@@ -123,13 +123,13 @@
 <tr>
 <td class="heading">&nbsp;</td><td class="heading">{tr}User{/tr}</td><td class="heading">{tr}Name{/tr}</td><td class="heading">&nbsp;</td>
 </tr>
-{foreach name=u key=k item=user from=$groupusers}
+{foreach name=u key=k item=item from=$groupusers}
 <tr>
-<td class="odd" width="48"><img src="./tiki-show_user_avatar.php?user={$user.login}" align='absmiddle' border=0></td>
-<td class="odd"><a href="./tiki-user_information.php?view_user={$user.login}">{$user.login}</a></td>
-<td class="odd" width=100%>	<a href="./tiki-user_information.php?view_user={$user.login}">{$user.name}</a></td>
+<td class="odd" width="48"><img src="./tiki-show_user_avatar.php?user={$item.login}" align='absmiddle' border=0></td>
+<td class="odd"><a href="./tiki-user_information.php?view_user={$item.login}">{$item.login}</a></td>
+<td class="odd" width=100%>	<a href="./tiki-user_information.php?view_user={$item.login}">{$item.name}</a></td>
 <td class="odd" >
-<img src='img/icons2/delete.gif' border='0' alt='Borrar' title='Borrar' onclick="document.getElementById('removeUserName').value='{$user.login}';document.getElementById('formRemoveUser').style.display = 'block';"/>
+<img src='img/icons2/delete.gif' border='0' alt='Borrar' title='Borrar' onclick="document.getElementById('removeUserName').value='{$item.login}';document.getElementById('formRemoveUser').style.display = 'block';"/>
 </td>
 </tr>
 {/foreach} 
