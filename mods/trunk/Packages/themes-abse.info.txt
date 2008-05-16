@@ -1,0 +1,45 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/abse/styles/abse.css styles/abse.css
+themes/abse/styles/abse/crimeboy_design.png styles/abse/crimeboy_design.png
+themes/abse/styles/abse/index.png styles/abse/index.png
+themes/abse/styles/abse/menubg.jpg styles/abse/menubg.jpg
+themes/abse/styles/abse/titlebgoff.png styles/abse/titlebgoff.png
+themes/abse/styles/abse/titlebgon.png styles/abse/titlebgon.png
+themes/abse/styles/abse/wgreenwall.png styles/abse/wgreenwall.png
+themes/abse/templates/styles/abse/credits.tpl templates/styles/abse/credits.tpl
+themes/abse/templates/styles/abse/header.tpl templates/styles/abse/header.tpl
+themes/abse/templates/styles/abse/index.tpl templates/styles/abse/index.tpl
+themes/abse/templates/styles/abse/tiki.tpl templates/styles/abse/tiki.tpl
+themes/abse/templates/styles/abse/tiki-bot_bar.tpl templates/styles/abse/tiki-bot_bar.tpl
+themes/abse/templates/styles/abse/tiki-site_header.tpl templates/styles/abse/tiki-site_header.tpl
+themes/abse/templates/styles/abse/tiki-top_bar.tpl templates/styles/abse/tiki-top_bar.tpl
+
+Description:
+absE is based on the visual design of the absE theme for openbox by crimeboy (http://celo.wordpress.com/) and uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss).
+ 
+Docurl:
+http://themes.tikiwiki.org/themename
+http://zukakakina.com/themename
+ 
+Licence:
+GNU/LGPL
+
+Author:
+Gary Cunningham-Lee (chibaguy)
+ 
+Version:
+1.10.0b1
+ 
+Changelog:
+1 initial package

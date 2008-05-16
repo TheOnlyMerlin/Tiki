@@ -38,6 +38,7 @@
 'taglines','rcogley','1.2','A collection of taglines from TikiWiki Developer R.Cogley','Unknown'
 'themes','3dblue','1.2','Blue and 3D','GNU/LGPL'
 'themes','akwa','1.3','Looking like MacOSX','GNU/LGPL'
+'themes','abse','1.10','Light-on-dark theme based on the visual design of the absE theme for openbox by crimeboy (http://celo.wordpress.com/) and using the *litecss layout method (http://sourceforge.net/projects/litecss).','GNU/LGPL'
 'themes','bluemetal','1.2','Theme borrowed to another cms.','GNU/GPL'
 'themes','classicblue','1.1','Variation of BlueMetal','GNU/GPL'
 'themes','greenjelly','1.2','British taste','GNU/LGPL'
