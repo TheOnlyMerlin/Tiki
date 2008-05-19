@@ -1,3 +1,4 @@
+$Id$
 -=Theme details=-
 * __Name:__ absE (abse.css)
 * __Author and maintainer:__ Gary Cunningham-Lee (chibaguy)
@@ -9,7 +10,7 @@
 (All file paths from Tiki root directory.)
 
 * templates/styles/abse/credits.tpl
-* templates/styles/abse/index.tpl
+* templates/styles/abse/index.php
 
 !!! The following template are identical to those of other *lite.css-based themes I am making for TikiWiki version 1.10:
 * themes/abse/templates/styles/abse/header.tpl templates/styles/abse/header.tpl
