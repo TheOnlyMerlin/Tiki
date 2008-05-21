@@ -428,7 +428,8 @@ div#tiki-center{ }
 	background: #467AA7}
 	
 .mdkitem a,
-.mdkitem a:visited  {
+.mdkitem a:visited,
+.cssmenu_vert li a  {
 	padding: 3px 10px;
 	position: relative;
 	display: block;
@@ -437,7 +438,13 @@ div#tiki-center{ }
 	color: #fff;
 	font-weight: normal}
 
-.mdkitem a:hover  {
+.cssmenu_vert li a {  }
+.cssmenu_vert li {background: #467AA7}
+.cssmenu_ver li a ul {border: 0}
+.cssmenu_vert li:hover ul, .cssmenu_vert li li:hover ul, .cssmenu_vert li li li:hover ul, .cssmenu_vert li.sfhover ul, .cssmenu_vert li li.sfhover ul, .cssmenu_vert li li li.sfhover ul { /* lists nested under hovered list items */border: 0; padding-right: 0}
+
+.mdkitem a:hover, 
+.cssmenu_vert li a:hover  {
 	background: none;
 	color: #fff;
 	text-decoration: none;
@@ -1463,7 +1470,19 @@ td.categobjectsdataodd {}
 .catlists a.link:hover {}
 
 /***** Tags (freetags) *****/
+li.freetag {
+	list-style: none;
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+ul.freetag {
+	margin: 0;
+	padding: 0;
+	display: inline;
+}
 
+.freetag a {display:inline}
 a.freetag_1 {text-decoration: none; font-size: .8em}
 a.freetag_2 {text-decoration: none; font-size: .9em}
 a.freetag_3 {text-decoration: none; font-size: 1em}

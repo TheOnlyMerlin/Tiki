@@ -407,7 +407,8 @@ html>body #c1c2 #wrapper #col1 #tiki-center:hover {
 	text-align: left;
 	white-space: nowrap}
 
-.mdkitem a  {
+.mdkitem a,
+.cssmenu_vert li a  {
 	padding: 2px 5px 2px 5px;
 	position: relative;
 	display: block;
@@ -417,7 +418,13 @@ html>body #c1c2 #wrapper #col1 #tiki-center:hover {
 .mdkitem a:link,
 .mdkitem a:visited {text-decoration: none}
 
-.mdkitem a:hover  {
+.cssmenu_vert li {padding-bottom: 4px}
+.cssmenu_ver li a ul {border: 0}
+.cssmenu_vert li:hover ul, .cssmenu_vert li li:hover ul, .cssmenu_vert li li li:hover ul, .cssmenu_vert li.sfhover ul, .cssmenu_vert li li.sfhover ul, .cssmenu_vert li li li.sfhover ul { /* lists nested under hovered list items */border: 0}
+.cssmenu_vert li.selected > a {background: #86a48a url(abse/menubg.jpg) repeat-y;}
+
+.mdkitem a:hover, 
+.cssmenu_vert li a:hover  {
 	background: url(abse/menubg.jpg) repeat-y;
 	color: #CCCCFF}
 
@@ -1030,10 +1037,17 @@ div.cachedpage {}
 .wiki {}
 .wikinew {}
 .wiki-edithelp {display: none}
-textarea.wikiedit {font-size: 1.1em}
+textarea.wikiedit {font-size: 1.25em}
 p.editdate {}
 div.wiki-edithelp {}
 img.externallink {}
+
+/* Needed esp. for light-on-dark theme */
+div.quicktag {}
+div.quicktag img,
+#wikihelp-tab td img {}
+div#helptool {background: #86a48a; padding: 2px}
+#helptool a.link {color: #000}
 
 /* Wiki plugins */
 /* Code plugin  */
@@ -1466,7 +1480,19 @@ td.categobjectsdataodd {}
 .catlists a.link:hover {}
 
 /***** Tags (freetags) *****/
+li.freetag {
+	list-style: none;
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+ul.freetag {
+	margin: 0;
+	padding: 0;
+	display: inline;
+}
 
+.freetag a {display:inline}
 a.freetag_1 {
 	text-decoration: none;
 	font-size: .8em}
