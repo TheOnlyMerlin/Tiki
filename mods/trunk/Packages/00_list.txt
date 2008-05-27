@@ -42,6 +42,7 @@
 'themes','Andreas08','1.10','Port of Andreas Viklund's Andreas08 design','GNU/GPL'
 'themes','Andreas08','1.10','Port of Andreas Viklund's Andreas09 design','GNU/GPL'
 'themes','bluemetal','1.2','Theme borrowed from another cms.','GNU/GPL'
+'themes','Candii Clouds','1.10','Adaptation of Micheal Schultz' Creative Commons Attributive-licensed design','GNU/GPL'
 'themes','classicblue','1.1','Variation of BlueMetal','GNU/GPL'
 'themes','greenjelly','1.2','British taste','GNU/LGPL'
 'themes','greenmetal','1.2','Theme borrowed from another CMS','GNU/GPL'
