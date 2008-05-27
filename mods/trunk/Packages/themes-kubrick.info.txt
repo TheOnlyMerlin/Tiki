@@ -1,0 +1,38 @@
+contributor:
+$Author: mose $
+
+revision:
+$Revision: 1.1 $
+
+lastmodif:
+$Date: 2006-02-19 06:05:18 $
+
+files:
+themes/kubrick/README-FIRST.txt templates/styles/kubrick/README-FIRST.txt
+themes/kubrick/theme_details-kubrick.txt templates/styles/kubrick/theme_details-kubrick.txt
+themes/kubrick/styles/kubrick/footerbg.jpg styles/kubrick/footerbg.jpg
+themes/kubrick/styles/kubrick/headerbg.jpg styles/kubrick/headerbg.jpg
+themes/kubrick/styles/kubrick/index.php styles/kubrick/index.php
+themes/kubrick/styles/kubrick/kubrickbg_left.jpg styles/kubrick/kubrickbg_left.jpg
+themes/kubrick/styles/kubrick/kubrickbg_right.jpg styles/kubrick/kubrickbg_right.jpg
+themes/kubrick/templates/styles/kubrick/tiki.tpl templates/styles/kubrick/tiki.tpl
+themes/kubrick/templates/styles/kubrick/credits.tpl templates/styles/kubrick/credits.tpl
+themes/kubrick/templates/styles/kubrick/header.tpl templates/styles/kubrick/header.tpl
+themes/kubrick/templates/styles/kubrick/tiki-bot_bar.tpl templates/styles/kubrick/tiki-bot_bar.tpl
+themes/kubrick/templates/styles/kubrick/tiki-read_article.tpl templates/styles/kubrick/tiki-read_article.tpl
+themes/kubrick/templates/styles/kubrick/tiki-site_header.tpl templates/styles/kubrick/tiki-site_header.tpl
+themes/kubrick/templates/styles/kubrick/tiki-top_bar.tpl templates/styles/kubrick/tiki-top_bar.tpl
+
+author:
+Gary Cunningham-Lee (chibaguy)
+
+licence:
+GNU/GPL
+
+Description: 
+This is a Tiki adaptation of the Kubrick theme (http://mambo.rhuk.net/) originally done by Michael Heilemann for the WordPress blog software.  It's been tested with Tiki 1.10 beta. Maintained by Gary Cunningham-Lee (chibaguy). For the latest information on and updates of the Kubrick theme for TikiCMS, visit http://zukakakina.com or http://themes.tikiwiki.org.
+ 
+
+Changelog:
+2 update for TikiWiki 1.10
+1 initial package
