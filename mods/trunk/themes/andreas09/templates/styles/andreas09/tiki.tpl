@@ -57,7 +57,7 @@
 			{if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
 			<hr class="hidden" /> {* for semantic separation of center and side columns *}
 			{if $prefs.feature_left_column ne 'n' && $left_modules|@count > 0 && $show_columns.left_modules ne 'n'}
-				<h2 class="hidden">Additional/extra/common/generic/related information</h2>
+				<h2 class="hidden">Sidebar</h2>
 				<div id="col2">
 					<div class="content">
 						{section name=homeix loop=$left_modules}
@@ -70,7 +70,7 @@
 			</div>{* -- END of c1c2 -- *}
 {if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
 	{if $prefs.feature_right_column ne 'n' && $right_modules|@count > 0 && $show_columns.right_modules ne 'n'}
-		<h2 class="hidden">Additional/extra/common/generic/related information</h2>
+		<h2 class="hidden">Sidebar</h2>
 		<div class="clearfix" id="col3" 
 		{if $prefs.feature_right_column eq 'user'} 
 		style="display:{if isset($cookie.show_rightcolumn) and $cookie.show_rightcolumn ne 'y'}none{else}table-cell;_display:block{/if};"

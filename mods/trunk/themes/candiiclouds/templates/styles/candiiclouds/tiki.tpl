@@ -39,7 +39,7 @@
 				{if $prefs.feature_left_column ne 'n' && $left_modules|@count > 0 && $show_columns.left_modules ne 'n'}
 				<td id="leftcolumn" valign="top" {if $prefs.feature_left_column eq 'user'}
 			style="display:{if isset($cookie.show_leftcolumn) and $cookie.show_leftcolumn ne 'y'}none{else}table-cell;_display:block{/if};"{/if}>
-			<h2 class="hidden">Additional/extra/common/generic/related information</h2>
+			<h2 class="hidden">Sidebar</h2>
 					<div class="colwrapper">
 						{section name=homeix loop=$left_modules}
 						{$left_modules[homeix].data}
@@ -78,7 +78,7 @@
 	 			{if $prefs.feature_right_column ne 'n' && $right_modules|@count > 0 && $show_columns.right_modules ne 'n'}
 				<td id="rightcolumn" valign="top" {if $prefs.feature_right_column eq 'user'} 
 			style="display:{if isset($cookie.show_rightcolumn) and $cookie.show_rightcolumn ne 'y'}none{else}table-cell;_display:block{/if};" {/if}>
-			<h2 class="hidden">Additional/extra/common/generic/related information</h2>
+			<h2 class="hidden">Sidebar</h2>
 					<div class="colwrapper">
 						{section name=homeix loop=$right_modules}
 							{$right_modules[homeix].data}
