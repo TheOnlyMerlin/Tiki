@@ -1473,7 +1473,6 @@ td.categobjectsdataodd {}
 .catname {}
 .catblock {}
 .catlists {}
-.catlists:last-child {}
 .catlists:hover {}
 .cattitle {}
 .catlists a.link {}
@@ -1663,7 +1662,6 @@ div.gallerypath a:hover {}
 	color: #000;
 	font-size: 90%}
 
-	
 .Calart,
 .Calblog,
 .Calchart,
@@ -1694,7 +1692,7 @@ div.gallerypath a:hover {}
 .Caltrack:before,
 .Calwiki:before {
 	background: #000;
-	font-size: 1.2em } 
+	font-size: 1.2em} 
 
 .Calart,
 .Calart a,
@@ -1743,9 +1741,8 @@ div.gallerypath a:hover {}
 .Caltrack,
 .Caltrack a,
 .Caltrack a:visited {color: #00BD02}
-
 	
-.calweb {font-size: 1em}
+.Calweb {font-size: 1em}
 .Calweb:hover {color: #996633}
 
 .Calwiki,
@@ -1990,7 +1987,7 @@ div#ajaxLoading {
 #shadowbox_title{
 	height: auto !important;
 	padding: 0;
-	overflow: display}
+	overflow: visible}
 
 #shadowbox_title_inner{
 	height: auto !important;

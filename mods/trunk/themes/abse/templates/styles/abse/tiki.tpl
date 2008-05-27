@@ -1,5 +1,4 @@
-{* $Id: tiki.tpl 12653 2008-04-23 06:50:23Z chibaguy $ *}
-{include file="header.tpl"}
+{* $Id: tiki.tpl 12653 2008-04-23 06:50:23Z chibaguy $ *}{include file="header.tpl"}
 {if $prefs.feature_ajax eq 'y'}
 {include file="tiki-ajax_header.tpl"}
 {/if}
