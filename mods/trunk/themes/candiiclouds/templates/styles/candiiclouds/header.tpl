@@ -50,16 +50,18 @@ You are most likely wanting to modify the top of your Tiki site. Please consider
 </title>
 
 {if $prefs.site_favicon}<link rel="icon" href="{$prefs.site_favicon}" />{/if}
-
+<!--[if lt IE 7]> <link rel="StyleSheet" href="css/ie6.css" type="text/css" /> <![endif]-->
 
 {* --- phplayers block --- *}
 {if $prefs.feature_phplayers eq 'y'}
 <link rel="StyleSheet" href="lib/phplayers/layerstreemenu.css" type="text/css"></link>
 <link rel="StyleSheet" href="lib/phplayers/layerstreemenu-hidden.css" type="text/css" />
-<script type="text/javascript"><!--
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
 var numl;var toBeHidden;
 {php} include_once ("lib/phplayers/libjs/layersmenu-browser_detection.js"); global $LayersMenu, $TreeMenu, $PHPTreeMenu, $PlainMenu;{/php}
-// --></script>
+//--><!]]>
+</script>
 <script type="text/javascript" src="lib/phplayers/libjs/layersmenu-library.js"></script>
 {* lets try this *}
 <script type="text/javascript" src="lib/phplayers/libjs/layersmenu.js"></script>
@@ -112,9 +114,9 @@ var numl;var toBeHidden;
 {/if}
 
 {if $headerlib}{$headerlib->output_headers()}{/if}
-<!--[if lt IE 7]> <link rel="StyleSheet" href="css/ie6.css" type="text/css" /> <![endif]-->
 {if ($mid eq 'tiki-editpage.tpl')}
 <script type="text/javascript">
+<!--//--><![CDATA[//><!--
 {literal}
   var needToConfirm = true;
   
@@ -125,6 +127,7 @@ var numl;var toBeHidden;
 		{/literal}return "{tr interactive='n'}You are about to leave this page. If you have made any changes without Saving, your changes will be lost.  Are you sure you want to exit this page?{/tr}";{literal}
   }
 {/literal}
+//--><!]]>
 </script>
 {/if}
 
@@ -141,7 +144,7 @@ var numl;var toBeHidden;
 	<script type="text/javascript" src="lib/shadowbox/build/js/shadowbox.js" charset="utf-8"></script>
 
 	<script type="text/javascript">
-
+<!--//--><![CDATA[//><!--
 {if $prefs.feature_mootools eq "y"}
 	{literal}
 		window.addEvent('domready', function() {
@@ -180,6 +183,7 @@ var numl;var toBeHidden;
 
 			Shadowbox.init(options);
 		});
+//--><!]]>
 	</script>
 {/literal}
 {/if}
