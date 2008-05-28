@@ -1330,62 +1330,10 @@ div.postfooter {
 
 /***** Forums *****/
 
-body.tiki_forums table.normal {margin: auto}
-
-div.forumtoolbar {
-	background-color: #395AAD;
-	margin-bottom: 20px;
-	border: 0}
- 
-td.threadsevenl {
-	border: 1px solid #8CACBB;
-	border-collapse: collapse;
-	background-color: #EEEEEE}
- 
-td.threadsevenr {
-	border: 1px solid #8CACBB;
-	border-collapse: collapse;
-	background-color: #EEEEEE}
- 
-td.threadsoddl {
-	border: 1px solid #8CACBB;
-	border-collapse: collapse;
-	background-color: #DDDDDD}
- 
-td.threadsoddr {
-	border: 1px solid #8CACBB;
-	border-collapse: collapse;
-	background-color: #DDDDDD}
-
-table.threads {width: 100%}
-
-/* Check ?? */
-td.threadseparator {
-	border: 1px solid #8CACBB;
-	border-collapse: collapse;
-	background-color: #EEEEEE;
-	height: 5px}
- 
 #forumpost {display: none}
 #forumpostopen {display: block}
 
-td.forumtoolbar {
-	color: white;
-	font-weight: bold;
-	text-decoration: none;
-	vertical-align: bottom}
- 
-.toolbarlink {
-	color: white;
-	font-weight: bold;
-	text-decoration: none}
 
-.forumvotelink {color: black}
-
-table.commentinfo {
-	background: #F0F0F0}
-/* Forums new */
-/* Forums new */
 .post {clear: both}
 
 .post .postbody {
@@ -1457,8 +1405,6 @@ table.commentinfo {
 	font-size: 1em}
 	
 .post .postbody .content {
-	/*float: left;*/
-	/*padding: 0px 3px 3px 3px;*/
 	width: 100%;
 	height: 100%;
 	text-align: left;
@@ -1477,17 +1423,13 @@ table.commentinfo {
 	vertical-align: top}
 
 .post .postfooter .status {font-size: 1em}
-
-.post .postfooter {
-	/*float: right;*/
-	text-align: right}
-
+.post .postfooter {text-align: right}
 .post .inner > .postfooter {clear: both}
 
 .post .contribution {
 	background-color: #F0F8FF;
 	border: 1px solid #D7E5F3;
-	padding: 0 2px 0 2px}
+	padding: 0 2px}
 
 .post .avatar {
 	/*float: right;*/
@@ -1512,9 +1454,7 @@ table.commentinfo {
 	vertical-align: middle;
 	color: #fff}
 
-.forum_actions .actions .action { 
-	margin-right: 10px}
-
+.forum_actions .actions .action {margin-right: 10px}
 .forum_actions .headers {vertical-align: bottom}
 
 .forum_actions .headers .title {
@@ -1534,7 +1474,9 @@ table.commentinfo {
 	margin-bottom: 10px}
 
 .nb_replies {white-space: nowrap}
-.post_preview, .top_post {margin-bottom: 15px}
+
+.post_preview,
+.top_post {margin-bottom: 15px}
 
 /*.post .postbody .signature { float: left}*/
 
@@ -1575,24 +1517,23 @@ td.categobjectsdataodd {}
 .catname {}
 .catblock {}
 .catlists {}
-.catlists:last-child {}
 .catlists:hover {}
 .cattitle {}
 .catlists a.link {}
 .catlists a.link:hover {}
 
 /***** Tags (freetags) *****/
+
 li.freetag {
 	list-style: none;
 	display: inline;
 	margin: 0;
-	padding: 0;
-}
+	padding: 0}
+
 ul.freetag {
 	margin: 0;
 	padding: 0;
-	display: inline;
-}
+	display: inline}
 
 .freetag a {display:inline}
 
@@ -1626,12 +1567,10 @@ a.freetag_7 {
 
 div.freetagObjectOdd {
 	margin: 2px;
-	/*background-color: #F7F9FA;*/
 	position: relative}
 
 div.freetagObjectEven {
 	margin: 2px;
-	/*background-color: #E7E9EA;*/
 	position: relative}
 
 div.freetagObjectName a {text-decoration: none}
@@ -1935,11 +1874,10 @@ div.quizanswer {}
 /***** Shoutbox *****/
 
 div.shoutboxmsg {}
-div.shoutboxmsg:last-child {/*border-bottom: 1px solid #8CACBB;*/}
 div.shoutboxmodmsg {}
 
 textarea.tshoutbox{
-	font-size: .95em;
+	font-size: 1.2em;
 	width: 162px}
 
 .wiki-table {}
@@ -2017,7 +1955,7 @@ div#ajaxLoading {
 #shadowbox_title {
 	height: auto !important;
 	padding: 0;
-	overflow: display}
+	overflow: visible}
 
 #shadowbox_title_inner {
 	height: auto !important;
@@ -2028,7 +1966,8 @@ div#ajaxLoading {
 
 /***** TikiSheet *****/
 
-table.default thead td, table.default tfoot td {
+table.default thead td,
+table.default tfoot td {
 	font-weight: bold;
 	text-align: center;
 	background-color: black;
@@ -2038,13 +1977,12 @@ table.default td {
 	border: solid 1px #A9A9A9;
 	background-color: black}
 
-/**********   'advanced feature' divs   **********/
+/***** 'Advanced feature' *****/
+
 .advanced {
   margin: 20px;
   padding: 5px;
-  border-color: #A9A9A9;
-  border-width: 1px;
-  border-style: solid;
+  border: #A9A9A9 1px solid;
   background-color: black;
   color: #D8D8D8}
 
@@ -2074,7 +2012,7 @@ table.default td {
 .justify {text-align: justify}
 .right {text-align: right}
 
-/**********    mypage   **********/
+/***** mypage *****/
 
 .mypage_configure th {width: 180px}
 #sideBarTab {background: url('../img/cord.png') no-repeat}
@@ -2084,7 +2022,7 @@ table.default td {
 
 a.admbox {
 	border: 1px solid #AAAAAA;
-	background-color: #e8e9ea}
+	background: #e8e9ea center no-repeat}
 
 a.admbox:hover,
 a.admbox:focus,
@@ -2095,77 +2033,3 @@ a.admbox:active  {
 a.admbox.off {border: 1px solid #9f9f9f}
 
 /* end of css file */
-{* $Id$ *}
-.cssmenu {	
-	z-index : 1000 !important;
-	width : 100%; 
-	background-color : #fff;
-}
-.cssmenu ul {
-	list-style : none;
-	margin : 0;
-	padding : 0;
-}
-.cssmenu a, .cssmenu .menuSection {
-	display : block;
-	border : 1px solid #bbb;
-	border-bottom : 0;
-	margin : 0;
-	padding : 1px 3px;
-}
-.cssmenu ul li ul li:last-child a,
-.cssmenu ul:last-child li .menuSection {
-	border-bottom : 1px solid #bbb;
-}
-/*.cssmenu */.menuSection {
-	font-weight : bold;
-	font-size : 1em;
-	background-image : url('../pics/icons/arrow_small.png');
-	background-position : right;
-	background-repeat : no-repeat;
-}
-.cssmenu .menuSection img {
-	padding-right : 5px;
-}
-.cssmenu ul li a {
-	padding-left : 23px;
-}
-.cssmenu ul li ul li a {
-	padding-left : 3px;
-	border-left : 0;
-}
-.cssmenu a {
-	text-decoration : none;
-}
-.cssmenu a:hover, .cssmenu .menuSection:hover {
-	cursor : pointer;
-	color : #000;
-	background-color : #ddd;
-}
-.cssmenu li {
-	background-color : #fff;
-	position : relative;
-}
-.cssmenu ul ul {
-	position : absolute;
-	top : 0;
-	left : 100%;
-	width : 100%;
-}
-.cssmenu ul ul,
-.cssmenu ul li:hover ul  {
-	display : none;
-	cursor : pointer;
-}
-.cssmenu ul li:hover ul,
-.cssmenu ul ul li:hover {
-	display : block;
-	cursor : pointer;
-}
-
-.cssmenu li.selected > a {
-	background-color: #D3D3D3;
-}
-.cssmenu li.selectedAscendant > a {
-	background-color: #E6E6E6;
-}
