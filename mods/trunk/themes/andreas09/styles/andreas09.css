@@ -2027,7 +2027,7 @@ a.admbox {
 a.admbox:hover,
 a.admbox:focus,
 a.admbox:active  {
-	background-color: #B2B2B2;
+	background: #B2B2B2 center no-repeat;
 	border: 1px solid #292929}
 
 a.admbox.off {border: 1px solid #9f9f9f}
