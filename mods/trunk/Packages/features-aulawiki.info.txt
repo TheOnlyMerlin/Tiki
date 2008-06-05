@@ -2,10 +2,10 @@ contributor:
 $Author: jreyesg $
 
 revision:
-$Revision: 1.5 $
+$Revision: 1.6 $
 
 lastmodif:
-$Date: 2007-03-03 08:41:17 $
+$Date: 2007-06-05 23:21:17 $
 
 files:
 features/aulawiki/aulawiki-assignments_admin.php aulawiki-assignments_admin.php
@@ -198,7 +198,7 @@ licence:
 GNU/LGPL
 
 Description: 
-AulaWiki offers team collaboration environments (workspaces), allowing you to manage sets of Tiki resources in an easy way.
+AulaWiki offers team collaboration environments (workspaces), allowing you to manage sets of Tiki resources in an easy way. Patched to work on Tiki 1.10svn by sylvieg, rodrigosampaio and Xavi.
 
 Changelog:
 0.1 initial package
@@ -254,14 +254,14 @@ DELETE FROM `users_groups` WHERE `groupName`='RolePerms-Owner';
 INSERT INTO `users_groups` (groupName,groupDesc) VALUES ('RolePerms-Teacher', 'Teacher role permissions template');
 INSERT INTO `users_groups` (groupName,groupDesc) VALUES ('RolePerms-Student', 'Student role permissions template');
 INSERT INTO `users_groups` (groupName,groupDesc) VALUES ('RolePerms-Owner', 'Owner role permissions template');
-INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('aulawiki_p_admin_assignments','Can admin assignments','admin','assignments');
-INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('aulawiki_p_view_assignments','Can view assignments','basic','assignments');
-INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('aulawiki_p_edit_assignments','Can edit existing assignments','editors','assignments');
-INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('aulawiki_p_create_assignments','Can create new assignments','editors','assignments');
-INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('aulawiki_p_remove_assignments','Can remove assignments','admin','assignments');
-INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('tiki_p_view_workspace','Can view a workspace','basic','workspace');
-INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('tiki_p_admin_workspace','Can admin workspaces','admin','workspace');
-INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('tiki_p_create_workspace_resour','Can create new workspace resources','editors','workspace');
+INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('aulawiki_p_admin_assignments','Can admin assignments','admin','assignments','NULL');
+INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('aulawiki_p_view_assignments','Can view assignments','basic','assignments','');
+INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('aulawiki_p_edit_assignments','Can edit existing assignments','editors','assignments','');
+INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('aulawiki_p_create_assignments','Can create new assignments','editors','assignments','');
+INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('aulawiki_p_remove_assignments','Can remove assignments','admin','assignments','');
+INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('tiki_p_view_workspace','Can view a workspace','basic','workspace','');
+INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('tiki_p_admin_workspace','Can admin workspaces','admin','workspace','');
+INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('tiki_p_create_workspace_resour','Can create new workspace resources','editors','workspace','');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (42,'s','Workspaces','./tiki-workspaces_admin.php',1020,'','tiki_p_admin_workspace','');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (42,'o','Admin Workspaces','./tiki-workspaces_admin.php',1022,'','tiki_p_admin_workspace','');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (42,'o','Workspace Types','./tiki-workspaces_types.php',1024,'','tiki_p_admin_workspace','');
