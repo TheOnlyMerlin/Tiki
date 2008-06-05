@@ -5,7 +5,7 @@ revision:
 $Revision: 1.1 $
 
 lastmodif:
-$Date: 2007-06-14 08:17:30 $
+$Date: 2008-06-05 16:20:00 $
 
 suggests:
 wikiplugins-phpfreechat
