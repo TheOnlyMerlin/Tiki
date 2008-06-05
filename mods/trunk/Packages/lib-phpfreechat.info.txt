@@ -7,7 +7,8 @@ $Revision: 1.1 $
 lastmodif:
 $Date: 2007-06-14 08:17:30 $
 
-files: 
+files:
+tiki-phpfreechat_ajax.php tiki-phpfreechat_ajax.php
 lib/json/LICENSE lib/phpfreechat/lib/json/LICENSE
 lib/json/JSON.php lib/phpfreechat/lib/json/JSON.php
 lib/pear/PHPUnit.php lib/phpfreechat/lib/pear/PHPUnit.php
