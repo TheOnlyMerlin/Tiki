@@ -146,7 +146,6 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 /*** Type 2 (table-assisted) layout ***/
 
 table#main {
-	position: absolute;
 	font-size: .9em;
 	position: absolute;
 	top: 20px;
@@ -223,7 +222,8 @@ div#tiki-bot {text-align: center}
 #siteheader {
 	text-align: left;
 	background: transparent;
-	vertical-align: middle}
+	vertical-align: middle;
+	position: relative}
 
 div#sioptions {padding: 1em}
 
@@ -640,6 +640,7 @@ h3.box-title {
 
 .box a.flipmodtitle img {display: none}
 
+* html .box a.flipmodtitle img,
 .box:hover a.flipmodtitle img {
 	display: block;
 	position: absolute;
@@ -647,24 +648,12 @@ h3.box-title {
 	top: 0;
 	border: 1px solid transparent}
 
+* html .box a.flipmodtitle img {border: none}
 a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
 .box-data {background: #fff}
 
 .box-data table {width: 100%}
 * html .box-data table {width: 95%}
-
-.box-data ol,
-.box-data ul {
-	margin-left: -2em;
-	padding-right: 1em;
-	/*overflow: hidden*/}
-
-/* IE */
-* html .box-data ol {margin-left: 2.5em}
-* html .box-data ul {margin-left: 1.5em}
-/* IE7 */
-*:first-child+html .box-data ol {margin-left: 2em}
-*:first-child+html .box-data ul {margin-left: 1em}
 
 .box-data ol li {}
 .box-footer {}
@@ -737,6 +726,7 @@ table.admin tr td div#page-bar {
 	background: transparent}
 
 td {vertical-align: top}
+
 /* IE */ * html td {font-size: 11px}
 th {}
 

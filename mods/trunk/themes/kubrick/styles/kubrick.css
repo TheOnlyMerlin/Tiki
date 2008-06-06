@@ -28,8 +28,7 @@ a:hover {
 	color: #000;
 	text-decoration: none} 
 
-caption {
-	font-weight: bold}
+caption {font-weight: bold}
 
 div {}
 
@@ -40,14 +39,11 @@ h1 {
 	font-weight: bold;
 	font-size: 1.8em}
 
-h2 {
-	font-size: 1.6em}
+h2 {font-size: 1.6em}
 
-h3 {
-	font-size: 1.5em}
+h3 {font-size: 1.5em}
 
-h4 {
-	font-size: 1.4em}
+h4 {font-size: 1.4em}
 
 h5 {
 	font-size: 1.2em;
@@ -66,9 +62,7 @@ hr {
 	color: #67ade7}
 
 img {border: 0}
-
-fieldset {
-	border: 1px solid #67ade7}
+fieldset {border: 1px solid #67ade7}
 
 /* Prevent forms from generating unwanted padding or margins */
 form {
@@ -280,8 +274,8 @@ div#sioptions  {
 
 #sioptionscentered {
 	text-align: center;
-	/*margin-left: 40px;*/
-	min-width: 800px}
+	/*margin-left: 40px;
+	min-width: 800px*/}
 
 div.floatright {
 	float: right;
@@ -715,7 +709,8 @@ h3.box-title {
 	height: 12px;
 	width: 12px;
 	display: none}
-
+	
+* html .box a.flipmodtitle img,
 .box:hover a.flipmodtitle img {
 	display: block;
 	position: absolute;
@@ -723,6 +718,7 @@ h3.box-title {
 	top: 0;
 	border: 1px solid transparent}
 
+* html .box a.flipmodtitle img {border: none}
 a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
 
 div.box-data {
@@ -733,14 +729,7 @@ div.box-data {
 	text-align: left}
 
 .box-data ol,
-.box-data ul {margin-left: -2em}
-
-* html .box-data ul {
-	margin-left: 0;
-	padding-right: 1em;
-	overflow: hidden}
-
-.box-data ol li {list-style: none}
+.box-data ul {}
 
 /** Other boxes **/
 .cbox {
@@ -847,7 +836,8 @@ table.bloglist {
 
 * html table.normal, 
 * html table.admin,
-* html table.bloglist {width: 97%}
+* html table.bloglist,
+* html table.sortable {width: 97%}
 
 table.admin tr td div#page-bar {}
 .wikitable {}
@@ -903,22 +893,17 @@ table.findtable {
 
 .findtable td { }
 
-/* Odd rows in several listings */
 tr.odd {
-	/*border: 1px solid #8CACBB;*/
 	color: black;
 	background-color: #F7F9FA}
 
-tr.odd:hover {
-	background-color: #FFF7E6}
+tr.odd:hover {background-color: #FFF7E6}
 
 tr.even {
-	/*border: 1px solid #8CACBB;*/
 	background-color: #E7E9EA;
 	color: black}
 
-tr.even:hover {
-	background-color: #FFF7E6}
+tr.even:hover {background-color: #FFF7E6}
 
 td.odd {
 	border-right: 1px solid #67ade7;
@@ -944,10 +929,18 @@ td.bloglist,
 td.odd,
 td.even {}
 
- /* headings */
+/* headings */
+
 th, div.heading,
 table.normal td.heading,
-td.bloglistheading {}
+td.bloglistheading {
+	color: #fff;
+	background-color: #67ade7;
+	font-weight: bold;
+	text-align: center;
+	padding: 0 2px}
+	
+* body th { font-size: 11px }
 
 form.admin {}
 form.admin fieldset {}
@@ -974,21 +967,24 @@ a.fgalname,
 a.artname,
 a.forumname {
 	font-weight: bold;
-	color: black}
+	color: #fff}
 
 a.forumnameread {
 	letter-spacing: 1px;
-	color: black}
+	color: #fff}
 
 /* links in table headings */
-.tableheading,
-.gallistheading,
-.listgalheading,
-.bloglistheading,
-.llisfgalheading,
-.llistfileslink,
-.llistart,
-.lforumheading { color: #fff; text-decoration: none}
+a.tableheading,
+a.gallistheading,
+a.listgalheading,
+a.bloglistheading,
+a.llisfgalheading,
+a.llistfileslink,
+a.llistart,
+a.lforumheading,
+a.sortheader {color: #fff; text-decoration: none}
+
+table.sortable th a.sortheader {color: #fff}
 
 /** Tabs **/
 .tabs {

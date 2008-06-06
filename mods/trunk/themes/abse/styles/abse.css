@@ -229,18 +229,16 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	padding: 3px;
 	overflow: hidden}
 
-#footer,
-#tiki-bot {
+#footer {
 	clear: both;
-	font-size: 0.9em;
+	font-size: 0.8em;
 	font-weight: bold;
 	text-align: center;
 	background: transparent;
 	background: url(abse/crimeboy_design.png) no-repeat center 100%;
 	padding-bottom: 40px}
 
-#footer a,
-#tiki-bot a {font-weight: bold}
+#footer a {font-weight: bold}
 #credits {}
 
 .footerbgtrap {background: transparent}
@@ -617,6 +615,7 @@ html>body div.box:hover {background: #0E1D10}
 
 .box a.flipmodtitle img {display: none}
 
+* html .box a.flipmodtitle img,
 .box:hover a.flipmodtitle img {
 	display: block;
 	position: absolute;
@@ -626,6 +625,7 @@ html>body div.box:hover {background: #0E1D10}
 	width: 12px;
 	border: 1px solid transparent}
 
+* html .box a.flipmodtitle img {border: none}
 a.flipmodtitle:hover img {border: 1px solid #55914E !important}
 
 .box-data {
@@ -643,23 +643,7 @@ a.flipmodtitle:hover img {border: 1px solid #55914E !important}
 	text-align: start}
 
 .box-data ol,
-.box-data ul {
-	margin-left: -2em;
-	padding-right: 1em;
-	overflow: hidden}
-
-.box-data ul {list-style: none}
-
-.box-data ol,
-.box-data ul {margin-left: -2em;padding-right: 1em;overflow: hidden}
-/* IE */
-* html .box-data ol {margin-left: 0em}
-* html .box-data ul {margin-left: 0em}
-/* IE7 */
-*:first-child+html .box-data ol {margin-left: 2em}
-*:first-child+html .box-data ul {margin-left: 1em}
-
-.box-data ol li {}
+.box-data ul {}
 
 .box-data li {
 	padding: 0.2em;
@@ -707,10 +691,7 @@ div.cbox-data {
 	overflow: hidden;
 	padding: 1px 4px 4px 4px}
 
-.cbox-data ul {
-	margin-top: -20px;
-	padding-left: 1em}
-
+.cbox-data ul {padding-left: 1em}
 .cbox-data ul ul {margin: auto}
 
 .rbox {
@@ -752,8 +733,21 @@ div.simplebox {
 /** Tables **/
 
 table {font-size: 1em}
-.normal {border: solid 1px #909090}
-body.tiki_users table.normal {border-collapse: collapse}
+* body table { font-size: 11px }
+
+table.normal, 
+table.admin,
+table.bloglist {
+	padding: 0;
+	margin: 0;
+	border: solid 1px #909090;
+	border-collapse: collapse;
+	width: 100%}
+
+* html table.normal, 
+* html table.admin,
+* html table.bloglist,
+* html table.sortable {width: 97%; font-size: 11px}
 
 td {vertical-align: top}
 
@@ -1492,6 +1486,7 @@ ul.freetag {
 }
 
 .freetag a {display:inline}
+
 a.freetag_1 {
 	text-decoration: none;
 	font-size: .8em}

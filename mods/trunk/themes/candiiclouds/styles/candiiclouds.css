@@ -63,7 +63,7 @@ p {}
 img {}
 fieldset {}
 form {}
-legend {}
+legend {color:#0076A3}
 
 button,
 input,
@@ -667,8 +667,7 @@ div.box {
 
 h3.box-title {
 	display: block;
-	background-image: url(candiiclouds/sbihead.gif);
-	background-repeat: no-repeat;
+	background: url(candiiclouds/sbihead.gif) no-repeat;
 	height: 24px;
 	width: 205px;
 	margin-right: auto;
@@ -683,9 +682,9 @@ h3.box-title {
 	
 * html h3.box-title { padding-bottom: 5px; }
 
-.box a.flipmodtitle img {
-	display: none}
+.box a.flipmodtitle img {display: none}
 
+* html .box a.flipmodtitle img,
 .box:hover a.flipmodtitle img {
 	display: block;
 	position: absolute;
@@ -693,6 +692,7 @@ h3.box-title {
 	top: 5px;
 	border: 1px solid transparent}
 
+* html .box a.flipmodtitle img {border: none}
 a.flipmodtitle:hover img {
 	border: 1px solid #FFCCE2 !important}
 
@@ -706,19 +706,14 @@ a.flipmodtitle:hover img {
 	overflow: hidden;
 	width: 180px}
 
-* html .box-data { margin-left: 10px; margin-right: 10px }
+* html .box-data {
+	margin-left: 10px;
+	margin-right: 10px}
+
 .box-data ul,
 ul.module,
 ol.module {
 	margin-left: -1em}
-
-.box-data li {
-	
-}
-
-.module li {
-	
-}
 
 /** controls for modules **/
 .modcontrols { 
@@ -1495,13 +1490,12 @@ li.freetag {
 	list-style: none;
 	display: inline;
 	margin: 0;
-	padding: 0;
-}
+	padding: 0}
+
 ul.freetag {
 	margin: 0;
 	padding: 0;
-	display: inline;
-}
+	display: inline}
 
 .freetag a {display: inline}
 
