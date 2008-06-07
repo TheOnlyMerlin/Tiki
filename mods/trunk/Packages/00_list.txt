@@ -44,6 +44,7 @@
 'themes','bluemetal','1.2','Theme borrowed from another cms.','GNU/GPL'
 'themes','Candii Clouds','1.10','Adaptation of Micheal Schultz' Creative Commons Attributive-licensed design','GNU/GPL'
 'themes','classicblue','1.1','Variation of BlueMetal','GNU/GPL'
+'themes','Faulkner','1.10','Adaptation of Demus Design's Creative Commons Attributive-licensed design','GNU/GPL'
 'themes','greenjelly','1.2','British taste','GNU/LGPL'
 'themes','greenmetal','1.2','Theme borrowed from another CMS','GNU/GPL'
 'themes','isabelsworld','1.1','The theme of Isabel.','GNU/LGPL'

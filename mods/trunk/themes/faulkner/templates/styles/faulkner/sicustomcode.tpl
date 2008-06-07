@@ -1,0 +1,2 @@
+<div id="sitetitle"><img src="styles/faulkner/title_left.gif" alt="" /> tc4400 <img src="styles/faulkner/title_right.gif" alt="" /></div>
+<div id="sitesubtitle">Faulkner - because Arial Is Overrated</div>
