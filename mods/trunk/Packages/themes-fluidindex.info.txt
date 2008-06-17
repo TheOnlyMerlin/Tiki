@@ -1,0 +1,49 @@
+$Id$
+
+Contributor:
+$Author$ (chibaguy)
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/fluidindex/styles/fluidindex.css styles/fluidindex.css
+themes/fluidindex/styles/fluidindex/bg.gif styles/fluidindex/bg.gif
+themes/fluidindex/styles/fluidindex/bgfooter.jpg styles/fluidindex/bgfooter.jpg
+themes/fluidindex/styles/fluidindex/bquote.gif styles/fluidindex/bquote.gif
+themes/fluidindex/styles/fluidindex/child.gif styles/fluidindex/child.gif
+themes/fluidindex/styles/fluidindex/contentbg.gif styles/fluidindex/contentbg.gif
+themes/fluidindex/styles/fluidindex/date.gif styles/fluidindex/date.gif
+themes/fluidindex/styles/fluidindex/page.gif styles/fluidindex/page.gif
+themes/fluidindex/styles/fluidindex/star.gif styles/fluidindex/star.gif
+themes/fluidindex/styles/fluidindex/index.php styles/fluidindex/index.php
+themes/fluidindex/templates/styles/fluidindex/credits.tpl templates/styles/fluidindex/credits.tpl
+themes/fluidindex/templates/styles/fluidindex/index.tpl templates/styles/fluidindex/index.tpl
+themes/fluidindex/templates/styles/fluidindex/header.tpl templates/styles/fluidindex/header.tpl
+themes/fluidindex/templates/styles/fluidindex/tiki.tpl templates/styles/fluidindex/tiki.tpl
+themes/fluidindex/templates/styles/fluidindex/tiki-bot_bar.tpl templates/styles/fluidindex/tiki-bot_bar.tpl
+themes/fluidindex/templates/styles/fluidindex/tiki-read_article.tpl templates/styles/fluidindex/tiki-read_article.tpl 
+themes/fluidindex/templates/styles/fluidindex/tiki-site_header.tpl templates/styles/fluidindex/tiki-site_header.tpl
+themes/fluidindex/templates/styles/fluidindex/tiki-top_bar.tpl templates/styles/fluidindex/tiki-top_bar.tpl
+
+Description:
+Fluid Index is a derived work, for TikiWiki CMS/Groupware, of the WordPress theme licensed Creative Commons Attribution 2.5 by Your Index (http://www.2yi.net/pwp_themes.html). This adaptation uses the *litecss source-ordered layout method ([http://sourceforge.net/projects/litecss]).
+ 
+Docurl:
+http://themes.tikiwiki.org/Fluid+Index
+http://zukakakina.com/Fluid+Index
+ 
+Licence:
+Creative Commons Attribution 2.5
+
+Author:
+Gary Cunningham-Lee (chibaguy)
+ 
+Version:
+1.10.0b1
+ 
+Changelog:
+1 initial package
