@@ -10,7 +10,7 @@ Lastmodif:
 $Date$
 
 Files:
-themes/candiiclouds/styles/candiiclouds.css styles/candiiclouds.css styles/candiiclouds.css styles/candiiclouds.css
+themes/candiiclouds/styles/candiiclouds.css styles/candiiclouds.css
 themes/candiiclouds/styles/candiiclouds/banstars.gif styles/candiiclouds/banstars.gif
 themes/candiiclouds/styles/candiiclouds/bcloud.gif styles/candiiclouds/bcloud.gif
 themes/candiiclouds/styles/candiiclouds/bluu.gif styles/candiiclouds/bluu.gif
