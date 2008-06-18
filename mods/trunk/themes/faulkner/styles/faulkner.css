@@ -95,8 +95,9 @@ input,
 textarea,
 option,
 select {
-	background: #FFF4DA url(faulkner/parchmentlight.jpg);
-	font: times, 'times new romans', serif}
+	background: #FFF4DA;
+	font-family: "Times New Roman", Times, serif;
+	color: #660000;}
 
 * html .wikitopline select {font-size: .9em}
 input.button {}
@@ -127,7 +128,7 @@ input[type=submit]:hover,
 * html .findtable input {font-size: 1em}
 form.admin input[name="features"] {margin-bottom: 3px !important}
 select {}
-select[multiple] {}
+select[multiple] {height: 10em}
 select[name="theme"] {}
 small {font-size: .9em}
 label {margin:0 2px}
@@ -315,17 +316,11 @@ div#tiki-bot {}
 
 #siteheader {
 	text-align: center;
-	vertical-align: middle;
-	width: 70%;
 	min-height: 70px;
 	margin: 0 auto;
-	padding-top: 30px;
-	display: inline-block}
+	padding-top: 30px}
 
-div#sioptions {
-	width: 100%;
-	margin: 0}
-
+#sioptions  {padding: 1em}
 #sioptionscentered {text-align: center}
 
 div.floatright {
@@ -336,15 +331,14 @@ div.floatleft {
 	float: left;
 	clear: none}
 
-div#sitelogo {
-	width: 33%;
-	margin: auto}
-
+#sitelogo {margin: auto !important}
 div#sitead {margin: auto}
 #sitead.floatright {padding-right: 100px}
 #sitead.floatleft {padding-left: 100px}
 #sioptionscentered #sitead.floatleft {padding-left: 10px}
-.floatright img {}
+.floatright img {margin-right: 40px}
+#bannertopright {padding-right: 1em}
+#sitelocbar {float: left}
 
 #siteloginbar {
 	position: absolute;
@@ -1380,7 +1374,7 @@ span.posthead {
 	font-weight: bold;
 	letter-spacing: .4pt}
  
-div.posthead h2 {font-size:1.2em}
+div.posthead h3 {font-size:1.2em}
  
 div.postbody {
 	margin-right: 8px;

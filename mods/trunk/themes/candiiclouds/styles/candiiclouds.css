@@ -1271,7 +1271,7 @@ div.posthead {
 span.posthead {
 	display: block}
  
-div.posthead h2 {
+div.posthead h3 {
 	font-size: 1.2em}
 
 .posthead a,
@@ -1333,7 +1333,7 @@ body.tiki_forums table.normal {margin: auto}
 
 .post .author_post_info {
 	display: block;
-	background: url(candiiclouds/sbihead.gif) no-repeat;
+	background: url(candiiclouds/sbihead.gif) repeat-x;
 	height: 24px;
 	/*width: 205px;*/
 	margin-right: auto;
@@ -1346,6 +1346,7 @@ body.tiki_forums table.normal {margin: auto}
 	letter-spacing: -0.5px
 	}
 
+.post .author_post_info_by a.link { color: #000 }
 .post .author_info .icons {display: block}
 .post .author_info .icons .actions {margin-right: 10px}
 .post .author_post_info_on {font-style: italic}
@@ -1413,17 +1414,18 @@ body.tiki_forums table.normal {margin: auto}
 
 .forum_actions .actions {
 	clear: both;
-	border: 1px solid #999999;
-	background: #E1EBF5;
+	border: 1px solid #00adef;
+	background: #a7e6ff;
 	padding: 3px;
+	margin-top: -1px;
 	vertical-align: middle}
 
 .forum_actions .actions .action {margin-right: 10px}
 .forum_actions .headers {vertical-align: bottom}
 .forum_actions .headers .title {
 	float: left;
-	background: #C7D0D9;
-	border: 1px solid #999999;
+	background: #a7e6ff;
+	border: 1px solid #00adef;
 	border-bottom: 0;
 	padding: 1px}
 

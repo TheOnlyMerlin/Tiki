@@ -32,7 +32,7 @@ a:hover {
 caption {}
 
 h1, h2, h3, h4, 5 {
-	color: #999980;
+	color: #BDCEC3 !important;
 	font-weight: bold;
 	letter-spacing: -1px;
 	margin: 0 0 15px;
@@ -257,7 +257,8 @@ div#tiki-main #tikimidtbl {
 	display: block;
 	width: 100%;
 	clear: both;
-	padding: 0;
+	padding-top: 4px;
+	padding-bottom: 4px;
 	margin: 0;
 	min-height: 74px;
 	position: relative}
@@ -293,6 +294,7 @@ div.floatleft {
 #sitead.floatright {padding-right: 100px}
 #sitead.floatleft {padding-left: 100px}
 #sioptionscentered #sitead.floatleft {padding-left: 10px}
+#bannertopright {padding-right: 4px }
 #siteheader #description {}
 #siteloginbar {font-size: 90%; text-align: right; position: absolute; bottom: 4px; right: 10px}
 
@@ -1268,7 +1270,7 @@ span.posthead {
 	font-weight: bold;
 	letter-spacing: .4pt}
  
-div.posthead h2 {
+div.posthead h3 {
 	text-align: left;
 	margin-bottom: 10px;
 	color: #999980;
@@ -1289,7 +1291,7 @@ div.postfooter {
 
 body.tiki_forums table.normal {margin: auto}
 #forumpost {display: none}
-#forumpostopen {display: block}
+#forumpostopen {display: block; color: #BDCEC3}
 
 .post .postbody {clear: both;
 	width: 100%;
@@ -1314,7 +1316,7 @@ body.tiki_forums table.normal {margin: auto}
 
 .post .postbody-title .title {
 	float: left;
-	color: #29677B;
+	color: #BDCEC3;
 	font-weight: bold;
 	font-size: 12px;
 	margin-left: 5px;

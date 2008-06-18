@@ -2166,7 +2166,7 @@ div#ajaxLoading {	display: none;
 #shadowbox_title {
 	height: auto !important;
 	padding: 0;
-	overflow: display}
+	overflow: visible}
 
 #shadowbox_title_inner {
 	height: auto !important;

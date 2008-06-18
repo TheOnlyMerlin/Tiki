@@ -967,11 +967,11 @@ a.fgalname,
 a.artname,
 a.forumname {
 	font-weight: bold;
-	color: #fff}
+	color: #000}
 
 a.forumnameread {
 	letter-spacing: 1px;
-	color: #fff}
+	color: #000}
 
 /* links in table headings */
 a.tableheading,
@@ -1567,7 +1567,7 @@ span.posthead small {
 .blogt {}
 .blogt:hover {}
 .blogt:active {}
-div.posthead h2 {font-size: 1.2em}
+div.posthead h3 {font-size: 1.2em}
  
 div.postbody {
 	text-align: left;
@@ -1664,6 +1664,8 @@ table.commentinfo {
 	height: 100%;
 	text-align: left;
 	color: #000000}
+	
+.postbody .quoteheader { margin-top: 0 }
 
 .post .postbody .attachments {
 	clear: both;
