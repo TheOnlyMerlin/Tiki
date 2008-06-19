@@ -1,0 +1,23 @@
+contributor:
+$Author$
+
+revision:
+$Revision$
+
+lastmodif:
+$Date$
+
+files: 
+themes/olive/styles/olive-red.css styles/olive-red.css
+
+author:
+Oliver Hertel
+
+licence:
+GNU/LGPL
+
+Description: 
+
+
+Changelog:
+1 move to mods
