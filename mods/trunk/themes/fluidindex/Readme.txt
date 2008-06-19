@@ -2,7 +2,7 @@
 -=Theme details=-
 * __Name:__ Fluid Index (fluidindex.css)
 * __Author and maintainer:__ Gary Cunningham-Lee (chibaguy)
-* __License:__ Creative Commons Attribution v2.5 (http://creativecommons.org/licenses/by/2.5/)
+* __License:__ Regarding aspects of visual similarity to the original design, this theme is a Creative Commons Attribution v2.5 (http://creativecommons.org/licenses/by/2.5/) derived work. Other aspects and functionalities are provided under the GNU LGPL license.
 * __Author URL:__ http://zukakakina.com
 * __Description__: Fluid Index is a derived work, for TikiWiki CMS/Groupware, of the WordPress theme licensed Creative Commons Attribution 2.5 by Your Index (http://www.2yi.net/pwp_themes.html). This adaptation uses the *litecss source-ordered layout method ([http://sourceforge.net/projects/litecss]).
 
