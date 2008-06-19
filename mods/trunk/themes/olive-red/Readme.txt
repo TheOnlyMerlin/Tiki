@@ -2,6 +2,7 @@
 -=Theme details=-
 * __Name:__ Olive-red (olive-red.css)
 * __License:__ GNU/LGPL
+* __Description:__ Olive-Red Style originally for Tiki 1.7+ by Oliver Hertel
 
 -=Files=-
 styles/olive-red.css

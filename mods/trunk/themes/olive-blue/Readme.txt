@@ -2,6 +2,7 @@
 -=Theme details=-
 * __Name:__ Olive-blue (olive-blue.css)
 * __License:__ GNU/LGPL
+* __Description:__ Olive-Blue Style originally for Tiki 1.7+ by Oliver Hertel
  
 -=Documentation=-
 http://themes.tikiwiki.org
