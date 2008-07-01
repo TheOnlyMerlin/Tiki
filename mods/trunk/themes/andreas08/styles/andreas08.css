@@ -146,6 +146,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 /*** Type 2 (table-assisted) layout ***/
 
 table#main {
+	text-align: left;
 	font-size: .9em;
 	position: absolute;
 	top: 20px;
@@ -170,15 +171,15 @@ td#leftcolumn {
  
 td#centercolumn {
 	background: #fff;
-	padding: 1em;
+	padding: 0 10px 10px 10px;
 	border-left: 2px solid #a0a0a0;
 	border-right: 2px solid #a0a0a0}
-
+	
 td#rightcolumn {
 	background: #fff;
 	width: 180px;
 	padding: 1em;
-	border-right: 2px solid #a0a0a0}
+	border-right: 2px inset #a0a0a0 !important}
 
 td#rightborder {}
 
@@ -617,7 +618,7 @@ div.adminanchors {}
 .box-shadow {  }
 
 div.box {
-	width: 176px;
+	width: 170px;
 	overflow: hidden}
 
 /* Needs to be set for CSS menu in col2 to work */
