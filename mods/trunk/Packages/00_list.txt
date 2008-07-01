@@ -95,3 +95,4 @@
 'wikiplugins','submit','1.0','Add submit to social networking site links.','GNU/LGPL'
 'wikiplugins','shelfari','1.0','Add your Shelfari (www.shelfari.com) bookshelf to a wiki page.','GNU/LGPL'
 'wikiplugins','lastfm','1.0','Add an embedded music player from last.fm to a wiki page.','GNU/LGPL'
+'wikiplugins','googlecalendar','1.0','Embed a Google Calendar in a Tiki wiki page.','GNU/LGPL'

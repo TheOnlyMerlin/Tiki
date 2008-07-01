@@ -1,0 +1,25 @@
+contributor:
+$Author: ricks99$
+
+revision: 
+$Revision: 1.0 $
+
+lastmodif:
+$Date: 2008-07-01 08:49:30 $
+
+files: 
+wiki-plugins/googlecalendar/wiki-plugins/wikiplugin_googlecalendar.php
+
+author:
+ricks99
+
+licence:
+GNU/LGPL
+
+Description: 
+Embed a Google Calendar in a Tiki wiki page.
+
+Docurl:
+
+Devurl:
+
