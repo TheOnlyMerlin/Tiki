@@ -772,7 +772,17 @@ table {font-size: 1em}
 
 table.normal, 
 table.admin,
-table.bloglist {border: solid 1px #909090}
+table.bloglist,
+table.sortable {
+	border: solid 1px #909090;
+	width: 100%}
+
+* html table.normal, 
+* html table.admin,
+* html table.bloglist,
+* html table.sortable {
+	width: 97%;
+	font-size: 11px}
 
 table.admin tr td div#page-bar {}
 
@@ -821,21 +831,15 @@ div.heading {}
 table.findtable {}
 .findtable td {}
 
-/* Odd rows in several listings */
-tr.odd {}
-tr.odd:hover {}
-tr.even {}
-tr.even:hover {}
+tr.odd td,
 td.odd {
 	background-color: #F5F5F5;
 	border-right: 1px solid #DDDDDD}
 
+tr.even td,
 td.even {
 	background: #ECECEC;
 	border-right: 1px solid #DDDDDD}
-
-tr.even td.even,
-tr.odd td.odd {}
 
 td.third {}
 

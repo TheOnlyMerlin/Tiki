@@ -837,7 +837,7 @@ table.bloglist {
 * html table.normal, 
 * html table.admin,
 * html table.bloglist,
-* html table.sortable {width: 97%}
+* html table.sortable {width: 97%; font-size: 11px}
 
 table.admin tr td div#page-bar {}
 .wikitable {}
@@ -895,24 +895,25 @@ table.findtable {
 
 tr.odd {
 	color: black;
-	background-color: #F7F9FA}
+	background: #f7fafd}
 
 tr.odd:hover {background-color: #FFF7E6}
 
 tr.even {
-	background-color: #E7E9EA;
+	background: #ebf5fa;
 	color: black}
 
-tr.even:hover {background-color: #FFF7E6}
 
+tr.odd td,
 td.odd {
 	border-right: 1px solid #67ade7;
 	border-collapse: collapse;
-	background-color: #f7fafd}
+	background: #f7fafd}
 
+tr.even td,
 td.even {
 	border-right: 1px solid #67ade7;
-	background-color: #ebf5fa;
+	background: #ebf5fa;
 	color: black;
 	border-collapse: collapse}
 

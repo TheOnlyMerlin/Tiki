@@ -762,8 +762,15 @@ table {font-size: 1em}
 table.normal, 
 table.admin,
 table.bloglist {
+	width: 100%;
 	border: 2px solid transparent;
 	background: url(candiiclouds/banstars.gif)}
+	
+* html table.normal, 
+* html table.admin,
+* html table.bloglist {
+	width: 97%;
+	font-size: 11px}
 	
 table.admin tr td div#page-bar {}
 
@@ -815,15 +822,11 @@ div.heading {}
 table.findtable {}
 .findtable td { }
 
-tr.odd {}
-tr.odd:hover {}
-tr.even {}
-tr.even:hover {}
+tr.odd td,
 td.odd {	background: #FFE0EE}
-td.even {background: #FFCCE2}
 
-tr.even td.even,
-tr.odd td.odd {}
+tr.even td,
+td.even {background: #FFCCE2}
 
 td.third {}
 

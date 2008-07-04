@@ -751,6 +751,9 @@ table.bloglist {
 * html table.bloglist,
 * html table.sortable {width: 97%; font-size: 11px}
 
+tr.odd td {background: #000 url(abse/menubg.jpg) repeat-y}
+tr.even {background: #0E150E}
+
 td {vertical-align: top}
 
 td.normal,

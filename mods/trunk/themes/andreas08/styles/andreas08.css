@@ -714,12 +714,19 @@ div.simplebox {
 /** Tables **/
 
 table {
-	font-size: 1em;
-	width: 100%}
+	font-size: 1em}
 
 table.normal, 
 table.admin,
-table.bloglist {}
+table.bloglist,
+table.sortable {width: 100%}
+
+* html table.normal, 
+* html table.admin,
+* html table.bloglist,
+* html table.sortable {
+	width: 97%;
+	font-size: 11px}
 
 table.admin tr td div#page-bar {
 	margin-left: 5px;
@@ -769,16 +776,12 @@ table.findtable {}
 .findtable td { }
 td.form {padding: 0.2em}
 
-/* Odd rows in several listings */
-tr.odd {}
-tr.odd:hover {}
-tr.even {}
-tr.even:hover {}
-
+tr.odd,
 td.odd {
 	background: #F0F0F0;
 	color: #000000}
 
+tr.even,
 td.even {
 	background: #DCDCDC;
 	color: #000000}

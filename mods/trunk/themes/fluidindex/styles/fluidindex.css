@@ -897,17 +897,19 @@ div.simplebox {
 /***** Tables, Tabs and Lists ****/
 /** Tables **/
 
-table {font-size: 1em}
-
 table.normal, 
 table.admin,
 table.bloglist {
+	font-size: 1em;
 	border: solid 1px #909090;
-	border-collapse: collapse}
+	border-collapse: collapse;
+	width: 100%}
 
 * html table.normal, 
 * html table.admin,
-* html table.bloglist {width: 97%}
+* html table.bloglist {
+	font-size: 11px;
+	width: 97%}
 
 table.admin tr td div#page-bar {}
 .wikitable {}
@@ -934,19 +936,15 @@ table.email td.closeButton {}
 table.findtable {}
 .findtable td { }
 
-/* Odd rows in several listings */
-tr.odd {}
-tr.odd:hover {}
-tr.even {}
-tr.even:hover {}
-
+tr.odd td, 
 td.odd {
-	background-color: #F5F5F5;
-	border-right: 1px solid #DDDDDD}
+	background: #F5F5F5;
+	border-left: 1px solid #DDDDDD}
 
+tr.even td, 
 td.even {
 	background: #ECECEC;
-	border-right: 1px solid #DDDDDD}
+	border-left: 1px solid #DDDDDD}
 
 tr.even td.even,
 tr.odd td.odd {}
