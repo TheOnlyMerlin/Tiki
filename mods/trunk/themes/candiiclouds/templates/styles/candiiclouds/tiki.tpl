@@ -54,11 +54,10 @@
       		{if $prefs.feature_left_column eq 'user' or $prefs.feature_right_column eq 'user'}
         		<div id="showhide_columns">
       				{if $prefs.feature_left_column eq 'user' && $left_modules|@count > 0 && $show_columns.left_modules ne 'n'}
-				<div style="text-align:left;float:left;"><a class="flip" href="javascript:flip('leftcolumn','table-cell');"><img name="leftcolumnicn" class="colflip" src="img/icons/ofo.gif" border="0" alt="+/-" />&nbsp;{tr}Show/Hide Left Menus{/tr}&nbsp;</a>
-						</div>
+				<div style="text-align:left;float:left;"><a class="flip" href="javascript:flip('leftcolumn','table-cell');">{icon _id=ofolder  name="leftcolumnicn" class="colflip" alt="+/-"}&nbsp;{tr}Show/Hide Left Menus{/tr}&nbsp;</a></div>
 					{/if}
 					{if $prefs.feature_right_column eq 'user'&& $right_modules|@count > 0 && $show_columns.right_modules ne 'n'}
-        				<div style="text-align:right;float:right;"><a class="flip" href="javascript:flip('rightcolumn','table-cell');">&nbsp;{tr}Show/Hide Right Menus{/tr}&nbsp;<img name="rightcolumnicn" class="colflip" src="img/icons/ofo.gif" border="0" alt="+/-" /></a>
+        				<div style="text-align:right;float:right;"><a class="flip" href="javascript:flip('rightcolumn','table-cell');"> &nbsp;{tr}Show/Hide Right Menus{/tr}&nbsp;{icon _id=ofolder name="rightcolumnicn" class="colflip" alt="+/-"}</a>
 						</div>
 					{/if}
         			<br clear="all" />

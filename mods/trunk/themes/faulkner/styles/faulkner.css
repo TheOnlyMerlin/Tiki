@@ -95,7 +95,8 @@ select {}
 input,
 textarea,
 option,
-select {
+select,
+body.wikitext {
 	background: #FFF4DA;
 	font-family: "Times New Roman", Times, serif;
 	color: #660000;}
@@ -738,7 +739,7 @@ div.adminanchors {}
 div.box {
 	padding-bottom: 5px;
 	margin-bottom: 1em;
-	width: 180px}
+	width: 180px !important}
 
 h3.box-title {
 	font: 1.1em Garamond,'Times New Roman', serif;
@@ -768,7 +769,7 @@ h3.box-title {
 
 * html .box a.flipmodtitle img {border: none}
 a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
-.box-data {}
+.box-data {overflow: hidden;}
 
 .box-data ol li a,
 .box-data ol li:hover {
@@ -830,7 +831,7 @@ th {
 	text-align: left;
 	vertical-align: top}
 
-* html td {	font-size: 11px}
+* html td {	font-size: 1em}
 td {}
 
 /* Cells in forms using a background color */
@@ -1587,6 +1588,17 @@ td.categobjectsdataodd {}
 .cattitle {}
 .catlists a.link {}
 .catlists a.link:hover {}
+
+ul.catfeatures {}
+ul.catfeatures li {}
+ul.catitems {}
+
+ul.catitems li {
+	float: left !important;
+	padding-right: 18px;
+}
+
+ul.catitems li a.link {}
 
 /***** Tags (freetags) *****/
 

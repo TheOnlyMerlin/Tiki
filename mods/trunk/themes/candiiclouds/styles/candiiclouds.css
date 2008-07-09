@@ -86,7 +86,10 @@ input[type=submit]:hover,
 	cursor: pointer;
 	color: #f06ea9;}
 
-textarea {background: #ffe0ee}
+textarea,
+body.wikitext {
+	background: #ffe0ee;
+	color: #0076a3}
 
 input[type=checkbox],
 input[type=radio] {
@@ -1489,6 +1492,17 @@ td.categobjectsdataodd {}
 .cattitle {}
 .catlists a.link {}
 .catlists a.link:hover {}
+
+ul.catfeatures {}
+ul.catfeatures li {}
+ul.catitems {}
+
+ul.catitems li {
+	float: left !important;
+	padding-right: 18px;
+}
+
+ul.catitems li a.link {}
 
 /***** Tags (freetags) *****/
 li.freetag {

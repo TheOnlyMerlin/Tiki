@@ -15,15 +15,16 @@
 
 /***** XHTML Elements ******/
 
-body {
+html>body {
 	background: #DFDAC3 url(fluidindex/bg.gif) repeat-x;
 	color: #000;
 	font-size: 72% !important;
 	font-family: Arial, Helvetica, sans-serif;
-	text-align: center}
+	text-align: left}
 
 html>body {font-size: 73% !important}
-body#fullscreen {}
+body#fullscreen {  }
+body.wikitext {background: #DFDAC3}
 
 a,
 a:link,
@@ -1729,6 +1730,17 @@ td.categobjectsdataodd {}
 .cattitle {}
 .catlists a.link {}
 .catlists a.link:hover {}
+
+ul.catfeatures {}
+ul.catfeatures li {}
+ul.catitems {}
+
+ul.catitems li {
+	float: left !important;
+	padding-right: 18px;
+}
+
+ul.catitems li a.link {}
 
 /***** Tags (freetags) *****/
 li.freetag {
