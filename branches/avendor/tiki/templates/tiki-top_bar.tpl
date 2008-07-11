@@ -1,1 +1,0 @@
-This is Tiki v0.9 Spica (c) 2002 by Fwazonga Industries.
