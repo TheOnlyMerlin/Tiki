@@ -3,6 +3,9 @@
 {if $prefs.feature_bidi eq 'y'}
 	<div dir="rtl">
 {/if}
+{if $prefs.feature_tikitests eq 'y' and $tikitest_state neq 0}
+{include file="tiki-tests_topbar.tpl"}
+{/if}
 {if $prefs.feature_ajax eq 'y'}
 	{include file="tiki-ajax_header.tpl"}
 {/if}

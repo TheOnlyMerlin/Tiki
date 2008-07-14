@@ -1,5 +1,7 @@
-{include file="header.tpl"}
-
+{* $Id *}{include file="header.tpl"}
+{* TikiTest ToolBar *}
+{if $prefs.feature_tikitests eq 'y' and $tikitest_state neq 0}
+{include file="tiki-tests_topbar.tpl"}
 <div id="tiki-main">
 
 {if $feature_top_bar eq 'y'}
