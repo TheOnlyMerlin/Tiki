@@ -20,10 +20,10 @@
 // $Id: ADOdb.php,v 1.3 2005/05/18 06:58:47 jlim Exp $
 //
 
-require_once 'Auth/Container.php';
-require_once 'adodb.inc.php';
-require_once 'adodb-pear.inc.php';
-require_once 'adodb-errorpear.inc.php';
+require_once 'lib/pear/Auth/Container.php';
+require_once 'lib/adodb/adodb.inc.php';
+require_once 'lib/adodb/adodb-pear.inc.php';
+require_once 'lib/adodb/adodb-errorpear.inc.php';
 
 /**
  * Storage driver for fetching login data from a database using ADOdb-PHP.
