@@ -815,8 +815,7 @@ class TrackerLib extends TikiLib {
 			case 'l':
 				if ( isset($fopt['options_array'][2]) && isset($fil[$fopt['options_array'][2]]) && ($lst = $fil[$fopt['options_array'][2]]) && isset($fopt['options_array'][3])) {
 					$opts[1] = split(':', $fopt['options_array'][1]);
-					$finalFields = explode('|', $fopt['options_array'][3]);
-					$fopt['links'] = $this->get_join_values($itemId, array_merge(array($fopt['options_array'][2]), array($fopt['options_array'][1]), array($finalFields[0])), $fopt['options_array'][0], $finalFields);
+					$fopt['links'] = $this->get_join_values($itemId, array_merge(array($fopt['options_array'][2]), array($fopt['options_array'][1]), array($fopt['options_array'][3])));
 					$fopt['trackerId'] = $fopt['options_array'][0];
 				}
 				if (isset($fopt['links']) && count($fopt['links']) == 1) { //if a computed field use it
@@ -1434,10 +1433,10 @@ class TrackerLib extends TikiLib {
 		return $total;
 	}
 
-	function import_csv($trackerId, $csvHandle, $replace = true, $dateFormat='', $encoding='UTF8', $csvDelimiter=',') {
+	function import_csv($trackerId, $csvHandle, $replace = true, $dateFormat='', $encoding='UTF8') {
 		global $tikilib;
 		$tracker_info = $this->get_tracker_options($trackerId);
-		if (($header = fgetcsv($csvHandle,100000,  $csvDelimiter)) === FALSE) {
+		if (($header = fgetcsv($csvHandle,100000)) === FALSE) {
 			return 'Illegal first line';
 		}
 		$max = count($header);
@@ -1453,7 +1452,7 @@ class TrackerLib extends TikiLib {
 		$total = 0;
 		$need_reindex = array();
 		$fields = $this->list_tracker_fields($trackerId, 0, -1, 'position_asc', '');
-		while (($data = fgetcsv($csvHandle,100000,  $csvDelimiter)) !== FALSE) {
+		while (($data = fgetcsv($csvHandle,100000)) !== FALSE) {
 			$status = $tracker_info['defaultStatus'];
 			$itemId = 0;
 			$created = $tikilib->now;
@@ -2548,8 +2547,7 @@ class TrackerLib extends TikiLib {
 		}
 		return $emails;
 	}
-	function get_join_values($itemId, $fieldIds, $finalTrackerId='', $finalFields='', $separator=' ') {
-		global $smarty;
+	function get_join_values($itemId, $fieldIds) {
 		$select[] = "`tiki_tracker_item_fields` t0";
 		$where[] = " t0.`itemId`=?";
 		$bindVars[] = $itemId;
@@ -2568,22 +2566,7 @@ class TrackerLib extends TikiLib {
 		$result = $this->query($query, $bindVars);
 		$ret = array();
 		while ($res = $result->fetchRow()) {
-			$field_value = $this->get_tracker_field($res['fieldId']);
-			$field_value['value'] = $res['value'];
-			$smarty->assign('field_value', $field_value);
-			$ret[$res['itemId']] = $smarty->fetch('tracker_item_field_value.tpl');
-			if (is_array($finalFields) && count($finalFields)) {
-				$i = 0;
-				foreach ($finalFields as $f) {
-					if (!$i++)
-						continue;
-					$field_value = $this->get_tracker_field($f);
-					$ff = $this->get_item_value($finalTrackerId, $res['itemId'], $f);;
-					$field_value['value'] = $ff;
-					$smarty->assign('field_value', $field_value);
-					$ret[$res['itemId']] .= $separator.$smarty->fetch('tracker_item_field_value.tpl');
-				}
-			}
+			$ret[$res['itemId']] = $res['value'];
 		}
 		return $ret;
 	}

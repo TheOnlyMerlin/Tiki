@@ -116,7 +116,7 @@ if ( ! $_SESSION['need_reload_prefs'] ) {
 	$prefs['wiki_feature_copyrights'] = 'n';
 	$prefs['wiki_forum_id'] = '';
 	$prefs['wiki_left_column'] = 'y';
-	$prefs['wiki_list_backlinks'] = 'n';
+	$prefs['wiki_list_backlinks'] = 'y';
 	$prefs['wiki_list_comment'] = 'y';
 	$prefs['wiki_list_comment_len'] = '200';
 	$prefs['wiki_list_description'] = 'y';
@@ -125,7 +125,7 @@ if ( ! $_SESSION['need_reload_prefs'] ) {
 	$prefs['wiki_list_hits'] = 'y';
 	$prefs['wiki_list_lastmodif'] = 'y';
 	$prefs['wiki_list_lastver'] = 'n';
-	$prefs['wiki_list_links'] = 'n';
+	$prefs['wiki_list_links'] = 'y';
 	$prefs['wiki_list_name'] = 'y';
 	$prefs['wiki_list_name_len'] = '40';
 	$prefs['wiki_list_size'] = 'n';
@@ -157,6 +157,7 @@ if ( ! $_SESSION['need_reload_prefs'] ) {
 	$prefs['wikiapproval_prefix'] = '*';
 	$prefs['wikiapproval_delete_staging'] = 'n';
 	$prefs['wikiapproval_master_group'] = '';
+	$prefs['wiki-edit_section'] = 'n';
 	$prefs['wiki_edit_section'] = 'n';
 
 	# wysiwyg
@@ -201,7 +202,7 @@ if ( ! $_SESSION['need_reload_prefs'] ) {
 	$prefs['blog_list_lastmodif'] = 'y';
 	$prefs['blog_list_posts'] = 'y';
 	$prefs['blog_list_visits'] = 'y';
-	$prefs['blog_list_activity'] = 'n';
+	$prefs['blog_list_activity'] = 'y';
 	$prefs['feature_blog_mandatory_category'] = '-1';
 	$prefs['feature_blog_heading'] = 'y';
 
@@ -419,7 +420,7 @@ if ( ! $_SESSION['need_reload_prefs'] ) {
 	$prefs['feature_community_friends_permission'] = 'n';
 	$prefs['feature_community_friends_permission_dep'] = '2';
 	$prefs['change_language'] = 'y';
-	$prefs['change_theme'] = 'n';
+	$prefs['change_theme'] = 'y';
 	$prefs['login_is_email'] = 'n';
 	$prefs['validateUsers'] = 'n';
 	$prefs['validateEmail'] = 'n';
@@ -636,7 +637,7 @@ if ( ! $_SESSION['need_reload_prefs'] ) {
 	$prefs['pass_chr_num'] = 'n';
 	$prefs['pass_due'] = -1;
 	$prefs['email_due'] = -1;
-	$prefs['unsuccessful_logins'] = -1;
+	$prefs['unsuccessful_logins'] = 20;
 	$prefs['rnd_num_reg'] = 'n';
 	$prefs['generate_password'] = 'n';
 	$prefs['auth_method'] = 'tiki';
@@ -822,9 +823,9 @@ if ( ! $_SESSION['need_reload_prefs'] ) {
 	# dev
 	$prefs['feature_experimental'] = 'n';
 
-	# Action logs
+  # Action logs
 	$prefs['feature_actionlog'] = 'n';
-	$prefs['feature_actionlog_bytes'] = 'n';
+	$prefs['feature_actionlog_bytes'] = 'y';
   
 	# admin
 	$prefs['siteTitle'] = '';
@@ -834,8 +835,8 @@ if ( ! $_SESSION['need_reload_prefs'] ) {
 	$prefs['feature_tell_a_friend'] = 'n';
 
 	# copyright
-	$prefs['feature_copyright'] = 'n';
-	$prefs['feature_multimedia'] = 'n';
+	$prefs['feature_copyright']='n';
+	$prefs['feature_multimedia']='n';
 
 	# swffix
 	$prefs['feature_swffix'] = 'n';
@@ -868,7 +869,7 @@ if ( ! $_SESSION['need_reload_prefs'] ) {
 	$prefs['error_reporting_adminonly'] = 'y';
 	$prefs['error_reporting_level'] = 0;
 	$prefs['smarty_notice_reporting'] = 'n';
-	$prefs['smarty_security'] = 'y';
+	$prefs['smarty_security'] = 'n';
 	$prefs['feature_ajax'] = 'n';
 	$prefs['feature_antibot'] = 'n';
 	$prefs['feature_banners'] = 'n';
@@ -951,7 +952,8 @@ if ( ! $_SESSION['need_reload_prefs'] ) {
 	$prefs['user_list_order'] = 'score_desc';
 	$prefs['webserverauth'] = 'n';
 	$prefs['feature_purifier'] = 'n';
-	$prefs['feature_shadowbox'] = 'y';
+	$prefs['feature_lightbox'] = 'n';
+	$prefs['feature_shadowbox'] = 'n';
 	$prefs['log_sql'] = 'n';
 	$prefs['log_mail'] = 'n';
 
@@ -1027,7 +1029,8 @@ if ( ! $_SESSION['need_reload_prefs'] ) {
 	$prefs['wiki_3d_adjust_camera'] = '';
 	$prefs['wiki_3d_autoload'] = '';
 	$prefs['feature_sefurl'] = 'n';
-	$prefs['feature_mootools'] = 'y'; // Needed for shadowbox
+	$prefs['pref_syntax'] = '2.0';
+	$prefs['feature_mootools'] = 'n';
 	$prefs['javascript_enabled'] = 'n';
 	$prefs['feature_comments_post_as_anonymous'] = 'n';
 	$prefs['feature_template_zoom'] = 'y';
@@ -1097,4 +1100,10 @@ $smarty->assign_by_ref('prefs', $prefs);
 // Define the special maxRecords global var
 $maxRecords = $prefs['maxRecords'];
 $smarty->assign_by_ref('maxRecords', $maxRecords);
+
+// DEPRECATED: Use $prefs array instead of each global vars to access prefs ; this will be removed soon
+if ($prefs['pref_syntax'] == '1.9') {
+	extract($prefs);
+	foreach ($prefs as $k=>$v) $smarty->assign($k, $v);
+}
 

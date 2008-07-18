@@ -56,10 +56,9 @@ window.onload = timeIt;
 
 
 {if $translation_mode eq 'n'}
-	{if $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}{assign var=pp value=$approvedPageName}{else}{assign var=pp value=$page}{/if}
-	{title}{if isset($hdr) && $prefs.wiki_edit_section eq 'y'}{tr}Edit Section{/tr}{else}{tr}Edit{/tr}{/if}: {$pp|escape}{if $pageAlias ne ''}&nbsp;({$pageAlias|escape}){/if}{/title}
+   <h1>{if isset($hdr) && $prefs.wiki_edit_section eq 'y'}{tr}Edit Section{/tr}{else}{tr}Edit{/tr}{/if}: {if $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}{$approvedPageName|escape}{else}{$page|escape}{/if}{if $pageAlias ne ''}&nbsp;({$pageAlias|escape}){/if}</h1>
 {else}
-   {title}{tr}Update '{$page}' based on '{$source_page}'{/tr}{/title}
+   <h1>{tr}Update '{$page}' based on '{$source_page}'{/tr}</h1>
 {/if}
    
 {if $beingStaged eq 'y'}

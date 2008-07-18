@@ -1,4 +1,4 @@
-{* --- IMPORTANT: If you edit this (or any other TPL file) file via the Tiki built-in TPL editor (tiki-edit_templates.php), all the javascript will be stripped. This will cause problems. (Ex.: menus stop collapsing/expanding).
+{php}header('Content-Type: text/html; charset=utf-8');{/php}{* --- IMPORTANT: If you edit this (or any other TPL file) file via the Tiki built-in TPL editor (tiki-edit_templates.php), all the javascript will be stripped. This will cause problems. (Ex.: menus stop collapsing/expanding).
 
 You should only modify header.tpl via a text editor through console, or ssh, or FTP edit commands. And only if you know what you are doing ;-)
 
@@ -55,7 +55,21 @@ You are most likely wanting to modify the top of your Tiki site. Please consider
 <!--[if lt IE 7]> <link rel="StyleSheet" href="css/ie6.css" type="text/css" /> <![endif]-->
 
 {* --- phplayers block --- *}
-{if isset($phplayers_headers)}{$phplayers_headers}{/if}
+{if $prefs.feature_phplayers eq 'y'}
+<link rel="StyleSheet" href="lib/phplayers/layerstreemenu.css" type="text/css"></link>
+<link rel="StyleSheet" href="lib/phplayers/layerstreemenu-hidden.css" type="text/css" />
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+var numl;var toBeHidden;
+{php} include_once ("lib/phplayers/libjs/layersmenu-browser_detection.js"); global $LayersMenu, $TreeMenu, $PHPTreeMenu, $PlainMenu;{/php}
+//--><!]]>
+</script>
+<script type="text/javascript" src="lib/phplayers/libjs/layersmenu-library.js"></script>
+{* lets try this *}
+<script type="text/javascript" src="lib/phplayers/libjs/layersmenu.js"></script>
+{* will it work now ? (luci) *}
+<script type="text/javascript" src="lib/phplayers/libjs/layerstreemenu-cookies.js"></script>
+{/if}
 
 {*-- css menus block --*}
 <link rel="StyleSheet" href="css/cssmenu_vert.css" type="text/css"></link>
@@ -187,24 +201,25 @@ You are most likely wanting to modify the top of your Tiki site. Please consider
 </head>
 
 <body {if isset($section) and $section eq 'wiki page' and $prefs.user_dbl eq 'y' and $dblclickedit eq 'y' and $tiki_p_edit eq 'y'}ondblclick="location.href='tiki-editpage.php?page={$page|escape:"url"}';"{/if}
-onload="{if $prefs.feature_tabs eq 'y'}tikitabs({if $cookietab neq ''}{$cookietab}{else}1{/if},5);{/if}{if $msgError} javascript:location.hash='msgError'{/if}"
-{if $section} class="tiki_{$section}"{/if}
-{if $smarty.session.fullscreen eq 'y'} id="fullscreen"{/if}>
-<ul class="jumplinks">
- <li><a href="#tiki-center">{tr}Jump to Content{/tr}</a></li>
- {*<li><a href="#nav">{tr}Jump to Navigation{/tr}</a></li>
- <li><a href="#footer">{tr}Jump to Footer{/tr}</a></li>*}
-</ul>
+ onload="{if $prefs.feature_tabs eq 'y'}tikitabs({if $cookietab neq ''}{$cookietab}{else}1{/if},5);{/if}{if $msgError} javascript:location.hash='msgError'{/if}"
+{if $section} class="tiki_{$section}"{/if}>
 {if $prefs.minical_reminders>100}
 <iframe width='0' height='0' frameborder="0" src="tiki-minical_reminders.php"></iframe>
 {/if}
 
 {if $prefs.feature_community_mouseover eq 'y'}{popup_init src="lib/overlib.js"}{/if}
+{if $prefs.feature_siteidentity eq 'y' and $filegals_manager ne 'y'}
+{* Site identity header section *}
+	<div id="siteheader">
+		{include file="tiki-site_header.tpl"}
+	</div>
+{/if}
+
 {if $prefs.feature_fullscreen eq 'y' and $filegals_manager ne 'y' and $print_page ne 'y'}
 {if $smarty.session.fullscreen eq 'y'}
-<a href="{$smarty.server.SCRIPT_NAME}{if $fsquery}?{$fsquery}&amp;{else}?{/if}fullscreen=n" class="menulink" id="fullscreenbutton">{icon _id=application_put alt="{tr}Cancel Fullscreen{/tr}"}</a>
+<a href="{$smarty.server.SCRIPT_NAME}{if $fsquery}?{$fsquery}&amp;{else}?{/if}fullscreen=n" style="float:right;padding:0 10px;font-size:80%;" class="menulink" id="fullscreenbutton">{icon _id=application_put alt="{tr}Cancel Fullscreen{/tr}"}</a>
 {else}
-<a href="{$smarty.server.SCRIPT_NAME}{if $fsquery}?{$fsquery}&amp;{else}?{/if}fullscreen=y" class="menulink" id="fullscreenbutton">{icon _id=application_get alt="{tr}Fullscreen{/tr}"}</a>
+<a href="{$smarty.server.SCRIPT_NAME}{if $fsquery}?{$fsquery}&amp;{else}?{/if}fullscreen=y" style="float:right;padding:0 10px;font-size:80%;" class="menulink" id="fullscreenbutton">{icon _id=application_get alt="{tr}Fullscreen{/tr}"}</a>
 {/if}
 {/if}
 

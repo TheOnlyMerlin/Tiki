@@ -786,8 +786,7 @@ if ($_REQUEST["itemId"]) {
 				} elseif ($fields["data"][$i]["type"] == 'l') {
 					if (isset($fields["data"][$i]["options_array"][3])) {
 						$l = split(':', $fields["data"][$i]["options_array"][1]);
-						$finalFields = explode('|', $fields['data'][$i]['options_array'][3]);
-						$ins_fields["data"][$i]['links'] = $trklib->get_join_values($_REQUEST['itemId'], array_merge(array($fields["data"][$i]["options_array"][2]), $l, array($fields["data"][$i]["options_array"][3])), $fields["data"][$i]["options_array"][0], $finalFields);
+						$ins_fields["data"][$i]['links'] = $trklib->get_join_values($_REQUEST['itemId'], array_merge(array($fields["data"][$i]["options_array"][2]), $l, array($fields["data"][$i]["options_array"][3])));
 
 						if (count($ins_fields["data"][$i]['links']) == 1) {
 							foreach ($ins_fields["data"][$i]['links'] as $linkItemId=>$linkValue) {

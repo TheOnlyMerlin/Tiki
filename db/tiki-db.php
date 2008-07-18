@@ -55,7 +55,7 @@ or HTTP_HOST
 */
 
 if (!isset($local_php) or !is_file($local_php)) {
-	$local_php = 'db/local.php';
+  $local_php = 'local.php';
 } else {
 	$local_php = preg_replace(array('/\.\./','/^db\//'),array('',''),$local_php);
 }
@@ -70,13 +70,12 @@ if (is_file('db/virtuals.inc')) {
 		}
 	}
 	if (isset($multi)) {
-		$local_php = "db/$multi/local.php";
+		$local_php = "$multi/local.php";
 		$tikidomain = $multi;
 	}
 }
-$re = false;
-if ( is_file($local_php) ) $re = include_once($local_php);
-if ( $re === false ) {
+$re  = include_once('db/'.$local_php);
+if ( $re === FALSE) {
 	print '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -117,8 +116,8 @@ if (preg_match('/^adodb$/i', $api_tiki)) {
 	define('ADODB_FORCE_NULLS', 1);
 	define('ADODB_ASSOC_CASE', 2);
 	define('ADODB_CASE_ASSOC', 2); // typo in adodb's driver for sybase?
-	require_once ('lib/adodb/adodb.inc.php');
-	include_once ('lib/adodb/adodb-pear.inc.php');
+	require_once ('adodb.inc.php');
+	include_once ('adodb-pear.inc.php');
 	//include_once('adodb-error.inc.php');
 	//include_once('adodb-errorhandler.inc.php');
 	//include_once('adodb-errorpear.inc.php');
@@ -137,7 +136,7 @@ if (preg_match('/^adodb$/i', $api_tiki)) {
 // ADODB_FETCH_BOTH appears to be buggy for null values
 } else {
 	// Database connection for the tiki system
-	include_once ('lib/pear/DB.php');
+	include_once ('DB.php');
 }
 
 //doesn't work with adodb. adodb doesn't let you inherit

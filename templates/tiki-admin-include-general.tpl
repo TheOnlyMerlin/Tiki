@@ -11,7 +11,7 @@
         <td class="heading" colspan="2"
             align="center">{tr}General Preferences{/tr}</td>
       </tr>
-	<tr><td width="40%" class="form">{tr}Tikiwiki version{/tr} : </td><td class="form">{$tiki_version}<br /><span class="button2"><a class="linkbut" href="tiki-install.php">{tr}Reset or upgrade your database{/tr}</a></span></td></tr>
+	<tr><td width="40%" class="form">{tr}Tikiwiki version{/tr} : </td><td class="form">{$tiki_version}</td></tr>
 	<tr><td colspan="2"><hr /></td></tr>
 
       <tr>
@@ -341,6 +341,14 @@
                                                 </div>
                                         </td>
                                 </tr>
+<tr>
+<td class="form"><label for="site_nav_seper">{tr}Preference syntax{/tr}:</label></td>
+<td><select name="pref_syntax">
+<option value="1.9" {if $prefs.pref_syntax eq '1.9'}selected="selected"{/if}>1.9 - $feature_foobar</option>
+<option value="2.0" {if $prefs.pref_syntax eq '2.0'}selected="selected"{/if}>2.0 - $prefs.feature_foobar, $prefs['feature_foobar']</option>
+</select></td>
+</tr>
+
       <tr>
         <td class="button" colspan='2'>
           <input type="submit" name="new_prefs" value="{tr}Change preferences{/tr}" />

@@ -130,10 +130,6 @@ if (isset($_REQUEST["preview"])) {
 	} else {
 		$info["data"] = '';
 	}
-	if (isset($_REQUEST['wikiparse']) && $_REQUEST['wikiparse'] == 'on')
-		$info['wikiparse'] = 'y';
-	else
-		$info['wikiparse'] = 'n';
    	if (isset($_REQUEST["datatxt"])) {
  		$info["datatxt"] = $_REQUEST["datatxt"];
 		//For the hidden input
@@ -144,15 +140,15 @@ if (isset($_REQUEST["preview"])) {
 		$info["datatxt"] = '';
 	}
 	if (!empty($_REQUEST["usedTpl"])) {
-		$smarty->assign('dataparsed', (($info['wikiparse'] == 'y')?$tikilib->parse_data($info["data"], array('absolute_links' => true)): $info['data']));
+		$smarty->assign('dataparsed', $tikilib->parse_data($info["data"], false, true));
 		$smarty->assign('subject', $info["subject"]);
 		$info["dataparsed"]  = $smarty->fetch("newsletters/".$_REQUEST["usedTpl"]);
-	        if (stristr($info['dataparsed'], "<body") === false) {
+	        if (stristr($info['dataparsed'], "<body>") === false) {
         	        $info['dataparsed'] = "<html><body>".$info['dataparsed']."</body></html>";
         	}
 		$smarty->assign("usedTpl", $_REQUEST["usedTpl"]);
 	} else {
-		$info["dataparsed"] = "<html><body>".(($info['wikiparse'] == 'y')?$tikilib->parse_data($info["data"], array('absolute_links' => true)):$info['data'])."</body></html>";
+		$info["dataparsed"] = "<html><body>".$tikilib->parse_data($info["data"], false, true)."</body></html>";
 	}
 	$smarty->assign('info', $info);
 }
@@ -168,23 +164,19 @@ if (isset($_REQUEST["save"])) {
 
 	$smarty->assign('nlId', $_REQUEST["nlId"]);
 	$smarty->assign('data', $_REQUEST["data"]);
-	$smarty->assign('datatxt', $_REQUEST["datatxt"]);
+        $smarty->assign('datatxt', $_REQUEST["datatxt"]);
 	$parsed = '';
-		if (isset($_REQUEST['wikiparse']) && $_REQUEST['wikiparse'] == 'on')
-		$wikiparse = 'y';
-	else
-		$wikiparse = 'n';
 	if (!empty($_REQUEST["usedTpl"])) {
-		$smarty->assign('dataparsed', (($wikiparse == 'y')?$tikilib->parse_data($_REQUEST["data"], array('absolute_links' => true)):$_REQUEST['data']));
+		$smarty->assign('dataparsed', $tikilib->parse_data($_REQUEST["data"], false, true));
 		$smarty->assign('subject', $_REQUEST["subject"]);
 		$parsed = $smarty->fetch("newsletters/".$_REQUEST["usedTpl"]);
 	} else {
-		$parsed = ($wikiparse == 'y')?$tikilib->parse_data($_REQUEST["data"], array('absolute_links' => true)):$_REQUEST['data'];
+		$parsed = $tikilib->parse_data($_REQUEST["data"], false, true);
 	}
 	if (empty($parsed) && !empty($_REQUEST['datatxt'])) {
 		$parsed = $_REQUEST['datatxt'];
 	}
-	if (stristr($parsed, "<body") === false) {
+	if (stristr($parsed, "<body>") === false) {
 		$parsed = "<html><body>$parsed</body></html>";
 	}
 	$smarty->assign('dataparsed',$parsed);
@@ -213,8 +205,9 @@ if (isset($_REQUEST["send"])) {
 	check_ticket('send-newsletter');
 	set_time_limit(0);
 	$mail = new TikiMail();	
-	if (stristr($_REQUEST["dataparsed"], "<body") === false) {
-		$html = "<html><body>".$tikilib->parse_data($_REQUEST["dataparsed"], array('absolute_links' => true))."</body></html>";
+	
+	if (stristr($_REQUEST["dataparsed"], "<body>") === false) {
+		$html = "<html><body>".$tikilib->parse_data($_REQUEST["dataparsed"], false, true)."</body></html>";
 	} else {
 		$html = $_REQUEST["dataparsed"];
 	}
@@ -378,4 +371,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the template
 $smarty->assign('mid', 'tiki-send_newsletters.tpl');
 $smarty->display("tiki.tpl");
+
 ?>

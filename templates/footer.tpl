@@ -14,9 +14,8 @@
   {include file="tiki-debug_console.tpl"}
 
 {/if}
-{if $prefs.feature_phplayers eq 'y' and isset($phplayers_LayersMenu)}
-	{$phplayers_LayersMenu->printHeader()}
-	{$phplayers_LayersMenu->printFooter()}
+{if $prefs.feature_phplayers eq 'y'}
+{php}global $LayersMenu; if (isset($LayersMenu)) {$LayersMenu->printHeader();$LayersMenu->printFooter();}{/php}
 {/if}
 
 {if $lastup}

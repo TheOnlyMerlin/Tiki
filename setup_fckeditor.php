@@ -4,7 +4,9 @@
 // -> IE apparently doesn't handle gzip compression on javascript files
 // (this is why FCKeditor doesn't find the "Tiki" toolbar defined here when compression is activated)
 $force_no_compression = true;
-include('tiki-setup.php');
+include 'tiki-setup.php';
+
+header('Content-type: application/javascript');
 
 $fckstyle = 'styles/'.$prefs['style'];
 $smarty->assign('fckstyle',$fckstyle);
@@ -24,5 +26,5 @@ foreach ($tools as $t) {
 }
 $smarty->assign('toolbar',$toolbar);
 
-$smarty->display('setup_fckeditor.tpl', null, null, 'application/javascript');
+$smarty->display('setup_fckeditor.tpl');
 ?>

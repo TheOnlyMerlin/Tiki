@@ -45,6 +45,22 @@ class UsersLib extends TikiLib {
     $this->get_object_permissions_for_user_cache = array();
     }
 
+    function set_admin_pass($pass) {
+	global $prefs;
+
+	$query = "select `email` from `users_users` where `login` = ?";
+	$email = $this->getOne($query, array('admin'));
+	$hash = $this->hash_pass($pass);
+
+	if ($prefs['feature_clear_passwords'] == 'n')
+	    $pass = '';
+
+	$query = "update `users_users` set `password` = ?, hash = ?
+	    where `login` = ?";
+	$result = $this->query($query, array($pass, $hash, 'admin'));
+	return true;
+    }
+
     function assign_object_permission($groupName, $objectId, $objectType, $permName) {
 	$objectId = md5($objectType . strtolower($objectId));
 
@@ -1169,26 +1185,6 @@ function get_included_groups($group, $recur=true) {
 	if ( $user == 'admin' ) return false;
 
 	$userId = $this->getOne("select `userId`  from `users_users` where `login` = ?", array($user));
-
-	$groupTracker = $this->get_tracker_usergroup( $user );
-	if( $groupTracker && $groupTracker['usersTrackerId'] ) {
-		global $trklib;
-		if( ! $trklib ) require_once 'lib/trackers/trackerlib.php';
-
-		$itemId = $trklib->get_item_id( $groupTracker['usersTrackerId'], $groupTracker['usersFieldId'], $user );
-		if( $itemId )
-			$trklib->remove_tracker_item( $itemId );
-	}
-
-	$tracker = $this->get_usertracker( $userId );
-	if( $tracker && $tracker['usersTrackerId'] ) {
-		global $trklib;
-		if( ! $trklib ) require_once 'lib/trackers/trackerlib.php';
-
-		$itemId = $trklib->get_item_id( $tracker['usersTrackerId'], $tracker['usersFieldId'], $user );
-		if( $itemId )
-			$trklib->remove_tracker_item( $itemId );
-	}
 
 	$query = "delete from `users_users` where ". $this->convert_binary()." `login` = ?";
 	$result = $this->query($query, array( $user ) );

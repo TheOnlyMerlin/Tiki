@@ -65,9 +65,7 @@ class Smarty_Tikiwiki extends Smarty {
 		if ( ($tpl = $this->get_template_vars('mid')) && ( $_smarty_tpl_file == 'tiki.tpl' || $_smarty_tpl_file == 'tiki-print.tpl' || $_smarty_tpl_file == 'tiki_full.tpl' ) ) {
 
 			// Set the last mid template to be used by AJAX to simulate a 'BACK' action
-			if ( isset($_SESSION['last_mid_template']) ) {
-				$this->assign('last_mid_template', $_SESSION['last_mid_template']);
-			}
+			$this->assign('last_mid_template', $_SESSION['last_mid_template']);
 			$_SESSION['last_mid_template'] = $tpl;
 
 			// Enable Template Zoom
@@ -182,16 +180,7 @@ class Smarty_Tikiwiki extends Smarty {
 		$_smarty_compile_id = $prefs['language'] . $_smarty_compile_id;
 		return parent::clear_cache($_smarty_tpl_file, $_smarty_cache_id, $_smarty_compile_id, $_smarty_exp_time);
 	}
-	function display($resource_name, $cache_id=null, $compile_id = null, $content_type = 'text/html; charset=utf-8') {
-		//
-		// By default, display is used with text/html content in UTF-8 encoding
-		// If you want to output other data from smarty,
-		//   - either use fetch() / fetchLang()
-		//   - or set $content_type to '' (empty string) or another content type.
-		//
-		if ( $content_type != '' && ! headers_sent() ) {
-			header('Content-Type: '.$content_type);
-		}
+	function display($resource_name, $cache_id=null, $compile_id = null) {
 		return parent::display($resource_name, $cache_id, $compile_id);
 	}
 	// Returns the file name associated to the template name
