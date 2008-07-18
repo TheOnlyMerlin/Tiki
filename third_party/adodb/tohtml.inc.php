@@ -1,11 +1,11 @@
 <?php 
 /*
-  V4.93 10 Oct 2006  (c) 2000-2008 John Lim (jlim#natsoft.com.my). All rights reserved.
+  V4.93 10 Oct 2006  (c) 2000-2008 John Lim (jlim#natsoft.com). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
   
-  Some pretty-printing by Chris Oxenreider <oxenreid@state.net>
+  Some pretty-printing by Chris Oxenreider <oxenreid#state.net>
 */ 
   
 // specific code for tohtml
@@ -36,7 +36,6 @@ $gSQLBlockRows=20; // max no of rows per table block
 //	$rs->Close();
 //
 // RETURNS: number of rows displayed
-
 
 function rs2html(&$rs,$ztabhtml=false,$zheaderarray=false,$htmlspecialchars=true,$echo = true)
 {

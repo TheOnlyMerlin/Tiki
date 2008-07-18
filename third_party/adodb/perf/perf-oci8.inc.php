@@ -1,6 +1,6 @@
 <?php
 /* 
-V4.98 13 Feb 2008  (c) 2000-2008 John Lim (jlim#natsoft.com.my). All rights reserved.
+V4.990 11 July 2008  (c) 2000-2008 John Lim (jlim#natsoft.com). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence. See License.txt. 
@@ -16,6 +16,8 @@ V4.98 13 Feb 2008  (c) 2000-2008 John Lim (jlim#natsoft.com.my). All rights rese
 if (!defined('ADODB_DIR')) die();
 
 class perf_oci8 extends ADODB_perf{
+	
+	var $noShowIxora = 15;
 	
 	var $tablesSQL = "select segment_name as \"tablename\", sum(bytes)/1024 as \"size_in_k\",tablespace_name as \"tablespace\",count(*) \"extents\" from sys.user_extents 
 	   group by segment_name,tablespace_name";
@@ -430,7 +432,10 @@ order by
 		if (isset($_GET['sql'])) return $this->_SuspiciousSQL($numsql);
 		
 		$s = '';
+		$timer = time();
 		$s .= $this->_SuspiciousSQL($numsql);
+		$timer = time() - $timer;
+		if ($timer > $this->noShowIxora) return $s;
 		$s .= '<p>';
 		
 		$save = $ADODB_CACHE_MODE;
@@ -501,8 +506,13 @@ order by
 			 return $var;
 		}
 		
-		$s = '';		
+		$s = '';
+		$timer = time();
 		$s .= $this->_ExpensiveSQL($numsql);
+		$timer = time() - $timer;
+		
+		if ($timer > $this->noShowIxora) return $s;
+		
 		$s .= '<p>';
 		$save = $ADODB_CACHE_MODE;
 		$ADODB_CACHE_MODE = ADODB_FETCH_NUM;

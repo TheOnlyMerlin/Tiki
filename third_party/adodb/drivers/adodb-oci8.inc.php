@@ -1,7 +1,7 @@
 <?php
 /*
 
-  version V4.98 13 Feb 2008 (c) 2000-2008 John Lim. All rights reserved.
+  version V4.990 11 July 2008 (c) 2000-2008 John Lim. All rights reserved.
 
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
@@ -915,7 +915,7 @@ NATSOFT.DOMAIN =
 					ADOConnection::outp("<b>Bind</b>: LOB has been written to temp");
 				}
 			} else {
-				$this->_refLOBs[$numlob]['VAR'] = &$var;
+				$this->_refLOBs[$numlob]['VAR'] = $var;
 			}
 			$rez = $tmp;
 		} else {
