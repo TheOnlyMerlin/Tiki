@@ -44,7 +44,7 @@
  */
  
 define('ADODB_PEAR',dirname(__FILE__));
-include_once "PEAR.php";
+include_once "lib/pear/PEAR.php";
 include_once ADODB_PEAR."/adodb-errorpear.inc.php";
 include_once ADODB_PEAR."/adodb.inc.php";
 
