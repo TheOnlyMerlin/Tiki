@@ -790,18 +790,18 @@ div.cbox {}
 .rbox-title {}
 .rbox-data {}
 
-.rbox-title[name="comment"],
-.rbox-data[name="comment"] {}
+.comment .rbox-title,
+.comment .rbox-data {}
 
-.rbox-title[name="note"] {}
-.rbox-data[name="note"] {}
+.note .rbox-title {}
+.note .rbox-data {}
 
-.rbox-title[name="tip"],
-.rbox-data[name="tip"],
-.rbox-data.tip {}
+.tip .rbox-title,
+.tip .rbox-data,
+.tip .rbox-data {}
 
-.rbox-title[name="warning"] {}
-.rbox-data[name="warning"] {}
+.warning .rbox-title {}
+.warning .rbox-data {}
 
 div.simplebox {}
 

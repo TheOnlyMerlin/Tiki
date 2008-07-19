@@ -720,19 +720,19 @@ div.cbox-data {
 	padding: 3px;
 	background: #415D44}
 
-.rbox-title[name="warning"] {}
-.rbox-data[name="warning"] {}
+.warning .rbox-title {}
+.warning .rbox-data {}
 
-.rbox-title[name="tip"] {
+.tip .rbox-title {
 	background: #415D44;
 	color: #fff}
 
-.rbox-data[name="tip"] {
+.tip .rbox-data {
 	background: #415D44;
 	color: #fff}
 
-.rbox-title[name="comment"],
-.rbox-data[name="comment"] {}
+.comment .rbox-title,
+.comment .rbox-data {}
 
 div.simplebox {
 	border: 1px solid #666;

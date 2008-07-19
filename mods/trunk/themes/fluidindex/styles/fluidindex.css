@@ -868,23 +868,23 @@ a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
 .rbox-data {
 	padding: 3px}
 
-.rbox-title[name="comment"],
-.rbox-data[name="comment"] {}
+.comment .rbox-title,
+.comment .rbox-data {}
 
-.rbox-title[name="note"] {}
-.rbox-data[name="note"] {}
+.note .rbox-title {}
+.note .rbox-data {}
 
-.rbox[name="tip"] {
+.tip .rbox {
 	background: #988CAA;
 	border: 1px solid #606060;
 	color: #FFFFFF;
 	border: 1px solid #A9A9A9}
 
-.rbox-title[name="tip"],
-.rbox-data[name="tip"] {border: none}
+.tip .rbox-title,
+.tip .rbox-data {border: none}
 
-.rbox-title[name="warning"] {}
-.rbox-data[name="warning"] {}
+.warning .rbox-title {}
+.warning .rbox-data {}
 
 div.simplebox {
 	border-top: 1px dotted #999999;
