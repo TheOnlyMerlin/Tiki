@@ -23,7 +23,7 @@ html>body {
 	text-align: left}
 
 html>body {font-size: 73% !important}
-body#fullscreen {  }
+body.fullscreen {  }
 body.wikitext {background: #DFDAC3}
 
 a,
@@ -218,7 +218,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	background: #DFDAC3;
 	color: #333}
 
-#fullscreen #col1 {
+.fullscreen #col1 {
 	margin-left: 30px !important;
 	margin-right: 30px !important}
 
@@ -425,7 +425,7 @@ a.flip img {display: none}
 	text-align: right;
 	padding-right: 6px}
 
-#fullscreen .tellafriend {}
+.fullscreen .tellafriend {}
 
 #c1c2 #wrapper #col1 #tiki-center {
 	padding: 1em;

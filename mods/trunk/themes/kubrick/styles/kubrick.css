@@ -14,7 +14,7 @@ body {
 
 html>body {font-size: 62.5% !important}
 
-body#fullscreen {
+body.fullscreen {
 	text-align: left;
 	padding: 3em;
 	background: #fff}
@@ -401,7 +401,7 @@ input[id="sl-login-pass"] {}
 a.flip img {display: none}
 .tellafriend {text-align: right}
 .tellafriend a:hover {}
-#fullscreen .tellafriend {}
+.fullscreen .tellafriend {}
 
 div#tiki-center {padding: 0 1em}
 /* IE */

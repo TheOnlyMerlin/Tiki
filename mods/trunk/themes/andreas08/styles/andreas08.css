@@ -19,7 +19,7 @@ body {
 	line-height: 1.4em;
 	color: #303030}
 
-body#fullscreen {}
+body.fullscreen {}
 html>body {}
 
 a,
@@ -135,7 +135,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	z-index: 10;
 	font-size: 80%}
 
-#fullscreen #tiki-center {
+.fullscreen #tiki-center {
 	padding: 3em;
 	text-align: left}
 
@@ -365,7 +365,7 @@ a.flip img {display: none}
 	font-size: 80%;
 	text-align:right}
 	
-#fullscreen .tellafriend {
+.fullscreen .tellafriend {
 	margin-right: 100px;
 	margin-top: 2px}
 

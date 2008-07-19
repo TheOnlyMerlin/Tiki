@@ -18,7 +18,7 @@ body {
 	color: #0076a3}
 	
 html>body {font-size: .7em !important}
-body#fullscreen {}
+body.fullscreen {}
 
 a {
 	color: #00adef;
@@ -158,7 +158,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 
 #fullscreenbutton:hover {}
 
-#fullscreen #tiki-center {
+.fullscreen #tiki-center {
 	padding: 3em;
 	background: #FFE0EE url(candiiclouds/s-stars.gif) repeat;
 	border:1px solid #FFCCE2}

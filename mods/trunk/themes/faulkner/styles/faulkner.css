@@ -19,7 +19,7 @@ body {
 
 html>body {font-size: 1em !important}
 
-body#fullscreen {
+body.fullscreen {
 	text-align: left;
 	padding: 3em}
 
@@ -184,12 +184,12 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 a#fullscreenbutton,
 a#fullscreenbutton:visited {color: #996633;}
 
-body#fullscreen a#fullscreenbutton,
-body#fullscreen a#fullscreenbutton:visited {
+body.fullscreen a#fullscreenbutton,
+body.fullscreen a#fullscreenbutton:visited {
 	color: #800;
 	text-decoration: underline}
 
-body#fullscreen a#fullscreenbutton:hover {
+body.fullscreen a#fullscreenbutton:hover {
 	color: #C90;
 	text-decoration: none}
 	
@@ -427,7 +427,7 @@ a.flip:hover,
 a.flip img {display: none}
 
 .tellafriend {font-size: 80%; text-align:right}
-#fullscreen .tellafriend {
+.fullscreen .tellafriend {
 	margin-right: 100px;
 	margin-top: 2px}
 
