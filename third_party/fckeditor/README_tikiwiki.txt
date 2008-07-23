@@ -10,7 +10,7 @@ for a full version of the original package, check oout
 Tikiwiki integration
 --------------------
 
-This library is tuned up to work with tikiwiki v1.10 or above.
+This library is tuned up to work with tikiwiki v2.0 or above.
 3 files in Tikiwiki manage the integration:
 * lib/tikifck.php is the main class for creating fckeditor edit forms 
 * lib/smarty_tiki/function.editform.php is used in templates
