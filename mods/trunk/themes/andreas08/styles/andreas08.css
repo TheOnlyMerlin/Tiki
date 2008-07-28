@@ -386,7 +386,8 @@ div#tiki-center{ }
 
 .horbaritem a,
 .horbaritem a:visited,
-.horbaritem a:hover {
+.horbaritem a:hover,
+.cssmenu_vert li a {
 	border-right: 1px solid #ffffff;
 	white-space: nowrap;
 	display: block;
@@ -622,12 +623,12 @@ div.box {
 	overflow: hidden}
 
 /* Needs to be set for CSS menu in col2 to work */
-/*#col2,*/
+/*#col2,
 .box-menu_css_v_43,
 .box-menu_css_v_43 .box-data,
 .box-menu_css_v_43 ul {overflow: visible !important; background: #fff}
 
-.box-menu_css_v_43 {padding-left: 1em}
+.box-menu_css_v_43 {padding-left: 1em}*/
 
 h3.box-title {
 	display: block;

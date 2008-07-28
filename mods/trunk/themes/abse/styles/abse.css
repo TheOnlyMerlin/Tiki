@@ -401,6 +401,7 @@ html>body #c1c2 #wrapper #col1 #tiki-center:hover {
 
 .mdksubmenu table {width: auto}
 
+.cssmenu_vert li ul li,
 .mdksubframe  {
 	z-index: 1000;
 	position: relative;
@@ -427,7 +428,15 @@ html>body #c1c2 #wrapper #col1 #tiki-center:hover {
 
 .cssmenu_vert li {padding-bottom: 4px}
 .cssmenu_ver li a ul {border: 0}
-.cssmenu_vert li:hover ul, .cssmenu_vert li li:hover ul, .cssmenu_vert li li li:hover ul, .cssmenu_vert li.sfhover ul, .cssmenu_vert li li.sfhover ul, .cssmenu_vert li li li.sfhover ul { /* lists nested under hovered list items */border: 0}
+/*
+.cssmenu_vert li ul li,
+.cssmenu_vert li:hover ul,
+.cssmenu_vert li li:hover ul,
+.cssmenu_vert li li li:hover ul,
+.cssmenu_vert li.sfhover ul,
+.cssmenu_vert li li.sfhover ul,
+.cssmenu_vert li li li.sfhover ul { border: 0}*/
+
 .cssmenu_vert li.selected > a {background: #86a48a url(abse/menubg.jpg) repeat-y;}
 
 .mdkitem a:hover, 
@@ -1302,17 +1311,19 @@ div.postfooter {
 body.tiki_forums table.normal {margin: auto}
 #forumpost {display: none}
 #forumpostopen {display: block; color: #BDCEC3}
-
+.post {width: 100%}
 .post .postbody {clear: both;
 	width: 100%;
+	min-width: 100%;
 	margin: 0;
 	margin-top: 5px;
 	padding: 0;
 	background: #000 url(abse/menubg.jpg) repeat-y;
-	font-size: 1.1em;
+	font-size: 1em;
 	border: solid 1px #909090}
 	
-* html .post .postbody {font-size: 11px}
+* html .post .postbody {font-size: 1em}
+*:first-child+html .postbody {min-width: 100% !important}
 
 .post .postbody-title {
 	display: block;
@@ -1462,6 +1473,8 @@ div.commentsedithelp {
 	border: 1px solid #ff0000;
 	text-align: center;
 	font-weight: bold}
+
+textarea#editpost2 {width: 100%;font-size: 1.1em}
 
 /***** Categories *****/
 

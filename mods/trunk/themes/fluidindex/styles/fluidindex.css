@@ -102,7 +102,9 @@ form {
 	margin: 0;
 	padding: 0}
 	
-legend { white-space: pre-wrap }
+legend {
+	white-space: pre-wrap;
+	color: #000}
 
 input {
 	border: solid 1px #8c9eaa;
@@ -508,7 +510,7 @@ a.flip img {display: none}
 
 .mdkitem a {font-size: 1.2em}
 
-.box-data .mdkverbar {margin-left: -40px}
+.box-data .mdkverbar {}
 
 .mdkverbar .mdkitem a, 
 .box .mdkitem a {
@@ -783,11 +785,11 @@ a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
 .box-data { 
 	font-size: 0.9em;
 	line-height: 1.4em;
-	margin: -10px 0 16px 10px;
+	margin: /*-10px 0 16px 10px*/;
 	overflow: hidden}
 
 .box-data select {width: 120px}
-.box-data table {margin: auto}
+.box-data table {width: 100%}
 
 .box-data table td {
 	padding: 0.2em;
@@ -795,9 +797,9 @@ a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
 
 .box-data ul {list-style: none}
 	
-.box-data div ul {/* lists in usermodules */
+.box-data div ul {/* lists in usermodules 
 	padding-left: -2em;
-	margin-left: -2.5em}
+	margin-left: -2.5em*/}
 
 .box-data li {
 	padding: 0.2em;
@@ -1547,11 +1549,13 @@ table.commentinfo {
 
 .post {
 	clear: both;
-	margin-top: 8px}
+	margin-top: 8px;
+	width: 100%}
 
 .post .postbody {
 	clear: both;
 	width: 100%;
+	min-width: 100%;
 	border: solid 1px #8c9eaa;
 	margin: 0;
 	padding: 0;
@@ -1708,7 +1712,7 @@ span.commentstitle {
 
 /* Help box*/
 div.commentsedithelp { background: #adbac3; color: black; border: 1px solid #ff0000; text-align: center; font-weight: bold}
-
+textarea#editpost2 {width: 100%}
 
 /***** Categories *****/
 

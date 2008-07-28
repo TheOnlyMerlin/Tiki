@@ -406,6 +406,7 @@ a.flip img {display: none}
 div#tiki-center {padding: 0 1em}
 /* IE */
 * html #tiki-center {font-size: 1em}
+*:first-child+html #tiki-center { width: 90% }
 
 /* end layout divs, etc. */
 
@@ -466,16 +467,25 @@ div#tiki-center {padding: 0 1em}
 	top: 5px;
 	right: 12px} 
 
-.mdkitem a {
+.mdkitem a,
+.mdkitem a:visited,
+.cssmenu_vert li a  {
 	padding: 2px 5px;
 	position: relative;
 	display: block;
-	font-weight: normal} 
+	font-weight: normal;
+	border: 0}
+	
+.cssmenu_vert li {}
+.cssmenu_ver li a ul {border: 0}
+.cssmenu_vert li:hover ul, .cssmenu_vert li li:hover ul, .cssmenu_vert li li li:hover ul, .cssmenu_vert li.sfhover ul, .cssmenu_vert li li.sfhover ul, .cssmenu_vert li li li.sfhover ul { /* lists nested under hovered list items */border: 0}
 
+.cssmenu_vert li.selected > a {  }
 .mdkitem a:link,
 .mdkitem a:visited {text-decoration: none} 
 
-.mdkitem a:hover {
+.mdkitem a:hover, 
+.cssmenu_vert li a:hover {
 	color: #993300;
 	text-decoration: none} 
 

@@ -1300,10 +1300,12 @@ div.postfooter {
 body.tiki_forums table.normal {margin: auto}
 #forumpost {display: none}
 #forumpostopen {display: block}
+.post {width: 100%}
 
 .post .postbody {
 	clear: both;
 	width: 100%;
+	min-width: 100%;
 	border: solid 1px #E7EAED;
 	border-top: solid 1px gray;
 	margin: 0;
@@ -1462,6 +1464,10 @@ body.tiki_forums table.normal {margin: auto}
 span.commentstitle {
 	font-weight: bold;
 	font-size: 1.2em}
+	
+textarea#editpost2 {
+	width: 95%;
+	font-size: 1em}
 
 /* Find */
 .subcomment { margin-left: 10px}

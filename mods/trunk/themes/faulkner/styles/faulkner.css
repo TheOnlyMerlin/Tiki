@@ -435,6 +435,7 @@ td.noleft {}
 div#center {}
 #tiki-center {}
 * html #tiki-center {font-size: 1em}
+*:first-child+html #tiki-center { width: 90% }
 
 /* end layout divs, etc. */
 
@@ -1567,6 +1568,10 @@ span.commentstitle {
 /* Help box*/
 
 div.commentsedithelp {}
+	
+textarea#editpost2 {
+	width: 100%;
+	font-size: 1em}
 
 /***** Categories *****/
 

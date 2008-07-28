@@ -271,7 +271,7 @@ div#tiki-main #tikimidtbl {
 	margin: 0;
 	text-align: left}
 
-#sioptions  {padding: 1em}
+#sioptions  {padding: 0 1em}
 #sioptionscentered {text-align: center}
 
 div.floatright {
@@ -1339,16 +1339,21 @@ div.postfooter {
 #forumpostopen {display: block}
 
 
-.post {clear: both}
+.post {
+	clear: both;
+	width: 100%}
 
 .post .postbody {
 	clear: both;
 	width: 100%;
+	min-width: 100%;
 	border: solid 1px #E7EAED;
 	margin: 0;
 	margin-top: 5px;
 	padding: 3px 0 3px 0px;
 	background-color: #F9FCFF}
+	
+* html .post .postbody {font-size: 11px}
 
 .post .postbody-title {
 	display: block;
@@ -1508,6 +1513,10 @@ span.commentstitle {
 
 /* Help box*/
 div.commentsedithelp {}
+
+textarea#editpost2 {
+	width: 100%;
+	font-size: 1em}
 
 /***** Categories *****/
 
