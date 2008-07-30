@@ -49,7 +49,6 @@ if (isset($_REQUEST['save']) && (!$user || $user == 'anonymous') && $prefs['feat
 
 $smarty->assign( 'translation_mode', (isNewTranslationMode() || isUpdateTranslationMode()) ?'y':'n' );
 
-
 // If from quickedit module and page is blank, tell user -- instead of editing the default page
 if ((isset($_REQUEST["quickedit"])) && ($_REQUEST["page"] == ''))  {
 		$smarty->assign('msg', tra("You must specify a page name, it will be created if it doesn't exist."));
@@ -795,7 +794,7 @@ if ( isset($_REQUEST['edit']) && ! $is_html ) {
 // apply the optional post edit filters before preview
 if(isset($_REQUEST["preview"]) || ($prefs['wiki_spellcheck'] == 'y' && isset($_REQUEST["spellcheck"]) && $_REQUEST["spellcheck"] == 'on')) {
   $parsed = $tikilib->apply_postedit_handlers($parsed);
-  $parsed = $tikilib->parse_data($parsed, array('is_html' => $is_html));
+  $parsed = $tikilib->parse_data($parsed,$is_html);
 } else {
   $parsed = "";
 }
@@ -1215,7 +1214,7 @@ if ($prefs['feature_wikiapproval'] == 'y') {
 		$smarty->assign('outOfSync', 'y');
 		if (!isset($_REQUEST['preview'])) {
 			$smarty->assign('preview',1);
-			$parsed = $tikilib->parse_data($edit_data, array('is_html' => $is_html));
+			$parsed = $tikilib->parse_data($edit_data,$is_html);
 			$smarty->assign('parsed', $parsed);
 			$smarty->assign('staging_preview', 'y');
 		}
@@ -1231,13 +1230,6 @@ if ($prefs['feature_wikiapproval'] == 'y') {
 			}
 		}		
 	}
-}
-
-if( $prefs['feature_multilingual'] == 'y' ) {
-	global $multilinguallib;
-	include_once('lib/multilingual/multilinguallib.php');
-	$trads = $multilinguallib->getTranslations('wiki page', $info['page_id'], $page, $info['lang']);
-	$smarty->assign('trads', $trads);
 }
 
 // Get edit session timeout in minutes

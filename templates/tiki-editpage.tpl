@@ -56,10 +56,9 @@ window.onload = timeIt;
 
 
 {if $translation_mode eq 'n'}
-	{if $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}{assign var=pp value=$approvedPageName}{else}{assign var=pp value=$page}{/if}
-	{title}{if isset($hdr) && $prefs.wiki_edit_section eq 'y'}{tr}Edit Section{/tr}{else}{tr}Edit{/tr}{/if}: {$pp|escape}{if $pageAlias ne ''}&nbsp;({$pageAlias|escape}){/if}{/title}
+   <h1>{if isset($hdr) && $prefs.wiki_edit_section eq 'y'}{tr}Edit Section{/tr}{else}{tr}Edit{/tr}{/if}: {if $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}{$approvedPageName|escape}{else}{$page|escape}{/if}{if $pageAlias ne ''}&nbsp;({$pageAlias|escape}){/if}</h1>
 {else}
-   {title}{tr}Update '{$page}' based on '{$source_page}'{/tr}{/title}
+   <h1>{tr}Update '{$page}' based on '{$source_page}'{/tr}</h1>
 {/if}
    
 {if $beingStaged eq 'y'}
@@ -309,24 +308,22 @@ function searchrep() {
 {if $translationOf}
 <input type="hidden" name="translationOf" value="{$translationOf|escape}"/>
 {/if}
-{if $diff_style}
-<input type="hidden" name="diff_style" value="{$diff_style|escape}"/>
-<input type="hidden" name="oldver" value="{$diff_oldver|escape}"/>
-<input type="hidden" name="newver" value="{$diff_newver|escape}"/>
-<input type="hidden" name="source_page" value="{$source_page|escape}"/>
-{/if}
 </td></tr>
 {else}
-	{if $trads|@count > 1}
-	<tr class="formcolor">
-		<td>{tr}Translation request{/tr}:</td>
-		<td>
-			<input type="hidden" name="lang" value="{$lang|escape}"/>
-			<input type="checkbox" name="translation_critical" id="translation_critical"{if $translation_critical} checked="checked"{/if}/>
-			<label for="translation_critical">{tr}Send urgent translation request.{/tr}</label>
-		</td>
-	</tr>
-	{/if}
+<tr class="formcolor">
+	<td>{tr}Translation request{/tr}:</td>
+	<td>
+		<input type="hidden" name="lang" value="{$lang|escape}"/>
+		<input type="checkbox" name="translation_critical" id="translation_critical"{if $translation_critical} checked="checked"{/if}/>
+		<label for="translation_critical">{tr}Send urgent translation request.{/tr}</label>
+		{if $diff_style}
+		<input type="hidden" name="diff_style" value="{$diff_style|escape}"/>
+		<input type="hidden" name="oldver" value="{$diff_oldver|escape}"/>
+		<input type="hidden" name="newver" value="{$diff_newver|escape}"/>
+		<input type="hidden" name="source_page" value="{$source_page|escape}"/>
+		{/if}
+	</td>
+</tr>
 {/if}
 {/if}
 {if $page|lower neq 'sandbox'}
@@ -380,7 +377,7 @@ function searchrep() {
 {if $prefs.feature_wiki_pictures eq 'y' and $tiki_p_upload_picture eq 'y'}
 <tr class="formcolor"><td>{tr}Upload picture{/tr}:</td><td>
 {if $prefs.feature_filegals_manager eq 'y'}
-<input type="submit" class="wikiaction" value="{tr}Add another image{/tr}" onclick="javascript:needToConfirm = false;javascript:window.open('{$url_path}tiki-file_galleries.php?filegals_manager=editwiki','_blank','menubar=1,scrollbars=1,resizable=1,height=400,width=800');return false;" />
+<input type="submit" class="wikiaction" value="{tr}Add another image{/tr}" onclick="javascript:needToConfirm = false;javascript:window.open('{$url_path}tiki-file_galleries.php?filegals_manager=y','_blank','menubar=1,scrollbars=1,resizable=1,height=400,width=800');return false;" />
 {else}
 <input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
 <input type="hidden" name="hasAlreadyInserted" value="" />

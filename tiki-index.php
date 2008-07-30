@@ -54,8 +54,6 @@ You can change this page after logging in. Please review the [http://doc.tikiwik
 
 !!{img src=pics/icons/star.png alt="Star"} Get started.
 To begin configuring your site:
-#Log in as the __admin__ with password __admin__.
-#Change the admin password.
 #Enable specific Tiki features.
 #Configure the features.
 
@@ -457,10 +455,6 @@ $cat_objid = $page;
 include_once('tiki-section_options.php');
 
 $smarty->assign('cached_page','n');
-$parse_options = array(
-	'is_html' => $info['is_html'],
-	'language' => $info['lang']
-);
 if(isset($info['wiki_cache'])) {$prefs['wiki_cache']=$info['wiki_cache'];}
 if($prefs['wiki_cache']>0) {
     $cache_info = $wikilib->get_cache_info($page);
@@ -468,11 +462,11 @@ if($prefs['wiki_cache']>0) {
 	$pdata = $cache_info['cache'];
 	$smarty->assign('cached_page','y');
     } else {
-	$pdata = $tikilib->parse_data($info['data'], $parse_options);
+	$pdata = $tikilib->parse_data($info['data'],$info['is_html']);
 	$wikilib->update_cache($page,$pdata);
     }
 } else {
-    $pdata = $tikilib->parse_data($info['data'], $parse_options);
+    $pdata = $tikilib->parse_data($info['data'],$info['is_html']);
 }
 
 $smarty->assign_by_ref('parsed',$pdata);
@@ -508,7 +502,13 @@ $smarty->assign_by_ref('description',$info['description']);
 if ( isset($_REQUEST['saved_msg']) && $info['user'] == $user ) {
 	// Generate the 'Page has been saved...' message
 	require_once('lib/smarty_tiki/modifier.userlink.php');
-	$smarty->assign('saved_msg', sprintf( tra('Page saved (version %d).'), $info['version'] ) );
+	$smarty->assign('saved_msg',
+		sprintf(
+			tra('%s - Version %d of this page has been saved by %s.'),
+			TikiLib::date_format($prefs['long_date_format'].' '.$prefs['long_time_format'], $info['lastModif']),
+			$info['version'], smarty_modifier_userlink($info['user'])
+		)
+	);
 }
 
 // Comments engine!

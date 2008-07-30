@@ -51,6 +51,7 @@ class TikiLib extends TikiDB {
     function httprequest($url, $reqmethod = "GET") {
 	global $prefs;
 	// test url :
+	if (!preg_match("/^[-_a-zA-Z0-9:\/\.\?&;=\+~%,]*$/",$url)) return false;
 	// rewrite url if sloppy # added a case for https urls
 	if ( (substr($url,0,7) <> "http://") and
 		(substr($url,0,8) <> "https://")
@@ -64,17 +65,6 @@ class TikiLib extends TikiDB {
 	if (substr_count($url, "/") < 3) {
 	    $url .= "/";
 	}
-
-   //handle url embedded user:pass
-   $spliturl=parse_url($url);
-   if(!empty($spliturl['user']) && !empty($spliturl['pass'])) {
-      $aSettingsRequest["pass"]=$spliturl['pass'];
-      $aSettingsRequest["user"]=$spliturl['user'];
-      $url=str_replace($spliturl['user'].":".$spliturl['pass']."@", null, $url);
-   }
-
-	if (!preg_match("/^[-_a-zA-Z0-9:\/\.\?&;=\+~%,]*$/",$url)) return false;
-
 	// Proxy settings
 	if ($prefs['use_proxy'] == 'y') {
 	    $aSettingsRequest["proxy_host"]=$prefs['proxy_host'];
@@ -2723,13 +2713,12 @@ function add_pageview() {
     }
 
     function list_blogs_user_can_post($user) {
-	global $tiki_p_blog_admin, $user;
 	$query = "select * from `tiki_blogs` order by `title` asc";
 	$result = $this->query($query);
 	$ret = array();
 
 	while ($res = $result->fetchRow()) {
-		if( (!empty($user) and $user == $res['user']) || $tiki_p_blog_admin == 'y' || ($res['public'] == 'y' && $this->user_has_perm_on_object($user, $res['blogId'], 'blog', 'tiki_p_blog_post')))
+	   if( $this->user_has_perm_on_object($user, $res['blogId'], 'blog', 'tiki_p_blog_post'))
 			$ret[] = $res;
 	}
 	return $ret;
@@ -5463,8 +5452,7 @@ function add_pageview() {
     }
 
     //PARSEDATA
-    // options defaults : is_html => false, absolute_links => false, language => ''
-    function parse_data($data, $options = null) {
+    function parse_data($data,$is_html=false,$absolute_links=false) {
    	// Don't bother if there's nothing...
 	  if (function_exists('mb_strlen')) {
 		if( mb_strlen( $data ) < 1 )
@@ -5475,12 +5463,6 @@ function add_pageview() {
 	
 	global $page_regex, $slidemode, $prefs, $ownurl_father, $tiki_p_admin_drawings, $tiki_p_edit_drawings, $tiki_p_edit_dynvar, $tiki_p_upload_picture, $page, $page_ref_id, $rsslib, $dbTiki, $structlib, $user, $tikidomain, $tikiroot;
 	global $wikilib; include_once('lib/wiki/wikilib.php');
-
-	// Handle parsing options
-	if ( $options == null ) $options = array();
-	$is_html = isset($options['is_html']) ? $options['is_html'] : false;
-	$absolute_links = isset($options['absolute_links']) ? $options['absolute_links'] : false;
-	$language = isset($options['language']) ? $options['language'] : '';
 
 	// if simple_wiki is tru, disable some wiki syntax
 	// basically, allow wiki plugins, wiki links and almost
@@ -5493,7 +5475,12 @@ function add_pageview() {
 			return $data;
 		}
 	}
-    
+
+	// Converts &lt;x&gt; (<x> tag using HTML entities) into the tag <x>. This tag comes from the input sanitizer (XSS filter).
+	// This is not HTML valid and avoids using <x> in a wiki text,
+	//   but hide '<x>' text inside some words like 'style' that are considered as dangerous by the sanitizer.
+	$data = str_replace('&lt;x&gt;', '<x>', $data);
+
 	// Replace dynamic content occurrences
 	if (preg_match_all("/\{content +id=([0-9]+)\}/", $data, $dcs)) {
 	    $temp_max = count($dcs[0]);
@@ -6571,7 +6558,7 @@ if (!$simple_wiki) {
 			//
 			if ( $nb_last_hdr > 0 && $hdrlevel <= $nb_last_hdr ) {
 				$hdr_structure[$nb_hdrs] = array_slice($last_hdr, 0, $hdrlevel);
-				if ( !empty($show_title_level[$hdrlevel]) || ! $need_autonumbering ) {
+				if ( $show_title_level[$hdrlevel] || ! $need_autonumbering ) {
 					//
 					// Increment the level number only if :
 					//     - the last title of the same level number has a displayed number
@@ -6769,7 +6756,7 @@ if (!$simple_wiki) {
 
 		// Handle old type definition for type "box" (and preserve environment for the title also)
 		if ( $maketoc_length > 12 && strtolower(substr($maketoc_string, 8, 4)) == ':box' ) {
-			$maketoc_string = '{maketoc type=box showhide=y title="'.tra('index', $language, true).'"'.substr($maketoc_string, 12);
+			$maketoc_string = '{maketoc type=box showhide=y title="'.tra('index','',true).'"'.substr($maketoc_string, 12);
 		}
 
 		$maketoc_string = str_replace('&quot;', '"', $maketoc_string);
@@ -6785,7 +6772,7 @@ if (!$simple_wiki) {
 			$maketoc_args = array(
 				'type' => '',
 				'maxdepth' => 0, // No limit
-				'title' => tra('Table of contents', $language, true),
+				'title' => tra("Table of contents","",true),
 				'showhide' => '',
 				'nolinks' => '',
 				'nums' => ''
@@ -6801,8 +6788,8 @@ if (!$simple_wiki) {
 
 			if ( $maketoc_args['title'] != '' ) {
 				// Translate maketoc title
-				$maketoc_summary = ' summary="'.tra($maketoc_args['title'], $language, true).'"';
-				$maketoc_title = "<div id='toctitle'><h3>".tra($maketoc_args['title'], $language).'</h3></div>';
+				$maketoc_summary = ' summary="'.tra($maketoc_args['title'],'',true).'"';
+				$maketoc_title = "<div id='toctitle'><h3>".tra($maketoc_args['title']).'</h3></div>';
 			} else {
 				$maketoc_summary = '';
 				$maketoc_title = '';
@@ -7677,7 +7664,7 @@ if (!$simple_wiki) {
 		global $prefs;
 		if ($prefs['search_parsed_snippet'] == 'y') {
 			$_REQUEST['redirectpage'] = 'y'; //do not interpret redirect
-			$data = $this->parse_data($data, array('is_html' => $is_html));
+			$data = $this->parse_data($data, $is_html);
 			$data = strip_tags($data);
 		}
 		return substr($data, 0, $length);

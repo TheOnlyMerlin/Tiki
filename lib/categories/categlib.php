@@ -1186,7 +1186,7 @@ class CategLib extends ObjectLib {
     }
 
     // Gets a list of categories that will block objects to be seen by user, recursive
-    function list_forbidden_categories($parentId=0, $parentAllowed='', $perm='tiki_p_view_categorized') {
+    function list_forbidden_categories($parentId=0, $parentAllowed='') {
 	global $user, $userlib;
 	if (empty($parentAllowed)) {
 	    global $tiki_p_view_categorized;
@@ -1201,17 +1201,17 @@ class CategLib extends ObjectLib {
 	while ($row = $result->fetchRow()) {
 	    $child = $row['categId'];
 	    if ($userlib->object_has_one_permission($child, 'category')) {
-		if ($userlib->object_has_permission($user, $child, 'category', $perm)) {
-		    $forbidden = array_merge($forbidden, $this->list_forbidden_categories($child, 'y', $perm));
+		if ($userlib->object_has_permission($user, $child, 'category', 'tiki_p_view_categorized')) {
+		    $forbidden = array_merge($forbidden, $this->list_forbidden_categories($child, 'y'));
 		} else {
 		    $forbidden[] = $child;
-		    $forbidden = array_merge($forbidden, $this->list_forbidden_categories($child, 'n', $perm));
+		    $forbidden = array_merge($forbidden, $this->list_forbidden_categories($child, 'n'));
 		}
 	    } else {
 		if ($parentAllowed != 'y') {
 		    $forbidden[] = $child;
 		}
-		$forbidden = array_merge($forbidden, $this->list_forbidden_categories($child, $parentAllowed, $perm));
+		$forbidden = array_merge($forbidden, $this->list_forbidden_categories($child, $parentAllowed));
 	    }
 	}
 	return $forbidden;

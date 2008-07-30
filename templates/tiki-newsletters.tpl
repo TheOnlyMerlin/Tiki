@@ -6,8 +6,6 @@
 {if $unsub eq 'y'}
 <div class="highlight">
 {tr}Your email address was removed from the list of subscriptors.{/tr}</div>
-{elseif $unsub eq 'f'}
-<div class="simplebox error">{tr}Removal of your email address failed.{/tr}</div>
 {/if}
 
 {if $confirm eq 'y'}
@@ -24,9 +22,6 @@
   <td class="even">{$nl_info.description|escape|nl2br}</td>
 </tr>
 </table>
-<br />
-{elseif $confirm eq 'f'}
-<div class="simplebox error">{tr}Subscription failed.{/tr}</div>
 <br />
 {/if}
 
@@ -56,7 +51,7 @@
 {/if}
 <tr>
   <td class="even">&nbsp;</td>
-  <td class="even"><input type="submit" name="subscribe" value="{tr}Subscribe to this Newsletter{/tr}" /></td>
+  <td class="even"><input type="submit" name="subscribe" value="{tr}Subscribe to This Newsletter{/tr}" /></td>
 </tr>
 {/if}
 </table>
