@@ -45,12 +45,6 @@ if ( $user ) {
 		$prefs['style'] = $prefs['theme'];
 	}
 
-	// Set the userPage name for this user since other scripts use this value.
-	$userPage = $prefs['feature_wiki_userpage_prefix'].$user;
-	$exist = $tikilib->page_exists($userPage);
-	$smarty->assign("userPage", $userPage);
-	$smarty->assign("userPage_exists", $exist);
-
 } else {
 	$allowMsgs = 'n';
 }

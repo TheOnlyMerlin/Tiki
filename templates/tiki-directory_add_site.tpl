@@ -23,12 +23,10 @@
     <td class="formcolor">{tr}URL{/tr}:</td>
     <td class="formcolor">{$info.url}</td>
   </tr>
-{if $prefs.directory_country_flag eq 'y'}
   <tr>
     <td class="formcolor">{tr}Country{/tr}:</td>
     <td class="formcolor">{$info.country}</td>
 </tr>
-{/if}
 </table>
 
 {else}
@@ -68,7 +66,6 @@
 {/if}
     </td>
   </tr>
-{if $prefs.directory_country_flag eq 'y'}
   <tr>
     <td class="formcolor">{tr}Country{/tr}:</td>
     <td class="formcolor">
@@ -79,9 +76,6 @@
       </select>
     </td>
   </tr>
-{else}
- <input type="hidden" name="country" value="None">
-{/if}
   <!--
   <tr>
     <td class="formcolor">{tr}Is valid{/tr}:</td>

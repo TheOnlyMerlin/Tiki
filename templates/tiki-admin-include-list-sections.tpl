@@ -4,9 +4,10 @@
  * there you"ll find attached a gimp image containing this page with icons in separated layers
  *}
 
-{remarksbox type="tip" title="{tr}Tip{/tr}"}
-	{tr}Enable/disable Tiki features in {/tr}<a class="rbox-link" href="tiki-admin.php?page=features">{tr}Admin{/tr}&nbsp;{$prefs.site_crumb_seper}&nbsp;{tr}Features{/tr}</a>{tr}, but configure them elsewhere{/tr}
-{/remarksbox}
+<div class="rbox tip">
+	<div class="rbox-title">{tr}Tip{/tr}</div>  
+	<div class="rbox-data">{tr}Enable/disable Tiki features in {/tr}<a class="rbox-link" href="tiki-admin.php?page=features">{tr}Admin{/tr}&nbsp;{$prefs.site_crumb_seper}&nbsp;{tr}Features{/tr}</a>{tr}, but configure them elsewhere{/tr}</div>
+</div>
 
 <div class="cbox">
  	<div class="cbox-title">
@@ -93,7 +94,7 @@
       <img src="pics/trans.png" alt="{tr}Google Maps{/tr}" title="{tr}Google Maps{/tr}{if $prefs.feature_gmap ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Google Maps{/tr}</span>
     </a>
     <a href="tiki-admin.php?page=i18n" class="admbox" style="background-image: url('pics/large/i18n48x48.png')">
-      <img src="pics/trans.png" alt="{tr}Internationalization{/tr}" title="{tr}Internationalization{/tr}" /><span>{tr}Internationalization{/tr}</span>
+      <img src="pics/trans.png" alt="{tr}i18n{/tr}" title="{tr}i18n{/tr}" /><span>{tr}i18n{/tr}</span>
     </a>
     <a href="tiki-admin.php?page=wysiwyg" class="admbox{if $prefs.feature_wysiwyg ne 'y'} off{/if}" style="background-image: url('pics/large/wysiwyg48x48.png')">
       <img src="pics/trans.png" alt="{tr}Wysiwyg{/tr}" title="{tr}Wysiwyg{/tr}{if $prefs.feature_wysiwyg ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Wysiwyg{/tr}</span>

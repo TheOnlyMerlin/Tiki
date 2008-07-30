@@ -139,7 +139,7 @@ border="0" src="topic_image.php?id={$listpages[ix].topicId}" /></a>
 </div>
 {/if}
 {sectionelse}
-{if $quiet ne 'y'}{tr}No articles.{/tr}{/if}
+{tr}No articles.{/tr}
 {/section}
 
 {pagination_links cant=$cant step=$maxArticles offset=$offset}{/pagination_links}

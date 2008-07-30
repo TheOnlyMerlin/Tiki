@@ -56,8 +56,8 @@
 						<td><select name="transition_style_ver" id="transition_style_ver">            
 							<option value="none" {if $prefs.transition_style_ver eq 'none'}selected="selected"{/if}>{tr}Never use transition css{/tr}</option>
 							<option value="css_specified_only" {if $prefs.transition_style_ver eq 'css_specified_only'}selected="selected"{/if}>{tr}Use @version:x.x specified in theme css or none if not specified{/tr}</option>
+							<option value="1.8" {if $prefs.transition_style_ver eq '1.8'}selected="selected"{/if}>{tr}Use @version:x.x specified in theme css or 1.8 if not specified{/tr}</option>
 							<option value="1.9" {if $prefs.transition_style_ver eq '1.9'}selected="selected"{/if}>{tr}Use @version:x.x specified in theme css or 1.9 if not specified{/tr}</option>
-							<option value="2.0" {if $prefs.transition_style_ver eq '2.0'}selected="selected"{/if}>{tr}Use @version:x.x specified in theme css or 2.0 if not specified{/tr}</option>
 							</select></td>
 					</tr><tr>
 						<td class="form"> {if $prefs.feature_help eq 'y'}<a href="{$prefs.helpurl}Edit+CSS"
@@ -121,9 +121,9 @@
         	</table>
 	</fieldset>
 
-	{* --- Customize Site Logo and Site Titile--- *}
+	{* --- Customize Site Logo --- *}
 	<fieldset>
-					<legend><a href="#"><span>{tr}Site Logo and Title{/tr}</span></a></legend>
+					<legend><a href="#"><span>{tr}Site Logo{/tr}</span></a></legend>
 
 				<table class="admin">
 				
@@ -159,13 +159,6 @@
 				<tr>
 					<td class="form"><label for="sitelogo_alt">{tr}Alt. description (e.g. for text browsers){/tr}:</label></td>
 					<td><input type="text" name="sitelogo_alt" id="sitelogo_alt" value="{$prefs.sitelogo_alt}" size="50" maxlength="50" /></td>
-				<tr>
-					<td class="form"><label for="sitetitle">{tr}Site title{/tr}:</label></td>
-					<td><input type="text" name="sitetitle" id="sitetitle" value="{$prefs.sitetitle}" size="50" maxlength="50" /></td>
-				</tr>
-				<tr>
-					<td class="form"><label for="sitesubtitle">{tr}Site subtitle{/tr}:</label></td>
-					<td><input type="text" name="sitesubtitle" id="sitesubtitle" value="{$prefs.sitesubtitle}" size="50" maxlength="50" /></td>
 				</tr>
 				</table>
 </fieldset>                                

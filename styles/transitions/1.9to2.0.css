@@ -512,31 +512,3 @@ div #page-bar
   text-align: center;
   font-size: 7pt;
 }
-
-#power_icons {
-	 text-align: center
-}
-
-#power_icons img {
-	border: 0;
-	vertical-align: middle
-}
-
-#fullscreenbutton {
-  float: right;
-	position: absolute;
-	top: 2px;
-	right: 10px;
-	font-size: 80%;
-	white-space: nowrap;
-	padding: 0 4px;
-	cursor: pointer;
-}
-
-#sitetitle {
-	font-size: 2.4em;
-}
-
-#sitesubtitle {
-	font-size:1.6em;
-}

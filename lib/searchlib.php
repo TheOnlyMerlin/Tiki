@@ -162,8 +162,7 @@ class SearchLib extends TikiLib {
 
 		    $bindJoin[] = $objType;
 
-		    $forbiddenCatList = $categlib->list_forbidden_categories(0, '', 'tiki_p_search_categorized');
-
+		    $forbiddenCatList = $categlib->list_forbidden_categories();
 		    $forbiddenCatStr = '';
 		    if (count($forbiddenCatList) > 0) {
 			$forbiddenCatStr = '?' . str_repeat(',?',count($forbiddenCatList)-1);
@@ -493,8 +492,7 @@ class SearchLib extends TikiLib {
 			'objectKeyCat' => 'a.`articleId`',
 		);
 
-		$res = $this->_find($search_articles, $words, $offset, $maxRecords, $fulltext);
-		return $res;
+		return $this->_find($search_articles, $words, $offset, $maxRecords, $fulltext);
 	}
 
 	function find_posts($words = '', $offset = 0, $maxRecords = -1, $fulltext = false) {

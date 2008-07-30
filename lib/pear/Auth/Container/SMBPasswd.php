@@ -26,15 +26,15 @@
 /**
  * Include PEAR File_SMBPasswd
  */
-require_once "lib/pear/File/SMBPasswd.php";
+require_once "File/SMBPasswd.php";
 /**
  * Include Auth_Container Base file
  */
-require_once "lib/pear/Auth/Container.php";
+require_once "Auth/Container.php";
 /**
  * Include PEAR class for error handling
  */
-require_once "lib/pear/PEAR.php";
+require_once "PEAR.php";
 
 /**
  * Storage driver for fetching login data from an SAMBA smbpasswd file.

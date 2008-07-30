@@ -269,7 +269,7 @@ style="background-image:url('{$stdata.image}');background-repeat:no-repeat;paddi
 		{include file='tracker_item_field_input.tpl' field_value=$cur_field}
 		{if $cur_field.options_array[0] == 'password'}<br /><i>Let empty to not change it</i>{/if}
 	{/if}
-{elseif $cur_field.type eq 'A' or $cur_field.type eq 'm'}
+{elseif $cur_field.type eq 'A'}
 	{include file='tracker_item_field_input.tpl' field_value=$cur_field}
 
 {elseif $cur_field.type eq 'u'}
@@ -351,7 +351,7 @@ document.write('<div class="categSelectAll"><input type="checkbox" id="clickall"
 </table>
 {/if}
 
-{elseif $cur_field.type eq 't'}
+{elseif $cur_field.type eq 't' || $cur_field.type eq 'm'}
 
     {if $cur_field.isMultilingual ne "y"}
         {if $cur_field.options_array[2]}<span class="formunit">{$cur_field.options_array[2]}&nbsp;</span>{/if}
@@ -412,7 +412,9 @@ document.write('<div class="categSelectAll"><input type="checkbox" id="clickall"
 {include file='tracker_item_field_input.tpl' field_value=$cur_field}
 
 {elseif $cur_field.type eq 'R'}
-{include file='tracker_item_field_input.tpl' field_value=$cur_field}
+{section name=jx loop=$cur_field.options_array}
+<input type="radio" name="ins_{$cur_field.id}" value="{$cur_field.options_array[jx]|escape}" {if $cur_field.value eq $cur_field.options_array[jx]}checked="checked"{/if}>{$cur_field.options_array[jx]}</input>
+{/section}
 
 {elseif $cur_field.type eq 'c'}
 <input type="checkbox" name="ins_{$cur_field.id}" {if $cur_field.value eq 'y'}checked="checked"{/if}/>

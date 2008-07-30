@@ -729,20 +729,20 @@ div.cbox {
 	color: #f5f5f5;
 	text-decoration: underline}
 
-.comment .rbox-title,
-.comment .rbox-data {}
+.rbox-title[name="comment"],
+.rbox-data[name="comment"] {}
 
-.note .rbox-title {}
-.note .rbox-data {}
+.rbox-title[name="note"] {}
+.rbox-data[name="note"] {}
 
-.tip .rbox-title,
-.tip .rbox-data,
+.rbox-title[name="tip"],
+.rbox-data[name="tip"],
 .rbox-data.tip {
 	background: #794a93;
 	color: #f5f5f5}
 
-.warning .rbox-title {}
-.warning .rbox-data {}
+.rbox-title[name="warning"] {}
+.rbox-data[name="warning"] {}
 
 div.simplebox {
 	color: #333;

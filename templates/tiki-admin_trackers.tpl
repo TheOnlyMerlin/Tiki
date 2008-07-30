@@ -90,7 +90,7 @@
 {* --- tab with form --- *}
 <a name="mod"></a>
 <div id="content{cycle name=content assign=focustab}{$focustab}"{if $prefs.feature_tabs eq 'y'} class="tabcontent" style="display:{if $focustab eq $cookietab}block{else}none{/if};"{/if}>
-<h2>{if $trackerId}{tr}Edit Tracker{/tr}{else}{tr}Create Trackers{/tr}{/if}</h2>
+<h2>{tr}Create/Edit Trackers{/tr}</h2>
 {if $trackerId}
 <div class="simplebox">
 <a title="{tr}Permissions{/tr}" class="link" href="tiki-objectpermissions.php?objectName={$name|escape:"url"}&amp;objectType=tracker&amp;permType=trackers&amp;objectId={$trackerId}">
@@ -329,7 +329,6 @@ categories = {$catsdump}
 <form action="tiki-import_tracker.php?trackerId={$trackerId}" method="post" enctype="multipart/form-data">
 <table class="normal">
 <tr class="formcolor"><td>{tr}File{/tr}</td><td><input name="importfile" type="file" /></td></tr>
-<tr class="formcolor"><td>{tr}Separator{/tr}</td><td><input name="separator" type="text" value="," /></td></tr>
 <tr class="formcolor"><td>{tr}Date Format{/tr}</td><td>
 <input type="radio" name="dateFormat" value="mm/dd/yyyy" checked="ckecked" />{tr}month{/tr}/{tr}day{/tr}/{tr}year{/tr}(01/31/2008)<br />
 <input type="radio" name="dateFormat" value="dd/mm/yyyy" />{tr}day{/tr}/{tr}month{/tr}/{tr}year{/tr}(31/01/2008)<br />
