@@ -112,6 +112,7 @@ var numl;var toBeHidden;
 
 {if $prefs.feature_mootools eq "y"}
 <script type="text/javascript" src="lib/mootools/mootools.js"></script>
+<script type="text/javascript" src="lib/mootools/mootools-1.2-more.js"></script>
 {if $mootools_windoo eq "y"}
 <script type="text/javascript" src="lib/mootools/extensions/windoo/windoo.js"></script>
 {/if}
