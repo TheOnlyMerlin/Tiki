@@ -1,7 +1,7 @@
 <?php
 
 function wikiplugin_flowplayer_help() {
-        return tra("Displays a FlowPlayer based Flash Video Player on the wiki page").":<br />~np~{FLOWPLAYER(videofile=url_to_flv_video,configfile=url_to_flowplayer_js_configfile,player=standard|longplay|skinnable,autoplay=true|false,title=text,width=pixel,height=pixel)}{FLASH}~/np~";
+        return tra("Displays a FlowPlayer based Flash Video Player on the wiki page").":<br />~np~{FLOWPLAYER(videofile=url_to_flv_video,configfile=url_to_flowplayer_js_configfile,player=standard|longplay|skinnable|dark,autoplay=true|false,width=pixel,height=pixel)}{FLASH}~/np~";
 }
 
 function wikiplugin_flowplayer($data, $params) {
@@ -20,25 +20,25 @@ function wikiplugin_flowplayer($data, $params) {
 	if ((isset($player)) && ($player=='longplay')) {
 	if (!isset($engine)) $engine='/lib/flowplayer/FlowPlayerLP.swf';
 	} elseif ((isset($player)) && ($player=='skinnable')) {
-	if (!isset($engine)) $engine='/lib/flowplayer/FlowPlayerLight.swf';
+		if (!isset($engine)) $engine='/lib/flowplayer/FlowPlayerLight.swf';
+	} elseif ((isset($player)) && ($player=='dark')) {
+		if (!isset($engine)) $engine='/lib/flowplayer/FlowPlayerDark.swf';
 	}else {
-	if (!isset($engine)) $engine='/lib/flowplayer/FlowPlayer.swf';
+		if (!isset($engine)) $engine='/lib/flowplayer/FlowPlayerClassic.swf';
 	}
 
 	if (!isset($configfile)) $configfile='/lib/flowplayer/flowPlayer.js';
 
 
-	$flowplayer = "<OBJECT WIDTH=\"$width\" HEIGHT=\"$height\" DATA=\"$engine\" TYPE=\"application/x-shockwave-flash\">";
-	$flowplayer .= "<param name=\"allowScriptAccess\" value=\"sameDomain\" />";
-	$flowplayer .= "<param name=\"movie\" value=\"$engine\" />";
-	$flowplayer .= "<param name=\"quality\" value=\"high\" />";
-	$flowplayer .= "<param name=\"scale\" value=\"noScale\" />";
-	$flowplayer .= "<param name=\"wmode\" value=\"transparent\" />";
+	$flowplayer = "<embed WIDTH=\"$width\" HEIGHT=\"$height\" src=\"$engine\" TYPE=\"application/x-shockwave-flash\" ";
+	$flowplayer .= "allowScriptAccess=\"sameDomain\" ";
+	$flowplayer .= "quality=\"high\" ";
+	$flowplayer .= "scale=\"noScale\" ";
 	if (isset($videofile)) {
-	$flowplayer .= "<param name=\"flashvars\" value=\"videoFile=$videofile\"></param></OBJECT>"; 
+	$flowplayer .= "flashvars=\"config={autoPlay: false, videoFile:'$videofile',initialScale:'scale',useNativeFullScreen:true}\"\>"; 
 	}
 	else {
-	$flowplayer .= "<param name=\"flashvars\" value=\"configFileName=$configfile\"></param></OBJECT>"; 
+	$flowplayer .= "flashvars=\"configFileName=$configfile\">"; 
 	}
 
 	return $flowplayer;
