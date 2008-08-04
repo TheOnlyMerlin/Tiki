@@ -2,10 +2,10 @@ contributor:
 $Author: franck $
 
 revision: 
-$Revision: 1.1 $
+$Revision: 1.2 $
 
 lastmodif:
-$Date: 2007-12-20 23:37:10 $
+$Date: 2008/06/09 23:37:10 $
 
 files: 
 wiki-plugins/dopplr/wiki-plugins/wikiplugin_dopplr.php lib/wiki-plugins/wikiplugin_dopplr.php
