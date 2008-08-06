@@ -1,68 +1,123 @@
-{if $show_page_bar !== 'n'}
-{include file="tiki-page_bar_tabs.tpl"}
+{* $Id: tiki-show_page.tpl 13616 2008-07-12 19:30:31Z jonnybradley $ *} 
+{if $prefs.feature_ajax == 'y'}
+  <script type="text/javascript" src="lib/wiki/wiki-ajax.js"></script>
 {/if}
 
 {breadcrumbs type="trail" loc="page" crumbs=$crumbs}
-{if $feature_page_title eq 'y'}
+{if $prefs.feature_page_title eq 'y'}
 {breadcrumbs type="pagetitle" loc="page" crumbs=$crumbs}
 {/if}
 
-{if $feature_wiki_pageid eq 'y'}
-	<small><a class="link" href="tiki-index.php?page_id={$page_id}">{tr}page id{/tr}: {$page_id}</a></small>
+{if $beingStaged eq 'y'}
+<div class="tocnav">
+{if $approvedPageExists}
+	{tr}This is the staging copy of{/tr} <a class="link" href="tiki-index.php?page={$approvedPageName|escape:'url'}">{tr}the approved version of this page.{/tr}</a>
+{else}
+	{tr}This is a new staging page that has not been approved before.{/tr}
 {/if}
-
-{if $is_categorized eq 'y' and $feature_categories eq 'y' and $feature_categorypath eq 'y'}
-<div style="float:right; margin-top: -19px; margin-right: 20px; font-size: 93%;"> {*catpath moved up to above pagetitle*}
-{tr}Category{/tr}: {$display_catpath}
+{if $outOfSync eq 'y'}
+	{if $canApproveStaging == 'y'}
+	{if $lastSyncVersion}<a class="link" href="tiki-pagehistory.php?page={$page|escape:'url'}&amp;diff2={$lastSyncVersion}">{tr}View changes since last approval.{/tr}</a>
+	{else}{tr}Viewing of changes since last approval is possible only after first approval.{/tr}{/if}
+	<a class="link" href="tiki-approve_staging_page.php?page={$page|escape:'url'}">{tr}Approve changes.{/tr}</a>
+	{elseif $approvedPageExists}
+	{tr}Latest changes will be synchronized after approval.{/tr}
+	{/if}
+{/if}
+</div>
+{/if}
+{if $needsFirstApproval == 'y' and $canApproveStaging == 'y'}
+<div class="tocnav">
+{tr}This is a new staging page that has not been approved before. Edit and manually move it to the category for approved pages to approve it for the first time.{/tr}
 </div>
 {/if}
 
-<div>
-{if $feature_wiki_description eq 'y'}
-<small>{$description}</small>
+<div class="wikitopline" style="clear: both;">
+	<div class="content">
+		<div class="wikiinfo" style="float: left">
+{if $prefs.feature_wiki_pageid eq 'y' and $print_page ne 'y'}
+			<small><a class="link" href="tiki-index.php?page_id={$page_id}">{tr}page id{/tr}: {$page_id}</a></small>
 {/if}
-{if $cached_page eq 'y'}
-<small>(cached)</small>
+{breadcrumbs type="desc" loc="page" crumbs=$crumbs}
+{if $cached_page eq 'y'}<small>({tr}Cached{/tr})</small>{/if}
+{if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categorypath eq 'y'}
+	{$display_catpath}
 {/if}
+		</div>
 </div>
+</div>
+
+
+<div class="navbar" style="clear: both; text-align: right">
+    {if $user and $prefs.feature_user_watches eq 'y'}
+        {if $category_watched eq 'y'}
+            {tr}Watched by categories{/tr}:
+            {section name=i loop=$watching_categories}
+			    <a href="tiki-browse_categories?parentId={$watching_categories[i].categId}">{$watching_categories[i].name}</a>&nbsp;
+            {/section}
+        {/if}			
+    {/if}
+</div>
+
+{section name=i loop=$translation_alert}
+<div class="cbox">
+<div class="cbox-title">
+{tr}{icon _id=information.png style="vertical-align:middle"} Content may be out of date{/tr}
+</div>
+<div class="cbox-data">
+	<p>{tr}An urgent request for translation has been sent. Until this page is updated, you can see a corrected version in the following pages:{/tr}</p>
+	<ul>
+	{section name=j loop=$translation_alert[i]}
+		<li>
+			<a href="tiki-index.php?page={if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage|escape:'url'}{else}{$translation_alert[i][j].page|escape:'url'}{/if}&bl=n">{if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage}{else}{$translation_alert[i][j].page}{/if}</a>
+			({$translation_alert[i][j].lang})
+			{if $editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') and $beingEdited ne 'y' or $canEditStaging eq 'y'} 
+			<a href="tiki-editpage.php?page={if isset($stagingPageName) && $hasStaging == 'y'}{$stagingPageName|escape:'url'}{else}{$page|escape:'url'}{/if}&amp;source_page={$translation_alert[i][j].page|escape:'url'}&amp;oldver={$translation_alert[i][j].last_update|escape:'url'}&amp;newver={$translation_alert[i][j].current_version|escape:'url'}&amp;diff_style=htmldiff" title="{tr}update from it{/tr}">{icon _id=arrow_refresh.png alt="{tr}update from it{/tr}" style="vertical-align:middle"}</a>
+			{/if}
+		</li>
+	{/section}
+	</ul>
+</div>
+</div>
+{/section}
+
+{if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y' and isset($freetags.data[0])}
+{include file="freetag_list.tpl"}
+{/if}
+
+{if $pages > 1 and $prefs.wiki_page_navigation_bar neq 'bottom'}
+	<div align="center">
+		<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$first_page}">{icon _id='resultset_first' alt="{tr}First page{/tr}"}</a>
+
+		<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$prev_page}">{icon _id='resultset_previous' alt="{tr}Previous page{/tr}"}</a>
+
+		<small>{tr}page{/tr}:{$pagenum}/{$pages}</small>
+
+		<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$next_page}">{icon _id='resultset_next' alt="{tr}Next page{/tr}"}</a>
+
+
+		<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$last_page}">{icon _id='resultset_last' alt="{tr}Last page{/tr}"}</a>
+	</div>
+{/if}
+
 <div class="wikitext">
 {if $structure eq 'y'}
 <div class="tocnav">
 <table>
 <tr>
   <td>
-    {if $prev_info and $prev_info.page_ref_id}
-		<a href="tiki-index.php?page_ref_id={$prev_info.page_ref_id}"><img src="img/icons2/nav_dot_right.gif" border="0" height="11" width="8" alt="{tr}Previous page{/tr}" 
-   			{if $prev_info.page_alias}
-   				title='{$prev_info.page_alias}'
-   			{else}
-   				title='{$prev_info.pageName}'
-   			{/if}/></a>{else}<img src="img/icons2/8.gif" alt="" border="0" height="1" width="8" />{/if}
-	{if $parent_info}
-   	<a href="tiki-index.php?page_ref_id={$parent_info.page_ref_id}"><img src="img/icons2/nav_home.gif" border="0" height="11" width="13" alt="{tr}Parent page{/tr}" 
-        {if $parent_info.page_alias}
-   	      title='{$parent_info.page_alias}'
-        {else}
-   	      title='{$parent_info.pageName}'
-        {/if}/></a>{else}<img src="img/icons2/8.gif" alt="" border="0" height="1" width="8" />{/if}
-   	{if $next_info and $next_info.page_ref_id}
-      <a href="tiki-index.php?page_ref_id={$next_info.page_ref_id}"><img src="img/icons2/nav_dot_left.gif" height="11" width="8" border="0" alt="{tr}Next page{/tr}" 
-		  {if $next_info.page_alias}
-			  title='{$next_info.page_alias}'
-		  {else}
-			  title='{$next_info.pageName}'
-		  {/if}/></a>{else}<img src="img/icons2/8.gif" alt="" border="0" height="1" width="8" />
-	{/if}
-	{if $home_info}
-   	<a href="tiki-index.php?page_ref_id={$home_info.page_ref_id}"><img src="img/icons2/home.gif" border="0" height="16" width="16" alt="TOC" 
-		  {if $home_info.page_alias}
-			  title='{$home_info.page_alias}'
-		  {else}
-			  title='{$home_info.pageName}'
-		  {/if}/></a>{/if}
+
+    {if $prev_info and $prev_info.page_ref_id}{if $prev_info.page_alias}{assign var=icon_title value=$prev_info.page_alias}{else}{assign var=icon_title value=$prev_info.pageName}{/if}<a href="tiki-index.php?page={$prev_info.pageName|escape:'url'}&amp;structure={$home_info.pageName|escape:'url'}">{icon _id='resultset_previous' alt="{tr}Previous page{/tr}" title=$icon_title}</a>{else}<img src="img/icons2/8.gif" alt="" border="0" height="1" width="8" />{/if}
+
+    {if $parent_info}{if $parent_info.page_alias}{assign var=icon_title value=$parent_info.page_alias}{else}{assign var=icon_title value=$parent_info.pageName}{/if}<a href="tiki-index.php?page={$parent_info.pageName|escape:'url'}&amp;structure={$home_info.pageName|escape:'url'}">{icon _id='resultset_up' alt="{tr}Parent page{/tr}" title=$icon_title}</a>{else}<img src="img/icons2/8.gif" alt="" border="0" height="1" width="8" />{/if}
+
+    {if $next_info and $next_info.page_ref_id}{if $next_info.page_alias}{assign var=icon_title value=$next_info.page_alias}{else}{assign var=icon_title value=$next_info.pageName}{/if}<a href="tiki-index.php?page={$next_info.pageName|escape:'url'}&amp;structure={$home_info.pageName|escape:'url'}">{icon _id='resultset_next' alt="{tr}Next page{/tr}" title=$icon_title}</a>{else}<img src="img/icons2/8.gif" alt="" border="0" height="1" width="8" />{/if}
+
+    {if $home_info}{if $home_info.page_alias}{assign var=icon_title value=$home_info.page_alias}{else}{assign var=icon_title value=$home_info.pageName}{/if}<a href="tiki-index.php?page={$home_info.pageName|escape:'url'}&amp;structure={$home_info.pageName|escape:'url'}">{icon _id='house' alt="{tr}TOC{/tr}" title=$icon_title}</a>{/if}
+
   </td>
   <td>
-{if $tiki_p_edit_structures and $tiki_p_edit_structures eq 'y' }
+{if $tiki_p_edit_structures and $tiki_p_edit_structures eq 'y' and $struct_editable eq 'y'}
     <form action="tiki-editpage.php" method="post">
       <input type="hidden" name="current_page_id" value="{$page_info.page_ref_id}" />
       <input type="text" name="page" />
@@ -79,9 +134,11 @@
 </tr>
 <tr>
   <td colspan="2">
+  	<a href="tiki-edit_structure.php?page_ref_id={$home_info.page_ref_id}">{icon _id='chart_organisation' alt="{tr}Structure{/tr}"}</a>&nbsp;&nbsp;
+	({$cur_pos})&nbsp;&nbsp;	
     {section loop=$structure_path name=ix}
-      {if $structure_path[ix].parent_id}&nbsp;{$site_crumb_seper}&nbsp;{/if}
-	  <a href="tiki-index.php?page_ref_id={$structure_path[ix].page_ref_id}">
+      {if $structure_path[ix].parent_id}&nbsp;{$prefs.site_crumb_seper}&nbsp;{/if}
+	  <a href="tiki-index.php?page={$structure_path[ix].pageName|escape:'url'}&amp;structure={$home_info.pageName|escape:'url'}">
       {if $structure_path[ix].page_alias}
         {$structure_path[ix].page_alias}
 	  {else}
@@ -94,47 +151,65 @@
 </table>
 </div>
 {/if}
-{if $feature_wiki_ratings eq 'y'}{include file="poll.tpl"}{/if}
+{if $prefs.feature_wiki_ratings eq 'y'}{include file="poll.tpl"}{/if}
+
+{if $pageLang eq 'ar' or $pageLang eq 'he'}
+<div style="direction:RTL; unicode-bidi:embed; text-align: right; {if $pageLang eq 'ar'}font-size: large;{/if}">
 {$parsed}
-{if $pages > 1}
+</div>
+{else}
+{$parsed}
+{/if}
+<hr style="clear:both; height:0px;"/> {* Information below the wiki content
+must not overlap the wiki content that could contain floated elements *}
+
+{if $pages > 1 and $prefs.wiki_page_navigation_bar neq 'top'}
 	<br />
 	<div align="center">
-		<a href="tiki-index.php?page={$page|escape:"url"}&amp;pagenum={$first_page}"><img src='img/icons2/nav_first.gif' border='0' alt='{tr}First page{/tr}' title='{tr}First page{/tr}' /></a>
+		<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$first_page}">{icon _id='resultset_first' alt="{tr}First page{/tr}"}</a>
 
-		<a href="tiki-index.php?page={$page|escape:"url"}&amp;pagenum={$prev_page}"><img src='img/icons2/nav_dot_right.gif' border='0' alt='{tr}Previous page{/tr}' title='{tr}Previous page{/tr}' /></a>
+		<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$prev_page}">{icon _id='resultset_previous' alt="{tr}Previous page{/tr}"}</a>
 
 		<small>{tr}page{/tr}:{$pagenum}/{$pages}</small>
 
-		<a href="tiki-index.php?page={$page|escape:"url"}&amp;pagenum={$next_page}"><img src='img/icons2/nav_dot_left.gif' border='0' alt='{tr}Next page{/tr}' title='{tr}Next page{/tr}' /></a>
+		<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$next_page}">{icon _id='resultset_next' alt="{tr}Next page{/tr}"}</a>
 
 
-		<a href="tiki-index.php?page={$page|escape:"url"}&amp;pagenum={$last_page}">{html_image file='img/icons2/nav_last.gif' border='0' alt='{tr}Last page{/tr}' title='{tr}Last page{/tr}'}</a>
+		<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$last_page}">{icon _id='resultset_last' alt="{tr}Last page{/tr}"}</a>
 	</div>
 {/if}
-</div>
+</div> {* End of main wiki page *}
 
-{if $has_footnote eq 'y'}
-<div class="wikitext">
-{$footnote}
-</div>
+{if $has_footnote eq 'y'}<div class="wikitext" id="wikifootnote">{$footnote}</div>{/if}
+{if $wiki_authors_style neq 'none' || $prefs.wiki_feature_copyrights eq 'y'|| $print_page eq 'y'}
+  <p class="editdate"> {* begining editdate *}
 {/if}
-<br style="clear:both" />
-{if $wiki_extras eq 'y' && $feature_wiki_attachments eq 'y' and $tiki_p_wiki_view_attachments eq 'y'}
-{include file=attachments.tpl}
-{/if}
-
-{if $feature_wiki_comments eq 'y' and $tiki_p_wiki_view_comments eq 'y'}
-{include file=comments.tpl}
+{* author info moved from here to tiki-bot_bar.tpl *}
+{if $prefs.wiki_feature_copyrights eq 'y' and $prefs.wikiLicensePage}
+  {if $prefs.wikiLicensePage == $page}
+    {if $tiki_p_edit_copyrights eq 'y'}
+      <br />
+      {tr}To edit the copyright notices{/tr} <a href="copyrights.php?page={$copyrightpage}">{tr}Click Here{/tr}</a>.
+    {/if}
+  {else}
+    <br />
+    {tr}The content on this page is licensed under the terms of the{/tr} <a href="tiki-index.php?page={$prefs.wikiLicensePage}&amp;copyrightpage={$page|escape:"url"}">{$prefs.wikiLicensePage}</a>.
+  {/if}
 {/if}
 
 {if $print_page eq 'y'}
-<div class="editdate" align="center">
-<p>{tr}The original document is available at{/tr} {$urlprefix}tiki-index.php?page={$page|escape:"url"}
-</p>
-</div>
+    <br />
+    {tr}The original document is available at{/tr} <a href="{$base_url}tiki-index.php?page={$page|escape:"url"}">{$base_url}tiki-index.php?page={$page|escape:"url"}</a>
 {/if}
-{if $is_categorized eq 'y' and $feature_categories eq 'y' and $feature_categoryobjects eq 'y'}
-<div class="catblock">{$display_catobjects}</div>
+
+{if $wiki_authors_style neq 'none' || $prefs.wiki_feature_copyrights eq 'y'|| $print_page eq 'y'}
+  </p> {* end editdate *}
 {/if}
-{* For tikipedia wiki page footer 
-{include file="tiki-bot_bar_wiki.tpl"}*}
+
+{if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categoryobjects eq 'y' and $tiki_p_view_categories eq 'y'}
+{$display_catobjects}
+{/if}
+
+{if $print_page ne 'y'}
+{include file=tiki-page_bar.tpl}
+{/if}
