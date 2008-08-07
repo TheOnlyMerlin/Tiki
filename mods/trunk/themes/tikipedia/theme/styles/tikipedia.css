@@ -1584,7 +1584,7 @@ body.tiki_wiki .post {padding: 0/* 10px*/}
 
 .title a.link {color: #000}
 
-#col1 .post .postbody .content {
+#c1c2 #wrapper #col1 .content .post .postbody .content {
 	color: #000000;
 	height: 100%;
 	padding: 0 3px 3px;
