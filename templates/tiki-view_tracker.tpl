@@ -377,7 +377,7 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
 {/if}
 
 {* -------------------- text field / email -------------------- *}
-{elseif $field_value.type eq 't'}
+{elseif $field_value.type eq 't' || $field_value.type eq 'm'}
 {if $field_value.isMultilingual ne "y"}
 {if $field_value.options_array[2]}<span class="formunit">{$field_value.options_array[2]}&nbsp;</span>{/if}
 <input type="text" name="{$field_value.ins_id}" {if $field_value.options_array[1]}size="{$field_value.options_array[1]}" maxlength="{$field_value.options_array[1]}"{/if} value="{if $input_err}{$field_value.value}{else}{$defaultvalues.$fid|escape}{/if}" />
@@ -411,10 +411,6 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
     {/if}
 	{/if}
 
-{* -------------------- email -------------------- *}
-{elseif $field_value.type eq 'm'}
-{include file=tracker_item_field_input.tpl}
-
 {* -------------------- textarea -------------------- *}
 {elseif $field_value.type eq 'a'}
 {include file=tracker_item_field_input.tpl}
@@ -429,7 +425,9 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
 
 {* -------------------- radio buttons -------------------- *}
 {elseif $field_value.type eq 'R'}
-{include file="tracker_item_field_input.tpl"}
+{section name=jx loop=$field_value.options_array}
+<input type="radio" name="{$field_value.ins_id}" value="{$field_value.options_array[jx]|escape}" {if $input_err}{if $field_value.value eq $field_value.options_array[jx]}checked="checked"{/if}{elseif $defaultvalues.$fid eq $field_value.options_array[jx] or $field_value.defaultvalue eq $field_value.options_array[jx]}checked="checked"{/if} />{$field_value.options_array[jx]}
+{/section}
 
 {* -------------------- checkbox -------------------- *}
 {elseif $field_value.type eq 'c'}

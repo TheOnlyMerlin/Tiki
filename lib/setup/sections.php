@@ -21,7 +21,6 @@ $sections = array(
 		'key' => 'blogId',
 		'itemkey' => 'postId',
 		'objectType' =>'blog post',
-		'itemObjectType' => 'blog post',
 	),
 	'file_galleries' => array(
 		'feature' => 'feature_file_galleries',

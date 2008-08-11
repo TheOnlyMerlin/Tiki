@@ -11,7 +11,7 @@
         <td class="heading" colspan="2"
             align="center">{tr}General Preferences{/tr}</td>
       </tr>
-	<tr><td width="40%" class="form">{tr}Tikiwiki version{/tr} : </td><td class="form">{$tiki_version}<br /><span class="button2"><a class="linkbut" href="tiki-install.php">{tr}Reset or upgrade your database{/tr}</a></span></td></tr>
+	<tr><td width="40%" class="form">{tr}Tikiwiki version{/tr} : </td><td class="form">{$tiki_version}</td></tr>
 	<tr><td colspan="2"><hr /></td></tr>
 
       <tr>
@@ -97,16 +97,11 @@
 						{tr}smarty notice reporting{/tr}
       </td>
 	  </tr><tr>
-		<tr>
-		<td class="form"><label for="feature_pear_date">{tr}Use PEAR::Date library:{/tr}</label></td>
-		<td><input type="checkbox" name="feature_pear_date"{if $prefs.feature_pear_date eq 'y'} checked="checked"{/if} /></td>
-		</tr><tr>
 	  <td class="form"><label for="log_mail">{tr}Log Mail in Tiki Logs:{/tr}</label></td>
-	  <td><input type="checkbox" name="log_mail"{if $prefs.log_mail eq 'y'} checked="checked"{/if} />
+	  <td><input type="checkbox" name="log_mail"{if $prefs.log_mail eq 'y'} checked="checked"{/if} /></td>
 	  </tr><tr>
 	  <td class="form"><label for="log_sql">{tr}Log SQL:{/tr}</label></td>
-	  <td><input type="checkbox" name="log_sql"{if $prefs.log_sql eq 'y'} checked="checked"{/if} /></td>
-	  {tr}only queries using more than seconds:{/tr} <input type="text" name="log_sql_perf_min" value="{$prefs.log_sql_perf_min}" /></td>
+	  <td><input type="checkbox" name="log_sql"{if $prefs.log_sql eq 'y'} checked="checked"{/if} />{tr}only queries using more than seconds:{/tr} 0.05</td>
       </tr><tr>
       <td class="form"><label for="general-charset">{tr}Default charset for sending mail:{/tr}</label></td>
       <td><select name="default_mail_charset" id="general-charset">
@@ -346,6 +341,14 @@
                                                 </div>
                                         </td>
                                 </tr>
+<tr>
+<td class="form"><label for="site_nav_seper">{tr}Preference syntax{/tr}:</label></td>
+<td><select name="pref_syntax">
+<option value="1.9" {if $prefs.pref_syntax eq '1.9'}selected="selected"{/if}>1.9 - $feature_foobar</option>
+<option value="2.0" {if $prefs.pref_syntax eq '2.0'}selected="selected"{/if}>2.0 - $prefs.feature_foobar, $prefs['feature_foobar']</option>
+</select></td>
+</tr>
+
       <tr>
         <td class="button" colspan='2'>
           <input type="submit" name="new_prefs" value="{tr}Change preferences{/tr}" />

@@ -63,14 +63,10 @@ $needed_prefs = array(
 	'feature_intertiki_sharedcookie' => 'n',
 	'interlist' => array(),
 	'auth_method' => 'tiki',
-	'smarty_security' => 'n',
-	'feature_pear_date' => 'y'
+	'smarty_security' => 'n'
 );
-
 $tikilib->get_preferences($needed_prefs, true, true);
 extract($prefs);
-require_once('lib/tikidate.php');
-$tikidate = new TikiDate();
 
 // Handle Smarty Security
 if ( $prefs['smarty_security'] == 'y' ) {
@@ -84,11 +80,19 @@ if ($prefs['session_lifetime'] > 0) {
 
 // is session data  stored in DB or in filesystem?
 if ($prefs['session_db'] == 'y') {
-	if ($api_tiki == 'adodb') {
-		require_once('tikisession-adodb.php');
-	} elseif ($api_tiki == 'pdo') {
-		require_once('tikisession-pdo.php');
-	}
+	include('db/local.php');
+	$ADODB_SESSION_DRIVER=$db_tiki;
+	$ADODB_SESSION_CONNECT=$host_tiki;
+	$ADODB_SESSION_USER=$user_tiki;
+	$ADODB_SESSION_PWD=$pass_tiki;
+	$ADODB_SESSION_DB=$dbs_tiki;
+	unset($db_tiki);
+	unset($host_tiki);
+	unset($user_tiki);
+	unset($pass_tiki);
+	unset($dbs_tiki);
+	ini_set('session.save_handler','user');
+	include_once('lib/adodb/session/adodb-session.php');
 }
 
 // Only accept PHP's session ID in URL when the request comes from the tiki server itself
@@ -239,7 +243,6 @@ $vartype['rolename'] = 'char';
 $vartype['type'] = 'string';
 $vartype['userole'] = 'int';
 $vartype['focus'] = 'string';
-$vartype['filegals_manager'] = 'vars';
 $vartype['ver'] = 'dotvars'; // filename hash for drawlib + rss type for rsslib
 
 function varcheck($array) {

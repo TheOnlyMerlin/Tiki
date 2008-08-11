@@ -46,11 +46,11 @@
 		</td>
 		{if $line ne 'y'}</tr>{else} {/if}
 {/section}
-{if $line ne 'y' and $action}<tr>{/if}
+{if $line ne 'y'}<tr>{/if}
 {if $action}
 <td>&nbsp;</td><td><input type="submit" name="filter" value="{if empty($action)}{tr}Filter{/tr}{else}{tr}{$action}{/tr}{/if}" /></td>
 {/if}
-{if $line ne 'y' and $action}</tr>{/if}
+</tr>
 </table>
 {if empty($inForm)}</form>{/if}
 </div>

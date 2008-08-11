@@ -35,8 +35,6 @@
 
  * \param tagunused  : Tags the unused strings with "// ## UNUSED".
 
- * \param verbose=y  : Display content of language files as they are created.
-
  */
 
 
@@ -181,8 +179,7 @@ function addToWordlist (&$wordlist, &$sentence) {
 
 
 function writeFile_and_User (&$fd, $outstring) {
-	global $verbose;
-  if($verbose == 'y') print (nl2br(htmlspecialchars($outstring)));
+  print (nl2br ($outstring));
   fwrite ($fd, $outstring);
 }
 
@@ -221,16 +218,6 @@ if($tiki_p_admin != 'y') {
   die("You need to be admin to run this script");
 }
 
-echo '<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-</head>
-<body>
-';
-
 $completion = isset($_REQUEST['completion']) && $_REQUEST['completion']=='y';
 if (!$completion)
 	echo "Initialization time: ", $tiki_timer->elapsed(), " seconds<br />\n";
@@ -243,7 +230,6 @@ $patch    = isset ($_REQUEST['patch']);
 $spelling = isset ($_REQUEST['spelling']);
 $group_w  = isset ($_REQUEST['groupwrite']);
 $tagunused= isset ($_REQUEST['tagunused']);
-$verbose  = isset ($_REQUEST['verbose']);
 
 $nohelp     = isset ($_REQUEST['nohelp']);
 $nosections = isset ($_REQUEST['nosections']);
@@ -375,7 +361,7 @@ foreach ($languages as $sel) {
     // Good to have instructions for translators in the release file.
     // The comments get filtered away by Smarty anyway
     writeFile_and_User ($fw, "// Parameters:\n\n");
-    writeFile_and_User ($fw, "// lang=xx    : only translates language 'xx',\n");
+    writeFile_and_User ($fw, "// lang=xx    : only tranlates language 'xx',\n");
     writeFile_and_User ($fw, "//              if not given all languages are translated\n");
     writeFile_and_User ($fw, "\n");
 
@@ -423,18 +409,8 @@ foreach ($languages as $sel) {
     writeFile_and_User ($fw, "// These options will only provide the minimal amout of comments.\n");
     writeFile_and_User ($fw, "// Usefull mode when preparing a translation for distribution.\n\n");
     writeFile_and_User ($fw, "// http://www.neonchart.com/get_strings.php?nohelp&nosections\n");
-    writeFile_and_User ($fw, "// Prepare all languages for release \n\n\n");
+    writeFile_and_User ($fw, "// Prepare all languages for release \n\n");
 
-		writeFile_and_User ($fw, "// ### Note for translators about translation of text ending with colons (':')\n");
-		writeFile_and_User ($fw, "// ###\n");
-		writeFile_and_User ($fw, "// ### Short version: it is not a problem that string \"Login:\" has no translation. Only \"Login\" needs to be translated.\n");
-		writeFile_and_User ($fw, "// ###\n");
-		writeFile_and_User ($fw, "// ### Technical justification:\n");
-		writeFile_and_User ($fw, "// ### If a string ending with colon needs translating (like \"{tr}Login:{/tr}\")\n");
-		writeFile_and_User ($fw, "// ### then TikiWiki tries to translate 'Login' and ':' separately.\n");
-		writeFile_and_User ($fw, "// ### This allows to have only one translation for \"{tr}Login{/tr}\" and \"{tr}Login:{/tr}\"\n");
-		writeFile_and_User ($fw, "// ### and it still allows to translate \":\" as \"&nbsp;:\" for languages that \n");
-		writeFile_and_User ($fw, "// ### need it (like french)\n");
 
     // Start generating the lang array
     writeFile_and_User ($fw, "\n\$lang=Array(\n");  
@@ -709,9 +685,9 @@ foreach ($languages as $sel) {
 if (!$completion) {
 	echo "Processing time: ", $tiki_timer->stop("processing"), " seconds<br />\n";
 	echo "Total time spent: ", $tiki_timer->elapsed(), " seconds<br />\n";
-} else {
-	echo "</table>";
-}
-
-echo '</body>';
+ }
+ else
+ {
+   echo "</table>";
+ }
 ?>

@@ -54,8 +54,6 @@ You can change this page after logging in. Please review the [http://doc.tikiwik
 
 !!{img src=pics/icons/star.png alt="Star"} Get started.
 To begin configuring your site:
-#Log in as the __admin__ with password __admin__.
-#Change the admin password.
 #Enable specific Tiki features.
 #Configure the features.
 
@@ -65,7 +63,7 @@ For more information:
 *[http://info.tikiwiki.org/Learn+More|Learn more about TikiWiki].
 *[http://info.tikiwiki.org/Help+Others|Get help], including the [http://doc.tikiwiki.org|official documentation] and [http://www.tikiwiki.org/forums|support forums].
 *[http://info.tikiwiki.org/Join+the+community|Join the TikiWiki community].
-',$tikilib->now,'Tiki initialization', 'admin', '0.0.0.0', '', 'en', false, null, 'n', '');
+',$tikilib->now,'Tiki initialization');
 			header('Location: tiki-index.php?page='.$userHomePage);
 		}
 	} else {
@@ -166,7 +164,7 @@ $smarty->assign('page_ref_id', $page_ref_id);
 
 
 
-if (!$tikilib->page_exists($page) && function_exists('utf8_encode') && $tikilib->page_exists(utf8_encode($page))) {
+if (!$tikilib->page_exists($page) && $tikilib->page_exists(utf8_encode($page))) {
     $page = $_REQUEST["page"] = utf8_encode($page);
 }
 
@@ -200,7 +198,6 @@ if ($prefs['feature_multilingual'] == 'y' && $use_best_language) { // chose the 
 // Get page data, if available
 if (!$info)
 	$info = $tikilib->get_page_info($page);
-
 
 // If the page doesn't exist then display an error
 if(empty($info) && !($user && $prefs['feature_wiki_userpage'] == 'y' && strcasecmp($prefs['feature_wiki_userpage_prefix'].$user, $page) == 0)) {
@@ -236,10 +233,6 @@ if(empty($info) && !($user && $prefs['feature_wiki_userpage'] == 'y' && strcasec
 if (empty($info) && $user && $prefs['feature_wiki_userpage'] == 'y' && (strcasecmp($prefs['feature_wiki_userpage_prefix'].$user, $page) == 0 || strcasecmp($prefs['feature_wiki_userpage_prefix'], $page) == 0 )) {
 	header('Location: tiki-editpage.php?page='.$prefs['feature_wiki_userpage_prefix'].$user);
     	die;
-}
-if ($prefs['feature_multilingual'] == 'y' && $prefs['feature_sync_language'] == 'y' && !empty($info['lang'])) {
-	$_SESSION['s_prefs']['language'] = $info['lang'];
-	$prefs['language'] = $info['lang'];
 }
 
 /*Wiki SECURITY warning to optimizers : Although get_page_info is currently
@@ -462,10 +455,6 @@ $cat_objid = $page;
 include_once('tiki-section_options.php');
 
 $smarty->assign('cached_page','n');
-$parse_options = array(
-	'is_html' => $info['is_html'],
-	'language' => $info['lang']
-);
 if(isset($info['wiki_cache'])) {$prefs['wiki_cache']=$info['wiki_cache'];}
 if($prefs['wiki_cache']>0) {
     $cache_info = $wikilib->get_cache_info($page);
@@ -473,11 +462,11 @@ if($prefs['wiki_cache']>0) {
 	$pdata = $cache_info['cache'];
 	$smarty->assign('cached_page','y');
     } else {
-	$pdata = $tikilib->parse_data($info['data'], $parse_options);
+	$pdata = $tikilib->parse_data($info['data'],$info['is_html']);
 	$wikilib->update_cache($page,$pdata);
     }
 } else {
-    $pdata = $tikilib->parse_data($info['data'], $parse_options);
+    $pdata = $tikilib->parse_data($info['data'],$info['is_html']);
 }
 
 $smarty->assign_by_ref('parsed',$pdata);
@@ -513,7 +502,13 @@ $smarty->assign_by_ref('description',$info['description']);
 if ( isset($_REQUEST['saved_msg']) && $info['user'] == $user ) {
 	// Generate the 'Page has been saved...' message
 	require_once('lib/smarty_tiki/modifier.userlink.php');
-	$smarty->assign('saved_msg', sprintf( tra('Page saved (version %d).'), $info['version'] ) );
+	$smarty->assign('saved_msg',
+		sprintf(
+			tra('%s - Version %d of this page has been saved by %s.'),
+			TikiLib::date_format($prefs['long_date_format'].' '.$prefs['long_time_format'], $info['lastModif']),
+			$info['version'], smarty_modifier_userlink($info['user'])
+		)
+	);
 }
 
 // Comments engine!

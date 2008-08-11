@@ -122,9 +122,13 @@ input[type=password] {
 	font-size: 0.9em;
 	cursor: text}
 
+/*input[type=submit],
+input[type=file],
+input[type=reset],
+select {}*/
+
 button,
 input[type=submit],
-.submitbutton,
 .button input,
 input[type=reset] {
 	background:#4E4E4E url(darkroom/button.png) top left repeat-x;
@@ -138,7 +142,6 @@ input[type=reset] {
 
 button:hover,
 input[type=submit]:hover,
-.submitbutton:hover,
 .button input:hover {
 	border: 1px solid #B2B2B2;
 	text-decoration: none}
@@ -587,7 +590,8 @@ a.phplmselected:hover {color: #AAAAAA}
 div.separator, div.separatorline {
 	color: #F5F5F5;
 	display: block;
-	padding: 5px 4px 4px 10px}
+	padding: 5px 4px 4px 10px;
+	width: 140px}
 
 div.separator:hover,
 div.option a.linkmenu:hover {
@@ -803,7 +807,7 @@ a.flipmodtitle:hover img {border: 1px solid #818181 !important}
 
 .box-data { 
 	background: #474747;
-	padding: 2px 2px;
+	padding: 2px 4px 2px 4px;
 	color: #DCDCDC;
 	line-height:1.4em;
 	margin: 8px;
@@ -875,20 +879,20 @@ a.flipmodtitle:hover img {border: 1px solid #818181 !important}
 
 .rbox a {text-decoration: underline}
 
-.warning .rbox-title {color: #ffe6db}
-.warning .rbox-data { }
+.rbox-title[name="warning"] {color: #ffe6db}
+.rbox-data[name="warning"] { }
 
-.tip .rbox-title,
-.tip .rbox-data,
-.note .rbox-data {
+.rbox-title[name="tip"],
+.rbox-data[name="tip"] {
 	background: #000;
 	border: none;
 	color: #fffff0}
 
-.comment .rbox-title,
-.comment .rbox-data {}
+.rbox-title[name="comment"],
+.rbox-data[name="comment"] {}
 
-.note .rbox-title {}
+.rbox-title[name="note"] {}
+.rbox-data[name="note"] {}
 
 div.simplebox {
 	background: #696969;
@@ -1456,10 +1460,6 @@ div.articlesource {
 	font-style: italic;
 	font-size: 90%}
  
-div.articletrailer .wikitopline {
-	background: #4E4E4E url(darkroom/button.png) top left repeat-x;
-	width: 100%}
-
 /***** Blogs *****/
 
 div.blogheading {
@@ -1599,7 +1599,7 @@ table.commentinfo {background: #F0F0F0}
 * html .post .postbody {font-size: 11px}
 *:first-child+html .post .postbody {min-width: 100% !important}
 	
-#c1c2 #wrapper #col1 .content .post .postbody .content {
+#col1 .post .postbody .content {
 	color: #D8D8D8;
 	border-color: transparent;
 	background: transparent !important;
@@ -1612,7 +1612,7 @@ table.commentinfo {background: #F0F0F0}
 	text-align: left;
 	color: #D8D8D8}
 	
-#c1c2 #wrapper #col1 .content .post .postbody .content p { margin: 5px 10px }
+.post .postbody .content p { margin: 5px 10px }
 		
 .post .postbody-title {
 	background-color: inherit;
@@ -1756,8 +1756,6 @@ span.commentstitle {
 
 /* Find */
 .subcomment {margin-left: 10px}
-.findtitle {float: left;}
-.findtable {padding: 15px 0;}
 
 /* Help box*/
 div.commentsedithelp {

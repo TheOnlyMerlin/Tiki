@@ -132,7 +132,6 @@ input[type=radio] {
 
 button,
 input[type=submit],
-.submitbutton,
 .button input {
 	border: 1px solid #46596f;
 	background: #C7D0D9;
@@ -141,7 +140,6 @@ input[type=submit],
 
 button:hover,
 input[type=submit]:hover,
-.submitbutton:hover,
 .button input:hover {
 	background: #FFFFFF;
 	cursor: pointer;
@@ -574,7 +572,7 @@ div#attzone, div#comzone {	display: none;	margin-top: 10px;}
 div#attzoneopen, div#comzoneopen {display: block; margin-top: 10px;}
 div#edithelpzone {display: none;}
 #rules-copy-panel {display: none;}
-.clear, #clear {clear: both !important;}
+.clear, #clear {clear: both;}
 br.clear {clear: both; height: 0}
 .clearfix:after {
     content: "."; 
@@ -788,7 +786,7 @@ div.simplebox {
 .rbox-data {
   padding: 2px;
 }
-.rbox-title, .warning .rbox-title { 
+.rbox-title, .rbox-title[name="warning"] { 
   border: 0;
   border-radius-topright: 1ex;
   -moz-border-radius-topright: 1ex;
@@ -803,28 +801,28 @@ div.simplebox {
 }
 
 .rbox-data, 
-.warning .rbox-data {
+.rbox-data[name="warning"] {
   background: #eeee99;
   border: 1px solid #DDDDCC;
 }
 
-.note .rbox-title {
+.rbox-title[name="note"] {
   background: #CCCCDD;
 }
 
-.note .rbox-data {
+.rbox-data[name="note"] {
   background: #ECECEF;
   border: 1px solid #CCCCDD;
 }
 
-.comment .rbox-title,
-.tip .rbox-title, 
+.rbox-title[name="comment"],
+.rbox-title[name="tip"], 
 .rbox-title.tip {
   background: #CCCCDD;
 }
 
-.comment .rbox-data,
-.tip .rbox-data,
+.rbox-data[name="comment"],
+.rbox-data[name="tip"],
 .rbox-data.tip {            
   background: #ECEFEC;
   border: 1px solid #CCDDCC;
@@ -1828,7 +1826,7 @@ td.forumtoolbar {
 	margin-left: 5px;
 	margin-top: 3px;
 }
-#c1c2 #wrapper #col1 .content .post .postbody .content {
+#col1 .post .postbody .content {
 	color: #000000;
 	background: #E7E9EA !important;
 	height: 100%;
@@ -2799,10 +2797,6 @@ padding-left: 18px;
 .opaque .box-title,
 .opaque .box-data {
   width: auto;
-}
-
-.sub {
-	padding-left: 5em !important;
 }
 
 /***** End of file ******/

@@ -37,16 +37,7 @@ if (isset($_REQUEST["articleId"])) {
 	$articleId = 0;
 }
 
-// We need separate numbering of previews, since we access preview images by this number
-if (isset($_REQUEST["previewId"])) {
-	$previewId = $_REQUEST["previewId"];
-} else {
-	$previewId = rand();
-}
-
 $smarty->assign('articleId', $articleId);
-$smarty->assign('previewId', $previewId);
-$smarty->assign('imageIsChanged', ($_REQUEST["imageIsChanged"]=='y')?'y':'n');
 
 if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0) {
 	$template_data = $tikilib->get_template($_REQUEST["templateId"]);
@@ -55,7 +46,7 @@ if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0) {
 	$_REQUEST["body"] = $template_data["content"];
 }
 
-$smarty->assign('allowhtml', 'y');
+$smarty->assign('allowhtml', 'on');
 $publishDate = $tikilib->now;
 $cur_time = explode(',', $tikilib->date_format('%Y,%m,%d,%H,%M,%S', $publishDate));
 $expireDate = $tikilib->make_time($cur_time[3], $cur_time[4], $cur_time[5], $cur_time[1], $cur_time[2], $cur_time[0]+1);
@@ -75,7 +66,6 @@ $smarty->assign('hasImage', 'n');
 $smarty->assign('image_name', '');
 $smarty->assign('image_type', '');
 $smarty->assign('image_size', '');
-$smarty->assign('image_data', '');
 $smarty->assign('image_x', 0);
 $smarty->assign('image_y', 0);
 $smarty->assign('heading', '');
@@ -141,6 +131,12 @@ if (isset($_REQUEST["articleId"]) and $_REQUEST["articleId"] > 0) {
 
 	$data = $article_data["image_data"];
 	$imgname = $article_data["image_name"];
+
+	if ($hasImage == 'y') {
+		$smarty->assign('tempimg', 'article_image.php?id='.$_REQUEST["articleId"]);
+	} else {
+		$smarty->assign('tempimg', 'n');
+	}
 
 	$body = $article_data["body"];
 	$heading = $article_data["heading"];
@@ -249,9 +245,9 @@ if (isset($_REQUEST["preview"]) or !empty($errors)) {
 	// Parse the information of an uploaded file and use it for the preview
 	if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_name'])) {
 		$fp = fopen($_FILES['userfile1']['tmp_name'], "rb");
+
 		$data = fread($fp, filesize($_FILES['userfile1']['tmp_name']));
 		fclose ($fp);
-
 		$imgtype = $_FILES['userfile1']['type'];
 		$imgsize = $_FILES['userfile1']['size'];
 		$imgname = $_FILES['userfile1']['name'];
@@ -261,16 +257,19 @@ if (isset($_REQUEST["preview"]) or !empty($errors)) {
 		$smarty->assign('image_size', $imgsize);
 		$hasImage = 'y';
 		$smarty->assign('hasImage', 'y');
-		// Create preview cache image, for display afterwards
-		$cachefile = $prefs['tmpDir'];
-		if ($tikidomain) { $cachefile.= "/$tikidomain"; }
-		$cachefile.= "/article_preview.".$previewId;
-		if (move_uploaded_file($_FILES['userfile1']['tmp_name'], $cachefile)) {
-			$smarty->assign('imageIsChanged', 'y');
-		}
-
 	}
 
+	if ($hasImage == 'y') {
+		$tmpfname = $prefs['tmpDir'] . "/articleimage" . "." . $_REQUEST["articleId"];
+		$fp = fopen($tmpfname, "wb");
+		if ($fp) {
+			fwrite($fp, $data);
+			fclose ($fp);
+			$smarty->assign('tempimg', $tmpfname);
+		} else {
+			$smarty->assign('tempimg', 'n');
+		}
+	}
 
 	$smarty->assign('heading', $_REQUEST["heading"]);
 	$smarty->assign('edit_data', 'y');
@@ -363,6 +362,10 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 		$imgtype = $_FILES['userfile1']['type'];
 		$imgsize = $_FILES['userfile1']['size'];
 		$imgname = $_FILES['userfile1']['name'];
+		$topiccachefile = $prefs['tmpDir'];
+		if ($tikidomain) { $topiccachefile.= "/$tikidomain"; }
+		$topiccachefile.= "/article.".$_REQUEST["id"];
+		@unlink($topiccachefile);
 	}
 
 	// Parse $edit and eliminate image references to external URIs (make them internal)
@@ -389,32 +392,10 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 		}
 	}
 
-	$artid = $artlib->replace_article(strip_tags($_REQUEST["title"], '<a><pre><p><img><hr><b><i>')
-																		, $_REQUEST["authorName"]
-																		, $_REQUEST["topicId"]
-																		, $useImage
-																		, $imgname
-																		, $imgsize
-																		, $imgtype
-																		, $imgdata
-																		, $heading
-																		, $body
-																		, $publishDate
-																		, $expireDate
-																		, $user
-																		, $articleId
-																		, $_REQUEST["image_x"]
-																		, $_REQUEST["image_y"]
-																		, $_REQUEST["type"]
-																		, $_REQUEST["topline"]
-																		, $_REQUEST["subtitle"]
-																		, $_REQUEST["linkto"]
-																		, $_REQUEST["image_caption"]
-																		, $_REQUEST["lang"]
-																		, $_REQUEST["rating"]
-																		, $isfloat
-																		, $emails
-																		);
+	$artid = $artlib->replace_article(strip_tags($_REQUEST["title"], '<a><pre><p><img><hr><b><i>'), $_REQUEST["authorName"],
+		$_REQUEST["topicId"], $useImage, $imgname, $imgsize, $imgtype, $imgdata, $heading, $body, $publishDate, $expireDate, $user,
+		$articleId, $_REQUEST["image_x"], $_REQUEST["image_y"], $_REQUEST["type"], $_REQUEST["topline"], $_REQUEST["subtitle"],
+		$_REQUEST["linkto"], $_REQUEST["image_caption"], $_REQUEST["lang"], $_REQUEST["rating"], $isfloat, $emails);
 
 	$cat_type = 'article';
 	$cat_objid = $artid;
@@ -423,11 +404,6 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 	$cat_href = "tiki-read_article.php?articleId=" . $cat_objid;
 	include_once("categorize.php");
 	include_once ("freetag_apply.php");
-	// Remove image cache because image may have changed, and we
-	// don't want to show the old image
-	@$artlib->delete_image_cache("article",$_REQUEST["id"]);
-	// Remove preview cache because it won't be used any more
-	@$artlib->delete_image_cache("preview",$previewId);
 
 	header ("location: tiki-read_article.php?articleId=$artid");
 }
@@ -447,7 +423,6 @@ $smarty->assign_by_ref('types', $types);
 if ($prefs['feature_cms_templates'] == 'y' && $tiki_p_use_content_templates == 'y') {
 	$templates = $tikilib->list_templates('cms', 0, -1, 'name_asc', '');
 }
-
 $smarty->assign_by_ref('templates', $templates["data"]);
 
 if ($prefs['feature_multilingual'] == 'y') {
