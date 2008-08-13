@@ -237,7 +237,7 @@ c1c2 #wrapper #col1.marginright {margin-right: 185px}/* Change this when width o
 	color: #d0d0d0;
 	font-weight: bold}
 
-#credits {text-align: center}
+#credits {display: inline}
 
 .footerbgtrap {
 	/*background-color: transparent;*/
@@ -1130,8 +1130,6 @@ div.code {
 	background-color: #FFFFFF;
 	margin: 4px;
 	border: 1px dashed #ADACAF;
-	overflow: auto; 
-	width: 90%;
 	font-size: 100%}
 
 .codecaption {

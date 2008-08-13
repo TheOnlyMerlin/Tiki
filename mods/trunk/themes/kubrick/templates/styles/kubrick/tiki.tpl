@@ -104,15 +104,11 @@
 		</tr>
 		{/if}
 		</table>
-		<div id="credits">
-{include file="credits.tpl"}
-{if $prefs.feature_topbar_date eq 'y'}
-	{if $prefs.feature_calendar eq 'y' and $tiki_p_view_calendar eq 'y'}
-	<a href="tiki-calendar.php">{$smarty.now|tiki_short_datetime}</a>
-	{else}
-	{$smarty.now|tiki_short_datetime}
-	{/if}
-{/if}
+<div id="power">
+	{tr}Powered by{/tr} <a href="http://info.tikiwiki.org" title="&#169; 2002&#8211;{$smarty.now|date_format:"%Y"} {tr}The TikiWiki Community{/tr}">{tr}TikiWiki CMS/Groupware{/tr}</a> {if $prefs.feature_topbar_version eq 'y'} v{$tiki_version} {if $tiki_uses_cvs eq 'y'} (CVS){/if} -{$tiki_star}- {/if}
+	<div id="credits">
+		{include file="credits.tpl"}
+	</div>
 </div>
 </div>
 {/if}

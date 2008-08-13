@@ -1,2 +1,2 @@
 {* $Id$ *}
-<a href="http://andreasviklund.com/" Title="{tr}Design by{/tr} Andreas Viklund">Andreas08</a> <a href="http://zukakakina.com" title="Adapted by Gary Cunningham-Lee aka chibaguy">{tr}For{/tr}</a> <a href="http://tikiwiki.org" title="{tr}Powered by{/tr} TikiWiki - &#169; 2002&#8211;{$smarty.now|date_format:"%Y"} by the Tiki community">TikiWiki CMS/Groupware</a> |
+ | <a href="http://zukakakina.com" title="Adapted by Gary Cunningham-Lee aka chibaguy">{tr}Theme{/tr}</a>: <a href="http://andreasviklund.com/" Title="{tr}Design by{/tr} Andreas Viklund">Andreas08</a>

@@ -240,7 +240,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	padding-bottom: 40px}
 
 #footer a {font-weight: bold}
-#credits {}
+#credits {display: inline}
 
 .footerbgtrap {background: transparent}
 /* end layout divs, etc. */
@@ -1078,9 +1078,7 @@ div.code {
 	padding: 10px;
 	background: #4B644E;
 	margin: 4px;
-	border: 1px dashed #ADACAF;
-	overflow: auto; 
-	width: 90%}
+	border: 1px dashed #ADACAF}
 
 .codecaption {
 	font-size: 90%;

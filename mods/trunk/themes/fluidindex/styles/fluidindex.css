@@ -277,7 +277,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	text-decoration: underline;
 	border: none}
 
-#credits {}
+#credits {display: inline}
 .footerbgtrap {color: #d0d0d0}
 
 /* end layout divs, etc. */
@@ -1293,9 +1293,7 @@ div.code {
 	background-color: #FFFFFF;
 	margin: 4px;
 	margin-top: -3px;
-	border: 1px dashed #CCCCCC;
-	overflow: auto; 
-   width: 90%}
+	border: 1px dashed #CCCCCC}
 
 .codecaption {
 	font-size: 90%;

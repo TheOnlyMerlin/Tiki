@@ -1,2 +1,2 @@
 {* $Id$ *}
-<a href="http://zukakakina.com" title="Design by Gary Cunningham-Lee aka chibaguy, based on Monobook by Gabriel Wicke (http://wikidev.net)">Tikipedia {tr}For{/tr}</a> <a href="http://tikiwiki.org" title="{tr}Powered by{/tr} TikiWiki - &#169; 2002&#8211;{$smarty.now|date_format:"%Y"} by the Tiki community">TikiWiki CMS/Groupware</a> |
+ | <a href="http://zukakakina.com" title="Design by Gary Cunningham-Lee aka chibaguy, based on Monobook by Gabriel Wicke (http://wikidev.net)">Tikipedia</a>

@@ -378,7 +378,9 @@ a.flip:hover,
 
 /* IE */
 * html #tiki-center {font-size: 1em}
-#credits {font-size: .9em}
+
+#power {font-size: .9em}
+#credits {display: inline}
 
 /* end layout divs, etc. */
 
@@ -1094,7 +1096,7 @@ div.code {
 	margin: 4px;
 	border: 1px dashed #ADACAF;
 	overflow: auto; 
-   width: 90%}
+   width: 500px}
 
 .codecaption {
 	font-size: 90%;

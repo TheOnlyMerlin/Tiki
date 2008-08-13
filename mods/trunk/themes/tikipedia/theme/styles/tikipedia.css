@@ -131,7 +131,7 @@ input[type=radio] {border: 0}
 #col2 input[type=text],
 #col2 input[type=password],
 #col3 input[type=text],
-#col3 input[type=password] {width: 90%}
+#col3 input[type=password] {}
 
 table.admin input[type=text] { font-size: 110% !important}
 input#tagBox,
@@ -299,7 +299,6 @@ ul.jumplinks a:active {
 #footer a:link,
 #footer a:visited {}
 #footer a:hover {}
-#credits {}
 .footerbgtrap {}
 
 /* end Type 1 layout divs, etc. */
@@ -437,9 +436,11 @@ div#tiki-center {
 * html #tiki-center {font-size: 1em}
 #rss {padding: 1em 1em 0}
 
-#credits {
+#power {
 	padding: 0 1em 1em;
 	font-size: .9em}
+	
+#credits {display: inline}
 
 /* end layout divs, etc. */
 /** Border boxes (if any) **/

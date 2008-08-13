@@ -241,7 +241,8 @@ td#footer .content {
 	text-align: center}
 
 #rss {padding: 1em 1em 0}
-#credits {font-size: .9em}
+#power {font-size: .9em}
+#credits {display: inline}
 
 /*** end Type 2 layout ***/
 
@@ -1328,7 +1329,7 @@ Maybe need to find updated code for this. */
 	background: #fff;
 	border: 1px solid #67ade7;
    overflow: auto;
- 	width: 100%}
+ 	width: /*100%*/500px} /* FF3 doesn't handle this combination. /
 /*
 * html .codelisting {
 	overflow-y: auto;

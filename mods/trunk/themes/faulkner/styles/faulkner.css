@@ -290,9 +290,11 @@ td#rightborder {
 td#bottommargin {height: 0}
 #rss {padding: 1em 1em 0}
 
-#credits {
+#power {
 	padding: 0 1em 1em;
 	font-size: .9em}
+
+#credits {display: inline}
 
 /*** end Type 2 layout ***/
 
@@ -1195,7 +1197,7 @@ div.code {
 	margin: 4px;
 	border: 1px dashed #ADACAF;
 	overflow: auto; 
-   width: 90%}
+   width: 500px}
 
 .codecaption {
 	font-size: 90%;
