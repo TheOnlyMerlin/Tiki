@@ -4,14 +4,14 @@
  * minimal HTML tables needed for graphic treatment and column integrity. -- */
 
 /*  Elements */
-
+html { background: #ffe0ee}
 body {
 	display: table;
 	margin: 0;
 	padding: 0;
 	text-align: left;
 	width: 100%;
-	background-image: url(candiiclouds/piink.gif);
+	background: #ffe0ee url(candiiclouds/piink.gif);
 	font-family: Tahoma;
 	font-size: 72%;
 	font-weight: bold;
@@ -178,14 +178,14 @@ tr#cols {}
 
 td#leftmargin {
 	width: 10%;
-	background: url(candiiclouds/horizleft.png) 100% 0 repeat-y}
+	background: url(candiiclouds/leftmarginbg.jpg) 100% 0 repeat-y;}
 
 td#header {background: #fff}
 td#header .wrapper {}
 
 td#rightmargin {
 	width: 10%;
-	background: url(candiiclouds/horizright.png) 0 0 repeat-y}
+	background: url(candiiclouds/rightmarginbg.jpg) 0 0 repeat-y; }
 
 tr#midrow {}
 td#leftborder {}
@@ -302,24 +302,15 @@ input[id="sl-login-pass"] {}
 
 /* #header text selectors, if needed */
 
-#sitetitle {
-	text-indent: 142px;
-	height: 120px;
-	border-bottom: none;
-	font-size: 3em;	
-	margin-top: 0;
-	line-height: 300%}
-
-#siteheader h1 a:visited,
-h1#sitetitle a:visited {
-	border-bottom: 0;
-	text-decoration: none}
-
 #sitetitle,
 #sitesubtitle {}
 
-#sitetitle {}
-#sitesubtitle {}
+#sitetitle {
+	text-indent: 42px;
+	font-size: 3em;	
+	padding-top: 20px}
+
+#sitesubtitle {text-indent: 42px}
 
 #header a,
 #header a:visited {}
@@ -332,7 +323,7 @@ h1#sitetitle a:visited {
 	padding-top: 0;
 	height: 32px}*/
 
-#tiki-top {background-color: #A7E6FF}
+#tiki-top {}
 #tiki-top table {width: auto}
 #tiki-top a {}
 
@@ -394,6 +385,8 @@ a.flip:hover,
 	height: 35px}
 
 .horbar table {width: auto}
+
+.horbaritem { margin-right: 10px }
 
 .horbaritem a,
 .horbaritem a:link,
@@ -719,6 +712,9 @@ a.flipmodtitle:hover img {
 ul.module,
 ol.module {
 	margin-left: -1em}
+	
+* html .box-data ul {margin-left: 1em  }
+*:first-child+html .box-data ul {margin-left: 1em}
 
 /** controls for modules **/
 .modcontrols { 
@@ -775,7 +771,8 @@ table.bloglist {
 * html table.admin,
 * html table.bloglist {
 	width: 97%;
-	font-size: 11px}
+	font-size: 11px;
+	border: none}
 	
 table.admin tr td div#page-bar {}
 
