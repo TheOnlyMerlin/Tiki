@@ -1,7 +1,7 @@
 <?php
 
 function wikiplugin_flowplayer_help() {
-        return tra("Displays a FlowPlayer based Flash Video Player on the wiki page").":<br />~np~{FLOWPLAYER(videofile=url_to_flv_video,configfile=url_to_flowplayer_js_configfile,player=standard|longplay|skinnable|dark,autoplay=true|false,width=pixel,height=pixel)}{FLASH}~/np~";
+        return tra("Displays a FlowPlayer based Flash Video Player on the wiki page").":<br />~np~{FLOWPLAYER(videofile=url_to_flv_video,configfile=url_to_flowplayer_js_configfile,player=standard|longplay|skinnable|dark,autoplay=true|false,width=pixel,height=pixel)}{FLOWPLAYER}~/np~";
 }
 
 function wikiplugin_flowplayer($data, $params) {
