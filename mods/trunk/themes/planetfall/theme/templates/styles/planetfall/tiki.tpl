@@ -1,109 +1,110 @@
 {include file="header.tpl"}
-{if $feature_bidi eq 'y'}
-<div dir="rtl">
+{* Index we display a wiki page here *}
+{if $prefs.feature_bidi eq 'y'}
+	<div dir="rtl">
 {/if}
-<table width="77%" border="0" cellspacing="0" cellpadding="0" align="center"><tr><td>
+{if $prefs.feature_ajax eq 'y'}
+	{include file="tiki-ajax_header.tpl"}
+{/if}
+{if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
 <div id="tiki-main">
-         	{if $feature_top_bar eq 'y'}
-          	<div id="tiki-top">
-	  	<table border="0" cellspacing="0" cellpadding="0" width="100%">
-	    		<tr>
-	     		<td height="11"id="top_bar_td" width="100%"></td></tr><tr>
-	     		<td>
-	       			<table cellspacing="0" cellpadding="0" width="100%"><tr>
-	  				<td id="planetfall_header" width="100%">
-	  					<div id="planetfall_header_module">{include file="modules/mod-search_box.tpl"}</div>
-	  					<div id="planetfall_logo">&nbsp;</div></td></tr>
-	        		</table>
-	        	</td>
-	        	</tr>
-	    		 <tr>
-	     		<td>
-	        		<table width="100%" cellspacing="0" cellpadding="0" height="26" background="/styles/planetfall/silver_bg.jpg"><tr>
-	  				<td align="left"><div id="horiz_menu">{phplayers id=43 type=horiz}</div></td>
-	  				<td id="tiki-top_bar_td">
-	           				<div id="tiki-top_bar">{include file="tiki-top_bar.tpl"}</div></td>
-	           		</tr>
-	        		</table>
-	     		</td>
-	     		</tr>
-	 	 </table>
-	  	</div>
-	    	{/if}
-	    	{* end tiki-top *}  
-	   {*  {if $feature_right_column eq 'user'}
-	              <span style="float: left"><a class="flip" href="javascript:icntoggle('rightcolumn');">
-	              <img name="rightcolumnicn" class="colflip" src="img/icons/ofo.gif" border="0" alt="+/-" />&nbsp;{tr}Show/Hide Column{/tr}&nbsp;</a>
-	              </span>
-	        {/if}
-	        *}
-	      
-	    <div id="tiki-mid">
-	    <table id="tiki-midtbl" border="0" cellpadding="0" cellspacing="0" width="100%"  valign="top">
-	    
-	  {* {if $feature_left_column eq 'user' or $feature_right_column eq 'user'}
-	      <tr><td id="tiki-columns" colspan="0" width="100%">
-	       {if $feature_left_column eq 'user'}
-	          <span style="float: left"><a class="flip" href="javascript:icntoggle('leftcolumn');">
-	          <img name="leftcolumnicn" class="colflip" src="img/icons/ofo.gif" border="0" alt="+/-" />&nbsp;{tr}Show/Hide Left Menus{/tr}&nbsp;</a>
-	          </span>
-	        {/if}
-	        
-	         </td></tr>
-	    {/if}*}
-	      <tr>
-	      <td id="centercolumn" valign="top">
-	     <div id="tiki-center">{include file=$mid}
-	            {if $show_page_bar eq 'y'}
-	            {include file="tiki-page_bar.tpl"}
-	        {/if}
-	      </div>
-	        </td>
-	        {if $feature_left_column ne 'n'}
-	        <td id="leftcolumn" valign="top" width="180">
-	        {section name=homeix loop=$left_modules}
-	        {$left_modules[homeix].data}
-	        {/section}
-	           {* {if $feature_left_column eq 'user'}
-	              <img src="blank.gif" width="100%" height="0px">
-	              {literal}
-	                <script language="Javascript" type="text/javascript">
-	                  setfolderstate("leftcolumn");
-	                </script>
-	              {/literal}
-	            {/if}*}
-	        </td>
-	        {/if}
-	       {if $feature_right_column ne 'n'}
-	              <td id="rightcolumn" valign="top"width="180">
-	              {section name=homeix loop=$right_modules}
-	              {$right_modules[homeix].data}
-	              {/section}
-	                {*  {if $feature_right_column eq 'user'}
-	                    <img src="blank.gif" width="100%" height="0px">
-	                    {literal}
-	                      <script language="Javascript" type="text/javascript"> 
-	                        setfolderstate("rightcolumn");
-	                      </script>
-	                    {/literal}
-	                  {/if}*}
-	              </td>
-	        {/if}
-	        
-	        </div>
-	        </td>
-	        
-	      </tr>
-	      </table>
-  </div>        
-          {if $feature_bot_bar eq 'y'}
-	    <div id="tiki-bot">
-	      {include file="tiki-bot_bar.tpl"}
-	    </div>
-  {/if}
-         
-{if $feature_bidi eq 'y'}
+	{if $user eq 'admin' and $tiki_upgrade eq 'y'}
+		<div style="background: #ee0000; color: white; border: 2px solid #990000; margin: 1px 1px; width: 99$; clear: both; font-weight: bold; text-align: center;">A new version of TikiWiki has been released: {$tiki_release}!  You are currently running {$tiki_version}.</div>
+	{/if}
+		<table width="100%" cellpadding="0" cellspacing="0" id="main">
+			<tr id="cols">
+				<td rowspan="3" id="leftmargin">&nbsp;</td>
+				<td id="leftborder" rowspan="3"><img src="styles/planetfall/9DA6B3-1x1.png" height="100%" width="1px" alt="spacer" /></td>{* For content cols - leftmargin graphic border. *}
+				<td colspan="5{* change to 5 if the 2 border tds are used *}" id="header">
+				<div class="clearfix" id="header-top">
+				{if $prefs.feature_siteidentity eq 'y' and $filegals_manager ne 'y'}
+				{* Site identity header section *}
+					<div class="clearfix" id="siteheader">
+						{include file="tiki-site_header.tpl"}
+					</div>
+				{/if}
+				</div>
+				{if $prefs.feature_top_bar eq 'y'}
+					<div class="clearfix" id="tiki-top">
+						{include file="tiki-top_bar.tpl"}
+					</div>
+				{/if}
+				{if $prefs.feature_siteidentity eq 'y' and $prefs.feature_topbar_custom_code}
+					<div class="clearfix" id="topbar_custom_code">
+						{eval var=$prefs.feature_topbar_custom_code}
+					</div>
+				{/if}				
+				</td>
+				<td id="rightborder" rowspan="5"><img src="styles/planetfall/9DA6B3-1x1.png" height="100%" width="1px" alt="spacer" /></td>{* For content cols - rightmargin graphic border. *}
+				<td rowspan="3" id="rightmargin">&nbsp;</td>
+				</tr>
+				<tr id="midrow">
+			
+				<td id="centercolumn" valign="top">
+			{/if}
+			<hr class="hidden" /> {* for semantic separation of center and side columns *}
+			{if $smarty.session.fullscreen neq 'y'}
+      		{if $prefs.feature_left_column eq 'user' or $prefs.feature_right_column eq 'user'}
+        		<div id="showhide_columns">
+      				{if $prefs.feature_left_column eq 'user' && $left_modules|@count > 0 && $show_columns.left_modules ne 'n'}
+				<div style="text-align:left;float:left;"><a class="flip" href="javascript:flip('leftcolumn','table-cell');">{icon _id=ofolder  name="leftcolumnicn" class="colflip" alt="+/-"}&nbsp;{tr}Show/Hide Left Menus{/tr}&nbsp;</a></div>
+					{/if}
+					{if $prefs.feature_right_column eq 'user'&& $right_modules|@count > 0 && $show_columns.right_modules ne 'n'}
+        				<div style="text-align:right;float:right;"><a class="flip" href="javascript:flip('rightcolumn','table-cell');"> &nbsp;{tr}Show/Hide Right Menus{/tr}&nbsp;{icon _id=ofolder name="rightcolumnicn" class="colflip" alt="+/-"}</a>
+						</div>
+					{/if}
+        			<br clear="all" />
+					</div>
+				{/if}
+				{/if}
+				{if $prefs.feature_tell_a_friend eq 'y' && $tiki_p_tell_a_friend eq 'y' and (!isset($edit_page) or $edit_page ne 'y')}
+				<div class="tellafriend"><a href="tiki-tell_a_friend.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{tr}Email this page{/tr}</a>
+				</div>
+				{/if}
+				<div id="tiki-center">
+					{$mid_data}
+				</div>
+				<hr class="hidden" /> {* for semantic separation of center and side columns *}
+				{if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
+				</td>
+	{if $prefs.feature_left_column ne 'n' && $left_modules|@count > 0 && $show_columns.left_modules ne 'n'}
+				<td id="leftcolumn" valign="top" {if $prefs.feature_left_column eq 'user'}
+			style="display:{if isset($cookie.show_leftcolumn) and $cookie.show_leftcolumn ne 'y'}none{else}table-cell;_display:block{/if};"{/if}>
+					<h2 class="hidden">Sidebar</h2>
+					<div class="colwrapper">
+						{section name=homeix loop=$left_modules}
+						{$left_modules[homeix].data}
+						{/section}
+					</div>
+				</td>
+				{/if}
+	 			{if $prefs.feature_right_column ne 'n' && $right_modules|@count > 0 && $show_columns.right_modules ne 'n'}
+				<td id="rightcolumn" valign="top" {if $prefs.feature_right_column eq 'user'} 
+			style="display:{if isset($cookie.show_rightcolumn) and $cookie.show_rightcolumn ne 'y'}none{else}table-cell;_display:block{/if};" {/if}>
+			<h2 class="hidden">Sidebar</h2>
+					<div class="colwrapper">
+						{section name=homeix loop=$right_modules}
+							{$right_modules[homeix].data}
+						{/section}
+					</div>
+				</td>
+			{/if}
+		</tr>
+		{if $prefs.feature_bot_bar eq 'y'}
+		<tr>
+		<td id="footer" colspan="3">
+			<div class="wrapper"> 
+		  			<div class="content">
+    					{include file="tiki-bot_bar.tpl"}
+					</div>
+			</div>
+		</td>
+		</tr>
+		{/if}
+		</table>
 </div>
-</td></tr></table>
+{/if}
+{if $prefs.feature_bidi eq 'y'}
+</div>
 {/if}
 {include file="footer.tpl"}
