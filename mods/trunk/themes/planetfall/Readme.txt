@@ -22,7 +22,6 @@
 -=Image Files=-
 * styles/planetfall/back_fade.jpg
 * styles/planetfall/header_bg.jpg
-* styles/planetfall/header_logo.jpg
 * styles/planetfall/indent1.gif
 * styles/planetfall/index.gif
 * styles/planetfall/menu_bullet_link.jpg
