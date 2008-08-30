@@ -88,7 +88,7 @@
 	{/if}
 {/if}
 <br class="clear" />
-</div>{* -- END of middle part wrapper -- *}
+</div></div>{* -- END of middle part wrapper -- *}
 {if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
 {if $prefs.feature_bot_bar eq 'y'}
 <div id="footer">
@@ -97,7 +97,6 @@
    			{include file="tiki-bot_bar.tpl"}
 		</div>
 	</div>
-</div>
 </div>
 {/if}
 {/if}
