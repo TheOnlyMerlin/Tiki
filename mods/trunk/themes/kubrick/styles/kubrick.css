@@ -644,6 +644,11 @@ div#edithelpzone {display: none}
 .highlight, #highlight  {
 	background: #eeee99 !important;
 	color: #000000}
+	
+/* OpenID  */
+.openid_url {
+	background: #fff url(../../img/icons/login-OpenID-bg.gif) no-repeat;
+	padding-left: 18px}
 
 /* Banners, text type */
 .bannertext {
