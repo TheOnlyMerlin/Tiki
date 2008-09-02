@@ -55,27 +55,11 @@ You are most likely wanting to modify the top of your Tiki site. Please consider
 <!--[if lt IE 7]> <link rel="StyleSheet" href="css/ie6.css" type="text/css" /> <![endif]-->
 
 {* --- phplayers block --- *}
-{if $prefs.feature_phplayers eq 'y'}
-<link rel="StyleSheet" href="lib/phplayers/layerstreemenu.css" type="text/css"></link>
-<link rel="StyleSheet" href="lib/phplayers/layerstreemenu-hidden.css" type="text/css" />
-<script type="text/javascript">
-<!--//--><![CDATA[//><!--
-var numl;var toBeHidden;
-{php} include_once ("lib/phplayers/libjs/layersmenu-browser_detection.js"); global $LayersMenu, $TreeMenu, $PHPTreeMenu, $PlainMenu;{/php}
-//--><!]]>
-</script>
-<script type="text/javascript" src="lib/phplayers/libjs/layersmenu-library.js"></script>
-{* lets try this *}
-<script type="text/javascript" src="lib/phplayers/libjs/layersmenu.js"></script>
-{* will it work now ? (luci) *}
-<script type="text/javascript" src="lib/phplayers/libjs/layerstreemenu-cookies.js"></script>
-{/if}
+{if isset($phplayers_headers)}{$phplayers_headers}{/if}
 
 {*-- css menus block --*}
-{if $prefs.feature_cssmenus eq 'y'}
 <link rel="StyleSheet" href="css/cssmenu_vert.css" type="text/css"></link>
 <link rel="StyleSheet" href="css/cssmenu_horiz.css" type="text/css"></link>
-{/if}
 
 {* --- universaleditbutton.org --- *}
 {if ($editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox')) or $tiki_p_admin_wiki eq 'y' or $canEditStaging eq 'y'}
@@ -113,7 +97,7 @@ var numl;var toBeHidden;
 {/if}
 
 {if $prefs.feature_mootools eq "y"}
-<script type="text/javascript" src="lib/mootools/mootools.js"></script>
+<script type="text/javascript" src="lib/mootools/mootools-1.2-core.js"></script>
 <script type="text/javascript" src="lib/mootools/mootools-1.2-more.js"></script>
 {if $mootools_windoo eq "y"}
 <script type="text/javascript" src="lib/mootools/extensions/windoo/windoo.js"></script>
@@ -204,9 +188,9 @@ var numl;var toBeHidden;
 </head>
 
 <body {if isset($section) and $section eq 'wiki page' and $prefs.user_dbl eq 'y' and $dblclickedit eq 'y' and $tiki_p_edit eq 'y'}ondblclick="location.href='tiki-editpage.php?page={$page|escape:"url"}';"{/if}
-onload="{if $prefs.feature_tabs eq 'y'}tikitabs({if $cookietab neq ''}{$cookietab}{else}1{/if},5);{/if}{if $msgError} javascript:location.hash='msgError'{/if}"
-{if $section} class="tiki_{$section}"{/if}
-{if $smarty.session.fullscreen eq 'y'} id="fullscreen"{/if}>
+ onload="{if $prefs.feature_tabs eq 'y'}tikitabs({if $cookietab neq ''}{$cookietab}{else}1{/if},5);{/if}{if $msgError} javascript:location.hash='msgError'{/if}"
+{if $section or $smarty.session.fullscreen eq 'y'}class="
+{if $section}tiki_{$section}{/if} {if $smarty.session.fullscreen eq 'y'}fullscreen{/if}"{/if}>
 <ul class="jumplinks">
  <li><a href="#tiki-center">{tr}Jump to Content{/tr}</a></li>
  {*<li><a href="#nav">{tr}Jump to Navigation{/tr}</a></li>
