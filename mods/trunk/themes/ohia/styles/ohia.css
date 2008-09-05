@@ -119,9 +119,6 @@ select[multiple] {height: 10em}
 select[name="theme"] {width: 145px}
 small {font-size: .9em}
 label {margin:0 2px}
-ol {}
-ul ()
-li {}
 
 /***** Page Layout *****/
 
@@ -190,7 +187,7 @@ ul.jumplinks a:active {
 #c1c2 #wrapper #col1 {}
 
 #c1c2 #wrapper #col1 .content {
-	background: transparent/;
+	background: transparent;
 	color: #f4f4f4;
 	padding: 0 1em}
 
@@ -233,9 +230,8 @@ ul.jumplinks a:active {
 /* end Type 1 layout divs, etc. */
 
 /*** Error page ***/
-div#tiki-main #tiki-top {margin-top: height needed to match page bg image}
-div#tiki-mid {}
 div#tiki-main #tiki-top {}
+div#tiki-mid {}
 
 /* To center cbox */
 div#tiki-main #tikimidtbl {
@@ -343,7 +339,7 @@ html>body #sitesubtitle {}
 	color: #f4f4f4;
 	background: #030511;
 	border-left: 1px solid #333333;
-	border-bottom: 1px solid dimgray}
+	border-bottom: 1px solid #696969}
 	
 #sitesearchbar form { margin-right: 40px }
 
@@ -398,8 +394,8 @@ a.flip img {display: none}
 	width: auto;
 	text-align: left;
 	background: #030511;
-	border-right: 1px solid dimgray;
-	border-bottom: 1px solid dimgray}
+	border-right: 1px solid #696969;
+	border-bottom: 1px solid #696969}
 
 .horbaritem a,
 .horbaritem a:visited {
@@ -432,7 +428,7 @@ a.flip img {display: none}
 	z-index: 1000;
 	position: relative;
 	display: block;
-	border: 1px solid dimgray;
+	border: 1px solid #696969;
 	background: #313131}
 
 .mdkitem {
@@ -473,8 +469,6 @@ a.flip img {display: none}
 
 .mdkitem a:active {}
 
-.cssmenu ul li ul li:last-child a,
-.cssmenu ul:last-child li .menuSection,
 .cssmenu_vert li.menuSection a,
 .cssmenu_vert li.menuOption a {border-bottom: none}
 
@@ -492,7 +486,7 @@ a.flip img {display: none}
 
 
 #cssmenu ul {
-	border: 1px solid dimgray;
+	border: 1px solid #696969;
 	background: #313131}
 
 /* Tree menu (also on Browse Categories */
@@ -782,13 +776,13 @@ table.admin {background:#030511}
 table.normal,
 table.bloglist {
 	border: none;
-	border-bottom: solid 1px dimgray;
-	border-left: solid 1px dimgray;
+	border-bottom: solid 1px #696969;
+	border-left: solid 1px #696969;
 	border-collapse: collapse}
 	
 table.normal tr,
 table.bloglist tr,
-table.bloglist tr {border-right: solid 1px dimgray}
+table.bloglist tr {border-right: solid 1px #696969}
 
 table.normal th,
 table.bloglist th,
@@ -824,11 +818,11 @@ tr.even:hover {}
 
 td.odd {
 	background: #030511;
-	border-right: 1px solid dimgray}
+	border-right: 1px solid #696969}
 
 td.even {
 	background: #313131;
-	border-right: 1px solid dimgray}
+	border-right: 1px solid #696969}
 
 tr.even td.even,
 tr.odd td.odd {}
@@ -844,7 +838,7 @@ td.even {
 	margin: 0;
 	padding: 0.2em;
 	vertical-align: top;
-	/*border-right: solid 1px dimgray;*/
+	/*border-right: solid 1px #696969;*/
 	border-collapse: collapse}
 
  /* headings */
@@ -1003,8 +997,8 @@ span#tab3 {background: #030511}
 #content3 {
 	border-top: 1px solid #777777;
 	border-left: 1px solid #777777;
-	border-right: 1px solid dimgray;
-	border-bottom: 1px solid dimgray;
+	border-right: 1px solid #696969;
+	border-bottom: 1px solid #696969;
 	margin-top: -1px}
 
 #content1 {
@@ -1060,8 +1054,8 @@ h1 a.pagetitle:hover {
 
 .titlebar {
 	padding: 0.1em;
-	border-top: 1px solid dimgray;
-	border-bottom: 1px solid dimgray;
+	border-top: 1px solid #696969;
+	border-bottom: 1px solid #696969;
 	margin: 10px 0}
 
 .wikitext ul li {} 
@@ -1131,7 +1125,7 @@ div.cachedpage {}
 
 #wikihelp-tab table,
 #wikihelp-tab table td {
-	border: solid 1px dimgray;
+	border: solid 1px #696969;
 	border-collapse: collapse}
 
 #wikihelp-tab table td {padding: 2px}
@@ -1162,7 +1156,7 @@ div.code {
 	padding: 10px;
 	background: #000000;
 	margin: 4px;
-	border: 1px dashed dimgray;
+	border: 1px dashed #696969;
 	overflow: auto; 
    width: 600px} /*Using % here makes Firefox 3 act like IE7. */
 
@@ -1172,10 +1166,10 @@ div.code {
 	position: relative;
 	bottom: -5px;
 	display: inline;
-	border: 1px solid dimgray;
+	border: 1px solid #696969;
 	border-bottom: 0;
 	margin: 0;
-	color: dimgray;
+	color: #696969;
 	background: #000000;
 	font-weight: bold}
 
@@ -1215,9 +1209,9 @@ ul.toc {
 ul.toc * {border: none}
 
 /* Wiki diff styles */
-.diff td {border: 1px solid dimgray}
-.diff div {border-top: 1px solid dimgray}
-.diffheader {background: dimgray; font-weight: bold}
+.diff td {border: 1px solid #696969}
+.diff div {border-top: 1px solid #696969}
+.diffheader {background: #696969; font-weight: bold}
 .diffadded {background: #CCFFCC}
 .diffdeleted {background: #FFCCCC}
 .diffinldel {background: #FFCCCC; text-decoration: line-through}
@@ -1660,7 +1654,7 @@ div.freetagObjectType {
 
 table.galtable {
 	border-collapse: collapse;
-	border: 1px solid dimgray;
+	border: 1px solid #696969;
 	width: 100%}
 
 * html body table.galtable {width: 97%}
@@ -1730,7 +1724,7 @@ div.thumbdescription span.thumbinfoname {}
 a.namealias {}
 div.gallerypath, div.gallerypath a {}
 div.gallerypath a:hover {}
-.fgalexplorer {border: 1px solid dimgray}
+.fgalexplorer {border: 1px solid #696969}
 
 .fgallisting table td {
 	padding-left: 2px;
@@ -1987,7 +1981,7 @@ textarea.tshoutbox {width: 162px}
 /***** Directory *****/
 
 div.dircategs {
-	border: 1px solid dimgray;
+	border: 1px solid #696969;
 	padding: 5px}
 
 .dirlink {}
@@ -2095,7 +2089,7 @@ table.default td {
 .advanced {
   margin: 20px;
   padding: 5px;
-  border: 1ps solid #A9A9A9;
+  border: 1px solid #A9A9A9;
   background: black;
   color: #f4f4f4}
 
@@ -2141,7 +2135,7 @@ a.admbox:hover,
 a.admbox:focus,
 a.admbox:active {
 	background: #313131 center no-repeat;
-	border: 1px solid dimgray}
+	border: 1px solid #696969}
 
 a.admbox.off {border: 1px solid darkgray}
 
