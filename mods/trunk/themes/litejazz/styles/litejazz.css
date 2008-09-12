@@ -888,18 +888,26 @@ a.forumnameread {}
 .lforumheading {}
 
 /** Tabs **/
-.tabs {}
+/*
 .tabactive {}
 [class].tabactive {}
 .tabactive a {}
 .tabinactive {}
-[class].tabinactive {}
+[class].tabinactive {}*/
+
+form.admin .tabs {
+	border-bottom: solid 1px #93c9db;
+	margin: 10px 2px -18px 2px;
+	padding: 0;
+	position: relative;
+	z-index: 201}
 
 .tabmark {
 	display: inline;
 	font-size: 85%;
 	background: #abcdef;
-	border: 1px solid #abcdef;
+	border: 1px solid #225566;
+	border-bottom: 1px solid #abcdef;
 	margin: 0;
 	margin-right: 5px;
 	padding: 1px 0 1px 0}
@@ -917,14 +925,17 @@ a.forumnameread {}
 .tabmark a:hover {
 	color: black;
 	background: #f0f9ff}
-
+	
 .tabcontent {
 	z-index: 200;
 	position: relative;
-	border: 1px solid #abcdef;
-	padding: 6px 2px 2px 2px;
+	padding: 18px 2px 2px 2px;
 	margin-bottom: 25px;
 	background: #f0f9ff}
+	
+form fieldset.tabcontent {
+	border: 1px solid #225566;
+	border-top: none !important}
 
 .tabcontent table {
 	margin: 1% auto 2% auto; 
@@ -933,19 +944,6 @@ a.forumnameread {}
 
 .tabcontent table td {
 	padding: 5px}
-
-form fieldset.tabcontent {
-	border: 1px solid #225566;
-	border-top: none !important}
-
-form.admin .tabs {
-	border-bottom: solid 1px #225566 !important;
-	margin: 10px 1px 0 0 !important;
-	padding: 0 !important}
-
-/* Get the contextual info to make this specific. */
-div.content {}
-div.content .tabs {}
 
 .tab-wrapper {
 	border: 1px solid #EEEEEE;
