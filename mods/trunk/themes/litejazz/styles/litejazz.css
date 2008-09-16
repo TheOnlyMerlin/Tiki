@@ -747,7 +747,7 @@ div.cbox {}
 div.simplebox {
 	margin-bottom: 8px;
 	padding: 3px;
-	border: 1px solid darkgray;
+	border: 1px solid #A9A9A9;
 	background: url(litejazz/blue/body-bg.png) repeat-x}
 
 /***** Tables, Tabs and Lists ****/
@@ -1413,7 +1413,7 @@ body.tiki_forums table.normal {margin: auto}
 .forum_actions .headers .title {
 	float: left;
 	background: honedew;
-	border: 1px solid darkgray;
+	border: 1px solid #A9A9A9;
 	border-bottom: 0;
 	padding: 1px}
 
@@ -1557,7 +1557,7 @@ div.freetagObjectType {
 
 table.galtable {
 	border-collapse: collapse;
-	border: 1px solid dimgray;
+	border: 1px solid #696969;
 	width: 100%}
 
 * html body table.galtable {width: 97%}
