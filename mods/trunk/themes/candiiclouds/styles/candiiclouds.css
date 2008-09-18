@@ -884,18 +884,19 @@ a.forumnameread {}
 .lforumheading {}
 
 /** Tabs **/
-.tabs {padding-left: 8px}
-.tabactive {}
-[class].tabactive {}
-.tabactive a {}
-.tabinactive {}
-[class].tabinactive {}
+.tabs {
+	margin: 10px 5px -21px 5px !important;
+	border-bottom: 1px solid #ccc;
+	padding: 0 !important;
+	position: relative;
+	z-index: 201}
 
 .tabmark {
-	display: inline;
+	display: inline-block;
 	font-size: .95em;
 	background-color: #ffe0ee;
 	border: 1px solid #f06ea9;
+	/*border-bottom-color: #ffe0ee;*/
 	margin: 0;
 	margin-right: 5px;
 	padding: 2px 0}
@@ -913,9 +914,10 @@ a.forumnameread {}
 	text-decoration: none;
 	background: #ffcce2;}
 
-.tabcontent {z-index: 0;
+.tabcontent {
+	z-index: 200;
 	position: relative;
-	padding: 6px 2px 2px 2px;
+	padding: 32px 2px 2px 2px;
 	margin: 5px;
 	margin-top: 0;
 	background: url(candiiclouds/banstars.gif)}
@@ -939,18 +941,6 @@ div.content .tabs {}
 
 .tab-menu li a:hover {} 
 .tab-menu li.tab-selected a {}
-
-span#tab1 {}
-span#tab2 {}
-span#tab3 {}
-
-#content1,
-#content2,
-#content3 {}
-
-#content1 {}
-#content2 {}
-#content3 {}
 
 table.admin div#content1 div.tabcontent div.cbox {}
 
@@ -1325,8 +1315,6 @@ body.tiki_forums table.normal {margin: auto}
 	background: url(candiiclouds/bluu.gif);
 	border-bottom: 1px solid #ACCCDD;
 	margin-bottom: 4px;
-	height: 100%;
-	overflow: auto;
 	padding-top: 2px}
 
 .post .postbody-title .checkbox {float: left}
@@ -1503,14 +1491,13 @@ td.categobjectsdataodd {}
 .catlists a.link {}
 .catlists a.link:hover {}
 
-ul.catfeatures {}
+ul.catfeatures {list-style: none}
 ul.catfeatures li {}
 ul.catitems {}
 
 ul.catitems li {
-	float: left !important;
-	padding-right: 18px;
-}
+	display: inline;
+	margin-right: 7px}
 
 ul.catitems li a.link {}
 

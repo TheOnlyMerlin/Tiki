@@ -261,7 +261,8 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	padding-top: 12px;
 	padding-bottom: 5px;
 	font-weight: normal;
-	font-size: 1em}
+	font-size: 1em;
+	text-align: center}
 	
 #footer small { font-size: 1em }
 
@@ -1016,32 +1017,18 @@ a.forumnameread {}
 
 /** Tabs **/
 .tabs {
-	border-bottom: solid 1px darkgreen !important;
-	margin-top: 10px !important;
-	padding: 0 !important}
-
-.tabactive {
-	border: solid 1px darkgreen !important;
-	border-bottom: none !important;
-	border-top-width: 2px !important;
-	position: relative; top: -2px}
-
-[class].tabactive {top: -1px}
-.tabactive a {background: #eee}
-
-.tabinactive {
-	border: solid 1px #666 !important;
-	border-bottom: none !important;
-	position: relative !important;
-	top: -3px !important}
-
-[class].tabinactive {top: -2px !important}
+	margin: 10px 5px -14px 5px !important;
+	border-bottom: 1px solid #ededed;
+	padding: 0 !important;
+	position: relative;
+	z-index: 201}
 
 .tabmark {
 	display: inline;
 	font-size: 85%;
 	background: #DDDDDD;
 	border: 1px solid #666666;
+	border-bottom: 1px solid #ededed;
 	margin: 0;
 	margin-right: 5px;
 	padding: 2px 0}
@@ -1062,18 +1049,14 @@ a.forumnameread {}
 .tabcontent {
 	z-index: 200;
 	position: relative;
-	padding: 6px 2px 2px 2px;
+	padding: 26px 2px 2px 2px;
 	margin: 5px;
 	margin-top: 0;
 	background-color : #DCDCDC}
-
-.tabcontent table td {}
+	
 form fieldset.tabcontent {}
+.tabcontent table td {}
 form.admin .tabs {}
-
-/* Get the contextual info to make this specific. */
-div.content {}
-div.content .tabs {}
 
 .tab-wrapper {
 	border:1px solid #EEEEEE;
@@ -1106,33 +1089,7 @@ div.content .tabs {}
 
 .tab-menu li a:hover {} 
 .tab-menu li.tab-selected a {}
-
-span#tab1 {background: #F5F5F5}
-span#tab2 {background: #ECECEC}
-span#tab3 {background: #DCDCDC}
-
-#content1,
-#content2,
-#content3 {
-	border-top: 1px solid #A9A9A9;
-	border-left: 1px solid #A9A9A9;
-	border-right: 1px solid #696969;
-	border-bottom: 1px solid #696969}
-
-#content1 {
-	padding: 10px;
-	background-color: #F5F5F5}
-
-#content2 {
-	padding: 5px;
-	background-color: #ECECEC}
-
-#content3 {
-	padding: 5px;
-	background-color: #DCDCDC}
-
-table.admin div#content1 div.tabcontent div.cbox {
-	background-color: transparent}
+table.admin div#content1 div.tabcontent div.cbox {background-color: transparent}
 
 /* Check ?? */
 table.admin tr td div#page-bar {
@@ -1738,14 +1695,13 @@ td.categobjectsdataodd {}
 .catlists a.link {}
 .catlists a.link:hover {}
 
-ul.catfeatures {}
+ul.catfeatures {list-style: none}
 ul.catfeatures li {}
 ul.catitems {}
 
 ul.catitems li {
-	float: left !important;
-	padding-right: 18px;
-}
+	display: inline;
+	margin-right: 7px}
 
 ul.catitems li a.link {}
 
@@ -2279,6 +2235,16 @@ a.admbox span {color: #000000}
 	float: left;
 	margin: -3px 5px 0 0;
 	color: #AAA}
+/* MiniChat  */
+
+div.box-minichat {width: 100%}
+div.minichatchans {overflow: auto}
+.minichat {overflow: auto}
+
+div.minichatdiv {
+  font-size: .9em;
+  overflow: auto}
+
 /* end of css file */
 
 

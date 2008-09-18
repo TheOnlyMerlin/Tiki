@@ -837,11 +837,12 @@ a.forumnameread {}
 .lforumheading {}
 
 /** Tabs **/
-.tabs {}
-.tabactive {}
-[class].tabactive {}
-.tabactive a {}
-.tabinactive {}
+.tabs {
+	margin: 10px 1px -14px 0 !important;
+	border-bottom: solid 1px #6c6c6c !important;
+	padding: 0 !important;
+	position: relative;
+	z-index: 201;}
 
 .tabmark {
 	display: inline;
@@ -870,18 +871,13 @@ a.forumnameread {}
 	z-index: 200;
 	position: relative;
 	border: 1px solid #abcdef;
-	padding: 6px 2px 2px 2px;
+	padding: 26px 2px 2px 2px;
 	margin-bottom: 25px;
 	background: #f0f9ff}
 
 .tabcontent table {}
 .tabcontent table td {}
 form fieldset.tabcontent {}
-form.admin .tabs {}
-
-/* Get the contextual info to make this specific. */
-div.content {}
-div.content .tabs {}
 
 .tab-wrapper {
 	border: 1px solid #EEEEEE;
@@ -914,33 +910,6 @@ div.content .tabs {}
 .tab-menu li a:hover {} 
 .tab-menu li.tab-selected a {}
 
-
-
-
-span#tab1 {background: #F5F5F5}
-span#tab2 {background: #ECECEC}
-span#tab3 {background: #DCDCDC}
-
-#content1,
-#content2,
-#content3 {
-	border-top:1px solid #A9A9A9;
-	border-left:1px solid #A9A9A9;
-	border-right:1px solid #696969;
-	border-bottom:1px solid #696969}
-
-#content1 {
-	padding:10px;
-	background: #F5F5F5}
-
-#content2 {
-	padding:5px;
-	background: #ECECEC}
-
-#content3 {
-	padding:5px;
-	background: #DCDCDC}
-	
 table.admin div#content1 div.tabcontent div.cbox {background: transparent}
 
 /*** Feature-specific selectors ***/
@@ -1255,9 +1224,6 @@ body.tiki_forums table.normal {margin: auto}
 #forumpost {display: none}
 #forumpostopen {display: block}
 
-table.commentinfo {}
-
-/* Forums new */
 .post {clear: both}
 
 .post .postbody {
@@ -1469,14 +1435,13 @@ td.categobjectsdataodd {}
 .catlists a.link {}
 .catlists a.link:hover {}
 
-ul.catfeatures {}
+ul.catfeatures {list-style: none}
 ul.catfeatures li {}
 ul.catitems {}
 
 ul.catitems li {
-	float: left !important;
-	padding-right: 18px;
-}
+	display: inline;
+	margin-right: 7px}
 
 ul.catitems li a.link {}
 
@@ -1521,7 +1486,7 @@ div.freetagObjectType {
 
 /***** Image Galleries *****/
 
-table.galtable {}
+table.galtable {width: 100%}
 html>body .galtable {}
 
 td.oddthumb {border-collapse: collapse}
@@ -1676,7 +1641,8 @@ Caltrack a:visited {color: #00BD02}
 	border-left: 1px solid #A9A9A9;
   	border-top: 1px solid #A9A9A9;
 	border-right: 1px solid #696969;
-	border-bottom: 1px solid #696969}
+	border-bottom: 1px solid #696969;
+	background: #fff}
 
 .opaque .box-title {border-bottom: 1px solid black}
 .searchresults {display:inline}
@@ -1989,5 +1955,15 @@ a.admbox.off {
 a.admbox.off:hover,
 a.admbox.off:focus,
 a.admbox.off:active {border: 1px solid #9f9f9f}
+
+/* MiniChat  */
+
+div.box-minichat {width: 100%}
+div.minichatchans {overflow: auto}
+.minichat {overflow: auto}
+
+div.minichatdiv {
+  font-size: .9em;
+  overflow: auto}
 
 /* end of css file */

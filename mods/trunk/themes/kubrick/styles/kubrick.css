@@ -1002,19 +1002,18 @@ table.sortable th a.sortheader {color: #fff}
 
 /** Tabs **/
 .tabs {
-	padding: 1px 5px}
-
-.tabactive {}
-[class].tabactive {}
-.tabactive a {}
-.tabinactive {}
-[class].tabinactive {}
+	margin: 10px 5px -12px 5px !important;
+	border-bottom: solid 1px #d9d9d9 !important;
+	padding: 0 !important;
+	position: relative;
+	z-index: 201;}
 
 .tabmark {
 	display: inline;
-	font-size: 10px;
+	font-size: 85%;
 	background-color: #DDDDDD;
 	border: 1px solid #666666;
+	border-bottom: solid 1px #d9d9d9;
 	margin: 0;
 	margin-right: 5px;
 	padding: 2px 0} 
@@ -1037,7 +1036,7 @@ table.sortable th a.sortheader {color: #fff}
 	z-index: 200;
 	position: relative;
 	border: 1px solid #999999;
-	padding: 6px 2px 2px 2px;
+	padding: 26px 2px 2px 2px;
 	margin: 5px;
 	margin-top: 0;
 	background-color: #EEEEEE}
@@ -1621,9 +1620,7 @@ table.commentinfo {
 	background-color: #67ade7; 
 	border-bottom: none;
 	margin-bottom: 4px;
-	height: 100%;
-	overflow: auto;
-	padding-top: 2px}
+	padding: 3px}
 
 .post .postbody-title .checkbox {float: left}
 
@@ -1804,14 +1801,13 @@ td.categobjectsdataodd {}
 .catlists a.link {}
 .catlists a.link:hover {}
  
-ul.catfeatures {}
+ul.catfeatures {list-style: none}
 ul.catfeatures li {}
 ul.catitems {}
 
 ul.catitems li {
-	float: left !important;
-	padding-right: 18px;
-}
+	display: inline;
+	margin-right: 7px}
 
 ul.catitems li a.link {}
 
@@ -2404,5 +2400,15 @@ a.admbox.off {
 a.admbox.off:hover,
 a.admbox.off:focus,
 a.admbox.off:active {border: 1px solid #9f9f9f}
+
+/* Minichat module */
+
+div.box-minichat {width: 100%}
+div.minichatchans {overflow: auto}
+.minichat {overflow: auto}
+
+div.minichatdiv {
+  font-size: .9em;
+  overflow: auto}
 
 /* end of file */

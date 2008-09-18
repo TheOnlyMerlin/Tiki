@@ -1575,14 +1575,13 @@ td.categobjectsdataodd {}
 .catlists a.link {}
 .catlists a.link:hover {}
 
-ul.catfeatures {}
+ul.catfeatures {list-style: none}
 ul.catfeatures li {}
 ul.catitems {}
 
 ul.catitems li {
-	float: left !important;
-	padding-right: 18px;
-}
+	display: inline;
+	margin-right: 7px}
 
 ul.catitems li a.link {}
 
@@ -2142,5 +2141,15 @@ a.admbox.off {border: 1px solid darkgray}
 a.admbox.off:hover,
 a.admbox.off:focus,
 a.admbox.off:active {border: 1px solid darkgray}
+
+/* MiniChat  */
+
+div.box-minichat {width: 100%}
+div.minichatchans {overflow: auto}
+.minichat {overflow: auto}
+
+div.minichatdiv {
+  font-size: .9em;
+  overflow: auto}
 
 /* end of file */

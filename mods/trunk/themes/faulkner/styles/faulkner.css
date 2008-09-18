@@ -939,32 +939,18 @@ a.forumnameread {}
 
 /** Tabs **/
 .tabs {
-	/*border-bottom: solid 1px #225566 !important;*/
-	margin-top: 10px !important;
-	padding: 0 !important}
-
-.tabactive {
-	border: solid 1px #225566 !important;
-	border-bottom: none !important;
-	border-top-width: 2px !important;
-	position: relative; top: -2px}
-
-[class].tabactive {top: -1px}
-.tabactive a {/*background: #eee*/font-weight: bold}
-
-.tabinactive {
-	border: solid 1px #666 !important;
-	border-bottom: none !important;
-	position: relative !important;
-	top: -3px !important}
-
-[class].tabinactive {top: -2px !important}
+	margin: 10px 1px -21px 0 !important;
+	border-bottom: 1px solid #e8d7cc;
+	padding: 0 !important;
+	position: relative;
+	z-index: 201}
 
 .tabmark {
 	display: inline;
 	font-size: 85%;
-	background: #ffe339;
-	border: 1px solid #ffe339;
+	background: #fff3d4;
+	border: 1px solid #d6b8a0;
+	border-bottom: 1px solid #e8d7cc;
 	margin: 0;
 	margin-right: 5px;
 	padding: 1px 0 1px 0}
@@ -986,10 +972,10 @@ a.forumnameread {}
 .tabcontent {
 	z-index: 200;
 	position: relative;
-	border: 1px solid #ffe339;
-	padding: 6px 2px 2px 2px;
+	border: 1px solid #d6b8a0;
+	padding: 26px 2px 2px 2px;
 	margin-bottom: 25px;
-	background: #f0f9ff}
+	background: #fff3d4}
 
 .tabcontent table {
 	margin: 1% auto 2% auto; 
@@ -1004,15 +990,6 @@ form fieldset.tabcontent {
 	border-right: 1px solid #ffe399;
 	border-bottom: 1px solid #ffe399;
 	border-top: none !important}
-
-form.admin .tabs {
-	/*border-bottom: solid 1px #225566 !important;*/
-	margin: 10px 1px 0 0 !important;
-	padding: 0 !important}
-
-/* Get the contextual info to make this specific.*/
-div.content {}
-div.content .tabs {}
 
 .tab-wrapper {border: 1px solid #edd4ae;
 padding: 0}
@@ -1035,30 +1012,6 @@ padding: 0}
 	padding-right: 1.5em}
 
 .tab-menu li img {vertical-align: middle}
-
-span#tab1 {background: #fff0c8}
-span#tab2 {background: #ffedbd}
-span#tab3 {background: #ffe9ae}
-
-#content1,
-#content2,
-#content3 {
-	border-top: 1px solid #fff3d4;
-	border-left: 1px solid #fff3d4;
-	border-right: 1px solid #ffe399;
-	border-bottom: 1px solid #ffe399}
-
-#content1 {
-	padding: 10px;
-	background: #fff0c8}
-
-#content2 {
-	padding: 5px;
-	background: #ffedbd}
-
-#content3 {
-	/*padding: 5px;*/
-	background: #ffe9ae}
 
 table.admin div#content1 div.tabcontent div.cbox {background: transparent}
 
@@ -1601,14 +1554,13 @@ td.categobjectsdataodd {}
 .catlists a.link {}
 .catlists a.link:hover {}
 
-ul.catfeatures {}
+ul.catfeatures {list-style: none}
 ul.catfeatures li {}
 ul.catitems {}
 
 ul.catitems li {
-	float: left !important;
-	padding-right: 18px;
-}
+	display: inline;
+	margin-right: 7px}
 
 ul.catitems li a.link {}
 
@@ -2121,7 +2073,7 @@ table.default	td {
 .advanced {
   margin: 20px;
   padding: 5px;
-  border: 1ps solid #880000}
+  border: 1px solid #880000}
 
 .advanced:before { content:url(../img/icons/mini_blue_diamond.gif)" "}
 
@@ -2174,5 +2126,15 @@ a.admbox.off {
 a.admbox.off:hover,
 a.admbox.off:focus,
 a.admbox.off:active {border: 1px solid #cc9900}
+
+/* MiniChat  */
+
+div.box-minichat {width: 100%}
+div.minichatchans {overflow: auto}
+.minichat {overflow: auto}
+
+div.minichatdiv {
+  font-size: .9em;
+  overflow: auto}
 
 /* end of css file */

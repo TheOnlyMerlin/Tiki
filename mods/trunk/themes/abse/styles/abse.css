@@ -47,7 +47,7 @@ hr {}
 img {border: 0}
 
 fieldset {
-	border: solid 1px #A9A9A9;
+	border: solid 1px #3f6041;
 	padding: 10px;}
 
 form {
@@ -802,6 +802,14 @@ td.heading {
 td.form {padding: .2em}
 
 /** Tabs **/
+
+form.admin .tabs {
+	border-bottom: solid 1px #3f6041 !important;
+	margin: 10px 1px -18px 0 !important;
+	padding: 0 !important;
+	position: relative;
+	z-index: 201}
+/*
 .tabs {
 	border-bottom: solid 1px #225566 !important;
 	margin-top: 10px !important;
@@ -823,15 +831,14 @@ td.form {padding: .2em}
 	top: -3px !important}
 	
 [class].tabinactive {top: -2px !important}
-
+*/
 .tabmark {
 	display: inline;
 	font-size: 1em;
 	background: #0E1D10;
 	border: 1px solid #666666;
-	margin: 0;
-	margin-right: 5px;
-	padding: 2px 0}
+	margin: 0 3px;
+	padding: 0}
 
 .tabmark a {
 	border-bottom: 0;
@@ -849,10 +856,9 @@ td.form {padding: .2em}
 .tabcontent {
 	z-index: 200;
 	position: relative;
-	/*border: 1px solid #abcdef;*/
-	padding: 6px 2px 2px 2px;
+	padding: 20px 2px 2px 2px;
 	margin-bottom: 25px;
-	background: #0E1D10}
+	background: #192F1C}
 
 .tabcontent table {
 	margin: 1% auto 2% auto;
@@ -860,21 +866,6 @@ td.form {padding: .2em}
 	width: 95%}
 
 .tabcontent table td {padding: 5px}
-
-form fieldset.tabcontent {
-	border: 1px solid #225566;
-	border-top: none !important}
-
-form.admin .tabs {
-	border-bottom: solid 1px #225566 !important;
-	margin: 10px 1px 0 0 !important;
-	padding: 0 !important}
-
-/* Get the contextual info to make this specific.
-div.content {
-	padding: 3px}*/
-
-div.content .tabs {margin: 0}
 
 .tab-wrapper {
 	border: 1px solid #EEEEEE;
@@ -917,7 +908,7 @@ div.content .tabs {margin: 0}
 .tab-menu li.tab-selected a {
 	background: #BCEC8F;
 	color: #000}
-
+/*
 span#tab1 {background: #192F1C}
 span#tab2 {background: #1C371F}
 span#tab3 {background: #243E28}
@@ -940,7 +931,7 @@ span#tab3 {background: #243E28}
 
 #content3 {
 	padding: 5px;
-	background: #243E28}
+	background: #243E28}*/
 
 table.admin div#content1 div.tabcontent div.cbox {
 	background: transparent}
@@ -968,7 +959,11 @@ div.description {
 
 /* top of wiki page */
 .catpaths {margin-right: 2em}
-.wikitext {line-height: 1.5em}
+
+
+.wikitext {
+	width: 100% !important;
+	line-height: 1.5em}
 
 .wikitext h2, h3, h4, h5 {
 	color: #B2B2B2;
@@ -1331,8 +1326,6 @@ body.tiki_forums table.normal {margin: auto}
 .post .postbody-title {
 	display: block;
 	margin-bottom: 4px;
-	height: 100%;
-	overflow: auto;
 	padding-top: 2px;
 	background: #000}
 	
@@ -1500,14 +1493,13 @@ td.categobjectsdataodd {}
 .catlists a.link {}
 .catlists a.link:hover {}
 
-ul.catfeatures {}
+ul.catfeatures {list-style: none}
 ul.catfeatures li {}
 ul.catitems {}
 
 ul.catitems li {
-	float: left !important;
-	padding-right: 18px;
-}
+	display: inline;
+	margin-right: 6px}
 
 ul.catitems li a.link {}
 
@@ -2048,7 +2040,7 @@ table.default	td {
 .advanced {
   margin: 20px;
   padding: 5px;
-  border: 1ps solid #A9A9A9;
+  border: 1px solid #A9A9A9;
   background: black;
   color: #D8D8D8}
 
@@ -2095,5 +2087,15 @@ a.admbox:focus,
 a.admbox:active  {
 	background: #B2B2B2 center no-repeat;
 	border: 1px solid #292929}
+
+/* MiniChat  */
+
+div.box-minichat {width: 100%}
+div.minichatchans {overflow: auto}
+.minichat {overflow: auto}
+
+div.minichatdiv {
+  font-size: .9em;
+  overflow: auto}
 
 /* end of css file */

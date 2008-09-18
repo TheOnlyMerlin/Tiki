@@ -2027,12 +2027,12 @@ td.categobjectsdataodd {
 
 .catlists a.link:hover {color: #000}
 */
-ul.catfeatures {}
+ul.catfeatures {list-style: none}
 ul.catfeatures li {}
 ul.catitems {}
 ul.catitems li {
-	float: left !important;
-	padding-right: 18px}
+	display: inline;
+	margin-right: 7px}
 
 ul.catitems li a:link {color: #ff6600}
 ul.catitems li a:hover {color: #9AB6C2 }
@@ -3043,5 +3043,15 @@ a.admbox.off:hover, a.admbox.off:focus, a.admbox.off:active {
 
 a.admbox.off img {
 	background-image: url('../pics/overlay-disabled_item.png')}
+
+/* MiniChat  */
+
+div.box-minichat {width: 100%}
+div.minichatchans {overflow: auto}
+.minichat {overflow: auto}
+
+div.minichatdiv {
+  font-size: .9em;
+  overflow: auto}
 
 /* end of css file */
