@@ -15,7 +15,7 @@ wiki-plugins/flowplayer/flowplayer/FlowPlayerClassic.swf lib/flowplayer/FlowPlay
 wiki-plugins/flowplayer/flowplayer/FlowPlayerDark.swf lib/flowplayer/FlowPlayerDark.swf
 wiki-plugins/flowplayer/flowplayer/FlowPlayerLP.swf lib/flowplayer/FlowPlayerLP.swf
 wiki-plugins/flowplayer/flowplayer/FlowPlayerLight.swf lib/flowplayer/FlowPlayerLight.swf
-wiki-plugins/flowplayer/flowplayer/flowplayer.js lib/flowplayer/flowplayer.js
+wiki-plugins/flowplayer/flowplayer/flowPlayer.js lib/flowplayer/flowPlayer.js
 
 author:
 lorinc
