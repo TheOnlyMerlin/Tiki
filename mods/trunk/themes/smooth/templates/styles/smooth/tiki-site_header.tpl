@@ -74,3 +74,8 @@
 	{include file="tiki-site_header_login.tpl"}
 	{/if}
 {/if}
+{if $prefs.feature_top_bar eq 'y'}
+<div class="clearfix" id="tiki-top">
+	{include file="tiki-top_bar.tpl"}
+</div>
+{/if}

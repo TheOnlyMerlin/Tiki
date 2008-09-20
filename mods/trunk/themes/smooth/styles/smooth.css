@@ -240,7 +240,8 @@ ul.jumplinks a:active {
 /*** Error page ***/
 div#tiki-main #tiki-top {margin-top: height needed to match page bg image}
 div#tiki-mid {}
-div#tiki-main #tiki-top {}
+div#tiki-main #tiki-top,
+div#tiki-main #tiki-bot {display: none}
 
 /* To center cbox */
 div#tiki-main #tikimidtbl {
@@ -250,20 +251,22 @@ div#tiki-main #tikimidtbl {
 div#tiki-bot {}
 
 /* Site Header & Identity */
-#header-top {position: relative;/* also height: set to preserve positions against page bg img, if any. */}
+
 
 #siteheader {
 	text-align: left;
 	background: transparent;
-	vertical-align: middle;
 	padding: 0;
 	margin: 0}
 
 div#sioptions {
 	width: 100%;
-	margin: 0}
+	margin: 0;
+	padding: 30px}
 
-#sioptionscente#e431d0 {text-align: center}
+#sioptionscentered {
+	text-align: center;
+	padding: 15px}
 
 div.floatright {
 	float: right;
@@ -280,32 +283,51 @@ div#sitelogo {
 div#sitead {margin: auto}
 #sitead.floatright {padding-right: 100px}
 #sitead.floatleft {padding-left: 100px}
-#sioptionscente#e431d0 #sitead.floatleft {padding-left: 10px}
+#sioptionscentered #sitead.floatleft {padding-left: 10px}
 .floatright img {}
 
 #siteloginbar {
 	position: absolute;
 	top: 30px;
 	right: 40px}
+	
+#siteloginbar * {text-align: right}
 
 input[id="sl-login-user"],
-input[id="sl-login-pass"] {}
+input[id="sl-login-pass"] {
+	background: #FDF1FC;
+	border: 1px inset #FEDAFE;
+	line-height: normal;
+	text-align: left !important}
 
-#sitesearchbar input.wikiaction {background: #f4abec;}
+#sitesearchbar input.wikiaction {
+	background: #7FE63C url(smooth/img05.gif) repeat-x 0 100%;
+	border: none;
+	color: #FFFFFF;
+	font-weight: bold;}
 #sitesearchbar input.wikiaction:hover {background:#7FE63C url(smooth/img05.gif) repeat-x 0 0;}
 #sitelocbar {float: left}
 
-div#customcode {
-	padding-top: 80px;
-	padding-left: 40px}
+div#customcode {}
 
 /* #header text selectors, if needed */
 
+#sitetitles {
+	position: absolute;
+	left: 40px;
+	bottom: 0;
+	color: #000}
+	
 #sitetitle,
-#sitesubtitle {color: #000}
+#sitesubtitle {}
 
-#sitetitle {font-size: 2.6em}
-#sitesubtitle {font-size: 1em}
+#sitetitle {
+	font-size: 2.6em;
+	bottom: 1.5em;}
+
+#sitesubtitle {
+	bottom: 0;
+	font-size: 1em}
 
 #sitetitle a,
 #sitetitle a:visited { color: #000; text-decoration: none }
@@ -331,10 +353,12 @@ div#customcode {
 
 #sitesearchbar {
 	float: right;
-	padding-right: 70px;
+	margin: 0;
+	margin-top: 4px;
+	margin-bottom: 4px;
+	padding-right: 40px;
 	text-align: right;
-	display: block;
-	margin: 0}
+	display: block}
 
 input#fuser,
 select[name="where"],
@@ -380,8 +404,6 @@ a.flip img {display: none}
 	font-size: .9em}
 	
 #credits {display: inline}
-	
-#c#e431d0its {display: inline}
 
 /* end layout divs, etc. */
 
@@ -411,7 +433,6 @@ a.flip img {display: none}
 	padding-top: 10px;
 	padding-left: 10px;
 	padding-right: 10px;
-	/*min-width: 110px;*/
 	text-align: center;
 	text-decoration: none;
 	white-space: nowrap;} 
@@ -478,7 +499,7 @@ a.flip img {display: none}
 
 .cssmenu_vert li {}
 .cssmenu_ver li a ul {border: 0}
-.cssmenu_vert li:hover ul, .cssmenu_vert li li:hover ul, .cssmenu_vert li li li:hover ul, .cssmenu_vert li.sfhover ul, .cssmenu_vert li li.sfhover ul, .cssmenu_vert li li li.sfhover ul { /* lists nested under hove#e431d0 list items */border: 0}
+.cssmenu_vert li:hover ul, .cssmenu_vert li li:hover ul, .cssmenu_vert li li li:hover ul, .cssmenu_vert li.sfhover ul, .cssmenu_vert li li.sfhover ul, .cssmenu_vert li li li.sfhover ul { /* lists nested under hovered list items */border: 0}
 
 .cssmenu_vert li.selected > a {}
 
@@ -996,6 +1017,8 @@ h1 a.pagetitle:hover {
 	background-image: none !important;
 	background: transparent !important;
 	border-top: none !important}
+	
+.wikiactions * {margin: 1px}
 
 div#description,
 div.description {
@@ -1463,7 +1486,7 @@ body.tiki_forums table.normal {margin: auto}
 	margin-left: 5px;
 	vertical-align: top}
 
-.post .postfooter .status {font-size: 10px}
+.post .postfooter .status {font-size: 1em}
 
 .post .postfooter {
 	float: right;
@@ -1499,6 +1522,7 @@ body.tiki_forums table.normal {margin: auto}
 
 .forum_actions .actions .action {margin-right: 10px}
 .forum_actions .headers {vertical-align: bottom}
+
 .forum_actions .headers .title {
 	float: left;
 	background: #FFFFFF url(smooth/img01.gif) repeat-x;

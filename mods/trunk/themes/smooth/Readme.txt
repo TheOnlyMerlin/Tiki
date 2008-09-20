@@ -18,7 +18,6 @@
 * templates/styles/smooth/tiki-list_blogs.tpl
 * templates/styles/smooth/tiki-read_article.tpl
 * templates/styles/smooth/tiki-site_header.tpl
-* templates/styles/smooth/tiki-top_bar.tpl
 
 -=Stylesheet and background images=-
 * styles/smooth.css

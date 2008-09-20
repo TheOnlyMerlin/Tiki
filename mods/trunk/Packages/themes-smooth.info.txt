@@ -30,7 +30,6 @@ themes/smooth/templates/styles/smooth/tiki-bot_bar.tpl templates/styles/smooth/t
 themes/smooth/templates/styles/smooth/tiki-list_blogs.tpl templates/styles/smooth/tiki-list_blogs.tpl
 themes/smooth/templates/styles/smooth/tiki-read_article.tpl templates/styles/smooth/tiki-read_article.tpl
 themes/smooth/templates/styles/smooth/tiki-site_header.tpl templates/styles/smooth/tiki-site_header.tpl
-themes/smooth/templates/styles/smooth/tiki-top_bar.tpl templates/styles/smooth/tiki-top_bar.tpl
 
 Description:
 Smooth has a clean pastel pink and green look and uses the *litecss source-ordered layout method ([http://sourceforge.net/projects/litecss]). For more information, please see the documentation pages for this theme. Please do not remove the link to freecsstemplates.com from the page footer.
