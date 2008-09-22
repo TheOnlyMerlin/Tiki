@@ -1,0 +1,51 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/eatlon/styles/eatlon.css styles/eatlon.css
+themes/eatlon/styles/eatlon/banner.gif styles/eatlon/banner.gif
+themes/eatlon/styles/eatlon/body_bg.gif styles/eatlon/body_bg.gif
+themes/eatlon/styles/eatlon/bottom_bg.gif styles/eatlon/bottom_bg.gif
+themes/eatlon/styles/eatlon/feed.gif styles/eatlon/feed.gif
+themes/eatlon/styles/eatlon/head_bg.gif styles/eatlon/head_bg.gif
+themes/eatlon/styles/eatlon/image.gif styles/eatlon/image.gif
+themes/eatlon/styles/eatlon/index.php styles/eatlon/index.php
+themes/eatlon/styles/eatlon/layouts.gif styles/eatlon/layouts.gif
+themes/eatlon/styles/eatlon/menu_bg.gif styles/eatlon/menu_bg.gif
+themes/eatlon/templates/styles/eatlon/credits.tpl templates/styles/eatlon/credits.tpl
+themes/eatlon/templates/styles/eatlon/header.tpl templates/styles/eatlon/header.tpl
+themes/eatlon/templates/styles/eatlon/index.php templates/styles/eatlon/index.php
+themes/eatlon/templates/styles/eatlon/sicustomcode.tpl templates/styles/eatlon/sicustomcode.tpl
+themes/eatlon/templates/styles/eatlon/tiki.tpl templates/styles/eatlon/tiki.tpl
+themes/eatlon/templates/styles/eatlon/tiki-bot_bar.tpl templates/styles/eatlon/tiki-bot_bar.tpl
+themes/eatlon/templates/styles/eatlon/tiki-list_blogs.tpl templates/styles/eatlon/tiki-list_blogs.tpl
+themes/eatlon/templates/styles/eatlon/tiki-read_article.tpl templates/styles/eatlon/tiki-read_article.tpl
+themes/eatlon/templates/styles/eatlon/tiki-site_header.tpl templates/styles/eatlon/tiki-site_header.tpl
+themes/eatlon/templates/styles/eatlon/tiki-view_articles.tpl templates/styles/eatlon/tiki-view_articles.tpl
+
+Description:
+Flexible "fixed-width" theme in light blues and greys. Please retain the link to eatlon.com in the page footer to be in compliance with the terms of use.
+ 
+Docurl:
+http://themes.tikiwiki.org/Eatlon
+http://zukakakina.com/Eatlon
+ 
+Licence:
+This theme adapted by Gary Cunningham-Lee (chibaguy) for TikiWiki CMS/Groupware is an adaptation of the Eatlon theme by Olle Axelsson (http://eatlon.com). The original theme has been made available to use freely, with the condition that the link to eatlon.com remains in the page footer. To be in compliance with the terms of use, please do not remove this link.
+
+Author:
+Adapted by Gary Cunningham-Lee (chibaguy).
+ 
+Version:
+Compatible with TikiWiki 2 releases.
+ 
+Changelog:
+1 initial package
