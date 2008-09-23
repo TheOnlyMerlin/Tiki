@@ -4,19 +4,22 @@
 {popup_init src="lib/overlib.js"}
 {include file="tiki-articles-js.tpl"}
 
+<h1>{if $articleId}<a class="pagetitle" href="tiki-edit_article.php?articleId={$articleId}">{tr}Edit{/tr}: {$title}</a>{else}<a class="pagetitle" href="tiki-edit_article.php?articleId={$articleId}">{tr}Edit article{/tr}{/if}
 {assign var=area_name value="body"}
 
-{title help="Articles"}
-  {if $articleId}
-    {tr}Edit:{/tr} {$title}
-  {else}
-    {tr}Edit article{/tr}
-  {/if}
-{/title}
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Articles" target="tikihelp" class="tikihelp" title="{tr}Edit Article{/tr}">
+<img src="img/icons/help.gif" border="0" height="16" width="16" alt='{tr}Help{/tr}' /></a>
+{/if}
+
+{if $prefs.feature_edit_templates eq 'y' and $tiki_p_edit_templates eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-edit_article.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Edit Article Tpl{/tr}">
+<img src="img/icons/info.gif" border="0" width="16" height="16" alt='{tr}Edit Template{/tr}' /></a>
+{/if}</h1>
 
 <div class="navbar">
-  <a href="tiki-list_articles.php">{tr}List Articles{/tr}</a>
-  <a href="tiki-view_articles.php">{tr}View Articles{/tr}</a>
+<a class="linkbut" href="tiki-list_articles.php">{tr}List Articles{/tr}</a>
+<a class="linkbut" href="tiki-view_articles.php">{tr}View Articles{/tr}</a>
 </div>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
@@ -39,8 +42,6 @@
 
 <form enctype="multipart/form-data" method="post" action="tiki-edit_article.php" id='editpageform'>
 <input type="hidden" name="articleId" value="{$articleId|escape}" />
-<input type="hidden" name="previewId" value="{$previewId|escape}" />
-<input type="hidden" name="imageIsChanged" value="{$imageIsChanged|escape}" />
 <input type="hidden" name="image_data" value="{$image_data|escape}" />
 <input type="hidden" name="useImage" value="{$useImage|escape}" />
 <input type="hidden" name="image_type" value="{$image_type|escape}" />
@@ -78,7 +79,7 @@
 </select>
 {if $tiki_p_admin_cms eq 'y'}<a href="tiki-article_types.php" class="link">{tr}Admin types{/tr}</a>{/if}
 </td></tr>
-<tr id='use_ratings' {if $types.$type.use_ratings eq 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor"><td>{tr}Rating{/tr}</td><td>
+<tr id='use_ratings' {if $types.$type.use_ratings eq 'y'}style="display:;"{else}style="display:none;"{/if}><td class="formcolor">{tr}Rating{/tr}</td><td class="formcolor">
 <select name='rating'>
 <option value="10" {if $rating eq 10}selected="selected"{/if}>10</option>
 <option value="9.5" {if $rating eq "9.5"}selected="selected"{/if}>9.5</option>
@@ -106,14 +107,11 @@
 <input name="userfile1" type="file" onchange="document.getElementById('useImage').checked = true;"/></td></tr>
 {if $hasImage eq 'y'}
   <tr class="formcolor"><td>{tr}Own Image{/tr}</td><td>{$image_name} [{$image_type}] ({$image_size} bytes)</td></tr>
-	<tr class="formcolor">
-		<td>{tr}Own Image{/tr}</td>
-  	{if $imageIsChanged eq 'y'}
-			<td><img alt="{tr}Article image{/tr}" border="0" src="article_image.php?image_type=preview&amp;id={$previewId}" /></td>
-		{else}
-			<td><img alt="{tr}Article image{/tr}" border="0" src="article_image.php?image_type=article&amp;id={$articleId}" /></td>
-		{/if}
-	</tr>
+  {if $tempimg ne 'n'}
+    <tr class="formcolor"><td>{tr}Own Image{/tr}</td><td>
+    <img alt="{tr}Article image{/tr}" border="0" src="{$tempimg}" {if $image_x > 0}width="{$image_x}"{/if}{if $image_y > 0 }height="{$image_y}"{/if}/>
+    </td></tr>
+  {/if}
 {/if}
 <tr id='show_image_2' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor"><td>{tr}Use own image{/tr}</td><td>
 <input type="checkbox" name="useImage" id="useImage" {if $useImage eq 'y'}checked='checked'{/if}/>
@@ -199,15 +197,7 @@
 <tr class="formcolor"><td>{tr}Allow HTML{/tr}</td><td><input type="checkbox" name="allowhtml" {if $allowhtml eq 'y'}checked="checked"{/if}/></td></tr>
 {/if}
 {if $prefs.feature_cms_emails eq 'y' and $articleId eq 0}
-<tr class="formcolor">
-	<td>{tr}Emails to be notified (separated with commas){/tr}</td>
-	<td>
-		<input type="text" name="emails" value="{$emails|escape}" size="80" /><br />
-		{if !empty($userEmail) and $userEmail ne $prefs.sender_email}
-			{tr}From:{/tr} {$userEmail|escape}<input type="radio" name="from" value="{$userEmail|escape}"{if empty($from) or $from eq $userEmail} checked="checked"{/if} /> {$prefs.sender_email|escape}<input type="radio" name="from" value="{$prefs.sender_email|escape}"{if $from eq $prefs.sender_email} checked="checked"{/if} />
-		{/if}
-	</td>
-</tr>
+<tr class="formcolor"><td>{tr}Emails to be notified (separated with commas){/tr}</td><td><input type="text" name="emails" value="{$emails|escape}" size="80" /></td></tr>
 {/if}
 
 {include file=freetag.tpl}
@@ -218,8 +208,7 @@
 </form>
 <br />
 
-<span class="button2">
-<a href="#edithelp" onclick="javascript:show('edithelpzone');hide('wikiplhelp-tab');show('wikihelp-tab'); return true;" name="edithelp">{tr}Wiki Help{/tr}</a>
-<a href="#edithelp" onclick="javascript:show('edithelpzone');hide('wikihelp-tab');show('wikiplhelp-tab'); return true;" name="edithelp">{tr}Plugin Help{/tr}</a>
-</span>
+<div class="button2">
+<a href="#edithelp" onclick="javascript:flip('edithelpzone'); return true;" name="edithelp" class="linkbut">{tr}Wiki Help{/tr}</a>
+</div>
 {include file=tiki-edit_help.tpl}

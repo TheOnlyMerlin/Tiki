@@ -1,4 +1,12 @@
-{title help="Securiy+Admin"}{tr}Security Admin{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-admin_security.php">{tr}Security Admin{/tr}</a>
+
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Security+Admin" target="tikihelp" class="tikihelp" title="{tr}security admin{/tr}">
+{icon _id='help'}</a>{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admin_security.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}security admin tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>{/if}
+</h1>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}To <a class="rbox-link" target="tikihelp" href="http://security.tikiwiki.org/tiki-contact.php">report any security issues</a>.{/tr}{/remarksbox}
 

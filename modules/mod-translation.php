@@ -26,7 +26,7 @@ if( isset( $module_params['pivot_language'] ) ) {
 
 $smarty->assign( 'pivot_language', $pivotLanguage );
 
-if( $prefs['feature_translation'] == 'y' && ! empty( $page ) && is_string($page) ) {
+if( $prefs['feature_multilingual'] == 'y' && ! empty( $page ) && is_string($page) ) {
 	global $multilinguallib;
 	include_once('lib/multilingual/multilinguallib.php');
 
@@ -119,17 +119,7 @@ if( $prefs['feature_translation'] == 'y' && ! empty( $page ) && is_string($page)
 	{
 		global $quantifylib;
 		include_once 'lib/wiki/quantifylib.php';
-		include_once 'lib/wiki-plugins/wikiplugin_gauge.php';
-		$numeric = $quantifylib->getCompleteness( $transinfo['page_id'] );
-		$smarty->assign( 'mod_translation_quantification', $numeric );
-		$smarty->assign( 'mod_translation_gauge', wikiplugin_gauge( '', array(
-			'value' => $numeric,
-			'max' => 100,
-			'size' => '100%',
-			'color' => 'green',
-			'bgcolor' => 'gray',
-			'showvalue' => false,
-		) ) );
+		$smarty->assign( 'mod_translation_quantification', $quantifylib->getCompleteness( $transinfo['page_id'] ) );
 	}
 }
 

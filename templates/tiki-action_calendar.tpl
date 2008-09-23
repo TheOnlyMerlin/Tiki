@@ -6,22 +6,22 @@
 {if $viewlist neq 'list'}
 <span class="button2">
 {if $group_by_item neq 'n'}
-<a href="{$myurl}?gbi=n" title="{tr}Do not group by item{/tr}">{tr}Do not group by item{/tr}</a>{else}
-<a href="{$myurl}?gbi=y" title="{tr}Group by item{/tr}">{tr}Group by item{/tr}</a>{/if}
+<a href="{$myurl}?gbi=n" class="linkbut" title="{tr}Do not group by item{/tr}">{tr}Do not group by item{/tr}</a>{else}
+<a href="{$myurl}?gbi=y" class="linkbut" title="{tr}Group by item{/tr}">{tr}Group by item{/tr}</a>{/if}
 </span>
 {/if}
 
-<span class="button2"><a href="#" onclick="toggle('filtercal');">{tr}Filter{/tr}</a></span>
+<span class="button2"><a href="#" class="linkbut" onclick="toggle('filtercal');">{tr}Filter{/tr}</a></span>
 
 <span class="button2">
 {if $viewlist eq 'list'}
-<a href="{$myurl}?viewlist=table" title="{tr}Calendar View{/tr}">{tr}Calendar View{/tr}</a>{else}
-<a href="{$myurl}?viewlist=list" title="{tr}List View{/tr}">{tr}List View{/tr}</a>{/if}
+<a href="{$myurl}?viewlist=table" class="linkbut" title="{tr}Calendar View{/tr}">{tr}Calendar View{/tr}</a>{else}
+<a href="{$myurl}?viewlist=list" class="linkbut" title="{tr}List View{/tr}">{tr}List View{/tr}</a>{/if}
 </span>
 
 </div>
 
-{title}{tr}Tiki Action Calendar{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-action_calendar.php">{tr}Tiki Action Calendar{/tr}</a></h1>
 
 <form id="filtercal" method="get" action="{$myurl}" name="f" style="display:none;">
 <div class="caltitle">{tr}Tools Calendars{/tr}</div>

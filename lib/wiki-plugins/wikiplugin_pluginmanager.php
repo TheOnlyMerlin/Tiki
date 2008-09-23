@@ -96,23 +96,6 @@ function wikiplugin_pluginmanager_help() {
             return $sDescription;
         }
     }
-
-	function wikiplugin_pluginmanager_info() {
-		return array(
-			'name' => tra('Plugin Manager'),
-			'documentation' => 'PluginManager',
-			'description' => tra("Provides a list of plugins on this wiki."),
-			'prefs' => array( 'wikiplugin_pluginmanager' ),
-			'params' => array(
-				'info' => array(
-					'required' => false,
-					'name' => tra('Information'),
-					'description' => tra('version|description|arguments, multiple values can be used.'),
-				),
-			),
-		);
-	}
-
     function wikiplugin_pluginmanager($data, $params) {
         $plugin = new WikiPluginPluginManager();
         return $plugin->run($data, $params);

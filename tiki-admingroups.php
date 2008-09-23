@@ -259,9 +259,6 @@ if (!empty($_REQUEST['group']) && isset($_REQUEST['export'])) {
 	if (isset($_REQUEST['email'])) {
 		$listfields[] = 'email';
 	}
-	if (isset($_REQUEST['lastLogin'])) {
-		$listfields[] = 'lastLogin';
-	}
 	$smarty->assign_by_ref('listfields', $listfields);
 	$data = $smarty->fetch('tiki-export_users.tpl');
 	if (!empty($_REQUEST['encoding']) && $_REQUEST['encoding'] == 'ISO-8859-1') {

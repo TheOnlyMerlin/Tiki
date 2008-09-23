@@ -3,12 +3,12 @@
 {if $prefs.feature_articles eq 'y'}
 {if !isset($tpl_module_title)}
 {if $nonums eq 'y'}
-{eval var="<a href=\"tiki-view_articles.php?topic=$topicId&amp;type=$type\">{tr}Last `$module_rows` articles{/tr}</a>" assign="tpl_module_title"}
+{eval var="<a href=\"tiki-view_articles.php?topic=$topicId&type=$type\">{tr}Last `$module_rows` articles{/tr}</a>" assign="tpl_module_title"}
 {else}
-{eval var="<a href=\"tiki-view_articles.php?topic=$topicId&amp;type=$type\">{tr}Last articles{/tr}</a>" assign="tpl_module_title"}
+{eval var="<a href=\"tiki-view_articles.php?topic=$topicId&type=$type\">{tr}Last articles{/tr}</a>" assign="tpl_module_title"}
 {/if}
 {/if}
-{tikimodule title=$tpl_module_title name="last_articles" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
+{tikimodule title=$tpl_module_title name="last_articles" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox}
 {if $nonums != 'y'}<ol class="module">{else}<ul class="module">{/if}
     {section name=ix loop=$modLastArticles}
       <li>
@@ -18,7 +18,7 @@
 				<div class="date">{$modLastArticles[ix].publishDate|tiki_short_date}</div>
 			{/if}
 			{if isset($showImg)}
-			{if $modLastArticles[ix].hasImage eq 'y'}<div class="image"><img alt="" src="article_image.php?id={$modLastArticles[ix].articleId}" width="{$showImg}" /></div>{elseif $modLastArticles[ix].topicId}<div class="image"><img alt="" src="article_image.php?image_type=topic&amp;id={$modLastArticles[ix].topicId}" width="{$showImg}" /></div>{/if}
+			{if $modLastArticles[ix].hasImage eq 'y'}<div class="image"><img alt="" src="article_image.php?id={$modLastArticles[ix].articleId}" width="{$showImg}" /></div>{elseif $modLastArticles[ix].topicId}<div class="image"><img alt="" src="topic_image.php?id={$modLastArticles[ix].topicId}" width="{$showImg}" /></div>{/if}
 			{/if}
 		</div>		
 		{/if}

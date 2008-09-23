@@ -1,5 +1,13 @@
-{title help="Inter-User Messages"}{tr}Messages{/tr}{/title}
+{*Smarty template*}
+<h1><a class="pagetitle" href="messu-mailbox.php">{tr}Messages{/tr}</a>
 
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Inter-User Messages" target="tikihelp" class="tikihelp" title="{tr}Messages{/tr}">{icon _id='help'}</a>
+{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=messu-mailbox.tpl" target="tikihelp" class="tikihelp">{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}</h1>
 {if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
 {include file=tiki-mytiki_bar.tpl}
 {/if}
@@ -90,7 +98,6 @@ var CHECKBOX_LIST = [{section name=user loop=$items}'msg[{$items[user].msgId}]'{
   <tr><td colspan="7" class="odd">{tr}No messages to display{/tr}<td></tr>
   {/section}
 </table>
-{if $items}
 <p>Perform action with checked:
 <input type="submit" name="delete" value="{tr}Delete{/tr}" />
 <input type="submit" name="archive" value="{tr}Archive{/tr}" />
@@ -102,7 +109,7 @@ var CHECKBOX_LIST = [{section name=user loop=$items}'msg[{$items[user].msgId}]'{
 <option value="isFlagged_n">{tr}Mark as unflagged{/tr}</option>
 </select>
 <input type="submit" name="mark" value="{tr}Mark{/tr}" />
-</p>{/if}
+</p>
 </form>
 <br />
 <div class="mini">

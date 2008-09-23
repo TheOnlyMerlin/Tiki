@@ -1,13 +1,20 @@
 {* $Id$ *}
+<h1><a class="pagetitle" href="tiki-received_pages.php">{tr}Received Pages{/tr}</a>
+  
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Communication+Center" target="tikihelp" class="tikihelp" title="{tr}Help on Communication Center{/tr}">
+{icon _id='help'}</a>{/if}
 
-{title help="Communication+Center"}{tr}Received Pages{/tr}{/title}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-received_pages.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}received pages tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit Tpl{/tr}'}</a>{/if}</h1>
 
 {if !empty($errors)}
-  <div class="simplebox highlight">
-    {foreach item=error from=$errors}
-      {tr}{$error.error}{/tr} {$error.param}<br />
-    {/foreach}
-  </div>
+<div class="simplebox highlight">
+{foreach item=error from=$errors}
+{tr}{$error.error}{/tr} {$error.param}<br />
+{/foreach}
+</div>
 {/if}
 
 {if $receivedPageId > 0 or $view eq 'y'}
@@ -24,13 +31,13 @@
 <tr><td class="formcolor">{tr}Comment{/tr}:</td><td class="formcolor">
 <input type="text" name="comment" value="{$comment|escape}" />
 </td></tr>
-<tr><td class="formcolor">&nbsp;</td><td class="formcolor"><input type="submit" name="preview" value="{tr}Preview{/tr}" />&nbsp;<input type="submit" name="save" value="{tr}Save{/tr}" /></td></tr>
+<tr><td  class="formcolor">&nbsp;</td><td class="formcolor"><input type="submit" name="preview" value="{tr}Preview{/tr}" />&nbsp;<input type="submit" name="save" value="{tr}Save{/tr}" /></td></tr>
 </table>
 </form>
 {/if}
 
 <h2>{tr}Received Pages{/tr}</h2>
-<div align="center">
+<div  align="center">
 <table class="findtable">
 <tr><td class="findtable">{tr}Find{/tr}</td>
    <td class="findtable">

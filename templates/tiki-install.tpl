@@ -191,10 +191,6 @@ hosting provider.  Normally Tiki tables won't conflict with other product names{
 		    <tr><td>
 <table class="normal" cellpadding="5">
 	<tr><th>{tr}To upgrade from{/tr}:</th><th>{tr}Use this script{/tr}:</th></tr>
-	<tr class="even">
-		<td>3.0.x</td>
-		<td>tiki_2.0to3.0</td>
-	</tr>
 	<tr class="odd">
 		<td>2.0.x</td>
 		<td>tiki_1.9to2.0</td>
@@ -288,13 +284,13 @@ hosting provider.  Normally Tiki tables won't conflict with other product names{
 {tr}Please read the following notes before entering Tikiwiki.{/tr}
 <p>&nbsp;</p>
 <h3><img src="pics/icons/information.png" alt="{tr}Note{/tr}" style="vertical-align:middle"/> {tr}Memory{/tr}</h3>
-{tr}TikiWiki requires <strong>at least</strong> 32MB of PHP memory for script execution. Use the <strong>memory_limit</strong> key in your <strong>php.ini </strong> file (for example: memory_limit = 32M) and restart your webserver{/tr}.
+{tr}TikiWiki requires <strong>at least</strong> 16MB of PHP memory for script execution. Use the <strong>memory_limit</strong> key in your <strong>php.ini </strong> file (for example: memory_limit = 16M) and restart your webserver{/tr}.
 <p>{tr}Allocating too little memory will cause TikiWiki to display blank pages{/tr}.</p>
 {if $php_memory_limit <= 0}
 	<div style="border-style: solid; border-width: 1; padding: 5px; background-color: #a9ff9b;">
 		<p align="center"><img src="pics/icons/accept.png" alt="{tr}Success{/tr}" style="vertical-align:middle"/> {tr}Tiki has not detected your PHP memory_limit. This probably means you have no set limit (all is well){/tr}. </p>
 	</div>	
-{elseif $php_memory_limit <= 32 * 1024 * 1024}
+{elseif $php_memory_limit <= 16 * 1024 * 1024}
 	<div style="border-style: solid; border-width: 1; padding: 5px; background-color: #FF0000">
 		<p align="center"><img src="pics/icons/delete.png" alt="alert" style="vertical-align:middle" /> {tr}Tiki has detected your PHP memory limit at{/tr}: {$php_memory_limit|kbsize:true:0}</p>
 	</div>
@@ -307,11 +303,6 @@ hosting provider.  Normally Tiki tables won't conflict with other product names{
 		</div>	
 	{/if}			
 <p>&nbsp;</p>
-
-{if isset($htaccess_error)}
-<h3><img src="pics/icons/information.png" alt="{tr}Note{/tr}" style="vertical-align:middle"/> {tr}Security{/tr}</h3>
-{tr}To increase your TikiWiki installation - and if you are using Apache web server - you should rename the <strong>_htaccess</strong> file into <strong>.htaccess</strong> (this file is in the main directory){/tr}.
-{/if}
 
 {if isset($smarty.post.scratch)}
 <h3><img src="pics/icons/information.png" alt="{tr}Note{/tr}" style="vertical-align:middle"/> {tr}Installation{/tr}</h3>

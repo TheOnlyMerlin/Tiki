@@ -1,11 +1,17 @@
 {* $Id$ *}
-
-{title help="Blogs"}{tr}Blogs{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-list_posts.php">{tr}Blogs{/tr}</a>
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Blogs" target="tikihelp" class="tikihelp" title="{tr}Blogs{/tr}">
+{icon _id='help'}</a>{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-list_posts.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}List Posts Tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit Tpl{/tr}'}</a>{/if}
+</h1>
 
 <div class="navbar">
-  <a href="tiki-edit_blog.php">{tr}Edit Blog{/tr}</a>
-  <a href="tiki-blog_post.php">{tr}Post{/tr}</a>
-  <a href="tiki-list_blogs.php">{tr}List Blogs{/tr}</a>
+<a class="linkbut" href="tiki-edit_blog.php">{tr}Edit Blog{/tr}</a>
+<a class="linkbut" href="tiki-blog_post.php">{tr}Post{/tr}</a>
+<a class="linkbut" href="tiki-list_blogs.php">{tr}List Blogs{/tr}</a>
 </div>
 
 {if $listpages or ($find ne '')}

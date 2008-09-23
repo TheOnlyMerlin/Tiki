@@ -1,11 +1,11 @@
-{title help="i18n"}{tr}Translate:{/tr}&nbsp;{$name}{if isset($languageName)}&nbsp;({$languageName}, {$langpage}){/if}{/title}
-
-{if $type eq 'wiki page'}
-  <a class="linkbut" href="tiki-index.php?page={$name|escape:'url'}&bl=n">{tr}View Page{/tr}</a>
-{else}
-  <a href="tiki-read_article.php?articleId={$id}">{tr}View Article{/tr}</a>
+<h1>{tr}Translate:{/tr}&nbsp;{if $type eq 'wiki page'}<a href="tiki-index.php?page={$name|escape:'url'}&bl=n">{else}<a href="tiki-read_article.php?articleId={$id}">{/if}{$name}</a> {if isset($languageName)}({$languageName}, {$langpage}){/if}
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}i18n" target="tikihelp" class="tikihelp" title="{tr}Tikiwiki.org help{/tr}: {tr}Edit Translations{/tr}"><img src="img/icons/help.gif" border="0" height="16" width="16" alt='{tr}Help{/tr}' /></a>
 {/if}
-
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-edit_translation.tpl" target="tikihelp" class="tikihelp" title="{tr}View template{/tr}: {tr}Edit Translations Template{/tr}"><img src="img/icons/info.gif" border="0" width="16" height="16" alt='{tr}Edit template{/tr}' /></a>
+{/if}
+</h1>
 
 {if $error}
 	<div class="simplebox highlight">
@@ -25,43 +25,21 @@
 {/if}
 
 {if $langpage}
-<form method="post" action="tiki-editpage.php" onsubmit="return validate_translation_request(this)">
-	<p>{tr}Language of newly translated page{/tr}:
-		<select name="lang" id="language_list" size="1">
-		   <option value="unspecified">{tr}Unspecified{/tr}</option>
+<form method="post" action="tiki-editpage.php">
+	<p>{tr}Language of newly translated page{/tr}: 
+		<select name="lang" size="1">
 			{section name=ix loop=$languages}
-			{if in_array($languages[ix].value, $prefs.available_languages) or $prefs.available_languages|@count eq 0 or !is_array($prefs.available_languages)}
+			{if in_array($languages[ix].value, $prefs.available_languages) or $prefs.available_languages|@count eq 0}
 			<option value="{$languages[ix].value|escape}">{$languages[ix].name}</option>
 			{/if}
 			{/section}
 		</select>
-	<br />{tr}Name of newly translated page{/tr}: <input type="text" size="40" name="page" id="translation_name"/><input type="hidden" name="translationOf" value="{$name|escape}"/>
+	<br />{tr}Name of newly translated page{/tr}: <input type="text" size="40" name="page"/><input type="hidden" name="translationOf" value="{$name|escape}"/>
 	<input type="submit" value="{tr}Create translation{/tr}"/></p>
 	<textarea name="edit" style="display:none">^{$translate_message}^
 
 {$pagedata|escape:'htmlall':'UTF-8'}</textarea>
 </form>
-
-<script type='text/javascript'>
-<!--
-{literal}
-function validate_translation_request() {
-   var success = true;
-   var language_of_translation = document.getElementById("language_list").value;
-  
-   if (language_of_translation == "unspecified") {
-{/literal}
-      var message = {tr}"You forgot to specify the language of the translation. Please choose a language in the picklist."{/tr};
-{literal}   
-      alert(message);
-      success = false;
-   }
-   return success;
-}
-// -->
-{/literal}
-</script>
-   
 {if !isset($allowed_for_staging_only)}
 {if ($articles and ($articles|@count ge '1')) or ($pages|@count ge '1')}
 {* only show if there are articles or pages to select *}
@@ -119,7 +97,7 @@ function validate_translation_request() {
 </div>
 </form>
 
-{* end of if !isset($allowed_for_staging_only)*}
+{* end of if !isset($allowed_for_staging_only)}
 {else}
 	<div class="simplebox">
 		{icon _id=delete.png alt="{tr}Alert{/tr}" style="vertical-align:middle"} 

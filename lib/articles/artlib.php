@@ -188,8 +188,8 @@ class ArtLib extends TikiLib {
 
 	// moved from tikilib.php
     function replace_article($title, $authorName, $topicId, $useImage, $imgname, $imgsize, $imgtype, $imgdata, 
-	$heading, $body, $publishDate, $expireDate, $user, $articleId, $image_x, $image_y, $type, 
-	$topline, $subtitle, $linkto, $image_caption, $lang, $rating = 0, $isfloat = 'n', $emails='', $from='') {
+	    $heading, $body, $publishDate, $expireDate, $user, $articleId, $image_x, $image_y, $type, 
+							 $topline, $subtitle, $linkto, $image_caption, $lang, $rating = 0, $isfloat = 'n', $emails='') {
 
 		if ($expireDate < $publishDate) {
 		    $expireDate = $publishDate;
@@ -201,6 +201,7 @@ class ArtLib extends TikiLib {
 		$topicName = $this->getOne($query, array($topicId) );
 		$size = strlen($body);
 
+		// Fixed query. -rlpowell
 		if ($articleId) {
 		    // Update the article
 		    $query = "update `tiki_articles` set `title` = ?, `authorName` = ?, `topicId` = ?, `topicName` = ?, `size` = ?, `useImage` = ?, `image_name` = ?, ";
@@ -212,9 +213,8 @@ class ArtLib extends TikiLib {
 				$title, $authorName, (int) $topicId, $topicName, (int) $size, $useImage, $imgname, $imgtype, (int) $imgsize, $imgdata, $isfloat,
 				(int) $image_x, (int) $image_y, $heading, $body, (int) $publishDate, (int) $expireDate, (int) $this->now, $user, $type, (float) $rating, 
 				$topline, $subtitle, $linkto, $image_caption, $lang, (int) $articleId ) );
-				// Clear article image cache because image may just have been changed
-				$this->delete_image_cache("article",$articleId);
 		} else {
+		    // Fixed query. -rlpowell
 		    // Insert the article
 		    $query = "insert into `tiki_articles` (`title`, `authorName`, `topicId`, `useImage`, `image_name`, `image_size`, `image_type`, `image_data`, ";
 		    $query.= " `publishDate`, `expireDate`, `created`, `heading`, `body`, `hash`, `author`, `nbreads`, `votes`, `points`, `size`, `topicName`, ";
@@ -247,7 +247,7 @@ class ArtLib extends TikiLib {
 				if (!in_array($n['email'], $nots3))
 					$nots[] = $n;
 			}
-			if (is_array($emails) && (empty ($from) || $from == $prefs['sender_email'])) {
+			if (is_array($emails)) {
 				foreach ($emails as $n) {
 					if (!in_array($n, $nots3))
 						$nots[] = array('email'=>$n);
@@ -256,7 +256,7 @@ class ArtLib extends TikiLib {
 		    if (!isset($_SERVER["SERVER_NAME"])) {
 			    $_SERVER["SERVER_NAME"] = $_SERVER["HTTP_HOST"];
 		    }
-		    if (count($nots) || is_array($emails)) {
+		    if (count($nots)) {
 			    include_once("lib/notifications/notificationemaillib.php");
 
 			    $smarty->assign('mail_site', $_SERVER["SERVER_NAME"]);
@@ -273,13 +273,6 @@ class ArtLib extends TikiLib {
 				    unset ($parts[count($parts) - 1]);
 			    $smarty->assign('mail_machine_raw', $tikilib->httpPrefix(). implode('/', $parts));
 			    sendEmailNotification($nots, "watch", "user_watch_article_post_subject.tpl", $_SERVER["SERVER_NAME"], "user_watch_article_post.tpl");
-			    if (is_array($emails) && !empty($from) && $from != $prefs['sender_email']) {
-					$nots = array();
-					foreach ($emails as $n) {
-						$nots[] = array('email'=>$n);
-					}
-			    	sendEmailNotification($nots, "watch", "user_watch_article_post_subject.tpl", $_SERVER["SERVER_NAME"], "user_watch_article_post.tpl", $from);
-			    }
 		    }
 	    }
 
@@ -598,38 +591,8 @@ $show_expdate, $show_reads, $show_size, $show_topline, $show_subtitle, $show_lin
 				$msgs[] = sprintf(tra('Error line: %d'), $line);
 			}
 		}
-		return true;
+return true;
 	}
-
-	function delete_image_cache($image_type,$imageId) {
-		global $prefs;
-		// Input validation: imageId must be a number, and not 0 
-		if(!ctype_digit("$imageId") || !($imageId>0)) {
-			return false;
-		}
-		switch ($image_type) {
-			case "article":
-				$image_cache_prefix="article";
-				break;
-			case "submission":
-				$image_cache_prefix="article_submission";
-				break;
-			case "preview":
-				$image_cache_prefix="article_preview";
-				break;
-			default:
-				return false;
-		}
-		$article_image_cache = $prefs['tmpDir'];
-		if ($tikidomain) { $article_image_cache.= "/$tikidomain"; }
-		$article_image_cache.= "/$image_cache_prefix.".$imageId;
-		if ( @unlink($article_image_cache) ) {
-			return true;
-		}else{
-			return false;
-		}
-	}
-
 }
 
 global $dbTiki;

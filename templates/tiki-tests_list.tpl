@@ -1,4 +1,5 @@
-{title help="tests"}{tr}TikiTests List{/tr}{/title}
+<h1 class='pagetitle'><a href='#' class='pagetitle'>TikiTests List</a></h1>
+<br/>
 
 {include file='tiki-tests_menubar.tpl'}
 

@@ -59,25 +59,6 @@ function showDetails( id, domain, profile ) { // {{{
 					p.innerHTML = "A version of this profile is already installed.";
 					p.style.fontWeight = 'bold';
 					cell.appendChild(p);
-
-					var form = document.createElement( 'form' );
-					var p = document.createElement('p');
-					var submit = document.createElement('input');
-					var hidden = document.createElement('input');
-					form.method = 'post';
-					form.action = document.location.href;
-
-					form.appendChild(p);
-					submit.type = 'submit';
-					submit.name = 'forget';
-					submit.value = 'Forget Past Installation';
-					p.appendChild(submit);
-					hidden.type = 'hidden';
-					hidden.name = 'url';
-					hidden.value = data.url;
-					p.appendChild(hidden);
-
-					cell.appendChild(form);
 				}
 				else if( data.installable )
 				{
@@ -88,34 +69,7 @@ function showDetails( id, domain, profile ) { // {{{
 					form.method = 'post';
 					form.action = document.location.href;
 
-					var iTable = document.createElement('table');
-					iTable.className = 'normal';
-
-					var rowNum = 0;
-					for( i in data.userInput ) {
-						if( typeof(data.userInput[i]) != 'string' )
-							continue;
-
-						var iRow = iTable.insertRow( rowNum++ );
-						var iLabel = iRow.insertCell( 0 );
-						var iField = iRow.insertCell( 1 );
-
-						iRow.className = 'formcolor';
-
-						iLabel.appendChild( document.createTextNode( i ) );
-						var iInput = document.createElement( 'input' );
-						iInput.type = 'text';
-						iInput.name = i;
-						iInput.value = data.userInput[i];
-
-						iField.appendChild( iInput );
-					}
-
-					if( rowNum > 0 )
-						form.appendChild( iTable );
-
 					form.appendChild(p);
-
 					submit.type = 'submit';
 					submit.name = 'install';
 					submit.value = 'Install Now';
@@ -146,9 +100,6 @@ function showDetails( id, domain, profile ) { // {{{
 				{
 					for( k in data.dependencies )
 					{
-						if( typeof(data.dependencies[k]) != 'string')
-							continue;
-
 						var li = document.createElement( 'li' );
 						var a = document.createElement( 'a' );
 						a.href = data.dependencies[k];
@@ -229,9 +180,9 @@ function showDetails( id, domain, profile ) { // {{{
 </div>
 
 <div class="cbox">
-  <div class="cbox-title"><a name="profile-results"/>"{tr}Profile list{/tr}</div>
+  <div class="cbox-title">{tr}Profile list{/tr}</div>
   <div class="cbox-data">
-  	<form method="get" action="tiki-admin.php#profile-results">
+  	<form method="get" action="tiki-admin.php">
         <table class="admin"><tr>
 			<col width="30%"/>
 			<col width="70%"/>

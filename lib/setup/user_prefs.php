@@ -45,12 +45,6 @@ if ( $user ) {
 		$prefs['style'] = $prefs['theme'];
 	}
 
-	// Set the userPage name for this user since other scripts use this value.
-	$userPage = $prefs['feature_wiki_userpage_prefix'].$user;
-	$exist = $tikilib->page_exists($userPage);
-	$smarty->assign("userPage", $userPage);
-	$smarty->assign("userPage_exists", $exist);
-
 } else {
 	$allowMsgs = 'n';
 }
@@ -74,7 +68,7 @@ if ($prefs['users_prefs_display_timezone'] == 'Site' || (isset($user_preferences
 		} else {
 			$prefs['display_timezone'] = $_COOKIE['local_tz'];
 		}
-		if (!TikiDate::TimezoneIsValidId($prefs['display_timezone'])) {
+		if ( ! Date_TimeZone::isValidID($prefs['display_timezone']) ) {
 			$prefs['display_timezone'] = $prefs['server_timezone'];
 		}
 	} else {

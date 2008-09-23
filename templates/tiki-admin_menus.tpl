@@ -1,4 +1,12 @@
-{title help="Menus"}{tr}Admin Menus{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-admin_menus.php">{tr}Admin Menus{/tr}</a>
+
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Menus" target="tikihelp" class="tikihelp" title="{tr}Admin Menu Builder{/tr}">{icon _id='help'}</a>
+{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admin_menus.tpl" target="tikihelp" class="tikihelp" title="{tr}Edit template{/tr}: {tr}Admin Menus Template{/tr}">{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}</h1>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
   {tr}To use menus in a <a href="tiki-admin_modules.php">module</a>, <a href="tiki-admin.php?page=siteid">Site identity</a> or a template, use {literal}{menu id=x}{/literal}, where x is the ID of the menu.{/tr}
@@ -33,13 +41,7 @@
 </select>
 </td></tr>
 {if $prefs.feature_menusfolderstyle eq 'y'}
-<tr><td class="formcolor">{tr}Folder Icon{/tr}:</td><td><input type="text" name="icon" value="{$info.icon}" style="width:95%" /><br /><em>{tr}Path and filename of closed folder icon{/tr}</em>.
-
-{remarksbox type="tip" title="{tr}Note{/tr}"}
-  {tr}To use custom folder icons in menus, enter the path to the icon for the <strong>closed</strong> folder.{/tr} {tr}In the same directory, include an icon for the opened folder.{/tr} {tr}The "opened folder" icon name must be identical to the "closed folder" icon name, prefixed with the letter <strong>o</strong>.{/tr}<hr />
-  For example, the default icon is: pics/icons/folder.png {icon _id="folder"}<br />The name of the "open folder" icon is: pics/icons/ofolder.png {icon _id="ofolder"}
-{/remarksbox}
-</td></tr>
+<tr><td class="formcolor">{tr}Path to the folder icon for close sections{/tr}</td><td><input type="text" name="icon" value="{$info.icon}" /><br />{tr}Example:{/tr} styles/mose/pics/icons/folder.png<br />{tr}Provide also a folder icon for open sections with the same name with the letter 'o' before in the same directory (ex: folder.png and ofolder.png){/tr}<br />{tr}Default:{/tr}{icon _id="folder"}</td></tr>
 {/if}
 <tr><td class="formcolor">&nbsp;</td><td class="formcolor"><input type="submit" name="save" value="{tr}Save{/tr}" /></td></tr>
 </table>

@@ -45,6 +45,22 @@ class UsersLib extends TikiLib {
     $this->get_object_permissions_for_user_cache = array();
     }
 
+    function set_admin_pass($pass) {
+	global $prefs;
+
+	$query = "select `email` from `users_users` where `login` = ?";
+	$email = $this->getOne($query, array('admin'));
+	$hash = $this->hash_pass($pass);
+
+	if ($prefs['feature_clear_passwords'] == 'n')
+	    $pass = '';
+
+	$query = "update `users_users` set `password` = ?, hash = ?
+	    where `login` = ?";
+	$result = $this->query($query, array($pass, $hash, 'admin'));
+	return true;
+    }
+
     function assign_object_permission($groupName, $objectId, $objectType, $permName) {
 	$objectId = md5($objectType . strtolower($objectId));
 
@@ -1169,26 +1185,6 @@ function get_included_groups($group, $recur=true) {
 	if ( $user == 'admin' ) return false;
 
 	$userId = $this->getOne("select `userId`  from `users_users` where `login` = ?", array($user));
-
-	$groupTracker = $this->get_tracker_usergroup( $user );
-	if( $groupTracker && $groupTracker['usersTrackerId'] ) {
-		global $trklib;
-		if( ! $trklib ) require_once 'lib/trackers/trackerlib.php';
-
-		$itemId = $trklib->get_item_id( $groupTracker['usersTrackerId'], $groupTracker['usersFieldId'], $user );
-		if( $itemId )
-			$trklib->remove_tracker_item( $itemId );
-	}
-
-	$tracker = $this->get_usertracker( $userId );
-	if( $tracker && $tracker['usersTrackerId'] ) {
-		global $trklib;
-		if( ! $trklib ) require_once 'lib/trackers/trackerlib.php';
-
-		$itemId = $trklib->get_item_id( $tracker['usersTrackerId'], $tracker['usersFieldId'], $user );
-		if( $itemId )
-			$trklib->remove_tracker_item( $itemId );
-	}
 
 	$query = "delete from `users_users` where ". $this->convert_binary()." `login` = ?";
 	$result = $this->query($query, array( $user ) );
@@ -2580,7 +2576,7 @@ function get_included_groups($group, $recur=true) {
 		while ($res = $result->fetchRow()) { $ret[] = $res['type']; }
 		return $ret;									
 	}
-	function send_validation_email($name, $apass, $email, $again='', $second='', $chosenGroup='') {
+	function send_validation_email($name, $apass, $email, $again='', $second='') {
 		global $tikilib, $prefs, $smarty;
 		$foo = parse_url($_SERVER['REQUEST_URI']);
 		$foo1 = str_replace('tiki-register', 'tiki-login_validate',$foo['path']);
@@ -2604,9 +2600,6 @@ function get_included_groups($group, $recur=true) {
 				return false;
 			}
 		} elseif ($prefs['validateRegistration'] == 'y') {
-			if (!empty($chosenGroup)) {
-				$smarty->assign_by_ref('chosenGroup', $chosenGroup);
-			}
 			$mail_data = $smarty->fetch('mail/moderate_validation_mail.tpl');
 			$mail_subject = $smarty->fetch('mail/moderate_validation_mail_subject.tpl');
 			if ($prefs['sender_email'] == NULL or !$prefs['sender_email']) {

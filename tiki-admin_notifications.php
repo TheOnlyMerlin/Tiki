@@ -17,8 +17,6 @@ if ($tiki_p_admin != 'y') {
 	die;
 }
 
-$auto_query_args = array('offset', 'sort_mode', 'find', 'maxRecords');
-
 $watches['user_registers'] = array(
 	'label'=>tra('A user registers'),
 	'type'=>'users',
@@ -127,13 +125,12 @@ if (isset($_REQUEST["find"])) {
 } else {
 	$find = '';
 }
-$smarty->assign_by_ref('find', $find);
+if (isset($_REQUEST['numrows']) && $maxRecords != $_REQUEST['numrows']) {
+	$maxRecords = $_REQUEST['numrows'];
+	$smarty->assign('numrows', $maxRecords);
+ }
 
-if (!empty($_REQUEST['maxRecords'])) {
-	$maxRecords = $_REQUEST['maxRecords'];
-}
-$smarty->assign_by_ref('maxRecords', $maxRecords);
-
+$smarty->assign('find', $find);
 
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 $channels = $tikilib->list_watches($offset, $maxRecords, $sort_mode, $find);

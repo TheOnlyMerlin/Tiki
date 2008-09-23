@@ -1,13 +1,13 @@
 {* $Id$ *}
 {if !( $searchNoResults ) }
-  {title}{tr}Search results{/tr}{/title}
+<h1>{tr}Search results{/tr}:</h1>
 {/if}
 
 {if !( $searchStyle eq "menu" )}
   <div class="nohighlight navbar">
     <p>{tr}Search in{/tr}:</p>
 	{foreach item=name key=k from=$where_list}
-      	<a {if $where eq $k}id="highlight"{/if} href="tiki-searchindex.php?highlight={$words}&amp;where={$k}">{tr}{$name}{/tr}</a>
+      	<a class="linkbut" {if $where eq $k}id="highlight"{/if} href="tiki-searchindex.php?highlight={$words}&amp;where={$k}">{tr}{$name}{/tr}</a>
    	{/foreach}
   </div><!--nohighlight-->
   {* do not change the comment below, since smarty 'highlight' outputfilter is hardcoded to find exactly this... instead you may experience white pages as results *}

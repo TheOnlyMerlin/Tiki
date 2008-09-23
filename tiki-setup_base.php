@@ -63,14 +63,10 @@ $needed_prefs = array(
 	'feature_intertiki_sharedcookie' => 'n',
 	'interlist' => array(),
 	'auth_method' => 'tiki',
-	'smarty_security' => 'n',
-	'feature_pear_date' => 'y'
+	'smarty_security' => 'n'
 );
-
 $tikilib->get_preferences($needed_prefs, true, true);
 extract($prefs);
-require_once('lib/tikidate.php');
-$tikidate = new TikiDate();
 
 // Handle Smarty Security
 if ( $prefs['smarty_security'] == 'y' ) {
@@ -84,11 +80,19 @@ if ($prefs['session_lifetime'] > 0) {
 
 // is session data  stored in DB or in filesystem?
 if ($prefs['session_db'] == 'y') {
-	if ($api_tiki == 'adodb') {
-		require_once('tikisession-adodb.php');
-	} elseif ($api_tiki == 'pdo') {
-		require_once('tikisession-pdo.php');
-	}
+	include('db/local.php');
+	$ADODB_SESSION_DRIVER=$db_tiki;
+	$ADODB_SESSION_CONNECT=$host_tiki;
+	$ADODB_SESSION_USER=$user_tiki;
+	$ADODB_SESSION_PWD=$pass_tiki;
+	$ADODB_SESSION_DB=$dbs_tiki;
+	unset($db_tiki);
+	unset($host_tiki);
+	unset($user_tiki);
+	unset($pass_tiki);
+	unset($dbs_tiki);
+	ini_set('session.save_handler','user');
+	include_once('lib/adodb/session/adodb-session.php');
 }
 
 // Only accept PHP's session ID in URL when the request comes from the tiki server itself
@@ -143,14 +147,21 @@ make_clean($_COOKIE,get_magic_quotes_gpc());
 make_clean($_SERVER['QUERY_STRING']);
 make_clean($_SERVER['REQUEST_URI']);
 
-// deal with old request globals (e.g. used by Smarty)
-$GLOBALS['HTTP_GET_VARS'] =& $_GET;
-$GLOBALS['HTTP_POST_VARS'] =& $_POST;
-$GLOBALS['HTTP_COOKIE_VARS'] =& $_COOKIE;
-unset($GLOBALS['HTTP_ENV_VARS']);
-unset($GLOBALS['HTTP_SERVER_VARS']);
-unset($GLOBALS['HTTP_SESSION_VARS']);
-unset($GLOBALS['HTTP_POST_FILES']);
+// deal with old request globals
+// Tiki uses them (admin for instance) so compatibility is required
+if ( false ) { // if pre-PHP 4.1 compatibility is not required
+	unset($GLOBALS['HTTP_GET_VARS']);
+	unset($GLOBALS['HTTP_POST_VARS']);
+	unset($GLOBALS['HTTP_COOKIE_VARS']);
+	unset($GLOBALS['HTTP_ENV_VARS']);
+	unset($GLOBALS['HTTP_SERVER_VARS']);
+	unset($GLOBALS['HTTP_SESSION_VARS']);
+	unset($GLOBALS['HTTP_POST_FILES']);
+} else {
+	$GLOBALS['HTTP_GET_VARS'] =& $_GET;
+	$GLOBALS['HTTP_POST_VARS'] =& $_POST;
+	$GLOBALS['HTTP_COOKIE_VARS'] =& $_COOKIE;
+}
 
 // mose : simulate strong var type checking for http vars
 $patterns['login']   = "/^[-_a-zA-Z0-9@\.]*$/"; // special check for logins, not to be used in varcheck because compat with already created accounts
@@ -172,7 +183,7 @@ $vartype['offset'] = 'intSign';
 $vartype['prev_offset'] = 'intSign';
 $vartype['next_offset'] = 'intSign';
 $vartype['thresold'] = 'int';
-$vartype['sort_mode'] = '+char';
+$vartype['sort_mode'] = '+char'; // TODO: only allow valid field names and order here!
 $vartype['file_sort_mode'] = 'char';
 $vartype['file_offset'] = 'int';
 $vartype['file_find'] = 'string';
@@ -181,11 +192,11 @@ $vartype['file_next_offset'] = 'intSign';
 $vartype['comments_offset'] = 'int';
 $vartype['comments_thresold'] = 'int';
 $vartype['comments_parentId'] = '+int';
-$vartype['thread_sort_mode'] = '+char';
-$vartype['thread_style'] = '+char';
+$vartype['thread_sort_mode'] = '+char';  // TODO: only allow valid field names and order here!
+$vartype['thread_style'] = '+char';  // TODO: only allow valid field names and order here!
 $vartype['comments_per_page'] = '+int';
 $vartype['topics_offset'] = 'int';
-$vartype['topics_sort_mode'] = '+char';
+$vartype['topics_sort_mode'] = '+char';  // TODO: only allow valid field names and order here!
 $vartype['priority'] = 'int';
 $vartype['theme'] = 'string';
 $vartype['flag'] = 'char';
@@ -223,7 +234,7 @@ $vartype['game'] = 'string'; // from games
 $vartype['aid'] = '+int';
 $vartype['description'] = 'string';
 $vartype['filter_active'] = 'char';
-$vartype['filter_name'] = 'string';
+$vartype['filter_name'] = '+string';
 $vartype['newmajor'] = '+int';
 $vartype['newminor'] = '+int';
 $vartype['pid'] = '+int';
@@ -232,7 +243,6 @@ $vartype['rolename'] = 'char';
 $vartype['type'] = 'string';
 $vartype['userole'] = 'int';
 $vartype['focus'] = 'string';
-$vartype['filegals_manager'] = 'vars';
 $vartype['ver'] = 'dotvars'; // filename hash for drawlib + rss type for rsslib
 
 function varcheck(&$array, $category) {

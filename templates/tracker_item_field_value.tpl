@@ -11,8 +11,6 @@
  or ($tracker_info.writerCanModify eq 'y' and $user and $my eq $user) or ($tracker_info.writerCanModify eq 'y' and $group and $ours eq $group))}
 	{if empty($url)}
 		{assign var=urll value="tiki-view_tracker_item.php?itemId=`$item.itemId`&amp;trackerId=`$item.trackerId`&amp;show=view"}
-	{elseif strstr($url, 'itemId')}
-		{assign var=urll value=$url|regex_replace:"/itemId=?/":"itemId=`$item.itemId`"}
 	{else}
 		{assign var=urll value=$url}
 	{/if}
@@ -48,7 +46,10 @@
 			{if $field_value.options_array[4] eq '1' and $showlinks ne 'n' and $list_mode ne 'csv'}
 				<a href="tiki-view_tracker_item.php?itemId={$tid}&amp;trackerId={$field_value.options_array[0]}">
 			{/if}
-			{if $list_mode eq 'y'}
+			{if isset($field_value.otherField)}
+				{assign var='field_value.otherField.value' value=$tlabel}
+				{include file="tracker_item_field_value.tpl" field_value=$field_value.otherField showlinks=n}
+			{elseif $list_mode eq 'y'}
 				{$tlabel|truncate:255:"..."}
 			{else}
 				{$tlabel}
@@ -100,8 +101,6 @@
 		{$field_value.value|escape}
 	{/if}
 
-
-
 {* -------------------- image -------------------- *}
 {elseif $field_value.type eq 'i'}
 	{if $list_mode eq 'csv'}
@@ -119,18 +118,18 @@
 {* -------------------- Multimedia -------------------- *}
 {elseif $field_value.type eq 'M'}
 	{if $field_value.value ne ''}	
-	{if isset($cur_field.options_array[1]) and $field_value.options_array[1] ne '' }
+	{if  $field_value.options_array[1] ne '' }
 		{assign var='Height' value=$prefs.MultimediaDefaultHeight}
 	{else}
 		{assign var='Height' value=$field_value.options_array[1]}
 	{/if}
-	{if isset($cur_field.options_array[2]) and $field_value.options_array[2] ne '' }
-		{assign var='Length' value=$field_value.options_array[2]}
+	{if  $field_value.options_array[2] ne '' }
+		{assign var='Lenght' value=$field_value.options_array[2]}
 	{else}
-		{assign var='Length' value=$prefs.MultimediaDefaultLength}
+		{assign var='Lenght' value=$prefs.MultimediaDefaultLength}
 	{/if}
 	{if $ModeVideo eq 'y' } { assign var="Height" value=$Height+$prefs.VideoHeight}{/if}
-	{include file=multiplayer.tpl url=$field_value.value w=$Length h=$Height video=$ModeVideo}
+	{include file=multiplayer.tpl url=$field_value.value w=$Lenght h=$Height video=$ModeVideo}
 	{/if}
 
 {* -------------------- file -------------------- *}
@@ -154,16 +153,6 @@
 		{$field_value.value}
 	{else}
 		{$field_value.value|escape}
-	{/if}
-
-{* -------------------- page selector ------------------------- *} 
-{elseif $field_value.type eq  'k'}
-	{if $list_mode eq 'y'}
-		{wiki}(({$field_value.value|escape})){/wiki}
-	{elseif $list_mode eq 'csv'}
-		{$field_value.value}
-	{else}
-		{wiki}(({$field_value.value|escape})){/wiki}
 	{/if}
 
 {* -------------------- textarea -------------------- *}
@@ -253,7 +242,7 @@
 		&nbsp;{if $field_value.value >= 0}&nbsp;{/if}{$field_value.value|default:"-"}&nbsp;</b>
 		</span>
 		{if $tiki_p_tracker_vote_ratings eq 'y'}
-			<span><span class="button2">
+			<span nowrap="nowrap"><span class="button2">
 			{if $item.my_rate eq NULL}
 				<b class="linkbut highlight">-</b>
 			{else}
@@ -261,7 +250,8 @@
 					trackerId={$item.trackerId}
 					&amp;itemId={$item.itemId}
 					&amp;ins_{$field_value.fieldId}=NULL
-					{if $page}&amp;page={$page|escape:url}{/if}">-</a>
+					{if $page}&amp;page={$page|escape:url}{/if}"
+					class="linkbut">-</a>
 			{/if}
 				{section name=i loop=$field_value.options_array}
 					{if $field_value.options_array[i] eq $item.my_rate}
@@ -271,7 +261,8 @@
 						trackerId={$item.trackerId}
 						&amp;itemId={$item.itemId}
 						&amp;ins_{$field_value.fieldId}={$field_value.options_array[i]}
-						{if $page}&amp;page={$page|escape:url}{/if}">{$field_value.options_array[i]}</a>
+						{if $page}&amp;page={$page|escape:url}{/if}"
+						class="linkbut">{$field_value.options_array[i]}</a>
 					{/if}
 				{/section}
 			</span></span>
@@ -311,7 +302,38 @@
 {* -------------------- google map -------------------- *}
 {elseif $field_value.type eq 'G'}
 	{if $prefs.feature_gmap eq 'y'}
-		{include file='tracker_item_field_googlemap_value.tpl'}
+{/strip}
+	Google Map : X = {$field_value.x} ; Y = {$field_value.y} ; Zoom = {$field_value.z}
+	<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key={$prefs.gmap_key}" type="text/javascript">
+	</script>
+	<div id="map" style="width: 500px; height: 400px;border: 1px solid #000;">
+	</div>
+	<script type="text/javascript">
+	<!--//--><![CDATA[//><!--
+	function load() {literal}{{/literal}
+	var map = new GMap2(document.getElementById("map"));
+	  map.addControl(new GLargeMapControl());
+	  map.addControl(new GMapTypeControl());
+	  map.addControl(new GScaleControl());
+	  map.setCenter(new GLatLng({$field_value.y}, {$field_value.x}), {$field_value.z});
+	  map.addOverlay(new GMarker(new GLatLng({$field_value.y},{$field_value.x})));
+
+/*	  GEvent.addListener(map, "zoomend", function(gold, gnew) {literal}{{/literal}
+	    document.getElementById('defz').value = gnew;
+	    document.getElementById('pointz').value = gnew;
+	  {literal}});{/literal}
+
+	  GEvent.addListener(map, "moveend", function() {literal}{{/literal}
+	    document.getElementById('defx').value = map.getCenter().x;
+	    document.getElementById('defy').value = map.getCenter().y;
+	  {literal}});{/literal}
+*/
+	{literal}}{/literal}
+//	load();
+	window.onload=load;
+	//--><!]]>
+	</script>
+{strip}
 	{else}
 	  {tr}Google Maps is not enabled.{/tr}
 	{/if}

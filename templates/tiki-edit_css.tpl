@@ -1,4 +1,12 @@
-{title help="Edit+CSS"}{tr}Edit Style Sheet{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-edit_css.php">{tr}Edit Style Sheet{/tr}</a>
+
+      {if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Edit+CSS" target="tikihelp" class="tikihelp" title="{tr}Edit CSS{/tr}">
+{icon _id='help'}</a>{/if}
+
+      {if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-edit_css.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Edit CSS{/tr}">
+{icon _id='shape_square_edit'}</a>{/if}</h1>
 
 <div>
 <form method="post" action="tiki-edit_css.php">
@@ -23,14 +31,14 @@
 <div class="">{tr}File with names appended by -{$user} are modifiable, others are only duplicable and be used as model.{/tr}</div>
 
 {section name=l loop=$css}
-<div style="padding:4px;">
+<div style="padding:4px;border-bottom:1px solid #c3b3a3;">
 <div style="float:right;">{$css[l].id}</div>
-<div class="comment">{$css[l].comment}</div>
+<div style="font-size:80%;background-color: #eeeece;">{$css[l].comment}</div>
 {section name=i loop=$css[l].items}
-<div style="font-weight: bold;">{$css[l].items[i]}</div>
+<div style="font-weight: bold;background-color:white;">{$css[l].items[i]}</div>
 {/section}
 {foreach item=v key=a from=$css[l].attributes}
-<div style="margin-left:10px;">{$a|string_format:"%'.-22s"} : 
+<div style="margin-left:10px;font:80% monospace;">{$a|string_format:"%'.-22s"} : 
 {$v|string_format:"%-56.s"}
 {if $v[0] eq "#"}
 <span style="height:8px;width:30px;background-color:{$v};">&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -40,7 +48,6 @@
 </div>
 {/foreach}
 </div>
-<hr />
 {/section}
 {/if}
 

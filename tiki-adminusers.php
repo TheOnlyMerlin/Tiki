@@ -145,14 +145,13 @@ function batchImportUsers() {
 }
 $cookietab = "1";
 
-if (isset($_REQUEST['batch']) && is_uploaded_file($_FILES['csvlist']['tmp_name'])) {
-	check_ticket('admin-users');
-	batchImportUsers();
-
 // Process the form to add a user here
-} elseif (isset($_REQUEST["newuser"])) {
+if (isset($_REQUEST["newuser"])) {
 	check_ticket('admin-users');
 	// if no user data entered, check if it's a batch upload  
+	if ((!$_REQUEST["name"]) and (is_uploaded_file($_FILES['csvlist']['tmp_name']))) {
+		batchImportUsers();
+	} else {
 		// Check if the user already exists
 		if ($_REQUEST["pass"] != $_REQUEST["pass2"]) {
 			$tikifeedback[] = array('num'=>1,'mes'=>tra("The passwords do not match"));
@@ -186,13 +185,13 @@ if (isset($_REQUEST['batch']) && is_uploaded_file($_FILES['csvlist']['tmp_name']
 		if (isset($tikifeedback[0]['msg'])) {
 			$logslib->add_log('adminusers','',$tikifeedback[0]['msg']);
 		}
+	}
 } elseif (isset($_REQUEST["action"])) {
 	if ($_REQUEST["action"] == 'delete' && $_REQUEST["user"] != 'admin') {
 		$area = 'deluser';
 		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
 			key_check($area);
 			$userlib->remove_user($_REQUEST["user"]);
-			$tikifeedback = array();
 			$tikifeedback[] = array('num'=>0,'mes'=>sprintf(tra("%s %s successfully deleted."),tra("user"),$_REQUEST["user"]));
 			$logslib->add_log('users',sprintf(tra("Deleted account %s"),$_REQUEST['user']));
 		} else {
@@ -395,22 +394,14 @@ if (isset($_REQUEST["user"]) and $_REQUEST["user"]) {
 
 	if (isset($_POST["edituser"]) and isset($_POST['name']) and isset($_POST['email'])) {
 		//var_dump($_POST);die;
-		if (!empty($_POST['name'])) {
+		if ($_POST['name']) {
 			if ( $userinfo['login'] != $_POST['name'] && $userinfo['login'] != 'admin' ) {
 				if ($userlib->user_exists($_POST['name'])) {
-					$tikifeedback[] = array('num'=>1,'mes'=>tra('User already exists'));
-				} elseif (!preg_match($patterns['login'],$_POST['name'])) {
-					$tikifeedback[] = array('num'=>1,'mes'=>tra("Login contains invalid characters"));
-				} elseif ($userlib->change_login($userinfo['login'],$_POST['name'])) {
-					$tikifeedback[] = array('num'=>0,'mes'=>sprintf(tra("%s changed from %s to %s"),tra("login"),$userinfo['login'],$_POST["name"]));
-					$logslib->add_log('adminusers','changed login for '.$_POST['name'].' from '.$userinfo['login'].' to '.$_POST["name"]);
-					$userinfo['login'] = $_POST['name'];
-					if ($prefs['login_is_email'] == 'y') {
-						$_POST['email'] = $_POST['name'];
-					}
-				} else {
-					$tikifeedback[] = array('num'=>1,'mes'=>sprintf(tra("Impossible to change %s from %s to %s"),tra("login"),$userinfo['email'],$_POST["email"]));
+					$smarty->assign('msg', tra("User already exists"));
+			  	$smarty->display("error.tpl");
+					die;
 				}
+				$chlogin = true;
 			}
 		}
 		if (isset($_POST['pass']) &&  $_POST["pass"]) {
@@ -425,7 +416,7 @@ if (isset($_REQUEST["user"]) and $_REQUEST["user"]) {
 			    $smarty->display("error.tpl");
 			    die;
 			}
-			if ($userlib->change_user_password($userinfo['login'], $_POST['pass'])) {
+			if ($userlib->change_user_password($_POST['name'],$_POST["pass"])) {
 				$tikifeedback[] = array('num'=>0,'mes'=>sprintf(tra("%s modified successfully."),tra("password")));
 				$logslib->add_log('adminusers','changed password for '.$_POST['name']);
 			} else {
@@ -433,14 +424,23 @@ if (isset($_REQUEST["user"]) and $_REQUEST["user"]) {
 			}
 		}
 		if ($userinfo['email'] != $_POST['email']) {
-			if ($userlib->change_user_email($userinfo['login'], $_POST['email'],'')) {
-				if ($prefs['login_is_email'] != 'y') {
-					$tikifeedback[] = array('num'=>0,'mes'=>sprintf(tra("%s changed from %s to %s"),tra("email"),$userinfo['email'],$_POST["email"]));
-					$logslib->add_log('adminusers','changed email for '.$_POST['name'].' from '.$userinfo['email'].' to '.$_POST["email"]);
-				}
+			if ($userlib->change_user_email($_POST['name'],$_POST['email'],'')) {
+				$tikifeedback[] = array('num'=>0,'mes'=>sprintf(tra("%s changed from %s to %s"),tra("email"),$userinfo['email'],$_POST["email"]));
+				$logslib->add_log('adminusers','changed email for '.$_POST['name'].' from '.$userinfo['email'].' to '.$_POST["email"]);
 				$userinfo['email'] = $_POST['email'];
 			} else {
 				$tikifeedback[] = array('num'=>1,'mes'=>sprintf(tra("Impossible to change %s from %s to %s"),tra("email"),$userinfo['email'],$_POST["email"]));
+			}
+		}
+		if ($chlogin) {
+			if (!preg_match($patterns['login'],$_POST['name'])) {
+				$tikifeedback[] = array('num'=>1,'mes'=>tra("Login contains invalid characters"));
+			} elseif ($userlib->change_login($userinfo['login'],$_POST['name'])) {
+				$tikifeedback[] = array('num'=>0,'mes'=>sprintf(tra("%s changed from %s to %s"),tra("login"),$userinfo['login'],$_POST["name"]));
+				$logslib->add_log('adminusers','changed login for '.$_POST['name'].' from '.$userinfo['login'].' to '.$_POST["name"]);
+				$userinfo['login'] = $_POST['name'];
+			} else {
+				$tikifeedback[] = array('num'=>1,'mes'=>sprintf(tra("Impossible to change %s from %s to %s"),tra("login"),$userinfo['email'],$_POST["email"]));
 			}
 		}
 		setcookie("activeTabs".urlencode(substr($_SERVER["REQUEST_URI"],1)),"tab1");
@@ -475,7 +475,6 @@ if (isset($_REQUEST["user"]) and $_REQUEST["user"]) {
 if (isset($_REQUEST['add'])) {
 	$cookietab = "2";
 }
-
 $all_groups = $userlib->get_groups();
 $smarty->assign_by_ref('all_groups', $all_groups['data']);
 

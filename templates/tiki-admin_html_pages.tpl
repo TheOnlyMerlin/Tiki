@@ -1,7 +1,18 @@
-{title help="Html+Pages"}{tr}Admin HTML pages{/tr}{/title}
+<a class="pagetitle" href="tiki-admin_html_pages.php">{tr}Admin HTML pages{/tr}</a>
+  
+{if $prefs.feature_help eq 'y'}
+  <a href="{$prefs.helpurl}Html+Pages" target="tikihelp" class="tikihelp" title="{tr}Admin Html Pages{/tr}">
+  {icon _id='help'}</a>
+{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+  <a href="tiki-edit_templates.php?template=tiki-admin_html_pages.tpl" target="tikihelp" class="tikihelp" title="{tr}View template{/tr}: {tr}Admin Html Pages Template{/tr}">
+  {icon _id='shape_square_edit'}</a>
+{/if}
+
 
 {if $pageName ne ''}
-  <div class="navbar"><a href="tiki-admin_html_pages.php">{tr}Create new HTML page{/tr}</a></div>
+  <div class="navbar"><a href="tiki-admin_html_pages.php" class="linkbut">{tr}Create new HTML page{/tr}</a></div>
 {/if}
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use {literal}{ed id=name}{/literal} or {literal}{ted id=name}{/literal} to insert dynamic zones{/tr}{/remarksbox}

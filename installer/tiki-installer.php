@@ -69,7 +69,7 @@ function process_sql_file($file,$db_tiki) {
 	}
 
 	$command = '';
-	if ( !is_file("db/$file") || !$fp = fopen("db/$file", "r") ) {
+	if(!$fp = fopen("db/$file", "r")) {
 		print('Fatal: Cannot open db/'.$file);
 		exit(1);
 	}
@@ -118,13 +118,12 @@ function process_sql_file($file,$db_tiki) {
 		}
 	}
 	$dbTiki->Execute("update `tiki_preferences` set `value`=`value`+1 where `name`='lastUpdatePrefs'");
-	unset($_SESSION['s_prefs']);
 
 	$smarty->assign_by_ref('succcommands', $succcommands);
 	$smarty->assign_by_ref('failedcommands', $failedcommands);
 }
 
-function write_local_php($dbb_tiki,$host_tiki,$user_tiki,$pass_tiki,$dbs_tiki,$dbversion_tiki="3.0") {
+function write_local_php($dbb_tiki,$host_tiki,$user_tiki,$pass_tiki,$dbs_tiki,$dbversion_tiki="2.0") {
 	global $local;
 	global $db_tiki;
 	if ($dbs_tiki and $user_tiki) {
@@ -363,6 +362,7 @@ or
 2- With shell (SSH) access, you can run the command below.
 
 	a) To run setup.sh, follow the instructions:
+		\$ bash
 		\$ cd $docroot
 		\$ sh setup.sh
 
@@ -454,13 +454,13 @@ function load_sql_scripts() {
 	//echo $dbversion_tiki . "---";
 
 	while ($file = readdir($h)) {
-        	if (preg_match('#\d\..*to.*\.sql$#',$file) || preg_match('#secdb#',$file)) {
+        	if (preg_match('#1\..*to.*\.sql$#',$file) || preg_match('#secdb#',$file)) {
                 	$files[] = $file;
         	}
 	}
 
 	closedir ($h);
-	rsort($files);
+	sort($files);
 	reset($files);
 	$smarty->assign('files', $files);
 }
@@ -528,9 +528,10 @@ if ($language != 'en')
 	$smarty->assign('lang', $language);
 
 // Tiki Database schema version
-$tiki_version = '3.0';
+$tiki_version = '2.1';
 $smarty->assign('tiki_version', $tiki_version);
-$smarty->assign('tiki_version_name', $tiki_version . ' BETA1');
+//$smarty->assign('tiki_version_name', $tiki_version . ' RC4');
+$smarty->assign('tiki_version_name', $tiki_version);
 
 // Available DB Servers
 $dbservers = array();
@@ -575,10 +576,13 @@ if ($errors) {
 TikiInit::prependIncludePath('lib/adodb');
 TikiInit::prependIncludePath('lib/pear');
 
+
 define('ADODB_FORCE_NULLS', 1);
 define('ADODB_ASSOC_CASE', 2);
 define('ADODB_CASE_ASSOC', 2); // typo in adodb's driver for sybase?
-include_once ('lib/adodb/adodb.inc.php');
+include_once ('adodb.inc.php');
+//include_once ('adodb-pear.inc.php'); //really needed?
+
 
 // next block checks if there is a local.php and if we can connect through this.
 // sets $dbcon to false if there is no valid local.php
@@ -591,6 +595,8 @@ if (!file_exists($local)) {
 	if ( $dbversion_tiki == '1.10' ) $dbversion_tiki = '2.0';
 
 	if (!isset($db_tiki)) {
+		//upgrade from 1.7.X
+		//$db_tiki="mysql";
 		//upgrade from 2.0 : if no db is specified, use the first db that this php installation can handle
 		$db_tiki = reset($dbservers);
 		write_local_php($db_tiki,$host_tiki,$user_tiki,$pass_tiki,$dbs_tiki);
@@ -695,7 +701,7 @@ if ( $admin_acc == 'n' ) $_SESSION["install-logged-$multi"] = 'y';
 $smarty->assign('dbdone', 'n');
 $smarty->assign('logged', $logged);
 
-if ( isset($dbTiki) && is_object($dbTiki) && isset($_SESSION["install-logged-$multi"]) && $_SESSION["install-logged-$multi"] == 'y' ) {
+if ( is_object($dbTiki) && isset($_SESSION["install-logged-$multi"]) && $_SESSION["install-logged-$multi"] == 'y' ) {
 	$smarty->assign('logged', 'y');
 
 	if ( isset($_REQUEST['scratch']) ) {
@@ -714,16 +720,6 @@ if ( isset($dbTiki) && is_object($dbTiki) && isset($_SESSION["install-logged-$mu
 			$dbTiki->Execute( "INSERT INTO users_objectpermissions (groupName, permName, objectType, objectId) SELECT groupName, 'tiki_p_view_categorized', objectType, objectId FROM users_objectpermissions WHERE permName = 'tiki_p_view_categories'" );
 		}
 		$smarty->assign('dbdone', 'y');
-	}
-
-	// Try to activate Apache htaccess file by renaming _htaccess into .htaccess
-	// Do nothing (but warn the user to do it manually) if:
-	//   - there is no  _htaccess file,
-	//   - there is already an existing .htaccess (that is not necessarily the one that comes from TikiWiki),
-	//   - the rename does not work (e.g. due to filesystem permissions)
-	//
-	if ( file_exists('_htaccess') && ( file_exists('.htaccess') || ! @rename('_htaccess', '.htaccess') ) ) {
-		$smarty->assign('htaccess_error', 'y');
 	}
 }
 

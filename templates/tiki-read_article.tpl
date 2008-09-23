@@ -4,7 +4,7 @@
 {if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y' and isset($freetags.data[0])}
 {include file="freetag_list.tpl"}
 {/if}
-<div class="article">
+
 {if $show_topline eq 'y' and $topline}<div class="articletopline">{$topline}</div>{/if}
 <div class="articletitle">
 <span class="titlea">
@@ -30,15 +30,42 @@
 ({$rating}/10)
 </div>
 {/if}
+
+
+<div class="articleheading">
+<table  cellpadding="0" cellspacing="0">
+<tr>{if $isfloat eq 'n'}<td  valign="top">{else}<td valign="top">{/if}
+{if $useImage eq 'y'}
+{if $hasImage eq 'y'}
+<a href="#" title="{if $show_image_caption and $image_caption}{$image_caption}{else}{tr}Article image{/tr}{/if}">
+<img {if $isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} 
+alt="{if $show_image_caption and $image_caption}{$image_caption}{else}{tr}Article image{/tr}{/if}" 
+border="0" src="article_image.php?id={$articleId}"{if $image_x > 0} width="{$image_x}"{/if}{if $image_y > 0 } height="{$image_y}"{/if} /></a>
+{else}
+<img {if $isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} 
+alt="{tr}Topic image{/tr}" border="0" src="topic_image.php?id={$topicId}" />
+{/if}
+{else}
+{section name=it loop=$topics}
+{if ($topics[it].topicId eq $topicId) and ($topics[it].image_size > 0)}
+<img {if $isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} alt="{$topicName}" border="0" src="topic_image.php?id={$topicId}" />
+{/if}
+{/section}
+{/if}
+{if $isfloat eq 'n'}
+</td><td  valign="top">
+{/if}
+<div class="articleheadingtext">{$parsed_heading}</div>
+</td></tr>
+</table>
+</div>
 <div class="articletrailer">
-<table cellpadding="0" cellspacing="0" ><tr>
-<td>
-<span>{if $show_size eq 'y'}
+<table class="wikitopline"><tr>
+<td>{if $show_size eq 'y'}
 ({$size} bytes)
-{/if}</span>
-</td>
+{/if}</td>
 {if $prefs.feature_multilingual eq 'y' and $show_lang eq 'y' and $lang}{include file="translated-lang.tpl" td='y' type='article'}{/if}
-<td>
+<td style="text-align:right;">
 {if $tiki_p_edit_article eq 'y'}
 <a class="trailer" href="tiki-edit_article.php?articleId={$articleId}">{icon _id='page_edit'}</a>
 {/if}
@@ -55,37 +82,9 @@
 <a class="trailer" href="tiki-list_articles.php?remove={$articleId}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a>
 {/if}
 </td>
-</tr></table>
-</div>
-
-<div class="articleheading">
-<table  cellpadding="0" cellspacing="0">
-<tr>{if $isfloat eq 'n'}<td  valign="top">{else}<td valign="top">{/if}
-{if $useImage eq 'y'}
-{if $hasImage eq 'y'}
-<a href="#" title="{if $show_image_caption and $image_caption}{$image_caption}{else}{tr}Article image{/tr}{/if}">
-<img {if $isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} 
-alt="{if $show_image_caption and $image_caption}{$image_caption}{else}{tr}Article image{/tr}{/if}" 
-border="0" src="article_image.php?image_type=article&amp;id={$articleId}"{if $image_x > 0} width="{$image_x}"{/if}{if $image_y > 0 } height="{$image_y}"{/if} /></a>
-{else}
-<img {if $isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} 
-alt="{tr}Topic image{/tr}" border="0" src="article_image.php?image_type=topic&amp;id={$topicId}" />
-{/if}
-{else}
-{section name=it loop=$topics}
-{if ($topics[it].topicId eq $topicId) and ($topics[it].image_size > 0)}
-<img {if $isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} alt="{$topicName}" border="0" src="article_image.php?image_type=topic&amp;id={$topicId}" />
-{/if}
-{/section}
-{/if}
-{if $isfloat eq 'n'}
-</td><td  valign="top">
-{/if}
-<div class="articleheadingtext">{$parsed_heading}</div>
-</td></tr>
+</tr>
 </table>
 </div>
-
 <div class="articlebody">
 {if $tiki_p_read_article eq 'y'}
 	{$parsed_body}
@@ -124,7 +123,7 @@ alt="{tr}Topic image{/tr}" border="0" src="article_image.php?image_type=topic&am
     <p class="editdate">{tr}The content on this page is licensed under the terms of the{/tr} <a href="tiki-index.php?page={$prefs.wikiLicensePage}&amp;copyrightpage={$page|escape:"url"}">{$prefs.wikiLicensePage}</a>.</p>
   {/if}
 {/if}
-</div>
+
 
 {if $prefs.feature_article_comments == 'y'
   && (($tiki_p_read_comments  == 'y'

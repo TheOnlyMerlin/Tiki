@@ -1,6 +1,12 @@
 {* $Id$ *}
+<h1><a class="pagetitle" href="tiki-admin_system.php">{tr}System Admin{/tr}</a>
 
-{title help="System+Admin"}{tr}System Admin{/tr}{/title}
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}System+Admin" target="tikihelp" class="tikihelp" title="{tr}system admin{/tr}">
+{icon _id='help'}</a>{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admin_system.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}system admin tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>{/if}</h1>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}If your Tiki is acting weird, first thing to try is to clear your cache below. Also very important is to clear your cache after an upgrade (by FTP/SSH when needed).{/tr}{/remarksbox}
 

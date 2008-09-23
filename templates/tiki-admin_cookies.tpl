@@ -1,5 +1,12 @@
-{title help="Cookie"}{tr}Admin cookies{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-admin_cookies.php">{tr}Admin cookies{/tr}</a>
+  
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Cookie" target="tikihelp" class="tikihelp" title="{tr}Cookie{/tr}">{icon _id='help'}</a>
+{/if}
 
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admin_cookies.tpl" target="tikihelp" class="tikihelp" title="{tr}View template{/tr}: {tr}Admin FortuneCookie tpl{/tr}">{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}</h1>
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}To use cookie in a text area (Wiki page, etc), a <a class="rbox-link" href="tiki-admin_modules.php">module</a> or a template, use {literal}{cookie}{/literal}.{/tr}{/remarksbox}
 <h2>{tr}Create/edit cookies{/tr}</h2>
 <form action="tiki-admin_cookies.php" method="post">
@@ -22,18 +29,11 @@
 <br />
 
 <h2>{tr}Cookies{/tr}</h2>
-{if $channels}
-	<div class="navbar">
-		<span class="button2">
-			<a href="tiki-admin_cookies.php?removeall=1">{tr}Remove all cookies{/tr}</a>
-		</span>
-	</div>
+{if $channels}<a href="tiki-admin_cookies.php?removeall=1" class="linkbut">{tr}Remove all cookies{/tr}</a><br /><br />
 {/if}
-
 {if $channels or ($find ne '')}
   {include file='find.tpl' _sort_mode='y'}
 {/if}
-
 <table class="normal">
 <tr>
 <td class="heading"><a class="tableheading" href="tiki-admin_cookies.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'cookieId_desc'}cookieId_asc{else}cookieId_desc{/if}">{tr}ID{/tr}</a></td>

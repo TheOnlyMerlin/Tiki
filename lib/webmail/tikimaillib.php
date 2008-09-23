@@ -9,9 +9,7 @@ include_once("lib/webmail/htmlMimeMail.php");
 class TikiMail extends HtmlMimeMail {
 		var $charset;
 	
-	/* $user = user you send the mail
-	   $from = email you send from*/
-	function TikiMail($user = null, $from=null) {
+	function TikiMail($user = null) {
 		global $prefs, $tikilib;
 
 		parent::htmlMimeMail();
@@ -21,13 +19,11 @@ class TikiMail extends HtmlMimeMail {
 		$this->setHeadCharset($this->charset);
 		if (isset($prefs['mail_crlf']))
 			$this->setCrlf($prefs['mail_crlf'] == "LF"? "\n": "\r\n");
-		if (empty($from))
-			$from = $prefs['sender_email'];
-		$this->setFrom($from);
+		$this->setFrom($prefs['sender_email']);
 		if (!@ini_get('safe_mode'))
-			$this->setReturnPath($from); // in safe-mode, return-path must then be configured at the server level
-		$this->setHeader("Return-Path", "<".$from.">"); // just in case, mainly will not work as usually the server rewrites the envelop
-		$this->setHeader("Reply-To",  "<".$from.">");
+			$this->setReturnPath($prefs['sender_email']); // in safe-mode, return-path must then be configured at the server level
+		$this->setHeader("Return-Path", "<".$prefs['sender_email'].">"); // just in case, mainly will not work as usually the server rewrites the envelop
+		$this->setHeader("Reply-To",  "<".$prefs['sender_email'].">");
 	}
 
 	function setUser($user) {

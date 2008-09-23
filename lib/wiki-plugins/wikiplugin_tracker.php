@@ -6,102 +6,9 @@
 
 function wikiplugin_tracker_help() {
 	$help = tra("Displays an input form for tracker submit").":\n";
-	$help.= "~np~{TRACKER(trackerId=1, fields=id1:id2:id3, action=Name of submit button, showtitle=n, showdesc=n, showmandatory=n, embedded=n, url=\"http://site.com\", values=val1:val2:val3, sort=n, preview=preview, view=user|page, tpl=x.tpl,wiki=page,newstatus=o|p|c, itemId=)}Notice{TRACKER}~/np~";
+	$help.= "~np~{TRACKER(trackerId=1, fields=id1:id2:id3, action=Name of submit button, showtitle=n, showdesc=n, showmandatory=n, embedded=n, url=\"http://site.com\", values=val1:val2:val3, sort=n, preview=preview, view=user, tpl=x.tpl,wiki=page,newstatus=o|p|c)}Notice{TRACKER}~/np~";
 	return $help;
 }
-
-function wikiplugin_tracker_info() {
-	return array(
-		'name' => tra('Tracker'),
-		'documentation' => 'PluginTracker',
-		'description' => tra("Displays an input form for tracker submit"),
-		'prefs' => array( 'feature_trackers', 'wikiplugin_tracker' ),
-		'body' => tra('Notice'),
-		'params' => array(
-			'trackerId' => array(
-				'required' => true,
-				'name' => tra('Tracker ID'),
-				'description' => tra('Tracker ID'),
-			),
-			'fields' => array(
-				'required' => true,
-				'name' => tra('Fields'),
-				'description' => tra('Colon-separated list of field IDs to be displayed. Example: 2:4:5'),
-			),
-			'action' => array(
-				'required' => false,
-				'name' => tra('Action'),
-				'description' => tra('Label on the submit button'),
-			),
-			'showtitle' => array(
-				'required' => false,
-				'name' => tra('Show Title'),
-				'description' => tra('y|n'),
-			),
-			'showdesc' => array(
-				'required' => false,
-				'name' => tra('Show Description'),
-				'description' => tra('y|n'),
-			),
-			'showmandatory' => array(
-				'required' => false,
-				'name' => tra('Show Mandatory'),
-				'description' => tra('y|n'),
-			),
-			'embedded' => array(
-				'required' => false,
-				'name' => tra('Embedded'),
-				'description' => tra('y|n'),
-			),
-			'url' => array(
-				'required' => false,
-				'name' => tra('URL'),
-				'description' => tra('Url used for the field links'),
-			),
-			'values' => array(
-				'required' => false,
-				'name' => tra('Values'),
-				'description' => tra('Colon-separated list of values.').' '.tra('Note that plugin arguments can be enclosed with double quotes "; this allows them to contain , or :'),
-			),
-			'sort' => array(
-				'required' => false,
-				'name' => tra('Sort'),
-				'description' => tra('y|n'),
-			),
-			'preview' => array(
-				'required' => false,
-				'name' => tra('Preview'),
-				'description' => tra('preview'),
-			),
-			'view' => array(
-				'required' => false,
-				'name' => tra('View'),
-				'description' => tra('user|page'),
-			),
-			'itemId' =>array(
-				'required' => false,
-				'name' => tra('itemId'),
-				'description' => tra('itemId if you want to edit an item'),
-			),
-			'tpl' => array(
-				'required' => false,
-				'name' => tra('Template File'),
-				'description' => tra('Name of the template used to display the tracker items.'),
-			),
-			'wiki' => array(
-				'required' => false,
-				'name' => tra('Wiki'),
-				'description' => tra('Name of the wiki page containing the template to display the tracker items.'),
-			),
-			'newstatus' => array(
-				'required' => false,
-				'name' => tra('New Status'),
-				'description' => tra('o|p|c, default status applied to newly created items.'),
-			),
-		),
-	);
-}
-
 function wikiplugin_tracker_name($fieldId, $name, $field_errors) {
 	foreach($field_errors['err_mandatory'] as $f) {
 		if ($fieldId == $f['fieldId'])
@@ -114,7 +21,7 @@ function wikiplugin_tracker_name($fieldId, $name, $field_errors) {
 	return $name;
 }
 function wikiplugin_tracker($data, $params) {
-	global $tikilib, $userlib, $dbTiki, $user, $group, $page, $tiki_p_admin, $tiki_p_create_tracker_items, $smarty, $prefs, $trklib, $tiki_p_tracker_vote_ratings, $tiki_p_wiki_admin_attachments;
+	global $tikilib, $userlib, $dbTiki, $user, $group, $page, $tiki_p_admin, $tiki_p_create_tracker_items, $smarty, $prefs, $trklib, $tiki_p_tracker_vote_ratings;
 	include_once('lib/trackers/trackerlib.php');
 	
 	//var_dump($_REQUEST);
@@ -139,14 +46,8 @@ function wikiplugin_tracker($data, $params) {
 	} elseif (!empty($trackerId) && !empty($view) && $view == 'user') {// the user item of a tracker
 		$itemId = $trklib->get_user_item($trackerId, $tracker);
 		$usertracker = true;
-	} elseif (!empty($trackerId) && !empty($view) && $view == 'page' && !empty($_REQUEST['page']) && ($f = $trklib->get_field_id_from_type($trackerId, 'k', '1%'))) {// the page item
-		$itemId = $trklib->get_item_id($trackerId, $f, $_REQUEST['page']);
 	} elseif (!empty($trackerId) && !empty($_REQUEST['view_user'])) {
 		$itemId = $trklib->get_user_item($trackerId, $tracker, $_REQUEST['view_user']);
-	} elseif (!empty($_REQUEST['itemId'])) {
-		$itemId = $_REQUEST['itemId'];
-		$item = $trklib->get_tracker_item($itemId);
-		$trackerId = $item['trackerId'];
 	}
 	if (!isset($trackerId)) {
 		return $smarty->fetch("wiki-plugins/error_tracker.tpl");
@@ -180,10 +81,7 @@ function wikiplugin_tracker($data, $params) {
 
 	if (isset($values)) {
 		if (!is_array($values)) {
-			$values = $tikilib->quotesplit(':', $values);
-			foreach ($values as $i=>$v) {
-				$values[$i] = preg_replace('/^"(.*)"$/', '$1', $v);
-			}
+			$values = explode(':', $values);
 		}
 	}
 	if (isset($_REQUEST['values'])) {
@@ -249,14 +147,7 @@ function wikiplugin_tracker($data, $params) {
 				foreach ($flds['data'] as $fl) {
 					// store value to display it later if form
 					// isn't fully filled.
-					if ($flds['data'][$cpt]['type'] == 's' && $flds['data'][$cpt]['name'] == 'Rating') {
-						if (isset($_REQUEST['track'][$fl['fieldId']])) {
-							$newItemRate = $_REQUEST['track'][$fl['fieldId']];
-							$newItemRateField = $fl['fieldId'];
-						} else {
-							$newItemRate = NULL;
-						}
-					} elseif (($flds['data'][$cpt]['type'] == 'u' || $flds['data'][$cpt]['type'] == 'g' || $flds['data'][$cpt]['type'] == 'I' || $flds['data'][$cpt]['type'] == 'k') && ($flds['data'][$cpt]['options_array'][0] == '1' || $flds['data'][$cpt]['options_array'][0] == '2') && $tiki_p_admin_trackers != 'y' && empty($_REQUEST['track'][$fl['fieldId']])) {
+					if (($flds['data'][$cpt]['type'] == 'u' || $flds['data'][$cpt]['type'] == 'g' || $flds['data'][$cpt]['type'] == 'I') && ($flds['data'][$cpt]['options_array'][0] == '1' || $flds['data'][$cpt]['options_array'][0] == '2') && $tiki_p_admin_trackers != 'y' && empty($_REQUEST['track'][$fl['fieldId']])) {
 						if (empty($itemId) && ($flds['data'][$cpt]['options_array'][0] == '1' || $flds['data'][$cpt]['options_array'][0] == '2')) {
 							if ($flds['data'][$cpt]['type'] == 'u')
 								$_REQUEST['track'][$fl['fieldId']] = empty($user)?(empty($_REQUEST['name'])? '':$_REQUEST['name']):$user;
@@ -264,8 +155,6 @@ function wikiplugin_tracker($data, $params) {
 								$_REQUEST['track'][$fl['fieldId']] = $group;
 							elseif ($flds['data'][$cpt]['type'] == 'I')
 								$_REQUEST['track'][$fl['fieldId']] = isset($_SERVER['REMOTE_ADDR'])?$_SERVER['REMOTE_ADDR']: '';
-							elseif ($flds['data'][$cpt]['type'] == 'k')
-								$_REQUEST['track'][$fl['fieldId']] = isset($_REQUEST['page'])?$_REQUEST['page']: '';
 						} elseif (!empty($itemId) && $flds['data'][$cpt]['options_array'][0] == '2') {
 							if ($flds['data'][$cpt]['type'] == 'u')
 								$_REQUEST['track'][$fl['fieldId']] = $user;
@@ -387,9 +276,6 @@ function wikiplugin_tracker($data, $params) {
 					}
 					$rid = $trklib->replace_item($trackerId,$itemId,$ins_fields, $status, $ins_categs);
 					$trklib->categorized_item($trackerId, $rid, $mainfield, $ins_categs);
-					if (isset($newItemRate)) {
-						$trklib->replace_rating($trackerId, $rid, $newItemRateField, $user, $newItemRate);
-					}
 					if (!empty($email)) {
 						$emailOptions = split("\|", $email);
 						if (is_numeric($emailOptions[0])) {
@@ -448,7 +334,7 @@ function wikiplugin_tracker($data, $params) {
 					$smarty->assign('wikiplugin_tracker', $trackerId);//used in vote plugin
 				}
 
-			} else if (empty($itemId) && !empty($values) || (!empty($_REQUEST['values']) and empty($_REQUEST['prefills']))) { // assign default values for each filedId specify
+			} else if (!empty($values) || (!empty($_REQUEST['values']) and empty($_REQUEST['prefills']))) { // assign default values for each filedId specify
 				if (empty($values)) { // url with values[]=x&values[] witouth the list of fields
 					$values = $_REQUEST['values'];
 				}
@@ -662,10 +548,6 @@ function wikiplugin_tracker($data, $params) {
 							$quicktags = $quicktagslib->list_quicktags(0, -1, 'taglabel_desc', '', 'trackers');
 							$smarty->assign_by_ref('quicktags', $quicktags['data']);
 						}
-					} elseif ($f['type'] == 'l' && isset($itemId)) {
-						$opts[1] = split(':', $f['options_array'][1]);
-						$finalFields = explode('|', $f['options_array'][3]);
-						$flds['data'][$i]['value'] = $trklib->get_join_values($itemId, array_merge(array($f['options_array'][2]), array($f['options_array'][1]), array($finalFields[0])), $f['options_array'][0], $finalFields);
 					}
 				}
 			}
@@ -695,7 +577,7 @@ function wikiplugin_tracker($data, $params) {
 					if (!empty($tpl) || !empty($wiki)) {
 						$smarty->assign_by_ref('field_value', $f);
 						$smarty->assign('f_'.$f['fieldId'], $smarty->fetch('tracker_item_field_input.tpl'));
-					} else {
+					} elseif (true) { // comment this block in problem
 						if (in_array($f['fieldId'], $optional)) {
 							$f['name'] = "<i>".$f['name']."</i>";
 						}
@@ -710,16 +592,242 @@ function wikiplugin_tracker($data, $params) {
 							$smarty->assign_by_ref('item', $item);
 						}
 						$back .= $smarty->fetch('tracker_item_field_input.tpl');
-					}
-
-					if (!empty($f['description']) && $f['type'] != 'h' && $f['type'] != 'S') {
-						$back .= '<br />';
-						if ($f['descriptionIsParsed'] == 'y') {
-							$back .= $tikilib->parse_data($f['description']);
-						} else {
-							$back .= '<i>'.$f['description'].'</i>';
+					} else {//old
+					// numeric or text field
+					if ($f['type'] == 't' or $f['type'] == 'n' and $f["fieldId"] != $embeddedId or $f['type'] == 'm') {
+						$back.= "<tr><td>".wikiplugin_tracker_name($f['fieldId'], $f['name'], $field_errors);
+						if ($showmandatory == 'y' and $f['isMandatory'] == 'y') {
+							$back.= "&nbsp;<b>*</b>&nbsp;";
+							$onemandatory = true;
 						}
+						$back.= "</td><td>";
+						$back.= '<input type="text" name="track['.$f["fieldId"].']" value="'.$f['value'].'"';
+						if (isset($f['options_array'][1])) {
+							$back.= 'size="'.$f['options_array'][1].'" maxlength="'.$f['options_array'][1].'"';
+						} else {
+							$back.= 'size="30"';
+						}
+						$back.= '/>';
+					// item link
+					} elseif ($f['type'] == 'r') {
+						$back.= "<tr><td>".wikiplugin_tracker_name($f['fieldId'], $f['name'], $field_errors);
+						if ($showmandatory == 'y' and $f['isMandatory'] == 'y') {
+							$back.= "&nbsp;<b>*</b>&nbsp;";
+							$onemandatory = true;
+						}
+						$back.= "</td><td>";
+						$back.= '<select name="track['.$f["fieldId"].']">';
+						$back.= '<option value=""></option>';
+						foreach ($f['list'] as $key=>$item) {
+							$selected = $f['value'] == $item ? 'selected="selected"' : '';
+							$back .= '<option value="'.$item.'" '.$selected.'>';
+							$back .= isset($f['displayedList'][$key])? $f['displayedList'][$key]: $item;
+							$back .= '</option>';
+						}
+						$back.= "</select>";
+					// country
+					} elseif ($f['type'] == 'y') {
+						$back.= "<tr><td>".wikiplugin_tracker_name($f['fieldId'], $f['name'], $field_errors);
+						if ($showmandatory == 'y' and $f['isMandatory'] == 'y') {
+							$back.= "&nbsp;<b>*</b>&nbsp;";
+							$onemandatory = true;
+						}
+						$back.= "</td><td>";
+						$back.= '<select name="track['.$f["fieldId"].']">';
+						$back .= '<option value=""></option>';
+						foreach ($f['flags'] as $flag) {
+							$selected = $f['value'] == $flag ? 'selected="selected"' : '';
+							if (!isset($f['options_array'][0]) ||  $f['options_array'][0] != '1')
+								$selected .= ' style="background-image:url(\'img/flags/'.$flag.'.gif\');background-repeat:no-repeat;padding-left:25px;padding-bottom:3px;"';
+							$back.= '<option value="'.$flag.'" '.$selected.'>'.tra($flag).'</option>';
+						}
+						$back.= "</select>";
+					// textarea
+					} elseif ($f['type'] == 'a') {
+						$back.= "<tr><td>".wikiplugin_tracker_name($f['fieldId'], $f['name'], $field_errors);
+						if ($showmandatory == 'y' and $f['isMandatory'] == 'y') {
+							$back.= "&nbsp;<b>*</b>&nbsp;";
+							$onemandatory = true;
+						}
+						$back.= "</td><td>";
+						if( isset($f['options_array'][1]) ) {
+							$back.= '<textarea cols="'.$f['options_array'][1].'" rows="'.$f['options_array'][2].'" name="track['.$f["fieldId"].']" wrap="soft">'.$f['value'].'</textarea>';
+						} else {
+							$back.= '<textarea cols="29" rows="7" name="track['.$f["fieldId"].']" wrap="soft">'.$f['value'].'</textarea>';
+						}
+					// user selector
+					} elseif (($f['type'] == 'u' or $f['type'] == 'g' or $f['type'] == 'I') and ($f['options_array'][0] == '1' or $f['options_array'][0] == '2')) {
+						$back.= '<tr><td>'.wikiplugin_tracker_name($f['fieldId'], $f['name'], $field_errors).'</td><td>';
+						$back .= ($f['type'] == 'I')? $_SERVER['REMOTE_ADDR']: (($f['type'] == 'g')? $group: $user);
+					// drop down, user selector or group selector
+					} elseif ($f['type'] == 'd' or $f['type'] == 'D' or $f['type'] == 'u' or $f['type'] == 'g' or $f['type'] == 'r' or $f['type'] == 'R') {
+						if ($f['type'] == 'd'  or $f['type'] == 'D' or $f['type'] == 'R') {
+							$list = $f['options_array'];
+						} elseif ($f['type'] == 'u') {
+							$list = $f['list'];
+						} elseif ($f['type'] == 'g') {
+							$list = $f['list'];
+						}
+						if ($list) {
+							$back.= "<tr><td>".wikiplugin_tracker_name($f['fieldId'], $f['name'], $field_errors);
+							if ($showmandatory == 'y' and $f['isMandatory'] == 'y') {
+								$back.= "&nbsp;<b>*</b>&nbsp;";
+								$onemandatory = true;
+							}
+							$back.= "</td><td>";
+							if ($f['type'] == 'R') {
+								foreach ($list as $item) {
+									$selected = ($f['value'] == $item || (empty($f['value']) && !empty($f['defaultvalue']) && $item == $f['defaultvalue'])) ? 'checked="checked"' : '';
+									$back .= '<div class="radio"><input type="radio" name="track['.$f["fieldId"].']" value="'.$item.'" '.$selected.' />'.$item.'</div>';
+								}
+							} else {
+								$back.= '<select name="track['.$f["fieldId"].']">';
+								$back .= '<option value=""></option>';
+								$otherValue = $f['value'];
+								foreach ($list as $item) {
+									if ($f['value'] == $item || (empty($f['value']) && !empty($f['defaultvalue']) && $item == $f['defaultvalue'])) {
+										$selected = 'selected="selected"';
+										$otherValue = '';
+									} else {
+										$selected = '';
+									}
+									$back.= '<option value="'.$item.'" '.$selected.'>'.tra($item).'</option>';
+								}
+							$back.= "</select>";
+							}
+
+							if ($f['type'] == 'D') {
+								$back .= '<br />'.tra('Other:').' <input type="text" name="track_other['.$f["fieldId"].']" value="'.$otherValue.'" />';
+							}
+						} else {
+							$back.= '<input type="hidden" name="track['.$f["fieldId"].']" value="'.$user.'" />';
+						}
+					} elseif ($f['type'] == 'h') {
+						if (strlen($back) != $backLength0) {
+							$back .= '</td></tr>';
+						}
+						$back .= "<tr><td colspan=\"2\" class=\"trackerheader\"><h2>";
+						$n = wikiplugin_tracker_name($f['fieldId'], $f['name'], $field_errors);
+						$back .= $n? $n : ' '.'</h2>';
+						if (!empty($f['description']))
+							$back .= '<i>'.$f['description'].'</i>';
+					} elseif ($f['type'] == 'e') {
+						$back .="<tr><td>".wikiplugin_tracker_name($f['fieldId'], $f['name'], $field_errors);
+						if ($showmandatory == 'y' and $f['isMandatory'] == 'y') {
+							$back.= "&nbsp;<b>*</b>&nbsp;";
+							$onemandatory = true;
+						}
+						$back .= "</td><td>";
+						$i = 0;
+						if (!empty($f['options_array'][2]) && ($f['options_array'][2] == '1' || $f['options_array'][2] == 'y')) { 
+							$back .= '<script type="text/javascript"> /* <![CDATA[ */';
+							$back .= "document.write('<div class=\"categSelectAll\"><input type=\"checkbox\" onclick=\"switchCheckboxes(this.form,\'ins_cat_{$f['fieldId']}[]\',this.checked)\"/>";
+							$back .= tra('Select All');
+							$back .= "</div>')/* ]]> */</script>";
+						}
+						if (isset($f['options_array'][1]) && ($f['options_array'][1] == 'd' || $f['options_array'][1] == 'm')) {
+							$back .= '<select name="ins_cat_'.$f['fieldId'].'[]"';
+							if ($f['options_array'][1] == 'm') {
+								$back .= ' multiple="multiple"';
+							}
+							$back .= '>';
+							if ($f['options_array'][1] == 'd') {
+								$back .= '<option value=""></option>"';
+							}
+							foreach ($f['list'] as $cat) {
+								$checked = ($f['value'] == $cat['categId']) ? 'selected="selected"' : '';
+								$back .= '<option value="'.$cat['categId'].'" '.$checked.'>'.$cat['name'].'</option>';
+							}
+							$back .= '</select>';
+						} else {
+							$t = (isset($f["options_array"][1]) && $f["options_array"][1] == 'radio')? 'radio': 'checkbox';
+							foreach ($f['list'] as $cat) {
+								$checked = ($f['value'] == $cat['categId']) ? 'checked="checked"' : '';
+								$back .= '<input type="'.$t.'" name="ins_cat_'.$f['fieldId'].'[]" value="'.$cat["categId"].'" '.$checked.'>'.$cat['name'].'</input><br />';
+							}
+						}
+					} elseif ($f['type'] == 'c') {
+						$back .="<tr><td>".wikiplugin_tracker_name($f['fieldId'], $f['name'], $field_errors);
+						if ($showmandatory == 'y' and $f['isMandatory'] == 'y') {
+							$back.= "&nbsp;<b>*</b>&nbsp;";
+							$onemandatory = true;
+						}
+						$checked = $f['value'] == 'y' ? 'checked="checked"' : '';
+						$back .= '</td><td><input type="checkbox" name="track['.$f["fieldId"].']" value="y" '.$checked.'/>';
+					} elseif ($f['type'] == 'i') {
+						$back.= "<tr><td>".wikiplugin_tracker_name($f['fieldId'], $f['name'], $field_errors);
+						if ($showmandatory == 'y' and $f['isMandatory'] == 'y') {
+							$back.= "&nbsp;<b>*</b>&nbsp;";
+							$onemandatory = true;
+						}
+						$back .= "</td><td>";
+						$back .= '<input type="file" name="track['.$f["fieldId"].']" />';
+					} elseif ($f['type'] == 'f') {
+						$back.= "<tr><td>".wikiplugin_tracker_name($f['fieldId'], $f['name'], $field_errors);
+						if ($showmandatory == 'y' and $f['isMandatory'] == 'y') {
+							$back.= "&nbsp;<b>*</b>&nbsp;";
+							$onemandatory = true;
+						}
+						$back .= "</td><td>";
+						include_once('lib/smarty_tiki/function.html_select_date.php');
+						include_once('lib/smarty_tiki/function.html_select_time.php');
+						$params['prefix'] = 'track_'.$f['fieldId'];
+						if (isset($f['options_array'][1])) {
+							$params['start_year'] = $f['options_array'][1];
+						}
+						if (isset($f['options_array'][2])) {
+							$params['end_year'] = $f['options_array'][2];
+						}
+						if (isset($f['value'])) {
+							$params['time'] = $f['value'];
+						}
+						$back .= smarty_function_html_select_date($params, $smarty);
+						if (empty($f['options_array'][0]) || $f['options_array'][0] != 'd') {
+							$params['display_seconds'] = false;
+							$back .= smarty_function_html_select_time($params, $smarty);
+						}
+					} elseif ($f['type'] == 'j') {
+						$back.= "<tr><td>".wikiplugin_tracker_name($f['fieldId'], $f['name'], $field_errors);
+						if ($showmandatory == 'y' and $f['isMandatory'] == 'y') {
+							$back.= "&nbsp;<b>*</b>&nbsp;";
+							$onemandatory = true;
+						}
+						$back .= "</td><td>";
+						include_once('lib/smarty_tiki/function.jscalendar.php');
+						$params['id'] = 'track['.$f['fieldId'].']';
+						$params['fieldname'] = 'track['.$f['fieldId'].']';
+						if (empty($f['options_array'][0]) || $f['options_array'][0] != 'd') {
+							$params['showtime'] = 'y';
+						} else {
+							$params['showtime'] = 'n';
+						}
+						if (isset($f['value'])) {
+							$params['date'] = $f['value'];
+						}
+						$back .= smarty_function_jscalendar_body($params,$smarty);
+					} elseif ($f['type'] == 'C' && isset($_REQUEST['tr_preview'])) { // computed
+						$back .= "<tr><td>".wikiplugin_tracker_name($f['fieldId'], $f['name'], $field_errors)."</td><td>";
+						$calc = preg_replace('/#([0-9]+)/','$assocNumerics[\1]',$f['options_array'][0]);
+						eval('$computed = '.$calc.';');
+						$back .= $computed;
+					} elseif ($f['type'] ==  'l'  && isset($_REQUEST['tr_preview'])) { // itemlist
+						$back .= "<tr><td>".wikiplugin_tracker_name($f['fieldId'], $f['name'], $field_errors)."</td><td>";
+						$items = $trklib->get_items_list($f['options_array'][0], $f['options_array'][1], $assocValues[$f['options_array'][2]]);
+						$i = 0;
+						foreach ($items as $id) {
+							$value =  $trklib->get_item_value($f['options_array'][0], $id, $f['options_array'][3]);
+							$assocValues[$f['fieldId']] = $value; // can be used in another computed field
+							$assocNumerics[$f['fieldId']] = preg_replace('/[^0-9\.\+]/', '', $value);
+							if ($i++ > 0)
+								$back .= ',';
+							$back .= $value;
+						}
+					} else {
 					}
+}//old
+
+					if (!empty($f['description']) && $f['type'] != 'h' && $f['type'] != 'S')
+						$back .= '<br /><i>'.$f['description'].'</i>';
 					if (empty($tpl) && empty($wiki)) {
 						$back.= "</td></tr>";
 					}

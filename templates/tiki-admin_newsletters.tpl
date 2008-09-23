@@ -1,9 +1,17 @@
 {* $Id$ *}
-{title help="Newsletters"}{tr}Admin newsletters{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-admin_newsletters.php">{tr}Admin newsletters{/tr}</a>
+  
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Newsletters" target="tikihelp" class="tikihelp" title="{tr}Newsletters{/tr}">
+{icon _id='help'}</a>{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admin_newsletters.tpl" target="tikihelp" class="tikihelp" title="{tr}View template{/tr}: {tr}Admin Newsletters Template{/tr}">
+{icon _id='shape_square_edit'}</a>{/if}</h1>
 
 <div class="navbar">
-<span class="button2"><a href="tiki-newsletters.php">{tr}List Newsletters{/tr}</a></span>
-<span class="button2"><a href="tiki-send_newsletters.php">{tr}Send Newsletters{/tr}</a></span>
+<span class="button2"><a class="linkbut" href="tiki-newsletters.php">{tr}List Newsletters{/tr}</a></span>
+<span class="button2"><a class="linkbut" href="tiki-send_newsletters.php">{tr}Send Newsletters{/tr}</a></span>
 </div>
 
 <h2>{tr}Create/Edit Newsletters{/tr}</h2>

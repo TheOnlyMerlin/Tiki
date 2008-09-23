@@ -7,10 +7,6 @@ require_once( 'Horde/Yaml/Exception.php' );
 
 class Tiki_Profile
 {
-	const SHORT_PATTERN = '/^\$((([\w\.-]+):)?((\w+):))?(\w+)$/';
-	const LONG_PATTERN = '/\$profileobject:((([\w\.-]+):)?((\w+):))?(\w+)\$/';
-	const INFO_REQUEST = '/\$profilerequest:([^\$]+)\$([^\$]+)\$/';
-
 	private $url;
 	private $pageUrl;
 	private $domain;
@@ -124,51 +120,17 @@ class Tiki_Profile
 		$content = substr( $content, $begin + 2 );
 		$this->pageContent = $content;
 
-		$pos = 0;
+		$base = strpos( $content, '{CODE(caption=>YAML' );
+		$begin = strpos( $content, ')}', $base ) + 2;
+		$end = strpos( $content, '{CODE}', $base );
 
-		$this->data = array();
+		if( false === $base || false === $begin || false === $end )
+			return false;
 
-		while( false !== $base = strpos( $content, '{CODE(caption=>YAML', $pos ) )
-		{
-			$begin = strpos( $content, ')}', $base ) + 2;
-			$end = strpos( $content, '{CODE}', $base );
-			$pos = $end;
+		$yaml = substr( $content, $begin, $end - $begin );
 
-			if( false === $base || false === $begin || false === $end )
-				return false;
-
-			$yaml = substr( $content, $begin, $end - $begin );
-
-			$data = Horde_Yaml::load( $yaml );
-
-			foreach( $data as $key => $value )
-			{
-				if( array_key_exists( $key, $this->data ) )
-					$this->data[$key] = $this->mergeData( $this->data[$key], $value );
-				else
-					$this->data[$key] = $value;
-			}
-		}
-
+		$this->data = Horde_Yaml::load( $yaml );
 		$this->getObjects();
-	} // }}}
-
-	function mergeData( $old, $new ) // {{{
-	{
-		if( is_array( $old ) && is_array( $new ) )
-		{
-			foreach( $new as $key => $value )
-			{
-				if( is_numeric( $key ) )
-					$old[] = $value;
-				else
-					$old[$key] = $this->mergeData( $old[$key], $value );
-			}
-
-			return $old;
-		}
-		else
-			return $new;
 	} // }}}
 
 	function getNamedObjects() // {{{
@@ -207,9 +169,9 @@ class Tiki_Profile
 		if( is_array( $value ) )
 			foreach( $value as $v )
 				$array = array_merge( $array, $this->traverseForReferences( $v ) );
-		elseif( preg_match( self::SHORT_PATTERN, $value, $parts ) )
+		elseif( preg_match( '/^\$((([^:]+):)?(([^:]+):))?(.+)$/', $value, $parts ) )
 			$array[] = $this->convertReference( $parts );
-		elseif( preg_match_all( self::LONG_PATTERN, $value, $parts, PREG_SET_ORDER ) )
+		elseif( preg_match_all( '/\$profileobject:((([^:]+):)?(([^:]+):))?([^\$]+)\$/', $value, $parts, PREG_SET_ORDER ) )
 			foreach( $parts as $row )
 				$array[] = $this->convertReference( $row );
 
@@ -226,23 +188,6 @@ class Tiki_Profile
 			$profile = $this->profile;
 
 		return array( 'domain' => $domain, 'profile' => $profile, 'object' => $object );
-	} // }}}
-
-	function getRequiredInput() // {{{
-	{
-		return $this->traverseForRequiredInput( $this->data );
-	} // }}}
-
-	function traverseForRequiredInput( $value ) // {{{
-	{
-		$array = array();
-		if( is_array( $value ) )
-			foreach( $value as $v )
-				$array = array_merge( $array, $this->traverseForRequiredInput( $v ) );
-		elseif( preg_match( self::INFO_REQUEST, $value, $parts ) )
-			$array[$parts[1]] = $parts[2];
-
-		return $array;
 	} // }}}
 
 	function getRequiredProfiles( $recursive = false, $known = array() ) // {{{
@@ -265,61 +210,32 @@ class Tiki_Profile
 		return $profiles;
 	} // }}}
 
-	public function replaceReferences( &$data, $suppliedUserData = false ) // {{{
+	public function replaceReferences( &$data ) // {{{
 	{
-		if( $suppliedUserData === false )
-			$suppliedUserData = $this->getRequiredInput();
-
 		if( is_array( $data ) )
 			foreach( $data as &$sub )
-				$this->replaceReferences( $sub, $suppliedUserData );
-		else
+				$this->replaceReferences( $sub );
+		elseif( preg_match( '/^\$((([^:]+):)?(([^:]+):))?(.+)$/', $data, $parts ) )
 		{
-			if( preg_match( self::SHORT_PATTERN, $data, $parts ) )
-			{
-				$object = $this->convertReference( $parts );
-				$serialized = Tiki_Profile_Object::serializeNamedObject( $object );
+			$object = $this->convertReference( $parts );
+			$serialized = Tiki_Profile_Object::serializeNamedObject( $object );
+			
+			if( ! isset( self::$known[$serialized] ) )
+				self::$known[$serialized] = self::findObjectReference( $object );
 
+			$data = self::$known[$serialized];
+		}
+		elseif( preg_match_all( '/\$profileobject:((([^:]+):)?(([^:]+):))?([^\$]+)\$/', $data, $parts, PREG_SET_ORDER ) )
+			foreach( $parts as $row )
+			{
+				$object = $this->convertReference( $row );
+				$serialized = Tiki_Profile_Object::serializeNamedObject( $object );
+				
 				if( ! isset( self::$known[$serialized] ) )
 					self::$known[$serialized] = self::findObjectReference( $object );
-
-				$data = self::$known[$serialized];
-				return;
+				
+				$data = str_replace( $row[0], self::$known[$serialized], $data );
 			}
-
-			$needles = array();
-			$replacements = array();
-
-			if( preg_match_all( self::LONG_PATTERN, $data, $parts, PREG_SET_ORDER ) )
-				foreach( $parts as $row )
-				{
-					$object = $this->convertReference( $row );
-					$serialized = Tiki_Profile_Object::serializeNamedObject( $object );
-
-					if( ! isset( self::$known[$serialized] ) )
-						self::$known[$serialized] = self::findObjectReference( $object );
-
-					$needles[] = $row[0];
-					$replacements[] = self::$known[$serialized];
-				}
-
-			if( preg_match_all( self::INFO_REQUEST, $data, $parts, PREG_SET_ORDER ) )
-				foreach( $parts as $row )
-				{
-					list( $full, $label, $default ) = $row;
-
-					if( ! array_key_exists( $label, $suppliedUserData ) )
-						$value = $default;
-					else
-						$value = $suppliedUserData[$label];
-
-					$needles[] = $full;
-					$replacements[] = $value;
-				}
-			
-			if( count( $needles ) )
-				$data = str_replace( $needles, $replacements, $data );
-		}
 	} // }}}
 
 	function getPreferences() // {{{
@@ -353,25 +269,10 @@ class Tiki_Profile
 				if( strpos( $key, 'tiki_p_' ) !== 0 )
 					unset( $permissions[$key] );
 
-			$defaultInfo = array(
-				'description' => '',
-				'home' => '',
-				'user_tracker' => 0,
-				'group_tracker' => 0,
-				'user_signup' => 'n',
-				'default_category' => 0,
-				'theme' => '',
-				'registration_fields' => array(),
-				'include' => array(),
-			);
-			foreach( $defaultInfo as $key => $value )
-				if( array_key_exists( $key, $data ) )
-				{
-					if( is_array( $value ) )
-						$defaultInfo[$key] = (array) $data[$key];
-					else
-						$defaultInfo[$key] = $data[$key];
-				}
+			if( array_key_exists( 'description', $data ) )
+				$description = $data['description'];
+			else
+				$description = '';
 
 			$objects = array();
 			if( isset( $data['objects'] ) )
@@ -394,7 +295,9 @@ class Tiki_Profile
 			$groups[$groupName] = array(
 				'permissions' => $permissions,
 				'objects' => $objects,
-				'general' => $defaultInfo,
+				'general' => array(
+					'description' => $description,
+				),
 			);
 		}
 
@@ -444,13 +347,6 @@ class Tiki_Profile
 
 		$this->objects = $classified;
 		return $this->objects;
-	} // }}}
-
-	function removeSymbols() // {{{
-	{
-		global $tikilib;
-		$tikilib->query( "DELETE FROM tiki_profile_symbols WHERE domain = ? AND profile = ?",
-			array( $this->domain, $this->profile ) );
 	} // }}}
 }
 
@@ -542,9 +438,9 @@ class Tiki_Profile_Object
 		return array();
 	} // }}}
 
-	public function replaceReferences( &$data, $suppliedUserData = false ) // {{{
+	public function replaceReferences( &$data ) // {{{
 	{
-		$this->profile->replaceReferences( $data, $suppliedUserData );
+		$this->profile->replaceReferences( $data );
 	} // }}}
 
 	private function traverseForReferences( $value ) // {{{
@@ -553,14 +449,14 @@ class Tiki_Profile_Object
 		if( is_array( $value ) )
 			foreach( $value as $v )
 				$array = array_merge( $array, $this->traverseForReferences( $v ) );
-		elseif( preg_match( Tiki_Profile::SHORT_PATTERN, $value, $parts ) )
+		elseif( preg_match( '/^\$((([^:]+):)?(([^:]+):))?(.+)$/', $value, $parts ) )
 		{
 			$ref = $this->profile->convertReference( $parts );
 			if( $this->profile->domain == $ref['domain']
 				&& $this->profile->profile == $ref['profile'] )
 				$array[] = $ref['object'];
 		}
-		elseif( preg_match_all( Tiki_Profile::LONG_PATTERN, $value, $parts, PREG_SET_ORDER ) )
+		elseif( preg_match_all( '/\$profileobject:((([^:]+):)?(([^:]+):))?([^\$]+)\$/', $value, $parts, PREG_SET_ORDER ) )
 		{
 			foreach( $parts as $row )
 			{

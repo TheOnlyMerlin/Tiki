@@ -1,17 +1,11 @@
 {* $Id$ *}
 {$showBoxCheck}
-
-{title help="Newsletters"}{tr}Send Newsletters{/tr} {if $nlId ne '0'}{$nlName}{/if}{/title}
-
-{if $tiki_p_admin_newsletters eq "y"}
-  <div class="navbar"><span class="button2"><a href="tiki-admin_newsletters.php{if $nlId}?nlId={$nlId}{/if}">{tr}Admin Newsletters{/tr}</a></span></div>
-{/if}
-
+<h1><a class="pagetitle" href="tiki-send_newsletters.php">{tr}Send Newsletters{/tr} {if $nlId ne '0'}{$nlName}{/if}</a></h1>
+{if $tiki_p_admin_newsletters eq "y"}<div class="navbar"><span class="button2"><a class="linkbut" href="tiki-admin_newsletters.php{if $nlId}?nlId={$nlId}{/if}">{tr}Admin Newsletters{/tr}</a></span></div>{/if}
 {assign var=area_name value="editwiki"}
 {if $emited eq 'y'}
 <div class="simplebox highlight">
-{tr}The newsletter was sent to {$sent} email addresses{/tr}
-<br /><br />
+{tr}The newsletter was sent to {$sent} email addresses{/tr}<br /><br />
 </div>
 {if $errors}
 <span class="attention">{tr}Errors detected{/tr}<br /></span>
@@ -143,7 +137,6 @@
     <textarea id='editwiki' name="data" rows="{$rows}" cols="{$cols}">{$info.data|escape}</textarea>
     <input type="hidden" name="rows" value="{$rows}"/>
     <input type="hidden" name="cols" value="{$cols}"/>
-	<br />{tr}Must be wiki parsed{/tr}: <input type="checkbox" name="wikiparse" {if empty($info.wikiparse) or $info.wikiparse eq 'y'} checked="checked"{/if} />
   </td>
 </tr>
   

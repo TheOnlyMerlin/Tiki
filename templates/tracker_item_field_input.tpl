@@ -21,24 +21,31 @@
 {* -------------------- system -------------------- *}
 {elseif $field_value.type eq 's' and ($field_value.name eq "Rating" or $field_value.name eq tra("Rating")) and $tiki_p_tracker_vote_ratings eq 'y'}
 	{section name=i loop=$field_value.options_array}
-		<input name="{$field_value.ins_id}"{if $field_value.options_array[i] eq $item.my_rate} checked="checked"{/if} type="radio" value="{$field_value.options_array[i]|escape}" id="{$field_value.ins_id}{$smarty.section.i.index}" /><label for="{$field_value.ins_id}{$smarty.section.i.index}">{$field_value.options_array[i]}</label>
+		<input name="{$field_value.ins_id}"{if $field_value.options_array[i] eq $item.my_rate} checked="checked"{/if} type="radio" value="{$field_value.options_array[i]|escape}" id="{$field_value.ins_id}" /><label for="{$field_value.ins_id}">{$field_value.options_array[i]}</label>
 	{/section}
 
 {* -------------------- user selector -------------------- *}
 {elseif $field_value.type eq 'u'}
-	{if empty($field_value.options_array) or ($field_value.options_array[0] !=1 and $field_value.options_array[0] !=2) or $tiki_p_admin_trackers eq 'y'}
+	{if $field_value.options_array[0] eq 0 or empty($field_value.options_array) or $tiki_p_admin_trackers eq 'y'}
 		<select name="{$field_value.ins_id}" {if $field_value.http_request}onchange="selectValues('trackerIdList={$field_value.http_request[0]}&amp;fieldlist={$field_value.http_request[3]}&amp;filterfield={$field_value.http_request[1]}&amp;status={$field_value.http_request[4]}&amp;mandatory={$field_value.http_request[6]}&amp;filtervalue='+escape(this.value),'{$listfields.$fid.http_request[5]}')"{/if}>
 		<option value="">{tr}None{/tr}</option>
 		{foreach key=id item=one from=$field_value.list}
 			{if ( ! isset($field_value.itemChoices) || $field_value.itemChoices|@count eq 0 || in_array($one, $field_value.itemChoices) )}
-				{if $field_value.options_array[0] ne '2'}
+				{if $field_value.value}
 					<option value="{$one|escape}"{if $one eq $field_value.value} selected="selected"{/if}>{$one}</option>
 				{else}
-					<option value="{$one|escape}"{if $one eq $user} selected="selected"{/if}>{$one}</option>
+					<option value="{$one|escape}"{if $one eq $user and $field_value.options_array[0] ne '2'} selected="selected"{/if}>{$one}</option>
 				{/if}
 			{/if}
 		{/foreach}
 		</select>
+	{elseif $field_value.options_array[0] eq 1}
+		{if empty($field_value.value)}
+			{$user|escape}
+			<input type="hidden" name="authorfieldid" value="{$field_value.fieldId}" />
+		{else}
+			{$field_value.value|escape}
+		{/if}
 	{else}
 		{$user|escape}
 	{/if}
@@ -121,13 +128,13 @@
 		<input type="text" name="{$field_value.ins_id}" value="{$field_value.value}" />
 	{/if}
 	{assign var='Height' value=$prefs.MultimediaDefaultHeight}
-	{assign var='Length' value=$prefs.MultimediaDefaultLength}
+	{assign var='Lenght' value=$prefs.MultimediaDefaultLength}
 
 	{if $field_value.value ne ''}	
-		{if isset($cur_field.options_array[1]) and $field_value.options_array[1] ne '' } {assign var=$Length value=$field_value.options_array[1] }{/if}
-		{if isset($cur_field.options_array[2]) and $field_value.options_array[2] ne '' } {assign var=$Height value=$field_value.options_array[2] }{/if}
+		{if  $field_value.options_array[1] ne '' } {assign var=$Lenght value=$field_value.options_array[1] }{/if}
+		{if  $field_value.options_array[2] ne '' } {assign var=$Height value=$field_value.options_array[2] }{/if}
 		{if $ModeVideo eq 'y' } { assign var="Height" value=$Height+$prefs.VideoHeight}{/if}
-		{include file=multiplayer.tpl url=$field_value.value w=$Length h=$Height video=$ModeVideo}
+		{include file=multiplayer.tpl url=$field_value.value w=$Lenght h=$Height video=$ModeVideo}
 	{/if}
 
 {* -------------------- file -------------------- *}
@@ -169,11 +176,6 @@
 		{/foreach}
 		</table>
 	{/if}
-
-{* -------------------- page selector  -------------------- *}
-{elseif $field_value.type eq 'k'}
-	<input type="text" name="{$field_value.ins_id}" {if $field_value.options_array[1]}size="{$field_value.options_array[1]}"{/if} value="{if $field_value.value}{$field_value.value|escape}{else}{$field_value.defaultvalue|escape}{/if}" />
-	
 
 {* -------------------- email  -------------------- *}
 {elseif $field_value.type eq 'm'}
@@ -231,43 +233,23 @@
 
 {* -------------------- date and time -------------------- *}
 {elseif $field_value.type eq 'f'}
-	{* ----- Start year --- *}
-	{if isset($field_value.options_array[1]) and $field_value.options_array[1] ne ''}
+	{if isset($field_value.options_array[1])}
 		{assign var=start value=$field_value.options_array[1]}
 	{elseif isset($prefs.calendar_start_year)}
 		{assign var=start value=$prefs.calendar_start_year}
 	{else}
 		{assign var=start value=-4}
-	{/if}	
-	{if $field_value.year > 0 and $field_value.year < $start}
-			{assign var=start value=$field_value.year}
 	{/if}
-
-	{* ----- End year --- *}
-	{if isset($field_value.options_array[2]) and $field_value.options_array[2] ne ''}
+	{if isset($field_value.options_array[2])}
 		{assign var=end value=$field_value.options_array[2]}
 	{elseif isset($prefs.calendar_end_year)}
 		{assign var=end value=$prefs.calendar_end_year}
 	{else}
 		{assign var=end value=+4}
 	{/if}
-	{if $field_value.year > $end}
-		{assign var=end value=$field_value.year}
-	{/if}
-
-	{if $field_value.value eq ''}
-		{assign var=time value="--"}
-	{else}
-		{assign var=time value=$field_value.value}
-	{/if}
-	{if $field_value.options_array[0] eq 'd'}
-		{if $field_value.isMandatory ne 'y' and (isset($field_value.options_array[3]) and $field_value.options_array[3] eq 'blank')}
-			{html_select_date prefix=$field_value.ins_id time=$time start_year=$start end_year=$end field_order=$prefs.display_field_order all_empty=" "}
-		{else}
-			{html_select_date prefix=$field_value.ins_id time=$time start_year=$start end_year=$end field_order=$prefs.display_field_order}
-		{/if}
-	{else}
-		{tr}at{/tr} {html_select_time prefix=$field_value.ins_id time=$time display_seconds=false}
+	{html_select_date prefix=$field_value.ins_id time=$field_value.value start_year=$start end_year=$end field_order=$prefs.display_field_order}
+	{if $field_value.options_array[0] ne 'd'}
+		{tr}at{/tr} {html_select_time prefix=$field_value.ins_id time=$field_value.value display_seconds=false}
 	{/if}
 
 {* -------------------- drop down -------------------- *}
@@ -336,10 +318,6 @@
 	</select>
 
 {* -------------------- item list -------------------- *}
-{elseif  $field_value.type eq 'l'}
-	{foreach key=id item=label from=$field_value.value}
-		{$label|escape}
-	{/foreach}
 
 {* -------------------- dynamic list -------------------- *}
 {elseif $field_value.type eq 'w'}

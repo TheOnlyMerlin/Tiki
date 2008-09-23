@@ -1,12 +1,9 @@
 {* $Id$ *}
-
-{title help="polls" admpage="polls"}{tr}Poll Results{/tr}{/title}
-
+<h1><a href="tiki-poll_results.php{if !empty($smarty.request.pollId)}?pollId={$smarty.request.pollId}{/if}">{tr}Poll Results{/tr}</a></h1>
 <div class="navbar">
-  <span class="button2"><a href="tiki-old_polls.php">{tr}Polls{/tr}</a></span>
-  <span class="button2"><a href="tiki-poll_results.php">{tr}Top Voted Polls{/tr}</a></span>
+<span class="button2"><a href="tiki-old_polls.php" class="linkbut">{tr}Polls{/tr}</a></span>
+<span class="button2"><a href="tiki-poll_results.php" class="linkbut">{tr}Top Voted Polls{/tr}</a></span>
 </div>
-
 {if empty($smarty.request.pollId) and !isset($list_votes)}
 <div align="center">
 <form method="post" action="{$smarty.server.PHP_SELF}">
@@ -29,7 +26,7 @@
 {/if}
 {section name=x loop=$poll_info_arr}
 <h2><a href="tiki-poll_results.php?pollId={$poll_info_arr[x].pollId}{if !empty($list_votes)}&amp;list=y{/if}">{$poll_info_arr[x].title}</a></h2>
-{if $tiki_p_admin_polls eq 'y'}<span class=button2"><a href="tiki-poll_results.php?list=y&amp;pollId={$poll_info_arr[x].pollId}">{tr}Votes{/tr}</a></span>{/if}
+{if $tiki_p_admin_polls eq 'y'}<span class=button2"><a href="tiki-poll_results.php?list=y&amp;pollId={$poll_info_arr[x].pollId}" class="linkbut">{tr}Votes{/tr}</a></span>{/if}
 <div class="pollresults">
 {cycle values="even,odd" print=false}
 <table class="pollresults">

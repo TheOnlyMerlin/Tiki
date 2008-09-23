@@ -1,23 +1,21 @@
 {* $Id$ *}
-
-{title help="Permission"}{tr}Assign permissions to {/tr}{tr}{$objectType|escape}{/tr}: {$objectName|escape}{/title}
-
+<h1><a href="tiki-objectpermissions.php?objectName={$objectName|escape:url}&amp;objectType={$objectType|escape:url}&amp;objectId={$objectId|escape:url}&amp;permType={$permType|escape:url}{if $filegals_manager eq 'y'}&amp;filegals_manager=y{/if}">{tr}Assign permissions to {/tr}{tr}{$objectType|escape}{/tr}: {$objectName|escape}</a></h1>
 <div class="navbar">
-  <a href="{$referer}">{tr}Back{/tr}</a>
+<a href="{$referer}" class="linkbut">{tr}Back{/tr}</a>
 </div>
 
 {if $prefs.feature_tabs eq 'y'}
-  <div class="tabs" style="clear: both;">
-	  <span id="tab1" class="tabmark tabactive"><a href="javascript:tikitabs(1,3);">{tr}View Permissions{/tr}</a></span>
-	  <span id="tab2" class="tabmark tabinactive"><a href="javascript:tikitabs(2,3);">{tr}Edit Permissions{/tr}</a></span>
-  </div>
+<div class="tabs" style="clear: both;">
+	<span id="tab1" class="tabmark tabactive"><a href="javascript:tikitabs(1,3);">{tr}View Permissions{/tr}</a></span>
+	<span id="tab2" class="tabmark tabinactive"><a href="javascript:tikitabs(2,3);">{tr}Edit Permissions{/tr}</a></span>
+</div>
 {/if}
 
 <fieldset {if $prefs.feature_tabs eq 'y'}id="content1"  class="tabcontent" style="clear:both;display:block; margin-left: 0;"{/if}>
 {if $prefs.feature_tabs neq 'y'}
 	<legend class="heading"><a href="#"><span>{tr}View Permissions{/tr}</span></a></legend>
 {/if}
-{if $filegals_manager eq ''}
+{if $filegals_manager ne 'y'}
 {remarksbox type="warning" title="{tr}Warning{/tr}"}{tr}These permissions override any global permissions or category permissions affecting this object.{/tr}<br />
 {if $tiki_p_admin eq 'y'}{tr}To edit global permissions <a class="rbox-link" href="tiki-admingroups.php">click here</a>.{/tr}{/if}
 {/remarksbox}
@@ -72,8 +70,8 @@
 {if $prefs.feature_tabs neq 'y'}
 	<legend class="heading"><a href="#"><span>{tr}Edit Permissions{/tr}</span></a></legend>
 {/if}
-<form method="post" action="tiki-objectpermissions.php{if $filegals_manager neq ''}?filegals_manager={$filegals_manager|escape}{/if}">
-{if $filegals_manager eq ''}
+<form method="post" action="tiki-objectpermissions.php{if $filegals_manager eq 'y'}?filegals_manager=y{/if}">
+{if $filegals_manager ne 'y'}
 {remarksbox type="warning" title="{tr}Warning{/tr}"}{tr}These permissions override any global permissions or category permissions affecting this object.{/tr}<br />
 {if $tiki_p_admin eq 'y'}{tr}To edit global permissions <a class="rbox-link" href="tiki-admingroups.php">click here</a>.{/tr}{/if}
 {/remarksbox}
@@ -81,8 +79,8 @@
 <h2>{tr}Current permissions for this object{/tr}</h2>
 <table class="normal">
 <tr>
-	<th class="heading" colspan="2">{tr}Permissions{/tr}</th>
-	<th class="heading">{tr}Groups{/tr}</th>
+	<th class="heading" colspan="2">{tr}Permission{/tr}</th>
+	<th class="heading">{tr}Group{/tr}</th>
 	<th class="heading" width="20px">{tr}Action{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
@@ -97,7 +95,7 @@
 <td class="{cycle advance=false}">
 	{$page_perms[pg].groupName}
 </td>
-<td class="{cycle advance=true}"><a class="link" href="tiki-objectpermissions.php?referer={$referer|escape:"url"}&amp;action=remove&amp;objectName={$objectName}&amp;objectId={$objectId}&amp;objectType={$objectType}&amp;permType={$permType}&amp;page={$page|escape:"url"}&amp;perm={$page_perms[pg].permName}&amp;group={$page_perms[pg].groupName}{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a></td></tr>
+<td class="{cycle advance=true}"><a class="link" href="tiki-objectpermissions.php?referer={$referer|escape:"url"}&amp;action=remove&amp;objectName={$objectName}&amp;objectId={$objectId}&amp;objectType={$objectType}&amp;permType={$permType}&amp;page={$page|escape:"url"}&amp;perm={$page_perms[pg].permName}&amp;group={$page_perms[pg].groupName}{if $filegals_manager eq 'y'}&amp;filegals_manager=y{/if}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a></td></tr>
 {sectionelse}
 <tr><td colspan="4" class="odd">{if !empty($categ_perms)}{tr}No individual permissions, category permissions apply{/tr}{else}{tr}No individual permissions, category permissions apply{/tr}{/if}</td></tr>
 {/section}
@@ -133,11 +131,11 @@
 
 <table class="normal">
 	<tr>
-		<th class="heading">{tr}Permissions{/tr}</th>
-		<th class="heading">{tr}Groups{/tr}</th>
+		<th class="heading">{tr}Permission{/tr}</th>
+		<th class="heading" colspan="2">{tr}Groups{/tr}</th>
 	</tr>
 <tr>
-<td><table width="100%">
+<td width="45%"><table width="100%">
 {cycle print=false values="even,odd"}
 {section name=prm loop=$perms}
 <tr class="{cycle advance=true}">
@@ -145,15 +143,14 @@
     <input type="checkbox" name="perm[]" value="{$perms[prm].permName|escape}" title="{$perms[prm].permName|escape}"/>
   </td>
   <td class="{cycle advance=false}">
-    {$perms[prm].permName|escape}
+    {tr}{$perms[prm].permDesc|escape}{/tr}
+    <div class="subcomment">{$perms[prm].permName|escape}</div>
   </td>
-  <td class="{cycle advance=false}">
-    <div class="subcomment">{tr}{$perms[prm].permDesc|escape}{/tr}</div>
-  </td>
-  </tr>
+	</tr>
 {/section}
 </table></td>
-<td><table width="100%">
+<td style="vertical-align: top;">{tr}to group{/tr}:</td>
+<td width="45%"><table width="100%">
 {cycle print=false values="even,odd"}
 {section name=grp loop=$groups}
 <tr class="{cycle advance=true}">
@@ -169,7 +166,7 @@
 {/if}
 <br /><br />
 <div class="button2">
-<a href="#" onclick="javascript:flip('edithelpzone'); return false;">{tr}Perms Help{/tr}</a>
+<a href="#" onclick="javascript:flip('edithelpzone'); return false;" class="linkbut">{tr}Perms Help{/tr}</a>
 </div>
 
 <div class="wiki-edithelp"  id='edithelpzone' >

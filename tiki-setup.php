@@ -70,6 +70,7 @@ $tiki_timer = new timer();
 $tiki_timer->start();
 
 require_once('tiki-setup_base.php');
+require_once('lib/setup/compatibility.php');
 require_once('lib/setup/prefs.php');
 // TikiTests are PHP5 only
 if ($prefs['feature_tikitests'] == 'y' and version_compare(PHP_VERSION, '5.0.0', '>='))  {
@@ -128,7 +129,7 @@ if ( ! empty($_SESSION['interactive_translation_mode']) && ($_SESSION['interacti
 	$cachelib->empty_full_cache();
 }
 if ( $prefs['feature_freetags'] == 'y' ) require_once('lib/setup/freetags.php');
-if ( $prefs['feature_categories'] == 'y' ) require_once('lib/setup/categories.php');
+//if ( $prefs['feature_categories'] == 'y') require_once('lib/setup/categories.php');
 if ( $prefs['feature_userlevels'] == 'y' ) require_once('lib/setup/userlevels.php');
 if ( $prefs['feature_fullscreen'] == 'y' ) require_once('lib/setup/fullscreen.php');
 if ( $prefs['auth_method'] == 'openid' ) require_once('lib/setup/openid.php');
@@ -137,14 +138,6 @@ if ( $prefs['feature_wysiwyg'] == 'y' ) {
 	$smarty->assign_by_ref('wysiwyg', $_SESSION['wysiwyg']);
 }
 if ( $prefs['feature_phplayers'] == 'y' ) require_once('lib/setup/phplayers.php');
-
-if( $tiki_p_admin == 'y' ) {
-	include_once('lib/admin/magiclib.php');
-	$templatename = substr($tiki_script_filename, strrpos($tiki_script_filename, '/') + 1, -4);
-	$smarty->assign('feature', $magiclib->get_feature_by_template($templatename));
-	$smarty->assign('templatename', $templatename);
-	require_once('tiki-admin_bar.php');
-}
 
 $smarty->assign_by_ref('phpErrors', $phpErrors);
 $smarty->assign_by_ref('num_queries', $num_queries);
@@ -155,6 +148,7 @@ $smarty->assign('lock', false);
 $smarty->assign('edit_page', 'n');
 $smarty->assign('forum_mode', 'n');
 $smarty->assign('uses_tabs', 'n');
+$smarty->assign('uses_jscalendar', 'n');
 $smarty->assign('uses_phplayers', 'n');
 $smarty->assign('wiki_extras', 'n');
 

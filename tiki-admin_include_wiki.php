@@ -120,10 +120,6 @@ if (isset($_REQUEST['wikilistprefs'])) {
 
 if (isset($_REQUEST["wikifeatures"])) {
 	check_ticket('admin-inc-wiki');
-	if ((isset($_REQUEST['feature_backlinks']) && $_REQUEST['feature_backlinks'] == 'on' && $prefs['feature_backlinks'] != 'y')
-		|| (empty($_REQUEST['feature_backlinks']) && $prefs['feature_backlinks'] == 'y')) {
-		$backlinksChange = true;
-	}
 	$pref_toggles = array(
 	'feature_lastChanges',
 	'feature_wiki_comments',
@@ -163,7 +159,6 @@ if (isset($_REQUEST["wikifeatures"])) {
 	'feature_backlinks',
 	'feature_likePages',
 	'wiki_uses_slides',
-	'feature_wiki_structure',
 	'feature_wiki_open_as_structure',
 	'feature_wiki_make_structure',
 	'feature_wiki_categorize_structure',
@@ -196,10 +191,6 @@ if (isset($_REQUEST["wikifeatures"])) {
 	);
 	foreach ($pref_values as $value) {
 		simple_set_value($value);
-	}
-	if (isset($backlinksChange) && $backlinksChange) {
-		global $wikilib; include_once('lib/wiki/wikilib.php');
-		$wikilib->refresh_backlinks();
 	}
 }
 

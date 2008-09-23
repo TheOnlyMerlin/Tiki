@@ -1,8 +1,6 @@
 {* $Id$ *}
 <script type="text/javascript" src="lib/trackers/dynamic_list.js"></script>
-
-{title help="trackers"}{tr}Tracker Item:{/tr} {$tracker_info.name}{/title}
-
+<h1><a class="pagetitle" href="tiki-view_tracker_item.php?itemId={$itemId}">{tr}Tracker Item:{/tr} {$tracker_info.name}</a></h1>
 
 {* --------- navigation ------ *}
 <div class="navbar">
@@ -15,20 +13,20 @@
   {/if}
 
   {if $tiki_p_list_trackers eq 'y' or $tiki_p_admin_trackers eq 'y'}
-    <span class="button2"><a href="tiki-list_trackers.php">{tr}List Trackers{/tr}</a></span>
+    <span class="button2"><a href="tiki-list_trackers.php" class="linkbut">{tr}List Trackers{/tr}</a></span>
   {/if}
 
   {if $tiki_p_view_trackers eq 'y'}
     <span class="button2">
-      <a href="tiki-view_tracker.php?trackerId={$trackerId}{if $status}&amp;status={$status}{/if}{if $sort_mode}&amp;sort_mode={$sort_mode}{/if}">{tr}View This Tracker's Items{/tr}</a>
+      <a href="tiki-view_tracker.php?trackerId={$trackerId}{if $status}&status={$status}{/if}{if $sort_mode}&amp;sort_mode={$sort_mode}{/if}" class="linkbut">{tr}View This Tracker's Items{/tr}</a>
     </span>
   {/if}
 
   {if $tiki_p_admin_trackers eq 'y'}
     &nbsp;&nbsp;
-    <span class="button2"><a href="tiki-admin_trackers.php">{tr}Admin Trackers{/tr}</a></span>
-    <span class="button2"><a href="tiki-admin_trackers.php?trackerId={$trackerId}">{tr}Edit This Tracker{/tr}</a></span>
-    <span class="button2"><a href="tiki-admin_tracker_fields.php?trackerId={$trackerId}">{tr}Edit Fields{/tr}</a></span>
+    <span class="button2"><a href="tiki-admin_trackers.php" class="linkbut">{tr}Admin Trackers{/tr}</a></span>
+    <span class="button2"><a href="tiki-admin_trackers.php?trackerId={$trackerId}" class="linkbut">{tr}Edit This Tracker{/tr}</a></span>
+    <span class="button2"><a href="tiki-admin_tracker_fields.php?trackerId={$trackerId}" class="linkbut">{tr}Edit Fields{/tr}</a></span>
   {/if}
 </div>
 
@@ -198,16 +196,13 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>&nbsp;&nbsp;
 {/section}
 
 <table class="normal">
-<tr class="formcolor">
-<td class="formcontent">&nbsp;</td>
-<td colspan="3" class="formcontent">
+<tr class="formcolor"><td class="formcontent">&nbsp;</td><td colspan="3" class="formcontent">
 <input type="submit" name="save" value="{tr}Save{/tr}" />
 {* --------------------------- to return to tracker list after saving --------- *}
 {if $tiki_p_view_trackers eq 'y'}
 <input type="submit" name="save_return" value="{tr}Save{/tr} &amp; {tr}Back{/tr} {tr}Items list{/tr}" />
 {if $tiki_p_admin_trackers eq 'y' or $tiki_p_modify_tracker_items eq 'y'}<a class="link" href="tiki-view_tracker.php?trackerId={$trackerId}&amp;remove={$itemId}" title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>{/if}
 {/if}
-</td></tr>
 {* ------------------- *}
 {if $tracker_info.showStatus eq 'y' or $tiki_p_admin_trackers eq 'y'}
 <tr class="formcolor">
@@ -215,7 +210,7 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>&nbsp;&nbsp;
 <td class="formcontent">
 <select name="edstatus">
 {foreach key=st item=stdata from=$status_types}
-<option value="{$st}" {if $item_info.status eq $st} selected="selected" {/if}
+<option value="{$st}"{if $item_info.status eq $st} selected="selected"{/if}
 style="background-image:url('{$stdata.image}');background-repeat:no-repeat;padding-left:17px;">{$stdata.label}</option>
 {/foreach}
 </select>
@@ -274,7 +269,7 @@ style="background-image:url('{$stdata.image}');background-repeat:no-repeat;paddi
 		{include file='tracker_item_field_input.tpl' field_value=$cur_field}
 		{if $cur_field.options_array[0] == 'password'}<br /><i>Let empty to not change it</i>{/if}
 	{/if}
-{elseif $cur_field.type eq 'A' or $cur_field.type eq 'm'}
+{elseif $cur_field.type eq 'A'}
 	{include file='tracker_item_field_input.tpl' field_value=$cur_field}
 
 {elseif $cur_field.type eq 'u'}
@@ -350,13 +345,13 @@ document.write('<div class="categSelectAll"><input type="checkbox" id="clickall"
 <table width="100%"><tr>{cycle name="2_$fca" values=",</tr><tr>" advance=false}
 {foreach key=ku item=iu from=$cur_field.$fca name=foreache}
 {assign var=fcat value=$iu.categId }
-<td width="50%" style="white_space:nowrap;"><input type={if $cur_field.options_array[1] eq "radio"}"radio"{else}"checkbox"{/if} name="ins_cat_{$cur_field.fieldId}[]" value="{$fcat}" {if $cur_field.cat.$fcat eq 'y'}checked="checked"{/if}/>{$iu.name|escape}</td>
+<td width="50%" nowrap="nowrap"><input type={if $cur_field.options_array[1] eq "radio"}"radio"{else}"checkbox"{/if} name="ins_cat_{$cur_field.fieldId}[]" value="{$fcat}" {if $cur_field.cat.$fcat eq 'y'}checked="checked"{/if}/>{$iu.name|escape}</td>
 {if !$smarty.foreach.foreache.last}{cycle name="2_$fca"}{else}{if $cur_field.$fca|@count%2}<td></td>{/if}</tr>{/if}
 {/foreach}
 </table>
 {/if}
 
-{elseif $cur_field.type eq 't'}
+{elseif $cur_field.type eq 't' || $cur_field.type eq 'm'}
 
     {if $cur_field.isMultilingual ne "y"}
         {if $cur_field.options_array[2]}<span class="formunit">{$cur_field.options_array[2]}&nbsp;</span>{/if}
@@ -374,9 +369,6 @@ document.write('<div class="categSelectAll"><input type="checkbox" id="clickall"
         {/foreach}
     </table>
     {/if}
-{elseif $cur_field.type eq 'k'}
-        <input type="text" name="ins_{$cur_field.id}" value="{$cur_field.value|escape}" {if $cur_field.options_array[1]}size="{$cur_field.options_array[1]}"{/if} />
-
 {elseif $cur_field.type eq 'n'}
 {if $cur_field.options_array[2]}<span class="formunit">{$cur_field.options_array[2]}&nbsp;</span>{/if}
 <input type="text" name="ins_{$cur_field.id}" value="{$cur_field.value|escape}" {if $cur_field.options_array[1]}size="{$cur_field.options_array[1]}" maxlength="{$cur_field.options_array[1]}"{/if} />
@@ -405,7 +397,7 @@ document.write('<div class="categSelectAll"><input type="checkbox" id="clickall"
 {include file='tracker_item_field_input.tpl' field_value=$cur_field}
 
 {elseif $cur_field.type eq 'r'}
-<select name="ins_{$cur_field.id}" {if $cur_field.http_request}onchange="selectValues('trackerIdList={$cur_field.http_request[0]}&amp;fieldlist={$cur_field.http_request[3]}&amp;filterfield={$cur_field.http_request[1]}&amp;status={$cur_field.http_request[4]}&amp;mandatory={$cur_field.http_request[6]}&amp;filtervalue='+escape(this.value),'{$cur_field.http_request[5]}')"{/if}>
+<select name="ins_{$cur_field.id}" {if $cur_field.http_request}onchange="selectValues('trackerIdList={$cur_field.http_request[0]}&fieldlist={$cur_field.http_request[3]}&filterfield={$cur_field.http_request[1]}&status={$cur_field.http_request[4]}&mandatory={$cur_field.http_request[6]}&filtervalue='+escape(this.value),'{$cur_field.http_request[5]}')"{/if}>
 {if $cur_field.isMandatory}<option value=""></option>{/if}
 {foreach key=id item=label from=$cur_field.list}
 <option value="{$label|escape}" {if $cur_field.value eq $label}selected="selected"{/if}>{if $cur_field.listdisplay[$id] eq ""}{$label}{else}{$cur_field.listdisplay[$id]}{/if}</option>
@@ -420,7 +412,9 @@ document.write('<div class="categSelectAll"><input type="checkbox" id="clickall"
 {include file='tracker_item_field_input.tpl' field_value=$cur_field}
 
 {elseif $cur_field.type eq 'R'}
-{include file='tracker_item_field_input.tpl' field_value=$cur_field}
+{section name=jx loop=$cur_field.options_array}
+<input type="radio" name="ins_{$cur_field.id}" value="{$cur_field.options_array[jx]|escape}" {if $cur_field.value eq $cur_field.options_array[jx]}checked="checked"{/if}>{$cur_field.options_array[jx]}</input>
+{/section}
 
 {elseif $cur_field.type eq 'c'}
 <input type="checkbox" name="ins_{$cur_field.id}" {if $cur_field.value eq 'y'}checked="checked"{/if}/>
@@ -440,7 +434,7 @@ document.write('<div class="categSelectAll"><input type="checkbox" id="clickall"
 <input type="file" name="ins_{$cur_field.id}" /><br />
 {if $cur_field.value ne ''}
 <img src="{$cur_field.value}" alt="n/a" width="{$cur_field.options_array[2]}" height="{$cur_field.options_array[3]}" /><br />
-<a href="tiki-view_tracker_item.php?trackerId={$trackerId}&amp;itemId={$itemId}&amp;fieldId={$cur_field.id}&amp;fieldName={$cur_field.name}&amp;removeImage">{tr}Remove Image{/tr}</a>
+<a href="tiki-view_tracker_item.php?trackerId={$trackerId}&itemId={$itemId}&fieldId={$cur_field.id}&fieldName={$cur_field.name}&removeImage">{tr}Remove Image{/tr}</a>
 {else}
 <img border="0" src="img/icons/na_pict.gif" alt="n/a" />
 {/if}
@@ -453,14 +447,14 @@ document.write('<div class="categSelectAll"><input type="checkbox" id="clickall"
 
 
 	{assign var='Height' value=$prefs.MultimediaDefaultHeight}
-	{assign var='Length' value=$prefs.MultimediaDefaultLength}
+	{assign var='Lenght' value=$prefs.MultimediaDefaultLength}
 
 	{if $cur_field.value ne ''}
-		{if isset($cur_field.options_array[1]) and $cur_field.options_array[1] ne '' } { assign var=Length value=$cur_field.options_array[1] }{/if}
-		{if isset($cur_field.options_array[2]) and $cur_field.options_array[2] ne '' } { assign var=Height value=$cur_field.options_array[2] }{/if}
-		{if $ModeVideo eq 'y' } { assign var="Height" value=$Height+$prefs.VideoHeight}{/if}
-		{include file=multiplayer.tpl url=$cur_field.value w=$Length h=$Height video=$ModeVideo}
-	{/if}
+	{if  $cur_field.options_array[1] ne '' } { $Lenght=$cur_field.options_array[1] }{/if}
+	{if  $cur_field.options_array[2] ne '' } { $Height=$cur_field.options_array[2] }{/if}
+	{if $ModeVideo eq 'y' } { assign var="Height" value=$Height+$prefs.VideoHeight}{/if}
+	{include file=multiplayer.tpl url=$cur_field.value w=$Lenght h=$Height video=$ModeVideo}
+{/if}
 {/if}
 {elseif $cur_field.type eq 'U'}
 <input type="text" name="ins_{$cur_field.id}" value="{$cur_field.value}" />
@@ -476,7 +470,7 @@ document.write('<div class="categSelectAll"><input type="checkbox" id="clickall"
 
 {if $cur_field.type ne 'a' and $cur_field.type ne 'S'}
 {if $cur_field.description}
-<br />{if $cur_field.descriptionIsParsed eq 'y'}{wiki}{$cur_field.description}{/wiki}{else}<em>{$cur_field.description|escape}</em>{/if}
+<br /><em>{$cur_field.description|escape}</em>
 {/if}
 {/if}
 </td>
@@ -517,7 +511,7 @@ document.write('<div class="categSelectAll"><input type="checkbox" id="clickall"
 <input type="submit" name="save" value="{tr}Save{/tr}" />
 {* --------------------------- to return to tracker list after saving --------- *}
 {if $tiki_p_view_trackers eq 'y'}
-<input type="submit" name="save_return" value="{tr}Save{/tr} &amp; {tr}Back{/tr} {tr}Items list{/tr}" /> 
+<input type="submit" name="save_return" value="{tr}Save{/tr} &amp; {tr}Back{/tr} {tr}Items list{/tr}" /> <span>
 {/if}
 </td></tr>
 </table>
@@ -539,7 +533,7 @@ document.write('<div class="categSelectAll"><input type="checkbox" id="clickall"
 {if $cur_field.http_request}
 <script type="text/javascript">
 <!--//--><![CDATA[//><!--
-selectValues('trackerIdList={$cur_field.http_request[0]}&amp;fieldlist={$cur_field.http_request[3]}&amp;filterfield={$cur_field.http_request[1]}&amp;status={$cur_field.http_request[4]}&amp;mandatory={$cur_field.http_request[6]}&amp;filtervalue={$cur_field.http_request[7]|escape:"url"}&amp;selected={$cur_field.http_request[8]|escape:"url"}','{$cur_field.http_request[5]}')
+selectValues('trackerIdList={$cur_field.http_request[0]}&fieldlist={$cur_field.http_request[3]}&filterfield={$cur_field.http_request[1]}&status={$cur_field.http_request[4]}&mandatory={$cur_field.http_request[6]}&filtervalue={$cur_field.http_request[7]|escape:"url"}&selected={$cur_field.http_request[8]|escape:"url"}','{$cur_field.http_request[5]}')
 //--><!]]>
 </script>
 {/if}

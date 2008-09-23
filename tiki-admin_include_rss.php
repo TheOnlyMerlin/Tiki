@@ -34,8 +34,6 @@ if (isset($_REQUEST['rss'])) {
 	simple_set_value('rssfeed_webmaster');
 	simple_set_value('rss_cache_time');
 	simple_set_value('rssfeed_img');
-	simple_set_toggle('summary_rss_blogs');
-	simple_set_toggle('rss_basic_auth');
 }
 
 ask_ticket('admin-inc-rss');

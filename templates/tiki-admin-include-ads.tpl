@@ -8,8 +8,8 @@
 
 	<form action="tiki-admin.php?page=ads"  onreset="return(confirm('{tr}Cancel Edit{/tr}'))" class="admin" method="post">
 		<div class="heading button" style="text-align: right">
-			<input type="submit" name="adssetup" value="{tr}Apply{/tr}" />
-			<input type="reset" name="adssetupreset" value="{tr}Reset{/tr}" />
+			<input type="submit" name="looksetup" value="{tr}Apply{/tr}" />
+			<input type="reset" name="looksetupreset" value="{tr}Reset{/tr}" />
 		</div>
 
 {if $prefs.feature_tabs eq 'y'}
@@ -26,7 +26,6 @@
 		<fieldset{if $prefs.feature_tabs eq 'y'} class="tabcontent" id="content{cycle name=content assign=focustab}{$focustab}"{/if}>
 {if $prefs.feature_tabs neq 'y'}			<legend class="heading" id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}"><a href="#siteads" name="siteads" onclick="flip('siteads'); return false;"><span>{tr}Site Ads and Banners{/tr}</span></a></legend>
 			<div id="siteads" style="display:{if !isset($smarty.session.tiki_cookie_jar.show_siteads) and $smarty.session.tiki_cookie_jar.show_siteads neq 'y'}none{else}block{/if};">{/if}
-        {remarksbox type="note"}{tr}Activate will only show content for admin. Check Publish to use content for all users.{/tr}{/remarksbox}
 				<table class="admin" width="100%">
 					<tr>
 						<td class="form"><label for="feature_sitead">{tr}Activate{/tr}:</label></td>

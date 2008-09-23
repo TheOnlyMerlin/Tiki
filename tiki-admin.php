@@ -40,7 +40,6 @@ function simple_set_toggle($feature) {
 
 function simple_set_value($feature, $pref = '', $isMultiple = false) {
 	global $_REQUEST, $tikilib ,$prefs;
-
 	if (isset($_REQUEST[$feature])) {
 		if ( $pref != '' ) {
 			$tikilib->set_preference($pref, $_REQUEST[$feature]);
@@ -258,21 +257,6 @@ if (isset($_REQUEST["page"])) {
 		$description = "Install predefined configuration profiles and add-ons.";
 		$helpUrl = "Profiles";
 		include_once ('tiki-admin_include_profiles.php');
-	} else if ($adminPage == "plugins") {
-		$admintitle = "Plugin Alias";
-		$description = "Create shortcut syntaxes to plugins.";
-		$helpUrl = "PluginAlias";
-		include_once ('tiki-admin_include_plugins.php');
-	} else if ($adminPage == "semantic") {
-		$admintitle = "Semantic Wiki Links";
-		$description = "Manage semantic tokens used throughout the wiki.";
-		$helpUrl = "SemanticLinks";
-		include_once ('tiki-admin_include_semantic.php');
-	} else if ($adminPage == "webservices") {
-		$admintitle = "Webservice Registration";
-		$description = "Discover and register web services to allow direct use in wiki pages.";
-		$helpUrl = "WebServices";
-		include_once ('tiki-admin_include_webservices.php');
 	}
 
 	$url = 'tiki-admin.php'.'?page='.$adminPage;

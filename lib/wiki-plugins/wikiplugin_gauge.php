@@ -22,67 +22,6 @@ function wikiplugin_gauge_help() {
 	return tra("Displays a graphical GAUGE").":<br />~np~{GAUGE(color=>,bgcolor=>,max=>,value=>,size=>,label=>,labelsize=>,perc=>,height=>)}".tra("description")."{GAUGE}~/np~";
 }
 
-function wikiplugin_gauge_info() {
-	return array(
-		'name' => tra('Gauge'),
-		'description' => tra('Displays a graphical gauge'),
-		'prefs' => array('wikiplugin_gauge'),
-		'body' => tra('description'),
-		'params' => array(
-			'value' => array(
-				'required' => true,
-				'name' => tra('Value'),
-				'description' => tra('current value (REQUIRED)'),
-			),
-			'max' => array(
-				'required' => false,
-				'name' => tra('Maximum Value'),
-				'description' => tra('Maximum possible value. Default: 100'),
-			),
-			'label' => array(
-				'required' => false,
-				'name' => tra('Label'),
-				'description' => tra('Label displayed on the left side of the gauge.'),
-			),
-			'color' => array(
-				'required' => false,
-				'name' => tra('Color'),
-				'description' => tra('As defined by CSS.'),
-			),
-			'bgcolor' => array(
-				'required' => false,
-				'name' => tra('Background Color'),
-				'description' => tra('As defined by CSS.'),
-			),
-			'size' => array(
-				'required' => false,
-				'name' => tra('Width'),
-				'description' => tra('Bar width in pixels.'),
-			),
-			'labelsize' => array(
-				'required' => false,
-				'name' => tra('Label Width'),
-				'description' => tra('Width in pixels allocated to the label.'),
-			),
-			'perc' => array(
-				'required' => false,
-				'name' => tra('Display Percentage'),
-				'description' => tra('true|false, if true then a percentage of the maximum is displayed.'),
-			),
-			'showvalue' => array(
-				'required' => false,
-				'name' => tra('Display Value'),
-				'description' => tra('true|false, if the numeric value is displayed.'),
-			),
-			'height' => array(
-				'required' => false,
-				'name' => tra('Height'),
-				'description' => tra('Bar height in pixels.'),
-			),
-		),
-	);
-}
-
 function wikiplugin_gauge($data, $params) {
 	extract ($params,EXTR_SKIP);
 
@@ -106,10 +45,6 @@ function wikiplugin_gauge($data, $params) {
 		$color = '#FF0000';
 	}
 
-	if (!isset($showvalue)) {
-		$showvalue = true;
-	}
-	
 	if (!isset($perc)) {
 		$perc = false;
 	}
@@ -165,7 +100,7 @@ function wikiplugin_gauge($data, $params) {
 
 	$html  ='<table border="0" cellpadding="0" cellspacing="0"><tr>' . $label_td . '<td width="' . $size . '" height="' . $height . '">';
 	$html .='<table border="0" cellpadding="0" cellspacing="0" width="100%"><tr>' . $h_td . '</tr></table>';
-	$html .='</td>' . ($showvalue ? $perc_td : '') . '<td>&nbsp;</td></tr>';
+	$html .='</td>' . $perc_td . '<td>&nbsp;</td></tr>';
 
 	if (!empty($data)) {
 		$html .= '<tr><td><small>' . $data . '</small></td></tr>';

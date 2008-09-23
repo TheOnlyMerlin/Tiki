@@ -1,7 +1,5 @@
 {if $prefs.feature_gmap eq 'y'}
-
-{title help="gmap"}{tr}Google Map Locator{/tr}{/title}
-
+<h1><a href="tiki-gmap_locator.php{$extraquery}" class="pagetitle">Google Map Locator</a></h1>
 <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key={$prefs.gmap_key}"></script>
 
 <div class="wikitext">

@@ -1,6 +1,6 @@
 {* $Id$ *}
 
-{tikimodule title="{tr}Language: {/tr}`$prefs.language`" name="switch_lang" flip=$module_params.flip decorations=$module_params.decorations notitle=$module_params.notitle}
+{tikimodule title="{tr}Language: {/tr}`$prefs.language`" name="switch_lang" flip=$module_params.flip decorations=$module_params.decorations}
 	{if $prefs.change_language ne 'n' or $user eq ''}
 	<form method="get" action="tiki-switch_lang.php">
 		<select name="language" size="1" onchange="this.form.submit();">

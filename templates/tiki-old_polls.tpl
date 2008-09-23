@@ -1,5 +1,4 @@
-{title help="polls" admpage="polls"}{tr}Polls{/tr}{/title}
-
+<h1><a class="pagetitle" href="tiki-old_polls.php">{tr}Polls{/tr}</a></h1>
 <div align="center">
 
 {include file='find.tpl' _sort_mode='y'}

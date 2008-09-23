@@ -1,10 +1,9 @@
 {* $Id$ *}
 
-{title help="forums" admpage="forums"}{$forum_info.name}{/title}
-
+<h1><a class="pagetitle" href="tiki-view_forum.php?forumId={$forum_info.forumId}">{$forum_info.name}</a></h1>
 {if $forum_info.show_description eq 'y'}
-  <div class="description">{$forum_info.description}</div>
-  <br />
+<div class="description">{$forum_info.description}</div>
+<br />
 {/if}
 
 <a class="link" href="tiki-forums.php">{tr}Forums{/tr}</a> {$prefs.site_crumb_seper} <a class="link" href="tiki-view_forum.php?forumId={$forumId}">{$forum_info.name}</a>
@@ -18,11 +17,10 @@
 {tr}New Topic{/tr}</a>
 {/if}
 {if $tiki_p_admin_forum eq 'y' or !isset($all_forums) or $all_forums|@count > 1 }{* No need for users to go to forum list if they are already looking at the only forum BUT note that all_forums only defined with quickjump feature *}
-  <a class="linkbut" href="tiki-forums.php">{tr}Forum List{/tr}</a> 
+<a class="linkbut" href="tiki-forums.php">{tr}Forum List{/tr}</a> 
 {/if}
-
 {if $tiki_p_admin_forum eq 'y'}
-  <a class="linkbut" href="tiki-admin_forums.php?forumId={$forum_info.forumId}">{tr}Edit Forum{/tr}</a>
+<a class="linkbut" href="tiki-admin_forums.php?forumId={$forum_info.forumId}">{tr}Edit Forum{/tr}</a>
 {/if}
 
 {if $queued > 0}
@@ -77,10 +75,6 @@
 </tr>
 </table>
 </div>
-
-<a class="link" href="tiki-forums.php">{tr}Forums{/tr}</a> {$prefs.site_crumb_seper} <a class="link" href="tiki-view_forum.php?forumId={$forumId}">{$forum_info.name}</a>
-
-<br />
 
 {if $unread > 0}
 <a class='link' href='messu-mailbox.php'>{tr}You have {$unread} unread private messages{/tr}<br /></a>

@@ -16,22 +16,6 @@ function wikiplugin_catorphans_help() {
 	return tra("Display Tiki objects that have not been categorized").":<br />~np~{CATORPHANS(objects=>wiki|article|blog|faq|fgal|forum|igal|newsletter|poll|quizz|survey|tracker)}{CATORPHANS}~/np~";
 }
 
-function wikiplugin_catorphans_info() {
-	return array(
-		'name' => tra('Category Orphans'),
-		'documentation' => 'PluginCatOrphans',
-		'description' => tra('Display Tiki objects that have not been categorized'),
-		'prefs' => array( 'feature_categories', 'wikiplugin_categories' ),
-		'params' => array(
-			'objects' => array(
-				'required' => false,
-				'name' => tra('Objects'),
-				'description' => tra('wiki|article|blog|faq|fgal|forum|igal|newsletter|poll|quizz|survey|tracker'),
-			),
-		),
-	);
-}
-
 function wikiplugin_catorphans($data, $params) {
 	global $dbTiki, $smarty, $tikilib, $prefs, $categlib;
 

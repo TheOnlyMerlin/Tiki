@@ -1,13 +1,13 @@
-{title}{tr}Directory batch upload{/tr}{/title}
-
+{* $Header$ *}
+<h1><a href="tiki-batch_upload_files.php" class="pagetitle">{tr}Directory batch upload{/tr}</a></h1>
 <span class="button2">
 {if $galleryId ne ''}
-<a href="tiki-list_file_gallery.php?galleryId={$galleryId}">
+<a href="tiki-list_file_gallery.php?galleryId={$galleryId}" class="linkbut">
 {else}
-<a href="tiki-list_file_gallery.php">
+<a href="tiki-file_galleries.php" class="linkbut">
 {/if}
 {tr}Browse file gallery{/tr}</a></span>
-<span class="button2"><a href="tiki-upload_file.php?galleryId={$galleryId}">{tr}Upload from disk{/tr}</a></span>
+<span class="button2"><a href="tiki-upload_file.php?galleryId={$galleryId}" class="linkbut">{tr}Upload from disk{/tr}</a></span>
 <br />
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Please do not use this feature to upload data into the database.{/tr}{/remarksbox}
 

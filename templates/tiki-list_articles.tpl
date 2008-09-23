@@ -1,21 +1,33 @@
 {* $Id$ *}
 
-{title help="Articles" admpage="cms"}{tr}Articles{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-list_articles.php">{tr}Articles{/tr}</a>
+
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Articles" target="tikihelp" class="tikihelp" title="{tr}List Articles{/tr}">
+{icon _id='help'}</a>
+{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-list_articles.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}List Articles Tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit Template{/tr}'}</a>
+{/if}
+{if $tiki_p_admin eq 'y'}
+<a href="tiki-admin.php?page=cms">{icon _id='wrench' alt="{tr}Admin Feature{/tr}"}</a>
+{/if}
+</h1>
 
 <div class="navbar">
 {if $tiki_p_edit_article eq 'y'}
-  <a href="tiki-edit_article.php">{tr}Edit New Article{/tr}</a>
+  <a class="linkbut" href="tiki-edit_article.php">{tr}Edit New Article{/tr}</a>
 {/if}
-<a href="tiki-view_articles.php">{tr}View Articles{/tr}</a>
+<a class="linkbut" href="tiki-view_articles.php">{tr}View Articles{/tr}</a>
 {if $prefs.feature_submissions == 'y' && ($tiki_p_approve_submission == "y" || $tiki_p_remove_submission == "y" || $tiki_p_edit_submission == "y")}
-<a href="tiki-list_submissions.php">{tr}View submissions{/tr}</a>
+<a class="linkbut" href="tiki-list_submissions.php">{tr}View submissions{/tr}</a>
 {/if}
 </div>
 {if $listpages or ($find ne '') or ($types ne '') or ($topics ne '') or ($lang ne '') or ($categId ne '')}
   {include file="find.tpl" find_show_languages='y' find_show_categories='y' find_show_num_rows='y'}
 {/if}
 <br />
-
 <table class="normal">
 <tr>
 {if $prefs.art_list_title eq 'y'}

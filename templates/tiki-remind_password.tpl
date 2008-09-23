@@ -1,16 +1,8 @@
-{title}{tr}I forgot my password{/tr}{/title}
-
-<div class="navbar">
-  <a href="{$prefs.tikiIndex}">{tr}Return to HomePage{/tr}</a>
-</div>
+<h1>{tr}I forgot my password{/tr}</h1>
 
 {if $showmsg ne 'n'}
   {if $showmsg eq 'e'}<span class="warn">{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle;align:left;"}{else}{icon _id=accept alt="{tr}OK{/tr}" style="vertical-align:middle;align:left;"} {/if} 
-{if $prefs.login_is_email ne 'y'}
   {$msg|escape:'html'|@default:'{tr}Enter your username or email.{/tr}'}
-{else}
-  {$msg|escape:'html'|@default:'{tr}Enter your email.{/tr}'}
-{/if}
   {if $showmsg eq 'e'}</span>{/if}
   <br /><br />
 {/if}
@@ -34,3 +26,6 @@
   </table>
   </form>
 {/if}
+
+<br /><br />
+<a href="{$prefs.tikiIndex}" class="link">{tr}Return to HomePage{/tr}</a>

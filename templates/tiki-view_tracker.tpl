@@ -4,7 +4,7 @@
 {popup_init src="lib/overlib.js"}
 {/if}
 
-{title url="tiki-view_tracker.php?trackerId=$trackerId" adm="trackers"}{tr}Tracker:{/tr} {$tracker_info.name}{/title}
+{title url="tiki-view_tracker.php?trackerId=$trackerId"}{tr}Tracker:{/tr} {$tracker_info.name}{/title}
 
 <div class="navbar">
 {if $prefs.feature_user_watches eq 'y' and $tiki_p_watch_trackers eq 'y' and $user}
@@ -17,17 +17,17 @@
 {if $prefs.rss_tracker eq "y"}
 <a href="tiki-tracker_rss.php?trackerId={$trackerId}"><img src='img/rss.png' border='0' alt='{tr}RSS feed{/tr}' title='{tr}RSS feed{/tr}'  align="right" /></a>
 {/if}
-{if (isset($tiki_p_list_trackers) and $tiki_p_list_trackers eq 'y') or (!isset($tiki_p_list_trackers) and $tiki_p_view_trackers eq 'y')}<span class="button2"><a href="tiki-list_trackers.php">{tr}List Trackers{/tr}</a></span>{/if}
-{if $tiki_p_create_tracker_items eq 'y' && $prefs['feature_tabs'] ne 'y'}<span class="button2"><a href="tiki-view_tracker.php?trackerId={$trackerId}#content2">{tr}Insert New Item{/tr}</a></span>
+{if (isset($tiki_p_list_trackers) and $tiki_p_list_trackers eq 'y') or (!isset($tiki_p_list_trackers) and $tiki_p_view_trackers eq 'y')}<span class="button2"><a href="tiki-list_trackers.php" class="linkbut">{tr}List Trackers{/tr}</a></span>{/if}
+{if $tiki_p_create_tracker_items eq 'y'}<span class="button2"><a href="tiki-view_tracker.php?trackerId={$trackerId}&cookietab=2" class="linkbut">{tr}Insert New Item{/tr}</a></span>
 {/if}
 {if $filtervalue}
-<span class="button2"><a href="tiki-view_tracker.php?trackerId={$trackerId}">{tr}View This Tracker's Items{/tr}</a></span>
+<span class="button2"><a href="tiki-view_tracker.php?trackerId={$trackerId}" class="linkbut">{tr}View This Tracker's Items{/tr}</a></span>
 {/if}
 {if $tiki_p_admin_trackers eq 'y'}
 &nbsp;&nbsp;
-<span class="button2"><a href="tiki-admin_trackers.php">{tr}Admin Trackers{/tr}</a></span>
-<span class="button2"><a href="tiki-admin_trackers.php?trackerId={$trackerId}">{tr}Edit This Tracker{/tr}</a></span>
-<span class="button2"><a href="tiki-admin_tracker_fields.php?trackerId={$trackerId}">{tr}Edit Fields{/tr}</a></span>
+<span class="button2"><a href="tiki-admin_trackers.php" class="linkbut">{tr}Admin Trackers{/tr}</a></span>
+<span class="button2"><a href="tiki-admin_trackers.php?trackerId={$trackerId}" class="linkbut">{tr}Edit This Tracker{/tr}</a></span>
+<span class="button2"><a href="tiki-admin_tracker_fields.php?trackerId={$trackerId}" class="linkbut">{tr}Edit Fields{/tr}</a></span>
 {/if}
 </div>
 
@@ -216,11 +216,6 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 <select name="batchaction">
 <option value="">{tr}...{/tr}</option>
 <option value="delete">{tr}Delete{/tr}</option>
-{if $tracker_info.showStatus eq 'y'}
-<option value="c">{tr}Close{/tr}</option>
-<option value="o">{tr}Open{/tr}</option>
-<option value="p">{tr}Pending{/tr}</option>
-{/if}
 </select>
 <input type="hidden" name="trackerId" value="{$trackerId}" />
 <input type="submit" name="act" value="{tr}OK{/tr}" />
@@ -249,7 +244,7 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 <td>
 <select name="status">
 {foreach key=st item=stdata from=$status_types}
-<option value="{$st}" {if $tracker_info.newItemStatus eq $st} selected="selected"{/if}
+<option value="{$st}"{if $tracker_info.newItemStatus eq $st} selected="selected"{/if}
 style="background-image:url('{$stdata.image}');background-repeat:no-repeat;padding-left:17px;">{$stdata.label}</option>
 {/foreach}
 </select>
@@ -382,7 +377,7 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
 {/if}
 
 {* -------------------- text field / email -------------------- *}
-{elseif $field_value.type eq 't'}
+{elseif $field_value.type eq 't' || $field_value.type eq 'm'}
 {if $field_value.isMultilingual ne "y"}
 {if $field_value.options_array[2]}<span class="formunit">{$field_value.options_array[2]}&nbsp;</span>{/if}
 <input type="text" name="{$field_value.ins_id}" {if $field_value.options_array[1]}size="{$field_value.options_array[1]}" maxlength="{$field_value.options_array[1]}"{/if} value="{if $input_err}{$field_value.value}{else}{$defaultvalues.$fid|escape}{/if}" />
@@ -415,10 +410,6 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
       {$field_value.description|escape|nl2br}
     {/if}
 	{/if}
-
-{* -------------------- email -------------------- *}
-{elseif $field_value.type eq 'm'}
-{include file=tracker_item_field_input.tpl}
 
 {* -------------------- textarea -------------------- *}
 {elseif $field_value.type eq 'a'}
@@ -483,7 +474,7 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
 {/if}
 {if $field_value.type ne 'a' and $field_value.type ne 'S'}
 {if $field_value.description}
-<br />{if $field_value.descriptionIsParsed eq 'y'}{wiki}{$field_value.description}{/wiki}{else}<em>{$field_value.description|escape}</em>{/if}
+<br /><em>{$field_value.description|escape}</em>
 {/if}
 {/if}
 </td>

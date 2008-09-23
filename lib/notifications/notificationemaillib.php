@@ -254,14 +254,13 @@ function sendWikiEmailNotification($event, $pageName, $edit_user, $edit_comment,
  * \param $subjectTpl: subject template file or null (ex: "submission_notifcation.tpl")
  * \param $subjectParam: le param to be inserted in the subject or null
  * \param $txtTpl : texte template file (ex: "submission_notifcation.tpl")
- * \param $from email from to not the default one
  * \ $smarty is supposed to be already built to fit $txtTpl
  * \return the nb of sent emails
  */
-function sendEmailNotification($list, $type, $subjectTpl, $subjectParam, $txtTpl, $from='') {
+function sendEmailNotification($list, $type, $subjectTpl, $subjectParam, $txtTpl) {
     global $smarty, $tikilib, $userlib, $prefs;
 	include_once('lib/webmail/tikimaillib.php');
-	$mail = new TikiMail(null, $from);
+	$mail = new TikiMail();
 	$sent = 0;
 	$defaultLanguage = $prefs['site_language'];
 	$languageEmail = $defaultLanguage;

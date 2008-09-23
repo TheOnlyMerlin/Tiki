@@ -22,7 +22,7 @@
           <td width="20"><input type="checkbox" name="rss_blogs" onclick="flip('blogsrss');"{if $prefs.rss_blogs eq 'y'} checked="checked"{/if}{if $prefs.feature_blogs ne 'y'} disabled="disabled"{/if} /></td>
           <td class="form" colspan="2">{if $prefs.rss_blogs eq 'y'}<a href="tiki-blogs_rss.php" title="{tr}Feed for blogs{/tr}.">{/if}{tr}Blogs{/tr}{if $prefs.rss_blogs eq 'y'}</a>{/if} {if $prefs.feature_blogs ne 'y'}&nbsp;({tr}Feature is disabled.{/tr} <a href="tiki-admin.php?page=features" title="{tr}Features{/tr}">{tr}Enable now{/tr}</a>.){/if}
             <div id="blogsrss" style="display:{if ($prefs.rss_blogs eq 'y') and ($prefs.feature_blogs eq 'y')}block{else}none{/if};">
-            <p>{tr}Title{/tr}: <input type="text" name="title_rss_blogs" size="20" maxlength="255" style="width:95%" value='{$prefs.title_rss_blogs|escape}' /><br />{tr}Description{/tr}: <textarea name="desc_rss_blogs" style="width:95%" cols="20" rows="2">{$prefs.desc_rss_blogs|escape}</textarea><br />{tr}Maximum number of items to display{/tr}:<input type="text" name="max_rss_blogs" size="5" value="{$prefs.max_rss_blogs|escape}" /><br />{tr}Only first page{/tr}:<input type="checkbox" name="summary_rss_blogs" onclick="flip('summaryrssblogs');"{if $prefs.summary_rss_blogs eq 'y'} checked="checked"{/if} /></p>
+            <p>{tr}Title{/tr}: <input type="text" name="title_rss_blogs" size="20" maxlength="255" style="width:95%" value='{$prefs.title_rss_blogs|escape}' /><br />{tr}Description{/tr}: <textarea name="desc_rss_blogs" style="width:95%" cols="20" rows="2">{$prefs.desc_rss_blogs|escape}</textarea><br />{tr}Maximum number of items to display{/tr}:<input type="text" name="max_rss_blogs" size="5" value="{$prefs.max_rss_blogs|escape}" /></p>
             </div>
           </td>
         </tr>
@@ -196,12 +196,6 @@
           <td>
             <input type="text" name="rss_cache_time" size="4" value="{$prefs.rss_cache_time}" /> {tr}seconds (0 = cache inactive){/tr}
 	    {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Enabling caching will override existing permissions - all content will be public. Enable this option <strong>only</strong> if your syndicated content should be public.{/tr}{/remarksbox}
-	  </td>
-        </tr>
-        <tr>
-          <td class="form">{tr}Allow Basic Authentication for RSS feeds{/tr}</td>
-          <td>
-            <input type="checkbox" name="rss_basic_auth" onclick="flip('rssbasicauth');"{if $prefs.rss_basic_auth eq 'y'} checked="checked"{/if} />{remarksbox type="comment" title="{tr}Comment{/tr}"}{tr}This potentially leaks passwords over unencrypted links, it is intended for private and enterprise settings, you should consider to also set https_login=required.{/tr}{/remarksbox}
 	  </td>
         </tr>
         <tr><td colspan="2">&nbsp;</td></tr>

@@ -28,53 +28,7 @@ so if you need to use params just add them in MODULE()
  */
 
 function wikiplugin_module_help() {
-	return tra("Displays a module inlined in page").":<br />~np~{MODULE(module=>,float=>left|right|none,decorations=>y|n,flip=>y|n,max=>,np=>0|1,notitle=y|n,args...)}{MODULE}~/np~";
-}
-
-function wikiplugin_module_info() {
-	return array(
-		'name' => tra('Insert Module'),
-		'documentation' => 'PluginModule',
-		'description' => tra("Displays a module inlined in page. More parameters can be added, not supported by UI."),
-		'prefs' => array( 'wikiplugin_module' ),
-		'params' => array(
-			'module' => array(
-				'required' => true,
-				'name' => tra('Module Name'),
-				'description' => tra('Module name as known in Tikiwiki.'),
-			),
-			'float' => array(
-				'required' => false,
-				'name' => tra('Float'),
-				'description' => tra('left|right|none'),
-			),
-			'decoration' => array(
-				'required' => false,
-				'name' => tra('Decoration'),
-				'description' => tra('y|n'),
-			),
-			'flip' => array(
-				'required' => false,
-				'name' => tra('Flip'),
-				'description' => tra('y|n'),
-			),
-			'max' => array(
-				'required' => false,
-				'name' => tra('Max'),
-				'description' => tra('y|n'),
-			),
-			'np' => array(
-				'required' => false,
-				'name' => tra('np'),
-				'description' => tra('0|1'),
-			),
-			'notitle' =>array(
-				'required' => false,
-				'name' => tra('notitle'),
-				'description' => tra('y|n'),
-			),
-		),
-	);
+	return tra("Displays a module inlined in page").":<br />~np~{MODULE(module=>,float=>left|right|none,decorations=>y|n,flip=>y|n,max=>,np=>0|1,args...)}{MODULE}~/np~";
 }
 
 function wikiplugin_module($data, $params) {

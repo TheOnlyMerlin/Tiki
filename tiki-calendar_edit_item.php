@@ -208,10 +208,7 @@ if (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["ca
 	header('Location: tiki-calendar.php');
 	die;
 }  elseif (isset($_REQUEST['duplicate']) and $tiki_p_add_events == 'y') {
-	$calitem = $calendarlib->get_item($_REQUEST['calitemId']);
-	$calitem['calendarId'] = $_REQUEST['calendarId'];
-	$calitem['calitemId'] = 0;
-	$calendarlib->set_item($user,0,$calitem);
+	$calitem = $calendarlib->get_item($_REQUEST['duplicate']);
 	$id = 0;
 	if (isset($_REQUEST['calId'])) {
 		$calendar = $calendarlib->get_calendar($_REQUEST['calId']);
@@ -246,14 +243,13 @@ if (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["ca
 	} else {
 		$now = $tikilib->now;
 	}
-	$calendar = $calendarlib->get_calendar($_REQUEST['calendarId']);
 	$calitem = array(
 		'calitemId'=>0,
 		'user'=>$user,
 		'name'=>'',
 		'url'=>'',
 		'description'=>'',
-		'status'=>$calendar['defaulteventstatus'],
+		'status'=>0,
 		'priority'=>0,
 		'locationId'=>0,
 		'categoryId'=>0,
@@ -263,6 +259,7 @@ if (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["ca
 		'duration'=>(60*60) 
 		);
 	$id = 0;
+	$calendar = $calendarlib->get_calendar($_REQUEST['calendarId']);
 	$smarty->assign('edit',true);
 	$hour_minmax = floor(($calendar['startday']-1)/(60*60)).'-'. ceil(($calendar['endday'])/(60*60));
 } else {
@@ -272,9 +269,6 @@ if (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["ca
   die;
 }
 
-if (!empty($calendar['eventstatus'])) {
-    $calitem['status'] = $calendar['eventstatus'];
-}
 
 if ($calendar['customlocations'] == 'y') {
 	$listlocs = $calendarlib->list_locations($_REQUEST['calendarId']);

@@ -3,7 +3,7 @@
 {*
   parameters used in this template:
 
-  * filegals_manager      : If value not empty, adds hidden input filegals_manager value=$filegals_manager
+  * filegals_manager      : If value = 'y' adds hidden input filegals_manager value=y
   * _sort_mode             : If value = 'y' adds hidden input sort_mode value=$sort_mode
 
   * what                  : Change form title. Default value (if $what empty) is "Find". If $what is not empty, the text presented is $what content
@@ -21,16 +21,15 @@
   *                  {include file="find.tpl" find_show_languages='y' find_show_categories='y' find_show_num_rows='y'} 
   *}
 
-<div class="clearfix findtable">
+<div class="findtable">
 <form method="post" action="{$smarty.server.PHP_SELF}">
 
-{if $filegals_manager neq ''}<input type="hidden" name="filegals_manager" value="{$filegals_manager|escape}" />{/if}
+{if $filegals_manager eq 'y'}<input type="hidden" name="filegals_manager" value="y" />{/if}
 {if $_sort_mode eq 'y'}<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />{/if}
 
 {query _type='form_input' maxRecords='NULL' type='NULL' find='NULL' topic='NULL' lang='NULL' exact_match='NULL' categId='NULL' filegals_manager='NULL' save='NULL'}
 
-<div class="findtitle">
-<label for="findwhat">
+<label class="findtitle" for="findwhat">
   {if empty($what)}
     {tr}Find{/tr}
   {else}
@@ -38,14 +37,11 @@
   {/if}
 </label>
 <input type="text" name="find" id="findwhat" value="{$find|escape}" />
-</div>
 {if isset($exact_match)}
-  <div class="findtitle">
-  <label for="findexactmatch">
+  <label class="findtitle" for="findexactmatch">
     {tr}Exact&nbsp;match{/tr}
   </label>
   <input type="checkbox" name="exact_match" id="findexactmatch" {if $exact_match ne 'n'}checked="checked"{/if}/>
-  </div>
 {/if}
 {if !empty($types)}
 	<div class="findtitle findtypes">
@@ -72,17 +68,8 @@
 		<select name="lang">
 		<option value='' {if $find_lang eq ''}selected="selected"{/if}>{tr}any language{/tr}</option>
 		{section name=ix loop=$languages}
-			{if !is_array($prefs.available_languages) || count($prefs.available_languages) == 0 || in_array($languages[ix].value, $prefs.available_languages)}
+			{if count($prefs.available_languages) == 0 || in_array($languages[ix].value, $prefs.available_languages)}
 			<option value="{$languages[ix].value|escape}" {if $find_lang eq $languages[ix].value}selected="selected"{/if}>{tr}{$languages[ix].name}{/tr}</option>
-			{/if}
-		{/section}
-		</select>
-		{tr}not in{/tr}
-		<select name="langOrphan">
-		<option value='' {if $find_langOrphan eq ''}selected="selected"{/if}></option>
-		{section name=ix loop=$languages}
-			{if !is_array($prefs.available_languages) || count($prefs.available_languages) == 0 || in_array($languages[ix].value, $prefs.available_languages)}
-			<option value="{$languages[ix].value|escape}" {if $find_langOrphan eq $languages[ix].value}selected="selected"{/if}>{tr}{$languages[ix].name}{/tr}</option>
 			{/if}
 		{/section}
 		</select>
@@ -99,16 +86,14 @@
 	</div>
 {/if}
 {if $find_show_num_rows eq 'y'}
-  <div class="findtitle">
-  <label for="findnumrows">
+  <label class="findtitle" for="findnumrows">
     {tr}Number of displayed rows{/tr}
   </label>
   <input type="text" name="maxRecords" id="findnumrows" value="{$maxRecords|escape}" size="3" />
-  </div>
 {/if}
 <div class="findtitle findsubmit">
   <input type="submit" name="search" value="{tr}Find{/tr}" />
 </div>
 </form>
 </div>
-<div class="clear"></div>
+ 

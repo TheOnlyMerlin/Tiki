@@ -1,9 +1,11 @@
-{title help="Notepad"}{tr}Write a note{/tr}{/title}
-
+{*Smarty template*}
+<h1>
+  <a class="pagetitle" href="tiki-notepad_write.php">{tr}Write a note{/tr}</a>
+</h1>
 {include file=tiki-mytiki_bar.tpl}
 
 <div class="navbar">
-  <span class="button2"><a href="tiki-notepad_list.php">{tr}Notes{/tr}</a></span>
+  <span class="button2"><a class="linkbut" href="tiki-notepad_list.php">{tr}Notes{/tr}</a></span>
 </div>
 
 <form action="tiki-notepad_write.php" method="post">

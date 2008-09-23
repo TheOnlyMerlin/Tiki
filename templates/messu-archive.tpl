@@ -1,4 +1,13 @@
-{title help="Inter-User Messages"}{tr}Message Archive{/tr}{/title}
+{*Smarty template*}
+<h1><a class="pagetitle" href="messu-archive.php">{tr}Message Archive{/tr}</a>
+
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Inter-User Messages" target="tikihelp" class="tikihelp" title="{tr}Message Archive{/tr}">{icon _id='help'}</a>
+{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=messu-archive.tpl" target="tikihelp" class="tikihelp">{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}</h1>
 
 {include file=tiki-mytiki_bar.tpl}
 {include file="messu-nav.tpl"}
@@ -33,11 +42,11 @@
 <label for="mess-mailprio">{tr}Priority{/tr}:</label>
 <select name="priority" id="mess-mailprio">
 <option value="" {if $priority eq ''}selected="selected"{/if}>{tr}All{/tr}</option>
-<option value="1" {if $priority eq 1}selected="selected"{/if}>1</option>
-<option value="2" {if $priority eq 2}selected="selected"{/if}>2</option>
-<option value="3" {if $priority eq 3}selected="selected"{/if}>3</option>
-<option value="4" {if $priority eq 4}selected="selected"{/if}>4</option>
-<option value="5" {if $priority eq 5}selected="selected"{/if}>5</option>
+<option value="1" {if $priority eq 1}selected="selected"{/if}>{tr}1{/tr}</option>
+<option value="2" {if $priority eq 2}selected="selected"{/if}>{tr}2{/tr}</option>
+<option value="3" {if $priority eq 3}selected="selected"{/if}>{tr}3{/tr}</option>
+<option value="4" {if $priority eq 4}selected="selected"{/if}>{tr}4{/tr}</option>
+<option value="5" {if $priority eq 5}selected="selected"{/if}>{tr}5{/tr}</option>
 </select>
 <label for="mess-mailcont">{tr}Containing{/tr}:</label>
 <input type="text" name="find" id="mess-mailcont" value="{$find|escape}" />

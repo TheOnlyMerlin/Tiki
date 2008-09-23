@@ -16,9 +16,9 @@
  * @author     Stig Bakken <ssb@php.net>
  * @author     Tomas V. V. Cox <cox@idecnet.com>
  * @author     Martin Jansen <mj@php.net>
- * @copyright  1997-2008 The PHP Group
+ * @copyright  1997-2006 The PHP Group
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version    CVS: $Id: Downloader.php,v 1.138 2008/04/11 01:16:40 dufuz Exp $
+ * @version    CVS: Id: Downloader.php,v 1.132 2007/06/11 05:30:38 cellog Exp 
  * @link       http://pear.php.net/package/PEAR
  * @since      File available since Release 1.3.0
  */
@@ -43,9 +43,9 @@ define('PEAR_INSTALLER_ERROR_NO_PREF_STATE', 2);
  * @author     Stig Bakken <ssb@php.net>
  * @author     Tomas V. V. Cox <cox@idecnet.com>
  * @author     Martin Jansen <mj@php.net>
- * @copyright  1997-2008 The PHP Group
+ * @copyright  1997-2006 The PHP Group
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version    Release: 1.7.2
+ * @version    Release: 1.6.1
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.3.0
  */
@@ -132,7 +132,7 @@ class PEAR_Downloader extends PEAR_Common
      * @access private
      */
     var $_errorStack = array();
-
+    
     /**
      * @var boolean
      * @access private
@@ -209,7 +209,7 @@ class PEAR_Downloader extends PEAR_Common
             return false;
         }
         list($a, $lastmodified) = $a;
-        if (!class_exists('PEAR_ChannelFile')) {
+        if (!class_exists('PEAR/ChannelFile.php')) {
             require_once 'PEAR/ChannelFile.php';
         }
         $b = new PEAR_ChannelFile;
@@ -253,7 +253,7 @@ class PEAR_Downloader extends PEAR_Common
      */
     function &getDependency2Object(&$c, $i, $p, $s)
     {
-        if (!class_exists('PEAR_Dependency2')) {
+        if (!class_exists('PEAR/Dependency2.php')) {
             require_once 'PEAR/Dependency2.php';
         }
         $z = &new PEAR_Dependency2($c, $i, $p, $s);
@@ -679,12 +679,7 @@ class PEAR_Downloader extends PEAR_Common
             return $this->_downloadDir;
         }
         $downloaddir = $this->config->get('download_dir');
-        if (empty($downloaddir) || (is_dir($downloaddir) && !is_writable($downloaddir))) {
-            if  (is_dir($downloaddir) && !is_writable($downloaddir)) {
-                $this->log(0, 'WARNING: configuration download directory "' . $downloaddir .
-                    '" is not writeable.  Change download_dir config variable to ' .
-                    'a writeable dir to avoid this warning');
-            }
+        if (empty($downloaddir)) {
             if (!class_exists('System')) {
                 require_once 'System.php';
             }
@@ -788,10 +783,8 @@ class PEAR_Downloader extends PEAR_Common
         if (PEAR::isError($chan)) {
             return $chan;
         }
-        PEAR::staticPushErrorHandling(PEAR_ERROR_RETURN);
         $version = $this->_registry->packageInfo($parr['package'], 'version',
             $parr['channel']);
-        PEAR::staticPopErrorHandling();
         $base2 = false;
         if ($chan->supportsREST($this->config->get('preferred_mirror')) &&
               (($base2 = $chan->getBaseURL('REST1.3', $this->config->get('preferred_mirror'))) ||
@@ -803,11 +796,10 @@ class PEAR_Downloader extends PEAR_Common
                 $rest = &$this->config->getREST('1.0', $this->_options);
             }
             if (!isset($parr['version']) && !isset($parr['state']) && $version
-                  && !PEAR::isError($version)
                   && !isset($this->_options['downloadonly'])) {
-                $url = $rest->getDownloadURL($base, $parr, $state, $version, $chan->getName());
+                $url = $rest->getDownloadURL($base, $parr, $state, $version);
             } else {
-                $url = $rest->getDownloadURL($base, $parr, $state, false, $chan->getName());
+                $url = $rest->getDownloadURL($base, $parr, $state, false);
             }
             if (PEAR::isError($url)) {
                 $this->configSet('default_channel', $curchannel);
@@ -824,12 +816,15 @@ class PEAR_Downloader extends PEAR_Common
                 return PEAR::raiseError('Invalid remote dependencies retrieved from REST - ' .
                     'this should never happen');
             }
+            PEAR::staticPushErrorHandling(PEAR_ERROR_RETURN);
+            $testversion = $this->_registry->packageInfo($url['package'], 'version',
+                $parr['channel']);
+            PEAR::staticPopErrorHandling();
             if (!isset($this->_options['force']) &&
                   !isset($this->_options['downloadonly']) &&
-                  $version &&
-                  !PEAR::isError($version) &&
+                  !PEAR::isError($testversion) &&
                   !isset($parr['group'])) {
-                if (version_compare($version, $url['version'], '>=')) {
+                if (version_compare($testversion, $url['version'], '>=')) {
                     return PEAR::raiseError($this->_registry->parsedPackageNameToString(
                         $parr, true) . ' is already installed and is newer than detected ' .
                         'release version ' . $url['version'], -976);
@@ -993,7 +988,7 @@ class PEAR_Downloader extends PEAR_Common
               $base = $chan->getBaseURL('REST1.0', $this->config->get('preferred_mirror'))) {
             $rest = &$this->config->getREST('1.0', $this->_options);
             $url = $rest->getDepDownloadURL($base, $xsdversion, $dep, $parr,
-                    $state, $version, $chan->getName());
+                    $state, $version);
             if (PEAR::isError($url)) {
                 return $url;
             }
@@ -1212,7 +1207,7 @@ class PEAR_Downloader extends PEAR_Common
      */
     function sortPkgDeps(&$packages, $uninstall = false)
     {
-        $uninstall ?
+        $uninstall ? 
             $this->sortPackagesForUninstall($packages) :
             $this->sortPackagesForInstall($packages);
     }
@@ -1533,7 +1528,6 @@ class PEAR_Downloader extends PEAR_Common
      * @param false|string|array $lastmodified header values to check against for caching
      *                           use false to return the header values from this download
      * @param false|array $accept Accept headers to send
-     * @param false|string $channel Channel to use for retrieving authentication
      * @return string|array  Returns the full path of the downloaded file or a PEAR
      *                       error on failure.  If the error is caused by
      *                       socket-related errors, the error object will
@@ -1544,7 +1538,7 @@ class PEAR_Downloader extends PEAR_Common
      * @access public
      */
     function downloadHttp($url, &$ui, $save_dir = '.', $callback = null, $lastmodified = null,
-                          $accept = false, $channel = false)
+                          $accept = false)
     {
         static $redirect = 0;
         // allways reset , so we are clean case of error
@@ -1570,7 +1564,7 @@ class PEAR_Downloader extends PEAR_Common
             $config = &PEAR_Config::singleton();
         }
         $proxy_host = $proxy_port = $proxy_user = $proxy_pass = '';
-        if ($config->get('http_proxy') &&
+        if ($config->get('http_proxy') && 
               $proxy = parse_url($config->get('http_proxy'))) {
             $proxy_host = isset($proxy['host']) ? $proxy['host'] : null;
             if (isset($proxy['scheme']) && $proxy['scheme'] == 'https') {
@@ -1636,11 +1630,11 @@ class PEAR_Downloader extends PEAR_Common
         } else {
             $ifmodifiedsince = ($lastmodified ? "If-Modified-Since: $lastmodified\r\n" : '');
         }
-        $request .= $ifmodifiedsince . "User-Agent: PEAR/1.7.2/PHP/" .
+        $request .= $ifmodifiedsince . "User-Agent: PEAR/1.6.1/PHP/" .
             PHP_VERSION . "\r\n";
         if (isset($this)) { // only pass in authentication for non-static calls
-            $username = $config->get('username', null, $channel);
-            $password = $config->get('password', null, $channel);
+            $username = $config->get('username');
+            $password = $config->get('password');
             if ($username && $password) {
                 $tmp = base64_encode("$username:$password");
                 $request .= "Authorization: Basic $tmp\r\n";

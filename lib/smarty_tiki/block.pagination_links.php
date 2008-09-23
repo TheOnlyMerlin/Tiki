@@ -65,13 +65,7 @@ function smarty_block_pagination_links($params, $url, &$smarty, $repeat) {
 	if ( ! isset($params['usedots']) ) $params['usedots'] = 'y';
 	if ( ! isset($params['class']) ) $params['class'] = 'mini';
 	if ( ! isset($params['htmlelement']) ) $params['htmlelement'] = 'tiki-center';
-   if ( ! isset($params['template']) ) {
-      $params['template'] = basename($_SERVER['PHP_SELF'], '.php').'.tpl';
-      if ( $params['template'] == 'tiki-index.tpl' ) {
-         $params['template'] = 'tiki-show_page.tpl';
-      }
-   }
-
+	if ( ! isset($params['template']) ) $params['template'] = basename($_SERVER['PHP_SELF'], '.php').'.tpl';
 	if ( ! file_exists('templates/'.$params['template']) || $params['template'] == 'noauto' ) {
 		$params['htmlelement'] = '';
 		$params['template'] = '';
@@ -213,7 +207,7 @@ function smarty_block_pagination_links($params, $url, &$smarty, $repeat) {
 			}
 		}
 
-		if ( $prefs['direct_pagination'] == 'y' && $nb_pages > 1 ) {
+		if ( $prefs['direct_pagination'] == 'y' ) {
 			$html .= "\n<br />";
 			$last_dots = false;
 			$page_num = floor($real_offset / $params['step']);

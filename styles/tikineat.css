@@ -145,12 +145,12 @@ button, input {
 input[type=checkbox], input[type=radio] {
 	border : 0;
 }
-button, input[type=submit], .button input, .submitbutton {
+button, input[type=submit], .button input {
 	border : 1px solid #46596f;
 	background-color: #C7D0D9;
 	font-weight : bold;
 }
-button:hover, input[type=submit]:hover, .button input:hover, .submitbutton:hover {
+button:hover, input[type=submit]:hover, .button input:hover {
 	background-color : #FFFFFF;
 	cursor : pointer;
 }
@@ -392,7 +392,7 @@ div.cbox-data {
 .rbox-data {
   padding: 2px;
 }
-.rbox-title, .warning .rbox-title { 
+.rbox-title, .rbox-title[name="warning"] { 
   border: 0;
   border-radius-topright : 1ex;
   -moz-border-radius-topright : 1ex;
@@ -405,21 +405,21 @@ div.cbox-data {
   font-weight : bold;
   background-color: #eeee99;
 }
-.rbox-data, .warning .rbox-data {
+.rbox-data, .rbox-data[name="warning"] {
   background-color: #eeee99;
   border: 1px solid #DDDDCC;
 }
-.note .rbox-title {
+.rbox-title[name="note"] {
   background-color: #CCCCDD;
 }
-.note .rbox-data {
+.rbox-data[name="note"] {
   background-color: #ECECEF;
   border: 1px solid #CCCCDD;
 }
-.comment, .tip .rbox-title, .rbox-title.tip {
+.rbox-title[name="comment"], .rbox-title[name="tip"], .rbox-title.tip {
   background-color: #CCCCDD;
 }
-.rbox-data[name="comment"], .tip .rbox-data, .rbox-data.tip {            
+.rbox-data[name="comment"], .rbox-data[name="tip"], .rbox-data.tip {            
   background-color: #ECEFEC;
   border: 1px solid #CCDDCC;
 }
@@ -605,7 +605,12 @@ a.forumnameread {
 .tableheading, .gallistheading, .listgalheading, .bloglistheading,
 .llisfgalheading, .llistfileslink, .llistart, .lforumheading {
 }
-.findtitle {float: left;}
+
+table.findtable {
+	margin-bottom : 1px;
+	padding-bottom : 10px;
+}
+.findtable td { }
 
 /* Odd rows in several listings */
 tr.odd {
@@ -2192,49 +2197,5 @@ span.minichat_nick {
 
 #sitelogo {
   background-color: white;
-}
-.clearfix:after {
-    content: "."; 
-    display: block; 
-    height: 0; 
-    clear: both; 
-    visibility: hidden;
-}
-/* Hides from IE-mac \*/
-* html .clearfix {height: 1%;}
-/* End hide from IE-mac */
-.clear {
-	clear: both !important;
-}
-
-.sub {
-	padding-left: 5em !important;
-}
-
-div.floatleft {
-	float: left;
-	clear: none;
-}
-/* File Gallery */
-div.fgal_file {
-}
-div.fgal_file div.fgal_file_c1 {
-  float: left;
-  display: block;
-  width: 49%; 
-}
-div.fgal_file div.fgal_file_c2 {
-  float: right;
-  width: 49%;
-  padding-left: 10px !important;
-}
-div.fgal_file div.div.fgal_file_c2:after {
-    content: ".";
-    display: block;
-    clear: both;
-    visibility: hidden;
-}
-div.fgal_file div.fgal_file_c3 {
-  clear: both;
 }
 /* end of css file */

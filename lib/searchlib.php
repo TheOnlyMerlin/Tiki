@@ -162,8 +162,7 @@ class SearchLib extends TikiLib {
 
 		    $bindJoin[] = $objType;
 
-		    $forbiddenCatList = $categlib->list_forbidden_categories(0, '', 'tiki_p_search_categorized');
-
+		    $forbiddenCatList = $categlib->list_forbidden_categories();
 		    $forbiddenCatStr = '';
 		    if (count($forbiddenCatList) > 0) {
 			$forbiddenCatStr = '?' . str_repeat(',?',count($forbiddenCatList)-1);
@@ -254,7 +253,6 @@ class SearchLib extends TikiLib {
 			// taking first 240 chars of text can bring broken html tags, better remove all tags.
 			global $tikilib;
 			$ret[] = array(
-				'name' => $res['name'],
 				'pageName' => $res["pageName"],
 				'data' => $tikilib->get_snippet($res['data'], isset($res['is_html'])? $res['is_html']:'n'),
 				'hits' => $res["hits"],
@@ -279,6 +277,7 @@ class SearchLib extends TikiLib {
 			'data' => 'c.`data`',
 			'hits' => 'p.`hits`', // c.hits is always null for a page comment!!
 			'lastModif' => 'c.`commentDate`',
+			'href' => 'tiki-index.php?page=%s#comments',
 			'id' => array('p.`pageName`', 'c.`threadId`'),
 			'pageName' => $this->db->concat('p.`pageName`', "': '", 'c.`title`'),
 			'search' => array('c.`title`', 'c.`data`'),
@@ -288,7 +287,6 @@ class SearchLib extends TikiLib {
 			'objectType' => 'wiki page',
 			'objectKey' => 'p.`pageName`',
 		);
-		$search_wikis_comments['href'] = $prefs['feature_sefurl'] == 'y'? '%s#comments': 'tiki-index.php?page=%s#comments';
 		$rv = $this->_find($search_wikis_comments, $words, $offset, $maxRecords, $fulltext);
 
 		static $search_wikis = array(
@@ -297,6 +295,7 @@ class SearchLib extends TikiLib {
 			'data' => '`data`',
 			'hits' => 'p.`hits`', //'pageRank', pageRank is updated not very often since the line below is in comment
 			'lastModif' => '`lastModif`',
+			'href' => 'tiki-index.php?page=%s',
 			'id' => array('`pageName`'),
 			'pageName' => '`pageName`',
 			'search' => array('p.`pageName`', 'p.`description`', '`data`'),
@@ -305,7 +304,6 @@ class SearchLib extends TikiLib {
 			'objectType' => 'wiki page',
 			'objectKey' => 'p.`pageName`',
 		);
-		$search_wikis['href'] = $prefs['feature_sefurl'] == 'y'? '%s': 'tiki-index.php?page=%s';
 		if ($prefs['search_parsed_snippet'] == 'y') {
 			$search_wikis['is_html'] = 'is_html';
 			$search_wikis['parsed'] = true;
@@ -314,7 +312,7 @@ class SearchLib extends TikiLib {
 		// that pagerank re-calculation was speed handicap (timex30)
 		//$this->pageRank();
 		if (!$rv['cant'])
-			$data = $this->_find($search_wikis, $words, $offset, $maxRecords, $fulltext);
+			return $this->_find($search_wikis, $words, $offset, $maxRecords, $fulltext);
 		else {
 			$data = array();
 			$data = $this->_find($search_wikis, $words, $offset, $maxRecords, $fulltext);
@@ -326,9 +324,8 @@ class SearchLib extends TikiLib {
 				array_push($data['data'], $a);
 			}
 			$data['cant'] += $rv['cant'];
+			return $data;
 		}
-		
-		return $data;
 
 	}
 	function find_relevance_cmp($a, $b) {
@@ -478,7 +475,7 @@ class SearchLib extends TikiLib {
 	function find_articles($words = '', $offset = 0, $maxRecords = -1, $fulltext = false) {
 		static $search_articles = array(
 			'from' => '`tiki_articles` a',
-			'name' => 'a.`topicId`',
+			'name' => 'a.`title`',
 			'data' => 'a.`heading`',
 			'hits' => 'a.`nbreads`',
 			'lastModif' => 'a.`publishDate`',
@@ -487,29 +484,15 @@ class SearchLib extends TikiLib {
 			'pageName' => 'a.`title`',
 			'search' => array('a.`title`', 'a.`heading`', 'a.`body`'),
 
-			//'permNameGlobal' => 'tiki_p_read_article',
-			//'permNameObj' => 'tiki_p_topic_read',
-			//'objectType' => 'topic',
-			//'objectKeyPerm' => 'a.`topicId`',
-			//'objectKeyGroup' => 'a.`articleId`',
-			//'objectKeyCat' => 'a.`articleId`',
-			'permName' => 'tiki_p_read_article',
-			'objectType' =>'article',
-			'objectKey'=>'`articleId`'
+			'permNameGlobal' => 'tiki_p_read_article',
+			'permNameObj' => 'tiki_p_topic_read',
+			'objectType' => 'topic',
+			'objectKeyPerm' => 'a.`topicId`',
+			'objectKeyGroup' => 'a.`articleId`',
+			'objectKeyCat' => 'a.`articleId`',
 		);
 
-		$res = $this->_find($search_articles, $words, $offset, $maxRecords, $fulltext);
-		$ret = array('cant'=>$res['cant'], 'data'=>array());
-		global $user;
-		foreach ($res['data'] as $r) {
-			if (empty($r['name']) || $this->user_has_perm_on_object($user, $r['name'], 'topic', 'tiki_p_topic_read')) {
-				$r['name'] = $r['pageName'];
-				$ret['data'][] = $r;
-			} else {
-				--$ret['cant'];
-			}
-		}
-		return $ret;
+		return $this->_find($search_articles, $words, $offset, $maxRecords, $fulltext);
 	}
 
 	function find_posts($words = '', $offset = 0, $maxRecords = -1, $fulltext = false) {

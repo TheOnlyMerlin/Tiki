@@ -1,10 +1,23 @@
 {* $Id$ *}
 {popup_init src="lib/overlib.js"}
+<h1>
+  <a class="pagetitle" href="tiki-admin_categories.php">{tr}Admin Categories{/tr}</a>
+  
+  {if $prefs.feature_help eq 'y'}
+    <a href="{$prefs.helpurl}Categories+Admin" target="tikihelp" class="tikihelp" title="{tr}Admin Categories{/tr}">
+      {icon _id='help'}
+    </a>
+  {/if}
 
-{title help="Categories+Admin"}{tr}Admin Categories{/tr}{/title}
+  {if $prefs.feature_view_tpl eq 'y'}
+    <a href="tiki-edit_templates.php?template=tiki-admin_categories.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Admin Categories tpl{/tr}">
+      {icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}
+    </a>
+  {/if}
+</h1>
 
 <div class="navbar">
-  <a href="tiki-browse_categories.php?parentId={$parentId}" title="{tr}browse the category system{/tr}">{tr}Browse Category{/tr}</a>
+  <a class="linkbut" href="tiki-browse_categories.php?parentId={$parentId}" title="{tr}browse the category system{/tr}">{tr}Browse Category{/tr}</a>
 </div>
 
 {if !empty($errors)}
