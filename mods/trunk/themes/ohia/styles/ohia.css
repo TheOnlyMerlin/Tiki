@@ -298,6 +298,9 @@ input[id="sl-login-pass"] {}
 	color: #f4f4f4;
 	font-weight: bold;
 	padding-left: 50px}
+	
+#sitetitle a,
+#sitetitle a:visited {color: #f4f4f4}
 
 #sitetitle {
 	display: block;
