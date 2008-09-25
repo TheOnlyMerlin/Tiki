@@ -1098,7 +1098,8 @@ table.admin div#content1 div.tabcontent div.cbox {background: transparent}
 /* Tikipedia page tabs */
 #page-bar {	
 	position: relative;
-	top: -17px;}
+	top: -17px;
+	border-top: 0} /* override transitions css */
 
 body.tiki_wiki div#page-bar, 
 body.tiki_mytiki div#page-bar {
@@ -1759,7 +1760,7 @@ td.categobjectsdataodd {}
 .catlists a.link {}
 .catlists a.l ink:hover {}
 
-ul.catfeatures {list-style: none}
+ul.catfeatures {}
 ul.catfeatures li {}
 ul.catitems {}
 
