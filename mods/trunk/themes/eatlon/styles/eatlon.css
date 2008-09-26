@@ -330,6 +330,11 @@ input[id="sl-login-pass"] {background: #e1e1e2}
 	font-size: 320%;
 	font-weight: 100;
 	margin-top: 40px}
+	
+#sitetitle a,
+#sitetitle a:visited {color: #8f8f8f}
+
+#sitetitle a:hover {color: #8f8f8f; text-decoration: none}
 
 #sitesubtitle {
 	font-size: 1em;
@@ -1244,10 +1249,8 @@ body.tiki_forums table.normal {margin: auto}
 	clear: both;
 	width: 100%;
 	min-width: 100%;
-	/*border: solid 1px #E7EAED;*/
 	margin: 0;
 	margin-top: 5px;
-	/*padding: 3px 0px 3px 0px;*/
 	background: white;
 	font-size: 1em}
 	
@@ -1255,8 +1258,7 @@ body.tiki_forums table.normal {margin: auto}
 
 .post .postbody-title {
 	display: block;
-	display:block;
-	margin-top:0;
+	margin-top: 0;
 	padding: 3px;
 	border-bottom: 1px solid #aaa}
 
@@ -1265,7 +1267,6 @@ body.tiki_forums table.normal {margin: auto}
 .post .postbody-title .title {
 	color: #29677B;
 	font-weight: bold;
-	/*font-size: 12px;*/
 	margin-left: 5px;
 	margin-top: 3px}
 	
@@ -1442,13 +1443,13 @@ td.categobjectsdataodd {}
 .catlists a.link {}
 .catlists a.link:hover {}
 
-ul.catfeatures {list-style: none}
+ul.catfeatures {}
 ul.catfeatures li {}
 ul.catitems {}
 
 ul.catitems li {
 	display: inline;
-	margin-right: 7px}
+	margin-right: 6px}
 
 ul.catitems li a.link {}
 
