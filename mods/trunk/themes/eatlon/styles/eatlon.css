@@ -13,7 +13,7 @@ body {
 	padding: 0;
 	margin: 0;
 	text-align: left;
-	font: 73%/1.4em black Verdana, Geneva, Arial, Helvetica, sans-serif}
+	font: 76%/1.4em black Verdana, Geneva, Arial, Helvetica, sans-serif}
 
 html>body {font-size: 76% !important}
 body.fullscreen {background: #fff; padding: 3em}
@@ -420,8 +420,8 @@ a.flip img {display: none}
 	padding-right: 6px}
 
 /* Also is .content */
-#tiki-center {}
-* html #tiki-center {font-size: 1em}
+#tiki-center {font-size: 1.1em}
+* html #tiki-center {font-size: 1.1em}
 
 /* end layout divs, etc. */
 
