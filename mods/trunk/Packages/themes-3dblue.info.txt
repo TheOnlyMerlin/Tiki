@@ -14,7 +14,6 @@ themes/3dblue/styles/3dblue/modheader.gif styles/3dblue/modheader.gif
 themes/3dblue/styles/3dblue/modl.gif styles/3dblue/modl.gif
 themes/3dblue/styles/3dblue/modr.gif styles/3dblue/modr.gif
 themes/3dblue/templates/tiki.tpl templates/styles/3dblue/tiki.tpl
-themes/3dblue/templates/error.tpl templates/styles/3dblue/error.tpl
 themes/3dblue/templates/error_ticket.tpl templates/styles/3dblue/error_ticket.tpl
 themes/3dblue/templates/tiki-top_bar.tpl templates/styles/3dblue/tiki-top_bar.tpl
 
