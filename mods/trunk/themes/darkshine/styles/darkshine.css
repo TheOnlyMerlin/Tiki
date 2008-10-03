@@ -1,0 +1,2153 @@
+/* Dark Shine theme for TikiWiki CMS/Groupware.
+ * This is an adaptation of the original by Jack Qiao (http://www.pureweb.ca/blog/).
+ * This is released under the GNU/LGPL license.
+ * For more information, etc., visit http://zukakakina.com or
+ * http://themes.tikiwiki.org. -- */
+
+/***** XHTML Elements ******/
+
+body {
+	margin: 0;
+	padding: 0;
+	text-align: left;
+	width: 100%;
+	background: #90140C url(darkshine/stripes.gif) repeat-x;
+	background-position: 50% 40px;
+	font: normal 76%/150% arial, verdana, helvetica, sans-serif}
+
+html>body {font-size: 72% !important}	
+	
+body.fullscreen {
+	background: #90140C url(darkshine/stripes.gif) repeat-x;
+	background-position: 50% 20px;
+	text-align: left}
+
+body.fullscreen #tiki-center {
+	background: #F3F3F3;
+	padding: 1em;
+	padding-top: 0;
+	margin: 1em;
+	margin-top: 0}
+	
+a {
+	color: #600000;
+	font-weight: bold;
+	text-decoration: none}
+
+a:visited {color: #000}
+a:hover {color: #90140C}
+
+caption {}
+div {}
+dt {font-weight: bold}
+h1, h2, h3, h4 {}
+
+h1 {
+	font-size: 1.2em;
+	color: #8A0700;
+	font: normal 2em arial, verdana, helvetica, sans-serif;
+	margin-bottom: 20px;
+	text-decoration: none}
+
+h2 {
+	color: #333;
+	font: bold 1.8em arial, verdana, helvetica, sans-serif}
+
+h3 {font-size: 1.6em}
+h4 {font-size: 1.5em}
+h5 {font-size: 1.3em}
+h6 {font-size: 1.1em}
+
+hr {
+	width: 90%;
+	height: 1px;
+	background: #7c7b7d;
+	border-width: 0;
+	padding: 0;
+	color: #7c7b7d}
+
+p {}
+img {border: 0}
+fieldset {color: #000}
+
+form {
+	margin: 0;
+	padding: 0}
+
+button {}
+button:hover {cursor: pointer}
+
+button,
+input,
+textarea,
+option,
+select {}
+
+input,
+textarea {}
+
+textarea,
+body.wikitext {
+	background: #fff;
+	color: #000}
+
+* html .wikitopline select {	font-size: .9em}
+input.button {}
+
+input[type=checkbox],
+input[type=radio] {border: 0}
+
+input[type=text],
+input[type=password] {}
+
+input[type=submit],
+input[type=file],
+input[type=reset],
+select {}
+
+button,
+input[type=submit],
+.button input,
+input[type=reset] {}
+
+button:hover,
+input[type=submit]:hover,
+.button input:hover {cursor: pointer}
+
+input[type=checkbox] {border: 0}
+* html .findtable input {font-size: 1em}
+
+select {}
+select[multiple] {height: 10em}
+select[name="theme"] {width: 100%}
+small {font-size: 1em}
+
+label {}
+ol {}
+
+ul {list-style: none}
+li {}
+tt {font-size: 110%}
+
+/***** Page Layout *****/
+
+/** off-screen **/
+
+ul.jumplinks {
+	font-size : 0.8em;
+	list-style-type : none}
+
+ul.jumplinks, .jumplinks {
+	position: absolute;
+	top: -9000px;
+	left: -9000px;
+	z-index: 9}
+
+ul.jumplinks a:focus, ul.jumplinks a:active {
+	position: absolute;
+	top: 9010px;
+	left: 9010px;
+	background-color: #339999; 
+	color: #fff;
+	padding: 5px;
+	font-weight: bold;
+	border: 2px solid #000;
+	width: 6em;
+	z-index: 9}
+
+#fullscreenbutton {
+	position: absolute;
+	top: 2px;
+	right: 10px;
+	font-size: 80%;
+	z-index: 10;
+	color: #FD9339;
+	background: black;}
+
+.fullscreen .tellafriend {
+	margin-right: 100px;
+	margin-top: 2px}
+
+.fullscreen .tellafriend a {
+	color: #FD9339}
+
+#tiki-clean {
+	text-align: left;
+	padding: 1em}
+
+/*** Type 2 (table-assisted) layout  ***/
+
+table#main {text-align: center}
+
+td#leftmargin {
+	width: 10%;
+	border-top: 40px solid black}
+
+td#rightmargin {
+	width: 10%;
+	border-top: 40px solid black}
+
+tr#tiki-mid {
+	background: #F3F3F3;
+	text-align: left}
+
+td#leftborder {
+	width: 15px !important;
+	background: #600000}
+
+td#leftcolumn {padding: 20px 10px 0 20px}
+td#centercolumn {padding: 20px 10px 0 20px}
+td#rightcolumn {padding: 20px 10px 0 20px}
+
+td#rightborder {
+	width: 15px !important;
+	background: #600000}
+
+td#footer {
+ 	text-align: center;
+	background-color: #000;
+	font: normal 10px/25px arial, verdana, helvetica, sans-serif;
+	color: #999;
+	text-align: center;
+	border-left: 15px solid #600000;
+	border-right: 15px solid #600000}
+
+#footer a {color: #999}
+
+#footer a:hover {
+	color: #999;
+	text-decoration: underline}
+	
+/*** Error page ***/
+div#tiki-main #tiki-top {margin-top: height needed to match page bg image}
+div#tiki-mid {}
+div#tiki-main #tiki-top {}
+
+/* To center cbox */
+div#tiki-main #tikimidtbl {
+	margin: auto;
+	width: auto}
+
+div#tiki-bot {}
+
+/* Site Header & Identity */
+
+#header-top {
+	height: 101px;
+	margin-top: 66px;
+	text-align: center}
+
+#siteheader {
+	text-align: left;
+	background: transparent;
+	vertical-align: middle;
+	padding: 0;
+	margin: 0}
+
+div#sioptions {
+	width: 100%;
+	margin: 0}
+
+#sioptionscentered {text-align: center}
+
+div.floatright {
+	float: right;
+	clear: none}
+
+div.floatleft {
+	float: left;
+	clear: none}
+
+div#sitelogo {
+	width: 33%;
+	margin: auto}
+
+
+
+#sitead.floatright {padding-right: 100px}
+#sitead.floatleft {padding-left: 100px}
+#sioptionscentered #sitead.floatleft {padding-left: 10px}
+.floatright img {}
+#sitelocbar {float: left}
+#siteloginbar {text-align: right}
+
+#sitetitles {
+	text-align: center;
+	width: 410px;
+	min-height: 101px;
+	margin: auto;
+	margin-top: 66px;
+	background: url(darkshine/title_background.jpg) no-repeat}
+	
+* html #sitetitles {
+	margin-top: 0;
+	height: 101px }
+
+#sitetitle {
+	display: block;
+	margin: 0 auto;
+	padding-top: 30px;
+	padding-bottom: 20px;
+	text-align: center;
+	font-family: 'trebuchet ms',georgia,'lucidia grande';
+	font-size: 3.6em;
+	color: #FE9B27;
+	letter-spacing: 8px}
+	
+* html #sitetitle {
+	padding-top: 20px;
+	padding-bottom: 0 }
+
+#sitetitle a {
+	color: #FE9B27}
+
+#sitesubtitle {
+	font-size: 13px;
+	font-weight: bold;
+	letter-spacing: 1px;
+	color: #4f0000;
+	margin: 10px auto auto;
+	text-align: center}
+	
+/* tiki-top_bar.tpl - menu and search */
+
+div#tiki-top {
+	text-align: center;
+	background: #000}
+
+* html #tiki-top {
+	font-size: 11px;
+	text-align: center}
+
+#tiki-top a {}
+
+#tiki-top table {
+	margin: auto;
+	width: auto;
+	text-align: left}
+
+/* end header */
+
+/* centercolumn */
+
+#tiki-columns {}
+
+a.flip,
+a.flip:visited,
+.tellafriend a,
+.tellafriend a:visited {font-size: 80%}
+
+a.flip:hover,
+.tellafriend a:hover {text-decoration: none}
+
+a.flip img {display: none}
+.tellafriend {text-align:right}
+.fullscreen .tellafriend {}
+tiki-center {background: #F3F3F3}
+* html #tiki-center {font-size: 1em}
+#rss {padding: 1em 1em 0}
+#power {font-size: .9em}
+#credits {display: inline}
+
+/* end layout divs, etc. */
+
+/** Border boxes (if any) **/
+	
+/****** Menus ******/
+/** PHP Layers Menus **/
+
+.horbar {
+	background: #000 url(darkshine/nav.gif) repeat-x;
+	margin: 0;
+	padding: 0;
+	height: 40px;
+	overflow: hidden;
+	cursor: default}
+
+.horbar table {
+	width: auto;
+	text-align: left;
+	margin: auto}
+
+.horbaritem a,
+.horbaritem a:visited {
+	color: #fff;
+	text-decoration: none;
+	font: bold 11px verdana, arial, helvetica, sans-serif;
+	height: 40px;
+	line-height: 40px;
+	padding: 13px 15px;
+	margin: 0}
+
+.horbaritem a:hover {
+	color: #fff;
+	background: url(darkshine/nav.gif) repeat-x;
+	background-position: 0 -40px}
+
+.horbar .mdkitem a {
+	display: block;
+	padding: 10px 15px;
+	margin: 0;
+	color: #fff;
+	font-size: 10px; 
+	font-weight: bold;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;}
+	
+.horbar .mdkitem a:hover {
+	color: #fff;
+	background: url(darkshine/nav.gif) repeat-x;
+	background-position: 0 -40px }
+	
+.mdksubframe  {display: block}
+
+.mdksubmenu {
+	display: table;
+	z-index: 500;
+	position: absolute;
+	left: 20px;
+	top: 0;
+	visibility: hidden;
+	background: #f3f3f3;
+	border: 2px solid #600000}
+
+.mdkverbar a {
+	line-height: normal;
+	margin: 0}
+
+.mdkverbar .mdkitem 	{
+	color: #600000;
+	display: block;
+	border: 1px solid #783C1C;
+	border-width: 0 0 1px 0;
+	color: #600000}
+
+.mdkverbar .mdkitem a { 
+	font-size: 1em;
+	font-weight: bold;
+	color: #600000;
+	display: block;
+	font-size: 1.1em;
+	padding: .25em}
+
+.mdkverbar .mdkitem a:hover {
+	background: #FD9339 url(darkshine/hover_list.jpg) repeat-x;
+	color: #fff}
+
+.mdksubmenu a {color: black}
+
+.mdkitem .mdkfwdarr {
+	position: absolute;
+	top: 7px;
+	right: 12px}
+	
+.mdkverbar .mdkitem .mdkfwdarr { 
+	position: absolute;
+	top: 5px;
+	right: 25px}
+	
+.mdksubmenu .mdkitem {padding: 6px}
+.mdksubmenu .mdkitem a:hover {color: #90140C}
+
+.treemenudiv {
+	display: block;
+	white-space: nowrap}
+
+.phplmnormal,
+a.phplmnormal:hover,
+a.phplm:link,
+a.phplm:visited,
+a.phplm:hover,
+a.phplm:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: #303030;
+	text-decoration: none;
+	font-weight: bold}
+
+a.phplm:visited {color: #726461}
+a.phplm:hover {color: #808080}
+a.phplm:active {color: #ff0000}
+
+a.phplmselected:link,
+a.phplmselected:visited,
+a.phplmselected:hover,
+a.phplmselected:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: black;
+	text-decoration: underline;
+	font-weight: bold;
+	background: url(menuhover.jpg)}
+
+a.phplmselected:hover {color: #808080}
+
+/* Dark Shine-specific page top */
+div#topbar_custom_code {
+	border-left: 15px solid #600000;
+	border-right: 15px solid #600000}
+
+div#topbar_custom_code .wrapper {
+	/*height: 246px;*/
+	padding: 1em;
+	background: #FE8624 url(darkshine/main.gif) repeat-x;
+	border-top: 1px solid #FEC782;
+	border-left: 1px solid #FEB154;
+	border-right: 1px solid #D76C22;
+	border-bottom: 1px solid #783C1C;
+	overflow: hidden}
+
+#topbar_custom_code .module {padding-left: 25px}
+
+#topbar_custom_code ul li {
+	float: left;
+	text-align: center;
+	margin-left: 25px;
+	display: inline}
+
+#topbar_custom_code ul li a img,
+#topbar_custom_code .module img {
+	border: 3px solid #fff}
+
+#topbar_custom_code ul li a img:hover,
+#topbar_custom_code .module img:hover {
+border: 3px solid #FEE5C6}
+
+#topbar_custom_code ul li h2 {
+	font: bold 11px arial, verdana, helvetica;
+	margin-top: 10px;
+	color: #000}
+	
+ul.topcontent {
+	float: right;
+	margin: 0;
+	padding: 0}
+
+ul.topcontent li {float: left}
+
+div#topcontent_items {
+	float: left;
+	overflow: hidden}
+
+span#ticker {
+	color: #fff;
+	display: block}
+	
+#topcontent {
+	display: block;
+	border: 15px solid #600000;
+	border-collapse: collapse;
+	border-bottom: 0;
+	height: 28px;
+	overflow: hidden;
+	background: #000 url(darkshine/stripes_small.gif) repeat-x;
+	color: #fff;
+	text-align: right;
+	font: normal 10px/32px arial, verdana, helvetica, sans-serif}
+	
+* html #topcontent {height: 43px}
+
+#contenttop strong {
+	font: bold 11px arial;
+	margin-left: 2px;
+	margin-right: 6px}
+
+#contenttop span {
+	display: inline;
+	margin-left: 10px;
+	float: left;
+	clear: none}
+
+#contenttop ul {
+	position: absolute;
+	left: 0;
+	top: 0}
+
+#contenttop ul li a, #contenttop ul li,
+#topcontent li {
+	display: block;
+	float: left;
+	width: 78px;
+	height: 28px;
+	text-align: center;
+	text-decoration: none;
+	color: #fff;
+	font: bold 12px/32px arial, verdana, helvetica, sans-serif;
+	overflow: hidden}
+
+#contenttop ul li a:hover {color: #000}
+
+#topcontent li#blue a,
+#topcontent li#blue a:visited {
+	display: block;
+	background: #0086EE url(darkshine/blue.jpg) no-repeat}
+
+#topcontent li#red a,
+#topcontent li#red a:visited {
+	display: block;
+	background: #F41100 url(darkshine/red.jpg) no-repeat}
+
+#topcontent li#orange a,
+#topcontent li#orange a:visited {
+	display: block;
+	background: #ED700D url(darkshine/orange.jpg) no-repeat}
+
+#search a,
+#sitesearchbar {
+	background: #199B2C url(darkshine/green.jpg) no-repeat;
+	float: right;
+	width: 78px;
+	height: 28px;
+	text-align: center;
+	text-decoration: none;
+	color: #fff;
+	font: bold 12px/32px arial, verdana, helvetica, sans-serif;
+	display: block}
+
+input[id="fuser"],
+select[name="where"],
+#sitesearchbar input.wikiaction {
+	background-color: #21C336;
+	color: #fff}
+
+#adspace {	
+	/*height: 67px;*/
+	background: #71201b url(darkshine/ad.gif) repeat-x;
+	border: 15px solid #600000;
+	border-top: 0;
+	border-bottom: 0;
+	text-align: center;
+	overflow: hidden;
+	/*height: 100%*/}
+
+#adspace .wrapper {
+	border-left: 1px solid #A5514B;
+	border-right: 1px solid #5B1D1B;
+	border-top: 1px solid #CA807C;
+	border-bottom: 1px solid #3E1B19;
+	height: 100%}
+	
+#adspace img {margin: .7em auto}
+
+div#sitead {
+	border-left: 1px solid #A5514B;
+	border-right: 1px solid #5B1D1B;
+	border-top: 1px solid #CA807C;
+	border-bottom: 1px solid #3E1B19;}
+
+/** Links in other menus **/
+div.separator, div.separatorline {
+	color: #600000;
+	display: block;
+	line-height: 2em;
+	border: 1px solid #783C1C;
+	border-width: 0 0 1px 0;
+	color: #600000;
+	padding-left: .25em}
+
+.separator a:link,
+.separator a:visited {color: #600000}
+
+.separator a:hover {color: #fff}
+
+div.separator:hover,
+* html div.separator a:hover {
+	background: #FD9339 url(darkshine/hover_list.jpg) repeat-x;
+	color: #fff}
+
+div.option a.linkmenu:hover {}
+a.separator img {}
+.menuSection .option {padding-left: 22px}
+
+div.optionline,
+.option a {}
+
+.option a:link,
+.option a:visited,
+a.linkmenu,
+.rsslink,
+.linkmenu:visited,
+.rsslink:visited {}
+
+.linkmenu:hover {}
+div.option a:hover,
+div.option a:active {}
+a.linkmodule {}
+a.linkmodule:hover {}
+.rsslist {}
+.rssitem {}
+.rssitem:first-child {}
+.rssdate {}
+
+/****** Misc. Global Classes (layout and style) ****/
+.hidden {
+	position: absolute;
+	left: -10000px;
+	top: 0;
+	width: 1px;
+	height: 1px;
+	overflow: hidden}
+
+.floatlist {
+	clear: left;
+	list-style-type: none;
+	margin: 0;
+	padding-left: 0}
+
+.floatlist li {float: left}
+
+div#attzone,
+div#comzone {
+	display: none}
+
+div#attzoneopen,
+div#comzoneopen {
+	display: block;
+	margin-top: 10px}
+
+div#edithelpzone {display: none}
+#edithelpzone code {font-size: 1.2em}
+#rules-copy-panel {display: none}
+.clear, #clear {clear: both}
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden}
+
+* html .clearfix {height: 1%}
+#overdiv table {width: auto !important}
+.attention {color: red}
+
+.highlight,
+#highlight {}
+
+.openid_url {
+	background: #fff url(../../img/icons/login-OpenID-bg.gif) no-repeat;
+	padding-left: 18px}
+
+.bannertext {
+	font-size: .95em;
+	text-decoration: none}
+
+.bannertext:hover {color: darkviolet}
+
+.link,
+.gallink,
+.bloglink,
+.fgallink,
+.trailer,
+.opencomlink,
+.commentslink,
+.admlink,
+.forumbutlink {}
+
+div.searchdate {}
+div#debugconsole {}
+
+.mini {
+	width: 100%;
+	text-align: center;
+	font-size: .9em}
+
+.prevnext,
+.galprevnext,
+.blogprevnext,
+.fgalprevnext,
+.artprevnext,
+.forumprevnext {
+	font-size: 1em;
+	padding: 1px 6px}
+
+a.tikihelp,
+a.tikihelp:visited {
+	border: 0;
+	vertical-align: text-top}
+
+a.tikihelp:hover {
+	cursor: help;
+	vertical-align: text-top}
+
+#rss img {vertical-align: middle}
+div.adminanchors {}
+
+/** Modules **/
+.box-shadow {}
+
+div.box {
+	margin-top: 0;
+	margin-bottom: 1em;
+	padding-bottom: .5em;
+	width: 160px}
+
+h3.box-title {
+	color: #8A0700;
+	font: normal 2em arial, verdana, helvetica, sans-serif;
+	margin-bottom: 20px;
+	position: relative}
+
+h3.box-title a, h3.box-title a:visited {
+	color: #8A0700;
+	font-weight: normal}
+
+h3.box-title a:hover {color: #000}
+.box a.flipmodtitle img {display: none}
+
+* html .box a.flipmodtitle img,
+.box:hover a.flipmodtitle img {
+	display: block;
+	position: absolute;
+	right: 0;
+	top: 0;
+	border: 1px solid transparent}
+
+* html .box a.flipmodtitle img {border: none}
+a.flipmodtitle:hover img {border: 1px solid #90140c !important}
+
+.box-data {
+	margin-top: 0;
+	padding-bottom: 0;
+	overflow: hidden}
+
+.box-data li a,
+.module li a {
+	color: #600000;
+	display: block;
+	line-height: 2em;
+	border: 1px solid #783C1C;
+	border-width: 0 0 1px 0;
+	color: #600000;
+	padding-left: .25em}
+
+.box-data li a:hover,
+.module li a:hover {
+	background: #FD9339 url(darkshine/hover_list.jpg) repeat-x;
+	color: #fff}
+
+.box-data ol,
+.box-data ul {padding-right: .6em}
+
+.box-data ol {
+	padding-left: 2em;
+	margin-top: 0;
+	margin-bottom: 0}
+
+.box-data ul {
+	padding-left: 0;
+	margin-top: 0;
+	margin-bottom: 0}
+
+* html .box-data ol {margin-left: 0em}
+* html .box-data ul {margin-left: 1em}
+*:first-child+html .box-data ol {margin-left: 0}
+*:first-child+html .box-data ul {margin-left: 1em}
+
+.box-data table {width: 100%}
+.box-footer {}
+
+/** Other boxes **/
+.wikitext .cbox {
+	border: 2px solid #90140c;
+	background: #fff}
+
+.cbox-title {
+	padding: 1px 3px;
+	font-weight: bold}
+
+.cboxlink {}
+.cbox-data {padding: 1px 3px}
+
+.rbox {
+	margin: 5px 10px 5px;
+	color: dimgray;
+	background: #f3f3f3}
+	
+.rbox-title,
+.rbox-data {
+	padding: 1px 3px;
+	background: #fff}
+
+.rbox-title {
+	display: inline-block;
+	margin-bottom: -2px;
+	border: 2px solid #90140c;
+	border-bottom: transparent;
+	font-weight: bold}
+	
+.rbox-data {
+	display: block;
+	border: 2px solid #90140c}
+
+
+.comment .rbox-title,
+.comment .rbox-data {}
+
+.note .rbox-title {}
+.note .rbox-data {}
+
+.tip .rbox-title,
+.tip .rbox-data {}
+
+.warning  .rbox-title {color: red}
+.warning .rbox-data {}
+
+div.simplebox {
+	border: 2px solid #90140c;
+	background: #fff;
+	padding: 3px}
+
+.highlight {}
+
+/***** Tables, Tabs and Lists ****/
+/** Tables **/
+
+table {font-size: 1em}
+
+table.normal/*, 
+table.admin*/ {
+	border: solid 1px #909090;
+	width: 100%}
+
+* html table.normal, 
+* html table.admin {
+	width: 97%;
+	font-size: 11px}
+
+table.admin tr td div#page-bar {}
+
+td {vertical-align: top}
+* html td {	font-size: 11px}
+th {background: #ececec;}
+
+.formcolor td,
+.galform td,
+.editblogform td,
+.editfgalform td,
+.comform td,
+.forumform td {}
+
+table.email {}
+table.email td.body {}
+table.email td.heading {}
+table.email td.closeButton {}
+
+/* headings */
+
+td.heading {
+	background-color: #DCDCDC;
+	text-align: center}
+
+form.admin {}
+form.admin fieldset {}
+form.admin legend.heading {}
+form.admin legend.heading a {}
+form.admin legend.heading a:hover {}
+form.admin legend.heading a span {}
+form.admin legend.heading a:hover span {}
+
+table.findtable {}
+.findtable td { }
+
+tr.odd td,
+td.odd {
+	background: #ececec;
+	border-right: 1px solid #DDDDDD}
+
+tr.even td,
+td.even {
+	background: #f5f5f5;
+	border-right: 1px solid #DDDDDD}
+
+tr.even td.even,
+tr.odd td.odd {}
+
+td.third {text-align: center}
+
+td.normal,
+td.bloglist,
+td.odd,
+td.even {
+	margin: 0;
+	padding: 0.2em;
+	vertical-align: top}
+	
+td.formlabel {}
+td.formcontent {}
+td.form {padding: 0.2em}
+
+/* links to view an object from a table listing objects can be generalized to this link */
+a.fgalname {}
+a.fgalname:hover {}
+ 
+a.tablename,
+a.galname,
+a.imagename,
+a.blogname,
+a.fgalname,
+a.artname,
+a.forumname {}
+
+a.forumnameread {}
+
+/* links in table headings */
+.tableheading,
+.gallistheading,
+.listgalheading,
+.bloglistheading,
+.llisfgalheading,
+.llistfileslink,
+.llistart,
+.lforumheading {}
+
+/** Tabs **/
+.tabs {
+	margin: 10px 3px -18px 3px !important;
+	border-bottom: solid 1px #8f8e91 !important;
+	padding: 0 !important;
+	position: relative;
+	z-index: 201}
+
+.tabmark {
+	display: inline;
+	font-size: 85%;
+	background-color: #ececec;
+	border: 1px solid #666666;
+	border-bottom: 0;
+	margin: 0;
+	margin-right: 5px;
+	padding: 2px 0}
+	
+.tabmark a {
+	border-bottom: 0;
+	color: #666666;
+	font-weight: bold;
+	padding: 1px 5px}
+
+.tabmark a:active {
+  color: #636466}
+
+.tabmark a:hover {
+	color: black;
+	text-decoration: none}
+	
+.tabactive {
+	border-color: #7c7b7d !important;
+	border-width: 1px !important}
+
+.tabinactive {
+	border-color: #bbbbbb !important;
+	border-width: 1px !important}
+
+.tabcontent {
+	z-index: 200;
+	position: relative;
+	padding-top: 26px;
+	margin-bottom: 25px;
+	border: 1px solid #7c7b7d;
+	background-color: #ececec}
+
+.tabcontent table {}
+.tabcontent table td {}
+form fieldset.tabcontent {}
+form.admin .tabs {}
+table.admin div#content1 div.tabcontent div.cbox {background-color:transparent}
+
+table.admin tr td div#page-bar {
+	margin-left: 5px;
+	margin-bottom: 0;
+	background-color: transparent}
+	
+.iconmenutext { white-space: nowrap; }
+
+
+/*** Feature-specific selectors ***/
+
+/***** Wiki *****/
+
+a.pagetitle {
+	color: #8A0700;
+	font: normal arial, verdana, helvetica, sans-serif;
+	margin-bottom: 20px;
+	text-decoration: none}
+
+.wikitopline {}
+
+div#description {
+	font-size: .9em;
+	font-style: italic}
+
+#pageid {
+	float: left;
+	clear: both}
+
+#cachedpage {
+	float: right;
+	font-size: small}
+
+.categpath {}
+.wikitext {line-height: 1.5em}
+
+.wikitext h1, 
+.wikitext h2, 
+.wikitext h3, 
+.wikitext h4 {
+	margin: 0 0 15px;
+	padding: 0}
+
+.wikitext h2 {margin-bottom: 10px}
+
+.titlebar {
+	border-top: 1px solid #999;
+	border-bottom: 1px solid #999;
+	margin:10px 0 10px 0}
+ 
+.wikitext ul li {} 
+.wikitext ul li ul li {}
+.wikitext ol{}
+
+/* From Tikineat */
+.wikitext div.box {}
+.wikitopline table {}
+html>body .wikitopline table {}
+/* End from Tikineat */
+
+table.wikitable {
+	border: 1px solid #A9A9A9;
+	border-collapse: collapse}
+ 
+td.wikicell {
+	padding: 3px;
+	border: 1px solid #999999;
+	border-collapse: collapse}
+
+.editdate {padding-bottom: 5px}
+
+div#page-bar {
+	display: block;
+	margin-top: 0}
+
+ul.floatleft {
+	display: block;
+	list-style: none;
+	padding: 0;
+	text-align: left;
+	height: 20px;
+	margin-top: 0}
+
+ul.floatleft li {
+	float: left;
+	padding: 4px 2px}
+
+.editdate ul.floatleft {margin-top: 8px}
+
+span.button2,
+div.button2, .button3 {
+	margin-right: 5px}
+
+/* First of these from han.css - Check ?? */
+.navbar .linkbut:hover,
+div.button2 a:hover, .button3 a:hover {}
+
+/* From han.css - Check ?? */
+#page-bar p span.button2 {} 
+#page-bar table a.linkbut {}
+
+.linkbut {
+	/*font-size:90%;*/
+}
+
+.wiki-edithelp { display: none}
+.linkbut:hover {}
+div.cache {}
+div.cachedpage {}
+.wikicache, .wikicache:visited {}
+.wikicache:hover {}
+.wiki {}
+.wikinew {}
+.wiki-edithelp { display: none}
+#wikihelp-tab table{}
+#wikihelp-tab table td {padding: 2px}
+textarea.wikiedit {}
+p.editdate {}
+div.wiki-edithelp {}
+img.externallink {}
+
+/* Needed esp. for light-on-dark theme */
+div.quicktag {}
+div.quicktag img,
+#wikihelp-tab td img {}
+div#helptool {}
+
+/* Wiki plugins */
+
+/* Code plugin  */
+div.code {
+	font-size: 90%;
+	padding: 3px;
+	border: 1px dashed #CCCCCC;
+	font-family: "Courier New", Courier, monospace}
+
+.codelisting {
+	font-family: "Courier New", Courier, monospace;
+	padding: 10px;
+	margin: 4px;
+	border: 1px dashed #ADACAF;
+	overflow: auto; 
+   width: 500px}
+
+.codecaption {
+	font-size: 90%;
+	padding: 0 10px;
+	position: relative;
+	bottom: -5px;
+	display: inline;
+	border: 1px solid #ADACAF;
+	border-bottom: 0;
+	margin: 0;
+	font-weight: bold}
+
+/* Quote plugin */
+div.quoteheader {margin-left: 20px}
+div.quotebody {}
+table.wikiplugin-split {border: none}
+
+/** Wiki tocs **/
+div.tocnav {
+	background: #EBEBEB;
+	padding: 3px;
+	margin-bottom: 4px;
+	clear: both}
+ 
+#tocnavicons {float: left}
+#tocnavaddpage{float: right}
+#tocnavlinks {clear: both}
+.fancytoclevel {}
+li.toclevel {}
+
+/* TOC */
+ul.toc {
+	padding-left: 2em;
+	margin-bottom: 4px}
+
+ul.toc * {border: none}
+
+/* Wiki diff styles */
+.diff td {}
+.diff div {}
+.diffheader {}
+.diffadded {}
+.diffdeleted {}
+.diffinldel {}
+.diffbody {}
+.diffchar {}
+
+/***** Articles ****/
+
+div.article {margin-bottom: 40px}
+
+div.articletopline {
+	font-size: 90%;
+	font-style: italic}
+
+div.articletitle {
+	padding-top: 16px;
+	margin-top: 6px;
+	margin-bottom:	15px;
+	text-align:	left}
+ 
+span.titlea {
+	font-size: 1.5em;
+	font-weight: normal}
+
+span.titleb {font-size: 1.0em} 
+div.articlesubtitle {font-size: 0.9em}
+div.articleheading {margin-top: 6px}
+div.articleheadingtext {}
+
+img.topicimage,
+img.articleimagenofloat,
+img.articleimage {
+	padding:2px 0 2px 0;
+	margin-bottom:10px}
+
+img.articleimagefloat {
+	margin-right: 4px;
+	float: left;
+	padding:2px 0 2px 0;
+	margin-bottom:10px}
+
+img.articleimage {
+	margin-right: 4px;
+	float: left;
+	clear: right;
+	padding:2px 0 2px 0;
+	margin-bottom:10px}
+
+div.articletrailer {text-align: right}
+div.articletrailer .wikitopline {float: left} 
+div.articlebody {margin-top: 1em}
+ 
+div.articlesource {
+	margin-top: 5px;
+	font-style: italic;
+	font-size: 90%}
+ 
+/***** Blogs *****/
+
+div.blogheading {
+	display: block;
+	width: 100%;
+	clear: both}
+
+div.blogtitle {
+	color: #8A0700;
+	font: normal 2.1em arial, verdana, helvetica, sans-serif;
+	line-height: 80%}
+
+div.blogdesc {
+	display: block;
+	width: 40%;
+	padding: 8px;
+	margin-top: 8px;
+	margin-left: 6px}
+
+div.bloginfo {
+	text-align: center;
+	display: block;
+	padding: 3px;
+	line-height: 150%;
+	text-transform: none}
+
+div.blogtools {
+	padding: 3px;
+	text-align: right}
+
+.blogpost {}
+
+/*.postinfo div a img,*/
+a.blogt,
+a.blog:visited {}
+a.blogt:hover {}
+
+/* Check - How do these differ?? */
+.postinfo a {}
+div.postinfo a.linkmodule {}
+
+.postinfo div {margin-top: 30%}
+
+div.posthead {
+	text-align: left;
+	padding: 3px}
+
+.postinfo {
+	margin-bottom: 20px;
+	margin-top: 10px;
+	font-size: 1.2em}
+
+.postinfo a {}
+.small {} /* Check ?? (from fluidindex */
+
+span.posthead {
+	display: block;
+	font-weight: bold;
+	letter-spacing: .4pt}
+ 
+div.posthead h3 {}
+ 
+div.postbody {
+	margin-right: 8px;
+	margin-bottom: 1em}
+
+div.postfooter {
+	clear: both;
+	float: right;
+	margin-bottom: 2em}
+
+/***** Forums *****/
+
+body.tiki_forums table.normal {margin: auto}
+#forumpost {display: none}
+#forumpostopen {display: block}
+.post {width: 100%}
+
+.post .postbody {
+	border: solid 3px #600000;
+	margin: 0;
+	margin-top: 5px;
+	padding: 0;
+	background: #F3F3F3;;
+	font-size: 1.1em}
+	
+* html .post .postbody {font-size: 11px}
+
+.post .postbody .content {
+	height: 100%;
+	padding: 0 3px 3px;
+	text-align: left;
+	color: #000;
+	background: #f3f3f3 !important}
+	
+#col1 .post .postbody .content p {  }
+
+.post .postbody-title {
+	display: block;
+	background: url(darkshine/main.gif);
+	border-bottom: 1px solid #600000;
+	display: block;
+	margin-top:0;
+	padding: 3px;}
+
+.post .postbody-title .checkbox {float: left}
+
+.postbody-title .title h2 {
+	font-size: 1.3em;
+	color: #000;
+	font-weight: normal;
+	margin-left: 5px;
+	margin-top: 3px;
+	margin-bottom: 3px}
+	
+.post .postbody-title .title {font-weight: bold }
+
+.postbody-title .title a,
+.postbody-title .title a:visited {color: #000}
+	
+.post .postbody-title .title a.link {  }
+.postbody-title br.clear {display: none}
+
+.post .author {
+	float: left;
+	text-align: left;
+	vertical-align: top;
+	width: 33%;
+	margin-left: -3px;
+	margin-right: 4px;
+	padding: 4px;
+	background: #f3f3f3;
+	border-right: 3px solid #600000;
+	border-bottom: 3px solid #600000;}
+
+.post .author_post_info {
+	background: #f3f3f3;
+	padding: 0 2px 2px 2px}
+
+.post .author_info .icons {
+	display: block;
+	margin-bottom: 0}
+
+.post .author_info .icons .actions {margin-right: 10px}
+.post .author_post_info_on {font-style: italic}
+
+.post .author_info {
+	background: #f3f3f3;
+	padding: 0 2px 2px 2px;
+	margin-left: 5px;
+	margin-bottom: 2px}
+
+.commentStyle_headers .author_info {float: left}
+
+.post .postbody-title .actions {
+	float: right;
+	font-size: 1em}
+
+.postbody-content {padding: 6px}
+.post .postbody .attachments {
+	clear: both;
+	border-top: 1px dotted #D9D9D9;
+	margin-top: 5px}
+
+.post .postbody .attachments img {vertical-align: text-bottom}
+
+.post .postfooter .actions,
+.post .postfooter .status {
+	display: inline;
+	margin-left: 5px;
+	vertical-align: top}
+
+.post .postfooter .status {font-size: 100%}
+
+.post .postfooter {
+	float: right;
+	text-align: right}
+
+.post .inner > .postfooter {clear: both}
+
+.post .contribution {
+	background: #F0F8FF;
+	border: 1px solid lightcyan;
+	padding: 0 2px}
+
+.post .avatar {
+	float: right;
+	margin-bottom: 5px;
+	margin-left: 4px;
+	padding: 3px;
+	border: 1px solid darkgray;
+	background: aliceblue}
+
+.sub_comment {padding-left: 20px}
+
+.sub_comment_area {
+	clear: both;
+	background: url("../../img/edge.gif") no-repeat top left}
+
+.forum_actions .actions {
+	clear: both;
+	border: 1px solid darkgray;
+	background: gainsboro;
+	padding: 3px;
+	vertical-align: middle}
+
+.forum_actions .actions .action {margin-right: 10px}
+.forum_actions .headers {vertical-align: bottom}
+
+.forum_actions .headers .title {
+	float: left;
+	background: gainsboro;
+	border: 1px solid darkgray;
+	border-bottom: 0;
+	padding: 1px}
+
+.forum_actions .headers .infos {
+	float: right;
+	font-size: smaller;
+	padding-top: 2px}
+
+.thread_pagination {
+	text-align: center;
+	margin-bottom: 10px}
+
+.nb_replies {white-space: nowrap}
+.post_preview, .top_post {margin-bottom: 15px}
+
+/* Comments */
+#comzone {
+	display: none;
+	margin: 5px 0;
+	padding: 0}
+ 
+#comzoneopen {
+	display: block;
+	margin: 5px 0;
+	padding: 0}
+ 
+span.commentstitle {
+	font-weight: bold;
+	font-size: 1.2em}
+
+textarea#editpost2 {width: 100%}
+
+/* Find */
+.subcomment { margin-left: 10px}
+
+/* Help box*/
+div.commentsedithelp { background: #ffcfcf; color: black; border: 1px solid #ff0000; text-align: center; font-weight: bold}
+
+
+/***** Categories *****/
+
+table.tcategpath {}
+td.tdcategpath {}
+.categpath {}
+table.subcats {}
+td.tdsubcat {}
+.categlink {}
+table.catobjects {}
+td.categobjectsnameeven,
+td.categobjectsnameodd {}
+td.categobjectsdataeven,
+td.categobjectsdataodd {}
+.catname {}
+.catblock {}
+.catlists {}
+.catlists:hover {}
+.cattitle {}
+.catlists a.link {}
+.catlists a.link:hover {}
+
+ul.catfeatures {}
+ul.catfeatures li {}
+ul.catitems {}
+
+ul.catitems li {
+	display: inline;
+	margin-right: 6px}
+
+ul.catitems li a.link {}
+
+/***** Tags (freetags) *****/
+
+li.freetag {
+	list-style: none;
+	display: inline;
+	margin: 0;
+	padding: 0}
+
+ul.freetag {
+	margin: 0;
+	padding: 0;
+	display: inline}
+
+.freetag a {display: inline !important}
+
+a.freetag_1 {
+	text-decoration: none;
+	font-size: .8em}
+
+a.freetag_2 {
+	text-decoration: none;
+	font-size: .9em}
+
+a.freetag_3 {
+	text-decoration: none;
+	font-size: 1em}
+
+a.freetag_4 {
+	text-decoration: none;
+	font-size: 1.2em}
+
+a.freetag_5 {
+	text-decoration: none;
+	font-size: 1.4em}
+
+a.freetag_6 {
+	text-decoration: none;
+	font-size: 1.6em}
+
+a.freetag_7 {
+	text-decoration: none;
+	font-size: 1.8em}
+
+div.freetagObjectOdd {
+	margin: 2px;
+	position: relative}
+
+div.freetagObjectEven {
+	margin: 2px;
+	position: relative}
+
+div.freetagObjectName a {text-decoration: none}
+
+div.freetagObjectType {
+	position: absolute;
+	top: 0;
+	right: 0}
+
+.freetaglist { padding-left: 20px} /*blog, blog post */
+a.freetag {} /* articles... */
+
+/***** Image Galleries *****/
+
+table.galtable {}
+html>body .galtable {}
+td.oddthumb {border-collapse: collapse}
+td.eventhumb {border-collapse: collapse}
+
+td.eventhumb img {
+	margin-left: 6px;
+	margin-right: 6px}
+
+div.thumbnails {}
+
+img.athumb {
+	border: 0;
+	margin: auto}
+
+.caption {}
+p.norecords {}
+div.imagetitle {}
+div.gallerylink {}
+
+div#browse_image {width: 100%}/* Check - from fluidindex ?? */
+
+div.showimage {
+	width: 100%;
+	text-align: center;
+	padding: 6px}
+
+div.imgaldescr {}
+.sorttitle {}
+
+/***** File Galleries *****/
+
+div.thumbnailcontener {}
+div.thumbnail {}
+div.thumbnamecontener, div.thumbimagecontener {}
+div.thumbnamecontener {}
+div.thumbname, div.thumbimage {}
+div.thumbnamesub, div.thumbimagesub {}
+div.thumbnail:hover {}
+div.thumbnail:hover div.thumbnamecontener {}
+div.thumbimage img {}
+div.thumbinfos {}
+div.thumbinfo {}
+span.thumbinfoval {}
+div.thumbname {}
+div.thumbactions {}
+div.thumbactions * {}
+div.thumbactions input {}
+div.thumbactions a {}
+div.thumbdescription {}
+div.thumbdescription + div.thumbinfo {}
+div.thumbdescription span.thumbinfoname {}
+a.namealias {}
+div.gallerypath, div.gallerypath a {}
+div.gallerypath a:hover {}
+.fgalexplorer {}
+.fgallisting table td {}
+
+/***** Trackers *****/
+
+.statuson {
+	padding: 1px;
+	margin: 1px;
+	vertical-align: middle}
+
+.statusoff {
+	padding: 1px;
+	margin: 2px;
+	vertical-align: middle}
+
+/***** Calendar *****/
+/* Overrides calendar.css, etc. */
+
+.Cal0, 
+.Cal1, 
+.Cal2 {
+	color: Black;
+	font-size: 1em}
+	
+.Calart,
+.Calblog,
+.Calchart,
+.Caldir,
+.Caleph,
+.Calfaq,
+.Calfgal,
+.Calforum,
+.Calgal,
+.Calnl,
+.Calquiz,
+.Calsurv,
+.Caltrack,
+.Calwiki {
+	font-size:90%;
+	padding:0 3px;
+	margin-top:0}
+
+.Calart,
+.Calart a,
+.Calart a:visited {color:#FA8072}
+
+.Calblog,
+.Calblog a,
+.Calblog a:visited {color:#DA70D6}
+
+.Calchart,
+.Calchart a,
+.Calchart a:visited {color:#304F30} 
+
+.Caldir,
+.Caldir a,
+.Caldir a:visited {color:#800080}
+
+.Caleph,
+.Caleph a,
+.Caleph a:visited {color:#008000}
+
+.Calfaq,
+.Calfaq a,
+.Calfaq a:visited {color:#822222}
+
+.Calfgal,
+.Calfgal a,
+.Calfgal a:visited {color:#8B4513}
+
+.Calforum,
+.Calforum a,
+.Calforum a:visited {color:#808000} 
+
+.Calgal,
+.Calgal a,
+.Calgal a:visited {color:#8B4513}
+
+.Calnl,
+.Calnl a,
+.Calnl a:visited {color:#708090}
+
+.Calquiz,
+.Calquiz a,
+.Calquiz a:visited {color:#5F9EA0}
+
+.Calsurv,
+.Calsurv a,
+.Calsurv a:visited {color:#DAA520}
+
+Caltrack,
+Caltrack a,
+Caltrack a:visited {color:#00BD02}
+	
+.Calweb {font-size: 1em}
+
+.Calwiki,
+.Calwiki a,
+.Calwiki a:visited {color:#2C4B80}
+
+.calcheckbox {background-color:#FFFFFF}
+
+.calcontent a.linkmenu,
+.calcontent a.linkmenu:hover {
+	background-image: none;
+	padding: 0}
+
+.calfocus {
+	font-size:90%;
+	background-color: transparent}
+
+.calfocus a {
+	text-decoration: none;
+	font-weight: normal;
+	color: #000000}
+
+.calfocuson {
+	font-size: 90%;
+	background-color: #F3E498}
+
+.calfocuson a {
+	text-decoration: none;
+	font-weight: normal;
+	color: #000000}
+
+#calprio {
+	margin-left: 7px;
+	padding: 0 5px;
+	color: black}
+
+.calprio1 a,
+.calprio2 a,
+.calprio3 a,
+.calprio4 a,
+.calprio5 a,
+.calprio6 a,
+.calprio7 a,
+.calprio8 a,
+.calprio9 a {color: #393E51}
+
+.caltoggle {font-size: 90%}
+
+.opaque {
+   border: 1px solid #783C1C;
+	background: white;
+	padding: 0}
+
+.opaque .box-title {
+	border-bottom: 1px solid black;
+	background: #FD9339 url(darkshine/hover_list.jpg) repeat-x;
+	color: #fff;
+	padding: 3px}
+
+.opaque .box-data  {background-color: white; padding: 3px}
+
+.searchresults {display: inline}
+
+#caltable .calfocuson,
+.box-data td.fc a.today,
+.box-data td a.today {
+	background: #FD9339 url(darkshine/hover_list.jpg) repeat-x;
+	color: #fff;
+	border-bottom: 1px solid #783C1C}
+
+.box-data td.fc a.today:hover,
+.box-data td a.today:hover {
+	background: #FD9339 url(darkshine/hover_list.jpg) repeat-x;
+	color: #fff}
+
+#caltable .calfocus a,
+#caltable .calfocuson a {
+	color: #000;
+	text-decoration: none}
+	
+#caltable .calfocuson a:hover {text-decoration: underline  }
+
+.day, .day:visited {}
+.today {}
+.nav {}
+.changedate {}
+.date {}
+
+.calinput {background: #82e641}
+.calfocuson + .calcontent {background: #fff}
+
+#caltable .days {
+	color: #000;
+	background: gainsboro;}
+
+#caltable .weeks {
+	background: gainsboro;
+	color: #000;
+	padding: 1px;
+	font-weight: bold}
+
+.addevent {
+	padding: 0 5px;
+	float: right}
+	
+.calnavigation a:hover {background: #FD9339 url(darkshine/hover_list.jpg) repeat-x;  }
+* html .addevent {padding: 0}
+.calodd, .caleven { border: 1px solid #999999}
+.calodd {background-color: #ececec}
+* html .calodd {padding: 0}
+.caleven {background-color: #f5f5f5}
+* html .caleven {padding: 0}
+.caldark {background: gainsboro}
+* html .caldark {padding: 0}
+.caldark .calfocus {background-color: gainsboro}
+.calfocus, .calfocuson {border-bottom: 0}
+
+.daterow {}
+.daterow:hover {}
+
+
+/*****  Polls  *****/
+
+div.pollresults {}
+table.pollresults {}
+td.pollr {}
+#pollopen {display: block}
+#pollzone {display: none}
+#polledit {display: none}
+.pollnav {}
+
+/***** FAQs *****/
+
+div.faqlistquestions {}
+div.faqqa {}
+div.faqquestion {}
+div.faqanswer {}
+
+/***** Quizzes *****/
+
+div.questionblock {}
+div.quizquestion {}
+div.quizoptions {}
+div.quizdescription {}
+div.quizanswer {}
+
+/***** Shoutbox *****/
+
+div.shoutboxmsg {}
+div.shoutboxmsg:last-child {/*border-bottom: 1px solid #8CACBB;*/}
+div.shoutboxmodmsg {}
+textarea.tshoutbox{width: 162px}
+.wiki-table {}
+.wiki-tr-a td {}
+.wiki-tr-b td {}
+
+/***** Directory *****/
+
+div.dircategs {}
+.dirlink {}
+.dirsublink {}
+div.dirlistsites {}
+
+div.dirsite {
+	margin-bottom: 10px;
+	padding: 4px}
+
+span.dirsitedesc {}
+
+span.dirsitetrail {
+	font-size: 95%}
+
+span.dirsitecats {
+	font-size: 95%}
+
+.dirsitelink {}
+div.dirrelated {}
+td.dirfooter {}
+div.dirfooter {}
+
+/***** Messages *****/
+
+td.prio1,
+td.prio2,
+td.prio3,
+td.prio4,
+td.prio5 {
+	border: 1px solid #8CACBB;
+	padding-left: 2px}
+
+td.prio1 {background: #F7F9CA}
+td.prio2 {background: #F7F9EA}
+td.prio3 {background: #F7F9FA}
+td.prio4 {background: #F7F9FD}
+td.prio5 {background: #F7F9FF}
+
+div.messureadflag {
+	background: #CCCCCC;
+	padding-left: 5px}
+
+div.messureadhead {
+	background: #DEDEDE;
+	margin-top: 2px}
+
+div.messureadbody {
+	margin-top: 5px;
+	background: #DEDEDE}
+
+.readlink {
+	font-size: .95em;
+	color: black}
+
+/**********   Ajax   **********/
+
+div#ajaxLoading {
+	display: none;
+	position: absolute;
+	top: 50px;
+	right: 50%;
+	color: transparent;
+	padding: 3px;
+	font-family: Verdana;
+	font-size: 90%;
+	background-color: transparent;
+	background: url(../lib/shadowbox/images/loading.gif) no-repeat;
+	height: 42px;
+	width: 32px}
+
+
+#shadowbox_title {
+	height: auto !important;
+	padding: 0;
+	overflow: visible}
+
+#shadowbox_title_inner {
+	height: auto !important;
+	font-size: 1em !important;
+	line-height: 1em !important;
+	white-space: normal !important;
+	padding: 5px 0 4px 8px}
+	
+/* MyTiki preferences Ajax */
+
+.tab-wrapper {
+	border: 1px solid #EEEEEE;
+	padding: 0}
+
+.tab-menu  {
+	list-style: none; 
+	padding: 2px 0; 
+	clear:  both}
+
+.tab-menu li {
+	width: 200px; 
+	display: inline; 
+	margin: 0 2px}
+
+.tab-menu li img {
+	vertical-align: middle}
+
+.tab-menu li a {
+	padding: 1px 5px; 
+	background: #f5f5f5; 
+	text-decoration: none;
+	border: 1px solid #783C1C;
+	border-width: 1px 0;
+	white-space: nowrap } 
+
+.tab-menu li a:hover, 
+.tab-menu li a:focus {
+	background: #FAEC8F; 
+	border-color: #999} 
+
+.tab-menu li a:hover {
+	background: #FD9339 url(darkshine/hover_list.jpg) repeat-x;
+	color: #fff}
+	 
+.tab-menu li.tab-selected a {background: #BCEC8F}
+
+/***** TikiSheet Default Style *****/
+
+table.default thead td,
+table.default tfoot td {
+	font-weight: bold;
+	text-align:	center;
+	background-color: black;
+	color: #D8D8D8}
+
+table.default	td {
+	border: solid 1px #A9A9A9;
+	background-color: black}
+
+/***** 'Advanced feature' *****/
+
+.advanced {
+  margin: 20px;
+  padding: 5px;
+  border-color: #A9A9A9;
+  border-width: 1px;
+  border-style: solid;
+  background-color: #988CAA;
+  color: #FFFFFF}
+
+.advanced:before { content:url(../img/icons/mini_blue_diamond.gif)" "}
+
+.highlight_word_0 {
+	color: #ffff66;
+	background-color: black}
+
+.highlight_word_1 {
+	color: #ff9999;
+	background-color: black}
+
+.highlight_word_2 {
+	color: #A0FFFF;
+	background-color: black}
+
+.highlight_word_3 {
+	color: #ff66ff;
+	background-color: black}
+
+.highlight_word_4 {
+	color: #99ff99;
+	background-color: black}
+
+.center {text-align: center}
+.justify {text-align: justify}
+.right {text-align: right}
+
+/**********    mypage   **********/
+
+.mypage_configure th {width: 180px}
+#sideBarTab {background: url('../img/cord.png') no-repeat}
+#sideBarContents {background: #fff}
+
+/* css/admin.css overrides */	
+
+a.admbox {
+	border: 1px solid #AAAAAA;
+	background-color: #90140c;
+	color: #f3f3f3}
+
+a.admbox:hover, a.admbox:focus, a.admbox:active  {
+	background-color: #600000;
+	color: #f3f3f3;
+	border: 1px solid #292929}
+
+a.admbox.off {border: 1px solid #9f9f9f}
+
+a.admbox.off:hover,
+a.admbox.off:focus,
+a.admbox.off:active {
+	border: 1px solid #9f9f9f}
+
+/* MiniChat  */
+
+div.box-minichat {width: 100%}
+div.minichatchans {overflow: auto}
+.minichat {overflow: auto}
+
+div.minichatdiv {
+	font-size: .9em;
+	overflow: auto}
+
+/* end of css file */
