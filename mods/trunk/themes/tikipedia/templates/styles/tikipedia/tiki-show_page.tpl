@@ -3,9 +3,11 @@
   <script type="text/javascript" src="lib/wiki/wiki-ajax.js"></script>
 {/if}
 
-{breadcrumbs type="trail" loc="page" crumbs=$crumbs}
-{if $prefs.feature_page_title eq 'y'}
-{breadcrumbs type="pagetitle" loc="page" crumbs=$crumbs}
+{* display breadcrumbs here only if the feature is on and when site location feature is selected to appear above page in top of center column  *}
+{if $prefs.feature_siteloc eq 'page' and $prefs.feature_breadcrumbs eq 'y'}
+    {if $prefs.feature_siteloclabel eq 'y'}{tr}Location : {/tr}{/if}
+    {breadcrumbs type="trail" loc="page" crumbs=$crumbs}
+    {breadcrumbs type="pagetitle" loc="page" crumbs=$crumbs}
 {/if}
 
 {if $beingStaged eq 'y'}
@@ -47,6 +49,9 @@
 </div>
 </div>
 
+{if isset($saved_msg) && $saved_msg neq ''}
+{remarksbox type="note" title="{tr}Note{/tr}"}{$saved_msg}{/remarksbox}
+{/if}
 
 <div class="navbar" style="clear: both; text-align: right">
     {if $user and $prefs.feature_user_watches eq 'y'}
@@ -101,6 +106,15 @@
 {/if}
 
 <div class="wikitext">
+
+{**
+ * Page Title as h1 here when the feature is on
+ *}
+{if $prefs.feature_page_title eq 'y'}
+	<h1 class="center pagetitle">{breadcrumbs type="pagetitle" loc="page" crumbs=$crumbs}</h1>
+    
+{/if}
+
 {if $structure eq 'y'}
 <div class="tocnav">
 <table>
