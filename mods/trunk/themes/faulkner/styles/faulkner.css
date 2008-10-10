@@ -632,6 +632,11 @@ a.linkmodule:hover {
 	background: #ECCAA3 url(faulkner/menu.gif) right no-repeat;
 	color: #800}
 	
+li a.linkmodule,
+li a.linkmodule:hover {
+	background-image: none;
+	padding-left: 1px }
+	
 a.tikihelp,
 a.tikihelp:hover { background: none }
 
@@ -1065,7 +1070,7 @@ div.description {
 
 .wikitext ul li {
 	padding-left: 17px;
-	background: url(faulkner/bullet.gif) no-repeat left center;
+	background: url(faulkner/bullet.gif) no-repeat 0 6px;
 	margin-left: 10px}
 
 .wikitext ol {}
