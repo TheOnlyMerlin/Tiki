@@ -76,7 +76,7 @@ if (!empty($ACCEPTIP))
 if (empty($_REQUEST['sql'])) err('No SQL');
 
 
-$conn = &ADONewConnection($driver);
+$conn = ADONewConnection($driver);
 
 if (!$conn->Connect($host,$uid,$pwd,$database)) err($conn->ErrorNo(). $sep . $conn->ErrorMsg());
 $sql = undomq($_REQUEST['sql']);

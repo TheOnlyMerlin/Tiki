@@ -5,7 +5,7 @@
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
   
-  Some pretty-printing by Chris Oxenreider <oxenreid#state.net>
+  Some pretty-printing by Chris Oxenreider <oxenreid@state.net>
 */ 
   
 // specific code for tohtml
@@ -36,6 +36,7 @@ $gSQLBlockRows=20; // max no of rows per table block
 //	$rs->Close();
 //
 // RETURNS: number of rows displayed
+
 
 function rs2html(&$rs,$ztabhtml=false,$zheaderarray=false,$htmlspecialchars=true,$echo = true)
 {
@@ -175,7 +176,7 @@ function arr2html(&$arr,$ztabhtml='',$zheaderarray='')
 	
 	for ($i=0; $i<sizeof($arr); $i++) {
 		$s .= '<TR>';
-		$a = &$arr[$i];
+		$a = $arr[$i];
 		if (is_array($a)) 
 			for ($j=0; $j<sizeof($a); $j++) {
 				$val = $a[$j];

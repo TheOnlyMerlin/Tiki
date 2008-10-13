@@ -8,7 +8,7 @@ $ADODB_INCLUDED_MEMCACHE = 1;
 
 /* 
 
-  V4.990 11 July 2008  (c) 2000-2008 John Lim (jlim#natsoft.com). All rights reserved.
+  V5.05 11 July 2008  (c) 2000-2008 John Lim (jlim#natsoft.com). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence. See License.txt. 
@@ -26,9 +26,10 @@ $db->memCacheCompress = false; /// Use 'true' to store the item compressed (uses
 
 $db->Connect(...);
 $db->CacheExecute($sql);
-
+  
   Note the memcache class is shared by all connections, is created during the first call to Connect/PConnect.
   
+  Class instance is stored in $ADODB_CACHE
 */
 
 	class ADODB_Cache_MemCache {
@@ -78,7 +79,6 @@ $db->CacheExecute($sql);
 			return 0;
 		}
 		
-		// returns true or false. true if successful save
 		function writecache($filename, $contents,$debug, $secs2cache)
 		{
 			if (!$this->_connected) {
@@ -95,7 +95,6 @@ $db->CacheExecute($sql);
 			return true;
 		}
 		
-		// returns a recordset
 		function &readcache($filename, &$err, $secs2cache, $rsClass)
 		{
 			if (!$this->_connected) $this->connect($err);
@@ -129,7 +128,7 @@ $db->CacheExecute($sql);
 			}
 			return $rs;
 		}
-	
+		
 		function flushall($debug=false)
 		{
 			if (!$this->_connected) {
