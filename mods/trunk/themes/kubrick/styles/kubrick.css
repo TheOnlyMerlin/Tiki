@@ -262,21 +262,13 @@ div#tiki-bot {}
 /* Site Header & Identity */
 #header-top {
 	height: 174px;
-	/*border: 1px solid transparent;*/
 	position: relative;
 	margin-left: 30px;
 	text-align: center}
 
 #siteheader {padding-top: 30px}
-
-div#sioptions  {
-	height: 176px;
-	margin-left: 40px}
-
-#sioptionscentered {
-	text-align: center;
-	/*margin-left: 40px;
-	min-width: 800px*/}
+div#sioptions  {margin-left: 40px}
+#sioptionscentered {text-align: center}
 
 div.floatright {
 	float: right;
