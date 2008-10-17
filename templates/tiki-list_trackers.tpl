@@ -1,13 +1,23 @@
 {* $Id$ *}
-
-{title help="Trackers" admpage="trackers"}{tr}Trackers{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-list_trackers.php">{tr}Trackers{/tr}</a>
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Trackers" target="tikihelp" class="tikihelp" title="{tr}Tikiwiki.org help{/tr}: {tr}Trackers{/tr}">
+<img border='0' src='img/icons/help.gif' alt="{tr}Help{/tr}" /></a>
+{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-list_trackers.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}List Trackers Tpl{/tr}">
+<img src="img/icons/info.gif" border="0" height="16" width="16" alt='{tr}Edit Tpl{/tr}' /></a>
+{/if}
+{if $tiki_p_admin eq 'y'}
+<a href="tiki-admin.php?page=trackers" title="{tr}Admin Feature{/tr}">{icon _id='wrench' alt="{tr}Admin Feature{/tr}"}</a>
+{/if}
+</h1>
 
 <div class="navbar">
-  {if $tiki_p_admin_trackers eq 'y'}
-    <span class="button2"><a href="tiki-admin_trackers.php?show=mod#mod">{tr}Create Trackers{/tr}</a></span>
-  {/if}
+{if $tiki_p_admin_trackers eq 'y'}
+<span class="button2"><a href="tiki-admin_trackers.php?show=mod#mod" class="linkbut">{tr}Create Trackers{/tr}</a></span>
+{/if}
 </div>
-
 {if ($channels) or ($find)}
   {include file='find.tpl' _sort_mode='y'}
   {if ($find) and ($channels)}
@@ -17,11 +27,11 @@
 <!-- beginning of table -->
 <table class="normal">
 <tr>
-<th>{self_link _sort_arg='sort_mode' _sort_field='name'}{tr}Name{/tr}{/self_link}</th>
-<th>{self_link _sort_arg='sort_mode' _sort_field='description'}{tr}Description{/tr}{/self_link}</th>
-<th>{self_link _sort_arg='sort_mode' _sort_field='created'}{tr}Created{/tr}{/self_link}</th>
-<th>{self_link _sort_arg='sort_mode' _sort_field='lastModif'}{tr}Last Modif{/tr}{/self_link}</th>
-<th style="text-align:right;">{self_link _sort_arg='sort_mode' _sort_field='items'}{tr}Items{/tr}{/self_link}</th>
+<td class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='name'}{tr}Name{/tr}{/self_link}</td>
+<td class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='description'}{tr}Description{/tr}{/self_link}</td>
+<td class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='created'}{tr}Created{/tr}{/self_link}</td>
+<td class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='lastModif'}{tr}Last Modif{/tr}{/self_link}</td>
+<td class="heading" style="text-align:right;">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='items'}{tr}Items{/tr}{/self_link}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}

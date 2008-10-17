@@ -9,17 +9,6 @@ function wikiplugin_sup_help() {
         return tra("Displays text in superscript.").":<br />~np~{SUP()}text{SUP}~/np~";
 }
 
-function wikiplugin_sup_info() {
-	return array(
-		'name' => tra( 'Superscript' ),
-		'description' => tra('Displays text in superscript (exponent).'),
-		'prefs' => array( 'wikiplugin_sup' ),
-		'body' => tra('text'),
-		'params' => array(
-		),
-	);
-}
-
 function wikiplugin_sup($data, $params)
 {
         global $tikilib;

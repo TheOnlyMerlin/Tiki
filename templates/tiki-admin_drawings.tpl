@@ -1,6 +1,14 @@
 {* $Id$ *}
 
-{title help="Drawings"}{tr}Admin drawings{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-admin_drawings.php">{tr}Admin drawings{/tr}</a>
+
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Drawings" target="tikihelp" class="tikihelp" title="{tr}Help on Drawings{/tr}">{icon _id='help'}</a>
+{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admin_drawings.tpl" target="tikihelp" class="tikihelp" title="{tr}View template{/tr}: {tr}Admin Drawings tpl{/tr}">{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}</h1>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}To create a drawing in a Wiki page, use {literal}{draw name=foo}{/literal}, where foo is the name of the drawing. After saving, click on the drawing link.{/tr}{/remarksbox}
 
@@ -34,12 +42,12 @@
 <table class="normal">
 <tr>
 {if $smarty.request.ver}
-<th><input type="submit" name="del" value="{tr}x{/tr} " /></th>
+<td class="heading"><input type="submit" name="del" value="{tr}x{/tr} " /></td>
 {/if}
-<th>{tr}Name{/tr}</th>
-<th>{tr}Ver{/tr}</th>
-<th>{tr}Versions{/tr}</th>
-<th>{tr}Action{/tr}</th>
+<td class="heading">{tr}Name{/tr}</td>
+<td class="heading">{tr}Ver{/tr}</td>
+<td class="heading">{tr}Versions{/tr}</td>
+<td class="heading">{tr}Action{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$items}

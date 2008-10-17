@@ -102,8 +102,7 @@ class BlogLib extends TikiLib {
 		return $blogId;
 	}
 
-	function list_blog_posts($blogId, $offset = 0, $maxRecords = -1, $sort_mode = 'created_desc', $find = '', $date = '', $approved = 'y') {
-		global $tiki_p_admin_comments;
+	function list_blog_posts($blogId, $offset = 0, $maxRecords = -1, $sort_mode = 'created_desc', $find = '', $date = '') {
 
 		if ($find) {
 			$findesc = '%' . $find . '%';
@@ -126,17 +125,8 @@ class BlogLib extends TikiLib {
 		$cant = $this->getOne($query_cant,$bindvars);
 		$ret = array();
 
-		$cant_com_query = "select count(*) from `tiki_comments` where `object`=? and `objectType` = 'post'";
-		if ( $tiki_p_admin_comments != 'y' ) {
-			$cant_com_query .= ' and `approved`=?';
-		} else {
-			$approved = NULL;
-		}
-
 		while ($res = $result->fetchRow()) {
-			$cant_com_vars = array((int)$res['postId']);
-			if ( $approved !== NULL ) $cant_com_vars[] = $approved;
-			$cant_com = $this->getOne($cant_com_query, $cant_com_vars);
+			$cant_com = $this->getOne("select count(*) from `tiki_comments` where `object`=? and `objectType` = 'post'", array((int)$res["postId"]));
 			$res["comments"] = $cant_com;
 			$res['pages'] = $this->get_number_of_pages($res['data']);
 			$res['avatar'] = $this->get_user_avatar($res['user']);		

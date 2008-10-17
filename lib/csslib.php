@@ -158,7 +158,7 @@ class cssLib extends TikiLib {
 	 *  @TODO: cache results
 	 *  @TODO: return empty string if CSS file is /newer/ than db version?
 	 */
-	function transition_css($path, $default_ver='2.0') {
+	function transition_css($path, $default_ver='1.9') {
 		global $TWV;
 
 		$cssversion = $this->version_css($path);

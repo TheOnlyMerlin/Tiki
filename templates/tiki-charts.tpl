@@ -1,7 +1,7 @@
 {* $Id$ *}
 {popup_init src="lib/overlib.js"}
 
-{title}{tr}Charts{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-charts.php">{tr}Charts{/tr}</a></h1>
 
 {if $items or ($find ne '')}
   {include file='find.tpl' _sort_mode='y'}
@@ -14,7 +14,7 @@
 <input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
 <table class="normal">
 <tr>
-<th><a href="{if $sort_mode eq 'title_desc'}{sameurl sort_mode="title_asc"}{else}{sameurl sort_mode="title_desc"}{/if}">{tr}Title{/tr}</a></th>
+<td class="heading" ><a class="tableheading" href="{if $sort_mode eq 'title_desc'}{sameurl sort_mode="title_asc"}{else}{sameurl sort_mode="title_desc"}{/if}">{tr}Title{/tr}</a></td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$items}

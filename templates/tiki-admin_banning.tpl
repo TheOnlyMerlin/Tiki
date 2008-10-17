@@ -16,7 +16,15 @@
 //--><!]]>
 </script>
 
-{title help="Banning+System"}{tr}Banning system{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-admin_banning.php">{tr}Banning system{/tr}</a>
+
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Banning+System" target="tikihelp" class="tikihelp" title="{tr}Help on Banning System{/tr}">
+{icon _id='help'}</a>{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admin_banning.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Admin banning tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>{/if}</h1>
 
 <h2>{tr}Add or edit a rule{/tr}</h2>
 <form action="tiki-admin_banning.php" name="banningform" method="post">
@@ -111,11 +119,11 @@
 <input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
 <table class="normal">
 <tr>
-<th><input type="submit" name="del" value="{tr}x{/tr} " /></th>
-<th>{tr}Title{/tr}</th>
-<th>{tr}User/IP{/tr}</th>
-<th>{tr}Sections{/tr}</th>
-<th>{tr}Action{/tr}</th>
+<td  class="heading"><input type="submit" name="del" value="{tr}x{/tr} " /></td>
+<td class="heading">{tr}Title{/tr}</td>
+<td class="heading">{tr}User/IP{/tr}</td>
+<td class="heading">{tr}Sections{/tr}</td>
+<td class="heading">{tr}Action{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$items}

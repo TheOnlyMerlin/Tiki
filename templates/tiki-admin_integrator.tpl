@@ -1,6 +1,14 @@
 {* $Id$ *}
 
-{title help="Integrator"}{tr}Integrator{/tr}{/title}
+<h1>
+  <a class="pagetitle" href="tiki-admin_integrator.php">{tr}Integrator{/tr}</a>
+
+  {if $prefs.feature_help eq 'y'}
+    <a href="{$prefs.helpurl}Integrator" target="tikihelp" class="tikihelp" title="{tr}Tiki integrator{/tr}">
+      <img src="img/icons/help.gif" border="0" height="16" width="16" alt='{tr}Help{/tr}' />
+    </a>
+  {/if}
+</h1>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
     {tr}An easier way to integrate content from another site into Tiki is via iframed links using Tiki's <a class="rbox-link" href="tiki-admin_links.php">featured links</a> feature.{/tr}
@@ -14,14 +22,14 @@
 <div id="page-bar">
   <table><tr>
     <td><div class="button2">
-      <a href="tiki-list_integrator_repositories.php">{tr}List Repositories{/tr}</a>
+      <a href="tiki-list_integrator_repositories.php" class="linkbut">{tr}List Repositories{/tr}</a>
     </div></td>
     <td><div class="button2">
-      <a href="tiki-admin_integrator.php">{tr}New Repository{/tr}</a>
+      <a href="tiki-admin_integrator.php" class="linkbut">{tr}New Repository{/tr}</a>
     </div></td>
     {if isset($repID) and $repID ne '0'}
     <td><div class="button2">
-      <a href="tiki-integrator.php?repID={$repID|escape}">{tr}View Repository{/tr}</a>
+      <a href="tiki-integrator.php?repID={$repID|escape}" class="linkbut">{tr}View Repository{/tr}</a>
     </div></td>
     {/if}
   </tr></table>
@@ -75,13 +83,13 @@
 {* Table with list of repositories *}
 <table class="normal" id="integrator-repositories">
   <tr>
-    <th rowspan="2">{tr}Name{/tr}</th>
-    <th>{tr}Path{/tr}</th>
-    <th>{tr}Start{/tr}</th>
-    <th>{tr}CSS File{/tr}</th>
-    <th>{tr}Actions{/tr}</th>
+    <td class="heading" rowspan="2">{tr}Name{/tr}</td>
+    <td class="heading">{tr}Path{/tr}</td>
+    <td class="heading">{tr}Start{/tr}</td>
+    <td class="heading">{tr}CSS File{/tr}</td>
+    <td class="heading">{tr}Actions{/tr}</td>
   </tr><tr>
-    <th colspan="4">{tr}Description{/tr}</th>
+    <td class="heading" colspan="4">{tr}Description{/tr}</td>
   </tr>
   {cycle values="odd,even" print=false}
   {section name=rep loop=$repositories}

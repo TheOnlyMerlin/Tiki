@@ -1,4 +1,12 @@
-{title help="Menus"}{tr}Admin Menus{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-admin_menus.php">{tr}Admin Menus{/tr}</a>
+
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Menus" target="tikihelp" class="tikihelp" title="{tr}Admin Menu Builder{/tr}">{icon _id='help'}</a>
+{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admin_menus.tpl" target="tikihelp" class="tikihelp" title="{tr}Edit template{/tr}: {tr}Admin Menus Template{/tr}">{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}</h1>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
   {tr}To use menus in a <a href="tiki-admin_modules.php">module</a>, <a href="tiki-admin.php?page=siteid">Site identity</a> or a template, use {literal}{menu id=x}{/literal}, where x is the ID of the menu.{/tr}
@@ -16,7 +24,7 @@
 
 {if $menuId > 0}
 <h2>{tr}Edit this Menu:{/tr} {$info.name}</h2>
-<span class="button2"><a href="tiki-admin_menus.php">{tr}Create new Menu{/tr}</a></span>
+<a href="tiki-admin_menus.php" class="linkbut">{tr}Create new Menu{/tr}</a>
 {else}
 <h2>{tr}Create new Menu{/tr}</h2>
 {/if}
@@ -33,13 +41,7 @@
 </select>
 </td></tr>
 {if $prefs.feature_menusfolderstyle eq 'y'}
-<tr><td class="formcolor">{tr}Folder Icon{/tr}:</td><td><input type="text" name="icon" value="{$info.icon}" style="width:95%" /><br /><em>{tr}Path and filename of closed folder icon{/tr}</em>.
-
-{remarksbox type="tip" title="{tr}Note{/tr}"}
-  {tr}To use custom folder icons in menus, enter the path to the icon for the <strong>closed</strong> folder.{/tr} {tr}In the same directory, include an icon for the opened folder.{/tr} {tr}The "opened folder" icon name must be identical to the "closed folder" icon name, prefixed with the letter <strong>o</strong>.{/tr}<hr />
-  For example, the default icon is: pics/icons/folder.png {icon _id="folder"}<br />The name of the "open folder" icon is: pics/icons/ofolder.png {icon _id="ofolder"}
-{/remarksbox}
-</td></tr>
+<tr><td class="formcolor">{tr}Path to the folder icon for close sections{/tr}</td><td><input type="text" name="icon" value="{$info.icon}" /><br />{tr}Example:{/tr} styles/mose/pics/icons/folder.png<br />{tr}Provide also a folder icon for open sections with the same name with the letter 'o' before in the same directory (ex: folder.png and ofolder.png){/tr}<br />{tr}Default:{/tr}{icon _id="folder"}</td></tr>
 {/if}
 <tr><td class="formcolor">&nbsp;</td><td class="formcolor"><input type="submit" name="save" value="{tr}Save{/tr}" /></td></tr>
 </table>
@@ -48,11 +50,11 @@
 {include file='find.tpl' _sort_mode='y'}
 <table class="normal">
 <tr>
-<th><a href="tiki-admin_menus.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'menuId_desc'}menuId_asc{else}menuId_desc{/if}">{tr}ID{/tr}</a></th>
-<th><a href="tiki-admin_menus.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
-<th><a href="tiki-admin_menus.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'type_desc'}type_asc{else}type_desc{/if}">{tr}Type{/tr}</a></th>
-<th>{tr}Options{/tr}</th>
-<th>{tr}Action{/tr}</th>
+<th class="heading"><a class="tableheading" href="tiki-admin_menus.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'menuId_desc'}menuId_asc{else}menuId_desc{/if}">{tr}ID{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_menus.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_menus.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'type_desc'}type_asc{else}type_desc{/if}">{tr}Type{/tr}</a></th>
+<th class="heading">{tr}Options{/tr}</th>
+<th class="heading">{tr}Action{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}

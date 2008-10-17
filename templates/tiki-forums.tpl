@@ -1,13 +1,16 @@
 {* $Id$ *}
 
-{title help="forums" admpage="forums"}{tr}Forums{/tr}{/title}
-
-{if $tiki_p_admin_forum eq 'y'}
-  <div class="navbar">
-    <a href="tiki-admin_forums.php">{tr}Admin forums{/tr}</a>
-  </div>
+<h1><a class="pagetitle" href="tiki-forums.php">{tr}Forums{/tr}</a>
+{if $tiki_p_admin eq 'y'}
+<a href="tiki-admin.php?page=forums" title="{tr}Admin Feature{/tr}">{icon _id='wrench' alt="{tr}Admin Feature{/tr}"}</a>
 {/if}
+</h1>
 
+<div class="navbar">
+{if $tiki_p_admin_forum eq 'y'}
+<span class="button2"><a href="tiki-admin_forums.php" class="linkbut">{tr}Admin forums{/tr}</a></span>
+{/if}
+</div>
 {if $channels or ($find ne '')}
 {if $prefs.feature_forums_search eq 'y' or $prefs.feature_forums_name_search eq 'y'}
   <table class="findtable">
@@ -40,26 +43,26 @@
 <br />
 <table class="normal">
   <tr>
-    <th>{self_link _sort_arg='sort_mode' _sort_field='name'}{tr}Name{/tr}{/self_link}</th>
+    <th class="heading">{self_link _class="tableheading" _sort_arg='sort_mode' _sort_field='name'}{tr}Name{/tr}{/self_link}</th>
     
     {if $prefs.forum_list_topics eq 'y'}
-	    <th>{self_link _sort_arg='sort_mode' _sort_field='threads'}{tr}Topics{/tr}{/self_link}</th>
+	    <th class="heading">{self_link _class="tableheading" _sort_arg='sort_mode' _sort_field='threads'}{tr}Topics{/tr}{/self_link}</th>
     {/if}	
 
     {if $prefs.forum_list_posts eq 'y'}
-	    <th>{self_link _sort_arg='sort_mode' _sort_field='comments'}{tr}Posts{/tr}{/self_link}</th>
+	    <th class="heading">{self_link _class="tableheading" _sort_arg='sort_mode' _sort_field='comments'}{tr}Posts{/tr}{/self_link}</th>
     {/if}	
 
     {if $prefs.forum_list_ppd eq 'y'}
-	    <th>{tr}PPD{/tr}</th>
+	    <th class="heading">{tr}PPD{/tr}</th>
     {/if}	
 
     {if $prefs.forum_list_lastpost eq 'y'}	
-	    <th>{self_link _sort_arg='sort_mode' _sort_field='lastPost'}{tr}Last Post{/tr}{/self_link}</th>
+	    <th class="heading">{self_link _class="tableheading" _sort_arg='sort_mode' _sort_field='lastPost'}{tr}Last Post{/tr}{/self_link}</th>
     {/if}
 
     {if $prefs.forum_list_visits eq 'y'}
-	    <th>{self_link _sort_arg='sort_mode' _sort_field='hits'}{tr}Visits{/tr}{/self_link}</th>
+	    <th class="heading">{self_link _class="tableheading" _sort_arg='sort_mode' _sort_field='hits'}{tr}Visits{/tr}{/self_link}</th>
     {/if}	
   </tr>
 

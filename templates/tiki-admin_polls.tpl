@@ -1,9 +1,22 @@
 {* $Id$ *}
-{title help="Polls" admpage="polls"}{tr}Admin Polls{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-admin_polls.php">{tr}Admin Polls{/tr}</a>
 
-<span class="button2"><a href="tiki-admin_polls.php?setlast=1">{tr}Set last poll as current{/tr}</a></span>
-<span class="button2"><a href="tiki-admin_polls.php?closeall=1">{tr}Close all polls but last{/tr}</a></span>
-<span class="button2"><a href="tiki-admin_polls.php?activeall=1">{tr}Activate all polls{/tr}</a></span>
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Polls" target="tikihelp" class="tikihelp" title="{tr}Admin Polls{/tr}">
+{icon _id='help'}</a>{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admin_polls.tpl" target="tikihelp" class="tikihelp" title="{tr}View template{/tr}: {tr}Admin Polls Template{/tr}">
+{icon _id='shape_square_edit'}</a>{/if}
+
+{if $tiki_p_admin eq 'y'}
+<a href="tiki-admin.php?page=polls">{icon _id='wrench' alt="{tr}Configure Polls{/tr}"}</a>
+{/if}
+</h1>
+<br /><br />
+<a href="tiki-admin_polls.php?setlast=1" class="linkbut">{tr}Set last poll as current{/tr}</a>
+<a href="tiki-admin_polls.php?closeall=1" class="linkbut">{tr}Close all polls but last{/tr}</a>
+<a href="tiki-admin_polls.php?activeall=1" class="linkbut">{tr}Activate all polls{/tr}</a>
 <br /><br /><h2>{if $pollId eq '0'}{tr}Create poll{/tr}{else}{tr}Edit poll{/tr}{/if}</h2>
 <form action="tiki-admin_polls.php" method="post">
 <input type="hidden" name="pollId" value="{$pollId|escape}" />
@@ -33,15 +46,15 @@
 {/if}
 <table class="normal">
 <tr>
-<th><a href="tiki-admin_polls.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'pollId_desc'}pollId_asc{else}pollId_desc{/if}">{tr}ID{/tr}</a></th>
-<th><a href="tiki-admin_polls.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Title{/tr}</a></th>
-{if $prefs.poll_list_categories eq 'y'}<th>{tr}Categories{/tr}</th>{/if}
-{if $prefs.poll_list_objects eq 'y'}<th>{tr}Objects{/tr}</th>{/if}
-<th><a href="tiki-admin_polls.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'active_desc'}active_asc{else}active_desc{/if}">{tr}Active{/tr}</a></th>
-<th><a href="tiki-admin_polls.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'votes_desc'}votes_asc{else}votes_desc{/if}">{tr}Votes{/tr}</a></th>
-<th><a href="tiki-admin_polls.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'publishDate_desc'}publishDate_asc{else}publishDate_desc{/if}">{tr}Publish{/tr}</a></th>
-<th>{tr}Options{/tr}</th>
-<th>{tr}Action{/tr}</th>
+<th class="heading"><a class="tableheading" href="tiki-admin_polls.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'pollId_desc'}pollId_asc{else}pollId_desc{/if}">{tr}ID{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_polls.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Title{/tr}</a></th>
+{if $prefs.poll_list_categories eq 'y'}<th class="heading">{tr}Categories{/tr}</th>{/if}
+{if $prefs.poll_list_objects eq 'y'}<th class="heading">{tr}Objects{/tr}</th>{/if}
+<th class="heading"><a class="tableheading" href="tiki-admin_polls.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'active_desc'}active_asc{else}active_desc{/if}">{tr}Active{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_polls.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'votes_desc'}votes_asc{else}votes_desc{/if}">{tr}Votes{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_polls.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'publishDate_desc'}publishDate_asc{else}publishDate_desc{/if}">{tr}Publish{/tr}</a></th>
+<th class="heading">{tr}Options{/tr}</th>
+<th class="heading">{tr}Action{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}

@@ -1,19 +1,23 @@
 {* $Id$ *}
-
-{title help="Spreadsheet"}{tr}TikiSheet{/tr}{/title}
+<h1><a href="tiki-sheets.php" class="pagetitle">{tr}TikiSheet{/tr}</a>
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Spreadsheet" target="tikihelp" class="tikihelp" title="{tr}Tikiwiki.org help{/tr}: {tr}Tiki Sheet{/tr}">
+{icon _id='help'}</a>{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-sheets.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}sheets tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>{/if}
+</h1>
 
 {if $tiki_p_edit_sheet eq 'y'}
 {if $edit_mode eq 'y'}
-
 {if $sheetId eq 0}
-  <h2>{tr}Create a sheet{/tr}</h2>
+<h2>{tr}Create a sheet{/tr}</h2>
 {else}
-  <h2>{tr}Edit this sheet:{/tr} {$title}</h2>
-  {if $tiki_p_edit_sheet eq 'y'}
-    <div class="navbar"><a href="tiki-sheets.php?edit_mode=1&amp;sheetId=0">{tr}Create New Sheet{/tr}</a></div>
-  {/if}
+<h2>{tr}Edit this sheet:{/tr} {$title}</h2>
+{if $tiki_p_edit_sheet eq 'y'}
+<div class="navbar"><a class="linkbut" href="tiki-sheets.php?edit_mode=1&amp;sheetId=0">{tr}Create New Sheet{/tr}</a></div>
 {/if}
-
+{/if}
 <div align="center">
 {if $individual eq 'y'}
 <a class="gallink" href="tiki-objectpermissions.php?objectName={$name|escape:"url"}&amp;objectType=sheet&amp;permType=sheet&amp;objectId={$sheetId}">{tr}There are individual permissions set for this sheet{/tr}</a>
@@ -42,7 +46,7 @@ cted"{/if}>{$users[ix].login|username}</option>{/section}
 </div>
 <br />
 {else}
-<div class="navbar"><a href="tiki-sheets.php?edit_mode=edit&sheetId=0">{tr}Create new Sheet{/tr}</a></div>
+<div class="navbar"><a href="tiki-sheets.php?edit_mode=edit&sheetId=0" class="linkbut">{tr}Create new Sheet{/tr}</a></div>
 {/if}
 {/if}
 
@@ -61,10 +65,10 @@ cted"{/if}>{$users[ix].login|username}</option>{/section}
 
 <table class="normal">
 <tr>
-<th><a href="tiki-sheets.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Title{/tr}</a></th>
-<th><a href="tiki-sheets.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'description_desc'}description_asc{else}description_desc{/if}">{tr}Description{/tr}</a></th>
-<th><a href="tiki-sheets.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_desc'}user_asc{else}user_desc{/if}">{tr}User{/tr}</a></th>
-<th>{tr}Actions{/tr}</th>
+<td class="heading"><a class="tableheading" href="tiki-sheets.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Title{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-sheets.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'description_desc'}description_asc{else}description_desc{/if}">{tr}Description{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-sheets.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_desc'}user_asc{else}user_desc{/if}">{tr}User{/tr}</a></td>
+<td  class="heading">{tr}Actions{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=changes loop=$sheets}

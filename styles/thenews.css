@@ -21,7 +21,7 @@ body {
 
 
 html>body {
-	font-size: /*84.5%*/74%;
+	font: /*84.5%*/74%;
 	text-align: left;
 }
 
@@ -121,9 +121,14 @@ input[type=password] {
 
 }
 
+input[type=submit],
+input[type=file],
+input[type=reset],
+select {
+	
+}
 button,
 input[type=submit],
-.submitbutton,
 .button input,
 input[type=reset] {
 	border: 1px solid #aaa; 
@@ -135,7 +140,6 @@ input[type=reset] {
 
 button:hover,
 input[type=submit]:hover,
-.submitbutton:hover,
 .button input:hover {
 	cursor: pointer;
 	background: #E6E6F8;
@@ -184,6 +188,13 @@ li {
 ul.jumplinks {
 	font-size : 0.8em;
 	list-style-type : none;
+}
+
+ul.jumplinks, .jumplinks {
+	position: absolute;
+	top: -9000px;
+	left: -9000px;
+	z-index: 9;
 }
 
 ul.jumplinks a:focus, ul.jumplinks a:active {
@@ -448,8 +459,9 @@ a.flip img {
 
 }
 
-#power {font-size: 90%}
-#credits {display: inline}
+#credits {
+	font-size: .9em; text-align: center;
+}
 
 .footerbgtrap {}
 
@@ -658,12 +670,8 @@ div#edithelpzone {	display: none;}
 .attention {	color: red;}
 .highlight, #highlight  {}
 
-/* OpenID  */
-.openid_url {
-	background: #fff url(../../img/icons/login-OpenID-bg.gif) no-repeat;
-	padding-left: 18px}
-
 /* Banners, text type */
+
 .bannertext {	font-size: .95em;	text-decoration: none;}
 .bannertext:hover {}
 
@@ -806,14 +814,14 @@ div.cbox {
 .rbox-title {}
 .rbox-data {}
 
-.warning .rbox-title {}
-.warning .rbox-data {}
+.rbox-title[name="warning"] {}
+.rbox-data[name="warning"] {}
 
-.tip .rbox-title,
-.tip .rbox-data {}
+.rbox-title[name="tip"],
+.rbox-data[name="tip"] {}
 
-.comment .rbox-title,
-.comment .rbox-data {}
+.rbox-title[name="comment"],
+.rbox-data[name="comment"] {}
 
 
 div.simplebox {
@@ -850,11 +858,13 @@ table.admin tr td div#page-bar {
 	background-color: transparent;
 }
 
-table.normal th {
+table.normal td.heading,
+td.bloglistheading {
 	font-size: 1em;
 }
 td {}
 * html td {	font-size: 11px}
+th {}
 
 td.normal,
 td.bloglist,
@@ -873,7 +883,8 @@ td.even {background: #f9f9f9}
 
 td.third {background: #e7e7e7}
 
-th {
+td.heading,
+td.bloglistheading {
 	text-align: center;
 	background: #F0F4F5;
 	border: 1px solid #999999;
@@ -900,6 +911,9 @@ td.form {
 	background: #E0DFE3;
 }
 
+th {
+	
+}
 /** Specific Tables **/
 
 /* Tables (list reduced due to classes not found in files) */
@@ -1242,6 +1256,8 @@ div.button2, .button3 {
 	margin-right: 5px;
 }
  
+.linkbut {}
+.linkbut:hover {}
 div.cache {}
 div.cachedpage {}
 .wikicache, .wikicache:visited {}
@@ -1636,7 +1652,7 @@ table.commentinfo {}
 	border-bottom: 1px solid #ACCCDD;
 	margin-bottom: 4px;
 	height: 100%;
-/*	overflow: auto;*/
+	overflow: auto;
 	padding-top: 2px;
 }
 .post .postbody-title .checkbox { float: left; }
@@ -1674,10 +1690,10 @@ table.commentinfo {}
 	float: right;
 	font-size: 10px;
 }
-#c1c2 #wrapper #col1 .content .post .postbody .content {
+.post .postbody .content {
 	float: left;
 	padding: 0px 3px 3px 3px;
-	width: 100% !important;
+	width: 100%;
 	height: 100%;
 	text-align: left;
 	color: #000000;
@@ -1780,13 +1796,14 @@ div.commentsedithelp {
 	font-weight: bold;
 }
 
-ul.catfeatures {list-style: none}
+ul.catfeatures {}
 ul.catfeatures li {}
 ul.catitems {}
 
 ul.catitems li {
-	display: inline;
-	margin-right: 10px}
+	float: left !important;
+	padding-right: 18px;
+}
 
 ul.catitems li a.link {}
 
@@ -2232,11 +2249,9 @@ a.admbox.off {
 a.admbox.off:hover, a.admbox.off:focus, a.admbox.off:active {
 	border: 1px solid #9f9f9f}
 
-#rss img {vertical-align: middle}
+#rss img {
+	vertical-align: middle;
+}
 
-a.icon,
-img.icon {
-	border: 0 !important;
-	background: transparent}
 /* end of css file */
 

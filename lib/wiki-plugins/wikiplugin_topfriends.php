@@ -3,26 +3,6 @@ function wikiplugin_topfriends_help() {
 	return tra("List top scoring users").":<br />~np~{TOPFRIENDS(limit=>5,public=>y)}{TOPFRIENDS}~/np~";
 }
 
-function wikiplugin_topfriends_info() {
-	return array(
-		'name' => tra('Top Friends'),
-		'description' => tra('List top scoring users.'),
-		'prefs' => array( 'feature_friends', 'wikiplugin_topfriends' ),
-		'params' => array(
-			'limit' => array(
-				'required' => false,
-				'name' => tra('Limit'),
-				'description' => tra('Maximum result count.'),
-			),
-			'public' => array(
-				'required' => false,
-				'name' => tra('Public'),
-				'description' => 'y|n',
-			),
-		),
-	);
-}
-
 function wikiplugin_topfriends($data, $params) {
 	global $smarty, $prefs, $tiki_p_list_users, $tikilib;
 	
@@ -30,7 +10,7 @@ function wikiplugin_topfriends($data, $params) {
 	if($prefs['feature_friends'] != 'y') {
 		return ' ';  
 	}
-	extract ($params, EXTR_SKIP);
+	extract ($params);
 
 	if(!(isset($limit) && $limit <> '')) {
 		$limit = 5;

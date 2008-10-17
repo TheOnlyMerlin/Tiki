@@ -1,7 +1,14 @@
 {popup_init src="lib/overlib.js"}
 {*Smarty template*}
+<h1><a class="pagetitle" href="tiki-admin_charts.php">{tr}Admin charts{/tr}</a>
+  
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Charts" target="tikihelp" class="tikihelp" title="{tr}Charts{/tr}">{icon _id='help'}</a>
+{/if}
 
-{title help="Charts"}{tr}Admin charts{/tr}{/title}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admin_charts.tpl" target="tikihelp" class="tikihelp" title="{tr}View template{/tr}: {tr}Admin Charts Template{/tr}">{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}</h1>
 
 <h2>{tr}Add or edit a chart{/tr} <a class="link" href="tiki-admin_charts.php?where={$where}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;chartId=0">{tr}New{/tr}</a>
 </h2>
@@ -47,7 +54,7 @@
 		<td class="formcolor">{tr}Ranking shows{/tr}</td>
 		<td class="formcolor">
 			<select name="topN">
-  	    <option value='0' {if $info.topN eq 0}selected="selected"{/if}>{tr}All items{/tr}</option>
+			    <option value='0' {if $info.topN eq 0}selected="selected"{/if}>{tr}All items{/tr}</option>
 				<option value='10' {if $info.topN eq 10}selected="selected"{/if}>{tr}Top 10 items{/tr}</option>
 				<option value='20' {if $info.topN eq 20}selected="selected"{/if}>{tr}Top 20 items{/tr}</option>
 				<option value='40' {if $info.topN eq 40}selected="selected"{/if}>{tr}Top 40 items{/tr}</option>
@@ -126,11 +133,11 @@
 <input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
 <table class="normal">
 <tr>
-<th><input type="submit" name="delete" value="{tr}x{/tr} " /></th>
-<th><a href="{if $sort_mode eq 'title_desc'}{sameurl sort_mode="title_asc"}{else}{sameurl sort_mode="title_desc"}{/if}">{tr}Title{/tr}</a></th>
-<th style="text-align:right;">{tr}Items{/tr}</th>
-<th style="text-align:right;">{tr}Ranks{/tr}</th>
-<th>&nbsp;</th>
+<td  class="heading"><input type="submit" name="delete" value="{tr}x{/tr} " /></td>
+<td class="heading" ><a class="tableheading" href="{if $sort_mode eq 'title_desc'}{sameurl sort_mode="title_asc"}{else}{sameurl sort_mode="title_desc"}{/if}">{tr}Title{/tr}</a></td>
+<td  style="text-align:right;" class="heading" >{tr}Items{/tr}</td>
+<td  style="text-align:right;" class="heading" >{tr}Ranks{/tr}</td>
+<td  class="heading">&nbsp;</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$items}

@@ -4,23 +4,28 @@
 # It reads db/local.php to find proper mysql info
 # mose@tikiwiki.org
 
-# Usage: sh ./doc/devtools/sqlupgrade.sh
+# Usage: ./doc/devtools/sqlupgrade.sh
 # it has to be launched from tiki root dir
 FIND='/usr/bin/find'
 SED='/bin/sed'
 MYSQL='/usr/bin/mysql'
-PHP='/usr/bin/php'
 
-if [ ! -x $PHP ]; then
-	echo "You need PHP command line interpreter."
-	exit 1
-fi
-
+UPGRADE="tiki_1.9to2.0.sql"
 if [ ! -d 'db' ]; then
 	echo "You must launch this script from your (multi)tiki root dir."
 	exit 0
 fi
 
-find db/ -name local.php -follow | sed -nr 's/db(\/([a-z0-9_-]+))?\/local\.php/\2/p' | awk '{system("'$PHP' installer/shell.php " $0)}'
+for loc in `$FIND db/ -name local.php -follow`; do
+	echo -n "Upgrading from $loc ... "
+	eval `sed -e '/[\?#]/d' -e "s/\$\([-_a-z]*\)[[:space:]]*=[[:space:]]*\([-_a-zA-Z0-9\"'\.:]*\);/\\1=\\2/" $loc`
+	LDBHOST=${host_tiki:-'localhost'}
+	LDBNAME=${dbs_tiki:-'tikiwiki'}
+	LDBUSER=${user_tiki:-'root'}
+	LDBPASS="${pass_tiki:-''}"
+	mysql -f -h$LDBHOST -u$LDBUSER -p"$LDBPASS" $LDBNAME < db/$UPGRADE
+	find temp/cache/ -type f -name '[0-9a-z]*' | xargs -- rm -rf
+	echo "Done."
+done
 
 exit 0

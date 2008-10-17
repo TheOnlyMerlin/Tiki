@@ -45,8 +45,7 @@ class LogsLib extends TikiLib {
 		$mid = '';
 		if ($find) {
 			$findesc = '%'.$find.'%';
-			$amid[] = "`logmessage` like ? or `loguser` like ? or 'logip' like ?";
-			$bindvars[] = $findesc;
+			$amid[] = "`logmessage` like ? or `loguser` like ?";
 			$bindvars[] = $findesc;
 			$bindvars[] = $findesc;
 		}
@@ -162,7 +161,7 @@ class LogsLib extends TikiLib {
 				}
 			}
 		}
-		return  isset($actions[0])? $actions[0]: 0;
+		return  $actions[0];
 	}
 	function action_must_be_logged($action, $objectType) {
 		global $prefs;
@@ -888,18 +887,14 @@ class LogsLib extends TikiLib {
 		}
 		return $contributorActions;
 	}
-	function list_logsql($sort_mode='created_desc', $offset=0, $maxRecords=-1, $find='') {
+	function list_logsql($sort_mode='created_desc', $offset=0, $maxRecords=-1) {
 		global $prefs;
-		$bindvars = array();
-		if (!empty($find)) {
-			$findesc = '%'.$find.'%';
-			$amid = '`sql1` like ? or `params` like ? or `tracer` like ?';
-			$bindvars[] = $findesc;$bindvars[] = $findesc;$bindvars[] = $findesc;
-		}
-		$query = 'select * from `adodb_logsql`'.($find?" where $amid":'').' order by '.$this->convert_sortmode($sort_mode);
-		$result = $this->query($query, $bindvars, $maxRecords, $offset);
-		$query_cant = 'select count(*) from `adodb_logsql`'.($find?" where $amid":'');
-		$cant = $this->getOne($query_cant, $bindvars);
+		if ($prefs['log_sql'] != 'y')
+			return null;
+		$query = 'select * from `adodb_logsql` order by '.$this->convert_sortmode($sort_mode);
+		$result = $this->query($query, array(), $maxRecords, $offset);
+		$query_cant = 'select count(*) from `adodb_logsql`';
+		$cant = $this->getOne($query_cant,$bindvars);
 		$ret = array();
 		while ($res = $result->fetchRow()) {
 			$ret[] = $res;
@@ -910,7 +905,7 @@ class LogsLib extends TikiLib {
 		return $retval;
 	}
 	function clean_logsql() {
-		$query = 'delete from  `adodb_logsql`';
+		$query = 'delete * from  `adodb_logsql`';
 		$this->query($query, array());
 	}
 	function graph_to_jpgraph(&$jpgraph, $series, $accumulated = false, $color='whitesmoke', $colorLegend='white') {

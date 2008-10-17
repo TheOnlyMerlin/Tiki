@@ -1,16 +1,12 @@
-{title help="Blogs"}{tr}Viewing blog post{/tr} - {$blog_data.title}{/title}
-
-<div class="navbar">
-  <a href="tiki-view_blog.php?find={$find}&amp;blogId={$blogId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}">{tr}Return to blog{/tr}</a>
-</div>
-
+<h1><a href="tiki-view_blog_post.php?blogId={$post_info.blogId}&amp;postId={$post_info.postId}" class="pagetitle">{tr}Viewing blog post{/tr} - {$blog_data.title}</a></h1>
+<span class="button2"><a class="linkbut" href="tiki-view_blog.php?find={$find}&amp;blogId={$blogId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}">{tr}Return to blog{/tr}</a></span>
+<br /><br />
 <div class="posthead">
 {if $blog_data.use_title eq 'y'}
 	<h3>{$post_info.title}</h3>
 {else}
 	<h3>{$post_info.created|tiki_short_datetime}</h3>
 {/if}
-
 {if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y'}
   {if $tags.data|@count >0}
     <div class="freetaglist">
@@ -20,7 +16,6 @@
     </div>
   {/if}
 {/if}
-
 <table ><tr><td align="left">
 <span class="posthead">
 {if $blog_data.use_title eq 'y'}
@@ -35,9 +30,7 @@
 <a class="blogt" href="tiki-view_blog.php?blogId={$post_info.blogId}&amp;remove={$post_info.postId}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a>
 {/if}
 {if $user and $prefs.feature_notepad eq 'y' and $tiki_p_notepad eq 'y'}
-<a title="{tr}Save to notepad{/tr}" href="tiki-view_blog_post.php?blogId={$smarty.request.blogId}&amp;postId={$smarty.request.postId}&amp;savenotepad=1">
-	{icon_id='disk' alt='{tr}Save to notepad{/tr}'}
-</a>
+<a title="{tr}Save to notepad{/tr}" href="tiki-view_blog_post.php?blogId={$smarty.request.blogId}&amp;postId={$smarty.request.postId}&amp;savenotepad=1">{icon _id='disk' alt='{tr}Save{/tr}'}</a>
 {/if}
 </td></tr></table>
 </div>
@@ -53,7 +46,7 @@
 	</div>
 {/if}
 
-{if $prefs.blogues_feature_copyrights eq 'y' and $prefs.wikiLicensePage}
+{if $prefs.blogues_feature_copyrights  eq 'y' and $prefs.wikiLicensePage}
   {if $prefs.wikiLicensePage == $page}
     {if $tiki_p_edit_copyrights eq 'y'}
       <p class="editdate">{tr}To edit the copyright notices{/tr} <a href="copyrights.php?page={$copyrightpage}">{tr}Click Here{/tr}</a>.</p>
@@ -66,7 +59,7 @@
 <table >
 <tr><td>
 <small>
-<a class="link" href="{$postId|sefurl:blogpost}">{tr}Permalink{/tr}</a>
+<a class="link" href="tiki-view_blog_post.php?blogId={$blogId}&amp;postId={$postId}">{tr}Permalink{/tr}</a>
 {if $post_info.trackbacks_from_count}
   ({tr}referenced by{/tr}: {$post_info.trackbacks_from_count}
 {/if}
@@ -88,18 +81,18 @@
 {cycle values="odd,even" print=false}
 <table class="normal">
 <tr>
-	<th>{tr}Title{/tr}</th>
-	<th>{tr}URI{/tr}</th>
-	<th>{tr}Blog name{/tr}</th>
+	<td class="heading">{tr}Title{/tr}</td>
+	<td class="heading">{tr}URI{/tr}</td>
+	<td class="heading">{tr}Blog name{/tr}</td>
 {if ($ownsblog eq 'y') or ($user and $post_info.user eq $user) or $tiki_p_blog_admin eq 'y'}
-	<th>{tr}Action{/tr}</th>
+	<td class="heading">{tr}Action{/tr}</td>
 {/if}
 </tr>
 {foreach from=$post_info.trackbacks_from key=key item=item}
 <tr>
-  <td class="{cycle advance=false}">{$item.title|htmlentities}</td>
-  <td class="{cycle advance=false}"><a href="{$key}" class="link" title="{$key}" target="_blank">{$key|truncate:"40"|htmlentities}</a></td>
-  <td class="{cycle}">{$item.blog_name|htmlentities}</td>
+  <td  class="{cycle advance=false}">{$item.title|htmlentities}</td>
+  <td  class="{cycle advance=false}"><a href="{$key}" class="link" title="{$key}" target="_blank">{$key|truncate:"40"|htmlentities}</a></td>
+  <td  class="{cycle}">{$item.blog_name|htmlentities}</td>
   {if ($ownsblog eq 'y') or ($user and $post_info.user eq $user) or $tiki_p_blog_admin eq 'y'}
     <td  class="{cycle advance=false}"><a href="tiki-view_blog_post.php?postId={$postId}&amp;deltrack={$key|urlencode}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a></td>
   {/if}
@@ -110,22 +103,24 @@
 
 {if $prefs.feature_blogposts_comments == 'y'
   && ($blog_data.allow_comments == 'y' or $blog_data.allow_comments == 'c')
-  && (($tiki_p_read_comments == 'y'
+  && (($tiki_p_read_comments  == 'y'
   && $comments_cant != 0)
-  || $tiki_p_post_comments == 'y'
-  || $tiki_p_edit_comments == 'y')
+  ||  $tiki_p_post_comments  == 'y'
+  ||  $tiki_p_edit_comments  == 'y')
 }
   <div id="page-bar">
-    <a href="#comment" onclick="javascript:flip('comzone');flip('comzone_close','inline');return false;"{if $comments_cant > 0} class="highlight"{/if}>
-			{if $comments_cant == 0 or ($tiki_p_read_comments == 'n' and $tiki_p_post_comments == 'y')}
-				{tr}Add Comment{/tr}
-      {elseif $comments_cant == 1}
-        {tr}1 comment{/tr}
-      {else}
-        {$comments_cant}&nbsp;{tr}comments{/tr}
-      {/if}
-      <span id="comzone_close" style="display:{if (isset($smarty.session.tiki_cookie_jar.show_comzone) and $smarty.session.tiki_cookie_jar.show_comzone eq 'y') or $show_comments}inline{else}none{/if};">({tr}close{/tr})</span>
-    </a>
+    <div class="button2">
+      <a href="#comment" onclick="javascript:flip('comzone');flip('comzone_close','inline');return false;" class="linkbut {if $comments_cant > 0}highlight{/if}">
+        {if $comments_cant == 0 or ($tiki_p_read_comments  == 'n' and $tiki_p_post_comments  == 'y')}
+          {tr}Add Comment{/tr}
+        {elseif $comments_cant == 1}
+          {tr}1 comment{/tr}
+        {else}
+          {$comments_cant}&nbsp;{tr}comments{/tr}
+        {/if}
+          <span id="comzone_close" style="display:{if (isset($smarty.session.tiki_cookie_jar.show_comzone) and $smarty.session.tiki_cookie_jar.show_comzone eq 'y') or $show_comments}inline{else}none{/if};">({tr}close{/tr})</span>
+      </a>
+    </div>
   </div>
   {include file=comments.tpl}
 {/if}

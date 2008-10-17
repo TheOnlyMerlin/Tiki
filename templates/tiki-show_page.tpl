@@ -3,13 +3,12 @@
   <script type="text/javascript" src="lib/wiki/wiki-ajax.js"></script>
 {/if}
 
-{if !$hide_page_header}
-	{* display breadcrumbs here only if the feature is on and when site location feature is selected to appear above page in top of center column  *}
-	{if $prefs.feature_siteloc eq 'page' and $prefs.feature_breadcrumbs eq 'y'}
-		{if $prefs.feature_siteloclabel eq 'y'}{tr}Location : {/tr}{/if}
-		{breadcrumbs type="trail" loc="page" crumbs=$crumbs}
-		{if $prefs.feature_page_title eq 'y'}{breadcrumbs type="pagetitle" loc="page" crumbs=$crumbs}{/if}
-	{/if}
+{* display breadcrumbs here only if the feature is on and when site location feature is selected to appear above page in top of center column  *}
+{if $prefs.feature_siteloc eq 'page' and $prefs.feature_breadcrumbs eq 'y'}
+    {if $prefs.feature_siteloclabel eq 'y'}{tr}Location : {/tr}{/if}
+    {breadcrumbs type="trail" loc="page" crumbs=$crumbs}
+    {if $prefs.feature_page_title eq 'y'}{breadcrumbs type="pagetitle" loc="page" crumbs=$crumbs}{/if}
+{/if}
 
 {if $beingStaged eq 'y'}
 <div class="tocnav">
@@ -34,11 +33,9 @@
 {tr}This is a new staging page that has not been approved before. Edit and manually move it to the category for approved pages to approve it for the first time.{/tr}
 </div>
 {/if}
-{/if} {*hide_page_header*}
 
 <div class="wikitopline" style="clear: both;">
 	<div class="content">
-		{if !$hide_page_header}
 		<div class="wikiinfo" style="float: left">
 {if $prefs.feature_wiki_pageid eq 'y' and $print_page ne 'y'}
 			<small><a class="link" href="tiki-index.php?page_id={$page_id}">{tr}page id{/tr}: {$page_id}</a></small>
@@ -78,9 +75,9 @@
 	{/if}
 	{if $user and $prefs.feature_user_watches eq 'y'}
 		{if $user_watching_page eq 'n'}
-				<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;watch_object={$page|escape:"url"}&amp;watch_action=add{if $structure eq 'y'}&amp;structure={$home_info.pageName|escape:'url'}{/if}" class="icon">{icon _id='eye' alt='{tr}Monitor this Page{/tr}'}</a>
+				<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;watch_object={$page|escape:"url"}&amp;watch_action=add{if $structure eq 'y'}&amp;structure={$home_info.pageName|escape:'url'}{/if}">{icon _id='eye' alt='{tr}Monitor this Page{/tr}'}</a>
 		{else}
-				<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;watch_object={$page|escape:"url"}&amp;watch_action=remove{if $structure eq 'y'}&amp;structure={$home_info.pageName|escape:'url'}{/if}" class="icon">{icon _id='no_eye' alt='{tr}Stop Monitoring this Page{/tr}'}</a>
+				<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;watch_object={$page|escape:"url"}&amp;watch_action=remove{if $structure eq 'y'}&amp;structure={$home_info.pageName|escape:'url'}{/if}">{icon _id='no_eye' alt='{tr}Stop Monitoring this Page{/tr}'}</a>
 		{/if}
 		{if $structure == 'y' and $tiki_p_watch_structure eq 'y'}
 			{if $user_watching_structure ne 'y'}
@@ -120,7 +117,7 @@
 			</form>
 	{/if}
 
-	{if $prefs.feature_multilingual == 'y' && $prefs.show_available_translations eq 'y'}
+	{if $prefs.feature_multilingual == 'y'}
 			<div style="float: left">
 		{include file="translated-lang.tpl" td='n'}
 			</div>
@@ -128,7 +125,6 @@
 		</div>
 		<br class="clear" style="clear: both" />
 {/if}{* <-- end of if $print_page ne 'y' *}
-{/if} {*hide_page_header*}
 	</div>
 </div>
 
@@ -147,31 +143,28 @@
     {/if}
 </div>
 
-{if $prefs.feature_urgent_translation eq 'y'}
-	{section name=i loop=$translation_alert}
-	<div class="cbox">
-	<div class="cbox-title">
-	{icon _id=information style="vertical-align:middle"} {tr}Content may be out of date{/tr}
-	</div>
-	<div class="cbox-data">
-		<p>{tr}An urgent request for translation has been sent. Until this page is updated, you can see a corrected version in the following pages:{/tr}</p>
-		<ul>
-		{section name=j loop=$translation_alert[i]}
-			<li>
-				<a href="tiki-index.php?page={if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage|escape:'url'}{else}{$translation_alert[i][j].page|escape:'url'}{/if}&bl=n">{if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage}{else}{$translation_alert[i][j].page}{/if}</a>
-				({$translation_alert[i][j].lang})
-				{if $editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') and $beingEdited ne 'y' or $canEditStaging eq 'y'} 
-				<a href="tiki-editpage.php?page={if isset($stagingPageName) && $hasStaging == 'y'}{$stagingPageName|escape:'url'}{else}{$page|escape:'url'}{/if}&amp;source_page={$translation_alert[i][j].page|escape:'url'}&amp;oldver={$translation_alert[i][j].last_update|escape:'url'}&amp;newver={$translation_alert[i][j].current_version|escape:'url'}&amp;diff_style=htmldiff" title="{tr}update from it{/tr}">{icon _id=arrow_refresh alt="{tr}update from it{/tr}" style="vertical-align:middle"}</a>
-				{/if}
-			</li>
-		{/section}
-		</ul>
-	</div>
-	</div>
+{section name=i loop=$translation_alert}
+<div class="cbox">
+<div class="cbox-title">
+{tr}{icon _id=information.png style="vertical-align:middle"} Content may be out of date{/tr}
+</div>
+<div class="cbox-data">
+	<p>{tr}An urgent request for translation has been sent. Until this page is updated, you can see a corrected version in the following pages:{/tr}</p>
+	<ul>
+	{section name=j loop=$translation_alert[i]}
+		<li>
+			<a href="tiki-index.php?page={if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage|escape:'url'}{else}{$translation_alert[i][j].page|escape:'url'}{/if}&bl=n">{if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage}{else}{$translation_alert[i][j].page}{/if}</a>
+			({$translation_alert[i][j].lang})
+			{if $editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') and $beingEdited ne 'y' or $canEditStaging eq 'y'} 
+			<a href="tiki-editpage.php?page={if isset($stagingPageName) && $hasStaging == 'y'}{$stagingPageName|escape:'url'}{else}{$page|escape:'url'}{/if}&amp;source_page={$translation_alert[i][j].page|escape:'url'}&amp;oldver={$translation_alert[i][j].last_update|escape:'url'}&amp;newver={$translation_alert[i][j].current_version|escape:'url'}&amp;diff_style=htmldiff" title="{tr}update from it{/tr}">{icon _id=arrow_refresh.png alt="{tr}update from it{/tr}" style="vertical-align:middle"}</a>
+			{/if}
+		</li>
 	{/section}
-{/if}
+	</ul>
+</div>
+</div>
+{/section}
 
-{if !$hide_page_header}
 {if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y' and isset($freetags.data[0])}
 {include file="freetag_list.tpl"}
 {/if}
@@ -252,7 +245,6 @@
 </div>
 {/if}
 {if $prefs.feature_wiki_ratings eq 'y'}{include file="poll.tpl"}{/if}
-{/if} {*hide_page_header*}
 
 {if $pageLang eq 'ar' or $pageLang eq 'he'}
 <div style="direction:RTL; unicode-bidi:embed; text-align: right; {if $pageLang eq 'ar'}font-size: large;{/if}">
@@ -271,7 +263,7 @@ must not overlap the wiki content that could contain floated elements *}
 
 		<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$prev_page}">{icon _id='resultset_previous' alt="{tr}Previous page{/tr}"}</a>
 
-		<small>{tr 0=$pagenum 1=$pages}page: %0/%1{/tr}</small>
+		<small>{tr}page{/tr}:{$pagenum}/{$pages}</small>
 
 		<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$next_page}">{icon _id='resultset_next' alt="{tr}Next page{/tr}"}</a>
 
@@ -306,14 +298,14 @@ must not overlap the wiki content that could contain floated elements *}
    {/if}
    {$contributors[author]|userlink}
   {/section}.<br />
-  {tr 0=$lastModif|tiki_long_datetime 1=$lastUser|userlink}Page last modified on %0 by %1{/tr}. {if $prefs.wiki_show_version eq 'y'}({tr}Version{/tr} {$lastVersion}){/if}
+  {tr}Page last modified on{/tr} {$lastModif|tiki_long_datetime} {tr}by{/tr} {$lastUser|userlink}. {if $prefs.wiki_show_version eq 'y'}({tr}Version{/tr} {$lastVersion}){/if}
 {elseif isset($wiki_authors_style) && $wiki_authors_style eq 'none'}
 {elseif isset($wiki_authors_style) && $wiki_authors_style eq 'lastmodif'}
 	{tr}Page last modified on{/tr} {$lastModif|tiki_long_datetime}
 {else}
 <br />
-  {tr 0=$creator|userlink}Created by %0{/tr}.
-  {tr 0=$lastModif|tiki_long_datetime 1=$lastUser|userlink}Last Modification: %0 by %1{/tr}. {if $prefs.wiki_show_version eq 'y'}({tr}Version{/tr} {$lastVersion}){/if}
+  {tr}Created by{/tr}: {$creator|userlink}.
+  {tr}Last Modification{/tr}: {$lastModif|tiki_long_datetime} {tr}by{/tr} {$lastUser|userlink}. {if $prefs.wiki_show_version eq 'y'}({tr}Version{/tr} {$lastVersion}){/if}
 {/if}
 
 {if $prefs.wiki_feature_copyrights eq 'y' and $prefs.wikiLicensePage}

@@ -61,7 +61,7 @@ function feature_pattern( &$featureNameIndex ) // {{{
 		$tl = '\\$tikilib->get_preference';
 		return "/(\\\${$featureName}\s*(!=|==)=?\s*$q(y|n)[\"'])|($tl\s*\(\s*$q{$featureName}$q\s*(,\s*{$q}n?$q)?\s*\)\s*(==|!=)=?\s*$q(y|n)$q)/";
 	}
-	elseif( ($major == 1 && $minor == 10) || $major >= 2 )
+	elseif( $major == 1 && $minor == 10 )
 	{
 		$featureNameIndex = 1;
 		return "/\\\$prefs\s*\[$q$featureName$q\]\s*(!=|==)=?\s*$q(y|n)$q/";
@@ -140,8 +140,6 @@ function analyse_file_path( $path ) // {{{
 			$type = 'blocker';
 		elseif( $name == 'language.php' )
 			$type = 'lang';
-		elseif( strpos( $path, './lib/wiki-plugins' ) === 0 )
-			$type = 'wikiplugin';
 		elseif( strpos( $path, './lib/' ) === 0 )
 		{
 			$parts = explode( '/', $path );
@@ -184,7 +182,6 @@ function analyse_file_path( $path ) // {{{
 		'includeonce' => false,
 		'noweb' => false,
 		'tikisetup' => false,
-		'unsafeextract' => false,
 	);
 } // }}}
 
@@ -246,18 +243,6 @@ function perform_tikisetup_check( &$file ) // {{{
 	$file['tikisetup'] = count( $parts[0] ) > 0;
 } // }}}
 
-function perform_extract_skip_check( &$file ) // {{{
-{
-	$pattern = "/extract\s*\([^\)]+\)/";
-
-	preg_match_all( $pattern, get_content($file['path']), $parts );
-
-	foreach( $parts[0] as $extract )
-		if( strpos( $extract, 'EXTR_SKIP' ) === false )
-			$file['unsafeextract'] = true;
-
-} // }}}
-
 $files = array();
 scanfiles( '.', $files );
 
@@ -268,13 +253,6 @@ foreach( $files as $key=>$dummy )
 
 	switch( $file['type'] )
 	{
-	case 'wikiplugin':
-		perform_extract_skip_check( $file );
-
-		if( $file['unsafeextract'] ) 
-			$unsafe[] = $file;
-
-		break;
 	case 'public':
 	case 'include':
 	case 'script':
@@ -287,7 +265,7 @@ foreach( $files as $key=>$dummy )
 		perform_noweb_check( $file );
 		perform_tikisetup_check( $file );
 
-		if( ! $file['noweb'] && ! $file['includeonly'] && ! count( $file['features'] ) && ! count( $file['permissions'] ) ) 
+		if( ! $file['noweb'] && ! $file['includeonly'] && ! count( $file['features'] ) && ! count( $file['permissions'] ) )
 			$unsafe[] = $file;
 
 		break;
@@ -325,21 +303,19 @@ To be safe, files must have either an include only check, block web access, have
 			<th>Include only check</th>
 			<th>Not web accessible</th>
 			<th>Includes tiki-setup</th>
-			<th>Unsafe extract</th>
 			<th>Permissions checked</th>
 			<th>Features checked</th>
 		</tr>
 	</thead>
 	<tbody>
 		<?php foreach( $files as $file ) if( in_array( $file['type'], array(
-			'script', 'module', 'include', 'public', 'lib', '3rdparty', 'wikiplugin'
+			'script', 'module', 'include', 'public', 'lib', '3rdparty'
 		) ) ): ?>
 		<tr>
 			<td><a href="<?php echo htmlentities( substr( $file['path'], 2 ) ) ?>"><?php echo htmlentities( $file['path'] ) ?></a></td>
 			<td><?php if( $file['includeonly'] ) echo 'X' ?></td>
 			<td><?php if( $file['noweb'] ) echo 'X' ?></td>
 			<td><?php if( $file['tikisetup'] ) echo 'X' ?></td>
-			<td><?php if( $file['unsafeextract'] ) echo 'X' ?></td>
 			<td>
 				<?php foreach( $file['permissions'] as $perm ): ?>
 				<div><?php echo $perm ?></div>

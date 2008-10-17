@@ -1,8 +1,16 @@
-{title help="FAQs"}{tr}{$faq_info.title}{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-view_faq.php?faqId={$faqId}">{$faq_info.title}</a>
 
-<span class="button2"><a href="tiki-list_faqs.php">{tr}List FAQs{/tr}</a></span>
-{if $tiki_p_admin_faqs eq 'y'}<span class="button2"><a href="tiki-list_faqs.php?faqId={$faqId}">{tr}Edit this FAQ{/tr}</a></span> {/if}
-{if $tiki_p_admin_faqs eq 'y'}<span class="button2"><a href="tiki-faq_questions.php?faqId={$faqId}">{tr}New Question{/tr}{/if}</a></span><br /><br />
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}FAQs" target="tikihelp" class="tikihelp" title="{tr}View FAQ{/tr}">
+<img src="img/icons/help.gif" border="0" height="16" width="16" alt='{tr}Help{/tr}' /></a>{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-view_faq.tpl" target="tikihelp" class="tikihelp" title="{tr}View FAQ Tpl{/tr}: {tr}Admin Menus tpl{/tr}">
+<img src="img/icons/info.gif" border="0" width="16" height="16" alt='{tr}Edit Template{/tr}' /></a>{/if}</h1>
+
+<a class="linkbut" href="tiki-list_faqs.php">{tr}List FAQs{/tr}</a>
+{if $tiki_p_admin_faqs eq 'y'}<a class="linkbut" href="tiki-list_faqs.php?faqId={$faqId}">{tr}Edit this FAQ{/tr}</a> {/if}
+{if $tiki_p_admin_faqs eq 'y'}<a class="linkbut" href="tiki-faq_questions.php?faqId={$faqId}">{tr}New Question{/tr}{/if}</a><br /><br />
 <h2>{tr}Questions{/tr}</h2>
 {if !$channels}
 {tr}There are no questions in this FAQ.{/tr}
@@ -43,7 +51,7 @@
 {/if}
 {if $faq_info.canSuggest eq 'y' and $tiki_p_suggest_faq eq 'y'}
   <span class="button2">
-  <a href="javascript:flip('faqsugg');"{if $suggested_cant > 0} class="highlight"{/if}>
+  <a href="javascript:flip('faqsugg');" class="linkbut {if $suggested_cant > 0}highlight{/if}">
     {if $suggested_cant == 0}
       {tr}Add Suggestion{/tr}
     {elseif $suggested_cant == 1}
@@ -62,7 +70,7 @@
   ||  $tiki_p_edit_comments  == 'y')
 }
   <span class="button2">
-  <a href="#comment" onclick="javascript:flip('comzone');flip('comzone_close','inline');return false;"{if $comments_cant >= 1} class="highlight"{/if}>
+  <a href="#comment" onclick="javascript:flip('comzone');flip('comzone_close','inline');return false;" class="linkbut {if $comments_cant >= 1}highlight{/if}">
     {if $comments_cant == 0 or ($tiki_p_read_comments  == 'n' and $tiki_p_post_comments  == 'y')}
       {tr}Add Comment{/tr}
     {elseif $comments_cant == 1}
@@ -96,7 +104,7 @@
 {if count($suggested) != 0}
 <br />
 <table class="normal">
-<tr><th>{tr}Suggested questions{/tr}</th></tr>
+<tr><th class="heading">{tr}Suggested questions{/tr}</th></tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$suggested}
 <tr><td class="{cycle}">{$suggested[ix].question}</td></tr>

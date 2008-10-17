@@ -1,14 +1,12 @@
 {if $prefs.feature_gmap eq 'y'}
-
-{title help="gmap"}{tr}Google Map Locator{/tr}{/title}
-
+<h1><a href="tiki-gmap_locator.php{$extraquery}" class="pagetitle">Google Map Locator</a></h1>
 <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key={$prefs.gmap_key}"></script>
 
 <div class="wikitext">
 <table>
 {if $input eq 'y'}
 <tr><td colspan="2">
-<span class="button2"><a href="{$backurl}">{$backlink}</a></span>{if $watch}({$watch}){/if}<br /><br />
+<a href="{$backurl}" class="linkbut">{$backlink}</a>{if $watch}({$watch}){/if}<br /><br />
 <form action="tiki-gmap_locator.php{$extraquery}" method="post">
 {if $watch}<input type="hidden" name="view_user" value="{$watch}" />{/if}
 <input type="text" name="point[x]" value="{$pointx}" id="pointx" size="16" />

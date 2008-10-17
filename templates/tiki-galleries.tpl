@@ -1,9 +1,20 @@
 {* $Id$ *}
 
-{title help="Image+Galleries" admpage="gal"}{tr}Galleries{/tr}{/title}
+<h1><a href="tiki-galleries.php" class="pagetitle">{tr}Galleries{/tr}</a>
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Image+Galleries" target="tikihelp" class="tikihelp" title="{tr}Image Gallery{/tr}" >
+{icon _id='help'}</a>
+{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-galleries.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}galleries tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit Tpl{/tr}'}</a>
+{/if}
+{if $tiki_p_admin eq 'y'}
+<a href="tiki-admin.php?page=gal" class="tikihelp">{icon _id='wrench' alt="{tr}Admin Feature{/tr}"}</a>
+{/if}</h1>
 
 {if $tiki_p_create_galleries eq 'y'}
-{if $edit_mode ne 'y' or $galleryId ne 0}<div class="navbar"><a href="tiki-galleries.php?edit_mode=1&amp;galleryId=0">{tr}Create New Gallery{/tr}</a></div>{/if}
+{if $edit_mode ne 'y' or $galleryId ne 0}<div class="navbar"><a class="linkbut" href="tiki-galleries.php?edit_mode=1&amp;galleryId=0">{tr}Create New Gallery{/tr}</a></div>{/if}
 {if $edit_mode eq 'y'}
 {if $galleryId eq 0}
 <h2>{tr}Create a gallery{/tr}</h2>
@@ -108,7 +119,7 @@
 {/if}
 {/if}
 {if $tiki_p_create_galleries eq 'y' && $galleryId ne 0}
-<div class="navbar"><a href="tiki-galleries.php?edit_mode=1&amp;galleryId=0">{tr}Create New Gallery{/tr}</a></div>
+<div class="navbar"><a class="linkbut" href="tiki-galleries.php?edit_mode=1&amp;galleryId=0">{tr}Create New Gallery{/tr}</a></div>
 {/if}
 <h2>{tr}Available Galleries{/tr}</h2>
 <div align="center">
@@ -138,30 +149,30 @@
 <table class="normal">
 <tr>
 {if $prefs.gal_list_name eq 'y'}
-<th><a href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
+<td class="heading"><a class="tableheading" href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></td>
 {/if}
 {if $prefs.gal_list_parent eq 'y'}
-<th><a href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'parentgallery_desc'}parentgallery_asc{else}parentgallery_desc{/if}">{tr}Parent{/tr}</th>
+<td class="heading"><a class="tableheading" href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'parentgallery_desc'}parentgallery_asc{else}parentgallery_desc{/if}">{tr}Parent{/tr}</td>
 {/if}
 {if $prefs.gal_list_description eq 'y'}
-<th><a href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'description_desc'}description_asc{else}description_desc{/if}">{tr}Description{/tr}</a></th>
+<td class="heading"><a class="tableheading" href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'description_desc'}description_asc{else}description_desc{/if}">{tr}Description{/tr}</a></td>
 {/if}
 {if $prefs.gal_list_created eq 'y'}
-<th><a href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr}</a></th>
+<td class="heading"><a class="tableheading" href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr}</a></td>
 {/if}
 {if $prefs.gal_list_lastmodif eq 'y'}
-<th><a href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastModif_desc'}lastModif_asc{else}lastModif_desc{/if}">{tr}Last modified{/tr}</a></th>
+<td class="heading"><a class="tableheading" href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastModif_desc'}lastModif_asc{else}lastModif_desc{/if}">{tr}Last modified{/tr}</a></td>
 {/if}
 {if $prefs.gal_list_user eq 'y'}
-<th><a href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_desc'}user_asc{else}user_desc{/if}">{tr}User{/tr}</a></th>
+<td class="heading"><a class="tableheading" href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_desc'}user_asc{else}user_desc{/if}">{tr}User{/tr}</a></td>
 {/if}
 {if $prefs.gal_list_imgs eq 'y'}
-<th style="text-align:right"><a href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'images_desc'}images_asc{else}images_desc{/if}">{tr}Imgs{/tr}</a></th>
+<td style="text-align:right;"  class="heading"><a class="tableheading" href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'images_desc'}images_asc{else}images_desc{/if}">{tr}Imgs{/tr}</a></td>
 {/if}
 {if $prefs.gal_list_visits eq 'y'}
-<th style="text-align:right"><a href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'hits_desc'}hits_asc{else}hits_desc{/if}">{tr}Visits{/tr}</a></th>
+<td style="text-align:right;"  class="heading"><a class="tableheading" href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'hits_desc'}hits_asc{else}hits_desc{/if}">{tr}Visits{/tr}</a></td>
 {/if}
-<th>{tr}Actions{/tr}</th>
+<td  class="heading">{tr}Actions{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=changes loop=$galleries}

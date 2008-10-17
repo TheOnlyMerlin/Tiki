@@ -4,9 +4,10 @@
  * there you"ll find attached a gimp image containing this page with icons in separated layers
  *}
 
-{remarksbox type="tip" title="{tr}Tip{/tr}"}
-	{tr}Enable/disable Tiki features in {/tr}<a class="rbox-link" href="tiki-admin.php?page=features">{tr}Admin{/tr}&nbsp;{$prefs.site_crumb_seper}&nbsp;{tr}Features{/tr}</a>{tr}, but configure them elsewhere{/tr}
-{/remarksbox}
+<div class="rbox tip">
+	<div class="rbox-title">{tr}Tip{/tr}</div>  
+	<div class="rbox-data">{tr}Enable/disable Tiki features in {/tr}<a class="rbox-link" href="tiki-admin.php?page=features">{tr}Admin{/tr}&nbsp;{$prefs.site_crumb_seper}&nbsp;{tr}Features{/tr}</a>{tr}, but configure them elsewhere{/tr}</div>
+</div>
 
 <div class="cbox">
  	<div class="cbox-title">
@@ -123,6 +124,7 @@
     <a href="tiki-admin.php?page=gmap" class="admbox{if $prefs.feature_gmap ne 'y'} off{/if}" style="background-image: url('pics/large/google_maps48x48.png')">
       <img src="pics/trans.png" alt="{tr}Google Maps{/tr}" title="{tr}Google Maps{/tr}{if $prefs.feature_gmap ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Google Maps{/tr}</span>
     </a>
+
 	<a href="tiki-admin.php?page=multimedia" class="admbox{if $prefs.feature_multimedia ne 'y'} off{/if}" style="background-image: url('pics/large/multimedia48x48.png')">
       <img src="pics/trans.png" alt="{tr}Multimedia{/tr}" title="{tr}Multimedia{/tr}" /><span>{tr}Multimedia{/tr}</span>
     </a>
@@ -147,7 +149,7 @@
       <img src="pics/trans.png" alt="{tr}Wysiwyg{/tr}" title="{tr}Wysiwyg{/tr}{if $prefs.feature_wysiwyg ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Wysiwyg{/tr}</span>
     </a>	
 	
-	<a href="tiki-admin.php?page=ads" class="admbox{if $prefs.feature_banners ne 'y'} off{/if}" style="background-image: url('pics/large/ads48x48.png')">
+	<a href="tiki-admin.php?page=ads" class="admbox{if $prefs.feature_banners ne 'y'} off{/if}"" style="background-image: url('pics/large/ads48x48.png')">
 			<img src="pics/trans.png" alt="{tr}Site Ads and Banners{/tr}" title="{tr}Site Ads and Banners{/tr}" {if $prefs.feature_banners ne 'y'} ({tr}Disabled{/tr}){/if}/><span>{tr}Site Ads and Banners{/tr}</span>
 	</a>
 

@@ -289,7 +289,7 @@ class FileGalLib extends TikiLib {
 		$extract_dir = 'temp/'.basename($file).'/';
 		mkdir($extract_dir);
 		$archive = new PclZip($file);
-		$archive->extract(PCLZIP_OPT_PATH, $extract_dir, PCLZIP_OPT_REMOVE_ALL_PATH);
+		$archive->extract($extract_dir);
 		unlink($file);
 		$files = array();
 		$h = opendir($extract_dir);
@@ -515,6 +515,9 @@ class FileGalLib extends TikiLib {
 	}
 	
 	function delete_file_handler($mime_type) {
+		if ($mime_type == 'default')
+			return false;
+			
 		$query = "delete from `tiki_file_handlers` where `mime_type`=?";
 		$result = $this->query($query,array($mime_type));
 		return (($result) ? true : false);
@@ -662,62 +665,6 @@ class FileGalLib extends TikiLib {
 			$tikilib->delete_preference( $pref );
 		else
 			$tikilib->set_preference( $pref, $limit );
-	}
-	// not the best optimisation as using a library using files and not content
-	function zip($fileIds, &$error, $zipName='') {
-		global $tiki_p_admin_file_galleries, $userlib, $tikilib, $prefs, $user;
-		$list = array();
-		$temp = 'temp/'.md5($tikilib->now).'/';
-		if (!mkdir($temp)) {
-			$error = "Can not create directory $temp";
-			return false;
-		}
-		foreach ($fileIds as $fileId) {
-			$info = $tikilib->get_file($fileId);
-			if ($tiki_p_admin_file_galleries == 'y' || $userlib->user_has_perm_on_object($user, $info['galleryId'], 'file gallery', 'tiki_p_download_files')) {
-				if (empty($zipName)) {
-					$zipName = $info['galleryId'];
-				}
-				$tmp = $temp.$info['filename'];
-				if ($info['path']) { // duplicate file in temp
-					if (!copy($prefs['fgal_use_dir'].$info['path'], $tmp)) {
-						$error = "Can not copy to $tmp";
-						return false;
-					}
-				} else {//write file in temp
-					if (file_put_contents($tmp, $info['data']) === false) {
-						$error = "Can not write to $tmp";
-						return false;
-					}
-				}
-				$list[] = $tmp;
-			}
-		}
-		if (empty($list)) {
-			$error = "No permission";
-			return null;
-		}
-		$info['filename'] = "$zipName.zip";
-		$zip = $temp.$info['filename'];
-		define( PCZLIB_SEPARATOR, '\001');
-		include_once ('lib/pclzip.lib.php');
-		if (!$archive = new PclZip($zip)) {
-			$error = $archive->errorInfo(true);
-			return false;
-		}
-		if (!($v_list = $archive->create($list, PCLZIP_OPT_REMOVE_PATH, $temp))) {
-			$error = $archive->errorInfo(true);
-			return false;
-		}
-		$info['data'] = file_get_contents($zip);
-		$info['path'] = '';
-		$info['filetype'] = 'application/x-zip-compressed';
-		foreach ($list as $tmp) {
-			unlink($tmp);
-		}
-		unlink($zip);
-		rmdir($temp);
-		return $info;
 	}
 }
 global $dbTiki;

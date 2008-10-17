@@ -27,11 +27,8 @@ ask_ticket('admin-inc-i18n');
 
     $pref_toggles = array(
 		"feature_multilingual",
-		'feature_translation',
-		'feature_urgent_translation',
 		"feature_multilingual_structures",
 		"feature_best_language",
-		'feature_sync_language',
         "feature_detect_language",
 // This option should be re-added to this page, no?
 //		"change_language",
@@ -41,7 +38,6 @@ ask_ticket('admin-inc-i18n');
 		"record_untranslated",
 		"feature_babelfish",
 		"feature_babelfish_logo",
-		'show_available_translations',
     );
 
 
@@ -52,4 +48,5 @@ ask_ticket('admin-inc-i18n');
 	simple_set_value( 'language' );
 	simple_set_value( 'available_languages', '', true );
 }
+
 ?>

@@ -1,28 +1,27 @@
 <link rel="stylesheet" href="lib/sheet/style.css" type="text/css" />
-
-{title}{tr}{$title}{/tr}{/title}
+<h1><a href="tiki-sheets.php" class="pagetitle">{tr}{$title}{/tr}</a></h1>
 
 <div>
-  {$description}
+{$description}
 </div>
 
 {if $tiki_p_view_sheet eq 'y' || $tiki_p_sheet_admin eq 'y' || $tiki_p_admin eq 'y'}
-<span class="button2"><a href="tiki-sheets.php">{tr}List Sheets{/tr}</a></span>
+<a href="tiki-sheets.php" class="linkbut">{tr}List Sheets{/tr}</a>
 {/if}
 {if $tiki_p_view_sheet eq 'y' || $tiki_p_sheet_admin eq 'y' || $tiki_p_admin eq 'y'}
-<span class="button2"><a href="tiki-view_sheets.php?sheetId={$sheetId}">{tr}View{/tr}</a></span>
+<a href="tiki-view_sheets.php?sheetId={$sheetId}" class="linkbut">{tr}View{/tr}</a>
 {/if}
 {if $tiki_p_edit_sheet eq 'y' || $tiki_p_sheet_admin eq 'y' || $tiki_p_admin eq 'y'}
-<span class="button2"><a href="tiki-view_sheets.php?sheetId={$sheetId}&readdate={$read_date}&mode=edit">{tr}Edit{/tr}</a></span>
+<a href="tiki-view_sheets.php?sheetId={$sheetId}&readdate={$read_date}&mode=edit" class="linkbut">{tr}Edit{/tr}</a>
 {/if}
 {if $tiki_p_view_sheet_history eq 'y' || $tiki_p_sheet_admin eq 'y' || $tiki_p_admin eq 'y'}
-<span class="button2"><a href="tiki-history_sheets.php?sheetId={$sheetId}">{tr}History{/tr}</a></span>
+<a href="tiki-history_sheets.php?sheetId={$sheetId}" class="linkbut">{tr}History{/tr}</a>
 {/if}
 {if $tiki_p_sheet_admin eq 'y' || $tiki_p_admin eq 'y'}
-<span class="button2"><a href="tiki-import_sheet.php?sheetId={$sheetId}">{tr}import{/tr}</a></span>
+<a href="tiki-import_sheet.php?sheetId={$sheetId}" class="linkbut">{tr}import{/tr}</a>
 {/if}
 {if $chart_enabled eq 'y'}
-<span class="button2"><a href="tiki-graph_sheet.php?sheetId={$sheetId}">{tr}Graph{/tr}</a></span>
+<a href="tiki-graph_sheet.php?sheetId={$sheetId}" class="linkbut">{tr}Graph{/tr}</a>
 {/if}
 
 {if $page_mode eq 'submit'}

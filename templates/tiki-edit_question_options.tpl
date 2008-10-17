@@ -1,10 +1,10 @@
-{title url="tiki-edit_question_options.php?questionId=$questionId"}{tr}Edit question options{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-edit_question_options.php?questionId={$questionId}">{tr}Edit question options{/tr}</a></h1>
 
-<span class="button2"><a href="tiki-list_quizzes.php">{tr}List Quizzes{/tr}</a></span>
-<span class="button2"><a href="tiki-quiz_stats.php">{tr}Quiz Stats{/tr}</a></span>
-<span class="button2"><a href="tiki-quiz_stats_quiz.php?quizId={$quizId}">{tr}This Quiz Stats{/tr}</a></span>
-<span class="button2"><a href="tiki-edit_quiz.php?quizId={$quizId}">{tr}Edit this Quiz{/tr}</a></span>
-<span class="button2"><a href="tiki-edit_quiz.php">{tr}Admin Quizzes{/tr}</a></span><br /><br />
+<a class="linkbut" href="tiki-list_quizzes.php">{tr}List Quizzes{/tr}</a>
+<a class="linkbut" href="tiki-quiz_stats.php">{tr}Quiz Stats{/tr}</a>
+<a class="linkbut" href="tiki-quiz_stats_quiz.php?quizId={$quizId}">{tr}This Quiz Stats{/tr}</a>
+<a class="linkbut" href="tiki-edit_quiz.php?quizId={$quizId}">{tr}Edit this Quiz{/tr}</a>
+<a class="linkbut" href="tiki-edit_quiz.php">{tr}Admin Quizzes{/tr}</a><br /><br />
 <h2>{tr}Create/edit options for question{/tr}: <a  href="tiki-edit_quiz_questions.php?quizId={$question_info.quizId}&amp;questionId={$question_info.questionId}">{$question_info.question}</a></h2>
 <form action="tiki-edit_question_options.php" method="post">
 <input type="hidden" name="optionId" value="{$optionId|escape}" />
@@ -31,10 +31,10 @@
 </table>
 <table class="normal">
 <tr>
-<th><a href="tiki-edit_question_options.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'optionId_desc'}optionId_asc{else}optionId_desc{/if}">{tr}ID{/tr}</a></th>
-<th><a href="tiki-edit_question_options.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'optionText_desc'}optionText_asc{else}optionText_desc{/if}">{tr}text{/tr}</a></th>
-<th><a href="tiki-edit_question_options.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'points_desc'}points_asc{else}points_desc{/if}">{tr}points{/tr}</a></th>
-<th>{tr}Action{/tr}</th>
+<td class="heading"><a class="tableheading" href="tiki-edit_question_options.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'optionId_desc'}optionId_asc{else}optionId_desc{/if}">{tr}ID{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-edit_question_options.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'optionText_desc'}optionText_asc{else}optionText_desc{/if}">{tr}text{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-edit_question_options.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'points_desc'}points_asc{else}points_desc{/if}">{tr}points{/tr}</a></td>
+<td class="heading">{tr}Action{/tr}</td>
 </tr>
 
 {cycle values="odd,even" print=false}

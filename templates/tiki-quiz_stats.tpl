@@ -1,8 +1,16 @@
 {* $Id$ *}
-{title help="Quiz"}{tr}Stats for quizzes{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-quiz_stats.php">{tr}Stats for quizzes{/tr}</a>
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Quiz" target="tikihelp" class="tikihelp" title="{tr}Tikiwiki.org help{/tr}: {tr}Quizzes{/tr}">
+<img border='0' src='img/icons/help.gif' alt="{tr}Help{/tr}" />
+</a>
+{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-quiz_stats.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}List Quizzes Tpl{/tr}">
+<img src="img/icons/info.gif" border="0" height="16" width="16" alt='{tr}Edit Tpl{/tr}' /></a>{/if}</h1>
 
-<div class="navbar"><a href="tiki-list_quizzes.php">{tr}List Quizzes{/tr}</a>
-  <a href="tiki-edit_quiz.php">{tr}Admin Quizzes{/tr}</a>
+<div class="navbar"><a class="linkbut" href="tiki-list_quizzes.php">{tr}List Quizzes{/tr}</a>
+<a class="linkbut" href="tiki-edit_quiz.php">{tr}Admin Quizzes{/tr}</a>
 </div>
 
 <h2>{tr}Quizzes{/tr}</h2>
@@ -24,15 +32,15 @@
 {/if}
 <table class="normal">
 <tr>
-<th><a href="tiki-quiz_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'quizName_desc'}quizName_asc{else}quizName_desc{/if}">{tr}Quiz{/tr}</a>
-</th>
-<th>
-<a href="tiki-quiz_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'timesTaken_desc'}timesTaken_asc{else}timesTaken_desc{/if}">{tr}taken{/tr}</a>
-</th>
-<th>
-<a href="tiki-quiz_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'avgavg_desc'}avgavg_asc{else}avgavg_desc{/if}">{tr}Av score{/tr}</a>
-</th>
-<th><a href="tiki-quiz_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'avgtime_desc'}avgtime_asc{else}avgtime_desc{/if}">{tr}Av time{/tr}</a></th>
+<td class="heading"><a class="tableheading" href="tiki-quiz_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'quizName_desc'}quizName_asc{else}quizName_desc{/if}">{tr}Quiz{/tr}</a>
+</td>
+<td class="heading">
+<a class="tableheading" href="tiki-quiz_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'timesTaken_desc'}timesTaken_asc{else}timesTaken_desc{/if}">{tr}taken{/tr}</a>
+</td>
+<td class="heading">
+<a class="tableheading" href="tiki-quiz_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'avgavg_desc'}avgavg_asc{else}avgavg_desc{/if}">{tr}Av score{/tr}</a>
+</td>
+<td class="heading"><a class="tableheading" href="tiki-quiz_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'avgtime_desc'}avgtime_asc{else}avgtime_desc{/if}">{tr}Av time{/tr}</a></td>
 </tr>
   {cycle values="odd,even" print=false}
   {section name=user loop=$channels}

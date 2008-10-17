@@ -8,7 +8,7 @@
 {eval var="{tr}Last Sites{/tr}" assign="tpl_module_title"}
 {/if}
 {/if}
-{tikimodule title=$tpl_module_title name="directory_last_sites" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
+{tikimodule title=$tpl_module_title name="directory_last_sites" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox}
 {if $module_params.nonums != 'y'}<ol>{else}<ul>{/if}
   {section name=ix loop=$modLastdirSites}
      <li>{if $absurl == 'y'}
@@ -25,7 +25,7 @@
  {if $module_params.nonums != 'y'}</ol>{else}</ul>{/if}
 {if $module_params.more eq 'y'}
 	<div class="more">
-		<span class="button2"><a href="tiki-directory_browse.php{if $module_params.categoryId}?parent={$module_params.categoryId}{/if}">{tr}More...{/tr}</a></span>
+		<a class="linkbut" href="tiki-directory_browse.php{if $module_params.categoryId}?parent={$module_params.categoryId}{/if}">{tr}More...{/tr}</a>
 	</div>
 {/if}
 {/tikimodule}

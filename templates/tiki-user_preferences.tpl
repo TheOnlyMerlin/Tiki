@@ -1,16 +1,30 @@
 {* $Id$ *}
 
-{if $userwatch ne $user}
-  {title help="User+Preferences"}{tr}User Preferences:{/tr} {$userwatch}{/title}
-{else}
-  {title help="User+Preferences"}{tr}User Preferences{/tr}{/title}
-{/if}
+<h1>
+  {if $userwatch ne $user}
+    <a class="pagetitle" href="tiki-user_preferences.php?view_user={$userwatch}">{tr}User Preferences{/tr}: {$userwatch}</a>
+  {else}
+    <a class="pagetitle" href="tiki-user_preferences.php">{tr}User Preferences{/tr}</a>
+  {/if}
 
-{if $tiki_p_admin_users eq 'y'}
-  <span class="button2"><a href="tiki-assignuser.php?assign_user={$userinfo.login}" title="{tr}Assign Group{/tr}">
-    {tr}Assign Group{/tr}
-  </a></span>
-{/if}
+  {if $prefs.feature_help eq 'y'}
+    <a href="{$prefs.helpurl}User+Preferences" target="tikihelp" class="tikihelp" title="{tr}User Preferences{/tr}">
+      {icon _id='help'}
+    </a>
+  {/if}
+
+  {if $prefs.feature_view_tpl eq 'y'}
+    <a href="tiki-edit_templates.php?template=tiki-user_preferences.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}UserPreferences tpl{/tr}">
+      {icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}
+    </a>
+  {/if}
+
+  {if $tiki_p_admin_users eq 'y'}
+    <a class="link" href="tiki-assignuser.php?assign_user={$userinfo.login}" title="{tr}Assign Group{/tr}">
+      {icon _id='key' alt="{tr}Assign Group{/tr}"}
+    </a>
+  {/if}
+</h1>
 
 {if $userwatch eq $user or $userwatch eq ""}
   {if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
@@ -150,7 +164,7 @@
     {/section}
 
     <tr>
-      <th colspan="2">{tr}Preferences{/tr}</th>
+      <td class="heading" colspan="2">{tr}Preferences{/tr}</td>
     </tr>
   
     <tr>
@@ -318,7 +332,7 @@
 
     {if $prefs.feature_messages eq 'y' and $tiki_p_messages eq 'y'}
       <tr>
-        <th colspan="2">{tr}User Messages{/tr}</th>
+        <td class="heading" colspan="2">{tr}User Messages{/tr}</td>
       </tr>
     
       <tr>
@@ -385,7 +399,7 @@
 
     {if $prefs.feature_tasks eq 'y' and $tiki_p_tasks eq 'y'}
       <tr>
-        <th colspan="2">{tr}User Tasks{/tr}</th>
+        <td class="heading" colspan="2">{tr}User Tasks{/tr}</td>
       </tr>
     
       <tr>
@@ -405,7 +419,7 @@
     {/if}
 
     <tr>
-      <th colspan="2">{tr}My Tiki{/tr}</th>
+      <td class="heading" colspan="2">{tr}My Tiki{/tr}</td>
     </tr>
 
     {if $prefs.feature_wiki eq 'y'}

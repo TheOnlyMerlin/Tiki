@@ -12,7 +12,6 @@
 {/if}
 
 {* multitiki ----------------------------- *}
-{* multitiki ----------------------------- *}
 {if $virt}
 <table><tr><td width="180">
 <div class="box">
@@ -176,7 +175,38 @@ hosting provider.  Normally Tiki tables won't conflict with other product names{
 		</td><td>
 			{if $tikidb_created}
 			<fieldset>
-			<p align="center"><input type="submit" name="update" value="{tr}Automatic update{/tr}" /></p>
+		    <table>
+			<tr><td><h2>{tr}Upgrade{/tr}</h2></td></tr>
+			<tr><td><p align="center"><img src="img/silk/sticky.png" alt="warning" style="vertical-align:middle"/> <strong>{tr}Important{/tr}</strong>: {tr}Backup your database with mysqldump, phpmyadmin, or other before upgrading.{/tr}</p>
+			<p>{tr}Update database using script{/tr}: <br />
+			<select name="file" size="{if $files}{$files|@count}{else}3{/if}">
+			{section name=ix loop=$files}
+			<option value="{$files[ix]|escape}">{$files[ix]}&nbsp;</option>
+{sectionelse}
+			<option value="" disabled="disabled">{tr}No scripts available.{/tr}</option>
+			{/section}
+			</select></p>
+			<p align="center"><input type="submit" name="update" value="{tr}Upgrade{/tr}" /></p>
+		    </td></tr>
+		    <tr><td>
+<table class="normal" cellpadding="5">
+	<tr><th>{tr}To upgrade from{/tr}:</th><th>{tr}Use this script{/tr}:</th></tr>
+	<tr class="odd">
+		<td>2.0.x</td>
+		<td>tiki_1.9to2.0</td>
+	</tr>
+	<tr class="even">
+		<td>1.9.x or<br/>1.8.x</td>
+		<td>tiki_1.8to1.9<br />{tr}Then rerun the installer using tiki_1.9to2.0.{/tr}</td>
+	</tr>
+	<tr class="odd">
+		<td>1.7.x</td>
+		<td>{tr}See <a target="help" class="link" href="http://doc.tikiwiki.org/Upgrade+1.7+to+1.8">Tiki database 1.7.x to 1.8x instructions{/tr}</a>.</td>
+	</tr>
+</table>
+			<p>{tr}For information about <strong>tiki-secdb_*.sql</strong> files, please see <a target="help" class="link" href="http://doc.tikiwiki.org/Security+Admin">http://doc.tikiwiki.org/Security+Admin{/tr}</a>.
+
+			
 		</td></tr>		
     </table>
 			</fieldset>
@@ -222,8 +252,8 @@ hosting provider.  Normally Tiki tables won't conflict with other product names{
 		</p>
 		</div>
     	
-<p><img src="pics/icons/accept.png" alt="{tr}Success{/tr}" style="vertical-align:middle"/> <strong>{if isset($smarty.post.update)}{tr}Upgrade{/tr}{else}{tr}Installation{/tr}{/if} {tr}operations executed successfully{/tr}</strong>: {$installer->success|@count} {tr}SQL queries{/tr}.</p>
-{if $installer->failures|@count > 0}
+<p><img src="pics/icons/accept.png" alt="{tr}Success{/tr}" style="vertical-align:middle"/> <strong>{if isset($smarty.post.update)}{tr}Upgrade{/tr}{else}{tr}Installation{/tr}{/if} {tr}operations executed successfully{/tr}</strong>: {$succcommands|@count} {tr}SQL queries{/tr}.</p>
+{if $failedcommands|@count > 0}
 			<script type="text/javascript">
 			<!--//--><![CDATA[//><!--
 				{literal}
@@ -234,16 +264,15 @@ hosting provider.  Normally Tiki tables won't conflict with other product names{
 			//--><!]]>
 			</script>
 
-<p><img src="pics/icons/delete.png" alt="{tr}Failed{/tr}" style="vertical-align:middle"/> <strong>{tr}Operations failed{/tr}:</strong> {$installer->failures|@count} {tr}SQL queries{/tr}. 
+<p><img src="pics/icons/delete.png" alt="{tr}Failed{/tr}" style="vertical-align:middle"/> <strong>{tr}Operations failed{/tr}:</strong> {$failedcommands|@count} {tr}SQL queries{/tr}. 
 <a href="javascript:sql_failed()">{tr}Display details{/tr}</a>.
 
 <div id="sql_failed_log" style="display:none">
  <p>{tr}During an upgrade, it is normal to have SQL failures resulting with <strong>Table already exists</strong> messages.{/tr}</p>
     		<textarea rows="15" cols="80">
-{foreach from=$installer->failures item=item}
-{$item[0]}
-{$item[1]}
-{/foreach}
+{section loop=$failedcommands name=ix}
+{$failedcommands[ix]}
+{/section}
     		</textarea>
 
 </div>
@@ -255,13 +284,13 @@ hosting provider.  Normally Tiki tables won't conflict with other product names{
 {tr}Please read the following notes before entering Tikiwiki.{/tr}
 <p>&nbsp;</p>
 <h3><img src="pics/icons/information.png" alt="{tr}Note{/tr}" style="vertical-align:middle"/> {tr}Memory{/tr}</h3>
-{tr}TikiWiki requires <strong>at least</strong> 32MB of PHP memory for script execution. Use the <strong>memory_limit</strong> key in your <strong>php.ini </strong> file (for example: memory_limit = 32M) and restart your webserver{/tr}.
+{tr}TikiWiki requires <strong>at least</strong> 16MB of PHP memory for script execution. Use the <strong>memory_limit</strong> key in your <strong>php.ini </strong> file (for example: memory_limit = 16M) and restart your webserver{/tr}.
 <p>{tr}Allocating too little memory will cause TikiWiki to display blank pages{/tr}.</p>
 {if $php_memory_limit <= 0}
 	<div style="border-style: solid; border-width: 1; padding: 5px; background-color: #a9ff9b;">
 		<p align="center"><img src="pics/icons/accept.png" alt="{tr}Success{/tr}" style="vertical-align:middle"/> {tr}Tiki has not detected your PHP memory_limit. This probably means you have no set limit (all is well){/tr}. </p>
 	</div>	
-{elseif $php_memory_limit <= 32 * 1024 * 1024}
+{elseif $php_memory_limit <= 16 * 1024 * 1024}
 	<div style="border-style: solid; border-width: 1; padding: 5px; background-color: #FF0000">
 		<p align="center"><img src="pics/icons/delete.png" alt="alert" style="vertical-align:middle" /> {tr}Tiki has detected your PHP memory limit at{/tr}: {$php_memory_limit|kbsize:true:0}</p>
 	</div>
@@ -274,12 +303,6 @@ hosting provider.  Normally Tiki tables won't conflict with other product names{
 		</div>	
 	{/if}			
 <p>&nbsp;</p>
-
-{if isset($htaccess_error)}
-<h3><img src="pics/icons/information.png" alt="{tr}Note{/tr}" style="vertical-align:middle"/> {tr}Security{/tr}</h3>
-{tr}To secure your TikiWiki installation - and if you are using Apache web server - you should rename the <strong>_htaccess</strong> file to <strong>.htaccess</strong> (this file is in the main directory){/tr}.
-<p>&nbsp;</p>
-{/if}
 
 {if isset($smarty.post.scratch)}
 <h3><img src="pics/icons/information.png" alt="{tr}Note{/tr}" style="vertical-align:middle"/> {tr}Installation{/tr}</h3>
@@ -295,10 +318,10 @@ hosting provider.  Normally Tiki tables won't conflict with other product names{
 <h2>{tr}Entering TikiWiki{/tr}</h2>
 <ul>
 {if isset($smarty.post.update)}
-<li><a href="tiki-install.php?lockenter" class="link">{tr}Enter TikiWiki and lock installer (Recommended){/tr}</a>
+<li><a href="tiki-install.php?lockenter" class="link">{tr}Enter TikiWiki and lock installer (Best){/tr}</a>
 <li><a href="tiki-index.php" class="link">{tr}Enter TikiWiki{/tr}</a>
 {else}
- <li><a href="tiki-install.php?lockchange" class="link">{tr}Login as the administrator and lock installer (Recommended){/tr}</a><br />{tr}You will be prompted to select a new administrator password.{/tr} {tr}Old password{/tr}: <em>admin</em></li>
+ <li><a href="tiki-install.php?lockchange" class="link">{tr}Login as the administrator and lock installer (Best){/tr}</a><br />{tr}You will be prompted to select a new administrator password.{/tr} {tr}Old password{/tr}: <em>admin</em></li>
  <li><a href="tiki-change_password.php?user=admin" class="link">{tr}Login as the administrator{/tr}</a><br />{tr}You will be prompted to select a new administrator password.{/tr} {tr}Old password{/tr}: <em>admin</em></li>
 {/if}
 </ul>

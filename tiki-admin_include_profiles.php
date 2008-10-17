@@ -12,6 +12,17 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
+if( ! function_exists( 'json_encode' ) )
+{
+	require_once 'lib/pear/Services/JSON.php';
+
+	function json_encode( $nodes )
+	{
+		$json = new Services_JSON();
+		return $json->encode($nodes);
+	}
+}
+
 require_once 'lib/profilelib/listlib.php';
 
 $list = new Tiki_Profile_List;
@@ -28,27 +39,11 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 		exit;
 	} // }}}
 
-	if( isset($_POST['forget'], $_POST['url']) ) { // {{{
-		require_once 'lib/profilelib/profilelib.php';
-
-		$profile = new Tiki_Profile( $_POST['url'] );
-		$profile->removeSymbols();
-		
-		header( 'Location: ' . $_SERVER['REQUEST_URI'] );
-		exit;
-	} // }}}
-
 	if( isset($_POST['install'], $_POST['url']) ) { // {{{
 		require_once 'lib/profilelib/profilelib.php';
 		require_once 'lib/profilelib/installlib.php';
 
-		$data = array();
-		foreach( $_POST as $key => $value )
-			if( $key != 'url' && $key != 'install' )
-				$data[str_replace('_', ' ', $key )] = $value;
-
 		$installer = new Tiki_Profile_Installer;
-		$installer->setUserData( $data );
 
 		$profile = new Tiki_Profile( $_POST['url'] );
 		$installer->install( $profile );
@@ -99,19 +94,15 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 		}
 
 		$dependencies = array();
-		$userInput = array();
 		foreach( $deps as $d )
-			if( ! $installer->isInstalled( $d ) ) {
+			if( ! $installer->isInstalled( $d ) )
 				$dependencies[] = $d->pageUrl;
-				$userInput = array_merge( $userInput, $d->getRequiredInput() );
-			}
 
 		$parsed = $tikilib->parse_data( $profile->pageContent );
 		$installed = $installer->isInstalled( $profile );
 
 		echo json_encode( array(
 			'dependencies' => $dependencies,
-			'userInput' => $userInput,
 			'installable' => $sequencable,
 			'error' => $error,
 			'content' => $parsed,

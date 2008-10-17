@@ -1541,7 +1541,7 @@ class ImageGalsLib extends TikiLib {
 			}
 		}
 		
-		if(!isset($bindvars) || !is_array($bindvars)) {
+		if(!@is_array($bindvars)) {
 			$bindvars=array((int)$id,$itype);
 		}
 

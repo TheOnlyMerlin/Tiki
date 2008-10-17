@@ -1,34 +1,27 @@
-{title help="Newsletters"}{tr}Newsletters{/tr}{/title}
-
+<h1><a href="tiki-newsletters.php" class="pagetitle">{tr}Newsletters{/tr}</a></h1>
 {if $subscribed eq 'y'}
-  <div class="simplebox highlight">
-    {tr}Thanks for your subscription. You will receive an email soon to confirm your subscription. No newsletters will be sent to you until the subscription is confirmed.{/tr}</div>
+<div class="simplebox highlight">
+{tr}Thanks for your subscription. You will receive an email soon to confirm your subscription. No newsletters will be sent to you until the subscription is confirmed.{/tr}</div>
 {/if}
-
 {if $unsub eq 'y'}
-  <div class="highlight">
-    {tr}Your email address was removed from the list of subscriptors.{/tr}</div>
-{elseif $unsub eq 'f'}
-  <div class="simplebox error">{tr}Removal of your email address failed.{/tr}</div>
+<div class="highlight">
+{tr}Your email address was removed from the list of subscriptors.{/tr}</div>
 {/if}
 
 {if $confirm eq 'y'}
 <table class="normal">
 <tr>
-  <th colspan="2" class="highlight">{tr}Subscription confirmed!{/tr}</th>
+  <td colspan="2" class="heading highlight">{tr}Subscription confirmed!{/tr}</td>
 </tr>
 <tr>
   <td class="even">{tr}Name{/tr}:</td>
-  <td class="even">{$nl_info.name|escape}</td>
+  <th class="even">{$nl_info.name|escape}</th>
 </tr>
 <tr>
   <td class="even">{tr}Description{/tr}:</td>
   <td class="even">{$nl_info.description|escape|nl2br}</td>
 </tr>
 </table>
-<br />
-{elseif $confirm eq 'f'}
-<div class="simplebox error">{tr}Subscription failed.{/tr}</div>
 <br />
 {/if}
 
@@ -37,7 +30,7 @@
 <input type="hidden" name="nlId" value="{$nlId|escape}" />
 <table class="normal">
 <tr>
-  <th colspan="2">{tr}Subscribe to Newsletter{/tr}</th>
+  <td colspan="2" class="heading">{tr}Subscribe to Newsletter{/tr}</td>
 </tr>
 <tr>
   <td class="even">{tr}Name{/tr}:</td>
@@ -58,7 +51,7 @@
 {/if}
 <tr>
   <td class="even">&nbsp;</td>
-  <td class="even"><input type="submit" name="subscribe" value="{tr}Subscribe to this Newsletter{/tr}" /></td>
+  <td class="even"><input type="submit" name="subscribe" value="{tr}Subscribe to This Newsletter{/tr}" /></td>
 </tr>
 {/if}
 </table>
@@ -73,9 +66,9 @@
 {/if}
 <table class="normal">
 <tr>
-<th><a href="tiki-admin_newsletters.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
-<th><a href="tiki-admin_newsletters.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'description_desc'}description_asc{else}description_desc{/if}">{tr}Description{/tr}</a></th>
-<th style="width:80px">&nbsp;</th>
+<td class="heading"><a class="tableheading" href="tiki-admin_newsletters.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-admin_newsletters.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'description_desc'}description_asc{else}description_desc{/if}">{tr}Description{/tr}</a></td>
+<td class="heading" width="80px">&nbsp;</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}

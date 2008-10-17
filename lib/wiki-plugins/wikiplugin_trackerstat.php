@@ -11,50 +11,8 @@
  */
 function wikiplugin_trackerstat_help() {
 	$help = tra("Displays some stat of a tracker content, fields are indicated with numeric ids.").":\n";
-	$help.= "~np~{TRACKERSTAT(trackerId=>1,fields=>2:4:5,show_percent=>y,show_bar=>n,status=>o|c|p|op|oc|pc|opc,show_link=n)}Title{TRACKERSTAT}~/np~";
+	$help.= "~np~{TRACKERSTAT(trackerId=>1,fields=>2:4:5,show_percent=>y,show_bar=>n,status=>o|c|p|op|oc|pc|opc)}Title{TRACKERSTAT}~/np~";
 	return $help;
-}
-
-function wikiplugin_trackerstat_info() {
-	return array(
-		'name' => tra('Tracker Stats'),
-		'documentation' => 'PluginTrackerStat',
-		'description' => tra("Displays some stat of a tracker content, fields are indicated with numeric ids."),
-		'prefs' => array( 'feature_trackers', 'wikiplugin_trackerstat' ),
-		'body' => tra('Title'),
-		'params' => array(
-			'trackerId' => array(
-				'required' => true,
-				'name' => tra('Tracker ID'),
-				'description' => tra('Tracker ID'),
-			),
-			'fields' => array(
-				'required' => true,
-				'name' => tra('Fields'),
-				'description' => tra('Colon-separated list of field IDs to be displayed. Example: 2:4:5'),
-			),
-			'show_percent' => array(
-				'required' => false,
-				'name' => tra('Show Percentage'),
-				'description' => 'y|n',
-			),
-			'show_bar' => array(
-				'required' => false,
-				'name' => tra('Show Bar'),
-				'description' => 'y|n',
-			),
-			'status' => array(
-				'required' => false,
-				'name' => tra('Status Filter'),
-				'description' => 'o|p|c|op|oc|pc|opc'.' '.tra('Which item status to list. o = open, p = pending, c = closed.'),
-			),
-			'show_link' => array(
-				'required' => false,
-				'name' => tra('Sow link to tiki-view_tracker'),
-				'description' => 'y|n',
-			),
-		),
-	);
 }
 
 function wikiplugin_trackerstat($data, $params) {
@@ -82,11 +40,6 @@ function wikiplugin_trackerstat($data, $params) {
 		$smarty->assign('show_bar', 'y');
 	} else {
 		$smarty->assign('show_bar', 'n');
-	}
-	if (isset($show_link) && $show_link == 'y') {
-		$smarty->assign('show_link', 'y');
-	} else {
-		$smarty->assign('show_link', 'n');
 	}
 	
 	$allFields = $trklib->list_tracker_fields($trackerId, 0, -1, 'position_asc', '');
@@ -154,9 +107,8 @@ function wikiplugin_trackerstat($data, $params) {
 						break;
 					}
 				}
-				$v[$j]['href'] = "trackerId=$trackerId&amp;filterfield=$fieldId&amp;filtervalue[$fieldId][]=".$listCategs[$j]['categId'];
 			}
-		} else	if ($allFields["data"][$i]['type'] == 'h') {//header
+		} else	if ($allFields["data"][$i]['type'] == 'h') {
 			$stat['name'] = $allFields["data"][$i]['name'];
 			$stat['values'] = array();
 			$stats[] = $stat;
@@ -179,7 +131,6 @@ function wikiplugin_trackerstat($data, $params) {
 					if (isset($userValues) && in_array($value, $userValues)) {
 						$v[$j]['me'] = 'y';
 					}
-					$v[$j]['href'] = "trackerId=$trackerId&amp;filterfield=$fieldId&amp;filtervalue[$fieldId]=".urlencode($value);
 				} else {
 					++$v[$j]['count'];
 				}
@@ -191,9 +142,6 @@ function wikiplugin_trackerstat($data, $params) {
 				$v[$j]['average'] = 100*$v[$j]['count']/$total;
 			}
 		}
-		if ($tracker_info['showStatus'] == 'y') {
-			$v[$j]['href'] .= "&amp;status=$status";
-		}
 		if (!empty($v)) {
 			$stat['name'] = $allFields["data"][$i]['name'];
 			$stat['values'] = $v;
@@ -204,3 +152,5 @@ function wikiplugin_trackerstat($data, $params) {
 	$smarty->assign_by_ref('stats', $stats);
 	return "~np~".$smarty->fetch('wiki-plugins/wikiplugin_trackerstat.tpl')."~/np~";
 }
+
+?>

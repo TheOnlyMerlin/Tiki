@@ -19,7 +19,7 @@
 {/if}
 {/if}
 
-<div class="separator{$sep}{if $chdata.selected} selected{/if}{if $chdata.selectedAscendant} selectedAscendant{/if}">
+<div class="separator{$sep}">
 {if $sep eq 'line'}{assign var=sep value=''}{/if}
 {if $menu_info.type eq 'e' or $menu_info.type eq 'd'}
 	{if $prefs.feature_menusfolderstyle eq 'y'}
@@ -48,21 +48,21 @@
 {else}
 <a href="javascript:icntoggle('menu{$cname}');" class="separator">
 {/if}
-{if $translate eq 'n'}{$chdata.name|escape}{else}{tr}{$chdata.name}{/tr}{/if}
+{tr}{$chdata.name}{/tr}
 </a>
 {if ($menu_info.type eq 'e' or $menu_info.type eq 'd') and $prefs.feature_menusfolderstyle ne 'y'}<a class='separator' href="javascript:toggle('menu{$cname}');">[+]</a>{/if} 
 </div> {* separator *}
 
 {assign var=opensec value=$opensec+1}
 {if $menu_info.type eq 'e' or $menu_info.type eq 'd'}
-<div class="menuSection" {if $menu_info.type eq 'd' and $smarty.cookies.menu ne ''  and $prefs.javascript_enabled ne 'n'}style="display:none;"{else}style="display:block;"{/if} id='menu{$cname}'>
+<div class="menuSection" {if $menu_info.type eq 'd' and $smarty.cookies.menu ne ''}style="display:none;"{else}style="display:block;"{/if} id='menu{$cname}'>
 {else}
 <div class="menuSection">
 {/if}
 
 {* ----------------------------- option *}
 {elseif $chdata.type eq 'o'}
-<div class="option{$sep}{if $chdata.selected} selected{/if}"><a href="{if $prefs.feature_sefurl eq 'y' and $chdata.sefurl}{$chdata.sefurl}{else}{$chdata.url}{/if}" class="linkmenu">{if $translate eq 'n'}{$chdata.name|escape}{else}{tr}{$chdata.name}{/tr}{/if}</a></div>
+<div class="option{$sep}"><a href="{if $prefs.feature_sefurl eq 'y' and $chdata.sefurl}{$chdata.sefurl}{else}{$chdata.url}{/if}" class="linkmenu">{tr}{$chdata.name}{/tr}</a></div>
 {if $sep eq 'line'}{assign var=sep value=''}{/if}
 
 {* ----------------------------- separator *}

@@ -1,44 +1,45 @@
 {* $Id$ *}
 {if $prefs.gal_image_mouseover neq 'n'}{popup_init src="lib/overlib.js"}{/if}
-
-{title}{tr}Browsing Gallery:{/tr} {$name}{/title}
+<h1><a class="pagetitle" href="tiki-browse_gallery.php?galleryId={$galleryId}">
+{tr}Browsing Gallery{/tr}: {$name}
+</a></h1>
 
 <div class="navbar">
 {if $tiki_p_list_image_galleries eq 'y'}
-<span class="button2"><a href="tiki-galleries.php" title="{tr}List Galleries{/tr}">{tr}List Galleries{/tr}</a></span>
+<span class="button2"><a href="tiki-galleries.php" class="linkbut" title="{tr}List Galleries{/tr}">{tr}List Galleries{/tr}</a></span>
 {/if}
 {if $system eq 'n'}
   {if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner)}
-    <span class="button2"><a href="tiki-galleries.php?edit_mode=1&amp;galleryId={$galleryId}">{tr}Edit Gallery{/tr}</a></span>
-    <span class="button2"><a href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;rebuild={$galleryId}">{tr}Rebuild Thumbnails{/tr}</a></span>
+    <span class="button2"><a href="tiki-galleries.php?edit_mode=1&amp;galleryId={$galleryId}" class="linkbut">{tr}Edit Gallery{/tr}</a></span>
+    <span class="button2"><a href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;rebuild={$galleryId}" class="linkbut">{tr}Rebuild Thumbnails{/tr}</a></span>
   {/if}
   {if $tiki_p_upload_images eq 'y'}
     {if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner) or $public eq 'y'}
-      <span class="button2"><a href="tiki-upload_image.php?galleryId={$galleryId}">{tr}Upload Image{/tr}</a></span>
+      <span class="button2"><a href="tiki-upload_image.php?galleryId={$galleryId}" class="linkbut">{tr}Upload Image{/tr}</a></span>
     {/if}
   {/if}
   {if $prefs.feature_gal_batch eq "y" and $tiki_p_batch_upload_image_dir eq 'y'}
     {if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner) or $public eq 'y'}
-      <span class="button2"><a href="tiki-batch_upload.php?galleryId={$galleryId}">{tr}Directory batch{/tr}</a></span>
+      <span class="button2"><a href="tiki-batch_upload.php?galleryId={$galleryId}" class="linkbut">{tr}Directory batch{/tr}</a></span>
     {/if}
   {/if}
   {if $tiki_p_assign_perm_image_gallery eq 'y'}
-  	  <span class="button2"><a href="tiki-objectpermissions.php?objectName={$name|escape:"url"}&amp;objectType=image+gallery&amp;permType=image+galleries&amp;objectId={$galleryId}">{tr}Perms{/tr}</a></span>
+  	  <span class="button2"><a href="tiki-objectpermissions.php?objectName={$name|escape:"url"}&amp;objectType=image+gallery&amp;permType=image+galleries&amp;objectId={$galleryId}" class="linkbut">{tr}Perms{/tr}</a></span>
   {/if}
 {/if}
 
 {if $tiki_p_admin_galleries eq 'y'}
-<span class="button2"><a href="tiki-list_gallery.php?galleryId={$galleryId}">{tr}List Gallery{/tr}</a></span>
-<span class="button2"><a href="tiki-show_all_images.php?id={$galleryId}">{tr}All Images{/tr}</a></span>
+<span class="button2"><a href="tiki-list_gallery.php?galleryId={$galleryId}" class="linkbut">{tr}List Gallery{/tr}</a></span>
+<span class="button2"><a href="tiki-show_all_images.php?id={$galleryId}" class="linkbut">{tr}All Images{/tr}</a></span>
 {/if}
 {if $prefs.rss_image_gallery eq 'y'}
-  <span class="button2"><a href="tiki-image_gallery_rss.php?galleryId={$galleryId}">{tr}RSS{/tr}</a></span>
+  <span class="button2"><a href="tiki-image_gallery_rss.php?galleryId={$galleryId}" class="linkbut">{tr}RSS{/tr}</a></span>
 {/if}
 	{if $user and $prefs.feature_user_watches eq 'y'}
 		{if $user_watching_gal eq 'n'}
-			<a href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;watch_event=image_gallery_changed&amp;watch_object={$galleryId}&amp;watch_action=add" title="{tr}Monitor this Gallery{/tr}" class="icon">{icon _id='eye' alt="{tr}Monitor this Gallery{/tr}"}</a>
+			<a href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;watch_event=image_gallery_changed&amp;watch_object={$galleryId}&amp;watch_action=add" title="{tr}Monitor this Gallery{/tr}">{html_image file='img/icons/icon_watch.png' border='0' alt="{tr}Monitor this Gallery{/tr}"}</a>
 		{else}
-			<a href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;watch_event=image_gallery_changed&amp;watch_object={$galleryId}&amp;watch_action=remove" title="{tr}Stop Monitoring this Gallery{/tr}" class="icon">{icon _id='no_eye' alt="{tr}Stop Monitoring this Gallery{/tr}"}</a>
+			<a href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;watch_event=image_gallery_changed&amp;watch_object={$galleryId}&amp;watch_action=remove" title="{tr}Stop Monitoring this Gallery{/tr}">{html_image file='img/icons/icon_unwatch.png' border='0' alt="{tr}Stop Monitoring this Gallery{/tr}"}</a>
 		{/if}
 	{/if}
 </div>
@@ -79,7 +80,7 @@
         {foreach from=$subgals key=key item=item}
           <td align="center" {if (($key / $rowImages) % 2)}class="oddthumb"{else}class="eventhumb"{/if}>
           &nbsp;&nbsp;<br />
-          <a href="{$item.galleryId|sefurl:gallery}"><img alt="{tr}subgallery{/tr} {$item.name}" class="athumb" src="show_image.php?id={$item.imageId}&amp;thumb=1" /></a>
+          <a href="tiki-browse_gallery.php?galleryId={$item.galleryId}"><img alt="{tr}subgallery{/tr} {$item.name}" class="athumb" src="show_image.php?id={$item.imageId}&amp;thumb=1" /></a>
 	  <br />
 	  <small class="caption">
 		{tr}Subgallery{/tr}: 
@@ -174,7 +175,7 @@
 }
   <div id="page-bar">
     <div class="button2">
-      <a href="#" onclick="javascript:flip('comzone');flip('comzone_close','inline');return false;"{if $comments_cant > 0} class="highlight"{/if}>
+      <a href="#" onclick="javascript:flip('comzone');flip('comzone_close','inline');return false;" class="linkbut {if $comments_cant > 0}highlight{/if}">
         {if $comments_cant == 0 or ($tiki_p_read_comments  == 'n' and $tiki_p_post_comments  == 'y')}
           {tr}Add Comment{/tr}
         {elseif $comments_cant == 1}

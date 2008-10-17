@@ -5,7 +5,7 @@
 <h3>{tr}{$dir}{/tr}</h3></a>
 <table class="normal">
 <tr>
-<th colspan="2">{tr}Directories{/tr}</th>
+<td class="heading" colspan="2">{tr}Directories{/tr}</td>
 </tr>
 {if $dir ne '/data'}
 <tr>
@@ -45,7 +45,7 @@
 </tr>
 {/if}
 {/section}
-<th colspan="2">{tr}Files{/tr}</th>
+<td class="heading" colspan="2">{tr}Files{/tr}</td>
 {cycle values="odd,even" print=false}
 {section name=user loop=$files}
 <tr>

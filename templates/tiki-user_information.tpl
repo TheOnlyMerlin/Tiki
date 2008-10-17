@@ -1,9 +1,7 @@
-{title url="tiki-user_information.php?view_user=$userwatch"}{tr}User Information{/tr}{/title}
-
+<h1><a class="pagetitle" href="tiki-user_information.php?view_user={$userwatch}">{tr}User Information{/tr}</a></h1>
 {if $prefs.feature_display_my_to_others eq 'y' and $user and $prefs.feature_messages eq 'y' and $tiki_p_messages eq 'y' and $allowMsgs eq 'y'}
-  <div class="navbar"><a href="#message">{tr}Send me a message{/tr}</a></div>
+<div class="navbar"><a class="linkbut" href="#message">{tr}Send me a message{/tr}</a></div>
 {/if}
-
 <table>
 <tr>
   <td valign="top">
@@ -108,7 +106,7 @@
 <table class="normal">
 {cycle values="even,odd" print=false}
 {section name=ix loop=$user_galleries}
-<tr><td class="{cycle}"><a class="link" href="{$user_galleries[ix].galleryId|sefurl:gallery}">{$user_galleries[ix].name}</a>{/section}</td></tr>
+<tr><td class="{cycle}"><a class="link" href="tiki-browse_gallery.php?galleryId={$user_galleries[ix].galleryId}">{$user_galleries[ix].name}</a>{/section}</td></tr>
 </table>
 {/if}
 {if $user_blogs|@count > 0}
@@ -116,7 +114,7 @@
 <table class="normal">
 {cycle values="even,odd" print=false}
 {section name=ix loop=$user_blogs}
-<tr><td class="{cycle}"><a class="link" title="{tr}View{/tr}" href="{$user_blogs[ix].blogId|sefurl:blog}">{$user_blogs[ix].title}</a></td></tr>
+<tr><td class="{cycle}"><a class="link" title="{tr}View{/tr}" href="tiki-view_blog.php?blogId={$user_blogs[ix].blogId}">{$user_blogs[ix].title}</a></td></tr>
 {/section}
 </table>
 {/if}

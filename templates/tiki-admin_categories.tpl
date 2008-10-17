@@ -1,10 +1,23 @@
 {* $Id$ *}
 {popup_init src="lib/overlib.js"}
+<h1>
+  <a class="pagetitle" href="tiki-admin_categories.php">{tr}Admin Categories{/tr}</a>
+  
+  {if $prefs.feature_help eq 'y'}
+    <a href="{$prefs.helpurl}Categories+Admin" target="tikihelp" class="tikihelp" title="{tr}Admin Categories{/tr}">
+      {icon _id='help'}
+    </a>
+  {/if}
 
-{title help="Categories+Admin"}{tr}Admin Categories{/tr}{/title}
+  {if $prefs.feature_view_tpl eq 'y'}
+    <a href="tiki-edit_templates.php?template=tiki-admin_categories.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Admin Categories tpl{/tr}">
+      {icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}
+    </a>
+  {/if}
+</h1>
 
 <div class="navbar">
-  <a href="tiki-browse_categories.php?parentId={$parentId}" title="{tr}browse the category system{/tr}">{tr}Browse Category{/tr}</a>
+  <a class="linkbut" href="tiki-browse_categories.php?parentId={$parentId}" title="{tr}browse the category system{/tr}">{tr}Browse Category{/tr}</a>
 </div>
 
 {if !empty($errors)}
@@ -124,9 +137,9 @@
 {/if}      
       <table class="normal">
       <tr>
-        <th>&nbsp;</th>
-        <th><a href="tiki-admin_categories.php?parentId={$parentId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}#objects">{tr}Name{/tr}</a></th>
-        <th><a href="tiki-admin_categories.php?parentId={$parentId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'type_desc'}type_asc{else}type_desc{/if}#objects">{tr}Type{/tr}</a></th>
+        <td class="heading">&nbsp;</td>
+        <td class="heading"><a class="tableheading" href="tiki-admin_categories.php?parentId={$parentId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}#objects">{tr}Name{/tr}</a></td>
+        <td class="heading"><a class="tableheading" href="tiki-admin_categories.php?parentId={$parentId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'type_desc'}type_asc{else}type_desc{/if}#objects">{tr}Type{/tr}</a></td>
       </tr>
       {section name=ix loop=$objects}
       <tr>

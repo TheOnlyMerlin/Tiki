@@ -1,4 +1,12 @@
-{title help="RSS+Modules""}{tr}Admin RSS modules{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-admin_rssmodules.php">{tr}Admin RSS modules{/tr}</a>
+  
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}RSS+Modules" target="tikihelp" class="tikihelp" title="{tr}Admin RSS Modules{/tr}">
+{icon _id='help'}</a>{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admin_rssmodules.tpl" target="tikihelp" class="tikihelp" title="{tr}View template{/tr}: {tr}Admin RSSmodules Template{/tr}">
+{icon _id='shape_square_edit'}</a>{/if}</h1>
 
 {remarksbox type="tip" title="{tr}Tips{/tr}"}{tr}This page is to configure settings of RSS feeds read/imported by Tiki. To generate/export RSS feeds, look for "RSS feeds" on the admin panel, or{/tr} <a class="rbox-link" href="tiki-admin.php?page=rss">{tr}Click Here{/tr}</a>.
 <hr>{tr}To use RSS feeds in a text area (Wiki page, etc), a <a class="rbox-link" href="tiki-admin_modules.php">module</a> or a template, use {literal}{rss id=x}{/literal}, where x is the ID of the RSS feed.{/tr}{/remarksbox}
@@ -59,12 +67,12 @@
 {/if}
 <table class="normal">
 <tr>
-<th><a href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'rssId_desc'}rssId_asc{else}rssId_desc{/if}">{tr}ID{/tr}</a></th>
-<th><a href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
-<th><a href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastUpdated_desc'}lastUpdated_asc{else}lastUpdated_desc{/if}">{tr}Last update{/tr}</a></th>
-<th><a href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastUpdated_desc'}showTitle_asc{else}showTitle_desc{/if}">{tr}Show Title?{/tr}</a></th>
-<th><a href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'refresh_desc'}showPubDate_asc{else}showPubDate_desc{/if}">{tr}Show Date?{/tr}</a></th>
-<th>{tr}Action{/tr}</th>
+<th class="heading"><a class="tableheading" href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'rssId_desc'}rssId_asc{else}rssId_desc{/if}">{tr}ID{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastUpdated_desc'}lastUpdated_asc{else}lastUpdated_desc{/if}">{tr}Last update{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastUpdated_desc'}showTitle_asc{else}showTitle_desc{/if}">{tr}Show Title?{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'refresh_desc'}showPubDate_asc{else}showPubDate_desc{/if}">{tr}Show Date?{/tr}</a></th>
+<th class="heading">{tr}Action{/tr}</th>
 </tr>
 {cycle values="even,odd" print=false}
 {section name=user loop=$channels}
@@ -91,10 +99,10 @@ Refresh rate:
 </td>
 <td class="{cycle advance=false}" style="text-align:center">{$channels[user].showTitle}</td>
 <td class="{cycle advance=false}" style="text-align:center">{$channels[user].showPubDate}</td>
-<td class="{cycle}">   <a class="link" href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].rssId}" title="{tr}Delete{/tr}">{icon _id=cross alt="{tr}Delete{/tr}"}</a>
-   <a class="link" href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;rssId={$channels[user].rssId}" title="{tr}Edit{/tr}">{icon _id=page_edit}</a>
-   <a class="link" href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;view={$channels[user].rssId}" title="{tr}View{/tr}">{icon _id=feed alt="{tr}View feed{/tr}"}</a>
-   <a class="link" href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;refresh={$channels[user].rssId}" title="{tr}Refresh{/tr}">{icon _id=arrow_refresh alt="{tr}Refresh{/tr}"}</a>
+<td class="{cycle}">   <a class="link" href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].rssId}" title="{tr}Delete{/tr}">{icon _id=cross.png alt="{tr}Delete{/tr}"}</a>
+   <a class="link" href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;rssId={$channels[user].rssId}" title="{tr}Edit{/tr}">{icon _id=page_edit.png}</a>
+   <a class="link" href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;view={$channels[user].rssId}" title="{tr}View{/tr}">{icon _id=feed.png alt="{tr}View feed{/tr}"}</a>
+   <a class="link" href="tiki-admin_rssmodules.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;refresh={$channels[user].rssId}" title="{tr}Refresh{/tr}">{icon _id=arrow_refresh.png alt="{tr}Refresh{/tr}"}</a>
 </td>
 </tr>
 {sectionelse}

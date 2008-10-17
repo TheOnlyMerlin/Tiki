@@ -25,8 +25,8 @@
 <td>
 	<small>{tr}Find{/tr}</small>
 </td>
-<td >&nbsp;
-	
+<td >
+	&nbsp;
 </td>	
 </tr>
 
@@ -50,9 +50,9 @@
 <input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
 <table class="normal">
 <tr>
-<th><a href="{if $sort_mode eq 'procname_desc'}{sameurl sort_mode='procname_asc'}{else}{sameurl sort_mode='procname_desc'}{/if}">{tr}Process{/tr}</a></th>
-<th>{tr}Activities{/tr}</th>
-<th>{tr}Instances{/tr}</th>
+<td  class="heading" ><a class="tableheading" href="{if $sort_mode eq 'procname_desc'}{sameurl sort_mode='procname_asc'}{else}{sameurl sort_mode='procname_desc'}{/if}">{tr}Process{/tr}</a></td>
+<td  class="heading" >{tr}Activities{/tr}</td>
+<td  class="heading" >{tr}Instances{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$items}

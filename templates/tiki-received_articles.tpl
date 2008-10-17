@@ -1,7 +1,17 @@
 {* $Id$ *}
+<h1><a class="pagetitle" href="tiki-received_articles.php">{tr}Received articles{/tr}</a>
 
-{title help="Articles"}{tr}Received articles{/tr}{/title}
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Communication+Center" target="tikihelp" class="tikihelp" title="{tr}Received Articles{/tr}">
+{icon _id='help'}</a>
+{/if}
 
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-received_articles.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}received articles tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit Template{/tr}'}</a>
+{/if}
+
+</h1>
 {if $preview eq 'y'}
 <h2>{tr}Preview{/tr}</h2>
 <div class="articletitle">
@@ -9,14 +19,14 @@
 <span class="titleb">{tr}By:{/tr} {$authorName} {tr}on:{/tr} {$publishDate|tiki_short_datetime} (0 {tr}Reads{/tr})</span>
 </div>
 <div class="articleheading">
-<table cellpadding="0" cellspacing="0">
-<tr><td valign="top">
+<table  cellpadding="0" cellspacing="0">
+<tr><td  valign="top">
 {if $useImage eq 'y'}
   <img alt="{tr}Article image{/tr}" border="0" src="received_article_image.php?id={$receivedArticleId}" />
 {else}
-  <img alt="{tr}Topic image{/tr}" border="0" src="article_image.php?image_type=topic&amp;id={$topic}" />
+  <img alt="{tr}Topic image{/tr}" border="0" src="topic_image.php?id={$topic}" />
 {/if}
-</td><td valign="top">
+</td><td  valign="top">
 <span class="articleheading">{$parsed_heading}</span>
 </td></tr>
 </table>
@@ -99,7 +109,7 @@
 </td></tr>
 <tr><td class="formcolor">{tr}Heading{/tr}:</td><td class="formcolor"><textarea rows="5" cols="40" name="heading">{$heading|escape}</textarea></td></tr>
 <tr><td class="formcolor">{tr}Heading{/tr}:</td><td class="formcolor"><textarea rows="25" cols="40" name="body">{$body|escape}</textarea></td></tr>
-<tr><td class="formcolor">&nbsp;</td><td class="formcolor"><input type="submit" name="preview" value="{tr}Preview{/tr}" />&nbsp;<input type="submit" name="save" value="{tr}Save{/tr}" /></td></tr>
+<tr><td  class="formcolor">&nbsp;</td><td class="formcolor"><input type="submit" name="preview" value="{tr}Preview{/tr}" />&nbsp;<input type="submit" name="save" value="{tr}Save{/tr}" /></td></tr>
 <tr><td class="formcolor">{tr}Accept Article{/tr}</td><td class="formcolor">
 {tr}Topic{/tr}:<select name="topic">
 {section name=t loop=$topics}
@@ -110,6 +120,7 @@
 </form>
 {/if}
 
+<h2>{tr}Received Articles{/tr}</h2>
 <div align="center">
 
 {if $channels or $find ne ''}
@@ -118,12 +129,12 @@
 
 <table class="normal">
 <tr>
-<th><a href="tiki-received_articles.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'receivedArticleId_desc'}receivedArticleId_asc{else}receivedArticleId_desc{/if}">{tr}ID{/tr}</a></th>
-<th><a href="tiki-received_articles.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Title{/tr}</a></th>
-<th><a href="tiki-received_articles.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'receivedDate_desc'}receivedDate_asc{else}receivedDate_desc{/if}">{tr}Date{/tr}</a></th>
-<th><a href="tiki-received_articles.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'receivedFromSite_desc'}receivedFromSite_asc{else}receivedFromSite_desc{/if}">{tr}Site{/tr}</a></th>
-<th><a href="tiki-received_articles.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'receivedFromUser_desc'}receivedFromUser_asc{else}receivedFromUser_desc{/if}">{tr}User{/tr}</a></th>
-<th>{tr}Action{/tr}</th>
+<td class="heading"><a class="tableheading" href="tiki-received_articles.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'receivedArticleId_desc'}receivedArticleId_asc{else}receivedArticleId_desc{/if}">{tr}ID{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-received_articles.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Title{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-received_articles.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'receivedDate_desc'}receivedDate_asc{else}receivedDate_desc{/if}">{tr}Date{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-received_articles.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'receivedFromSite_desc'}receivedFromSite_asc{else}receivedFromSite_desc{/if}">{tr}Site{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-received_articles.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'receivedFromUser_desc'}receivedFromUser_asc{else}receivedFromUser_desc{/if}">{tr}User{/tr}</a></td>
+<td class="heading">{tr}Action{/tr}</td>
 </tr>
 {cycle values="even,odd" print=false}
 {section name=user loop=$channels}

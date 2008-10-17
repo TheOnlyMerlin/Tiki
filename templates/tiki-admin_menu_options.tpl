@@ -1,11 +1,15 @@
 {* $Id$ *}
-{title help="Menus" url="tiki-admin_menu_options.php?menuId=$menuId"}{tr}Admin Menu:{/tr} {$editable_menu_info.name}{/title}
+<h1><a class="pagetitle" href="tiki-admin_menu_options.php?menuId={$menuId}">{tr}Admin Menu{/tr}: {$editable_menu_info.name}</a>
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Menus" target="tikihelp" class="tikihelp" title="{tr}Help{/tr}">
+{icon _id='help'}</a>{/if}
+</h1>
 
 <div class="navbar">
-<span class="button2"><a href="tiki-admin_menus.php">{tr}List menus{/tr}</a></span>
-<span class="button2"><a href="tiki-admin_menus.php?menuId={$menuId}">{tr}Edit this menu{/tr}</a></span>
-<span class="button2"><a href="#export">{tr}Export{/tr}</a></span>
-<span class="button2"><a href="#import">{tr}Import{/tr}</a></span>
+<span class="button2"><a href="tiki-admin_menus.php" class="linkbut">{tr}List menus{/tr}</a></span>
+<span class="button2"><a href="tiki-admin_menus.php?menuId={$menuId}" class="linkbut">{tr}Edit this menu{/tr}</a></span>
+<span class="button2"><a href="#export" class="linkbut">{tr}Export{/tr}</a></span>
+<span class="button2"><a href="#import" class="linkbut">{tr}Import{/tr}</a></span>
 </div>
 <br />
 <table><tr>
@@ -44,7 +48,7 @@
 {/foreach}
 </select>
 {if $option_groups|@count ge '2'}
-{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple groups.{/tr}<br />{tr}Selecting 2 groups means that the option will be seen if the user belongs to the 2 groups. If you want the 2 groups to see the option, create 2 options with one group each.{/tr}{/remarksbox}
+{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple groups.{/tr}{/remarksbox}
 {/if}
 </td></tr>
 {if $prefs.feature_userlevels eq 'y'}
@@ -131,7 +135,7 @@
 {if $prefs.feature_file_galleries eq 'y'}
 <tr><td>{tr}Files{/tr}: </td><td><select name="wikilinks" onchange="setMenuCon(options[selectedIndex].value);return true;">
 <option value=",,,">{tr}Choose{/tr} ...</option>
-<option value="tiki-list_file_gallery.php,{tr}File galleries{/tr},feature_file_galleries,tiki_p_view_file_gallery">{tr}File galleries{/tr}</option>
+<option value="tiki-file_galleries.php,{tr}File galleries{/tr},feature_file_galleries,tiki_p_view_file_gallery">{tr}File galleries{/tr}</option>
 <option value="tiki-upload_file.php,{tr}Upload file{/tr},feature_file_galleries,tiki_p_upload_files">{tr}Upload file{/tr}</option>
 <option value="tiki-file_galleries_rankings.php,{tr}Rankings{/tr},feature_file_galleries_rankings,tiki_p_view_file_gallery">{tr}Rankings{/tr}</option>
 </select></td></tr>
@@ -207,7 +211,7 @@
 <input type="hidden" name="offset" value="{$offset}" />
 <table class="normal">
 <tr>
-<th>
+<th class="heading">
 {if $channels}
 	<script type="text/javascript">
 	<!--//--><![CDATA[//><!--
@@ -216,14 +220,14 @@
 	</script>
 {/if}
 </th>
-<th><a href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'optionId_desc'}optionId_asc{else}optionId_desc{/if}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}">{tr}ID{/tr}</a></th>
-<th><a href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'position_desc'}position_asc{else}position_desc{/if}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}">{tr}Position{/tr}</a></th>
-<th><a href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}">{tr}Name{/tr}</a></th>
-<th><a href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'type_desc'}type_asc{else}type_desc{/if}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}">{tr}Type{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'optionId_desc'}optionId_asc{else}optionId_desc{/if}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}">{tr}ID{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'position_desc'}position_asc{else}position_desc{/if}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}">{tr}Position{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}">{tr}Name{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'type_desc'}type_asc{else}type_desc{/if}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}">{tr}Type{/tr}</a></th>
 {if $prefs.feature_userlevels eq 'y'}
-<th><a href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'level_desc'}level_asc{else}level_desc{/if}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}">{tr}Level{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'level_desc'}level_asc{else}level_desc{/if}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}">{tr}Level{/tr}</a></th>
 {/if}
-<th>{tr}Action{/tr}</th>
+<th class="heading">{tr}Action{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}
@@ -249,11 +253,13 @@ title="{tr}Edit{/tr}">{$channels[user].name}</a>
 <td class="{cycle advance=true}">
 <a class="link" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;optionId={$channels[user].optionId}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}"
 title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
-{if !$smarty.section.user.first}<a class="link" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;up={$channels[user].optionId}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}#options"
-title="{tr}switch with previous option{/tr}">{icon _id='resultset_up'}</a>{/if}
+{if $channels[user].position > 1 }
+<a class="link" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;up={$channels[user].optionId}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}#options"
+title="{tr}switch with previous option{/tr}">{icon _id='resultset_up'}</a>
+{/if}
 {if !$smarty.section.user.last}<a class="link" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;down={$channels[user].optionId}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}#options"
 title="{tr}switch with next option{/tr}">{icon _id='resultset_down'}</a>{/if}
-<a class="link" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].optionId}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}"
+&nbsp;&nbsp;<a class="link" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].optionId}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}"
 title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 </td>
 </tr>

@@ -17,7 +17,6 @@ define("SERVER_ERROR", -1);
 define("PASSWORD_INCORRECT", -3);
 define("USER_NOT_FOUND", -5);
 define("ACCOUNT_DISABLED", -6);
-define("ACCOUNT_WAITING_USER", -9);
 define ("USER_AMBIGOUS", -7);
 define('USER_NOT_VALIDATED', -8);
 
@@ -44,6 +43,22 @@ class UsersLib extends TikiLib {
 	$this->groupperm_cache = array(array());
 	$this->groupinclude_cache = array();
     $this->get_object_permissions_for_user_cache = array();
+    }
+
+    function set_admin_pass($pass) {
+	global $prefs;
+
+	$query = "select `email` from `users_users` where `login` = ?";
+	$email = $this->getOne($query, array('admin'));
+	$hash = $this->hash_pass($pass);
+
+	if ($prefs['feature_clear_passwords'] == 'n')
+	    $pass = '';
+
+	$query = "update `users_users` set `password` = ?, hash = ?
+	    where `login` = ?";
+	$result = $this->query($query, array($pass, $hash, 'admin'));
+	return true;
     }
 
     function assign_object_permission($groupName, $objectId, $objectType, $permName) {
@@ -829,8 +844,6 @@ class UsersLib extends TikiLib {
 		if ($res['valid'] > '' && $pass == $res['valid']) // used for validation of user account before activation
 		return array(USER_VALID, $user);
 
-		if (!empty($res['valid']) && $res['waiting'] == 'u')
-			return array(ACCOUNT_WAITING_USER, $user);
 		if (!empty($res['valid']))
 			return array(ACCOUNT_DISABLED, $user);
 	    return array(PASSWORD_INCORRECT, $user);
@@ -1175,26 +1188,6 @@ function get_included_groups($group, $recur=true) {
 	if ( $user == 'admin' ) return false;
 
 	$userId = $this->getOne("select `userId`  from `users_users` where `login` = ?", array($user));
-
-	$groupTracker = $this->get_tracker_usergroup( $user );
-	if( $groupTracker && $groupTracker['usersTrackerId'] ) {
-		global $trklib;
-		if( ! $trklib ) require_once 'lib/trackers/trackerlib.php';
-
-		$itemId = $trklib->get_item_id( $groupTracker['usersTrackerId'], $groupTracker['usersFieldId'], $user );
-		if( $itemId )
-			$trklib->remove_tracker_item( $itemId );
-	}
-
-	$tracker = $this->get_usertracker( $userId );
-	if( $tracker && $tracker['usersTrackerId'] ) {
-		global $trklib;
-		if( ! $trklib ) require_once 'lib/trackers/trackerlib.php';
-
-		$itemId = $trklib->get_item_id( $tracker['usersTrackerId'], $tracker['usersFieldId'], $user );
-		if( $itemId )
-			$trklib->remove_tracker_item( $itemId );
-	}
 
 	$query = "delete from `users_users` where ". $this->convert_binary()." `login` = ?";
 	$result = $this->query($query, array( $user ) );
@@ -1679,9 +1672,7 @@ function get_included_groups($group, $recur=true) {
 		return $utr;
 	}
 
-  function get_permissions($offset = 0, $maxRecords = -1, $sort_mode = 'permName_asc', $find = '', $type = '', $group = '', $enabledOnly = false) {
-	global $prefs;
-
+  function get_permissions($offset = 0, $maxRecords = -1, $sort_mode = 'permName_asc', $find = '', $type = '', $group = '') {
 	$values = array();
 	$sort_mode = $this->convert_sortmode($sort_mode);
 	$mid = '';
@@ -1714,9 +1705,6 @@ function get_included_groups($group, $recur=true) {
 	$ret = array();
 
 	while ($res = $result->fetchRow()) {
-		if( $res['feature_check'] && $prefs[ $res['feature_check'] ] != 'y' )
-			continue;
-
 	    $cant++;
 	    if ($group && $this->group_has_permission($group, $res['permName'])) {
 		$res['hasPerm'] = 'y';
@@ -2591,7 +2579,7 @@ function get_included_groups($group, $recur=true) {
 		while ($res = $result->fetchRow()) { $ret[] = $res['type']; }
 		return $ret;									
 	}
-	function send_validation_email($name, $apass, $email, $again='', $second='', $chosenGroup='') {
+	function send_validation_email($name, $apass, $email, $again='', $second='') {
 		global $tikilib, $prefs, $smarty;
 		$foo = parse_url($_SERVER['REQUEST_URI']);
 		$foo1 = str_replace('tiki-register', 'tiki-login_validate',$foo['path']);
@@ -2615,9 +2603,6 @@ function get_included_groups($group, $recur=true) {
 				return false;
 			}
 		} elseif ($prefs['validateRegistration'] == 'y') {
-			if (!empty($chosenGroup)) {
-				$smarty->assign_by_ref('chosenGroup', $chosenGroup);
-			}
 			$mail_data = $smarty->fetch('mail/moderate_validation_mail.tpl');
 			$mail_subject = $smarty->fetch('mail/moderate_validation_mail_subject.tpl');
 			if ($prefs['sender_email'] == NULL or !$prefs['sender_email']) {

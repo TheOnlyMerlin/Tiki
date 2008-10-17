@@ -1,4 +1,6 @@
-{title}{tr}Create WebHelp{/tr}{/title}
+<h1><a href="tiki-create_webhelp.php" class="pagetitle">{tr}Create WebHelp{/tr}</a>
+
+</h1>
 
 {if  $generated eq 'y'}
 <a class="link" href="whelp/{$dir}/index.html">{tr}You can browse the generated WebHelp here{/tr}</a><br /><br />

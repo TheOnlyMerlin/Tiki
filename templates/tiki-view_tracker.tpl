@@ -4,7 +4,7 @@
 {popup_init src="lib/overlib.js"}
 {/if}
 
-{title url="tiki-view_tracker.php?trackerId=$trackerId" adm="trackers"}{tr}Tracker:{/tr} {$tracker_info.name}{/title}
+{title url="tiki-view_tracker.php?trackerId=$trackerId"}{tr}Tracker:{/tr} {$tracker_info.name}{/title}
 
 <div class="navbar">
 {if $prefs.feature_user_watches eq 'y' and $tiki_p_watch_trackers eq 'y' and $user}
@@ -17,17 +17,17 @@
 {if $prefs.rss_tracker eq "y"}
 <a href="tiki-tracker_rss.php?trackerId={$trackerId}"><img src='img/rss.png' border='0' alt='{tr}RSS feed{/tr}' title='{tr}RSS feed{/tr}'  align="right" /></a>
 {/if}
-{if (isset($tiki_p_list_trackers) and $tiki_p_list_trackers eq 'y') or (!isset($tiki_p_list_trackers) and $tiki_p_view_trackers eq 'y')}<span class="button2"><a href="tiki-list_trackers.php">{tr}List Trackers{/tr}</a></span>{/if}
-{if $tiki_p_create_tracker_items eq 'y' && $prefs.feature_tabs ne 'y'}<span class="button2"><a href="tiki-view_tracker.php?trackerId={$trackerId}#content2">{tr}Insert New Item{/tr}</a></span>
+{if (isset($tiki_p_list_trackers) and $tiki_p_list_trackers eq 'y') or (!isset($tiki_p_list_trackers) and $tiki_p_view_trackers eq 'y')}<span class="button2"><a href="tiki-list_trackers.php" class="linkbut">{tr}List Trackers{/tr}</a></span>{/if}
+{if $tiki_p_create_tracker_items eq 'y'}<span class="button2"><a href="tiki-view_tracker.php?trackerId={$trackerId}&cookietab=2" class="linkbut">{tr}Insert New Item{/tr}</a></span>
 {/if}
 {if $filtervalue}
-<span class="button2"><a href="tiki-view_tracker.php?trackerId={$trackerId}">{tr}View This Tracker's Items{/tr}</a></span>
+<span class="button2"><a href="tiki-view_tracker.php?trackerId={$trackerId}" class="linkbut">{tr}View This Tracker's Items{/tr}</a></span>
 {/if}
 {if $tiki_p_admin_trackers eq 'y'}
 &nbsp;&nbsp;
-<span class="button2"><a href="tiki-admin_trackers.php">{tr}Admin Trackers{/tr}</a></span>
-<span class="button2"><a href="tiki-admin_trackers.php?trackerId={$trackerId}">{tr}Edit This Tracker{/tr}</a></span>
-<span class="button2"><a href="tiki-admin_tracker_fields.php?trackerId={$trackerId}">{tr}Edit Fields{/tr}</a></span>
+<span class="button2"><a href="tiki-admin_trackers.php" class="linkbut">{tr}Admin Trackers{/tr}</a></span>
+<span class="button2"><a href="tiki-admin_trackers.php?trackerId={$trackerId}" class="linkbut">{tr}Edit This Tracker{/tr}</a></span>
+<span class="button2"><a href="tiki-admin_tracker_fields.php?trackerId={$trackerId}" class="linkbut">{tr}Edit Fields{/tr}</a></span>
 {/if}
 </div>
 
@@ -95,43 +95,43 @@
 <table class="normal">
 <tr>
 {if $tracker_info.showStatus eq 'y' or ($tracker_info.showStatusAdminOnly eq 'y' and $tiki_p_admin_trackers eq 'y')}
-<th class="auto" style="width:20px;"></th>
+<td class="heading auto" style="width:20px;"></td>
 {/if}
 {if $tiki_p_admin_trackers eq 'y'}
-<th width="15">
+<td class="heading" width="15">
 <script type='text/javascript'>
 <!--//--><![CDATA[//><!--
 document.write("<input name=\"switcher\" id=\"clickall2\" title=\"{tr}Select All{/tr}\" type=\"checkbox\" onclick=\"switchCheckboxes(this.form,'action[]',this.checked)\"/>");
 //--><!]]>
 </script>
-</th>
+</td>
 {/if}
 
 {foreach from=$fields key=ix item=field_value}
 {if ( $field_value.type eq 's' and ($field_value.name eq "Rating" or $field_value.name eq tra("Rating")) and $field_value.isTblVisible eq 'y' ) || ( $field_value.isTblVisible eq 'y' and $field_value.type ne 'x' and $field_value.type ne 'h' and ($field_value.isHidden eq 'n' or $field_value.isHidden eq 'p' or $tiki_p_admin_trackers eq 'y') ) and ($field_value.type ne 'p' or $field_value.options_array[0] ne 'password') and (empty($field_value.visibleBy) or in_array($default_group, $field_value.visibleBy) or $tiki_p_admin_trackers eq 'y') }
-	<th class="auto">
+	<td class="heading auto">
 		{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='f_'|cat:$field_value.fieldId}{$field_value.name|truncate:255:"..."|default:"&nbsp;"}{/self_link}
-	</th>
+	</td>
 	{assign var=rateFieldId value=$field_value.fieldId}
 {/if}
 {/foreach}
 
 {if $tracker_info.showCreated eq 'y'}
-<th><a href="tiki-view_tracker.php?{if $status}status={$status}&amp;{/if}{if $initial}initial={$initial}&amp;{/if}{if $find}find={$find}&amp;{/if}trackerId={$trackerId}{if $offset}&amp;offset={$offset}{/if}&amp;sort_mode={if
-$sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr}</a></th>
+<td class="heading"><a class="tableheading" href="tiki-view_tracker.php?{if $status}status={$status}&amp;{/if}{if $initial}initial={$initial}&amp;{/if}{if $find}find={$find}&amp;{/if}trackerId={$trackerId}{if $offset}&amp;offset={$offset}{/if}&amp;sort_mode={if
+$sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr}</a></td>
 {/if}
 {if $tracker_info.showLastModif eq 'y'}
-<th><a href="tiki-view_tracker.php?status={$status}&amp;{if $initial}initial={$initial}&amp;{/if}find={$find}&amp;trackerId={$trackerId}{if $offset}&amp;offset={$offset}{/if}&amp;sort_mode={if $sort_mode eq 'lastModif_desc'}lastModif_asc{else}lastModif_desc{/if}">{tr}lastModif{/tr}</a></th>
+<td class="heading"><a class="tableheading" href="tiki-view_tracker.php?status={$status}&amp;{if $initial}initial={$initial}&amp;{/if}find={$find}&amp;trackerId={$trackerId}{if $offset}&amp;offset={$offset}{/if}&amp;sort_mode={if $sort_mode eq 'lastModif_desc'}lastModif_asc{else}lastModif_desc{/if}">{tr}lastModif{/tr}</a></td>
 {/if}
-{if $tracker_info.useComments eq 'y' and ($tracker_info.showComments eq 'y' || $tracker_info.showLastComment eq 'y')}
-<th{if $tracker_info.showLastComment ne 'y'} style="width:5%"{/if}>{tr}Coms{/tr}</th>
+{if $tracker_info.useComments eq 'y' and $tracker_info.showComments eq 'y'}
+<td class="heading" width="5%">{tr}Coms{/tr}</td>
 {/if}
 {if $tracker_info.useAttachments eq 'y' and  $tracker_info.showAttachments eq 'y'}
-<th style="width:5%">{tr}atts{/tr}</th>
-{if $tiki_p_admin_trackers eq 'y'}<th style="width:5%">{tr}dls{/tr}</th>{/if}
+<td class="heading" width="5%">{tr}atts{/tr}</td>
+{if $tiki_p_admin_trackers eq 'y'}<td class="heading" width="5%">{tr}dls{/tr}</td>{/if}
 {/if}
 {if $tiki_p_admin_trackers eq 'y'}
-<th style="width:20px">{tr}Action{/tr}</th>
+<td class="heading" width="20">{tr}Action{/tr}</td>
 {/if}
 </tr>
 
@@ -166,7 +166,7 @@ $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr
 	{cycle values="odd,even" print=false}
 	{foreach from=$items[user].field_values item=f}
 		{if in_array($f.fieldId, $popupFields)}
-			 <tr><th class="{cycle advance=false}">{$f.name}</th><td class="{cycle}">{include file="tracker_item_field_value.tpl" field_value=$f}</th></tr>
+			 <tr><th class="{cycle advance=false}">{$f.name}</th><td class="{cycle}">{include file="tracker_item_field_value.tpl" field_value=$f}</td></tr>
 		{/if}
 	{/foreach}
 	</table>
@@ -190,8 +190,8 @@ $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr
 {if $tracker_info.showLastModif eq 'y'}
 <td>{if $tracker_info.showLastModifFormat}{$items[user].lastModif|tiki_date_format:$tracker_info.showLastModifFormat}{else}{$items[user].lastModif|tiki_short_datetime}{/if}</td>
 {/if}
-{if $tracker_info.useComments eq 'y' and ($tracker_info.showComments eq 'y' or $tracker_info.showLastComment eq 'y')}
-<td  style="text-align:center;">{if $tracker_info.showComments eq 'y'}{$items[user].comments}{/if}{if $tracker_info.showComments eq 'y' and $tracker_info.showLastComment eq 'y'}<br />{/if}{if $tracker_info.showLastComment eq 'y' and !empty($items[user].lastComment)}{$items[user].lastComment.user|escape}-{$items[user].lastComment.posted|tiki_short_date}{/if}</td>
+{if $tracker_info.useComments eq 'y' and $tracker_info.showComments eq 'y'}
+<td  style="text-align:center;">{$items[user].comments}</td>
 {/if}
 {if $tracker_info.useAttachments eq 'y' and $tracker_info.showAttachments eq 'y'}
 <td style="text-align:center;"><a href="tiki-view_tracker_item.php?itemId={$items[user].itemId}&amp;show=att{if $offset}&amp;offset={$offset}{/if}{foreach key=urlkey item=urlval from=$urlquery}{if $urlval}&amp;{$urlkey}={$urlval|escape:"url"}{/if}{/foreach}{section name=mix loop=$fields}{if $fields[mix].value}&amp;{$fields[mix].name}={$fields[mix].value}{/if}{/section}"
@@ -216,11 +216,6 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 <select name="batchaction">
 <option value="">{tr}...{/tr}</option>
 <option value="delete">{tr}Delete{/tr}</option>
-{if $tracker_info.showStatus eq 'y'}
-<option value="c">{tr}Close{/tr}</option>
-<option value="o">{tr}Open{/tr}</option>
-<option value="p">{tr}Pending{/tr}</option>
-{/if}
 </select>
 <input type="hidden" name="trackerId" value="{$trackerId}" />
 <input type="submit" name="act" value="{tr}OK{/tr}" />
@@ -249,15 +244,17 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 <td>
 <select name="status">
 {foreach key=st item=stdata from=$status_types}
-<option value="{$st}" {if $tracker_info.newItemStatus eq $st} selected="selected"{/if}
+<option value="{$st}"{if $tracker_info.newItemStatus eq $st} selected="selected"{/if}
 style="background-image:url('{$stdata.image}');background-repeat:no-repeat;padding-left:17px;">{$stdata.label}</option>
 {/foreach}
 </select>
 </td></tr>
 {/if}
 
+
 {foreach from=$fields key=ix item=field_value}
 {assign var=fid value=$field_value.fieldId}
+
 {* -------------------- header and others -------------------- *}
 {if $field_value.isHidden eq 'n' or $field_value.isHidden eq 'c'  or $tiki_p_admin_trackers eq 'y'}
 {if $field_value.type ne 'x' and $field_value.type ne 'l' and $field_value.type ne 'q' and (($field_value.type ne 'u' and $field_value.type ne 'g' and $field_value.type ne 'I') or !$field_value.options_array[0] or $tiki_p_admin_trackers eq 'y') and (empty($field_value.visibleBy) or in_array($default_group, $field_value.visibleBy) or $tiki_p_admin_trackers eq 'y')and (empty($field_value.editableBy) or in_array($default_group, $field_value.editableBy) or $tiki_p_admin_trackers eq 'y')}
@@ -309,7 +306,6 @@ style="background-image:url('{$stdata.image}');background-repeat:no-repeat;paddi
 {/if}
 {/if}
 {/foreach}
-
 </select>
 {else}
 {$user}
@@ -372,10 +368,6 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
 {elseif $field_value.type eq 'i'}
 <input type="file" name="{$field_value.ins_id}" {if $input_err}value="{$field_value.value}"{/if}/>
 
-{* -------------------- page -------------------- *}
-{elseif $field_value.type eq 'k'}
-{include file=tracker_item_field_input.tpl}
-
 {* -------------------- multimedia -------------------- *}
 {elseif $field_value.type eq 'M'}
 {if ($field_value.options_array[0] > '2')}
@@ -385,7 +377,7 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
 {/if}
 
 {* -------------------- text field / email -------------------- *}
-{elseif $field_value.type eq 't'}
+{elseif $field_value.type eq 't' || $field_value.type eq 'm'}
 {if $field_value.isMultilingual ne "y"}
 {if $field_value.options_array[2]}<span class="formunit">{$field_value.options_array[2]}&nbsp;</span>{/if}
 <input type="text" name="{$field_value.ins_id}" {if $field_value.options_array[1]}size="{$field_value.options_array[1]}" maxlength="{$field_value.options_array[1]}"{/if} value="{if $input_err}{$field_value.value}{else}{$defaultvalues.$fid|escape}{/if}" />
@@ -418,10 +410,6 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
       {$field_value.description|escape|nl2br}
     {/if}
 	{/if}
-
-{* -------------------- email -------------------- *}
-{elseif $field_value.type eq 'm'}
-{include file=tracker_item_field_input.tpl}
 
 {* -------------------- textarea -------------------- *}
 {elseif $field_value.type eq 'a'}
@@ -486,7 +474,7 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
 {/if}
 {if $field_value.type ne 'a' and $field_value.type ne 'S'}
 {if $field_value.description}
-<br />{if $field_value.descriptionIsParsed eq 'y'}{wiki}{$field_value.description}{/wiki}{else}<em>{$field_value.description|escape}</em>{/if}
+<br /><em>{$field_value.description|escape}</em>
 {/if}
 {/if}
 </td>

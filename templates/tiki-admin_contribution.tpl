@@ -1,7 +1,11 @@
 {* $Id$ *}
-
-{title help="Contribution"}{tr}Admin Contributions{/tr}{/title}
-
+<h1><a  class="pagetitle" href="tiki-admin_contribution.php">{tr}Admin Contributions{/tr}</a>
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Contribution" target="tikihelp" class="tikihelp" title="{tr}Contribution{/tr}">
+{icon _id='help'}</a>{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admin_contributions.tpl" target="tikihelp" class="tikihelp" title="{tr}View template{/tr}">
+{icon _id='shape_square_edit'}</a>{/if}</h1>
 
 {if $contribution}
 <h2>{tr}Edit the contribution:{/tr} {$contribution.name|escape}</h2>
@@ -48,9 +52,9 @@
 <h2>{tr}List of contributions{/tr}</h2>
 <table class="normal">
 <tr>
-<th>{tr}Name{/tr}</th>
-<th>{tr}Description{/tr}</th>
-<th>{tr}Actions{/tr}</th>
+<td class="heading">{tr}Name{/tr}</td>
+<td class="heading">{tr}Description{/tr}</td>
+<td class="heading">{tr}Actions{/tr}</td>
 </tr>
 {cycle print=false values="even,odd"}
 {section name=ix loop=$contributions}

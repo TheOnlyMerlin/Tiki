@@ -1,17 +1,33 @@
 {* $Id$ *}
 
-{* Copyright (c) 2002-2008 *}
+{* Copyright (c) 2004 *}
 {* All Rights Reserved. See copyright.txt for details and a complete list of authors. *}
 {* Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details. *}
 
-{title help="Quiz" url="tiki-edit_quiz_questions.php?quizId=$quizId"}{tr}Edit quiz questions{/tr}{/title}
+<!-- tiki-edit_quiz_questions.tpl start -->
+
+<h1><a class="pagetitle" href="tiki-edit_quiz_questions.php?quizId={$quizId}">{tr}Edit quiz questions{/tr}</a>
+<!-- the help link info -->
+  
+      {if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Quiz" target="tikihelp" class="tikihelp" title="{tr}Tikiwiki.org help{/tr}: {tr}Edit Quiz Questions{/tr}"><img border='0' src='img/icons/help.gif' alt="{tr}Help{/tr}" /></a>{/if}
+
+<!-- link to tpl -->
+
+     {if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=/tiki-edit_quiz_questions.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Edit Quiz Questions Tpl{/tr}"><img src="img/icons/info.gif" border="0" height="16" width="16" alt='{tr}Edit Tpl{/tr}' /></a>
+{/if}
+
+
+
+</h1>
 
 <!-- beginning of link buttons -->
-<span class="button2"><a href="tiki-list_quizzes.php">{tr}List Quizzes{/tr}</a></span>
-<span class="button2"><a href="tiki-quiz_stats.php">{tr}Quiz Stats{/tr}</a></span>
-<span class="button2"><a href="tiki-quiz_stats_quiz.php?quizId={$quizId}">{tr}This Quiz Stats{/tr}</a></span>
-<span class="button2"><a href="tiki-edit_quiz.php?quizId={$quizId}">{tr}Edit this Quiz{/tr}</a></span>
-<span class="button2"><a href="tiki-edit_quiz.php">{tr}Admin Quizzes{/tr}</a></span>
+<a class="linkbut" href="tiki-list_quizzes.php">{tr}List Quizzes{/tr}</a>
+<a class="linkbut" href="tiki-quiz_stats.php">{tr}Quiz Stats{/tr}</a>
+<a class="linkbut" href="tiki-quiz_stats_quiz.php?quizId={$quizId}">{tr}This Quiz Stats{/tr}</a>
+<a class="linkbut" href="tiki-edit_quiz.php?quizId={$quizId}">{tr}Edit this Quiz{/tr}</a>
+<a class="linkbut" href="tiki-edit_quiz.php">{tr}Admin Quizzes{/tr}</a>
 <br /><br />
 
 <h2>{tr}Create/edit questions for quiz{/tr}: <a href="tiki-edit_quiz.php?quizId={$quiz_info.quizId}" >{$quiz_info.name}</a></h2>
@@ -89,30 +105,30 @@
 
 <table class="normal">
 <tr>
-<th><a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'questionId_desc'}questionId_asc{else}questionId_desc{/if}">{tr}ID{/tr}</a></th>
-<th><a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'position_desc'}position_asc{else}position_desc{/if}">{tr}Position{/tr}</a></th>
-<th>
+<td class="heading"><a class="tableheading" href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'questionId_desc'}questionId_asc{else}questionId_desc{/if}">{tr}ID{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'position_desc'}position_asc{else}position_desc{/if}">{tr}Position{/tr}</a></td>
+<td class="heading">
 
 {* how come these questions are sortable and the others are not? *}
-<a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'question_desc'}question_asc{else}question_desc{/if}">{tr}question{/tr}</a>
-</th>
+<a class="tableheading" href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'question_desc'}question_asc{else}question_desc{/if}">{tr}question{/tr}</a>
+</td>
 
 {* how come the options are not sortable? 
-<th><a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'options_desc'}options_asc{else}options_desc{/if}">{tr}Options{/tr}</a>
-</th>
+<td class="heading"><a class="tableheading" href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'options_desc'}options_asc{else}options_desc{/if}">{tr}Options{/tr}</a>
+</td>
 *}
 
-<th>{tr}Options{/tr}</th>
+<td class="heading">{tr}Options{/tr}</td>
 
 {* these need to be sortable so as to do quick cks for bogus scores... TAs and teachers make mistakes
-<th><a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'maxScore_desc'}maxScore_asc{else}maxScore_desc{/if}">{tr}maxScore{/tr}</a>
-</th>
+<td class="heading"><a class="tableheading" href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'maxScore_desc'}maxScore_asc{else}maxScore_desc{/if}">{tr}maxScore{/tr}</a>
+</td>
 *}
 
-<th>{tr}maxScore{/tr}</th>
+<td class="heading">{tr}maxScore{/tr}</td>
 
 
-<th>{tr}Action{/tr}</th>
+<td class="heading">{tr}Action{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}

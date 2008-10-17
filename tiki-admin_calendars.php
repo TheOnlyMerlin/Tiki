@@ -45,13 +45,12 @@ if (isset($_REQUEST["save"])) {
 	$customflags["custompriorities"] = $_REQUEST["custompriorities"];
 	$customflags["customsubscription"] = isset($_REQUEST["customsubscription"]) ? $_REQUEST["customsubscription"] : 'n';
 	$customflags["personal"] = $_REQUEST["personal"];
-	$customflags['customstatus'] = isset($_REQUEST['customstatus']) ? $_REQUEST['customstatus'] : 'y';
 	$options = $_REQUEST['options'];
 	if (!preg_match('/^[0-9a-fA-F]{3,6}$/',$options['customfgcolor'])) $options['customfgcolor'] = '000000';
 	if (!preg_match('/^[0-9a-fA-F]{3,6}$/',$options['custombgcolor'])) $options['custombgcolor'] = 'ffffff';
 	$options['startday'] = $_REQUEST['startday_Hour']*60*60;
 	$options['endday'] = $_REQUEST['endday_Hour']*60*60 - 1;
-	$extra = array('calname','description','location','description','language','category','participants','url', 'status', 'status_calview');
+	$extra = array('calname','description','location','description','language','category','participants','url');
 	foreach ($extra as $ex) {
 		if (isset($_REQUEST['show'][$ex]) and $_REQUEST['show'][$ex] == 'on') {
 			$options["show_$ex"] = 'y';
@@ -95,7 +94,7 @@ if ($prefs['feature_categories'] == 'y') {
 
 if ($_REQUEST["calendarId"]) {
 	$info = $calendarlib->get_calendar($_REQUEST["calendarId"]);
-	$cookietab = 2;
+	setcookie("activeTabs".urlencode(substr($_SERVER["REQUEST_URI"],1)),"tab2");
 } else {
 	$info = array();
 	$info["name"] = '';
@@ -106,7 +105,6 @@ if ($_REQUEST["calendarId"]) {
 	$info["customcategories"] = 'n';
 	$info["custompriorities"] = 'n';
 	$info["customsubscription"] = 'n';
-	$info['customstatus'] = 'y';
 	$info["customurl"] = 'n';
 	$info["customfgcolor"] = '000000';
 	$info["custombgcolor"] = 'ffffff';
@@ -121,15 +119,7 @@ if ($_REQUEST["calendarId"]) {
 	$info["personal"] = 'n';
 	$info["startday"] = '25200';
 	$info["endday"] = '72000';
-    $info["defaulteventstatus"] = 0;
-	if (!empty($_REQUEST['show']) && $_REQUEST['show'] == 'mod') {
-		$cookietab = '2';
-	} else {
-		$cookietab = 1;
-	}
 }
-setcookie('tab', $cookietab);
-$smarty->assign_by_ref('cookietab', $cookietab);
 
 $smarty->assign('name', $info["name"]);
 $smarty->assign('description', $info["description"]);
@@ -155,14 +145,6 @@ $smarty->assign('personal', $info["personal"]);
 $smarty->assign('startday', $info["startday"] < 0 ?0: round($info['startday']/(60*60)));
 $smarty->assign('endday', $info["endday"] < 0 ?0: round($info['endday']/(60*60)));
 $smarty->assign('hours', array('0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24'));
-$smarty->assign('defaulteventstatus', $info['defaulteventstatus']);
-
-$smarty->assign('eventstatus', array(
-                                0 => tra('Tentative'),
-                                1 => tra('Confirmed'),
-                                2 => tra('Cancelled'))
-                                );
-$smarty->assign_by_ref('info', $info);
 
 if (!isset($_REQUEST["sort_mode"])) {
 	$sort_mode = 'name_desc';
@@ -180,6 +162,12 @@ if (isset($_REQUEST["find"])) {
 
 $smarty->assign('find', $find);
 
+$calendars = $calendarlib->list_calendars(0, -1, $sort_mode, $find);
+
+foreach (array_keys($calendars["data"]) as $i) {
+	$calendars["data"][$i]["individual"] = $userlib->object_has_one_permission($i, 'calendar');
+}
+
 if (!isset($_REQUEST["offset"])) {
 	$offset = 0;
 } else {
@@ -187,13 +175,22 @@ if (!isset($_REQUEST["offset"])) {
 }
 $smarty->assign_by_ref('offset', $offset);
 
-$calendars = $calendarlib->list_calendars($offset, $maxRecords, $sort_mode, $find);
+$cant_pages = ceil($calendars["cant"] / $maxRecords);
+$smarty->assign_by_ref('cant_pages', $cant_pages);
+$smarty->assign('actual_page', 1 + ($offset / $maxRecords));
 
-foreach (array_keys($calendars["data"]) as $i) {
-	$calendars["data"][$i]["individual"] = $userlib->object_has_one_permission($i, 'calendar');
+if ($calendars["cant"] > ($offset + $maxRecords)) {
+	$smarty->assign('next_offset', $offset + $maxRecords);
+} else {
+	$smarty->assign('next_offset', -1);
 }
 
-$smarty->assign_by_ref('cant', $calendars['cant']);
+// If offset is > 0 then prev_offset
+if ($offset > 0) {
+	$smarty->assign('prev_offset', $offset - $maxRecords);
+} else {
+	$smarty->assign('prev_offset', -1);
+}
 
 $smarty->assign_by_ref('calendars', $calendars["data"]);
 

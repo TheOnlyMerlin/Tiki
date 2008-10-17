@@ -121,12 +121,14 @@ input[type=password] {
 	width: 120px;
 	font-size: 0.9em;
 	cursor: text}
-	
 
+/*input[type=submit],
+input[type=file],
+input[type=reset],
+select {}*/
 
 button,
 input[type=submit],
-.submitbutton,
 .button input,
 input[type=reset] {
 	background:#4E4E4E url(darkroom/button.png) top left repeat-x;
@@ -140,7 +142,6 @@ input[type=reset] {
 
 button:hover,
 input[type=submit]:hover,
-.submitbutton:hover,
 .button input:hover {
 	border: 1px solid #B2B2B2;
 	text-decoration: none}
@@ -169,6 +170,7 @@ input[type=wikiaction] {margin-bottom: 2px}
 * html .findtable input {font-size: 1em}
 * html .wikitopline select {font-size: .9em}
 small {font-size: 0.8em}
+label {}
 ul, ol {text-align: left}
 li {}
 
@@ -179,6 +181,12 @@ li {}
 ul.jumplinks {
 	font-size: 0.8em;
 	list-style-type: none}
+
+ul.jumplinks, .jumplinks {
+	position: absolute;
+	top: -9000px;
+	left: -9000px;
+	z-index: 9}
 
 ul.jumplinks a:focus, ul.jumplinks a:active {
 	position: absolute;
@@ -262,8 +270,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 #footer a:visited {font-weight: bold}
 
 #footer a:hover {}
-#power {margin-top: .5em}
-#credits {display: inline}
+#credits {margin-top: .5em}
 .footerbgtrap {}
 
 /* end Type 1 layout */
@@ -583,7 +590,8 @@ a.phplmselected:hover {color: #AAAAAA}
 div.separator, div.separatorline {
 	color: #F5F5F5;
 	display: block;
-	padding: 5px 4px 4px 10px}
+	padding: 5px 4px 4px 10px;
+	width: 140px}
 
 div.separator:hover,
 div.option a.linkmenu:hover {
@@ -691,11 +699,6 @@ div#edithelpzone {display: none}
 .highlight, #highlight  {
 	background: #474747 !important;
 	color: #fff}
-	
-/* OpenID  */
-.openid_url {
-	background: #fff url(../../img/icons/login-OpenID-bg.gif) no-repeat;
-	padding-left: 18px}
 
 .bannertext {
 	font-size: .95em;
@@ -804,7 +807,7 @@ a.flipmodtitle:hover img {border: 1px solid #818181 !important}
 
 .box-data { 
 	background: #474747;
-	padding: 2px 2px;
+	padding: 2px 4px 2px 4px;
 	color: #DCDCDC;
 	line-height:1.4em;
 	margin: 8px;
@@ -858,40 +861,38 @@ a.flipmodtitle:hover img {border: 1px solid #818181 !important}
 
 .rbox {
 	overflow: hidden;
-	border: 0;
+	border: 1px solid #606060;
+	padding: 4px;
 	color: #fffff0}
 
 .rbox-title {
-	display: inline-block;
 	text-align: left;
 	padding: 3px;
 	font-weight: bold;
 	background: transparent;
-	border: 1px solid #606060;
-	border-bottom: 0;
-	margin-bottom: -1px}
+	border: 0}
 
 .rbox-data {
 	padding: 3px;
 	background: transparent;
-	border: 1px solid #606060}
+	border: 0}
 
 .rbox a {text-decoration: underline}
 
-.warning .rbox-title {color: #ffe6db}
-.warning .rbox-data { }
+.rbox-title[name="warning"] {color: #ffe6db}
+.rbox-data[name="warning"] { }
 
-.tip .rbox-title,
-.tip .rbox-data,
-.note .rbox-data {
+.rbox-title[name="tip"],
+.rbox-data[name="tip"] {
 	background: #000;
-	/*border: none;*/
+	border: none;
 	color: #fffff0}
 
-.comment .rbox-title,
-.comment .rbox-data {}
+.rbox-title[name="comment"],
+.rbox-data[name="comment"] {}
 
-.note .rbox-title {}
+.rbox-title[name="note"] {}
+.rbox-data[name="note"] {}
 
 div.simplebox {
 	background: #696969;
@@ -925,6 +926,11 @@ table.admin tr td div#page-bar {}
 td {vertical-align: top}
 * html td { font-size: 11px}
 
+th {
+	padding: 0 2px;
+	background: #303030;
+	color: #F5F5F5}
+
 td.normal,
 td.bloglist,
 .wikitable td,
@@ -943,17 +949,17 @@ td.even {
 
 /* table.email {}
 table.email td.body {}
-table.email th {}
+table.email td.heading {}
 table.email td.closeButton {} */
 
 div.heading,
-th {
-	padding: 0 2px;
+td.heading {
 	background: #292929 !important;
 	text-align: center;
 	color: #F5F5F5;
 	border-bottom: 1px solid #696969}
 
+td.bloglistheading {text-align: center}
 /* form.admin {}
 form.admin fieldset {}
 form.admin legend.heading {}
@@ -1009,6 +1015,16 @@ a.forumname {}
 
 a.forumnameread {} */
 
+/* links in table headings */
+/* .tableheading,
+.gallistheading,
+.listgalheading,
+.bloglistheading,
+.llisfgalheading,
+.llistfileslink,
+.llistart,
+.lforumheading {} */
+
 /** Tabs **/
 
 .tabs {
@@ -1017,7 +1033,7 @@ a.forumnameread {} */
 	padding: 0 !important}
 
 .tabactive {
-	border: solid 1px #225566 !important;
+	border: solid;1px #225566 !important;
 	border-bottom: none !important;
 	border-top-width: 2px !important;
 	position: relative;
@@ -1253,32 +1269,40 @@ ul.floatleft li {
 	padding: 4px 2px}
 
 .editdate ul.floatleft {margin-top: 8px}
-
- .navbar > a,
+ 
 .button2 {
+	display: inline-block;
 	margin: 2px;
 	padding: 0 4px;
 	background:#4E4E4E url(darkroom/button.png) top left repeat-x;
 	border: 1px solid #3F3F3F;
 	border-top: 1px solid #818181}
-.button2 {display: inline-block;}
 
-.navbar > a:hover{
-	border: 1px solid #B2B2B2;
-	text-decoration: none;
-}
-.button2:hover {border: 1px solid #B2B2B2}
-
-.button2 a,
-.button2 a:visited {
-	display: block;
+div.button2 a, .button3 a {
+	/*margin: 2px;
+	padding: 0 4px;
+	background:#4E4E4E url(darkroom/button.png) top left repeat-x;
+	*/color:#B2B2B2;
 	font-weight: bold;
-	font-size: 0.8em;
-	text-decoration: none
-	color: #3F3F3F;}
+	/*border: 1px solid #3F3F3F;
+	border-top: 1px solid #818181;*/
+	display: block}
 	
-.button2 a:hover {text-decoration: none}
+.navbar .linkbut { 
+	color:#B2B2B2;
+	font-weight: bold}
 
+.navbar .linkbut:hover,
+div.button2 a:hover, .button3 a:hover {
+	/*border: 1px solid #B2B2B2;*/
+	text-decoration: none}
+
+span.button2 {line-height: 150%}
+span.button2:hover {border: 1px solid #B2B2B2}
+span.button2 a {border: 1px solid transparent}
+span.button2 a:hover {text-decoration: none}
+.linkbut, .linkbut:visited {font-size: 0.8em}
+ /*.linkbut:hover {}
 div.cache {}
 div.cachedpage {}
 .wikicache, .wikicache:visited {}
@@ -1365,18 +1389,16 @@ ul.toc * {}
 
 .diffheader {
 	background: #A9B8C2;
-	color: #000;
 	font-weight: bold}
 
-.diffadded { background: #CCFFCC; color: #000}
-.diffdeleted { background: #FFCCCC; color: #000}
+.diffadded { background: #CCFFCC}
+.diffdeleted { background: #FFCCCC}
 
 .diffinldel {
 	background: #FFCCCC;
-	 color: #000;
 	text-decoration: line-through}
 
-.diffbody { background: #F2F4F5;  color: #000}
+.diffbody { background: #F2F4F5}
 .diffchar { color: red}
 
 /***** Articles ****/
@@ -1440,10 +1462,6 @@ div.articlesource {
 	font-style: italic;
 	font-size: 90%}
  
-div.articletrailer .wikitopline {
-	background: #4E4E4E url(darkroom/button.png) top left repeat-x;
-	width: 100%}
-
 /***** Blogs *****/
 
 div.blogheading {
@@ -1583,7 +1601,7 @@ table.commentinfo {background: #F0F0F0}
 * html .post .postbody {font-size: 11px}
 *:first-child+html .post .postbody {min-width: 100% !important}
 	
-#c1c2 #wrapper #col1 .content .post .postbody .content {
+#col1 .post .postbody .content {
 	color: #D8D8D8;
 	border-color: transparent;
 	background: transparent !important;
@@ -1596,7 +1614,7 @@ table.commentinfo {background: #F0F0F0}
 	text-align: left;
 	color: #D8D8D8}
 	
-#c1c2 #wrapper #col1 .content .post .postbody .content p { margin: 5px 10px }
+.post .postbody .content p { margin: 5px 10px }
 		
 .post .postbody-title {
 	background-color: inherit;
@@ -1703,7 +1721,7 @@ table.commentinfo {background: #F0F0F0}
 
 .forum_actions .headers .title {
 	float: left;
-	background-color: #696969;
+	background-color: dimgray;
 	border: 1px solid #999999;
 	border-bottom: 0;
 	padding: 1px}
@@ -1740,8 +1758,6 @@ span.commentstitle {
 
 /* Find */
 .subcomment {margin-left: 10px}
-.findtitle {float: left;}
-.findtable {padding: 15px 0;}
 
 /* Help box*/
 div.commentsedithelp {
@@ -1776,13 +1792,14 @@ td.categobjectsdataodd {}
 .catlists a.link {}
 .catlists a.link:hover {}
 
-ul.catfeatures {list-style: none}
+ul.catfeatures {}
 ul.catfeatures li {}
 ul.catitems {}
 
 ul.catitems li {
-	display: inline;
-	margin-right: 10px}
+	float: left !important;
+	padding-right: 18px;
+}
 
 ul.catitems li a.link {}
 
@@ -1917,7 +1934,7 @@ div.thumbdescription span.thumbinfoname {}
 a.namealias {}
 div.gallerypath, div.gallerypath a { color: #6996C3; font-style: italic; font-weight: normal; margin-left: 3px; text-decoration: none}
 div.gallerypath a:hover { text-decoration: underline}
-.fgalexplorer { border: 1px solid #D8D8D8; background: #999999;}
+.fgalexplorer { border: 1px solid #D8D8D8}
 .fgallisting table td { padding-left: 2px; padding-right: 2px}
 
 /***** Trackers *****/
@@ -2306,15 +2323,17 @@ div#ajaxLoading {
 	position: absolute;
 	top: 50px;
 	right: 50%;
+	color: transparent;
 	padding: 3px;
 	font-family: Verdana;
 	font-size: 90%;
+	background-color: transparent;
 	background: url(../lib/shadowbox/images/loading.gif) no-repeat;
 	height: 45px;
 	width: 32px;
 	padding-top: 32px}
 
-#shadowbox_title {
+#shadowbox_title{
 	height: auto !important;
 	padding: 0;
 	overflow: visible}
@@ -2399,19 +2418,5 @@ a.admbox.off {border: 1px solid #9f9f9f}
 a.admbox.off:hover,
 a.admbox.off:focus,
 a.admbox.off:active {border: 1px solid #9f9f9f}
-#page_bar {text-align:center;}
 
-a.icon,
-img.icon {border: 0 !important;
-	background: transparent;}
-
-div.multiselect {
-	vertical-align: middle;
-	overflow-y: auto;
-	overflow-x: hidden;
-	height: 5em;
-}
-
-div.multiselect div.odd {background: #292929}
-div.multiselect div.even {background: #3F3F3F}
 /* end of css file */

@@ -57,9 +57,6 @@ if ( ! isset($_REQUEST['galleryId']) || $_REQUEST['galleryId'] == 0 ) {
 
 } elseif ( $gal_info = $tikilib->get_file_gallery($_REQUEST['galleryId']) ) {
 	$tikilib->get_perm_object($_REQUEST['galleryId'], 'file gallery', $gal_info);
-	if ($userlib->object_has_one_permission($_REQUEST['galleryId'], 'file gallery')) {
-		$smarty->assign('individual', 'y');
-	}
 	$podCastGallery = $filegallib->isPodCastGallery($_REQUEST['galleryId'], $gal_info);
 
 } else {
@@ -92,7 +89,7 @@ $smarty->assign('edit_mode', 'n');
 $smarty->assign('dup_mode', 'n');
 $smarty->assign('visible', 'y');
 $smarty->assign('fgal_type', 'default');
-$smarty->assign('parentId', isset($_REQUEST['parentId']) ? (int)$_REQUEST['parentId'] : -1);
+$smarty->assign('parentId', -1);
 $smarty->assign('creator', $user);
 $smarty->assign('sortorder', 'created');
 $smarty->assign('sortdirection', 'desc');
@@ -109,13 +106,14 @@ if ( $tiki_p_admin_file_galleries == 'y' ) {
 	if ( isset($_REQUEST['delsel_x']) ) {
 		check_ticket('fgal');
 		foreach ( array_values($_REQUEST['file']) as $file ) {
-			if ($info = $filegallib->get_file_info($file)) {
+			if ( $_REQUEST['file'] > 0 ) {
+				$info = $filegallib->get_file_info($file);
 				$smarty->assign('fileId', $file);
 				$smarty->assign_by_ref('filename', $info['filename']);
 				$smarty->assign_by_ref('fname', $info['name']);
 				$smarty->assign_by_ref('fdescription', $info['description']);
-				$filegallib->remove_file($info, $user, $gal_info);
 			}
+			$filegallib->remove_file($info, $user, $gal_info);
 		}
 		foreach ( array_values($_REQUEST['subgal']) as $subgal ) {
 			$filegallib->remove_file_gallery($subgal, $galleryId);
@@ -132,18 +130,6 @@ if ( $tiki_p_admin_file_galleries == 'y' ) {
 			$filegallib->move_file_gallery($subgal, $_REQUEST['moveto']);
 		}
 	}
-}
-if (isset($_REQUEST['zipsel_x']) && $tiki_p_upload_files == 'y') {
-	check_ticket('fgal');
-	$href = array();
-	foreach (array_values($_REQUEST['file']) as $file) {
-		$href[] = "fileId[]=$file";
-	}
-	foreach ( array_values($_REQUEST['subgal']) as $subgal ) {
-		$href[] = "galId[]=$subgal";
-	}
-	header("Location: tiki-download_file.php?".implode('&', $href));
-	die;
 }
 
 // Lock a file
@@ -243,7 +229,7 @@ if ( isset($_REQUEST['edit_mode']) and $_REQUEST['edit_mode'] ) {
 	}
 
 	// Edit a file
-	if ( isset($_REQUEST['fileId']) && $_REQUEST['fileId'] > 0 ) {
+	if ( $_REQUEST['fileId'] > 0 ) {
 		$info = $filegallib->get_file_info($_REQUEST['fileId']);
 
 		$smarty->assign('fileId', $_REQUEST['fileId']);
@@ -592,7 +578,7 @@ if ( ! empty($_FILES) ) {
 
 			$fileId = $filegallib->replace_file(
 				$fileInfo['fileId'],
-				$fileInfo['name'],
+				$fileInto['name'],
 				$fileInfo['description'],
 				$v['name'],
 				$data,
@@ -816,7 +802,7 @@ if ( $prefs['feature_user_watches'] == 'y' ) {
 	}
 }
 
-$all_galleries = $filegallib->list_file_galleries(0, -1, 'name_asc', $user, '', -1, false, true, false, false,false,true, false );
+$all_galleries = $filegallib->list_file_galleries(0, -1, 'name_asc', $user);
 $smarty->assign_by_ref('all_galleries', $all_galleries['data']);
 
 // Build galleries browsing tree and current gallery path array
@@ -860,7 +846,7 @@ if ( is_array($all_galleries) && count($all_galleries) > 0 ) {
 	$gallery_path_str = '';
 	foreach ( $gallery_path as $dir_id ) {
 		if ( $gallery_path_str != '' ) $gallery_path_str .= ' &nbsp;&gt;&nbsp;';
-		$gallery_path_str .= '<a href="tiki-list_file_gallery.php?galleryId='.$dir_id[0].( ( isset($_REQUEST['filegals_manager']) && $_REQUEST['filegals_manager'] != '' ) ? '&amp;filegals_manager='.urlencode($_REQUEST['filegals_manager']) : '').'">'.$dir_id[1].'</a>';
+		$gallery_path_str .= '<a href="tiki-list_file_gallery.php?galleryId='.$dir_id[0].( isset($_REQUEST['filegals_manager']) ? '&amp;filegals_manager=y' : '').'">'.$dir_id[1].'</a>';
 	}
 }
 
@@ -890,8 +876,8 @@ if ( $_REQUEST['galleryId'] != 0 ) {
 include_once('fgal_listing_conf.php');
 
 // Display the template
-if ( isset($_REQUEST['filegals_manager']) && $_REQUEST['filegals_manager'] != '' ) {
-	$smarty->assign('filegals_manager', $_REQUEST['filegals_manager']);
+if ( isset($_REQUEST['filegals_manager']) && $_REQUEST['filegals_manager'] == 'y' ) {
+	$smarty->assign('filegals_manager','y');
 	$smarty->display('tiki_full.tpl');
 } else {
 	$smarty->display('tiki.tpl');

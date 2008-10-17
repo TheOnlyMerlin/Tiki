@@ -6,7 +6,7 @@ require_once('tiki-setup.php');
 include_once ('lib/userprefs/userprefslib.php');
 
 if($prefs['feature_friends'] != 'y') {
-  $smarty->assign('msg',tra('This feature is disabled').': feature_friends');
+  $smarty->assign('msg',tra("This feature is disabled"));
   $smarty->display("error.tpl");
   die;  
 }
@@ -50,7 +50,7 @@ if(isset($_REQUEST["find"])) {
 }
 $smarty->assign('find',$find);
 
-$listusers = $tikilib->list_users($offset,$maxRecords,$sort_mode,$find, true);
+$listusers = $tikilib->list_users($offset,$maxRecords,$sort_mode,$find);
 
 // If there're more records then assign next_offset
 $cant_pages = ceil($listusers["cant"] / $maxRecords);

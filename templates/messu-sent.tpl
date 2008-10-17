@@ -1,4 +1,13 @@
-{title help="Inter-User Messages"}{tr}Sent Messages{/tr}{/title}
+{*Smarty template*}
+<h1><a class="pagetitle" href="messu-sent.php">{tr}Sent Messages{/tr}</a>
+
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Inter-User Messages" target="tikihelp" class="tikihelp" title="{tr}Messages{/tr}">{icon _id='help'}</a>
+{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=messu-sent.tpl" target="tikihelp" class="tikihelp">{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}</h1>
 
 {include file=tiki-mytiki_bar.tpl}
 {include file="messu-nav.tpl"}
@@ -60,13 +69,13 @@ var CHECKBOX_LIST = [{section name=user loop=$items}'msg[{$items[user].msgId}]'{
 </script>
 <table class="normal" >
   <tr>
-    <th><input type="checkbox" name="checkall" onclick="checkbox_list_check_all('form_messu_sent',CHECKBOX_LIST,this.checked);" /></th>
-    <th style="width:18px">&nbsp;</th>
-    <th><a href="messu-sent.php?flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_to_desc'}user_to_asc{else}user_to_desc{/if}">{tr}receiver{/tr}</a></th>
-    <th><a href="messu-sent.php?flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'subject_desc'}subject_asc{else}subject_desc{/if}">{tr}Subject{/tr}</a></th>
-    <th><a href="messu-sent.php?flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'date_desc'}date_asc{else}date_desc{/if}">{tr}Date{/tr}</a></th>
-    <th><a href="messu-sent.php?flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'isReplied_desc'}isReplied_asc{else}isReplied_desc{/if}">{tr}Replies{/tr}</a></th>
-    <th style="text-align:right;">{tr}Size{/tr}</th>
+    <td class="heading" ><input type="checkbox" name="checkall" onclick="checkbox_list_check_all('form_messu_sent',CHECKBOX_LIST,this.checked);" /></td>
+    <td class="heading" width='18' >&nbsp;</td>
+    <td class="heading" ><a class="tableheading" href="messu-sent.php?flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_to_desc'}user_to_asc{else}user_to_desc{/if}">{tr}receiver{/tr}</a></td>
+    <td class="heading" ><a class="tableheading" href="messu-sent.php?flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'subject_desc'}subject_asc{else}subject_desc{/if}">{tr}Subject{/tr}</a></td>
+    <td class="heading" ><a class="tableheading" href="messu-sent.php?flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'date_desc'}date_asc{else}date_desc{/if}">{tr}Date{/tr}</a></td>
+    <td class="heading" ><a class="tableheading" href="messu-sent.php?flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'isReplied_desc'}isReplied_asc{else}isReplied_desc{/if}">{tr}Replies{/tr}</a></td>
+    <td style="text-align:right;" class="heading" >{tr}Size{/tr}</td>
   </tr>
   {cycle values="odd,even" print=false}
   {section name=user loop=$items}

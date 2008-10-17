@@ -91,8 +91,8 @@
 <input type="hidden" name="iid" value="{$iid|escape}" />
 <table class="normal">
 <tr>
-	<th>{tr}Property{/tr}</th>
-	<th>{tr}Value{/tr}</th>
+	<td class="heading">{tr}Property{/tr}</td>
+	<td class="heading">{tr}Value{/tr}</td>
 </tr>
 {foreach from=$props item=item key=key}
 <tr>

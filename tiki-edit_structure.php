@@ -22,18 +22,6 @@ if ($tiki_p_view != 'y') {
 	die;
 }
 
-if($prefs['feature_wiki'] != 'y') {
-    $smarty->assign('msg', tra('This feature is disabled').': feature_wiki');
-    $smarty->display('error.tpl');
-    die;  
-}
-
-if($prefs['feature_wiki_structure'] != 'y') {
-    $smarty->assign('msg', tra('This feature is disabled').': feature_wiki_structure');
-    $smarty->display('error.tpl');
-    die;  
-}
-
 if (!isset($_REQUEST["page_ref_id"])) {
 	$smarty->assign('msg', tra("No structure indicated"));
 	$smarty->display("error.tpl");
@@ -248,7 +236,7 @@ if (!empty($_REQUEST['categId'])) {
 }
 	
 // Get all wiki pages for the dropdown menu
-$listpages = $tikilib->list_pages(0, -1, 'pageName_asc', $find_objects, '', true, true, false, false, $filter);
+$listpages = $tikilib->list_pages(0, 50, 'pageName_asc', $find_objects, '', true, true, false, false, $filter);
 $smarty->assign_by_ref('listpages', $listpages["data"]);
 
 $structures = $structlib->list_structures(0, -1, 'pageName_asc');

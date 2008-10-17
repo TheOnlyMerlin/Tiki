@@ -11,7 +11,7 @@
 	{if ($forum_mode eq 'y' and $forum_info.vote_threads eq 'y' and $tiki_p_forum_vote eq 'y') or ($forum_mode neq 'y' and $tiki_p_vote_comments eq 'y')}
 		<span class="score">
 		<b>{tr}Score{/tr}</b>: {$comment.average|string_format:"%.2f"}
-		{if $comment.userName ne $user and $comment.approved eq 'y' and (
+		{if $comment.userName ne $user and (
 			   ( $forum_mode neq 'y' and $tiki_p_vote_comments eq 'y' )
 			or ( $forum_mode eq 'y' and $forum_info.vote_threads eq 'y' and ( $tiki_p_forum_vote eq 'y' or $tiki_p_admin_forum eq 'y' ) )
 		) }
@@ -43,20 +43,20 @@
 
 	</div>
 
-	{if $thread_style != 'commentStyle_headers' and $comment.approved eq 'y'}
+	{if $thread_style != 'commentStyle_headers'}
 	<div class="actions">
 		{if ( $forum_mode neq 'y' and $tiki_p_post_comments == 'y' )
 			or ( $forum_mode eq 'y' and $tiki_p_forum_post eq 'y' )
 		}
 			{if $forum_mode neq 'y'}
-			<span class="button2"><a href="{$comments_complete_father}comments_threshold={$comments_threshold}&amp;comments_reply_threadId={$comment.threadId}&amp;comments_offset={$comments_offset}&amp;thread_sort_mode={$thread_sort_mode}&amp;comments_per_page={$comments_per_page}&amp;comments_grandParentId={$comment.parentId}&amp;comments_parentId={$comment.threadId}&amp;thread_style={$thread_style}&amp;post_reply=1#form">{tr}Reply{/tr}</a></span>
+			<a class="linkbut" href="{$comments_complete_father}comments_threshold={$comments_threshold}&amp;comments_reply_threadId={$comment.threadId}&amp;comments_offset={$comments_offset}&amp;thread_sort_mode={$thread_sort_mode}&amp;comments_per_page={$comments_per_page}&amp;comments_grandParentId={$comment.parentId}&amp;comments_parentId={$comment.threadId}&amp;thread_style={$thread_style}&amp;post_reply=1#form">{tr}Reply{/tr}</a>
 			{else}
 				{if $first eq 'y'}
-				<span class="button2"><a href="#form">{tr}Reply{/tr}</a></span>
+				<a class="linkbut" href="#form">{tr}Reply{/tr}</a>
 				{elseif $comments_grandParentId}
-				<span class="button2"><a href="{$comments_complete_father}comments_threshold={$comments_threshold}&amp;comments_reply_threadId={$comment.threadId}&amp;comments_offset={$comments_offset}&amp;thread_sort_mode={$thread_sort_mode}&amp;comments_per_page={$comments_per_page}&amp;comments_grandParentId={$comments_grandParentId}&amp;comments_parentId={$comments_grandParentId}&amp;thread_style={$thread_style}&amp;post_reply=1#form">{tr}Reply{/tr}</a></span>
+				<a class="linkbut" href="{$comments_complete_father}comments_threshold={$comments_threshold}&amp;comments_reply_threadId={$comment.threadId}&amp;comments_offset={$comments_offset}&amp;thread_sort_mode={$thread_sort_mode}&amp;comments_per_page={$comments_per_page}&amp;comments_grandParentId={$comments_grandParentId}&amp;comments_parentId={$comments_grandParentId}&amp;thread_style={$thread_style}&amp;post_reply=1#form">{tr}Reply{/tr}</a>
 				{elseif $forum_info.is_flat neq 'y'}
-				<span class="button2"><a href="{$comments_complete_father}comments_threshold={$comments_threshold}&amp;comments_reply_threadId={$comment.threadId}&amp;comments_offset={$comments_offset}&amp;thread_sort_mode={$thread_sort_mode}&amp;comments_per_page={$comments_per_page}&amp;comments_grandParentId={$comment.parentId}&amp;comments_parentId={$comment.parentId}&amp;thread_style={$thread_style}&amp;post_reply=1#form">{tr}Reply{/tr}</a></span>
+				<a class="linkbut" href="{$comments_complete_father}comments_threshold={$comments_threshold}&amp;comments_reply_threadId={$comment.threadId}&amp;comments_offset={$comments_offset}&amp;thread_sort_mode={$thread_sort_mode}&amp;comments_per_page={$comments_per_page}&amp;comments_grandParentId={$comment.parentId}&amp;comments_parentId={$comment.parentId}&amp;thread_style={$thread_style}&amp;post_reply=1#form">{tr}Reply{/tr}</a>
 				{/if}
 			{/if}
 		{/if}

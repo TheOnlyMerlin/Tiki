@@ -1,4 +1,4 @@
-{title help="tests"}{tr}TikiTests Record Configuration{/tr}{/title}
+<h1 class='pagetitle'><a href='#' class='pagetitle'>TikiTests Record Configuration</a></h1>
 
 {include file='tiki-tests_menubar.tpl'}
 

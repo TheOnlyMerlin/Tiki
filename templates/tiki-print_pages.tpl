@@ -1,6 +1,5 @@
 {* $Id$ *}
-
-{title help="print"}{tr}Print multiple pages{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-print_pages.php">{tr}Print multiple pages{/tr}</a></h1>
 
 <table class="findtable">
   <tr>

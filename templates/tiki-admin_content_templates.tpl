@@ -1,4 +1,12 @@
-{title help="Content+Templates"}{tr}Admin templates{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-admin_content_templates.php">{tr}Admin templates{/tr}</a>
+  
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Content+Templates" target="tikihelp" class="tikihelp" title="{tr}Admin Content Templates{/tr}">{icon _id='help'}</a>
+{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admin_content_templates.tpl" target="tikihelp" class="tikihelp" title="{tr}View template{/tr}: {tr}Admin Content Templates Template{/tr}">{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}</h1>
 
 {remarksbox type="tip" title="Tip"}Use the Administration page of each enabled feature to allow the use of content templates.{/remarksbox}
 
@@ -14,19 +22,13 @@
 {/if}
 <form action="tiki-admin_content_templates.php" method="post">
 {if $prefs.feature_wysiwyg eq 'y' and $prefs.wysiwyg_optional eq 'y'}
-	<div class="navbar">
-		{if $wysiwyg ne 'y'}
-			<span class="button2">
-				<a href="?templateId={$templateId}&amp;wysiwyg=y">{tr}Use wysiwyg editor{/tr}</a>
-			</span>
-		{else}
-			<span class="button2">
-				<a href="?templateId={$templateId}&amp;wysiwyg=n">{tr}Use normal editor{/tr}</a>
-			</span>
-		{/if}
-	</div>
+{if $wysiwyg ne 'y'}
+<span class="button2"><a class="linkbut" href="?templateId={$templateId}&amp;wysiwyg=y">{tr}Use wysiwyg editor{/tr}</a></span>
+{else}
+<span class="button2"><a class="linkbut" href="?templateId={$templateId}&amp;wysiwyg=n">{tr}Use normal editor{/tr}</a></span>
 {/if}
-
+{/if}
+<br />
 <input type="hidden" name="templateId" value="{$templateId|escape}" />
 <table class="normal">
 <tr><td class="formcolor">{tr}Name{/tr}:</td><td class="formcolor"><input type="text" maxlength="255" size="40" name="name" value="{$info.name|escape}" /></td></tr>
@@ -101,10 +103,10 @@
 <br />
 <table class="normal">
 <tr>
-<th><a href="tiki-admin_content_templates.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
-<th><a href="tiki-admin_content_templates.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Last Modified{/tr}</a></th>
-<th>{tr}Sections{/tr}</th>
-<th>{tr}Action{/tr}</th>
+<td class="heading"><a class="tableheading" href="tiki-admin_content_templates.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-admin_content_templates.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Last Modif{/tr}</a></td>
+<td class="heading">{tr}Sections{/tr}</td>
+<td class="heading">{tr}Action{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false advance=false}
 {section name=user loop=$channels}
@@ -112,10 +114,9 @@
 <td class="{cycle advance=false}">{$channels[user].name}</td>
 <td class="{cycle advance=false}">{$channels[user].created|tiki_short_datetime}</td>
 <td class="{cycle advance=false}">
-{if count($channels[user].sections) == 0}{tr}Visible in no sections{/tr}{/if}
 {section name=ix loop=$channels[user].sections}
-{$channels[user].sections[ix]} <a title="{tr}Delete{/tr}" class="link" href="tiki-admin_content_templates.php?removesection={$channels[user].sections[ix]}&amp;rtemplateId={$channels[user].templateId}" 
-{icon _id='cross' alt='{tr}Delete{/tr}'}</a>&nbsp;&nbsp;
+({$channels[user].sections[ix]} <a title="{tr}Delete{/tr}" class="link" href="tiki-admin_content_templates.php?removesection={$channels[user].sections[ix]}&amp;rtemplateId={$channels[user].templateId}" 
+>{icon _id='cross' alt='{tr}Delete{/tr}'}</a>)&nbsp;&nbsp;
 {/section}
 </td>
 <td class="{cycle advance=true}">

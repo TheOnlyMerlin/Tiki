@@ -1,9 +1,9 @@
 {*Smarty template*}
 <h1><a class="pagetitle" href="tiki-g-map_roles.php?pid={$pid}">{tr}Map process roles{/tr}</a></h1>
-<span class="button2"><a href="tiki-g-admin_processes.php">{tr}Admin Processes{/tr}</a></span>
-<span class="button2"><a href="tiki-g-admin_activities.php?pid={$pid}">{tr}Admin Activities{/tr}</a></span>
-<span class="button2"><a href="tiki-g-admin_roles.php?pid={$pid}">{tr}Admin Roles{/tr}</a></span>
-<span class="button2"><a href="tiki-g-admin_processes.php?pid={$pid}">{tr}Edit this Process{/tr}</a></span><br /><br />
+<a class="linkbut" href="tiki-g-admin_processes.php">{tr}Admin Processes{/tr}</a>
+<a class="linkbut" href="tiki-g-admin_activities.php?pid={$pid}">{tr}Admin Activities{/tr}</a>
+<a class="linkbut" href="tiki-g-admin_roles.php?pid={$pid}">{tr}Admin Roles{/tr}</a>
+<a class="linkbut" href="tiki-g-admin_processes.php?pid={$pid}">{tr}Edit this Process{/tr}</a><br /><br />
 {tr}Process:{/tr} {$proc_info.name} {$proc_info.version}<br />
 
 process graph<br />
@@ -88,9 +88,9 @@ Errors:<br />
 <input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
 <table class="normal">
 <tr>
-<th><input type="submit" name="delete" value="{tr}Del{/tr}" /></th>
-<th><a href="tiki-g-map_roles.php?pid={$pid}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Role{/tr}</a></th>
-<th><a href="tiki-g-map_roles.php?pid={$pid}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_desc'}user_asc{else}user_desc{/if}">{tr}User{/tr}</a></th>
+<td class="heading"><input type="submit" name="delete" value="{tr}Del{/tr}" /></td>
+<td class="heading" ><a class="tableheading" href="tiki-g-map_roles.php?pid={$pid}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Role{/tr}</a></td>
+<td class="heading" ><a class="tableheading" href="tiki-g-map_roles.php?pid={$pid}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_desc'}user_asc{else}user_desc{/if}">{tr}User{/tr}</a></td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$items}

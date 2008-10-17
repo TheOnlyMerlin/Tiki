@@ -1,18 +1,14 @@
 <?php
 
-if (array_key_exists('SHELL', $_ENV)) {
-	$tikiversion='3.0';
+$tikiversion='1.9';
+if(!isset($_GET['version'])) {
+   echo "version not given. Using default $tikiversion.<br />";
 } else {
-	$tikiversion='1.9';
-
-	if(!isset($_GET['version'])) {
-	   echo "version not given. Using default $tikiversion.<br />";
-	} else {
-	   if(preg_match('/\d\.\d/',$_GET['version'])) {
-	      $tikiversion=$_GET['version'];
-	   }
-	}
+   if(preg_match('/\d\.\d/',$_GET['version'])) {
+      $tikiversion=$_GET['version'];
+   }
 }
+
 // read file
 $file="../tiki-$tikiversion-mysql.sql";
 @$fp = fopen($file,"r");

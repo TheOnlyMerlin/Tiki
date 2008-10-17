@@ -149,14 +149,14 @@ table.galtable {
 	border-collapse: collapse;
 }
 
-table.normal th {
+table.normal td.heading {
  background-color: #abcdef;
  border: solid 1px #24880C;
  font-size: 1em;
  width: 15px;
 }
 
-table.admin th {
+table.admin td.heading {
  background-color: #EEF5EE;
  border: solid 1px #24880C;
  font-size: 1em;
@@ -1448,9 +1448,4 @@ h3.box-title {
 a.flipmodtitle:hover img {
 	border: 1px solid #eef5ee !important;
 }
-
-a.icon,
-img.icon {
-	border: 0 !important;
-	background: transparent}
 /* end of css file */

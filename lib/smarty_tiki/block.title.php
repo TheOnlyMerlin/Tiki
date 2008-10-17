@@ -23,16 +23,12 @@ function smarty_block_title($params, $content, &$smarty, $repeat)
   global $prefs;
   global $smarty;
   global $tiki_p_view_templates, $tiki_p_edit_templates, $tiki_p_admin;
-  include_once('lib/smarty_tiki/function.icon.php');
 
   if ( $repeat || $content == '' ) return;
 
   if ( ! isset($params['help']) ) $params['help'] = '';
   if ( ! isset($params['admpage']) ) $params['admpage'] = '';
-  if ( ! isset($params['url']) ) {
-	  require_once $smarty->_get_plugin_filepath('function', 'query');
-	  $params['url'] = smarty_function_query(array('_type' => 'absolute_path'), $smarty);
-  }
+  if ( ! isset($params['url']) ) $params['url'] = $_SERVER['REQUEST_URI'];
   
   $html = '<h1>';
   $html .= '<a class="pagetitle" href="' . $params['url'] . '">' . $content . "</a>\n";
@@ -42,15 +38,15 @@ function smarty_block_title($params, $content, &$smarty, $repeat)
           . smarty_function_icon(array('_id' => 'help') , $smarty)
           . "</a>\n";
   }
- 
-  if ( ($prefs['feature_view_tpl'] == 'y' &&  $tiki_p_view_templates == 'y') || ($prefs['feature_edit_templates'] == 'y' && $tiki_p_edit_templates == 'y' ) ) {
+  
+  if ( $prefs['feature_view_tpl'] == 'y' && ( $tiki_p_edit_templates || $tiki_p_edit_templates ) ) {
     $html .= '<a href="tiki-edit_templates.php?template=' . $smarty->_tpl_vars['mid'] . '" target="tikihelp" class="tikihelp" title="' . tra('View tpl:') . ' ' . $content . '">' 
           . smarty_function_icon(array('_id' => 'shape_square_edit', 'alt' => tra('Edit Template')), $smarty)
           . "</a>\n";
   }
   
   if ( $tiki_p_admin == 'y' && $params['admpage'] != '' ) {
-    $html .= '<a class="tikihelp" href="tiki-admin.php?page=' . $params['admpage'] . '">'
+    $html .= '<a href="tiki-admin.php?page=' . $params['admpage'] . '">'
           . smarty_function_icon(array('_id' => 'wrench', 'alt' => tra('Admin Feature')), $smarty)
           . "</a>\n";
   }

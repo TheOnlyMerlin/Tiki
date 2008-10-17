@@ -1,9 +1,9 @@
-{title help="User+Menu"}{tr}User Menu{/tr}{/title}
-
+{*Smarty template*}
+<h1><a class="pagetitle" href="tiki-usermenu.php">{tr}User Menu{/tr}</a></h1>
 {include file=tiki-mytiki_bar.tpl}
 <br />
 {if $prefs.feature_user_bookmarks eq 'y' and $tiki_p_create_bookmarks eq 'y'}
-  <a title="({tr}May need to refresh twice to see changes{/tr})" class="link" href="tiki-usermenu.php?addbk=1">{tr}Add top level bookmarks to menu{/tr}</a> 
+<a title="({tr}May need to refresh twice to see changes{/tr})" class="link" href="tiki-usermenu.php?addbk=1">{tr}Add top level bookmarks to menu{/tr}</a> 
 {/if}
 <h2>{tr}Menus{/tr}</h2>
 
@@ -12,11 +12,11 @@
 <form action="tiki-usermenu.php" method="post">
 <table class="normal">
 <tr>
-<th><input type="submit" name="delete" value="x " title="{tr}Delete Selected{/tr}" /></th>
-<th><a href="tiki-usermenu.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'position_desc'}position_asc{else}position_desc{/if}">{tr}Pos{/tr}</a></th>
-<th><a href="tiki-usermenu.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
-<th><a href="tiki-usermenu.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'url_desc'}url_asc{else}url_desc{/if}">{tr}URL{/tr}</a></th>
-<th><a href="tiki-usermenu.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'mode_desc'}mode_asc{else}mode_desc{/if}">{tr}Mode{/tr}</a></th>
+<td  class="heading"><input type="submit" name="delete" value="x " title="{tr}Delete Selected{/tr}" /></td>
+<td class="heading" ><a class="tableheading" href="tiki-usermenu.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'position_desc'}position_asc{else}position_desc{/if}">{tr}Pos{/tr}</a></td>
+<td class="heading" ><a class="tableheading" href="tiki-usermenu.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></td>
+<td class="heading" ><a class="tableheading" href="tiki-usermenu.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'url_desc'}url_asc{else}url_desc{/if}">{tr}URL{/tr}</a></td>
+<td class="heading" ><a class="tableheading" href="tiki-usermenu.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'mode_desc'}mode_asc{else}mode_desc{/if}">{tr}Mode{/tr}</a></td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}

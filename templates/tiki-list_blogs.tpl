@@ -1,8 +1,12 @@
 {* $Id$ *}
-{title help="Blogs" admpage="blogs"}{tr}Blogs{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-list_blogs.php">{tr}Blogs{/tr}</a>
+{if $tiki_p_admin eq 'y'}
+<a href="tiki-admin.php?page=blogs">{icon _id='wrench' alt="{tr}Admin Feature{/tr}"}</a>
+{/if}
+</h1>
 
 {if $tiki_p_create_blogs eq 'y'}
-  <div class="navbar"><a href="tiki-edit_blog.php">{tr}Create New Blog{/tr}</a></div>
+  <div class="navbar"><a class="linkbut" href="tiki-edit_blog.php">{tr}Create New Blog{/tr}</a></div>
 {/if}
 <div align="center">
 
@@ -10,39 +14,39 @@
   {include file='find.tpl' _sort_mode='y'}
 {/if}
 
-<table class="normal">
+<table class="bloglist">
 <tr>
 {if $prefs.blog_list_title eq 'y'}
-	<th><a href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Title{/tr}</a></th>
+	<td class="heading"><a class="link" href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Title{/tr}</a></td>
 {/if}
 {if $prefs.blog_list_description eq 'y'}
-	<th>{tr}Description{/tr}</th>
+	<td class="heading">{tr}Description{/tr}</td>
 {/if}
 {if $prefs.blog_list_created eq 'y'}
-	<th><a href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr}</a></th>
+	<td class="heading"><a class="link" href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr}</a></td>
 {/if}
 {if $prefs.blog_list_lastmodif eq 'y'}
-	<th><a href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastModif_desc'}lastModif_asc{else}lastModif_desc{/if}">{tr}Last post{/tr}</a></th>
+	<td class="heading"><a class="link" href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastModif_desc'}lastModif_asc{else}lastModif_desc{/if}">{tr}Last post{/tr}</a></td>
 {/if}
 {if $prefs.blog_list_user ne 'disabled'}
-	<th><a href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_desc'}user_asc{else}user_desc{/if}">{tr}User{/tr}</a></th>
+	<td class="heading"><a class="link" href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_desc'}user_asc{else}user_desc{/if}">{tr}User{/tr}</a></td>
 {/if}
 {if $prefs.blog_list_posts eq 'y'}
-	<th style="text-align:right;"><a href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'posts_desc'}posts_asc{else}posts_desc{/if}">{tr}Posts{/tr}</a></th>
+	<td style="text-align:right;" class="heading"><a class="link" href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'posts_desc'}posts_asc{else}posts_desc{/if}">{tr}Posts{/tr}</a></td>
 {/if}
 {if $prefs.blog_list_visits eq 'y'}
-	<th style="text-align:right;"><a href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'hits_desc'}hits_asc{else}hits_desc{/if}">{tr}Visits{/tr}</a></th>
+	<td style="text-align:right;" class="heading"><a class="link" href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'hits_desc'}hits_asc{else}hits_desc{/if}">{tr}Visits{/tr}</a></td>
 {/if}
 {if $prefs.blog_list_activity eq 'y'}
-	<th style="text-align:right;"><a href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'activity_desc'}activity_asc{else}activity_desc{/if}">{tr}Activity{/tr}</a></th>
+	<td style="text-align:right;" class="heading"><a class="link" href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'activity_desc'}activity_asc{else}activity_desc{/if}">{tr}Activity{/tr}</a></td>
 {/if}
-<th>{tr}Action{/tr}</th>
+<td class="heading">{tr}Action{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=changes loop=$listpages}
 <tr>
 {if $prefs.blog_list_title eq 'y'}
-	<td class="{cycle advance=false}">{if ($tiki_p_admin eq 'y') or ($listpages[changes].individual eq 'n') or ($listpages[changes].individual_tiki_p_read_blog eq 'y' ) }<a class="blogname" href="{$listpages[changes].blogId|sefurl:blog}" title="{$listpages[changes].title}">{/if}{if $listpages[changes].title}{$listpages[changes].title|truncate:$prefs.blog_list_title_len:"...":true}{else}&nbsp;{/if}{if ($tiki_p_admin eq 'y') or ($listpages[changes].individual eq 'n') or ($listpages[changes].individual_tiki_p_read_blog eq 'y' ) }</a>{/if}</td>
+	<td class="{cycle advance=false}">{if ($tiki_p_admin eq 'y') or ($listpages[changes].individual eq 'n') or ($listpages[changes].individual_tiki_p_read_blog eq 'y' ) }<a class="blogname" href="tiki-view_blog.php?blogId={$listpages[changes].blogId}" title="{$listpages[changes].title}">{/if}{if $listpages[changes].title}{$listpages[changes].title|truncate:$prefs.blog_list_title_len:"...":true}{else}&nbsp;{/if}{if ($tiki_p_admin eq 'y') or ($listpages[changes].individual eq 'n') or ($listpages[changes].individual_tiki_p_read_blog eq 'y' ) }</a>{/if}</td>
 {/if}
 {if $prefs.blog_list_description eq 'y'}
 	<td class="{cycle advance=false}">{$listpages[changes].description}</td>
@@ -75,26 +79,26 @@
 <td class="{cycle}" nowrap="nowrap">
 	{if ($user and $listpages[changes].user eq $user) or ($tiki_p_blog_admin eq 'y')}
 		{if ($tiki_p_admin eq 'y') or ($listpages[changes].individual eq 'n') or ($listpages[changes].individual_tiki_p_blog_create_blog eq 'y' ) }
-			<a class="icon" href="tiki-edit_blog.php?blogId={$listpages[changes].blogId}">{icon _id='page_edit'}</a>
+			<a class="bloglink" href="tiki-edit_blog.php?blogId={$listpages[changes].blogId}">{icon _id='page_edit'}</a>
 		{/if}
 	{/if}
 	{if $tiki_p_blog_post eq 'y'}
 		{if ($tiki_p_admin eq 'y') or ($listpages[changes].individual eq 'n') or ($listpages[changes].individual_tiki_p_blog_post eq 'y' ) }
 			{if ($user and $listpages[changes].user eq $user) or ($tiki_p_blog_admin eq 'y') or ($listpages[changes].public eq 'y')}
-				<a class="icon" href="tiki-blog_post.php?blogId={$listpages[changes].blogId}">{icon _id='pencil_add' alt='{tr}Post{/tr}'}</a>
+				<a class="bloglink" href="tiki-blog_post.php?blogId={$listpages[changes].blogId}">{icon _id='pencil_add' alt='{tr}Post{/tr}'}</a>
 			{/if}
 		{/if}
 	{/if}
 	{if $tiki_p_admin eq 'y' || $tiki_p_assign_perm_blog eq 'y'}
 	    {if $listpages[changes].individual eq 'y'}
-		<a class="icon" href="tiki-objectpermissions.php?objectName={$listpages[changes].title|escape:"url"}&amp;objectType=blog&amp;permType=blogs&amp;objectId={$listpages[changes].blogId}">{icon _id='key_active' alt='{tr}Active Perms{/tr}'}</a>
+		<a class="bloglink" href="tiki-objectpermissions.php?objectName={$listpages[changes].title|escape:"url"}&amp;objectType=blog&amp;permType=blogs&amp;objectId={$listpages[changes].blogId}">{icon _id='key_active' alt='{tr}Active Perms{/tr}'}</a>
 	    {else}
-		<a class="icon" href="tiki-objectpermissions.php?objectName={$listpages[changes].title|escape:"url"}&amp;objectType=blog&amp;permType=blogs&amp;objectId={$listpages[changes].blogId}">{icon _id='key' alt='{tr}Perms{/tr}'}</a>
+		<a class="bloglink" href="tiki-objectpermissions.php?objectName={$listpages[changes].title|escape:"url"}&amp;objectType=blog&amp;permType=blogs&amp;objectId={$listpages[changes].blogId}">{icon _id='key' alt='{tr}Perms{/tr}'}</a>
 	    {/if}
 	{/if}
         {if ($user and $listpages[changes].user eq $user) or ($tiki_p_blog_admin eq 'y')}
                 {if ($tiki_p_admin eq 'y') or ($listpages[changes].individual eq 'n') or ($listpages[changes].individual_tiki_p_blog_create_blog eq 'y' ) }
-                        &nbsp;&nbsp;<a class="icon" href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$listpages[changes].blogId}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a>
+                        &nbsp;&nbsp;<a class="bloglink" href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$listpages[changes].blogId}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a>
                 {/if}
         {/if}
 	

@@ -1,11 +1,7 @@
 {popup_init src="lib/overlib.js"}
-
-{title help="forums" admpage="forums"}{tr}Message queue for forum{/tr} {$forum_info.name}{/title}
-
-<div class="navbar">
-  <a href="tiki-view_forum.php?forumId={$forumId}">{tr}Back to forum{/tr}</a>
-</div>
-
+{*Smarty template*}
+<h1><a class="pagetitle" href="tiki-forum_queue.php?forumId={$forumId}">{tr}Message queue for{/tr}: {$forum_info.name}</a></h1>
+<a class="link" href="tiki-view_forum.php?forumId={$forumId}">{tr}back to forum{/tr}</a>
 {if $smarty.request.qId and $form eq 'y'}
 <h3>{tr}Edit queued message{/tr}</h3>
 <form method="post" action="tiki-forum_queue.php">
@@ -127,9 +123,9 @@
 <input type="hidden" name="find" value="{$find|escape}" />
 <table class="normal">
 <tr>
-{if $items}<th>&nbsp;</th>
+{if $items}<th class="heading" >&nbsp;</th>
 {/if}
-<th>{tr}Message{/tr}</th>
+<th class="heading" >{tr}Message{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$items}

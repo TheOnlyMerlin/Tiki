@@ -1,11 +1,9 @@
 {popup_init src="lib/overlib.js"}
-
-{title help="Forums" admpage="forums"}{tr}Reported messages for forum{/tr}&nbsp;{$forum_info.name}{/title}
-
-<div class="navbar">
-  <a href="tiki-view_forum.php?forumId={$forumId}">{tr}Back to forum{/tr}</a>
-</div>
-
+{*Smarty template*}
+<h1><a class="pagetitle" href="tiki-forums_reported.php?forumId={$forumId}">{tr}Reported messages for{/tr}: {$forum_info.name}</a>
+</h1>
+<a class="link" href="tiki-view_forum.php?forumId={$forumId}">{tr}back to forum{/tr}</a>
+<br />
 <h2>{tr}List of messages{/tr} ({$cant})</h2>
 {* FILTERING FORM *}
 {if $items or ($find ne '')}
@@ -35,10 +33,10 @@
 <table class="normal">
 <tr>
 {if $items}
-<th></th>
+<th class="heading" ></th>
 {/if}
-<th>{tr}Message{/tr}</th>
-<th>{tr}Reported by{/tr}</th>
+<th class="heading">{tr}Message{/tr}</th>
+<th class="heading">{tr}Reported by{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$items}

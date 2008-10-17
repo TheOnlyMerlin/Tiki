@@ -6,7 +6,7 @@
 
 <div class="admin">
 <table class="normal">
-<tr><th colspan="2">{tr}Operations{/tr}</th></tr>
+<tr><td class="heading" colspan="2">{tr}Operations{/tr}</td></tr>
 
 </table>
 

@@ -5,17 +5,21 @@
 {if $preview}
 {include file="tiki-preview_article.tpl"}
 {/if}
-
+<h1>{if $subId}<a class="pagetitle" href="tiki-edit_submission.php?subId={$subId}">{tr}Edit{/tr}: {$title}</a>{else}<a class="pagetitle" href="tiki-edit_submission.php">{tr}Submit article{/tr}{/if}
 {assign var=area_name value="body"}
 
-{if $subId}
-  {title help="Articles" url="tiki-edit_submission.php?subId=$subId"}{tr}Edit:{/tr} {$title}{/title}
-{else}
-  {title help="Articles"}{tr}Submit article{/tr}{/title}
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Articles" target="tikihelp" class="tikihelp" title="{tr}Help on Articles{/tr}">
+<img src="img/icons/help.gif" border="0" height="16" width="16" alt='{tr}Help{/tr}' /></a>
 {/if}
 
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-edit_submission.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Edit Submissions Tpl{/tr}">
+<img src="img/icons/info.gif" border="0" width="16" height="16" alt='{tr}Edit Template{/tr}' /></a>
+{/if}</h1>
+
 <div class="navbar">
-  <a href="tiki-list_submissions.php">{tr}List Submissions{/tr}</a>
+<a class="linkbut" href="tiki-list_submissions.php">{tr}List Submissions{/tr}</a>
 </div>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
@@ -24,8 +28,6 @@
 
 <form enctype="multipart/form-data" method="post" action="tiki-edit_submission.php" id='editpageform'>
 <input type="hidden" name="subId" value="{$subId|escape}" />
-<input type="hidden" name="previewId" value="{$previewId|escape}" />
-<input type="hidden" name="imageIsChanged" value="{$imageIsChanged|escape}" />
 <input type="hidden" name="image_data" value="{$image_data|escape}" />
 <input type="hidden" name="useImage" value="{$useImage|escape}" />
 <input type="hidden" name="image_type" value="{$image_type|escape}" />
@@ -89,20 +91,17 @@
 </select>
 </td></tr>
 <tr id='show_image_1' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor"><td>{tr}Own Image{/tr} *</td><td><input type="hidden" name="MAX_FILE_SIZE" value="1000000" />
-<input name="userfile1" type="file" onchange="document.getElementById('useImage').checked = true;"/></td></tr>
+<input name="userfile1" type="file" /></td></tr>
 {if $hasImage eq 'y'}
   <tr class="formcolor"><td>{tr}Own Image{/tr}</td><td>{$image_name} [{$image_type}] ({$image_size} bytes)</td></tr>
-	<tr class="formcolor">
-		<td>{tr}Own Image{/tr}</td>
-  	{if $imageIsChanged eq 'y'}
-			<td><img alt="{tr}Article image{/tr}" border="0" src="article_image.php?image_type=preview&amp;id={$previewId}" /></td>
-		{else}
-			<td><img alt="{tr}Article image{/tr}" border="0" src="article_image.php?image_type=submission&amp;id={$subId}" /></td>
-		{/if}
-	</tr>
+  {if $tempimg ne 'n'}
+    <tr class="formcolor"><td>{tr}Own Image{/tr}</td><td>
+    <img alt="{tr}Article image{/tr}" border="0" src="{$tempimg}" {if $image_x > 0}width="{$image_x}"{/if}{if $image_y > 0 }height="{$image_y}"{/if}/>
+    </td></tr>
+  {/if}
 {/if}
 <tr id='show_image_2' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor"><td>{tr}Use own image{/tr} *</td><td>
-<input type="checkbox" name="useImage" id="useImage" {if $useImage eq 'y'}checked='checked'{/if}/>
+<input type="checkbox" name="useImage" {if $useImage eq 'y'}checked='checked'{/if}/>
 </td></tr>
 <tr id='show_image_3' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor"><td>{tr}Float text around image{/tr} *</td><td>
 <input type="checkbox" name="isfloat" {if $isfloat eq 'y'}checked='checked'{/if}/>
@@ -125,7 +124,9 @@
 {include file=categorize.tpl}
 
 <tr class="formcolor">
-  <td>{tr}Heading{/tr}<br />
+  <td>
+    {tr}Heading{/tr}
+    <br />
     {if $prefs.quicktags_over_textarea neq 'y'}
       {include file=tiki-edit_help_tool.tpl area_name='heading' qtnum='1'}
     {/if}

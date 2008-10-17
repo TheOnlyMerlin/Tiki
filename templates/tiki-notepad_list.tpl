@@ -1,19 +1,16 @@
-{title help="notepad"}{tr}Notes{/tr}{/title}
-
+<h1><a class="pagetitle" href="tiki-notepad_list.php">{tr}Notes{/tr}</a></h1>
 {if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
-  {include file=tiki-mytiki_bar.tpl}
+{include file=tiki-mytiki_bar.tpl}
 {/if}
 
-<div class="navbar">
-  <span class="button2"><a href="tiki-notepad_write.php">{tr}Write a note{/tr}</a></span>
-</div>
+<div class="navbar"><span class="button2"><a class="linkbut" href="tiki-notepad_write.php">{tr}Write a note{/tr}</a></span></div>
 
 <div style="text-align:center;">
  <div style="height:20px; width:200px; border:1px solid black; background-color:#666666; text-align:left; margin:0 auto;">
     <div style="background-color:red; height:100%; width:{$cellsize}px;"> 
     </div>
   </div>
-  <small>{tr}quota{/tr}&nbsp;{$percentage}%</small>
+<small>{tr}quota{/tr}&nbsp;{$percentage}%</small>
 </div>
 
 {if count($channels) > 0 or $find ne ''}
@@ -24,13 +21,13 @@
 <form action="tiki-notepad_list.php" method="post">
 <table class="normal">
 <tr>
-<th style="text-align:center;"><input type="submit" name="delete" value="{tr}x{/tr} " /></th>
-<th><a href="tiki-notepad_list.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
-<th><a href="tiki-notepad_list.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'parse_mode_desc'}parse_mode_asc{else}parse_mode_desc{/if}">{tr}Type{/tr}</a></th>
-<th><a href="tiki-notepad_list.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr}</a></th>
-<th><a href="tiki-notepad_list.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastModif_desc'}lastModif_asc{else}lastModif_desc{/if}">{tr}Last Modified{/tr}</a></th>
-<th style="text-align:right;"><a href="tiki-notepad_list.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'size_desc'}size_asc{else}size_desc{/if}">{tr}Size{/tr}</a></th>
-<th style="text-align:center;">{tr}Actions{/tr}</th>
+<td style="text-align:center;" class="heading"><input type="submit" name="delete" value="{tr}x{/tr} " /></td>
+<td class="heading" ><a class="tableheading" href="tiki-notepad_list.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></td>
+<td class="heading" ><a class="tableheading" href="tiki-notepad_list.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'parse_mode_desc'}parse_mode_asc{else}parse_mode_desc{/if}">{tr}Type{/tr}</a></td>
+<td class="heading" ><a class="tableheading" href="tiki-notepad_list.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr}</a></td>
+<td class="heading" ><a class="tableheading" href="tiki-notepad_list.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastModif_desc'}lastModif_asc{else}lastModif_desc{/if}">{tr}Last Modified{/tr}</a></td>
+<td style="text-align:right;" class="heading" ><a class="tableheading" href="tiki-notepad_list.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'size_desc'}size_asc{else}size_desc{/if}">{tr}Size{/tr}</a></td>
+<td style="text-align:center;" class="heading" >{tr}Actions{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}

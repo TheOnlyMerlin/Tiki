@@ -1,14 +1,13 @@
 {* $Id$ *}
 
-{assign var=escuser value=$assign_user|escape:url}
-{title}{tr}Assign User {$assign_user} to Groups{/tr}{/title}
+<h1><a href="tiki-assignuser.php{if $assign_user}?assign_user={$assign_user|escape:url}{/if}" class="pagetitle">{tr}Assign User {$assign_user} to Groups{/tr}</a></h1>
 
 <div class="navbar">
 {if $tiki_p_admin eq 'y'} {* only full admins can manage groups, not tiki_p_admin_users *}
-<span class="button2"><a href="tiki-admingroups.php">{tr}Admin groups{/tr}</a></span>
+<span class="button2"><a href="tiki-admingroups.php" class="linkbut">{tr}Admin groups{/tr}</a></span>
 {/if}
 {if $tiki_p_admin eq 'y' or $tiki_p_admin_users eq 'y'}
-<span class="button2"><a href="tiki-adminusers.php">{tr}Admin users{/tr}</a></span>
+<span class="button2"><a href="tiki-adminusers.php" class="linkbut">{tr}Admin users{/tr}</a></span>
 {/if}
 </div>
 
@@ -64,9 +63,9 @@
 
 <table class="normal">
 <tr>
-<th><a href="tiki-assignuser.php?{if $assign_user}assign_user={$assign_user|escape:url}&amp;{/if}offset={$offset}&amp;maxRecords={$prefs.maxRecords}&amp;sort_mode={if $sort_mode eq 'groupName_desc'}groupName_asc{else}groupName_desc{/if}">{tr}Name{/tr}</a></th>
-<th><a href="tiki-assignuser.php?{if $assign_user}assign_user={$assign_user|escape:url}&amp;{/if}offset={$offset}&amp;maxRecords={$prefs.maxRecords}&amp;sort_mode={if $sort_mode eq 'groupDesc_desc'}groupDesc_asc{else}groupDesc_desc{/if}">{tr}Description{/tr}</a></th>
-<th>{tr}Action{/tr}</td>
+<th class="heading"><a class="tableheading" href="tiki-assignuser.php?{if $assign_user}assign_user={$assign_user|escape:url}&amp;{/if}offset={$offset}&amp;maxRecords={$prefs.maxRecords}&amp;sort_mode={if $sort_mode eq 'groupName_desc'}groupName_asc{else}groupName_desc{/if}">{tr}Name{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-assignuser.php?{if $assign_user}assign_user={$assign_user|escape:url}&amp;{/if}offset={$offset}&amp;maxRecords={$prefs.maxRecords}&amp;sort_mode={if $sort_mode eq 'groupDesc_desc'}groupDesc_asc{else}groupDesc_desc{/if}">{tr}Description{/tr}</a></th>
+<th class="heading">{tr}Action{/tr}</td>
 </tr>
 {cycle values="even,odd" print=false}
 {section name=user loop=$users}

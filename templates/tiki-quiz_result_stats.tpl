@@ -1,18 +1,31 @@
-{title help="Quiz"}{tr}Quiz result stats{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-quiz_result_stats.php?quizId={$quizId}&amp;resultId={$resultId}&amp;userResultId={$userResultId}">{tr}Quiz result stats{/tr}:</a>
 
-<! -- linkbuttons, they would be better if they had rollover info -->
+<! -- the help link info -->
 
-<span class="button2"><a href="tiki-list_quizzes.php">{tr}List Quizzes{/tr}</a></span>
-<span class="button2"><a href="tiki-quiz_stats.php">{tr}Quiz Stats{/tr}</a></span>
-<span class="button2"><a href="tiki-quiz_stats_quiz.php?quizId={$quizId}">{tr}This Quiz Stats{/tr}</a></span>
-<span class="button2"><a href="tiki-edit_quiz.php?quizId={$quizId}">{tr}Edit this Quiz{/tr}</a></span>
-<span class="button2"><a href="tiki-edit_quiz.php">{tr}Admin Quizzes{/tr}</a><br /><br /></span>
+      {if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Quiz" target="tikihelp" class="tikihelp" title="{tr}Tikiwiki.org help{/tr}: {tr}Edit Quiz Questions{/tr}"><img border='0' src='img/icons/help.gif' alt="{tr}Help{/tr}" /></a>{/if}
+
+<! -- link to tpl -->
+
+     {if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?=tiki-quiz_result_stats.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Edit Quiz Stats Tpl{/tr}"><img src="img/icons/info.gif" border="0" height="16" width="16" alt='{tr}Edit Tpl{/tr}' /></a>
+{/if}
+
+
+</h1>
+<! -- linkbuttons, they'd be better if they had rollover info -->
+
+<a class="linkbut" href="tiki-list_quizzes.php">{tr}List Quizzes{/tr}</a>
+<a class="linkbut" href="tiki-quiz_stats.php">{tr}Quiz Stats{/tr}</a>
+<a class="linkbut" href="tiki-quiz_stats_quiz.php?quizId={$quizId}">{tr}This Quiz Stats{/tr}</a>
+<a class="linkbut" href="tiki-edit_quiz.php?quizId={$quizId}">{tr}Edit this Quiz{/tr}</a>
+<a class="linkbut" href="tiki-edit_quiz.php">{tr}Admin Quizzes{/tr}</a><br /><br />
 
 <! -- begin table/ it has no internal linking... that needs fixing -->
 
 <table class="normal">
 <tr> 
-  <th colspan="2">{tr}Quiz stats{/tr}</th>
+  <td colspan="2" class="heading">{tr}Quiz stats{/tr}</td>
 </tr>
 <tr> 
   <td class="even">{tr}Quiz{/tr}</td>
@@ -56,30 +69,30 @@ what is this supposed to be doing? isn't it already in the table below?
 <table class="normal">
   <tr>
 {*
-   <th>{tr}Question{/tr}</th>
+   <td  class="heading">{tr}Question{/tr}</td>
 *}
-<th>
-<a href="tiki-quiz_result_stats.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'question_desc'}question_asc{else}question_desc{/if}">{tr}Questions{/tr}</a>
-</th>
+<td class="heading">
+<a class="tableheading" href="tiki-quiz_result_stats.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'question_desc'}question_asc{else}question_desc{/if}">{tr}Questions{/tr}</a>
+</td>
 
 {*
-   <th>{tr}Answer{/tr}</th>
+   <td  class="heading">{tr}Answer{/tr}</td>
 *}
 
-<th>
-<a href="tiki-quiz_result_stats.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'optionText_desc'}optionText_asc{else}optionText_desc{/if}">{tr}Answer{/tr}</a>
-</th>
+<td class="heading">
+<a class="tableheading" href="tiki-quiz_result_stats.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'optionText_desc'}optionText_asc{else}optionText_desc{/if}">{tr}Answer{/tr}</a>
+</td>
 
 
 {*
-   <th>{tr}Points{/tr}</th>
+   <td  class="heading">{tr}Points{/tr}</td>
 *}
-<th>
-<a href="tiki-quiz_result_stats.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'points_desc'}points_asc{else}points_desc{/if}">{tr}Points{/tr}</a>
-</th>
-<th>
+<td class="heading">
+<a class="tableheading" href="tiki-quiz_result_stats.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'points_desc'}points_asc{else}points_desc{/if}">{tr}Points{/tr}</a>
+</td>
+<td class="heading">
 {tr}Upload{/tr}
-</th>
+</td>
 
 
 

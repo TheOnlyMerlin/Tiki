@@ -1,7 +1,7 @@
-{title}{tr}Admin layout{/tr}{/title}
+<h1><a href="tiki-admin_layout.php" class="pagetitle">{tr}Admin layout{/tr}</a></h1>
 
 <div class="navbar">
-<a href="tiki-theme_control.php">Theme control</a>
+<a class="linkbut" href="tiki-theme_control.php">Theme control</a>
 </div>
 
 {section name=ix loop=$sections}

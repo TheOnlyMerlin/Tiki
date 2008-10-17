@@ -11,8 +11,6 @@ if ($prefs['feature_score'] == 'y') {
 	$users_rank = $tikilib->rank_users($module_rows);
 	$smarty->assign('users_rank', $users_rank);
 } else
-	$smarty->assign("module_error", tra("This feature is disabled"));
-
-$smarty->assign('nonums', isset($module_params["nonums"]) ? $module_params["nonums"] : 'n');
+	$smarty->assign("module_error", tra("This feature is disabled"));	
 
 ?>

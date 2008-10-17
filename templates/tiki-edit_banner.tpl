@@ -1,8 +1,7 @@
 {* $Id$ *}
-{title help="Banners"}{tr}Edit or create banners{/tr}{/title}
-
+{title}{tr}Edit or create banners{/tr}{/title}
 <div class="navbar">
-<a href="tiki-list_banners.php">{tr}List banners{/tr}</a>
+<a class="linkbut" href="tiki-list_banners.php">{tr}List banners{/tr}</a>
 </div>
 <form action="tiki-edit_banner.php" method="post" enctype="multipart/form-data">
 <input type="hidden" name="bannerId" value="{$bannerId|escape}" />
@@ -161,8 +160,8 @@
 <h2>{tr}Remove Zones (you lose entered info for the banner){/tr}</h2>
 <table class="normal">
 <tr>
-<th>{tr}Name{/tr}</th>
-<th>{tr}Action{/tr}</th>
+<td class="heading">{tr}Name{/tr}</td>
+<td class="heading">{tr}Action{/tr}</td>
 </tr>
 {cycle print=false values="even,odd"}
 {section name=ix loop=$zones}

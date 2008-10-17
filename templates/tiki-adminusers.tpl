@@ -1,15 +1,26 @@
 {* $Id$ *}
 {popup_init src="lib/overlib.js"}
+<h1><a href="tiki-adminusers.php" class="pagetitle">{tr}Admin Users{/tr}</a>
 
-{title help="Users+Management" admpage="login" url="tiki-adminusers.php"}{tr}Admin Users{/tr}{/title}
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Users+Management" target="tikihelp" class="tikihelp" title="{tr}Admin Users{/tr}">
+{icon _id='help'}</a>{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-adminusers.tpl" target="tikihelp" class="tikihelp" title="{tr}View template{/tr}: {tr}Admin Users Template{/tr}">
+{icon _id='shape_square_edit'}</a>
+{/if}
+{if $tiki_p_admin eq 'y'}
+<a href="tiki-admin.php?page=login" title="{tr}Admin Feature{/tr}">{icon _id='wrench' alt="{tr}Admin Feature{/tr}"}</a>
+{/if}
+</h1>
 
 <div class="navbar">
 {if $tiki_p_admin eq 'y'} {* only full admins can manage groups, not tiki_p_admin_users *}
-<span class="button2"><a href="tiki-admingroups.php">{tr}Admin Groups{/tr}</a></span>
+<span class="button2"><a href="tiki-admingroups.php" class="linkbut">{tr}Admin Groups{/tr}</a></span>
 {/if}
-<span class="button2"><a href="tiki-adminusers.php">{tr}Admin Users{/tr}</a></span>
+<span class="button2"><a href="tiki-adminusers.php" class="linkbut">{tr}Admin Users{/tr}</a></span>
 {if $userinfo.userId}
-<span class="button2"><a href="tiki-adminusers.php?add=1">{tr}Add a New User{/tr}</a></span>
+<span class="button2"><a href="tiki-adminusers.php?add=1" class="linkbut">{tr}Add a New User{/tr}</a></span>
 {/if}
 </div>
 
@@ -18,17 +29,18 @@
 {/if}
   
 {if $tikifeedback}
-{remarksbox type="feedback" title="Feedback"}{section name=n loop=$tikifeedback}{$tikifeedback[n].mes}<br />{/section}{/remarksbox}
+<div class="simplebox {if $tikifeedback[n].num > 0} highlight{/if}">{section name=n loop=$tikifeedback}{$tikifeedback[n].mes}<br />{/section}</div>
 {/if}
 
 {if $added != "" or $discarded != "" or $discardlist != ''}
-{remarksbox type="feedback" title="Batch Upload Results"}
+<div class="simplebox">
+<h2>{tr}Batch Upload Results{/tr}</h2>
 {tr}Updated users{/tr}: {$added}
 {if $discarded != ""}- {tr}Rejected users{/tr}: {$discarded}{/if}
 <br /><br />
 {if $discardlist != ''}
 <table class="normal">
-<tr><th>{tr}Username{/tr}</th><th>{tr}Reason{/tr}</th></tr>
+<tr><td class="heading">{tr}Username{/tr}</td><td class="heading">{tr}Reason{/tr}</td></tr>
 {section name=reject loop=$discardlist}
 <tr><td class="odd">{$discardlist[reject].login}</td><td class="odd">{$discardlist[reject].reason}</td></tr>
 {/section}
@@ -40,19 +52,18 @@
 {$errors[ix]}<br />
 {/section}
 {/if}
-{/remarksbox}
+</div>
 {/if}
 
 {if $prefs.feature_tabs eq 'y'}
 {cycle name=tabs values="1,2,3,4" print=false advance=false reset=true}
 <div class="tabs">
-<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark" style="border-color:{if $cookietab eq $tabi}black{else}white{/if};"><a href="javascript:tikitabs({cycle name=tabs},4);">{tr}Users{/tr}</a></span>
+<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark" style="border-color:{if $cookietab eq $tabi}black{else}white{/if};"><a href="javascript:tikitabs({cycle name=tabs},3);">{tr}Users{/tr}</a></span>
 {if $userinfo.userId}
-<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark" style="border-color:{if $cookietab eq $tabi}black{else}white{/if};"><a href="javascript:tikitabs({cycle name=tabs},4);">{tr}Edit user{/tr} <i>{$userinfo.login}</i></a></span>
+<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark" style="border-color:{if $cookietab eq $tabi}black{else}white{/if};"><a href="javascript:tikitabs({cycle name=tabs},3);">{tr}Edit user{/tr} <i>{$userinfo.login}</i></a></span>
 {else}
-<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark" style="border-color:{if $cookietab eq $tabi}black{else}white{/if};"><a href="javascript:tikitabs({cycle name=tabs},4);">{tr}Add a New User{/tr}</a></span>
+<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark" style="border-color:{if $cookietab eq $tabi}black{else}white{/if};"><a href="javascript:tikitabs({cycle name=tabs},3);">{tr}Add a New User{/tr}</a></span>
 {/if}
-<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark" style="border-color:{if $cookietab eq $tabi}black{else}white{/if};"><a href="javascript:tikitabs({cycle name=tabs},4);">{tr}Import/Export{/tr}</a></span>
 </div>
 {/if}
 
@@ -91,11 +102,11 @@
 </div>
 </form>
 
-{if $cant > $numrows or !empty($initial)}
+{if $cant_pages > 1 or !empty($initial)}
 <div align="center">
 {section name=ini loop=$initials}
 {if $initial and $initials[ini] eq $initial}
-<span class="button2">{$initials[ini]|capitalize}</span> . 
+<span class="button2"><span class="linkbuton">{$initials[ini]|capitalize}</span></span> . 
 {else}
 <a href="tiki-adminusers.php?initial={$initials[ini]}{if $find}&amp;find={$find|escape:"url"}{/if}{if $numrows}&amp;numrows={$numrows}{/if}{if $sort_mode}&amp;sort_mode={$sort_mode}{/if}" 
 class="prevnext">{$initials[ini]}</a> . 
@@ -106,10 +117,10 @@ class="prevnext">{tr}All{/tr}</a>
 </div>
 {/if}
 
-<form name="checkform" method="post" action="{$smarty.server.PHP_SELF}{if $group_management_mode ne  'y' and $set_default_groups_mode ne 'y' and $email_mode ne 'y'}#multiple{/if}">
+<form name="checkform" method="post" action="{$smarty.server.PHP_SELF}{if $group_management_mode ne  'y' and $set_default_groups_mode ne 'y'}#multiple{/if}">
 <table class="normal">
 <tr>
-<th class="auto">{if $users}
+<td class="heading auto">{if $users}
   <script type='text/javascript'>
   <!--
   // check / uncheck all.
@@ -118,57 +129,50 @@ class="prevnext">{tr}All{/tr}</a>
   document.write("<input name=\"switcher\" title=\"{tr}Select All{/tr}\" id=\"clickall\" type=\"checkbox\" onclick=\"switchCheckboxes(this.form,'checked[]',this.checked)\"/>");
   //-->                     
   </script>{/if}
-</th>
-<th>{self_link _sort_arg='sort_mode' _sort_field='login'}{tr}User{/tr}{/self_link}</th>
-{if $prefs.login_is_email neq 'y'}
-	<th>{self_link _sort_arg='sort_mode' _sort_field='email}{tr}Email{/tr}{/self_link}</th>
-{/if}
-<th>{self_link _sort_arg='sort_mode' _sort_field='currentLogin'}{tr}Last login{/tr}{/self_link}</th>
-<th colspan="2">{tr}Groups{/tr}</th>
-<th>{tr}Action{/tr}</th>
+</td>
+<td class="heading">&nbsp;</td>
+<td class="heading"><a class="tableheading" href="tiki-adminusers.php?offset={$offset}&amp;numrows={$numrows}&amp;sort_mode={if $sort_mode eq 'login_desc'}login_asc{else}login_desc{/if}">{tr}User{/tr}</a></td>
+{if $prefs.login_is_email neq 'y'}<td class="heading"><a class="tableheading" href="tiki-adminusers.php?offset={$offset}&amp;numrows={$numrows}&amp;sort_mode={if $sort_mode eq 'email_desc'}email_asc{else}email_desc{/if}">{tr}Email{/tr}</a></td>{/if}
+<td class="heading"><a class="tableheading" href="tiki-adminusers.php?offset={$offset}&amp;numrows={$numrows}&amp;sort_mode={if $sort_mode eq 'currentLogin_desc'}currentLogin_asc{else}currentLogin_desc{/if}">{tr}Last login{/tr}</a></td>
+<td class="heading">&nbsp;</td>
+<td class="heading">{tr}Groups{/tr}</td>
+<td class="heading">&nbsp;</td>
 </tr>
 {cycle print=false values="even,odd"}
 {section name=user loop=$users}
 <tr class="{cycle}">
 <td class="thin">{if $users[user].user ne 'admin'}<input type="checkbox" name="checked[]" value="{$users[user].user}" {if $users[user].checked eq 'y'}checked="checked" {/if}/>{/if}</td>
+<td>
+  {if $prefs.feature_userPreferences eq 'y' || $user eq 'admin'}
+    <a class="link" href="tiki-user_preferences.php?userId={$users[user].userId}" title="{tr}Change user preferences{/tr}: {$users[user].user}">{icon _id='wrench' alt="{tr}Change user preferences{/tr}: `$users[user].user`"}</a>
+  {/if}
 
-<td><a class="link" href="tiki-adminusers.php?offset={$offset}&amp;numrows={$numrows}&amp;sort_mode={$sort_mode}&amp;user={$users[user].userId}{if feature_tabs ne 'y'}#2{/if}" title="{tr}Edit Account Settings{/tr}: {$users[user].user}">{$users[user].user}</a></td>
+  <a class="link" href="tiki-adminusers.php?offset={$offset}&amp;numrows={$numrows}&amp;sort_mode={$sort_mode}&amp;user={$users[user].userId}{if feature_tabs ne 'y'}#2{/if}" title="{tr}Edit Account Settings{/tr}: {$users[user].user}">{icon _id='page_edit' alt="{tr}Edit Account Settings{/tr}: `$users[user].user`"}</a>
 
+  <a class="link" href="tiki-user_information.php?userId={$users[user].userId}" title="{tr}User Information{/tr}">{icon _id='help' alt='{tr}User Information{/tr}'}</a>
+</td>
+
+<td><a class="link" href="tiki-adminusers.php?offset={$offset}&amp;numrows={$numrows}&amp;sort_mode={$sort_mode}&amp;user={$users[user].userId}{if feature_tabs ne 'y'}#2{/if}" title="{tr}Edit Account Settings{/tr}">{$users[user].user}</a></td>
 {if $prefs.login_is_email ne 'y'}<td>{$users[user].email}</td>{/if}
-
-<td>{if $users[user].currentLogin eq ''}{tr}Never{/tr} <em>({tr}Registered{/tr} {$users[user].age|duration_short} {tr}ago{/tr})</em>{else}{$users[user].currentLogin|dbg|tiki_long_datetime}{/if}
+<td>{if $users[user].currentLogin eq ''}{tr}Never{/tr} <i>({$users[user].age|duration_short})</i>{else}{$users[user].currentLogin|dbg|tiki_long_datetime}{/if}
 {if $users[user].waiting eq 'u'}<br />{tr}Need to validate email{/tr}{/if}</td>
-
-<td class="thin"><a class="link" href="tiki-assignuser.php?assign_user={$users[user].user|escape:url}" title="{tr}Assign to group{/tr}">{icon _id='group_key' alt="{tr}Assign{/tr} `$users[user].user` {tr}to groups{/tr} "}</a></td>
+<td class="thin"><a class="link" href="tiki-assignuser.php?assign_user={$users[user].user|escape:url}" title="{tr}Assign Group{/tr}">{icon _id='group_key' alt="{tr}Assign Group{/tr}"}</a></td>
 
 <td>
-{foreach from=$users[user].groups key=grs item=what name=gr}
+{foreach from=$users[user].groups key=grs item=what}
 {if $grs != "Anonymous"}
-{if $what eq 'included'}<i>{/if}
-<a class="link" href="tiki-admingroups.php?group={$grs|escape:"url"}" title={if $what eq 'included'}"{tr}Edit Included Group{/tr}"{else}"{tr}Edit Group{/tr}: {$grs}"{/if}>{$grs}</a>
-{if $what eq 'included'}</i>{/if}
-{if $grs eq $users[user].default_group}({tr}default{/tr}){/if}
-{if $what ne 'included' and $grs != "Registered"}
-	{self_link _class='link' action='removegroup' group=$grs _icon='delete' _title="{tr}Remove{/tr} `$users[user].user` {tr}from{/tr} $grs"}{/self_link}
-{/if}
-{if !$smarty.foreach.gr.last}<br />{/if}
+{if $what eq 'included'}<i>{/if}<a class="link" href="tiki-admingroups.php?group={$grs|escape:"url"}" title={if $what eq 'included'}"{tr}Edit Included Group{/tr}"{else}"{tr}Edit{/tr}"{/if}>{$grs}</a>{if $what eq 'included'}</i>{/if}
+{if $what ne 'included' and $grs != "Registered"}(<a class="link" href="tiki-adminusers.php?offset={$offset}&amp;numrows={$numrows}&amp;sort_mode={$sort_mode}&amp;user={$users[user].user}&amp;action=removegroup&amp;group={$grs|escape:"url"}" title="{tr}Remove{/tr}">x</a>){/if}
+{if $grs eq $users[user].default_group} {tr}default{/tr}{/if}<br />
 {/if}
 {/foreach}
 </td>
 
-<td>
-  {if $prefs.feature_userPreferences eq 'y' || $user eq 'admin'}
-    {self_link _class="link" user=`$users[user].userId` _icon="page_edit" _title="{tr}Edit Account Settings{/tr}: `$users[user].user`"}{/self_link}
-
-    <a class="link" href="tiki-user_preferences.php?userId={$users[user].userId}" title="{tr}Change user preferences{/tr}: {$users[user].user}">{icon _id='wrench' alt="{tr}Change user preferences{/tr}: `$users[user].user`"}</a>
-  {/if}
-
-  <a class="link" href="tiki-user_information.php?userId={$users[user].userId}" title="{tr}User Information{/tr}: {$users[user].user}">{icon _id='help' alt="{tr}User Information{/tr}: `$users[user].user`"}</a>
-
+<td class="thin">
   {if $users[user].user ne 'admin'}
-    <a class="link" href="{$smarty.server.PHP_SELF}?{query action=delete user=$users[user].user}" title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
+    <a class="link" href="tiki-adminusers.php?offset={$offset}&amp;numrows={$numrows}&amp;sort_mode={$sort_mode}&amp;action=delete&amp;user={$users[user].user|escape:url}" title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
   	{if $users[user].valid && $users[user].waiting eq 'a'}
-		<a class="link" href="tiki-login_validate.php?user={$users[user].user|escape:url}&amp;pass={$users[user].valid|escape:url}" title="{tr}Validate user{/tr}: {$users[user].user}">{icon _id='accept' alt="{tr}Validate user{/tr}: `$users[user].user`"}</a>
+		<a class="link" href="tiki-login_validate.php?user={$users[user].user|escape:url}&amp;pass={$users[user].valid|escape:url}" title="{tr}Validate{/tr}">{icon _id='accept' alt="{tr}Validate{/tr}"}</a>
 	{/if}
   {/if}
 </td>
@@ -179,7 +183,7 @@ class="prevnext">{tr}All{/tr}</a>
   <tr>
   <td class="form" colspan="18">
   <a name="multiple"></a>{if $users}<p align="left"> {*on the left to have it close to the checkboxes*}
-  {if $group_management_mode neq 'y' && $set_default_groups_mode neq 'y' && $email_mode neq 'y'}
+  {if $group_management_mode neq 'y' && $set_default_groups_mode neq 'y'}
   {tr}Perform action with checked:{/tr}
   <select name="submit_mult">
     <option value="" selected="selected">-</option>
@@ -187,7 +191,6 @@ class="prevnext">{tr}All{/tr}</a>
     {if $prefs.feature_wiki_userpage == 'y'}<option value="remove_users_with_page">{tr}Remove Users and their Userpages{/tr}</option>{/if}
     <option value="assign_groups" >{tr}Manage Group Assignments{/tr}</option>
     <option value="set_default_groups">{tr}Set Default Groups{/tr}</option>
-	<option value="emailChecked">{tr}Email{/tr}</option>
   </select>
   <input type="submit" value="{tr}OK{/tr}" />
   {elseif $group_management_mode eq 'y'}
@@ -209,10 +212,6 @@ class="prevnext">{tr}All{/tr}</a>
   {/section}
   </select><br /><input type="submit" value="{tr}OK{/tr}" />
   <input type="hidden" name="set_default_groups" value="{$set_default_groups_mode}" />
-  {elseif $email_mode eq 'y'}
-  {tr}Template wiki page{/tr} <input type="text" name="wikiTpl" /><br />
-  {tr}bcc{/tr} <input type="text" name="bcc" /><input type="submit" value="{tr}OK{/tr}" />
-  <input type="hidden" name="emailChecked" value="{$email_mode}" />
   {/if}
   </p>
 {/if}
@@ -225,8 +224,28 @@ class="prevnext">{tr}All{/tr}</a>
 <input type="hidden" name="offset" value="{$offset|escape}" />
 </form>
 
-{pagination_links cant=$cant step=$numrows offset=$offset}{/pagination_links}
+{if $cant_pages > 1}
+<br />
+<div class="mini">
+{if $prev_offset >= 0}
+[<a class="prevnext" href="tiki-adminusers.php?{if $find}find={$find|escape:"url"}&amp;{/if}{if $initial}initial={$initial}&amp;{/if}offset={$prev_offset}&amp;numrows={$numrows}&amp;sort_mode={$sort_mode}">{tr}Prev{/tr}</a>]&nbsp;
+{/if}
+{tr}Page{/tr}: {$actual_page}/{$cant_pages}
+{if $next_offset >= 0}
+&nbsp;[<a class="prevnext" href="tiki-adminusers.php?{if $find}find={$find|escape:"url"}&amp;{/if}{if $initial}initial={$initial}&amp;{/if}offset={$next_offset}&amp;numrows={$numrows}&amp;sort_mode={$sort_mode}">{tr}Next{/tr}</a>]
+{/if}
+{if $prefs.direct_pagination eq 'y'}
+<br />
+{section loop=$cant_pages name=foo}
+{assign var=selector_offset value=$smarty.section.foo.index|times:$maxRecords}
 
+<a class="prevnext" href="tiki-adminusers.php?find={$find|escape:"url"}&amp;{if $initial}initial={$initial}&amp;{/if}offset={$selector_offset}&amp;numrows={$numrows}&amp;sort_mode={$sort_mode}">
+{$smarty.section.foo.index_next}</a>&nbsp;
+{/section}
+{/if}
+
+</div>
+{/if}
 </div>
 
 {* ---------------------- tab with form -------------------- *}
@@ -234,19 +253,18 @@ class="prevnext">{tr}All{/tr}</a>
 <div id="content{cycle name=content assign=focustab}{$focustab}" class="tabcontent"{if $prefs.feature_tabs eq 'y'} style="display:{if $focustab eq $cookietab}block{else}none{/if};"{/if}>
 {if $userinfo.userId}
 <h2>{tr}Edit user{/tr}: {$userinfo.login}</h2>
-{if $userinfo.login ne 'admin'}<span class="button2"><a href="tiki-assignuser.php?assign_user={$userinfo.login|escape:url}">{tr}Assign to Groups{/tr}: {$userinfo.login}</a></span>{/if}
+{if $userinfo.login ne 'admin'}<a class="linkbut" href="tiki-assignuser.php?assign_user={$userinfo.login|escape:url}">{tr}Assign to Groups{/tr}: {$userinfo.login}</a>{/if}
 {else}
 <h2>{tr}Add a New User{/tr}</h2>
 {/if}
-<form action="tiki-adminusers.php" method="post" enctype="multipart/form-data" name="RegForm">
+<form action="tiki-adminusers.php" method="post" enctype="multipart/form-data">
 <table class="normal">
-<tr class="formcolor"><td>{if $prefs.login_is_email eq 'y'}{tr}Email{/tr}{else}{tr}User{/tr}{/if}:</td><td>{if $userinfo.login neq 'admin'}<input type="text" name="name"  value="{$userinfo.login|escape}" /><br /> {if $prefs.login_is_email eq 'y'}<em>{tr}Use the email as username{/tr}.</em>
-{elseif $prefs.lowercase_username eq 'y'} <em>{tr}Lowercase only{/tr}</em>.
-{/if}<br />
+<tr class="formcolor"><td>{tr}User{/tr}</td><td>{if $userinfo.login neq 'admin'}<input type="text" name="name"  value="{$userinfo.login|escape}" /> {if $prefs.login_is_email eq 'y'}<i>{tr}Use the email as username{/tr}</i>{/if}<br />
 {if $userinfo.userId}
-<p>{icon _id=exclamation alt="{tr}Warning{/tr}" style="vertical-align:middle"} <em>{tr}Warning: changing the username could require the user to change his password(for user registered with an old tikiwiki <=1.8){/tr}</em></p>
   {if $prefs.feature_intertiki_server eq 'y'}
-    <i>{tr}Warning: it will mess with slave intertiki sites that use this one as master{/tr}</i>
+    <i>{tr}Warning: changing the username will require the user to change his password and will mess with slave intertiki sites that use this one as master{/tr}</i>
+  {else}
+    <i>{tr}Warning: changing the username will require the user to change his password{/tr}</i>
   {/if}
 {/if}
 {else}
@@ -262,39 +280,37 @@ class="prevnext">{tr}All{/tr}</a>
 {if $prefs.auth_method eq 'auth' and ( $prefs.auth_create_user_tiki eq 'n' or $prefs.auth_skip_admin eq 'y' ) and $prefs.auth_create_user_auth eq 'n' and $userinfo.login neq 'admin'}
 <tr class="formcolor"><td colspan="2"><b>{tr}No password is required{/tr}</b><br /><i>{tr}Tikiwiki is configured to delegate the password managment to LDAP through PEAR Auth.{/tr}</i></td></tr>
 {else}
-<tr class="formcolor"><td>{tr}Password{/tr}:</td><td><input type="password" name="pass" id="pass1" onKeyUp="runPassword(this.value, 'mypassword');" />
-<div style="float:right;width:150px;margin-left:5px;">
-				<div id="mypassword_text"></div>
-				<div id="mypassword_bar" style="font-size: 5px; height: 2px; width: 0px;"></div> 
-				</div>
-<br />
-{if $prefs.min_pass_length > 1}<em>{tr}Minimum {$prefs.min_pass_length} characters long{/tr}</em>. {/if}
-{if $prefs.pass_chr_num eq 'y'}<em>{tr}Password must contain both letters and numbers{/tr}</em>.{/if}
-{if ! ( $prefs.auth_method eq 'auth' and ( $prefs.auth_create_user_tiki eq 'n' or $prefs.auth_skip_admin eq 'y' ) and $prefs.auth_create_user_auth eq 'n' ) }
-<p><div><span class="button2"><a href="#" onClick="genPass('genepass','pass1','pass2');runPassword(document.RegForm.genpass.value, 'mypassword');">Generate a password:</a> <input id='genepass' name="genpass" type="text" /></div></p>{/if}
-</td></tr>
-<tr class="formcolor"><td>{tr}Repeat Password{/tr}:</td><td><input type="password" name="pass2" id="pass2" /></td></tr>
+<tr class="formcolor"><td>{tr}Pass{/tr}</td><td><input type="password" name="pass" id="pass" /></td></tr>
+<tr class="formcolor"><td>{tr}Again{/tr}</td><td><input type="password" name="pass2" id="pass2" /></td></tr>
 {if $userinfo.login neq 'admin'}
-<tr class="formcolor"><td>{tr}Must Change Password{/tr}:</td><td><input type="checkbox" name="pass_first_login" /> 
-{tr}User must change password at first login{/tr}.</td></tr>
+<tr class="formcolor"><td>{tr}User must change his password at first login{/tr}</td><td><input type="checkbox" name="pass_first_login" /></td></tr>
 {/if}
 {/if}
-{if $prefs.login_is_email neq 'y'}<tr class="formcolor"><td>{tr}Email{/tr}:</td><td><input type="text" name="email" size="30"  value="{$userinfo.email|escape}" /></td></tr>{/if}
+{if $prefs.login_is_email neq 'y'}<tr class="formcolor"><td>{tr}Email{/tr}</td><td><input type="text" name="email" size="30"  value="{$userinfo.email|escape}" /></td></tr>{/if}
 {if $userinfo.userId != 0}
-<tr class="formcolor"><td>{tr}Created{/tr}:</td><td>{$userinfo.created|tiki_long_datetime}</td></tr>
-{if $userinfo.login neq 'admin'}<tr class="formcolor"><td>{tr}Registered{/tr}:</td><td>{if $userinfo.registrationDate}{$userinfo.registrationDate|tiki_long_datetime}{/if}</td></tr>{/if}
-<tr class="formcolor"><td>{tr}Last Login{/tr}:</td><td>{if $userinfo.lastLogin}{$userinfo.lastLogin|tiki_long_datetime|default:'Never'}{/if}</td></tr>
+<tr class="formcolor"><td>{tr}Created{/tr}</td><td>{$userinfo.created|tiki_long_datetime}</td></tr>
+{if $userinfo.login neq 'admin'}<tr class="formcolor"><td>{tr}Registration{/tr}</td><td>{if $userinfo.registrationDate}{$userinfo.registrationDate|tiki_long_datetime}{/if}</td></tr>{/if}
+<tr class="formcolor"><td>{tr}Last login{/tr}</td><td>{if $userinfo.lastLogin}{$userinfo.lastLogin|tiki_long_datetime}{/if}</td></tr>
 {/if}
-<tr class="formcolor"><td>&nbsp;</td><td>
 {if $userinfo.userId}
+<tr class="formcolor"><td>&nbsp;</td><td>
 <input type="hidden" name="user" value="{$userinfo.userId|escape}" />
 <input type="hidden" name="edituser" value="1" />
 <input type="submit" name="submit" value="{tr}Save{/tr}" />
 {else}
-<input type="submit" name="newuser" value="{tr}Add{/tr}" />
+<tr class="formcolor">
+  <td>{tr}Batch upload (CSV file):{/tr} <a {popup text='login,password,email,groups&lt;br /&gt;user1,password1,email1,&quot;group1,group2&quot;&lt;br /&gt;user2, password2,email2'}>{icon _id='help'}</a></td>
+  <td>
+    <input type="file" name="csvlist"/><br /><input type="radio" name="overwrite" value="y" checked="checked" />&nbsp;{tr}Overwrite{/tr}<br /><input type="radio" name="overwrite" value="c"/>&nbsp;{tr}Overwrite but keep the previous login if the login exists in another case{/tr}<br /><input type="radio" name="overwrite" value="n" />&nbsp;{tr}Don't overwrite{/tr}<br />{tr}Overwrite groups:{/tr} <input type="checkbox" name="overwriteGroup" />
+  </td>
+</tr>
+<tr class="formcolor"><td>&nbsp;</td><td>
+<input type="hidden" name="newuser" value="1" />
+<input type="submit" name="submit" value="{tr}Add{/tr}" />
 {/if}
 </td></tr>
 </table>
+</form>
 <br /><br />
 
 {if $prefs.userTracker eq 'y'}
@@ -303,28 +319,14 @@ class="prevnext">{tr}All{/tr}</a>
 {/if}
 <br /><br />
 {/if}
-</form>
+
+{if ! ( $prefs.auth_method eq 'auth' and ( $prefs.auth_create_user_tiki eq 'n' or $prefs.auth_skip_admin eq 'y' ) and $prefs.auth_create_user_auth eq 'n' ) }
+<table class="normal">
+<tr class="formcolor"><td>
+<a class="link" href="javascript:genPass('genepass','pass','pass2');">{tr}Generate a password{/tr}</a></td>
+<td><input id='genepass' type="text" /></td></tr>
+</table>
+{/if}
+
 </div>
 
-{* ---------------------- tab with upload -------------------- *}
-<div id="content{cycle name=content assign=focustab}{$focustab}" class="tabcontent"{if $prefs.feature_tabs eq 'y'} style="display:{if $focustab eq $cookietab}block{else}none{/if};"{/if}>
-<h2>{tr}Batch upload (CSV file):{/tr}</h2>
-<form action="tiki-adminusers.php" method="post" enctype="multipart/form-data">
-<table class="normal">
-<tr class="formcolor">
-  <td>{tr}CSV File:{/tr} <a {popup text='login,password,email,groups&lt;br /&gt;user1,password1,email1,&quot;group1,group2&quot;&lt;br /&gt;user2, password2,email2'}>{icon _id='help'}</a></td>
-  <td>
-    <input type="file" name="csvlist"/><br />
-	<input type="radio" name="overwrite" value="y" checked="checked" />&nbsp;{tr}Overwrite{/tr}<br />
-	<input type="radio" name="overwrite" value="c"/>&nbsp;{tr}Overwrite but keep the previous login if the login exists in another case{/tr}<br />
-	<input type="radio" name="overwrite" value="n" />&nbsp;{tr}Don't overwrite{/tr}<br />
-	{tr}Overwrite groups:{/tr} <input type="checkbox" name="overwriteGroup" />
-  </td>
-</tr>
-<tr class="formcolor"><td>&nbsp;</td><td>
-<input type="submit" name="batch" value="{tr}Add{/tr}" />
-</td></tr>
-</table>
-</form>
-{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}You can export users of a group in <a href="tiki-admingroups.php">admin->groups->a_group</a>{/tr}{/remarksbox}
-</div>

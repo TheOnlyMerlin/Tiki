@@ -17,8 +17,6 @@ if ($tiki_p_admin != 'y') {
 	die;
 }
 
-$auto_query_args = array('offset', 'sort_mode', 'find', 'maxRecords');
-
 $watches['user_registers'] = array(
 	'label'=>tra('A user registers'),
 	'type'=>'users',
@@ -127,32 +125,18 @@ if (isset($_REQUEST["find"])) {
 } else {
 	$find = '';
 }
-$smarty->assign_by_ref('find', $find);
+if (isset($_REQUEST['numrows']) && $maxRecords != $_REQUEST['numrows']) {
+	$maxRecords = $_REQUEST['numrows'];
+	$smarty->assign('numrows', $maxRecords);
+ }
 
-if (!empty($_REQUEST['maxRecords'])) {
-	$maxRecords = $_REQUEST['maxRecords'];
-}
-$smarty->assign_by_ref('maxRecords', $maxRecords);
-
+$smarty->assign('find', $find);
 
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 $channels = $tikilib->list_watches($offset, $maxRecords, $sort_mode, $find);
 
 $smarty->assign_by_ref('cant', $channels['cant']);
 $smarty->assign_by_ref('channels', $channels["data"]);
-
-if ($prefs['feature_trackers'] == 'y') {
-	global $trklib; include_once('lib/trackers/trackerlib.php');
-	$trackers = $trklib->get_trackers_options(0, 'outboundemail', $find, 'empty');
-	$smarty->assign_by_ref('trackers', $trackers);
-}
-if ($prefs['feature_forums'] == 'y') {
-	include_once('lib/commentslib.php');
-	$commentslib = new Comments($dbTiki);
-	$forums = $commentslib->get_outbound_emails();
-	$smarty->assign_by_ref('forums', $forums);
-}
-
 
 ask_ticket('admin-notif');
 

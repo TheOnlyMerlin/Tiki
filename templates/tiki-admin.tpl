@@ -16,7 +16,7 @@
 </div>
 {* The rest determines which page to include using "page" GET parameter. Default : list-sections
 Add a value in first check when you create a new admin page. *}
-{if in_array($adminpage, array("features", "general", "login", "wiki", "gal", "fgal", "cms", "polls", "search", "blogs", "forums", "faqs", "trackers", "webmail", "rss", "directory", "userfiles", "maps", "metatags", "wikiatt","score", "community", "messages", "calendar","intertiki","freetags","gmap", "i18n","wysiwyg","copyright","category", "module", "look", "textarea", "multimedia", "ads", "profiles", "semantic", "plugins", "webservices"))}
+{if in_array($adminpage, array("features", "general", "login", "wiki", "gal", "fgal", "cms", "polls", "search", "blogs", "forums", "faqs", "trackers", "webmail", "rss", "directory", "userfiles", "maps", "metatags", "wikiatt","score", "community", "messages", "calendar","intertiki","freetags","gmap", "i18n","wysiwyg","copyright","category", "module", "look", "textarea", "multimedia", "ads", "profiles"))}
   {assign var="include" value=$smarty.get.page}
 {else}
   {assign var="include" value="list-sections"}
@@ -38,7 +38,7 @@ Add a value in first check when you create a new admin page. *}
 
 <a name="morelinks"></a>
 <br style="clear:both" />
-<span class="button2"><a href="#morelinks">{tr}More Links{/tr}</a></span><br />
+<span class="button2"><a href="#morelinks" class="linkbut">{tr}More Links{/tr}</a></span><br />
 
 <div class="cbox" id="morelinks" style="display:block;">
 <div class="cbox-title">{tr}Crosslinks to other features and settings{/tr}</div>
@@ -65,7 +65,6 @@ href="tiki-admin_shoutbox_words.php">{tr}Shoutbox Words{/tr}</a> {/if}
 {tr}Administration features{/tr}:<br />
 <a href="tiki-adminusers.php">{tr}Users{/tr}</a> 
 <a href="tiki-admingroups.php">{tr}Groups{/tr}</a> 
-<a href="tiki-admin.php?page=profiles">{tr}Profiles{/tr}</a>
 <a href="tiki-admin_security.php">{tr}Security{/tr}</a> 
 <a href="tiki-admin_system.php">{tr}System{/tr}</a> 
 <a href="tiki-syslog.php">{tr}SysLogs{/tr}</a> 

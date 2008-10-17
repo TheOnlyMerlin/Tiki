@@ -1,18 +1,18 @@
-{title}{tr}Contacts{/tr}{/title}
+<h1><a href="tiki-contacts.php" class="pagetitle">{tr}Contacts{/tr}</a></h1>
 
 <div class="page-bar">
 <div style="float:right;margin:5px;">
 <span class="button2">
 {if $view eq 'list'}
-<a href="{$myurl}?view=group" title="{tr}Group View{/tr}">{tr}Group View{/tr}</a>
+<a href="{$myurl}?view=group" class="linkbut" title="{tr}Group View{/tr}">{tr}Group View{/tr}</a>
 {else}
-<a href="{$myurl}?view=list" title="{tr}List View{/tr}">{tr}List View{/tr}</a>
+<a href="{$myurl}?view=list" class="linkbut" title="{tr}List View{/tr}">{tr}List View{/tr}</a>
 {/if}
 </span>
 </div>
 <div style="float:left;margin:5px;">
-<span class="button2"><a href="#" onclick="flip('editform');return false;">{tr}Create/edit contacts{/tr}</a></span>
-<span class="button2"><a href="tiki-user_contacts_prefs.php" title="{tr}Preferences{/tr}">{tr}Preferences{/tr}</a></span>
+<span class="button2"><a href="#" onclick="flip('editform');return false;" class="linkbut">{tr}Create/edit contacts{/tr}</a></span>
+<span class="button2"><a href="tiki-user_contacts_prefs.php" class="linkbut" title="{tr}Preferences{/tr}">{tr}Preferences{/tr}</a></span>
 </div>
 </div>
 
@@ -56,15 +56,15 @@
 
 <table class="normal">
 <tr>
-<th><a href="tiki-contacts.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'firstName_desc'}firstName_asc{else}firstName_desc{/if}">{tr}First Name{/tr}</a></th>
-<th><a href="tiki-contacts.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastName_desc'}lastName_asc{else}lastName_desc{/if}">{tr}Last Name{/tr}</a></th>
-<th><a href="tiki-contacts.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'email_desc'}email_asc{else}email_desc{/if}">{tr}Email{/tr}</a></th>
-<th><a href="tiki-contacts.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'nickname_desc'}nickname_asc{else}nickname_desc{/if}">{tr}Nickname{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-contacts.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'firstName_desc'}firstName_asc{else}firstName_desc{/if}">{tr}First Name{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-contacts.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastName_desc'}lastName_asc{else}lastName_desc{/if}">{tr}Last Name{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-contacts.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'email_desc'}email_asc{else}email_desc{/if}">{tr}Email{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-contacts.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'nickname_desc'}nickname_asc{else}nickname_desc{/if}">{tr}Nickname{/tr}</a></th>
 {foreach from=$exts item=ext key=k}{if $ext.show eq 'y'}
-<th><a>{$ext.tra}</a></th>
+<th class="heading"><a class="tableheading">{$ext.tra}</a></th>
 {/if}{/foreach}
-{if $view eq 'list'}<th>{tr}Groups{/tr}</th>{/if}
-<th>{tr}Action{/tr}</th>
+{if $view eq 'list'}<th class="heading">{tr}Groups{/tr}</th>{/if}
+<th class="heading">{tr}Action{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
 {foreach key=k item=channels from=$all}

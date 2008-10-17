@@ -1,7 +1,7 @@
 {* $Id$ *}
 <div class="navbar">
-<span class="button2"><a href="tiki-admingroups.php">{tr}Admin Groups{/tr}</a></span>
-<span class="button2"><a href="tiki-adminusers.php">{tr}Admin Users{/tr}</a></span>
+<span class="button2"><a href="tiki-admingroups.php" class="linkbut">{tr}Admin Groups{/tr}</a></span>
+<span class="button2"><a href="tiki-adminusers.php" class="linkbut">{tr}Admin Users{/tr}</a></span>
 </div>
 
 <div class="cbox">
@@ -316,9 +316,9 @@ name="eponymousGroups" {if $prefs.eponymousGroups eq 'y'}checked="checked"{/if}/
 <table class="admin">
 
 {* *** Preferences *** *}
-<tr><th colspan="2">
+<tr><td colspan="2" class="heading">
   {tr}Preferences{/tr}
-</th></tr>
+</td></tr>
 
 <tr><td class="form">{tr}Does your mail reader need a special charset{/tr}</td>
   <td class="form">
@@ -405,9 +405,9 @@ name="eponymousGroups" {if $prefs.eponymousGroups eq 'y'}checked="checked"{/if}/
 {if $prefs.feature_messages eq 'y' and $tiki_p_messages eq 'y'}
 {* *** User Messages *** *}
 
-<tr><th colspan="2">
+<tr><td colspan="2" class="heading">
   {tr}User Messages{/tr}
-</th></tr>
+</td></tr>
 
 <tr>
   <td class="form">{tr}Messages per page{/tr}</td>
@@ -466,9 +466,9 @@ name="eponymousGroups" {if $prefs.eponymousGroups eq 'y'}checked="checked"{/if}/
 
 {if $prefs.feature_tasks eq 'y' and $tiki_p_tasks eq 'y'}
 {* *** User Tasks *** *}
-<tr><th colspan="2">
+<tr><td colspan="2" class="heading">
   {tr}User Tasks{/tr}
-</th></tr>
+</td></tr>
 
 <tr>
   <td class="form">{tr}Tasks per page{/tr}</td>
@@ -488,9 +488,9 @@ name="eponymousGroups" {if $prefs.eponymousGroups eq 'y'}checked="checked"{/if}/
 {/if}
 
 {* *** My Tiki *** *}
-<tr><th colspan="2">
+<tr><td colspan="2" class="heading">
   {tr}My Tiki{/tr}
-</th></tr>
+</td></tr>
 
 {if $prefs.feature_wiki eq 'y'}
 <tr><td class="form">{tr}My pages{/tr}</td><td class="form"><input type="checkbox" name="users_prefs_mytiki_pages" {if $prefs.users_prefs_mytiki_pages eq 'y'}checked="checked"{/if} /></td></tr>

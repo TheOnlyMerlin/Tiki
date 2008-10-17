@@ -54,11 +54,11 @@ window.onload = timeIt;
 //--><!]]>
 </script>
 
+
 {if $translation_mode eq 'n'}
-	{if $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}{assign var=pp value=$approvedPageName}{else}{assign var=pp value=$page}{/if}
-	{title}{if isset($hdr) && $prefs.wiki_edit_section eq 'y'}{tr}Edit Section{/tr}{else}{tr}Edit{/tr}{/if}: {$pp|escape}{if $pageAlias ne ''}&nbsp;({$pageAlias|escape}){/if}{/title}
+   <h1>{if isset($hdr) && $prefs.wiki_edit_section eq 'y'}{tr}Edit Section{/tr}{else}{tr}Edit{/tr}{/if}: {if $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}{$approvedPageName|escape}{else}{$page|escape}{/if}{if $pageAlias ne ''}&nbsp;({$pageAlias|escape}){/if}</h1>
 {else}
-   {title}{tr}Update '{$page}' based on '{$source_page}'{/tr}{/title}
+   <h1>{tr}Update '{$page}' based on '{$source_page}'{/tr}</h1>
 {/if}
    
 {if $beingStaged eq 'y'}
@@ -103,50 +103,29 @@ window.onload = timeIt;
 {if $likepages|@count < 0}
 <ul>
 {section name=back loop=$likepages}
-<li><a href="{$likepages[back]|sefurl}" class="wiki">{$likepages[back]}</a></li>
+<li><a href="tiki-index.php?page={$likepages[back]|escape:"url"}" class="wiki">{$likepages[back]}</a></li>
 {/section}
 </ul>
 {else}
 <table class="normal"><tr>
 {cycle name=table values=',,,,</tr><tr>' print=false advance=false}
 {section name=back loop=$likepages}
-<td><a href="{$likepages[back]|sefurl}" class="wiki">{$likepages[back]}</a></td>{cycle name=table}
+<td><a href="tiki-index.php?page={$likepages[back]|escape:"url"}" class="wiki">{$likepages[back]}</a></td>{cycle name=table}
 {/section}
 </tr></table>
 {/if}
 </div>
 <br />
 {/if}
-
-{if $preview && $translation_mode eq 'n'}
+{if $preview}
   {include file="tiki-preview.tpl"}
 {/if}
 {if $diff_style}
 <div style="overflow:auto;height:200px;">
 {include file=pagehistory.tpl}
-
 </div>
 {/if}
 <form  enctype="multipart/form-data" method="post" action="tiki-editpage.php" id='editpageform' name='editpageform'>
-
-{if $diff_style}
-<select name="diff_style">
-
-   {if $diff_style eq "htmldiff"}
-      <option value="htmldiff" selected="selected">html</option>
-   {else}
-      <option value="htmldiff">html</option>
-   {/if}
-   {if $diff_style eq "inlinediff"}
-      <option value="inlinediff" selected="selected">text</option>
-   {else}
-      <option value="inlinediff">text</option>
-   {/if}   
-</select>
-
-<input type="submit" class="wikiaction" onmouseover="return overlib('{tr}Change the style used to display differences to be translated.{/tr}');" onmouseout="nd();" name="preview" value="{tr}Change diff styles{/tr}" onclick="needToConfirm=false;" />
-{/if}
-
 <input type="hidden" name="page" value="{$page|escape}" />
 <input type="hidden" name="clock" value="{$edittimeout}" />
 {if $page_ref_id}
@@ -227,9 +206,9 @@ window.onload = timeIt;
 {if $poll_rated.info}
 <input type="hidden" name="poll_title" value="{$poll_rated.info.title|escape}" />
 <a href="tiki-admin_poll_options.php?pollId={$poll_rated.info.pollId}">{$poll_rated.info.title}</a>
-<span class="button2"><a href="tiki-editpage.php?page={$page|escape:"url"}&amp;removepoll={$poll_rated.info.pollId}">{tr}disable{/tr}</a>
+<span class="button2"><a class="linkbut" href="tiki-editpage.php?page={$page|escape:"url"}&amp;removepoll={$poll_rated.info.pollId}">{tr}disable{/tr}</a>
 {if $tiki_p_admin_poll eq 'y'}
-<span class="button2"><a href="tiki-admin_polls.php">{tr}Admin Polls{/tr}</a></span>
+<span class="button2"><a class="linkbut" href="tiki-admin_polls.php">{tr}Admin Polls{/tr}</a></span>
 {/if}
 {else}
 {if count($polls_templates)}
@@ -326,33 +305,29 @@ function searchrep() {
 <option value="{$languages[ix].value|escape}"{if $lang eq $languages[ix].value or (not($data.page_id) and $lang eq '' and $languages[ix].value eq $prefs.language)} selected="selected"{/if}>{$languages[ix].name}</option>
 {/section}
 </select>
-
-
 {if $translationOf}
 <input type="hidden" name="translationOf" value="{$translationOf|escape}"/>
 {/if}
 </td></tr>
 {else}
-	{if $trads|@count > 1}
-	<tr class="formcolor"{if $prefs.feature_urgent_translation neq 'y' or $diff_style} style="display:none;"{/if}>
-		<td>{tr}Translation request{/tr}:</td>
-		<td>
-			<input type="hidden" name="lang" value="{$lang|escape}"/>
-			<input type="checkbox" name="translation_critical" id="translation_critical"{if $translation_critical} checked="checked"{/if}/>
-			<label for="translation_critical">{tr}Send urgent translation request.{/tr}</label>
-			{if $diff_style}
-			<input type="hidden" name="oldver" value="{$diff_oldver|escape}"/>
-			<input type="hidden" name="newver" value="{$diff_newver|escape}"/>
-			<input type="hidden" name="source_page" value="{$source_page|escape}"/>
-			{/if}
-		</td>
-	</tr>
-	{/if}
+<tr class="formcolor">
+	<td>{tr}Translation request{/tr}:</td>
+	<td>
+		<input type="hidden" name="lang" value="{$lang|escape}"/>
+		<input type="checkbox" name="translation_critical" id="translation_critical"{if $translation_critical} checked="checked"{/if}/>
+		<label for="translation_critical">{tr}Send urgent translation request.{/tr}</label>
+		{if $diff_style}
+		<input type="hidden" name="diff_style" value="{$diff_style|escape}"/>
+		<input type="hidden" name="oldver" value="{$diff_oldver|escape}"/>
+		<input type="hidden" name="newver" value="{$diff_newver|escape}"/>
+		<input type="hidden" name="source_page" value="{$source_page|escape}"/>
+		{/if}
+	</td>
+</tr>
 {/if}
 {/if}
-
 {if $page|lower neq 'sandbox'}
-<tr class="formcolor" id="input_edit_summary"><td>{tr}Edit Comment{/tr}:</td><td><input style="width:98%;" class="wikiedit" type="text" name="comment" value="{$commentdata|escape}" /></td></tr>
+<tr class="formcolor" id="input_edit_summary"><td>{tr}Edit Summary{/tr}:</td><td><input style="width:98%;" class="wikiedit" type="text" name="comment" value="{$commentdata|escape}" /></td></tr>
 {if $prefs.wiki_feature_copyrights  eq 'y'}
 <tr class="formcolor"><td>{tr}Copyright{/tr}:</td><td>
 <table border="0">
@@ -399,10 +374,10 @@ function searchrep() {
 </td></tr>
 {/if}
 {if $wysiwyg neq 'y'}
-{if $prefs.feature_wiki_pictures eq 'y' and $tiki_p_upload_picture eq 'y' and (!$quicktags or $prefs.feature_filegals_manager eq 'n')}
+{if $prefs.feature_wiki_pictures eq 'y' and $tiki_p_upload_picture eq 'y'}
 <tr class="formcolor"><td>{tr}Upload picture{/tr}:</td><td>
 {if $prefs.feature_filegals_manager eq 'y'}
-<input type="submit" class="wikiaction" value="{tr}Add another image{/tr}" onclick="javascript:needToConfirm = false;javascript:window.open('{$url_path}tiki-list_file_gallery.php?filegals_manager=editwiki','_blank','menubar=1,scrollbars=1,resizable=1,height=400,width=800');return false;" />
+<input type="submit" class="wikiaction" value="{tr}Add another image{/tr}" onclick="javascript:needToConfirm = false;javascript:window.open('{$url_path}tiki-file_galleries.php?filegals_manager=y','_blank','menubar=1,scrollbars=1,resizable=1,height=400,width=800');return false;" />
 {else}
 <input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
 <input type="hidden" name="hasAlreadyInserted" value="" />
@@ -443,7 +418,7 @@ function searchrep() {
 {include file=antibot.tpl}
 {/if}
 {if $prefs.wiki_feature_copyrights  eq 'y'}
-<tr class="formcolor"><td>{tr}License{/tr}:</td><td><a href="{$prefs.wikiLicensePage|sefurl}">{tr}{$prefs.wikiLicensePage}{/tr}</a></td></tr>
+<tr class="formcolor"><td>{tr}License{/tr}:</td><td><a href="tiki-index.php?page={$prefs.wikiLicensePage}">{tr}{$prefs.wikiLicensePage}{/tr}</a></td></tr>
 {if $prefs.wikiSubmitNotice neq ""}
 <tr class="formcolor"><td>{tr}Important{/tr}:</td><td><b>{tr}{$prefs.wikiSubmitNotice}{/tr}</b></td>
 {/if}

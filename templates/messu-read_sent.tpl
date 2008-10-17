@@ -1,5 +1,4 @@
-{title url="messu-read.php?msgId=$msgId"}{tr}Read message{/tr}{/title}
-
+<h1><a class="pagetitle" href="messu-read.php?msgId={$msgId}">{tr}Read message{/tr}</a></h1>
 {include file=tiki-mytiki_bar.tpl}
 {include file="messu-nav.tpl"}
 <br />

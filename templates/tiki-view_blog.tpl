@@ -1,5 +1,5 @@
 <div class="navbar">
-  <a href="tiki-list_blogs.php">{tr}List Blogs{/tr}</a>
+  <a class="linkbut" href="tiki-list_blogs.php">{tr}List Blogs{/tr}</a>
 </div>
 
 {if strlen($heading) > 0}
@@ -34,6 +34,7 @@
 {/if}
 
 {section name=ix loop=$listpages}
+	{if $ownsblog eq 'y' or $listpages[ix].priv neq 'y' or $tiki_p_blog_admin eq 'y'}
   <a name="postId{$listpages[ix].postId}"></a>
   <div class="blogpost">
     <div class="posthead">
@@ -74,8 +75,7 @@
             {/if}
 
             {if $user and $prefs.feature_notepad eq 'y' and $tiki_p_notepad eq 'y'}
-              <a title="{tr}Save to notepad{/tr}" href="tiki-view_blog.php?blogId={$blogId}&amp;savenotepad={$listpages[ix].postId}">{icon _id='disk'
-							alt='{tr}Save to notepad{/tr}'}</a>
+              <a title="{tr}Save to notepad{/tr}" href="tiki-view_blog.php?blogId={$blogId}&amp;savenotepad={$listpages[ix].postId}">{icon _id='disk' alt='{tr}Save{/tr}'}</a>
             {/if}
           </td>
         </tr>
@@ -95,7 +95,7 @@
     <div class="postbody">
       {$listpages[ix].parsed_data}
       {if $listpages[ix].pages > 1}
-        <a class="link" href="{$listpages[ix].postId|sefurl:blogpost}">
+        <a class="link" href="tiki-view_blog_post.php?blogId={$blogId}&amp;postId={$listpages[ix].postId}">
           {tr}read more{/tr} ({$listpages[ix].pages} {tr}pages{/tr})
         </a>
       {/if}
@@ -122,16 +122,9 @@
         <tr>
           <td>
             <small>
-              <a class="link" href="{$listpages[ix].postId|sefurl:blogpost}">{tr}Permalink{/tr}</a>
+              <a class="link" href="tiki-view_blog_post.php?blogId={$blogId}&amp;postId={$listpages[ix].postId}">{tr}Permalink{/tr}</a>
               {if $allow_comments eq 'y' and $prefs.feature_blogposts_comments eq 'y'}
-                <a class="link" href="tiki-view_blog_post.php?find={$find}&amp;blogId={$blogId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;postId={$listpages[ix].postId}&amp;show_comments=1">
-								{$listpages[ix].comments}
-								{if $listpages[ix].comments == 1}
-									{tr}comment{/tr}
-								{else}
-									{tr}comments{/tr}
-									</a>
-								{/if}
+                <a class="link" href="tiki-view_blog_post.php?find={$find}&amp;blogId={$blogId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;postId={$listpages[ix].postId}&amp;show_comments=1">{$listpages[ix].comments} {tr}comments{/tr}</a>
               {/if}
             </small>
           </td>
@@ -144,6 +137,7 @@
       </table>
     </div> <!-- postbody -->
   </div> <!--blogpost -->
+	{/if}
 {/section}
 
 {pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
@@ -159,7 +153,7 @@
       <tr>
         <td>
           <div class="button2">
-            <a href="#comment" onclick="javascript:flip('comzone');flip('comzone_close','inline');return false;"{if $comments_cant > 0} class="highlight"{/if}>
+            <a href="#comment" onclick="javascript:flip('comzone');flip('comzone_close','inline');return false;" class="linkbut {if $comments_cant > 0}highlight{/if}">
               {if $comments_cant == 0 or ($tiki_p_read_comments  == 'n' and $tiki_p_post_comments  == 'y')}
                 {tr}Add Comment{/tr}
               {elseif $comments_cant == 1}

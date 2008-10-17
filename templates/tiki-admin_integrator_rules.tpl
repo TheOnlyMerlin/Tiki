@@ -4,31 +4,31 @@
 <div id="page-bar">
   <table><tr>
     <td><div class="button2">
-      <a href="tiki-admin_integrator.php">{tr}Configure Repositories{/tr}</a>
+      <a href="tiki-admin_integrator.php" class="linkbut">{tr}Configure Repositories{/tr}</a>
     </div></td>
     <td><div class="button2">
-      <a href="tiki-list_integrator_repositories.php">{tr}List Repositories{/tr}</a>
+      <a href="tiki-list_integrator_repositories.php" class="linkbut">{tr}List Repositories{/tr}</a>
     </div></td>
 
     <td>&nbsp;</td>
 
     <td><div class="button2">
-      <a href="tiki-admin_integrator.php?action=edit&amp;repID={$repID|escape}">{tr}Configure this Repository{/tr}</a>
+      <a href="tiki-admin_integrator.php?action=edit&amp;repID={$repID|escape}" class="linkbut">{tr}Configure this Repository{/tr}</a>
     </div></td>
     <td><div class="button2">
-      <a href="tiki-integrator.php?repID={$repID|escape}">{tr}View this Repository{/tr}</a>
+      <a href="tiki-integrator.php?repID={$repID|escape}" class="linkbut">{tr}View this Repository{/tr}</a>
     </div></td>
     
     <td>&nbsp;</td>
     
     <td><div class="button2">
-      <a title="{tr}Add new rule{/tr}" href="tiki-admin_integrator_rules.php?repID={$repID|escape}">
+      <a title="{tr}Add new rule{/tr}" href="tiki-admin_integrator_rules.php?repID={$repID|escape}" class="linkbut">
         {tr}New Rule{/tr}
       </a>
     </div></td>
     {if count($reps) gt 0}
     <td><div class="button2">
-      <a title="{tr}view/hide copy rules dialog{/tr}" href="javascript:flip('rules-copy-panel');">
+      <a title="{tr}view/hide copy rules dialog{/tr}" href="javascript:flip('rules-copy-panel');" class="linkbut">
         {tr}Copy Rules{/tr}
       </a>
     </div></td>
@@ -136,14 +136,14 @@
 {* Table with list of repositories *}
 <table class="normal" id="integrator_rules">
   <tr>
-    <th rowspan="2"><span title="{tr}Rule order{/tr}">#</span></th>
-    <th>{tr}Search{/tr}</th>
-    <th>{tr}Replace{/tr}</th>
-    <th>{tr}Regex{/tr}</th>
-    <th>{tr}Case{/tr}</th>
-    <th>{tr}Actions{/tr}</th>
+    <td class="heading" rowspan="2"><span title="{tr}Rule order{/tr}">#</span></td>
+    <td class="heading">{tr}Search{/tr}</td>
+    <td class="heading">{tr}Replace{/tr}</td>
+    <td class="heading">{tr}Regex{/tr}</td>
+    <td class="heading">{tr}Case{/tr}</td>
+    <td class="heading">{tr}Actions{/tr}</td>
   </tr><tr>
-    <th colspan="5">{tr}Description{/tr}</th>
+    <td class="heading" colspan="5">{tr}Description{/tr}</td>
   </tr>
   {cycle values="odd,even" print=false}
   {section name=rule loop=$rules}

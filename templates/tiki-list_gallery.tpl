@@ -1,34 +1,34 @@
-{title help="Image+Galleries"}{tr}Browsing Gallery:{/tr}&nbsp;{$name}{/title}
+<h1><a href="tiki-list_gallery.php?galleryId={$galleryId}" class="pagetitle">{tr}Browsing Gallery{/tr}: {$name}</a></h1>
+
+<div class="navbar">
+{if $system eq 'n'}
+  {if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner)}
+    <span class="button2"><a href="tiki-galleries.php?edit_mode=1&amp;galleryId={$galleryId}" class="linkbut">{tr}Edit Gallery{/tr}</a></span>
+    <span class="button2"><a href="tiki-list_gallery.php?galleryId={$galleryId}&amp;rebuild={$galleryId}" class="linkbut">{tr}Rebuild Thumbnails{/tr}</a></span>
+  {/if}
+  {if $tiki_p_upload_images eq 'y'}
+    {if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner) or $public eq 'y'}
+        <span class="button2"><a href="tiki-upload_image.php?galleryId={$galleryId}" class="linkbut">{tr}Upload Image{/tr}</a></span>
+    {/if}
+  {/if}
+{/if}
+<span class="button2"><a href="tiki-browse_gallery.php?galleryId={$galleryId}" class="linkbut">{tr}Browse Gallery{/tr}</a></span>
+</div>
 
 <div class="galdesc">
   {$description}
 </div>
 
-<div class="navbar">
-{if $system eq 'n'}
-  {if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner)}
-    <a  href="tiki-galleries.php?edit_mode=1&amp;galleryId={$galleryId}">{tr}Edit Gallery{/tr}</a>
-    <a href="tiki-list_gallery.php?galleryId={$galleryId}&amp;rebuild={$galleryId}">{tr}Rebuild Thumbnails{/tr}</a>
-  {/if}
-  {if $tiki_p_upload_images eq 'y'}
-    {if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner) or $public eq 'y'}
-        <a href="tiki-upload_image.php?galleryId={$galleryId}">{tr}Upload Image{/tr}</a>
-    {/if}
-  {/if}
-{/if}
-<a href="{$galleryId|sefurl:gallery}">{tr}Browse Gallery{/tr}</a>
-</div>
-
-<h2>{tr}Gallery Images{/tr}</h2>
+  <h2>{tr}Gallery Images{/tr}</h2>
 <div align="center">
 <table class="normal">
 <tr>
-<th><a href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'imageId_desc'}imageId_asc{else}imageId_desc{/if}">{tr}ID{/tr}</a></th>
-<th><a href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
-<th><a href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr}</a></th>
-<th><a href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'hits_desc'}hits_asc{else}hits_desc{/if}">{tr}Hits{/tr}</a></th>
-<th><a href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_desc'}user_asc{else}user_desc{/if}">{tr}User{/tr}</a></th>
-<th><a href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'filesize_desc'}filesize_asc{else}filesize_desc{/if}">{tr}Filesize{/tr}</a></th>
+<td class="heading"><a class="tableheading" href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'imageId_desc'}imageId_asc{else}imageId_desc{/if}">{tr}ID{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'hits_desc'}hits_asc{else}hits_desc{/if}">{tr}Hits{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_desc'}user_asc{else}user_desc{/if}">{tr}User{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'filesize_desc'}filesize_asc{else}filesize_desc{/if}">{tr}Filesize{/tr}</a></td>
 </tr>
 {cycle print=false values="even,odd"}
 {section name=changes loop=$images}

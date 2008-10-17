@@ -1,6 +1,5 @@
-{title}{tr}Approve page changes in staging:{/tr} {$page|escape:"url"}{/title}
-
-<div class="navbar"><a href="tiki-index.php?page={$page|escape:url}" title="{tr}View{/tr}">{tr}View page{/tr}</a></div>
+<h1>{tr}Approve page changes in staging{/tr}: <a class="pagetitle" href="tiki-index.php?page={$page|escape:"url"}">{$page}</a></h1>
+<div class="navbar"><a href="tiki-index.php?page={$page|escape:url}" class="linkbut" title="{tr}View{/tr}">{tr}View page{/tr}</a></div>
 <br />
 <div class="simplebox highlight">{icon _id=accept alt="{tr}Page has been approved{/tr}" style="vertical-align:middle"} {tr}Page has been approved{/tr}</div>
 <br />
@@ -21,12 +20,12 @@
 {cycle values="odd,even" print=false}
 <table>
 <tr>
-<th>{tr}Date{/tr}</th>
-<th>{tr}User{/tr}</th>
-{if $prefs.feature_wiki_history_ip ne 'n'}<th>{tr}IP{/tr}</th>{/if}
-<th>{tr}Comment{/tr}</th>
-<th>{tr}Version{/tr}</th>
-<th>{tr}Action{/tr}</th>
+<th class="heading">{tr}Date{/tr}</th>
+<th class="heading">{tr}User{/tr}</th>
+{if $prefs.feature_wiki_history_ip ne 'n'}<th class="heading">{tr}IP{/tr}</th>{/if}
+<th class="heading">{tr}Comment{/tr}</th>
+<th class="heading">{tr}Version{/tr}</th>
+<th class="heading">{tr}Action{/tr}</th>
 </tr><tr>
 <td class="{cycle advance=false}">{$staging_info.lastModif|tiki_short_datetime}</td>
 {if $tiki_p_wiki_view_author ne 'n'}<td class="{cycle advance=false}">{$staging_info.user}</td>{/if}

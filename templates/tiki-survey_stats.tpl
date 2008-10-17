@@ -1,13 +1,10 @@
 {* $Id$ *}
-
-{title}{tr}Stats for surveys{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-survey_stats.php">{tr}Stats for surveys{/tr}</a></h1>
 
 <div class="navbar">
-  <span class="button2"><a href="tiki-list_surveys.php">{tr}List Surveys{/tr}</a></span>
-  <span class="button2"><a href="tiki-survey_stats.php">{tr}Survey Stats{/tr}</a></span>
-  {if $tiki_p_admin_surveys eq 'y'}
-    <span class="button2"><a href="tiki-admin_surveys.php">{tr}Admin Surveys{/tr}</a></span>
-  {/if}
+<span class="button2"><a class="linkbut" href="tiki-list_surveys.php">{tr}List Surveys{/tr}</a></span>
+<span class="button2"><a class="linkbut" href="tiki-survey_stats.php">{tr}Survey Stats{/tr}</a></span>
+{if $tiki_p_admin_surveys eq 'y'}<span class="button2"><a class="linkbut" href="tiki-admin_surveys.php">{tr}Admin Surveys{/tr}</a></span>{/if}
 </div>
 
 <h2>{tr}Surveys{/tr}</h2>
@@ -26,10 +23,10 @@
 </table>
 <table class="normal">
 <tr>
-<th><a href="tiki-survey_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Survey{/tr}</a></th>
-<th><a href="tiki-survey_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'taken_desc'}taken_asc{else}taken_desc{/if}">{tr}taken{/tr}</a></th>
-<th><a href="tiki-survey_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr}</a></th>
-<th><a href="tiki-survey_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastTaken_desc'}lastTaken_asc{else}lastTaken_desc{/if}">{tr}Last taken{/tr}</a></th>
+<td class="heading"><a class="tableheading" href="tiki-survey_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Survey{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-survey_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'taken_desc'}taken_asc{else}taken_desc{/if}">{tr}taken{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-survey_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-survey_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastTaken_desc'}lastTaken_asc{else}lastTaken_desc{/if}">{tr}Last taken{/tr}</a></td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}

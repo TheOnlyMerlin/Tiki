@@ -1,5 +1,4 @@
-{title}{tr}Change password enforced{/tr}{/title}
-
+<h1>{tr}Change password enforced{/tr}</h1>
 <form method="post" action="tiki-change_password.php" >
 {if !empty($smarty.request.actpass)}
 <input type="hidden" name="actpass" value="{$smarty.request.actpass|escape}" />

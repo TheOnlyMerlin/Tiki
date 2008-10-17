@@ -111,7 +111,7 @@ function refresh_index($object_type, $object_id = null) {
 		$index_type = 'wiki';
 		$f_id = 'pageName';
 		$f_content = array('data', 'description', 'pageName');
-		array_unshift($filtering_expr, '$content = $tikilib->parse_data($content, array("is_html" => $res["is_html"]));');
+		array_unshift($filtering_expr, '$content = $tikilib->parse_data($content, $res["is_html"]);');
 		$wiki_html = ', `is_html`';
 		break;
 
@@ -203,10 +203,12 @@ function &search_index($data) {
 	}
 
 	// Clean the UTF-8 string using HTML Purifier
-@	require_once('lib/htmlpurifier/HTMLPurifier.auto.php');
-@	require_once('lib/htmlpurifier/HTMLPurifier/Encoder.php');
+@	require_once('lib/HTMLPurifier.auto.php');
+@	require_once('HTMLPurifier/Encoder.php');
 	if ( class_exists('HTMLPurifier_Encoder') ) {
-		$data = HTMLPurifier_Encoder::cleanUTF8($data);
+		$utf8encoder = new HTMLPurifier_Encoder();
+		$data = $utf8encoder->cleanUTF8($data);
+		unset($utf8encoder);
 	}
 
 	// Remove remaining HTML numeric entities

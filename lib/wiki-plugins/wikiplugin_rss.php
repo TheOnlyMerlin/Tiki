@@ -8,42 +8,6 @@ function wikiplugin_rss_help() {
 	return tra("~np~{~/np~RSS(id=>feedId:feedId2,max=>3,date=>1,desc=>1,author=>1)}{RSS} Insert rss feed output into a wikipage");
 }
 
-function wikiplugin_rss_info() {
-	return array(
-		'name' => tra('RSS Feed'),
-		'documentation' => 'PluginRSS',
-		'description' => tra('Inserts an RSS feed output.'),
-		'prefs' => array( 'wikiplugin_rss' ),
-		'params' => array(
-			'id' => array(
-				'required' => true,
-				'name' => tra('IDs'),
-				'description' => tra('List of feed IDs separated by colons. ex: feedId:feedId2'),
-			),
-			'max' => array(
-				'required' => false,
-				'name' => tra('Result Count'),
-				'description' => tra('Amount of results displayed.'),
-			),
-			'date' => array(
-				'required' => false,
-				'name' => tra('Date'),
-				'description' => '0|1',
-			),
-			'desc' => array(
-				'required' => false,
-				'name' => tra('Description'),
-				'description' => '0|1|2',
-			),
-			'author' => array(
-				'required' => false,
-				'name' => tra('Author'),
-				'description' => '0|1',
-			),
-		),
-	);
-}
-
 function rss_sort($a,$b) {
 	if (isset($a["pubDate"])) {
   	$datea=strtotime($a["pubDate"]);
@@ -93,7 +57,7 @@ function wikiplugin_rss($data,$params) {
 	}
  
 	if ( isset($items[0]) && $items[0]['isTitle'] == 'y' ) {
-		$repl .= '<div class="rsstitle"><a target="_blank" href="'.$items[0]['link'].'">'.TikiLib::htmldecode($items[0]['title']).'</a></div>'; 
+		$repl .= '<div class="wiki"><a target="_blank" href="'.$items[0]['link'].'">'.TikiLib::htmldecode($items[0]['title']).'</a></div><br />'; 
 		$items = array_slice($items, 1);
 	}
 
@@ -104,10 +68,10 @@ function wikiplugin_rss($data,$params) {
 
 	if ( count($items) < $max ) $max = count($items);
 
-	$repl .= '<ul class="rsslist">';
+	$repl .= '<table class="normal">';
 	for ( $j = 0 ; $j < $max ; $j++ ) {
 
-		$repl .= '<li  class="rssitem"><a target="_blank" href="'.$items[$j]['link'].'">'.TikiLib::htmldecode($items[$j]['title']).'</a>';
+		$repl .= '<tr><td class="heading"><a class="tableheading" target="_blank" href="'.$items[$j]['link'].'"><b>'.TikiLib::htmldecode($items[$j]['title']).'</b></a>';
 
 		if ( $author == 1 || $date == 1 ) {
 			$repl_author = '';
@@ -118,24 +82,26 @@ function wikiplugin_rss($data,$params) {
 				}
 			}
 			if ( $date == 1 && isset($items[$j]['pubDate']) && $items[$j]['pubDate'] <> '' ) {
-				$repl_author .= '<span class="rssdate">'.$items[$j]['pubDate'].'</span>';
+				$repl_author .= ''.$items[$j]['pubDate'];
 			}
 			if ( $repl_author != '' ) {
 				$repl .= '&nbsp;&nbsp;&nbsp;('.$repl_author.')';
 			}
 		}
 
-		if ( $desc == 1 && !empty($items[$j]['description'])) {
-			$repl .= '<div class="rssdescription">'.TikiLib::htmldecode($items[$j]['description']).'</div>';
+		$repl .= '</td></tr>';
+		if ( $desc == 1 ) {
+			$repl .= '<tr><td class="even" colspan="2">'.TikiLib::htmldecode($items[$j]['description']).'</td></tr>';
+			$repl .= '</tr>';
 		}
 
 		if ( $desc > 1 ) {
-			$repl .= '<div class="rssdescription">'.substr(strip_tags(TikiLib::htmldecode($items[$j]['description'])),0,$desc).' <a href="'.$items[$j]['link'].'">[...]</a></div>';
+			$repl .= '<tr><td class="even" colspan="2">'.substr(strip_tags(TikiLib::htmldecode($items[$j]['description'])),0,$desc).' <a class="wiki" href="'.$items[$j]['link'].'">[[...]</a></td></tr>';
+			$repl .= '</tr>';
 		}
-		$repl .= '</li>';
 	}
-	$repl .= '</ul>';
-	return '~np~'.$repl.'~/np~';
+	$repl .= '</table>';
+	return $repl;
 }
 
 ?>

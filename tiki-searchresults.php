@@ -159,12 +159,6 @@ if (!isset($_REQUEST["offset"])) {
 $smarty->assign_by_ref('offset', $offset);
 
 $fulltext = $prefs['feature_search_fulltext'] == 'y';
-if (isset($_REQUEST['boolean']) && ($_REQUEST['boolean'] == 'on' || $_REQUEST['boolean'] == 'y' )) {
-	$boolean = 'y';
-} else {
-	$boolean = 'n';
-}
-$smarty->assign_by_ref('boolean', $boolean);
 
 // Build the query using words
 if ((!isset($_REQUEST["words"])) || (empty($_REQUEST["words"]))) {
@@ -173,8 +167,7 @@ if ((!isset($_REQUEST["words"])) || (empty($_REQUEST["words"]))) {
 	$smarty->assign('words', '');
 } else {
 	$words = strip_tags($_REQUEST["words"]);
-	$results = $searchlib->$find_where($words, $offset, $maxRecords, $fulltext, $filter, $boolean);
-	//	echo '<pre>'; print_r($results);
+	$results = $searchlib->$find_where($words, $offset, $maxRecords, $fulltext, $filter);
 
 	$smarty->assign('words', $words);
 }

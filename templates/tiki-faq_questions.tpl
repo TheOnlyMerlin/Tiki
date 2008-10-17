@@ -1,14 +1,10 @@
-{title}{tr}Admin FAQ{/tr}: {$faq_info.title}{/title}
-
-<span class="button2"><a href="tiki-list_faqs.php">{tr}List FAQs{/tr}</a></span>
-<span class="button2"><a href="tiki-view_faq.php?faqId={$faqId}">{tr}View FAQ{/tr}</a></span>
-<span class="button2"><a href="tiki-list_faqs.php?faqId={$faqId}">{tr}Edit this FAQ{/tr}</a></span>
-<span class="button2"><a href="tiki-faq_questions.php?faqId={$faqId}">{tr}New Question{/tr}</a></span>
+<h1><a class="pagetitle" href="tiki-faq_questions.php?faqId={$faqId}">{tr}Admin FAQ{/tr}: {$faq_info.title}</a></h1>
+<a href="tiki-list_faqs.php" class="linkbut">{tr}List FAQs{/tr}</a>
+<a href="tiki-view_faq.php?faqId={$faqId}" class="linkbut">{tr}View FAQ{/tr}</a>
+<a href="tiki-list_faqs.php?faqId={$faqId}" class="linkbut">{tr}Edit this FAQ{/tr}</a>
+<a class="linkbut" href="tiki-faq_questions.php?faqId={$faqId}">{tr}New Question{/tr}</a><br />
 <br />
-<br />
-
 <h2>{if $questionId}{tr}Edit FAQ question{/tr}{else}{tr}Add FAQ question{/tr}{/if}</h2>
-
 <form action="tiki-faq_questions.php" method="post" id="editpageform">
 <input type="hidden" name="questionId" value="{$questionId|escape}" />
 <input type="hidden" name="faqId" value="{$faqId|escape}" />
@@ -96,12 +92,12 @@
 
 <table class="normal">
 <tr>
-<th>
-<a href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'questionId_desc'}questionId_asc{else}questionId_desc{/if}">{tr}ID{/tr}</a>
-</th>
-<th><a href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'question_desc'}question_asc{else}question_desc{/if}">{tr}Question{/tr}</a>
-</th>
-<th>{tr}Action{/tr}</th>
+<td class="heading">
+<a class="tableheading" href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'questionId_desc'}questionId_asc{else}questionId_desc{/if}">{tr}ID{/tr}</a>
+</td>
+<td class="heading"><a class="tableheading" href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'question_desc'}question_asc{else}question_desc{/if}">{tr}Question{/tr}</a>
+</td>
+<td class="heading">{tr}Action{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}
@@ -144,9 +140,9 @@
 <h2>{tr}Suggested questions{/tr}</h2>
 <table class="normal">
 <tr>
-  <th>{tr}Question{/tr}</th>
-  <th>{tr}Answer{/tr}</th>
-  <th>{tr}Action{/tr}</th>
+  <th class="heading">{tr}Question{/tr}</th>
+  <th class="heading">{tr}Answer{/tr}</th>
+  <th class="heading">{tr}Action{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$suggested}

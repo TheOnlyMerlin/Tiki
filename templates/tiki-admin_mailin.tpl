@@ -1,14 +1,24 @@
-{title help="Webmail"}{tr}Mail-in accounts{/tr}{/title}
+<h1><a href="tiki-admin_mailin.php" class="pagetitle">{tr}Mail-in accounts{/tr}</a>
+
+{if $prefs.feature_help eq 'y'}
+  <a href="{$prefs.helpurl}Webmail" target="tikihelp" class="tikihelp" title="{tr}Admin Webmail{/tr}">
+  {icon _id='help'}</a>
+{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+  <a href="tiki-edit_templates.php?template=tiki-admin_mailin.tpl" target="tikihelp" class="tikihelp" title="{tr}View template{/tr}: {tr}Admin Mailing Template{/tr}">
+  {icon _id='shape_square_edit'}</a>
+{/if}</h1>
 
 <table class="normal">
   <tr>
-    <th>
+    <td class="heading">
       {tr}Action{/tr}
-    </th>
-    <th>
+    </td>
+    <td class="heading">
       {tr}Account{/tr}
-    </th>
-    <th>{tr}Type{/tr}</th>
+    </td>
+    <td class="heading">{tr}Type{/tr}</td>
   </tr>
   {cycle values="even,odd" print=false}
   {section name=ix loop=$accounts}

@@ -1,13 +1,10 @@
-{title url="tiki-edit_quiz_results.php?quizId=$quizId"}{tr}Edit quiz results{/tr}{/title}
-
-<span class="button2"><a href="tiki-list_quizzes.php">{tr}List Quizzes{/tr}</a></span>
-<span class="button2"><a href="tiki-quiz_stats.php">{tr}Quiz Stats{/tr}</a></span>
-<span class="button2"><a href="tiki-quiz_stats_quiz.php?quizId={$quizId}">{tr}This Quiz Stats{/tr}</a></span>
-<span class="button2"><a href="tiki-edit_quiz.php?quizId={$quizId}">{tr}Edit this Quiz{/tr}</a></span>
-<span class="button2"><a href="tiki-edit_quiz.php">{tr}Admin Quizzes{/tr}</a></span><br /><br />
-
+<h1><a class="pagetitle" href="tiki-edit_quiz_results.php?quizId={$quizId}">Edit quiz results</a></h1>
+<a class="linkbut" href="tiki-list_quizzes.php">{tr}List Quizzes{/tr}</a>
+<a class="linkbut" href="tiki-quiz_stats.php">{tr}Quiz Stats{/tr}</a>
+<a class="linkbut" href="tiki-quiz_stats_quiz.php?quizId={$quizId}">{tr}This Quiz Stats{/tr}</a>
+<a class="linkbut" href="tiki-edit_quiz.php?quizId={$quizId}">{tr}Edit this Quiz{/tr}</a>
+<a class="linkbut" href="tiki-edit_quiz.php">{tr}Admin Quizzes{/tr}</a><br /><br />
 <h2>{tr}Create/edit questions for quiz{/tr}: <a href="tiki-edit_quiz.php?quizId={$quiz_info.quizId}" class="pageTitle">{$quiz_info.name}</a></h2>
-
 <form action="tiki-edit_quiz_results.php" method="post">
 <input type="hidden" name="quizId" value="{$quizId|escape}" />
 <input type="hidden" name="resultId" value="{$resultId|escape}" />
@@ -34,10 +31,10 @@
 </table>
 <table class="normal">
 <tr>
-<th><a href="tiki-edit_quiz_results.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'fromPoints_desc'}fromPoints_asc{else}fromPoints_desc{/if}">{tr}From Points{/tr}</a></th>
-<th><a href="tiki-edit_quiz_results.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'toPoints_desc'}toPoints_asc{else}toPoints_desc{/if}">{tr}To Points{/tr}</a></th>
-<th><a href="tiki-edit_quiz_results.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'position_desc'}answer_asc{else}answer_desc{/if}">{tr}Answer{/tr}</a></th>
-<th>{tr}Action{/tr}</th>
+<td class="heading"><a class="tableheading" href="tiki-edit_quiz_results.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'fromPoints_desc'}fromPoints_asc{else}fromPoints_desc{/if}">{tr}From Points{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-edit_quiz_results.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'toPoints_desc'}toPoints_asc{else}toPoints_desc{/if}">{tr}To Points{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-edit_quiz_results.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'position_desc'}answer_asc{else}answer_desc{/if}">{tr}Answer{/tr}</a></td>
+<td class="heading">{tr}Action{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}

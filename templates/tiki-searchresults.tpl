@@ -1,61 +1,52 @@
 {* $Id$ *}
-{popup_init src="lib/overlib.js"}
 {if !( $searchNoResults ) }
-  {title admpage="search"}{tr}Search results{/tr}{/title}
+<h1>{tr}Search results{/tr}
+{if $tiki_p_admin eq 'y'}
+<a href="tiki-admin.php?page=search" title="{tr}Admin Feature{/tr}">{icon _id='wrench' alt="{tr}Admin Feature{/tr}"}</a>
+{/if}
+</h1>
 {/if}
 
 <div class="nohighlight">
 {if !( $searchStyle eq "menu" )}
 <div class="navbar">
 {tr}Search in{/tr}:<br />
-<a href="{$smarty.server.PHP_SELF}?{query where=pages}"{if $where eq 'pages'} class='highlight'{/if}>{tr}All{/tr}</a>
+<a class="linkbut" href="tiki-searchresults.php?highlight={$words}&amp;where=pages">{tr}All{/tr}</a>
 {if $prefs.feature_wiki eq 'y'}
- <a href="{$smarty.server.PHP_SELF}?{query where=wikis}"{if $where eq 'wikis'} class='highlight'{/if}>{tr}Wiki{/tr}</a>
+ <a class="linkbut" href="tiki-searchresults.php?highlight={$words}&amp;where=wikis">{tr}Wiki{/tr}</a>
 {/if}
 {if $prefs.feature_galleries eq 'y'}
- <a href="{$smarty.server.PHP_SELF}?{query where=galleries}"{if $where eq 'galleries'} class='highlight'{/if}>{tr}Galleries{/tr}</a>
- <a href="{$smarty.server.PHP_SELF}?{query where=images}"{if $where eq 'images'} class='highlight'{/if}>{tr}Images{/tr}</a>
+ <a class="linkbut" href="tiki-searchresults.php?highlight={$words}&amp;where=galleries">{tr}Galleries{/tr}</a>
+ <a class="linkbut" href="tiki-searchresults.php?highlight={$words}&amp;where=images">{tr}Images{/tr}</a>
 {/if}
 {if $prefs.feature_file_galleries eq 'y'}
- <a href="{$smarty.server.PHP_SELF}?{query where=files}{if $where eq 'files'} class='highlight'{/if}">{tr}Files{/tr}</a>
+ <a class="linkbut" href="tiki-searchresults.php?highlight={$words}&amp;where=files">{tr}Files{/tr}</a>
 {/if}
 {if $prefs.feature_forums eq 'y'}
- <a href="{$smarty.server.PHP_SELF}?{query where=forums}"{if $where eq 'forums'} class='highlight'{/if}>{tr}Forums{/tr}</a>
+ <a class="linkbut" href="tiki-searchresults.php?highlight={$words}&amp;where=forums">{tr}Forums{/tr}</a>
 {/if}
 {if $prefs.feature_faqs eq 'y'}
- <a href="{$smarty.server.PHP_SELF}?{query where=faqs}"{if $where eq 'faqs'} class='highlight'{/if}>{tr}FAQs{/tr}</a>
+ <a class="linkbut" href="tiki-searchresults.php?highlight={$words}&amp;where=faqs">{tr}FAQs{/tr}</a>
 {/if}
 {if $prefs.feature_blogs eq 'y'}
- <a href="{$smarty.server.PHP_SELF}?{query where=blogs}"{if $where eq 'blogs'} class='highlight'{/if}>{tr}Blogs{/tr}</a>
- <a href="{$smarty.server.PHP_SELF}?{query where=posts}"{if $where eq 'posts'} class='highlight'{/if}>{tr}Blog Posts{/tr}</a>
+ <a class="linkbut" href="tiki-searchresults.php?highlight={$words}&amp;where=blogs">{tr}Blogs{/tr}</a>
+ <a class="linkbut" href="tiki-searchresults.php?highlight={$words}&amp;where=posts">{tr}Blog Posts{/tr}</a>
 {/if}
 {if $prefs.feature_directory eq 'y'}
- <a href="{$smarty.server.PHP_SELF}?{query where=directory}"{if $where eq 'directory'} class='highlight'{/if}>{tr}Directory{/tr}</a>
+ <a class="linkbut" href="tiki-searchresults.php?highlight={$words}&amp;where=directory">{tr}Directory{/tr}</a>
 {/if}
 
 {if $prefs.feature_articles eq 'y'}
- <a href="{$smarty.server.PHP_SELF}?{query where=articles}"{if $where eq 'articles'} class='highlight'{/if}>{tr}Articles{/tr}</a>
+ <a class="linkbut" href="tiki-searchresults.php?highlight={$words}&amp;where=articles">{tr}Articles{/tr}</a>
 {/if}
 {if $prefs.feature_trackers eq 'y'}
- <a href="{$smarty.server.PHP_SELF}?{query where=trackers}"{if $where eq 'trackers'} class='highlight'{/if}>{tr}Trackers{/tr}</a>
+ <a class="linkbut" href="tiki-searchresults.php?highlight={$words}&amp;where=trackers">{tr}Trackers{/tr}</a>
 {/if}
 </div><!-- navbar -->
+<br /><br />
+{tr}Found{/tr} "{$words}" {tr}in{/tr} {if $where3}{$where2}: {$where3}{else}{$cant_results} {$where2}{/if}
 {/if}
 <form class="forms" method="get" action="tiki-searchresults.php">
-	{if !( $searchStyle eq "menu" )}
-		<label for="boolean">{tr}Boolean search:{/tr}<input type="checkbox" name="boolean"{if $boolean eq 'y'} checked="checked"{/if} /></label>
-		<a {popup text="<ul><li>+ : {tr}A leading plus sign indicates that this word must be present in every object returned.{/tr}</li>
-		<li>- : {tr}A leading minus sign indicates that this word must not be present in any row returned.{/tr}</li>
-    	<li>{tr}By default (when neither plus nor minus is specified) the word is optional, but the object that contain it will be rated higher.{/tr}</li>
-		<li>< > : {tr}These two operators are used to change a word's contribution to the relevance value that is assigned to a row.{/tr}</li>
-		<li>( ) : {tr}Parentheses are used to group words into subexpressions.{/tr}</li>
-		<li>~ : {tr}A leading tilde acts as a negation operator, causing the word's contribution to the object relevance to be negative. It's useful for marking noise words. An object that contains such a word will be rated lower than others, but will not be excluded altogether, as it would be with the - operator.{/tr}</li>
-		<li>* : {tr}An asterisk is the truncation operator. Unlike the other operators, it should be appended to the word, not prepended.{/tr}</li>
-		<li>&quot; : {tr}The phrase, that is enclosed in double quotes &quot;, matches only objects that contain this phrase literally, as it was typed. {/tr}</li></ul>" width=300 center=true}>
-			  {icon _id='help' style="vertical-align:middle"}
-		</a>
-		<br />
-	{/if}
     {tr}Find{/tr} <input id="fuser" name="highlight" size="14" type="text" accesskey="s" value="{$words}"/>
 {if ( $searchStyle eq "menu" )}
     {tr}in{/tr}
@@ -96,12 +87,6 @@
 </form>
 </div><!--nohighlight-->
 
-{if $searchStyle ne "menu" }
-	<div class="highlight simplebox">
-		 {tr}Found{/tr} "{$words}" {tr}in{/tr} {if $where3}{$where2}: {$where3}{else}{$cant_results} {$where2}{/if}
-	</div>
-{/if}
-
 {if !($searchNoResults) }
 <div class="searchresults">
 <br /><br />
@@ -117,7 +102,6 @@
 {if $results[search].type > ''}
 &nbsp;({$results[search].type})
 {/if}
-{if !empty($results[search].parentName)}{tr}in{/tr} <a href="{$results[search].parentHref}">{$results[search].parentName|escape}</a> {/if}
 
 <br />
 <div class="searchdesc">{$results[search].data|strip_tags}</div>

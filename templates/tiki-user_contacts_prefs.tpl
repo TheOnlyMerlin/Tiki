@@ -1,9 +1,20 @@
-{title help="User+Contacts+Prefs"}{tr}User Contacts Preferences{/tr}{/title}
+{*Smarty template*}
+<h1><a class="pagetitle" href="tiki-user_contacts_prefs.php">{tr}User Contacts Preferences{/tr}</a>
+
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}User+Contacts+Prefs" target="tikihelp" class="tikihelp" title="{tr}Tikiwiki.org help{/tr}: {tr}Edit User Contacts Preferences{/tr}">
+{icon _id='help'}</a>{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-user_contacts_prefs.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Edit Quiz Stats Tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}
+</a>
+{/if}</h1>
 
 <!-- this bar is created by a ref to {include file=tiki-mytiki_bar.tpl} :) -->
 {include file=tiki-mytiki_bar.tpl}
 <div class="navbar">
-	<span class="button2"><a href="tiki-contacts.php" title="{tr}Contacts{/tr}">{tr}Contacts{/tr}</a></span>
+	<span class="button2"><a href="tiki-contacts.php" class="linkbut" title="{tr}Contacts{/tr}">{tr}Contacts{/tr}</a></span>
 </div>
 
 <table class="admin" style="clear:both;"><tr><td>
@@ -47,9 +58,9 @@
 <table class="admin"><tr><td>
 <table class="normal">
   <tr>
-	<th colspan="2">{tr}Order{/tr}</th>
-  	<th>{tr}Field{/tr}</th>
-	<th>{tr}Action{/tr}</th>
+	<td class="heading" colspan="2">{tr}Order{/tr}</td>
+  	<td class="heading">{tr}Field{/tr}</td>
+	<td class="heading">{tr}Action{/tr}</td>
   </tr>
 {cycle values="odd,even" print=false}
   {foreach from=$exts item=ext key=k name=e}

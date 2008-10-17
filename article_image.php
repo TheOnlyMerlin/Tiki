@@ -9,14 +9,6 @@
 // application to display an image from the database with 
 // option to resize the image dynamically creating a thumbnail on the fly.
 
-// This handles three types of images, depending on the image_type parameter: 
-// "article": Images for articles
-// "submission": Images for article submissions
-// "topic": Images for topics associated to articles
-// "preview": Images for article and article submissions previews
-// Any other value is invalid
-// If image_type has no value, we default to "article" to preserve previous behaviour
-
 require_once ('tiki-setup.php');
 
 if ($prefs['feature_articles'] != 'y') {
@@ -28,86 +20,49 @@ if ($prefs['feature_articles'] != 'y') {
 
 // Now check permissions to access this page
 if(($tiki_p_read_article != 'y') && ($tiki_p_articles_read_heading != 'y')) {
-	$smarty->assign('errortype', 401);
-	$smarty->assign('msg',tra("Permission denied you cannot view pages"));
-	$smarty->display("error.tpl");
-	die;  
+  $smarty->assign('errortype', 401);
+  $smarty->assign('msg',tra("Permission denied you cannot view pages"));
+  $smarty->display("error.tpl");
+  die;  
 }
 
 if (!isset($_REQUEST["id"])) {
 	die;
 }
 
-// If image_type has no value, we default to "article" to preserve previous behaviour
-if(!isset($_REQUEST["image_type"])) {
-	$_REQUEST["image_type"]="article";
-}
+include_once ('lib/init/initlib.php');
+include_once ('tiki-setup_base.php');
 
-switch ($_REQUEST["image_type"]) {
-	case "article":
-		$image_cache_prefix="article";
-		break;
-	case "submission":
-		$image_cache_prefix="article_submission";
-		break;
-	case "topic":
-		$image_cache_prefix="article_topic";
-		break;
-	case "preview":
-		$image_cache_prefix="article_preview";
-		break;
-	default:
-		die;
-}
+$topiccachefile = $prefs['tmpDir'];
 
-$cachefile = $prefs['tmpDir'];
-if ($tikidomain) { $cachefile.= "/$tikidomain"; }
-$cachefile.= "/$image_cache_prefix.".$_REQUEST["id"];
+if ($tikidomain) { $topiccachefile.= "/$tikidomain"; }
+$topiccachefile.= "/article.".$_REQUEST["id"];
 
-// If "reload" parameter is set, recreate the cached image file from database values.
-// This does not make sense if "image_type" is "preview".
-if ( (isset($_REQUEST["reload"])) || (!is_file($cachefile))) {
-	switch ($_REQUEST["image_type"]) {
-		case "article":
-			$storedData = $tikilib->get_article_image($_REQUEST["id"]);
-			break;
-		case "submission":
-			$storedData = $tikilib->get_submission($_REQUEST["id"]);
-			break;
-		case "topic":
-			$storedData = $tikilib->get_topic_image($_REQUEST["id"]);
-			break;
-		case "preview":
-			// We can't get the data from the database. No fallback solution.
-			// No image displayed
-			break;
-		default:
-			// Invalid value
-			die;
-	}
+if (is_file($topiccachefile) and (!isset($_REQUEST["reload"]))) {
+	$size = getimagesize($topiccachefile);
+	header ("Content-type: ".$size['mime']); /* do not backport to 1.8 */
+	readfile($topiccachefile);
+	die();
+} else {
+	$data = $tikilib->get_article_image($_REQUEST["id"]);
 	// if blank then die, otherwise we offer to download strangeness
 	// this also catches invalid id's
-	if (!$storedData) {
+	if (!$data) {
 		die;
 	}
-	$type = $storedData["image_type"];
-	$data = $storedData["image_data"];
+	$type = $data["image_type"];
+	$data = $data["image_data"];
 	if ($data["image_data"]) {
-		$fp = fopen($cachefile,"wb");
+		$fp = fopen($topiccachefile,"wb");
 		fputs($fp,$data);
 		fclose($fp);
 	}
 }
 
-// If cached file exists, display cached file
-if (is_file($cachefile)) {
-	$size = getimagesize($cachefile);
-	header ("Content-type: ".$size['mime']);
-	readfile($cachefile);
+header ("Content-type: $type");
+if (is_file($topiccachefile)) {
+	readfile($topiccachefile);
 } else {
-	// Just in case creation of cache file failed, but data was
-	// retrieved from database
-	header ("Content-type: ".$type);
 	echo $data;
 }
 

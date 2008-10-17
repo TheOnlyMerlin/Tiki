@@ -1,13 +1,13 @@
-{title}{tr}Directory batch upload{/tr}{/title}
-
+{* $Header$ *}
+<h1><a href="tiki-batch_upload_files.php" class="pagetitle">{tr}Directory batch upload{/tr}</a></h1>
 <span class="button2">
 {if $galleryId ne ''}
-<a href="tiki-list_file_gallery.php?galleryId={$galleryId}">
+<a href="tiki-list_file_gallery.php?galleryId={$galleryId}" class="linkbut">
 {else}
-<a href="tiki-list_file_gallery.php">
+<a href="tiki-file_galleries.php" class="linkbut">
 {/if}
 {tr}Browse file gallery{/tr}</a></span>
-<span class="button2"><a href="tiki-upload_file.php?galleryId={$galleryId}">{tr}Upload from disk{/tr}</a></span>
+<span class="button2"><a href="tiki-upload_file.php?galleryId={$galleryId}" class="linkbut">{tr}Upload from disk{/tr}</a></span>
 <br />
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Please do not use this feature to upload data into the database.{/tr}{/remarksbox}
 
@@ -17,10 +17,10 @@
 <form method="post" action="tiki-batch_upload_files.php" name="f">
 <table border="0" class="normal" id="filelist" width="100%">
 <tr>
-<th></th>
-<th><a href="javascript:void(0);">{tr}Filename{/tr}</a></th>
-<th width="80"><a href="javascript:void(0);">{tr}Filesize{/tr}</th>
-<th width="80"><a href="javascript:void(0);">{tr}Filetype{/tr}</a></th></tr>
+<th class="heading"></th>
+<th class="heading"><a class="tableheading" href="javascript:void(0);">{tr}Filename{/tr}</a></th>
+<th class="heading" width="80"><a class="tableheading" href="javascript:void(0);">{tr}Filesize{/tr}</th>
+<th class="heading" width="80"><a class="tableheading" href="javascript:void(0);">{tr}Filetype{/tr}</a></th></tr>
 {cycle print=false values="even,odd"}
 {foreach key=k item=it from=$filestring}
 <tr class="{cycle}">

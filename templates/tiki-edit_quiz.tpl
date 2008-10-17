@@ -1,14 +1,20 @@
 {* $Id$ *}
  
-{* Copyright (c) 2002-2008 *}
+{* Copyright (c) 2004 *}
 {* All Rights Reserved. See copyright.txt for details and a complete list of authors. *}
 {* Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details. *}
 
-{title help="Quiz"}{tr}Admin Quizzes{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-edit_quiz.php">{tr}Admin quizzes{/tr}</a>
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Quiz" target="tikihelp" class="tikihelp" title="{tr}Quizzes{/tr}">
+<img src="img/icons/help.gif" border="0" height="16" width="16" alt='{tr}Help{/tr}' /></a>{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=/tiki-edit_quiz.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Admin Quizzes tpl{/tr}">
+<img src="img/icons/info.gif" border="0" height="16" width="16" alt='{tr}Edit Tpl{/tr}' /></a>{/if}</h1>
 
 <div class="navbar">
-<a href="tiki-list_quizzes.php">{tr}List Quizzes{/tr}</a>
-<a href="tiki-quiz_stats.php">{tr}Quiz Stats{/tr}</a>
+<a class="linkbut" href="tiki-list_quizzes.php">{tr}List Quizzes{/tr}</a>
+<a class="linkbut" href="tiki-quiz_stats.php">{tr}Quiz Stats{/tr}</a>
 </div>
 
 <h2>{tr}Create/edit quizzes{/tr}</h2>
@@ -119,33 +125,33 @@
 <!-- begin table for displaying quiz data -->
 <table class="normal">
   <tr>
-    <th>
-      <a href="tiki-edit_quiz.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'quizId_desc'}quizId_asc{else}quizId_desc{/if}">{tr}ID{/tr}</a>
-    </th>
-    <th>
-      <a href="tiki-edit_quiz.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a>
-    </th>
-    <th>
-      <a href="tiki-edit_quiz.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'description_desc'}description_asc{else}description_desc{/if}">{tr}Description{/tr}</a>
-    </th>
-    <th>
-      <a href="tiki-edit_quiz.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'canRepeat_desc'}canRepeat_asc{else}canRepeat_desc{/if}">{tr}canRepeat{/tr}</a>
-    </th>
-    <th>
-      <a href="tiki-edit_quiz.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'timeLimit_desc'}timeLimit_asc{else}timeLimit_desc{/if}">{tr}timeLimit{/tr}</a>
-    </th>
+    <td class="heading">
+      <a class="tableheading" href="tiki-edit_quiz.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'quizId_desc'}quizId_asc{else}quizId_desc{/if}">{tr}ID{/tr}</a>
+    </td>
+    <td class="heading">
+      <a class="tableheading" href="tiki-edit_quiz.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a>
+    </td>
+    <td class="heading">
+      <a class="tableheading" href="tiki-edit_quiz.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'description_desc'}description_asc{else}description_desc{/if}">{tr}Description{/tr}</a>
+    </td>
+    <td class="heading">
+      <a class="tableheading" href="tiki-edit_quiz.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'canRepeat_desc'}canRepeat_asc{else}canRepeat_desc{/if}">{tr}canRepeat{/tr}</a>
+    </td>
+    <td class="heading">
+      <a class="tableheading" href="tiki-edit_quiz.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'timeLimit_desc'}timeLimit_asc{else}timeLimit_desc{/if}">{tr}timeLimit{/tr}</a>
+    </td>
 
     <!-- I don't know why but these column head will not behave properly with sort -->
-    <th>{tr}Questions{/tr}</th>
-    <th>{tr}Results{/tr}</th>
+    <td class="heading">{tr}Questions{/tr}</td>
+    <td class="heading">{tr}Results{/tr}</td>
 
     {* still stuck on being able to sort by number of questions and results!
       Results need to be sortable so as to give admin quick idea of user participation
-      <th><a href="tiki-edit_quiz.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'results_desc'}results_asc{else}results_desc{/if}">{tr}Results{/tr}</a>
-      </th>
+      <td><a class="tableheading" href="tiki-edit_quiz.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'results_desc'}results_asc{else}results_desc{/if}">{tr}Results{/tr}</a>
+      </td>
     *}
 
-    <th>{tr}Action{/tr}</th>
+    <td class="heading">{tr}Action{/tr}</td>
   </tr>
 <!-- end header data -->
 {cycle values="odd,even" print=false}

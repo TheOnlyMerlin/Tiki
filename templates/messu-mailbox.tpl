@@ -1,5 +1,13 @@
-{title help="Inter-User Messages"}{tr}Messages{/tr}{/title}
+{*Smarty template*}
+<h1><a class="pagetitle" href="messu-mailbox.php">{tr}Messages{/tr}</a>
 
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Inter-User Messages" target="tikihelp" class="tikihelp" title="{tr}Messages{/tr}">{icon _id='help'}</a>
+{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=messu-mailbox.tpl" target="tikihelp" class="tikihelp">{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}</h1>
 {if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
 {include file=tiki-mytiki_bar.tpl}
 {/if}
@@ -61,13 +69,13 @@ var CHECKBOX_LIST = [{section name=user loop=$items}'msg[{$items[user].msgId}]'{
 </script>
 <table class="normal">
   <tr>
-    <th>{if $items}<input title="{tr}Select All{/tr}" type="checkbox" name="checkall" onclick="checkbox_list_check_all('form_messu_mailbox',CHECKBOX_LIST,this.checked);" />{/if}</th>
-    <th style="width:18px">&nbsp;</th>
-    <th><a href="messu-mailbox.php?flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_from_desc'}user_from_asc{else}user_from_desc{/if}">{tr}Sender{/tr}</a></th>
-    <th><a href="messu-mailbox.php?flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'subject_desc'}subject_asc{else}subject_desc{/if}">{tr}Subject{/tr}</a></th>
-    <th><a href="messu-mailbox.php?flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'date_desc'}date_asc{else}date_desc{/if}">{tr}Date{/tr}</a></th>
-    <th>{tr}is reply to{/tr}</th>
-    <th style="text-align:right;">{tr}Size{/tr}</th>
+    <td class="heading" >{if $items}<input title="{tr}Select All{/tr}" type="checkbox" name="checkall" onclick="checkbox_list_check_all('form_messu_mailbox',CHECKBOX_LIST,this.checked);" />{/if}</td>
+    <td class="heading" width='18'>&nbsp;</td>
+    <td class="heading" ><a class="tableheading" href="messu-mailbox.php?flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_from_desc'}user_from_asc{else}user_from_desc{/if}">{tr}Sender{/tr}</a></td>
+    <td class="heading" ><a class="tableheading" href="messu-mailbox.php?flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'subject_desc'}subject_asc{else}subject_desc{/if}">{tr}Subject{/tr}</a></td>
+    <td class="heading" ><a class="tableheading" href="messu-mailbox.php?flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'date_desc'}date_asc{else}date_desc{/if}">{tr}Date{/tr}</a></td>
+    <td class="heading" >{tr}is reply to{/tr}</td>
+    <td style="text-align:right;" class="heading" >{tr}Size{/tr}</td>
   </tr>
   {cycle values="odd,even" print=false}
   {section name=user loop=$items}
@@ -90,7 +98,6 @@ var CHECKBOX_LIST = [{section name=user loop=$items}'msg[{$items[user].msgId}]'{
   <tr><td colspan="7" class="odd">{tr}No messages to display{/tr}<td></tr>
   {/section}
 </table>
-{if $items}
 <p>Perform action with checked:
 <input type="submit" name="delete" value="{tr}Delete{/tr}" />
 <input type="submit" name="archive" value="{tr}Archive{/tr}" />
@@ -102,7 +109,7 @@ var CHECKBOX_LIST = [{section name=user loop=$items}'msg[{$items[user].msgId}]'{
 <option value="isFlagged_n">{tr}Mark as unflagged{/tr}</option>
 </select>
 <input type="submit" name="mark" value="{tr}Mark{/tr}" />
-</p>{/if}
+</p>
 </form>
 <br />
 <div class="mini">

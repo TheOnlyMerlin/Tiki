@@ -9,21 +9,14 @@
 //this script may only be included - so its better to die if called directly.
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 
-if ($prefs['feature_categories'] == 'y' && $prefs['categories_used_in_tpl'] == 'y') {
+if ($prefs['feature_categories'] == 'y') {
 	global $categlib; include_once('lib/categories/categlib.php');
 	// pick up the objectType from cat_type is set or from section
     if (!empty($section) && !empty($sections) && !empty($sections[$section])) {
 		$here = $sections[$section];
-		if (isset($_REQUEST[$here['key']])) {
-			if (is_array($_REQUEST[$here['key']])) { // tiki-upload_file uses galleryId[]
-				$key = $_REQUEST[$here['key']][0];
-			} else {
-				$key = $_REQUEST[$here['key']];
-			}
-		}
 		if (isset($here['itemkey']) && isset($_REQUEST[$here['itemkey']]) && isset($here['itemObjectType'])) {
 			if (strstr($here['itemObjectType'], '%') && isset($_REQUEST[$here['key']])) {
-				$objectType = sprintf($here['itemObjectType'], $key);
+				$objectType = sprintf($here['itemObjectType'], $_REQUEST[$here['key']]);
 			} else {
 				$objectType = $here['itemObjectType'];
 			}
@@ -36,9 +29,10 @@ if ($prefs['feature_categories'] == 'y' && $prefs['categories_used_in_tpl'] == '
 		if (isset($here['itemkey']) && isset($_REQUEST[$here['itemkey']]) && isset($here['itemObjectType'])) {
 			$objectCategoryIds = $categlib->get_object_categories($objectType, $_REQUEST[$here['itemkey']]);
 		} elseif (isset($here['key']) && isset($_REQUEST[$here['key']])) {
-			$objectCategoryIds = $categlib->get_object_categories($objectType, $key);
+			$objectCategoryIds = $categlib->get_object_categories($objectType, $_REQUEST[$here['key']]);
 		}
 	}
     $smarty->assign_by_ref('objectCategoryIds', $objectCategoryIds);
 	// use in smarty {if isset($objectCategoryIds) and in_array(54, $objectCategoryIds)} My stuff ..{/if}
+	echo $section.'-'.$objectType.'-'.$_REQUEST[$here['key']].'-'.$_REQUEST[$here['itemkey']];print_r($objectCategoryIds);
 }

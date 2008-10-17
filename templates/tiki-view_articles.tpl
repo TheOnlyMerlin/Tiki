@@ -56,14 +56,14 @@
 $listpages[ix].image_caption}{$listpages[ix].image_caption}{else}{$listpages[ix].topicName}{/if}"><img 
 {if $listpages[ix].isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} 
 alt="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption}{else}{$listpages[ix].topicName}{/if}" 
-border="0" src="article_image.php?image_type=article&amp;id={$listpages[ix].articleId}"
+border="0" src="article_image.php?id={$listpages[ix].articleId}"
 {if $listpages[ix].image_x > 0} width="{$listpages[ix].image_x}"{/if}{if $listpages[ix].image_y > 0 } height="{$listpages[ix].image_y}"{/if} /></a>
 {else}
 <a href="tiki-read_article.php?articleId={$listpages[ix].articleId}" title="{if $listpages[ix].show_image_caption and
 $listpages[ix].image_caption}{$listpages[ix].image_caption}{else}{$listpages[ix].topicName}{/if}"><img 
 {if $listpages[ix].isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} 
 alt="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption}{else}{$listpages[ix].topicName}{/if}" 
-border="0" src="article_image.php?image_type=topic&amp;id={$listpages[ix].topicId}" /></a>
+border="0" src="topic_image.php?id={$listpages[ix].topicId}" /></a>
 {/if}
 {else}
 {section name=it loop=$topics}
@@ -72,7 +72,7 @@ border="0" src="article_image.php?image_type=topic&amp;id={$listpages[ix].topicI
 $listpages[ix].image_caption}{$listpages[ix].image_caption}{else}{$listpages[ix].topicName}{/if}"><img 
 {if $listpages[ix].isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} 
 alt="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption}{else}{$listpages[ix].topicName}{/if}" 
-border="0" src="article_image.php?image_type=topic&amp;id={$listpages[ix].topicId}" /></a>
+border="0" src="topic_image.php?id={$listpages[ix].topicId}" /></a>
 {/if}
 {/section}
 {/if}
@@ -107,7 +107,7 @@ border="0" src="article_image.php?image_type=topic&amp;id={$listpages[ix].topicI
    and ($tiki_p_read_comments eq 'y')
    and ($listpages[ix].allow_comments eq 'y')}
     <td class="articletrailer">
-      <a href="tiki-read_article.php?articleId={$listpages[ix].articleId}&amp;show_comzone=y#comments"{if $listpages[ix].comments_cant > 0} class="highlight"{/if}>
+      <a href="tiki-read_article.php?articleId={$listpages[ix].articleId}&amp;show_comzone=y#comments" class="linkbut {if $listpages[ix].comments_cant > 0}highlight{/if}">
         {if $listpages[ix].comments_cant == 0 or ($tiki_p_read_comments  == 'n' and $tiki_p_post_comments  == 'y')}
           {tr}Add Comment{/tr}
         {elseif $listpages[ix].comments_cant == 1}
@@ -139,11 +139,7 @@ border="0" src="article_image.php?image_type=topic&amp;id={$listpages[ix].topicI
 </div>
 {/if}
 {sectionelse}
-{if $quiet ne 'y'}{tr}No articles yet.{/tr}
-
-{if $tiki_p_edit_article eq 'y'}<a href="tiki-edit_article.php">{tr}Add an article{/tr}</a>{/if}
-
-{/if}
+{tr}No articles.{/tr}
 {/section}
 
 {pagination_links cant=$cant step=$maxArticles offset=$offset}{/pagination_links}

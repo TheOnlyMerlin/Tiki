@@ -1,14 +1,13 @@
 {* $Id$ *}
-{title}{tr}Directory batch upload{/tr}{/title}
-
+<h1><a href="tiki-batch_upload.php" class="pagetitle">{tr}Directory batch upload{/tr}</a></h1>
 <span class="button2">
 {if $galleryId ne ''}
-<a href="{$galleryId|sefurl:gallery}">
+<a href="tiki-browse_gallery.php?galleryId={$galleryId}" class="linkbut">
 {else}
-<a href="tiki-galleries.php">
+<a href="tiki-galleries.php" class="linkbut">
 {/if}
 {tr}Browse gallery{/tr}</a></span>
-<span class="button2"><a href="tiki-upload_image.php">{tr}Upload from disk{/tr}</a></span>
+<span class="button2"><a href="tiki-upload_image.php" class="linkbut">{tr}Upload from disk{/tr}</a></span>
 <br /><br />
 
 {if count($feedback)}<div class="simplebox highlight">{section name=i loop=$feedback}{$feedback[i]}<br />{/section}</div>{/if}
@@ -17,12 +16,12 @@
 <form method="post" action="tiki-batch_upload.php" name="f">
 <table border="0" class="normal" id="imagelist" width="100%">
 <tr>
-<th style="width:42px"></th>
-<th><a href="javascript:void(0);">{tr}Filename{/tr}</a></th>
-<th style="width:80px"><a href="javascript:void(0);">{tr}width{/tr}</a></th>
-<th style="width:80px"><a href="javascript:void(0);">{tr}height{/tr}</a></th>
-<th style="width:80px"><a href="javascript:void(0);">{tr}Filesize{/tr}</th>
-<th style="width:80px"><a href="javascript:void(0);">{tr}Filetype{/tr}</a></th></tr>
+<th width="42" class="heading"></th>
+<th class="heading"><a class="tableheading" href="javascript:void(0);">{tr}Filename{/tr}</a></th>
+<th class="heading" width="80"><a class="tableheading" href="javascript:void(0);">{tr}width{/tr}</a></th>
+<th class="heading" width="80"><a class="tableheading" href="javascript:void(0);">{tr}height{/tr}</a></th>
+<th class="heading" width="80"><a class="tableheading" href="javascript:void(0);">{tr}Filesize{/tr}</th>
+<th class="heading" width="80"><a class="tableheading" href="javascript:void(0);">{tr}Filetype{/tr}</a></th></tr>
 {cycle print=false values="even,odd"}
 {foreach key=k item=it from=$imgstring}
 <tr class="{cycle}">

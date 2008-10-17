@@ -137,27 +137,25 @@ if (isset($_REQUEST["preview"])) {
 	} else {
 		$info["data"] = '';
 	}
-	if (isset($_REQUEST['wikiparse']) && $_REQUEST['wikiparse'] == 'on')
-		$info['wikiparse'] = 'y';
-	else
-		$info['wikiparse'] = 'n';
    	if (isset($_REQUEST["datatxt"])) {
  		$info["datatxt"] = $_REQUEST["datatxt"];
 		//For the hidden input
 		$smarty->assign('datatxt',$_REQUEST["datatxt"]);
+		//For the display
+		$info["datatxt"] = preg_replace ( "/\n/", "<br>", $info["datatxt"] );
 	} else {
 		$info["datatxt"] = '';
 	}
 	if (!empty($_REQUEST["usedTpl"])) {
-		$smarty->assign('dataparsed', (($info['wikiparse'] == 'y')?$tikilib->parse_data($info["data"], array('absolute_links' => true)): $info['data']));
+		$smarty->assign('dataparsed', $tikilib->parse_data($info["data"], false, true));
 		$smarty->assign('subject', $info["subject"]);
 		$info["dataparsed"]  = $smarty->fetch("newsletters/".$_REQUEST["usedTpl"]);
-	        if (stristr($info['dataparsed'], "<body") === false) {
+	        if (stristr($info['dataparsed'], "<body>") === false) {
         	        $info['dataparsed'] = "<html><body>".$info['dataparsed']."</body></html>";
         	}
 		$smarty->assign("usedTpl", $_REQUEST["usedTpl"]);
 	} else {
-		$info["dataparsed"] = "<html><body>".(($info['wikiparse'] == 'y')?$tikilib->parse_data($info["data"], array('absolute_links' => true)):$info['data'])."</body></html>";
+		$info["dataparsed"] = "<html><body>".$tikilib->parse_data($info["data"], false, true)."</body></html>";
 	}
 	$smarty->assign('info', $info);
 }
@@ -173,27 +171,23 @@ if (isset($_REQUEST["save"])) {
 
 	$smarty->assign('nlId', $_REQUEST["nlId"]);
 	$smarty->assign('data', $_REQUEST["data"]);
-	$smarty->assign('datatxt', $_REQUEST["datatxt"]);
+        $smarty->assign('datatxt', $_REQUEST["datatxt"]);
 	$parsed = '';
-		if (isset($_REQUEST['wikiparse']) && $_REQUEST['wikiparse'] == 'on')
-		$wikiparse = 'y';
-	else
-		$wikiparse = 'n';
 	if (!empty($_REQUEST["usedTpl"])) {
-		$smarty->assign('dataparsed', (($wikiparse == 'y')?$tikilib->parse_data($_REQUEST["data"], array('absolute_links' => true)):$_REQUEST['data']));
+		$smarty->assign('dataparsed', $tikilib->parse_data($_REQUEST["data"], false, true));
 		$smarty->assign('subject', $_REQUEST["subject"]);
 		$parsed = $smarty->fetch("newsletters/".$_REQUEST["usedTpl"]);
 	} else {
-		$parsed = ($wikiparse == 'y')?$tikilib->parse_data($_REQUEST["data"], array('absolute_links' => true)):$_REQUEST['data'];
+		$parsed = $tikilib->parse_data($_REQUEST["data"], false, true);
 	}
 	if (empty($parsed) && !empty($_REQUEST['datatxt'])) {
 		$parsed = $_REQUEST['datatxt'];
 	}
-	if (stristr($parsed, "<body") === false) {
+	if (stristr($parsed, "<body>") === false) {
 		$parsed = "<html><body>$parsed</body></html>";
 	}
 	$smarty->assign('dataparsed',$parsed);
-
+	
 	$smarty->assign('subject', $_REQUEST["subject"]);
 	$cant = count($subscribers);
 	$smarty->assign('subscribers', $cant);
@@ -202,15 +196,15 @@ if (isset($_REQUEST["save"])) {
 $smarty->assign('emited', 'n');
 if (!empty($_REQUEST['datatxt']))
    $txt = $_REQUEST['datatxt'];
-if (empty($txt)&&!empty($_REQUEST["data"])) {
-	//No txt message is explicitely provided -> 
-	//Create one with the html Version & remove Wiki tags
-	$txt = strip_tags(str_replace(array("\r\n","&nbsp;") , array("\n"," ") , $_REQUEST["data"]));
-	$txt=preg_replace('/^!!!(.*?)$/m',"\n$1\n",$txt);
-	$txt=preg_replace('/^!!(.*?)$/m',"\n$1\n",$txt);
-	$txt=preg_replace('/^!(.*?)$/m',"\n$1\n",$txt);
-	$smarty->assign('txt', $txt);
-}
+if (empty($txt)&&!empty($_REQUEST["data"]))
+	{
+		//No txt message is explicitely provided -> 
+		//Create one with the html Version & remove Wiki tags
+		$txt = strip_tags(str_replace(array("\r\n","&nbsp;") , array("\n"," ") , $_REQUEST["data"]));
+		$txt=ereg_replace("[^ a-zA-Z0-9]*!",'\n',$txt);
+		$txt=ereg_replace("!!",'\n',$txt);
+		$txt=ereg_replace("!!!",'\n',$txt);
+	}
 
 
 if (isset($_REQUEST["send"])) {
@@ -218,8 +212,9 @@ if (isset($_REQUEST["send"])) {
 	check_ticket('send-newsletter');
 	set_time_limit(0);
 	$mail = new TikiMail();	
-	if (stristr($_REQUEST["dataparsed"], "<body") === false) {
-		$html = "<html><body>".$tikilib->parse_data($_REQUEST["dataparsed"], array('absolute_links' => true))."</body></html>";
+	
+	if (stristr($_REQUEST["dataparsed"], "<body>") === false) {
+		$html = "<html><body>".$tikilib->parse_data($_REQUEST["dataparsed"], false, true)."</body></html>";
 	} else {
 		$html = $_REQUEST["dataparsed"];
 	}
@@ -232,7 +227,7 @@ if (isset($_REQUEST["send"])) {
 	} else {
 		$users = $nllib->get_all_subscribers($_REQUEST["nlId"], $nl_info["unsubMsg"]);
 	}
-
+	
 	$nllib->memo_subscribers_edition($editionId, $users);
 	$sender_email = $prefs['sender_email'];
 	foreach ($users as $us) {
@@ -245,34 +240,34 @@ if (isset($_REQUEST["send"])) {
 		if ($userEmail == "") {
 			$userEmail = $userlib->get_user_by_email($email);
 		}
-
+	
 		if ($userEmail) {
 			$mail->setUser($userEmail);
 		} else {
 			$userEmail = '';
 		}
-		$mail->setFrom($sender_email);
-		$mail->setSubject($_REQUEST["subject"]); // htmlMimeMail memorised the encoded subject 
-		$languageEmail = ! $userEmail ? $prefs['site_language'] : $tikilib->get_user_preference($userEmail, "language", $prefs['site_language']);
-		if ($nl_info["unsubMsg"] == 'y') {
-			$unsubmsg = $nllib->get_unsub_msg($_REQUEST["nlId"], $email, $languageEmail, $us["code"], $userEmail);
-			if (stristr($html, "</body>") === false) {
-				$msg = $html.nl2br($unsubmsg);
+			$mail->setFrom($sender_email);
+			$mail->setSubject($_REQUEST["subject"]); // htmlMimeMail memorised the encoded subject 
+			$languageEmail = ! $userEmail ? $prefs['site_language'] : $tikilib->get_user_preference($userEmail, "language", $prefs['site_language']);
+			if ($nl_info["unsubMsg"] == 'y') {
+				$unsubmsg = $nllib->get_unsub_msg($_REQUEST["nlId"], $email, $languageEmail, $us["code"], $userEmail);
+				if (stristr($html, "</body>") === false) {
+					$msg = $html.nl2br($unsubmsg);
+				} else {
+					$msg = str_replace("</body>", nl2br($unsubmsg)."</body>", $html);
+				}
 			} else {
-				$msg = str_replace("</body>", nl2br($unsubmsg)."</body>", $html);
+				$msg = $html;
 			}
-		} else {
-			$msg = $html;
-		}
-		$mail->setHtml($msg, $txt.strip_tags($unsubmsg));
-		$mail->buildMessage(array('text_encoding'=>'8bit'));
-		if ($mail->send(array($email))) {
-			$sent++;
-			$nllib->delete_edition_subscriber($editionId, $us);
-		} else {
-			$errors[] = array("user"=>$userEmail, "email"=>$email);
-			$nllib->mark_edition_subscriber($editionId, $us);
-		}
+			$mail->setHtml($msg, $txt.strip_tags($unsubmsg));
+			$mail->buildMessage();
+			if ($mail->send(array($email))) {
+				$sent++;
+				$nllib->delete_edition_subscriber($editionId, $us);
+			} else {
+				$errors[] = array("user"=>$userEmail, "email"=>$email);
+				$nllib->mark_edition_subscriber($editionId, $us);
+			}
 	}
 
 	$smarty->assign('sent', $sent);
@@ -383,4 +378,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the template
 $smarty->assign('mid', 'tiki-send_newsletters.tpl');
 $smarty->display("tiki.tpl");
+
 ?>

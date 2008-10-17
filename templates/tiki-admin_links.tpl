@@ -1,17 +1,25 @@
-{title help="FeaturedLinksAdmin"}{tr}Featured links{/tr}{/title}
+<h1><a href="tiki-admin_links.php" class="pagetitle">{tr}Featured links{/tr}</a>
+  
+      {if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}FeaturedLinksAdmin" target="tikihelp" class="tikihelp" title="{tr}Admin Featured Links{/tr}">
+{icon _id='help'}</a>{/if}
+
+      {if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admin_links.tpl" target="tikihelp" class="tikihelp" title="{tr}View template{/tr}: {tr}Admin Featured Links Template{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>{/if}</h1>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}To use these links, you must assign the featured_links <a class="rbox-link" href="tiki-admin_modules.php">module</a>.{/tr}{/remarksbox}
 
-<span class="button2"><a href="tiki-admin_links.php?generate=1">{tr}Generate positions by hits{/tr}</a></span>
+<a class="linkbut" href="tiki-admin_links.php?generate=1">{tr}Generate positions by hits{/tr}</a>
 <h2>{tr}List of featured links{/tr}</h2>
 <table class="normal">
 <tr>
-<th>{tr}URL{/tr}</th>
-<th>{tr}Title{/tr}</th>
-<th>{tr}Hits{/tr}</th>
-<th>{tr}Position{/tr}</th>
-<th>{tr}Type{/tr}</th>
-<th>{tr}Action{/tr}</th>
+<th class="heading">{tr}URL{/tr}</th>
+<th class="heading">{tr}Title{/tr}</th>
+<th class="heading">{tr}Hits{/tr}</th>
+<th class="heading">{tr}Position{/tr}</th>
+<th class="heading">{tr}Type{/tr}</th>
+<th class="heading">{tr}Action{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$links}

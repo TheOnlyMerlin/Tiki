@@ -3,54 +3,6 @@
 function wikiplugin_thumb_help() {
 	return tra("Displays the thumbnail for an image").":<br />~np~{THUMB(image=>url,id=url,max=>,float=>,url=>,original=y, sticky=n)}".tra("description")."{THUMB}~/np~";
 }
-
-function wikiplugin_thumb_info() {
-	return array(
-		'name' => tra('Thumbnail'),
-		'documentation' => 'PluginThumb',
-		'description' => tra('Displays the thumbnail for an image'),
-		'prefs' => array( 'wikiplugin_thumb' ),
-		'body' => tra('description'),
-		'params' => array(
-			'image' => array(
-				'required' => false,
-				'name' => tra('Image'),
-				'description' => tra('URL to the image.'),
-			),
-			'id' => array(
-				'required' => false,
-				'name' => tra('Image ID'),
-				'description' => tra('Image ID from the image gallery.'),
-			),
-			'max' => array(
-				'required' => false,
-				'name' => tra('Maximum Size'),
-				'description' => tra('Maximum width or height for the image.'),
-			),
-			'float' => array(
-				'required' => false,
-				'name' => tra('Floating'),
-				'description' => 'left|right|none',
-			),
-			'url' => array(
-				'required' => false,
-				'name' => tra('URL'),
-				'description' => tra('Link target of the image.'),
-			),
-			'original' => array(
-				'required' => false,
-				'name' => tra('Original'),
-				'description' => 'y|n',
-			),
-			'sticky' => array(
-				'required' => false,
-				'name' => tra('Sticky'),
-				'description' => 'y|n',
-			),
-		),
-	);
-}
-
 function wikiplugin_thumb($data, $params) {
 	global $smarty, $tikidomain;
 	extract ($params,EXTR_SKIP);

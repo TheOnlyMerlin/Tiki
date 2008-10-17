@@ -1,57 +1,69 @@
 {* $Id$ *}
 
-{title help="Articles" admpage="cms"}{tr}Articles{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-list_articles.php">{tr}Articles{/tr}</a>
+
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Articles" target="tikihelp" class="tikihelp" title="{tr}List Articles{/tr}">
+{icon _id='help'}</a>
+{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-list_articles.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}List Articles Tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit Template{/tr}'}</a>
+{/if}
+{if $tiki_p_admin eq 'y'}
+<a href="tiki-admin.php?page=cms">{icon _id='wrench' alt="{tr}Admin Feature{/tr}"}</a>
+{/if}
+</h1>
 
 <div class="navbar">
 {if $tiki_p_edit_article eq 'y'}
-  <a href="tiki-edit_article.php">{tr}Edit New Article{/tr}</a>
+  <a class="linkbut" href="tiki-edit_article.php">{tr}Edit New Article{/tr}</a>
 {/if}
-<a href="tiki-view_articles.php">{tr}View Articles{/tr}</a>
+<a class="linkbut" href="tiki-view_articles.php">{tr}View Articles{/tr}</a>
 {if $prefs.feature_submissions == 'y' && ($tiki_p_approve_submission == "y" || $tiki_p_remove_submission == "y" || $tiki_p_edit_submission == "y")}
-<a href="tiki-list_submissions.php">{tr}View submissions{/tr}</a>
+<a class="linkbut" href="tiki-list_submissions.php">{tr}View submissions{/tr}</a>
 {/if}
 </div>
 {if $listpages or ($find ne '') or ($types ne '') or ($topics ne '') or ($lang ne '') or ($categId ne '')}
   {include file="find.tpl" find_show_languages='y' find_show_categories='y' find_show_num_rows='y'}
 {/if}
 <br />
-
 <table class="normal">
 <tr>
 {if $prefs.art_list_title eq 'y'}
-	<th>{self_link _sort_arg='sort_mode' _sort_field='title'}{tr}Title{/tr}{/self_link}</th>
+	<td class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='title'}{tr}Title{/tr}{/self_link}</td>
 {/if}
 {if $prefs.art_list_type eq 'y'}	
-	<th>{self_link _sort_arg='sort_mode' _sort_field='type'}{tr}Type{/tr}{/self_link}</th>
+	<td class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='type'}{tr}Type{/tr}{/self_link}</td>
 {/if}
 {if $prefs.art_list_topic eq 'y'}	
-	<th>{self_link _sort_arg='sort_mode' _sort_field='topicName'}{tr}Topic{/tr}{/self_link}</th>
+	<td class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='topicName'}{tr}Topic{/tr}{/self_link}</td>
 {/if}
 {if $prefs.art_list_date eq 'y'}
-	<th>{self_link _sort_arg='sort_mode' _sort_field='publishDate'}{tr}PublishDate{/tr}{/self_link}</th>
+	<td class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='publishDate'}{tr}PublishDate{/tr}{/self_link}</td>
 {/if}
 {if $prefs.art_list_expire eq 'y'}
-	<th>{self_link _sort_arg='sort_mode' _sort_field='expireDate'}{tr}ExpireDate{/tr}{/self_link}</th>
+	<td class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='expireDate'}{tr}ExpireDate{/tr}{/self_link}</td>
 {/if}
 {if $prefs.art_list_visible eq 'y'}
-	<th><span>{tr}Visible{/tr}</span></th>
+	<td class="heading"><span class="tableheading">{tr}Visible{/tr}</span></td>
 {/if}
 {if $prefs.art_list_lang eq 'y'}
-	<th>{self_link _sort_arg='sort_mode' _sort_field='lang'}{tr}Lang{/tr}{/self_link}</th>
+	<td class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='lang'}{tr}Lang{/tr}{/self_link}</td>
 {/if}
 {if $prefs.art_list_author eq 'y'}
-	<th>{self_link _sort_arg='sort_mode' _sort_field='authorName'}{tr}AuthorName{/tr}{/self_link}</th>
+	<td class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='authorName'}{tr}AuthorName{/tr}{/self_link}</td>
 {/if}
 {if $prefs.art_list_reads eq 'y'}
-	<th style="text-align:right;">{self_link _sort_arg='sort_mode' _sort_field='nbreads'}{tr}Reads{/tr}{/self_link}</th>
+	<td style="text-align:right;" class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='nbreads'}{tr}Reads{/tr}{/self_link}</td>
 {/if}
 {if $prefs.art_list_size eq 'y'}
-	<th style="text-align:right;">{self_link _sort_arg='sort_mode' _sort_field='size'}{tr}Size{/tr}{/self_link}</th>
+	<td style="text-align:right;" class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='size'}{tr}Size{/tr}{/self_link}</td>
 {/if}
 {if $prefs.art_list_img eq 'y'}
-	<th>{tr}Img{/tr}</th>
+	<td class="heading">{tr}Img{/tr}</td>
 {/if}
-{if $tiki_p_edit_article eq 'y' or $tiki_p_remove_article eq 'y' or isset($oneEditPage) or $tiki_p_read_article}<th>{tr}Action{/tr}</th>{/if}
+{if $tiki_p_edit_article eq 'y' or $tiki_p_remove_article eq 'y' or isset($oneEditPage) or $tiki_p_read_article}<td  class="heading">{tr}Action{/tr}</td>{/if}
 </tr>
 {cycle values="odd,even" print=false}
 {section name=changes loop=$listpages}

@@ -5,43 +5,6 @@ function wikiplugin_trackerfilter_help() {
   $help .= "~np~{TRACKERFILTER(filters=>2/d:4/r:5,action=>Name of submit button,displayList=y|n,line=y|n,TRACKERLIST_params )}Notice{TRACKERFILTER}~/np~";
   return $help;
 }
-
-function wikiplugin_trackerfilter_info() {
-	require_once 'lib/wiki-plugins/wikiplugin_trackerlist.php';
-	$list = wikiplugin_trackerlist_info();
-	$params = array_merge( $list['params'], array(
-		'filters' => array(
-			'required' => true,
-			'name' => tra('Filters'),
-			'description' => tra('Example:') . '2/d:4/r:5',
-		),
-		'action' => array(
-			'required' => false,
-			'name' => tra('Action'),
-			'description' => tra('Label on the submit button'),
-		),
-		'displayList' => array(
-			'required' => false,
-			'name' => tra('Display List'),
-			'description' => 'y|n',
-		),
-		'line' => array(
-			'required' => false,
-			'name' => tra('Line'),
-			'description' => 'y|n',
-		),
-	) );
-
-return array(
-		'name' => tra('Tracker Filter'),
-		'documentation' => 'PluginTrackerFilter',
-		'description' => tra("Filters the items of a tracker, fields are indicated with numeric ids."),
-		'prefs' => array( 'feature_trackers', 'wikiplugin_trackerfilter' ),
-		'body' => tra('notice'),
-		'params' => $params,
-	);
-}
-
 function wikiplugin_trackerfilter($data, $params) {
 	global $smarty, $prefs;
 	global $trklib;	include_once('lib/trackers/trackerlib.php');
@@ -84,11 +47,11 @@ function wikiplugin_trackerfilter($data, $params) {
 			}
 		}
 	}
-	if (empty($trackerId) || !($tracker = $trklib->get_tracker($trackerId))) {
-		return $smarty->fetch("wiki-plugins/error_tracker.tpl");
-	}
 	if ($displayList == 'y' || isset($_REQUEST['filter']) || isset($_REQUEST['tr_offset']) || isset($_REQUEST['tr_sort_mode'])) {
 	  
+		if (!isset($trackerId) || !($tracker = $trklib->get_tracker($trackerId))) {
+			return $smarty->fetch("wiki-plugins/error_tracker.tpl");
+		}
 		if (!isset($fields)) {
 			$smarty->assign('msg', tra("missing parameters"));
 			return $msg;
@@ -219,7 +182,7 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', $for
 				foreach ($field['options_array'] as $val) {
 					$opt['id'] = $val;
 					$opt['name'] = $val;
-					if (!empty($_REQUEST['f_'.$fieldId]) && ((!is_array($_REQUEST['f_'.$fieldId]) && $_REQUEST['f_'.$fieldId] == $val) || (is_array($_REQUEST['f_'.$fieldId]) && in_array($val, $_REQUEST['f_'.$fieldId])))) {
+					if (!empty($_REQUEST['f_'.$fieldId]) && $_REQUEST['f_'.$fieldId][0] == $val) {
 						$opt['selected'] = 'y';
 						$selected = true;
 					} else {

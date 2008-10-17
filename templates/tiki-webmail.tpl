@@ -2,46 +2,41 @@
 
 {title help=Webmail admpage=webmail}{tr}Webmail{/tr}{/title}
 
-{* include file=tiki-mytiki_bar.tpl *}
+{include file=tiki-mytiki_bar.tpl}
 <br /><br />
-<table width="100%" border=0>
+<table>
 <tr>
-  
   <td>
-    <a href="tiki-webmail.php?locSection=mailbox" title="{tr}Mailbox{/tr}">
-    <img border="0" src="img/webmail/mailbox.gif" alt="{tr}Mailbox{/tr}" /></A><br />
-    <a class="link" href="tiki-webmail.php?locSection=mailbox" title="{tr}Mailbox{/tr}">{tr}Mailbox{/tr}</a>
+    <a class="link" href="tiki-webmail.php?locSection=settings" title="{tr}Settings{/tr}">
+    <img border="0" src="img/webmail/settings.gif" alt="{tr}Settings{/tr}" /><br />
+    {tr}Settings{/tr}</a>
   </td>
   <td>
-    <a href="tiki-webmail.php?locSection=compose" title="{tr}Compose{/tr}">
-    <img border="0" src="img/webmail/compose.gif" alt="{tr}Compose{/tr}" /></a><br />
-    <a class="link" href="tiki-webmail.php?locSection=compose" title="{tr}Compose{/tr}">{tr}Compose{/tr}</a>
+    <a class="link" href="tiki-webmail.php?locSection=mailbox" title="{tr}Mailbox{/tr}">
+    <img border="0" src="img/webmail/mailbox.gif" alt="{tr}Mailbox{/tr}" /><br />
+    {tr}Mailbox{/tr}</a>
   </td>
   <td>
-    <a href="tiki-webmail.php?locSection=contacts" title="{tr}Contacts{/tr}">
-    <img border="0" src="img/webmail/contact.gif" alt="{tr}Contacts{/tr}" /></A><br />
-    <a class="link" href="tiki-webmail.php?locSection=contacts" title="{tr}Contacts{/tr}">{tr}Contacts{/tr}</a>
+    <a class="link" href="tiki-webmail.php?locSection=compose" title="{tr}Compose{/tr}">
+    <img border="0" src="img/webmail/compose.gif" alt="{tr}Compose{/tr}" /><br />
+    {tr}Compose{/tr}</a>
   </td>
-<TD width="50%">
-	</TD>
-<td>
-    <a href="tiki-webmail.php?locSection=settings" title="{tr}Settings{/tr}">
-    <img border="0" src="img/webmail/settings.gif" alt="{tr}Settings{/tr}" /></A><br />
-    <a class="link" href="tiki-webmail.php?locSection=settings" title="{tr}Settings{/tr}">{tr}Settings{/tr}</a>
+  <td>
+    <a class="link" href="tiki-webmail.php?locSection=contacts" title="{tr}Contacts{/tr}">
+    <img border="0" src="img/webmail/contact.gif" alt="{tr}Contacts{/tr}" /><br />
+    {tr}Contacts{/tr}</a>
   </td>
 </tr>
 </table>
 <hr/>
 
 {if $locSection eq 'settings'}
-
-{if  $tiki_p_admin_personal_webmail eq 'y' or $tiki_p_admin_group_webmail eq 'y'}
-
-{if $conmsg ne ""}<div class="simplebox error">{tr}There was an error connecting to your e-maill account.{/tr} {$conmsg}</DIV>{/if}
-
-<h2>{if $accountId eq ''}{tr}Add a new{/tr}{else}{tr}Edit this{/tr}{/if} {tr} mail account{/tr}</h2>
-
-{if $tiki_p_admin_personal_webmail eq 'y' or $tiki_p_admin_group_webmail eq 'y'}
+{if $accountId}
+<h2>{tr}Edit mail account{/tr}</h2>
+<a href="tiki-webmail.php?locSection=settings" class="linkbut">{tr}Add new mail account{/tr}</a><br /><br />
+{else}
+<h2>{tr}Add new mail account{/tr}</h2>
+{/if}
 <form action="tiki-webmail.php" method="post">
 <input type="hidden" name="accountId" value="{$accountId|escape}" />
 <input type="hidden" name="locSection" value="settings" />
@@ -52,44 +47,22 @@
 <tr><td class="formcolor">{tr}SMTP requires authentication{/tr}</td><td colspan="3" class="formcolor">{tr}Yes{/tr}<input type="radio" name="useAuth" value="y" {if $info.useAuth eq 'y'}checked="checked"{/if} /> {tr}No{/tr}<input type="radio" name="useAuth" value="n" {if $info.useAuth eq 'n'}checked="checked"{/if} /></td></tr>
 <tr><td class="formcolor">{tr}Username{/tr}</td><td colspan="3" class="formcolor"><input type="text" name="username" value="{$info.username|escape}" /></td></tr>
 <tr><td class="formcolor">{tr}Password{/tr}</td><td colspan="3" class="formcolor"><input type="password" name="pass" value="{$info.pass|escape}" /></td></tr>
-<tr><td class="formcolor">{tr}Messages per page{/tr}</td><td colspan="3" class="formcolor"><input type="text" name="msgs" size="4" value="{$info.msgs|escape}" /></td></tr>
-
-{if ($tiki_p_admin_group_webmail eq 'y' and tiki_p_admin_personal_webmail) or $tiki_p_admin eq 'y'}
-<tr><td class="formcolor">{tr}Group (shared mail inbox) or private{/tr}</td><td colspan="3" class="formcolor">{tr}Group{/tr}<input type="radio" name="flagsPublic" value="y" {if $info.flagsPublic eq 'y'}checked="checked"{/if} /> {tr}Private{/tr}<input type="radio" name="flagsPublic" value="n" {if $info.flagsPublic eq 'n'}checked="checked"{/if} /></td></tr>
-{else}
-<tr><td></td><td><input type="hidden" name="flagsPublic" {if $tiki_p_admin_group_webmail eq 'y'}value="y"{else} value="n"{/if}>
-{if $tiki_p_admin_group_webmail eq 'y'}{tr}This will be a group mail account.{/tr}{else}{tr}This will be a personal mail account.{/tr}{/if}
-</td></tr>
-{/if}
-
-<tr><td class="formcolor">{tr}Auto-refresh page time{/tr}</td><td colspan="3" class="formcolor"><input type="text" name="autoRefresh" size="4" value="{$info.autoRefresh|escape}" /> seconds (0 = no auto refresh)</td></tr>
-<tr><td class="formcolor">&nbsp;</td><td colspan="3" class="formcolor"><input type="submit" name="new_acc" value="{if $accountId eq ''}{tr}Add{/tr}{else}{tr}Update{/tr}{/if}" /> <input type="submit" name="cancel_acc" value="{tr}Clear{/tr}" /> </td></tr>
+<tr><td class="formcolor">{tr}Messages per page{/tr}</td><td colspan="3" class="formcolor"><input type="text" name="msgs" size="7" value="{$info.msgs|escape}" /></td></tr>
+<tr><td class="formcolor">&nbsp;</td><td colspan="3" class="formcolor"><input type="submit" name="new_acc" value="{tr}Add{/tr}" /></td></tr>
 </table>
 </form>
-
-{/if}
-{else}
-{tr}You do not have the correct permissions to Add or Edit a webmail account. <BR />Please contact your administrator and ask for "admin_personal_webmail" or "admin_group_webmail" permission.{/tr}
-{/if}
-
-{if count($accounts) != 0}
-<h2>{tr}Personal e-mail accounts{/tr}</h2>
+<h2>{tr}User accounts{/tr}</h2>
 <table class="normal">
 <tr>
-<th>{tr}Active{/tr}</th>
-<th>{tr}Account{/tr}</th>
-<th>{tr}Active{/tr}</th>
-<th>{tr}POP server{/tr}</th>
-<th>{tr}Username{/tr}</th>
-<th>{tr}Action{/tr}</th>
+<td class="heading">{tr}Account{/tr}</td>
+<td class="heading">{tr}Active{/tr}</td>
+<td class="heading">{tr}POP server{/tr}</td>
+<td class="heading">{tr}Username{/tr}</td>
+<td class="heading">{tr}Action{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$accounts}
 <tr>
-	<td class="{cycle advance=false}">	{if $accounts[ix].current ne 'y'}
-		<a href="tiki-webmail.php?locSection=settings&amp;current={$accounts[ix].accountId}" title="{tr}Activate{/tr}">{icon _id='star_grey' alt="{tr}Click to activate{/tr}"}</a>{else}{icon _id='star' alt="{tr}This is the active account.{/tr}"}
-		{/if}
-	</td>
 <td class="{cycle advance=false}"><a href="tiki-webmail.php?locSection=settings&amp;current={$accounts[ix].accountId}" class="{if $accounts[ix].current eq 'y'}tablename{else}link{/if}" title="{if $accounts[ix].current ne 'y'}{tr}Activate{/tr}{/if}">{$accounts[ix].account}</a>
 </td>
 <td class="{cycle advance=false}">{if $accounts[ix].current eq 'y'}{tr}Yes{/tr}{else}{tr}No{/tr}{/if}</td>
@@ -99,72 +72,22 @@
 title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 <a href="tiki-webmail.php?locSection=settings&amp;accountId={$accounts[ix].accountId}" class="tablename" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
 {if $accounts[ix].current ne 'y'}
-<a href="tiki-webmail.php?locSection=settings&amp;current={$accounts[ix].accountId}" title="{tr}Activate{/tr}">{icon _id='accept' alt="{tr}Click to activate{/tr}"}</a>{/if}
+<a href="tiki-webmail.php?locSection=settings&amp;current={$accounts[ix].accountId}" title="{tr}Activate{/tr}">{icon _id='accept' alt="{tr}Activate{/tr}"}</a>{/if}
 </td></tr>
 {sectionelse}
 <tr><td colspan="5" class="odd">{tr}No records found.{/tr}</td></tr>
 {/section}
 </table>
 {/if}
-{if $tiki_p_use_group_webmail eq 'y'}
-{if count($pubAccounts) != 0}
-<h2>{tr}Group e-mail accounts{/tr}</h2>
-<table class="normal">
-<tr>
-<th>{tr}Active{/tr}</th>
-<th>{tr}Account{/tr}</th>
-<th>{tr}Active{/tr}</th>
-<th>{tr}POP server{/tr}</th>
-<th>{tr}Username{/tr}</th>
-<th>{tr}Action{/tr}</th>
-</tr>
-{cycle values="odd,even" print=false}
-{section name=ixp loop=$pubAccounts}
-<tr>
-<td class="{cycle advance=false}">	{if $pubAccounts[ixp].current ne 'y'}
-	<a href="tiki-webmail.php?locSection=settings&amp;current={$pubAccounts[ixp].accountId}" title="{tr}Click to activate{/tr}">{icon _id='star_grey' alt="{tr}Click to activate{/tr}"}</a>{else}{icon _id='star' alt="{tr}This is the active account.{/tr}"}
-	{/if}
-</td>
-<td class="{cycle advance=false}"><a href="tiki-webmail.php?locSection=settings&amp;current={$pubAccounts[ixp].accountId}" class="{if $pubAccounts[ixp].current eq 'y'}tablename{else}link{/if}" title="{if $pubAccounts[ixp].current ne 'y'}{tr}Activate{/tr}{/if}">{$pubAccounts[ixp].account}</a>
-</td>
-<td class="{cycle advance=false}">{if $pubAccounts[ixp].current eq 'y'}{tr}Yes{/tr}{else}{tr}No{/tr}{/if}</td>
-<td class="{cycle advance=false}">{$pubAccounts[ixp].pop} ({$pubAccounts[ixp].port})</td>
-<td class="{cycle advance=false}">{$pubAccounts[ixp].username}</td>
-<td class="{cycle}"><a href="tiki-webmail.php?locSection=settings&amp;remove={$pubAccounts[ixp].accountId}" class="link" 
-title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
-{if $tiki_p_admin_group_webmail eq 'y'or $tiki_p_admin eq 'y'}
-<a href="tiki-webmail.php?locSection=settings&amp;accountId={$pubAccounts[ixp].accountId}" class="tablename" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
-{/if}
-{if $pubAccounts[ixp].current ne 'y'}
-<a href="tiki-webmail.php?locSection=settings&amp;current={$pubAccounts[ixp].accountId}" title="{tr}Activate{/tr}">{icon _id='accept' alt="{tr}Click to activate{/tr}"}</a>{/if}
-</td></tr>
-{sectionelse}
-<tr><td colspan="5" class="odd">{tr}No records found.{/tr}</td></tr>
-{/section}
-</table>
-{/if}
-{/if}
-
-{/if}
-
 
 {if $locSection eq 'mailbox'}
-
-{if $autoRefresh neq 0}
-<script type="text/JavaScript">
-<!--
-setTimeout("location.reload(true);",{$autoRefresh}*1000);
-//   -->
-</script>
-{/if}
-
-<table width="100%">
+<table >
 <tr>
 <td>
-<a class="link" href="tiki-webmail.php?locSection=mailbox">{tr}Show All{/tr}</a> | <a class="link" href="tiki-webmail.php?locSection=mailbox&amp;filter=unread">{tr}Show Unread{/tr}</a> | <a class="link" href="tiki-webmail.php?locSection=mailbox&amp;filter=flagged">{tr}Show Flagged{/tr}</a> | {if $autoRefresh != 0}<a class="link" href="tiki-webmail.php?locSection=mailbox">{tr}Refresh now{/tr}</a> Auto refresh set for every {$autoRefresh} seconds.{else}<a class="link" href="tiki-webmail.php?locSection=mailbox">{tr}Refresh{/tr}</a>{/if}
+<a class="link" href="tiki-webmail.php?locSection=mailbox">{tr}View All{/tr}</a> | <a class="link" href="tiki-webmail.php?locSection=mailbox&amp;filter=unread">{tr}Unread{/tr}</a> | <a class="link" href="tiki-webmail.php?locSection=mailbox&amp;filter=flagged">{tr}Flagged{/tr}</a>
 </td>
-<td align="right" style="text-align:right">
-{if $flagsPublic eq 'y'}{tr}Group messages{/tr}{else}{tr}Messages{/tr}{/if} {$showstart} to {$showend} {tr}of{/tr} {$total} 
+<td align="right">
+{tr}Msg{/tr} {$showstart}-{$showend} {tr}of{/tr} {$total} 
 {if $first}| <a class="link" href="tiki-webmail.php?locSection=mailbox&amp;start={$first}{if $filter}&amp;filter={$filter}{/if}">{tr}First{/tr}</a>{/if} 
 {if $prevstart}| <a class="link" href="tiki-webmail.php?locSection=mailbox&amp;start={$prevstart}{if $filter}&amp;filter={$filter}{/if}">{tr}Prev{/tr}</a>{/if} 
 {if $nextstart}| <a class="link" href="tiki-webmail.php?locSection=mailbox&start={$nextstart}{if $filter}&amp;filter={$filter}{/if}">{tr}Next{/tr}</a>{/if} 
@@ -172,9 +95,7 @@ setTimeout("location.reload(true);",{$autoRefresh}*1000);
 </td>
 </tr>
 </table><br />
-<form action="tiki-webmail.php" method="post" name="mailb">
-<input type="hidden" name="quickFlag" value="" />
-<input type="hidden" name="quickFlagMsg" value="" />
+<form action="tiki-webmail.php" method="post">
 <input type="hidden" name="locSection" value="mailbox" />
 <input type="submit" name="delete" value="{tr}Delete{/tr}" />
 <input type="hidden" name="start" value="{$start|escape}" />
@@ -188,12 +109,12 @@ setTimeout("location.reload(true);",{$autoRefresh}*1000);
 <br /><br />
 <table class="normal">
 <tr>
-  <th>&nbsp;</th>
-  <th>&nbsp;</th>
-  <th>{tr}Sender{/tr}</th>
-  <th>{tr}Subject{/tr}</th>
-  <th>{tr}Date{/tr}</th>
-  <th>{tr}Size{/tr}</th>
+  <td class="heading">&nbsp;</td>
+  <td class="heading">&nbsp;</td>
+  <td class="heading">{tr}Sender{/tr}</td>
+  <td class="heading">{tr}Subject{/tr}</td>
+  <td class="heading">{tr}Date{/tr}</td>
+  <td class="heading">{tr}Size{/tr}</td>
 </tr>
 {section name=ix loop=$list}
 {if $list[ix].isRead eq 'y'}
@@ -208,14 +129,10 @@ setTimeout("location.reload(true);",{$autoRefresh}*1000);
 </td>
 <td style="background:{$class};">
 {if $list[ix].isFlagged eq 'y'}
-<A href="javascript: submit_form('{$list[ix].realmsgid|escape}','n')"><img src="img/webmail/flagged.gif" border="0" alt='{tr}Flagged{/tr}'></A>
-{else}
-{if $prefs.webmail_quick_flags eq 'y'}
-<A href="javascript: submit_form('{$list[ix].realmsgid|escape}','y')"><img src="img/webmail/unflagged.gif" border="0" alt='{tr}unFlagged{/tr}'></A>
-{/if}
+<img src="img/webmail/flagged.gif" alt='{tr}Flagged{/tr}'/>
 {/if}
 {if $list[ix].isReplied eq 'y'}
-<img src="img/webmail/replied.gif" border="0" alt='{tr}Replied{/tr}'/>
+<img src="img/webmail/replied.gif" alt='{tr}Replied{/tr}'/>
 {/if}
 </td>
 <td style="background:{$class};">{$list[ix].sender.name}</td>
@@ -353,10 +270,10 @@ setTimeout("location.reload(true);",{$autoRefresh}*1000);
 {/section}
 <table class="normal">
 <tr>
-<th><a href="tiki-webmail.php?locSection=contacts&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'firstName_desc'}firstName_asc{else}firstName_desc{/if}">{tr}First Name{/tr}</a></th>
-<th><a href="tiki-webmail.php?locSection=contacts&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastName_desc'}lastName_asc{else}lastName_desc{/if}">{tr}Last Name{/tr}</a></th>
-<th><a href="tiki-webmail.php?locSection=contacts&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'email_desc'}email_asc{else}email_desc{/if}">{tr}Email{/tr}</a></th>
-<th><a href="tiki-webmail.php?locSection=contacts&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'nickname_desc'}nickname_asc{else}nickname_desc{/if}">{tr}Nickname{/tr}</a></th>
+<td class="heading"><a class="tableheading" href="tiki-webmail.php?locSection=contacts&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'firstName_desc'}firstName_asc{else}firstName_desc{/if}">{tr}First Name{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-webmail.php?locSection=contacts&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastName_desc'}lastName_asc{else}lastName_desc{/if}">{tr}Last Name{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-webmail.php?locSection=contacts&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'email_desc'}email_asc{else}email_desc{/if}">{tr}Email{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-webmail.php?locSection=contacts&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'nickname_desc'}nickname_asc{else}nickname_desc{/if}">{tr}Nickname{/tr}</a></td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}
@@ -425,7 +342,7 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>&nbsp;&nbsp;
     <tr>
     <tr class="formcolor"><td>&nbsp;</td>
     <td colspan="3">
-    <textarea name="body" cols="60" rows="30">{$body}</textarea>
+    <textarea name="body" cols="60" rows="30">{$body|escape}</textarea>
     <tr class="formcolor"><td>{tr}Use HTML mail{/tr}</td><td colspan="3"><input type="checkbox" name="useHTML" />
     </td></tr>
     </table>
@@ -437,11 +354,11 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>&nbsp;&nbsp;
       <form action="tiki-webmail.php" method="post">
       <table class="normal">
       <tr>
-        <th>&nbsp;</th>
-        <th>{tr}Email{/tr}</th>
-        <th>{tr}First Name{/tr}</th>
-        <th>{tr}Last Name{/tr}</th>
-        <th>{tr}Nickname{/tr}</th>
+        <td class="heading">&nbsp;</td>
+        <td class="heading">{tr}Email{/tr}</td>
+        <td class="heading">{tr}First Name{/tr}</td>
+        <td class="heading">{tr}Last Name{/tr}</td>
+        <td class="heading">{tr}Nickname{/tr}</td>
       </tr>
       {section name=ix loop=$not_contacts}
       <tr><td><input type="checkbox" name="add[{$smarty.section.ix.index}]" /><input type="hidden" name="addemail[{$smarty.section.ix.index}]" value="{$not_contacts[ix]|escape}" /></td>

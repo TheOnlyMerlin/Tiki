@@ -63,30 +63,6 @@ html>body {
 	background-color: transparent;
 }
 
-#leftcolumn {
-	width : 180px;
-	padding : 0px;
-}
-#centercolumn {
-	padding : 5px;
-}
-#rightcolumn {
-	width : 180px;
-	padding : 0px;
-}
-DIV#tiki-center {
-	padding : 5px 0;
-}
-DIV#tiki-mid > table {
-	border-spacing : 0;
-	margin : 0;
-	padding : 0;
-}
-
-#overDiv table {
-	width : auto !important;
-}
-
 /* next comes footer */
 #footer {background-color: transparent}
 .footerbgtrap {background-color: transparent; color: #000}/* this is needed as a little workaround because MSIE tends to display the footer partly without the background specified */
@@ -147,7 +123,7 @@ table.galtable {
   border-collapse: collapse;
 }
 
-table.normal th {
+table.normal td.heading {
   background-color: #abcdef;
   font-size: 1em;
   width: 15px;
@@ -565,7 +541,7 @@ div.messureadbody {
 /*
  * common page classes
  */
-.button2 a {
+.linkbut {
  font-size: 0.8em;
 }
 .pagetitle {
@@ -877,7 +853,7 @@ div.articlebody {
   border-bottom: 1px dashed #999999;
   background-color: transparent;
 }
-.versionav .button2 a {
+.versionav .button2 .linkbut {
   border: 0;
   background-color: inherit;
   padding: 0 10px;
@@ -997,10 +973,5 @@ a.flipmodtitle:hover img {
 /* floating blocks */
 .floatleft {float: left}
 .floatright {float: right}
-
-a.icon,
-img.icon {
-	border: 0 !important;
-	background: transparent}
 
 /* end of css file */

@@ -154,6 +154,7 @@ class CalendarLib extends TikiLib {
 
 	/* tsart ans tstop are in user time - the data base is in server time */
 	function list_raw_items($calIds, $user, $tstart, $tstop, $offset, $maxRecords, $sort_mode='start_asc', $find='', $customs=array()) {
+		global $user;
 
 		if (sizeOf($calIds) == 0) {
 		    return array();
@@ -188,7 +189,7 @@ class CalendarLib extends TikiLib {
 	}
 
 	function list_items($calIds, $user, $tstart, $tstop, $offset, $maxRecords, $sort_mode='start_asc', $find='', $customs=array()) {
-		global $tiki_p_change_events, $prefs;
+		global $user, $tiki_p_change_events, $prefs;
 		$ret = array();
 		$list = $this->list_raw_items($calIds, $user, $tstart, $tstop, $offset, $maxRecords, $sort_mode, $find, $customs);
 		foreach ($list as $res) {
@@ -230,8 +231,7 @@ class CalendarLib extends TikiLib {
 					"head" => $head,
 					"parsedDescription" => $this->parse_data($res["description"]),
 					"description" => str_replace("\n|\r", "", $res["description"]),
-					"calendarId" => $res['calendarId'],
-					"status" => $res['status']
+					"calendarId" => $res['calendarId']
 				);
 			}
 		}
@@ -239,7 +239,7 @@ class CalendarLib extends TikiLib {
 	}
 
 	function list_items_by_day($calIds, $user, $tstart, $tstop, $offset, $maxRecords, $sort_mode='start_asc', $find='', $customs=array()) {
-		global $prefs;
+		global $user, $prefs;
 		$ret = array();
 		$list = $this->list_raw_items($calIds, $user, $tstart, $tstop, $offset, $maxRecords, $sort_mode, $find, $customs);
 		foreach ($list as $res) {
@@ -325,7 +325,7 @@ class CalendarLib extends TikiLib {
 	}
 
 	function set_item($user, $calitemId, $data, $customs=array()) {
-		global $prefs;
+		global $user, $prefs;
 		if (!isset($data['calendarId'])) {
 			return false;
 		}
@@ -586,7 +586,7 @@ class CalendarLib extends TikiLib {
 		return true;
 	}
 
-	function upcoming_events($maxrows = -1, $calendarId = 0, $maxDays = -1, $order = 'start_asc', $priorDays = 0) {
+	function upcoming_events($maxrows = -1, $calendarId = 0, $maxDays = -1, $order = 'start_asc') {
 		$cond = '';
 		$bindvars = array();
 		if(is_array($calendarId) && count($calendarId) > 0) {
@@ -595,14 +595,12 @@ class CalendarLib extends TikiLib {
 				$cond = $cond." or i.`calendarId` = ? ";
 			}
 			$cond = $cond.")";
-			$bindvars = array_merge( $bindvars, $calendarId );
+			$bindvars += $calendarId;
 		} elseif (!is_array($calendarId) and $calendarId > 0) {
 			$cond = $cond." and i.`calendarId` = ? ";
-			$bindvars[] = $calendarId;
+			$bindvars += array($calendarId);
 		}
-		$cond .= " and `end` >= (unix_timestamp(now()) - ?*3600*34)";
-		$bindvars[] = $priorDays;
-
+		$cond .= " and `end` >= (unix_timestamp(now()))";
 		if($maxDays > 0)
 		{
 			$maxSeconds = ($maxDays * 24 * 60 * 60);

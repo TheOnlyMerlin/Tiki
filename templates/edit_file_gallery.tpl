@@ -4,7 +4,7 @@
   <br /><a class="fgallink" href="tiki-objectpermissions.php?objectName={$name|escape:"url"}&amp;objectType=file+gallery&amp;permType=file+galleries&amp;objectId={$galleryId}">{tr}There are individual permissions set for this file gallery{/tr}</a>
   {/if}
   <div>
-    <form class="admin" action="tiki-list_file_gallery.php{if $filegals_manager neq ''}?filegals_manager={$filegals_manager|escape}{/if}" method="post">
+    <form class="admin" action="tiki-list_file_gallery.php{if $filegals_manager eq 'y'}?filegals_manager=y{/if}" method="post">
       <input type="hidden" name="galleryId" value="{$galleryId|escape}" />
 
 
@@ -37,9 +37,7 @@
 
         <tr><td class="formcolor">{tr}This Gallery is Public{/tr}:</td><td class="formcolor"><input type="checkbox" name="public" {if $public eq 'y'}checked="checked"{/if}/></td></tr>
         <tr><td class="formcolor">{tr}The files can be locked at download:{/tr} </td><td class="formcolor"><input type="checkbox" name="lockable" {if $lockable eq 'y'}checked="checked"{/if}/></td></tr>
-        <tr><td class="formcolor">{tr}Maximum number of archives for each file{/tr}: </td><td class="formcolor"><input size="5" type="text" name="archives" value="{$archives|escape}" /> <i>(0={tr}unlimited{/tr}) (-1={tr}none{/tr})</i>
-	{if ! isset($smarty.request.parentId)}
-        </td></tr>
+        <tr><td class="formcolor">{tr}Maximum number of archives for each file{/tr}: </td><td class="formcolor"><input size="5" type="text" name="archives" value="{$archives|escape}" /> <i>(0={tr}unlimited{/tr}) (-1={tr}none{/tr})</i></td></tr>
         <tr><td class="formcolor">{tr}Parent gallery{/tr}:</td><td class="formcolor">
           <select name="parentId">
             <option value="-1" {if $parentId == -1} selected="selected"{/if}>{tr}none{/tr}</option>
@@ -49,9 +47,6 @@
 							{/if}
             {/foreach}
           </select>
-	{else}
-	<input type="hidden" name="parentId" value="{$parentId|escape}" />
-	{/if}
         </td></tr>
         {if $tiki_p_admin eq 'y' or $tiki_p_admin_file_galleries eq 'y'}
         <tr><td class="formcolor">{tr}Owner of the gallery{/tr}:</td><td class="formcolor">

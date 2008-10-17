@@ -3,185 +3,8 @@
 
 function wikiplugin_trackerlist_help() {
 	$help = tra("Displays the output of a tracker content, fields are indicated with numeric ids.").":\n";
-	$help.= "~np~{TRACKERLIST(trackerId=1,fields=2:4:5, sort=y, popup=6:7, stickypopup=y, showtitle=y, showlinks=y, showdesc=y, shownbitems=n, showinitials=y, showstatus=y, showcreated=y, showlastmodif=y, showfieldname=n, status=o|p|c|op|oc|pc|opc, sort_mode=, max=, filterfield=1:2, filtervalue=x:y, exactvalue=x:y, checkbox=fieldId/name/title/submit/action/tpl,goIfOne=y,more=y,moreurl=,view=user|page,tpl=,wiki=,view_user=user,itemId=,url=,ldelim=,rdelim=,list_mode=)}Notice{TRACKERLIST}~/np~";
+	$help.= "~np~{TRACKERLIST(trackerId=1,fields=2:4:5, sort=y, popup=6:7, stickypopup=y, showtitle=y, showlinks=y, showdesc=y, shownbitems=n, showinitials=y, showstatus=y, showcreated=y, showlastmodif=y, showfieldname=n, status=o|p|c|op|oc|pc|opc, sort_mode=, max=, filterfield=1:2, filtervalue=x:y, exactvalue=x:y, checkbox=fieldId/name/title/submit/action/tpl,goIfOne=y,more=y,moreurl=,view=user,tpl=,wiki=,view_user=user,itemId=,url=,ldelim=,rdelim=)}Notice{TRACKERLIST}~/np~";
 	return $help;
-}
-
-function wikiplugin_trackerlist_info() {
-	return array(
-		'name' => tra('Tracker List'),
-		'documentation' => 'PluginTrackerList',
-		'description' => tra('Displays the output of a tracker content, fields are indicated with numeric ids.'),
-		'prefs' => array( 'feature_trackers', 'wikiplugin_trackerlist' ),
-		'body' => tra('Notice'),
-		'params' => array(
-			'trackerId' => array(
-				'required' => true,
-				'name' => tra('Tracker ID'),
-				'description' => tra('Tracker ID'),
-			),
-			'fields' => array(
-				'required' => true,
-				'name' => tra('Fields'),
-				'description' => tra('Colon-separated list of field IDs to be displayed. Example: 2:4:5'),
-			),
-			'sort' => array(
-				'required' => false,
-				'name' => tra('Sort'),
-				'description' => 'y|n',
-			),
-			'popup' => array(
-				'required' => false,
-				'name' => tra('Popup'),
-				'description' => tra('Colon-separated list of fields to display on click. Example: 6:7'),
-			),
-			'stickypopup' => array(
-				'required' => false,
-				'name' => tra('Sticky Popup'),
-				'description' => 'y|n',
-			),
-			'showtitle' => array(
-				'required' => false,
-				'name' => tra('Show Title'),
-				'description' => 'y|n',
-			),
-			'showlinks' => array(
-				'required' => false,
-				'name' => tra('Show Links'),
-				'description' => 'y|n',
-			),
-			'showdesc' => array(
-				'required' => false,
-				'name' => tra('Show Description'),
-				'description' => 'y|n',
-			),
-			'shownbitems' => array(
-				'required' => false,
-				'name' => tra('shownbitems'),
-				'description' => 'y|n',
-			),
-			'showinitials' => array(
-				'required' => false,
-				'name' => tra('Show Initials'),
-				'description' => 'y|n',
-			),
-			'showstatus' => array(
-				'required' => false,
-				'name' => tra('Show Status'),
-				'description' => 'y|n',
-			),
-			'showcreated' => array(
-				'required' => false,
-				'name' => tra('Show Creation Date'),
-				'description' => 'y|n',
-			),
-			'showlastmodif' => array(
-				'required' => false,
-				'name' => tra('Show Last Modification'),
-				'description' => 'y|n',
-			),
-			'showfieldname' => array(
-				'required' => false,
-				'name' => tra('Show Field Name'),
-				'description' => 'y|n',
-			),
-			'status' => array(
-				'required' => false,
-				'name' => tra('Status Filter'),
-				'description' => 'o|p|c|op|oc|pc|opc'.' '.tra('Which item status to list. o = open, p = pending, c = closed.'),
-			),
-			'sort_mode' => array(
-				'required' => false,
-				'name' => tra('Sort Mode'),
-				'description' => tra('?'),
-			),
-			'max' => array(
-				'required' => false,
-				'name' => tra('Max'),
-				'description' => tra('?'),
-			),
-			'filterfield' => array(
-				'required' => false,
-				'name' => tra('Filter Field'),
-				'description' => tra('Colon separated list of fields to allow filtering on.'),
-			),
-			'filtervalue' => array(
-				'required' => false,
-				'name' => tra('Filter Value'),
-				'description' => tra('?'),
-			),
-			'exactvalue' => array(
-				'required' => false,
-				'name' => tra('Exact Value'),
-				'description' => tra('?'),
-			),
-			'checkbox' => array(
-				'required' => false,
-				'name' => tra('Checkbox'),
-				'description' => tra('?'),
-			),
-			'goIfOne' => array(
-				'required' => false,
-				'name' => tra('goIfOne'),
-				'description' => tra('?'),
-			),
-			'more' => array(
-				'required' => false,
-				'name' => tra('More'),
-				'description' => 'y|n',
-			),
-			'moreurl' => array(
-				'required' => false,
-				'name' => tra('More URL'),
-				'description' => tra('?'),
-			),
-			'view' => array(
-				'required' => false,
-				'name' => tra('View'),
-				'description' => 'user|page '.tra('Select automatically the item of the current user or the page'),
-			),
-			'tpl' => array(
-				'required' => false,
-				'name' => tra('Template'),
-				'description' => tra('?'),
-			),
-			'wiki' => array(
-				'required' => false,
-				'name' => tra('Wiki'),
-				'description' => tra('?'),
-			),
-			'view_user' => array(
-				'required' => false,
-				'name' => tra('View User'),
-				'description' => tra('?'),
-			),
-			'itemId' => array(
-				'required' => false,
-				'name' => tra('Item ID'),
-				'description' => tra('?'),
-			),
-			'url' => array(
-				'required' => false,
-				'name' => tra('URL'),
-				'description' => tra('link url'),
-			),
-			'ldelim' => array(
-				'required' => false,
-				'name' => tra('Left Deliminator'),
-				'description' => tra('?'),
-			),
-			'rdelim' => array(
-				'required' => false,
-				'name' => tra('Right Deliminator'),
-				'description' => tra('?'),
-			),
-			'list_mode' => array(
-				'required' => false,
-				'name' => tra('Mode'),
-				'description' => 'y|n'.' '.tra('If y, value will be truncated'),
-			),
-		),
-	);
 }
 
 function wikiplugin_trackerlist($data, $params) {
@@ -299,10 +122,6 @@ function wikiplugin_trackerlist($data, $params) {
 		}
 		$tr_status = $status;
 		$smarty->assign_by_ref('tr_status', $tr_status);
-		if (!isset($list_mode)) {
-			$list_mode = 'y';
-		}
-		$smarty->assign_by_ref('list_mode', $list_mode);
 
 		if (!isset($showcreated)) {
 			$showcreated = $tracker_info['showCreated'];
@@ -397,14 +216,7 @@ function wikiplugin_trackerlist($data, $params) {
 			if ($f = $trklib->get_field_id_from_type($trackerId, 'u', '1%')) {
 				$filterfield[] = $f;
 				$filtervalue[] = '';
-				$exactvalue[] = isset($view)? (empty($user)?'Anonymous':$user): $view_user;
-			}
-		}
-		if (isset($view) && $view == 'page' && $_REQUEST['page']) {
-			if ($f = $trklib->get_field_id_from_type($trackerId, 'k', '1%')) {
-				$filterfield[] = $f;
-				$filtervalue[] = '';
-				$exactvalue[] = $_REQUEST['page'];
+				$exactvalue[] = isset($view)? $user: $view_user;
 			}
 		}
 			
@@ -416,12 +228,9 @@ function wikiplugin_trackerlist($data, $params) {
 		
 		if (!isset($exactvalue)) {
 			$exactvalue = '';
-		} elseif ($exactvalue == '#user') {
-			$exactvalue = $user;
 		}
-
 		if (isset($itemId)) {
-			$filter = array('tti.`itemId`'=> $itemId);
+			$filter = array('itemId', $itemId);
 		} else {
 			$filter = '';
 		}
@@ -487,7 +296,7 @@ function wikiplugin_trackerlist($data, $params) {
 				elseif (empty($exactvalue))
 					$exactvalue = $user;
 				else
-					$exactvalue = array($exactvalue, $user);
+					$exatvalue = array($exactvalue, $user);
 			}
 		}
 

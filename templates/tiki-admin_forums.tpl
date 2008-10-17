@@ -1,19 +1,29 @@
 {* $Id$ *}
+<h1><a class="pagetitle" href="tiki-admin_forums.php">{tr}Admin Forums{/tr}</a>
+ 
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Forums" target="tikihelp" class="tikihelp" title="{tr}Forums{/tr}">{icon _id='help'}</a>
+{/if}
 
-{title help="Forums" admpage="forums"}{tr}Admin Forums{/tr}{/title}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admin_forums.tpl" target="tikihelp" class="tikihelp" title="{tr}View template{/tr}: {tr}Admin Forums Template{/tr}">{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}</h1>
 
 <div class="navbar">
 {if $forumId > 0 or $dup_mode eq 'y'}
-<a href="tiki-admin_forums.php">{tr}Create new forum{/tr}</a>
+<a href="tiki-admin_forums.php" class="linkbut">{tr}Create new forum{/tr}</a>
 {/if}
 {if $dup_mode ne 'y'}
-<a href="tiki-admin_forums.php?dup_mode=y">{tr}Duplicate forum{/tr}</a>
+<a class="linkbut" href="tiki-admin_forums.php?dup_mode=y">{tr}Duplicate forum{/tr}</a>
 {/if}
 {if $forumId > 0}
-<a href="tiki-view_forum.php?forumId={$forumId}">{tr}View this forum{/tr}</a>
+<a href="tiki-view_forum.php?forumId={$forumId}" class="linkbut">{tr}View this forum{/tr}</a>
 {/if}
-<a href="tiki-forum_import.php">{tr}Import forums{/tr}</a>
-<a href="#editforums">{tr}List forums{/tr}</a>
+<a href="tiki-forum_import.php" class="linkbut">{tr}Import forums{/tr}</a>
+<a href="#editforums" class="linkbut">{tr}List forums{/tr}</a>
+{if $tiki_p_admin eq 'y'}
+<a title="{tr}Configure/Options{/tr}" href="tiki-admin.php?page=forums">{icon _id='wrench' alt='{tr}Configure/Options{/tr}'}</a>
+{/if}
 </div>
 
 {if $dup_mode != 'y'}
@@ -353,7 +363,7 @@
 <form action="#">
 <table class="normal">
 <tr>
-<th>
+<th class="heading">
 {if $channels}
 <script type="text/javascript">
 <!--//--><![CDATA[//><!--
@@ -362,15 +372,15 @@
 </script>
 {/if}
 </th>
-<th><a href="tiki-admin_forums.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}#editforums">{tr}Name{/tr}</a></th>
-<th><a href="tiki-admin_forums.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'threads_desc'}threads_asc{else}threads_desc{/if}#editforums">{tr}Topics{/tr}</a></th>
-<th><a href="tiki-admin_forums.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'comments_desc'}comments_asc{else}comments_desc{/if}#editforums">{tr}Coms{/tr}</a></th>
-<th>{tr}Users{/tr}</th>
-<th>{tr}Age{/tr}</th>
-<th>{tr}PPD{/tr}</th>
-<!--<th><a href="tiki-admin_forums.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastPost_desc'}lastPost_asc{else}lastPost_desc{/if}">{tr}Last Post{/tr}</a></th>-->
-<th><a href="tiki-admin_forums.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'hits_desc'}hits_asc{else}hits_desc{/if}">{tr}Hits{/tr}</a></th>
-<th>{tr}Action{/tr}</th>
+<th class="heading"><a class="tableheading" href="tiki-admin_forums.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}#editforums">{tr}Name{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_forums.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'threads_desc'}threads_asc{else}threads_desc{/if}#editforums">{tr}Topics{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_forums.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'comments_desc'}comments_asc{else}comments_desc{/if}#editforums">{tr}Coms{/tr}</a></th>
+<th class="heading">{tr}Users{/tr}</th>
+<th class="heading">{tr}Age{/tr}</th>
+<th class="heading">{tr}PPD{/tr}</th>
+<!--<td class="heading"><a class="tableheading" href="tiki-admin_forums.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'lastPost_desc'}lastPost_asc{else}lastPost_desc{/if}">{tr}Last Post{/tr}</a></td>-->
+<th class="heading"><a class="tableheading" href="tiki-admin_forums.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'hits_desc'}hits_asc{else}hits_desc{/if}">{tr}Hits{/tr}</a></th>
+<th class="heading">{tr}Action{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}

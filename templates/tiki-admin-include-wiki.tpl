@@ -327,13 +327,13 @@ name="w_displayed_default"{if $prefs.w_displayed_default eq 'y'} checked="checke
     		</td>
     	</tr>
     	<tr>
-    		<td class="form">{tr}Edit Comments{/tr}</td>
+    		<td class="form">{tr}Comment{/tr}</td>
     		<td class="form">
     			<input type="checkbox" name="wiki_list_comment" {if $prefs.wiki_list_comment eq 'y'}checked="checked"{/if} />
     		</td>
     	</tr>
     	<tr>
-		<td class="form">{tr}Edit Comments length:{/tr}</td>
+		<td class="form">{tr}Comment length:{/tr}</td>
 		<td class="form">
 			<input type="text" name="wiki_list_comment_len" value="{$prefs.wiki_list_comment_len}" size="3" />
 		</td>
@@ -427,7 +427,7 @@ name="w_displayed_default"{if $prefs.w_displayed_default eq 'y'} checked="checke
     <form action="tiki-admin.php?page=wiki" method="post">
     <table class="admin">
       <tr>
-        <th colspan="2">General</th>
+        <td colspan="2" class="heading">General</td>
       </tr>
       <tr>
         <td class="form">{tr}Enable wiki 3D browser:{/tr}</td>
@@ -446,7 +446,7 @@ name="w_displayed_default"{if $prefs.w_displayed_default eq 'y'} checked="checke
 	<td><input type="text" name="wiki_3d_height" value="{$prefs.wiki_3d_height|escape}" size="3" /></td>
       </tr>
       <tr>
-        <th colspan="2">Graph appearance</th>
+        <td colspan="2" class="heading">Graph appearance</td>
       </tr>
       <tr>
         <td class="form">{tr}Navigation depth:{/tr} </td>
@@ -473,7 +473,7 @@ name="w_displayed_default"{if $prefs.w_displayed_default eq 'y'} checked="checke
 	<td><input type="text" name="wiki_3d_missing_page_color" value="{$prefs.wiki_3d_missing_page_color|escape}" size="7" /></td>
       </tr>
       <tr>
-        <th colspan="2">Camera settings</th>
+        <td colspan="2" class="heading">Camera settings</td>
      </tr>
       <tr>
         <td class="form">{tr}Camera distance adjusted relative to nearest node:{/tr} </td>
@@ -496,7 +496,7 @@ name="w_displayed_default"{if $prefs.w_displayed_default eq 'y'} checked="checke
       </tr>
       {* new fields *}
       <tr>
-        <th colspan="2">Physics engine</th>
+        <td colspan="2" class="heading">Physics engine</td>
      </tr>
       <tr>
         <td class="form">{tr}Friction constant:{/tr} </td>
@@ -597,11 +597,10 @@ name="w_displayed_default"{if $prefs.w_displayed_default eq 'y'} checked="checke
     <tr><td class="form">{tr}Tables syntax:{/tr}</td><td>
     <select name="feature_wiki_tables">
     <option value="old" {if $prefs.feature_wiki_tables eq 'old'}selected="selected"{/if}>{tr}|| for rows{/tr}</option>
-    <option value="new" {if $prefs.feature_wiki_tables eq 'new'}selected="selected"{/if}>{tr}<return> for rows{/tr}</option>
+    <option value="new" {if $prefs.feature_wiki_tables eq 'new'}selected="selected"{/if}>{tr}\n for rows{/tr}</option>
     </select>
     </td></tr>
     <tr><td class="form">{tr}Uses Slideshow:{/tr}</td><td><input type="checkbox" name="wiki_uses_slides" {if $prefs.wiki_uses_slides eq 'y'}checked="checked"{/if}/></td></tr>
-    <tr><td class="form">{tr}Structures:{/tr}</td><td><input type="checkbox" name="feature_wiki_structure" {if $prefs.feature_wiki_structure eq 'y'}checked="checked"{/if}/></td></tr>
     <tr><td class="form">{tr}Open page as structure:{/tr}</td><td><input type="checkbox" name="feature_wiki_open_as_structure" {if $prefs.feature_wiki_open_as_structure eq 'y'}checked="checked"{/if}/></td></tr>
     <tr><td class="form">{tr}Make structure from page:{/tr}</td><td><input type="checkbox" name="feature_wiki_make_structure" {if $prefs.feature_wiki_make_structure eq 'y'}checked="checked"{/if}/></td></tr>
     <tr><td class="form">{tr}Categorize structure pages together:{/tr}</td><td><input type="checkbox" name="feature_wiki_categorize_structure" {if $prefs.feature_wiki_categorize_structure eq 'y'}checked="checked"{/if}/></td></tr>

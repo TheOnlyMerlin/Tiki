@@ -187,9 +187,7 @@ class FreetagLib extends ObjectLib {
      * 
      */
     
-function get_objects_with_tag_combo($tagArray, $type='', $thisUser = '', $offset = 0, $maxRecords = -1, $sort_mode = 'name_asc', $find = '', $broaden = 'n') {
-	global $categlib; include_once('lib/categories/categlib.php');
-	global $tiki_p_admin, $user;
+function get_objects_with_tag_combo($tagArray, $type='', $user = '', $offset = 0, $maxRecords = -1, $sort_mode = 'name_asc', $find = '', $broaden = 'n') {
 	if (!isset($tagArray) || !is_array($tagArray)) {
 	    return false;
 	}
@@ -203,9 +201,9 @@ function get_objects_with_tag_combo($tagArray, $type='', $thisUser = '', $offset
 	
 	$numTags = count($tagArray);
 		
-	if (isset($thisUser) && !empty($thisUser)) {
+	if (isset($user) && !empty($user)) {
 	    $mid = "AND `user` = ?";
-	    $bindvals[] = $thisUser;
+	    $bindvals[] = $user;
 	} else {
 	    $mid = '';
 	}
@@ -220,9 +218,9 @@ function get_objects_with_tag_combo($tagArray, $type='', $thisUser = '', $offset
 		$bindvals_t = $bindvals;		
 		$mid_t = '';
 
-		if (isset($thisUser) && !empty($thisUser)) {
+		if (isset($user) && !empty($user)) {
 	    	$mid_t = "AND `user` = ?";
-	    	$bindvals_t[] = $thisUser;	
+	    	$bindvals_t[] = $user;	
 		}	
 	
 		if (isset($type) && !empty($type)) {
@@ -270,9 +268,9 @@ function get_objects_with_tag_combo($tagArray, $type='', $thisUser = '', $offset
 	
 	$mid = '';
 
-	if (isset($thisUser) && !empty($thisUser)) {
+	if (isset($user) && !empty($user)) {
 	    $mid = "AND `user` = ?";
-	    $bindvals[] = $thisUser;	
+	    $bindvals[] = $user;	
 	}	
 	
 	if (isset($type) && !empty($type)) {
@@ -305,18 +303,13 @@ function get_objects_with_tag_combo($tagArray, $type='', $thisUser = '', $offset
 	$query_cant .= $query_end;	
 	
 	$result = $this->query($query, $bindvals, $maxRecords, $offset);
-	$cant = $this->getOne($query_cant, $bindvals);
 	
 	$ret = array();
-	$permMap = $categlib->map_object_type_to_permission();
 	while ($row = $result->fetchRow()) {
-		if ($tiki_p_admin == 'y' || $this->user_has_perm_on_object($user, $row['itemId'], $row['type'], $permMap[$row['type']])) {
-			$ret[] = $row;
-		} else {
-			--$cant;
-		}
+	    $ret[] = $row;
 	}
 	
+	$cant = $this->getOne($query_cant, $bindvals);
 	
 	return array('data' => $ret,
 		     'cant' => $cant);
@@ -399,7 +392,7 @@ function get_objects_with_tag_combo($tagArray, $type='', $thisUser = '', $offset
      *	 - 'user' => The unique ID of the person who tagged the object with this tag.
      */ 
 	function get_tags_on_object($itemId, $type, $offset = 0, $maxRecords = -1, $user = NULL) {
-		if (!isset($itemId) || !isset($type) || empty($itemId) || empty($type) || !is_int($itemId) || !is_string($type)) {
+		if (!isset($itemId) || !isset($type) || empty($itemId) || empty($type)) {
 			return false;
 		}
 

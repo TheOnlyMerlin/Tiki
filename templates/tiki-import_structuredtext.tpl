@@ -1,4 +1,19 @@
-{title help="ImportingPagesAdmin"}{tr}Import pages from a Structured Text Dump{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-import_structuredtext.php">{tr}Import pages from a Structured Text Dump{/tr}</a>
+
+
+  
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}ImportingPagesAdmin" target="tikihelp" class="tikihelp" title="{tr}ImportingPagesPhpWikiPageAdmin{/tr}">
+<img src="img/icons/help.gif" border="0" height="16" width="16" alt='{tr}Help{/tr}' /></a>{/if}
+
+
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-import_phpwiki.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}tiki-import_phpwiki tpl{/tr}">
+<img src="img/icons/info.gif" border="0" height="16" width="16" alt='{tr}Edit Tpl{/tr}' /></a>{/if}
+
+
+</h1>
 
 <form method="post" action="tiki-import_structuredtext.php">
 <table class="normal">
@@ -24,10 +39,10 @@
 {if $result eq 'y'}
 <table class="normal">
 <tr>
-  <th>{tr}page{/tr}</th>
-  <th>{tr}excerpt{/tr}</th>
-  <th>{tr}Result{/tr}</th>
-  <th>{tr}body{/tr}</th>
+  <td class="heading">{tr}page{/tr}</td>
+  <td class="heading">{tr}excerpt{/tr}</td>
+  <td class="heading">{tr}Result{/tr}</td>
+  <td class="heading">{tr}body{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$lines}

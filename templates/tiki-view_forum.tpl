@@ -1,10 +1,9 @@
 {* $Id$ *}
 
-{title help="forums" admpage="forums"}{$forum_info.name}{/title}
-
+<h1><a class="pagetitle" href="tiki-view_forum.php?forumId={$forum_info.forumId}">{$forum_info.name}</a></h1>
 {if $forum_info.show_description eq 'y'}
-  <div class="description">{$forum_info.description}</div>
-  <br />
+<div class="description">{$forum_info.description}</div>
+<br />
 {/if}
 
 <a class="link" href="tiki-forums.php">{tr}Forums{/tr}</a> {$prefs.site_crumb_seper} <a class="link" href="tiki-view_forum.php?forumId={$forumId}">{$forum_info.name}</a>
@@ -14,23 +13,22 @@
 <tr>
 <td>
 {if ($tiki_p_forum_post_topic eq 'y' and ($prefs.feature_wiki_discuss ne 'y' or $prefs.$forumId ne $prefs.wiki_forum_id)) or $tiki_p_admin_forum eq 'y'}
-<span class="button2"><a href="tiki-view_forum.php?openpost=1&amp;forumId={$forum_info.forumId}&amp;comments_threadId=0&amp;comments_threshold={$comments_threshold}&amp;comments_offset={$comments_offset}&amp;thread_sort_mode={$thread_sort_mode}&amp;comments_per_page={$comments_per_page}" {if !isset($comments_threadId) or $comments_threadId eq 0}onclick="javascript:show('forumpost');return false;"{/if}>
-{tr}New Topic{/tr}</a></span>
+<a class="linkbut" href="tiki-view_forum.php?openpost=1&amp;forumId={$forum_info.forumId}&amp;comments_threadId=0&amp;comments_threshold={$comments_threshold}&amp;comments_offset={$comments_offset}&amp;thread_sort_mode={$thread_sort_mode}&amp;comments_per_page={$comments_per_page}" {if !isset($comments_threadId) or $comments_threadId eq 0}onclick="javascript:show('forumpost');return false;"{/if}>
+{tr}New Topic{/tr}</a>
 {/if}
 {if $tiki_p_admin_forum eq 'y' or !isset($all_forums) or $all_forums|@count > 1 }{* No need for users to go to forum list if they are already looking at the only forum BUT note that all_forums only defined with quickjump feature *}
-  <span class="button2"><a href="tiki-forums.php">{tr}Forum List{/tr}</a></span>
+<a class="linkbut" href="tiki-forums.php">{tr}Forum List{/tr}</a> 
 {/if}
-
 {if $tiki_p_admin_forum eq 'y'}
-  <span class="button2"><a href="tiki-admin_forums.php?forumId={$forum_info.forumId}">{tr}Edit Forum{/tr}</a></span>
+<a class="linkbut" href="tiki-admin_forums.php?forumId={$forum_info.forumId}">{tr}Edit Forum{/tr}</a>
 {/if}
 
 {if $queued > 0}
-   <span class="button2"><a class="highlight" href="tiki-forum_queue.php?forumId={$forumId}">{tr}Manage Message Queue{/tr}&nbsp;({$queued})</a></span>
+  <a class="linkbut highlight" href="tiki-forum_queue.php?forumId={$forumId}">{tr}Manage Message Queue{/tr}&nbsp;({$queued})</a>
 {/if}
 
 {if $reported > 0}
-  <span class="button2"><a class="highlight" href="tiki-forums_reported.php?forumId={$forumId}">{tr}Manage Reported Messages{/tr}&nbsp;({$reported})</a></span>
+  <a class="linkbut highlight" href="tiki-forums_reported.php?forumId={$forumId}">{tr}Manage Reported Messages{/tr}&nbsp;({$reported})</a>
 {/if}
 
 </td>
@@ -77,10 +75,6 @@
 </tr>
 </table>
 </div>
-
-<a class="link" href="tiki-forums.php">{tr}Forums{/tr}</a> {$prefs.site_crumb_seper} <a class="link" href="tiki-view_forum.php?forumId={$forumId}">{$forum_info.name}</a>
-
-<br />
 
 {if $unread > 0}
 <a class='link' href='messu-mailbox.php'>{tr}You have {$unread} unread private messages{/tr}<br /></a>
@@ -289,7 +283,7 @@
 <table class="normal">
 {if $tiki_p_admin_forum eq 'y'}
 <tr>
-	<th colspan='18'>{tr}Moderator Actions{/tr}</th>
+	<th class="heading" colspan='18'>{tr}Moderator Actions{/tr}</th>
 </tr>
 <tr>	
 	<td class="odd" colspan="3">
@@ -346,27 +340,27 @@
 {/if}
 <tr>
   {if $tiki_p_admin_forum eq 'y'}
-  <th>&nbsp;</th>
+  <th class="heading">&nbsp;</th>
   {/if}
-  <th>{self_link _sort_arg='thread_sort_mode' _sort_field='type'}{tr}Type{/tr}{/self_link}</th>
+  <th class="heading">{self_link _class="tableheading" _sort_arg='thread_sort_mode' _sort_field='type'}{tr}Type{/tr}{/self_link}</th>
   {if $forum_info.topic_smileys eq 'y'}
-  <th>{self_link _sort_arg='thread_sort_mode' _sort_field='smiley'}{tr}Emot{/tr}{/self_link}</th>
+  <th class="heading">{self_link _class="tableheading" _sort_arg='thread_sort_mode' _sort_field='smiley'}{tr}Emot{/tr}{/self_link}</th>
   {/if}
-  <th>{self_link _sort_arg='thread_sort_mode' _sort_field='title'}{tr}Title{/tr}{/self_link}</th>
+  <th class="heading">{self_link _class="tableheading" _sort_arg='thread_sort_mode' _sort_field='title'}{tr}Title{/tr}{/self_link}</th>
   {if $forum_info.topics_list_replies eq 'y'}
-  	<th>{self_link _sort_arg='thread_sort_mode' _sort_field='replies'}{tr}Replies{/tr}{/self_link}</th>
+  	<th class="heading">{self_link _class="tableheading" _sort_arg='thread_sort_mode' _sort_field='replies'}{tr}Replies{/tr}{/self_link}</th>
   {/if}
   {if $forum_info.topics_list_reads eq 'y'}
-  	<th>{self_link _sort_arg='thread_sort_mode' _sort_field='hits'}{tr}Reads{/tr}{/self_link}</th>
+  	<th class="heading">{self_link _class="tableheading" _sort_arg='thread_sort_mode' _sort_field='hits'}{tr}Reads{/tr}{/self_link}</th>
   {/if}
   {if $forum_info.topics_list_pts eq 'y'}
-  	<th>{self_link _sort_arg='thread_sort_mode' _sort_field='average'}{tr}pts{/tr}{/self_link}</th>
+  	<th class="heading">{self_link _class="tableheading" _sort_arg='thread_sort_mode' _sort_field='average'}{tr}pts{/tr}{/self_link}</th>
   {/if}
   {if $forum_info.topics_list_lastpost eq 'y'}
-  	<th>{self_link _sort_arg='thread_sort_mode' _sort_field='lastPost'}{tr}Last Post{/tr}{/self_link}</th>
+  	<th class="heading">{self_link _class="tableheading" _sort_arg='thread_sort_mode' _sort_field='lastPost'}{tr}Last Post{/tr}{/self_link}</th>
   {/if}
   {if $forum_info.topics_list_author eq 'y'}
-  	<th>{self_link _sort_arg='thread_sort_mode' _sort_field='userName'}{tr}Author{/tr}{/self_link}</th>
+  	<th class="heading">{self_link _class="tableheading" _sort_arg='thread_sort_mode' _sort_field='userName'}{tr}Author{/tr}{/self_link}</th>
   {/if}
 </tr>
 {cycle values="odd,even" print=false}
@@ -475,7 +469,7 @@
 	{cycle values="odd,even" print=false}
 	<table class="normal">
 	<tr>
-	 	<th>{tr}Last{/tr} {$forum_info.forum_last_n} {tr}posts in this forum{/tr}</th>
+	 	<td class="heading">{tr}Last{/tr} {$forum_info.forum_last_n} {tr}posts in this forum{/tr}</td>
 	</tr>
  	{section name=ix loop=$last_comments}
 	 	<tr>

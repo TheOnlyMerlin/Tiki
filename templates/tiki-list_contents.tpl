@@ -1,4 +1,16 @@
-{title help="Dynamic+Content"}{tr}Dynamic content system{/tr}{/title}
+<h1>
+<a class="pagetitle" href="tiki-list_contents.php">{tr}Dynamic content system{/tr}</a>
+{if $prefs.feature_help eq 'y'}
+  <a href="{$prefs.helpurl}Dynamic+Content" target="tikihelp" class="tikihelp" title="{tr}Help on Dynamic Content{/tr}">
+    <img src="img/icons/help.gif" border="0" height="16" width="16" alt='{tr}Help{/tr}' />
+  </a>
+{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+  <a href="tiki-edit_templates.php?template=tiki-list_contents.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Admin DynamicContent tpl{/tr}">
+    <img src="img/icons/info.gif" border="0" height="16" width="16" alt='{tr}Edit Tpl{/tr}' />
+  </a>
+{/if}
+</h1>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}To use content blocks in a text area (Wiki page, etc), a <a class="rbox-link" href="tiki-admin_modules.php">module</a> or a template, use {literal}{content id=x}{/literal}, where x is the ID of the content block.{/tr} {tr}You can also use {literal}{content label=x}{/literal}, where x is the label of the content block.{/tr}{/remarksbox}
 
@@ -10,7 +22,7 @@
 {/if}
 </h2>
 
-{if $contentId ne ''}<span class="button2"><a href="tiki-list_contents.php">{tr}Create New Block{/tr}</a></span>{/if}
+{if $contentId ne ''}<a class="linkbut" href="tiki-list_contents.php">{tr}Create New Block{/tr}</a>{/if}
 
 <form action="tiki-list_contents.php" method="post">
   {query _type='form_input'}
@@ -46,13 +58,13 @@
 
 <table class="normal">
   <tr>
-    <th>{self_link _sort_arg='sort_mode' _sort_field='contentId'}{tr}Id{/tr}{/self_link}</th>
-    <th>{self_link _sort_arg='sort_mode' _sort_field='contentLabel'}{tr}Label{/tr}{/self_link}</th>
-    <th>{self_link _sort_arg='sort_mode' _sort_field='data'}{tr}Current Value{/tr}{/self_link}</th>
-    <th>{self_link _sort_arg='sort_mode' _sort_field='actual'}{tr}Current ver{/tr}{/self_link}</th>
-    <th>{self_link _sort_arg='sort_mode' _sort_field='next'}{tr}Next ver{/tr}{/self_link}</th>
-    <th>{self_link _sort_arg='sort_mode' _sort_field='future'}{tr}Future vers{/tr}{/self_link}</th>
-    <th>{tr}Action{/tr}</th>
+    <td class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='contentId'}{tr}Id{/tr}{/self_link}</td>
+    <td class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='contentLabel'}{tr}Label{/tr}{/self_link}</td>
+    <td class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='data'}{tr}Current Value{/tr}{/self_link}</td>
+    <td class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='actual'}{tr}Current ver{/tr}{/self_link}</td>
+    <td class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='next'}{tr}Next ver{/tr}{/self_link}</td>
+    <td class="heading">{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='future'}{tr}Future vers{/tr}{/self_link}</td>
+    <td class="heading">{tr}Action{/tr}</td>
   </tr>
 {cycle values="odd,even" print=false}
 {section name=changes loop=$listpages}
@@ -72,7 +84,7 @@
     <td class="{cycle advance=false}">{$listpages[changes].future}</td>
     <td class="{cycle advance=true}">
       {self_link _class='link' _icon='page_edit' edit=$listpages[changes].contentId}{tr}Edit{/tr}{/self_link}
-      <a class="link" href="tiki-edit_programmed_content.php?contentId={$listpages[changes].contentId}" title="{tr}Program{/tr}">{icon _id=wrench alt="{tr}Program{/tr}"}</a>
+      <a class="link" href="tiki-edit_programmed_content.php?contentId={$listpages[changes].contentId}" title="{tr}Program{/tr}">{icon _id=wrench.png alt="{tr}Program{/tr}"}</a>
       {self_link _class='link' _icon='cross' _template='confirm.tpl' remove=$listpages[changes].contentId}{tr}Remove{/tr}{/self_link}
     </td>
   </tr>

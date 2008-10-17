@@ -1,13 +1,20 @@
 {* $Id$ *}
+<h1><a href="tiki-assignpermission.php?group={$group|escape:url}" class="pagetitle">{tr}Assign permissions to group{/tr}: {$group}</a>
 
-{assign var=escgroup value=$group|escape:url}
-{title help="Permissions+Settings" url="tiki-assignpermission.php?group=$escgroup"}{tr}Assign permissions to group:{/tr} {$group}{/title}
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Permissions+Settings" target="tikihelp" class="tikihelp" title="{tr}Help for Assigning Permissions{/tr}">
+{icon _id='help'}</a>
+{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-assignpermission.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Edit Article Tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}</h1>
 
 <div class="navbar">
 {if $tiki_p_admin eq 'y'} {* only full admins can manage groups, not tiki_p_admin_users *}
-<span class="button2"><a href="tiki-admingroups.php">{tr}Admin groups{/tr}</a></span>
+<span class="button2"><a href="tiki-admingroups.php" class="linkbut">{tr}Admin groups{/tr}</a></span>
 {/if}
-<span class="button2"><a href="tiki-adminusers.php">{tr}Admin users{/tr}</a></span>
+<span class="button2"><a href="tiki-adminusers.php" class="linkbut">{tr}Admin users{/tr}</a></span>
 </div>
 
 <h2>{tr}Group Information{/tr}</h2>
@@ -52,11 +59,11 @@
 <input type="submit" name="update" value="{tr}Update{/tr}" /><br />
 <table class="sortable" id="assignperms" width="100%">
 <tr>
-<th>&nbsp;</th>
-<th>{tr}Name{/tr}</th>
-<th {if $advanced_features ne 'y'}style="display:none;"{else}style="display:block;"{/if}>{tr}level{/tr}</th>
-<th>{tr}Type{/tr}</th>
-<th>{tr}desc{/tr}</th>
+<th class="heading">&nbsp;</th>
+<th class="heading">{tr}Name{/tr}</th>
+<th class="heading" {if $advanced_features ne 'y'}style="display:none;"{else}style="display:block;"{/if}>{tr}level{/tr}</th>
+<th class="heading">{tr}Type{/tr}</th>
+<th class="heading">{tr}desc{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$perms}
@@ -90,8 +97,7 @@
 {else}
 <a href="tiki-assignpermission.php?find={$find}&amp;type={$type}&amp;group={$group|escape:url}&amp;sort_mode={$sort_mode}">{tr}Hide{/tr}</a>
 {/if}<br /><br />
-</div>
-</form>
+
 <div {if $advanced_features ne 'y'}style="display:none;"{else}style="display:block;"{/if}>
 <h2>{tr}Create level{/tr}</h2>
 <form method="post" action="tiki-assignpermission.php">
@@ -109,10 +115,11 @@
 <option value="remove">{tr}Remove{/tr}</option>
 </select>
 {tr}all permissions in level{/tr}:  
-<select name="level[]" multiple="multiple" size="5">
+<select name="level[]" multiple="yes" size="5">
 {html_options output=$levels values=$levels selected=$perms[user].level}
 </select>
 <input type="submit" name="allper" value="{tr}Update{/tr}" />
 </form>
 </div>
 <br />
+</form>

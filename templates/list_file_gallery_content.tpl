@@ -1,15 +1,14 @@
 <table class="normal">
   <tr>
-  {if $gal_info.show_checked ne 'n' and ($tiki_p_admin_file_galleries eq 'y' or $tiki_p_upload_files eq 'y')}
+  {if $gal_info.show_checked ne 'n' and $tiki_p_admin_file_galleries eq 'y'}
     {assign var=nbCols value=`$nbCols+1`}
-    <th style="width:1%">&nbsp;</th>
+    <td class="heading" style="width:1%">&nbsp;</td>
   {/if}
   {if ( $prefs.use_context_menu_icon eq 'y' or $prefs.use_context_menu_text eq 'y' ) and $gal_info.show_action neq 'n' and $prefs.javascript_enabled eq 'y'}
     {assign var=nbCols value=`$nbCols+1`}
-    <th style="width:1%">&nbsp;</th>
+    <td class="heading" style="width:1%">&nbsp;</td>
   {/if}
       
-  {if $show_parentName eq 'y'}<th>{self_link _sort_arg="sort_mode" _sort_field='parentName'}{tr}Gallery{/tr}{/self_link}</th>{/if}
   {foreach from=$fgal_listing_conf item=item key=propname}
     {if isset($item.key)}
       {assign var=key_name value=$item.key}
@@ -30,7 +29,7 @@
     {if isset($gal_info.$key_name) and ( $gal_info.$key_name eq 'y' or $gal_info.$key_name eq 'i' or $gal_info.$key_name eq 'a' or $propname eq 'name' ) }
       {assign var=propval value=$item.name}
       {assign var=link_title value=''}
-      {assign var=td_args value=''}
+      {assign var=td_args value=' class="heading"'}
       
       {if $gal_info.$key_name eq 'i' or $propname eq 'type' or ( $propname eq 'lockedby' and $gal_info.$key_name eq 'a') }
          {if isset($item.icon)}
@@ -44,15 +43,15 @@
 
       {if $propname eq 'name' and ( $gal_info.show_name eq 'a' or $gal_info.show_name eq 'f' ) }
         {assign var=nbCols value=`$nbCols+1`}
-        <th{$td_args}>{self_link _sort_arg="sort_mode" _sort_field='filename'}{if empty($galleryId)}{tr}Name{/tr}{else}{tr}Filename{/tr}{/if}{/self_link}</th>
+        <td{$td_args}>{self_link _class="tableheading" _sort_arg="sort_mode" _sort_field='filename'}{tr}Filename{/tr}{/self_link}</td>
       {/if}
       {if !($galleryId eq 0 and $propname eq 'lockedby') and ($propname neq 'name' or ( $gal_info.show_name eq 'a' or $gal_info.show_name eq 'n' )) }
         {assign var=nbCols value=`$nbCols+1`}
-        <th{$td_args}>
-           {self_link _sort_arg="sort_mode" _sort_field=$propname _title=$link_title}
+        <td{$td_args}>
+           {self_link _class="tableheading" _sort_arg="sort_mode" _sort_field=$propname _title=$link_title}
              {if $propicon}{icon _id=$propicon alt=$link_title}{else}{$propval}{/if}
 		   {/self_link}
-        </th>
+        </td>
       {/if}
     {/if}
   {/foreach}
@@ -74,23 +73,23 @@
       
   {if $other_columns_selected neq ''}
     {assign var=nbCols value=`$nbCols+1`}
-    <th>
-    {self_link _sort_arg='sort_mode' _sort_field=$other_columns_selected _title=$fgal_listing_conf.$other_columns_selected.name}{$fgal_listing_conf.$other_columns_selected.name}{/self_link}
-    </th>
+    <td class="heading">
+    {self_link _class='tableheading' _sort_arg='sort_mode' _sort_field=$other_columns_selected _title=$fgal_listing_conf.$other_columns_selected.name}{$fgal_listing_conf.$other_columns_selected.name}{/self_link}
+    </td>
   {/if}
       
   {if ( $prefs.use_context_menu_icon neq 'y' and $prefs.use_context_menu_text neq 'y' ) or $gal_info.show_action eq 'y' or $prefs.javascript_enabled neq 'y'}
     {assign var=nbCols value=`$nbCols+1`}
-    <th>{tr}Actions{/tr}</th>
+    <td class="heading">{tr}Actions{/tr}</td>
   {/if}
       
   {if ( $other_columns neq '' or $other_columns_selected neq '' ) and $prefs.javascript_enabled eq 'y'}
     {assign var=nbCols value=`$nbCols+1`}
-    <th style="width:1%">
+    <td class="heading" style="width:1%">
     {if $other_columns neq ''}
       <a href='#' {popup trigger="onClick" sticky=1 mouseoff=1 fullhtml="1" text=$smarty.capture.over_other_columns|escape:"javascript"|escape:"html"} title='{tr}Other Sorts{/tr}'>{/if}{icon _id='timeline_marker' alt='{tr}Other Sorts{/tr}' title=''}{if $other_columns neq ''}</a>
     {/if}
-    </th>
+    </td>
   {/if}
 
   </tr>
@@ -158,7 +157,7 @@
 
   <tr>
       
-  {if $gal_info.show_checked neq 'n' and ($tiki_p_admin_file_galleries eq 'y' or $tiki_p_upload_files eq 'y')}
+  {if $gal_info.show_checked neq 'n' and $tiki_p_admin_file_galleries eq 'y'}
     <td style="text-align:center;" class="{cycle advance=false}">
       {if $files[changes].isgal eq 1}
         {assign var='checkname' value='subgal'}
@@ -171,11 +170,10 @@
       
   {if ( $prefs.use_context_menu_icon eq 'y' or $prefs.use_context_menu_text eq 'y' ) and $gal_info.show_action neq 'n' and $prefs.javascript_enabled eq 'y'}
     <td style="white-space: nowrap" class="{cycle advance=false}">
-      <a class="fgalname" title="{tr}Actions{/tr}" href="#" {popup trigger="onClick" sticky=1 mouseoff=1 fullhtml="1" center=true text=$smarty.capture.over_actions|escape:"javascript"|escape:"html"} style="padding:0; margin:0; border:0">{icon _id='wrench' alt='{tr}Actions{/tr}'}</a>
+      <a class="fgalname" title="{tr}Actions{/tr}" href="#" {popup trigger="onClick" sticky=1 mouseoff=1 fullhtml="1" text=$smarty.capture.over_actions|escape:"javascript"|escape:"html"} style="padding:0; margin:0; border:0">{icon _id='wrench' alt='{tr}Actions{/tr}'}</a>
     </td>
   {/if}
       
-  {if $show_parentName eq 'y'}<td class="{cycle advance=false}"><a href="tiki-list_file_gallery.php?galleryId={$files[changes].galleryId}">{$files[changes].parentName|escape}</a></td>{/if}
   {foreach from=$fgal_listing_conf item=item key=propname}
     {if isset($item.key)}
       {assign var=key_name value=$item.key}
@@ -188,14 +186,10 @@
       {* build link *}
       {capture assign=link}{strip}
         {if $files[changes].isgal eq 1}
-          href="tiki-list_file_gallery.php?galleryId={$files[changes].id}{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}"
+          href="tiki-list_file_gallery.php?galleryId={$files[changes].id}{if $filegals_manager eq 'y'}&amp;filegals_manager=y{/if}"
         {else}
-          {if $filegals_manager neq ''}
-            {assign var=seturl value="`$url_path`tiki-download_file.php?fileId=`$files[changes].id`&display"}
-
-            {* Note: When using this code inside FCKeditor, SetMyUrl function is not defined and we use FCKeditor SetUrl native function *}
-            href="javascript:if (typeof window.opener.SetMyUrl != 'undefined') window.opener.SetMyUrl('{$filegals_manager|escape}','{$seturl}'); else window.opener.SetUrl('{$seturl}'); javascript:window.close();"  title="{tr}Download{/tr}"
-
+          {if $filegals_manager eq 'y'}
+            href="javascript:window.opener.SetUrl('{$url_path}tiki-download_file.php?fileId={$files[changes].id}&display');javascript:window.close() ;"  title="{tr}Download{/tr}"
           {elseif $tiki_p_download_files eq 'y'}
             {if $gal_info.type eq 'podcast' or $gal_info.type eq 'vidcast'}
               href="{$download_path}{$files[changes].path}" title="{tr}Download{/tr}"
@@ -270,7 +264,7 @@
       {if $over_infos eq ''}
         {icon _id='information_gray' class='' alt='{tr}No information{/tr}'}
       {else}
-        <a class="fgalname" href="#" {popup fullhtml="1" text=$over_infos|escape:"javascript"|escape:"html" left=true} style="cursor:help">{icon _id='information' class='' title=''}</a>
+        <a class="fgalname" href="#" {popup fullhtml="1" text=$over_infos|escape:"javascript"|escape:"html"} style="cursor:help">{icon _id='information' class='' title=''}</a>
       {/if}
     {/if}
     </td>

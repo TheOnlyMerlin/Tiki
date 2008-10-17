@@ -1,3 +1,7 @@
+{if $prefs.feature_help eq "y"}
+{remarksbox type="tip" title="{tr}Tip{/tr}" icon=accept}{tr}Freetags rock!{/tr}{/remarksbox}
+{/if}
+
   <div id ="Browsing" class="cbox">
     <div class="cbox-title">
       {tr}Freetag Browsing{/tr}
@@ -6,7 +10,7 @@
     <form action="tiki-admin.php?page=freetags" method="post">
       <table class="admin">
         <tr>
-          <th colspan="2">{tr}General{/tr}</th>
+          <td colspan="2" class="heading">{tr}General{/tr}</td>
         </tr>
         <tr>
           <td class="form">{tr}Show Tag Cloud{/tr}: </td>
@@ -76,7 +80,7 @@
           </tr>
           
           <tr>
-            <th colspan="2">{tr}More Like This/Get Similar Module{/tr}</th>
+            <td colspan="2" class="heading">{tr}More Like This/Get Similar Module{/tr}</td>
           </tr>
         
           <tr>    
@@ -93,15 +97,15 @@
 	    <td>{tr}Basic algorithm - Minimum amount of tags in common{/tr}</td>
 	    <td>
 	      <select name="morelikethis_basic_mincommon">
-	        <option value="1"{if $prefs.morelikethis_basic_mincommon eq '1'} selected="selected"{/if}>1</option>
-	        <option value="2"{if $prefs.morelikethis_basic_mincommon eq '2' or ! $prefs.morelikethis_basic_mincommon} selected="selected"{/if}>2</option>
-	        <option value="3"{if $prefs.morelikethis_basic_mincommon eq '3'} selected="selected"{/if}>3</option>
-	        <option value="4"{if $prefs.morelikethis_basic_mincommon eq '4'} selected="selected"{/if}>4</option>
-	        <option value="5"{if $prefs.morelikethis_basic_mincommon eq '5'} selected="selected"{/if}>5</option>
-	        <option value="6"{if $prefs.morelikethis_basic_mincommon eq '6'} selected="selected"{/if}>6</option>
-	        <option value="7"{if $prefs.morelikethis_basic_mincommon eq '7'} selected="selected"{/if}>7</option>
-	        <option value="8"{if $prefs.morelikethis_basic_mincommon eq '8'} selected="selected"{/if}>8</option>
-	        <option value="9"{if $prefs.morelikethis_basic_mincommon eq '9'} selected="selected"{/if}>9</option>
+	        <option value="1"{if $prefs.morelikethis_basic_mincommon eq '1'} selected="selected"{/if}>{tr}1{/tr}</option>
+	        <option value="2"{if $prefs.morelikethis_basic_mincommon eq '2' or ! $prefs.morelikethis_basic_mincommon} selected="selected"{/if}>{tr}2{/tr}</option>
+	        <option value="3"{if $prefs.morelikethis_basic_mincommon eq '3'} selected="selected"{/if}>{tr}3{/tr}</option>
+	        <option value="4"{if $prefs.morelikethis_basic_mincommon eq '4'} selected="selected"{/if}>{tr}4{/tr}</option>
+	        <option value="5"{if $prefs.morelikethis_basic_mincommon eq '5'} selected="selected"{/if}>{tr}5{/tr}</option>
+	        <option value="6"{if $prefs.morelikethis_basic_mincommon eq '6'} selected="selected"{/if}>{tr}6{/tr}</option>
+	        <option value="7"{if $prefs.morelikethis_basic_mincommon eq '7'} selected="selected"{/if}>{tr}7{/tr}</option>
+	        <option value="8"{if $prefs.morelikethis_basic_mincommon eq '8'} selected="selected"{/if}>{tr}8{/tr}</option>
+	        <option value="9"{if $prefs.morelikethis_basic_mincommon eq '9'} selected="selected"{/if}>{tr}9{/tr}</option>
 	      </select>			
 	    </td>		
 	  </tr>
@@ -123,7 +127,7 @@
     <form action="tiki-admin.php?page=freetags" method="post">
     <table class="admin">
       <tr>
-        <th colspan="2">{tr}General{/tr}</th>
+        <td colspan="2" class="heading">{tr}General{/tr}</td>
       </tr>
       <tr>
         <td class="form">{tr}Enable freetags 3D browser{/tr}:</td>
@@ -142,7 +146,7 @@
 	<td><input type="text" name="freetags_3d_height" value="{$prefs.freetags_3d_height|escape}" size="3" /></td>
       </tr>
       <tr>
-        <th colspan="2">{tr}Graph appearance{/tr}</th>
+        <td colspan="2" class="heading">{tr}Graph appearance{/tr}</td>
       </tr>
       <tr>
         <td class="form">{tr}Navigation depth{/tr}: </td>
@@ -169,7 +173,7 @@
 	<td><input type="text" name="freetags_3d_missing_page_color" value="{$prefs.freetags_3d_missing_page_color|escape}" size="7" /></td>
       </tr> *}
       <tr>
-        <th colspan="2">{tr}Camera settings{/tr}</th>
+        <td colspan="2" class="heading">{tr}Camera settings{/tr}</td>
      </tr>
       <tr>
         <td class="form">{tr}Camera distance adjusted relative to nearest node{/tr}: </td>
@@ -189,7 +193,7 @@
       </tr>
       {* new fields *}
       <tr>
-        <th colspan="2">{tr}Physics engine{/tr}</th>
+        <td colspan="2" class="heading">{tr}Physics engine{/tr}</td>
      </tr>
       <tr>
         <td class="form">{tr}Friction constant{/tr}: </td>

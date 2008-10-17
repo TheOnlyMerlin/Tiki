@@ -6,7 +6,7 @@
 <div id="page-bar">
   <table><tr>
     <td><div class="button2">
-      <a href="tiki-admin_integrator.php">{tr}Configure Repositories{/tr}</a>
+      <a href="tiki-admin_integrator.php" class="linkbut">{tr}Configure Repositories{/tr}</a>
     </div></td>
   </tr></table>
 </div>
@@ -18,8 +18,8 @@
 {if count($repositories) gt 0}
 <table class="normal" id="integrator-repositories">
   <tr>
-    <th>{tr}Name{/tr}</th>
-    <th>{tr}Description{/tr}</th>
+    <td class="heading">{tr}Name{/tr}</td>
+    <td class="heading">{tr}Description{/tr}</td>
   </tr>
   {cycle values="odd,even" print=false}
   {section name=rep loop=$repositories}

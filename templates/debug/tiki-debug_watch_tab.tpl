@@ -3,8 +3,8 @@
 <table  id="watchlist">
   <caption> {tr}Watchlist{/tr} </caption>
   <tr>
-    <th>Variable</th>
-    <th>Value</th>
+    <td class="heading">Variable</td>
+    <td class="heading">Value</td>
   </tr>
   {cycle values="even,odd" print=false}
   {section name=i loop=$watchlist}

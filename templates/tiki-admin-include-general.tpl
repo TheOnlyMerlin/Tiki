@@ -7,52 +7,11 @@
   </div>
   <div class="cbox-data">
     <form action="tiki-admin.php?page=general" method="post">
-		<div class="heading button" style="text-align: right">
-		<input type="submit" name="new_prefs" value="{tr}Change preferences{/tr}" />
-    </div>
-
-    {if $prefs.feature_tabs eq 'y'}
-      {cycle name=tabs values="1,2,3,4,5,6,7" print=false advance=false reset=true}
-			{strip}
-      <div class="tabs">
-        <span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark tabinactive">
-          <a href="#theme" onclick="javascript:tikitabs({cycle name=tabs},7); return false;">{tr}General Preferences{/tr}</a>
-        </span>
-        <span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark tabinactive">
-          <a href="#layout" onclick="javascript:tikitabs({cycle name=tabs},7); return false;">{tr}General Settings{/tr}</a>
-        </span>
-        <span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark tabinactive">
-          <a href="#other" onclick="javascript:tikitabs({cycle name=tabs},7); return false;">{tr}Release check{/tr}</a>
-        </span>
-        <span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark tabinactive">
-          <a href="#other" onclick="javascript:tikitabs({cycle name=tabs},7); return false;">{tr}Date and Time Formats{/tr}</a>
-        </span>
-        <span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark tabinactive">
-          <a href="#other" onclick="javascript:tikitabs({cycle name=tabs},7); return false;">{tr}Other{/tr}</a>
-        </span>
-        <span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark tabinactive">
-          <a href="#other" onclick="javascript:tikitabs({cycle name=tabs},7); return false;">{tr}Change password{/tr}</a>
-        </span>
-      </div>
-			{/strip}
-      {cycle name=content values="1,2,3,4,5,6,7" print=false advance=false reset=true}
-    {/if}
-
-
-    <fieldset{if $prefs.feature_tabs eq 'y'} class="tabcontent" id="content{cycle name=content assign=focustab}{$focustab}"{/if}>
-      {if $prefs.feature_tabs neq 'y'}
-        <legend class="heading">
-          <a href="#theme" onclick="flip('theme'); return false;">
-            <span>{tr}Theme{/tr}</span>
-          </a>
-        </legend>
-        <div id="theme" style="display:{if !isset($smarty.session.tiki_cookie_jar.show_theme) and $smarty.session.tiki_cookie_jar.show_theme neq 'y'}none{else}block{/if};">
-      {/if}
       <table class="admin"><tr>
-        <th colspan="2"
-            align="center">{tr}General Preferences{/tr}</th>
+        <td class="heading" colspan="2"
+            align="center">{tr}General Preferences{/tr}</td>
       </tr>
-	<tr><td style="width:40%" class="form">{tr}Tikiwiki version{/tr} : </td><td class="form">{$tiki_version}<br /><span class="button2"><a href="tiki-install.php">{tr}Reset or upgrade your database{/tr}</a></span></td></tr>
+	<tr><td width="40%" class="form">{tr}Tikiwiki version{/tr} : </td><td class="form">{$tiki_version}</td></tr>
 	<tr><td colspan="2"><hr /></td></tr>
 
       <tr>
@@ -138,15 +97,11 @@
 						{tr}smarty notice reporting{/tr}
       </td>
 	  </tr><tr>
-		<td class="form"><label for="feature_pear_date">{tr}Use PEAR::Date library:{/tr}</label></td>
-		<td><input type="checkbox" id="feature_pear_date" name="feature_pear_date"{if $prefs.feature_pear_date eq 'y'} checked="checked"{/if} /></td>
-		</tr><tr>
 	  <td class="form"><label for="log_mail">{tr}Log Mail in Tiki Logs:{/tr}</label></td>
-	  <td><input type="checkbox" id="log_mail" name="log_mail"{if $prefs.log_mail eq 'y'} checked="checked"{/if} /></td>
+	  <td><input type="checkbox" name="log_mail"{if $prefs.log_mail eq 'y'} checked="checked"{/if} /></td>
 	  </tr><tr>
 	  <td class="form"><label for="log_sql">{tr}Log SQL:{/tr}</label></td>
-	  <td><input type="checkbox" id="log_sql" name="log_sql"{if $prefs.log_sql eq 'y'} checked="checked"{/if} /></td></tr>
-		<tr><td class="form">{tr}Log queries using more than seconds:{/tr}</td><td><input type="text" name="log_sql_perf_min" value="{$prefs.log_sql_perf_min}" /></td>
+	  <td><input type="checkbox" name="log_sql"{if $prefs.log_sql eq 'y'} checked="checked"{/if} />{tr}only queries using more than seconds:{/tr} 0.05</td>
       </tr><tr>
       <td class="form"><label for="general-charset">{tr}Default charset for sending mail:{/tr}</label></td>
       <td><select name="default_mail_charset" id="general-charset">
@@ -162,22 +117,9 @@
             </select>
       </td>
 	</tr>
-      </table>
-      {if $prefs.feature_tabs neq 'y'}</div>{/if}
-    </fieldset>
-
-
-    <fieldset{if $prefs.feature_tabs eq 'y'} class="tabcontent" id="content{cycle name=content assign=focustab}{$focustab}"{/if}>
-      {if $prefs.feature_tabs neq 'y'}
-        <legend class="heading" id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}">
-          <a href="#layout" onclick="flip('layout'); return false;">
-            <span>{tr}General Layout options{/tr}</span>
-          </a>
-        </legend>
-        <div id="layout" style="display:{if !isset($smarty.session.tiki_cookie_jar.show_layout) and $smarty.session.tiki_cookie_jar.show_layout neq 'y'}none{else}block{/if};">{/if}
-        <table class="admin" width="100%">
+		
 			<tr>
-        <th colspan="2" align="center">{tr}General Settings{/tr}</th>
+        <td class="heading" colspan="2" align="center">{tr}General Settings{/tr}</td>
       </tr>
 		
 		<tr>
@@ -295,7 +237,7 @@
 
       </tr><tr>
         <td class="form"><label for="feature_help">{tr}Help System{/tr}:</label></td>
-        <td><input type="checkbox" name="feature_help" id="feature_help" {if $prefs.feature_help eq 'y'}checked="checked"{/if} /></td>
+        <td><input type="checkbox" name="feature_help" id="general-feature_help" {if $prefs.feature_help eq 'y'}checked="checked"{/if} /></td>
 
       </tr><tr>
         <td class="form"><label for="general-helpurl">{tr}Help URL{/tr}:</label></td>
@@ -306,22 +248,9 @@
         <td>{tr}Please expect not found help-pages with the default-URL.{/tr}<br />
 	    {tr}Any help with the documentation is welcome.{/tr}</td>
       </tr>
-      </table>
-      {if $prefs.feature_tabs neq 'y'}</div>{/if}
-    </fieldset>
-      
-    
-    <fieldset{if $prefs.feature_tabs eq 'y'} class="tabcontent" id="content{cycle name=content assign=focustab}{$focustab}"{/if}>
-      {if $prefs.feature_tabs neq 'y'}
-        <legend class="heading" id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}">
-          <a href="#layout" onclick="flip('layout'); return false;">
-            <span>{tr}General Layout options{/tr}</span>
-          </a>
-        </legend>
-        <div id="layout" style="display:{if !isset($smarty.session.tiki_cookie_jar.show_layout) and $smarty.session.tiki_cookie_jar.show_layout neq 'y'}none{else}block{/if};">{/if}
-        <table class="admin" width="100%">
+
 			<tr>
-        <th colspan="2" align="center">{tr}Release check{/tr}</th>
+        <td class="heading" colspan="2" align="center"><a name="help">{tr}Release check{/tr}</a></td>
 			</tr>
 			<tr>
 				<td class="form"><label for="general-versioncheck">{tr}Release check{/tr}</label></td>
@@ -342,22 +271,9 @@
         <td>{tr}Release checks are made when you browse admin main page only{/tr}
 				<br /><a href="tiki-admin.php?page=general&amp;forcecheck=1">{tr}Force immediate check{/tr}</a></td>
       </tr>
-      </table>
-      {if $prefs.feature_tabs neq 'y'}</div>{/if}
-    </fieldset>
-      
-    
-    <fieldset{if $prefs.feature_tabs eq 'y'} class="tabcontent" id="content{cycle name=content assign=focustab}{$focustab}"{/if}>
-      {if $prefs.feature_tabs neq 'y'}
-        <legend class="heading" id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}">
-          <a href="#layout" onclick="flip('layout'); return false;">
-            <span>{tr}General Layout options{/tr}</span>
-          </a>
-        </legend>
-        <div id="layout" style="display:{if !isset($smarty.session.tiki_cookie_jar.show_layout) and $smarty.session.tiki_cookie_jar.show_layout neq 'y'}none{else}block{/if};">{/if}
-        <table class="admin" width="100%">
+
 			<tr>
-        <th colspan="2" align="center">{tr}Date and Time Formats{/tr}</th>
+        <td class="heading" colspan="2" align="center">{tr}Date and Time Formats{/tr}</td>
       </tr><tr>
         <td class="form" ><label for="general-timezone">{tr}Default timezone{/tr}:</label></td>
         <td ><select name="server_timezone" id="general-timezone">
@@ -394,22 +310,9 @@
           <a class="link" target="strftime" href="{$fcnlink}">
             {tr}Date and Time Format Help{/tr}</a></td>
       </tr>
-      </table>
-      {if $prefs.feature_tabs neq 'y'}</div>{/if}
-    </fieldset>
-      
-    
-    <fieldset{if $prefs.feature_tabs eq 'y'} class="tabcontent" id="content{cycle name=content assign=focustab}{$focustab}"{/if}>
-      {if $prefs.feature_tabs neq 'y'}
-        <legend class="heading" id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}">
-          <a href="#layout" onclick="flip('layout'); return false;">
-            <span>{tr}General Layout options{/tr}</span>
-          </a>
-        </legend>
-        <div id="layout" style="display:{if !isset($smarty.session.tiki_cookie_jar.show_layout) and $smarty.session.tiki_cookie_jar.show_layout neq 'y'}none{else}block{/if};">{/if}
-        <table class="admin" width="100%">
+
 				<tr>
-					<th colspan="2" align="center">{tr}Other{/tr}</th>
+					<td class="heading" colspan="2" align="center">{tr}Other{/tr}</td>
 				</tr>
 				<tr>
 				<td class="form"><label for="user_show_realnames">{tr}When possible, show the real user name instead of login:{/tr}</label></td>
@@ -438,23 +341,30 @@
                                                 </div>
                                         </td>
                                 </tr>
-      </table>
-      {if $prefs.feature_tabs neq 'y'}</div>{/if}
-    </fieldset>
-		<div class="button clear" style="text-align: center">
-		<input type="submit" name="new_prefs" value="{tr}Change preferences{/tr}" />
-		</div>
+<tr>
+<td class="form"><label for="site_nav_seper">{tr}Preference syntax{/tr}:</label></td>
+<td><select name="pref_syntax">
+<option value="1.9" {if $prefs.pref_syntax eq '1.9'}selected="selected"{/if}>1.9 - $feature_foobar</option>
+<option value="2.0" {if $prefs.pref_syntax eq '2.0'}selected="selected"{/if}>2.0 - $prefs.feature_foobar, $prefs['feature_foobar']</option>
+</select></td>
+</tr>
+
+      <tr>
+        <td class="button" colspan='2'>
+          <input type="submit" name="new_prefs" value="{tr}Change preferences{/tr}" />
+        </td>
+      </tr></table>
     </form>
+  </div>
+</div>
+
+<div class="cbox">
+  <div class="cbox-title">
+    {tr}Change admin password{/tr}
+  </div>
+  <div class="cbox-data">
     <form method="post" action="tiki-admin.php?page=general">
-    <fieldset{if $prefs.feature_tabs eq 'y'} class="tabcontent" id="content{cycle name=content assign=focustab}{$focustab}"{/if}>
-      {if $prefs.feature_tabs neq 'y'}
-        <legend class="heading" id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}">
-          <a href="#layout" onclick="flip('layout'); return false;">
-            <span>{tr}Change admin password{/tr}</span>
-          </a>
-        </legend>
-        <div id="layout" style="display:{if !isset($smarty.session.tiki_cookie_jar.show_layout) and $smarty.session.tiki_cookie_jar.show_layout neq 'y'}none{else}block{/if};">{/if}
-        <table class="admin" width="100%">
+      <table class="admin">
       <tr>
         <td class="form" ><label for="general-new_pass">{tr}New password{/tr}:</label></td>
         <td ><input type="password" name="adminpass" id="general-new_pass" /></td>
@@ -467,8 +377,6 @@
         </td>
       </tr>
       </table>
-      {if $prefs.feature_tabs neq 'y'}</div>{/if}
-    </fieldset>
     </form>
   </div>
 </div>

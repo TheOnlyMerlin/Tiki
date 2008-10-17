@@ -23,7 +23,6 @@ if (isset($_REQUEST["looksetup"])) {
 	"feature_bot_bar_debug",
 	"feature_bot_bar_icons",
 	"feature_bot_bar_rss",
-	'feature_bot_bar_power_by_tw',
 	"feature_edit_templates",
 	"feature_editcss",
 	"feature_tabs",
@@ -36,9 +35,8 @@ if (isset($_REQUEST["looksetup"])) {
     "feature_siteidentity",
 	"feature_siteloclabel",
 	"feature_sitelogo",
-	"feature_sitetitle",
-	"feature_sitesubtitle",
 	"feature_sitenav",
+	"feature_sitead",
 	"feature_sitesearch",
 	"feature_site_login",
 	"feature_sitemenu",
@@ -46,9 +44,10 @@ if (isset($_REQUEST["looksetup"])) {
 	"feature_topbar_date",
 	"feature_topbar_debug",
 	"sitemycode_publish",
+	"sitead_publish",
 	"feature_bot_logo",
-	'feature_menusfolderstyle',
-	'direct_pagination',
+        "feature_menusfolderstyle",
+        "direct_pagination",
 	"nextprev_pagination",
 	"pagination_firstlast",
 	"pagination_icons",
@@ -69,9 +68,8 @@ if (isset($_REQUEST["looksetup"])) {
 	"sitelogo_bgstyle",
 	"sitelogo_title",
 	"sitelogo_alt",
-	"sitetitle",
-	"sitesubtitle",
 	"sitemycode",
+	"sitead",
 	"site_favicon",
 	"site_favicon_type",
 	"feature_topbar_id_menu",
@@ -81,8 +79,7 @@ if (isset($_REQUEST["looksetup"])) {
 	"transition_style_ver",
 	"direct_pagination_max_middle_links",
 	"direct_pagination_max_ending_links",
-	'feature_site_report_email',
-	'feature_endbody_code',
+	"feature_site_report_email"
     );
 
     foreach ($pref_simple_values as $svitem) {
@@ -122,11 +119,7 @@ $smarty->assign_by_ref("slide_styles", $slide_styles);
 
 if ( isset($_REQUEST["site_style"]) ) {
 	// If the theme has changed, reload the page to use the new theme
-	$location= 'location: tiki-admin.php?page=look';
-	if ($prefs['feature_tabs'] == 'y') {
-		$location .= "&cookietab=".$_COOKIE['tab'];
-	}
-	header($location);
+	header("location: tiki-admin.php?page=look");
 	exit;
 }
 ?>

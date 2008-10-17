@@ -1,20 +1,10 @@
 {popup_init src="lib/overlib.js"}
 {*Smarty template*}
-
-{title}{tr}Admin chart items{/tr}{/title}
-
-<div class="navbar">
-	<span class="button2">
-		<a href="tiki-admin_charts.php">{tr}Charts{/tr}</a>
-	</span>
-	<span class="button2">
-		<a href="tiki-admin_charts.php?chartId={$chartId}">{tr}Edit Chart{/tr}</a>
-	</span>
-	<span class="button2">
-		<a href="tiki-view_chart.php?chartId={$chartId}">{tr}View{/tr}</a>
-	</span>
-</div>
-
+<h1><a class="pagetitle" href="tiki-admin_chart_items.php">{tr}Admin chart items{/tr}</a>
+</h1><br /><br />
+<a class="linkbut" href="tiki-admin_charts.php">{tr}charts{/tr}</a>
+<a class="linkbut" href="tiki-admin_charts.php?chartId={$chartId}">{tr}Edit Chart{/tr}</a>
+<a class="linkbut" href="tiki-view_chart.php?chartId={$chartId}">{tr}View{/tr}</a>
 <h3>{tr}Add or edit an item{/tr} <a class="link" href="tiki-admin_chart_items.php?chartId=$chartId&amp;where={$where}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;itemId=0">{tr}New{/tr}</a>
 </h3>
 <form action="tiki-admin_chart_items.php" method="post">
@@ -63,9 +53,9 @@
 <input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
 <table class="normal">
 <tr>
-<th><input type="submit" name="delete" value="{tr}x{/tr} " /></th>
-<th><a href="{if $sort_mode eq 'title_desc'}{sameurl sort_mode="title_asc"}{else}{sameurl sort_mode="title_desc"}{/if}">{tr}Title{/tr}</a></th>
-<th><a href="{if $sort_mode eq 'URL_desc'}{sameurl sort_mode="URL_asc"}{else}{sameurl sort_mode="URL_desc"}{/if}">{tr}URL{/tr}</a></th>
+<td class="heading"><input type="submit" name="delete" value="{tr}x{/tr} " /></td>
+<td class="heading"><a class="tableheading" href="{if $sort_mode eq 'title_desc'}{sameurl sort_mode="title_asc"}{else}{sameurl sort_mode="title_desc"}{/if}">{tr}Title{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="{if $sort_mode eq 'URL_desc'}{sameurl sort_mode="URL_asc"}{else}{sameurl sort_mode="URL_desc"}{/if}">{tr}URL{/tr}</a></td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$items}

@@ -1,13 +1,27 @@
-{title help="Quiz"}{tr}Stats for quiz:{/tr} {$quiz_info.name}{/title}
+<h1><a class="pagetitle" href="tiki-quiz_stats_quiz.php?quizId={$quizId}">{tr}Stats for quiz{/tr}:{$quiz_info.name}</a>
 
-<span class="button2"><a href="tiki-list_quizzes.php">{tr}List Quizzes{/tr}</a></span>
-<span class="button2"><a href="tiki-quiz_stats.php">{tr}Quiz Stats{/tr}</a></span>
-<span class="button2"><a href="tiki-quiz_stats_quiz.php?quizId={$quizId}">{tr}This Quiz Stats{/tr}</a></span>
-<span class="button2"><a href="tiki-edit_quiz.php?quizId={$quizId}">{tr}Edit this Quiz{/tr}</a></span>
+
+<!-- the help link info -->
+  
+      {if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Quiz" target="tikihelp" class="tikihelp" title="{tr}Tikiwiki.org help{/tr}: {tr}Edit Quiz Questions{/tr}"><img border='0' src='img/icons/help.gif' alt="{tr}Help{/tr}" /></a>{/if}
+
+<!-- link to tpl -->
+
+     {if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=/tiki-quiz_stats_quiz.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Edit Quiz Stats Tpl{/tr}">
+<img src="img/icons/info.gif" border="0" height="16" width="16" alt='{tr}Edit Tpl{/tr}' /></a>{/if}
+<!-- linkbuttons, they'd be better if they had rollover info -->
+</h1>
+
+<a class="linkbut" href="tiki-list_quizzes.php">{tr}List Quizzes{/tr}</a>
+<a class="linkbut" href="tiki-quiz_stats.php">{tr}Quiz Stats{/tr}</a>
+<a class="linkbut" href="tiki-quiz_stats_quiz.php?quizId={$quizId}">{tr}This Quiz Stats{/tr}</a>
+<a class="linkbut" href="tiki-edit_quiz.php?quizId={$quizId}">{tr}Edit this Quiz{/tr}</a>
 {if $tiki_p_admin_quizzes eq 'y'}
-  <span class="button2"><a href="tiki-quiz_stats_quiz.php?quizId={$quizId}&amp;clear={$quizId}">{tr}Clear Stats{/tr}</a></span>
+  <a class="linkbut" href="tiki-quiz_stats_quiz.php?quizId={$quizId}&amp;clear={$quizId}">{tr}Clear Stats{/tr}</a>
 {/if}
-<span class="button2"><a href="tiki-edit_quiz.php">{tr}Admin Quizzes{/tr}</a></span>
+<a class="linkbut" href="tiki-edit_quiz.php">{tr}Admin Quizzes{/tr}</a>
 <br /><br />
 
 <!-- end link buttons -->
@@ -19,25 +33,25 @@
 
 <table class="normal">
 <tr>
-<th>
+<td class="heading">
 <!-- sort user -->
-<a href="tiki-quiz_stats_quiz.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_desc'}user_asc{else}user_desc{/if}">{tr}User{/tr}</a>
-</th>
+<a class="tableheading" href="tiki-quiz_stats_quiz.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_desc'}user_asc{else}user_desc{/if}">{tr}User{/tr}</a>
+</td>
 {*
 Set the names of the table headings to reflect the names of the db
 *}
 <!-- sort date -->
-<th><a href="tiki-quiz_stats_quiz.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'timestamp_desc'}timestamp_asc{else}timestamp_desc{/if}">{tr}Date{/tr}</a></th>
+<td class="heading"><a class="tableheading" href="tiki-quiz_stats_quiz.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'timestamp_desc'}timestamp_asc{else}timestamp_desc{/if}">{tr}Date{/tr}</a></td>
 <!-- sort time taken -->
-<th>
-<a href="tiki-quiz_stats_quiz.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'timeTaken_desc'}timeTaken_asc{else}timeTaken_desc{/if}">{tr}time taken{/tr}</a></th>
+<td class="heading">
+<a class="tableheading" href="tiki-quiz_stats_quiz.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'timeTaken_desc'}timeTaken_asc{else}timeTaken_desc{/if}">{tr}time taken{/tr}</a></td>
 <!-- sort points-->
-<th>
-<a href="tiki-quiz_stats_quiz.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'points_desc'}points_asc{else}points_desc{/if}">{tr}points{/tr}</a></th>
-<th>
+<td class="heading">
+<a class="tableheading" href="tiki-quiz_stats_quiz.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'points_desc'}points_asc{else}points_desc{/if}">{tr}points{/tr}</a></td>
+<td class="heading">
 <!-- sort results -->
-<a href="tiki-quiz_stats_quiz.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'resultId_desc'}resultId_asc{else}resultId_desc{/if}">{tr}Result{/tr}</a></th>
-<th>{tr}P/F{/tr}</th>
+<a class="tableheading" href="tiki-quiz_stats_quiz.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'resultId_desc'}resultId_asc{else}resultId_desc{/if}">{tr}Result{/tr}</a></td>
+<td class="heading">{tr}P/F{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}
@@ -95,16 +109,16 @@ Set the names of the table headings to reflect the names of the db
 
 {* I'd like to have every table heading sorted for immediate analysis
 <!-- sort options -->
-<th>
-<a href="tiki-quiz_stats_quiz.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'options_desc'}options_asc{else}options_desc{/if}">{tr}Options{/tr}</a>
-</th>
+<td>
+<a class="tableheading" href="tiki-quiz_stats_quiz.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'options_desc'}options_asc{else}options_desc{/if}">{tr}Options{/tr}</a>
+</td>
 *}
 
 <tr>
 	
-	<th>{tr}Option{/tr}</th>
-        <th>{tr}Votes{/tr}</th>
-   	<th>{tr}Average{/tr}</th>
+	<td class="heading">{tr}Option{/tr}</td>
+        <td class="heading">{tr}Votes{/tr}</td>
+   	<td class="heading">{tr}Average{/tr}</td>
 </tr>
 <!-- begin looping of data from data base -->
 {*second section beginning *}

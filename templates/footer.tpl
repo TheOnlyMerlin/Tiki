@@ -1,9 +1,8 @@
 {* $Id$ *}
-{* ==> put in this file what is not displayed in the layout (javascript, debug..)*}
 {if (! isset($display) or $display eq '')}
 {if count($phpErrors)}
-<span class="button2"><a href="#" onclick="flip('errors');return false;">{tr}Show php error messages{/tr}</a></span><br />
-<div id="errors" style="display:{if (isset($smarty.session.tiki_cookie_jar.show_errors) and $smarty.session.tiki_cookie_jar.show_errors eq 'y') or $prefs.javascript_enabled ne 'y'}block{else}none{/if};">
+<span class="button2"><a href="#" onclick="flip('errors');return false;" class="linkbut">{tr}Show php error messages{/tr}</a></span><br />
+<div id="errors" style="display:{if isset($smarty.session.tiki_cookie_jar.show_errors) and $smarty.session.tiki_cookie_jar.show_errors eq 'y'}block{else}none{/if};">
 {foreach item=err from=$phpErrors}{$err}{/foreach}
 </div>
 {/if}
@@ -20,9 +19,9 @@
 	{$phplayers_LayersMenu->printFooter()}
 {/if}
 
+{if $lastup}
+<div class="cvsup" style="font-size:x-small;text-align:center;color:#999;">{tr}Last update from SVN{/tr}({$prefs.tiki_version}): {$lastup|tiki_long_datetime}</div>
 {/if}
-{if $prefs.feature_endbody_code}{*this code must be added just before </body>: needed by google analytics *}
-	{eval var=$prefs.feature_endbody_code}
 {/if}
 </body>
 </html>  

@@ -13,12 +13,10 @@ if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== FALSE) {
 	die();
 }
 
-// add a line like the following in db/local.php to use an external smarty installation: $smarty_path='/usr/share/php/smarty/'
-define('TIKI_SMARTY_DIR', 'lib/smarty_tiki/');
-if ( isset($smarty_path) && $smarty_path != '' && file_exists($smarty_path.'Smarty.class.php') ) define('SMARTY_DIR', $smarty_path);
-else define('SMARTY_DIR', 'lib/smarty/libs/');
+// uncomment and adapt the following line if you use smarty external to tiki
+// define('SMARTY_DIR', 'lib/smarty/');
 
-require_once(SMARTY_DIR.'Smarty.class.php');
+require_once ( 'lib/smarty/libs/Smarty.class.php');
 
 class Smarty_Tikiwiki extends Smarty {
 	
@@ -31,22 +29,16 @@ class Smarty_Tikiwiki extends Smarty {
 		$this->caching = 0;
 		$this->assign('app_name', 'Tikiwiki');
 		$this->plugins_dir = array(	// the directory order must be like this to overload a plugin
-			TIKI_SMARTY_DIR,
+			dirname(dirname(SMARTY_DIR)).'/smarty_tiki',
 			SMARTY_DIR.'plugins'
 		);
-
 		// In general, it's better that use_sub_dirs = false
 		// If ever you are on a very large/complex/multilingual site and your
 		// templates_c directory is > 10 000 files, (you can check at tiki-admin_system.php)
 		// you can change to true and maybe you will get better performance.
 		// http://smarty.php.net/manual/en/variable.use.sub.dirs.php
-		//
-		$this->use_sub_dirs = false;
 
-		$this->security_settings['MODIFIER_FUNCS'] = array_merge(
-			$this->security_settings['MODIFIER_FUNCS'],
-			array('addslashes', 'ucfirst', 'ucwords', 'urlencode', 'md5', 'implode', 'explode')
-		);
+			$this->use_sub_dirs = false;
 	}
 
 	function _smarty_include($params) {
@@ -73,9 +65,7 @@ class Smarty_Tikiwiki extends Smarty {
 		if ( ($tpl = $this->get_template_vars('mid')) && ( $_smarty_tpl_file == 'tiki.tpl' || $_smarty_tpl_file == 'tiki-print.tpl' || $_smarty_tpl_file == 'tiki_full.tpl' ) ) {
 
 			// Set the last mid template to be used by AJAX to simulate a 'BACK' action
-			if ( isset($_SESSION['last_mid_template']) ) {
-				$this->assign('last_mid_template', $_SESSION['last_mid_template']);
-			}
+			$this->assign('last_mid_template', $_SESSION['last_mid_template']);
 			$_SESSION['last_mid_template'] = $tpl;
 
 			// Enable Template Zoom
