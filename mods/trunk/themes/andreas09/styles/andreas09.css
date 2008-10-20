@@ -805,7 +805,7 @@ table.admin tr td div#page-bar {}
 	border-bottom: 1px solid #696969;
 	vertical-align: top}
 
-td {}
+td {vertical-align: top}
 /* IE */ * html td {font-size: 11px}
 th {}
 

@@ -1711,14 +1711,14 @@ div.imgaldescr {margin: 10px}
 
 /* Check next 4 ?? */
 div.gallerypath, div.gallerypath a {
-	color: #6996C3;
-	font-style: italic;
+	color: #3e9722;
+	font-style: normal;
 	font-weight: normal;
 	margin-left: 3px;
 	text-decoration: none}
 
 div.gallerypath a:hover {
-	color: #3e9722;
+	color: #e58c24;
 	text-decoration: underline}
 
 .fgalexplorer {border: 1px solid #e431d0}

@@ -201,8 +201,8 @@ ul {
 /** off-screen **/
 
 ul.jumplinks {
-	font-size : 0.8em;
-	list-style-type : none}
+	font-size: 0.8em;
+	list-style-type: none}
 
 ul.jumplinks,
 .jumplinks {
@@ -968,12 +968,12 @@ a.forumnameread { color: #002bb8}
 
 /** Tabs **/
 .tabs {
-	border-bottom: solid 1px darkgray !important;
+	border-bottom: solid 1px #a9a9a9 !important;
 	margin-top: 10px !important;
 	padding: 0 !important}
 
 .tabactive {
-	border: solid 1px darkgray !important;
+	border: solid 1px #a9a9a9 !important;
 	border-bottom: none !important;
 	border-top-width: 2px !important;
 	position: relative; top: -2px}
@@ -1028,7 +1028,7 @@ a.forumnameread { color: #002bb8}
 .tabcontent table td {padding: 5px}
 
 form fieldset.tabcontent {
-	/*border: 1px solid darkgray;
+	/*border: 1px solid #a9a9a9;
 	border-top: none !important*/}
 
 form.admin .tabs {
@@ -1196,7 +1196,7 @@ div.description {
 .wikitext ol {}
 
 table.wikitable {
-	border: 1px solid #A9A9A9;
+	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
  
 td.wikicell {
@@ -1218,7 +1218,7 @@ div.cachedpage {}
 
 #wikihelp-tab table,
 #wikihelp-tab table td {
-	border: solid 1px dimgray;
+	border: solid 1px #696969;
 	border-collapse: collapse}
 
 #wikihelp-tab table td {padding: 2px}
@@ -1379,9 +1379,9 @@ ul.toc {
 ul.toc * {border: none}
 
 /* Wiki diff styles */
-.diff td {border: 1px solid dimgray}
-.diff div {border-top: 1px solid dimgray}
-.diffheader {background: dimgray; font-weight: bold}
+.diff td {border: 1px solid #696969}
+.diff div {border-top: 1px solid #696969}
+.diffheader {background: #696969; font-weight: bold}
 .diffadded {background: #CCFFCC}
 .diffdeleted {background: #FFCCCC}
 .diffinldel {background: #FFCCCC; text-decoration: line-through}
@@ -1831,7 +1831,7 @@ div.freetagObjectType {
 
 table.galtable {
 	border-collapse: collapse;
-	border: 1px solid dimgray;
+	border: 1px solid #696969;
 	width: 100%}
 	
 .galtable a.linkmenu {background: none}
@@ -1891,18 +1891,6 @@ div.showimage {
 div.imgaldescr {margin: 10px}
 .sorttitle {margin-left: 10px}
 
-/* Check next 4 ?? */
-div.gallerypath, div.gallerypath a {
-	color: darkcyan;
-	font-style: italic;
-	font-weight: normal;
-	margin-left: 3px;
-	text-decoration: none}
-
-div.gallerypath a:hover {
-	color: black;
-	text-decoration: underline}
-	
 /***** File Galleries *****/
 
 div.thumbnailcontener {}
@@ -1928,7 +1916,7 @@ div.thumbdescription span.thumbinfoname {}
 a.namealias {}
 div.gallerypath, div.gallerypath a {}
 div.gallerypath a:hover {}
-.fgalexplorer {border: 1px solid dimgray}
+.fgalexplorer {border: 1px solid #696969}
 
 .fgallisting table td {
 	padding-left: 2px;
@@ -2052,8 +2040,8 @@ Caltrack a:visited {color: #00BD02}
 
 .opaque {
 	background: #fff;
-   border-left: 1px solid #A9A9A9;
-  	border-top: 1px solid #A9A9A9;
+   border-left: 1px solid #a9a9a9;
+  	border-top: 1px solid #a9a9a9;
 	border-right: 1px solid #696969;
 	border-bottom: 1px solid #696969}
 
@@ -2079,7 +2067,7 @@ Caltrack a:visited {color: #00BD02}
 .changedate {}
 .date {}
 
-.calinput {background: darkgray}
+.calinput {background: #a9a9a9}
 .calfocuson + .calcontent { background: #F5F5F5}
 
 .days {
@@ -2093,14 +2081,14 @@ Caltrack a:visited {color: #00BD02}
 
 .addevent {padding: 0 5px; float: right}
 * html .addevent {padding: 0}
-.calodd, .caleven { border: 1px solid darkgray}
+.calodd, .caleven { border: 1px solid #a9a9a9}
 .calodd {background: gainsboro}
 * html .calodd {padding: 0}
 .caleven {background: #ececec}
 * html .caleven {padding: 0}
-.caldark {background: darkgray}
+.caldark {background: #a9a9a9}
 * html .caldark {padding: 0}
-.caldark .calfocus {background: darkgray}
+.caldark .calfocus {background: #a9a9a9}
 .daterow {}
 .daterow:hover {}
 
@@ -2165,7 +2153,7 @@ textarea.tshoutbox{
 /***** Directory *****/
 
 div.dircategs {
-	border: 1px solid dimgray;
+	border: 1px solid #696969;
 	padding: 5px}
 
 .dirlink {}
@@ -2260,7 +2248,7 @@ table.default tfoot td {
 	color: #D8D8D8}
 
 table.default td {
-	border: solid 1px #A9A9A9;
+	border: solid 1px #a9a9a9;
 	background: black}
 
 /***** 'Advanced feature' *****/
@@ -2268,7 +2256,7 @@ table.default td {
 .advanced {
   margin: 20px;
   padding: 5px;
-  border: 1px solid #A9A9A9;
+  border: 1px solid #a9a9a9;
   background: black;
   color: #D8D8D8}
 

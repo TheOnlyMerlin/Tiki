@@ -1609,24 +1609,6 @@ div.showimage {
 div.imgaldescr {margin: 10px}
 .sorttitle {margin-left: 10px}
 
-/* Check next 4 ?? */
-div.gallerypath, div.gallerypath a {
-	color: #6996C3;
-	font-style: italic;
-	font-weight: normal;
-	margin-left: 3px;
-	text-decoration: none}
-
-div.gallerypath a:hover {
-	color: black;
-	text-decoration: underline}
-
-.fgalexplorer {border: 1px solid #8CACBB}
-
-.fgallisting table td {
-	padding-left: 2px;
-	padding-right: 2px}
-
 /***** File Galleries *****/
 
 div.thumbnailcontener {}
@@ -1652,8 +1634,11 @@ div.thumbdescription span.thumbinfoname {}
 a.namealias {}
 div.gallerypath, div.gallerypath a {}
 div.gallerypath a:hover {}
-.fgalexplorer {}
-.fgallisting table td {}
+.fgalexplorer {border: 1px solid #f06ea9}
+
+.fgallisting table td {
+	padding-left: 2px;
+	padding-right: 2px}
 
 /***** Trackers *****/
 
