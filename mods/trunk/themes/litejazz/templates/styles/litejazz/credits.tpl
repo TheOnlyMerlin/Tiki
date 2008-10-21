@@ -1,1 +1,1 @@
- | <a href="http://zukakakina.com" title="Adapted by Gary Cunningham-Lee aka chibaguy">{tr}Theme{/tr}</a>: <a href="http://www.roopletheme" Title="{tr}Design by{/tr} Roopletheme">LiteJazz</a>
+ | <a href="http://zukakakina.com" title="Adapted by Gary Cunningham-Lee aka chibaguy">{tr}Theme{/tr}</a>: <a href="http://www.roopletheme" title="{tr}Design by{/tr} Roopletheme">LiteJazz</a>
