@@ -688,7 +688,7 @@ div#attzoneopen, div#comzoneopen {display: block; margin-top: 10px}
 div#edithelpzone {display: none}
 #edithelpzone code {font-size: 1.2em}
 #rules-copy-panel {display: none}
-.clear, #clear {clear: both; height: 1px}
+.clear, #clear {clear: both}
 .clearfix:after {content: ".";display: block;height: 0;clear: both;visibility: hidden}
 /* IE */ * html .clearfix {height: 1%}
 #overdiv table {width: auto !important}
