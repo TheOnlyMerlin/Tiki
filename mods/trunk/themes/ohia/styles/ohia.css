@@ -8,12 +8,12 @@
  @import "lite/lite.css"; /* Here we import lite/lite.css as the base. */
 
 /***** XHTML Elements ******/
-html { background: #990003}
+html {}
 
 body {
 	text-align: center;
 	font: 67%/1.4em Verdana, Geneva, Arial, Helvetica, sans-serif;
-	background: #d10000 url(ohia/body.jpg) repeat-x}
+	background: #d10000 url(ohia/body.png) repeat-x}
 
 html>body {font-size: 72% !important}
 * html body {font-size: 11px !important }
@@ -209,7 +209,7 @@ ul.jumplinks a:active {
 #footer {
 	text-align: center;
 	font-size: .9em;
-	background: #d10000 url(ohia/body.jpg) repeat-x;
+	background: #d10000 url(ohia/body.png) 0 100px;
 	min-height: 90px;
 	color: #f4f4f4;
 	position: relative}
@@ -1879,7 +1879,7 @@ div.gallerypath a:hover {}
 .changedate {}
 .date {}
 .calnavigation {border: 1px solid #4c4c4c}
-.calnavigation a:hover {background: url(ohia/body.jpg)}
+.calnavigation a:hover {background: url(ohia/body.png)}
 .calinput {background: #000000}
 
 span#disp_trig {
