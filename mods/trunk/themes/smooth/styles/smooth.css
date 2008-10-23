@@ -111,6 +111,7 @@ button:hover,
 input[type=submit]:hover,
 .button input:hover {
 	background:#7FE63C url(smooth/img05.gif) repeat-x 0 0;
+	color: #E58C24;
 	cursor: pointer}
 
 * html .findtable input {font-size: 1em}
@@ -189,7 +190,7 @@ ul.jumplinks a:active {
 	color:  #666666;
 	border-top: 1px solid #FFFFFF;
 	background: #fcf8ff url(smooth/img08.jpg) repeat-x;
-	background-position: 0 40px;
+	/*background-position: 0 40px;*/
 	margin: 0 15px;}
 
 #c1c2 #wrapper .marginleft {margin-left: 250px}
@@ -305,10 +306,15 @@ input[id="sl-login-pass"] {
 	border: none;
 	color: #FFFFFF;
 	font-weight: bold;}
-#sitesearchbar input.wikiaction:hover {background:#7FE63C url(smooth/img05.gif) repeat-x 0 0;}
+
+#sitesearchbar input.wikiaction:hover {
+	background:#7FE63C url(smooth/img05.gif) repeat-x 0 0;
+	color: #E58C24}
+
 #sitelocbar {float: left}
 
 div#customcode {}
+#topbar_custom_code {  }
 
 /* #header text selectors, if needed */
 
@@ -1003,16 +1009,25 @@ table.admin div#content1 div.tabcontent div.cbox {background: transparent}
 /*** Feature-specific selectors ***/
 
 /***** Wiki *****/
+body.tiki_wiki #c1c2 #wrapper #col1 > .content {
+	background: none;
+	border-top: 0}
 
-h1 a.pagetitle,
-h1 a.pagetitle:visited,
-h1 a.pagetitle:hover {
+h1.pagetitle a,
+h1.pagetitle a:visited,
+h1.pagetitle a:hover,
+a.pagetitle,
+a.pagetitle:visited,
+a.pagetitle:hover {
 	color: #fff;
 	text-decoration: none}
 	
-#tiki-center h1 { margin-top: 0 }
+body.tiki_wiki #tiki-center h1 {
+	margin-top: 0;
+	margin-left: -1em;
+	margin-right: -1em }
 
-.wikitopline {}
+.wikitopline {background: inherit}
 .wikitopline .content {
 	background-image: none !important;
 	background: transparent !important;
@@ -1034,12 +1049,16 @@ div.description {
 	font-size: small}
 
 .categpath {}
-.wikitext {padding: 0 1em 1em 1em}
+.wikitext {
+	padding: 0 1em 1em 1em;
+	background:#FCF8FF url(smooth/img08.jpg) repeat-x scroll 0 0;
+	border-top:1px solid #FFFFFF;
+	color:#666666}
 
-.wikitext h1, 
 .wikitext h2, 
 .wikitext h3, 
-.wikitext h4 {}
+.wikitext h4,
+.wikitext h5 {}
 
 .titlebar {
 	padding: 0.1em;
@@ -1168,7 +1187,7 @@ table.wikiplugin-split {border: none}
 
 /** Wiki tocs **/
 div.tocnav {
-	background: #EBEBEB;
+	border: 1px dotted #BD53FF;
 	padding: 3px;
 	margin-bottom: 4px;
 	clear: both}
@@ -1916,8 +1935,10 @@ div.gallerypath a:hover {}
 .caldark {background: #a4ed75}
 * html .caldark {padding: 0}
 .caldark .calfocus {background: #a4ed75}
-.calfocus, .calfocuson {border-bottom: 0}
+.calnavigation a:hover {background: #bd53ff}
+#caltable, #calscreen table.normal { font-size: 1em }
 
+#caltable td {padding: 0}
 .daterow {}
 .daterow:hover {}
 
@@ -2068,6 +2089,32 @@ div#ajaxLoading {
 	line-height: 1em !important;
 	white-space: normal !important;
 	padding: 5px 0 4px 8px}
+	
+/* MyTiki Preferences Ajax */
+
+
+.tab-wrapper {
+	border: 1px solid #82e641;
+	padding: 0}
+
+.tab-menu  {
+	clear: both;
+	line-height: 17px;
+	list-style-image: none;
+	list-style-position: outside;
+	list-style-type: none;
+	padding: 2px 0;
+	margin-bottom: 6px;
+	margin-top: 2px;
+	width: 100%}
+
+.tab-menu li {
+	display: inline;
+	margin: 0 2px;
+	width: 200px;
+	padding-right: 1.5em}
+
+.tab-menu li img {vertical-align: middle}
 
 /***** TikiSheet Default Style *****/
 

@@ -15,12 +15,12 @@
 			{include file="tiki-site_header.tpl"}
 		</div>
 	{/if}
-	{if $prefs.feature_siteidentity eq 'y' and $prefs.feature_topbar_custom_code}
+</div>
+{if $prefs.feature_siteidentity eq 'y' and $prefs.feature_topbar_custom_code}
 	<div class="clearfix" id="topbar_custom_code">
 		{eval var=$prefs.feature_topbar_custom_code}
 	</div>
-	{/if}
-</div>
+{/if}
 {/if}
 <div class="clearfix" id="middle">
 	<div class="clearfix {if $prefs.feature_fullscreen != 'n' and $smarty.session.fullscreen != 'n'}fullscreen{/if}{if $prefs.feature_fullscreen != 'y' and $smarty.session.fullscreen !='n'}nofullscreen{/if}" id="c1c2">
