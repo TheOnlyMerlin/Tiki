@@ -139,7 +139,7 @@ ul.jumplinks a:active {
 	position: absolute;
 	top: 9010px;
 	left: 9010px;
-	background: mistyrose;
+	background: #ffe4e1;
 	color: #fd0006;
 	padding: 5px;
 	font-weight: bold;
@@ -818,11 +818,7 @@ table.email {}
 table.email td.body {}
 table.email td.heading {}
 table.email td.closeButton {}
-
 .button {}
-
-table.findtable {}
-.findtable td { }
 
 tr.odd {background: #030511}
 tr.odd:hover {}

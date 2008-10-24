@@ -149,7 +149,7 @@ ul.jumplinks a:active {
 	position: absolute;
 	top: 9010px;
 	left: 9010px;
-	background: mistyrose;
+	background: #ffe4e1;
 	color: #666;
 	padding: 5px;
 	font-weight: bold;
@@ -823,23 +823,18 @@ table.email {}
 table.email td.body {}
 table.email td.heading {}
 table.email td.closeButton {}
-
 .button {}
-
-table.findtable {}
-.findtable td { }
-
-tr.odd {background: #fff url(smooth/img06.gif) repeat-x /*a quamarine*/}
+tr.odd {background: #fff url(smooth/img06.gif) repeat-x}
 tr.odd:hover {}
 tr.even {}
 tr.even:hover {}
 
 td.odd {
-	background: #fff url(smooth/img06.gif) repeat-x /*a quamarine*/;
+	background: #fff url(smooth/img06.gif) repeat-x;
 	border-right: 1px solid #e431d0}
 
 td.even {
-	background: #fcf8ff url(smooth/img08.jpg) repeat-x /*l avender*/;
+	background: #fcf8ff url(smooth/img08.jpg) repeat-x;
 	border-right: 1px solid #e431d0}
 
 tr.even td.even,
@@ -1938,9 +1933,9 @@ div.gallerypath a:hover {}
 
 * html .addevent {padding: 0}
 .calodd, .caleven { border: 1px solid #bd53ff}
-.calodd {background: #fff url(smooth/img06.gif) repeat-x /*a quamarine*/}
+.calodd {background: #fff url(smooth/img06.gif) repeat-x}
 * html .calodd {padding: 0}
-.caleven {background: #fcf8ff url(smooth/img08.jpg) repeat-x /*l avender*/}
+.caleven {background: #fcf8ff url(smooth/img08.jpg) repeat-x}
 * html .caleven {padding: 0}
 .caldark {background: #a4ed75}
 * html .caldark {padding: 0}

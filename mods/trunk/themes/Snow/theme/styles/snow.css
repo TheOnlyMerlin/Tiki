@@ -891,11 +891,7 @@ table.email {}
 table.email td.body {}
 table.email td.heading {}
 table.email td.closeButton {}
-
 .button {}
-
-table.findtable {}
-.findtable td { }
 
 td.odd,
 tr.odd {

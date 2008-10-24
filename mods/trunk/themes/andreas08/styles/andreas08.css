@@ -790,8 +790,6 @@ form.admin legend.heading a span {}
 form.admin legend.heading a:hover span {}
 div.heading {}
 .button {}
-table.findtable {}
-.findtable td { }
 td.form {padding: 0.2em}
 
 tr.odd,
