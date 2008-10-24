@@ -673,6 +673,14 @@ div#botbar_custom_code {
 #botbar_custom_code #block_center {}
 #botbar_custom_code #block_right {}
 
+div.findtable {margin-bottom: 10px}
+label.findtitle {} /* "Find" */
+input#findwhat {} /* text input */
+div.findtitle {} /* This and next are one div with two classes contain the input submit which has no . or # . */
+div.findsubmit {display: inline}
+* html .findtable input {
+	font-size: 1em}
+
 /** Modules **/
 .box-shadow {}
 

@@ -613,6 +613,14 @@ a.tikihelp:hover {
 /** Admin pages **/
 /* overrides inline css */
 div.adminanchors {background: transparent !important}
+div.findtable {margin-bottom: 10px}
+label.findtitle {} /* "Find" */
+input#findwhat {} /* text input */
+div.findtitle {} /* This and next are one div with two classes contain the input submit which has no . or # . */
+div.findsubmit {display: inline}
+* html .findtable input {
+	font-size: 1em}
+
 /** Modules **/
 .box-shadow {}
 
