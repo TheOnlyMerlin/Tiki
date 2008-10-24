@@ -662,6 +662,8 @@ a.tikihelp:hover {
 div.adminanchors {
 	background: url(candiiclouds/banstars.gif) !important}
 
+/** Find form **/
+
 div.findtable {margin-bottom: 10px}
 label.findtitle {} /* "Find" */
 input#findwhat {} /* text input */

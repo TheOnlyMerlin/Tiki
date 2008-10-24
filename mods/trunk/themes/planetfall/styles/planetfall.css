@@ -820,6 +820,8 @@ a.tikihelp:hover {color: #224466}
 #rss img {vertical-align: middle}
 div.adminanchors {}
 
+/** Find form **/
+
 div.findtable {margin-bottom: 10px}
 label.findtitle {} /* "Find" */
 input#findwhat {} /* text input */

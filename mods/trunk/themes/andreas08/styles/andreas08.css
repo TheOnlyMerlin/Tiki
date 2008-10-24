@@ -622,6 +622,8 @@ a.tikihelp:hover {
 /* overrides inline css */
 div.adminanchors {}
 
+/** Find form **/
+
 div.findtable {margin-bottom: 10px}
 label.findtitle {} /* "Find" */
 input#findwhat {} /* text input */

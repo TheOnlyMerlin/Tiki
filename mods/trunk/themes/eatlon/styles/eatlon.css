@@ -651,6 +651,8 @@ a.tikihelp:hover {
 	cursor: help;
 	vertical-align: text-top}
 
+/** Find form **/
+
 div.findtable {margin-bottom: 10px}
 label.findtitle {} /* "Find" */
 input#findwhat {} /* text input */

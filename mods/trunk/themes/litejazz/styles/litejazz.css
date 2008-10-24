@@ -673,6 +673,8 @@ div#botbar_custom_code {
 #botbar_custom_code #block_center {}
 #botbar_custom_code #block_right {}
 
+/** Find form **/
+
 div.findtable {margin-bottom: 10px}
 label.findtitle {} /* "Find" */
 input#findwhat {} /* text input */

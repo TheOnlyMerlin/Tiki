@@ -690,6 +690,8 @@ span.back_to_top {
 	float: right;
 	margin-top: 3px}
 
+/** Find form **/
+
 div.findtable {margin-bottom: 10px}
 label.findtitle {} /* "Find" */
 input#findwhat {} /* text input */

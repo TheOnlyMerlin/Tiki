@@ -658,6 +658,8 @@ a.tikihelp:hover {
 /* overrides inline css */
 div.adminanchors {background: url(andreas09/bodybg.jpg) repeat-x !important}
 
+/** Find form **/
+
 div.findtable {margin-bottom: 10px}
 label.findtitle {} /* "Find" */
 input#findwhat {} /* text input */
