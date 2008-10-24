@@ -45,8 +45,6 @@ h1 {font-size: 1.7em}
 
 h1 {
 	font-size: 1.8em;
-	background: url(snow/pagetitle-bg.jpg) repeat-x;
-	width: 100%;
 	min-height: 35px;
 	margin-top: 0;
 	margin-bottom: 0}
@@ -243,7 +241,7 @@ body.fullscreen #col1 {
 #c1c2 #wrapper #col1.marginright {
 	margin-right: 230px}
 
-#c1c2	#wrapper	#col1>div.content {
+#c1c2	#wrapper	#col1 > .content {
 	background: url(snow/pagetitle-bg.jpg) repeat-x;
 	font-size: 1.1em}
 
@@ -1114,20 +1112,35 @@ table.admin div#content1 div.tabcontent div.cbox {background-color: transparent}
 
 /***** Wiki *****/
 
-h1 a.pagetitle {
+body.tiki_wiki #c1c2 #wrapper #col1 > .content {
+	background: none;
+	border-top: 0}
+	
+body.tiki_wiki h1.pagetitle {margin-top: -.25em}
+
+h1.pagetitle a,
+h1.pagetitle a:visited,
+h1.pagetitle a:hover,
+a.pagetitle,
+a.pagetitle:visited,
+a.pagetitle:hover,
+h1 a.crumblink:visited,
+h1 a.crumblink,
+h1 a.crumblink:hover {
 	display: block;
 	background: url(snow/pagetitle-bullet.gif) no-repeat;
 	background-position: 4px 4px;
 	color: #714952;
 	font-size: .7em;
 	text-decoration: none;
-	padding-top: 6px;
+	padding-top: 7px;
 	padding-bottom: 8px;
 	padding-left: 35px;
-	height: 35px;
+	min-height: 35px;
 	letter-spacing: normal}
 	
-* html h1 a.pagetitle {margin-top: 6px}
+* html h1 a.pagetitle,
+* html h1 a, {margin-top: 6px}
 
 div.wikitopline {
 	display: block;
@@ -1155,6 +1168,7 @@ div.wikitopline {
 .categpath {}
 
 .wikitext {
+	background: url(snow/pagetitle-bg.jpg) repeat-x;
 	line-height: 1.5em;
 	padding: .5em}
 
