@@ -1,0 +1,37 @@
+contributor:
+$Author$
+
+revision:
+Subversion $Revision$ - Compatible with TikiWiki 2
+
+lastmodif:
+$Date$
+
+files:
+themes/twist/styles/twist.css styles/twist.css
+themes/twist/styles/twist/background.gif styles/twist/background.gif
+themes/twist/styles/twist/bullet.gif styles/twist/bullet.gif
+themes/twist/styles/twist/header.jpg styles/twist/header.jpg
+themes/twist/styles/twist/index.php styles/twist/index.php
+themes/twist/templates/styles/twist/credits.tpl templates/styles/twist/credits.tpl
+themes/twist/templates/styles/twist/header.tpl templates/styles/twist/header.tpl
+themes/twist/templates/styles/twist/index.php templates/styles/twist/index.php
+themes/twist/templates/styles/twist/tiki.tpl templates/styles/twist/tiki.tpl
+themes/twist/templates/styles/twist/tiki-bot_bar.tpl templates/styles/twist/tiki-bot_bar.tpl
+themes/twist/templates/styles/twist/tiki-browse_image.tpl templates/styles/twist/tiki-browse_image.tpl
+themes/twist/templates/styles/twist/tiki-read_article.tpl templates/styles/twist/tiki-read_article.tpl
+themes/twist/templates/styles/twist/tiki-site_header.tpl templates/styles/twist/tiki-site_header.tpl
+themes/twist/templates/styles/twist/tiki-top_bar.tpl templates/styles/twist/tiki-top_bar.tpl
+
+author:
+Gary Griffin (gg)
+
+licence:
+GNU/LGPL
+
+Description: 
+This is an original theme for TikiWiki CMS/Groupware (http://tikiwiki.org) to replicate the visual appearance of the GPL Monobook theme for Mediawiki. This theme uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss).
+
+Changelog:
+2 update for TikiWiki 2
+1 initial package (May 2, 2006)
