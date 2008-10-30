@@ -13,7 +13,7 @@ updated For TikiWiki version 2.0 and committed to the Tiki Mods Subversion repos
 
 * templates/styles/twist/credits.tpl
 * templates/styles/twist/header.tpl
-* templates/styles/twist/index.tpl
+* templates/styles/twist/index.php
 * templates/styles/twist/tiki.tpl
 * templates/styles/twist/tiki-bot_bar.tpl
 * templates/styles/twist/tiki-browse_image.tpl
@@ -26,6 +26,7 @@ updated For TikiWiki version 2.0 and committed to the Tiki Mods Subversion repos
 * styles/twist/background.gif
 * styles/twist/bullet.gif
 * styles/twist/header.jpg
+* styles/twist/index.php
  
 -=Documentation=-
 http://themes.tikiwiki.org/Twist
