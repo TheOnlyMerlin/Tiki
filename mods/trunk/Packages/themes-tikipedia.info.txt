@@ -2,7 +2,7 @@ contributor:
 $Author$
 
 revision:
-$Revision$
+SVN $Revision$ - for TikiWiki2
 
 lastmodif:
 $Date$
