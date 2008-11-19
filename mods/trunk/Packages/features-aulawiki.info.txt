@@ -2,10 +2,10 @@ contributor:
 $Author: jreyesg $
 
 revision:
-$Revision: 1.6 $
+$Revision: 1.6.1 $
 
 lastmodif:
-$Date: 2007-06-05 23:21:17 $
+$Date: 2008-11-18 22:47:22 $
 
 files:
 features/aulawiki/aulawiki-assignments_admin.php aulawiki-assignments_admin.php
@@ -192,13 +192,13 @@ features/aulawiki/modules/conf/modconf-workspaces_viewstructure.php modules/conf
 Configuration:
 
 author:
-jreyes (SF: jreyesg )
+jreyes (SF: jreyesg) 
 
 licence:
 GNU/LGPL
 
 Description: 
-AulaWiki offers team collaboration environments (workspaces), allowing you to manage sets of Tiki resources in an easy way. Patched to work on Tiki 1.10svn by sylvieg, rodrigosampaio and Xavi.
+AulaWiki offers team collaboration environments (workspaces), allowing you to manage sets of Tiki resources in an easy way. This version works on Tiki 2.X, if you want to install it on previous versions you need aulawiki 1.5. Patched to work on Tiki 1.10svn by sylvieg, rodrigosampaio and Xavi. Fixed a bug in the installation process by axold.
 
 Changelog:
 0.1 initial package
@@ -212,24 +212,24 @@ Changelog:
 
 sql-install:
 DROP TABLE IF EXISTS `tiki_workspace_role_wstype`;
-CREATE TABLE `tiki_workspace_role_wstype` (`roleName` varchar(250) NOT NULL default '0',`typeId` int(14) NOT NULL default '0',`wstypePermGroup` varchar(250) default NULL, PRIMARY KEY  (`typeId`,`roleName`)) TYPE=MyISAM;
 DROP TABLE IF EXISTS `tiki_workspace_roles`;
-CREATE TABLE `tiki_workspace_roles` (`name` varchar(100) NOT NULL default '',`uid` varchar(100) NOT NULL default '',`permgroup` varchar(250) default NULL,`description` varchar(250) NOT NULL default '', PRIMARY KEY  (`name`)) TYPE=MyISAM;
 DROP TABLE IF EXISTS `tiki_workspaces`;
-CREATE TABLE `tiki_workspaces` (`workspaceId` int(14) NOT NULL auto_increment, `code` varchar(100) NOT NULL default '',`name` varchar(100) NOT NULL default '',`description` varchar(250) default '',`created` int(14) default '0',`startDate` int(14) default '0',`endDate` int(14) default '0',`closed` char(1) NOT NULL default 'y',`type` int(14) NOT NULL default '0',`parentId` int(14) NOT NULL default '0',`uid` varchar(100) NOT NULL default '',`owner` varchar(100) default '',`isuserws` char(1) NOT NULL default '',`hide` char(1) NOT NULL default '',`categoryId` int(12) NOT NULL default '0', PRIMARY KEY  (`workspaceId`)) TYPE=MyISAM;
 DROP TABLE IF EXISTS `tiki_workspace_modules`;
-CREATE TABLE `tiki_workspace_modules` (`moduleId` int(10) NOT NULL auto_increment,`name` varchar(200) NOT NULL default '',`position` char(1) default NULL,`ord` int(4) default NULL,`zoneId` int(11) NOT NULL default '0',`title` varchar(255) default NULL,`cache_time` int(14) default NULL,`rows` int(4) default NULL,`params` text,`groups` text,`style_data` varchar(150) default NULL,`style_title` varchar(150) default NULL, `uid` varchar(100) NOT NULL default '', PRIMARY KEY  (`moduleId`)) TYPE=MyISAM;
 DROP TABLE IF EXISTS `tiki_workspace_types`;
-CREATE TABLE `tiki_workspace_types` (`id` int(14) NOT NULL auto_increment,`code` varchar(100) NOT NULL default '',`name` varchar(100) NOT NULL default '',`description` varchar(100) NOT NULL default '',`uid` varchar(100) NOT NULL default '',`menuid` int(8) NOT NULL default '0',`resources` text NOT NULL,`userwstype` int(14) NOT NULL default '0',`hide` char(1) NOT NULL default '',`active` char(1) NOT NULL default '', PRIMARY KEY  (`id`)) TYPE=MyISAM; 
 DROP TABLE IF EXISTS `tiki_workspace_zones`;
-CREATE TABLE tiki_workspace_zones (`zoneId` int(11) NOT NULL auto_increment,`name` varchar(100) NOT NULL default '',`description` varchar(100) NOT NULL default '',`workspaceId` int(14) NOT NULL,`type` varchar(100) NOT NULL default '',`ord` int(4) NOT NULL default '0',`uid` varchar(100) NOT NULL default '', PRIMARY KEY  (`zoneId`)) TYPE=MyISAM;
 DROP TABLE IF EXISTS `aulawiki_assignment`;
-CREATE TABLE `aulawiki_assignment` (`assignmentId` int(14) NOT NULL auto_increment,`workspaceId` int(14) NOT NULL default '0',`periodId` int(14) NOT NULL default '0',`gradeWeight` int(5) NOT NULL default '0',`name` varchar(150) NOT NULL default '',`description` varchar(250) NOT NULL default '',`wikipage` varchar(100) NOT NULL default '',`createdby` varchar(100) NOT NULL default '',`creationDate` int(14) NOT NULL default '0',`startDate` int(14) NOT NULL default '0',`uid` varchar(100) NOT NULL default '',`type` int(11) NOT NULL default '0',`endDate` int(14) NOT NULL default '0', PRIMARY KEY  (`assignmentId`)) TYPE=MyISAM;
 DROP TABLE IF EXISTS `aulawiki_gradebook`;
-CREATE TABLE `aulawiki_gradebook` (`assignmentId` int(14) NOT NULL default '0',`userId` varchar(100) NOT NULL default '',`comment` varchar(250) NOT NULL default '',`grade` int(4) NOT NULL default '0') TYPE=MyISAM;
 DROP TABLE IF EXISTS `aulawiki_period`;
-CREATE TABLE `aulawiki_period` (`periodId` int(5) NOT NULL auto_increment,`periodTypeId` int(5) default '0',`name` varchar(100) NOT NULL default '',`description` varchar(100) default '',`startDate` int(11) NOT NULL default '0',`endDate` int(14) NOT NULL default '0',`uid` varchar(100) NOT NULL default '',`gradeWeight` int(14) NOT NULL default '50', PRIMARY KEY  (`periodId`)) TYPE=MyISAM;
 DROP TABLE IF EXISTS `aulawiki_period_type`;
+CREATE TABLE `tiki_workspace_role_wstype` (`roleName` varchar(250) NOT NULL default '0',`typeId` int(14) NOT NULL default '0',`wstypePermGroup` varchar(250) default NULL, PRIMARY KEY  (`typeId`,`roleName`)) TYPE=MyISAM;
+CREATE TABLE `tiki_workspace_roles` (`name` varchar(100) NOT NULL default '',`uid` varchar(100) NOT NULL default '',`permgroup` varchar(250) default NULL,`description` varchar(250) NOT NULL default '', PRIMARY KEY  (`name`)) TYPE=MyISAM;
+CREATE TABLE `tiki_workspaces` (`workspaceId` int(14) NOT NULL auto_increment, `code` varchar(100) NOT NULL default '',`name` varchar(100) NOT NULL default '',`description` varchar(250) default '',`created` int(14) default '0',`startDate` int(14) default '0',`endDate` int(14) default '0',`closed` char(1) NOT NULL default 'y',`type` int(14) NOT NULL default '0',`parentId` int(14) NOT NULL default '0',`uid` varchar(100) NOT NULL default '',`owner` varchar(100) default '',`isuserws` char(1) NOT NULL default '',`hide` char(1) NOT NULL default '',`categoryId` int(12) NOT NULL default '0', PRIMARY KEY  (`workspaceId`)) TYPE=MyISAM;
+CREATE TABLE `tiki_workspace_modules` (`moduleId` int(10) NOT NULL auto_increment,`name` varchar(200) NOT NULL default '',`position` char(1) default NULL,`ord` int(4) default NULL,`zoneId` int(11) NOT NULL default '0',`title` varchar(255) default NULL,`cache_time` int(14) default NULL,`rows` int(4) default NULL,`params` text,`groups` text,`style_data` varchar(150) default NULL,`style_title` varchar(150) default NULL, `uid` varchar(100) NOT NULL default '', PRIMARY KEY  (`moduleId`)) TYPE=MyISAM;
+CREATE TABLE `tiki_workspace_types` (`id` int(14) NOT NULL auto_increment,`code` varchar(100) NOT NULL default '',`name` varchar(100) NOT NULL default '',`description` varchar(100) NOT NULL default '',`uid` varchar(100) NOT NULL default '',`menuid` int(8) NOT NULL default '0',`resources` text NOT NULL,`userwstype` int(14) NOT NULL default '0',`hide` char(1) NOT NULL default '',`active` char(1) NOT NULL default '', PRIMARY KEY  (`id`)) TYPE=MyISAM; 
+CREATE TABLE tiki_workspace_zones (`zoneId` int(11) NOT NULL auto_increment,`name` varchar(100) NOT NULL default '',`description` varchar(100) NOT NULL default '',`workspaceId` int(14) NOT NULL,`type` varchar(100) NOT NULL default '',`ord` int(4) NOT NULL default '0',`uid` varchar(100) NOT NULL default '', PRIMARY KEY  (`zoneId`)) TYPE=MyISAM;
+CREATE TABLE `aulawiki_assignment` (`assignmentId` int(14) NOT NULL auto_increment,`workspaceId` int(14) NOT NULL default '0',`periodId` int(14) NOT NULL default '0',`gradeWeight` int(5) NOT NULL default '0',`name` varchar(150) NOT NULL default '',`description` varchar(250) NOT NULL default '',`wikipage` varchar(100) NOT NULL default '',`createdby` varchar(100) NOT NULL default '',`creationDate` int(14) NOT NULL default '0',`startDate` int(14) NOT NULL default '0',`uid` varchar(100) NOT NULL default '',`type` int(11) NOT NULL default '0',`endDate` int(14) NOT NULL default '0', PRIMARY KEY  (`assignmentId`)) TYPE=MyISAM;
+CREATE TABLE `aulawiki_gradebook` (`assignmentId` int(14) NOT NULL default '0',`userId` varchar(100) NOT NULL default '',`comment` varchar(250) NOT NULL default '',`grade` int(4) NOT NULL default '0') TYPE=MyISAM;
+CREATE TABLE `aulawiki_period` (`periodId` int(5) NOT NULL auto_increment,`periodTypeId` int(5) default '0',`name` varchar(100) NOT NULL default '',`description` varchar(100) default '',`startDate` int(11) NOT NULL default '0',`endDate` int(14) NOT NULL default '0',`uid` varchar(100) NOT NULL default '',`gradeWeight` int(14) NOT NULL default '50', PRIMARY KEY  (`periodId`)) TYPE=MyISAM;
 CREATE TABLE `aulawiki_period_type` (`periodTypeId` int(14) NOT NULL auto_increment,`name` varchar(100) NOT NULL default '',`description` varchar(250) NOT NULL default '', PRIMARY KEY  (`periodTypeId`)) TYPE=MyISAM;
 DELETE FROM tiki_menu_options WHERE url LIKE '%aulawiki%';
 DELETE FROM tiki_menus WHERE menuid=100 AND description LIKE '%AulaWiki%';
@@ -262,11 +262,11 @@ INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('
 INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('tiki_p_view_workspace','Can view a workspace','basic','workspace','');
 INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('tiki_p_admin_workspace','Can admin workspaces','admin','workspace','');
 INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('tiki_p_create_workspace_resour','Can create new workspace resources','editors','workspace','');
+INSERT INTO tiki_menus VALUES (100,'Workspace menu','Sample workspace menu','d', null);
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (42,'s','Workspaces','./tiki-workspaces_admin.php',1020,'','tiki_p_admin_workspace','');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (42,'o','Admin Workspaces','./tiki-workspaces_admin.php',1022,'','tiki_p_admin_workspace','');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (42,'o','Workspace Types','./tiki-workspaces_types.php',1024,'','tiki_p_admin_workspace','');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (42,'o','Admin Roles','./tiki-workspaces_roles.php',1026,'','tiki_p_admin_workspace','');
-INSERT INTO tiki_menus VALUES (100,'Workspace menu','Sample workspace menu','d');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (100,'o','Users/Groups','./tiki-workspaces_view_module.php?module=workspaces_user_groups',10,'','','');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (100,'o','Resources','./tiki-workspaces_view_module.php?module=workspaces_resources',52,'','','');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (100,'o','Blogs list','tiki-workspaces_view_module.php?module=workspaces_list_resources&type=blog',60,'','','');
