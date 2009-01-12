@@ -6,7 +6,7 @@
 *}
 <p class="pagetitle">{tr}Workspace Types Administration{/tr}</p>
 <form name="form1" method="post" action="tiki-workspaces_types.php">
-  <input name="id" type="hidden" id="id" value="{$wstype.id}"> 
+  <input name="wstypeId" type="hidden" id="wstypeId" value="{$wstype.wstypeId}"> 
   <table class="normal">
     <tr> 
       <td class="formcolor"><label for="code">{tr}Code{/tr}</label></td>
@@ -55,9 +55,9 @@
       <td class="formcolor">
       
       <select name="userws" id="userws">
-	      <option value="" {if $activeTypes[i].id eq ""}selected{/if}>Not allowed</option>
+	      <option value="" {if $activeTypes[i].wstypeId eq ""}selected{/if}>Not allowed</option>
 	      {section name=i loop=$activeTypes}
-	      	<option value="{$activeTypes[i].id}" {if $activeTypes[i].id eq $wstype.userwstype}selected{/if}>{$activeTypes[i].name}</option>
+	      	<option value="{$activeTypes[i].wstypeId}" {if $activeTypes[i].wstypeId eq $wstype.userwstype}selected{/if}>{$activeTypes[i].name}</option>
 	      {/section}
       </select>
 			{ws_help}A workspace can have a private subworkspace for each user of the main workspace. You can select the workspace type for that private zones.{/ws_help}
@@ -101,22 +101,22 @@
 {section name=i loop=$wstypes}
     {cycle values="odd,even" assign="parImpar"}
     <tr> 
-      <td class="{$parImpar}">{$wstypes[i].id}</td>
+      <td class="{$parImpar}">{$wstypes[i].wstypeId}</td>
       <td class="{$parImpar}">{$wstypes[i].code}</td>
       <td class="{$parImpar}">{$wstypes[i].name}</td>
       <td class="{$parImpar}">{$wstypes[i].active}</td>
-      <td class="{$parImpar}"> <a class="link" href="tiki-workspaces_types.php?edit={$wstypes[i].id}">
+      <td class="{$parImpar}"> <a class="link" href="tiki-workspaces_types.php?edit={$wstypes[i].wstypeId}">
            <img src='img/icons/edit.gif' border='0' alt='{tr}Edit{/tr}' title='{tr}Edit{/tr}' /></a></td>
-      <td class="{$parImpar}"><a class="link" href="tiki-workspaces_assigned_modules.php?wstypeId={$wstypes[i].id}&wsmodtype=workspace type">
+      <td class="{$parImpar}"><a class="link" href="tiki-workspaces_assigned_modules.php?wstypeId={$wstypes[i].wstypeId}&wsmodtype=workspace type">
       	   <img src='img/icons/mo.png' border='0' alt='Assigned modules' title='Assigned modules' /></a>
       </td>
-      <td class="{$parImpar}"><a class="link" href="tiki-workspaces_types_roles.php?wstypeId={$wstypes[i].id}">
+      <td class="{$parImpar}"><a class="link" href="tiki-workspaces_types_roles.php?wstypeId={$wstypes[i].wstypeId}">
       	   <img src='images/workspaces/edu_role.gif' border='0' alt='{tr}Workspace type roles{/tr}' title='{tr}Workspace type roles{/tr}' /></a>
       </td>
-      <td class="{$parImpar}"><a class="link" href="tiki-workspaces_types_resources.php?wstypeId={$wstypes[i].id}">
+      <td class="{$parImpar}"><a class="link" href="tiki-workspaces_types_resources.php?wstypeId={$wstypes[i].wstypeId}">
       	   <img src='img/icons/change.gif' border='0' alt='{tr}Workspace type resources{/tr}' title='{tr}Workspace type resources{/tr}' /></a>
       </td>
-      <td class="{$parImpar}"><a class="link" href="tiki-workspaces_types.php?delete={$wstypes[i].id}">
+      <td class="{$parImpar}"><a class="link" href="tiki-workspaces_types.php?delete={$wstypes[i].wstypeId}">
       	   <img src='img/icons2/delete.gif' border='0' alt='{tr}Delete{/tr}' title='{tr}Delete{/tr}' /></a>
       </td>
     </tr>

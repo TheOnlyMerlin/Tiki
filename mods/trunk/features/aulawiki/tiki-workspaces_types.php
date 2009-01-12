@@ -30,8 +30,10 @@ if (isset ($_REQUEST["send"])) {
 		$active = "n";
 	}
 
-	if (isset ($_REQUEST["id"]) && ($_REQUEST["id"] != "")) {
-		$wsTypesLib->update_workspace_type($_REQUEST["id"], $_REQUEST["code"], $_REQUEST["name"], $_REQUEST["desc"], $_REQUEST["menuid"], $active, $_REQUEST["userws"], $hide);
+# 	if (isset ($_REQUEST["id"]) && ($_REQUEST["id"] != "")) {
+# 		$wsTypesLib->update_workspace_type($_REQUEST["id"], $_REQUEST["code"], $_REQUEST["name"], $_REQUEST["desc"], $_REQUEST["menuid"], $active, $_REQUEST["userws"], $hide);
+ 	if (isset ($_REQUEST["wstypeId"]) && ($_REQUEST["wstypeId"] != "")) {
+ 		$wsTypesLib->update_workspace_type($_REQUEST["wstypeId"], $_REQUEST["code"], $_REQUEST["name"], $_REQUEST["desc"], $_REQUEST["menuid"], $active, $_REQUEST["userws"], $hide);
 	} else {
 		$wsTypesLib->add_workspace_type($_REQUEST["code"], $_REQUEST["name"], $_REQUEST["desc"], $_REQUEST["menuid"], $active, "", $_REQUEST["userws"], $hide);
 	}

@@ -570,7 +570,16 @@ class WorkspaceResourcesLib extends TikiDB {
 			return $filegal["objId"];
 		}
 
-		$galId = $filegallib->replace_file_gallery($galId, $name, $desc, "admin", 15, 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 2024);
+// patched by pingus - added to svn by xavi - ini
+ 		$fgal_info = array();
+                 $fgal_info['galleryId'] = $galId;
+                 $fgal_info['name'] = $name;
+                 $fgal_info['desc'] = $desc;
+                 $fgal_info['user'] = 'admin';
+                 $fgal_info['maxRows'] = 15;
+###############	$galId = $filegallib->replace_file_gallery($galId, $name, $desc, "admin", 15, 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 2024);
+                 $galId = $filegallib->replace_file_gallery($fgal_info);
+// patched by pingus - added to svn by xavi - end
 
 		//Categorizar galeria de ficheros
 		$categlib->uncategorize_object("file gallery", $galId);

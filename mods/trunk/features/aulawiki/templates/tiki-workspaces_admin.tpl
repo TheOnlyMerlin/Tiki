@@ -126,7 +126,7 @@
       <td class="formcolor">
 	      <select name="type" id="type">
 		      {section name=i loop=$typesAll}
-		      	<option value="{$typesAll[i].id}" {if $typesAll[i].id==$workspace.type}selected{/if}>{$typesAll[i].name}</option>
+ 		      	<option value="{$typesAll[i].wstypeId}" {if $typesAll[i].wstypeId==$workspace.type}selected{/if}>{$typesAll[i].name}</option>
 		      {/section}
 	      </select>
 				{ws_help}{tr}Workspace type{/tr}{/ws_help}

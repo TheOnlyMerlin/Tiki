@@ -87,7 +87,8 @@ class WorkspaceLib extends TikiDB {
 	}
 	
 	function list_active_workspaces() {
-		$query = "select tiki_workspaces.*,tiki_workspace_types.name as typename from tiki_workspaces,tiki_workspace_types where tiki_workspaces.type=tiki_workspace_types.id and tiki_workspaces.closed=? and tiki_workspaces.startDate<? and tiki_workspaces.endDate>?";
+# 		$query = "select tiki_workspaces.*,tiki_workspace_types.name as typename from tiki_workspaces,tiki_workspace_types where tiki_workspaces.type=tiki_workspace_types.id and tiki_workspaces.closed=? and tiki_workspaces.startDate<? and tiki_workspaces.endDate>?";
+ 		$query = "select tiki_workspaces.*,tiki_workspace_types.name as typename from tiki_workspaces,tiki_workspace_types where tiki_workspaces.type=tiki_workspace_types.wstypeId and tiki_workspaces.closed=? and tiki_workspaces.startDate<? and tiki_workspaces.endDate>?";
 		$result = $this->query($query, array ('n', date("U"), date("U")));
 		$ret = array ();
 		while ($res = $result->fetchRow()) {
@@ -531,10 +532,12 @@ class WorkspaceLib extends TikiDB {
 				$portfoliosws = $this->get_workspace_by_code("PORTFOLIOS");
 				if (!isset ($portfoliosws) || $portfoliosws == "") { // Create PORTFOLIOS workspace folder
 					$wstypeFolder = $wsTypesLib->get_workspace_type_by_code("FOLDER");
-					$wsuid = $this->create_workspace("PORTFOLIOS", "Portfolios folder", "", date("U"), date("U"), "n", 0, $wstypeFolder["id"], null, "admin", "n", $wstypeFolder["hide"]);
+# 					$wsuid = $this->create_workspace("PORTFOLIOS", "Portfolios folder", "", date("U"), date("U"), "n", 0, $wstypeFolder["id"], null, "admin", "n", $wstypeFolder["hide"]);
+ 					$wsuid = $this->create_workspace("PORTFOLIOS", "Portfolios folder", "", date("U"), date("U"), "n", 0, $wstypeFolder["wstypeId"], null, "admin", "n", $wstypeFolder["hide"]);
 					$portfoliosws = $this->get_workspace_by_uid($wsuid);
 				}
-				$wsuid = $this->create_workspace("PWS".$userws, $userws." portfolio", "", date("U"), date("U"), "n", $portfoliosws["workspaceId"], $wstype["id"], null, $userws, "n", $wstype["hide"]);
+# 				$wsuid = $this->create_workspace("PWS".$userws, $userws." portfolio", "", date("U"), date("U"), "n", $portfoliosws["workspaceId"], $wstype["id"], null, $userws, "n", $wstype["hide"]);
+ 				$wsuid = $this->create_workspace("PWS".$userws, $userws." portfolio", "", date("U"), date("U"), "n", $portfoliosws["workspaceId"], $wstype["wstypeId"], null, $userws, "n", $wstype["hide"]);
 				
 				$workspace = $this->get_workspace_by_uid($wsuid);
 				return $workspace;

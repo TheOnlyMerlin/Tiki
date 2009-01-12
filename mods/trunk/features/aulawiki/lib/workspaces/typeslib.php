@@ -65,7 +65,7 @@ class WorkspaceTypesLib extends TikiLib {
 	}
 
 	function get_workspace_type_by_id($id) {
-		$query = "select * from tiki_workspace_types where id=?";
+		$query = "select * from tiki_workspace_types where wstypeId=?";
 		$result = $this->db->query($query, array ($id));
 		$res = $result->fetchRow();
 		$roles = $this->get_workspace_type_roles($res["id"]);
@@ -87,7 +87,7 @@ class WorkspaceTypesLib extends TikiLib {
 		$this->del_workspace_type_roles($wstype["id"]);
 		/*global $userlib;
 		$userlib->remove_group("WSTYPEGRP".$wstype["code"]);*/
-		$query = "delete from tiki_workspace_types where id=?";
+		$query = "delete from tiki_workspace_types where wstypeId=?";
 		$result = $this->db->query($query, array ($id));
 	}
 
@@ -96,14 +96,14 @@ class WorkspaceTypesLib extends TikiLib {
 		/*$this->del_workspace_type_roles($id);
 		$this->add_workspace_type_roles($id, $roles, $code);
 */
-		$query = "update tiki_workspace_types set name=?,description=?,menuid=?,active=?,userwstype=?,hide=? where id=?";
+		$query = "update tiki_workspace_types set name=?,description=?,menuid=?,active=?,userwstype=?,hide=? where wstypeId=?";
 		$result = $this->db->query($query, array ($name, $desc, $menuid, $active, $userwstype, $hide,$id));
 		return true;
 	}
 
 	function update_workspace_type_resources($id, $resources) {
 
-		$query = "update tiki_workspace_types set resources=? where id=?";
+		$query = "update tiki_workspace_types set resources=? where wstypeId=?";
 		$result = $this->db->query($query, array ($resources, $id));
 		return true;
 	}

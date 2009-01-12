@@ -7,12 +7,12 @@
 <p class="pagetitle">{tr}Workspace Types Resources{/tr}</p>
 
 <form name="form1" method="post" action="tiki-workspaces_types_resources.php">
-  <input name="wstypeId" type="hidden" id="wstypeId" value="{$wstype.id}"> 
+  <input name="wstypeId" type="hidden" id="wstypeId" value="{$wstype.wstypeId}"> 
   <input name="resourceId" type="hidden" id="resourceId" value="{$resourceId}"> 
   <table class="normal">
     <tr> 
       <td class="formcolor"><label>{tr}Workspace type name{/tr}</label></td>
-      <td class="formcolor"><a href="tiki-workspaces_types.php?edit={$wstype.id}">({$wstype.code}) {$wstype.name}</a></td>
+      <td class="formcolor"><a href="tiki-workspaces_types.php?edit={$wstype.wstypeId}">({$wstype.code}) {$wstype.name}</a></td>
     </tr>
     <tr> 
       <td class="formcolor"><label for="name">{tr}Resource name{/tr}</label></td>
@@ -55,9 +55,9 @@
       <td class="{$parImpar}">{$wstype.resources[i].name}</td>
       <td class="{$parImpar}">{$wstype.resources[i].desc}</td>
       <td class="{$parImpar}">{$wstype.resources[i].type}</td>
-      <td class="{$parImpar}"> <a class="link" href="tiki-workspaces_types_resources.php?edit={$index}&wstypeId={$wstype.id}">
+      <td class="{$parImpar}"> <a class="link" href="tiki-workspaces_types_resources.php?edit={$index}&wstypeId={$wstype.wstypeId}">
            <img src='img/icons/edit.gif' border='0' alt='Editar' title='Editar' /></a></td>
-       <td class="{$parImpar}"><a class="link" href="tiki-workspaces_types_resources.php?delete={$index}&wstypeId={$wstype.id}">
+       <td class="{$parImpar}"><a class="link" href="tiki-workspaces_types_resources.php?delete={$index}&wstypeId={$wstype.wstypeId}">
       	   <img src='img/icons2/delete.gif' border='0' alt='Borrar' title='Borrar' /></a>
       </td>
     </tr>
