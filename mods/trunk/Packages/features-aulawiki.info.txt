@@ -101,6 +101,9 @@ features/aulawiki/lib/smarty_tiki/block.tiki_workspaces_module.php lib/smarty_ti
 features/aulawiki/lib/smarty_tiki/block.ws_help.php lib/smarty_tiki/block.ws_help.php
 features/aulawiki/lib/smarty_tiki/function.workspaces_menu.php lib/smarty_tiki/function.workspaces_menu.php
 features/aulawiki/styles/workspaces.css styles/workspaces.css
+features/aulawiki/styles/workspaces/index.php styles/workspaces/index.php
+features/aulawiki/styles/workspaces/options/index.php styles/workspaces/options/index.php
+features/aulawiki/styles/workspaces/options/wider_left_column.css styles/workspaces/options/wider_left_column.css
 features/aulawiki/templates/tiki-workspaces_blog.tpl templates/tiki-workspaces_blog.tpl
 features/aulawiki/templates/tiki-workspaces_objectpermissions.tpl templates/tiki-workspaces_objectpermissions.tpl
 features/aulawiki/templates/aulawiki-assignments_admin.tpl templates/aulawiki-assignments_admin.tpl

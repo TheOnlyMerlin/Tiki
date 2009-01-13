@@ -49,7 +49,7 @@ $wstype = $workspace["type"];
 $workspaceId = $workspace["workspaceId"];
 $wsmodtype= "workspace";
 if (!$wsmoduleslib->workspace_has_assigned_zones($workspaceId,$wsmodtype)) {
-	$workspaceId = $wstype["id"];
+	$workspaceId = $wstype["wstypeId"];
 	$wsmodtype= "workspace type";
 }
 

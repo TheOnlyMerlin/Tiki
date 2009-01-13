@@ -1,22 +1,4 @@
-@import "moreneat.css";
-
-body {
-  background-color: #E9ECEF;
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-  margin: 0px;
-  padding: 0px;
-  font-size : 10px;
-}
-
-TD#centercolumn {  
-  vertical-align: top;
-  width: 100%;
-}
-
-DIV#tiki-center{  
-  margin-top: 4px;
-  width: 100%;
-  }
+@import "thenews.css";
 
 .mini {
   font-size: 9px;
@@ -25,25 +7,7 @@ DIV#tiki-center{
 }
 
 div.box-title {
-  background-color: #C7D0D9;
-  border-bottom: 1px solid #8CACBB;
-  color: #225566;
-  text-align: center;
-  padding: 1px; 
-  font-weight : bold;
   background-image: url(../images/workspaces/degrada.gif);
-}
-div.box {  
-  background-color: white;
-  margin: 4px;
-  border: 1px solid #8CACBB; 
-  width : 174px;
-}
-div.box-title table {
-  color: #225566;
-  font-size: 10px;
-  font-weight : bold;   
-  width: 100%;
 }
 
 div.wsbox-data {
@@ -90,44 +54,11 @@ div.wsbox-title table {
   width: 100%;
 }
 
-input,textarea, select {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size : 10px;
-	text-indent : 2px;
-	border : 1px solid #000000;
-}
-textarea, select {
-	border : 1px solid #000000;
-	color : #225566;
-	margin : 1px;
-}	 
-input[type=text]{
-	border : 1px solid #000000;
-	color : #225566;
-	margin : 1px;
-	height : 12px;
-}
-
 input[type=submit]{
-	text-decoration: none;
-	height: 20px;
-	border: 1px solid #8CACBB;
-	border-bottom: 2px solid #8CACBB;
-	border-right: 2px solid #8CACBB;
-	background: #E7E9EA;
 	background-image: url(../images/workspaces/degrada2.gif);
   	cursor: pointer;
 }
 span.tabbut {
-	border-top: 1px solid #99bec6;
-	border-left: 1px solid #99bec6;
-	border-right: 1px solid #99bec6;
-	color: #225566;
-	margin-left:2px;
-	padding-left:2px;
-	padding-right: 2px;
-	background-color: #C7D0D9;
-	height:14px;
   	background-image: url(../images/workspaces/degrada3.gif);
 }
 
@@ -137,24 +68,6 @@ span.tabbut {
 	color: red;
 }
 
-div.tree
-{
-  text-align: left;
-  padding-left: 19px;
-  margin: 0px;
-}
-/* Root of tree (outer div) */
-div.tree#top
-{
-  border: 1px solid #8CACBB;
-  padding: 10px 1.5em 20px 1.5em;
-}
-div.treenode
-{
-  text-align: left;
-  padding-left: 0px;
-  margin: 0px;
-}
 /*Workspaces*/
 
 td.wsevent {
@@ -209,54 +122,11 @@ table.wscalevents {
 }
 
 
-div.printstructure {
-	background-color : #C7D0D9;
-	padding-bottom : 1px;
-	border: 1px solid #8CACBB;
-	overflow : hidden;
-	margin : 5px;
-	width : 100%;
-	font-size : 10px;
-}
-div.printpage {
-	background-color : white;
-	overflow : hidden;
-	margin : 3px;
-	width : 100%;
-	font-size : 10px;
-}
 li.estruct_index{
 	font-size : 10px;
 	list-style-image: url(../images/workspaces/page.gif)
 }
-div.page_head{
-	background-color: #EAEAEE;
-	border: 1px solid #C4C5DE;
-	margin : 2px;
-	width: 100%;
-}
-div.structure_tree{
-	background-color : white;
-	padding-bottom : 1px;
-	border: 1px solid #8CACBB;
-	overflow : hidden;
-	margin : 5px;
-	width : 100%;
-	font-size : 10px;
 
-}
-ol.estruct_index {
-	padding : 0px;
-	margin-top : 2px;
-	margin-bottom : 2px;
-	margin-left: 25px;
-}
-ul.estruct_index {
-	padding : 0px;
-	margin-top : 2px;
-	margin-bottom : 2px;
-	margin-left: 15px;
-}
 TD#workspace_column{
 
 }
@@ -305,23 +175,7 @@ div.myworkspaces{
 	margin-top : 5px;
 	width: 100%;
 }
-a.categtree {
-	text-decoration: none;
-	font-weight: normal;
-	font-size: 9px;
-	color : black;
-}
-a.categtreeActive {
-	text-decoration: none;
-	font-weight: bold;
-	font-size: 9px;
-	color : black;
-}
-div.treenode{
-	margin-bottom : 2px;
-	width: 100%;
 
-}
 div.workspace_desktop_box{
 	border-right: 1px solid #8CACBB;
 	border-bottom: 1px solid #8CACBB;
@@ -357,13 +211,7 @@ div.edubuttons{
 }
 
 a.edulinkbut {
-text-decoration: none;
-	height: 20px;
-	border: 1px solid #8CACBB;
-	border-bottom: 2px solid #8CACBB;
-	border-right: 2px solid #8CACBB;
-	background: #E7E9EA;
-}
+
 a.edulinkbut:hover{
 text-decoration: none;
 	height: 20px;
@@ -542,54 +390,6 @@ label{
 	margin : 2px;
 	font-size: 10px;
 }
-div.odd {
-	border-bottom: 1px solid #8CACBB;  
-	border-collapse: collapse;  
-	font-size: 10px; 
-	color : black; 
-	background-color: #F7F9FA; 
-	vertical-align: top; 
-	text-align: left;
-}
-div.odd:hover {
-	background-color: #FFF7E6;
-}
-div.even {
-	border-bottom: 1px solid #8CACBB; 
-	font-size: 10px; 
-	background-color: transparent; 
-	color : black; 
-	vertical-align: top; 
-	text-align: left;
-}
-div.even:hover {
-background-color: #FFF7E6;
-}
-
-div.oddcenter {
-	border-bottom: 1px solid #8CACBB;  
-	border-collapse: collapse;  
-	font-size: 10px; 
-	color : black; 
-	background-color: #F7F9FA; 
-	vertical-align: top; 
-	text-align: center;
-}
-div.oddcenter:hover {
-	background-color: #FFF7E6;
-}
-
-div.evencenter {
-	border-bottom: 1px solid #8CACBB; 
-	font-size: 10px; 
-	background-color: transparent; 
-	color : black; 
-	vertical-align: top; 
-	text-align: center;
-}
-div.evencenter:hover {
-background-color: #FFF7E6;
-}
 
 div.resourceSelect{
 	border-bottom: 1px solid #8CACBB; 
@@ -615,46 +415,11 @@ div.test1 {
 }
 
 div.activetabbut {
-	border-top: 1px solid #A0C1C9;
-	border-left: 1px solid #A0C1C9;
-	border-right: 1px solid #A0C1C9;
-	color: #225566;
-	margin-rigth:2px;
-	padding-left:4px;
-	padding-right: 5px;
-	padding-top: 2px;
-	background-color: #FFF;
-	height:21px;
-	float: left;
   	background-image: url(../images/workspaces/degrada2.gif);
 }
 
 div.noactivetabbut {
-	border-top: 1px solid lightgrey;
-	border-left: 1px solid lightgrey;
-	border-right: 1px solid lightgrey;
-	color: #225566;
-	margin-rigth:2px;
-	padding-left:4px;
-	padding-right: 5px;
-	padding-top: 2px;
-	background-color: #C7D0D9;
-	height:21px;
-	float: left;
   	background-image: url(../images/workspaces/degrada2gris.gif);
-}
-
-.activetablink {
-	color: #225566; 
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  font-size: 10px;   
-	text-decoration: none;
-	font-weight: bold;
-}
-.noactivetablink {
-	color: #B7B7B7; 
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  font-size: 10px;   
-	text-decoration: none;
-	font-weight: normal;
 }
 
 div.resourcelistHead {

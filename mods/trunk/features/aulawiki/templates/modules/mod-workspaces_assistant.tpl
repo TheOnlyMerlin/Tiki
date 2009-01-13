@@ -9,7 +9,7 @@
 {tr}First configuration steps{/tr}:<br />
 <ol class="estruct_index">
 <li><a class='link' href="./tiki-admin_modules.php">{tr}Assign{/tr} workspaces_my {tr}module{/tr} </a>{tr}to the users that you want to use AulaWiki workspaces{/tr}.</li>
-<li><a class='link' href="./tiki-admin.php?page=general">{tr}Change theme{/tr} </a>{tr}to workspaces.css{/tr}.</li>
+<li><a class='link' href="./tiki-admin.php?page=look">{tr}Change theme{/tr} </a>{tr}to workspaces.css{/tr}.</li>
 <li>{tr}Define the <a class='link' href="./tiki-workspaces_roles.php">workspace roles</a> and permission levels.{/tr}</li>
 <li>{tr}Define the <a class='link' href="./tiki-workspaces_types.php">workspace types</a> , use MenuID 100 or <a class='link' href="./tiki-admin_menus.php">define your own menu</a>. Assign <img src='img/icons/change.gif' border='0' alt='Workspace type resources' title='Workspace type resources' /> default resources and <img src='img/icons/mo.png' border='0' alt='Assigned modules' title='Assigned modules' /> desktop modules.{/tr}</li>
 <li><a class='link' href="./tiki-workspaces_admin.php">{tr}Create a workspace{/tr}</a> {tr}of the previosly defined type{/tr}.</li>
