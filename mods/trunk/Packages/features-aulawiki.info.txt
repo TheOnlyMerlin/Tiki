@@ -315,6 +315,7 @@ INSERT INTO tiki_workspace_role_wstype VALUES ('Teacher','5','');
 INSERT INTO tiki_workspace_role_wstype VALUES ('Student','5','');
 INSERT INTO tiki_workspace_role_wstype VALUES ('Registered','2','');
 INSERT INTO tiki_workspace_role_wstype VALUES ('Anonymous','2','');
+INSERT INTO tiki_modules (name,position,ord,cache_time,groups) VALUES ('workspaces_assistant','r',9,0,'a:2:{i:0;s:10:"Registered";i:1;s:9:"Anonymous";}');
 
 
 sql-remove:
