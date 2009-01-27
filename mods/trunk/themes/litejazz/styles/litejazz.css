@@ -109,11 +109,7 @@ select[name="theme"] {width: 165px}
 small {font-size: .9em}
 label {cursor: pointer}
 
-pre {
-	background-color: #eee;
-	padding: 0.75em 1.5em;
-	font-size: 12px;
-	border: 1px solid #ddd}
+pre {padding: 0.75em 1.5em}
 
 /***** Page Layout *****/
 
