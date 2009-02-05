@@ -667,8 +667,10 @@ div.findsubmit {display: inline}
 div.box {
 	overflow: hidden;
 	margin-bottom: 16px;
-	width: 160px;
 	display: block}
+	
+#leftcolumn .box,
+#rightcolumn .box {width: 160px}
 	
 .wikitext div.box { width: 96% }
 
@@ -1759,6 +1761,7 @@ Caltrack a:visited {color: #00BD02}
 	padding: 2px;
 	font-size: 1em}
 
+td.event {background: whitesmoke}
 .addevent {padding: 0 5px; float: right}
 * html .addevent {padding: 0}
 .calodd, .caleven { border: 1px solid darkgray}
