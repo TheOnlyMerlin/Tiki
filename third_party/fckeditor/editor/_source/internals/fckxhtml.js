@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
- * Copyright (C) 2003-2008 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2009 Frederico Caldeira Knabben
  *
  * == BEGIN LICENSE ==
  *
@@ -204,9 +204,16 @@ FCKXHtml._AppendNode = function( xmlNode, htmlNode )
 
 			// Ignore bogus BR nodes in the DOM.
 			if ( FCKBrowserInfo.IsGecko &&
-					htmlNode.nextSibling &&
 					( htmlNode.hasAttribute('_moz_editor_bogus_node') || htmlNode.getAttribute( 'type' ) == '_moz' ) )
-				return false ;
+			{
+				if ( htmlNode.nextSibling )
+					return false ;
+				else
+				{
+					htmlNode.removeAttribute( '_moz_editor_bogus_node' ) ;
+					htmlNode.removeAttribute( 'type' ) ;
+				}
+			}
 
 			// This is for elements that are instrumental to FCKeditor and
 			// must be removed from the final HTML.
@@ -289,7 +296,7 @@ FCKXHtml._AppendNode = function( xmlNode, htmlNode )
 // Append an item to the SpecialBlocks array and returns the tag to be used.
 FCKXHtml._AppendSpecialItem = function( item )
 {
-	return '___FCKsi___' + FCKXHtml.SpecialBlocks.AddItem( item ) ;
+	return '___FCKsi___' + ( FCKXHtml.SpecialBlocks.push( item ) - 1 ) ;
 }
 
 FCKXHtml._AppendEntity = function( xmlNode, entity )
