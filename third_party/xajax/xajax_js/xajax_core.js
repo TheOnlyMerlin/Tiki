@@ -99,7 +99,7 @@ xajax.tools._getFormValues=function(aFormValues,children,submitDisabledElements,
 xajax.tools._getFormValues(aFormValues,child.childNodes,submitDisabledElements,prefix);xajax.tools._getFormValue(aFormValues,child,submitDisabledElements,prefix);}
 }
 xajax.tools._getFormValue=function(aFormValues,child,submitDisabledElements,prefix){if(!child.name)
-return;if(child.disabled)
+return;if('PARAM'==child.tagName)return;if(child.disabled)
 if(true==child.disabled)
 if(false==submitDisabledElements)
 return;if(prefix!=child.name.substring(0,prefix.length))
