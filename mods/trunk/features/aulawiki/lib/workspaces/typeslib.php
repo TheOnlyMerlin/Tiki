@@ -59,7 +59,7 @@ class WorkspaceTypesLib extends TikiLib {
 		$query = "select * from tiki_workspace_types where uid=?";
 		$result = $this->db->query($query, array ($uid));
 		$res = $result->fetchRow();
-		$roles = $this->get_workspace_type_roles($res["id"]);
+		$roles = $this->get_workspace_type_roles($res["wstypeId"]);
 		$res["roles"] = $roles;
 		return $res;
 	}
@@ -68,7 +68,7 @@ class WorkspaceTypesLib extends TikiLib {
 		$query = "select * from tiki_workspace_types where wstypeId=?";
 		$result = $this->db->query($query, array ($id));
 		$res = $result->fetchRow();
-		$roles = $this->get_workspace_type_roles($res["id"]);
+		$roles = $this->get_workspace_type_roles($res["wstypeId"]);
 		$res["roles"] = $roles;
 		return $res;
 	}
@@ -77,7 +77,7 @@ class WorkspaceTypesLib extends TikiLib {
 		$query = "select * from tiki_workspace_types where code=?";
 		$result = $this->db->query($query, array ($code));
 		$res = $result->fetchRow();
-		$roles = $this->get_workspace_type_roles($res["id"]);
+		$roles = $this->get_workspace_type_roles($res["wstypeId"]);
 		$res["roles"] = $roles;
 		return $res;
 	}
