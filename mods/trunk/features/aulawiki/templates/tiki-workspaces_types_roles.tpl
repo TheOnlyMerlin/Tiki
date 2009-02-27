@@ -5,9 +5,9 @@
 @license http://www.gnu.org/copyleft/lgpl.html GNU/LGPL
 *}
 <p class="pagetitle">{tr}Workspace Type Roles{/tr}</p>
-<a href="tiki-workspaces_types.php?edit={$wstype.id}">({$wstype.code}) {$wstype.name}</a>
+<a href="tiki-workspaces_types.php?edit={$wstype.wstypeId}">({$wstype.code}) {$wstype.name}</a>
 <form name="form1" method="post" action="tiki-workspaces_types_roles.php">
-  <input name="wstypeId" type="hidden" id="wstypeId" value="{$wstype.id}"> 
+  <input name="wstypeId" type="hidden" id="wstypeId" value="{$wstype.wstypeId}"> 
   <table class="normal">
     <tr> 
       <td class="formcolor"><label for="roleName">{tr}Role{/tr}</label></td>
@@ -61,7 +61,7 @@
       </td>
       <td class="{$parImpar}"> <a class="link" href="tiki-assignpermission.php?group={if $role.wstypePermGroup==""}{$role.permgroup}{else}{$role.wstypePermGroup}{/if}">
            <img src='images/workspaces/edu_group.gif' border='0' alt='{tr}Premissions{/tr}' title='{tr}Premissions{/tr}' /></a></td>
-        <td class="{$parImpar}"><a class="link" href="tiki-workspaces_types_roles.php?delete={$wstype.id}&wstypeId={$wstype.id}&roleName={$role.name}">
+        <td class="{$parImpar}"><a class="link" href="tiki-workspaces_types_roles.php?delete={$wstype.wstypeId}&wstypeId={$wstype.wstypeId}&roleName={$role.name}">
       	   <img src='img/icons2/delete.gif' border='0' alt='{tr}Delete{/tr}' title='{tr}Delete{/tr}' /></a>
       </td>
     </tr>
