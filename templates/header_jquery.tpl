@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Id: header_jquery.tpl 17065 2009-03-02 11:31:20Z jonnybradley $ *}
 
 <!--  start jquery-tiki -->
 <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
