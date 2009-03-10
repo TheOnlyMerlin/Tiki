@@ -1,14 +1,14 @@
-$Header: /cvsroot/tikiwiki/_mods/themes/README,v 1.4 2004-06-30 22:04:32 damosoft Exp $
+$Id$
 
 TikiWiki User Contributed Themes Collection
 -------------------------------------------
 
 These themes are bundled seperately simply to reduce the footprint on
-the TikiWiki installation.  Also, you may want to license your theme
+the Tiki installation.  Also, you may want to license your theme
 differently.
 
-If no license reference is found in your themes README, lets assume its 
-the same as TikiWiki, thats LGPL.
+If no license reference is found in your theme's README, lets assume its 
+the same as Tiki, that's LGPL.
 
 Remember to include your contact details.
 
@@ -17,10 +17,10 @@ Please note the following desired format:
 /themename/README
 
 /themename/styles/
-* This contains everything that needs to be copied to your sites /styles/ folder
+* This contains everything that needs to be copied to your site's /styles/ folder
 
 /themename/templates/styles/themename/
-* This contains everything that needs to be copied to your sites /templates/styles/themename/ folder
+* This contains everything that needs to be copied to your site's /templates/styles/themename/ folder
 
 The idea being you can just cp -R /themename/* /tikiroot/.
 
@@ -28,9 +28,44 @@ The idea being you can just cp -R /themename/* /tikiroot/.
 Themes Index
 ------------
 
-/isabelsworld/ - http://isabel.parkersworld.org
-/zaksworld/ - http://zak.parkersworld.org
-/veryorange/ - very orange style
-/ztheme/ - bobzims ztheme style
-/nhs/ - sdl's nhs colour schemed style
-/greenjelly/ - The mods.tikiwiki.org theme, its a love/hate relationship with it
+isabelsworld - http://isabel.parkersworld.org
+zaksworld - http://zak.parkersworld.org
+veryorange - very orange style
+ztheme - bobzims ztheme style
+nhs - sdl's nhs colour schemed style
+greenjelly - The mods.tikiwiki.org theme, its a love/hate relationship with it
+3dblue
+508
+abse
+akwa
+andreas08
+andreas09
+bluemetal
+candiiclouds
+classicblue
+darkshine
+eatlon
+faulkner
+fluidindex
+greenmetal
+kubrick
+litejazz
+matrix
+nhs
+ohia
+olive
+olive-blue
+olive-red
+planetfall
+purplemetal
+redgrey
+redmetal
+smooth
+Snow
+specialsauce
+tiki
+tikineat
+tikipedia
+twist
+underground
+underworld
