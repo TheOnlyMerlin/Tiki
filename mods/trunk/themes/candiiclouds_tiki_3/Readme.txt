@@ -11,21 +11,15 @@ an HTML table is needed in tiki.tpl for graphic treatment and column integrity.
 (All file paths from Tiki root directory.)
 
 * templates/styles/candiiclouds/credits.tpl
-* templates/styles/candiiclouds/tiki.tpl (identical to other "Type 2" themes' tiki.tpl)
-
-!!! The following template are identical to those of other Type 1 and Type 2 themes of mine for TikiWiki version 1.10 and so hopefully won't be needed eventually:
-* templates/styles/candiiclouds/header.tpl
-* templates/styles/candiiclouds/index.tpl
-* templates/styles/candiiclouds/tiki-bot_bar.tpl
-* templates/styles/candiiclouds/tiki-read_article.tpl
-* templates/styles/candiiclouds/tiki-site_header.tpl
-* templates/styles/candiiclouds/tiki-top_bar.tpl
+* templates/styles/candiiclouds/tiki.tpl
+* templates/styles/candiiclouds/index.php
 
 -=Stylesheet and background images=-
 * styles/candiiclouds.css
 * styles/candiiclouds/banstars.gif
 * styles/candiiclouds/bcloud.gif
 * styles/candiiclouds/bluu.gif
+* styles/candiiclouds/candiiclouds.png
 * styles/candiiclouds/cloudsbdr.gif
 * styles/candiiclouds/headercloud.jpg
 * styles/candiiclouds/horizleft.png
@@ -40,7 +34,8 @@ http://themes.tikiwiki.org/Candii Clouds
 http://zukakakina.com/Candii Clouds
  
 -=Version=-
-* Compatible with TikiWiki 1.10.0b1 and newer.
+* Compatible with TikiWiki 3.0beta and newer.
  
 -=Changelog=-
+2 updated for Tiki 3
 1 initial package
