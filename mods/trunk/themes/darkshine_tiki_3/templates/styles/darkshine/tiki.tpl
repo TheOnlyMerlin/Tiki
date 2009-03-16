@@ -20,7 +20,7 @@
 				<td rowspan="3" id="leftmargin">&nbsp;</td>
 				<td colspan="5{* changed from 3 since the 2 border tds are used *}" id="header">
 				{if $prefs.feature_top_bar eq 'y'}
-					<div id="tiki-top">
+					<div class="clearfix" id="tiki-top">
 						{include file="tiki-top_bar.tpl"}
 					</div>
 				{/if}

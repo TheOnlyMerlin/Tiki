@@ -2,7 +2,7 @@
 	{if $prefs.feature_phplayers eq 'y'}
 		{phplayers id=$prefs.feature_topbar_id_menu type=horiz}
 	{else}
-		{menu id=$prefs.feature_topbar_id_menu type=horiz css=y}
+		<table id="listcontainer"><tr><td>{menu id=$prefs.feature_topbar_id_menu type=horiz css=y}</td></tr></table>
 	{/if}
 {/if}
 {if $prefs.feature_siteloc eq 'y' and $prefs.feature_breadcrumbs eq 'y'}

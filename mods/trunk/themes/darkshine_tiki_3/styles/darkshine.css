@@ -217,11 +217,6 @@ td#footer {
 #footer a:hover {
 	color: #999;
 	text-decoration: underline}
-	
-/*** Error page ***/
-div#tiki-main #tiki-top {margin-top: height needed to match page bg image}
-div#tiki-mid {}
-div#tiki-main #tiki-top {}
 
 /* To center cbox */
 div#tiki-main #tikimidtbl {
@@ -313,7 +308,8 @@ div#sitelogo {
 
 div#tiki-top {
 	text-align: center;
-	background: #000}
+	background: #000;
+	height: 40px}
 
 * html #tiki-top {
 	font-size: 11px;
@@ -364,7 +360,8 @@ tiki-center {background: #F3F3F3}
 	overflow: hidden;
 	cursor: default}
 
-.horbar table {
+.horbar table,
+#listcontainer {
 	width: auto;
 	text-align: left;
 	margin: auto}
@@ -478,6 +475,28 @@ a.phplmselected:active {
 	background: url(menuhover.jpg)}
 
 a.phplmselected:hover {color: #808080}
+
+/** CSS (suckerfish) menus **/
+
+.cssmenu ul,
+.cssmenu_vert li ul,
+.cssmenu_horiz li ul {
+	background: #f3f3f3;}
+
+#listcontainer ul.cssmenu_horiz li a {
+	color: #fff;
+	text-decoration: none;
+	font: bold 11px verdana, arial, helvetica, sans-serif;
+	padding: 12px 0 12px 6px;
+	margin: 0}
+	
+#listcontainer ul.cssmenu_horiz li a:hover {
+	color: #fff;
+	background: url(darkshine/nav.gif) repeat-x;
+	background-position: 0 -40px  }
+	
+#listcontainer ul.cssmenu_horiz li ul a {color: #000}
+#listcontainer ul.cssmenu_horiz li ul a:hover {color: #fff}
 
 /* Dark Shine-specific page top */
 div#topbar_custom_code {
@@ -815,8 +834,7 @@ a.flipmodtitle:hover img {border: 1px solid #90140c !important}
 
 .box-data {
 	margin-top: 0;
-	padding-bottom: 0;
-	overflow: hidden}
+	padding-bottom: 0}
 
 .box-data li a,
 .module li a {
