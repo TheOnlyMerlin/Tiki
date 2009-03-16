@@ -111,11 +111,11 @@ span.button input,
 /*
 input[type=submit],
 input[type=file],
-input[type=reset],
+input[type=reset],*/
 select {
 	background: #586858 url(abse/titlebgoff.png) repeat-x;
 	color: #BDCEC3;
-	border: 0}*/
+	border: 0}
 
 .button a:hover,
 button:hover,
@@ -317,15 +317,13 @@ div.floatleft {
 
 /* #header text selectors, if needed */
 #sitetitle,
-#sitesubtitle {}
+#sitesubtitle {padding-left: 20px}
 
 #sitetitle {
 	font-size: 2.4em;
-	padding-top: 20px;
-	padding-left: 2em}
+	padding-top: 20px}
 
 #sitesubtitle {font-size: 1.6em}
-
 * html #subtitle { font-size: 1.8em }
 
 * html #sitesubtitle {
@@ -417,7 +415,6 @@ html>body #c1c2 #wrapper #col1 #tiki-center:hover {
 
 .mdksubmenu table {width: auto}
 
-.cssmenu_vert li ul li,
 .mdksubframe  {
 	z-index: 1000;
 	position: relative;
@@ -431,8 +428,7 @@ html>body #c1c2 #wrapper #col1 #tiki-center:hover {
 	text-align: left;
 	white-space: nowrap}
 
-.mdkitem a,
-.cssmenu_vert li a  {
+.mdkitem a {
 	padding: 2px 5px 2px 5px;
 	position: relative;
 	display: block;
@@ -442,21 +438,7 @@ html>body #c1c2 #wrapper #col1 #tiki-center:hover {
 .mdkitem a:link,
 .mdkitem a:visited {text-decoration: none}
 
-.cssmenu_vert li {padding-bottom: 4px}
-.cssmenu_ver li a ul {border: 0}
-/*
-.cssmenu_vert li ul li,
-.cssmenu_vert li:hover ul,
-.cssmenu_vert li li:hover ul,
-.cssmenu_vert li li li:hover ul,
-.cssmenu_vert li.sfhover ul,
-.cssmenu_vert li li.sfhover ul,
-.cssmenu_vert li li li.sfhover ul { border: 0}*/
-
-.cssmenu_vert li.selected > a {background: #86a48a url(abse/menubg.jpg) repeat-y;}
-
-.mdkitem a:hover, 
-.cssmenu_vert li a:hover  {
+.mdkitem a:hover {
 	background: url(abse/menubg.jpg) repeat-y;
 	color: #CCCCFF}
 
@@ -511,6 +493,28 @@ a.phplmselected:hover {
 	border: 0;
 	width: 16px;
 	height: 18px}
+	
+.cssmenu li ul,
+.cssmenu_horiz li ul,
+.cssmenu_vert li ul {background: url(abse/menubg.jpg) repeat-y}
+
+.cssmenu_vert li a  {
+	/*padding: 2px 5px 2px 5px;
+	position: relative;
+	display: block;*/
+	color: #ffffff;
+	text-decoration: none}
+
+.cssmenu_vert li a:hover  {
+	background: url(abse/menubg.jpg) repeat-y;
+	color: #CCCCFF;
+	text-decoration: none}
+	
+
+.cssmenu_vert li {padding-bottom: 4px}
+.cssmenu_ver li a ul {border: 0}
+.cssmenu_vert li.selected > a {background: #86a48a url(abse/menubg.jpg) repeat-y;}
+
 	
 /** Links in other menus **/
 div.separator, div.separatorline {color: #F5F5F5;
@@ -679,8 +683,7 @@ a.flipmodtitle:hover img {border: 1px solid #55914E !important}
 	padding: 2px 4px 12px 4px;
 	color: #FFFFFF;
 	line-height:1.4em;
-	margin: 8px;
-	overflow: hidden}
+	margin: 8px}
 
 .box-data select {width: 120px}
 .box-data table {margin: auto}
@@ -746,17 +749,23 @@ div.cbox-data {
 	padding: 4px}
 
 .rbox-title {
+	color: #fff;
+	background: #415d44;
 	text-align: left;
-	padding: 3px;
-	font-weight: bold;
-	border: 1px solid #DDCCCC;
-	border-bottom: 0;
-	margin-bottom: -1px;
-	margin-left: 1px}
+	border: none;
+	float: left;
+	font-size: 1em;
+	padding: 0.2em 0.8em;
+	line-height: 1.4em;
+	position: relative;
+	top: 1px;
+	z-index: 2}
 
 .rbox-data {
-	padding: 3px;
-	background: #415D44}
+	background: #415D44;
+	clear: left;
+	margin: 0;
+	padding: 6px 2px 2px 2px}
 
 .warning .rbox-title {}
 .warning .rbox-data {}
@@ -771,6 +780,12 @@ div.cbox-data {
 
 .comment .rbox-title,
 .comment .rbox-data {}
+
+.note .rbox-title {}
+.note .rbox-data {}
+
+.warning  .rbox-title {}
+.warning .rbox-data {}
 
 div.simplebox {
 	border: 1px solid #666;
@@ -874,7 +889,7 @@ form.admin .tabs {
 
 .tabmark a:hover {
 	color: #CCCCFF;
-	text-decoration: underline;
+	text-decoration: none;
 	background: url(abse/titlebgon.png) repeat-x 0 1px}
 
 .tabcontent {
