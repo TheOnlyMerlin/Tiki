@@ -12,7 +12,7 @@
 /***** XHTML Elements ******/
 
 body {
-	background: #f0f0f0 url(andreas09/bodybg.jpg) repeat-x;
+	background: #f0f0f0;
 	color: #303030;
 	font-size: 67% !important;
 	font-family: Verdana,Tahoma,Arial,sans-serif}
@@ -88,24 +88,40 @@ select {
 #col2 input[type=file],
 #col2 select {font-size: 120%}
 
-button {
+/* Links in buttons */
+span.button a,
+span.button a:visited,
+button,
+input[type=reset],
+input[type=submit],
+span.button input,
+.submitbutton,
+.calbuttonoff,
+.calbuttonon {
 	border-left: 1px solid #A9A9A9;
 	border-top: 1px solid #A9A9A9;
 	border-right: 1px solid #696969;
 	border-bottom: 1px solid #696969;
 	color: #666;
-	font-size: 0.9em;
-	line-height: 1.6em;
+	font-size: 10px;
+	padding: 1px 4px;	
 	vertical-align: middle;
-	background: #f0f0f0 url(andreas09/menuhover.jpg) top left repeat-x;
+	background: #f0f0f0 url(andreas09/menuhover.jpg) 0 -20px repeat-x;
 	font-weight: bold;
 	margin: 2px;
 	vertical-align: middle;
 	text-transform: uppercase;
 	cursor: pointer}
 
+.button a:hover,
 button:hover,
-.dropdownbutton:hover {cursor: pointer}
+input[type=reset]:hover,
+input[type=submit]:hover,
+.button input:hover,
+.submitbutton:hover {
+	cursor: pointer;
+	text-decoration: none;
+	background: #f0f0f0 url(andreas09/menuhover.jpg) 0 0 repeat-x;}
 
 select[multiple] {height: 10em}
 
@@ -260,14 +276,16 @@ div#tiki-main #tikimidtbl {
 
 /* Site Header & Identity */
 #header-top {
-	height: 101px !important;
+	min-height: 101px !important;
+	background: url(andreas09/header.jpg) repeat-x bottom;
 	position: relative}
+
+* html #header-top {height: 101px}
 
 #siteheader {
 	text-align: left;
 	background: transparent;
 	color: #ffffff;
-	padding-top: 1em;
 	margin: 0;
 	text-align: left}
 
@@ -321,7 +339,10 @@ div#sitead {margin: auto}
 
 /** horizontal menu and search form **/
 
-#tiki-top {}
+#tiki-top {
+	background: url(andreas09/header.jpg) repeat-x;
+	height: 35px}
+
 #tiki-top a {}
 #tiki-top table {width: auto}
 
@@ -517,6 +538,16 @@ a.phplmselected:active {
 
 a.phplmselected:hover {color: #808080}
 
+/** CSS (suckerfish) menus **/
+
+.cssmenu_horiz li a {
+	border-right: 1px solid #b0b0b0;
+	color: #606060;
+	display: block;
+	font-size: 10px;
+	padding: 11px 10px 10px;
+	text-transform: uppercase}
+
 /** Links in other menus **/
 
 div.separator {
@@ -705,8 +736,7 @@ a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
 .box-data {
 	font-size: 0.9em;
 	line-height: 1.4em;
-	margin: 0 0 16px 10px;
-	overflow: hidden}
+	margin: 0 0 16px 10px}
 
 .box-data select {width: 120px}
 
@@ -847,7 +877,6 @@ form.admin legend.heading a:hover {}
 form.admin legend.heading a span {}
 form.admin legend.heading a:hover span {}
 div.heading {}
-.button {}
 
 tr.odd td,
 td.odd {
