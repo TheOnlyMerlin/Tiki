@@ -18,24 +18,14 @@
 			<tr id="cols">
 				<td rowspan="3" id="leftmargin">&nbsp;</td>
 				<td colspan="3{* change to 5 if the 2 border tds are used *}" id="header">
-				<div class="clearfix" id="header-top">
-				{if $prefs.feature_siteidentity eq 'y' and $filegals_manager ne 'y'}
-				{* Site identity header section *}
-					<div class="clearfix" id="siteheader">
-						{include file="tiki-site_header.tpl"}
+					<div class="clearfix" id="header-top">
+						{if $prefs.feature_siteidentity eq 'y' and $filegals_manager ne 'y'}
+							{* Site identity header section *}
+							<div class="clearfix" id="siteheader">
+								{include file="tiki-site_header.tpl"}
+							</div>
+						{/if}
 					</div>
-				{/if}
-				</div>
-				{if $prefs.feature_top_bar eq 'y'}
-					<div class="clearfix" id="tiki-top">
-						{include file="tiki-top_bar.tpl"}
-					</div>
-				{/if}
-				{if $prefs.feature_siteidentity eq 'y' and $prefs.feature_topbar_custom_code}
-					<div class="clearfix" id="topbar_custom_code">
-						{eval var=$prefs.feature_topbar_custom_code}
-					</div>
-				{/if}				
 				</td>
 				<td rowspan="3" id="rightmargin">&nbsp;</td>
 				</tr>
