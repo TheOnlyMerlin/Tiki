@@ -1,0 +1,42 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/abse_tiki_3/styles/abse.css styles/abse.css
+themes/abse_tiki_3/styles/abse_tiki_3/abse.png styles/abse/abse.png
+themes/abse_tiki_3/styles/abse_tiki_3/crimeboy_design.png styles/abse/crimeboy_design.png
+themes/abse_tiki_3/styles/abse_tiki_3/index.png styles/abse/index.png
+themes/abse_tiki_3/styles/abse_tiki_3/menubg.jpg styles/abse/menubg.jpg
+themes/abse_tiki_3/styles/abse_tiki_3/titlebgoff.png styles/abse/titlebgoff.png
+themes/abse_tiki_3/styles/abse_tiki_3/titlebgon.png styles/abse/titlebgon.png
+themes/abse_tiki_3/styles/abse_tiki_3/wgreenwall.png styles/abse/wgreenwall.png
+themes/abse_tiki_3/templates/styles/abse_tiki_3/credits.tpl templates/styles/abse/credits.tpl
+themes/abse_tiki_3/templates/styles/abse_tiki_3/index.php templates/styles/abse/index.php
+
+Description:
+absE is based on the visual design of the absE theme for openbox by crimeboy (http://celo.wordpress.com/) and uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss).
+ 
+Docurl:
+http://themes.tikiwiki.org/absE
+http://zukakakina.com/absE
+ 
+Licence:
+GNU/LGPL
+
+Author:
+Gary Cunningham-Lee (chibaguy)
+ 
+Version:
+Compatible with TikiWiki 3.0beta and newer
+ 
+Changelog:
+2 update for TikiWiki 3
+1 initial package
