@@ -389,8 +389,7 @@ div#tiki-center{ }
 
 .horbaritem a,
 .horbaritem a:visited,
-.horbaritem a:hover,
-.cssmenu_vert li a {
+.horbaritem a:hover {
 	border-right: 1px solid #ffffff;
 	white-space: nowrap;
 	display: block;
@@ -434,8 +433,7 @@ div#tiki-center{ }
 	background: #467AA7}
 	
 .mdkitem a,
-.mdkitem a:visited,
-.cssmenu_vert li a  {
+.mdkitem a:visited {
 	padding: 3px 10px;
 	position: relative;
 	display: block;
@@ -444,13 +442,7 @@ div#tiki-center{ }
 	color: #fff;
 	font-weight: normal}
 
-.cssmenu_vert li a {  }
-.cssmenu_vert li {background: #467AA7}
-.cssmenu_ver li a ul {border: 0}
-.cssmenu_vert li:hover ul, .cssmenu_vert li li:hover ul, .cssmenu_vert li li li:hover ul, .cssmenu_vert li.sfhover ul, .cssmenu_vert li li.sfhover ul, .cssmenu_vert li li li.sfhover ul { /* lists nested under hovered list items */border: 0; padding-right: 0}
-
-.mdkitem a:hover, 
-.cssmenu_vert li a:hover  {
+.mdkitem a:hover  {
 	background: none;
 	color: #fff;
 	text-decoration: none;
@@ -503,6 +495,43 @@ a.phplmselected:hover {
 	text-decoration: none;
 	background: #E9ECEF;
 	font-weight: normal}
+	
+/** CSS (suckerfish) menus **/
+.cssmenu_vert {background: #fff}
+.cssmenu_vert li a {color: #467AA7}
+
+.cssmenu ul,
+.cssmenu_vert li ul,
+.cssmenu_horiz li ul {
+	border: 1px solid #fff;
+	background: #578bb8}
+	
+
+.cssmenu_ver li a ul {border: 0}
+	
+.cssmenu_horiz li a {
+	border-right: 1px solid #ffffff;
+	white-space: nowrap;
+	display: block;
+	padding: 6px 10px;
+	font-weight: normal;
+	text-transform: uppercase;
+	text-decoration: none;
+	background: inherit;
+	color: #ffffff;
+	font-size: .9em}
+	
+.cssmenu_horiz li ul a:hover {text-decoration: underline}
+
+.cssmenu_vert li a  {
+	padding: 3px 10px;
+	position: relative;
+	display: block;
+	text-decoration: none;
+	font-weight: normal}
+
+.cssmenu_vert li a:hover  {text-decoration: underline}
+.cssmenu_vert li ul li a {color: #fff}
 
 /** Links in other menus **/
 div.separator, div.separatorline {}
@@ -710,16 +739,34 @@ div.cbox {
 
 .rbox {}
 
-.rbox-title,
-.rbox-title[name=tip] {
+.rbox-title {
 	background: #DECDDE;
-	margin-bottom: -2px;
-	margin-left: 1px}
+	border: none;
+	float: left;
+	font-size: 1em;
+	padding: 0.2em 0.8em;
+	line-height: 1.4em;
+	position: relative;
+	top: 1px;
+	z-index: 2}
 
-.rbox-data,
-.rbox-data[name=tip] {
+.rbox-data {
 	background: #DECDDE;
-	margin-top: -2px}
+	clear: left;
+	margin: 0;
+	padding: 6px 2px 2px 2px}
+	
+.comment .rbox-title,
+.comment .rbox-data {}
+
+.note .rbox-title {}
+.note .rbox-data {}
+
+.tip .rbox-title,
+.tip .rbox-data {}
+
+.warning  .rbox-title {}
+.warning .rbox-data {}
 
 div.simplebox {
 	margin: 0 0 20px 0;
@@ -835,19 +882,11 @@ a.forumname {}
 a.forumnameread {}
 
 /* links in table headings */
-.tableheading,
-.gallistheading,
-.listgalheading,
-.bloglistheading,
-.llisfgalheading,
-.llistfileslink,
-.llistart,
-.lforumheading {}
 
 /** Tabs **/
 .tabs {
 	margin: 10px 1px -14px 0 !important;
-	border-bottom: solid 1px #6c6c6c !important;
+	border-bottom: solid 1px #cee1f2 !important;
 	padding: 0 !important;
 	position: relative;
 	z-index: 201;}
@@ -859,7 +898,7 @@ a.forumnameread {}
 	border: 1px solid #abcdef;
 	margin: 0;
 	margin-right: 5px;
-	padding: 1px 0 1px 0}
+	padding: 1px 0}
 
 .tabmark a { 
 	border-bottom :0;
@@ -879,7 +918,7 @@ a.forumnameread {}
 	z-index: 200;
 	position: relative;
 	border: 1px solid #abcdef;
-	padding: 26px 2px 2px 2px;
+	padding-top: 26px;
 	margin-bottom: 25px;
 	background: #f0f9ff}
 
