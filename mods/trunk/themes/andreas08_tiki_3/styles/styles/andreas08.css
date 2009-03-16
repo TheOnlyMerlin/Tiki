@@ -35,8 +35,6 @@ a:hover {
 	background: inherit}
 
 a img {border: none}
-button {}
-button:hover {cursor: pointer}
 div {}
 form {}
 
@@ -57,37 +55,13 @@ form {
 	padding: 0}
 	
 legend {color: #303030}
-button {}
-button:hover {cursor: pointer}
 
-button,
-input,
-textarea,
-option,
-select {}
 
 /* IE */
 * html .wikitopline select {font-size: .9em}
 input.button {}
 
 input[type=checkbox] {border: 0}
-
-input[type=text],
-input[type=password] {}
-
-input[type=submit],
-input[type=file],
-input[type=reset],
-select {}
-
-button,
-input[type=submit],
-.button input,
-input[type=reset] {}
-
-button:hover,
-input[type=submit]:hover,
-.button input:hover {cursor: pointer}
 
 
 * html .findtable input {font-size: 1em}
@@ -331,15 +305,42 @@ input[id="sl-login-pass"] {
 
 input#fuser {line-height: 90%} 
 
+/* Links in buttons */
+span.button a,
+span.button a:visited,
+button,
+input[type=reset],
+input[type=submit],
+span.button input,
+.submitbutton,
+.calbuttonoff,
+.calbuttonon,
 input[name="search"] {
 	border: solid 1px #FFFFFF;
 	background: #467AA7;
 	color: #FFFFFF;
 	vertical-align: middle;
-	text-transform: uppercase; 
-	font-size: .9em}
+	text-transform: uppercase;
+	font-weight: normal;
+	font-size: .9em;
+	padding: 2px 4px;
+	margin-right: 3px;
+	text-decoration: none;}
 
-input[name="search"]:hover {cursor: pointer}
+.button:hover,	
+.button a:hover,
+button:hover,
+input[type=reset]:hover,
+input[type=submit]:hover,
+.button input:hover,
+.submitbutton:hover,
+.calbuttonoff:hover,
+.calbuttonon:hover,
+.button input:hover,
+.submitbutton:hover,
+input[name="search"]:hover {
+	cursor: pointer;
+	background: #578bb8;}
 
 select[name="where"] {
 	font-size: .9em;
@@ -789,7 +790,6 @@ form.admin legend.heading a:hover {}
 form.admin legend.heading a span {}
 form.admin legend.heading a:hover span {}
 div.heading {}
-.button {}
 td.form {padding: 0.2em}
 
 tr.odd,
@@ -996,17 +996,6 @@ ul.floatleft li {
 	padding: 4px 2px}
 
 .editdate ul.floatleft {margin-top: 8px}
-
-span.button2,
-div.button2, .button3 {margin-right: 5px}
-
-/* First of these from han.css - Check ?? */
-.navbar .linkbut:hover,
-div.button2 a:hover, .button3 a:hover {}
-
-/* From han.css - Check ?? */
-#page-bar p span.button2 {}
-#page-bar table a.linkbut {}
 
 .linkbut {
 	/*font-size:90%;*/
