@@ -504,7 +504,9 @@ a.phplmselected:hover {
 	display: block;*/
 	color: #ffffff;
 	text-decoration: none}
-
+	
+.cssmenu li a:hover,
+.cssmenu_horiz li a:hover,
 .cssmenu_vert li a:hover  {
 	background: url(abse/menubg.jpg) repeat-y;
 	color: #CCCCFF;
