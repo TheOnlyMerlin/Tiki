@@ -84,28 +84,45 @@ input[type=password] {
 	color: #F5F5F5;
 	width: 120px}
 
-input[type=submit],
-input[type=file],
+/* Links in buttons */
+span.button a,
+span.button a:visited,
+button,
 input[type=reset],
-select {
-	overflow: hidden;
-	background: #586858 url(abse/titlebgoff.png) repeat-x;
+input[type=submit],
+span.button input,
+.submitbutton,
+.calbuttonoff,
+.calbuttonon {
+	background: #404046 url(abse/titlebgoff.png) repeat-x;
+	border: 1px solid;
+	border-color: #b5b5c3 #5a5a62 #5a5a62 #b5b5c3;
 	color: #BDCEC3;
-	font-size: 1.1em;
-	font-weight: normal}
+	font-size: .95em;
+	font-weight: normal;
+	padding: 1px 4px;
+	margin-right: 3px;
+	text-decoration: none;
+	white-space: nowrap;
+	cursor: pointer;}
 
 /* IE */
 * html .wikitopline select {font-size: .9em}
-
+/*
 input[type=submit],
 input[type=file],
 input[type=reset],
 select {
 	background: #586858 url(abse/titlebgoff.png) repeat-x;
 	color: #BDCEC3;
-	border: 0}
+	border: 0}*/
 
+.button a:hover,
+button:hover,
+input[type=reset]:hover,
 input[type=submit]:hover,
+.button input:hover,
+.submitbutton:hover,
 select:hover,
 select[name="theme"] option:hover {
 	cursor: pointer;
@@ -252,7 +269,7 @@ div#tiki-main #tikimidtbl {
 
 /* Site Header & Identity */
 
-#header-top {}
+#header-top {position: relative}
 
 #siteheader {
 	display: block;
@@ -261,8 +278,7 @@ div#tiki-main #tikimidtbl {
 	padding-top: 4px;
 	padding-bottom: 4px;
 	margin: 0;
-	min-height: 74px;
-	position: relative}
+	min-height: 74px}
 
 div#sioptions {
 	margin: 0;
