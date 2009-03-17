@@ -27,6 +27,7 @@
 				{if $prefs.feature_top_bar eq 'y'}
 					<div class="clearfix" id="tiki-top">
 						{include file="tiki-top_bar.tpl"}
+						<img src="styles/faulkner/ornament.gif" alt="ornament" style="display: block; margin: 0 auto" />
 					</div>
 				{/if}
 				{if $prefs.feature_siteidentity eq 'y' and $prefs.feature_topbar_custom_code}

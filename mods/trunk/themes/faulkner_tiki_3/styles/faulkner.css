@@ -118,14 +118,51 @@ input[type=file],
 input[type=reset],
 select {}
 
-button,
-input[type=submit],
-.button input,
-input[type=reset] {}
 
+/* Links in buttons */
+span.button a,
+span.button a:visited,
+button,
+input[type=reset],
+input[type=submit],
+span.button input,
+.submitbutton,
+.calbuttonoff,
+.calbuttonon {
+	font-family: Verdana, Helvetica, Geneva, Arial, sans-serif;
+	font-size: 11px;
+	line-height: 20px;
+	font-weight: normal;
+	color: #660000;
+	background: #eacca7;
+	border: 1px solid;
+	border-color: #eccaa3 #880000 #880000 #eccaa3;
+	padding: 0 4px;
+	margin-right: 3px;
+	text-decoration: none;
+	white-space: nowrap;
+	cursor: pointer}
+
+.button a:hover,
 button:hover,
+input[type=reset]:hover,
 input[type=submit]:hover,
-.button input:hover {cursor: pointer}
+.button input:hover,
+.submitbutton:hover {
+	background: #edd4ae;
+	color: #660000;
+	border: 1px solid;
+	border-color: #880000 #eccaa3 #eccaa3 #880000;
+	text-decoration: none}
+
+.button a:active,	
+button:active,
+input[type=reset]:active,
+input[type=submit]:active,
+.button input:active,
+.submitbutton:active {border-color: #223845 #41cbe7 #41cbe7 #223845;  }
+
+
 
 * html .findtable input {font-size: 1em}
 form.admin input[name="features"] {margin-bottom: 3px !important}
@@ -584,6 +621,67 @@ a.phplmselected:hover {
 	font-size: 0.9em;
 	text-decoration: none;
 	background: #f0f9ff}
+	
+/** CSS (suckerfish) menus **/
+
+.cssmenu ul,
+.cssmenu_vert li ul,
+.cssmenu_horiz li ul {
+	border-top: 1px solid #98615F;
+	background: transparent url(faulkner/h3bg.gif) no-repeat bottom center;
+	padding: 0 0 16px 0}
+	
+.cssmenu_vert li ul { /* second-level lists */
+	margin-left: 11.05em;
+	margin-top: -1.35em;
+	padding-bottom: 1px; /*enable border to show */}
+
+.cssmenu_horiz li,
+.cssmenu_vert li,
+.cssmenu li {background: url(faulkner/parchment.jpg);  }
+	
+.cssmenu_horiz li:hover,
+.cssmenu_vert li:hover,
+.cssmenu li:hover {
+	background: #ECCAA3 url(faulkner/menu.gif) no-repeat -360px 50%;
+	color: #880000;}
+
+.cssmenu_ver li:hover {background: none}
+	
+.cssmenu a,	
+.cssmenu_horiz a,
+.cssmenu_vert a {
+	display: block;
+	background: transparent url(faulkner/menu.gif) no-repeat scroll left center;
+	color: #660000;
+	font-size: 0.9em;
+	padding: 5px 5px 5px 22px;
+	text-decoration: none;}
+	
+.cssmenu_vert a:link,
+.cssmenu_vert a:visited {color: #660000}
+
+.cssmenu_vert a:hover {
+	color: #880000;
+	text-decoration: none}
+
+.cssmenu_vert ul a:link,
+.cssmenu_vert ul a:visited {color: #660000}
+
+.cssmenu_vert ul a:hover {color: #880000}
+
+#tiki-top .cssmenu_horiz {text-align: left; float: right; margin-right: 100px}
+
+#tiki-top .cssmenu_horiz > li > a {
+	/*padding: 10px 15px 5px 15px;*/
+	font: 600 1.2em garamond,times,'times new romans',serif;
+	color: #990000}
+
+#tiki-top .cssmenu_horiz > li > a:hover {
+	/*padding: 10px 15px 5px 15px;*/
+	color: #C90;
+	text-decoration: none;
+	background: url(faulkner/menuhover.jpg) repeat-x bottom left}
 
 /** Links in other menus **/
 
@@ -792,7 +890,7 @@ h3.box-title {
 
 * html .box a.flipmodtitle img {border: none}
 a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
-.box-data {overflow: hidden;}
+.box-data {}
 
 .box-data ol li a,
 .box-data ol li:hover {
