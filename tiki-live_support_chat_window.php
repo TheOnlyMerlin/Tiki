@@ -51,7 +51,7 @@ $smarty->assign('req_info', $lslib->get_request($_REQUEST['reqId']));
 
 $smarty->assign('reqId', $_REQUEST['reqId']);
 
-$smarty->assign('IP',$tikilib->get_ip_address());
+$smarty->assign('IP',$_SERVER['REMOTE_ADDR']);
 
 if (!isset($user)) {
 	$smarty->assign('username', 'anonymous');

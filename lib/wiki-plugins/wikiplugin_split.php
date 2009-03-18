@@ -24,42 +24,6 @@ function wikiplugin_split_help() {
 	return tra("Split a page into rows and columns").":<br />~np~{SPLIT(joincols=>[y|n|0|1],fixedsize=>[y|n|0|1],colsize=>size1|size2|...,first=>[col|line], edit=>y|n)}".tra("row1col1")."---".tra("row1col2")."@@@".tra("row2col1")."---".tra("row2col2")."{SPLIT}~/np~";
 }
 
-function wikiplugin_split_info() {
-	return array(
-		'name' => tra('Split'),
-		'documentation' => 'PluginSplit',
-		'description' => tra('Split a page into rows and columns'),
-		'prefs' => array( 'wikiplugin_split' ),
-		'params' => array(
-			'joincols' => array(
-				'required' => false,
-				'name' => tra('Join Columns'),
-				'description' => 'y|n'.' '.tra('Generate the colspan attribute if columns are missing' ),
-			),
-			'fixedsize' => array(
-				'required' => false,
-				'name' => tra('Fixed Size'),
-				'description' => 'y|n'.' '.tra('Generate the width attribute on the columns'),
-			),
-			'colsize' => array(
-				'required' => false,
-				'name' => tra('Column Size'),
-				'description' => tra('?'),
-			),
-			'first' => array(
-				'required' => false,
-				'name' => tra('First'),
-				'description' => 'col|line',
-			),
-			'edit' => array(
-				'required' => false,
-				'name' => tra('Editable'),
-				'description' => 'y|n'.' '.tra('Display edit icon for each section'),
-			),
-		),
-	);
-}
-
 /*
  * \note This plugin should carefuly change text it have to parse
  *       because some of wiki syntaxes are sensitive for
@@ -182,7 +146,7 @@ function wikiplugin_split($data, $params, $pos) {
 	$result .= '<tr>';
 	foreach ($rows as $r) {
 		$idx = 0;
-		$result .= '<td valign="top" '.(($fixedsize && isset($tdsize))? ' width="'.$tdsize[$idx].'%"' : '').'>';
+		$result .= '<td valign="top" '.($fixedsize ? ' width="'.$tdsize[$idx].'%"' : '').'>';
 		foreach ($r as $i) {
 			if (substr($i, 0, 2) == "\r\n") {
 				$i = substr($i, 2);

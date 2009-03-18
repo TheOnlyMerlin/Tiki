@@ -1,4 +1,4 @@
-{tikimodule error=$module_params.error title="minichat" name="minichat" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
+{tikimodule title="minichat" name="minichat" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox}
 
 <div id='minichatchans' class='minichatchans'></div>
 <div id='minichat' class='minichat' style='overflow-x: hidden; overflow-y: scroll; width: 100%; height: {$module_rows}px;'>
@@ -6,7 +6,7 @@
 
 <div style='width: 100%; overflow: hidden;'>
  <form name='minichatinputform' action='javascript:minichatpost();'>
-  <input name='minichatinput' id='minichatinput' type='text' style='width: 95%;' autocomplete='off' /><input type='submit' value='{tr}OK{/tr}' style='display: none;' />
+  <input name='minichatinput' id='minichatinput' type='text' style='width: 95%;' autocomplete='off' /><input type='submit' value='Ok' style='display: none;' />
  </form>
 </div>
 {/tikimodule}

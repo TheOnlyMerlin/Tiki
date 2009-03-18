@@ -1,6 +1,6 @@
 <?php
 
-// $Id$
+// $Id: /cvsroot/tikiwiki/tiki/tiki-setup.php,v 1.474.2.11 2008-03-20 19:35:06 kerrnel22 Exp $
 // Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for
@@ -12,19 +12,48 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-if (version_compare(PHP_VERSION, '5.0.0', '<')) {
-  header("location: tiki-install.php");
-  exit;
-}
-
-require_once 'tiki-filter-base.php';
-
 // Enable Versioning
 // Please update the specified class below at release time, as well as
 // adding new release to http://tikiwiki.org/{$branch}.version file
 include_once ('lib/setup/twversion.class.php');
 $TWV = new TWVersion();
 
+/* Automatically set params used for absolute URLs - BEGIN */
+
+$tiki_setup_dir = realpath(dirname(__FILE__));
+$tiki_script_filename = realpath($_SERVER['SCRIPT_FILENAME']);
+
+// On some systems, SCRIPT_FILENAME contains the full path to the cgi script that 
+//   calls the script we are looking for. In this case, we have to fallback to 
+//   PATH_TRANSLATED. This one may be wrong on some systems, this is why SCRIPT_FILENAME
+//   is tried first.
+
+if ( substr($tiki_script_filename, 0, strlen($tiki_setup_dir)) != $tiki_setup_dir ) {
+	$tiki_script_filename = realpath($_SERVER['PATH_TRANSLATED']);
+}
+$tmp = dirname(str_replace($tiki_setup_dir,'',$tiki_script_filename));
+
+if ($tmp != '/') {
+        $dir_level = substr_count($tmp,"/");
+} else {
+        $dir_level = 0;
+}
+unset($tmp);
+
+$tikiroot = dirname($_SERVER['PHP_SELF']);
+$tikipath = dirname($tiki_script_filename);
+
+if ($dir_level > 0) {
+        $tikiroot = preg_replace('#(/[^/]+){'.$dir_level.'}$#','',$tikiroot);
+        $tikipath = preg_replace('#(/[^/]+){'.$dir_level.'}$#','',$tikipath);
+        chdir(join('../',array_fill(0,$dir_level+1,'')));
+}
+
+if ( substr($tikiroot,-1,1) != '/' ) $tikiroot .= '/';
+if ( substr($tikipath,-1,1) != '/' ) $tikipath .= '/';
+
+require_once('lib/init/initlib.php');
+///if ( ! isset($_SESSION['votes']) ) $_SESSION['votes'] = array();
 $num_queries = 0;
 $elapsed_in_db = 0.0;
 $server_load = '';
@@ -32,18 +61,22 @@ $area = 'tiki';
 $crumbs = array();
 
 require_once('lib/setup/tikisetup.class.php');
+TikiSetup::prependIncludePath($tikipath);
+TikiSetup::prependIncludePath('lib');
+TikiSetup::prependIncludePath('lib/pear');
 
 require_once('lib/setup/timer.class.php');
 $tiki_timer = new timer();
 $tiki_timer->start();
 
 require_once('tiki-setup_base.php');
-
+require_once('lib/setup/compatibility.php');
+require_once('lib/setup/prefs.php');
 // TikiTests are PHP5 only
 if ($prefs['feature_tikitests'] == 'y' and version_compare(PHP_VERSION, '5.0.0', '>='))  {
 	require_once('tiki_tests/tikitestslib.php');
 }
-$crumbs[] = new Breadcrumb($prefs['browsertitle'], '', $prefs['tikiIndex']);
+$crumbs[] = new Breadcrumb($prefs['siteTitle'], '', $prefs['tikiIndex']);
 
 if ( $prefs['site_closed'] == 'y' ) require_once('lib/setup/site_closed.php');
 require_once('lib/setup/error_reporting.php');
@@ -53,8 +86,8 @@ if ( ($prefs['feature_wysiwyg'] != 'n' && $prefs['feature_wysiwyg'] != 'y') || $
 require_once('lib/setup/sections.php');
 require_once('lib/headerlib.php');
 
-if ( isset($_REQUEST['PHPSESSID']) ) $tikilib->setSessionId($_REQUEST['PHPSESSID']);
-elseif ( function_exists('session_id') ) $tikilib->setSessionId(session_id());
+if ( isset($_REQUEST['PHPSESSID']) ) $tikilib->update_session($_REQUEST['PHPSESSID']);
+elseif ( function_exists('session_id') ) $tikilib->update_session(session_id());
 
 require_once('lib/setup/cookies.php');
 require_once('lib/setup/js_detect.php');
@@ -67,7 +100,7 @@ if ( $prefs['useGroupHome'] == 'y' ) require_once('lib/setup/default_homepage.ph
 require_once('lib/setup/theme.php');
 if ( $prefs['feature_babelfish'] == 'y' || $prefs['feature_babelfish_logo'] == 'y' ) require_once('lib/setup/babelfish.php');
 
-if ( !empty($varcheck_errors) ) {
+if ( $varcheck_errors != '' ) {
 	$smarty->assign('msg', $varcheck_errors);
 	$smarty->display('error.tpl');
 	die;
@@ -96,7 +129,7 @@ if ( ! empty($_SESSION['interactive_translation_mode']) && ($_SESSION['interacti
 	$cachelib->empty_full_cache();
 }
 if ( $prefs['feature_freetags'] == 'y' ) require_once('lib/setup/freetags.php');
-if ( $prefs['feature_categories'] == 'y' ) require_once('lib/setup/categories.php');
+//if ( $prefs['feature_categories'] == 'y') require_once('lib/setup/categories.php');
 if ( $prefs['feature_userlevels'] == 'y' ) require_once('lib/setup/userlevels.php');
 if ( $prefs['feature_fullscreen'] == 'y' ) require_once('lib/setup/fullscreen.php');
 if ( $prefs['auth_method'] == 'openid' ) require_once('lib/setup/openid.php');
@@ -105,18 +138,6 @@ if ( $prefs['feature_wysiwyg'] == 'y' ) {
 	$smarty->assign_by_ref('wysiwyg', $_SESSION['wysiwyg']);
 }
 if ( $prefs['feature_phplayers'] == 'y' ) require_once('lib/setup/phplayers.php');
-
-if( $prefs['feature_magic'] == 'y' && $tiki_p_admin == 'y' ) {
-	include_once('lib/admin/magiclib.php');
-	$templatename = substr($tiki_script_filename, strrpos($tiki_script_filename, '/') + 1, -4);
-	$smarty->assign('feature', $magiclib->get_feature_by_template($templatename));
-	$smarty->assign('templatename', $templatename);
-	require_once('tiki-admin_bar.php');
-}
-if ( $prefs['feature_sefurl_filter'] == 'y' ) {
-  require_once ('tiki-sefurl.php');
-  $smarty->register_outputfilter('filter_out_sefurl');
-}
 
 $smarty->assign_by_ref('phpErrors', $phpErrors);
 $smarty->assign_by_ref('num_queries', $num_queries);
@@ -127,6 +148,7 @@ $smarty->assign('lock', false);
 $smarty->assign('edit_page', 'n');
 $smarty->assign('forum_mode', 'n');
 $smarty->assign('uses_tabs', 'n');
+$smarty->assign('uses_jscalendar', 'n');
 $smarty->assign('uses_phplayers', 'n');
 $smarty->assign('wiki_extras', 'n');
 

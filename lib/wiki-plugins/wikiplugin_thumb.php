@@ -3,59 +3,6 @@
 function wikiplugin_thumb_help() {
 	return tra("Displays the thumbnail for an image").":<br />~np~{THUMB(image=>url,id=url,max=>,float=>,url=>,original=y, sticky=n)}".tra("description")."{THUMB}~/np~";
 }
-
-function wikiplugin_thumb_info() {
-	return array(
-		'name' => tra('Thumbnail'),
-		'documentation' => 'PluginThumb',
-		'description' => tra('Displays the thumbnail for an image'),
-		'prefs' => array( 'wikiplugin_thumb' ),
-		'body' => tra('description'),
-		'params' => array(
-			'file' => array(
-				'required' => false,
-				'name' => tra('File ID'),
-				'description' => tra('File ID from the file gallery.'),
-			),
-			'id' => array(
-				'required' => false,
-				'name' => tra('Image ID'),
-				'description' => tra('Image ID from the image gallery.'),
-			),
-			'image' => array(
-				'required' => false,
-				'name' => tra('Image'),
-				'description' => tra('URL to the image.'),
-			),
-			'max' => array(
-				'required' => false,
-				'name' => tra('Maximum Size'),
-				'description' => tra('Maximum width or height for the image.'),
-			),
-			'float' => array(
-				'required' => false,
-				'name' => tra('Floating'),
-				'description' => 'left|right|none',
-			),
-			'url' => array(
-				'required' => false,
-				'name' => tra('URL'),
-				'description' => tra('Link target of the image.'),
-			),
-			'original' => array(
-				'required' => false,
-				'name' => tra('Original'),
-				'description' => 'y|n',
-			),
-			'sticky' => array(
-				'required' => false,
-				'name' => tra('Sticky'),
-				'description' => 'y|n',
-			),
-		),
-	);
-}
-
 function wikiplugin_thumb($data, $params) {
 	global $smarty, $tikidomain;
 	extract ($params,EXTR_SKIP);
@@ -78,34 +25,10 @@ function wikiplugin_thumb($data, $params) {
 	if (!isset($url)) {
 		$url = "javascript:void()";
 	}
-
-	if( isset($file) && !empty($file) ) {
-		// From file galleries
-		global $filegallib; include_once('lib/filegals/filegallib.php');
-		$info = $filegallib->get_file($file);
-
-		if( ! $info ) {
-			return '^' . tra('File not found.') . '^';
+	if (empty($image)) {
+		if (empty($id)) {
+			return "''no image''";
 		}
-
-		if( substr($info['filetype'], 0, 5) != 'image' ) {
-			return '^' . tra('File is not an image.') . '^';
-		}
-
-		require_once('lib/images/images.php');
-		if (!class_exists('Image')) return '^' . tra('Server does not support image manipulation.') . '^';
-
-		$imageObj = new Image($info['data']);
-
-		$width = $imageObj->get_width();
-		$height = $imageObj->get_height();
-
-		$image = 'tiki-download_file.php?fileId='. urlencode($file) .'&thumbnail&max=' . urlencode($max);
-		$imageOver = 'tiki-download_file.php?fileId=' . urlencode($file);
-		$type = $info['filetype'];
-
-	} elseif (isset($id) && !empty($id)) {
-		// From image galleries
 		$image = "show_image.php?id=$id&thumb=1";
 		global $imagegallib; include_once('lib/imagegals/imagegallib.php');
 		if (isset($original) && $original == 'y') {
@@ -125,8 +48,7 @@ function wikiplugin_thumb($data, $params) {
 		$height = $info['ysize'];
 		$imageOver = "show_image.php?id=$id&scalesize=$scalesize";
 		$type = $info['type'];
-	} elseif (isset($image) && !empty($image)) {
-		// From generic image
+	} else {
 		if ($tikidomain) {
 			$image = preg_replace('~wiki_up/~',"wiki_up/$tikidomain/",$image);
 		}
@@ -135,10 +57,7 @@ function wikiplugin_thumb($data, $params) {
 		}
 		list($width, $height, $type, $attr) = getimagesize($image);
 		$imageOver = $image;
-	} else {
-		return "^" . tra('No image specified.') . "^";
 	}
-
 	if ($width > $max or $height > $max) {
 		if ($width > $height) {
 			$factor = $width / $max;
@@ -151,7 +70,6 @@ function wikiplugin_thumb($data, $params) {
 		$twidth = $width;
 		$theight = $height;
 	}
-
 	$html = '';
 	if (!$smarty->get_template_vars('overlib_loaded')) {
 		$html = '<div id=\"overDiv\" style=\"position:absolute; visibility:hidden; z-index:1000;\"></div>';

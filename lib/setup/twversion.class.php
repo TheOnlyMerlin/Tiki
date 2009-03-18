@@ -27,11 +27,11 @@ class TWVersion {
 		//   stable   : Represents officially supported releases.
 		//   unstable : Represents candidate and test/development releases.
 		//   head     : Represents next generation development version.
-		$this->branch 	= 'unstable';
+		$this->branch 	= 'stable';
 
 		// Set everything else, including defaults.
-		$this->version 	= '4.0';
-		$this->star	= 'Aldebaran';
+		$this->version 	= '2.3';
+		$this->star		= 'Arcturus';
 		$this->release 	= $this->version;
 		$this->releases	= array();
 		$this->ridx 	= array();
@@ -61,9 +61,7 @@ class TWVersion {
 				10=>'Era Carinae',
 				11=>'Polaris',
 				12=>'Sirius',
-				13=>'Arcturus',
-				14=>'Betelgeuse',
-				15=>'Aldebaran'
+				13=>'Arcturus'
 				);
 	}
 
@@ -93,7 +91,7 @@ class TWVersion {
 				17=>'2.0',
 				18=>'2.1',
 				19=>'2.2',
-				20=>'3.0beta1'
+				20=>'2.3',
 				);
 	}
 

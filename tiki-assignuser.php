@@ -11,8 +11,6 @@
 // Initialization
 require_once ('tiki-setup.php');
 
-$auto_query_args = array('sort_mode', 'offset', 'find', 'assign_user', 'action', 'group', 'set_default', 'default_group', 'login', 'maxRecords');
-
 if ($tiki_p_admin != 'y' && $tiki_p_admin_users != 'y' && $tiki_p_subscribe_groups != 'y') {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg', tra("You do not have permission to use this feature"));
@@ -126,7 +124,22 @@ foreach ($users['data'] as $key=>$group) {
 	}
 }
 			
-$smarty->assign_by_ref('cant_pages', $users["cant"]);
+$cant_pages = ceil($users["cant"] / $maxRecords);
+$smarty->assign_by_ref('cant_pages', $cant_pages);
+$smarty->assign('actual_page', 1 + ($offset / $maxRecords));
+
+if ($users["cant"] > ($offset + $maxRecords)) {
+	$smarty->assign('next_offset', $offset + $maxRecords);
+} else {
+	$smarty->assign('next_offset', -1);
+}
+
+// If offset is > 0 then prev_offset
+if ($offset > 0) {
+	$smarty->assign('prev_offset', $offset - $maxRecords);
+} else {
+	$smarty->assign('prev_offset', -1);
+}
 
 // Get users (list of users)
 $smarty->assign_by_ref('users', $users["data"]);

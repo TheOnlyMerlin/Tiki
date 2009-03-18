@@ -13,9 +13,9 @@
  * @category   pear
  * @package    PEAR
  * @author     Greg Beaver <cellog@php.net>
- * @copyright  1997-2008 The PHP Group
+ * @copyright  1997-2006 The PHP Group
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version    CVS: $Id: ChannelFile.php,v 1.80 2008/01/03 20:26:34 cellog Exp $
+ * @version    CVS: Id: ChannelFile.php,v 1.79 2007/05/19 23:46:06 cellog Exp 
  * @link       http://pear.php.net/package/PEAR
  * @since      File available since Release 1.4.0a1
  */
@@ -23,9 +23,9 @@
 /**
  * Needed for error handling
  */
-require_once 'lib/pear/PEAR/ErrorStack.php';
-require_once 'lib/pear/PEAR/XMLParser.php';
-require_once 'lib/pear/PEAR/Common.php';
+require_once 'PEAR/ErrorStack.php';
+require_once 'PEAR/XMLParser.php';
+require_once 'PEAR/Common.php';
 
 /**
  * Error code if the channel.xml <channel> tag does not contain a valid version
@@ -150,9 +150,9 @@ $GLOBALS['_PEAR_CHANNELS_MIRROR_TYPES'] =  array('server');
  * @category   pear
  * @package    PEAR
  * @author     Greg Beaver <cellog@php.net>
- * @copyright  1997-2008 The PHP Group
+ * @copyright  1997-2006 The PHP Group
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version    Release: 1.7.2
+ * @version    Release: 1.6.1
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.4.0a1
  */
@@ -393,7 +393,7 @@ class PEAR_ChannelFile {
     {
         if (!file_exists($descfile) || !is_file($descfile) || !is_readable($descfile) ||
              (!$fp = fopen($descfile, 'r'))) {
-            require_once 'lib/pear/PEAR.php';
+            require_once 'PEAR.php';
             return PEAR::raiseError("Unable to open $descfile");
         }
 
@@ -429,7 +429,7 @@ class PEAR_ChannelFile {
                 }
             }
             if (PEAR::isError($info)) {
-                require_once 'lib/pear/PEAR.php';
+                require_once 'PEAR.php';
                 return PEAR::raiseError($info);
             }
         }

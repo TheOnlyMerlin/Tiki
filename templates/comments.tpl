@@ -4,37 +4,13 @@
 <div>
 {else}
 <div id="comments">
-<div
-{if $pagemd5}
-	{assign var=cookie_key value="show_comzone$pagemd5"}
-	id="comzone{$pagemd5}"
-{else}
-	{assign var=cookie_key value="show_comzone"}
-	id="comzone"
-{/if}
-{if (isset($smarty.session.tiki_cookie_jar.$cookie_key) and $smarty.session.tiki_cookie_jar.$cookie_key eq 'y') or (!isset($smarty.session.tiki_cookie_jar.$cookie_key) and $prefs.wiki_comments_displayed_default eq 'y') or (isset($prefs.show_comzone) and $prefs.show_comzone eq 'y') or $show_comzone eq 'y' or $show_comments or $edit_reply eq '1'}
+<div id="comzone"
+{if (isset($smarty.session.tiki_cookie_jar.show_comzone) and $smarty.session.tiki_cookie_jar.show_comzone eq 'y') or (!isset($smarty.session.tiki_cookie_jar.show_comzone) and $prefs.wiki_comments_displayed_default eq 'y') or (isset($prefs.show_comzone) and $prefs.show_comzone eq 'y') or $show_comzone eq 'y' or $show_comments or $edit_reply eq '1'}
 	style="display:block;"
 {else}
 	style="display:none;"
 {/if}
 >
-{/if}
-
-{if !empty($errors)}
-	{remarksbox type="warning" title="{tr}Errors{/tr}"}
-		{foreach from=$errors item=error name=error}
-			{if !$smarty.foreach.error.first}<br />{/if}
-			{$error|escape}
-		{/foreach}
-	{/remarksbox}
-{/if}
-{if !empty($feedbacks)}
-	{remarksbox type="feddback"}
-		{foreach from=$feedbacks item=feedback name=feedback}
-			{$feedback|escape}
-			{if !$smarty.foreach.feedback.first}<br />{/if}
-		{/foreach}
-	{/remarksbox}
 {/if}
 
 {if ($tiki_p_read_comments eq 'y' and $forum_mode ne 'y') or ($tiki_p_forum_read eq 'y' and $forum_mode eq 'y')}
@@ -43,7 +19,6 @@
   {* if a reply to it is being composed * }
   {* The $parent_com is only set in this case *}
   {* WARNING: when previewing a new reply to a forum post, $parent_com is also set *}
-
 
   {if $comments_cant gt 0}
 
@@ -59,7 +34,6 @@
 	{if $smarty.request.topics_find}<input type="hidden" name="topics_find" value="{$smarty.request.topics_find|escape}" />{/if}
 	{if $smarty.request.topics_sort_mode}<input type="hidden" name="topics_sort_mode" value="{$smarty.request.topics_sort_mode|escape}" />{/if}
 	{if $smarty.request.topics_threshold}<input type="hidden" name="topics_threshold" value="{$smarty.request.topics_threshold|escape}" />{/if}
-	{if $forumId}<input type="hidden" name="forumId" value="{$forumId|escape}" />{/if}
 
 	{if $tiki_p_admin_forum eq 'y' and $forum_mode eq 'y'}
 	<div class="forum_actions">
@@ -95,12 +69,6 @@
 	{if $forum_mode neq 'y' or $prefs.forum_thread_user_settings eq 'y'}
 	<div class="forum_actions">
 		<div class="headers">
-		{if $tiki_p_admin_comments eq 'y' && $prefs.feature_comments_moderation eq 'y'}
-			<span class="title">{tr}Moderator actions{/tr}</span>
-			<span class="infos">
-				<a class="link" href="tiki-list_comments.php?types_section={$section}&amp;findfilter_approved=n">{tr}queued:{/tr}{$queued}</a>
-			</span>
-		{/if}
 		</div>
 		<div class="actions">
 			<span class="action">
@@ -159,9 +127,9 @@
 
 {*** Seems buggy (at least when called for a wiki page)
 {if $forum_mode ne 'y'}
-    <th style="text-align: center; vertical-align: middle">
+    <td class="heading" style="text-align: center; vertical-align: middle">
 		<a class="link" href="{$comments_complete_father}comzone=hide">{tr}Hide all{/tr}</a>
-    </th>
+    </td>
 {/if}
 ***}
 
@@ -232,6 +200,10 @@
 		</h2>
 	</div>
 
+	{if $msgError}<div id="msgError" class="simplebox highlight">
+	{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle"} 
+	{$msgError}</div><br />{/if}
+
 	{if $comment_preview eq 'y'}
 	<div class="clearfix post_preview">
 		{if $forum_mode neq 'y'}<b>{tr}Preview{/tr}</b>{/if}
@@ -263,6 +235,12 @@
 	{/section}
 
 	<table class="normal">
+		{if empty($user)}
+			<tr>
+				<td class="formcolor">{tr}Your name{/tr}:</td>
+				<td class="formcolor"><input type="text" maxlength="50" size="50" id="anonymous_name" name="anonymous_name" /></td>
+			</tr>
+		{/if}
 		<tr>
 			<td class="formcolor">
 				<label for="comments-title">{tr}Title{/tr} <span class="attention">({tr}required{/tr})</span>: </label>
@@ -333,7 +311,7 @@
 		<tr>
 			<td class="formcolor">{tr}Attach file{/tr}</td>
 			<td class="formcolor">
-				<input type="hidden" name="MAX_FILE_SIZE" value="{$forum_info.att_max_size|escape}" /><input name="userfile1" type="file" />{tr}Maximum size:{/tr} {$forum_info.att_max_size|kbsize}
+				<input type="hidden" name="MAX_FILE_SIZE" value="{$forum_info.att_max_size|escape}" /><input name="userfile1" type="file" />
 			</td>
 		</tr>
 		{/if}
@@ -343,21 +321,9 @@
 		{/if}
 
 		{if $prefs.feature_antibot eq 'y'}
-			{include file="antibot.tpl" td_style="formcolor"}
+			{include file="antibot.tpl"}
 		{/if}
 
-		{if !$user}
-			<tr>
-				<td class="formcolor"><label for="anonymus_name">{tr}Enter your name{/tr}</label></td>
-				<td class="formcolor"><input type="text" maxlength="50" size="12" id="anonymous_name" name="anonymous_name" /></td>
-			</tr>
-			{if $forum_mode eq 'y'}
-				<tr>
-					<td class="formcolor"><label for="anonymous_email">{tr}If you would like to be notified when someone replies to this topic<br />please tell us your e-mail address{/tr}</label></td>
-					<td class="formcolor"><input type="text" size="30" id="anonymous_email" name="anonymous_email" /></td>
-				</tr>
-			{/if}
-		{/if}
 		<tr>
 			<td class="formcolor">
 			{if $parent_coms}
@@ -375,10 +341,6 @@
 				{/if}
 				{if $forum_mode eq 'y'}
 				<input type="button" name="comments_cancelComment" value="{tr}Cancel{/tr}" onclick="hide('{$postclass}');"/>
-				{elseif $prefs.feature_comments_moderation eq 'y' and $tiki_p_admin_comments neq 'y'}
-					{remarksbox type="note" title="{tr}Note{/tr}"}
-						Your comment will have to be approved by the moderator before it is displayed.
-					{/remarksbox}	
 				{/if}
 			</td>
 		</tr>
@@ -386,15 +348,15 @@
 	</form>
 
 	<br />
-	{if $forum_mode eq 'y'}
-		{assign var=tips_title value="{tr}Posting replies{/tr}"}
-	{else}
-		{assign var=tips_title value="{tr}Posting comments{/tr}"}
-	{/if}
-	{remarksbox type="tip" title=$tips_title}
-		{tr}Use{/tr} [http://www.foo.com] {tr}or{/tr} [http://www.foo.com|{tr}Description{/tr}] {tr}for links{/tr}.<br />
-		{tr}HTML tags are not allowed inside posts{/tr}.<br />
-	{/remarksbox}
+	<table class="normal" id="commentshelp">
+		<tr><td class="even">
+			<b>{if $forum_mode eq 'y'}{tr}Posting replies{/tr}:{else}{tr}Posting comments{/tr}:{/if}</b><br />
+			<br />
+			{tr}Use{/tr} [http://www.foo.com] {tr}or{/tr} [http://www.foo.com|{tr}Description{/tr}] {tr}for links{/tr}.<br />
+			{tr}HTML tags are not allowed inside posts{/tr}.<br />
+		</td></tr>
+	</table>
+	<br />
 
 	{if $forum_mode eq 'y'}
     </div>

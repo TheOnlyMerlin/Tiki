@@ -4,24 +4,19 @@
  * @param $lg - language - if not specify = global current language
  */
 
-function tr($content) {
-	$args = func_get_args();
-	return tra( $content, '', false, array_slice( $args, 1 ) );
-}
-
-function tra($content, $lg='', $no_interactive = false, $args = array()) {
+function tra($content, $lg='', $no_interactive = false) {
 	global $prefs;
 
 	if ($content != '') {
 		if ($prefs['lang_use_db'] != 'y') {
-			global $lang, $tikidomain;
+			global $lang;
 			if ($lg != "") {
 				if (is_file("lang/$lg/language.php")) {
 					$l = $lg;
 				} else {
 					$l = $prefs['language'];
 				}
-			} elseif (!empty($prefs['language']) && is_file('lang/'.$prefs['language'].'/language.php')) {
+			} elseif (is_file('lang/'.$prefs['language'].'/language.php')) {
 				$l = $prefs['language'];
 			} elseif (is_file('lang/'.$prefs['site_language'].'/language.php')) {
 				$l = $prefs['site_language'];
@@ -35,36 +30,33 @@ function tra($content, $lg='', $no_interactive = false, $args = array()) {
 				  if (is_file("lang/$l/custom.php")) {
 					include_once("lang/$l/custom.php");
 				  }
-				  if (!empty($tikidomain) && is_file("lang/$l/$tikidomain/custom.php")) {
-					include_once("lang/$l/$tikidomain/custom.php");
-				  }
 				  ${"lang_$l"} = $lang;
 				  unset($lang);
 				}
 				$lang = &${"lang_".$prefs['language']};
 			}
 			if ($l and isset(${"lang_$l"}[$content])) {
-				return tr_replace( ${"lang_$l"}[$content], $args );
+				return ${"lang_$l"}[$content];
 			} else {
 				// If no translation has been found and if the string ends with a punctuation,
 				//   try to translate punctuation separately (e.g. if the content is 'Login:' or 'Login :',
 				//   then it will try to translate 'Login' and ':' separately).
 				// This should avoid duplicated strings like 'Login' and 'Login:' that were needed before
 				//   (because there is no space before ':' in english, but there is one in others like french)
-				$punctuations = array(':', '!', ';', '.', ',', '?'); // Modify get_strings.php accordingly
+				$punctuations = array(':', '!', ';');
 				$content_lenght = strlen($content);
 				foreach ( $punctuations as $p ) {
 					if ( $content[$content_lenght - 1] == $p ) {
 						$new_content = substr($content, 0, $content_lenght - 1);
 						if ( isset(${"lang_$l"}[$new_content]) ) {
-							return tr_replace( ${"lang_$l"}[$new_content].( isset(${"lang_$l"}[$p]) ? ${"lang_$l"}[$p] : $p ), $args );
+							return ${"lang_$l"}[$new_content].( isset(${"lang_$l"}[$p]) ? ${"lang_$l"}[$p] : $p );
 						} else {
-							return tr_replace( $content, $args );
+							return $content;
 						}
 					}
 				}
 
-				return tr_replace( $content, $args );
+				return $content;
 			}
 		} else {
 			global $tikilib,$multilinguallib;
@@ -87,31 +79,18 @@ function tra($content, $lg='', $no_interactive = false, $args = array()) {
 			$result = $tikilib->query($query, array($content,$lg == ""? $prefs['language'] : $lg));
 			$res = $result->fetchRow();
 			if (!$res) {
-				return tr_replace( $content.$tag, $args );
+				return $content.$tag;
 			}
 			if (!isset($res["tran"])) {
 				if ($prefs['record_untranslated'] == 'y') {
 					$query = "insert into `tiki_untranslated` (`source`,`lang`) values (?,?)";
 					$tikilib->query($query, array($content,$prefs['language']),-1,-1,false);
 				}
-				return tr_replace( $content.$tag, $args );
+				return $content.$tag;
 			}
 			$res["tran"] = preg_replace("~&lt;br(\s*/)&gt;~","<br$1>",$res["tran"]);
-			return tr_replace( $res["tran"].$tag, $args );
+			return $res["tran"].$tag;
 		}
 	}
-}
-
-function tr_replace( $content, $args ) {
-	if( ! count( $args ) )
-		return $content;
-
-	$needles = array();
-	$replacements = $args;
-
-	foreach( array_keys( $args ) as $num )
-		$needles[] = "%$num";
-	
-	return str_replace( $needles, $replacements, $content );
 }
 ?>

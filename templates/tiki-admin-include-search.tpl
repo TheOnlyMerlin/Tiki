@@ -36,7 +36,7 @@
         </tr>
           
         <tr>
-          <th colspan="2" align="center">{tr}Database Search using MySQL 'Full-Text' Feature{/tr}</th>
+          <th class="heading" colspan="2" align="center">{tr}Database Search using MySQL 'Full-Text' Feature{/tr}</th>
         </tr>
         
         <tr>
@@ -53,7 +53,7 @@
         </tr>
 	
         <tr>
-          <th colspan="2">{tr}Performance issues{/tr}</th>
+          <td class="heading" colspan="2">{tr}Performance issues{/tr}</td>
         </tr>
         
         <tr>
@@ -84,24 +84,13 @@
         </tr>
         
         <tr>
-          <th colspan="2" align="center">{tr}Database Independent Full Text Search or Tiki Search{/tr}</th>
+          <th class="heading" colspan="2" align="center">{tr}Database Independent Full Text Search or Tiki Search{/tr}</th>
         </tr>
 	
         <tr>
           <td>{tr}This is activated by default if MySQL 'Full-Text' feature is not activated above{/tr}</td>
           <td>&nbsp;</td>
         </tr>
-	
-        {if $refresh_index_all_now neq 'y'}
-	  <tr>
-	    <td>
-              <a href="tiki-admin.php?page=search&amp;refresh_index_all_now=y" class="link" title="{tr}Refresh all search index now{/tr}">
-                {tr}Refresh all search index now{/tr}
-              </a>
-            </td>
-            <td>&nbsp;</td>
-	  </tr>
-	{/if}
 	
         {if $refresh_index_now neq 'y'}
 	  <tr>
@@ -133,7 +122,7 @@
 	{/if}
       
         <tr>
-          <th colspan="2">{tr}Search features{/tr}</th>
+          <td class="heading" colspan="2">{tr}Search features{/tr}</td>
         </tr>
         
         <tr>
@@ -150,7 +139,7 @@
 	</tr>
       
         <tr>
-          <th colspan="2">{tr}Settings for searching content{/tr}</th>
+          <td class="heading" colspan="2">{tr}Settings for searching content{/tr}</td>
         </tr>
         
         <tr>
@@ -196,67 +185,9 @@
           <td class="form"><label for="search-list_length">{tr}LRU list length{/tr}: </label></td>
           <td><input size="5" type="text" name="search_lru_length" id="search-list_length" value="{$prefs.search_lru_length|escape}" /></td>
         </tr>
-
-        <tr>
-          <th colspan="2">{tr}Search results page{/tr}</th>
-        </tr>
-        <tr>
-          <td class="form">
-            {tr}Show object filter{/tr}:
-          </td>
-          <td>
-            <input type="checkbox" name="feature_search_show_object_filter"
-              {if $prefs.feature_search_show_object_filter eq 'y'}checked="checked"{/if}/>
-          </td>
-        </tr>
-        <tr>
-          <td class="form">
-            {tr}Show search box{/tr}:
-          </td>
-          <td>
-            <input type="checkbox" name="feature_search_show_search_box"
-              {if $prefs.feature_search_show_search_box eq 'y'}checked="checked"{/if}/>
-          </td>
-        </tr>
-        <tr>
-          <td class="form">
-            {tr}Show visit count{/tr}:
-          </td>
-          <td>
-            <input type="checkbox" name="feature_search_show_visit_count"
-              {if $prefs.feature_search_show_visit_count eq 'y'}checked="checked"{/if}/>
-          </td>
-        </tr>
-        <tr>
-          <td class="form">
-            {tr}Show pertinence{/tr}:
-          </td>
-          <td>
-            <input type="checkbox" name="feature_search_show_pertinence"
-              {if $prefs.feature_search_show_pertinence eq 'y'}checked="checked"{/if}/>
-          </td>
-        </tr>
-        <tr>
-          <td class="form">
-            {tr}Show object type{/tr}:
-          </td>
-          <td>
-            <input type="checkbox" name="feature_search_show_object_type"
-              {if $prefs.feature_search_show_object_type eq 'y'}checked="checked"{/if}/>
-          </td>
-        </tr>
-        <tr>
-          <td class="form">
-            {tr}Show last modification date{/tr}:
-          </td>
-          <td>
-            <input type="checkbox" name="feature_search_show_last_modification"
-              {if $prefs.feature_search_show_last_modification eq 'y'}checked="checked"{/if}/>
-          </td>
-        </tr>
         
         <tr>
-          <td colspan="2" class="input_submit_container"><input type="submit" name="searchprefs" value="{tr}Change settings{/tr}" /></td>
+          <td colspan="2" class="button"><input type="submit" name="searchprefs" value="{tr}Change settings{/tr}" /></td>
         </tr>
       </table>
     </form>

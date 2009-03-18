@@ -106,65 +106,69 @@ class Comments extends TikiLib {
 	return $this->getOne("select count(*) from `tiki_forum_reads` where `user`=? and `threadId`=?",array($user,$threadId));
     }
 
-	/* Add an attachment to a post in a forum */
-	function add_thread_attachment( $forum_info, $threadId, &$errors, $fp = '', $data = '', $name, $type, $size, $inbound_mail = 0, $qId=0 ) {
-		global $smarty, $tiki_p_admin_forum, $tiki_p_forum_attach, $smarty;
+    function add_thread_attachment( $forum_info, $threadId, $fp = '', $data = '', $name, $type, $size, $inbound_mail = 0 ) {
+	global $smarty, $tiki_p_admin_forum, $tiki_p_forum_attach;
 
-		if( !($forum_info['att'] == 'att_all'
-			|| ($forum_info['att'] == 'att_admin' && $tiki_p_admin_forum == 'y')
-			|| ($forum_info['att'] == 'att_perm' && $tiki_p_forum_attach == 'y') ))	{
-			$smarty->assign('errortype', 401);
-			$smarty->assign('msg', tra('Permission denied'));
-			$smarty->display("error.tpl");
-			die;
-		}
-		if (!empty($prefs['forum_match_regex']) && !preg_match($prefs['forum_match_regex'], $name)) {
-			$errors[] = tra('Invalid filename (using filters for filenames)');
-			return 0;
-		}
-		if ($size > $forum_info['att_max_size'] && ! $inbound_mail ) {
-			$errors[] = tra('Cannot upload this file maximum upload size exceeded');
-			return 0;
-		}
-		$fhash = '';
-		if ($forum_info['att_store'] == 'dir') {
-			$fhash = md5(uniqid('.'));
-			// Just in case the directory doesn't have the trailing slash
-			if (substr($forum_info['att_store_dir'], strlen($forum_info['att_store_dir']) - 1, 1) == '\\') {
-				$forum_info['att_store_dir'] = substr($forum_info['att_store_dir'],	0, strlen($forum_info['att_store_dir']) - 1). '/';
-			} elseif (substr($forum_info['att_store_dir'], strlen($forum_info['att_store_dir']) - 1, 1) != '/') {
-				$forum_info['att_store_dir'] .= '/';
-			}
+	// Deal with attachment
+	if( $forum_info['att'] == 'att_all'
+		    || ($forum_info['att'] == 'att_admin' && $tiki_p_admin_forum == 'y')
+		    || ($forum_info['att'] == 'att_perm' && $tiki_p_forum_attach == 'y') )
+	{
 
-			@$fw = fopen($forum_info['att_store_dir'] . $fhash, "wb");
-			if (!$fw && ! $inbound_mail ) {
-				$errors[] = tra('Cannot write to this file:').' '.$forum_info['att_store_dir'] . $fhash;
-				return 0;
-			}
-		}
-		if( $fp ) {
-			while (!feof($fp)) {
-				if ($forum_info['att_store'] == 'db') {
-					$data .= fread($fp, 8192 * 16);
-				} else {
-					$data = fread($fp, 8192 * 16);
-					fwrite($fw, $data);
-				}
-			}
-			fclose ($fp);
-		} else {
-			if ($forum_info['att_store'] == 'dir') {
-				fwrite($fw, $data);
-			}
+	    $fhash = '';
+	    if ($forum_info['att_store'] == 'dir') {
+		$fhash = md5(uniqid('.'));
+		// Just in case the directory doesn't have the trailing slash
+		if (substr($forum_info['att_store_dir'], strlen($forum_info['att_store_dir']) - 1, 1) == '\\') {
+		    $forum_info['att_store_dir'] = substr($forum_info['att_store_dir'],
+			    0, strlen($forum_info['att_store_dir']) - 1). '/';
+		} elseif (
+			substr($forum_info['att_store_dir'], strlen($forum_info['att_store_dir']) - 1, 1) != '/') {
+		    $forum_info['att_store_dir'] .= '/';
 		}
 
-		if ($forum_info['att_store'] == 'dir') {
-			fclose ($fw);
-			$data = '';
+		@$fw = fopen($forum_info['att_store_dir'] . $fhash, "wb");
+		if (!$fw && ! $inbound_mail ) {
+		    $smarty->assign('msg', tra('Cannot write to this file: '). $forum_info['att_store_dir'] . $fhash);
+		    $smarty->display("error.tpl");
+		    die;
 		}
+	    }
+	    if( $fp )
+	    {
+		while (!feof($fp)) {
+		    if ($forum_info['att_store'] == 'db') {
+			$data .= fread($fp, 8192 * 16);
+		    } else {
+			$data = fread($fp, 8192 * 16);
+			fwrite($fw, $data);
+		    }
+		}
+		fclose ($fp);
+	    } else {
+	    	if ($forum_info['att_store'] == 'dir') {
+			fwrite($fw, $data);
+		}
+	    }
 
-		return $this->attach_file($threadId, $qId, $name, $type, $size, $data, $fhash, $forum_info['att_store_dir'], $forum_info['forumId']);
+	    if ($forum_info['att_store'] == 'dir') {
+		fclose ($fw);
+		$data = '';
+	    }
+
+	    if ($size > $forum_info['att_max_size'] && ! $inbound_mail ) {
+		$smarty->assign('msg', tra('Cannot upload this file maximum upload size exceeded'));
+		$smarty->display("error.tpl");
+		die;
+	    }
+
+	    return $this->attach_file($threadId, 0, $name, $type, $size, $data,
+		    $fhash, $forum_info['att_store_dir'], $_REQUEST['forumId']);
+	/* attachment */
+	} else {
+	    return false;
 	}
+    }
 
     function attach_file($threadId, $qId, $name, $type, $size, $data, $fhash, $dir, $forumId) {
 	if ($fhash) {
@@ -178,7 +182,6 @@ class Comments extends TikiLib {
 		    `forumId`)
 	    values(?,?,?,?,?,?,?,?,?,?)";
 	$this->query($query,array($threadId,$qId,$name,$type,$size,$data,$fhash,$this->now,$dir,$forumId));
-	return true;
 	// Now the file is attached and we can proceed.
     }
 
@@ -302,74 +305,68 @@ class Comments extends TikiLib {
 	if (!$pop3)
 	    return;
 
-	$mailSum = $pop3->numMsg();
-	
-	//we don't want the operation to time out... this would result in the same messages being imported over and over...
-	//(messages are only removed from the pop server on a gracefull connection termination... ie .not php or webserver a timeout)
-	//$maximport should be in a admin config screen, but I don't know how to do that yet.
-	$maxImport = 10;
-	if ($mailSum > $maxImport ) $mailSum = $maxImport;
-	
-	for ($i = 1; $i <= $mailSum; $i++) {
-	//echo 'loop ' . $i;
-		
-		$aux = $pop3->getParsedHeaders( $i );
-		
+	$mailsum = $pop3->numMsg();
+
+	$pop3->disconnect();
+
+	for ($i = 1; $i <= $mailsum; $i++) {
+
+	    // Just changed the code to close and re-open the POP3 session for
+	    // each message; it used to try to retrieve everything in one
+	    // session.
+	    //
+	    // We close and re-open for each message because POP3 won't
+	    // delete mail until the client quits (so you can back out of
+	    // accidental deletions in a real user client).  This doesn't apply
+	    // here, and as it stands if the mailbox gets very full, we end up
+	    // hitting the mailbox over and over without changing anything,
+	    // because eventually the session times out.
+	    //
+	    // As a side effect, $i doesn't really get used (we're always
+	    // retrieving the first message).
+	    //
+	    // -Robin Powell, 8 Nov 2004
+
+	    $pop3->connect($info["inbound_pop_server"]);
+	    $pop3->login($info["inbound_pop_user"], $info["inbound_pop_password"]);
+
+	    $aux = $pop3->getParsedHeaders( 1 );
+
 	    // If the connection is done, or the mail has an error, or whatever,
 	    // we try to delete the current mail (because something is wrong with it)
 	    // and continue on. --rlpowell
 	    if( $aux == FALSE ) {
-			$pop3->deleteMsg( $i );
-			continue;
+		$pop3->deleteMsg( 1 );
+		continue;
 	    }
 
-		//echo '<pre>';
-		//print_r ($aux);
-		//echo '</pre>';
-		
 	    if (!isset($aux['From']))
 	    {
-			if( isset($aux['Return-path']) )
-			{
-				$aux['From'] = $aux['Return-path'];
-			}
-			else
-			{
-				$aux['From'] = "";
-				$aux['Return-path'] = "";
-			}
+	    	if( isset($aux['Return-path']) )
+		{
+		    $aux['From'] = $aux['Return-path'];
+		} else {
+		    $aux['From'] = "";
+		    $aux['Return-path'] = "";
+		}
 	    }
-		
-		//try to get the date from the email:
-		$postDate = strtotime($aux['Date']);
-		if ($postDate == false) $postDate = $this->now;
-		
-		//save the original email address, if we don't get a user match, then we
-		//can at least give some info about the poster.
-		$original_email = $aux["From"];
-		
-		//fix mailman addresses, or there is no chance to get a match
-		$aux["From"] = str_replace(' at ', '@', $original_email);
-		
 
 	    preg_match('/<?([-!#$%&\'*+\.\/0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'*+\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\.\/0-9=?A-Z^_`a-z{|}~]+)>?/',$aux["From"],$mail);
 
-	    // should we throw out emails w/ invalid (possibly obfusicated) email addressses?
-		//this should be an admin option, but I don't know how to put it there yet.
-		$throwOutInvalidEmails = false;
+	    // If we don't actually have a mail, try again
 	    if( ! array_key_exists( 1, $mail ) )
 	    {
-			if ( $throwOutInvalidEmails ) continue;
+	    	continue;
 	    }
-		
-	$email = $mail[1];
-			
-	    $full = $pop3->getMsg( $i );
-	    $message = $pop3->getBody( $i );
 
-	    //print( "<pre>" );
-	    //print_r( $full );
-	    //print( "</pre>" );
+	    $email = $mail[1];
+			
+	    $full = $pop3->getMsg( 1 );
+	    $message = $pop3->getBody( 1 );
+
+	    // print( "<pre>" );
+	    // print_r( $full );
+	    // print( "</pre>" );
 
 	    $output = mime::decode($full);
 	    //unset ($parts);
@@ -418,8 +415,8 @@ class Comments extends TikiLib {
 	    // Determine user from email
 	    $userName = $this->getOne("select `login` from `users_users` where `email`=?",array($email));
 
-		//use anonomus name feature if we don't have a real name
-	    if (!$userName) $anonName = $original_email;
+	    if (!$userName)
+		$user = '';
 
 	    // Determine if the thread already exists.
 	    $parentId = $this->getOne(
@@ -435,10 +432,6 @@ class Comments extends TikiLib {
 
 	    if (!$parentId)
 	    {
-/*		
-		This doesn't make any sense to me... why would we say an inbound email is a'thread to discuss a page'?
-		I've updated this to just make a new thread w/ the original email info by seting $parentId = 0
-		
 		// No thread already; create it.
 
 		$temp_msid = '';
@@ -454,22 +447,18 @@ class Comments extends TikiLib {
 
 		// First post is in reply to this one
 		$in_reply_to = $temp_msid;
-*/
-		$parentId = 0;
-
 	    }
 
 	    // post
 	    $threadid = $this->post_new_comment( 'forum:' . $forumId,
 		    $parentId, $userName, $title, $body,
-		    $message_id, $in_reply_to, 'n', '', '', '', $anonName, $postDate);
+		    $message_id, $in_reply_to);
 
 	    $this->register_forum_post($forumId,$parentId);
 
 	    // Process attachments
 	    if( array_key_exists( 'parts', $output ) && count( $output['parts'] ) > 1 ) {
 		$forum_info = $this->get_forum( $forumId );
-		$errors = aray();
 		foreach( $output['parts'] as $part ) {
 		    if (array_key_exists( 'disposition', $part )) {
 				if ($part['disposition'] == 'attachment') {
@@ -478,10 +467,10 @@ class Comments extends TikiLib {
 					} else {
 						$part_name = "Unnamed File";
 					}
-					$this->add_thread_attachment($forum_info, $threadid, $errors, '', $part['body'],	$part_name, $part['type'], strlen( $part['body'] ),	1 );
+					$this->add_thread_attachment($forum_info, $threadid, '', $part['body'],	$part_name, $part['type'], strlen( $part['body'] ),	1 );
 				} elseif ($part['disposition'] == 'inline') {
 					foreach ($part['parts'] as $p) {
-						$this->add_thread_attachment($forum_info, $threadid, $errors, '', $p['body'], '-', $p['type'], strlen( $p['body'] ),	1 );
+						$this->add_thread_attachment($forum_info, $threadid, '', $p['body'], '-', $p['type'], strlen( $p['body'] ),	1 );
 					}
 				}
 		    }
@@ -500,14 +489,19 @@ class Comments extends TikiLib {
 			$title, $message_id, $in_reply_to,
 			$threadid, $parentId);
 	    }
-		$pop3->deleteMsg( $i );
+
+
+		$pop3->deleteMsg( 1 );
+
+	    $pop3->disconnect();
+
 	}
-	$pop3->disconnect();
+
     }
 
     /* queue management */
     function replace_queue($qId, $forumId, $object, $parentId, $user, $title, $data, $type = 'n', $topic_smiley = '', $summary = '',
-						   $topic_title = '', $in_reply_to = '', $anonymous_name='', $tags='', $email='') {
+	    $topic_title = '', $in_reply_to = '') {
 	// timestamp
 
 	$hash2 = md5($title . $data);
@@ -515,9 +509,6 @@ class Comments extends TikiLib {
 	if ($qId == 0 && $this->getOne("select count(*) from
 		    `tiki_forums_queue` where `hash`=?",array($hash2)))
 	    return false;
-	if (!$user && $anonymous_name) {
-		$user = $anonymous_name;
-	}
 
 	if ($qId) {
 	    $query = "update `tiki_forums_queue` set
@@ -533,24 +524,22 @@ class Comments extends TikiLib {
 	    `topic_smiley`=?,
 	    `summary` = ?,
 	    `timestamp` = ?,
-	    `in_reply_to` = ?,
-	    `tags` = ?,
-	    `email` = ?,
+	    `in_reply_to` = ?
 		where `qId`=?
 		";
 
-	    $this->query($query,array($object,$parentId,$user,$title,$data,$forumId,$type,$hash2,$topic_title,$topic_smiley,$summary,(int)$this->now,$in_reply_to,$tags, $email, $qId));
+	    $this->query($query,array($object,$parentId,$user,$title,$data,$forumId,$type,$hash2,$topic_title,$topic_smiley,$summary,(int)$this->now,$in_reply_to,$qId));
 	    return $qId;
 	} else {
 	    $query = "insert into
 		`tiki_forums_queue`(`object`, `parentId`, `user`,
 			`title`, `data`, `type`, `topic_smiley`, `summary`,
-			`timestamp`, `topic_title`, `hash`, `forumId`, `in_reply_to`, `tags`, `email`)
-		values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			`timestamp`, `topic_title`, `hash`, `forumId`, `in_reply_to`)
+		values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	    $this->query($query, array($object, $parentId, $user,
 			$title, $data, $type, $topic_smiley, $summary, (int)$this->now,
-								   $topic_title, $hash2, $forumId, $in_reply_to, $tags, $email));
+			$topic_title, $hash2, $forumId, $in_reply_to));
 	    $qId = $this->getOne("select max(`qId`) from
 		    `tiki_forums_queue` where `hash`=? and
 		    `timestamp`=?",array($hash2,(int)$this->now));
@@ -570,7 +559,7 @@ class Comments extends TikiLib {
 	    $findesc = '%' . $find . '%';
 
 	    $mid = " and `title` like $findesc or `data` like $findesc";
-	    $bindvars=array($object,$findesc,$findesc);
+	    $bindvars=array($findesc,$findesc,$object);
 	} else {
 	    $mid = "";
 	    $bindvars=array($object);
@@ -615,48 +604,30 @@ class Comments extends TikiLib {
 
     //Approve queued message -> post as new comment
     function approve_queued($qId) {
-		global $userlib, $tikilib, $prefs;
 	$info = $this->queue_get($qId);
 
 	$message_id = '';
-	if ($userlib->user_exists($info['user'])) {
-		$u = $w = $info['user'];
-		$a = '';
-	} else {
-		$u = '';
-		$a = $info['user'];
-		$w = $a. ' '. tra('(not registered)', $prefs['site_language']);
-	}
 	$threadId = $this->post_new_comment(
 		'forum:' . $info['forumId'], $info['parentId'],
-		$u, $info['title'], $info['data'], 
+		$info['user'], $info['title'], $info['data'], 
 		$message_id, $info['in_reply_to'],
 		$info['type'],
-		$info['summary'], $info['topic_smiley'], '', $a
+		$info['summary'], $info['topic_smiley']
 		);
-	if (!$threadId) {
-		return null;
-	}
-	if ($info['email']) {
-		$tikilib->add_user_watch($w, 'forum_post_thread', $threadId, 'forum topic', '' . ':' . $info['title'], 'tiki-view_forum_thread.php?forumId=' . $info['forumId'] . '&amp;comments_parentId=' . $threadId, $info['email']);
-	}
-	if ($info['tags']) {
-		$cat_type = 'forum post';
-		$cat_objid = $threadId;
-		$cat_desc = substr($info['data'],0,200);
-		$cat_name = $info['title'];
-		$cat_href='tiki-view_forum_thread.php?comments_parentId=' . $threadId . '&forumId=' . $info['forumId'];
-		$_REQUEST['freetag_string'] = $info['tags'];
-		include ('freetag_apply.php');
-	}
-	$query = "update `tiki_forum_attachments` set `threadId`=?, `qId`=? where `qId`=?";
-	$this->query($query, array($threadId, 0, $qId));
 	$this->remove_queued($qId);
 
-	return $threadId;
+	/* This all looks redundant to me -dheltzel
+	   if ($threadId) {
+	   $query = "update `tiki_forum_attachments` set `threadId`=$threadId where `qId`=$qId";
+
+	   $this->query($query);
+	   $query = "delete from `tiki_forum_attachments` where `qId`=$qId";
+	   $this->query($query);
+	   }
+	 */
     }
 
-    function get_forum_topics($forumId, $offset = 0, $max = -1, $sort_mode = 'commentDate_asc', $include_archived = false, $who = '', $type = '', $reply_state = '') {
+    function get_forum_topics($forumId, $offset = 0, $max = -1, $sort_mode = 'commentDate_asc', $include_archived = false) {
 	if ($sort_mode == 'points_asc') {
 	    $sort_mode = 'average_asc';
 	}
@@ -668,74 +639,51 @@ class Comments extends TikiLib {
 	    $time_cond = '';
 	    $bind_time = array();
 	}
-	if (!empty($who)) {
-		$time_cond .= ' and a.`threadId` IN (';
-		//get a list of threads the user has posted in
-		//this needs to be a separate query otherwise it'll run once for every row in the db!
-		$user_thread_ids_query = "SELECT DISTINCT IF(parentId=0, threadId, parentId) threadId FROM tiki_comments WHERE object = ? AND userName = ? ORDER BY threadId DESC";
-		$user_thread_ids_params = array($forumId, $who);
-		$user_thread_ids_result = $this->query($user_thread_ids_query, $user_thread_ids_params, 1000);
-		if ($user_thread_ids_result->numRows() == 0) {
-			return array();
-		}
-		$user_thread_ids = array();
-	    while ($res = $user_thread_ids_result->fetchRow()) {
-			$user_thread_ids[] = $res['threadId'];
-		}
-		$time_cond .= implode(",", $user_thread_ids);
-		$time_cond .= ") ";
-	}
-	if ($reply_state == 'none') {
-		$time_cond .= ' and  (SELECT count(b.`threadId`) as replies from `tiki_comments` b where `parentId`=a.`threadId`) =0  ';
-	}
-	if (!empty($type)) {
-		$time_cond .= ' and a.`type` = ? ';
-		$bind_time[] = $type;
-	}
-		
+
 	$ret = array();
-	$query = "select a.`threadId`,a.`object`,a.`objectType`,a.`parentId`,
+	foreach (array('=', '<>') as $stickytest) {
+	    $query = "select a.`threadId`,a.`object`,a.`objectType`,a.`parentId`,
 	    a.`userName`,a.`commentDate`,a.`hits`,a.`type`,a.`points`,
 	    a.`votes`,a.`average`,a.`title`,a.`data`,a.`hash`,a.`user_ip`,
 	    a.`summary`,a.`smiley`,a.`message_id`,a.`in_reply_to`,a.`comment_rating`,".
 		$this->ifNull("a.`archived`", "'n'")." as `archived`,".
-		$this->ifNull("max(b.`commentDate`)","a.`commentDate`")." as `lastPost`,".
-	    $this->ifNull("a.`type`", "'s'")." as `sticky`,
+		$this->ifNull("max(b.`commentDate`)","a.`commentDate`")." as `lastPost`,
 	    count(b.`threadId`) as `replies`
 		from `tiki_comments` a left join `tiki_comments` b 
 		on b.`parentId`=a.`threadId`
 		where a.`object`=?"
 		.(( $include_archived ) ? '' : ' and (a.`archived` is null or a.`archived`=?)')
-		." and a.`objectType` = 'forum'
+		." and a.`type` $stickytest ?  and a.`objectType` = 'forum'
 		and a.`parentId` = ? $time_cond group by a.`threadId`";
-		
-
-	if($this->driver != 'sybase') {
+	    global $ADODB_LASTDB;
+	    if($ADODB_LASTDB != 'sybase') {
 		$query .=",a.`object`,a.`objectType`,a.`parentId`,a.`userName`,a.`commentDate`,a.`hits`,a.`type`,a.`points`,a.`votes`,a.`average`,a.`title`,a.`data`,a.`hash`,a.`user_ip`,a.`summary`,a.`smiley`,a.`message_id`,a.`in_reply_to`,a.`comment_rating` ";
-	}
-	$query .="order by `sticky` desc, ".$this->convert_sortmode($sort_mode).", `threadId`";
+	    }
+	    $query .="order by ".$this->convert_sortmode($sort_mode).", `threadId`";
 
-	$bind_vars = array((string) $forumId);
-	if ( ! $include_archived ) $bind_vars[] = 'n';
-	$bind_vars[] = 0;
+	    $bind_vars = array((string) $forumId);
+	    if ( ! $include_archived ) $bind_vars[] = 'n';
+	    $bind_vars[] = 's';
+	    $bind_vars[] = 0;
 
-	$result = $this->query($query, array_merge($bind_vars, $bind_time), $max, $offset);
+	    $result = $this->query($query, array_merge($bind_vars, $bind_time), $max, $offset);
 
-	while ($res = $result->fetchRow()) {
+	    while ($res = $result->fetchRow()) {
 		$tid = $res['threadId'];
 		if ($res["lastPost"]!=$res["commentDate"]) {
-			// last post data is for tiki-view_forum.php. 
-			// you can see the title and author of last post
-			$query = "select * from `tiki_comments`
+		    // last post data is for tiki-view_forum.php. 
+		    // you can see the title and author of last post
+		    $query = "select * from `tiki_comments`
 			where `parentId` = ? and `commentDate` = ?
 			order by `threadId` desc";
-			$r2 = $this->query($query, array($tid, $res['lastPost']));
-			$res['lastPostData'] = $r2->fetchRow();
+		    $r2 = $this->query($query, array($tid, $res['lastPost']));
+		    $res['lastPostData'] = $r2->fetchRow();
 		}
 
 		// Has the user read it?
 		$res['is_marked'] = $this->is_marked($tid);
 		$ret[] = $res;
+	    }
 	}
 
 	return $ret;
@@ -1001,9 +949,9 @@ class Comments extends TikiLib {
 		    if ( $res['comments'] > 0 ) {
 			    $result2 = $this->query(
 				'select * from `tiki_comments` where `object`= ? and `objectType` = ? order by commentDate desc',
-				array($res['forumId'], 'forum'));
-
-
+				array($res['forumId'], 'forum', (int)$res['lastPost']),
+				1
+			    );
 			    $res['lastPostData'] = $result2->fetchRow();
 			    $res['lastPost'] = $res['lastPostData']['commentDate'];
 		    } else {
@@ -1287,15 +1235,13 @@ class Comments extends TikiLib {
 	$ret = array();
 	
 	while ($res = $result->fetchRow()) {
-		if ($this->user_has_perm_on_object($user, $res['forumId'], 'forum', 'tiki_p_forum_read')) {
-			$ret[] = $res;
-		}
+	    $ret[] = $res;
 	}
 	
 	return $ret;
     }
     // FORUMS END
-    function get_comment($id, $message_id=null, $forum_info=null) {
+    function get_comment($id, $message_id=null) {
 	if ($message_id) {
 		$query = "select * from `tiki_comments` where `message_id`=?";
 		$result = $this->query($query, array($message_id ) );
@@ -1306,7 +1252,7 @@ class Comments extends TikiLib {
 	}
 	$res = $result->fetchRow();
 	if($res) { //if there is a comment with that id
-	   $this->add_comments_extras($res, $forum_info);
+	   $this->add_comments_extras($res);
 	}
 
 	return $res;
@@ -1322,7 +1268,7 @@ class Comments extends TikiLib {
 		return $result;
 	}
 
-    function add_comments_extras(&$res, $forum_info=null) { 
+    function add_comments_extras(&$res) { 
 	    // this function adds some extras to the referenced array. 
 	    // This array should already contain the contents of the tiki_comments table row
 	    // used in $this->get_comment and $this->get_comments
@@ -1331,18 +1277,18 @@ class Comments extends TikiLib {
 	    $res["parsed"] = $this->parse_comment_data($res["data"]);
 
 	    // these could be cached or probably queried along with the original query of the tiki_comments table
-	    if ($forum_info == null || $forum_info['ui_posts'] == 'y' || $forum_info['ui_level'] == 'y') {
-			$result2=$this->query("select `posts`, `level` from `tiki_user_postings` where `user`=?", array( $res['userName'] ) );
+	    $result2=$this->query("select `posts`, `level` from `tiki_user_postings` where `user`=?",
+	    	array( $res['userName'] ) );
             $res2=$result2->fetchRow();
-			$res['user_posts'] = $res2['posts'];
-			$res['user_level'] = $res2['level'];
-		}
+	    $res['user_posts'] = $res2['posts'];
+	    $res['user_level'] = $res2['level'];
+
 	    // 'email is public' never has 'y' value, because it is now used to choose the email scrambling method
 	    // ... so, we need to test if it's not equal to 'n'
-	    if (($forum_info == null || $forum_info['ui_email'] == 'y') && $this->get_user_preference($res['userName'], 'email is public', 'n') != 'n') {
-			$res['user_email'] = $this->getOne("select `email` from `users_users` where `login`=?", array( $res['userName'] ) );
+	    if ($this->get_user_preference($res['userName'], 'email is public', 'n') != 'n') {
+		$res['user_email'] = $this->getOne("select `email` from `users_users` where `login`=?", array( $res['userName'] ) );
 	    } else {
-			$res['user_email'] = '';
+		$res['user_email'] = '';
 	    }
 
 	    $res['attachments'] = $this->get_thread_attachments($res['threadId'], 0);
@@ -1371,31 +1317,16 @@ class Comments extends TikiLib {
 	return $ret;
     }
 
-    function count_comments($objectId, $approved = 'y') {
-	global $tiki_p_admin_comments;
-
-
+    function count_comments($objectId) {
 	$object = explode( ":", $objectId, 2);
-	$query = 'select count(*) from `tiki_comments` where `objectType`=?';
-	if ( $object[0] == 'topic' ) {
-		$bindvars = array('forum');
-		$query .= ' and `parentId`=?';
-
+	if ($object[0] == 'topic') {
+		$query = 'select count(*) from `tiki_comments` where `objectType`=? and `parentId`=?';
+		$cant = $this->getOne($query, array('forum', $object[1]));
 	} else {
-		$bindvars = array($object[0]);
-		$query .= ' and `object`=?';
+		$query = 'select count(*) from `tiki_comments` where `objectType`=? and `object`=?';
+		$cant = $this->getOne($query, $object );
 	}
-	$bindvars[] = $object[1];
-
-	if ( $tiki_p_admin_comments != 'y' ) {
-		$query .= ' and `approved`=?';
-		$bindvars[] = $approved;
-
-
-	}
-
-	return $this->getOne($query, $bindvars);
-
+	return $cant;
     }
 
     function count_comments_threads($objectId) {
@@ -1404,10 +1335,8 @@ class Comments extends TikiLib {
 	$cant = $this->getOne($query, $object );
 	return $cant;
     }
-	
-    function get_comment_replies($id, $sort_mode, $offset, $orig_offset, $maxRecords, $orig_maxRecords, $threshold = 0, $find = '', $message_id = "", $forum = 0, $approved = 'y' )
+    function get_comment_replies($id, $sort_mode, $offset, $orig_offset, $maxRecords, $orig_maxRecords, $threshold = 0, $find = '', $message_id = "", $forum = 0 )
     {
-	global $tiki_p_admin_comments;
 	$retval = array();
 
 	if( $maxRecords <= 0 && $orig_maxRecords != 0)
@@ -1432,20 +1361,15 @@ class Comments extends TikiLib {
 	} else {
 	    $query = $query . " where `parentId`=? and `average`>=? ";
 	}
-	$bind = array($real_id, (int)$threshold);
 
-	if ( $tiki_p_admin_comments != 'y' ) {
-		$query .= 'and `approved`=? ';
-		$bind[] = $approved;
-	}
 	if ($find)
 	{
 	    $findesc = '%' . $find . '%';
 
 	    $query = $query . " and (`title` like ? or `data` like ?) ";
-	    $bind[] = $findesc;
-	    $bind[] = $findesc;
-
+	    $bind=array($real_id, (int) $threshold, $findesc, $findesc);
+	} else {
+	    $bind=array($real_id, (int) $threshold );
 	}
 
 	$query = $query . " order by " . $this->convert_sortmode($sort_mode);
@@ -1612,11 +1536,10 @@ class Comments extends TikiLib {
 	$this->time_control = $time;
     }
 
-     function get_comments($objectId, $parentId, $offset = 0, $maxRecords = 0,
-	    $sort_mode = 'commentDate_asc', $find = '', $threshold = 0, $style = 'commentStyle_threaded', $reply_threadId=0, $approved='y')
+    function get_comments($objectId, $parentId, $offset = 0, $maxRecords = 0,
+	    $sort_mode = 'commentDate_asc', $find = '', $threshold = 0, $style = 'commentStyle_threaded', $reply_threadId=0)
     {
-	global $userlib, $tiki_p_admin_comments;
-
+	global $userlib;
 	// $start_time = microtime(true);
 	// Turn maxRecords into maxRecords + offset, so we can increment it without worrying too much.
 	$maxRecords = $offset + $maxRecords;
@@ -1655,19 +1578,11 @@ class Comments extends TikiLib {
 
 	// Break out the type and object parameters.
 	$object = explode( ":", $objectId, 2);
-	$bindvars = array_merge(array($object[0], $object[1], (float) $threshold), $bind_time);
 
-	if ( $tiki_p_admin_comments != 'y' ) {
-		$queue_cond = 'and tc1.`approved`=?';
-		$bindvars[] = $approved;
-	} else {
-		$queue_cond = '';
-	}
-
-	$query = "select count(*) from `tiki_comments` as tc1 where
-	    `objectType`=? and `object`=? and `average` < ? $time_cond $queue_cond";
-	$below = $this->getOne($query, $bindvars);
-
+	$query = "select count(*) from `tiki_comments` where
+	    `objectType`=? and `object`=? and `average` < ? $time_cond";
+	$below = $this->getOne($query, array_merge(
+		    array($object[0], $object[1], (float) $threshold), $bind_time) );
 
 	if ($find) {
 	    $findesc = '%' . $find . '%';
@@ -1681,10 +1596,7 @@ class Comments extends TikiLib {
 	    $mid = " where tc1.`objectType` = ? and tc1.`object`=? and tc1.`parentId`=? and tc1.`average`>=? ";
 	    $bind_mid=array($object[0], $object[1], (int) $parentId, (int) $threshold);
 	}
-	if ( $tiki_p_admin_comments != 'y' ) {
-		$mid .= ' '.$queue_cond;
-		$bind_mid[] = $approved;
-	}
+
 	// $end_time = microtime(true);
 
 	// print "TIME1 in get_comments: ".($end_time - $start_time)."\n";
@@ -1847,28 +1759,15 @@ class Comments extends TikiLib {
 
 	/* administrative functions to get all the comments of some types + enlarge find
 	 *  no perms checked as it is only for admin */
-	function get_all_comments($type, $offset = 0, $maxRecords = -1, $sort_mode = 'commentDate_asc', $find = '', $parent='', $approved='') {
-
+	function get_all_comments($type, $offset = 0, $maxRecords = -1, $sort_mode = 'commentDate_asc', $find = '', $parent='') {
 		$join = '';
-		if ( empty($type) ) {
-			// If no type has been specified, get all comments except those used for forums which must not be handled here
-			$mid = 'tc.`objectType`!=?';
-			$bindvars[] = 'forum';
+		if (is_array($type)) {
+			$mid = 'tc.`objectType`in ('.implode(',', array_fill(0, count($type),'?')).')';
+			$bindvars = $type;
 		} else {
-			if (is_array($type)) {
-				$mid = 'tc.`objectType` in ('.implode(',', array_fill(0, count($type),'?')).')';
-				$bindvars = $type;
-			} else {
-				$mid = 'tc.`objectType`=?';
-				$bindvars[] = $type;
-			}
+			$mid = 'tc.`objectType`=?';
+			$bindvars[] = $type;
 		}
-
-		// Blog hack -- to fix
-		foreach ( $bindvars as $k => $v ) {
-			if ( $v == 'blog post' ) $bindvars[$k] = 'post';
-		}
-
 		if ($find) {
 			$find = "%$find%";
 			$mid .= ' and (tc.`title` like ? or tc.`data` like ? or tc.`userName` like ? or  tc.`user_ip` like ? or tc.`object` like ?)';
@@ -1878,16 +1777,9 @@ class Comments extends TikiLib {
 			$bindvars[] = $find;
 			$bindvars[] = $find;
 		}
-
-		if ( ! empty($approved) ) {
-			$mid .= ' and tc.`approved`=?';
-			$bindvars[] = $approved;
-		}
-
 		if ($parent) {
 			$join = ' left join `tiki_comments` tc2 on(tc2.`threadId`=tc.`parentId`)';
 		}
-
 		$query = "select tc.*, tc2.`title` as parentTitle from `tiki_comments` tc $join where $mid order by ".$this->convert_sortmode($sort_mode);
 		$result = $this->query($query, $bindvars, $maxRecords, $offset);
 		$query = "select count(*) from `tiki_comments` tc where $mid";
@@ -1895,16 +1787,15 @@ class Comments extends TikiLib {
 		$ret = array();
 		while ($res = $result->fetchRow()) {
 			switch ($res['objectType']) {
-				case 'wiki page': $res['href'] = 'tiki-index.php?page='; break;
-				case 'article': $res['href'] = 'tiki-read_article.php?articleId='; break;
-				case 'faq': $res['href'] = 'tiki-view_faq.php?faqId='; break;
-				case 'blog': $res['href'] = 'tiki-view_blog.php?blogId='; break;
-				case 'post': $res['href'] = 'tiki-view_blog_post.php?postId='; break;
-				case 'forum': $res['href'] = 'tiki-view_forum_thread.php?forumId='; break;
-				case 'file gallery': $res['href'] = 'tiki-list_file_gallery.php?galleryId='; break;
-				case 'image gallery': $res['href'] = 'tiki-browse_gallery.php?galleryId='; break;
+				case 'wiki page': $res['href'] = 'tiki-index.php?page='.$res['object'].'&amp;comzone=show#threadId'.$res['threadId']; break;
+				case 'article': $res['href'] = 'tiki-read_article.php?articleId='.$res['object'].'&amp;comzone=show#threadId'.$res['threadId']; break;
+				case 'faq': $res['href'] = 'tiki-view_faq.php?faqId='.$res['object'].'&amp;comzone=show#threadId'.$res['threadId']; break;
+				case 'blog': $res['href'] = 'tiki-view_blog.php?blogId='.$res['object'].'&amp;comzone=show#threadId'.$res['threadId']; break;
+				case 'post': $res['href'] = 'tiki-view_blog_post.php?postId='.$res['object'].'&amp;comzone=show#threadId'.$res['threadId']; break;
+				case 'forum': $res['href'] = 'tiki-view_forum_thread.php?forumId='.$res['object'].'&amp;comzone=show#threadId'.$res['threadId']; break;
+				case 'file gallery': $res['href'] = 'tiki-list_file_gallery.php?galleryId='.$res['object'].'&amp;comzone=show#threadId'.$res['threadId']; break;
+				case 'image gallery': $res['href'] = 'tiki-browse_gallery.php?galleryId='.$res['object'].'&amp;comzone=show#threadId'.$res['threadId']; break;
 			}
-			if ( isset($res['href']) ) $res['href'] .= $res['object'].'&amp;comzone=show';
 			$res['parsed'] = $this->parse_comment_data($res['data']);
 			$ret[] = $res;
 		}
@@ -2031,17 +1922,15 @@ class Comments extends TikiLib {
 
     function post_new_comment($objectId, $parentId, $userName,
 	    $title, $data, &$message_id, $in_reply_to = '', $type = 'n',
-	    $summary = '', $smiley = '', $contributions = '', $anonymous_name = '',
-		$postDate = ''
+	    $summary = '', $smiley = '', $contributions = '', $anonymous_name = ''
 	    )
     {
-	global $prefs, $tiki_p_admin_comments;
-	
-	if ($postDate == '') $postDate = $this->now;
-	
 	if (!$userName) {
-	    $_SESSION["lastPost"] = $postDate;
+	    $_SESSION["lastPost"] = $this->now;
 	}
+
+	if (!isset($_SERVER['REMOTE_ADDR']))
+	    $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 
 	// Check for banned userName or banned IP or IP in banned range
 
@@ -2050,8 +1939,7 @@ class Comments extends TikiLib {
 
 	if (!$userName) {
 		if ($anonymous_name) {
-			//$userName = $anonymous_name . ' ' . tra('(not registered)');
-			$userName = $anonymous_name;
+			$userName = $anonymous_name . ' ' . tra('(not registered)');
 		} else {
 	    	$userName = tra('Anonymous');
 		}
@@ -2064,7 +1952,7 @@ class Comments extends TikiLib {
 		$query = "update `tiki_user_postings` ".
 		    "set `last`=?, `posts` = `posts` + 1 where `user`=?";
 
-		$this->query($query, array( (int)$postDate, $userName ) );
+		$this->query($query, array( (int)$this->now, $userName ) );
 	    } else {
 		$posts = $this->getOne("select count(*) ".
 			"from `tiki_comments` where `userName`=?",
@@ -2076,7 +1964,7 @@ class Comments extends TikiLib {
 		$query = "insert into 
 		    `tiki_user_postings`(`user`,`first`,`last`,`posts`) 
 		    values( ?, ?, ?, ? )";
-		$this->query($query,  array($userName, (int) $postDate, (int) $postDate,(int) $posts) );
+		$this->query($query,  array($userName, (int) $this->now, (int) $this->now,(int) $posts) );
 	    }
 
 	    // Calculate max
@@ -2134,8 +2022,6 @@ class Comments extends TikiLib {
 
 	// Break out the type and object parameters.
 	$object = explode( ":", $objectId, 2);
-	// Handle comments moderation (this should not affect forums and user with admin rights on comments)
-	$approved = ( $tiki_p_admin_comments == 'y' || $object[0] == 'forum' || $prefs['feature_comments_moderation'] != 'y' ) ? 'y' : 'n';
 	// If this post was not already found.
 	if (!$result->numRows())
 	{
@@ -2144,15 +2030,15 @@ class Comments extends TikiLib {
 			`commentDate`, `userName`, `title`, `data`, `votes`,
 			`points`, `hash`, `parentId`, `average`, `hits`,
 			`type`, `summary`, `smiley`, `user_ip`,
-			`message_id`, `in_reply_to`, `approved`)
+			`message_id`, `in_reply_to`)
 		values ( ?, ?, ?, ?, ?, ?,
 			0, 0, ?, ?, 0, 0, ?, ?, 
-			?, ?, ?, ?, ?)";
+			?, ?, ?, ?)";
 	    $result = $this->query($query, 
 		    array( $object[0], (string) $object[1],(int) $this->now, $userName,
 			$title, $data, $hash, (int) $parentId, $type,
-			$summary, $smiley, $this->get_ip_address(),
-			$message_id, (string) $in_reply_to, $approved)
+			$summary, $smiley, $_SERVER["REMOTE_ADDR"],
+			$message_id, (string) $in_reply_to)
 		    );
 	}
 
@@ -2203,17 +2089,6 @@ class Comments extends TikiLib {
 	return $threadId;
     }
 
-	function approve_comment($threadId, $status = 'y') {
-		if ( $threadId == 0 ) return false;
-
-		$query = "UPDATE `tiki_comments` SET `approved`=? WHERE `threadId`=?";
-		return $this->query($query, array($status, (int)$threadId)) !== false;
-	}
-	function reject_comment($threadId) {
-		return $this->approve_comment($threadId, 'r');
-
-	}
-	
     function remove_comment($threadId) {
 	if ($threadId == 0)
 		return false;
@@ -2367,261 +2242,8 @@ class Comments extends TikiLib {
 		}
 		return $dirs;
 	}
-	function get_outbound_emails() {
-		$ret = array();
-		$query = "select `forumId`, `mail` as outbound_address from `tiki_forums` where `useMail`=? and `mail` != ''";
-		$result = $this->query($query, array('y'));
-		while ($res = $result->fetchRow()) {
-			$ret[] = $res;
-		}
-		$query = "select `forumId`, `outbound_address` from `tiki_forums` where `outbound_address` != '' and `outbound_address` is not null";
-		$result = $this->query($query);
-		while ($res = $result->fetchRow()) {
-			$ret[] = $res;
-		}
-		return $ret;
-	}
-	/* post a topic or a reply in forum
-	 * @param array forum_info 
-	 * @param array $params: list of options($_REQUEST)
- 	 * @return  the threadId
-	 * @return $feedbacks, $errors */
-	function post_in_forum($forum_info, &$params, &$feedbacks, &$errors) {
-		global $tiki_p_admin_forum, $tiki_p_forum_post_topic, $tiki_p_forum_post, $prefs, $user;
-
-		if (!empty($params['comments_grandParentId'])) {
-			$parent_id = $params['comments_grandParentId'];
-		} elseif (!empty($params['comments_parentId'])) {
-			$parent_id = $params['comments_parentId'];
-		} else {
-			$parent_id = 0;
-		}
-		if (!($tiki_p_admin_forum == 'y' || ($parent_id == 0 && $tiki_p_forum_post_topic == 'y') || ($parent_id > 0 && $tiki_p_forum_post == 'y'))) {
-			$errors[] = tra('Permission denied');
-			return 0;
-		}
-		if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $params['antibotcode'])) {
-			$errors[] = tra('You have mistyped the anti-bot verification code; please try again.');
-		}
-		if ($forum_info['controlFlood'] == 'y' && !$commentslib->user_can_post_to_forum($user, $forumId) ) {
-			$errors = sprintf(tra('Please wait %d secondes between posts'). $forum_info['floodInterval']);
-		}
-		if ($tiki_p_admin_forum != 'y' && $forum_info['forum_use_password'] != 'n' && $params['password'] != $forum_info['forum_password']) {
-			$errors[] = tra('Wrong password. Cannot post comment');
-		}
-		if ( $parent_id > 0 && $forum_info['is_flat'] == 'y' && $params['comments_grandParentId'] > 0 ) {
-			$errors[] = tra("This forum is flat and doesn't allow replies to other replies");
-		}
-		if ($prefs['feature_contribution'] == 'y' && $prefs['feature_contribution_mandatory_forum'] == 'y' && empty($params['contributions'])) {
-			$errors[] = tra('A contribution is mandatory');
-		}
-		if ( empty($params['comments_title']) || ( empty($params['comments_data']) && $prefs['feature_forums_allow_thread_titles'] != 'y' ) ) {
-			$errors[] = tra('You have to enter a title and text');
-		}
-		if (!empty($params['anonymous_email']) && !validate_email($params['anonymous_email'], $prefs['validateEmail'])) {
-			$errors[] = tra('Invalid Email');
-		}
-		//if ($threadId = $this->check_for_topic($params['comments_title'], $params['comments_data'])) {// Check if the thread/topic already exist
-		// what do we do???
-
-		if (!empty($errors)) {
-			return 0;
-		}
-		// Remove HTML tags and empty lines at the end of the posted comment
-		$params['comments_data'] = rtrim(strip_tags($params['comments_data'])); 
-		if ($tiki_p_admin_forum != 'y') {// non admin can only post normal
-			$params['comment_topictype'] = 'n';
-			if ($forum_info['topic_summary'] != 'y')
-				$params['comment_topicsummary'] = '';
-			if ($forum_info['topic_smileys'] != 'y')
-				$params['comment_topicsmiley'] = '';
-		}
-		if ( isset($params['comments_postComment_anonymous']) && ! empty($user) && $prefs['feature_comments_post_as_anonymous'] == 'y' ) {
-			$params['comments_postComment'] = $params['comments_postComment_anonymous'];
-			$user = '';
-		}
-		if (!isset($params['comment_topicsummary']))
-			$params['comment_topicsummary'] = '';
-		if (!isset($params['comment_topicsmiley']))
-			$params['comment_topicsmiley'] = '';
-		if ( isset($params['anonymous_name']) ) {
-			$params['anonymous_name'] = trim(strip_tags($params['anonymous_name']));
-		} else {
-			$params['anonymous_name'] = '';
-		}
-		if (!isset($params['freetag_string'])) {
-			$params['freetag_string'] = '';
-		}
-		if (!isset($params['anonymous_email'])) {
-			$params['anonymous_email'] = '';
-		}
-		if ( isset($params['comments_reply_threadId']) && ! empty($params['comments_reply_threadId']) ) {
-			$reply_info = $this->get_comment($params['comments_reply_threadId']);
-			$in_reply_to = $reply_info['message_id'];
-		} else {
-			$in_reply_to = '';
-		}
-		$comments_objectId = 'forum:'.$params['forumId'];
-
-		if (($tiki_p_forum_autoapp != 'y')
-			&& ($forum_info['approval_type'] == 'queue_all' || (!$user && $forum_info['approval_type'] == 'queue_anon'))) {
-			$threadId = 0;
-			$feedbacks[] = tra('Your message has been queued for approval, the message will be posted after a moderator approves it.');
-			$qId = $this->replace_queue(0, $forum_info['forumId'], $comments_objectId, $parent_id,
-				$user, $params['comments_title'], $params['comments_data'], $params['comment_topictype'],
-				$params['comment_topicsmiley'], $params['comment_topicsummary'], $params['comments_title'], $in_reply_to, $params['anonymous_name'], $params['freetag_string'], $params['anonymous_email']);
-		} else { // not in queue mode
-			$qId = 0;
-
-			if ($params['comments_threadId'] == 0) { // new post
-				$message_id = '';
-
-
-				// The thread/topic does not already exist
-				if( ! $params['comments_threadId'] ) {
-					$threadId =	$this->post_new_comment($comments_objectId, $parent_id, $user, $params['comments_title'], $params['comments_data'], $message_id, $in_reply_to,
-						$params['comment_topictype'],	$params['comment_topicsummary'], $params['comment_topicsmiley'], isset($params['contributions'])? $params['contributions']: '',	$params['anonymous_name']	);
-					// The thread *WAS* successfully created.
-
-					if( $threadId ) {
-
-						 // Deal with mail notifications.
-						include_once('lib/notifications/notificationemaillib.php');
-						sendForumEmailNotification('forum_post_topic', $params['forumId'], $forum_info, $params['comments_title'], $params['comments_data'], $user, $params['comments_title'], $message_id, $in_reply_to, $threadId, isset($params['comments_parentId'])?$params['comments_parentId']: 0, isset($params['contributions'])? $params['contributions']: '' );
-						// Set watch if requested
-						if ($prefs['feature_user_watches'] == 'y') {
-							if ($user && isset($params['set_thread_watch']) && $params['set_thread_watch'] == 'y') {
-								$tikilib->add_user_watch($user, 'forum_post_thread', $threadId, 'forum topic', $forum_info['name'] . ':' . $params['comments_title'], 'tiki-view_forum_thread.php?forumId=' . $forum_info['forumId'] . '&amp;comments_parentId=' . $threadId);
-							} elseif (!empty($params['anonymous_email'])) { // Add an anonymous watch, if email address supplied.
-								$tikilib->add_user_watch($params['anonymous_name']. ' ' . tra('(not registered)', $prefs['site_language']), 'forum_post_thread', $threadId, 'forum topic', $forum_info['name'] . ':' . $params['comments_title'], 'tiki-view_forum_thread.php?forumId=' . $forum_info['forumId'] . '&amp;comments_parentId=' . $threadId, $params['anonymous_email'], isset($prefs['language']) ? $prefs['language'] : '');
-							}
-						}
-
-						// TAG Stuff
-						$cat_type = 'forum post';
-						$cat_objid = $threadId;
-						$cat_desc = substr($params['comments_data'],0,200);
-						$cat_name = $params['comments_title'];
-						$cat_href='tiki-view_forum_thread.php?comments_parentId=' . $threadId . '&forumId=' . $params['forumId'];
-						include ('freetag_apply.php');
-					}
-				}
-
-				$this->register_forum_post($forum_info['forumId'], 0);
-			} elseif ($tiki_p_admin_forum == 'y' || $this->user_can_edit_post($user, $params['comments_threadId'])) {
-				$threadId = $params['comments_threadId'];
-				$this->update_comment($threadId, $params['comments_title'], '', ($params['comments_data']), $params['comment_topictype'], $params['comment_topicsummary'], $params['comment_topicsmiley'], $comments_objectId, isset($params['contributions'])? $params['contributions']: '');
-			}
-		}
-		if (!empty($threadId) || !empty($qId)) {
-			// PROCESS ATTACHMENT HERE
-			if (isset($_FILES['userfile1']) && !empty($_FILES['userfile1']['name'])) {
-				if (is_uploaded_file($_FILES['userfile1']['tmp_name'])) {
-					$fp = fopen($_FILES['userfile1']['tmp_name'], 'rb');
-					$ret = $this->add_thread_attachment($forum_info, $threadId, $errors, $fp, '',	$_FILES['userfile1']['name'], $_FILES['userfile1']['type'],	$_FILES['userfile1']['size'], 0, $qId );
-					fclose($fp);
-				} else {
-					$errors[] = $tikilib->uploaded_file_error($_FILES['userfile1']['error']);
-				}
-			} //END ATTACHMENT PROCESSING
-		}
-		if (!empty($errors)) {
-			return 0;
-		} elseif ($qId) {
-			return $qId;
-		} else {
-			return $threadId;
-		}
-	}
-	/* post a comment
-	 * @param string comments_objectId
-	 * @param array $params: list of options($_REQUEST)
- 	 * @return  the threadId
-	 * @return $feedbacks, $errors */
-	function post_in_object($comments_objectId, &$params, &$feedbacks, &$errors) {
-		global $smarty, $tiki_p_admin, $tiki_p_post_comments, $tiki_p_edit_comments, $prefs, $user;
-
-		if (!empty($params['comments_grandParentId'])) {
-			$parent_id = $params['comments_grandParentId'];
-		} elseif (!empty($params['comments_parentId'])) {
-			$parent_id = $params['comments_parentId'];
-		} else {
-			$parent_id = 0;
-		}
-		if (!($tiki_p_post_comments == 'y')) {
-			$smarty->assign('errortype', 401);
-			$smarty->assign('msg', tra('Permission denied'));
-			$smarty->display("error.tpl");
-			die;
-		}
-		if (!empty($params['comments_threadId'])) {
-			if (!($tiki_p_edit_comments == 'y' || $this->user_can_edit_post($user, $params['comments_threadId']))) {
-				$smarty->assign('errortype', 401);
-				$smarty->assign('msg', tra('Permission denied'));
-				$smarty->display("error.tpl");
-				die;
-			}
-		}
-				
-		if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $params['antibotcode'])) {
-			$errors[] = tra('You have mistyped the anti-bot verification code; please try again.');
-		}
-
-		if ($prefs['feature_contribution'] == 'y' && $prefs['feature_contribution_mandatory_comment'] == 'y' && empty($params['contributions'])) {
-			$errors[] = tra('A contribution is mandatory');
-		}
-		if ( empty($params['comments_title']) || ( empty($params['comments_data']) && $prefs['feature_forums_allow_thread_titles'] != 'y' ) ) {
-			$errors[] = tra('You have to enter a title and text');
-		}
-		if (!empty($params['anonymous_email']) && !validate_email($params['anonymous_email'], $prefs['validateEmail'])) {
-			$errors[] = tra('Invalid Email');
-		}
-		//if ($threadId = $this->check_for_topic($params['comments_title'], $params['comments_data'])) {// Check if the thread/topic already exist
-		// what do we do???
-
-		if (!empty($errors)) {
-			return 0;
-		}
-		// Remove HTML tags and empty lines at the end of the posted comment
-		$params['comments_data'] = rtrim(strip_tags($params['comments_data'])); 
-		if ( isset($params['anonymous_name']) ) {
-			$params['anonymous_name'] = trim(strip_tags($params['anonymous_name']));
-		} else {
-			$params['anonymous_name'] = '';
-		}
-		if (!isset($params['freetag_string'])) {
-			$params['freetag_string'] = '';
-		}
-		if (!isset($params['anonymous_email'])) {
-			$params['anonymous_email'] = '';
-		}
-		if ( isset($params['comments_reply_threadId']) && ! empty($params['comments_reply_threadId']) ) {
-			$reply_info = $this->get_comment($params['comments_reply_threadId']);
-			$in_reply_to = $reply_info['message_id'];
-		} else {
-			$in_reply_to = '';
-		}
-		if ( isset($params['comments_postComment_anonymous']) && ! empty($user) && $prefs['feature_comments_post_as_anonymous'] == 'y' ) {
-			$params['comments_postComment'] = $params['comments_postComment_anonymous'];
-			$user = '';
-		}
-		if ($params['comments_threadId'] == 0) { // new post
-			$message_id = '';
-
-			$threadId =	$this->post_new_comment($comments_objectId, $parent_id, $user, $params['comments_title'], $params['comments_data'], $message_id, $in_reply_to,
-					'n', '', '', isset($params['contributions'])? $params['contributions']: '',	$params['anonymous_name']	);
-
-		} elseif ($tiki_p_edit_comments == 'y' || $this->user_can_edit_post($user, $params['comments_threadId'])) {
-			$threadId = $params['comments_threadId'];
-			$this->update_comment($threadId, $params['comments_title'], '', ($params['comments_data']), 'n', '', '', $comment_objectId, isset($params['contributions'])? $params['contributions']: '');
-		}
-		if (!empty($errors)) {
-			return 0;
-		} else {
-			return $threadId;
-		}
-	}
 }
+
 function compare_replies($ar1, $ar2) {
     if (($ar1['type'] == 's' && $ar2['type'] == 's') ||
 	    ($ar1['type'] != 's' && $ar2['type'] != 's')) {

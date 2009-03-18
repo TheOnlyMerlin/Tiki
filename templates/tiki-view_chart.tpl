@@ -1,23 +1,17 @@
-{title help="charts"}{$chart_info.title}{/title}
-
+<h1><a class="pagetitle" href="tiki-view_chart.php?chartId={$smarty.request.chartId}">{$chart_info.title}</a></h1>
 {if $chart_info.hits > 0}
-  <small>{tr}viewed{/tr} {$chart_info.hits} {tr}times{/tr}</small>
-  <br /><br />
+<small>{tr}viewed{/tr} {$chart_info.hits} {tr}times{/tr}</small>
+<br /><br />
 {/if}
-
 {if strlen($chart_info.description)}
-  {$chart_info.description}
-  <br /><br /><br />
+{$chart_info.description}<br /><br /><br />
 {/if}
-
 {if $tiki_p_admin_charts eq 'y'}
-  <a href="tiki-admin_charts.php?chartId={$smarty.request.chartId}">{icon _id='wrench' alt='{tr}Edit Chart{/tr}'}</a>
+<a href="tiki-admin_charts.php?chartId={$smarty.request.chartId}">{icon _id='wrench' alt='{tr}Edit Chart{/tr}'}</a>
 {/if}
-
 {if $tiki_p_admin_charts eq 'y' or $tiki_p_suggest_chart_item eq 'y'}
-  <a href="tiki-admin_chart_items.php?chartId={$smarty.request.chartId}">{icon _id='text_list_numbers' alt='{tr}Edit Items{/tr}'}</a>
+<a href="tiki-admin_chart_items.php?chartId={$smarty.request.chartId}">{icon _id='text_list_numbers' alt='{tr}Edit Items{/tr}'}</a>
 {/if}
-
 <a href="tiki-charts.php">{icon _id='table' alt='{tr}List Charts{/tr}'}</a>
 <a class="link" href="tiki-view_chart.php?chartId={$smarty.request.chartId}">{icon _id='chart_line' alt='{tr}Last Chart{/tr}'}</a>
 {if $chart_info.frequency > 0}
@@ -32,18 +26,18 @@
 {/if}
 <table class="normal">
 <tr>
-	<th style="text-align:right;">{tr}Pos{/tr}</th>
-	<th style="text-align:right;">{tr}Pre{/tr}</th>
-	<th style="text-align:right;">{tr}Permanency{/tr}</th>
-	<th>{tr}Item{/tr}</th>
-	<th style="text-align:right;">{tr}chg{/tr}</th>
+	<td style="text-align:right;"  class="heading">{tr}Pos{/tr}</td>
+	<td style="text-align:right;"  class="heading">{tr}Pre{/tr}</td>
+	<td style="text-align:right;"  class="heading">{tr}Permanency{/tr}</td>
+	<td class="heading">{tr}Item{/tr}</td>
+	<td style="text-align:right;"  class="heading">{tr}chg{/tr}</td>
 	{if $chart_info.showVotes eq 'y'}
-	<th style="text-align:right;">{tr}Votes{/tr}</th>
+	<td style="text-align:right;"  class="heading">{tr}Votes{/tr}</td>
 	{/if}
 	{if $chart_info.showAverage eq 'y'}
-	<th style="text-align:right;">{tr}Avg{/tr}</th>
+	<td style="text-align:right;"  class="heading">{tr}Avg{/tr}</td>
 	{/if}
-	<th style="text-align:right;">&nbsp;</th>
+	<td style="text-align:right;"  class="heading">&nbsp;</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$items}

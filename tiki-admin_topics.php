@@ -55,7 +55,7 @@ if (isset($_REQUEST["remove"])) {
     key_check($area);
 		$artlib->remove_topic($_REQUEST["remove"]);
 	} else {
-		key_get($area, tra('Are you sure you want to remove this topic?'));
+		key_get($area);
 	}
 }
 if (isset($_REQUEST["removeall"])) {
@@ -64,7 +64,7 @@ if (isset($_REQUEST["removeall"])) {
     key_check($area);
 		$artlib->remove_topic($_REQUEST["removeall"], 1);
 	} else {
-		key_get($area, tra('Are you sure you want to remove this topic AND all the articles related?'));
+		key_get($area);
 	}
 }
 

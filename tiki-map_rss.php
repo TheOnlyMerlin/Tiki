@@ -10,25 +10,15 @@ require_once ('tiki-setup.php');
 require_once ('lib/tikilib.php');
 require_once ('lib/rss/rsslib.php');
 
-if ($prefs['feature_maps'] != 'y') {
-	$smarty->assign('msg', tra("This feature is disabled").": feature_maps");
-	$smarty->display("error.tpl");
-	die;
-}
-
 if ($prefs['rss_mapfiles'] != 'y') {
         $errmsg=tra("rss feed disabled");
         require_once ('tiki-rss_error.php');
 }
 
-$res=$access->authorize_rss(array('tiki_p_map_view'));
-if($res) {
-   if($res['header'] == 'y') {
-      header('WWW-Authenticate: Basic realm="'.$tikidomain.'"');
-      header('HTTP/1.0 401 Unauthorized');
-   }
-   $errmsg=$res['msg'];
-   require_once ('tiki-rss_error.php');
+if($tiki_p_map_view != 'y') {
+	$smarty->assign('errortype', 401);
+	$errmsg=tra("Permission denied you cannot view this section");
+	require_once ('tiki-rss_error.php');
 }
 
 $feed = "map";

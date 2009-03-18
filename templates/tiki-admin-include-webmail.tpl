@@ -28,16 +28,9 @@
             </select>
           </td>
         </tr>
-   
+      
         <tr>
-          <td class="form">{tr}Include a flag by each e-mail to quickly flag/un-flag them?{/tr}</td>
-          <td>
-            <input type="checkbox" name="webmail_quick_flags" {if $prefs.webmail_quick_flags eq 'y'}checked="checked"{/if} />
-          </td>
-        </tr>
-   
-        <tr>
-          <td colspan="2" class="input_submit_container">
+          <td colspan="2" class="button">
             <input type="submit" name="webmail" value="{tr}Change preferences{/tr}" />
           </td>
         </tr>    

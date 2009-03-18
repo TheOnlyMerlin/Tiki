@@ -26,7 +26,7 @@
 /**
  * Requires PEAR
  */
-require_once 'lib/pear/PEAR.php';
+require_once 'PEAR.php';
 
 /**
  * The default number of bytes for reading

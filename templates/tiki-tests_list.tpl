@@ -1,4 +1,5 @@
-{title help="tests"}{tr}TikiTests List{/tr}{/title}
+<h1 class='pagetitle'><a href='#' class='pagetitle'>TikiTests List</a></h1>
+<br/>
 
 {include file='tiki-tests_menubar.tpl'}
 
@@ -6,8 +7,8 @@
 
 <table class="normal" width="100%" style="clear: both;">
 <tr>
-	<th>{tr}File Name{/tr}</th>
-	<th>{tr}Actions{/tr}</th>
+	<th class="heading">{tr}File Name{/tr}</th>
+	<th class="heading">{tr}Actions{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
 {foreach from=$files item=file}

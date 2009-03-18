@@ -1,4 +1,12 @@
-{title help="Directory" url="tiki-directory_admin_related.php?parent=$parent"}{tr}Admin related categories{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-directory_admin_related.php?parent={$parent}">{tr}Admin related categories{/tr}</a>
+  
+      {if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Directory" target="tikihelp" class="tikihelp" title="{tr}Admin Directory Related {/tr}">
+<img src="img/icons/help.gif" border="0" height="16" width="16" alt='{tr}Help{/tr}' /></a>{/if}
+
+      {if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-directory_admin_related.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}directory admin related tpl{/tr}">
+<img src="img/icons/info.gif" border="0" height="16" width="16" alt='{tr}Edit Tpl{/tr}' /></a>{/if}</h1>
 
 {* Display the title using parent *}
 {include file=tiki-directory_admin_bar.tpl}
@@ -35,7 +43,7 @@
   </tr>
   <tr>
     <td class="formcolor">&nbsp;</td>
-    <td class="formcolor"><input type="submit" name="add" value="{tr}Save{/tr}" /></td>
+    <td class="formcolor"><input type="submit" name="add" value="{tr}Save{/tr}" />
   </tr>
 </table>
 </form>
@@ -43,16 +51,16 @@
 <h2>{tr}Related categories{/tr}</h2>
 {* Display the list of categories (items) using pagination *}
 {* Links to edit, remove, browse the categories *}
-<form action="tiki-directory_admin_related.php">
-<input type="hidden" name="parent" value="{$parent|escape}" />
-<input type="hidden" name="oldcategId" value="{$items[user].relatedTo|escape}" />
 <table class="normal">
   <tr>
-    <th>{tr}Category{/tr}</th>
-    <th>{tr}Action{/tr}</th>
+    <th class="heading">{tr}Category{/tr}</th>
+    <th class="heading">{tr}Action{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$items}
+<form action="tiki-directory_admin_related.php">
+<input type="hidden" name="parent" value="{$parent|escape}" />
+<input type="hidden" name="oldcategId" value="{$items[user].relatedTo|escape}" />
 <tr>
 <td class="{cycle advance=false}">
 <select name="categId">
@@ -65,10 +73,25 @@
 <input type="submit" name="remove" value="{tr}Remove{/tr}" />
 <input type="submit" name="update" value="{tr}Update{/tr}" />
 </td>
+</form>
 </tr>
 {sectionelse}<tr><td colspan="2" class="odd">{tr}No records found.{/tr}</td></tr>
 {/section}
 </table>
-</form>
-
-{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
+<div class="mini">
+{if $prev_offset >= 0}
+[<a class="prevnext" href="tiki-directory_admin_related.php?parent={$parent}&amp;find={$find}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}">{tr}Prev{/tr}</a>]&nbsp;
+{/if}
+{tr}Page{/tr}: {$actual_page}/{$cant_pages}
+{if $next_offset >= 0}
+&nbsp;[<a class="prevnext" href="tiki-directory_admin_related.php?parent={$parent}&amp;find={$find}&amp;offset={$next_offset}&amp;sort_mode={$sort_mode}">{tr}Next{/tr}</a>]
+{/if}
+{if $prefs.direct_pagination eq 'y'}
+<br />
+{section loop=$cant_pages name=foo}
+{assign var=selector_offset value=$smarty.section.foo.index|times:$prefs.maxRecords}
+<a class="prevnext" href="tiki-directory_admin_related.php?parent={$parent}&amp;find={$find}&amp;offset={$selector_offset}&amp;sort_mode={$sort_mode}">
+{$smarty.section.foo.index_next}</a>&nbsp;
+{/section}
+{/if}
+</div>

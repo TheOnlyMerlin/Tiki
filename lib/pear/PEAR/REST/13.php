@@ -13,9 +13,9 @@
  * @category   pear
  * @package    PEAR
  * @author     Greg Beaver <cellog@php.net>
- * @copyright  1997-2008 The PHP Group
+ * @copyright  1997-2006 The PHP Group
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version    CVS: $Id: 13.php,v 1.6 2008/04/11 01:16:40 dufuz Exp $
+ * @version    CVS: Id: 13.php,v 1.2 2007/05/31 03:51:08 cellog Exp 
  * @link       http://pear.php.net/package/PEAR
  * @since      File available since Release 1.4.0a12
  */
@@ -32,9 +32,9 @@ require_once 'PEAR/REST/10.php';
  * @category   pear
  * @package    PEAR
  * @author     Greg Beaver <cellog@php.net>
- * @copyright  1997-2008 The PHP Group
+ * @copyright  1997-2006 The PHP Group
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version    Release: 1.7.2
+ * @version    Release: 1.6.1
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.4.0a12
  */
@@ -58,7 +58,7 @@ class PEAR_REST_13 extends PEAR_REST_10
      * @param bool $installed the installed version of this package to compare against
      * @return array|false|PEAR_Error see {@link _returnDownloadURL()}
      */
-    function getDownloadURL($base, $packageinfo, $prefstate, $installed, $channel = false)
+    function getDownloadURL($base, $packageinfo, $prefstate, $installed)
     {
         $channel = $packageinfo['channel'];
         $package = $packageinfo['package'];
@@ -66,8 +66,13 @@ class PEAR_REST_13 extends PEAR_REST_10
         if (!$states) {
             return PEAR::raiseError('"' . $prefstate . '" is not a valid state');
         }
-        $state   = isset($packageinfo['state'])   ? $packageinfo['state']   : null;
-        $version = isset($packageinfo['version']) ? $packageinfo['version'] : null;
+        $state = $version = null;
+        if (isset($packageinfo['state'])) {
+            $state = $packageinfo['state'];
+        }
+        if (isset($packageinfo['version'])) {
+            $version = $packageinfo['version'];
+        }
         $info = $this->_rest->retrieveData($base . 'r/' . strtolower($package) .
             '/allreleases2.xml');
         if (PEAR::isError($info)) {
@@ -77,7 +82,8 @@ class PEAR_REST_13 extends PEAR_REST_10
         if (!isset($info['r'])) {
             return false;
         }
-        $release = $found = false;
+        $found = false;
+        $release = false;
         if (!is_array($info['r']) || !isset($info['r'][0])) {
             $info['r'] = array($info['r']);
         }
@@ -136,11 +142,11 @@ class PEAR_REST_13 extends PEAR_REST_10
         if (!$found && $skippedphp) {
             $found = null;
         }
-        return $this->_returnDownloadURL($base, $package, $release, $info, $found, $skippedphp, $channel);
+        return $this->_returnDownloadURL($base, $package, $release, $info, $found, $skippedphp);
     }
 
     function getDepDownloadURL($base, $xsdversion, $dependency, $deppackage,
-                               $prefstate = 'stable', $installed = false, $channel = false)
+                               $prefstate = 'stable', $installed = false)
     {
         $channel = $dependency['channel'];
         $package = $dependency['name'];
@@ -148,8 +154,13 @@ class PEAR_REST_13 extends PEAR_REST_10
         if (!$states) {
             return PEAR::raiseError('"' . $prefstate . '" is not a valid state');
         }
-        $state   = isset($dependency['state'])   ? $dependency['state']   : null;
-        $version = isset($dependency['version']) ? $dependency['version'] : null;
+        $state = $version = null;
+        if (isset($packageinfo['state'])) {
+            $state = $packageinfo['state'];
+        }
+        if (isset($packageinfo['version'])) {
+            $version = $packageinfo['version'];
+        }
         $info = $this->_rest->retrieveData($base . 'r/' . strtolower($package) .
             '/allreleases2.xml');
         if (PEAR::isError($info)) {
@@ -247,7 +258,7 @@ class PEAR_REST_13 extends PEAR_REST_10
                     if (!in_array($release['s'], $states)) {
                         // the stability is too low, but we must return the
                         // recommended version if possible
-                        return $this->_returnDownloadURL($base, $package, $release, $info, true, false, $channel);
+                        return $this->_returnDownloadURL($base, $package, $release, $info, true);
                     }
                 }
             }
@@ -274,7 +285,7 @@ class PEAR_REST_13 extends PEAR_REST_10
         if (!$found && $skippedphp) {
             $found = null;
         }
-        return $this->_returnDownloadURL($base, $package, $release, $info, $found, $skippedphp, $channel);
+        return $this->_returnDownloadURL($base, $package, $release, $info, $found, $skippedphp);
     }
 }
 ?>

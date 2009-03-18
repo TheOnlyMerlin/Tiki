@@ -1,17 +1,6 @@
 {* $Id$ *}
-
-{title}
-  {if $report eq 'y'}
-    {tr}Report to Webmaster{/tr}
-  {else}
-    {tr}Send a link to a friend{/tr}
-  {/if}
-{/title}
-
-<div class="navbar">
-	{button href="$url" _text="{tr}Back{/tr}"}
-</div>
-
+<h1>{if $report eq 'y'}{tr}Report to Webmaster{/tr}{else}{tr}Send a link to a friend{/tr}{/if}</h1>
+<span class="button2"><a href="{$url}" class="linkbut">{tr}Back{/tr}</a></span>
 {if isset($sent)}
 <div class="simplebox highlight">{icon _id=accept alt="{tr}OK{/tr}" style="vertical-align:middle" align="left"} 
 {if $report eq 'y'}
@@ -70,11 +59,11 @@
       </td>
       
       <td class="formcolor">
-        <textarea name="comment" style="width:95%;" rows="10" cols='{$cols}' id='comment'>{$comment|escape|@default:"{tr}I found an interesting page that I thought you would like.{/tr}"}</textarea>
+        <textarea name="comment" style="width:95%;" rows="10" cols='{$cols}' id='comment'>{$comment|escape|@default:'{tr}I found an interesting page that I thought you would like.{/tr}'}</textarea>
       </td>
     </tr>
 	{if $prefs.feature_antibot eq 'y' && $user eq ''}
-		{include file="antibot.tpl" td_style="formcolor"}
+		{include file="antibot.tpl"}
 	{/if}
 
     

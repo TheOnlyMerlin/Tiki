@@ -16,10 +16,10 @@
 <br /><br />
 
 {if $sent}
-<div class="simplebox highlight">{if ($message|truncate:5:"":true eq "{tr}ERROR{/tr}") or ($message|truncate:7:"":true eq "{tr}Invalid{/tr}")}{icon _id=delete alt="{tr}Error{/tr}" style="vertical-align:middle" align="left"}{else}{icon _id=accept alt="{tr}Send{/tr}" style="vertical-align:middle"} {/if}{$message}</div>
+<div class="simplebox highlight">{if ($message|truncate:5:"":true eq "{tr}ERROR{/tr}") or ($message|truncate:7:"":true eq "{tr}Invalid{/tr}")}{icon _id=delete.png alt="{tr}Error{/tr}" style="vertical-align:middle" align="left"}{else}{icon _id=accept.png alt="{tr}Send{/tr}" style="vertical-align:middle"} {/if}{$message}</div>
 {/if}
 {if $allowMsgs ne "y"}<br />
-<div class="simplebox">{icon _id=information style="vertical-align:middle" align="left"} {tr}If you want people to be able to reply to you, you have to check <a href='tiki-user_preferences.php'>Allow messages from other users</a>{/tr}</div>
+<div class="simplebox">{icon _id=information.png style="vertical-align:middle" align="left"} {tr}If you want people to be able to reply to you, you have to check <a href='tiki-user_preferences.php'>Allow messages from other users</a>{/tr}</div>
 {/if}
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Separate multiple usernames with a comma (&nbsp;,&nbsp;).{/tr}{/remarksbox}
@@ -34,8 +34,6 @@
   </tr>
   <tr>
     <td class="formcolor"><label for="mess-composecc">{tr}CC{/tr}:</label></td><td class="formcolor"><input type="text" name="cc" id="mess-composecc" value="{$cc|escape}" /></td>
-  </tr>
-<td class="formcolor"><label for="mess-composecc">{tr}CC{/tr}:</label></td><td class="formcolor"><input type="text" name="cc" id="mess-composecc" value="{$cc|escape}" /></td>
   </tr>
   <tr>
     <td class="formcolor"><label for="mess-composebcc">{tr}BCC{/tr}:</label></td><td class="formcolor"><input type="text" name="bcc" id="mess-composebcc" value="{$bcc|escape}" /> </td>

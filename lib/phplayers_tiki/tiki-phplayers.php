@@ -35,7 +35,7 @@ class TikiPhplayers extends TikiLib {
 			return array('', 0);
 		}
 	}
-	function mkMenuEntry($idMenu, &$curOption, $sectionLevel='', $translate='y') {
+	function mkMenuEntry($idMenu, &$curOption, $sectionLevel='') {
 		global $tikilib, $wikilib, $mylevel, $prefs;
 		global $menulib; include_once('lib/menubuilder/menulib.php');
 		$menu_info = $tikilib->get_menu($idMenu);
@@ -59,9 +59,7 @@ class TikiPhplayers extends TikiLib {
 		$realKey = 0;
 		$level = 0;
 		foreach ($channels['data'] as $key=>$cd) {
-			if ($translate != 'n') {
-				$cd["name"] = tra($cd["name"]);
-			}
+			$cd["name"] = tra($cd["name"]);
 			if ($cd['type'] == 'o') {
 				$res .= $indented;
 			} elseif ($cd['type'] == 's' or $cd['type'] == 'r') {
@@ -157,7 +155,7 @@ class TikiPhplayers extends TikiLib {
 		}
 		list($plType, $plClass, $plNew, $plTplFct, $plTpl) = $this->getParamsStyle($style);
 		include_once ("lib/phplayers/lib/PHPLIB.php");
-		include_once ('lib/phplayers_tiki/lib/layersmenu-common.inc.php');
+		include_once ("lib/phplayers_tiki/lib/layersmenu-common.inc.php"); // include Tiki's modified version of that file to keep original intact (luci)
 		include_once ('lib/phplayers/lib/layersmenu.inc.php');
 		include_once ("lib/phplayers/lib/".$plType);
 		global $$plClass;
@@ -166,7 +164,7 @@ class TikiPhplayers extends TikiLib {
 		}
 		$$plClass->setDirrootCommon("lib/phplayers/");
 		$$plClass->setLibjsdir("lib/phplayers/libjs/");
-		$$plClass->setTpldirCommon('../../lib/phplayers_tiki/templates/');
+		$$plClass->setTpldirCommon("lib/phplayers/templates/");
 
 		if ( $style == 'tree' || $style == 'phptree' ) {
 			// Use Tikiwiki icons for tree menus (especially to have famfamfam folders icons)

@@ -23,18 +23,6 @@ if ($tiki_p_view != 'y') {
 	die;
 }
 
-if($prefs['feature_wiki'] != 'y') {
-    $smarty->assign('msg', tra('This feature is disabled').': feature_wiki');
-    $smarty->display('error.tpl');
-    die;  
-}
-
-if($prefs['feature_wiki_structure'] != 'y') {
-    $smarty->assign('msg', tra('This feature is disabled').': feature_wiki_structure');
-    $smarty->display('error.tpl');
-    die;  
-}
-
 // start security hardened section
 if ($tiki_p_edit_structures == 'y') {
 
@@ -82,21 +70,6 @@ if (isset($_REQUEST['export'])) {
 		die;
 	}
 	$structlib->s_export_structure($_REQUEST['export']);
-}
-if (isset($_REQUEST['zip']) && $tiki_p_admin == 'y') {
-	check_ticket('admin-structures');
-	include_once('lib/wiki/xmllib.php');
-	$xmllib = new XmlLib();
-	$zipFile = 'dump/xml.zip';
-	$config['debug'] = false;
-	if ($xmllib->export_pages(null, $_REQUEST['zip'], $zipFile, $config)) {
-		if (!$config['debug']) {
-			header("location: $zipFile");
-			die;
-		}
-	} else {
-		$smarty->assign('error', $xmllib->get_error());
-	}
 }
 
 if (isset($_REQUEST['export_tree'])) {
@@ -270,7 +243,7 @@ $smarty->assign('find', $find);
 
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 
-// default $maxRecords defined in tiki-setup.php
+/* default $maxRecords defined in tiki-setup.php */
 if (isset($_REQUEST['maxRecords'])) {
 	$maxRecords = $_REQUEST['maxRecords'];
 }

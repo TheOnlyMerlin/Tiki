@@ -107,12 +107,7 @@ class HeaderLib {
 			foreach ($this->cssfiles as $x=>$cssf) {
 				$back.= "<!-- cssfile $x -->\n";
 				foreach ($cssf as $cf) {					
-					global $tikipath, $tikidomain, $style_base;
-					if (!empty($tikidomain) && is_file("styles/$tikidomain/$style_base/$cf")) {
-						$cf = "styles/$tikidomain/$style_base/$cf";
-					} elseif (is_file("styles/$style_base/$cf")) {
-						$cf = "styles/$style_base/$cf";
-					}
+					global $tikipath;
 					$cfprint = str_replace('.css','',$cf) . '-print.css';
 					if (!file_exists($tikipath . $cfprint)) {
 						$back.= "<link rel=\"stylesheet\" href=\"$cf\" type=\"text/css\" />\n";
@@ -123,6 +118,13 @@ class HeaderLib {
 					}
 				}
 			}
+		}
+
+		// Handle theme's special CSS file for IE6 hacks
+		if ( $style_ie6_css != '' ) {
+			$back .= "<!--[if IE 6]>\n"
+				.'<link rel="stylesheet" href="'.$style_ie6_css.'" type="text/css" />'."\n"
+				."<![endif]-->\n";
 		}
 
 		if (count($this->css)) {
@@ -136,14 +138,6 @@ class HeaderLib {
 			$back.= "-->\n</style>\n\n";
 		}
 
-		// Handle theme's special CSS file for IE6 hacks
-			$back .= "<!--[if lt IE 7]>\n"
-					.'<link rel="stylesheet" href="css/ie6.css" type="text/css" />'."\n";
-			if ( $style_ie6_css != '' ) {
-				$back .= '<link rel="stylesheet" href="'.$style_ie6_css.'" type="text/css" />'."\n";
-			}
-			$back .= "<![endif]-->\n";
-
 		if (count($this->jsfiles)) {
 			foreach ($this->jsfiles as $x=>$jsf) {
 				$back.= "<!-- jsfile $x -->\n";
@@ -155,14 +149,14 @@ class HeaderLib {
 		}
 
 		if (count($this->js)) {
-			$back.= "<script type=\"text/javascript\">\n<!--//--><![CDATA[//><!--\n";
+			$back.= "<script type=\"text/javascript\">\n<!--\n";
 			foreach ($this->js as $x=>$js) {
 				$back.= "// js $x \n";
 				foreach ($js as $j) {
 					$back.= "$j\n";
 				}
 			}
-			$back.= "//--><!]]>\n</script>\n\n";
+			$back.= "-->\n</script>\n\n";
 		}
 		
 		if (count($this->rssfeeds)) {

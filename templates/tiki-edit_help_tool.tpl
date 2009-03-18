@@ -74,29 +74,12 @@ function taginsert(area_name,tagid)
     {cycle name='cycle'|cat:$qtnum values=$qtcycle|default:",,,</div><div>" advance=false print=false}
   {/if}
     {section name=qtg loop=$quicktags}
-	  {assign var='label' value=$quicktags[qtg].taglabel|regex_replace:"/^ +/":""}
-      <a class="icon" title="{tr interactive='n'}{$label}{/tr}" href="javascript:taginsert('{$area_name}','{$quicktags[qtg].tagId}');" onclick="needToConfirm = false;"><img class="icon" src='{$quicktags[qtg].tagicon}' alt='{tr interactive="n"}{$label}{/tr}' title='{tr interactive="n"}{$label}{/tr}' /></a>
+      <a title="{tr interactive='n'}{$quicktags[qtg].taglabel}{/tr}" href="javascript:taginsert('{$area_name}','{$quicktags[qtg].tagId}');" onclick="needToConfirm = false;"><img class="icon" src='{$quicktags[qtg].tagicon}' alt='{tr interactive="n"}{$quicktags[qtg].taglabel}{/tr}' title='{tr interactive="n"}{$quicktags[qtg].taglabel}{/tr}' border='0' /></a>
       {if (!isset($zoom_mode) || $zoom_mode eq 'n') and $prefs.quicktags_over_textarea neq 'y'}{cycle name='cycle'|cat:$qtnum}{/if}
     {/section}
 
-  {if ($prefs.feature_filegals_manager eq 'y') and ($prefs.feature_file_galleries eq 'y') and ($tiki_p_list_file_galleries eq 'y') and ($prefs.feature_wiki_pictures eq 'y')}
-    {literal}
-<script type="text/javascript">
-<!--//--><![CDATA[//><!--
-if (typeof fgals_window == "undefined") {
-	var fgals_window = null;
-}
-function openFgalsWindow() {
-	if(fgals_window && fgals_window.document) {
-		fgals_window.focus();
-	} else {{/literal}
-		fgals_window=window.open('{$url_path}tiki-list_file_gallery.php?filegals_manager={$area_name}','_blank','menubar=1,scrollbars=1,resizable=1,height=500,width=800,left=50,top=50');
-	{literal}}
-}
-//--><!]]>
-</script>
-    {/literal}
-    <a title="{tr}Add another image{/tr}" href="#" onclick="needToConfirm=false; openFgalsWindow();return false;">{icon _id='image' alt='{tr}Add another image{/tr}'}</a>
+  {if $prefs.feature_filegals_manager eq 'y'}
+    <a title="{tr}Add another image{/tr}" href="#" onclick="javascript:needToConfirm = false;javascript:window.open('{$url_path}tiki-list_file_gallery.php?gallery_id=0&amp;filegals_manager=y','_blank','menubar=1,scrollbars=1,resizable=1,height=400,width=800');return false;">{icon _id='image' alt='{tr}Add another image{/tr}'}</a>
     {if (!isset($zoom_mode) || $zoom_mode eq 'n') and $prefs.quicktags_over_textarea neq 'y'}{cycle name='cycle'|cat:$qtnum}{/if}
   {/if}
 
@@ -118,7 +101,7 @@ function openFgalsWindow() {
   {else}
 	style="float: right; border-left: medium double lightgrey; padding-left:8px; margin-left:8px"
   {/if}>
-	<a href="tiki-admin_quicktags.php{if isset($section)}?category={$section|escape:'url'}{/if}" onclick="needToConfirm = true;">{icon _id='wrench' alt="{tr}Admin Quicktags{/tr}"}</a>
+	<a href="tiki-admin_quicktags.php" onclick="needToConfirm = true;">{icon _id='wrench' alt="{tr}Admin Quicktags{/tr}"}</a>
   </div>
   {/if}
 

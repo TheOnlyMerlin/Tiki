@@ -7,19 +7,17 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 function smarty_block_ajax_href($params, $content, &$smarty, $repeat) {
-    global $prefs, $user;
+    global $prefs;
     if ( $repeat ) return;
 
     $url = $content;
     $template = $params['template'];
     $htmlelement = $params['htmlelement'];
-    $last_user = htmlspecialchars($user);
 
     if ( $prefs['feature_ajax'] != 'y' || $prefs['javascript_enabled'] == 'n' ) {
 	return " href=\"$url\" ";
     } else {
-	$max_tikitabs = 5; // Same value as in header.tpl, <body> tag onload's param
-	return " href=\"#main\" onclick=\"window.scrollTo(0,0);loadComponent('$url','$template','$htmlelement',$max_tikitabs,'$last_user');return false;\" ";
+	return " href=\"#\" onclick=\"loadComponent('$url','$template','$htmlelement');return false;\" ";
     }
 }
 

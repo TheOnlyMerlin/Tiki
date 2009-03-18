@@ -1,10 +1,23 @@
 {* $Id$ *}
 {popup_init src="lib/overlib.js"}
+<h1>
+  <a class="pagetitle" href="tiki-admin_categories.php">{tr}Admin Categories{/tr}</a>
+  
+  {if $prefs.feature_help eq 'y'}
+    <a href="{$prefs.helpurl}Categories+Admin" target="tikihelp" class="tikihelp" title="{tr}Admin Categories{/tr}">
+      {icon _id='help'}
+    </a>
+  {/if}
 
-{title help="Categories+Admin" admpage="category"}{tr}Admin Categories{/tr}{/title}
+  {if $prefs.feature_view_tpl eq 'y'}
+    <a href="tiki-edit_templates.php?template=tiki-admin_categories.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Admin Categories tpl{/tr}">
+      {icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}
+    </a>
+  {/if}
+</h1>
 
 <div class="navbar">
-	{button href="tiki-browse_categories.php?parentId=$parentId" _text="{tr}Browse Category{/tr}" _title="{tr}Browse the category system{/tr}"}
+  <a class="linkbut" href="tiki-browse_categories.php?parentId={$parentId}" title="{tr}browse the category system{/tr}">{tr}Browse Category{/tr}</a>
 </div>
 
 {if !empty($errors)}
@@ -24,36 +37,35 @@
 </div>
 
 {section name=dx loop=$catree}
-	{assign var=after value=$smarty.section.dx.index_next}
-	{assign var=before value=$smarty.section.dx.index_prev}
-	{if $smarty.section.dx.index > 0 and $catree[dx].deep > $catree[$before].deep}
-		<div id="id{$catree[$before].categId}" style="display:{if $catree[$before].incat eq 'y'}inline{else}none{/if};">
-	{/if}
-	<div class="treenode{if $catree[dx].categId eq $smarty.request.parentId}select{/if}">
-		<!-- {$catree[dx].parentId} :: {$catree[dx].categId} :: -->
-		{if $catree[dx].children > 0}<i class="mini">{$catree[dx].children} {tr}Child categories{/tr}</i>{/if}
-		{if $catree[dx].objects > 0}<i class="mini">{$catree[dx].objects} {tr}Child categories{/tr}</i>{/if}
-		<a class="link" href="tiki-admin_categories.php?parentId={$catree[dx].parentId}&amp;categId={$catree[dx].categId}" title="{tr}Edit{/tr}">{icon _id='page_edit' hspace="5" vspace="1"}</a>
-		<a class="link" href="tiki-admin_categories.php?parentId={$catree[dx].parentId}&amp;removeCat={$catree[dx].categId}" title="{tr}Delete{/tr}">{icon _id='cross' hspace="5" vspace="1"}</a>
-		{if $catree[dx].has_perm eq 'y'}
-			<a title="{tr}Edit permissions for this category{/tr}" href="tiki-categpermissions.php?categId={$catree[dx].categId}">{icon hspace="5" vspace="1" _id='key_active' alt="{tr}Edit permissions for this category{/tr}"}</a>
-		{else}
-				<a title="{tr}Assign Permissions{/tr}" href="tiki-categpermissions.php?categId={$catree[dx].categId}">{icon hspace="5" vspace="1" _id='key' alt="{tr}Assign Permissions{/tr}"}</a>
-		{/if}
-		<div style="display: inline; padding-left:{$catree[dx].deep*30+5}px;">
-			<a class="catname" href="tiki-admin_categories.php?parentId={$catree[dx].categId}">{$catree[dx].name|escape}</a>
-			{if $smarty.section.dx.last}
-				{repeat count=$catree[dx].deep}</div>{/repeat}
-			{elseif $catree[dx].deep < $catree[$after].deep}
-				<a href="javascript:toggle('id{$catree[dx].categId}');" class="linkmenu">&gt;&gt;&gt;</a>
-				</div>
-			{elseif $catree[dx].deep eq $catree[$after].deep}
-				</div>
-			{else}
-				</div>
-				{repeat count=$catree[dx].deep-$catree[$after].deep}</div>{/repeat}
-			{/if}
-	</div>
+{assign var=after value=$smarty.section.dx.index_next}
+{assign var=before value=$smarty.section.dx.index_prev}
+{if $smarty.section.dx.index > 0 and $catree[dx].deep > $catree[$before].deep}
+<div id="id{$catree[$before].categId}" style="display:{if $catree[$before].incat eq 'y'}inline{else}none{/if};">
+{/if}
+<div class="treenode{if $catree[dx].categId eq $smarty.request.parentId}select{/if}">
+<!-- {$catree[dx].parentId} :: {$catree[dx].categId} :: -->
+{if $catree[dx].children > 0}<i class="mini">{$catree[dx].children} {tr}Child categories{/tr}</i>{/if}
+{if $catree[dx].objects > 0}<i class="mini">{$catree[dx].objects} {tr}Child categories{/tr}</i>{/if}
+<a class="link" href="tiki-admin_categories.php?parentId={$catree[dx].parentId}&amp;categId={$catree[dx].categId}" title="{tr}Edit{/tr}">
+{icon _id='page_edit' hspace="5" vspace="1"}</a>
+<a class="link" href="tiki-admin_categories.php?parentId={$catree[dx].parentId}&amp;removeCat={$catree[dx].categId}" title="{tr}Delete{/tr}">
+{icon _id='cross' hspace="5" vspace="1"}</a>
+{if $catree[dx].has_perm eq 'y'}
+<a title="{tr}Edit permissions for this category{/tr}" href="tiki-categpermissions.php?categId={$catree[dx].categId}">{icon hspace="5" vspace="1" _id='key_active' alt="{tr}Edit permissions for this category{/tr}"}</a>
+{else}
+<a title="{tr}Assign Permissions{/tr}" href="tiki-categpermissions.php?categId={$catree[dx].categId}">{icon hspace="5" vspace="1" _id='key' alt="{tr}Assign Permissions{/tr}"}</a>
+{/if}
+<div style="display: inline; padding-left:{$catree[dx].deep*30+5}px;">
+<a class="catname" href="tiki-admin_categories.php?parentId={$catree[dx].categId}">{$catree[dx].name}</a>
+{if $catree[dx].deep < $catree[$after].deep}
+<a href="javascript:toggle('id{$catree[dx].categId}');" class="linkmenu">&gt;&gt;&gt;</a></div>
+{elseif $catree[dx].deep eq $catree[$after].deep}
+</div>
+{else}
+</div>
+{repeat count=$catree[dx].deep-$catree[$after].deep}</div>{/repeat}
+{/if}
+</div>
 {/section}
 
 <a name="editcreate"></a>
@@ -125,9 +137,9 @@
 {/if}      
       <table class="normal">
       <tr>
-        <th>&nbsp;</th>
-        <th><a href="tiki-admin_categories.php?parentId={$parentId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}#objects">{tr}Name{/tr}</a></th>
-        <th><a href="tiki-admin_categories.php?parentId={$parentId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'type_desc'}type_asc{else}type_desc{/if}#objects">{tr}Type{/tr}</a></th>
+        <td class="heading">&nbsp;</td>
+        <td class="heading"><a class="tableheading" href="tiki-admin_categories.php?parentId={$parentId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}#objects">{tr}Name{/tr}</a></td>
+        <td class="heading"><a class="tableheading" href="tiki-admin_categories.php?parentId={$parentId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'type_desc'}type_asc{else}type_desc{/if}#objects">{tr}Type{/tr}</a></td>
       </tr>
       {section name=ix loop=$objects}
       <tr>
@@ -140,10 +152,18 @@
       {/section}
       </table>
       
-			{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset }{/pagination_links}
+        <div class="mini">
+        {if $prev_offset >= 0}
+          [<a class="prevnext" href="tiki-admin_categories.php?find={$find}&amp;parentId={$parentId}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}#objects">{tr}Prev{/tr}</a>]&nbsp;
+        {/if}
+        {tr}Page{/tr}: {$actual_page}/{if $cant_pages eq 0}1{else}{$cant_pages}{/if}
+        {if $next_offset >= 0}
+          &nbsp;[<a class="prevnext" href="tiki-admin_categories.php?find={$find}&amp;parentId={$parentId}&amp;offset={$next_offset}&amp;sort_mode={$sort_mode}#objects">{tr}Next{/tr}</a>]
+        {/if}
+        </div>
+
       
-	</div>
-</div>
+      </div>
 
 {if $parentId != 0}
     <div class="cbox">

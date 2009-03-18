@@ -59,7 +59,6 @@ if ($nbChoiceGroups) {
 
 if(isset($_REQUEST['register']) && !empty($_REQUEST['name']) && (isset($_REQUEST['pass']) || isset($_SESSION['openid_url']))) {
   check_ticket('register');
-  $smarty->assign('errortype', 'no_redirect_login');
   if($novalidation != 'yes' and ($_REQUEST["pass"] <> $_REQUEST["passAgain"]) and !isset($_SESSION['openid_url'])) {
     $smarty->assign('msg',tra("The passwords don't match"));
     $smarty->display("error.tpl");
@@ -72,9 +71,9 @@ if(isset($_REQUEST['register']) && !empty($_REQUEST['name']) && (isset($_REQUEST
     die;
   }
   
-  if($prefs['rnd_num_reg'] == 'y' && !isset($_SESSION['in_tracker'])) {
+  if($prefs['rnd_num_reg'] == 'y') {
   	if (!isset($_SESSION['random_number']) || $_SESSION['random_number']!=$_REQUEST['antibotcode']) {
-    $smarty->assign('msg',tra("You have mistyped the anti-bot verification code; please try again."));
+    $smarty->assign('msg',tra("Wrong registration code"));
     $smarty->display("error.tpl");
     die;	
   	}
@@ -128,7 +127,7 @@ if(isset($_REQUEST['register']) && !empty($_REQUEST['name']) && (isset($_REQUEST
     die;
   }
     
-  if (!empty($prefs['username_pattern']) && !preg_match($prefs['username_pattern'],$_REQUEST["name"])) {
+  if (!preg_match($patterns['login'],$_REQUEST["name"])) {
     $smarty->assign('msg',tra("Invalid username"));
     $smarty->display("error.tpl");
     die;
@@ -165,7 +164,6 @@ if(isset($_REQUEST['register']) && !empty($_REQUEST['name']) && (isset($_REQUEST
 			include_once('lib/wiki-plugins/wikiplugin_tracker.php');
 			$userTrackerData = wikiplugin_tracker('', array('trackerId'=>$re['usersTrackerId'], 'fields'=>$re['registrationUsersFieldIds'], 'showdesc'=>'y', 'showmandatory'=>'y', 'embedded'=>'n'));
 			$smarty->assign('userTrackerData', $userTrackerData);
-			$_SESSION['in_tracker'] = true;
 			if (!isset($_REQUEST['trackit']) || (isset($_REQUEST['error']) && $_REQUEST['error'] == 'y')) {
 				$email_valid = 'n';// first pass or error
 			}
@@ -178,10 +176,9 @@ if(isset($_REQUEST['register']) && !empty($_REQUEST['name']) && (isset($_REQUEST
 		} else {
 			$openid_url = '';
 		}
-		unset($_SESSION['in_tracker']);
 		if($prefs['validateUsers'] == 'y' || (isset($prefs['validateRegistration']) && $prefs['validateRegistration'] == 'y')) {
 			$apass = addslashes(md5($tikilib->genPass()));
-			$userlib->send_validation_email($_REQUEST['name'], $apass, $_REQUEST['email'], '', '', isset($_REQUEST['chosenGroup'])?$_REQUEST['chosenGroup']:'');
+			$userlib->send_validation_email($_REQUEST['name'], $apass, $_REQUEST['email']);
 			
 			$userlib->add_user($_REQUEST["name"],$apass,$_REQUEST["email"],$_REQUEST["pass"], false, 'n', $openid_url);
 			if (isset($_REQUEST['chosenGroup']) && $userlib->get_registrationChoice($_REQUEST['chosenGroup']) == 'y') {

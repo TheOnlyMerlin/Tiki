@@ -4,124 +4,65 @@ require_once('lib/images/abstract.php');
 
 class Image extends ImageAbstract {
 
-	function __construct($image, $isfile = false) {
-		if ( $isfile ) {
-			$this->filename = $image;
-			parent::__construct(NULL, false);
-		} else {
-			parent::__construct($image, false);
-		}
-	}
+  function __construct($image, $isfile = false) {
+    if ( $isfile ) {
+      $blob = new Imagick();
+      $blob->readImage($image);
+      parent::__construct($blob, false);
+    } else {
+      parent::__construct($image, false);
+      $this->data = new Imagick();
+      $this->data->readImageBlob($image);
+    }
+  }
 
-	function _load_data() {
-		if (!$this->loaded) {
-			if (!empty($this->filename)) {
-				$this->data = new Imagick();
-				try {
-					$this->data->readImage($this->filename);
-					$this->loaded = true;
-				}
-				catch (ImagickException $e) {
-					$this->loaded = true;
-					$this->data = null;
-				}
-			} elseif (!empty($this->data)) {
-				$tmp = new Imagick();
-				try {
-					$tmp->readImageBlob($this->data);
-					$this->data =& $tmp;
-					$this->loaded = true;
-				}
-				catch (ImagickException $e) {
-					$this->data = null;
-				}
-			}	
-		}
-	}
+  function Image($image, $isfile = false) {
+    Image::__construct($image, $isfile);
+  }
 
-	function Image($image, $isfile = false) {
-		Image::__construct($image, $isfile);
-	}
+  function _resize($x, $y) {
+    return $this->data->scaleImage($x, $y);
+  }
 
-	function _resize($x, $y) {
-		if ($this->data) {
-			return $this->data->scaleImage($x, $y);
-		}
-	}
+  function set_format($format) {
+    $this->format = $format;
+    $this->data->setFormat($format);
+  }
 
-	function resizethumb() {
-		if ( $this->thumb !== null ) {
-			$this->data = new Imagick();
-			try {
-				$this->data->readImageBlob($this->thumb);
-				$this->loaded = true;
-			}
-			catch (ImagickException $e) {
-				$this->loaded = true;
-				$this->data = null;
-			}
-		} else { 
-			$this->_load_data();
-		}
-		if ($this->data) {
-			return parent::resizethumb();
-		}
-	}
+  function get_format() {
+    return $this->format;
+  }
 
-	function set_format($format) {
-		$this->_load_data();
-		if ($this->data) {
-			$this->format = $format;
-			$this->data->setFormat($format);
-		}
-	}
+  function display() {
+    return $this->data->getImageBlob();
+  }
 
-	function get_format() {
-		return $this->format;
-	}
+  function rotate($angle) {
+    $this->data->rotateImage(-$angle);
+    return true;
+  }
 
-	function display() {
-		$this->_load_data();
-		if ($this->data) {
-			return $this->data->getImageBlob();
-		}
-	}
+  function is_supported($format) {
+    $image = new Imagick();
+    $format = strtoupper(trim($format));
 
-	function rotate($angle) {
-		$this->_load_data();
-		if ($this->data) {
-			$this->data->rotateImage(-$angle);
-			return true;
-		} else {
-			return false;
-		}
-	}
+    // Theses formats have pb if multipage document
+    switch ($format) {
+      case 'PDF':
+      case 'PS':
+      case 'HTML':
+        return false;
+    }
+    return in_array($format, $image->queryFormats());
+  }
 
-	function is_supported($format) {
-		$image = new Imagick();
-		$format = strtoupper(trim($format));
+  function get_height() {
+    return $this->data->getImageHeight();
+  }
 
-		// Theses formats have pb if multipage document
-		switch ($format) {
-			case 'PDF':
-			case 'PS':
-			case 'HTML':
-				return false;
-		}
-		return in_array($format, $image->queryFormats());
-	}
-
-	function get_height() {
-		$this->_load_data();
-		if ($this->data)
-			return $this->data->getImageHeight();
-	}
-
-	function get_width() {
-		$this->_load_data();
-		if ($this->data)
-			return $this->data->getImageWidth();
-	}
+  function get_width() {
+    return $this->data->getImageWidth();
+  }
 }
 
 ?>

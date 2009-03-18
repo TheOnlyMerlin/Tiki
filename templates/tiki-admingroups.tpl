@@ -1,19 +1,27 @@
 {* $Id$ *}
 {popup_init src="lib/overlib.js"}
 
-{title help="Groups+Management" admpage="login"}{tr}Admin groups{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-admingroups.php{if !empty($groupname)}?group={$groupname|escape:'url'}{/if}">{tr}Admin groups{/tr}</a>
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Groups+Management" target="tikihelp" class="tikihelp" title="{tr}Admin Groups{/tr}">
+{icon _id='help'}</a>
+{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admingroups.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Admin Groups Template{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}
+{if $tiki_p_admin eq 'y'}
+<a href="tiki-admin.php?page=login" title="{tr}Admin Feature{/tr}">{icon _id='wrench' alt="{tr}Admin Feature{/tr}"}</a>
+{/if}
+</h1>
 
 <div class="navbar">
-	{button _text="{tr}Admin groups{/tr}"}
-	{button href="tiki-adminusers.php" _text="{tr}Admin users{/tr}"}
-	{button href="tiki-admingroups.php?clean=y" _text="{tr}Clear cache{/tr}"}
-	{if $groupname}
-		{if $prefs.feature_tabs ne 'y'}
-			{button  href="tiki-admingroups.php?add=1#2" _text="{tr}Add new group{/tr}"}
-		{else}
-			{button  href="tiki-admingroups.php?add=1" _text="{tr}Add new group{/tr}"}
-		{/if}
-	{/if}
+<span class="button2"><a href="tiki-admingroups.php" class="linkbut">{tr}Admin groups{/tr}</a></span>
+<span class="button2"><a href="tiki-adminusers.php" class="linkbut">{tr}Admin users{/tr}</a></span>
+<span class="button2"><a href="tiki-admingroups.php?clean=y" class="linkbut">{tr}Clear cache{/tr}</a></span>
+{if $groupname}
+<span class="button2"><a href="tiki-admingroups.php?add=1{if $prefs.feature_tabs ne 'y'}#2{/if}" class="linkbut">{tr}Add new group{/tr}</a></span>
+{/if}
 </div>
 
 {if $prefs.feature_tabs eq 'y'}
@@ -41,9 +49,7 @@
 <div align="center">
 {section name=ini loop=$initials}
 {if $initial and $initials[ini] eq $initial}
-	<span class="button">
-		<span>{$initials[ini]|capitalize}</span>
-	</span> . 
+<span class="button2"><span class="linkbut">{$initials[ini]|capitalize}</span></span> . 
 {else}
 <a href="tiki-admingroups.php?initial={$initials[ini]}{if $find}&amp;find={$find|escape:"url"}{/if}{if $numrows}&amp;numrows={$numrows}{/if}{if $sort_mode}&amp;sort_mode={$sort_mode}{/if}" 
 class="prevnext">{$initials[ini]}</a> . 
@@ -56,13 +62,13 @@ class="prevnext">{tr}All{/tr}</a>
 
 <table class="normal">
 <tr>
-<th style="width: 20px;">&nbsp;</th>
-<th><a href="tiki-admingroups.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'groupName_desc'}groupName_asc{else}groupName_desc{/if}">{tr}Name{/tr}</a></th>
-<th><a href="tiki-admingroups.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'groupDesc_desc'}groupDesc_asc{else}groupDesc_desc{/if}">{tr}Description{/tr}</a></th>
-<th>{tr}Includes{/tr}</th>
-<th>{tr}User Choice{/tr}</th>
-<th>{tr}Permissions{/tr}</th>
-<th style="width: 20px;">&nbsp;</th>
+<td class="heading" style="width: 20px;">&nbsp;</td>
+<td class="heading"><a class="tableheading" href="tiki-admingroups.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'groupName_desc'}groupName_asc{else}groupName_desc{/if}">{tr}Name{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-admingroups.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'groupDesc_desc'}groupDesc_asc{else}groupDesc_desc{/if}">{tr}Description{/tr}</a></td>
+<td class="heading">{tr}Includes{/tr}</td>
+<td class="heading">{tr}User Choice{/tr}</td>
+<td class="heading">{tr}Permissions{/tr}</td>
+<td class="heading" style="width: 20px;">&nbsp;</td>
 </tr>
 {cycle values="even,odd" print=false}
 {section name=user loop=$users}
@@ -85,22 +91,37 @@ class="prevnext">{tr}All{/tr}</a>
 </tr>
 {/section}
 </table>
-
-{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
-
+{if $cant_pages > 1}
+<br />
+<div class="mini">
+{if $prev_offset >= 0}
+[<a class="prevnext" href="tiki-admingroups.php?find={$find|escape:"url"}&amp;{if $initial}initial={$initial}&amp;{/if}offset={$prev_offset}&amp;sort_mode={$sort_mode}&amp;numrows={$numrows}">{tr}Prev{/tr}</a>]&nbsp;
+{/if}
+{tr}Page{/tr}: {$actual_page}/{$cant_pages}
+{if $next_offset >= 0}
+&nbsp;[<a class="prevnext" href="tiki-admingroups.php?find={$find|escape:"url"}&amp;{if $initial}initial={$initial}&amp;{/if}offset={$next_offset}&amp;sort_mode={$sort_mode}&amp;numrows={$numrows}">{tr}Next{/tr}</a>]
+{/if}
+{if $prefs.direct_pagination eq 'y'}
+<br />
+{section loop=$cant_pages name=foo}
+{assign var=selector_offset value=$smarty.section.foo.index|times:$numrows}
+<a class="prevnext" href="tiki-admingroups.php?find={$find|escape:"url"}&amp;{if $initial}initial={$initial}&amp;{/if}offset={$selector_offset}&amp;sort_mode={$sort_mode}&amp;numrows={$numrows}">
+{$smarty.section.foo.index_next}</a>&nbsp;
+{/section}
+{/if}
+</div>
+{/if}
 </div>
 
 {* ----------------------- tab with form --------------------------------------- *}
 <a name="2" ></a>
 <div id="content{cycle name=content assign=focustab}{$focustab}" class="tabcontent"{if $prefs.feature_tabs eq 'y'} style="display:{if $focustab eq $cookietab}block{else}none{/if};"{/if}>
-
 {if $groupname}
-	<h2>{tr}Edit group{/tr} {$groupname}</h2>
-	{button href="tiki-assignpermission.php?group=$groupname" _text="{tr}Assign Permissions{/tr}"}
+<h2>{tr}Edit group{/tr} {$groupname}</h2>
+<a class="linkbut" href="tiki-assignpermission.php?group={$groupname}">{tr}Assign Permissions{/tr}</a>
 {else}
-	<h2>{tr}Add new group{/tr}</h2>
+<h2>{tr}Add new group{/tr}</h2>
 {/if}
-
 <form action="tiki-admingroups.php" method="post">
 <table class="normal">
 <tr class="formcolor"><td><label for="groups_group">{tr}Group{/tr}:</label></td><td>{if $groupname neq 'Anonymous' and $groupname neq 'Registered' and $groupname neq 'Admins'}<input type="text" name="name" id="groups_group" value="{$groupname|escape}" />{else}<input type="hidden" name="name" id="groups_group" value="{$groupname|escape}" />{$groupname}{/if}</td></tr>
@@ -164,13 +185,7 @@ class="prevnext">{tr}All{/tr}</a>
 {/section}
 </select>
 {/if}
-
-{if $grouptrackerid}
-	{button href="tiki-admin_tracker_fields.php?trackerId=$grouptrackerid" _text="{tr}Admin{/tr} $ggr"}
-{else}
-	{button href="tiki-admin_trackers.php" _text="{tr}Admin{/tr} $ggr"}
-{/if}
-
+<span class="button2"><a href="{if $grouptrackerid}tiki-admin_tracker_fields.php?trackerId={$grouptrackerid}{else}tiki-admin_trackers.php{/if}" class="linkbut">{tr}Admin{/tr} {$ggr}</a>
 </td></tr>
 {/if}
 {if $prefs.userTracker eq 'y'}
@@ -190,13 +205,7 @@ class="prevnext">{tr}All{/tr}</a>
 {/section}
 </select>
 {/if}
-
-{if $userstrackerid}
-	{button href="tiki-admin_tracker_fields.php?trackerId=$userstrackerid" _text="{tr}Admin{/tr} $ugr"}
-{else}
-	{button href="tiki-admin_trackers.php" _text="{tr}Admin{/tr} $ugr"}
-{/if}
-
+<span class="button2"><a href="{if $grouptrackerid}tiki-admin_tracker_fields.php?trackerId={$userstrackerid}{else}tiki-admin_trackers.php{/if}" class="linkbut">{tr}Admin{/tr} {$ugr}</a>
 </td></tr>
 <tr class="formcolor"><td>{tr}Users Information Tracker Fields Asked at Registration Time<br />(fieldIds separated with :){/tr}</td>
 <td><input type="text" size="40" name="registrationUsersFieldIds" value="{$registrationUsersFieldIds|escape}" /></td></tr>
@@ -214,18 +223,18 @@ class="prevnext">{tr}All{/tr}</a>
 <br /><br />
 
 {if $prefs.groupTracker eq 'y'}
-	{if $grouptrackerid and $groupitemid}
-		{tr}Group tracker item : {$groupitemid}{/tr} 
-			{button href="tiki-view_tracker_item.php?trackerId=$grouptrackerid&amp;itemId=$groupitemid&amp;show=mod" _text="{tr}Edit Item{/tr}"}
-	{elseif $grouptrackerid}
-		{if $groupfieldid}
-			{tr}Group tracker item not found{/tr}
-			{button href="tiki-view_tracker.php?trackerId=$grouptrackerid" _text="{tr}Create Item{/tr}"}
-		{else}
-			{tr}Choose a field ...{/tr}
-		{/if}
-	{/if}
-	<br /><br />
+{if $grouptrackerid and $groupitemid}
+{tr}Group tracker item : {$groupitemid}{/tr} <span class="button2"><a href="tiki-view_tracker_item.php?trackerId={$grouptrackerid}&amp;itemId={$groupitemid}&amp;show=mod" class="linkbut">{tr}Edit Item{/tr}</a></span>
+{elseif $grouptrackerid}
+{if $groupfieldid}
+{tr}Group tracker item not found{/tr} <span class="button2"><a href="tiki-view_tracker.php?trackerId={$grouptrackerid}" class="linkbut">{tr}Create item{/tr}</a></span>
+{else}
+{tr}choose a field ...{/tr}
+{/if}
+{else}
+{tr}choose a group tracker ...{/tr}
+{/if}
+<br /><br />
 {/if}
 </div>
 
@@ -241,19 +250,6 @@ class="prevnext">{tr}All{/tr}</a>
 {/section}
 </tr></table>
 <div class="box">{$smarty.section.ix.total} {tr}users in group{/tr} {$groupname}</div>
-<form method="post" action="tiki-admingroups.php">
-	<p>
-		<input type="hidden" name="group" value="{$groupname|escape}"/>
-		<select name="user">
-			{foreach from=$userslist item=iuser}
-				{if ! in_array( $iuser, $memberslist ) }
-				<option>{$iuser|escape}</option>
-				{/if}
-			{/foreach}
-		</select>
-		<input type="submit" name="adduser" value="{tr}Add to group{/tr}"/>
-	</p>
-</form>
 </div>
 {/if}
 
@@ -277,21 +273,14 @@ class="prevnext">{tr}All{/tr}</a>
 <tr>
 <td class="formcolor auto">{tr}Charset encoding:{/tr}</td><td  class="formcolor auto"><select name="encoding"><option value="UTF-8" selected="selected">{tr}UTF-8{/tr}</option><option value="ISO-8859-1">{tr}ISO-8859-1{/tr}</option></select></td>
 </tr><tr>
-<td class="formcolor auto">{tr}Fields:{/tr}</td><td class="formcolor auto">
-<input type="checkbox" name="username" checked="checked" />{tr}Username{/tr}<br />
-<input type="checkbox" name="email"/>{tr}Email{/tr}<br />
-<input type="checkbox" name="lastLogin" />{tr}Last login{/tr}
-</td>
+<td class="formcolor auto"></td><td class="formcolor auto"><input type="checkbox" name="username" checked="checked" />{tr}Username{/tr}<br /><input type="checkbox" name="email"/>{tr}Email{/tr}</td>
 </tr><tr>
 <td class="formcolor auto"></td><td class="formcolor auto"><input type="submit" name="export" value="{tr}Export{/tr}" /></td>
 </tr>
 </table>
 
-<h2>{tr}Batch upload (CSV file){/tr}</h2>
-<h3>{tr}Assign users to group:{/tr} {$groupname} </h3>
-{remarksbox type="tip" title="{tr}Tip{/tr}"}
-{tr}Each user in the file must already exist.{/tr}<br />{tr}To create users or/and assign them to groups, got to <a href="tiki-adminusers.php">admin->users</a>{/tr}
-{/remarksbox}
+<h2>{tr}Batch upload (CSV file):{/tr}</h2>
+{tr}Assign users to group:{/tr} {$groupname} <br />{tr}User must already exist.{/tr}<br />{tr}To create users and assign them to groups, got to admin->users{/tr}
 <table class="normal">
 <tr>
 <td class="formcolor auto">{tr}CSV File{/tr}<a {popup text='user<br />user1<br />user2'}>{icon _id='help'}</a></td><td class="formcolor auto"><input name="csvlist" type="file" /></td>

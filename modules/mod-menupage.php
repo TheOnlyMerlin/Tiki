@@ -1,18 +1,16 @@
 <?php
-// $Id$
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
+
 if (isset($module_params['pagemenu'])) {
-	$pagemenu = $module_params['pagemenu'];
-} elseif (isset($module_params['page'])) {
-	$pagemenu = $module_params['page'];
+	if ($tikilib->page_exists($module_params['pagemenu'])) {
+		$info = $tikilib->get_page_info($module_params['pagemenu']);
+		$content = $tikilib->parse_data($info['data'], $info['is_html']);
+		$smarty->assign('tpl_module_title',$module_params['pagemenu']);
+		$smarty->assign('contentmenu',$content);
+	}
 }
 
-if (!empty($pagemenu)) {
-	global $wikilib; include_once('lib/wiki/wikilib.php');
-	$content = $wikilib->get_parse($pagemenu, $canBeRefreshed);
-	$smarty->assign('module_title', isset($module_params['title']) ? $module_params['title'] : $pagemenu);
-	$smarty->assign_by_ref('contentmenu',$content);
-}
+?>

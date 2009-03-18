@@ -9,9 +9,8 @@
 // Initialization
 $section = 'newsletters';
 require_once ('tiki-setup.php');
-include_once ('lib/newsletters/nllib.php');
 
-$auto_query_args = array('sort_mode', 'offset', 'find', 'nlId', 'remove', 'email', 'subuser', 'group', 'included', 'valid', 'confirmEmail', 'addemail', 'add', 'addall', 'addbatch', 'addgroup', 'addincluded', 'export', 'sort_mode_g', 'offset_g', 'find_g');
+include_once ('lib/newsletters/nllib.php');
 
 if ($prefs['feature_newsletters'] != 'y') {
 	$smarty->assign('msg', tra("This feature is disabled").": feature_newsletters");
@@ -210,10 +209,26 @@ $smarty->assign('find', $find);
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 $channels = $nllib->list_newsletter_subscriptions($_REQUEST["nlId"], $offset, $maxRecords, $sort_mode, $find);
 
-$smarty->assign_by_ref('cant_pages', $channels["cant"]);
+$cant_pages = ceil($channels["cant"] / $maxRecords);
+$smarty->assign_by_ref('cant_pages', $cant_pages);
+$smarty->assign('actual_page', 1 + ($offset / $maxRecords));
+
+if ($channels["cant"] > ($offset + $maxRecords)) {
+	$smarty->assign('next_offset', $offset + $maxRecords);
+} else {
+	$smarty->assign('next_offset', -1);
+}
+
+// If offset is > 0 then prev_offset
+if ($offset > 0) {
+	$smarty->assign('prev_offset', $offset - $maxRecords);
+} else {
+	$smarty->assign('prev_offset', -1);
+}
 
 $smarty->assign_by_ref('channels', $channels["data"]);
 
+/* --------------------------------------- */
 $sort_mode_g = (isset($_REQUEST["sort_mode_g"]))?$_REQUEST["sort_mode_g"] : 'groupName_asc';
 $smarty->assign_by_ref('sort_mode_g', $sort_mode_g);
 $offset_g = (isset($_REQUEST["offset_g"]))? $_REQUEST["offset_g"] : 0;
@@ -243,6 +258,8 @@ $included_n = $nllib->list_newsletter_included($_REQUEST["nlId"], 0, -1);
 $smarty->assign('included_n',$included_n);
 $smarty->assign('nb_included',count($included_n));
 
+/* --------------------------------------- */
+
 // Fill array with possible number of questions per page
 $freqs = array();
 
@@ -264,6 +281,11 @@ $smarty->assign_by_ref('users', $users);
 $newsletters = $nllib->list_newsletters(0,-1,"created_desc",false, '', '', 'n');
 $smarty->assign_by_ref('newsletters', $newsletters['data']);
 
+/*
+$cat_type='newsletter';
+$cat_objid = $_REQUEST["nlId"];
+include_once("categorize_list.php");
+*/
 include_once ('tiki-section_options.php');
 
 ask_ticket('admin-nl-subsriptions');

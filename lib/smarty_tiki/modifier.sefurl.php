@@ -9,37 +9,14 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 	exit;
 }
 
-function smarty_modifier_sefurl($source, $type='wiki', $with_next = '' ) {
-	global $prefs, $wikilib, $smarty;
+function smarty_modifier_sefurl($source, $type='wiki') {
+	global $prefs, $wikilib;
 	include_once('lib/wiki/wikilib.php');
-
 	switch($type){
 	case 'wiki page':
 	case 'wiki':
-		return $wikilib->sefurl($source, $with_next);
-	case 'blog':
-		$href = 'tiki-view_blog.php?blogId='.$source;
-		break;
-	case 'blogpost':
-		$href = 'tiki-view_blog_post.php?postId='.$source;
-		break;
-	case 'gallery':
-		$href = 'tiki-browse_gallery.php?galleryId='. $source;
-		break;
-	case 'article':
-		$href = 'tiki-read_article.php?articleId='. $source;
-		break;
-	default:
-		$href = $source;
-		break;
+		return $wikilib->sefurl($source);
 	}
-	if ($with_next) {
-		$href .= '&amp;';
-	}
-	if ($prefs['feature_sefurl'] == 'y') {
-		include_once('tiki-sefurl.php');
-		return filter_out_sefurl($href, $smarty, $type);
-	} else {
-		return $href;
-	}
+	return $source;
 }
+?>

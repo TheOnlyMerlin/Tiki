@@ -41,7 +41,5 @@ ask_ticket('admin-inc-module');
 
 }
 
-$headerlib->add_cssfile('css/admin.css');
-
 
 ?>

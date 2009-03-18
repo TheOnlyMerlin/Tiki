@@ -1,15 +1,10 @@
-{title help="Banners"}{tr}Banner stats{/tr}{/title}
-
-<div class="navbar">
-	{button href="tiki-list_banners.php" _text="{tr}List banners{/tr}"}
-	{if $tiki_p_admin_banners eq 'y'}
-		{button href="tiki-edit_banner.php?bannerId=$bannerId" _text="{tr}Edit{/tr}"}
-		{button href="tiki-edit_banner.php" _text="{tr}Create new banner{/tr}"}
-	{/if}
-</div>
-
+<h1>{tr}Banner stats{/tr}</h1>
+<a class="linkbut" href="tiki-list_banners.php">{tr}List banners{/tr}</a>
+{if $tiki_p_admin_banners eq 'y'}
+<a class="linkbut" href="tiki-edit_banner.php?bannerId={$bannerId}">{tr}Edit{/tr}</a>
+<a class="linkbut" href="tiki-edit_banner.php">{tr}Create new banner{/tr}</a>
+{/if}
 <h2>{tr}Banner Information{/tr}</h2>
-
 <div class="simplebox">
 <table>
 <tr>
@@ -36,11 +31,6 @@
   <td>{tr}Impressions{/tr}:</td>
   <td>{$impressions}</td>
 </tr>
-<tr>
-  <td>{tr}Max Clicks{/tr}:</td>
-  <td>{$maxClicks}</td>
-</tr>    
-
 <tr>
   <td>{tr}Clicks{/tr}:</td>
   <td>{$clicks}</td>

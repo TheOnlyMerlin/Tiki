@@ -16,10 +16,13 @@ if (!function_exists("categories_help")) {
 global $prefs, $tiki_p_view_categories;
 
 if ($prefs['feature_categories'] != 'y') {
-	$module_params['error'] = tra("This feature is disabled").": feature_categories";
+	$smarty->assign('module_error', tra("This feature is disabled").": feature_categories");
+} elseif ($tiki_p_view_categories != 'y') {
+	$smarty->assign('module_error', tra("You do not have permission to use this feature"));
 } else {
 	global $user;
 	global $categlib; include_once ('lib/categories/categlib.php');
+	$categories = $categlib->get_all_categories_respect_perms($user, 'tiki_p_view_categories');
 	if (isset($module_params['type'])) {
 		$type = $module_params['type'];
 		$urlEnd = '&amp;type='.urlencode($type);
@@ -33,12 +36,6 @@ if ($prefs['feature_categories'] != 'y') {
 		$deep= 'on';
 	$urlEnd .= "&amp;deep=$deep";
 	$name = "";
-
-	$categories = $categlib->get_all_categories_respect_perms($user, 'tiki_p_view_categories');
-
-	if ( empty($categories) ) {
-		$module_params['error'] = tra("You do not have permission to use this feature");
-	}
 	if (isset($module_params['categId'])) {
 		$categId = $module_params['categId'];
 		foreach ($categories as $cat) {
@@ -78,4 +75,4 @@ if ($prefs['feature_categories'] != 'y') {
 		$smarty->assign('tree', $res);
 	}
 }
-
+?>

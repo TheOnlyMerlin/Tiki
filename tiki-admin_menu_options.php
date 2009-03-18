@@ -8,10 +8,8 @@
 
 // Initialization
 require_once ('tiki-setup.php');
-include_once ('lib/menubuilder/menulib.php');
 
-$auto_query_args = array('menuId','import','export', 'optionId', 'remove', 'up', 'down', 'delsel_x', 'checked', 'save', 'groupname', 'level', 'name', 'url', 'position', 'section', 'type', 'sort_mode', 'offset', 'find', 'maxRecords');
-                                                                             
+include_once ('lib/menubuilder/menulib.php');
 
 if ($tiki_p_admin != 'y' && $tiki_p_edit_menu_option != 'y') {
 	$smarty->assign('errortype', 401);
@@ -152,18 +150,36 @@ if (isset($_REQUEST["find"])) {
 }
 $smarty->assign('find', $find);
 
-if (!empty($_REQUEST['maxRecords'])) {
-	$maxRecords = $_REQUEST['maxRecords'];
+if (isset($_REQUEST['nbRecords'])) {
+	$nbRecords = $_REQUEST['nbRecords'];
+	if ($nbRecords != $maxRecords)
+		$smarty->assign('nbRecords', $_REQUEST['nbRecords']);
+} else {
+	$nbRecords = $maxRecords;
 }
-$smarty->assign_by_ref('maxRecords', $maxRecords);
+
 
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 $allchannels = $menulib->list_menu_options($_REQUEST["menuId"], 0, -1, $sort_mode, $find);
 $allchannels = $menulib->sort_menu_options($allchannels);
-$channels = $menulib->list_menu_options($_REQUEST["menuId"], $offset, $maxRecords, $sort_mode, $find, true);
+$channels = $menulib->list_menu_options($_REQUEST["menuId"], $offset, $nbRecords, $sort_mode, $find, true);
 $channels = $menulib->describe_menu_types($channels);
+$cant_pages = ceil($channels["cant"] / $nbRecords);
+$smarty->assign_by_ref('cant_pages', $cant_pages);
+$smarty->assign('actual_page', 1 + ($offset / $nbRecords));
 
-$smarty->assign_by_ref('cant_pages', $channels["cant"]);
+if ($channels["cant"] > ($offset + $nbRecords)) {
+	$smarty->assign('next_offset', $offset + $nbRecords);
+} else {
+	$smarty->assign('next_offset', -1);
+}
+
+// If offset is > 0 then prev_offset
+if ($offset > 0) {
+	$smarty->assign('prev_offset', $offset - $nbRecords);
+} else {
+	$smarty->assign('prev_offset', -1);
+}
 
 $smarty->assign_by_ref('channels', $channels["data"]);
 $smarty->assign_by_ref('allchannels', $allchannels["data"]);

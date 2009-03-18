@@ -194,15 +194,15 @@ if (isset($_REQUEST["removeCat"]) && ($info = $categlib->get_category($_REQUEST[
 if (isset($_REQUEST["save"]) && isset($_REQUEST["name"]) && strlen($_REQUEST["name"]) > 0) {
 	check_ticket('admin-categories');
 	// Save
-	if ($_REQUEST["categId"]) {
+	if ($categlib->exist_child_category($_REQUEST['parentId'], $_REQUEST['name'])) {
+	  $errors[]= tra('You can not create a category with a name already existing at this level');
+	} else if ($_REQUEST["categId"]) {
 	        if ($_REQUEST['parentId'] == $_REQUEST['categId']) {
 	            $smarty->assign('msg', tra("Category can`t be parent of itself"));
   	            $smarty->display("error.tpl");
 	            die;
                 }
 		$categlib->update_category($_REQUEST["categId"], $_REQUEST["name"], $_REQUEST["description"], $_REQUEST["parentId"]);
-	} else if ($categlib->exist_child_category($_REQUEST['parentId'], $_REQUEST['name'])) {
-	  $errors[]= tra('You can not create a category with a name already existing at this level');
 	} else {
 		$newcategId = $categlib->add_category($_REQUEST["parentId"], $_REQUEST["name"], $_REQUEST["description"]);
 		if (isset($_REQUEST['assign_perms'])) {
@@ -293,6 +293,36 @@ if ($_REQUEST["parentId"]) {
 $smarty->assign('path', $path);
 $smarty->assign('father', $father);
 $smarty->assign('categ_name', $categ_name);
+/*
+// ---------------------------------------------------
+// Convert $childrens
+//$debugger->var_dump('$children');
+$ctall = $categlib->get_all_categories_ext();
+$tree_nodes = array();
+
+foreach ($ctall as $c) {
+	$tree_nodes[] = array(
+		"id" => $c["categId"],
+		"parent" => $c["parentId"],
+		"data" => '<a class="catname" href="tiki-admin_categories.php?parentId=' . $c["categId"] . '" title="' . tra(
+			'Child categories'). ':' . $c["children"] . ' ' . tra(
+			'Objects in category'). ':' . $c["objects"] . '">' . $c["name"] . '</a>',
+		"edit" =>
+			'<a class="link" href="tiki-admin_categories.php?parentId=' . $c["parentId"] . '&amp;categId=' . $c["categId"] . '#editcreate" title="' . tra(
+			'edit'). '"><img border="0" src="img/icons/edit.gif" /></a>',
+		"remove" =>
+			'<a class="link" href="tiki-admin_categories.php?parentId=' . $c["parentId"] . '&amp;removeCat=' . $c["categId"] . '" title="' . tra(
+			'remove'). '"><img  border="0" src="img/icons2/delete.gif" /></a>',
+		"children" => $c["children"],
+		"objects" => $c["objects"]
+	);
+}
+
+//$debugger->var_dump('$tree_nodes');
+$tm = new CatAdminTreeMaker("admcat");
+$res = $tm->make_tree($_REQUEST["parentId"], $tree_nodes);
+$smarty->assign('tree', $res);
+*/
 // ---------------------------------------------------
 function array_csort($marray, $column) {
 	if (is_array($marray)) {
@@ -319,6 +349,8 @@ if (is_array($path)) {
 	}
 }
 $smarty->assign('catree', $catree['data']);
+
+// var_dump($catree); 
 
 // ---------------------------------------------------
 
@@ -359,8 +391,26 @@ $smarty->assign_by_ref('find', $find);
 $objects = $categlib->list_category_objects($_REQUEST["parentId"], $offset, $maxRecords, $sort_mode, '', $find, false);
 $smarty->assign_by_ref('objects', $objects["data"]);
 
-$smarty->assign_by_ref('cant_pages', $objects["cant"]);
+$cant_pages = ceil($objects["cant"] / $maxRecords);
+$smarty->assign_by_ref('cant_pages', $cant_pages);
+$smarty->assign('actual_page', 1 + ($offset / $maxRecords));
 
+if ($objects["cant"] > ($offset + $maxRecords)) {
+	$smarty->assign('next_offset', $offset + $maxRecords);
+} else {
+	$smarty->assign('next_offset', -1);
+}
+
+// If offset is > 0 then prev_offset
+if ($offset > 0) {
+	$smarty->assign('prev_offset', $offset - $maxRecords);
+} else {
+	$smarty->assign('prev_offset', -1);
+}
+/*
+$categories = $categlib->get_all_categories();
+$smarty->assign_by_ref('categories', $categories);
+*/
 $galleries = $tikilib->list_galleries(0, -1, 'name_desc', 'admin', $find_objects);
 $smarty->assign_by_ref('galleries', $galleries["data"]);
 
@@ -389,7 +439,7 @@ $trackers = $trklib->list_trackers(0, -1, 'name_asc', $find_objects);
 $smarty->assign_by_ref('trackers', $trackers["data"]);
 
 
-$articles = $tikilib->list_articles(0, -1, 'title_asc', $find_objects, '', '', $user, '', '', 'n');
+$articles = $tikilib->list_articles(0, -1, 'title_asc', $find_objects, '', $user, '', '', 'n');
 $smarty->assign_by_ref('articles', $articles["data"]);
 
 $directories = $dirlib->dir_list_all_categories(0, -1, 'name_asc', $find_objects);

@@ -12,23 +12,7 @@
 require_once('tiki-setup.php');  
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 
-
-
 if (isset($_REQUEST["new_prefs"])) {
-
-		$listgroups = $userlib->get_groups(0, -1, 'groupName_asc', '', '', 'n');
-		$in = array();
-		$out = array();
-		foreach ($listgroups['data'] as $gr) {
-			if ($gr['groupName'] == 'Anonymous')
-				continue;
-			if ($gr['registrationChoice'] == 'y' && !in_array($gr['groupName'], $_REQUEST['registration_choices'])) // deselect
-				$out[] = $gr['groupName'];
-			elseif ($gr['registrationChoice'] != 'y' && in_array($gr['groupName'], $_REQUEST['registration_choices'])) //select
-				$in[] = $gr['groupName'];
-		}
-
-
 	check_ticket('admin-inc-general');
     $pref_toggles = array(
         "anonCanEdit",
@@ -51,12 +35,7 @@ if (isset($_REQUEST["new_prefs"])) {
         "user_show_realnames",
 		"log_sql",
 		"log_mail",
-		"smarty_security",
-		"feature_pear_date",
-		"permission_denied_login_box",
-		"feature_ticketlib",
-		"feature_ticketlib2",
-		"feature_display_my_to_others",
+		"smarty_security"
     );
 
     foreach ($pref_toggles as $toggle) {
@@ -64,7 +43,6 @@ if (isset($_REQUEST["new_prefs"])) {
     }
 
     $pref_simple_values = array(
-        "browsertitle",
         "site_crumb_seper",
         "site_nav_seper",
         "contact_user",
@@ -77,17 +55,13 @@ if (isset($_REQUEST["new_prefs"])) {
         "urlIndex",
         "proxy_host",
         "proxy_port",
-	"ip_can_be_checked",
         "session_lifetime",
         "load_threshold",
         "site_busy_msg",
         "site_closed_msg",
         "helpurl",
         "tiki_version_check_frequency",
-		'log_sql_perf_min',
-		"permission_denied_url",
-		"highlight_group",
-		"user_tracker_infos",
+        "pref_syntax",
     );
 
     foreach ($pref_simple_values as $svitem) {
@@ -102,8 +76,8 @@ if (isset($_REQUEST["new_prefs"])) {
         "long_time_format",
         "short_date_format",
         "short_time_format",
-        "tikiIndex",
-	"users_prefs_display_timezone"
+        "siteTitle",
+        "tikiIndex"
     );
 
     foreach ($pref_byref_values as $britem) {
@@ -160,7 +134,7 @@ elseif (isset($_REQUEST["newadminpass"])) {
 }
 
 // Get list of time zones
-$smarty->assign_by_ref("timezones", TikiDate::getTimeZoneList());
+$smarty->assign_by_ref("timezones", $GLOBALS['_DATE_TIMEZONE_DATA']);
 
 // Get information for alternate homes
 $smarty->assign("home_forum_url", "tiki-view_forum.php?forumId=" . $prefs['home_forum']);
@@ -199,11 +173,6 @@ if ($prefs['home_file_gallery']) {
 } else {
 	$smarty->assign("home_fil_name", '');
 }
-
-$listgroups = $userlib->get_groups(0, -1, 'groupName_desc', '', '', 'n');
-$smarty->assign("listgroups", $listgroups['data']);
-
-$headerlib->add_cssfile('css/admin.css');
 
 ask_ticket('admin-inc-general');
 ?>

@@ -6,6 +6,7 @@
  
  @import "lite/lite.css"; /* here we import *lite as the base */
 
+
 /***** XHTML Elements ******/
 body {
 	background: white;
@@ -17,6 +18,7 @@ body {
 *:first-child+html body {
 	font-size: 75% !important;
 }
+
 
 html>body {
 	font-size: 12px;
@@ -133,7 +135,7 @@ input.button, button, .submitbutton, .button input, .button, input.wikiaction {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: .8em;
 }
-
+	
 /* styles by type separated from the above because IE6 doesn't like multiple class specifications with bracket selectors together */
 input[type=submit],
 input[type=reset] {
@@ -246,6 +248,13 @@ ul.jumplinks {
 	list-style-type : none;
 }
 
+ul.jumplinks, .jumplinks {
+	position: absolute;
+	top: -9000px;
+	left: -9000px;
+	z-index: 9;
+}
+
 ul.jumplinks a:focus, ul.jumplinks a:active {
 	position: absolute;
 	top: 9010px;
@@ -353,9 +362,9 @@ div#sitead {
 	bottom: 3px;
 	right: 10px;
 	font-size: 1em}
-
-#siteloginbar * {margin: .2em}
-
+#siteloginbar * {
+	margin: .2em; padding: .2em;
+}
  #siteloginbar.logged-in {
 	bottom: 3px;
 }
@@ -552,7 +561,7 @@ div#tiki-bot {}
 	font: .9em Verdana, Helvetica, Arial, Sans-Serif;
 	display: block;
 	border-right: 1px solid #aaa;
-}
+} 
 
 .horbaritem a:hover {
 	background-color: #fff;
@@ -638,6 +647,7 @@ div#tiki-bot {}
 	display: block;
 	white-space: nowrap;
 	background: #fff}
+
 
 .phplmnormal,
 a.phplmnormal:hover,
@@ -802,6 +812,7 @@ div#edithelpzone {	display: none;}
 	padding-left: 18px}
 
 /* Banners, text type */
+
 .bannertext {	font-size: .95em;	text-decoration: none;}
 .bannertext:hover {}
 
@@ -855,8 +866,8 @@ h3.box-title {
 	text-transform: uppercase;
 	font-family: Arial, Helvetica, sans-serif;
 	display: block;
-	font-size: 90%;
-	font-weight: bold;
+	font-size:90%;
+	font-weight:bold;
 	position: relative;
 }
 
@@ -886,7 +897,7 @@ a.flipmodtitle:hover img {border: 1px solid #AAAAAA !important}
 	border-bottom: 1px solid #D3D3D3;
 	padding: 7px;
 	margin: 0}
-	
+
 .box-data {padding-bottom: 8px}
 
 * html .box-data {
@@ -994,14 +1005,16 @@ table {
 }
 
 table.normal, 
-table.admin{
+table.admin,
+table.bloglist {
 	padding: 0;
 	margin: 0;
 	border-collapse: collapse;
 	width: 100%;
 }
 
-table.normal {
+table.normal,
+table.bloglist {
 	border: solid 1px #909090;
 	border-collapse: collapse;
 }
@@ -1012,13 +1025,16 @@ table.admin tr td div#page-bar {
 	background-color: transparent;
 }
 
-table.normal th {
-	font-size: 1em}
-	
-td {vertical-align: top}
+table.normal td.heading,
+td.bloglistheading {
+	font-size: 1em;
+}
+td {}
 * html td {	font-size: 11px}
+th {}
 
 td.normal,
+td.bloglist,
 .wikitable td,
 td.odd,
 td.even {
@@ -1034,10 +1050,16 @@ td.even {background: #f9f9f9}
 
 td.third {background: #e7e7e7}
 
-th {
+td.heading,
+td.bloglistheading {
 	text-align: center;
 	background: #F0F4F5;
 	border: 1px solid #999999;
+	border-collapse: collapse;
+}
+
+.bloglist td {
+	border: solid 1px #909090;
 	border-collapse: collapse;
 }
 
@@ -1060,7 +1082,8 @@ td.form {
 
 /* Tables (list reduced due to classes not found in files) */
 table.normal, 
-table.admin {
+table.admin,
+table.bloglist {
 	margin: 0;
 	border-collapse: collapse;
 	width: 100%;
@@ -1068,7 +1091,8 @@ table.admin {
 table.normalnoborder {
 	width: 100%;
 }
-table.normal {
+table.normal,
+table.bloglist {
 	border: solid 1px #909090;
 	border-collapse: collapse;
 }
@@ -1091,8 +1115,8 @@ div.content .tabs {
 
 .tabs {
 	border-bottom: solid 1px #0a6aa6 !important;
-	margin-top: 10px !important;
-	padding: 0 !important;
+	margin-top: 10px !important; 
+  padding: 0 !important;
 }
 
 .admin {
@@ -1108,8 +1132,8 @@ div.content .tabs {
 	padding: 2px 0;
 }
 
-.tabmark a {
-	border-bottom: 0;
+.tabmark a { 
+	border-bottom :0;
 	color: #000;
 	font-weight: bold;
 	padding: 1px 5px;
@@ -1162,8 +1186,6 @@ div.content .tabs {
 	top: -2px !important
 }
 
-
-
 .tabcontent {
 	background-color: #f2f2f2;
 	border: solid 1px #0a6aa6 !important;
@@ -1186,10 +1208,99 @@ div.content .tabs {
 	padding: 5px;
 }
 
-.commentbloc {
-	text-align: left;
+.tab-menu  {
+	clear: both;
+	line-height: 17px;
+	list-style-image: none;
+	list-style-position: outside;
+	list-style-type: none;
+	padding: 2px 0;
+	margin-bottom: 6px;
+	margin-top: 2px;
+	width: 100%;
 }
 
+.tab-menu li {
+	display: inline;
+	margin: 0 2px;
+	width: 200px;
+	padding-right: 1.5em;
+}
+
+.tab-menu li a 	{ 
+	padding: 1px 5px; 
+	background: #f5f5f5; 
+	color:  #222; 
+	font-weight: bold; 
+	text-decoration: none; 
+} 
+.tab-menu li a:hover, 
+.tab-menu li a:focus { 
+	background: #FAEC8F; 
+	border-bottom-color: #999; 
+} 
+
+.tab-menu li a:hover { 
+	background: #FAEC8F; 
+	border-bottom-color: #999; 
+} 
+
+.tab-menu li.tab-selected a { 
+	background: #BCEC8F; 
+}
+
+/* CHECK
+.tab-menu li img {
+	vertical-align: middle;
+}*/
+
+/*  tiki tabs -- deprecated?
+table.admin tr td div#page-bar {
+	margin-left: 5px;
+	margin-bottom: 0;
+	background-color: transparent;
+}
+
+span#tab1 {
+	background: #F5F5F5;
+}
+
+span#tab2 {
+	background: #ECECEC;
+}
+
+span#tab3 {
+	background: #DCDCDC;
+}
+
+#content1,
+#content2,
+#content3 {
+	border-top: 1px solid #A9A9A9;
+	border-left: 1px solid #A9A9A9;
+	border-right: 1px solid #696969;
+	border-bottom: 1px solid #696969;
+}
+
+#content1 {
+	padding: 10px;
+	background: #F5F5F5;
+
+}
+
+#content2 {
+	padding: 5px;
+	background: #ECECEC;
+}
+
+#content3 {
+	padding: 5px;
+	background: #DCDCDC;
+}
+table.admin div#content1 div.tabcontent div.cbox {
+	background-color: transparent;
+}
+*/
 
 /*** Feature-specific selectors ***/
 
@@ -1248,23 +1359,6 @@ span#description {
 
 .wikitext ol {
 
-}
-
-/* fancylist wikiplugin */
-.wikitext .fancylist {
-	margin-left: 30px; padding-left: 30px;
-}
-.wikitext .fancylist li {
-	color: #999;
-	font: italic 2.2em Georgia, "Times New Roman", sans-serif;
-	list-style-position: outside;
-}
-
-.wikitext .fancylist li p {
-	color: #000;
-	display: inline;
-	font-size: 50%;
-	font-style: normal;
 }
 
 .titlebar {
@@ -1332,6 +1426,16 @@ div.button2, .button3 {
 	margin-right: 5px;
 }
  
+.linkbut {
+	border : 1px solid #9f9f9f;
+	padding: 2px;
+}
+
+.linkbut:hover {
+	background: #F5F5F5;
+	text-decoration: none;
+}
+
 div.cache {}
 div.cachedpage {}
 .wikicache, .wikicache:visited {}
@@ -1355,7 +1459,8 @@ img.externallink {
 	
 }
 
-/* code examples after uploaded file */
+/* Wiki plugins */
+/* Code plugin  */
 div.code {
 	font-size: 90%;
 	padding: 3px;
@@ -1364,33 +1469,28 @@ div.code {
 	font-family: "Courier New", Courier, monospace;
 }
 
-
-/* Wiki plugins */
-
-/* Code plugin  */
-.codecaption {
-	font-size: 0.9em;
-	padding: 0 10px;
-	position: relative;
-	bottom: -1em;
-	display: inline;
-	border: 1px solid #ADACAF;
-	border-bottom: 0;
-	margin-left: 4px;
-	line-height: 1em;
-	color: #666666;
-	background: #F5F5F5;
-	font-weight: bold;
-}
-
 .codelisting {
 	font-family: "Courier New", Courier, monospace;
 	padding: 10px;
 	background: #F5F5F5;
+	margin: 4px;
 	border: 1px dashed #ADACAF;
-	margin-left: 4px;
-	overflow: auto;
-	width: 90%;
+	overflow: auto; 
+   width: 90%;
+}
+
+.codecaption {
+	font-size: 90%;
+	padding: 0 10px;
+	position: relative;
+	bottom: -5px;
+	display: inline;
+	border: 1px solid #ADACAF;
+	border-bottom: 0;
+	margin: 0;
+	color: #666666;
+	background: #F5F5F5;
+	font-weight: bold;
 }
 
 /* Quote plugin */
@@ -1454,10 +1554,9 @@ ul.toc * {
 .diff div {
 	border-top: 1px solid #A9B8C2;
 }
-.diffheader td {
+.diffheader {
 	background: #A9B8C2;
 	font-weight: bold;
-	width: 50%;
 }
 .diffadded {
 	background: #CCFFCC;
@@ -1550,9 +1649,11 @@ div.articletrailer {
 	position: relative;
 	text-align: center;
 	margin-top: 1.1em}
-	
-div.articletrailer img {}
 
+div.articletrailer .wikitopline {
+	float: left;
+} 
+ 
 div.article .status {
 	position: absolute;
 	left: 0}
@@ -1614,6 +1715,7 @@ div.bloginfo {
 div.blogtools {
 	padding: 3px;
 	text-align: right;
+	/*margin-bottom: -2em;*/
 }
 
 .blogpost {
@@ -1670,50 +1772,20 @@ span.posthead span.link {
 	font-weight: bold;
 }
 
-body.tiki_blogs .post .title {margin-top: 0}
-
-/*div.posthead h3*/
-body.tiki_blogs .post .title h2 {
-	font-size: 1.2em;
-	margin-top: 0}
+div.posthead h3 {
+	font-size:1.2em}
  
-/*div.postbody*/
-body.tiki_blogs .post .postbody {
+div.postbody {
 	margin-right: 8px;
 	line-height: 1.4em;
 	margin-bottom: 1em;
 }
 
-/* Maybe needs override to differentiate from forums */
-body.tiki_blogs .post .postbody {
-	background: none;
-	border: 0  }
-	
-body.tiki_blogs div.author_actions {
-	float: none;
-	background: none;
-	border: 0;
-	width: 100%}
-	
-body.tiki_blogs .actions {background: none}
-
-body.tiki_blogs .author_info {  }
-.postbody-title {
-	background: none;
-	border: 0}
-	
-body.tiki_blogs .postbody-title {
-	float: none;
-	width: 100%;
-	background: none;
-	border: 0}
-
-body.tiki_blogs .postfooter {
-	width: 100%;
+div.postfooter {
+	clear: both;
+	float: right;
 	margin-bottom: 2em;
 }
-
-body.tiki_blogs .postfooter .actions {float: left}
 
 /***** Forums *****/
 
@@ -2055,6 +2127,22 @@ div.imgaldescr {
 	margin-left: 10px;
 }
 
+div.gallerypath, div.gallerypath a {
+	color: #6996C3;
+	font-style: italic;
+	font-weight: normal;
+	margin-left: 3px;
+	text-decoration: none;
+}
+
+div.gallerypath a:hover {
+	color: black;
+	text-decoration: underline;
+}
+
+.fgalexplorer { border: 1px solid #8CACBB; }
+.fgallisting table td { padding-left: 2px; padding-right: 2px; }
+
 /***** Trackers *****/
 
 .statuson {
@@ -2198,7 +2286,7 @@ Caltrack a:visited {color: #00BD02}
 /* This version for light-colored backgrounds */
 .opaque {
 	background: #fff;
-	border-left: 1px solid #A9A9A9;
+   border-left: 1px solid #A9A9A9;
   	border-top: 1px solid #A9A9A9;
 	border-right: 1px solid #696969;
 	border-bottom: 1px solid #696969
@@ -2208,6 +2296,10 @@ Caltrack a:visited {color: #00BD02}
 	background-color: white;
 	border-bottom: 1px solid black;
 	padding-bottom: 7px;
+}
+
+.opaque .box-data  {
+	background-color: white;
 }
 .searchresults {
 	display: inline;
@@ -2380,13 +2472,11 @@ div.minichatdiv {
   font-size: .9em;
   overflow: auto !important}
 
-body.tiki_mytiki #tiki-center form {
-	border: 1px solid #aaa;
-	padding: 10px}
+body.tiki_mytiki #tiki-center form {border: 1px solid #aaa}
   
-body.tiki_mytiki #tiki-center form table.normal,
-body.tiki_mytiki #tiki-center .normal form {
-	border: none;}
+body.tiki_mytiki #tiki-center form table.normal {
+	border: 0;
+margin: 10px}
  
 /* end of css file */
 

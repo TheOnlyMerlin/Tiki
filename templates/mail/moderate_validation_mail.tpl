@@ -4,8 +4,6 @@
 {tr}{$mail_user} <{$mail_email}> has requested a new password on {$mail_site}, but you need to validate his account first{/tr}
 {else}
 {$mail_user} <{$mail_email}> {tr}has requested an account on{/tr} {$mail_site}
-{if isset($chosenGroup)}
-{tr}Group:{/tr} {$chosenGroup}{/if}
 {/if}
 
 {tr}To validate that account, please follow the link:{/tr}
@@ -14,12 +12,5 @@
 
 {tr}best regards{/tr},
 {tr}your Tikiwiki{/tr}
-
-{if isset($item)}
-{tr}User Tracker{/tr}
-{foreach item=field_value from=$item.field_values}
-	{$field_value.name}: {include file="tracker_item_field_value.tpl" list_mode='csv' showlinks='n'}	 
-{/foreach}
-{/if}
 
             

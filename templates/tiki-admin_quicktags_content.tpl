@@ -1,6 +1,5 @@
 
 {* quicktags filter *}
-{if $list_categories|@count gt 1}
 <div align="center">
   <form action="tiki-admin_quicktags.php" method="get">
     <input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
@@ -8,23 +7,22 @@
     {tr}Quicktags category filter{/tr}
     <select name="category" onchange="this.form.submit()">
       <option value="All">{tr}All{/tr}</option>
-      {foreach item=text key=value from=$list_categories}
-        <option value="{$value}"{if $category eq $value} selected="selected"{/if}>{$text}</option>
-      {/foreach}
+      {section name=ct loop=$list_categories}
+        <option value="{$list_categories[ct]}" {if $category eq $list_categories[ct]} selected="selected"{/if}>{tr}{$list_categories[ct]}{/tr}</option>
+      {/section}
     </select>
   </form>
 </div>
-{/if}
 
 <br /><br />
 
 <table class="normal">
   <tr>
-    <th>&nbsp;</th>
+    <td class="heading">&nbsp;</td>
     {foreach from=$table_headers item=header key=sort_field}
-    <th>{self_link _template='tiki-admin_quicktags_content.tpl' _htmlelement='quicktags-content' _sort_field=$sort_field _sort_arg='sort_mode'}{$header}{/self_link}</th>
+    <td class="heading">{self_link _template='tiki-admin_quicktags_content.tpl' _htmlelement='quicktags-content' _sort_field=$sort_field _sort_arg='sort_mode' _class='tableheading'}{$header}{/self_link}</td>
     {/foreach}
-    <th>{tr}Action{/tr}</th>
+    <td class="heading">{tr}Action{/tr}</td>
   </tr>
 
 {cycle values="odd,even" print=false}
@@ -32,14 +30,7 @@
   <tr>
     <td class="{cycle advance=false}">{icon _id=$quicktags[tag].tagicon}</td>
     {foreach from=$table_headers item=header key=sort_field}
-    <td class="{cycle advance=false}">
-      {if $sort_field eq 'tagcategory'}
-         {assign var=qtkey value=$quicktags[tag].$sort_field}
-         {$list_categories[$qtkey]}
-      {else}
-         {tr}{$quicktags[tag].$sort_field}{/tr}
-      {/if}
-    </td>
+    <td class="{cycle advance=false}">{tr}{$quicktags[tag].$sort_field}{/tr}</td>
     {/foreach}
     <td class="{cycle}">
       {self_link _template='tiki-admin_quicktags_edit.tpl' _htmlelement='quicktags-edit' _class='link' tagId=$quicktags[tag].tagId _icon='page_edit'}{tr}Edit{/tr}{/self_link}

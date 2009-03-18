@@ -46,9 +46,7 @@ if ($freetaglib->count_tags() == 0) {
 
 if (!isset($_REQUEST['tag']) && $prefs['freetags_preload_random_search'] == 'y') {
 	$tag = $freetaglib->get_tag_suggestion('', 1);
-	if (!empty($tag[0])) {
-		$_REQUEST['tag'] = $tag[0];
-	}
+  header("Location: tiki-browse_freetags.php?tag=$tag[0]");
 }
 
 
@@ -177,9 +175,6 @@ include_once ('tiki-section_options.php');
 ask_ticket('browse-freetags');
 
 // Display the template
-$smarty->assign('objects_with_freetags', array(
-	'wiki page', 'blog post', 'article', 'directory', 'faq', 'file gallery', 'image gallery', 'image', 'poll', 'quiz', 'survey',	'tracker', 'tracker %d'
-));
 $smarty->assign('mid', 'tiki-browse_freetags.tpl');
 $smarty->display("tiki.tpl");
 

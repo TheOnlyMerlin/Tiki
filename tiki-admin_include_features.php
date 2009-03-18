@@ -18,7 +18,6 @@ if (isset($_REQUEST["features"])) {
 		"feature_action_calendar",
 		"feature_actionlog",
 		"feature_ajax",
-		"feature_ajax_autosave",
 		"feature_articles",
 		"feature_banners",
 		"feature_banning",
@@ -30,11 +29,11 @@ if (isset($_REQUEST["features"])) {
 		"feature_contact",
 		"feature_contacts",
 		"feature_contribution",
-		"feature_multilingual",
 		"feature_custom_home",
 		"feature_debug_console",
 		"feature_directory",
 		"feature_drawings",
+		"feature_edit_templates",
 		"feature_events",
 		"feature_faqs",
 		"feature_featuredLinks",
@@ -71,7 +70,6 @@ if (isset($_REQUEST["features"])) {
 		"feature_score",
 		"feature_search",
 		"feature_sheet",
-		"feature_sefurl",
 		"feature_shoutbox",
 		"feature_stats",
 		"feature_surveys",
@@ -81,7 +79,6 @@ if (isset($_REQUEST["features"])) {
 		"feature_userPreferences",
 		"feature_user_bookmarks",
 		"feature_user_watches",
-		"feature_group_watches",
 		"feature_user_watches_translations",
 		"feature_userfiles",
 		"feature_usermenu",
@@ -94,14 +91,12 @@ if (isset($_REQUEST["features"])) {
 		"feature_multimedia",
 		"feature_userlevels",
 		"feature_mootools",
-		"feature_jquery",
 		"feature_shadowbox",
-		"feature_swfobj",
-		"feature_tikitests",
-		"feature_magic",
-		"feature_minichat",
-		"feature_comments_moderation",
-		"feature_groupalert",
+		"feature_swffix",
+		"layout_section",
+		"user_assigned_modules",
+		"feature_sefurl",
+		"feature_tikitests"
 	);
 
 	$pref_byref_values = array(
@@ -122,8 +117,6 @@ if (isset($_REQUEST["features"])) {
 
 if (!empty($_REQUEST['tabs'])) {
 	$smarty->assign('tabs', $_REQUEST['tabs']=='on'?'n':'');
-} else {
-	$smarty->assign('tabs', '');
 }
 
 $smarty->assign('php_major_version', substr(PHP_VERSION, 0, strpos(PHP_VERSION, '.')));

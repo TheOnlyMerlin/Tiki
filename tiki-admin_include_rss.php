@@ -21,18 +21,11 @@ if (isset($_REQUEST['rss'])) {
 		$tikilib->set_preference('max_rss_'.$feed, trim($_REQUEST['max_rss_'.$feed]));
 		$tikilib->set_preference('title_rss_'.$feed, trim($_REQUEST['title_rss_'.$feed]));
 		$tikilib->set_preference('desc_rss_'.$feed, trim($_REQUEST['desc_rss_'.$feed]));
-		$tikilib->set_preference('index_rss_'.$feed, trim($_REQUEST['index_rss_'.$feed]));
 
 		if (isset($_REQUEST['rss_'.$feed]) && $_REQUEST['rss_'.$feed] == 'on') {
 		  $tikilib->set_preference('rss_'.$feed, 'y');
 		} else {
 		  $tikilib->set_preference('rss_'.$feed, 'n');
-		}
-
-		if (isset($_REQUEST['showAuthor_rss_'.$feed]) && $_REQUEST['showAuthor_rss_'.$feed] == 'on') {
-		  $tikilib->set_preference('showAuthor_rss_'.$feed, 'y');
-		} else {
-		  $tikilib->set_preference('showAuthor_rss_'.$feed, 'n');
 		}
 	}
 	simple_set_value('rssfeed_default_version');

@@ -31,13 +31,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  function smarty_outputfilter_highlight($source, &$smarty) {
     global $prefs;
 
-	if (empty($_REQUEST['highlight'])) {
-		return $source;
-	}
     $highlight = $_REQUEST['highlight'];
-	if (isset($_REQUEST['boolean']) && ($_REQUEST['boolean'] == 'on' || $_REQUEST['boolean'] == 'y')) {
-		$highlight = str_replace(array('(', ')', '*', '-', '"', '~','<', '>'), ' ', $highlight);
-	}
     if(isset($prefs['feature_referer_highlight']) && $prefs['feature_referer_highlight'] == 'y') {
         $refererhi = _refererhi();
         if(isset($refererhi) && !empty($refererhi)) {

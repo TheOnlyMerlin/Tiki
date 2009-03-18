@@ -1,7 +1,7 @@
 {* $Id$ *}
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
-{tr}To add/remove file galleries, go to "File Galleries" on the application menu, or{/tr} <a class="rbox-link" href="tiki-list_file_gallery.php">{tr}Click Here{/tr}</a>.
+{tr}To add/remove file galleries, go to "File Galleries" on the application menu, or{/tr} <a class="rbox-link" href="tiki-file_galleries.php">{tr}Click Here{/tr}</a>.
 <hr />
 {tr}If you decide to store files in a directory you must ensure that the user cannot access directly to the directory.{/tr}
 {tr}You have two options to accomplish this:<br /><ul><li>Use a directory outside your document root, make sure your php script can read and write to that directory</li><li>Use a directory inside the document root and use .htaccess to prevent the user from listing the directory contents</li></ul>{/tr}
@@ -145,7 +145,7 @@
         </tr>
         
         <tr class="formcolor">
-          <td colspan="2" class="input_submit_container">
+          <td colspan="2" class="button">
             <input type="submit" name="filegalfeatures" value="{tr}Set features{/tr}" /></td>
        </tr>
       </table>
@@ -157,7 +157,6 @@
   <div class="cbox-title">{tr}Gallery listing configuration{/tr}</div>
   <div class="cbox-data">
       <form method="post" action="tiki-admin.php?page=fgal">
-  	  {remarksbox title="warning"}{tr}Some changes below will affect only new file galleries{/tr}{/remarksbox}
         <table class="admin">
 		{include file="fgal_listing_conf.tpl"}
 		<tr class="formcolor">
@@ -172,7 +171,7 @@
 		</td>
 		</tr>
         <tr class="formcolor">
-          <td colspan="2" class="input_submit_container"><input type="submit"
+          <td colspan="2" class="button"><input type="submit"
               name="filegallistprefs" value="{tr}Change configuration{/tr}" /></td>
         </tr></table>
       </form>
@@ -195,7 +194,7 @@
               <option value="points_desc" {if $prefs.file_galleries_comments_default_ordering eq 'points_desc'}selected="selected"{/if}>{tr}Points{/tr}</option>
               </select></td>
         </tr><tr class="formcolor">
-          <td colspan="2" class="input_submit_container"><input type="submit" name="filegalcomprefs"
+          <td colspan="2" class="button"><input type="submit" name="filegalcomprefs"
               value="{tr}Change settings{/tr}" /></td>
         </tr></table>
       </form>
@@ -222,8 +221,8 @@
           <td colspan="2">
             <table class="normal">
               <tr class="formcolor">
-                <th>{tr}MIME Type{/tr}</th>
-                <th>{tr}System command{/tr}</th>
+                <td class="heading">{tr}MIME Type{/tr}</td>
+                <td class="heading">{tr}System command{/tr}</td>
               </tr>
               {foreach  key=mime item=cmd from=$fgal_handlers}
               <tr>
@@ -249,7 +248,7 @@
         </tr>
     
         <tr class="formcolor">
-          <td colspan="2" class="input_submit_container">
+          <td colspan="2" class="button">
             <input type="submit" name="filegalhandlers" value="{tr}Change preferences{/tr}" />
           </td>
         </tr>

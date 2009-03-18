@@ -2,12 +2,9 @@
 
 // $Id: /cvsroot/tikiwiki/tiki/tiki-view_blog.php,v 1.65.2.1 2007-12-07 05:56:38 mose Exp $
 
-// Copyright (c) 2002-2009, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-//
-// 2009-02-23 SEWilco
-// Added blogTitle parameter for access by title.
 
 // Initialization
 $section = 'blogs';
@@ -31,13 +28,6 @@ if ($prefs['feature_blogs'] != 'y') {
 
 	$smarty->display("error.tpl");
 	die;
-}
-
-if (isset($_REQUEST["blogTitle"])) {
-  $blog_data = $tikilib->get_blog_by_title(trim(trim($_REQUEST["blogTitle"]),"\x22\x27"));
-  if ( (!empty($blog_data)) && (!empty($blog_data["blogId"])) ) {
-    $_REQUEST["blogId"] = $blog_data["blogId"];
-  }
 }
 
 if (!isset($_REQUEST["blogId"])) {
@@ -194,9 +184,7 @@ if (isset($_REQUEST["find"])) {
 $smarty->assign('find', $find);
 
 // Get a list of last changes to the blog database
-$date_min = isset($_REQUEST['date_min']) ? $_REQUEST['date_min'] : '';
-$date_max = isset($_REQUEST['date_max']) ? $_REQUEST['date_max'] : $tikilib->now;
-$listpages = $bloglib->list_blog_posts($_REQUEST["blogId"], $offset, $blog_data["maxPosts"], $sort_mode, $find, $date_min, $date_max);
+$listpages = $bloglib->list_blog_posts($_REQUEST["blogId"], $offset, $blog_data["maxPosts"], $sort_mode, $find, $tikilib->now);
 
 $temp_max = count($listpages["data"]);
 for ($i = 0; $i < $temp_max; $i++) {

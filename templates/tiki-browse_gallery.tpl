@@ -1,50 +1,45 @@
 {* $Id$ *}
 {if $prefs.gal_image_mouseover neq 'n'}{popup_init src="lib/overlib.js"}{/if}
-
-{title}{tr}Browsing Gallery:{/tr} {$name}{/title}
+<h1><a class="pagetitle" href="tiki-browse_gallery.php?galleryId={$galleryId}">
+{tr}Browsing Gallery{/tr}: {$name}
+</a></h1>
 
 <div class="navbar">
-	{if $tiki_p_list_image_galleries eq 'y'}
-		{button href="tiki-galleries.php" _text="{tr}List Galleries{/tr}"}
-	{/if}
-	{if $system eq 'n'}
-		{if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner)}
-			{button href="tiki-galleries.php?edit_mode=1&amp;galleryId=$galleryId" _text="{tr}Edit Gallery{/tr}"}
-			{button href="tiki-browse_gallery.php?galleryId=$galleryId&amp;rebuild=$galleryId" _text="{tr}Rebuild Thumbnails{/tr}"}
-		{/if}
-		
-		{if $tiki_p_upload_images eq 'y'}
-			{if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner) or $public eq 'y'}
-				{button href="tiki-upload_image.php?galleryId=$galleryId" _text="{tr}Upload Image{/tr}"}
-			{/if}
-		{/if}
-		
-		{if $prefs.feature_gal_batch eq "y" and $tiki_p_batch_upload_image_dir eq 'y'}
-			{if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner) or $public eq 'y'}
-				{button href="tiki-batch_upload.php?galleryId=$galleryId" _text="{tr}Directory Batch{/tr}"}
-			{/if}
-		{/if}
-		
-		{if $tiki_p_assign_perm_image_gallery eq 'y'}
-			{assign var=thisname value=$name|escape:"url"}
-			{button href="tiki-objectpermissions.php?objectName=$thisname&amp;objectType=image+gallery&amp;permType=image+galleries&amp;objectId=$galleryId"	_text="{tr}Perms{/tr}"}
-		{/if}
-	{/if}
+{if $tiki_p_list_image_galleries eq 'y'}
+<span class="button2"><a href="tiki-galleries.php" class="linkbut" title="{tr}List Galleries{/tr}">{tr}List Galleries{/tr}</a></span>
+{/if}
+{if $system eq 'n'}
+  {if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner)}
+    <span class="button2"><a href="tiki-galleries.php?edit_mode=1&amp;galleryId={$galleryId}" class="linkbut">{tr}Edit Gallery{/tr}</a></span>
+    <span class="button2"><a href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;rebuild={$galleryId}" class="linkbut">{tr}Rebuild Thumbnails{/tr}</a></span>
+  {/if}
+  {if $tiki_p_upload_images eq 'y'}
+    {if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner) or $public eq 'y'}
+      <span class="button2"><a href="tiki-upload_image.php?galleryId={$galleryId}" class="linkbut">{tr}Upload Image{/tr}</a></span>
+    {/if}
+  {/if}
+  {if $prefs.feature_gal_batch eq "y" and $tiki_p_batch_upload_image_dir eq 'y'}
+    {if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner) or $public eq 'y'}
+      <span class="button2"><a href="tiki-batch_upload.php?galleryId={$galleryId}" class="linkbut">{tr}Directory batch{/tr}</a></span>
+    {/if}
+  {/if}
+  {if $tiki_p_assign_perm_image_gallery eq 'y'}
+  	  <span class="button2"><a href="tiki-objectpermissions.php?objectName={$name|escape:"url"}&amp;objectType=image+gallery&amp;permType=image+galleries&amp;objectId={$galleryId}" class="linkbut">{tr}Perms{/tr}</a></span>
+  {/if}
+{/if}
 
-	{if $tiki_p_admin_galleries eq 'y'}
-		{button href="tiki-list_gallery.php?galleryId=$galleryId" _text="{tr}List Gallery{/tr}"}
-		{button href="tiki-show_all_images.php?id=$galleryId" _text="{tr}All Images{/tr}"}
-	{/if}
-
-	{if $prefs.rss_image_gallery eq 'y'}
-		{button href="tiki-image_gallery_rss.php?galleryId=$galleryId" _text="{tr}RSS{/tr}"}
-	{/if}
-	
+{if $tiki_p_admin_galleries eq 'y'}
+<span class="button2"><a href="tiki-list_gallery.php?galleryId={$galleryId}" class="linkbut">{tr}List Gallery{/tr}</a></span>
+<span class="button2"><a href="tiki-show_all_images.php?id={$galleryId}" class="linkbut">{tr}All Images{/tr}</a></span>
+{/if}
+{if $prefs.rss_image_gallery eq 'y'}
+  <span class="button2"><a href="tiki-image_gallery_rss.php?galleryId={$galleryId}" class="linkbut">{tr}RSS{/tr}</a></span>
+{/if}
 	{if $user and $prefs.feature_user_watches eq 'y'}
 		{if $user_watching_gal eq 'n'}
-			<a href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;watch_event=image_gallery_changed&amp;watch_object={$galleryId}&amp;watch_action=add" title="{tr}Monitor this Gallery{/tr}" class="icon">{icon _id='eye' alt="{tr}Monitor this Gallery{/tr}"}</a>
+			<a href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;watch_event=image_gallery_changed&amp;watch_object={$galleryId}&amp;watch_action=add" title="{tr}Monitor this Gallery{/tr}">{html_image file='img/icons/icon_watch.png' border='0' alt="{tr}Monitor this Gallery{/tr}"}</a>
 		{else}
-			<a href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;watch_event=image_gallery_changed&amp;watch_object={$galleryId}&amp;watch_action=remove" title="{tr}Stop Monitoring this Gallery{/tr}" class="icon">{icon _id='no_eye' alt="{tr}Stop Monitoring this Gallery{/tr}"}</a>
+			<a href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;watch_event=image_gallery_changed&amp;watch_object={$galleryId}&amp;watch_action=remove" title="{tr}Stop Monitoring this Gallery{/tr}">{html_image file='img/icons/icon_unwatch.png' border='0' alt="{tr}Stop Monitoring this Gallery{/tr}"}</a>
 		{/if}
 	{/if}
 </div>
@@ -65,17 +60,17 @@
 {/if}
 
 {if strlen($description) > 0}
-	<div class="description">
-	  {$description|escape}
+	<div class="imgaldescr">
+	  {$description}
   </div>
 {/if}
 
 	<span class="sorttitle">{tr}Sort Images by{/tr}</span>
-    [ <span class="sortoption"><a class="gallink" href="{$galleryId|sefurl:gallery:with_next}offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></span>
-    | <span class="sortoption"><a class="gallink" href="{$galleryId|sefurl:gallery:with_next}offset={$offset}&amp;sort_mode={if $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Date{/tr}</a></span>
-    | <span class="sortoption"><a class="gallink" href="{$galleryId|sefurl:gallery:with_next}offset={$offset}&amp;sort_mode={if $sort_mode eq 'hits_desc'}hits_asc{else}hits_desc{/if}">{tr}Hits{/tr}</a></span>
-    | <span class="sortoption"><a class="gallink" href="{$galleryId|sefurl:gallery:with_next}offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_desc'}user_asc{else}user_desc{/if}">{tr}User{/tr}</a></span>
-    | <span class="sortoption"><a class="gallink" href="{$galleryId|sefurl:gallery:with_next}offset={$offset}&amp;sort_mode={if $sort_mode eq 'filesize_desc'}filesize_asc{else}filesize_desc{/if}">{tr}Size{/tr}</a></span> ]
+    [ <span class="sortoption"><a class="gallink" href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></span>
+    | <span class="sortoption"><a class="gallink" href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Date{/tr}</a></span>
+    | <span class="sortoption"><a class="gallink" href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'hits_desc'}hits_asc{else}hits_desc{/if}">{tr}Hits{/tr}</a></span>
+    | <span class="sortoption"><a class="gallink" href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_desc'}user_asc{else}user_desc{/if}">{tr}User{/tr}</a></span>
+    | <span class="sortoption"><a class="gallink" href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'filesize_desc'}filesize_asc{else}filesize_desc{/if}">{tr}Size{/tr}</a></span> ]
 
 
   <div class="thumbnails">
@@ -85,19 +80,12 @@
         {foreach from=$subgals key=key item=item}
           <td align="center" {if (($key / $rowImages) % 2)}class="oddthumb"{else}class="eventhumb"{/if}>
           &nbsp;&nbsp;<br />
-          <a href="{$item.galleryId|sefurl:gallery}"><img alt="{tr}subgallery{/tr} {$item.name}" class="athumb" src="show_image.php?id={$item.imageId}&amp;thumb=1" /></a>
+          <a href="tiki-browse_gallery.php?galleryId={$item.galleryId}"><img alt="{tr}subgallery{/tr} {$item.name}" class="athumb" src="show_image.php?id={$item.imageId}&amp;thumb=1" /></a>
 	  <br />
 	  <small class="caption">
 		{tr}Subgallery{/tr}: 
 			{if $showname=='y' || $showfilename=='y'}{$item.name}<br />{/if}
 			{if $showimageid=='y'}{tr}ID{/tr}: {$item.galleryId}<br />{/if}
-			{if $showcategories=='y'}
-				{tr}Categories{/tr}:
-                       		{section name=categ loop=item.categories}
-                        		<li>{$item.categories[categ]}</li>
-                		{/section}
-                		</ul><br />
-			{/if}
 			{if $showdescription=='y'}{$item.description}<br />{/if}
 			{if $showcreated=='y'}{tr}Created{/tr}: {$item.created|tiki_short_date}<br />{/if}
 			{if $showuser=='y'}{tr}User{/tr}: {$item.user|userlink}<br />{/if}
@@ -122,19 +110,12 @@
 	</a>
 {/if}
           <br />
-	  <small class="caption">
+
+          <small class="caption">
 	  {if $prefs.gal_image_mouseover neq 'only'}
 		{if $showname=='y'}{$item.name}<br />{/if}
 		{if $showfilename=='y'}{tr}Filename{/tr}: {$item.filename}<br />{/if}
 		{if $showimageid=='y'}{tr}ID{/tr}: {$item.imageId}<br />{/if}
-		{if $showcategories=='y'}
-		    	{tr}Categories{/tr}:
-                        <ul class='categories'>
-                        {section name=categ loop=$item.categories}
-                        	<li>{$item.categories[categ]}</li>
-                        {/section}
-                        </ul><br />
-                {/if}
 		{if $showdescription=='y'}{$item.description}<br />{/if}
 		{if $showcreated=='y'}{tr}Created{/tr}: {$item.created|tiki_short_date}<br />{/if}
 		{if $showuser=='y'}{tr}User{/tr}: {$item.user|userlink}<br />{/if}
@@ -147,12 +128,12 @@
 	  <br />
           {if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner)}
 	    		{if $nextx!=0}
-            		<a class="gallink" href="tiki-browse_image.php?galleryId={$galleryId}&amp;sort_mode={$sort_mode}&amp;imageId={$item.imageId}&amp;scalesize=0" title="{tr}Original Size{/tr}"><img src='img/icons2/nav_dot.gif' width='8' height='11' alt='{tr}Original Size{/tr}' title='{tr}Original Size{/tr}' /></a>
+            		<a class="gallink" href="tiki-browse_image.php?galleryId={$galleryId}&amp;sort_mode={$sort_mode}&amp;imageId={$item.imageId}&amp;scalesize=0" title="{tr}Original Size{/tr}"><img src='img/icons2/nav_dot.gif' border='0' width='8' height='11' alt='{tr}Original Size{/tr}' title='{tr}Original Size{/tr}' /></a>
 	    		{/if}
             	{if $imagerotate}
-            		<a class="gallink" href="{$galleryId|sefurl:gallery:with_next}rotateright={$item.imageId}" title="{tr}rotate right{/tr}"><img src='img/icons2/admin_rotate.gif' width='11' height='11' alt='{tr}rotate{/tr}' title='{tr}rotate{/tr}' /></a>
+            		<a class="gallink" href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;rotateright={$item.imageId}" title="{tr}rotate right{/tr}"><img src='img/icons2/admin_rotate.gif' border='0' width='11' height='11' alt='{tr}rotate{/tr}' title='{tr}rotate{/tr}' /></a>
             	{/if}
-            	<a class="gallink" href="{$galleryId|sefurl:gallery:with_next}remove={$item.imageId}" title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
+            	<a class="gallink" href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;remove={$item.imageId}" title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
             	<a class="gallink" href="tiki-edit_image.php?galleryId={$galleryId}&amp;edit={$item.imageId}" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
           {/if}
           <a class="gallink" href="tiki-browse_image.php?galleryId={$galleryId}&amp;sort_mode={$sort_mode}&amp;imageId={$item.imageId}&amp;scalesize={$defaultscale}" {if $prefs.gal_image_mouseover neq 'n'}{popup fullhtml="1" text=$over_info.$key|escape:"javascript"|escape:"html"}{/if}>{icon _id='magnifier' alt='{tr}Details{/tr}'}</a>
@@ -175,8 +156,17 @@
 
 {pagination_links cant=$cant step=$maxImages offset=$offset}{/pagination_links}
 
-{include file="find.tpl"}
-
+<table class="findtable">
+<tr><td class="findtable">{tr}Find{/tr}
+   <form method="get" action="tiki-browse_gallery.php">
+     <input type="text" name="find" value="{$find|escape}" />
+     <input type="submit" value="{tr}Find{/tr}" name="search" />
+     <input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
+     <input type="hidden" name="galleryId" value="{$galleryId}" />
+   </form>
+   </td>
+</tr>
+</table>
 {if $prefs.feature_image_galleries_comments == 'y'
   && (($tiki_p_read_comments == 'y'
   && $comments_cant != 0)
@@ -184,17 +174,29 @@
   ||  $tiki_p_edit_comments  == 'y')
 }
   <div id="page-bar">
-  	   {include file=comments_button.tpl}
+    <div class="button2">
+      <a href="#" onclick="javascript:flip('comzone');flip('comzone_close','inline');return false;" class="linkbut {if $comments_cant > 0}highlight{/if}">
+        {if $comments_cant == 0 or ($tiki_p_read_comments  == 'n' and $tiki_p_post_comments  == 'y')}
+          {tr}Add Comment{/tr}
+        {elseif $comments_cant == 1}
+          {tr}1 comment{/tr}
+        {else}
+          {$comments_cant}&nbsp;{tr}comments{/tr}
+        {/if}
+          <span id="comzone_close" style="display:{if isset($smarty.session.tiki_cookie_jar.show_comzone) and $smarty.session.tiki_cookie_jar.show_comzone eq 'y'}inline{else}none{/if};">({tr}close{/tr})</span>
+      </a>
+    </div>
   </div>
   {include file=comments.tpl}
 {/if}
 
+<br /><br />    
 <table class="normal noslideshow">
 <tr>
       <td class="even">
       <small>
   {tr}You can view this gallery's configured image (first, random, etc.) in your browser using{/tr}:<br /><br />
-  <a class="gallink" href="{$base_url}show_image.php?galleryId={$galleryId}">{$base_url}show_image.php?galleryId={$galleryId}</a><br />
+  <a class="gallink" href="{$url_show}?galleryId={$galleryId}">{$url_show}?galleryId={$galleryId}</a><br />
   </small>
   </td>
 </tr>
@@ -203,11 +205,11 @@
   <small>
   {tr}You can include the gallery's image in an HTML page using one of these lines{/tr}:<br /><br />
   {if $resultscale == $defaultscale}
-  &lt;img src="{$base_url}show_image.php?galleryId={$galleryId}" /&gt;<br />
+  &lt;img src="{$url_show}?galleryId={$galleryId}" /&gt;<br />
   {elseif !$resultscale}
-  &lt;img src="{$base_url}show_image.php?galleryId={$galleryId}" /&gt;<br />
+  &lt;img src="{$url_show}?galleryId={$galleryId}" /&gt;<br />
   {else}
-  &lt;img src="{$base_url}show_image.php?galleryId={$galleryId}" /&gt;<br />
+  &lt;img src="{$url_show}?galleryId={$galleryId}" /&gt;<br />
   {/if}
   </small>
   </td>
@@ -221,7 +223,7 @@
   {elseif !$resultscale}
   {literal}{{/literal}img src=show_image.php?galleryId={$galleryId} {literal}}{/literal}<br />
   {else}
-  {literal}{{/literal}img src={$base_url}show_image.php?galleryId={$galleryId} {literal}}{/literal}<br />
+  {literal}{{/literal}img src={$url_show}?galleryId={$galleryId} {literal}}{/literal}<br />
   {/if}
   </small>
   </td>

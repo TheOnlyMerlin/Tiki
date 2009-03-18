@@ -44,21 +44,15 @@ if ( $user ) {
 	if ( isset($prefs['theme']) && $prefs['theme'] != '' ) {
 		$prefs['style'] = $prefs['theme'];
 	}
-	if ( isset($prefs['theme-option']) && $prefs['theme-option'] != '' ) {
-		$prefs['style_option'] = $prefs['theme-option'];
-	}
-
-	// Set the userPage name for this user since other scripts use this value.
-	$userPage = $prefs['feature_wiki_userpage_prefix'].$user;
-	$exist = $tikilib->page_exists($userPage);
-	$smarty->assign("userPage", $userPage);
-	$smarty->assign("userPage_exists", $exist);
 
 } else {
 	$allowMsgs = 'n';
 }
 
-$smarty->assign('IP', $tikilib->get_ip_address());
+if ( isset($_SERVER['REMOTE_ADDR']) ) {
+	$IP = $_SERVER['REMOTE_ADDR'];
+	$smarty->assign('IP', $IP);
+}
 
 if ($prefs['users_prefs_display_timezone'] == 'Site' || (isset($user_preferences[$user]['display_timezone']) && $user_preferences[$user]['display_timezone'] == 'Site')) {
 	// Everybody stays in the time zone of the server
@@ -74,7 +68,7 @@ if ($prefs['users_prefs_display_timezone'] == 'Site' || (isset($user_preferences
 		} else {
 			$prefs['display_timezone'] = $_COOKIE['local_tz'];
 		}
-		if (!TikiDate::TimezoneIsValidId($prefs['display_timezone'])) {
+		if ( ! Date_TimeZone::isValidID($prefs['display_timezone']) ) {
 			$prefs['display_timezone'] = $prefs['server_timezone'];
 		}
 	} else {

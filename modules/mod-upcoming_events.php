@@ -7,8 +7,6 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 global $calendarlib, $userlib, $tiki_p_admin, $tiki_p_view_calendar;
-if ($prefs['feature_calendar'] != 'y')
-	return;
 include_once ('lib/calendar/calendarlib.php');
 
 $rawcals = $calendarlib->list_calendars();
@@ -39,21 +37,14 @@ foreach ($rawcals["data"] as $cal_id=>$cal_data) {
 		$viewable[] = $cal_id;
 	}
 }
-$smarty->assign_by_ref('infocals', $rawcals['data']);
 
 $events = array();
-if (!empty($viewable))
-	$events = $calendarlib->upcoming_events($module_rows,
-		array_intersect(isset($module_params["calendarId"]) ? array($module_params["calendarId"]) : $calIds, $viewable),
-		isset($module_params["maxDays"]) ? (int) $module_params["maxDays"] : 365,
-		'start_asc', 
-		isset($module_params["priorDays"]) ? (int) $module_params["priorDays"] : 0
-	);
+if (!empty($viewable))  $events = $calendarlib->upcoming_events($module_rows,
+    array_intersect(isset($module_params["calendarId"]) ? array($module_params["calendarId"]) : $calIds, $viewable),
+    isset($module_params["maxDays"]) ? $module_params["maxDays"] : 365);
 $smarty->assign('modUpcomingEvents', $events);
 $smarty->assign('maxlen', isset($module_params["maxlen"]) ? $module_params["maxlen"] : 0);
 $smarty->assign('nonums', isset($module_params["nonums"]) ? $module_params["nonums"] : 'n');
 $module_rows = count($events);
 $smarty->assign('module_rows', $module_rows);
-if (isset($module_params['title'])) {
-	$smarty->assign('tpl_module_title', $module_params['title']);
-}
+?>

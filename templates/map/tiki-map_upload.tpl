@@ -5,7 +5,7 @@
 <h3>{tr}{$dir}{/tr}</h3></a>
 <table class="normal">
 <tr>
-<th colspan="2">{tr}Directories{/tr}</th>
+<td class="heading" colspan="2">{tr}Directories{/tr}</td>
 </tr>
 {if $dir ne '/data'}
 <tr>
@@ -23,7 +23,7 @@
 <td class="odd">
 {if $tiki_p_map_delete eq 'y'}
 <a class="link" href="tiki-map_upload.php?dir={$dir}&directory={$dirs[user]}&action=deldir">
-<img src='pics/icons/cross.png' alt='{tr}Delete{/tr}' title='{tr}Delete{/tr}' width='16' height='16' />
+<img src='pics/icons/cross.png' border='0' alt='{tr}Delete{/tr}' title='{tr}Delete{/tr}' width='16' height='16' />
 </a>
 {/if}
 </td>
@@ -38,14 +38,14 @@
 <td class="even">
 {if $tiki_p_map_delete eq 'y'}
 <a class="link" href="tiki-map_upload.php?dir={$dir}&directory={$dirs[user]}&action=deldir">
-<img src='pics/icons/cross.png' alt='{tr}Delete{/tr}' title='{tr}Delete{/tr}' width='16' height='16' />
+<img src='pics/icons/cross.png' border='0' alt='{tr}Delete{/tr}' title='{tr}Delete{/tr}' width='16' height='16' />
 </a>
 {/if}
 </td>
 </tr>
 {/if}
 {/section}
-<th colspan="2">{tr}Files{/tr}</th>
+<td class="heading" colspan="2">{tr}Files{/tr}</td>
 {cycle values="odd,even" print=false}
 {section name=user loop=$files}
 <tr>
@@ -55,7 +55,7 @@
 <td class="{cycle advance=true}">
 {if $tiki_p_map_delete eq 'y'}
 <a class="link" href="tiki-map_upload.php?dir={$dir}&file={$files[user]}&action=delete">
-<img src='pics/icons/cross.png' alt='{tr}Delete{/tr}' title='{tr}Delete{/tr}' width='16' height='16' />
+<img src='pics/icons/cross.png' border='0' alt='{tr}Delete{/tr}' title='{tr}Delete{/tr}' width='16' height='16' />
 </a>
 {/if}
 </td>

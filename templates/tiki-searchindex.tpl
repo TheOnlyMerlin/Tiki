@@ -1,23 +1,21 @@
 {* $Id$ *}
-{title}{if $words neq '' and !$searchNoResults}{tr}Search results{/tr}{else}{tr}Search{/tr}{/if}{/title}
+{if !( $searchNoResults ) }
+<h1>{tr}Search results{/tr}:</h1>
+{/if}
 
 {if !( $searchStyle eq "menu" )}
-{if $prefs.feature_search_show_object_filter eq 'y'}
   <div class="nohighlight navbar">
     <p>{tr}Search in{/tr}:</p>
-		{foreach item=name key=k from=$where_list}
-			{button _auto_args='where,highlight' href="tiki-searchindex.php?where=$k"  _selected="'$where'=='$k'" _selected_class="highlight" _text="{tr}$name{/tr}"}
+	{foreach item=name key=k from=$where_list}
+      	<a class="linkbut" {if $where eq $k}id="highlight"{/if} href="tiki-searchindex.php?highlight={$words}&amp;where={$k}">{tr}{$name}{/tr}</a>
    	{/foreach}
   </div><!--nohighlight-->
   {* do not change the comment below, since smarty 'highlight' outputfilter is hardcoded to find exactly this... instead you may experience white pages as results *}
 
 {/if}
-{/if}
 <form class="forms" method="get" action="tiki-searchindex.php">
     {tr}Find{/tr} <input id="fuser" name="highlight" size="14" type="text" accesskey="s" value="{$words}"/>
-{if $prefs.feature_search_show_object_filter eq 'y'}
 {if ( $searchStyle eq "menu" )}
-<span class='searchMenu'>
     {tr}in{/tr}
     <select name="where">
 	{if empty($where_list)}
@@ -38,10 +36,8 @@
     	{/foreach}
 	{/if}
     </select>
-</span>
 {else}
     <input type="hidden" name="where" value="{$where|escape}" />
-{/if}
 {/if}
     <input type="submit" class="wikiaction" name="search" value="{tr}Go{/tr}"/>
 </form>

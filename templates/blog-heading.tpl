@@ -1,9 +1,9 @@
-<h1>{$title}</h1>
+<div class="blogtitle">{tr}Blog{/tr}: {$title}</div>
 {if $description neq ""}
-  <div class="description">{$description|escape}</div>
+  <div class="blogdesc">{tr}Description:{/tr} {$description}</div>
 {/if}
 <div class="bloginfo">
-{tr}Created by{/tr} {$creator|userlink} {tr}on{/tr} {$created|tiki_short_datetime}<br />
+{tr}Created by{/tr} {$creator|userlink}{tr} on {/tr}{$created|tiki_short_datetime}<br />
 {tr}Last post{/tr} {$lastModif|tiki_short_datetime}<br />
 <span class="blogactions">
 		{if $tiki_p_blog_post eq "y"}
@@ -20,9 +20,9 @@
 		
 		{if $user and $prefs.feature_user_watches eq 'y'}
 		{if $user_watching_blog eq 'n'}
-		<a href="tiki-view_blog.php?blogId={$blogId}&amp;watch_event=blog_post&amp;watch_object={$blogId}&amp;watch_action=add" class="icon">{icon _id='eye' alt='{tr}Monitor this Blog{/tr}'}</a>
+		<a href="tiki-view_blog.php?blogId={$blogId}&amp;watch_event=blog_post&amp;watch_object={$blogId}&amp;watch_action=add">{icon _id='eye' alt='{tr}Monitor this Blog{/tr}'}</a>
 		{else}
-		<a href="tiki-view_blog.php?blogId={$blogId}&amp;watch_event=blog_post&amp;watch_object={$blogId}&amp;watch_action=remove" class="icon">{icon _id='no_eye' alt='{tr}Stop Monitoring this Blog{/tr}'}</a>
+		<a href="tiki-view_blog.php?blogId={$blogId}&amp;watch_event=blog_post&amp;watch_object={$blogId}&amp;watch_action=remove">{icon _id='no_eye' alt='{tr}Stop Monitoring this Blog{/tr}'}</a>
 		{/if}
 		{/if}
 </span>
@@ -34,7 +34,7 @@
 	{if $category_watched eq 'y'}
 		{tr}Watched by categories{/tr}:
 		{section name=i loop=$watching_categories}
-			<a href="tiki-browse_categories?parentId={$watching_categories[i].categId}" class="icon">{$watching_categories[i].name}</a>&nbsp;
+			<a href="tiki-browse_categories?parentId={$watching_categories[i].categId}">{$watching_categories[i].name}</a>&nbsp;
 		{/section}
 	{/if}		
 {/if}

@@ -1,17 +1,26 @@
 {* $Id$ *}
-
 <div class="navbar">
-	{button href="messu-mailbox.php" _text="{tr}Mailbox{/tr}"}
-	{button href="messu-compose.php" _text="{tr}Compose{/tr}"}
+  <span class="button2">
+    <a class="linkbut" href="messu-mailbox.php">{tr}Mailbox{/tr}</a>
+  </span>
+  <span class="button2">
+    <a class="linkbut" href="messu-compose.php">{tr}Compose{/tr}</a>
+  </span>
 
   {if $tiki_p_broadcast eq 'y'}
-		{button  href="messu-broadcast.php" _text="{tr}Broadcast{/tr}"}
+    <span class="button2">
+      <a class="linkbut" href="messu-broadcast.php">{tr}Broadcast{/tr}</a>
+    </span>
   {/if}
 
-	{button href="messu-sent.php" _text="{tr}Sent{/tr}"}
-	{button href="messu-archive.php" _text="{tr}Archive{/tr}"}
+    <span class="button2">
+      <a class="linkbut" href="messu-sent.php">{tr}Sent{/tr}</a>
+    </span>
+    <span class="button2">
+      <a class="linkbut" href="messu-archive.php">{tr}Archive{/tr}</a>
+    </span>
 
-  {if $mess_archiveAfter>0}
-		({tr}Auto-archive age for read messages:{/tr} {$mess_archiveAfter} {tr}days{/tr})
-  {/if}
+    {if $mess_archiveAfter>0}
+      ({tr}Auto-archive age for read messages:{/tr} {$mess_archiveAfter} {tr}days{/tr})
+    {/if}
 </div>

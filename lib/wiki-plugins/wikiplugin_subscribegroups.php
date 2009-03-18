@@ -1,32 +1,14 @@
 <?php
 // $Id: /cvsroot/tikiwiki/tiki/lib/wiki-plugins/wikiplugin_subscribegroups.php,v 1.1.2.1 2007-12-04 20:33:16 sylvieg Exp $
+// Allow users to subscribe/unsubscribe from groups.
+// Usage:
+// {GROUP(subscribe=text, groups=g1:g2) /}
 
 function wikiplugin_subscribegroups_help() {
 	$help = tra('Subscribe or unsubscribe to a group').":\n";
 	$help.= "~np~<br />{SUBSCRIBEGROUPS(subscribe=text,groups=g1:g2) /}<br />~/np~";
 	return $help;
 }
-
-function wikiplugin_subscribegroups_info() {
-	return array(
-		'name' => tra('Subscribe Groups'),
-		'description' => tra('Subscribe or unsubscribe to a group'),
-		'prefs' => array( 'wikiplugin_subscribegroups' ),
-		'params' => array(
-			'subscribe' => array(
-				'required' => false,
-				'name' => tra('Subscribe'),
-				'description' => tra('text'),
-			),
-			'groups' => array(
-				'required' => true,
-				'name' => tra('Groups'),
-				'description' => tra('Colon separated list of groups.'),
-			),
-		),
-	);
-}
-
 function wikiplugin_subscribegroups($data, $params) {
 	global $tiki_p_subscribe_groups, $userlib, $user, $smarty;
 	if ($tiki_p_subscribe_groups != 'y' || empty($user)) {

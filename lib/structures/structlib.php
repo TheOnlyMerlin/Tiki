@@ -267,7 +267,7 @@ class StructLib extends TikiLib {
       $aux["flag"]  = $res["flag"];
 	  $aux["user"]  = $res["user"];
 		global $user;
-		if ($this->user_has_perm_on_object($user,$res['pageName'],'wiki page','tiki_p_edit', 'tiki_p_edit_categorized')) {	
+		if ($this->user_has_perm_on_object($user,$res['pageName'],'wiki page','tiki_p_edit')) {	
       		$aux['editable'] = 'y';
       		$aux['viewable'] = 'y';
 		} else {
@@ -321,15 +321,7 @@ class StructLib extends TikiLib {
 		}
 		$query = "SELECT ts.`parent_id`,tuw.`email`,tuw.`user`, tuw.`event`";
 		$query .= " FROM `tiki_structures` ts";
-		$query .= " LEFT JOIN (
-			SELECT watchId, user, event, object, title, type, url, email FROM `tiki_user_watches`
-			UNION DISTINCT
-				SELECT watchId, uu.login as user, event, object, title, type, url, uu.email 
-				FROM 
-					`tiki_group_watches` tgw
-					INNER JOIN users_usergroups ug ON tgw.`group` = ug.groupName
-					INNER JOIN users_users uu ON ug.userId = uu.userId AND uu.email IS NOT NULL AND uu.email <> ''
-			) tuw ON (tuw.`object`=ts.`page_ref_id` AND tuw.`event`=?)";
+		$query .= " LEFT JOIN `tiki_user_watches` tuw ON (tuw.`object`=ts.`page_ref_id` AND tuw.`event`=?)";
 		if (empty($page_ref_id)) {
 			$query .= " LEFT JOIN `tiki_pages` tp ON ( tp.`page_id`=ts.`page_id`)";
 			$query .= " WHERE tp.`pageName`=?";

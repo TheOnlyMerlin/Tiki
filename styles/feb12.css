@@ -1,5 +1,4 @@
-/* Feb12 theme for TikiWiki CMS/Groupware, released under LGPL license.
- * See http://themes.tikwiki.org for more information. -- */
+/* Type 1 -- based on *litecss -- */
 
  @import "lite/lite.css"; /* here we import *lite as the base */
 
@@ -7,15 +6,15 @@
 
 body {
 	text-align: left;
-	font: normal 75%/1.5em 'Trebuchet MS', sans-serif;
+	font: normal 62.5%/1.5em 'Trebuchet MS', sans-serif;
 	color: #333;
-	background: #fff}
+	background: #fff url(feb12/pagebg.jpg) repeat-x}
 	
-/*html>body {font-size: 75% !important}*/
+html>body {font-size: 75% !important}
 
 *:first-child+html body {font-size: 74% !important}
 
-body#fullscreen {background: #fff url(feb12/page.jpg) repeat-x}
+body#fullscreen {background: #fff url(feb12/pagebg.jpg) repeat-x 0 -137px}
 
 a, a:visited { 
 	background: inherit;
@@ -84,6 +83,7 @@ select {
 	
 }
 
+/* IE */
 * html .wikitopline select {font-size: .9em}
 
 input.button { 
@@ -109,7 +109,6 @@ input[type=password] {
 	width: 120px}
 
 input[type=submit],
-.submitbutton,
 input[type=file],
 input[type=reset],
 select {
@@ -118,42 +117,19 @@ select {
 
 button,
 input[type=submit],
-.submitbutton,
 .button input,
-input[type=reset],
-span.button {
+input[type=reset] {
 	vertical-align: middle;	
 	margin: 2px;
-	background: url(feb12/header.jpg) repeat-x 0 -2px;
-	border: 1px solid #5aa5cf;
-	color: #F5F5F5;
-	font-size: 80%}
+	vertical-align: middle}
 	
-*:first-child+html input {font-weight: normal}
+*:first-child+html input { font-weight: normal }
 
 button:hover,
 input[type=submit]:hover,
-.submitbutton:hover,
-.button input:hover,
-span.button:hover {
-	background: url(feb12/header.jpg) repeat-x 0 -15px;
+.button input:hover {
+	background: #FFFFFF;
 	cursor: pointer}
-	
-span.button {
-	margin: 1px 2px;
-	padding: 0 2px}
-
-span.button a,
-span.button a:visited {color: #F5F5F5}
-
-* html span.button a,
-* html span.button a:visited {background: url(feb12/header.jpg) repeat-x 0 -2px}
-
-* html span.button a:hover {
-	color: #F5F5F5;
-	background: url(feb12/header.jpg) repeat-x 0 -15px}
-
-span.button a:hover {text-decoration: none}
 
 input[type=checkbox] {border: 0}
 * html .findtable input {font-size: 1em}
@@ -172,7 +148,7 @@ label {margin: 0 2px}
 
 ul, ol {}
 li {}
-ul {}
+ul ()
 
 ul span, ol span {
 	color: #333}
@@ -184,6 +160,12 @@ ul span, ol span {
 ul.jumplinks {
 	font-size : 0.8em;
 	list-style-type : none}
+
+ul.jumplinks, .jumplinks {
+	position: absolute;
+	top: -9000px;
+	left: -9000px;
+	z-index: 9}
 
 ul.jumplinks a:focus, ul.jumplinks a:active {
 	position: absolute;
@@ -218,11 +200,10 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 #main {font-size: 1.24em}
 
 #header {
-	/*height: 137px;*/
-	text-align: left;
-	position: static}
+	height: 137px;
+	text-align: left}
 
-#middle {background: #fff url(feb12/page.jpg) repeat-x;}
+#middle {}
 
 #c1c2 {
 	text-align: left;
@@ -249,7 +230,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 
 #c1c2 #col2 {
 	width: 240px;
-	overflow: visible;
+	overflow: hidden;
 	background: #A8CCE2 url(feb12/columnbg.jpg) repeat-x}
 
 #c1c2 #col2 .content {padding: 1em}
@@ -289,15 +270,14 @@ div#tiki-bot {}
 /* Site Header & Identity */
 
 #header-top {
-	background: url(feb12/header.jpg) repeat-x bottom;
-	min-height: 98px;
+	height: 98px;
 	position: relative}
 
 #siteheader {
 	text-align: left;
 	background: transparent;
 	vertical-align: top;
-	/*padding-top: 1em;*/
+	padding-top: 1em;;
 	padding-bottom: 0;
 	margin: 0}
 
@@ -312,10 +292,7 @@ div.floatleft {
 	float: left;
 	clear: none}
 
-#sitelogo {
-	margin: auto !important;
-	padding-top: 20px}
-
+#sitelogo {margin: auto !important}
 div#sitead {margin: auto}
 #sitead.floatright {padding-right: 100px}
 #sitead.floatleft {padding-left: 100px}
@@ -330,11 +307,6 @@ div#sitead {margin: auto}
 	bottom: 7px;
 	right: 3px;
 	color: #f5f5f5}
-	
-#siteloginbar a:link,
-#siteloginbar a:visited {
-	color: #fff;
-	text-decoration: none}
 
 input[id="sl-login-user"],
 input[id="sl-login-pass"] {}
@@ -353,7 +325,7 @@ input[id="sl-login-pass"] {}
 
 #sitetitle {
 	font-size: 2.2em;
-	/*padding-top: 30px;*/
+	padding-top: 30px;
 	padding-bottom: 14px}
 
 * html #sitetitle { padding-top: 20px }
@@ -373,13 +345,12 @@ input[id="sl-login-pass"] {}
 /* tiki-top_bar.tpl - menu and search */
 
 #tiki-top {
-	background: url(feb12/header.jpg) repeat-x;
 	color: #F5F5F5;
 	height: 34px;
-	padding-top: 3px;
-	font-size: 14px}
+	padding-top: 10px;
+	font-size: 1em}
 	
-* html #tiki-top { font-size: 11px}
+* html #tiki-top { font-size: 11px }
 #tiki-top a {color: #F5F5F5}
 
 #tiki-top table {
@@ -391,8 +362,7 @@ input[id="sl-login-pass"] {}
 	padding-right: 4px;
 	text-align: right;
 	display: block;
-	margin: 0;
-	margin-top: 4px}
+	margin: 0}
 
 input#fuser,
 select[name="where"],
@@ -429,11 +399,12 @@ a.flip img {display: none}
 
 /* Also is .content */
 #tiki-center {}
+
+/* IE */
 * html #tiki-center {font-size: 1em}
 
 #rss {padding: 1em 1em 0}
-#power {font-size: 90%}
-#credits {display: inline}
+#credits {}
 
 /** Border boxes (if any) **/
 	
@@ -447,12 +418,10 @@ a.flip img {display: none}
 	text-align: left}
 
 .horbaritem a,
-.horbaritem a:link,
 .horbaritem a:visited {
-	display: block;
-	padding: 8px 0 8px 5px;
+	padding: 6px 3px;
 	text-decoration: none;
-	font: 14px Verdana, Helvetica, Arial, Sans-Serif;
+	font: 1em Verdana, Helvetica, Arial, Sans-Serif;
 	color: white;
 	margin: 0}
 	
@@ -461,11 +430,12 @@ a.flip img {display: none}
 * html .horbaritem a:visited {font-size: 1.3em }
 
 .horbaritem a:hover {
-	background: url(feb12/header.jpg) 0 -40px repeat-x;
+	background: url(feb12/pagebg.jpg) repeat-x;
 	color: #eee !important;
 	text-decoration: none} 
 
 .horbaritem a:visited {} 
+* html .horbaritem a {font-size: .8em}
 .mdkverbar {} 
 
 .mdksubmenu {
@@ -475,7 +445,7 @@ a.flip img {display: none}
 	top: 0;
 	background: #FFFFFF;
 	visibility: hidden;
-	margin-top: 0}
+	margin-top: 10px}
 
 * html .mdksubmenu {margin-top: 0}
 *:first-child+html .mdksubmenu { margin-top: 0 }
@@ -523,8 +493,7 @@ a.flip img {display: none}
 
 .treemenudiv {
 	display: block;
-	white-space: nowrap;
-	background: #a8cce2;}
+	white-space: nowrap}
 
 .box-data table {width: 100%}
 * html .box-data table {width: 95%}
@@ -535,74 +504,30 @@ a.phplm:link,
 a.phplm:visited,
 a.phplm:hover,
 a.phplm:active {
-	font: 1em 'Trebuchet MS', sans-serif;
-	color: #794a93;
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: #303030;
 	text-decoration: none;
-	font-weight: normal}
+	font-weight: bold}
 
-a.phplm:visited {color: #794a93}
-a.phplm:hover,
-a.phplm:active {
-	color: #006699;
-	text-decoration: underline;
-	background: none}
+a.phplm:visited {color: #726461}
+a.phplm:hover {color: #808080}
+a.phplm:active {color: #ff0000}
 
 a.phplmselected:link,
 a.phplmselected:visited,
 a.phplmselected:hover,
 a.phplmselected:active {
-	font-family: 'Trebuchet MS', sans-serif;
-	color: #794a93;
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: black;
 	text-decoration: underline;
-	font-weight: normal}
+	font-weight: bold}
 
-a.phplmselected:hover {color: #006699}
+a.phplmselected:hover {color: #808080}
 
 .imgs	{
 	border: 0;
 	width: 16px;
 	height: 18px}
-
-/** CSS (suckerfish) menus **/
-
-.csmenu ul li,
-.cssmenu_horiz ul li,
-.cssmenu_vert ul li {border-top: 1px solid #57A5D0}
-
-.cssmenu_vert li ul,
-.cssmenu_horiz li ul {
-	background: #a8cce2 !important}
-	
-.cssmenu_horiz ul li:hover {background: none}
-
-.cssmenu ul a,	
-.cssmenu_horiz ul a,
-.cssmenu_vert ul a {
-	padding: 6px;
-	color: #000}
-
-#tiki-top > .cssmenu_horiz > li > a {
-	padding: 8px 3px;
-	text-decoration: none;
-	font: 14px Verdana, Helvetica, Arial, Sans-Serif;
-	color: white;
-	margin: 0}
-	
-* html #tiki-top .cssmenu_horiz li a {
-	font-size: 14px;
-	padding: 6px 3px;
-	display: block}
-
-#tiki-top > .cssmenu_horiz > li:hover {
-	background: url(feb12/pagebg.jpg) repeat-x;
-	color: #eee !important;
-	text-decoration: none}
-	
-#tiki-top .cssmenu_horiz li ul a {color: #000}
-
-#tiki-top .cssmenu_horiz ul li a:hover {
-	color: #993300;
-	text-decoration: none}
 
 /** Links in other menus **/
 div.separator, div.separatorline {color: #794a93}
@@ -683,10 +608,6 @@ div#edithelpzone {display: none}
 .highlight,
 #highlight  {}
 
-.openid_url {
-	background: #fff url(../../img/icons/login-OpenID-bg.gif) no-repeat;
-	padding-left: 18px}
-
 .bannertext {
 	font-size: .95em;
 	text-decoration: none}
@@ -751,7 +672,6 @@ h3.box-title {
 	border-bottom: 1px solid #57A5D0;
 	position: relative}
 
-* html h3.box-title {position: static}
 .box a.flipmodtitle img {display: none}
 
 * html .box a.flipmodtitle img,
@@ -763,11 +683,6 @@ h3.box-title {
 	border: 1px solid transparent}
 
 * html .box a.flipmodtitle img {border: none}
-* html #col2 a.flipmodtitle img,
-* html #col3 a.flipmodtitle img {
-	position: static;
-	float: right;
-	margin-top: -12px}
 
 a.flipmodtitle:hover img {
 	border: 1px solid #58A7D2 !important}
@@ -781,7 +696,8 @@ a.flipmodtitle:hover img {
 
 .box-data ol,
 .box-data ul {
-	padding-right: 1em}
+	padding-right: 1em;
+	overflow: hidden}
 
 /** Other boxes **/
 
@@ -813,20 +729,20 @@ div.cbox {
 	color: #f5f5f5;
 	text-decoration: underline}
 
-.comment .rbox-title,
-.comment .rbox-data {}
+.rbox-title[name="comment"],
+.rbox-data[name="comment"] {}
 
-.note .rbox-title {}
-.note .rbox-data {}
+.rbox-title[name="note"] {}
+.rbox-data[name="note"] {}
 
-.tip .rbox-title,
-.tip .rbox-data,
+.rbox-title[name="tip"],
+.rbox-data[name="tip"],
 .rbox-data.tip {
 	background: #794a93;
 	color: #f5f5f5}
 
-.warning .rbox-title {}
-.warning .rbox-data {}
+.rbox-title[name="warning"] {}
+.rbox-data[name="warning"] {}
 
 div.simplebox {
 	color: #333;
@@ -857,6 +773,7 @@ table.admin tr td div#page-bar {}
 
 td {vertical-align: top; font-size: inherit}
 * html td {	font-size: 100%}
+th {}
 
 .normal td,
 td.normal,
@@ -882,9 +799,15 @@ td.even {
 
 td.third { }
 
-th,
-table.normal th {
+td.heading,
+td.bloglistheading {
 	text-align: center;
+	color: #93554a;
+	background: #a8cce2}
+
+th,
+table.normal td.heading,
+td.bloglistheading {
 	font-size: 1em;
 	font-weight: bold;
 	color: #93554a;
@@ -908,6 +831,8 @@ td.form {
 	border: 1px solid #a5acb2;
 	background: #a8cce2}
 
+th { }
+
 /** Tabs **/
 .tabs {
 	border-bottom: solid 1px #225566 !important;
@@ -915,7 +840,8 @@ td.form {
 	padding: 0 !important}
 
 .tabactive {
-	border: solid 1px #225566 !important;
+	border: solid;
+	1px #225566 !important;
 	border-bottom: none !important;
 	border-top-width: 2px !important;
 	position: relative;
@@ -1047,7 +973,7 @@ h1 a.pagetitle:hover {text-decoration: none}
 
 .wikitopline {}
 
-#description {
+div#description {} {
 	font-size: .9em;
 	font-style: italic}
 
@@ -1085,8 +1011,8 @@ h1 a.pagetitle:hover {text-decoration: none}
 
 /* From Tikineat */
 .wikitext div.box { width: 220px}
-.wikitopline table { width: 100%}
-* html .wikitopline table {width: 97%}
+.wikitopline table { width: 100%; _width: 97%}
+html>body .wikitopline table { width: 100%}
 /* End from Tikineat */
 
 table.wikitable {
@@ -1125,6 +1051,8 @@ span.button2,
 div.button2,
 .button3 {margin-right: 5px}
  
+.linkbut {/*font-size:90%;*/}
+.linkbut:hover { }
 div.cache { }
 div.cachedpage { }
 .wikicache, .wikicache:visited { }
@@ -1259,27 +1187,8 @@ img.articleimage {
 	padding:2px 0;
 	margin-bottom:10px}
 
-div.articletrailer {
-	position: relative;
-	text-align: center;
-	margin-top: 1.1em}
-	
-div.articletrailer img {}
-
-div.article .status {
-	position: absolute;
-	left: 0}
-
-div.articletrailer span {
-	display: inline-block;
-	margin: auto;
-	white-space: nowrap}
-
-div.article .actions {
-	position: absolute;
-	right: 0;
-	top: 0}
-
+div.articletrailer {text-align: right}
+div.articletrailer .wikitopline {float: left} 
 div.articlebody {}
  
 div.articlesource {
@@ -1355,57 +1264,18 @@ span.posthead {
 	display: block;
 	font-weight: bold;
 	letter-spacing: .4pt}
-	
-body.tiki_blogs .post .title {  }
  
-/*div.posthead h3*/
-body.tiki_blogs .post .title h2 {
-	font-size: 1.2em;
-	margin-top: 0;
-	margin-bottom: 0}
+div.posthead h3 {font-size:1.2em}
  
-/*div.postbody*/
-body.tiki_blogs .post .postbody {
+div.postbody {
 	margin-right: 8px;
 	line-height: 1.2em;
-	margin-bottom: 1em;
-	border: 0;
-	background: none}
-	
-/* Maybe needs override to differentiate from forums */
-	
-body.tiki_blogs div.author_actions {
-	float: none;
-	text-align: right;
-	background: none;
-	border: 0;
-	width: 100%}
-	
-body.tiki_blogs .actions {background: none}
+	margin-bottom: 1em}
 
-body.tiki_blogs .author_info {
-	width: 100%;
-	float: none;
-	text-align: left;
-	background: none;
-	border: 0}
-
-.postbody-title {
-	background: none;
-	border: 0}
-	
-body.tiki_blogs .postbody-title {
-	float: none;
-	width: 100%;
-	background: none;
-	border: 0}
-
-body.tiki_blogs .postfooter {
-	width: 100%;
+div.postfooter {
+	clear: both;
+	float: right;
 	margin-bottom: 2em}
-	
-body.tiki_blogs .postfooter .actions {float: left}
-
 
 /***** Forums *****/
 body.tiki_forums table.normal {margin: auto}
@@ -1496,7 +1366,7 @@ table.commentinfo {}
 	float: right;
 	font-size: .9em}
 
-#c1c2 #wrapper #col1 .content .post .postbody .content {
+#col1 .post .postbody .content {
 	float: left;
 	padding: 0px 3px 3px 3px;
 	width: 100%;
@@ -1617,13 +1487,14 @@ td.categobjectsdataodd {}
 .catlists a.link {}
 .catlists a.link:hover {}
 
-ul.catfeatures {list-style: none}
+ul.catfeatures {}
 ul.catfeatures li {}
 ul.catitems {}
 
 ul.catitems li {
-	display: inline;
-	margin-right: 10px}
+	float: left !important;
+	padding-right: 18px;
+}
 
 ul.catitems li a.link {}
 
@@ -1737,6 +1608,10 @@ div.showimage {
 
 div.imgaldescr {margin: 10px}
 .sorttitle { margin-left: 10px}
+
+/* Check next 4 ?? */
+div.gallerypath, div.gallerypath a { color: #6996C3; font-style: italic; font-weight: normal; margin-left: 3px; text-decoration: none}
+div.gallerypath a:hover { color: black; text-decoration: underline}
 
 /***** File Galleries *****/
 
@@ -2088,19 +1963,19 @@ table.default thead td,
 table.default tfoot td {
 	font-weight: bold;
 	text-align:	center;
-	background: #F5F5F5;
+	background: black;
 	color: #D8D8D8}
 
 table.default td {
-	border: solid 1px #909090;
-	background: #F5F5F5}
+	border: solid 1px #A9A9A9;
+	background: black}
 
 /***** 'Advanced feature' *****/
-
+.
 .advanced {
   margin: 20px;
   padding: 5px;
-  border: 1px solid #A9A9A9;
+  border: 1ps solid #A9A9A9;
   background: black;
   color: #D8D8D8}
 
@@ -2158,12 +2033,5 @@ a.admbox.off:hover,
 a.admbox.off:focus,
 a.admbox.off:active {
 	border: 1px solid #9f9f9f}
-	
-a.icon,
-img.icon {
-	border: 0 !important;
-	background: transparent}
-
-.button .iconmenu {display:inline;}
 
 /* end of css file */

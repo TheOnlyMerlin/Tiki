@@ -101,8 +101,6 @@ if ($tiki_p_view_image_gallery != 'y') {
 	die;
 }
 
-$auto_query_args = array('offset','galleryId', 'sort_mode', 'find');
-
 if (!isset($_REQUEST["galleryId"])) {
 	$_REQUEST["galleryId"] = 0;
 }
@@ -110,6 +108,16 @@ if (!isset($_REQUEST["galleryId"])) {
 if ($_REQUEST["galleryId"] != 0) {
 	// To browse the gallery the user has to be admin, the owner or the gallery has to be public
 	$gal_info = $imagegallib->get_gallery($_REQUEST["galleryId"]);
+//$smarty->assign_by_ref('theme',$gal_info["theme"]);
+//$smarty->assign('use_theme','y');
+/*
+if($user!='admin' && $user!=$gal_info["user"] && $gal_info["public"]!='y') {
+  $smarty->assign('errortype', 401);
+  $smarty->assign('msg',tra("Permission denied you cannot browse this gallery"));
+  $smarty->display("error.tpl");
+  die;  
+}
+*/
 } else {
 	$gal_info["galleryId"] = 0;
 
@@ -119,7 +127,6 @@ if ($_REQUEST["galleryId"] != 0) {
 	$gal_info["description"] = 'System Gallery';
 	$gal_info['showname'] ='y';
 	$gal_info['showimageid'] ='n';
-	$gal_info['showcategories'] ='n';
 	$gal_info['showdescription'] ='n';
 	$gal_info['showcreated'] ='n';
 	$gal_info['showuser'] ='n';
@@ -136,7 +143,6 @@ $smarty->assign_by_ref('public', $gal_info["public"]);
 $smarty->assign_by_ref('galleryId', $_REQUEST["galleryId"]);
 $smarty->assign_by_ref('showname', $gal_info['showname']);
 $smarty->assign_by_ref('showimageid', $gal_info['showimageid']);
-$smarty->assign_by_ref('showcategories', $gal_info['showcategories']);
 $smarty->assign_by_ref('showdescription', $gal_info['showdescription']);
 $smarty->assign_by_ref('showcreated', $gal_info['showcreated']);
 $smarty->assign_by_ref('showuser', $gal_info['showuser']);
@@ -265,17 +271,23 @@ if ($_REQUEST["galleryId"] == 0) {
 	$nextscaleinfo = $imagegallib->get_gallery_next_scale($_REQUEST["galleryId"]);
 }
 
-if (empty($info['maxRows']) || $info['maxRows'] < 0)
-	$info['maxRows'] = 10;
+if (!isset($info["maxRows"]))
+	$info["maxRows"] = 10;
 
-if (empty($info['rowImages']) || $info['rowImages'] < 0)
-	$info['rowImages'] = 5;
+if (!isset($info["rowImages"]))
+	$info["rowImages"] = 5;
 
 if (!isset($nextscaleinfo['scale'])) {
 	$nextscaleinfo['scale'] = 0;
 
 	$nextscaleinfo['scale'] = 0;
 }
+
+if ($info["maxRows"] == 0)
+	$info["maxRows"] = 10;
+
+if ($info["rowImages"] == 0)
+	$info["rowImages"] = 6;
 
 //print $info["rowImages"] ;
 $maxImages = $info["maxRows"] * $info["rowImages"];
@@ -325,33 +337,34 @@ if (isset($_REQUEST["find"])) {
 } else {
 	$find = '';
 }
-$smarty->assign_by_ref('find', $find);
 
 // get subgalleries first
 $subgals = $imagegallib->get_subgalleries($offset, $maxImages, $sort_mode, '', $_REQUEST["galleryId"]);
 $remainingImages = $maxImages-count($subgals['data']);
 $newoffset = $offset -$subgals['cant'];
 $images = $imagegallib->get_images($newoffset, $remainingImages, $sort_mode, $find, $_REQUEST["galleryId"]);
-//get categories for each images
-global $objectlib;
-if ($prefs['feature_categories'] == 'y') {
-	$type='image';
-	$arr=array();
-	for($i=0;$i<=count($images['data'])-1;$i++){
-		$img_id=$images['data'][$i]['imageId'];
-		$arr= $categlib->get_object_categories($type, $img_id);
-		//adding categories to the object
-		for ($k=0; $k<=count($arr)-1; $k++){
-			$images['data'][$i]['categories'][$k]=$categlib->get_category_name($arr[$k]);
-		}
-	}
-}
 $smarty->assign('num_objects',count($subgals['data'])+count($images['data']));
 $smarty->assign('num_subgals',count($subgals['data']));
 $smarty->assign('num_images',count($images['data']));
+$cant_pages = ceil(($subgals['cant']+$images['cant']) / $maxImages);
+$smarty->assign_by_ref('cant_pages', $cant_pages);
+$smarty->assign('actual_page', 1 + ($offset / $maxImages));
+
+if ($images["cant"] > ($offset + $maxImages)) {
+	$smarty->assign('next_offset', $offset + $maxImages);
+} else {
+	$smarty->assign('next_offset', -1);
+}
+
+// If offset is > 0 then prev_offset
+if ($offset > 0) {
+	$smarty->assign('prev_offset', $offset - $maxImages);
+} else {
+	$smarty->assign('prev_offset', -1);
+}
 
 $smarty->assign_by_ref('images', $images["data"]);
-$smarty->assign('cant', $subgals['cant']+ $images['cant']);
+$smarty->assign_by_ref('cant', $images["cant"]);
 $smarty->assign_by_ref('subgals', $subgals['data']);
 
 // Mouseover data
@@ -395,6 +408,9 @@ if ($prefs['feature_actionlog'] == 'y') {
 }
 
 // Display the template
+$foo = parse_url($_SERVER["REQUEST_URI"]);
+$foo2 = str_replace("tiki-browse_gallery", "show_image", $foo["path"]);
+$smarty->assign('url_show', $tikilib->httpPrefix(). $foo2);
 
 $smarty->assign('mid', 'tiki-browse_gallery.tpl');
 $smarty->display("tiki.tpl");

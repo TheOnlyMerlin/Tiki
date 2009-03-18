@@ -1,7 +1,17 @@
 {* $Id$ *}
 {** \brief Show wiki syntax and plugins help *}
 {* TODO: Add links to add samples to edit form *}
-{add_help show='n' title="{tr}Wiki Help{/tr}" id="wiki_help"}
+
+<div class="wiki-edithelp" id="edithelpzone">
+<div id="wikihelp-tab">
+{if count($plugins) ne 0 and !($wysiwyg ne 'y' and $prefs.wysiwyg_wiki_parsed ne 'y' and $prefs.wysiwyg_wiki_semi_parsed ne 'y')}
+  <div style="text-align: right;">
+    <a href="javascript:hide('wikihelp-tab');show('wikiplhelp-tab');" onclick="needToConfirm = false;">{tr}Show Plugins Help{/tr}</a>
+    <a title="{tr}Close{/tr}" href="javascript:flip('edithelpzone');">{icon _id=minus_small alt="{tr}Close{/tr}" width="11" height="8"}</a>
+  </div>
+{/if}
+<br />
+
 <p>{tr}For more information, please see <a href="{$prefs.helpurl}Wiki Page Editor">Wiki Page Editor</a>{/tr}</p>
 
 {if $prefs.feature_wiki_paragraph_formatting eq 'y' }
@@ -15,9 +25,9 @@
 {/if}</h3>
 <br /><table width="95%" class="normal">
  <tr>
-  <th>{tr}Quicktag{/tr}</th>
-  <th>{tr}Description{/tr}</th>
-  <th>{tr}Wiki Syntax{/tr}</th>
+  <th class="heading">{tr}Quicktag{/tr}</th>
+  <th class="heading">{tr}Description{/tr}</th>
+  <th class="heading">{tr}Wiki Syntax{/tr}</th>
  </tr>
 {cycle values="odd,even" print=false}
 {section name=qtg loop=$quicktags}
@@ -33,8 +43,8 @@
 {/if}</h3>
 <br /><table width="95%" class="normal">
  <tr>
-	<th>{tr}Format{/tr}</th>
-	<th>{tr}Wiki Syntax{/tr}</th>
+	<th class="heading">{tr}Format{/tr}</th>
+	<th class="heading">{tr}Wiki Syntax{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
 {if $wysiwyg ne 'y' or ($wysiwyg eq 'y' and $prefs.wysiwyg_wiki_parsed eq 'y')}
@@ -42,11 +52,9 @@
 <tr><td width="20%" class="{cycle advance=false}"><strong>{tr}Italic text{/tr}</strong></td><td class="{cycle}"> 2 {tr}single quotes{/tr} "'".  {tr}Example{/tr} ''{tr}text{/tr}'' = <em>text</em></td></tr>
 <tr><td class="{cycle advance=false}"><strong>{tr}Centered text{/tr}</strong></td><td class="{cycle}"> 2 {tr}colons{/tr} ":". {tr}Example{/tr} ::{tr}some text{/tr}:</td></tr>
 <tr><td class="{cycle advance=false}"><strong>{tr}Underlined text{/tr}</strong></td><td class="{cycle}"> 3 {tr}equals{/tr} "=". {tr}Example{/tr} ==={tr}text{/tr}===</td></tr>
-<tr><td class="{cycle advance=false}"><strong>{tr}Deleted text{/tr}</strong></td><td class="{cycle}"> {tr}2 dashes{/tr} "-". {tr}Example{/tr} --{tr}text{/tr}--</td></tr>
 <tr><td class="{cycle advance=false}"><strong>{tr}Text box{/tr}</strong></td><td class="{cycle}"> {tr}One carat{/tr} "^". {tr}Creates a box with the data{/tr}. {tr}Example{/tr} "^{tr}Box content{/tr}^"</td></tr>
 <tr><td class="{cycle advance=false}"><strong>{tr}Title bar{/tr}</strong></td><td class="{cycle}"> "-={tr}Title{/tr}=-" {tr}creates a title bar{/tr}.</td></tr>
-<tr><td class="{cycle advance=false}"><strong>{tr}Colored text{/tr}</strong></td><td class="{cycle}"> "~~#FFEE33:{tr}some text{/tr}~~" {tr}or{/tr}  "~~yellow:{tr}some text{/tr}~~". {tr}Will display using the indicated HTML color or color name. Color name can contain two colors separated by a comma. In this case, the first color would be the foreground and the second one the background.{/tr}</td></tr>
-<tr><td width="20%" class="{cycle advance=false}"><strong>{tr}Monospace font{/tr}</strong></td><td class="{cycle}">-+{tr}Code sample{/tr}+- {tr}for{/tr} <code>Code sample</code></td></tr>
+<tr><td class="{cycle advance=false}"><strong>{tr}Colored text{/tr}</strong></td><td class="{cycle}"> "~~#FFEE33:{tr}some text{/tr}~~" {tr}or{/tr}  "~~yellow:{tr}some text{/tr}~~". {tr}Will display using the indicated HTML color or color name{/tr}</td></tr>
 <tr><td class="{cycle advance=false}"><strong>{tr}Lists{/tr}</strong></td><td class="{cycle}"> * {tr}for bullet lists{/tr}, # {tr}for numbered lists{/tr}, ;{tr}Word{/tr}{tr}definition{/tr} {tr}for definiton lists{/tr}</td></tr>
 <tr><td class="{cycle advance=false}"><strong>{tr}Indentation{/tr}</strong></td><td class="{cycle}">+, ++ {tr}Creates an indentation for each plus(useful in list to continue at the same level){/tr}</td></tr>
 <tr><td class="{cycle advance=false}"><strong>{tr}Headings{/tr}</strong></td><td class="{cycle}"> "!", "!!", "!!!" {tr}make headings{/tr}</td></tr>
@@ -81,34 +89,31 @@
 <tr><td class="{cycle advance=false}"><strong>{tr}Block Preformatting{/tr}</strong></td><td class="{cycle}"> {tr}Indent text with any number of spaces to turn it into a monospaced block that still follows other Wiki formatting instructions. It will be indended with the same number of spaces that you used.  Note that this mode does not preserve exact spacing and line breaks; use ~pp~...~/pp~ for that.{/tr}</td></tr>
 <tr><td class="{cycle advance=false}"><strong>{tr}Direction{/tr}</strong></td><td class="{cycle}">"{literal}{r2l}{/literal}", "{literal}{l2r}{/literal}", "{literal}{rm}{/literal}", "{literal}{lm}{/literal}"{tr}Insert resp. right-to-left and left-to-right text direction DIV (up to end of text) and markers for langages as arabic or hebrew.{/tr}</td></tr>
 <tr><td class="{cycle advance=false}"><strong>{tr}Table of contents{/tr}</strong></td><td class="{cycle}">{tr}"{literal}{toc}{/literal}", "{literal}{maketoc}{/literal}" prints out a table of contents for the current page based on structures (toc) or ! headings (maketoc){/tr}</td></tr>
-<tr><td class="{cycle advance=false}"><strong>{tr}Special characters{/tr}</strong></td><td class="{cycle}">
-"{literal}~hs~{/literal}" {tr}hard space{/tr},
-"{literal}~c~{/literal}" &copy;,
-"{literal}~amp~{/literal}" &amp;,
-"{literal}~lt~{/literal}" &lt;,
-"{literal}~gt~{/literal}" &gt;,
-"{literal}~ldq~{/literal}" &ldquo;,
-"{literal}~rdq~{/literal}" &rdquo;,
-"{literal}~lsq~{/literal}" &lsquo;,
-"{literal}~rsq~{/literal}" &rsquo;,
-"{literal}~--~{/literal}" &mdash;,
-"{literal}~bs~{/literal}" &#92;,
-{tr}numeric between ~ for html numeric characters entity{/tr}</td></tr>
 <tr><td class="{cycle advance=false}"><strong>{tr}Misc{/tr}</strong></td><td class="{cycle}">"{literal}{cookie}, {poll}{/literal}"</td></tr>
 </table>
-{/add_help}
+</div>
 
 {if count($plugins) ne 0}
-{add_help show='n' title="{tr}Plugin Help{/tr}" id="plugins_help"}
+<div id="wikiplhelp-tab" style="display:none;">
+  <div style="text-align: right;">
+    <a href="javascript:hide('wikiplhelp-tab');show('wikihelp-tab');">{tr}Show Text Formatting Rules{/tr}</a>
+    <a title="{tr}Close{/tr}" href="javascript:flip('edithelpzone');">{icon _id=minus_small alt="{tr}Close{/tr}" width="11" height="8"}</a>
+  </div>
+<br />
+
 <h3>{tr}Plugins{/tr}{if $prefs.feature_help eq 'y'} <a href="{$prefs.helpurl}Plugins" target="tikihelp" class="tikihelp" title="{tr}Quicktags{/tr}">{icon _id='help' style="vertical-align:middle"}</a>
 {/if}</h3>
 <p>{tr}Note that plugin arguments can be enclosed with double quotes (&quot;); this allows them to contain , or = or &gt;{/tr}.</p>
+
 <br />
 <table width="95%" class="normal">
-	<tr><th>{tr}Description{/tr}</th></tr>
+	<tr><th class="heading">{tr}Plugin{/tr}</th><th class="heading">{tr}Description{/tr}</th></tr>
   {cycle values="even,odd" print=false}
   {section name=i loop=$plugins}
     <tr>
+      <td width="20%" class="{cycle advance=false}">
+        <code>{$plugins[i].name}</code>
+      </td>
       <td class="{cycle advance=false}">
         {if $plugins[i].help eq ''}
           {tr}No description available{/tr}
@@ -120,5 +125,6 @@
   {cycle print=false}
   {/section}
 </table>
-{/add_help}
+</div>
 {/if}
+</div>

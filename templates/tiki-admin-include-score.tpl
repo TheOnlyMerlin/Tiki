@@ -36,7 +36,7 @@
 </tr>
 {/section}
 <tr>
-  <td colspan="4">
+  <td class="button" colspan="4">
     <input type="submit" name="scoreevents" value="{tr}Save{/tr}" />
   </td>
 </tr>

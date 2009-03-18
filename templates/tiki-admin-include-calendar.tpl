@@ -18,15 +18,6 @@
 </tr>
 
 <tr class="form">
-<td><label>{tr}Default calendars to display{/tr}<br /></label></td>
-  <td>
-{foreach item=k from=$rawcals}
-	<input type="checkbox" name="default_calendars[]" value="{$k.calendarId}" {if in_array($k.calendarId,$prefs.site_default_calendars)}checked="checked"{/if}/>{$k.name}<br />
-{/foreach}
-  </td>
-</tr>
-
-<tr class="form">
 <td><label>{tr}Default view mode{/tr}</label></td>
 <td><select name="calendar_view_mode">
   <option value="day" {if $prefs.calendar_view_mode eq 'day'}selected="selected"{/if}>{tr}Day{/tr}</option>
@@ -83,7 +74,7 @@
 </tr>
 
 <tr>
-<td colspan="2" class="input_submit_container"><input type="submit" name="calprefs" value="{tr}Change settings{/tr}" /></td>
+<td colspan="2" class="button"><input type="submit" name="calprefs" value="{tr}Change settings{/tr}" /></td>
 </tr>
 </table>
 </form>

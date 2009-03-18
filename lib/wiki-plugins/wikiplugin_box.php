@@ -15,48 +15,6 @@ function wikiplugin_box_help() {
 	return tra("Insert theme styled box on wiki page").":<br />~np~{BOX(title=>Title, bg=>color, width=>num[%], align=>left|right|center, float=>|left|right),class=class, id=id}".tra("text")."{BOX}~/np~";
 }
 
-function wikiplugin_box_info() {
-	return array(
-		'name' => tra('Box'),
-		'documentation' => 'PluginBox',
-		'description' => tra('Insert theme styled box on wiki page'),
-		'prefs' => array('wikiplugin_box'),
-		'body' => tra('text'),
-		'params' => array(
-			'title' => array(
-				'required' => false,
-				'name' => tra('Box title'),
-				'description' => tra('Displayed above the content'),
-			),
-			'bg' => array(
-				'required' => false,
-				'name' => tra('Background color'),
-				'description' => tra('As defined by CSS, name or Hex code.'),
-			),
-			'width' => array(
-				'required' => false,
-				'name' => tra('Box width'),
-				'description' => tra('In pixels or percentage. Default value is 100%.'),
-			),
-			'align' => array(
-				'required' => false,
-				'name' => tra('Text Alignment'),
-				'description' => tra('left|right|center'),
-			),
-			'float' => array(
-				'required' => false,
-				'name' => tra('Float Position'),
-				'description' => tra('left|right, for box with width lesser than 100%, make text wrap around the box.'),
-			),
-			'class' => array(
-				'required' => false,
-				'name' => tra('CSS Class'),
-				'description' => tra('Apply custom CSS class to the box.'),
-			),
-		),
-	);
-}
-
 function wikiplugin_box($data, $params) {
 	global $tikilib;
 	
@@ -64,14 +22,14 @@ function wikiplugin_box($data, $params) {
 	// if (substr($data, 0, 2) == "\r\n") $data = substr($data, 2);
     
 	extract ($params,EXTR_SKIP);
-	$bg   = (isset($bg))    ? " background:$bg" : "";
+	$bg   = (isset($bg))    ? " background:$bg;" : "";
 	$id = (isset($id)) ? " id=\"$id\" ":'';
 	$class = (isset($class))? ' '.$class: ' ';
 	if (isset($float)) {// box without table 
 		$w = (isset($width)) ? " width:$width"  : "";
-		$f = ($float == "left" || $float == "right")? " float:$float" : "";
-		$c = (isset($clear))    ? " clear:both" : "";
-		$begin = "<div class='cbox$class' $id style='$bg;$f;margin:1em;margin-$float:0;$w;$c'>";
+		$f = ($float == "left" || $float == "right")? " float:$float;" : "";
+		$c = (isset($clear))    ? " clear:both;" : "";
+		$begin = "<div class='cbox$class' $id style='$bg;$f;$w;$c'>";
 	} else { // box in a table
 		$w = (isset($width)) ? " width=\"$width\""  : "";
 		$al = (isset($align) && ($align == 'right' || $align == "center")) ? " align=\"$align\"" : "";

@@ -1,16 +1,16 @@
 {popup_init src="lib/overlib.js"}
 {*Smarty template*}
-<h1><a class="pagetitle" href="tiki-g-monitor_processes.php">{tr}Monitor Processes{/tr}</a>
+<h1><a class="pagetitle" href="tiki-g-monitor_processes.php">{tr}Monitor processes{/tr}</a>
 
   
       {if $prefs.feature_help eq 'y'}
 <a href="{$prefs.helpurl}GalaxiaMonitorProcesses" target="tikihelp" class="tikihelp" title="{tr}Galaxia Monitor Processes{/tr}">
-<img src="img/icons/help.gif" height="16" width="16" alt='{tr}Help{/tr}' /></a>{/if}
+<img src="img/icons/help.gif" border="0" height="16" width="16" alt='{tr}Help{/tr}' /></a>{/if}
 
 
 
       {if $prefs.feature_view_tpl eq 'y'}
-<a href="tiki-edit_templates.php?template=tiki-g-monitor_processes.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Galaxia Monitor Processes tpl{/tr}"><img src="img/icons/info.gif" height="16" width="16" alt='{tr}Edit Tpl{/tr}' /></a>{/if}
+<a href="tiki-edit_templates.php?template=tiki-g-monitor_processes.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Galaxia Monitor Processes tpl{/tr}"><img src="img/icons/info.gif" border="0" height="16" width="16" alt='{tr}Edit Tpl{/tr}' /></a>{/if}
 
 </h1>
 {include file=tiki-g-monitor_bar.tpl}
@@ -34,8 +34,8 @@
 <td >
 	<small>{tr}Valid{/tr}</small>
 </td>
-<td >&nbsp;
-	
+<td >
+	&nbsp;
 </td>	
 </tr>
 
@@ -81,12 +81,12 @@
 <input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
 <table class="normal">
 <tr>
-<th><a href="{if $sort_mode eq 'name_desc'}{sameurl sort_mode='name_asc'}{else}{sameurl sort_mode='name_desc'}{/if}">{tr}Name{/tr}</a></th>
-<th>{tr}Activities{/tr}</th>
-<th><a href="{if $sort_mode eq 'isActive_desc'}{sameurl sort_mode='isActive_asc'}{else}{sameurl sort_mode='isActive_desc'}{/if}">{tr}act{/tr}</a></th>
-<th><a href="{if $sort_mode eq 'isValid_desc'}{sameurl sort_mode='isValid_asc'}{else}{sameurl sort_mode='isValid_desc'}{/if}">{tr}val{/tr}</a></th>
-<th>{tr}Instances{/tr}<br />
-</th>
+<td  class="heading" ><a class="tableheading" href="{if $sort_mode eq 'name_desc'}{sameurl sort_mode='name_asc'}{else}{sameurl sort_mode='name_desc'}{/if}">{tr}Name{/tr}</a></td>
+<td  class="heading" >{tr}Activities{/tr}</td>
+<td  class="heading" ><a class="tableheading" href="{if $sort_mode eq 'isActive_desc'}{sameurl sort_mode='isActive_asc'}{else}{sameurl sort_mode='isActive_desc'}{/if}">{tr}act{/tr}</a></td>
+<td  class="heading" ><a class="tableheading" href="{if $sort_mode eq 'isValid_desc'}{sameurl sort_mode='isValid_asc'}{else}{sameurl sort_mode='isValid_desc'}{/if}">{tr}val{/tr}</a></td>
+<td  class="heading" >{tr}Instances{/tr}<br />
+</td>
 </tr>
 {cycle values="odd,even" print=false}
 {foreach from=$items item=proc}

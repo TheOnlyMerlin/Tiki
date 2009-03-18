@@ -12,7 +12,6 @@ class BannerLib extends TikiLib {
 	}
 
 	function select_banner($zone, $target='_blank') {
-		global $prefs;
 
 		// Things to check
 		// UseDates and dates
@@ -30,8 +29,8 @@ class BannerLib extends TikiLib {
 		//
 		$query = "select count(*) from `tiki_banners` where `$dw` = ? and  `hourFrom`<=? and `hourTo`>=? and
     		( ((`useDates` = ?) and (`fromDate`<=? and `toDate`>=?)) or (`useDates` = ?) ) and
-    		(`impressions`<`maxImpressions` or `maxImpressions`=?) and (`clicks` < `maxClicks` or `maxClicks`=?) and `zone`=?";
-		$bindvars=array('y',$hour,$hour,'y',(int) $this->now,(int) $this->now,'n',-1,-1,$zone);
+    		(`impressions`<`maxImpressions` or `maxImpressions`=?) and `zone`=?";
+		$bindvars=array('y',$hour,$hour,'y',(int) $this->now,(int) $this->now,'n',-1,$zone);
 		$rows=$this->getOne($query,$bindvars);
 
 		if (!$rows)
@@ -42,7 +41,7 @@ class BannerLib extends TikiLib {
 
 		$query = "select * from `tiki_banners` where $dw = ? and  `hourFrom`<=? and `hourTo`>=? and
 		( ((`useDates` = ?) and (`fromDate`<=? and `toDate`>=?)) or (`useDates` = ?) ) and
-		(`impressions`<`maxImpressions`  or `maxImpressions`=?) and (`clicks`<`maxClicks` or `maxClicks`=?) and `zone`=?";
+		(`impressions`<`maxImpressions`  or `maxImpressions`=?)and `zone`=?";
 		$result = $this->query($query,$bindvars,1,$bid);
 
 		$res = $result->fetchRow();
@@ -54,10 +53,8 @@ class BannerLib extends TikiLib {
 
 			break;
 		case 'useFlash':
-			if ($prefs['javascript_enabled'] == 'y')
-				$raw = $res['HTMLData'];
-			else
-				$raw = $res['textData'];
+			$raw = $res["HTMLData"];
+
 			break;
 
 
@@ -178,10 +175,30 @@ class BannerLib extends TikiLib {
 		$res = $result->fetchRow();
 		return $res;
 	}
+	function embed_flash($movieUrl,$movieId,$movieInstallUrl,$movieWidth,$movieHeight,$movieVersion='8.0.0',$movieFlashVars='',$movieParams='',$movieAttributes='') {
+		global $prefs;
+		if ($prefs['feature_swffix'] == 'y') {
+			if (!$movieId) {
+				$movieId="banner_".rand(1000,100000);
+			}
+			$flash_embed ="<div id=\"$movieId\"></div>\n";
+			$flash_embed .="<script type=\"text/javascript\">";
+			$flash_embed .="SWFFix.embedSWF(\"$movieUrl\",\"$movieId\", \"$movieWidth\", \"$movieHeight\", \"$movieVersion\", \"$movieInstallUrl\",\"$movieFlashVars\",\"$movieParams\",\"$movieAttributes\");";
+			$flash_embed .="</script>";
+		} else {
+			$flash_embed = "<OBJECT CLASSID=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=$movieVersion\" WIDTH=\"$movieWidth\" HEIGHT=\"$movieHeight\">";
+			$flash_embed .= "<PARAM NAME=\"movie\" VALUE=\"$movieUrl\">";
+			$flash_embed .= "<PARAM NAME=\"quality\" VALUE=\"best\">";
+			$flash_embed .= "<PARAM NAME=\"wmode\" VALUE=\"transparent\">";
+			$flash_embed .= "<embed src=\"$movieUrl\" quality=\"best\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" width=\"$movieWidth\" height=\"$movieHeight\" wmode=\"transparent\"></embed></object>";
+		}
+		
+		Return $flash_embed;
 
+	}
 	function replace_banner($bannerId, $client, $url, $title = '', $alt = '', $use, $imageData, $imageType, $imageName, $HTMLData,
 		$fixedURLData, $textData, $fromDate, $toDate, $useDates, $mon, $tue, $wed, $thu, $fri, $sat, $sun, $hourFrom, $hourTo,
-		$maxImpressions, $maxClicks,$zone) {
+		$maxImpressions, $zone) {
 		$imageData = urldecode($imageData);
 		//$imageData = '';
 
@@ -206,11 +223,11 @@ class BannerLib extends TikiLib {
                 `hourFrom` = ?,
                 `hourTo` = ?,
                 `mon` = ? ,`tue` = ?, `wed` = ?, `thu` = ?, `fri` = ?, `sat` = ?, `sun` = ?,
-                `maxImpressions` = ?, `maxClicks` = ? where `bannerId`=?";
+                `maxImpressions` = ? where `bannerId`=?";
 
                 $bindvars=array($client,$url,$title,$alt,$use,$imageData,$imageType,$imageName,$HTMLData,
                                 $fixedURLData, $textData, $fromDate, $toDate, $useDates,$this->now,$zone,$hourFrom,$hourTo,
-				$mon,$tue,$wed,$thu,$fri,$sat,$sun,$maxImpressions,$maxClicks,$bannerId);
+				$mon,$tue,$wed,$thu,$fri,$sat,$sun,$maxImpressions,$bannerId);
 
 				$result = $this->query($query,$bindvars);
 
@@ -223,14 +240,14 @@ class BannerLib extends TikiLib {
 		} else {
 			$query = "insert into `tiki_banners`(`client`, `url`, `title`, `alt`, `which`, `imageData`, `imageType`, `HTMLData`,
                 `fixedURLData`, `textData`, `fromDate`, `toDate`, `useDates`, `mon`, `tue`, `wed`, `thu`, `fri`, `sat`, `sun`,
-                `hourFrom`, `hourTo`, `maxImpressions`,`maxClicks`,`created`,`zone`,`imageName`,`impressions`,`clicks`)
+                `hourFrom`, `hourTo`, `maxImpressions`,`created`,`zone`,`imageName`,`impressions`,`clicks`)
                 values(?,?,?,?,?,?,?,?,
                 ?,?,?,?,?,?,?,?,?,
-                ?,?,?,?,?,?,?,?,?,?,?,?)";
+                ?,?,?,?,?,?,?,?,?,?,?)";
 
                 $bindvars=array($client,$url,$title,$alt,$use,$imageData,$imageType,$HTMLData,
                                 $fixedURLData, $textData, $fromDate, $toDate, $useDates, $mon,$tue,$wed,$thu,
-                                $fri,$sat,$sun,$hourFrom,$hourTo,$maxImpressions,$maxClicks,$this->now,$zone,$imageName,0,0);
+                                $fri,$sat,$sun,$hourFrom,$hourTo,$maxImpressions,$this->now,$zone,$imageName,0,0);
 
 
 			$result = $this->query($query,$bindvars);

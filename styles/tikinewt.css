@@ -6,11 +6,11 @@ Variation of Tikineat theme for TikiWiki CMS/Groupware, based on *litecss.
 /***** XHTML Elements ******/
 
 body {
-	background: #E9ECEF;
+	background: #E9ECEF url("tikinewt/bg_vertline.png") 180px 0px repeat-y;
 	font-family: Verdana, Helvetica, Geneva, Arial, sans-serif;
 	margin: 0;
 	padding: 0;
-	font-size: 70% !important;
+	font-size: 60% !important;
 	color: #000;
 }
 
@@ -19,7 +19,9 @@ body {
 	font-size: 70% !important;
 }
 
-#main {}
+#main {
+	background: transparent url("tikinewt/bg_vertline.png") right top repeat-y;
+}
 
 a,
 a:visited {
@@ -102,8 +104,6 @@ button,
 input,
 textarea,
 select {
-	font-family: Verdana, Helvetica, Geneva, Arial, sans-serif;
-	font-size: 100% !important;
 	color: #112233;
 	margin: 1px;
 }
@@ -132,7 +132,6 @@ input[type=radio] {
 
 button,
 input[type=submit],
-.submitbutton,
 .button input {
 	border: 1px solid #46596f;
 	background: #C7D0D9;
@@ -141,16 +140,18 @@ input[type=submit],
 
 button:hover,
 input[type=submit]:hover,
-.submitbutton:hover,
 .button input:hover {
 	background: #FFFFFF;
 	cursor: pointer;
 }
 
+* html .findtable input {
+	font-size: 1em;
+}
+
 fieldset {
 	border: solid 1px #C7D0D9;
 	padding: 10px;
-	margin: 0px;
 }
 
 textarea {
@@ -168,6 +169,13 @@ label {
 ul.jumplinks {
 	font-size : 0.8em;
 	list-style-type : none;
+}
+
+ul.jumplinks, .jumplinks {
+	position: absolute;
+	top: -9000px;
+	left: -9000px;
+	z-index: 9;
 }
 
 ul.jumplinks a:focus, ul.jumplinks a:active {
@@ -212,22 +220,18 @@ div#tiki-main {
 	background: #dca;
 }
 
-#header {background: #E9ECEF}
+#header {
+	background-color: #E9ECEF;
+}
 
 #header a,
-#header a:visited {text-decoration: none}
+#header a:visited {
+	text-decoration: none;
+}
 
-#header-top {position: relative}
-
-div#sitetitle {
-	font-size: 2.6em;
-	font-weight: bold;
-	margin-left: 40px}
-	
-div#sitesubtitle {
-	font-size: 1.2em;
-	font-weight: bold;
-	margin-left: 40px}
+#header-top {
+	position: relative;
+}
 
 /** Look & Feel (Site Identity) **/
 #siteheader {
@@ -281,16 +285,8 @@ div#sitead {
 	float: left;
 }
 
-#siteloginbar {
-	text-align: right;
-	position: absolute;
-	bottom: 3px;
-	right: 10px;
-	font-size: 90%}
+#siteloginbar {position: absolute; bottom:3px; right: 10px;}
 
- #siteloginbar.logged-in {
-	bottom: 3px;
-}
 
 #tiki-top {
 	font-size: .95em;
@@ -307,7 +303,7 @@ div#sitead {
 #sitesearchbar {
 	font-size: .95em;
 	text-align: right;
-/*	max-width: 300px;*/
+	max-width: 300px;
 	float: right; 
 }
 
@@ -316,11 +312,9 @@ div#sitead {
 #middle {
 	text-align: left;
 	font-size: 1em;
-	margin-bottom: 2px;
 }
-
-#showhide_columns {
-	margin: 3px 3px -1px 3px;
+#showhide_columns, .tellafriend {
+	border-left: 1px solid #8CACBB;
 }
 
 #c1c2 {
@@ -358,17 +352,19 @@ a.flip img {
 }
 
 #c1c2 #wrapper #col1 {
-	}
+	background-color: #E9ECEF;
+}
 
-#c1c2	#wrapper #col1 > .content {
+#c1c2	#wrapper #col1	.content {
 	background-color: white;
 }
 
 #c1c2 #wrapper #col1 #tiki-center {
 	background: #F3F6F9;
-	margin: 0 3px;
+	margin: 0;
 	padding: 0 5px;
-	border: 1px solid #8CACBB
+	border-left: 1px solid #8CACBB;
+/*	font-size: .9em;*/
 }
 
 /* IE */
@@ -388,7 +384,6 @@ a.flip img {
 	background-color: transparent;
 	width: 180px;
 	text-align: left;
-	overflow: visible;
 }
 
 #col2 .content {
@@ -402,6 +397,7 @@ a.flip img {
 	width: 179px;
 	margin-left: -180px;
 	text-align: left;
+	border-left: 1px solid #8CACBB;
 	
 }
 
@@ -426,11 +422,7 @@ a.flip img {
 
 }
 
-div#power {
-	font-size: .9em;
-	text-align: center}
-	
-#credits {display: inline}
+div#credits {font-size: .9em; text-align: center}
 
 /* this is needed as a little workaround because MSIE tends to display the footer partly without the background specified */
 .footerbgtrap {
@@ -461,10 +453,6 @@ div#tiki-main #tikimidtbl {
 
 * html .horbaritem a {
 	font-size: .8em;
-}
-
-.box .box-data table {
-	width: 100%;
 }
 
 a.phplm:link, a.phplm, a.phplm:hover, a.phplm:visited, .phplmnormal a, .phplmnormal a:hover, .phplmnormal a:visited {
@@ -521,14 +509,6 @@ a.phplm:hover, .phplmnormal a:hover {
 	top: 5px;
 	right: 12px;
 }
-div.treemenudiv {background: #fff}
-#col2 div.treemenudiv {font-size: 1em}
-
-#col2 a.phplm:hover {
-	background:#DDD;
-	color:#224466;
-	text-decoration: none}
-
 div.separator, div.separatorline {
 	background: #FFFFFF;
 	color: black;
@@ -547,13 +527,9 @@ div.menuSection div.separator {
 	font-weight: normal;
 }
 .linkmenu:hover {
-	color: #224466;
+  color: #224466;
 	background: #ddd;
 	letter-spacing: 0;
-}
-.linkmenu,
-.linkmenu:visited {
-	display: block;
 }
 
 .rsslist {
@@ -596,7 +572,7 @@ div#attzone, div#comzone {	display: none;	margin-top: 10px;}
 div#attzoneopen, div#comzoneopen {display: block; margin-top: 10px;}
 div#edithelpzone {display: none;}
 #rules-copy-panel {display: none;}
-.clear, #clear {clear: both !important;}
+.clear, #clear {clear: both;}
 br.clear {clear: both; height: 0}
 .clearfix:after {
     content: "."; 
@@ -682,10 +658,10 @@ div.adminanchors {background: #E9ECEF !important}
 
 div.box {
 	background: white;
-	/*overflow: hidden;*/
+	overflow: hidden;
 	margin: 3px;
 	border: 1px solid #ACCCDD;
-	width: 172px;
+	width: 174px;
 	text-align: left;
 }
 
@@ -740,7 +716,7 @@ div.box-data {
 	color: black;
 	padding: 5px;
 	font-size: .95em;
-	/*overflow: hidden;*/
+	overflow: hidden;
 }
 
 .box-data ol {padding-left: 2em; margin-top: 0; margin-bottom: 0;}
@@ -806,19 +782,17 @@ div.simplebox {
 /** rbox: remarks box (note/warning/tip/comment) */
 .rbox {
   margin-top: 10px;
-	text-align: left;
 }
 .rbox-data {
   padding: 2px;
 }
-.rbox-title, .warning .rbox-title { 
+.rbox-title, .rbox-title[name="warning"] { 
   border: 0;
   border-radius-topright: 1ex;
   -moz-border-radius-topright: 1ex;
   -khtml-border-radius-topright: 1ex;
   font-size: .95em;
   padding: 0 10px;   
-	padding-bottom: 0.35em;
   position: relative;
   display: inline;
   margin: 0;
@@ -827,28 +801,28 @@ div.simplebox {
 }
 
 .rbox-data, 
-.warning .rbox-data {
+.rbox-data[name="warning"] {
   background: #eeee99;
   border: 1px solid #DDDDCC;
 }
 
-.note .rbox-title {
+.rbox-title[name="note"] {
   background: #CCCCDD;
 }
 
-.note .rbox-data {
+.rbox-data[name="note"] {
   background: #ECECEF;
   border: 1px solid #CCCCDD;
 }
 
-.comment .rbox-title,
-.tip .rbox-title, 
+.rbox-title[name="comment"],
+.rbox-title[name="tip"], 
 .rbox-title.tip {
   background: #CCCCDD;
 }
 
-.comment .rbox-data,
-.tip .rbox-data,
+.rbox-data[name="comment"],
+.rbox-data[name="tip"],
 .rbox-data.tip {            
   background: #ECEFEC;
   border: 1px solid #CCDDCC;
@@ -865,6 +839,16 @@ td {
 	font-size: 1em;
 	vertical-align: top;
 	text-align: left;
+}
+
+* html td,
+* html th { font-size: 11px }
+
+th {
+	color: black;
+	background: #DEE7EC;
+	border: 1px solid #8CACBB;
+	padding: 0 2px;
 }
 
 /* Cells in forms using a background color */
@@ -889,9 +873,7 @@ table.bloglist {
 	border-collapse: collapse;
 	width: 100%;
 }
-table.normalnoborder {
-	width: 100%;
-}
+
 /* cells in tracker items display */
 td.formlabel {
 	white-space: nowrap;
@@ -907,7 +889,7 @@ table.email td.body {
  border: 1px solid #8CACBB;
 }
 
-table.email th {
+table.email td.heading {
  text-align: left;
  width: 15px;
 }
@@ -918,15 +900,12 @@ table.email td.closeButton {
 }
 
 /* headings */
-div.heading, th {
+div.heading, td.heading {
 	color: black;
 	background: #DEE7EC;
 	border: 1px solid #8CACBB;
 	padding: 0 2px;
 }
-
-* html td,
-* html th {font-size: 11px}
 
 form.admin {
 	padding: 3px
@@ -977,6 +956,15 @@ div.heading {
 	margin: 3px 2px;
 }
 
+.button {
+	background: #DEE7EC;
+	border: 1px solid #8CACBB;
+	margin: 2px;
+	padding: 0 2px;
+	text-align: center;
+	vertical-align: middle;
+}
+
 /* links to view an object from a table listing objects can be generalized to this link */
 a.fgalname {
 	text-decoration: none;
@@ -1004,8 +992,21 @@ a.forumnameread {
 }
 
 /* links in table headings */
+.tableheading,
+.gallistheading,
+.listgalheading,
+.bloglistheading,
+.llisfgalheading,
+.llistfileslink,
+.llistart,
+.lforumheading {
+}
 
-.findtitle {float: left;}
+table.findtable {
+	margin-bottom: 1px;
+	padding-bottom: 10px;
+}
+.findtable td { }
 
 /* Odd rows in several listings */
 tr.odd {
@@ -1217,7 +1218,8 @@ div.titlebar {
 div#page-bar {
 	padding-bottom: 40px;
 	display: block;
-	padding-top: 5px;
+  border-top: 1px solid #8CACBB;
+  padding-top: 5px;
 }
 
 div#page-bar table, div#page-bar td, div#page-bar tr {
@@ -1225,49 +1227,46 @@ div#page-bar table, div#page-bar td, div#page-bar tr {
 	padding: 0;
 }
 
-#page-bar > span {
+#page-bar span {
 	float: left;
 }
 
-.navbar, .findtable {
-	margin: 5px 0px 10px 0px;
+.button2, .button3 {
+	/*margin: 0;
+	padding: 0;*/
+}
+.button3 {
+	border-radius: 5px 5px 0 0;
+	-moz-border-radius: 5px 5px 0 0;
+	-khtml-border-radius: 5px 5px 0 0;
+}
+.button3 .linkbut {
+	border-radius: 5px 5px 0 0;
+	-moz-border-radius: 5px 5px 0 0;
+	-khtml-border-radius: 5px 5px 0 0;
+	padding-bottom: 2px;
+	border-bottom: 0;
+}
+body .button2 {
+	margin-left: 5px;
 }
 
 /* Links in buttons */
-.button a,
-.button a:visited,
-button,
-input[type=submit],
-.button input,
-.submitbutton,
-.calbuttonoff,
-.calbuttonon {
-        font-family : Verdana, Helvetica, Geneva, Arial, sans-serif;
+.linkbut, .linkbut:visited {
 	font-size: .95em;
-        font-weight: bold;
-        color: #223344;
-        background-color: #C7D0D9;
-        border: 1px solid #999;
-        padding: 0px 4px;
-        margin-right: 1px;
-        text-decoration: none;
-        white-space: nowrap;
-        cursor: pointer;
-        display: inline;
-        outline: none;
-	line-height: 2em;
-}
-.button a,
-.button a:visited {
-        padding: 1px 4px;
+	color: #223344;
+	background: #C7D0D9;
+	padding: 0 4px;
+	text-decoration: none;
+	border: 1px solid #999;
+	height: 16px;
+	white-space: nowrap;
+	cursor : pointer;
+	line-height: 170%;
 }
 
-.button a:hover,
-button:hover,
-input[type=submit]:hover,
-.button input:hover,
-.submitbutton:hover {
-        background-color: #dca;
+.linkbut:hover {
+	background: #dca;
 }
 
 .tab1 form {
@@ -1304,12 +1303,14 @@ td.wikicell {
 	background: #F7F9FA;
 }
 div.wikitext {
+	font-size: 1.2em;
 	padding: 10px;
 	clear: both;
 	width: auto;
 }
 
 body.wikitext {
+	font-size: 1.2em;
 	margin: 10px !important;
 	background: #F3F6F9;
 }
@@ -1365,6 +1366,7 @@ textarea.wikiedit {
 
 p.editdate {
 	color: #223344;
+	border-top: 1px solid #8CACBB;
 	font-size: 1em;
 	padding: 0 10px;
 }
@@ -1482,6 +1484,19 @@ div.code {
 	border-left: 1px dashed #999999;
 }
 
+.versionav .button2 {
+	display: block;
+	border: 0;
+	border-bottom: 1px dashed #999999;
+	background-color: transparent;
+}
+
+.versionav .button2 .linkbut {
+	border: 0;
+	background-color: inherit;
+	padding: 0 10px;
+}
+
 .versionav .highlight {
 	background: #CCCCCC;
 	font-weight: bold;
@@ -1559,7 +1574,6 @@ div.split {
 
 div.article {
 	font-size: 1.1em;
-	margin-bottom: 1.8em;
 }
 
 .wikitext .article {
@@ -1581,8 +1595,8 @@ span.titlea {
 	font-weight: bold;
 	border-radius-bottomright: 20px;
 	-moz-border-radius-bottomright: 20px;
-	-khtml-border-radius-bottomright: 20px}
-span.titlea a {text-decoration: none}
+	-khtml-border-radius-bottomright: 20px;
+}
 span.titleb,
 span.titleb:after {
 	color: #666666;
@@ -1602,28 +1616,12 @@ div.articletrailer {
 	margin-bottom: 10px;
 	margin-right: 20px;
 	margin-left: 20px;
-	position: relative;
-	text-align: center;
-	font-size: 90%;
-	margin-top: 1.1em}
-	
-div.articletrailer img {}
+	text-align: right;
+	clear: both;
+}
 
-div.article .status {
-	position: absolute;
-	left: 0}
-
-div.articletrailer span {
-	display: inline-block;
-	margin: auto;
-	white-space: nowrap}
-
-div.article .actions {
-	position: absolute;
-	right: 0;
-	top: 0}
-
-
+span.trailer {
+}
 
 .articleimage {
 	margin-right: 20px;
@@ -1702,57 +1700,20 @@ span.posthead small {
 	font-weight: normal;
 }
 
-body.tiki_blogs .post {margin-bottom: 20px}
+.blogt {  }
 
-/*div.postbody*/
-body.tiki_blogs .post .postbody {
+.blogpost .postbody {
 	border-top: 1px solid #AEAEAE;
 	border-bottom: 1px solid #AEAEAE;
 	font-size: .95em;
 	color: black;
 	padding: 10px}
 
-/* Maybe needs override to differentiate from forums */
-body.tiki_blogs .post .postbody {
-	background: none;
-	border-bottom:1px solid #AEAEAE;
-	border-top: 1px solid #AEAEAE;
-	color :black;
-	font-size: 0.95em;
-	padding: 10px;}
-	
-body.tiki_blogs div.author_actions {
-	float: none;
-	background: none;
-	border: 0;
-	width: 100%}
-	
-body.tiki_blogs .actions {
-	background: none;
-	text-align: right}
-
-body.tiki_blogs .author_info {border-bottom: 1px solid #aeaeae}
-.postbody-title {
-	background: none;
-	border: 0}
-	
-body.tiki_blogs .postbody-title {
-	float: none;
-	width: 100%;
-	background: none;
-	border: 0}
-
-body.tiki_blogs .postfooter {
-	width: 100%;
-}
-
-body.tiki_blogs .postfooter .actions {float: left}
-
-
 /***** Forums *****/
 
-.pagetitle { text-decoration: none; }
-.pagetitle:hover { text-decoration: underline; }
+div.forumspagetitle {
+
+}
 
 table.threads {
 	width: 100%;
@@ -1860,17 +1821,6 @@ td.forumtoolbar {
 	border-bottom: 1px solid #8CACBB;
 	padding-bottom: 4px;
 }
-.post-approved-n { border-left: 3px dotted blue; }
-.post-approved-r { border-left: 3px double red; }
-.post-approved-r .content * { background-image: url(../img/icons2/dots.gif); }
-
-.post-approved-n .content, .post-approved-r .content,
-.post-approved-n .title, .post-approved-r .title,
-.post-approved-n .postfooter, .post-approved-r .postfooter,
-tr.post-approved-n td span, tr.post-approved-r td span {
-	opacity: 0.5;
-}
-tr.post-approved-n td span, tr.post-approved-r td span { opacity: 0.6; }
 
 .post .postbody-title .checkbox { float: left; }
 .post .postbody-title .title {
@@ -2131,13 +2081,14 @@ td.categobjectsdataodd {
 	color: #000000;
 }
 
-ul.catfeatures {list-style: none}
+ul.catfeatures {}
 ul.catfeatures li {}
 ul.catitems {}
 
 ul.catitems li {
-	display: inline;
-	margin-right: 10px}
+	float: left !important;
+	padding-right: 18px;
+}
 
 ul.catitems li a.link {}
 
@@ -2213,10 +2164,6 @@ td.eventhumb {
 	border-collapse: collapse;
 	text-align: center;
 }
-div.thumbnailcontenerchecked div.thumbnail {
-	background-color: #adcddd;
-	border-color: #8cacbb;
-}
 
 div.thumbnails {
 	border: 1px solid white;
@@ -2259,8 +2206,7 @@ div.imgaldescr {
 /***** File Galleries *****/
 
 div.thumbnailcontener {
-	margin: 4px 4px -12px;
-	height: 100% !important;
+	margin: 4px;
 }
 div.thumbnail {
 	padding: 0;
@@ -2272,9 +2218,8 @@ div.thumbnail {
 	text-align: center;
 }
 div.thumbnamecontener, div.thumbimagecontener {
-	margin: auto;
 	display: table;
-	position: relative;
+	#position: relative;
 	overflow: hidden;
 }
 div.thumbnamecontener {
@@ -2289,14 +2234,14 @@ div.thumbname, div.thumbimage {
 	display: table-cell;
 	vertical-align: middle;
 	/* for IE including IE7 */
-	_position: absolute;
-	left: 0;
-	top: 50%;
+	#position: absolute;
+	#left: 0;
+	#top: 50%;
 }
 div.thumbnamesub, div.thumbimagesub {
 	/* for IE including IE7 */
-	position: relative;
-	top: -50%;
+	#position: relative;
+	#top: -50%;
 }
 div.thumbnail:hover {
 	background-color: #F3F6F9;
@@ -2326,8 +2271,7 @@ div.thumbname {
 }
 div.thumbactions {
 	width: 100%;
-	position: relative;
-	top: -20px; /* -25px */
+	margin-top: -20px; /* -25px */
 }
 div.thumbactions * {
 	vertical-align: middle;
@@ -2350,6 +2294,23 @@ div.thumbdescription span.thumbinfoname {
 a.namealias {
 	font-style: italic;
 }
+
+div.gallerypath, div.gallerypath a {
+	color: #6996C3;
+	font-style: italic;
+	font-weight: normal;
+	margin-left: 3px;
+	text-decoration: none;
+}
+
+div.gallerypath a:hover {
+	color: black;
+	text-decoration: underline;
+}
+
+.fgalexplorer { border: 1px solid #8CACBB; }
+.fgallisting table td { padding-left: 2px; padding-right: 2px; }
+
 
 /***** Calendar *****/
 
@@ -2740,15 +2701,12 @@ table.default td {
   background: #dee7ec;
 }
 
-.advanced:before { 
-	content:url(../img/icons/mini_blue_diamond.gif)" "; 
-}
+.advanced:before { content:url(../img/icons/mini_blue_diamond.gif)" "; }
 
 .tellafriend {
 	font-size: 80%;
 	text-align:right;
 	margin-right: 1em;
-	margin: 3px 1em -1px 3px;
 }
 .tellafriend a {
 	text-decoration: none;
@@ -2792,12 +2750,11 @@ table.default td {
 	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=80);
 	-moz-opacity: 0.8;
 	border: 1px solid transparent;
+	_border-color: white; /* for IE6 */
+	_filter: chroma(color=white); /* for IE6 */
 	padding: 1px;
 	margin: 0;
-	vertical-align: middle;
 }
-
-* html .icon { border:color: white; filter: chroma(color=white): }
 
 .upspan:hover .icon, a:hover .icon/*, span:hover .icon*/ {
 	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=100);
@@ -2819,8 +2776,12 @@ table.default td {
 
 /* OpenID  */
 .openid_url {
-	background: #fff url(../../img/icons/login-OpenID-bg.gif) no-repeat;
-	padding-left: 18px}
+background-image: url(../../img/icons/login-OpenID-bg.gif);
+background-repeat: no-repeat;
+background-attachment: scroll;
+background-color: #ffffff;
+padding-left: 18px;
+}
 
 /* Style for navbar buttons 
  *  This class has to be added in the main style sheet */
@@ -2837,107 +2798,10 @@ table.default td {
   -moz-border-radius : 10px;
   -khtml-border-radius : 10px;
   padding : 5px;
-  text-align: left;
 }
 .opaque .box-title,
 .opaque .box-data {
-	width: auto;
-}
-.opaque a {
-	text-decoration: none;
-}
-.sub {
-	padding-left: 5em !important;
-}
-#page_bar {
-	text-align: center;
-}
-/* File Gallery */
-div.fgal_file {
-}
-div.fgal_file div.fgal_file_c1 {
-  float: left;
-  display: block;
-  width: 49%;
-}
-div.fgal_file div.fgal_file_c2 {
-  float: right;
-  width: 49%;
-  padding-left: 10px !important;
-}
-div.fgal_file div.div.fgal_file_c2:after {
-    content: ".";
-    display: block;
-    clear: both;
-    visibility: hidden;
-}
-div.fgal_file div.fgal_file_c3 {
-  clear: both;
-}
-a.icon,
-img.icon {
-	border: 0 !important;
-	background: transparent}
-
-form.wikiplugin_edit textarea {
-	width: 100%;
-	height: 10em;
+  width: auto;
 }
 
-div.icon_edit_section {
-	float: right;
-}
-
-div.multiselect {
-	vertical-align: middle;
-	overflow-y: auto;
-	overflow-x: hidden;
-	height: 5em;
-	width: 100%;
-	border: 1px solid black;
-}
-
-div.multiselect table {
-	width: 100%;
-}
-
-div.multiselect div.odd {
-	border: 1px solid #8CACBB;
-	color: black;
-	background: #F7F9FA;
-}
-
-div.multiselect div.odd:hover {
-	background: #FFF7E6;
-}
-
-div.multiselect div.even {
-	border: 1px solid #8CACBB;
-	background: #E7E9EA;
-	color: black;
-}
-
-div.multiselect div.even:hover {
-	background: #FFF7E6;
-}
-.button .iconmenu {display:inline;}
-
-/** CSS (suckerfish) menus **/
-
-.cssmenu li,
-.cssmenu_horiz li,
-.cssmenu_vert li {border-top: 1px solid #dedede}
-
-.cssmenu li:hover,
-.cssmenu_horiz li:hover,
-.cssmenu_vert li:hover,
-.cssmenu li.sfhover,
-.cssmenu_horiz li.sfhover,
-.cssmenu_vert li.sfhover {background: #e9ecef}
-
-.cssmenu li ul,
-.cssmenu_horiz li ul,
-.cssmenu_vert li ul {border: 1px solid black}
-
-.cssmenu_horiz li ul ul {margin: -1em 0 0 11em}
 /***** End of file ******/

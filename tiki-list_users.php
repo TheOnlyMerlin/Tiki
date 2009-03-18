@@ -6,7 +6,7 @@ require_once('tiki-setup.php');
 include_once ('lib/userprefs/userprefslib.php');
 
 if($prefs['feature_friends'] != 'y') {
-  $smarty->assign('msg',tra('This feature is disabled').': feature_friends');
+  $smarty->assign('msg',tra("This feature is disabled"));
   $smarty->display("error.tpl");
   die;  
 }
@@ -50,9 +50,24 @@ if(isset($_REQUEST["find"])) {
 }
 $smarty->assign('find',$find);
 
-$listusers = $tikilib->list_users($offset,$maxRecords,$sort_mode,$find, true);
+$listusers = $tikilib->list_users($offset,$maxRecords,$sort_mode,$find);
 
-$smarty->assign_by_ref('cant_pages',$listusers["cant"]);
+// If there're more records then assign next_offset
+$cant_pages = ceil($listusers["cant"] / $maxRecords);
+$smarty->assign_by_ref('cant_pages',$cant_pages);
+$smarty->assign('actual_page',1+($offset/$maxRecords));
+
+if($listusers["cant"] > ($offset + $maxRecords)) {
+  $smarty->assign('next_offset',$offset + $maxRecords);
+} else {
+  $smarty->assign('next_offset',-1); 
+}
+// If offset is > 0 then prev_offset
+if($offset>0) {
+  $smarty->assign('prev_offset',$offset - $maxRecords);
+} else {
+  $smarty->assign('prev_offset',-1);
+}
 
 //get the distance
 $listdistance = array();

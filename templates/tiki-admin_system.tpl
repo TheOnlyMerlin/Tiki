@@ -1,12 +1,18 @@
 {* $Id$ *}
+<h1><a class="pagetitle" href="tiki-admin_system.php">{tr}System Admin{/tr}</a>
 
-{title help="System+Admin"}{tr}System Admin{/tr}{/title}
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}System+Admin" target="tikihelp" class="tikihelp" title="{tr}system admin{/tr}">
+{icon _id='help'}</a>{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admin_system.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}system admin tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>{/if}</h1>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}If your Tiki is acting weird, first thing to try is to clear your cache below. Also very important is to clear your cache after an upgrade (by FTP/SSH when needed).{/tr}{/remarksbox}
 
 <h2>{tr}Exterminator of cached content{/tr}</h2>
 <table class="normal">
-<tr><th>{tr}Directory{/tr}</th><th>{tr}Files{/tr}/{tr}Size{/tr}</th><th>{tr}Action{/tr}</th></tr>
+<tr><th class="heading">{tr}Directory{/tr}</th><th>{tr}Files{/tr}/{tr}Size{/tr}</th><th>{tr}Action{/tr}</th></tr>
 <tr class="form">
 <td class="odd"><b>./templates_c/</b></td>
 <td class="odd">({$templates_c.cant} {tr}Files{/tr} / {$templates_c.total|kbsize|default:'0 Kb'})</td>
@@ -28,20 +34,17 @@
 </tr>
 </table>
 <br />
-{if count($dirs) && $tiki_p_admin eq 'y'}
-<h2>{tr}Directories to save{/tr}</h2>
-<form  method="post" action="{$smarty.server.PHP_SELF}">
-	{tr}Full Path to the Zip File:{/tr}<input type="text" name="zipPath" value="{$zipPath|escape}" />
-	<input type="submit" name="zip" value="{tr}Generate a zip of those directories{/tr}" />
-	{if $zipPath}
-		<div class="simplebox highlight">{tr}A zip has been written to {$zipPath}{/tr}</div>
-	{/if}
-</form>
+{if count($dirs)}
+<div class="cbox">
+<div class="cbox-title">{tr}Directories to save:{/tr}</div>
+<div class="cbox-data"> 
 <ul>
-{foreach from=$dirs item=d key=k}
-	<li>{$d|escape}{if !$dirsWritable[$k]} <i>({tr}Directory is not writeable{/tr})</i>{/if}</li>
+{foreach from=$dirs item=d}
+	<li>{$d}</li>
 {/foreach}
 </ul>
+</div>
+</div>
 {/if}
 
 {if count($templates)}
@@ -49,9 +52,9 @@
 <h2>{tr}Templates compiler{/tr}</h2>
 <table class="sortable" id="templatecompiler" width="100%">
 <tr>
-<th>{tr}Language{/tr}</th>
-<th>{tr}Pages{/tr}/{tr}Size{/tr}</th>
-<th>{tr}Action{/tr}</th>
+<th class="heading">{tr}Language{/tr}</th>
+<th class="heading">{tr}Pages{/tr}/{tr}Size{/tr}</th>
+<th class="heading">{tr}Action{/tr}</th>
 </tr>
 {cycle values="even,odd" print=false}
 {foreach key=key item=item from=$templates}
@@ -66,8 +69,9 @@
 <br />
 
 {if $tiki_p_admin eq 'y'}
-{remarksbox type="warning" title="{tr}Advanced feature{/tr}"}
-{tr}Fix UTF-8 Errors in Tables{/tr} <a href="javascript:toggle('fixutf8')">: {tr}Show{/tr}/{tr}Hide{/tr}</a>
+<div class="advanced">{tr}Advanced feature{/tr}: {tr}Fix UTF-8 Errors in Tables{/tr}:
+<a href="javascript:toggle('fixutf8')">{tr}Show{/tr}/{tr}Hide{/tr}</a>
+<br /><br />
 <div id="fixutf8" {if $advanced_features ne 'y'}style="display:none;"{else}style="display:block;"{/if}>
 <h2>{tr}Fix UTF-8 Errors in Tables{/tr}</h2>
 <table class="normal">
@@ -84,7 +88,7 @@
 {/if}
 </table>
 <table class="sortable" id="tablefix" width="100%">
-<tr><th>{tr}Table{/tr}</th><th>{tr}Field{/tr}</th><th>{tr}Investigate{/tr}</th><th>{tr}Fix it{/tr}</th></tr>
+<tr><th class="heading">{tr}Table{/tr}</th><th class="heading">{tr}Field{/tr}</th><th class="heading">{tr}Investigate{/tr}</th><th class="heading">{tr}Fix it{/tr}</th></tr>
 {cycle values="even,odd" print=false}
 {foreach key=key item=item from=$tabfields}
 <tr><td class="{cycle advance=false}">{$item.table}</td><td class="{cycle advance=false}">{$item.field}</td>
@@ -94,5 +98,5 @@
 {/foreach}
 </table>
 </div>
-{/remarksbox}
+</div>
 {/if}

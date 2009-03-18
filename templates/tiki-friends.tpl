@@ -1,11 +1,22 @@
-{title help="Friendship+Network"}{tr}Friendship Network{/tr}{/title}
+<h1><a href="tiki-friends.php" class="pagetitle">{tr}Friendship Network{/tr}</a>
+  
+      {if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Friendship+Network" target="tikihelp" class="tikihelp" title="{tr}Friendship Network{/tr}">
+<img src="img/icons/help.gif" border="0" height="16" width="16" alt='{tr}Help{/tr}' /></a>{/if}
+
+
+      {if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-friends.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}friends tpl{/tr}">
+<img src="img/icons/info.gif" border="0" height="16" width="16" alt='{tr}Edit Tpl{/tr}' /></a>{/if}
+
+</h1>
 
 {if $msg}
-  <center>{$msg}</center>
-  <br /><br />
+<center>{$msg}</center>
+<br /><br />
 {/if}
 
-{if $pending_requests|@count}
+{if $pending_requests|sizeof}
 <p style="font-weight: bold;">{tr}Pending requests{/tr}</p>
 <table class="userlist">
 <tr>
@@ -24,7 +35,7 @@
 </table>
 {/if}
 
-{if $waiting_requests|@count}
+{if $waiting_requests|sizeof}
 <p style="font-weight: bold;">{tr}Waiting requests{/tr}</p>
 <table class="userlist">
 <tr>
@@ -69,5 +80,21 @@
 </td></tr>
 {/section}
 </table>
-
-{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset }{/pagination_links}
+<br />
+<div class="mini">
+{if $prev_offset >= 0}
+[<a class="userprevnext" href="tiki-friends.php?find={$find}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}">{tr}Prev{/tr}</a>]&nbsp;
+{/if}
+{tr}Page{/tr}: {$actual_page}/{$cant_pages}
+{if $next_offset >= 0}
+&nbsp;[<a class="userprevnext" href="tiki-friends.php?find={$find}&amp;offset={$next_offset}&amp;sort_mode={$sort_mode}">{tr}Next{/tr}</a>]
+{/if}
+{if $prefs.direct_pagination eq 'y'}
+<br />
+{section loop=$cant_pages name=foo}
+{assign var=selector_offset value=$smarty.section.foo.index|times:$prefs.maxRecords}
+<a class="prevnext" href="tiki-friends.php?find={$find}&amp;offset={$selector_offset}&amp;sort_mode={$sort_mode}">
+{$smarty.section.foo.index_next}</a>&nbsp;
+{/section}
+{/if}
+</div>

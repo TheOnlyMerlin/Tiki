@@ -1,21 +1,24 @@
 {* $Id$ *}
-
-{title help="Spreadsheet"}{tr}TikiSheet{/tr}{/title}
+<h1><a href="tiki-sheets.php" class="pagetitle">{tr}TikiSheet{/tr}</a>
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Spreadsheet" target="tikihelp" class="tikihelp" title="{tr}Tikiwiki.org help{/tr}: {tr}Tiki Sheet{/tr}">
+{icon _id='help'}</a>{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-sheets.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}sheets tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>{/if}
+</h1>
 
 {if $tiki_p_edit_sheet eq 'y'}
 {if $edit_mode eq 'y'}
-
 {if $sheetId eq 0}
-  <h2>{tr}Create a sheet{/tr}</h2>
+<h2>{tr}Create a sheet{/tr}</h2>
 {else}
-  <h2>{tr}Edit this sheet:{/tr} {$title}</h2>
-  {if $tiki_p_edit_sheet eq 'y'}
-    <div class="navbar">
-			{button href="tiki-sheets.php?edit_mode=1&amp;sheetId=0" _text="{tr}Create New Sheet{/tr}"}
-		</div>
-  {/if}
+<h2>{tr}Edit this sheet:{/tr} {$title}</h2>
+{if $tiki_p_edit_sheet eq 'y'}
+<div class="navbar"><a class="linkbut" href="tiki-sheets.php?edit_mode=1&amp;sheetId=0">{tr}Create New Sheet{/tr}</a></div>
 {/if}
-
+{/if}
+<div align="center">
 {if $individual eq 'y'}
 <a class="gallink" href="tiki-objectpermissions.php?objectName={$name|escape:"url"}&amp;objectType=sheet&amp;permType=sheet&amp;objectId={$sheetId}">{tr}There are individual permissions set for this sheet{/tr}</a>
 {/if}
@@ -32,7 +35,8 @@
 <tr><td class="formcolor">{tr}Creator{/tr}:</td><td class="formcolor">
 		<select name="creator">
 		<option value=""></option>
-		{section name=ix loop=$users}<option value="{$users[ix].login|escape}"{if $creator eq $users[ix].login} selected="selected"{/if}>{$users[ix].login|username}</option>{/section}
+		{section name=ix loop=$users}<option value="{$users[ix].login|escape}"{if $creator eq $users[ix].login} selected="sele
+cted"{/if}>{$users[ix].login|username}</option>{/section}
 		</select>
 </td></tr>
 {/if}
@@ -42,7 +46,7 @@
 </div>
 <br />
 {else}
-<div class="navbar"><a href="tiki-sheets.php?edit_mode=edit&sheetId=0">{tr}Create new Sheet{/tr}</a></div>
+<div class="navbar"><a href="tiki-sheets.php?edit_mode=edit&sheetId=0" class="linkbut">{tr}Create new Sheet{/tr}</a></div>
 {/if}
 {/if}
 
@@ -54,16 +58,17 @@
 {/if}
 {/if}
 <h2>{tr}Available Sheets{/tr}</h2>
+<div align="center">
 {if $sheets or $find ne ''}
   {include file='find.tpl' _sort_mode='y'}
 {/if}
 
 <table class="normal">
 <tr>
-<th>{self_link _sort_arg='sort_mode' _sort_field='title'}{tr}Title{/tr}{/self_link}</th>
-<th>{self_link _sort_arg='sort_mode' _sort_field='description'}{tr}Description{/tr}{/self_link}</th>
-<th>{self_link _sort_arg='sort_mode' _sort_field='user'}{tr}User{/tr}{/self_link}</th>
-<th>{tr}Actions{/tr}</th>
+<td class="heading"><a class="tableheading" href="tiki-sheets.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Title{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-sheets.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'description_desc'}description_asc{else}description_desc{/if}">{tr}Description{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-sheets.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_desc'}user_asc{else}user_desc{/if}">{tr}User{/tr}</a></td>
+<td  class="heading">{tr}Actions{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=changes loop=$sheets}
@@ -73,7 +78,7 @@
   <td class="{cycle advance=false}">{$sheets[changes].author}</td>
   <td class="{cycle}">
   {if $chart_enabled eq 'y'}
-    <a class="gallink" href="tiki-graph_sheet.php?sheetId={$sheets[changes].sheetId}"><img src='pics/icons2/chart_curve.png' width='16' height='16' alt='{tr}Graph{/tr}' title='{tr}Graph{/tr}' /></a>
+    <a class="gallink" href="tiki-graph_sheet.php?sheetId={$sheets[changes].sheetId}"><img src='pics/icons2/chart_curve.png' border='0' width='16' height='16' alt='{tr}Graph{/tr}' title='{tr}Graph{/tr}' /></a>
   {/if}
   {if $tiki_p_view_sheet_history eq 'y'}
     <a class="gallink" href="tiki-history_sheets.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;sheetId={$sheets[changes].sheetId}">{icon _id='application_form_magnify' alt='{tr}History{/tr}'}</a>
@@ -103,5 +108,22 @@
 </td></tr>
 {/section}
 </table>
-
-{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
+<br />
+<div class="mini">
+{if $prev_offset >= 0}
+[<a class="galprevnext" href="tiki-sheets.php?find={$find}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}">{tr}Prev{/tr}</a>]&nbsp;
+{/if}
+{tr}Page{/tr}: {$actual_page}/{$cant_pages}
+{if $next_offset >= 0}
+&nbsp;[<a class="galprevnext" href="tiki-sheets.php?find={$find}&amp;offset={$next_offset}&amp;sort_mode={$sort_mode}">{tr}Next{/tr}</a>]
+{/if}
+{if $prefs.direct_pagination eq 'y'}
+<br />
+{section loop=$cant_pages name=foo}
+{assign var=selector_offset value=$smarty.section.foo.index|times:$prefs.maxRecords}
+<a class="prevnext" href="tiki-sheets.php?find={$find}&amp;offset={$selector_offset}&amp;sort_mode={$sort_mode}">
+{$smarty.section.foo.index_next}</a>&nbsp;
+{/section}
+{/if}
+</div>
+</div>

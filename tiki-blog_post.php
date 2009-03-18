@@ -25,33 +25,8 @@ if ($prefs['feature_blogs'] != 'y') {
 	die;
 }
 
-if (isset($_REQUEST['blogId'])) {
-	$blogId = $_REQUEST['blogId'];
-	$blog_data = $tikilib->get_blog($blogId);
-} else {
-	$blogId = 0;
-}
-
-if ($tiki_p_blog_admin == 'y') {
-	$blogsd = $bloglib->list_blogs(0, -1, 'created_desc', '');
-	$blogs = $blogsd['data'];
-} else {
-	$blogs = $bloglib->list_blogs_user_can_post();
-}
-$smarty->assign_by_ref('blogs', $blogs);
-
-if ( count($blogs) == 0 ) {
-	$smarty->assign('msg', tra("You can't post in any blog maybe you have to create a blog first"));
-	$smarty->display("error.tpl");
-	die;
-} elseif ( $blogId == 0 && count($blogs) == 1 ) {
-	$blogId = $blogs[0]['blogId'];
-}
-$smarty->assign('blogId', $blogId);
-
 // Now check permissions to access this page
-if (!($tiki_p_blog_admin == 'y' || (!empty($blogId) && $tiki_p_blog_post == 'y') || (!empty($blogId) && $blog_data['public']== 'y' && $tikilib->user_has_perm_on_object($user, $blogId, 'blog', 'tiki_p_blog_post')))) {
-$msg="tiki_p_blog_admin: $tiki_p_blog_admin -- blogId: $blogId -- tiki_p_blog_post: $tiki_p_blog_post -- blog_data(public): ".$blog_data['public']." -- tikilib: ".$tikilib->user_has_perm_on_object($user, $blogId, 'blog', 'tiki_p_blog_post')." -- user: $user ";
+if ((empty($_REQUEST['blogId']) && $tiki_p_blog_post != 'y') || (!empty($_REQUEST["blogId"]) && !$tikilib->user_has_perm_on_object($user, $_REQUEST['blogId'], 'blog', 'tiki_p_blog_post'))) {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg', tra("Permission denied you cannot post"));
 
@@ -62,13 +37,25 @@ $msg="tiki_p_blog_admin: $tiki_p_blog_admin -- blogId: $blogId -- tiki_p_blog_po
 if ( $prefs['feature_wysiwyg'] == 'y' &&
 	( $prefs['wysiwyg_default'] == 'y' && ! isset($_REQUEST['wysiwyg']) )
 	|| ( isset($_REQUEST['wysiwyg']) && $_REQUEST['wysiwyg'] == 'y' )
-) {
-	$smarty->assign('wysiwyg', 'y');
+) $smarty->assign('wysiwyg', 'y');
+else $smarty->assign('wysiwyg', 'n');
+
+if (isset($_REQUEST["blogId"])) {
+	$blogId = $_REQUEST["blogId"];
+
+	$blog_data = $tikilib->get_blog($_REQUEST["blogId"]);
 } else {
-	$smarty->assign('wysiwyg', 'n');
+	$blogId = 0;
 }
 
-$postId = isset($_REQUEST["postId"]) ? $_REQUEST["postId"] : 0;
+$smarty->assign('blogId', $blogId);
+
+if (isset($_REQUEST["postId"])) {
+	$postId = $_REQUEST["postId"];
+} else {
+	$postId = 0;
+}
+
 $smarty->assign('postId', $postId);
 
 $smarty->assign('data', '');
@@ -78,13 +65,13 @@ $blog_data = $bloglib->get_blog($blogId);
 $smarty->assign_by_ref('blog_data', $blog_data);
 
 if (isset($_REQUEST['remove_image'])) {
-	$area = 'delblogpostimage';
-	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
-		key_check($area);
+  $area = 'delblogpostimage';
+  if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+    key_check($area);
 		$bloglib->remove_post_image($_REQUEST['remove_image']);
-	} else {
-		key_get($area);
-	}
+  } else {
+    key_get($area);
+  }
 }
 
 // If the articleId is passed then get the article data
@@ -114,7 +101,7 @@ if (isset($_REQUEST["postId"]) && $_REQUEST["postId"] > 0) {
 	$smarty->assign('title', $data["title"]);
 	$smarty->assign('created', $data["created"]);
 	$smarty->assign('parsed_data', $tikilib->parse_data($data["data"]));
-	$smarty->assign('blogpriv', $data["priv"]);
+    $smarty->assign('blogpriv', $data["priv"]);
 }
 
 if ($postId) {
@@ -314,6 +301,20 @@ if ($contribution_needed) {
 		$smarty->assign('taglist',$_REQUEST["freetag_string"]);
 	}
 }
+if ($tiki_p_blog_admin == 'y') {
+	$blogsd = $bloglib->list_blogs(0, -1, 'created_desc', '');
+
+	$blogs = $blogsd['data'];
+} else {
+	$blogs = $bloglib->list_blogs_user_can_post($user);
+}
+
+if (count($blogs) == 0) {
+	$smarty->assign('msg', tra("You can't post in any blog maybe you have to create a blog first"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 $sameurl_elements = array(
 	'offset',
@@ -324,7 +325,10 @@ $sameurl_elements = array(
 	'postId'
 );
 
+$smarty->assign_by_ref('blogs', $blogs);
+
 include_once ('tiki-section_options.php');
+
 include_once("textareasize.php");
 
 global $wikilib; include_once('lib/wiki/wikilib.php');
@@ -346,3 +350,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the Index Template
 $smarty->assign('mid', 'tiki-blog_post.tpl');
 $smarty->display("tiki.tpl");
+
+?>

@@ -13,14 +13,14 @@
 <body>
 <div id="{$rootid}browse_image">
 {else}
-  {title}{tr}Browsing Image:{/tr}&nbsp;{$name}{/title}
 <div id="{$rootid}browse_image">
-  <div class="navbar">
-		{button href="tiki-browse_gallery.php?galleryId=$galleryId&amp;offset=$offset" _text="{tr}Return to Gallery{/tr}"}
+  <h1><a class="pagetitle pixurl" href="{$url_base}{$imageId}">{tr}Browsing Image{/tr}: <span class="noslideshow">{$name}</span><span class="slideshow_i pixurl" style="display: none">#{$imageId}</span></a></h1>
+  <p style="float:left;position:absolute;">
+    <a class="linkbut" href="tiki-browse_gallery.php?galleryId={$galleryId}&amp;offset={$offset}" style="">{tr}Return to Gallery{/tr}</a>
     {if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner)}
-			{button href="tiki-edit_image.php?galleryId=$galleryId&amp;edit=$imageId&amp;sort_mode=$sort_mode" _text="{tr}Edit Image{/tr}"}
+      <a class="linkbut pixurl" href="tiki-edit_image.php?galleryId={$galleryId}&amp;edit={$imageId}&amp;sort_mode={$sort_mode}" style="">{tr}Edit Image{/tr}</a>
     {/if}
-  </div>
+  </p>
 {/if}
 
 {capture name=buttons}
@@ -164,13 +164,13 @@
     {tr}You can include the image in a tiki page using one of these lines{/tr}:<br /><br />
     {if $resultscale == $defaultscale}
     {literal}{{/literal}img src=show_image.php?id={$imageId} {literal}}{/literal}<br />
-    {literal}{{/literal}img src=show_image.php?name={$name|escape}&amp;galleryId={$galleryId} {literal}}{/literal}<br />
+    {literal}{{/literal}img src=show_image.php?name={$name|escape} {literal}}{/literal}<br />
     {elseif !$resultscale}
     {literal}{{/literal}img src=show_image.php?id={$imageId}&amp;scalesize=0 {literal}}{/literal}<br />
-    {literal}{{/literal}img src=show_image.php?name={$name|escape}&amp;galleryId={$galleryId}&amp;scalesize=0 {literal}}{/literal}<br />
+    {literal}{{/literal}img src=show_image.php?name={$name|escape}&amp;scalesize=0 {literal}}{/literal}<br />
     {else}
     {literal}{{/literal}img src={$url_show}?id={$imageId}&amp;scaled&amp;scalesize={$resultscale} {literal}}{/literal}<br />
-    {literal}{{/literal}img src={$url_show}?name={$name|escape}&amp;galleryId={$galleryId}&amp;scalesize={$resultscale} {literal}}{/literal}<br />
+    {literal}{{/literal}img src={$url_show}?name={$name|escape}&amp;scalesize={$resultscale} {literal}}{/literal}<br />
     {/if}
     </small>
     </td>

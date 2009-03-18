@@ -6,13 +6,16 @@
 // Initialization
 $section = 'mytiki';
 require_once ('tiki-setup.php');
+if ($prefs['feature_ajax'] == "y") {
+require_once ('lib/ajax/ajaxlib.php');
+}
+include_once ('lib/webmail/contactlib.php');
 
 if ($prefs['feature_contacts'] != 'y') {
   $smarty->assign('msg', tra("This feature is disabled").": feature_contacts");
   $smarty->display("error.tpl");
   die;
 }
-include_once ('lib/webmail/contactlib.php');
 
 if (!isset($_REQUEST["contactId"])) {
 	$_REQUEST["contactId"] = 0;
@@ -112,7 +115,7 @@ if (isset($_REQUEST["find"])) {
 $smarty->assign('find', $find);
 $maxRecords = 20;
 
-$contacts = $contactlib->list_contacts($user, $offset, $maxRecords, $sort_mode, $find, true, $_REQUEST["initial"]);
+$contacts = $contactlib->list_contacts($user, $offset, $maxRecords, $sort_mode, $find, true, $_REQUEST["letter"]);
 
 if ( isset($_REQUEST['view']) ) $_SESSION['UserContactsView'] = $_REQUEST['view'];
 elseif ( ! isset($_SESSION['UserContactsView']) ) $_SESSION['UserContactsView'] = $userlib->get_user_preference($user, 'user_contacts_default_view');
@@ -166,7 +169,7 @@ if ($cant > ($offset + $maxRecords)) {
 	$smarty->assign('next_offset', -1);
 }
 
-$smarty->assign('initial', range('a','z'));
+$smarty->assign('letters', range('a','z'));
 if ($offset > 0) {
 	$smarty->assign('prev_offset', $offset - $maxRecords);
 } else {
@@ -177,7 +180,14 @@ include_once ('tiki-section_options.php');
 
 ask_ticket('contacts');
 if ($prefs['feature_ajax'] == "y") {
-	$smarty->assign("mootab",'y');
+function user_contacts_ajax() {
+    global $ajaxlib, $xajax;
+    $ajaxlib->registerTemplate("tiki-contacts.tpl");
+    $ajaxlib->registerFunction("loadComponent");
+    $ajaxlib->processRequests();
+}
+user_contacts_ajax();
+$smarty->assign("mootab",'y');
 }
 $smarty->assign('myurl', 'tiki-contacts.php');
 

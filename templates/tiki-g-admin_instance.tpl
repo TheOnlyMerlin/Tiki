@@ -91,14 +91,14 @@
 <input type="hidden" name="iid" value="{$iid|escape}" />
 <table class="normal">
 <tr>
-	<th>{tr}Property{/tr}</th>
-	<th>{tr}Value{/tr}</th>
+	<td class="heading">{tr}Property{/tr}</td>
+	<td class="heading">{tr}Value{/tr}</td>
 </tr>
 {foreach from=$props item=item key=key}
 <tr>
 	<td class="odd">
 
-	 <a href="tiki-g-admin_instance.php?iid={$iid}&amp;unsetprop={$key}"><img src='lib/Galaxia/img/icons/trash.gif' alt='{tr}Delete{/tr}' title='{tr}Delete{/tr}' /></a>
+	 <a href="tiki-g-admin_instance.php?iid={$iid}&amp;unsetprop={$key}"><img border="0" src='lib/Galaxia/img/icons/trash.gif' alt='{tr}Delete{/tr}' title='{tr}Delete{/tr}' /></a>
 	 <b>{$key}</b>
 	 </td>
 	<td class="odd">

@@ -21,10 +21,6 @@ if (!extension_loaded("http") and !extension_loaded("curl")) {
 	die;
 }
 
-$smarty->assign("tidy",extension_loaded("tidy"));
-$smarty->assign("http",extension_loaded("http"));
-$smarty->assign("curl",extension_loaded("curl"));
-
 function get_from_dom($element) {
 	if ($element === NULL) return NULL;
 	$es = $element->getElementsByTagName("*");
@@ -56,8 +52,6 @@ function verif_url($url, $use_tidy = TRUE) {
 		$options["redirect"] = 0;
 		$options["cookies"] = $cookies ;
 		$options["cookiestore"] = tempnam("/tmp/","tiki-tests") ;
-		// Close the session to avoid timeout
-		session_write_close();
 		switch (strtolower($url->getAttribute("method"))) {
 			case 'get':
 				$buffer = http_get($urlstr,$options,$info);
@@ -106,8 +100,6 @@ function verif_url($url, $use_tidy = TRUE) {
 				}
 				curl_setopt($curl, CURLOPT_POSTFIELDS, $post_string);
 		}
-		// Close the session to avoid timeout
-		session_write_close();
 		$http_response = curl_exec($curl);
 		$header_size = curl_getinfo($curl,CURLINFO_HEADER_SIZE);
 		$header = substr($http_response, 0, $header_size);
@@ -138,7 +130,7 @@ function verif_url($url, $use_tidy = TRUE) {
 		}
 	} else {
 		if (!$loaded) {
-			require_once("lib/htmlpurifier/HTMLPurifier.auto.php");
+			require_once("HTMLPurifier.auto.php");
 			$config =& HTMLPurifier_Config::createDefault();
 			$config->set('HTML', 'Doctype', 'XHTML 1.0 Transitional');
 			$config->set('HTML', 'TidyLevel', 'light');
@@ -242,7 +234,7 @@ if (isset($_REQUEST['action'])) {
 		foreach($urls as $url) {
 			$tmp = verif_url($url,$options['use_tidy'] == 'y');
 			$result[] = $tmp;
-			if ($options["summary"]) {
+			if ($summary) {
 				$test_count++;
 				if ($tmp['html'] == '') {
 					$test_success++;

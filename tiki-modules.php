@@ -7,8 +7,7 @@
 
 //this script may only be included - so its better to die if called directly.
 //smarty is not there - we need setup
-require_once('tiki-setup.php');
-global $access;
+global $access; require_once('tiki-setup.php');
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 
 global $usermoduleslib; include_once ('lib/usermodules/usermoduleslib.php');
@@ -34,15 +33,13 @@ $module_zones['l'] = 'left_modules';
 $module_zones['r'] = 'right_modules';
 
 if ($prefs['user_assigned_modules'] == 'y' && $tiki_p_configure_modules == 'y' && $user && $usermoduleslib->user_has_assigned_modules($user)) {
-	foreach ( $module_zones as $zone=>$zone_name ) {
-		$$zone_name = $usermoduleslib->get_assigned_modules_user($user, $zone);
-	}
+    foreach ( $module_zones as $zone=>$zone_name ) {
+        $$zone_name = $usermoduleslib->get_assigned_modules_user($user, $zone);
+    }
 } else {
-	$modules_by_position = $tikilib->get_assigned_modules(null, 'y');
-	foreach ( $module_zones as $zone => $zone_name ) {
-		$$zone_name = isset($modules_by_position[$zone]) ? $modules_by_position[$zone] : array();
-	}
-	unset($modules_by_position);
+    foreach ( $module_zones as $zone=>$zone_name ) {
+    	$$zone_name = $tikilib->get_assigned_modules($zone, 'y');
+    }
 }
 
 foreach ( array('left_modules', 'right_modules') as $these_modules_name ) {
@@ -61,35 +58,15 @@ for ($mod_counter = 0; $mod_counter < $temp_max; $mod_counter++) {
 		$module_params['flip'] = 'n';
 	if (!isset($module_params['overflow'])) $module_params['overflow'] = 'n';
 	if (!isset($module_params['nobox'])) $module_params['nobox'] = 'n';
-	if (!isset($module_params['notitle'])) $module_params['notitle'] = 'n';
-	if (!isset($module_params['error'])) $module_params['error'] = '';
 	if (isset($module_params['section']) && $module_params['section'] == 'wiki' && $section == 'wiki page') $module_params['section'] = 'wiki page';
 	$pass = 'y';
 	if (isset($module_params["lang"]) && ((gettype($module_params["lang"]) == "array" && !in_array($prefs['language'], $module_params["lang"])) ||  (gettype($module_params["lang"]) == "string" && $module_params["lang"] != $prefs['language']))) {
 		$pass="n";
-	}
-	if ($pass == 'y' && isset($module_params['section']) && (!isset($section) || $section != $module_params['section'])) {
+	} elseif (isset($module_params['section']) && (!isset($section) || $section != $module_params['section'])) {
 		$pass = 'n';
-	}
-	if ($pass == 'y' && isset($module_params['nopage']) && isset($page) && isset($section) && $section == 'wiki page') {
-		if (is_array($module_params['nopage'])) {
-			if (in_array($page,$module_params['nopage'])) {
-				$pass = 'n';
-			}
-		} else if ($module_params['nopage'] == $page) {
-			$pass = 'n';
-		}
-	}
-	if ($pass == 'y' && isset($module_params['page'])) {
-		if (!isset($section) || $section != 'wiki page' || !isset($page)) { // must be in a page
-			$pass = 'n';
-		} elseif (isset($page)  && is_array($module_params['page']) && !in_array($page, $module_params['page'])) {
-			$pass = 'n';
-		} elseif (isset($page)  && !is_array($module_params['page']) && $page != $module_params['page']) {
-			$pass = 'n';
-		}
-	}
-	if ($pass == 'y' && isset($module_params['theme'])) {
+	} elseif (isset($module_params['page']) && (!isset($section) || $section != 'wiki page' || !isset($page) || $page != $module_params['page'])) {
+		$pass = 'n';
+	} elseif (isset($module_params['theme'])) {
 		global $tc_theme;
 		if (substr($module_params['theme'],0,1) != '!') { // usual behavior
 			if (isset($tc_theme) && $tc_theme > '' && $module_params['theme'] != $tc_theme) {
@@ -105,8 +82,7 @@ for ($mod_counter = 0; $mod_counter < $temp_max; $mod_counter++) {
 				$pass = 'n';
 			}
 		}
-	}
-	if ($pass == 'y' && $prefs['modallgroups'] != 'y') {
+	} elseif ($prefs['modallgroups'] != 'y') {
 		if ($mod_reference["groups"]) {
 			$module_groups = unserialize($mod_reference["groups"]);
 		} else {
@@ -173,14 +149,8 @@ for ($mod_counter = 0; $mod_counter < $temp_max; $mod_counter++) {
 		}
 		$module_rows = $mod_reference["rows"];
 		$smarty->assign_by_ref('module_rows',$mod_reference["rows"]);
-		$cachefile = 'modules/cache/';
-		if ($tikidomain) { $cachefile.= "$tikidomain/"; }
-		$cachefile.= 'mod-' . md5($mod_reference['moduleId'] . '-'.$prefs['language'].'-'.$mod_reference['params']);
-		$nocache = 'templates/modules/mod-' . $mod_reference["name"] . '.tpl.nocache';
-
-		if (!empty($user) || $mod_reference['cache_time'] <=0 || !file_exists($cachefile) || file_exists($nocache)|| (($tikilib->now - filemtime($cachefile)) >= $mod_reference['cache_time'])) {
 			$mod_reference["data"] = '';
-			$smarty->assign_by_ref('module_params', $module_params); // module code can unassign this if it wants to hide params
+            $smarty->assign_by_ref('module_params', $module_params); // module code can unassign this if it wants to hide params
 			$smarty->assign('module_ord', $mod_reference['ord']);
 			$smarty->assign('module_position', $mod_reference['position']);
 			$smarty->assign('moduleId', $mod_reference['moduleId']);
@@ -190,8 +160,8 @@ for ($mod_counter = 0; $mod_counter < $temp_max; $mod_counter++) {
 			if (file_exists("templates/".$template)) {
 				$data = $smarty->fetch($template);
 			} else {
-				$info = $tikilib->get_user_module($mod_reference['name']);
-				if (!empty($info)) {
+				if ($tikilib->is_user_module($mod_reference["name"])) {
+					$info = $tikilib->get_user_module($mod_reference["name"]);
 					$smarty->assign('user_title', tra($info["title"]));
 					if (isset($info['parse']) && $info["parse"] == 'y')
 						$info["data"] = $tikilib->parse_data($info["data"]);
@@ -206,19 +176,17 @@ for ($mod_counter = 0; $mod_counter < $temp_max; $mod_counter++) {
             unset($info); // clean up when done
 			$smarty->clear_assign('tpl_module_title');
 			$mod_reference["data"] = $data;
-			if (empty($user) && $mod_reference['cache_time'] > 0 && !file_exists($nocache)) {
-				if ($fp = fopen($cachefile, 'w+')) {
-					fwrite($fp, $data, strlen($data));
-					fclose ($fp);
-				}
-			}
-		} else {
-			if ($fp = fopen($cachefile, 'r')) {
-				$data = fread($fp, filesize($cachefile));
-				fclose ($fp);
-				}
-			$mod_reference['data'] = $data;
-		}
+//			if (!file_exists($nocache)) {
+//				$fp = fopen($cachefile, "w+");
+//				fwrite($fp, $data, strlen($data));
+//				fclose ($fp);
+//			}
+//		} else {
+//			$fp = fopen($cachefile, "r");
+//			$data = @fread($fp, filesize($cachefile));
+//			fclose ($fp);
+//			$mod_reference["data"] = $data;
+//		}
 	}
 } // end for
 $smarty->assign_by_ref($these_modules_name, $these_modules);

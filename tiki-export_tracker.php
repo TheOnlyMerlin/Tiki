@@ -43,11 +43,7 @@ if ($tiki_p_view_trackers != 'y') {
 
 $filters = array();
 if (!empty($_REQUEST['listfields'])) {
-	if (is_string($_REQUEST['listfields'])) {
-		$filters['fieldId'] = split('[,:]', $_REQUEST['listfields']);
-	} elseif (is_array($_REQUEST['listfields'])) {
-		$filters['fieldId'] = $_REQUEST['listfields'];
-	}
+	$filters['fieldId'] = split(',', $_REQUEST['listfields']);
 } elseif (isset($_REQUEST['which']) && $_REQUEST['which'] == 'ls') {
 	$filters['or'] = array('isSearchable'=>'y', 'isTblVisible'=>'y');
 } elseif (isset($_REQUEST['which']) && $_REQUEST['which'] == 'list') {
@@ -186,7 +182,7 @@ while (($items = $trklib->list_items($_REQUEST['trackerId'], $offset, $maxRecord
 		}
 	$smarty->assign_by_ref('items', $items["data"]);
 
-	$data = $smarty->fetch('tiki-export_tracker_item.tpl');
+	$data = $smarty->fetch('tiki-export_tracker.tpl');
 	if (empty($_REQUEST['encoding']) || $_REQUEST['encoding'] == 'ISO-8859-1') {
 		$data = utf8_decode($data);
 	}
@@ -199,7 +195,6 @@ while (($items = $trklib->list_items($_REQUEST['trackerId'], $offset, $maxRecord
 	} else
 		echo $data;
 }
-if (!empty($fp)) {
+if (!empty($fp))
 	fclose($fp);
-}
-die;
+?>

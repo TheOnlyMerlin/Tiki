@@ -44,39 +44,25 @@
 			<td><input type="checkbox" name="feature_multilingual" id="feature_multilingual"
 			{if $prefs.feature_multilingual eq 'y'}checked="checked"{/if}/></td>
         </tr><tr>
-
-			<td class="form"><label for="feature_translation">{tr}Translation Assistant{/tr}:</label></td>
-			<td><input type="checkbox" name="feature_translation" id="feature_translation"
-			{if $prefs.feature_translation eq 'y'}checked="checked"{/if}/></td>
-
-	</tr><tr>
-			<td class="form"><label for="feature_urgent_translation">{tr}Urgent Translation{/tr}:</label></td>
-			<td><input type="checkbox" name="feature_urgent_translation" id="feature_translation"
-			{if $prefs.feature_urgent_translation eq 'y'}checked="checked"{/if}/></td>
-	</tr><tr>
-
+		
+		
 			<td class="form"><label for="feature_multilingual_structures">{tr}Multilingual structures{/tr}:</label></td>
 			<td><input type="checkbox" name="feature_multilingual_structures" id="feature_multilingual_structures"
 			{if $prefs.feature_multilingual_structures eq 'y'}checked="checked"{/if}/></td>
         </tr><tr>
 		
+		
 			<td class="form"><label for="feature_best_language">{tr}Show pages in user's preferred language{/tr}:</label></td>
 			<td><input type="checkbox" name="feature_best_language" id="feature_best_language"
 			{if $prefs.feature_best_language eq 'y'}checked="checked"{/if}/></td>
-	</tr><tr>
-
-			<td class="form"><label for="feature_sync_language">{tr}Page language forces to display strings in the same language{/tr}:</label></td>
-			<td><input type="checkbox" name="feature_sync_language" id="feature_sync_language"
-			{if $prefs.feature_sync_language eq 'y'}checked="checked"{/if}/></td>
-	</tr><tr>
-	
+        </tr><tr>
+		
+		
 			<td class="form"><label for="feature_detect_language">{tr}Detect browser language{/tr}:</label></td>
 			<td><input type="checkbox" name="feature_detect_language" id="feature_detect_language"
 			{if $prefs.feature_detect_language eq 'y'}checked="checked"{/if}/></td>
 		</tr><tr>
-			<td class="form"><label for="change_language">{tr}Users can change language{/tr}:</label></td>
-			<td><input type="checkbox" name="change_language" id="change_language"{if $prefs.change_language eq 'y'} checked="checked"{/if}>
-		</tr><tr>
+		
 		
 			<td class="form"><label for="restrict_language">{tr}Restrict supported languages{/tr}:</label></td>
 			<td><input type="checkbox" name="restrict_language" id="restrict_language"
@@ -138,13 +124,9 @@
 			{if $prefs.feature_babelfish_logo eq 'y'}checked="checked"{/if}/></td>
 		</tr><tr>
 
-			<td class="form"><label for="show_available_translations">{tr}Display Available Translations{/tr}:</label></td>		
-			<td><input type="checkbox" name="show_available_translations" id="show_available_translations"
-			{if $prefs.show_available_translations eq 'y'}checked="checked"{/if}/></td>
-		</tr><tr>
 
 		
-          <td colspan="2" class="input_submit_container"><input type="submit" name="i18nsetup" value="{tr}Save{/tr}" /></td>
+          <td colspan="2" class="button"><input type="submit" name="i18nsetup" value="{tr}Save{/tr}" /></td>
 		  
         </tr></table>
       </form>

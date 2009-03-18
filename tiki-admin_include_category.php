@@ -20,8 +20,7 @@ ask_ticket('admin-inc-category');
 	"feature_categorypath",
 	"feature_search_show_forbidden_cat",
 	"feature_category_reinforce",
-	'feature_category_use_phplayers',
-	'categories_used_in_tpl'
+	"feature_category_use_phplayers"
     );
 
 

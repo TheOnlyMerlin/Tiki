@@ -32,27 +32,11 @@ $smarty->assign('categories', $categories);
 
 $list_styles = $tikilib->list_styles();
 $smarty->assign_by_ref('styles',$list_styles);
-if (!empty($_REQUEST['theme'])) {
-	$a_style = $_REQUEST['theme'];
-} else {
-	$a_style = $prefs['style'];
-}
-$smarty->assign('a_style', $a_style);
-$loplist = $tikilib->list_style_options($a_style);
-if (!$loplist) {
-	$loplist = Array(tra('None'));
-}
-$smarty->assign_by_ref( "style_options", $loplist);
 
 if (isset($_REQUEST['assigcat'])) {
 	if (isset($_REQUEST['categId'])) {
 		check_ticket('theme-control');
-		if (!isset($_REQUEST['theme-option'])) {
-			$option = '';
-		} else {
-			$option = $_REQUEST['theme-option'];	// including 'None'
-		}
-		$tcontrollib->tc_assign_category($_REQUEST['categId'], $_REQUEST['theme'], $option);
+		$tcontrollib->tc_assign_category($_REQUEST['categId'], $_REQUEST['theme']);
 	} else {
 		$smarty->assign('msg', tra("Please create a category first"));
 
@@ -95,7 +79,22 @@ $smarty->assign('find', $find);
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 $channels = $tcontrollib->tc_list_categories($offset, $maxRecords, $sort_mode, $find);
 
-$smarty->assign_by_ref('cant_pages', $channels["cant"]);
+$cant_pages = ceil($channels["cant"] / $maxRecords);
+$smarty->assign_by_ref('cant_pages', $cant_pages);
+$smarty->assign('actual_page', 1 + ($offset / $maxRecords));
+
+if ($channels["cant"] > ($offset + $maxRecords)) {
+	$smarty->assign('next_offset', $offset + $maxRecords);
+} else {
+	$smarty->assign('next_offset', -1);
+}
+
+// If offset is > 0 then prev_offset
+if ($offset > 0) {
+	$smarty->assign('prev_offset', $offset - $maxRecords);
+} else {
+	$smarty->assign('prev_offset', -1);
+}
 
 $smarty->assign_by_ref('channels', $channels["data"]);
 

@@ -7,7 +7,7 @@
 {foreach key=st item=stdata from=$status_types}
 <td><div class="{$stdata.class}">
 <a href="tiki-view_tracker.php?trackerId={$trackerId}{if $filtervalue}&amp;filtervalue={$filtervalue|escape:"url"}{/if}{if $filterfield}&amp;filterfield={$filterfield|escape:"url"}{/if}{if $sort_mode}&amp;sort_mode={$sort_mode}{/if}&amp;status={$stdata.statuslink}" 
-class="statusimg"><img src="{$stdata.image}" title="{$stdata.label}" alt="{$stdata.label}" align="top" width="12" height="12" /></a></div></td>
+class="statusimg"><img src="{$stdata.image}" title="{$stdata.label}" alt="{$stdata.label}" align="top" border="0" width="12" height="12" /></a></div></td>
 {/foreach}
 {/if}
 
@@ -25,9 +25,7 @@ fields[{$c}] = '{$fid}';
 {/foreach}
 //--><!]]>
 </script>
-{*FIX flip from tikijs.js this only a paleative<select name="filterfield" onchange="multitoggle(fields,this.options[selectedIndex].value);flip('filterbutton');">*}
-<select name="filterfield" onchange="multitoggle(fields,this.options[selectedIndex].value); {literal}showit = 'show_filterbutton'; if(this.selectedIndex == 0){document.getElementById('filterbutton').style.display = 'none';setSessionVar(showit,'n');}else{ document.getElementById('filterbutton').style.display = 'block'; setSessionVar(showit,'y');}{/literal}">
-{*FIX flip from tikijs.js this only a paleative<select name="filterfield" onchange="multitoggle(fields,this.options[selectedIndex].value);flip('filterbutton');">*}
+<select name="filterfield" onchange="multitoggle(fields,this.options[selectedIndex].value);flip('filterbutton');">
 <option value="">{tr}Choose a filter{/tr}</option>
 {foreach key=fid item=field from=$listfields}
 {if $field.isSearchable eq 'y' and $field.type ne 'f' and $field.type ne 'j' and $field.type ne 'i' and ($field.isHidden ne 'y' or $tiki_p_admin_trackers eq 'y')}
@@ -51,16 +49,16 @@ fields[{$c}] = '{$fid}';
 <div style="display:{if $filterfield eq $fid}block{else}none{/if};" id="fid{$fid}"><select name="filtervalue[{$fid}]">
 {if $field.type eq 'D'}<option value="" />{/if}
 {section name=jx loop=$field.options_array}
-<option value="{$field.options_array[jx]|escape}" {if $fid == $filterfield}{if $filtervalue eq $field.options_array[jx]}{assign var=gotit value=y}selected="selected"{/if}{/if}>{$field.options_array[jx]|tr_if}</option>
+<option value="{$field.options_array[jx]|escape}" {if $filtervalue eq $field.options_array[jx]}{assign var=gotit value=y}selected="selected"{/if}>{$field.options_array[jx]|tr_if}</option>
 {/section}
 </select>
-{if $field.type eq 'D'}<input type="text" name="filtervalue_other"{if $gotit ne 'y'} value="{if $fid == $filterfield}{$filtervalue}{/if}"{/if} />{/if}
+{if $field.type eq 'D'}<input type="text" name="filtervalue_other"{if $gotit ne 'y'} value="{$filtervalue}"{/if} />{/if}
 </div>
 
 {elseif $field.type eq 'R'}
 <div style="display:{if $filterfield eq $fid}block{else}none{/if};" id="fid{$fid}">
 {section name=jx loop=$field.options_array}
-<input type="radio" name="filtervalue[{$fid}]" value="{$field.options_array[jx]|escape}" {if $fid == $filterfield}{if $filtervalue eq $field.options_array[jx]}checked="checked"{/if}{/if} />{$field.options_array[jx]|escape}
+<input type="radio" name="filtervalue[{$fid}]" value="{$field.options_array[jx]|escape}" {if $filtervalue eq $field.options_array[jx]}checked="checked"{/if} />{$field.options_array[jx]|escape}
 {/section}
 </div>
 
@@ -73,7 +71,7 @@ fields[{$c}] = '{$fid}';
 {foreach key=ku item=iu from=$field.categories name=eforeach}
   <td width="50%" nowrap="nowrap">
     <input type="checkbox" name="filtervalue[{$fid}][]" value="{$iu.categId}" id="cat{$iu.categId}" 
-      {if $fid == $filterfield && is_array($filtervalue) && in_array($iu.categId,$filtervalue)} checked="checked"{/if}
+      {if $fid == $filterfield && is_array($filtervalue) && in_array($iu.categId,$filtervalue)} checked{/if}
     />
     <label for="cat{$i.categId}">{$iu.name|escape}</label>
   </td>

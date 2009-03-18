@@ -15,14 +15,15 @@ if ( isset($_REQUEST['pollVote']) ) {
 			if ( ! isset($polllib) or ! is_object($polllib) ) {
 				include_once('lib/polls/polllib_shared.php');
 			}
-			if (($prefs['feature_poll_revote'] == 'y' && $user) || !$tikilib->user_has_voted($user, 'poll'.$_REQUEST['polls_pollId'])) {
+			if (!$tikilib->user_has_voted($user, 'poll'.$_REQUEST['polls_pollId'])) {
 				$polllib->poll_vote($user, $_REQUEST['polls_pollId'], $_REQUEST['polls_optionId']);
+				// Poll vote must go first, or the new vote will be seen as the previous one.
 				$tikilib->register_user_vote($user, 'poll' . $_REQUEST['polls_pollId'], $_REQUEST['polls_optionId']);
 			}
 		}
 	}
 	$pollId = $_REQUEST['polls_pollId'];
-	if ( ! isset($_REQUEST['wikipoll']) && $tiki_p_view_poll_results == 'y') {
+	if ( ! isset($_REQUEST['wikipoll']) ) {
 		header ("location: tiki-poll_results.php?pollId=$pollId");
 	}
 }

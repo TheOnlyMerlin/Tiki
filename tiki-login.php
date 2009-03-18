@@ -14,7 +14,6 @@ if ( ! (isset($_REQUEST['user']) or isset($_REQUEST['username'])) ) {
 	header('Location: '.$base_url.'tiki-login_scr.php');
 	die;
 }
-$smarty->assign('errortype', 'login'); // to avoid any redirection to the login box if error
 // Alert user if cookies are switched off
 if ( ini_get('session.use_cookies') == 1 && ! isset($_COOKIE['PHPSESSID']) ) {
 	$smarty->assign('msg',tra('You have to enable cookies to be able to login to this site'));
@@ -209,11 +208,11 @@ if ( $isvalid ) {
 		$url = 'tiki-change_password.php?user=' . urlencode($user);
 	} elseif ($isEmailDue) {
 		$userlib->send_confirm_email($user);
-		$userlib->change_user_waiting($user, 'u');
 		$msg = $smarty->fetch('tiki-login_confirm_email.tpl');
-		$smarty->assign_by_ref('msg', explode("\n", $msg));
+		$smarty->assign_by_ref('msg', $msg);
 		$smarty->assign('user', '');
 		unset($user);
+		$smarty->assign('do_not_show_login_box', 'y');
 		$smarty->assign('mid', 'tiki-information.tpl');
 		$smarty->display("tiki.tpl");
 		die;
@@ -323,8 +322,6 @@ if ( $isvalid ) {
 				$smarty->assign('msg', $msg.' '.tra('An email has been sent to you with the instructions to follow.'));
 			$smarty->assign('user', '');
 			unset($user);
-			$show_history_back_link = 'y';
-			$smarty->assign_by_ref('show_history_back_link', $show_history_back_link);
 			$smarty->assign('mid', 'tiki-information.tpl');
 			$smarty->display("tiki.tpl");
 			die;
@@ -335,13 +332,12 @@ if ( $isvalid ) {
 	unset($isvalid);
 
 	switch ( $error ) {
-	case PASSWORD_INCORRECT: $error = 'Invalid password'; break;
-	case USER_NOT_FOUND: $error = 'Invalid username'; break;
-	case ACCOUNT_DISABLED: $error = 'Account disabled'; break;
-	case ACCOUNT_WAITING_USER: $error = 'You did not validate your account'; break;
-	case USER_AMBIGOUS: $error = 'You must use the right case for your user name'; break;
-	case USER_NOT_VALIDATED: $error = 'You are not yet validated'; break;
-	default: $error = 'Invalid username or password';
+	case PASSWORD_INCORRECT: $error = tra('Invalid password'); break;
+	case USER_NOT_FOUND: $error = tra('Invalid username'); break;
+	case ACCOUNT_DISABLED: $error = tra('Account disabled'); break;
+	case USER_AMBIGOUS: $error = tra('You must use the right case for your user name'); break;
+	case USER_NOT_VALIDATED: $error = tra('You are not yet validated'); break;
+	default: $error = tra('Invalid username or password');
 	}
 	if ( isset($user) and $prefs['feature_score'] == 'y' ) $tikilib->score_event($user, 'login');
 	$smarty->assign('msg',tra($error));

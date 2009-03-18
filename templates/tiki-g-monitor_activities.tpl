@@ -1,15 +1,15 @@
 {popup_init src="lib/overlib.js"}
 {*Smarty template*}
-<h1><a class="pagetitle" href="tiki-g-monitor_activities.php">{tr}Monitor Activities{/tr}</a>
+<h1><a class="pagetitle" href="tiki-g-monitor_activities.php">{tr}Monitor activities{/tr}</a>
 
   
       {if $prefs.feature_help eq 'y'}
 <a href="{$prefs.helpurl}GalaxiaMonitorActivities" target="tikihelp" class="tikihelp" title="{tr}Galaxia Monitor Activities{/tr}">
-<img src="img/icons/help.gif" height="16" width="16" alt='{tr}Help{/tr}' /></a>{/if}
+<img src="img/icons/help.gif" border="0" height="16" width="16" alt='{tr}Help{/tr}' /></a>{/if}
 
 
       {if $prefs.feature_view_tpl eq 'y'}
-<a href="tiki-edit_templates.php?template=tiki-g-monitor_activities.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Galaxia Monitor Activities tpl{/tr}"><img src="img/icons/info.gif" height="16" width="16" alt='{tr}Edit Tpl{/tr}' /></a>{/if}
+<a href="tiki-edit_templates.php?template=tiki-g-monitor_activities.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Galaxia Monitor Activities tpl{/tr}"><img src="img/icons/info.gif" border="0" height="16" width="16" alt='{tr}Edit Tpl{/tr}' /></a>{/if}
 
 
 </h1>
@@ -40,8 +40,8 @@
 <td >
 	<small>{tr}auto{/tr}</small>
 </td>
-<td >&nbsp;
-	
+<td >
+	&nbsp;
 </td>	
 </tr>
 
@@ -104,12 +104,13 @@
 <input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
 <table class="normal">
 <tr>
-<th><a href="{if $sort_mode eq 'type_desc'}{sameurl sort_mode='type_asc'}{else}{sameurl sort_mode='type_desc'}{/if}">&nbsp;</a></th>
-<th><a href="{if $sort_mode eq 'name_desc'}{sameurl sort_mode='name_asc'}{else}{sameurl sort_mode='name_desc'}{/if}">{tr}Name{/tr}</a></th>
-<th><a href="{if $sort_mode eq 'type_desc'}{sameurl sort_mode='type_asc'}{else}{sameurl sort_mode='type_desc'}{/if}">{tr}Type{/tr}</a></th>
-<th><a href="{if $sort_mode eq 'isInteractive_desc'}{sameurl sort_mode='isInteractive_asc'}{else}{sameurl sort_mode='isInteractive_desc'}{/if}">{tr}int{/tr}</a></th>
-<th><a href="{if $sort_mode eq 'isAutoRouted_desc'}{sameurl sort_mode='isAutoRouted_asc'}{else}{sameurl sort_mode='isAutoRouted_desc'}{/if}">{tr}routing{/tr}</a></th>
-<th>{tr}Instances{/tr}</th>
+<td  class="heading" ><a class="tableheading" href="{if $sort_mode eq 'type_desc'}{sameurl sort_mode='type_asc'}{else}{sameurl sort_mode='type_desc'}{/if}">&nbsp;</a></td>
+<td  class="heading" ><a class="tableheading" href="{if $sort_mode eq 'name_desc'}{sameurl sort_mode='name_asc'}{else}{sameurl sort_mode='name_desc'}{/if}">{tr}Name{/tr}</a></td>
+<td  class="heading" ><a class="tableheading" href="{if $sort_mode eq 'type_desc'}{sameurl sort_mode='type_asc'}{else}{sameurl sort_mode='type_desc'}{/if}">{tr}Type{/tr}</a></td>
+<td  class="heading" ><a class="tableheading" href="{if $sort_mode eq 'isInteractive_desc'}{sameurl sort_mode='isInteractive_asc'}{else}{sameurl sort_mode='isInteractive_desc'}{/if}">{tr}int{/tr}</a></td>
+<td  class="heading" ><a class="tableheading" href="{if $sort_mode eq 'isAutoRouted_desc'}{sameurl sort_mode='isAutoRouted_asc'}{else}{sameurl sort_mode='isAutoRouted_desc'}{/if}">{tr}routing{/tr}</a></td>
+<td  class="heading" >{tr}Instances{/tr}<br />
+</td>
 </tr>
 {cycle values="odd,even" print=false}
 {foreach from=$items item=act}
@@ -122,10 +123,10 @@
 	<td class="{cycle advance=false}">
 	  <a class="link" href="tiki-g-admin_activities.php?pid={$act.pId}&amp;activityId={$act.activityId}">{$act.name}</a>
 	  {if $act.type eq 'standalone'}
-	  <a href="tiki-g-run_activity.php?activityId={$act.activityId}"><img alt='{tr}run{/tr}' title='{tr}run activity{/tr}' src='lib/Galaxia/img/icons/next.gif' /></a>
+	  <a href="tiki-g-run_activity.php?activityId={$act.activityId}"><img alt='{tr}run{/tr}' title='{tr}run activity{/tr}' src='lib/Galaxia/img/icons/next.gif' border='0' /></a>
 	  {/if}
 	  {if $act.type eq 'start'}
-	  <a onclick="var answer = prompt('{tr}Enter the name of this instance{/tr}:','');while(answer == '')answer = prompt('{tr}The name is not valid. Please, enter the name again{/tr}:','');if (answer != null)window.location = 'tiki-g-run_activity.php?activityId={$act.activityId}&createInstance=1&name='+answer;"><img src='lib/Galaxia/img/icons/next.gif' alt='{tr}run{/tr}' title='{tr}run activity{/tr}' /></a>{*<a href="tiki-g-run_activity.php?activityId={$act.activityId}&amp;createInstance=1"><img alt='{tr}run{/tr}' title='{tr}run activity{/tr}' src='lib/Galaxia/img/icons/next.gif' /></a>*}
+	  <a onclick="var answer = prompt('{tr}Enter the name of this instance{/tr}:','');while(answer == '')answer = prompt('{tr}The name is not valid. Please, enter the name again{/tr}:','');if (answer != null)window.location = 'tiki-g-run_activity.php?activityId={$act.activityId}&createInstance=1&name='+answer;"><img border="0" src='lib/Galaxia/img/icons/next.gif' alt='{tr}run{/tr}' title='{tr}run activity{/tr}' /></a>{*<a href="tiki-g-run_activity.php?activityId={$act.activityId}&amp;createInstance=1"><img alt='{tr}run{/tr}' title='{tr}run activity{/tr}' src='lib/Galaxia/img/icons/next.gif' border='0' /></a>*}
 	  {/if}
 	</td>
   

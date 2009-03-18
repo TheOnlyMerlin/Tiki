@@ -1,25 +1,26 @@
 {* $Id$ *}
 
-{title help="mods"}{tr}Tikiwiki Mods{/tr}{/title}
-<div class="navbar">
-	{button href="tiki-mods_admin.php" _text="{tr}Mods Configuration{/tr}"}
-	{button href="tiki-mods.php?reload=1$findarg$typearg" _text="{tr}Update remote index{/tr}"}
-	{button href="tiki-mods.php?rebuild=1$findarg$typearg" _text="{tr}Rebuild local list{/tr}"}
-	{if $prefs.feature_mods_provider eq 'y'}
-		{button href="tiki-mods.php?republishall=1$findarg$typearg" _text="{tr}Republish all{/tr}"}
-		{button href="tiki-mods.php?publishall=1$findarg$typearg" _text="{tr}Publish all{/tr}"}
-		{button href="tiki-mods.php?unpublishall=1$findarg$typearg" _text="{tr}Unpublish all{/tr}"}
-	{/if}
-</div>
+<h1><a href="tiki-mods.php" class="pagetitle">{tr}Tikiwiki Mods{/tr}</a></h1>
+
+<span class="button2"><a href="tiki-mods_admin.php" class="linkbut">{tr}Mods Configuration{/tr}</a></span>
+<span class="button2"><a href="tiki-mods.php?reload=1{$findarg}{$typearg}" class="linkbut">{tr}Update remote index{/tr}</a></span>
+<span class="button2"><a href="tiki-mods.php?rebuild=1{$findarg}{$typearg}" class="linkbut">{tr}Rebuild local list{/tr}</a></span>
+{if $prefs.feature_mods_provider eq 'y'}
+<span class="button3">
+<span class="button2"><a href="tiki-mods.php?republishall=1{$findarg}{$typearg}" class="linkbut">{tr}Republish all{/tr}</a></span>
+<span class="button2"><a href="tiki-mods.php?publishall=1{$findarg}{$typearg}" class="linkbut">{tr}Publish all{/tr}</a></span>
+<span class="button2"><a href="tiki-mods.php?unpublishall=1{$findarg}{$typearg}" class="linkbut">{tr}Unpublish all{/tr}</a></span>
+</span>
+{/if}
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
     {tr}Tiki "mods" are additional features not included in the public release. Learn more at <a target="tikihelp" href="http://mods.tikiwiki.org">mods.tikiwiki.org</a>.{/tr}
 {/remarksbox}
 
 {if $iswritable}
-<div class="simplebox" style="color:#009900;">{icon _id=information style="vertical-align:middle;"} <b>{tr}Attention{/tr}</b><br />{tr}Apache has the right to write in your file tree, which enables the installation, removal or upgrade of packages. When you are done with those operations, think to fix those permissions back to a safe state (by using "./setup.sh" for example).{/tr}</div>
+<div class="simplebox" style="color:#009900;">{icon _id=information.png style="vertical-align:middle;"} <b>{tr}Attention{/tr}</b><br />{tr}Apache has the right to write in your file tree, which enables the installation, removal or upgrade of packages. When you are done with those operations, think to fix those permissions back to a safe state (by using "./fixperms fix" for example).{/tr}</div>
 {else}
-<div class="simplebox" style="color:#990000;"><b>{tr}Attention{/tr}</b><br />{tr}To install, remove or upgrade packages you need to give the apache user the right to write files in your web tree (you can use "./setup.sh open" to set it up). After installation you need to remove that permission (using "./setup.sh").{/tr}</div>
+<div class="simplebox" style="color:#990000;"><b>{tr}Attention{/tr}</b><br />{tr}To install, remove or upgrade packages you need to give the apache user the right to write files in your web tree (you can use "./fixperms.sh open" to set it up). After installation you need to remove that permission (using "./fixperms fix").{/tr}</div>
 {/if}
 {if $installask}
 <form method='post' action='?'>
@@ -141,7 +142,7 @@ function update_button_install() {
 {if $tikifeedback}
 <br />
 {section name=n loop=$tikifeedback}
-<div class="simplebox {if $tikifeedback[n].num > 0} highlight{/if}">{if $tikifeedback[n].num > 0}{icon _id=delete alt="Alert" style="vertical-align:middle;"}{/if}{$tikifeedback[n].mes}</div><br />
+<div class="simplebox {if $tikifeedback[n].num > 0} highlight{/if}">{if $tikifeedback[n].num > 0}{icon _id=delete.png alt="Alert" style="vertical-align:middle;"}{/if}{$tikifeedback[n].mes}</div><br />
 {/section}{/if}
 
 {if not $installask}
@@ -167,8 +168,7 @@ No mods.
 
 {foreach key=type item=i from=$display}
 <tr><td colspan="{if $prefs.feature_mods_provider eq 'y'}3{else}2{/if}">
-	{assign var=thistype value=$type|escape:"url"}
-	{button href="tiki-mods.php?type=$thistype$findarg" _title="{tr}Display only this type{/tr}" _text=$type}
+<span class="button2"><a href="tiki-mods.php?type={$type|escape:"url"}{$findarg}" class="linkbut" title="{tr}Display only this type{/tr}">{$type}</a></span>
 </td><td colspan="7">&nbsp;</td>
 </tr>
 {cycle values="odd,even" print=false}
