@@ -6,11 +6,9 @@
  * which it imports.
 */ 
 
-@import "litejazz.css";
-
 body {
   color: #292929;
-  background: #adadad url(litejazz/bg-green.png) 0 0 repeat-x;
+  background: #adadad url(green/bg.png) 0 0 repeat-x;
 }
 
 a:link,
@@ -25,7 +23,7 @@ h3.box-title {color:#166F00}
 
 /* LiteJazz top section */
 #topbar_custom_code {
-	background: #41b61c url(litejazz/topbar_custcode-green.png) 0 0 repeat-x !important;
+	background: #41b61c url(green/topbar_custcode.png) 0 0 repeat-x !important;
 	color: #F0F0F0}
 	
 #topbar_custom_code a,
