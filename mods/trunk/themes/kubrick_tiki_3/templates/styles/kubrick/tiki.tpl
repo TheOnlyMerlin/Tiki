@@ -48,11 +48,6 @@
 								</div>
 							{/if}
 							</div>
-							{if $prefs.feature_top_bar eq 'y'}
-								<div class="clearfix" id="tiki-top">
-									{include file="tiki-top_bar.tpl"}
-								</div>
-							{/if}
 						</div>
 					</div>
 				</td>
