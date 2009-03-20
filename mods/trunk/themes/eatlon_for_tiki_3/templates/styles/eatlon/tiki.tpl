@@ -40,7 +40,7 @@
 			<tr id="cols">
 				<td rowspan="3" id="leftmargin">&nbsp;</td>
 				<td colspan="3{* change to 5 if the 2 border tds are used *}" id="header">
-				<div class="clearfix" id="header-top">
+				<div class="clearfix" id="header-liner">
 				{if $prefs.feature_siteidentity eq 'y' and $filegals_manager ne 'y'}
 				{* Site identity header section *}
 					<div class="clearfix" id="siteheader">

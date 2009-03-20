@@ -294,16 +294,18 @@ div#tiki-bot {}
 /* Site Header & Identity */
 
 div#header-top {
-	background: url(eatlon/banner.gif) no-repeat right;
 	height: 140px;
 	position: relative}
+	
+div#header-liner {
+	height: 140px;
+	background: url(eatlon/banner.gif) no-repeat right}
 
 /* Site Identity */
 #siteheader {
 	text-align: left;
-	background: transparent;
 	vertical-align: middle;
-	padding-top: 1em;
+	padding: 0;
 	margin: 0}
 
 #sioptions  {padding: 1em}
