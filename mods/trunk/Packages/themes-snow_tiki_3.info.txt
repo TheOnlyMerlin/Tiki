@@ -1,0 +1,53 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/snow_tiki_3/Readme.txt styles/snow/Readme.txt
+themes/snow_tiki_3/resources/Flash/snowfall.fla styles/snow/resources/Flash/snowfall.fla
+themes/snow_tiki_3/theme/styles/snow.css styles/snow.css
+themes/snow_tiki_3/theme/styles/snow/boxbtm.jpg styles/snow/boxbtm.jpg
+themes/snow_tiki_3/theme/styles/snow/boxmid.jpg styles/snow/boxmid.jpg
+themes/snow_tiki_3/theme/styles/snow/boxtop.jpg styles/snow/boxtop.jpg
+themes/snow_tiki_3/theme/styles/snow/flakesptn.jpg styles/snow/flakesptn.jpg
+themes/snow_tiki_3/theme/styles/snow/flakesptn2.jpg styles/snow/flakesptn2.jpg
+themes/snow_tiki_3/theme/styles/snow/flakesptn3.jpg styles/snow/flakesptn3.jpg
+themes/snow_tiki_3/theme/styles/snow/header-bg.jpg styles/snow/header-bg.jpg
+themes/snow_tiki_3/theme/styles/snow/index.php styles/snow/index.php
+themes/snow_tiki_3/theme/styles/snow/logo.jpg styles/snow/logo.jpg
+themes/snow_tiki_3/theme/styles/snow/pagetitle-bg.jpg styles/snow/pagetitle-bg.jpg
+themes/snow_tiki_3/theme/styles/snow/pagetitle-bullet.gif styles/snow/pagetitle-bullet.gif
+themes/snow_tiki_3/theme/styles/snow/pagetitle-bullet-sm.gif styles/snow/pagetitle-bullet-sm.gif
+themes/snow_tiki_3/theme/styles/snow/snow.png styles/snow/snow.png
+themes/snow_tiki_3/theme/styles/snow/Flash/index.php styles/snow/Flash/index.php
+themes/snow_tiki_3/theme/styles/snow/Flash/snowfall.swf styles/snow/Flash/snowfall.swf
+themes/snow_tiki_3/theme/templates/styles/snow/credits.tpl templates/styles/snow/credits.tpl
+themes/snow_tiki_3/theme/templates/styles/snow/index.php templates/styles/snow/index.php
+
+Description:
+Snow is an original design for TikiWiki CMS/Groupware and uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss). A Flash .fla and .swf file are included but not tested with this version of the theme. If updating from an early version, remove all the old template (.tpl) files in templates/styles/snow and then add the ones in this package. 
+ 
+Docurl:
+http://themes.tikiwiki.org/Snow
+http://zukakakina.com/Snow
+ 
+Licence:
+GNU/LGPL
+
+Author:
+Gary Cunningham-Lee (chibaguy)
+ 
+Version:
+Compatible with Tiki 3 releases.
+ 
+Changelog:
+3 update for Tiki 3
+2 update for TikiWiki 2
+1 initial package
