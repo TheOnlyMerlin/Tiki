@@ -10,6 +10,7 @@ Lastmodif:
 $Date$
 
 Files:
+themes/ohia/Readme.txt styles/ohia/Readme.txt
 themes/ohia/styles/ohia.css styles/ohia.css
 themes/ohia/styles/ohia/index.png styles/ohia/index.php
 themes/ohia/styles/ohia/body.jpg styles/ohia/body.jpg

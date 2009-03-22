@@ -10,6 +10,7 @@ $Date: 2006-02-19 06:05:18 $
 files:
 themes/kubrick/README-FIRST.txt templates/styles/kubrick/README-FIRST.txt
 themes/kubrick/theme_details-kubrick.txt templates/styles/kubrick/theme_details-kubrick.txt
+themes/kubrick/styles/kubrick.css styles/kubrick.css
 themes/kubrick/styles/kubrick/footerbg.jpg styles/kubrick/footerbg.jpg
 themes/kubrick/styles/kubrick/headerbg.jpg styles/kubrick/headerbg.jpg
 themes/kubrick/styles/kubrick/index.php styles/kubrick/index.php
@@ -19,7 +20,6 @@ themes/kubrick/templates/styles/kubrick/tiki.tpl templates/styles/kubrick/tiki.t
 themes/kubrick/templates/styles/kubrick/credits.tpl templates/styles/kubrick/credits.tpl
 themes/kubrick/templates/styles/kubrick/header.tpl templates/styles/kubrick/header.tpl
 themes/kubrick/templates/styles/kubrick/tiki-bot_bar.tpl templates/styles/kubrick/tiki-bot_bar.tpl
-themes/kubrick/templates/styles/kubrick/tiki-read_article.tpl templates/styles/kubrick/tiki-read_article.tpl
 themes/kubrick/templates/styles/kubrick/tiki-site_header.tpl templates/styles/kubrick/tiki-site_header.tpl
 themes/kubrick/templates/styles/kubrick/tiki-top_bar.tpl templates/styles/kubrick/tiki-top_bar.tpl
 

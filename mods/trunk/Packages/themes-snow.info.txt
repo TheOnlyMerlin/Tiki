@@ -10,6 +10,7 @@ Lastmodif:
 $Date$
 
 Files:
+themes/Snow/Readme.txt styles/snow/Readme.txt
 themes/Snow/resources/Flash/snowfall.fla styles/snow/resources/Flash/snowfall.fla
 themes/Snow/theme/styles/snow.css styles/snow.css
 themes/Snow/theme/styles/snow/boxbtm.jpg styles/snow/boxbtm.jpg
@@ -22,8 +23,8 @@ themes/Snow/theme/styles/snow/header-bg.jpg styles/snow/header-bg.jpg
 themes/Snow/theme/styles/snow/index.php styles/snow/index.php
 themes/Snow/theme/styles/snow/logo.jpg styles/snow/logo.jpg
 themes/Snow/theme/styles/snow/pagetitle-bg.jpg styles/snow/pagetitle-bg.jpg
-themes/Snow/theme/styles/snow/pagetitle-bullet.jpg styles/snow/pagetitle-bullet.jpg
-themes/Snow/theme/styles/snow/pagetitle-bullet-sm.jpg styles/snow/pagetitle-bullet-sm.jpg
+themes/Snow/theme/styles/snow/pagetitle-bullet.gif styles/snow/pagetitle-bullet.gif
+themes/Snow/theme/styles/snow/pagetitle-bullet-sm.gif styles/snow/pagetitle-bullet-sm.gif
 themes/Snow/theme/styles/snow/Flash/index.php styles/snow/Flash/index.php
 themes/Snow/theme/styles/snow/Flash/snowfall.swf styles/snow/Flash/snowfall.swf
 themes/Snow/theme/templates/styles/snow/credits.tpl templates/styles/snow/credits.tpl

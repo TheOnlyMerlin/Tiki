@@ -10,6 +10,7 @@ Lastmodif:
 $Date$
 
 Files:
+themes/smooth/Readme.txt styles/smooth/Readme.txt
 themes/smooth/styles/smooth.css styles/smooth.css
 themes/smooth/styles/smooth/img01.gif styles/smooth/img01.gif
 themes/smooth/styles/smooth/img02.gif styles/smooth/img02.gif
@@ -18,7 +19,6 @@ themes/smooth/styles/smooth/img04.gif styles/smooth/img04.gif
 themes/smooth/styles/smooth/img05.gif styles/smooth/img05.gif
 themes/smooth/styles/smooth/img06.gif styles/smooth/img06.gif
 themes/smooth/styles/smooth/img07.gif styles/smooth/img07.gif
-themes/smooth/styles/smooth/img08.gif styles/smooth/img08.gif
 themes/smooth/styles/smooth/img08.jpg styles/smooth/img08.jpg
 themes/smooth/styles/smooth/index.php styles/smooth/index.php
 themes/smooth/templates/styles/smooth/credits.tpl templates/styles/smooth/credits.tpl

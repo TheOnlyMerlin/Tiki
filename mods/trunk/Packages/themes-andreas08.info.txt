@@ -10,6 +10,7 @@ Lastmodif:
 $Date$
 
 Files:
+themes/andreas08/Readme.txt styles/andreas08/Readme.txt
 themes/andreas08/styles/andreas08.css styles/andreas08.css
 themes/andreas08/templates/styles/andreas08/credits.tpl templates/styles/andreas08/credits.tpl
 themes/andreas08/templates/styles/andreas08/header.tpl templates/styles/andreas08/header.tpl

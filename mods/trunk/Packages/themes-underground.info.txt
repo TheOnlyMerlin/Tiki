@@ -10,6 +10,7 @@ Lastmodif:
 $Date$
 
 Files:
+themes/underground/Readme.txt styles/underground/Readme.txt
 themes/underground/styles/underground.css styles/underground.css
 themes/underground/styles/underground/bg.gif styles/underground/bg.gif
 themes/underground/styles/underground/bullet.gif styles/underground/bullet.gif
@@ -22,7 +23,6 @@ themes/underground/styles/underground/tabright.gif styles/underground/tabright.g
 themes/underground/templates/styles/underground/credits.tpl templates/styles/underground/credits.tpl
 themes/underground/templates/styles/underground/header.tpl templates/styles/underground/header.tpl
 themes/underground/templates/styles/underground/index.php templates/styles/underground/index.php
-themes/underground/templates/styles/underground/sicustomcode.tpl templates/styles/underground/sicustomcode.tpl
 themes/underground/templates/styles/underground/tiki.tpl templates/styles/underground/tiki.tpl
 themes/underground/templates/styles/underground/tiki-bot_bar.tpl templates/styles/underground/tiki-bot_bar.tpl
 themes/underground/templates/styles/underground/tiki-list_blogs.tpl templates/styles/underground/tiki-list_blogs.tpl

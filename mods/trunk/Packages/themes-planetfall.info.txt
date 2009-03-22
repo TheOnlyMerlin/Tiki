@@ -14,17 +14,17 @@ themes/planetfall/styles/planetfall/9DA6B3-1x1.png styles/planetfall/9DA6B3-1x1.
 themes/planetfall/styles/planetfall/back_fade.jpg styles/planetfall/back_fade.jpg
 themes/planetfall/styles/planetfall/header_bg.jpg styles/planetfall/header_bg.jpg
 themes/planetfall/styles/planetfall/indent1.png styles/planetfall/indent1.png
-themes/planetfall/styles/planetfall/menu2_fade.jpg styles/planetfall/menu2_fade.jpg
+themes/planetfall/styles/planetfall/menu_bullet_hover.gif styles/planetfall/menu_bullet_hover.gif
 themes/planetfall/styles/planetfall/menu_bullet_link.gif styles/planetfall/menu_bullet_link.gif
+themes/planetfall/styles/planetfall/menu1_fade.jpg styles/planetfall/menu1_fade.jpg
+themes/planetfall/styles/planetfall/menu2_fade.jpg styles/planetfall/menu2_fade.jpg
 themes/planetfall/styles/planetfall/silver_bg.jpg styles/planetfall/silver_bg.jpg
-themes/planetfall/styles/planetfall/title_background.png styles/planetfall/title_background.png
+themes/planetfall/styles/planetfall/title_bg.png styles/planetfall/title_bg.png
 themes/planetfall/styles/planetfall/top_bar.jpg styles/planetfall/top_bar.jpg
 themes/planetfall/templates/styles/planetfall/credits.tpl templates/styles/planetfall/credits.tpl
 themes/planetfall/templates/styles/planetfall/header.tpl templates/styles/planetfall/header.tpl
 themes/planetfall/templates/styles/planetfall/tiki.tpl templates/styles/planetfall/tiki.tpl
 themes/planetfall/templates/styles/planetfall/tiki-bot_bar.tpl templates/styles/planetfall/tiki-bot_bar.tpl
-themes/planetfall/templates/styles/planetfall/tiki-read_article.tpl  templates/styles/planetfall/tiki-read_article.tpl
-themes/planetfall/templates/styles/planetfall/tiki-show_page.tpl templates/styles/planetfall/tiki-show_page.tpl
 themes/planetfall/templates/styles/planetfall/tiki-site_header.tpl templates/styles/planetfall/tiki-site_header.tpl
 themes/planetfall/templates/styles/planetfall/tiki-top_bar.tpl templates/styles/planetfall/tiki-top_bar.tpl
 

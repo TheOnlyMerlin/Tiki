@@ -10,6 +10,7 @@ Lastmodif:
 $Date$
 
 Files:
+themes/andreas09/Readme.txt styles/andreas09/Readme.txt
 themes/andreas09/styles/andreas09.css styles/andreas09.css
 themes/andreas09/styles/andreas09/bodybg.jpg styles/andreas09/bodybg.jpg
 themes/andreas09/styles/andreas09/footerbg.jpg styles/andreas09/footerbg.jpg

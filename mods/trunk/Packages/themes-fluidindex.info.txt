@@ -10,6 +10,7 @@ Lastmodif:
 $Date$
 
 Files:
+themes/fluidindex/Readme.txt styles/fluidindex/Readme.txt
 themes/fluidindex/styles/fluidindex.css styles/fluidindex.css
 themes/fluidindex/styles/fluidindex/bg.gif styles/fluidindex/bg.gif
 themes/fluidindex/styles/fluidindex/bgfooter.jpg styles/fluidindex/bgfooter.jpg

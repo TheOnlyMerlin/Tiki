@@ -10,6 +10,7 @@ Lastmodif:
 $Date$
 
 Files:
+themes/abse/Readme.txt styles/abse/Readme.txt
 themes/abse/styles/abse.css styles/abse.css
 themes/abse/styles/abse/crimeboy_design.png styles/abse/crimeboy_design.png
 themes/abse/styles/abse/index.png styles/abse/index.png
@@ -22,6 +23,7 @@ themes/abse/templates/styles/abse/header.tpl templates/styles/abse/header.tpl
 themes/abse/templates/styles/abse/index.php templates/styles/abse/index.php
 themes/abse/templates/styles/abse/tiki.tpl templates/styles/abse/tiki.tpl
 themes/abse/templates/styles/abse/tiki-bot_bar.tpl templates/styles/abse/tiki-bot_bar.tpl
+themes/abse/templates/styles/abse/tiki-read_article.tpl templates/styles/abse/tiki-read_article.tpl
 themes/abse/templates/styles/abse/tiki-site_header.tpl templates/styles/abse/tiki-site_header.tpl
 themes/abse/templates/styles/abse/tiki-top_bar.tpl templates/styles/abse/tiki-top_bar.tpl
 

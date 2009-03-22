@@ -8,11 +8,14 @@ lastmodif:
 $Date$
 
 files:
+themes/twist/Readme.txt styles/twist/Readme.txt
 themes/twist/styles/twist.css styles/twist.css
 themes/twist/styles/twist/background.gif styles/twist/background.gif
 themes/twist/styles/twist/bullet.gif styles/twist/bullet.gif
+themes/twist/styles/twist/fo.gif styles/twist/fo.gif
 themes/twist/styles/twist/header.jpg styles/twist/header.jpg
 themes/twist/styles/twist/index.php styles/twist/index.php
+themes/twist/styles/twist/ofo.gif styles/twist/ofo.gif
 themes/twist/templates/styles/twist/credits.tpl templates/styles/twist/credits.tpl
 themes/twist/templates/styles/twist/header.tpl templates/styles/twist/header.tpl
 themes/twist/templates/styles/twist/index.php templates/styles/twist/index.php
