@@ -1,0 +1,38 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/andreas08/Readme.txt styles/andreas08/Readme.txt
+themes/andreas08/styles/andreas08.css styles/andreas08.css
+themes/andreas08/styles/andreas08/andreas08.png styles/andreas08/andreas08.png
+themes/andreas08/templates/styles/andreas08/credits.tpl templates/styles/andreas08/credits.tpl
+themes/andreas08/templates/styles/andreas08/index.php templates/styles/andreas08/index.php
+themes/andreas08/templates/styles/andreas08/tiki.tpl templates/styles/andreas08/tiki.tpl
+
+Description:
+Andreas08 is based on the original design by Andreas Viklund (http://andreasviklund.com/templates/) Until IE7 supports display:table, use of one HTML table is needed for graphic treatment and column integrity when pages widen dynamically. This version is updated for Tiki 3. If updating this theme from a previous Tiki release, remove all old .tpl files in templates/styles/andreas08/ and install the above files.
+ 
+Docurl:
+http://themes.tikiwiki.org/Andreas08
+http://zukakakina.com/Andreas08
+ 
+Licence:
+GNU/GPL
+
+Author:
+Gary Cunningham-Lee (chibaguy)
+ 
+Version:
+3
+ 
+Changelog:
+2 updated for Tiki 3
+1 initial package
