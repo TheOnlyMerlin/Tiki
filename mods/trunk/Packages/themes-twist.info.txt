@@ -33,7 +33,7 @@ licence:
 GNU/LGPL
 
 Description: 
-This is an original theme for TikiWiki CMS/Groupware (http://tikiwiki.org) to replicate the visual appearance of the GPL Monobook theme for Mediawiki. This theme uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss).
+Centered content area on dark blue background.
 
 Changelog:
 2 update for TikiWiki 2
