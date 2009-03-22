@@ -12,15 +12,15 @@ $Date$
 Files:
 themes/abse_tiki_3/Readme.txt styles/abse/Readme.txt
 themes/abse_tiki_3/styles/abse.css styles/abse.css
-themes/abse_tiki_3/styles/abse_tiki_3/abse.png styles/abse/abse.png
-themes/abse_tiki_3/styles/abse_tiki_3/crimeboy_design.png styles/abse/crimeboy_design.png
-themes/abse_tiki_3/styles/abse_tiki_3/index.php styles/abse/index.php
-themes/abse_tiki_3/styles/abse_tiki_3/menubg.jpg styles/abse/menubg.jpg
-themes/abse_tiki_3/styles/abse_tiki_3/titlebgoff.png styles/abse/titlebgoff.png
-themes/abse_tiki_3/styles/abse_tiki_3/titlebgon.png styles/abse/titlebgon.png
-themes/abse_tiki_3/styles/abse_tiki_3/wgreenwall.png styles/abse/wgreenwall.png
-themes/abse_tiki_3/templates/styles/abse_tiki_3/credits.tpl templates/styles/abse/credits.tpl
-themes/abse_tiki_3/templates/styles/abse_tiki_3/index.php templates/styles/abse/index.php
+themes/abse_tiki_3/styles/abse/abse.png styles/abse/abse.png
+themes/abse_tiki_3/styles/abse/crimeboy_design.png styles/abse/crimeboy_design.png
+themes/abse_tiki_3/styles/abse/index.php styles/abse/index.php
+themes/abse_tiki_3/styles/abse/menubg.jpg styles/abse/menubg.jpg
+themes/abse_tiki_3/styles/abse/titlebgoff.png styles/abse/titlebgoff.png
+themes/abse_tiki_3/styles/abse/titlebgon.png styles/abse/titlebgon.png
+themes/abse_tiki_3/styles/abse/wgreenwall.png styles/abse/wgreenwall.png
+themes/abse_tiki_3/templates/styles/abse/credits.tpl templates/styles/abse/credits.tpl
+themes/abse_tiki_3/templates/styles/abse/index.php templates/styles/abse/index.php
 
 Description:
 absE is based on the visual design of the absE theme for openbox by crimeboy (http://celo.wordpress.com/) and uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss).
