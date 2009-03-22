@@ -1,0 +1,46 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/underground_tiki_3/Readme.txt styles/underground/Readme.txt
+themes/underground_tiki_3/styles/underground.css styles/underground.css
+themes/underground_tiki_3/styles/underground/bg.gif styles/underground/bg.gif
+themes/underground_tiki_3/styles/underground/bullet.gif styles/underground/bullet.gif
+themes/underground_tiki_3/styles/underground/footerbg.gif styles/underground/footerbg.gif
+themes/underground_tiki_3/styles/underground/headerbg.gif styles/underground/headerbg.gif
+themes/underground_tiki_3/styles/underground/index.php styles/underground/index.php
+themes/underground_tiki_3/styles/underground/quote.gif styles/underground/quote.gif
+themes/underground_tiki_3/styles/underground/tableft.gif styles/underground/tableft.gif
+themes/underground_tiki_3/styles/underground/tabright.gif styles/underground/tabright.gif
+themes/underground_tiki_3/styles/underground/underground.png styles/underground/underground.png
+themes/underground_tiki_3/templates/styles/underground/credits.tpl templates/styles/underground/credits.tpl
+themes/underground_tiki_3/templates/styles/underground/index.php templates/styles/underground/index.php
+themes/underground_tiki_3/templates/styles/underground/tiki.tpl templates/styles/underground/tiki.tpl
+themes/underground_tiki_3/templates/styles/underground/tiki-site_header.tpl templates/styles/underground/tiki-site_header.tpl
+
+Description:
+Underground uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss). Due to the limited page-top space, not all Look & Feel options may be available. Although this theme can be used with all three columns, the present column margins were specified for a two-column layout (left and center) to emulate the look of the original design. For more information, please see the documentation pages for this theme. Please do not remove the link to Styleshout.com from the page footer.
+ 
+Docurl:
+http://themes.tikiwiki.org/Underground
+http://zukakakina.com/Underground
+ 
+Licence:
+This theme adapted for TikiWiki CMS/Groupware is a derived work using visual elements of the Underground theme by Erwin Aligam (http://www.styleshout.com), which was released under the Creative Commons Attribution 2.5 license. Consequently, the visual aspects retain the Creative Commons Attribution 2.5 license, while the  structural aspects based on the default TikiWiki components are licensed GNU/LGPL. Please retain the link to styleshout.com in the page footer to be in compliance with the CCA 2.4 license.
+ 
+Author:
+Adapted by Gary Cunningham-Lee (chibaguy).
+ 
+Version:
+Compatible with TikiWiki 2 releases.
+ 
+Changelog:
+1 initial package
