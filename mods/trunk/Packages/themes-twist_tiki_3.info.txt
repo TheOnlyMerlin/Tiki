@@ -15,8 +15,8 @@ themes/twist_tiki_3/styles/twist/bullet.gif styles/twist/bullet.gif
 themes/twist_tiki_3/styles/twist/fo.gif styles/twist/fo.gif
 themes/twist_tiki_3/styles/twist/header.jpg styles/twist/header.jpg
 themes/twist_tiki_3/styles/twist/index.php styles/twist/index.php
-themes/twist_tiki_3/styles/twist/pics/icons/folder.gif styles/twist/pics/icons/folder.gif
-themes/twist_tiki_3/styles/twist/pics/icons/ofolder.gif styles/twist/pics/icons/ofolder.gif
+themes/twist_tiki_3/styles/twist/pics/icons/folder.png styles/twist/pics/icons/folder.png
+themes/twist_tiki_3/styles/twist/pics/icons/ofolder.png styles/twist/pics/icons/ofolder.png
 themes/twist_tiki_3/styles/twist/twist.png styles/twist/twist.png
 themes/twist_tiki_3/templates/styles/twist/credits.tpl templates/styles/twist/credits.tpl
 themes/twist_tiki_3/templates/styles/twist/index.php templates/styles/twist/index.php
