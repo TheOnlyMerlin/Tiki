@@ -1,0 +1,49 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/eatlon_tiki_3/Readme.txt styles/eatlon/Readme.txt
+themes/eatlon_tiki_3/styles/eatlon.css styles/eatlon.css
+themes/eatlon_tiki_3/styles/eatlon/banner.gif styles/eatlon/banner.gif
+themes/eatlon_tiki_3/styles/eatlon/body_bg.gif styles/eatlon/body_bg.gif
+themes/eatlon_tiki_3/styles/eatlon/bottom_bg.gif styles/eatlon/bottom_bg.gif
+themes/eatlon_tiki_3/styles/eatlon/eatlon.png styles/eatlon/eatlon.png
+themes/eatlon_tiki_3/styles/eatlon/feed.gif styles/eatlon/feed.gif
+themes/eatlon_tiki_3/styles/eatlon/head_bg.gif styles/eatlon/head_bg.gif
+themes/eatlon_tiki_3/styles/eatlon/image.gif styles/eatlon/image.gif
+themes/eatlon_tiki_3/styles/eatlon/index.php styles/eatlon/index.php
+themes/eatlon_tiki_3/styles/eatlon/layouts.gif styles/eatlon/layouts.gif
+themes/eatlon_tiki_3/styles/eatlon/menu_bg.png styles/eatlon/menu_bg.png
+themes/eatlon_tiki_3/templates/styles/eatlon/credits.tpl templates/styles/eatlon/credits.tpl
+themes/eatlon_tiki_3/templates/styles/eatlon/index.php templates/styles/eatlon/index.php
+themes/eatlon_tiki_3/templates/styles/eatlon/sicustomcode.tpl templates/styles/eatlon/sicustomcode.tpl
+themes/eatlon_tiki_3/templates/styles/eatlon/tiki.tpl templates/styles/eatlon/tiki.tpl
+themes/eatlon_tiki_3/templates/styles/eatlon/tiki-top_bar.tpl templates/styles/eatlon/tiki-top_bar.tpl
+
+Description:
+Flexible "fixed-width" theme in light blues and greys. Please retain the link to eatlon.com in the page footer to be in compliance with the terms of use. This version updated for Tiki 3. Be sure no Eatlon template (.tpl) files remain from before when installing this update. Older files may not be compatible with Tiki 3.
+ 
+Docurl:
+http://themes.tikiwiki.org/Eatlon
+http://zukakakina.com/Eatlon
+ 
+Licence:
+This theme adapted by Gary Cunningham-Lee (chibaguy) for TikiWiki CMS/Groupware is an adaptation of the Eatlon theme by Olle Axelsson (http://eatlon.com). The original theme has been made available to use freely, with the condition that the link to eatlon.com remains in the page footer. To be in compliance with the terms of use, please do not remove this link.
+
+Author:
+Adapted by Gary Cunningham-Lee (chibaguy).
+ 
+Version:
+Compatible with TikiWiki 2 releases.
+ 
+Changelog:
+2 update for Tiki 3
+1 initial package
