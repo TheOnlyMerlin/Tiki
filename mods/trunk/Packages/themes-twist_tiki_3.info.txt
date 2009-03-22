@@ -1,0 +1,38 @@
+contributor:
+$Author$
+
+revision:
+$Revision$
+
+lastmodif:
+$Date$
+
+files:
+themes/twist_tiki_3/Readme.txt styles/twist/Readme.txt
+themes/twist_tiki_3/styles/twist.css styles/twist.css
+themes/twist_tiki_3/styles/twist/background.gif styles/twist/background.gif
+themes/twist_tiki_3/styles/twist/bullet.gif styles/twist/bullet.gif
+themes/twist_tiki_3/styles/twist/fo.gif styles/twist/fo.gif
+themes/twist_tiki_3/styles/twist/header.jpg styles/twist/header.jpg
+themes/twist_tiki_3/styles/twist/index.php styles/twist/index.php
+themes/twist_tiki_3/styles/twist/pics/icons/folder.gif styles/twist/pics/icons/folder.gif
+themes/twist_tiki_3/styles/twist/pics/icons/ofolder.gif styles/twist/pics/icons/ofolder.gif
+themes/twist_tiki_3/styles/twist/twist.png styles/twist/twist.png
+themes/twist_tiki_3/templates/styles/twist/credits.tpl templates/styles/twist/credits.tpl
+themes/twist_tiki_3/templates/styles/twist/index.php templates/styles/twist/index.php
+themes/twist_tiki_3/templates/styles/twist/tiki.tpl templates/styles/twist/tiki.tpl
+themes/twist_tiki_3/templates/styles/twist/tiki-site_header.tpl templates/styles/twist/tiki-site_header.tpl
+themes/twist_tiki_3/templates/styles/twist/tiki-top_bar.tpl templates/styles/twist/tiki-top_bar.tpl
+
+author:
+Gary Griffin (gg), maintained by Gary Cunningham-Lee (chibaguy)
+
+licence:
+GNU/LGPL
+
+Description: Centered content area on dark blue background. 
+
+Changelog:
+3 updated for Tiki 3
+2 updated for TikiWiki 2
+1 initial package (May 2, 2006)
