@@ -10,10 +10,11 @@ Lastmodif:
 $Date$
 
 Files:
+themes/abse_tiki_3/Readme.txt styles/abse/Readme.txt
 themes/abse_tiki_3/styles/abse.css styles/abse.css
 themes/abse_tiki_3/styles/abse_tiki_3/abse.png styles/abse/abse.png
 themes/abse_tiki_3/styles/abse_tiki_3/crimeboy_design.png styles/abse/crimeboy_design.png
-themes/abse_tiki_3/styles/abse_tiki_3/index.png styles/abse/index.png
+themes/abse_tiki_3/styles/abse_tiki_3/index.php styles/abse/index.php
 themes/abse_tiki_3/styles/abse_tiki_3/menubg.jpg styles/abse/menubg.jpg
 themes/abse_tiki_3/styles/abse_tiki_3/titlebgoff.png styles/abse/titlebgoff.png
 themes/abse_tiki_3/styles/abse_tiki_3/titlebgon.png styles/abse/titlebgon.png
