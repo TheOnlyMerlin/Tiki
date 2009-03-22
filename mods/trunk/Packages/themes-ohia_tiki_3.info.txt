@@ -1,0 +1,40 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/ohia_tiki_3/Readme.txt styles/ohia/Readme.txt
+themes/ohia_tiki_3/styles/ohia.css styles/ohia.css
+themes/ohia_tiki_3/styles/ohia/index.png styles/ohia/index.php
+themes/ohia_tiki_3/styles/ohia/body.jpg styles/ohia/body.jpg
+themes/ohia_tiki_3/styles/ohia/ohia.png styles/ohia/ohia.png
+themes/ohia_tiki_3/templates/styles/ohia/credits.tpl templates/styles/ohia/credits.tpl
+themes/ohia_tiki_3/templates/styles/ohia/index.php templates/styles/ohia/index.php
+themes/ohia_tiki_3/templates/styles/ohia/tiki-site_header.tpl templates/styles/ohia/tiki-site_header.tpl
+
+Description:
+Ohia is an original design for TikiWiki CMS/Groupware and uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss). If upgrading from a previous install, be sure older files in templates/styles/ohia directory are removed before installing the above files; older files are incompatible with Tiki 3. 
+ 
+Docurl:
+http://themes.tikiwiki.org/Ohia
+http://zukakakina.com/Ohia
+ 
+Licence:
+GNU/LGPL
+
+Author:
+Gary Cunningham-Lee (chibaguy)
+ 
+Version:
+Compatible with Tiki 3 releases.
+ 
+Changelog:
+2 update for Tiki 3
+1 initial package
