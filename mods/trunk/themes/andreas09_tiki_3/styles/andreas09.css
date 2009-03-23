@@ -206,7 +206,9 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	height: 100px !important;*/ /* dblcheck this size */
 }
 
-#middle {margin-top: 20px}
+#middle {
+	padding-top: 20px;
+	background: url(andreas09/mid.jpg) repeat-x}
 
 #c1c2 {
 	text-align: left;
@@ -436,8 +438,7 @@ div.mdkitem  {
 	display: block}
 
 .mdkverbar a,
-.mdkitem a,
-.cssmenu_vert li a  {
+.mdkitem a {
 	font-size: .9em;
 	background-color: #e8e9ea;
 	border: 1px solid #b0b0b0;
@@ -447,19 +448,12 @@ div.mdkitem  {
 	display: block;
 	padding: 6px 4px}
 
-.box .mdkitem a,
-.cssmenu_vert li a {
+.box .mdkitem a {
 	width: 140px;
 	padding: 4px 2px 2px 8px}
 
-.cssmenu_vert li {padding-bottom: 4px}
-.cssmenu_ver li a ul {border: 0}
-.cssmenu_vert li:hover ul, .cssmenu_vert li li:hover ul, .cssmenu_vert li li li:hover ul, .cssmenu_vert li.sfhover ul, .cssmenu_vert li li.sfhover ul, .cssmenu_vert li li li.sfhover ul { /* lists nested under hovered list items */border: 0}
-
-
 .mdkitem a:hover,
-.mdkitem a:active, 
-.cssmenu_vert li a:hover {
+.mdkitem a:active {
 	background: #f8f9fa;
 	border: 1px solid #909090;
 	color: #303030;
@@ -547,6 +541,28 @@ a.phplmselected:hover {color: #808080}
 	font-size: 10px;
 	padding: 11px 10px 10px;
 	text-transform: uppercase}
+	
+.cssmenu_vert li a  {
+	font-size: .9em;
+	background-color: #e8e9ea;
+	border: 1px solid #b0b0b0;
+	color: #606060;
+	text-transform: uppercase;
+	padding: 6px 4px}
+/*	
+.cssmenu_vert li a {
+	width: 140px;
+	padding: 4px 2px 2px 8px}*/
+
+.cssmenu_vert li {padding-bottom: 4px}
+.cssmenu_ver li a ul {border: 0}
+.cssmenu_vert li:hover ul, .cssmenu_vert li li:hover ul, .cssmenu_vert li li li:hover ul, .cssmenu_vert li.sfhover ul, .cssmenu_vert li li.sfhover ul, .cssmenu_vert li li li.sfhover ul { /* lists nested under hovered list items */border: 0}
+
+.cssmenu_vert li a:hover {
+	background: #f8f9fa;
+	border: 1px solid #909090;
+	color: #303030;
+	text-decoration: none}
 
 /** Links in other menus **/
 
