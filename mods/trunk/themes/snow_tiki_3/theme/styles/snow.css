@@ -342,7 +342,7 @@ div#siteloginbar {
 #sitelocbar {float: left}
 #customcodewith_ad {width: 400px}
 
-#/* #header text selectors, if needed */
+/* #header text selectors, if needed */
 #sitetitle,
 #sitesubtitle {
 	display: block;
@@ -691,8 +691,6 @@ div#edithelpzone {display: none}
 	font-size: .95em;
 	text-decoration: none}
 
-.bannertext:hover {color: darkviolet}
-
 .link,
 .gallink,
 .bloglink,
@@ -1013,12 +1011,12 @@ a.forumnameread {}
 
 /** Tabs **/
 .tabs {
-	border-bottom: solid 1px darkgreen !important;
+	border-bottom: solid 1px #393e51 !important;
 	margin-top: 10px !important;
 	padding: 0 !important}
 
 .tabactive {
-	border: solid 1px darkgreen !important;
+	border: solid 1px #393e51 !important;
 	border-bottom: none !important;
 	border-top-width: 2px !important;
 	position: relative; top: -2px}
@@ -1070,9 +1068,6 @@ a.forumnameread {}
 form fieldset.tabcontent {}
 form.admin .tabs {}
 
-/* Get the contextual info to make this specific. */
-div.content {}
-div.content .tabs {}]
 .tab-wrapper {
 	border: 1px solid #EEEEEE;
 	padding: 0}
@@ -1163,7 +1158,7 @@ h1 a.crumblink:hover {
 	letter-spacing: normal}
 	
 * html h1 a.pagetitle,
-* html h1 a, {margin-top: 6px}
+* html h1 a {margin-top: 6px}
 
 div.wikitopline {
 	display: block;
@@ -2188,7 +2183,7 @@ table.default td {
   padding: 5px;
   border: 1px solid #A9A9A9;
   background: url(snow/flakesptn.jpg);
-  color: deeppink}
+  color: #ff1943}
   
 .advanced:before { content:url(../img/icons/mini_blue_diamond.gif)" "}
 
@@ -2210,7 +2205,7 @@ table.default td {
 
 .highlight_word_4 {
 	color: #99ff99;
-	background: black}}
+	background: black}
 
 .center {text-align: center}
 .justify {text-align: justify}

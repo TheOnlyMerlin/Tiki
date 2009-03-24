@@ -438,7 +438,6 @@ a.flip img {
 	padding-left: 2px;
 	font-weight: normal;
 	font-size: .9em;
-	vertical-align: center;
 	color: #ffffff;
 	background: #efefef;
 	text-decoration: none
@@ -719,18 +718,15 @@ a.linkmodule:hover {}
 	border-left: #dadac9 1px solid;
 	padding-top: 1px;
 	border-bottom: #dadac9 1px solid;
-	background-color: #efefef
- 
-}
+	background-color: #efefef}
+
 .rssitem {
 	border-top: #dadac9 1px dashed;
 	padding: 1px 6px}
-.rssitem:unknown {
-	border-top: 0px
-}
+	
 .rssdate {
-	color: #999999; FONT-STYLE: italic
-}
+	color: #999999;
+	font-style: italic}
 
 .rsslink {
 	font-size: 11px;
@@ -1037,7 +1033,7 @@ tr.odd:hover {
 	background: #fff7e6
 }
 tr.odddark {
-	padding: 2;
+	padding: 2px;
 	border: 1px solid #FFFFFF}
 
 tr.even {
@@ -1140,7 +1136,7 @@ table.findtable {
 
 /** Tabs **/
 .tabs { border-bottom: solid 1px #225566 !important; margin-top: 10px !important; padding: 0 !important}
-.tabactive { border: solid; 1px #225566 !important;
+.tabactive {border: solid 1px #225566 !important;
 	border-bottom: none !important; border-top-width: 2px !important; position: relative; top: -2px}
 [class].tabactive { top: -1px}
 .tabactive a { background: #eee}
@@ -1937,7 +1933,7 @@ div.freetagObjectType {
 
 table.galtable {
 	border-collapse: collapse;
-	border: 1px solid dimgray;
+	border: 1px solid #696969;
 	width: 100%}
 
 * html body table.galtable {width: 97%}
@@ -2007,7 +2003,7 @@ div.thumbdescription span.thumbinfoname {}
 a.namealias {}
 div.gallerypath, div.gallerypath a {}
 div.gallerypath a:hover {}
-.fgalexplorer {border: 1px solid dimgray}
+.fgalexplorer {border: 1px solid #696969}
 
 .fgallisting table td {
 	padding-left: 2px;
@@ -2204,8 +2200,6 @@ div.shoutboxmsg {
 	margin-bottom: 0;
 	padding: 4px;
 	padding-bottom: 1px}
-
-div.shoutboxmsg:last-child {}
 
 div.shoutboxmodmsg {
 	font-size: .95em;

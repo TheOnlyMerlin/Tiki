@@ -263,9 +263,9 @@ c1c2 #wrapper #col1.marginright {margin-right: 185px}/* Change this when width o
 
 /* end Type 1 layout divs, etc. */
 
-/*** Error page ***/
+/*** Error page **
 
-div#tiki-main #tiki-top {margin-top: 100px}
+div#tiki-main #tiki-top {margin-top: 100px}*/
 
 div#tiki-main #tikimidtbl {
 	margin: auto;
@@ -343,7 +343,7 @@ div#sitead {margin: auto}
 
 #tiki-top {
 	background: url(andreas09/header.jpg) repeat-x;
-	height: 35px}
+	height: 38px}
 
 #tiki-top a {}
 #tiki-top table {width: auto}
@@ -1485,7 +1485,7 @@ div.postfooter {
 	background-color: #e8e9ea;
 	padding: 3px 3px 3px 3px;
 	vertical-align: middle;
-	color: dimgray}
+	color: #696969}
 
 .forum_actions .actions .action {margin-right: 10px}
 .forum_actions .headers {vertical-align: bottom}

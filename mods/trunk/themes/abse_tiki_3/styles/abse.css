@@ -124,12 +124,14 @@ input[type=submit]:hover,
 .button input:hover,
 .submitbutton:hover,
 select:hover,
-select[name="theme"] option:hover {
+select[name="theme"]:hover,
+option:hover {
 	cursor: pointer;
 	color: #fff;
 	text-decoration: none}
 
-select[name="theme"]option:hover {
+select[name="theme"]:hover,
+option:hover {
 	text-decoration: none;
 	color: #fff;
 	background: #586858 url(abse/menubg.jpg) repeat-y}
@@ -305,8 +307,7 @@ div.floatleft {
 	color: #999999;
 	max-width: 460px;
 	margin-top: .8em;
-	margin: auto;
-	padding: auto}
+	margin: auto}
 
 #sitead.floatright {padding-right: 100px}
 #sitead.floatleft {padding-left: 100px}
@@ -663,23 +664,22 @@ html>body div.box:hover {background: #0E1D10}
 	font-size: 1em;
 	font-weight: normal;
 	margin:0 0 12px;
-	display: block;
-	position: relative}
+	display: block}
+	
+h3.box-title span.moduletitle {float: left}
+h3.box-title span.moduleflip {float: right}
 
-.box a.flipmodtitle img {display: none}
+.box img.flipmodimage {display: none}
 
-* html .box a.flipmodtitle img,
-.box:hover a.flipmodtitle img {
+* html .box img.flipmodimage,
+.box:hover img.flipmodimage {
 	display: block;
-	position: absolute;
-	right: 0;
-	top: 0;
 	height: 12px;
 	width: 12px;
 	border: 1px solid transparent}
 
-* html .box a.flipmodtitle img {border: none}
-a.flipmodtitle:hover img {border: 1px solid #55914E !important}
+* html .box img.flipmodimage {border: none}
+img.flipmodimage:hover {border: 1px solid #55914E !important}
 
 .box-data {
 	padding: 2px 4px 12px 4px;
@@ -705,26 +705,6 @@ a.flipmodtitle:hover img {border: 1px solid #55914E !important}
 	text-decoration: none;
 	color: #CCCCFF;
 	background: url(abse/menubg.jpg) repeat-y}
-
-
-/** controls for modules **/
-span#moduleflip {
-	display: block;
-	float: right}
-
-.modcontrols {
-	display: block;
-	float: right;
-	width: 64px;
-	height: 16px}
-
-.modcontrols a {
-	display: block;
-	float: left;
-	width: 16px;
-	height: 16px}
-	
-.modcontrols a span {display: none}
 
 /** Other boxes **/
 div.cbox {
@@ -1935,8 +1915,6 @@ div.shoutboxmsg {
 	margin-bottom: 0;
 	padding: 4px;
 	padding-bottom: 1px}
-
-div.shoutboxmsg:last-child {}
 
 div.shoutboxmodmsg {
 	font-size: .95em;

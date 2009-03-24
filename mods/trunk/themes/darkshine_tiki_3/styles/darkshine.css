@@ -748,8 +748,6 @@ div#edithelpzone {display: none}
 	font-size: .95em;
 	text-decoration: none}
 
-.bannertext:hover {color: darkviolet}
-
 .link,
 .gallink,
 .bloglink,
@@ -886,7 +884,7 @@ a.flipmodtitle:hover img {border: 1px solid #90140c !important}
 
 .rbox {
 	margin: 5px 10px 5px;
-	color: dimgray;
+	color: #696969;
 	background: #f3f3f3}
 	
 .rbox-title,
@@ -1090,7 +1088,8 @@ table.admin tr td div#page-bar {
 
 a.pagetitle {
 	color: #8A0700;
-	font: normal arial, verdana, helvetica, sans-serif;
+	font-family: arial, verdana, helvetica, sans-serif;
+	font-weight: normal;
 	margin-bottom: 20px;
 	text-decoration: none}
 
@@ -1498,7 +1497,7 @@ body.tiki_forums table.normal {margin: auto}
 
 .post .contribution {
 	background: #F0F8FF;
-	border: 1px solid lightcyan;
+	border: 1px solid #f3f3f3;
 	padding: 0 2px}
 
 .post .avatar {
@@ -1507,7 +1506,7 @@ body.tiki_forums table.normal {margin: auto}
 	margin-left: 4px;
 	padding: 3px;
 	border: 1px solid #a9a9a9;
-	background: aliceblue}
+	background: #f3f3f3}
 
 .sub_comment {padding-left: 20px}
 
@@ -1517,8 +1516,8 @@ body.tiki_forums table.normal {margin: auto}
 
 .forum_actions .actions {
 	clear: both;
-	border: 1px solid darkgray;
-	background: gainsboro;
+	border: 1px solid #a9a9a9;
+	background: #dcdcdc;
 	padding: 3px;
 	vertical-align: middle}
 
@@ -1527,8 +1526,8 @@ body.tiki_forums table.normal {margin: auto}
 
 .forum_actions .headers .title {
 	float: left;
-	background: gainsboro;
-	border: 1px solid darkgray;
+	background: #dcdcdc;
+	border: 1px solid #a9a9a9;
 	border-bottom: 0;
 	padding: 1px}
 
@@ -1904,10 +1903,10 @@ Caltrack a:visited {color:#00BD02}
 
 #caltable .days {
 	color: #000;
-	background: gainsboro;}
+	background: #dcdcdc;}
 
 #caltable .weeks {
-	background: gainsboro;
+	background: #dcdcdc;
 	color: #000;
 	padding: 1px;
 	font-weight: bold}
@@ -1923,9 +1922,9 @@ Caltrack a:visited {color:#00BD02}
 * html .calodd {padding: 0}
 .caleven {background-color: #f5f5f5}
 * html .caleven {padding: 0}
-.caldark {background: gainsboro}
+.caldark {background: #dcdcdc}
 * html .caldark {padding: 0}
-.caldark .calfocus {background-color: gainsboro}
+.caldark .calfocus {background-color: #dcdcdc}
 .calfocus, .calfocuson {border-bottom: 0}
 
 .daterow {}
@@ -1960,7 +1959,6 @@ div.quizanswer {}
 /***** Shoutbox *****/
 
 div.shoutboxmsg {}
-div.shoutboxmsg:last-child {/*border-bottom: 1px solid #8CACBB;*/}
 div.shoutboxmodmsg {}
 textarea.tshoutbox{width: 162px}
 .wiki-table {}
@@ -2030,11 +2028,9 @@ div#ajaxLoading {
 	position: absolute;
 	top: 50px;
 	right: 50%;
-	color: transparent;
 	padding: 3px;
 	font-family: Verdana;
 	font-size: 90%;
-	background-color: transparent;
 	background: url(../lib/shadowbox/images/loading.gif) no-repeat;
 	height: 42px;
 	width: 32px}

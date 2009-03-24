@@ -1002,7 +1002,9 @@ form fieldset.tabcontent {
 	border-top: none !important*/}
 
 form.admin .tabs {
-	border-bottom: solid 1px inherit !important;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: inherit !important;
 	margin: 10px 1px 0 0 !important;
 	padding: 0 !important}
 
@@ -1193,7 +1195,7 @@ div#helptool {}
 div.code {
 	font-size: 90%;
 	padding: 3px;
-	border: 1px dashed darkgray;
+	border: 1px dashed #a9a9a9;
 	background: #000000;
 	font-family: "Courier New", Courier, monospace}
 
@@ -1248,8 +1250,8 @@ li.toclevel a:hover {
 /* TOC */
 ul.toc {
 	padding-left: 2em;
-	border-top: 1px dotted darkgray;
-	border-bottom: 1px dotted darkgray;
+	border-top: 1px dotted #a9a9a9;
+	border-bottom: 1px dotted #a9a9a9;
 	margin-bottom: 4px}
 
 ul.toc * {border: none}
@@ -1551,7 +1553,7 @@ body.tiki_forums table.normal {margin: auto}
 .forum_actions .headers {vertical-align: bottom}
 .forum_actions .headers .title {
 	float: left;
-	background: honeydew;
+	background: #f4f4f4;
 	border: 1px solid #4c4c4c;
 	border-bottom: 0;
 	padding: 1px}
@@ -2140,8 +2142,8 @@ table.default td {
 
 .advanced:before { content:url(../img/icons/mini_blue_diamond.gif)" "}
 
-.highlight_word_0{
-	color: #f4f4f4f66;
+.highlight_word_0 {
+	color: #f4f4f4;
 	background: #cfcfcf}
 
 .highlight_word_1{
@@ -2173,7 +2175,7 @@ table.default td {
 /* css/admin.css overrides */
 
 a.admbox {
-	border: 1px solid slategray;
+	border: 1px solid #708090;
 	background: #030511 center no-repeat}
 
 a.admbox:hover,
@@ -2182,11 +2184,11 @@ a.admbox:active {
 	background: #313131 center no-repeat;
 	border: 1px solid #696969}
 
-a.admbox.off {border: 1px solid darkgray}
+a.admbox.off {border: 1px solid #a9a9a9}
 
 a.admbox.off:hover,
 a.admbox.off:focus,
-a.admbox.off:active {border: 1px solid darkgray}
+a.admbox.off:active {border: 1px solid #a9a9a9}
 
 /* MiniChat  */
 

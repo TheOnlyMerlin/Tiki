@@ -4,29 +4,28 @@
 * __Author and maintainer:__ Gary Cunningham-Lee (chibaguy)
 * __License:__ GPL
 * __Author URL:__ http://zukakakina.com
-* __Description__: Faulkner theme for TikiWiki CMS/Groupware, adapted by the original WordPress template by Brad, Demus Designs (http://www.demusdesign.com. Two page-layout tables used to enable expanding content area and side-column-independent background gradients.
+* __Description__: Faulkner theme for TikiWiki CMS/Groupware, adapted by the original WordPress template by
+Brad, Demus Designs (http://www.demusdesign.com. Two page-layout tables used to enable expanding content area
+and side-column-independent background gradients.
 See http://themes.tikiwiki.org or http://zukakakakina.com for more information. Released under GPL license.
 Please respect the request of the author and display the Demus Designs credit/link in the page footer.
 Use Look & Feel custom code for the site title text ornaments (see docs).
 
--=Template Files=-
 (All file paths from Tiki root directory.)
+
+-=Template Files=-
+(If you are updating Faulkner from Tiki 2 to Tiki 3, be sure only the following template files are
+in the templates/styles/faulkner directory.)
 * templates/styles/faulkner/credits.tpl
 * templates/styles/faulkner/index.tpl
 * templates/styles/faulkner/sicustomcode.tpl
 * templates/styles/faulkner/tiki.tpl
 
-!!! The following template are identical to those of other *lite.css-based themes I am making for TikiWiki version 1.10:
-* templates/styles/faulkner/header.tpl
-* templates/styles/faulkner/tiki-bot_bar.tpl
-* templates/styles/faulkner/tiki-site_header.tpl
-* templates/styles/faulkner/tiki-top_bar.tpl
-
 -=Stylesheet and background images=-
 * styles/faulkner.css
 * styles/faulkner/bullet.gif
-
 * styles/faulkner/entrybg.gif
+* styles/faulkner/faulkner.png
 * styles/faulkner/foot.jpg
 * styles/faulkner/h3bg.gif
 * styles/faulkner/leftmargin.jpg
@@ -43,7 +42,8 @@ http://themes.tikiwiki.org/Faulkner
 http://zukakakina.com/Faulkner
  
 -=Version=-
-* Compatible with TikiWiki 1.10.0b1 and newer.
+* Compatible with TikiWiki 3.0beta and newer.
  
 -=Changelog=-
+2 update for Tiki 3
 1 initial package

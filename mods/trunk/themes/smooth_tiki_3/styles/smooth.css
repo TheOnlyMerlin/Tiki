@@ -239,7 +239,7 @@ ul.jumplinks a:active {
 
 
 /*** Error page ***/
-div#tiki-main #tiki-top {margin-top: height needed to match page bg image}
+div#tiki-main #tiki-top {}
 div#tiki-mid {}
 div#tiki-main #tiki-top,
 div#tiki-main #tiki-bot {display: none}
@@ -778,8 +778,7 @@ div.cbox {
 div.simplebox {
 	margin-bottom: 8px;
 	padding: 3px;
-	border: 1px solid #bd53ff;
-	background:}
+	border: 1px solid #bd53ff}
 
 
 /***** Tables, Tabs and Lists ****/
@@ -1520,7 +1519,7 @@ body.tiki_forums table.normal {margin: auto}
 
 .post .contribution {
 	background: #F0F8FF;
-	border: 1px solid lightcyan;
+	border: 1px solid #f4abec;
 	padding: 0 2px}
 
 .post .avatar {
@@ -1540,7 +1539,7 @@ body.tiki_forums table.normal {margin: auto}
 .forum_actions .actions {
 	clear: both;
 	border: 1px solid #bd53ff;
-	background: honeydew;
+	background: #fcf8ff;
 	padding: 3px;
 	vertical-align: middle}
 

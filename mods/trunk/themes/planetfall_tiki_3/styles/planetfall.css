@@ -121,7 +121,7 @@ input[type=submit]:hover {cursor: pointer}
 
 input[type=submit],
 input[type=file],
-input[type=reset], {
+input[type=reset] {
 	color: #FF6600;
 	background-color: #293B42;
 	border: 1px solid #9DA6B3}
@@ -162,7 +162,7 @@ button:hover,
 input[type=reset]:hover,
 input[type=submit]:hover,
 .button input:hover,
-.submitbutton:hoverr {
+.submitbutton:hover {
 	cursor: pointer;
 	color: #9AB6C2;
 	text-decoration: none;
@@ -550,7 +550,7 @@ li.menuSection:hover a {
 	background: none}
 	
 .cssmenu_vert li.selected > a {
-	background-color: none;
+	background-color: transparent;
 }
 
 ul.cssmenu_vert {width: 172px}
@@ -789,8 +789,8 @@ div#debugconsole {}
 .prevnext, .galprevnext, .blogprevnext, .fgalprevnext,
 .artprevnext, .forumprevnext {
 	font-size: 1em;
-	padding: 1px 6px,
-	color: #CCCCCC;
+	padding: 1px 6px;
+	color: #ccc;
 	text-decoration: none}
 
 a.tikihelp, a.tikihelp:visited {
@@ -1446,7 +1446,7 @@ div.code {}
 	display: block;
 	border: 0;
 	border-bottom: 1px dashed #999999;
-	background-color: none}
+	background-color: transparent}
 
 .versionav .button2 .linkbut {
 	border: 0;
@@ -1829,9 +1829,9 @@ body.tiki_forums table.normal {margin: auto}
 .post .author_post_info {background-color: #0D1315}
 .post .author_post_info_on { font-style: italic}
 
-.commentStyle_headers .author_info { float: right}
+.commentStyle_headers .author_info {float: right}
+.commentStyle_headers .author_info {float: left}
 
-..commentStyle_headers .author_info {float: left}
 .post .postbody-title .actions {
 	float: right;
 	font-size: .9em}
@@ -1897,7 +1897,7 @@ body.tiki_forums table.normal {margin: auto}
 
 .forum_actions .headers .title {
 	float: left;
-	background-color: dimgray;
+	background-color: #696969;
 	border: 1px solid #999999;
 	border-bottom: 0;
 	padding: 1px}
@@ -2721,7 +2721,7 @@ Caltrack a:visited {color: #00BD02}
 	float: right}
 
 * html .addevent {padding: 0}
-.calodd, .caleven {border: 1px solid darkgray}
+.calodd, .caleven {border: 1px solid #a9a9a9}
 .calodd {background: #2e4452}
 * html .calodd {padding: 0}
 .caleven {background: #435f6d}
@@ -2825,8 +2825,6 @@ div.shoutboxmsg {
 	background: #1f363a;
 	margin-bottom: 0;
 	padding-bottom: 1px}
-
-div.shoutboxmsg:last-child {}
 
 div.shoutboxmodmsg {
 	font-size: 1em;

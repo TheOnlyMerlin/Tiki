@@ -172,11 +172,10 @@ select[name="theme"] {}
 small {font-size: .9em}
 label {margin:0 2px}
 
-ul,ol {}
-
 ol {
 	color: #600;
-	font: 600 garamond,times,serif;
+	font-family: garamond,times,serif;
+	font-weight: 600;
 	font-style: italic}
 	
 ol li {padding: 4px 0}
@@ -334,11 +333,6 @@ td#bottommargin {height: 0}
 #credits {display: inline}
 
 /*** end Type 2 layout ***/
-
-/*** Error page ***/
-div#tiki-main #tiki-top {margin-top: height needed to match page bg image}
-div#tiki-mid {}
-div#tiki-main #tiki-top {}
 
 /* To center cbox */
 div#tiki-main #tikimidtbl {
@@ -1500,7 +1494,7 @@ table.threads {width: 100%}
 	float: left;
 	color: #660000;
 	font-weight: bold;
-	font-size: 1,2em;
+	font-size: 1.2em;
 	margin-left: 5px;
 	margin-top: 3px}
 
@@ -1777,8 +1771,7 @@ div#browse_image {width: 100%}
 
 img.athumb {
 	background: none;
-	margin: auto;
-	padding: auto}
+	margin: auto}
 
 .caption {
 	color: #660000;

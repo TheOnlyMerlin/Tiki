@@ -684,21 +684,20 @@ h3.box-title {
 	font-weight: normal;
 	letter-spacing: -1px;
 	color: #505050;
-	background: inherit;
-	position: relative}
+	background: inherit}
+	
+h3.box-title span.moduletitle {float: left}
+h3.box-title span.moduleflip {float: right}
 
-.box a.flipmodtitle img {display: none}
+.box img.flipmodimage {display: none}
 
-* html .box a.flipmodtitle img,
-.box:hover a.flipmodtitle img {
+* html .box img.flipmodimage,
+.box:hover img.flipmodimage {
 	display: block;
-	position: absolute;
-	right: 0;
-	top: 0;
 	border: 1px solid transparent}
 
-* html .box a.flipmodtitle img {border: none}
-a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
+* html .box img.flipmodimage {border: none}
+img.flipmodimage:hover {border: 1px solid #58A7D2 !important}
 .box-data {background: #fff}
 
 .box-data table {width: 100%}
@@ -1811,8 +1810,6 @@ div.shoutboxmsg {
 	margin-bottom: 0;
 	padding: 4px;
 	padding-bottom: 1px}
-
-div.shoutboxmsg:last-child {/*border-bottom: 1px solid #8CACBB;*/}
 
 div.shoutboxmodmsg {
 	font-size: 1em;
