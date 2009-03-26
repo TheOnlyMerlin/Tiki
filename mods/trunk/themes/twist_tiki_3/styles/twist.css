@@ -837,19 +837,24 @@ h3.box-title {
 .box-title a,
 .box-title a:link {}
 
-.box-title a:hover {}
-.box a.flipmodtitle img {display: none}
+* html h3.box-title {position: static}
 
-* html .box a.flipmodtitle img,
-.box:hover a.flipmodtitle img {
-	display: block;
+.moduleflip {
+	display: none;
 	position: absolute;
 	right: 0;
-	top: 0;
-	border: 1px solid transparent}
+	top: 0}
 
-* html .box a.flipmodtitle img {border: none}
-a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
+* html .moduleflip {
+	position: static;
+	float: right}
+
+* html .moduleflip,
+.box:hover .moduleflip {display: block}
+
+.box:hover img.flipmodimage {border: 1px solid transparent}
+* html img.flipmodimage {border: none}
+.flipmodimage:hover {border: 1px solid #58A7D2 !important}
 
 .box-data {
 	font-size: .9em;

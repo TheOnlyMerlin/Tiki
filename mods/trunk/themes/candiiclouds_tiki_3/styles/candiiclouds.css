@@ -720,21 +720,25 @@ h3.box-title {
 	letter-spacing: -0.5px;
 	position: relative}
 	
-* html h3.box-title { padding-bottom: 5px; }
+* html h3.box-title {position: static}
 
-.box a.flipmodtitle img {display: none}
-
-* html .box a.flipmodtitle img,
-.box:hover a.flipmodtitle img {
-	display: block;
+.moduleflip {
+	display: none;
 	position: absolute;
-	right: 3px;
-	top: 5px;
-	border: 1px solid transparent}
+	right: 0;
+	top: 0}
 
-* html .box a.flipmodtitle img {border: none}
-a.flipmodtitle:hover img {
-	border: 1px solid #FFCCE2 !important}
+* html .moduleflip {
+	position: static;
+	float: right}
+
+* html .moduleflip,
+.box:hover .moduleflip {display: block}
+
+.box:hover img.flipmodimage {border: 1px solid transparent}
+* html img.flipmodimage {border: none}
+
+.flipmodimage:hover {border: 1px solid #FFCCE2 !important}
 
 .box-data {
 	background-image: url(candiiclouds/s-stars.gif);

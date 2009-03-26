@@ -764,26 +764,36 @@ h3.box-title {
 	
 span.moduletitle {
 	display: block;
-	width: 100%}
+	width: 100%;
+	font-weight: bold;
+	color: #393E51}
 
 .wikitext h3.box-title { font-size: 107% }
 
-.box a.flipmodtitle img {display: none}
+* html h3.box-title {position: static}
 
-* html .box a.flipmodtitle img,
-.box:hover a.flipmodtitle img {
-	display: block;
+.moduleflip {
+	display: none;
 	position: absolute;
-	right: 0;
-	top: 0;
-	border: 1px solid transparent}
+	right: 6px;
+	top: 6px}
 
-* html .box a.flipmodtitle img {
+* html .moduleflip {
+	position: static;
+	float: right}
+
+* html .moduleflip,
+.box:hover .moduleflip {display: block}
+
+.box:hover img.flipmodimage {border: 1px solid transparent}
+* html img.flipmodimage {border: none}
+
+* html img.flipmodimage {
 	border: none;
-	margin-top: 4px;
-	margin-right: 4px}
+	margin-top: 6px;
+	margin-right: 6px}
 
-a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
+.flipmodimage:hover {border: 1px solid #abcdef !important}
 
 .box-title a,
 .box-title a:link {color: #9D9D9D}
@@ -794,12 +804,6 @@ a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
 
 #col2 .box-title a,
 #col2 .box-title a:link {
-	font-weight: bold;
-	color: #393E51}
-
-.box-title a:hover {}
-
-span.box-titletext {
 	font-weight: bold;
 	color: #393E51}
 

@@ -781,21 +781,29 @@ h3.box-title {
 	margin: 0 12px 0 0;
 	position: relative}
 
-.box a.flipmodtitle img {
-	height: 12px;
-	width: 12px;
-	display: none}
-	
-* html .box a.flipmodtitle img,
-.box:hover a.flipmodtitle img {
-	display: block;
+* html h3.box-title {position: static}
+
+.moduleflip {
+	display: none;
 	position: absolute;
 	right: 0;
-	top: 0;
-	border: 1px solid transparent}
+	top: 0}
 
-* html .box a.flipmodtitle img {border: none}
-a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
+* html .moduleflip {
+	position: static;
+	float: right}
+
+* html .moduleflip,
+.box:hover .moduleflip {display: block}
+
+.box:hover img.flipmodimage {
+	border: 1px solid transparent;
+	height: 12px;
+	width: 12px}
+
+* html img.flipmodimage {border: none}
+	
+a.flipmodtitle:hover img {border: 1px solid #67ade7 !important}
 
 div.box-data {
 	padding: 5px;

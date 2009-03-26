@@ -732,19 +732,30 @@ h3.box-title {
 	
 .box-title a:hover {text-decoration: underline}
 
-.box a.flipmodtitle img {display: none}
+* html h3.box-title {position: static}
 
-* html .box a.flipmodtitle img,
-.box:hover a.flipmodtitle img {
-	display: block;
+.moduleflip {
+	display: none;
 	position: absolute;
+	right: 0;
+	top: 0}
+
+* html .moduleflip {
+	position: static;
+	float: right}
+
+* html .moduleflip,
+.box:hover .moduleflip {display: block}
+
+.box:hover img.flipmodimage {
+	border: 1px solid transparent;
 	right: 3px;
 	top: 3px;
-	background: #5e0000;
-	border: 1px solid transparent}
+	background: #5e0000}
 
-* html .box a.flipmodtitle img {border: none}
-a.flipmodtitle:hover img {border: 1px solid #990000 !important}
+* html img.flipmodimage {border: none}
+img.flipmodimage:hover {border: 1px solid #990000 !important}
+
 #col2 h3.box-title {}
 #col2 .box-title a,
 #col2 .box-title a:link {}

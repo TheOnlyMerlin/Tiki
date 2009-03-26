@@ -669,14 +669,6 @@ div.box {
 	width: 170px;
 	overflow: hidden}
 
-/* Needs to be set for CSS menu in col2 to work */
-/*#col2,
-.box-menu_css_v_43,
-.box-menu_css_v_43 .box-data,
-.box-menu_css_v_43 ul {overflow: visible !important; background: #fff}
-
-.box-menu_css_v_43 {padding-left: 1em}*/
-
 h3.box-title {
 	display: block;
 	margin: 0 0 16px 0;
@@ -684,17 +676,30 @@ h3.box-title {
 	font-weight: normal;
 	letter-spacing: -1px;
 	color: #505050;
-	background: inherit}
-	
-h3.box-title span.moduletitle {float: left}
-h3.box-title span.moduleflip {float: right}
+	background: inherit;
+	position: relative}
 
-.box img.flipmodimage {display: none}
+* html h3.box-title {position: static}
+
+.moduleflip {
+	display: none;
+	position: absolute;
+	right: 0;
+	top: 0}
+
+* html .moduleflip {
+	position: static;
+	float: right}
+
+* html .moduleflip,
+.box:hover .moduleflip {display: block}
 
 * html .box img.flipmodimage,
 .box:hover img.flipmodimage {
-	display: block;
-	border: 1px solid transparent}
+	height: 13px;
+	width: 13px;
+	border: 1px solid transparent;
+	background: #fff}
 
 * html .box img.flipmodimage {border: none}
 img.flipmodimage:hover {border: 1px solid #58A7D2 !important}

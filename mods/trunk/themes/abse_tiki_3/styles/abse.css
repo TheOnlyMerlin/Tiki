@@ -664,16 +664,26 @@ html>body div.box:hover {background: #0E1D10}
 	font-size: 1em;
 	font-weight: normal;
 	margin:0 0 12px;
-	display: block}
+	display: block;
+	position: relative}
 	
-h3.box-title span.moduletitle {float: left}
-h3.box-title span.moduleflip {float: right}
+* html h3.box-title {position: static}
 
-.box img.flipmodimage {display: none}
+.moduleflip {
+	display: none;
+	position: absolute;
+	right: 0;
+	top: 0}
+
+* html .moduleflip {
+	position: static;
+	float: right}
+
+* html .moduleflip,
+.box:hover .moduleflip {display: block}
 
 * html .box img.flipmodimage,
 .box:hover img.flipmodimage {
-	display: block;
 	height: 12px;
 	width: 12px;
 	border: 1px solid transparent}
