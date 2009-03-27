@@ -115,27 +115,24 @@ if (!$exit_module){
 	$smarty->assign('can_admin_groups', $can_admin_groups);	
 	$smarty->assign('can_add_users', $can_add_users);	
 	if ($can_admin_all_workspaces) {
-#		should he be able of adding only 'workspaces groups'?
-#      		$wkgroups = $workspacesLib->get_child_workspaces_groups("0", $includeParent = FALSE);
-#      		$allowed=$userlib->list_can_include_groups($groupName);
-#      			foreach ($wkgroups as $k=>$g) {
-#      				if (in_array($g,$allowed))
-#      					$allwsgroups[]=$g;
-#			}
-#		or *all* site groups (included 'admins` 'RolePerms' etc)? Dunno
+#		should global 'tiki_p_admin_workspace' be able of adding *any* site group
+#		   and objectperm 'tiki_p_admin_workspace' only 'workspaces groups' ?
+#		OR should we make a difference here between the two perms?
+#
+#	   if (!$tiki_p_admin) {.....
+#      		$allwsgroups = $workspacesLib->get_includable_child_workspaces_groups("0", $groupName, $includeParent = FALSE);
+#		}
+#		or *all* site groups (included 'admins` 'RolePerms' etc)? Dunno. I choose this.
+#	   }else{...
 		$allwsgroups = $userlib->list_can_include_groups($groupName);
-		reset ($allwsgroups);
 		array_shift ($allwsgroups); # take away Anonymous
 		array_shift ($allwsgroups); # take away Registered
+		sort($allwsgroups);
+		reset ($allwsgroups);
 		}
 	else	{
 		if ($topmost_workspace_Iadmin=$workspacesLib->get_topmost_workspace_Iadmin($user,$workspace)){
-       		$wkgroups = $workspacesLib->get_child_workspaces_groups($topmost_workspace_Iadmin, $includeParent = TRUE);
-      		$allowed=$userlib->list_can_include_groups($groupName);
-      			foreach ($wkgroups as $k=>$g) {
-      				if (in_array($g,$allowed))
-      					$allwsgroups[]=$g;
-			}
+			$allwsgroups=$workspacesLib->get_includable_child_workspaces_groups($topmost_workspace_Iadmin, $groupName);
 		}
 	}
 		$smarty->assign_by_ref('groups', $allwsgroups); 
