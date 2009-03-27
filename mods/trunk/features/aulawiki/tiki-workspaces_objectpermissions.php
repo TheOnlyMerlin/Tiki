@@ -17,6 +17,7 @@ $workspacesLib = new WorkspaceLib($dbTiki);
 $workspace = $workspacesLib->get_current_workspace();
 $WorkspaceUserLib = new WorkspaceUserLib($dbTiki);
 $can_admin_workspace =false;
+$can_admin_all_workspaces =false;
 $can_admin_resources= false;
 
 if ( $tiki_p_admin == 'y' 
