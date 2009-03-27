@@ -156,7 +156,7 @@ class WorkspaceResourcesLib extends TikiDB {
 	}
 
 	function get_url_admin_workspace($id, $name) {
-		return "./tiki-workspaces_admin.php?find=".$name."&search=find&edit=".$id;
+		return "./tiki-workspaces_admin.php?viewWS=".$id;
 	}
 
 	function get_url_admin_quiz($id, $name) {
@@ -228,7 +228,7 @@ class WorkspaceResourcesLib extends TikiDB {
 	}
 
 	function get_url_remove_workspace($id) {
-		return "./tiki-workspaces_admin.php?viewWS=0&delete=".$id;
+		return "./tiki-workspaces_admin.php?viewWS=".$id."&delete=".$id;
 	}
 
 	function get_url_remove_quiz($id) {

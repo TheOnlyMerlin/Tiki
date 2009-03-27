@@ -53,19 +53,39 @@
 	      				<a class="link" href="tiki-workspaces_objectpermissions.php?objectName={$object.name|escape:"url"}&amp;objectType={$object.type|replace:" ":"+"}&amp;permType=quizzes&amp;resourceIdName={$object.objId}"><img src='images/workspaces/key.gif' alt='{tr}active perms{/tr}' title='{tr}active perms{/tr}' height="16" width="17" border='0' /></a>
 	      			{elseif $object.type=="file gallery"}
 	      				<a class="link" href="tiki-workspaces_objectpermissions.php?objectName={$object.name|escape:"url"}&amp;objectType={$object.type|replace:" ":"+"}&amp;permType=file+galleries&amp;resourceIdName={$object.objId}"><img src='images/workspaces/key.gif' alt='{tr}active perms{/tr}' title='{tr}active perms{/tr}' height="16" width="17" border='0' /></a>
-	      			{elseif $object.type=="workspace" || $object.type=="calendar" || $object.type=="assignments" || $object.type=="sheet"}
+	      			{elseif $object.type=="workspace"}
+					{if $showAdminBar=="y"}
+	      				<a class="link" href="tiki-workspaces_objectpermissions.php?objectName={$object.name|escape:"url"}&amp;objectType={$object.type|replace:" ":"+"}&amp;permType={$object.type|replace:" ":"+"}&amp;resourceIdName={$object.objId}"><img src='images/workspaces/key.gif' alt='{tr}active perms{/tr}' title='{tr}active perms{/tr}' height="16" width="17" border='0' /></a>
+					{/if}
+	      			{elseif $object.type=="calendar" || $object.type=="assignments" || $object.type=="sheet"}
 	      				<a class="link" href="tiki-workspaces_objectpermissions.php?objectName={$object.name|escape:"url"}&amp;objectType={$object.type|replace:" ":"+"}&amp;permType={$object.type|replace:" ":"+"}&amp;resourceIdName={$object.objId}"><img src='images/workspaces/key.gif' alt='{tr}active perms{/tr}' title='{tr}active perms{/tr}' height="16" width="17" border='0' /></a>
 	      			{else}
 	      				<a class="link" href="tiki-workspaces_objectpermissions.php?objectName={$object.name|escape:"url"}&amp;objectType={$object.type|replace:" ":"+"}&amp;permType={$object.type|replace:" ":"+"}s&amp;resourceIdName={$object.objId}"><img src='images/workspaces/key.gif' alt='{tr}active perms{/tr}' title='{tr}active perms{/tr}' height="16" width="17" border='0' /></a>
 	      			{/if}
 	      		</td>
 	      		<td class="{$parImpar}">
-	      		<a class="link" href="{$object.adminURL}"><img src='images/workspaces/config.gif' alt='{tr}Admin resource{/tr}' title='{tr}Admin resource{/tr}' border='0' /></a>
+      			{if $object.type!="workspace"}
+	      		<a class="link" href="{$object.adminURL}">
+			<img src='images/workspaces/config.gif' alt='{tr}Admin resource{/tr}' title='{tr}Admin resource{/tr}' border='0' /></a>
+			{else}
+				{if $showAdminBar=="y"}
+	      		<a class="link" href="{$object.adminURL}">
+			<img src='images/workspaces/config.gif' alt='{tr}Admin resource{/tr}' title='{tr}Admin resource{/tr}' border='0' /></a>
+				{/if}
+			{/if}
 	      		</td>
-	      		<td class="{$parImpar}"><a class="link" href="{$object.removeURL}">
-	      		   <img src='images/workspaces/delete.gif' border='0' alt='{tr}Remove{/tr}' title='{tr}Remove{/tr}' /></a>
+			<td class="{$parImpar}">
+      			{if $object.type!="workspace"}
+	      		<a class="link" href="{$object.removeURL}">
+			<img src='images/workspaces/delete.gif' border='0' alt='{tr}Remove{/tr}' title='{tr}Remove{/tr}' /></a>
+			{else}
+				{if $showAdminBar=="y"}
+	      		<a class="link" href="tiki-workspaces_admin.php?viewWS={$workspaceId}&delete={$object.objId}">
+			 <img src='images/workspaces/delete.gif' border='0' alt='{tr}Remove{/tr}' title='{tr}Remove{/tr}' /></a>
+				{/if}
+			{/if}
 			    </td>
-			  {/if}
+		  {/if}
       	</tr>
      {/foreach}
      </table>

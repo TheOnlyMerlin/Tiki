@@ -64,7 +64,14 @@
      <tr> 
       <td class="formcolor">
       <label for="addGroupName">{tr}Group Name:{/tr}</label>
-      <br/><input name="addGroupName" type="text" id="addGroupName" value="" size="25" maxlength="100"></td>
+      <br/>
+	<!-- input name="addGroupName" type="text" id="addGroupName" value="" size="25" maxlength="100" -->
+<select name="addGroupName" id="addGroupName" >
+{section name=grp loop=$groups}
+<option value="{$groups[grp]|escape}" {if $groupName eq $groups[grp] }selected="selected"{/if}>{$groups[grp]}</option>
+{/section}
+</select>
+     </td>
     </tr>
       <tr> 
       <td class="formcolor" colspan="2"><center><input class="edubutton" type="submit" name="addGroup" value="Add Group"><input class="edubutton" type="button" name="cancel" value="Cancel" onclick="document.getElementById('formAddGroup').style.display = 'none';"></center></td>
@@ -105,15 +112,21 @@
 </form>
 </div>
 <b>Active group: {$activeGroup}</b>
+{* if $error_msg==""*}
 <div class="edubuttons">
+{if $can_add_users!=""}
+{if $can_admin_groups!=""}
 <a class="edubutton" href="#" onclick="document.getElementById('formCreateGroup').style.display = 'block';">
 <img border='0'src='images/workspaces/edu_group_new.gif'/> New group</a>
 <a class="edubutton" href="#" onclick="document.getElementById('formAddGroup').style.display = 'block';">
 <img border='0' src='images/workspaces/edu_group_add.gif'/> Add group</a>
 <a class="edubutton" href="#" onclick="document.getElementById('formRemoveGroup').style.display = 'block';">
 <img border='0' src='images/workspaces/edu_group_remove.gif'/>Remove group</a> 
+{/if}
+
 <a class="edubutton" href="#" onclick="document.getElementById('formCreateUser').style.display = 'block';">
 <img border='0' src='images/workspaces/edu_user_new.gif'/> Add user</a>
+
 </div>
 <div class="edubox">
 {$groupsTree}
@@ -134,5 +147,7 @@
 </tr>
 {/foreach} 
 </table>
+{/if}
+{* /if *}
 {/tiki_workspaces_module}
 

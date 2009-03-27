@@ -22,34 +22,61 @@ $workspacesLib = new WorkspaceLib($dbTiki);
 
 $workspace = $workspacesLib->get_current_workspace();
 $exit_module = false;
+$can_admin_groups=false;
+$can_add_users =false;
+$can_admin_all_workspaces =false;
 
-if ($tiki_p_admin != 'y' && $tiki_p_admin_workspace!='y' && !$userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_admin_workspace")) {
+if ( $tiki_p_admin == 'y' 
+   || $tiki_p_admin_workspace =='y' 
+   || $workspacesLib->user_can_admin_workspace_or_upper($user,$workspace)) {
+	$can_admin_groups = true;
+	$can_add_users =true;
+	}
+else	{			
+	$can_admin_groups = false;
+	}
+if ( $tiki_p_admin == 'y' || $tiki_p_admin_workspace =='y' ) {
+    $can_admin_all_workspaces = true;
+    }
+if ($userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")) {
+	$can_add_users =true;
+	}
+
+if (!$can_admin_groups && !$can_add_users) {
 	$smarty->assign('error_msg', tra("Permission denied, you cannot admin the workspace"));
 	$exit_module = true;
-}elseif (isset ($workspace)) {
+}
+	
+if (isset ($workspace)) {
 	$groupName = "WSGRP".$workspace["code"];
 } else {
 	$smarty->assign('error_msg', tra("Workspace not selected"));
 	$exit_module = true;
+	}
+if ($exit_module){
+	$smarty->assign('activeGroup', $groupName);
 }
-
 if (!$exit_module){
 	if(!isset($module_params["activeGroup"])){
 		$module_params["activeGroup"] = $groupName;
 		$module_params["activeParentGroup"] = "-1";
 	}
 	
-	if (isset ($module_params["addGroupActiveName"])) {
+	if (isset ($module_params["addGroupActiveName"]) && $can_admin_groups) {
 		if($module_params["addGroupName"]=="Anonymous" || $module_params["addGroupName"]=="Registered"){
-			$smarty->assign('error_msg', tra("Anonymous and Registered group can't be added"));	
+		$smarty->assign('error_msg', tra("Anonymous and Registered group can't be added"));	
 		}elseif ($userlib->group_exists($module_params["addGroupName"])) {
-			$userlib->group_inclusion($module_params["addGroupName"], $module_params["addGroupActiveName"]);
+			if ($wsUserLib->group_can_include_group($module_params["addGroupActiveName"],$module_params["addGroupName"])) {
+				$userlib->group_inclusion($module_params["addGroupName"], $module_params["addGroupActiveName"]);
+			} else {
+				$smarty->assign('error_msg', tra($module_params["addGroupActiveName"] ."can't  contain group ". $module_params["addGroupName"]));
+			}			
 		} else {
 			$smarty->assign('error_msg', tra("group not found"));
 		}
 	}
 	
-	if (isset ($module_params["createGroupActiveName"])) {
+	if (isset ($module_params["createGroupActiveName"]) && $can_admin_groups) {
 		if ($userlib->group_exists($groupName."-".$module_params["createGroupName"])) {
 			$smarty->assign('error_msg', tra("group already exist"));
 		} else {
@@ -66,7 +93,7 @@ if (!$exit_module){
 		}
 	}
 	
-	if (isset ($module_params["removeGroupActiveName"])) {
+	if (isset ($module_params["removeGroupActiveName"]) && $can_admin_groups) {
 		if (!$userlib->group_exists($module_params["removeGroupActiveName"])){
 			$smarty->assign('error_msg', tra("group not found"));
 		}elseif($module_params["removeGroupActiveName"]=="WSGRP".$workspace["code"]){
@@ -83,7 +110,36 @@ if (!$exit_module){
 	if (isset ($module_params["removeUserGroupActiveName"])) {
 		$result = $userlib->remove_user_from_group($module_params["removeUserName"], $module_params["removeUserGroupActiveName"]);
 	}
-		
+
+	$smarty->assign('can_admin_all_workspaces', $can_admin_all_workspaces);	
+	$smarty->assign('can_admin_groups', $can_admin_groups);	
+	$smarty->assign('can_add_users', $can_add_users);	
+	if ($can_admin_all_workspaces) {
+#		should he be able of adding only 'workspaces groups'?
+#      		$wkgroups = $workspacesLib->get_child_workspaces_groups("0", $includeParent = FALSE);
+#      		$allowed=$userlib->list_can_include_groups($groupName);
+#      			foreach ($wkgroups as $k=>$g) {
+#      				if (in_array($g,$allowed))
+#      					$allwsgroups[]=$g;
+#			}
+#		or *all* site groups (included 'admins` 'RolePerms' etc)? Dunno
+		$allwsgroups = $userlib->list_can_include_groups($groupName);
+		reset ($allwsgroups);
+		array_shift ($allwsgroups); # take away Anonymous
+		array_shift ($allwsgroups); # take away Registered
+		}
+	else	{
+		if ($topmost_workspace_Iadmin=$workspacesLib->get_topmost_workspace_Iadmin($user,$workspace)){
+       		$wkgroups = $workspacesLib->get_child_workspaces_groups($topmost_workspace_Iadmin, $includeParent = TRUE);
+      		$allowed=$userlib->list_can_include_groups($groupName);
+      			foreach ($wkgroups as $k=>$g) {
+      				if (in_array($g,$allowed))
+      					$allwsgroups[]=$g;
+			}
+		}
+	}
+		$smarty->assign_by_ref('groups', $allwsgroups); 
+
 	$wsgroups = $wsUserLib->get_descendant_groups($groupName, TRUE);
 	$tree_nodes = array ();
 	$imgGroup = "<img border=0 src='images/workspaces/edu_group.gif'>";
@@ -118,4 +174,5 @@ if (!$exit_module){
 	$smarty->assign('activeGroup', $module_params["activeGroup"]);
 	$smarty->assign('activeParentGroup', $module_params["activeParentGroup"]);
 }
+
 ?>

@@ -9,13 +9,23 @@ require_once ('tiki-setup.php');
 require_once ('lib/workspaces/typeslib.php');
 require_once ('lib/workspaces/workspacelib.php');
 
-if ($tiki_p_admin != 'y' && (!isset ($tiki_p_admin_workspace) || $tiki_p_admin_workspace != 'y')) {
-	$smarty->assign('msg', tra("Permission denied"));
+global $userlib;
+global $user;
+#global $tiki_p_admin;
+
+$workspacesLib = new WorkspaceLib($dbTiki);
+
+if (isset ($_REQUEST["viewWS"])) { 
+        $edit=$_REQUEST["viewWS"];
+	$ws = $workspacesLib->get_workspace_by_id($edit);
+}      
+if ($tiki_p_admin != 'y' &&  $tiki_p_admin_workspace != 'y' 
+   && !$workspacesLib->user_can_admin_workspace_or_upper($user,$ws)) {
+	$smarty->assign('msg', tra("Permission denied you cannot admin this workspace"));
 	$smarty->display("error.tpl");
 	die;
 }
 
-$workspacesLib = new WorkspaceLib($dbTiki);
 $wstypesLib = new WorkspaceTypesLib($dbTiki);
 
 $typesAll = $wstypesLib->list_active_types();

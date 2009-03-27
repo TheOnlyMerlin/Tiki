@@ -84,7 +84,14 @@ class WorkspaceUserLib extends TikiLib {
 
 		return $back;
 	}
-
+	function group_can_include_group ($container, $contained) {
+		global $userlib;
+		$cantlist=$userlib->list_can_include_groups($container);
+			if(!in_array($contained, $cantlist)) {
+				return false;
+			}
+		return true;
+	}
 	function get_includegrp_users($group) {
 
 		$grupos = $this->get_descendant_groups($group);

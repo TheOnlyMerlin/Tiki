@@ -7,6 +7,7 @@
 */
 include_once ('typeslib.php');
 include_once ('resourceslib.php');
+include_once ('userlib.php');
 
 class WorkspaceLib extends TikiDB {
 	var $db; // The PEAR db object used to access the database
@@ -331,7 +332,77 @@ class WorkspaceLib extends TikiDB {
 			$userlib->remove_group("WSGRP".$code."-".$key);
 		}
 	}
+	function get_included_groups ($group, $includeParent = TRUE) {
+		$wsUserLib = new WorkspaceUserLib($this->db);
+		$wk=$wsUserLib->get_descendant_groups($group, $includeParent);
+		foreach ($wk as $k => $d) {
+	        	$groups[]=$k;
+	        }
+        return $groups;
+        } 
+	function get_child_workspaces_groups ($topWS, $includeParent = TRUE) {
+		$grps=$this->recourse_child_workspaces_groups ($topWS, $includeParent);
+		$grps=array_unique($grps);
+		# clean empty element left by 'array_unique' ?!
+		foreach ($grps as $k => $d) {
+			if ($d !="")
+				$groups[]=$d;
+		}
+		return $groups;
+	}		
 	
+	function recourse_child_workspaces_groups ($topWS, $includeParent = TRUE) {
+		if ($includeParent) {
+			$topworkspace=$this->get_workspace_by_id($topWS);
+			$groups=$this->get_included_groups("WSGRP".$topworkspace["code"], TRUE);
+			}
+		$wsData = $this->get_child_workspaces(0,-1,'name_desc',$topWS);
+		foreach ($wsData["data"] as $k1 => $d1) {
+			$wk=$this->recourse_child_workspaces_groups ($d1["workspaceId"]);
+			foreach ($wk as $w => $x) {
+				$groups[]=$x;
+			}
+		}
+	return $groups;
+	}	
+	function get_includable_child_workspaces_groups ($topWS, $groupName, $includeParent = TRUE) {
+		global $userlib;
+		$groups=$this->get_child_workspaces_groups($topWS,$includeParent);
+		$allowed=$userlib->list_can_include_groups($groupName);
+      			foreach ($groups as $k=>$g) {
+      				if (in_array($g,$allowed))
+      					$allowedgroups[]=$g;
+			}
+		asort($allowedgroups);	
+		return $allowedgroups;
+	}
+		
+	function get_topmost_workspace_Iadmin ($theuser,$currentWS) {
+		global $userlib;
+		if (! isset($currentWS))
+			return false;
+		$path = $this->get_workspace_path($currentWS["parentId"]);		
+		$path[] = $currentWS;
+		foreach ($path as $k => $d){
+			foreach ($d as $k1 => $d1){
+				if ($k1 == "workspaceId" && $d1 != 0) {
+					if ($userlib->object_has_permission($theuser, $d1, 'workspace', "tiki_p_admin_workspace"))
+						{
+						$topmost_workspace_Iadmin=$d1;
+						return $topmost_workspace_Iadmin;
+					}
+				}
+			}
+		}
+		return false;
+        }		
+        function user_can_admin_workspace ($theuser,$workspace){
+        	return $this->get_topmost_workspace_IAdmin($theuser, $workspace);
+	}        	
+        function user_can_admin_workspace_or_upper ($theuser,$workspace){
+        	return $this->get_topmost_workspace_IAdmin($theuser, $workspace);
+	}        	
+        
 	/*
 		function create_workspace_user($code, $wsType) {
 			global $userlib;
@@ -560,6 +631,5 @@ class WorkspaceLib extends TikiDB {
 		}
 		return $response;
 	}
-	
 }
 ?>

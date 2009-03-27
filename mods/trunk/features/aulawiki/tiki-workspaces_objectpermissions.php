@@ -15,7 +15,20 @@ require_once ('lib/workspaces/workspacelib.php');
 
 $workspacesLib = new WorkspaceLib($dbTiki);
 $workspace = $workspacesLib->get_current_workspace();
+$WorkspaceUserLib = new WorkspaceUserLib($dbTiki);
+$can_admin_workspace =false;
+$can_admin_resources= false;
 
+if ( $tiki_p_admin == 'y' 
+   || $tiki_p_admin_workspace =='y' ) {
+   	$can_admin_all_workspaces = true;
+}elseif($workspacesLib->user_can_admin_workspace_or_upper($user,$workspace)) {
+	$can_admin_workspace = true;
+}
+if ($userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")) {
+	$can_admin_resources =true;
+}
+   
 if (!isset($_REQUEST["referer"])) {
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		$_REQUEST["referer"] = $_SERVER['HTTP_REFERER'];
@@ -63,18 +76,25 @@ if($_REQUEST["objectType"]=="blog"){
 	$admin_perm_name = "tiki_p_admin_wiki";
 }elseif($_REQUEST["objectType"]=="sheet"){
 	$admin_perm_name = "tiki_p_admin_sheet";
+##### pingus start  
+//    'tiki_p_admin_workspace' has no ending "s" too
+}elseif($_REQUEST["objectType"]=="workspace"){
+	$admin_perm_name = "tiki_p_admin_workspace";
+##### pingus end
 }else{
 	$admin_perm_name = "tiki_p_admin_".$_REQUEST["objectType"]."s";
 } 
 
 global $user;
-if ($tiki_p_admin != 'y' && $tiki_p_admin_workspace!='y') {
-	if (!$userlib->object_has_permission($user, $_REQUEST["resourceIdName"], $_REQUEST["objectType"], $admin_perm_name)) {
-		$smarty->assign('msg', tra("Permission denied you cannot view this page"));
-		$smarty->display("error.tpl");
-		die;
+##### pingus start: 
+if (!$can_admin_workspace && !$can_admin_all_workspaces 
+    && ($_REQUEST["objectType"]=="workspace")) {
+    	$smarty->assign('msg', tra("Permission denied you cannot admin the workspace"));
+    	$smarty->display("error.tpl");
+        die;
 	}
-}
+##### pingus end
+
 // Process the form to assign a new permission to this page
 if (isset($_REQUEST["assign"])) {
 	check_ticket('object-perms');
@@ -95,13 +115,30 @@ $page_perms = $userlib->get_object_permissions($_REQUEST["resourceIdName"], $_RE
 $smarty->assign_by_ref('page_perms', $page_perms);
 
 // Get a list of groups
-$groups = $userlib->get_groups(0, -1, 'groupName_desc', '',"WSGRP".$workspace["code"], 'n');
+######## pingus test
+##$groups = $userlib->get_groups(0, -1, 'groupName_desc', '',"WSGRP".$workspace["code"], 'n');
 
-$groups["data"][]["groupName"]="Anonymous";
-$groups["data"][]["groupName"]="Registered";
+if ($can_admin_workspace) {  # he can choose among all groups from topmost-he_admins to bottom
+	if ($topmost_workspace_Iadmin=$workspacesLib->get_topmost_workspace_Iadmin($user,$workspace)){
+		$groups = $workspacesLib->get_child_workspaces_groups($topmost_workspace_Iadmin, $includeParent = TRUE);
+		}
+}elseif ($can_admin_all_workspaces) {  # he can choose among all site groups
+	$groups = $workspacesLib->get_child_workspaces_groups("0", $includeParent = FALSE);
+}elseif ($can_admin_resources) {  
+        # he can only choose among those from-this-ws-level-to-bottom (this+brothers-to-bottom: father excluded)
+//	$groups = $workspacesLib->get_child_workspaces_groups($workspace["parentId"], $includeParent = FALSE);
 
-$smarty->assign_by_ref('groups', $groups["data"]);
+	# OR he can only choose among those from-this-ws-level-to-bottom (this-to-bottom, this included)
+//	$groups = $workspacesLib->get_child_workspaces_groups($workspace["workspaceId"], $includeParent = TRUE);
 
+	# OR he can only choose among those from-father-level-to-bottom ( father-to-bottom, father+brothers included)
+	$groups = $workspacesLib->get_child_workspaces_groups($workspace["parentId"], $includeParent = TRUE);
+	}
+
+$groups[]="Anonymous";
+$groups[]="Registered";
+$smarty->assign_by_ref('groups', $groups);
+                                                                                
 // Get a list of permissions
 $perms = $userlib->get_permissions(0, -1, 'permName_desc', '', $_REQUEST["permType"]);
 $smarty->assign_by_ref('perms', $perms["data"]);
