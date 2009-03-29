@@ -20,8 +20,6 @@ themes/kubrick_tiki_3/styles/kubrick/kubrickbg_right.jpg styles/kubrick/kubrickb
 themes/kubrick_tiki_3/templates/styles/kubrick/credits.tpl templates/styles/kubrick/credits.tpl
 themes/kubrick_tiki_3/templates/styles/kubrick/tiki.tpl templates/styles/kubrick/tiki.tpl
 themes/kubrick_tiki_3/templates/styles/kubrick/tiki-bot_bar.tpl templates/styles/kubrick/tiki-bot_bar.tpl
-themes/kubrick_tiki_3/templates/styles/kubrick/tiki-site_header.tpl templates/styles/kubrick/tiki-site_header.tpl
-themes/kubrick_tiki_3/templates/styles/kubrick/tiki-top_bar.tpl templates/styles/kubrick/tiki-top_bar.tpl
 
 author:
 Gary Cunningham-Lee (chibaguy)

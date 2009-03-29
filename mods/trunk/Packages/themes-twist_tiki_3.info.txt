@@ -22,7 +22,6 @@ themes/twist_tiki_3/templates/styles/twist/credits.tpl templates/styles/twist/cr
 themes/twist_tiki_3/templates/styles/twist/index.php templates/styles/twist/index.php
 themes/twist_tiki_3/templates/styles/twist/tiki.tpl templates/styles/twist/tiki.tpl
 themes/twist_tiki_3/templates/styles/twist/tiki-site_header.tpl templates/styles/twist/tiki-site_header.tpl
-themes/twist_tiki_3/templates/styles/twist/tiki-top_bar.tpl templates/styles/twist/tiki-top_bar.tpl
 
 author:
 Gary Griffin (gg), maintained by Gary Cunningham-Lee (chibaguy)
