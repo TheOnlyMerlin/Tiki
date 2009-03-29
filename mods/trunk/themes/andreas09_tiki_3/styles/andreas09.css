@@ -81,7 +81,7 @@ select {
 	color: #000;
 	font-size: 1.1em;
 	vertical-align: middle;
-	background: #f0f0f0 url(andreas09/menuhover.jpg) top left repeat-x;
+	background: #f0f0f0 url(andreas09/options/red/menuhover.jpg) top left repeat-x;
 	cursor: pointer}
 
 #col2 input[type=submit],
@@ -106,7 +106,7 @@ span.button input,
 	font-size: 10px;
 	padding: 1px 4px;	
 	vertical-align: middle;
-	background: #f0f0f0 url(andreas09/menuhover.jpg) 0 -20px repeat-x;
+	background: #f0f0f0 url(andreas09/options/red/menuhover.jpg) 0 -20px repeat-x;
 	font-weight: bold;
 	margin: 2px;
 	vertical-align: middle;
@@ -121,7 +121,7 @@ input[type=submit]:hover,
 .submitbutton:hover {
 	cursor: pointer;
 	text-decoration: none;
-	background: #f0f0f0 url(andreas09/menuhover.jpg) 0 0 repeat-x;}
+	background: #f0f0f0 url(andreas09/options/red/menuhover.jpg) 0 0 repeat-x;}
 
 select[multiple] {height: 10em}
 
@@ -208,7 +208,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 
 #middle {
 	padding-top: 20px;
-	background: url(andreas09/mid.jpg) repeat-x}
+	background: url(andreas09/options/red/mid.jpg) repeat-x}
 
 #c1c2 {
 	text-align: left;
@@ -279,7 +279,7 @@ div#tiki-main #tikimidtbl {
 /* Site Header & Identity */
 #header-top {
 	min-height: 101px !important;
-	background: url(andreas09/header.jpg) repeat-x bottom;
+	background: url(andreas09/options/red/header.jpg) repeat-x bottom;
 	position: relative}
 
 * html #header-top {height: 101px}
@@ -342,7 +342,7 @@ div#sitead {margin: auto}
 /** horizontal menu and search form **/
 
 #tiki-top {
-	background: url(andreas09/header.jpg) repeat-x;
+	background: url(andreas09/options/red/header.jpg) repeat-x;
 	height: 38px}
 
 #tiki-top a {}
@@ -356,7 +356,7 @@ div#sitead {margin: auto}
 
 #sitesearchbar .button {
 	border: solid 1px #AAAAAA;
-	background: #f0f0f0 url(andreas09/menuhover.jpg) top left repeat-x;
+	background: #f0f0f0 url(andreas09/options/red/menuhover.jpg) top left repeat-x;
 	color: #505050;
 	font-weight: bold;
 	margin: 2px;
@@ -426,7 +426,7 @@ a.flip img {display: none}
 	text-transform: uppercase}
 
 .horbaritem a:hover {
-	background: #f0f0f0 url(andreas09/menuhover.jpg) top 	left repeat-x;
+	background: #f0f0f0 url(andreas09/options/red/menuhover.jpg) top 	left repeat-x;
 	color: #505050;
 	text-decoration: none}
 
@@ -528,7 +528,7 @@ a.phplmselected:active {
 	color: black;
 	text-decoration: underline;
 	font-weight: bold;
-	background: url(andreas09/menuhover.jpg)}
+	background: url(andreas09/options/red/menuhover.jpg)}
 
 a.phplmselected:hover {color: #808080}
 
@@ -543,7 +543,7 @@ a.phplmselected:hover {color: #808080}
 	text-transform: uppercase}
 	
 #tiki-top .cssmenu_horiz li a:hover {
-	background: url(andreas09/menuhover.jpg);
+	background: url(andreas09/options/red/menuhover.jpg);
 	text-decoration: none}
 	
 .cssmenu_vert li a  {
@@ -707,7 +707,7 @@ a.tikihelp:hover {
 
 /** Admin pages **/
 /* overrides inline css */
-div.adminanchors {background: url(andreas09/bodybg.jpg) repeat-x !important}
+div.adminanchors {background: url(andreas09/options/red/header.jpg) repeat-x !important}
 
 /** Find form **/
 
@@ -982,7 +982,7 @@ a.forumnameread {}
 .tabmark a:hover {
 	color: black;
 	text-decoration: none;
-	background: #f0f0f0 url(andreas09/menuhover.jpg) top left repeat-x}
+	background: #f0f0f0 url(andreas09/options/red/menuhover.jpg) top left repeat-x}
 
 .tabcontent {
 	z-index: 200;
@@ -1091,7 +1091,7 @@ div#description {
 	margin-bottom: 10px}
 
 .titlebar {
-	background:#f0f0f0 url(andreas09/menuhover.jpg) top left repeat-x;
+	background:#f0f0f0 url(andreas09/options/red/menuhover.jpg) top left repeat-x;
 	color:#505050;
 	font-weight: bold;
 	text-transform: uppercase;
@@ -1395,7 +1395,7 @@ div.postfooter {
 
 .post .postbody-title {
 	display: block;
-	background: transparent url(andreas09/bodybg.jpg) repeat-x;
+	background: transparent url(andreas09/options/red/header.jpg) repeat-x;
 	border-bottom: none;
 	margin-bottom: 4px;
 	padding-top: 2px}
@@ -1424,7 +1424,7 @@ div.postfooter {
 
 .post .author_post_info {
 	display: block;
-	background: #f3efee url(andreas09/bodybg.jpg) repeat-x 0 -101px;
+	background: #f3efee url(andreas09/options/red/mid.jpg) repeat-x 0 -101px;
 	padding: 0 0 2px 0}
 
 .post .author_info .icons {display: block}
@@ -1845,7 +1845,7 @@ Caltrack a:visited {color: #00BD02}
 .box-data td a.today {
 	border: solid 1px #696969;
 	border: solid 1px #AAAAAA;
-	background: #f0f0f0 url(andreas09/menuhover.jpg) top left repeat-x;
+	background: #f0f0f0 url(andreas09/options/red/menuhover.jpg) top left repeat-x;
 	color: #505050;
 	font-weight: bold;
 	margin: 2px;
@@ -1884,16 +1884,16 @@ Caltrack a:visited {color: #00BD02}
 
 .daterow {
 	color: #000;
-	background: #f0f0f0 url(andreas09/menuhover.jpg) top left repeat-x;
+	background: #f0f0f0 url(andreas09/options/red/menuhover.jpg) top left repeat-x;
 	cursor: pointer}
 	
 .daterow:hover {
 	color: #000;
-	background: #f0f0f0 url(andreas09/menuhover.jpg) top left repeat-x}
+	background: #f0f0f0 url(andreas09/options/red/menuhover.jpg) top left repeat-x}
 
 .calnavigation a,.calnavigation a:hover {
 	color: #000;
-	background: #f0f0f0 url(andreas09/menuhover.jpg) top left repeat-x}
+	background: #f0f0f0 url(andreas09/options/red/menuhover.jpg) top left repeat-x}
 
 /*****  Polls  *****/
 

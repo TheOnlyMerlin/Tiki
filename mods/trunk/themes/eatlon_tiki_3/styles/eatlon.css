@@ -237,7 +237,7 @@ td#rightmargin {
 	width: 6.8%;
 	background: transparent}
 
-td#header {
+td#main-header {
 	text-align: left;
 	height: 215px;
 	background: #fff url(eatlon/head_bg.gif) repeat-x}
@@ -291,11 +291,11 @@ div#tiki-bot {}
 
 /* Site Header & Identity */
 
-div#header-top {
+div#header {
 	height: 140px;
 	position: relative}
 	
-div#header-liner {
+div#header-top {
 	height: 140px;
 	background: url(eatlon/banner.gif) no-repeat right}
 

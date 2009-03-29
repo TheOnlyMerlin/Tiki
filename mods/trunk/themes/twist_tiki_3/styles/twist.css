@@ -89,8 +89,6 @@ form {
 	padding: 0;
 	margin: 0}
 
-
-
 input,
 textarea,
 option,
@@ -102,20 +100,15 @@ select {
 	line-height: normal}
 
 input[type="checkbox"],
-input[type=radio] {
-	
-}
+input[type=radio] {}
 
 input[type="text"],
-input[type="password"] {
+input[type="password"] {}
 
-}
 input[type=submit],
 input[type=file],
 input[type=reset],
-select {
-	
-}
+select {}
 
 /* Links in buttons */
 span.button a,
@@ -168,18 +161,10 @@ input[type=checkbox] {border: 0}
 form.admin input[name="features"] {margin-bottom: 3px !important}
 select {}
 
-select[multiple] {
-	height: 10em}
-
-select[name="theme"] {
-	width: 125px}
-
-small {
-	
-}
-
-label {
-	cursor: pointer}
+select[multiple] {height: 10em}
+select[name="theme"] {width: 125px}
+small {}
+label {cursor: pointer}
 
 ol {}
 ul {}
@@ -232,7 +217,7 @@ td#leftmargin {
 td#rightmargin {
 	width: 10%}
 
-td#header {
+td#main-header {
 	background: url(twist/header.jpg) no-repeat 100% 0;
 	color: #ffffff;
 	height: 98px;
@@ -240,10 +225,10 @@ td#header {
 	margin-left: 30px;
 	padding: 0;}
 	
-td#header a,
-td#header a:visited {color: #ffffff}
+td#main-header a,
+td#main-header a:visited {color: #ffffff}
 	
-div#headerliner  {
+div#header  {
 	background: url(twist/header.jpg) no-repeat 0 0;
 	margin: 0;
 	margin-right: 22px}
@@ -650,25 +635,6 @@ div.optionline {
 .option a:link,
 .option a:visited,
 a.linkmenu, .rsslink, .linkmenu:visited, .rsslink:visited {}
-.linkmenu:hover {}
-
-.linkmenu {
-	font-size: 9px;
-	color: #666699;
-	line-height: 13px;
-	padding-top: 0px;
-	font-family: "Lucida Grande", Verdana, Geneva, Arial,  sans-serif; text-decoration: none
-}
-
-.linkmenu:active {
-	color: #666699
-}
-
-.linkmenu:hover {
-	width: 100%;
-	color: black;
-	background-color: #efefef
-}
 
 /* Or these .linkmenu, below. Find out which */
 .linkmenu {

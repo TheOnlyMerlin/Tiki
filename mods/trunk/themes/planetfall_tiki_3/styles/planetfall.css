@@ -242,7 +242,7 @@ tr#cols {}
 
 td#leftmargin {width: 10%}
 	
-td#header {
+td#main-header {
 	border: 1px solid #9DA6B3;
 	background: url(planetfall/header_bg.jpg) no-repeat  0 10px #04030B;
 	height: 111px}
@@ -311,24 +311,12 @@ td#footer .content,
 #credits {display: inline}
 /* end Type 2 layout ***/
 
-/*** Error page ***/
-
-div#tiki-main #tiki-top {/*margin-top: height needed to match page bg image*/}
-div#tiki-mid {/*background: */}
-div#tiki-main #tiki-top {}
-
-/* To center cbox */
-div#tiki-main #tikimidtbl {
-	margin: auto;
-	width: auto}
-
 div#tiki-bot {
 	position: absolute;
 	bottom: 0}
 
 /* Site Header & Identity */
-#header-top {height: 111px;
-	position: relative}
+#header {height: 111px}
 
 /* Theme-specific selector to hold logo. */
 div#silogo {
@@ -350,6 +338,8 @@ div#header_module {
 	margin: 0;
 	width: 100%;
 	text-align: left}
+	
+#header-top {position: relative}
 
 #sioptions  {padding: 1em}
 #sioptionscentered {text-align: center}

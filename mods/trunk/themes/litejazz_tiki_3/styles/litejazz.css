@@ -184,7 +184,7 @@ tr#cols {}
 td#leftmargin {width: 10%}
 td#rightmargin {width: 10%}
 
-td#header {
+td#main-header {
 	background: #170808 url(litejazz/header.jpg) 100% 0 no-repeat;
 	vertical-align: bottom}
 
@@ -279,7 +279,6 @@ div#tiki-bot {
 /* Site Header & Identity */
 
 #header-top {
-	background: url(litejazz/header.jpg) no-repeat;
 	margin-right: 15px;
 	position: relative;
 	min-height: 78px}
@@ -287,8 +286,7 @@ div#tiki-bot {
 #siteheader {
 	background: transparent;
 	vertical-align: middle;
-	padding: .6em;
-	padding-bottom: 0;
+	padding: 0;
 	margin: 0}
 
 div#sioptions {

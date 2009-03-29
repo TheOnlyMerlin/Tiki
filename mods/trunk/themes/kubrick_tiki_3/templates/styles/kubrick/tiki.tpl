@@ -9,10 +9,7 @@
 	<body{if isset($section) and $section eq 'wiki page' and $prefs.user_dbl eq 'y' and $dblclickedit eq 'y' and $tiki_p_edit eq 'y'} ondblclick="location.href='tiki-editpage.php?page={$page|escape:"url"}';"{/if} onload="{if $prefs.feature_tabs eq 'y'}tikitabs({if $cookietab neq ''}{$cookietab}{else}1{/if},50);{/if}{if $msgError} javascript:location.hash='msgError'{/if}"{if $section or $smarty.session.fullscreen eq 'y'} class="{if $section}tiki_{$section}{/if}{if $smarty.session.fullscreen eq 'y'} fullscreen{/if}"{/if}>
 		<ul class="jumplinks" style="position:absolute;top:-9000px;left:-9000px;z-index:9;">
 			<li><a href="#tiki-center">{tr}Jump to Content{/tr}</a></li>
-			{*<li><a href="#nav">{tr}Jump to Navigation{/tr}</a></li>
-			<li><a href="#footer">{tr}Jump to Footer{/tr}</a></li>*}
 		</ul>
-
 {if $prefs.feature_community_mouseover eq 'y'}{popup_init src="lib/overlib.js"}{/if}
 {if $prefs.feature_fullscreen eq 'y' and $filegals_manager eq '' and $print_page ne 'y'}
 	{if $smarty.session.fullscreen eq 'y'}
@@ -21,10 +18,7 @@
 		<a href="{$smarty.server.SCRIPT_NAME}{if $fsquery}?{$fsquery|escape:"url":"UTF-8"}&amp;{else}?{/if}fullscreen=y" class="menulink" id="fullscreenbutton">{icon _id=application_get alt="{tr}Fullscreen{/tr}"}</a>
 	{/if}
 {/if}
-{* Index we display a wiki page here *}
-{if $prefs.feature_bidi eq 'y'}
-	<div dir="rtl">
-{/if}
+{* TikiTest ToolBar *}
 {if $prefs.feature_tikitests eq 'y' and $tikitest_state neq 0}
 {include file="tiki-tests_topbar.tpl"}
 {/if}
@@ -32,32 +26,29 @@
 	{include file="tiki-ajax_header.tpl"}
 {/if}
 {if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
-<div id="tiki-main">
 	<br style="clear:both; height: 1px" />
 		<table width="100%" cellpadding="0" cellspacing="0" id="main">
 			<tr id="cols">
 				<td rowspan="3" id="leftmargin">&nbsp;</td>
-				<td colspan="5" id="header">
-					<div class="wrapper">
-						<div class="wrapper2">
-							<div class="clearfix" id="header-top">
-							{if $prefs.feature_siteidentity eq 'y'}
+				<td colspan="5" id="main-header">
+					<div id="header">
+						<div class="wrapper">
+							<div class="clearfix" id="wrapper2">
 								{* Site identity header section *}
 								<div class="clearfix" id="siteheader">
 									{include file="tiki-site_header.tpl"}
 								</div>
-							{/if}
 							</div>
 						</div>
 					</div>
 				</td>
-				<td rowspan="3" id="rightmargin"></td>
+				<td rowspan="3" id="rightmargin">&nbsp;</td>
 				</tr>
 				<tr id="midrow">
 				<td id="leftborder"><img src="styles/kubrick/kubrickbg_left.jpg" alt="leftborder" /></td>
 				{if $prefs.feature_left_column ne 'n' && $left_modules|@count > 0 && $show_columns.left_modules ne 'n'}
 				<td id="leftcolumn" valign="top" {if $prefs.feature_left_column eq 'user'}
-			style="display:{if isset($cookie.show_leftcolumn) and $cookie.show_leftcolumn ne 'y'}none{else}table-cell;_display:block{/if};"{/if}>
+			style="display:{if isset($cookie.show_leftcolumn) and $cookie.show_leftcolumn ne 'y'}none{else}table-cell;_display:block{/if};"{/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
 			<h2 class="hidden">Sidebar</h2>
 					<div class="colwrapper">
 						{section name=homeix loop=$left_modules}
@@ -66,7 +57,7 @@
 					</div>
 				</td>
 				{/if}
-				<td id="centercolumn" valign="top">
+				<td id="centercolumn" valign="top"{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
 			{/if}
 			<hr class="hidden" /> {* for semantic separation of center and side columns *}
 			{if $smarty.session.fullscreen neq 'y'}
@@ -96,7 +87,7 @@
 				</td>
 	 			{if $prefs.feature_right_column ne 'n' && $right_modules|@count > 0 && $show_columns.right_modules ne 'n'}
 				<td id="rightcolumn" valign="top" {if $prefs.feature_right_column eq 'user'} 
-			style="display:{if isset($cookie.show_rightcolumn) and $cookie.show_rightcolumn ne 'y'}none{else}table-cell;_display:block{/if};" {/if}>
+			style="display:{if isset($cookie.show_rightcolumn) and $cookie.show_rightcolumn ne 'y'}none{else}table-cell;_display:block{/if};" {/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
 			<h2 class="hidden">Sidebar</h2>
 					<div class="colwrapper">
 						{section name=homeix loop=$right_modules}
@@ -105,11 +96,11 @@
 					</div>
 				</td>
 			{/if}
-				<td id="rightborder" valign="top"><img src="styles/kubrick/kubrickbg_right.jpg" alt="." /></td>
+			<td id="rightborder" valign="top"><img src="styles/kubrick/kubrickbg_right.jpg" alt="." /></td>
 		</tr>
 		{if $prefs.feature_bot_bar eq 'y'}
 		<tr>
-		<td colspan="5" id="footer" colspan="5">
+		<td colspan="5" id="footer" colspan="5"{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
 			<div class="wrapper"> 
 		  			<div class="content">
     					{include file="tiki-bot_bar.tpl"}
@@ -126,11 +117,6 @@
 	<div id="credits">
 		{include file="credits.tpl"}
 	</div>
-</div>
-</div>
-{/if}
-{if $prefs.feature_bidi eq 'y'}
-</div>
 {/if}
 {include file="footer.tpl"}
 	</body>

@@ -14,7 +14,7 @@ body {
 	padding: 0;
 	text-align: left;
 	width: 100%;
-	background: #e8eaec;
+	background: #fff;
 	font: 76% Verdana,Tahoma,Arial,sans-serif;
 	line-height: 1.4em;
 	color: #303030}
@@ -131,7 +131,7 @@ td#leftmargin {width: 10%}
 tr#cols {}
 td#rightmargin {width: 10%}
 
-td#header {
+td#main-header {
 	background: #467aa7;
 	color: #ffffff}
 
@@ -180,16 +180,6 @@ div#tiki-bot {
 	
 #credits {display: inline}
 /*  end layout tables */
-
-/*** Error page ***/
-/* To center cbox */
-div#tiki-main {background: #fff}
-
-div#tiki-main #tikimidtbl {
-	margin: auto;
-	width: auto}
-
-div#tiki-bot {text-align: center}
 
 /* Site Header & Identity */
 #header-top {

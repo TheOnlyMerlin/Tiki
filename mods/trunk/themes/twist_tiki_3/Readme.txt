@@ -15,7 +15,6 @@ updated For TikiWiki version 3.0 and committed to the Tiki Mods Subversion repos
 * templates/styles/twist/index.php
 * templates/styles/twist/tiki.tpl
 * templates/styles/twist/tiki-site_header.tpl
-* templates/styles/twist/tiki-top_bar.tpl
 
 -=Stylesheet and background images=-
 * styles/twist.css

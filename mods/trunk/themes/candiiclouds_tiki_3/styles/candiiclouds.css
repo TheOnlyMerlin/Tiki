@@ -252,15 +252,6 @@ td#rightborder {}
 
 /*** end Type 2 layout ***/
 
-/*** Error page ***/
-/* To center cbox */
-div#tiki-main {}
-div#tiki-main #tikimidtbl {
-	margin: auto;
-	width: auto}
-
-div#tiki-bot {text-align: center}
-
 /* Site Header & Identity */
 #header-top {
 	height: 120px;

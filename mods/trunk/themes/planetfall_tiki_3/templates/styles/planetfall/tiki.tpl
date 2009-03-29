@@ -9,10 +9,7 @@
 	<body{if isset($section) and $section eq 'wiki page' and $prefs.user_dbl eq 'y' and $dblclickedit eq 'y' and $tiki_p_edit eq 'y'} ondblclick="location.href='tiki-editpage.php?page={$page|escape:"url"}';"{/if} onload="{if $prefs.feature_tabs eq 'y'}tikitabs({if $cookietab neq ''}{$cookietab}{else}1{/if},50);{/if}{if $msgError} javascript:location.hash='msgError'{/if}"{if $section or $smarty.session.fullscreen eq 'y'} class="{if $section}tiki_{$section}{/if}{if $smarty.session.fullscreen eq 'y'} fullscreen{/if}"{/if}>
 		<ul class="jumplinks" style="position:absolute;top:-9000px;left:-9000px;z-index:9;">
 			<li><a href="#tiki-center">{tr}Jump to Content{/tr}</a></li>
-			{*<li><a href="#nav">{tr}Jump to Navigation{/tr}</a></li>
-			<li><a href="#footer">{tr}Jump to Footer{/tr}</a></li>*}
 		</ul>
-
 {if $prefs.feature_community_mouseover eq 'y'}{popup_init src="lib/overlib.js"}{/if}
 {if $prefs.feature_fullscreen eq 'y' and $filegals_manager eq '' and $print_page ne 'y'}
 	{if $smarty.session.fullscreen eq 'y'}
@@ -20,32 +17,6 @@
 	{else}
 		<a href="{$smarty.server.SCRIPT_NAME}{if $fsquery}?{$fsquery|escape:"url":"UTF-8"}&amp;{else}?{/if}fullscreen=y" class="menulink" id="fullscreenbutton">{icon _id=application_get alt="{tr}Fullscreen{/tr}"}</a>
 	{/if}
-{/if}
-{* $Id: tiki.tpl 12618 2008-04-21 05:43:35Z chibaguy $ *}<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html 
-	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
-	<head>
-{include file="header.tpl"}
-	</head>
-	<body{if isset($section) and $section eq 'wiki page' and $prefs.user_dbl eq 'y' and $dblclickedit eq 'y' and $tiki_p_edit eq 'y'} ondblclick="location.href='tiki-editpage.php?page={$page|escape:"url"}';"{/if} onload="{if $prefs.feature_tabs eq 'y'}tikitabs({if $cookietab neq ''}{$cookietab}{else}1{/if},50);{/if}{if $msgError} javascript:location.hash='msgError'{/if}"{if $section or $smarty.session.fullscreen eq 'y'} class="{if $section}tiki_{$section}{/if}{if $smarty.session.fullscreen eq 'y'} fullscreen{/if}"{/if}>
-		<ul class="jumplinks" style="position:absolute;top:-9000px;left:-9000px;z-index:9;">
-			<li><a href="#tiki-center">{tr}Jump to Content{/tr}</a></li>
-			{*<li><a href="#nav">{tr}Jump to Navigation{/tr}</a></li>
-			<li><a href="#footer">{tr}Jump to Footer{/tr}</a></li>*}
-		</ul>
-
-{if $prefs.feature_community_mouseover eq 'y'}{popup_init src="lib/overlib.js"}{/if}
-{if $prefs.feature_fullscreen eq 'y' and $filegals_manager eq '' and $print_page ne 'y'}
-	{if $smarty.session.fullscreen eq 'y'}
-		<a href="{$smarty.server.SCRIPT_NAME}{if $fsquery}?{$fsquery|escape:"url":"UTF-8"}&amp;{else}?{/if}fullscreen=n" class="menulink" id="fullscreenbutton">{icon _id=application_put alt="{tr}Cancel Fullscreen{/tr}"}</a>
-	{else}
-		<a href="{$smarty.server.SCRIPT_NAME}{if $fsquery}?{$fsquery|escape:"url":"UTF-8"}&amp;{else}?{/if}fullscreen=y" class="menulink" id="fullscreenbutton">{icon _id=application_get alt="{tr}Fullscreen{/tr}"}</a>
-	{/if}
-{/if}
-{if $prefs.feature_bidi eq 'y'}
-	<div dir="rtl">
 {/if}
 {* TikiTest ToolBar *}
 {if $prefs.feature_tikitests eq 'y' and $tikitest_state neq 0}
@@ -55,22 +26,16 @@
 	{include file="tiki-ajax_header.tpl"}
 {/if}
 {if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
-<div id="tiki-main">
-	{if $user eq 'admin' and $tiki_upgrade eq 'y'}
-		<div style="background: #ee0000; color: white; border: 2px solid #990000; margin: 1px 1px; width: 99$; clear: both; font-weight: bold; text-align: center;">A new version of TikiWiki has been released: {$tiki_release}!  You are currently running {$tiki_version}.</div>
-	{/if}
 		<table width="100%" cellpadding="0" cellspacing="0" id="main">
 			<tr id="cols">
 				<td rowspan="3" id="leftmargin">&nbsp;</td>
 				<td id="leftborder" rowspan="3"><img src="styles/planetfall/9DA6B3-1x1.png" height="100%" width="1px" alt="spacer" /></td>{* For content cols - leftmargin graphic border. *}
-				<td colspan="5{* change to 5 if the 2 border tds are used *}" id="header">
-				<div class="clearfix" id="header-top">
-					{if $prefs.feature_siteidentity eq 'y' and $filegals_manager ne 'y'}
-						{* Site identity header section *}
-						<div class="clearfix" id="siteheader">
-							{include file="tiki-site_header.tpl"}
-						</div>
-					{/if}
+				<td colspan="5{* change to 5 if the 2 border tds are used *}" id="main-header">
+				<div class="clearfix" id="header">
+				{* Site identity header section *}
+					<div class="clearfix" id="siteheader">
+						{include file="tiki-site_header.tpl"}
+					</div>
 				</div>
 				</td>
 				<td id="rightborder" rowspan="5"><img src="styles/planetfall/9DA6B3-1x1.png" height="100%" width="1px" alt="spacer" /></td>{* For content cols - rightmargin graphic border. *}
@@ -101,6 +66,7 @@
 				{/if}
 				<div id="tiki-center">
 					{$mid_data}
+					{show_help}
 				</div>
 				<hr class="hidden" /> {* for semantic separation of center and side columns *}
 				{if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
@@ -140,10 +106,6 @@
 		</tr>
 		{/if}
 		</table>
-</div>
-{/if}
-{if $prefs.feature_bidi eq 'y'}
-</div>
 {/if}
 {include file="footer.tpl"}
 	</body>

@@ -342,10 +342,11 @@ div#tiki-main #tikimidtbl {
 div#tiki-bot {}
 
 /* Site Header & Identity */
+#main-header {background: url(faulkner/parchmentleft.jpg) repeat-y;}
+div#header {background: url(faulkner/parchmentright.jpg) 100% 0 repeat-y}
 
 #header-top {
 	position: relative;
-	background: url(faulkner/parchmentleft.jpg) repeat-y;
 	text-align: center;
 	min-height: 70px}
 
@@ -389,14 +390,17 @@ input[id="sl-login-pass"] {font-size: 90%}
 
 /* #header text selectors, if needed */
 
-#sitetitle,
-#sitesubtitle {}
-
+#sitetitles {
+	background: url(faulkner/title_right.gif) 100% 16px no-repeat;
+	padding-right: 60px}
+	
 #sitetitle {
 	font: 250% garamond, times, 'times new romans', serif;
 	color: #630;
 	font-weight: 600;
-	margin: 0 auto}
+	margin: 0 auto;
+	background: url(faulkner/title_left.gif) 0 16px no-repeat;
+	padding-left: 60px}
 
 #sitesubtitle {
 	font: 100% times, 'times new romans', serif;
@@ -404,6 +408,7 @@ input[id="sl-login-pass"] {font-size: 90%}
 	letter-spacing: 3px;
 	margin: 0 auto;
 	margin-bottom: 20px;
+	margin-left: 60px;
 	padding: 0px;
 	font-variant: small-caps}
 
@@ -422,9 +427,10 @@ input[id="sl-login-pass"] {font-size: 90%}
 #tiki-top {
 	margin: 0 auto;
 	padding: 0;
+	padding-bottom: 20px;
 	list-style-type: none;
 	text-align: center;
-	background: url(faulkner/parchmentleft.jpg) repeat-y}
+	background: url(faulkner/ornament.gif) bottom center no-repeat;}
 
 #tiki-top a {}
 #tiki-top table {

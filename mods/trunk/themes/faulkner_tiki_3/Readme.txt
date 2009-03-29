@@ -13,21 +13,14 @@ Use Look & Feel custom code for the site title text ornaments (see docs).
 (All file paths from Tiki root directory.)
 * templates/styles/faulkner/credits.tpl
 * templates/styles/faulkner/index.tpl
-* templates/styles/faulkner/sicustomcode.tpl
 * templates/styles/faulkner/tiki.tpl
-
-!!! The following template are identical to those of other *lite.css-based themes I am making for TikiWiki version 1.10:
-* templates/styles/faulkner/header.tpl
-* templates/styles/faulkner/tiki-bot_bar.tpl
-* templates/styles/faulkner/tiki-site_header.tpl
-* templates/styles/faulkner/tiki-top_bar.tpl
 
 -=Stylesheet and background images=-
 * styles/faulkner.css
 * styles/faulkner/bullet.gif
-
 * styles/faulkner/entrybg.gif
 * styles/faulkner/foot.jpg
+* styles/faulkner/faulkner.png
 * styles/faulkner/h3bg.gif
 * styles/faulkner/leftmargin.jpg
 * styles/faulkner/menu.gif
@@ -43,7 +36,8 @@ http://themes.tikiwiki.org/Faulkner
 http://zukakakina.com/Faulkner
  
 -=Version=-
-* Compatible with TikiWiki 1.10.0b1 and newer.
+* Compatible with TikiWiki 3.0beta and newer.
  
 -=Changelog=-
+2 update for Tiki 3
 1 initial package
