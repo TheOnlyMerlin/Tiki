@@ -1406,7 +1406,7 @@ div.articletitle {
 	text-align: left;
 	background: url(fluidindex/page.gif) 0px 17px no-repeat}
  
-span.titlea {
+div.articletitle h2 {
 	font-size: 1.2em;
 	font-weight: bold}
 

@@ -1292,8 +1292,7 @@ div.articletitle {
 	
 div.articletitle br {display: none}
  
-span.titlea {
-	display: block;
+div.articletitle h2 {
 	font-size: 1.8em;
 	font-weight: normal;
 	height: auto;

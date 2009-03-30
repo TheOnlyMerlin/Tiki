@@ -1368,8 +1368,7 @@ div.articletitle {
 	text-indent: 18px;
 	min-height: 48px}
  
-span.titlea {
-	display: block;
+div.articletitle h2 {
 	background: url(snow/pagetitle-bullet.gif) no-repeat;
 	background-position: 4px 0;
 	font-size: 1.4em;

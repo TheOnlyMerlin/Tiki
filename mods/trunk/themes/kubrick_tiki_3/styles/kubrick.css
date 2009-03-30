@@ -1521,11 +1521,10 @@ div.articletitle {
 	clear: both;
 	margin-left: 20px}
  
-span.titlea {
+div.articletitle h2 {
 	font-size: 1.6em;
 	font-weight: bold;
 	letter-spacing: -1px;
-	display: block;
 	padding: 0 20px;
 	margin: 3px 0 6px 0;
 	color: #444}

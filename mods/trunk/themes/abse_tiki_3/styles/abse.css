@@ -1171,7 +1171,7 @@ div.articletitle {
 	background: url(abse/menubg.jpg) repeat-y;
 	margin-bottom: 1em}
  
-span.titlea {
+div.articletitle h2 {
 	font-size: 1.4em;
 	font-weight: bold}
  

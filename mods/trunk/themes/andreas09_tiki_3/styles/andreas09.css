@@ -1245,9 +1245,9 @@ div.articletitle {
 	margin: 0 0 15px;
 	padding: 0}
  
-span.titlea {
+div.articletitle h2 {
 	font-size: 1.6em;
-	font-weight:bold}
+	font-weight: bold}
 
 span.titleb {} 
 

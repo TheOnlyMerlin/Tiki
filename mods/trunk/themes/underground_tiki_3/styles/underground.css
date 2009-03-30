@@ -1372,8 +1372,7 @@ div.articletitle {
 	padding: 4px 0 4px 8px; 
 	display: block}
  
-span.titlea {
-	display: block;
+div.articletitle h2 {
 	padding: 4px 0 4px 8px; 
 	font-size: 105%;
 	color: #FFF;

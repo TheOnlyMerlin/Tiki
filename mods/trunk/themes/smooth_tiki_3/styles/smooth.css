@@ -1249,8 +1249,7 @@ div.articletopline {
 div.articletitle {
 	}
  
-span.titlea {
-	display: block;
+div.articletitle h2 {
 	height: 28px;
 	margin-top: 0;
 	padding: 12px 0 0 20px;
