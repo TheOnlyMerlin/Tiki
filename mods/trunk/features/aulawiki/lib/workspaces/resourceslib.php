@@ -577,6 +577,7 @@ class WorkspaceResourcesLib extends TikiDB {
                  $fgal_info['desc'] = $desc;
                  $fgal_info['user'] = 'admin';
                  $fgal_info['maxRows'] = 15;
+                 $fgal_info['public'] = "y";
 ###############	$galId = $filegallib->replace_file_gallery($galId, $name, $desc, "admin", 15, 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 2024);
                  $galId = $filegallib->replace_file_gallery($fgal_info);
 // patched by pingus - added to svn by xavi - end
