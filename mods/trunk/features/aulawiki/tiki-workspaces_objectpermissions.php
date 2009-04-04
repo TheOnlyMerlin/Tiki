@@ -119,21 +119,22 @@ $smarty->assign_by_ref('page_perms', $page_perms);
 ######## pingus test
 ##$groups = $userlib->get_groups(0, -1, 'groupName_desc', '',"WSGRP".$workspace["code"], 'n');
 
-if ($can_admin_workspace) {  # he can choose among all groups from topmost-he_admins to bottom
-	if ($topmost_workspace_Iadmin=$workspacesLib->get_topmost_workspace_Iadmin($user,$workspace)){
-		$groups = $workspacesLib->get_child_workspaces_groups($topmost_workspace_Iadmin, $includeParent = TRUE);
-		}
-}elseif ($can_admin_all_workspaces) {  # he can choose among all site groups
+if ($can_admin_all_workspaces) {  # he can choose among all site groups
 	$groups = $workspacesLib->get_child_workspaces_groups("0", $includeParent = FALSE);
+}elseif ($can_admin_workspace) {  # he can choose among all groups from topmost-he_admins to bottom
+	if ($topmost_workspace_Iadmin=$workspacesLib->get_topmost_workspace_Iadmin($user,$workspace)){
+               if($workspace["workspaceId"]=$topmost_workspace_Iadmin) {
+                    $topmost_workspace_Iadmin=$workspace["parentId"];
+                }          
+		$groups = $workspacesLib->get_child_workspaces_groups($topmost_workspace_Iadmin, $includeParent = TRUE);
+	}
 }elseif ($can_admin_resources) {  
         # he can only choose among those from-this-ws-level-to-bottom (this+brothers-to-bottom: father excluded)
-	$groups = $workspacesLib->get_child_workspaces_groups($workspace["parentId"], $includeParent = FALSE);
-
+//	$groups = $workspacesLib->get_child_workspaces_groups($workspace["parentId"], $includeParent = FALSE);
 	# OR he can only choose among those from-this-ws-level-to-bottom (this-to-bottom, this included)
 //	$groups = $workspacesLib->get_child_workspaces_groups($workspace["workspaceId"], $includeParent = TRUE);
-
 	# OR he can only choose among those from-father-level-to-bottom ( father-to-bottom, father+brothers included)
-//	$groups = $workspacesLib->get_child_workspaces_groups($workspace["parentId"], $includeParent = TRUE);
+	$groups = $workspacesLib->get_child_workspaces_groups($workspace["parentId"], $includeParent = TRUE);
 	}
 
 $groups[]="Anonymous";
