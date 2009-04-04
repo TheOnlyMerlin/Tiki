@@ -216,7 +216,7 @@ class WorkspaceResourcesLib extends TikiDB {
 	}
 
 	function get_url_remove_filegallery($id) {
-		return "./tiki-file_galleries.php?removegal=".$id;
+		return "./tiki-list_file_gallery.php?removegal=".$id;
 	}
 
 	function get_url_remove_calendar($id) {

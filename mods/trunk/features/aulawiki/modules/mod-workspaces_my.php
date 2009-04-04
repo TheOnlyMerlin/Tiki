@@ -35,11 +35,13 @@ $parentId = $workspace["parentId"];
 while($parentId != 0) {
 	$parentWorkspace = $workspacesLib->get_workspace_by_id($parentId);
 	if (isset ($parentWorkspace)) {
-		$wsType = $wsTypesLib->get_workspace_type_by_id($parentWorkspace["type"]);
-		$parentWorkspace["type"] = $wsType;
-		$newElement = array ();
-		$newElement[] = $parentWorkspace;
-		$selectedWorkspaces = array_merge($newElement, $selectedWorkspaces);
+		if ($parentWorkspace["hide"] != "y"){
+			$wsType = $wsTypesLib->get_workspace_type_by_id($parentWorkspace["type"]);
+			$parentWorkspace["type"] = $wsType;
+			$newElement = array ();
+			$newElement[] = $parentWorkspace;
+			$selectedWorkspaces = array_merge($newElement, $selectedWorkspaces);
+		}
 	}
 	$parentId = $parentWorkspace["parentId"];
 }
@@ -55,7 +57,6 @@ if (isset ($user) && $user != "") {
 			if ( $workspacesLib->parentInSelWorspaces($workspace, $selectedWorkspaces)) {
 				$wsType = $wsTypesLib->get_workspace_type_by_id($workspace["type"]);
 				$workspace["type"] = $wsType;
-				$selectedWorkspaces[] = $workspace;
 				$found = true;
 			}
 			if ($workspace["hide"] != "y") {

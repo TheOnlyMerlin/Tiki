@@ -10,7 +10,7 @@
 <!------------ Common Title   --------->
 
 <div>
-<label>Selected Workspace:</label> {$selectedCategory.name} {$selectedCategory.description}
+<label>{tr}Selected Workspace{/tr}:</label> {$selectedCategory.name} {$selectedCategory.description}
 <br>
 
 </div>

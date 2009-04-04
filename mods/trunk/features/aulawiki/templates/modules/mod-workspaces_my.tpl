@@ -5,7 +5,7 @@
 @license http://www.gnu.org/copyleft/lgpl.html GNU/LGPL
 *}
 {tikimodule title="{tr}My Workspaces{/tr}" name="workspaces_my" flip=$module_params.flip decorations=$module_params.decorations}
-{tr}Current workspace:{/tr}<br/>
+{tr}Current workspace{/tr}:<br/>
 {foreach from=$selectedWorkspaces item=selectedWorkspace}
 {if $activeWorkspace.workspaceId==$selectedWorkspace.workspaceId}
     <img src='images/workspaces/edu_workspaceActive.png' align="middle" border='0' alt='{tr}Active workspace{/tr}:({$selectedWorkspace.code}) {$selectedWorkspace.name}' title='{tr}Active workspace{/tr}:({$selectedWorkspace.code}) {$selectedWorkspace.name}' />
@@ -27,7 +27,7 @@
 <BR/>
 {/foreach}
 <BR/>
-{tr}My workspaces:{/tr}<br/>
+{tr}My Workspaces{/tr}:<br/>
 <div class="myworkspaces">
 {foreach from=$userWorkspaces item=userWorkspace}
  <img src='images/workspaces/edu_workspaceInactive.png' align="middle" border='0' alt='{tr}Inactive workspace{/tr}:({$userWorkspace.code}) {$userWorkspace.name}' title='{tr}Inactive workspace{/tr}:({$userWorkspace.code}) {$userWorkspace.name}' /> 

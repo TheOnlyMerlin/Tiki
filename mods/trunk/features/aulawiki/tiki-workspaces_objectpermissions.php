@@ -127,13 +127,13 @@ if ($can_admin_workspace) {  # he can choose among all groups from topmost-he_ad
 	$groups = $workspacesLib->get_child_workspaces_groups("0", $includeParent = FALSE);
 }elseif ($can_admin_resources) {  
         # he can only choose among those from-this-ws-level-to-bottom (this+brothers-to-bottom: father excluded)
-//	$groups = $workspacesLib->get_child_workspaces_groups($workspace["parentId"], $includeParent = FALSE);
+	$groups = $workspacesLib->get_child_workspaces_groups($workspace["parentId"], $includeParent = FALSE);
 
 	# OR he can only choose among those from-this-ws-level-to-bottom (this-to-bottom, this included)
 //	$groups = $workspacesLib->get_child_workspaces_groups($workspace["workspaceId"], $includeParent = TRUE);
 
 	# OR he can only choose among those from-father-level-to-bottom ( father-to-bottom, father+brothers included)
-	$groups = $workspacesLib->get_child_workspaces_groups($workspace["parentId"], $includeParent = TRUE);
+//	$groups = $workspacesLib->get_child_workspaces_groups($workspace["parentId"], $includeParent = TRUE);
 	}
 
 $groups[]="Anonymous";

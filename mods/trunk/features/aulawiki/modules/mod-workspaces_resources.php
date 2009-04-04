@@ -150,6 +150,8 @@ if (!$exit_module){
                 $smarty->assign('showCreateBar', 'n');
 		$smarty->assign('showButtons', 'n');
 	}
+		$smarty->assign('showCreationDate', 'n');
+
 #### pingus end
 
 	
