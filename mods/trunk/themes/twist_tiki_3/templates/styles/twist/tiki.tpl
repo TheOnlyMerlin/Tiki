@@ -36,15 +36,12 @@
 			<tr id="cols">
 				<td rowspan="3" id="leftmargin">&nbsp;</td>
 				{*<td id="leftborder"><img src=" " alt="." /></td> For content cols - leftmargin graphic border. *}
-				<td colspan="3{* change to 5 if the 2 border tds are used *}" id="header">
-					<div id="headerliner">
-						<div class="clearfix" id="header-top">
-						{if $prefs.feature_siteidentity eq 'y' and $filegals_manager ne 'y'}
+				<td colspan="3{* change to 5 if the 2 border tds are used *}" id="main-header">
+					<div id="header">
 						{* Site identity header section *}
-							<div class="clearfix" id="siteheader">
-								{include file="tiki-site_header.tpl"}
-							</div>
-						{/if}
+						<div class="clearfix" id="siteheader">
+							{include file="tiki-site_header.tpl"}
+						</div>
 					</div>
 				</td>
 				<td rowspan="3" id="rightmargin">&nbsp;</td>
@@ -52,14 +49,15 @@
 			<tr id="midrow">
 				{*<td id="leftborder"><img src=" " alt="." /></td> Left graphic border *}
 					{if $prefs.feature_left_column ne 'n' && $left_modules|@count > 0 && $show_columns.left_modules ne 'n'}
-				<td id="leftcolumn" valign="top"{if $prefs.feature_left_column eq 'user'} style="display:{if isset($cookie.show_leftcolumn) and $cookie.show_leftcolumn ne 'y'}none{else}table-cell;_display:block{/if};"{/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
-					<h2 class="hidden">Sidebar</h2>
-					<div class="colwrapper">
-						{section name=homeix loop=$left_modules}
-							{$left_modules[homeix].data}
-						{/section}
-					</div>
-				</td>
+						<td id="leftcolumn" valign="top"{if $prefs.feature_left_column eq 'user'} style="display:{if isset($cookie.show_leftcolumn) and $cookie.show_leftcolumn ne 'y'}none{else}table-cell;_display:block{/if};"{/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
+							<h2 class="hidden">Sidebar</h2>
+							<div class="colwrapper">
+								{section name=homeix loop=$left_modules}
+									{$left_modules[homeix].data}
+								{/section}
+							</div>
+						</td>
+					{/if}
 				<td id="centercolumn" valign="top"{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
 			{/if}
 					<hr class="hidden" /> {* for semantic separation of center and side columns *}
