@@ -785,11 +785,12 @@ img.flipmodimage:hover {border: 1px solid #990000 !important}
 div.cbox {
 	color: #f4f4f4;
 	background: #030511;
-	border: 1px solid #333333}
+	border: 1px solid #333333;
+	overflow: hidden}
 
 .cbox-title {}
 .cboxlink {}
-.cbox-data {}
+.cbox-data {overflow: hidden}
 
 .rbox {
 	background: #5e0000;

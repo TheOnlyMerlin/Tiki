@@ -832,13 +832,13 @@ html>body .box-data ul {padding-left: 14px}
 	height: 54px}
 
 /** Other boxes **/
-.wikitext .cbox {
+.cbox {
 	overflow: hidden;
 	border: 2px solid #a1adc7;
 	padding: 2px}
 	
 .cbox-title {}
-.cbox-data {}
+.cbox-data {overflow: hidden}
 
 .rbox {margin: 3px}
 

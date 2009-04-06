@@ -830,9 +830,9 @@ img.flipmodimage:hover {border: 1px solid #AAAAAA !important}
 .box-footer {}
 
 /** Other boxes **/
-div.cbox {}
+div.cbox {overflow: hidden}
 .cbox-title {}
-.cbox-data {}
+.cbox-data {overflow: hidden}
 .rbox {margin-bottom: 10px}
 
 .rbox-title,

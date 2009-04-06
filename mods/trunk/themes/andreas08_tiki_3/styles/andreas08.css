@@ -723,13 +723,14 @@ div.cbox {
 	border: 1px solid #c0c0c0;
 	background: #fafbfc;
 	color: #505050;
-	line-height: 1.5em}
+	line-height: 1.5em;
+	overflow: hidden}
 
 .cbox-title {
 	font-weight: bold;
 	border-bottom: 1px solid #c0c0c0}
 
-.cbox-data {}
+.cbox-data {overflow: hidden}
 
 .rbox {}
 

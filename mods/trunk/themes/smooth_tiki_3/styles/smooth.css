@@ -746,14 +746,17 @@ div.cbox {
 	color: #e431d0;
 	background: #fff;
 	border: 1px solid #f4abec/*green*/;
-	margin: 6px}
+	margin: 6px;
+	overflow: hidden}
 
 .cbox-title {
 	padding: 6px 6px 3px 6px;
 	border-bottom: 1px solid #f4abec}
 
 .cboxlink {}
-.cbox-data {padding: 3px 6px 6px 6px}
+.cbox-data {
+	padding: 3px 6px 6px 6px;
+	overflow: hidden}
 
 .rbox {margin: 5px 10px 5px}
 

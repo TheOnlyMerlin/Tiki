@@ -909,10 +909,10 @@ ul.module li {list-style: none }
 .box-footer {}
 
 /** Other boxes **/
-div.cbox {}
+div.cbox {overflow: hidden}
 .cbox-title {}
 .cboxlink {}
-.cbox-data {}
+.cbox-data {overflow: hidden}
 
 .rbox {}
 .rbox-title {}

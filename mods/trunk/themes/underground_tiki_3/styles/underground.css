@@ -870,15 +870,11 @@ div.cbox {
  	padding: 6px;  	
   	background: #FAFAFA; 
 	border: 1px solid #f2f2f2; 
-	border-left: 4px solid #CC0000}
+	border-left: 4px solid #CC0000;
+	overflow: hidden}
 
-.cbox-title {
-	
-}
-
-.cbox-data {
-	
-}
+.cbox-title {}
+.cbox-data {overflow: hidden}
 
 .rbox-title {}
 .rbox-data {}

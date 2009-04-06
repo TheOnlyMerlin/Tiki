@@ -921,7 +921,8 @@ img.flipmodimage:hover {border: 1px solid #6d809f !important}
 /** Other boxes **/
 .cbox {
 	border: 1px solid #999999;
-	margin: 6px}
+	margin: 6px;
+	overflow: hidden}
  
 .cbox-title {
 	text-align: left;
@@ -931,7 +932,9 @@ img.flipmodimage:hover {border: 1px solid #6d809f !important}
 	font-weight: bold}
 
 .cboxlink {}
-.cbox-data {padding: 4px;}
+.cbox-data {
+	padding: 4px;
+	overflow: hidden}
 
 .cbox-data ul {padding-left: 1em}
 .cbox-data ul ul {margin: auto}

@@ -769,9 +769,9 @@ ol.module {
 	display: none}
 
 /** cbox **/
-div.cbox {}
+div.cbox {overflow: hidden}
 .cbox-title {}
-.cbox-data {}
+.cbox-data {overflow: hidden}
 
 .rbox-title {}
 .rbox-data {}
