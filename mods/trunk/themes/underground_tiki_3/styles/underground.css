@@ -752,6 +752,10 @@ div#edithelpzone {display: none}
 #rules-copy-panel {display: none}
 .clear, #clear {clear: both}
 .clearfix:after {content: ".";display: block;height: 0;clear: both;visibility: hidden}
+.clearfix {display: inline-block}
+/* Hide from IE Mac \*/
+.clearfix {display: block}
+/* End hide from IE Mac */
 /* IE */ * html .clearfix {height: 1%}
 #overdiv table {width: auto !important}
 .attention {color: red}
