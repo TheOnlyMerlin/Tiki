@@ -11,7 +11,7 @@ suggests:
 wikiplugins-phpfreechat
 
 files:
-tiki-phpfreechat_ajax.php tiki-phpfreechat_ajax.php
+tiki-phpfreechat_ajax.php lib/phpfreechat/tiki-phpfreechat_ajax.php
 lib/json/LICENSE lib/phpfreechat/lib/json/LICENSE
 lib/json/JSON.php lib/phpfreechat/lib/json/JSON.php
 lib/pear/PHPUnit.php lib/phpfreechat/lib/pear/PHPUnit.php
