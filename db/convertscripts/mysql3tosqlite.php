@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 
-$tikiversion='4.0';
+$tikiversion='3.0';
 if(!isset($_GET['version'])) {
    echo "version not given. Using default $tikiversion.<br />";
 } else {

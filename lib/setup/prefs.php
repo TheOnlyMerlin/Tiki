@@ -212,7 +212,6 @@ function get_default_prefs() {
 		'wikiplugin_iframe' => 'n',
 		'wikiplugin_image' => 'y',
 		'wikiplugin_include' => 'y',
-		'wikiplugin_invite' => 'y',
 		'wikiplugin_jabber' => 'n',
 		'wikiplugin_js' => 'n',
 		'wikiplugin_jq' => 'n',
@@ -889,7 +888,6 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 
 		// look and feel
 
-		'feature_siteidentity' => 'y',
 		'site_crumb_seper' => '»',
 		'site_nav_seper' => '|',
 		'feature_sitemycode' => 'n',
@@ -1162,18 +1160,18 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 		'feature_comments_moderation' => 'n',
 		'feature_comments_locking' => 'n',
 		'feature_template_zoom' => 'y',
-		'menus_items_icons' => 'n',
 		'feature_iepngfix' => 'n',
 		'iepngfix_selectors' => '#sitelogo a img',
 		'iepngfix_elements' => '',
 		'use_minified_scripts' => 'y',		// for debugging
 		
 		// JQuery
-		'feature_jquery' => 'y',			// Alternative lib for shadowbox etc
+		'feature_jquery' => 'n',			// Alternative lib for shadowbox etc
 		'jquery_effect' => '',				// Default effect for general show/hide: ['' | 'slide' | 'fade' | and
 											// see http://docs.jquery.com/UI/Effects: 'blind' | 'clip' | 'explode' etc]
 		'jquery_effect_direction' => 'vertical', 	// ['horizontal' | 'vertical' | 'left' | 'right' | 'up' | 'down' ]
 		'jquery_effect_speed' => 'normal', 	// ['slow' | 'normal' | 'fast' | milliseconds (int) ]
+
 		'jquery_effect_tabs' => 'slide',	// Different effect for tabs (['none' | 'normal' (for jq) | 'slide' etc]
 		'jquery_effect_tabs_direction' => 'vertical',
 		'jquery_effect_tabs_speed' => 'fast',
@@ -1185,6 +1183,7 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 		'feature_jquery_reflection' => 'y',		// reflection effects on images
 		'feature_jquery_sheet' => 'n',			// spreadsheet TODO: implement
 		'feature_jquery_tablesorter' => 'y',	// sortable tables ([will] override existing)
+		'feature_jquery_cycle' => 'y',			// slideshow lib
 	
 		// SefUrl
 		'feature_sefurl' => 'n',
@@ -1209,7 +1208,7 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 
 		'feature_bidi' => 'n',
 		'feature_lastup' => 'y',
-		'transition_style_ver' => '3.0',
+		'transition_style_ver' => '2.0',
 
 		'magic_last_load' => 0,
 

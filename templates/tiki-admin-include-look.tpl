@@ -750,6 +750,17 @@
 							<input type="checkbox" name="feature_jquery_tablesorter" {if $prefs.feature_jquery_tablesorter eq 'y'}checked="checked"{/if}/>
 						</td>
 					</tr>
+					<tr>
+						<td width=30%>
+							<label for="feature_jquery_cycle">{tr}JQuery Cycle (slideshow){/tr}</label>
+						</td>
+						<td width=2%>
+							{help url="JQuery#Cycle" desc="{tr}JQuery Cycle (slideshow){/tr}"}
+						</td>
+						<td>
+							<input type="checkbox" name="feature_jquery_cycle" {if $prefs.feature_jquery_cycle eq 'y'}checked="checked"{/if}/>
+						</td>
+					</tr>
 				</table>
 			</fieldset>
 			<fieldset class="admin">
@@ -1007,16 +1018,6 @@
 									<input class="fullwidth" id="iepngfix_elements" type="text" name="iepngfix_elements" size="32" value="{$prefs.iepngfix_elements}" />
 								</div>
 							</div>
-						</td>
-					</tr>
-					<tr>
-						<td width=30%>
-			        		<label for="menus_items_icons">{tr}Allow users to define icons for menus entries{/tr}</label>
-						</td>
-						<td width=2%>
-						</td>
-						<td>
-							<input type="checkbox" name="menus_items_icons" id="menus_items_icons" {if $prefs.menus_items_icons eq 'y'}checked="checked"{/if}/>
 						</td>
 					</tr>
 				</table>

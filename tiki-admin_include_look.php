@@ -58,7 +58,6 @@ if (isset($_REQUEST["looksetup"])) {
 	"pagination_firstlast",
 	"pagination_icons",
 	"pagination_fastmove_links",
-	"menus_items_icons",
 	"use_context_menu_icon",
 	"use_context_menu_text",
 	"feature_site_report",
@@ -71,6 +70,7 @@ if (isset($_REQUEST["looksetup"])) {
 	'feature_jquery_reflection',
     'feature_jquery_sheet',
 	'feature_jquery_tablesorter',
+	'feature_jquery_cycle',
 	'feature_iepngfix',
 	'feature_layoutshadows',
 	'useGroupTheme'
