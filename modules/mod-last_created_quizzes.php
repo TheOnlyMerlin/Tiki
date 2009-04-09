@@ -5,10 +5,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
-global $tikilib, $smarty;
+
 $ranking = $tikilib->list_quizzes(0, $module_rows, 'created_desc', '');
 
 $smarty->assign('modLastCreatedQuizzes', $ranking["data"]);
 $smarty->assign('nonums', isset($module_params["nonums"]) ? $module_params["nonums"] : 'n');
 
-
+?>

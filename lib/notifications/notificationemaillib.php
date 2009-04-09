@@ -61,13 +61,9 @@ function sendForumEmailNotification($event, $object, $forum_info, $title, $data,
 		{
 		    foreach ( $attachments as $att )
 		    {
-				$att_data = $commentslib->get_thread_attachment( $att['attId'] );
-				if($att_data['dir'].$att_data['path'] == ""){ // no path to file on disk
-					$file = $att_data['data']; // read file from database
-				} else {
-					$file = $mail->getFile( $att_data['dir'].$att_data['path'] ); // read file from disk
-				}
-				$mail->addAttachment( $file, $att_data['filename'], $att_data['filetype'] );
+			$att_data = $commentslib->get_thread_attachment( $att['attId'] );
+			$file = $mail->getFile( $att_data['dir'].$att_data['path'] );
+			$mail->addAttachment( $file, $att_data['filename'], $att_data['filetype'] );
 		    }
 		}
 
@@ -84,7 +80,7 @@ function sendForumEmailNotification($event, $object, $forum_info, $title, $data,
 	$defaultLanguage = $prefs['site_language'];
 
 	// Users watching this forum or this post
-	if ($prefs['feature_user_watches'] == 'y' || $prefs['feature_group_watches'] == 'y') {
+	if ($prefs['feature_user_watches'] == 'y') {
 		$nots = $tikilib->get_event_watches($event, $event == 'forum_post_topic'? $forum_info['forumId']: $threadId, $forum_info);
 		for ($i = count($nots) - 1; $i >=0; --$i) {
 			$nots[$i]['language'] = $tikilib->get_user_preference($nots[$i]['user'], "language", $defaultLanguage);
@@ -235,13 +231,8 @@ function sendWikiEmailNotification($event, $pageName, $edit_user, $edit_comment,
 	    $smarty->assign('mail_machine_raw', $tikilib->httpPrefix(). implode('/', $parts));
 	    $smarty->assign_by_ref('mail_pagedata', $edit_data);
 	    $smarty->assign_by_ref('mail_diffdata', $diff);
-	    if ($event == 'wiki_page_created') {
-			$smarty->assign('mail_action', 'new');
-	    } else if ($event == 'wiki_page_deleted') {
-	    	$smarty->assign('mail_action', 'delete');
-	    } else {
-	    	$smarty->assign('mail_action', 'edit');
-	    }
+	    if ($event == 'wiki_page_created')
+		$smarty->assign('new_page', 'y');
 
 	    foreach ($nots as $not) {
 		if (isset($not['hash']))
@@ -263,14 +254,13 @@ function sendWikiEmailNotification($event, $pageName, $edit_user, $edit_comment,
  * \param $subjectTpl: subject template file or null (ex: "submission_notifcation.tpl")
  * \param $subjectParam: le param to be inserted in the subject or null
  * \param $txtTpl : texte template file (ex: "submission_notifcation.tpl")
- * \param $from email from to not the default one
  * \ $smarty is supposed to be already built to fit $txtTpl
  * \return the nb of sent emails
  */
-function sendEmailNotification($list, $type, $subjectTpl, $subjectParam, $txtTpl, $from='') {
+function sendEmailNotification($list, $type, $subjectTpl, $subjectParam, $txtTpl) {
     global $smarty, $tikilib, $userlib, $prefs;
 	include_once('lib/webmail/tikimaillib.php');
-	$mail = new TikiMail(null, $from);
+	$mail = new TikiMail();
 	$sent = 0;
 	$defaultLanguage = $prefs['site_language'];
 	$languageEmail = $defaultLanguage;
@@ -435,7 +425,6 @@ function sendCategoryEmailNotification($values) {
                 
                 $foo = parse_url($_SERVER["REQUEST_URI"]);
                 $machine = $tikilib->httpPrefix(). dirname( $foo["path"] );
-				$machine = preg_replace("!/$!", "", $machine); // just incase
                 $smarty->assign('mail_machine', $machine);
 
 				$nots_send = array(); 

@@ -5,7 +5,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
-global $smarty;
+
 global $imagegallib; include_once ("lib/imagegals/imagegallib.php");
 
 if (isset($module_params["galleryId"])) {
@@ -17,4 +17,4 @@ if (isset($module_params["galleryId"])) {
 
 $ranking = $imagegallib->get_random_image($galleryId);
 $smarty->assign('img', $ranking);
-
+?>

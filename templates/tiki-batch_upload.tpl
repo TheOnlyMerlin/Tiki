@@ -1,14 +1,14 @@
 {* $Id$ *}
-{title}{tr}Directory batch upload{/tr}{/title}
-
-<div class="navbar">
-	{if $galleryId ne ''}
-		{button href="tiki-browse_gallery.php?galleryId=$galleryId" _text="{tr}Browse Gallery{/tr}"}
-	{else}
-		{button href="tiki-galleries.php" _text="{tr}Browse Gallery{/tr}"}
-	{/if}
-	{button href="tiki-upload_image.php" _text="{tr}Upload From Disk{/tr}"}
-</div>
+<h1><a href="tiki-batch_upload.php" class="pagetitle">{tr}Directory batch upload{/tr}</a></h1>
+<span class="button2">
+{if $galleryId ne ''}
+<a href="tiki-browse_gallery.php?galleryId={$galleryId}" class="linkbut">
+{else}
+<a href="tiki-galleries.php" class="linkbut">
+{/if}
+{tr}Browse gallery{/tr}</a></span>
+<span class="button2"><a href="tiki-upload_image.php" class="linkbut">{tr}Upload from disk{/tr}</a></span>
+<br /><br />
 
 {if count($feedback)}<div class="simplebox highlight">{section name=i loop=$feedback}{$feedback[i]}<br />{/section}</div>{/if}
 
@@ -16,12 +16,12 @@
 <form method="post" action="tiki-batch_upload.php" name="f">
 <table border="0" class="normal" id="imagelist" width="100%">
 <tr>
-<th style="width:42px"></th>
-<th><a href="javascript:void(0);">{tr}Filename{/tr}</a></th>
-<th style="width:80px"><a href="javascript:void(0);">{tr}Width{/tr}</a></th>
-<th style="width:80px"><a href="javascript:void(0);">{tr}Height{/tr}</a></th>
-<th style="width:80px"><a href="javascript:void(0);">{tr}Filesize{/tr}</th>
-<th style="width:80px"><a href="javascript:void(0);">{tr}Filetype{/tr}</a></th></tr>
+<th width="42" class="heading"></th>
+<th class="heading"><a class="tableheading" href="javascript:void(0);">{tr}Filename{/tr}</a></th>
+<th class="heading" width="80"><a class="tableheading" href="javascript:void(0);">{tr}width{/tr}</a></th>
+<th class="heading" width="80"><a class="tableheading" href="javascript:void(0);">{tr}height{/tr}</a></th>
+<th class="heading" width="80"><a class="tableheading" href="javascript:void(0);">{tr}Filesize{/tr}</th>
+<th class="heading" width="80"><a class="tableheading" href="javascript:void(0);">{tr}Filetype{/tr}</a></th></tr>
 {cycle print=false values="even,odd"}
 {foreach key=k item=it from=$imgstring}
 <tr class="{cycle}">
@@ -44,7 +44,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {tr}eg. from "digicam0001.jpg" then name digicam0001 will be used for the name field{/tr}<br />
 <br />
 {if $permAddGallery eq "y"}
-&nbsp;&nbsp;&nbsp;&nbsp; <input type="checkbox" name="subdirToSubgal" value="true" id="subdirToSubgal" /> {tr}Convert the last sub directory to a sub gallery{/tr}<br />
+&nbsp;&nbsp;&nbsp;&nbsp; <input type="checkbox" name="subdirToSubgal" value="true" id="subdirToSubgal" /> {tr}convert the last sub directory to a sub gallery{/tr}<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {tr}eg. from "misc/screenshots/digicam0001.jpg" a gallery named "screenshots" will be created{/tr}<br />
 <br />
 {/if}

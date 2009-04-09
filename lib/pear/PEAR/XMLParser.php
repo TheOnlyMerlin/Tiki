@@ -1,6 +1,6 @@
 <?php
 /**
- * PEAR_XMLParser
+ * PEAR_FTP
  *
  * PHP versions 4 and 5
  *
@@ -14,9 +14,9 @@
  * @package    PEAR
  * @author     Greg Beaver <cellog@php.net>
  * @author     Stephan Schmidt (original XML_Unserializer code)
- * @copyright  1997-2008 The PHP Group
+ * @copyright  1997-2006 The PHP Group
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version    CVS: $Id: XMLParser.php,v 1.13 2008/01/03 20:26:36 cellog Exp $
+ * @version    CVS: Id: XMLParser.php,v 1.12 2006/03/27 04:39:03 cellog Exp 
  * @link       http://pear.php.net/package/PEAR
  * @since      File available since Release 1.4.0a1
  */
@@ -27,9 +27,9 @@
  * @package    PEAR
  * @author     Greg Beaver <cellog@php.net>
  * @author     Stephan Schmidt (original XML_Unserializer code)
- * @copyright  1997-2008 The PHP Group
+ * @copyright  1997-2006 The PHP Group
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version    Release: 1.7.2
+ * @version    Release: 1.6.1
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.4.0a1
  */
@@ -80,7 +80,7 @@ class PEAR_XMLParser
     function parse($data)
     {
         if (!extension_loaded('xml')) {
-            include_once 'lib/pear/PEAR.php';
+            include_once 'PEAR.php';
             return PEAR::raiseError("XML Extension not found", 1);
         }
         $this->_valStack = array();
@@ -107,7 +107,7 @@ class PEAR_XMLParser
             $msg = xml_error_string(xml_get_error_code($xp));
             $line = xml_get_current_line_number($xp);
             xml_parser_free($xp);
-            include_once 'lib/pear/PEAR.php';
+            include_once 'PEAR.php';
             return PEAR::raiseError("XML Error: '$msg' on line '$line'", 2);
         }
         xml_parser_free($xp);

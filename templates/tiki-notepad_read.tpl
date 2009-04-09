@@ -1,11 +1,9 @@
-{title help="notepad"}{tr}Reading note:{/tr}&nbsp;{$info.name}{/title}
-
+<h1><a class="pagetitle" href="tiki-notepad_read.php?noteId={$noteId}">{tr}Reading note:{/tr} {$info.name}</a></h1>
 {include file=tiki-mytiki_bar.tpl}
 
-<div class="navbar"
-	{button href="tiki-notepad_list.php" _text="{tr}List notes{/tr}"}
-	{button href="tiki-notepad_write.php" _text="{tr}Write note{/tr}"}
-</div>
+<span class="button2"><a class="linkbut" href="tiki-notepad_list.php">{tr}List notes{/tr}</a></span>
+<span class="button2"><a class="linkbut" href="tiki-notepad_write.php">{tr}Write note{/tr}</a></span>
+<br /><br />
 
 <table>
 <tr><td>

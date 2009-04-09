@@ -101,7 +101,6 @@ if (isset($_REQUEST["upload"])) {
 
 	if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $_REQUEST['antibotcode'])) {
 		$error_msg = tra('You have mistyped the anti-bot verification code; please try again.');
-		$smarty->assign('errortype', 'no_redirect_login');
 	}
 	if (!empty($_REQUEST["url"])) {
 		// check URL. avoid uploading local files!
@@ -122,11 +121,9 @@ if (isset($_REQUEST["upload"])) {
 			$size = strlen($data);
 		} else {
 			$error_msg = tra("Cannot get image from URL");
-			$smarty->assign('errortype', 'no_redirect_login');
 		}
 		} else {
 			$error_msg = tra("That is not an image (or you have php < 4.0.5)");
-			$smarty->assign('errortype', 'no_redirect_login');
 		}
 	} else {
 		// We process here file uploads
@@ -135,7 +132,7 @@ if (isset($_REQUEST["upload"])) {
 			if (!empty($prefs['gal_match_regex'])) {
 				if (!preg_match('/'.$prefs['gal_match_regex'].'/', $_FILES['userfile1']['name'], $reqs)) {
 					$smarty->assign('msg', tra('Invalid imagename (using filters for filenames)'));
-					$smarty->assign('errortype', 'no_redirect_login');
+
 					$smarty->display("error.tpl");
 					die;
 				}
@@ -144,7 +141,7 @@ if (isset($_REQUEST["upload"])) {
 			if (!empty($prefs['gal_nmatch_regex'])) {
 				if (preg_match('/'.$prefs['gal_nmatch_regex'].'/', $_FILES['userfile1']['name'], $reqs)) {
 					$smarty->assign('msg', tra('Invalid imagename (using filters for filenames)'));
-					$smarty->assign('errortype', 'no_redirect_login');
+
 					$smarty->display("error.tpl");
 					die;
 				}
@@ -161,7 +158,7 @@ if (isset($_REQUEST["upload"])) {
 					if ($imagegallib->process_batch_image_upload($_REQUEST["galleryId"], $_FILES['userfile1']['tmp_name'], $user)
 						== 0) {
 						$smarty->assign('msg', tra('Error processing zipped image package'));
-						$smarty->assign('errortype', 'no_redirect_login');
+
 						$smarty->display("error.tpl");
 						die;
 					}
@@ -181,7 +178,6 @@ if (isset($_REQUEST["upload"])) {
 			$tmp_dest = $prefs['tmpDir'] . '/' . $file_name.'.tmp'; // add .tmp to not overwrite existing files (like index.php)
 			if (!move_uploaded_file($file_tmp_name, $tmp_dest)) {
 				$smarty->assign('msg', tra('Errors detected'));
-				$smarty->assign('errortype', 'no_redirect_login');
 				$smarty->display("error.tpl");
 				die();
 			}
@@ -193,13 +189,9 @@ if (isset($_REQUEST["upload"])) {
 			unlink($tmp_dest);
 			if (!$data || !$imginfo) { // Not in Image format
 				$error_msg = tra('The uploaded file ist not recognized as a image');
-				$smarty->assign('errortype', 'no_redirect_login');
 	        }
 		} else {
 			$error_msg = $tikilib->uploaded_file_error($_FILES['userfile1']['error']);
-			if (!empty($error_msg)) {
-				$smarty->assign('errortype', 'no_redirect_login');
-			}
 		}
 		}
 	}
@@ -211,13 +203,13 @@ if (isset($_REQUEST["upload"])) {
 		$thumb_data = $imagegallib->get_one_image_from_disk('userfile2');
 		if (isset($thumb_data['msg'])) {
 			$error_msg = $thumb_data['msg'];
-			$smarty->assign('errortype', 'no_redirect_login');
 		}
 		$up_thumb = 1;
 	}
 
 	if ($error_msg) {
 		$smarty->assign('msg', $error_msg);
+
 		$smarty->display("error.tpl");
 		die;
 	}
@@ -419,8 +411,9 @@ $cat_type = 'image';
 $cat_objid = '0';
 include_once ("categorize_list.php");
 
-include('lib/filegals/max_upload_size.php');
 include_once ('tiki-section_options.php');
+
+$smarty->assign("max_img_upload_size", $imagegallib->max_img_upload_size());
 
 ask_ticket('upload-image');
 

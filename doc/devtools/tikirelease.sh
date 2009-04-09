@@ -1,19 +1,15 @@
 #!/bin/sh
 # $Id$
-#
-# ===========================================================
-# IMPORTANT NOTE : This script should not be called manually.
-#   It is called by doc/devtools/release.php
-# ===========================================================
+# written and maintained by mose@tikiwiki.org
 #
 # HOWTO release Tikiwiki ?
 # --------------------------
+#
 # 
 # pre/
-#    - run doc/devtools/release_changelog.php to update changelog.txt and check the diff with the last version
-#    - run doc/devtools/release_copyright.php to update copyright.txt and check the diff with the last version
+#    - update changelog.txt (from SVN commit logs)
+#    - update copyright.txt (we _need_ a way to automate this - it was omitted for 1.9.2 release)
 #    - update README
-#    - Test the whole Installer and check if everything is OK
 #    - run doc/devtools/securitycheck.php and check each "potentially unsafe" file.
 #    - run doc/devtools/diffsql.sh to make sure tiki.sql and upgrade script from 
 #        previous version give the same db structure (but not necessarily the same data).
@@ -21,32 +17,53 @@
 #        want new permissions or modules to appear at upgrade. If there is a chance that 
 #        someone chose to delete something, it should not re-appear at each upgrade. 
 #    - cd db/convertscripts and run convertsqls.sh
-#    - in lib/setup/twversion.class.php
-#      - increment the version number in the constructor
-#      - update list of valid releases in getVersions()
+#    - increment version number ($TWV->version) in lib/setup/twversion.class.php
+#    - update version number in installer/tiki-installer.php
+#    - check for PHP syntax errors: find . -type f -name \*.php -exec php -l {} \;  | grep Parse
 #    - commit your changes
+#    - create the checksum file: copy doc/devtools/tiki-create_md5.php in tiki root 
+#        and load that page in your browser
+#    - Empty the existing tiki-secdb database table
+#    - export secdb MD5 checksums from database using the following commands:
+#      (You have to replace $USER, $DBNAME and $VERSION by the correct values)
+#
+#        echo "DELETE FROM tiki_secdb WHERE tiki_version = '$VERSION';" > db/tiki-secdb_$VERSION_mysql.sql
+#        echo '' >> db/tiki-secdb_$VERSION_mysql.sql
+#        mysqldump -p -u $USER -cnt --compact --skip-extended-insert $DBNAME tiki_secdb >> db/tiki-secdb_$VERSION_mysql.sql
 #
 # 1/ Create and test pre-release packages by executing the script with the release
-#    version as argument, using the format major.minor.sub 
-#    php doc/devtools/release.php 2.0 preRC4
+#    version as the first argument, using the format major.minor.sub 
+#    and the subversion branch for as the second argument, using the format major.0
 #
-# 2/ Test the produced "tarballs" and share the testing : you need at least 3 installations
+#    Examples:
+#      * major pre-release: bash tikirelease.sh 3.0.preRC3 branches/3.0
+#      * major final release: bash tikirelease.sh 3.0 branches/3.0
+#      * minor release: bash tikirelease.sh 2.3 branches/2.0
+#
+# 2/ Test the produced "tarballs" and share the testing : you need at least 3 install 
 #    from 3 different people
 # 
-# 3/ After testing, tag the release, build the release "tarballs"
-#    php doc/devtools/release.php 2.0 RC4
+# 3/ After testing, tag the release
+#    ex: svn copy https://tikiwiki.svn.sourceforge.net/svnroot/tikiwiki/branches/3.0 https://tikiwiki.svn.sourceforge.net/svnroot/tikiwiki/tags/3.0.RC3
 #    
-# 4/ Test the produced "tarballs" and share the testing : you need at least 3 install 
+# 4/ Build the release "tarballs"
+#    bash tikirelease.sh 3.0.RC3 tags/3.0.RC3
+#    
+# 5/ Test the produced "tarballs" and share the testing : you need at least 3 install 
 #    from 3 different people
 # 
-# 5/ When the "tarballs" are tested, follow the steps to upload on SourceForge:
-#    http://tinyurl.com/59uubv
+# 6/ When the "tarballs" is tested once you can copy-paste the produced line to upload
+#    the tarballs (.gz .bz2 and .zip) files to sourceforge (take care to replace $SF_LOGIN
+#    by your real sourceforge login in the line you've just copy-pasted)
 #    
-# 6/ Warn people that do .rpm and ebuilds that the archive is avalaible so they can
+# 7/ If you are release technician on sourceforge, add the files to the repository 
+#    in admin sf section. If you are not, ask a release technician to do it 
+# 
+# 8/ Warn people that do .rpm and ebuilds that the archive is avalaible so they can
 #    complete the packaging process with new files. If you don't know who does that,
 #    warn everybody.
 #
-# 7/ unless in step 8/ you warned everybody you have now to announce the good news
+# 9/ unless in step 8/ you warned everybody you have now to announce the good news
 #    on devel mailing-list and ask the TAG (TikiWiki Admin Group) through the admin
 #    mailing-list to launch the announce-speading process 
 #    (Freshmeat, SourceForge and tikiwiki.org (manually for now).
@@ -97,15 +114,23 @@ fi
 mkdir $VER
 cd $VER
 svn export $SVNROOT/$RELTAG $MODULE-$VER
+find $MODULE-$VER -name CVS -type d | xargs -- rm -rf
+find $MODULE-$VER -name .svn -type d | xargs -- rm -rf
 find $MODULE-$VER -name .cvsignore -type f -exec rm -f {} \;
 find $MODULE-$VER -name .svnignore -type f -exec rm -f {} \;
+find $MODULE-$VER -name Thumbs.db -exec rm -f {} \;
 find $MODULE-$VER -type d -exec chmod 775 {} \;
 find $MODULE-$VER -type f -exec chmod 664 {} \;
-
 # some more cleanup
 rm -rf $MODULE-$VER/tests
 rm -rf $MODULE-$VER/db/convertscripts
+rm -rf $MODULE-$VER/db/convert_nulls_to_non_nulls.*
 rm -rf $MODULE-$VER/doc/devtools
+rm -rf $MODULE-$VER/bin
+rm -rf $MODULE-$VER/CVSROOT
+rm -rf $MODULE-$VER/SPIDERCORE
+rm -rf $MODULE-$VER/Smarty
+rm -rf $MODULE-$VER/templates_c/%*
 
 tar -czf $MODULE-$VER.tar.gz $MODULE-$VER
 tar -cjf $MODULE-$VER.tar.bz2 $MODULE-$VER

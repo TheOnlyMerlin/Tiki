@@ -1,12 +1,25 @@
-{title help="Live+Support"}{tr}Live support system{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-live_support_admin.php">
+{tr}Live support system{/tr}</a>
 
-<div class="navbar">
-	{button	href='#' _onclick="javascript:window.open('tiki-live_support_console.php','','menubar=no,scrollbars=yes,resizable=yes,height=400,width=600');" _text="{tr}Open operator console{/tr}"}
-	{button	href='#' _onclick="javascript:window.open('tiki-live_support_client.php','','menubar=no,scrollbars=yes,resizable=yes,height=450,width=300');" _text="{tr}Open client window{/tr}"}
-	{button href="?show_html" _text="{tr}Generate HTML{/tr}"}
-	{button href="tiki-live_support_transcripts.php" _text="{tr}Transcripts{/tr}"}
-</div>
+  
+      {if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Live+Support" target="tikihelp" class="tikihelp" title="{tr}Live Support{/tr}">
+<img src="img/icons/help.gif" border="0" height="16" width="16" alt='{tr}Help{/tr}' /></a>{/if}
 
+
+
+      {if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-live_support_admin.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Admin Live Support tpl{/tr}">
+<img src="img/icons/info.gif" border="0" height="16" width="16" alt='{tr}Edit Tpl{/tr}' /></a>{/if}
+
+
+</h1>
+<a class="linkbut" {jspopup href="tiki-live_support_console.php"}>{tr}Open operator console{/tr}</a>
+<a class="linkbut" {jspopup width="300" height="450" href="tiki-live_support_client.php"}> {tr}Open client window{/tr}</a>
+<a class="linkbut" href="tiki-live_support_admin.php?show_html">{tr}Generate HTML{/tr}</a>
+<a class="linkbut" href="tiki-live_support_transcripts.php">{tr}Transcripts{/tr}</a>
+<!--<a class="linkbut" href="tiki-live_support_messages.php">{tr}Support tickets{/tr}</a>-->
+<br /><br />
 {if $html}
 	<b>Generated HTML code:</b><br />
 	Copy-paste the following XHTML snippet in the pages where you want to provide live support.<br />
@@ -27,12 +40,12 @@
 <h2>{tr}Online operators{/tr}</h2>
 <table class="normal">
 	<tr>
-		<th style="text-align:center;">	
+		<td  class="heading" style="text-align:center;">	
 		{tr}Operator{/tr}
-		</th>
-		<th colspan='2'>
+		</td>
+		<td class="heading" colspan='2'>
 		{tr}Stats{/tr}
-		</th>		
+		</td>		
 	</tr>
 {cycle values='odd,even' print=false}	
 {section name=ix loop=$online_operators}
@@ -42,7 +55,7 @@
 			<b>{$online_operators[ix].user}</b>
 		</td>
 		<td class="{cycle advance=false}">
-			<table>
+			<table >
 				<tr>
 					<td>{tr}Accepted requests{/tr}:</td>
 					<td>{$online_operators[ix].accepted_requests}</td>
@@ -58,8 +71,8 @@
 		</td>
 		<td class="{cycle}" style="text-align:right;">
 		{if $tiki_p_live_support_admin eq 'y'}
-			<a href='tiki-live_support_admin.php?removeuser={$online_operators[ix].user}'><img src='img/icons/trash.gif' alt='{tr}Del{/tr}' title='{tr}Del{/tr}' /></a>
-<a href='tiki-live_support_admin.php?offline={$online_operators[ix].user}'><img src='img/icons/icon_unwatch.png' alt='{tr}offline{/tr}' title='{tr}offline{/tr}' /></a>
+			<a href='tiki-live_support_admin.php?removeuser={$online_operators[ix].user}'><img src='img/icons/trash.gif' border='0' alt='{tr}Del{/tr}' title='{tr}Del{/tr}' /></a>
+<a href='tiki-live_support_admin.php?offline={$online_operators[ix].user}'><img src='img/icons/icon_unwatch.png' border='0' alt='{tr}offline{/tr}' title='{tr}offline{/tr}' /></a>
 		{else}
 			&nbsp;
 		{/if}
@@ -74,12 +87,12 @@
 {cycle values='odd,even' print=false}
 <table class="normal">
 	<tr>
-		<th style="text-align:center;">	
+		<td  class="heading" style="text-align:center;">	
 		{tr}Operator{/tr}
-		</th>
-		<th colspan='2'>
+		</td>
+		<td class="heading" colspan='2'>
 		{tr}Stats{/tr}
-		</th>		
+		</td>		
 	</tr>
 {section name=ix loop=$offline_operators}
 	<tr>
@@ -101,7 +114,7 @@
 		</td>
 		<td class="{cycle}" style="text-align:right;">
 		{if $tiki_p_live_support_admin eq 'y'}
-			<a href='tiki-live_support_admin.php?removeuser={$offline_operators[ix].user}'><img src='img/icons/trash.gif' alt='{tr}Del{/tr}' title='{tr}Del{/tr}' /></a>
+			<a href='tiki-live_support_admin.php?removeuser={$offline_operators[ix].user}'><img src='img/icons/trash.gif' border='0' alt='{tr}Del{/tr}' title='{tr}Del{/tr}' /></a>
 		{else}
 			&nbsp;
 		{/if}

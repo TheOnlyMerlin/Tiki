@@ -8,27 +8,20 @@
 	{assign var='is_link' value='n'}
 {elseif $field_value.isMain eq 'y'
  and ($tiki_p_view_trackers eq 'y' or $tiki_p_modify_tracker_items eq 'y' or $tiki_p_comment_tracker_items eq 'y'
- or ($tracker_info.writerCanModify eq 'y' and $user and $my eq $user) or ($tracker_info.writerGroupCanModify eq 'y' and $group and $ours eq $group))}
-	{if empty($url) and !empty($item.itemId)}
+ or ($tracker_info.writerCanModify eq 'y' and $user and $my eq $user) or ($tracker_info.writerCanModify eq 'y' and $group and $ours eq $group))}
+	{if empty($url)}
 		{assign var=urll value="tiki-view_tracker_item.php?itemId=`$item.itemId`&amp;trackerId=`$item.trackerId`&amp;show=view"}
-	{elseif strstr($url, 'itemId') and !empty($item.itemId)}
-		{assign var=urll value=$url|regex_replace:"/itemId=?/":"itemId=`$item.itemId`"}
 	{else}
 		{assign var=urll value=$url}
 	{/if}
-	{if !empty($urll)}
-		{assign var='is_link' value='y'}
-	{else}
-		{assign var='is_link' value='n'}
-	{/if}
+	<a class="tablename" href="{$urll}{if $offset}&amp;offset={$offset}{/if}{if isset($reloff)}&amp;reloff={$reloff}{/if}{if $item_count}&amp;cant={$item_count}{/if}{foreach key=urlkey item=urlval from=$urlquery}{if $urlval}&amp;{$urlkey}={$urlval|escape:"url"}{/if}{/foreach}"{if $showpopup eq 'y'} {popup text=$smarty.capture.popup|escape:"javascript"|escape:"html" fullhtml="1" hauto=true vauto=true sticky=$stickypopup}{/if}>
+	{assign var='is_link' value='y'}
 {else}
 	{assign var='is_link' value='n'}
 {/if}
-{if $is_link eq 'y'}
-	<a class="tablename" href="{$urll}{if $offset}&amp;offset={$offset}{/if}{if isset($reloff)}&amp;reloff={$reloff}{/if}{if $item_count}&amp;cant={$item_count}{/if}{foreach key=urlkey item=urlval from=$urlquery}{if $urlval}&amp;{$urlkey}={$urlval|escape:"url"}{/if}{/foreach}"{if $showpopup eq 'y'} {popup text=$smarty.capture.popup|escape:"javascript"|escape:"html" fullhtml="1" hauto=true vauto=true sticky=$stickypopup}{/if}>
-{/if}
+
 {* ******************** field with preprend ******************** *}
-{if ($field_value.type eq 't' or $field_value.type eq 'n' or $field_value.type eq 'c') and !empty($field_value.options_array[2]) and $field_value.value != ''}
+{if ($field_value.type eq 't' or $field_value.type eq 'n' or $field_value.type eq 'c') and !empty($field_value.options_array[2])}
 	<span class="formunit">{$field_value.options_array[2]}</span>
 {/if}
 {if $field_value.type eq 'q' and !empty($field_value.options_array[1])}
@@ -39,7 +32,7 @@
 {* -------------------- category -------------------- *}
 {if $field_value.type eq 'e'}
 	{foreach from=$field_value.categs item=categ name=fcategs}
-		{$categ.name|tr_if}
+		{$categ.name}
 		{if !$smarty.foreach.fcategs.last}<br />{/if}
 	{/foreach}
 
@@ -50,15 +43,18 @@
 			{if $list_mode ne 'csv' and count($field_value.links) > 1}
 				<div>
 			{/if}
-			{if $field_value.options_array[4] eq '1' and $showlinks ne 'n' and $list_mode ne 'csv' and !empty($field_value.options_array[0]) and !empty($tid)}
+			{if $field_value.options_array[4] eq '1' and $showlinks ne 'n' and $list_mode ne 'csv'}
 				<a href="tiki-view_tracker_item.php?itemId={$tid}&amp;trackerId={$field_value.options_array[0]}">
 			{/if}
-			{if $list_mode eq 'y'}
+			{if isset($field_value.otherField)}
+				{assign var='field_value.otherField.value' value=$tlabel}
+				{include file="tracker_item_field_value.tpl" field_value=$field_value.otherField showlinks=n}
+			{elseif $list_mode eq 'y'}
 				{$tlabel|truncate:255:"..."}
 			{else}
 				{$tlabel}
 			{/if}
-			{if $field_value.options_array[4] eq '1' and $showlinks ne 'n' and $list_mode ne 'csv' and !empty($field_value.options_array[0]) and !empty($tid)}
+			{if $field_value.options_array[4] eq '1' and $showlinks ne 'n' and $list_mode ne 'csv'}
 				</a>
 			{/if}
 			{if $list_mode ne 'csv' and count($field_value.links) > 1}
@@ -84,7 +80,7 @@
 	{/if}
 
 {* -------------------- empty field -------------------- *}
-{elseif empty($field_value.value) and $field_value.value != '0' and $field_value.type ne 'U' and $field_value.type ne 's' and $field_value.type ne 'q' and $field_value.type ne 'n' and $field_value.type ne 'C'}
+{elseif empty($field_value.value) and $field_value.type ne 'U' and $field_value.type ne 's' and $field_value.type ne 'q'}
 	{if $list_mode ne 'csv' and $is_link eq 'y'}&nbsp;{/if} {* to have something to click on *}
 
 {* -------------------- text field, numeric, drop down, radio,user/group/IP selector, autopincrement, dynamic list *}
@@ -96,7 +92,7 @@
 	{/if}
 
 {* -------------------- text field, numeric, drop down, radio,user/group/IP selector, autopincrement, dynamic list *} 
-{elseif $field_value.type eq  't' or $field_value.type eq 'n' or $field_value.type eq 'd' or $field_value.type eq 'D' or $field_value.type eq 'R' or $field_value.type eq 'u' or $field_value.type eq 'g' or $field_value.type eq 'I' or $field_value.type eq 'q' or $field_value.type eq 'w' or ($field_value.type eq 'C' and $field_value.computedtype ne 'f')}
+{elseif $field_value.type eq  't' or $field_value.type eq 'n' or $field_value.type eq 'd' or $field_value.type eq 'D' or $field_value.type eq 'R' or $field_value.type eq 'u' or $field_value.type eq 'g' or $field_value.type eq 'I' or $field_value.type eq 'q' or $field_value.type eq 'w' or $field_value.type eq 'C'}
 	{if $list_mode eq 'y'}
 		{$field_value.value|escape|truncate:255:"..."|default:"&nbsp;"}
 	{elseif $list_mode eq 'csv'}
@@ -105,41 +101,35 @@
 		{$field_value.value|escape}
 	{/if}
 
-
-
 {* -------------------- image -------------------- *}
 {elseif $field_value.type eq 'i'}
 	{if $list_mode eq 'csv'}
 		{$field_value.value}
 	{elseif $field_value.value ne ''}
 		{if $list_mode ne 'n'}
-			{if !empty($field_value.options_array[5]) and $prefs.feature_shadowbox eq 'y'}
-				<a href="{$field_value.value}" rel="{if $field_value.options_array[5] eq 'item'}shadowbox[{$item.itemId}]{elseif $field_value.options_array[5]} eq 'individual'}shadowbox{else}shadowbox[{$field_value.options_array[5]}{/if};type=img">
-			{/if}
-			<img src="{$field_value.value}"{if $field_value.options_array[0]} width="{$field_value.options_array[0]}"{/if}{if $field_value.options_array[1]} height="{$field_value.options_array[1]}"{/if} alt="" />
-			{if $field_value.options_array[5] and $prefs.feature_shadowbox eq 'y'}</a>{/if}
+			<img border="0" src="{$field_value.value}"{if $field_value.options_array[0]} width="{$field_value.options_array[0]}"{/if}{if $field_value.options_array[1]} height="{$field_value.options_array[1]}"{/if} alt="" />
 		{else}
-			<img src="{$field_value.value}"{if $field_value.options_array[2]} width="{$field_value.options_array[2]}"{/if}{if $field_value.options_array[3]} height="{$field_value.options_array[3]}"{/if} alt="" />
+			<img border="0" src="{$field_value.value}"{if $field_value.options_array[2]} width="{$field_value.options_array[2]}"{/if}{if $field_value.options_array[3]} height="{$field_value.options_array[3]}"{/if} alt="" />
 		{/if}
 	{else}
-		<img src="img/icons/na_pict.gif" alt="n/a" />
+		<img border="0" src="img/icons/na_pict.gif" alt="n/a" />
 	{/if}
 
 {* -------------------- Multimedia -------------------- *}
 {elseif $field_value.type eq 'M'}
 	{if $field_value.value ne ''}	
-	{if isset($cur_field.options_array[1]) and $field_value.options_array[1] ne '' }
+	{if  $field_value.options_array[1] ne '' }
 		{assign var='Height' value=$prefs.MultimediaDefaultHeight}
 	{else}
 		{assign var='Height' value=$field_value.options_array[1]}
 	{/if}
-	{if isset($cur_field.options_array[2]) and $field_value.options_array[2] ne '' }
-		{assign var='Length' value=$field_value.options_array[2]}
+	{if  $field_value.options_array[2] ne '' }
+		{assign var='Lenght' value=$field_value.options_array[2]}
 	{else}
-		{assign var='Length' value=$prefs.MultimediaDefaultLength}
+		{assign var='Lenght' value=$prefs.MultimediaDefaultLength}
 	{/if}
 	{if $ModeVideo eq 'y' } { assign var="Height" value=$Height+$prefs.VideoHeight}{/if}
-	{include file=multiplayer.tpl url=$field_value.value w=$Length h=$Height video=$ModeVideo}
+	{include file=multiplayer.tpl url=$field_value.value w=$Lenght h=$Height video=$ModeVideo}
 	{/if}
 
 {* -------------------- file -------------------- *}
@@ -165,16 +155,6 @@
 		{$field_value.value|escape}
 	{/if}
 
-{* -------------------- page selector ------------------------- *} 
-{elseif $field_value.type eq  'k'}
-	{if $list_mode eq 'y'}
-		{wiki}(({$field_value.value|escape})){/wiki}
-	{elseif $list_mode eq 'csv'}
-		{$field_value.value}
-	{else}
-		{wiki}(({$field_value.value|escape})){/wiki}
-	{/if}
-
 {* -------------------- textarea -------------------- *}
 {elseif $field_value.type eq 'a'}
 	{if $field_value.options_array[4] ne '' and $field_value.options_array[4] ne 0 and $list_mode eq 'y'}
@@ -194,7 +174,7 @@
 	{/if}
 
 {* -------------------- date -------------------- *}
-{elseif $field_value.type eq 'f' or $field_value.type eq 'j' or $field_value.computedtype eq 'f'}
+{elseif $field_value.type eq 'f' or $field_value.type eq 'j'}
 	{if $field_value.value}
 		{if $field_value.options_array[0] eq 'd'}
 			{$field_value.value|tiki_short_date}
@@ -234,8 +214,8 @@
 		{capture name=flag}
 		{tr}{$field_value.value}{/tr}
 		{/capture}
-		{if $o_opt ne '1' and $list_mode ne 'csv'}<img src="img/flags/{$field_value.value}.gif" title="{$smarty.capture.flag|replace:'_':' '}" alt="{$smarty.capture.flag|replace:'_':' '}" />{/if}
-		{if $o_opt ne '1' and $o_opt ne '2' and $list_mode ne 'csv'}&nbsp;{/if}
+		{if $o_opt ne '1'}<img border="0" src="img/flags/{$field_value.value}.gif" title="{$smarty.capture.flag|replace:'_':' '}" alt="{$smarty.capture.flag|replace:'_':' '}" />{/if}
+		{if $o_opt ne '1' and $o_opt ne '2'}&nbsp;{/if}
 		{if $o_opt ne '2'}{$smarty.capture.flag|replace:'_':' '}{/if}
 	{else}
 		&nbsp;
@@ -258,33 +238,34 @@
 	{if $list_mode eq 'csv'}
 		{$field_value.value}
 	{else}
-		{capture name=stat}
-		{tr}Rating{/tr}: {$field_value.value|default:"-"}, {tr}Number of voices{/tr}: {$field_value.numvotes|default:"-"}, {tr}Average{/tr}: {$field_value.voteavg|default:"-"}, {tr}Your vote{/tr}: {if $item.my_rate}{$item.my_rate}{else}-{/if}
-		{/capture}
-		<b title="{$smarty.capture.stat}">
-		{if $field_value.value}{$field_value.voteavg}/{$field_value.value}{else}&nbsp;-&nbsp;{/if}</b>
+		<span style="padding-right:2em"><b title="{tr}Rating{/tr}: {$field_value.value|default:"-"}, {tr}Number of voices{/tr}: {$field_value.numvotes|default:"-"}, {tr}Average{/tr}: {$field_value.voteavg|default:"-"}" style="position:absolute">
+		&nbsp;{if $field_value.value >= 0}&nbsp;{/if}{$field_value.value|default:"-"}&nbsp;</b>
+		</span>
 		{if $tiki_p_tracker_vote_ratings eq 'y'}
-			{if !$item.my_rate}
-				<b class="highlight">-</b>
+			<span nowrap="nowrap"><span class="button2">
+			{if $item.my_rate eq NULL}
+				<b class="linkbut highlight">-</b>
 			{else}
 				<a href="{$smarty.server.PHP_SELF}{if $query_string}?{$query_string}{else}?{/if}
 					trackerId={$item.trackerId}
 					&amp;itemId={$item.itemId}
 					&amp;ins_{$field_value.fieldId}=NULL
-					{if $page}&amp;page={$page|escape:url}{/if}">-</a>
+					{if $page}&amp;page={$page|escape:url}{/if}"
+					class="linkbut">-</a>
 			{/if}
 				{section name=i loop=$field_value.options_array}
 					{if $field_value.options_array[i] eq $item.my_rate}
-						<b class="highlight">{$field_value.options_array[i]}</b>
+						<b class="linkbut highlight">{$field_value.options_array[i]}</b>
 					{else}
 						<a href="{$smarty.server.PHP_SELF}?
 						trackerId={$item.trackerId}
 						&amp;itemId={$item.itemId}
 						&amp;ins_{$field_value.fieldId}={$field_value.options_array[i]}
 						{if $page}&amp;page={$page|escape:url}{/if}"
-						title="{tr}Click to vote for this value.{/tr} {$smarty.capture.stat}">{$field_value.options_array[i]}</a>
+						class="linkbut">{$field_value.options_array[i]}</a>
 					{/if}
 				{/section}
+			</span></span>
 		{/if}
 	{/if}
 
@@ -321,13 +302,38 @@
 {* -------------------- google map -------------------- *}
 {elseif $field_value.type eq 'G'}
 	{if $prefs.feature_gmap eq 'y'}
-		{if $list_mode eq 'y'}
-			{include file='tracker_item_field_googlemap_value.tpl' width=200 height=200 control='n'}
-		{elseif $list_mode eq 'csv'}
-			{$field_value.value}
-		{else}
-			{include file='tracker_item_field_googlemap_value.tpl' width=500 height=400 control='y'}
-		{/if}
+{/strip}
+	Google Map : X = {$field_value.x} ; Y = {$field_value.y} ; Zoom = {$field_value.z}
+	<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key={$prefs.gmap_key}" type="text/javascript">
+	</script>
+	<div id="map" style="width: 500px; height: 400px;border: 1px solid #000;">
+	</div>
+	<script type="text/javascript">
+	<!--//--><![CDATA[//><!--
+	function load() {literal}{{/literal}
+	var map = new GMap2(document.getElementById("map"));
+	  map.addControl(new GLargeMapControl());
+	  map.addControl(new GMapTypeControl());
+	  map.addControl(new GScaleControl());
+	  map.setCenter(new GLatLng({$field_value.y}, {$field_value.x}), {$field_value.z});
+	  map.addOverlay(new GMarker(new GLatLng({$field_value.y},{$field_value.x})));
+
+/*	  GEvent.addListener(map, "zoomend", function(gold, gnew) {literal}{{/literal}
+	    document.getElementById('defz').value = gnew;
+	    document.getElementById('pointz').value = gnew;
+	  {literal}});{/literal}
+
+	  GEvent.addListener(map, "moveend", function() {literal}{{/literal}
+	    document.getElementById('defx').value = map.getCenter().x;
+	    document.getElementById('defy').value = map.getCenter().y;
+	  {literal}});{/literal}
+*/
+	{literal}}{/literal}
+//	load();
+	window.onload=load;
+	//--><!]]>
+	</script>
+{strip}
 	{else}
 	  {tr}Google Maps is not enabled.{/tr}
 	{/if}
@@ -343,7 +349,7 @@
 {/if}
 
 {* ******************** append ******************** *}
-{if ($field_value.type eq 't' or $field_value.type eq 'n' or $field_value.type eq 'c') and $field_value.options_array[3] and $field_value.value != ''}
+{if ($field_value.type eq 't' or $field_value.type eq 'n' or $field_value.type eq 'c') and $field_value.options_array[3]}
 	<span class="formunit">{$field_value.options_array[3]}</span>
 {/if}
 {if $field_value.type eq 'q' and !empty($field_value.options_array[2])}

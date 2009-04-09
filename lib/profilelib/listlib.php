@@ -59,33 +59,6 @@ class Tiki_Profile_List
 		return true;
 	} // }}}
 
-	function getCategoryList( $source = '' ) // {{{
-	{
-		$category_list = array();
-	
-		$sources = $this->getSources();
-
-		foreach( $sources as $s )
-		{
-			if( $source && $s['url'] != $source )
-                                continue;
-				
-			if( !$s['lastupdate'] )
-                                continue;
-
-                        $fp = fopen( $this->getCacheLocation( $s['url'] ), 'r' );
-
-                        while( false !== $row = fgetcsv( $fp, 200, "\t" ) )
-                        {
-				list( $c, $t, $i ) = $row;
-				if ($c) $category_list[] = $c;
-			}
-		}
-
-		natsort( $category_list );	
-		return( array_unique( $category_list ) );
-	} // }}}
-							
 	function getList( $source = '', $category = '', $profile = '' ) // {{{
 	{
 		$list = array();
@@ -109,31 +82,22 @@ class Tiki_Profile_List
 
 				list( $c, $t, $i ) = $row;
 
-				$key = "{$s['url']}#{$i}";
-
 				if( $category && stripos( $c, $category ) === false )
 					continue;
 				if( $profile && stripos( $i, $profile ) === false )
 					continue;
 
-				if( array_key_exists( $key, $list ) )
-				{
-					$list[$key]['category'] .= ", $c";
-				}
-				else
-				{
-					$list[$key] = array(
-						'domain' => $s['short'],
-						'category' => $c,
-						'name' => $i,
-					);
-				}
+				$list[] = array(
+					'domain' => $s['short'],
+					'category' => $c,
+					'name' => $i,
+				);
 			}
 
 			fclose($fp);
 		}
 
-		return array_values( $list );
+		return $list;
 	} // }}}
 
 	private function getCacheLocation( $path ) // {{{

@@ -20,25 +20,25 @@ class TWVersion {
 	var $ridx;			// Associative array pointing versions to release index
 	var $vidx;			// Index where this version appears in releases array
 	var $star;			// Star being used for this version tree
-	var $svn;			// Is this a Subversion version or a package?
+	var $cvs;			// Is this a cvs version or a package?
 
 	function TWVersion() {
 		// Set the development branch.  Valid are:
 		//   stable   : Represents officially supported releases.
 		//   unstable : Represents candidate and test/development releases.
 		//   head     : Represents next generation development version.
-		$this->branch 	= 'unstable';
+		$this->branch 	= 'stable';
 
 		// Set everything else, including defaults.
-		$this->version 	= '4.0';
-		$this->star	= 'Aldebaran';
+		$this->version 	= '2.4';
+		$this->star		= 'Arcturus';
 		$this->release 	= $this->version;
 		$this->releases	= array();
 		$this->ridx 	= array();
 		$this->vidx 	= 0;
 
-		// Check for Subversion or not
-		$this->svn	= is_dir('.svn') ? 'y' : 'n';
+		// Check for CVS or not
+		$this->cvs	= is_dir('CVS') ? 'y' : 'n';
 	}
 
 	function getBaseVersion()
@@ -61,9 +61,7 @@ class TWVersion {
 				10=>'Era Carinae',
 				11=>'Polaris',
 				12=>'Sirius',
-				13=>'Arcturus',
-				14=>'Betelgeuse',
-				15=>'Aldebaran'
+				13=>'Arcturus'
 				);
 	}
 
@@ -93,7 +91,8 @@ class TWVersion {
 				17=>'2.0',
 				18=>'2.1',
 				19=>'2.2',
-				20=>'3.0beta1'
+				20=>'2.3',
+				21=>'2.4',
 				);
 	}
 

@@ -5,7 +5,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
-global $smarty;
+
 global $imagegallib; include_once ("lib/imagegals/imagegallib.php");
 
 $galleryId = -1;
@@ -17,4 +17,4 @@ $ranking = $imagegallib->list_images(0, $module_rows, 'created_desc', '', $galle
 $smarty->assign('modLastImages', $ranking["data"]);
 $smarty->assign('nonums', isset($module_params["nonums"]) ? $module_params["nonums"] : 'n');
 
-
+?>

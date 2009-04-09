@@ -1,17 +1,16 @@
-{title help="FAQs"}{tr}{$faq_info.title}{/tr}{/title}
-<div class="description">{$faq_info.description|escape}</div>
+<h1><a class="pagetitle" href="tiki-view_faq.php?faqId={$faqId}">{$faq_info.title}</a>
 
-<div class="navbar">
-	{button href="tiki-list_faqs.php" _text="{tr}List FAQs{/tr}"}
-	
-	{if $tiki_p_admin_faqs eq 'y'}
-		{button href="tiki-list_faqs.php?faqId=$faqId" _text="{tr}Edit this FAQ{/tr}"}
-	{/if}
-	{if $tiki_p_admin_faqs eq 'y'}
-		{button href="tiki-faq_questions.php?faqId=$faqId" _text="{tr}New Question{/tr}"}
-	{/if}
-</div>
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}FAQs" target="tikihelp" class="tikihelp" title="{tr}View FAQ{/tr}">
+<img src="img/icons/help.gif" border="0" height="16" width="16" alt='{tr}Help{/tr}' /></a>{/if}
 
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-view_faq.tpl" target="tikihelp" class="tikihelp" title="{tr}View FAQ Tpl{/tr}: {tr}Admin Menus tpl{/tr}">
+<img src="img/icons/info.gif" border="0" width="16" height="16" alt='{tr}Edit Template{/tr}' /></a>{/if}</h1>
+
+<a class="linkbut" href="tiki-list_faqs.php">{tr}List FAQs{/tr}</a>
+{if $tiki_p_admin_faqs eq 'y'}<a class="linkbut" href="tiki-list_faqs.php?faqId={$faqId}">{tr}Edit this FAQ{/tr}</a> {/if}
+{if $tiki_p_admin_faqs eq 'y'}<a class="linkbut" href="tiki-faq_questions.php?faqId={$faqId}">{tr}New Question{/tr}{/if}</a><br /><br />
 <h2>{tr}Questions{/tr}</h2>
 {if !$channels}
 {tr}There are no questions in this FAQ.{/tr}
@@ -50,21 +49,39 @@
 </div>
 {/section}
 {/if}
+{if $faq_info.canSuggest eq 'y' and $tiki_p_suggest_faq eq 'y'}
+  <span class="button2">
+  <a href="javascript:flip('faqsugg');" class="linkbut {if $suggested_cant > 0}highlight{/if}">
+    {if $suggested_cant == 0}
+      {tr}Add Suggestion{/tr}
+    {elseif $suggested_cant == 1}
+      {tr}1 suggestion{/tr}
+    {else}
+      {$suggested_cant} {tr}suggestions{/tr}
+    {/if}
+  </a>
+  </span>
+{/if}
 
-<div id="page-bar">
-	{if $faq_info.canSuggest eq 'y' and $tiki_p_suggest_faq eq 'y'}
-		{button href="javascript:flip('faqsugg');" _flip_id="faqsugg" _text="{tr}Add Suggestion{/tr}"}
-	{/if}
-
-	{if $prefs.feature_faq_comments == 'y'
-			&& (($tiki_p_read_comments == 'y'
-			&& $comments_cant != 0)
-		|| $tiki_p_post_comments == 'y'
-		|| $tiki_p_edit_comments == 'y')
-	}
-		{include file=comments_button.tpl}
-	{/if}
-</div>
+{if $prefs.feature_faq_comments == 'y'
+    && (($tiki_p_read_comments  == 'y'
+    && $comments_cant != 0)
+  ||  $tiki_p_post_comments  == 'y'
+  ||  $tiki_p_edit_comments  == 'y')
+}
+  <span class="button2">
+  <a href="#comment" onclick="javascript:flip('comzone');flip('comzone_close','inline');return false;" class="linkbut {if $comments_cant >= 1}highlight{/if}">
+    {if $comments_cant == 0 or ($tiki_p_read_comments  == 'n' and $tiki_p_post_comments  == 'y')}
+      {tr}Add Comment{/tr}
+    {elseif $comments_cant == 1}
+      {tr}1 comment{/tr}
+    {else}
+      {$comments_cant} {tr}comments{/tr}
+    {/if}
+    <span id="comzone_close" style="display:{if isset($smarty.session.tiki_cookie_jar.show_comzone) and $smarty.session.tiki_cookie_jar.show_comzone eq 'y'}inline{else}none{/if};">({tr}close{/tr})</span>
+  </a>
+  </span>
+{/if}
 
 {if $faq_info.canSuggest eq 'y' and $tiki_p_suggest_faq eq 'y'}
 <div class="faq_suggestions" id="faqsugg" style="display:{if !empty($error)}block{else}none{/if};">
@@ -79,7 +96,7 @@
 <tr><td class="formcolor">{tr}Question{/tr}:</td><td class="formcolor"><textarea rows="2" cols="80" name="suggested_question" style="width:95%;">{if $pendingquestion}{$pendingquestion}{/if}</textarea></td></tr>
 <tr><td class="formcolor">{tr}Answer{/tr}:</td><td class="formcolor"><textarea rows="2" cols="80" name="suggested_answer" style="width:95%;">{if $pendinganswer}{$pendinganswer}{/if}</textarea></td></tr>
 {if $prefs.feature_antibot eq 'y' && $user eq ''}
-{include file="antibot.tpl" td_style="formcolor"}
+{include file="antibot.tpl"}
 {/if}
 <tr><td class="formcolor">&nbsp;</td><td class="formcolor"><input type="submit" name="sugg" value=" {tr}Add{/tr} " /></td></tr>
 </table>
@@ -87,7 +104,7 @@
 {if count($suggested) != 0}
 <br />
 <table class="normal">
-<tr><th>{tr}Suggested questions{/tr}</th></tr>
+<tr><th class="heading">{tr}Suggested questions{/tr}</th></tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$suggested}
 <tr><td class="{cycle}">{$suggested[ix].question}</td></tr>
@@ -97,7 +114,7 @@
 </div>
 {/if}
 
-{if $prefs.faqs_feature_copyrights eq 'y' and $prefs.wikiLicensePage}
+{if $prefs.faqs_feature_copyrights  eq 'y' and $prefs.wikiLicensePage}
   {if $prefs.wikiLicensePage == $page}
     {if $tiki_p_edit_copyrights eq 'y'}
       <p class="editdate">{tr}To edit the copyright notices{/tr} <a href="copyrights.php?page={$copyrightpage}">{tr}Click Here{/tr}</a>.</p>
@@ -110,9 +127,9 @@
 
 
 {if $prefs.feature_faq_comments == 'y'
-&& (($tiki_p_read_comments == 'y'
+&& (($tiki_p_read_comments  == 'y'
 && $comments_cant != 0)
-|| $tiki_p_post_comments == 'y'
-|| $tiki_p_edit_comments == 'y')}
+||  $tiki_p_post_comments  == 'y'
+||  $tiki_p_edit_comments  == 'y')}
 {include file=comments.tpl}
 {/if}

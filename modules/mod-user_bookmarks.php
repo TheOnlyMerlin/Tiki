@@ -5,7 +5,8 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
-global $tikilib, $smarty;
+
+require_once ('lib/tikilib.php'); # httpScheme()
 
 global $bookmarklib, $imagegallib, $user, $prefs, $tiki_p_create_bookmarks;
 include_once ('lib/bookmarks/bookmarklib.php');
@@ -14,7 +15,7 @@ include_once ("lib/imagegals/imagegallib.php");
 $setup_parsed_uri = parse_url($_SERVER["REQUEST_URI"]);
 
 if (isset($setup_parsed_uri["query"])) {
-	TikiLib::parse_str($setup_parsed_uri["query"], $setup_query_data);
+	parse_str($setup_parsed_uri["query"], $setup_query_data);
 } else {
 	$setup_query_data = array();
 }
@@ -146,4 +147,4 @@ if ($prefs['feature_user_bookmarks'] != 'y') {
 // get urls for the parent
 }
 
-
+?>

@@ -1,7 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html 
      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
@@ -22,15 +22,15 @@
   	<input type="hidden" id="status" value="online" />
 	<table class="normal" >
 		<tr>
-			<th>{tr}Operator{/tr}: {$user}</th>
-			<th>{tr}Status{/tr}: <b>{tr}{$status}{/tr}</b></th>
-			<th style="text-align:right;">    
+			<td class="heading">{tr}Operator{/tr}: {$user}</td>
+			<td class="heading">{tr}Status{/tr}: <b>{tr}{$status}{/tr}</b></td>
+			<td class="heading" style="text-align:right;">    
 				{if $status eq 'offline'}
-    				<a href="tiki-live_support_console.php?status=online">{tr}be online{/tr}</a>
+    				<a href="tiki-live_support_console.php?status=online" class="tableheading">{tr}be online{/tr}</a>
     			{else}
-    				<a href="tiki-live_support_console.php?status=offline">{tr}be offline{/tr}</a>
+    				<a href="tiki-live_support_console.php?status=offline" class="tableheading">{tr}be offline{/tr}</a>
     		{/if}
-		</th>
+		</td>
 		</tr>
 	</table>
 
@@ -43,10 +43,10 @@
     {/if}
 	<table id='reqs' class="normal">
 		<tr>
-			<th>{tr}User{/tr}</th>
-			<th>{tr}Reason{/tr}</th>
-			<th>{tr}Requested{/tr}</th>
-			<th>&nbsp;</th>
+			<td class="heading">{tr}User{/tr}</td>
+			<td class="heading">{tr}Reason{/tr}</td>
+			<td class="heading">{tr}Requested{/tr}</td>
+			<td class="heading">&nbsp;</td>
 		</tr>
 		{cycle values="odd,even" print=false}
 		{section loop=$requests name=ix}

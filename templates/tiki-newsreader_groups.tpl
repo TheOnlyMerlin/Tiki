@@ -6,9 +6,9 @@
 <br /><br />
 <table class="normal">
 <tr>
-  <th>{tr}Group{/tr}</th>
-  <th style="text-align:right;">{tr}Msgs{/tr}</th>
-  <th>{tr}Desc{/tr}</th>
+  <td class="heading">{tr}Group{/tr}</td>
+  <td style="text-align:right;" class="heading">{tr}Msgs{/tr}</td>
+  <td class="heading">{tr}Desc{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {foreach from=$groups key=group item=item}

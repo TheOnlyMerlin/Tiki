@@ -22,7 +22,7 @@ function smarty_resource_wiki_source($page, &$tpl_source, &$smarty) {
 	if (empty($info)) {
 		return false;
 	}
-	$tpl_source = $tikilib->parse_data($info['data'], array('is_html' => $info['is_html']));
+	$tpl_source = $tikilib->parse_data($info['data'],$info['is_html']);
 	return true;
 }
 
@@ -32,11 +32,7 @@ function smarty_resource_wiki_timestamp($page, &$tpl_timestamp, &$smarty) {
 	if (empty($info)) {
 		return false;
 	}
-	if (preg_match("/\{([A-Z0-9_]+) */", $info['data'])) { // there are some plugins - so it can be risky to cache the page
-		$tpl_timestamp = $tikilib->now;
-	} else {
-		$tpl_timestamp = $info['lastModif'];
-	}
+	$tpl_timestamp = $info['lastModif'];
 	return true;
 }
 

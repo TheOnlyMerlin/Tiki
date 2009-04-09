@@ -156,14 +156,14 @@ class HistLib extends TikiLib {
 
 		if ($fetchdata==true) {
 			if ($version > 0)
-				$query = "select `pageName`, `description`, `version`, `lastModif`, `user`, `ip`, `data`, `comment`, `is_html` from `tiki_history` where `pageName`=? and `version`=?";				
+				$query = "select `pageName`, `description`, `version`, `lastModif`, `user`, `ip`, `data`, `comment` from `tiki_history` where `pageName`=? and `version`=?";				
 			else
-				$query = "select `pageName`, `description`, `version`, `lastModif`, `user`, `ip`, `data`, `comment`, `is_html` from `tiki_pages` where `pageName`=?";
+				$query = "select `pageName`, `description`, `version`, `lastModif`, `user`, `ip`, `data`, `comment` from `tiki_pages` where `pageName`=?";
 		} else {
 			if ($version > 0)
-				$query = "select `pageName`, `description`, `version`, `lastModif`, `user`, `ip`, `comment`, `is_html` from `tiki_history` where `pageName`=? and `version`=?";
+				$query = "select `pageName`, `description`, `version`, `lastModif`, `user`, `ip`, `comment` from `tiki_history` where `pageName`=? and `version`=?";
 			else
-				$query = "select `pageName`, `description`, `version`, `lastModif`, `user`, `ip`, `comment`, `is_html` from `tiki_pages` where `pageName`=?";
+				$query = "select `pageName`, `description`, `version`, `lastModif`, `user`, `ip`, `comment` from `tiki_pages` where `pageName`=?";
 		}
 		if ($version > 0)
 			$result = $this->query($query,array($page,$version));
@@ -183,7 +183,6 @@ class HistLib extends TikiLib {
 			$aux["pageName"] = $res["pageName"];
 			$aux["description"] = $res["description"];
 			$aux["comment"] = $res["comment"];
-			$aux["is_html"] = $res["is_html"];
 			//$aux["percent"] = levenshtein($res["data"],$actual);
 			$ret[] = $aux;
 		}
@@ -301,8 +300,7 @@ $histlib = new HistLib($dbTiki);
 
 function histlib_helper_setup_diff( $page, $oldver, $newver )
 {
-	global $smarty, $histlib, $tikilib, $prefs;
-	$prefs['wiki_edit_section'] = 'n';
+	global $smarty, $histlib, $tikilib;
 	
 	$info = $tikilib->get_page_info( $page );
 
@@ -332,7 +330,7 @@ function histlib_helper_setup_diff( $page, $oldver, $newver )
 			$smarty->assign_by_ref('new', $new);
 		}
 	}
-	
+
 	if (!isset($_REQUEST["diff_style"]) || $_REQUEST["diff_style"] == "old") {
 		$_REQUEST["diff_style"] = 'unidiff';
 	}
@@ -351,32 +349,12 @@ function histlib_helper_setup_diff( $page, $oldver, $newver )
 			$new['data'] = strip_tags(preg_replace($search,$replace,$new['data']),'<h1><h2><h3><h4><b><i><u><span>');
 		}
 		if ($_REQUEST["diff_style"] == "htmldiff") {
-			$oldp = $prefs['wiki_edit_plugin'];
-			$olds = $prefs['wiki_edit_section'];
-
-			$prefs['wiki_edit_plugin'] = 'n';
-			$prefs['wiki_edit_section'] = 'n';
-			$parse_options = array('is_html' => ($old['is_html'] == 1), 'noheadinc' => true);
-			$old["data"] = $tikilib->parse_data($old["data"], $parse_options);
-
-			$parse_options = array('is_html' => ($new['is_html'] == 1), 'noheadinc' => true);
-			$new["data"] = $tikilib->parse_data($new["data"], $parse_options);
-
-			$prefs['wiki_edit_plugin'] = $oldp;
-			$prefs['wiki_edit_section'] = $olds;
-
-			$old['data'] = histlib_strip_irrelevant( $old['data'] );
-			$new['data'] = histlib_strip_irrelevant( $new['data'] );
+			$old["data"] = $tikilib->parse_data($old["data"],$info['is_html'] == 1 );
+			$new["data"] = $tikilib->parse_data($new["data"],$info['is_html'] == 1 );
 		}
 		$html = diff2($old["data"], $new["data"], $_REQUEST["diff_style"]);
 		$smarty->assign_by_ref('diffdata', $html);
 	}
-}
-
-function histlib_strip_irrelevant( $data )
-{
-	$data = preg_replace( "/<(h1|h2|h3|h4|h5|h6|h7)\s+([^\\\\>]+)>/i", '<$1>', $data );
-	return $data;
 }
 
 ?>

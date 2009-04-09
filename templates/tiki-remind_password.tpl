@@ -1,20 +1,15 @@
-{* $Id$ *}
-{title help='Registration' admpage='login'}{tr}I forgot my password{/tr}{/title}
+<h1>{tr}I forgot my password{/tr}</h1>
 
 {if $showmsg ne 'n'}
   {if $showmsg eq 'e'}<span class="warn">{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle;align:left;"}{else}{icon _id=accept alt="{tr}OK{/tr}" style="vertical-align:middle;align:left;"} {/if} 
-{if $prefs.login_is_email ne 'y'}
   {$msg|escape:'html'|@default:'{tr}Enter your username or email.{/tr}'}
-{else}
-  {$msg|escape:'html'|@default:'{tr}Enter your email.{/tr}'}
-{/if}
   {if $showmsg eq 'e'}</span>{/if}
   <br /><br />
 {/if}
 
 {if $showfrm eq 'y'}
   <form action="tiki-remind_password.php" method="post">
-  <table class="form">
+  <table class="normal">
   {if $prefs.login_is_email ne 'y'}
   <tr>
     <td class="formcolor">{tr}Username{/tr}</td>
@@ -31,3 +26,6 @@
   </table>
   </form>
 {/if}
+
+<br /><br />
+<a href="{$prefs.tikiIndex}" class="link">{tr}Return to HomePage{/tr}</a>

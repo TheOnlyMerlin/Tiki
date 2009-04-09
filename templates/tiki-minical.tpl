@@ -1,23 +1,30 @@
-{title help="User+Calendar" url="tiki-minical.php?view=$view"}{tr}Mini Calendar{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-minical.php?view={$view}">{tr}Mini Calendar{/tr}</a>
 
-{if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
-  {include file=tiki-mytiki_bar.tpl}
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}User+Calendar" target="tikihelp" class="tikihelp" title="{tr}User Calendar{/tr}">
+{icon _id='help'}</a>
 {/if}
 
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-minical.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}User Calendar Doc tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}</h1>
 {if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
-	{include file=tiki-mytiki_bar.tpl}
+{include file=tiki-mytiki_bar.tpl}
 {/if}
-
-<div class="navbar">
-	{button href="tiki-minical.php#add" _text="{tr}Add{/tr} "}
-	{button href="tiki-minical_prefs.php" _text="{tr}Prefs{/tr}"}
-	{button href="tiki-minical.php?view=daily" _text="{tr}Daily{/tr}"}
-	{button href="tiki-minical.php?view=weekly" _text="{tr}Weekly{/tr}"}
-	{button href="tiki-minical.php?view=list" _text="{tr}List{/tr}"}
-	{button href="tiki-minical_export.php" _text="{tr}Export{/tr}"}
-	{button href="tiki-minical_prefs.php#import" _text="{tr}Import{/tr}"}
-</div>
-
+<br />
+<table border="0">
+<tr>
+<td><div class="button2"><a class="linkbut" href="tiki-minical.php#add">{tr}Add{/tr}</a></div></td>
+<td><div class="button2"><a class="linkbut" href="tiki-minical_prefs.php">{tr}Prefs{/tr}</a></div></td>
+<td><div class="button2"><a class="linkbut" href="tiki-minical.php?view=daily">{tr}Daily{/tr}</a></div></td>
+<td><div class="button2"><a class="linkbut" href="tiki-minical.php?view=weekly">{tr}Weekly{/tr}</a></div></td>
+<td><div class="button2"><a class="linkbut" href="tiki-minical.php?view=list">{tr}List{/tr}</a></div></td>
+<td><div class="button2"><a class="linkbut" href="tiki-minical_export.php">{tr}Export{/tr}</a></div></td>
+<td><div class="button2"><a class="linkbut" href="tiki-minical_prefs.php#import">{tr}Import{/tr}</a></div></td>
+</tr>
+</table>
+<br />
 <table class="normal" >
 <tr>
 	<td class="formcolor">
@@ -129,18 +136,18 @@
 
 {if $view eq 'list' and (count($channels) > 0 or $find ne '')}
 
-{include file='find.tpl'}
+{include file='find.tpl' _sort_mode='y'}
 
 <a class="link" href="tiki-minical.php?view={$view}&amp;removeold=1">{tr}Remove old events{/tr}</a>
 <form action="tiki-minical.php" method="post">
 <input type="hidden" name="view" value="{$view|escape}" />
 <table class="normal">
 <tr>
-<th><input type="submit" name="delete" value="x " /></th>
-<th><a href="tiki-minical.php?view={$view}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Title{/tr}</a></th>
-<th><a href="tiki-minical.php?view={$view}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'start_desc'}start{else}start_desc{/if}">{tr}Start{/tr}</a></th>
-<th><a href="tiki-minical.php?view={$view}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'duration_desc'}duration_asc{else}duration_desc{/if}">{tr}duration{/tr}</a></th>
-<th style="text-align:center;"><a href="tiki-minical.php?view={$view}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'topicId_desc'}topicId_asc{else}topicId_desc{/if}">{tr}Topic{/tr}</a></th>
+<td class="heading"><input type="submit" name="delete" value="x " /></td>
+<td class="heading" ><a class="tableheading" href="tiki-minical.php?view={$view}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Title{/tr}</a></td>
+<td class="heading" ><a class="tableheading" href="tiki-minical.php?view={$view}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'start_desc'}start{else}start_desc{/if}">{tr}Start{/tr}</a></td>
+<td class="heading" ><a class="tableheading" href="tiki-minical.php?view={$view}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'duration_desc'}duration_asc{else}duration_desc{/if}">{tr}duration{/tr}</a></td>
+<td style="text-align:center;" class="heading" ><a class="tableheading" href="tiki-minical.php?view={$view}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'topicId_desc'}topicId_asc{else}topicId_desc{/if}">{tr}Topic{/tr}</a></td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}
@@ -165,10 +172,27 @@
 {/section}
 </table>
 </form>
-
-{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
-
+<div class="mini">
+<div align="center">
+{if $prev_offset >= 0}
+[<a class="prevnext" href="tiki-minical.php?view={$view}&amp;find={$find}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}">{tr}Prev{/tr}</a>]&nbsp;
 {/if}
+{tr}Page{/tr}: {$actual_page}/{$cant_pages}
+{if $next_offset >= 0}
+&nbsp;[<a class="prevnext" href="tiki-minical.php?view={$view}&amp;find={$find}&amp;offset={$next_offset}&amp;sort_mode={$sort_mode}">{tr}Next{/tr}</a>]
+{/if}
+{if $prefs.direct_pagination eq 'y'}
+<br />
+{section loop=$cant_pages name=foo}
+{assign var=selector_offset value=$smarty.section.foo.index|times:$prefs.maxRecords}
+<a class="prevnext" href="tiki-minical.php?vew={$view}&amp;find={$find}&amp;offset={$selector_offset}&amp;sort_mode={$sort_mode}">
+{$smarty.section.foo.index_next}</a>&nbsp;
+{/section}
+{/if}
+</div>
+</div>
+{/if}
+<br />
 <a name="add"></a>
 <h2>{if $eventId}{tr}Edit event{/tr}{else}{tr}Add event{/tr}{/if}</h2>
 <form action="tiki-minical.php" method="post">

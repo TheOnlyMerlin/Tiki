@@ -7,7 +7,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
-global $tiki_p_admin, $user, $tikilib, $smarty;
+global $tiki_p_admin, $user;
 
 if ($user) {
 	// admin gets ALL actions, user only his own.
@@ -42,4 +42,4 @@ if ($user) {
 	$smarty->assign('nonums', isset($module_params["nonums"]) ? $module_params["nonums"] : 'n');
 	$smarty->assign('maxlen', isset($module_params["maxlen"]) ? $module_params["maxlen"] : '20');
 }
-
+?>

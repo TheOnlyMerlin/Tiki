@@ -1,13 +1,7 @@
-{* $Id$ *}
-
-{title url="tiki-user_information.php?view_user=$userwatch"}{tr}User Information{/tr}{/title}
-
+<h1><a class="pagetitle" href="tiki-user_information.php?view_user={$userwatch}">{tr}User Information{/tr}</a></h1>
 {if $prefs.feature_display_my_to_others eq 'y' and $user and $prefs.feature_messages eq 'y' and $tiki_p_messages eq 'y' and $allowMsgs eq 'y'}
-  <div class="navbar">
-		{button href="#message" _text="{tr}Send me a message{/tr}"}
-	</div>
+<div class="navbar"><a class="linkbut" href="#message">{tr}Send me a message{/tr}</a></div>
 {/if}
-
 <table>
 <tr>
   <td valign="top">
@@ -29,18 +23,16 @@
   <tr><td class="form">{tr}Last login{/tr}:</td><td>{$userinfo.lastLogin|tiki_short_datetime}</td></tr>
 {if $email_isPublic neq 'n'}
   <tr><td class="form">{tr}Email{/tr}:</td><td>{$userinfo.email}</td></tr>
-{elseif $email_isPublic eq 'n' and $tiki_p_admin eq 'y'}
-  <tr><td class="form">{tr}Email{/tr}:</td><td>{$userinfo.email|escape} <i>{tr}(non public){/tr}</i></td></tr>
 {/if}  
-{if !empty($country) and $country != 'Other'}
-  <tr><td class="form">{tr}Country{/tr}:</td><td>{$userinfo.login|countryflag} {tr}{$country|stringfix}{/tr}</td></tr>
+{if !empty($country) and $contry != 'Other'}
+  <tr><td class="form">{tr}Country{/tr}:</td><td><img alt="{tr}{$country}{/tr}" src="img/flags/{$country}.gif" /> {tr}{$country}{/tr}</td></tr>
 {/if}
   {if $prefs.change_theme ne 'n'}<tr><td class="form">{tr}Theme{/tr}:</td><td>{$user_style}</td></tr>{/if}
   {if $prefs.change_language eq 'y'}<tr><td  class="form">{tr}Language{/tr}:</td><td>{$user_language}</td></tr>{/if}
   {if $realName }
   <tr><td class="form">{tr}Real Name{/tr}:</td><td>{$realName}</td></tr>
   {/if}
-{if $prefs.feature_community_gender eq 'y' and $gender neq 'Hidden' and $gender}
+{if $gender neq 'Hidden' and $gender}
   <tr><td>{tr}Gender{/tr}:</td><td>{tr}{$gender}{/tr}</td></tr>
 {/if}
 
@@ -114,7 +106,7 @@
 <table class="normal">
 {cycle values="even,odd" print=false}
 {section name=ix loop=$user_galleries}
-<tr><td class="{cycle}"><a class="link" href="{$user_galleries[ix].galleryId|sefurl:gallery}">{$user_galleries[ix].name|escape}</a>{/section}</td></tr>
+<tr><td class="{cycle}"><a class="link" href="tiki-browse_gallery.php?galleryId={$user_galleries[ix].galleryId}">{$user_galleries[ix].name}</a>{/section}</td></tr>
 </table>
 {/if}
 {if $user_blogs|@count > 0}
@@ -122,7 +114,7 @@
 <table class="normal">
 {cycle values="even,odd" print=false}
 {section name=ix loop=$user_blogs}
-<tr><td class="{cycle}"><a class="link" title="{tr}View{/tr}" href="{$user_blogs[ix].blogId|sefurl:blog}">{$user_blogs[ix].title|escape}</a></td></tr>
+<tr><td class="{cycle}"><a class="link" title="{tr}View{/tr}" href="tiki-view_blog.php?blogId={$user_blogs[ix].blogId}">{$user_blogs[ix].title}</a></td></tr>
 {/section}
 </table>
 {/if}
@@ -131,7 +123,7 @@
 <table class="normal">
 {cycle values="even,odd" print=false}
 {section name=ix loop=$user_articles}
-<tr><td class="{cycle}"><a class="link" title="{tr}View{/tr}" href="{$user_articles[ix].articleId|sefurl:article}">{$user_articles[ix].title|escape}</a></td></tr>
+<tr><td class="{cycle}"><a class="link" title="{tr}View{/tr}" href="tiki-read_article.php?articleId={$user_articles[ix].articleId}">{$user_articles[ix].title}</a></td></tr>
 {/section}
 </table>
 {/if}
@@ -140,25 +132,7 @@
 <table class="normal">
 {cycle values="even,odd" print=false}
 {section name=ix loop=$user_forum_comments}
-<tr><td class="{cycle}"><a class="link" title="{tr}View{/tr}" href="tiki-view_forum_thread.php?comments_parentId={$user_forum_comments[ix].threadId}&forumId={$user_forum_comments[ix].object}">{$user_forum_comments[ix].title|escape}</a></td></tr>
-{/section}
-</table>
-{/if}
-{if $user_forum_topics|@count > 0}
-<h2>{tr}Forum topics{/tr}</h2>
-<table class="normal">
-{cycle values="even,odd" print=false}
-{section name=ix loop=$user_forum_topics}
-<tr><td class="{cycle}"><a class="link" title="{tr}View{/tr}" href="tiki-view_forum_thread.php?comments_parentId={$user_forum_topics[ix].threadId}&forumId={$user_forum_topics[ix].object}">{$user_forum_topics[ix].title|escape}</a></td></tr>
-{/section}
-</table>
-{/if}
-{if $user_items|@count > 0}
-<h2>{tr}User Items{/tr}</h2>
-<table class="normal">
-{cycle values="even,odd" print=false}
-{section name=ix loop=$user_items}
-<tr><td class="{cycle}"> <a class="link" title="{tr}View{/tr}" href="tiki-view_tracker_item.php?trackerId={$user_items[ix].trackerId}&amp;itemId={$user_items[ix].itemId}">{$user_items[ix].name|escape}: {$user_items[ix].value|escape}</a></td></tr>
+<tr><td class="{cycle}"><a class="link" title="{tr}View{/tr}" href="tiki-view_forum_thread.php?comments_parentId={$user_forum_comments[ix].threadId}&forumId={$user_forum_comments[ix].object}">{$user_forum_comments[ix].title}</a></td></tr>
 {/section}
 </table>
 {/if}

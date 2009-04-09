@@ -1,8 +1,20 @@
 {* $Id$ *}
+<h1><a class="pagetitle" href="tiki-print_pages.php">{tr}Print multiple pages{/tr}</a></h1>
 
-{title help="print"}{tr}Print multiple pages{/tr}{/title}
-
-{include file='find.tpl'}
+<table class="findtable">
+  <tr>
+    <td class="findtable">{tr}Find{/tr}</td>
+    <td class="findtable">
+      <form action="tiki-print_pages.php" method="post">
+        <input type="hidden" name="printpages" value="{$form_printpages|escape}" />
+        <input type="hidden" name="printstructures" value="{$form_printstructures|escape}" />
+        <input type="text" name="find" value="{$find|escape}" />
+        <input type="submit" name="filter" value="{tr}Find{/tr}" />
+        <br />
+      </form>
+    </td>
+  </tr>
+</table>
 
 {if $prefs.feature_tabs eq 'y'}
   {cycle name=tabs values="1,2,3" print=false advance=false reset=true}

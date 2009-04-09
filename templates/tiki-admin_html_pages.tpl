@@ -1,9 +1,18 @@
-{title help="Html+Pages"}{tr}Admin HTML pages{/tr}{/title}
+<a class="pagetitle" href="tiki-admin_html_pages.php">{tr}Admin HTML pages{/tr}</a>
+  
+{if $prefs.feature_help eq 'y'}
+  <a href="{$prefs.helpurl}Html+Pages" target="tikihelp" class="tikihelp" title="{tr}Admin Html Pages{/tr}">
+  {icon _id='help'}</a>
+{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+  <a href="tiki-edit_templates.php?template=tiki-admin_html_pages.tpl" target="tikihelp" class="tikihelp" title="{tr}View template{/tr}: {tr}Admin Html Pages Template{/tr}">
+  {icon _id='shape_square_edit'}</a>
+{/if}
+
 
 {if $pageName ne ''}
-  <div class="navbar">
-		{button _text="{tr}Create new HTML page{/tr}"}
-	</div>
+  <div class="navbar"><a href="tiki-admin_html_pages.php" class="linkbut">{tr}Create new HTML page{/tr}</a></div>
 {/if}
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use {literal}{ed id=name}{/literal} or {literal}{ted id=name}{/literal} to insert dynamic zones{/tr}{/remarksbox}
@@ -79,24 +88,25 @@
 
 <br />
 <h2>{tr}HTML pages{/tr}</h2>
+<div align="center">
 {if $channels}
-  {include file='find.tpl'}
+  {include file='find.tpl' _sort_mode='y'}
 {/if}
 <table class="normal">
   <tr>
-    <th>
-      <a href="tiki-admin_html_pages.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a>
-    </th>
+    <td class="heading">
+      <a class="tableheading" href="tiki-admin_html_pages.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a>
+    </td>
     
-    <th>
-      <a href="tiki-admin_html_pages.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'type_desc'}type_asc{else}type_desc{/if}">{tr}Type{/tr}</a>
-    </th>
+    <td class="heading">
+      <a class="tableheading" href="tiki-admin_html_pages.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'type_desc'}type_asc{else}type_desc{/if}">{tr}Type{/tr}</a>
+    </td>
 
-    <th>
-      <a href="tiki-admin_html_pages.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Last Modif{/tr}</a>
-    </th>
+    <td class="heading">
+      <a class="tableheading" href="tiki-admin_html_pages.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Last Modif{/tr}</a>
+    </td>
 
-    <th style="width:100px;">{tr}Action{/tr}</th>
+    <td class="heading" style="width:100px;">{tr}Action{/tr}</td>
   </tr>
   
   {cycle values="odd,even" print=false}
@@ -130,4 +140,23 @@
   {/section}
 </table>
 
-{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
+<div class="mini">
+  {if $prev_offset >= 0}
+    [<a class="prevnext" href="tiki-admin_html_pages.php?find={$find}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}">{tr}Prev{/tr}</a>]&nbsp;
+  {/if}
+  {tr}Page{/tr}: {$actual_page}/{$cant_pages}
+  {if $next_offset >= 0}
+    &nbsp;[<a class="prevnext" href="tiki-admin_html_pages.php?find={$find}&amp;offset={$next_offset}&amp;sort_mode={$sort_mode}">{tr}Next{/tr}</a>]
+  {/if}
+  
+  {if $prefs.direct_pagination eq 'y'}
+    <br />
+    {section loop=$cant_pages name=foo}
+      {assign var=selector_offset value=$smarty.section.foo.index|times:$prefs.maxRecords}
+      <a class="prevnext" href="tiki-admin_html_pages.php?find={$find}&amp;offset={$selector_offset}&amp;sort_mode={$sort_mode}">
+      {$smarty.section.foo.index_next}</a>&nbsp;
+    {/section}
+  {/if}
+</div>
+</div>
+

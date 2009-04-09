@@ -20,7 +20,6 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 // Usage exemple :
 // {MODULE(module=>adsense,client=pub-xxxxxxxxxxxxxxxx,display=468*60_as,color_border=edeed5,color_bg=edeed5,color_link=0000CC,color_url=008000,color_text=000000)}{MODULE}
 
-global $smarty;
 $smarty->assign('display', isset($module_params["display"]) ? $module_params["display"] : '');
 $smarty->assign('client', isset($module_params["client"]) ? $module_params["client"] : '');
 $smarty->assign('ad_channel', isset($module_params["ad_channel"]) ? $module_params["ad_channel"] : '');
@@ -29,3 +28,4 @@ $smarty->assign('color_bg', isset($module_params["color_bg"]) ? $module_params["
 $smarty->assign('color_link', isset($module_params["color_link"]) ? $module_params["color_link"] : '');
 $smarty->assign('color_url', isset($module_params["color_url"]) ? $module_params["color_url"] : '');
 $smarty->assign('color_text', isset($module_params["color_text"]) ? $module_params["color_text"] : '');
+?>

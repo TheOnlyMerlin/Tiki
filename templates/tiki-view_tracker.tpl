@@ -4,42 +4,31 @@
 {popup_init src="lib/overlib.js"}
 {/if}
 
-{title url="tiki-view_tracker.php?trackerId=$trackerId" adm="trackers"}{tr}Tracker:{/tr} {$tracker_info.name}{/title}
+{title url="tiki-view_tracker.php?trackerId=$trackerId"}{tr}Tracker:{/tr} {$tracker_info.name}{/title}
 
 <div class="navbar">
-	 {if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
-	 	 <a href="tiki-object_watches.php?objectId={$trackerId|escape:"url"}&amp;watch_event=tracker_modified&amp;objectType=tracker&amp;objectName={$tracker_info.name|escape:"url"}&amp;objectHref={'tiki-view_tracker.php?trackerId='|cat:$trackerId|escape:"url"}" class="icon">{icon _id='eye_group' alt='{tr}Group Monitor{/tr}' align='right' hspace="1"}</a>
-	{/if}
-	{if $prefs.feature_user_watches eq 'y' and $tiki_p_watch_trackers eq 'y' and $user}
-		{if $user_watching_tracker ne 'y'}
-			<a href="tiki-view_tracker.php?trackerId={$trackerId}&amp;watch=add" title="{tr}Monitor{/tr}">{icon _id='eye' align="right" hspace="1" alt="{tr}Monitor{/tr}"}</a>
-		{else}
-			<a href="tiki-view_tracker.php?trackerId={$trackerId}&amp;watch=stop" title="{tr}Stop Monitor{/tr}">{icon _id='no_eye' align="right" hspace="1" alt="{tr}Stop Monitor{/tr}"}</a>
-		{/if}
-	{/if}
-
-	{if $prefs.rss_tracker eq "y"}
-		<a href="tiki-tracker_rss.php?trackerId={$trackerId}">{icon _id='feed' align="right" hspace="1" alt="{tr}RSS feed{/tr}"}</a>
-	{/if}
-
-	{if (isset($tiki_p_list_trackers) and $tiki_p_list_trackers eq 'y') or (!isset($tiki_p_list_trackers) and $tiki_p_view_trackers eq 'y')}
-		{button href="tiki-list_trackers.php" _text="{tr}List Trackers{/tr}"}
-	{/if}
-
-	{if $tiki_p_create_tracker_items eq 'y' && $prefs.feature_tabs ne 'y'}
-		{button href="tiki-view_tracker.php?trackerId=$trackerId#content2" _text="{tr}Insert New Item{/tr}"}
-	{/if}
-
-	{if $filtervalue}
-		{button href="tiki-view_tracker.php?trackerId=$trackerId" _text="{tr}View This Tracker's Items{/tr}"}
-	{/if}
-
-	{if $tiki_p_admin_trackers eq 'y'}
-		&nbsp;&nbsp;
-		{button href="tiki-admin_trackers.php" _text="{tr}Admin Trackers{/tr}"}
-		{button href="tiki-admin_trackers.php?trackerId=$trackerId" _text="{tr}Edit This Tracker{/tr}"}
-		{button href="tiki-admin_tracker_fields.php?trackerId=$trackerId" _text="{tr}Edit Fields{/tr}"}
-	{/if}
+{if $prefs.feature_user_watches eq 'y' and $tiki_p_watch_trackers eq 'y' and $user}
+{if $user_watching_tracker ne 'y'}
+<a href="tiki-view_tracker.php?trackerId={$trackerId}&amp;watch=add" title="{tr}Monitor{/tr}">{icon _id='eye' align="right" hspace="5" alt="{tr}Monitor{/tr}"}</a>
+{else}
+<a href="tiki-view_tracker.php?trackerId={$trackerId}&amp;watch=stop" title="{tr}Stop Monitor{/tr}">{icon _id='no_eye' align="right" hspace="5" alt="{tr}Stop Monitor{/tr}"}</a>
+{/if}
+{/if}
+{if $prefs.rss_tracker eq "y"}
+<a href="tiki-tracker_rss.php?trackerId={$trackerId}"><img src='img/rss.png' border='0' alt='{tr}RSS feed{/tr}' title='{tr}RSS feed{/tr}'  align="right" /></a>
+{/if}
+{if (isset($tiki_p_list_trackers) and $tiki_p_list_trackers eq 'y') or (!isset($tiki_p_list_trackers) and $tiki_p_view_trackers eq 'y')}<span class="button2"><a href="tiki-list_trackers.php" class="linkbut">{tr}List Trackers{/tr}</a></span>{/if}
+{if $tiki_p_create_tracker_items eq 'y'}<span class="button2"><a href="tiki-view_tracker.php?trackerId={$trackerId}&cookietab=2" class="linkbut">{tr}Insert New Item{/tr}</a></span>
+{/if}
+{if $filtervalue}
+<span class="button2"><a href="tiki-view_tracker.php?trackerId={$trackerId}" class="linkbut">{tr}View This Tracker's Items{/tr}</a></span>
+{/if}
+{if $tiki_p_admin_trackers eq 'y'}
+&nbsp;&nbsp;
+<span class="button2"><a href="tiki-admin_trackers.php" class="linkbut">{tr}Admin Trackers{/tr}</a></span>
+<span class="button2"><a href="tiki-admin_trackers.php?trackerId={$trackerId}" class="linkbut">{tr}Edit This Tracker{/tr}</a></span>
+<span class="button2"><a href="tiki-admin_tracker_fields.php?trackerId={$trackerId}" class="linkbut">{tr}Edit Fields{/tr}</a></span>
+{/if}
 </div>
 
 <div class="navbar" align="right">
@@ -55,9 +44,9 @@
 
 {if !empty($tracker_info.description)}
 	{if $tracker_info.descriptionIsParsed eq 'y' }
-		<div class="description">{wiki}{$tracker_info.description}{/wiki}</div>
+		<div class="wikitext">{wiki}{$tracker_info.description}{/wiki}</div>
 	{else}
-		<div class="description">{$tracker_info.description|escape|nl2br}</div>
+		<div class="wikitext">{$tracker_info.description|escape|nl2br}</div>
 	{/if}
 {/if}
 
@@ -78,19 +67,14 @@
 	{/section}
 </div><br />{/if}
 {if $prefs.feature_tabs eq 'y'}
-{cycle name=tabs values="1,2,3,4" print=false advance=false reset=true}
+{cycle name=tabs values="1,2,3" print=false advance=false reset=true}
 <div class="tabs">
 {if $tiki_p_view_trackers eq 'y' or ($tracker_info.writerCanModify eq 'y' and $user)}
-<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark"><a href="javascript:tikitabs({cycle name=tabs},4);">{tr}Tracker Items{/tr}</a></span>
+<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark"><a href="javascript:tikitabs({cycle name=tabs},3);">{tr}Tracker Items for{/tr} <i>{$tracker_info.name}</i></a></span>
 {/if}
 {if $tiki_p_create_tracker_items eq 'y'}
-<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark"><a href="javascript:tikitabs({cycle name=tabs},4);">{tr}Insert New Item{/tr}</a></span>
+<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark"><a href="javascript:tikitabs({cycle name=tabs},3);">{tr}Insert New Item{/tr}</a></span>
 {/if}
-{if $tiki_p_export_tracker eq 'y'}
-	<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark"><a href="javascript:tikitabs({cycle name=tabs},4);">{tr}Export Tracker Items{/tr}</a></span>
-{/if}
-
-
 </div>
 {/if}
 
@@ -111,23 +95,23 @@
 <table class="normal">
 <tr>
 {if $tracker_info.showStatus eq 'y' or ($tracker_info.showStatusAdminOnly eq 'y' and $tiki_p_admin_trackers eq 'y')}
-<th class="auto" style="width:20px;"></th>
+<td class="heading auto" style="width:20px;"></td>
 {/if}
 {if $tiki_p_admin_trackers eq 'y'}
-<th width="15">
+<td class="heading" width="15">
 <script type='text/javascript'>
 <!--//--><![CDATA[//><!--
 document.write("<input name=\"switcher\" id=\"clickall2\" title=\"{tr}Select All{/tr}\" type=\"checkbox\" onclick=\"switchCheckboxes(this.form,'action[]',this.checked)\"/>");
 //--><!]]>
 </script>
-</th>
+</td>
 {/if}
 
 {foreach from=$fields key=ix item=field_value}
 {if ( $field_value.type eq 's' and ($field_value.name eq "Rating" or $field_value.name eq tra("Rating")) and $field_value.isTblVisible eq 'y' ) || ( $field_value.isTblVisible eq 'y' and $field_value.type ne 'x' and $field_value.type ne 'h' and ($field_value.isHidden eq 'n' or $field_value.isHidden eq 'p' or $tiki_p_admin_trackers eq 'y') ) and ($field_value.type ne 'p' or $field_value.options_array[0] ne 'password') and (empty($field_value.visibleBy) or in_array($default_group, $field_value.visibleBy) or $tiki_p_admin_trackers eq 'y') }
-	<th class="auto">
-		{self_link _sort_arg='sort_mode' _sort_field='f_'|cat:$field_value.fieldId}{$field_value.name|truncate:255:"..."|default:"&nbsp;"}{/self_link}
-	</th>
+	<td class="heading auto">
+		{self_link _class='tableheading' _sort_arg='sort_mode' _sort_field='f_'|cat:$field_value.fieldId}{$field_value.name|truncate:255:"..."|default:"&nbsp;"}{/self_link}
+	</td>
 	{if $field_value.type eq 's' and ($field_value.name eq "Rating" or $field_value.name eq tra("Rating"))}
 		{assign var=rateFieldId value=$field_value.fieldId}
 	{/if}
@@ -135,21 +119,21 @@ document.write("<input name=\"switcher\" id=\"clickall2\" title=\"{tr}Select All
 {/foreach}
 
 {if $tracker_info.showCreated eq 'y'}
-<th><a href="tiki-view_tracker.php?{if $status}status={$status}&amp;{/if}{if $initial}initial={$initial}&amp;{/if}{if $find}find={$find}&amp;{/if}trackerId={$trackerId}{if $offset}&amp;offset={$offset}{/if}&amp;sort_mode={if
-$sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr}</a></th>
+<td class="heading"><a class="tableheading" href="tiki-view_tracker.php?{if $status}status={$status}&amp;{/if}{if $initial}initial={$initial}&amp;{/if}{if $find}find={$find}&amp;{/if}trackerId={$trackerId}{if $offset}&amp;offset={$offset}{/if}&amp;sort_mode={if
+$sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr}</a></td>
 {/if}
 {if $tracker_info.showLastModif eq 'y'}
-<th><a href="tiki-view_tracker.php?status={$status}&amp;{if $initial}initial={$initial}&amp;{/if}find={$find}&amp;trackerId={$trackerId}{if $offset}&amp;offset={$offset}{/if}&amp;sort_mode={if $sort_mode eq 'lastModif_desc'}lastModif_asc{else}lastModif_desc{/if}">{tr}lastModif{/tr}</a></th>
+<td class="heading"><a class="tableheading" href="tiki-view_tracker.php?status={$status}&amp;{if $initial}initial={$initial}&amp;{/if}find={$find}&amp;trackerId={$trackerId}{if $offset}&amp;offset={$offset}{/if}&amp;sort_mode={if $sort_mode eq 'lastModif_desc'}lastModif_asc{else}lastModif_desc{/if}">{tr}lastModif{/tr}</a></td>
 {/if}
-{if $tracker_info.useComments eq 'y' and ($tracker_info.showComments eq 'y' || $tracker_info.showLastComment eq 'y') and $tiki_p_tracker_view_comments ne 'n'}
-<th{if $tracker_info.showLastComment ne 'y'} style="width:5%"{/if}>{tr}Coms{/tr}</th>
+{if $tracker_info.useComments eq 'y' and $tracker_info.showComments eq 'y'}
+<td class="heading" width="5%">{tr}Coms{/tr}</td>
 {/if}
 {if $tracker_info.useAttachments eq 'y' and  $tracker_info.showAttachments eq 'y'}
-<th style="width:5%">{tr}atts{/tr}</th>
-{if $tiki_p_admin_trackers eq 'y'}<th style="width:5%">{tr}dls{/tr}</th>{/if}
+<td class="heading" width="5%">{tr}atts{/tr}</td>
+{if $tiki_p_admin_trackers eq 'y'}<td class="heading" width="5%">{tr}dls{/tr}</td>{/if}
 {/if}
 {if $tiki_p_admin_trackers eq 'y'}
-<th style="width:20px">{tr}Action{/tr}</th>
+<td class="heading" width="20">{tr}Action{/tr}</td>
 {/if}
 </tr>
 
@@ -184,7 +168,7 @@ $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr
 	{cycle values="odd,even" print=false}
 	{foreach from=$items[user].field_values item=f}
 		{if in_array($f.fieldId, $popupFields)}
-			 <tr><th class="{cycle advance=false}">{$f.name}</th><td class="{cycle}">{include file="tracker_item_field_value.tpl" field_value=$f}</th></tr>
+			 <tr><th class="{cycle advance=false}">{$f.name}</th><td class="{cycle}">{include file="tracker_item_field_value.tpl" field_value=$f}</td></tr>
 		{/if}
 	{/foreach}
 	</table>
@@ -196,7 +180,7 @@ $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr
 {/if}
 {/if}
 
-{include file="tracker_item_field_value.tpl" field_value=$field_value list_mode="y" item=$items[user] showlinks="y" reloff=$smarty.section.user.index url=""}
+{include file="tracker_item_field_value.tpl" field_value=$field_value list_mode="y" item=$items[user] showlinks="y" reloff=$smarty.section.user.index}
 
 </td>
 {/if}
@@ -208,12 +192,12 @@ $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr
 {if $tracker_info.showLastModif eq 'y'}
 <td>{if $tracker_info.showLastModifFormat}{$items[user].lastModif|tiki_date_format:$tracker_info.showLastModifFormat}{else}{$items[user].lastModif|tiki_short_datetime}{/if}</td>
 {/if}
-{if $tracker_info.useComments eq 'y' and ($tracker_info.showComments eq 'y' or $tracker_info.showLastComment eq 'y') and $tiki_p_tracker_view_comments ne 'n'}
-<td  style="text-align:center;">{if $tracker_info.showComments eq 'y'}{$items[user].comments}{/if}{if $tracker_info.showComments eq 'y' and $tracker_info.showLastComment eq 'y'}<br />{/if}{if $tracker_info.showLastComment eq 'y' and !empty($items[user].lastComment)}{$items[user].lastComment.user|escape}-{$items[user].lastComment.posted|tiki_short_date}{/if}</td>
+{if $tracker_info.useComments eq 'y' and $tracker_info.showComments eq 'y'}
+<td  style="text-align:center;">{$items[user].comments}</td>
 {/if}
 {if $tracker_info.useAttachments eq 'y' and $tracker_info.showAttachments eq 'y'}
 <td style="text-align:center;"><a href="tiki-view_tracker_item.php?itemId={$items[user].itemId}&amp;show=att{if $offset}&amp;offset={$offset}{/if}{foreach key=urlkey item=urlval from=$urlquery}{if $urlval}&amp;{$urlkey}={$urlval|escape:"url"}{/if}{/foreach}{section name=mix loop=$fields}{if $fields[mix].value}&amp;{$fields[mix].name}={$fields[mix].value}{/if}{/section}"
-link="{tr}List Attachments{/tr}"><img src="img/icons/folderin.gif" alt="{tr}List Attachments{/tr}"
+link="{tr}List Attachments{/tr}"><img src="img/icons/folderin.gif" border="0" alt="{tr}List Attachments{/tr}"
 /></a> {$items[user].attachments}</td>
 {if $tiki_p_admin_trackers eq 'y'}<td  style="text-align:center;">{$items[user].hits}</td>{/if}
 {/if}
@@ -234,11 +218,6 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 <select name="batchaction">
 <option value="">{tr}...{/tr}</option>
 <option value="delete">{tr}Delete{/tr}</option>
-{if $tracker_info.showStatus eq 'y'}
-<option value="c">{tr}Close{/tr}</option>
-<option value="o">{tr}Open{/tr}</option>
-<option value="p">{tr}Pending{/tr}</option>
-{/if}
 </select>
 <input type="hidden" name="trackerId" value="{$trackerId}" />
 <input type="submit" name="act" value="{tr}OK{/tr}" />
@@ -258,23 +237,26 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 <input type="hidden" name="trackerId" value="{$trackerId|escape}" />
 
 <h2>{tr}Insert New Item{/tr}</h2>
-{remarksbox type="note"}{tr}Fields marked with a * are mandatory.{/tr}{/remarksbox}
 <table class="normal">
+<tr class="formcolor"><td  class="formlabel">&nbsp;</td><td colspan="3" class="formcontent">
+<input type="submit" name="save" value="{tr}Save{/tr}" /></td></tr>
 
 {if $tracker_info.showStatus eq 'y' and ($tracker_info.showStatusAdminOnly ne 'y' or $tiki_p_admin_trackers eq 'y')}
 <tr class="formcolor"><td>{tr}Status{/tr}</td>
 <td>
 <select name="status">
 {foreach key=st item=stdata from=$status_types}
-<option value="{$st}" {if $tracker_info.newItemStatus eq $st} selected="selected"{/if}
+<option value="{$st}"{if $tracker_info.newItemStatus eq $st} selected="selected"{/if}
 style="background-image:url('{$stdata.image}');background-repeat:no-repeat;padding-left:17px;">{$stdata.label}</option>
 {/foreach}
 </select>
 </td></tr>
 {/if}
 
+
 {foreach from=$fields key=ix item=field_value}
 {assign var=fid value=$field_value.fieldId}
+
 {* -------------------- header and others -------------------- *}
 {if $field_value.isHidden eq 'n' or $field_value.isHidden eq 'c'  or $tiki_p_admin_trackers eq 'y'}
 {if $field_value.type ne 'x' and $field_value.type ne 'l' and $field_value.type ne 'q' and (($field_value.type ne 'u' and $field_value.type ne 'g' and $field_value.type ne 'I') or !$field_value.options_array[0] or $tiki_p_admin_trackers eq 'y') and (empty($field_value.visibleBy) or in_array($default_group, $field_value.visibleBy) or $tiki_p_admin_trackers eq 'y')and (empty($field_value.editableBy) or in_array($default_group, $field_value.editableBy) or $tiki_p_admin_trackers eq 'y')}
@@ -326,7 +308,6 @@ style="background-image:url('{$stdata.image}');background-repeat:no-repeat;paddi
 {/if}
 {/if}
 {/foreach}
-
 </select>
 {else}
 {$user}
@@ -378,7 +359,7 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
 <table width="100%"><tr>{cycle name=2_$fca values=",</tr><tr>" advance=false print=false}
 {foreach key=ku item=iu from=$field_value.categories name=eforeach}
 {assign var=fcat value=$iu.categId }
-<td{if $onePerLine ne 'y'} width="50%"{/if}>
+<td{if onePerLine ne 'y'} width="50%"{/if}>
 <input type={if $field_value.options_array[1] eq "radio"}"radio"{else}"checkbox"{/if} name="ins_cat_{$field_value.fieldId}[]" value="{$iu.categId}" id="cat{$iu.categId}" {if $field_value.cat.$fcat eq 'y'}checked="checked"{/if}/><label for="cat{$i.categId}">{$iu.name|escape}</label>
 </td>{if $onePerLine eq 'y'}{if !$smarty.foreach.eforeach.last}</tr><tr>{/if}{elseif !$smarty.foreach.eforeach.last}{cycle name=2_$fca}{else}{if $field_value.categories|@count%2}<td></td>{/if}{/if}
 {/foreach}
@@ -389,10 +370,6 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
 {elseif $field_value.type eq 'i'}
 <input type="file" name="{$field_value.ins_id}" {if $input_err}value="{$field_value.value}"{/if}/>
 
-{* -------------------- page -------------------- *}
-{elseif $field_value.type eq 'k'}
-{include file=tracker_item_field_input.tpl}
-
 {* -------------------- multimedia -------------------- *}
 {elseif $field_value.type eq 'M'}
 {if ($field_value.options_array[0] > '2')}
@@ -402,12 +379,29 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
 {/if}
 
 {* -------------------- text field / email -------------------- *}
-{elseif $field_value.type eq 't'}
-{include file='tracker_item_field_input.tpl'}
+{elseif $field_value.type eq 't' || $field_value.type eq 'm'}
+{if $field_value.isMultilingual ne "y"}
+{if $field_value.options_array[2]}<span class="formunit">{$field_value.options_array[2]}&nbsp;</span>{/if}
+<input type="text" name="{$field_value.ins_id}" {if $field_value.options_array[1]}size="{$field_value.options_array[1]}" maxlength="{$field_value.options_array[1]}"{/if} value="{if $input_err}{$field_value.value}{else}{$defaultvalues.$fid|escape}{/if}" />
+{if $field_value.options_array[3]}<span class="formunit">&nbsp;{$field_value.options_array[3]}</span>{/if}
+{else}
+<table>
+    {foreach from=$field_value.lingualvalue item=ling}
+    <tr><td>{$ling.lang}</td><td>
+            {if $field_value.options_array[2]}<span class="formunit">{$field_value.options_array[2]}&nbsp;</span>{/if}
+        <input type="text" name="{$field_value.ins_id}_{$ling.lang}" value="{$ling.value|escape}" {if $field_value.options_array[1]}size="{$field_value.options_array[1]}" maxlength="{$field_value.options_array[1]}"{/if} />
+        {if $field_value.options_array[3]}<span class="formunit">&nbsp;{$field_value.options_array[3]}</span>{/if}
+    </td></tr>
+    {/foreach}
+</table>
+{/if}
+
 
 {* -------------------- numeric field -------------------- *}
 {elseif $field_value.type eq 'n'}
-{include file='tracker_item_field_input.tpl'}
+{if $field_value.options_array[2]}<span class="formunit">{$field_value.options_array[2]}&nbsp;</span>{/if}
+<input type="text" name="{$field_value.ins_id}" {if $field_value.options_array[1]}size="{$field_value.options_array[1]}" maxlength="{$field_value.options_array[1]}"{/if} value="{if $input_err}{$field_value.value}{else}{$defaultvalues.$fid|escape}{/if}" />
+{if $field_value.options_array[3]}<span class="formunit">&nbsp;{$field_value.options_array[3]}</span>{/if}
 
 {* -------------------- static text -------------------- *}
 {elseif $field_value.type eq 'S'}
@@ -418,10 +412,6 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
       {$field_value.description|escape|nl2br}
     {/if}
 	{/if}
-
-{* -------------------- email -------------------- *}
-{elseif $field_value.type eq 'm'}
-{include file=tracker_item_field_input.tpl}
 
 {* -------------------- textarea -------------------- *}
 {elseif $field_value.type eq 'a'}
@@ -458,7 +448,9 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
 
 {* -------------------- dynamic list -------------------- *}
 {elseif $field_value.type eq 'w'}
-{include file='tracker_item_field_input.tpl'}
+<select name="{$field_value.ins_id}" {if $listfields.$fid.http_request}onchange="selectValues('trackerIdList={$listfields.$fid.http_request[0]}&amp;fieldlist={$listfields.$fid.http_request[3]}&amp;filterfield={$listfields.$fid.http_request[1]}&amp;status={$listfields.$fid.http_request[4]}&amp;mandatory={$listfields.$fid.http_request[6]}&amp;filtervalue='+escape(this.value),'{$listfields.$fid.http_request[5]}')"{/if}>
+</select>
+
 
 {* -------------------- User subscription -------------------- *}
 {elseif $field_value.type eq 'U'}
@@ -467,7 +459,8 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
 
 {* -------------------- Google Map -------------------- *}
 {elseif $field_value.type eq 'G'}
-{include file='tracker_item_field_input.tpl'}
+<input type="text" name="{$field_value.ins_id}" value="{$field_value.value}" />
+<br />{tr}Format : x,y,zoom - You can use Google Map Locator in the item view script.{/tr}
 
 {* -------------------- country selector -------------------- *}
 {elseif $field_value.type eq 'y'}
@@ -483,7 +476,7 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
 {/if}
 {if $field_value.type ne 'a' and $field_value.type ne 'S'}
 {if $field_value.description}
-<br />{if $field_value.descriptionIsParsed eq 'y'}{wiki}{$field_value.description}{/wiki}{else}<em>{$field_value.description|escape}</em>{/if}
+<br /><em>{$field_value.description|escape}</em>
 {/if}
 {/if}
 </td>
@@ -498,49 +491,16 @@ document.write('<div  class="categSelectAll"><input type="checkbox" id="clickall
 
 {* -------------------- antibot code -------------------- *}
 {if $prefs.feature_antibot eq 'y' && $user eq ''}
-{include file="antibot.tpl" tr_style="formcolor"}
+{include file="antibot.tpl"}
 {/if}
 
-{if $groupforalert ne ''}
-{if $showeachuser eq 'y' }
-<tr class="formcolor">
-<td>{tr}Choose users to alert{/tr}</td>
-<td>
-{/if}
-{section name=idx loop=$listusertoalert}
-{if $showeachuser eq 'n' }
-<input type="hidden"  name="listtoalert[]" value="{$listusertoalert[idx].user}">
-{else}
-<input type="checkbox" name="listtoalert[]" value="{$listusertoalert[idx].user}"> {$listusertoalert[idx].user}
-{/if}
-{/section}
-</td>
-</tr>
-{/if}
-
-
-<tr class="formcolor">
-	<td class="formlabel">&nbsp;</td>
-	<td colspan="3" class="formcontent">
-		<input type="submit" name="save" value="{tr}Save{/tr}" /> 
-		<input type="radio" name="viewitem" value="view" /> {tr}View inserted item{/tr}
-		{* --------------------------- to continue inserting items after saving --------- *}
-		<input type="radio" name="viewitem" value="new" /> {tr}Insert new item{/tr}
-	</td>
-</tr>
+<tr class="formcolor"><td class="formlabel">&nbsp;</td><td colspan="3" class="formcontent">
+<input type="submit" name="save" value="{tr}Save{/tr}" /> <input type="checkbox" name="viewitem"/> {tr}View inserted item{/tr}</td></tr>
 </table>
 </form>
+<br /><em>{tr}Fields marked with a * are mandatory.{/tr}</em>
 </div>
 {/if}
-
-{* -------------------------------------------------- tab with export --- *}
-{if $tiki_p_export_tracker eq 'y'}
-<div id="content{cycle name=content assign=focustab}{$focustab}"{if $prefs.feature_tabs eq 'y'} class="tabcontent"{/if}>
-{include file=tiki-export_tracker.tpl}
-</div>
-{/if}
-
-
 {foreach from=$fields key=ix item=field_value}
 {assign var=fid value=$field_value.fieldId}
 {if $listfields.$fid.http_request}

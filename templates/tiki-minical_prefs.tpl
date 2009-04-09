@@ -1,14 +1,26 @@
-{title help="User+Calendar"}{tr}Mini Calendar: Preferences{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-minical_prefs.php">{tr}Mini Calendar: Preferences{/tr}</a>
+
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}User+Calendar" target="tikihelp" class="tikihelp" title="{tr}User Calendar Doc{/tr}">
+{icon _id='help'}</a>
+{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-minical_prefs.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}User Calendar Preferences Doc tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}</h1>
 
 {include file=tiki-mytiki_bar.tpl}
-
-<div class="navbar">
-	{button href="tiki-minical.php#add" _text="{tr}Add{/tr} "}
-	{button href="tiki-minical_prefs.php" _text="{tr}Prefs{/tr}"}
-	{button href="tiki-minical.php?view=daily" _text="{tr}Daily{/tr}"}
-	{button href="tiki-minical.php?view=weekly" _text="{tr}Weekly{/tr}"}
-	{button href="tiki-minical.php?view=list" _text="{tr}List{/tr}"}
-</div>
+<br />
+<table border="0">
+<tr>
+<td><div class="button2"><a class="linkbut" href="tiki-minical.php#add">{tr}Add{/tr}</a></div></td>
+<td><div class="button2"><a class="linkbut" href="tiki-minical_prefs.php">{tr}Prefs{/tr}</a></div></td>
+<td><div class="button2"><a class="linkbut" href="tiki-minical.php?view=daily">{tr}Daily{/tr}</a></div></td>
+<td><div class="button2"><a class="linkbut" href="tiki-minical.php?view=weekly">{tr}Weekly{/tr}</a></div></td>
+<td><div class="button2"><a class="linkbut" href="tiki-minical.php?view=list">{tr}List{/tr}</a></div></td>
+</tr>
+</table>
 
 <h2>{tr}Preferences{/tr}</h2>
 <form action="tiki-minical_prefs.php" method="post">
@@ -81,7 +93,7 @@
 </table>
 </form>
 
-<h2>{tr}Admin Topics{/tr}</h2>
+<h2>{tr}Admin topics{/tr}</h2>
 <form  enctype="multipart/form-data"  action="tiki-minical_prefs.php" method="post">
 <table class="normal">
 <tr>

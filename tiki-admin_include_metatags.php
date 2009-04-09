@@ -25,6 +25,5 @@ if (isset($_REQUEST["metatags"])) {
 	simple_set_value('metatag_robots');
 	simple_set_value('metatag_revisitafter');
 } 
-
 ask_ticket('admin-inc-metatags');
 ?>

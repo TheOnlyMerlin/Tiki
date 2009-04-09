@@ -1,15 +1,25 @@
-{title help="Inter-User Messages"}{tr}Compose message{/tr}{/title}
+<h1><a class="pagetitle" href="messu-compose.php">{tr}Compose message{/tr}</a>
+
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Inter-User Messages" target="tikihelp" class="tikihelp" title="{tr}Compose Message{/tr}">
+{icon _id='help'}</a>
+{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-edit_article.tpl" target="tikihelp" class="tikihelp">
+{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}</h1>
 
 {include file=tiki-mytiki_bar.tpl}
 {include file="messu-nav.tpl"}
 
 {if $allowMsgs ne 'y'}<br />
-<div class="simplebox">{icon _id=information style="vertical-align:middle" align="left"} {tr}If you want people to be able to reply to you, enable <a href='tiki-user_preferences.php'>Allow messages from other users</a> in your preferences.{/tr}</div><br /</br />
+<div class="simplebox">{icon _id=information.png style="vertical-align:middle" align="left"} {tr}If you want people to be able to reply to you, enable <a href='tiki-user_preferences.php'>Allow messages from other users</a> in your preferences.{/tr}</div><br /</br />
 {/if}
 
 
 {if $sent}
-<div class="simplebox highlight">{if (strstr($message, '{tr}ERROR{/tr}')) or (strstr($message, '{tr}Invalid{/tr}'))}{icon _id=delete alt="{tr}Error{/tr}" style="vertical-align:middle" align="left"}{else}{icon _id=accept alt="{tr}Send{/tr}" style="vertical-align:middle"} {/if}{$message}</div>
+<div class="simplebox highlight">{if (strstr($message, '{tr}ERROR{/tr}')) or (strstr($message, '{tr}Invalid{/tr}'))}{icon _id=delete.png alt="{tr}Error{/tr}" style="vertical-align:middle" align="left"}{else}{icon _id=accept.png alt="{tr}Send{/tr}" style="vertical-align:middle"} {/if}{$message}</div>
 {/if}
 
 {if (!$sent) or ((strstr($message, '{tr}ERROR{/tr}')) or (strstr($message, '{tr}Invalid{/tr}')))}

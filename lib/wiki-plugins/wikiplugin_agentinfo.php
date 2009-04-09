@@ -9,16 +9,6 @@ function wikiplugin_agentinfo_help() {
         return tra("Displays browser client info").":<br />~np~{AGENTINFO(info=>IP or SVRSW or BROWSER)/}~/np~";
 }
 
-function wikiplugin_agentinfo_info() {
-	return array(
-		'name' => tra( 'User-Agent Info' ),
-		'documentation' => 'PluginAgentinfo',
-		'description' => tra( 'Displays various information about the client.' ),
-		'prefs' => array('wikiplugin_agentinfo'),
-		'params' => array(),
-	);
-}
-
 function wikiplugin_agentinfo($data, $params) {
 	
 	extract ($params,EXTR_SKIP);
@@ -30,7 +20,7 @@ function wikiplugin_agentinfo($data, $params) {
 	}
 
 	if ($info == 'IP') {
-		$asetup = $tikilib->get_ip_address();
+		$asetup = $_SERVER["REMOTE_ADDR"];
 	}
 
 	if ($info == 'SVRSW') {

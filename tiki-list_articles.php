@@ -73,20 +73,20 @@ if (!empty($_REQUEST['maxRecords'])) {
 } else {
 	$maxRecords = $maxRecords;
 }
-$smarty->assign_by_ref('maxRecords', $maxRecords);
+#samrty->assign_by_ref('maxRecords', $maxRecords);
 
 if( ($tiki_p_admin == 'y') || ($tiki_p_admin_cms == 'y') ) {
-  $date_max = '';
+  $pdate = '';
 } elseif(isset($_SESSION["thedate"])) {
   if($_SESSION["thedate"]<$tikilib->now) {
     // If the session is older then set it to today
     // so you can list articles
-    $date_max = $tikilib->now; 
+    $pdate = $tikilib->now; 
   } else {
-      $date_max = $_SESSION["thedate"]; 
+      $pdate = $_SESSION["thedate"]; 
   }
 } else {
-	$date_max = $tikilib->now;
+	$pdate = $tikilib->now;
 }
 
 if (isset($_REQUEST["find"])) {
@@ -122,7 +122,7 @@ $visible_only='y';
 if( ($tiki_p_admin == 'y') || ($tiki_p_admin_cms == 'y') ) { $visible_only="n"; }
 
 // Get a list of last changes to the Wiki database
-$listpages = $tikilib->list_articles($offset, $maxRecords, $sort_mode, $find, 0, $date_max, $user, $_REQUEST["type"], $_REQUEST["topic"], $visible_only, '', $_REQUEST["categId"], '', '', $_REQUEST['lang']);
+$listpages = $tikilib->list_articles($offset, $maxRecords, $sort_mode, $find, $pdate, $user, $_REQUEST["type"], $_REQUEST["topic"], $visible_only, '', $_REQUEST["categId"], '', '', $_REQUEST['lang']);
 // If there're more records then assign next_offset
 $smarty->assign_by_ref('cant', $listpages['cant']);
 

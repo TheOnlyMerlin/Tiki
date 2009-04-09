@@ -56,12 +56,15 @@ if (!$tikilib->page_exists($prefs['wikiHomePage'])) {
 	$tikilib->create_page($prefs['wikiHomePage'], 0, '', $tikilib->now, 'Tiki initialization');
 }
 
-if (!($info = $tikilib->get_page_info($page))) {
-	$smarty->assign('msg', tra('Page cannot be found'));
-	$smarty->display('error.tpl');
+require_once('tiki-pagesetup.php');
+
+// If the page doesn't exist then display an error
+if (!$tikilib->page_exists($page)) {
+	$smarty->assign('msg', tra("Page cannot be found"));
+
+	$smarty->display("error.tpl");
 	die;
 }
-$tikilib->get_perm_object( $page, 'wiki page', $info);
 
 // Check to see if page is categorized
 $objId = urldecode($page);
@@ -186,7 +189,21 @@ $preparsed = array();
 $noparsed = array();
 $tikilib->parse_first( $info["data"], $preparsed, $noparsed );
 
-$pdata = $wikilib->get_parse($page, $canBeRefreshed);
+if ($prefs['wiki_cache'] > 0) {
+	$cache_info = $wikilib->get_cache_info($page);
+
+	if ($cache_info['cache_timestamp'] + $prefs['wiki_cache'] > $tikilib->now) {
+		$pdata = $cache_info['cache'];
+
+		$smarty->assign('cached_page', 'y');
+	} else {
+		$pdata = $tikilib->parse_data($info["data"]);
+
+		$wikilib->update_cache($page, $pdata);
+	}
+} else {
+	$pdata = $tikilib->parse_data($info["data"]);
+}
 
 $pdata = str_replace('tiki-index.php', 'tiki-index_p.php', $pdata);
 

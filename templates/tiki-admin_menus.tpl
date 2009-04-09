@@ -1,4 +1,12 @@
-{title help="Menus"}{tr}Admin Menus{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-admin_menus.php">{tr}Admin Menus{/tr}</a>
+
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Menus" target="tikihelp" class="tikihelp" title="{tr}Admin Menu Builder{/tr}">{icon _id='help'}</a>
+{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-admin_menus.tpl" target="tikihelp" class="tikihelp" title="{tr}Edit template{/tr}: {tr}Admin Menus Template{/tr}">{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}</h1>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
   {tr}To use menus in a <a href="tiki-admin_modules.php">module</a>, <a href="tiki-admin.php?page=siteid">Site identity</a> or a template, use {literal}{menu id=x}{/literal}, where x is the ID of the menu.{/tr}
@@ -10,17 +18,16 @@
     <li>{literal}{phplayers id=X type=vert}{/literal}</li>
   </ul>
   {tr}This will work well (or not!) depending on your theme. To learn more about <a target="tikihelp" href="http://themes.tikiwiki.org">themes</a>{/tr}<br />
-  {tr}To use a menu in a tiki format:{/tr} {literal}{menu id=X}{/literal}<br />
-  {tr}To use menu in a css/suckerfish format:{/tr} {literal}{menu id=X css=y}{/literal}
+  {tr}To use a menu in a tiki format: {/tr}{literal}{menu id=X}{/literal}<br />
+  {tr}To use menu in a css/suckerfish format: {/tr}{literal}{menu id=X css=y}{/literal}
 {/remarksbox}
 
 {if $menuId > 0}
-	<h2>{tr}Edit this Menu:{/tr} {$info.name}</h2>
-	{button href="tiki-admin_menus.php" _text="{tr}Create new Menu{/tr}"}
+<h2>{tr}Edit this Menu:{/tr} {$info.name}</h2>
+<a href="tiki-admin_menus.php" class="linkbut">{tr}Create new Menu{/tr}</a>
 {else}
-	<h2>{tr}Create new Menu{/tr}</h2>
+<h2>{tr}Create new Menu{/tr}</h2>
 {/if}
-
 <form action="tiki-admin_menus.php" method="post">
 <input type="hidden" name="menuId" value="{$menuId|escape}" />
 <table class="normal">
@@ -34,47 +41,20 @@
 </select>
 </td></tr>
 {if $prefs.feature_menusfolderstyle eq 'y'}
-<tr>
-	<td class="formcolor" rowspan="2">{tr}Icons:{/tr}</td>
-	<td>
-		<div>{tr}Folder Icon{/tr}</div>
-		<input type="text" name="icon" value="{$info.icon}" style="width:95%" /><br /><em>{tr}Path and filename of closed folder icon{/tr}</em>.
-
-		{remarksbox type="tip" title="{tr}Note{/tr}"}
-			{tr}To use custom folder icons in menus, enter the path to the icon for the <strong>closed</strong> folder.{/tr} {tr}In the same directory, include an icon for the opened folder.{/tr} {tr}The "opened folder" icon name must be identical to the "closed folder" icon name, prefixed with the letter <strong>o</strong>.{/tr}<hr />
-			For example, the default icon is: pics/icons/folder.png {icon _id="folder"}<br />The name of the "open folder" icon is: pics/icons/ofolder.png {icon _id="ofolder"}
-		{/remarksbox}
-	</td>
-</tr>
+<tr><td class="formcolor">{tr}Path to the folder icon for close sections{/tr}</td><td><input type="text" name="icon" value="{$info.icon}" /><br />{tr}Example:{/tr} styles/mose/pics/icons/folder.png<br />{tr}Provide also a folder icon for open sections with the same name with the letter 'o' before in the same directory (ex: folder.png and ofolder.png){/tr}<br />{tr}Default:{/tr}{icon _id="folder"}</td></tr>
 {/if}
-{if $prefs.menus_items_icons eq 'y'}
-<tr>
-	<td class="formcolor">
-		<label for="use_items_icons">
-			<input type="checkbox" id="use_items_icons" name="use_items_icons"{if $info.use_items_icons eq 'y'} checked="checked"{/if}/>
-			{tr}Configure icons for menu entries{/tr}
-		</label>
-	</td>
-</tr>
-{/if}
-<tr>
-	<td class="formcolor">&nbsp;</td>
-	<td class="formcolor">
-		<input type="submit" name="save" value="{tr}Save{/tr}" />
-		{if $prefs.menus_items_icons neq 'y'}<input type="hidden" name="use_items_icons" value="{$info.use_items_icons}" />{/if}
-	</td>
-</tr>
+<tr><td class="formcolor">&nbsp;</td><td class="formcolor"><input type="submit" name="save" value="{tr}Save{/tr}" /></td></tr>
 </table>
 </form>
 <br /><h2>{tr}Menus{/tr}</h2>
-{include file='find.tpl'}
+{include file='find.tpl' _sort_mode='y'}
 <table class="normal">
 <tr>
-<th>{self_link _sort_arg='sort_mode' _sort_field='menuId'}{tr}ID{/tr}{/self_link}</th>
-<th>{self_link _sort_arg='sort_mode' _sort_field='name'}{tr}Name{/tr}{/self_link}</th>
-<th>{self_link _sort_arg='sort_mode' _sort_field='type'}{tr}Type{/tr}{/self_link}</th>
-<th>{tr}Options{/tr}</th>
-<th>{tr}Action{/tr}</th>
+<th class="heading"><a class="tableheading" href="tiki-admin_menus.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'menuId_desc'}menuId_asc{else}menuId_desc{/if}">{tr}ID{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_menus.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
+<th class="heading"><a class="tableheading" href="tiki-admin_menus.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'type_desc'}type_asc{else}type_desc{/if}">{tr}Type{/tr}</a></th>
+<th class="heading">{tr}Options{/tr}</th>
+<th class="heading">{tr}Action{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}
@@ -86,11 +66,6 @@
 <td class="{cycle advance=true}">
 	<a class="link" href="tiki-admin_menus.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;menuId={$channels[user].menuId}" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
 {if $tiki_p_edit_menu_option eq 'y'}	<a class="link" href="tiki-admin_menu_options.php?menuId={$channels[user].menuId}" title="{tr}Configure/Options{/tr}">{icon _id='table' alt='{tr}Configure/Options{/tr}'}</a>{/if}
-{if $channels[user].individual eq 'y'}<a title="{tr}Active Permissions{/tr}" class="link" href="tiki-objectpermissions.php?objectName={$channels[user].name|escape:"url"}&amp;objectType=menus&amp;permType=menus&amp;objectId={$channels[user].menuId}">
-{icon _id='key_active' alt="{tr}Active Permissions{/tr}"}</a>{else}
-<a title="{tr}Permissions{/tr}" class="link" href="tiki-objectpermissions.php?objectName={$channels[user].name|escape:"url"}&amp;objectType=menus&amp;permType=menus&amp;objectId={$channels[user].menuId}">
-{icon _id='key' alt="{tr}Permissions{/tr}"}</a>{/if}
-&nbsp;
     <a class="link" href="tiki-admin_menus.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].menuId}" title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 </td>
 </tr>
@@ -98,4 +73,20 @@
 <tr><td class="odd" colspan="5">No records found.</td></tr>
 {/section}
 </table>
-{pagination_links cant=$cant step=$maxRecords offset=$offset }{/pagination_links} 
+<div class="mini">
+{if $prev_offset >= 0}
+[<a class="prevnext" href="tiki-admin_menus.php?find={$find}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}">{tr}Prev{/tr}</a>][
+{/if}
+{tr}Page{/tr}: {$actual_page}/{$cant_pages}
+{if $next_offset >= 0}
+&nbsp;[<a class="prevnext" href="tiki-admin_menus.php?find={$find}&amp;offset={$next_offset}&amp;sort_mode={$sort_mode}">{tr}Next{/tr}</a>]
+{/if}
+{if $prefs.direct_pagination eq 'y'}
+<br />
+{section loop=$cant_pages name=foo}
+{assign var=selector_offset value=$smarty.section.foo.index|times:$prefs.maxRecords}
+<a class="prevnext" href="tiki-admin_menus.php?find={$find}&amp;offset={$selector_offset}&amp;sort_mode={$sort_mode}">
+{$smarty.section.foo.index_next}</a>
+{/section}
+{/if}
+</div>

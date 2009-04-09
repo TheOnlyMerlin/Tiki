@@ -5,7 +5,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
-global $user, $tikilib, $smarty;
+global $user;
 
 if ($user && isset($prefs['feature_tasks']) && $prefs['feature_tasks'] == 'y' && isset($tiki_p_tasks) && $tiki_p_tasks == 'y') {
 	global $tasklib;
@@ -38,4 +38,4 @@ if ($user && isset($prefs['feature_tasks']) && $prefs['feature_tasks'] == 'y' &&
 	$smarty->assign('user_groups', $user_groups );
 }
 
-
+?>

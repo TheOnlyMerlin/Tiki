@@ -61,7 +61,7 @@ function feature_pattern( &$featureNameIndex ) // {{{
 		$tl = '\\$tikilib->get_preference';
 		return "/(\\\${$featureName}\s*(!=|==)=?\s*$q(y|n)[\"'])|($tl\s*\(\s*$q{$featureName}$q\s*(,\s*{$q}n?$q)?\s*\)\s*(==|!=)=?\s*$q(y|n)$q)/";
 	}
-	elseif( ($major == 1 && $minor == 10) || $major >= 2 )
+	elseif( $major == 1 && $minor == 10 )
 	{
 		$featureNameIndex = 1;
 		return "/\\\$prefs\s*\[$q$featureName$q\]\s*(!=|==)=?\s*$q(y|n)$q/";
@@ -80,16 +80,9 @@ function includeonly_pattern() // {{{
 	return "/strpos\s*\(\s*\\\$_SERVER\s*\[\s*[\"']SCRIPT_NAME[\"']\s*\]\s*,\s*basename\s*\(\s*__FILE__\s*\)\s*\)\s*!==\s*(false|FALSE)/";
 } // }}}
 
-function includeonly_pattern3() // {{{
-{
-        return "/basename\s*\(\s*\\\$_SERVER\s*\[\s*[\"']SCRIPT_NAME[\"']\s*\]\s*\)\s*==\s*basename\s*\(\s*__FILE__\s*\)\s*\)/";
-} // }}}
-
-
 function includeonly_pattern2() // {{{
 {
-	return "/\\\$access\s*->\s*check_script\s*\(\s*\\\$_SERVER\s*\[\s*[\"']SCRIPT_NAME[\"']\s*\]\s*,\s*basename\s*\(\s*__FILE__\s*\)\s*\)/s";
-	//return "/\\\$access\s*\->\s*check_script\s*\(\s*\\\$_SERVER\s*\[\s*[\"']SCRIPT_NAME[\"']\s*\]\s*,\s*basename\s*\(\s*__FILE__\s*\)\s*\)/";
+	return "/\\\$access\s*->\s*check_script\s*\\(\s*\\\$_SERVER\s*\\[\s*[\"']SCRIPT_NAME[\"']\s*\\]\s*,\s*basename\s*\\(\s*__FILE__\s*\\)\s*\\)/";
 } // }}}
 
 function noweb_pattern() // {{{
@@ -147,8 +140,6 @@ function analyse_file_path( $path ) // {{{
 			$type = 'blocker';
 		elseif( $name == 'language.php' )
 			$type = 'lang';
-		elseif( strpos( $path, './lib/wiki-plugins' ) === 0 )
-			$type = 'wikiplugin';
 		elseif( strpos( $path, './lib/' ) === 0 )
 		{
 			$parts = explode( '/', $path );
@@ -191,7 +182,6 @@ function analyse_file_path( $path ) // {{{
 		'includeonce' => false,
 		'noweb' => false,
 		'tikisetup' => false,
-		'unsafeextract' => false,
 	);
 } // }}}
 
@@ -214,7 +204,6 @@ function perform_feature_check( &$file ) // {{{
 function perform_permission_check( &$file ) // {{{
 {
 	$index = 0;
-	
 	$permission_pattern = permission_pattern( $index );
 
 	preg_match_all( $permission_pattern, get_content( $file['path'] ), $parts );
@@ -225,25 +214,19 @@ function perform_permission_check( &$file ) // {{{
 
 function perform_includeonly_check( &$file ) // {{{
 {
-	$index = 0;
 	$pattern = includeonly_pattern($index);
 
 	preg_match_all( $pattern, get_content($file['path']), $parts );
 
-        $pattern = includeonly_pattern2($index);
+	$pattern = includeonly_pattern2($index);
 
-        preg_match_all( $pattern, get_content($file['path']), $parts2 );
+	preg_match_all( $pattern, get_content($file['path']), $parts2 );
 
-	$pattern = includeonly_pattern3($index);
-
-        preg_match_all( $pattern, get_content($file['path']), $parts3 );
-
-	$file['includeonly'] = count( $parts[0] ) > 0 || count( $parts2[0] ) > 0 || count( $parts3[0] ) > 0;
+	$file['includeonly'] = count( $parts[0] ) > 0 || count( $parts2[0] ) > 0;
 } // }}}
 
 function perform_noweb_check( &$file ) // {{{
 {
-	$index = 0;
 	$pattern = noweb_pattern($index);
 
 	preg_match_all( $pattern, get_content($file['path']), $parts );
@@ -253,25 +236,11 @@ function perform_noweb_check( &$file ) // {{{
 
 function perform_tikisetup_check( &$file ) // {{{
 {
-	$index = 0;
-
 	$pattern = tikisetup_pattern($index);
 
 	preg_match_all( $pattern, get_content($file['path']), $parts );
 
 	$file['tikisetup'] = count( $parts[0] ) > 0;
-} // }}}
-
-function perform_extract_skip_check( &$file ) // {{{
-{
-	$pattern = "/extract\s*\([^\)]+\)/";
-
-	preg_match_all( $pattern, get_content($file['path']), $parts );
-
-	foreach( $parts[0] as $extract )
-		if( strpos( $extract, 'EXTR_SKIP' ) === false )
-			$file['unsafeextract'] = true;
-
 } // }}}
 
 $files = array();
@@ -284,13 +253,6 @@ foreach( $files as $key=>$dummy )
 
 	switch( $file['type'] )
 	{
-	case 'wikiplugin':
-		perform_extract_skip_check( $file );
-
-		if( $file['unsafeextract'] ) 
-			$unsafe[] = $file;
-
-		break;
 	case 'public':
 	case 'include':
 	case 'script':
@@ -303,7 +265,7 @@ foreach( $files as $key=>$dummy )
 		perform_noweb_check( $file );
 		perform_tikisetup_check( $file );
 
-		if( ! $file['noweb'] && ! $file['includeonly'] && ! count( $file['features'] ) && ! count( $file['permissions'] ) ) 
+		if( ! $file['noweb'] && ! $file['includeonly'] && ! count( $file['features'] ) && ! count( $file['permissions'] ) )
 			$unsafe[] = $file;
 
 		break;
@@ -341,21 +303,19 @@ To be safe, files must have either an include only check, block web access, have
 			<th>Include only check</th>
 			<th>Not web accessible</th>
 			<th>Includes tiki-setup</th>
-			<th>Unsafe extract</th>
 			<th>Permissions checked</th>
 			<th>Features checked</th>
 		</tr>
 	</thead>
 	<tbody>
 		<?php foreach( $files as $file ) if( in_array( $file['type'], array(
-			'script', 'module', 'include', 'public', 'lib', '3rdparty', 'wikiplugin'
+			'script', 'module', 'include', 'public', 'lib', '3rdparty'
 		) ) ): ?>
 		<tr>
 			<td><a href="<?php echo htmlentities( substr( $file['path'], 2 ) ) ?>"><?php echo htmlentities( $file['path'] ) ?></a></td>
-			<td><?php if( isset($file['includeonly']) && $file['includeonly'] ) echo 'X' ?></td>
+			<td><?php if( $file['includeonly'] ) echo 'X' ?></td>
 			<td><?php if( $file['noweb'] ) echo 'X' ?></td>
 			<td><?php if( $file['tikisetup'] ) echo 'X' ?></td>
-			<td><?php if( $file['unsafeextract'] ) echo 'X' ?></td>
 			<td>
 				<?php foreach( $file['permissions'] as $perm ): ?>
 				<div><?php echo $perm ?></div>

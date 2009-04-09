@@ -1,20 +1,25 @@
 {* $Id$ *}
 
-{title}{tr}Available Repositories{/tr}{/title}
+<h2>{tr}Available Repositories{/tr}</h2>
 
 {if $tiki_p_admin eq 'y'}
-	<div class="navbar">
-		{button href="tiki-admin_integrator.php" _text="{tr}Configure Repositories{/tr}"}
-	</div>
+<div id="page-bar">
+  <table><tr>
+    <td><div class="button2">
+      <a href="tiki-admin_integrator.php" class="linkbut">{tr}Configure Repositories{/tr}</a>
+    </div></td>
+  </tr></table>
+</div>
 {/if}
+<br />
 
 
 {* Table with list of repositories (if array is not empty) *}
 {if count($repositories) gt 0}
 <table class="normal" id="integrator-repositories">
   <tr>
-    <th>{tr}Name{/tr}</th>
-    <th>{tr}Description{/tr}</th>
+    <td class="heading">{tr}Name{/tr}</td>
+    <td class="heading">{tr}Description{/tr}</td>
   </tr>
   {cycle values="odd,even" print=false}
   {section name=rep loop=$repositories}

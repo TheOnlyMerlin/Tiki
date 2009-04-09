@@ -18,9 +18,6 @@ include_once("lib/trackers/trackerlib.php");
 if (isset($_REQUEST["trkset"])) {
 	check_ticket('admin-inc-trackers');
 	$tikilib->set_preference('t_use_db', $_REQUEST["t_use_db"]);
-	if (substr($_REQUEST['t_use_dir'], -1) != "\\" && substr($_REQUEST['t_use_dir'], -1) != '/' && $_REQUEST['t_use_dir'] != '') {
-			$_REQUEST['t_use_dir'] .= '/';
-		}
 	$tikilib->set_preference('t_use_dir', $_REQUEST["t_use_dir"]);
 }
 
@@ -91,14 +88,13 @@ if (isset($_REQUEST["all2db"])) {
 	}
 }
 $attachements = $trklib->list_all_attachements($offset,$maxRecords,$sort_mode,$find);
-$smarty->assign_by_ref('cant_pages', $attachements['cant']);
-
-$headerlib->add_cssfile('css/admin.css');
 
 $smarty->assign_by_ref('attachements', $attachements['data']);
 $urlquery['find'] = $find;
 $urlquery['page'] = 'trackers';
 $urlquery['sort_mode'] = $sort_mode;
 $smarty->assign_by_ref('urlquery', $urlquery);
+$cant = $attachements['cant'];
+include "tiki-pagination.php";
 ask_ticket('admin-inc-trackers');
 ?>

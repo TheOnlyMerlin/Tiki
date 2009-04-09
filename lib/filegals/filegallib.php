@@ -25,12 +25,12 @@ class FileGalLib extends TikiLib {
 	function remove_file($fileInfo, $user, $galInfo='') {
 		global $prefs, $smarty;
 
-		if ($podCastGallery = $this->isPodCastGallery($fileInfo['galleryId'], $galInfo)) {
+		if ($podCastGallery = $this->isPodCastGallery($galleryId, $galInfo)) {
 			$savedir=$prefs['fgal_podcast_dir'];
 		} else {
 			$savedir=$prefs['fgal_use_dir'];
 		}
-
+		
 		if ($fileInfo['path']) {
 			unlink ($savedir . $fileInfo['path']);
 		}
@@ -138,10 +138,6 @@ class FileGalLib extends TikiLib {
 			$info = $this->get_file_info($id);
 			$galleryId = $info['galleryId'];
 		}
-		global $cachelib; require_once("lib/cache/cachelib.php");
-		$cachelib->empty_type_cache('fgals_perms_'.$id."_");
-		$cachelib->empty_type_cache('fgals_perms_'.$info['galleryId']."_");
-		$cachelib->empty_type_cache($this->get_all_galleries_cache_type());
 
 		if ($podCastGallery = $this->isPodCastGallery($galleryId)) {
 			$savedir=$prefs['fgal_podcast_dir'];
@@ -201,11 +197,11 @@ class FileGalLib extends TikiLib {
 
 		// if the user is admin or the user is the same user and the gallery exists
 		// then replace if not then create the gallary if the name is unused.
-		$fgal_info['name'] = strip_tags($fgal_info['name']);
+		$name = strip_tags($name);
 
-		$fgal_info['description'] = strip_tags($fgal_info['description']);
-		if ($fgal_info['sort_mode'] == 'created_desc') {
-			$fgal_info['sort_mode'] = null;
+		$description = strip_tags($description);
+		if ($sort_mode == 'created_desc') {
+			$sort_mode = null;
 		}
 
 		if ($fgal_info['galleryId'] > 0) {
@@ -249,8 +245,8 @@ class FileGalLib extends TikiLib {
 			`show_hits`, `max_desc`, `type`, `parentId`, `lockable`, `show_lockedby`,
 			`archives`, `sort_mode`, `show_modified`, `show_creator`, `show_author`,
 			`subgal_conf`, `show_last_user`, `show_comment`, `show_files`,
-			`show_explorer`, `show_path`) values (?,?,?,?,?,?,?,?,?,?,
-			?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			`show_explorer`, `show_path`) values (?,?,?,?,?,?,?,?,?,
+			?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 			$bindvars=array($fgal_info['name'], $fgal_info['description'], (int)
 			$this->now, $fgal_info['user'], (int) $this->now, (int)
@@ -272,7 +268,6 @@ class FileGalLib extends TikiLib {
 			`lastModif`=?",array($fgal_info['name'],(int) $this->now));
 
 			if ($prefs['feature_score'] == 'y') {
-				global $user;
 			    $this->score_event($user, 'fgallery_new');
 			}
 		}
@@ -281,20 +276,9 @@ class FileGalLib extends TikiLib {
 			require_once('lib/search/refresh-functions.php');
 			refresh_index('file_galleries', $galleryId);
 		}
-		global $cachelib; include_once('lib/cache/cachelib.php');
-		$cachelib->empty_type_cache($this->get_all_galleries_cache_type());
 
 		// event_handler($action,$object_type,$object_id,$options);
 		return $galleryId;
-	}
-	function get_all_galleries_cache_name($user) {
-		global $tikilib;
-		$gs = $tikilib->get_user_groups($user);
-		$cacheName = md5(implode("\n", $gs));
-		return $cacheName;
-	}
-	function get_all_galleries_cache_type() {
-		return 'fgals_';
 	}
 
 	function process_batch_file_upload($galleryId, $file, $user, $description) {
@@ -305,7 +289,7 @@ class FileGalLib extends TikiLib {
 		$extract_dir = 'temp/'.basename($file).'/';
 		mkdir($extract_dir);
 		$archive = new PclZip($file);
-		$archive->extract(PCLZIP_OPT_PATH, $extract_dir, PCLZIP_OPT_REMOVE_ALL_PATH);
+		$archive->extract($extract_dir);
 		unlink($file);
 		$files = array();
 		$h = opendir($extract_dir);
@@ -525,12 +509,15 @@ class FileGalLib extends TikiLib {
 		else {
 			$query = "insert into `tiki_file_handlers` (`mime_type`,`cmd`) values (?,?)";
 			$result = $this->query($query,array($mime_type,$cmd));
-		}
-
+		}	
+		
 		return $result;
 	}
-
+	
 	function delete_file_handler($mime_type) {
+		if ($mime_type == 'default')
+			return false;
+			
 		$query = "delete from `tiki_file_handlers` where `mime_type`=?";
 		$result = $this->query($query,array($mime_type));
 		return (($result) ? true : false);
@@ -543,7 +530,7 @@ class FileGalLib extends TikiLib {
 		while ($row = $result->fetchRow()) {
 			$fileParseApps[$row['mime_type']] = $row['cmd'];
 		}
-
+		
 		return $fileParseApps;
 	}
 
@@ -554,7 +541,7 @@ class FileGalLib extends TikiLib {
 		while($row = $result->fetchRow()) {
 			$rows[] = $row;
 		}
-
+		
 		foreach($rows as $row) {
 			$search_text = $this->get_search_text_for_data($row['data'],$row['path'],$row['filetype'], $row['galleryId']);
 			if ($search_text!==false) {
@@ -568,7 +555,7 @@ class FileGalLib extends TikiLib {
 
 	function get_search_text_for_data($data,$path,$type, $galleryId) {
 		global $prefs;
-
+		
 		if (!isset($data) && !isset($path)) {
 			return false;
 		}
@@ -578,7 +565,7 @@ class FileGalLib extends TikiLib {
 		} else {
 			$savedir=$prefs['fgal_use_dir'];
 		}
-
+		
 		$fileParseApps = $this->get_file_handlers();
 
 		$parseApp = '';
@@ -589,13 +576,13 @@ class FileGalLib extends TikiLib {
 
 		if (empty($parseApp))
 			return '';
-
-		if (empty($path)) {
+			
+		if (empty($path)) {	
 			$tmpfname = tempnam("/tmp", "wiki_");
 			$tmpFile = fopen($tmpfname,'w');
 			if ($tmpFile === false)
 				return false;
-
+				
 			if (fwrite($tmpFile,$data) === false)
 				return false;
 			fflush($tmpFile);
@@ -604,7 +591,7 @@ class FileGalLib extends TikiLib {
 		else {
 			$tmpfname = $savedir . $path;
 		}
-
+		
 		$cmd = str_replace('%1',$tmpfname,$parseApp);
 		$handle = popen("$cmd","r");
 		if ($handle === false) {
@@ -612,16 +599,16 @@ class FileGalLib extends TikiLib {
 				@unlink($tmpfname);
 			return false;
 		}
-
+			
 		$contents = '';
 		while (!feof($handle)) {
 			$contents .= fread($handle, 8192);
 		}
 		fclose($handle);
-
+		
 		if (empty($path))
 			@unlink($tmpfname);
-
+				
 		return $contents;
 	}
 
@@ -645,7 +632,7 @@ class FileGalLib extends TikiLib {
 	/* unlock a file */
 	function unlock_file($fileId) {
 		$query = 'update `tiki_files` set `lockedby`=? where `fileId`=?';
-		$this->query($query, array(NULL, $fileId));
+		$this->query($query, array(NULL, $fileId));		
 	}
 	/* get archives of a file */
 	function get_archives($fileId, $offset=0, $maxRecords=-1, $sort_mode='created_desc', $find='') {
@@ -678,62 +665,6 @@ class FileGalLib extends TikiLib {
 			$tikilib->delete_preference( $pref );
 		else
 			$tikilib->set_preference( $pref, $limit );
-	}
-	// not the best optimisation as using a library using files and not content
-	function zip($fileIds, &$error, $zipName='') {
-		global $tiki_p_admin_file_galleries, $userlib, $tikilib, $prefs, $user;
-		$list = array();
-		$temp = 'temp/'.md5($tikilib->now).'/';
-		if (!mkdir($temp)) {
-			$error = "Can not create directory $temp";
-			return false;
-		}
-		foreach ($fileIds as $fileId) {
-			$info = $tikilib->get_file($fileId);
-			if ($tiki_p_admin_file_galleries == 'y' || $userlib->user_has_perm_on_object($user, $info['galleryId'], 'file gallery', 'tiki_p_download_files')) {
-				if (empty($zipName)) {
-					$zipName = $info['galleryId'];
-				}
-				$tmp = $temp.$info['filename'];
-				if ($info['path']) { // duplicate file in temp
-					if (!copy($prefs['fgal_use_dir'].$info['path'], $tmp)) {
-						$error = "Can not copy to $tmp";
-						return false;
-					}
-				} else {//write file in temp
-					if (file_put_contents($tmp, $info['data']) === false) {
-						$error = "Can not write to $tmp";
-						return false;
-					}
-				}
-				$list[] = $tmp;
-			}
-		}
-		if (empty($list)) {
-			$error = "No permission";
-			return null;
-		}
-		$info['filename'] = "$zipName.zip";
-		$zip = $temp.$info['filename'];
-		define( PCZLIB_SEPARATOR, '\001');
-		include_once ('lib/pclzip.lib.php');
-		if (!$archive = new PclZip($zip)) {
-			$error = $archive->errorInfo(true);
-			return false;
-		}
-		if (!($v_list = $archive->create($list, PCLZIP_OPT_REMOVE_PATH, $temp))) {
-			$error = $archive->errorInfo(true);
-			return false;
-		}
-		$info['data'] = file_get_contents($zip);
-		$info['path'] = '';
-		$info['filetype'] = 'application/x-zip-compressed';
-		foreach ($list as $tmp) {
-			unlink($tmp);
-		}
-		unlink($zip);
-		rmdir($temp);
-		return $info;
 	}
 }
 global $dbTiki;

@@ -14,6 +14,8 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 if (isset($_REQUEST["loginprefs"])) {
 	check_ticket('admin-inc-login');
+	simple_set_toggle('change_theme');
+	simple_set_toggle('change_language');
 	simple_set_toggle('change_password');
 	simple_set_value('messu_mailbox_size');
 	simple_set_value('messu_archive_size');
@@ -28,7 +30,6 @@ if (isset($_REQUEST["loginprefs"])) {
 	simple_set_value('registerPasscode');
 	simple_set_value('min_username_length');
 	simple_set_value('max_username_length');
-	simple_set_value('username_pattern');
 	simple_set_value('min_pass_length');
 	simple_set_value('pass_due');
 	simple_set_value('email_due');
@@ -51,14 +52,17 @@ if (isset($_REQUEST["loginprefs"])) {
 	simple_set_value('https_port');
 	simple_set_value('rememberme');
 	simple_set_value('remembertime');
-	simple_set_value('remembermethod');
 	simple_set_value('cookie_name');
 	simple_set_value('cookie_domain');
 	simple_set_value('cookie_path');
 	simple_set_value('auth_method');
+	simple_set_toggle('feature_ticketlib');
+	simple_set_toggle('feature_ticketlib2');
 	simple_set_value('highlight_group');
 	simple_set_value('user_tracker_infos');
 	simple_set_toggle('desactive_login_autocomplete');
+	simple_set_value('available_languages');
+	simple_set_value('available_styles');
 	simple_set_toggle('permission_denied_login_box');
 	simple_set_value('permission_denied_url');
 
@@ -88,6 +92,8 @@ if (isset($_REQUEST["auth_pear"])) {
 	simple_set_toggle('auth_create_user_tiki');
 	simple_set_toggle('auth_create_user_auth');
 	simple_set_toggle('auth_skip_admin');
+	simple_set_value('auth_type');
+    simple_set_value('auth_imap_pop3_basedsn');
 	simple_set_value('auth_ldap_url');
 	simple_set_value('auth_pear_host');
 	simple_set_value('auth_pear_port');

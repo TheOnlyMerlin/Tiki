@@ -27,13 +27,7 @@ body {
 html>body {
 	font-size: 0.75em !important;/* redefine the body font-size for all modern browsers - ignored by old IEs */
 }
-
-/* workaround for Safari when in FCKEditor */
-html[dir=ltr]>body {
-	display: block;
-	margin: 1em .5em;
-}
-
+	
 #header {
 	background-color: transparent;
 }
@@ -67,30 +61,6 @@ html[dir=ltr]>body {
 
 #col3 {
 	background-color: transparent;
-}
-
-#leftcolumn {
-	width : 180px;
-	padding : 0px;
-}
-#centercolumn {
-	padding : 5px;
-}
-#rightcolumn {
-	width : 180px;
-	padding : 0px;
-}
-DIV#tiki-center {
-	padding : 5px 0;
-}
-DIV#tiki-mid > table {
-	border-spacing : 0;
-	margin : 0;
-	padding : 0;
-}
-
-#overDiv table {
-	width : auto !important;
 }
 
 /* next comes footer */
@@ -153,7 +123,7 @@ table.galtable {
   border-collapse: collapse;
 }
 
-table.normal th {
+table.normal td.heading {
   background-color: #abcdef;
   font-size: 1em;
   width: 15px;
@@ -257,13 +227,12 @@ fieldset {
 	border: solid 1px #99ccff;
 	padding: 0.9em;
 }
+
 /* All select elements, NOTE: text-align: start is RTL languages compatible */
 select {
-	text-align: start;
-}
-* html select {
-  font-size: 1em; /* MSIE workaround for simmilar height like input and submit */
-  vertical-align: top; /* MSIE workaround for simmilar height like input and submit */
+  _font-size: 1em; /* MSIE workaround for simmilar height like input and submit */
+  text-align: start;
+  _vertical-align: top; /* MSIE workaround for simmilar height like input and submit */
 }
 /*select[name="lang"], select[name="language"] {
   height: 2em;
@@ -572,7 +541,7 @@ div.messureadbody {
 /*
  * common page classes
  */
-.button2 a {
+.linkbut {
  font-size: 0.8em;
 }
 .pagetitle {
@@ -884,7 +853,7 @@ div.articlebody {
   border-bottom: 1px dashed #999999;
   background-color: transparent;
 }
-.versionav .button2 a {
+.versionav .button2 .linkbut {
   border: 0;
   background-color: inherit;
   padding: 0 10px;
@@ -1004,23 +973,5 @@ a.flipmodtitle:hover img {
 /* floating blocks */
 .floatleft {float: left}
 .floatright {float: right}
-
-a.icon,
-img.icon {
-	border: 0 !important;
-	background: transparent}
-
-/***** TikiSheet Default Style *****/
-
-table.default thead td,
-table.default tfoot td {
-	font-weight: bold;
-	text-align:	center;
-	background: #ABCDEF;
-	color: #cce5ff}
-
-table.default td {
-	border: solid 1px #A9A9A9;
-	background: white}
 
 /* end of css file */

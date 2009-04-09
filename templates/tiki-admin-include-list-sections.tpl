@@ -4,9 +4,10 @@
  * there you"ll find attached a gimp image containing this page with icons in separated layers
  *}
 
-{remarksbox type="tip" title="{tr}Tip{/tr}"}
-	{tr}Enable/disable Tiki features in {/tr}<a class="rbox-link" href="tiki-admin.php?page=features">{tr}Admin{/tr}&nbsp;{$prefs.site_crumb_seper}&nbsp;{tr}Features{/tr}</a>{tr}, but configure them elsewhere{/tr}
-{/remarksbox}
+<div class="rbox tip">
+	<div class="rbox-title">{tr}Tip{/tr}</div>  
+	<div class="rbox-data">{tr}Enable/disable Tiki features in {/tr}<a class="rbox-link" href="tiki-admin.php?page=features">{tr}Admin{/tr}&nbsp;{$prefs.site_crumb_seper}&nbsp;{tr}Features{/tr}</a>{tr}, but configure them elsewhere{/tr}</div>
+</div>
 
 <div class="cbox">
  	<div class="cbox-title">
@@ -16,22 +17,18 @@
 
 	<div class="clearfix cbox-data">
 
-	<a href="tiki-admin.php?page=general" class="admbox" style="background-image: url('pics/large/icon-configuration48x48.png')">
-			<img src="pics/trans.png" alt="{tr}General{/tr}" title="{tr}General{/tr}" /><span>{tr}General{/tr}</span>
-	</a>
-
     <a href="tiki-admin.php?page=features" class="admbox" style="background-image: url('pics/large/boot48x48.png')">
       <img src="pics/trans.png" alt="{tr}Features{/tr}" title="{tr}Features{/tr}" /><span>{tr}Features{/tr}</span>
     </a>
 	
+	<a href="tiki-admin.php?page=general" class="admbox" style="background-image: url('pics/large/icon-configuration48x48.png')">
+			<img src="pics/trans.png" alt="{tr}General{/tr}" title="{tr}General{/tr}" /><span>{tr}General{/tr}</span>
+	</a>
+
     <a href="tiki-admin.php?page=login" class="admbox" style="background-image: url('pics/large/stock_quit48x48.png')">
       <img src="pics/trans.png" alt="{tr}Login{/tr}" title="{tr}Login{/tr}" /><span>{tr}Login{/tr}</span>
     </a>
 
-    <a href="tiki-admin.php?page=profiles" class="admbox" style="background-image: url('pics/large/profiles48x48.png')">
-      <img src="pics/trans.png" alt="{tr}Profiles{/tr}" title="{tr}Profiles{/tr}" /><span>{tr}Profiles{/tr}</span>
-    </a>	
-	
     <a href="tiki-admin.php?page=look" class="admbox" style="background-image: url('pics/large/gnome-settings-background48x48.png')">
       <img src="pics/trans.png" alt="{tr}Look &amp; Feel{/tr}" title="{tr}Customize look and feel of your Tiki{/tr}" /><span>{tr}Look &amp; Feel{/tr}</span>
     </a>
@@ -127,6 +124,7 @@
     <a href="tiki-admin.php?page=gmap" class="admbox{if $prefs.feature_gmap ne 'y'} off{/if}" style="background-image: url('pics/large/google_maps48x48.png')">
       <img src="pics/trans.png" alt="{tr}Google Maps{/tr}" title="{tr}Google Maps{/tr}{if $prefs.feature_gmap ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Google Maps{/tr}</span>
     </a>
+
 	<a href="tiki-admin.php?page=multimedia" class="admbox{if $prefs.feature_multimedia ne 'y'} off{/if}" style="background-image: url('pics/large/multimedia48x48.png')">
       <img src="pics/trans.png" alt="{tr}Multimedia{/tr}" title="{tr}Multimedia{/tr}" /><span>{tr}Multimedia{/tr}</span>
     </a>
@@ -151,30 +149,14 @@
       <img src="pics/trans.png" alt="{tr}Wysiwyg{/tr}" title="{tr}Wysiwyg{/tr}{if $prefs.feature_wysiwyg ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Wysiwyg{/tr}</span>
     </a>	
 	
-	<a href="tiki-admin.php?page=ads" class="admbox{if $prefs.feature_banners ne 'y'} off{/if}" style="background-image: url('pics/large/ads48x48.png')">
+	<a href="tiki-admin.php?page=ads" class="admbox{if $prefs.feature_banners ne 'y'} off{/if}"" style="background-image: url('pics/large/ads48x48.png')">
 			<img src="pics/trans.png" alt="{tr}Site Ads and Banners{/tr}" title="{tr}Site Ads and Banners{/tr}" {if $prefs.feature_banners ne 'y'} ({tr}Disabled{/tr}){/if}/><span>{tr}Site Ads and Banners{/tr}</span>
 	</a>
 
 	<a href="tiki-admin.php?page=intertiki" class="admbox{if $prefs.feature_intertiki ne 'y'} off{/if}" style="background-image: url('pics/large/intertiki48x48.png')">
       <img src="pics/trans.png" alt="{tr}InterTiki{/tr}" title="{tr}InterTiki{/tr}{if $prefs.feature_intertiki ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}InterTiki{/tr}</span>
     </a>
-	{* TODO: these new features seem not to have feature prefs - eg $prefs.feature_profiles so are on by default for now *}
-	<a href="tiki-admin.php?page=plugins" class="admbox{if $prefs.feature_plugins eq 'n'} off{/if}" style="background-image: url('pics/large/stock_line-in48x48.png')">
-      <img src="pics/trans.png" alt="{tr}Plugin aliases{/tr}" title="{tr}Plugin aliases{/tr}{if $prefs.feature_plugins eq 'n'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Plugin aliases{/tr}</span>
-    </a>
 
-	<a href="tiki-admin.php?page=semantic" class="admbox{if $prefs.feature_semantic eq 'n'} off{/if}" style="background-image: url('pics/large/semantic48x48.png')">
-      <img src="pics/trans.png" alt="{tr}Semantic{/tr}" title="{tr}Semantic wiki links{/tr}{if $prefs.feature_semantic eq 'n'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Semantic links{/tr}</span>
-    </a>
-
-	<a href="tiki-admin.php?page=webservices" class="admbox{if $prefs.feature_webservices eq 'n'} off{/if}" style="background-image: url('pics/large/webservices48x48.png')">
-      <img src="pics/trans.png" alt="{tr}Webservices{/tr}" title="{tr}Webservices management{/tr}{if $prefs.feature_webservices eq 'n'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Webservices{/tr}</span>
-    </a>
-
-	<a href="tiki-admin.php?page=sefurl" class="admbox{if $prefs.feature_sefurl eq 'n'} off{/if}" style="background-image: url('pics/large/goto48x48.png')">
-      <img src="pics/trans.png" alt="{tr}Search engine friendly url{/tr}" title="{tr}Search engine friendly url{/tr}{if $prefs.feature_sefurl eq 'n'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Search engine friendly url{/tr}</span>
-    </a>
 	</div>
 </div>
 
-{* $Id$ *}

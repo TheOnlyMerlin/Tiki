@@ -37,9 +37,9 @@
   <table><tr>
   {section name=i loop=$tabs}
     <td>
-			{assign var=thistabshref value=$tabs[i].button_href}
-			{assign var=thistabscaption value=$tabs[i].button_caption}
-			{button href=$thistabshref _text=$thistabscaption}
+      <div class="button2">
+        <a href="{$tabs[i].button_href}" class="linkbut">{$tabs[i].button_caption}</a>
+      </div>
     </td>
   {/section}
   </tr></table>

@@ -1,11 +1,9 @@
 {popup_init src="lib/overlib.js"}
-
-{title help="Forums" admpage="forums"}{tr}Reported messages for forum{/tr}&nbsp;{$forum_info.name}{/title}
-
-<div class="navbar">
-	{button href="tiki-view_forum.php?forumId=$forumId" _text="{tr}Back to forum{/tr}"}
-</div>
-
+{*Smarty template*}
+<h1><a class="pagetitle" href="tiki-forums_reported.php?forumId={$forumId}">{tr}Reported messages for{/tr}: {$forum_info.name}</a>
+</h1>
+<a class="link" href="tiki-view_forum.php?forumId={$forumId}">{tr}back to forum{/tr}</a>
+<br />
 <h2>{tr}List of messages{/tr} ({$cant})</h2>
 {* FILTERING FORM *}
 {if $items or ($find ne '')}
@@ -35,10 +33,10 @@
 <table class="normal">
 <tr>
 {if $items}
-<th></th>
+<th class="heading" ></th>
 {/if}
-<th>{tr}Message{/tr}</th>
-<th>{tr}Reported by{/tr}</th>
+<th class="heading">{tr}Message{/tr}</th>
+<th class="heading">{tr}Reported by{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$items}
@@ -71,4 +69,24 @@
 </form>
 {* END OF LISTING *}
 
-{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
+{* PAGINATION *}
+<div class="mini">
+<div align="center">
+{if $prev_offset >= 0}
+[<a class="prevnext" href="tiki-forums_reported.php?forumId={$forumId}&amp;find={$find}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}">{tr}Prev{/tr}</a>]&nbsp;
+{/if}
+{tr}Page{/tr}: {$actual_page}/{$cant_pages}
+{if $next_offset >= 0}
+&nbsp;[<a class="prevnext" href="tiki-forums_reported.php?forumId={$forumId}&amp;find={$find}&amp;offset={$next_offset}&amp;sort_mode={$sort_mode}">{tr}Next{/tr}</a>]
+{/if}
+{if $prefs.direct_pagination eq 'y'}
+<br />
+{section loop=$cant_pages name=foo}
+{assign var=selector_offset value=$smarty.section.foo.index|times:$prefs.maxRecords}
+<a class="prevnext" href="tiki-forums_reported.php?forumId={$forumId}&amp;find={$find}&amp;offset={$selector_offset}&amp;sort_mode={$sort_mode}">
+{$smarty.section.foo.index_next}</a>&nbsp;
+{/section}
+{/if}
+</div>
+</div> 
+{* END OF PAGINATION *}

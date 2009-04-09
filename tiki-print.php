@@ -41,16 +41,18 @@ if (!isset($_REQUEST["page"])) {
 	$smarty->assign_by_ref('page', $_REQUEST["page"]);
 }
 
+require_once ('tiki-pagesetup.php');
+
 // If the page doesn't exist then display an error
-if (!($info = $tikilib->get_page_info($page))) {
-	$smarty->assign('msg', tra('Page cannot be found'));
-	$smarty->display('error.tpl');
+if (!$tikilib->page_exists($page)) {
+	$smarty->assign('msg', tra("Page cannot be found"));
+
+	$smarty->display("error.tpl");
 	die;
 }
 
 // Now check permissions to access this page
-$tikilib->get_perm_object( $page, 'wiki page', $info);
-if ($tiki_p_view != 'y') {
+if (!$tikilib->user_has_perm_on_object($user, $_REQUEST["page"],'wiki page','tiki_p_view')) {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg', tra("Permission denied you cannot view this page"));
 
@@ -62,6 +64,9 @@ if ($tiki_p_view != 'y') {
 if ($prefs['count_admin_pvs'] == 'y' || $user != 'admin') {
 	$tikilib->add_hit($page);
 }
+
+// Get page data
+$info = $tikilib->get_page_info($page);
 
 if (isset($prefs['wiki_feature_copyrights']) && $prefs['wiki_feature_copyrights'] == 'y' && isset($prefs['wikiLicensePage'])) {
 	// insert license if wiki copyrights enabled
@@ -84,7 +89,7 @@ if (isset($_REQUEST['page_ref_id'])) {
     $page_ref_id = $_REQUEST['page_ref_id'];
 }
 
-$pdata = $tikilib->parse_data($info["data"], array('is_html' => $info["is_html"]));
+$pdata = $tikilib->parse_data($info["data"],$info["is_html"]);
 $smarty->assign_by_ref('parsed', $pdata);
 $smarty->assign_by_ref('lastModif', $info["lastModif"]);
 

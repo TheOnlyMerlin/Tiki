@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -226,12 +225,7 @@ class RSSLib extends TikiLib {
 
 		$dirname = (dirname($urlarray["path"]) != "/" ? "/" : "");
 
-		if ($prefs['index_rss_'.$feed]!='') {
-			$url = $prefs['index_rss_'.$feed];
-		} else {
-			$url = htmlspecialchars($this->httpPrefix().$_SERVER["REQUEST_URI"]);
-		}
-
+		$url = htmlspecialchars($this->httpPrefix().$_SERVER["REQUEST_URI"]);
 		$home = htmlspecialchars($this->httpPrefix().dirname( $urlarray["path"] ).$dirname.$prefs['tikiIndex']);
 		$img = htmlspecialchars($this->httpPrefix().dirname( $urlarray["path"] ).$dirname.$prefs['rssfeed_img']);
 
@@ -305,10 +299,10 @@ class RSSLib extends TikiLib {
 		$rss->feedURL = $url;
 		
 		$image = new FeedImage();
-		$image->title = $prefs['browsertitle'];
+		$image->title = $prefs['siteTitle'];
 		$image->url = $img;
 		$image->link = $home;
-		$image->description = sprintf(tra('Feed provided by %s. Click to visit.'), $prefs['browsertitle']);
+		$image->description = sprintf(tra('Feed provided by %s. Click to visit.'), $prefs['siteTitle']);
 	
 		//optional
 		$image->descriptionTruncSize = 500;
@@ -318,9 +312,11 @@ class RSSLib extends TikiLib {
 
 		global $dbTiki;
         if (!isset($userslib)) $userslib = new Userslib($dbTiki);
+		
 		foreach ($changes["data"] as $data)  {
 			$item = new FeedItem(); 
 			$item->title = $data["$titleId"]; 
+
 			// 2 parameters to replace			
 			if ($urlparam<>'') {
 				$item->link = sprintf($read, urlencode($data["$id"]), urlencode($data["$urlparam"]));
@@ -350,30 +346,27 @@ class RSSLib extends TikiLib {
 			//optional
 			//item->descriptionTruncSize = 500;
 			$item->descriptionHtmlSyndicated = true;
-			
 			$item->date = (int) $data["$dateId"]; 
 	
 			$item->source = $url; 
 
 			$item->author = "";
 			if ($authorId<>"") {
-				if ($prefs['showAuthor_rss_'.$feed] == 'y') {
-					if ($userslib->user_exists($data["$authorId"])) {
-						$item->author = $data["$authorId"];
-						// only use realname <email> if existing and
-						$tmp = "";
-						if ($this->get_user_preference($data["$authorId"], 'user_information', 'private')=='public') {
-							$tmp = $this->get_user_preference($data["$authorId"], "realName");
-						}
-						$epublic = $this->get_user_preference($data["$authorId"], 'email is public', 'n');
-						if ($epublic!='n') {
-							$res = $userslib->wget_user_info($data["$authorId"], false);
-							if ($tmp<>"") $tmp .= ' ';
-							$tmp .= "<".scrambleEmail($res['email'], $epublic).">";
-						}
-						if ($tmp<>"") $item->author = $tmp;
-					} else $item->author = $data["$authorId"];
-				}
+				if ($userslib->user_exists($data["$authorId"])) {
+					$item->author = $data["$authorId"];
+					// only use realname <email> if existing and
+					$tmp = "";
+					if ($this->get_user_preference($data["$authorId"], 'user_information', 'private')=='public') {
+						$tmp = $this->get_user_preference($data["$authorId"], "realName");
+					}
+					$epublic = $this->get_user_preference($data["$authorId"], 'email is public', 'n');
+					if ($epublic!='n') {
+						$res = $userslib->get_user_info($data["$authorId"], false);
+						if ($tmp<>"") $tmp .= ' ';
+						$tmp .= "<".scrambleEmail($res['email'], $epublic).">";
+					}
+					if ($tmp<>"") $item->author = $tmp;
+				} else $item->author = $data["$authorId"];
 			}
 			 
 			$rss->addItem($item); 
@@ -546,10 +539,8 @@ class RSSLib extends TikiLib {
 	}
 
 	/* refresh content of a certain rss feed */
-	function refresh_rss_module($rssId, $info='') {
-		if (empty($info)) {
-			$info = $this->get_rss_module($rssId);
-		}
+	function refresh_rss_module($rssId) {
+		$info = $this->get_rss_module($rssId);
 		if ($info) {
 			if (($gotit = $this->httprequest($info['url'])) !== false) {
 				$data = $this->rss_iconv($gotit);
@@ -602,7 +593,7 @@ class RSSLib extends TikiLib {
 
 		// cache too old, get data from feed and update cache
 		if (($info["lastUpdated"] + $info["refresh"] < $this->now) || ($info["content"]=="") || $refresh) {
-			$data = $this->refresh_rss_module($rssId, $info);
+			$data = $this->refresh_rss_module($rssId);
 		}
 
 		// get from cache

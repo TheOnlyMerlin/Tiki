@@ -16,7 +16,7 @@ require_once('tiki-setup.php');
 global $prefs, $userlib;
 
 $smarty->assign('mandatory_category', '-1');
-if ($prefs['feature_categories'] == 'y' && isset($cat_type) && isset($cat_objid)) {
+if ($prefs['feature_categories'] == 'y') {
 	global $categlib, $user; include_once ('lib/categories/categlib.php');
 	$smarty->assign('cat_categorize', 'n');
 
@@ -48,10 +48,13 @@ if ($prefs['feature_categories'] == 'y' && isset($cat_type) && isset($cat_objid)
 		$all_categories = $categlib->list_categs();
 	$categories = array();
 	for ($i = 0; $i < count($all_categories); $i++) {
-		if ( $tikilib->user_has_perm_on_object($user,$all_categories[$i]['categId'],'category','tiki_p_view_categories')
-			|| $tikilib->user_has_perm_on_object($user,$all_categories[$i]['categId'],'category','tiki_p_admin_categories')
-		) {
+		if($tikilib->user_has_perm_on_object($user,$all_categories[$i]['categId'],'category','tiki_p_edit_categorized') || $tikilib->user_has_perm_on_object($user,$all_categories[$i]['categId'],'category','tiki_p_admin_categories')) {
 			$categories[] = $all_categories[$i];
+			// remove category for approved pages from category list if this is a staging page
+			if ($prefs["feature_wikiapproval"] == 'y' && $cat_type == 'wiki page' && substr($cat_objid, 0, strlen($prefs['wikiapproval_prefix'])) == $prefs['wikiapproval_prefix']
+			 && $prefs['wikiapproval_approved_category'] > 0 && $prefs['wikiapproval_approved_category'] == $all_categories[$i]['categId']) {			
+				array_pop($categories);
+			}	
 		}
 	}
 
@@ -80,24 +83,6 @@ else {
 		}
 	}
 
-	include_once ('lib/tree/categ_browse_tree.php');
-	$tree_nodes = array();
-	foreach ($categories as $c) {
-		if (isset($c['name']) || $c['parentId'] != 0) {
-			$tree_nodes[] = array(
-				'id' => $c['categId'],
-				'parent' => $c['parentId'],
-				'data' => '<span class="tips" title="'.$c['description'].'"><input type=checkbox name="cat_categories[]" value=' . $c['categId'] . ($c['incat'] == 'y' ? ' checked=checked' : '') . '/> ' . $c['name'] . '</span>'
-			);
-			if ($c['parentId'] == 0) {
-				$tree_nodes[count($tree_nodes) - 1]['data'] = '<strong>'.$tree_nodes[count($tree_nodes) - 1]['data'].'</strong>';
-			}
-		}
-	}
-	$tm = new CatBrowseTreeMaker("categorize");
-	$res = $tm->make_tree(0, $tree_nodes);
-	$smarty->assign('cat_tree', $res);
-	
 	if (!empty($cats))
 		$smarty->assign('catsdump', implode(',',$cats));
 	$smarty->assign_by_ref('categories', $categories);

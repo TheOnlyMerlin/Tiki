@@ -1,5 +1,4 @@
 <?php
-// $Id: /cvsroot/tikiwiki/tiki/tiki-objectpermissions.php,v 1.25.2.2 2008-03-11 15:17:54 nyloth Exp $
 
 /* Displays a remarks box
  * Use:
@@ -23,44 +22,13 @@ function wikiplugin_remarksbox_help() {
 		tra('remarks text').'{REMARKSBOX}~/np~';
 }
 
-function wikiplugin_remarksbox_info() {
-	return array(
-		'name' => tra('Remarks Box'),
-		'description' => tra('Displays a comment, tip, note or warning box'),
-		'prefs' => array( 'wikiplugin_remarksbox' ),
-		'body' => tra('remarks text'),
-		'params' => array(
-			'type' => array(
-				'required' => true,
-				'name' => tra('Type'),
-				'description' => 'tip|comment|note|warning',
-			),
-			'title' => array(
-				'required' => true,
-				'name' => tra('title'),
-				'description' => tra('Label displayed above the remark.'),
-			),
-			'highlight' => array(
-				'required' => false,
-				'name' => tra('Highlight'),
-				'description' => 'y|n',
-			),
-			'icon' => array(
-				'required' => false,
-				'name' => tra('Icon'),
-				'description' => tra('Icon ID.'),
-			),
-		),
-	);
-}
-
 function wikiplugin_remarksbox($data, $params) {
 	global $smarty;
 	require_once('lib/smarty_tiki/block.remarksbox.php');
 	
 	// there probably is a better way @todo this
 	// but for now i'm escaping the html in ~np~s as the parser is adding odd <p> tags
-	$ret = '~np~'.smarty_block_remarksbox($params, '~/np~'.tra($data).'~np~', $smarty).'~/np~';
+	$ret = '~np~'.smarty_block_remarksbox($params, '~/np~'.tra($data).'~np~', &$smarty).'~/np~';
 	return $ret;
 }
 

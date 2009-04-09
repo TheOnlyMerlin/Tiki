@@ -1,10 +1,16 @@
-{title help="Replicate"}{tr}Replicate{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-replicate.php">{tr}Replicate{/tr}</a>
+
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Replicate" target="tikihelp" class="tikihelp" title="{tr}Tikiwiki.org help{/tr}: {tr}system admin{/tr}">
+{icon _id='help'}</a>{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-replicate.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}system admin tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>{/if}
+</h1>
 
 {if $tikifeedback}
-  <br />
-  {section name=n loop=$tikifeedback}
-    <div class="simplebox {if $tikifeedback[n].num > 0} highlight{/if}">{$tikifeedback[n].mes}</div>
-  {/section}
+<br />{section name=n loop=$tikifeedback}<div class="simplebox {if $tikifeedback[n].num > 0} highlight{/if}">{$tikifeedback[n].mes}</div>{/section}
 {/if}
 
 <div class="admin">
@@ -21,7 +27,7 @@
 <tr><td width="50%" valign="top">
 
 <table class="normal">
-<tr><th colspan="2">{tr}Operations{/tr}</th></tr>
+<tr><td class="heading" colspan="2">{tr}Operations{/tr}</td></tr>
 {if $master}
 <tr class="form"><td><b>check</b></td><td>
 <form action="tiki-replicate.php" method="post">
@@ -34,7 +40,7 @@
 
 {cycle values="odd,even" print=false}
 <table class="normal">
-<tr><th colspan="3">{tr}Operations Log{/tr}</th></tr>
+<tr><td class="heading" colspan="3">{tr}Operations Log{/tr}</td></tr>
 {section name=i loop=$log}
 <tr class="{cycle}"><td>{$log[i].logtime|tiki_short_datetime}</td>
 <td>{$log[i].loguser}</td>

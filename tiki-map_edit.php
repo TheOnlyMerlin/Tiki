@@ -91,7 +91,7 @@ if (isset($_REQUEST["create"]) && ($tiki_p_map_create == 'y')) {
 	fwrite ($fp,"#\n");
 	fwrite ($fp,"#Modified by: ".$user."\n");
 	fwrite ($fp,"#GMT Date: ".gmdate("Ymd His")."\n");
-	fwrite ($fp,"#IP: ".$tikilib->get_ip_address()."\n");
+	fwrite ($fp,"#IP: ".$_REQUEST["REMOTE_ADDR"]."\n");
 	fwrite ($fp,"#\n");
 	fwrite ($fp,"##TIKIMAPS HEADER: END##\n");
 	fwrite ($fp,"\n");
@@ -167,7 +167,7 @@ if ($tiki_p_map_edit != 'y') {
 	fwrite ($fp,"#\n");
 	fwrite ($fp,"#Modified by: ".$user."\n");
 	fwrite ($fp,"#GMT Date: ".gmdate("Ymd His")."\n");
-	fwrite ($fp,"#IP: ".$tikilib->get_ip_address()."\n");
+	fwrite ($fp,"#IP: ".$_REQUEST["REMOTE_ADDR"]."\n");
 	fwrite ($fp,"#\n");
 	$mapfiledata=strstr($_REQUEST["pagedata"],"##TIKIMAPS HEADER: END##");
 	// if the header is not found
@@ -254,7 +254,7 @@ if($prefs['feature_user_watches'] == 'y') {
 	  if($_REQUEST['watch_action']=='add') {
 	    $tikilib->add_user_watch($user,$_REQUEST['watch_event'],$_REQUEST['watch_object'],'Map',$_REQUEST['watch_object'],"tiki-map.php?mapfile=".$_REQUEST['watch_object']);
 	  } else {
-	    $tikilib->remove_user_watch($user,$_REQUEST['watch_event'],$_REQUEST['watch_object'], 'map');
+	    $tikilib->remove_user_watch($user,$_REQUEST['watch_event'],$_REQUEST['watch_object']);
 	  }
 	}
 
@@ -277,7 +277,7 @@ $smarty->assign('url_browse', $tikilib->httpPrefix(). $foo1);
 include_once("textareasize.php");
 
 include_once ('lib/quicktags/quicktagslib.php');
-$quicktags = $quicktagslib->list_quicktags(0,-1,'taglabel_asc','','maps');
+$quicktags = $quicktagslib->list_quicktags(0,-1,'taglabel_desc','','maps');
 $smarty->assign_by_ref('quicktags', $quicktags["data"]);
 $smarty->assign('quicktagscant', $quicktags["cant"]);
 

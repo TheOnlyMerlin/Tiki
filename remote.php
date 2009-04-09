@@ -7,6 +7,12 @@
 
 $version = "0.2";
 
+/*
+// if you wisely moved that script ..
+$_SERVER['TIKI_VIRTUAL'] = 'myvirtual';
+chdir('/path/to/tiki');
+*/
+
 include 'tiki-setup.php';
 require_once("XML/Server.php");
 
@@ -24,8 +30,7 @@ function lograw($file,$line) {
 }
 
 function logit($file,$txt,$user,$code,$from) {
-	global $tikilib;
-	$line = $tikilib->get_ip_address()." - $user - ". date('[m/d/Y:H:i:s]')." \"$txt\" $code \"$from\"";
+	$line = $_SERVER['REMOTE_ADDR']." - $user - ". date('[m/d/Y:H:i:s]')." \"$txt\" $code \"$from\"";
 	lograw($file,$line);
 }
 
@@ -52,10 +57,9 @@ function validate($params) {
 	$slave = $params->getParam(3); $slave = $slave->scalarval();
 	$hashkey = $params->getParam(4); $hashkey = $hashkey->scalarval();
 	
-	if (!isset($prefs['known_hosts'][$key]) or $prefs['known_hosts'][$key]['ip'] != $tikilib->get_ip_address()) {
+	if (!isset($prefs['known_hosts'][$key]) or $prefs['known_hosts'][$key]['ip'] != $_SERVER['REMOTE_ADDR']) {
 		$msg = tra('Invalid server key');
-		if (!empty($prefs['intertiki_errfile']))
-			logit($prefs['intertiki_errfile'],$msg,$key,INTERTIKI_BADKEY,$prefs['known_hosts'][$key]['name']);
+		if ($prefs['intertiki_errfile']) logit($prefs['intertiki_errfile'],$msg,$key,INTERTIKI_BADKEY,$prefs['known_hosts'][$key]['name']);
 		$logslib->add_log('intertiki',$msg.' from '.$prefs['known_hosts'][$key]['name'],$login);
 		return new XML_RPC_Response(0, 101, $msg);
 	}
@@ -98,7 +102,7 @@ function set_user_info($params) {
 		return new XML_RPC_Response(new XML_RPC_Value(1, 'boolean'));
 	}
 	$key = $params->getParam(0); $key = $key->scalarval(); 
-	if (!isset($prefs['known_hosts'][$key]) or $prefs['known_hosts'][$key]['ip'] != $tikilib->get_ip_address()) {
+	if (!isset($prefs['known_hosts'][$key]) or $prefs['known_hosts'][$key]['ip'] != $_SERVER['REMOTE_ADDR']) {
 		$msg = tra('Invalid server key');
 		if ($prefs['intertiki_errfile']) logit($prefs['intertiki_errfile'],$msg,$key,INTERTIKI_BADKEY,$prefs['known_hosts'][$key]['name']);
 		$logslib->add_log('intertiki',$msg.' from '.$prefs['known_hosts'][$key]['name'],$login);
@@ -113,7 +117,7 @@ function logout($params) {
 	global $userlib,$logslib,$prefs;
 	$key = $params->getParam(0); $key = $key->scalarval();
 	$login = $params->getParam(1); $login = $login->scalarval();
-	if (!isset($prefs['known_hosts'][$key]) or $prefs['known_hosts'][$key]['ip'] != $tikilib->get_ip_address()) {
+	if (!isset($prefs['known_hosts'][$key]) or $prefs['known_hosts'][$key]['ip'] != $_SERVER['REMOTE_ADDR']) {
 		$msg = tra('Invalid server key');
 		if ($prefs['intertiki_errfile']) logit($prefs['intertiki_errfile'],$msg,$key,INTERTIKI_BADKEY,$prefs['known_hosts'][$key]['name']);
 		$logslib->add_log('intertiki',$msg.' from '.$prefs['known_hosts'][$key]['name'],$login);
@@ -130,7 +134,7 @@ function cookie_check($params) {
 	global $userlib,$prefs;
 	$key = $params->getParam(0); $key = $key->scalarval();
 	$hash = $params->getParam(1); $hash = $hash->scalarval();
-	if (!isset($prefs['known_hosts'][$key]) or $prefs['known_hosts'][$key]['ip'] != $tikilib->get_ip_address()) {
+	if (!isset($prefs['known_hosts'][$key]) or $prefs['known_hosts'][$key]['ip'] != $_SERVER['REMOTE_ADDR']) {
 		$msg = tra('Invalid server key');
 		if ($prefs['intertiki_errfile']) logit($prefs['intertiki_errfile'],$msg,$key,INTERTIKI_BADKEY,$prefs['known_hosts'][$key]['name']);
 		$logslib->add_log('intertiki',$msg.' from '.$prefs['known_hosts'][$key]['name'],$login);
@@ -153,7 +157,7 @@ function get_version($params) {
 function get_user_info($params) {
 	global $prefs, $userlib;
 	$key = $params->getParam(0); $key = $key->scalarval(); 
-	if (!isset($prefs['known_hosts'][$key]) or $prefs['known_hosts'][$key]['ip'] != $tikilib->get_ip_address()) {
+	if (!isset($prefs['known_hosts'][$key]) or $prefs['known_hosts'][$key]['ip'] != $_SERVER['REMOTE_ADDR']) {
 		$msg = tra('Invalid server key');
 		if ($prefs['intertiki_errfile']) logit($prefs['intertiki_errfile'],$msg,$key,INTERTIKI_BADKEY,$prefs['known_hosts'][$key]['name']);
 		$logslib->add_log('intertiki',$msg.' from '.$prefs['known_hosts'][$key]['name'],$login);

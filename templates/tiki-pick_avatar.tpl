@@ -1,28 +1,20 @@
-{* $Id$ *}
-
-{title}
-  {if $user ne $userwatch}
-    {tr}Avatar:{/tr} {$userwatch}
-  {else}
-    {tr}Pick your avatar{/tr}
-  {/if}
-{/title}
-
+<h1><a class="pagetitle" href="tiki-pick_avatar.php{if $user ne $userwatch}?view_user={$userwatch}{/if}">{if $user ne $userwatch}{tr}Avatar:{/tr} {$userwatch}{else}{tr}Pick your avatar{/tr}{/if}</a></h1>
 
 {if $user eq $userwatch}
-	{include file=tiki-mytiki_bar.tpl}
+{include file=tiki-mytiki_bar.tpl}
 {else}
-	<div class="navbar">
-		{assign var=thisuserwatch value=$userwatch|escape}
-		{button href="tiki-user_preferences.php?view_user=$thisuserwatch" _text="{tr}User Preferences{/tr}"}
-	</div>
+<div class="navbar"><span class="button2"><a href="tiki-user_preferences.php?view_user={$userwatch|escape}" class="linkbut">{tr}User Preferences{/tr}</a></span></div>
 {/if}
 
 <h2>{if $user eq $userwatch}{tr}Your current avatar{/tr}{else}{tr}Avatar{/tr}{/if}</h2>
-{if $avatar}{$avatar}{else}{tr}no avatar{/tr}{/if}
+<table class="normal">
+<tr>
+  <td class="formcolor">{if $avatar}{$avatar}{else}{tr}no avatar{/tr}{/if}</td>
 {if sizeof($avatars) eq 0 and $avatar}
-<a class="link" href="tiki-pick_avatar.php?reset=y" title="{tr}reset{/tr}">{icon _id='cross' alt='{tr}reset{/tr}'}</a>
+ <td class="formcolor"><a class="link" href="tiki-pick_avatar.php?reset=y" title="{tr}reset{/tr}">{icon _id='cross' alt='{tr}reset{/tr}'}</a></td>
 {/if}
+</tr>
+</table>
 
 {if sizeof($avatars) > 0}
 
@@ -94,15 +86,14 @@ function subavt() {
 
 {/if}
 
-<div class="normal">
+<h2>{tr}Upload your own avatar{/tr}</h2>
 <form enctype="multipart/form-data" action="tiki-pick_avatar.php" method="post">
-<fieldset>
-<legend><strong>{tr}Upload your own avatar{/tr}</strong></legend>
 {if $user ne $userwatch}<input type="hidden" name="view_user" value="{$userwatch|escape}" />{/if}
-<label for="userfile1">{tr}File (only .gif, .jpg and .png images approximately 45px × 45px){/tr}:</label>
+<table class="normal">
+<tr><td class="formcolor">{tr}File{/tr} {tr}(Only .gif images, and aproximately 45px x 45px){/tr}:</td><td class="formcolor">
 <input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
-<input id="userfile1" name="userfile1" type="file" />
-<input class="submitbutton" type="submit" name="upload" value="{tr}Upload{/tr}" />
-</fieldset>
+<input name="userfile1" type="file" />
+</td></tr>
+<tr><td class="formcolor">&nbsp;</td><td class="formcolor"><input type="submit" name="upload" value="{tr}Upload{/tr}" /></td></tr>
+</table>
 </form>
-</div>

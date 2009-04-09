@@ -2,55 +2,8 @@
 // $Id: /cvsroot/tikiwiki/tiki/lib/wiki-plugins/wikiplugin_code.php,v 1.22.2.6 2007-11-25 18:21:21 nyloth Exp $
 // Displays a snippet of code
 function wikiplugin_code_help() {
-	$help = tra("Displays a snippet of code").":<br />~np~{CODE(ln=>1,colors=>php|html|sql|javascript|css|java|c|doxygen|delphi|...,caption=>caption text,wrap=>1,wiki=>1,rtl=>1)}".tra("code")."{CODE}~/np~ - ''".tra("note: colors and ln are exclusive")."''";
+	$help = tra("Displays a snippet of code").":<br />~np~{CODE(ln=>1,colors=>php|html|sql|javascript|css|java|c|doxygen|delphi|...,caption=>caption text,wrap=>1,wiki=>1,rtl=>1,ishtml=>1)}".tra("code")."{CODE}~/np~ - ''".tra("note: colors and ln are exclusive. And ishtml allows to escape the special characters, so that html code is shown as is")."''";
 	return tra($help);
-}
-
-function wikiplugin_code_info() {
-	return array(
-		'name' => tra('Code'),
-		'documentation' => 'PluginCode',
-		'description' => tra('Displays a snippet of code'),
-		'prefs' => array('wikiplugin_code'),
-		'body' => tra('code'),
-		'params' => array(
-			'caption' => array(
-				'required' => false,
-				'name' => tra('Caption'),
-				'description' => tra('Code snippet label.'),
-			),
-			'wrap' => array(
-				'required' => false,
-				'name' => tra('Word Wrap'),
-				'description' => tra('0|1, Enable word wrapping on the code to avoid breaking the layout.'),
-			),
-			'colors' => array(
-				'required' => false,
-				'name' => tra('Colors'),
-				'description' => tra('Syntax highlighting to use. May not be used with line numbers. Available: php, html, sql, javascript, css, java, c, doxygen, delphi, ...'),
-			),
-			'ln' => array(
-				'required' => false,
-				'name' => tra('Line numbers'),
-				'description' => tra('0|1, may not be used with colors.'),
-			),
-			'wiki' => array(
-				'required' => false,
-				'name' => tra('Wiki syntax'),
-				'description' => tra('0|1, parse wiki syntax within the code snippet.'),
-			),
-			'rtl' => array(
-				'required' => false,
-				'name' => tra('Right to left'),
-				'description' => tra('0|1, switch the text display from left to right to right to left'),
-			),
-			'ishtml' => array(
-				'required' => false,
-				'name' => tra('Content is HTML'),
-				'description' => tra('0|1, display the content as is instead of escaping HTML special chars'),
-			),
-		),
-	);
 }
 
 function wikiplugin_code($data, $params) {
@@ -58,9 +11,8 @@ function wikiplugin_code($data, $params) {
 		extract($params, EXTR_SKIP);
 	}
 	$code = trim($data);
-
 	$parse_wiki = ( isset($wiki) && $wiki == 1 );
-	$escape_html = 0;
+	$escape_html = ( ! isset($ishtml) || $ishtml != 1 );
 
 	// Detect if GeSHI (Generic Syntax Highlighter) is available
 	$geshi_paths = array(
@@ -131,7 +83,6 @@ function wikiplugin_code($data, $params) {
 			$out = $code;
 		}
 
-		if ( $escape_html ) $out = htmlentities($out,ENT_COMPAT,"utf-8");
 	}
 
 	if ( isset($wrap) && $wrap == 1 ) {
@@ -145,6 +96,8 @@ function wikiplugin_code($data, $params) {
 		// If there is no wrapping, display a scrollbar (only if needed) to avoid truncating the text
 		$pre_style = 'overflow:auto;';
 	}
+
+
 
 	$out = '<pre class="codelisting" dir="'.( (isset($rtl) && $rtl == 1) ? 'rtl' : 'ltr').'" style="'.$pre_style.'">'
 		.(( $parse_wiki ) ? '' : '~np~')

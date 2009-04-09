@@ -5,7 +5,6 @@
 // Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-$section = 'admin';
 require_once ('tiki-setup.php');
 
 include_once ('lib/menubuilder/menulib.php');
@@ -113,12 +112,8 @@ if (!empty($_REQUEST['edit_assign'])) {
 if (!empty($_REQUEST['unassign'])) {
 	check_ticket('admin-modules');
 	$info = $modlib->get_assigned_module($_REQUEST['unassign']);
-	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
-		$modlib->unassign_module($_REQUEST['unassign']);
-		$logslib->add_log('adminmodules','unassigned module '.$info['name']);
-	} else {
-		key_get($area, tra('Unassign module:').' '.$info['name']);
-	}
+	$modlib->unassign_module($_REQUEST['unassign']);
+	$logslib->add_log('adminmodules','unassigned module '.$info['name']);
 }
 
 if (!empty($_REQUEST['modup'])) {
@@ -175,8 +170,6 @@ if (isset($_REQUEST["preview"])) {
 	$smarty->assign('preview', 'y');
 
 	$smarty->assign_by_ref('assign_name', $_REQUEST["assign_name"]);
-	TikiLib::parse_str($_REQUEST["assign_params"], $module_params);
-	$smarty->assign_by_ref('module_params', $module_params);
 
 	if ($tikilib->is_user_module($_REQUEST["assign_name"])) {
 		$info = $tikilib->get_user_module($_REQUEST["assign_name"]);
@@ -195,6 +188,8 @@ if (isset($_REQUEST["preview"])) {
 
 		if (file_exists($phpfile)) {
 			$module_rows = $_REQUEST["assign_rows"];
+
+			parse_str($_REQUEST["assign_params"], $module_params);
 			include ($phpfile);
 		}
 

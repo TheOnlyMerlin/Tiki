@@ -1,6 +1,20 @@
 {* $Id$ *}
 
-{title help="MyTiki"}{tr}My Tiki{/tr}{/title}
+<h1>
+  <a class="pagetitle" href="tiki-my_tiki.php">{tr}My Tiki{/tr}</a>
+
+  {if $prefs.feature_help eq 'y'}
+    <a href="{$prefs.helpurl}MyTiki" target="tikihelp" class="tikihelp" title="{tr}My Tiki{/tr}">
+      {icon _id='help'}
+    </a>
+  {/if}
+
+  {if $prefs.feature_view_tpl eq 'y'}
+    <a href="tiki-edit_templates.php?template=tiki-my_tiki.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}my tiki tpl{/tr}">
+      {icon _id='shape_square_edit' alt='{tr}Edit Template{/tr}'}
+    </a>
+  {/if}
+</h1>
 
 {if $prefs.feature_mootools eq 'y' and $prefs.feature_ajax eq 'y'}
   {include file=tiki-mytiki_mootabs.tpl}
@@ -21,15 +35,15 @@
           
           <table class="normal">
             <tr>
-              <th>
-                <a href="tiki-my_tiki.php?sort_mode={if $sort_mode eq 'pageName_desc'}pageName_asc{else}pageName_desc{/if}">{tr}Page{/tr}</a>
+              <th class="heading">
+                <a class="tableheading" href="tiki-my_tiki.php?sort_mode={if $sort_mode eq 'pageName_desc'}pageName_asc{else}pageName_desc{/if}">{tr}Page{/tr}</a>
               </th>
-              <th>{tr}Creator{/tr}</th>
-              <th>{tr}Last editor{/tr}</th>
-              <th>
-                <a href="tiki-my_tiki.php?sort_mode={if $sort_mode eq 'date_desc'}date_asc{else}date_desc{/if}">{tr}Last modification{/tr}</a>
+              <th class="heading">{tr}Creator{/tr}</th>
+              <th class="heading">{tr}Last editor{/tr}</th>
+              <th class="heading">
+                <a class="tableheading" href="tiki-my_tiki.php?sort_mode={if $sort_mode eq 'date_desc'}date_asc{else}date_desc{/if}">{tr}Last modification{/tr}</a>
               </th>
-              <th style="width:50px">{tr}Actions{/tr}</th>
+              <th class="heading" width="50px">{tr}Actions{/tr}</th>
             </tr>
             {cycle values="even,odd" print=false}
             {section name=ix loop=$user_pages}
@@ -68,14 +82,14 @@
         <div class="cbox-data">
           <table class="normal">
             <tr>
-              <th>{tr}Gallery{/tr}</th>
-              <th style="width:50px">{tr}Actions{/tr}</th>
+              <th class="heading">{tr}Gallery{/tr}</th>
+              <th class="heading" width="50px">{tr}Actions{/tr}</th>
             </tr>
             {cycle values="even,odd" print=false}
             {section name=ix loop=$user_galleries}
               <tr>
                 <td class="{cycle advance=false}">
-                  <a class="link" href="{$user_galleries[ix].galleryId|sefurl:gallery}">{$user_galleries[ix].name}</a>
+                  <a class="link" href="tiki-browse_gallery.php?galleryId={$user_galleries[ix].galleryId}">{$user_galleries[ix].name}</a>
                 </td>
                 <td class="{cycle}" style="text-align:center;" width="50px">
                   <a class="link" href="tiki-galleries.php?editgal={$user_galleries[ix].galleryId}">
@@ -90,48 +104,17 @@
     </div>
   {/if}
 
-  {if $prefs.feature_articles eq 'y' and $mytiki_articles eq 'y'}
-    <div id="content2" class="content">
-      <div class="cbox">
-        <div class="cbox-title">
-          {if $userwatch eq $user}{tr}My Articles{/tr}{else}{tr}User Articles{/tr}{/if}
-        </div>
-        <div class="cbox-data">
-          <table class="normal">
-            <tr>
-              <th>{tr}Article{/tr}</th>
-              <th style="width:50px">{tr}Actions{/tr}</th>
-            </tr>
-            {cycle values="even,odd" print=false}
-            {section name=ix loop=$user_articles}
-              <tr>
-                <td class="{cycle advance=false}">
-                  <a class="link" href="{$user_articles[ix].articleId|sefurl:article}">{$user_articles[ix].title}</a>
-                </td>
-                <td class="{cycle}" style="text-align:center;" width="50px">
-                  <a class="link" href="tiki-edit_article.php?articleId={$user_articles[ix].articleId}">
-                    {icon _id='page_edit'}
-                  </a>
-                </td>
-              </tr>
-            {/section}
-          </table>
-        </div>
-      </div>
-    </div>
-  {/if}
-
-  {if $prefs.feature_trackers eq 'y' and $mytiki_user_items eq 'y'}
+  {if $prefs.feature_trackers eq 'y' and $mytiki_items eq 'y'}
     <div id="content3" class="content">
       <div class="cbox">
         <div class="cbox-title">
-          {if $userwatch eq $user}{tr}My User Items{/tr}{else}{tr}User Items{/tr}{/if}
+          {if $userwatch eq $user}{tr}My items{/tr}{else}{tr}Assigned items{/tr}{/if}
         </div>
         <div class="cbox-data">
           <table class="normal">
             <tr>
-              <th>{tr}Item{/tr}</th>
-              <th>{tr}Tracker{/tr}</th>
+              <th class="heading">{tr}Item{/tr}</th>
+              <th class="heading">{tr}Tracker{/tr}</th>
             </tr>
             {cycle values="even,odd" print=false}
             {section name=ix loop=$user_items}
@@ -157,9 +140,9 @@
         <div class="cbox-data">
           <table class="normal">
             <tr>
-              <th>{tr}Subject{/tr}</th>
-              <th>{tr}From{/tr}</th>
-              <th>{tr}Date{/tr}</th>
+              <th class="heading">{tr}Subject{/tr}</th>
+              <th class="heading">{tr}From{/tr}</th>
+              <th class="heading">{tr}Date{/tr}</th>
             </tr>
             {cycle values="even,odd" print=false}
             {section name=ix loop=$msgs}
@@ -190,7 +173,7 @@
         <div class="cbox-data">
           <table class="normal">
             <tr>
-              <th>{tr}Tasks{/tr}</th>
+              <th class="heading">{tr}Tasks{/tr}</th>
             </tr>
             {cycle values="even,odd" print=false}
             {section name=ix loop=$tasks}
@@ -215,8 +198,8 @@
         <div class="cbox-data">
           <table class="normal">
             <tr>
-              <th>{tr}Forum topics{/tr}</th>              
-              <th>{tr}Date of post{/tr}</th>              
+              <th class="heading">{tr}Forum topics{/tr}</th>              
+              <th class="heading">{tr}Date of post{/tr}</th>              
             </tr>
             {cycle values="even,odd" print=false}
             {section name=ix loop=$user_forum_topics}
@@ -244,8 +227,8 @@
         <div class="cbox-data">
           <table class="normal">
             <tr>
-              <th>{tr}Forum replies{/tr}</th>              
-              <th>{tr}Date of post{/tr}</th>              
+              <th class="heading">{tr}Forum replies{/tr}</th>              
+              <th class="heading">{tr}Date of post{/tr}</th>              
             </tr>
             {cycle values="even,odd" print=false}
             {section name=ix loop=$user_forum_replies}
@@ -273,14 +256,14 @@
         <div class="cbox-data">
           <table class="normal">
             <tr>
-              <th>{tr}Blogs{/tr}</th>
-              <th style="width:50px">{tr}Actions{/tr}</th>
+              <th class="heading">{tr}Blogs{/tr}</th>
+              <th class="heading" width="50px">{tr}Actions{/tr}</th>
             </tr>
             {cycle values="even,odd" print=false}
             {section name=ix loop=$user_blogs}
               <tr>
                 <td class="{cycle advance=false}">
-                  <a class="link" title="{tr}View{/tr}" href="{$user_blogs[ix].blogId|sefurl:blog}">{$user_blogs[ix].title}</a>
+                  <a class="link" title="{tr}View{/tr}" href="tiki-view_blog.php?blogId={$user_blogs[ix].blogId}">{$user_blogs[ix].title}</a>
                 </td>
                 <td class="{cycle}" style="text-align:center;" width="50px">
                   <a class="link" href="tiki-edit_blog.php?blogId={$user_blogs[ix].blogId}">

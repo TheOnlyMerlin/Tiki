@@ -1,11 +1,7 @@
-{title}{tr}Tag translation{/tr}{if isset($data)}: {$data.pageName}{/if}{/title}
-
+<h1>{tr}Tag translation{/tr}{if isset($data)}: {$data.pageName}{/if}</h1>
 {if isset($data)}
-	<div class="navbar">
-		{button  href="tiki-index.php?page=$objId" _text="{tr}View page{/tr}"}
-	</div>
+<a href="tiki-index.php?page={$objId}" class="linkbut">View page</a>
 {/if}
-
 	<p>{tr}Note that tags that were created on pages with no language set will remain
 	universal (i.e. is the same tag in all languages) until a language has been set for the tag.{/tr}
 	{tr}Until then, they cannot be translated.{/tr}</p>
@@ -30,9 +26,7 @@
 	{/literal}
 	//--><!]]>
 	</script>
-		
-{button _onclick="javascript:show_cleartra_checkboxes()" id="scblink" _text="{tr}Show checkboxes to clear language information on tags{/tr}"}
-
+	<a class="linkbut" href="javascript:show_cleartra_checkboxes()" id="scblink">{tr}Show checkboxes to clear language information on tags{/tr}</a>
 <table id="tagtranslationtable">
 	<thead>
 		<tr>
@@ -84,7 +78,7 @@
 		</tr>
 	{/foreach}
 		<tr>
-			<td colspan="{$languageList|@count - (in_array('',$languageList)?1:0)}">
+			<td class="button" colspan="{$languageList|@count - (in_array('',$languageList)?1:0)}">
 				<input type="submit" name="save" value="{tr}Save{/tr}"/>
 			</td>
 		</tr>

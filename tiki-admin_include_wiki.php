@@ -120,10 +120,6 @@ if (isset($_REQUEST['wikilistprefs'])) {
 
 if (isset($_REQUEST["wikifeatures"])) {
 	check_ticket('admin-inc-wiki');
-	if ((isset($_REQUEST['feature_backlinks']) && $_REQUEST['feature_backlinks'] == 'on' && $prefs['feature_backlinks'] != 'y')
-		|| (empty($_REQUEST['feature_backlinks']) && $prefs['feature_backlinks'] == 'y')) {
-		$backlinksChange = true;
-	}
 	$pref_toggles = array(
 	'feature_lastChanges',
 	'feature_wiki_comments',
@@ -154,22 +150,22 @@ if (isset($_REQUEST["wikifeatures"])) {
 	'feature_wiki_multiprint',
 	// 'feature_wiki_pdf',
 	'feature_listPages',
-	'feature_listorphanPages',	
 	'feature_history',
 	'feature_source',
 	'feature_sandbox',
 	'feature_wiki_print',
 	'feature_wiki_replace',
+	'feature_antibot',
 	'feature_backlinks',
 	'feature_likePages',
 	'wiki_uses_slides',
-	'feature_wiki_structure',
 	'feature_wiki_open_as_structure',
 	'feature_wiki_make_structure',
 	'feature_wiki_categorize_structure',
 	'feature_create_webhelp',
-	'wiki_edit_plugin',
+	'feature_wiki_ext_icon',
 	'feature_wiki_userpage',
+	'feature_wiki_protect_email',
 	'feature_wiki_1like_redirection',
 	'feature_wiki_show_hide_before',
 	'feature_wiki_allowhtml',
@@ -178,7 +174,6 @@ if (isset($_REQUEST["wikifeatures"])) {
 	'wiki_edit_section',
 	'feature_actionlog_bytes',
 	'wiki_authors_style_by_page',
-	'wiki_edit_minor',
 	);
 	foreach ($pref_toggles as $toggle) {
 		simple_set_toggle($toggle);
@@ -192,17 +187,10 @@ if (isset($_REQUEST["wikifeatures"])) {
 	'wiki_authors_style',
 	'feature_wiki_mandatory_category',
 	'wiki_page_navigation_bar',
-	'wiki_actions_bar',
-	'wiki_topline_position',
-	'wiki_edit_section_level',
-	'page_bar_position'
+	'wiki_actions_bar'
 	);
 	foreach ($pref_values as $value) {
 		simple_set_value($value);
-	}
-	if (isset($backlinksChange) && $backlinksChange) {
-		global $wikilib; include_once('lib/wiki/wikilib.php');
-		$wikilib->refresh_backlinks();
 	}
 }
 

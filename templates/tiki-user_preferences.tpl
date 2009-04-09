@@ -1,17 +1,30 @@
 {* $Id$ *}
 
-{if $userwatch ne $user}
-  {title help="User+Preferences"}{tr}User Preferences:{/tr} {$userwatch}{/title}
-{else}
-  {title help="User+Preferences"}{tr}User Preferences{/tr}{/title}
-{/if}
+<h1>
+  {if $userwatch ne $user}
+    <a class="pagetitle" href="tiki-user_preferences.php?view_user={$userwatch}">{tr}User Preferences{/tr}: {$userwatch}</a>
+  {else}
+    <a class="pagetitle" href="tiki-user_preferences.php">{tr}User Preferences{/tr}</a>
+  {/if}
 
-{if $tiki_p_admin_users eq 'y'}
-	<div class="navbar">
-		{assign var=thisuser value=$userinfo.login}
-		{button href="tiki-assignuser.php?assign_user=$thisuser" _text="{tr}Assign Group{/tr}"}
-	</div>
-{/if}
+  {if $prefs.feature_help eq 'y'}
+    <a href="{$prefs.helpurl}User+Preferences" target="tikihelp" class="tikihelp" title="{tr}User Preferences{/tr}">
+      {icon _id='help'}
+    </a>
+  {/if}
+
+  {if $prefs.feature_view_tpl eq 'y'}
+    <a href="tiki-edit_templates.php?template=tiki-user_preferences.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}UserPreferences tpl{/tr}">
+      {icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}
+    </a>
+  {/if}
+
+  {if $tiki_p_admin_users eq 'y'}
+    <a class="link" href="tiki-assignuser.php?assign_user={$userinfo.login}" title="{tr}Assign Group{/tr}">
+      {icon _id='key' alt="{tr}Assign Group{/tr}"}
+    </a>
+  {/if}
+</h1>
 
 {if $userwatch eq $user or $userwatch eq ""}
   {if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
@@ -30,6 +43,7 @@
 <h2>{tr}Personal Information{/tr}</h2>
 <form action="tiki-user_preferences.php" method="post">
   <input type="hidden" name="view_user" value="{$userwatch|escape}" />
+  <input type="hidden" name="user" value="{$userwatch|escape}" />
 
   {cycle values="odd,even" print=false}
   <table class="normal">
@@ -54,28 +68,28 @@
       </td>
     </tr>
 
-	{if $prefs.feature_community_gender eq 'y'}
+    {* this should be optional
       <tr><td class="{cycle advance=false}">{tr}Gender{/tr}:</td>
         <td class="{cycle}">
-          <input type="radio" name="gender" value="Male" {if $user_prefs.gender eq 'Male'}checked="checked"{/if}/> {tr}Male{/tr}
-          <input type="radio" name="gender" value="Female" {if $user_prefs.gender eq 'Female'}checked="checked"{/if}/> {tr}Female{/tr}
-          <input type="radio" name="gender" value="Hidden" {if $user_prefs.gender ne 'Male' and $user_prefs.gender ne 'Female'}checked="checked"{/if}/> {tr}Hidden{/tr}
+          <input type="radio" name="gender" value="Male" {if $gender eq 'Male'}checked="checked"{/if}/> {tr}Male{/tr}
+          <input type="radio" name="gender" value="Female" {if $gender eq 'Female'}checked="checked"{/if}/> {tr}Female{/tr}
+          <input type="radio" name="gender" value="Hidden" {if $gender ne 'Male' and $gender ne 'Female'}checked="checked"{/if}/> {tr}Hidden{/tr}
         </td>
       </tr>
-	{/if}
+    *}
 
     <tr>
       <td class="{cycle advance=false}">{tr}Country{/tr}:</td>
       <td class="{cycle}">
         {if isset($user_prefs.country) && $user_prefs.country != "None" && $user_prefs.country != "Other"}
-          {$userinfo.login|countryflag}
+          <img alt="{tr}{$user_prefs.country}{/tr}" title="{tr}{$user_prefs.country}{/tr}" src="img/flags/{$user_prefs.country}.gif" />
         {/if}
         <select name="country">
           <option value="Other" {if $user_prefs.country eq "Other"}selected="selected"{/if}>{tr}Other{/tr}</option>
           {sortlinks}
             {section name=ix loop=$flags}
               {if $flags[ix] ne "Other"}
-                <option value="{$flags[ix]|escape}" {if $user_prefs.country eq $flags[ix]}selected="selected"{/if}>{tr}{$flags[ix]|stringfix}{/tr}</option>
+                <option value="{$flags[ix]|escape}" {if $user_prefs.country eq $flags[ix]}selected="selected"{/if}>{tr}{$flags[ix]}{/tr}</option>
               {/if}
             {/section}
           {/sortlinks}
@@ -150,7 +164,7 @@
     {/section}
 
     <tr>
-      <th colspan="2">{tr}Preferences{/tr}</th>
+      <td class="heading" colspan="2">{tr}Preferences{/tr}</td>
     </tr>
   
     <tr>
@@ -183,7 +197,8 @@
         </select>
       </td>
     </tr>
-    {if $prefs.change_theme eq 'y' && empty($group_style)}
+    
+    {if $prefs.change_theme eq 'y'}
       <tr>
         <td class="{cycle advance=false}">{tr}Theme{/tr}:</td>
         <td class="{cycle}">
@@ -267,11 +282,11 @@
       <td class="{cycle}">
         <select name="display_timezone" id="display_timezone">
 	  <option value="" style="font-style:italic;">{tr}Detect user timezone if browser allows, otherwise site default{/tr}</option>
-	  <option value="Site" style="font-style:italic;border-bottom:1px dashed #666;"{if isset($user_prefs.display_timezone) and $user_prefs.display_timezone eq 'Site'} selected="selected"{/if}>{tr}Site default{/tr}</option>
+	  <option value="Site" style="font-style:italic;border-bottom:1px dashed #666;"{if $user_prefs.display_timezone eq 'Site'} selected="selected"{/if}>{tr}Site default{/tr}</option>
           {foreach key=tz item=tzinfo from=$timezones}
             {math equation="floor(x / (3600000))" x=$tzinfo.offset assign=offset}
             {math equation="(x - (y*3600000)) / 60000" y=$offset x=$tzinfo.offset assign=offset_min format="%02d"}
-            <option value="{$tz|escape}"{if isset($user_prefs.display_timezone) and $user_prefs.display_timezone eq $tz} selected="selected"{/if}>{$tz|escape} (UTC{if $offset >= 0}+{/if}{$offset}h{if $offset_min gt 0}{$offset_min}{/if})</option>
+            <option value="{$tz|escape}"{if $user_prefs.display_timezone eq $tz} selected="selected"{/if}>{$tz|escape} (UTC{if $offset >= 0}+{/if}{$offset}h{if $offset_min gt 0}{$offset_min}{/if})</option>
           {/foreach}
         </select>
       </td>
@@ -308,7 +323,7 @@
   
     {if $prefs.feature_community_mouseover eq 'y'}
       <tr>
-        <td class="{cycle advance=false}">{tr}Displays users' info tooltip on mouseover for every user who allows his information to be public{/tr}</td>
+        <td class="{cycle advance=false}">{tr}Show user's info on mouseover{/tr}:</td>
         <td class="{cycle}">
           <input type="checkbox" name="show_mouseover_user_info" {if $show_mouseover_user_info eq 'y'}checked="checked"{/if} />
         </td>
@@ -317,7 +332,7 @@
 
     {if $prefs.feature_messages eq 'y' and $tiki_p_messages eq 'y'}
       <tr>
-        <th colspan="2">{tr}User Messages{/tr}</th>
+        <td class="heading" colspan="2">{tr}User Messages{/tr}</td>
       </tr>
     
       <tr>
@@ -384,7 +399,7 @@
 
     {if $prefs.feature_tasks eq 'y' and $tiki_p_tasks eq 'y'}
       <tr>
-        <th colspan="2">{tr}User Tasks{/tr}</th>
+        <td class="heading" colspan="2">{tr}User Tasks{/tr}</td>
       </tr>
     
       <tr>
@@ -404,7 +419,7 @@
     {/if}
 
     <tr>
-      <th colspan="2">{tr}My Tiki{/tr}</th>
+      <td class="heading" colspan="2">{tr}My Tiki{/tr}</td>
     </tr>
 
     {if $prefs.feature_wiki eq 'y'}
@@ -469,7 +484,7 @@
     
     {if $prefs.feature_trackers eq 'y'}
       <tr>
-        <td class="{cycle advance=false}">{tr}My user items{/tr}</td>
+        <td class="{cycle advance=false}">{tr}My items{/tr}</td>
         <td class="{cycle}">
           <input type="checkbox" name="mytiki_items" {if $user_prefs.mytiki_items eq 'y'}checked="checked"{/if} />
         </td>
@@ -487,15 +502,6 @@
       {/if}
     {/if}
 
-    {if $prefs.feature_articles eq 'y'}
-      <tr>
-        <td class="{cycle advance=false}">{tr}My Articles{/tr}</td>
-        <td class="{cycle}">
-          <input type="checkbox" name="mytiki_articles" {if $user_prefs.mytiki_articles eq 'y'}checked="checked"{/if} />
-        </td>
-      </tr>
-    {/if}
-
     {if $prefs.feature_userlevels eq 'y'}
       <tr>
         <td class="{cycle advance=false}">{tr}My level{/tr}</td>
@@ -510,7 +516,7 @@
     {/if}
 
     <tr>
-      <td colspan="2" class="input_submit_container"><input type="submit" name="new_prefs" value="{tr}Change preferences{/tr}" /></td>
+      <td colspan="2" class="button"><input type="submit" name="new_prefs" value="{tr}Change preferences{/tr}" /></td>
     </tr>
   </table>
 </form>
@@ -560,7 +566,7 @@
       {/if}
     
       <tr>
-        <td colspan="2" class="input_submit_container"><input type="submit" name="chgadmin" value="{tr}Change administrative info{/tr}" /></td>
+        <td colspan="2" class="button"><input type="submit" name="chgadmin" value="{tr}Change administrative info{/tr}" /></td>
       </tr>
     </table>
   </form>

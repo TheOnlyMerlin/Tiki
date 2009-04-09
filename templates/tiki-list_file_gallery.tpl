@@ -2,50 +2,54 @@
 
 {popup_init src="lib/overlib.js"}
 
-{title help="File+Galleries" admpage="fgal"}
-  {strip}
-    {if $edit_mode eq 'y'}
-      {if $galleryId eq 0}
-        {tr}Create a File Gallery{/tr}
-      {else}
-        {tr}Edit Gallery{/tr}: {$name}
-      {/if}
-    {else}
-      {if $galleryId eq 0}
-        {tr}File Galleries{/tr}
-      {else}
-        {tr}Gallery{/tr}: {$name}
-      {/if}
-    {/if}
-  {/strip}
-{/title}
+<h1><a class="pagetitle" href="tiki-list_file_gallery.php?galleryId={$galleryId}{if $filegals_manager eq 'y'}&amp;filegals_manager=y{/if}">{strip}
+{if $edit_mode eq 'y'}
+  {if $galleryId eq 0}
+  {tr}Create a file gallery{/tr}
+  {else}
+  {tr}Edit Gallery{/tr}: {$name}
+  {/if}
+{else}
+{if $galleryId eq 0}{tr}File Galleries{/tr}{else}{tr}Gallery{/tr}: {$name}{/if}
+{/if}
+{/strip}</a>
 
-{if $edit_mode neq 'y' and $gal_info.description neq ''}
-  <div class="description">
-    {$gal_info.description|escape|nl2br}
-  </div>
+{if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}File+Galleries" target="tikihelp" class="tikihelp" title="{tr}File Galleries{/tr}">{icon _id='help'}</a>
+{/if}
+{if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-list_file_gallery.tpl{if $filegals_manager eq 'y'}?filegals_manager=y{/if}" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}File Galleries tpl{/tr}">
+{icon _id='shape_square_edit' alt='{tr}Edit template{/tr}'}</a>
+{/if}
+{if $tiki_p_admin eq 'y' and $filegals_manager ne 'y'}
+<a href="tiki-admin.php?page=fgal">{icon _id='wrench' alt="{tr}Admin Feature{/tr}"}</a>
+{/if}
+</h1>
+
+
+{if $edit_mode neq 'y' and $description neq ''}
+<div class="simplebox">
+{$description|escape}
+</div>
 {/if}
 
 <div class="navbar">
 {if $galleryId gt 0}
 
-  {if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
-	<a href="tiki-object_watches.php?objectId={$galleryId|escape:"url"}&amp;watch_event=file_gallery_changed&amp;objectType=File+Gallery&amp;objectName={$gal_info.name|escape:"url"}&amp;objectHref={'tiki-list_file_gallery.php?galleryId='|cat:$galleryId|escape:"url"}" class="icon">{icon _id='eye_group' alt='{tr}Group Monitor{/tr}' align='right' hspace="1"}</a>
-  {/if}
-
   {if $user and $prefs.feature_user_watches eq 'y'}
     {if $user_watching_file_gallery eq 'n'}
-      {self_link galleryName=$name watch_event='file_gallery_changed' watch_object=$galleryId watch_action='add'}{icon _id='eye' align='right' alt="{tr}Monitor this Gallery{/tr}" hspace="1"}{/self_link}
+      <a href="tiki-list_file_gallery.php?galleryId={$galleryId|escape:"url"}&amp;galleryName={$name|escape:"url"}&amp;watch_event=file_gallery_changed&amp;watch_object={$galleryId|escape:"url"}&amp;watch_action=add"{if $filegals_manager eq 'y'}&amp;filegals_manager=y{/if}>{icon _id='eye' align='right' alt="{tr}Monitor this Gallery{/tr}"}</a>
     {else}
-      {self_link galleryName=$name watch_event='file_gallery_changed' watch_object=$galleryId watch_action='remove'}{icon _id='no_eye' align='right' alt="{tr}Stop Monitoring this Gallery{/tr}" hspace="1"}{/self_link}
+      <a href="tiki-list_file_gallery.php?galleryId={$galleryId|escape:"url"}&amp;galleryName={$name|escape:"url"}&amp;watch_event=file_gallery_changed&amp;watch_object={$galleryId|escape:"url"}&amp;watch_action=remove{if $filegals_manager eq 'y'}&amp;filegals_manager=y{/if}">{icon _id='no_eye' align='right' alt="{tr}Stop Monitoring this Gallery{/tr}"}</a>
     {/if}
-  {/if} 
+  {/if}  
   {if $prefs.rss_file_gallery eq 'y'}
     {if $gal_info.type eq "podcast" or $gal_info.type eq "vidcast"}
       <a href="tiki-file_gallery_rss.php?galleryId={$galleryId}&amp;ver=PODCAST">
-      <img src='img/rss_podcast_80_15.png' alt="{tr}RSS feed{/tr}" title="{tr}RSS feed{/tr}"  align='right' /></a>
+      <img src='img/rss_podcast_80_15.png' border='0' alt="{tr}RSS feed{/tr}" title="{tr}RSS feed{/tr}"  align='right' /></a>
     {else}
-      <a href="tiki-file_gallery_rss.php?galleryId={$galleryId}">{icon _id='feed' alt="{tr}RSS feed{/tr}" title="{tr}RSS feed{/tr}" align='right'}</a>
+      <a href="tiki-file_gallery_rss.php?galleryId={$galleryId}">
+      {icon _id='feed' alt="{tr}RSS feed{/tr}" title="{tr}RSS feed{/tr}" align='right'}</a>
     {/if}
   {/if}
   {if $view eq 'browse'}
@@ -56,101 +60,62 @@
     {/if}
   {/if}
 
-  {if $tiki_p_list_file_galleries eq 'y' or (!isset($tiki_p_list_file_galleries) and $tiki_p_view_file_gallery eq 'y')}
-    {button _text="{tr}List Galleries{/tr}" href="?"}
-  {/if}
-
-  {if $tiki_p_create_file_galleries eq 'y' and $edit_mode ne 'y'}
-    {button _text="{tr}Create a File Gallery{/tr}" href="?edit_mode=1&amp;parentId=$galleryId"}
-  {/if}
+  {if $tiki_p_list_file_galleries eq 'y' or (!isset($tiki_p_list_file_galleries) and $tiki_p_view_file_gallery eq 'y')}<a href="tiki-list_file_gallery.php{if $filegals_manager eq 'y'}?filegals_manager=y{/if}" class="linkbut" title="{tr}List Galleries{/tr}">{tr}List Galleries{/tr}</a>{/if}
   
   {if $tiki_p_admin_file_galleries eq 'y' or $user eq $gal_info.user}
     {if $edit_mode eq 'y' or $dup_mode eq 'y'}
-      {button _text="{tr}Browse Gallery{/tr}" href="?galleryId=$galleryId"}
+      <a class="linkbut" href="tiki-list_file_gallery.php?galleryId={$galleryId}{if $filegals_manager eq 'y'}&amp;filegals_manager=y{/if}">{tr}Browse Gallery{/tr}</a>
     {else}
-      {button _text="{tr}Edit Gallery{/tr}" href="?edit_mode=1&amp;galleryId=$galleryId"}
-    {/if}
-  {/if}
-
-  {if $edit_mode neq 'y' and $dup_mode neq 'y'}
-    {if $view eq 'browse'}
-      {button _text="{tr}List Gallery{/tr}" href="?view=list&amp;galleryId=$galleryId"}
-    {else}
-      {button _text="{tr}Browse Images{/tr}" href="?view=browse&amp;galleryId=$galleryId" _ajax='n'} {* no AJAX to make shadowbox work in browse view *}
+      <a href="tiki-list_file_gallery.php?edit_mode=1&amp;galleryId={$galleryId}{if $filegals_manager eq 'y'}&amp;filegals_manager=y{/if}" class="linkbut" title="{tr}Edit Gallery{/tr}">{tr}Edit Gallery{/tr}</a>
+      {if $view eq 'browse'}
+        <a href="tiki-list_file_gallery.php?view=list&amp;galleryId={$galleryId}{if $filegals_manager eq 'y'}&amp;filegals_manager=y{/if}" class="linkbut" title="{tr}List Gallery{/tr}">{tr}List Gallery{/tr}</a>
+      {else}
+        <a href="tiki-list_file_gallery.php?view=browse&amp;galleryId={$galleryId}{if $filegals_manager eq 'y'}&amp;filegals_manager=y{/if}" class="linkbut" title="{tr}Browse Images{/tr}">{tr}Browse Images{/tr}</a>
+      {/if}
     {/if}
   {/if}
 
   {if $tiki_p_assign_perm_file_gallery eq 'y'}
-    {assign var=objectName value=$name|escape:"url"}
-    {button _text="{tr}Permissions{/tr}" href="tiki-objectpermissions.php?objectName=$objectName&amp;objectType=file+gallery&amp;permType=file+galleries&amp;objectId=$galleryId"}
-  {/if}
+		<a class="linkbut" href="tiki-objectpermissions.php?objectName={$name|escape:"url"}&amp;objectType=file+gallery&amp;permType=file+galleries&amp;objectId={$galleryId}{if $filegals_manager eq 'y'}&amp;filegals_manager=y{/if}">{tr}Permissions{/tr}</a>
+	{/if}
+
   
   {if $tiki_p_admin_file_galleries eq 'y' or $user eq $gal_info.user or $gal_info.public eq 'y'}
     {if $tiki_p_upload_files eq 'y'}
-      {button _text="{tr}Upload File{/tr}" href="tiki-upload_file.php?galleryId=$galleryId"}
+      <a href="tiki-upload_file.php?galleryId={$galleryId}{if $filegals_manager eq 'y'}&amp;filegals_manager=y{/if}" class="linkbut">{tr}Upload File{/tr}</a>
     {/if}
     {if $prefs.feature_file_galleries_batch eq "y" and $tiki_p_batch_upload_file_dir eq 'y'}
-      {button _text="{tr}Directory Batch{/tr}" href="tiki-batch_upload_files.php?galleryId=$galleryId"}
+      <a href="tiki-batch_upload_files.php?galleryId={$galleryId}{if $filegals_manager eq 'y'}&amp;filegals_manager=y{/if}" class="linkbut">{tr}Directory batch{/tr}</a>
     {/if}
   {/if}
 
 {else}
 
   {if $edit_mode eq 'y' or $dup_mode eq 'y'}
-    {button _text="{tr}List Galleries{/tr}" href='?'}
+    <a class="linkbut" href="tiki-list_file_gallery.php{if $filegals_manager eq 'y'}?filegals_manager=y{/if}">{tr}List Galleries{/tr}</a>
   {/if}
   {if $tiki_p_create_file_galleries eq 'y' and $edit_mode ne 'y'}
-    {button _text="{tr}Create a File Gallery{/tr}" href="?edit_mode=1&amp;parentId=-1&amp;galleryId=0"}
+    <a class="linkbut" href="tiki-list_file_gallery.php?edit_mode=1&amp;galleryId=0{if $filegals_manager eq 'y'}&amp;filegals_manager=y{/if}">{tr}Create New File Gallery{/tr}</a>
   {/if}
   {if $tiki_p_create_file_galleries eq 'y' and $dup_mode ne 'y'}
-    {button _text="{tr}Duplicate File Gallery{/tr}" href="?dup_mode=1" _auto_args='filegals_manager'}
-  {/if}
-  {if $tiki_p_upload_files eq 'y'}
-  	  {button _text="{tr}Upload File{/tr}" href="tiki-upload_file.php"}
+    <a class="linkbut" href="tiki-list_file_gallery.php?dup_mode=1{if $filegals_manager eq 'y'}&amp;filegals_manager=y{/if}">{tr}Duplicate File Gallery{/tr}</a>
   {/if}
 
 {/if}
 
 {if $edit_mode neq 'y'}
-  {button _text="{tr}SlideShow{/tr}" href="#" _onclick="javascript:window.open('tiki-list_file_gallery.php?galleryId=$galleryId&amp;slideshow','','menubar=no,width=600,height=500,resizable=yes');"}
+<a href="#" onclick="javascript:window.open('tiki-list_file_gallery.php?galleryId={$galleryId}&amp;slideshow','','menubar=no,width=600,height=500');" class="linkbut">{tr}SlideShow{/tr}</a>
 {/if}
 
 </div>
 
-{if $filegals_manager neq ''}
-  {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Be careful to set the right permissions on the files you link to{/tr}.{/remarksbox}
-  <label for="keepOpenCbx">{tr}Keep gallery window open{/tr}</label>
-  <input type="checkbox" name="keepOpenCbx" id="keepOpenCbx" onchange="keepOpenChanged(this);">
-  <script type="text/javascript">{literal}
-<!--//--><![CDATA[//><!--
-function keepOpenChanged(cbx) {
-	if (cbx.checked) {
-		setCookie("fgalKeepOpen", "1");
-	} else {
-		setCookie("fgalKeepOpen", "");
-	}
-}
-function checkClose() {
-	var el = document.getElementById("keepOpenCbx");
-	if (el) {
-		if (!el.checked) {
-			window.close();
-		} else {
-			window.blur();
-		}
-	}
-}
-if (getCookie("fgalKeepOpen")) {
-	document.getElementById("keepOpenCbx").checked = "checked";
-}
-//--><!]]>
-  {/literal}</script>
-
+{if $filegals_manager eq 'y'}
+{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Be careful to set the right permissions on the files you link to{/tr}.{/remarksbox}
 {/if}
 {if isset($fileChangedMessage) and $fileChangedMessage neq ''}
   {remarksbox type="note" title="{tr}Note{/tr}"}
     {$fileChangedMessage}
-    <form method="post" action="{$smarty.server.PHP_SELF}{if $filegals_manager neq ''}?filegals_manager={$filegals_manager|escape}{/if}">
+    <form method="post" action="{$smarty.server.PHP_SELF}{if $filegals_manager eq 'y'}?filegals_manager=y{/if}">
       <input type="hidden" name="galleryId" value="{$galleryId|escape}" />
       <input type="hidden" name="fileId" value="{$fileId|escape}" />
       {tr}Your comment{/tr} ({tr}optional{/tr}): <input type="text" name="comment" size="40" />
@@ -159,24 +124,28 @@ if (getCookie("fgalKeepOpen")) {
   {/remarksbox}
 {/if}
 
-{if $user and $prefs.feature_user_watches eq 'y'}
 <div class="navbar" align="right">
-  {if $category_watched eq 'y'}
-    {tr}Watched by categories{/tr}:
-    {section name=i loop=$watching_categories}
-      {button _text=$watching_categories[i].name href="tiki-browse_categories?parentId=`$watching_categories[i].categId`"}
-    {/section}
-  {/if}			
+  {if $user and $prefs.feature_user_watches eq 'y'}
+    {if $category_watched eq 'y'}
+      {tr}Watched by categories{/tr}:
+      {section name=i loop=$watching_categories}
+        <a href="tiki-browse_categories?parentId={$watching_categories[i].categId}">{$watching_categories[i].name}</a>&nbsp;
+      {/section}
+    {/if}			
+  {/if}
+</div>
+
+
+{foreach from=$fgal_diff item=fgp_prop key=fgp_name name=change}
+{if $smarty.foreach.change.first}
+<div class="rbox tip">
+<div class="rbox-title tip">{tr}Modifications{/tr}</div>
+{/if}
+<div class="rbox-data warning">{tr}Property <b>{$fgp_name}</b> Changed{/tr}</div>
+{if $smarty.foreach.change.last}
 </div>
 {/if}
-
-{if $fgal_diff|@count gt 0}
-  {remarksbox type="note" title="{tr}Modifications{/tr}"}
-    {foreach from=$fgal_diff item=fgp_prop key=fgp_name name=change}
-      {tr}Property <b>{$fgp_name}</b> Changed{/tr}
-    {/foreach}
-  {/remarksbox}
-{/if}
+{/foreach}
 
 {if $edit_mode eq 'y'}
 
@@ -199,9 +168,18 @@ if (getCookie("fgalKeepOpen")) {
     ||  $tiki_p_post_comments  == 'y'
     ||  $tiki_p_edit_comments  == 'y')}
 
-    <div id="page-bar">
-		  {include file=comments_button.tpl}
-    </div>
+    <span class="button2">
+      <a href="#" onclick="javascript:flip('comzone');flip('comzone_close','inline');return false;" class="linkbut {if $comments_cant > 0}highlight{/if}">
+        {if $comments_cant == 0 or ($tiki_p_read_comments  == 'n' and $tiki_p_post_comments  == 'y')}
+          {tr}Add Comment{/tr}
+        {elseif $comments_cant == 1}
+          {tr}1 comment{/tr}
+        {else}
+          {$comments_cant} {tr}comments{/tr}
+        {/if}
+        <span id="comzone_close" style="display:{if isset($smarty.session.tiki_cookie_jar.show_comzone) and $smarty.session.tiki_cookie_jar.show_comzone eq 'y'}inline{else}none{/if};">({tr}Hide{/tr})</span>
+      </a>
+    </span>
 
   {include file=comments.tpl}
   {/if}

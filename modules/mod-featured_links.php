@@ -5,10 +5,9 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
-global $tikilib, $smarty;
 
 $ranking = $tikilib->get_featured_links($module_rows);
 
 $smarty->assign('featuredLinks', $ranking);
 
-
+?>

@@ -1,49 +1,28 @@
-<div style="position:relative">
-  <table border="0" cellpading="0" cellspacing="0" style="width:100%">
-	<tr valign="middle" style="height:36px">
-	  <td id="month_title" style="text-align:center"><strong>{$focusdate|tiki_long_date}</strong></td>
-	</tr>
-  </table>
-  <table border="0" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;border:1px solid #ccc">
+<table cellpadding="0" cellspacing="0" border="0" id="caltable">
+<tr><td width="42" class="heading">{tr}Hours{/tr}</td><td class="heading">{tr}Events{/tr}</td></tr>
+{cycle values="odd,even" print=false}
 {foreach key=k item=h from=$hours}
-  <tr valign="middle" style="height:24px">
-    <td id="rowLeft_{$h}" class="calHours" style="width:10%">{if ($h < 10)}0{/if}{$h}:00</td>
-    <td id="row_{$h}" class="calWeek" style="background:none">&nbsp;</td>
-  </tr>
+<tr><td width="42" class="{cycle advance=false}">{$h}{tr}h{/tr}</td>
+<td class="{cycle}">
+{section name=hr loop=$hrows[$h]}
+{if ($prefs.calendar_view_tab eq "y" or $tiki_p_change_events eq "y") and $hrows[$h][hr].calname ne ""}<span  style="float:right;">
+<a href="tiki-calendar_edit_item.php?viewcalitemId={$hrows[$h][hr].calitemId}"{if $prefs.feature_tabs ne "y"}#details{/if} title="{tr}Details{/tr}">{icon _id='magnifier' alt="{tr}Zoom{/tr}"}</a>
+{if $hrows[$h][hr].modifiable eq "y"}
+<a href="tiki-calendar_edit_item.php?calitemId={$hrows[$h][hr].calitemId}" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
+<a href="tiki-calendar_edit_item.php?calitemId={$hrows[$h][hr].calitemId}&amp;delete=1"  title="{tr}Remove{/tr}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>{/if}</span>
+{/if}
+<div {if $hrows[$h][hr].calname ne ""}class="Cal{$hrows[$h][hr].type} vevent"{/if}>
+<abbr class="dtstart" title="{$hrows[$h][hr].startTimeStamp|isodate}">{$hours[$h]}:{$hrows[$h][hr].mins}</abbr> : {if $hrows[$h][hr].calname eq ""}{$hrows[$h][hr].type} : {/if}
+{if $myurl eq "tiki-action_calendar.php"}
+<a href="{$hrows[$h][hr].url}" class="url" title="{$hrows[$h][hr].web|escape}" class="linkmenu summary">{$hrows[$h][hr].name}</a>
+{else}
+<a href="tiki-calendar_edit_item.php?viewcalitemId={$hrows[$h][hr].calitemId}" class="linkmenu summary">{$hrows[$h][hr].name}</a>
+{/if}
+<span class="description">
+{if $hrows[$h][hr].calname ne ""}{$hrows[$h][hr].parsedDescription}{else}{$hrows[$h][hr].description}{/if}
+</span>
+</div>
+{/section}
+</td></tr>
 {/foreach}
 </table>
-
-
-{foreach key=k item=h from=$hours}
-	{section name=hr loop=$hrows[$h]}
-		{assign var=event value=$hrows[$h][hr]}
-		{assign var=calendarId value=$event.calendarId}
-		{assign var=over value=$event.over}
-		{if $event.calitemId neq ''}
-		<div id="event_{$event.calitemId}" {if $hrows[$h][hr].calname ne ""}class="Cal{$event.type} vevent"{/if} style="position:absolute;z-index:100;top:{$event.top}px;left:{$event.left}%;width:{$event.width}%;height:{$event.duree}px;background-color:#{$infocals.$calendarId.custombgcolor};border-color:#{$infocals.$calendarId.customfgcolor};opacity:{if $event.status eq '0'}0.6{else}0.8{/if};filter:Alpha(opacity={if $event.status eq '0'}60{else}80{/if});text-align:center;overflow:hidden;cursor:pointer"
-			{if $prefs.calendar_sticky_popup eq "y"}
-				{popup vauto=true hauto=true sticky=true trigger="onClick" fullhtml="1" text=$over|escape:"javascript"|escape:"html"}
-			{else}
-				{popup vauto=true hauto=true sticky=false fullhtml="1" text=$over|escape:"javascript"|escape:"html"}
-			{/if}>
-			<span style="padding-top:4px;padding-right:4px;float:right"><a style="padding:0 3px;"
-			{if $event.modifiable eq "y" || $event.visible eq 'y'}
-				{if $prefs.calendar_sticky_popup eq "y"}
-					href="#"
-				{else}
-					href="tiki-calendar_edit_item.php?viewcalitemId={$event.calitemId}"
-				{/if}
-			{/if}
-
-		><img src="pics/icons/more_info.gif" alt="{tr}Details{/tr}" /></a></span>
-		{if $myurl eq "tiki-action_calendar.php"}
-		<a href="{$event.url}" class="url" title="{$event.web|escape}" class="linkmenu summary" style="color:#{$infocals.$calendarId.customfgcolor};{if $event.status eq '2'}text-decoration:line-through{/if}">{$event.name}</a>
-		{else}
-		<a href="tiki-calendar_edit_item.php?viewcalitemId={$event.calitemId}" class="linkmenu summary" style="color:#{$infocals.$calendarId.customfgcolor}">{$event.name}</a>
-		{/if}
-		</div>
-		{/if}
-	{/section}
-{/foreach}
-
-</div>

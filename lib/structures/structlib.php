@@ -267,7 +267,7 @@ class StructLib extends TikiLib {
       $aux["flag"]  = $res["flag"];
 	  $aux["user"]  = $res["user"];
 		global $user;
-		if ($this->user_has_perm_on_object($user,$res['pageName'],'wiki page','tiki_p_edit', 'tiki_p_edit_categorized')) {	
+		if ($this->user_has_perm_on_object($user,$res['pageName'],'wiki page','tiki_p_edit')) {	
       		$aux['editable'] = 'y';
       		$aux['viewable'] = 'y';
 		} else {
@@ -321,15 +321,7 @@ class StructLib extends TikiLib {
 		}
 		$query = "SELECT ts.`parent_id`,tuw.`email`,tuw.`user`, tuw.`event`";
 		$query .= " FROM `tiki_structures` ts";
-		$query .= " LEFT JOIN (
-			SELECT watchId, user, event, object, title, type, url, email FROM `tiki_user_watches`
-			UNION DISTINCT
-				SELECT watchId, uu.login as user, event, object, title, type, url, uu.email 
-				FROM 
-					`tiki_group_watches` tgw
-					INNER JOIN users_usergroups ug ON tgw.`group` = ug.groupName
-					INNER JOIN users_users uu ON ug.userId = uu.userId AND uu.email IS NOT NULL AND uu.email <> ''
-			) tuw ON (tuw.`object`=ts.`page_ref_id` AND tuw.`event`=?)";
+		$query .= " LEFT JOIN `tiki_user_watches` tuw ON (tuw.`object`=ts.`page_ref_id` AND tuw.`event`=?)";
 		if (empty($page_ref_id)) {
 			$query .= " LEFT JOIN `tiki_pages` tp ON ( tp.`page_id`=ts.`page_id`)";
 			$query .= " WHERE tp.`pageName`=?";
@@ -359,9 +351,8 @@ class StructLib extends TikiLib {
   */
 	function s_get_structure_info($page_ref_id) {
 		$parent_id = $this->getOne('select `parent_id` from `tiki_structures` where `page_ref_id`=?', array((int)$page_ref_id));
-		if (!$parent_id) {
+		if (!$parent_id)
 			return $this->s_get_page_info($page_ref_id);
-		}
 		return $this->s_get_structure_info($parent_id);
 	}
   /**Returns an array of info about the parent
@@ -491,7 +482,7 @@ class StructLib extends TikiLib {
 					)
 				WHERE
 					parent_id = ?
-				order by ".$this->convert_sortmode('pos_'.$order);
+				";
 				$args[] = (int) $id;
 			}
 			$result = $this->query($query, $args);
@@ -826,7 +817,7 @@ function list_structures($offset, $maxRecords, $sort_mode, $find='', $exact_matc
 			} else {
 			  $res['webhelp']='n';
 			}
-			if ( $this->user_has_perm_on_object($user,$res['pageName'],'wiki page','tiki_p_edit', 'tiki_p_edit_categorized') ) {
+			if ( $this->user_has_perm_on_object($user,$res['pageName'],'wiki page','tiki_p_edit') ) {
 				$res['editable']='y';
 			} else {
 				$res['editable']='n';

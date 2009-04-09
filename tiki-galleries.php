@@ -10,8 +10,8 @@
 $section = 'galleries';
 require_once ('tiki-setup.php');
 
-global $imagegallib; include_once ("lib/imagegals/imagegallib.php");
-global $categlib; include_once ('lib/categories/categlib.php');
+include_once ("lib/imagegals/imagegallib.php");
+include_once ('lib/categories/categlib.php');
 include_once ('lib/map/usermap.php');
 
 if ($prefs['feature_galleries'] != 'y') {
@@ -124,12 +124,11 @@ $smarty->assign('sortorder','created');
 $smarty->assign('sortdirection','desc');
 $smarty->assign('showname','y');
 $smarty->assign('showimageid','n');
-$smarty->assign('showcategories','n');
 $smarty->assign('showdescription','n');
 $smarty->assign('showcreated','n');
 $smarty->assign('showuser','n');
 $smarty->assign('showhits','y');
-$smarty->assign('showxysize','n');
+$smarty->assign('showxysize','y');
 $smarty->assign('showfilesize','n');
 $smarty->assign('showfilename','n');
 $options_galleryimage=array(tra('first uploaded image') => 'firstu',
@@ -156,6 +155,7 @@ if (isset($_REQUEST["edit_mode"]) && $_REQUEST["edit_mode"]) {
 
 	if ($_REQUEST["galleryId"] > 0) {
 		if ($info = $imagegallib->get_gallery_info($_REQUEST["galleryId"])) {
+
 		$scaleinfo = $imagegallib->get_gallery_scale_info($_REQUEST["galleryId"]);
 		$gallery_images = $imagegallib->get_images(0,-1,'name_asc',false,$_REQUEST['galleryId']);
 		foreach($gallery_images['data'] as $key => $item) {
@@ -177,7 +177,6 @@ if (isset($_REQUEST["edit_mode"]) && $_REQUEST["edit_mode"]) {
 		$smarty->assign('parentgallery',$info['parentgallery']);
 		$smarty->assign('showname',$info['showname']);
 		$smarty->assign('showimageid',$info['showimageid']);
-		$smarty->assign('showcategories',$info['showcategories']);;
 		$smarty->assign('showdescription',$info['showdescription']);
 		$smarty->assign('showcreated',$info['showcreated']);
 		$smarty->assign('showuser',$info['showuser']);
@@ -239,7 +238,7 @@ if (isset($_REQUEST["edit"]) && $prefs['feature_categories'] == 'y' && $prefs['f
 	$smarty->assign('galleryimage',$_REQUEST['galleryimage']);
 	$smarty->assign('parentgallery',$_REQUEST['parentgallery']);
 	$smarty->assign('defaultscale',$_REQUEST['defaultscale']);
-	$auxarray=array('showname','showimageid','showdescription','showcreated','showuser','showhits','showxysize','showfilesize','showfilename','showcategories');
+	$auxarray=array('showname','showimageid','showdescription','showcreated','showuser','showhits','showxysize','showfilesize','showfilename');
 	foreach($auxarray as $key => $item) {
 		if(!isset($_REQUEST[$item])) {
 			$_REQUEST[$item]='n';
@@ -269,7 +268,8 @@ if (isset($_REQUEST["edit"]) && $prefs['feature_categories'] == 'y' && $prefs['f
 		'', $_REQUEST["owner"], $_REQUEST["maxRows"], $_REQUEST["rowImages"], $_REQUEST["thumbSizeX"], $_REQUEST["thumbSizeY"], $public,
 		$visible,$_REQUEST['sortorder'],$_REQUEST['sortdirection'],$_REQUEST['galleryimage'],$_REQUEST['parentgallery'],
 		$_REQUEST['showname'],$_REQUEST['showimageid'],$_REQUEST['showdescription'],$_REQUEST['showcreated'],
-		$_REQUEST['showuser'],$_REQUEST['showhits'],$_REQUEST['showxysize'],$_REQUEST['showfilesize'],$_REQUEST['showfilename'],$_REQUEST['defaultscale'],$geographic,$_REQUEST['showcategories']);
+		$_REQUEST['showuser'],$_REQUEST['showhits'],$_REQUEST['showxysize'],$_REQUEST['showfilesize'],$_REQUEST['showfilename'],$_REQUEST['defaultscale'],$geographic);
+
 	#add scales
 	if (isset($_REQUEST["scaleSize"])) {
 		if (strstr($_REQUEST["scaleSize"],',')) {
@@ -322,7 +322,7 @@ if ($category_needed == 'y') {
 	$smarty->assign('galleryimage',$_REQUEST['galleryimage']);
 	$smarty->assign('parentgallery',$_REQUEST['parentgallery']);
 	$smarty->assign('defaultscale',$_REQUEST['defaultscale']);
-	$auxarray=array('showname','showimageid','showdescription','showcreated','showuser','showhits','showxysize','showfilesize','showfilename','showcategories');
+	$auxarray=array('showname','showimageid','showdescription','showcreated','showuser','showhits','showxysize','showfilesize','showfilename');
 	foreach($auxarray as $key => $item) {
 		if(!isset($_REQUEST[$item])) {
 			$_REQUEST[$item]='n';
@@ -405,6 +405,9 @@ if (!isset($_REQUEST["sort_mode"])) {
 
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 
+// If offset is set use it if not then use offset =0
+// use the maxRecords php variable to set the limit
+// if sortMode is not set then use lastModif_desc
 if (!isset($_REQUEST["offset"])) {
 	$offset = 0;
 } else {
@@ -431,6 +434,7 @@ for ($i = 0; $i < $temp_max; $i++) {
 
 	// check if top gallery (has no parents)
 	$info = $imagegallib->get_gallery_info($galleries["data"][$i]["galleryId"]);
+	/*$subgals = $imagegallib->get_subgalleries($top_offset = 1, $maxImages, $sort_mode, '', $galleries["data"][$i]["galleryId"]);*/
 	if ($info['parentgallery'] == -1) {
 		$galleries["data"][$i]["topgal"] = 'y';
 	} else {
@@ -477,6 +481,24 @@ for ($i = 0; $i < $temp_max; $i++) {
 	}
 }
 
+// If there're more records then assign next_offset
+$cant_pages = ceil($galleries["cant"] / $maxRecords);
+$smarty->assign_by_ref('cant_pages', $cant_pages);
+$smarty->assign('actual_page', 1 + ($offset / $maxRecords));
+
+if ($galleries["cant"] > ($offset + $maxRecords)) {
+	$smarty->assign('next_offset', $offset + $maxRecords);
+} else {
+	$smarty->assign('next_offset', -1);
+}
+
+// If offset is > 0 then prev_offset
+if ($offset > 0) {
+	$smarty->assign('prev_offset', $offset - $maxRecords);
+} else {
+	$smarty->assign('prev_offset', -1);
+}
+
 $smarty->assign_by_ref('galleries', $galleries["data"]);
 $smarty->assign_by_ref('cant', $galleries["cant"]);
 
@@ -494,4 +516,5 @@ ask_ticket('galleries');
 // Display the template
 $smarty->assign('mid', 'tiki-galleries.tpl');
 $smarty->display("tiki.tpl");
+
 ?>

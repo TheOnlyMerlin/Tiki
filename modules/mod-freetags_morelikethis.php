@@ -7,7 +7,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 global $page;
-global $dbTiki, $smarty;
+global $dbTiki;
 global $freetaglib;
 global $tiki_p_view;
 if (!isset($freetaglib) or !is_object($freetaglib)) { include_once 'lib/freetag/freetaglib.php'; }
@@ -22,4 +22,4 @@ $smarty->assign('modMoreLikeThis', $morelikethis);
 $smarty->assign('module_rows', $module_rows);
 $smarty->assign('nonums', isset($module_params["nonums"]) ? $module_params["nonums"] : 'n');
 
-
+?>

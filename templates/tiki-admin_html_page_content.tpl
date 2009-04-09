@@ -1,13 +1,13 @@
-{title}{tr}Admin HTML Page Dynamic Zones{/tr}{/title}
+<h1><a class="pagetitle" href="tiki-admin_html_page_content.php?pageName={$pageName|escape:"url"}">{tr}Admin HTML Page Dynamic Zones{/tr}</a>
 
-<h2>{tr}Page{/tr}: {$pageName}</h2>
 
-<div class="navbar">
-	{button href="tiki-admin_html_pages.php" _text="{tr}Admin HTML pages{/tr}"}
-	{assign var='pname' value=$pageName|escape:"url"}
-	{button href="tiki-admin_html_pages.php?pageName=$pname" _text="{tr}Edit this page{/tr}"}
-	{button href="tiki-page.php?pageName=$pname" _text="{tr}View page{/tr}"}
-</div>
+
+
+<br />
+<h2>{tr}Page{/tr}: {$pageName}</h2><br /><br />
+<a class="linkbut" href="tiki-admin_html_pages.php">{tr}Admin HTML pages{/tr}</a>
+<a class="linkbut" href="tiki-admin_html_pages.php?pageName={$pageName|escape:"url"}">{tr}Edit this page{/tr}</a>
+<a class="linkbut" href="tiki-page.php?pageName={$pageName|escape:"url"}">{tr}View page{/tr}</a></h1>
 
 {if $zone}
 <h2>{tr}Edit zone{/tr}</h2>
@@ -29,17 +29,27 @@
 {/if}
 
 <h2>{tr}Dynamic zones{/tr}</h2>
-
-{include file="find.tpl"}
-
+<div  align="center">
+<table class="findtable">
+<tr><td class="findtable">{tr}Find{/tr}</td>
+   <td class="findtable">
+   <form method="get" action="tiki-admin_html_page_content.php">
+     <input type="text" name="find" value="{$find|escape}" />
+     <input type="submit" value="{tr}Find{/tr}" name="search" />
+     <input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
+     <input type="hidden" name="pageName" value="{$pageName|escape}" />
+   </form>
+   </td>
+</tr>
+</table>
 <form action="tiki-admin_html_page_content.php" method="post">
 <input type="hidden" name="pageName" value="{$pageName|escape}" />
 <input type="hidden" name="zone" value="{$zone|escape}" />
 <table class="normal">
 <tr>
-<th><a href="tiki-admin_html_page_content.php?pageName={$pageName|escape:"url"}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'zone_desc'}zone_asc{else}zone_desc{/if}">{tr}zone{/tr}</a></th>
-<th><a href="tiki-admin_html_page_content.php?pageName={$pageName|escape:"url"}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'content_desc'}content_asc{else}content_desc{/if}">{tr}content{/tr}</a></th>
-<th>{tr}Action{/tr}</th>
+<td class="heading"><a class="tableheading" href="tiki-admin_html_page_content.php?pageName={$pageName|escape:"url"}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'zone_desc'}zone_asc{else}zone_desc{/if}">{tr}zone{/tr}</a></td>
+<td class="heading"><a class="tableheading" href="tiki-admin_html_page_content.php?pageName={$pageName|escape:"url"}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'content_desc'}content_asc{else}content_desc{/if}">{tr}content{/tr}</a></td>
+<td class="heading">{tr}Action{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}
@@ -63,5 +73,23 @@
 <input type="submit" name="editmany" value="{tr}Mass update{/tr}" />
 </div>
 </form>
+<div class="mini">
+{if $prev_offset >= 0}
+[<a class="prevnext" href="tiki-admin_html_page_content.php?find={$find}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}">{tr}Prev{/tr}</a>]&nbsp;
+{/if}
+{tr}Page{/tr}: {$actual_page}/{$cant_pages}
+{if $next_offset >= 0}
+&nbsp;[<a class="prevnext" href="tiki-admin_html_page_content.php?find={$find}&amp;offset={$next_offset}&amp;sort_mode={$sort_mode}">{tr}Next{/tr}</a>]
+{/if}
+{if $prefs.direct_pagination eq 'y'}
+<br />
+{section loop=$cant_pages name=foo}
+{assign var=selector_offset value=$smarty.section.foo.index|times:$prefs.maxRecords}
+<a class="prevnext" href="tiki-admin_html_page_content.php?find={$find}&amp;offset={$selector_offset}&amp;sort_mode={$sort_mode}">
+{$smarty.section.foo.index_next}</a>&nbsp;
+{/section}
+{/if}
 
-{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
+</div>
+</div>
+

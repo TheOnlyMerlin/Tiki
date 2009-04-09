@@ -35,8 +35,6 @@
 
  * \param tagunused  : Tags the unused strings with "// ## UNUSED".
 
- * \param verbose=y  : Display content of language files as they are created.
-
  */
 
 
@@ -44,7 +42,6 @@
 ////////////////////////////////////////////////////////////////////////////
 /// functions
 
-$punctuations = array(':', '!', ';', '.', ',', '?'); // Modify lib/init/tra.php accordingly
 $addPHPslashes = Array ("\n" => '\n',
 			"\r" => '\r',
 			"\t" => '\t',
@@ -72,41 +69,9 @@ function collect_perms_desc($file)
     $perm_strings[] = $row['permDesc'];
 
   $pstr = fopen($file,'w');
-  if (!$pstr) {
-	  echo "The file $file can not be written";
-  }
   foreach ($perm_strings as $strg)
   {
     fwrite ($pstr,  "{tr}" . $strg . "{/tr}" . "\n");
-  }
-  fclose($pstr);
-}
-
-/**
-  * Reads all the permission descriptions in tikiwiki database and writes
-  *   it to the file $file. All the strings will be surrounded by smarty translate tags
-  *     ex: {tr}preference name{/tr}
-  *
-  * @param $file string: target file for the pref names
-  * @returns: nothing but creates the file with the pref names (take care about the acl's in the target directory !)
-  */
-function collect_prefs_names($file)
-{
-  global $tikilib;
-
-  $result = $tikilib->query("select `name` from `tiki_preferences`");
-
-  $prefs_strings = array();
-  while( $row = $result->fetchRow() )
-    $prefs_strings[] = $row['name'];
-
-  $pstr = fopen($file,'w');
-  if (!$pstr) {
-	  echo "The file $file can not be written";
-  }
-  foreach ($prefs_strings as $strg)
-  {
-    fwrite ($pstr,  "{tr}" . str_replace('_',' ',$strg) . "{/tr}" . "\n");
   }
   fclose($pstr);
 }
@@ -214,8 +179,7 @@ function addToWordlist (&$wordlist, &$sentence) {
 
 
 function writeFile_and_User (&$fd, $outstring) {
-	global $verbose;
-  if($verbose == 'y') print (nl2br(htmlspecialchars($outstring)));
+  print (nl2br ($outstring));
   fwrite ($fd, $outstring);
 }
 
@@ -254,16 +218,6 @@ if($tiki_p_admin != 'y') {
   die("You need to be admin to run this script");
 }
 
-echo '<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-</head>
-<body>
-';
-
 $completion = isset($_REQUEST['completion']) && $_REQUEST['completion']=='y';
 if (!$completion)
 	echo "Initialization time: ", $tiki_timer->elapsed(), " seconds<br />\n";
@@ -276,7 +230,6 @@ $patch    = isset ($_REQUEST['patch']);
 $spelling = isset ($_REQUEST['spelling']);
 $group_w  = isset ($_REQUEST['groupwrite']);
 $tagunused= isset ($_REQUEST['tagunused']);
-$verbose  = isset ($_REQUEST['verbose']);
 
 $nohelp     = isset ($_REQUEST['nohelp']);
 $nosections = isset ($_REQUEST['nosections']);
@@ -320,15 +273,12 @@ hardwire_file ('./img/flags/flagnames.php');
 
 ## Adding a file in ./temp which contains all the perms descriptions
 ## This file is called permstrings.tpl. The extension has to be .tpl in order to be
-##   taken in charge by the script (tpl or php)
+##   taken in charge by the scipt (tpl or php)
 ## This file is, of course, temporary and will be deleted during the next cache clear !
 
 $permsfile = "./temp/permstrings.tpl";
 $permsstrgs = collect_perms_desc($permsfile);
-$prefsfile = "./temp/prefnames.tpl";
-collect_prefs_names($prefsfile);
 hardwire_file ($permsfile);
-hardwire_file ($prefsfile);
 
 // Sort files to make generated strings appear in language.php in the same 
 // order across different systems
@@ -396,9 +346,6 @@ foreach ($languages as $sel) {
 
   if (!$completion) {
     $fw = fopen("lang/$sel/new_language.php",'w');
-	if (!$fw) {
-		echo "The file lang/$sel/new_language.php can not be written";
-	}
   
     print("&lt;");
     fwrite($fw,"<");
@@ -414,7 +361,7 @@ foreach ($languages as $sel) {
     // Good to have instructions for translators in the release file.
     // The comments get filtered away by Smarty anyway
     writeFile_and_User ($fw, "// Parameters:\n\n");
-    writeFile_and_User ($fw, "// lang=xx    : only translates language 'xx',\n");
+    writeFile_and_User ($fw, "// lang=xx    : only tranlates language 'xx',\n");
     writeFile_and_User ($fw, "//              if not given all languages are translated\n");
     writeFile_and_User ($fw, "\n");
 
@@ -462,22 +409,8 @@ foreach ($languages as $sel) {
     writeFile_and_User ($fw, "// These options will only provide the minimal amout of comments.\n");
     writeFile_and_User ($fw, "// Usefull mode when preparing a translation for distribution.\n\n");
     writeFile_and_User ($fw, "// http://www.neonchart.com/get_strings.php?nohelp&nosections\n");
-    writeFile_and_User ($fw, "// Prepare all languages for release\n\n\n");
+    writeFile_and_User ($fw, "// Prepare all languages for release \n\n");
 
-		writeFile_and_User ($fw, "// ### Note for translators about translation of text ending with punctuation\n");
-		writeFile_and_User ($fw, "// ###\n");
-		writeFile_and_User ($fw, "// ### The current list of concerned punctuation can be found in 'lib/init/tra.php'\n");
-		writeFile_and_User ($fw, "// ### On 2009-03-02, it is: (':', '!', ';', '.', ',', '?')\n");
-		writeFile_and_User ($fw, "// ### For clarity, we explain here only for colons: ':' but it is the same for the rest\n");
-		writeFile_and_User ($fw, "// ###\n");
-		writeFile_and_User ($fw, "// ### Short version: it is not a problem that string \"Login:\" has no translation. Only \"Login\" needs to be translated.\n");
-		writeFile_and_User ($fw, "// ###\n");
-		writeFile_and_User ($fw, "// ### Technical justification:\n");
-		writeFile_and_User ($fw, "// ### If a string ending with colon needs translating (like \"{tr}Login:{/tr}\")\n");
-		writeFile_and_User ($fw, "// ### then TikiWiki tries to translate 'Login' and ':' separately.\n");
-		writeFile_and_User ($fw, "// ### This allows to have only one translation for \"{tr}Login{/tr}\" and \"{tr}Login:{/tr}\"\n");
-		writeFile_and_User ($fw, "// ### and it still allows to translate \":\" as \"&nbsp;:\" for languages that\n");
-		writeFile_and_User ($fw, "// ### need it (like french)\n");
 
     // Start generating the lang array
     writeFile_and_User ($fw, "\n\$lang=Array(\n");  
@@ -508,13 +441,12 @@ foreach ($languages as $sel) {
       $data = preg_replace ("!^\s*\#.*\$!m", "", $data); // shell comments
 
       // Only extract tra () and hawtra () in .php-files
-	  // tr() function also exists for strings with arguments
 
       // Extract from SINGLE qouted strings
-      preg_match_all ('!\W(?:haw)?tra?\s*\(\s*\'(.+?)\'\s*[\),]!s', $data, $sqwords);
+      preg_match_all ('!\W(?:haw)?tra\s*\(\s*\'(.+?)\'\s*[\),]!s', $data, $sqwords);
 
       // Extract from DOUBLE quoted strings
-      preg_match_all ('!\W(?:haw)?tra?\s*\(\s*"(.+?)"\s*[\),]!s', $data, $dqwords);
+      preg_match_all ('!\W(?:haw)?tra\s*\(\s*"(.+?)"\s*[\),]!s', $data, $dqwords);
     }
 
     if (preg_match ("/\.tpl$/", $file)) {
@@ -528,8 +460,7 @@ foreach ($languages as $sel) {
       $data = preg_replace ('/(?s)\{tr\}\s*\{[$][^\}]*?\}\s*\{\/tr\}/','',$data);
 
       // Only extract {tr} ... {/tr} in .tpl-files
-	  // Also match {tr [args]} ...{/tr}
-      preg_match_all ('/(?s)\{tr[^\}]*\}(.+?)\{\/tr\}/', $data, $uqwords);
+      preg_match_all ('/(?s)\{tr\}(.+?)\{\/tr\}/', $data, $uqwords);
     }
 
     // Transfer unquoted words (if any) to the words array
@@ -561,7 +492,6 @@ foreach ($languages as $sel) {
     }
 
     foreach (array_unique ($words) as $word) {
-
       if (isset ($lang[$word])) {
 	if (!isset ($translated[$word])) {
 	  $translated[$word] = $lang[$word];
@@ -569,22 +499,9 @@ foreach ($languages as $sel) {
 	unset ($unused[$word]);
       }
       else {
-
-        // Handle punctuations at the end of the string (cf. comments in lib/init/tra.php)
-        // For example, if word == 'Login:', we don't keep it if we also have a string 'Login'
-        //   (except if we already have an explicit translation for 'Login:')
-        //
-        $word_lenght = strlen($word);
-        $word_last_char = $word[$word_lenght - 1];
-        if ( in_array($word_last_char, $punctuations) ) {
-          $word = substr($word, 0, $word_lenght - 1);
-	  if ( isset($lang[$word]) ) continue;
-        }
-
 	if (!isset ($to_translate[$word])) {
 	  $to_translate[$word]=$word;
 	}
-
       }
 
       if ($module) {
@@ -744,9 +661,6 @@ foreach ($languages as $sel) {
 
   if ($spelling) {
     $fw = fopen("lang/$sel/spellcheck_me.txt", 'w');
-	if (!$fw) {
-		echo "The file lang/$sel//spellcheck_me.txt can not be written";
-	}
     ksort ($wordlist);
     reset ($wordlist);
     foreach ($wordlist as $word => $dummy) {
@@ -771,9 +685,9 @@ foreach ($languages as $sel) {
 if (!$completion) {
 	echo "Processing time: ", $tiki_timer->stop("processing"), " seconds<br />\n";
 	echo "Total time spent: ", $tiki_timer->elapsed(), " seconds<br />\n";
-} else {
-	echo "</table>";
-}
-
-echo '</body>';
+ }
+ else
+ {
+   echo "</table>";
+ }
 ?>

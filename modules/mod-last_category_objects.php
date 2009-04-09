@@ -6,7 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
-global $smarty;
+
 if (!isset($module_params["type"])) {
 	$module_params["type"] = "wiki page";
 }
@@ -27,4 +27,4 @@ if (!is_array($last) or !is_array($last['data'])) {
 }
 $smarty->assign('last',$last['data']);
 $smarty->assign('type',$module_params["type"]);
-
+?>

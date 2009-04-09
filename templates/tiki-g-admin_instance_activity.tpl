@@ -5,7 +5,7 @@
 {include file=tiki-g-monitor_bar.tpl}
 <h3>{tr}Process:{/tr} {$proc_info.name} {$proc_info.version}<br />
 {tr}Instance{/tr}: {$ins_info.name} <br />
-{tr}Activity{/tr}: {$acts.name} {if $acts.actstatus eq 'running'}<a href="tiki-g-run_activity.php?iid={$iid}&amp;activityId={$aid}"><img title='{tr}run instance{/tr}' alt='{tr}run instance{/tr}' src='lib/Galaxia/img/icons/next.gif' /></a>{/if}</h3>
+{tr}Activity{/tr}: {$acts.name} {if $acts.actstatus eq 'running'}<a href="tiki-g-run_activity.php?iid={$iid}&amp;activityId={$aid}"><img border='0' title='{tr}run instance{/tr}' alt='{tr}run instance{/tr}' src='lib/Galaxia/img/icons/next.gif' /></a>{/if}</h3>
 <form method="POST" action="tiki-g-admin_instance_activity.php?iid={$iid}&amp;aid={$aid}">
 <input type="hidden" name="iid" value="{$iid|escape}" />
 <table class="normal">
@@ -49,7 +49,7 @@
 {section name=ix loop=$comments}
 <table class="email">
         <tr>
-	    	<th>{tr}From{/tr}:</th>
+	    	<td class="heading">{tr}From{/tr}:</td>
 		<td class="formcolor">{$comments[ix].user|capitalize:true}</td>
       	        <td class="closeButton">
 		    <form method="POST" target="email" action="tiki-g-view_comment.php">
@@ -68,11 +68,11 @@
 		</td>
 	</tr>
 	<tr>
-	    	<th>{tr}Date{/tr}:</th>
+	    	<td class="heading">{tr}Date{/tr}:</td>
 		<td class="formcolor" colspan="3">{$comments[ix].timestamp|date_format:"%A %e de %B, %Y %H:%M:%S"|capitalize:true}</td>
 	</tr>
 	<tr>
-		<th>{tr}Subject{/tr}:</th>
+		<td class="heading">{tr}Subject{/tr}:</td>
 		<td class="formcolor" colspan="3">{$comments[ix].title}</td>
 	</tr>
 	<tr>
@@ -87,11 +87,11 @@
 <table class="normal">
 
 	<tr>
-	    	<th>{tr}Subject{/tr}:</th>
+	    	<td class="heading">{tr}Subject{/tr}:</td>
 	    	<td class="formcolor"><input type="text" name="__title" /></td>
 	</tr>
 	<tr>
-		<th>{tr}Body{/tr}:</th>
+		<td class="heading">{tr}Body{/tr}:</td>
 		<td class="formcolor"><textarea rows="5" cols="60" name="__comment"></textarea></td>
 	</tr>
 	<tr>

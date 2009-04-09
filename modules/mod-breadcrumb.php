@@ -8,11 +8,11 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
-global $smarty;
+
 if (!isset($_SESSION["breadCrumb"])) {
 	$_SESSION["breadCrumb"] = array();
 }
 $bbreadCrumb = array_slice(array_reverse($_SESSION["breadCrumb"]), 0, $module_rows);
 $smarty->assign('breadCrumb', $bbreadCrumb);
 $smarty->assign('maxlen', isset($module_params["maxlen"]) ? $module_params["maxlen"] : 0);
-
+?>

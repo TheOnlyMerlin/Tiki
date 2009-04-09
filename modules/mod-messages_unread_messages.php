@@ -5,7 +5,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
-global $user, $tikilib, $smarty;
+global $user;
 
 if ($user) {
 	$modUnread = $tikilib->user_unread_messages($user);
@@ -13,4 +13,4 @@ if ($user) {
 	$smarty->assign('modUnread', $modUnread);
 }
 
-
+?>

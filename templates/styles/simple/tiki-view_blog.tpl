@@ -77,18 +77,44 @@
 </div>
 </div>
 {/section}
-
-{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
+<br />
+<div style="align:center">
+<div class="mini">
+{if $prev_offset >= 0}
+[<a class="blogprevnext" href="tiki-view_blog.php?find={$find}&amp;blogId={$blogId}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}">{tr}Prev{/tr}</a>]
+{/if}
+{tr}Page{/tr}: {$actual_page}/{$cant_pages}
+{if $next_offset >= 0}
+[<a class="blogprevnext" href="tiki-view_blog.php?find={$find}&amp;blogId={$blogId}&amp;offset={$next_offset}&amp;sort_mode={$sort_mode}">{tr}Next{/tr}</a>]
+{/if}
+{if $prefs.direct_pagination eq 'y'}
+<br />
+{section loop=$cant_pages name=foo}
+{assign var=selector_offset value=$smarty.section.foo.index|times:$maxRecords}
+<a class="prevnext" href="tiki-view_blog.php?find={$find}&amp;blogId={$blogId}&amp;offset={$selector_offset}&amp;sort_mode={$sort_mode}">
+{$smarty.section.foo.index_next}</a>
+{/section}
+{/if}
+</div>
+</div>
 
 {if $prefs.feature_blog_comments == 'y'
   && (($tiki_p_read_comments  == 'y'
   && $comments_cant != 0)
   ||  $tiki_p_post_comments  == 'y'
   ||  $tiki_p_edit_comments  == 'y')}
-
-  <div id="page-bar">
-  	   {include file=comments_button.tpl}
-  </div>
-
-  {include file=comments.tpl}
+<div id="page-bar">
+<div class="button2">
+      <a href="#comments" onclick="javascript:flip('comzone{if $comments_show eq 'y'}open{/if}');" class="linkbut">
+	{if $comments_cant == 0}
+          {tr}Add Comment{/tr}
+        {elseif $comments_cant == 1}
+          <span class="highlight">{tr}1 comment{/tr}</span>
+        {else}
+          <span class="highlight">{$comments_cant} {tr}comments{/tr}</span>
+        {/if}
+      </a>
+</div>
+</div>
+{include file=comments.tpl}
 {/if}

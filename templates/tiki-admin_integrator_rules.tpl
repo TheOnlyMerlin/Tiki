@@ -1,18 +1,41 @@
 {* $Id$ *}
 
-{title help="Integrator"}{tr}Edit Rules for Repository:{/tr} {$name}{/title}
+<h2>{tr}Edit Rules for Repository:{/tr} {$name}</h2>
+<div id="page-bar">
+  <table><tr>
+    <td><div class="button2">
+      <a href="tiki-admin_integrator.php" class="linkbut">{tr}Configure Repositories{/tr}</a>
+    </div></td>
+    <td><div class="button2">
+      <a href="tiki-list_integrator_repositories.php" class="linkbut">{tr}List Repositories{/tr}</a>
+    </div></td>
 
-<div class="navbar">
-	{button href="tiki-admin_integrator.php" _text="{tr}Configure Repositories{/tr}"}
-  {button href="tiki-list_integrator_repositories.php" _text="{tr}List Repositories{/tr}</a>"}
-	{assign var=thisrepID value=$repID|escape } 
-	{button href="tiki-admin_integrator.php?action=edit&amp;repID=$thisrepID" _text="{tr}Configure this Repository{/tr}"}
-	{button href="tiki-integrator.php?repID=$thisrepID" _text="{tr}View this Repository{/tr}"}
-	{button href="tiki-admin_integrator_rules.php?repID=$thisrepID" _text="{tr}New Rule{/tr}"}
-	{if count($reps) gt 0}
-		{button _onclick="javascript:flip('rules-copy-panel');" _text="{tr}Copy Rules{/tr}" _title="{tr}view/hide copy rules dialog{/tr}"}
-  {/if}
+    <td>&nbsp;</td>
+
+    <td><div class="button2">
+      <a href="tiki-admin_integrator.php?action=edit&amp;repID={$repID|escape}" class="linkbut">{tr}Configure this Repository{/tr}</a>
+    </div></td>
+    <td><div class="button2">
+      <a href="tiki-integrator.php?repID={$repID|escape}" class="linkbut">{tr}View this Repository{/tr}</a>
+    </div></td>
+    
+    <td>&nbsp;</td>
+    
+    <td><div class="button2">
+      <a title="{tr}Add new rule{/tr}" href="tiki-admin_integrator_rules.php?repID={$repID|escape}" class="linkbut">
+        {tr}New Rule{/tr}
+      </a>
+    </div></td>
+    {if count($reps) gt 0}
+    <td><div class="button2">
+      <a title="{tr}view/hide copy rules dialog{/tr}" href="javascript:flip('rules-copy-panel');" class="linkbut">
+        {tr}Copy Rules{/tr}
+      </a>
+    </div></td>
+    {/if}
+  </tr></table>
 </div>
+<br />
 
 {if count($reps) gt 0}
 <div id="rules-copy-panel">
@@ -113,14 +136,14 @@
 {* Table with list of repositories *}
 <table class="normal" id="integrator_rules">
   <tr>
-    <th rowspan="2"><span title="{tr}Rule order{/tr}">#</span></th>
-    <th>{tr}Search{/tr}</th>
-    <th>{tr}Replace{/tr}</th>
-    <th>{tr}Regex{/tr}</th>
-    <th>{tr}Case{/tr}</th>
-    <th>{tr}Actions{/tr}</th>
+    <td class="heading" rowspan="2"><span title="{tr}Rule order{/tr}">#</span></td>
+    <td class="heading">{tr}Search{/tr}</td>
+    <td class="heading">{tr}Replace{/tr}</td>
+    <td class="heading">{tr}Regex{/tr}</td>
+    <td class="heading">{tr}Case{/tr}</td>
+    <td class="heading">{tr}Actions{/tr}</td>
   </tr><tr>
-    <th colspan="5">{tr}Description{/tr}</th>
+    <td class="heading" colspan="5">{tr}Description{/tr}</td>
   </tr>
   {cycle values="odd,even" print=false}
   {section name=rule loop=$rules}

@@ -23,7 +23,7 @@ class LogsLib extends TikiLib {
 			}
 		}
 		if (!$ip) {
-			$ip = $this->get_ip_address();
+			$ip = $_SERVER['REMOTE_ADDR'];
 		}
 		if (!$client) {
 			if (!$_SERVER['HTTP_USER_AGENT']) {
@@ -45,8 +45,7 @@ class LogsLib extends TikiLib {
 		$mid = '';
 		if ($find) {
 			$findesc = '%'.$find.'%';
-			$amid[] = "`logmessage` like ? or `loguser` like ? or 'logip' like ?";
-			$bindvars[] = $findesc;
+			$amid[] = "`logmessage` like ? or `loguser` like ?";
 			$bindvars[] = $findesc;
 			$bindvars[] = $findesc;
 		}
@@ -113,7 +112,7 @@ class LogsLib extends TikiLib {
 		if ($who == '')
 			$who = $user;
 		if ($ip == '')
-			$ip = $this->get_ip_address();
+			$ip = $_SERVER['REMOTE_ADDR'];;
 		if ($client == '')
 			$client = $_SERVER['HTTP_USER_AGENT'];
 		if ($logCateg) {
@@ -162,7 +161,7 @@ class LogsLib extends TikiLib {
 				}
 			}
 		}
-		return  isset($actions[0])? $actions[0]: 0;
+		return  $actions[0];
 	}
 	function action_must_be_logged($action, $objectType) {
 		global $prefs;
@@ -608,21 +607,12 @@ class LogsLib extends TikiLib {
 	}
 	return $csv;
 	}
-	function get_action_params($actionId, $name='') {
-		if (empty($name)) {
-			$query = "select * from `tiki_actionlog_params` where `actionId`=?";
-			$result = $this->query($query, array($actionId));
-			$ret = array();
-			while ($res = $result->fetchRow()) {
-				$ret[] = $res;
-			}
-		} else {
-			$query = "select `value` from `tiki_actionlog_params` where `actionId`=? and `name`=?";
-			$result = $this->query($query, array($actionId, $name));
-			$ret = array();
-			while ($res = $result->fetchRow()) {
-				$ret[] = $res['value'];
-			}
+	function get_action_params($actionId, $name) {
+		$query = "select `value` from `tiki_actionlog_params` where `actionId`=? and `name`=?";
+		$result = $this->query($query, array($actionId, $name));
+		$ret = array();
+		while ($res = $result->fetchRow()) {
+			$ret[] = $res['value'];
 		}
 		return $ret;
 	}
@@ -640,10 +630,6 @@ class LogsLib extends TikiLib {
 		$this->query($query, array("old=$oldName&amp;", $oldName, $objectType, 'comment' , '%old=%'));
 		$query = "update `tiki_actionlog`set `object`=? where `object`=? and (`objectType`=? or `objectType`= ?)";
 		$this->query($query, array($newName, $oldName, $objectType, 'comment'));
-	}
-	function update_category($actionId, $categId) {
-		$query = "update `tiki_actionlog` set `categId`=? where `actionId`=?";
-		$this->query($query, array($categId, $actionId));
 	}
 	function get_info_action($actionId) {
 		$query = "select * from `tiki_actionlog`where `actionId`= ?";
@@ -859,7 +845,7 @@ class LogsLib extends TikiLib {
 
 	// get the contributors of the last update of a wiki page
 	function get_wiki_contributors($page_info) {
-		$query = 'select distinct(uu.`login`), uu.`userId` from `tiki_actionlog_params` tap, `users_users` uu , `tiki_actionlog` ta where tap.`actionId`= ta.`actionId` and tap.`name`=? and uu.`userId`=tap.`value` and ta.`object`=? and ta.`objectType`=? and ta.`lastModif`=? order by `login` asc';
+		$query = 'select distinct(uu.`login`) from `tiki_actionlog_params` tap, `users_users` uu , `tiki_actionlog` ta where tap.`actionId`= ta.`actionId` and tap.`name`=? and uu.`userId`=tap.`value` and ta.`object`=? and ta.`objectType`=? and ta.`lastModif`=? order by `login` asc';
 		$result = $this->query($query, array('contributor', $page_info['pageName'], 'wiki page', $page_info['lastModif'])); 
 		$ret = array();
 		while ($res = $result->fetchRow()) {
@@ -901,18 +887,14 @@ class LogsLib extends TikiLib {
 		}
 		return $contributorActions;
 	}
-	function list_logsql($sort_mode='created_desc', $offset=0, $maxRecords=-1, $find='') {
+	function list_logsql($sort_mode='created_desc', $offset=0, $maxRecords=-1) {
 		global $prefs;
-		$bindvars = array();
-		if (!empty($find)) {
-			$findesc = '%'.$find.'%';
-			$amid = '`sql1` like ? or `params` like ? or `tracer` like ?';
-			$bindvars[] = $findesc;$bindvars[] = $findesc;$bindvars[] = $findesc;
-		}
-		$query = 'select * from `adodb_logsql`'.($find?" where $amid":'').' order by '.$this->convert_sortmode($sort_mode);
-		$result = $this->query($query, $bindvars, $maxRecords, $offset);
-		$query_cant = 'select count(*) from `adodb_logsql`'.($find?" where $amid":'');
-		$cant = $this->getOne($query_cant, $bindvars);
+		if ($prefs['log_sql'] != 'y')
+			return null;
+		$query = 'select * from `adodb_logsql` order by '.$this->convert_sortmode($sort_mode);
+		$result = $this->query($query, array(), $maxRecords, $offset);
+		$query_cant = 'select count(*) from `adodb_logsql`';
+		$cant = $this->getOne($query_cant,$bindvars);
 		$ret = array();
 		while ($res = $result->fetchRow()) {
 			$ret[] = $res;
@@ -923,7 +905,7 @@ class LogsLib extends TikiLib {
 		return $retval;
 	}
 	function clean_logsql() {
-		$query = 'delete from  `adodb_logsql`';
+		$query = 'delete * from  `adodb_logsql`';
 		$this->query($query, array());
 	}
 	function graph_to_jpgraph(&$jpgraph, $series, $accumulated = false, $color='whitesmoke', $colorLegend='white') {
@@ -1072,12 +1054,6 @@ class LogsLib extends TikiLib {
 	}
 	return $actions;
 	} // end of get_more_info($actions)
-	function remove_action($actionId) {
-		$query = 'delete from `tiki_actionlog` where `actionId`=?';
-		$this->query($query, array($actionId));
-		$query = 'delete from `tiki_actionlog_params` where `actionId`=?';
-		$this->query($query, array($actionId));
-	}
 }
 global $dbTiki;
 $logslib = new LogsLib($dbTiki);

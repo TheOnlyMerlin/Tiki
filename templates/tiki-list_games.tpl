@@ -4,7 +4,18 @@
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
   <td{if $xtitle} width="30%"{/if}>
-    {title help="Games"}{tr}Games{/tr}{/title}
+    <h1><a class="pagetitle" href="tiki-list_games.php">{tr}Games{/tr}</a>
+
+      {if $prefs.feature_help eq 'y'}
+<a href="{$prefs.helpurl}Games" target="tikihelp" class="tikihelp" title="{tr}Tikiwiki.org help{/tr}: {tr}Games{/tr}">
+<img border='0' src='img/icons/help.gif' alt="{tr}Help{/tr}" /></a>{/if}
+
+
+      {if $prefs.feature_view_tpl eq 'y'}
+<a href="tiki-edit_templates.php?template=tiki-list_games.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}games tpl{/tr}">
+<img src="img/icons/info.gif" border="0" height="16" width="16" alt='{tr}Edit Tpl{/tr}' /></a>{/if}</h1>
+
+    
   </td>
 {if $xtitle}
   <td align="center">
@@ -54,7 +65,7 @@
 <input type="hidden" name="editable" value="{$editable|escape}" />
 <table class="normal">
   <tr><td class="formcolor" style="text-align:center; vertical-align:bottom">
-        <a href="tiki-list_games.php?edit={$games[$editable].game}"><img src="games/thumbs/{$games[$editable].game}" alt=''/></td>
+        <a href="tiki-list_games.php?edit={$games[$editable].game}"><img border='0' src="games/thumbs/{$games[$editable].game}" alt=''/></td>
       <td class="formcolor">{tr}Description{/tr}<br />
       <textarea name="description" rows="4" cols="40">{$data|escape}</textarea></td>
   </tr>
@@ -71,7 +82,7 @@
 <table class="normal">
 {foreach from=$games item=ix}
    <tr><td class="even">
-      <a href="tiki-list_games.php?game={$ix.game}"><img src="games/thumbs/{$ix.game}" alt=''/></a>
+      <a href="tiki-list_games.php?game={$ix.game}"><img border='0' src="games/thumbs/{$ix.game}" alt=''/></a>
 
   {if $tiki_p_admin_games eq 'y'}
   <div align="center"><small>

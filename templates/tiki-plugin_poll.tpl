@@ -1,11 +1,9 @@
-~np~
-<div class="poll">
-<div class="poll-title">
-    <strong>{$poll_title}</strong>
+<div class="box">
+<div class="box-title">
+    <strong>{$poll_title}</strong><br />
 </div>
-<div class="poll-data">
+<div class="box-data">
 {$menu_info.name}
 {include file=tiki-poll.tpl}
 </div>
 </div>
-~/np~

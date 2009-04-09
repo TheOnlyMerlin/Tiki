@@ -5,7 +5,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
-global $smarty;
+
 global $ranklib; include_once ('lib/rankings/ranklib.php');
 
 $ranking = $ranklib->forums_ranking_last_posts($module_rows);
@@ -25,4 +25,4 @@ if ($ranking) {
 $smarty->assign('modForumsLastPosts', $ranking["data"]);
 $smarty->assign('nonums', isset($module_params["nonums"]) ? $module_params["nonums"] : 'n');
 
-
+?>

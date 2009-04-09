@@ -42,7 +42,7 @@ if (isset($_REQUEST["remind"])) {
 			$info = $userlib->get_user_info($_REQUEST["name"]);
 			if (!empty($info['valid']) && ($prefs['validateRegistration'] == 'y' || $prefs['validateUsers'] == 'y')) {
 				$showmsg = 'e';
-				$userlib->send_validation_email($_REQUEST["name"], $info['valid'], $info['email'], 'y');
+				$userlib->send_validation_email($_REQUEST["username"], $info['valid'], $info['email'], 'y');
 			} elseif (empty($info['email'])) { //only renew if i can mail the pass
 				$showmsg = 'e';
 				$smarty->assign('msg', tra('Unable to send mail. User has not configured email'));
@@ -84,7 +84,7 @@ if (isset($_REQUEST["remind"])) {
 		$smarty->assign('mail_same', $prefs['feature_clear_passwords']);
 		$smarty->assign('mail_pass', $pass);
 		$smarty->assign('mail_apass', md5($pass));
-		$smarty->assign('mail_ip', $tikilib->get_ip_address());
+		$smarty->assign('mail_ip', $_SERVER['REMOTE_ADDR']);
 		$mail_data = sprintf($smarty->fetchLang($languageEmail, 'mail/password_reminder_subject.tpl'),$_SERVER["SERVER_NAME"]);
 		$mail = new TikiMail($name);
 		$mail->setSubject(sprintf($mail_data, $_SERVER["SERVER_NAME"]));
@@ -106,7 +106,7 @@ if (isset($_REQUEST["remind"])) {
 		}
 
 		if ($prefs['login_is_email'] == 'y')
-			$tmp .= tra("to the email");
+			$tmp .= tra("to the email ");
 		else
 			$tmp .= tra("to the registered email address for");
 		$tmp .= " " . $name. ". ";

@@ -43,8 +43,6 @@ function smarty_block_remarksbox($params, $content, &$smarty) {
 			$icon='exclamation';
 		} else if ($type=='note') {
 			$icon='information';
-		} else {
-			$icon = 'information';
 		}
 	}
 	

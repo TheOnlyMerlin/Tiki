@@ -1,14 +1,24 @@
-{title help="Webmail"}{tr}Mail-in accounts{/tr}{/title}
+<h1><a href="tiki-admin_mailin.php" class="pagetitle">{tr}Mail-in accounts{/tr}</a>
+
+{if $prefs.feature_help eq 'y'}
+  <a href="{$prefs.helpurl}Webmail" target="tikihelp" class="tikihelp" title="{tr}Admin Webmail{/tr}">
+  {icon _id='help'}</a>
+{/if}
+
+{if $prefs.feature_view_tpl eq 'y'}
+  <a href="tiki-edit_templates.php?template=tiki-admin_mailin.tpl" target="tikihelp" class="tikihelp" title="{tr}View template{/tr}: {tr}Admin Mailing Template{/tr}">
+  {icon _id='shape_square_edit'}</a>
+{/if}</h1>
 
 <table class="normal">
   <tr>
-    <th>
+    <td class="heading">
       {tr}Action{/tr}
-    </th>
-    <th>
+    </td>
+    <td class="heading">
       {tr}Account{/tr}
-    </th>
-    <th>{tr}Type{/tr}</th>
+    </td>
+    <td class="heading">{tr}Type{/tr}</td>
   </tr>
   {cycle values="even,odd" print=false}
   {section name=ix loop=$accounts}
@@ -85,7 +95,7 @@
 {/section}
 <option value="" {if $info.article_topicId eq 0}selected="selected"{/if}>{tr}None{/tr}</option>
 </select>
-{if $tiki_p_admin_cms eq 'y'}<a href="tiki-admin_topics.php" class="link">{tr}Admin Topics{/tr}</a>{/if}
+{if $tiki_p_admin_cms eq 'y'}<a href="tiki-admin_topics.php" class="link">{tr}Admin topics{/tr}</a>{/if}
 </td><td></td><td></td></tr>
 <tr id='article_type' class="formcolor" {if $info.type ne 'article-put'}style="display:none;"{/if}><td>{tr}Article Type{/tr}</td><td>
 <select id='articletype' name='article_type'>
@@ -94,7 +104,7 @@
 <option value="{$types[t].type|escape}" {if $info.article_type eq $types[t].type}selected="selected"{/if}>{tr}{$types[t].type}{/tr}</option>
 {/section}
 </select>
-{if $tiki_p_admin_cms eq 'y'}<a href="tiki-article_types.php" class="link">{tr}Admin Types{/tr}</a>{/if}
+{if $tiki_p_admin_cms eq 'y'}<a href="tiki-article_types.php" class="link">{tr}Admin types{/tr}</a>{/if}
 </td><td></td><td></td></tr>
 
     <tr class="formcolor">

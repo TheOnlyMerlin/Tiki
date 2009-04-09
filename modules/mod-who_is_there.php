@@ -5,7 +5,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
-global $tikilib, $smarty;
+
 $logged_users = $tikilib->count_sessions();
 
 $online_users = $tikilib->get_online_users();
@@ -21,4 +21,4 @@ if(isset($module_params["cluster"]) && $module_params["cluster"]==1) {
 $smarty->assign_by_ref('online_users', $online_users);
 $smarty->assign('logged_users', $logged_users);
 
-
+?>

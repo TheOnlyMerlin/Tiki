@@ -1,48 +1,38 @@
 {popup_init src="lib/overlib.js"}
-
-{title url="tiki-blog_post.php?blogId=$blogId&postId=$postId"}{if $postId gt 0}{tr}Edit Post{/tr}{else}{tr}Post{/tr}{/if} - {$blog_data.title|escape}{/title}
+<h1><a class="pagetitle" href="tiki-blog_post.php?blogId={$blogId}&amp;postId={$postId}">{tr}Edit Post{/tr}</a></h1>
 
 <div class="navbar">
-	{if $prefs.feature_wysiwyg eq 'y' and $prefs.wysiwyg_optional eq 'y'}
-		{if $wysiwyg ne 'y'}
-			{button href="tiki-blog_post.php?wysiwyg=y" _auto_args='blogId,postId' _text="{tr}Use Wysiwyg Editor{/tr}"}
-		{else}
-			{button href="tiki-blog_post.php?wysiwyg=n" _auto_args='blogId,postId' _text="{tr}Use Normal Editor{/tr}"}
-		{/if}
-	{/if}
-
-	{if $blogId gt 0 }
-		{assign var=thisblog value=$blogId|sefurl:blog}
-		{button href=$thisblog _text="{tr}View Blog{/tr}"}
-	{/if}
-
-	{if $blogs|@count gt 1 }
-		{* No need for users to go to log list if they are already looking at the only blog *}
-		{button href="tiki-list_blogs.php" _text="{tr}List Blogs{/tr}"}
-	{/if}
+{if $prefs.feature_wysiwyg eq 'y' and $prefs.wysiwyg_optional eq 'y'}
+{if $wysiwyg ne 'y'}
+<span class="button2"><a class="linkbut" href="tiki-blog_post.php?{if $blogId ne ''}blogId={$blogId}&amp;{/if}{if $postId ne ''}&amp;postId={$postId}{/if}&amp;wysiwyg=y">{tr}Use wysiwyg editor{/tr}</a></span>
+{else}
+<span class="button2"><a class="linkbut" href="tiki-blog_post.php?{if $blogId ne ''}blogId={$blogId}&amp;{/if}{if $postId ne ''}&amp;postId={$postId}{/if}&amp;wysiwyg=n">{tr}Use normal editor{/tr}</a></span>
+{/if}
+{/if}
+{if $blogId > 0 }
+<span class="button2"><a class="linkbut" href="tiki-view_blog.php?blogId={$blogId}">{tr}View Blog{/tr}</a></span>
+{/if}
+<span class="button2"><a class="linkbut" href="tiki-list_blogs.php">{tr}List Blogs{/tr}</a></span>
 </div>
 
 {if $contribution_needed eq 'y'}
-	<div class="simplebox highlight">{tr}A contribution is mandatory{/tr}</div>
+<div class="simplebox highlight">{tr}A contribution is mandatory{/tr}</div>
 {/if}
 {if $preview eq 'y'}
 	{include file=tiki-preview_post.tpl}
 {/if}
 
-{if $wysiwyg ne 'y'}
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
   {tr}If you want to use images please save the post first and you will be able to edit/post images. Use the &lt;img&gt; snippet to include uploaded images in the textarea editor or use the image URL to include images using the WYSIWYG editor. {/tr}
   {if $wysiwyg eq 'n' and $prefs.wysiwyg_optional eq 'y'}
     <hr />{tr}Use ...page... to separate pages in a multi-page post{/tr}
   {/if}
 {/remarksbox}
-{/if}
 
 <form enctype="multipart/form-data" name='blogpost' method="post" action="tiki-blog_post.php" id ='editpageform'>
 <input type="hidden" name="wysiwyg" value="{$wysiwyg|escape}" />
 <input type="hidden" name="postId" value="{$postId|escape}" />
-
-{if $blogs|@count gt 1 and ( !isset($blogId) or $blogId eq 0 )}
+<input type="hidden" name="blogId" value="{$blogId|escape}" />
 <table class="normal">
 <tr><td class="editblogform">{tr}Blog{/tr}</td><td class="editblogform">
 <select name="blogId">
@@ -51,11 +41,6 @@
 {/section}
 </select>
 </td></tr>
-{else}
-<input type="hidden" name="blogId" value="{$blogId|escape}" />
-<table class="normal">
-{/if}
-
 {assign var=area_name value="blogedit"}
 {if $prefs.feature_smileys eq 'y' && not $wysiwyg}
 <tr><td class="editblogform">{tr}Smileys{/tr}</td><td class="editblogform">
@@ -108,7 +93,7 @@
   </td>
 </tr>
 
-{if $postId > 0 && $wysiwyg ne 'y'}
+{if $postId > 0}
 	<tr><td class="editblogform">{tr}Upload image for this post{/tr}</td>
 	<td class="editblogform">
 	<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
@@ -128,7 +113,7 @@
 				<textarea rows="1" cols="40">{$post_images[ix].absolute|escape}</textarea>
 			</td>
 			<td>
-				<a href="tiki-blog_post.php?postId={$postId}&amp;remove_image={$post_images[ix].imgId}"><img src='img/icons/trash.gif' alt='{tr}Trash{/tr}'/></a>
+				<a href="tiki-blog_post.php?postId={$postId}&amp;remove_image={$post_images[ix].imgId}"><img border='0' src='img/icons/trash.gif' alt='{tr}Trash{/tr}'/></a>
 			</td>
 		</tr>
 		{/section}
@@ -136,7 +121,6 @@
 		</td></tr>
 	{/if}
 {/if}
-
 <tr><td class="editblogform">{tr}Mark entry as private:{/tr}</td>
   <td class="editblogform"><input type="checkbox" name="blogpriv" {if $blogpriv eq 'y'}checked="checked"{/if} /></td></tr>
 {if $prefs.blog_spellcheck eq 'y'}
@@ -148,17 +132,15 @@
 {if $prefs.feature_contribution eq 'y'}
 {include file="contribution.tpl"}
 {/if}
-<tr><td class="editblogform">&nbsp;</td><td class="editblogform">
+<tr><td class="editblogform">&nbsp;</td><td class="editblogform"><input type="submit" class="wikiaction" name="save" value="{tr}Save{/tr}" />
 <input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" />
-<input type="submit" class="wikiaction" name="save" value="{tr}Save{/tr}" />
 <input type="submit" class="wikiaction" name="save_exit" value="{tr}Save and Exit{/tr}" />
-<input type="hidden" name="referer" value="{$referer|escape}" />
-&nbsp;&nbsp;&nbsp;<input type="submit" name="cancel" onclick='document.location="{$referer|escape:'html'}";return false;' value="{tr}Cancel{/tr}"/>
 </td></tr>
 </table>
 </form>
 <br />
 
-{button href="#edithelp" _onclick="javascript:show('edithelpzone');hide('wikiplhelp-tab');show('wikihelp-tab'); return true;" name="edithelp"	_text="{tr}Wiki Help{/tr}"}
-{button href="#edithelp" _onclick="javascript:show('edithelpzone');hide('wikihelp-tab');show('wikiplhelp-tab'); return true;" name="edithelp" _text="{tr}Plugin Help{/tr}"}
+<div class="button2">
+<a href="#edithelp" onclick="javascript:flip('edithelpzone'); return true;" name="edithelp" class="linkbut">{tr}Wiki Help{/tr}</a>
+</div>
 {include file=tiki-edit_help.tpl}

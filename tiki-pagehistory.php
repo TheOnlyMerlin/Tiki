@@ -43,6 +43,8 @@ if (!isset($_REQUEST["page"])) {
 	$smarty->assign_by_ref('page', $_REQUEST["page"]);
 }
 
+include_once ("tiki-pagesetup.php");
+
 // Now check permissions to access this page
 if (!isset($_REQUEST["source"])) {
     if (!$tikilib->user_has_perm_on_object($user, $_REQUEST["page"],'wiki page','tiki_p_view')  || (isset($tiki_p_wiki_view_history) && $tiki_p_wiki_view_history != 'y') ) {
@@ -109,8 +111,8 @@ if (isset($source)) {
 	else {
 		$version = $histlib->get_version($page, $source);
 		if ($version) {
-			if ($version['is_html'] == 1 ) {
-				$smarty->assign('sourced', $version['data']);
+			if ($info['is_html'] == 1 ) {
+				$smarty->assign('sourced', $info["data"]);
 			} else {
 				$smarty->assign('sourced', nl2br($version["data"]));
 			}
@@ -197,7 +199,7 @@ if ($prefs['feature_multilingual'] == 'y') {
 			}
 
 		// Build URI / Redirect
-		$diff_style = isset( $_REQUEST['diff_style'] ) ? rawurlencode( $_REQUEST['diff_style'] ) : rawurlencode($prefs['default_wiki_diff_style']);
+		$diff_style = isset( $_REQUEST['diff_style'] ) ? rawurlencode( $_REQUEST['diff_style'] ) : '';
 		$comment = rawurlencode( "Updating from $page at version {$info['version']}" );
 
 		if( $newver == 0 ) {
@@ -218,7 +220,7 @@ if ($prefs['feature_multilingual'] == 'y') {
 if (isset($_REQUEST["compare"]))
 	histlib_helper_setup_diff( $page, $oldver, $newver );
 else
-	$smarty->assign('diff_style', $prefs['default_wiki_diff_style']);
+	$smarty->assign('diff_style', '');
 
 if($info["flag"] == 'L')
     $smarty->assign('lock',true);  

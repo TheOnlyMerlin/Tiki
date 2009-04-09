@@ -10,9 +10,8 @@
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
+	die();
 }
-
-require_once 'tiki-filter-base.php';
 
 // ---------------------------------------------------------------------
 // basic php conf adjustment
@@ -40,7 +39,6 @@ ini_set('magic_quotes_runtime',0);
 ini_set('allow_call_time_pass_reference','On');
 // ---------------------------------------------------------------------
 // inclusions of mandatory stuff and setup
-require_once("lib/setup/compat.php");
 require_once("lib/tikiticketlib.php");
 require_once("db/tiki-db.php");
 require_once("setup_smarty.php"); 
@@ -57,17 +55,23 @@ $needed_prefs = array(
 	'session_db' => 'n',
 	'sessions_silent' => 'disabled',
 	'language' => 'en',
-	'feature_pear_date' => 'y',
-	'lastUpdatePrefs' => -1
+	'cookie_name' => 'tikiwiki',
+	'rememberme' => 'disabled',
+	'feature_intertiki' => 'n',
+	'tiki_key' => '',
+	'feature_intertiki_mymaster' => '',
+	'feature_intertiki_sharedcookie' => 'n',
+	'interlist' => array(),
+	'auth_method' => 'tiki',
+	'smarty_security' => 'n'
 );
-
 $tikilib->get_preferences($needed_prefs, true, true);
-if ( $prefs['lastUpdatePrefs'] == -1 ) {
-	$tikilib->query('insert into `tiki_preferences`(`name`,`value`) values(?,?)', array('lastUpdatePrefs', 1));
-}
+extract($prefs);
 
-require_once('lib/tikidate.php');
-$tikidate = new TikiDate();
+// Handle Smarty Security
+if ( $prefs['smarty_security'] == 'y' ) {
+	$smarty->security = true;
+}
 
 // set session lifetime
 if ($prefs['session_lifetime'] > 0) {
@@ -76,11 +80,19 @@ if ($prefs['session_lifetime'] > 0) {
 
 // is session data  stored in DB or in filesystem?
 if ($prefs['session_db'] == 'y') {
-	if ($api_tiki == 'adodb') {
-		require_once('lib/tikisession-adodb.php');
-	} elseif ($api_tiki == 'pdo') {
-		require_once('lib/tikisession-pdo.php');
-	}
+	include('db/local.php');
+	$ADODB_SESSION_DRIVER=$db_tiki;
+	$ADODB_SESSION_CONNECT=$host_tiki;
+	$ADODB_SESSION_USER=$user_tiki;
+	$ADODB_SESSION_PWD=$pass_tiki;
+	$ADODB_SESSION_DB=$dbs_tiki;
+	unset($db_tiki);
+	unset($host_tiki);
+	unset($user_tiki);
+	unset($pass_tiki);
+	unset($dbs_tiki);
+	ini_set('session.save_handler','user');
+	include_once('lib/adodb/session/adodb-session.php');
 }
 
 // Only accept PHP's session ID in URL when the request comes from the tiki server itself
@@ -89,20 +101,9 @@ if ( isset($_GET['PHPSESSID']) && $_SERVER['REMOTE_ADDR'] == '127.0.0.1' ) {
 	$_COOKIE['PHPSESSID'] = $_GET['PHPSESSID'];
 	session_id($_GET['PHPSESSID']);
 }
-if ( $prefs['sessions_silent'] == 'disabled' or !empty($_COOKIE) ) {
+if ($sessions_silent == 'disabled' or !empty($_COOKIE)) {
 	// enabing silent sessions mean a session is only started when a cookie is presented
 	session_start();
-}
-
-// Check if phpCAS mods is installed 
-$phpcas_enabled = is_file('lib/phpcas/source/CAS/CAS.php') ? 'y' : 'n';
-
-// Retrieve all preferences
-require_once('lib/setup/prefs.php');
-
-// Handle Smarty Security
-if ( $prefs['smarty_security'] == 'y' ) {
-	$smarty->security = true;
 }
 
 require_once("lib/userslib.php");
@@ -110,21 +111,61 @@ $userlib = new UsersLib($dbTiki);
 require_once("lib/tikiaccesslib.php");
 $access = new TikiAccessLib();
 require_once("lib/breadcrumblib.php");
+//require_once("lib/tikihelplib.php");
 
 // ------------------------------------------------------
 // DEAL WITH XSS-TYPE ATTACKS AND OTHER REQUEST ISSUES
 
-function remove_gpc(&$var) {
+require_once('lib/setup/sanitization.php');
+function make_clean(&$var,$gpc=false) {
 	if ( is_array($var) ) {
 		foreach ( $var as $key=>$val ) {
-			remove_gpc($var[$key]);
+			make_clean($var[$key],$gpc);
 		}
 	} else {
-		$var = stripslashes($var);
+		if ($gpc) $var = stripslashes($var);
+		if ( ! isset($_SERVER['SCRIPT_FILENAME']) || basename($_SERVER['SCRIPT_FILENAME']) != 'tiki-admin.php' ) {
+			$var = RemoveXSS($var);
+		}
 	}
 }
 
+// deal with register_globals
+if ( ini_get('register_globals') ) {
+	foreach ( array($_ENV, $_GET, $_POST, $_COOKIE, $_SERVER) as $superglob ) {
+		foreach ( $superglob as $key=>$val ) {
+			if ( isset($GLOBALS[$key]) && $GLOBALS[$key]==$val ) { // if global has been set some other way
+				// that is OK (prevents munging of $_SERVER with ?_SERVER=rubbish etc.)
+				unset($GLOBALS[$key]);
+			}
+		}
+	}
+}
+make_clean($_GET,get_magic_quotes_gpc());
+make_clean($_POST,get_magic_quotes_gpc());
+make_clean($_COOKIE,get_magic_quotes_gpc());
+make_clean($_SERVER['QUERY_STRING']);
+make_clean($_SERVER['REQUEST_URI']);
+make_clean($_SERVER['PHP_SELF']);
+
+// deal with old request globals
+// Tiki uses them (admin for instance) so compatibility is required
+if ( false ) { // if pre-PHP 4.1 compatibility is not required
+	unset($GLOBALS['HTTP_GET_VARS']);
+	unset($GLOBALS['HTTP_POST_VARS']);
+	unset($GLOBALS['HTTP_COOKIE_VARS']);
+	unset($GLOBALS['HTTP_ENV_VARS']);
+	unset($GLOBALS['HTTP_SERVER_VARS']);
+	unset($GLOBALS['HTTP_SESSION_VARS']);
+	unset($GLOBALS['HTTP_POST_FILES']);
+} else {
+	$GLOBALS['HTTP_GET_VARS'] =& $_GET;
+	$GLOBALS['HTTP_POST_VARS'] =& $_POST;
+	$GLOBALS['HTTP_COOKIE_VARS'] =& $_COOKIE;
+}
+
 // mose : simulate strong var type checking for http vars
+$patterns['login']   = "/^[-_a-zA-Z0-9@\.]*$/"; // special check for logins, not to be used in varcheck because compat with already created accounts
 $patterns['int']   = "/^[0-9]*$/"; // *Id
 $patterns['intSign']   = "/^[-+]?[0-9]*$/"; // *offset,
 $patterns['char']  = "/^(pref:)?[-,_a-zA-Z0-9]*$/"; // sort_mode 
@@ -143,7 +184,7 @@ $vartype['offset'] = 'intSign';
 $vartype['prev_offset'] = 'intSign';
 $vartype['next_offset'] = 'intSign';
 $vartype['thresold'] = 'int';
-$vartype['sort_mode'] = '+char';
+$vartype['sort_mode'] = '+char'; // TODO: only allow valid field names and order here!
 $vartype['file_sort_mode'] = 'char';
 $vartype['file_offset'] = 'int';
 $vartype['file_find'] = 'string';
@@ -152,11 +193,11 @@ $vartype['file_next_offset'] = 'intSign';
 $vartype['comments_offset'] = 'int';
 $vartype['comments_thresold'] = 'int';
 $vartype['comments_parentId'] = '+int';
-$vartype['thread_sort_mode'] = '+char';
-$vartype['thread_style'] = '+char';
+$vartype['thread_sort_mode'] = '+char';  // TODO: only allow valid field names and order here!
+$vartype['thread_style'] = '+char';  // TODO: only allow valid field names and order here!
 $vartype['comments_per_page'] = '+int';
 $vartype['topics_offset'] = 'int';
-$vartype['topics_sort_mode'] = '+char';
+$vartype['topics_sort_mode'] = '+char';  // TODO: only allow valid field names and order here!
 $vartype['priority'] = 'int';
 $vartype['theme'] = 'string';
 $vartype['flag'] = 'char';
@@ -194,7 +235,7 @@ $vartype['game'] = 'string'; // from games
 $vartype['aid'] = '+int';
 $vartype['description'] = 'string';
 $vartype['filter_active'] = 'char';
-$vartype['filter_name'] = 'string';
+$vartype['filter_name'] = '+string';
 $vartype['newmajor'] = '+int';
 $vartype['newminor'] = '+int';
 $vartype['pid'] = '+int';
@@ -203,7 +244,6 @@ $vartype['rolename'] = 'char';
 $vartype['type'] = 'string';
 $vartype['userole'] = 'int';
 $vartype['focus'] = 'string';
-$vartype['filegals_manager'] = 'vars';
 $vartype['ver'] = 'dotvars'; // filename hash for drawlib + rss type for rsslib
 
 function varcheck(&$array, $category) {
@@ -230,10 +270,7 @@ function varcheck(&$array, $category) {
 				}
 
 				if ( is_array($rv) ) {
-					$tmp = varcheck($array[$rq], $category);
-					if ($tmp != "") {	
-						$return[] = $tmp;
-					}
+					$return[] = varcheck($array[$rq], $category);
 				} else {
 					// Check single parameters
 					$pattern_key = $has_sign ? substr($vartype[$rq], 1) : $vartype[$rq];
@@ -249,6 +286,22 @@ function varcheck(&$array, $category) {
 
 	return implode('<br />', $return);
 }
+
+$varcheck_vars = array('_COOKIE', '_GET', '_POST', '_ENV', '_SERVER');
+$varcheck_errors = '';
+foreach ( $varcheck_vars as $var ) {
+	if ( ! isset($$var) ) continue;
+	if ( ( $tmp = varcheck($$var, $var) ) != '' ) {
+		if ( $varcheck_errors != '' ) $varcheck_errors .= '<br />';
+		$varcheck_errors .= $tmp;
+	}
+}
+unset($tmp);
+
+// rebuild $_REQUEST after sanity check
+unset($_REQUEST);
+$_REQUEST = array_merge($_GET, $_POST);
+///$_REQUEST = array_merge($_COOKIE, $_GET, $_POST, $_ENV, $_SERVER);
 
 unset($_COOKIE['offset']);
 if (!empty($_REQUEST['highlight'])) {
@@ -274,21 +327,21 @@ if (empty($_SERVER['SERVER_NAME'])) {
 
 
 // in the case of tikis on same domain we have to distinguish the realm
-// changed cookie and session variable name by a name made with browsertitle 
+// changed cookie and session variable name by a name made with siteTitle 
 $cookie_site = ereg_replace("[^a-zA-Z0-9]", "", $prefs['cookie_name']);
 $user_cookie_site = 'tiki-user-'.$cookie_site;
 
 // if remember me is enabled, check for cookie where auth hash is stored
 // user gets logged in as the first user in the db with a matching hash
 if (($prefs['rememberme'] != 'disabled') 
-	and (isset($_COOKIE["$user_cookie_site"]))
+	and (isset($_COOKIE["$user_cookie_site"])) 
 	and (!isset($user) and !isset($_SESSION["$user_cookie_site"]))) {
 	if ($prefs['feature_intertiki'] == 'y' and !empty($prefs['feature_intertiki_mymaster']) and $prefs['feature_intertiki_sharedcookie'] == 'y') {
 		$rpcauth = $userlib->get_remote_user_by_cookie($_COOKIE["$user_cookie_site"]);
 		if (is_object($rpcauth)) {
 			$response_value = $rpcauth->value();
-			if (is_object($response_value)) {
-				$user = $response_value->scalarval();
+			if (is_object($response_value))  {
+			$user = $response_value->scalarval();
 			}
 		}
 	} else {
@@ -309,7 +362,14 @@ if (($prefs['auth_method'] == 'ws') and (isset($_SERVER['REMOTE_USER']))) {
 	} elseif ($userlib->user_exists(substr($_SERVER['REMOTE_USER'], strpos($_SERVER['REMOTE_USER'], "\\") + 2))){
 		// Check for the username without the domain name
 		$_SESSION["$user_cookie_site"] = substr($_SERVER['REMOTE_USER'], strpos($_SERVER['REMOTE_USER'], "\\") + 2);
-	}
+	}																						 
+}
+
+// check if phpCAS mods is installed 
+if (is_file('lib/phpcas/source/CAS/CAS.php')) {
+	$phpcas_enabled = 'y';
+} else {
+	$phpcas_enabled = 'n';
 }
 
 // Check for Shibboleth Login
@@ -370,7 +430,58 @@ if (isset($_SESSION["$user_cookie_site"])) {
 
 // --------------------------------------------------------------
 
-if ( ! $cachelib->isCached("allperms") ) {
+if (isset($_REQUEST['highlight']) || (isset($prefs['feature_referer_highlight']) && $prefs['feature_referer_highlight'] == 'y') ) {
+  $smarty->load_filter('output','highlight');
+}
+
+
+/* \brief  substr with a utf8 string - works only with $start and $length positive or nuls
+ * This function is the same as substr but works with multibyte
+ * In a multybyte sequence, the first byte of a multibyte sequence that represents a non-ASCII character is always in the range 0xC0 to 0xFD
+ * and it indicates how many bytes follow for this character.
+ * All further bytes in a multibyte sequence are in the range 0x80 to 0xBF.
+ */
+if (function_exists('mb_substr')) {
+    mb_internal_encoding("UTF-8");
+}
+else {
+    function mb_substr($str, $start, $len = '', $encoding="UTF-8"){
+        $limit = strlen($str);
+        for ($s = 0; $start > 0;--$start) {// found the real start
+            if ($s >= $limit)
+                break;
+            if ($str[$s] <= "\x7F")
+                ++$s;
+            else {
+                ++$s; // skip length
+                while ($str[$s] >= "\x80" && $str[$s] <= "\xBF")
+                    ++$s;
+            }
+        }
+        if ($len == '')
+            return substr($str, $s);
+        else {
+            for ($e = $s; $len > 0; --$len) {//found the real end
+                if ($e >= $limit)
+                    break;
+                if ($str[$e] <= "\x7F")
+                    ++$e;
+                else {
+                    ++$e;//skip length
+                    while ($str[$e] >= "\x80" && $str[$e] <= "\xBF" && $e < $limit)
+                        ++$e;
+                       }
+            }
+        return substr($str, $s, $e - $s);
+		}
+    }
+}
+
+
+// We might need to cache this on a per-user basis
+// Cache cache
+// function user_has_permission($user,$perm) 
+if(!$cachelib->isCached("allperms")) {
 	$allperms = $userlib->get_permissions(0, -1, 'permName_desc', '', '');
 	$cachelib->cacheItem("allperms",serialize($allperms));
 } else {
@@ -378,20 +489,17 @@ if ( ! $cachelib->isCached("allperms") ) {
 }
 $allperms = $allperms["data"];
 
-// Initializes permissions
-$admin_perms = array();
-foreach ( $allperms as $vperm ) {
+//Initializes permissions
+
+foreach ($allperms as $vperm) {
 	$perm = $vperm["permName"];
 	$$perm = 'n';
+
 	$smarty->assign("$perm", 'n');
-	if ( $vperm['admin'] == 'y' ) {
-		$admin_perms[] = $perm;
-	}
 }
 
 // Permissions
-if ( $user && ( $user == 'admin' || $userlib->user_has_permission($user, 'tiki_p_admin') ) ) {
-	// Gives admins all permissions
+if ($user == 'admin' || ($user && $userlib->user_has_permission($user, 'tiki_p_admin'))) {//Gives admins all permissions
 	foreach ($allperms as $vperm) {
 		$perm = $vperm['permName'];
 		$$perm = 'y';
@@ -400,117 +508,19 @@ if ( $user && ( $user == 'admin' || $userlib->user_has_permission($user, 'tiki_p
 } else {
 	$perms = $userlib->get_user_detailled_permissions($user);
 	foreach ($perms as $perm) {
-		$smarty->assign($perm['permName'], 'y');
-		$$perm['permName'] = 'y';
-		if ( in_array($perm['permName'], $admin_perms) ) { // assign all perms of the perm type
+	    $smarty->assign($perm['permName'], 'y');
+	    $$perm['permName'] = 'y';
+		if ($perm['admin'] == 'y') { // assign all perms of the perm type
 			$ps = $userlib->get_permissions(0, -1, 'permName_desc', '', $perm['type']);
-			foreach ($ps['data'] as $p) {
-				$$p['permName'] = 'y';
-				$smarty->assign($p['permName'], 'y');
+			foreach ($ps['data'] as $perm) {
+				$$perm['permName'] = 'y';
+				$smarty->assign($perm['permName'], 'y');
 			}
 		}
 	}
 }
 
-unset($admin_perms);
 unset($allperms);
-
-// --------------------------------------------------------------
-$magic_quotes_gpc = get_magic_quotes_gpc();
-$clean_xss = ( $tiki_p_trust_input != 'y' );
-
-// deal with register_globals
-if ( ini_get('register_globals') ) {
-	foreach ( array($_ENV, $_GET, $_POST, $_COOKIE, $_SERVER) as $superglob ) {
-		foreach ( $superglob as $key=>$val ) {
-			if ( isset($GLOBALS[$key]) && $GLOBALS[$key]==$val ) { // if global has been set some other way
-				// that is OK (prevents munging of $_SERVER with ?_SERVER=rubbish etc.)
-				unset($GLOBALS[$key]);
-			}
-		}
-	}
-}
-
-$serverFilter = new DeclFilter;
-if( $clean_xss ) {
-	$serverFilter->addStaticKeyFilters( array(
-		'QUERY_STRING' => 'xss',
-		'REQUEST_URI' => 'xss',
-		'PHP_SELF' => 'xss',
-	) );
-}
-$jitServer = new JitFilter( $_SERVER );
-$_SERVER = $serverFilter->filter( $_SERVER );
-
-if( $magic_quotes_gpc ) {
-	remove_gpc($_GET);
-	remove_gpc($_POST);
-	remove_gpc($_COOKIE);
-}
-
-// Rebuild request after gpc fix
-// _REQUEST should only contain GET and POST in the app
-$_REQUEST = array_merge($_GET, $_POST);
-
-// Preserve unfiltered values accessible through JIT filtering
-$jitPost = new JitFilter( $_POST );
-$jitGet = new JitFilter( $_GET );
-$jitRequest = new JitFilter( $_REQUEST );
-$jitCookie = new JitFilter( $_COOKIE );
-
-$jitPost->setDefaultFilter( 'xss' );
-$jitGet->setDefaultFilter( 'xss' );
-$jitRequest->setDefaultFilter( 'xss' );
-$jitCookie->setDefaultFilter( 'xss' );
-
-// Apply configured filters to all other input
-if( ! isset( $inputConfiguration ) ) $inputConfiguration = array();
-$inputFilter = DeclFilter::fromConfiguration( $inputConfiguration, array('catchAllFilter') );
-if( $clean_xss ) {
-	$inputFilter->addCatchAllFilter('xss');
-}
-
-$_GET = $inputFilter->filter( $_GET );
-$_POST = $inputFilter->filter( $_POST );
-$_COOKIE = $inputFilter->filter( $_COOKIE );
-
-// Rebuild request with filtered values
-$_REQUEST = array_merge($_GET, $_POST);
-
-if ( $tiki_p_trust_input != 'y' ) {
-	$varcheck_vars = array('_COOKIE', '_GET', '_POST', '_ENV', '_SERVER');
-	$varcheck_errors = '';
-	foreach ( $varcheck_vars as $var ) {
-		if ( ! isset($$var) ) continue;
-		if ( ( $tmp = varcheck($$var, $var) ) != '' ) {
-			if ( $varcheck_errors != '' ) $varcheck_errors .= '<br />';
-			$varcheck_errors .= $tmp;
-		}
-	}
-	unset($tmp);
-}
-
-// deal with old request globals (e.g. used by Smarty)
-$GLOBALS['HTTP_GET_VARS'] =& $_GET;
-$GLOBALS['HTTP_POST_VARS'] =& $_POST;
-$GLOBALS['HTTP_COOKIE_VARS'] =& $_COOKIE;
-unset($GLOBALS['HTTP_ENV_VARS']);
-unset($GLOBALS['HTTP_SERVER_VARS']);
-unset($GLOBALS['HTTP_SESSION_VARS']);
-unset($GLOBALS['HTTP_POST_FILES']);
-
-
-// --------------------------------------------------------------
-
-if (isset($_REQUEST['highlight']) || (isset($prefs['feature_referer_highlight']) && $prefs['feature_referer_highlight'] == 'y') ) {
-  $smarty->load_filter('output','highlight');
-}
-
-if (function_exists('mb_internal_encoding')) {
-	mb_internal_encoding("UTF-8");
-}
-
-// --------------------------------------------------------------
 
 // Fix IIS servers not setting what they should set (ay ay IIS, ay ay)
 if (!isset($_SERVER['QUERY_STRING']))

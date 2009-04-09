@@ -1,5 +1,4 @@
 <?php
-// $Id$
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
@@ -9,7 +8,6 @@ class HeaderLib {
 	var $title;
 	var $jsfiles;
 	var $js;
-	var $jq_onready;
 	var $cssfiles;
 	var $css;
 	var $rssfeeds;
@@ -19,7 +17,6 @@ class HeaderLib {
 		$this->title = '';
 		$this->jsfiles = array();
 		$this->js = array();
-		$this->jq_onready = array();
 		$this->cssfiles = array();
 		$this->css = array();
 		$this->rssfeeds = array();
@@ -39,18 +36,6 @@ class HeaderLib {
 	function add_js($script,$rank=0) {
 		if (empty($this->js[$rank]) or !in_array($script,$this->js[$rank])) {
 			$this->js[$rank][] = $script;
-		}
-	}
-
-	/**
-	 * Adds lines or blocks of JQuery JavaScript to $jq(document).ready handler
-	 * @param $script = Script to execute
-	 * @param $rank   = Execution order (default=0)
-	 * @return nothing
-	 */
-	function add_jq_onready($script,$rank=0) {
-		if (empty($this->jq_onready[$rank]) or !in_array($script,$this->jq_onready[$rank])) {
-			$this->jq_onready[$rank][] = $script;
 		}
 	}
 
@@ -98,11 +83,10 @@ class HeaderLib {
 	}
 
 	function output_headers() {
-		global $style_ie6_css, $prefs;
+		global $style_ie6_css;
 
 		ksort($this->jsfiles);
 		ksort($this->js);
-		ksort($this->jq_onready);
 		ksort($this->cssfiles);
 		ksort($this->css);
 		ksort($this->rssfeeds);
@@ -123,12 +107,7 @@ class HeaderLib {
 			foreach ($this->cssfiles as $x=>$cssf) {
 				$back.= "<!-- cssfile $x -->\n";
 				foreach ($cssf as $cf) {					
-					global $tikipath, $tikidomain, $style_base;
-					if (!empty($tikidomain) && is_file("styles/$tikidomain/$style_base/$cf")) {
-						$cf = "styles/$tikidomain/$style_base/$cf";
-					} elseif (is_file("styles/$style_base/$cf")) {
-						$cf = "styles/$style_base/$cf";
-					}
+					global $tikipath;
 					$cfprint = str_replace('.css','',$cf) . '-print.css';
 					if (!file_exists($tikipath . $cfprint)) {
 						$back.= "<link rel=\"stylesheet\" href=\"$cf\" type=\"text/css\" />\n";
@@ -139,6 +118,13 @@ class HeaderLib {
 					}
 				}
 			}
+		}
+
+		// Handle theme's special CSS file for IE6 hacks
+		if ( $style_ie6_css != '' ) {
+			$back .= "<!--[if IE 6]>\n"
+				.'<link rel="stylesheet" href="'.$style_ie6_css.'" type="text/css" />'."\n"
+				."<![endif]-->\n";
 		}
 
 		if (count($this->css)) {
@@ -152,14 +138,6 @@ class HeaderLib {
 			$back.= "-->\n</style>\n\n";
 		}
 
-		// Handle theme's special CSS file for IE6 hacks
-			$back .= "<!--[if lt IE 7]>\n"
-					.'<link rel="stylesheet" href="css/ie6.css" type="text/css" />'."\n";
-			if ( $style_ie6_css != '' ) {
-				$back .= '<link rel="stylesheet" href="'.$style_ie6_css.'" type="text/css" />'."\n";
-			}
-			$back .= "<![endif]-->\n";
-
 		if (count($this->jsfiles)) {
 			foreach ($this->jsfiles as $x=>$jsf) {
 				$back.= "<!-- jsfile $x -->\n";
@@ -171,29 +149,14 @@ class HeaderLib {
 		}
 
 		if (count($this->js)) {
-			$back.= "<script type=\"text/javascript\">\n<!--//--><![CDATA[//><!--\n";
+			$back.= "<script type=\"text/javascript\">\n<!--\n";
 			foreach ($this->js as $x=>$js) {
 				$back.= "// js $x \n";
 				foreach ($js as $j) {
 					$back.= "$j\n";
 				}
 			}
-			$back.= "//--><!]]>\n</script>\n\n";
-		}
-		
-		if ($prefs['feature_jquery'] == 'y') {
-			if (count($this->jq_onready)) {
-				$back .= "<script type=\"text/javascript\">\n<!--//--><![CDATA[//><!--\n";
-				$back .= '$jq("document").ready(function(){'."\n";
-				foreach ($this->jq_onready as $x=>$js) {
-					$back.= "// jq_onready $x \n";
-					foreach ($js as $j) {
-						$back.= "$j\n";
-					}
-				}
-				$back .= "});\n";
-				$back.= "//--><!]]>\n</script>\n";
-			}
+			$back.= "-->\n</script>\n\n";
 		}
 		
 		if (count($this->rssfeeds)) {

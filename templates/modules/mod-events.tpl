@@ -67,7 +67,7 @@ $parsed = parse_url($_SERVER["REQUEST_URI"]);
 if (!isset($parsed["query"])) {
 	$parsed["query"]='';
 }
-TikiLib::parse_str($parsed["query"],$query);
+parse_str($parsed["query"],$query);
 unset($query["day"]);
 unset($query["mon"]);
 unset($query["year"]);
@@ -90,7 +90,7 @@ if (count($query)>0) {
 $todaylink=$father."day=".date("d")."&amp;mon=".date("m")."&amp;year=".date("Y");
 {/php}
 
-{tikimodule error=$module_params.error title="{tr}Current events{/tr}" name="events" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
+{tikimodule title="{tr}Current events{/tr}" name="events" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox}
 	<table	border="0" cellspacing="0" cellpadding="0" class="caltable">
 	<!-- THIS ROW DISPLAYS THE YEAR AND MONTH -->
 	<tr>

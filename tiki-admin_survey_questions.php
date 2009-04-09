@@ -8,23 +8,25 @@
 
 // Initialization
 require_once ('tiki-setup.php');
-include_once ('lib/surveys/surveylib.php');
 
-$auto_query_args = array('surveyId','questionId','offset','find','sort_mode','maxRecords');
+include_once ('lib/surveys/surveylib.php');
 
 if ($prefs['feature_surveys'] != 'y') {
 	$smarty->assign('msg', tra("This feature is disabled").": feature_surveys");
+
 	$smarty->display("error.tpl");
 	die;
 }
 
 if (!isset($_REQUEST["surveyId"])) {
 	$smarty->assign('msg', tra("No survey indicated"));
+
 	$smarty->display("error.tpl");
 	die;
 }
 
 $smarty->assign('surveyId', $_REQUEST["surveyId"]);
+
 $smarty->assign('individual', 'n');
 
 if ($userlib->object_has_one_permission($_REQUEST["surveyId"], 'survey')) {
@@ -75,9 +77,6 @@ if ($_REQUEST["questionId"]) {
 	$info["type"] = '';
 	$info["position"] = '';
 	$info["options"] = '';
-	$info["mandatory"] = '';
-	$info["min_answers"] = '';
-	$info["max_answers"] = '';
 }
 
 $smarty->assign_by_ref('info', $info);
@@ -94,25 +93,13 @@ if (isset($_REQUEST["remove"])) {
 
 if (isset($_REQUEST["save"])) {
 	check_ticket('admin-survey-questions');
-	$srvlib->replace_survey_question(
-		$_REQUEST["questionId"],
-		$_REQUEST["question"],
-		$_REQUEST["type"],
-		$_REQUEST["surveyId"],
-		$_REQUEST["position"],
-		$_REQUEST["options"],
-		isset($_REQUEST["mandatory"]) ? 'y' : 'n',
-		$_REQUEST["min_answers"],
-		$_REQUEST["max_answers"]
-	);
+	$srvlib->replace_survey_question($_REQUEST["questionId"], $_REQUEST["question"], $_REQUEST["type"], $_REQUEST["surveyId"],
+		$_REQUEST["position"], $_REQUEST["options"]);
 
 	$info["question"] = '';
 	$info["type"] = '';
 	$info["position"] = '';
 	$info["options"] = '';
-	$info["mandatory"] = '';
-	$info["min_answers"] = '';
-	$info["max_answers"] = '';
 	$smarty->assign('questionId', 0);
 	$smarty->assign('info', $info);
 }
@@ -141,12 +128,26 @@ $smarty->assign('find', $find);
 
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 $channels = $srvlib->list_survey_questions($_REQUEST["surveyId"], $offset, $maxRecords, $sort_mode, $find);
-
+//$smarty->assign('questions',$channels["data"]);
+$cant_pages = ceil($channels["cant"] / $maxRecords);
 if (empty($info["position"])) {
 	$info["position"] = $channels["cant"] + 1;
 }
+$smarty->assign_by_ref('cant_pages', $cant_pages);
+$smarty->assign('actual_page', 1 + ($offset / $maxRecords));
 
-$smarty->assign_by_ref('cant_pages', $channels["cant"]);
+if ($channels["cant"] > ($offset + $maxRecords)) {
+	$smarty->assign('next_offset', $offset + $maxRecords);
+} else {
+	$smarty->assign('next_offset', -1);
+}
+
+// If offset is > 0 then prev_offset
+if ($offset > 0) {
+	$smarty->assign('prev_offset', $offset - $maxRecords);
+} else {
+	$smarty->assign('prev_offset', -1);
+}
 
 $smarty->assign_by_ref('channels', $channels["data"]);
 

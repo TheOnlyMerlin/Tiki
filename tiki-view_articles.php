@@ -18,6 +18,13 @@ if ($prefs['feature_categories'] == 'y') {
 
 $commentslib = new Comments($dbTiki);
 
+/*
+if($prefs['feature_listPages'] != 'y') {
+  $smarty->assign('msg',tra("This feature is disabled"));
+  $smarty->display("error.tpl");
+  die;  
+}
+*/
 if ($prefs['feature_articles'] != 'y') {
 	$smarty->assign('msg', tra("This feature is disabled").": feature_articles");
 
@@ -72,23 +79,18 @@ if (!isset($_REQUEST["offset"])) {
 
 $smarty->assign_by_ref('offset', $offset);
 
-if ( isset($_REQUEST['date_min']) || isset($_REQUEST['date_max']) ) {
-	$date_min = isset($_REQUEST['date_min']) ? $_REQUEST['date_min'] : 0;
-	$date_max = isset($_REQUEST['date_max']) ? $_REQUEST['date_max'] : $tikilib->now;
-} elseif (isset($_SESSION["thedate"])) {
-	$date_min = 0;
+if (isset($_SESSION["thedate"])) {
 	if ($_SESSION["thedate"] < $tikilib->now) {
-		$date_max = $_SESSION["thedate"];
+		$pdate = $_SESSION["thedate"];
 	} else {
 		if ($tiki_p_admin == 'y' || $tiki_p_admin_cms == 'y') {
-			$date_max = $_SESSION["thedate"];
+			$pdate = $_SESSION["thedate"];
 		} else {
-			$date_max = $tikilib->now;
+			$pdate = $tikilib->now;
 		}
 	}
 } else {
-	$date_min = 0;
-	$date_max = $tikilib->now;
+	$pdate = $tikilib->now;
 }
 
 if (isset($_REQUEST["find"])) {
@@ -103,17 +105,19 @@ if (isset($_REQUEST["type"])) {
 } else {
 	$type = '';
 }
+$smarty->assign_by_ref('type', $type);
 
 if (isset($_REQUEST["topic"])) {
 	$topic = $_REQUEST["topic"];
  } else {
 	$topic = '';
 }
-if (isset($_REQUEST['topicName'])) {
-	$topicName = $_REQUEST['topicName'];
+if (isset($REQUEST['topicName'])) {
+	$topicName = $REQUEST['topicName'];
  } else {
 	$topicName = '';
  }
+$smarty->assign_by_ref('topic', $topic);
 
 if (isset($_REQUEST["categId"])) {
 	$categId = $_REQUEST["categId"];
@@ -127,7 +131,7 @@ if (!isset($_REQUEST['lang'])) {
 }
 
 // Get a list of last changes to the Wiki database
-$listpages = $tikilib->list_articles($offset, $prefs['maxArticles'], $sort_mode, $find, $date_min, $date_max, $user, $type, $topic, 'y', $topicName, $categId, '', '', $_REQUEST['lang']);
+$listpages = $tikilib->list_articles($offset, $prefs['maxArticles'], $sort_mode, $find, $pdate, $user, $type, $topic, 'y', $topicName, $categId, '', '', $_REQUEST['lang']);
 if ($prefs['feature_multilingual'] == 'y') {
 	include_once("lib/multilingual/multilinguallib.php");
 	$listpages['data'] = $multilinguallib->selectLangList('article', $listpages['data']);
@@ -141,20 +145,9 @@ for ($i = 0; $i < $temp_max; $i++) {
 	$comments_objectId = $comments_prefix_var.$comments_object_var;
 	$listpages["data"][$i]["comments_cant"] = $commentslib->count_comments($comments_objectId);
 }
-	if (!empty($topicName) && !strstr($topicName, '!') && !strstr($topicName, '+')) {
-		$smarty->assign_by_ref('topic', $topicName);
-	} elseif (!empty($topic) &&  is_numeric($topic)) {
-		if (!empty($listpages['data'][0]['topicName']))
-			$smarty->assign_by_ref('topic', $listpages['data'][0]['topicName']);
-		else {
-			$topic_info = $artlib->get_topic($topic);
-			if (isset($topic_info['name']))
-				$smarty->assign_by_ref('topic', $topic_info['name']);
-		}
-	}
-	if (!empty($type) && !strstr($type, '!') && !strstr($type, '+')) {
-		$smarty->assign_by_ref('type', $type);
-	}
+
+$topics = $artlib->list_topics();
+$smarty->assign_by_ref('topics', $topics);
 
 $smarty->assign('maxArticles', $prefs['maxArticles']);
 

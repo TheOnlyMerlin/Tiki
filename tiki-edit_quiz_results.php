@@ -8,9 +8,8 @@
 
 // Initialization
 require_once ('tiki-setup.php');
-include_once ('lib/quizzes/quizlib.php');
 
-$auto_query_args = array('quizId', 'resultId', 'sort_mode', 'offset', 'find');
+include_once ('lib/quizzes/quizlib.php');
 
 if ($prefs['feature_quizzes'] != 'y') {
 	$smarty->assign('msg', tra("This feature is disabled").": feature_quizzes");
@@ -126,7 +125,22 @@ $smarty->assign('find', $find);
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 $channels = $quizlib->list_quiz_results($_REQUEST["quizId"], $offset, $maxRecords, $sort_mode, $find);
 
-$smarty->assign_by_ref('cant_pages', $channels["cant"]);
+$cant_pages = ceil($channels["cant"] / $maxRecords);
+$smarty->assign_by_ref('cant_pages', $cant_pages);
+$smarty->assign('actual_page', 1 + ($offset / $maxRecords));
+
+if ($channels["cant"] > ($offset + $maxRecords)) {
+	$smarty->assign('next_offset', $offset + $maxRecords);
+} else {
+	$smarty->assign('next_offset', -1);
+}
+
+// If offset is > 0 then prev_offset
+if ($offset > 0) {
+	$smarty->assign('prev_offset', $offset - $maxRecords);
+} else {
+	$smarty->assign('prev_offset', -1);
+}
 
 $smarty->assign_by_ref('channels', $channels["data"]);
 

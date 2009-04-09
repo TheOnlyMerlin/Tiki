@@ -29,12 +29,12 @@ if ($tiki_p_map_view != 'y') {
 }
 
 //setting up xajax
-require_once("lib/ajax/xajax/xajax_core/xajaxAIO.inc.php");
+require_once("lib/ajax/xajax.inc.php");
 $xajax = new xajax("x_maps.php");
-//$xajax->setFlag('debug',true);
-//$xajax->configure('statusMessages',true);
-$xajax->register(XAJAX_FUNCTION,"map_redraw");
-$smarty->assign('xajax_javascript', $xajax->getJavascript("lib/ajax/xajax"));
+//$xajax->debugOn();
+//$xajax->statusMessagesOn();
+$xajax->registerFunction("map_redraw");
+$smarty->assign('xajax_javascript', $xajax->getJavascript("lib/ajax"));
 
 //handling the layer manager menu: visible by default if never used before
 if (getCookie('layermenu', "menu") != 'o' && getCookie('layermenu', "menu") != 'c') {
@@ -75,7 +75,7 @@ function userErrorHandler ($errno, $errmsg, $filename, $linenum, $vars)
   global $map_path;
   global $mapfile;
   global $tiki_p_map_edit;
-  $msg=tra("An error as occured with the mapfile:")." ".$mapfile."<br /><br />".$errmsg."<br />";
+  $msg=tra("An error as occured with the mapfile: ").$mapfile."<br /><br />".$errmsg."<br />";
   
   $pos=strpos($errmsg,":(");
   if ($errmsg[$pos+2]=='l')

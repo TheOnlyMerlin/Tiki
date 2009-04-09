@@ -86,7 +86,22 @@ for ($i = 0; $i < $temp_max; $i++) {
 	}
 }
 
-$smarty->assign_by_ref('cant_pages', $channels["cant"]);
+$cant_pages = ceil($channels["cant"] / $maxRecords);
+$smarty->assign_by_ref('cant_pages', $cant_pages);
+$smarty->assign('actual_page', 1 + ($offset / $maxRecords));
+
+if ($channels["cant"] > ($offset + $maxRecords)) {
+	$smarty->assign('next_offset', $offset + $maxRecords);
+} else {
+	$smarty->assign('next_offset', -1);
+}
+
+// If offset is > 0 then prev_offset
+if ($offset > 0) {
+	$smarty->assign('prev_offset', $offset - $maxRecords);
+} else {
+	$smarty->assign('prev_offset', -1);
+}
 
 $smarty->assign_by_ref('channels', $channels["data"]);
 
@@ -96,3 +111,5 @@ ask_ticket('list-surveys');
 // Display the template
 $smarty->assign('mid', 'tiki-list_surveys.tpl');
 $smarty->display("tiki.tpl");
+
+?>

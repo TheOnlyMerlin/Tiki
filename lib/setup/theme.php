@@ -14,22 +14,18 @@ if ( isset($_SESSION['try_style']) ) {
 } elseif ( $prefs['change_theme'] != 'y' ) {
 	// Use the site value instead of the user value if the user is not allowed to change the theme
 	$prefs['style'] = $prefs['site_style'];
-	$prefs['style_option'] = $prefs['site_style_option'];
 }
 
-if ($tikilib->get_style_path('', '', $prefs['style']) == '') {
-	$prefs['style'] = 'thenews.css';
+if ( ! is_file('styles/'.$prefs['style']) and ! is_file('styles/'.$tikidomain.'/'.$prefs['style']) ) {
+	$prefs['style'] = 'tikineat.css';
 }
 
-if ($group_style = $userlib->get_user_group_theme()) {
-	$prefs['style'] = $group_style;
-	$smarty->assign_by_ref('group_style', $group_style);
-}
+$prefs['style'] = $userlib->get_user_group_theme($user);
 		
-include_once("lib/csslib.php");
-if ( $prefs['transition_style_ver'] == 'css_specified_only' ) {
+include_once("csslib.php");
+if ($prefs['transition_style_ver'] && $prefs['transition_style_ver'] == 'css_specified_only') {
 	$transition_style = $csslib->transition_css('styles/'.$prefs['style'], '');
-} elseif ( $prefs['transition_style_ver'] != '' && $prefs['transition_style_ver'] != 'none') {
+} elseif ($prefs['transition_style_ver'] && $prefs['transition_style_ver'] != 'none') {
 	$transition_style = $csslib->transition_css('styles/'.$prefs['style'], $prefs['transition_style_ver']);
 } else {
 	$transition_style = '';
@@ -37,24 +33,19 @@ if ( $prefs['transition_style_ver'] == 'css_specified_only' ) {
 
 if ( $transition_style != '' ) $headerlib->add_cssfile('styles/transitions/'.$transition_style,50);
 
-$headerlib->add_cssfile($tikilib->get_style_path('', '', $prefs['style']), 51);
+if ( $tikidomain and is_file('styles/'.$tikidomain.'/'.$prefs['style']) ) {
+	$headerlib->add_cssfile('styles/'.$tikidomain.'/'.$prefs['style'], 51);
+} else {
+	$headerlib->add_cssfile('styles/'.$prefs['style'], 51);
+}
 
-$style_base = $tikilib->get_style_base($prefs['style']);
+$stlstl = split("-|\.", $prefs['style']);
+$style_base = $stlstl[0];
 
 // Allow to have an ie6.css file for the theme's specific hacks for IE 6
-$style_ie6_css = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], 'ie6.css');;
-
-// include optional "options" cascading stylesheet if set
-if ( !empty($prefs['style_option'])) {
-	$style_option_css = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], $prefs['style_option']);
-	if (!empty($style_option_css)) {
-		$headerlib->add_cssfile($style_option_css, 52);
-	}
+$style_ie6_css = '';
+if ( $tikidomain and is_file('styles/'.$tikidomain.'/'.$style_base.'/ie6.css') ) {
+	$style_ie6_css = 'styles/'.$tikidomain.'/'.$style_base.'/ie6.css';
+} elseif ( is_file('styles/'.$style_base.'/ie6.css') ) {
+	$style_ie6_css = 'styles/'.$style_base.'/ie6.css';
 }
-
-// include optional "custom" cascading stylesheet if there
-$custom_css = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], 'custom.css');;
-if ( !empty($custom_css)) {
-	$headerlib->add_cssfile($custom_css, 53);
-}
-

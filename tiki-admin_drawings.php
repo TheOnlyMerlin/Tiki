@@ -8,9 +8,8 @@
 
 // Initialization
 require_once ('tiki-setup.php');
-include_once ('lib/drawings/drawlib.php');
 
-$auto_query_args = array('sort_mode','offset','find', 'ver');
+include_once ('lib/drawings/drawlib.php');
 
 if ($prefs['feature_drawings'] != 'y') {
 	$smarty->assign('msg', tra('This feature is disabled').': feature_drawings');
@@ -107,7 +106,22 @@ if (isset($_REQUEST['ver']) && $_REQUEST['ver']) {
 	$items = $drawlib->list_drawings($offset, $maxRecords, $sort_mode, $find);
 }
 
-$smarty->assign_by_ref('cant_pages', $items["cant"]);
+$smarty->assign('cant', $items['cant']);
+$cant_pages = ceil($items["cant"] / $maxRecords);
+$smarty->assign_by_ref('cant_pages', $cant_pages);
+$smarty->assign('actual_page', 1 + ($offset / $maxRecords));
+
+if ($items["cant"] > ($offset + $maxRecords)) {
+	$smarty->assign('next_offset', $offset + $maxRecords);
+} else {
+	$smarty->assign('next_offset', -1);
+}
+
+if ($offset > 0) {
+	$smarty->assign('prev_offset', $offset - $maxRecords);
+} else {
+	$smarty->assign('prev_offset', -1);
+}
 
 $smarty->assign_by_ref('items', $items["data"]);
 

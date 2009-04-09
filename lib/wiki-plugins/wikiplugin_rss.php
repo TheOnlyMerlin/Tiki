@@ -8,60 +8,21 @@ function wikiplugin_rss_help() {
 	return tra("~np~{~/np~RSS(id=>feedId:feedId2,max=>3,date=>1,desc=>1,author=>1)}{RSS} Insert rss feed output into a wikipage");
 }
 
-function wikiplugin_rss_info() {
-	return array(
-		'name' => tra('RSS Feed'),
-		'documentation' => 'PluginRSS',
-		'description' => tra('Inserts an RSS feed output.'),
-		'prefs' => array( 'wikiplugin_rss' ),
-		'params' => array(
-			'id' => array(
-				'required' => true,
-				'name' => tra('IDs'),
-				'description' => tra('List of feed IDs separated by colons. ex: feedId:feedId2'),
-			),
-			'max' => array(
-				'required' => false,
-				'name' => tra('Result Count'),
-				'description' => tra('Amount of results displayed.'),
-			),
-			'date' => array(
-				'required' => false,
-				'name' => tra('Date'),
-				'description' => '0|1',
-			),
-			'desc' => array(
-				'required' => false,
-				'name' => tra('Description'),
-				'description' => '0|1|max length',
-			),
-			'author' => array(
-				'required' => false,
-				'name' => tra('Author'),
-				'description' => '0|1',
-			),
-		),
-	);
-}
-
 function rss_sort($a,$b) {
 	if (isset($a["pubDate"])) {
-	$datea=strtotime($a["pubDate"]);
+  	$datea=strtotime($a["pubDate"]);
 	} else {
 		$datea=time();
 	}
 	if (isset($b["pubDate"])) {
-		$dateb=strtotime($b["pubDate"]);
+  	$dateb=strtotime($b["pubDate"]);
 	} else {
 		$dateb=time();
 	}	
-	
-	if ($datea==$dateb) {
-		return 0;
-	} elseif ($datea>$dateb) {
-		return -1;
+	if ($datea<$dateb) {
+		return true;
 	} else {
-		return 1;
+		return false;
 	}
 }
 
@@ -84,60 +45,63 @@ function wikiplugin_rss($data,$params) {
 	if ( ! isset($author) ) { $author = 0; }
 
 	$ids = explode(':', $id);
-
+  
 	$repl = '';		
 	$items = array();
-
-	$filter = new DeclFilter;
-	$filter->addStaticKeyFilters( array(
-		'link' => 'url',
-		'title' => 'striptags',
-		'author' => 'striptags',
-		'pubDate' => 'striptags',
-		'description' => 'striptags',
-	) );
-
 	foreach ( $ids as $val ) {
 		if ( ! ($rssdata = $rsslib->get_rss_module_content($val)) ) {
 			$repl = tra('RSS Id incorrect:').' '.$val;
 		}
-		$itemsrss = $rsslib->parse_rss_data($rssdata, $val, $rssdata);
-
-		foreach($itemsrss as & $item) {
-			foreach( $item as &$v ) {
-				$v = TikiLib::htmldecode($v);
-			}
-			$item = $filter->filter($item);
-
-			if( $desc > 1 && strlen($item['description']) > $desc ) {
-				$item['description'] = substr($item['description'], 0, $desc ) . ' [...]';
-			}
-		}
-
+		$itemsrss = $rsslib->parse_rss_data($rssdata, $val);
 		$items = array_merge($items, $itemsrss);		
 	}
  
-	$title = null;
 	if ( isset($items[0]) && $items[0]['isTitle'] == 'y' ) {
-		$title = array_shift($items);
+		$repl .= '<div class="wiki"><a target="_blank" href="'.$items[0]['link'].'">'.TikiLib::htmldecode($items[0]['title']).'</a></div><br />'; 
+		$items = array_slice($items, 1);
 	}
 
-	// No need to waste time sorting with only one feed
-	if( count( $ids ) > 1 ) {
-		usort($items, 'rss_sort');
+	usort($items, 'rss_sort');
+	if ( count($ids) > 1 ) {
+		$items = array_slice($items, count($ids));
 	}
-
-	$items = array_slice($items, 0, $max);
 
 	if ( count($items) < $max ) $max = count($items);
 
-	global $smarty;
-	$smarty->assign('title', $title);
-	$smarty->assign('items', $items);
-	$smarty->assign('showdate', $date > 0);
-	$smarty->assign('showdesc', $desc > 0);
-	$smarty->assign('showauthor', $author > 0);
-	return '~np~' . $smarty->fetch( 'wiki-plugins/wikiplugin_rss.tpl' ) . '~/np~';
+	$repl .= '<table class="normal">';
+	for ( $j = 0 ; $j < $max ; $j++ ) {
+
+		$repl .= '<tr><td class="heading"><a class="tableheading" target="_blank" href="'.$items[$j]['link'].'"><b>'.TikiLib::htmldecode($items[$j]['title']).'</b></a>';
+
+		if ( $author == 1 || $date == 1 ) {
+			$repl_author = '';
+			if ( $author == 1 && isset($items[$j]['author']) && $items[$j]['author'] <> '' ) {
+				$repl_author .= $items[$j]['author'];
+				if ( $date == 1 ) {
+					$repl_author .= ', ';
+				}
+			}
+			if ( $date == 1 && isset($items[$j]['pubDate']) && $items[$j]['pubDate'] <> '' ) {
+				$repl_author .= ''.$items[$j]['pubDate'];
+			}
+			if ( $repl_author != '' ) {
+				$repl .= '&nbsp;&nbsp;&nbsp;('.$repl_author.')';
+			}
+		}
+
+		$repl .= '</td></tr>';
+		if ( $desc == 1 ) {
+			$repl .= '<tr><td class="even" colspan="2">'.TikiLib::htmldecode($items[$j]['description']).'</td></tr>';
+			$repl .= '</tr>';
+		}
+
+		if ( $desc > 1 ) {
+			$repl .= '<tr><td class="even" colspan="2">'.substr(strip_tags(TikiLib::htmldecode($items[$j]['description'])),0,$desc).' <a class="wiki" href="'.$items[$j]['link'].'">[[...]</a></td></tr>';
+			$repl .= '</tr>';
+		}
+	}
+	$repl .= '</table>';
+	return $repl;
 }
 
 ?>

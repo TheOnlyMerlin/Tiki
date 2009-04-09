@@ -13,12 +13,10 @@ if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== FALSE) {
 	die();
 }
 
-// add a line like the following in db/local.php to use an external smarty installation: $smarty_path='/usr/share/php/smarty/'
-define('TIKI_SMARTY_DIR', 'lib/smarty_tiki/');
-if ( isset($smarty_path) && $smarty_path != '' && file_exists($smarty_path.'Smarty.class.php') ) define('SMARTY_DIR', $smarty_path);
-else define('SMARTY_DIR', 'lib/smarty/libs/');
+// uncomment and adapt the following line if you use smarty external to tiki
+// define('SMARTY_DIR', 'lib/smarty/');
 
-require_once(SMARTY_DIR.'Smarty.class.php');
+require_once ( 'lib/smarty/libs/Smarty.class.php');
 
 class Smarty_Tikiwiki extends Smarty {
 	
@@ -31,28 +29,16 @@ class Smarty_Tikiwiki extends Smarty {
 		$this->caching = 0;
 		$this->assign('app_name', 'Tikiwiki');
 		$this->plugins_dir = array(	// the directory order must be like this to overload a plugin
-			TIKI_SMARTY_DIR,
+			dirname(dirname(SMARTY_DIR)).'/smarty_tiki',
 			SMARTY_DIR.'plugins'
 		);
-
 		// In general, it's better that use_sub_dirs = false
 		// If ever you are on a very large/complex/multilingual site and your
 		// templates_c directory is > 10 000 files, (you can check at tiki-admin_system.php)
 		// you can change to true and maybe you will get better performance.
 		// http://smarty.php.net/manual/en/variable.use.sub.dirs.php
-		//
-		$this->use_sub_dirs = false;
 
-		$this->security_settings['MODIFIER_FUNCS'] = array_merge(
-			$this->security_settings['MODIFIER_FUNCS'],
-			array('addslashes', 'ucfirst', 'ucwords', 'urlencode', 'md5', 'implode', 'explode', 'is_array', 'htmlentities')
-		);
-		$this->security_settings['IF_FUNCS'] = array_merge(
-			$this->security_settings['IF_FUNCS'],
-			array('tra', 'strlen', 'strstr', 'strtolower', 'basename', 'ereg', 'array_key_exists')
-		);
-		$secure_dirs[] = 'img/icons2';
-		$this->secure_dir = $secure_dirs;
+			$this->use_sub_dirs = false;
 	}
 
 	function _smarty_include($params) {
@@ -73,15 +59,14 @@ class Smarty_Tikiwiki extends Smarty {
 	function fetch($_smarty_tpl_file, $_smarty_cache_id = null, $_smarty_compile_id = null, $_smarty_display = false) {
 		global $prefs, $style_base, $tikidomain, $zoom_templates;
 
+		$_smarty_cache_id = $prefs['language'] . $_smarty_cache_id;
+		$_smarty_compile_id = $prefs['language'] . $_smarty_compile_id;
+
 		if ( ($tpl = $this->get_template_vars('mid')) && ( $_smarty_tpl_file == 'tiki.tpl' || $_smarty_tpl_file == 'tiki-print.tpl' || $_smarty_tpl_file == 'tiki_full.tpl' ) ) {
 
 			// Set the last mid template to be used by AJAX to simulate a 'BACK' action
-			if ( isset($_SESSION['last_mid_template']) ) {
-				$this->assign('last_mid_template', $_SESSION['last_mid_template']);
-				$this->assign('last_mid_php', $_SESSION['last_mid_php']);
-			}
+			$this->assign('last_mid_template', $_SESSION['last_mid_template']);
 			$_SESSION['last_mid_template'] = $tpl;
-			$_SESSION['last_mid_php'] = $_SERVER['REQUEST_URI'];
 
 			// Enable Template Zoom
 			if ( $prefs['feature_template_zoom'] == 'y' && isset($zoom_templates) ) {
@@ -100,9 +85,10 @@ class Smarty_Tikiwiki extends Smarty {
 			}
 
 			// Enable AJAX
-			if ( $prefs['feature_ajax'] == 'y' && $_smarty_display ) {
+			if ( $prefs['feature_ajax'] == 'y' ) {
 				global $ajaxlib; require_once('lib/ajax/ajaxlib.php');
 				$ajaxlib->registerTemplate($tpl);
+				$ajaxlib->processRequests();
 			}
 
 			if ( $_smarty_tpl_file == 'tiki-print.tpl' ) {
@@ -110,21 +96,9 @@ class Smarty_Tikiwiki extends Smarty {
 			}
 			$data = $this->fetch($tpl, $_smarty_cache_id, $_smarty_compile_id);//must get the mid because the modules can overwrite smarty variables
 			$this->assign('mid_data', $data);
-			if ($prefs['feature_fullscreen'] != 'y' || empty($_SESSION['fullscreen']) || $_SESSION['fullscreen'] != 'y')
-				include_once('tiki-modules.php');
-			if ($prefs['feature_ajax'] == 'y' && $_smarty_display ) {
-				$ajaxlib->processRequests();
-			}
+			include_once('tiki-modules.php');
 		} elseif ($_smarty_tpl_file == 'confirm.tpl' || $_smarty_tpl_file == 'error.tpl' || $_smarty_tpl_file == 'information.tpl' || $_smarty_tpl_file == 'error_ticket.tpl' || $_smarty_tpl_file == 'error_simple.tpl') {
 			include_once('tiki-modules.php');
-
-			// Enable AJAX
-			if ( $prefs['feature_ajax'] == 'y' && $_smarty_display ) {
-				$_POST['xajaxargs'][0] = $_smarty_tpl_file;
-				global $ajaxlib; require_once('lib/ajax/ajaxlib.php');
-				$ajaxlib->registerTemplate($_smarty_tpl_file);
-				$ajaxlib->processRequests();
-			}
 		}
 
 		if (isset($style_base)) {
@@ -136,8 +110,6 @@ class Smarty_Tikiwiki extends Smarty {
 				$_smarty_tpl_file = "styles/$style_base/$_smarty_tpl_file";
 			}
 		}
-		$_smarty_cache_id = $prefs['language'] . $_smarty_cache_id;
-		$_smarty_compile_id = $prefs['language'] . $_smarty_compile_id;
 
 		return parent::fetch($_smarty_tpl_file, $_smarty_cache_id, $_smarty_compile_id, $_smarty_display);
 	}

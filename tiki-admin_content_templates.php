@@ -213,7 +213,22 @@ $smarty->assign('find', $find);
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 $channels = $templateslib->list_all_templates($offset, $maxRecords, $sort_mode, $find);
 
-$smarty->assign_by_ref('cant_pages', $channels["cant"]);
+$cant_pages = ceil($channels["cant"] / $maxRecords);
+$smarty->assign_by_ref('cant_pages', $cant_pages);
+$smarty->assign('actual_page', 1 + ($offset / $maxRecords));
+
+if ($channels["cant"] > ($offset + $maxRecords)) {
+	$smarty->assign('next_offset', $offset + $maxRecords);
+} else {
+	$smarty->assign('next_offset', -1);
+}
+
+// If offset is > 0 then prev_offset
+if ($offset > 0) {
+	$smarty->assign('prev_offset', $offset - $maxRecords);
+} else {
+	$smarty->assign('prev_offset', -1);
+}
 
 // wysiwyg decision
 include 'tiki-parsemode_setup.php';
@@ -221,7 +236,7 @@ include 'tiki-parsemode_setup.php';
 $smarty->assign_by_ref('channels', $channels["data"]);
 include_once("textareasize.php");
 include_once ('lib/quicktags/quicktagslib.php');
-$quicktags = $quicktagslib->list_quicktags(0,-1,'taglabel_asc','','wiki');
+$quicktags = $quicktagslib->list_quicktags(0,-1,'taglabel_desc','','wiki');
 $smarty->assign_by_ref('quicktags', $quicktags["data"]);
 
 ask_ticket('admin-content-templates');

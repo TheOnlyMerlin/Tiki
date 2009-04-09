@@ -12,14 +12,10 @@ require_once ('tiki-setup.php');
 require_once ('lib/search/searchlib.php'); 
 // note: lib/search/searchlib.php is new. the old one was lib/searchlib.php
 
-$searchlib = new SearchLib($tikilib->db);
+$searchlib = &new SearchLib($tikilib->db);
 $auto_query_args = array('highlight','where');
 
-if (isset($_REQUEST["highlight"]) && !empty($_REQUEST["highlight"])) {
-    $smarty->assign('headtitle',tra('Search results'));
-} else {
-    $smarty->assign('headtitle',tra('Search'));
-}
+$smarty->assign('headtitle',tra('Search results'));
 
 if ($prefs['feature_search'] != 'y') {
 	$smarty->assign('msg', tra("This feature is disabled").": feature_search");
@@ -58,6 +54,12 @@ if($where=='wikis') {
     $smarty->display("error.tpl");
     die;
   }
+  if($tiki_p_admin_wiki != 'y'  && $tiki_p_view != 'y') {
+	$smarty->assign('errortype', 401);
+    $smarty->assign('msg',tra("Permission denied you cannot view this section"));
+    $smarty->display("error.tpl");
+    die;  
+  }
 }
 
 if($where=='directory') {
@@ -66,6 +68,12 @@ if($where=='directory') {
   $smarty->display("error.tpl");
   die;
 	}
+  if($tiki_p_admin_directory != 'y' && $tiki_p_view_directory != 'y') {
+	$smarty->assign('errortype', 401);
+    $smarty->assign('msg',tra("Permission denied"));
+    $smarty->display("error.tpl");
+    die;  
+  }
 }
 
 if($where=='faqs') {
@@ -73,6 +81,12 @@ if($where=='faqs') {
 	  $smarty->assign('msg', tra("This feature is disabled").": feature_faqs");
 	  $smarty->display("error.tpl");
 	  die;
+	}
+	if($tiki_p_admin_faqs != 'y' && $tiki_p_view_faqs != 'y') {
+		$smarty->assign('errortype', 401);
+		$smarty->assign('msg',tra("You do not have permission to use this feature"));
+    $smarty->display("error.tpl");
+    die;
 	}
 }
 
@@ -82,6 +96,12 @@ if($where=='forums') {
   	$smarty->display("error.tpl");
   	die;
 	}
+  if($tiki_p_admin_forum != 'y' && $tiki_p_forum_read != 'y') {
+	  $smarty->assign('errortype', 401);
+		$smarty->assign('msg',tra("You do not have permission to use this feature"));
+		$smarty->display("error.tpl");
+	  die;
+  }
   if (!empty($_REQUEST['forumId'])) {
 	$filter['forumId'] = $_REQUEST['forumId'];
   }
@@ -93,6 +113,12 @@ if($where=='files') {
 	  $smarty->display("error.tpl");
 	  die;
 	}
+	if($tiki_p_view_file_gallery != 'y') {
+      $smarty->assign('errortype', 401);
+	  $smarty->assign('msg',tra("Permission denied you cannot view this section"));
+	  $smarty->display("error.tpl");
+	  die;
+	}
 }
 
 if($where=='articles') {
@@ -100,6 +126,12 @@ if($where=='articles') {
 	  $smarty->assign('msg', tra("This feature is disabled").": feature_articles");
 	  $smarty->display("error.tpl");
 	  die;
+	}
+	if($tiki_p_read_article != 'y') {
+      $smarty->assign('errortype', 401);
+	  $smarty->assign('msg',tra("Permission denied you cannot view this section"));
+	  $smarty->display("error.tpl");
+	  die;  
 	}
 }
 
@@ -109,6 +141,12 @@ if (($where=='galleries' || $where=='images')) {
 	  $smarty->display("error.tpl");
 	  die;
 	}
+  if($tiki_p_view_image_gallery != 'y') {
+    $smarty->assign('errortype', 401);
+    $smarty->assign('msg',tra("Permission denied you can not view this section"));
+    $smarty->display("error.tpl");
+    die;  
+  }
 }
 
 if(($where=='blogs' || $where=='posts')) {
@@ -117,11 +155,23 @@ if(($where=='blogs' || $where=='posts')) {
 	  $smarty->display("error.tpl");
 	  die;
 	}
+	if($tiki_p_read_blog != 'y') {
+      $smarty->assign('errortype', 401);
+	  $smarty->assign('msg',tra("Permission denied you can not view this section"));
+	  $smarty->display("error.tpl");
+	  die;  
+	}
 }
 
 if(($where=='trackers')) {
         if ($prefs['feature_trackers'] != 'y') {
           $smarty->assign('msg', tra("This feature is disabled").": feature_trackers");
+          $smarty->display("error.tpl");
+          die;
+        }
+        if($tiki_p_view_trackers != 'y') {
+          $smarty->assign('errortype', 401);
+          $smarty->assign('msg',tra("Permission denied you can not view this section"));
           $smarty->display("error.tpl");
           die;
         }

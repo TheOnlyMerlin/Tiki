@@ -1,5 +1,5 @@
 <?php
-// $Id$
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_notifications.php,v 1.16 2007/01/03 01:09:34 mose Exp $
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
@@ -67,54 +67,12 @@ class ArtLib extends TikiLib {
 		return true;
 	}
 
-	function remove_article($articleId, $article_data='') {
-		global $smarty, $tikilib, $user;
-		
+	function remove_article($articleId) {
 		if ($articleId) {
-			if (empty($article_data)) $article_data = $this->get_article($articleId);
 			$query = "delete from `tiki_articles` where `articleId`=?";
 
 			$result = $this->query($query,array($articleId));
 			$this->remove_object('article', $articleId);
-			
-			// TODO refactor
-			$nots = $tikilib->get_event_watches('article_deleted', '*');
-			if (!empty($article_data['topicId']))
-				$nots2 = $tikilib->get_event_watches('topic_article_deleted', $article_data['topicId']);
-			else
-				$nots2 = array();
-			$smarty->assign('mail_action', 'Delete');
-			
-			$nots3 = array();
-			foreach ($nots as $n) {
-				$nots3[] = $n['email'];
-			}
-			foreach ($nots2 as $n) {
-				if (!in_array($n['email'], $nots3))
-					$nots[] = $n;
-			}
-		    if (!isset($_SERVER["SERVER_NAME"])) {
-			    $_SERVER["SERVER_NAME"] = $_SERVER["HTTP_HOST"];
-		    }
-		    if (count($nots) || is_array($emails)) {
-			    include_once("lib/notifications/notificationemaillib.php");
-	
-			    $smarty->assign('mail_site', $_SERVER["SERVER_NAME"]);
-			    $smarty->assign('mail_title', 'articleId='.$articleId);
-			    $smarty->assign('mail_postid', $articleId);
-			    $smarty->assign('mail_date', $this->now);
-			    $smarty->assign('mail_user', $user);
-			    $smarty->assign('mail_data', $article_data['heading']."\n----------------------\n");
-			    $foo = parse_url($_SERVER["REQUEST_URI"]);
-			    $machine = $tikilib->httpPrefix(). $foo["path"];
-			    $smarty->assign('mail_machine', $machine);
-			    $parts = explode('/', $foo['path']);
-			    if (count($parts) > 1)
-				    unset ($parts[count($parts) - 1]);
-			    $smarty->assign('mail_machine_raw', $tikilib->httpPrefix(). implode('/', $parts));
-			    sendEmailNotification($nots, "watch", "user_watch_article_post_subject.tpl", $_SERVER["SERVER_NAME"], "user_watch_article_post.tpl");
-		    }
-
 			return true;
 		}
 	}
@@ -230,11 +188,9 @@ class ArtLib extends TikiLib {
 
 	// moved from tikilib.php
     function replace_article($title, $authorName, $topicId, $useImage, $imgname, $imgsize, $imgtype, $imgdata, 
-	$heading, $body, $publishDate, $expireDate, $user, $articleId, $image_x, $image_y, $type, 
-	$topline, $subtitle, $linkto, $image_caption, $lang, $rating = 0, $isfloat = 'n', $emails='', $from='') {
-		
-		global $smarty, $tikilib;
-		
+	    $heading, $body, $publishDate, $expireDate, $user, $articleId, $image_x, $image_y, $type, 
+							 $topline, $subtitle, $linkto, $image_caption, $lang, $rating = 0, $isfloat = 'n', $emails='') {
+
 		if ($expireDate < $publishDate) {
 		    $expireDate = $publishDate;
 		}
@@ -245,6 +201,7 @@ class ArtLib extends TikiLib {
 		$topicName = $this->getOne($query, array($topicId) );
 		$size = strlen($body);
 
+		// Fixed query. -rlpowell
 		if ($articleId) {
 		    // Update the article
 		    $query = "update `tiki_articles` set `title` = ?, `authorName` = ?, `topicId` = ?, `topicName` = ?, `size` = ?, `useImage` = ?, `image_name` = ?, ";
@@ -256,14 +213,8 @@ class ArtLib extends TikiLib {
 				$title, $authorName, (int) $topicId, $topicName, (int) $size, $useImage, $imgname, $imgtype, (int) $imgsize, $imgdata, $isfloat,
 				(int) $image_x, (int) $image_y, $heading, $body, (int) $publishDate, (int) $expireDate, (int) $this->now, $user, $type, (float) $rating, 
 				$topline, $subtitle, $linkto, $image_caption, $lang, (int) $articleId ) );
-				// Clear article image cache because image may just have been changed
-				$this->delete_image_cache("article",$articleId);
-			
-			$nots = $tikilib->get_event_watches('article_edited', '*');
-			$nots2 = $tikilib->get_event_watches('topic_article_edited', $topicId);
-			$smarty->assign('mail_action', 'Edit');
-			
 		} else {
+		    // Fixed query. -rlpowell
 		    // Insert the article
 		    $query = "insert into `tiki_articles` (`title`, `authorName`, `topicId`, `useImage`, `image_name`, `image_size`, `image_type`, `image_data`, ";
 		    $query.= " `publishDate`, `expireDate`, `created`, `heading`, `body`, `hash`, `author`, `nbreads`, `votes`, `points`, `size`, `topicName`, ";
@@ -283,53 +234,45 @@ class ArtLib extends TikiLib {
 		    if ($prefs['feature_score'] == 'y') {
 				$this->score_event($user, 'article_new');
 		    }		    
-		    // workaround to "pass" $topicId to get_event_watches
+		    global $smarty, $tikilib;
+		    #workaround to "pass" $topicId to get_event_watches
 			$GLOBALS["topicId"] = $topicId;
 			$nots = $tikilib->get_event_watches('article_submitted', '*');
 			$nots2 = $tikilib->get_event_watches('topic_article_created', $topicId);
-			$smarty->assign('mail_action', 'New');
-		}
-		
-		$nots3 = array();
-		foreach ($nots as $n) {
-			$nots3[] = $n['email'];
-		}
-		foreach ($nots2 as $n) {
-			if (!in_array($n['email'], $nots3))
-				$nots[] = $n;
-		}
-		if (is_array($emails) && (empty ($from) || $from == $prefs['sender_email'])) {
-			foreach ($emails as $n) {
-				if (!in_array($n, $nots3))
-					$nots[] = array('email'=>$n);
+			$nots3 = array();
+			foreach ($nots as $n) {
+				$nots3[] = $n['email'];
 			}
-		}
-	    if (!isset($_SERVER["SERVER_NAME"])) {
-		    $_SERVER["SERVER_NAME"] = $_SERVER["HTTP_HOST"];
-	    }
-	    if (count($nots) || is_array($emails)) {
-		    include_once("lib/notifications/notificationemaillib.php");
-
-		    $smarty->assign('mail_site', $_SERVER["SERVER_NAME"]);
-		    $smarty->assign('mail_title', $title);
-		    $smarty->assign('mail_postid', $articleId);
-		    $smarty->assign('mail_date', $this->now);
-		    $smarty->assign('mail_user', $user);
-		    $smarty->assign('mail_data', $heading."\n----------------------\n".$body);
-		    $foo = parse_url($_SERVER["REQUEST_URI"]);
-		    $machine = $tikilib->httpPrefix(). $foo["path"];
-		    $smarty->assign('mail_machine', $machine);
-		    $parts = explode('/', $foo['path']);
-		    if (count($parts) > 1)
-			    unset ($parts[count($parts) - 1]);
-		    $smarty->assign('mail_machine_raw', $tikilib->httpPrefix(). implode('/', $parts));
-		    sendEmailNotification($nots, "watch", "user_watch_article_post_subject.tpl", $_SERVER["SERVER_NAME"], "user_watch_article_post.tpl");
-		    if (is_array($emails) && !empty($from) && $from != $prefs['sender_email']) {
-				$nots = array();
+			foreach ($nots2 as $n) {
+				if (!in_array($n['email'], $nots3))
+					$nots[] = $n;
+			}
+			if (is_array($emails)) {
 				foreach ($emails as $n) {
-					$nots[] = array('email'=>$n);
+					if (!in_array($n, $nots3))
+						$nots[] = array('email'=>$n);
 				}
-		    	sendEmailNotification($nots, "watch", "user_watch_article_post_subject.tpl", $_SERVER["SERVER_NAME"], "user_watch_article_post.tpl", $from);
+			}
+		    if (!isset($_SERVER["SERVER_NAME"])) {
+			    $_SERVER["SERVER_NAME"] = $_SERVER["HTTP_HOST"];
+		    }
+		    if (count($nots)) {
+			    include_once("lib/notifications/notificationemaillib.php");
+
+			    $smarty->assign('mail_site', $_SERVER["SERVER_NAME"]);
+			    $smarty->assign('mail_title', $title);
+			    $smarty->assign('mail_postid', $articleId);
+			    $smarty->assign('mail_date', $this->now);
+			    $smarty->assign('mail_user', $user);
+			    $smarty->assign('mail_data', $heading."\n----------------------\n".$body);
+			    $foo = parse_url($_SERVER["REQUEST_URI"]);
+			    $machine = $tikilib->httpPrefix(). $foo["path"];
+			    $smarty->assign('mail_machine', $machine);
+			    $parts = explode('/', $foo['path']);
+			    if (count($parts) > 1)
+				    unset ($parts[count($parts) - 1]);
+			    $smarty->assign('mail_machine_raw', $tikilib->httpPrefix(). implode('/', $parts));
+			    sendEmailNotification($nots, "watch", "user_watch_article_post_subject.tpl", $_SERVER["SERVER_NAME"], "user_watch_article_post.tpl");
 		    }
 	    }
 
@@ -576,9 +519,7 @@ $show_expdate, $show_reads, $show_size, $show_topline, $show_subtitle, $show_lin
 	    $ret = array();
 	    
 	    while ($res = $result->fetchRow()) {
-			if ($this->user_has_perm_on_object($user, $res['articleId'], 'article', 'tiki_p_read_article')) {
-				$ret[] = $res;
-			}
+		$ret[] = $res;
 	    }
 	    
 	    return $ret;
@@ -650,38 +591,8 @@ $show_expdate, $show_reads, $show_size, $show_topline, $show_subtitle, $show_lin
 				$msgs[] = sprintf(tra('Error line: %d'), $line);
 			}
 		}
-		return true;
+return true;
 	}
-
-	function delete_image_cache($image_type,$imageId) {
-		global $prefs;
-		// Input validation: imageId must be a number, and not 0 
-		if(!ctype_digit("$imageId") || !($imageId>0)) {
-			return false;
-		}
-		switch ($image_type) {
-			case "article":
-				$image_cache_prefix="article";
-				break;
-			case "submission":
-				$image_cache_prefix="article_submission";
-				break;
-			case "preview":
-				$image_cache_prefix="article_preview";
-				break;
-			default:
-				return false;
-		}
-		$article_image_cache = $prefs['tmpDir'];
-		if ($tikidomain) { $article_image_cache.= "/$tikidomain"; }
-		$article_image_cache.= "/$image_cache_prefix.".$imageId;
-		if ( @unlink($article_image_cache) ) {
-			return true;
-		}else{
-			return false;
-		}
-	}
-
 }
 
 global $dbTiki;

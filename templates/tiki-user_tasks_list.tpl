@@ -22,12 +22,12 @@
 		</td>
 	</tr>
 <tr>
-<th style="text-align:right;" >&nbsp;</th>
-<th><a href="tiki-user_tasks.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Title{/tr}</a></th>
-<th><a href="tiki-user_tasks.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'start_desc'}start_asc{else}start_desc{/if}">{tr}Start{/tr}</a></th>
-<th><a href="tiki-user_tasks.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'end_desc'}end_asc{else}end_desc{/if}">{tr}End{/tr}</a></th>
-<th style="text-align:right;"><a href="tiki-user_tasks.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'priority_desc'}priority_asc{else}priority_desc{/if}">{tr}Priority{/tr}</a></th>
-<th style="text-align:right;"><a href="tiki-user_tasks.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'percentage_desc'}percentage_asc{else}percentage_desc{/if}">{tr}Completed{/tr}</a></th>
+<td class="heading" style="text-align:right;" >&nbsp;</td>
+<td class="heading" ><a class="tableheading" href="tiki-user_tasks.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Title{/tr}</a></td>
+<td class="heading" ><a class="tableheading" href="tiki-user_tasks.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'start_desc'}start_asc{else}start_desc{/if}">{tr}Start{/tr}</a></td>
+<td class="heading" ><a class="tableheading" href="tiki-user_tasks.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'end_desc'}end_asc{else}end_desc{/if}">{tr}End{/tr}</a></td>
+<td style="text-align:right;" class="heading" ><a class="tableheading" href="tiki-user_tasks.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'priority_desc'}priority_asc{else}priority_desc{/if}">{tr}Priority{/tr}</a></td>
+<td style="text-align:right;" class="heading" ><a class="tableheading" href="tiki-user_tasks.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'percentage_desc'}percentage_asc{else}percentage_desc{/if}">{tr}Completed{/tr}</a></td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=task_i loop=$tasklist}
@@ -36,9 +36,9 @@
 <input {if $tasklist[task_i].disabled} disabled = "disabled" {/if}  type="checkbox" name="task[{$tasklist[task_i].taskId}]" />
 {if $tasklist[task_i].deleted} 
 	{if $tasklist[task_i].creator ne $user}
-		<img src='img/icons2/delete_all.gif' width='16' height='16' alt='{tr}Delete{/tr}' />
+		<img src='img/icons2/delete_all.gif' width='16' height='16' border='0' alt='{tr}Delete{/tr}' />
 	{else}
-		<img src='img/icons/trash.gif' width='16' height='16' alt='{tr}Trash{/tr}' />
+		<img src='img/icons/trash.gif' width='16' height='16' border='0' alt='{tr}Trash{/tr}' />
 	{/if}
 {/if}
 {if (($tasklist[task_i].creator eq $tasklist[task_i].user) and ($tasklist[task_i].user eq $user)) }
@@ -48,15 +48,15 @@
 		{*recived task*}
 		{icon _id='task_received' align="middle"}
 		{if (($tasklist[task_i].accepted_creator eq 'n') or ($tasklist[task_i].accepted_user eq 'n')) }
-			<img src="{$img_not_accepted}" height="{$img_not_accepted_height}" width="{$img_not_accepted_width}" title='{tr}Not Accepted by One User{/tr}' alt='{tr}Not Accepted User{/tr}' />
+			<img src="{$img_not_accepted}" height="{$img_not_accepted_height}" width="{$img_not_accepted_width}" title='{tr}Not Accepted by One User{/tr}'  border='0' alt='{tr}Not Accepted User{/tr}' />
 		{else}
 			{if ($tasklist[task_i].accepted_user eq '')}
-				<img src="{$img_me_waiting}" height="{$img_me_waiting_height}" width="{$img_me_waiting_width}" title='{tr}Waiting for Me{/tr}' alt='{tr}Waiting for Me{/tr}' />
+				<img src="{$img_me_waiting}" height="{$img_me_waiting_height}" width="{$img_me_waiting_width}" title='{tr}Waiting for Me{/tr}' border='0' alt='{tr}Waiting for Me{/tr}' />
 			{else}
 				{if ($tasklist[task_i].accepted_creator eq 'y')} 
-					<img src="{$img_accepted}" height="{$img_accepted_height}" width="{$img_accepted_width}" title='{tr}Accepted by Task User and Creator{/tr}' alt='{tr}Accepted User and Creator{/tr}' />
+					<img src="{$img_accepted}" height="{$img_accepted_height}" width="{$img_accepted_width}" title='{tr}Accepted by Task User and Creator{/tr}' border='0' alt='{tr}Accepted User and Creator{/tr}' />
 				{else}
-					<img src="{$img_he_waiting}"  height="{$img_he_waiting_height}" width="{$img_he_waiting_width}"alt='{tr}Waiting for Other User{/tr}' title='{tr}Waiting for Other User{/tr}' />
+					<img src="{$img_he_waiting}"  height="{$img_he_waiting_height}" width="{$img_he_waiting_width}" border='0' alt='{tr}Waiting for Other User{/tr}' title='{tr}Waiting for Other User{/tr}' />
 				{/if}
 			{/if}
 		{/if}
@@ -64,19 +64,19 @@
 		{*submitted task*}
 		{icon _id='task_submitted' align="middle"}
 		{if (($tasklist[task_i].accepted_creator eq 'n') or ($tasklist[task_i].accepted_user eq 'n')) }
-			<img src="{$img_not_accepted}" height="{$img_not_accepted_height}" width="{$img_not_accepted_width}" title='{tr}Not Accepted by One User{/tr}' alt='{tr}Not Accepted User{/tr}' />
+			<img src="{$img_not_accepted}" height="{$img_not_accepted_height}" width="{$img_not_accepted_width}" title='{tr}Not Accepted by One User{/tr}'  border='0' alt='{tr}Not Accepted User{/tr}' />
 		{else}
 			{if ($tasklist[task_i].accepted_user eq '')}
 				{if ($tasklist[task_i].accepted_creator eq 'y')}
-					 <img src="{$img_he_waiting}"  height="{$img_he_waiting_height}" width="{$img_he_waiting_width}" alt='{tr}Waiting for Other User{/tr}' title='{tr}Waiting for Other User{/tr}' />
+					 <img src="{$img_he_waiting}"  height="{$img_he_waiting_height}" width="{$img_he_waiting_width}" border='0' alt='{tr}Waiting for Other User{/tr}' title='{tr}Waiting for Other User{/tr}' />
 				{else}
-					<img src="{$img_me_waiting}" height="{$img_me_waiting_height}" width="{$img_me_waiting_width}" title='{tr}Waiting for Me{/tr}' alt='{tr}Waiting for Me{/tr}' />
+					<img src="{$img_me_waiting}" height="{$img_me_waiting_height}" width="{$img_me_waiting_width}" title='{tr}Waiting for Me{/tr}' border='0' alt='{tr}Waiting for Me{/tr}' />
 				{/if}
 			{else}
 				{if ($tasklist[task_i].accepted_creator eq 'y')}
-					<img src="{$img_accepted}" height="{$img_accepted_height}" width="{$img_accepted_width}" title='{tr}Accepted by Task User and Creator{/tr}' alt='{tr}Accepted User and Creator{/tr}' />
+					<img src="{$img_accepted}" height="{$img_accepted_height}" width="{$img_accepted_width}" title='{tr}Accepted by Task User and Creator{/tr}' border='0' alt='{tr}Accepted User and Creator{/tr}' />
 				{else}
-					<img src="{$img_me_waiting}" height="{$img_me_waiting_height}" width="{$img_me_waiting_width}" title='{tr}Waiting for Me{/tr}' alt='{tr}Waiting for Me{/tr}' />
+					<img src="{$img_me_waiting}" height="{$img_me_waiting_height}" width="{$img_me_waiting_width}" title='{tr}Waiting for Me{/tr}' border='0' alt='{tr}Waiting for Me{/tr}' />
 				{/if}
 			{/if}
 		{/if}
@@ -149,7 +149,28 @@
 </table>
 </form>
 
-{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
+<br />
+<div class="mini">
+{if $prev_offset >= 0}
+[<a class="prevnext" href="tiki-user_tasks.php?find={$find}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}">{tr}Prev{/tr}</a>]&nbsp;
+{/if}
+{tr}Page{/tr}: {$actual_page}/{$cant_pages}
+{if $next_offset >= 0}
+&nbsp;[<a class="prevnext" href="tiki-user_tasks.php?find={$find}&amp;offset={$next_offset}&amp;sort_mode={$sort_mode}">{tr}Next{/tr}</a>]
+{/if}
+{if $prefs.direct_pagination eq 'y'}
+<br />
+{section loop=$cant_pages name=foo}
+{assign var=selector_offset value=$smarty.section.foo.index|times:$prefs.maxRecords}
+<a class="prevnext" href="tiki-user_tasks.php?find={$find}&amp;offset={$selector_offset}&amp;sort_mode={$sort_mode}">
+{$smarty.section.foo.index_next}</a>&nbsp;
+{/section}
+{/if}<br />
+{$cant} {tr}Tasks{/tr}
+</div>
+<br />
+<br />
+
 
 {* end ************ Task list ***************}
 

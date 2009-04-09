@@ -5,10 +5,9 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
-global $tikilib, $smarty;
 
 $ranking = $tikilib->list_received_pages(0, -1, $sort_mode = 'pageName_asc', '');
 
 $smarty->assign('modReceivedPages', $ranking["cant"]);
 
-
+?>

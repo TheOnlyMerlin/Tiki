@@ -7,7 +7,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
-global $prefs, $user, $tikilib, $smarty;
+global $prefs, $user;
 global $logslib; require_once('lib/logs/logslib.php');
 global $categlib; require_once('lib/categories/categlib.php');
   
@@ -140,4 +140,4 @@ if ($prefs['feature_categories'] == 'y' && (isset($_REQUEST['page']) || isset($_
   $smarty->assign('modcatlist',$modcatlist);
   $smarty->assign('modcatid',$id);
 }
-
+?>

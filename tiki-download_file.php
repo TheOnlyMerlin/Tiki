@@ -3,340 +3,246 @@
 // Initialization
 
 $force_no_compression = true;
-$skip = false;
+require_once('tiki-setup.php');
+include_once('lib/filegals/filegallib.php');
 
-if ( isset($_GET['fileId']) && isset($_GET['thumbnail']) && isset($_COOKIE['PHPSESSID']) && count($_GET) == 2 ) {
-	session_start();
-	if ( isset($_SESSION['allowed'][$_GET['fileId']]) ) {
-		include('db/tiki-db.php');
-		include('lib/tikidblib.php');
-		$db = new TikiDB($dbTiki);
-
-		$query = "select * from `tiki_files` where `fileId`=?";
-		$result = $db->query($query, array((int)$_GET['fileId']));
-		if ( $result ) {
-			$info = $result->fetchRow();
-
-			if ( isset($_SESSION['s_prefs']) ) {
-				$prefs = $_SESSION['s_prefs'];
-			} else {
-				$query = "select `value` from `tiki_preferences` where `name` = 'fgal_use_dir';";
-				$result = $db->query($query);
-				if ( $result ) {
-					$tmp = $result->fetchRow();
-					$prefs = array('fgal_use_dir' => $tmp['value']);
-				}
-			}
-
-			$skip = true;
-		} else {
-			$info = array();
-		}
-	} else {
-		session_write_close();
-	}
+if ( $prefs['feature_file_galleries'] != 'y' ) {
+  $smarty->assign('msg', tra('This feature is disabled'));
+  $smarty->display('error.tpl');
+  die;
 }
-
-if (!$skip) {
-	require_once('tiki-setup.php');
-	include_once('lib/filegals/filegallib.php');
-
-	if ( $prefs['feature_file_galleries'] != 'y' ) {
-		$smarty->assign('msg', tra('This feature is disabled'));
-		$smarty->display('error.tpl');
-		die;
-	}
-}
-
-if ( ! ini_get('safe_mode') ) {
-	@set_time_limit(0);
-}
+@set_time_limit(0);
 
 /*
-	 Borrowed from http://php.net/manual/en/function.readfile.php#54295 to come
-	 over the 2MB readfile() limitation
- */
+Borrowed from http://php.net/manual/en/function.readfile.php#54295
+to come over the 2MB readfile() limitation
+*/
 function readfile_chunked($filename,$retbytes=true) {
-	$chunksize = 1*(1024*1024); // how many bytes per chunk
-	$buffer = '';
-	$cnt =0;
-	$handle = fopen($filename, 'rb');
-	if ($handle === false) {
-		return false;
-	}
-	while (!feof($handle)) {
-		$buffer = fread($handle, $chunksize);
-		echo $buffer;
-		@ob_flush();
-		flush();
-		if ($retbytes) {
-			$cnt += strlen($buffer);
-		}
-	}
-	$status = fclose($handle);
-	if ($retbytes && $status) {
-		return $cnt; // return num. bytes delivered like readfile() does.
-	}
-	return $status;
-}
-$zip = false;
-$error = '';
-
-if (!$skip) {
-	if ( isset($_REQUEST['fileId']) && !is_array($_REQUEST['fileId'])) {
-		$info = $tikilib->get_file($_REQUEST['fileId']);
-	} elseif ( isset($_REQUEST['galleryId']) && isset($_REQUEST['name']) ) {
-		$info = $tikilib->get_file_by_name($_REQUEST['galleryId'], $_REQUEST['name']);
-	} elseif ( isset($_REQUEST['fileId']) && is_array($_REQUEST['fileId'])) {
-		$info = $filegallib->zip($_REQUEST['fileId'], $error);
-		$zip = true;
-	} else {
-		$smarty->assign('msg', tra('Incorrect param'));
-		$smarty->display('error.tpl');
-		die;
-	}
-	if ( ! is_array($info) ) {
-		$smarty->assign('msg', tra('Incorrect param').' '.tra($error));
-		$smarty->display('error.tpl');
-		die;
-	}
-
-	if ( !$zip && $tiki_p_admin_file_galleries != 'y' && !$userlib->user_has_perm_on_object($user, $info['galleryId'], 'file gallery', 'tiki_p_download_files')) {
-		$smarty->assign('errortype', 401);
-		$smarty->assign('msg', tra('Permission denied'));
-		$smarty->display('error.tpl');
-		die;
-	}
+   $chunksize = 1*(1024*1024); // how many bytes per chunk
+   $buffer = '';
+   $cnt =0;
+   $handle = fopen($filename, 'rb');
+   if ($handle === false) {
+       return false;
+   }
+   while (!feof($handle)) {
+       $buffer = fread($handle, $chunksize);
+       echo $buffer;
+       @ob_flush();
+       flush();
+       if ($retbytes) {
+           $cnt += strlen($buffer);
+       }
+   }
+   $status = fclose($handle);
+   if ($retbytes && $status) {
+       return $cnt; // return num. bytes delivered like readfile() does.
+   }
+   return $status;
 }
 
-// Add hits ( if download or display only ) + lock if set
+function get_readfile_chunked($filename) {
+   $chunksize = 1*(1024*1024); // how many bytes per chunk
+   $buffer = '';
+   $cnt =0;
+   $handle = fopen($filename, 'rb');
+   if ($handle === false) {
+       return false;
+   }
+   while (!feof($handle)) {
+       $buffer = fread($handle, $chunksize);
+   }
+   fclose($handle);
+   return $buffer;
+}
+
+if ( isset($_REQUEST['fileId']) ) {
+	$info = $tikilib->get_file($_REQUEST['fileId']);
+} elseif ( isset($_REQUEST['galleryId']) && isset($_REQUEST['name']) ) {
+	$info = $tikilib->get_file_by_name($_REQUEST['galleryId'], $_REQUEST['name']);
+	$_REQUEST['fileId'] = $info['fileId'];
+} else {
+	$smarty->assign('msg', tra('Incorrect param'));
+	$smarty->display('error.tpl');
+	die;
+}
+if ( ! is_array($info) ) {
+	$smarty->assign('msg', tra('Incorrect param'));
+	$smarty->display('error.tpl');
+	die;
+}
+
+$_REQUEST['galleryId'] = $info['galleryId'];
+
+$smarty->assign('individual', 'n');
+if ( $userlib->object_has_one_permission($_REQUEST['galleryId'], 'file gallery') ) {
+  $smarty->assign('individual', 'y');
+  if ( $tiki_p_admin != 'y' ) {
+    // Now get all the permissions that are set for this type of permissions 'file gallery'
+    $perms = $userlib->get_permissions(0, -1, 'permName_desc', '', 'file galleries');
+    foreach ( $perms['data'] as $perm ) {
+      $permName = $perm['permName'];
+      if ( $userlib->object_has_permission($user, $_REQUEST['galleryId'], 'file gallery', $permName) ) {
+        $$permName = 'y';
+        $smarty->assign("$permName", 'y');
+      } else {
+        $$permName = 'n';
+        $smarty->assign("$permName", 'n');
+      }
+    }
+  }
+}
+
+if ( $tiki_p_admin_file_galleries == 'y' ) {
+  $tiki_p_download_files = 'y';
+}
+
+if ( $tiki_p_download_files != 'y' ) {
+  $smarty->assign('msg', tra('You can not download files'));
+  $smarty->display('error.tpl');
+  die;
+}
+
+// Add hits ( if download or display only )
 if ( ! isset($_GET['thumbnail']) && ! isset($_GET['icon']) ) {
 
 	require_once('lib/stats/statslib.php');
-	if( ! $tikilib->add_file_hit($info['fileId']) )	{
+	if( ! $tikilib->add_file_hit($_REQUEST['fileId']) )
+	{
 		$smarty->assign('msg', tra('You cannot download this file right now. Your score is low or file limit was reached.'));
 		$smarty->display('error.tpl');
 		die;
 	}
-	$statslib->stats_hit($info['filename'], 'file', $info['fileId']);
+
+	$statslib->stats_hit($info['filename'], 'file', $_REQUEST['fileId']);
 
 	if ( $prefs['feature_actionlog'] == 'y' ) {
 		require_once('lib/logs/logslib.php');
-		$logslib->add_action('Downloaded', $info['galleryId'], 'file gallery', 'fileId='.$info['fileId']);
-	}
-
-	if ( ! empty($_REQUEST['lock']) ) {
-		if (!empty($info['lockedby']) && $info['lockedby'] != $user) {
-			$smarty->assign('msg', tra(sprintf('The file is locked by %s', $info['lockedby'])));
-			$smarty->assign('close_window', 'y');
-			$smarty->display('error.tpl');
-			die;
-		}
-		$filegallib->lock_file($info['fileId'], $user);
+		$logslib->add_action('Downloaded', $_REQUEST['galleryId'], 'file gallery', 'fileId='.$_REQUEST["fileId"]);
 	}
 }
 
-session_write_close(); // close the session in case of large downloads to enable further browsing
+// close the session in case of large downloads to enable further browsing
+session_write_close();
 error_reporting(E_ALL);
-if ( ob_get_level() ) while (@ob_end_clean()); // Be sure output buffering is turned off
 
-$content_changed = false;
 $content = &$info['data'];
 
-$md5 = '';
-if ( ! empty($info['path']) )  {
-	if (!$skip and $filegallib->isPodCastGallery($info['galleryId'])) {
-		$filepath = $prefs['fgal_podcast_dir'].$info['path'];
-	} else {
-		$filepath = $prefs['fgal_use_dir'].$info['path'];
-	}
-	if ( is_readable($filepath) ) {
-		$file_stats = stat($filepath);
-		$last_modified = $file_stats['mtime'];
-		$md5 = empty($info['hash']) ?
-			md5($file_stats['mtime'].'='.$file_stats['ino'].'='.$file_stats['size'])
-			: $info['hash'];
-	} else {
-		// File missing or not readable
-		die;
-	}
-} elseif ( ! empty($content) ) {
-	$last_modified = $info['lastModif'];
-	$md5 = empty($info['hash']) ? md5($content) : $info['hash'];
-} else {
-	// Empty content
-	die;
-}
-
-// ETag: Entity Tag used for strong cache validation.
-if ( ! isset($_GET['display']) || isset($_GET['x']) || isset($_GET['y']) || isset($_GET['scale']) || isset($_GET['max']) || isset($_GET['format']) ) {
-  // if image will be modified, emit a different ETag for modifications.
-  $etag = '"' . $md5 . '-' . crc32($md5) . '-' . crc32( $_GET['x'] . 'x' . $_GET['y'] . 'y' . $_GET['scale'] . 's' . $_GET['max'] . 'm' . $_GET['format'] . 'f' ) . '"';
-} else {
-  $etag = '"' . $md5 . '-' . crc32($md5) . '"';
-}
-header('ETag: '.$etag);
-
-$use_client_cache = false;
-if ( isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && $last_modified == strtotime(current($a = explode(';', $_SERVER['HTTP_IF_MODIFIED_SINCE']))) ) {
-	$use_client_cache = true;
-} elseif ( isset($_SERVER['HTTP_IF_NONE_MATCH']) ) {
-	$tmp = array_map('trim', explode(',', $_SERVER['HTTP_IF_NONE_MATCH']));
-	foreach ( $tmp as $v ) {
-		if ( $v == '*' || $v == $etag ) {
-			$use_client_cache = true;
-			break;
-		}
-	}
-	unset($tmp);
-}
-
-header("Pragma: ");
-header('Expires: ');
-header('Cache-Control: '.( $user ? 'private' : 'public' ).',must-revalidate,post-check=0,pre-check=0');
-
-if ( $use_client_cache ) {
-	header('Status: 304 Not Modified', true, 304);
-	exit;
-} else {
-	if ( !empty($last_modified) ) header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified). ' GMT');
-}
-
 // Handle images display, files thumbnails and icons
-if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['display']) || isset($_GET['icon']) ) {
-	$use_cache = false;
-
-	// Cache only thumbnails to avoid DOS attacks
-	if ( ( isset($_GET['thumbnail']) || isset($_GET['preview']) ) && ! isset($_GET['display']) && ! isset($_GET['icon']) && ! isset($_GET['scale']) && ! isset($_GET['x']) && ! isset($_GET['y']) && ! isset($_GET['format']) && ! isset($_GET['max']) ) {
-	        global $cachelib; include_once('lib/cache/cachelib.php');
-		$cacheName = $md5;
-	        $cacheType = ( isset($_GET['thumbnail']) ? 'thumbnail_' : 'preview_' ) . ((int)$_REQUEST['fileId']).'_';
-		$use_cache = true;
+if ( isset($_GET['thumbnail']) || isset($_GET['display']) || isset($_GET['icon']) ) {
+	
+	if ( $info['path'] && (!$content || sizeof($content) == 0)) {
+		$content = &get_readfile_chunked($prefs['fgal_use_dir'].$info['path']);
 	}
 
-	$build_content = true;
-        if ( $use_cache && $cachelib->isCached($cacheName, $cacheType) ) {
-		$content = null; // Explicitely free memory before getting cache
-		$content = $cachelib->getCached($cacheName, $cacheType);
-		if ($content !== serialize(false) and $content != "") $build_content = false;
-		$content_changed = true;
-	}
+	// Modify the original image if needed
+	if ( ! isset($_GET['display']) || isset($_GET['x']) || isset($_GET['y']) || isset($_GET['scale']) || isset($_GET['max']) || isset($_GET['format']) ) {
 
-	if ($build_content) {
+		require_once('lib/images/images.php');
+    if (!class_exists('Image')) die();
 
-		// Modify the original image if needed
-		if ( ! isset($_GET['display']) || isset($_GET['x']) || isset($_GET['y']) || isset($_GET['scale']) || isset($_GET['max']) || isset($_GET['format']) ) {
-	
-			require_once('lib/images/images.php');
-			if (!class_exists('Image')) die();
-	
-			$content_changed = true;
-			$format = substr($info['filename'], strrpos($info['filename'], '.') + 1);
-	
-			// Fallback to an icon if the format is not supported
-			if ( ! Image::is_supported($format) ) {
-				$_GET['icon'] = 'y';
-				$_GET['max'] = 32;
-			}
-	
-			if ( isset($_GET['icon']) ) {
-				unset($info['path']);
-				$content = null; // Explicitely free memory before generating icon
+		$format = substr($info['filename'], strrpos($info['filename'], '.') + 1);
 
-				if ( isset($_GET['max']) ) {
-					$icon_x = $_GET['max'];
-					$icon_y = $_GET['max'];
-				} else {
-					$icon_x = isset($_GET['x']) ? $_GET['x'] : 0;
-					$icon_y = isset($_GET['y']) ? $_GET['y'] : 0;	
-				}
-	
-				$content = Image::icon($format, $icon_x, $icon_y);
-				$format = Image::get_icon_default_format();
-				$info['filetype'] = 'image/'.$format;
-				$info['lastModif'] = 0;
-			}
-	
-			if ( ! isset($_GET['icon']) || ( isset($_GET['format']) && $_GET['format'] != $format ) ) {
-  				if ( ! empty($info['path']) ) {
-					$image = new Image($prefs['fgal_use_dir'].$info['path'], true);
-				} else {
-					$image = new Image($content);
-					$content = null; // Explicitely free memory before getting cache
-				}
-				if ( $image->is_empty() ) die;
-	
-				$resize = false;
-				// We resize if needed
-				if ( isset($_GET['x']) || isset($_GET['y']) ) {
-					$image->resize($_GET['x']+0, $_GET['y']+0);
-					$resize = true;
-				}
-				// We scale if needed
-				elseif ( isset($_GET['scale']) ) {
-					$image->scale($_GET['scale']+0);
-					$resize = true;
-				}
-				// We reduce size if length or width is greater that $_GET['max'] if needed
-				elseif ( isset($_GET['max']) ) {
-					$image->resizemax($_GET['max']+0);
-					$resize = true;
-				}
-				// We resize to a thumbnail size if needed
-				elseif ( isset($_GET['thumbnail']) ) {
-					$image->resizethumb();
-				}
-				// We resize to a preview size if needed
-				elseif ( isset($_GET['preview']) ) {
-					$image->resizemax('800');
-					$resize = true;
-				}
-	
-				// We change the image format if needed
-				if ( isset($_GET['format']) && Image::is_supported($_GET['format']) ) {
-					$image->convert($_GET['format']);
-				}
-				// By default, we change the image format to the usual most common format (jpeg) for thumbnails
-				elseif ( isset($_GET['thumbnail']) ) {
-					$image->convert('jpeg');
-				}
-	
-				$content =& $image->display();
-				$info['filetype'] = $image->get_mimetype();
-			}
+		// Fallback to an icon if the format is not supported
+		if ( ! Image::is_supported($format) ) {
+			$_GET['icon'] = 'y';
+			$_GET['max'] = 32;
 		}
 		
-		if ( $use_cache ) {
-			// Remove all existing thumbnails for this file, to avoid taking too much disk space
-			// (only one thumbnail size is handled at the same time)
-			$cachelib->empty_type_cache($cacheType);
+		if ( isset($_GET['icon']) ) {
+			unset($content);
+			if ( isset($_GET['max']) ) {
+				$icon_x = $_GET['max'];
+				$icon_y = $_GET['max'];
+			} else {
+				$icon_x = isset($_GET['x']) ? $_GET['x'] : 0;
+				$icon_y = isset($_GET['y']) ? $_GET['y'] : 0;	
+			}
 
-			// Cache Thumbnail
-			$cachelib->cacheItem($cacheName, $content, $cacheType);
+			$content = Image::icon($format, $icon_x, $icon_y);
+			$format = Image::get_icon_default_format();
+			$info['filetype'] = 'image/'.$format;
 		}
+
+		if ( ! isset($_GET['icon']) || ( isset($_GET['format']) && $_GET['format'] != $format ) ) {
+			$image = new Image($content);
+		
+			$resize = false;
+			// We resize if needed
+			if ( isset($_GET['x']) || isset($_GET['y']) ) {
+				$image->resize($_GET['x']+0, $_GET['y']+0);
+				$resize = true;
+			}
+			// We scale if needed
+			elseif ( isset($_GET['scale']) ) {
+				$image->scale($_GET['scale']+0);
+				$resize = true;
+			}
+			// We reduce size if length or width is greater that $_GET['max'] if needed
+			elseif ( isset($_GET['max']) ) {
+				$image->resizemax($_GET['max']+0);
+				$resize = true;
+			}
+			// We resize to a thumbnail size if needed
+			elseif ( isset($_GET['thumbnail']) ) {
+				$image->resizethumb();
+			}
+		
+			// We change the image format if needed
+			if ( isset($_GET['format']) && Image::is_supported($_GET['format']) ) {
+				$image->convert($_GET['format']);
+			}
+			// By default, we change the image format to the usual most common format (jpeg) for thumbnails
+			elseif ( isset($_GET['thumbnail']) ) {
+				$image->convert('jpeg');
+			}
+		
+			$content =& $image->display();
+			$info['filetype'] = $image->get_mimetype();
+		}
+
 	}
-}
 
-if ( empty($info['filetype']) ) $info['filetype'] = 'application/x-octetstream';
-header('Content-type: '.$info['filetype']);
-
-
-// IE6 can not download file with / in the name (the / can be there from a previous bug)
-$file = basename($info['filename']);
-
-// If the content has not changed, ask the browser to download it (instead of displaying it)
-if ( ! $content_changed and !isset($_GET['display']) ) {
-	header("Content-Disposition: attachment; filename=\"$file\"");
-}
-
-if ( $info['path'] and !$content_changed ) {
-	header('Content-Length: '.filesize($filepath));
-	readfile_chunked($filepath);
-} else {
 	if ( function_exists('mb_strlen') ) {
 		header('Content-Length: '.mb_strlen($content, '8bit'));
 	} else {
 		header('Content-Length: '.strlen($content));
 	}
+	header('Content-type: '.$info['filetype']);
+	echo "$content";
+
+	die();
+}
+
+// Lock while downloading
+if ( ! empty($_REQUEST['lock']) ) {
+	if (!empty($info['lockedby']) && $info['lockedby'] != $user) {
+		$smarty->assign('msg', tra(sprintf('The file is locked by %s', $info['lockedby'])));
+		$smarty->assign('close_window', 'y');
+		$smarty->display('error.tpl');
+		die;
+	}
+	$filegallib->lock_file($_REQUEST['fileId'], $user);
+}
+
+// IE6 can not download file with / in the name (the / can be there from a previous bug)
+$file = preg_replace('/.*([^\/]*)$/U', '$1', $info['filename']);
+
+// Added by Jenolan  31/8/2003 /////////////////////////////////////////////
+// File galleries should always be attachments (files) not inline (textual)
+
+header('Content-type: '.$info['filetype']);
+header("Content-Disposition: attachment; filename=\"$file\"");
+
+header('Expires: 0');
+header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+header('Pragma: public');
+
+if ( $info['path'] ) {
+	header('Content-Length: '.filesize($prefs['fgal_use_dir'].$info['path']) );
+	readfile_chunked($prefs['fgal_use_dir'].$info['path']);
+} else {
+	header('Content-Length: '.$info['filesize']);
 	echo "$content";
 }
+?>

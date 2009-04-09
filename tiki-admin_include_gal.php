@@ -132,8 +132,7 @@ if (isset($_REQUEST['mvimg']) && isset($_REQUEST['move_gallery'])) {
 	$smarty->assign('scaleSize', $_REQUEST['scaleSize']);
 
 if($imagegallib->havegd) {
-	$gdlib=tra('Detected, Version:').' '.$imagegallib->gdversion.' ('.tra('Test Image').': <img src="tiki-testGD.php" alt="" />)'; 
-        
+	$gdlib=tra('Detected, Version:').' '.$imagegallib->gdversion;
 } else {
 	$gdlib=tra('Not detected.');
 }

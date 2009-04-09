@@ -9,6 +9,13 @@
 // Initialization
 require_once ('tiki-setup.php');
 
+/*
+if($prefs['feature_listPages'] != 'y') {
+  $smarty->assign('msg',tra("This feature is disabled"));
+  $smarty->display("error.tpl");
+  die;  
+}
+*/
 if (isset($_REQUEST['url'])) {
 	$id = $tikilib->get_cache_id($_REQUEST['url']);
 

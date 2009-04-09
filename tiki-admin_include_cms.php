@@ -71,6 +71,5 @@ if (isset($_REQUEST['import'])) {
 		$smarty->assign_by_ref('msgs', $msgs);
 	}
 }
-
 ask_ticket('admin-inc-cms');
 ?>

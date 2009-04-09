@@ -1,5 +1,5 @@
 /*
- * The Darkroom theme for TikiWiki CMS/Groupware.
+ * The Darkroom theme for Tiki CMS/Groupware by Gary Cunningham-Lee (chibaguy),
  * Released under the LGPL license. For use with default Tiki templates.
  * Imports lite/lite.css. Be sure the file is available for proper layout. 
  * For more information on Darkroom, please visit http://themes.tikiwiki.org.
@@ -17,11 +17,7 @@ body {
 	font-family: "Trebuchet MS", "Bitstream Vera Sans", sans-serif}
 
 html>body {font-size: 74% !important}
-*:first-child+html body {font-size: 72% !important;}
-/* workaround for Safari when in FCKEditor */
-html[dir=ltr]>body {
-	display: block;
-	margin: 1em .5em;
+*:first-child+html body {font-size: 72% !important;
 }
 body.fullscreen { }
 
@@ -71,10 +67,37 @@ form {
 
 legend {color: #d8d8d8}
 
+input.button,
+button,
+input {
+	margin-right: 1px;
+	padding: 1px}
+	
+button {
+	background: #4E4E4E url(darkroom/button.png) top left repeat-x;
+	color: #B2B2B2;
+	font-size: 0.9em;
+	font-weight: bold;
+	border: 1px solid #3F3F3F;
+	border-top: 1px solid #818181;
+	margin: 2px;
+	padding: 0 4px;
+	vertical-align: middle;
+	cursor: pointer}
+
+button:hover {
+	border-top: 1px solid #A9A9A9;
+	border-left: 1px solid #A9A9A9;
+	border-right: 1px solid #696969;
+	border-bottom: 1px solid #696969}
+
+button,
 input,
 textarea,
 option,
 select {
+	border: solid 1px #aaa;
+	padding: 0.1em;
 	margin: 2px;
 	vertical-align: middle;
 	font-size: 0.9em;
@@ -99,25 +122,14 @@ input[type=password] {
 	font-size: 0.9em;
 	cursor: text}
 
+/*input[type=submit],
+input[type=file],
+input[type=reset],
+select {}*/
+
 button,
-.button,
-.submitbutton,
-.button input,
-.calbuttonBox {
-	background:#4E4E4E url(darkroom/button.png) top left repeat-x;
-	color:#B2B2B2;
-	font-weight: bold;
-	border: 1px solid transparent;
-	border-top: 1px solid #818181;
-	padding: 0 4px;
-	vertical-align: middle;
-	cursor: pointer;
-	white-space: nowrap}
-
-#page-bar .button {margin: 0 2px;}
-
-/* do not put this rule with button rule for IE6 */
 input[type=submit],
+.button input,
 input[type=reset] {
 	background:#4E4E4E url(darkroom/button.png) top left repeat-x;
 	color:#B2B2B2;
@@ -129,20 +141,15 @@ input[type=reset] {
 	cursor: pointer}
 
 button:hover,
-.button:hover,
 input[type=submit]:hover,
-input[type=reset]:hover,
-.submitbutton:hover,
-.button input:hover,
-.calbuttonBox:hover {border: 1px solid #B2B2B2}
+.button input:hover {
+	border: 1px solid #B2B2B2;
+	text-decoration: none}
 
-.button a:hover {text-decoration: none}
-.button {font-size: 0.8em;}
-input[type=file] {color: #000}
-
+input[type=file],
 select {
 	border: solid 1px #aaa;
-	background-color: #292929;
+	background: #292929;
 	color: #F5F5F5;
 	font-size: 1em;
 	vertical-align: middle}
@@ -157,12 +164,13 @@ select[name="theme"] {
 	border-right: 1px solid #696969;
 	border-bottom: 1px solid #696969}
 	
-#col1 select[type=file] {font-size: .95em}
+#col1 select[type=file] { font-size: .95em }
 
 input[type=wikiaction] {margin-bottom: 2px}
 * html .findtable input {font-size: 1em}
 * html .wikitopline select {font-size: .9em}
 small {font-size: 0.8em}
+label {}
 ul, ol {text-align: left}
 li {}
 
@@ -173,6 +181,12 @@ li {}
 ul.jumplinks {
 	font-size: 0.8em;
 	list-style-type: none}
+
+ul.jumplinks, .jumplinks {
+	position: absolute;
+	top: -9000px;
+	left: -9000px;
+	z-index: 9}
 
 ul.jumplinks a:focus, ul.jumplinks a:active {
 	position: absolute;
@@ -206,7 +220,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	margin: 0;
 	font-size: 1em}
 
-#header {text-align: left}
+#header {text-align:left}
 
 #middle {
 	text-align: left;
@@ -229,8 +243,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 #c1c2 #col2 {
 	width: 200px;
 	font-size: 1em;
-	/*margin-top: 10px;*/
-	overflow: visible;}
+	margin-top: 10px}
 
 #c1c2 #col2 .content {
 	margin: 0;
@@ -257,8 +270,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 #footer a:visited {font-weight: bold}
 
 #footer a:hover {}
-#power {margin-top: .5em}
-#credits {display: inline}
+#credits {margin-top: .5em}
 .footerbgtrap {}
 
 /* end Type 1 layout */
@@ -271,13 +283,14 @@ div#tiki-main #tikimidtbl {
 
 /* Site Header & Identity */
 
-#header-top {position: relative} 
+/* #header-top {} */ 
 
 #siteheader {
 	text-align: left;
 	background: transparent;
 	vertical-align: middle;
-	margin: 0}
+	margin: 0;
+	position: relative}
 
 div#sioptions {
 	padding-left: 0;
@@ -340,16 +353,9 @@ div#sitead {
 #siteloginbar {
 	text-align: right;
 	position: absolute;
-	bottom: 2px;
-	right: 10px;
-	font-size: 90%}
+	bottom: 2px; right: 10px;
+	font-size: 80%}
 	
-* html #siteloginbar {position: absolute; top: 10px; right: 10px  }
-
-#siteloginbar.logged-in {
-	bottom: 2px;
-}
-
 input[id="sl-login-user"],
 input[id="sl-login-pass"] {font-size: 1.1em}
 
@@ -359,7 +365,6 @@ input[id="sl-login-pass"] {font-size: 1.1em}
 
 #tiki-top {
 	border-top: 1px solid #818181;
-	height: 34px;
 	background: url(darkroom/button.png) repeat-x}
 
 #tiki-top table {
@@ -420,9 +425,7 @@ a.flip img {display: none}
 
 .horbar {
 	margin-left: 0;
-	margin-bottom: 0;
-	float: left;
-	clear: none;}
+	margin-bottom: 0px}
 
 .horbar table {
 	width: auto;
@@ -436,7 +439,9 @@ a.flip img {display: none}
 	border: 1px solid #909090;
 	color: #909090;
 	text-decoration: none;
-	/*padding: 4px 2px 4px 7px*/}
+	padding: 4px 2px 4px 7px}
+
+/* .mdkverbar {} */
 
 .mdksubmenu {
 	z-index: 999;
@@ -459,11 +464,14 @@ a.flip img {display: none}
 	position: relative;
 	text-align: left;
 	white-space: nowrap;
+	/*width: 125px;*/
 	font-size: 1em}
 
+ul#cssmenu li a,
 .horbaritem a,
 .mdkverbar a,
 .mdkitem a,
+ul#cssmenu li a:visited,
 .horbaritem a:visited,
 .mdkverbar a:visited,
 .mdkitem a:visited  {
@@ -472,6 +480,55 @@ a.flip img {display: none}
 	padding: 5px 2px 5px 8px;
 	position: relative;
 	display: block}
+
+#box-menu_43_CSS_vert,
+#menu_43_CSS_vert {overflow: visible}
+
+ul.cssmenu_vert {width: 172px}
+
+.cssmenu li,
+.cssmenu a,
+.cssmenu h2,
+li.menuoption {
+	background: #474747;
+	border: none}
+
+.cssmenu ul li ul {border: 1px solid #6A6A6A}
+
+.cssmenu a,
+.cssmenu a:visited,
+.cssmenu h2 {
+	background: #474747;
+	color: #A6A68D;
+	border: none;
+	text-decoration: none}
+
+.cssmenu a:hover,
+.cssmenu h2:hover,
+li.menuSection:hover a {color: #FF1493}
+
+/* These override css/cssmenu_vert.css */
+.cssmenu_vert li a,
+.cssmenu_vert a:visited {
+	background: #474747;
+	border: none;
+	padding: 0}
+
+#cssmenu_vert li ul {
+	background: #474747;
+	margin-left: 174px}
+
+.cssmenu_vert,
+.cssmenu_vert ul,
+.cssmenu_vert li ul {
+	width: 184px;
+	background: #474747}
+
+.cssmenu_vert li ul li ul,
+.cssmenu_vert li ul {
+	margin-left: 114px;
+	padding-left: 0;
+	width: 11em}
 
 .mdksubframe .mdkitem a:hover {
 	text-decoration: none;
@@ -493,8 +550,8 @@ a.flip img {display: none}
 .treemenudiv {
 	display: block;
 	white-space: nowrap;
-	/*padding-right: 2em;
-	margin-left: 2em*/}
+	padding-right: 2em;
+	margin-left: 2em}
 
 .phplmnormal,
 a.phplmnormal:hover,
@@ -506,9 +563,9 @@ a.phplm:active {
 	color: #F5F5F5;
 	text-decoration: none;
 	font-weight: normal;
-	background: #474747}
+	background: #999/*#3F3F3F*/}
 
-td.phplmnormal {background: #474747}
+td.phplmnormal {background: #999}
 a.phplm:visited {color: #F5F5F5}
 
 a.phplm:hover {
@@ -528,87 +585,13 @@ a.phplmselected:active {
 
 a.phplmselected:hover {color: #AAAAAA}
 
-img.imgs {background: #999}
-
-/** CSS (suckerfish) menus **/
-
-.cssmenu li,
-.cssmenu_horiz li,
-.cssmenu_vert li,
-.cssmenu li ul,
-.cssmenu_horiz li ul,
-.cssmenu_vert li ul {background: #474747}
-	
-#col2 .cssmenu_vert > li {
-	width: 172px;
-	padding: 0 !important}
-
-#col2 .cssmenu_vert li {padding: 0}
-
-.cssmenu_vert li ul { 
-	margin-top: -1.35em;
-	padding-bottom: 1px;}
-
-#col2 .cssmenu_vert > li > ul {margin-left: 172px}
-
-.cssmenu li ul,
-.cssmenu_horiz li ul,
-.cssmenu_vert li ul {
-	border: 1px solid #6A6A6A;
-	padding: 0}
-
-.cssmenu a,	
-.cssmenu_horiz a,
-.cssmenu_vert a {
-	text-decoration: none;
-	font-weight: normal;
-	display: block;
-	text-decoration: none;
-	padding: 3px 0 3px 6px}
-	
-.cssmenu_vert a {padding: 3px 2px 3px 8px;}
-.cssmenu a:hover,
-.cssmenu_vert a:hover,	
-.cssmenu_horiz a:hover {color: #F5F5F5}
-
-.cssmenu li:hover,
-.cssmenu_horiz li:hover,
-.cssmenu_vert li:hover,
-.cssmenu li.sfhover,
-.cssmenu_horiz li.sfhover,
-.cssmenu_vert li.sfhover {background: #b2b2b2}
-
-.cssmenu_vert li:hover {background: #b2b2b2}
-
-.cssmenu li:hover > a,
-.cssmenu_horiz li:hover > a,
-.cssmenu_vert li:hover > a {color: #303030}
-
-#tiki-top > .cssmenu_horiz > li {
-	background: url(darkroom/button.png) repeat-x;
-	width: 10em}
-
-#tiki-top > .cssmenu_horiz > li > a {
-	border: 1px solid transparent;
-	border-right: 1px solid #6A6A6A;
-	color: #A6A68D;
-	font-weight: bold;
-	font-size: 12px;
-	padding: 6px 2px 6px 8px}
-
-#tiki-top > .cssmenu_horiz > li > a:hover {
-	border: 1px solid #909090;
-	color: #909090 !important}
-	
-* html #tiki-top .cssmenu_horiz li {background: transparent}
-* html #tiki-top .cssmenu_horiz li ul li {background: #999}
-
 /** Links in other menus **/
  
 div.separator, div.separatorline {
 	color: #F5F5F5;
 	display: block;
-	padding: 5px 4px 4px 10px}
+	padding: 5px 4px 4px 10px;
+	width: 140px}
 
 div.separator:hover,
 div.option a.linkmenu:hover {
@@ -708,23 +691,14 @@ div#edithelpzone {display: none}
     height: 0; 
     clear: both; 
     visibility: hidden}
-	
-.clearfix {display: inline-block}
-/* Hide from IE Mac \*/
-.clearfix {display: block}
-/* End hide from IE Mac */
+
 * html .clearfix {height: 1%}
 #overdiv table {width: auto !important}
 .attention {color: red}
 
 .highlight, #highlight  {
-	background: #474747;
+	background: #474747 !important;
 	color: #fff}
-
-/* OpenID  */
-.openid_url {
-	background: #fff url(../../img/icons/login-OpenID-bg.gif) no-repeat;
-	padding-left: 18px}
 
 .bannertext {
 	font-size: .95em;
@@ -754,8 +728,8 @@ div.searchdate {
 
 div#debugconsole {
 	position: absolute;
-	background: #333;
-	color: #fff;
+	background: #F3F6F9;
+	color: #000;
 	top: 0;
 	left: 20px;
 	right: 310px;
@@ -764,12 +738,7 @@ div#debugconsole {
 	padding: 5px;
 	border: 6px ridge #996600;
 	font-size: 1.2em}
-#debugconsole form {
-	color: #000;
-}
-#debugconsole input[type="text"] {
-	width: auto;
-}
+
 .mini {
 	width: 100%;
 	text-align: center;
@@ -810,11 +779,12 @@ div.box {
 	background: #292929;
 	margin-bottom: 8px;
 	padding-bottom: 2px;
-	width: 190px;
-	overflow: hidden}
+	width: 190px}
+
+.box-menu_43_CSS_horiz {overflow: visible}
 
 h3.box-title {
-	display: block;
+	overflow: hidden;
 	color:#9D9D9D;
 	font-size:1.4em;
 	font-weight:bold;
@@ -822,39 +792,32 @@ h3.box-title {
 	padding: 4px;
 	position: relative}
 
-* html h3.box-title {position: static}
-	
 .box-title a {color: #9D9D9D}
+.box a.flipmodtitle img {display: none}
 
-.moduleflip {
-	display: none;
+* html .box a.flipmodtitle img,
+.box:hover a.flipmodtitle img {
+	display: block;
 	position: absolute;
 	right: 0;
-	top: 0}
+	top: 0;
+	border: 1px solid transparent}
 
-* html .moduleflip {
-	position: static;
-	float: right}
-
-* html .moduleflip,
-.box:hover .moduleflip {display: block}
-
-.box:hover img.flipmodimage {border: 1px solid transparent}
-* html img.flipmodimage {border: none}
-
-img.flipmodimage:hover {border: 1px solid #818181 !important}
+a.flipmodtitle:hover img {border: 1px solid #818181 !important}
 
 .box-data { 
 	background: #474747;
-	padding: 2px 2px;
+	padding: 2px 4px 2px 4px;
 	color: #DCDCDC;
 	line-height:1.4em;
-	margin: 8px}
+	margin: 8px;
+	overflow: hidden}
 
-* html .box img.flipmodimage {border: none}
+* html .box a.flipmodtitle img {border: none}
+.box-menu_43_CSS_horiz .box-data {overflow: visible}
 .box-data a.linkmenu {display: block}
 .box-data select {width: 120px}
-.box-data table {width: 100%}
+.box-data table {margin: auto}
 
 .box-data table td {
 	padding: 0.2em;
@@ -898,40 +861,38 @@ img.flipmodimage:hover {border: 1px solid #818181 !important}
 
 .rbox {
 	overflow: hidden;
-	border: 0;
+	border: 1px solid #606060;
+	padding: 4px;
 	color: #fffff0}
 
 .rbox-title {
-	display: inline-block;
 	text-align: left;
 	padding: 3px;
 	font-weight: bold;
 	background: transparent;
-	border: 1px solid #606060;
-	border-bottom: 0;
-	margin-bottom: -1px}
+	border: 0}
 
 .rbox-data {
 	padding: 3px;
 	background: transparent;
-	border: 1px solid #606060}
+	border: 0}
 
-.rbox a {}
+.rbox a {text-decoration: underline}
 
-.warning .rbox-title {color: #ffe6db}
-.warning .rbox-data { }
+.rbox-title[name="warning"] {color: #ffe6db}
+.rbox-data[name="warning"] { }
 
-.tip .rbox-title,
-.tip .rbox-data,
-.note .rbox-data {
+.rbox-title[name="tip"],
+.rbox-data[name="tip"] {
 	background: #000;
-	/*border: none;*/
+	border: none;
 	color: #fffff0}
 
-.comment .rbox-title,
-.comment .rbox-data {}
+.rbox-title[name="comment"],
+.rbox-data[name="comment"] {}
 
-.note .rbox-title {}
+.rbox-title[name="note"] {}
+.rbox-data[name="note"] {}
 
 div.simplebox {
 	background: #696969;
@@ -951,8 +912,6 @@ table.bloglist  {
 	border-collapse: collapse;
 	margin-top: 1em;
 	margin-bottom: 1em}
-table.normalnoborder {
-	width: 100%}
 	
 * html table.normal, 
 * html table.admin,
@@ -966,6 +925,11 @@ table.bloglist {}
 table.admin tr td div#page-bar {}
 td {vertical-align: top}
 * html td { font-size: 11px}
+
+th {
+	padding: 0 2px;
+	background: #303030;
+	color: #F5F5F5}
 
 td.normal,
 td.bloglist,
@@ -985,19 +949,27 @@ td.even {
 
 /* table.email {}
 table.email td.body {}
-table.email th {}
+table.email td.heading {}
 table.email td.closeButton {} */
 
 div.heading,
-th {
-	padding: 0 2px;
+td.heading {
 	background: #292929 !important;
 	text-align: center;
 	color: #F5F5F5;
-	/*border-bottom: 1px solid #696969*/}
+	border-bottom: 1px solid #696969}
 
-tr.odd {background: #292929;}
-tr.even {background: #3F3F3F;}
+td.bloglistheading {text-align: center}
+/* form.admin {}
+form.admin fieldset {}
+form.admin legend.heading {}
+form.admin legend.heading a {}
+form.admin legend.heading a:hover {}
+form.admin legend.heading a span {}
+form.admin legend.heading a:hover span {}
+div.heading {} */
+tr.odd {background: #292929}
+tr.even {background: #3F3F3F}
 
 tr.odd td,
 td.odd {
@@ -1014,6 +986,14 @@ td.third { }
 td.form {
 	padding: .2em;
 	color: #F5F5F5}
+
+/* td.normal,
+td.bloglist,
+td.odd,
+td.even {}
+
+td.formlabel {}
+td.formcontent {} */
 
 /* Needed for light-on-dark theme */
 div.quicktag {}
@@ -1035,24 +1015,32 @@ a.forumname {}
 
 a.forumnameread {} */
 
+/* links in table headings */
+/* .tableheading,
+.gallistheading,
+.listgalheading,
+.bloglistheading,
+.llisfgalheading,
+.llistfileslink,
+.llistart,
+.lforumheading {} */
+
 /** Tabs **/
 
 .tabs {
-	border-bottom: 0;
-	margin: 10px 5px -14px 5px !important;
-	padding: 0 !important;
-	position: relative;
-	z-index: 201}
+	border-bottom: solid 1px #225566 !important;
+	margin-top: 10px !important;
+	padding: 0 !important}
 
 .tabactive {
-	border: solid 1px #696969 !important;
+	border: solid;1px #225566 !important;
 	border-bottom: none !important;
 	border-top-width: 2px !important;
 	position: relative;
 	top: -2px}
 
 [class].tabactive {top: -1px}
-.tabactive a {background: #696969}
+.tabactive a {background: #767676}
 
 .tabinactive {
 	border: solid 1px #666 !important;
@@ -1064,18 +1052,16 @@ a.forumnameread {} */
 
 .tabmark {
 	display: inline;
-	white-space: nowrap;
 	font-size: 10px;
 	background: #4E4E4E url(darkroom/button.png);
 	border: 1px solid #666666;
-	border-bottom: 1px solid #696969;
 	margin: 0;
 	margin-right: 5px;
 	padding: 2px 0;
 	color: #F5F5F5}
 
 .tabmark a { 
-	border: 1px solid transparent;
+	border-bottom: 0;
 	font-weight: bold;
 	padding: 1px 5px;
 	color: #F5F5F5}
@@ -1086,17 +1072,15 @@ a.forumnameread {} */
 .tabmark a:hover {
 	color: #F5F5F5;
 	text-decoration: none;
-	border: 1px solid #a9a9a9;
-	border-bottom-color: transparent}
+	border: 1px solid #a9a9a9;}
 
 .tabcontent {
 	z-index: 200;
 	position: relative;
-	padding: 26px 2px 2px 2px;
+	padding: 6px 2px 2px 2px;
 	margin: 5px;
 	margin-top: 0;
-	border: 1px solid #666666;
-	background-color: #696969}
+	background-color: #474747}
 
 .tabcontent table {
 	margin: 1% auto 2% auto;
@@ -1105,21 +1089,21 @@ a.forumnameread {} */
 	
 .tabcontent table td {padding: 5px}
 
-/*form fieldset.tabcontent {
+form fieldset.tabcontent {
 	border: 1px solid #225566;
 	border-top: none !important}
 
 form.admin .tabs {
+	border-bottom: solid 1px #225566 !important;
 	margin: 10px 1px 0 0 !important;
-	padding: 0 !important}*/
+	padding: 0 !important}
 
-form.admin {background: #292929}
-/*
-form.admin legend.heading {}
-form.admin legend.heading a {}
-form.admin legend.heading a:hover {}
-form.admin legend.heading a span {}
-form.admin legend.heading a:hover span {} */
+/* Get the contextual info to make this specific. 
+div.content {
+	padding: 3px}
+
+div.content .tabs {
+	margin: 0}*/
 
 .tab-wrapper {
 	border: 1px solid #eee;
@@ -1165,7 +1149,31 @@ form.admin legend.heading a:hover span {} */
 	text-decoration: underline}
 
 .tab-menu li img {vertical-align: middle}
-table.admin .tabcontent .cbox {background: transparent}
+span#tab1 {background: #7d7d7d}
+span#tab2 {background: #6c6c6c}
+span#tab3 {background: #5c5c5c}
+
+#content1,
+#content2,
+#content3 {
+	border-top: 1px solid #A9A9A9;
+	border-left: 1px solid #A9A9A9;
+	border-right: 1px solid #696969;
+	border-bottom: 1px solid #696969}
+
+#content1 {
+	padding: 10px;
+	background: #7d7d7d}
+
+#content2 {
+	padding: 5px;
+	background: #3A3A3A}
+
+#content3 {
+	padding: 5px;
+	background: #5c5c5c}
+
+table.admin div#content1 div.tabcontent div.cbox {background-color: transparent}
 
 /***** Feature-specific styles ****/
 
@@ -1173,9 +1181,7 @@ table.admin .tabcontent .cbox {background: transparent}
 
 h1 a.pagetitle {font-size: 1.2em}
 
-div#description,
-.description {
-	display: block;
+div#description {
 	font-size: .95em;
 	font-style: italic}
 
@@ -1242,15 +1248,13 @@ td.wikicell {
 	border-right: 1px solid #A9A9A9;
 	border-bottom: 1px solid #A9A9A9}
 
-.editdate {padding-bottom: 5px; padding-top: 5px}
+.editdate {padding-bottom: 5px}
 
 div#page-bar {
 	display: block;
-	margin-top: 0;
-	text-align:center;
-	line-height: 150%;
-}
+	margin-top: 0}
 
+#page-bar span {float: left}
 
 ul.floatleft {
 	display: block;
@@ -1265,13 +1269,44 @@ ul.floatleft li {
 	padding: 4px 2px}
 
 .editdate ul.floatleft {margin-top: 8px}
+ 
+.button2 {
+	display: inline-block;
+	margin: 2px;
+	padding: 0 4px;
+	background:#4E4E4E url(darkroom/button.png) top left repeat-x;
+	border: 1px solid #3F3F3F;
+	border-top: 1px solid #818181}
 
-.navbar {line-height: 150%;margin-bottom: 10px;margin-top: 5px;}
+div.button2 a, .button3 a {
+	/*margin: 2px;
+	padding: 0 4px;
+	background:#4E4E4E url(darkroom/button.png) top left repeat-x;
+	*/color:#B2B2B2;
+	font-weight: bold;
+	/*border: 1px solid #3F3F3F;
+	border-top: 1px solid #818181;*/
+	display: block}
+	
+.navbar .linkbut { 
+	color:#B2B2B2;
+	font-weight: bold}
 
+.navbar .linkbut:hover,
+div.button2 a:hover, .button3 a:hover {
+	/*border: 1px solid #B2B2B2;*/
+	text-decoration: none}
+
+span.button2 {line-height: 150%}
+span.button2:hover {border: 1px solid #B2B2B2}
+span.button2 a {border: 1px solid transparent}
+span.button2 a:hover {text-decoration: none}
+.linkbut, .linkbut:visited {font-size: 0.8em}
+ /*.linkbut:hover {}
 div.cache {}
 div.cachedpage {}
 .wikicache, .wikicache:visited {}
-.wikicache:hover {}
+.wikicache:hover {}*/
 .wikinew {color: #fff}
 .wiki-edithelp {display: none}
 textarea.wikiedit {font-size: 1.1em}
@@ -1285,7 +1320,7 @@ div.code {
 	font-size: 90%;
 	padding: 3px;
 	border: 1px dashed #CCCCCC;
-	background: #000000;
+	background: #F4F4F4;
 	font-family: "Courier New", Courier, monospace}
 
 .codelisting {
@@ -1354,18 +1389,16 @@ ul.toc * {}
 
 .diffheader {
 	background: #A9B8C2;
-	color: #000;
 	font-weight: bold}
 
-.diffadded { background: #CCFFCC; color: #000}
-.diffdeleted { background: #FFCCCC; color: #000}
+.diffadded { background: #CCFFCC}
+.diffdeleted { background: #FFCCCC}
 
 .diffinldel {
 	background: #FFCCCC;
-	 color: #000;
 	text-decoration: line-through}
 
-.diffbody { background: #F2F4F5;  color: #000}
+.diffbody { background: #F2F4F5}
 .diffchar { color: red}
 
 /***** Articles ****/
@@ -1382,7 +1415,7 @@ div.articletitle {
 	margin: 0 0 15px;
 	padding: 0}
  
-div.articletitle h2 {
+span.titlea {
 	font-size: 1.6em;
 	font-weight: bold}
 
@@ -1420,27 +1453,8 @@ img.articleimage {
 	background: Black;
 	border: 1px solid #989898}
 
-div.articletrailer {
-	position: relative;
-	text-align: center;
-	margin-top: 1.1em}
-	
-div.articletrailer img {}
-
-div.article .status {
-	position: absolute;
-	left: 0}
-
-div.articletrailer span {
-	display: inline-block;
-	margin: auto;
-	white-space: nowrap}
-
-div.article .actions {
-	position: absolute;
-	right: 0;
-	top: 0}
-
+div.articletrailer {text-align: right}
+div.articletrailer .wikitopline {float: left} 
 div.articlebody {}
  
 div.articlesource {
@@ -1448,10 +1462,6 @@ div.articlesource {
 	font-style: italic;
 	font-size: 90%}
  
-div.articletrailer .wikitopline {
-	background: #4E4E4E url(darkroom/button.png) top left repeat-x;
-	width: 100%}
-
 /***** Blogs *****/
 
 div.blogheading {
@@ -1473,11 +1483,10 @@ div.blogdesc {
 	padding: 8px}
 
 div.bloginfo {
-	text-align: right;
 	display: block;
 	padding: 3px;
-	font-size: 95%;
-	background: none}
+	line-height: 150%;
+	background: #292929}
 
 div.blogtools {
 	margin-right: 4px;
@@ -1508,51 +1517,21 @@ div.posthead {
 	font-weight: bold;
 	letter-spacing: .4pt;
 	border-bottom: 1px solid #B0B0B0}
-	
-body.tiki_blogs .post {margin-bottom: 20px  }
  
-body.tiki_blogs .post .title {
-	width: 100%}
-
-/*div.posthead h3*/
-body.tiki_blogs .post .title h2 {
+div.posthead h3 {
 	background: #343434 url(darkroom/button.png) repeat-x;
 	color: #D8D8D8;
 	text-align: left;
 	margin-bottom: 10px;
-	margin-left: 0;
-	padding-left: 6px;
 	font-size: 1.1em}
  
-/*div.postbody*/
-body.tiki_blogs .post .postbody {
+.blogpost .postbody {
 	margin-right: 8px;
-	padding: 6px 0}
+	line-height: 1.5em}
 
-body.tiki_blogs div.author_actions {
-	float: none;
-	background: none;
-	border: 0;
-	width: 100%}
-	
-body.tiki_blogs .actions {
-	background: none;
-	text-align: right}
-
-body.tiki_blogs .author_info {background: none}
-
-.postbody-title {
-	background: none;
-	border: 0}
-	
-body.tiki_blogs .postbody-title {
-	float: none;
-	width: 100%;
-	background: none;
-	border: 0}
-	
-body.tiki_blogs .postfooter {width: 100%}	
-body.tiki_blogs .postfooter .actions {float: left}
+div.postfooter {
+	clear: both;
+	float: right}
 
 /***** Forums *****/
 
@@ -1622,7 +1601,7 @@ table.commentinfo {background: #F0F0F0}
 * html .post .postbody {font-size: 11px}
 *:first-child+html .post .postbody {min-width: 100% !important}
 	
-#c1c2 #wrapper #col1 .content .post .postbody .content {
+#col1 .post .postbody .content {
 	color: #D8D8D8;
 	border-color: transparent;
 	background: transparent !important;
@@ -1635,7 +1614,7 @@ table.commentinfo {background: #F0F0F0}
 	text-align: left;
 	color: #D8D8D8}
 	
-#c1c2 #wrapper #col1 .content .post .postbody .content p { margin: 5px 10px }
+.post .postbody .content p { margin: 5px 10px }
 		
 .post .postbody-title {
 	background-color: inherit;
@@ -1742,7 +1721,7 @@ table.commentinfo {background: #F0F0F0}
 
 .forum_actions .headers .title {
 	float: left;
-	background-color: #696969;
+	background-color: dimgray;
 	border: 1px solid #999999;
 	border-bottom: 0;
 	padding: 1px}
@@ -1766,8 +1745,7 @@ table.commentinfo {background: #F0F0F0}
 #comzone {
 	display: none;
 	margin: 5px 0;
-	padding: 0;
-}
+	padding: 0}
  
 #comzoneopen {
 	display: block;
@@ -1780,9 +1758,6 @@ span.commentstitle {
 
 /* Find */
 .subcomment {margin-left: 10px}
-.findtable {padding: 15px 0;}
-.findtable ul {list-style: none;padding:0; margin: 0;float: left;}
-.findtable ul li {float: left;}
 
 /* Help box*/
 div.commentsedithelp {
@@ -1817,13 +1792,14 @@ td.categobjectsdataodd {}
 .catlists a.link {}
 .catlists a.link:hover {}
 
-ul.catfeatures {list-style: none}
+ul.catfeatures {}
 ul.catfeatures li {}
 ul.catitems {}
 
 ul.catitems li {
-	display: inline;
-	margin-right: 10px}
+	float: left !important;
+	padding-right: 18px;
+}
 
 ul.catitems li a.link {}
 
@@ -1907,6 +1883,7 @@ td.eventhumb img {
 	margin-right: 6px}
 
 /* ?? */
+div.thumbnails {}
 
 img.athumb {
 	border: 0;
@@ -1929,32 +1906,25 @@ div.imgaldescr {margin: 10px}
 .sorttitle {margin-left: 10px}
 
 div#browse_image {
+	background: white;
 	width: 100%}
 
 /***** File Galleries *****/
 
-div.thumbnailcontener {
-	border: 1px solid #292929;
-	overflow: hidden;
-	margin: 2px;
-	text-align: center;
-	height: 100% !important;
-}
-div#thumbnails {padding: 1px;}
+div.thumbnailcontener {}
 div.thumbnail {}
 div.thumbnamecontener, div.thumbimagecontener {}
 div.thumbnamecontener {}
-div.thumbname, div.thumbimage {padding: 4px;}
+div.thumbname, div.thumbimage {}
 div.thumbnamesub, div.thumbimagesub {}
 div.thumbnail:hover {}
 div.thumbnail:hover div.thumbnamecontener {}
 div.thumbimage img {}
-div.thumbinfosothers {font-size: 80%;}
 div.thumbinfos {}
 div.thumbinfo {}
 span.thumbinfoval {}
-div.thumbname {border-top: 1px dotted #292929;border-bottom: 1px dotted #292929;}
-div.thumbactions {text-align: right;}
+div.thumbname {}
+div.thumbactions {}
 div.thumbactions * {}
 div.thumbactions input {}
 div.thumbactions a {}
@@ -1962,10 +1932,10 @@ div.thumbdescription {}
 div.thumbdescription + div.thumbinfo {}
 div.thumbdescription span.thumbinfoname {}
 a.namealias {}
-div.gallerypath, div.gallerypath a {}
-div.gallerypath a:hover {}
-.fgalexplorer {background: #999999}
-.fgallisting table td {padding-left: 2px; padding-right: 2px}
+div.gallerypath, div.gallerypath a { color: #6996C3; font-style: italic; font-weight: normal; margin-left: 3px; text-decoration: none}
+div.gallerypath a:hover { text-decoration: underline}
+.fgalexplorer { border: 1px solid #D8D8D8}
+.fgallisting table td { padding-left: 2px; padding-right: 2px}
 
 /***** Trackers *****/
 
@@ -1983,7 +1953,6 @@ div.gallerypath a:hover {}
 
 /***** Calendar *****/
 
-.Cal,
 .Cal0, 
 .Cal1, 
 .Cal2 {
@@ -2126,7 +2095,7 @@ Caltrack a:visited {color: #00BD02}
 	font-size: 1em;
 	background: inherit}
 
-#calscreen .calfocus a {color: #F5F5F5}
+.calfocus a {color: #F5F5F5}
 
 .calfocuson {
 	font-size: 90%;
@@ -2152,11 +2121,6 @@ Caltrack a:visited {color: #00BD02}
 .caltoggle {
 	font-size: 90%;
 	background: #3F3F3F}
-.calbuttonon a { text-decoration: underline;}
-
-.calHeadingOn a {
-	text-decoration: underline !important;
-	color: #D8D8D8 !important;}
 
 .opaque {
 	font-size: .9em;
@@ -2211,9 +2175,6 @@ Caltrack a:visited {color: #00BD02}
 .caleven {background: #696969}
 * html .caleven {padding: 0}
 
-.calHours,
-.calWeek {border-color: #a9a9a9}
-
 .caldark {
 	background: #3F3F3F;
 	border: 1px solid #999999}
@@ -2231,8 +2192,6 @@ Caltrack a:visited {color: #00BD02}
 	border-top: 1px solid #818181}
 	
 .daterow:hover {border: 1px solid #aaa}
-
-a.viewmodeon img.icon {border: white solid 1px !important;padding:0 0 0 2px;}
 
 /*****  Polls  *****/
 
@@ -2364,15 +2323,17 @@ div#ajaxLoading {
 	position: absolute;
 	top: 50px;
 	right: 50%;
+	color: transparent;
 	padding: 3px;
 	font-family: Verdana;
 	font-size: 90%;
+	background-color: transparent;
 	background: url(../lib/shadowbox/images/loading.gif) no-repeat;
 	height: 45px;
 	width: 32px;
 	padding-top: 32px}
 
-#shadowbox_title {
+#shadowbox_title{
 	height: auto !important;
 	padding: 0;
 	overflow: visible}
@@ -2458,18 +2419,4 @@ a.admbox.off:hover,
 a.admbox.off:focus,
 a.admbox.off:active {border: 1px solid #9f9f9f}
 
-a.icon,
-img.icon {border: 0 !important;
-	background: transparent;}
-
-div.multiselect {
-	vertical-align: middle;
-	overflow: auto;
-	height: auto;
-}
-
-div.multiselect div.odd {background: #292929}
-div.multiselect div.even {background: #3F3F3F}
-.help_section table { color: white; }
-.button .iconmenu {display:inline;}
 /* end of css file */

@@ -12,6 +12,17 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
+if( ! function_exists( 'json_encode' ) )
+{
+	require_once 'lib/pear/Services/JSON.php';
+
+	function json_encode( $nodes )
+	{
+		$json = new Services_JSON();
+		return $json->encode($nodes);
+	}
+}
+
 require_once 'lib/profilelib/listlib.php';
 
 $list = new Tiki_Profile_List;
@@ -23,35 +34,18 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 
 	if( isset($_POST['config']) ) { // {{{
 		$tikilib->set_preference( 'profile_sources', $_POST['profile_sources'] );
-		$tikilib->set_preference( 'profile_channels', $_POST['profile_channels'] );
-
+		
 		header( 'Location: tiki-admin.php?page=profiles' );
 		exit;
 	} // }}}
 
-	if( isset($_POST['forget'], $_POST['pp'], $_POST['pd']) ) { // {{{
-		require_once 'lib/profilelib/profilelib.php';
-
-		$profile = Tiki_Profile::fromNames( $_POST['pd'], $_POST['pp'] );
-		$profile->removeSymbols();
-		
-		header( 'Location: ' . $_SERVER['REQUEST_URI'] );
-		exit;
-	} // }}}
-
-	if( isset($_POST['install'], $_POST['pd'], $_POST['pp']) ) { // {{{
+	if( isset($_POST['install'], $_POST['url']) ) { // {{{
 		require_once 'lib/profilelib/profilelib.php';
 		require_once 'lib/profilelib/installlib.php';
 
-		$data = array();
-		foreach( $_POST as $key => $value )
-			if( $key != 'url' && $key != 'install' )
-				$data[str_replace('_', ' ', $key )] = $value;
-
 		$installer = new Tiki_Profile_Installer;
-		$installer->setUserData( $data );
 
-		$profile = Tiki_Profile::fromNames( $_POST['pd'], $_POST['pp'] );
+		$profile = new Tiki_Profile( $_POST['url'] );
 		$installer->install( $profile );
 		
 		header( 'Location: ' . $_SERVER['REQUEST_URI'] );
@@ -78,7 +72,8 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 
 		$installer = new Tiki_Profile_Installer;
 
-		$profile = Tiki_Profile::fromNames( $_GET['pd'], $_GET['pp'] );
+		$url = $_GET['pd'] . '/tiki-export_wiki_pages.php?page=' . urlencode( $_GET['pp'] );
+		$profile = new Tiki_Profile( $url );
 		$error = '';
 
 		try
@@ -99,19 +94,15 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 		}
 
 		$dependencies = array();
-		$userInput = array();
 		foreach( $deps as $d )
-			if( ! $installer->isInstalled( $d ) ) {
+			if( ! $installer->isInstalled( $d ) )
 				$dependencies[] = $d->pageUrl;
-				$userInput = array_merge( $userInput, $d->getRequiredInput() );
-			}
 
 		$parsed = $tikilib->parse_data( $profile->pageContent );
 		$installed = $installer->isInstalled( $profile );
 
 		echo json_encode( array(
 			'dependencies' => $dependencies,
-			'userInput' => $userInput,
 			'installable' => $sequencable,
 			'error' => $error,
 			'content' => $parsed,
@@ -129,10 +120,6 @@ if( isset( $_GET['list'] ) ) { // {{{
 	$smarty->assign( 'repository', $params['repository'] );
 
 	$result = $list->getList( $params['repository'], $params['category'], $params['profile'] );
-
-	$category_list = $list->getCategoryList( $params['repository'] );
-	$smarty->assign( 'category_list', $category_list );	
-
 	$smarty->assign( 'result', $result );
 } // }}}
 

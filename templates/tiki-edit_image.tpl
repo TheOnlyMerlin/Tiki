@@ -1,10 +1,7 @@
-{title}{tr}Edit Image{/tr}{/title}
-
-<div class="navbar">
-	{button href="tiki-browse_gallery.php" _auto_args='galleryId' _text="{tr}Return to Gallery{/tr}"}
-	{button href="tiki-browse_image.php?imageId=$imageId" _text="{tr}Browse Images{/tr}"}
-</div>
-
+<h1><a href="tiki-edit_image.php?galleryId={$galleryId}&amp;edit={$imageId}" class="pagetitle">{tr}Edit Image{/tr}</a></h1>
+<a class="linkbut" href="tiki-browse_gallery.php?galleryId={$galleryId}">{tr}Return to Gallery{/tr}</a>
+<a class="linkbut" href="tiki-browse_image.php?imageId={$imageId}">{tr}Browse Images{/tr}</a>
+<br /><br />
 <div align="center">
 {if $show eq 'y'}
 <br />
@@ -47,10 +44,8 @@
     <td class="even">
     <small>
     {tr}You can include the image in an HTML page using one of these lines{/tr}:<br /><br />
-    &lt;img src="show_image.php?id={$imageId}" /&gt;<br />
-    &lt;img src="show_image.php?name={$name|escape}&amp;galleryId={$galleryId}" /&gt;<br />
     &lt;img src="{$url_show}?id={$imageId}" /&gt;<br />
-    &lt;img src="{$url_show}?name={$name|escape}&amp;galleryId={$galleryId}" /&gt;<br />
+    &lt;img src="{$url_show}?name={$name|escape}" /&gt;<br />
     </small>
     </td>
   </tr>
@@ -58,10 +53,8 @@
     <td class="even">
     <small>
     {tr}You can include the image in a tiki page using one of these lines{/tr}:<br /><br />
-    {literal}{{/literal}img src="show_image.php?id={$imageId}" {literal}}{/literal}<br />
-    {literal}{{/literal}img src="show_image.php?name={$name|escape}&amp;galleryId={$galleryId}" {literal}}{/literal}<br />
-    {literal}{{/literal}img src="{$url_show}?id={$imageId}" {literal}}{/literal}<br />
-    {literal}{{/literal}img src="{$url_show}?name={$name|escape}&amp;galleryId={$galleryId}" {literal}}{/literal}<br />
+    {literal}{{/literal}img src={$url_show}?id={$imageId} {literal}}{/literal}<br />
+    {literal}{{/literal}img src={$url_show}?name={$name|escape} {literal}}{/literal}<br />
     </small>
     </td>
   </tr>

@@ -1,11 +1,7 @@
 {popup_init src="lib/overlib.js"}
-
-{title help="forums" admpage="forums"}{tr}Message queue for forum{/tr} {$forum_info.name}{/title}
-
-<div class="navbar">
-	{button href="tiki-view_forum.php?forumId=$forumId" _text="{tr}Back to forum{/tr}"}
-</div>
-
+{*Smarty template*}
+<h1><a class="pagetitle" href="tiki-forum_queue.php?forumId={$forumId}">{tr}Message queue for{/tr}: {$forum_info.name}</a></h1>
+<a class="link" href="tiki-view_forum.php?forumId={$forumId}">{tr}back to forum{/tr}</a>
 {if $smarty.request.qId and $form eq 'y'}
 <h3>{tr}Edit queued message{/tr}</h3>
 <form method="post" action="tiki-forum_queue.php">
@@ -127,9 +123,9 @@
 <input type="hidden" name="find" value="{$find|escape}" />
 <table class="normal">
 <tr>
-{if $items}<th>&nbsp;</th>
+{if $items}<th class="heading" >&nbsp;</th>
 {/if}
-<th>{tr}Message{/tr}</th>
+<th class="heading" >{tr}Message{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$items}
@@ -160,9 +156,9 @@
 		    <br />
 			{section name=iz loop=$items[ix].attachments}
 				<a class="link" href="tiki-download_forum_attachment.php?attId={$items[ix].attachments[iz].attId}">
-				<img src="img/icons/attachment.gif" width="10" height= "13" alt='{tr}Attachment{/tr}' />
+				<img src="img/icons/attachment.gif" border="0" width="10" height= "13" alt='{tr}Attachment{/tr}' />
 				{$items[ix].attachments[iz].filename} ({$items[ix].attachments[iz].filesize|kbsize})</a>
-				<a class="link" href="tiki-forum_queue.php?forumId={$forumId}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove_attachment={$items[ix].attachments[iz].attId}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a>				
+				<a class="link" href="tiki-forum_queue.php?forumId={$forumId}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove_attachment={$items[ix].attachments[iz].attId}">[{tr}Del{/tr}]</a>					
 				<br />
 			{/section}
   		  {/if}
@@ -187,4 +183,24 @@
 </form>
 {* END OF LISTING *}
 
-{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
+{* PAGINATION *}
+<div class="mini">
+<div align="center">
+{if $prev_offset >= 0}
+[<a class="prevnext" href="tiki-forum_queue.php?forumId={$forumId}&amp;find={$find}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}">{tr}Prev{/tr}</a>]&nbsp;
+{/if}
+{tr}Page{/tr}: {$actual_page}/{$cant_pages}
+{if $next_offset >= 0}
+&nbsp;[<a class="prevnext" href="tiki-forum_queue.php?forumId={$forumId}&amp;find={$find}&amp;offset={$next_offset}&amp;sort_mode={$sort_mode}">{tr}Next{/tr}</a>]
+{/if}
+{if $prefs.direct_pagination eq 'y'}
+<br />
+{section loop=$cant_pages name=foo}
+{assign var=selector_offset value=$smarty.section.foo.index|times:$prefs.maxRecords}
+<a class="prevnext" href="tiki-forum_queue.php?forumId={$forumId}&amp;find={$find}&amp;offset={$selector_offset}&amp;sort_mode={$sort_mode}">
+{$smarty.section.foo.index_next}</a>&nbsp;
+{/section}
+{/if}
+</div>
+</div> 
+{* END OF PAGINATION *}

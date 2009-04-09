@@ -4,22 +4,6 @@ function wikiplugin_youtube_help() {
         return tra("Display youtube video in a wiki page").":<br />~np~{YOUTUBE(movie=>\"url_to_youtube_video\")}{YOUTUBE}~/np~";
 }
 
-function wikiplugin_youtube_info() {
-	return array(
-		'name' => tra('Youtube'),
-		'documentation' => 'PluginYouTube',
-		'description' => tra('Display youtube video in a wiki page'),
-		'prefs' => array( 'wikiplugin_youtube' ),
-		'params' => array(
-			'movie' => array(
-				'required' => true,
-				'name' => 'Movie',
-				'description' => tra('URL to the Youtube video'),
-			),
-		),
-	);
-}
-
 function wikiplugin_youtube($data, $params) {
 	
 	extract ($params,EXTR_SKIP);
@@ -40,7 +24,7 @@ function wikiplugin_youtube($data, $params) {
 	    $quality = "high";
 	}
 
-	$movie = "http://www.youtube.com/v/" . preg_replace('/http:\/\/(\w+\.)?youtube\.com\/watch\?v=/', '', $movie);
+	$movie = "http://www.youtube.com/v/" . preg_replace('/http:\/\/(www.)?youtube\.com\/watch\?v=/', '', $movie);
 
 	$asetup = "<OBJECT CLASSID=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0\" WIDTH=\"$width\" HEIGHT=\"$height\">";
 	$asetup .= "<PARAM NAME=\"movie\" VALUE=\"$movie\">";

@@ -1,16 +1,16 @@
 {popup_init src="lib/overlib.js"}
 {*Smarty template*}
-<h1><a class="pagetitle" href="tiki-g-user_processes.php">{tr}User Processes{/tr}</a>
+<h1><a class="pagetitle" href="tiki-g-user_processes.php">{tr}User processes{/tr}</a>
 
   
       {if $prefs.feature_help eq 'y'}
 <a href="{$prefs.helpurl}GalaxiaUserProcesses" target="tikihelp" class="tikihelp" title="{tr}Galaxia User Processes{/tr}">
-<img src="img/icons/help.gif" height="16" width="16" alt='{tr}Help{/tr}' /></a>{/if}
+<img src="img/icons/help.gif" border="0" height="16" width="16" alt='{tr}Help{/tr}' /></a>{/if}
 
 
 
       {if $prefs.feature_view_tpl eq 'y'}
-<a href="tiki-edit_templates.php?template=tiki-g-user_processes.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Galaxia User Processes tpl{/tr}"><img src="img/icons/info.gif" height="16" width="16" alt='{tr}Edit Tpl{/tr}' /></a>{/if}
+<a href="tiki-edit_templates.php?template=tiki-g-user_processes.tpl" target="tikihelp" class="tikihelp" title="{tr}View tpl{/tr}: {tr}Galaxia User Processes tpl{/tr}"><img src="img/icons/info.gif" border="0" height="16" width="16" alt='{tr}Edit Tpl{/tr}' /></a>{/if}
 
 </h1>
 {include file=tiki-g-user_bar.tpl}
@@ -25,8 +25,8 @@
 <td>
 	<small>{tr}Find{/tr}</small>
 </td>
-<td >&nbsp;
-	
+<td >
+	&nbsp;
 </td>	
 </tr>
 
@@ -50,9 +50,9 @@
 <input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
 <table class="normal">
 <tr>
-<th><a href="{if $sort_mode eq 'procname_desc'}{sameurl sort_mode='procname_asc'}{else}{sameurl sort_mode='procname_desc'}{/if}">{tr}Process{/tr}</a></th>
-<th>{tr}Activities{/tr}</th>
-<th>{tr}Instances{/tr}</th>
+<td  class="heading" ><a class="tableheading" href="{if $sort_mode eq 'procname_desc'}{sameurl sort_mode='procname_asc'}{else}{sameurl sort_mode='procname_desc'}{/if}">{tr}Process{/tr}</a></td>
+<td  class="heading" >{tr}Activities{/tr}</td>
+<td  class="heading" >{tr}Instances{/tr}</td>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$items}

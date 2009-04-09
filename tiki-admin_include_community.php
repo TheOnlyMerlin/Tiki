@@ -12,12 +12,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-if (isset($_REQUEST["userfeatures"])) {
+if (isset($_REQUEST["mouseoverfeatures"])) {
 	check_ticket('admin-inc-community');
-	simple_set_toggle("feature_community_gender");
 	simple_set_toggle("feature_community_mouseover");
 	simple_set_toggle("feature_community_mouseover_name");
-	simple_set_toggle("feature_community_mouseover_gender");
 	simple_set_toggle("feature_community_mouseover_picture");
 	simple_set_toggle("feature_community_mouseover_friends");
 	simple_set_toggle("feature_community_mouseover_score");
@@ -27,7 +25,7 @@ if (isset($_REQUEST["userfeatures"])) {
 	simple_set_toggle("feature_community_mouseover_distance");
 }
 
-if (isset($_REQUEST["userlistfeatures"])) {
+if (isset($_REQUEST["listfeatures"])) {
 	check_ticket('admin-inc-community');
 	simple_set_toggle("feature_community_list_name");
 	simple_set_toggle("feature_community_list_score");
@@ -36,4 +34,16 @@ if (isset($_REQUEST["userlistfeatures"])) {
 	simple_set_value("user_list_order");
 }
 
+/* This is desired future feature
+if (isset($_REQUEST["friendshipfeatures"])) {
+	check_ticket('admin-inc-community');
+	simple_set_toggle("feature_community_friends_permission");
+	simple_set_int("feature_community_friends_permission_dep");
+
+}
+*/
+
 ask_ticket('admin-inc-community');
+?>
+
+

@@ -23,25 +23,13 @@ if ($tiki_p_view != 'y') {
 	die;
 }
 
-if($prefs['feature_wiki'] != 'y') {
-    $smarty->assign('msg', tra('This feature is disabled').': feature_wiki');
-    $smarty->display('error.tpl');
-    die;  
-}
-
-if($prefs['feature_wiki_structure'] != 'y') {
-    $smarty->assign('msg', tra('This feature is disabled').': feature_wiki_structure');
-    $smarty->display('error.tpl');
-    die;  
-}
-
 // start security hardened section
 if ($tiki_p_edit_structures == 'y') {
 
 if (isset($_REQUEST['rremove'])) {
   $area = 'delstruct';
   $structure_info = $structlib->s_get_structure_info($_REQUEST['rremove']);
-	if (!$tikilib->user_has_perm_on_object($user,$structure_info["pageName"],'wiki page','tiki_p_edit', 'tiki_p_edit_categorized')) {
+	if (!$tikilib->user_has_perm_on_object($user,$structure_info["pageName"],'wiki page','tiki_p_edit')) {
 		$smarty->assign('errortype', 401);
 		$smarty->assign('msg', tra("Permission denied you cannot edit this page"));
 		$smarty->display("error.tpl");
@@ -58,7 +46,7 @@ if (isset($_REQUEST['rremove'])) {
 if (isset($_REQUEST['rremovex'])) {
   $area = 'delstructandpages';
   $structure_info = $structlib->s_get_structure_info($_REQUEST['rremovex']);
-	if (!$tikilib->user_has_perm_on_object($user,$structure_info["pageName"],'wiki page','tiki_p_edit', 'tiki_p_edit_categorized')) {
+	if (!$tikilib->user_has_perm_on_object($user,$structure_info["pageName"],'wiki page','tiki_p_edit')) {
 		$smarty->assign('errortype', 401);
 		$smarty->assign('msg', tra("Permission denied you cannot edit this page"));
 		$smarty->display("error.tpl");
@@ -83,21 +71,6 @@ if (isset($_REQUEST['export'])) {
 	}
 	$structlib->s_export_structure($_REQUEST['export']);
 }
-if (isset($_REQUEST['zip']) && $tiki_p_admin == 'y') {
-	check_ticket('admin-structures');
-	include_once('lib/wiki/xmllib.php');
-	$xmllib = new XmlLib();
-	$zipFile = 'dump/xml.zip';
-	$config['debug'] = false;
-	if ($xmllib->export_pages(null, $_REQUEST['zip'], $zipFile, $config)) {
-		if (!$config['debug']) {
-			header("location: $zipFile");
-			die;
-		}
-	} else {
-		$smarty->assign('error', $xmllib->get_error());
-	}
-}
 
 if (isset($_REQUEST['export_tree'])) {
 	check_ticket('admin-structures');
@@ -119,7 +92,7 @@ $smarty->assign('askremove', 'n');
 if (isset($_REQUEST['remove'])) {
 	check_ticket('admin-structures');
 	$structure_info = $structlib->s_get_structure_info($_REQUEST['remove']);
-	if (!$tikilib->user_has_perm_on_object($user,$structure_info["pageName"],'wiki page','tiki_p_edit', 'tiki_p_edit_categorized')) {
+	if (!$tikilib->user_has_perm_on_object($user,$structure_info["pageName"],'wiki page','tiki_p_edit')) {
 		$smarty->assign('errortype', 401);
 		$smarty->assign('msg', tra("Permission denied you cannot edit this page"));
 		$smarty->display("error.tpl");
@@ -270,7 +243,7 @@ $smarty->assign('find', $find);
 
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 
-// default $maxRecords defined in tiki-setup.php
+/* default $maxRecords defined in tiki-setup.php */
 if (isset($_REQUEST['maxRecords'])) {
 	$maxRecords = $_REQUEST['maxRecords'];
 }

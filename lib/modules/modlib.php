@@ -20,15 +20,11 @@ class ModLib extends TikiLib {
 			$query = "insert into `tiki_user_modules`(`name`,`title`,`data`, `parse`) values(?,?,?,?)";
 
 			$result = $this->query($query,array($name,$title,$data,$parse));
-
-			global $cachelib; require_once("lib/cache/cachelib.php");
-			$cachelib->invalidate("user_modules_$name");
-
 			return true;
 		}
 	}
 
-	function assign_module($moduleId=0, $name, $title, $position, $order, $cache_time = 0, $rows = 10, $groups = null, $params = null,$type = null) {
+	function assign_module($moduleId=0, $name, $title, $position, $order, $cache_time = 0, $rows = 10, $groups, $params,$type) {
 		//check for valid values
 		$cache_time = is_numeric($cache_time) ? $cache_time : 0;
 		$rows = is_numeric($rows) ? $rows : 10;
@@ -144,10 +140,6 @@ class ModLib extends TikiLib {
 		$this->unassign_module($name);
 		$query = " delete from `tiki_user_modules` where `name`=?";
 		$result = $this->query($query,array($name));
-
-		global $cachelib; require_once("lib/cache/cachelib.php");
-		$cachelib->invalidate('user_modules');
-
 		return true;
 	}
 
@@ -182,47 +174,7 @@ class ModLib extends TikiLib {
 		}
 		closedir($h);
 	}
-	/* @param module_info = info of a module
-	 * @param user_groups = list of groups of a user
-	 * @param user = the user
-	 */
-	function check_groups($module_info, $user, $user_groups) {
-		global $prefs;
-		$pass = 'y';
-		if ($user != 'admin' && $prefs['modallgroups'] != 'y') {
-			if ($module_info['groups']) {
-				$module_groups = unserialize($module_info['groups']);
-			} else {
-				$module_groups = array();
-			}
-			$pass = 'n';
-			if ($prefs['modseparateanon'] !== 'y') {
-				foreach ($module_groups as $mod_group) {
-					if (in_array($mod_group, $user_groups)) {
-						$pass = 'y';
-						break; 
-					}
-				}
-			} else {
-				if(!$user) { 
-					if (in_array('Anonymous', $module_groups)) {
-						$pass = 'y';
-					}
-				} else { 
-					foreach ($module_groups as $mod_group) {
-						if ($mod_group === 'Anonymous') { 
-							continue; 
-						}
-						if (in_array($mod_group, $user_groups)) {
-							$pass = 'y';
-							break;
-						}
-					}
-				}
-			}
-		}
-		return $pass;
-	}
+
 }
 global $dbTiki;
 $modlib = new ModLib($dbTiki);

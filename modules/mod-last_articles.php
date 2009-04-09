@@ -12,7 +12,6 @@ if (!function_exists('mod_last_articles_help')) {
 		return "type=Article|Event|...&topicId=1&topic=xx&categId=1&lang=en&showImg=width&showDate=y&showHeading=chars";
 	}
 }
-global $tikilib, $smarty;
 // Parameter absurl set if the last_article url is absolute or not [y|n].
 // If not set, default = relative
 
@@ -32,7 +31,7 @@ if (isset($module_params['showDate']) && $module_params['showDate'] == 'y') {
 	$smarty->assign('showDate','y');
 }
 
-$ranking = $tikilib->list_articles(0,$module_rows,'publishDate_desc', '', '', date("U"), '', $mod_type, $mod_topicId, 'y', $mod_topic, $categId, '', '', $l);
+$ranking = $tikilib->list_articles(0,$module_rows,'publishDate_desc', '', date("U"), '', $mod_type, $mod_topicId, 'y', $mod_topic, $categId, '', '', $l);
 if (isset($module_params['showHeading']) && $module_params['showHeading'] != 'n') {
 	if ($module_params['showHeading'] == 'y')
 		$module_params['showHeading'] = -1;
@@ -46,4 +45,4 @@ $smarty->assign('nonums', isset($module_params["nonums"]) ? $module_params["nonu
 $smarty->assign('absurl', isset($module_params["absurl"]) ? $module_params["absurl"] : 'n');
 $module_rows = count($ranking["data"]);
 $smarty->assign('module_rows', $module_rows);
-
+?>

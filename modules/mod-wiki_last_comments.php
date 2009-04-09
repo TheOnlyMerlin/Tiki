@@ -34,7 +34,6 @@ function wiki_last_comments($limit)
     return $ret;
 }
 }
-global $smarty;
 
 $comments = wiki_last_comments($module_rows);
 $smarty->assign('comments', $comments);
@@ -42,4 +41,4 @@ $smarty->assign('nonums', isset($module_params["nonums"]) ? $module_params["nonu
 $smarty->assign('module_rows', $module_rows);
 $smarty->assign('moretooltips', isset($module_params["moretooltips"]) ? $module_params["moretooltips"] : 'n');
 
-
+?>

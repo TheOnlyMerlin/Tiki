@@ -11,8 +11,6 @@
 // Initialization
 require_once ('tiki-setup.php');
 
-$auto_query_args = array('sort_mode', 'offset', 'find', 'assign_user', 'group', 'maxRecords');
-
 if ($tiki_p_admin != 'y' && $tiki_p_admin_users != 'y' && $tiki_p_subscribe_groups != 'y') {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg', tra("You do not have permission to use this feature"));
@@ -59,16 +57,18 @@ if (isset($_REQUEST["action"])) {
 			$smarty->display("error.tpl");
 			die;
 		}
-		if ($tiki_p_admin_users == 'y' ||($tiki_p_admin_users == 'y' && array_key_exists($_REQUEST["group"], $groups))) {
+		if ($tiki_p_admin_users == 'y' || array_key_exists($_REQUEST["group"], $groups)) {
 			$userlib->assign_user_to_group($_REQUEST["assign_user"], $_REQUEST["group"]);
 			$logslib->add_log('perms',sprintf("Assigned %s in group %s",$_REQUEST["assign_user"], $_REQUEST["group"]));
 		}			
-	} elseif ($_REQUEST["action"] == 'removegroup' && ($tiki_p_admin == 'y' || ($tiki_p_admin_users == 'y' && array_key_exists($_REQUEST["group"], $groups)))) {
+	} elseif ($_REQUEST["action"] == 'removegroup') {
 		$area = 'deluserfromgroup';
 		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
 			key_check($area);
-			$userlib->remove_user_from_group($_REQUEST["assign_user"], $_REQUEST["group"]);
-			$logslib->add_log('perms',sprintf("Removed %s from group %s",$_REQUEST["assign_user"], $_REQUEST["group"]));
+			if ($tiki_p_admin_users == 'y' || array_key_exists($_REQUEST["group"], $groups)) {
+				$userlib->remove_user_from_group($_REQUEST["assign_user"], $_REQUEST["group"]);
+				$logslib->add_log('perms',sprintf("Removed %s from group %s",$_REQUEST["assign_user"], $_REQUEST["group"]));
+			}
 		} else {
 			key_get($area);
 		}
@@ -112,14 +112,9 @@ if (isset($_REQUEST['maxRecords'])) {
 	$maxRecords = $_REQUEST['maxRecords'];
 }
 
-if ($tiki_p_admin != 'y' && $userChoice != 'y') {
+if ($tiki_p_admin != 'y' && $userChoice != 'y')
 	$ingroups = $userlib->get_user_groups_inclusion($user);
-	foreach ($user_info['groups'] as $grp=>$i) {
-		if (!isset($ingroups[$grp])) {
-			unset($user_info['groups'][$grp]);
-		}
-	}
-} else
+else
 	$ingroups = '';
 $users = $userlib->get_groups($offset, $maxRecords, $sort_mode, $find,'','y', $ingroups, $userChoice);
 
@@ -129,7 +124,22 @@ foreach ($users['data'] as $key=>$group) {
 	}
 }
 			
-$smarty->assign_by_ref('cant_pages', $users["cant"]);
+$cant_pages = ceil($users["cant"] / $maxRecords);
+$smarty->assign_by_ref('cant_pages', $cant_pages);
+$smarty->assign('actual_page', 1 + ($offset / $maxRecords));
+
+if ($users["cant"] > ($offset + $maxRecords)) {
+	$smarty->assign('next_offset', $offset + $maxRecords);
+} else {
+	$smarty->assign('next_offset', -1);
+}
+
+// If offset is > 0 then prev_offset
+if ($offset > 0) {
+	$smarty->assign('prev_offset', $offset - $maxRecords);
+} else {
+	$smarty->assign('prev_offset', -1);
+}
 
 // Get users (list of users)
 $smarty->assign_by_ref('users', $users["data"]);

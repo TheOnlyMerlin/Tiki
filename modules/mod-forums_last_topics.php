@@ -14,7 +14,7 @@ if (!function_exists('mod_forums_last_topics_help')) {
 
 // Parameter absurl set if the last_topics url is absolute or not [y|n].
 // If not set, default = relative
-global $smarty;
+
 global $ranklib; include_once ('lib/rankings/ranklib.php');
 
 if (isset($module_params['lastreplied']) && $module_params['lastreplied'] == 'y') {
@@ -35,4 +35,4 @@ if (isset($module_params['forumId'])) {
 $smarty->assign('modForumsLastTopics', $ranking["data"]);
 $smarty->assign('nonums', isset($module_params["nonums"]) ? $module_params["nonums"] : 'n');
 $smarty->assign('absurl', isset($module_params["absurl"]) ? $module_params["absurl"] : 'n');
-
+?>

@@ -13,7 +13,7 @@ require_once ('tiki-setup.php');
 require_once ('lib/sheet/grid.php');
 
 if ($prefs['feature_sheet'] != 'y') {
-	$smarty->assign('msg', tra("This feature is disabled").": feature_sheet");
+	$smarty->assign('msg', tra("This feature is disabled").": feature_sheets");
 
 	$smarty->display("error.tpl");
 	die;
@@ -29,7 +29,7 @@ if (!isset($_REQUEST["sheetId"])) {
 	else
 		$tiki_p_view_sheet = 'n';
 	$smarty->assign('tiki_p_view_sheet', $tiki_p_view_sheet);
-	if ($tiki_p_admin == 'y' || $tiki_p_admin_sheet == 'y' || ($user && $user == $info['author']) || $tikilib->user_has_perm_on_object($user, $_REQUEST['sheetId'], 'sheet', 'tiki_p_edit_sheet', 'tiki_p_edit_categorized'))
+	if ($tiki_p_admin == 'y' || $tiki_p_admin_sheet == 'y' || ($user && $user == $info['author']) || $tikilib->user_has_perm_on_object($user, $_REQUEST['sheetId'], 'sheet', 'tiki_p_edit_sheet'))
 		$tiki_p_edit_sheet = 'y';
 	else
 		$tiki_p_edit_sheet = 'n';
@@ -42,7 +42,7 @@ if (!isset($_REQUEST["sheetId"])) {
 }
 
 if ($tiki_p_view_sheet != 'y') {
-	$smarty->assign('msg', tra("Access Denied").": feature_sheet");
+	$smarty->assign('msg', tra("Access Denied").": feature_sheets");
 
 	$smarty->display("error.tpl");
 	die;
@@ -59,6 +59,7 @@ $smarty->assign('find', $find);
 $smarty->assign('sheetId', $_REQUEST["sheetId"]);
 
 // Init smarty variables to blank values
+//$smarty->assign('theme','');
 $smarty->assign('title', '');
 $smarty->assign('description', '');
 $smarty->assign('edit_mode', 'n');
@@ -67,7 +68,7 @@ $smarty->assign('chart_enabled', (function_exists('imagepng') || function_exists
 // If we are editing an existing gallery prepare smarty variables
 if (isset($_REQUEST["edit_mode"]) && $_REQUEST["edit_mode"]) {
 	if ($tiki_p_edit_sheet != 'y') {
-		$smarty->assign('msg', tra("Access Denied").": feature_sheet");
+		$smarty->assign('msg', tra("Access Denied").": feature_sheets");
 
 		$smarty->display("error.tpl");
 		die;
@@ -104,7 +105,7 @@ if (isset($_REQUEST["edit_mode"]) && $_REQUEST["edit_mode"]) {
 // Process the insertion or modification of a gallery here
 if (isset($_REQUEST["edit"])) {
 	if ($tiki_p_edit_sheet != 'y') {
-		$smarty->assign('msg', tra("Access Denied").": feature_sheet");
+		$smarty->assign('msg', tra("Access Denied").": feature_sheets");
 
 		$smarty->display("error.tpl");
 		die;
@@ -113,6 +114,7 @@ if (isset($_REQUEST["edit"])) {
 
 	// Everything is ok so we proceed to edit the gallery
 	$smarty->assign('edit_mode', 'y');
+	//$smarty->assign_by_ref('theme',$_REQUEST["theme"]);
 	$smarty->assign_by_ref('title', $_REQUEST["title"]);
 	$smarty->assign_by_ref('description', $_REQUEST["description"]);
 
@@ -173,9 +175,25 @@ $smarty->assign_by_ref('offset', $offset);
 // GET ALL GALLERIES SINCE ALL GALLERIES ARE BROWSEABLE
 $sheets = $sheetlib->list_sheets($offset, $maxRecords, $sort_mode, $find);
 
-$smarty->assign_by_ref('cant_pages', $sheets["cant"]);
+$cant_pages = ceil($sheets["cant"] / $maxRecords);
+$smarty->assign_by_ref('cant_pages', $cant_pages);
+$smarty->assign('actual_page', 1 + ($offset / $maxRecords));
+
+if ($sheets["cant"] > ($offset + $maxRecords)) {
+	$smarty->assign('next_offset', $offset + $maxRecords);
+} else {
+	$smarty->assign('next_offset', -1);
+}
+
+// If offset is > 0 then prev_offset
+if ($offset > 0) {
+	$smarty->assign('prev_offset', $offset - $maxRecords);
+} else {
+	$smarty->assign('prev_offset', -1);
+}
 
 $smarty->assign_by_ref('sheets', $sheets["data"]);
+//print_r($galleries["data"]);
 $cat_type = 'sheet';
 $cat_objid = $_REQUEST["sheetId"];
 include_once ("categorize_list.php");

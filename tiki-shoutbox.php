@@ -1,6 +1,6 @@
 <?php
 
-// $Id$
+// $Id: /cvsroot/tikiwiki/tiki/tiki-shoutbox.php,v 1.18.2.1 2008-02-14 11:10:14 sylvieg Exp $
 
 // Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -8,6 +8,7 @@
 
 // Initialization
 require_once ('tiki-setup.php');
+
 include_once ('lib/shoutbox/shoutboxlib.php');
 
 if ($prefs['feature_shoutbox'] != 'y') {
@@ -95,51 +96,27 @@ if (isset($_REQUEST["find"])) {
 	$find = '';
 }
 
-/* additions for ajax (formerly shoutjax) */
-
-function processShout($formValues, $destDiv = 'mod-shoutbox') {
-	global $shoutboxlib, $user, $smarty, $prefs, $ajaxlib, $tiki_p_admin_shoutbox;
-	
-	if (array_key_exists('shout_msg',$formValues) && strlen($formValues['shout_msg']) > 2) {
-		if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $formValues['antibotcode'])) {
-			$smarty->assign('shout_error', tra('You have mistyped the anti-bot verification code; please try again.'));
-			$smarty->assign_by_ref('shout_msg', $formValues['shout_msg']);
-		} else {
-			$shoutboxlib->replace_shoutbox(0, $user, $formValues['shout_msg']);
-		}
-	} else if (array_key_exists('shout_remove',$formValues) && $formValues['shout_remove'] > 0) {
-		$info = $shoutboxlib->get_shoutbox($formValues['shout_remove']);
-		if ($tiki_p_admin_shoutbox == 'y'  || $info['user'] == $user ) {
-			$shoutboxlib->remove_shoutbox($formValues['shout_remove']);
-		}
-	}
-
-	$ajaxlib->registerTemplate('mod-shoutbox.tpl');
-	
-	include('lib/wiki-plugins/wikiplugin_module.php');
-	$data = wikiplugin_module('', Array('module'=>'shoutbox','max'=>10,'np'=>0,'nobox'=>'y','notitle'=>'y'));
-	$objResponse = new xajaxResponse();
-	$objResponse->assign($destDiv,"innerHTML",$data);
-	return $objResponse;
-}
-
-if ($prefs['feature_ajax'] == 'y') {
-	global $ajaxlib;
-	include_once('lib/ajax/ajaxlib.php');
-	$ajaxlib->registerFunction('processShout');
-	$ajaxlib->registerTemplate('mod-shoutbox.tpl');
-	$ajaxlib->processRequests();
-
-
-}
-/* end additions for ajax */
-
 $smarty->assign('find', $find);
 
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 $channels = $shoutboxlib->list_shoutbox($offset, $maxRecords, $sort_mode, $find);
 
-$smarty->assign_by_ref('cant_pages', $channels["cant"]);
+$cant_pages = ceil($channels["cant"] / $maxRecords);
+$smarty->assign_by_ref('cant_pages', $cant_pages);
+$smarty->assign('actual_page', 1 + ($offset / $maxRecords));
+
+if ($channels["cant"] > ($offset + $maxRecords)) {
+	$smarty->assign('next_offset', $offset + $maxRecords);
+} else {
+	$smarty->assign('next_offset', -1);
+}
+
+// If offset is > 0 then prev_offset
+if ($offset > 0) {
+	$smarty->assign('prev_offset', $offset - $maxRecords);
+} else {
+	$smarty->assign('prev_offset', -1);
+}
 
 $smarty->assign_by_ref('channels', $channels["data"]);
 
