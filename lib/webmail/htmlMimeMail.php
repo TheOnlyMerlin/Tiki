@@ -667,9 +667,6 @@ class htmlMimeMail {
 * @return mixed
 */
 	function send($recipients, $type = 'mail') {
-		if ( ! empty($recipients) && is_string($recipients) ) {
-			$recipients = array($recipients);
-		}
 		if (!defined('CRLF')) {
 			$this->setCrlf($type == 'mail' ? "\n" : "\r\n");
 		}

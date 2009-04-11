@@ -797,6 +797,7 @@ CREATE TABLE "tiki_objects" (
   "name" varchar(200) default NULL NULL,
   "href" varchar(200) default NULL NULL,
   "hits" numeric(8,0) default NULL NULL,
+  "comments_locked" char(1) default 'n' NOT NULL,
   PRIMARY KEY (objectId),
   KEY (type, objectId),
   KEY (itemId, type)
@@ -1015,6 +1016,7 @@ CREATE TABLE "tiki_comments" (
   "comment_rating" numeric(2,0) default NULL NULL,
   "archived" char(1) default NULL NULL,
   "approved" char(1) default 'y' NOT NULL,
+  "locked" char(1) default 'n' NOT NULL,
   PRIMARY KEY (threadId)
 ) ENGINE=MyISAM  
 go
@@ -2088,7 +2090,6 @@ CREATE TABLE "tiki_menu_options" (
   "perm" text default NULL NULL,
   "groupname" text default NULL NULL,
   "userlevel" numeric(4,0) default 0,
-  "icon" varchar(200) default '',
   PRIMARY KEY (optionId)
 ) ENGINE=MyISAM  
 go
@@ -2865,7 +2866,6 @@ CREATE TABLE "tiki_menus" (
   "description" text default '',
   "type" char(1) default NULL NULL,
   "icon" varchar(200) default NULL NULL,
-  "use_items_icons" char(1) DEFAULT 'n' NOT NULL,
   PRIMARY KEY (menuId)
 ) ENGINE=MyISAM  
 go
@@ -7566,95 +7566,6 @@ go
 
 
 INSERT INTO `tiki_sefurl_regex_out` (`left`, `right`, `type`, `feature`, `order`) VALUES('tiki-sheets.php', 'sheets', '', 'feature_sheet', 200)
-go
-
-
-
-UPDATE tiki_menu_options SET icon = 'icon-configuration48x48' WHERE name = 'Admin'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'xfce4-appfinder48x48' WHERE name = 'Search'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'wikipages48x48' WHERE name = 'Wiki'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'blogs48x48' WHERE name = 'Blogs'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'stock_select-color48x48' WHERE name = 'Image Galleries'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'file-manager48x48' WHERE name = 'File Galleries'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'stock_bold48x48' WHERE name = 'Articles'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'stock_index48x48' WHERE name = 'Forums'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'gnome-settings-font48x48' WHERE name = 'Trackers'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'users48x48' WHERE name = 'Community'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'stock_dialog_question48x48' WHERE name = 'FAQs'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'maps48x48' WHERE name = 'Maps'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'messages48x48' WHERE name = 'Newsletters'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'vcard48x48' WHERE name = 'Freetags'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'date48x48' WHERE name = 'Calendar' AND url = 'tiki-calendar.php'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'userfiles48x48' WHERE name = 'MyTiki'
-go
-
-
-UPDATE tiki_menu_options SET icon = '' WHERE name = 'Quizzes'
-go
-
-
-UPDATE tiki_menu_options SET icon = '' WHERE name = 'Surveys'
-go
-
-
-UPDATE tiki_menu_options SET icon = '' WHERE name = 'TikiSheet'
-go
-
-
-UPDATE tiki_menu_options SET icon = '' WHERE name = 'Workflow'
-go
-
-
-UPDATE tiki_menu_options SET icon = '' WHERE name = 'Charts'
-go
-
-
-UPDATE tiki_menus SET use_items_icons='y' WHERE menuId=42
 go
 
 

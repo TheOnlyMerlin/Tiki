@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Id: header_jquery.tpl 17065 2009-03-02 11:31:20Z jonnybradley $ *}
 {if $prefs.use_minified_scripts == 'y'}{assign var=minified value='.min'}{assign var=minidir value='minified'}{else}{assign var=minified value=''}{assign var=minidir value=''}{/if}
 <!--  start jquery-tiki -->
 <script type="text/javascript" src="lib/jquery/jquery{$minified}.js"></script>
