@@ -21,8 +21,7 @@ function get_default_prefs() {
 		return $prefs;
 
 	global $cachelib;
-	if( $cachelib->isCached("tiki_default_preferences_cache") )
-	{
+	if( isset($cachelib) && $cachelib->isCached("tiki_default_preferences_cache") ) {
 		$prefs = unserialize( $cachelib->getCached("tiki_default_preferences_cache") );
 		return $prefs;
 	}
@@ -211,7 +210,6 @@ function get_default_prefs() {
 		'wikiplugin_iframe' => 'n',
 		'wikiplugin_image' => 'y',
 		'wikiplugin_include' => 'y',
-		'wikiplugin_invite' => 'y',
 		'wikiplugin_jabber' => 'n',
 		'wikiplugin_js' => 'n',
 		'wikiplugin_jq' => 'n',
@@ -223,7 +221,7 @@ function get_default_prefs() {
 		'wikipuglin_mediaplayer' => 'y',
 		'wikiplugin_miniquiz' => 'y',
 		'wikiplugin_module' => 'y',
-		'wikiplugin_mono' => 'y',
+		'wikiplugin_mono' => 'n',
 		'wikiplugin_mouseover' => 'y',
                 'wikiplugin_mwtable' => 'y',
 		'wikiplugin_myspace' => 'n',
@@ -496,7 +494,7 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 
 		// user
 		'feature_userlevels' => 'n',
-		'userlevels' => array('1'=>tra('Simple'),'2'=>tra('Advanced')),
+		'userlevels' => function_exists('tra') ? array('1'=>tra('Simple'),'2'=>tra('Advanced')) : array('1'=>'Simple','2'=>'Advanced'),
 		'userbreadCrumb' => 4,
 		'user_assigned_modules' => 'n',
 		'user_flip_modules' => 'module',
@@ -681,7 +679,7 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 		'calendar_end_year' => '+3',
 
 		// dates
-		'server_timezone' => $tikidate->getTimezoneId(),
+		'server_timezone' => isset($tikidate) ? $tikidate->getTimezoneId() : 'UTC',
 		'long_date_format' => '%A %d of %B, %Y',
 		'long_time_format' => '%H:%M:%S %Z',
 		'short_date_format' => '%a %d of %b, %Y',
@@ -755,7 +753,7 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 		'allowRegister' => 'n',
 		'eponymousGroups' => 'n',
 		'useRegisterPasscode' => 'n',
-		'registerPasscode' => md5($tikilib->genPass()),
+		'registerPasscode' => isset($tikilib) ? md5($tikilib->genPass()) : md5(mt_rand()),
 		'rememberme' => 'disabled',
 		'remembertime' => 7200,
 		'remembermethod' => '',	// '' = IP based (default) | 'simple' = unique id based
@@ -1001,7 +999,7 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 		'default_mail_charset' =>'utf-8',
 		'error_reporting_adminonly' => 'y',
 		'error_reporting_level' => 0,
-		'smarty_notice_reporting' => 'n',
+		'smarty_notice_reporting' => 'y',
 		'smarty_security' => 'y',
 		'feature_ajax' => 'n',
 		'feature_ajax_autosave' => 'n',
@@ -1080,11 +1078,11 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 		'session_lifetime' => 0,
 		'shoutbox_autolink' => 'n',
 		'show_comzone' => 'n',
-		'system_os' => TikiSetup::os(),
+		'system_os' => class_exists('TikiSetup') ? TikiSetup::os() : 'unix',
 		'tikiIndex' => 'tiki-index.php',
 		'urlIndex' => '',
 		'useGroupHome' => 'n',
-		'useGroupTheme' => 'y',
+		'useGroupTheme' => 'n',
 		'useUrlIndex' => 'n',
 		'use_proxy' => 'n',
 		'user_list_order' => 'score_desc',
@@ -1162,18 +1160,18 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 		'feature_comments_moderation' => 'n',
 		'feature_comments_locking' => 'n',
 		'feature_template_zoom' => 'y',
-		'menus_items_icons' => 'n',
 		'feature_iepngfix' => 'n',
 		'iepngfix_selectors' => '#sitelogo a img',
 		'iepngfix_elements' => '',
 		'use_minified_scripts' => 'y',		// for debugging
 		
 		// JQuery
-		'feature_jquery' => 'y',			// Alternative lib for shadowbox etc
+		'feature_jquery' => 'n',			// Alternative lib for shadowbox etc
 		'jquery_effect' => '',				// Default effect for general show/hide: ['' | 'slide' | 'fade' | and
 											// see http://docs.jquery.com/UI/Effects: 'blind' | 'clip' | 'explode' etc]
 		'jquery_effect_direction' => 'vertical', 	// ['horizontal' | 'vertical' | 'left' | 'right' | 'up' | 'down' ]
 		'jquery_effect_speed' => 'normal', 	// ['slow' | 'normal' | 'fast' | milliseconds (int) ]
+
 		'jquery_effect_tabs' => 'slide',	// Different effect for tabs (['none' | 'normal' (for jq) | 'slide' etc]
 		'jquery_effect_tabs_direction' => 'vertical',
 		'jquery_effect_tabs_speed' => 'fast',
@@ -1184,7 +1182,7 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 		'feature_jquery_superfish' => 'y',		// Effects on CSS (Suckerfish) menus
 		'feature_jquery_reflection' => 'y',		// reflection effects on images
 		'feature_jquery_sheet' => 'n',			// spreadsheet TODO: implement
-		'feature_jquery_tablesorter' => 'y',	// sortable tables ([will] override existing)
+		'feature_jquery_tablesorter' => 'n',	// sortable tables ([will] override existing)
 		'feature_jquery_cycle' => 'y',			// slideshow lib
 	
 		// SefUrl
@@ -1212,20 +1210,12 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 
 		'feature_bidi' => 'n',
 		'feature_lastup' => 'y',
-		'transition_style_ver' => '3.0',
+		'transition_style_ver' => '2.0',
 
 		'magic_last_load' => 0,
 
 		//groupalert
 		'feature_groupalert' => 'n',
-
-		'zend_mail_handler' => 'sendmail',
-		'zend_mail_smtp_server' => '',
-		'zend_mail_smtp_auth' => '',
-		'zend_mail_smtp_user' => '',
-		'zend_mail_smtp_pass' => '',
-		'zend_mail_smtp_port' => 25,
-		'zend_mail_smtp_security' => '',
 	);
 
 	// spellcheck
@@ -1252,7 +1242,7 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 	elseif ( ! is_file($prefs['site_favicon']) )
 		$prefs['site_favicon'] = false;
 
-	$_SESSION['tmpDir'] = TikiInit::tempdir(); //??
+	$_SESSION['tmpDir'] = class_exists('TikiInit') ? TikiInit::tempdir() : '/tmp';
 
 	$prefs['feature_bidi'] = 'n';
 	$prefs['feature_lastup'] = 'y';
@@ -1264,7 +1254,7 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 		}
 	}
 
-	$cachelib->cacheItem("tiki_default_preferences_cache",serialize($prefs));
+	if ( isset($cachelib) ) $cachelib->cacheItem("tiki_default_preferences_cache",serialize($prefs));
 	return $prefs;
 }
 
@@ -1296,7 +1286,7 @@ $defaults = get_default_prefs();
 // Set default prefs only if needed
 if ( ! $_SESSION['need_reload_prefs'] ) {
 	$modified = $_SESSION['s_prefs'];
-} else {
+} elseif ( isset($tikilib) ) {
 
 	// Find which preferences need to be serialized/unserialized, based on the default values (those with arrays as values)
 	if ( ! isset($_SESSION['serialized_prefs']) ) {
@@ -1326,12 +1316,13 @@ if ( ! $_SESSION['need_reload_prefs'] ) {
 	$_SESSION['s_prefs'] = $modified;
 }
 
-$prefs = array_merge( $defaults, $modified );
+$prefs = empty($modified) ? $defaults : array_merge( $defaults, $modified );
 
-// Assign the prefs array in smarty, by reference
-$smarty->assign_by_ref('prefs', $prefs);
+if ( isset($smarty) ) {
+	// Assign the prefs array in smarty, by reference
+	$smarty->assign_by_ref('prefs', $prefs);
 
-// Define the special maxRecords global var
-$maxRecords = $prefs['maxRecords'];
-$smarty->assign_by_ref('maxRecords', $maxRecords);
-
+	// Define the special maxRecords global var
+	$maxRecords = $prefs['maxRecords'];
+	$smarty->assign_by_ref('maxRecords', $maxRecords);
+}

@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Id: header_jquery.tpl 17065 2009-03-02 11:31:20Z jonnybradley $ *}
 {if $prefs.use_minified_scripts == 'y'}{assign var=minified value='.min'}{assign var=minidir value='minified'}{else}{assign var=minified value=''}{assign var=minidir value=''}{/if}
 <!--  start jquery-tiki -->
 <script type="text/javascript" src="lib/jquery/jquery{$minified}.js"></script>
@@ -21,7 +21,7 @@
 {/if}
 {if $prefs.feature_jquery_autocomplete eq 'y'}
 <script type="text/javascript" src="lib/jquery/jquery-autocomplete/lib/jquery.ajaxQueue.js"></script>
-<script type="text/javascript" src="lib/jquery/jquery-autocomplete/lib/jquery.bgiframe{$minified}.js"></script>
+<script type="text/javascript" src="lib/jquery/jquery-autocomplete/lib/jquery.bgiframe.min.js"></script>
 <script type="text/javascript" src="lib/jquery/jquery-autocomplete/jquery.autocomplete{$minified}.js"></script>
 <link rel="stylesheet" href="lib/jquery/jquery-autocomplete/jquery.autocomplete.css" type="text/css" /> 
 {/if}

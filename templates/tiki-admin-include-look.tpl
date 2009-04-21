@@ -1027,16 +1027,6 @@
 							</div>
 						</td>
 					</tr>
-					<tr>
-						<td width=30%>
-			        		<label for="menus_items_icons">{tr}Allow users to define icons for menus entries{/tr}</label>
-						</td>
-						<td width=2%>
-						</td>
-						<td>
-							<input type="checkbox" name="menus_items_icons" id="menus_items_icons" {if $prefs.menus_items_icons eq 'y'}checked="checked"{/if}/>
-						</td>
-					</tr>
 				</table>
 				<fieldset>
 					<legend>

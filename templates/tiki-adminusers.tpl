@@ -225,9 +225,6 @@
 							{if $users[user].valid && $users[user].waiting eq 'a'}
 								<a class="link" href="tiki-login_validate.php?user={$users[user].user|escape:url}&amp;pass={$users[user].valid|escape:url}" title="{tr}Validate user{/tr}: {$users[user].user}">{icon _id='accept' alt="{tr}Validate user{/tr}: `$users[user].user`"}</a>
 							{/if}
-							{if $users[user].waiting eq 'u'}
-								<a class="link" href="tiki-confirm_user_email.php?user={$users[user].user|escape:url}&amp;pass={$users[user].provpass|md5|escape:url}" title="{tr}Validate user{/tr}: {$users[user].user}">{icon _id='accept' alt="{tr}Validate user{/tr}: `$users[user].user`"}</a>
-							{/if}
 						{/if}
 					</td>
 				</tr>
@@ -416,15 +413,6 @@
 					<td>{tr}Email{/tr}:</td>
 					<td>
 						<input type="text" name="email" size="30" value="{$userinfo.email|escape}" />
-					</td>
-				</tr>
-			{/if}
-			{if $userinfo.login neq 'admin'}
-				<tr class="formcolor">
-					<td>{tr}Must Validate Email{/tr}:</td>
-					<td>
-						<input type="checkbox" name="need_email_validation" {if $prefs.validateUsers eq 'y' or $prefs.validateRegistration eq 'y'}checked="checked" {/if}/> 
-						{tr}User must validate its email{/tr}.
 					</td>
 				</tr>
 			{/if}
