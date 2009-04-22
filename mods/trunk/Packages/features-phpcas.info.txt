@@ -11,7 +11,6 @@ files:
 features/phpcas/COPYRIGHT lib/phpcas/COPYRIGHT
 features/phpcas/README lib/phpcas/README
 features/phpcas/source/CAS/CAS.php lib/phpcas/source/CAS/CAS.php
-features/phpcas/source/CAS/PGTStorage lib/phpcas/source/CAS/PGTStorage
 features/phpcas/source/CAS/PGTStorage/pgt-db.php lib/phpcas/source/CAS/PGTStorage/pgt-db.php
 features/phpcas/source/CAS/PGTStorage/pgt-file.php lib/phpcas/source/CAS/PGTStorage/pgt-file.php
 features/phpcas/source/CAS/PGTStorage/pgt-main.php lib/phpcas/source/CAS/PGTStorage/pgt-main.php
