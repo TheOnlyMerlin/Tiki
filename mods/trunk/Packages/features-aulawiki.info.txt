@@ -216,7 +216,7 @@ Changelog:
 0.7 fixed some bugs
 0.8 fixed some bugs
 1.6 updated to work on Tiki 2.x
-1.7.0 new permission scheme 
+1.7.0 new permission scheme. Works on tw 3.0 
 
 sql-install:
 DROP TABLE IF EXISTS `tiki_workspace_role_wstype`;
