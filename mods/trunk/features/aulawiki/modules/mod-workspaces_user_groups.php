@@ -39,6 +39,7 @@ if ( $tiki_p_admin == 'y' || $tiki_p_admin_workspace =='y' ) {
     $can_admin_all_workspaces = true;
     }
 if ($userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")) {
+#	$can_add_users =false;  # uncomment this if don't want to give users/group mngmnt to p_crteate_ws_resource
 	$can_add_users =true;
 	}
 
