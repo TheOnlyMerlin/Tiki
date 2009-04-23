@@ -8,12 +8,13 @@
 {include file="tiki-workspaces_module_error.tpl" error=$error_msg}
 
 <!------------ Common Title   --------->
-
+<!---
 <div>
 <label>{tr}Selected Workspace{/tr}:</label> {$selectedCategory.name} {$selectedCategory.description}
 <br>
 
 </div>
+--->
 <!------------ End Common Title   --------->
 
 {if $showCreateBar!="n"}
@@ -54,11 +55,12 @@
 <a class="edubutton" href="#" onclick="document.getElementById('createForm').style.display = 'block';"><img border=0 src="images/workspaces/pageNueva.gif"/> New Object</a>
 
 <!-----------  End Create new object   ---------->
+{/if}
+{if $showAddUser!="n"}
 <!------------  Add USer Button   --------->
 <a  href="./tiki-workspaces_view_module.php?module=workspaces_user_groups&workspaceId={$workspaceId}" >
 <img src='images/workspaces/pageNueva.gif'> Add Users/Groups
 </a>
-
 <!------------ End  Add USer Button   --------->
 {/if}
 {if $showAdminBar!="n"}
