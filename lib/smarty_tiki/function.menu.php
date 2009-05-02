@@ -11,9 +11,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  * - css = use suckerfish menu
  * - type = vert|horiz
  * - id = menu ID (mandatory)
- * - tr = y|n , n means no option translation (default y)
- * - menu_cookie=y|n (default y)
- */
+ * - tr = y|n , n means no option translation (default y) */
 function smarty_function_menu($params, &$smarty)
 {
 	global $tikilib, $user, $headerlib, $prefs;
@@ -29,10 +27,6 @@ function smarty_function_menu($params, &$smarty)
 		$translate = 'y';
 	}
 	$smarty->assign_by_ref('translate', $translate);
-	if (empty($menu_cookie)) {
-		$menu_cookie = 'y';
-	}
-	$smarty->assign_by_ref('menu_cookie', $menu_cookie);
 	if (isset($css) and $prefs['feature_cssmenus'] == 'y') {
 		static $idCssmenu = 0;
 		if (isset($type) && ($type == 'vert' || $type == 'horiz')) {

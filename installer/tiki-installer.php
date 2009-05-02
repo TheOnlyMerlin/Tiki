@@ -136,7 +136,7 @@ function process_sql_file($file,$db_tiki) {
 	$smarty->assign_by_ref('failedcommands', $failedcommands);
 }
 
-function write_local_php($dbb_tiki,$host_tiki,$user_tiki,$pass_tiki,$dbs_tiki,$dbversion_tiki="4.0") {
+function write_local_php($dbb_tiki,$host_tiki,$user_tiki,$pass_tiki,$dbs_tiki,$dbversion_tiki="3.0") {
 	global $local;
 	global $db_tiki;
 	if ($dbs_tiki and $user_tiki) {
@@ -824,7 +824,6 @@ if ($install_step == '2') {
 			$smarty->assign('mail_test', $mail_test);
 			$smarty->assign('perform_mail_test', 'y');
 			
-			unset($TWV);
 		}
 	}
 
@@ -839,6 +838,8 @@ if ($install_step == '2') {
 		$gd_test = 'n'; }
 	$smarty->assign('gd_test', $gd_test);
 }
+
+unset($TWV);
 
 // write general settings
 if (($_REQUEST['general_settings']) == 'y') {

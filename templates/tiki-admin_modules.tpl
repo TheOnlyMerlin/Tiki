@@ -199,7 +199,7 @@
 <td class="{cycle advance=false}">{$user_modules[user].name|escape}</td>
 <td class="{cycle advance=false}">{$user_modules[user].title|escape}</td>
 <td class="{cycle}"><a class="link" href="tiki-admin_modules.php?um_edit={$user_modules[user].name|escape:'url'}&amp;cookietab=2#editcreate" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
-             <a class="link" href="tiki-admin_modules.php?edit_assign={$user_modules[user].name|escape:'url'}#assign" title="{tr}Assign{/tr}">{icon _id='add' alt='{tr}Assign{/tr}'}</a>
+             <a class="link" href="tiki-admin_modules.php?edit_assign={$user_modules[user].name|escape:'url'}&amp;cookietab=1#assign" title="{tr}Assign{/tr}">{icon _id='add' alt='{tr}Assign{/tr}'}</a>
              <a class="link" href="tiki-admin_modules.php?um_remove={$user_modules[user].name|escape:'url'}&amp;cookietab=2" title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a></td>
 </tr>
 {sectionelse}
@@ -333,7 +333,7 @@
 
 
   </td><td class="form">
-	<a {popup text="Params: id= structureId= css= link_on_section=y type=vert|horiz translate=y|n" width=100 center=true}>{icon _id='help'}</a>  </td>
+	<a {popup text="Params: id= css= link_on_section=y type=vert|horiz translate=y|n" width=100 center=true}>{icon _id='help'}</a>  </td>
 </tr>
 {if $prefs.feature_phplayers eq "y"}
 <tr>

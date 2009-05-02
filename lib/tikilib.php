@@ -722,43 +722,35 @@ class TikiLib extends TikiDB {
 		}
 	}
 
-	function list_quizzes($offset, $maxRecords, $sort_mode = 'name_desc', $find) {
+	/*shared*/
+	function list_quizzes($offset, $maxRecords, $sort_mode, $find) {
 		$bindvars = array();
-		$mid = '';
+		$mid = "";
 		if ($find) {
 			$findesc = '%' . $find . '%';
+
 			$mid = " where (`name` like ? or `description` like ?)";
-			$bindvars = array($findesc, $findesc);
+			$bindvars = array($findesc,$findesc);
 		}
 
-		$query = "select `quizId` from `tiki_quizzes` $mid";
-		$result = $this->query($query, $bindvars);
-		$res = $ret = $retids = array();
-		$n = 0;
+		$query = "select * from `tiki_quizzes` $mid order by ".$this->convert_sortmode($sort_mode);
+		$query_cant = "select count(*) from `tiki_quizzes` $mid";
+		$result = $this->query($query,$bindvars,$maxRecords,$offset);
+		$cant = $this->getOne($query_cant,$bindvars);
+		$ret = array();
 
-		while ( $res = $result->fetchRow() ) {
+		while ($res = $result->fetchRow()) {
 			global $user;
-			$objperm = $this->get_perm_object($res['quizId'], 'quizzes', '', false);
-
-			if ( $objperm['tiki_p_take_quiz'] == 'y' ) {
-				if ( ($maxRecords == -1) || (($n >= $offset) && ($n < ($offset + $maxRecords))) ) {
-					$retids[] = $res['quizId'];
-				}
-				$n++;
-			}
-		}
-
-		if ($n > 0) {
-		  $query = 'select * from `tiki_quizzes` where quizId in (' . implode(',', $retids) . ') order by ' . $this->convert_sortmode($sort_mode);
-		  $result = $this->query($query);
-		  while ( $res = $result->fetchRow() ) {
-				$res['questions'] = $this->getOne('select count(*) from `tiki_quiz_questions` where `quizId`=?', array( (int) $res['quizId'] ));
-				$res['results'] = $this->getOne('select count(*) from `tiki_quiz_results` where `quizId`=?', array( (int) $res['quizId'] ));
+			$add=$this->user_has_perm_on_object($user,$res['quizId'],'quiz',array('tiki_p_take_quiz'));
+			if ($add) {
+				$res["questions"] = $this->getOne("select count(*) from `tiki_quiz_questions` where `quizId`=?",array((int) $res["quizId"]));
+				$res["results"] = $this->getOne("select count(*) from `tiki_quiz_results` where `quizId`=?",array((int) $res["quizId"]));
 				$ret[] = $res;
 			}
 		}
-		$retval['data'] = $ret;
-		$retval['cant'] = $n;
+		$retval = array();
+		$retval["data"] = $ret;
+		$retval["cant"] = $cant;
 		return $retval;
 	}
 
@@ -830,43 +822,32 @@ class TikiLib extends TikiDB {
 		return $retval;
 	}
 
+	/*shared*/
 	function list_surveys($offset, $maxRecords, $sort_mode, $find) {
 		if ($find) {
-		  $findesc = '%' . $find . '%';
-		  $mid = " where (`name` like ? or `description` like ?)";
-		  $bindvars=array($findesc, $findesc);
+			$findesc = '%' . $find . '%';
+			$mid = " where (`name` like ? or `description` like ?)";
+			$bindvars=array($findesc,$findesc);
 		} else {
-		  $mid = '';
-		  $bindvars=array();
+			$mid = " ";
+			$bindvars=array();
 		}
-
-		$query = "select `surveyId` from `tiki_surveys` $mid";
-		$result = $this->query($query, $bindvars);
-		$res = $ret = $retids = array();
-		$n = 0;
-
-		while ( $res = $result->fetchRow() ) {
-		  global $user;
-		  $objperm = $this->get_perm_object( $res['surveyId'], 'survey', '', false );
-		  if ( $objperm['tiki_p_take_survey'] ) {
-			if ( ($maxRecords == -1) || (($n >= $offset) && ($n < ($offset + $maxRecords))) ) {
-			  $retids[] = $res['surveyId'];
+		$query = "select * from `tiki_surveys` $mid order by ".$this->convert_sortmode($sort_mode);
+		$query_cant = "select count(*) from `tiki_surveys` $mid";
+		$result = $this->query($query,$bindvars,$maxRecords,$offset);
+		$cant = $this->getOne($query_cant,$bindvars);
+		$ret = array();
+		while ($res = $result->fetchRow()) {
+			global $user;
+			$add=$this->user_has_perm_on_object($user,$res['surveyId'],'survey',array('tiki_p_take_survey','tiki_p_view_survey_stats'));
+			if ($add) {
+				$res["questions"] = $this->getOne("select count(*) from `tiki_survey_questions` where `surveyId`=?",array((int) $res["surveyId"]));
+				$ret[] = $res;
 			}
-			$n++;
-		  }
 		}
-		if ( $n > 0 ) {
-		  $query = 'select * from `tiki_surveys` where `surveyId` in (' . implode(',',$retids) . ') order by ' . $this->convert_sortmode($sort_mode);
-		  $result = $this->query($query);
-		  while ( $res = $result->fetchRow() ) {
-			$res["questions"] = $this->getOne( 'select count(*) from `tiki_survey_questions` where `surveyId`=?', array( (int) $res['surveyId']) );
-			$ret[] = $res;
-		  }
-		} 
-		
 		$retval = array();
 		$retval["data"] = $ret;
-		$retval["cant"] = $n;
+		$retval["cant"] = $cant;
 		return $retval;
 	}
 
@@ -1496,6 +1477,7 @@ class TikiLib extends TikiDB {
 	}
 
 	// Functions for FAQs ////
+	/*shared*/
 	function list_faqs($offset, $maxRecords, $sort_mode, $find) {
 	  $mid = '';
 	  if ( $find ) {
@@ -1694,46 +1676,37 @@ class TikiLib extends TikiDB {
 		return $result;
 	}
 
+	/*shared*/
 	function list_all_forum_topics($offset, $maxRecords, $sort_mode, $find) {
-		$bindvars = array('forum', 0);
+		$bindvars = array("forum",0);
 		if ($find) {
-		  $findesc = '%' . $find . '%';
-		  $mid = " and (`title` like ? or `data` like ?)";
-		  $bindvars[] = $findesc;
-		  $bindvars[] = $findesc;
+			$findesc = '%'.$find.'%';
+			$mid = " and (`title` like ? or `data` like ?)";
+			$bindvars[] = $findesc;
+			$bindvars[] = $findesc;
 		} else {
-		  $mid = '';
+			$mid = "";
 		}
 
-		$query = 'select threadId, forumId from `tiki_comments`,`tiki_forums`'
-			  . " where `object`=`forumId` and `objectType`=? and `parentId`=? $mid order by " . $this->convert_sortmode($sort_mode);
-		$result = $this->query($query, $bindvars);
-		$res = $ret = $retids = array();
-		$n = 0;
+		$query = "select * from `tiki_comments`,`tiki_forums` ";
+		$query.= " where `object`=`forumId` and `objectType`=? and `parentId`=? $mid order by ".$this->convert_sortmode($sort_mode);
+		$query_cant = "select count(*) from `tiki_comments`,`tiki_forums` ";
+		$query_cant.= " where `object`=`forumId` and `objectType`=? and `parentId`=? $mid";
+		$result = $this->query($query,$bindvars,$maxRecords,$offset);
+		$cant = $this->getOne($query_cant,$bindvars);
+		$ret = array();
 
-		while ( $res = $result->fetchRow() ) {
-		  global $user;
-		  $objperm = $this->get_perm_object($res['forumId'], 'forums', '', false);
-		  if ($objperm['tiki_p_forum_read'] == 'y') {
-			if (($maxRecords == -1) || (($n >= $offset) && ($n < ($offset + $maxRecords)))) {
-			$retids[] = $res['threadId'];
-		  }
-		  $n++;
-		  }
-		}
-		
-		if ( $n > 0 ) {
-		  $query = 'select * from `tiki_comments`'
-			  . ' where `threadId` in (' . implode(',', $retids) . ') order by ' . $this->convert_sortmode($sort_mode);
-		  $result = $this->query($query);
-		  while ( $res = $result->fetchRow() ) {
-			$ret[] = $res;
-		  }
-		}
+		while ($res = $result->fetchRow()) {
+			global $user;
+			$add=$this->user_has_perm_on_object($user,$res['forumId'],'forums','tiki_p_forum_read');
 
+			if ($add) {
+				$ret[] = $res;
+			}
+		}
 		$retval = array();
-		$retval['data'] = $ret;
-		$retval['cant'] = $n;
+		$retval["data"] = $ret;
+		$retval["cant"] = $cant;
 		return $retval;
 	}
 
@@ -2771,34 +2744,33 @@ class TikiLib extends TikiDB {
 	}
 
 	// BLOG METHODS ////
+	/*shared*/
 	function list_blogs($offset = 0, $maxRecords = -1, $sort_mode = 'created_desc', $find = '') {
 
 		if ($find) {
 			$findesc = '%' . $find . '%';
 
-			$mid = ' where (`title` like ? or `description` like ?) ';
-			$bindvars = array($findesc, $findesc);
+			$mid = " where (`title` like ? or `description` like ?) ";
+			$bindvars=array($findesc,$findesc);
 		} else {
 			$mid = '';
-			$bindvars = array();
+			$bindvars=array();
 		}
-		$query = "select * from `tiki_blogs` $mid order by " . $this->convert_sortmode($sort_mode);
-		$result = $this->query($query, $bindvars);
+		$query = "select * from `tiki_blogs` $mid order by ".$this->convert_sortmode($sort_mode);
+		$result = $this->query($query,$bindvars);
 		$ret = array();
 		$cant = 0;
 		$nb = 0;
 		$i = 0;
 		while ($res = $result->fetchRow()) {
 			global $user;
-			if ($objperm = $this->get_perm_object($res['blogId'], 'blog', '', false)) {
-				if ( $objperm['tiki_p_read_blog'] == 'y' ) {
-				  ++$cant;
-				  if ($maxRecords == - 1 || ($i >= $offset && $nb < $maxRecords)) {
+			if ($this->user_has_perm_on_object($user,$res['blogId'],'blog','tiki_p_read_blog')) {
+				++$cant;
+				if ($maxRecords == - 1 || ($i >= $offset && $nb < $maxRecords)) {
 					$ret[] = $res;
 					++$nb;
-				  }
+				}
 				++$i;
-			  }
 			}
 		}
 		$retval = array();
@@ -3579,6 +3551,21 @@ class TikiLib extends TikiDB {
 		return $id;
 	}
 
+	function vote_page($page, $points) {
+		$query = "update `pages`
+			set `points`=`points`+$points, `votes`=`votes`+1
+			where `pageName`=?";
+		$result = $this->query($query, array( $page ));
+	}
+
+	function get_votes($page) {
+		$query = "select `points` ,`votes`
+			from `pages` where `pageName`=?";
+		$result = $this->query($query, array( $page ));
+		$res = $result->fetchRow();
+		return $res;
+	}
+
 	// This funcion return the $limit most accessed pages
 	// it returns pageName and hits for each page
 	function get_top_pages($limit) {
@@ -3971,9 +3958,6 @@ class TikiLib extends TikiDB {
 					$tmp_mid[] = "( (tro.traId IS NULL AND tp.lang != ?) OR tro.traId NOT IN(SELECT traId FROM tiki_translated_objects WHERE lang = ?))";
 					$bindvars[] = $val;
 					$bindvars[] = $val;
-				} elseif ($type == 'structure_orphans') {
-					$join_tables .= " left join `tiki_structures` as tss on (tss.`page_id` = tp.`page_id`) ";
-					$tmp_mid[] = "(tss.page_ref_id is null)";
 				}
 			}
 			if (!empty($tmp_mid)) {
@@ -7097,7 +7081,7 @@ class TikiLib extends TikiDB {
 							if (!empty($options['page'])) {
 								$button .= 'page='.urlencode($options['page']).'&amp;';
 							}
-							$button .= 'hdr='.$nb_hdrs.'">'.smarty_function_icon(array('_id'=>'page_edit', 'alt'=>tra('Edit Section')), $smarty).'</a></div>';
+							$button .= 'hdr='.$nb_hdrs.'">'.smarty_function_icon(array('_id'=>'page_edit_section', 'alt'=>tra('Edit Section')), $smarty).'</a></div>';
 						} else {
 							$button = '';
 						}
@@ -7611,11 +7595,17 @@ class TikiLib extends TikiDB {
 				$oktodel = $saveLastModif - ($keep * 24 * 3600);
 				$query = "select `pageName` ,`version`, `historyId` from `tiki_history` where `pageName`=? and `lastModif`<=? order by `lastModif` asc";
 				$result = $this->query($query,array($pageName,$oktodel),$nb - $maxversions);
+				$toelim = $result->numRows();
+
 				while ($res = $result->fetchRow()) {
 					$page = $res["pageName"];
 					$version = $res["version"];
-					
-					$histlib->remove_version($res['pageName'], $res['version']);
+					$query = "delete from `tiki_history` where `pageName`=? and `version`=?";
+					$this->query($query,array($pageName,$version));
+					if ($prefs['feature_contribution'] == 'y') {
+						global $contributionlib; include_once('lib/contribution/contributionlib.php');
+						$contributionlib->remove_history($res['historyId']);
+					}
 				}
 			}
 		}
@@ -8244,24 +8234,15 @@ class TikiLib extends TikiDB {
 		return $retval;
 	}
 
-	/**
-	  *  Returns explicit message on upload problem
-	  *
-	  *	@params: $iError: php status of the file uploading (documented in http://uk2.php.net/manual/en/features.file-upload.errors.php )
-	  *
-	  */
+	/* get explicit message on upload problem */
 	function uploaded_file_error($iError) {
 		switch($iError) {
-			case UPLOAD_ERR_OK: return tra('The file was uploaded with success.');
-			case UPLOAD_ERR_INI_SIZE : return tra('The uploaded file exceeds the upload_max_filesize directive in php.ini.');
-			case UPLOAD_ERR_FORM_SIZE: return tra('The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.');
-			case UPLOAD_ERR_PARTIAL: return tra('The file you are trying upload was only partially uploaded.');
-			case UPLOAD_ERR_NO_FILE: return tra('No file was uploaded. Was a file selected ?');
-			case UPLOAD_ERR_NO_TMP_DIR: return tra('A temporary folder is missing.');
-			case UPLOAD_ERR_CANT_WRITE: return tra('Failed to write file to disk.');
-			case UPLOAD_ERR_EXTENSION: return tra('File upload stopped by extension.');
-
-			default: return tra('Unknown error.');
+			case 0: return tra('You are not allowed to upload this type of file.');
+			case 1: return tra('Cannot upload this file maximum upload size exceeded').'(upload_max_filesize)';
+			case 2: return tra('Cannot upload this file maximum upload size exceeded');
+			case 3: return tra('The file you are trying upload was only partially uploaded.');
+			case 4: return tra('You must select a file.');
+			default: return tra('The file you are trying upload was only partially uploaded.');
 		}
 	}
 
@@ -8590,6 +8571,16 @@ function detect_browser_language() {
 	}
 
 	return $aproximate_lang;
+}
+
+function alterprefs() {
+	global $tikilib;
+	if (!$tikilib->query( "ALTER TABLE `tiki_preferences` MODIFY `value` BLOB", array())) {
+		$smarty->assign("msg", tra('Altering database table failed'));
+		$smarty->display("error.tpl");
+		die;
+	}
+	return true;
 }
 
 function validate_email($email,$checkserver='n') {

@@ -102,9 +102,6 @@
 										<input type="text" name="position" value="{$position|escape}" size="6" />
 									</td>
 								</tr>
-{if $prefs.menus_items_icons eq 'y'}
-							 	<tr><td>{tr}Icon:{/tr}</td><td colspan="3"><input type="text" name="icon" value="{$icon|escape}" size="20" /></td></tr>
-{/if}
 								<tr class="formcolor">
 									<td>&nbsp;</td>
 									<td colspan="3">
