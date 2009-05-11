@@ -13,7 +13,6 @@ V5.07 18 Dec 2008   (c) 2000-2008 John Lim (jlim#natsoft.com). All rights reserv
 Based on adodb 3.40
 */ 
 
-ini_set('max_execution_time','3600');
 // security - hide paths
 if (!defined('ADODB_DIR')) die();
 
