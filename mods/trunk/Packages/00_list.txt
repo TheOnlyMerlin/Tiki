@@ -126,3 +126,5 @@
 'wikiplugins','lastfm','1.0','Add an embedded music player from last.fm to a wiki page.','GNU/LGPL'
 'wikiplugins','googlecalendar','1.0','Embed a Google Calendar in a Tiki wiki page.','GNU/LGPL'
 'wikiplugins','jskitrating','1.0','Add the JS-Kit Ratings (www.js-kit.com/ratings) to a wiki page.','GNU/LGPL'
+'goodies','batch_clean_structure','1.0','Batch to clean the position info of a structure displayed in a view page'
+
