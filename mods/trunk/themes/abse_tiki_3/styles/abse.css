@@ -126,6 +126,10 @@ img {border: 0}
 fieldset {
 	border: solid 1px #3f6041;
 	padding: 10px}
+	
+hr {
+	color: #bdcec3;
+	background: #bdcec3}
 
 legend {color: #a9a9a9}
 
@@ -384,6 +388,10 @@ div.option a.linkmenu:hover {
 	text-decoration: none;
 	color: #ccccff;
 	background: url(abse/menubg.jpg) repeat-y}
+	
+.separator a:link,
+.separator a:visited,
+.separator a:hover {text-decoration: none}
 
 /***** Misc. Center Col. *****/
 a.flip,
@@ -457,6 +465,8 @@ img.flipmodimage:hover {border: 1px solid #55914E !important}
 
 /** Other boxes **/
 div.cbox {
+	color: #fff;
+	background: inherit;
 	border: 1px solid #909090;
 	margin: 6px}
  
@@ -660,6 +670,9 @@ div.articletitle {
 	margin-bottom: 1em}
  
 div.articletitle h2 {font-size: 1.4em}
+
+div.articletitle h2 a,
+div.articletitle h2 a:visited {text-decoration: none}
  
 div.articlesubtitle {
 	font-size: 90%;
@@ -1238,12 +1251,12 @@ table.admin div#content1 div.tabcontent div.cbox {
 
 a.admbox {
 	border: 1px solid #aaa;
-	background: #6c6c6c}
+	background-color: #6c6c6c}
 
 a.admbox:hover,
 a.admbox:focus,
 a.admbox:active  {
-	background: #b2b2b2;
+	background-color: #b2b2b2;
 	border: 1px solid #292929}
 
 /* End of File */
