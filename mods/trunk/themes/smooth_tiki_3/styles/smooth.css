@@ -1,24 +1,97 @@
 /* Smooth theme for TikiWiki CMS/Groupware is a derived work by Gary Cunningham-Lee
-(aka Chibaguy) based on the original design by Free CSS Templates 
-(http://www.freecsstemplates.org/preview/smooth), which is distributed under
-a Creative Commons Attribution 2.5 License. Please do not remove the link
-to Free CSS Templates in the footer.
+	(aka Chibaguy) based on the original design by Free CSS Templates 
+	(http://www.freecsstemplates.org/preview/smooth), which is distributed under
+	a Creative Commons Attribution 2.5 License. Please do not remove the link
+	to Free CSS Templates in the footer.
+	For more information on the Tiki implementation of this theme, please
+	visit http://zukakakina.com or http://themes.tikiwiki.org. 
 
-For more information on the Tiki implementation of this theme, please
-visit http://zukakakina.com or http://themes.tikiwiki.org. */
-
- @import "lite/lite.css"; /* here we import *lite as the base */
+	smooth.css is comprised of these sections:
+	XHTML elements, Siteheader & Identity; Menus, Links;
+	Misc. Center Col.; Misc. Global; Boxes; Tables, Tabs;
+	Wiki (inc. plugins, etc.); Articles; Blogs; Forums;
+	Galleries; Trackers; Categories, Tags; Polls; FAQs;
+	Quizzes;	Shoutbox; Directory; Messages; TikiSheets;
+	Calendar; Admin; and Ajax, jquery, etc.
+*/
  
-/***** XHTML Elements ******/
+/* Import layout foundation CSS file. */
+/* *litecss-based theme, so . . .  */
+@import "lite/lite.css";
 
+/* Then import the default layout properties file: */
+ @import "layout/layout.css";
+ 
+/***** XHTML Elements (body tag here,
+			others follow Layout) *****/ 
 body {
 	text-align: left;
 	font: 76%/1.4em "Trebuchet MS", Arial, Helvetica, sans-serif;
-	background: #FFFFFF url(smooth/img01.gif) repeat-x}
+	background: #fff url(smooth/img01.gif) repeat-x}
 
 html>body {font-size: .85em !important}
-body.fullscreen {}
 
+ /***** Layout (overrides layout.css;
+		also styling of page layout divs)  *****/
+#main {text-align: left;
+		background: transparent;
+		color:  #666}
+
+#header {height: 160px; position: relative}
+#middle {padding-top: 20px}
+
+.fullscreen #col1 {
+	margin-left: 30px !important;
+	margin-right: 30px !important}
+
+#c1c2 #wrapper #col1>.content {
+	color:  #666;
+	border-top: 1px solid #fff;
+	background: #fcf8ff url(smooth/img08.jpg) repeat-x;
+	margin: 0 15px}
+
+#c1c2 #wrapper .marginleft {margin-left: 250px}
+#c1c2 #wrapper .marginright {margin-right: 250px}
+
+#c1c2 #col2 {
+	width: 250px;
+	overflow: hidden}
+
+#c1c2 #col2 .content {border-top: 1px solid #fff;
+	background: #fff url(smooth/img06.gif) repeat-x;
+	margin-left: 40px}
+
+#col3 {
+	margin-left: -250px;
+	margin-top: 0;
+	width: 250px;
+	text-align: left}
+
+#col3 .content {
+	margin: 0;
+	margin-right: 40px;
+	border-top: 1px solid #fff;
+	background: #fff url(smooth/img06.gif) repeat-x;
+	margin-right: 40px}
+
+#footer {
+	text-align: center;
+	font-size: .9em;
+	background: #ea5ada;
+	clear: both;
+	color: #fff;
+	height: 100px;
+	padding-top: 40px;
+	padding-bottom: 40px}
+
+#footer a:link,
+#footer a:visited {
+	color: white;
+	text-decoration: underline}
+
+#footer a:hover {text-decoration: none}
+
+/***** XHTML Elements (other than body tag) ******/
 a,
 a:visited {
 	color: #3e9722;
@@ -28,14 +101,14 @@ a:hover {
 	text-decoration: none;
 	color: #e58c24}
 
-caption {}
-div {}
-h2, h3, h4, h5 {padding-left: .6em; padding-right: .6em}
+h2, h3, h4, h5 {
+	padding-left: .6em;
+	padding-right: .6em}
 
 h1 {
 	font-weight: bold;
-	background: #A923FF url(smooth/img07.gif) repeat-x scroll 0%;
-	color: #FFFFFF;
+	background: #a923ff url(smooth/img07.gif) repeat-x scroll 0%;
+	color: #fff;
 	font-size: 1em;
 	text-transform: uppercase;
 	height: 28px;
@@ -44,7 +117,7 @@ h1 {
 	position: relative;
 	display: block}
 
-#header h1 { background: none }
+#header h1 {background: 0}
 h2 {font-size: 1.15em}
 h3 {font-size: 1.1em}
 h4 {font-size: 1.05em}
@@ -59,20 +132,11 @@ hr {
 	padding: 0px;
 	color: #f4abec}
 
-p {}
 img {border: 0}
 
 fieldset {
-	border: solid 1px  #666666;
+	border: solid 1px  #666;
 	padding: 10px}
-
-form {
-	margin: 0;
-	padding: 0}
-
-legend {}
-button {}
-button:hover {cursor: pointer}
 
 button,
 input,
@@ -85,13 +149,6 @@ body.wikitext {
 	padding: 2px}
 
 * html .wikitopline select {font-size: .9em}
-input.button {}
-
-input[type=checkbox],
-input[type=radio] {border: 0}
-
-input[type=text],
-input[type=password] {}
 
 input[type=submit],
 input[type=file],
@@ -103,7 +160,7 @@ input[type=submit],
 .button input,
 input[type=reset] {
 	background:#7FE63C url(smooth/img05.gif) repeat-x 0 100%;
-	color: #FFFFFF;
+	color: #fff;
 	border: 0;
 	font-weight: bold}
 
@@ -120,140 +177,14 @@ form.admin input[name="features"] {margin-bottom: 3px !important}
 select {
 	line-height: normal;
 	padding: 0;
-	background: #fdf1fc;}
+	background: #fdf1fc}
 
 select[multiple] {height: 10em}
 select[name="theme"] {width: 165px}
 small {font-size: .9em}
-label {margin:0 2px}
-ol {}
-ul {}
-li {}
+label {margin: 0 2px}
 
-/***** Page Layout *****/
-
-/** off-screen **/
-
-ul.jumplinks {
-	font-size: 0.8em;
-	list-style-type: none}
-	
-ul.jumplinks,
-.jumplinks {
-	position: absolute;
-	top: -9000px; left: -9000px;
-	z-index: 9}
-
-ul.jumplinks a:focus,
-ul.jumplinks a:active {
-	position: absolute;
-	top: 9010px;
-	left: 9010px;
-	background: #ffe4e1;
-	color: #666;
-	padding: 5px;
-	font-weight: bold;
-	border: 2px solid  #666666;
-	width: 6em;
-	z-index: 9}
-
-#fullscreenbutton {
-	position: absolute;
-	top: 2px;
-	right: 10px;
-	z-index: 10;
-	font-size: 80%}
-	
-#fullscreenbutton:hover {}
-
-#tiki-clean {
-	text-align: left;
-	padding: 1em}
-
-/*** Type 1 (*litecss-based) layout 
-	(overrides lite.css) ***/
-#main {text-align: left;
-		background: transparent;
-		color:  #666666}
-#header {height: 160px; position: relative}
-#middle {padding-top: 20px}
-#c1c2 {}
-#c1c2 #wrapper {}
-
-.fullscreen #col1 {
-	margin-left: 30px !important;
-	margin-right: 30px !important}
-
-#c1c2 #wrapper #col1 {}
-
-#c1c2 #wrapper #col1>.content {
-	color:  #666666;
-	border-top: 1px solid #FFFFFF;
-	background: #fcf8ff url(smooth/img08.jpg) repeat-x;
-	/*background-position: 0 40px;*/
-	margin: 0 15px;}
-
-#c1c2 #wrapper .marginleft {margin-left: 250px}
-#c1c2 #wrapper .marginright {margin-right: 250px}
-
-#c1c2 #col2 {
-	width: 250px;
-	overflow: hidden}
-
-#c1c2 #col2 .content {border-top: 1px solid #FFFFFF;
-	background: #fff url(smooth/img06.gif) repeat-x;
-	margin-left: 40px
-}
-
-#col3 {
-	margin-left: -250px;
-	margin-top: 0;
-	width: 250px;
-	text-align: left}
-
-#col3 .content {
-	margin: 0;
-	margin-right: 40px;
-	border-top: 1px solid #FFFFFF;
-	background: #fff url(smooth/img06.gif) repeat-x;
-	margin-right: 40px}
-
-#footer {
-	text-align: center;
-	font-size: .9em;
-	background: #EA5ADA;
-	clear: both;
-	color: #FFFFFF;
-	height: 100px;
-	padding-top: 40px;
-	padding-bottom: 40px}
-
-#footer a:link,
-#footer a:visited {
-	color: white;
-	text-decoration: underline}
-
-#footer a:hover {text-decoration: none}
-.footerbgtrap {}
-/* end Type 1 layout divs, etc. */
-
-
-/*** Error page ***/
-div#tiki-main #tiki-top {}
-div#tiki-mid {}
-div#tiki-main #tiki-top,
-div#tiki-main #tiki-bot {display: none}
-
-/* To center cbox */
-div#tiki-main #tikimidtbl {
-	margin: auto;
-	width: auto}
-
-div#tiki-bot {}
-
-/* Site Header & Identity */
-
-
+/***** Site Header & Identity *****/
 #siteheader {
 	text-align: left;
 	background: transparent;
@@ -269,23 +200,9 @@ div#sioptions {
 	text-align: center;
 	padding: 15px}
 
-div.floatright {
-	float: right;
-	clear: none}
-
-div.floatleft {
-	float: left;
-	clear: none}
-
-div#sitelogo {
-	width: 33%;
-	margin: auto}
-
-div#sitead {margin: auto}
+div#sitelogo {width: 33%}
 #sitead.floatright {padding-right: 100px}
 #sitead.floatleft {padding-left: 100px}
-#sioptionscentered #sitead.floatleft {padding-left: 10px}
-.floatright img {}
 
 #siteloginbar {
 	position: absolute;
@@ -303,20 +220,13 @@ input[id="sl-login-pass"] {
 
 #sitesearchbar input.wikiaction {
 	background: #7FE63C url(smooth/img05.gif) repeat-x 0 100%;
-	border: none;
-	color: #FFFFFF;
-	font-weight: bold;}
+	border: 0;
+	color: #fff;
+	font-weight: bold}
 
 #sitesearchbar input.wikiaction:hover {
 	background:#7FE63C url(smooth/img05.gif) repeat-x 0 0;
 	color: #E58C24}
-
-#sitelocbar {float: left}
-
-div#customcode {}
-#topbar_custom_code {  }
-
-/* #header text selectors, if needed */
 
 #sitetitles {
 	position: absolute;
@@ -329,21 +239,14 @@ div#customcode {}
 
 #sitetitle {
 	font-size: 2.6em;
-	bottom: 1.5em;}
+	bottom: 1.5em}
 
 #sitesubtitle {
 	bottom: 0;
 	font-size: 1em}
 
 #sitetitle a,
-#sitetitle a:visited { color: #000; text-decoration: none }
-
-#header a,
-#header a:visited {}
-
-#header a:hover {}
-
-/* tiki-top_bar.tpl - menu and search */
+#sitetitle a:visited {color: #000; text-decoration: none}
 
 #tiki-top {
 	position: absolute;
@@ -371,53 +274,55 @@ select[name="where"],
 input[name="search"] {
 	line-height: normal;
 	border: 1px inset #fedafe;
-	background: #fdf1fc;}
+	background: #fdf1fc}
 
-select[name="where"] option { padding: 0 }
-/* end header */
+select[name="where"] option {padding: 0}
 
-/* centercolumn */
 
-#showhide_columns {margin: 0 18px}
+/****** Menus, Links ******/
+/** CSS (suckerfish) menus **/
+#header .cssmenu_horiz {
+	float: right;
+	margin-right: 300px}
+	
+#header .cssmenu_horiz ul {text-align: left}
+	/*
+#header .cssmenu_horiz ul	 li {
+	float: left}
+*/
+.cssmenu_vert li a {
+	font-weight: normal;
+	text-decoration: none} 
 
-a.flip,
-a.flip:visited,
-.tellafriend a,
-.tellafriend a:visited {
-	font-size: 80%;
-	color: #a4ed75}
+.cssmenu_vert li a:hover {
+	color: #000;
+	text-decoration: none;
+	background: #fff url(smooth/img06.gif) repeat-x} 
 
-a.flip:hover,
-.tellafriend a:hover {
-	color: #e58c24;
+#tiki-top .cssmenu_horiz > li > a {
+	background: transparent url(smooth/img02.gif) no-repeat scroll 0%;
+	color: #000;
+	display: block;
+	font-size: 12px;
+	font-weight: bold;
+	height: 30px;
+	margin-right: 4px;
+	padding-top: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	text-align: center;
+	text-decoration: none;
+	white-space: nowrap}
+	
+#tiki-top .cssmenu_horiz > li > a:hover {
+	background: url(smooth/img03.gif);
+	color: #000 !important;
 	text-decoration: none}
-
-a.flip img {display: none}
-
-.tellafriend {margin: 0 18px}
-.fullscreen .tellafriend {}
-
-/* Also is .content */
-#tiki-center {}
-
-/* IE */
-* html #tiki-center {font-size: 1em}
-
-.rss {vertical-align: middle}
-
-#power {
-	padding: 0 1em 1em;
-	font-size: .9em}
 	
-#credits {display: inline}
-
-/* end layout divs, etc. */
-
-/** Border boxes (if any) **/
-	
-/****** Menus ******/
+#tiki-top .cssmenu_horiz li.menuSection a {padding-right: 20px}
+#tiki-top .cssmenu_horiz li ul li a {width: 11em}
+#tiki-top .cssmenu_horiz li ul li a:hover {}
 /** PHP Layers Menus **/
-
 .horbar {width: 100%} 
 
 .horbar table {
@@ -429,7 +334,7 @@ a.flip img {display: none}
 .horbaritem a:link,
 .horbaritem a:visited {
 	background: transparent url(smooth/img02.gif) no-repeat scroll 0%;
-	color: #000000;
+	color: #000;
 	display: block;
 	font-size: .95em;
 	font-weight: bold;
@@ -441,11 +346,11 @@ a.flip img {display: none}
 	padding-right: 10px;
 	text-align: center;
 	text-decoration: none;
-	white-space: nowrap;} 
+	white-space: nowrap} 
 
 .horbaritem a:hover {
 	background-image: url(smooth/img03.gif);
-	color: #000000 !important;
+	color: #000 !important;
 	text-decoration: none} 
 
 * html .horbaritem a {font-size: .8em}
@@ -456,7 +361,7 @@ a.flip img {display: none}
 	position: absolute;
 	left: 0;
 	top: 0;
-	background: #FFFFFF;
+	background: #fff;
 	visibility: hidden;
 	margin-top: 0}
 
@@ -467,7 +372,7 @@ a.flip img {display: none}
 	position: relative;
 	display: block;
 	border: 1px solid #e431d0;
-	border-top: 1px solid #FFFFFF;
+	border-top: 1px solid #fff;
 	background: #fcf8ff url(smooth/img08.jpg) repeat-x} 
 
 .mdkitem {
@@ -486,7 +391,7 @@ a.flip img {display: none}
 	display: block;
 	font-weight: normal;
 	font-size: 1em;
-	color: #000000} 
+	color: #000} 
 
 .mdkitem a:link,
 .cssmenu_vert li a {
@@ -505,7 +410,7 @@ a.flip img {display: none}
 
 .cssmenu_vert li {}
 .cssmenu_ver li a ul {border: 0}
-.cssmenu_vert li:hover ul, .cssmenu_vert li li:hover ul, .cssmenu_vert li li li:hover ul, .cssmenu_vert li.sfhover ul, .cssmenu_vert li li.sfhover ul, .cssmenu_vert li li li.sfhover ul { /* lists nested under hovered list items */border: 0}
+.cssmenu_vert li:hover ul, .cssmenu_vert li li:hover ul, .cssmenu_vert li li li:hover ul, .cssmenu_vert li.sfhover ul, .cssmenu_vert li li.sfhover ul, .cssmenu_vert li li li.sfhover ul {/* lists nested under hovered list items */border: 0}
 
 .cssmenu_vert li.selected > a {}
 
@@ -530,7 +435,7 @@ a.phplm:hover,
 a.phplm:active {
 	text-decoration: none;
 	color: #e58c24;
-	background: transparent;}
+	background: transparent}
 
 a.phplmselected:link,
 a.phplmselected:visited,
@@ -538,7 +443,7 @@ a.phplmselected:hover,
 a.phplmselected:active {
 	color: #e58c24;
 	text-decoration: underline;
-	background: none;
+	background: 0;
 	font-weight: bold}
 
 a.phplmselected:hover {color: #e58c24}
@@ -550,147 +455,45 @@ a.phplmselected:hover {color: #e58c24}
 	height: 18px}
 
 /** Links in other menus **/
-div.separator, div.separatorline {}
-.separator a:link,
-.separator a:visited,
-.separator a:hover {}
 
-div.option a.linkmenu:hover {}
-a.separator img {}
-.option {}
+/***** Misc. Center Col. *****/
+#showhide_columns {margin: 0 18px}
 
-div.optionline,
-.option a {}
+a.flip,
+a.flip:visited,
+.tellafriend a,
+.tellafriend a:visited {
+	font-size: 80%;
+	color: #a4ed75}
 
-.option a:link,
-.option a:visited,
-a.linkmenu, .rsslink, .linkmenu:visited, .rsslink:visited {}
-
-.linkmenu:hover {}
-
-div.option a:hover,
-div.option a:active {}
-
-a.linkmodule {}
-a.linkmodule:hover {}
-.rsslist {}
-.rssitem {}
-.rssitem:first-child {}
-.rssdate {}
-
-/* From Tikineat -- check */
-div.menuSection div.menuSection,
-div.menuSection div.separator {}
-/* End from Tikineat */
-
-/****** Misc. Global Classes (layout and style) ****/
-.hidden {
-	position: absolute;
-	left: -10000px;
-	top: 0;
-	width: 1px;
-	height: 1px;
-	overflow: hidden}
-
-.floatlist {
-	clear: left;
-	list-style-type: none;
-	margin: 0;
-	padding-left: 0}
-
-.floatlist li {float: left}
-
-div#attzone,
-div#comzone {
-	display: none}
-
-div#attzoneopen,
-div#comzoneopen {
-	display: block;
-	margin-top: 10px}
-
-div#edithelpzone {display: none}
-#edithelpzone code {font-size: 1.2em}
-#rules-copy-panel {display: none}
-.clear, #clear {clear: both}
-
-.clearfix:after {
-	content: ".";
-	display: block;
-	height: 0;
-	clear: both;
-	visibility: hidden}
-
-.clearfix {display: inline-block}
-/* Hide from IE Mac \*/
-.clearfix {display: block}
-/* End hide from IE Mac */
-* html .clearfix {height: 1%}
-#overdiv table {width: auto !important}
-.attention {color: #e431d0}
-
-.highlight,
-#highlight {}
-
-.openid_url {
-	background: #fff url(../../img/icons/login-OpenID-bg.gif) no-repeat;
-	padding-left: 18px}
-
-.bannertext {
-	font-size: .95em;
+a.flip:hover,
+.tellafriend a:hover {
+	color: #e58c24;
 	text-decoration: none}
 
-.bannertext:hover {}
+a.flip img {display: 0}
 
-.link,
-.gallink,
-.bloglink,
-.fgallink,
-.trailer,
-.opencomlink,
-.commentslink,
-.admlink,
-.forumbutlink {}
+.tellafriend {margin: 0 18px}
+.fullscreen .tellafriend {}
 
-div.searchdate {}
-div#debugconsole {}
+/* Also is .content */
+#tiki-center {}
 
-.mini {
-	width: 100%;
-	text-align: center;
+/* IE */
+* html #tiki-center {font-size: 1em}
+
+.rss {vertical-align: middle}
+
+#power {
+	padding: 0 1em 1em;
 	font-size: .9em}
+	
+#credits {display: inline}
 
-.prevnext,
-a.prevnext:visited {
-	font-size: 1em;
-	padding: 1px 6px;
-	text-decoration: none}
+/****** Misc. Global ****/
 
-a.tikihelp,
-a.tikihelp:visited {
-	border: 0;
-	vertical-align: text-top}
-
-a.tikihelp:hover {
-	cursor: help;
-	vertical-align: text-top}
-
-#rss img {vertical-align: middle}
-div.adminanchors {}
-
-/** Find form **/
-
-div.findtable {margin-bottom: 10px}
-label.findtitle {} /* "Find" */
-input#findwhat {} /* text input */
-div.findtitle {} /* This and next are one div with two classes contain the input submit which has no . or # . */
-div.findsubmit {display: inline}
-* html .findtable input {
-	font-size: 1em}
-
+/***** Boxes *****/
 /** Modules **/
-.box-shadow {}
-
 div.box {
 	overflow: hidden}
 
@@ -701,7 +504,7 @@ h3.box-title {
 	margin-top: 0;
 	text-transform: uppercase;
 	font-size: 1.05em;
-	color: #FFFFFF;
+	color: #fff;
 	position: relative}
 
 .box-title a,
@@ -713,7 +516,7 @@ h3.box-title {
 * html h3.box-title {position: static}
 
 .moduleflip {
-	display: none;
+	display: 0;
 	position: absolute;
 	right: 0;
 	top: 0}
@@ -726,7 +529,7 @@ h3.box-title {
 .box:hover .moduleflip {display: block}
 
 .box:hover img.flipmodimage {border: 1px solid transparent}
-* html img.flipmodimage {border: none}
+* html img.flipmodimage {border: 0}
 
 .flipmodimage:hover {border: 1px solid #bd5bff !important}
 #col2 h3.box-title {}
@@ -743,24 +546,21 @@ h3.box-title {
 
 .box-footer {}
 /* Check on this ?? */
-.modcontrols { display: block;float: right;width: 64px;height: 16px}
+.modcontrols {display: block;float: right;width: 64px;height: 16px}
 
 /** Other boxes **/
 div.cbox {
 	color: #e431d0;
 	background: #fff;
 	border: 1px solid #f4abec/*green*/;
-	margin: 6px;
-	overflow: hidden}
+	margin: 6px}
 
 .cbox-title {
 	padding: 6px 6px 3px 6px;
 	border-bottom: 1px solid #f4abec}
 
 .cboxlink {}
-.cbox-data {
-	padding: 3px 6px 6px 6px;
-	overflow: hidden}
+.cbox-data {padding: 3px 6px 6px 6px}
 
 .rbox {margin: 5px 10px 5px}
 
@@ -796,10 +596,8 @@ div.simplebox {
 	padding: 3px;
 	border: 1px solid #bd53ff}
 
-
-/***** Tables, Tabs and Lists ****/
+/***** Tables, Tabs *****/
 /** Tables **/
-
 table {font-size: 1em}
 
 table.normal, 
@@ -832,7 +630,7 @@ th {}
 .editblogform td,
 .editfgalform td,
 .comform td,
-.forumform td {}
+.forumform td {padding: 3px}
 
 table.email {}
 table.email td.body {}
@@ -875,17 +673,17 @@ td.bloglistheading {
 	font-size: 1em;
 	font-weight: bold;
 	color: #fff /*#bd53ffgreenyellow*/;
-	background: #A923FF url(smooth/img07.gif) repeat-x /* s ienna */;
+	background: #a923ff url(smooth/img07.gif) repeat-x /* s ienna */;
 	min-height: 32px;
 	text-align: center}
 	
 th a, table.normal td.heading a {
 	color: white;
-	text-decoration: underline  }
+	text-decoration: underline }
 
 th a:visited, table.normal td.heading a:visited {
 	color: white;
-	text-decoration: none  }
+	text-decoration: none }
 
 form.admin {}
 form.admin fieldset {}
@@ -909,9 +707,9 @@ a.imagename,
 a.blogname,
 a.fgalname,
 a.artname,
-a.forumname { color: #3e9722}
+a.forumname {color: #3e9722}
 
-a.forumnameread { color: #3e9722}
+a.forumnameread {color: #3e9722}
 
 /* links in table headings */
 .tableheading,
@@ -946,7 +744,7 @@ form.admin .tabs {
 /*	
 .tabactive {
 	border: solid 1px #82e641 !important;
-	border-bottom: none !important;
+	border-bottom: 0 !important;
 	border-top-width: 2px !important;
 	position: relative; top: -2px}
 
@@ -955,7 +753,7 @@ form.admin .tabs {
 
 .tabinactive {
 	border: solid 1px #666 !important;
-	border-bottom: none !important;
+	border-bottom: 0 !important;
 	position: relative !important;
 	top: -3px !important}
 
@@ -971,7 +769,7 @@ form.admin .tabs {
 .tabmark a {
 	font-size: 95%;
 	font-weight: bold;
-	border-bottom :0;
+	border-bottom: 0;
 	color: #fff;
 	padding: 1px 5px 1px 5px;
 	text-decoration: none}
@@ -1000,37 +798,11 @@ form.admin .tabs {
 
 form fieldset.tabcontent {
 	/*border: 1px solid #82e641;
-	border-top: none !important*/}
-
-.tab-wrapper {
-	border: 1px solid #82e641;
-	padding: 0}
-
-.tab-menu  {
-	clear: both;
-	line-height: 17px;
-	list-style-image: none;
-	list-style-position: outside;
-	list-style-type: none;
-	padding: 2px 0;
-	margin-bottom: 6px;
-	margin-top: 2px;
-	width: 100%}
-
-.tab-menu li {
-	display: inline;
-	margin: 0 2px;
-	width: 200px;
-	padding-right: 1.5em}
-
-.tab-menu li img {vertical-align: middle}
-table.admin div#content1 div.tabcontent div.cbox {background: transparent}
-
-/*** Feature-specific selectors ***/
+	border-top: 0 !important*/}
 
 /***** Wiki *****/
 body.tiki_wiki #c1c2 #wrapper #col1 > .content {
-	background: none;
+	background: 0;
 	border-top: 0}
 
 h1.pagetitle a,
@@ -1045,13 +817,13 @@ a.pagetitle:hover {
 body.tiki_wiki #tiki-center h1 {
 	margin-top: 0;
 	margin-left: -1em;
-	margin-right: -1em }
+	margin-right: -1em}
 
 .wikitopline {background: inherit}
 .wikitopline .content {
-	background-image: none !important;
+	background-image: 0 !important;
 	background: transparent !important;
-	border-top: none !important}
+	border-top: 0 !important}
 	
 .wikiactions * {margin: 1px}
 
@@ -1072,8 +844,8 @@ div.description {
 .wikitext {
 	padding: 0 1em 1em 1em;
 	background:#FCF8FF url(smooth/img08.jpg) repeat-x scroll 0 0;
-	border-top:1px solid #FFFFFF;
-	color:#666666}
+	border-top:1px solid #fff;
+	color:#666}
 
 .wikitext h2, 
 .wikitext h3, 
@@ -1106,17 +878,17 @@ td.wikicell {
 	border: 1px solid #bd53ff;
 	border-collapse: collapse}
 
-.editdate {border-top:1px dotted #A923FF}
+.editdate {border-top:1px dotted #a923ff}
 div#page-bar {
 	display: block;
 	margin-top: 0;
-	float: none}
+	float: 0}
 
 #page-bar span {float: left}
 
 ul.floatleft {
 	display: block;
-	list-style: none;
+	list-style: 0;
 	padding: 0;
 	text-align: left;
 	height: 20px;
@@ -1149,7 +921,7 @@ div.cachedpage {}
 .wiki {}
 .wikinew {}
 
-.wiki-edithelp {display: none}
+.wiki-edithelp {display: 0}
 
 #wikihelp-tab table,
 #wikihelp-tab table td {
@@ -1203,7 +975,7 @@ div.code {
 /* Quote plugin */
 div.quoteheader {margin-left: 20px}
 div.quotebody {font-style: italic}
-table.wikiplugin-split {border: none}
+table.wikiplugin-split {border: 0}
 
 /** Wiki tocs **/
 div.tocnav {
@@ -1225,7 +997,7 @@ ul.toc {
 	border-bottom: 1px dotted #bd53ff;
 	margin-bottom: 4px}
 
-ul.toc * {border: none}
+ul.toc * {border: 0}
 
 /* Wiki diff styles */
 .diff td {border: 1px solid #e431d0}
@@ -1237,15 +1009,15 @@ ul.toc * {border: none}
 .diffbody {background: #F2F4F5}
 .diffchar {color: #e431d0}
 
-/***** Articles ****/
 
+/***** Articles ****/
 body.tiki_cms #c1c2 #wrapper #col1 .content {
 	background: #fcf8ff url(smooth/img08.jpg) repeat-x 0 0}
 
 body.tiki_cms h1 {
-	background: none;
+	background: 0;
 	color: #666;
-	height: auto;}
+	height: auto}
 
 div.article {margin-bottom: 40px}
 
@@ -1257,11 +1029,12 @@ div.articletitle {
 	}
  
 div.articletitle h2 {
+	display: block;
 	height: 28px;
 	margin-top: 0;
 	padding: 12px 0 0 20px;
 	background: url(smooth/img07.gif) repeat-x scroll 0%;
-	color: #FFFFFF;
+	color: #fff;
 	font-weight: bold;
 	font-size: 1.2em;
 	text-transform: uppercase}
@@ -1299,7 +1072,7 @@ div.articletrailer {
 	text-align: right;
 	margin-right: 8px;
 	background: inherit;
-	border-top: 1px dotted #A923FF}
+	border-top: 1px dotted #a923ff}
 
 div.articletrailer .wikitopline {float: left} 
 .trailer, a.linkbut {font-size: .9em}
@@ -1311,15 +1084,15 @@ div.articlesource {
 	font-style: italic;
 	font-size: 90%}
 
-/***** Blogs *****/
 
+/***** Blogs *****/
 body.tiki_blogs #c1c2 #wrapper #col1 .content {
 	background: #fcf8ff url(smooth/img08.jpg) repeat-x 0 0}
 /*
 body.tiki_blogs h1 {
-	background: none;
+	background: 0;
 	color: #666;
-	height: auto;}*/
+	height: auto}*/
 
 div.blogheading {
 	display: block;
@@ -1338,7 +1111,7 @@ div.blogtitle {
 	margin-top: 0;
 	padding: 12px 0 0 20px;
 	background: url(smooth/img07.gif) repeat-x scroll 0%;
-	color: #FFFFFF;
+	color: #fff;
 	font-weight: bold;
 	font-size: 1.2em;
 	text-transform: uppercase}
@@ -1355,7 +1128,7 @@ div.bloginfo {
 	display: block;
 	padding: 3px;
 	line-height: 150%;
-	text-transform: none}
+	text-transform: 0}
 
 * html .bloginfo table {font-size: 11px}
 
@@ -1386,7 +1159,7 @@ div.postinfo a.linkmodule {}
 .postinfo a {
 	color: #3e9722;
 	text-decoration: none;
-	border-bottom: none}
+	border-bottom: 0}
 
 .small {} /* Check ?? (from fluidindex */
 
@@ -1405,7 +1178,7 @@ div.posthead h3 {
 	margin-top: 0;
 	padding: 12px 0 0 20px;
 	background: url(smooth/img07.gif) repeat-x scroll 0%;
-	color: #FFFFFF;
+	color: #fff;
 	font-weight: bold;
 	font-size: 1.2em;
 	text-transform: uppercase}
@@ -1422,10 +1195,10 @@ div.postfooter {
 	float: right;
 	margin-bottom: 2em}
 
-/***** Forums *****/
 
+/***** Forums *****/
 body.tiki_forums table.normal {margin: auto}
-#forumpost {display: none}
+#forumpost {display: 0}
 #forumpostopen {display: block}
 
 .post {width: 100%}
@@ -1444,16 +1217,16 @@ body.tiki_forums table.normal {margin: auto}
 
 .post .postbody-title {
 	display: block;
-	background: #A923FF url(smooth/img07.gif) repeat-x 0 0;
+	background: #a923ff url(smooth/img07.gif) repeat-x 0 0;
 	display:block;
 	min-height:28px;
-	margin-top:0;
+	margin-top: 0;
 	padding: 3px}
 
 .post .postbody-title .checkbox {float: left}
 
 .post .postbody-title .title {
-	color:#FFFFFF;
+	color:#fff;
 	text-transform:uppercase;
 	font-weight: bold;
 	margin-left: 5px;
@@ -1462,7 +1235,7 @@ body.tiki_forums table.normal {margin: auto}
 .title a.link {color: #fff; text-decoration: none}
 
 .post .postbody .content {
-	color: #000000;
+	color: #000;
 	/*float: left;*/
 	height: 100%;
 	padding: 0 3px 3px;
@@ -1506,9 +1279,9 @@ body.tiki_forums table.normal {margin: auto}
 	height: 100%;
 	text-align: left;
 	text-align: left;
-	color:  #666666;
+	color:  #666;
 	margin: 0;
-	padding-top: 3px;}
+	padding-top: 3px}
 	
 .postbody-content {margin: 3px; padding: 4px}
 
@@ -1563,7 +1336,7 @@ body.tiki_forums table.normal {margin: auto}
 
 .forum_actions .headers .title {
 	float: left;
-	background: #FFFFFF url(smooth/img01.gif) repeat-x;
+	background: #fff url(smooth/img01.gif) repeat-x;
 	background-position: 0 -100px;
 	border: 1px solid #bd53ff;
 	border-bottom: 0;
@@ -1580,11 +1353,11 @@ body.tiki_forums table.normal {margin: auto}
 
 .nb_replies {white-space: nowrap}
 .post_preview, .top_post {margin-bottom: 15px}
-/*.post .postbody .signature { float: left}*/
+/*.post .postbody .signature {float: left}*/
 
 /* Comments */
 #comzone {
-	display: none;
+	display: 0;
 	margin: 5px 0;
 	padding: 0}
  
@@ -1600,106 +1373,12 @@ span.commentstitle {
 textarea#editpost2 {width: 100%}
 
 /* Find */
-.subcomment { margin-left: 10px}
+.subcomment {margin-left: 10px}
 
 /* Help box*/
-div.commentsedithelp { background: #ffcfcf; color: #666; border: 1px solid #ff0000; text-align: center; font-weight: bold}
+div.commentsedithelp {background: #ffcfcf; color: #666; border: 1px solid #ff0000; text-align: center; font-weight: bold}
 
-/***** Categories *****/
-
-table.tcategpath {}
-td.tdcategpath {}
-.categpath {}
-table.subcats {}
-td.tdsubcat {}
-.categlink {}
-table.catobjects {}
-
-td.categobjectsnameeven,
-td.categobjectsnameodd {}
-
-td.categobjectsdataeven,
-td.categobjectsdataodd {}
-
-.catname {}
-.catblock {}
-.catlists {}
-.catlists:hover {}
-.cattitle {}
-.catlists a.link {}
-.catlists a.link:hover {}
-
-ul.catfeatures {list-style: none}
-ul.catfeatures li {}
-ul.catitems {}
-
-ul.catitems li {
-	display: inline;
-	margin-right: 7px}
-
-ul.catitems li a {}
-
-/***** Tags (freetags) *****/
-li.freetag {
-	list-style: none !important;
-	display: inline !important;
-	margin: 0;
-	padding: 0}
-
-ul.freetag {
-	margin: 0;
-	padding: 0;
-	display: inline !important}
-
-.freetag a {display: inline !important}
-
-a.freetag_1 {
-	text-decoration: none;
-	font-size: .8em}
-
-a.freetag_2 {
-	text-decoration: none;
-	font-size: .9em}
-	
-a.freetag_3 {
-	text-decoration: none;
-	font-size: 1em}
-
-a.freetag_4 {
-	text-decoration: none;
-	font-size: 1.2em}
-
-a.freetag_5 {
-	text-decoration: none;
-	font-size: 1.4em}
-
-a.freetag_6 {
-	text-decoration: none;
-	font-size: 1.6em}
-
-a.freetag_7 {
-	text-decoration: none;
-	font-size: 1.8em}
-
-div.freetagObjectOdd {
-	margin: 2px;
-	/*background-color : #F7F9FA;*/
-	position: relative}
-
-div.freetagObjectEven {
-	margin: 2px;
-	/*background-color : #E7E9EA;*/
-	position: relative}
-
-div.freetagObjectName a {text-decoration: none}
-
-div.freetagObjectType {
-	position: absolute;
-	top: 0;
-	right: 0}
-
-/***** Image Galleries *****/
-
+/**** Image Galleries ****/
 table.galtable {
 	border-collapse: collapse;
 	border: 1px solid #e431d0;
@@ -1735,7 +1414,7 @@ div.imagetitle {
 	font-weight: bold;
 	font-size: 200%}
 
-div.gallerylink { }
+div.gallerylink {}
 div#browse_image {} /* Check - from fluidindex ?? */
 div.showimage {
 	text-align: center;
@@ -1767,47 +1446,97 @@ div.gallerypath a:hover {
 
 /***** File Galleries *****/
 
-div.thumbnailcontener {}
-div.thumbnail {}
-div.thumbnamecontener, div.thumbimagecontener {}
-div.thumbnamecontener {}
-div.thumbname, div.thumbimage {}
-div.thumbnamesub, div.thumbimagesub {}
-div.thumbnail:hover {}
-div.thumbnail:hover div.thumbnamecontener {}
-div.thumbimage img {}
-div.thumbinfos {}
-div.thumbinfo {}
-span.thumbinfoval {}
-div.thumbname {}
-div.thumbactions {}
-div.thumbactions * {}
-div.thumbactions input {}
-div.thumbactions a {}
-div.thumbdescription {}
-div.thumbdescription + div.thumbinfo {}
-div.thumbdescription span.thumbinfoname {}
-a.namealias {}
-div.gallerypath, div.gallerypath a {}
-div.gallerypath a:hover {}
-.fgalexplorer {}
-.fgallisting table td {}
-
 /***** Trackers *****/
 
-.statuson {
-	padding: 1px;
-	margin: 1px;
-	vertical-align: middle}
+/***** Categories, Tags *****/
 
-.statusoff {
-	padding: 1px;
-	margin: 2px;
-	vertical-align: middle}
+/***** Tags (freetags) *****/
+	
+/*****  Polls  *****/
+
+/***** FAQs *****/
+
+/***** Quizzes *****/
+
+/***** Shoutbox *****/
+div.shoutboxmsg {
+	margin-bottom: 0;
+	padding: 4px;
+	padding-bottom: 1px}
+
+div.shoutboxmodmsg {
+	font-size: .95em;
+	margin: 0 5px 4px 5px;
+	padding-top: 5px;
+	padding-bottom: 1px}
+
+textarea.tshoutbox{
+	font-size: .95em;
+	width: 162px}
+
+/***** Directory *****/
+div.dircategs {
+	border: 1px solid #e431d0;
+	padding: 5px}
+
+.dirlink {}
+.dirsublink {font-size: .95em}
+
+div.dirlistsites {
+	padding: 5px 0 10px 5px;
+	margin-top: 10px}
+
+div.dirsite {
+	margin-bottom: 10px;
+	padding: 4px}
+
+span.dirsitedesc {}
+span.dirsitetrail {font-size: 95%}
+span.dirsitecats {font-size: 95%}
+.dirsitelink {}
+
+div.dirrelated {
+	margin-top: 10px;
+	padding: 5px}
+
+td.dirfooter {font-size: .95em}
+div.dirfooter {margin-top: 10px}
+
+/***** Messages *****/
+td.prio1,
+td.prio2,
+td.prio3,
+td.prio4,
+td.prio5 {
+	border: 1px solid #bd53ff;
+	padding-left: 2px}
+
+td.prio1 {background: #F7F9CA}
+td.prio2 {background: #F7F9EA}
+td.prio3 {background: #F7F9FA}
+td.prio4 {background: #F7F9FD}
+td.prio5 {background: #F7F9FF}
+
+div.messureadflag {
+	background: #bd53ff;
+	padding-left: 5px}
+
+div.messureadhead {
+	background: #f4abec;
+	margin-top: 2px}
+
+div.messureadbody {
+	margin-top: 5px;
+	background: #f4abec}
+
+.readlink {
+	font-size: .95em;
+	color: #3e9722}
+
+/***** TikiSheets *****/
+
 
 /***** Calendar *****/
-/* Overrides calendar.css, etc. */
-
 .Cal0, 
 .Cal1, 
 .Cal2 {font-size: 90%}
@@ -1899,20 +1628,20 @@ div.gallerypath a:hover {}
 .calprio6 a,
 .calprio7 a,
 .calprio8 a,
-.calprio9 a {color: #393E51}
+.calprio9 a {color: #393e51}
 
 .caltoggle {font-size: 90%}
 
 .opaque {
    border: 1px solid #a4ed75;
-	background: #e3fcd6;}
+	background: #e3fcd6}
 
 .opaque .box-title {border-bottom: 1px solid #a4ed75}
 
 .searchresults {display: inline}
 
 .calnavigation a:hover {background: #bd53ff}
-#caltable, #calscreen table.normal { font-size: 1em }
+#caltable, #calscreen table.normal {font-size: 1em}
 
 #caltable td {padding: 0}
 #caltable .calfocuson,
@@ -1937,7 +1666,7 @@ div.gallerypath a:hover {}
 .days {color: white}
 
 #caltable .weeks {
-	background: #A923FF url(smooth/img07.gif) repeat-x;
+	background: #a923ff url(smooth/img07.gif) repeat-x;
 	color: #fff;
 	padding: 1px}
 
@@ -1946,7 +1675,7 @@ div.gallerypath a:hover {}
 	float: right}
 
 * html .addevent {padding: 0}
-.calodd, .caleven { border: 1px solid #bd53ff}
+.calodd, .caleven {border: 1px solid #bd53ff}
 .calodd {background: #fff url(smooth/img06.gif) repeat-x}
 * html .calodd {padding: 0}
 .caleven {background: #fcf8ff url(smooth/img08.jpg) repeat-x}
@@ -1955,137 +1684,33 @@ div.gallerypath a:hover {}
 * html .caldark {padding: 0}
 .caldark .calfocus {background: #a4ed75}
 .calnavigation a:hover {background: #bd53ff}
-#caltable, #calscreen table.normal { font-size: 1em }
+#caltable, #calscreen table.normal {font-size: 1em}
 
 #caltable td {padding: 0}
 .daterow {}
 .daterow:hover {}
 
-/*****  Polls  *****/
-
-div.pollresults {
-	margin-top: 5px;
-	font-size: 1.2em;
-	padding: 0 5px}
-	
-table.pollresults {width: 100%}
-td.pollr {color: #666}
-#pollopen {display: block}
-#pollzone {display: none}
-#polledit {display: none}
-.pollnav {}
-
-/***** FAQs *****/
-
-div.faqlistquestions {margin-bottom: 20px}
-div.faqqa {margin-bottom: 20px}
-
-div.faqquestion {
-	font-weight: bold;
-	padding: 2px 12px;
-	padding-bottom: 0}
-
-div.faqanswer {
-	padding: 4px 12px;
-	padding-top: 0}
-
-/***** Quizzes *****/
-
-div.questionblock {
-	padding: 4px;
-	margin-bottom: 10px}
-
-div.quizquestion {margin-bottom: 5px}
-div.quizoptions {}
-div.quizdescription {margin-bottom: 10px}
-div.quizanswer {margin-bottom: 10px}
-
-/***** Shoutbox *****/
-
-div.shoutboxmsg {
-	margin-bottom: 0;
-	padding: 4px;
-	padding-bottom: 1px}
-
-div.shoutboxmodmsg {
-	font-size: .95em;
-	margin: 0 5px 4px 5px;
-	padding-top: 5px;
-	padding-bottom: 1px}
-
-textarea.tshoutbox{
-	font-size: .95em;
-	width: 162px}
-
-.wiki-table {}
-.wiki-tr-a td {border: 0}
-.wiki-tr-b td {border: 0}
-
-/***** Directory *****/
-
-div.dircategs {
+/***** Admin *****/
+a.admbox {
 	border: 1px solid #e431d0;
-	padding: 5px}
+	background: #f09be6 center no-repeat}
 
-.dirlink {}
-.dirsublink {font-size: .95em}
+a.admbox:hover,
+a.admbox:focus,
+a.admbox:active {
+	background: #fbf4fb center no-repeat;
+	border: 1px solid #a4ed75}
 
-div.dirlistsites {
-	padding: 5px 0 10px 5px;
-	margin-top: 10px}
+a.admbox.off {border: 1px solid #bd53ff}
 
-div.dirsite {
-	margin-bottom: 10px;
-	padding: 4px}
+a.admbox.off:hover,
+a.admbox.off:focus,
+a.admbox.off:active {border: 1px solid #bd53ff}
 
-span.dirsitedesc {}
-span.dirsitetrail {font-size: 95%}
-span.dirsitecats {font-size: 95%}
-.dirsitelink {}
-
-div.dirrelated {
-	margin-top: 10px;
-	padding: 5px}
-
-td.dirfooter {font-size: .95em}
-div.dirfooter {margin-top: 10px}
-
-/***** Messages *****/
-
-td.prio1,
-td.prio2,
-td.prio3,
-td.prio4,
-td.prio5 {
-	border: 1px solid #bd53ff;
-	padding-left: 2px}
-
-td.prio1 {background: #F7F9CA}
-td.prio2 {background: #F7F9EA}
-td.prio3 {background: #F7F9FA}
-td.prio4 {background: #F7F9FD}
-td.prio5 {background: #F7F9FF}
-
-div.messureadflag {
-	background: #bd53ff;
-	padding-left: 5px}
-
-div.messureadhead {
-	background: #f4abec;
-	margin-top: 2px}
-
-div.messureadbody {
-	margin-top: 5px;
-	background: #f4abec}
-
-.readlink {
-	font-size: .95em;
-	color: #3e9722}
-
+/***** Ajax, jquery. etc. *****/
 /***** Ajax *****/
-
 div#ajaxLoading {
-	display: none;
+	display: 0;
 	position: absolute;
 	top: 50px;
 	right: 50%;
@@ -2108,9 +1733,6 @@ div#ajaxLoading {
 	line-height: 1em !important;
 	white-space: normal !important;
 	padding: 5px 0 4px 8px}
-	
-/* MyTiki Preferences Ajax */
-
 
 .tab-wrapper {
 	border: 1px solid #82e641;
@@ -2119,9 +1741,29 @@ div#ajaxLoading {
 .tab-menu  {
 	clear: both;
 	line-height: 17px;
-	list-style-image: none;
+	list-style-image: 0;
 	list-style-position: outside;
-	list-style-type: none;
+	list-style-type: 0;
+	padding: 2px 0;
+	margin-bottom: 6px;
+	margin-top: 2px;
+	width: 100%}
+
+.tab-menu li {
+	display: inline;
+	margin: 0 2px;
+	width: 200px;
+	padding-right: 1.5em}
+.tab-wrapper {
+	border: 1px solid #82e641;
+	padding: 0}
+
+.tab-menu  {
+	clear: both;
+	line-height: 17px;
+	list-style-image: 0;
+	list-style-position: outside;
+	list-style-type: 0;
 	padding: 2px 0;
 	margin-bottom: 6px;
 	margin-top: 2px;
@@ -2135,84 +1777,15 @@ div#ajaxLoading {
 
 .tab-menu li img {vertical-align: middle}
 
-/***** TikiSheet Default Style *****/
+.tab-menu li img {vertical-align: middle}
+table.admin div#content1 div.tabcontent div.cbox {background: transparent}
 
-table.default thead td,
-table.default tfoot td {
-	font-weight: bold;
-	text-align:	center;
-	background: #82e641;
-	color: #fff}
+/***** New (unsorted) *****/
 
-table.default td {
-	border: solid 1px #bd53ff}
+/***** End New (unsorted) *****/
 
-/***** 'Advanced feature' *****/
+/* End of File */
 
-.advanced {
-  margin: 20px;
-  padding: 5px;
-  border: 1px solid #bd53ff;
-  background: #3e9722;
-  color: #fff}
 
-.advanced:before { content:url(../img/icons/mini_blue_diamond.gif)" "}
 
-.highlight_word_0{
-	color: #ffff66;
-	background: #82e641}
 
-.highlight_word_1{
-	color: #ff9999;
-	background: #82e641}
-
-.highlight_word_2 {
-	color: #A0FFFF;
-	background: #82e641}
-
-.highlight_word_3 {
-	color: #ff66ff;
-	background: #82e641}
-
-.highlight_word_4 {
-	color: #99ff99;
-	background: #82e641}
-
-.center {text-align: center}
-.justify {text-align: justify}
-.right {text-align: right}
-
-/***** mypage *****/
-
-.mypage_configure th {width: 180px}
-#sideBarTab {background: url('../img/cord.png') no-repeat}
-#sideBarContents {background: #fff}
-
-/* css/admin.css overrides */
-
-a.admbox {
-	border: 1px solid #e431d0;
-	background: #f09be6 center no-repeat}
-
-a.admbox:hover,
-a.admbox:focus,
-a.admbox:active {
-	background: #fbf4fb center no-repeat;
-	border: 1px solid #a4ed75}
-
-a.admbox.off {border: 1px solid #bd53ff}
-
-a.admbox.off:hover,
-a.admbox.off:focus,
-a.admbox.off:active {border: 1px solid #bd53ff}
-
-/* Minichat module */
-
-div.box-minichat {width: 100%}
-div.minichatchans {overflow: auto}
-.minichat {overflow: auto}
-
-div.minichatdiv {
-  font-size: .9em;
-  overflow: auto}
-/* end of file */
