@@ -7,6 +7,7 @@
   // Run the script from the brower http://yoursite.com/batch_clean_structure.php?page_ref_id=x where x if the id of the structure
   // or http://yoursite.com/batch_clean_structure.php to clean all the structures
 include_once('tiki-setup.php');
+include_once ('lib/structures/structlib.php');
 if($prefs['feature_wiki'] != 'y') {
     $smarty->assign('msg', tra('This feature is disabled').': feature_wiki');
     $smarty->display('error.tpl');
