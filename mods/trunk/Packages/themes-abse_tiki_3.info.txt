@@ -39,5 +39,6 @@ Version:
 Compatible with TikiWiki 3.0beta and newer
  
 Changelog:
+3 modified to import layout/layout.css
 2 update for TikiWiki 3
 1 initial package

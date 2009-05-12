@@ -1,0 +1,53 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/lightjazz/Readme.txt styles/lightjazz/Readme.txt
+themes/lightjazz/styles/lightjazz.css styles/lightjazz.css
+
+themes/lightjazz/styles/lightjazz/bg.png styles/lightjazz/bg.png
+themes/lightjazz/styles/lightjazz/body-bg.gif styles/lightjazz/body-bg.gif
+themes/lightjazz/styles/lightjazz/footer.jpg styles/lightjazz/footer.jpg
+themes/lightjazz/styles/lightjazz/header.jpg styles/lightjazz/header.jpg
+themes/lightjazz/styles/lightjazz/index.php styles/lightjazz/index.php
+themes/lightjazz/styles/lightjazz/menu-bg.png styles/lightjazz/menu-bg.png
+themes/lightjazz/styles/lightjazz/menu-div.png styles/lightjazz/menu-div.png
+themes/lightjazz/styles/lightjazz/menubg-over.gif styles/lightjazz/menubg-over.gif
+themes/lightjazz/styles/lightjazz/options/green.css styles/lightjazz/options/green.css
+themes/lightjazz/styles/lightjazz/options/red.css styles/lightjazz/options/red.css
+themes/lightjazz/styles/litejazz/options/blue/topbar_custcode.png styles/litejazz/options/blue/topbar_custcode.png
+themes/lightjazz/styles/litejazz/options/green/topbar_custcode.png styles/litejazz/options/green/topbar_custcode.png
+themes/lightjazz/styles/litejazz/options/red/topbar_custcode.png styles/litejazz/options/red/topbar_custcode.png
+themes/lightjazz/templates/styles/lightjazz/credits.tpl templates/styles/lightjazz/credits.tpl
+themes/lightjazz/templates/styles/lightjazz/index.php templates/styles/lightjazz/index.php
+themes/lightjazz/templates/styles/litejazz/litejazz_bottom.tpl templates/styles/litejazz/litejazz_bottom.tpl
+themes/lightjazz/templates/styles/litejazz/litejazz_top.tpl templates/styles/litejazz/litejazz_top.tpl
+themes/lightjazz/templates/styles/lightjazz/tiki.tpl templates/styles/lightjazz/tiki.tpl
+
+Description:
+Adaptation for TikiWiki CMS/Groupware of the LiteJazz theme for Drupal by Roopletheme (http://roopletheme.com). Styling is provided for the topbar and bottombar custom code page sections, and there are three color variations, with the red and green versions available as theme options.
+ 
+Docurl:
+http://themes.tikiwiki.org/LightJazz
+http://zukakakina.com/LightJazz
+ 
+Licence:
+This theme adapted for TikiWiki CMS/Groupware is licensed GNU/GPL, consistent with the licensing of the original theme for Drupal by Roopletheme ().
+ 
+Author:
+Adapted by Gary Cunningham-Lee (chibaguy).
+ 
+Version:
+3
+ 
+Changelog:
+2 modified to import layout/layout.css
+1 initial package

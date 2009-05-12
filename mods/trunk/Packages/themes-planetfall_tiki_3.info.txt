@@ -35,6 +35,7 @@ Description:
 This is a Tiki adaptation of the Planetfall theme (http://mambo.rhuk.net/) originally done by rhuk for the Mambo CMS (now Joomla). This version is compatible with Tiki 3. If updating from an earlier version, be sure all old template (.tpl) files are removed from templates/styles/planetfall and then the above files installed. Maintained by Gary Cunningham-Lee (chibaguy). For the latest information on and updates of the Planetfall theme for TikiWiki CMS/Groupware, visit http://zukakakina.com or http://themes.tikiwiki.org.
 
 Changelog:
+4 modified to import layout/layout.css
 3 updated for Tiki 3
 2 updated for Tiki 2
 1 initial package

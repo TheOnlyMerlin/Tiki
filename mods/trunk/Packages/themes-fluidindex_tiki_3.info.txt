@@ -12,6 +12,7 @@ $Date$
 Files:
 themes/fluidindex_tiki_3/Readme.txt styles/fluidindex/Readme.txt
 themes/fluidindex_tiki_3/styles/fluidindex.css styles/fluidindex.css
+themes/fluidindex_tiki_3/styles/fluidindex/arrows-600.png styles/fluidindex/arrows-600.png
 themes/fluidindex_tiki_3/styles/fluidindex/bg.gif styles/fluidindex/bg.gif
 themes/fluidindex_tiki_3/styles/fluidindex/bgfooter.jpg styles/fluidindex/bgfooter.jpg
 themes/fluidindex_tiki_3/styles/fluidindex/bquote.gif styles/fluidindex/bquote.gif
@@ -39,8 +40,9 @@ Author:
 Gary Cunningham-Lee (chibaguy)
  
 Version:
-Compatible with Tiki 3.
+3
  
 Changelog:
-2 updated for Tiki 3.
+3 modified to import layout/layout.css; suckerfish menu arrows image added
+2 updated for Tiki 3
 1 initial package

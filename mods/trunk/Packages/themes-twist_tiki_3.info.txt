@@ -10,6 +10,7 @@ $Date$
 files:
 themes/twist_tiki_3/Readme.txt styles/twist/Readme.txt
 themes/twist_tiki_3/styles/twist.css styles/twist.css
+themes/twist_tiki_3/styles/twist/arrows-000.png styles/twist/arrows-000.png
 themes/twist_tiki_3/styles/twist/background.gif styles/twist/background.gif
 themes/twist_tiki_3/styles/twist/bullet.gif styles/twist/bullet.gif
 themes/twist_tiki_3/styles/twist/fo.gif styles/twist/fo.gif
@@ -29,9 +30,13 @@ Gary Griffin (gg), maintained by Gary Cunningham-Lee (chibaguy)
 licence:
 GNU/LGPL
 
-Description: Centered content area on dark blue background. 
+Description: Centered content area on dark blue background.
+
+Version:
+3 
 
 Changelog:
+4 modified to import layout/layout.css; suckerfish menu arrows image added
 3 updated for Tiki 3
 2 updated for TikiWiki 2
 1 initial package (May 2, 2006)

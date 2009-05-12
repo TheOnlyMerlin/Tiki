@@ -13,6 +13,7 @@ Files:
 themes/andreas08_tiki_3/Readme.txt styles/andreas08/Readme.txt
 themes/andreas08_tiki_3/styles/andreas08.css styles/andreas08.css
 themes/andreas08_tiki_3/styles/andreas08/andreas08.png styles/andreas08/andreas08.png
+themes/andreas08_tiki_3/styles/andreas08/arrows-467aa7.png styles/andreas08/arrows-467aa7.png
 themes/andreas08_tiki_3/templates/styles/andreas08/credits.tpl templates/styles/andreas08/credits.tpl
 themes/andreas08_tiki_3/templates/styles/andreas08/index.php templates/styles/andreas08/index.php
 themes/andreas08_tiki_3/templates/styles/andreas08/tiki.tpl templates/styles/andreas08/tiki.tpl
@@ -34,5 +35,6 @@ Version:
 3
  
 Changelog:
+3 modified to import layout/layout.css; suckerfish menu arrow image added.
 2 updated for Tiki 3
 1 initial package

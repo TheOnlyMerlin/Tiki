@@ -12,6 +12,7 @@ $Date$
 Files:
 themes/eatlon_tiki_3/Readme.txt styles/eatlon/Readme.txt
 themes/eatlon_tiki_3/styles/eatlon.css styles/eatlon.css
+themes/eatlon_tiki_3/styles/eatlon/arrows-6d819d.png styles/eatlon/arrows-6d819d.png
 themes/eatlon_tiki_3/styles/eatlon/banner.gif styles/eatlon/banner.gif
 themes/eatlon_tiki_3/styles/eatlon/body_bg.gif styles/eatlon/body_bg.gif
 themes/eatlon_tiki_3/styles/eatlon/bottom_bg.gif styles/eatlon/bottom_bg.gif
@@ -42,8 +43,9 @@ Author:
 Adapted by Gary Cunningham-Lee (chibaguy).
  
 Version:
-Compatible with TikiWiki 2 releases.
+3
  
 Changelog:
+3 modified to import layout/layout.css; suckerfish menu arrows image added
 2 update for Tiki 3
 1 initial package

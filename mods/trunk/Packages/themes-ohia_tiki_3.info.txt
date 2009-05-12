@@ -36,5 +36,6 @@ Version:
 Compatible with Tiki 3 releases.
  
 Changelog:
+3 modified to import layout/layout.css
 2 update for Tiki 3
 1 initial package

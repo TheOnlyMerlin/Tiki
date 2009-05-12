@@ -45,9 +45,10 @@ Author:
 Gary Cunningham-Lee (chibaguy)
  
 Version:
-Compatible with Tiki 3 releases.
+3
  
 Changelog:
+4 modified to import layout/layout.css
 3 update for Tiki 3
 2 update for TikiWiki 2
 1 initial package

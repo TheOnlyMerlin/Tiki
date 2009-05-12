@@ -1,23 +1,78 @@
-/* 
- * This theme adapted by Gary Cunningham-Lee (chibaguy) for TikiWiki CMS/Groupware is an adaptation of the Eatlon theme by Olle Axelsson (http://eatlon.com). Please retain the link to eatlon.com in the page footer to be in compliance with the terms of use.
- * For more information, please visit http://themes.tikiwiki.org or http://zukakakina.com.
- */
-
-
-/***** XHTML Elements ******/
-
+/* This theme adapted by Gary Cunningham-Lee (chibaguy) for TikiWiki
+	CMS/Groupware is an adaptation of the Eatlon theme by Olle Axelsson
+	(http://eatlon.com). Please retain the link to eatlon.com in the
+	page footer to be in compliance with the terms of use. Because IE7
+	does not support display:table, minimal HTML tables are needed for
+	graphic treatment and column integrity. For more information, please visit
+	http://themes.tikiwiki.org	or http://zukakakina.com.
+ 
+	eatlon.css is comprised of these sections:
+	XHTML elements, Siteheader & Identity; Menus, Links;
+	Misc. Center Col.; Misc. Global; Boxes; Tables, Tabs;
+	Wiki (inc. plugins, etc.); Articles; Blogs; Forums;
+	Galleries; Trackers; Categories, Tags; Polls; FAQs;
+	Quizzes;	Shoutbox; Directory; Messages; TikiSheets;
+	Calendar; Admin; and Ajax, jquery, etc.
+*/
+ 
+/* Import the default layout properties file: */
+ @import "layout/layout.css";
+ 
+/***** XHTML Elements (body tag here,
+			others follow Layout) *****/ 
 body {
 	background: #9faec2 url(eatlon/body_bg.gif) repeat-x;
 	font-family: arial, sans-serif;
 	color: #8f8f8f;
-	padding: 0;
-	margin: 0;
-	text-align: left;
 	font: 76%/1.4em black Verdana, Geneva, Arial, Helvetica, sans-serif}
 
 html>body {font-size: 76% !important}
 body.fullscreen {background: #fff; padding: 3em}
 
+ /***** Layout (overrides layout.css;
+		also styling of page layout divs)  *****/
+table#main {
+	text-align: left;
+	min-height: 450px/*;
+	height: auto !important*/}
+
+td#leftmargin {
+	width: 6.8%;
+	background: transparent}
+
+td#rightmargin {
+	width: 6.8%;
+	background: transparent}
+
+td#main-header {
+	text-align: left;
+	height: 215px;
+	background: #fff url(eatlon/head_bg.gif) repeat-x}
+
+tr#midrow {background: #fff}
+td#leftcolumn {width: 180px}
+
+td#centercolumn {
+	border-left: 1px solid #e0e0e0;
+	border-right: 1px solid #e0e0e0;
+	padding: 0 30px}
+
+td#leftcolumn .colwrapper {padding: 0 20px}
+td#rightcolumn {width: 180px}
+td#rightcolumn .colwrapper {padding: 0 20px}
+
+td#footer {
+	background: #fff url(eatlon/bottom_bg.png) no-repeat right;
+	height: 163px}
+
+td#footer .content {
+	background: url(eatlon/bottom_bg.png) no-repeat left;
+	height: 163px;
+ 	text-align: center;
+ 	font-size: .9em;
+	margin-right: 50px}
+
+/***** XHTML Elements (other than body tag) ******/
 a,
 a:link,
 a:visited {
@@ -34,9 +89,6 @@ a:hover {
 	color: #a42929;
 	border-bottom: 1px solid #6d819d}
 
-
-caption {}
-div {}
 h1, h2, h3, h4, h5 {
 	font-family: georgia, serif;
 	font-weight: 100}
@@ -45,7 +97,7 @@ h1 {
 	font-size: 2.2em;
 	border-bottom: 1px solid #E0E0E0;
 	padding-bottom: 6px;
-	line-height: normal;}
+	line-height: normal}
 
 h2 {
 	font-size: 180%;
@@ -72,31 +124,16 @@ h5 {
 hr {
 	width: 100%;
 	height: 1px;
-	background: #8CACBB;
+	background: #8cacbb;
 	border-width: 0;
 	padding: 0;
-	color: #8CACBB}
-
-p {}
-img {border: 0}
+	color: #8cacbb}
 
 fieldset {
-	border: solid 1px #A9A9A9;
+	border: solid 1px #a9a9a9;
 	padding: 10px}
 
-form {
-	margin: 0;
-	padding: 0}
-
-legend {color: #A9A9A9}
-button {}
-button:hover {cursor: pointer}
-
-button,
-input,
-textarea,
-option,
-select {}
+legend {color: #a9a9a9}
 
 * html .wikitopline select {font-size: .9em}
 
@@ -106,24 +143,20 @@ body.wikitext {
 	color: #000;
 	font-size: 1.3em}
 
-button,
-input,
-select {vertical-align: middle}
-
-input.button {}
-
 input[type=checkbox],
 input[type=radio] {border: 0}
 
 input[type=text],
-input[type=password] {background: #d2d9e3; color: #000}
+input[type=password] {
+	background: #d2d9e3;
+	color: #000}
 
 input[type=submit],
 input[type=file],
 input[type=reset],
 select {background: #d2d9e3; color: #000}
 
-/* Links in buttons */
+
 span.button a,
 span.button a:visited,
 button,
@@ -131,8 +164,7 @@ input[type=reset],
 input[type=submit],
 span.button input,
 .submitbutton,
-.calbuttonoff,
-.calbuttonon {
+.calbuttonBox a {
 	border-top: 1px solid #f3f3f4;
 	border-left: 1px solid #f3f3f4;
 	border-right: 1px solid #878689;
@@ -142,23 +174,31 @@ span.button input,
 	color: #fff;
 	font-size: 11px;
 	font-weight: normal;
-	padding: 2px 4px;
-	margin-right: 3px;
-	text-decoration: none;
-	white-space: nowrap;
-	cursor: pointer;}
+	padding: 2px 4px}
+	
+* html input[type=reset],
+* html input[type=submit] {
+	border-top: 1px solid #f3f3f4;
+	border-left: 1px solid #f3f3f4;
+	border-right: 1px solid #878689;
+	border-bottom: 1px solid #878689;
+	background: #afafaf;
+	background: url(eatlon/menu_bg.png) 1000px -15px;
+	color: #fff;
+	font-size: 11px;
+	font-weight: normal;
+	padding: 2px 4px}
 
 .button a:hover,
 button:hover,
 input[type=reset]:hover,
 input[type=submit]:hover,
 .button input:hover,
-.submitbutton:hover {
+.submitbutton:hover,
+.calbuttonBox a:hover {
 	border-top: 1px solid #868f93;
 	border-left: 1px solid #868f93;
-	cursor: pointer;
-	color: #ececec;
-	text-decoration: none}
+	color: #ececec}
 
 input[type="checkbox"] {border: 0}
 * html .findtable input {font-size: 1em}
@@ -167,177 +207,35 @@ input[type="checkbox"] {border: 0}
 form.admin input[name="features"] {margin-bottom: 3px !important}
 
 input[type=file],
-select {}
 select[multiple] {height: 10em}
+
 select[name="theme"] {width: 135px}
-small {}
 label {cursor: pointer}
 ul, ol {text-align: left}
-li {}
 tt {font-size: 1.2em}
 
-/***** Page Layout *****/
-
-/** off-screen **/
-
-ul.jumplinks {
-	font-size: 0.8em;
-	list-style-type: none}
-
-ul.jumplinks,
-.jumplinks {
-	position: absolute;
-	top: -9000px;
-	left: -9000px;
-	z-index: 9}
-
-ul.jumplinks a:focus,
-ul.jumplinks a:active {
-	position: absolute;
-	top: 9010px;
-	left: 9010px;
-	background: #339999; 
-	color: #fff;
-	padding: 5px;
-	font-weight: bold;
-	border: 2px solid #000;
-	width: 6em;
-	z-index: 9}
-
-#tiki-clean {
-	text-align: left;
-	padding: 1em}
-
-#fullscreenbutton {
-	position: absolute;
-	top: 2px;
-	right: 10px;
-	z-index: 10;
-	font-size:80%}
-
-#fullscreenbutton:hover {}
-
-/*** Type 2 (table-assisted) layout ***/
-
-table#main {
-	text-align: left;
-	min-height: 450px;
-	height: auto !important;
-	height: 450px;
-	padding: 0;
-	margin: 0}
-
-td#leftmargin {
-	width: 6.8%;
-	background: transparent}
-
-tr#cols {}
-
-td#rightmargin {
-	width: 6.8%;
-	background: transparent}
-
-td#header {
-	text-align: left;
-	height: 215px;
-	background: #fff url(eatlon/head_bg.gif) repeat-x}
-
-tr#midrow { background: #fff}
-td#leftborder {}
-td#leftcolumn {width: 180px}
-
-td#centercolumn {
-	border-left: 1px solid #e0e0e0;
-	border-right: 1px solid #e0e0e0;
-	padding: 0 30px}
-
-td#leftcolumn .colwrapper {padding: 0 20px}
-td#rightcolumn {width: 180px}
-td#rightcolumn .colwrapper {padding: 0 20px}
-td#rightborder {}
-#tiki-columns {}
-
-td#footer {
-	background: #fff url(eatlon/bottom_bg.png) no-repeat right;
-	height: 163px}
-
-td#footer .content {
-	background: url(eatlon/bottom_bg.png) no-repeat left;
-	height: 163px;
- 	text-align: center;
- 	font-size: .9em;
-	margin-right: 50px}
-
-#footer .content {}
-
-#footer a:link,
-#footer a:visited {}
-
-#footer a:hover {}
-#power {font-size: .9em}
-#credits {display: inline}
-
-/*** end Type 2 layout ***/
-
-/*** Error page ***/
-div#tiki-mid {}
-
-/* To center cbox */
-div#tiki-main #tikimidtbl {
-	margin: auto;
-	width: auto}
-
-div#tiki-bot {}
-
-/* Site Header & Identity */
-
-div#header-top {
+/***** Site Header & Identity *****/
+div#header {
 	height: 140px;
 	position: relative}
 	
-div#header-liner {
+div#header-top {
+	position: static;
 	height: 140px;
 	background: url(eatlon/banner.gif) no-repeat right}
 
-/* Site Identity */
-#siteheader {
-	text-align: left;
-	vertical-align: middle;
-	padding: 0;
-	margin: 0}
-
 #sioptions  {padding: 1em}
-#sioptionscentered {text-align: center}
-
-div.floatright {
-	float: right;
-	clear: none}
-
-div.floatleft {
-	float: left;
-	clear: none}
-
-#sitelogo {margin: auto !important}
-div#sitead {margin: auto}
-#sitead.floatright {padding-right: 100px}
-#sitead.floatleft {padding-left: 100px}
-#sioptionscentered #sitead.floatleft {padding-left: 10px}
-.floatright img {margin-right: 40px}
+#sitelogo a:hover {border-bottom: 0}
+#sitead.floatright {padding-right: 10px}
+#sitead.floatleft {padding-left: 10px}
+.floatright img {margin-right: 10px}
 #bannertopright {padding-right: 1em}
-#sitelocbar {float: left}
-
-#siteloginbar {
-	text-align: right;
-	position: absolute;
-	bottom: 3px;
-	right: 20px}
+#siteloginbar {right: 20px}
 
 input[id="sl-login-user"],
 input[id="sl-login-pass"] {background: #e1e1e2}
 
 #siteloginbar input.wikiaction {cursor: pointer}
-
-/* #header text selectors, if needed */
 
 #sitetitle,
 #sitesubtitle {margin-left: 30px}
@@ -359,14 +257,6 @@ input[id="sl-login-pass"] {background: #e1e1e2}
 	font-weight: 100;
 	margin-top: 18px}
 
-#header a,
-#header a:visited {}
-
-#header a:hover {}
-
-
-/* tiki-top_bar.tpl - menu and search */
-
 #tiki-top {
 	background: url(eatlon/menu_bg.png) no-repeat right;
 	height: 78px;	
@@ -380,20 +270,8 @@ input[id="sl-login-pass"] {background: #e1e1e2}
 	margin-right: 30px}
 
 #sitesearchbar {
-	float: right;
-	padding-right: 4px;
-	text-align: right;
-	display: block;
-	margin-right: 0 !important;
 	margin-top: 7px;
 	color: white}
-/*
-input#fuser,
-#sitesearchbar select,
-#sitesearchbar input[type="submit"] {
-	background: #afafaf;
-	background: url(eatlon/menu_bg.png) 1000px -15px;
-	color: #fff}*/
 
 input#fuser,
 #sitesearchbar select,
@@ -409,52 +287,40 @@ input#fuser,
 	background: url(eatlon/menu_bg.png) 1000px -15px;
 	color: #fff}
 
-/* end header */
+/****** Menus, Links ******/
+/** CSS (suckerfish) menus **/
+#tiki-top ul.cssmenu_horiz {margin-left: 30px}
 
-/* centercolumn */
-
-
-a.flip,
-a.flip:visited,
-.tellafriend a,
-.tellafriend a:visited {
-	font-size: 80%;
-	color: #ADBAC3}
-
-a.flip:hover,
-.tellafriend a:hover {
-	color: #505050;
+#tiki-top ul.cssmenu_horiz li.menuSection0 a,
+#tiki-top ul.cssmenu_horiz li.menuLevel0 a {
+	height: 32px;
+	line-height: 32px;
+	font-weight: bold;
+	color: #fff}
+	
+#tiki-top ul.cssmenu_horiz li.menuSection0 a:hover,
+ul.cssmenu_vert ul li a:link,
+ul.cssmenu_vert ul li a:visited {
+	color: #d7e5f3 !important;
 	text-decoration: none}
 
-a.flip img {display: none}
-
-.fullscreen .tellafriend {
-	margin-right: 100px;
-	margin-top: 2px}
-
-.tellafriend {
-	text-align: right;
-	padding-right: 6px}
-
-/* Also is .content */
-#tiki-center {font-size: 1.1em}
-* html #tiki-center {font-size: 1.1em}
-
-/* end layout divs, etc. */
-
-/** Border boxes (if any) **/
+#tiki-top ul.cssmenu_horiz li.menuLevel1 a {
+	height: auto;
+	line-height: normal}
 	
-/****** Menus ******/
+ul.cssmenu_vert ul li a:hover {color: #d7e5f3}
+	
+.cssmenu li ul,
+.cssmenu_horiz li ul,
+.cssmenu_vert li ul {background: #9faec2 url(eatlon/body_bg.gif) 0 -300px repeat-x}
+.cssmenu_vert .sf-sub-indicator {background: url(eatlon/arrows-6d819d.png) no-repeat -10px -100px; /* 8-bit indexed alpha png. IE6 gets solid image only; */}
+#tiki-top .cssmenu_horiz li.menuSection a .sf-sub-indicator {top: 1.2em}
 /** PHP Layers Menus **/
-
 .horbar {
 	margin-top: 10px;
 	width: 100%} 
 
-.horbar table {
-	width: auto;
-	text-align: left;
-	margin-left: 30px}
+.horbar table {margin-left: 30px}
 
 .horbaritem a,
 .horbaritem a:visited {
@@ -466,54 +332,26 @@ a.flip img {display: none}
 	margin: 0} 
 
 * html .horbaritem a,
-* html .horbaritem a:visited {font-size: .9em }
-
+* html .horbaritem a:visited {font-size: .9em}
 
 .horbaritem a:hover {
 	color: #d7e5f3 !important;
 	text-decoration: none} 
 
-.horbaritem a:visited {} 
-.mdkverbar {} 
-
 .mdksubmenu {
-	z-index: 999;
-	position: absolute;
 	background: #9faec2 url(eatlon/body_bg.gif) 0 -300px repeat-x;
-	visibility: hidden;
-	margin-top: 12px;}
-
-.mdksubmenu table {width: auto} 
-
-.mdksubframe {
-	z-index: 1000;
-	position: relative;
-	display: block} 
-
-.mdkitem {
-	position: relative;
-	text-align: left;
-	white-space: nowrap}
-
-.mdkitem .mdkfwdarr {
-	position: absolute;
-	top: 7px;
-	right: 7px} 
+	margin-top: 12px}
 
 .mdkitem a,
 .mdkitem a:link,
 .mdkitem a:visited {
 	padding: 4px 9px;
-	position: relative;
-	display: block;
 	font-weight: normal;
 	color: #fff} 
 
 .mdkitem a:hover {
 	color: #d7e5f3;
 	text-decoration: none} 
-
-.mdkitem a:active {} 
 
 .box-data .mdkitem a,
 .box-data .mdkitem a:link,
@@ -527,10 +365,6 @@ a.flip img {display: none}
 	text-decoration: none;
 	color: #a42929;
 	border-bottom: 1px solid #6d819d}
- 
-.treemenudiv {
-	display: block;
-	white-space: nowrap}
 
 .phplmnormal,
 a.phplmnormal:hover,
@@ -558,201 +392,50 @@ a.phplmselected:active {
 
 a.phplmselected:hover {color: #d7e5f3}
 
-/* cssmenus.css overrides (page controls and menus) */
-
-#tiki-top ul.cssmenu_horiz { margin-left: 30px }
-
-#tiki-top ul.cssmenu_horiz li.menuSection0 a {
-	height: 32px;
-	line-height: 32px;
-	font-weight: bold;
-	color: #fff}
-	
-#tiki-top ul.cssmenu_horiz li.menuSection0 a:hover,
-ul.cssmenu_vert ul li a:link,
-ul.cssmenu_vert ul li a:visited {
-	color: #d7e5f3 !important;
-	text-decoration: none}
-
-#tiki-top ul.cssmenu_horiz li.menuLevel1 a {
-	height: auto;
-	line-height: normal}
-	
-ul.cssmenu_vert ul li a:hover {color: #d7e5f3}
-	
-.cssmenu li ul,
-.cssmenu_horiz li ul,
-.cssmenu_vert li ul {background: #9faec2 url(eatlon/body_bg.gif) 0 -300px repeat-x}
-
 /** Links in other menus **/
 
-div.separator, div.separatorline {}
+/***** Misc. Center Col. *****/
+a.flip,
+a.flip:visited,
+.tellafriend a,
+.tellafriend a:visited {color: #ADBAC3}
 
-.separator a:link,
-.separator a:visited,
-.separator a:hover {}
+a.flip:hover,
+.tellafriend a:hover {color: #505050}
 
-div.option a.linkmenu:hover {}
-a.separator img {}
-.option {}
 
-div.optionline,
-.option a {}
+.tellafriend {padding-right: 6px}
 
-.option a:link,
-.option a:visited,
-a.linkmenu,
-.rsslink,
-.linkmenu:visited,
-.rsslink:visited {text-decoration: none}
+/* Also is .content */
+#tiki-center {font-size: 1.1em}
+* html #tiki-center {font-size: 1.1em}
 
-.linkmenu:hover {}
+/****** Misc. Global ****/
 
-div.option a:hover,
-div.option a:active {}
-
-a.linkmodule {}
-a.linkmodule:hover {}
-.rsslist {}
-.rssitem {}
-.rssitem:first-child {}
-.rssdate {}
-
-/* From Tikineat -- check */
-div.menuSection div.menuSection,
-div.menuSection div.separator {padding-left: 5px}
-/* End from Tikineat */
-
-/****** Misc. Global Classes (layout and style) ****/
-.hidden {position: absolute; left: -10000px; top: 0px; width: 1px; height: 1px; overflow: hidden}
-
-.floatlist {
-	clear: left;
-	list-style-type: none;
-	margin: 0;
-	padding-left: 0}
-
-div#attzone,
-div#comzone {
-	display: none;
-	margin-top:10px}
-
-div#attzoneopen,
-div#comzoneopen {
-	display: block;
-	margin-top: 10px}
-
-div#edithelpzone {display: none}
-#rules-copy-panel {display: none}
-.clear, #clear {clear: both}
-
-.clearfix:after {
-	content: ".";
-	display: block;
-	height: 0;
-	clear: both;
-	visibility: hidden}
-
-* html .clearfix {height: 1%}
-#overdiv table {width: auto !important}
-.attention {color: red}
-
-.highlight,
-#highlight  {}
-
-.openid_url {
-	background: #fff url(../../img/icons/login-OpenID-bg.gif) no-repeat;
-	padding-left: 18px}
-
-.bannertext {
-	font-size: .95em;
-	text-decoration: none}
-
-.bannertext:hover {}
-
-/* Pagination for listings */
-.mini {
-	width: 100%;
-	text-align: center;
-	font-size: .9em}
-
-.prevnext,
-.galprevnext,
-.blogprevnext,
-.fgalprevnext,
-.artprevnext,
-.forumprevnext {
-	font-size: 1em;
-	padding: 1px 6px}
-
-a.tikihelp,
-a.tikihelp:visited {
-	border: 0;
-	vertical-align: text-top}
-
-a.tikihelp:hover {
-	cursor: help;
-	vertical-align: text-top}
-
-/** Find form **/
-
-div.findtable {margin-bottom: 10px}
-label.findtitle {} /* "Find" */
-input#findwhat {} /* text input */
-div.findtitle {} /* This and next are one div with two classes contain the input submit which has no . or # . */
-div.findsubmit {display: inline}
-* html .findtable input {
-	font-size: 1em}
-
+/***** Boxes *****/
 /** Modules **/
-.box-shadow {}
-
 div.box {
-	overflow: hidden;
 	margin-bottom: 16px;
 	display: block}
 	
 #leftcolumn .box,
 #rightcolumn .box {width: 160px}
 	
-.wikitext div.box { width: 96% }
+.wikitext div.box {width: 96%}
 
 h3.box-title {
 	color:#8F8F8F;
 	font-family: arial,sans-serif;
-	position: relative;
 	font-size: 1.3em;
 	font-weight: 100;
 	border-bottom: 0}
 
-.box-title a {}
-.box a.flipmodtitle img {display: none}
+.flipmodimage:hover {border: 1px solid #58A7D2 !important}
 
-* html .box a.flipmodtitle img,
-.box:hover a.flipmodtitle img {
-	display: block;
-	position: absolute;
-	right: 1px;
-	top: 1px;
-	border: 1px solid transparent}
-
-* html .box a.flipmodtitle img {border: none}
-a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
-.box-title a:hover {}
-.box-data {}
-.box-data table {width: 100%}
-
-.box-data ol,
-.box-data ul {}
-
-.box-data li,
-.module li {padding: 0.2em}
-
-.box-footer {}
 /** Other boxes **/
 .cbox {
 	border: 1px solid #e0e0e0;
-	background: white;}
+	background: white}
 
 .cbox-title {
 	border-bottom: 1px solid #e0e0e0;
@@ -767,204 +450,89 @@ a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
 
 .rbox-title,
 .rbox-data {
-	padding: 1px 3px;
-	background: #e3fcd6;}
+	border-color: #506887;
+	background: #cecece;
+	color: #000}
 
-.rbox-title {
-	display: inline-block;
-	margin-bottom: -1px}
-
-.rbox-data {display: block}
-
-.comment .rbox-title,
-.comment .rbox-data {}
-
-.note .rbox-title {}
-.note .rbox-data {}
-
-.tip .rbox-title,
-.tip .rbox-data {}
-
-.warning  .rbox-title {}
-.warning .rbox-data {}
+.rbox-title {}
+.rbox-data {}
 
 div.simplebox {
 	border: 1px solid #e0e0e0;
 	padding: 4px;
-	background: white;}
+	background: white}
 
-/***** Tables, Tabs and Lists ****/
+/***** Tables, Tabs *****/
 /** Tables **/
-table {font-size: inherit}
-
-table.normal, 
-table.admin,
-table.sortable {
-	padding: 0;
-	margin: 0;
-	border-collapse: collapse;
-	width: 100%}
-	
-* html table.normal, 
-* html table.admin,
-* html table.sortable { width: 95% }
 
 table.admin tr td div#page-bar {
 	margin-left: 5px;
 	margin-bottom: 0;
-	background-color: transparent}
+	background: transparent}
 
 table.normal td.odd:hover,
 table.normal td.even:hover,
 table.normal tr:hover {background: #f3f3f4}
 
-td {vertical-align: top;
-	margin: 0;
-	padding: 0}
-
-* html td {font-size: 11px}
-th {}
-
 td.normal,
-.wikitable td/*,
-/td.odd,
-td.even*/ {
+.wikitable td {
 	margin: 0;
 	padding: 0.2em;
 	vertical-align: top}
 
 td.odd:hover,
-td.even:hover {border-right: 1px solid #e0e0e0;}
-
-td.third {}
-
-td.heading,
-td.bloglistheading {text-align: center}
+td.even:hover {border-right: 1px solid #e0e0e0}
 
 table.normal td.heading {font-size: 1em}
 
-.bloglist td {
-	border: solid 1px #909090;
-	border-collapse: collapse}
-
-td.form {padding: 0.2em}
 
 /* Cells in forms using a background color */
 .formcolor td,
-.galform td,
-.editblogform td,
-.editfgalform td,
-.comform td,
-.forumform td {
-	border: 1px solid #8CACBB;
+.editblogform td {
+	border: 1px solid #8cacbb;
 	background: #DEE7EC}
 
 * html th {font-size: 12px}
 
 /** Tabs **/
-
-form.admin .tabs {
+.tabs {
 	margin: 10px 1px -20px 0 !important;
-	border-bottom: 1px solid #ccc;
-	padding: 0 !important;
-	position: relative;
-	z-index: 201}
+	border-bottom: 1px solid #ccc}
 
 .tabmark {
-	display: inline;
-	margin: 0;
-	margin-right: 5px;
-	padding: 1px;
+	background: #afafaf url(eatlon/menu_bg.png) 1000px -15px;
+	color: #fff}
+
+.tabmark a {
 	border-top: 1px solid #f3f3f4;
 	border-left: 1px solid #f3f3f4;
 	border-right: 1px solid #878689;
-	border-bottom: 1px solid #878689;
-	background: #afafaf;
-	background: url(eatlon/menu_bg.png) 1000px -15px;
+	/*border-bottom: 1px solid #878689;*/
 	color: #fff}
 
-.tabmark a { 
-	/*border-bottom :0;*/
-	color: #fff;
-	/*padding: 1px 5px 1px 5px;*/
-	text-decoration: none}
-
 .tabmark a:active {
-	/*background: #fff;*/
+	background: url(eatlon/menu_bg.png) 1000px -15px;
 	color: red}
 
 .tabmark a:hover {
-	/*border-top: 1px solid #868f93;
-	border-left: 1px solid #868f93;*/
-	cursor: pointer;
+	background: url(eatlon/menu_bg.png) 1000px 0;
 	color: #ececec}
 
-.tab-wrapper {
-	border: 1px solid #eee;
-	padding: 0}
-
-.tab-menu {
-	clear: both;
-	line-height: 17px;
-	list-style-image: none;
-	list-style-position: outside;
-	list-style-type: none;
-	padding: 2px 0;
-	margin-bottom: 6px;
-	margin-top: 2px;
-	width: 100%}
-
-.tab-menu li {
-	display: inline;
-	margin: 0 2px;
-	width: 200px;
-	padding-right: 1.5em}
-
-.tab-menu li a 	{ 
-	padding: 1px 5px; 
-	background: #f5f5f5; 
-	color: #222; 
-	font-weight: bold; 
-	text-decoration: none} 
-
-.tab-menu li a:hover, 
-.tab-menu li a:focus { 
-	background: #FAEC8F; 
-	border-bottom-color: #999} 
-
-.tab-menu li a:hover {
-	background: #FAEC8F; 
-	border-bottom-color: #999} 
-
-.tab-menu li.tab-selected a { 
-	background: #BCEC8F}
-	
+.tabactive a {color: #d7e5f3; font-weight: bold}	
 .tabcontent {
-	z-index: 200;
-	position: relative;
-	border-top: 1px solid #A9A9A9;
-	border-left: 1px solid #A9A9A9;
+	/*border-top: 1px solid #a9a9a9;*/
+	border-left: 1px solid #a9a9a9;
 	border-right: 1px solid #696969;
 	border-bottom: 1px solid #696969;
 	background: #ECECEC;
 	padding: 26px 2px 2px 2px;
 	margin-bottom: 25px}
 
-.tabcontent table {
-	margin: 1% auto 2% auto;
-	text-align: left;
-	width: 95%}
-
-.tabcontent table td {padding: 5px}
-
 form fieldset.tabcontent {
 	border: 1px solid #225566;
-	border-top: none !important}
+	border-top: 0 !important}
 
-
-table.admin div#content1 div.tabcontent div.cbox {background-color: transparent}
-
-/***** Feature-specific styles ****/
+table.admin div#content1 div.tabcontent div.cbox {background: transparent}
 
 /***** Wiki *****/
 
@@ -973,7 +541,7 @@ a.pagetitle:visited,
 a.pagetitle:hover {
 	color: #8f8f8f;
 	text-decoration: none;
-	border-bottom: none}
+	border-bottom: 0}
 
 div#description {
 	font-size: .9em;
@@ -1020,12 +588,12 @@ html>body .wikitopline table {width: 100%}
 /* End from Tikineat */
 
 table.wikitable {
-	border: 1px solid #A9A9A9;
+	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
  
 td.wikicell {
 	padding: 3px;
-	border: 1px solid #999999;
+	border: 1px solid #999;
 	border-collapse: collapse}
 
 .editdate {padding-bottom: 5px}
@@ -1038,7 +606,7 @@ div#page-bar {
 
 ul.floatleft {
 	display: block;
-	list-style: none;
+	list-style: 0;
 	padding: 0;
 	text-align: left;
 	height: 20px;
@@ -1066,7 +634,7 @@ div.cachedpage {}
 .wikicache:hover {}
 .wiki {}
 .wikinew {}
-.wiki-edithelp {display: none}
+.wiki-edithelp {display: 0}
 
 #wikihelp-tab table,
 #wikihelp-tab table td {
@@ -1085,7 +653,7 @@ img.externallink {}
 div.code {
 	font-size: 90%;
 	padding: 3px;
-	border: 1px dashed #CCCCCC;
+	border: 1px dashed #ccc;
 	background: #F5F5F5;
 	font-family: "Courier New", Courier, monospace}
 
@@ -1109,7 +677,7 @@ div.code {
 	border: 1px solid #ADACAF;
 	border-bottom: 0;
 	margin: 0;
-	color: #666666;
+	color: #666;
 	background: #F5F5F5;
 	font-weight: bold}
 
@@ -1117,7 +685,7 @@ div.code {
 div.quoteheader {margin-left: 20px}
 div.quotebody {font-style: italic}
 
-table.wikiplugin-split {border: none}
+table.wikiplugin-split {border: 0}
 
 /** Wiki tocs **/
 div.tocnav {
@@ -1137,11 +705,11 @@ li.toclevel {}
 /* TOC */
 ul.toc {
 	padding-left: 2em;
-	border-top: 1px dotted #999999;
-	border-bottom: 1px dotted #999999;
+	border-top: 1px dotted #999;
+	border-bottom: 1px dotted #999;
 	margin-bottom: 4px}
 
-ul.toc * {border: none}
+ul.toc * {border: 0}
 
 /* Wiki diff styles */
 .diff td {border: 1px solid #A9B8C2}
@@ -1161,8 +729,8 @@ ul.toc * {border: none}
 .diffbody {background: #F2F4F5}
 .diffchar {color: red}
 
-/***** Articles ****/
 
+/***** Articles ****/
 div.article {margin-bottom: 40px}
 .wikitext .article {font-size: 1em}
 
@@ -1175,7 +743,7 @@ div.articletitle {
 	margin-bottom:	15px;
 	text-align:	left}
  
-span.titlea {
+div.articletitle h2 {
 	font-size: 1.5em;
 	font-weight: normal}
 
@@ -1213,9 +781,9 @@ div.articlesource {
 	margin-top: 5px;
 	font-style: italic;
 	font-size: 90%}
- 
-/***** Blogs *****/
 
+
+/***** Blogs *****/
 div.blogheading {
 	display: block;
 	width: 100%;
@@ -1241,7 +809,7 @@ div.bloginfo {
 	display: block;
 	padding: 3px;
 	line-height: 150%;
-	text-transform: none}
+	text-transform: 0}
 
 div.blogtools {
 	padding: 3px;
@@ -1294,10 +862,10 @@ div.postfooter {
 	float: right;
 	margin-bottom: 2em}
 
-/***** Forums *****/
 
+/***** Forums *****/
 body.tiki_forums table.normal {margin: auto}
-#forumpost {display: none}
+#forumpost {display: 0}
 #forumpostopen {display: block}
 .post {width: 100%}
 
@@ -1327,7 +895,7 @@ body.tiki_forums table.normal {margin: auto}
 	margin-top: 3px}
 	
 .title h2 {}
-.postbody-title br.clear {display: none}
+.postbody-title br.clear {display: 0}
 	
 .title a.link {
 	color: #29677B;
@@ -1348,7 +916,7 @@ body.tiki_forums table.normal {margin: auto}
 	width: 33%;
 	margin-left: -3px;
 	margin-right: 4px;
-	background: url(eatlon/head_bg.gif) repeat-x;}
+	background: url(eatlon/head_bg.gif) repeat-x}
 	
 .post .author_post_info {
 	/*display: block;*/
@@ -1380,7 +948,7 @@ body.tiki_forums table.normal {margin: auto}
 	border-top: 1px dotted #8f8f8f;
 	margin-top: 5px}
 
-.post .postbody .attachments img { vertical-align: text-bottom}
+.post .postbody .attachments img {vertical-align: text-bottom}
 
 .post .postfooter .actions,
 .post .postfooter .status {
@@ -1408,7 +976,7 @@ body.tiki_forums table.normal {margin: auto}
 	margin-right: 4px;
 	padding: 3px;
 	border: 1px solid #ACCCDD;
-	background: inherit;}
+	background: inherit}
 
 .sub_comment {padding-left: 20px}
 
@@ -1418,11 +986,11 @@ body.tiki_forums table.normal {margin: auto}
 
 .forum_actions .actions {
 	clear: both;
-	background-color: #E1EBF5;
+	background: #E1EBF5;
 	padding: 3px 3px 3px 3px;
 	vertical-align: middle}
 
-.forum_actions .actions .action { margin-right: 10px}
+.forum_actions .actions .action {margin-right: 10px}
 .forum_actions .headers {vertical-align: bottom}
 
 .forum_actions .headers .title {
@@ -1446,7 +1014,7 @@ body.tiki_forums table.normal {margin: auto}
 .post_preview,
 .top_post {margin-bottom: 15px}
 
-/*.post .postbody .signature { float: left}*/
+/*.post .postbody .signature {float: left}*/
 
 /* Comments */
 
@@ -1478,105 +1046,10 @@ div.commentsedithelp {
 	text-align: center;
 	font-weight: bold}
 
-/***** Categories *****/
-
-table.tcategpath {}
-td.tdcategpath {}
-.categpath {}
-table.subcats {}
-td.tdsubcat {}
-.categlink {}
-table.catobjects {}
-td.categobjectsnameeven,
-td.categobjectsnameodd {}
-td.categobjectsdataeven,
-td.categobjectsdataodd {}
-.catname {}
-.catblock {}
-.catlists {}
-.catlists:hover {}
-.cattitle {}
-.catlists a.link {}
-.catlists a.link:hover {}
-
-ul.catfeatures {}
-ul.catfeatures li {}
-ul.catitems {}
-
-ul.catitems li {
-	display: inline;
-	margin-right: 6px}
-
-ul.catitems li a.link {}
-
-/***** Tags (freetags) *****/
-
-li.freetag {
-	list-style: none !important;
-	display: inline !important;
-	margin: 0;
-	padding: 0}
-
-ul.freetag {
-	margin: 0;
-	padding: 0;
-	display: inline !important}
-
-.freetag a {display:inline !important}
-
-a.freetag_1 {
-	text-decoration: none;
-	font-size: .8em}
-
-a.freetag_2 {
-	text-decoration: none;
-	font-size: .9em}
-
-a.freetag_3 {
-	text-decoration: none;
-	font-size: 1em}
-
-a.freetag_4 {
-	text-decoration: none;
-	font-size: 1.2em}
-
-a.freetag_5 {
-	text-decoration: none;
-	font-size: 1.4em}
-
-a.freetag_6 {
-	text-decoration: none;
-	font-size: 1.6em}
-
-a.freetag_7 {
-	text-decoration: none;
-	font-size: 1.8em}
-
-div.freetagObjectOdd {
-	margin: 2px;
-	/*background-color: #F7F9FA;*/
-	position: relative}
-
-div.freetagObjectEven {
-	margin: 2px;
-	/*background-color : #E7E9EA;*/
-	position: relative}
-
-div.freetagObjectName a {text-decoration: none}
-
-div.freetagObjectType {
-	position: absolute;
-	top: 0;
-	right: 0}
-
-.freetaglist { padding-left: 20px} /*blog, blog post */
-a.freetag {} /* articles... */
-
-/***** Image Galleries *****/
-
+/**** Image Galleries ****/
 table.galtable {
 	border-collapse: collapse;
-	border: 1px solid #8CACBB;	width: 100%}
+	border: 1px solid #8cacbb;	width: 100%}
 
 * html body table.galtable {width: 97%}
 html>body .galtable {width: 100%}
@@ -1614,8 +1087,9 @@ div.showimage {
 div.imgaldescr {margin: 10px}
 .sorttitle {margin-left: 10px}
 
-/***** Trackers *****/
+/***** File Galleries *****/
 
+/***** Trackers *****/
 .statuson {
 	padding: 1px;
 	margin: 1px;
@@ -1626,9 +1100,106 @@ div.imgaldescr {margin: 10px}
 	margin: 2px;
 	vertical-align: middle}
 
-/***** Calendar *****/
-/* Overrides calendar.css, etc. */
+/***** Categories, Tags *****/
 
+/***** Tags (freetags) *****/
+	
+/*****  Polls  *****/
+
+/***** FAQs *****/
+
+/***** Quizzes *****/
+
+/***** Shoutbox *****/
+div.shoutboxmsg {
+	margin-bottom: 0;
+	padding: 4px;
+	padding-bottom: 1px}
+
+div.shoutboxmodmsg {
+	font-size: .95em;
+	margin: 0 5px 4px 5px;
+	padding-top: 5px;
+	padding-bottom: 1px}
+
+textarea.tshoutbox{
+	font-size: 1.3em;
+	width: 132px}
+
+/***** Directory *****/
+div.dircategs {
+	border: 1px solid #8cacbb;
+	padding: 5px}
+
+.dirlink {}
+.dirsublink {font-size: .95em}
+
+div.dirlistsites {
+	padding: 5px 0 10px 5px;
+	margin-top: 10px}
+
+div.dirsite {
+	margin: 5px;
+	margin-bottom: 10px;
+	padding: 4px}
+
+span.dirsitedesc {}
+span.dirsitetrail {font-size: .95em}
+span.dirsitecats {font-size: .95em}
+.dirsitelink {}
+
+div.dirrelated {
+	margin-top: 10px;
+	padding: 5px}
+
+td.dirfooter {font-size: .95em}
+div.dirfooter {margin-top: 10px}
+
+/***** Messages *****/
+td.prio1,
+td.prio2,
+td.prio3,
+td.prio4,
+td.prio5 {
+	border: 1px solid #8cacbb;
+	padding-left: 2px}
+
+td.prio1 {background: #F7F9CA}
+td.prio2 {background: #F7F9EA}
+td.prio3 {background: #F7F9FA}
+td.prio4 {background: #F7F9FD}
+td.prio5 {background: #F7F9FF}
+
+div.messureadflag {
+	background: #ccc;
+	padding-left: 5px}
+
+div.messureadhead {
+	background: #DEDEDE;
+	margin-top: 2px}
+
+div.messureadbody {
+	margin-top: 5px;
+	background: #DEDEDE}
+
+.readlink {
+	font-size: .95em;
+	color: black}
+
+/***** TikiSheets *****/
+table.default thead td,
+table.default tfoot td {
+	font-weight: bold;
+	text-align: center;
+	background: black;
+	color: #D8D8D8}
+
+table.default td {
+	border: solid 1px #a9a9a9;
+	background: black}
+
+
+/***** Calendar *****/
 .Cal0, 
 .Cal1, 
 .Cal2 {font-size: 90%}
@@ -1735,16 +1306,16 @@ Caltrack a:visited {color: #00BD02}
 
 .calcontent a.linkmenu,
 .calcontent a.linkmenu:hover {
-	background: none;
+	background: 0;
 	padding: 0}
 
 .calfocus {
 	font-size: 90%;
 	background: inherit}
 
-.caldark .calfocus { background: inherit }
+.caldark .calfocus {background: inherit}
 
-.calfocuson + .calcontent { background: #e6eff8 }
+.calfocuson + .calcontent {background: #e6eff8}
 
 .calprio1 a,
 .calprio2 a,
@@ -1754,13 +1325,13 @@ Caltrack a:visited {color: #00BD02}
 .calprio6 a,
 .calprio7 a,
 .calprio8 a,
-.calprio9 a {color: #393E51}
+.calprio9 a {color: #393e51}
 
 .caltoggle {font-size: 90%}
 
 .opaque {
-   border-left: 1px solid #A9A9A9;
-  	border-top: 1px solid #A9A9A9;
+   border-left: 1px solid #a9a9a9;
+  	border-top: 1px solid #a9a9a9;
 	border-right: 1px solid #696969;
 	border-bottom: 1px solid #696969}
 
@@ -1775,9 +1346,9 @@ Caltrack a:visited {color: #00BD02}
 .box-data td.fc a.today,
 .box-data td a.today {
 	background: #d2d9e3;
-	border: none}
+	border: 0}
 
-#caltable .calfocuson a { color:#000}
+#caltable .calfocuson a {color:#000}
 
 #caltable .calfocus a,
 #caltable .calfocuson a {text-decoration:none}
@@ -1791,7 +1362,7 @@ Caltrack a:visited {color: #00BD02}
 .date {}
 
 .calinput {background: #9faec2}
-.calfocuson + .calcontent { background: #F5F5F5}
+.calfocuson + .calcontent {background: #F5F5F5}
 
 #caltable td {padding: 0}
 #caltable .weeks,
@@ -1807,18 +1378,18 @@ Caltrack a:visited {color: #00BD02}
 td.event {background: whitesmoke}
 .addevent {padding: 0 5px; float: right}
 * html .addevent {padding: 0}
-.calodd, .caleven { border: 1px solid darkgray}
-.calodd {background-color: #ececec}
+.calodd, .caleven {border: 1px solid darkgray}
+.calodd {background: #ececec}
 * html .calodd {padding: 0}
-.caleven {background-color: #f5f5f5}
+.caleven {background: #f5f5f5}
 * html .caleven {padding: 0}
-.caldark { background: #c4cdda}
+.caldark {background: #c4cdda}
 .caldark .calfocus {background: #c4cdda}
 * html .caldark {padding: 0}
 .caldark .calfocus {background: #c4cdda}
 .daterow {
 	display: block;
-	border: 1px solid #CCCCCC !important;
+	border: 1px solid #ccc !important;
 	background: #fff;
 	font-size: 1.1em;
 	font-weight: bold;
@@ -1832,132 +1403,30 @@ td.event {background: whitesmoke}
 	color: #fff;
 	background: #9faec2}
 
+/***** Admin *****/
+a.admbox {
+	border: 1px solid #aaa;
+	background: #506887 center no-repeat}
 
-/*****  Polls  *****/
-div.pollresults {
-	margin-top: 5px;
-	font-size: 1.2em;
-	padding: 0 5px}
+a.admbox:hover,
+a.admbox:focus,
+a.admbox:active  {
+	background: #B2B2B2 center no-repeat;
+	border: 1px solid #292929}
 
-table.pollresults {width: 100%}
-td.pollr {color: black}
-#pollopen {display: block}
-#pollzone {display: none}
-#polledit {display: none}
-.pollnav {}
+a.admbox.off {border: 1px solid #9f9f9f}
 
-/***** FAQs *****/
+a.admbox.off:hover,
+a.admbox.off:focus,
+a.admbox.off:active {border: 1px solid #9f9f9f}
 
-div.faqlistquestions {margin-bottom: 20px}
-div.faqqa {margin-bottom: 20px}
+div.adminanchors {}
+a.admbox span {color: #fff}
 
-div.faqquestion {
-	font-weight: bold;
-	padding: 2px 12px;
-	padding-bottom: 0}
-
-div.faqanswer {
-	padding: 4px 12px;
-	padding-top: 0}
-
-/***** Quizzes *****/
-
-div.questionblock {
-	padding: 4px;
-	margin-bottom: 10px}
-
-div.quizquestion {margin-bottom: 5px}
-div.quizoptions {}
-div.quizdescription {margin-bottom: 10px}
-div.quizanswer {margin-bottom: 10px}
-
-/***** Shoutbox *****/
-
-div.shoutboxmsg {
-	margin-bottom: 0;
-	padding: 4px;
-	padding-bottom: 1px}
-
-div.shoutboxmodmsg {
-	font-size: .95em;
-	margin: 0 5px 4px 5px;
-	padding-top: 5px;
-	padding-bottom: 1px}
-
-textarea.tshoutbox{
-	font-size: 1.3em;
-	width: 132px}
-
-.wiki-table {}
-.wiki-tr-a td {border: 0}
-.wiki-tr-b td {border: 0}
-
-/***** Directory *****/
-
-div.dircategs {
-	border: 1px solid #8CACBB;
-	padding: 5px}
-
-.dirlink {}
-.dirsublink {font-size: .95em}
-
-div.dirlistsites {
-	padding: 5px 0 10px 5px;
-	margin-top: 10px}
-
-div.dirsite {
-	margin: 5px;
-	margin-bottom: 10px;
-	padding: 4px}
-
-span.dirsitedesc {}
-span.dirsitetrail {font-size: .95em}
-span.dirsitecats {font-size: .95em}
-.dirsitelink {}
-
-div.dirrelated {
-	margin-top: 10px;
-	padding: 5px}
-
-td.dirfooter {font-size: .95em}
-div.dirfooter {margin-top: 10px}
-
-/***** Messages *****/
-
-td.prio1,
-td.prio2,
-td.prio3,
-td.prio4,
-td.prio5 {
-	border: 1px solid #8CACBB;
-	padding-left: 2px}
-
-td.prio1 {background: #F7F9CA}
-td.prio2 {background: #F7F9EA}
-td.prio3 {background: #F7F9FA}
-td.prio4 {background: #F7F9FD}
-td.prio5 {background: #F7F9FF}
-
-div.messureadflag {
-	background: #CCCCCC;
-	padding-left: 5px}
-
-div.messureadhead {
-	background: #DEDEDE;
-	margin-top: 2px}
-
-div.messureadbody {
-	margin-top: 5px;
-	background: #DEDEDE}
-
-.readlink {
-	font-size: .95em;
-	color: black}
-
+/***** Ajax, jquery. etc. *****/
 /***** Ajax *****/
-
 div#ajaxLoading {
-	display: none;
+	display: 0;
 	position: absolute;
 	top: 50px;
 	right: 50%;
@@ -1982,81 +1451,52 @@ div#ajaxLoading {
 	white-space: normal !important;
 	padding: 5px 0 4px 8px}
 
-/***** TikiSheet Default Style *****/
+.tab-wrapper {
+	border: 1px solid #eee;
+	padding: 0}
 
-table.default thead td,
-table.default tfoot td {
-	font-weight: bold;
-	text-align: center;
-	background-color: black;
-	color: #D8D8D8}
+.tab-menu {
+	clear: both;
+	line-height: 17px;
+	list-style-image: 0;
+	list-style-position: outside;
+	list-style-type: 0;
+	padding: 2px 0;
+	margin-bottom: 6px;
+	margin-top: 2px;
+	width: 100%}
 
-table.default td {
-	border: solid 1px #A9A9A9;
-	background-color: black}
+.tab-menu li {
+	display: inline;
+	margin: 0 2px;
+	width: 200px;
+	padding-right: 1.5em}
 
-/***** 'advanced feature' *****/
+.tab-menu li a 	{
+	padding: 1px 5px; 
+	background: #f5f5f5; 
+	color: #222; 
+	font-weight: bold; 
+	text-decoration: none} 
 
-.advanced {
-  margin: 20px;
-  padding: 5px;
-  background: #fff;
-  border: 2px solid #9faec2;
-  color: #000}
+.tab-menu li a:hover, 
+.tab-menu li a:focus {
+	background: #FAEC8F; 
+	border-bottom-color: #999} 
 
-.advanced:before { content:url(../img/icons/mini_blue_diamond.gif)" "}
+.tab-menu li a:hover {
+	background: #FAEC8F; 
+	border-bottom-color: #999} 
 
-.highlight_word_0 {
-	color: #ffff66;
-	background: black}
+.tab-menu li.tab-selected a {
+	background: #BCEC8F}
+	
+/***** New (unsorted) *****/
 
-.highlight_word_1 {
-	color:#ff9999;
-	background: black}
+/***** End New (unsorted) *****/
 
-.highlight_word_2 {
-	color:#A0FFFF;
-	background: black}
+/* End of File */
 
-.highlight_word_3{
-	color: #ff66ff;
-	background: black}
 
-.highlight_word_4 {
-	color: #99ff99;
-	background: black}
 
-.center {text-align: center}
-.justify {text-align: justify}
-.right {text-align: right}
 
-/***** mypage *****/
-
-.mypage_configure th {width: 180px}
-#sideBarTab {background: url('../img/cord.png') no-repeat}
-#sideBarContents {background: #fff}
-
-/** Admin pages **/
-
-a.admbox {
-	border: 1px solid #AAAAAA;
-	background: #506887 center no-repeat}
-
-a.admbox:hover,
-a.admbox:focus,
-a.admbox:active  {
-	background: #B2B2B2 center no-repeat;
-	border: 1px solid #292929}
-
-a.admbox.off {border: 1px solid #9f9f9f}
-
-a.admbox.off:hover,
-a.admbox.off:focus,
-a.admbox.off:active {border: 1px solid #9f9f9f}
-
-div.adminanchors {}
-a.admbox span {color: #fff}
-
-#rss img {vertical-align: middle}
-
-/* end of file */

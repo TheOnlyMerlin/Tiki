@@ -12,6 +12,7 @@ $Date$
 Files:
 themes/candiiclouds_tiki_3/Readme.txt styles/candiiclouds/Readme.txt
 themes/candiiclouds_tiki_3/styles/candiiclouds.css styles/candiiclouds.css
+themes/candiiclouds_tiki_3/styles/candiiclouds/arrows-00adef.png styles/candiiclouds/arrows-00adef.png
 themes/candiiclouds_tiki_3/styles/candiiclouds/banstars.gif styles/candiiclouds/banstars.gif
 themes/candiiclouds_tiki_3/styles/candiiclouds/bcloud.gif styles/candiiclouds/bcloud.gif
 themes/candiiclouds_tiki_3/styles/candiiclouds/bluu.gif styles/candiiclouds/bluu.gif
@@ -45,7 +46,8 @@ Author:
 Gary Cunningham-Lee (chibaguy)
  
 Version:
-1.10.0b1
+3
  
 Changelog:
+2 modified to import layout/layout.css; suckerfish menu arrows image added
 1 initial package

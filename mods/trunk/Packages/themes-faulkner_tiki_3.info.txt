@@ -12,6 +12,7 @@ $Date$
 Files:
 themes/faulkner_tiki_3/Readme.txt styles/faulkner/Readme.txt
 themes/faulkner_tiki_3/styles/faulkner.css styles/faulkner.css
+themes/faulkner_tiki_3/styles/faulkner/arrows-600.png styles/faulkner/arrows-600.png
 themes/faulkner_tiki_3/styles/faulkner/bullet.gif styles/faulkner/bullet.gif
 themes/faulkner_tiki_3/styles/faulkner/entrybg.gif styles/faulkner/entrybg.gif
 themes/faulkner_tiki_3/styles/faulkner/faulkner.png styles/faulkner/faulkner.png
@@ -47,8 +48,9 @@ Author:
 Adapted by Gary Cunningham-Lee (chibaguy).
  
 Version:
-Compatible with Tiki 3 releases.
+3
  
 Changelog:
+3 modified to import layout/layout.css; suckerfish menu arrows image added
 2 updated for Tiki 3.
 1 initial package
