@@ -56,7 +56,8 @@ if (isset ($user) && $user != "") {
 		foreach ($userWorkspacesTmp as $key => $workspace) {
 			if ( $workspacesLib->parentInSelWorspaces($workspace, $selectedWorkspaces)) {
 				$wsType = $wsTypesLib->get_workspace_type_by_id($workspace["type"]);
-				$workspace["type"] = $wsType;
+				$workspace["type"] = $wsType["wstypeId"];
+				$selectedWorkspaces[] = $workspace;
 				$found = true;
 			}
 			if ($workspace["hide"] != "y") {
