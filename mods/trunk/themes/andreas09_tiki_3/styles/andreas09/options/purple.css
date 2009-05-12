@@ -30,7 +30,8 @@ input[type=submit]:hover,
 	background: #f0f0f0 url(purple/menuhover.jpg) top left repeat-x;
 	color: #505050}
 	
-.horbaritem a:hover {
+.horbaritem a:hover,
+#tiki-top .cssmenu_horiz li a:hover {
 	background: #f0f0f0 url(purple/menuhover.jpg) top repeat-x;
 	color: #505050}
 	
