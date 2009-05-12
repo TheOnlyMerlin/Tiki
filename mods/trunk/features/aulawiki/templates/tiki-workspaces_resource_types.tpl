@@ -11,17 +11,17 @@
 	
 	$types = array(
 		"blog" => array(name=>"Blog",selected=>""),
-//		"calendar" => array(name=>"Calendar",selected=>""),
-//		"category" => array(name=>"Category",selected=>""),
-//		"faq" => array(name=>"FAQs",selected=>""),
+		"calendar" => array(name=>"Calendar",selected=>""),
+		"category" => array(name=>"Category",selected=>""),
+		"faq" => array(name=>"FAQs",selected=>""),
 		"file gallery" => array(name=>"File Gallery",selected=>""),
 		"forum" => array(name=>"Forum",selected=>""),
 		"image gallery" => array(name=>"Image Gallery",selected=>""),
-//		"quiz" => array(name=>"Quizze",selected=>""),
-//		"structure" => array(name=>"Structure",selected=>""),
-//		"sheet" => array(name=>"Sheet",selected=>""),
-//		"survey" => array(name=>"Survey",selected=>""),
-//		"tracker" => array(name=>"Tracker",selected=>""),
+		"quiz" => array(name=>"Quizze",selected=>""),
+		"structure" => array(name=>"Structure",selected=>""),
+		"sheet" => array(name=>"Sheet",selected=>""),
+		"survey" => array(name=>"Survey",selected=>""),
+		"tracker" => array(name=>"Tracker",selected=>""),
 		"wiki page" => array(name=>"Wiki Page",selected=>"")
 	);
 	/*
