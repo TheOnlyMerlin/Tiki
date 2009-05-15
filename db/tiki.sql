@@ -321,7 +321,6 @@ CREATE TABLE tiki_banners (
   created int(14) default NULL,
   maxImpressions int(8) default NULL,
   impressions int(8) default NULL,
-  maxUserImpressions int(8) default -1,
   maxClicks int(8) default NULL,
   clicks int(8) default NULL,
   zone varchar(40) default NULL,
@@ -469,7 +468,7 @@ CREATE TABLE tiki_calendar_items (
   locationId int(14) default NULL,
   categoryId int(14) default NULL,
   nlId int(12) NOT NULL default '0',
-  priority enum('0', '1','2','3','4','5','6','7','8','9') default '0',
+  priority enum('1','2','3','4','5','6','7','8','9') NOT NULL default '1',
   status enum('0','1','2') NOT NULL default '0',
   url varchar(255) default NULL,
   lang char(16) NOT NULL default 'en',
@@ -1418,7 +1417,6 @@ CREATE TABLE tiki_menu_options (
   perm text default NULL,
   groupname text default NULL,
   userlevel int(4) default 0,
-  icon varchar(200),
   PRIMARY KEY (optionId),
   UNIQUE KEY uniq_menu (menuId,name(30),url(50),position,section(60),perm(50),groupname(50))
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
@@ -1621,7 +1619,6 @@ CREATE TABLE tiki_menus (
   description text,
   type char(1) default NULL,
   icon varchar(200) default NULL,
-  use_items_icons char(1) NOT NULL DEFAULT 'n',
   PRIMARY KEY (menuId)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
@@ -2783,7 +2780,6 @@ INSERT INTO users_grouppermissions (groupName,permName) VALUES('Anonymous','tiki
 
 DROP TABLE IF EXISTS users_groups;
 CREATE TABLE users_groups (
-  id int(11) NOT NULL auto_increment,
   groupName varchar(255) NOT NULL default '',
   groupDesc varchar(255) default NULL,
   groupHome varchar(255),
@@ -2796,9 +2792,8 @@ CREATE TABLE users_groups (
   userChoice char(1) default NULL,
   groupDefCat int(12) default 0,
   groupTheme varchar(255) default '',
-  PRIMARY KEY id,
-  UNIQUE KEY groupName (groupName)
-) ENGINE=MyISAM, AUTO_INCREMENT=1;
+  PRIMARY KEY (groupName(30))
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS users_objectpermissions;
 CREATE TABLE users_objectpermissions (
@@ -3021,7 +3016,6 @@ INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('tiki_p_
 INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('tiki_p_wiki_view_ratings', 'Can view rating of wiki pages', 'basic', 'wiki');
 INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('tiki_p_wiki_view_source', 'Can view source of wiki pages', 'basic', 'wiki');
 INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('tiki_p_wiki_vote_ratings', 'Can participate to rating of wiki pages', 'registered', 'wiki');
-INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('tiki_p_wiki_view_similar', 'Can view similar wiki pages', 'registered', 'wiki');
 
 INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('tiki_p_admin_workflow', 'Can admin workflow processes', 'admin', 'workflow', 'y');
 INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('tiki_p_abort_instance', 'Can abort a process instance', 'editors', 'workflow');
@@ -3096,7 +3090,6 @@ INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('tiki_p_
 INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('tiki_p_view_backlink', 'View page backlinks', 'basic', 'wiki');
 
 INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('tiki_p_admin_notifications', 'Can admin mail notifications', 'editors', 'mail notifications');
-INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('tiki_p_invite', 'Can invite user in groups', 'editors', 'tiki');
 
 UPDATE users_permissions SET feature_check = 'feature_wiki' WHERE permName IN(
 	'tiki_p_admin_wiki',
@@ -3822,29 +3815,6 @@ INSERT INTO `tiki_sefurl_regex_out` (`left`, `right`, `type`, `feature`, `order`
 INSERT INTO `tiki_sefurl_regex_out` (`left`, `right`, `type`, `feature`, `order`) VALUES('tiki-list_trackers.php', 'trackers', '', 'feature_trackers', 200);
 INSERT INTO `tiki_sefurl_regex_out` (`left`, `right`, `type`, `feature`, `order`) VALUES('tiki-mobile.php', 'mobile', '', 'feature_mobile', 200);
 INSERT INTO `tiki_sefurl_regex_out` (`left`, `right`, `type`, `feature`, `order`) VALUES('tiki-sheets.php', 'sheets', '', 'feature_sheet', 200);
-
-UPDATE tiki_menu_options SET icon = 'icon-configuration48x48' WHERE name = 'Admin';
-UPDATE tiki_menu_options SET icon = 'xfce4-appfinder48x48' WHERE name = 'Search';
-UPDATE tiki_menu_options SET icon = 'wikipages48x48' WHERE name = 'Wiki';
-UPDATE tiki_menu_options SET icon = 'blogs48x48' WHERE name = 'Blogs';
-UPDATE tiki_menu_options SET icon = 'stock_select-color48x48' WHERE name = 'Image Galleries';
-UPDATE tiki_menu_options SET icon = 'file-manager48x48' WHERE name = 'File Galleries';
-UPDATE tiki_menu_options SET icon = 'stock_bold48x48' WHERE name = 'Articles';
-UPDATE tiki_menu_options SET icon = 'stock_index48x48' WHERE name = 'Forums';
-UPDATE tiki_menu_options SET icon = 'gnome-settings-font48x48' WHERE name = 'Trackers';
-UPDATE tiki_menu_options SET icon = 'users48x48' WHERE name = 'Community';
-UPDATE tiki_menu_options SET icon = 'stock_dialog_question48x48' WHERE name = 'FAQs';
-UPDATE tiki_menu_options SET icon = 'maps48x48' WHERE name = 'Maps';
-UPDATE tiki_menu_options SET icon = 'messages48x48' WHERE name = 'Newsletters';
-UPDATE tiki_menu_options SET icon = 'vcard48x48' WHERE name = 'Freetags';
-UPDATE tiki_menu_options SET icon = 'date48x48' WHERE name = 'Calendar' AND url = 'tiki-calendar.php';
-UPDATE tiki_menu_options SET icon = 'userfiles48x48' WHERE name = 'MyTiki';
-UPDATE tiki_menu_options SET icon = '' WHERE name = 'Quizzes';
-UPDATE tiki_menu_options SET icon = '' WHERE name = 'Surveys';
-UPDATE tiki_menu_options SET icon = '' WHERE name = 'TikiSheet';
-UPDATE tiki_menu_options SET icon = '' WHERE name = 'Workflow';
-UPDATE tiki_menu_options SET icon = '' WHERE name = 'Charts';
-UPDATE tiki_menus SET use_items_icons='y' WHERE menuId=42;
 
 DROP TABLE IF EXISTS tiki_plugin_security;
 CREATE TABLE tiki_plugin_security (

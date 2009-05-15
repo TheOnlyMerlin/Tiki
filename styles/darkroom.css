@@ -101,6 +101,8 @@ input[type=password] {
 
 button,
 .button,
+.button2,
+.submitbutton,
 .button input,
 .calbuttonBox {
 	background:#4E4E4E url(darkroom/button.png) top left repeat-x;
@@ -131,8 +133,10 @@ input[type=reset] {
 
 button:hover,
 .button:hover,
+.button2:hover,
 input[type=submit]:hover,
 input[type=reset]:hover,
+.submitbutton:hover,
 .button input:hover,
 .calbuttonBox:hover {border: 1px solid #B2B2B2}
 
@@ -2320,8 +2324,7 @@ td.calodd, td.caleven {border: 1px solid #999999}
 .daterow:hover {border: 1px solid #aaa}
 
 a.viewmodeon img.icon {border: white solid 1px !important;padding:0 0 0 2px;}
-.tabrow .viewmode { float: left; }
-.viewmode div {display: inline;}
+
 /*****  Polls  *****/
 
 div.pollresults {

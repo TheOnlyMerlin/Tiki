@@ -211,7 +211,8 @@ function sendWikiEmailNotification($event, $pageName, $edit_user, $edit_comment,
 
 	if (count($nots)) {
 	    $edit_data = TikiLib::htmldecode($edit_data);
-	    include_once('lib/mail/maillib.php');
+	    include_once('lib/webmail/tikimaillib.php');
+	    $mail = new TikiMail();
 	    $smarty->assign('mail_site', $_SERVER["SERVER_NAME"]);
 	    $smarty->assign('mail_page', $pageName);
 	    $smarty->assign('mail_date', $tikilib->now);
@@ -243,19 +244,16 @@ function sendWikiEmailNotification($event, $pageName, $edit_user, $edit_comment,
 	    }
 
 	    foreach ($nots as $not) {
-			if (isset($not['hash']))
-				$smarty->assign('mail_hash', $not['hash']);
-
-			$mail_subject = $smarty->fetchLang($not['language'], "mail/user_watch_wiki_page_changed_subject.tpl");
-			$mail_data = $smarty->fetchLang($not['language'], "mail/user_watch_wiki_page_changed.tpl");
-
-			tiki_send_admin_mail(
-				$not['email'],
-				$not['user'],
-				sprintf($mail_subject, $pageName),
-				$mail_data
-			);
-		}
+		if (isset($not['hash']))
+		    $smarty->assign('mail_hash', $not['hash']);
+		$mail->setUser($not['user']);
+		$mail_data = $smarty->fetchLang($not['language'], "mail/user_watch_wiki_page_changed_subject.tpl");
+		$mail->setSubject(sprintf($mail_data, $pageName));
+		$mail_data = $smarty->fetchLang($not['language'], "mail/user_watch_wiki_page_changed.tpl");
+		$mail->setText($mail_data);
+		$mail->buildMessage();
+		$mail->send(array($not['email']));
+	    }
 	}
 }
 

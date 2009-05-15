@@ -227,9 +227,6 @@
 							{if $users[user].valid && $users[user].waiting eq 'a'}
 								<a class="link" href="tiki-login_validate.php?user={$users[user].user|escape:url}&amp;pass={$users[user].valid|escape:url}" title="{tr}Validate user{/tr}: {$users[user].user}">{icon _id='accept' alt="{tr}Validate user{/tr}: `$users[user].user`"}</a>
 							{/if}
-							{if $users[user].waiting eq 'u'}
-								<a class="link" href="tiki-confirm_user_email.php?user={$users[user].user|escape:url}&amp;pass={$users[user].provpass|md5|escape:url}" title="{tr}Validate user{/tr}: {$users[user].user}">{icon _id='accept' alt="{tr}Validate user{/tr}: `$users[user].user`"}</a>
-							{/if}
 						{/if}
 					</td>
 				</tr>
@@ -323,7 +320,7 @@
 	{else}
 		<h2>{tr}Add a New User{/tr}</h2>
 	{/if}
-	<form action="tiki-adminusers.php" method="post" enctype="multipart/form-data" name="RegForm" autocomplete="off">
+	<form action="tiki-adminusers.php" method="post" enctype="multipart/form-data" name="RegForm">
 		<table class="normal">
 			<tr class="formcolor">
 				<td>
@@ -404,9 +401,9 @@
 				</tr>
 				{if $userinfo.login neq 'admin'}
 					<tr class="formcolor">
-						<td>&nbsp;</td>
+						<td>{tr}Must Change Password{/tr}:</td>
 						<td>
-							<input type="checkbox" name="pass_first_login"{if $userinfo.pass_confirm eq '0'} checked="checked"{/if} /> 
+							<input type="checkbox" name="pass_first_login" /> 
 							{tr}User must change password at first login{/tr}.
 						</td>
 					</tr>
@@ -418,15 +415,6 @@
 					<td>{tr}Email{/tr}:</td>
 					<td>
 						<input type="text" name="email" size="30" value="{$userinfo.email|escape}" />
-					</td>
-				</tr>
-			{/if}
-			{if $userinfo.login neq 'admin'}
-				<tr class="formcolor">
-					<td>&nbsp;</td>
-					<td>
-						<input type="checkbox" name="need_email_validation" {if ($userinfo.login eq '' and ($prefs.validateUsers eq 'y' or $prefs.validateRegistration eq 'y')) or $userinfo.provpass neq ''}checked="checked" {/if}/> 
-						{tr}Send an email to the user in order to allow him to validate his account.{/tr}
 					</td>
 				</tr>
 			{/if}
