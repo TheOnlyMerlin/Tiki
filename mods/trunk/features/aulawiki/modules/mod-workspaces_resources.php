@@ -56,8 +56,7 @@ if (!$exit_module && $tiki_p_admin != 'y' && $tiki_p_admin_workspace != 'y') {
 
 if ($userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")) {
 	$can_create_resources = "y";
-## commenti this out if has to have no group/users faculties
-	$can_add_users = "y"; # he will be able to add only single users, not groups
+#	$can_add_users = "y"; # he will be able to add only single users, not groups
 	}
 if ($workspacesLib->user_can_admin_workspace_or_upper($user,$workspace)){
 	$can_create_resources = "y";
@@ -77,10 +76,14 @@ if (!$exit_module){
 		} else {
 			//$wsTypesLib = new WorkspaceTypesLib($dbTiki);
 	
-			$wsType = $workspace["type"];
+			$type = $workspace["type"];
 	
 			$wscode = "";
 			$wscode = $workspace["code"];
+			$resourcesLib = new WorkspaceResourcesLib($dbTiki);
+			$wsTypesLib = new WorkspaceTypesLib($dbTiki);
+			$wsType = $wsTypesLib->get_workspace_type_by_id($type);
+
 # what Prefix on new objects ?
 # original, top cat prefix 
 			$id = $resourcesLib->create_object($wscode."-".$_REQUEST["createObjectName"], $_REQUEST["createObjectDesc"], $_REQUEST["createObjectType"], $_REQUEST["createObjectCategoryId"]);
