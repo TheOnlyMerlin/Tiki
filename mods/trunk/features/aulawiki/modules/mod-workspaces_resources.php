@@ -74,16 +74,9 @@ if (!$exit_module){
 		}elseif (!isset ($_REQUEST["createObjectName"])) {
 			$smarty->assign('error_msg', tra("Name requiered"));
 		} else {
-			//$wsTypesLib = new WorkspaceTypesLib($dbTiki);
-	
-			$type = $workspace["type"];
-	
-			$wscode = "";
 			$wscode = $workspace["code"];
-			$resourcesLib = new WorkspaceResourcesLib($dbTiki);
 			$wsTypesLib = new WorkspaceTypesLib($dbTiki);
-			$wsType = $wsTypesLib->get_workspace_type_by_id($type);
-
+			$wsType = $wsTypesLib->get_workspace_type_by_id($workspace["type"]);
 # what Prefix on new objects ?
 # original, top cat prefix 
 			$id = $resourcesLib->create_object($wscode."-".$_REQUEST["createObjectName"], $_REQUEST["createObjectDesc"], $_REQUEST["createObjectType"], $_REQUEST["createObjectCategoryId"]);

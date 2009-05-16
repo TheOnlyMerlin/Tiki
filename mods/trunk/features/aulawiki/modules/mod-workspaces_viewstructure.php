@@ -15,6 +15,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 include_once ('lib/workspaces/workspacelib.php');
 include_once ('lib/workspaces/printlib.php');
 include_once "lib/structures/structlib.php";
+include_once ('lib/workspaces/typeslib.php');
 
 global $dbTiki;
 global $userlib;
@@ -55,7 +56,9 @@ $smarty->assign('canadmin', $canadmin);
 //TODO: Check perms
 if($canadmin && isset($module_params["createObjectName"]) && $module_params["createObjectName"]!=""){
 	$id = $resourcesLib->create_object($workspace["code"]."-".$module_params["createObjectName"], $module_params["createObjectDesc"], "wiki page", $workspace["categoryId"]);
-	$workspacesLib->assign_permissions($workspace["code"], "wiki page", $id,$workspace["type"]);
+	$wsTypesLib = new WorkspaceTypesLib($dbTiki);
+	$wsType = $wsTypesLib->get_workspace_type_by_id($workspace["type"]);
+	$workspacesLib->assign_permissions($workspace["code"], "wiki page", $id,$wsType);
   
 	$subpages = $structlib->s_get_pages($module_params["parentPage".$module_params["structureId"]]);
 	$max = count($subpages);
