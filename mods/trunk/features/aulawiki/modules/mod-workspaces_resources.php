@@ -56,7 +56,7 @@ if (!$exit_module && $tiki_p_admin != 'y' && $tiki_p_admin_workspace != 'y') {
 
 if ($userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")) {
 	$can_create_resources = "y";
-#	$can_add_users = "y"; # he will be able to add only single users, not groups
+	$can_add_users = _TIKI_P_CREATE_WORKSPACE_RESOUR_CAN_ADD_USERS_ ; # he will be able to add only single users, not groups
 	}
 if ($workspacesLib->user_can_admin_workspace_or_upper($user,$workspace)){
 	$can_create_resources = "y";
@@ -141,7 +141,12 @@ if (!$exit_module){
 	}elseif($can_create_resources == "y") {
                 $smarty->assign('showAdminBar', 'n');
                 $smarty->assign('showCreateBar', 'y');
-                $smarty->assign('showAddUser', 'n');
+		if (!$can_add_users) {
+			$smarty->assign('showAddUser', 'n');
+			}
+		else {
+			$smarty->assign('showAddUser', 'y');
+			}
 		$smarty->assign('showButtons', 'y');
 	}
 	else{
@@ -151,10 +156,7 @@ if (!$exit_module){
 		$smarty->assign('showButtons', 'n');
 	}
 		$smarty->assign('showCreationDate', 'n');
-
 #### pingus end
-
-	
 	$smarty->assign('categObjects', $categObjects);
 	$smarty->assign('workspaceId',$workspace["workspaceId"]) ;
 	$smarty->assign('selectedWsObject', $selectedWsObject);
