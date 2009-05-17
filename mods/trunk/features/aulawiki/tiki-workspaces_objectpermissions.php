@@ -116,9 +116,6 @@ $page_perms = $userlib->get_object_permissions($_REQUEST["resourceIdName"], $_RE
 $smarty->assign_by_ref('page_perms', $page_perms);
 
 // Get a list of groups
-######## pingus test
-##$groups = $userlib->get_groups(0, -1, 'groupName_desc', '',"WSGRP".$workspace["code"], 'n');
-
 if ($can_admin_all_workspaces) {  # he can choose among all site groups
 	$groups = $workspacesLib->get_child_workspaces_groups("0", $includeParent = FALSE);
 }elseif ($can_admin_workspace) {  # he can choose among all groups from topmost-he_admins to bottom
@@ -129,12 +126,14 @@ if ($can_admin_all_workspaces) {  # he can choose among all site groups
 		$groups = $workspacesLib->get_child_workspaces_groups($topmost_workspace_Iadmin, $includeParent = TRUE);
 	}
 }elseif ($can_admin_resources) {  
+        # he can only choose among this ws group + included
+	$groups = $workspacesLib->get_included_groups("WSGRP".$workspace["code"], TRUE);
         # he can only choose among those from-this-ws-level-to-bottom (this+brothers-to-bottom: father excluded)
 //	$groups = $workspacesLib->get_child_workspaces_groups($workspace["parentId"], $includeParent = FALSE);
 	# OR he can only choose among those from-this-ws-level-to-bottom (this-to-bottom, this included)
 //	$groups = $workspacesLib->get_child_workspaces_groups($workspace["workspaceId"], $includeParent = TRUE);
 	# OR he can only choose among those from-father-level-to-bottom ( father-to-bottom, father+brothers included)
-	$groups = $workspacesLib->get_child_workspaces_groups($workspace["parentId"], $includeParent = TRUE);
+//	$groups = $workspacesLib->get_child_workspaces_groups($workspace["parentId"], $includeParent = TRUE);
 	}
 
 $groups[]="Anonymous";
