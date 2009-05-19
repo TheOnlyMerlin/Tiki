@@ -10,7 +10,6 @@
 (All file paths from Tiki root directory.)
 * templates/styles/underground/credits.tpl (trunk -- Tiki 3 -- standard)
 * templates/styles/underground/index.php 
-* templates/styles/underground/sicustomcode.tpl (contains div.sitetitle and div.sitesubtitle)
 * templates/styles/underground/tiki-site_header.tpl (contains top_bar lines; no tiki-top_bar.tpl in this theme)
 
 -=Stylesheet and background images=-
