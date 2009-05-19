@@ -6,14 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
-global $smarty, $tikilib, $user;
-
-$cachefile = 'modules/cache/';
-if ($tikidomain) { $cachefile.= "$tikidomain/"; }
-$cachefile.= 'mod-' . md5($mod_reference['moduleId'] . '-'.$prefs['language'].'-'.$mod_reference['params']);
-$nocache = 'templates/modules/mod-' . $mod_reference["name"] . '.tpl.nocache';
-
-if (!empty($user) || $mod_reference['cache_time'] <=0 || !file_exists($cachefile) || file_exists($nocache)|| (($tikilib->now - filemtime($cachefile)) >= $mod_reference['cache_time'])) {
+	global $smarty, $tikilib;
 	if (isset($module_params['title'])) { 
 		$smarty->assign('tpl_module_title',tra($module_params['title'])); 
 	}
@@ -47,9 +40,3 @@ if (!empty($user) || $mod_reference['cache_time'] <=0 || !file_exists($cachefile
 	}
 	$smarty->clear_assign('module_params'); // ensure params not available outside current module
 	$smarty->clear_assign('tpl_module_title');
-} else {
-	if ($fp = fopen($cachefile, 'r')) {
-		$data = fread($fp, filesize($cachefile));
-		fclose ($fp);
-	}
-}

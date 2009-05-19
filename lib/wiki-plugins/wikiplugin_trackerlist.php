@@ -85,11 +85,6 @@ function wikiplugin_trackerlist_info() {
 				'name' => tra('Show Field Name'),
 				'description' => 'y|n',
 			),
-			'showitemrank' => array(
-				'required' => false,
-				'name' => tra('Show Item Rank'),
-				'description' => 'y|n',
-			),
 			'status' => array(
 				'required' => false,
 				'name' => tra('Status Filter'),
@@ -311,11 +306,6 @@ function wikiplugin_trackerlist($data, $params) {
 			$showfieldname = "y";
 		}
 		$smarty->assign_by_ref('showfieldname', $showfieldname);
-
-		if (!isset($showitemrank)) {
-			$showitemrank = 'n';
-		}
-		$smarty->assign_by_ref('showitemrank', $showitemrank);
 
 		if (!isset($status)) {
 			$status = "o";

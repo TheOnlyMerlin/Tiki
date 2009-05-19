@@ -1,6 +1,10 @@
 {* $Id$ *}
 {strip}
 <div class="cbox">
+	<div class="cbox-title">
+	{tr}{$crumbs[$crumb]->title}{/tr}
+	{help crumb=$crumbs[$crumb]}</div>
+
 	<form action="tiki-admin.php?page=look"  id="look" name="look" onreset="return(confirm('{tr}Cancel Edit{/tr}'))"  class="admin" method="post">
 		<div class="heading input_submit_container" style="text-align: right">
 			<input type="submit" name="looksetup" value="{tr}Apply{/tr}" />
@@ -116,7 +120,6 @@
 								<option value="css_specified_only" {if $prefs.transition_style_ver eq 'css_specified_only'}selected="selected"{/if}>{tr}Use @version:x.x specified in theme css or none if not specified{/tr}</option>
 								<option value="1.9" {if $prefs.transition_style_ver eq '1.9'}selected="selected"{/if}>{tr}Use @version:x.x specified in theme css or 1.9 if not specified{/tr}</option>
 								<option value="2.0" {if $prefs.transition_style_ver eq '2.0'}selected="selected"{/if}>{tr}Use @version:x.x specified in theme css or 2.0 if not specified{/tr}</option>
-								<option value="3.0" {if $prefs.transition_style_ver eq '3.0'}selected="selected"{/if}>{tr}Use @version:x.x specified in theme css or 3.0 if not specified{/tr}</option>
 							</select>
 						</td>
 					</tr>
@@ -1028,16 +1031,6 @@
 									<input class="fullwidth" id="iepngfix_elements" type="text" name="iepngfix_elements" size="32" value="{$prefs.iepngfix_elements}" />
 								</div>
 							</div>
-						</td>
-					</tr>
-					<tr>
-						<td width=30%>
-			        		<label for="menus_items_icons">{tr}Allow users to define icons for menus entries{/tr}</label>
-						</td>
-						<td width=2%>
-						</td>
-						<td>
-							<input type="checkbox" name="menus_items_icons" id="menus_items_icons" {if $prefs.menus_items_icons eq 'y'}checked="checked"{/if}/>
 						</td>
 					</tr>
 				</table>

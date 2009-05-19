@@ -101,6 +101,8 @@ input[type=password] {
 
 button,
 .button,
+.button2,
+.submitbutton,
 .button input,
 .calbuttonBox {
 	background:#4E4E4E url(darkroom/button.png) top left repeat-x;
@@ -131,8 +133,10 @@ input[type=reset] {
 
 button:hover,
 .button:hover,
+.button2:hover,
 input[type=submit]:hover,
 input[type=reset]:hover,
+.submitbutton:hover,
 .button input:hover,
 .calbuttonBox:hover {border: 1px solid #B2B2B2}
 
@@ -1089,7 +1093,7 @@ td.form {
 /* Needed for light-on-dark theme */
 div.quicktag {}
 div.quicktag img,
-#wikihelp-tab td img {background: #292929}
+#wikihelp-tab td img {background: #e4e4e4}
 div#helptool {}
 
 /* links to view an object from a table listing objects can be generalized to this link */
@@ -1314,6 +1318,7 @@ td.wikicell {
 	border-bottom: 1px solid #A9A9A9}
 
 .editdate {padding-bottom: 5px; padding-top: 5px}
+#textarea-toolbar {background: #e4e4e4/* url(darkroom/button.png) repeat-x*/}
 
 div#page-bar {
 	display: block;
@@ -2318,8 +2323,7 @@ td.calodd, td.caleven {border: 1px solid #999999}
 .daterow:hover {border: 1px solid #aaa}
 
 a.viewmodeon img.icon {border: white solid 1px !important;padding:0 0 0 2px;}
-.tabrow .viewmode { float: left; }
-.viewmode div {display: inline;}
+
 /*****  Polls  *****/
 
 div.pollresults {

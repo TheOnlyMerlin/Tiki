@@ -530,11 +530,6 @@ name="w_displayed_default" {if $prefs.w_displayed_default eq 'y'} checked="check
 	<div class="adminoptionlabel"><label for="feature_create_webhelp">{tr}Create webhelp from structure:{/tr}</label></div>
 </div>
 
-<div class="adminoptionbox">
-	<div class="adminoption"><input type="checkbox" id="page_n_times_in_a_structure" name="page_n_times_in_a_structure" {if $prefs.page_n_times_in_a_structure eq 'y'}checked="checked"{/if}/></div>
-	<div class="adminoptionlabel"><label for="page_n_times_in_a_structure">{tr}A page can occur multiple times in a structure:{/tr}</label></div>
-</div>
-
 </div>	
 </div>
 
@@ -754,11 +749,7 @@ name="w_displayed_default" {if $prefs.w_displayed_default eq 'y'} checked="check
 
 <div class="adminoptionbox">
 	<div class="adminoption"><input type="checkbox" id='feature_listorphanPages' name="feature_listorphanPages" {if $prefs.feature_listorphanPages eq 'y'}checked="checked"{/if}/></div>
-	<div class="adminoptionlabel"><label for="feature_listorphanPages">{tr}Orphan pages{/tr} </label></div>
-</div>
-<div class="adminoptionbox">
-	<div class="adminoption"><input type="checkbox" id='feature_listorphanStructure' name="feature_listorphanStructure" {if $prefs.feature_listorphanStructure eq 'y'}checked="checked"{/if}/></div>
-	<div class="adminoptionlabel"><label for="feature_listorphanStructure">{tr}Pages not in structure{/tr} </label></div>
+	<div class="adminoptionlabel"><label for="feature_listorphanPages">{tr}Orphan page{/tr} </label></div>
 </div>	 
 
 <div class="adminoptionbox">

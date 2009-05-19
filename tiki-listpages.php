@@ -11,7 +11,7 @@ $section = 'wiki page';
 require_once('tiki-setup.php');
 require_once('lib/ajax/ajaxlib.php');
 
-$auto_query_args = array('initial','maxRecords','sort_mode','find','lang','langOrphan', 'findfilter_orphan');
+$auto_query_args = array('initial','maxRecords','sort_mode','find','lang','langOrphan');
 
 $smarty->assign('headtitle',tra('Pages'));
 
@@ -166,32 +166,6 @@ if ( ! empty($multiprint_pages) ) {
 		global $categlib; include_once ('lib/categories/categlib.php');
 		$filter['categId'] = $categlib->get_category_id($_REQUEST['category']);
 		$smarty->assign_by_ref('find_categId', $filter['categId']);	
-	}
-	if ( (!empty($_REQUEST['page_orphans']) && $_REQUEST['page_orphans'] == 'y') || (isset($_REQUEST['findfilter_orphan']) && $_REQUEST['findfilter_orphan'] == 'page_orphans')) {
-		$listpages_orphans = true;
-	}
-	if ($prefs['feature_listorphanPages'] == 'y') {
-		if ( (!empty($_REQUEST['page_orphans']) && $_REQUEST['page_orphans'] == 'y') || (isset($_REQUEST['findfilter_orphan']) && $_REQUEST['findfilter_orphan'] == 'page_orphans')) {
-			$filter_values['orphan'] = 'page_orphans';
-		}
-		$filters['orphan']['page_orphans'] = tra('Orphan pages');
-	}
-	if ($prefs['feature_wiki_structure'] == 'y') {
-		if ( (!empty($_REQUEST['structure_orphans']) && $_REQUEST['structure_orphans'] == 'y') || (isset($_REQUEST['findfilter_orphan']) && $_REQUEST['findfilter_orphan'] == 'structure_orphans')) {
-			$filter['structure_orphans'] = true;
-		}
-		if ($prefs['feature_listorphanStructure'] == 'y') {
-			if ( (!empty($_REQUEST['structure_orphans']) && $_REQUEST['structure_orphans'] == 'y') || (isset($_REQUEST['findfilter_orphan']) && $_REQUEST['findfilter_orphan'] == 'structure_orphans')) {
-				$filter_values['orphan'] = 'structure_orphans';
-			}
-		$filters['orphan']['structure_orphans'] = tra('Pages not in structure');
-		}
-	}
-	if (!empty($filters)) {
-		$filter_names['orphan'] = tra('Type');
-		$smarty->assign_by_ref('filters', $filters);
-		$smarty->assign_by_ref('filter_names', $filter_names);
-		$smarty->assign_by_ref('filter_values', $filter_values);
 	}
 
 	if (isset($_REQUEST["initial"])) {
