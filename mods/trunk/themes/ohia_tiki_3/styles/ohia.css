@@ -51,7 +51,7 @@ html>body {font-size: 72% !important}
 	margin-left: 30px !important;
 	margin-right: 30px !important}
 
-#c1c2 #wrapper #col1 .content {
+#c1c2 #wrapper #col1 > .content {
 	background: transparent;
 	color: #f4f4f4;
 	padding: 0 1em}
@@ -63,7 +63,7 @@ html>body {font-size: 72% !important}
 	width: 240px;
 	overflow: hidden}
 
-#c1c2 #col2 .content {
+#c1c2 #col2 > .content {
 	margin: auto;
 	padding-top: 20px}
 
@@ -454,16 +454,26 @@ img.flipmodimage:hover {border: 1px solid #990000 !important}
 	margin-bottom: 10px}
 
 /** Other boxes **/
-div.cbox {
+.cbox {
 	color: #f4f4f4;
 	background: #030511;
-	border: 1px solid #333}
+	border-color: #333}
+	
+.cbox-title {
+	border-color: #333;
+	text-align: center;
+	font-weight: bold}
 
 .rbox-title,
 .rbox-data {
 	background: #5e0000;
 	border-color: #990000;
 	color: #fff}
+	
+div.simplebox {
+	background: #030511;
+	border: 1px dotted #a9a9a9;
+	color: #f4f4f4}
 
 /***** Tables, Tabs *****/
 /** Tables **/
