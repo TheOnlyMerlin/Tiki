@@ -8,34 +8,30 @@
 
 -=Template Files=-
 (All file paths from Tiki root directory.)
-
 * templates/styles/litejazz/credits.tpl
-* templates/styles/litejazz/header.tpl
 * templates/styles/litejazz/index.tpl
 * templates/styles/litejazz/litejazz_bottom.tpl
 * templates/styles/litejazz/litejazz_top.tpl
 * templates/styles/litejazz/tiki.tpl
-* templates/styles/litejazz/tiki-bot_bar.tpl
-* templates/styles/litejazz/tiki-browse_image.tpl
-* templates/styles/litejazz/tiki-listblogs.tpl
-* templates/styles/litejazz/read_article.tpl
-* templates/styles/litejazz/tiki-site_header.tpl
-* templates/styles/litejazz/tiki-top_bar.tpl
-* templates/styles/lightjazz/tiki-view_articles.tpl
 
 -=Stylesheet and background images=-
 * styles/litejazz.css
-* styles/litejazz-green.css
-* styles/litejazz-red.css
+* styles/litejazz.css
 * styles/litejazz/bg.png
 * styles/litejazz/body-bg.png
-* styles/litejazz/footer-bg.png
+* styles/litejazz/botbar_custcode.png
+* styles/litejazz/footer.jpg
+* styles/litejazz/header.jpg
+* styles/litejazz/index.php
+* styles/litejazz/litejazz.png
 * styles/litejazz/menu-bg.png
 * styles/litejazz/menu-div.png
 * styles/litejazz/menubg-over.png
-* styles/litejazz/topbar_custcode-blue.png
-* styles/litejazz/topbar_custcode-green.png
-* styles/litejazz/topbar_custcode-red.png
+* styles/litejazz/options/green.css
+* styles/litejazz/options/red.css
+* styles/litejazz/options/blue/topbar_custcode.png
+* styles/litejazz/options/green/topbar_custcode.png
+* styles/litejazz/options/red/topbar_custcode.png
 
  
 -=Documentation=-
@@ -43,7 +39,8 @@ http://themes.tikiwiki.org/LiteJazz
 http://zukakakina.com/LiteJazz
  
 -=Version=-
-* Compatible with TikiWiki 2.0.
+3.0
  
 -=Changelog=-
+2 updated for Tiki 3
 1 initial package

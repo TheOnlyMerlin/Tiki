@@ -35,6 +35,6 @@
 		{eval var=$prefs.sitemycode}{* here will be parsed the custom site header code *}
 	{/if}
 	{/if}
-	<div id="sitesubtitle">{eval var=$prefs.sitesubtitle}</div>
-	<div id="sitetitle">{eval var=$prefs.sitetitle}</div>
+	<div id="sitesubtitle">{$prefs.sitesubtitle}</div>
+	<div id="sitetitle"><a href="index.php">{$prefs.sitetitle}</a></div>
 </div>
