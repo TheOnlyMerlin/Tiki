@@ -336,7 +336,7 @@ div#sioptions {
 	padding-bottom: 1px}
 
 .cssmenu_horiz li:hover {}
-.cssmenu_ver li:hover {background: 0}
+.cssmenu_ver li:hover {background: none}
 	
 .cssmenu a,	
 .cssmenu_horiz a,
@@ -605,7 +605,7 @@ img.flipmodimage:hover {border: 1px solid #6d809f !important}
 	background: url(fluidindex/child.gif) no-repeat 0 .2em}
 
 .box-data ul.cssmenu_vert li,
-.box-data ul li.freetag {background: 0}
+.box-data ul li.freetag {background: none}
 
 .box-data ul li ul li{
 	padding-left: 10px;
@@ -867,7 +867,7 @@ div.cachedpage {}
 .wiki {}
 .wikinew {}
 
-.wiki-edithelp {display: 0}
+.wiki-edithelp {display: none}
 
 #wikihelp-tab table,
 #wikihelp-tab table td {
@@ -1032,13 +1032,7 @@ div.articlesource {
 	font-style: italic;
 	font-size: 90%}
 
-
 /***** Blogs *****/
-div.blogheading {
-	display: block;
-	width: 100%;
-	clear: both}
-
 div.blogtitle {
 	font-size: 1.3em;
 	font-weight: bold;
@@ -1048,53 +1042,29 @@ div.blogtitle {
 	letter-spacing: .4pt;
 	line-height: 80%}
 
-div.blogdesc {
-	display: block;
-	width: 40%;
-	padding: 8px;
-	margin-top: 8px;
-	margin-left: 6px}
-
 div.bloginfo {
 	text-align: right;
-	display: block;
 	padding: 3px;
 	line-height: 150%}
 
 * html .bloginfo table {font-size: 11px}
 
-div.blogtools {
-	padding: 3px;
-	text-align: right;
-	margin-bottom: -2em}
+div.blogtools {margin-bottom: -2em}
 
 .blogpost {
 	margin-top: 3.5em;
 	margin-bottom: 2em}
 
-a.blogt,
-a.blog:visited {}
-a.blogt:hover {}
-
 .postinfo {
 	border-top: 1px dotted #999;
 	border-bottom: 1px dotted #999;
-	margin-bottom: 20px;
-	margin-top: 10px;
 	background: #E6EAEC;
 	font-size: 1.2em;
 	width: 100%}
 
 .small {font-size: .9em}
-div.postinfo a.linkmodule {}
-.postinfo div {}
-
-div.posthead {
-	text-align: left;
-	padding: 3px}
 
 span.posthead {
-	display: block;
 	font-weight: bold;
 	letter-spacing: .4pt;
 	border-bottom: 1px solid #2F3E4F}
@@ -1131,32 +1101,16 @@ div.date {
 	width: 35px;
 	color: #6D809F}
 
-div.postfooter {
-	clear: both;
-	float: right}
-
-
 /***** Forums *****/
-body.tiki_forums table.normal {margin: auto}
-#forumpost {display: 0}
-#forumpostopen {display: block}
 
 table.commentinfo {
 	width: 100%;
 	background: #fff}
 
-.post {
-	clear: both;
-	margin-top: 8px;
-	width: 100%}
+.post {margin-top: 8px}
 
 .post .postbody {
-	clear: both;
-	width: 100%;
-	min-width: 100%;
 	border: solid 1px #8c9eaa;
-	margin: 0;
-	padding: 0;
 	background: white}
 	
 * html .post .postbody {font-size: 11px}
@@ -1169,14 +1123,11 @@ table.commentinfo {
 	padding-top: 0;
 	margin-top: 0}
 
-.post .postbody-title .checkbox {float: left}
-
 .post .postbody-title .title {
 	color: #666;
 	border-bottom: 1px solid #8c9eaa;
 	font-weight: bold;
 	font-size: 1.1em;
-	margin-left: 5px;
 	margin-top: 0}
 	
 .post .postbody-title .title h2 {margin-top: 0}
@@ -1194,7 +1145,6 @@ table.commentinfo {
 .post .author {	
 	float: left;
 	text-align: left;
-	vertical-align: top;
 	width: 25%;
 	height: 100%}
 
@@ -1254,7 +1204,7 @@ table.commentinfo {
 	padding: 3px;
 	border: 1px solid #8c9eaa;
 	background: #dfdac3;
-	/*display: 0*/}
+	/*display: none*/}
 
 .sub_comment {padding-left: 20px}
 
@@ -1280,72 +1230,19 @@ table.commentinfo {
 	border-bottom: 0;
 	padding: 1px}
 
-.forum_actions .headers .infos {
-	float: right;
-	font-size: smaller;
-	padding-top: 2px}
-
-.thread_pagination {
-	text-align: center;
-	margin-bottom: 10px}
-
-.nb_replies {white-space: nowrap}
-.post_preview, .top_post {margin-bottom: 15px}
-/*.post .postbody .signature {float: left}*/
- 
-/* Comments */
-#comzone {display: 0}
- 
-#comzoneopen {
-	display: block;
-	margin: 5px 0px;
-	padding: 0}
- 
-span.commentstitle {
-	font-weight: bold;
-	font-size: 1.2em}
-
-/* find */
-.subcomment {margin-left: 10px}
-
-/* Help box*/
+.forum_actions .headers .infos {font-size: smaller}
 div.commentsedithelp {background: #adbac3; color: black; border: 1px solid #ff0000; text-align: center; font-weight: bold}
-textarea#editpost2 {width: 100%}
 
 /**** Image Galleries ****/
 td.oddthumb {
 	background: #fff;
-	border: 3px solid white;
-	border-collapse: collapse}
+	border: 3px solid white}
  
 td.eventhumb {
 	background: #fff;
-	border: 3px solid white;
-	border-collapse: collapse}
+	border: 3px solid white}
 
-td.eventhumb img {
-	margin-left: 6px;
-	margin-right: 6px}
-
-div.thumbnails {}
-
-img.athumb {
-	border: 0;
-	margin: auto}
-
-.caption {}
-p.norecords {}
-div.imagetitle {}
-div.gallerylink {}
-
-div#browse_image {
-	background: white;
-	width: 100%}
-
-div.showimage {
-	width: 100%;
-	text-align: center;
-	padding: 6px}
+div#browse_image {background: white}
 
 /***** File Galleries *****/
 
@@ -1622,7 +1519,7 @@ a.admbox span {color: #000}
 
 /***** Ajax, jquery. etc. *****/
 /***** Ajax *****/
-div#ajaxLoading {	display: 0;
+div#ajaxLoading {	display: none;
 	position: absolute;
 	top: 50px;
 	right: 50%;

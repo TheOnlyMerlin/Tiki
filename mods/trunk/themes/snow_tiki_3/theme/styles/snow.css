@@ -391,7 +391,7 @@ a.phplm:active {
 a.phplm:hover {
 	color: #6c7b8c;
 	text-decoration: underline;
-	background: 0}
+	background: none}
 
 a.phplmselected:link,
 a.phplmselected:visited,
@@ -609,7 +609,7 @@ table.admin div#content1 div.tabcontent div.cbox {background: transparent}
 
 /***** Wiki *****/
 body.tiki_wiki #c1c2 #wrapper #col1 > .content {
-	background: 0;
+	background: none;
 	border-top: 0}
 
 h1.pagetitle {
@@ -730,7 +730,7 @@ div.cachedpage {}
 .wikicache:hover {}
 .wiki {}
 .wikinew {}
-.wiki-edithelp {display: 0}
+.wiki-edithelp {display: none}
 #wikihelp-tab table{}
 #wikihelp-tab table td {padding: 2px}
 textarea.wikiedit {}
@@ -810,7 +810,7 @@ ul.toc * {border: 0}
 
 /***** Articles ****/
 body.tiki_cms #tiki-center > h1 {
-	background: 0;
+	background: none;
 	padding-left: 6px;
 	font-size: 1.4em;
 	color: black}
@@ -897,11 +897,6 @@ div.articlesource {
 
 
 /***** Blogs *****/
-div.blogheading {
-	display: block;
-	width: 100%;
-	clear: both}
-
 div.blogtitle {
 	font-size: 1.3em;
 	font-weight: bold;
@@ -910,54 +905,23 @@ div.blogtitle {
 	font-weight: bold;
 	line-height: 80%}
 
-div.blogdesc {
-	display: block;
-	width: 40%;
-	padding: 8px;
-	margin-top: 8px;
-	margin-left: 6px}
-
 div.bloginfo {
 	text-align: center;
-	display: block;
 	padding: 3px;
 	line-height: 150%;
 	text-transform: 0}
-
-div.blogtools {
-	padding: 3px;
-	text-align: right}
-
-.blogpost {
-
-}
-
-/*.postinfo div a img,*/
-a.blogt,
-a.blog:visited {
-	border: 0;
-	text-decoration: none}
 
 a.blogt:hover {
 	color: #FFF;
 	border-bottom: 1px dotted #FFF}
 
-div.postinfo a.linkmodule {}
-
-.postinfo div {
-	margin-top: 30%}
-
 div.posthead {background: url(snow/pagetitle-bg.jpg) repeat-x;
-	width: 100%;
 	min-height: 35px;
 	margin-top: 0;
 	margin-bottom: 0;
 	border-bottom: 1px solid #A8ADCA}
 
-.postinfo {
-	margin-bottom: 20px;
-	margin-top: 10px;
-	font-size: 1.2em}
+.postinfo {font-size: 1.2em}
 
 .postinfo a {
 	color: #9CF;
@@ -971,8 +935,6 @@ div.posthead {background: url(snow/pagetitle-bg.jpg) repeat-x;
 	font-weight: bolder;
 	padding-left: 6px}
 
-span.posthead {}
- 
 div.posthead h3 {
 	background: url(snow/pagetitle-bullet-sm.gif) no-repeat;
 	background-position: 4px 8px;
@@ -984,35 +946,13 @@ div.posthead h3 {
 
 div.postbody {
 	margin-right: 8px;
-	margin-bottom: 1em;
-	/*padding:6px 6px 0*/}
-
-div.postfooter {
-	clear: both;
-	float: right;
-	margin-bottom: 2em}
-
+	margin-bottom: 1em}
 
 /***** Forums *****/
-body.tiki_forums table.normal {margin: auto}
-#forumpost {display: 0}
-#forumpostopen {display: block}
 
-table.commentinfo {
-	width: 100%;
-	background: #fff}
+table.commentinfo {background: #fff}
 
-.post {
-	clear: both;
-	width: 100%}
-
-.post .postbody {
-	clear: both;
-	width: 95%;
-	min-width: 95%;
-	border: solid 1px #6a6a6a;
-	/*margin: 5px;
-	background: url(snow/flakesptn2.jpg) !important*/}
+.post .postbody {border: solid 1px #6a6a6a}
 
 .post .postbody-title {
 	display: block;
@@ -1022,8 +962,6 @@ table.commentinfo {
 	background: url(snow/pagetitle-bg.jpg) repeat-x}
 	
 * html .post .postbody-title {height: 36px}
-
-.post .postbody-title .checkbox {float: left}
 
 .post .postbody-title .title {
 	color: #000;
@@ -1043,19 +981,13 @@ table.commentinfo {
 	color: #000;
 	height: 100%;
 	padding: 0;
-	text-align: left;
-	/*width: 100%;*/
 	font-size: 1em !important}
 	
-.postbody-content {
-	background: url(snow/flakesptn3.jpg);
-	/*padding: 4px;
-	min-width: 100%*/}
+.postbody-content {background: url(snow/flakesptn3.jpg)}
 
 .post .author {	
 	float: left;
 	text-align: left;
-	vertical-align: top;
 	width: 30%;
 	margin-left: 0;
 	margin-top: 0}
@@ -1065,8 +997,6 @@ table.commentinfo {
 	background: #E0EAF4;
 	padding: 0 2px 2px 2px}
 
-.post .author_info .icons {display: block}
-.post .author_info .icons .actions {margin-right: 10px}
 .post .author_post_info_on {font-style: italic}
 
 .post .author_info {
@@ -1077,24 +1007,10 @@ table.commentinfo {
 	border-right: 1px solid #D7E5F3;
 	border-bottom: 1px solid #D7E5F3}
 
-.commentStyle_headers .author_info {float: left}
-.post .postbody-title .actions {
-	float: right;
-	font-size: 1em}
-
+.post .postbody-title .actions {font-size: 1em}
 .postbody .quoteheader {margin-top: 0}
 
-.post .postbody .attachments {
-	clear: both;
-	border-top: 1px dotted #D9D9D9;
-	margin-top: 5px}
-
-.post .postbody .attachments img {vertical-align: text-bottom}
-
-.post .postfooter .actions, .post .postfooter .status {
-	display:inline;
-	margin-left: 5px;
-	vertical-align: top}
+.post .postbody .attachments {border-top: 1px dotted #D9D9D9}
 
 .post .postfooter .status {font-size: 10px}
 .post .postfooter {text-align: right}
@@ -1106,112 +1022,34 @@ table.commentinfo {
 	padding: 0 2px}
 
 .post .avatar {
-	margin-bottom: 5px;
-	margin-left: 4px;
 	padding: 3px;
 	border: 1px solid #ACCCDD;
-	background: #E0EAF4;
-	display: 0}
-
-.sub_comment {padding-left: 20px}
-
-.sub_comment_area {
-	clear: both;
-	background: url("../../img/edge.gif") no-repeat top left}
+	background: #E0EAF4}
 
 .forum_actions .actions {
-	clear: both;
 	border: 1px solid #A9B8C2;
 	background: url(snow/flakesptn2.jpg);
-	padding: 3px;
-	vertical-align: middle;
 	color: #fff}
 
-.forum_actions .actions .action {margin-right: 10px}
-.forum_actions .headers {vertical-align: bottom}
 
 .forum_actions .headers .title {
-	float: left;
 	background: #C7D0D9;
-	border: 1px solid #999;
-	border-bottom: 0;
-	padding: 1px}
+	border: 1px solid #999}
 
-.forum_actions .headers .infos {
-	float: right;
-	font-size: smaller;
-	padding-top: 2px}
-
-.thread_pagination {
-	text-align: center;
-	margin-bottom: 10px}
-
-.nb_replies {white-space: nowrap}
-.post_preview, .top_post {margin-bottom: 15px}
-/*.post .postbody .signature {float: left}*/
- 
-/* Comments */
-#comzone {display: 0}
- 
-#comzoneopen {
-	display: block;
-	margin: 5px 0px;
-	padding: 0}
- 
-span.commentstitle {
-	font-weight: bold;
-	font-size: 1.2em}
-	
+.forum_actions .headers .infos {font-size: smaller}
 input#comments-title {font-size: 1.1em; width: 300px}
-
-/* find */
 .subcomment {margin-left: 10px}
 
-/* Help box*/
-div.commentsedithelp {background: #ffcfcf; color: black; border: 1px solid #ff0000; text-align: center; font-weight: bold}
-textarea#editpost2 {width: 100%;font-size: 1.1em}
+div.commentsedithelp {
+	background: #ffcfcf;
+	color: black;
+	border: 1px solid #ff0000;
+	text-align: center;
+	font-weight: bold}
+
+textarea#editpost2 {font-size: 1.1em}
 
 /**** Image Galleries ****/
-table.galtable {}
-html>body .galtable {}
-
-td.oddthumb {
-	border-collapse: collapse}
- 
-td.eventhumb {
-	border-collapse: collapse}
-
-td.eventhumb img {
-	margin-left: 6px;
-	margin-right: 6px}
-
-img.athumb {
-	border: 0;
-	margin: auto}
-
-.caption {}
-p.norecords {}
-div.imagetitle {}
-div.gallerylink {}
-div#browse_image {} /* Check - from fluidindex ?? */
-div.showimage {}
-div.imgaldescr {}
-.sorttitle {}
-
-/* Check -- still valid ?? 
-
-div.browsegallery {
-	text-align: center;
-	width: 100%}
-
-div#browse_image {
-	width: 100%}
-
-div.showimage {
-	width: 100%;
-	text-align: center;
-	padding: 6px}
-*/
 
 /***** File Galleries *****/
 
@@ -1331,7 +1169,7 @@ Caltrack a:visited {color: #00BD02}
 
 .calcontent a.linkmenu,
 .calcontent a.linkmenu:hover {
-	background: 0;
+	background: none;
 	padding: 0}
 
 .calfocus {font-size: 90%}
@@ -1417,7 +1255,7 @@ a.admbox.off:active {border: 1px solid #9f9f9f}
 /***** Ajax, jquery. etc. *****/
 /***** Ajax *****/
 div#ajaxLoading {
-	display: 0;
+	display: none;
 	position: absolute;
 	top: 50px;
 	right: 50%;

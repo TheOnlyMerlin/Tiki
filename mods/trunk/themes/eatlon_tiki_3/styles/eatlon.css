@@ -634,7 +634,7 @@ div.cachedpage {}
 .wikicache:hover {}
 .wiki {}
 .wikinew {}
-.wiki-edithelp {display: 0}
+.wiki-edithelp {display: none}
 
 #wikihelp-tab table,
 #wikihelp-tab table td {
@@ -784,10 +784,6 @@ div.articlesource {
 
 
 /***** Blogs *****/
-div.blogheading {
-	display: block;
-	width: 100%;
-	clear: both}
 
 div.blogtitle {
 	font-size: 1.3em;
@@ -797,43 +793,21 @@ div.blogtitle {
 	font-weight: bold;
 	line-height: 80%}
 
-div.blogdesc {
-	display: block;
-	width: 40%;
-	padding: 8px;
-	margin-top: 8px;
-	margin-left: 6px}
-
 div.bloginfo {
 	text-align: center;
-	display: block;
 	padding: 3px;
 	line-height: 150%;
 	text-transform: 0}
-
-div.blogtools {
-	padding: 3px;
-	text-align: right;
-	/*margin-bottom: -2em;*/}
-
-.blogpost {}
  
 .postinfo a {
 	color: #9CF;
 	text-decoration: none;
 	border-bottom: 1px dotted #9CF}
 
-/*.postinfo div a img,*/
-a.blogt,
-a.blog:visited {
-	border: 0;
-	text-decoration: none}
-
 a.blogt:hover {
 	color: #FFF;
 	border-bottom: 1px dotted #FFF}
 
-div.postinfo a.linkmodule {}
 .postinfo div {margin-top: 30%}
 
 div.posthead {
@@ -846,7 +820,6 @@ div.posthead {
 	font-size: 1.2em}
 
 span.posthead {
-	display: block;
 	font-weight: bold;
 	letter-spacing: .4pt}
  
@@ -857,24 +830,9 @@ div.postbody {
 	line-height: inherit;
 	margin-bottom: 1em}
 
-div.postfooter {
-	clear: both;
-	float: right;
-	margin-bottom: 2em}
-
-
 /***** Forums *****/
-body.tiki_forums table.normal {margin: auto}
-#forumpost {display: 0}
-#forumpostopen {display: block}
-.post {width: 100%}
 
 .post .postbody {
-	clear: both;
-	width: 100%;
-	min-width: 100%;
-	margin: 0;
-	margin-top: 5px;
 	background: white;
 	font-size: 1em}
 	
@@ -886,16 +844,11 @@ body.tiki_forums table.normal {margin: auto}
 	padding: 3px;
 	border-bottom: 1px solid #aaa}
 
-.post .postbody-title .checkbox {float: left}
-
 .post .postbody-title .title {
 	color: #29677B;
-	font-weight: bold;
-	margin-left: 5px;
-	margin-top: 3px}
-	
-.title h2 {}
-.postbody-title br.clear {display: 0}
+	font-weight: bold}
+
+.postbody-title br.clear {display: none}
 	
 .title a.link {
 	color: #29677B;
@@ -912,57 +865,24 @@ body.tiki_forums table.normal {margin: auto}
 .post .author {	
 	float: left;
 	text-align: left;
-	vertical-align: top;
 	width: 33%;
 	margin-left: -3px;
 	margin-right: 4px;
 	background: url(eatlon/head_bg.gif) repeat-x}
 	
-.post .author_post_info {
-	/*display: block;*/
-	padding: 2px}
-	
+.post .author_post_info {padding: 2px}
 .post .author_post_info:first-letter {text-transform: uppercase}
 
-.post .author_info .icons {display: block}
-.post .author_info .icons .actions {margin-right: 10px}
-
 .post .author_post_info_on {font-style: italic}
+
 .post .author_info {
-	/*float: right;*/
 	padding: 0 2px 2px 2px;
-	margin-left: 5px;
-	/*border-left: 1px solid #D7E5F3;
-	border-bottom: 1px solid #D7E5F3*/}
+	margin-left: 5px}
 
-.commentStyle_headers .author_info {float: left}
-
-.post .postbody-title .actions {
-	float: right;
-	font-size: 1em}
-
-.postbody-content {/*margin: 3px;*/ padding: 4px}
-
-.post .postbody .attachments {
-	clear: both;
-	border-top: 1px dotted #8f8f8f;
-	margin-top: 5px}
-
-.post .postbody .attachments img {vertical-align: text-bottom}
-
-.post .postfooter .actions,
-.post .postfooter .status {
-	display: inline;
-	margin-left: 5px;
-	vertical-align: top}
-
+.post .postbody-title .actions {font-size: 1em}
+.postbody-content {padding: 4px}
+.post .postbody .attachments {border-top: 1px dotted #8f8f8f}
 .post .postfooter .status {font-size: 1em}
-
-.post .postfooter {
-	float: right;
-	text-align: right}
-
-.post .inner > .postfooter {clear: both}
 
 .post .contribution {
 	background: #F0F8FF;
@@ -972,72 +892,19 @@ body.tiki_forums table.normal {margin: auto}
 .post .avatar {
 	float: left;
 	width: 33%;
-	margin-bottom: 5px;
-	margin-right: 4px;
-	padding: 3px;
 	border: 1px solid #ACCCDD;
 	background: inherit}
 
-.sub_comment {padding-left: 20px}
-
-.sub_comment_area {
-	clear: both;
-	background: url("../../img/edge.gif") no-repeat top left}
-
 .forum_actions .actions {
-	clear: both;
 	background: #E1EBF5;
-	padding: 3px 3px 3px 3px;
-	vertical-align: middle}
-
-.forum_actions .actions .action {margin-right: 10px}
-.forum_actions .headers {vertical-align: bottom}
+	padding: 3px 3px 3px 3px}
 
 .forum_actions .headers .title {
-	float: left;
 	background: #e1ebf5;
-	border: 0;
 	padding: 1px;
 	font-weight: bold}
 
-.forum_actions .headers .infos {
-	float: right;
-	font-size: smaller;
-	padding-top: 2px}
-
-.thread_pagination {
-	text-align: center;
-	margin-bottom: 10px}
-
-.nb_replies {white-space: nowrap}
-
-.post_preview,
-.top_post {margin-bottom: 15px}
-
-/*.post .postbody .signature {float: left}*/
-
-/* Comments */
-
-#comzone {
-	margin: 5px 0;
-	padding: 0}
- 
-#comzoneopen {
-	margin: 5px 0;
-	padding: 0}
- 
-span.commentstitle {
-	font-weight: bold;
-	font-size: 1.1em}
-	
-textarea#editpost2 {
-	width: 95%;
-	/*font-size: 1em*/}
-
-/* Find */
-.subcomment {margin-left: 10px}
-
-/* Help box*/
+.forum_actions .headers .infos {font-size: smaller}
 
 div.commentsedithelp {
 	background: #ffcfcf;
@@ -1306,7 +1173,7 @@ Caltrack a:visited {color: #00BD02}
 
 .calcontent a.linkmenu,
 .calcontent a.linkmenu:hover {
-	background: 0;
+	background: none;
 	padding: 0}
 
 .calfocus {
@@ -1426,7 +1293,7 @@ a.admbox span {color: #fff}
 /***** Ajax, jquery. etc. *****/
 /***** Ajax *****/
 div#ajaxLoading {
-	display: 0;
+	display: none;
 	position: absolute;
 	top: 50px;
 	right: 50%;
