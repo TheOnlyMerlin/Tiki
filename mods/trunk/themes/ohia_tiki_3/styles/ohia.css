@@ -958,15 +958,10 @@ div.postfooter {
 
 /***** Forums *****/
 body.tiki_forums table.normal {margin: auto}
-#forumpost {display: 0}
-#forumpostopen {display: block}
-.post {width: 100%}
+
+
 .post .postbody {
 	clear: both;
-	width: 100%;
-	min-width: 100%;
-	/*border: solid 1px darkgray;
-	border-top: solid 1px gray;*/
 	margin: 0;
 	margin-top: 5px;
 	padding: 0;
@@ -975,12 +970,11 @@ body.tiki_forums table.normal {margin: auto}
 	
 * html .post .postbody {font-size: 11px}
 
-/* Full path needed to override higher .content properties. */
-#c1c2 #wrapper #col1 .content .post .postbody .content {
+.post .postbody .content {
 	float: left;
 	padding: 0;
 	text-align: left;
-	width: 100% !important;
+	width: 100%;
 	color: #f4f4f4;
 	border: 1px solid #4c4c4c;
 	border-top: 0;
@@ -1522,14 +1516,15 @@ table.default td {
 
 /***** Admin *****/
 a.admbox {
-	border: 1px solid #708090;
+	border: 1px solid #a9a9a9;
 	background: #030511 center no-repeat}
 
 a.admbox:hover,
 a.admbox:focus,
 a.admbox:active {
 	background: #313131 center no-repeat;
-	border: 1px solid #696969}
+	border: 1px solid #696969;
+	color: #fff}
 
 a.admbox.off {border: 1px solid #a9a9a9}
 
