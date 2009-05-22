@@ -54,12 +54,10 @@ div.adminanchors {background: url(blue/header.jpg) repeat-x bottom !important}
 .titlebar {
 	background:#f0f0f0 url(blue/menuhover.jpg) top left repeat-x;
 	color:#505050}
-	
+
 .post .postbody-title {background: transparent url(blue/header.jpg) repeat-x bottom}
-	
-.post .author_post_info {
-	display: block;
-	background: #f3efee url(blue/header.jpg) repeat-x bottom}
+.post .author {background: url(blue/mid.jpg) repeat-x}
+.post .author_post_info {display: block}
 
 #caltable .calfocuson,
 .box-data td.fc a.today,

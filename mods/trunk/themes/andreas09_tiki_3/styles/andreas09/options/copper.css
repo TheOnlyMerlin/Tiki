@@ -56,10 +56,8 @@ div.adminanchors {background: url(copper/header.jpg) repeat-x bottom !important}
 	color:#505050}
 	
 .post .postbody-title {background: transparent url(copper/header.jpg) repeat-x bottom}
-	
-.post .author_post_info {
-	display: block;
-	background: #f3efee url(copper/header.jpg) repeat-x bottom}
+.post .author {background: url(copper/mid.jpg) repeat-x}
+.post .author_post_info {display: block}
 
 #caltable .calfocuson,
 .box-data td.fc a.today,

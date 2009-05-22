@@ -94,8 +94,8 @@ a:visited {
 a:hover {
 	color: #808080;
 	text-decoration: underline}
-
-div {font-size: 1em}
+/*
+div {font-size: 1em}*/
 
 h1, h2, h3, h4 {
 	color: #606060;
@@ -255,8 +255,10 @@ ul, ol {text-align: left}
 
 #sitesearchbar {
 	margin-right: 10px;
-	margin-top: 6px;
+	font-size: 95%;
 	color: #303030}
+	
+#sitesearchbar form {margin-top: 6px; margin-bottom: -6px}
 
 #sitesearchbar .button {
 	border: solid 1px #aaa;
@@ -703,7 +705,7 @@ div.cachedpage {}
 .wiki {}
 .wikinew {}
 textarea#editwiki {font-size: 1.3em}
-.wiki-edithelp {display: 0}
+.wiki-edithelp {display: none}
 img.externallink {}
  
 /* Wiki plugins */
@@ -849,11 +851,6 @@ div.articlesource {
 
 
 /***** Blogs *****/
-div.blogheading {
-	display: block;
-	width: 100%;
-	clear: both}
-
 div.blogtitle {
 	font-size:1.8em;
 	font-weight: bold;
@@ -862,44 +859,19 @@ div.blogtitle {
 	letter-spacing: .4pt;
 	line-height: 80%}
 
-div.blogdesc {
-	display: block;
-	width: 40%;
-	margin-top: 8px;
-	margin-left: 6px}
-
 div.bloginfo {
 	text-align: right;
-	display: block;
 	padding: 3px;
 	line-height: 150%}
 
-div.blogtools {
-	padding: 3px;
-	text-align: right;
-	margin-bottom: -2em}
-
+div.blogtools {margin-bottom: -2em}
 .blogpost {margin-top: 3.5em}
-
-/*.postinfo div a img,*/
-a.blogt,
-a.blog:visited {}
-a.blogt:hover {}
-div.postinfo a.linkmodule {}
-.postinfo div {}
-
-div.posthead {
-	text-align: left;
-	padding: 3px;
-	font-size: 1.3em}
+div.posthead {font-size: 1.3em}
 
 .postinfo {
 	background: #F0F0F0;
 	margin-bottom: 6px;
 	padding: 2px}
-
-.postinfo a {}
-.small {} /* Check ?? (from fluidindex */
 
 span.posthead {
 	display: block;
@@ -924,19 +896,9 @@ div.postfooter {
 	clear: both;
 	float: right}
 
-
 /***** Forums *****/
-.post {
-	clear: both;
-	width: 100%}
-
 .post .postbody {
-	clear: both;
-	width: 100%;
-	min-width: 100%;
 	border: solid 1px #E7EAED;
-	margin: 0;
-	margin-top: 5px;
 	padding: 3px 0 3px 0px;
 	background: #F9FCFF}
 	
@@ -944,19 +906,15 @@ div.postfooter {
 
 .post .postbody-title {
 	display: block;
-	background: transparent url(andreas09/options/black/bodybg.jpg) repeat-x;
+	background: transparent url(andreas09/options/black/header.jpg) repeat-x bottom;
 	border-bottom: 0;
-	margin-bottom: 4px;
-	padding-top: 2px}
-	
-.post .postbody-title .checkbox {float: left}
+	padding: 0;
+	margin: 0}
 
 .post .postbody-title .title {
 	color: #fff;
 	font-weight: bold;
-	font-size: 1.1em;
-	margin-left: 5px;
-	margin-top: 3px}
+	font-size: 1.1em}
 
 .title h2,
 .title a.link {color: #fff}
@@ -966,25 +924,20 @@ div.postfooter {
 .post .author {	
 	float: left;
 	text-align: left;
-	vertical-align: top;
 	width: 30%;
-	margin-left: 0;
-	margin-top: 0}
+	margin: -3px 3px 3px -3px;
+	background: url(andreas09/options/black/mid.jpg) repeat-x}
 
 .post .author_post_info {
 	display: block;
-	background: #f3efee url(andreas09/options/black/bodybg.jpg) repeat-x 0 -101px;
-	padding: 0 0 2px 0}
-
-.post .author_info .icons {display: block}
-.post .author_info .icons .actions {margin-right: 10px}
-.post .author_post_info_on {font-style: italic}
+	background: inherit;
+	padding: 3px}
 
 .post .author_info {
 	float: right;
-	background: #f0f0f0;
-	padding: 0 0 2px 0;
-	margin-right: 5px;
+	background: inherit;
+	padding: 2px;
+	margin-right: 0;
 	border-right: 1px solid #b0b0b0;
 	border-bottom: 1px solid #b0b0b0}
 
@@ -994,28 +947,21 @@ div.postfooter {
 	float: right;
 	font-size: 1em}
 
-#c1c2 #wrapper #col1 .content .post .postbody .content {
+.post .postbody .content {
 	width: 100%;
-	height: 100%;
 	text-align: left;
 	color: #000;
-	padding: 0 3px 3px}
+	padding: 3px}
 
-.post .postbody .attachments {
-	clear: both;
-	border-top: 1px dotted #D9D9D9;
-	margin-top: 5px}
+.post .postbody .attachments {border-top: 1px dotted #D9D9D9}
 
-.post .postbody .attachments img {vertical-align: text-bottom}
-
-.post .postfooter .actions, .post .postfooter .status {
+.post .postfooter .actions,
+.post .postfooter .status {
 	display: inline;
 	margin-left: 5px;
 	vertical-align: top}
 
 .post .postfooter .status {font-size: 1em}
-.post .postfooter {text-align: right}
-.post .inner > .postfooter {clear: both}
 
 .post .contribution {
 	background: #F0F8FF;
@@ -1023,78 +969,22 @@ div.postfooter {
 	padding: 0 2px}
 
 .post .avatar {
-	/*float: right;*/
-	margin-bottom: 5px;
-	margin-left: 4px;
-	padding: 3px;
-	border: 1px solid #ACCCDD;
-	background: #E0EAF4;
-	display: 0}
-
-.sub_comment {padding-left: 20px}
-
-.sub_comment_area {
-	clear: both;
-	background: url("../../img/edge.gif") no-repeat top left}
+	float: left;
+	margin: 3px;
+	border: 1px solid #909090;
+	background: inherit}
 
 .forum_actions .actions {
-	clear: both;
 	border: 1px solid #b0b0b0;
 	background: #e8e9ea;
-	padding: 3px 3px 3px 3px;
-	vertical-align: middle;
 	color: #696969}
 
-.forum_actions .actions .action {margin-right: 10px}
-.forum_actions .headers {vertical-align: bottom}
-
 .forum_actions .headers .title {
-	float: left;
-	background: #C7D0D9;
-	border: 1px solid #999;
-	border-bottom: 0;
-	padding: 1px}
+	background: inherit;
+	border: 1px solid #999}
 
-.forum_actions .headers .infos {
-	float: right;
-	font-size: smaller;
-	padding-top: 2px}
-
-.thread_pagination {
-	text-align: center;
-	margin-bottom: 10px}
-
-.nb_replies {white-space: nowrap}
-
-.post_preview,
-.top_post {margin-bottom: 15px}
-
-/*.post .postbody .signature {float: left}*/
-
-/* Comments */
-#comzone {
-	display: 0;
-	margin: 5px 0;
-	padding: 0}
- 
-#comzoneopen {
-	display: block;
-	margin: 5px 0;
-	padding: 0}
- 
-span.commentstitle {
-	font-weight: bold;
-	font-size: 1.2em}
-
-/* Find */
+.forum_actions .headers .infos {font-size: smaller}
 .subcomment {margin-left: 10px}
-
-/* Help box*/
-div.commentsedithelp {}
-
-textarea#editpost2 {
-	width: 100%;
-	font-size: 1em}
 
 /**** Image Galleries ****/
 table.galtable {width: 100%}
@@ -1460,7 +1350,7 @@ a.admbox.off {border: 1px solid #9f9f9f}
 /***** Ajax *****/
 
 div#ajaxLoading {
-	display: 0;
+	display: none;
 	position: absolute;
 	top: 50px;
 	right: 50%;
