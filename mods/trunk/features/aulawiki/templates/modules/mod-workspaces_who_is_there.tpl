@@ -10,7 +10,7 @@
 </div>
 {foreach key=key item=online_user from=$online_users}
 <div>
-{if $user and $feature_messages eq 'y' and $tiki_p_messages eq 'y'}
+{if $user and $prefs.feature_messages eq 'y' and $tiki_p_messages eq 'y'}
 <a class="linkmodule" href="messu-compose.php?to={$online_user.login}" title="{tr}Send a message to{/tr} {$online_users[ix].login}"><img src="images/workspaces/user_red.gif" hspace="2" vspace="0" border="0" alt="{tr}Send message{/tr}" /></a>
 {/if}
 {$online_user.login|userlink:"linkmodule"}
@@ -21,7 +21,7 @@
 </div>
 {foreach key=key item=offline_user from=$offline_users}
 <div>
-{if $user and $feature_messages eq 'y' and $tiki_p_messages eq 'y'}
+{if $user and $prefs.feature_messages eq 'y' and $tiki_p_messages eq 'y'}
 <a class="linkmodule" href="messu-compose.php?to={$offline_user.login}" title="{tr}Send a message to{/tr} {$offline_users[ix].login}"><img src="images/workspaces/user_blue.gif" hspace="2" vspace="0" border="0" alt="{tr}Send message{/tr}" /></a>
 {/if}
 {$offline_user.login|userlink:"linkmodule"}

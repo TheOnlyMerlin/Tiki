@@ -25,7 +25,8 @@ $resourcesLib = new WorkspaceResourcesLib($dbTiki);
 $workspace = $workspacesLib->get_current_workspace();
 $exit_module = false;
 
-if($feature_wiki != 'y') {
+##########if($feature_wiki != 'y') {
+if($prefs["feature_wiki"] != 'y') {
    	$smarty->assign('error_msg', tra("This feature is disabled").": feature_wiki");
 	$exit_module = true;
 }
