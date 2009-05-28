@@ -4,7 +4,7 @@
 @copyright (C) 2006 Javier Reyes Gomez (eScire.com)
 @license http://www.gnu.org/copyleft/lgpl.html GNU/LGPL
 *}
-{if $feature_blogs eq 'y'}
+{if $prefs.feature_blogs eq 'y'}
 {if $title==""}
 {assign var=title value="{tr}Workspace History{/tr}"}
 {/if}
