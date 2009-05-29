@@ -192,11 +192,12 @@ $todaylink=$father."day=".date("d")."&amp;mon=".date("m")."&amp;year=".date("Y")
 <table class="wscalevents">
 {php}
     foreach ($listevents as $key=>$le) {
-    	$day = date("d-H:i",$key);
+#    	$day = date("d  H i",$key);
     	foreach ($le as $keyevent=>$event) {
-    	$eventname = $event["result"]["name"];
-    	print("<tr><td class=\"wscaleventday\" >$day</td><td class=\"wscaleventname\">$eventname</td></tr>");
-   		}
+	$eventname = $event["result"]["name"];
+	$day= date ("<b>d</b>-H:i",$event["result"]["start"]);
+	print("<tr><td class=\"wscaleventday\" >$day</td><td class=\"wscaleventname\">$eventname</td></tr>");
+	}
     }
 {/php}
 </table>
