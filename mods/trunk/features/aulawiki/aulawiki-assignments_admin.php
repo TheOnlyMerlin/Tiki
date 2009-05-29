@@ -68,7 +68,7 @@ $smarty->assign("showAssignmentPanel", false);
 $smarty->assign('currentWorkspace', $workspace);
 $assignments = $assignmentsLib->get_assignments('startDate_desc', $workspace["workspaceId"]);
 $smarty->assign_by_ref('assignments', $assignments);
-$smarty->assign('ownurl', $tikilib->httpPrefix().$_SERVER["REQUEST_URI"]);
+$smarty->assign('ownurl', $tikilib->httpPrefix().$_SERVER["PHP_SELF"]);
 
 if (($firstDayofWeek = $tikilib->get_user_preference($user, "")) == "") { /* 0 for Sundays, 1 for Mondays */
 	$strRef = "First day of week: Sunday (its ID is 0) - translators you need to localize this string!";

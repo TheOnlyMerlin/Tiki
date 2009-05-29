@@ -42,7 +42,7 @@ $dayofweek = tra($c->dayOfWeekStr($day,$mon,$year));
 {tr}Monday{/tr} {tr}Tuesday{/tr} {tr}Wednesday{/tr} {tr}Thursday{/tr} {tr}Friday{/tr} {tr}Saturday{/tr} {tr}Sunday{/tr}-  only tr tags are collected by get_strings in tpl*}
 {php}
 
-$parsed = parse_url($_SERVER["REQUEST_URI"]);
+$parsed = parse_url($_SERVER["PHP_SELF"]);
 if (!isset($parsed["query"])) {
   $parsed["query"]='';
 }

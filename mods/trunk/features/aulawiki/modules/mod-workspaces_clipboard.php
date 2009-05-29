@@ -67,7 +67,7 @@ if (isset ($_REQUEST["copyIdObj"])) {
 	$smarty->assign('error', $error);
 }
 $smarty->assign('clipboard', $_SESSION["clipboard"]);
-$smarty->assign('clipboardCurrentUrl', $tikilib->httpPrefix().$_SERVER["REQUEST_URI"]);
+$smarty->assign('clipboardCurrentUrl', $tikilib->httpPrefix().$_SERVER["PHP_SELF"]);
 
 function paste_workspace($objectToPaste){
 	global $dbTiki;

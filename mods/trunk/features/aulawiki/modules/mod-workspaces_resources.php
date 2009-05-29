@@ -161,7 +161,7 @@ if (!$exit_module){
 	$smarty->assign('workspaceId',$workspace["workspaceId"]) ;
 	$smarty->assign('selectedWsObject', $selectedWsObject);
 
-	$ownurl = $tikilib->httpPrefix().$_SERVER["REQUEST_URI"];
+	$ownurl = $tikilib->httpPrefix().$_SERVER["PHP_SELF"];
 	include_once ('lib/tree/categ_browse_tree.php');
 	$imgWiki = "<img align='bottom' border=0 src='img/icons/page.gif'>";
 	$imgCateg = "<img border=0 valign='center' src='images/workspaces/edu_folder_closed.png'>";
