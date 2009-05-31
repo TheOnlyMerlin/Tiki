@@ -26,7 +26,7 @@
 body {
 	background: #000 url(abse/wgreenwall.png) fixed;
 	color: #fff;
-	font: 55% "Bitstream Vera Sans", Verdana, Geneva, sans-serif normal}
+	font: 70% "Bitstream Vera Sans", Verdana, Geneva, sans-serif normal}
 
 html>body {font-size: .7em !important}
 
@@ -47,8 +47,8 @@ html>body {font-size: .7em !important}
 	margin-left: 30px !important;
 	margin-right: 30px !important}
 
-#c1c2	#wrapper	#col1.marginleft  {margin-left: 200px;/* change this in your stylesheet too when you change the width of #col2 */}
-#c1c2	#wrapper	#col1.marginright {margin-right: 200px;/* change this in your stylesheet too when you change the width of #col3 */}
+#c1c2	#wrapper	#col1.marginleft  {margin-left: 200px;}
+#c1c2	#wrapper	#col1.marginright {margin-right: 200px;}
 #c1c2	#wrapper	#col1	.content {background: transparent}
 
 #c1c2 #wrapper #col1 #tiki-center {
@@ -132,7 +132,7 @@ hr {
 	background: #bdcec3}
 
 legend {color: #a9a9a9}
-
+/*
 button,
 input {
 	background: #586858 url(abse/titlebgoff.png) repeat-x 0 1px;
@@ -149,14 +149,31 @@ input#fuser {
 	border: 0;
 	padding: 0;
 	background: #586858 !important}
-
+*/
 input[type=text],
 input[type=password] {
-	border: solid 1px #aaa;
 	background: #586858;
-	color: #F5F5F5;
-	width: 120px}
+	border: 1px solid;
+	border-color: #5a5a62 #b5b5c3 #b5b5c3 #5a5a62;
+	color: #b2b2b2;
+	padding: 0 4px}
 
+* html input.wikiaction,
+* html input.button {
+	background: #424248 url(abse/titlebgoff.png) repeat-x;
+	border: 1px solid;
+	border-color: #b5b5c3 #5a5a62 #5a5a62 #b5b5c3;
+	color: #b2b2b2;
+	font-size: .95em;
+	font-weight: normal;
+	padding: 0 4px;
+	cursor: pointer}
+
+option {
+	text-decoration: none;
+	color: #ccccff;
+	background: #586858 url(abse/menubg.jpg) repeat-y}
+	
 span.button a,
 span.button a:visited,
 button,
@@ -175,13 +192,25 @@ span.button input,
 
 * html input[type=reset],
 * html input[type=submit] {
-	background: #586858 url(abse/titlebgoff.png) repeat-x;
+	background: #586858/* url(abse/titlebgoff.png) repeat-x*/;
 	border: 1px solid;
-	border-color: #b5b5c3 #5a5a62 #5a5a62 #b5b5c3;
+	border-color: #5a5a62 #b5b5c3 #b5b5c3 #5a5a62;
 	color: #b2b2b2;
-	font-size: .95em;
 	font-weight: normal;
-	padding: 0 4px}	
+	padding: 0 4px}
+
+* html input#sl-login-user,
+* html input#sl-login-pass,
+* html input#fuser,
+* html input#login-user,
+* html input#login-pass,
+* html input#login-switchuser {
+	background: #586858;
+	border: 1px solid;
+	border-color: #5a5a62 #b5b5c3 #b5b5c3 #5a5a62;
+	color: #b2b2b2;
+	padding: 0 4px;
+	margin-right: 3px}
 	
 * html .wikitopline select {font-size: .9em}
 
@@ -237,6 +266,8 @@ body.wikitext {
 	padding-top: 4px;
 	padding-bottom: 4px;
 	min-height: 74px}
+	
+* html #siteheader {height: 74px}
 
 div#sioptions {
 	margin: 0;
@@ -249,16 +280,12 @@ div#sioptions {
 	text-align: center;
 	font-size: 11px;
 	font-family: Geneva, Arial, Helvetica, sans-serif;
-	color: #999;
 	max-width: 460px;
-	margin-top: .8em;
-	margin: auto}
+	margin-top: .8em}
 
 #sitead.floatright {padding-right: 100px}
 #sitead.floatleft {padding-left: 100px}
-
 #siteloginbar {bottom: 4px}
-
 #sitetitles {padding-left: 20px}
 
 #sitetitle {
@@ -282,7 +309,7 @@ div#sioptions {
 
 .cssmenu li ul,
 .cssmenu_horiz li ul,
-.cssmenu_vert li ul {background: url(abse/menubg.jpg) repeat-y}
+.cssmenu_vert li ul {background: #010101 url(abse/menubg.jpg) repeat-y}
 
 .cssmenu li,
 .cssmenu_horiz li,
@@ -295,7 +322,7 @@ div#sioptions {
 .cssmenu li a:hover,
 .cssmenu_horiz li a:hover,
 .cssmenu_vert li a:hover  {
-	background: url(abse/menubg.jpg) repeat-y;
+	background: #010101 url(abse/menubg.jpg) repeat-y;
 	color: #ccccff;
 	text-decoration: none}
 	
@@ -311,13 +338,13 @@ div#sioptions {
 
 .horbaritem a:hover {
 	text-decoration: none;
-	background: url(abse/menubg.jpg) repeat-y}
+	background: #010101 url(abse/menubg.jpg) repeat-y}
 
 .mdkverbar {margin: 0}
 .mdksubmenu {width: 180px}
 
 .mdksubframe  {
-	background: url(abse/menubg.jpg) repeat-y;
+	background: #010101 url(abse/menubg.jpg) repeat-y;
 	width: 180px}
 
 .mdkitem a {
@@ -329,7 +356,7 @@ div#sioptions {
 .mdkitem a:visited {text-decoration: none}
 
 .mdkitem a:hover {
-	background: url(abse/menubg.jpg) repeat-y;
+	background: #010101 url(abse/menubg.jpg) repeat-y;
 	color: #ccccff}
 
 .phplmnormal,
@@ -387,11 +414,12 @@ div.separator:hover,
 div.option a.linkmenu:hover {
 	text-decoration: none;
 	color: #ccccff;
-	background: url(abse/menubg.jpg) repeat-y}
+	background: #010101 url(abse/menubg.jpg) repeat-y}
 	
 .separator a:link,
 .separator a:visited,
 .separator a:hover {text-decoration: none}
+.menuSection .option {margin-left: 20px}
 
 /***** Misc. Center Col. *****/
 a.flip,
@@ -429,8 +457,9 @@ html>body div.box:hover {background: #0e1d10}
 	font-weight: normal;
 	margin: 0 0 12px}
 	
-.box:hover .box-title {
-	background: #0E1D10 url(abse/titlebgon.png) repeat-x}
+.box:hover .box-title,
+* html .box-title {
+	background: #4f5d50 url(abse/titlebgon.png) repeat-x}
 
 * html .box img.flipmodimage,
 .box:hover img.flipmodimage {
@@ -461,23 +490,25 @@ img.flipmodimage:hover {border: 1px solid #55914E !important}
 .box-data li:hover {
 	text-decoration: none;
 	color: #ccccff;
-	background: url(abse/menubg.jpg) repeat-y}
+	background: #010101 url(abse/menubg.jpg) repeat-y}
 
 /** Other boxes **/
-div.cbox {
+.cbox {
 	color: #fff;
 	background: inherit;
 	border: 1px solid #909090;
 	margin: 6px}
+	
+* html .cbox {background: #192919} 
  
-div.cbox-title {
+.cbox-title {
 	text-align: left;
 	text-indent: 1em;
 	border-bottom: 1px solid #999;
 	padding: 4px 4px 0 4px;
 	font-weight: bold}
 
-div.cbox-data {padding: 1px 4px 4px 4px}
+.cbox-data {padding: 1px 4px 4px 4px}
 
 .cbox-data ul {padding-left: 1em}
 .cbox-data ul ul {margin: auto}
@@ -566,9 +597,7 @@ div.description {
 	font-style: italic;
 	margin-bottom: 1.5em}
 
-.wikitext {
-	width: 100% !important;
-	line-height: 1.5em}
+.wikitext {line-height: 1.5em}
 
 .wikitext h2,
 .wikitext h3,
@@ -666,7 +695,7 @@ div.articletitle {
 	padding: 0;
 	text-align: left;
 	padding: 3px;
-	background: url(abse/menubg.jpg) repeat-y;
+	background: #010101 url(abse/menubg.jpg) repeat-y;
 	margin-bottom: 1em}
  
 div.articletitle h2 {font-size: 1.4em}
@@ -757,7 +786,7 @@ div.postinfo a.linkmodule {}
 div.posthead {
 	text-align: left;
 	padding: 3px;
-	background: url(abse/menubg.jpg) repeat-y;
+	background: #010101 url(abse/menubg.jpg) repeat-y;
 	margin-bottom: 1em}
 
 .postinfo {
@@ -792,7 +821,7 @@ div.postbody {
 	border: solid 1px #909090}
 	
 * html .post .postbody {font-size: 1em}
-*:first-child+html .postbody {min-width: 100% !important}
+/* *:first-child+html .postbody {min-width: 100% !important} */
 
 .post .postbody-title {
 	display: block;
@@ -846,10 +875,8 @@ div.postbody {
 	margin-top: -10px}
 
 .post .postbody .content {
-	float: 0;
+	float: none;
 	padding: 0 3px 3px 3px;
-	width: 100%;
-	height: 100%;
 	text-align: left;
 	color: #BDCEC3}
 	
@@ -911,19 +938,13 @@ div.commentsedithelp {
 	text-align: center;
 	font-weight: bold}
 
-textarea#editpost2 {width: 100%;font-size: 1.1em}
-
 /***** Image Galleries *****/
 table.galtable {
 	border-collapse: collapse;
 	border: 1px solid #8cacbb}
 
 div#browse_image {background: transparent}
-
-div.showimage {
-	width: 100%;
-	text-align: center;
-	padding: 6px}
+div.showimage {padding: 6px}
 
 td.oddthumb {
 	background: #0E150E;
@@ -970,19 +991,15 @@ div.pollresults {
 td.pollr {color: black}
 
 /***** FAQs *****/
-
 /***** Quizzes *****/
-
 div.questionblock {padding: 4px}
 
 /***** Shoutbox *****/
-
 textarea.tshoutbox {
 	font-size: 1.3em;
 	width: 162px}
 
 /***** Directory *****/
-
 div.dircategs {
 	border: 1px solid #8cacbb;
 	padding: 5px}
@@ -1004,13 +1021,11 @@ td.dirfooter {font-size: .95em}
 div.dirfooter {margin-top: 10px}
 
 /***** Messages *****/
-
 td.prio1,
 td.prio2,
 td.prio3,
 td.prio4,
 td.prio5 {border: 1px solid #8cacbb}
-
 
 div.messureadflag {background: #ccc}
 div.messureadhead {background: #dedede}
@@ -1030,7 +1045,6 @@ table.default	td {
 	background: #000}
 
 /***** Calendar *****/
-
 .Cal0, 
 .Cal1, 
 .Cal2 {
@@ -1161,7 +1175,6 @@ table.default	td {
 	border-bottom: 1px solid #000}
 
 .opaque .box-data {background: #000}
-.searchresults {display: inline}
 
 #caltable .calfocuson,
 .box-data td.fc a.today,
@@ -1180,12 +1193,7 @@ table.default	td {
 .calfocus a:hover {
 	text-decoration: none;
 	color: #ccccff;
-	background: url(abse/menubg.jpg) repeat-y}
-
-option {
-	text-decoration: none;
-	color: #ccccff;
-	background: #586858 url(abse/menubg.jpg) repeat-y}
+	background: #010101 url(abse/menubg.jpg) repeat-y}
 
 .calinput {background: #3f3f3f}
 .calfocuson + .calcontent {background: #586858}

@@ -34,10 +34,7 @@ html>body {font-size: .7em !important}
 
  /***** Layout (overrides layout.css;
 		also styling of page layout divs)  *****/
-table#main {
-	font-size: 1em;
-/*	position: absolute;
-	top: 0*/}
+table#main {font-size: 1em}
 
 td#leftmargin {
 	width: 10%;
@@ -93,18 +90,16 @@ a:hover {
 a:active {color: #9e005d}
 fieldset {border: 1px solid #f06ea9}
 
-h1, h2, h3, h4 {
-	letter-spacing: 2px;
-	text-indent: 15px}
+h1, h2, h3, h4 {letter-spacing: 90%}
 
 h1 {
-	font-size: 1.3em;
+	font-size: 1.4em;
 	border-bottom: 1px dashed #00adef}
 	
-h2 {font-size: 1.2em}
-h3 {font-size: 1.1em}
-h4 {font-size: 1.05em}
-h5 {font-size: 1em}
+h2 {font-size: 1.4em}
+h3 {font-size: 1.2em}
+h4 {font-size: 1.1em}
+h5 {font-size: 1.05em}
 h6 {font-size: 1em}
 legend {color:#0076A3}
 
@@ -164,18 +159,25 @@ input[type=submit]:hover,
 	background: #ffcce2;
 	color: /*#f06ea9*/#00adef}
 	
-input[type=reset],
-input[type=submit],
-input[type=file] {
+* html input[type=reset],
+* html input[type=submit],
+* html input[type=file] {
 	background: #a7e6ff;
 	border: 1px solid;
-	border-color: #223845 #41cbe7 #41cbe7 #223845;
+	border-color: #41cbe7 #223845 #223845 #41cbe7;
 	color: #0076a3;
 	font-size: 94%;
 	font-weight: bold}
 
 select[multiple] {height: 10em}
 select[name="theme"] {width: 165px}
+
+select[name="theme"],
+select[name="time_control"],
+span.searchMenu select {
+	border: 1px solid;
+	border-color: #223845 #41cbe7 #41cbe7 #223845}
+
 option {background: #a7e6ff}
 label {cursor: pointer}
 
@@ -185,10 +187,8 @@ u {
 
 /***** Site Header & Identity *****/
 #header-top {
-	height: 120px;
-	background: #fff url(candiiclouds/headercloud.jpg) no-repeat;
-	margin: 10px 10px 10px 6px;
-	padding-left: 120px}
+	background: #fff;
+	padding: 10px}
 
 img#bcloud {
 	float: left;
@@ -199,21 +199,24 @@ img#bcloud {
 	display: block;
 	min-height: 120px}
 
-div#sioptions  {padding: 1em}
-#sioptionscentered {margin: 1em}
+div#sioptions  {background: url(candiiclouds/banstars.gif);}
+#sioptionscentered {background: url(candiiclouds/banstars.gif);}
 .floatright img {margin-right: 40px}
 
 div#sitelogo {
 	float: left;
 	clear: 0;
-	margin: 5px}
+	margin: 0;
+	padding: 0}
 
 #sitelogo a {border-bottom: 0}
 div#sitead {margin: 5px}
 #sitead.floatright {padding-right: 100px}
 #sitead.floatleft {padding-left: 100px}
 
-#siteloginbar {right: 3px}
+#siteloginbar {
+	right: 13px;
+	bottom: 8px}
 
 #sitetitle {
 	text-indent: 42px;
@@ -230,7 +233,8 @@ input[name="search"] {
 	background: #a7e6ff;
 	color: #00adef;
 	font-weight: bold}
-
+	
+#tiki-top {background: #fff}
 
 /****** Menus, Links ******/
 /** CSS (suckerfish) menus **/
@@ -340,7 +344,7 @@ a.phplmselected:hover {
 	background: #f0f9ff}
 
 /** Links in other menus **/
-div.separator/*, div.separatorline*/ {
+div.separator {
 	background: #A7E6FF;
 	color: #0076A3;
 	text-decoration: none;
@@ -393,7 +397,7 @@ a.linkmenu:hover{
 
 /***** Boxes *****/
 /** Modules **/
-div.box {
+.box {
 	margin-bottom: 10px;
 	width: 210px}
 
@@ -437,8 +441,10 @@ ol.module {margin-left: -1em}
 .box-data ul.cssmenu_vert {margin-left: 0}
 
 /** cbox **/
-div.cbox {}
-.cbox-title {}
+div.cbox {
+	background: #ffe0ee;
+	border-color: #ffcce2;}
+.cbox-title {border-bottom-color: #ffcce2;}
 .cbox-data {}
 
 .rbox-title,
@@ -460,7 +466,10 @@ div.cbox {}
 .warning .rbox-title {}
 .warning .rbox-data {}
 
-div.simplebox {}
+div.simplebox {
+	background: #cff1ff;
+	border-color: #a7e6ff;
+	color: #0076a3}
 
 /***** Tables, Tabs *****/
 /** Tables **/
@@ -726,15 +735,20 @@ div.articletopline {
 	font-style: italic}
 
 div.articletitle {
-	padding-top: 16px;
+	padding: 10px 4px 4px;
 	margin-top: 6px;
 	margin-bottom:	15px;
-	text-align:	left}
+	background: url(candiiclouds/bluu.gif);
+	border-bottom: 1px solid #ACCCDD}
  
 div.articletitle h2 {
-	font-size: 1.5em;
-	font-weight: normal}
-
+	color: #0076a3;
+	font-weight: bold;
+	/*font-size: 1.2em;*/
+	margin-top: 3px}
+	
+div.articletitle h2 a,
+div.articletitle h2 a:visited {border-bottom: none}
 span.titleb {font-size: 1.0em} 
 div.articlesubtitle {font-size: 0.9em}
  
@@ -829,7 +843,7 @@ div.postfooter {
 
 /***** Forums *****/
 .post .postbody {
-	padding: 3px 0;
+	padding: 4px;
 	background: url(candiiclouds/s-stars.gif);
 	font-size: 1.1em}
 	
@@ -868,12 +882,13 @@ div.postfooter {
 .post .author_post_info_on {font-style: italic}
 
 .post .author_info {
-	float: right;
+	display: block;
+	float: none;
 	background: #ffe0ee;
-	padding: 0 2px 2px 2px;
-	margin-left: 5px;
-	border-left: 1px solid #f06ea9;
-	border-bottom: 1px solid #f06ea9}
+	padding: 2px;
+	margin-left: 0;
+	border-left: none;
+	border-bottom: none}
 
 .commentStyle_headers .author_info {float: left}
 
@@ -1212,13 +1227,13 @@ div.adminanchors {
 
 a.admbox {
 	border: 1px solid #aaa;
-	background: #a7e6ff;
+	background-color: #a7e6ff;
 	color: #0076a3}
 
 a.admbox:hover,
 a.admbox:focus,
 a.admbox:active {
-	background: #ffcce2;
+	background-color: #ffcce2;
 	border: 1px solid #f06ea9;
 	color: #f06ea9}
 

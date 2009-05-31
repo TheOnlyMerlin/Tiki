@@ -106,6 +106,10 @@ fieldset {
 	border: solid 1px #303030;
 	padding: 10px}
 	
+hr {
+	color: #467aa7;
+	background: #467aa7}
+
 legend {color: #303030}
 * html .wikitopline select {font-size: .9em}
 * html .findtable input {font-size: 1em}
@@ -160,6 +164,17 @@ select[name="where"] {
 	font-size: .9em;
 	background: #578BB8;
 	color: #fff}
+	
+* html input#sl-login-user,
+* html input#sl-login-pass,
+* html input#fuser,
+* html input#login-user,
+* html input#login-pass {
+	padding: 0 4px;
+	margin-right: 4px}
+	
+	
+.highlight { }
 
 textarea {font-size: 1em}
 td textarea {font-size: 1.3em}
@@ -227,8 +242,9 @@ input[id="sl-login-pass"] {
 	margin-right: 10px;
 	padding-top: 3px;
 	font-size: 90%;
-	border-left: 1px solid #fff}	
-
+	border-left: 1px solid #fff}
+	
+#sitesearchbar br {display: none}
 input#fuser {line-height: 90%} 
 
 
@@ -365,7 +381,10 @@ a.flip:hover,
 
 /***** Boxes *****/
 /** Modules **/
-.box {width: 180px}
+.box {
+	width: 180px;
+	margin-bottom: 20px}
+
 .wikitext .box {width: auto}
 
 h3.box-title {
@@ -387,7 +406,7 @@ img.flipmodimage:hover {border: 1px solid #58A7D2 !important}
 .box-data {background: #fff}
 
 /** Other boxes **/
-div.cbox {
+.cbox {
 	margin: 0 0 20px 0;
 	padding: 10px;
 	border: 1px solid #c0c0c0;
@@ -422,6 +441,10 @@ div.simplebox {
 
 /***** Tables, Tabs *****/
 /** Tables **/
+table.normal,
+table.admin {
+	border-collapse: separate}
+
 table.admin tr td div#page-bar {
 	margin-left: 5px;
 	margin-bottom: 0;
@@ -432,19 +455,18 @@ td.bloglistheading {
 	font-size: 1em;
 	background: #ABCDEF}
 
-td.heading,
-td.bloglistheading {
+th, td.heading {
 	background: #ABCDEF;
 	text-align: center}
 
 td.form {padding: 0.2em}
 
-tr.odd,
+tr.odd td,
 td.odd {
 	background: #F0F0F0;
 	color: #000}
 
-tr.even,
+tr.even td,
 td.even {
 	background: #DCDCDC;
 	color: #000}
@@ -491,7 +513,8 @@ h1 a.pagetitle {
 	color: #505050;
 	background: inherit}
 
-div#description {
+div#description,
+div.description {
 	font-size: .9em;
 	font-style: italic}
 
@@ -641,20 +664,12 @@ div.postfooter {
 
 
 /***** Forums *****/
-
-body.tiki_forums table.normal {margin: auto}
-#forumpost {display: 0}
-#forumpostopen {display: block}
-
-.post {clear: both}
-
 .post .postbody {
 	clear: both;
-	width: 100%;
 	border: solid 1px #E7EAED;
 	margin: 0;
 	margin-top: 5px;
-	padding: 3px 0;
+	padding: 0;
 	background: #F9FCFF}
 
 .post .postbody-title {
@@ -677,8 +692,6 @@ body.tiki_forums table.normal {margin: auto}
 
 .post .postbody .content {
 	color: #000;
-	/*float: left;*/
-	height: 100%;
 	padding: 0 3px 3px;
 	text-align: left;
 	width: 100%}
@@ -716,8 +729,6 @@ body.tiki_forums table.normal {margin: auto}
 	font-size: .9em}
 	
 .post .postbody .content {
-	width: 100%;
-	height: 100%;
 	text-align: left;
 	color: #000}
 
@@ -736,7 +747,6 @@ body.tiki_forums table.normal {margin: auto}
 .post .postfooter .status {font-size: .9em}
 
 .post .postfooter {
-	/*float: right;*/
 	text-align: right}
 
 .post .inner > .postfooter {clear: both}
@@ -747,13 +757,12 @@ body.tiki_forums table.normal {margin: auto}
 	padding: 0 2px}
 
 .post .avatar {
-	/*float: right;*/
 	margin-bottom: 5px;
 	margin-left: 4px;
 	padding: 3px;
 	border: 1px solid #ACCCDD;
 	background: #E0EAF4;
-	display: 0}
+	display: none}
 
 .sub_comment {padding-left: 20px}
 
@@ -796,7 +805,6 @@ body.tiki_forums table.normal {margin: auto}
 
 /* Comments */
 #comzone {
-	display: 0;
 	margin: 5px 0;
 	padding: 0}
 
@@ -827,17 +835,7 @@ td.eventhumb img {
 	margin-left: 6px;
 	margin-right: 6px}
 
-/* ?? */
-div.thumbnails {}
-img.athumb {}
-.caption {}
-p.norecords {}
-div.imagetitle {}
-div.gallerylink {}
-div#browse_image {} /* Check - from fluidindex ?? */
-div.showimage {}
-div.imgaldescr {}
-.sorttitle {}
+
 
 /***** File Galleries *****/
 
@@ -866,68 +864,32 @@ table.subcats {
 	border-collapse: collapse}
 
 td.tdsubcat {width: 25%}
-ul.catfeatures {list-style: 0}
+.catitems {padding-left: 20px}
+.catfeatures {list-style: none}
+.catfeatures > li {text-transform: capitalize}
+.catblock {background: #f0f0f0}
+
+.cattitle {
+	font-weight: bold;
+	background: #abcdef}
+	
+.catlists {
+	height: 100px;
+	overflow: auto;
+	padding: 3px;
+	margin-bottom: 6px}
 
 /***** Tags (freetags) *****/
-li.freetag {
-	list-style: 0;
-	display: inline;
-	margin: 0;
-	padding: 0}
+div.freetagObjectOdd {background: #F7F9FA}
+div.freetagObjectEven {background: #E7E9EA}
 
-ul.freetag {
-	margin: 0;
-	padding: 0;
-	display: inline}
-
-.freetag a {display:inline}
-a.freetag_1 {text-decoration: none; font-size: .8em}
-a.freetag_2 {text-decoration: none; font-size: .9em}
-a.freetag_3 {text-decoration: none; font-size: 1em}
-a.freetag_4 {text-decoration: none; font-size: 1.2em}
-a.freetag_5 {text-decoration: none; font-size: 1.4em}
-a.freetag_6 {text-decoration: none; font-size: 1.6em}
-a.freetag_7 {text-decoration: none; font-size: 1.8em}
-
-div.freetagObjectOdd {
-	margin: 2px;
-	background: #F7F9FA;
-	position: relative}
-
-div.freetagObjectEven {
-	margin: 2px;
-	background: #E7E9EA;
-	position: relative}
-
-div.freetagObjectName a {text-decoration: none}
-
-div.freetagObjectType {
-	position: absolute;
-	top: 0;
-	right: 0}
-	
 /*****  Polls  *****/
-
-div.pollresults {
-	margin-top: 5px;
-	font-size: 1em;
-	padding: 0 5px}
-
-table.pollresults {width: 100%}
-td.pollr {color: black}
-#pollopen {display: block}
-#pollzone {display: 0}
-#polledit {display: 0}
-.pollnav {}
-
-
 /***** FAQs *****/
 
 div.faqlistquestions {
 	background: #67ade7;
 	color: #fff;
-	padding: 2px;
-	margin-bottom: 20px}
+	padding: 2px}
 
 .faqlistquestions a.link,
 .faqlistquestions a.link:visited {
@@ -943,58 +905,36 @@ div.faqqa {
 	margin-bottom: 20px}
 
 div.faqquestion {
-	font-weight: bold;
 	color: #fff;
 	padding: 2px 12px;
 	background: #67ade7}
-
-div.faqanswer {
-	padding: 4px 12px;
-	padding-top: 0}
 
 /***** Quizzes *****/
 
 div.questionblock {
 	border: 1px solid #8cacbb;
 	background: white;
-	padding: 4px;
-	margin-bottom: 10px}
+	padding: 4px}
  
-div.quizquestion {margin-bottom: 5px}
-div.quizoptions {}
- 
-div.quizdescription {
-	border: 1px solid #8cacbb;
-	background: white;
-	margin-bottom: 10px}
- 
+div.quizdescription,
 div.quizanswer {
 	border: 1px solid #8cacbb;
-	background: white;
-	margin-bottom: 10px}
+	background: #fff}
 
 /***** Shoutbox *****/
 
 div.shoutboxmsg {
 	border: 1px solid #67ade7;
 	border-bottom: 0;
-	background: white;
-	margin-bottom: 0;
-	padding: 4px;
-	padding-bottom: 1px}
+	background: #fff}
 
-div.shoutboxmodmsg {
-	font-size: 1em;
-	margin: 0 5px 4px 5px;
-	padding-top: 5px;
-	padding-bottom: 1px}
+div.shoutboxmodmsg {font-size: 1em}
 
 textarea.tshoutbox {
 	background: #fff;
 	border: 1px solid #67ade7;
 	color: #000;
-	font-size: 1.2em;
-	width: 162px}
+	font-size: 1.2em}
 
 /***** Directory *****/
 
@@ -1004,58 +944,11 @@ td.prio2,
 td.prio3,
 td.prio4,
 td.prio5 {
-	border: 1px solid #8cacbb;
-	padding-left: 2px}
+	border: 1px solid #8cacbb}
 
-td.prio1 {background: #F7F9CA}
-td.prio2 {background: #F7F9EA}
-td.prio3 {background: #F7F9FA}
-td.prio4 {background: #F7F9FD}
-td.prio5 {background: #F7F9FF}
-
-div.messureadflag {
-	background: #ccc;
-	padding-left: 5px}
-
-div.messureadhead {
-	background: #DEDEDE;
-	margin-top: 2px}
-
-div.messureadbody {
-	margin-top: 5px;
-	background: #DEDEDE}
-
-.readlink {
-	font-size: .95em;
-	color: black}
-
-/***** Messages *****/
-
-td.prio1, td.prio2, td.prio3, td.prio4, td.prio5 {
-	border: 1px solid #8cacbb;
-	padding-left: 2px}
-	
-td.prio1 {background: #F7F9CA}
-td.prio2 {background: #F7F9EA}
-td.prio3 {background: #F7F9FA}
-td.prio4 {background: #F7F9FD}
-td.prio5 {background: #F7F9FF}
-
-div.messureadflag {
-	background: #ccc;
-	padding-left: 5px}
-	
-div.messureadhead {
-	background: #DEDEDE;
-	margin-top: 2px}
-	
-div.messureadbody {
-	margin-top: 5px;
-	background: #DEDEDE}
-
-.readlink {
-	font-size: 1em;
-	color: black}
+div.messureadflag {background: #ccc}
+div.messureadhead {background: #DEDEDE}
+div.messureadbody {background: #DEDEDE}
 
 /***** TikiSheets *****/
 table.default thead td,
@@ -1068,8 +961,6 @@ table.default tfoot td {
 table.default td {
 	border: solid 1px #a9a9a9;
 	background: black}
-
-
 
 /***** Calendar *****/
 
@@ -1181,13 +1072,6 @@ Caltrack a:visited {color: #00BD02}
 #caltable .calfocus a,
 #caltable .calfocuson a {text-decoration: none}
 
-.day, .day:visited {}
-.today {}
-.nav {}
-.changedate {}
-.date {}
-
-/* May be necessary to override calendar.css, etc. */
 .calinput {background: #3f3f3f}
 .calfocuson + .calcontent {background: #F5F5F5}
 .days {color: #467aa7}
@@ -1225,11 +1109,11 @@ Caltrack a:visited {color: #00BD02}
 /***** Admin *****/
 a.admbox {
 	border: 1px solid #aaa;
-	background: #578bb8; 
+	background-color: #578bb8; 
 	color: #c4d6e5}
 
 a.admbox:hover, a.admbox:focus, a.admbox:active  {
-	background: #B2B2B2;
+	background-color: #B2B2B2;
 	border: 1px solid #292929}
 
 a.admbox.off {
