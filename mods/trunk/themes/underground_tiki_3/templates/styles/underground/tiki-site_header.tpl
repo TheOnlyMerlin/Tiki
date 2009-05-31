@@ -1,7 +1,6 @@
 <div id="header-top">
 </div>
 <div class="clearfix" id="tiki-top">
-{*if $prefs.feature_top_bar eq 'y'*}
 {* menu float right *}
 	{if $prefs.feature_sitemenu eq 'y'}
 		{if $prefs.feature_phplayers eq 'y'}
@@ -10,8 +9,7 @@
 			{menu id=$prefs.feature_topbar_id_menu type=horiz css=y}
 		{/if}
 	{/if}
-
-{*/if*}
+<!--[if IE]><br style="clear:both; height: 0" /> <![endif]-->
 </div>
 <div id="header-bottom">
 	{* search form, second row float right *}
@@ -38,3 +36,8 @@
 	<div id="sitesubtitle">{$prefs.sitesubtitle}</div>
 	<div id="sitetitle"><a href="index.php">{$prefs.sitetitle}</a></div>
 </div>
+{if $prefs.feature_topbar_custom_code}
+<div class="clearfix" id="topbar_custom_code">
+	{eval var=$prefs.feature_topbar_custom_code}
+</div>
+{/if}
