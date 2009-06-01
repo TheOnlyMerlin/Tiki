@@ -208,8 +208,8 @@ span.button input,
 	border: solid 1px #8c9eaa;
 	background: #E9E7DB}
 
-input[type=reset],
-input[type=submit] {
+* html input[type=reset],
+* html input[type=submit] {
 	font-family: Verdana, Helvetica, Geneva, Arial, sans-serif;
 	font-size: 11px;
 	font-weight: normal;
@@ -350,19 +350,7 @@ div#sioptions {
 	margin-left: 5px;
 	text-align: left;
 	background: url(fluidindex/star.gif) no-repeat 0 4px}
-/*	
-.cssmenu_vert a:link,
-.cssmenu_vert a:visited {color: #006699}
 
-.cssmenu_vert a:hover {
-	color: #000;
-	text-decoration: underline}
-
-.cssmenu_vert ul a:link,
-.cssmenu_vert ul a:visited {color: #006699}
-
-.cssmenu_vert ul a:hover {color: #000}
-*/
 .sf-sub-indicator {background: url(fluidindex/arrows-6d809f.png) no-repeat -10px -100px; /* 8-bit indexed alpha png. IE6 gets solid image only; */}
 
 /** PHP Layers Menus **/
@@ -531,9 +519,7 @@ a.flip:visited,
 a.flip:hover,
 .tellafriend a:hover {color: #505050}
 
-.tellafriend {
-	text-align: right;
-	padding-right: 6px}
+.tellafriend {padding-right: 6px}
 
 #c1c2 #wrapper #col1 #tiki-center {
 	padding: 1em;
@@ -584,16 +570,6 @@ img.flipmodimage:hover {border: 1px solid #6d809f !important}
 
 .box-data ul {list-style: 0}
 	
-.box-data div ul {/* lists in usermodules 
-	padding-left: -2em;
-	margin-left: -2.5em*/}
-/*
-.box-data li {
-	padding: 0.2em;
-	text-align: start}
-
-.box-data ul li {margin-left: -1em}
-*/
 .box-data ol li a {
 	margin-left: -0.5em;
 	background-image: 0}
@@ -633,7 +609,9 @@ img.flipmodimage:hover {border: 1px solid #6d809f !important}
 /** Other boxes **/
 .cbox {
 	border: 1px solid #999;
-	margin: 6px}
+	margin: 6px;
+	background: #e9e7db;
+	color: black;}
  
 .cbox-title {
 	text-align: left;
@@ -647,6 +625,11 @@ img.flipmodimage:hover {border: 1px solid #6d809f !important}
 .cbox-data ul {padding-left: 1em}
 .cbox-data ul ul {margin: auto}
 
+.rbox-title,
+.rbox-data {
+	border-color: #999;
+	background: #988CAA}
+
 .rbox {
 	overflow: hidden;
 	padding: 4px}
@@ -658,14 +641,11 @@ img.flipmodimage:hover {border: 1px solid #6d809f !important}
 
 .rbox-data {padding: 3px}
 
-.tip .rbox {
-	background: #988CAA;
-	border: 1px solid #606060;
-	color: #fff;
-	border: 1px solid #a9a9a9}
-
 .tip .rbox-title,
-.tip .rbox-data {border: 0}
+.tip .rbox-data {
+	background: #988CAA;
+	border-color: #606060;
+	color: #fff}
 
 div.simplebox {
 	border-top: 1px dotted #999;
@@ -673,6 +653,7 @@ div.simplebox {
 	margin-bottom: 20px;
 	margin-top: 10px;
 	background: #E6EAEC;
+	color: #000;
 	padding: 4px}
 
 /***** Tables, Tabs *****/
@@ -773,15 +754,6 @@ div.description {
 	font-style: italic;
 	margin-bottom: 1.0em}
 
-#pageid {
-	float: left;
-	clear: both}
-
-#cachedpage {
-	float: right;
-	font-size: small}
-
-.categpath {}
 .wikitext {line-height: 1.5em}
 
 .wikitext h2, 
@@ -826,67 +798,15 @@ td.wikicell {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
 
-.editdate {padding-bottom: 5px}
-
-div#page-bar {
-	display: block;
-	margin-top: 0}
-
-ul.floatleft {
-	display: block;
-	list-style: 0;
-	padding: 0;
-	text-align: left;
-	height: 20px;
-	margin-top: 0}
-
-ul.floatleft li {
-	float: left;
-	padding: 4px 2px}
-
-.editdate ul.floatleft {
-	margin-top: 8px}
- 
-span.button2, 
-div.button2,
-.button3 {
-	margin-right: 2px;
-	border: 1px solid #8c9eaa;
-	background: #E9E7DB;
-	padding: 0 2px}
- 
-a.linkbut {
-	/*white-space: nowrap;*/
-	font-size: .85em}
-
-.linkbut:hover {}
-div.cache {}
-div.cachedpage {}
-.wikicache, .wikicache:visited {}
-.wikicache:hover {}
-.wiki {}
-.wikinew {}
-
-.wiki-edithelp {display: none}
 
 #wikihelp-tab table,
 #wikihelp-tab table td {
 	border: solid 1px #696969;
 	border-collapse: collapse}
 
-#wikihelp-tab table td {padding: 2px}
 textarea#editwiki {font-size: 1.3em} /* fullscreen */
 table.normal textarea#editwiki {font-size: 1.4em} /* normal */
-p.editdate {}
-div.wiki-edithelp {}
-img.externallink {}
 
-/* Needed esp. for light-on-dark theme */
-div.quicktag {}
-div.quicktag img,
-#wikihelp-tab td img {}
-div#helptool {}
- 
 /* Wiki plugins */
 
 /* Code plugin  */
@@ -929,39 +849,16 @@ div.quotebody {
 	margin: 0 25px 25px 25px;
 	background: #fff url(fluidindex/bquote.gif) repeat-y}
 
-
-table.wikiplugin-split {border: 0}
-
 /** Wiki tocs **/
 div.tocnav {
 	background: #EBEBEB;
-	padding: 3px;
-	margin-bottom: 4px;
-	clear: both}
- 
-#tocnavicons {
-	float: left}
-
-#tocnavaddpage{
-	float: right}
-
-#tocnavlinks {
-	clear: both}
+	padding: 3px}
 
 ul.toc {
-	padding-left: 2em;
 	border-top: 1px dotted #999;
-	border-bottom: 1px dotted #999;
-	margin-bottom: 4px}
-
-ul.toc * {
-	border: 0}
-
+	border-bottom: 1px dotted #999}
 
 /***** Articles ****/
-div.article {
-	margin-bottom: 40px}
-
 div.articletopline {
 	font-size: 90%;
 	font-style: italic}
@@ -979,8 +876,6 @@ div.articletitle {
 div.articletitle h2 {
 	font-size: 1.2em;
 	font-weight: bold}
-
-span.titleb {}
 
 div.articlesubtitle {
 	font-size: 90%;
@@ -1001,37 +896,19 @@ img.articleimage {
 	padding: 5px}
 
 img.articleimagefloat {
-	margin-right: 4px;
-	float: left;
 	background: #fafbfc;
 	border: 1px solid #b0b0b0;
 	padding: 5px}
 
 img.articleimage {
-	margin-right: 4px;
-	float: left;
-	clear: right;
 	background: #fafbfc;
 	border: 1px solid #b0b0b0}
-
-div.articletrailer {text-align: right}
-
-div.articletrailer .wikitopline {
-	float: right} 
-
-.trailer {}
-.trailer:hover {}
 
 div.articlebody {
 	color: black;
 	line-height: 1.5em;
 	margin-top: 2em}
  
-div.articlesource {
-	margin-top: 5px;
-	font-style: italic;
-	font-size: 90%}
-
 /***** Blogs *****/
 div.blogtitle {
 	font-size: 1.3em;
@@ -1055,7 +932,7 @@ div.blogtools {margin-bottom: -2em}
 	margin-top: 3.5em;
 	margin-bottom: 2em}
 
-.postinfo {
+div.postinfo {
 	border-top: 1px dotted #999;
 	border-bottom: 1px dotted #999;
 	background: #E6EAEC;
@@ -1090,7 +967,7 @@ div.postbody {
 	
 * html .postbody table {font-size: 11px}
 
-/* Used by custom tpl not yet in 1.10 */
+/* Used by custom tpl, not implemented yet */
 div.date {
 	float: right;
 	font-weight: bold;
@@ -1102,11 +979,6 @@ div.date {
 	color: #6D809F}
 
 /***** Forums *****/
-
-table.commentinfo {
-	width: 100%;
-	background: #fff}
-
 .post {margin-top: 8px}
 
 .post .postbody {
@@ -1114,6 +986,15 @@ table.commentinfo {
 	background: white}
 	
 * html .post .postbody {font-size: 11px}
+
+post .postbody .content {
+	float: none;
+	color: #000;
+	height: 100%;
+	padding: 0 3px 3px;
+	text-align: left;
+	width: 100%;
+	background: #ececec}
 
 .post .postbody-title {
 	display: block;
@@ -1124,6 +1005,7 @@ table.commentinfo {
 	margin-top: 0}
 
 .post .postbody-title .title {
+	float: none;
 	color: #666;
 	border-bottom: 1px solid #8c9eaa;
 	font-weight: bold;
@@ -1131,16 +1013,7 @@ table.commentinfo {
 	margin-top: 0}
 	
 .post .postbody-title .title h2 {margin-top: 0}
-
 .title a.link {color: #666}
-
-#c1c2 #wrapper #col1 .content .post .postbody .content {
-	color: #000;
-	height: 100%;
-	padding: 0 3px 3px;
-	text-align: left;
-	width: 100%;
-	background: #ececec}
 
 .post .author {	
 	float: left;
@@ -1163,10 +1036,7 @@ table.commentinfo {
 	margin-right: 5px;
 	border: 0}
 
-.commentStyle_headers .author_info {float: left}
-.post .postbody-title .actions {
-	float: right;
-	font-size: 1em}
+.post .postbody-title .actions {font-size: 1em}
 
 .postbody-content {
 	background: white;
@@ -1177,21 +1047,9 @@ table.commentinfo {
 	
 .postbody .quoteheader {margin-top: 0}
 
-.post .postbody .attachments {
-	clear: both;
-	border-top: 1px dotted #8c9eaa;
-	margin-top: 5px}
-
-.post .postbody .attachments img {vertical-align: text-bottom}
-
-.post .postfooter .actions, .post .postfooter .status {
-	display: inline;
-	margin-left: 5px;
-	vertical-align: top}
-
+.post .postbody .attachments {border-top: 1px dotted #8c9eaa}
 .post .postfooter .status {font-size: 10px}
 .post .postfooter {text-align: right}
-.post .inner > .postfooter {clear: both}
 
 .post .contribution {
 	background: white;
@@ -1199,39 +1057,26 @@ table.commentinfo {
 	padding: 0 2px}
 
 .post .avatar {
-	margin-bottom: 5px;
-	margin-left: 4px;
-	padding: 3px;
+	float: none;
 	border: 1px solid #8c9eaa;
-	background: #dfdac3;
-	/*display: none*/}
-
-.sub_comment {padding-left: 20px}
-
-.sub_comment_area {
-	clear: both;
-	background: url("../../img/edge.gif") no-repeat top left}
+	background: #dfdac3}
 
 .forum_actions .actions {
-	clear: both;
 	border: 0;
 	background: #A9B8C2;
-	padding: 3px;
-	vertical-align: middle;
 	color: #fff}
 
-.forum_actions .actions .action {margin-right: 10px}
-.forum_actions .headers {vertical-align: bottom}
-
 .forum_actions .headers .title {
-	float: left;
 	background: white;
-	border: 1px solid #8c9eaa;
-	border-bottom: 0;
-	padding: 1px}
+	border: 1px solid #8c9eaa}
 
 .forum_actions .headers .infos {font-size: smaller}
-div.commentsedithelp {background: #adbac3; color: black; border: 1px solid #ff0000; text-align: center; font-weight: bold}
+div.commentsedithelp {
+	background: #adbac3;
+	color: black;
+	border: 1px solid #ff0000;
+	text-align: center;
+	font-weight: bold}
 
 /**** Image Galleries ****/
 td.oddthumb {
@@ -1248,16 +1093,8 @@ div#browse_image {background: white}
 
 /***** Trackers *****/
 .statuson {
-	padding: 1px;
-	margin: 1px;
 	border: 1px inset #666;
-	vertical-align: middle;
 	background: #bbaa99}
-
-.statusoff {
-	padding: 1px;
-	margin: 2px;
-	vertical-align: middle}
 
 /***** Categories, Tags *****/
 
@@ -1270,17 +1107,6 @@ div#browse_image {background: white}
 /***** Quizzes *****/
 
 /***** Shoutbox *****/
-div.shoutboxmsg {
-	margin-bottom: 0;
-	padding: 4px;
-	padding-bottom: 1px}
-
-div.shoutboxmodmsg {
-	font-size: .95em;
-	margin: 0 5px 4px 5px;
-	padding-top: 5px;
-	padding-bottom: 1px}
-
 textarea.tshoutbox {
 	font-size: 1.1em;
 	width: 162px}
@@ -1291,11 +1117,6 @@ div.dirsite {
 	border: 1px solid #aaa;
 	margin-bottom: 10px;
 	padding: 4px}
-
-span.dirsitedesc {}
-span.dirsitetrail {font-size: 95%}
-span.dirsitecats {font-size: 95%}
-.dirsitelink {}
 
 div.dirrelated {
 	margin-top: 10px;
@@ -1309,45 +1130,20 @@ td.prio1,
 td.prio2,
 td.prio3,
 td.prio4,
-td.prio5 {
-	border: 1px solid #8cacbb;
-	padding-left: 2px}
+td.prio5 {border: 1px solid #8cacbb}
 
-td.prio1 {background: #F7F9CA}
-td.prio2 {background: #F7F9EA}
-td.prio3 {background: #F7F9FA}
-td.prio4 {background: #F7F9FD}
-td.prio5 {background: #F7F9FF}
-
-div.messureadflag {
-	background: #ccc;
-	padding-left: 5px}
-
-div.messureadhead {
-	background: #DEDEDE;
-	margin-top: 2px}
-
-div.messureadbody {
-	margin-top: 5px;
-	background: #DEDEDE}
-
-.readlink {
-	font-size: .95em;
-	color: black}
+div.messureadflag {background: #ccc}
+div.messureadhead {background: #DEDEDE}
+div.messureadbody {background: #DEDEDE}
 
 /***** TikiSheets *****/
 
 table.default thead td,
 table.default tfoot td {
 	font-weight: bold;
-	text-align:	center;
-	background: black;
-	color: #D8D8D8}
+	text-align:	center}
 
-table.default td {
-	border: solid 1px #a9a9a9;
-	background: black}
-
+table.default td {border: solid 1px #a9a9a9}
 
 /***** Calendar *****/
 .Cal0, 
@@ -1471,10 +1267,6 @@ Caltrack a:visited {color: #00BD02}
 .day,
 .day:visited {background: #ADBAC3}
 
-.today {}
-.nav {}
-.changedate {}
-
 .date {
 	background: #ADBAC3;
 	text-align: center;
@@ -1494,8 +1286,6 @@ Caltrack a:visited {color: #00BD02}
 .caldark {background: #dcdcdc}
 * html .caldark {padding: 0}
 .caldark .calfocus {background: #ececec}
-.daterow {}
-.daterow:hover {}
 .calnavigation a:hover {background: #dfdac3}
 
 /***** Admin *****/
@@ -1519,69 +1309,9 @@ a.admbox span {color: #000}
 
 /***** Ajax, jquery. etc. *****/
 /***** Ajax *****/
-div#ajaxLoading {	display: none;
-	position: absolute;
-	top: 50px;
-	right: 50%;
-	color: #fff;
-	padding: 3px;
-	font-family: Verdana;
-	font-size: 90%;
-	text-align: center;
-	background: transparent url(../lib/shadowbox/images/loading-light.gif) no-repeat 50% 100%;
-	height: 43px;
-	width: 50px}
 
-#shadowbox_title {
-	height: auto !important;
-	padding: 0;
-	overflow: visible}
+.tab-wrapper {border:1px solid #eee}
 
-#shadowbox_title_inner {
-	height: auto !important;
-	font-size: 1em !important;
-	line-height: 1em !important;
-	white-space: normal !important;
-	padding: 5px 0 4px 8px}
-
-.tab-wrapper {
-	border:1px solid #eee;
-	padding: 0}
-
-.tab-menu  {
-	clear: both;
-	line-height: 17px;
-	list-style-image: 0;
-	list-style-position: outside;
-	list-style-type: 0;
-	padding: 2px 0;
-	margin-bottom: 6px;
-	margin-top: 2px;
-	width: 100%}
-
-.tab-menu li {
-	display: inline;
-	margin: 0pt 2px;
-	width: 200px;
-	padding-right: 1.5em}
-
-.tab-menu li img {
-	vertical-align: middle}
-
-.tab-menu li a {} 
-
-.tab-menu li a:hover, 
-.tab-menu li a:focus {} 
-
-.tab-menu li a:hover {} 
-.tab-menu li.tab-selected a {}
-table.admin div#content1 div.tabcontent div.cbox {background: transparent}
-
-/* Check ?? */
-table.admin tr td div#page-bar {
-	margin-left: 5px;
-	margin-bottom: 0;
-	background: transparent}
 
 /***** New (unsorted) *****/
 /**** Theme-specific ****/
