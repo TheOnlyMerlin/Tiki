@@ -12,6 +12,8 @@ $Date$
 Files:
 themes/smooth_tiki_3/Readme.txt styles/smooth/Readme.txt
 themes/smooth_tiki_3/styles/smooth.css styles/smooth.css
+themes/smooth_tiki_3/styles/smooth/header.png styles/smooth/header.png
+themes/smooth_tiki_3/styles/smooth/ie6.css styles/smooth/ie6.css
 themes/smooth_tiki_3/styles/smooth/img01.gif styles/smooth/img01.gif
 themes/smooth_tiki_3/styles/smooth/img02.gif styles/smooth/img02.gif
 themes/smooth_tiki_3/styles/smooth/img03.gif styles/smooth/img03.gif
@@ -21,6 +23,7 @@ themes/smooth_tiki_3/styles/smooth/img06.gif styles/smooth/img06.gif
 themes/smooth_tiki_3/styles/smooth/img07.gif styles/smooth/img07.gif
 themes/smooth_tiki_3/styles/smooth/img08.jpg styles/smooth/img08.jpg
 themes/smooth_tiki_3/styles/smooth/index.php styles/smooth/index.php
+themes/smooth_tiki_3/styles/smooth/middle.png styles/smooth/middle.png
 themes/smooth_tiki_3/styles/smooth/smooth.png styles/smooth/smooth.png
 themes/smooth_tiki_3/templates/styles/smooth/credits.tpl templates/styles/smooth/credits.tpl
 themes/smooth_tiki_3/templates/styles/smooth/index.tpl templates/styles/smooth/index.tpl
@@ -43,6 +46,7 @@ Version:
 3
  
 Changelog:
+4 separate CSS file for ie6; misc. fixes (todo: page header still basically broken in ie6)
 3 modified to import layout/layout.css
 2 updated for Tiki 3
 1 initial package

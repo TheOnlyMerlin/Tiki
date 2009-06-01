@@ -15,6 +15,8 @@
 
 -=Stylesheet and background images=-
 * styles/smooth.css
+* styles/smooth/header.png
+* styles/smooth/ie6.css
 * styles/smooth/img01.gif
 * styles/smooth/img02.gif
 * styles/smooth/img03.gif
@@ -24,15 +26,17 @@
 * styles/smooth/img07.gif
 * styles/smooth/img08.gif
 * styles/smooth/img08.jpg
+* styles/smooth/middle.png
 * styles/smooth/smooth.png
  
 -=Documentation=-
-http://themes.tikiwiki.org/smooth
-http://zukakakina.com/smooth
+http://themes.tikiwiki.org/Smooth
+http://zukakakina.com/Smooth
  
 -=Version=-
 * Compatible with Tiki 3 releases.
  
 -=Changelog=-
+3 separate CSS file for ie6; misc. fixes
 2 updated for Tiki 3
 1 initial package
