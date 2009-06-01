@@ -822,9 +822,7 @@ body.tiki_blogs div.postbody {
 	display: block;
 	background: #EDD4AE;
 	border-bottom: 1px solid #660000;
-	margin-bottom: 4px;
-	height: 100%;
-	overflow: auto}
+	margin-bottom: 4px}
 
 .post .postbody-title .title {
 	color: #660000;
