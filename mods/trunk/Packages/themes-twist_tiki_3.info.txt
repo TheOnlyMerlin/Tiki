@@ -15,6 +15,7 @@ themes/twist_tiki_3/styles/twist/background.gif styles/twist/background.gif
 themes/twist_tiki_3/styles/twist/bullet.gif styles/twist/bullet.gif
 themes/twist_tiki_3/styles/twist/fo.gif styles/twist/fo.gif
 themes/twist_tiki_3/styles/twist/header.jpg styles/twist/header.jpg
+themes/twist_tiki_3/styles/twist/ie6.css styles/twist/ie6.css
 themes/twist_tiki_3/styles/twist/index.php styles/twist/index.php
 themes/twist_tiki_3/styles/twist/pics/icons/folder.png styles/twist/pics/icons/folder.png
 themes/twist_tiki_3/styles/twist/pics/icons/ofolder.png styles/twist/pics/icons/ofolder.png
@@ -36,6 +37,7 @@ Version:
 3 
 
 Changelog:
+5 more CSS redundancy removed; page header improved; ie6 css put in separate file
 4 modified to import layout/layout.css; suckerfish menu arrows image added
 3 updated for Tiki 3
 2 updated for TikiWiki 2

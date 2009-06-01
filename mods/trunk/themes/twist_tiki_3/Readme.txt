@@ -21,15 +21,18 @@ updated For TikiWiki version 3.0 and committed to the Tiki Mods Subversion repos
 * styles/twist/background.gif
 * styles/twist/bullet.gif
 * styles/twist/header.jpg
+* styles/twist/ie6.css
 * styles/twist/index.php
 * styles/twist/twist.png
  
 -=Documentation=-
+http://zukakakina.com/Twist
 http://themes.tikiwiki.org/Twist
  
 -=Version=-
 * This version compatible with Tiki 3.0.
  
 -=Changelog=-
+3 more CSS redundancy removed; page header improved; ie6 css put in separate file
 2 update for Tiki 3
 1 initial package

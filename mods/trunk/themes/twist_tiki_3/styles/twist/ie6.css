@@ -1,0 +1,26 @@
+/* Twist theme CSS for IE6 */
+body {font-size: 100%}
+input[type=reset],
+input[type=submit] {
+	font-family: Verdana, Helvetica, Geneva, Arial, sans-serif;
+	font-size: 10px;
+	font-weight: normal;
+	color: #fff;
+	background: #1b5880 url(twist/header.jpg) -30px 0 no-repeat}
+
+div#header {}
+div#header-top {position: static}
+
+#sitetitles {
+	position: static;
+	width: 300px;
+	padding-top: 35px}
+
+div.articletrailer {width: 95%}
+.findtable input {font-size: 1em}
+.box-data ul {margin-left: 0}
+table.galtable {width: 97%}
+table.galtable {width: 97%}
+.calodd {padding: 0}
+.caleven {padding: 0}
+.caldark {padding: 0}

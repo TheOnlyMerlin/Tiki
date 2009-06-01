@@ -8,7 +8,7 @@
 {else}
 	{* site logo *}
 	{if $prefs.feature_sitelogo eq 'y'}
-		<div id="sitelogo" style="{if $prefs.sitelogo_bgcolor ne ''}background-color: {$prefs.sitelogo_bgcolor}; {/if}text-align: {$prefs.sitelogo_align};{if $prefs.sitelogo_bgstyle} background: {$prefs.sitelogo_bgstyle};{/if}"><a href="./" title="{$prefs.sitelogo_title}"><img src="{$prefs.sitelogo_src}" alt="{$prefs.sitelogo_alt}" style="border: none" /></a>
+		<div id="sitelogo" style="{if $prefs.sitelogo_bgcolor ne ''}background-color: {$prefs.sitelogo_bgcolor}; {/if}text-align: {$prefs.sitelogo_align};{if $prefs.sitelogo_bgstyle} background: {$prefs.sitelogo_bgstyle};{/if}"><a href="./" title="{$prefs.sitelogo_title}">{if $prefs.sitelogo_src}<img src="{$prefs.sitelogo_src}" alt="{$prefs.sitelogo_alt}" style="border: none" />{/if}</a>
 		</div>
 		<div id="sitetitles">
 			<div id="sitetitle"><a href="index.php">{$prefs.sitetitle}</a></div>
