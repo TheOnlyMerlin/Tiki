@@ -160,7 +160,6 @@ features/aulawiki/templates/styles/workspaces/tiki-show_page.tpl templates/style
 features/aulawiki/templates/styles/workspaces/tiki-user_edumenu.tpl templates/styles/workspaces/tiki-user_edumenu.tpl
 features/aulawiki/templates/styles/workspaces/tiki-user_information.tpl templates/styles/workspaces/tiki-user_information.tpl
 features/aulawiki/templates/styles/workspaces/tiki-user_preferences.tpl templates/styles/workspaces/tiki-user_preferences.tpl
-features/aulawiki/templates/styles/workspaces/modules/index.php templates/styles/workspaces/modules/index.php
 features/aulawiki/modules/mod-aulawiki_assignments.php modules/mod-aulawiki_assignments.php
 features/aulawiki/modules/mod-workspaces_calendar.php modules/mod-workspaces_calendar.php
 features/aulawiki/modules/mod-workspaces_childs.php modules/mod-workspaces_childs.php
