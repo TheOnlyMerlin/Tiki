@@ -261,7 +261,8 @@ span.highlight {background: inherit; border: 1px solid yellow}
 
 ul.cssmenu li ul,
 ul.cssmenu_horiz li ul,
-ul.cssmenu_vert li ul {
+ul.cssmenu_vert li ul,
+.mdksubframe {
 	background: #0b0c04 url(greenblog/right_section_bg.jpg) top center no-repeat;	
 	border: 1px solid #5f3b11}
 	
