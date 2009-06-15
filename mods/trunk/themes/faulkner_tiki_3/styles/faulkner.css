@@ -337,7 +337,7 @@ input[id="sl-login-pass"] {font-size: 90%}
 	padding: 0 0 14px 0}
 	
 .cssmenu_vert li ul {
-	margin-left: 11.05em;
+	margin-left: 11.05em !important;
 	margin-top: -1.35em;
 	padding-bottom: 1px}
 

@@ -318,6 +318,10 @@ div#sitead {margin: auto}
 /****** Menus, Links ******/
 /** CSS (suckerfish) menus **/
 
+.cssmenu_vert ul {
+	margin-left: 10.9em !important;
+}
+
 .cssmenu ul li ul,
 li.menuSection ul,
 .cssmenu_vert ul li ul {

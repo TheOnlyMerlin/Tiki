@@ -252,6 +252,10 @@ div#tiki-top {
 .cssmenu_vert ul {
 	border: #fdfefd 2px outset;
 	background: #efefef}
+	
+.cssmenu_vert ul {
+	margin-left: 10.9em !important;
+}
 
 #tiki-top .cssmenu_horiz {
 	text-align: left;

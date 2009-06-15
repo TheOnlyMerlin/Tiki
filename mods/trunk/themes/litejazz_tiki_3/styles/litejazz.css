@@ -218,6 +218,10 @@ div#sitead {margin: auto}
 	background: #818181;
 	border-bottom: 1px #aaa solid;
 	border-left: 1px #999 solid}
+	
+.cssmenu_vert ul {
+	margin-left: 10.9em !important;
+}
 
 .cssmenu_horiz li:hover,
 .cssmenu_vert li:hover {

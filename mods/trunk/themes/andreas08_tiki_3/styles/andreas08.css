@@ -258,8 +258,9 @@ input#fuser {line-height: 90%}
 .cssmenu_horiz li ul {
 	border: 1px solid #fff;
 	background: #578bb8}
-
-.cssmenu_ver li a ul {border: 0}
+	
+.cssmenu_vert ul {margin-left: 10.9em !important}
+.cssmenu_vert li a ul {border: 0}
 	
 .cssmenu_horiz li a {
 	border-right: 1px solid #fff;

@@ -243,6 +243,11 @@ input[name="search"] {
 .cssmenu_horiz,
 .cssmenu_vert {background: #a7e6ff}
 
+.cssmenu_vert ul {
+	margin-left: 10.9em !important;
+	background: none !important;
+}
+
 .cssmenu_vert li a   {
 	position: relative;
 	display: block;

@@ -300,15 +300,10 @@ div#sioptions  {margin-left: 40px}
 	border: 1px solid #8cacbb;
 	background: #fff}
 	
-.cssmenu_vert li ul {/* second-level lists */
-	margin-left: 11.05em;
-	margin-top: -1.35em;
-	padding-bottom: 1px; /*enable border to show */}
-/*
 .cssmenu_vert li ul {
-	background: #cce5ff;
-	border: 1px solid #233039}
-*/
+	margin-left: 10.9em !important;
+	padding-bottom: 1px;}
+
 .cssmenu ul li,
 .cssmenu_vert li ul li,
 .cssmenu_horiz li ul li {border-top: 1px solid #DEDEDE}
@@ -319,12 +314,7 @@ div#sioptions  {margin-left: 40px}
 .cssmenu a,	
 .cssmenu_horiz a,
 .cssmenu_vert a,
-#tiki-top .cssmenu_horiz li a {
-	/*text-decoration: none;
-	display: block;
-	text-decoration: none;
-	padding: 3px 0 3px 6px;*/
-	color: #006699}
+#tiki-top .cssmenu_horiz li a {color: #006699}
 	
 .cssmenu_vert a:link,
 .cssmenu_vert a:visited {color: #006699}

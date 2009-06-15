@@ -240,6 +240,10 @@ div#tiki-top {
 .cssmenu_vert li ul,
 .cssmenu_horiz li ul {
 	background: #f3f3f3}
+	
+.cssmenu_vert ul {
+	margin-left: 10.9em !important;
+}
 
 #tiki-top ul.cssmenu_horiz li a,
 #listcontainer ul.cssmenu_horiz li a {
@@ -264,6 +268,7 @@ div#tiki-top {
 #tiki-top ul.cssmenu_horiz li.menuSection a {padding-right: 20px}
 #tiki-top .cssmenu_horiz li.menuSection a .sf-sub-indicator {top: 1.8em}
 .box-data .cssmenu_vert li.menuSection a .sf-sub-indicator {top: 1.2em}
+
 /** PHP Layers Menus **/
 .horbar {
 	background: #000 url(darkshine/nav.gif) repeat-x;

@@ -295,7 +295,8 @@ ul.cssmenu_vert ul li a:visited {
 	padding-bottom: 3px}
 	
 ul.cssmenu_vert ul li a:hover {color: #d7e5f3}
-	
+.cssmenu_vert ul {margin-left: 10.9em !important}
+
 .cssmenu li ul,
 .cssmenu_horiz li ul,
 .cssmenu_vert li ul {background: #9faec2 url(eatlon/body_bg.gif) 0 -300px repeat-x}
