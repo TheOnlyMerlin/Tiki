@@ -1,0 +1,54 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/tikipedia_tiki_3/Readme.txt templates/styles/tikipedia/Readme.txt
+themes/tikipedia_tiki_3/styles/tikipedia.css styles/tikipedia.css
+themes/tikipedia_tiki_3/styles/tikipedia/arrows-6d819.png styles/tikipedia/arrows-6d819.png
+themes/tikipedia_tiki_3/styles/tikipedia/bullet.gif styles/tikipedia/bullet.gif
+themes/tikipedia_tiki_3/styles/tikipedia/headbg.jpg styles/tikipedia/headbg.jpg
+themes/tikipedia_tiki_3/styles/tikipedia/index.php styles/tikipedia/index.php
+themes/tikipedia_tiki_3/styles/tikipedia/logo.png styles/tikipedia/logo.png
+themes/tikipedia_tiki_3/styles/tikipedia/logo-indexed.gif styles/tikipedia/logo-indexed.gif
+themes/tikipedia_tiki_3/styles/tikipedia/user.gif styles/tikipedia/user.gif
+themes/tikipedia_tiki_3/templates/styles/tikipedia/credits.tpl templates/styles/tikipedia/credits.tpl
+themes/tikipedia_tiki_3/templates/styles/tikipedia/index.php templates/styles/tikipedia/index.php
+themes/tikipedia_tiki_3/templates/styles/tikipedia/mod-toolbox.tpl templates/styles/tikipedia/mod-toolbox.tpl
+themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki.tpl templates/styles/tikipedia/tiki.tpl
+themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-bot_bar.tpl templates/styles/tikipedia/tiki-bot_bar.tpl
+themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-likepages.tpl templates/styles/tikipedia/tiki-likepages.tpl
+themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-pagehistory.tpl templates/styles/tikipedia/tiki-pagehistory.tpl
+themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-read_article.tpl templates/styles/tikipedia/tiki-read_article.tpl
+themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-rename_page.tpl templates/styles/tikipedia/tiki-rename_page.tpl
+themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-rollback.tpl templates/styles/tikipedia/tiki-rollback.tpl
+themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-show_page.tpl templates/styles/tikipedia/tiki-show_page.tpl
+themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-site_header.tpl templates/styles/tikipedia/tiki-site_header.tpl
+themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-stats.tpl templates/styles/tikipedia/tiki-stats.tpl
+themes/tikipedia/templates/styles/tikipedia/tiki-top_bar.tpl templates/styles/tikipedia/tiki-top_bar.tpl
+
+Description: 
+This is an original theme for TikiWiki CMS/Groupware (http://tikiwiki.org) to replicate the visual appearance of the GPL Monobook theme for Mediawiki. This theme uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss).
+
+Docurl:
+http://themes.tikiwiki.org/Tikipedia
+http://zukakakina.com/Tikipedia
+
+Licence:
+GNU/GPL
+
+Author:
+Gary Cunningham-Lee (chibaguy)
+
+Version:
+3
+
+Changelog:
+1 initial commit for Tiki 3
