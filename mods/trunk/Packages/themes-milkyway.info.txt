@@ -14,6 +14,8 @@ themes/milkyway/Readme.txt styles/milkyway/Readme.txt
 themes/milkyway/styles/milkyway.css styles/milkyway.css
 themes/milkyway/styles/milkyway/index.php styles/milkyway/index.php
 themes/milkway/styles/milkyway/milkyway.png styles/milkyway/milkyway.png
+themes/milkway/styles/milkyway/borderlspacer.gif styles/milkyway/borderlspacer.gif
+themes/milkway/styles/milkyway/borderrspacer.gif styles/milkyway/borderrspacer.gif
 themes/milkyway/styles/milkyway/mw_menu_active._bg.png styles/milkyway/mw_menu_active._bg.png
 themes/milkyway/styles/milkyway/ie6.css styles/milkyway/ie6.css
 themes/milkyway/styles/milkyway/mw_menu_cap_l.png styles/milkyway/mw_menu_cap_l.png
