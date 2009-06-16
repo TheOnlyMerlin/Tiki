@@ -384,7 +384,7 @@ td.pill_r {
 #tiki-top .cssmenu_horiz li {background: url(milkyway/mw_menu_separator.png) 100% 0 no-repeat}
 	
 #tiki-top .cssmenu_horiz li.menuSection a {padding-right: 2.6em}
-#tiki-top .cssmenu_horiz li.menuSection a:hover {background: url(milkyway/options/white/mw_menu_active_bg.png) repeat-x}
+#tiki-top .cssmenu_horiz li.menuLevel0 a:hover {background: url(milkyway/options/white/mw_menu_active_bg.png) repeat-x}
 
 #col2 .cssmenu_vert > li > ul {
 	margin-left: 10.9em !important;
