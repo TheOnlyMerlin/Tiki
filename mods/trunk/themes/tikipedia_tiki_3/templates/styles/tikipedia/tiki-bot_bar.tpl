@@ -2,7 +2,8 @@
 {if $prefs.feature_bot_logo eq 'y'}{eval var=$prefs.bot_logo_code}{/if}
 <a href="http://tikiwiki.org/" title="TikiWiki"><img style="border: 0; vertical-align: middle; float: right; margin-right: 10px;" alt="{tr}Powered by{/tr} TikiWiki" src="img/tiki/tikibutton2.png" /></a>
 {if $page}
- {* begining editdate *}
+<div class="editdate" id="wiki-footer">
+{* begin editdate *}
 {if $wiki_authors_style neq 'none' || $prefs.wiki_feature_copyrights eq 'y'|| $print_page eq 'y'}
   <p class="editdate"> {* begining editdate *}
 {/if}
@@ -19,6 +20,7 @@
   {/section}.<br />
   {tr}Page last modified on{/tr} {$lastModif|tiki_long_datetime}. {if $prefs.wiki_show_version eq 'y'}({tr}Version{/tr} {$lastVersion}){/if}
 {elseif isset($wiki_authors_style) && $wiki_authors_style eq 'collaborative'}
+<br />
   {tr}Contributors to this page{/tr}: {$lastUser|userlink}
   {section name=author loop=$contributors}
    {if !$smarty.section.author.last},
@@ -26,23 +28,38 @@
    {/if}
    {$contributors[author]|userlink}
   {/section}.<br />
-  {tr 0=$lastModif|tiki_long_datetime 1=$lastUser|userlink}Page last modified on %0 by %1{/tr}. {if $prefs.wiki_show_version eq 'y'}({tr}Version{/tr} {$lastVersion}){/if}
+  {tr}Page last modified on{/tr} {$lastModif|tiki_long_datetime} {tr}by{/tr} {$lastUser|userlink}. {if $prefs.wiki_show_version eq 'y'}({tr}Version{/tr} {$lastVersion}){/if}
 {elseif isset($wiki_authors_style) && $wiki_authors_style eq 'none'}
 {elseif isset($wiki_authors_style) && $wiki_authors_style eq 'lastmodif'}
 	{tr}Page last modified on{/tr} {$lastModif|tiki_long_datetime}
 {else}
-  {tr 0=$creator|userlink}Created by %0{/tr}.
-  {tr 0=$lastModif|tiki_long_datetime 1=$lastUser|userlink}Last Modification: %0 by %1{/tr}. {if $prefs.wiki_show_version eq 'y'}({tr}Version{/tr} {$lastVersion}){/if}
-{/if} {* /if $page *}
+<br />
+  {tr}Created by{/tr}: {$creator|userlink}.
+  {tr}Last Modification{/tr}: {$lastModif|tiki_long_datetime} {tr}by{/tr} {$lastUser|userlink}. {if $prefs.wiki_show_version eq 'y'}({tr}Version{/tr} {$lastVersion}){/if}
 {/if}
-{if ($prefs.feature_site_report eq 'y' && $tiki_p_site_report eq 'y') || ($prefs.feature_site_send_link eq 'y' and $prefs.feature_tell_a_friend eq 'y' and $tiki_p_tell_a_friend eq 'y')}
+{if $prefs.wiki_feature_copyrights  eq 'y' and $prefs.wikiLicensePage}
+  {if $prefs.wikiLicensePage == $page}
+    {if $tiki_p_edit_copyrights eq 'y'}
+      <br />
+      {tr}To edit the copyright notices{/tr} <a href="copyrights.php?page={$copyrightpage}">{tr}Click Here{/tr}</a>.
+    {/if}
+  {else}
+    <br />
+    {tr}The content on this page is licensed under the terms of the{/tr} <a href="tiki-index.php?page={$prefs.wikiLicensePage}&amp;copyrightpage={$page|escape:"url"}">{$prefs.wikiLicensePage}</a>.
+  {/if}
+{/if}
+
+{if $print_page eq 'y'}
+    <br />
+    {tr}The original document is available at{/tr} <a href="{$base_url}tiki-index.php?page={$page|escape:"url"}">{$base_url}tiki-index.php?page={$page|escape:"url"}</a>
+{/if}
+
+{* end editdate *}
+</div>
+{/if}
+{if ($prefs.feature_site_report eq 'y' && $tiki_p_site_report eq 'y')}
 	<div id="site_report">
-		{if $prefs.feature_site_report eq 'y'}
-			<a href="tiki-tell_a_friend.php?report=y&amp;url={$smarty.server.REQUEST_URI|escape:'url'}">{tr}Report to Webmaster{/tr}</a>
-		{/if}
-		{if $prefs.feature_site_send_link eq 'y'}
-			<a href="tiki-tell_a_friend.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{tr}Email this page{/tr}</a>
-		{/if}
+		<a href="tiki-tell_a_friend.php?report=y&amp;url={$smarty.server.REQUEST_URI|escape:'url'}">{tr}Report to Webmaster{/tr}</a>
 	</div>
 {/if}
 {if $prefs.feature_bot_bar_icons eq 'y'}
@@ -105,19 +122,13 @@
 	{include file="babelfish.tpl"}
 {/if}
 <div id="power">
-	{if $prefs.feature_bot_bar_power_by_tw ne 'n'}
-		{tr}Powered by{/tr} <a href="http://info.tikiwiki.org" title="&#169; 2002&#8211;{$smarty.now|date_format:"%Y"} {tr}The TikiWiki Community{/tr}">{tr}TikiWiki CMS/Groupware{/tr}</a> {if $prefs.feature_topbar_version eq 'y'} v{$tiki_version} {if $tiki_uses_cvs eq 'y'} (CVS){/if} -{$tiki_star}- {/if}
-	{/if}
+	{tr}Powered by{/tr} <a href="http://info.tikiwiki.org" title="&#169; 2002&#8211;{$smarty.now|date_format:"%Y"} {tr}The TikiWiki Community{/tr}">{tr}TikiWiki CMS/Groupware{/tr}</a> {if $prefs.feature_topbar_version eq 'y'} v{$tiki_version} {if $tiki_uses_cvs eq 'y'} (CVS){/if} -{$tiki_star}- {/if}
 	<div id="credits">
 		{include file="credits.tpl"}
 	</div>
 </div>
 {if $prefs.feature_bot_bar_debug eq 'y'}
 <div id="loadstats" style="text-align: center">
-	<small>[ {tr}Execution time{/tr}: {elapsed} {tr}secs{/tr} ] &nbsp; [ {tr}Memory usage{/tr}: {memusage} ] &nbsp; [ {$num_queries} {tr}database queries used in {/tr} {$elapsed_in_db|truncate:3:''} secs ]{if $server_load and $server_load ne '?'} &nbsp; [ {tr}Server load{/tr}: {$server_load} ]{/if}</small>
+	<small>[ {tr}Execution time{/tr}: {elapsed} {tr}secs{/tr} ] &nbsp; [ {tr}Memory usage{/tr}: {memusage} ] &nbsp; [ {$num_queries} {tr}database queries used in {/tr} {$elapsed_in_db|truncate:3:''} secs ] &nbsp; [ GZIP {$gzip} ] &nbsp; [ {tr}Server load{/tr}: {$server_load} ]</small>
 </div>
-{/if}
-
-{if $lastup}
-<div class="cvsup" style="font-size:x-small;text-align:center;color:#999;">{tr}Last update from SVN{/tr}({$prefs.tiki_version}): {$lastup|tiki_long_datetime}</div>
 {/if}

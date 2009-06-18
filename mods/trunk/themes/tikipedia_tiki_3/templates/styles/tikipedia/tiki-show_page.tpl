@@ -36,14 +36,20 @@
 {/if}
 {/if} {*hide_page_header*}
 
-{if !$prefs.wiki_topline_position or $prefs.wiki_topline_position eq 'top' or $prefs.wiki_topline_position eq 'both'}
-{include  file=tiki-wiki_topline.tpl}
+<div class="wikitopline" style="clear: both;">
+	<div class="content">
+		<div class="wikiinfo" style="float: left">
+{if $prefs.feature_wiki_pageid eq 'y' and $print_page ne 'y'}
+			<small><a class="link" href="tiki-index.php?page_id={$page_id}">{tr}page id{/tr}: {$page_id}</a></small>
 {/if}
-{*if $print_page ne 'y'*} {* Moved to module *}
-{*if $prefs.page_bar_position eq 'top'*}
-{*include  file=tiki-page_bar.tpl*}
-{*/if*}
-{*/if*}
+{breadcrumbs type="desc" loc="page" crumbs=$crumbs}
+{if $cached_page eq 'y'}<small>({tr}Cached{/tr})</small>{/if}
+{if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categorypath eq 'y'}
+	{$display_catpath}
+{/if}
+		</div>
+</div>
+</div>
 
 {if isset($saved_msg) && $saved_msg neq ''}
 {remarksbox type="note" title="{tr}Note{/tr}"}{$saved_msg}{/remarksbox}
@@ -54,35 +60,33 @@
         {if $category_watched eq 'y'}
             {tr}Watched by categories{/tr}:
             {section name=i loop=$watching_categories}
-			    <a href="tiki-browse_categories?parentId={$watching_categories[i].categId}">{$watching_categories[i].name}</a>&nbsp;
+			    <a href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}">{$watching_categories[i].name}</a>&nbsp;
             {/section}
         {/if}			
     {/if}
 </div>
-
-{if $prefs.feature_urgent_translation eq 'y'}
-	{section name=i loop=$translation_alert}
-	<div class="cbox">
-	<div class="cbox-title">
-	{icon _id=information style="vertical-align:middle"} {tr}Content may be out of date{/tr}
-	</div>
-	<div class="cbox-data">
-		<p>{tr}An urgent request for translation has been sent. Until this page is updated, you can see a corrected version in the following pages:{/tr}</p>
-		<ul>
-		{section name=j loop=$translation_alert[i]}
-			<li>
-				<a href="{if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage|sefurl:wiki:with_next}{else}{$translation_alert[i][j].page|sefurl:wiki:with_next}{/if}bl=n">{if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage}{else}{$translation_alert[i][j].page}{/if}</a>
-				({$translation_alert[i][j].lang})
-				{if $editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') and $beingEdited ne 'y' or $canEditStaging eq 'y'} 
-				<a href="tiki-editpage.php?page={if isset($stagingPageName) && $hasStaging == 'y'}{$stagingPageName|escape:'url'}{else}{$page|escape:'url'}{/if}&amp;source_page={$translation_alert[i][j].page|escape:'url'}&amp;oldver={$translation_alert[i][j].last_update|escape:'url'}&amp;newver={$translation_alert[i][j].current_version|escape:'url'}&amp;diff_style=htmldiff" title="{tr}update from it{/tr}">{icon _id=arrow_refresh alt="{tr}update from it{/tr}" style="vertical-align:middle"}</a>
-				{/if}
-			</li>
-		{/section}
-		</ul>
-	</div>
-	</div>
+{*
+{section name=i loop=$translation_alert}
+<div class="cbox">
+<div class="cbox-title">
+{tr}{icon _id=information.png style="vertical-align:middle"} Content may be out of date{/tr}
+</div>
+<div class="cbox-data">
+	<p>{tr}An urgent request for translation has been sent. Until this page is updated, you can see a corrected version in the following pages:{/tr}</p>
+	<ul>
+	{section name=j loop=$translation_alert[i]}
+		<li>
+			<a href="tiki-index.php?page={if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage|escape:'url'}{else}{$translation_alert[i][j].page|escape:'url'}{/if}&bl=n">{if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage}{else}{$translation_alert[i][j].page}{/if}</a>
+			({$translation_alert[i][j].lang})
+			{if $editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') and $beingEdited ne 'y' or $canEditStaging eq 'y'} 
+			<a href="tiki-editpage.php?page={if isset($stagingPageName) && $hasStaging == 'y'}{$stagingPageName|escape:'url'}{else}{$page|escape:'url'}{/if}&amp;source_page={$translation_alert[i][j].page|escape:'url'}&amp;oldver={$translation_alert[i][j].last_update|escape:'url'}&amp;newver={$translation_alert[i][j].current_version|escape:'url'}&amp;diff_style=htmldiff" title="{tr}update from it{/tr}">{icon _id=arrow_refresh.png alt="{tr}update from it{/tr}" style="vertical-align:middle"}</a>
+			{/if}
+		</li>
 	{/section}
-{/if}
+	</ul>
+</div>
+</div>
+{/section}*}
 
 {if !$hide_page_header}
 {if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y' and isset($freetags.data[0]) and $prefs.freetags_show_middle eq 'y'}
@@ -120,17 +124,17 @@
 <tr>
   <td>
 
-    {if $prev_info and $prev_info.page_ref_id}{if $prev_info.page_alias}{assign var=icon_title value=$prev_info.page_alias}{else}{assign var=icon_title value=$prev_info.pageName}{/if}<a href="{$prev_info.pageName|sefurl:wiki:with_next}structure={$home_info.pageName|escape:'url'}">{icon _id='resultset_previous' alt="{tr}Previous page{/tr}" title=$icon_title}</a>{else}<img src="img/icons2/8.gif" alt="" height="1" width="8" />{/if}
+    {if $prev_info and $prev_info.page_ref_id}{if $prev_info.page_alias}{assign var=icon_title value=$prev_info.page_alias}{else}{assign var=icon_title value=$prev_info.pageName}{/if}<a href="{sefurl page=$prev_info.pageName structure=$home_info.pageName page_ref_id=$prev_info.page_ref_id}">{icon _id='resultset_previous' alt="{tr}Previous page{/tr}" title=$icon_title}</a>{else}<img src="img/icons2/8.gif" alt="" height="1" width="8" />{/if}
 
-    {if $parent_info}{if $parent_info.page_alias}{assign var=icon_title value=$parent_info.page_alias}{else}{assign var=icon_title value=$parent_info.pageName}{/if}<a href="{$parent_info.pageName|sefurl:wiki:with_next}structure={$home_info.pageName|escape:'url'}">{icon _id='resultset_up' alt="{tr}Parent page{/tr}" title=$icon_title}</a>{else}<img src="img/icons2/8.gif" alt="" height="1" width="8" />{/if}
+    {if $parent_info}{if $parent_info.page_alias}{assign var=icon_title value=$parent_info.page_alias}{else}{assign var=icon_title value=$parent_info.pageName}{/if}<a href="{sefurl page=$parent_info.pageName structure=$home_info.pageName page_ref_id=$parent_info.page_ref_id}">{icon _id='resultset_up' alt="{tr}Parent page{/tr}" title=$icon_title}</a>{else}<img src="img/icons2/8.gif" alt="" height="1" width="8" />{/if}
 
-    {if $next_info and $next_info.page_ref_id}{if $next_info.page_alias}{assign var=icon_title value=$next_info.page_alias}{else}{assign var=icon_title value=$next_info.pageName}{/if}<a href="{$next_info.pageName|sefurl:wiki:with_next}structure={$home_info.pageName|escape:'url'}">{icon _id='resultset_next' alt="{tr}Next page{/tr}" title=$icon_title}</a>{else}<img src="img/icons2/8.gif" alt="" height="1" width="8" />{/if}
+    {if $next_info and $next_info.page_ref_id}{if $next_info.page_alias}{assign var=icon_title value=$next_info.page_alias}{else}{assign var=icon_title value=$next_info.pageName}{/if}<a href="{sefurl page=$next_info.pageName structure=$home_info.pageName page_ref_id=$next_info.page_ref_id}">{icon _id='resultset_next' alt="{tr}Next page{/tr}" title=$icon_title}</a>{else}<img src="img/icons2/8.gif" alt="" height="1" width="8" />{/if}
 
-    {if $home_info}{if $home_info.page_alias}{assign var=icon_title value=$home_info.page_alias}{else}{assign var=icon_title value=$home_info.pageName}{/if}<a href="{$home_info.pageName|sefurl:wiki:with_next}structure={$home_info.pageName|escape:'url'}">{icon _id='house' alt="{tr}TOC{/tr}" title=$icon_title}</a>{/if}
+    {if $home_info}{if $home_info.page_alias}{assign var=icon_title value=$home_info.page_alias}{else}{assign var=icon_title value=$home_info.pageName}{/if}<a href="{sefurl page=$home_info.pageName structure=$home_info.pageName page_ref_id=$home_info.page_ref_id}">{icon _id='house' alt="{tr}TOC{/tr}" title=$icon_title}</a>{/if}
 
   </td>
   <td>
-{if $tiki_p_edit_structures and $tiki_p_edit_structures eq 'y' and $struct_editable eq 'y'}
+{if $tiki_p_edit_structures eq 'y' and $tiki_p_edit_structures eq 'y' and $struct_editable eq 'y'}
     <form action="tiki-editpage.php" method="post">
       <input type="hidden" name="current_page_id" value="{$page_info.page_ref_id}" />
       <input type="text" name="page" />
@@ -151,7 +155,7 @@
 	({$cur_pos})&nbsp;&nbsp;	
     {section loop=$structure_path name=ix}
       {if $structure_path[ix].parent_id}&nbsp;{$prefs.site_crumb_seper}&nbsp;{/if}
-	  <a href="{$structure_path[ix].pageName|sefurl:wiki:with_next}structure={$home_info.pageName|escape:'url'}">
+	  <a href="{sefurl page=$structure_path[ix].pageName structure=$home_info.pageName page_ref_id=$structure_path[ix].page_ref_id}">
       {if $structure_path[ix].page_alias}
         {$structure_path[ix].page_alias}
 	  {else}
@@ -195,9 +199,10 @@ must not overlap the wiki content that could contain floated elements *}
 </div> {* End of main wiki page *}
 
 {if $has_footnote eq 'y'}<div class="wikitext" id="wikifootnote">{$footnote}</div>{/if}
-{* p class="editdate" moved to footer *}
-
-
+{if $wiki_authors_style neq 'none' || $prefs.wiki_feature_copyrights eq 'y'|| $print_page eq 'y'}
+  <p class="editdate"> {* begining editdate *}
+{/if}
+{* author info moved from here to tiki-bot_bar.tpl *}
 {if $prefs.wiki_feature_copyrights eq 'y' and $prefs.wikiLicensePage}
   {if $prefs.wikiLicensePage == $page}
     {if $tiki_p_edit_copyrights eq 'y'}
