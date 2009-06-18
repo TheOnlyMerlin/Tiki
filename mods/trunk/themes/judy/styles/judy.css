@@ -175,7 +175,7 @@ button,
 input[type=reset],
 input[type=submit],
 span.button input,
-.calbuttonBox {
+.calbuttonBox a {
 	font-family: Verdana, Helvetica, Geneva, Arial, sans-serif;
 	font-size: 11px;
 	font-weight: normal;
@@ -190,7 +190,7 @@ button:hover,
 input[type=reset]:hover,
 input[type=submit]:hover,
 .button input:hover,
-.calbuttonBox:hover {
+.calbuttonBox a:hover {
 	background-color: #1d5f89;
 	color: #fff;
 	text-decoration: none}
