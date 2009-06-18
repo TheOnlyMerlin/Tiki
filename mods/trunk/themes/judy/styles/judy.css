@@ -389,7 +389,7 @@ a.flip {color: #95d4fd; text-decoration: none;font-size: 90%}
 a.flip:hover {color: #027ac6;font-size: 90%}
 
 /****** Misc. Global ****/
-span.highlight {
+.highlight {
 	background: #6ac4fd;
 }
 /***** Boxes *****/
@@ -444,7 +444,7 @@ span.highlight {
 	line-height: normal;
 }
 
-.simplebox {
+div.simplebox {
 	background: #fff;
 	border: 1px solid #e0e5fb;
 	color: #494949;
