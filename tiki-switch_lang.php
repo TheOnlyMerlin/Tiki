@@ -86,3 +86,4 @@ if ( isset($_GET['language']) ) {
 
 header("location: $orig_url");
 exit;
+?>

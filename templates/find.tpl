@@ -21,7 +21,7 @@
 	*		filter_values         : array( filter_fieldX => filter_fieldX_selected_value, ... )
 	*
 	* Usage examples : {include file='find.tpl'}
-	*                  {include file='find.tpl' find_show_languages='y' find_show_categories='y' find_show_num_rows='y'} 
+	*                  {include file="find.tpl" find_show_languages='y' find_show_categories='y' find_show_num_rows='y'} 
 *}
 
 <div class="clearfix">
@@ -119,6 +119,15 @@
 	</label>
 {/if}
 
+<label class="findsubmit">
+	<input type="submit" name="search" value="{tr}Go{/tr}" />
+	{if $find ne ''}
+		<span class="button">
+			<a href="{$smarty.server.PHP_SELF}?{query find='' types='' topic='' lang='' langOrphan='' exact_match='' categId='' maxRecords=''}" title="{tr}Clear Filter{/tr}">{tr}Clear Filter{/tr}</a>
+		</span>
+	{/if}
+</label>
+
 {if !empty($types) and isset($types_tag) and $types_tag eq 'checkbox' }
 	<div class="findtypes">
 		<ul>
@@ -150,14 +159,6 @@
 	</div>
 {/if}
 
-<label class="findsubmit">
-	<input type="submit" name="search" value="{tr}Go{/tr}" />
-	{if $find ne ''}
-		<span class="button">
-			<a href="{$smarty.server.PHP_SELF}?{query find='' types='' topic='' lang='' langOrphan='' exact_match='' categId='' maxRecords=''}" title="{tr}Clear Filter{/tr}">{tr}Clear Filter{/tr}</a>
-		</span>
-	{/if}
-</label>
 
 </form>
 </div>

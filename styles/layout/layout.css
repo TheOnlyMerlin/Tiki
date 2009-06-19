@@ -50,6 +50,8 @@ span.button {
 span.button a,
 span.button a:visited,
 button,
+input[type=reset],
+input[type=submit],
 span.button input,
 .calbuttonBox a {
 	padding: 1px 4px;
@@ -57,10 +59,9 @@ span.button input,
 	text-decoration: none;
 	white-space: nowrap;
 	cursor: pointer}
-
-/* Definitions below are the same as above, but are separated to make those above work in IE6 */
-input[type=reset],
-input[type=submit] {
+	
+* html input[type=submit],
+* html input[type=reset] {
 	padding: 1px 4px;
 	margin-right: 1px;
 	text-decoration: none;
@@ -75,25 +76,18 @@ input[type=submit] {
 	
 .button a:hover,
 button:hover,
+input[type=reset]:hover,
+input[type=submit]:hover,
 .button input:hover,
 .calbuttonBox:hover {}
 
-input[type=reset]:hover,
-input[type=submit]:hover {}
-
 .button a:active,
 button:active,
+input[type=reset]:active,
+input[type=submit]:active,
 .button input:active,
 span.highlight a:link,
-span.highlight a:visited {}
-
-input[type=reset]:active,
-input[type=submit]:active {}
-
-span.highlight {
-	background: aqua;
-	padding: 0 !important;
-	margin: 0}
+span.highlight a:visited {  }
 
 div.iconmenu {display: inline}
 select[multiple] {height: 10em}
@@ -223,12 +217,11 @@ div#sitead {margin: auto}
 	display: block;
 	margin: 0}
 	
-#sitesearchbar form {}
-#tiki-top #sitesearchbar br {display: none;}
+#sitesearchbar form {}	
 input#text
 input.wikiaction {}
 #sitesearchbar form button {}
-
+input#fuser,
 select[name="where"],
 input[name="search"] {}
 
@@ -411,7 +404,6 @@ ul.jumplinks a:active {
 	width: 6em;
 	z-index: 9}
 
-.fullscreenbutton, 
 #fullscreenbutton {
 	position: absolute;
 	top: 2px;
@@ -557,21 +549,6 @@ img.icon {
 .findtable ul {list-style: none}
 .findtable ul li {float: left}
 
-.alphafilter {
-	display: block;
-	margin: 10px 0;
-	text-align:center;
-}
-
-.alphafilter a {
-	font-size: 120%;
-}
-
-.alphafilter .highlight {
-	font-weight: bold;
-	font-size: 130%;
-}
-
 .top_actions {
 	text-align: right;
 	margin-top: 5px}
@@ -592,30 +569,29 @@ ul.categories li{
 div#tikihelp {
 	position: fixed;
 	right: 0;
-	top: 0;
+	top: 3px;
 	height: auto; /* if there was height specified it covered the right column content "invisibly" making part of it unclickable (from strasa) */
 	max-width: 50%;
 	padding: 0;
 	margin: 0;
 	border: none;
 	background: transparent;
-	z-index: 820;
-	height: 100%;
-}
+	z-index: 820}
 
-* html div#tikihelp {
-	position: absolute;
-}
+* html div#tikihelp {position: absolute}
 
-.help_title { float: left }
+div.help_icon {
+	border: 0;
+	margin: 0;
+	padding: 0;
+	height: 48px;
+	text-align: right}
 
-.help_close_icon,
-.help_fullscreen_icon {
-	float: right;
+div.help_icon img {
 	vertical-align: middle;
-}
-.help_fullscreen_icon { margin-right: 8px }
-.help_close_icon { margin-right: 20px }
+	border: 0;
+	margin: 0;
+	padding: 0}
 
 div.help_section_select {
 	font-weight : bold;
@@ -623,23 +599,21 @@ div.help_section_select {
 	background: #e7e9ea;
 	color: #000;
 	width: 100%;
-	padding: 2px;
-}
+	margin: 2px}
 
 div.help_sections {
 	width: 360px;
 	padding:  2px;
 	background: #aac9e9;
+	max-height : 95%;
 	overflow: auto;
-	height: 100%;
-}
+	height: 400px}
 
 div.help_section {
 	margin: 5px;
 	padding: 5px;
 	background: #fff;
-	color: #000;
-}
+	color: #000}
 	
 #site_report {text-align: center}
 
@@ -689,26 +663,21 @@ h3.box-title {
 .box-title a,
 .box-title a:link {}
 
-* html h3.box-title {
-	position: static;
-	padding-right: 18px}
+* html h3.box-title {position: static}
 
-.moduleflip,
-.wikitext .box-title span img.flipmodimage {
+.moduleflip {
 	display: none !important;
 	position: absolute;
 	right: 0;
 	top: 0}
 
-* html .moduleflip,
-* html .wikitext .box-title span img.flipmodimage {
+* html .moduleflip {
 	position: static;
 	float: right;
 	margin-top: -16px}
 
 * html .moduleflip,
-.box:hover .moduleflip,
-.wikitext .box:hover .box-title span img.flipmodimage {display: block !important}
+.box:hover .moduleflip {display: block !important}
 
 .box:hover img.flipmodimage {border: 1px solid transparent}
 * html img.flipmodimage {border: none}
@@ -722,7 +691,6 @@ h3.box-title {
 .box-data table {width: 100%}
 * html .box-data table {width: 95%}
 .box-data a.linkmenu {display: block}
-
 .box-data ol,
 .box-data ul {padding-right: .6em}
 
@@ -750,13 +718,10 @@ h3.box-title {
 	height: 16px}
 	
 /* MiniChat  */
-div.minichatdiv {
-	font-size: .9em;
-	overflow: auto}
-
 div.box-minichat {width: 100%}
 div.minichatchans {overflow: auto}
 .minichat {overflow: auto}
+div.minichatdiv {overflow: auto}
 
 /* mod-switch_lang */
 .box-switch_lang .box-data img {
@@ -832,8 +797,9 @@ div.minichatchans {overflow: auto}
 div.simplebox {
 	color: green;
 	background: silver;
-	border: 1px solid green;
-	padding: 3px}
+	border: 1px solid green}
+
+.highlight {background: aqua}
 
 /***** Tables, Tabs ****/
 /** Tables **/
@@ -853,6 +819,7 @@ table.admin {
 
 table.normalnoborder {width: 100%}
 table.admin tr td div#page-bar {}
+
 td {vertical-align: top}
 
 td.normal,
@@ -868,6 +835,7 @@ td.form,
 	vertical-align: top}
 
 * html td {font-size: 11px}
+th {}
 
 table.email {}
 table.email td.body {}
@@ -898,9 +866,7 @@ td.even {
 	border-collapse: collapse}
 
 /* Headings */
-th,
-td.heading,
-tr.diffheader {text-align: center}
+th, table.normal td.heading {text-align: center}
 
 form.admin {}
 form.admin fieldset {}
@@ -954,9 +920,6 @@ td.form {padding: 0.2em}
 	top: -3px/* !important*/}
 	
 [class].tabinactive {top: -2px !important}
-
-.tabinactive a,
-.tabinactive a:visited {}
 
 .tabcontent {
 	z-index: 1;
@@ -1057,7 +1020,14 @@ table.wikiplugin-split {
 	clear: both}
 
 table.wikiplugin-split .codelisting {width: 95%}
+div.box-minichat {width: 100%}
+div.minichatchans {overflow: auto}
+.minichat {overflow: auto}
 
+div.minichatdiv {
+	font-size: .9em;
+	overflow: auto}
+	
 /* wikiplugin_footnotearea */
 .footnotearea {
 	margin-top: 2em;
@@ -1069,6 +1039,8 @@ table.wikiplugin-split .codelisting {width: 95%}
 	padding: 0}
 
 .wikitext .fancylist li {
+	background: transparent url(strasa/list_icon.png) top left no-repeat;
+	color: #f90;
 	font: italic 2em Verdana, Geneva, Arial, Helvetica, sans-serif;
 	line-height: 27px;
 	list-style-position: inside;
@@ -1124,7 +1096,7 @@ div.tocnav {
 #tocnavicons {float: left}
 #tocnavaddpage {float: right}
 #tocnavlinks {clear: both}
-.fancytoclevel {list-style-image: url(../../img/icons/footprint.gif)}
+.fancytoclevel {list-style-image: url(../img/icons/footprint.gif)}
 li.toclevel {}
 
 /* TOC */
@@ -1139,9 +1111,9 @@ ul.toc * {border: none}
 /* Wiki diff styles */
 .diff td {border: 1px solid #696969}
 .diff div {border-top: 1px solid #696969}
-.diffbody {color: #000}
-.diffadded {background: #ccffcc; color: #000}
-.diffdeleted {background: #ffcccc; color: #000}
+.diffheader {background: #696969; font-weight: bold}
+.diffadded {background: #ccffcc}
+.diffdeleted {background: #ffcccc}
 
 .diffinldel {
 	background: #ffcccc;
@@ -1286,12 +1258,10 @@ body.tiki_blogs .post .postfooter {
 body.tiki_forums table.normal {margin: auto}
 #forumpost {display: none}
 #forumpostopen {display: block}
-.post {/*width: 100%*/}
+.post {width: 100%}
 
 .post .postbody {
 	clear: both;
-	/*width: 100%;
-	min-width: 100%;*/
 	margin: 0;
 	margin-top: 5px;
 	padding: 0}
@@ -1302,9 +1272,9 @@ body.tiki_forums table.normal {margin: auto}
 	float: left;
 	padding: 0 3px 3px 3px;
 	margin: 0;
-	/*width: 100%;
+	width: 100%;
 	min-width: 100%;
-	height: 100%;*/
+	height: 100%;
 	text-align: left}
 	
 .post .postbody .content p {}
@@ -1320,11 +1290,6 @@ body.tiki_forums table.normal {margin: auto}
 .postbody-title .title h2 {}
 .postbody-title .title h3 {  }
 .post .postbody-title .title a.link {}
-
-.title .freetaglist,
-.title a.freetag,
-.title a.freetag:visited {/*color: #fff*/}
-
 .postbody-title .title br.clear {}
 .post .author_actions {}
 
@@ -1344,7 +1309,7 @@ body.tiki_forums table.normal {margin: auto}
 .commentStyle_headers .author_info {float: left}
 .post .postbody-title .actions {float: right}
 
-.postbody-content {margin: 5px}
+.postbody-content {min-width: 100%; margin: 5px}
 .post .postbody .attachments {
 	clear: both;
 	margin-top: 5px}
@@ -1530,6 +1495,7 @@ opaque .box-title,
 div.multiselect {
 	vertical-align: middle;
 	padding: 0;
+	border:1px solid #80B1E2;
 	height: auto;
 	overflow: visible}
 
@@ -1634,11 +1600,10 @@ td.categobjectsdataodd {}
 
 .catfeatures li {
 	display: inline;
-	margin-right: 7px;
-	text-transform: capitalize;}
+	margin-right: 7px}
 
 .catitems {
-	margin-left: 15px;
+	margin-left: 0;
 	padding: 0;
 	list-style: none}
 
@@ -1744,17 +1709,7 @@ div.freetagObjectType {
 	right: 0}
 
 div.freetagObjectName a {text-decoration: none}	
-
-.searchresults {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-}
-
-.searchresults li {
-	margin: 10px 0 0;
-}
-
+.searchresults {display: inline}
 .freetaglist {
 	padding: 0 20px;
 	text-align: right}
@@ -1949,7 +1904,6 @@ td.mods_update {
 /***** Ajax, jquery. etc. *****/
 /***** Ajax *****/
 div#ajaxLoading {
-	z-index: 10000;
 	display: none;
 	position: absolute;
 	top: 50px;
@@ -1958,7 +1912,7 @@ div#ajaxLoading {
 	font-family: Verdana;
 	font-size: 90%;
 	text-align: center;
-	background: transparent url(../../lib/shadowbox/images/loading-light.gif) no-repeat 50% 100%;
+	background: transparent url(../lib/shadowbox/images/loading-light.gif) no-repeat 50% 100%;
 	height: 43px;
 	width: 50px;
 	padding-top: 32px}
@@ -2039,63 +1993,6 @@ div#ajaxLoading {
 .tab-menu li.tab-selected a {background: #f8f8ff}
 
 /***** New (unsorted) *****/
-
-/* webmail & groupmail */
-
-.box-webmail_inbox img.icon {vertical-align: middle}
-
-.webmail_item {
-	font-size: .9em;
-	border: #999 solid 1px;
-	margin: 1px 0;
-	padding: 0 1px;}
-
-.webmail_refresh_message {
-	font-size: .8em;}
-
-.webmail_list .even {}
-
-.webmail_list .odd {
-	background-color: #eee;}
-
-.webmail_list .button {
-	background-color: #fff;
-	border: #666 solid 1px;
-	display: inline-block;
-	padding: 0 2px;}
-
-.webmail_list .webmail_read {background-color: #aaa;}
-
-.webmail_list .webmail_flagged {}
-
-.webmail_list .webmail_replied {background-color: #888;}
-
-.webmail_list .webmail_taken {
-	border-color: #900;
-	color: #900;}
-
-.webmail_message {
-	background-color: #fff;}
-
-.webmail_mono {
-/*	max-width: 800px;
-	white-space: pre;
-	overflow: hidden;*/
-	font-size: 1.1em;
-	font-family: "Courier New", Courier, monospace}
-
-table.webmail_message_headers {
-	background-color: #fff;
-	width: 100%;
-	padding: 0 5em .5em 0;
-}
-
-table.webmail_message_headers th {
-	width: 6em;
-	font-style: italic;
-	text-align: right;
-	border: none;
-	background-color: transparent}
 
 /***** End New (unsorted) *****/
 

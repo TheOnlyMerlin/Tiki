@@ -123,3 +123,5 @@ class Image extends ImageAbstract {
 			return $this->data->getImageWidth();
 	}
 }
+
+?>

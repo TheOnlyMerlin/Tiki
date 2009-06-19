@@ -97,9 +97,18 @@ if (isset($_REQUEST["postId"]) && $_REQUEST["postId"] > 0) {
 	// Check permission
 	$data = $bloglib->get_post($_REQUEST["postId"]);
 
-	// If the blog is public and the user has posting permissions then he can edit
 	// If the user owns the weblog then he can edit
-	if (!$user || ($data["user"] != $user && $user != $blog_data["user"] && !($blog_data['public'] == 'y' && $tikilib->user_has_perm_on_object($user, $_REQUEST['blogId'], 'blog', 'tiki_p_blog_post', 'tiki_p_edit_categorized')))) {
+	if ($user && $user == $blog_data["user"]) {
+		$data["user"] = $user;
+	}
+
+	// If the blog is public and the user has posting permissions then he can edit
+	if ($user && $blog_data['public'] == 'y' 
+		&& $tikilib->user_has_perm_on_object($user, $_REQUEST['blogId'], 'blog', 'tiki_p_blog_post', 'tiki_p_edit_categorized') ) {
+		$data["user"] = $user;
+	}
+
+	if ($data["user"] != $user || !$user) {
 		if ($tiki_p_blog_admin != 'y' && !$tikilib->user_has_perm_on_object($user, $_REQUEST['blogId'], 'blog', 'tiki_p_blog_admin')) {
 			$smarty->assign('errortype', 401);
 			$smarty->assign('msg', tra("Permission denied you cannot edit this post"));
@@ -198,7 +207,6 @@ if (isset($_REQUEST["preview"])) {
 	$smarty->assign('taglist',$_REQUEST["freetag_string"]);
 	}
 	$smarty->assign('title', isset($_REQUEST["title"]) ? $_REQUEST['title'] : '');
-	$smarty->assign('author', isset($data) ? $data["user"] : $user);
 	$smarty->assign('parsed_data', $parsed_data);
 	$smarty->assign('preview', 'y');
 }
@@ -259,7 +267,16 @@ if ((isset($_REQUEST["save"]) || isset($_REQUEST['save_exit'])) && !$contributio
 
 		$blog_data = $tikilib->get_blog($data["blogId"]);
 
-		if (!$user || ($data["user"] != $user && $user != $blog_data["user"] && !($blog_data['public'] == 'y' && $tikilib->user_has_perm_on_object($user, $_REQUEST['blogId'], 'blog', 'tiki_p_blog_post', 'tiki_p_edit_categorized')))) {
+		if ($user && $user == $blog_data["user"]) {
+			$data["user"] = $user;
+		}
+
+		if ($user && $blog_data['public'] == 'y' 
+			&& $tikilib->user_has_perm_on_object($user, $_REQUEST['blogId'], 'blog', 'tiki_p_blog_post', 'tiki_p_edit_categorized') ) {
+			$data["user"] = $user;
+		}
+
+		if ($data["user"] != $user || !$user) {
 			if ($tiki_p_blog_admin != 'y') {
 				$smarty->assign('errortype', 401);
 				$smarty->assign('msg', tra("Permission denied you cannot edit this post"));
@@ -272,7 +289,7 @@ if ((isset($_REQUEST["save"]) || isset($_REQUEST['save_exit'])) && !$contributio
 	$edit_data = $imagegallib->capture_images($edit_data);
 	$title = isset($_REQUEST['title']) ? $_REQUEST['title'] : '';
 	if ($_REQUEST["postId"] > 0) {
-	  $bloglib->update_post($_REQUEST["postId"], $_REQUEST["blogId"], $edit_data, $data["user"], $title, isset($_REQUEST['contributions'])? $_REQUEST['contributions']:'', $data['data'], $blogpriv);
+	  $bloglib->update_post($_REQUEST["postId"], $_REQUEST["blogId"], $edit_data, $user, $title, isset($_REQUEST['contributions'])? $_REQUEST['contributions']:'', $data['data'], $blogpriv);
 		$postid = $_REQUEST["postId"];
 	} else {
 	  $postid = $bloglib->blog_post($_REQUEST["blogId"], $edit_data, $user, $title, isset($_REQUEST['contributions'])? $_REQUEST['contributions']:'', $blogpriv);

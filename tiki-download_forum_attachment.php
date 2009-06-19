@@ -42,3 +42,5 @@ if ($info["dir"]) {
 } else {
 	echo "$content";
 }
+
+?>

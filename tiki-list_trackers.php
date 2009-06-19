@@ -113,3 +113,5 @@ ask_ticket('list-trackers');
 // Display the template
 $smarty->assign('mid', 'tiki-list_trackers.tpl');
 $smarty->display("tiki.tpl");
+
+?>

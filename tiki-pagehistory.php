@@ -236,3 +236,5 @@ include_once ('tiki-section_options.php');
 // Display the template
 $smarty->assign('mid', 'tiki-pagehistory.tpl');
 $smarty->display("tiki.tpl");
+
+?>

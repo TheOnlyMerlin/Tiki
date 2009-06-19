@@ -85,5 +85,7 @@ class QuantifyLib extends TikiLib {
 		return floor( $value * 100 ); 
 	}
 }
+
 $quantifylib = new QuantifyLib($dbTiki);
 
+?>

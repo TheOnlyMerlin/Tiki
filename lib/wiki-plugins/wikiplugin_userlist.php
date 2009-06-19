@@ -112,3 +112,5 @@ function wikiplugin_userlist($data, $params) {
     }
     return $pre.implode ( $sep, $ret ).$post;
 }
+
+?>

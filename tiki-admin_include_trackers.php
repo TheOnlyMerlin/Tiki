@@ -101,3 +101,4 @@ $urlquery['page'] = 'trackers';
 $urlquery['sort_mode'] = $sort_mode;
 $smarty->assign_by_ref('urlquery', $urlquery);
 ask_ticket('admin-inc-trackers');
+?>

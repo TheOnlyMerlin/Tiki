@@ -94,3 +94,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
 $smarty->assign('mid', 'tiki-removepage.tpl');
 $smarty->display("tiki.tpl");
+
+?>

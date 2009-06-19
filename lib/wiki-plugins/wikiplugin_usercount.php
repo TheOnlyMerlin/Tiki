@@ -33,3 +33,5 @@ function wikiplugin_usercount($data, $params) {
 
         return $numusers;
 }
+
+?>

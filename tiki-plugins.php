@@ -19,3 +19,5 @@ $smarty->assign( 'plugin_list', $tikilib->list_plugins_pending_approval() );
 
 $smarty->assign('mid','tiki-plugins.tpl');
 $smarty->display("tiki.tpl");
+
+?>

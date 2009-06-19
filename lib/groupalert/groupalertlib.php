@@ -59,5 +59,8 @@ class groupAlertLib extends TikiLib {
 	}
 	}
 }
+
+
 global $tikilib,$dbTiki;
 $groupalertlib = new groupAlertLib($dbTiki);
+?>

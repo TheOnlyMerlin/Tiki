@@ -153,3 +153,5 @@ class DeclFilter_ConfigureTest extends TikiTestCase
 		$this->assertEquals( $data['world'], '123abc' );
 	}
 }
+
+?>

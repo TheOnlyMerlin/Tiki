@@ -256,3 +256,5 @@ class Installer
 		return count( $this->patches ) > 0 ;
 	} // }}}
 }
+
+?>

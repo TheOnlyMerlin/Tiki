@@ -113,3 +113,5 @@ class JitFilter_AccessTest extends TikiTestCase
 		$this->assertEquals( $filtered, array( 'hello', 'world' ) );
 	}
 }
+
+?>

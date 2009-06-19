@@ -105,3 +105,5 @@ class Image extends ImageAbstract {
 		}
 	}
 }
+
+?>

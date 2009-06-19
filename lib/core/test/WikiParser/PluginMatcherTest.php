@@ -272,3 +272,5 @@ class WikiParser_PluginMatcherTest extends TikiTestCase
 	// TODO : Replacement original vs generated
 	*/
 }
+
+?>

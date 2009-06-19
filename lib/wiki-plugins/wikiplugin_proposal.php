@@ -70,3 +70,5 @@ function wikiplugin_proposal($data, $params) {
 
 	return "~np~$content~/np~";
 }
+
+?>

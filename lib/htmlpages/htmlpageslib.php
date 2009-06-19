@@ -152,3 +152,5 @@ class HtmlPagesLib extends TikiLib {
 }
 global $dbTiki;
 $htmlpageslib = new HtmlPagesLib($dbTiki);
+
+?>

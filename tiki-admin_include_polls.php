@@ -26,3 +26,4 @@ if (isset($_REQUEST["pollprefs"])) {
 $headerlib->add_cssfile('css/admin.css');
 
 ask_ticket('admin-inc-polls');
+?>

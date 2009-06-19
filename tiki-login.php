@@ -382,3 +382,4 @@ if ( $stay_in_ssl_mode != 'y' || ! $https_mode ) $url = str_replace('https://', 
 if ( SID ) $url .= (( strpos('?', $url) === false ) ? '?' : '').SID;
 header('Location: '.$url);
 exit;
+?>

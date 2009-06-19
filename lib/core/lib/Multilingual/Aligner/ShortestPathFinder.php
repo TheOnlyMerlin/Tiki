@@ -205,3 +205,7 @@ class  Multilingual_Aligner_ShortestPathFinder {
 		return $foo;
 	}
 } // end class 
+
+
+
+?>

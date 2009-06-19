@@ -97,3 +97,5 @@ class CatBrowseTreeMaker extends TreeMaker {
 		return "\t" . '</li>';
 	}
 }
+
+?>

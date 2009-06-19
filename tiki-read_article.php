@@ -223,3 +223,5 @@ $statslib->stats_hit($article_data["title"],"article",$article_data['articleId']
 // Display the Index Template
 $smarty->assign('mid', 'tiki-read_article.tpl');
 $smarty->display("tiki.tpl");
+
+?>

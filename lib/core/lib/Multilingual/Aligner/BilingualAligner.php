@@ -232,3 +232,5 @@ class Multilingual_Aligner_BilingualAligner {
     }
 	
 }
+
+?>

@@ -80,3 +80,4 @@ class Multilingual_MachineTranslation_GoogleTranslateWrapper {
    		
    	}
 }
+?>

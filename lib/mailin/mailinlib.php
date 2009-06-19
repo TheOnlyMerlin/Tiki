@@ -98,3 +98,5 @@ class MailinLib extends TikiLib {
 }
 global $dbTiki;
 $mailinlib = new MailinLib($dbTiki);
+
+?>

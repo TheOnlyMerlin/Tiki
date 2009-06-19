@@ -18,7 +18,6 @@ require_once SMARTY_DIR.'Smarty.class.php';
 class Smarty_Tikiwiki extends Smarty {
 	
 	function Smarty_Tikiwiki($tikidomain = '') {
-		parent::Smarty();
 		if ($tikidomain) { $tikidomain.= '/'; }
 		$this->template_dir = 'templates/';
 		$this->compile_dir = "templates_c/$tikidomain";
@@ -45,7 +44,7 @@ class Smarty_Tikiwiki extends Smarty {
 		);
 		$this->security_settings['IF_FUNCS'] = array_merge(
 			$this->security_settings['IF_FUNCS'],
-			array('tra', 'strlen', 'strstr', 'strtolower', 'basename', 'ereg', 'array_key_exists', 'preg_match')
+			array('tra', 'strlen', 'strstr', 'strtolower', 'basename', 'ereg', 'array_key_exists')
 		);
 		$secure_dirs[] = 'img/icons2';
 		$this->secure_dir = $secure_dirs;
@@ -234,7 +233,6 @@ class Smarty_Tikiwiki extends Smarty {
 
 $smarty = new Smarty_Tikiwiki($tikidomain);
 $smarty->load_filter('pre', 'tr');
-$smarty->load_filter('pre', 'jq');
 
 include_once('lib/smarty_tiki/resource.wiki.php');
 $smarty->register_resource('wiki', array('smarty_resource_wiki_source', 'smarty_resource_wiki_timestamp', 'smarty_resource_wiki_secure', 'smarty_resource_wiki_trusted'));

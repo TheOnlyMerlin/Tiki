@@ -146,3 +146,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the template
 $smarty->assign('mid', 'tiki-edit_quiz_results.tpl');
 $smarty->display("tiki.tpl");
+
+?>

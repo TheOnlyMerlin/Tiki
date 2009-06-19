@@ -152,3 +152,4 @@ class ContributionLib extends TikiLib {
 }
 global $dbTiki;
 $contributionlib = new ContributionLib($dbTiki);
+?>

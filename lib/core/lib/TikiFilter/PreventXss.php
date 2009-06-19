@@ -146,3 +146,5 @@ class TikiFilter_PreventXss implements Zend_Filter_Interface
 		return $found;
 	}
 }
+
+?>

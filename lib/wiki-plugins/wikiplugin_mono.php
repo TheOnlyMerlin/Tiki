@@ -56,3 +56,5 @@ function wikiplugin_mono($data, $params) {
 
 	return $data;
 }
+
+?>

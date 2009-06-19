@@ -10,3 +10,5 @@
 
 header ("location: ../tiki-list_games.php");
 die;
+
+?>

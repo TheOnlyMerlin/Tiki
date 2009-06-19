@@ -44,3 +44,4 @@ $smarty->assign('featurelist', $featurelist);
 // Display the template
 $smarty->assign('mid', 'tiki-pandora.tpl');
 $smarty->display("tiki.tpl");
+?>

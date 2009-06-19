@@ -11,7 +11,6 @@
 $section = 'sheet';
 require_once ('tiki-setup.php');
 require_once ('lib/sheet/grid.php');
-$auto_query_args = array ('sheetId','readdate','mode');
 
 if ($prefs['feature_sheet'] != 'y') {
 	$smarty->assign('msg', tra("This feature is disabled").": feature_sheet");
@@ -167,3 +166,5 @@ ask_ticket('sheet');
 // Display the template
 $smarty->assign('mid', 'tiki-view-sheets.tpl');
 $smarty->display("tiki.tpl");
+
+?>

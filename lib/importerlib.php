@@ -286,3 +286,4 @@ function parseForumList($dbType, $dbPrefix, $sqlFile) {
 
 
 }
+?>

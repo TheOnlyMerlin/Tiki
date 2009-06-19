@@ -361,3 +361,5 @@ class PS_GRenderer extends GRenderer // {{{1
 		return $size;
 	}
 } // }}}1
+
+?>

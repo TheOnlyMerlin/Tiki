@@ -36,3 +36,5 @@ function wikiplugin_dl($data, $params) {
 	$result .= '</dl>';
 	return $result;
 }
+
+?>

@@ -11,3 +11,4 @@
 class TikiTestCase extends PHPUnit_Framework_TestCase {
   protected $backupGlobals = FALSE;	
 } 
+?>

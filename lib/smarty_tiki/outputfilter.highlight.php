@@ -113,9 +113,7 @@ function _enlightColor($matches) {
  // helper function
  // q= for Google, p= for Yahoo
  function _refererhi() {
-	 if (isset($_SERVER['HTTP_REFERER'])) {
-		 $referer = parse_url($_SERVER['HTTP_REFERER']);
-	 }
+     $referer = parse_url($_SERVER['HTTP_REFERER']);
      if (empty($referer['query'])) {
          return '';
      }
@@ -127,3 +125,4 @@ function _enlightColor($matches) {
      }
      return '';
  }
+?>

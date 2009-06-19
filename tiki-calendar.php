@@ -623,16 +623,9 @@ if ($max > 100) {
 					$hrows[$aDay][$anHour][$i]['concurrences'] = $concurrencies[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['value'];
 					$hrows[$aDay][$anHour][$i]['duree'] = $eventHoraires[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['duree'] * 24;
 					$hrows[$aDay][$anHour][$i]['left'] = $hrows[$aDay][$anHour][$i]['left'] + $concurrencies[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['offset'];
-
-					if ( $concurrencies[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['value'] != 1
-						&& $hrows[$aDay][$anHour][$i]['width'] > 0
-						&& $concurrencies[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['value'] > 0
-					) {
-						$hrows[$aDay][$anHour][$i]['width'] = $hrows[$aDay][$anHour][$i]['width'] / $concurrencies[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['value'];
-					} else {
-						$hrows[$aDay][$anHour][$i]['width'] = 12.8;
-					}
-
+					$hrows[$aDay][$anHour][$i]['width'] = 
+						$concurrencies[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['value'] == 1 ? 12.8 : 
+							$hrows[$aDay][$anHour][$i]['width']/$concurrencies[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['value'];
 					$manyEvents[$aDay]['tooMany'] = false;
 				} else {
 					$manyEvents[$aDay]['tooMany'] = true;
@@ -775,5 +768,6 @@ else {
 
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
-$smarty->assign('headtitle',tra('Calendar'));
+
 $smarty->display("tiki.tpl");
+?>

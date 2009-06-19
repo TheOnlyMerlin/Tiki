@@ -430,3 +430,5 @@ class TaskLib extends TikiLib {
 }
 global $dbTiki;
 $tasklib = new TaskLib($dbTiki);
+
+?>

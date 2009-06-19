@@ -306,3 +306,5 @@ class MagicLib extends TikiLib {
 }
 global $dbTiki;
 $magiclib = new MagicLib($dbTiki);
+
+?>

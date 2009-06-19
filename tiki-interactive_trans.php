@@ -121,3 +121,4 @@ foreach ($languages as $key => $value)
 $smarty->assign('languages', $languages);
 $smarty->assign('entries', $entries);
 $smarty->display("tiki-interactive_trans.tpl");
+?>

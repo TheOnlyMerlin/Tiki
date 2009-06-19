@@ -21,3 +21,5 @@ function wikiplugin_cookie( $data, $params )
 
 	return $cookie;
 }
+
+?>

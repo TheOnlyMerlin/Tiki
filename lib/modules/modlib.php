@@ -226,3 +226,5 @@ class ModLib extends TikiLib {
 }
 global $dbTiki;
 $modlib = new ModLib($dbTiki);
+
+?>

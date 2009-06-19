@@ -118,3 +118,5 @@ function wikiplugin_snarf($data, $params)
     }
     return $ret;
 }
+
+?>

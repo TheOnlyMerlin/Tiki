@@ -734,3 +734,4 @@ class CalRecurrence extends TikiLib {
 	public function getLastModif() { return $this->lastModif; }
 	public function setLastModif($value) { $this->lastModif = $value; }
 }
+?>

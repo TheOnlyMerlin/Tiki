@@ -50,3 +50,5 @@ function wikiplugin_youtube($data, $params) {
 
 	return $asetup;
 }
+
+?>

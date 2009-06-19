@@ -7,3 +7,5 @@ class TikiFilter_RawUnsafe implements Zend_Filter_Interface
 		return $value;
 	}
 }
+
+?>

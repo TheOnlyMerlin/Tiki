@@ -34,3 +34,4 @@ function _escape_smarty_jq($key) {
 	$s = preg_replace('/(?s)\{literal\}\s*\{\/literal\}/', '', $s);		// remove empties
 	return !empty($s) ? $key[1].'{literal}'.$s.'{/literal}{/jq}' : '';	// wrap
 }
+?>

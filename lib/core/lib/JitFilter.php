@@ -217,3 +217,5 @@ class JitFilter implements ArrayAccess, Iterator, Countable
 		return $this->filter( $name );
 	}
 }
+
+?>

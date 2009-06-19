@@ -15,7 +15,7 @@
 
 {if $userwatch eq $user or $userwatch eq ""}
   {if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
-    {include file='tiki-mytiki_bar.tpl'}
+    {include file=tiki-mytiki_bar.tpl}
   {/if}
   <br />
 {/if}
@@ -25,13 +25,11 @@
     {section name=n loop=$tikifeedback}{$tikifeedback[n].mes}{/section}
   </div>
 {/if}
-{tabset name="mytiki_user_preference"}
 
 {if $prefs.feature_userPreferences eq 'y'}
-{tab name="{tr}Personal Information{/tr}"}
+<h2>{tr}Personal Information{/tr}</h2>
 <form action="tiki-user_preferences.php" method="post">
   <input type="hidden" name="view_user" value="{$userwatch|escape}" />
-
 
   {cycle values="odd,even" print=false}
   <table class="normal">
@@ -516,11 +514,10 @@
     </tr>
   </table>
 </form>
-{/tab}
 {/if}
 
 {if $prefs.change_password neq 'n' or ! ($prefs.login_is_email eq 'y' and $userinfo.login neq 'admin')}
-	{tab name="{tr}Account Information{/tr}"}
+  <h2>{tr}Account Information{/tr}</h2>
   <form action="tiki-user_preferences.php" method="post">
   <input type="hidden" name="view_user" value="{$userwatch|escape}" />
   <table class="normal">
@@ -567,6 +564,5 @@
       </tr>
     </table>
   </form>
-	{/tab}
 {/if}
-{/tabset}
+

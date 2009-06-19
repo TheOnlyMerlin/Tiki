@@ -206,3 +206,5 @@ ask_ticket('poll-results');
 // Display the template
 $smarty->assign('mid', 'tiki-poll_results.tpl');
 $smarty->display('tiki.tpl');
+
+?>

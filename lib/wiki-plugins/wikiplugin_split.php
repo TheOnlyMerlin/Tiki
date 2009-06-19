@@ -260,3 +260,4 @@ function  wikiplugin_split_cell($data, $pos, $cell) {
 	}
 	return array($start, $end - $start);
 }
+?>

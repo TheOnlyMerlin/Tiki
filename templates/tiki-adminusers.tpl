@@ -21,7 +21,7 @@
 {/if}
 
 {if $tikifeedback}
-	{remarksbox type="feedback" title="{tr}Feedback{/tr}"}{section name=n loop=$tikifeedback}{{tr}$tikifeedback[n].mes{/tr}}<br />{/section}{/remarksbox}
+	{remarksbox type="feedback" title="Feedback"}{section name=n loop=$tikifeedback}{$tikifeedback[n].mes}<br />{/section}{/remarksbox}
 {/if}
 
 {if $added != "" or $discarded != "" or $discardlist != ''}
@@ -54,10 +54,31 @@
 	{/remarksbox}
 {/if}
 
-{tabset name='tabs_adminuers'}
+{if $prefs.feature_tabs eq 'y'}
+	{cycle name=tabs values="1,2,3,4" print=false advance=false reset=true}
+	<div class="tabs">
+		<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark" style="border-color:{if $cookietab eq $tabi}black{else}white{/if};">
+			<a href="javascript:tikitabs({cycle name=tabs},4);">{tr}Users{/tr}</a>
+		</span>
+		{if $userinfo.userId}
+			<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark" style="border-color:{if $cookietab eq $tabi}black{else}white{/if};">
+				<a href="javascript:tikitabs({cycle name=tabs},4);">{tr}Edit user{/tr} <i>{$userinfo.login}</i></a>
+			</span>
+		{else}
+			<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark" style="border-color:{if $cookietab eq $tabi}black{else}white{/if};">
+				<a href="javascript:tikitabs({cycle name=tabs},4);">{tr}Add a New User{/tr}</a>
+			</span>
+		{/if}
+		<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark" style="border-color:{if $cookietab eq $tabi}black{else}white{/if};">
+			<a href="javascript:tikitabs({cycle name=tabs},4);">{tr}Import/Export{/tr}</a>
+		</span>
+	</div>
+{/if}
 
+{cycle name=content values="1,2,3,4" print=false advance=false reset=true}
 {* ---------------------- tab with list -------------------- *}
-{tab name='{tr}Users{/tr}'}
+<div id="content{cycle name=content assign=focustab}{$focustab}" class="tabcontent"{if $prefs.feature_tabs eq 'y'} style="display:{if $focustab eq $cookietab}block{else}none{/if};"{/if}>
+	
 	<h2>{tr}Users{/tr}</h2>
 
 	<form method="get" action="tiki-adminusers.php">
@@ -103,7 +124,16 @@
 	</form>
 
 	{if $cant > $numrows or !empty($initial)}
-		{initials_filter_links}
+		<div align="center">
+			{section name=ini loop=$initials}
+				{if $initial and $initials[ini] eq $initial}
+					<span class="button">{$initials[ini]|capitalize}</span> . 
+				{else}
+					<a href="tiki-adminusers.php?initial={$initials[ini]}{if $find}&amp;find={$find|escape:"url"}{/if}{if $numrows}&amp;numrows={$numrows}{/if}{if $sort_mode}&amp;sort_mode={$sort_mode}{/if}" class="prevnext">{$initials[ini]}</a> . 
+				{/if}
+			{/section}
+			<a href="tiki-adminusers.php?initial={if $find}&amp;find={$find|escape:"url"}{/if}{if $numrows}&amp;numrows={$numrows}{/if}{if $sort_mode}&amp;sort_mode={$sort_mode}{/if}" class="prevnext">{tr}All{/tr}</a>
+		</div>
 	{/if}
 
 	<form name="checkform" method="post" action="{$smarty.server.PHP_SELF}{if $group_management_mode ne 'y' and $set_default_groups_mode ne 'y' and $email_mode ne 'y'}#multiple{/if}">
@@ -190,9 +220,6 @@
 							{if $users[user].valid && $users[user].waiting eq 'a'}
 								<a class="link" href="tiki-login_validate.php?user={$users[user].user|escape:url}&amp;pass={$users[user].valid|escape:url}" title="{tr}Validate user{/tr}: {$users[user].user}">{icon _id='accept' alt="{tr}Validate user{/tr}: `$users[user].user`"}</a>
 							{/if}
-							{if $users[user].waiting eq 'u'}
-								<a class="link" href="tiki-confirm_user_email.php?user={$users[user].user|escape:url}&amp;pass={$users[user].provpass|md5|escape:url}" title="{tr}Validate user{/tr}: {$users[user].user}">{icon _id='accept' alt="{tr}Validate user{/tr}: `$users[user].user`"}</a>
-							{/if}
 						{/if}
 					</td>
 				</tr>
@@ -272,18 +299,11 @@
 	</form>
 
 	{pagination_links cant=$cant step=$numrows offset=$offset}{/pagination_links}
-{/tab}
-
+</div>
 
 {* ---------------------- tab with form -------------------- *}
 <a name="2" ></a>
-{if $userinfo.userId}
-	{assign var=add_edit_user_tablabel value="{tr}Edit user{/tr} <i>`$userinfo.login`</i>"}
-{else}
-	{assign var=add_edit_user_tablabel value='{tr}Add a New User{/tr}'}
-{/if}
-
-{tab name=$add_edit_user_tablabel}
+<div id="content{cycle name=content assign=focustab}{$focustab}" class="tabcontent"{if $prefs.feature_tabs eq 'y'} style="display:{if $focustab eq $cookietab}block{else}none{/if};"{/if}>
 	{if $userinfo.userId}
 		<h2>{tr}Edit user{/tr}: {$userinfo.login}</h2>
 		{if $userinfo.login ne 'admin'}
@@ -445,10 +465,10 @@
 			<br />
 		{/if}
 	</form>
-{/tab}
+</div>
 
 {* ---------------------- tab with upload -------------------- *}
-{tab name='{tr}Import/Export{/tr}'}
+<div id="content{cycle name=content assign=focustab}{$focustab}" class="tabcontent"{if $prefs.feature_tabs eq 'y'} style="display:{if $focustab eq $cookietab}block{else}none{/if};"{/if}>
 	<h2>{tr}Batch upload (CSV file):{/tr}</h2>
 
 	<form action="tiki-adminusers.php" method="post" enctype="multipart/form-data">
@@ -479,6 +499,4 @@
 		</table>
 	</form>
 	{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}You can export users of a group in <a href="tiki-admingroups.php">admin->groups->a_group</a>{/tr}{/remarksbox}
-{/tab}
-
-{/tabset}
+</div>

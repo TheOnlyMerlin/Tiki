@@ -462,7 +462,6 @@ CREATE TABLE "tiki_banners" (
   "created" numeric(14,0) default NULL NULL,
   "maxImpressions" numeric(8,0) default NULL NULL,
   "impressions" numeric(8,0) default NULL NULL,
-  "maxUserImpressions" numeric(8,0) default -1,
   "maxClicks" numeric(8,0) default NULL NULL,
   "clicks" numeric(8,0) default NULL NULL,
   "zone" varchar(40) default NULL NULL,
@@ -2093,7 +2092,6 @@ CREATE TABLE "tiki_menu_options" (
   "perm" text default NULL NULL,
   "groupname" text default NULL NULL,
   "userlevel" numeric(4,0) default 0,
-  "icon" varchar(200) default '',
   PRIMARY KEY (optionId)
 ) ENGINE=MyISAM  
 go
@@ -2870,7 +2868,6 @@ CREATE TABLE "tiki_menus" (
   "description" text default '',
   "type" char(1) default NULL NULL,
   "icon" varchar(200) default NULL NULL,
-  "use_items_icons" char(1) DEFAULT 'n' NOT NULL,
   PRIMARY KEY (menuId)
 ) ENGINE=MyISAM  
 go
@@ -4232,10 +4229,6 @@ CREATE TABLE "tiki_user_mail_accounts" (
   "smtpPort" numeric(4,0) default NULL NULL,
   "flagsPublic" char(1) default 'n',				-- COMMENT 'MatWho - Shared Group Mail box if y',
   "autoRefresh" numeric(4,0) default 0,		-- COMMENT 'seconds for mail list to refresh, 0 = none' NOT NULL,
-  "imap" varchar( 255 ) default NULL NULL,
-  "mbox" varchar( 255 ) default NULL NULL,
-  "maildir" varchar( 255 ) default NULL NULL,
-  "useSSL" char( 1 ) default 'n' NOT NULL,
   PRIMARY KEY (accountId)
 ) ENGINE=MyISAM  
 go
@@ -4636,7 +4629,6 @@ go
 
 
 CREATE TABLE "users_groups" (
-  "id" numeric(11 ,0) identity,
   "groupName" varchar(255) default '' NOT NULL,
   "groupDesc" varchar(255) default NULL NULL,
   "groupHome" varchar(255) default '',
@@ -4649,13 +4641,11 @@ CREATE TABLE "users_groups" (
   "userChoice" char(1) default NULL NULL,
   "groupDefCat" numeric(12,0) default 0,
   "groupTheme" varchar(255) default '',
-  PRIMARY KEY (id)
-) ENGINE=MyISAM 
+  PRIMARY KEY (groupName(30))
+) ENGINE=MyISAM
 go
 
 
-CREATE UNIQUE INDEX "users_groups_groupName" ON "users_groups"("groupName")
-go
 
 -- DROP TABLE "users_objectpermissions"
 go
@@ -5671,10 +5661,6 @@ go
 
 
 INSERT INTO "users_permissions" ("permName","permDesc","level","type") VALUES ('tiki_p_admin_notifications', 'Can admin mail notifications', 'editors', 'mail notifications')
-go
-
-
-INSERT INTO "users_permissions" ("permName","permDesc","level","type") VALUES ('tiki_p_invite', 'Can invite user in groups', 'editors', 'tiki')
 go
 
 
@@ -7546,95 +7532,6 @@ go
 
 
 INSERT INTO `tiki_sefurl_regex_out` (`left`, `right`, `type`, `feature`, `order`) VALUES('tiki-sheets.php', 'sheets', '', 'feature_sheet', 200)
-go
-
-
-
-UPDATE tiki_menu_options SET icon = 'icon-configuration48x48' WHERE name = 'Admin'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'xfce4-appfinder48x48' WHERE name = 'Search'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'wikipages48x48' WHERE name = 'Wiki'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'blogs48x48' WHERE name = 'Blogs'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'stock_select-color48x48' WHERE name = 'Image Galleries'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'file-manager48x48' WHERE name = 'File Galleries'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'stock_bold48x48' WHERE name = 'Articles'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'stock_index48x48' WHERE name = 'Forums'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'gnome-settings-font48x48' WHERE name = 'Trackers'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'users48x48' WHERE name = 'Community'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'stock_dialog_question48x48' WHERE name = 'FAQs'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'maps48x48' WHERE name = 'Maps'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'messages48x48' WHERE name = 'Newsletters'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'vcard48x48' WHERE name = 'Freetags'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'date48x48' WHERE name = 'Calendar' AND url = 'tiki-calendar.php'
-go
-
-
-UPDATE tiki_menu_options SET icon = 'userfiles48x48' WHERE name = 'MyTiki'
-go
-
-
-UPDATE tiki_menu_options SET icon = '' WHERE name = 'Quizzes'
-go
-
-
-UPDATE tiki_menu_options SET icon = '' WHERE name = 'Surveys'
-go
-
-
-UPDATE tiki_menu_options SET icon = '' WHERE name = 'TikiSheet'
-go
-
-
-UPDATE tiki_menu_options SET icon = '' WHERE name = 'Workflow'
-go
-
-
-UPDATE tiki_menu_options SET icon = '' WHERE name = 'Charts'
-go
-
-
-UPDATE tiki_menus SET use_items_icons='y' WHERE menuId=42
 go
 
 

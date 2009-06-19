@@ -142,7 +142,7 @@ function process_sql_file($file,$db_tiki) {
 	$smarty->assign_by_ref('failedcommands', $failedcommands);
 }
 
-function write_local_php($dbb_tiki,$host_tiki,$user_tiki,$pass_tiki,$dbs_tiki,$dbversion_tiki="4.0") {
+function write_local_php($dbb_tiki,$host_tiki,$user_tiki,$pass_tiki,$dbs_tiki,$dbversion_tiki="3.0") {
 	global $local;
 	global $db_tiki;
 	if ($dbs_tiki and $user_tiki) {
@@ -218,7 +218,6 @@ function isWindows() {
 class Smarty_Tikiwiki_Installer extends Smarty {
 
 	function Smarty_Tikiwiki_Installer() {
-		parent::Smarty();
 		$this->template_dir = "templates/";
 		$this->compile_dir = "templates_c/";
 		$this->config_dir = "configs/";
@@ -546,8 +545,8 @@ $smarty->load_filter('pre', 'tr');
 $smarty->load_filter('output', 'trimwhitespace');
 $smarty->assign('mid', 'tiki-install.tpl');
 $smarty->assign('style', 'thenews.css');
-$smarty->assign('virt', isset($virt) ? $virt : null );
-$smarty->assign('multi', isset($multi) ? $multi : null );
+$smarty->assign('virt',$virt);
+$smarty->assign('multi', $multi);
 if ($language != 'en')
 	$smarty->assign('lang', $language);
 

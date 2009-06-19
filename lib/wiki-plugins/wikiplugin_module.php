@@ -80,7 +80,7 @@ function wikiplugin_module_info() {
 }
 
 function wikiplugin_module($data, $params) {
-	global $tikilib, $cache_time, $smarty, $dbTiki, $prefs, $ranklib, $tikidomain, $user, $tiki_p_tasks, $tiki_p_create_bookmarks, $imagegallib, $module_params;
+	global $tikilib, $cache_time, $smarty, $dbTiki, $prefs, $ranklib, $tikidomain, $user, $tiki_p_tasks, $tiki_p_create_bookmarks, $imagegallib;
 
 	$out = '';
 	extract ($params,EXTR_SKIP);
@@ -189,3 +189,5 @@ function wikiplugin_module($data, $params) {
 
 	return $data;
 }
+
+?>

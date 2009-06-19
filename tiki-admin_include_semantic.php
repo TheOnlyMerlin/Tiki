@@ -85,3 +85,5 @@ if( isset($_POST['list']) ) {
 }
 
 ask_ticket('admin-inc-semantic');
+
+?>

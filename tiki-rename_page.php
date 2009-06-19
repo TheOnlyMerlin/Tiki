@@ -93,3 +93,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
 $smarty->assign('mid', 'tiki-rename_page.tpl');
 $smarty->display("tiki.tpl");
+
+?>

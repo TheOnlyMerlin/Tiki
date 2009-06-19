@@ -209,3 +209,5 @@ class MiniCalLib extends TikiLib {
 }
 global $dbTiki;
 $minicallib = new MiniCalLib($dbTiki);
+
+?>

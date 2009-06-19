@@ -147,3 +147,5 @@ function wikiplugin_include($data, $params) {
 	}
 	return $text;
 }
+
+?>

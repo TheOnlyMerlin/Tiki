@@ -50,15 +50,12 @@ $focuscell = TikiLib::make_time(0,0,0,$focus_month,$focus_day,$focus_year);
 $smarty->assign('focusdate', $focusdate);
 $smarty->assign('focuscell', $focuscell);
 
-// Get viewmode from URL, session or prefs if it has not already been defined by the calling script (for example by modules, to force a month view)
-if ( ! isset($calendarViewMode) ) {
-	if (!empty($_REQUEST['viewmode'])) {
-		$calendarViewMode = $_REQUEST['viewmode'];
-	} elseif (!empty($_SESSION['CalendarViewMode'])) {
-		$calendarViewMode = $_SESSION['CalendarViewMode'];
-	} else {
-		$calendarViewMode = $prefs['calendar_view_mode'];
-	}
+if (!empty($_REQUEST['viewmode'])) {
+	$calendarViewMode = $_REQUEST['viewmode'];
+} elseif (!empty($_SESSION['CalendarViewMode'])) {
+	$calendarViewMode = $_SESSION['CalendarViewMode'];
+} else {
+	$calendarViewMode = $prefs['calendar_view_mode'];
 }
 $_SESSION['CalendarViewMode'] = $calendarViewMode;
 $smarty->assign_by_ref('viewmode', $calendarViewMode);
@@ -363,3 +360,5 @@ if (empty($myurl))
 	$myurl = 'tiki-calendar.php';
 $jscal_url = "$myurl?todate=%s";
 $smarty->assign('jscal_url', $jscal_url);
+//echo "view ".date('r', $viewstart).'-'.date('r', $viewend).'<br>'.'db '.date('r', $daystart).'-'.date('r', $dayend);
+?>

@@ -15,7 +15,7 @@ class TikiSetup extends TikiInit {
 
         \static
     */
-    static function check($tikidomain='') {
+    function check($tikidomain='') {
         static $checked;
 
         if ($checked) {

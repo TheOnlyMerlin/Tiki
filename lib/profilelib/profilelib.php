@@ -653,17 +653,6 @@ class Tiki_Profile_Object
 		$this->profile = $profile;
 	} // }}}
 
-	function getDescription() {
-		$str = '';
-		if ($this->isWellStructured()) {
-			$str .= $this->getType().' ';
-			$str .= '"'.isset($this->data['data']['name']) ? $this->data['data']['name'] : tra('No name').'"';
-		} else {
-			$str .= tra('Bad object');
-		}
-		return $str;
-	}
-	
 	function isWellStructured() // {{{
 	{
 		return isset( $this->data['type'], $this->data['data'] );
@@ -761,3 +750,5 @@ class Tiki_Profile_Object
 			return $this->data['data'][$name];
 	} // }}}
 }
+
+?>

@@ -139,3 +139,5 @@ function wikiplugin_rss($data,$params) {
 	$smarty->assign('showauthor', $author > 0);
 	return '~np~' . $smarty->fetch( 'wiki-plugins/wikiplugin_rss.tpl' ) . '~/np~';
 }
+
+?>

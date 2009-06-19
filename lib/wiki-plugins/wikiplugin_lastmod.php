@@ -44,3 +44,5 @@ function wikiplugin_lastmod($data, $params) {
 	return $lastmod;
 
 }
+
+?>

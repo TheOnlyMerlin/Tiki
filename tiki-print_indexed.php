@@ -366,3 +366,5 @@ $objectList->render( $smarty, 'title', array(
 
 $smarty->display( 'print/print-page_footer.tpl' );
 $smarty->display( 'footer.tpl' );
+
+?>

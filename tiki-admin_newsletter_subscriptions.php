@@ -274,3 +274,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the template
 $smarty->assign('mid', 'tiki-admin_newsletter_subscriptions.tpl');
 $smarty->display("tiki.tpl");
+
+?>

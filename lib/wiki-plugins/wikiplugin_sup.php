@@ -28,3 +28,5 @@ function wikiplugin_sup($data, $params)
         extract ($params,EXTR_SKIP);
 	return "<sup>$data</sup>";
 }
+
+?>

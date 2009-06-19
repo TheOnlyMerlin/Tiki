@@ -64,3 +64,5 @@ class NotepadLib extends TikiLib {
 }
 global $dbTiki;
 $notepadlib = new NotepadLib($dbTiki);
+
+?>

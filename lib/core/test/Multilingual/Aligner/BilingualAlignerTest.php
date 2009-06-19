@@ -386,3 +386,4 @@ class  Multilingual_Aligner_BilingualAlignerTest extends TikiTestCase
                           $tolerance);  
    }
 }
+?>

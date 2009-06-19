@@ -44,3 +44,5 @@ function wikiplugin_html($data, $params) {
 	// return the result
 	return $ret;
 }
+
+?>

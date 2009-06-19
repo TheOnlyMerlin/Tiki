@@ -18,3 +18,4 @@ if ($_POST['submit'] != '') {
 }
 $smarty->assign('features', $features);
 ask_ticket('admin_features');
+?>

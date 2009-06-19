@@ -104,3 +104,5 @@ ask_ticket('theme-control');
 // Display the template
 $smarty->assign('mid', 'tiki-theme_control.tpl');
 $smarty->display("tiki.tpl");
+
+?>

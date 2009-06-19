@@ -33,3 +33,4 @@ $smarty->assign_by_ref('countries',$countries);
 // Display the template
 $smarty->assign('mid','tiki-register_site.tpl');
 $smarty->display("tiki.tpl");
+?>

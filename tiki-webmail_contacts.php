@@ -108,3 +108,5 @@ ask_ticket('webmail-contact');
 
 //$smarty->display("tiki-webmail_contacts.tpl");
 $smarty->display("tiki-webmail_contacts.tpl");
+
+?>

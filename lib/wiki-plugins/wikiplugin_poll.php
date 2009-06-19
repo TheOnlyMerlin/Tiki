@@ -52,3 +52,5 @@ function wikiplugin_poll($data, $params) {
 	    return $smarty->fetch("tiki-plugin_poll.tpl");
 	}
 }
+
+?>

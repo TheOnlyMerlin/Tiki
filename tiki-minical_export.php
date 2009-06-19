@@ -74,3 +74,5 @@ foreach ($events['data'] as $event) {
 	print ($theline);
 	print ("\r\n");
 }
+
+?>

@@ -27,3 +27,5 @@ function wikiplugin_foo($data, $params) {
 	$ret = "foo face=$face size=$size :: $data";
 	return $ret;
 }
+
+?>

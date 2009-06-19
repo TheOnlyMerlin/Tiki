@@ -251,3 +251,5 @@ function smarty_block_pagination_links($params, $url, &$smarty, $repeat) {
 	}
 	return $html;
 }
+
+?>

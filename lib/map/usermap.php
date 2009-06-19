@@ -252,3 +252,4 @@ class MapsLib extends TikiLib {
 global $dbTiki;
 global $mapslib;
 $mapslib = new MapsLib($dbTiki);
+?>

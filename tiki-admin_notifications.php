@@ -207,3 +207,5 @@ $smarty->assign('admin_mail',$admin_mail);
 // Display the template
 $smarty->assign('mid', 'tiki-admin_notifications.tpl');
 $smarty->display("tiki.tpl");
+
+?>

@@ -19,3 +19,5 @@ class TikiFilter_AllTests
         return $suite;
     }
 }
+
+?>

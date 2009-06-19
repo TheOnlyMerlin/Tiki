@@ -60,3 +60,5 @@ class Tiki_Profile_ChannelList
 		return $profiles;
 	} // }}}
 }
+
+?>

@@ -90,3 +90,5 @@ $smarty->assign( 'page', $page );
 
 $smarty->assign('mid','tiki-mindmap.tpl');
 $smarty->display("tiki.tpl");
+
+?>

@@ -42,3 +42,7 @@ function smarty_function_initials_filter_links($params, &$smarty) {
 	
 	return '<div class="alphafilter">'.$html.'</div>';
 }
+
+
+
+?>

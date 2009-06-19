@@ -158,3 +158,4 @@ $smarty->assign_by_ref('galleries', $galleries["data"]);
 $smarty->assign("max_img_upload_size", $imagegallib->max_img_upload_size());
 
 ask_ticket('admin-inc-gal');
+?>

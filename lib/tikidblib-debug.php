@@ -416,3 +416,6 @@ function debugger_log($query, $values)
         $debugger->msg($this->num_queries.': '.$query);
     }
 }
+
+
+?>

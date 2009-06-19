@@ -28,3 +28,5 @@ function wikiplugin_sub($data, $params)
         extract ($params,EXTR_SKIP);
 	return "<sub>$data</sub>";
 }
+
+?>

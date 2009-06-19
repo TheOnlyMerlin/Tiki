@@ -53,7 +53,7 @@ if (isset($_REQUEST["remove"])) {
 // for the information as the number of
 // days to get in the log 1,3,4,etc
 // it will default to 1 recovering information for today
-if (empty($_REQUEST["sort_mode"])) {
+if (!isset($_REQUEST["sort_mode"])) {
 	$sort_mode = 'publishDate_desc';
 } else {
 	$sort_mode = $_REQUEST["sort_mode"];
@@ -91,9 +91,6 @@ if ( isset($_REQUEST['date_min']) || isset($_REQUEST['date_max']) ) {
 	$date_max = $tikilib->now;
 }
 
-$min_rating = isset($_REQUEST['min_rating']) ? $_REQUEST['min_rating'] : '';
-$max_rating = isset($_REQUEST['max_rating']) ? $_REQUEST['max_rating'] : '';
-
 if (isset($_REQUEST["find"])) {
 	$find = $_REQUEST["find"];
 } else {
@@ -130,7 +127,7 @@ if (!isset($_REQUEST['lang'])) {
 }
 
 // Get a list of last changes to the Wiki database
-$listpages = $tikilib->list_articles($offset, $prefs['maxArticles'], $sort_mode, $find, $date_min, $date_max, $user, $type, $topic, 'y', $topicName, $categId, '', '', $_REQUEST['lang'], $min_rating, $max_rating);
+$listpages = $tikilib->list_articles($offset, $prefs['maxArticles'], $sort_mode, $find, $date_min, $date_max, $user, $type, $topic, 'y', $topicName, $categId, '', '', $_REQUEST['lang']);
 if ($prefs['feature_multilingual'] == 'y') {
 	include_once("lib/multilingual/multilinguallib.php");
 	$listpages['data'] = $multilinguallib->selectLangList('article', $listpages['data']);
@@ -174,3 +171,5 @@ ask_ticket('view_article');
 // Display the template
 $smarty->assign('mid', 'tiki-view_articles.tpl');
 $smarty->display("tiki.tpl");
+
+?>

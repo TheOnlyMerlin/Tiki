@@ -53,3 +53,5 @@ if ($prefs['feature_freetags'] == 'y' and $tiki_p_view_freetags == 'y') {
 
     $smarty->assign('tag_suggestion',$suggestion);
 }
+
+?>

@@ -19,3 +19,4 @@ header("Content-type: ".$output["content-type"]);
 print $output["data"];
 
 die;
+?>

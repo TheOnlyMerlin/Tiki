@@ -78,3 +78,5 @@ class UserFilesLib extends TikiLib {
 }
 global $dbTiki;
 $userfileslib = new UserFilesLib($dbTiki);
+
+?>

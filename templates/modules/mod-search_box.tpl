@@ -15,7 +15,7 @@
 		<li>&quot; : {tr}The phrase, that is enclosed in double quotes &quot;, matches only objects that contain this phrase literally, as it was typed.{/tr}</li></ul>
 {/capture}
 
-    <form class="forms" id="search-module-form" method="get" action="tiki-searchresults.php">
+    <form class="forms" method="get" action="tiki-searchresults.php">
     <input id="fuser" name="highlight" size="14" type="text" accesskey="s" /> 
 	
  	{if $prefs.feature_search_show_object_filter eq 'y'}

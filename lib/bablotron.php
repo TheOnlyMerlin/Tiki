@@ -103,3 +103,5 @@ class bablotron extends TikiLib {
 	function find_similar($word, $threshold) {
 	}
 }
+
+?>

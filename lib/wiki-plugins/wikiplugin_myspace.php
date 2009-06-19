@@ -49,3 +49,5 @@ function wikiplugin_myspace($data, $params) {
 	return $data;
 
 }
+
+?>

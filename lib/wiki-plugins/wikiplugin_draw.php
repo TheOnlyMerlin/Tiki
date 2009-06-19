@@ -60,3 +60,5 @@ function wikiplugin_draw( $data, $params )
 
 	return $repl;
 }
+
+?>

@@ -58,3 +58,5 @@ if ($tiki_p_view_trackers != 'y') {
 
 $smarty->assign("info",$info);
 $smarty->display("tiki-view_tracker_more_info.tpl");
+
+?>

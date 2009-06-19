@@ -168,3 +168,5 @@ class WikiParser_PluginParserTest extends TikiTestCase
 		$parser->parse( '{a}' );
 	}
 }
+
+?>

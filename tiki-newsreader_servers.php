@@ -136,3 +136,5 @@ $smarty->assign("mootab",'y');
 
 $smarty->assign('mid', 'tiki-newsreader_servers.tpl');
 $smarty->display("tiki.tpl");
+
+?>

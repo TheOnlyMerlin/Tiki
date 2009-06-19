@@ -440,3 +440,4 @@ class page_Parser extends XML_Parser {
 		return $this->pages;
 	}
 }
+?>

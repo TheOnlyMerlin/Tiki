@@ -186,3 +186,5 @@ ask_ticket('sheet');
 // Display the template
 $smarty->assign('mid', 'tiki-sheets.tpl');
 $smarty->display("tiki.tpl");
+
+?>

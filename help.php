@@ -16,7 +16,12 @@ if ($prefs['feature_wiki'] != 'y') {
   $smarty->display("error.tpl");
   die;
 }
+
 include_once ('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true);
+
 $smarty->assign_by_ref('plugins', $plugins);
+
 $smarty->display("tiki-edit_help.tpl");
+
+?>

@@ -712,3 +712,5 @@ $smarty->assign("mootab",'y');
 // Display the template
 $smarty->assign('mid', 'tiki-admin_actionlog.tpl');
 $smarty->display("tiki.tpl");
+
+?>

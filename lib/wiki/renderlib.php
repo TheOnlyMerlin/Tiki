@@ -590,3 +590,5 @@ class WikiRenderer
 		$this->info[$name] = $value;
 	} // }}}
 }
+
+?>

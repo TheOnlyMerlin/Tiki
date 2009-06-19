@@ -162,3 +162,4 @@ class OOoText extends absOOo {
  		$nodeContent->appendChild($pNode);
 	}
 }	
+?>

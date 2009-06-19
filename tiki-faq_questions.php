@@ -149,3 +149,5 @@ $smarty->assign_by_ref('plugins', $plugins);
 // Display the template
 $smarty->assign('mid', 'tiki-faq_questions.tpl');
 $smarty->display("tiki.tpl");
+
+?>

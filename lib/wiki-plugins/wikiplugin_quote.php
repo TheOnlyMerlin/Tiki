@@ -56,3 +56,5 @@ function wikiplugin_quote($data, $params) {
 //    if (substr($data, 0, 1) != "\n") $data = "\n".$data;
 	return $begin . $data . $end;
 }
+
+?>

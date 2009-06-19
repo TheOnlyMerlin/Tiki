@@ -98,8 +98,11 @@ class HeaderLib {
 	}
 
 	function output_headers() {
-		global $style_ie6_css, $style_ie7_css, $style_ie8_css;
+		global $style_ie6_css, $style_ie7_css, $style_ie8_css, $prefs;
 
+		ksort($this->jsfiles);
+		ksort($this->js);
+		ksort($this->jq_onready);
 		ksort($this->cssfiles);
 		ksort($this->css);
 		ksort($this->rssfeeds);
@@ -169,31 +172,6 @@ class HeaderLib {
                         }
                         $back .= "<![endif]-->\n";
 
-                        
-        $back .= $this->output_js();	// TODO move to end of page
-        
-		if (count($this->rssfeeds)) {
-			foreach ($this->rssfeeds as $x=>$rssf) {
-				$back.= "<!-- rss $x -->\n";
-				foreach ($rssf as $rsstitle=>$rssurl) {
-					$back.= "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"$rsstitle\" href=\"$rssurl\" />\n";
-				}
-			}
-			$back.= "\n";
-		}
-
-		return $back;
-	}
-	
-	function output_js() {
-		global $prefs;
-		
-		ksort($this->jsfiles);
-		ksort($this->js);
-		ksort($this->jq_onready);
-		
-		$back = "\n";
-		
 		if (count($this->jsfiles)) {
 			foreach ($this->jsfiles as $x=>$jsf) {
 				$back.= "<!-- jsfile $x -->\n";
@@ -230,48 +208,17 @@ class HeaderLib {
 			}
 		}
 		
-		return $back;
-	}
-	
-	function getJs() {
-		global $prefs;
-		
-		ksort($this->js);
-		ksort($this->jq_onready);
-		$out = array();
-		
-		if (count($this->js)) {
-			foreach ($this->js as $x=>$js) {
-				foreach ($js as $j) {
-					$out[] = "$j\n";
+		if (count($this->rssfeeds)) {
+			foreach ($this->rssfeeds as $x=>$rssf) {
+				$back.= "<!-- rss $x -->\n";
+				foreach ($rssf as $rsstitle=>$rssurl) {
+					$back.= "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"$rsstitle\" href=\"$rssurl\" />\n";
 				}
 			}
+			$back.= "\n";
 		}
-		if ($prefs['feature_jquery'] == 'y') {
-			if (count($this->jq_onready)) {
-				foreach ($this->jq_onready as $x=>$js) {
-					foreach ($js as $j) {
-						$out[] = "$j\n";
-					}
-				}
-			}
-		}
-		return $out;
-	}
 
-	function getJsfiles() {
-		
-		ksort($this->jsfiles);
-		$out = array();
-		
-		if (count($this->jsfiles)) {
-			foreach ($this->jsfiles as $x=>$jsf) {
-				foreach ($jsf as $jf) {
-					$out[] = "<script type=\"text/javascript\" src=\"$jf\"></script>\n";
-				}
-			}
-		}
-		return $out;
+		return $back;
 	}
 
 }

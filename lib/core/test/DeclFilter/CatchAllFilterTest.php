@@ -40,3 +40,5 @@ class DeclFilter_CatchAllFilterTest extends TikiTestCase
 		$this->assertEquals( $data['hello'][1], '456' );
 	}
 }
+
+?>

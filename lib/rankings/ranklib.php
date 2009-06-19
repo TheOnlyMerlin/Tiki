@@ -668,3 +668,5 @@ class RankLib extends TikiLib {
 }
 global $dbTiki;
 $ranklib = new RankLib($dbTiki);
+
+?>

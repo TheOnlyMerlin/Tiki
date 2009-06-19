@@ -151,8 +151,7 @@ if (isset($_REQUEST["wikifeatures"])) {
 	'feature_wiki_multiprint',
 	// 'feature_wiki_pdf',
 	'feature_listPages',
-	'feature_listorphanPages',
-	'feature_listorphanStructure',
+	'feature_listorphanPages',	
 	'feature_history',
 	'feature_source',
 	'feature_sandbox',
@@ -166,7 +165,6 @@ if (isset($_REQUEST["wikifeatures"])) {
 	'feature_wiki_make_structure',
 	'feature_wiki_categorize_structure',
 	'feature_create_webhelp',
-	'page_n_times_in_a_structure',
 	'feature_wiki_userpage',
 	'feature_wiki_1like_redirection',
 	'feature_wiki_show_hide_before',
@@ -177,7 +175,6 @@ if (isset($_REQUEST["wikifeatures"])) {
 	'feature_actionlog_bytes',
 	'wiki_authors_style_by_page',
 	'wiki_edit_minor',
-	'feature_filegals_manager',
 	);
 	foreach ($pref_toggles as $toggle) {
 		simple_set_toggle($toggle);
@@ -302,3 +299,4 @@ $tags = $adminlib->get_tags();
 $smarty->assign_by_ref("tags", $tags);
 
 ask_ticket('admin-inc-wiki');
+?>

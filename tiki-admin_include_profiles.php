@@ -43,14 +43,12 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 			global $wikilib; require_once 'lib/wiki/wikilib.php';
 
 			$target = $wikilib->sefurl( $target );
-			header( 'Location: ' . $target );
-			exit;
 		} else {
-			if (count($installer->getFeedback()) > 0) {
-				$smarty->assign_by_ref('profilefeedback', $installer->getFeedback());
-			}
+			$target = $_SERVER['REQUEST_URI'];
 		}
-					
+		
+		header( 'Location: ' . $target );
+		exit;
 	} // }}}
 
 	if( isset($_POST['install'], $_POST['pd'], $_POST['pp']) ) { // {{{
@@ -69,14 +67,12 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 			global $wikilib; require_once 'lib/wiki/wikilib.php';
 
 			$target = $wikilib->sefurl( $target );
-			header( 'Location: ' . $target );
-			exit;
 		} else {
-			if (count($installer->getFeedback()) > 0) {
-				$smarty->assign_by_ref('profilefeedback', $installer->getFeedback());
-			}
+			$target = $_SERVER['REQUEST_URI'];
 		}
 		
+		header( 'Location: ' . $target );
+		exit;
 	} // }}}
 
 	if( isset( $_GET['refresh'] ) ) { // {{{
@@ -167,3 +163,5 @@ $smarty->assign( 'sources', $sources );
 $smarty->assign( 'oldSources', $oldSources );
 
 ask_ticket('admin-inc-profiles');
+
+?>

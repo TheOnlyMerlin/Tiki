@@ -150,3 +150,4 @@ ask_ticket('tell-a-friend');
 
 $smarty->assign('mid', 'tiki-tell_a_friend.tpl');
 $smarty->display('tiki.tpl');
+?>

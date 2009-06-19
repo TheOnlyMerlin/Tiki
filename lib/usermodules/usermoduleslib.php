@@ -240,3 +240,5 @@ class UserModulesLib extends TikiLib {
 }
 global $dbTiki;
 $usermoduleslib = new UserModulesLib($dbTiki);
+
+?>

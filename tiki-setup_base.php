@@ -43,6 +43,7 @@ ini_set('allow_call_time_pass_reference','On');
 require_once("lib/setup/compat.php");
 require_once("lib/tikiticketlib.php");
 require_once("db/tiki-db.php");
+require_once("setup_smarty.php"); 
 require_once("lib/tikilib.php");
 global $cachelib; require_once("lib/cache/cachelib.php");
 global $logslib; require_once("lib/logs/logslib.php");
@@ -57,9 +58,7 @@ $needed_prefs = array(
 	'sessions_silent' => 'disabled',
 	'language' => 'en',
 	'feature_pear_date' => 'y',
-	'lastUpdatePrefs' => -1,
-	'feature_fullscreen' => 'n',
-	'error_reporting_level' => 0 // needed by initlib
+	'lastUpdatePrefs' => -1
 );
 
 $tikilib->get_preferences($needed_prefs, true, true);
@@ -92,17 +91,8 @@ if ( isset($_GET['PHPSESSID']) && $_SERVER['REMOTE_ADDR'] == '127.0.0.1' ) {
 }
 if ( $prefs['sessions_silent'] == 'disabled' or !empty($_COOKIE) ) {
 	// enabing silent sessions mean a session is only started when a cookie is presented
-	$session_params = session_get_cookie_params();
-	session_set_cookie_params($session_params['lifetime'],$tikiroot);
-	unset($session_params);
 	session_start();
 }
-
-// Moved here from tiki-setup.php because smarty use a copy of session
-if ( $prefs['feature_fullscreen'] == 'y' ) require_once('lib/setup/fullscreen.php');
-
-// Smarty needs session since 2.6.25
-require_once("setup_smarty.php"); 
 
 // Check if phpCAS mods is installed 
 $phpcas_enabled = is_file('lib/phpcas/source/CAS/CAS.php') ? 'y' : 'n';
@@ -552,3 +542,5 @@ $smarty->assign("tikidomain", $tikidomain);
 $smarty->assign('debugconsole_style',
 	isset($_COOKIE["debugconsole"]) && ($_COOKIE["debugconsole"] == 'o') ? 'display:block;' : 'display:none;'
 );
+
+?>

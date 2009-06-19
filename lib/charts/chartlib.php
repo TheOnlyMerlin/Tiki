@@ -498,3 +498,5 @@ class ChartLib extends TikiLib {
 }
 global $dbTiki;
 $chartlib = new ChartLib($dbTiki);
+
+?>

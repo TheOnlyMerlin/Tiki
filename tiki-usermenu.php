@@ -122,3 +122,5 @@ ask_ticket('user-menu');
 
 $smarty->assign('mid', 'tiki-usermenu.tpl');
 $smarty->display("tiki.tpl");
+
+?>

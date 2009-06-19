@@ -173,7 +173,7 @@
 
 		{if $prefs.wiki_list_name eq 'y'}
 			<td class="{cycle advance=false}">
-				<a href="{$listpages[changes].pageName|sefurl:'wiki':'':$all_langs}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].pageName}">
+				<a href="{$listpages[changes].pageName|sefurl}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].pageName}">
 					{$listpages[changes].pageName|truncate:$prefs.wiki_list_name_len:"...":true|escape}
 				</a>
 				{if $prefs.wiki_list_description eq 'y' && $listpages[changes].description neq ""}
@@ -336,8 +336,8 @@
 
 {if $checkboxes_on eq 'y' && count($listpages) > 0} {* what happens to the checked items? *}
 	<p align="left"> {*on the left to have it close to the checkboxes*}
-		<label for="submit_mult">{tr}Perform action with checked{/tr}:</label>
-		<select name="submit_mult" id="submit_mult" onchange="this.form.submit();">
+		{tr}Perform action with checked{/tr}:
+		<select name="submit_mult" onchange="this.form.submit();">
 			<option value="" selected="selected">...</option>
 			{if $tiki_p_remove eq 'y'} 
 				<option value="remove_pages" >{tr}Remove{/tr}</option>
@@ -369,7 +369,7 @@
 {/if}
 
 {if $find && $tiki_p_edit eq 'y' and $pagefound eq 'n'}
-	{button _text="{tr}Create Page{/tr}: $find" href="tiki-editpage.php?page=$find&lang=$find_lang" _title="{tr}Create{/tr}"}
+	{button _text="{tr}Create Page{/tr}: $find" href="tiki-editpage.php?page=$find" _title="{tr}Create{/tr}"}
 {/if}
 {if $checkboxes_on eq 'y'}
 </form>

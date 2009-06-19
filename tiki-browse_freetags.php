@@ -182,3 +182,5 @@ $smarty->assign('objects_with_freetags', array(
 ));
 $smarty->assign('mid', 'tiki-browse_freetags.tpl');
 $smarty->display("tiki.tpl");
+
+?>

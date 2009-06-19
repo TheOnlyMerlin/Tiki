@@ -105,3 +105,5 @@ if ( $isvalid ) {
 	$smarty->assign('msg', $error);
 	$smarty->display("error.tpl");
 }
+
+?>

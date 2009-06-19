@@ -26,3 +26,5 @@ class DeclFilter_AllTests
         return $suite;
     }
 }
+
+?>

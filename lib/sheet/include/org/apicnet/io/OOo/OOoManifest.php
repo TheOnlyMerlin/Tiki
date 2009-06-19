@@ -115,3 +115,4 @@ class OOoManifest extends absOOo {
 	
 
 }	
+?>

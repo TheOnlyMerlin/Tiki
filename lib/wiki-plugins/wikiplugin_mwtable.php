@@ -367,3 +367,4 @@ function _check_class_attribute(&$attributes,$default_class = "",$add = True) {
             $class .= " ".$attributes["class"];
         $attributes["class"] = $class;
 }
+?>

@@ -1,4 +1,5 @@
 {* $Id$ *}
+{* START of html head content *}
 {if $base_url and $dir_level gt 0}		<base href="{$base_url}" />{/if}
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="TikiWiki CMS/Groupware - http://TikiWiki.org" />
@@ -23,7 +24,7 @@
 
 {* --- tikiwiki block --- *}
 		<script type="text/javascript" src="lib/tiki-js.js"></script>
-{include file='bidi.tpl'}
+{include file="bidi.tpl"}
 		<title>
 {if isset($trail)}			{breadcrumbs type="fulltrail" loc="head" crumbs=$trail}
 {else}
@@ -102,7 +103,7 @@
 	{/if}
 {/if}
 {if $prefs.feature_jquery eq "y"}
-	{include file='header_jquery.tpl'}
+	{include file="header_jquery.tpl"}
 {/if}
 
 {if $prefs.feature_swfobj eq "y"}

@@ -789,3 +789,5 @@ if ($prefs['feature_ajax'] == "y") {
 }
 $smarty->assign('mid', 'tiki-user_tasks.tpl');
 $smarty->display("tiki.tpl");
+
+?>

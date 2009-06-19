@@ -156,3 +156,5 @@ $smarty->assign_by_ref('cant', $comments['cant']);
 ask_ticket('list_comments');
 $smarty->assign('mid', 'tiki-list_comments.tpl');
 $smarty->display('tiki.tpl');
+
+?>

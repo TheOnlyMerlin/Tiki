@@ -530,120 +530,7 @@ class TikiLib extends TikiDB {
 		}
 		return $ret;
 	}
-	
-	function add_user_report($user, $interval, $view, $type, $always_email) {
-		if(!isset($always_email))
-			$always_email = 0;
-		
-		if (!$this->get_report_preferences_by_user($user)) {
-			//Add new report entry	
-			$query = "insert into `tiki_user_reports`(`user`, `interval`, `view`, `type`, `always_email`, `last_report`) ";
-			$query.= "values(?,?,?,?,?,NOW())";
-			$this->query($query,array($user,$interval,$view,$type,$always_email));
-		} else {
-			//Update report entry
-			$query = "update `tiki_user_reports` set `interval`=?, `view`=?, `type`=?, `always_email`=? where `user`=?";
-			$this->query($query,array($interval,$view,$type,$always_email,$user));
-		}
-		return true;
-	}
-	
-	function delete_user_report($user) {
-		$query = "delete from `tiki_user_reports` where `user`=?";
-		$this->query($query,array($user));
 
-		$this->deleteUsersReportCache($user);
-		return true;
-	}
-	
-	function get_report_preferences_by_user($user) {
-		$query = "select `id`, `interval`, `view`, `type`, `always_email`, `last_report` from `tiki_user_reports` where `user` = ?";
-		$result = $this->query($query, array($user));
-		if (!$result->numRows()) {
-			return false;
-		}
-		$ret = array();
-		while ($res = $result->fetchRow()) {
-			$ret = $res;
-		}
-		
-		return $ret;
-	}
-	
-	function getUsersForSendingReport() {
-		$query = "select `user`, `interval`, UNIX_TIMESTAMP(`last_report`) as last_report from tiki_user_reports";
-		$result = $this->query($query);
-		if (!$result->numRows()) {
-			return false;
-		}
-		$ret = array();
-		while ($res = $result->fetchRow()) {
-			if ($res['interval']=="daily" AND ($res['last_report']+86400)<=time()) {
-				$ret[] = $res['user'];
-			}
-			if ($res['interval']=="weekly" AND ($res['last_report']+604800)<=time()) {
-				$ret[] = $res['user'];
-			}
-			if ($res['interval']=="monthly" AND ($res['last_report']+2419200)<=time()) {
-				$ret[] = $res['user'];
-			}
-		}
-
-		return $ret;
-	}
-	
-	function makeReportCache(&$nots, $cache_data) {
-		//Get all users that have enabled reports
-		$query = "select `user` from tiki_user_reports";
-		$result = $this->query($query);
-		$report_users = array();
-		while ($res = $result->fetchRow()) {
-			$report_users[] = $res['user'];
-		}
-		
-		foreach ($nots as $key=>$not) {
-			//If user in $nots has enabled reports
-			if (in_array($not['user'], $report_users)) {
-				//dump the report-data to the report cache
-				$query = "insert into `tiki_user_reports_cache`(`user`, `event`, `data`,`time`) ";
-				$query.= "values(?,?,?,NOW())";
-				$this->query($query,array($not['user'], $cache_data['event'], serialize($cache_data)));
-
-				//and reove the user from $nots so that he doesn´t get a notification for the event
-				unset($nots[$key]);
-			}
-		}
-	}
-	
-	
-	
-	function get_report_cache_entries_by_user($user, $order_by) {
-		$query = "select `user`, `event`, `data`, `time` from `tiki_user_reports_cache` where `user` = ? ORDER BY $order_by";
-		$result = $this->query($query, array($user));
-		if (!$result->numRows()) {
-			return false;
-		}
-		$ret = array();
-		while ($res = $result->fetchRow()) {
-			$res['data'] = unserialize($res['data']);
-			$ret[] = $res;
-		}
-		
-		return $ret;
-	}
-	
-	function deleteUsersReportCache($user) {
-		$query = "delete from `tiki_user_reports_cache` where `user`=?";
-		$this->query($query,array($user));
-		return true;
-	}
-	
-	function updateLastSent($user) {
-		$query = "update `tiki_user_reports` set last_report = NOW() where `user`=?";
-		$this->query($query,array($user));
-		return true;
-	}
-	
 	/*shared*/
 	function dir_stats() {
 		$aux = array();
@@ -930,6 +817,8 @@ class TikiLib extends TikiDB {
 			global $user;
 			$add=$this->user_has_perm_on_object($user,$res['trackerId'],'tracker','tiki_p_view_trackers');
 			if ($add) {
+				$qu = "select count(*) from`tiki_tracker_items` where `trackerId`=? ";
+				$res['items'] = $this->getOne($qu,array((int)$res['trackerId']));
 				$ret[] = $res;
 				$list[$res['trackerId']] = $res['name'];
 			}
@@ -1434,7 +1323,7 @@ class TikiLib extends TikiDB {
 		$result = $this->query("select `cookie`  from `tiki_cookies`",array(),1,$bid);
 		if ($res = $result->fetchRow()) {
 			$cookie = str_replace("\n", "", $res['cookie']);
-			return preg_replace('/^(.+?)(\s*--.+)?$/','<em>"$1"</em>$2',$cookie);
+			return preg_replace('/^(.+?)(\s*--.+)?$/','<i>"$1"</i>$2',$cookie);
 		} else {
 			return "";
 		}
@@ -2370,7 +2259,7 @@ class TikiLib extends TikiDB {
 					// If $user is admin then get ALL galleries, if not only user galleries are shown
 					// If the user is not admin then select it's own galleries or public galleries
 					if ( $tiki_p_admin_file_galleries != 'y' && $my_user != 'admin' && ! $parentId ) {
-						$g_mid = " WHERE (tfg.`user`='$my_user' OR tfg.`visible`='y' OR tfg.`public`='y')"; /// FIXME: use bindvars
+						$g_mid = " WHERE (tfg.`user`='$my_user' OR tfg.`public`='y')"; /// FIXME: use bindvars
 					}
 
 					$g_query = 'SELECT '.implode(', ', array_values($f2g_corresp)).' FROM '.$g_table.$g_join.$g_mid;
@@ -3058,7 +2947,7 @@ class TikiLib extends TikiDB {
 	}
 
 	/*shared*/
-	function list_articles($offset = 0, $maxRecords = -1, $sort_mode = 'publishDate_desc', $find = '', $date_min = 0, $date_max = 0, $user=false, $type = '', $topicId = '', $visible_only = 'y', $topic='', $categId='',$creator='',$group='', $lang='', $min_rating='', $max_rating='') {
+	function list_articles($offset = 0, $maxRecords = -1, $sort_mode = 'publishDate_desc', $find = '', $date_min = 0, $date_max = 0, $user=false, $type = '', $topicId = '', $visible_only = 'y', $topic='', $categId='',$creator='',$group='', $lang='') {
 
 		global $userlib, $user;
 
@@ -3171,19 +3060,10 @@ class TikiLib extends TikiDB {
 			$bindvars[] = "%$creator%";
 		}
 
-		if ($min_rating || $max_rating) {
-			$min_rating = isset($min_rating) ? $min_rating : '0.0';
-			$max_rating = isset($max_rating) ? $max_rating : '10.0';
-			$mid2 .= " and (`tiki_articles`.`rating` >= ? and `tiki_articles`.`rating` <= ? )" ;
-			$bindvars[] = $min_rating;
-			$bindvars[] = $max_rating;
-		}
-
 		if ($categId) {
 			global $categlib; require_once('lib/categories/categlib.php');
 			$categlib->getSqlJoin($categId, 'article', '`tiki_articles`.`articleId`', $fromSql, $mid2, $bindvars);
 		}
-		
 		$query = "select `tiki_articles`.*,
 			`tiki_article_types`.`use_ratings`,
 			`tiki_article_types`.`show_pre_publ`,
@@ -3540,7 +3420,7 @@ class TikiLib extends TikiDB {
 
 		/// Match things like [...], but ignore things like [[foo].
 		// -Robin
-		if (preg_match_all("/(?<!\[)\[([^\[\|\]]+)(?:\|?[^\[\|\]]+){0,2}\]/", $data, $r1)) {
+		if (preg_match_all("/(?<!\[)\[([^\[\|\]]+)(\||\])/", $data, $r1)) {
 			$res = $r1[1];
 			$links = array_unique($res);
 		}
@@ -3697,6 +3577,21 @@ class TikiLib extends TikiDB {
 			where `url`=?";
 		$id = $this->getOne($query, array( $url ) );
 		return $id;
+	}
+
+	function vote_page($page, $points) {
+		$query = "update `pages`
+			set `points`=`points`+$points, `votes`=`votes`+1
+			where `pageName`=?";
+		$result = $this->query($query, array( $page ));
+	}
+
+	function get_votes($page) {
+		$query = "select `points` ,`votes`
+			from `pages` where `pageName`=?";
+		$result = $this->query($query, array( $page ));
+		$res = $result->fetchRow();
+		return $res;
 	}
 
 	// This funcion return the $limit most accessed pages
@@ -4091,9 +3986,6 @@ class TikiLib extends TikiDB {
 					$tmp_mid[] = "( (tro.traId IS NULL AND tp.lang != ?) OR tro.traId NOT IN(SELECT traId FROM tiki_translated_objects WHERE lang = ?))";
 					$bindvars[] = $val;
 					$bindvars[] = $val;
-				} elseif ($type == 'structure_orphans') {
-					$join_tables .= " left join `tiki_structures` as tss on (tss.`page_id` = tp.`page_id`) ";
-					$tmp_mid[] = "(tss.page_ref_id is null)";
 				}
 			}
 			if (!empty($tmp_mid)) {
@@ -4454,15 +4346,13 @@ class TikiLib extends TikiDB {
 
 	/* this function will change if we got a table categ<->perm
 	 */
-	function get_perm_from_categPerms($categPerms, $objectType, $global=true) {
+	function get_perm_from_categPerms($categPerms, $objectType) {
 		global $userlib;
 		$ret = array();
-		$perms = $userlib->get_permissions(0, -1, 'permName_asc', '', $this->get_permGroup_from_objectType($objectType));
-		if ($global) {
-			foreach ($perms['data'] as $perm) {
-				global $$perm['permName'];
-				$ret[$perm['permName']] = $$perm['permName'];
-			}
+		$perms = $userlib->get_permissions(0, -1, 'permName_desc', '', $this->get_permGroup_from_objectType($objectType));
+		foreach ($perms['data'] as $perm) {
+			global $$perm['permName'];
+			$ret[$perm['permName']] = $$perm['permName'];
 		}
 		if (empty($categPerms['tiki_p_view_categorized'])) {
 			$categPerms['tiki_p_view_categorized'] = 'n';
@@ -4482,13 +4372,9 @@ class TikiLib extends TikiDB {
 				}
 				if ($categPerms['tiki_p_edit_categorized'] == 'y' || $categPerms['tiki_p_admin_categories'] == 'y') {
 					$ret['tiki_p_modify_tracker_items'] = 'y';
-					$ret['tiki_p_modify_tracker_items_pending'] = 'y';
-					$ret['tiki_p_modify_tracker_items_closed'] = 'y';
 					$ret['tiki_p_create_tracker_items'] = 'y';
 				} else {
 					$ret['tiki_p_modify_tracker_items'] = 'n';
-					$ret['tiki_p_modify_tracker_items_pending'] = 'n';
-					$ret['tiki_p_modify_tracker_items_closed'] = 'n';
 					$ret['tiki_p_create_tracker_items'] = 'n';
 				}
 				break;
@@ -5431,7 +5317,6 @@ class TikiLib extends TikiDB {
 		$params_string = str_replace('&gt;', '>', $params_string);
 		$params_string = str_replace('&lt;', '<', $params_string);
 		$params_string = str_replace('&quot;', '"', $params_string);
-		$params_string = str_replace('&apos;', "'", $params_string);
 		$params_string = str_replace('&amp;', '&', $params_string);
 
 		$arguments = array();
@@ -5443,17 +5328,17 @@ class TikiLib extends TikiDB {
 			$value = '';
 
 			// Consider =>
-			if( isset($params_string{$pos + 1}) && $params_string{$pos + 1} == '>' )
+			if( $params_string{$pos + 1} == '>' )
 				$pos++;
 
 			// Cut off the name part
 			$params_string = substr( $params_string, $pos + 1 );
 			$params_string = ltrim( $params_string );
 
-			if( !empty($params_string) && ($params_string{0} == '"' || $params_string{0} == "'") ) {
+			if( !empty($params_string) && $params_string{0} == '"' ) {
 				$quote = 0;
 				// Parameter between quotes, find closing quote not escaped by a \
-				while( false !== $quote = strpos( $params_string, $params_string{0}, $quote + 1 ) ) {
+				while( false !== $quote = strpos( $params_string, '"', $quote + 1 ) ) {
 					if( $params_string{$quote - 1} != "\\" )
 						break;
 				}
@@ -5461,7 +5346,7 @@ class TikiLib extends TikiDB {
 				// Closing quote found
 				if( $quote !== false ) {
 					$value = substr( $params_string, 1, $quote - 1 );
-					$arguments[$name] = str_replace( array('\"', "\\'"), array('"', "'"), $value );
+					$arguments[$name] = str_replace( '\"', '"', $value );
 
 					$params_string = substr( $params_string, $quote + 1 );
 					continue;
@@ -6229,12 +6114,11 @@ class TikiLib extends TikiDB {
 
 		// Replace Hotwords
 		if ($prefs['feature_hotwords'] == 'y') {
-			$sep =  " \n\t\r\,\;\(\)\.\:\[\]\{\}\!\?\"";
 			foreach ($words as $word => $url) {
 				// \b is a word boundary, \s is a space char
 				$pregword = preg_replace("/\//","\/",$word);
-				$line = preg_replace("/(=(\"|')[^\"']*[$sep'])$pregword([$sep][^\"']*(\"|'))/i","$1:::::$word,:::::$3",$line);
-				$line = preg_replace("/([$sep']|^)$pregword($|[$sep])/i","$1<a class=\"wiki\" href=\"$url\" $hotw_nw>$word</a>$2",$line);
+				$line = preg_replace("/(=(\"|')[^\"']*[ \n\t\r\,\;'])$pregword([ \n\t\r\,\;][^\"']*(\"|'))/i","$1:::::$word,:::::$3",$line);
+				$line = preg_replace("/([ \n\t\r\,\;']|^)$pregword($|[ \n\t\r\,\;])/i","$1<a class=\"wiki\" href=\"$url\" $hotw_nw>$word</a>$2",$line);
 				$line = preg_replace("/:::::$pregword,:::::/i","$word",$line);
 			}
 		}
@@ -6527,9 +6411,9 @@ class TikiLib extends TikiDB {
 		// Handle ~pre~...~/pre~ sections
 		$data = preg_replace(';~pre~(.*?)~/pre~;s', '<pre>$1</pre>', $data);
 
-		// Strike-deleted text --text-- (but not in the context <!--[if IE]><--!>)
+		// Strike-deleted text --text--
 		if (!$simple_wiki) {
-			$data = preg_replace("/(?!\<\!)--(.+?)--(?!\>)/", "<del>$1</del>", $data);
+			$data = preg_replace("/--(.+?)--/", "<del>$1</del>", $data);
 		}
 
 		// Handle comment sections
@@ -7041,9 +6925,9 @@ class TikiLib extends TikiDB {
 			// Replace monospaced text
 			$line = preg_replace("/(^|\s)-\+(.*?)\+-/", "$1<code>$2</code>", $line);
 			// Replace bold text
-			$line = preg_replace("/__(.*?)__/", "<strong>$1</strong>", $line);
+			$line = preg_replace("/__(.*?)__/", "<b>$1</b>", $line);
 			// Replace italic text
-			$line = preg_replace("/\'\'(.*?)\'\'/", "<em>$1</em>", $line);
+			$line = preg_replace("/\'\'(.*?)\'\'/", "<i>$1</i>", $line);
 			// Replace definition lists
 			$line = preg_replace("/^;([^:]*):([^\/\/].*)/", "<dl><dt>$1</dt><dd>$2</dd></dl>", $line);
 			$line = preg_replace("/^;(<a [^<]*<\/a>):([^\/\/].*)/", "<dl><dt>$1</dt><dd>$2</dd></dl>", $line);
@@ -7773,11 +7657,17 @@ class TikiLib extends TikiDB {
 				$oktodel = $saveLastModif - ($keep * 24 * 3600);
 				$query = "select `pageName` ,`version`, `historyId` from `tiki_history` where `pageName`=? and `lastModif`<=? order by `lastModif` asc";
 				$result = $this->query($query,array($pageName,$oktodel),$nb - $maxversions);
+				$toelim = $result->numRows();
+
 				while ($res = $result->fetchRow()) {
 					$page = $res["pageName"];
 					$version = $res["version"];
-					
-					$histlib->remove_version($res['pageName'], $res['version']);
+					$query = "delete from `tiki_history` where `pageName`=? and `version`=?";
+					$this->query($query,array($pageName,$version));
+					if ($prefs['feature_contribution'] == 'y') {
+						global $contributionlib; include_once('lib/contribution/contributionlib.php');
+						$contributionlib->remove_history($res['historyId']);
+					}
 				}
 			}
 		}
@@ -7949,7 +7839,7 @@ class TikiLib extends TikiDB {
 		return $tikilib->date_format($format, $timestamp, $_user, $input_format, false);
 	}
 
-	static function date_format($format, $timestamp = false, $_user = false, $input_format = DATE_FORMAT_UNIXTIME, $is_strftime_format = true) {
+	function date_format($format, $timestamp = false, $_user = false, $input_format = DATE_FORMAT_UNIXTIME, $is_strftime_format = true) {
 		global $tikidate, $tikilib;
 		if ( ! $timestamp ) {
 			$timestamp = time();
@@ -8045,8 +7935,7 @@ class TikiLib extends TikiDB {
 	 * @return  array of css files in the style dir
 	 */
 	function list_styles() {
-		global $tikidomain;
-		global $csslib; include_once("lib/csslib.php");
+		global $tikidomain, $csslib;
 
 		$sty = array();
 		$style_base_path = $this->get_style_path();	// knows about $tikidomain
@@ -8087,8 +7976,7 @@ class TikiLib extends TikiDB {
 	 * @return array of css files in the style options dir
 	 */
 	function list_style_options($a_style='') {
-		global $prefs;
-		global $csslib; include_once ("lib/csslib.php");
+		global $prefs, $csslib;
 
 		if (empty($a_style)) {
 			$a_style = $prefs['style'];
@@ -8181,7 +8069,7 @@ class TikiLib extends TikiDB {
 
 	// Comparison function used to sort languages by their name in the
 	// current locale.
-	static function formatted_language_compare($a, $b) {
+	function formatted_language_compare($a, $b) {
 		return strcmp($a['name'], $b['name']);
 	}
 	// Returns a list of languages formatted as a twodimensionel array
@@ -8408,24 +8296,15 @@ class TikiLib extends TikiDB {
 		return $retval;
 	}
 
-	/**
-	  *  Returns explicit message on upload problem
-	  *
-	  *	@params: $iError: php status of the file uploading (documented in http://uk2.php.net/manual/en/features.file-upload.errors.php )
-	  *
-	  */
+	/* get explicit message on upload problem */
 	function uploaded_file_error($iError) {
 		switch($iError) {
-			case UPLOAD_ERR_OK: return tra('The file was uploaded with success.');
-			case UPLOAD_ERR_INI_SIZE : return tra('The uploaded file exceeds the upload_max_filesize directive in php.ini.');
-			case UPLOAD_ERR_FORM_SIZE: return tra('The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.');
-			case UPLOAD_ERR_PARTIAL: return tra('The file you are trying upload was only partially uploaded.');
-			case UPLOAD_ERR_NO_FILE: return tra('No file was uploaded. Was a file selected ?');
-			case UPLOAD_ERR_NO_TMP_DIR: return tra('A temporary folder is missing.');
-			case UPLOAD_ERR_CANT_WRITE: return tra('Failed to write file to disk.');
-			case UPLOAD_ERR_EXTENSION: return tra('File upload stopped by extension.');
-
-			default: return tra('Unknown error.');
+			case 0: return tra('You are not allowed to upload this type of file.');
+			case 1: return tra('Cannot upload this file maximum upload size exceeded').'(upload_max_filesize)';
+			case 2: return tra('Cannot upload this file maximum upload size exceeded');
+			case 3: return tra('The file you are trying upload was only partially uploaded.');
+			case 4: return tra('You must select a file.');
+			default: return tra('The file you are trying upload was only partially uploaded.');
 		}
 	}
 
@@ -8597,7 +8476,7 @@ JS;
 	// TikiWiki version of parse_str, that:
 	//  - uses a workaround for a bug in PHP 5.2.0
 	//  - Handle the value of magic_quotes_gpc to stripslashes when needed (as already done for GET/POST/... in tiki-setup_base.php)
-	static function parse_str($str, &$arr) {
+	function parse_str($str, &$arr) {
 		parse_str($str, $arr);
 
 		/* From PHP Manual comments (quoting Vladimir Kornea):
@@ -8756,6 +8635,16 @@ function detect_browser_language() {
 	return $aproximate_lang;
 }
 
+function alterprefs() {
+	global $tikilib;
+	if (!$tikilib->query( "ALTER TABLE `tiki_preferences` MODIFY `value` BLOB", array())) {
+		$smarty->assign("msg", tra('Altering database table failed'));
+		$smarty->display("error.tpl");
+		die;
+	}
+	return true;
+}
+
 function validate_email($email,$checkserver='n') {
 	global $prefs;
 	$valid_syntax = eregi($prefs['valid_email_regex'], $email);
@@ -8803,6 +8692,7 @@ function tiki_get_remote_file( $url ) {
 		return false;
 	}
 }
+
 /* Editor configuration
 	 Local Variables:
 	 tab-width: 4
@@ -8810,3 +8700,4 @@ function tiki_get_remote_file( $url ) {
 End:
  * vim: fdm=marker tabstop=4 shiftwidth=4 noet:
  */
+?>

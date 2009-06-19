@@ -155,3 +155,4 @@ class MultilineGraphic extends GridBasedGraphic // {{{1
 		) );
 	}
 } // }}}1
+?>

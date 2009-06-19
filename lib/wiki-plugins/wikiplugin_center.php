@@ -28,3 +28,5 @@ function wikiplugin_center($data, $params) {
 	$data = '<div align="center">' . trim($data). '</div>';
 	return $data;
 }
+
+?>

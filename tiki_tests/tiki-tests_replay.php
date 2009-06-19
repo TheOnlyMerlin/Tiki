@@ -269,3 +269,5 @@ if (isset($_REQUEST['action'])) {
 } else {
 	header("Location: tiki-tests_list.php");
 }
+
+?>

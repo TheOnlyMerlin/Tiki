@@ -27,3 +27,4 @@ if (isset($_REQUEST["metatags"])) {
 } 
 
 ask_ticket('admin-inc-metatags');
+?>

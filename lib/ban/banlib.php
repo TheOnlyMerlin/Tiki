@@ -144,3 +144,5 @@ class BanLib extends TikiLib {
 }
 global $dbTiki;
 $banlib = new BanLib($dbTiki);
+
+?>

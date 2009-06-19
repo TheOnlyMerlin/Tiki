@@ -110,3 +110,5 @@ else {
 	}
 	$smarty->assign('cat_categorize', $cat_categorize);
 }
+
+?>

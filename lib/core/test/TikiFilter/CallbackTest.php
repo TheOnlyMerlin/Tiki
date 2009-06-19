@@ -9,3 +9,5 @@ class TikiFilter_CallbackTest extends TikiTestCase
 		$this->assertEquals( 'HELLO', $filter->filter( 'hello' ) );
 	}
 }
+
+?>

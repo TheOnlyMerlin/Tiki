@@ -6,15 +6,9 @@
 	 {tr}Information{/tr}
 	 </div>
 
-	<div class="simplebox highlight">
-	{if is_array($msg)}
-		{foreach from=$msg item=line}
-	 		{$line|escape}<br />
-	 	{/foreach}
-	{else}
-		{$msg|escape}
-	{/if}
-	</div>
+	 <div class="simplebox highlight">
+	 {$msg|escape}
+	 </div>
 
 	<p>
 

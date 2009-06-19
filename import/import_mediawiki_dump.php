@@ -186,3 +186,5 @@ class ImportMediaWikiDump
 		return $tiki_text;
 	}
 }
+
+?>

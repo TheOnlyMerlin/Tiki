@@ -102,9 +102,6 @@
 										<input type="text" name="position" value="{$position|escape}" size="6" />
 									</td>
 								</tr>
-{if $prefs.menus_items_icons eq 'y'}
-							 	<tr><td>{tr}Icon:{/tr}</td><td colspan="3"><input type="text" name="icon" value="{$icon|escape}" size="20" /></td></tr>
-{/if}
 								<tr class="formcolor">
 									<td>&nbsp;</td>
 									<td colspan="3">
@@ -267,7 +264,7 @@
 			<div class="box">
 				<div class="box-title">{$editable_menu_info.name}</div>
 				<div class="box-data">
-					{include file='tiki-user_menu.tpl' menu_channels=$allchannels}
+					{include file=tiki-user_menu.tpl menu_channels=$allchannels}
 				</div>
 			</div>
 		</td>

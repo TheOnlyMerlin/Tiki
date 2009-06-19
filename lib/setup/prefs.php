@@ -48,7 +48,6 @@ function get_default_prefs() {
 		'feature_likePages' => 'n',
 		'feature_listPages' => 'y',
 		'feature_listorphanPages' => 'n',
-		'feature_listorphanStructure' => 'n',
 		'feature_page_title' => 'y',
 		'feature_sandbox' => 'n',
 		'feature_warn_on_edit' => 'y',
@@ -217,7 +216,6 @@ function get_default_prefs() {
 		'wikiplugin_img' => 'y',
 		'wikiplugin_image' => 'n',    // Experimental, may supercede img in 4.0
 		'wikiplugin_include' => 'y',
-		'wikiplugin_invite' => 'y',
 		'wikiplugin_jabber' => 'n',
 		'wikiplugin_js' => 'n',
 		'wikiplugin_jq' => 'n',
@@ -255,7 +253,6 @@ function get_default_prefs() {
 		'wikiplugin_sort' => 'y',
 		'wikiplugin_split' => 'y',
 		'wikiplugin_sql' => 'n',
-		'wikiplugin_stat' => 'n',
 		'wikiplugin_sub' => 'y',
 		'wikiplugin_subscribegroup' => 'n',
 		'wikiplugin_subscribegroups' => 'n',
@@ -331,7 +328,6 @@ function get_default_prefs() {
 		'wikiplugininline_img' => 'n',
 		'wikiplugininline_image' => 'n',    // Experimental, may supercede img in 4.0
 		'wikiplugininline_include' => 'n',
-		'wikiplugininline invite' => 'n',
 		'wikiplugininline_jabber' => 'n',
 		'wikiplugininline_js' => 'n',
 		'wikiplugininline_jq' => 'n',
@@ -398,10 +394,6 @@ function get_default_prefs() {
 
 		// webservices
 		'webservice_consume_defaultcache' => 300, // 5 min
-		'feature_webservices' => 'y',
-
-		// semantic links
-		'feature_semantic' => 'y',
 
 		// wysiwyg
 		'feature_wysiwyg' => 'n',
@@ -588,7 +580,6 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 		'art_list_topic' => 'y',
 		'art_list_date' => 'y',
 		'art_list_author' => 'y',
-		'art_list_rating' => 'n',
 		'art_list_reads' => 'y',
 		'art_list_size' => 'y',
 		'art_list_expire' => 'y',
@@ -622,7 +613,6 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 		'groupTracker' => 'n',
 		'userTracker' => 'n',
 		'trk_with_mirror_tables' => 'n',
-		'trackerCreatorGroupName' => ' ',
 
 		// user
 		'feature_userlevels' => 'n',
@@ -1098,16 +1088,6 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 		'feature_site_report' => 'n',
 		'feature_site_send_link' => 'n',
 		'feature_layoutshadows' => 'n',
-		'main_shadow_start' => '',
-		'main_shadow_end' => '',
-		'header_shadow_start' => '',
-		'header_shadow_end' => '',
-		'middle_shadow_start' => '',
-		'middle_shadow_end' => '',
-		'center_shadow_start' => '',
-		'center_shadow_end' => '',
-		'footer_shadow_start' => '',
-		'footer_shadow_end' => '',
 
 		// mods
 		'feature_mods_provider' => 'n',
@@ -1144,6 +1124,7 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 		'default_rows_textarea_comment' => '6',
 		'default_rows_textarea_forum' => '20',
 		'default_rows_textarea_forumthread' => '10',
+		'feature_floating_help' => 'y',
 
 		// pagination
 		'direct_pagination' => 'y',
@@ -1224,7 +1205,6 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 		'feature_user_watches' => 'n',
 		'feature_group_watches' => 'n',
 		'feature_user_watches_translations' => 'n',
-		'feature_daily_report_watches' => 'n',
 		'feature_workflow' => 'n',
 		'feature_xmlrpc' => 'n',
 		'helpurl' => "http://doc.tikiwiki.org/",
@@ -1269,7 +1249,6 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 		'bot_logo_code' => '',
 		'feature_blogposts_pings' => 'n',
 		'feature_create_webhelp' => 'n',
-		'page_n_times_in_a_structure' => 'n',
 		'feature_forums_search' => 'n',
 		'feature_trackbackpings' => 'n',
 		'feature_wiki_ext_icon' => 'y',
@@ -1313,20 +1292,19 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 		'feature_comments_moderation' => 'n',
 		'feature_comments_locking' => 'n',
 		'feature_template_zoom' => 'y',
-		'menus_items_icons' => 'n',
 		'feature_iepngfix' => 'n',
 		'iepngfix_selectors' => '#sitelogo a img',
 		'iepngfix_elements' => '',
 		'use_minified_scripts' => 'y',		// for debugging
 		'valid_email_regex' => '^[_a-z0-9\+\.\-]+@[_a-z0-9\.\-]+\.[a-z]{2,4}$',
-		'debug_ignore_xdebug' => 'n',
-		
+
 		// JQuery
-		'feature_jquery' => 'y',			// Alternative lib for shadowbox etc
+		'feature_jquery' => 'n',			// Alternative lib for shadowbox etc
 		'jquery_effect' => '',				// Default effect for general show/hide: ['' | 'slide' | 'fade' | and
 											// see http://docs.jquery.com/UI/Effects: 'blind' | 'clip' | 'explode' etc]
 		'jquery_effect_direction' => 'vertical', 	// ['horizontal' | 'vertical' | 'left' | 'right' | 'up' | 'down' ]
 		'jquery_effect_speed' => 'normal', 	// ['slow' | 'normal' | 'fast' | milliseconds (int) ]
+
 		'jquery_effect_tabs' => 'slide',	// Different effect for tabs (['none' | 'normal' (for jq) | 'slide' etc]
 		'jquery_effect_tabs_direction' => 'vertical',
 		'jquery_effect_tabs_speed' => 'fast',
@@ -1365,19 +1343,12 @@ Style,FontName,FontSize,-,TextColor,BGColor,-,Source",
 
 		'feature_bidi' => 'n',
 		'feature_lastup' => 'y',
+		'transition_style_ver' => '2.0',
 
 		'magic_last_load' => 0,
 
 		//groupalert
 		'feature_groupalert' => 'n',
-
-		'zend_mail_handler' => 'sendmail',
-		'zend_mail_smtp_server' => '',
-		'zend_mail_smtp_auth' => '',
-		'zend_mail_smtp_user' => '',
-		'zend_mail_smtp_pass' => '',
-		'zend_mail_smtp_port' => 25,
-		'zend_mail_smtp_security' => '',
 	);
 
 	// spellcheck

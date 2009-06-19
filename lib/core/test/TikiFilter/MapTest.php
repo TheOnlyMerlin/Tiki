@@ -59,3 +59,5 @@ class TikiFilter_MapTest extends TikiTestCase
 		$this->assertEquals( 'alert', $filter->filter('alert') );
 	}
 }
+
+?>

@@ -4,15 +4,11 @@
 
 {if $field_value.type ne 'x'}
 {* ******************** link to the item ******************** *}
-{if $showlinks ne 'y' or (isset($field_value.showlinks) and $field_value.showlinks eq 'n')}
+{if $showlinks ne 'y'}
 	{assign var='is_link' value='n'}
 {elseif $field_value.isMain eq 'y'
- and ($tiki_p_view_trackers eq 'y' 
- 	 or ($tiki_p_modify_tracker_items eq 'y' and $item.status ne 'p' and $item.status ne 'c')
-	 or ($tiki_p_modify_tracker_items_pending eq 'y' and $item.status eq 'p')
-	 or ($tiki_p_modify_tracker_items_closed eq 'y' and $item.status eq 'c')
-	 or $tiki_p_comment_tracker_items eq 'y'
- 	 or ($tracker_info.writerCanModify eq 'y' and $user and $my eq $user) or ($tracker_info.writerGroupCanModify eq 'y' and $group and $ours eq $group))}
+ and ($tiki_p_view_trackers eq 'y' or $tiki_p_modify_tracker_items eq 'y' or $tiki_p_comment_tracker_items eq 'y'
+ or ($tracker_info.writerCanModify eq 'y' and $user and $my eq $user) or ($tracker_info.writerGroupCanModify eq 'y' and $group and $ours eq $group))}
 	{if empty($url) and !empty($item.itemId)}
 		{assign var=urll value="tiki-view_tracker_item.php?itemId=`$item.itemId`&amp;trackerId=`$item.trackerId`&amp;show=view"}
 	{elseif strstr($url, 'itemId') and !empty($item.itemId)}
@@ -151,7 +147,7 @@
 		{assign var='Length' value=$prefs.MultimediaDefaultLength}
 	{/if}
 	{if $ModeVideo eq 'y' } { assign var="Height" value=$Height+$prefs.VideoHeight}{/if}
-	{include file='multiplayer.tpl' url=$field_value.value w=$Length h=$Height video=$ModeVideo}
+	{include file=multiplayer.tpl url=$field_value.value w=$Length h=$Height video=$ModeVideo}
 	{/if}
 
 {* -------------------- file -------------------- *}

@@ -16,3 +16,5 @@ class DeclFilter_StaticKeyUnsetRule extends DeclFilter_UnsetRule
 		return in_array( $key, $this->keys );
 	}
 }
+
+?>

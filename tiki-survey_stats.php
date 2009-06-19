@@ -95,3 +95,5 @@ ask_ticket('survey-stats');
 // Display the template
 $smarty->assign('mid', 'tiki-survey_stats.tpl');
 $smarty->display("tiki.tpl");
+
+?>

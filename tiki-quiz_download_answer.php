@@ -14,3 +14,4 @@ require_once('lib/quizzes/quizlib.php');
 if (isset($_REQUEST['answerUploadId'])) {
 	$quizlib->download_answer($_REQUEST['answerUploadId']);	
 }
+?>

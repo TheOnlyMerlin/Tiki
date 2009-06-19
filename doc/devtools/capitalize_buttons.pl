@@ -41,8 +41,6 @@
 #                        slashes in text
 #  2007-12-29  JML    5: Now handles strings with single quotes (')
 #                        Abstract translated
-#              JML    6: Now handles strings with ()|
-#  2007-12-29  JML    7: Now handles strings with #
 #
 #TODO:
 #
@@ -80,7 +78,6 @@ my $word_lowercase_escaped_perl = $word_lowercase;
 my $word_correct_escaped = $word_correct;
 $word_lowercase_escaped =~ s/\//\\\//g;
 $word_lowercase_escaped =~ s/'/'\\''/g;
-$word_lowercase_escaped =~ s/\#/\\#/g;
 $word_lowercase_escaped_perl = $word_lowercase_escaped;
 $word_lowercase_escaped_perl =~ s/\(/\\(/g;
 $word_lowercase_escaped_perl =~ s/\)/\\)/g;

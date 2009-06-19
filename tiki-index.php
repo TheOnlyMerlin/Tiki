@@ -112,10 +112,6 @@ if( $prefs['feature_wiki_structure'] == 'y' ) {
 		}
 
 	}
-} elseif (!empty($_REQUEST['page_ref_id'])) {
-	$smarty->assign('msg', tra('This feature is disabled').': feature_wiki_structure');
-	$smarty->display('error.tpl');
-	die;
 }
 
 if(isset($page_ref_id)) {
@@ -406,3 +402,5 @@ $smarty->display("tiki.tpl");
 
 // xdebug_dump_function_profile(XDEBUG_PROFILER_CPU);
 // debug: print all objects
+
+?>

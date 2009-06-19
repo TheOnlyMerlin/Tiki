@@ -192,3 +192,4 @@ function wikiplugin_trackeritemfield($data, $params) {
 	}
 	return $data;
 }
+?>

@@ -281,7 +281,6 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	padding: 1em;
 }
 
-.fullscreenbutton,
 #fullscreenbutton {
 	position: absolute;
 	top: 2px;
@@ -292,7 +291,6 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	border: 1px solid #D3D3D3;
 }
 
-.fullscreenbutton:hover,
 #fullscreenbutton:hover {}
 
 /* #Header */
@@ -389,10 +387,6 @@ div#sitead {
 	text-align: right;
 	display: block;
 	margin: 0;
-}
-
-#tiki-top #sitesearchbar br {
-	display: none;
 }
 
 /* Middle */
@@ -857,7 +851,7 @@ div#edithelpzone {	display: none;}
 * html .clearfix {	height: 1%;}
 #overdiv table {	width: auto !important;}
 .attention {	color: red;}
-.highlight, #highlight  {background-color: #f2cd5e !important}
+.highlight, #highlight  {background-color: #f2cd5e}
 
 /* OpenID  */
 .openid_url {
@@ -871,6 +865,8 @@ div#edithelpzone {	display: none;}
 div.imagerank { margin: 10px 5px; }
 .link, .gallink, .bloglink, .fgallink, .trailer,
 .opencomlink, .commentslink, .admlink,.forumbutlink { font-weight: normal; padding: 0; }
+div.searchdate { font-size: .95em;  }
+
 
 /* Pagination for listings */
 .mini {
@@ -899,7 +895,7 @@ a.tikihelp:hover {
 div#tikihelp {
 	position: fixed;
 	right: 0;
-	top: 0;
+	top: 25px;
 	height: auto; /* if there was height specified it covered the right column content "invisibly" making part of it unclickable (from strasa) */
 	max-width: 50%;
 	padding: 0;
@@ -907,46 +903,49 @@ div#tikihelp {
 	border: none;
 	background: transparent;
 	z-index: 820;
-	height: 100%;
 }
 
-* html div#tikihelp {
-	position: absolute;
+* html div#tikihelp {position: absolute}
+
+div.help_icon {
+	border: 0;
+	margin: 0;
+	padding: 0;
+	height: 48px;
+	text-align: right;
 }
-
-.help_title { float: left }
-
-.help_close_icon,
-.help_fullscreen_icon {
-	float: right;
+div.help_icon a:hover {
+  text-decoration: none;
+}
+div.help_icon img{
 	vertical-align: middle;
+	border: 0;
+	margin: 0;
+	padding: 0;
 }
-.help_fullscreen_icon { margin-right: 8px }
-.help_close_icon { margin-right: 20px }
-
 div.help_section_select {
 	font-weight : bold;
 	font-size: 120%;
-	background: #e7e9ea;
-	color: #000;
+	background-color : #E7E9EA;
+	color: black;
 	width: 100%;
-	padding: 2px;
+	margin: 2px;
 }
-
 div.help_sections {
-	width: 360px;
+	width : 360px;
 	padding:  2px;
-	background: #aac9e9;
+	background-color: #AAC9E9;
+	max-height : 95%;
 	overflow: auto;
-	height: 100%;
+	height: 400px;
 }
-
 div.help_section {
 	margin: 5px;
 	padding: 5px;
-	background: #fff;
-	color: #000;
+	background-color: white;
+	color: black;
 }
+
 
 /** Admin pages **/
 /* overrides inline css */
@@ -1724,7 +1723,7 @@ div.blogheading {
 }
 
 div.blogtitle {
-	font-size: 1.8em;
+	font-size: 1.3em;
 	font-weight: bold;
 	padding: 3px;
 	margin-top: 10px;
@@ -1809,13 +1808,9 @@ span.posthead span.link {
 
 body.tiki_blogs .post .title {margin-top: 0}
 
-.tiki_blogs #tiki-center .postbody-title,
-.tiki_blogs #tiki-center .title {
-	padding-left: 0;
-	margin-left: 0}
-
+/*div.posthead h3*/
 body.tiki_blogs .post .title h2 {
-	font-size: 1.7em;
+	font-size: 1.2em;
 	margin-top: 0}
  
 /*div.postbody*/
@@ -1923,7 +1918,7 @@ table.commentinfo {}
 	
 .post .postbody-title .checkbox {float: left}
 
-.tiki_forums .post .postbody-title .title {
+.post .postbody-title .title {
 	color: #29677B;
 	font-weight: bold;
 	font-size: 12px;
@@ -2350,31 +2345,9 @@ Caltrack a:visited {color: #00BD02}
 	border-bottom: 1px solid black;
 	padding-bottom: 7px;
 }
-
 .searchresults {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-	}
-
-.searchresults li {
-	margin: 10px 0 0;
+	display: inline;
 }
-
-.searchresults li .objecttype,
-	.searchresults li .parentname ,
-	.searchresults li .objectname 
- {
-	font-size: 120%;
-	font-weight: bold;
- }
-
-.searchresults .itemhits,
-	.searchresults .itemrelevance,
-	.searchresults .searchdate {
-	color: gray;
-	font-size: 90%;
-	}
 
 #caltable .calfocuson,
 .box-data td.fc a.today,
@@ -2382,7 +2355,6 @@ Caltrack a:visited {color: #00BD02}
 	background: #D4D0C8;
 	border: solid 1px #696969}
 
-.buttonon a,
 .calbuttonon a,
 .calHeadingOn a {font-weight: bold}
 
@@ -2565,7 +2537,5 @@ body.tiki_mytiki #tiki-center .normal form {
 	font-style: italic;
 	margin-top: 10px;
 }
-.close_help_icon { float: right }
-
 /* end of css file */
 

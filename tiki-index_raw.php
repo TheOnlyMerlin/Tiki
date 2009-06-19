@@ -167,3 +167,5 @@ ask_ticket('index-raw');
 // Display the Index Template
 $smarty->assign('dblclickedit', 'y');
 $smarty->display("tiki-show_page_raw.tpl");
+
+?>

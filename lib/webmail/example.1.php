@@ -88,3 +88,5 @@ if (!$result) {
 } else {
 	echo 'Mail sent!';
 }
+
+?>

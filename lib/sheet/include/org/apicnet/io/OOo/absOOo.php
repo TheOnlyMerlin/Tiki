@@ -623,3 +623,5 @@ class absOOo extends ErrorManager {
 		return $this->xml->toString(); 
 	}
 }
+
+?>

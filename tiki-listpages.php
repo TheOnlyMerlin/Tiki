@@ -10,20 +10,9 @@
 $section = 'wiki page';
 require_once('tiki-setup.php');
 require_once('lib/ajax/ajaxlib.php');
-global $multilinguallib;
-include_once('lib/multilingual/multilinguallib.php');
 
-$auto_query_args = array('initial','maxRecords','sort_mode','find','lang','langOrphan', 
-                         'findfilter_orphan', 'categId', 'category', 'page_orphans', 
-                         'structure_orphans', 'exact_match', 'hits_link_to_all_languages');
-                         
+$auto_query_args = array('initial','maxRecords','sort_mode','find','lang','langOrphan', 'findfilter_orphan');
 
-if ($_REQUEST['hits_link_to_all_languages'] == 'On') {
-   $smarty->assign('all_langs', 'y');
-} else {
-   $smarty->assign('all_langs', '');
-}
-   
 $smarty->assign('headtitle',tra('Pages'));
 
 $access->check_feature( array( 'feature_wiki', 'feature_listPages' ) );
@@ -161,7 +150,10 @@ if ( ! empty($multiprint_pages) ) {
 	$smarty->assign('find', $find);
 	
 	$filter = '';
-	$filter = setLangFilter($filter);
+	if (!empty($_REQUEST['lang'])) {
+		$filter['lang'] = $_REQUEST['lang'];
+		$smarty->assign_by_ref('find_lang', $_REQUEST['lang']);
+	}
 	if (!empty($_REQUEST['langOrphan'])) {
 		$filter['langOrphan'] = $_REQUEST['langOrphan'];
 		$smarty->assign_by_ref('find_langOrphan', $_REQUEST['langOrphan']);
@@ -174,32 +166,6 @@ if ( ! empty($multiprint_pages) ) {
 		global $categlib; include_once ('lib/categories/categlib.php');
 		$filter['categId'] = $categlib->get_category_id($_REQUEST['category']);
 		$smarty->assign_by_ref('find_categId', $filter['categId']);	
-	}
-	if ( (!empty($_REQUEST['page_orphans']) && $_REQUEST['page_orphans'] == 'y') || (isset($_REQUEST['findfilter_orphan']) && $_REQUEST['findfilter_orphan'] == 'page_orphans')) {
-		$listpages_orphans = true;
-	}
-	if ($prefs['feature_listorphanPages'] == 'y') {
-		if ( (!empty($_REQUEST['page_orphans']) && $_REQUEST['page_orphans'] == 'y') || (isset($_REQUEST['findfilter_orphan']) && $_REQUEST['findfilter_orphan'] == 'page_orphans')) {
-			$filter_values['orphan'] = 'page_orphans';
-		}
-		$filters['orphan']['page_orphans'] = tra('Orphan pages');
-	}
-	if ($prefs['feature_wiki_structure'] == 'y') {
-		if ( (!empty($_REQUEST['structure_orphans']) && $_REQUEST['structure_orphans'] == 'y') || (isset($_REQUEST['findfilter_orphan']) && $_REQUEST['findfilter_orphan'] == 'structure_orphans')) {
-			$filter['structure_orphans'] = true;
-		}
-		if ($prefs['feature_listorphanStructure'] == 'y') {
-			if ( (!empty($_REQUEST['structure_orphans']) && $_REQUEST['structure_orphans'] == 'y') || (isset($_REQUEST['findfilter_orphan']) && $_REQUEST['findfilter_orphan'] == 'structure_orphans')) {
-				$filter_values['orphan'] = 'structure_orphans';
-			}
-		$filters['orphan']['structure_orphans'] = tra('Pages not in structure');
-		}
-	}
-	if (!empty($filters)) {
-		$filter_names['orphan'] = tra('Type');
-		$smarty->assign_by_ref('filters', $filters);
-		$smarty->assign_by_ref('filter_names', $filter_names);
-		$smarty->assign_by_ref('filter_values', $filter_values);
 	}
 
 	if (isset($_REQUEST["initial"])) {
@@ -222,7 +188,6 @@ if ( ! empty($multiprint_pages) ) {
 	if (!isset($listpages_orphans)) {
 		$listpages_orphans = false;
 	}
-	
 	$listpages = $tikilib->list_pages($offset, $maxRecords, $sort_mode, $find, $initial, $exact_match, false, true, $listpages_orphans, $filter);
 
 	// Only show the 'Actions' column if the user can do at least one action on one of the listed pages
@@ -324,12 +289,4 @@ if ( ! empty($multiprint_pages) ) {
 		$smarty->display("tiki.tpl");
 	}
 }
-
-function setLangFilter($filter) {
-   global $_REQUEST, $_SESSION, $smarty, $multilinguallib;
-   $lang = $multilinguallib->currentSearchLanguage(false); 
-   $filter['lang'] = $lang;
-   $smarty->assign_by_ref('find_lang', $lang);   
-   return $filter;
-}
-
+?>

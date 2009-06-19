@@ -134,3 +134,5 @@ class PollLib extends PollLibShared {
 }
 global $dbTiki;
 $polllib = new PollLib($dbTiki);
+
+?>

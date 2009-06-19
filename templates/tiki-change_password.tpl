@@ -20,7 +20,7 @@
 		<input type="hidden" name="user" value="{$userlogin|escape}" />
 		<b>{$userlogin}</b>
 	{else}
-		<input type="text" name="user" value="{$userlogin|escape}" />
+		<input type="text" name="user" value="{$userlogin|escape}" {if $userlogin}readonly="readonly"{/if} />
 	{/if}
   </td>
 </tr>

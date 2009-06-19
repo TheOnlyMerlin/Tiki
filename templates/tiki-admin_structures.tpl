@@ -49,7 +49,7 @@
 <br /><br />
 {/if}
 {if $channels or ($find ne '')}
-  {include file='find.tpl' find_show_languages='y' find_show_categories='y' find_show_num_rows='y' }
+  {include file="find.tpl" find_show_languages='y' find_show_categories='y' find_show_num_rows='y' }
 {/if}
 <br />
 <h2>{tr}Structures{/tr}</h2>
@@ -99,21 +99,21 @@
 <form action="tiki-admin_structures.php" method="post">
 <table class="normal">
 <tr>
-   <td class="formcolor"><label for="name">{tr}Structure ID{/tr}:</label></td>
-   <td class="formcolor"><input type="text" name="name" id="name" /></td>
+   <td class="formcolor">{tr}Structure ID{/tr}:</td>
+   <td class="formcolor"><input type="text" name="name" /></td>
 </tr>
 <tr>
-   <td class="formcolor"><label for="alias">{tr}Alias{/tr}:</label></td>
-   <td class="formcolor"><input type="text" name="alias" id="alias" /></td>
+   <td class="formcolor">{tr}Alias{/tr}:</td>
+   <td class="formcolor"><input type="text" name="alias" /></td>
 </tr>    
 <tr>
-   <td class="formcolor"><label for="tree">{tr}Tree{/tr}:</label><br />(optional)</td>
-   <td colspan="2" class="formcolor"><textarea rows="5" cols="60" id="tree" name="tree" style="width:95%"></textarea>
+   <td class="formcolor">{tr}Tree{/tr}:<br />(optional)</td>
+   <td colspan="2" class="formcolor"><textarea rows="5" cols="60" name="tree" style="width:95%"></textarea>
 		{remarksbox type="tip" title="{tr}Note{/tr}"}{tr}Use single spaces to indent structure levels{/tr}{/remarksbox}
    </td>
 </tr>    
 {if $tiki_p_view_categories eq 'y'}
-{include file='categorize.tpl'}
+{include file=categorize.tpl}
 {/if}
 <tr>
    <td class="formcolor">&nbsp;</td>

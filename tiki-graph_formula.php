@@ -117,3 +117,4 @@ $graph->setData( $data );
 $graph->draw( $renderer );
 
 $renderer->httpOutput( "graph.{$_GET['t']}" );
+?>

@@ -167,3 +167,4 @@ function wikiplugin_thumb($data, $params) {
 	$html.= "<img src='$image' width='$twidth' height='$theight' /></a>";
 	return $html;
 }
+?>

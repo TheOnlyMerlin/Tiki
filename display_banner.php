@@ -63,4 +63,7 @@ case 'useText':
 
 	break;
 }
+
 print ($raw);
+
+?>

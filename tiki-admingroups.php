@@ -53,14 +53,8 @@ if (!empty($_REQUEST["defcat"])) $ag_defcat = $_REQUEST["defcat"];
 if (isset($_REQUEST["theme"])) $ag_theme = $_REQUEST["theme"];
 
 // Process the form to add a group
-if (isset($_REQUEST["newgroup"])) {
+if (isset($_REQUEST["newgroup"]) and $_REQUEST["name"]) {
 	check_ticket('admin-groups');
-	if (!empty($_REQUEST['name'])) $_REQUEST['name'] = trim($_REQUEST['name']);
-	if (empty($_REQUEST['name'])) {
-		$smarty->assign('msg', tra("Group name can not be empty"));
-		$smarty->display("error.tpl");
-		die;
-	}	
 	// Check if the user already exists
 	if ($userlib->group_exists($_REQUEST["name"])) {
 		$smarty->assign('msg', tra("Group already exists"));
@@ -149,7 +143,6 @@ if (isset($_REQUEST['clean'])) {
 	global $cachelib;require_once("lib/cache/cachelib.php");
 	check_ticket('admin-groups');
 	$cachelib->invalidate('grouplist');
-	$cachelib->invalidate('groupIdlist');
 }
 if (!isset($_REQUEST["numrows"])) {
 	$numrows = $maxRecords;
@@ -178,6 +171,7 @@ if (isset($_REQUEST["initial"])) {
 	$initial = '';
 }
 $smarty->assign('initial', $initial);
+$smarty->assign('initials', split(' ','a b c d e f g h i j k l m n o p q r s t u v w x y z'));
 
 if (isset($_REQUEST["find"])) {
 	$find = $_REQUEST["find"];
@@ -376,3 +370,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the template for group administration
 $smarty->assign('mid', 'tiki-admingroups.tpl');
 $smarty->display("tiki.tpl");
+
+?>
