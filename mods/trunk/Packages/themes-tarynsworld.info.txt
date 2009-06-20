@@ -21,7 +21,10 @@ url:
 http://taryn.parkersworld.org
 
 Description: 
-This is the theme in action of TarynsWorld
+This is the theme in action of TarynsWorld.
+
+Version:
+1.9
 
 Changelog:
 1 initial package

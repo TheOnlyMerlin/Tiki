@@ -34,7 +34,7 @@ GNU/LGPL
 Description: Centered content area on dark blue background.
 
 Version:
-3 
+3.0
 
 Changelog:
 5 more CSS redundancy removed; page header improved; ie6 css put in separate file

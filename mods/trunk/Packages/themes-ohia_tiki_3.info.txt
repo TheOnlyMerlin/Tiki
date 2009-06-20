@@ -33,7 +33,7 @@ Author:
 Gary Cunningham-Lee (chibaguy)
  
 Version:
-Compatible with Tiki 3 releases.
+3.0
  
 Changelog:
 3 modified to import layout/layout.css

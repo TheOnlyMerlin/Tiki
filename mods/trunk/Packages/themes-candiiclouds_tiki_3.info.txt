@@ -46,7 +46,7 @@ Author:
 Gary Cunningham-Lee (chibaguy)
  
 Version:
-3
+3.0
  
 Changelog:
 2 modified to import layout/layout.css; suckerfish menu arrows image added

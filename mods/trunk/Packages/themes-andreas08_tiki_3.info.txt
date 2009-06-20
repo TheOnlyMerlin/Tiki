@@ -32,7 +32,7 @@ Author:
 Gary Cunningham-Lee (chibaguy)
  
 Version:
-3
+3.0
  
 Changelog:
 3 modified to import layout/layout.css; suckerfish menu arrow image added.

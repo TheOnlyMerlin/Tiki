@@ -23,7 +23,10 @@ url:
 http://zak.parkersworld.org
 
 Description: 
-This is the theme in action at Zaks site
+This is the theme in action at Zaks site.
+
+Version:
+1.9
 
 Changelog:
 1 initial package

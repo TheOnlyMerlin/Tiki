@@ -19,5 +19,8 @@ GNU/LGPL
 Description: 
 Underworld theme, very dark colours
 
+Version:
+1.9
+
 Changelog:
 1 initial package

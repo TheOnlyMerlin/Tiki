@@ -26,5 +26,8 @@ GNU/LGPL
 Description: 
 Blue and 3D
 
+Version:
+1.9
+
 Changelog:
 1 initial package

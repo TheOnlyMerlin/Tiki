@@ -39,7 +39,7 @@ Author:
 Adapted by Gary Cunningham-Lee (chibaguy).
  
 Version:
-Compatible with TikiWiki 2 releases.
+3.0
  
 Changelog:
 1 initial package

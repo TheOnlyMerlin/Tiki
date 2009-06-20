@@ -19,5 +19,8 @@ GNU/LGPL
 Description: 
 Orange version of moreneat
 
+Version:
+1.9
+
 Changelog:
 1 initial package

@@ -20,5 +20,8 @@ GNU/LGPL
 Description: 
 Black, Yellow and Grey
 
+Version:
+1.9
+
 Changelog:
 1 initial package

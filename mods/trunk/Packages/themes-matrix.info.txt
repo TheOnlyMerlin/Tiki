@@ -55,5 +55,8 @@ GNU/LGPL
 Description: 
 Requires a high powered workstation, light version also included.
 
+Version:
+1.9
+
 Changelog:
 1 initial package

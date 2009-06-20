@@ -42,7 +42,7 @@ Author:
 Gary Cunningham-Lee (chibaguy)
  
 Version:
-3
+3.0
  
 Changelog:
 1 initial package

@@ -45,7 +45,7 @@ Author:
 Gary Cunningham-Lee (chibaguy)
  
 Version:
-3
+3.0
  
 Changelog:
 4 modified to import layout/layout.css

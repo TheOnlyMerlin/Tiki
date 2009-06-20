@@ -50,7 +50,7 @@ Author:
 Gary Cunningham-Lee (chibaguy)
  
 Version:
-Compatible with TikiWiki 2 releases.
+2.0
  
 Changelog:
 2 update for TikiWiki 2

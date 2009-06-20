@@ -46,7 +46,10 @@ licence:
 GNU/GPL
 
 Description: 
-Theme borrowed to another cms.
+Theme borrowed from another cms.
+
+Version:
+1.9
 
 Changelog:
 2 added wikirating include

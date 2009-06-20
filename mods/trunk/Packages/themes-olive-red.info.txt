@@ -16,8 +16,11 @@ Oliver Hertel
 licence:
 GNU/LGPL
 
-Description: 
+Description:
+-
 
+Version:
+1.9
 
 Changelog:
 1 move to mods

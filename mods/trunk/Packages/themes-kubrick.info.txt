@@ -31,7 +31,9 @@ GNU/GPL
 
 Description: 
 This is a Tiki adaptation of the Kubrick theme (http://mambo.rhuk.net/) originally done by Michael Heilemann for the WordPress blog software.  It's been tested with Tiki 1.10 beta. Maintained by Gary Cunningham-Lee (chibaguy). For the latest information on and updates of the Kubrick theme for TikiCMS, visit http://zukakakina.com or http://themes.tikiwiki.org.
- 
+
+Version:
+2.0
 
 Changelog:
 2 update for TikiWiki 1.10

@@ -19,5 +19,8 @@ GNU/LGPL
 Description: 
 A style sheet by sdl of the Tiki Community conforming to the NHS colour schemes
 
+Version:
+1.9
+
 Changelog:
 1 initial package

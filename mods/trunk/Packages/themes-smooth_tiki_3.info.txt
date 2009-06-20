@@ -43,7 +43,7 @@ Author:
 Gary Cunningham-Lee (chibaguy)
  
 Version:
-3
+3.0
  
 Changelog:
 4 separate CSS file for ie6; misc. fixes (todo: page header still basically broken in ie6)

@@ -35,6 +35,9 @@ GNU/LGPL
 Description: 
 Centered content area on dark blue background.
 
+Version:
+2.0
+
 Changelog:
 2 update for TikiWiki 2
 1 initial package (May 2, 2006)

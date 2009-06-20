@@ -44,6 +44,9 @@ GNU/GPL
 Description: 
 This is an original theme for TikiWiki CMS/Groupware (http://tikiwiki.org) to replicate the visual appearance of the GPL Monobook theme for Mediawiki. This theme uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss).
 
+Version:
+2.0
+
 Changelog:
-2 update for TikiWiki 1.10
+2 update for TikiWiki 2.0
 1 initial package (May 2, 2006)

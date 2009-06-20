@@ -25,6 +25,9 @@ Unknown!
 Description: 
 A rip of the Fedora* themes
 
+Version:
+1.9
+
 Changelog:
 3 added wikirating include
 1 initial package

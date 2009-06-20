@@ -36,7 +36,7 @@ Author:
 Gary Cunningham-Lee (chibaguy)
  
 Version:
-Compatible with TikiWiki 2 releases.
+2.0
  
 Changelog:
 1 initial package

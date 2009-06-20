@@ -44,7 +44,7 @@ Author:
 Gary Cunningham-Lee (chibaguy), implementing visual aspects of the original Garland theme for Drupal.
  
 Version:
-3
+3.0
  
 Changelog:
 1 initial package

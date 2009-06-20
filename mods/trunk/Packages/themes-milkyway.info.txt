@@ -121,6 +121,9 @@ http://zukakakina.com/MilkyWay
 Licence:
 This theme is a derived work using visual elements of the original Joomla theme, which was released under the GPL license. This theme for TikiWiki CMS/Groupware is licensed GNU/LGPL.
 
+Version:
+3.0
+
 Author:
 Gary Cunningham-Lee (chibaguy)
  

@@ -44,7 +44,7 @@ Author:
 Gary Cunningham-Lee (chibaguy)
  
 Version:
-1.10.0b1
+2.0
  
 Changelog:
 1 initial package

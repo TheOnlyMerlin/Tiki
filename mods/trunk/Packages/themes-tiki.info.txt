@@ -30,6 +30,9 @@ GNU/LGPL
 Description: 
 Themes inspired by the statue image representing tiki, the polynesian goddess of fertility
 
+Version:
+1.9
+
 Changelog:
 1 initial package proted from main trunk
 

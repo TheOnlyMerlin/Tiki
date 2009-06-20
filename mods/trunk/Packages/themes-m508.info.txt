@@ -18,7 +18,10 @@ licence:
 GNU/LGPL
 
 Description: 
-Originaly aimed for 508 compliance, but not very successful
+Originally aimed for 508 compliance, but not very successful
+
+Version:
+1.9
 
 Changelog:
 1 initial package

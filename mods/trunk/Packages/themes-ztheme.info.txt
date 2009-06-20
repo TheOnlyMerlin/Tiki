@@ -20,5 +20,8 @@ Description:
 Simple theme, conservative colors. 
 Designed for easy "readability" and use.
 
+Version:
+1.9
+
 Changelog:
 1 initial package
