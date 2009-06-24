@@ -270,7 +270,7 @@ INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('
 INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('tiki_p_view_workspace','Can view a workspace','basic','workspace','');
 INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('tiki_p_admin_workspace','Can admin workspaces','admin','workspace','');
 INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('tiki_p_create_workspace_resour','Can create new workspace resources','editors','workspace','');
-INSERT INTO tiki_menus VALUES (100,'Workspace menu','Sample workspace menu','d', '');
+INSERT INTO tiki_menus (menuId, name, description, type, icon) VALUES (100,'Workspace menu','Sample workspace menu','d', '');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (42,'s','Workspaces','./tiki-workspaces_admin.php',1020,'','tiki_p_admin_workspace','');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (42,'o','Admin Workspaces','./tiki-workspaces_admin.php',1022,'','tiki_p_admin_workspace','');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (42,'o','Workspace Types','./tiki-workspaces_types.php',1024,'','tiki_p_admin_workspace','');
@@ -397,7 +397,7 @@ INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupn
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (42,'o','Admin Workspaces','./tiki-workspaces_admin.php',1022,'','tiki_p_admin_workspaces','');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (42,'o','Workspace Types','./tiki-workspaces_types.php',1024,'','tiki_p_admin_workspaces_types','');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (42,'o','Admin Roles','./tiki-workspaces_roles.php',1026,'','tiki_p_admin_workspaces_roles','');
-INSERT INTO tiki_menus VALUES (100,'Workspace menu','Sample workspace menu','d','');
+INSERT INTO tiki_menus (menuId, name, description, type, icon) VALUES (100,'Workspace menu','Sample workspace menu','d','');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (100,'o','Users/Groups','./tiki-workspaces_view_module.php?module=workspaces_user_groups',10,'','','');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (100,'o','Resources','./tiki-workspaces_view_module.php?module=workspaces_resources',52,'','','');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (100,'o','Blogs list','tiki-workspaces_view_module.php?module=workspaces_list_resources&type=blog',60,'','','');
