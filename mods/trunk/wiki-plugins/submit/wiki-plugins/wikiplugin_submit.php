@@ -13,6 +13,23 @@
 function wikiplugin_submit_help() {
 	return tra("Insert social network submission links").":<br />~np~{SUBMIT(image=y|n,text=y|n)}{SUBMIT}~/np~";
 }
+function wikiplugin_submit_info() {
+	return array(
+		'name' => tra('Social network'),
+		'documentation' => 'PluginSubmit',		
+		'description' => tra('Insert social network submission links.'),
+		'params' => array(
+			'image' => array(
+				'required' => 'n',
+				'name' => tra('Show image'),
+				'description' => 'y '.tra('or').' n'),
+			'text' => array(
+				'required' => 'n',
+				'name' => tra('Show text'),
+				'description' => 'y '.tra('or').' n'),
+			),
+		 );
+}
 
 function wikiplugin_submit($data, $params) {
 	extract ($params,EXTR_SKIP);
