@@ -551,7 +551,9 @@ class WorkspaceLib extends TikiDB {
 			$workspace = $this->get_workspace_by_id($_REQUEST["workspaceId"]);
 			if ((isset ($workspace) && $workspace != "")) {
 				$wstype = $wsTypesLib->get_workspace_type_by_id($workspace["type"]);
-				$workspace["type"] = $wstype["wstypeId"];
+# workspace[type] must contain the array, not the name
+#				$workspace["type"] = $wstype["wstypeId"];
+				$workspace["type"] = $wstype;
 			}
 		}
 		elseif (isset ($_REQUEST["workspaceCode"])) {
@@ -561,7 +563,9 @@ class WorkspaceLib extends TikiDB {
 			}
 			if(isset($workspace) && $workspace!=""){
 				$wstype = $wsTypesLib->get_workspace_type_by_id($workspace["type"]);
-				$workspace["type"] = $wstype["wstypeId"];
+# workspace[type] must contain the array, not the name
+#				$workspace["type"] = $wstype["wstypeId"];
+				$workspace["type"] = $wstype;
 			}
 		} else
 			if (isset ($_SESSION["currentWorkspace"]) && $_SESSION["currentWorkspace"] != "") {
