@@ -22,6 +22,12 @@ $workspacesLib = new WorkspaceLib($dbTiki);
 $wsuserlib = new WorkspaceUserLib($dbTiki);
 
 $workspace = $workspacesLib->get_current_workspace();
+if (isset($module_params["workspaceId"])) {
+	$workspace=$workspacesLib->get_workspace_by_id($module_params["workspaceId"]);
+	}
+else 	{
+	$workspace = $workspacesLib->get_current_workspace();
+	}	
 
 if (!isset ($workspace)) {
 	$smarty->assign('error_msg', tra("Workspace not selected"));
@@ -30,10 +36,17 @@ if (!isset ($workspace)) {
 	global $userlib;
 	global $user;
 	//$workspacesData = $workspacesLib->get_workspace_list(0, -1, 'name_desc', null, $workspace["workspaceId"]);
+	if (isset($module_params["workspaceId"])) {
+		$workspace=$workspacesLib->get_workspace_by_id($module_params["workspaceId"]);
+	}
 	$workspacesData = $workspacesLib->get_child_workspaces(0, -1, 'name_desc', $workspace["workspaceId"]);
+
 	if (isset($workspace["type"]["userwstype"]) && $workspace["type"]["userwstype"]!="" && $workspace["type"]["userwstype"]!="0"){
 		$workspace_users = $wsuserlib->get_includegrp_users("WSGRP".$workspace["code"]);
 		if (isset($workspace_users) && count($workspace_users)>0){
+		if ($user && in_array($user,$workspace_users)) {  # pity this doesn't work on pgp5
+				$smarty->assign_by_ref('thiswsuser', $user);
+			}
 			$smarty->assign_by_ref('workspace_users', $workspace_users);
 		}
 	}
