@@ -125,8 +125,12 @@ if (!$exit_module){
 #		or *all* site groups (included 'admins` 'RolePerms' etc)? Dunno. I choose this.
 #	   }else{...
 		$allwsgroups = $userlib->list_can_include_groups($groupName);
-		array_shift ($allwsgroups); # take away Anonymous
-		array_shift ($allwsgroups); # take away Registered
+#		array_shift ($allwsgroups); # take away Anonymous # mmmh, these may not always be at the start
+#		array_shift ($allwsgroups); # take away Registered
+		foreach ($allwsgroups as $k => $name) {
+			if ($name=="Anonymous" || $name=="Registered")
+				unset ($allwsgroups[$k]);
+		}
 		sort($allwsgroups);
 		reset ($allwsgroups);
 		}
