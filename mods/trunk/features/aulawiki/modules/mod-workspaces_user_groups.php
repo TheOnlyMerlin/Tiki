@@ -144,15 +144,24 @@ if (!$exit_module){
 	$wsgroups = $wsUserLib->get_descendant_groups($groupName, TRUE);
 	$tree_nodes = array ();
 	$imgGroup = "<img border=0 src='images/workspaces/edu_group.gif'>";
+	$c1=0; 
 	foreach ($wsgroups as $parentGroup => $childgroups) {
+		$c1++; 
 		foreach ($childgroups as $childGroup) {
-			$onclick = "onclick=\"document.getElementById('activeParentGroup').value='$parentGroup';document.getElementById('activeGroup').value='$childGroup';document['groupSelection'].submit();return false\"";
-			
+			if ($c1==1 || $can_admin_all_workspaces) {
+				$onclick = "onclick=\"document.getElementById('activeParentGroup').value='$parentGroup';document.getElementById('activeGroup').value='$childGroup';document['groupSelection'].submit();return false\"";
+			} else {
+				$onclick = "";
+			}		
 			$cssclass = "categtree";
 			if ($module_params["activeGroup"] == $childGroup) {
 				$cssclass = "categtreeActive";
 			}
-			$tree_nodes[] = array ("id" => $childGroup, "parent" => $parentGroup, "data" => '<a href="#" class="'.$cssclass.'" '.$onclick.'>'.$imgGroup.'&nbsp;'.$childGroup.'</a><br />');
+			if ($c1==1 || $can_admin_all_workspaces) {
+				$tree_nodes[] = array ("id" => $childGroup, "parent" => $parentGroup, "data" => '<a href="#" class="'.$cssclass.'" '.$onclick.'>'.$imgGroup.'&nbsp;'.$childGroup.'</a><br />');
+			} else {
+				$tree_nodes[] = array ("id" => $childGroup, "parent" => $parentGroup, "data" => $imgGroup.'&nbsp;'.$childGroup.'<br />');
+			}
 		}
 	}
 	$onclick = "onclick=\"document.getElementById('activeParentGroup').value='-1';document.getElementById('activeGroup').value='$groupName';document['groupSelection'].submit();return false\"";
