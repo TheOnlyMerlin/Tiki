@@ -26,20 +26,17 @@ $can_admin_groups=false;
 $can_add_users =false;
 $can_admin_all_workspaces =false;
 
+if ($userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")) {
+	$can_add_users =_TIKI_P_CREATE_WORKSPACE_RESOUR_CAN_ADD_USERS_;
+	}
+if ( $tiki_p_admin == 'y' || $tiki_p_admin_workspace =='y' ) {
+	$can_admin_all_workspaces = true;
+    }
 if ( $tiki_p_admin == 'y' 
    || $tiki_p_admin_workspace =='y' 
    || $workspacesLib->user_can_admin_workspace_or_upper($user,$workspace)) {
 	$can_admin_groups = true;
 	$can_add_users =true;
-	}
-else	{			
-	$can_admin_groups = false;
-	}
-if ( $tiki_p_admin == 'y' || $tiki_p_admin_workspace =='y' ) {
-    $can_admin_all_workspaces = true;
-    }
-if ($userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")) {
-	$can_add_users =_TIKI_P_CREATE_WORKSPACE_RESOUR_CAN_ADD_USERS_;
 	}
 
 if (!$can_admin_groups && !$can_add_users) {
@@ -127,12 +124,15 @@ if (!$exit_module){
 		$allwsgroups = $userlib->list_can_include_groups($groupName);
 #		array_shift ($allwsgroups); # take away Anonymous # mmmh, these may not always be at the start
 #		array_shift ($allwsgroups); # take away Registered
+		unset ($tmpallwsgroups);
 		foreach ($allwsgroups as $k => $name) {
-			if ($name=="Anonymous" || $name=="Registered")
-				unset ($allwsgroups[$k]);
+			if ($name!="Anonymous" && $name!="Registered" && $name!=""){
+				$tmpallwsgroups[]=$allwsgroups[$k];  # no empty slots this way, smarty hates them
+			}			
 		}
-		sort($allwsgroups);
-		reset ($allwsgroups);
+		sort($tmpallwsgroups);
+		reset ($tmpallwsgroups);
+		$allwsgroups=$tmpallwsgroups;
 		}
 	else	{
 		if ($topmost_workspace_Iadmin=$workspacesLib->get_topmost_workspace_Iadmin($user,$workspace)){
