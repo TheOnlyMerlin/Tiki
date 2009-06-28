@@ -9,6 +9,7 @@
 
 <form name="groupSelection" method="post" action="{$ownurl}">
 <input name="activeGroup" type="hidden" id="activeGroup" value=""/> 
+<input name="activeGroup2" type="hidden" id="activeGroup2" value=""/> 
 <input name="activeParentGroup" type="hidden" id="activeParentGroup" value=""/> 
 </form>
 {if $edu_user_groups_error!=""}
@@ -111,22 +112,30 @@
   </table>
 </form>
 </div>
+{if $activeGroup}
 <b>Active group: {$activeGroup}</b>
+{else}
+<b>No Active group! Select a Group</b>
+{/if}
 {* if $error_msg==""*}
 <div class="edubuttons">
+{if $activeGroup}
 {if $can_add_users!=""}
 {if $can_admin_groups!=""}
+{if $can_create_groups!=""}
 <a class="edubutton" href="#" onclick="document.getElementById('formCreateGroup').style.display = 'block';">
 <img border='0'src='images/workspaces/edu_group_new.gif'/> New group</a>
+{/if} {* end can_create_groups *}
 <a class="edubutton" href="#" onclick="document.getElementById('formAddGroup').style.display = 'block';">
 <img border='0' src='images/workspaces/edu_group_add.gif'/> Add group</a>
 <a class="edubutton" href="#" onclick="document.getElementById('formRemoveGroup').style.display = 'block';">
 <img border='0' src='images/workspaces/edu_group_remove.gif'/>Remove group</a> 
-{/if}
+{/if} {* end can_admin_groups *}
 
 <a class="edubutton" href="#" onclick="document.getElementById('formCreateUser').style.display = 'block';">
 <img border='0' src='images/workspaces/edu_user_new.gif'/> Add user</a>
-
+{/if} {* end can_add_users *}
+{/if} {* end activeGroup *}
 </div>
 <div class="edubox">
 {$groupsTree}
@@ -147,7 +156,5 @@
 </tr>
 {/foreach} 
 </table>
-{/if}
-{* /if *}
 {/tiki_workspaces_module}
 

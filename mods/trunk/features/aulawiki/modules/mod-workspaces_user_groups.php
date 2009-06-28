@@ -23,6 +23,7 @@ $workspacesLib = new WorkspaceLib($dbTiki);
 $workspace = $workspacesLib->get_current_workspace();
 $exit_module = false;
 $can_admin_groups=false;
+$can_create_groups=false;
 $can_add_users =false;
 $can_admin_all_workspaces =false;
 
@@ -31,6 +32,9 @@ if ($userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace
 	}
 if ( $tiki_p_admin == 'y' || $tiki_p_admin_workspace =='y' ) {
 	$can_admin_all_workspaces = true;
+	$can_admin_groups = true;
+	$can_add_users =true;
+	$can_create_groups = true;
     }
 if ( $tiki_p_admin == 'y' 
    || $tiki_p_admin_workspace =='y' 
@@ -45,7 +49,7 @@ if (!$can_admin_groups && !$can_add_users) {
 }
 	
 if (isset ($workspace)) {
-	$groupName = "WSGRP".$workspace["code"];
+	$groupName = $topgroupName = "WSGRP".$workspace["code"];
 } else {
 	$smarty->assign('error_msg', tra("Workspace not selected"));
 	$exit_module = true;
@@ -108,9 +112,15 @@ if (!$exit_module){
 		$result = $userlib->remove_user_from_group($module_params["removeUserName"], $module_params["removeUserGroupActiveName"]);
 	}
 
+	# If he can only admin this ws, but is not an admin, he can create new groups only under the top group
+	if ( $workspacesLib->user_can_admin_workspace_or_upper($user,$workspace)
+		&& $topgroupName==$module_params["activeGroup"]) {
+		$can_create_groups = true;
+	}
 	$smarty->assign('can_admin_all_workspaces', $can_admin_all_workspaces);	
 	$smarty->assign('can_admin_groups', $can_admin_groups);	
 	$smarty->assign('can_add_users', $can_add_users);	
+	$smarty->assign('can_create_groups', $can_create_groups);	
 	if ($can_admin_all_workspaces) {
 #		should global 'tiki_p_admin_workspace' be able of adding *any* site group
 #		   and objectperm 'tiki_p_admin_workspace' only 'workspaces groups' ?
@@ -148,11 +158,14 @@ if (!$exit_module){
 	foreach ($wsgroups as $parentGroup => $childgroups) {
 		$c1++; 
 		foreach ($childgroups as $childGroup) {
+			# only admin can add groups to subtop groups
 			if ($c1==1 || $can_admin_all_workspaces) {
 				$onclick = "onclick=\"document.getElementById('activeParentGroup').value='$parentGroup';document.getElementById('activeGroup').value='$childGroup';document['groupSelection'].submit();return false\"";
+			# others will get a list of selected group users by clicking on faces icon,
+			#  but this group will not become an addable group
 			} else {
-				$onclick = "";
-			}		
+				$onclick = "onclick=\"document.getElementById('activeParentGroup').value='$parentGroup';document.getElementById('activeGroup2').value='$childGroup';document['groupSelection'].submit();return false\"";
+ 			}		
 			$cssclass = "categtree";
 			if ($module_params["activeGroup"] == $childGroup) {
 				$cssclass = "categtreeActive";
@@ -160,7 +173,7 @@ if (!$exit_module){
 			if ($c1==1 || $can_admin_all_workspaces) {
 				$tree_nodes[] = array ("id" => $childGroup, "parent" => $parentGroup, "data" => '<a href="#" class="'.$cssclass.'" '.$onclick.'>'.$imgGroup.'&nbsp;'.$childGroup.'</a><br />');
 			} else {
-				$tree_nodes[] = array ("id" => $childGroup, "parent" => $parentGroup, "data" => $imgGroup.'&nbsp;'.$childGroup.'<br />');
+				$tree_nodes[] = array ("id" => $childGroup, "parent" => $parentGroup, "data" => $childGroup.'<a href="#" class="'.$cssclass.'" '.$onclick.'>&nbsp;'.$imgGroup.'?</a>&nbsp;<br />');
 			}
 		}
 	}
@@ -177,7 +190,11 @@ if (!$exit_module){
 	$smarty->assign('groupsTree', $res);
 	
 	//Get users in selected group
-	$groupusers = $wsUserLib->get_group_usersdata($module_params["activeGroup"]);
+	if ($module_params["activeGroup2"])
+		$get_userdata_from=$module_params["activeGroup2"];
+	else
+		$get_userdata_from=$module_params["activeGroup"];
+	$groupusers = $wsUserLib->get_group_usersdata($get_userdata_from);
 	
 	$smarty->assign('workspaceGroupName', $groupName);
 	$smarty->assign('groupusers', $groupusers);
