@@ -36,20 +36,14 @@
 {/if}
 {/if} {*hide_page_header*}
 
-<div class="wikitopline" style="clear: both;">
-	<div class="content">
-		<div class="wikiinfo" style="float: left">
-{if $prefs.feature_wiki_pageid eq 'y' and $print_page ne 'y'}
-			<small><a class="link" href="tiki-index.php?page_id={$page_id}">{tr}page id{/tr}: {$page_id}</a></small>
+{if !$prefs.wiki_topline_position or $prefs.wiki_topline_position eq 'top' or $prefs.wiki_topline_position eq 'both'}
+{include  file=tiki-wiki_topline.tpl}
 {/if}
-{breadcrumbs type="desc" loc="page" crumbs=$crumbs}
-{if $cached_page eq 'y'}<small>({tr}Cached{/tr})</small>{/if}
-{if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categorypath eq 'y'}
-	{$display_catpath}
+{if $print_page ne 'y'}
+{if $prefs.page_bar_position eq 'top'}
+{include  file=tiki-page_bar.tpl}
 {/if}
-		</div>
-</div>
-</div>
+{/if}
 
 {if isset($saved_msg) && $saved_msg neq ''}
 {remarksbox type="note" title="{tr}Note{/tr}"}{$saved_msg}{/remarksbox}
@@ -65,28 +59,33 @@
         {/if}			
     {/if}
 </div>
-{*
-{section name=i loop=$translation_alert}
-<div class="cbox">
-<div class="cbox-title">
-{tr}{icon _id=information.png style="vertical-align:middle"} Content may be out of date{/tr}
-</div>
-<div class="cbox-data">
-	<p>{tr}An urgent request for translation has been sent. Until this page is updated, you can see a corrected version in the following pages:{/tr}</p>
-	<ul>
-	{section name=j loop=$translation_alert[i]}
-		<li>
-			<a href="tiki-index.php?page={if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage|escape:'url'}{else}{$translation_alert[i][j].page|escape:'url'}{/if}&bl=n">{if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage}{else}{$translation_alert[i][j].page}{/if}</a>
-			({$translation_alert[i][j].lang})
-			{if $editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') and $beingEdited ne 'y' or $canEditStaging eq 'y'} 
-			<a href="tiki-editpage.php?page={if isset($stagingPageName) && $hasStaging == 'y'}{$stagingPageName|escape:'url'}{else}{$page|escape:'url'}{/if}&amp;source_page={$translation_alert[i][j].page|escape:'url'}&amp;oldver={$translation_alert[i][j].last_update|escape:'url'}&amp;newver={$translation_alert[i][j].current_version|escape:'url'}&amp;diff_style=htmldiff" title="{tr}update from it{/tr}">{icon _id=arrow_refresh.png alt="{tr}update from it{/tr}" style="vertical-align:middle"}</a>
-			{/if}
-		</li>
+{* This translation alert code moved to toolbox; to return it to the normal location, move the brace and asterisk from line 86 to the end of this comment. 
+{if $prefs.feature_urgent_translation eq 'y'}
+	{section name=i loop=$translation_alert}
+	<div class="cbox">
+	<div class="cbox-title">
+	{icon _id=information style="vertical-align:middle"} {tr}Content may be out of date{/tr}
+	</div>
+	<div class="cbox-data">
+		<p>{tr}An urgent request for translation has been sent. Until this page is updated, you can see a corrected version in the following pages:{/tr}</p>
+		<ul>
+		{section name=j loop=$translation_alert[i]}
+			<li>
+				<a href="{if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage|sefurl:wiki:with_next}{else}{$translation_alert[i][j].page|sefurl:wiki:with_next}{/if}bl=n">{if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage}{else}{$translation_alert[i][j].page}{/if}</a>
+				({$translation_alert[i][j].lang})
+				{if $editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') and $beingEdited ne 'y' or $canEditStaging eq 'y'} 
+				<a href="tiki-editpage.php?page={if isset($stagingPageName) && $hasStaging == 'y'}{$stagingPageName|escape:'url'}{else}{$page|escape:'url'}{/if}&amp;source_page={$translation_alert[i][j].page|escape:'url'}&amp;oldver={$translation_alert[i][j].last_update|escape:'url'}&amp;newver={$translation_alert[i][j].current_version|escape:'url'}&amp;diff_style=htmldiff" title="{tr}update from it{/tr}">{icon _id=arrow_refresh alt="{tr}update from it{/tr}" style="vertical-align:middle"}</a>
+				{/if}
+			</li>
+		{/section}
+		</ul>
+	</div>
+	</div>
 	{/section}
-	</ul>
-</div>
-</div>
-{/section}*}
+{/if}
+*}
+
+<div class="wikitext">
 
 {if !$hide_page_header}
 {if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y' and isset($freetags.data[0]) and $prefs.freetags_show_middle eq 'y'}
@@ -107,8 +106,6 @@
 		<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$last_page}">{icon _id='resultset_last' alt="{tr}Last page{/tr}"}</a>
 	</div>
 {/if}
-
-<div class="wikitext">
 
 {**
  * Page Title as h1 here when the feature is on
@@ -197,12 +194,13 @@ must not overlap the wiki content that could contain floated elements *}
 	</div>
 {/if}
 </div> {* End of main wiki page *}
+<!-- 1234 -->
 
 {if $has_footnote eq 'y'}<div class="wikitext" id="wikifootnote">{$footnote}</div>{/if}
 {if $wiki_authors_style neq 'none' || $prefs.wiki_feature_copyrights eq 'y'|| $print_page eq 'y'}
   <p class="editdate"> {* begining editdate *}
 {/if}
-{* author info moved from here to tiki-bot_bar.tpl *}
+{* Author info moved from here to tiki-bot_bar.tpl *}
 {if $prefs.wiki_feature_copyrights eq 'y' and $prefs.wikiLicensePage}
   {if $prefs.wikiLicensePage == $page}
     {if $tiki_p_edit_copyrights eq 'y'}

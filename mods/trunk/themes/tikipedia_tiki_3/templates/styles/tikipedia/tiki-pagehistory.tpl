@@ -1,6 +1,7 @@
 {* $Id$ *}
+{* Next line moved from bottom of file to top. *}
 {include file=tiki-page_bar.tpl}
-{title}{tr}History{/tr}: {$page}{/title}
+{title admpage="wiki"}{tr}History{/tr}: {$page}{/title}
 
 <div class="navbar">
 	{assign var=thispage value=$page|escape:url}
@@ -26,14 +27,14 @@
 {if $info.version ne $source and $tiki_p_rollback eq 'y'}
 <div class="navbar"><a href="tiki-rollback.php?page={$page|escape:"url"}&amp;version={$source}" title="{tr}Rollback{/tr}">{tr}Rollback to this version{/tr}</a></div>
 {/if}
-<div  class="wikitext">{$sourced}</div>
+<div class="wikitext">{$sourced}</div>
 {/if}
 
 {include file=pagehistory.tpl}
 
 <br />
 
-{if (!isset($noHistory))}                                              
+{if (!isset($noHistory))}
 {if $preview || $source || $diff_style}<h2>{tr}History{/tr}</h2>{/if}
 <form action="tiki-pagehistory.php" method="get">
 <input type="hidden" name="page" value="{$page|escape}" />

@@ -50,58 +50,73 @@ Name: toolbox (this does display, so "toolbox" is used to be consistent with the
 Name: tikipedia_toolbox (or whatever makes you like; doesn't really matter)
 Title : Toolbox (capitalized to be consistent with other modules, but tikipedia.css transforms to lowercase)
 
-Data: (this goes in the data text area at the bottom of the Admin Modules page, User Modules tab) 
+Data: (this goes in the data text area at the bottom of the Admin Modules page, User Modules tab - There are two ways to input this data. The first is to simple input 
+
+{include file='toolbox_content.tpl'}
+
+The second is to input the following data directly (starting below the start-module-data line):
 
 *** start module data ***
 
+{* data for Toolbox module *} 
 {if $page}
 		<div>{*  icons *}
 	{if $pdf_export eq 'y'}
-	<a href="tiki-print.php?{query display="pdf"}" title="{tr}PDF{/tr}">{icon _id='page_white_acrobat' alt="{tr}PDF{/tr}"}</a>
+				<a href="tiki-print.php?{query display="pdf"}" title="{tr}PDF{/tr}">{icon _id='page_white_acrobat' alt="{tr}PDF{/tr}"}</a>
 	{/if}
 	{if $editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') and $beingEdited ne 'y' or $canEditStaging eq 'y'}
-	<a title="{tr}Edit{/tr}" {ajax_href template="tiki-editpage.tpl" htmlelement="tiki-center"}tiki-editpage.php?page={if $needsStaging eq 'y'}{$stagingPageName|escape:"url"}{else}{$page|escape:"url"}{/if}{if !empty($page_ref_id) and $needsStaging neq 'y'}&amp;page_ref_id={$page_ref_id}{/if}{/ajax_href}>{icon _id='page_edit'}</a>
+				<a title="{tr}Edit{/tr}" {ajax_href template="tiki-editpage.tpl" htmlelement="tiki-center"}tiki-editpage.php?page={if $needsStaging eq 'y'}{$stagingPageName|escape:"url"}{else}{$page|escape:"url"}{/if}{if !empty($page_ref_id) and $needsStaging neq 'y'}&amp;page_ref_id={$page_ref_id}{/if}{/ajax_href}>{icon _id='page_edit'}</a>
 	{/if}
 	{if $prefs.feature_morcego eq 'y' && $prefs.wiki_feature_3d eq 'y'}
-	<a title="{tr}3d browser{/tr}" href="javascript:wiki3d_open('{$page|escape}',{$prefs.wiki_3d_width}, {$prefs.wiki_3d_height})">{icon _id='wiki3d' alt="{tr}3d browser{/tr}"}</a>
+				<a title="{tr}3d browser{/tr}" href="javascript:wiki3d_open('{$page|escape}',{$prefs.wiki_3d_width}, {$prefs.wiki_3d_height})">{icon _id='wiki3d' alt="{tr}3d browser{/tr}"}</a>
 	{/if}
 	{if $cached_page eq 'y'}
-	<a title="{tr}Refresh{/tr}" href="tiki-index.php?page={$page|escape:"url"}&amp;refresh=1">{icon _id='arrow_refresh'}</a>
+				<a title="{tr}Refresh{/tr}" href="tiki-index.php?page={$page|escape:"url"}&amp;refresh=1">{icon _id='arrow_refresh'}</a>
 	{/if}
 	{if $prefs.feature_wiki_print eq 'y'}
-	<a title="{tr}Print{/tr}" href="tiki-print.php?{if !empty($page_ref_id)}page_ref_id={$page_ref_id}&amp;{/if}page={$page|escape:"url"}">{icon _id='printer' alt="{tr}Print{/tr}"}</a>
+				<a title="{tr}Print{/tr}" href="tiki-print.php?{if !empty($page_ref_id)}page_ref_id={$page_ref_id}&amp;{/if}page={$page|escape:"url"}">{icon _id='printer' alt="{tr}Print{/tr}"}</a>
 	{/if}
+
 	{if $prefs.feature_tell_a_friend eq 'y' && $tiki_p_tell_a_friend eq 'y'}
-	<a title="{tr}Send a link{/tr}" href="tiki-tell_a_friend.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{icon _id='email_link' alt="{tr}Send a link{/tr}"}</a>
+				<a title="{tr}Send a link{/tr}" href="tiki-tell_a_friend.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{icon _id='email_link' alt="{tr}Send a link{/tr}"}</a>
 	{/if}
 	{if $user and $prefs.feature_notepad eq 'y' and $tiki_p_notepad eq 'y'}
-	<a title="{tr}Save to notepad{/tr}" href="tiki-index.php?page={$page|escape:"url"}&amp;savenotepad=1{if !empty($page_ref_id)}&amp;page_ref_id={$page_ref_id}{/if}">{icon _id='disk' alt="{tr}Save to notepad{/tr}"}</a>
+				<a title="{tr}Save to notepad{/tr}" href="tiki-index.php?page={$page|escape:"url"}&amp;savenotepad=1{if !empty($page_ref_id)}&amp;page_ref_id={$page_ref_id}{/if}">{icon _id='disk' alt="{tr}Save to notepad{/tr}"}</a>
 	{/if}
 	{if $user and $prefs.feature_user_watches eq 'y'}
 		{if $user_watching_page eq 'n'}
-		<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;watch_object={$page|escape:"url"}&amp;watch_action=add{if $structure eq 'y'}&amp;structure={$home_info.pageName|escape:'url'}{/if}">{icon _id='eye' alt='{tr}Monitor this Page{/tr}'}</a>
+				<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;watch_object={$page|escape:"url"}&amp;watch_action=add{if $structure eq 'y'}&amp;structure={$home_info.pageName|escape:'url'}{/if}" class="icon">{icon _id='eye' alt='{tr}Monitor this Page{/tr}'}</a>
 		{else}
-		<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;watch_object={$page|escape:"url"}&amp;watch_action=remove{if $structure eq 'y'}&amp;structure={$home_info.pageName|escape:'url'}{/if}">{icon _id='no_eye' alt='{tr}Stop Monitoring this Page{/tr}'}</a>
+				<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;watch_object={$page|escape:"url"}&amp;watch_action=remove{if $structure eq 'y'}&amp;structure={$home_info.pageName|escape:'url'}{/if}" class="icon">{icon _id='no_eye' alt='{tr}Stop Monitoring this Page{/tr}'}</a>
 		{/if}
-	{if $structure == 'y' and $tiki_p_watch_structure eq 'y'}
-		{if $user_watching_structure ne 'y'}
-		<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=structure_changed&amp;watch_object={$page_info.page_ref_id}&amp;watch_action=add_desc&amp;structure={$home_info.pageName|escape:'url'}">{icon _id='eye_arrow_down' alt='{tr}Monitor the Sub-Structure{/tr}'}</a>
-		{else}
-		<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=structure_changed&amp;watch_object={$page_info.page_ref_id}&amp;watch_action=remove_desc&amp;structure={$home_info.pageName|escape:'url'}">{icon _id='no_eye_arrow_down' alt='{tr}Stop Monitoring the Sub-Structure{/tr}'}</a>
-		{/if}
+		{if $structure == 'y' and $tiki_p_watch_structure eq 'y'}
+			{if $user_watching_structure ne 'y'}
+				<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=structure_changed&amp;watch_object={$page_info.page_ref_id}&amp;watch_action=add_desc&amp;structure={$home_info.pageName|escape:'url'}">{icon _id='eye_arrow_down' alt='{tr}Monitor the Sub-Structure{/tr}'}</a>
+			{else}
+				<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=structure_changed&amp;watch_object={$page_info.page_ref_id}&amp;watch_action=remove_desc&amp;structure={$home_info.pageName|escape:'url'}">{icon _id='no_eye_arrow_down' alt='{tr}Stop Monitoring the Sub-Structure{/tr}'}</a>
+			{/if}
 		{/if}
 	{/if}
-		</div><!-- END of icons -->
-	{if $prefs.feature_backlinks eq 'y' and $backlinks}
-	<form action="tiki-index.php" method="get" style="display: block; float: left">
-	<select name="page" onchange="page.form.submit()">
-	<option>{tr}Backlinks{/tr}...</option>
-	{section name=back loop=$backlinks}
-		<option value="{$backlinks[back].fromPage}">{$backlinks[back].fromPage}</option>
-	{/section}
-	</select>
-	</form>
+	{if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
+		<a href="tiki-object_watches.php?objectId={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;objectType=wiki+page&amp;objectName={$page|escape:"url"}&amp;objectHref={'tiki-index.php?page='|cat:$page|escape:"url"}" class="icon">{icon _id='eye_group' alt='{tr}Group Monitor{/tr}'}</a>
+
+		{if $structure == 'y'}
+			<a href="tiki-object_watches.php?objectId={$page_info.page_ref_id|escape:"url"}&amp;watch_event=structure_changed&amp;objectType=structure&amp;objectName={$page|escape:"url"}&amp;objectHref={'tiki-index.php?page_ref_id='|cat:$page_ref_id|escape:"url"}" class="icon">{icon _id=eye_group_arrow_down alt='{tr}Group Monitor on Structure{/tr}'}</a>
+		{/if}
 	{/if}
+			</div><!-- END of icons -->
+
+	{if $prefs.feature_backlinks eq 'y' and $backlinks and $tiki_p_view_backlink eq 'y'}
+			<form action="tiki-index.php" method="get" style="display: block; float: left">
+				<select name="page" onchange="page.form.submit()">
+					<option>{tr}Backlinks{/tr}...</option>
+		{section name=back loop=$backlinks}
+					<option value="{$backlinks[back].fromPage}">{$backlinks[back].fromPage}</option>
+		{/section}
+				</select>
+			</form>
+	{/if}
+
 	{if $structure == 'y' and count($showstructs) > 1 or $structure eq 'n' and count($showstructs) ne 0 }
 			<form action="tiki-index.php" method="post" style="float: left">
 				<select name="page_ref_id" onchange="page_ref_id.form.submit()">
@@ -119,7 +134,7 @@ Data: (this goes in the data text area at the bottom of the Admin Modules page, 
 			</form>
 	{/if}
 
-	{if $prefs.feature_multilingual == 'y'}
+	{if $prefs.feature_multilingual == 'y' && $prefs.show_available_translations eq 'y'}
 		<div>
 		{include file="translated-lang.tpl" td='n'}
 		</div>
@@ -152,6 +167,8 @@ Anonymous, Registered
 * templates/styles/tikipedia/tiki-show_page.tpl
 * templates/styles/tikipedia/tiki-site_header.tpl
 * templates/styles/tikipedia/tiki-top_bar.tpl
+* templates/styles/tikipedia/tiki-wiki_topline.tpl
+* templates/styles/tikipedia/toolbox_content.tpl
 
 -=Stylesheet and background images=-
 * styles/tikipedia.css
@@ -174,6 +191,7 @@ http://zukakakina.com/Tikipedia
 3.0
  
 -=Changelog=-
+4 updated for better synchronization with Tiki 3.0/3.1 files, and CSS improvements.
 3 updated for Tiki 3, imports layout/layout.css and uses fewer custom files
 2 Update for TikiWiki 2.0. Switch to *litecss layout.
 1 initial package (May 2, 2006)

@@ -1,4 +1,5 @@
 {* $Id$ *}
+{* Next line moved from bottom of file to top *}
 {include file=tiki-page_bar.tpl}
 <h2>{tr}Pages like{/tr}:
 

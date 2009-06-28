@@ -21,18 +21,17 @@ themes/tikipedia_tiki_3/styles/tikipedia/logo-indexed.gif styles/tikipedia/logo-
 themes/tikipedia_tiki_3/styles/tikipedia/user.gif styles/tikipedia/user.gif
 themes/tikipedia_tiki_3/templates/styles/tikipedia/credits.tpl templates/styles/tikipedia/credits.tpl
 themes/tikipedia_tiki_3/templates/styles/tikipedia/index.php templates/styles/tikipedia/index.php
-themes/tikipedia_tiki_3/templates/styles/tikipedia/mod-toolbox.tpl templates/styles/tikipedia/mod-toolbox.tpl
 themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki.tpl templates/styles/tikipedia/tiki.tpl
 themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-bot_bar.tpl templates/styles/tikipedia/tiki-bot_bar.tpl
 themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-likepages.tpl templates/styles/tikipedia/tiki-likepages.tpl
 themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-pagehistory.tpl templates/styles/tikipedia/tiki-pagehistory.tpl
-themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-read_article.tpl templates/styles/tikipedia/tiki-read_article.tpl
 themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-rename_page.tpl templates/styles/tikipedia/tiki-rename_page.tpl
 themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-rollback.tpl templates/styles/tikipedia/tiki-rollback.tpl
 themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-show_page.tpl templates/styles/tikipedia/tiki-show_page.tpl
 themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-site_header.tpl templates/styles/tikipedia/tiki-site_header.tpl
-themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-stats.tpl templates/styles/tikipedia/tiki-stats.tpl
 themes/tikipedia/templates/styles/tikipedia/tiki-top_bar.tpl templates/styles/tikipedia/tiki-top_bar.tpl
+themes/tikipedia_tiki_3/templates/styles/tikipedia/tiki-wiki_topline.tpl templates/styles/tikipedia/tiki-wiki_topline.tpl
+themes/tikipedia_tiki_3/templates/styles/tikipedia/toolbox_content.tpl templates/styles/tikipedia/toolbox_content.tpl
 
 Description: 
 This is an original theme for TikiWiki CMS/Groupware (http://tikiwiki.org) to replicate the visual appearance of the GPL Monobook theme for Mediawiki. This theme uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss).
@@ -51,4 +50,5 @@ Version:
 3
 
 Changelog:
+2 updated for better synchronization with Tiki 3.0/3.1 files, and CSS improvements.
 1 initial commit for Tiki 3
