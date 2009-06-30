@@ -112,14 +112,9 @@
   </table>
 </form>
 </div>
-{if $activeGroup}
 <b>Active group: {$activeGroup}</b>
-{else}
-<b>No Active group! Select a Group</b>
-{/if}
 {* if $error_msg==""*}
 <div class="edubuttons">
-{if $activeGroup}
 {if $can_create_groups!=""}
 <a class="edubutton" href="#" onclick="document.getElementById('formCreateGroup').style.display = 'block';">
 <img border='0'src='images/workspaces/edu_group_new.gif'/> New group</a>
@@ -127,14 +122,15 @@
 {if $can_add_groups!=""}
 <a class="edubutton" href="#" onclick="document.getElementById('formAddGroup').style.display = 'block';">
 <img border='0' src='images/workspaces/edu_group_add.gif'/> Add existing group</a>
+{/if} {* end can_add_groups *}
+{if $can_remove_groups!=""}
 <a class="edubutton" href="#" onclick="document.getElementById('formRemoveGroup').style.display = 'block';">
 <img border='0' src='images/workspaces/edu_group_remove.gif'/>Remove this group</a> 
-{/if} {* end can_add_groups *}
+{/if} {* end can_remove_groups *}
 {if $can_add_users!=""}
 <a class="edubutton" href="#" onclick="document.getElementById('formCreateUser').style.display = 'block';">
 <img border='0' src='images/workspaces/edu_user_new.gif'/> Add user</a>
 {/if} {* end can_add_users *}
-{/if} {* end activeGroup *}
 </div>
 <div class="edubox">
 {$groupsTree}

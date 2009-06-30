@@ -23,6 +23,7 @@ $workspacesLib = new WorkspaceLib($dbTiki);
 $workspace = $workspacesLib->get_current_workspace();
 $exit_module = false;
 $can_add_groups=false;
+$can_remove_groups=false;
 $can_create_groups=false;
 $can_add_users =false;
 $can_admin_all_workspaces =false;
@@ -40,19 +41,17 @@ if (isset ($workspace)) {
 if ( $tiki_p_admin == 'y' || $tiki_p_admin_workspace =='y' ) {
 	$can_admin_all_workspaces = true;
 	$can_add_groups = true;
+	$can_remove_groups = true;
 	$can_add_users =true;
 	$can_create_groups = true;
     }
-# a non-admin can: create groups only under level0 grp, add groups only to level1 grps
+
 if ( $workspacesLib->user_can_admin_workspace_or_upper($user,$workspace)) {
-	if ($topgroupName==$module_params["activeGroup"] ) {
- 		$can_create_groups = true;
-	}
-	if ($topgroupName!=$module_params["activeGroup"] ) {
-		$can_add_groups=true;
-	} else {
-		$can_add_groups=false;
-	}
+	$can_create_groups = true;
+	$can_add_groups=true;
+	$can_remove_groups = true;
+	$can_add_groups=true;
+	$can_remove_groups = true;
 	$can_add_users =true;
 }
 if (!$can_add_users) {
@@ -64,10 +63,6 @@ if ($exit_module){
 	$smarty->assign('activeGroup', $groupName);
 }
 
-$smarty->assign('can_admin_all_workspaces', $can_admin_all_workspaces);	
-$smarty->assign('can_add_groups', $can_add_groups);	
-$smarty->assign('can_add_users', $can_add_users);	
-$smarty->assign('can_create_groups', $can_create_groups);	
 if (!$exit_module){
 	if(!isset($module_params["activeGroup"])){
 		$module_params["activeGroup"] = $groupName;
@@ -156,47 +151,76 @@ if (!$exit_module){
 	$wsgroups = $wsUserLib->get_descendant_groups($groupName, TRUE);
 	$tree_nodes = array ();
 	$imgGroup = "<img border=0 src='images/workspaces/edu_group.gif'>";
-	$c1=0; 
+	$nav_right = "<img border=0 src='images/workspaces/edu_nav_right.gif'>";
+	$nav_right.=$nav_right;
+	$nav_left = "<img border=0 src='images/workspaces/edu_nav_left.gif'>";
+	$nav_left.=$nav_left;
+	$level=0; 
 	foreach ($wsgroups as $parentGroup => $childgroups) {
-		$c1++; 
+		$level++; 
 		foreach ($childgroups as $childGroup) {
+			$childGrouplink=$childGroup;
 			# only admin can add groups to subtop groups
-			if ($c1==1 || $can_admin_all_workspaces) {
-				$onclick = "onclick=\"document.getElementById('activeParentGroup').value='$parentGroup';document.getElementById('activeGroup').value='$childGroup';document['groupSelection'].submit();return false\"";
 			# others will get a list of selected group users by clicking on faces icon,
-			#  but this group will not become an addable group
-			} else {
-				$onclick = "onclick=\"document.getElementById('activeParentGroup').value='$parentGroup';document.getElementById('activeGroup2').value='$childGroup';document['groupSelection'].submit();return false\"";
- 			}		
+			$onclick = "onclick=\"document.getElementById('activeParentGroup').value='$parentGroup';document.getElementById('activeGroup').value='$childGroup';document['groupSelection'].submit();return false\"";
 			$cssclass = "categtree";
 			if ($module_params["activeGroup"] == $childGroup) {
+				$activelevel=$level;
 				$cssclass = "categtreeActive";
+				if ($module_params["activeParentGroup"] == $parentGroup) {
+					$childGrouplink=$nav_left."&nbsp;<b>".$childGroup."</b>&nbsp;".$nav_right;
+				}
 			}
-			if ($c1==1 || $can_admin_all_workspaces) {
-				$tree_nodes[] = array ("id" => $childGroup, "parent" => $parentGroup, "data" => '<a href="#" class="'.$cssclass.'" '.$onclick.'>'.$imgGroup.'&nbsp;'.$childGroup.'</a><br />');
-			} else {
-				$tree_nodes[] = array ("id" => $childGroup, "parent" => $parentGroup, "data" => $childGroup.'<a href="#" class="'.$cssclass.'" '.$onclick.'>&nbsp;'.$imgGroup.'?</a>&nbsp;<br />');
-			}
+			$tree_nodes[] = array ("id" => $childGroup, "parent" => $parentGroup, "data" => '<a href="#" class="'.$cssclass.'" '.$onclick.'>'.$imgGroup.'&nbsp;'.$childGrouplink.'</a><br />');
 		}
 	}
+	# non admin can create/remove groups under level0 , add/remove groups below top and level 1
+	# addusers not below level 1
+	if (!$can_admin_all_workspaces) {
+		if ($activelevel == 0) {
+			$can_create_groups=true;
+			$can_add_groups=true;
+			$can_remove_groups=false;
+			$can_add_users=true;
+			} 
+		if ($activelevel == 1) {
+			$can_create_groups=false;
+			$can_add_groups=true;
+			$can_remove_groups=true;
+			$can_add_users=true;
+			} 
+		if ($activelevel > 1) {
+			$can_create_groups=false;
+			$can_add_groups=false;
+			$can_remove_groups=true;
+			$can_add_users=false;
+			} 
+	}
+
 	$onclick = "onclick=\"document.getElementById('activeParentGroup').value='-1';document.getElementById('activeGroup').value='$groupName';document['groupSelection'].submit();return false\"";
 	
 	$cssclass = "categtree";
 	if ($module_params["activeGroup"] == $groupName) {
 		$cssclass = "categtreeActive";
 	}
-	$tree_nodes[] = array ("id" => $groupName, "parent" => "99999999", "data" => '<a class="'.$cssclass.'" href="#" '.$onclick.'>'.$imgGroup.'&nbsp;'.$groupName.'</a><br />');
+	if ($topgroupName==$module_params["activeGroup"] ) 
+		$groupNamelink=$nav_left."&nbsp;<b>".$groupName."</b>&nbsp;".$nav_right;
+	else
+		$groupNamelink=$groupName;
+	
+	$tree_nodes[] = array ("id" => $groupName, "parent" => "99999999", "data" => '<a class="'.$cssclass.'" href="#" '.$onclick.'>'.$imgGroup.'&nbsp;'.$groupNamelink.'</a><br />');
 	include_once ('lib/tree/categ_browse_tree.php');
 	$tm = new CatBrowseTreeMaker("categ");
 	$res = $tm->make_tree("99999999", $tree_nodes);
 	$smarty->assign('groupsTree', $res);
 	
-	//Get users in selected group
-	if ($module_params["activeGroup2"])
-		$get_userdata_from=$module_params["activeGroup2"];
-	else
-		$get_userdata_from=$module_params["activeGroup"];
-	$groupusers = $wsUserLib->get_group_usersdata($get_userdata_from);
+	$groupusers = $wsUserLib->get_group_usersdata($module_params["activeGroup"]);
+
+	$smarty->assign('can_admin_all_workspaces', $can_admin_all_workspaces);	
+	$smarty->assign('can_add_groups', $can_add_groups);	
+	$smarty->assign('can_remove_groups', $can_remove_groups);	
+	$smarty->assign('can_add_users', $can_add_users);	
+	$smarty->assign('can_create_groups', $can_create_groups);	
 	
 	$smarty->assign('workspaceGroupName', $groupName);
 	$smarty->assign('groupusers', $groupusers);
