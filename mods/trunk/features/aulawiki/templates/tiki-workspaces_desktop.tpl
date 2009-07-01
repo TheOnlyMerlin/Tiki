@@ -22,7 +22,12 @@
 <br/><br/>
 <b>{tr}Workspace path:{/tr}</b>
 {section name=i loop=$path}
-<a href="./tiki-workspaces_desktop.php?workspaceId={$path[i].workspaceId}">{$path[i].code}</a>/{/section}
+{if $path[i].workspaceId!=0}
+<a href="./tiki-workspaces_desktop.php?workspaceId={$path[i].workspaceId}">{$path[i].code}</a>/
+{else}
+{$path[i].code}/
+{/if}
+{/section}
 <br/>
 </div>
 {foreach key=keygroups item=modules from=$modulegroups}
