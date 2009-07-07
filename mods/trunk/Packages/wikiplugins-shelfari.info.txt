@@ -8,7 +8,7 @@ lastmodif:
 $Date: 2008-01-28 13:20:09 $
 
 files: 
-wiki-plugins/wikiplugin_shelfari.php 
+wiki-plugins/shelfari/wiki-plugins/wikiplugin_shelfari.php lib/wiki-plugins/wikiplugin_shelfari.php
 
 author:
 ricks99
