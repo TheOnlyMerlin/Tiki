@@ -31,6 +31,7 @@ $can_admin_all_workspaces =false;
 if ($userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")
 	&& !$userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_admin_workspace")) {
 	$can_add_users =_TIKI_P_CREATE_WORKSPACE_RESOUR_CAN_ADD_USERS_;
+	$can_create_resources = true;
 	}
 if (isset ($workspace)) {
 	$groupName = $topgroupName = "WSGRP".$workspace["code"];
@@ -47,9 +48,8 @@ if ( $tiki_p_admin == 'y' || $tiki_p_admin_workspace =='y' ) {
     }
 
 if ( $workspacesLib->user_can_admin_workspace_or_upper($user,$workspace)) {
+	$can_admin_this_workspace=true;
 	$can_create_groups = true;
-	$can_add_groups=true;
-	$can_remove_groups = true;
 	$can_add_groups=true;
 	$can_remove_groups = true;
 	$can_add_users =true;
@@ -174,9 +174,9 @@ if (!$exit_module){
 			$tree_nodes[] = array ("id" => $childGroup, "parent" => $parentGroup, "data" => '<a href="#" class="'.$cssclass.'" '.$onclick.'>'.$imgGroup.'&nbsp;'.$childGrouplink.'</a><br />');
 		}
 	}
-	# non admin can create/remove groups under level0 , add/remove groups below top and level 1
+	# local ws-admin can create/remove groups under level0 , add/remove groups below top and level 1
 	# addusers not below level 1
-	if (!$can_admin_all_workspaces) {
+	if (!$can_admin_all_workspaces && $can_admin_this_workspace) {
 		if ($activelevel == 0) {
 			$can_create_groups=true;
 			$can_add_groups=true;
@@ -196,7 +196,14 @@ if (!$exit_module){
 			$can_add_users=false;
 			} 
 	}
-
+	# local resources-managers (tiki_p_create_ws_resour) can add users only, not below level 1
+	if ($can_create_resources) {
+		if ($activelevel > 1) {
+			$can_add_users=false;
+			} 
+	}
+		
+	
 	$onclick = "onclick=\"document.getElementById('activeParentGroup').value='-1';document.getElementById('activeGroup').value='$groupName';document['groupSelection'].submit();return false\"";
 	
 	$cssclass = "categtree";

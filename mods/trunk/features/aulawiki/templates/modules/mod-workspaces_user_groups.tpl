@@ -146,10 +146,11 @@
 <td class="odd"><a href="./tiki-user_information.php?view_user={$item.login}">{$item.login}</a></td>
 <td class="odd" width=100%>	<a href="./tiki-user_information.php?view_user={$item.login}">{$item.name}</a></td>
 <td class="odd" >
+{if $can_add_users!=""}
 <img src='img/icons2/delete.gif' border='0' alt='Borrar' title='Borrar' onclick="document.getElementById('removeUserName').value='{$item.login}';document.getElementById('formRemoveUser').style.display = 'block';"/>
+{/if}
 </td>
 </tr>
 {/foreach} 
 </table>
 {/tiki_workspaces_module}
-
