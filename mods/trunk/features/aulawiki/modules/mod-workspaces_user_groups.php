@@ -27,7 +27,7 @@ $can_remove_groups=false;
 $can_create_groups=false;
 $can_add_users =false;
 $can_admin_all_workspaces =false;
-
+# first base setup of priviliges
 if ($userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")
 	&& !$userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_admin_workspace")) {
 	$can_add_users =_TIKI_P_CREATE_WORKSPACE_RESOUR_CAN_ADD_USERS_;
@@ -174,29 +174,30 @@ if (!$exit_module){
 			$tree_nodes[] = array ("id" => $childGroup, "parent" => $parentGroup, "data" => '<a href="#" class="'.$cssclass.'" '.$onclick.'>'.$imgGroup.'&nbsp;'.$childGrouplink.'</a><br />');
 		}
 	}
-	# local ws-admin can create/remove groups under level0 , add/remove groups below top and level 1
+	# level 0: the top ws group - level 1: default ws roles groups - level >1: groups added to ws roles 
+	# local ws-admin can create/remove groups under level0 , add/remove groups below level 1
 	# addusers not below level 1
 	if (!$can_admin_all_workspaces && $can_admin_this_workspace) {
-		if ($activelevel == 0) {
-			$can_create_groups=true;
-			$can_add_groups=true;
-			$can_remove_groups=false;
+		if ($activelevel == 0) { # to the top ws group
+			$can_create_groups=true; 
+			$can_add_groups=false;    
+			$can_remove_groups=true; 
 			$can_add_users=true;
 			} 
-		if ($activelevel == 1) {
+		if ($activelevel == 1) { # to level 1 groups: the default ws roles
 			$can_create_groups=false;
 			$can_add_groups=true;
 			$can_remove_groups=true;
 			$can_add_users=true;
 			} 
-		if ($activelevel > 1) {
+		if ($activelevel > 1) { # to groups below the default ws-roles
 			$can_create_groups=false;
 			$can_add_groups=false;
 			$can_remove_groups=true;
 			$can_add_users=false;
 			} 
 	}
-	# local resources-managers (tiki_p_create_ws_resour) can add users only, not below level 1
+	# local resources-managers (tiki_p_create_ws_resour) can add users only, and not below level 1
 	if ($can_create_resources) {
 		if ($activelevel > 1) {
 			$can_add_users=false;
