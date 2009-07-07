@@ -115,5 +115,9 @@
 	</div>
 {/if}
 {include file="footer.tpl"}
+
+{if $prefs.feature_endbody_code}{*this code must be added just before </body>: needed by google analytics *}
+	{eval var=$prefs.feature_endbody_code}
+{/if}
 	</body>
 </html>

@@ -1,5 +1,4 @@
-{* $Id$ *}
-<!DOCTYPE html 
+{* $Id$ *}<!DOCTYPE html 
 	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
@@ -102,5 +101,9 @@
 	</table>
 {/if}
 {include file="footer.tpl"}
+
+{if $prefs.feature_endbody_code}{*this code must be added just before </body>: needed by google analytics *}
+	{eval var=$prefs.feature_endbody_code}
+{/if}
 	</body>
 </html>
