@@ -190,10 +190,16 @@ if (!$exit_module){
 			$can_remove_groups=true;
 			$can_add_users=true;
 			} 
-		if ($activelevel > 1) { # to groups below the default ws-roles
+		if ($activelevel == 2) { # to groups just below the default ws-roles
 			$can_create_groups=false;
 			$can_add_groups=false;
-			$can_remove_groups=true;
+			$can_remove_groups=true;  # can remove groups contained in default ws roles grps
+			$can_add_users=false;
+			} 
+		if ($activelevel > 2) { # to groups contained in groups below the default ws-roles
+			$can_create_groups=false;
+			$can_add_groups=false;
+			$can_remove_groups=false;  #  cannot remove grps contained in groups not of this ws
 			$can_add_users=false;
 			} 
 	}
