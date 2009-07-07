@@ -8,7 +8,7 @@ lastmodif:
 $Date: 2008-07-01 08:49:30 $
 
 files: 
-wiki-plugins/googlecalendar/wiki-plugins/wikiplugin_googlecalendar.php
+wiki-plugins/googlecalendar/wiki-plugins/wikiplugin_googlecalendar.php lib/wiki-plugins/wikiplugin_googlecalendar.php
 
 author:
 ricks99
