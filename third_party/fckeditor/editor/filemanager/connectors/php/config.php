@@ -21,34 +21,16 @@
  *
  * Configuration file for the File Manager Connector for PHP.
  */
-$tikiroot = dirname(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))));
-$tikidomain = '';
-if (is_file($tikiroot.'/db/virtuals.inc')) {
-	if (isset($_SERVER['TIKI_VIRTUAL']) and is_file($tikiroot.'/db/'.$_SERVER['TIKI_VIRTUAL'].'/local.php')) {
-		$tikidomain = $_SERVER['TIKI_VIRTUAL'];
-	} elseif (isset($_SERVER['SERVER_NAME']) and is_file($tikiroot.'/db/'.$_SERVER['SERVER_NAME'].'/local.php')) {
-		$tikidomain = $_SERVER['SERVER_NAME'];
-	} elseif (isset($_SERVER['HTTP_HOST']) and is_file($tikiroot.'/db/'.$_SERVER['HTTP_HOST'].'/local.php')) {
-		$tikidomain = $_SERVER['HTTP_HOST'];
-	}
-}
-if ($tikidomain) $tikidomain.= '/';
-if ($tikiroot != $_SERVER['DOCUMENT_ROOT']) {
-	$tikipath = strrchr($tikiroot,$_SERVER['DOCUMENT_ROOT']).'/';
-} else {
-	$tikipath = '/';
-}
 
 global $Config ;
 
 // SECURITY: You must explicitly enable this "connector". (Set it to "true").
 // WARNING: don't just set "$Config['Enabled'] = true ;", you must be sure that only
 //		authenticated users can access this file or use some kind of session checking.
-$Config['Enabled'] = true ;
-
+$Config['Enabled'] = false ;
 
 // Path to user files relative to the document root.
-$Config['UserFilesPath'] = $tikipath.'img/wiki_up/'.$tikidomain ;
+$Config['UserFilesPath'] = '/userfiles/' ;
 
 // Fill the following value it you prefer to specify the absolute path for the
 // user files directory. Useful if you are using a virtual directory, symbolic
