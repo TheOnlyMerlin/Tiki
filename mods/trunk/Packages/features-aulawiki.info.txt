@@ -427,6 +427,7 @@ UPDATE `tiki_user_assigned_modules` SET `name`='workspaces_clipboard' WHERE `nam
 UPDATE `tiki_user_assigned_modules` SET `name`='workspaces_my' WHERE `name`='aulawiki_myworkspaces';
 UPDATE `tiki_user_assigned_modules` SET `name`='workspaces_assistant' WHERE `name`='aulawiki_assistant';
 UPDATE `tiki_preferences` SET `value`='workspaces.css' WHERE `value`='aulawiki.css';
+ALTER TABLE tiki_workspace_types CHANGE `id` `wstypeId` int(14) NOT NULL auto_increment;
 :0.7
 DELETE FROM `users_grouppermissions` WHERE `permName`='tiki_p_admin_workspaces_types';
 DELETE FROM `users_grouppermissions` WHERE `permName`='tiki_p_admin_workspaces_roles';
@@ -441,8 +442,10 @@ INSERT INTO `users_permissions` VALUES ('aulawiki_p_remove_assignments','Can rem
 INSERT INTO `users_permissions` VALUES ('tiki_p_view_workspace','Can view a workspace','basic','workspace');
 INSERT INTO `users_permissions` VALUES ('tiki_p_admin_workspace','Can admin workspaces','admin','workspace');
 INSERT INTO `users_permissions` VALUES ('tiki_p_create_workspace_resour','Can create new workspace resources','editors','workspace');
+ALTER TABLE tiki_workspace_types CHANGE `id` `wstypeId` int(14) NOT NULL auto_increment;
 :0.8
 UPDATE `tiki_workspace_types` SET `resources`='a:0:{}' WHERE `resources`='a:1:{i:0;s:8:"wikipage";}';
+ALTER TABLE tiki_workspace_types CHANGE `id` `wstypeId` int(14) NOT NULL auto_increment;
 :1.1
 DELETE FROM `users_grouppermissions` WHERE `permName`='tiki_p_admin_workspaces';
 DELETE FROM tiki_menu_options WHERE menuid=42 AND position=1020;
@@ -453,3 +456,8 @@ INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupn
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (42,'o','Admin Workspaces','./tiki-workspaces_admin.php',1022,'','tiki_p_admin_workspace','');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (42,'o','Workspace Types','./tiki-workspaces_types.php',1024,'','tiki_p_admin_workspace','');
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (42,'o','Admin Roles','./tiki-workspaces_roles.php',1026,'','tiki_p_admin_workspace','');
+ALTER TABLE tiki_workspace_types CHANGE `id` `wstypeId` int(14) NOT NULL auto_increment;
+:1.5
+ALTER TABLE tiki_workspace_types CHANGE `id` `wstypeId` int(14) NOT NULL auto_increment;
+:1.6
+ALTER TABLE tiki_workspace_types CHANGE `id` `wstypeId` int(14) NOT NULL auto_increment;
