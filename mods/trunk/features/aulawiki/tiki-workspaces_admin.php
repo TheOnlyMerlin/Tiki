@@ -151,7 +151,7 @@ if (isset ($_REQUEST["send"])) {
 	} else
 		if (isset ($_REQUEST["delete"])) {
 			$area = 'delworkspace';
-			if ($feature_ticketlib2 != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+			if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
 				key_check($area);
 				$workspacesLib->remove_workspace($_REQUEST["delete"]);
 			} else {
