@@ -9,7 +9,7 @@
 			{menu id=$prefs.feature_topbar_id_menu type=horiz css=y}
 		{/if}
 	{/if}
-<!--[if IE]><br style="clear:both; height: 0" /> <![endif]-->
+<!--[if IE]><br style="clear:both; height: 0" /><![endif]-->
 </div>
 <div id="header-bottom">
 	{* search form, second row float right *}

@@ -94,7 +94,7 @@
 	{include file="tiki-site_header_login.tpl"}
 {/if}
 {/if}
-<!--[if IE]><br style="clear:both; height: 0" /> <![endif]-->
+<!--[if IE]><br style="clear:both; height: 0" /><![endif]-->
 </div>{*  end div#header-top *}
 {* navbar and search *}
 <div class="clearfix" id="tiki-top">
@@ -105,7 +105,7 @@
 		{menu id=$prefs.feature_topbar_id_menu type=horiz css=y}
 	{/if}
 {/if}
-<!--[if IE 7]><br style="clear:both; height: 0" /> <![endif]-->
+<!--[if IE 7]><br style="clear:both; height: 0" /><![endif]-->
 </div>
 {* topbar custom code *}
 {if $prefs.feature_topbar_custom_code}

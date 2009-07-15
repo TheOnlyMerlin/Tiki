@@ -79,7 +79,7 @@
 	{include file="tiki-site_header_login.tpl"}
 {/if}
 {/if}
-<!--[if IE]><br style="clear:both; height: 0" /> <![endif]-->
+<!--[if IE]><br style="clear:both; height: 0" /><![endif]-->
 </div>{*  end div#header-top *}
 {* topbar custom code *}
 {if $prefs.feature_topbar_custom_code}

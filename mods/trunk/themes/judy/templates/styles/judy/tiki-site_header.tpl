@@ -2,7 +2,7 @@
 {* navbar and search *}
 <div class="clearfix" id="tiki-top">
 	{include file="tiki-top_bar.tpl"}
-<!--[if IE 7]><br style="clear:both; height: 0" /> <![endif]-->
+<!--[if IE 7]><br style="clear:both; height: 0" /><![endif]-->
 </div>
 {* Template for Tikiwiki site identity header *}
 <div id="header-top">
@@ -86,7 +86,7 @@
 	</div>
 {/if}
 {/if}
-<!--[if IE]><br style="clear:both; height: 0" /> <![endif]-->
+<!--[if IE]><br style="clear:both; height: 0" /><![endif]-->
 </div>{*  end div#header-top *}
 {* topbar custom code *}
 {if $prefs.feature_topbar_custom_code}
