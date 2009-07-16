@@ -633,6 +633,12 @@ td.wikicell {
 
 .editdate {padding-bottom: 5px}
 textarea.wikiedit {font-size: 1.25em}
+div.help_section,
+
+div#tikihelp table.normal {
+	color: #fff;
+	background: #000}
+
 div#helptool {background: #86a48a; padding: 2px}
 #helptool a.link {color: #000}
 
