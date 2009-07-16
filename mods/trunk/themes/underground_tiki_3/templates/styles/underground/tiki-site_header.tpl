@@ -33,8 +33,8 @@
 		{eval var=$prefs.sitemycode}{* here will be parsed the custom site header code *}
 	{/if}
 	{/if}
-	<div id="sitesubtitle">{$prefs.sitesubtitle}</div>
-	<div id="sitetitle"><a href="index.php">{$prefs.sitetitle}</a></div>
+	<div id="sitesubtitle">{tr}{$prefs.sitesubtitle}{/tr}</div>
+	<div id="sitetitle"><a href="index.php">{tr}{$prefs.sitetitle}{/tr}</a></div>
 </div>
 {if $prefs.feature_topbar_custom_code}
 <div class="clearfix" id="topbar_custom_code">

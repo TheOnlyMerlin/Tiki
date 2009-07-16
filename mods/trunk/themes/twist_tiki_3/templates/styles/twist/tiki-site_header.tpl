@@ -8,11 +8,11 @@
 {else}
 	{* site logo *}
 	{if $prefs.feature_sitelogo eq 'y'}
-		<div id="sitelogo" style="{if $prefs.sitelogo_bgcolor ne ''}background-color: {$prefs.sitelogo_bgcolor}; {/if}text-align: {$prefs.sitelogo_align};{if $prefs.sitelogo_bgstyle} background: {$prefs.sitelogo_bgstyle};{/if}"><a href="./" title="{$prefs.sitelogo_title}">{if $prefs.sitelogo_src}<img src="{$prefs.sitelogo_src}" alt="{$prefs.sitelogo_alt}" style="border: none" />{/if}</a>
+		<div id="sitelogo" style="{if $prefs.sitelogo_bgcolor ne ''}background-color: {$prefs.sitelogo_bgcolor}; {/if}text-align: {$prefs.sitelogo_align};{if $prefs.sitelogo_bgstyle} background: {$prefs.sitelogo_bgstyle};{/if}"><a href="./" title="{tr}{$prefs.sitelogo_title}{/tr}">{if $prefs.sitelogo_src}<img src="{$prefs.sitelogo_src}" alt="{tr}{$prefs.sitelogo_alt}{/tr}" style="border: none" />{/if}</a>
 		</div>
 		<div id="sitetitles">
-			<div id="sitetitle"><a href="index.php">{$prefs.sitetitle}</a></div>
-			<div id="sitesubtitle">{$prefs.sitesubtitle}</div>
+			<div id="sitetitle"><a href="index.php">{tr}{$prefs.sitetitle}{/tr}</a></div>
+			<div id="sitesubtitle">{tr}{$prefs.sitesubtitle}{/tr}</div>
 		</div>
 	{/if}
 {/if}
