@@ -92,6 +92,7 @@
 			{/if}
 			<div id="tiki-center">
 				{$mid_data}
+				{show_help}
 			</div>
 			</div>
 			<hr class="hidden" /> {* for semantic separation of center and side columns *}
