@@ -474,6 +474,10 @@ border-right: 1px solid #3e3c3d}
 	border-top: none !important;
 }
 
+.tabcontent h2 {
+	color: #fff;
+}
+
 /***** Wiki *****/
 h1.pagetitle a,
 h1.pagetitle a:visited,
