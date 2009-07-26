@@ -443,6 +443,7 @@ fieldset.admin label,
 
 tr.odd td,
 td.odd {
+	color: #3e3c3d;
 	background: #b0b0b0;
 	border-right: 1px solid #3e3c3d}
 
