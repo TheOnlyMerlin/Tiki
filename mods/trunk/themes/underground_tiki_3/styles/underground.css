@@ -348,18 +348,26 @@ input.wikiaction {
 	bottom: 0;
 	font: bold 13px 'Trebuchet MS', Arial, Sans-serif}
 
-#tiki-top .cssmenu_horiz li {
+#tiki-top .cssmenu_horiz li.menuLevel0 {
 	float: left;
    background: url(underground/tableft.gif) no-repeat left top;
    margin: 0;
    padding: 0 0 0 4px;
    text-decoration: none}
 
-#tiki-top .cssmenu_horiz li.menuSection0 > a:link,
-#tiki-top .cssmenu_horiz li.menuSection0 > a:visited {
+#tiki-top .cssmenu_horiz li.menuLevel0 a/*:link,
+#tiki-top .cssmenu_horiz li.menuLevel0 > a:visited*/ {
    background: url(underground/tabright.gif) no-repeat right top;
-   padding: 5px 15px 4px 6px;
+   padding-top: 5px;
+   padding-bottom: 4px;
    color: #FFF}
+
+#tiki-top .cssmenu_horiz li.menuLevel0:hover,
+#tiki-top .cssmenu_horiz li.menuLevel0 a:hover {
+	background-position:0% -42px
+} 
+  
+
 
 #tiki-top .cssmenu_horiz ul {
 	background: #F4F4F4;
