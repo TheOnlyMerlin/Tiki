@@ -29,7 +29,7 @@ defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664 '));
 defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --vanilla --quiet'));
 
 function wikiplugin_r_help() {
-	return tra("~np~{~/np~R(rfile=>fileId)}R code{R} Parses R code (r-project.org) from between the plugin tags and shows the output in the wiki page");
+	return tra("~np~{~/np~R(rfile=>fileId)}R code{R} Parses R code (r-project.org) from between the plugin tags and shows the output in the wiki page. rfile parameter is not yet implemented");
 }
 
 function wikiplugin_r_info() {
@@ -38,6 +38,7 @@ function wikiplugin_r_info() {
 		'documentation' => 'PluginR',
 		'description' => tra('Parses R syntax and shows the output either from the code introduced between the plugin tags or from the file Id from an r script in a Tiki file gallery'),
 		'prefs' => array( 'wikiplugin_r' ),
+		'validate' => 'all',
 		'params' => array(
 			'rfile' => array(
 				'required' => false,
