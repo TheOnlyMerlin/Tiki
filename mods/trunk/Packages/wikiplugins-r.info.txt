@@ -1,0 +1,34 @@
+contributor:
+$Author: xavi $
+
+revision: 
+$Revision: 0.1 $
+
+lastmodif:
+$Date: 2009-08-04 17:36:00 $
+
+files: 
+wiki-plugins/r/lib/r/StatWiki.r lib/r/StatWiki.r
+wiki-plugins/r/lib/r/index.php lib/r/index.php
+wiki-plugins/r/lib/wiki-plugins/wikiplugin_r.php lib/wiki-plugins/wikiplugin_r.php
+
+Author:
+Xavier de Pedro (xavi)
+ 
+Version:
+3.0
+
+licence:
+GNU/GPL
+
+Description: 
+In wiki syntax type {R(rdata=>)}{R}
+
+Docurl:
+http://dev.tikiwiki.org/PluginR
+
+Devurl:
+http://dev.tikiwiki.org/PluginR
+
+Changelog:
+0.1 initial package
