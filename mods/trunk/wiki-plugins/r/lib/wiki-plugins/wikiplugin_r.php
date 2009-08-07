@@ -29,7 +29,7 @@ defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664 '));
 defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --vanilla --quiet'));
 
 function wikiplugin_r_help() {
-	return tra("~np~{~/np~R(rfile=>fileId)}R code{R} Parses R code (r-project.org) from between the plugin tags and shows the output in the wiki page. rfile parameter is not yet implemented");
+	return tra("~np~{~/np~R(fileId=>fileId,attId=>attId)}R code{R} Parses R code (r-project.org) from between the plugin tags and shows the output in the wiki page. Data to analyse can be taken from file galleries by providing the fileId, or from tracker item attachments by attId. Both fileId and attId are optional");
 }
 
 function wikiplugin_r_info() {
@@ -40,10 +40,15 @@ function wikiplugin_r_info() {
 		'prefs' => array( 'wikiplugin_r' ),
 		'validate' => 'all',
 		'params' => array(
-			'rfile' => array(
+			'fileId' => array(
 				'required' => false,
 				'name' => tra('fileId'),
-				'description' => tra('File Id from a file gallery. ex: 1. (Optional)'),
+				'description' => tra('File Id from a file gallery. Ex: 1. (Optional)'),
+			),
+			'attId' => array(
+				'required' => false,
+				'name' => tra('attId'),
+				'description' => tra('AttId from a tracker Item attachment. ex: 1. (Optional)'),
 			),
 		),
 	);
@@ -59,6 +64,15 @@ function wikiplugin_r($data, $params) {
 
 	// security checks
 	if (security>0) {
+
+		extract(params);
+		if (isset($fileId)) {
+				$data = file_get_contents("tiki-download_file.php?fileId=$fileId&display");	} 
+			else if (isset($attId)) { 
+				$data = file_get_contents("tiki-download_item_attachment.php?attId=$attId&display");
+		}
+
+
 		$chkres = checkCommands($data);
 		#    error ('R', $chkres, $data);
 		if (strlen($chkres) != 0) {
