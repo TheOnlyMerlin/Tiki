@@ -63,9 +63,7 @@ function wikiplugin_r($data, $params) {
 
 	extract($params);
 
-	if (isset($fileId)) {
-		$data = file_get_contents("tiki-download_file.php?fileId=$fileId&display");
-	} else if (isset($attId)) {
+	if(isset($attId)) {
 		require_once("lib/trackers/trackerlib.php");
 /* *** Mostly copy from tiki-download_item_attachment.php and modified *** */
 
@@ -96,16 +94,6 @@ function wikiplugin_r($data, $params) {
 		$file = &$info["filename"];
 		$content = &$info["data"];
 
-		if ($info["path"]) {
-			if (!file_exists($prefs['t_use_dir'].$info["path"])) {
-				$str = sprintf(tra("Error : The file %s doesn't exist."), $_REQUEST["attId"]). tra("Please contact the website administrator.");
-				$data = $str;
-			} else {
-				$data = readfile ($prefs['t_use_dir'] . $info["path"]);
-			}
-		} else {
-			$data = $content;
-		}
 /* *** END of Mostly copy from tiki-download_item_attachment.php and modified *** */
 	}
 
@@ -120,40 +108,9 @@ function wikiplugin_r($data, $params) {
 	defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664 '));
 	defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --vanilla --quiet'));
 
-	// security checks
-	if (security>0) {		
-
-		$chkres = checkCommands($data);
-		#    error ('R', $chkres, $data);
-		if (strlen($chkres) != 0) {
-			$msg = 'R security check failed: used banned command or parameter "' . $chkres . '"';
-			$smarty->assign('msg', $msg);
-			$smarty->display('error.tpl');
-		}
-		$data = $data . "\n#" . $chkres;
-	}
-	(preg_match('/\W+/', $ws)==0) or error ('R', 'security check failed: invalid workspace name "' . $ws . '"', $data);
-	// check if iframe is given, if not then assume direct output
-	$iframe = 'width:100%;height:250px;';
-
-	/* TODO: confirm if the code below it is not necessary
-	if (array_key_exists('name', $params)) {
-		// we may reuse the program ..., thus save all infos
-		$sav = r_dir . DIRECTORY_SEPARATOR . $params['name'] . '.sav';
-		$fd = fopen ($sav, 'w') or error ('R', 'can not open file: ' . $sav, $data);
-		fwrite ($fd, '@output  ' . $output . "\n");
-		fwrite ($fd, '@convert ' . $convert . "\n");
-		fwrite ($fd, '@sha '     . $sha1 . "\n");
-		fwrite ($fd, '@direct '  . $direct . "\n");
-		fwrite ($fd, '@echo '    . $echo . "\n");
-		fwrite ($fd, '@workspace '. $ws . "\n");
-		fwrite ($fd, $data);
-		fclose ($fd);
-	}*/
-
 	if ($type == "text/csv") {
 		$path = $_SERVER["SCRIPT_NAME"];
-		$data = "read.csv(\"$filepath\")";
+		$data = "data <- read.csv(\"$filepath\")\n$data";
 	}
 
 	// execute R program
