@@ -19,19 +19,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 */
 
-defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp' );
-defined('r_ext') || define('r_ext', getcwd() . DIRECTORY_SEPARATOR . 'lib/r' );
-defined('security')  || define('security',  0);
-defined('sudouser')  || define('sudouser', 'rd');
 
-defined('convert')   || define('convert',   getCmd('', 'convert', ''));
-defined('sudo')      || define('sudo',      getCmd('', 'sudo', ' -u ' . sudouser . ' '));
-defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664 '));
-defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --vanilla --quiet'));
-
-function wikiplugin_r_help() {
-	return tra("~np~{~/np~R(fileId=>fileId,attId=>attId,iframe=>1|0,security=>2|1|0)}R code{R} Parses R code (r-project.org) from between the plugin tags and shows the output in the wiki page. Data to analyse can be taken from file galleries by providing the fileId, or from tracker item attachments by the attId. Both fileId and attId are optional. iframe param show the output inside an iframe (default value, 1) or within the wiki page (0). Security levels are: 0 - all commands from R are possible; security is handled only by the validation step of the Tiki profile calls; 1 - a big list of comamnds are allowed, but not all; 2 - just a few commands are allowed. See the documentation. )");
-}
 
 function wikiplugin_r_info() {
 	return array(
@@ -82,8 +70,13 @@ function wikiplugin_r($data, $params) {
 /* *** Mostly copy from tiki-download_item_attachment.php and modified *** */
 
 		$info = $trklib->get_item_attachment($attId);
-		$itemInfo = $trklib->get_tracker_item($info["itemId"]);
-		$itemUser = $trklib->get_item_creator($itemInfo['trackerId'], $itemInfo['itemId']);
+
+		if( $info['data'] ) {
+			$filepath = tempnam( '/tmp', 'r' );
+			file_put_contents( $filepath, $info['data'] );
+		} else {
+			$filepath = $info['path'];
+		}
 
 		if (isset($info['user']) && $info['user'] == $user) {
 		} elseif (!empty($itemUser) && $user == $itemUser) {
@@ -117,7 +110,15 @@ function wikiplugin_r($data, $params) {
 	}
 
 
+	defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp' );
+	defined('r_ext') || define('r_ext', getcwd() . DIRECTORY_SEPARATOR . 'lib/r' );
+	defined('security')  || define('security',  0);
+	defined('sudouser')  || define('sudouser', 'rd');
 
+	defined('convert')   || define('convert',   getCmd('', 'convert', ''));
+	defined('sudo')      || define('sudo',      getCmd('', 'sudo', ' -u ' . sudouser . ' '));
+	defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664 '));
+	defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --vanilla --quiet'));
 
 	// security checks
 	if (security>0) {		
@@ -152,7 +153,7 @@ function wikiplugin_r($data, $params) {
 
 	if ($type == "text/csv") {
 		$path = $_SERVER["SCRIPT_NAME"];
-		$data = "read.csv(\"$path/tiki-download_item_attachment.php?attId=$attId&display\")";
+		$data = "read.csv(\"$filepath\")";
 	}
 
 	// execute R program
