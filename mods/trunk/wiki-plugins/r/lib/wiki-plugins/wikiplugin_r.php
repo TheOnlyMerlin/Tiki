@@ -1,8 +1,9 @@
 <?php
 // Parses R code (r-project.org) and shows the output in a wiki page.
-// Author: Xavier de Pedro. <xavier.depedro (a) ub.edu>
+// Author: Xavier de Pedro. <xavier.depedro (a) ub.edu> 
+// 	Rodrigo Sampaio <rodrigosprimo (a) gmail.com>
 // Usage:
-// {R(rfile=>fileId)}R code{R} 
+// {R(fileId=>fileId,attId=>attId,iframe=>1|0)}R code{R} 
 //
 /* 
 
@@ -29,7 +30,7 @@ defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664 '));
 defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --vanilla --quiet'));
 
 function wikiplugin_r_help() {
-	return tra("~np~{~/np~R(fileId=>fileId,attId=>attId)}R code{R} Parses R code (r-project.org) from between the plugin tags and shows the output in the wiki page. Data to analyse can be taken from file galleries by providing the fileId, or from tracker item attachments by attId. Both fileId and attId are optional");
+	return tra("~np~{~/np~R(fileId=>fileId,attId=>attId,iframe=>1|0,security=>2|1|0)}R code{R} Parses R code (r-project.org) from between the plugin tags and shows the output in the wiki page. Data to analyse can be taken from file galleries by providing the fileId, or from tracker item attachments by the attId. Both fileId and attId are optional. iframe param show the output inside an iframe (default value, 1) or within the wiki page (0). Security levels are: 0 - all commands from R are possible; security is handled only by the validation step of the Tiki profile calls; 1 - a big list of comamnds are allowed, but not all; 2 - just a few commands are allowed. See the documentation. )");
 }
 
 function wikiplugin_r_info() {
@@ -50,28 +51,76 @@ function wikiplugin_r_info() {
 				'name' => tra('attId'),
 				'description' => tra('AttId from a tracker Item attachment. ex: 1. (Optional)'),
 			),
+			'iframe' => array(
+				'required' => false,
+				'name' => tra('iframe'),
+				'description' => tra('Show output on an html page inside the wiki page. ex: 1. (default)'),
+			),
+			'security' => array(
+				'required' => yes,
+				'name' => tra('security'),
+				'description' => tra('Set the secutiry level for the R commands allowed by the plugin. Show output on an html page inside the wiki page. ex: 1. (default)'),
+			),
 		),
 	);
 }
 
 function wikiplugin_r($data, $params) {
-	global $smarty;
+	global $smarty, $trklib, $tikilib;
 
 	$output = 'text';
 	$style = '';
 	$ws = '';
 	$sha1 = md5($data . $output . $style);
 
-	// security checks
-	if (security>0) {
+	extract($params);
 
-		extract(params);
-		if (isset($fileId)) {
-				$data = file_get_contents("tiki-download_file.php?fileId=$fileId&display");	} 
-			else if (isset($attId)) { 
-				$data = file_get_contents("tiki-download_item_attachment.php?attId=$attId&display");
+	if (isset($fileId)) {
+		$data = file_get_contents("tiki-download_file.php?fileId=$fileId&display");
+	} else if (isset($attId)) {
+		require_once("lib/trackers/trackerlib.php");
+/* *** Mostly copy from tiki-download_item_attachment.php and modified *** */
+
+		$info = $trklib->get_item_attachment($attId);
+		$itemInfo = $trklib->get_tracker_item($info["itemId"]);
+		$itemUser = $trklib->get_item_creator($itemInfo['trackerId'], $itemInfo['itemId']);
+
+		if (isset($info['user']) && $info['user'] == $user) {
+		} elseif (!empty($itemUser) && $user == $itemUser) {
+		} elseif ((isset($itemInfo['status']) and $itemInfo['status'] == 'p' && !$tikilib->user_has_perm_on_object($user, $itemInfo['trackerId'], 'tracker', 'tiki_p_view_trackers_pending')) 
+			||  (isset($itemInfo['status']) and $itemInfo['status'] == 'c' && !$tikilib->user_has_perm_on_object($user, $itemInfo['trackerId'], 'tracker', 'tiki_p_view_trackers_closed'))
+			||  ($tiki_p_admin_trackers != 'y' && !$tikilib->user_has_perm_on_object($user, $itemInfo['trackerId'], 'tracker', 'tiki_p_view_trackers') )
+		    ) {
+				$data = tra('Permission denied');
 		}
 
+		if ( empty($info['filetype']) || $info['filetype'] == 'application/x-octetstream' || $info['filetype'] == 'application/octet-stream' ) {
+			include_once('lib/mime/mimelib.php');
+			$info['filetype'] = tiki_get_mime($info['filename'], 'application/octet-stream');
+		}
+
+		$type = &$info["filetype"];			
+		$file = &$info["filename"];
+		$content = &$info["data"];
+
+		if ($info["path"]) {
+			if (!file_exists($prefs['t_use_dir'].$info["path"])) {
+				$str = sprintf(tra("Error : The file %s doesn't exist."), $_REQUEST["attId"]). tra("Please contact the website administrator.");
+				$data = $str;
+			} else {
+				$data = readfile ($prefs['t_use_dir'] . $info["path"]);
+			}
+		} else {
+			$data = $content;
+		}
+/* *** END of Mostly copy from tiki-download_item_attachment.php and modified *** */
+	}
+
+
+
+
+	// security checks
+	if (security>0) {		
 
 		$chkres = checkCommands($data);
 		#    error ('R', $chkres, $data);
@@ -100,6 +149,11 @@ function wikiplugin_r($data, $params) {
 		fwrite ($fd, $data);
 		fclose ($fd);
 	}*/
+
+	if ($type == "text/csv") {
+		$path = $_SERVER["SCRIPT_NAME"];
+		$data = "read.csv(\"$path/tiki-download_item_attachment.php?attId=$attId&display\")";
+	}
 
 	// execute R program
 	$fn   = runR ($output, $convert, $sha1, $data, $echo, $ws);
