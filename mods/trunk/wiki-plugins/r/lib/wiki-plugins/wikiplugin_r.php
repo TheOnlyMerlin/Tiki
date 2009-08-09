@@ -67,11 +67,11 @@ function wikiplugin_r($data, $params) {
 	$sha1 = md5($data . $output . $style);
 
 
-	if(isset($attId)) {
+	if(isset($params["attId"])) {
 		require_once("lib/trackers/trackerlib.php");
 /* *** Mostly copy from tiki-download_item_attachment.php and modified *** */
 
-		$info = $trklib->get_item_attachment($attId);
+		$info = $trklib->get_item_attachment($params["attId"]);
 
 		if( $info['data'] ) {
 			$filepath = tempnam( '/tmp', 'r' );
@@ -80,16 +80,6 @@ function wikiplugin_r($data, $params) {
 			$filepath = $info['path'];
 		}
 
-		if (isset($info['user']) && $info['user'] == $user) {
-		} elseif (!empty($itemUser) && $user == $itemUser) {
-		} elseif ((isset($itemInfo['status']) and $itemInfo['status'] == 'p' && !$tikilib->user_has_perm_on_object($user, $itemInfo['trackerId'], 'tracker', 'tiki_p_view_trackers_pending')) 
-			||  (isset($itemInfo['status']) and $itemInfo['status'] == 'c' && !$tikilib->user_has_perm_on_object($user, $itemInfo['trackerId'], 'tracker', 'tiki_p_view_trackers_closed'))
-			||  ($tiki_p_admin_trackers != 'y' && !$tikilib->user_has_perm_on_object($user, $itemInfo['trackerId'], 'tracker', 'tiki_p_view_trackers') )
-		    ) {
-				$data = tra('Permission denied');
-		}
-
-if (empty($params['type'])) {
 		if ( empty($info['filetype']) || $info['filetype'] == 'application/x-octetstream' || $info['filetype'] == 'application/octet-stream' ) {
 			include_once('lib/mime/mimelib.php');
 			$info['filetype'] = tiki_get_mime($info['filename'], 'application/octet-stream');
@@ -97,15 +87,11 @@ if (empty($params['type'])) {
 
 		$type = $info["filetype"];			
 		$file = $info["filename"];
-		$content = $info["data"];
-} else {
-	$type = $params["type"];
-}
-
-
-/* *** END of Mostly copy from tiki-download_item_attachment.php and modified *** */
 	}
 
+	if (isset($params["type"])) {
+		$type = $params["type"];
+	}
 
 	defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp' );
 	defined('r_ext') || define('r_ext', getcwd() . DIRECTORY_SEPARATOR . 'lib/r' );
