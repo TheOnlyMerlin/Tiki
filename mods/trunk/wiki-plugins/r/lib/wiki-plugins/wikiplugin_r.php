@@ -39,6 +39,11 @@ function wikiplugin_r_info() {
 				'name' => tra('attId'),
 				'description' => tra('AttId from a tracker Item attachment. ex: 1. (Optional)'),
 			),
+			'type' => array(
+				'required' => true,
+				'name' => tra('type'),
+				'description' => tra('Choose the source file type in the appropriate mimetype syntax. Options: text/csv|text/xml. ex: text/csv. (default). For text/xml, you need to have installed library ("R4X") in R at the server. See documentation for more details'),
+			),
 			'iframe' => array(
 				'required' => false,
 				'name' => tra('iframe'),
@@ -61,7 +66,6 @@ function wikiplugin_r($data, $params) {
 	$ws = '';
 	$sha1 = md5($data . $output . $style);
 
-	extract($params);
 
 	if(isset($attId)) {
 		require_once("lib/trackers/trackerlib.php");
@@ -85,14 +89,19 @@ function wikiplugin_r($data, $params) {
 				$data = tra('Permission denied');
 		}
 
+if (empty($params['type'])) {
 		if ( empty($info['filetype']) || $info['filetype'] == 'application/x-octetstream' || $info['filetype'] == 'application/octet-stream' ) {
 			include_once('lib/mime/mimelib.php');
 			$info['filetype'] = tiki_get_mime($info['filename'], 'application/octet-stream');
 		}
 
-		$type = &$info["filetype"];			
-		$file = &$info["filename"];
-		$content = &$info["data"];
+		$type = $info["filetype"];			
+		$file = $info["filename"];
+		$content = $info["data"];
+} else {
+	$type = $params["type"];
+}
+
 
 /* *** END of Mostly copy from tiki-download_item_attachment.php and modified *** */
 	}
@@ -113,6 +122,10 @@ function wikiplugin_r($data, $params) {
 		$data = "data <- read.csv(\"$filepath\")\n$data";
 	}
 
+	if ($type == "text/xml") {
+		$path = $_SERVER["SCRIPT_NAME"];
+		$data = "data <- xml(\"$filepath\")\n$data";
+	}
 	// execute R program
 	$fn   = runR ($output, $convert, $sha1, $data, $echo, $ws);
 
