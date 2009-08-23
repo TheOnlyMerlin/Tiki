@@ -18,6 +18,7 @@ themes/tikipedia_tiki_3/styles/tikipedia/headbg.jpg styles/tikipedia/headbg.jpg
 themes/tikipedia_tiki_3/styles/tikipedia/index.php styles/tikipedia/index.php
 themes/tikipedia_tiki_3/styles/tikipedia/logo.png styles/tikipedia/logo.png
 themes/tikipedia_tiki_3/styles/tikipedia/logo-indexed.gif styles/tikipedia/logo-indexed.gif
+themes/tikipedia_tiki_3/styles/tikipedia/tikipedia.png styles/tikipedia/tikipedia.png
 themes/tikipedia_tiki_3/styles/tikipedia/user.gif styles/tikipedia/user.gif
 themes/tikipedia_tiki_3/templates/styles/tikipedia/credits.tpl templates/styles/tikipedia/credits.tpl
 themes/tikipedia_tiki_3/templates/styles/tikipedia/index.php templates/styles/tikipedia/index.php
@@ -50,5 +51,6 @@ Version:
 3
 
 Changelog:
+3 tikipedia.png thumbnail added
 2 updated for better synchronization with Tiki 3.0/3.1 files, and CSS improvements.
 1 initial commit for Tiki 3
