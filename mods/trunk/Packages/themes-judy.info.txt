@@ -12,6 +12,7 @@ $Date$
 Files:
 themes/judy/Readme.txt styles/judy/Readme.txt
 themes/judy/styles/judy.css styles/judy.css
+themes/judy/styles/judy/arrows-467aa7.png styles/judy/arrows-467aa7.png
 themes/judy/styles/judy/header.png styles/judy/header.png
 themes/judy/styles/judy/ie6.css styles/judy/ie6.css
 themes/judy/styles/judy/bg-content.png styles/judy/bg-content.png

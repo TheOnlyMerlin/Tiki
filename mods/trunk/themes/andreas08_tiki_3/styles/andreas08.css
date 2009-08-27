@@ -284,7 +284,10 @@ input#fuser {line-height: 90%}
 
 .cssmenu_vert li a:hover  {text-decoration: underline}
 .cssmenu_vert li ul li a {color: #fff}
-/*.cssmenu_vert li> a > .sf-sub-indicator {background: url(andreas08/arrows-467aa7.png) no-repeat -10px -100px; /* 8-bit indexed alpha png. IE6 gets solid image only; */}
+.cssmenu_vert li a .sf-sub-indicator {background: url(andreas08/arrows-467aa7.png) no-repeat;}
+.cssmenu_vert li ul li a .sf-sub-indicator {background: url(andreas08/arrows-ffffff.png) no-repeat;}
+
+/*.cssmenu_vert li ul li ul {margin-left: 10.9em !important;}*/
 
 /** PHP Layers Menus **/
 .horbar {

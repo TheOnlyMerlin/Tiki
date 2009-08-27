@@ -50,5 +50,16 @@ h3.box-title {color:#166F00}
 	border-bottom: 1px #999 solid;
 	border-left: 1px #999 solid} 
 	
-.mdkitem a:hover {background: #41b61c;} 
+.mdkitem a:hover,
+#tiki-top .cssmenu_horiz ul li:hover a,
+.cssmenu_vert li ul li:hover a {
+	background: #41b61c !important;
+ 	color: #fff;
+} 
+
+.mdkitem a:hover,
+#tiki-top .cssmenu_horiz ul li a:hover,
+.cssmenu_vert li ul li a:hover {
+	text-decoration: underline !important;
+}
 

@@ -12,6 +12,7 @@ $Date$
 Files:
 themes/underground_tiki_3/Readme.txt styles/underground/Readme.txt
 themes/underground_tiki_3/styles/underground.css styles/underground.css
+themes/underground_tiki_3/styles/underground/arrows-000.png styles/underground/arrows-000.png
 themes/underground_tiki_3/styles/underground/bg.gif styles/underground/bg.gif
 themes/underground_tiki_3/styles/underground/bullet.gif styles/underground/bullet.gif
 themes/underground_tiki_3/styles/underground/footerbg.gif styles/underground/footerbg.gif

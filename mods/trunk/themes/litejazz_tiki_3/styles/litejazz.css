@@ -215,13 +215,18 @@ div#sitead {margin: auto}
 .cssmenu ul,
 .cssmenu_vert li ul,
 .cssmenu_horiz li ul {
-	background: #818181;
 	border-bottom: 1px #aaa solid;
 	border-left: 1px #999 solid}
 	
+.cssmenu ul li,
+.cssmenu_vert li ul li,
+.cssmenu_horiz li ul li {
+	background: #818181;
+}
+	/*
 .cssmenu_vert ul {
 	margin-left: 10.9em !important;
-}
+}*/
 
 .cssmenu_horiz li:hover,
 .cssmenu_vert li:hover {
@@ -276,6 +281,10 @@ div#sitead {margin: auto}
 .box-data .cssmenu_vert li:hover {background: 0}
 .box-data .cssmenu_vert ul a:hover {color: #fff; text-decoration: none}
 .box-data .cssmenu_vert li ul li:hover {background: #104a91; }
+
+.cssmenu_vert .sf-sub-indicator {
+	background: url(litejazz/arrows-467aa7.png) no-repeat;
+}
 
 /** PHP Layers Menus **/
 .horbar {

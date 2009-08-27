@@ -12,6 +12,7 @@ $Date$
 Files:
 themes/milkyway/Readme.txt styles/milkyway/Readme.txt
 themes/milkyway/styles/milkyway.css styles/milkyway.css
+themes/milkyway/styles/milkyway/arrows-000.png styles/milkyway/arrows-000.png
 themes/milkyway/styles/milkyway/index.php styles/milkyway/index.php
 themes/milkway/styles/milkyway/milkyway.png styles/milkyway/milkyway.png
 themes/milkway/styles/milkyway/borderlspacer.gif styles/milkyway/borderlspacer.gif

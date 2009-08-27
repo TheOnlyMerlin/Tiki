@@ -361,9 +361,15 @@ td.pill_r {
 
 /** CSS (suckerfish) menus **/
 
+.cssmenu_horiz li:hover ul
 .cssmenu_vert li:hover ul {
 	border: 1px solid #dfdfdf;
-	background: #f9f9f9}
+}
+
+.cssmenu_horiz li:hover ul li,	
+.cssmenu_vert li:hover ul li {
+	background: #f9f9f9 !important;
+}
 
 .cssmenu_vert li a,
 .cssmenu_horiz li a {
@@ -390,6 +396,17 @@ td.pill_r {
 	margin-left: 10.9em !important;
 	margin-top: -1.5em;
 }
+
+.cssmenu_horiz .sf-sub-indicator,
+.cssmenu_vert .sf-sub-indicator {
+	background: url(milkyway/arrows-000.png) no-repeat -10px -100px;
+}
+
+
+/*.cssmenu_horiz ul .sf-sub-indicator,
+.cssmenu_vert .sf-sub-indicator {
+	background: url(milkyway/arrows-ffffff.png) no-repeat;
+}*/
 
 /** PHP Layers Menus **/
 

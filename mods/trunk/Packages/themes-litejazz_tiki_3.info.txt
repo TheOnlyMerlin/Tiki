@@ -12,6 +12,7 @@ $Date$
 Files:
 themes/litejazz/Readme.txt styles/litejazz/Readme.txt
 themes/litejazz/styles/litejazz.css styles/litejazz.css
+themes/litejazz/styles/litejazz/arrows-467aa7.png styles/litejazz/arrows-467aa7.png
 themes/litejazz/styles/litejazz/bg.png styles/litejazz/bg.png
 themes/litejazz/styles/litejazz/body-bg.png styles/litejazz/body-bg.png
 themes/litejazz/styles/litejazz/botbar_custcode.png styles/litejazz/botbar_custcode.png

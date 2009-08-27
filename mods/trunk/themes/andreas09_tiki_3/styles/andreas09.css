@@ -284,7 +284,7 @@ ul, ol {text-align: left}
 	text-transform: uppercase;
 	padding: 6px 4px}
 	
-.cssmenu_horiz li ul li {margin-top: 4px}
+/*.cssmenu_horiz li ul li {margin-top: 3px}*/
 #tiki-top .cssmenu_horiz li ul li a {padding: 4px 4px}
 
 .cssmenu_vert li {padding-bottom: 4px}
@@ -297,8 +297,8 @@ ul, ol {text-align: left}
 	color: #303030;
 	text-decoration: none}
 
-.sf-sub-indicator {background: url(andreas09/options/black/arrows-000.png) no-repeat -10px -100px}
-li.menuSection a .sf-sub-indicator {top: 1em}
+.sf-sub-indicator {background: url(andreas09/arrows-000.png) no-repeat -10px -100px}
+li.menuSection a .sf-sub-indicator {top: 1.3em}
 #tiki-top > .cssmenu_horiz > li {margin-top: 2px}
 
 #tiki-top .cssmenu_horiz li a {
@@ -316,7 +316,7 @@ li.menuSection a .sf-sub-indicator {top: 1em}
 	text-decoration: none}
 
 #tiki-top .cssmenu_horiz li.menuSection a .sf-sub-indicator {top: 1.8em}
-#tiki-top .cssmenu_horiz li.menuSection ul li.menuSection a .sf-sub-indicator {top: 1em}
+#tiki-top .cssmenu_horiz li.menuSection ul li.menuSection a .sf-sub-indicator {top: 1.0em}
 
 #tiki-top .cssmenu_horiz li ul {padding-top: 2px}
 
