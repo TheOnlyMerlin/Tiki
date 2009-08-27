@@ -784,6 +784,12 @@ div.articletitle h2 {
 	text-transform: uppercase; 
 	background: #CC0000;	
 	letter-spacing: .5px}
+	
+div.articletitle h2 a,
+div.articletitle h2 a:visited,
+div.articletitle h2 a:hover {
+	color: #fff;
+}
 
 span.titleb {
 	font-size: 1.0em}
