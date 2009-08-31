@@ -15,7 +15,7 @@ themes/eatlon_tiki_3/styles/eatlon.css styles/eatlon.css
 themes/eatlon_tiki_3/styles/eatlon/arrows-6d819d.png styles/eatlon/arrows-6d819d.png
 themes/eatlon_tiki_3/styles/eatlon/banner.gif styles/eatlon/banner.gif
 themes/eatlon_tiki_3/styles/eatlon/body_bg.gif styles/eatlon/body_bg.gif
-themes/eatlon_tiki_3/styles/eatlon/bottom_bg.gif styles/eatlon/bottom_bg.gif
+themes/eatlon_tiki_3/styles/eatlon/bottom_bg.png styles/eatlon/bottom_bg.png
 themes/eatlon_tiki_3/styles/eatlon/eatlon.png styles/eatlon/eatlon.png
 themes/eatlon_tiki_3/styles/eatlon/feed.gif styles/eatlon/feed.gif
 themes/eatlon_tiki_3/styles/eatlon/head_bg.gif styles/eatlon/head_bg.gif
