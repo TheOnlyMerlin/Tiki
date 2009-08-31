@@ -25,7 +25,7 @@ themes/clubcard/styles/clubcard/options/index.php styles/clubcard/options/index.
 themes/clubcard/styles/clubcard/options/wide.css styles/clubcard/options/wide.css
 themes/clubcard/styles/clubcard/options/wide/wide.png styles/clubcard/options/wide/wide.png
 themes/clubcard/templates/styles/clubcard/credits.tpl templates/styles/clubcard/credits.tpl
-themes/clubcard/templates/styles/clubcard/index.tpl templates/styles/clubcard/index.tpl
+themes/clubcard/templates/styles/clubcard/index.php templates/styles/clubcard/index.php
 
 Description:
 Club Card (clubcard.css) is meant to use the left and center columns only; the right column should be turned off. To use all three columns, use the theme's option "wide" (select it on the Look and Feel admin page). For more information, please see the documentation pages for this theme. To comply with the license, retain the link to Free CSS Templates in the page footer.
