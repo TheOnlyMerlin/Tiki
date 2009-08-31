@@ -23,7 +23,7 @@
 * styles/judy/index.php
 * styles/judy/judy.png
 * templates/styles/judy/credits.tpl
-* templates/styles/judy/index.tpl
+* templates/styles/judy/index.php
 * templates/styles/judy/tiki.tpl
 * templates/styles/judy/tiki-site_header.tpl
 

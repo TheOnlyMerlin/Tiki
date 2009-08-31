@@ -17,7 +17,7 @@ Use Look & Feel custom code for the site title text ornaments (see docs).
 (If you are updating Faulkner from Tiki 2 to Tiki 3, be sure only the following template files are
 in the templates/styles/faulkner directory.)
 * templates/styles/faulkner/credits.tpl
-* templates/styles/faulkner/index.tpl
+* templates/styles/faulkner/index.php
 * templates/styles/faulkner/sicustomcode.tpl
 * templates/styles/faulkner/tiki.tpl
 

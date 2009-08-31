@@ -10,7 +10,7 @@
 (All file paths from Tiki root directory.)
 
 * templates/styles/andreas09/credits.tpl
-* templates/styles/andreas09/index.tpl
+* templates/styles/andreas09/index.php
 
 The following template are identical to those of other *lite.css-based themes I am making for TikiWiki version 1.10:
 * templates/styles/andreas09/header.tpl

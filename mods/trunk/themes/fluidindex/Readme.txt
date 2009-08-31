@@ -9,7 +9,7 @@
 -=Template Files=-
 (All file paths from Tiki root directory.)
 * templates/styles/fluidindex/credits.tpl
-* templates/styles/fluidindex/index.tpl
+* templates/styles/fluidindex/index.php
 
 !!! The following template are identical to those of other *lite.css-based themes I am making for TikiWiki version 1.10:
 * templates/styles/fluidindex/header.tpl

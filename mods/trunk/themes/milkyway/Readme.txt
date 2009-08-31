@@ -116,7 +116,7 @@
 
 -=Template files=-
 * templates/styles/milkyway/credits.tpl
-* templates/styles/milkyway/index.tpl
+* templates/styles/milkyway/index.php
 * templates/styles/milkyway/module.tpl
 * templates/styles/milkyway/tiki.tpl
 * templates/styles/milkyway/tiki-site_header.tpl

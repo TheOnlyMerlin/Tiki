@@ -9,7 +9,7 @@
 (All file paths from Tiki root directory.)
 -=Template Files=-
 * templates/styles/andreas09/credits.tpl
-* templates/styles/andreas09/index.tpl
+* templates/styles/andreas09/index.php
 
 -=Stylesheet and background images=-
 * styles/andreas09.css

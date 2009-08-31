@@ -9,7 +9,7 @@
 -=Template Files=-
 (All file paths from Tiki root directory.)
 * templates/styles/fluidindex/credits.tpl
-* templates/styles/fluidindex/index.tpl
+* templates/styles/fluidindex/index.php
 
 -=Stylesheet and background images=-
 * styles/fluidindex.css

@@ -12,7 +12,7 @@ Use Look & Feel custom code for the site title text ornaments (see docs).
 -=Template Files=-
 (All file paths from Tiki root directory.)
 * templates/styles/faulkner/credits.tpl
-* templates/styles/faulkner/index.tpl
+* templates/styles/faulkner/index.php
 * templates/styles/faulkner/tiki.tpl
 
 -=Stylesheet and background images=-

@@ -9,7 +9,7 @@
 -=Template Files=-
 (All file paths from Tiki root directory.)
 * templates/styles/eatlon/credits.tpl
-* templates/styles/eatlon/index.tpl
+* templates/styles/eatlon/index.php
 * templates/styles/eatlon/sicustomcode.tpl
 * templates/styles/eatlon/tiki.tpl
 

@@ -15,7 +15,7 @@ an HTML table is needed in tiki.tpl for graphic treatment and column integrity.
 
 !!! The following template are identical to those of other Type 1 and Type 2 themes of mine for TikiWiki version 1.10 and so hopefully won't be needed eventually:
 * templates/styles/candiiclouds/header.tpl
-* templates/styles/candiiclouds/index.tpl
+* templates/styles/candiiclouds/index.php
 * templates/styles/candiiclouds/tiki-bot_bar.tpl
 * templates/styles/candiiclouds/tiki-read_article.tpl
 * templates/styles/candiiclouds/tiki-site_header.tpl

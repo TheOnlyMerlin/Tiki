@@ -9,7 +9,7 @@
 -=Template Files=-
 (All file paths from Tiki root directory.)
 * templates/styles/litejazz/credits.tpl
-* templates/styles/litejazz/index.tpl
+* templates/styles/litejazz/index.php
 * templates/styles/litejazz/litejazz_bottom.tpl
 * templates/styles/litejazz/litejazz_top.tpl
 * templates/styles/litejazz/tiki.tpl
