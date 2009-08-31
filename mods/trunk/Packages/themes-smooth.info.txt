@@ -22,7 +22,7 @@ themes/smooth/styles/smooth/img07.gif styles/smooth/img07.gif
 themes/smooth/styles/smooth/img08.jpg styles/smooth/img08.jpg
 themes/smooth/styles/smooth/index.php styles/smooth/index.php
 themes/smooth/templates/styles/smooth/credits.tpl templates/styles/smooth/credits.tpl
-themes/smooth/templates/styles/smooth/index.tpl templates/styles/smooth/index.tpl
+themes/smooth/templates/styles/smooth/index.php templates/styles/smooth/index.php
 themes/smooth/templates/styles/smooth/header.tpl templates/styles/smooth/header.tpl
 themes/smooth/templates/styles/smooth/sicustomcode.tpl templates/styles/smooth/sicustomcode.tpl
 themes/smooth/templates/styles/smooth/tiki.tpl templates/styles/smooth/tiki.tpl

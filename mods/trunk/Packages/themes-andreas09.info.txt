@@ -17,7 +17,7 @@ themes/andreas09/styles/andreas09/footerbg.jpg styles/andreas09/footerbg.jpg
 themes/andreas09/styles/andreas09/index.php styles/andreas09/index.php
 themes/andreas09/styles/andreas09/menuhover.jpg styles/andreas09/menuhover.jpg
 themes/andreas09/templates/styles/andreas09/credits.tpl templates/styles/andreas09/credits.tpl
-themes/andreas09/templates/styles/andreas09/index.tpl templates/styles/andreas09/index.tpl
+themes/andreas09/templates/styles/andreas09/index.php templates/styles/andreas09/index.php
 themes/andreas09/templates/styles/andreas09/header.tpl templates/styles/andreas09/header.tpl
 themes/andreas09/templates/styles/andreas09/tiki.tpl templates/styles/andreas09/tiki.tpl
 themes/andreas09/templates/styles/andreas09/tiki-bot_bar.tpl templates/styles/andreas09/tiki-bot_bar.tpl

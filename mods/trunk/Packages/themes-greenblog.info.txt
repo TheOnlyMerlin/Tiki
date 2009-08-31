@@ -22,7 +22,7 @@ themes/greenblog/styles/greenblog/post_bg.jpg styles/greenblog/post_bg.jpg
 themes/greenblog/styles/greenblog/right_section_bg.jpg styles/greenblog/right_section_bg.jpg
 themes/greenblog/styles/greenblog/index.php styles/greenblog/index.php
 themes/greenblog/templates/styles/greenblog/credits.tpl templates/styles/greenblog/credits.tpl
-themes/greenblog/templates/styles/greenblog/index.tpl templates/styles/greenblog/index.tpl
+themes/greenblog/templates/styles/greenblog/index.php templates/styles/greenblog/index.php
 themes/greenblog/templates/styles/greenblog/tiki-site_header.tpl templates/styles/greenblog/tiki-site_header.tpl
 
 Description:

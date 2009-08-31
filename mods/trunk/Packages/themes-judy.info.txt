@@ -27,7 +27,7 @@ themes/judy/styles/judy/gradient-inner.png styles/judy/gradient-inner.png
 themes/judy/styles/judy/index.php styles/judy/index.php
 themes/judy/styles/judy/judy.png styles/judy/judy.png
 themes/judy/templates/styles/judy/credits.tpl templates/styles/judy/credits.tpl
-themes/judy/templates/styles/judy/index.tpl templates/styles/judy/index.tpl
+themes/judy/templates/styles/judy/index.php templates/styles/judy/index.php
 themes/judy/templates/styles/judy/tiki.tpl templates/styles/judy/tiki.tpl
 themes/judy/templates/styles/judy/tiki-site_header.tpl templates/styles/judy/tiki-site_header.tpl
 

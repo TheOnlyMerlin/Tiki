@@ -106,7 +106,7 @@ themes/milkyway/styles/milkyway/options/white/modboxr.jpg styles/milkyway/option
 themes/milkyway/styles/milkyway/options/white/modboxtitlebottom.png styles/milkyway/options/white/modboxtitlebottom.png
 themes/milkyway/styles/milkyway/options/white/topbar.jpg styles/milkyway/options/white/topbar.jpg
 themes/milkyway/templates/styles/milkyway/credits.tpl templates/styles/milkyway/credits.tpl
-themes/milkyway/templates/styles/milkyway/index.tpl templates/styles/milkyway/index.tpl
+themes/milkyway/templates/styles/milkyway/index.php templates/styles/milkyway/index.php
 themes/milkyway/templates/styles/milkyway/module.tpl templates/styles/milkyway/module.tpl
 themes/milkyway/templates/styles/milkyway/tiki.tpl templates/styles/milkyway/tiki.tpl
 themes/milkyway/templates/styles/milkyway/tiki-site_header.tpl templates/styles/milkyway/tiki-site_header.tpl

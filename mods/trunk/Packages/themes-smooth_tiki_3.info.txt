@@ -26,7 +26,7 @@ themes/smooth_tiki_3/styles/smooth/index.php styles/smooth/index.php
 themes/smooth_tiki_3/styles/smooth/middle.png styles/smooth/middle.png
 themes/smooth_tiki_3/styles/smooth/smooth.png styles/smooth/smooth.png
 themes/smooth_tiki_3/templates/styles/smooth/credits.tpl templates/styles/smooth/credits.tpl
-themes/smooth_tiki_3/templates/styles/smooth/index.tpl templates/styles/smooth/index.tpl
+themes/smooth_tiki_3/templates/styles/smooth/index.php templates/styles/smooth/index.php
 themes/smooth_tiki_3/templates/styles/smooth/tiki-site_header.tpl templates/styles/smooth/tiki-site_header.tpl
 
 Description:
