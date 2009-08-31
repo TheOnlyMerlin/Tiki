@@ -48,7 +48,7 @@ themes/andreas09_tiki_3/styles/andreas09/options/red/menuhover.jpg styles/andrea
 themes/andreas09_tiki_3/styles/andreas09/options/red/mid.jpg styles/andreas09/options/red/mid.jpg
 themes/andreas09_tiki_3/styles/andreas09/options/red/red.png styles/andreas09/options/red/red.png
 themes/andreas09_tiki_3/templates/styles/andreas09/credits.tpl templates/styles/andreas09/credits.tpl
-themes/andreas09_tiki_3/templates/styles/andreas09/index.tpl templates/styles/andreas09/index.tpl
+themes/andreas09_tiki_3/templates/styles/andreas09/index.php templates/styles/andreas09/index.php
 
 Description:
 Andreas09 is based on the original design by Andreas Viklund (http://andreasviklund.com/templates/). If upgrading from a previous Tiki version, remove all Andreas template files (in templates/styles/andreas09) before installing this update.
