@@ -1,0 +1,50 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/business/Readme.txt styles/business/Readme.txt
+themes/business/styles/business.css styles/business.css
+themes/business/styles/business/arrows-467aa7.png styles/business/arrows-467aa7.png
+themes/business/styles/business/arrows-ffffff.png styles/business/arrows-ffffff.png
+themes/business/styles/business/boxtop.gif styles/business/boxtop.gif
+themes/business/styles/business/business.png styles/business/business.png
+themes/business/styles/business/footer.gif styles/business/footer.gif
+themes/business/styles/business/header.gif styles/business/header.gif
+themes/business/styles/business/image1.gif styles/business/image1.gif
+themes/business/styles/business/index.php styles/business/index.php
+themes/business/styles/business/info.gif styles/business/info.gif
+themes/business/styles/business/input.gif styles/business/input.gif
+themes/business/styles/business/magnify.gif styles/business/magnify.gif
+themes/business/styles/business/market.jpg styles/business/market.jpg
+themes/business/styles/business/nav.gif styles/business/nav.gif
+themes/business/styles/business/nav_h.gif styles/business/nav_h.gif
+themes/business/styles/business/title_bg.png styles/business/title_bg.png
+themes/business/templates/styles/business/credits.tpl templates/styles/business/credits.tpl
+themes/business/templates/styles/business/index.php templates/styles/business/index.php
+
+Description:
+The 'Business' theme for TikiWiki is a clean, blue on light design that uses the default templates and imports lite.css and layout.css. For more information, please see the documentation pages for this theme.
+ 
+Docurl:
+http://themes.tikiwiki.org/Business
+http://zukakakina.com/Busines
+ 
+Licence:
+This theme adapted by Gary Cunningham-Lee (chibaguy) for TikiWiki CMS/Groupware is an adaptation of the Eatlon theme by Olle Axelsson (http://business.com). The original theme has been made available to use freely, with the condition that the link to business.com remains in the page footer. To be in compliance with the terms of use, please do not remove this link.
+
+Author:
+Adapted by Gary Cunningham-Lee (chibaguy).
+ 
+Version:
+3.0
+ 
+Changelog:
+1 initial package
