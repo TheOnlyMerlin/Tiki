@@ -617,7 +617,9 @@ table.normal th a:visited,
 th a,
 th a:visited,
 td.heading a,
-td.heading a:visited {
+td.heading a:visited,
+th a.sortheader,
+th a.sortheader:visited {
 	color: #fff;
 }
 
