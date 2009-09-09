@@ -1,8 +1,18 @@
 -------------------------
 JQuery/Tiki readme
 -------------------------
-jonnybradley August 2009
+
+jonnybradley September 2009
 - - - - - - - - - - - - -
+
+Updates:
+	cluetip-1.0.4
+	colorbox-1.2.9
+	jquery-ui-1.7.2
+	js-autocomplete-1.3.2
+	jquery.sheet-0.52
+	superfish-1.4.8
+	
 
 This directory /third_party/jquery (/trunk/lib/jquery/) contains the JQuery library and selected plugins for TikiWiki 3.0
 
