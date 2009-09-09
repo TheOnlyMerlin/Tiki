@@ -1,11 +1,17 @@
 /*
 	jQuery.sheet() Spreadsheet with Calculations Plugin
-	Verison: 0.4
+	Verison: 0.52
+	Copywrite Robert Plummer 2008-2009
 	
-	Note:  There is a confusion bug with height that has been addressed
-	Safari likes to use the attribute height,
-	Firefox likes $().height;
-	IE likes $().outerHeight();
+	Dimensions Info:
+		When dealing with size, it seems that outerHeight is generally the most stable cross browser
+		attribute to use for bar sizing.  We try to use this as much as possible.  But because col's
+		don't have boarders, we subtract or add jS.attrH.boxModelCorrection() for those browsers.
+	
+	If vs Switch:
+		I try to use case over If as much as possible, especially on loops, because it's faster, even on try false, not much,
+		but a little (100ms in some cases).  So if you have 10 if statements firing at the same time,
+		the difference is notable.
 */
 jQuery.fn.extend({
 	sheet: function(settings) {
@@ -14,67 +20,65 @@ jQuery.fn.extend({
 			urlSave: "save.html",
 			title: '',
 			editable: true,
-			urlBaseCss: 'jquery.sheet.base.css',
-			urlTheme: "theme/ui.theme.css",
+			urlBaseCss: 'jquery.sheet.css',
+			urlTheme: "theme/jquery-ui-1.7.2.custom.css",
 			urlMenu: "menu.html",
-			urlMenuJs: "plugins/jquery.clickmenu.pack.js",
-			urlMenuCss: "plugins/clickmenu.css",
-			urlScrollTo: "plugins/jquery.scrollTo-1.4.0-min.js",
+			urlMenuJs: "plugins/mbMenu.min.js",
+			urlMenuCss: "plugins/menu.css",
+			urlMetaData: "plugins/jquery.metadata.js",
+			urlScrollTo: "plugins/jquery.scrollTo-min.js",
+			urlScrollsync: 'plugins/scrollsync.js',
+			urlJGCharts: 'plugins/jgcharts.pack.js',
 			loading: 'Loading Spreadsheet...',
-			newColumnWidth: '120px',
+			newColumnWidth: 120,
 			ajaxSaveType: 'POST',
 			buildSheet: false,//'10x30', this can be slow
 			calcOff: false,
 			log: false,
 			lockFormulas: false,
 			parent: this,
-			colMargin: "25px",
+			colMargin: 18, //If text size make cell bigger than this number the bars will be off on loadtime
 			fnBefore: function() {},
-			fnAfter: function() {},
+			fnAfter: function() {
+				jS.obj.formula().focus().select();
+			},
 			fnSave: function() { jS.saveSheet(); },
 			fnOpen: function() {},
-			fnClose: function() {}
+			fnClose: function() {},
+			joinedResizing: false //this joins the column/row with the resize bar
 		}, settings);
-		
+		jQuery.fn.sheet.settings = jS.s = settings;
 		settings.fnBefore();
 		
 		jS.getCss(settings.urlBaseCss);
+		
+		//We need to take the sheet out of the parent in order to get an accurate reading of it's height and width
+		var tempSheet = jQuery(this).find('table').hide();
+		jQuery(this).html(jS.s.loading);
+
 		settings.width = jQuery(settings.parent).width();
 		settings.height = jQuery(settings.parent).height();
-		
-		jQuery.fn.sheet.settings = jS.s = settings;
-		
-		var tempSheet = jQuery(jS.s.parent).html();
-		jQuery(jS.s.parent).html(jS.s.loading);
 		
 		if (jS.s.log) {
 			jQuery(jS.s.parent).after('<textarea id="' + jS.id.log + '" />');
 		}
 		
-		var sheetObj = jQuery(
+		var sheetUI = jQuery(
 			'<div id="' + jS.id.ui + '">'+
-				'<table class="tableControl">'+
-					'<colgroup>'+
-						'<col style="width: ' + jS.s.colMargin + ';" width="' + jS.s.colMargin + '"><col />'+
-					'</colgroup>'+
-					'<tbody>' +
-						'<tr style="height: ' + jS.s.colMargin + ';">'+
-							'<td><div id="' + jS.id.barCorner + '" onclick="jS.cellEditAbandon();" /></td>'+
-							'<td style="height: ' + jS.s.colMargin + '; vertical-align: middle;"><div style="overflow: hidden;" id="' + jS.id.barTopParent + '" /></td>'+
-						'</tr>'+
-						'<tr style="position: relative;">' +
-							'<td width="' + jS.s.colMargin + '" style="vertical-align: top; overflow: hidden; width: ' + jS.s.colMargin + ';">' +
-								'<div style="overflow: hidden;" id="' + jS.id.barLeftParent + '" />' +
-							'</td>' +
-							'<td id="' + jS.id.paneParent + '" style="position: relative;">' +
-								'<div id="' + jS.id.pane + '" />' +
-							'</td>'+
-						'</tr>' +
-					'</tbody>'+
-				'</table>'+
+				'<table cellpadding="0" cellspacing="0" border="0" class="tableControl ui-corner-bottom" style="border-collapse:collapse; border-width: 1px ! important; padding: none ! important; margin: none ! important;"><tbody><tr>' + 
+					'<td id="' + jS.id.barCornerParent + '">' + //corner
+						'<div style="height: ' + jS.s.colMargin + '; width: ' + jS.s.colMargin + ';" id="' + jS.id.barCorner + '" class="ui-icon ui-icon-refresh" onclick="jS.cellEditAbandon();">&nbsp;</div>'+
+					'</td><td>' + //barTop
+						'<div style="overflow: hidden;" id="' + jS.id.barTopParent + '" />'+
+					'</td></tr><tr><td>' + //barLeft
+						'<div style="overflow: hidden;width: ' + jS.s.colMargin + ';" id="' + jS.id.barLeftParent + '" />' +
+					'</td><td>' + //pane
+						'<div id="' + jS.id.pane + '"></div>'+
+					'</td>' +
+				'</tr></tbody></table>' +
 			'</div>'
 		);
-		
+
 		//Make functions upper and lower case compatible
 		for (var k in cE.fn) {
 			var kLower = k.toLowerCase();
@@ -83,44 +87,22 @@ jQuery.fn.extend({
 			}
 		}
 		
-		function tuneForUse(obj, r) {
-			jQuery(obj).find('table:first')
-				.addClass(jS.cl.sheet)
-				.attr('id', jS.id.sheet);
-			jQuery(obj).find('.' + jS.cl.uiCell).removeClass(jS.cl.uiCell);
-			jQuery(obj).find('td')
-				.css('background-color', '')
-				.css('color', '');
-			if (r) {
-				return obj;
-			}
+		jS.obj.parent().html(sheetUI);
+		
+		if (tempSheet) {
+			jS.obj.pane().html(tempSheet);
 		}
 		
-		//We load a sheet from a url, ajaxx style
-		if (jS.s.buildSheet == false) {
-			jQuery(sheetObj).find('#' + jS.id.pane).load(jS.s.urlGet, function(){
-				tuneForUse(this);
-				jS.sheetInit(sheetObj);
-				settings.fnAfter();
-			});
-		} else { //We know that the sheet is either one to build or already included in the code.
-			var tunedSheet;
-			
-			if (jS.s.buildSheet.toLowerCase().match('x')) {//We now know that the sheet is (or should be) was contained in the parent
-				tunedSheet = tuneForUse(jS.buildSheet(), true);
-			} else { //We go ahead and build a sheet.
-				tunedSheet = tuneForUse(tempSheet, true);
-			}
-			
-			jQuery(sheetObj).find('#' + jS.id.pane).html(tunedSheet);
-			jS.sheetInit(sheetObj);
-			settings.fnAfter();
+		if (!jS.s.buildSheet) {
+			jS.openSheet(jS.s.urlGet, false, true);
+		} else {
+			jS.openSheet(jS.s.urlGet, jS.s.buildSheet.toLowerCase(), true);
 		}
 	}
 });
 
- var jS = jQuery.sheet = {
-	version: '0.41',
+var jS = jQuery.sheet = {
+	version: 0.52,
 	s: {},//s = settings object, used for shorthand, populated from jQuery.sheet
 	obj: {//obj = object references
 		parent: 		function() { return jQuery(jS.s.parent) },
@@ -132,6 +114,7 @@ jQuery.fn.extend({
 		barLeft: 		function() { return jQuery('#' + jS.id.barLeft) },
 		barLeftParent: 	function() { return jQuery('#' + jS.id.barLeftParent) },
 		barCorner:		function() { return jQuery('#' + jS.id.barCorner) },
+		barCornerParent:function() { return jQuery('#' + jS.id.barCornerParent) },
 		barSelected:	function() { return jQuery('.' + jS.cl.barSelected) },
 		cell: 			function() { return jQuery('.' + jS.cl.cell) },
 		controls:		function() { return jQuery('#' + jS.id.controls) },
@@ -139,7 +122,6 @@ jQuery.fn.extend({
 		label: 			function() { return jQuery('#' + jS.id.label) },
 		fx:				function() { return jQuery('#' + jS.id.fx) },
 		pane: 			function() { return jQuery('#' + jS.id.pane) },
-		paneParent:		function() { return jQuery('#' + jS.id.paneParent) },
 		log: 			function() { return jQuery('#' + jS.id.log) },
 		menu:			function() { return jQuery('#' + jS.id.menu) },
 		title:			function() { return jQuery('#' + jS.id.title) },
@@ -159,12 +141,12 @@ jQuery.fn.extend({
 		barLeft: 		'jSheetBarLeft',
 		barLeftParent: 	'jSheetBarLeftParent',
 		barCorner:		'jSheetBarCorner',
+		barCornerParent:'jSheetBarCornerParent',
 		controls:		'jSheetControls',
 		formula: 		'jSheetControls_formula',
 		label: 			'jSheetControls_loc',
 		fx:				'jSheetControls_fx',
 		pane: 			'jSheetEditPane',
-		paneParent:		'jSheetEditPaneParent',
 		log: 			'jSheetLog',
 		menu:			'jSheetMenu',
 		title:			'sheetTitle'
@@ -178,82 +160,160 @@ jQuery.fn.extend({
 		uiDefault:		'ui-state-default',
 		uiActive:		'ui-state-active',
 		uiBase:			'ui-widget-content',
-		uiParent: 		'ui-widget ui-widget-content ui-corner-all',
-		uiBar: 			'ui-widget-header ui-helper-clearfix',
+		uiParent: 		'ui-widget-content ui-corner-all',
+		uiBar: 			'ui-widget-header',
 		uiPane: 		'ui-widget-content',
 		uiMenuUl: 		'ui-widget-header',
 		uiMenuLi: 		'ui-widget-header',
 		uiMenuHighlighted: 'ui-state-highlight',
-		uiControl: 		'ui-widget-content',
+		uiControl: 		'ui-widget-header ui-corner-top',
+		uiControlTextBox:'ui-widget-content',
 		uiCell:			'themeRoller_activeCell',
 		uiCellHighlighted: 'ui-state-highlight',
 		toggle:			'cellStyleToggle'
 	},
 	ERROR: function() { return cE.ERROR },
-	sheetInit: function(sheetObj) {
-		jS.obj.parent().html(sheetObj);
-		jS.sheetDecorate();
-		jS.barAdjustor();
-	},
-	attr: {//I created this object so I could see, quickly, which attribute was most stable.
-		width: function(obj) { return jQuery(obj).outerWidth(); },
-		height: function(obj) { return jQuery(obj).outerHeight(); }
-	},
-	makeBarItemLeft: function() {
-		jS.obj.barLeft().remove();
-		
-		var barLeft = jQuery('<table border="1px" id="' + jS.id.barLeft + '" width="100%" />');
-		var tBody = jQuery('<tbody />');
-		jS.obj.sheet().find('tr').each(function(i) {
-			var newHeight = jS.attr.height(jQuery(this).find('td:first'));
+	tuneTableForSheetUse: function(obj, r) {
+		obj
+			.addClass(jS.cl.sheet)
+			.attr('id', jS.id.sheet)
+			.attr('border', '1px');
+		obj.find('.' + jS.cl.uiCell).removeClass(jS.cl.uiCell);
+		obj.find('td')
+			.css('background-color', '')
+			.css('color', '')
+			.css('height', '')
+			.attr('height', '');
 			
-			var tr = jQuery('<tr />').height(newHeight);
-			var td = jQuery('<td>' + (i+1) + '</td>').height(newHeight).css('vertical-align', 'middle');
+		if (r) {
+			return obj;
+		}
+	},
+	attrH: {//Attribute Helpers
+	//I created this object so I could see, quickly, which attribute was most stable.
+	//As it turns out, all browsers are different, thus this has evolved to a much uglier beast
+		width: function(obj, skipCorrection) {
+			return jQuery(obj).outerWidth() - jS.attrH.boxModelCorrection(skipCorrection);
+		},
+		widthReverse: function(obj, skipCorrection) {
+			return jQuery(obj).outerWidth() + jS.attrH.boxModelCorrection(skipCorrection);
+		},
+		height: function(obj, skipCorrection) {
+			return jQuery(obj).outerHeight() - jS.attrH.boxModelCorrection(skipCorrection);
+		},
+		heightReverse: function(obj, skipCorrection) {
+			return jQuery(obj).outerHeight() + jS.attrH.boxModelCorrection(skipCorrection);
+		},
+		syncSheetWidthFromTds: function(obj) {
+			var entireWidth = 0;
+			obj = (obj ? obj : jS.obj.sheet());
+			obj.find('tr:first').find('td').each(function() {
+				entireWidth += jQuery(this).width();
+			});
+			obj.width(entireWidth);
+		},
+		boxModelCorrection: function(skipCorrection) {
+			var correction = 0;
+			if (jQuery.support.boxModel && !skipCorrection) {
+				correction = 2;
+			}
+			return correction;
+		},
+		setHeight: function(i, from, skipCorrection, obj) {
+			var correction = 0;
+			var h = 0;
+			var fn;
 			
-			if (jS.s.editable) {
-				jS.getResizeControl.height(td);
+			switch(from) {
+				case 'cell':
+					obj = (obj ? obj : jS.obj.barLeft().find('div').eq(i))
+					h = jS.attrH.height(jQuery(jS.getTd(null, i + 1, 1)).parent().andSelf(), skipCorrection);
+					break;
+				case 'bar':
+					obj = (obj ? obj : jQuery(jS.getTd(null, i + 1, 1)).parent().andSelf());
+					h = jS.attrH.heightReverse(jS.obj.barLeft().find('div').eq(i), skipCorrection);
+					break;
 			}
 			
-			tr.append(td);
-			
-			jQuery(tBody).append(tr);
-		});
-		barLeft.append(tBody);
-		jS.obj.barLeftParent().append(barLeft);
-		
-		//Safari Fix
-		jS.barHeightSync();
+			if (h) {
+				jQuery(obj)
+					.height(h)
+					.css('height', h)
+					.attr('height', h);
+			}
+
+			return obj;
+		}
 	},
-	makeBarItemTop: function() {
-		jS.obj.barTop().remove();
-		
-		var w = jS.attr.width(jS.obj.sheet());
-		var barTop = jQuery('<table border="1px" id="' + jS.id.barTop + '" />').width(w);
-		barTop.height(jS.s.colMargin);
-
-		barTop.append(jS.obj.sheet().find('colgroup').clone());
-		// Prepend a new row for column headers.
-		var tr = jQuery("<tr class='" + jS.cl.bar + "' />");
-		var td = '';
-		
-		jS.obj.sheet().find('tr:eq(0) td').each(function(i) {
-			var v = cE.columnLabelString(i+1);
-			//Creating the object without touching the DOM makes loading faster.
-			td += "<td>" + v + "</td>";
+	makeBarItemLeft: function(url) {//Works great!
+		jS.obj.barLeft().remove();
+		var barLeft = jQuery('<div border="1px" id="' + jS.id.barLeft + '" />').height('10000px');
+		var heightFn;
+		if (url) { //This is our standard way of detecting height when a sheet loads from a url
+			heightFn = function(i, objSource, objBar) {
+				objBar.height(parseInt(objSource.outerHeight()) - jS.attrH.boxModelCorrection());
+			}
+		} else { //This way of detecting height is used becuase the object has some problems getting
+				//height because both tr and td have height set
+				//This corrects the problem
+				//This is only used when a sheet is already loaded in the pane
+			heightFn = function(i, objSource, objBar) {
+				objBar.height(parseInt(objSource.css('height').replace('px','')) - jS.attrH.boxModelCorrection());
+			}
+		}
+		jS.obj.sheet().find('tr').each(function(i) {
+			
+			var child = jQuery('<div><span>' + (i + 1) + '</span></div>');
+			jQuery(barLeft).append(child);
+			heightFn(i, jQuery(this), child);
+			jS.getResizeControl.height(child);
 		});
+		barLeft.appendTo(jS.obj.barLeftParent());
+	},
+	makeBarItemTop: function(url) { //Works great!
+		jS.obj.barTop().remove();
+		var barTop = jQuery('<div id="' + jS.id.barTop + '" class="' + jS.cl.bar + '" />').width('10000px');
+		barTop.height(jS.s.colMargin);
 		
-		jQuery(tr).append(td);
+		var parents;
+		var widthFn;
 		
-		jQuery(barTop).find('colgroup').after("<tbody />");
-		jQuery(barTop).find('tbody').html(tr);
-
-		// Prepend one colgroup/col element that covers the new row headers.
-		if (jS.s.editable) {
-			jS.getResizeControl.width(jQuery(barTop).find('td'));
+		if (url) {
+			parents = jS.obj.pane().find('tr:first td');
+			widthFn = function(obj) {
+				return jS.attrH.width(obj);
+			}
+		} else {
+			parents = jS.obj.pane().find('col');
+			widthFn = function(obj) {
+				return parseInt(jQuery(obj).css('width').replace('px','')) - jS.attrH.boxModelCorrection();
+			}
 		}
 		
-		jS.obj.barTopParent().append(barTop);
+		parents.each(function(i) {
+			var v = cE.columnLabelString(i + 1);
+			var w = widthFn(this);
+			
+			var child = jQuery("<div>" + v + "</div>")
+				.width(w)
+				.height(jS.s.colMargin);
+			
+			jS.getResizeControl.width(child);
 
+			barTop.append(child);
+		});
+		
+		// Prepend one colgroup/col element that covers the new row headers.
+		//jS.attrH.syncSheetWidthFromTds();
+		
+		jS.obj.barTopParent().append(barTop);
+	},
+	setTdIds: function() {
+		jS.obj.sheet().find('tr').each(function(row) {
+			jQuery(this).find('td').each(function(col) {
+				jQuery(this).attr('id', jS.getTdId(row + 1, col + 1));
+			});
+		});
 	},
 	toggleHide: {//These are not ready for prime time
 		row: function(i) {
@@ -261,7 +321,7 @@ jQuery.fn.extend({
 				i = jS.obj.cell().parent().attr('rowIndex');
 			}
 			if (i) {//Make sure that i equals something
-				var o = jS.obj.barLeft().find('tr').eq(i);
+				var o = jS.obj.barLeft().find('div').eq(i);
 				if (o.is(':visible')) {//This hides the current row
 					o.hide();
 					jS.obj.sheet().find('tr').eq(i).hide();
@@ -276,7 +336,7 @@ jQuery.fn.extend({
 		},
 		rowAll: function() {
 			jS.obj.sheet().find('tr').show();
-			jS.obj.barLeft().find('tr').show();
+			jS.obj.barLeft().find('div').show();
 		},
 		column: function(i) {
 			if (!i) {
@@ -284,12 +344,11 @@ jQuery.fn.extend({
 			}
 			if (i) {
 				//We need to hide both the col and td of the same i
-				var o = jS.obj.barTop().find('colgroup col').eq(i);
+				var o = jS.obj.barTop().find('div').eq(i);
 				if (o.is(':visible')) {
 					jS.obj.sheet().find('tbody tr').each(function() {
 						jQuery(this).find('td').eq(i).hide();
 					});
-					jS.obj.barTop().find('tbody tr td').eq(i);
 					o.hide();
 					jS.obj.sheet().find('colgroup col').eq(i).hide();
 					jS.toggleHide.columnSizeManage();
@@ -304,10 +363,10 @@ jQuery.fn.extend({
 		columnSizeManage: function() {
 			var w = jS.obj.barTop().width();
 			var newW = 0;
-			jS.obj.barTop().find('colgroup col').each(function() {
+			jS.obj.barTop().find('div').each(function() {
 				var o = jQuery(this);
 				if (o.is(':hidden')) {
-					newW += parseInt(o.css('width').replace('px',''));
+					newW += o.width();
 				}
 			});
 			jS.obj.barTop().width(w);
@@ -316,59 +375,83 @@ jQuery.fn.extend({
 	},
 	getResizeControl: {
 		height: function(obj) {
-			jQuery(obj).mousedown(function(e) { 
-				jS.barResizer(e, this, 'row');
-				return false;
-			})
-			.dblclick(function() {
-				var i = jQuery.trim(jQuery(this).text());
-				i = parseInt(i) - 1;
-				jS.cellSetActiveMultiRow(i);
-			});
+			if (jS.s.editable) {
+				obj
+					.unbind('mousedown')
+					.unbind('dblclick')
+					.mousedown(function(e) { 
+						jS.barResizer(e, jQuery(this), 'row');
+						return false;
+					})
+					.dblclick(function() {
+						jS.cellEditAbandon();
+						var i = jQuery.trim(jQuery(this).text());
+						i = parseInt(i);
+						jS.cellSetActiveMultiRow(i);
+					});
+			}
 		},
 		width: function(obj) {
-			jQuery(obj).mousedown(function(e) {
-				jS.barResizer(e, this, 'column');
-				return false;
-			})
-			.dblclick(function() {
-				var i = cE.columnLabelIndex(jQuery.trim(jQuery(this).text()));
-				i = parseInt(i) - 1;
-				jS.cellSetActiveMultiColumn(i);
-			});
+			if (jS.s.editable) {
+				obj
+					.unbind('mousedown')
+					.unbind('dblclick')
+					.mousedown(function(e) {
+						jS.barResizer(e, jQuery(this), 'column');
+						return false;
+					})
+					.dblclick(function() {
+						jS.cellEditAbandon();
+						var i = cE.columnLabelIndex(jQuery.trim(jQuery(this).text()));
+						i = parseInt(i);
+						jS.cellSetActiveMultiColumn(i);
+					});
+			}
 		}
 	},
 	makeControls: function(parent) {
 		jS.obj.controls().remove();
 		if (jS.s.editable) {
 			// Register onclick for tableBody td elements.
-			jS.obj.pane().find('td').mousedown(jS.cellOnMouseDown).click(jS.cellOnClick);
-
+			jS.obj.pane().find('td')
+				.mousedown(jS.cellOnMouseDown)
+				.click(jS.cellOnClick);
 			var controls = jQuery('<div id="' + jS.id.controls + '" />');
 			//Lets get the page title information			
 			var sheetTitle = jS.sheetTitle(true);
 			
-			if (jS.s.urlMenu) {
+			if (jS.s.urlMenuJs && jS.s.urlMenuCss && jS.s.urlMetaData && jS.s.urlMenu) {
+				jQuery.getScript(jS.s.urlMetaData);
 				jQuery.getScript(jS.s.urlMenuJs, function() {
 					jS.getCss(jS.s.urlMenuCss);
 					var menuObj = jQuery('<div />').load(jS.s.urlMenu, function() {
 						controls.prepend(menuObj.html());
 						jS.obj.menu()
-							.clickMenu()
-							.append('&nbsp;&nbsp;&nbsp;<span id="' + jS.id.title + '">' + sheetTitle + '</span>')
-							.find('.' + jS.cl.toggle)
-								.click(function(e) {
-									jS.cellStyleToggle(e);
-								});
-
-						jS.sheetSyncSize();
+							.buildMenu({
+								additionalData:"pippo=1",
+								menuWidth: 100,
+								openOnRight:false,
+								menuSelector: ".menuContainer",
+								hasImages:false,
+								fadeInTime: 0,
+								fadeOutTime:0,
+								adjustLeft:2,
+								minZindex:"auto",
+								adjustTop:10,
+								opacity:.95,
+								shadow:true,
+								closeOnMouseOut:false,
+								closeAfter:1000
+							});
 						
-						jS.obj.menu()
+						//Append Title
+						jS.obj.menu().find('#titleHolder').append('<span id="' + jS.id.title + '">' + sheetTitle + '</span>');
+							
+						jS.sheetSyncSize();
 					});
 				});
 			} else {
 				controls.append('&nbsp;&nbsp;&nbsp;<span id="' + jS.id.title + '">' + sheetTitle + '</span>');
-				jS.sheetSyncSize();
 			}
 			
 			controls.append('<table style="width: 100%;">' +
@@ -393,23 +476,16 @@ jQuery.fn.extend({
 			});
 
 			jQuery(parent).prepend(controls);
+			jS.sheetSyncSize();
+		} else {
+			jS.sheetSyncSize();
 		}
 	},
-	sheetDecorate: function() {			
-		// Set standard height for those with none
-		jS.obj.sheet().find('[style!="height"] tr').innerHeight(jS.s.colMargin);
-		jS.obj.sheet().find('[style!="height"] tr').outerHeight(jS.s.colMargin);
-		
+	sheetDecorate: function() {	
+		jS.sheetSyncSizeToCols();
 		jS.formatSheet();
-		
-		jS.makeBarItemLeft();
-		jS.makeBarItemTop();
-		
+		jS.sheetDecorateRemove(jS.obj.sheet());
 		jS.makeControls(jS.obj.ui());
-
-		if (!jS.s.calcOff) {
-			jS.calc(jS.obj.tableBody());
-		}
 	},
 	formatSheet: function() {
 		if (!jS.obj.parent().find('tbody').length > 0) {
@@ -420,7 +496,15 @@ jQuery.fn.extend({
 			var colgroup = jQuery('<colgroup />');
 			jS.obj.sheet().find('tr:first').find('td').each(function() {
 				var w = jQuery(this).width();
-				jQuery('<col />').width(w).attr('width', w).appendTo(colgroup);
+				jQuery(this)
+					.width(w)
+					.css('width', w)
+					.attr('width', w);
+				jQuery('<col />')
+					.width(w)
+					.css('width', w)
+					.attr('width', w)
+					.appendTo(colgroup);
 			});
 			colgroup.insertBefore(jS.obj.sheet().parent());
 		}
@@ -431,47 +515,18 @@ jQuery.fn.extend({
 	themeRoller: {
 		start: function() {
 			jS.getCss(jS.s.urlTheme);		
-			//Style sheet
-			
+			//Style sheet			
 			jS.obj.parent().addClass(jS.cl.uiParent);
-			
+			jS.obj.sheet().addClass(jS.cl.uiParent);
 			//Style bars
-			jS.obj.barLeft().find('td').addClass(jS.cl.uiBar);
-			jS.obj.barTop().find('td').addClass(jS.cl.uiBar);
-			jS.obj.barCorner().addClass(jS.cl.uiBar);
+			jS.obj.barLeft().find('div').addClass(jS.cl.uiBar)
+			jS.obj.barTop().find('div').addClass(jS.cl.uiBar);
+			jS.obj.barCornerParent().addClass(jS.cl.uiBar);
 			
-			//The sheet is transparent, this gives it background
-			jS.obj.pane().addClass(jS.cl.uiPane);
-			
-			//Style the menu
-			jS.obj.menu()
-				.css('font-size', '12px')
-				.css('padding-top', '2px')
-				.css('padding-left', '2px')
-				.find('ul')
-					.addClass(jS.cl.uiMenuUl)
-					.andSelf()
-				.find('li')
-					.css('border', 'none')
-					.addClass(jS.cl.uiMenuLi)
-					.hover(function() {
-						//Handle mouseover styling, or highlighting
-						jQuery(this)
-							.addClass(jS.cl.uiMenuHighlighted);
-					},function() {
-						//This cleans the menus so only what's mouseover shows as highlighted.
-						jQuery(this).removeClass(jS.cl.uiMenuHighlighted);
-					});
-			
-			jS.obj.sheet().addClass('ui-widget-content');
-			
-			jS.obj.barLeft().addClass(jS.cl.uiBar);
-			jS.obj.barTop().addClass(jS.cl.uiBar);
-			
-			jS.obj.title().addClass(jS.cl.uiControl);
+			jS.obj.controls().addClass(jS.cl.uiControl);
 			jS.obj.fx().addClass(jS.cl.uiControl);
 			jS.obj.label().addClass(jS.cl.uiControl);
-			jS.obj.formula().addClass(jS.cl.uiControl);
+			jS.obj.formula().addClass(jS.cl.uiControlTextBox);
 		},
 		cell: function(td) {
 			jS.themeRoller.clearCell();
@@ -492,17 +547,17 @@ jQuery.fn.extend({
 			jQuery(obj).addClass(jS.cl.uiBar);
 		},
 		barTop: function(i) {
-			jS.obj.barTop().find('td').eq(i).addClass(jS.cl.uiActive);
+			jS.obj.barTop().find('div').eq(i - 1).addClass(jS.cl.uiActive);
 		},
 		barLeft: function(i) {
-			jS.obj.barLeft().find('td').eq(i).addClass(jS.cl.uiActive);
+			jS.obj.barLeft().find('div').eq(i - 1).addClass(jS.cl.uiActive);
 		},
 		barObj: function(obj) {
 			jQuery(obj).addClass(jS.cl.uiActive);
 		},
 		clearBar: function() {
-			jS.obj.barTopParent().find('.' + jS.cl.uiActive).removeClass(jS.cl.uiActive);
-			jS.obj.barLeftParent().find('.' + jS.cl.uiActive).removeClass(jS.cl.uiActive);
+			jS.obj.barTop().find('.' + jS.cl.uiActive).removeClass(jS.cl.uiActive);
+			jS.obj.barLeft().find('.' + jS.cl.uiActive).removeClass(jS.cl.uiActive);
 		}
 	},
 	manageHtmlToText: function(v) {
@@ -534,425 +589,414 @@ jQuery.fn.extend({
 		}
 		return v;
 	},
-	sheetDecorateRemove: function(obj) {
+	sheetDecorateRemove: function(obj, removeHeight) {
+		//remove class jSheetCellActive
 		jQuery(obj).find('.' + jS.cl.cell).removeClass(jS.cl.cell);
+		//remove class ui-state-highlight
+		jQuery(obj).find('.' + jS.cl.uiCellHighlighted).removeClass(jS.cl.uiCellHighlighted);
+		//remove class themeRoller_activeCell
+		
+		jQuery(obj).find('.' + jS.cl.uiCell).removeClass(jS.cl.uiCell);
 		//IE Bug, match width with css width
 		jQuery('col', obj).each(function(i) {
 			var v = jQuery(this).css('width') + 'px';
 			jQuery(obj).find('col').eq(i).attr('width', v);
 		});
 		
-		jQuery(obj).find('td').css('height', '');
+		if (removeHeight) {
+			jQuery(obj).find('td').andSelf()
+				.css('height', '')
+				.attr('height', '');
+		}
 	},
 	cellIsEdit: false,
-	cellClick: function(verb, loc) {
-		loc[0]--; loc[1]--;
-		switch (verb) {
-			case 'up': 		loc[0]--; break;
-			case 'down': 	loc[0]++; break;
-			case 'left': 	loc[1]--; break;
-			case 'right': 	loc[1]++; break;
+	sheetIsEdit: false, //we don't want to have to recompile the sheet every time a person presses a button
+	getCellClickFn: function() {
+		return (jS.s.lockFormulas ? jS.cellOnClickLocked : jS.cellOnClickReg);
+	},
+	cellClick: function(keyCode) {
+		var h = 0;
+		var v = 0;
+		switch (keyCode) {
+			case key.UP: 		v--; break;
+			case key.DOWN: 		v++; break;
+			case key.LEFT: 		h--; break;
+			case key.RIGHT: 	h++; break;
 		}
-		jS.obj.sheet().find('tr').eq(loc[0]).find('td:visible').eq(loc[1]).click();
+		jQuery(jS.getTd(null, jS.cellEditLastLoc[1] + v, jS.cellEditLastLoc[2] + h)).click();
+		
+		return false;
 	},
 	cellOnMouseDown: function(evt) {
-		jS.cellSetActiveMulti(evt);
-		if (jQuery(evt.target).attr('cellIndex')) {//This is to detect if it is a textarea
+		if (evt.altKey) {
+			jS.cellSetActiveMulti(evt);
+			jQuery(document).mouseup(function() {
+				jQuery(this).unbind('mouseup');
+				var v = jS.obj.formula().val();
+				jS.obj.formula().val(v + jS.getTdRange());
+			});
+		} else {
+			jS.cellSetActiveMulti(evt);
+		}
+		
+		switch (!isNaN(evt.target.cellIndex)) {//This is to detect if it is a textarea or other obj
+			case true: 
+				jS.obj.formula().focus().select();
+				return false;
+		}
+	},
+	cellOnClickLocked: function(evt) {
+		if (!isNaN(evt.target.cellIndex)) {
+			if (!jQuery(evt.target).attr('formula')) {
+				jS.cellOnClickManage(jQuery(evt.target));
+			}
+		} else {
+			jSCellEditAbandon();
+			jS.obj.formula().focus().select();
+		}
+	},
+	cellOnClickReg: function(evt) {
+		if (!isNaN(evt.target.cellIndex)) {		
+			jS.cellOnClickManage(jQuery(evt.target));
+		} else {
+			jS.obj.formula().focus().select();
 			return false;
 		}
 	},
-	cellOnClick: function(evt, o) {
-		if (!o) {
-			o = this;
-		}
-		switch (jS.s.lockFormulas) {
-			case true:
-				if (!jQuery(o).attr('formula')) {
-					jS.cellOnClickManage(o);
-					jS.followMe();
-				}
-				break;
-			default:
-				jS.cellOnClickManage(o);
-				jS.followMe();
-		}
-	},
-	cellOnClickManage: function(target) {
-		switch (!jQuery(target).hasClass(jS.cl.cell)) {
-			case true:
-				var loc = jS.getTdLocation(target);
-				if (loc) {
-					jS.cellSetFocus(loc, jS.obj.label(), jS.obj.formula());
-					jS.cellEdit(loc[0], loc[1], target);
-				}
-				jS.log('click: ' + loc);
-				break;
-			default:
+	cellOnClickManage: function(td) {
+		if (!isNaN(td[0].cellIndex)) {
+			if (!td.hasClass(jS.cl.cell)) {
+				
+				jS.cellEdit(td);
+				jS.log('click cell');
+			} else {
 				jS.cellIsEdit = true;
-				jS.cellTextArea(target, false, true);
+				jS.isSheetEdit = true;
+				jS.cellTextArea(td, false, true);
 				jS.log('click, textarea over table activated');
+			}
+			jS.followMe();
+		} else {
+			return false;
 		}
 	},
-	cellSetFocus: function(loc, labelLocation, editObject) {
-		var v = editObject.val();
-		switch (v.charAt(0)) {
-			case '=':
-				if ("=([:,*/+-".indexOf(v.charAt(v.length)) >= 0) {
-					// Append cell location to currently edited formula based on mouse click.
-					editObject.val(v);
-					jQuery(editObject).focus();
-					return false;
-				}
-				break;
-		}
-	},
-	cellEdit: function(row, col, td) {
-		// The row and col are 1-based.
-		// This method points the controls to a new cell.
-		if (!td[0]) {
-			td = jS.getTd(jS.obj.tableBody(), row, col);
-		}
-		td = jQuery(td);
+	cellEdit: function(td) {
+		//This finished up the edit of the last cell
 		jS.cellEditDone();
-		jS.obj.label().html(cE.columnLabelString(col) + row);
+		var loc = jS.getTdLocation(td);
+		//Show where we are to the user
+		jS.obj.label().html(cE.columnLabelString(loc[1]) + loc[0]);
+		
 		var v = td.attr('formula');
-		if (!v || v.length <= 0) {
+		if (!v) {
 			v = jS.manageHtmlToText(td.html());
 		}
-		jS.obj.formula().val(v).focus().select();
-		jS.cellSetActive(td);
+		
+		jS.obj.formula()
+			.val(v)
+			.focus()
+			.select();
+		jS.cellSetActive(td, loc);
 	},
-	cellSetActive: function(td) {
-		var loc = jS.getTdLocation(td);
-		jQuery(td).addClass(jS.cl.cell);
-		jS.obj.barLeft().find('td').eq(loc[0]--).addClass(jS.cl.barSelected);
-		jS.obj.barTop().find('td').eq(loc[1]--).addClass(jS.cl.barSelected);
+	cellSetActive: function(td, loc) {
+		jS.cellEditLastLoc[0] = td;
+		jS.cellEditLastLoc[1] = loc[0];
+		jS.cellEditLastLoc[2] = loc[1];
 		
 		jS.themeRoller.cell(td);
-		jS.themeRoller.barLeft(loc[0]--);
-		jS.themeRoller.barTop(loc[1]--);
+		jS.themeRoller.barLeft(loc[0]);
+		jS.themeRoller.barTop(loc[1]);
+		
+		td.addClass(jS.cl.cell);
+		jS.obj.barLeft().find('div').eq(loc[0] - 1).addClass(jS.cl.barSelected);
+		jS.obj.barTop().find('div').eq(loc[1] - 1).addClass(jS.cl.barSelected);
 	},
+	cellEditLastLoc: new Array(),
 	cellEditDone: function(bsheetClearActive) {
 		switch (jS.cellIsEdit) {
 			case true:
 				// Any changes to the input controls are stored back into the table, with a recalc.
-				var loc = cE.parseLocation(jS.obj.label().html());
-				if (loc) {
-					var td = jQuery(jS.getTd(jS.obj.tableBody(), loc[0], loc[1]));
-					var recalc = false;
+				var loc = [jS.cellEditLastLoc[1], jS.cellEditLastLoc[2]];
+				var td = jS.cellEditLastLoc[0];
+				var recalc = false;
+				
+				//Lets ensure that the cell being edited is actually active
+				if (td && loc && td.hasClass(jS.cl.cell)) { 
+					//This should return either a val from textbox or formula, but if fails it tries once more from formula.
+					var v = jS.cellTextArea(td, true);
+
+					//inputFormula.value;
+					var noEditFormula = false;
+					var noEditNumber = false;
+					var noEditNull = false;
+					var editedFormulaToFormula = false;
+					var editedFormulaToReg = false;
+					var editedRegToFormula = false;
+					var editedRegToReg = false;
+					var editedToNull = false;
+					var editedNumberToNumber = false;
+					var editedNullToNumber = false;
 					
-					//Lets ensure that the cell being edited is actually active
-					if (td.hasClass(jS.cl.cell)) { 
-						//This should return either a val from textbox or formula, but if fails it tries once more from formula.
-						var v = jS.cellTextArea(td, true);
+					var tdFormula = td.attr('formula');
+					var tdPrevVal = td.attr('prevVal');
 
-						//inputFormula.value;
-						var noEditFormula = false;
-						var noEditNumber = false;
-						var noEditNull = false;
-						var editedFormulaToFormula = false;
-						var editedFormulaToReg = false;
-						var editedRegToFormula = false;
-						var editedRegToReg = false;
-						var editedToNull = false;
-						var editedNumberToNumber = false;
-						var editedNullToNumber = false;
-						
-						var resize = false;
-						
-						var tdFormula = td.attr('formula');
-						var tdPrevVal = td.attr('prevVal');
-						var tdHeight = jS.attr.height(td);
-
-						if (v) {
-							if (v.charAt(0) == '=') { //This is now a formula
-								if (v != tdFormula) { //Didn't have a formula before but now does
-									editedFormulaToFormula = true;
-									jS.log('edit, new formula, possibly had formula');
-								} else if (tdFormula) { //Updated using inline edit
-									noEditFormula = true;
-									jS.log('no edit, has formula');
-								} else {
-									jS.log('no edit, has formula, unknown action');
-								}
-							} else if (tdFormula) { //Updated out of formula
-								editedRegToFormula = true;
-								jS.log('edit, new value, had formula');
-							} else if (!isNaN(parseInt(v))) {
-								if ((v != tdPrevVal && v != jS.obj.formula().val()) || (td.text() != v)) {
-									editedNumberToNumber = true;
-									jS.log('edit, from number to number, possibly in function');
-								} else {
-									noEditNumber = true;
-									jS.log('no edit, is a number');
-								}
-							} else { //Didn't have a formula before of after edit
-								editedRegToReg = true;
-								jS.log('possible edit from textarea, has value');
-							}
-						} else { //No length value
-							if (td.html().length > 0 && tdFormula) {
-								editedFormulaToReg = true;
-								jS.log('edit, null value from formula');
-							} else if (td.html().length > 0 && tdFormula) {
-								editedToNull = true;
-								jS.log('edit, null value from formula');
-							
+					if (v) {
+						if (v.charAt(0) == '=') { //This is now a formula
+							if (v != tdFormula) { //Didn't have a formula before but now does
+								editedFormulaToFormula = true;
+								jS.log('edit, new formula, possibly had formula');
+							} else if (tdFormula) { //Updated using inline edit
+								noEditFormula = true;
+								jS.log('no edit, has formula');
 							} else {
-								noEditNull = true;
-								jS.log('no edit, null value');
+								jS.log('no edit, has formula, unknown action');
 							}
+						} else if (tdFormula) { //Updated out of formula
+							editedRegToFormula = true;
+							jS.log('edit, new value, had formula');
+						} else if (!isNaN(parseInt(v))) {
+							if ((v != tdPrevVal && v != jS.obj.formula().val()) || (td.text() != v)) {
+								editedNumberToNumber = true;
+								jS.log('edit, from number to number, possibly in function');
+							} else {
+								noEditNumber = true;
+								jS.log('no edit, is a number');
+							}
+						} else { //Didn't have a formula before of after edit
+							editedRegToReg = true;
+							jS.log('possible edit from textarea, has value');
 						}
+					} else { //No length value
+						if (td.html().length > 0 && tdFormula) {
+							editedFormulaToReg = true;
+							jS.log('edit, null value from formula');
+						} else if (td.html().length > 0 && tdFormula) {
+							editedToNull = true;
+							jS.log('edit, null value from formula');
 						
-						td.removeAttr('prevVal');
-						v = jS.manageTextToHtml(v);
-						if (noEditFormula) {
-							td.html(tdPrevVal);
-						} else if (editedFormulaToFormula) {
-							recalc = true;
-							resize = true;
-							td.attr('formula', v).html('');
-						} else if (editedFormulaToReg) {
-							recalc = true;
-							resize = true;
-							td.removeAttr('formula').html(v);
-						} else if (editedRegToFormula) {
-							recalc = true;
-							resize = true;
-							td.removeAttr('formula').html(v);
-						} else if (editedRegToReg) {
-							resize = true;
-							td.html(v);
-						} else if (noEditNumber) {
-							td.html(v); 
-						} else if (noEditNull) {
-							td.html(v);
-						} else if (editedNumberToNumber) {
-							recalc = true;
-							resize = true;
-							td.html(v);
-						} else if (editedToNull) {
-							recalc = true;
-							resize = true;
-							td.removeAttr('formula').html('');
+						} else {
+							noEditNull = true;
+							jS.log('no edit, null value');
 						}
-						
-						if (recalc && !jS.obj.sheet().hasClass(jS.cl.calcOff)) {
-							jS.calc(jS.obj.tableBody());
-						}
-						
-						if (bsheetClearActive != false) {
-							// Treats null == true.
-							jS.sheetClearActive();
-						}
-						
-						if (resize) {
-							td.parent().height(tdHeight);
-							jS.obj.barLeft().find('tr').eq(loc[0] - 1).height(jS.attr.height(td.parent()));
-						}
-						
-						jS.obj.formula().focus().select();
-						jS.cellIsEdit = false;
 					}
+					
+					td.removeAttr('prevVal');
+					v = jS.manageTextToHtml(v);
+					if (noEditFormula) {
+						td.html(tdPrevVal);
+					} else if (editedFormulaToFormula) {
+						recalc = true;
+						td.attr('formula', v).html('');
+					} else if (editedFormulaToReg) {
+						recalc = true;
+						td.removeAttr('formula').html(v);
+					} else if (editedRegToFormula) {
+						recalc = true;
+						td.removeAttr('formula').html(v);
+					} else if (editedRegToReg) {
+						td.html(v);
+					} else if (noEditNumber) {
+						td.html(v); 
+					} else if (noEditNull) {
+						td.html(v);
+					} else if (editedNumberToNumber) {
+						recalc = true;
+						td.html(v);
+					} else if (editedToNull) {
+						recalc = true;
+						td.removeAttr('formula').html('');
+					}
+					
+					if (recalc) {
+						jS.calc(jS.obj.sheet());
+					}
+					
+					if (bsheetClearActive != false) {
+						// Treats null == true.
+						jS.sheetClearActive();
+					}
+					
+					jS.obj.barLeft().find('div').eq(loc[0] - 1)
+						.height(jS.attrH.height(td.parent()));
+					
+					jS.obj.formula().focus().select();
+					jS.cellIsEdit = false;
 				}
 				break;
 			default:
-				var loc = cE.parseLocation(jS.obj.label().html());
-				try {
-					if (!jQuery.browser.safari) {
-						var tdHeight = jS.attr.height(jS.obj.cell().parent());
-						jS.obj.cell().parent().height(tdHeight);
-					} else {
-						var h = jS.obj.barLeft().find('tr').eq(loc[0] - 1).attr('height');
-						jS.obj.cell().parent().attr('height', h);
-						//Fix for safari
-						jS.barHeightSync();
-					}
-				} catch(e) {}
+				jS.attrH.setHeight(jS.cellEditLastLoc[2] - 1, 'cell', false);
 				jS.sheetClearActive();
 		}
 	},
 	cellEditAbandon: function() {
 		jS.themeRoller.clearCell();
 		jS.themeRoller.clearBar();
-		var v = jS.cellTextArea(jS.obj.cell(), true);
+		var v = jS.cellTextArea(jS.cellEditLastLoc[0], true);
 		if (v) {
-			jS.obj.cell().html(jS.manageTextToHtml(v));
+			jS.cellEditLastLoc[0].html(jS.manageTextToHtml(v));
 			jS.sheetClearActive();
 			if (v.charAt(0) == '=') {
-				jS.calc(jS.obj.tableBody());
+				jS.calc(jS.obj.sheet());
 			}
+		} else { //Even if the cell is blank, that doesn't mean it's not active
+			jS.sheetClearActive();
+			jS.calc(jS.obj.sheet());
 		}
+		jS.cellEditLastLoc[0] = jS.obj.sheet().find('td:first');
+		jS.cellEditLastLoc[1] = 0;
+		jS.cellEditLastLoc[2] = 1;
 		jS.obj.label().html('');
+
 		return false;
 	},
-	formulaKeyDown: function(evt, isTextbox) {
-		//Switch is much faster than if statements
-		var loc = jS.getTdLocation(jS.obj.cell());
-		function enter(evt) {
-			var cell = jS.obj.cell();
-			var vCell = jS.manageHtmlToText(cell.html());
-			var vCellFormula = cell.attr('formula');
-			var vFormula = jS.obj.formula().val();
-			if ((vCell == vFormula || 
-				vFormula == vCellFormula || 
-				vFormula == vCell) && !evt.ctrlKey) {
-				jS.cellClick('', loc);
+	keyDownHandler: {
+		enterOnTextArea: function(evt) {
+			if (evt.ctrlKey) {
+				return jS.cellClick(key.DOWN);
 			} else {
-				jS.cellClick('down', loc);
+				return true;
 			}
-		}
-		function tab(evt) {
-			switch (evt.shiftKey) {
-				case true: 					jS.cellClick('left', loc);
-					break;
-				case false: 				jS.cellClick('right', loc);
-					break;
+		},
+		enter: function(evt) {
+			if (!jS.cellIsEdit && !evt.ctrlKey) {
+				return jS.cellClick();
+			} else {
+				return jS.cellClick(key.DOWN);
 			}
-		}
-		function textBoxFn(evt) {
-			switch (evt.ctrlKey) {
-				case true:
-					switch (evt.keyCode) {
-						case key.ENTER: 	enter(evt);
-							break;
-					}
-					break;
+		},
+		tab: function(evt) {
+			if (evt.shiftKey) {
+				return jS.cellClick(key.LEFT);
+			} else {
+				return jS.cellClick(key.RIGHT);
 			}
+		},
+		textAreaKeyDown: function(evt) {
 			switch (evt.keyCode) {
-				case key.TAB: 				tab(evt); return false;
+				case key.ENTER: 	return jS.keyDownHandler.enterOnTextArea(evt);
+					break;
+				case key.TAB: 		return jS.keyDownHandler.tab(evt);
 					break;
 			}
-		}
-		function regKeyHandle(evt) {
-			switch (evt.ctrlKey) {
-				case true: 					if (evt.keyCode == key.ENTER) { enter(evt); } else { jS.cellIsEdit = true; } return true; 
-					break;
-				default:
-					switch (evt.keyCode) {
-						case key.ESCAPE: 	jS.cellEditAbandon();
-							break;
-						case key.TAB: 		tab(evt); return false;
-							break;
-						case key.ENTER: 	enter(evt); return false;
-							break;
-						case key.LEFT: 		jS.cellClick('left', loc); return false;
-							break;
-						case key.UP: 		jS.cellClick('up', loc); return false;
-							break;
-						case key.RIGHT: 	jS.cellClick('right', loc); return false;
-							break;
-						case key.DOWN: 		jS.cellClick('down', loc); return false;
-							break;
-						default: 			jS.cellIsEdit = true;
-					}
+		},
+		formulaKeyDown: function(evt) {
+			switch (evt.keyCode) {
+				case key.ESCAPE: 	jS.cellEditAbandon();					break;
+				case key.TAB: 		return jS.keyDownHandler.tab(evt);		break;
+				case key.ENTER: 	return jS.keyDownHandler.enter(evt);	break;
+				case key.LEFT:
+				case key.UP:
+				case key.RIGHT:
+				case key.DOWN:		return jS.cellClick(evt.keyCode);		break;
+				default: 			jS.cellIsEdit = true;
 			}
 		}
-		var returnKey = true;
-		switch (isTextbox) {
-			case true:						returnKey = textBoxFn(evt);
-				break;
-			default:						returnKey = regKeyHandle(evt);
-				break;
-		}
-		return returnKey;
 	},
-	cellStyleToggle: function(e) {
-		var setClass = jQuery(e.target).attr('setclass');
-		var removeClass = jQuery(e.target).attr('removeclass').split(',');
-		
-		jQuery(removeClass).each(function() {
-			if (jS.obj.uiCell().hasClass(this)) {
+	formulaKeyDown: function(evt, isTextArea) {
+		//Switch is much faster than if statements
+		//I found that it's much easier to go from the origin key (up, down, left, right, tab, enter) and then detect if the ctrl key or shift keys are down.
+		//It's just difficult to look at later on and it's probably faster overall
+		return (isTextArea ? jS.keyDownHandler.textAreaKeyDown(evt) : jS.keyDownHandler.formulaKeyDown(evt))
+	},
+	cellStyleToggle: function(setClass, removeClass) {
+		//Lets check to remove any style classes
+		if (removeClass) {
+			removeClass = removeClass.split(',');
+			
+			jQuery(removeClass).each(function() {
 				jS.obj.uiCell().removeClass(this);
-			}
-		});
-		
+			});
+		}
+		//Now lets add some style
 		if (jS.obj.uiCell().hasClass(setClass)) {
 			jS.obj.uiCell().removeClass(setClass);
 		} else {
 			jS.obj.uiCell().addClass(setClass);
 		}
-	
+		jS.obj.formula()
+			.focus()
+			.select();
 		return false;
 	},
 	context: {},
 	calc: function(tableBody, fuel) {
-		return cE.calc(new jS.tableCellProvider(tableBody.id), jS.context, fuel);
+		jS.log('Calculation Started');
+		if (tableBody && !jS.s.calcOff) {
+			cE.calc(new jS.tableCellProvider(tableBody.id), jS.context, fuel);
+			jS.isSheetEdit = false;
+		}
+		jS.log('Calculation Ended');
 	},
-	cellTextArea: function(cell, returnVal, makeEdit, setVal) {
+	cellTextArea: function(td, returnVal, makeEdit, setVal) {
 		//Remove Textarea and transfer value.
 		var v;
-		cell = jQuery(cell);
-		if (!makeEdit) {
-			var textArea = jQuery(cell).find('textarea');
-			var textAreaVal = textArea.val();
-			if (textAreaVal || jS.obj.formula().attr('disabled')) {
-				jS.log('Textarea value used');
-				v = textAreaVal;
-				textArea.remove();
-				cell
-					.css('text-align', '')
-					.css('vertical-align', '');
+		if (td) {
+			if (!makeEdit) {
+				var textArea = td.find('textarea');
+				var textAreaVal = textArea.val();
+				if (textAreaVal || jS.obj.formula().attr('disabled')) {
+					jS.log('Textarea value used');
+					v = textAreaVal;
+					textArea.remove();
+					//td
+					//	.css('text-align', '')
+					//	.css('vertical-align', '');
+				} else {
+					jS.log('Formula value used');
+					v = jS.obj.formula().val();
+				}
+				jS.obj.formula().removeAttr('disabled');
 			} else {
-				jS.log('Formula value used');
-				v = jS.obj.formula().val();
+				if (setVal) {
+					v = setVal;
+				} else {
+					v = jS.obj.formula().val();
+				}
+				
+				jS.obj.formula().attr('disabled', 'true');
+				
+				var textArea = jQuery('<textarea id="tempText" />');
+				var h = jS.attrH.height(td);
+				
+				//There was an error in some browsers where they would mess this up.
+				td.parent().height(h + jS.attrH.boxModelCorrection());
+				//create text area.  Agian, strings are faster than DOM.
+				textArea
+					.height(h < 75 ? 75 : h)
+					.val(jQuery.trim(v))
+					.click(function(){
+						return false;
+					})
+					.keydown(function(e) {
+						return jS.formulaKeyDown(e, true);
+					});
+				
+				//Se we can look at the past value after edit.
+				if (td.attr('formula')) {
+					td.attr('prevVal', td.text()).removeAttr('formula');
+				}
+				//add it to cell
+				td.html(textArea);
+				//focus textarea
+				textArea
+					.focus()
+					.select();
 			}
-			jS.obj.formula().removeAttr('disabled');
-		} else {
-			jS.obj.formula().attr('disabled', 'true');
-			if (setVal) {
-				v = setVal;
-			} else {
-				v = jS.obj.formula().val();
+			if (returnVal) {
+				return v;
 			}
-			
-			var textArea = jQuery('<textarea id="tempText" />');
-			var w = cell.width();
-			var h = cell.height();
-			if (h < 75) {
-				h = 75;
-			} else {
-				textArea.css('border', '0px');
-			}
-			//create text area.  Agian, strings are faster than DOM.
-			textArea
-				.removeAttr('disabled')
-				.height(h)
-				.width(w)
-				.val(jQuery.trim(v))
-				.css('position', 'absolute')
-				.click(function(){
-					return false;
-				})
-				.keydown(function(e) {
-					return jS.formulaKeyDown(e, true);
-				});
-			
-			//Se we can look at the past value after edit.
-			if (cell.attr('formula')) {
-				cell.attr('prevVal', cell.text()).removeAttr('formula');
-			}
-			//add it to cell
-			cell.css('text-align', 'left')
-				.css('vertical-align', 'top')
-				.html(textArea);
-			//focus textarea
-			cell.find('textarea').focus();
-		}
-		if (returnVal) {
-			return v;
 		}
 	},
 	refreshLabelsColumns: function(){
 		var w = 0;
-		jS.obj.barTopParent().find('td').each(function(i) {
+		jS.obj.barTop().find('div').each(function(i) {
 			jQuery(this).text(cE.columnLabelString(i+1));
 			w += jQuery(this).width();
 		});
 		return w;
 	},
 	refreshLabelsRows: function(){
-		jS.obj.barLeftParent().find('td').each(function(i) {
+		jS.obj.barLeft().find('div').each(function(i) {
 			jQuery(this).text((i + 1));
 		});
 	},
@@ -965,6 +1009,7 @@ jQuery.fn.extend({
 				jS.addRow();
 			}
 		}
+		jS.setTdIds();
 	},
 	addColumnMulti: function(qty) {
 		if (!qty) {
@@ -975,14 +1020,14 @@ jQuery.fn.extend({
 				jS.addColumn();
 			}
 		}
+		jS.setTdIds();
 	},
-	addRow: function(atRow) {
+	addRow: function(atRow, insertBefore) {
 		if (!atRow) {
 			//if atRow has no value, lets just add it to the end.
 			atRow = ':last';
 		} else if (atRow == true) {//if atRow is boolean, then lets add it just after the currently selected row.
-			var loc = jS.getTdLocation(jS.obj.cell());
-			atRow = ':eq(' + (loc[0] - 1) + ')';
+			atRow = ':eq(' + (jS.cellEditLastLoc[1] - 1) + ')';
 		} else {
 			//If atRow is a number, lets add it at that row
 			atRow = ':eq(' + (atRow - 1) + ')';
@@ -991,130 +1036,166 @@ jQuery.fn.extend({
 		jS.cellEditAbandon();
 		var currentRow = jS.obj.sheet().find('tr' + atRow);
 		var newRow = currentRow.clone();
+		
 		jQuery('td', newRow)
 			.html('')
 			.attr('class', '')
 			.attr('formula', '')
 			.css('background-color', '')
 			.removeAttr('function')
+			.unbind('click')
+			.unbind('mousedown')
 			.mousedown(jS.cellOnMouseDown)
-			.click(jS.cellOnClick);
-		newRow.insertAfter(currentRow);
+			.click(jS.getCellClickFn());
+
+		if (insertBefore) {
+			newRow.insertBefore(currentRow);
+		} else {
+			newRow.insertAfter(currentRow);
+		}
 		
-		var currentLeftColumn = jS.obj.barLeft().find('tr' + atRow);
-		var newLeftColumn = currentLeftColumn.clone();
+		var currentBar = jS.obj.barLeft().find('div' + atRow);
+		var newBar = currentBar.clone();
 		
-		jS.themeRoller.newBar(newLeftColumn);
+		jS.themeRoller.newBar(newBar);
 		
-		newLeftColumn.find('td')
-			.html(parseInt(currentLeftColumn.text()) + 1)
-			.removeClass(jS.cl.uiActive)
-			.addClass(jS.cl.uiDefault);
+		jS.getResizeControl.height(
+			newBar
+				.html(parseInt(currentBar.text()) + 1)
+				.removeClass(jS.cl.uiActive)
+				.height(jS.attrH.height(newRow))
+		);
 		
-		jS.log('New row at: ' + (parseInt(currentLeftColumn.text()) + 1));
+		jS.log('New row at: ' + (parseInt(currentBar.text()) + 1));
 		
-		jS.getResizeControl.height(jQuery(newLeftColumn).find('td'));
-		
-		newLeftColumn.insertAfter(currentLeftColumn);
+		if (insertBefore) {
+			newBar.insertBefore(currentBar);
+		} else {
+			newBar.insertAfter(currentBar);
+		}
 		
 		if (atRow) {//If atRow equals anything it means that we inserted at a point, because of this we need to update the labels
-			jS.obj.barLeft().find('td').each(function(i) {
-				jQuery(this).text((i + 1));
+			jS.obj.barLeft().find('div').each(function(i) {
+				jQuery(this).text(i + 1);
 			});
 		}
-		//Fix for safari
-		jS.barHeightSync();
+
+		jS.setTdIds();
+		jS.obj.pane().scroll();
 	},
-	addColumn: function(atColumn) {
+	addColumn: function(atColumn, insertBefore) {
 		if (!atColumn) {
 			//if atColumn has no value, lets just add it to the end.
 			atColumn = ':last';
 		} else if (atColumn == true) {
 			//if atColumn is boolean, then lets add it just after the currently selected row.
-			var loc = jS.getTdLocation(jS.obj.cell());
-			atColumn = ':eq(' + (loc[1] - 1) + ')';
+			atColumn = ':eq(' + (jS.cellEditLastLoc[2] - 1) + ')';
 		} else {
 			//If atColumn is a number, lets add it at that row
 			atColumn = ':eq(' + (atColumn - 1) + ')';
 		}
 
 		jS.cellEditAbandon();
-		var currentIndex = cE.columnLabelIndex(jS.obj.barTop().find('td' + atColumn).html());
+		
+		//there are 3 obj that need managed here div, col, and each tr's td
+		//Lets get the current div & col, then later we go through each row
+		var currentBar = jS.obj.barTop().find('div' + atColumn);
+		var currentCol = jS.obj.sheet().find('col' + atColumn);
+		
+		//Lets create our new bar, cell, and col
+		var newBar = currentBar.clone().width(jS.s.newColumnWidth - jS.attrH.boxModelCorrection());
+		jS.getResizeControl.width(newBar);
+		var newCol = currentCol.clone().width(jS.s.newColumnWidth);
+		var newCell = jQuery('<td></td>');
+		
+		//This is just to get the new label
+		var currentIndex = cE.columnLabelIndex(currentBar.text());
 		var newLabel = cE.columnLabelString(currentIndex + 1);
 		jS.log('New Column: ' + currentIndex + ', ' + newLabel);
-		//Add column heads first
-		var col = jS.obj.barTop().find('col' + atColumn);
-		col.clone()
-			.insertAfter(col)
-			.width(jS.s.newColumnWidth);
 		
-		var td = jS.obj.barTop().find('td' + atColumn);
-		jS.getResizeControl.width(td.clone()
-			.html(newLabel)
-			.insertAfter(td));
-		
-		//Add column heads first
-		jS.obj.sheet().find('col' + atColumn).clone()
-			.insertAfter('#' + jS.id.sheet + ' col' + atColumn)
-			.width(jS.s.newColumnWidth);
-		
+		if (insertBefore) {
+			currentCol.before(newCol);
+			currentBar.before(newBar);
+		} else {
+			currentCol.after(newCol);
+			currentBar.after(newBar);
+		}
+			
 		//Add new spreadsheet column to top
-		var newCell = '<td></td>';
+		
 		var j = 0;
+		var addNewCellFn;
+		if (insertBefore) {
+			addNewCellFn = function(obj) {
+				jQuery(obj).find('td' + atColumn).before(
+					newCell.clone()
+						.mousedown(jS.cellOnMouseDown)
+						.click(jS.getCellClickFn())
+				);
+			}
+		} else {
+			addNewCellFn = function(obj) {
+				jQuery(obj).find('td' + atColumn).after(
+					newCell.clone()
+						.mousedown(jS.cellOnMouseDown)
+						.click(jS.getCellClickFn())
+				);
+			}
+		}
+		
 		jS.obj.sheet().find('tr').each(function(i) {
-			jQuery(this).find('td' + atColumn).after(newCell);
+			addNewCellFn(this);
 			j++;
 		});
-		jS.log('Sheet length: ' + j);
-		jS.obj.pane().find('tr td')
-			.unbind('click')
-			.mousedown(jS.cellOnMouseDown)
-			.click(jS.cellOnClick);
+		
+		jS.log('Sheet length: ' + j);		
 		
 		if (atColumn) {//If atColumn equals anything it means that we inserted at a point, because of this we need to update the labels
-			jS.obj.barTop().find('td').each(function(i) {
+			jS.obj.barTop().find('div').each(function(i) {
 				jQuery(this).text(cE.columnLabelString(i + 1));
 			});
 		}
-		//Fix for safari
-		jS.barHeightSync();
+		
+		jS.attrH.syncSheetWidthFromTds();
+		
+		jS.setTdIds();
+		jS.obj.pane().scroll();
 	},
 	deleteRow: function() {
 		if (jS.obj.cell()[0]) {
 			var v = confirm("Are you sure that you want to delete that row? Fomulas will not be updated.");
 			if (v) {
-				var loc = jS.getTdLocation(jS.obj.cell());
-				loc = loc[0] - 1;
-				jS.obj.barLeftParent().find('td').eq(loc).parent().remove();
+				var loc = jS.cellEditLastLoc[1] - 1;
+				jS.obj.barLeft().find('div').eq(loc).remove();
 				jS.obj.sheet().find('tr').eq(loc).remove();
 				jS.obj.formula().val('');
-				
+				jS.setTdIds();
 				jS.refreshLabelsRows();
 			}
 		}
+		jS.obj.pane().scroll();
 	},
 	deleteColumn: function() {
 		if (jS.obj.cell()[0]) {
 			var v = confirm("Are you sure that you want to delete that column? Fomulas will not be updated.");
 			if (v) {
-				var loc = jS.getTdLocation(jS.obj.cell());
-				loc = loc[1] - 1;
+				var loc = jS.cellEditLastLoc[2] - 1;
 
-				jS.obj.barTop().find('td').eq(loc).remove();
-				jS.obj.barTop().find('colgroup col').eq(loc).remove();
+				jS.obj.barTop().find('div').eq(loc).remove();
 				jS.obj.sheet().find('colgroup col').eq(loc).remove();
 				jS.obj.sheet().find('tr').each(function(i) {
 						jQuery(this).find('td').eq(loc).remove();
+						//jQuery(jS.getTd(null, loc[0] + 1, loc[1] + 1)).remove();
 				});
 				
 				jS.obj.formula().val('');
 				
 				var w = jS.refreshLabelsColumns();
-				
+				jS.setTdIds();
 				jS.obj.sheet().width(w);
-				jS.obj.barTop().width(w);
 			}
 		}
+		jS.obj.pane().scroll();
 	},
 	sheetTitle: function(startup, newTitle) {
 		var sheetTitle = '';
@@ -1268,30 +1349,25 @@ jQuery.fn.extend({
 		}
 		return result;
 	},
-	barAdjustor: function() {
-		var jSheetScroll = jS.obj.pane();
-		/*
-		jS.obj.barTop().animate({
-			'left': '-' + jSheetScroll.scrollLeft()},
-			50);
-		jS.obj.barLeft().animate({
-			'top': '-' + jSheetScroll.scrollTop()},
-			50);
-		*/
-		jS.obj.barTop().css('left', '-' + jSheetScroll.scrollLeft());
-		jS.obj.barLeft().css('top', '-' + jSheetScroll.scrollTop());
-		window.setTimeout('jS.barAdjustor()', 5);
-	},
-	barHeightSync: function() {
-		if (jQuery.browser.safari) {//Safari & Chrome have an odd issue with resize, this should fix it. 
-			jS.obj.barLeft().find('tr').each(function(i) {
-				var h = jS.attr.height(jQuery(this).find('td:first'));
-				if (!h) {
-					h = jQuery(this).find('td:first').attr('height');
-				}
-				jS.obj.sheet().find('tr').eq(i).find('td:first').attr('height', h).height(h);
-				jS.obj.sheet().find('tr').eq(i).attr('height', h).height(h);
-			});
+	barAdjustorCache: new Array(),
+	barAdjustor: function(killTimer) {
+		if (!killTimer) {
+			if (!this.barAdjustorCache.length) {
+				this.barAdjustorCache[0] = jS.obj.pane();
+				this.barAdjustorCache[1] = jS.obj.barTop();
+				this.barAdjustorCache[2] = jS.obj.barLeft();
+			} else {
+				this.barAdjustorCache[1].stop().animate({
+					left: '-' + this.barAdjustorCache[0].scrollLeft()},
+					50);
+				this.barAdjustorCache[2].stop().animate({
+					top: '-' + this.barAdjustorCache[0].scrollTop()},
+					50);
+			}
+			this.barAdjustorCache[3] = window.setTimeout('jS.barAdjustor()', 500);
+		} else { //reset barAdjustorCache to it's original state
+			window.clearTimeout(this.barAdjustorCache[3]);
+			this.barAdjustorCache = new Array();
 		}
 	},
 	followMe: function() {
@@ -1299,44 +1375,88 @@ jQuery.fn.extend({
 			jS.obj.pane().stop().scrollTo(jS.obj.cell(), {
 				margin: true,
 				axis: 'xy',
-				duration: 800,
-				offset:   -jS.s.height/3
+				duration: 250,
+				offset: {
+					top: -jS.s.height / 3,
+					left: -jS.s.width / 5
+				}
 			});
 		}
 	},
 	count: {
 		rows: function() {
-			return parseInt(jQuery.trim(jS.obj.barLeft().find('tr:last').text()));
+			return parseInt(jQuery.trim(jS.obj.barLeft().find('div:last').text()));
 		},
 		columns: function() {
-			return parseInt(jS.columnLabelIndex(jQuery.trim(jS.obj.barTop().find('td:last').text())));
+			return parseInt(jS.columnLabelIndex(jQuery.trim(jS.obj.barTop().find('div:last').text())));
 		}
 	},
-	openSheet: function(url, size) {
-		function UI() {
-			jS.makeBarItemTop();
-			jS.makeBarItemLeft();
+	openSheet: function(url, size, noNotify) {
+		function initSheet(obj) {
+			if (obj) {
+				jS.obj.pane().html(jQuery(obj).show());
+			} else {
+				obj = jS.obj.pane().find('table:first').show();
+			}
+
+			obj = jS.tuneTableForSheetUse(obj, true);
+			
+			jS.sheetDecorate();
+			
+			jS.makeBarItemTop(url);
+			jS.makeBarItemLeft(url);
+		
 			jS.sheetTitle(true);
 			
 			if (jS.s.editable) {
-				jS.obj.pane().find('td').mousedown(jS.cellOnMouseDown).click(jS.cellOnClick);
-			}
-			
-			if (!jS.s.calcOff) {
-				jS.calc(jS.obj.tableBody());
+				jS.obj.pane().find('td')
+					.mousedown(jS.cellOnMouseDown)
+					.click(jS.getCellClickFn());
 			}
 			
 			jS.themeRoller.start();
-		}
-		if (confirm("Are you sure you want to open a different sheet?  All unsaved changes will be lost.")) {
-			if (!size) {
-				jS.cellEditAbandon();
-				jS.obj.pane().load(url, function() {
-					UI();
+
+			jS.setTdIds();
+			
+			//We load the plugins
+			if (jS.s.urlScrollsync) {
+				jQuery.getScript(jS.s.urlScrollsync, function() {
+					jS.obj.pane().add(jS.obj.barLeftParent()).scrollsync({axis: 'y'});
+					jS.obj.pane().add(jS.obj.barTopParent()).scrollsync({axis: 'x'});
 				});
 			} else {
-				jS.obj.pane().html(jS.buildSheet(size));
-				UI();
+				jS.barAdjustor();
+			}
+			
+			var calc = function() {}
+			if (!jS.s.calcOff) {
+					calc = function() {
+						jS.calc(jS.obj.sheet());
+					};
+				}
+			if (jS.s.urlJGCharts) { //When loading the charts, we need to make sure that the namespace exists before we fire fnAfter();
+				jQuery.getScript(jS.s.urlJGCharts, function() {
+					calc();
+				});
+			} else {
+				calc();
+			}
+		}
+		if (noNotify ? true : confirm("Are you sure you want to open a different sheet?  All unsaved changes will be lost.")) {
+			jS.cellEditAbandon();
+			if (!size) {
+				if (url) {
+					jQuery('<div />').load(url, function() {
+						initSheet(jQuery(this).find('table:first'));
+					});
+				} else {
+					initSheet();
+				}
+			} else if (size.toLowerCase().match('x')) {
+				jS.s.title = '';
+				initSheet(jS.buildSheet(size));
+			} else {
+				initSheet();
 			}
 		}
 	},
@@ -1366,6 +1486,7 @@ jQuery.fn.extend({
 			alert(error);
 		}
 		//Let's recalculate the sheet just in case
+		jS.setTdIds();
 		jS.calc(jS.obj.sheet());
 	},
 	importColumn: function(columnArray) {
@@ -1391,6 +1512,7 @@ jQuery.fn.extend({
 			alert(error);
 		}
 		//Let's recalculate the sheet just in case
+		jS.setTdIds();
 		jS.calc(jS.obj.sheet());
 	},
 	buildSheet: function(size) {
@@ -1407,21 +1529,39 @@ jQuery.fn.extend({
 		//Create elements before loop to make it faster.
 		var newSheet = jQuery('<table border="1px" class="' + jS.cl.sheet + '" id="' + jS.id.sheet + '"><colgroup /><tbody><tr /></tbody></table>');
 		var standardCol = '<col width="' + columnWidth + '" style="width: ' + columnWidth + '" />';
-		var standardTd = '<td />';
+		var standardTd = '<td> </td>';
 		
 		//Using -- is many times faster than ++
 		for (var i = columnsCount; i >= 1; i--) {
-			jQuery(newSheet).find('colgroup').prepend(standardCol);
-			jQuery(newSheet).find('tbody tr')
+			newSheet.find('colgroup').prepend(standardCol);
+			newSheet.find('tbody tr')
 				.prepend(standardTd)
-				.height(jS.s.colMargin);
+				.css('height', jS.s.colMargin);
 		}
-		var row = jQuery('<div />').html(jQuery(newSheet).find('tbody tr')).html();
+		
+		
+		var row = jQuery('<div />').html(newSheet.find('tbody tr')).html();
 		for (var i = rowsCount; i >= 1; i--) {
-			jQuery(newSheet).find('tbody').prepend(row);
+			newSheet.find('tbody').prepend(row);
 		}
-		jQuery(newSheet).width(jS.attr.width(jQuery(newSheet).find('tr:first')));
+		
+		jS.attrH.syncSheetWidthFromTds(newSheet);
+		
 		return newSheet;
+	},
+	sheetSyncSizeToDivs: function() {
+		var newSheetWidth = 0;
+		jS.obj.barTop().find('div').each(function() {
+			newSheetWidth += parseInt(jQuery(this).outerWidth());
+		});
+		jS.obj.sheet().width(newSheetWidth);
+	},
+	sheetSyncSizeToCols: function() {
+		var newSheetWidth = 0;
+		jS.obj.sheet().find('colgroup col').each(function() {
+			newSheetWidth += jQuery(this).width();
+		});
+		jS.obj.sheet().width(newSheetWidth);
 	},
 	sheetSyncSize: function() {
 		var h = jS.s.height;
@@ -1429,226 +1569,140 @@ jQuery.fn.extend({
 			h = 400; //Height really needs to be set by the parent
 		}
 		var w = jS.s.width;
-		
-		if (jS.s.editable) {
-			jQuery.each(jQuery.browser, function(i, val) {
-				if((i=="mozilla" && val == true) || (i=="safari" && val == true)) {
-					if (jS.s.urlMenu) {
-						h = h - 89;
-					} else {
-						h = h - 87;
-					}
-					w = w - 30;
-				} else if (i=="msie" && val == true) {
-					if (jS.s.urlMenu) {
-						h = h - 86;
-					} else {
-						h = h - 66;
-					}
-					
-					w = w - 38;
-					jS.obj.pane().height(h - 30);
-				}
-			});
-			
-		} else {
-			jQuery.each(jQuery.browser, function(i, val) {
-				if((i=="mozilla" && val == true) || (i=="safari" && val == true)) {
-					h = h - 31;
-					w = w - 30;
-				} else if (i=="msie" && val == true) {
-					h = h - 31;
-					w = w - 38;
-				}
-			});
-		}
-		
+
 		jS.obj.pane()
-			.height(h)
+			.height(
+				(h - jS.attrH.height(jS.obj.controls())) -
+				(jS.s.colMargin + 6)
+			)
 			.width(w);
 			
 		jS.obj.barLeftParent()
-			.height(h);
+			.height(jS.obj.pane().height());
 		
 		jS.obj.barTopParent()
 			.height(jS.s.colMargin)
-			.width(w);
-		jS.obj.parent().find('col:eq(1)').width(w);
-		jS.obj.barCorner().height(jS.obj.barTopParent().height());
+			.width(jS.obj.pane().width());
+		
 		jS.themeRoller.start();
 	},
-	barResizer: function(evt, target, type) {
-		//Resize Column & Row & Prototype functions are private under class jSheet
-		var columnResizer = {
+	columnResizer: {
 			xyDimension: 0,
 			getIndex: function(td) {
-				return parseInt(cE.columnLabelIndex(jQuery.trim(jQuery(td).text()))) - 1;
-			},
-			get: function(obj, i) {
-				return jQuery(obj).find('col').eq(i);
+				return cE.columnLabelIndex(jQuery.trim(td.text())) - 1;
 			},
 			getSize: function(obj) {
-				var v = jS.attr.width(obj);
-				return v;
+				return jS.attrH.width(obj, true);
 			},
 			setSize: function(obj, v) {
-				jQuery(obj).width(v);
-			}
-		};
-
-		var rowResizer = {
-			xyDimension: 1,
-			getIndex: function(td) {
-				return parseInt(jQuery.trim(jQuery(td).text())) - 1;
+				obj.width(v);
 			},
-			get: function(obj, i) {
-				return jQuery(obj).find('tr').eq(i);
+			setDesinationSize: function(w) {
+				jS.sheetSyncSizeToDivs();
+				
+				jS.obj.sheet().find('col').eq(this.i)
+					.width(w)
+					.css('width', w)
+					.attr('width', w);
+				
+				jS.obj.pane().scroll();
+			}
+		},
+	rowResizer: {
+		xyDimension: 1,
+			getIndex: function(obj) {
+				return parseInt(jQuery.trim(obj.text())) - 1;
 			},
 			getSize: function(obj) {
-				var v = jS.attr.height(obj);
-				return v;
+				return jS.attrH.height(obj, true);
 			},
 			setSize: function(obj, v) {
-				jQuery(obj).height(v);
-			}
-		};
-		
-		//Lets fix the resizers so that they are also compatible with safari...man this bug is irritating
-		if (jQuery.browser.safari) {
-			columnResizer.getSize = function(obj) {
-				var v = jS.attr.width(obj);
-				var vBackup = jQuery(obj).attr('width');
-				return (v ? v : vBackup);
-			};
-			columnResizer.setSize = function(obj, v) {
-				jQuery(obj)
-					.css('width', v)
-					.attr('width', v);
-			};
-			rowResizer.get = function(obj, i) {
-				return jQuery(obj).find('tr').eq(i).find('td:first');
-			};
-			rowResizer.getSize = function(obj) {
-				var v = jS.attr.height(obj);
-				return v;
-			};
-			rowResizer.setSize = function(obj, v) {
-				jQuery(obj)
+				if (v) {
+				obj
+					.height(v)
 					.css('height', v)
 					.attr('height', v);
-			};
-		}
+				}
+				return jS.attrH.height(obj);
+			},
+			setDesinationSize: function() {
+				//Set the cell height
+				jS.attrH.setHeight(this.i, 'bar', true);
+				
+				//Reset the bar height if the resized row don't match
+				jS.attrH.setHeight(this.i, 'cell', false);
+				
+				jS.obj.pane().scroll();
+			}
+	},
+	barResizer: function(evt, target, type) {
+		//Resize Column & Row & Prototype functions are private under class jSheet		
 		
-		var o;
-		if (type == 'row') {
-			o = rowResizer;
-		} else {
-			o = columnResizer;
-		}
+		var o = (type == 'row' ? jS.rowResizer : jS.columnResizer);
+
 		var barResizer = {
 			start: function(evt) {
 				//Finish up last editted cell.
-				jS.cellEditDone();
-				jS.cellEditAbandon();
+				//jS.cellEditDone();
+				//jS.cellEditAbandon();
 				
 				jS.log('start resize');
-				var srcTable = jQuery(target).parent().parent().parent();
-				var tdPageXY = jS.cellFindXY(target)[o.xyDimension];
-				var eventPOS = [evt.pageX, evt.pageY][o.xyDimension];
-				var i = o.getIndex(target);
-				var srcBarSize = o.getSize(o.get(srcTable, i));
-				var edgeDelta = parseInt(eventPOS) - (parseInt(tdPageXY) + parseInt(srcBarSize));
+				//I never had any problems with the numbers not being ints but I used the parse method
+				//to ensuev non-breakage
+				o.offset = target.offset();
+				o.tdPageXY = [o.offset.left, o.offset.top][o.xyDimension];
+				o.startXY = [evt.pageX, evt.pageY][o.xyDimension];
+				o.i = o.getIndex(target);
+				o.srcBarSize = o.getSize(target);
+				o.edgeDelta = o.startXY - (o.tdPageXY + o.srcBarSize);
+				o.min = 15;
 				
-				if (Math.abs(edgeDelta) <= 35 || jQuery.browser.safari) {//We do this because the registered height is lost after the first resize on Safari and Chrome
-					//Add a little Themeroller
-					jS.themeRoller.barObj(target);
-					
-					
-					o.dragInfo = {
-						startXY: [evt.pageX, evt.pageY],
-						srcTable: srcTable,
-						srcItem: o.get(srcTable, i),
-						dstItem: o.get(jS.obj.sheet(), i),
-						edgeDelta: edgeDelta,
-						startSizes: o.getSize(o.get(srcTable, i)),
-						i: i
-					};
+				if (jS.s.joinedResizing) {
+					o.resizeFn = function(size) {
+						o.setDesinationSize(size);
+						o.setSize(target, size);
+					}
+				} else {
+					o.resizeFn = function(size) {
+						o.setSize(target, size);
+					}
+				}
+				
+				//We start the drag sequence
+				if (Math.abs(o.edgeDelta) <= o.min) {
 					jQuery(document)
 						.mousemove(barResizer.drag)
 						.mouseup(barResizer.stop);
-					
-					if (o.xyDimension) {
-						jS.obj.barLeft().find('tr').eq(o.dragInfo.i).outerHeight(o.dragInfo.startSizes);
-						jS.obj.barLeft().find('tr').eq(o.dragInfo.i).find('td').css('height', '').attr('height', '');
-					}
 				}
 			},
 			drag: function(evt) {
-				var target = this;
-				if (o.dragInfo.srcTable) {
-					var newSize = o.dragInfo.startSizes;
-					// Make a copy.
-					var v = parseInt([evt.pageX, evt.pageY][o.xyDimension]) - parseInt(o.dragInfo.startXY[o.xyDimension]) + parseInt(o.dragInfo.startSizes);
-					var sizeTotal = 0
-					if (v > 0) {// A non-zero minimum size saves many headaches.
-						newSize = Math.max(v - sizeTotal, 3);
-					}
-					
-					sizeTotal += newSize;
-					o.setSize(o.dragInfo.srcItem, newSize);
-					
-					if (!o.xyDimension) {
-						o.setSize(o.dragInfo.srcTable, sizeTotal);
-					}
-					return false;
+				var newSize = o.min;
+
+				var v = o.srcBarSize + ([evt.pageX, evt.pageY][o.xyDimension] - o.startXY);
+				if (v > 0) {// A non-zero minimum size saves many headaches.
+					newSize = Math.max(v, o.min);
 				}
+
+				o.resizeFn(newSize)
+				return false;
 			},
-			stop: function(evt) {
-				var target = this;
-				if (o.dragInfo.srcTable) {
-					var size = o.getSize(o.dragInfo.srcItem);
-					var parentSize = o.getSize(o.dragInfo.srcTable);
-					//Resize sheet column / row
-					o.setSize(o.dragInfo.dstItem, size);
-					
-					//Sync sheet width with topbar width
-					if (!o.xyDimension) {//columns
-						o.setSize(jS.obj.sheet(), parentSize);
-					}
-					
-					//If we've sized it too small, and it's a row,it will resize.
-					if (o.xyDimension) {//rows
-						o.setSize(o.dragInfo.srcItem, o.getSize(o.dragInfo.dstItem));
-						//jS.barHeightSync();
-						
-						//This is a height fix for IE and Safari
-						var h1 = jS.obj.barLeft().find('tr').eq(o.dragInfo.i).find('td').attr('height');
-						var h2 = jS.obj.barLeft().find('tr').eq(o.dragInfo.i).find('td').css('height');
-						h = (h1 ? h1 : h2);
-						jS.obj.barLeft().find('tr').eq(o.dragInfo.i).outerHeight('height', h);
-					}
-				}
-				o.dragInfo = {};
+			stop: function(evt) {	
+				o.setDesinationSize(o.getSize(target));
+				
 				jQuery(document)
 					.unbind('mousemove')
 					.unbind('mouseup');
-				jS.log('stop resizing');
 				//Remove themeRoller selection
-				jS.themeRoller.clearBar();
+				//jS.themeRoller.clearBar();
+				//jS.barAdjustor();
+				jS.obj.formula()
+					.focus()
+					.select();
+				
+				jS.log('stop resizing');
 			}
 		}
 		barResizer.start(evt);
-	},
-	cellFindXY: function(obj) {
-		var curleft = curtop = 0;
-		obj = jQuery(obj)[0];
-		if (obj.offsetParent) {
-			do {
-				curleft += obj.offsetLeft;
-				curtop += obj.offsetTop;
-			} while (obj = obj.offsetParent);	
-		}
-		return [curleft,curtop];
 	},
 	cellFind: function(v) {
 		if(!v) {
@@ -1674,30 +1728,21 @@ jQuery.fn.extend({
 		}
 	},
 	cellSetActiveMulti: function(evt) {
-		var dragInfo = {
+		var o = {
 			startRow: evt.target.parentNode.rowIndex,
 			startColumn: evt.target.cellIndex
 		};//These are the events used to selected multiple rows.
 		jS.obj.sheet()
 			.mousemove(function(evt) {
-				dragInfo.endRow = evt.target.parentNode.rowIndex;
-				dragInfo.endColumn = evt.target.cellIndex;
-				for (var i = dragInfo.startRow; i <= dragInfo.endRow; i++) {
-					for (var j = dragInfo.startColumn; j <= dragInfo.endColumn; j++) {
-						var o = jS.getTd(jS.obj.tableBody(), i + 1, j + 1);
-						jQuery(o)
+				o.endRow = evt.target.parentNode.rowIndex;
+				o.endColumn = evt.target.cellIndex;
+				for (var i = o.startRow; i <= o.endRow; i++) {
+					for (var j = o.startColumn; j <= o.endColumn; j++) {
+						var td = jS.getTd(jS.obj.tableBody(), i + 1, j + 1);
+						jQuery(td)
 							.addClass(jS.cl.uiCell)
 							.addClass(jS.cl.uiCellHighlighted);
 					}
-				}
-				//This is used for debugging
-				//jS.obj.formula().val(dragInfo.startRow + ',' + dragInfo.startColumn + ',' + dragInfo.endRow + ',' + dragInfo.endColumn);
-				
-				//There was some difficulty making the mouseover not select everything, this fixed it
-				if (jQuery(evt.target).attr('id') == 'tempText') {
-					return true;
-				} else { 
-					return false;
 				}
 			})
 			.mouseup(function() {
@@ -1709,15 +1754,15 @@ jQuery.fn.extend({
 	},
 	cellSetActiveMultiColumn: function(i) {
 		jS.obj.sheet().find('tr').each(function() {
-			var o = jQuery(this).find('td').eq(i);
-			jQuery(o)
+			var o = jQuery(this).find('td').eq(i - 1);
+			o
 				.addClass(jS.cl.uiCell)
 				.addClass(jS.cl.uiCellHighlighted);
 		});
 		jS.themeRoller.barTop(i);
 	},
 	cellSetActiveMultiRow: function(i) {
-		jS.obj.sheet().find('tr').eq(i).find('td')
+		jS.obj.sheet().find('tr').eq(i - 1).find('td')
 			.addClass(jS.cl.uiCell)
 			.addClass(jS.cl.uiCellHighlighted);
 		jS.themeRoller.barLeft(i);
@@ -1736,9 +1781,25 @@ jQuery.fn.extend({
 		return col - 1;
 		// A indexTd is 0-based.
 	},
+	getTdRange: function() {
+		//three steps here,
+		//Get td's
+		//Get locations
+		//Get labels for locationa and return them
+		
+		var cells = jS.obj.uiCell().not('.' + jS.cl.cell);
+		var firstCellLoc = jS.getTdLocation(cells.eq(0));
+		var firstLabel = cE.columnLabelString(firstCellLoc[1]) + firstCellLoc[0];
+		var lastCellLoc = jS.getTdLocation(cells.eq(cells.length - 1));
+		var lastLabel = cE.columnLabelString(lastCellLoc[1]) + lastCellLoc[0];
+		return firstLabel + ":" + lastLabel
+	},
+	getTdId: function(row, col) {
+		return 'cell_c' + col + '_r' + row;
+	},
 	getTd: function(tableBody, row, col, indexTr, indexTd) {
 		// The row and col are 1-based.
-		if (!indexTr) {
+		/*if (!indexTr) {
 			// The indexTr and indexTd are 0-based.
 			indexTr = jS.getIndexTr(row);
 		}
@@ -1750,12 +1811,13 @@ jQuery.fn.extend({
 				}
 				return tr.cells[indexTd];
 			}
-		}
-		return null;
+		}*/
+		var cell =  document.getElementById(jS.getTdId(row, col));
+		return cell;
 	},
 	getTdLocation: function(td) {
-		var col = jQuery(td).attr('cellIndex') + 1;
-		var row = jQuery(td).parent().attr('rowIndex') + 1;
+		var col = td[0].cellIndex + 1;
+		var row = td[0].parentNode.rowIndex + 1;
 		return [row--, col--];
 		// The row and col are 1-based.
 	},
@@ -1777,9 +1839,43 @@ jQuery.fn.extend({
 	log: function(msg) {
 		switch (jS.s.log) {
 			case true:
-				jS.obj.log().prepend(msg + '; <br />\n');
+				var d = new Date();
+				jS.obj.log().prepend(d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds() + ':' + d.getMilliseconds() + ';' + msg + '<br />\n');
 				break;
 		}
+	},
+	getChart: function(type, data, legend, axisLabels, w, h) {
+		var api = new jGCharts.Api();
+		function refine(v) {
+			var refinedV = new Array();
+			jQuery(v).each(function(i) {
+				refinedV[i] = jS.manageHtmlToText(v[i] + '');
+			});
+			return refinedV;
+		}
+		var o = {};
+		
+		if (type) {
+			o.type = type;
+		}
+		
+		if (data) {
+			o.data = data;
+		}
+		
+		if (legend) {
+			o.legend = refine(legend);
+		}
+		
+		if (axisLabels) {
+			o.axis_labels = refine(axisLabels);
+		}
+		
+		if (w || h) {
+			o.size = w + 'x' + h;
+		}
+		
+		return jQuery('<img>').attr('src', api.make(o));
 	}
 }
 
@@ -2035,8 +2131,51 @@ var cE = jQuery.calculationEngine = {
 		PI: 		function() { return Math.PI; },
 		POWER: 		function(x, y) {
 			return Math.pow(x, y);
+		},
+		LIST:		function(v, noBlank) {
+			var cell = jQuery(jS.getTd(null, cE.calcState.row, cE.calcState.col - 1));	
+			var cellValues = cE.foldPrepare(v, arguments);
+			var cellSelectedValue = cell.find('select').val();
+			var selectObj = jQuery('<select style="width: 100%;">' + (!noBlank ? '<option value="empty">Select a value</option>' : '') + '</select>');
+			var selected = '';
+			for (var i = 0; i < (cellValues.length <= 25 ? cellValues.length : 25); i++) {
+				var v = '';
+				if (selected != 'SELECTED' && cellValues[i] == cellSelectedValue) {
+					v = selected = 'SELECTED';
+				}
+				selectObj.append('<option ' + v + ' value="' + cellValues[i] + '">' + cellValues[i] + '</option>');
+			}
+			
+			return selectObj;
+		},
+		LISTVAL:	function(v) {
+			return jQuery(v).val();
+		},
+		CHART: {
+			BAR:	function(v, legend, axisLabels, w, h) {
+				return this.CUSTOM(null, cE.foldPrepare(v, arguments), legend, axisLabels, w, h);
+			},
+			BARH:	function(v, legend, axisLabels, w, h) {
+				return this.CUSTOM('bhg', cE.foldPrepare(v, arguments), legend, axisLabels, w, h);
+			},
+			SBAR:	function(v, legend, axisLabels, w, h) {
+				return this.CUSTOM('bvs', cE.foldPrepare(v, arguments), legend, axisLabels, w, h);
+			},
+			SBARH:	function(v, legend, axisLabels, w, h) {
+				return this.CUSTOM('bhs', cE.foldPrepare(v, arguments), legend, axisLabels, w, h);
+			},
+			LINE:	function(v, legend, axisLabels, w, h) {
+				return this.CUSTOM('lc', cE.foldPrepare(v, arguments), legend, axisLabels, w, h);
+			},
+			PIE:	function(v, legend, axisLabels, w, h) {
+				return this.CUSTOM('p', cE.foldPrepare(v, arguments), legend, axisLabels, w, h);
+			},
+			CUSTOM:	function(type, v, legend, axisLabels, w, h) {
+				return jS.getChart(type, cE.foldPrepare(v, arguments), legend, axisLabels,  w, h);
+			}
 		}
 	},
+	calcState: {},
 	calc: function(cellProvider, context, startFuel) {
 		// Returns null if all done with a complete calc() run.
 		// Else, returns a non-null continuation function if we ran out of fuel.  
@@ -2044,19 +2183,19 @@ var cE = jQuery.calculationEngine = {
 		// The fuelStart is either null (which forces a complete calc() to the finish) 
 		// or is an integer > 0 to slice up long calc() runs.  A fuelStart number
 		// is roughly matches the number of cells to visit per calc() run.
-		var calcState = { 
-			cellProvider: cellProvider, 
-			context	 : (context != null ? context: {}),
-			row		 : 1, 
-			col		 : 1, 
-			done		: false,
-			stack		: [],
-			calcMore: function(moreFuel) {
-				calcState.fuel = moreFuel;
-				return cE.calcLoop(calcState);
-			}
+		cE.calcState = { 
+			cellProvider:	cellProvider, 
+			context: 		(context != null ? context: {}),
+			row: 			1, 
+			col: 			1, 
+			done:			false,
+			stack:			[],
+			calcMore: 		function(moreFuel) {
+								cE.calcState.fuel = moreFuel;
+								return cE.calcLoop(cE.calcState);
+							}
 		};
-		return calcState.calcMore(startFuel);
+		return cE.calcState.calcMore(startFuel);
 	},
 	cell: function() {
 		prototype: {// Cells don't know their coordinates, to make shifting easier.
@@ -2211,6 +2350,7 @@ var cE = jQuery.calculationEngine = {
 	},
 	visitCell: function(calcState, r, c) { // Returns true if done with all cells.
 		with (calcState) {
+			[r, c]; //make current usable to fn's
 			var cell = cellProvider.getCell(r, c);
 			if (cell == null) {
 				return true;
@@ -2293,16 +2433,18 @@ var cE = jQuery.calculationEngine = {
 				if (formulaFunc != null) {
 					try {
 						var v = formulaFunc(calcState.cellProvider, calcState.context, cE.fn);
-						if (typeof(v) == "string") {
-							v = v
-								.replace(cE.RE_AMP, '&amp;')
-								.replace(cE.RE_LT, '&lt;')
-								.replace(cE.RE_GT, '&gt;')
-								.replace(cE.RE_NBSP, '&nbps;');
-						} else if (typeof(v) == "object"){
-							v = jQuery('<div />').html(v).html();
+						switch(typeof(v)) {
+							case "string":
+								v = v
+									.replace(cE.RE_AMP, '&amp;')
+									.replace(cE.RE_LT, '&lt;')
+									.replace(cE.RE_GT, '&gt;')
+									.replace(cE.RE_NBSP, '&nbps;');
+							case "object":
+								v = jQuery('<div />').html(v).html();
 						}
 						cell.setValue(v);
+						
 					} catch (e) {
 						cell.setValue(cE.ERROR + ': ' + e, e);
 					}
