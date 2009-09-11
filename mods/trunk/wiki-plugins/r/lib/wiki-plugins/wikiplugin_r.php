@@ -66,9 +66,16 @@ function wikiplugin_r($data, $params) {
 	$ws = '';
 	$sha1 = md5($data . $output . $style);
 
+	if (isset($_REQUEST['itemId'])) {
+		global $trklib; require_once('lib/trackers/trackerlib.php');
+		$atts = $trklib->list_item_attachments($_REQUEST['itemId'], 0, -1, 'comment_asc', '');
+		if (!empty($atts['data'][0]['attId'])) {
+			$params['attId'] = $atts['data'][0]['attId'];
+		}
+	}
 
 	if(isset($params["attId"])) {
-		require_once("lib/trackers/trackerlib.php");
+		global $trklib; require_once('lib/trackers/trackerlib.php');
 /* *** Mostly copy from tiki-download_item_attachment.php and modified *** */
 
 		$info = $trklib->get_item_attachment($params["attId"]);
