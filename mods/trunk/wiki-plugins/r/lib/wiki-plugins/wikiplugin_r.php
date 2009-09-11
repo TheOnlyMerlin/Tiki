@@ -1,9 +1,9 @@
 <?php
 // Parses R code (r-project.org) and shows the output in a wiki page.
-// Author: Xavier de Pedro. <xavier.depedro (a) ub.edu> 
-// 	Rodrigo Sampaio <rodrigosprimo (a) gmail.com>
+// Corresponding author: Xavier de Pedro. <xavier.depedro (a) ub.edu> 
+// Contributors: Rodrigo Sampaio, Lukáš Mašek, Louis-Philippe Huberdau, Sylvie Greverend
 // Usage:
-// {R(fileId=>fileId,attId=>attId,iframe=>1|0)}R code{R} 
+// {R(attId=>attId,type=>csv|xml)}R code{R} 
 //
 /* 
 
@@ -29,11 +29,6 @@ function wikiplugin_r_info() {
 		'prefs' => array( 'wikiplugin_r' ),
 		'validate' => 'all',
 		'params' => array(
-			'fileId' => array(
-				'required' => false,
-				'name' => tra('fileId'),
-				'description' => tra('File Id from a file gallery. Ex: 1. (Optional)'),
-			),
 			'attId' => array(
 				'required' => false,
 				'name' => tra('attId'),
