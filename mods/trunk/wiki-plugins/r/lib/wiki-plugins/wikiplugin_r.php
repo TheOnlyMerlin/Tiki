@@ -35,7 +35,7 @@ function wikiplugin_r_info() {
 				'description' => tra('AttId from a tracker Item attachment. ex: 1. (Optional)'),
 			),
 			'type' => array(
-				'required' => true,
+				'required' => false,
 				'name' => tra('type'),
 				'description' => tra('Choose the source file type in the appropriate mimetype syntax. Options: text/csv|text/xml. ex: text/csv. (default). For text/xml, you need to have installed library ("R4X") in R at the server. See documentation for more details'),
 			),
@@ -45,7 +45,7 @@ function wikiplugin_r_info() {
 				'description' => tra('Show output on an html page inside the wiki page. ex: 1. (default)'),
 			),
 			'security' => array(
-				'required' => yes,
+				'required' => false,
 				'name' => tra('security'),
 				'description' => tra('Set the secutiry level for the R commands allowed by the plugin. Show output on an html page inside the wiki page. ex: 1. (default)'),
 			),
