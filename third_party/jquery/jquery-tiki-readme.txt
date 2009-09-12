@@ -6,7 +6,7 @@ jonnybradley September 2009
 - - - - - - - - - - - - -
 
 Updates:
-	cluetip-1.0.4
+	cluetip-1.0.3 (rolled back from 1.0.4 - still causing problems)
 	colorbox-1.2.9
 	jquery-ui-1.7.2
 	js-autocomplete-1.3.2
