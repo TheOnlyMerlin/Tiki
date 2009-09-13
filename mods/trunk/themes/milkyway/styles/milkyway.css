@@ -639,6 +639,11 @@ a.flipmodtitle:hover img {border: 1px solid #fff !important}
 	
 .box-data {background: #fff}
 
+.box-data ol,
+.box-data ul {
+	list-style-position: inside;
+}
+
 /** Other boxes **/
 div.cbox {
 	color: #909090;
