@@ -470,6 +470,11 @@ h3.box-title {
 
 .box-data ul {list-style: url(twist/bullet.gif)}
 
+.box-data ol,
+.box-data ul {
+	list-style-position: inside;
+} 
+
 .box-data ul,
 ul.module,
 ol.module {
