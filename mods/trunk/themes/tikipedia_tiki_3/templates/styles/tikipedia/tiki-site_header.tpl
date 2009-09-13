@@ -48,3 +48,4 @@
 	{eval var=$prefs.feature_topbar_custom_code}
 </div>
 {/if}
+<br class="clear" />
