@@ -79,7 +79,7 @@ body {
 #squeeze .right-corner .left-corner {
   padding: 60px 25px 5em 35px;
   background: transparent url(judy/bg-content-left.png) no-repeat;
-  margin-right: 10px
+  margin-right: 10px;
   min-height: 400px;
 }
 
@@ -143,7 +143,7 @@ h6 {
 }
 
 legend {
-	color: 494949;
+	color: #494949;
 }
 
 quote, code, fieldset {
@@ -213,12 +213,12 @@ hr {
   height: 1px;
   background: #5294c1;
 }
-/*
+
+ol,
 ul {
-  margin: 0.5em 0 1em;
-  padding: 0;
+	list-style-position: inside;
 }
-*/
+
 ol {
   margin: 0.75em 0 1.25em;
   padding: 0;
@@ -353,13 +353,13 @@ ol li/*, ul li*/ {
 .cssmenu_horiz ul .sf-sub-indicator,
 .cssmenu_vert .sf-sub-indicator {
 	background: url(coelesce/arrows-467aa7.png) no-repeat;
-
+}
 
 /** PHP Layers Menus **/
 .horbar table {
 	position: static;
 	float: right;
-	padding-top: 7px
+	padding-top: 7px;
 }
 
 .horbar table {
@@ -398,11 +398,12 @@ a.flip:hover {color: #027ac6;font-size: 90%}
 .highlight {
 	background: #6ac4fd;
 }
+
 /***** Boxes *****/
 /** Modules **/
 
 .box {
-	margin: 0 0 1.5em;
+	margin-bottom: 2em;
 }
 
 #col2 .box {
