@@ -841,7 +841,7 @@ form.admin .tabs {
 /***** Wiki *****/
 h1.pagetitle a,
 h1.pagetitle a:visited {
-	background: url(planetfall/title_background.png) no-repeat 0 4px;
+	background: url(planetfall/title_bg.png) no-repeat 0 4px;
 	vertical-align: top; 
 	padding-left: 15px;
 	padding-top: 4px;
@@ -1145,7 +1145,7 @@ div.articletopline {
 	font-size: .9em}
 
 div.articletitle {
-	background: url(planetfall/title_background.png) no-repeat;
+	background: url(planetfall/title_bg.png) no-repeat;
 	vertical-align: middle;
 	font-size: 1.2em;
 	font-weight: bold;
@@ -1288,7 +1288,7 @@ div.postinfo a.linkmodule {}
 .small {} /* Check ?? (from fluidindex */
 
 div.posthead {
-	background: url(planetfall/title_background.png) no-repeat;
+	background: url(planetfall/title_bg.png) no-repeat;
 	vertical-align: middle;
 	text-align: left;
 	text-indent: 15px;
@@ -2480,53 +2480,6 @@ a.admbox.off img {
 
 /***** Ajax, jquery. etc. *****/
 /***** Ajax *****/
-div#ajaxLoading {	display: 0;
-	position: absolute;
-	top: 50px;
-	right: 50%;
-	color: #fff;
-	padding: 3px;
-	font-family: Verdana;
-	font-size: 90%;
-	text-align: center;
-	background: transparent url(../lib/shadowbox/images/loading-light.gif) no-repeat 50% 100%;
-	height: 43px;
-	width: 50px}
-
-
-#shadowbox_title {
-	height: auto !important;
-	padding: 0;
-	overflow: visible}
-
-#shadowbox_title_inner {
-	height: auto !important;
-	font-size: 1em !important;
-	line-height: 1em !important;
-	white-space: normal !important;
-	padding: 5px 0 4px 8px}
-
-.tab-menu  {
-	clear: both;
-	line-height: 17px;
-	list-style-image: 0;
-	list-style-position: outside;
-	list-style-type: 0;
-	padding: 2px 0;
-	margin-bottom: 6px;
-	margin-top: 2px;
-	width: 100%}
-
-.tab-menu li {
-	display: inline;
-	margin: 0 2px;
-	width: 200px;
-	padding-right: 1.5em}
-
-.tab-menu li img {vertical-align: middle}
-
-.tab-wrapper {
-	border: 1px s
 /***** New (unsorted) *****/
 
 /***** End New (unsorted) *****/
