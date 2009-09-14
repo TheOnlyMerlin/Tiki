@@ -256,11 +256,6 @@ li {
 /***** Site Header & Identity *****/
 #header {height: 111px}
 
-/* Theme-specific selector to hold logo. */
-div#silogo {
-	height: 111px;
-	background: url(planetfall/header_logo.jpg) no-repeat}
-
 /* Theme-specific selector to style header module */
 div#header_module {
 	float: right;
@@ -611,7 +606,7 @@ div.box {
 	width: 180px}
 
 h3.box-title {
-	background: url(planetfall/title_background.png) no-repeat;
+	background: url(planetfall/title_bg.png) no-repeat;
 	background: 	
 	vertical-align: middle;
 	font-size: 1em;
