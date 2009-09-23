@@ -1,7 +1,9 @@
 {title help="Inter-User Messages"}{tr}Messages{/tr}{/title}
 
-{include file='tiki-mytiki_bar.tpl'}
-{include file='messu-nav.tpl'}
+{if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
+{include file=tiki-mytiki_bar.tpl}
+{/if}
+{include file="messu-nav.tpl"}
 {if $prefs.messu_mailbox_size gt '0'}
 <br />
 <table border='0' cellpadding='0' cellspacing='0'>
@@ -89,7 +91,7 @@ var CHECKBOX_LIST = [{section name=user loop=$items}'msg[{$items[user].msgId}]'{
   {/section}
 </table>
 {if $items}
-<p>{tr}Perform action with checked{/tr}:
+<p>Perform action with checked:
 <input type="submit" name="delete" value="{tr}Delete{/tr}" />
 <input type="submit" name="archive" value="{tr}Archive{/tr}" />
 <input type="submit" name="download" value="{tr}Download{/tr}" />

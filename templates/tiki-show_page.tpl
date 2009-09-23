@@ -8,7 +8,7 @@
 	{if $prefs.feature_siteloc eq 'page' and $prefs.feature_breadcrumbs eq 'y'}
 		{if $prefs.feature_siteloclabel eq 'y'}{tr}Location : {/tr}{/if}
 		{breadcrumbs type="trail" loc="page" crumbs=$crumbs}
-		{if $prefs.feature_page_title eq 'y'}{breadcrumbs type="pagetitle" loc="page" crumbs=$crumbs machine_translate=$machine_translate_to_lang source_lang=$pageLang target_lang=$machine_translate_to_lang}{/if}
+		{if $prefs.feature_page_title eq 'y'}{breadcrumbs type="pagetitle" loc="page" crumbs=$crumbs}{/if}
 	{/if}
 
 {if $beingStaged eq 'y'}
@@ -88,7 +88,7 @@
 
 {if !$hide_page_header}
 {if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y' and isset($freetags.data[0]) and $prefs.freetags_show_middle eq 'y'}
-{include file='freetag_list.tpl'}
+{include file="freetag_list.tpl"}
 {/if}
 
 {if $pages > 1 and $prefs.wiki_page_navigation_bar neq 'bottom'}
@@ -106,8 +106,12 @@
 	</div>
 {/if}
 
+{**
+ * Page Title as h1 here when the feature is on
+ *}
 {if $prefs.feature_page_title eq 'y'}
-	<h1 class="pagetitle">{breadcrumbs type="pagetitle" loc="page" crumbs=$crumbs machine_translate=$machine_translate_to_lang source_lang=$pageLang target_lang=$machine_translate_to_lang}</h1>
+	<h1 class="pagetitle">{breadcrumbs type="pagetitle" loc="page" crumbs=$crumbs}</h1>
+    
 {/if}
 
 {if $structure eq 'y'}
@@ -160,14 +164,8 @@
 </table>
 </div>
 {/if}
-{if $prefs.feature_wiki_ratings eq 'y'}{include file='poll.tpl'}{/if}
+{if $prefs.feature_wiki_ratings eq 'y'}{include file="poll.tpl"}{/if}
 {/if} {*hide_page_header*}
-
-{if $machine_translate_to_lang != ''}
-	{remarksbox type="warning" title="{tr}Warning{/tr}" highlight="y"}
-       {tr}This text was automatically translated by Google Translate from the following page: {/tr}<a href="tiki-index.php?page={$page}">{$page}</a>
-	{/remarksbox}
-{/if}
 
 {if $pageLang eq 'ar' or $pageLang eq 'he'}
 <div style="direction:RTL; unicode-bidi:embed; text-align: right; {if $pageLang eq 'ar'}font-size: large;{/if}">
@@ -176,7 +174,7 @@
 {else}
 {$parsed}
 {/if}
-<hr class="hrwikibottom" style="clear:both; height:0px;"/> {* Information below the wiki content
+<hr style="clear:both; height:0px;"/> {* Information below the wiki content
 must not overlap the wiki content that could contain floated elements *}
 
 {if $pages > 1 and $prefs.wiki_page_navigation_bar neq 'top'}
@@ -251,7 +249,7 @@ must not overlap the wiki content that could contain floated elements *}
   </p> {* end editdate *}
 {/if}
 
-{if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categoryobjects eq 'y'}
+{if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categoryobjects eq 'y' and $tiki_p_view_categories eq 'y'}
 {$display_catobjects}
 {/if}
 
@@ -259,7 +257,7 @@ must not overlap the wiki content that could contain floated elements *}
 {include  file=tiki-wiki_topline.tpl}
 {/if}
 {if $print_page ne 'y'}
-{if (!$prefs.page_bar_position or $prefs.page_bar_position eq 'bottom' or $prefs.page_bar_position eq 'both') and $machine_translate_to_lang == ''}
+{if !$prefs.page_bar_position or $prefs.page_bar_position eq 'bottom' or $prefs.page_bar_position eq 'both'}
 {include  file=tiki-page_bar.tpl}
 {/if}
 {/if}

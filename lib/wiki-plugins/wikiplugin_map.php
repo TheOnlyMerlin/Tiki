@@ -17,7 +17,6 @@ function wikiplugin_map_info() {
 		'documentation' => 'PluginMap',	
 		'description' => tra('Displays a map'),
 		'prefs' => array( 'feature_maps', 'wikiplugin_map' ),
-		'icon' => 'pics/icons/map.png',
 		'params' => array(
 			'mapfile' => array(
 				'required' => true,
@@ -90,3 +89,5 @@ function wikiplugin_map($data, $params) {
 	}
 	return $map;
 }
+
+?>

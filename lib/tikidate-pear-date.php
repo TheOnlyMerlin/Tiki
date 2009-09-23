@@ -72,7 +72,7 @@ class TikiDate extends Date {
 		return $this->tz->getID();
 	}
 
-	static function TimezoneIsValidId($tz_id) {
+	function TimezoneIsValidId($tz_id) {
 		return Date_TimeZone::isValidID($tz_id);
 	}
 
@@ -80,3 +80,5 @@ class TikiDate extends Date {
 		return $GLOBALS['_DATE_TIMEZONE_DATA'];
 	}
 }
+
+?>

@@ -1,47 +1,8 @@
-{* $Id$ *}
-{if $prefs.feature_use_minified_scripts == 'y'}{assign var=minified value='.min'}{assign var=minidir value='minified'}{else}{assign var=minified value=''}{assign var=minidir value=''}{/if}
+{* $Id: header_jquery.tpl 17065 2009-03-02 11:31:20Z jonnybradley $ *}
+{if $prefs.use_minified_scripts == 'y'}{assign var=minified value='.min'}{assign var=minidir value='minified'}{else}{assign var=minified value=''}{assign var=minidir value=''}{/if}
 <!--  start jquery-tiki -->
 <script type="text/javascript" src="lib/jquery/jquery{$minified}.js"></script>
 <script type="text/javascript" src="lib/jquery_tiki/tiki-jquery.js"></script>
-<!-- Includes for Colorbox script -->
-
-{if $prefs.feature_use_minified_scripts == 'y'}
-	<script type="text/javascript" src="lib/jquery/colorbox/jquery.colorbox-min.js" charset="utf-8"></script>
-{else}
-	<script type="text/javascript" src="lib/jquery/colorbox/jquery.colorbox.js" charset="utf-8"></script>
-{/if}
-<link type="text/css" media="screen" rel="stylesheet" href="lib/jquery/colorbox/styles/colorbox.css" />
-<script type="text/javascript">
-<!--//--><![CDATA[//><!--
-{literal}
-$jq(document).ready(function(){
-	$jq("a[rel*='shadowbox']").colorbox({
-		current: "{{/literal}current{literal}} / {{/literal}total{literal}}"
-	});		
-});
-{/literal}
-//--><!]]>
-</script>
-
-{* fade out remark boxes on a click to save user space *}
-<script type="text/javascript">
-<!--//--><![CDATA[//><!--
-{literal}
-	$jq(document.body).ready(function() {
-		$jq("div.rbox").css("position","relative");
-		$jq("div.rbox").append('{/literal}{icon _id='cross' alt='{tr}Close{/tr}' title='{tr}Click to fade this out{/tr}' style='position: absolute; top: 0; right: 0'}{literal}');
-		$jq("div.rbox img.icon").hover(function() {
-			$jq(this).css("cursor","crosshair");
-			$jq(this).attr("title","{/literal}{tr}Click to fade this out{/tr}{literal}");
-			$jq(this).click(function() {
-				$jq(this).parent().fadeOut(1000);
-			});
-		});
-	});
-{/literal}
-//--><!]]>
-</script>
-
 {if $prefs.feature_jquery_ui eq 'y' or $prefs.feature_jquery_tooltips eq 'y' or $prefs.feature_jquery_autocomplete eq 'y' or $prefs.feature_jquery_superfish eq 'y' or $prefs.feature_jquery_reflection eq 'y' or $prefs.feature_jquery_cycle eq 'y'}
 <script type="text/javascript">
 <!--//--><![CDATA[//><!--
@@ -51,7 +12,6 @@ $jq(document).ready(function(){
 </script>
 {if $prefs.feature_jquery_ui eq 'y'}{* TODO optimise so not including all - maybe - one day *}
 <script type="text/javascript" src="lib/jquery/jquery-ui/ui/{$minidir}/jquery-ui{$minified}.js"></script>
-<link rel="stylesheet" href="lib/jquery/jquery-ui/themes/{$prefs.feature_jquery_ui_theme}/jquery-ui.css" />
 {/if}
 {if $prefs.feature_jquery_tooltips eq 'y'}
 <script type="text/javascript" src="lib/jquery/cluetip/lib/jquery.hoverIntent.js"></script>
@@ -85,11 +45,6 @@ $jq(document).ready(function(){
 {if $prefs.feature_jquery_cycle eq 'y'}
 <script type="text/javascript" src="lib/jquery/malsup-cycle/jquery.cycle.all{$minified}.js"></script>
 {/if}
-{* small libs on by default *}
-<script type="text/javascript" src="lib/jquery/jquery.cookie.js"></script>
-<script type="text/javascript" src="lib/jquery/jquery.columnmanager/jquery.columnmanager{$minified}.js"></script>
-<script type="text/javascript" src="lib/jquery/treeTable/src/javascripts/jquery.treeTable{$minified}.js"></script>
-<link rel="stylesheet" href="lib/jquery/treeTable/src/stylesheets/jquery.treeTable.css" type="text/css" /> 
 <script type="text/javascript">
 <!--//--><![CDATA[//><!--
 // Restore $
@@ -109,7 +64,6 @@ jqueryTiki.superfish = {if $prefs.feature_jquery_superfish eq 'y'}true{else}fals
 jqueryTiki.replection = {if $prefs.feature_jquery_reflection eq 'y'}true{else}false{/if};
 jqueryTiki.tablesorter = {if $prefs.feature_jquery_tablesorter eq 'y'}true{else}false{/if};
 jqueryTiki.cycle = {if $prefs.feature_jquery_cycle eq 'y'}true{else}false{/if};
-jqueryTiki.colorbox = {if $prefs.feature_shadowbox eq 'y'}true{else}false{/if};
 
 jqueryTiki.effect = "{$prefs.jquery_effect}";				// Default effect
 jqueryTiki.effect_direction = "{$prefs.jquery_effect_direction}";	// 'horizontal' | 'vertical' etc

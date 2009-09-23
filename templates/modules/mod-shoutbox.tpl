@@ -40,9 +40,9 @@
       <form action="javascript:void(null);" onsubmit="return submitShout();" id="shout_form" name="shout_form">
       <input type="hidden" id="shout_remove" name="shout_remove" value="0" />
       <input type="hidden" id="shout_edit" name="shout_edit" value="0" />{/if}
-	  {if !empty($shout_error)}<div class="highlight">{$shout_error}</div>{/if}
+	  {if $shout_error}<div class="highlight">{$shout_error}</div>{/if}
       <div align="center">
-        <textarea rows="3" cols="16" class="tshoutbox" id="shout_msg" name="shout_msg"></textarea>
+        <textarea rows="3" cols="16" class="tshoutbox" id="shout_msg" name="shout_msg">{$shout_msg|escape:'htmlall'}</textarea>
 		{if $prefs.feature_antibot eq 'y' && $user eq ''}
 			<table>{include file="antibot.tpl"}</table>
 		{/if}
@@ -58,8 +58,8 @@
         {/strip}{/capture}
 	    {* Show user message in style according to 'tooltip' module parameter *}
 	    {assign var=cdate value=$smarty.capture.date}
-	    {if $tooltip == 1}{* TODO: Improve $userlink modifier one day to handle other attibutes better? *}
-          <b>{strip}{$userlink|replace:"\" href=":"<br /><em>{tr}Shout date:{/tr} `$cdate`</em>\" href="}{/strip}</b>:
+	    {if 0 and $tooltip == 1}{* TODO: Improve $userlink modifier one day to handle other attibutes better? *}
+          <b>{strip}{$userlink|replace:" class=":" onmouseover='return overlib(\"$cdate\");' onmouseout='nd();' class="}{/strip}</b>:
         {else}
           <b>{strip}{$userlink}{/strip}</b>, {$cdate}:
         {/if}

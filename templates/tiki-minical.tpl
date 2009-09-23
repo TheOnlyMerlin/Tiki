@@ -1,6 +1,12 @@
 {title help="User+Calendar" url="tiki-minical.php?view=$view"}{tr}Mini Calendar{/tr}{/title}
 
-{include file='tiki-mytiki_bar.tpl'}
+{if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
+  {include file=tiki-mytiki_bar.tpl}
+{/if}
+
+{if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
+	{include file=tiki-mytiki_bar.tpl}
+{/if}
 
 <div class="navbar">
 	{button href="tiki-minical.php#add" _text="{tr}Add{/tr} "}

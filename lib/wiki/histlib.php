@@ -7,6 +7,9 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 class HistLib extends TikiLib {
+	function HistLib($db) {
+		$this->TikiLib($db);
+	}
 
 	/* 
 		*	Removes a specific version of a page
@@ -43,8 +46,8 @@ class HistLib extends TikiLib {
 		    $comment = $info["comment"];
 		    $data = $info["data"];
 		    $description = $info["description"];
-			$query = "insert into `tiki_history`(`pageName`, `version`, `version_minor`, `lastModif`, `user`, `ip`, `comment`, `data`, `description`,`is_html`) values(?,?,?,?,?,?,?,?,?,?)";
-		    $this->query($query,array($page,(int) $old_version, (int) $info["version_minor"],(int) $lastModif,$user,$ip,$comment,$data,$description, $info["is_html"]));
+				$query = "insert into `tiki_history`(`pageName`, `version`, `lastModif`, `user`, `ip`, `comment`, `data`, `description`) values(?,?,?,?,?,?,?,?)";
+		    $this->query($query,array($page,(int) $old_version,(int) $lastModif,$user,$ip,$comment,$data,$description));
 		}
 		
 		$query = "select * from `tiki_history` where `pageName`=? and `version`=?";
@@ -60,31 +63,10 @@ class HistLib extends TikiLib {
 			// for approval and staging feature to work properly, one has to use real commit time of rollbacks
 			//TODO: make this feature to set rollback time as current time as more general optional feature
 			$res["lastModif"] = time();
+			$res["comment"] = $res["comment"] . " [" . tra("rollback version ") . $version . "]"; 		
 		}
-		// add rollback comment to existing one (after truncating if needed)
-		$ver_comment = " [" . tra("rollback version ") . $version . "]";
-		$too_long = 200 - strlen($res["comment"] . $ver_comment);
-		if ($too_long < 0) {
-			$too_long -= 4;
-			$res["comment"] = substr($res["comment"], 0, $too_long) . '...';
-		}
-		$res["comment"] = $res["comment"] . $ver_comment; 		
-		
-		$query = "update `tiki_pages` set `data`=?,`lastModif`=?,`user`=?,`comment`=?,`version`=`version`+1,`ip`=?, `description`=?, `is_html`=?";
-		$bindvars = array($res['data'], $res['lastModif'], $res['user'], $res['comment'], $res['ip'], $res['description'], $res['is_html']);
-		
-		// handle rolling back once page has been edited in a different editor (wiki or wysiwyg) based on is_html in history
-		if ($prefs['feature_wysiwyg'] == 'y' && $prefs['wysiwyg_optional'] == 'y' && $prefs['wysiwyg_memo'] == 'y') {
-			if ($res['is_html'] == 1) {
-				$bindvars[] = 'y';
-			} else {
-				$bindvars[] = 'n';
-			}
-			$query .= ', `wysiwyg`=?';
-		}
-		$query .= ' where `pageName`=?';
-		$bindvars[] = $page;
-		$result = $this->query($query, $bindvars);
+		$query = "update `tiki_pages` set `data`=?,`lastModif`=?,`user`=?,`comment`=?,`version`=`version`+1,`ip`=?, `description`=? where `pageName`=?";
+		$result = $this->query($query,array($res['data'], $res['lastModif'], $res['user'], $res['comment'], $res['ip'], $res['description'], $page));
 		$query = "delete from `tiki_links` where `fromPage` = ?";
 		$result = $this->query($query,array($page));
 		$this->clear_links($page);
@@ -211,7 +193,7 @@ class HistLib extends TikiLib {
 	// history db table, which is one less than the current version 
 	function get_page_latest_version($page, $sort_mode='version_desc') {
 
-		$query = "select `version` from `tiki_history` where `pageName`=? order by ".$this->convertSortMode($sort_mode);
+		$query = "select `version` from `tiki_history` where `pageName`=? order by ".$this->convert_sortmode($sort_mode);
 		$result = $this->query($query,array($page),1);
 		$ret = array();
 		
@@ -237,18 +219,12 @@ class HistLib extends TikiLib {
 	function get_last_changes($days, $offset = 0, $limit = -1, $sort_mode = 'lastModif_desc', $findwhat = '') {
 	        global $user;
 
+		$where = "where (th.`version` != 0 or tp.`version` != 0) ";
 		$bindvars = array();
-		$categories = $this->get_jail();
-		if ($categories) {
-			$categjoin .= "inner join `tiki_objects` as tob on (tob.`itemId`= ta.`object` and tob.`type`= ?) inner join `tiki_category_objects` as tc on (tc.`catObjectId`=tob.`objectId` and tc.`categId` IN(" . implode(', ', array_fill(0, count($categories), '?')) . ")) ";
-			$bindvars = array_merge(array('wiki page'), $categories);
-		}
-
-		$where = "where true ";
 		if ($findwhat) {
 			$findstr='%' . $findwhat . '%';
 			$where.= " and ta.`object` like ? or ta.`user` like ? or ta.`comment` like ?";
-			$bindvars = array_merge($bindvars, array($findstr,$findstr,$findstr));
+			$bindvars = array($findstr,$findstr,$findstr);
 		}
 
 		if ($days) {
@@ -259,20 +235,23 @@ class HistLib extends TikiLib {
 			$bindvars[] = $toTime;
 		}
 
-		$query = "select distinct ta.`action`, ta.`lastModif`, ta.`user`, ta.`ip`, ta.`object`, thf.`comment`, thf.`version`, thf.`versionlast` from `tiki_actionlog` ta 
-			inner join (select NULL as version, `comment`, `pageName`, `lastModif`, '1' as versionlast from tiki_pages union select `version`, `comment`, `pageName`, `lastModif`, '0' as versionlast from `tiki_history`) as thf on ta.`object`=thf.`pageName` and ta.`lastModif`=thf.`lastModif` and ta.`objectType`='wiki page' " . $categjoin . $where . " order by ta.".$this->convertSortMode($sort_mode);
+		$query = "select ta.`action`, ta.`lastModif`, ta.`user`, ta.`ip`, ta.`object`,th.`comment`, th.`version` as version, tp.`version` as versionlast from `tiki_actionlog` ta 
+			left join `tiki_history` th on  ta.`object`=th.`pageName` and ta.`lastModif`=th.`lastModif` and ta.`objectType`='wiki page'
+			left join `tiki_pages` tp on ta.`object`=tp.`pageName` and ta.`lastModif`=tp.`lastModif` " . $where . " order by ta.".$this->convert_sortmode($sort_mode);
+		$query_cant = "select count(*) from `tiki_actionlog` ta 
+			left join `tiki_history` th on  ta.`object`=th.`pageName` and ta.`lastModif`=th.`lastModif` 
+			left join `tiki_pages` tp on ta.`object`=tp.`pageName` and ta.`lastModif`=tp.`lastModif` " . $where;
 
-		$query_cant = "select count(distinct ta.`lastModif`, ta.`object`) from `tiki_actionlog` ta 
-			inner join (select `pageName`, `lastModif` from tiki_pages union select `pageName`, `lastModif` from `tiki_history`) as thf on ta.`object`=thf.`pageName` and ta.`lastModif`=thf.`lastModif` and ta.`objectType`='wiki page' " . $categjoin . $where;
-
-		$result = $this->fetchAll($query,$bindvars,$limit,$offset);
-		$result = Perms::filter( array( 'type' => 'wiki page' ), 'object', $result, array( 'object' => 'object' ), 'view' );
+		$result = $this->query($query,$bindvars,$limit,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
 		$ret = array();
 		$retval = array();
-		foreach( $result as $res ) {
+		while ($res = $result->fetchRow()) {
+		   //WYSIWYCA hack: the $limit will not be respected
+		   if($this->user_has_perm_on_object($user,$res['object'],'wiki page','tiki_p_view')) {
 			$res['pageName'] = $res['object'];
 			$ret[] = $res;
+		   }
 		}
 		$retval["data"] = $ret;
 		$retval["cant"] = $cant;
@@ -315,7 +294,8 @@ class HistLib extends TikiLib {
 	}
 }
 
-$histlib = new HistLib;
+global $dbTiki;
+$histlib = new HistLib($dbTiki);
 
 function histlib_helper_setup_diff( $page, $oldver, $newver )
 {
@@ -396,3 +376,5 @@ function histlib_strip_irrelevant( $data )
 	$data = preg_replace( "/<(h1|h2|h3|h4|h5|h6|h7)\s+([^\\\\>]+)>/i", '<$1>', $data );
 	return $data;
 }
+
+?>

@@ -25,7 +25,7 @@ function getSubGraph($params) {
     $queue = array($nodeName);
     $i = 0;
 
-    $tikilib = new TikiLib;
+    $tikilib = new TikiLib($dbTiki);
     $existing_color = $prefs['wiki_3d_existing_page_color'];
     $missing_color = $prefs['wiki_3d_missing_page_color'];
 
@@ -68,3 +68,5 @@ function getSubGraph($params) {
     
     return new XML_RPC_Response(new XML_RPC_Value($response, "struct"));
 }
+
+?>

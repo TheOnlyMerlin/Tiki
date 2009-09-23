@@ -22,7 +22,6 @@ function wikiplugin_trackerstat_info() {
 		'description' => tra("Displays some stat of a tracker content, fields are indicated with numeric ids."),
 		'prefs' => array( 'feature_trackers', 'wikiplugin_trackerstat' ),
 		'body' => tra('Title'),
-		'icon' => 'pics/icons/database_lightning.png',
 		'params' => array(
 			'trackerId' => array(
 				'required' => true,
@@ -126,7 +125,7 @@ function wikiplugin_trackerstat($data, $params) {
 		if ($i < 0 ) {
 			return tra("incorrect fieldId")." ".$fieldId;
 		}
-		if ($allFields["data"][$i]['type'] == 'u' || $allFields["data"][$i]['type'] == 'I' || $allFields["data"][$i]['type'] == 's') {
+		if ($allFields["data"][$i]['type'] == 'u' || $allFields["data"][$i]['type'] == 'I' || $allFields["data"][$i]['type'] == 'g' || $allFields["data"][$i]['type'] == 's') {
 			continue;
 		}
 		if (!($allFields["data"][$i]['isHidden'] == 'n' || $allFields["data"][$i]['isHidden'] == 'p' || ($allFields["data"][$i]['isHidden'] == 'y' && $tiki_p_admin_trackers == 'y'))) {
@@ -173,7 +172,6 @@ function wikiplugin_trackerstat($data, $params) {
 			$allValues = $trklib->get_all_items($trackerId, $fieldId, $status);
 			$j = -1;
 			foreach ($allValues as $value) {
-				$value = trim($value);
 				if ($j < 0 || $value != $v[$j]['value']) {
 					++$j;
 					$v[$j]['value'] = $value;
@@ -191,10 +189,10 @@ function wikiplugin_trackerstat($data, $params) {
 			$total = $trklib->get_nb_items($trackerId);
 			for (; $j >= 0; --$j) {
 				$v[$j]['average'] = 100*$v[$j]['count']/$total;
-				if ($tracker_info['showStatus'] == 'y') {
-					$v[$j]['href'] .= "&amp;status=$status";
-				}
 			}
+		}
+		if ($tracker_info['showStatus'] == 'y') {
+			$v[$j]['href'] .= "&amp;status=$status";
 		}
 		if (!empty($v)) {
 			$stat['name'] = $allFields["data"][$i]['name'];

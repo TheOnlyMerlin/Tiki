@@ -31,6 +31,25 @@ require_once ('lib/tikilib.php'); # httpScheme()
 // user requests that could be used to change thread display settings
 $handled_requests = array('comments_per_page', 'thread_style', 'thread_sort_mode');
 
+// Set global site prefs to initialize vars
+foreach ( $handled_requests as $request_name ) {
+        if ( isset($prefs['forum_'.$request_name]) ) {
+                $$request_name = $prefs['forum_'.$request_name];
+        }
+}
+
+// First override existing values (e.g. coming from forum specific settings) by user specific requests if we allow them
+//   (we empty those user specific requests if they are denied)
+if ( $prefs['forum_thread_user_settings'] == 'y' ) {
+	foreach ( $handled_requests as $request_name ) {
+		if ( isset($_REQUEST[$request_name]) ) {
+			$$request_name = $_REQUEST[$request_name];
+			$smarty->assign($request_name.'_param', '&amp;'.$request_name.'='.$_REQUEST[$request_name]);
+			if ( $prefs['forum_thread_user_settings_keep'] == 'y' ) $_SESSION['forums_'.$request_name] = $_REQUEST[$request_name];
+		}
+	}
+} else foreach ( $handled_requests as $request_name ) unset($_REQUEST[$request_name]);
+
 // Then determine the final value for thread display settings
 if ( isset($forum_mode) && $forum_mode == 'y' ) {
 	// If we are in a forum thread
@@ -171,8 +190,7 @@ if( ! isset( $comments_objectId ) ) {
 
 $feedbacks = array();
 $errors = array();
-if ( $_REQUEST['comments_objectId'] == $comments_objectId
-	&& (isset($_REQUEST['comments_postComment']) || isset($_REQUEST['comments_postComment_anonymous']) )) {
+if (isset($_REQUEST['comments_postComment']) || isset($_REQUEST['comments_postComment_anonymous'])) {
 	if (isset($forum_mode) && $forum_mode == 'y') {
 		$forum_info = $commentslib->get_forum($_REQUEST['forumId']);
 		$threadId = $commentslib->post_in_forum($forum_info, $_REQUEST, $feedbacks, $errors);
@@ -334,7 +352,7 @@ if ($_REQUEST["comments_threadId"] > 0) {
 	// check to see if QUOTE plugin or > should be used -Terence
 	global $prefs;
 	if ( $comment_info["data"] != ''  ) {
-		if ( ($prefs['feature_forum_parse'] == 'y' || $prefs['section_comments_parse'] == 'y') && $prefs['feature_use_quoteplugin'] == 'y' ) {
+		if ( $prefs['feature_forum_parse'] == 'y' && $prefs['feature_use_quoteplugin'] == 'y' ) {
 			$comment_info["data"] = "\n{QUOTE()}" . $comment_info["data"] . '{QUOTE}';
 		} else {
 			$comment_info["data"] = preg_replace( '/\n/', "\n> ", $comment_info["data"] ) ;
@@ -503,6 +521,4 @@ if ($prefs['feature_contribution'] == 'y') {
 	include_once('contribution.php');
 }
 
-
-$smarty->assign('comments_objectId', $comments_objectId);
 $smarty->assign('comments_show', $comments_show);

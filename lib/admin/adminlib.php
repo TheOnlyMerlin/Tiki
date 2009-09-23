@@ -7,6 +7,9 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 class AdminLib extends TikiLib {
+	function AdminLib($db) {
+		$this->TikiLib($db);
+	}
 
 	function list_dsn($offset, $maxRecords, $sort_mode, $find) {
 		
@@ -20,7 +23,7 @@ class AdminLib extends TikiLib {
 			$mid = "";
 		}
 
-		$query = "select * from `tiki_dsn` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_dsn` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_dsn` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -95,7 +98,7 @@ class AdminLib extends TikiLib {
 			$mid = "";
 		}
 
-		$query = "select * from `tiki_extwiki` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_extwiki` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_extwiki` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -441,4 +444,7 @@ class AdminLib extends TikiLib {
 	}
 
 }
-$adminlib = new AdminLib;
+global $dbTiki;
+$adminlib = new AdminLib($dbTiki);
+
+?>

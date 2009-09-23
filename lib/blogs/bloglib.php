@@ -6,9 +6,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-include_once('lib/reportslib.php');
-
 class BlogLib extends TikiLib {
+	function BlogLib($db) {
+		$this->TikiLib($db);
+	}
 
 	//Special parsing for multipage articles
 	function get_number_of_pages($data) {
@@ -129,7 +130,7 @@ class BlogLib extends TikiLib {
 		}
 		$mid = empty($mid) ? '' : 'where ' . implode(' and ', $mid);
 
-		$query = "select * from `tiki_blog_posts` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_blog_posts` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_blog_posts` $mid";
 		$result = $this->query($query, $bindvars, $maxRecords, $offset);
 		$cant = $this->getOne($query_cant, $bindvars);
@@ -165,8 +166,7 @@ class BlogLib extends TikiLib {
 		$query = "SELECT b.`title`, b.`postId`, c.`threadId`, c.`title` as commentTitle, `commentDate`, `userName` FROM `tiki_comments` c, `tiki_blog_posts` b WHERE `objectType`='post' AND b.`postId`=c.`object`";
 
 		$bindvars = array();
-		$globalperms = Perms::get();
-		if ( !$globalperms->admin_comment ) {
+		if ( $tiki_p_admin_comments != 'y' ) {
 			$query .= ' AND `approved`=?';
 			$bindvars[] = $approved;
 		} else {
@@ -213,20 +213,50 @@ class BlogLib extends TikiLib {
 			}
 		}
 
-		$query = "select * from `tiki_blog_posts` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_blog_posts` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_blog_posts` $mid";
-		$result = $this->fetchAll($query,$bindvars,$maxRecords,$offset);
+		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
 		$ret = array();
 
-		$result = Perms::filter( array( 'type' => 'blog' ), 'object', $result, array( 'object' => 'blogId' ), 'read_blog' );
+		global $prefs, $userlib, $user, $tiki_p_admin;
+		while ($res = $result->fetchRow()) {
+		    $add = TRUE;
+	
+		    if ($tiki_p_admin != 'y' && $userlib->object_has_one_permission($res['blogId'], 'blog')) {
+		    // quiz permissions override category permissions
+				if (!$userlib->object_has_permission($user, $res['blogId'], 'blog', 'tiki_p_read_blog'))
+				{
+				    $add = FALSE;
+				}
+		    } elseif ($tiki_p_admin != 'y' && $prefs['feature_categories'] == 'y') {
+		    	// no quiz permissions so now we check category permissions
+		    	global $categlib;
+				if (!is_object($categlib)) {
+					include_once('lib/categories/categlib.php');
+				}
+		    	unset($tiki_p_view_categorized); // unset this var in case it was set previously
+		    	$perms_array = $categlib->get_object_categories_perms($user, 'blog', $res['blogId']);
+		    	if ($perms_array) {
+		    		$is_categorized = TRUE;
+			    	foreach ($perms_array as $perm => $value) {
+			    		$$perm = $value;
+			    	}
+		    	} else {
+		    		$is_categorized = FALSE;
+		    	}
+	
+		    	if ($is_categorized && isset($tiki_p_view_categorized) && $tiki_p_view_categorized != 'y') {
+		    		$add = FALSE;
+		    	}
+		    }
 
-		global $prefs;
-		foreach( $result as $res ) {
-			$query2 = "select `title` from `tiki_blogs` where `blogId`=?";
-			$title = $this->getOne($query2,array($res["blogId"]));
-			$res["blogtitle"] = $title;
-			$ret[] = $res;
+			if ($add) {
+				$query2 = "select `title` from `tiki_blogs` where `blogId`=?";
+				$title = $this->getOne($query2,array($res["blogId"]));
+				$res["blogtitle"] = $title;
+			    $ret[] = $res;
+			}
 		}
 
 		$retval = array();
@@ -237,7 +267,7 @@ class BlogLib extends TikiLib {
 
 	function blog_post($blogId, $data, $user, $title = '', $contributions='', $priv='n') {
 		// update tiki_blogs and call activity functions
-		global $smarty, $tikilib, $prefs, $reportslib;
+		global $smarty, $tikilib, $prefs;
 
 		$data = strip_tags($data, '<a><b><i><h1><h2><h3><h4><h5><h6><ul><li><ol><br><p><table><tr><td><img><pre>');
 		$query = "insert into `tiki_blog_posts`(`blogId`,`data`,`created`,`user`,`title`,`priv`) values(?,?,?,?,?,?)";
@@ -253,13 +283,6 @@ class BlogLib extends TikiLib {
 			if (!isset($_SERVER["SERVER_NAME"])) {
 				$_SERVER["SERVER_NAME"] = $_SERVER["HTTP_HOST"];
 			}
-
-			if ($prefs['feature_daily_report_watches'] == 'y') {
-				$query = "select `title` from `tiki_blogs` where `blogId`=?";
-				$blogTitle = $this->getOne($query, array((int)$blogId));
-				$reportslib->makeReportCache($nots, array("event"=>'blog_post', "blogId"=>$blogId, "blogTitle"=>$blogTitle, "postId"=>$id, "user"=>$user));
-			}
-			
 			if (count($nots)) {
 				include_once("lib/notifications/notificationemaillib.php");
 				$smarty->assign('mail_site', $_SERVER["SERVER_NAME"]);
@@ -386,7 +409,7 @@ class BlogLib extends TikiLib {
 			$bindvars=array($user);
 		}
 
-		$query = "select * from `tiki_blog_posts` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_blog_posts` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_blog_posts` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -454,4 +477,7 @@ class BlogLib extends TikiLib {
 		return $this->getOne($query, array((int)$blogId));
 	}
 }
-$bloglib = new BlogLib;
+global $dbTiki;
+$bloglib = new BlogLib($dbTiki);
+
+?>

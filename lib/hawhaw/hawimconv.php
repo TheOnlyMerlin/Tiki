@@ -42,3 +42,4 @@ if (isset($_REQUEST['img']))
     ImageWBMP($im);
   }
 }
+?>

@@ -319,3 +319,5 @@ function wikiplugin_attach($data, $params) {
 
 	return '~np~'.$data.'~/np~';
 }
+
+?>

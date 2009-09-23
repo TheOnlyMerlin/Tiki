@@ -227,11 +227,10 @@ if ( $calendarViewMode == 'month' ||
 	}
    }
    // this is the last day of $focus_month
-   if ($viewlist == 'list' && $prefs['calendar_list_begins_focus'] == 'y') {
+   if ($viewlist == 'list' && $prefs['calendar_list_begins_focus'] == 'y')
 	   $df = $focus_day;
-   } else {
+   else
 	   $df = 1;
-	}
 	   
    if ($calendarViewMode == 'month') {
      $viewend = TikiLib::make_time(0,0,0,$focus_month + 1, $df, $focus_year);
@@ -364,3 +363,5 @@ if (empty($myurl))
 	$myurl = 'tiki-calendar.php';
 $jscal_url = "$myurl?todate=%s";
 $smarty->assign('jscal_url', $jscal_url);
+//echo "view ".date('r', $viewstart).'-'.date('r', $viewend).'<br>'.'db '.date('r', $daystart).'-'.date('r', $dayend);
+?>

@@ -36,7 +36,6 @@ input[type=text],
 input[type=password] {
 	background: #fafafa;
 	border-color: #878787;
-	color: #222222;
 }
 
 .box-login_box input[type=text],
@@ -303,16 +302,16 @@ a.phplmselected:hover {
 }
 
 /** CSS (suckerfish) menus **/
-
-.cssmenu_horiz li ul li,
-.cssmenu_vert li ul li {
-	border: 1px solid #233039;
-	background: #e5e5e5;
+.cssmenu ul,
+.cssmenu_vert li ul,
+.cssmenu_horiz li ul {
+	border: 1px solid #a9a9a9;
+	background: #4c4c4c;
 }
 
-.cssmenu_horiz li ul li:first-child,
-.cssmenu_vert li ul li:first-child {
-	border-top: 1px solid #233039;
+.cssmenu_vert li ul {
+	background: #e5e5e5;
+	border: 1px solid #233039;
 }
 
 .cssmenu_horiz li:hover {
@@ -323,6 +322,7 @@ a.phplmselected:hover {
 	background: none;
 }
 
+.cssmenu a,	
 .cssmenu_horiz a,
 .cssmenu_vert a {
 	color: #666666;
@@ -345,38 +345,6 @@ a.phplmselected:hover {
 
 .cssmenu_vert ul a:hover {
 	color: #000000;
-}
-
-#tiki-top .cssmenu_horiz a,
-#tiki-top .cssmenu_horiz a:visited {
-	background: none;
-	border: none;
-	color: #fff;
-	padding: 3px 5px 6px 
-}
-
-#tiki-top .cssmenu_horiz a:hover {
-	background: #000;
-	border: none;
-	color: #fff;
-}
-
-#tiki-top .cssmenu_horiz li ul li {
-	border: 1px solid #a9a9a9;
-	background: #4c4c4c;
-}
-
-#tiki-top .cssmenu_horiz li ul li:first-child,
-.cssmenu_vert li ul li:first-child {
-	border-top: 1px solid #a9a9a9;
-}
-
-#tiki-top .cssmenu_horiz li ul li a:hover {
-	background: #000;
-}
-
-.cssmenu_vert li a .sf-sub-indicator {
-	background: url(mono/arrows-000000.png) no-repeat 0 0;
 }
 
 /** Links in other menus **/
@@ -457,12 +425,12 @@ a.flipmodtitle:hover img {
 /** Other boxes **/
 
 div.cbox {
-	border: 1px solid #444;
+	border: 1px solid #212121;
 }
 
 .cbox-title {
 	color: #ebebeb;
-	background: #666;
+	background: #212121;
 }
 
 .cbox-title a:link,
@@ -475,12 +443,12 @@ div.cbox {
 }
 
 .rbox-title {
-	border-color: #ccc;
+	background-color: #e5e5e5;
 }
 
 .rbox-data {
 	background-color: #fff;
-	border: solid 1px #ccc;
+	border: solid 1px #e5e5e5;
 }
 
 
@@ -529,7 +497,7 @@ td.third {}
 th,
 table.normal td.heading {
 	color: #ebebeb;
-	background: #444;
+	background: #212121;
 }
 
 th a:link,
@@ -674,7 +642,7 @@ div.split {
 }
 
 /* Needed esp. for light-on-dark theme */
-div.toolbar {
+div.quicktag {
 }
 
 /* Wiki plugins */
@@ -1044,7 +1012,6 @@ div.multiselect {
 	border-color: #878787 #343434 #343434 #878787;
 }
 
-.buttonon a,
 .calbuttonon a,
 .calbuttonoff a {
 	color: #fff;
@@ -1212,13 +1179,13 @@ table.default tfoot td {
 /* css/admin.css overrides */
 a.admbox {
 	border: 1px solid #223845;
-	background-color: #f0f0f0;
+	background: #f0f0f0 center no-repeat;
 }
 
 a.admbox:hover,
 a.admbox:focus,
 a.admbox:active {
-	background-color: #dcdcdc;
+	background: #dcdcdc center no-repeat;
 	border: 1px solid #696969;
 }
 
@@ -1233,26 +1200,5 @@ a.admbox.off:active {
 }
 
 /* MiniChat  */
-
-/* ClueTip tooltips */
-
-.cluetip-default {
-	background: #ccc;
-	color: #000;
-}
-
-.cluetip-default #cluetip-outer {
-	background: #ccc;
-}
-.cluetip-default h3#cluetip-title {
-	background: #444;
-	color: #fff;
-}
-
-.cluetip-default #cluetip-title a {
-	color: #ccc;
-	font-size: 0.95em;
-}
-  
 
 /* end of file */

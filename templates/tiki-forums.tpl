@@ -89,9 +89,9 @@
 <td class="{cycle advance=false}">
 	<span style="float:left">
 		{if ($channels[user].individual eq 'n') or ($tiki_p_admin eq 'y') or ($channels[user].individual_tiki_p_forum_read eq 'y')}
-			<a class="forumname" href="tiki-view_forum.php?forumId={$channels[user].forumId}">{$channels[user].name|escape}</a>
+			<a class="forumname" href="tiki-view_forum.php?forumId={$channels[user].forumId}">{$channels[user].name}</a>
 		{else}
-			{$channels[user].name|escape}
+			{$channels[user].name}
 		{/if}
 	</span>
 
@@ -115,7 +115,7 @@
 <td class="{cycle advance=false}">
 {if isset($channels[user].lastPost)}
 {$channels[user].lastPost|tiki_short_datetime}<br />
-<small><i>{$channels[user].lastPostData.title|escape}</i> {tr}by{/tr} {$channels[user].lastPostData.userName}</small>
+<small><i>{$channels[user].lastPostData.title}</i> {tr}by{/tr} {$channels[user].lastPostData.userName}</small>
 {/if}
 </td>
 {/if}

@@ -49,3 +49,4 @@ $langmapping = array(
     'tw' => array(  '正體中文',          tra("Traditional Chinese")          ),
     'uk' => array( 'Українська',     tra("Ukrainian")    )
 );
+?>

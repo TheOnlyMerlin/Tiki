@@ -175,5 +175,5 @@ class Cachelib {
 
 }
 
-global $cachelib;
 $cachelib = new Cachelib();
+?>

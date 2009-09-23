@@ -173,7 +173,7 @@
 
 		{if $prefs.wiki_list_name eq 'y'}
 			<td class="{cycle advance=false}">
-				<a href="{$listpages[changes].pageName|sefurl:'wiki':'':$all_langs}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].pageName}">
+				<a href="{$listpages[changes].pageName|sefurl}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].pageName}">
 					{$listpages[changes].pageName|truncate:$prefs.wiki_list_name_len:"...":true|escape}
 				</a>
 				{if $prefs.wiki_list_description eq 'y' && $listpages[changes].description neq ""}
@@ -328,8 +328,7 @@
 	{sectionelse}
 		<tr>
 			<td colspan="{$cntcol}" class="odd">
-				<b>{tr}No pages found{/tr}.{if $find ne ''} {tr}with{/tr} &quot;{$find}&quot;{/if}{if $initial ne ''}{tr} {if $find ne ''}and {/if}starting with{/tr} &quot;{$initial}&quot;{/if}</b>
-				{if $aliases_were_found == 'y'}<br><b>{tr}However, some page aliases fitting the query were found (see Aliases section above).{/tr}</b>{/if}
+				<b>{tr}No records found{/tr}{if $find ne ''} {tr}with{/tr} &quot;{$find}&quot;{/if}{if $initial ne ''}{tr} {if $find ne ''}and {/if}starting with{/tr} &quot;{$initial}&quot;{/if}</b>
 			</td>
 		</tr>
 	{/section}
@@ -337,8 +336,8 @@
 
 {if $checkboxes_on eq 'y' && count($listpages) > 0} {* what happens to the checked items? *}
 	<p align="left"> {*on the left to have it close to the checkboxes*}
-		<label for="submit_mult">{tr}Perform action with checked{/tr}:</label>
-		<select name="submit_mult" id="submit_mult" onchange="this.form.submit();">
+		{tr}Perform action with checked{/tr}:
+		<select name="submit_mult" onchange="this.form.submit();">
 			<option value="" selected="selected">...</option>
 			{if $tiki_p_remove eq 'y'} 
 				<option value="remove_pages" >{tr}Remove{/tr}</option>
@@ -369,12 +368,10 @@
 	</noscript>
 {/if}
 
-{if $find && $tiki_p_edit eq 'y' and $pagefound eq 'n' and $alias_found eq 'n'}
-	<div class="navbar">
-		 {button _text="{tr}Create Page{/tr}: $find" href="tiki-editpage.php?page=$find&lang=$find_lang&templateId=$template_id" _title="{tr}Create{/tr}"}
-	</div>
+{if $find && $tiki_p_edit eq 'y' and $pagefound eq 'n'}
+	{button _text="{tr}Create Page{/tr}: $find" href="tiki-editpage.php?page=$find" _title="{tr}Create{/tr}"}
 {/if}
 {if $checkboxes_on eq 'y'}
 </form>
 {/if}
-{pagination_links cant=$cant step=$maxRecords offset=$offset clean=$clean}{/pagination_links}
+{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}

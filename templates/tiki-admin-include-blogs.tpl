@@ -3,12 +3,29 @@
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}To add/remove blogs, go to "Create/Edit Blog" under "Blogs" on the application menu, or{/tr} <a class="rbox-link" href="tiki-edit_blog.php">{tr}Click Here{/tr}</a>.{/remarksbox}
 
 <form action="tiki-admin.php?page=blogs" method="post">
-<div class="heading input_submit_container" style="text-align: right">
-	<input type="submit" value="{tr}Change preferences{/tr}" />
-</div>
+<div class="cbox">
+<table class="admin"><tr><td>
+<div style="padding:1em;" align="center"><input type="submit" value="{tr}Change preferences{/tr}" /></div>
 
-{tabset name="admin_blogs"}
-	{tab name="{tr}General Settings{/tr}"}
+{if $prefs.feature_tabs eq 'y'}
+			{tabs}{strip}
+				{tr}General Settings{/tr}|
+				{tr}Blogs Listing{/tr}
+			{/strip}{/tabs}
+{/if}
+
+{cycle name=content values="1,2" print=false advance=false reset=true}
+
+    <fieldset{if $prefs.feature_tabs eq 'y'} class="tabcontent" id="content{cycle name=content assign=focustab}{$focustab}"{/if}>
+      {if $prefs.feature_tabs neq 'y'}
+        <legend class="heading">
+          <a href="#content{cycle name=content assign=focus}{$focus}" onclick="flip('content{$focus}'); return false;">
+            <span>{tr}General Settings{/tr}</span>
+          </a>
+        </legend>
+        <div id="content{$focus}" style="display:{if !isset($smarty.session.tiki_cookie_jar.show_content.$focus) and $smarty.session.tiki_cookie_jar.show_content.$focus neq 'y'}none{else}block{/if};">
+      {/if}
+
 <div class="adminoptionbox">
 	<div class="adminoptionlabel"><label for="home_forum">{tr}Home Blog (main blog){/tr}</label>
 	<select name="homeBlog" id="blogs-home"{if !$blogs} disabled="disabled"{/if}>
@@ -82,8 +99,18 @@
 	<div class="adminoptionlabel"><label for="blogs-postpings">{tr}Post-level{/tr}</label></div>
 </div>
 </fieldset>
-	{/tab}
-	{tab name="{tr}Blogs Listings{/tr}"}
+     {if $prefs.feature_tabs neq 'y'}</div>{/if}
+    </fieldset>
+
+    <fieldset{if $prefs.feature_tabs eq 'y'} class="tabcontent" id="content{cycle name=content assign=focustab}{$focustab}"{/if}>
+      {if $prefs.feature_tabs neq 'y'}
+        <legend class="heading">
+          <a href="#content{cycle name=content assign=focus}{$focus}" onclick="flip('content{$focus}'); return false;">
+            <span>{tr}Blogs Listings{/tr}</span>
+          </a>
+        </legend>
+        <div id="content{$focus}" style="display:{if !isset($smarty.session.tiki_cookie_jar.show_content.$focus) and $smarty.session.tiki_cookie_jar.show_content.$focus neq 'y'}none{else}block{/if};">
+      {/if}
 <input type="hidden" name="bloglistconf" />	  
 <div class="adminoptionbox">
 	<div class="adminoptionlabel"><label for="blogs-order">{tr}Default ordering{/tr}:</label> 
@@ -147,14 +174,14 @@
 	<div class="adminoptionlabel"><label for="blogs-visits">{tr}Visits{/tr}</label></div>
 </div>
 <div class="adminoptionbox">
-	<div class="adminoption">
-		<input type="checkbox" name="blog_list_activity" id="blogs-activity" {if $prefs.blog_list_activity eq 'y'}checked="checked"{/if} />
-	</div>
+	<div class="adminoption"><input type="checkbox" name="blog_list_activity" id="blogs-activity"
+              {if $prefs.blog_list_activity eq 'y'}checked="checked"{/if} /></div>
 	<div class="adminoptionlabel"><label for="blogs-activity">{tr}Activity{/tr}</label></div>
 </div>
-	{/tab}
-{/tabset}
-<div class="heading input_submit_container" style="text-align: center">
-	<input type="submit" value="{tr}Change preferences{/tr}" />
+     {if $prefs.feature_tabs neq 'y'}</div>{/if}
+    </fieldset>
+
+<div style="padding:1em;" align="center"><input type="submit" value="{tr}Change preferences{/tr}" /></div>
+</td></tr></table>
 </div>
 </form>

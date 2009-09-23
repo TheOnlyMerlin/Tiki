@@ -1,8 +1,10 @@
 {title help="User+Bookmarks"}{tr}User Bookmarks{/tr}{/title}
 
-  {include file='tiki-mytiki_bar.tpl'}
+{if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
+  {include file=tiki-mytiki_bar.tpl}
   <br />
   <br />
+{/if}
 
 {if $parentId>0}[<a class="link" href="tiki-user_bookmarks.php">{tr}top{/tr}</a>] {/if}{tr}Current folder{/tr}: {$path}<br />
 <br />

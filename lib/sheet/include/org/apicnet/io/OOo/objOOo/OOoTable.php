@@ -413,3 +413,5 @@ class OOoTable extends absOOo {
 		}
 	}
 } 
+
+?>

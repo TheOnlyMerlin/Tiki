@@ -85,8 +85,8 @@ class FreetagLib extends ObjectLib {
      * Constructor for the freetag class. 
      *
      */ 
-	function __construct() {
-		parent::__construct();
+	function FreetagLib($db) {
+		$this->ObjectLib($db);
 
 		// update private vars with tiki preferences
 		global $prefs;
@@ -144,7 +144,7 @@ class FreetagLib extends ObjectLib {
 	$query = "SELECT DISTINCT o.* ";
 	$query_cant = "SELECT COUNT(*) ";
 	
-	$query_end = "FROM `tiki_objects` o, `tiki_freetagged_objects` fto, `tiki_freetags` t WHERE fto.`tagId`=t.`tagId` AND o.`objectId` = fto.`objectId` AND `tag` = ? $mid ORDER BY o.". $this->convertSortMode($sort_mode);
+	$query_end = "FROM `tiki_objects` o, `tiki_freetagged_objects` fto, `tiki_freetags` t WHERE fto.`tagId`=t.`tagId` AND o.`objectId` = fto.`objectId` AND `tag` = ? $mid ORDER BY o.". $this->convert_sortmode($sort_mode);
 
 	
 	
@@ -189,7 +189,7 @@ class FreetagLib extends ObjectLib {
     
 function get_objects_with_tag_combo($tagArray, $type='', $thisUser = '', $offset = 0, $maxRecords = -1, $sort_mode = 'name_asc', $find = '', $broaden = 'n') {
 	global $categlib; include_once('lib/categories/categlib.php');
-	global $tiki_p_admin, $user, $smarty;
+	global $tiki_p_admin, $user;
 	if (!isset($tagArray) || !is_array($tagArray)) {
 	    return false;
 	}
@@ -298,7 +298,7 @@ function get_objects_with_tag_combo($tagArray, $type='', $thisUser = '', $offset
 	$query_cant = "SELECT COUNT(DISTINCT o.`objectId`) ";
 	
 	$query_end = "FROM `tiki_objects` o, `tiki_freetagged_objects` fto, `tiki_freetags` t 
-	WHERE fto.`tagId`=t.`tagId` AND o.`objectId` = fto.`objectId` AND $tag_sql $mid ORDER BY ". $this->convertSortMode($sort_mode);
+	WHERE fto.`tagId`=t.`tagId` AND o.`objectId` = fto.`objectId` AND $tag_sql $mid ORDER BY ". $this->convert_sortmode($sort_mode);
 	// note the original line was originally here to fix ambiguous 'created' column for default sort. Not a neat fix the o. prefix is ugly.	So changed default order instead.
 	
 	$query      .= $query_end;
@@ -310,34 +310,14 @@ function get_objects_with_tag_combo($tagArray, $type='', $thisUser = '', $offset
 	$ret = array();
 	$permMap = $categlib->map_object_type_to_permission();
 	while ($row = $result->fetchRow()) {
-		$ok = false;
-		if ($tiki_p_admin == 'y') { 
-			$ok = true;
-		} elseif ($row['type'] == 'blog post') {
-			global $bloglib; include_once('lib/blogs/bloglib.php');
-			$post_info = $bloglib->get_post($row['itemId']);
-			if ($this->user_has_perm_on_object($user, $post_info['blogId'], 'blog', 'tiki_p_read_blog')) {
-				$ok = true;
-			}
-		} elseif ($this->user_has_perm_on_object($user, $row['itemId'], $row['type'], $permMap[$row['type']])) {
-			$ok = true;
-		}
-		if ($ok) {
-			if ($prefs['feature_sefurl'] == 'y') {
-				include_once('tiki-sefurl.php');
-				if ($row['type'] == 'blog post' && !empty($post_info)) {
-					$row['href'] = filter_out_sefurl($row['href'], $smarty, 'blogpost', $post_info['title']);
-				} else {
-					$type = ($row['type'] == 'wiki page')?'wiki':($row['type'] == 'blog post'? 'blogpost': $row['type']);
-					$row['href'] = filter_out_sefurl($row['href'], $smarty, $type);
-				}
-			}
+		if ($tiki_p_admin == 'y' || $this->user_has_perm_on_object($user, $row['itemId'], $row['type'], $permMap[$row['type']])) {
 			$ret[] = $row;
 		} else {
-			-- $cant;
+			--$cant;
 		}
 	}
-
+	
+	
 	return array('data' => $ret,
 		     'cant' => $cant);
     }
@@ -922,11 +902,7 @@ function get_objects_with_tag_combo($tagArray, $type='', $thisUser = '', $offset
 	$count = array();
 
 	while ($row = $result->fetchRow()) {
-	    $row['size'] =  ceil(1 +(1+ $row['count'] / $top)*log(1+$row['count']));
-		if ($row['size'] > $this->max_cloud_text_size) {
-			$row['size'] = $this->max_cloud_text_size;
-		}
-		$size[] = $row['size'];
+	    $size[] = $row['size'] = ceil($this->max_cloud_text_size * $row['count'] / $top);
 	    $tag[] = $row['tag'];
 	    $count[] = $row['count'];
 
@@ -954,7 +930,7 @@ function get_objects_with_tag_combo($tagArray, $type='', $thisUser = '', $offset
      */
 
     function get_tag_suggestion($exclude = '', $max = 10, $lang = null) {
-	$query = "select t.* from `tiki_freetags` t, `tiki_freetagged_objects` o where t.`tagId`=o.`tagId` and (`lang` = ? or `lang` is null) order by " . $this->convertSortMode('random');
+	$query = "select t.* from `tiki_freetags` t, `tiki_freetagged_objects` o where t.`tagId`=o.`tagId` and (`lang` = ? or `lang` is null) order by " . $this->convert_sortmode('random');
 	$result = $this->query($query, array( $lang ));
 
 	$tags = array();
@@ -1152,8 +1128,9 @@ function get_objects_with_tag_combo($tagArray, $type='', $thisUser = '', $offset
 					cnt >= ?
 				ORDER BY
 					cnt DESC, RAND()
+				LIMIT ?
 				";
-			break;
+			
 		// }}}
 
 		case 'weighted': // {{{
@@ -1176,14 +1153,16 @@ function get_objects_with_tag_combo($tagArray, $type='', $thisUser = '', $offset
 					having_cnt >= ?
 				ORDER BY					
 					sort_cnt DESC, RAND()
+				LIMIT ?
 				";	
 			// Sort based on the global popularity of all tags in common
 		// }}}
 		}
 		
 		$bindvals[] = $minCommon;
+		$bindvals[] = $maxResults;
 		
-		$result = $this->query( $query, $bindvals, $maxResults );
+		$result = $this->query( $query, $bindvals );
 		$tags = array();
 		while( $row = $result->fetchRow() )
 			$tags[] = $row;
@@ -1347,4 +1326,7 @@ function get_objects_with_tag_combo($tagArray, $type='', $thisUser = '', $offset
 		$this->cleanup_tags();
 	}
 }
-$freetaglib = new FreetagLib;
+
+global $dbTiki;
+$freetaglib = new FreetagLib($dbTiki);
+?>

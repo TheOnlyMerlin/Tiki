@@ -48,3 +48,4 @@ function help_doclink($params) {
     }
     return $ret;
 }
+?>

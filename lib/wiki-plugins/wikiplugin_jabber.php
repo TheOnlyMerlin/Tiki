@@ -80,3 +80,4 @@ function wikiplugin_jabber($data,$params) {
   $result.='</APPLET>';
   return $result;
 }
+?>

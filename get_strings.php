@@ -301,7 +301,8 @@ if ( $script_mode ) {
 
 	if ( file_exists('db/local.php') ) {
 		require_once('db/tiki-db.php');
-		$tikilib = TikiDb::get();
+		require_once('lib/tikidblib.php');
+		$tikilib = new TikiDB($dbTiki);
 	} else {
 		require_once('lib/setup/prefs.php'); // Used to get default prefs
 	}

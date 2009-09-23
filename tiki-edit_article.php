@@ -434,7 +434,6 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 	$cat_objid = $artid;
 	$cat_desc = substr($_REQUEST["heading"], 0, 200);
 	$cat_name = $_REQUEST["title"];
-	$cat_object_exists = (bool) $artid;
 	$cat_href = "tiki-read_article.php?articleId=" . $cat_objid;
 	include_once("categorize.php");
 	include_once ("freetag_apply.php");
@@ -473,7 +472,6 @@ if ($prefs['feature_multilingual'] == 'y') {
 
 $cat_type = 'article';
 $cat_objid = $articleId;
-$cat_object_exists = (bool) $articleId;
 include_once ("categorize_list.php");
 
 if ($prefs['feature_freetags'] == 'y') {
@@ -497,6 +495,10 @@ global $wikilib; include_once('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'body');
 $smarty->assign_by_ref('plugins', $plugins);
 
+include_once ('lib/quicktags/quicktagslib.php');
+$quicktags = $quicktagslib->list_quicktags(0,100,'taglabel_asc','','articles');
+$smarty->assign_by_ref('quicktags', $quicktags["data"]);
+
 ask_ticket('edit-article');
 
 // disallow robots to index page:
@@ -505,3 +507,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the Index Template
 $smarty->assign('mid', 'tiki-edit_article.tpl');
 $smarty->display("tiki.tpl");
+
+?>

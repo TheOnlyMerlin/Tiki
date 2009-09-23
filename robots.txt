@@ -13,6 +13,7 @@ Disallow: /lang/
 Disallow: /backups/
 Disallow: /bin/
 Disallow: /db/
+Disallow: /games/
 Disallow: /images/
 Disallow: /maps/
 Disallow: /modules/
@@ -78,6 +79,7 @@ Disallow: lang/
 Disallow: backups/
 Disallow: bin/
 Disallow: db/
+Disallow: games/
 Disallow: images/
 Disallow: maps/
 Disallow: modules/

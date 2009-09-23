@@ -35,3 +35,4 @@ function smarty_function_js_maxlength($params, &$smarty) {
     echo "//-->\n";
     echo "</script>\n";
 }
+?>

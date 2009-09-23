@@ -14,7 +14,9 @@
 {/if}
 
 {if $userwatch eq $user or $userwatch eq ""}
-    {include file='tiki-mytiki_bar.tpl'}
+  {if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
+    {include file=tiki-mytiki_bar.tpl}
+  {/if}
   <br />
 {/if}
 
@@ -23,20 +25,18 @@
     {section name=n loop=$tikifeedback}{$tikifeedback[n].mes}{/section}
   </div>
 {/if}
-{tabset name="mytiki_user_preference"}
 
 {if $prefs.feature_userPreferences eq 'y'}
-{tab name="{tr}Personal Information{/tr}"}
+<h2>{tr}Personal Information{/tr}</h2>
 <form action="tiki-user_preferences.php" method="post">
   <input type="hidden" name="view_user" value="{$userwatch|escape}" />
-
 
   {cycle values="odd,even" print=false}
   <table class="normal">
     <tr>
       <td class="{cycle advance=false}">{tr}User{/tr}:</td>
       <td class="{cycle}">
-        {$userinfo.login|escape}
+        {$userinfo.login}
         {if $prefs.login_is_email eq 'y' and $userinfo.login neq 'admin'} 
           <i>({tr}Use the email as username{/tr})</i>
         {/if}
@@ -48,8 +48,8 @@
         {tr}Real Name{/tr}:
       </td>
       <td class="{cycle}">
-        {if $prefs.auth_ldap_nameattr eq '' || $prefs.auth_method ne 'ldap'}
-          <input type="text" name="realName" value="{$user_prefs.realName|escape}" />{else}{$user_prefs.realName|escape}
+        {if $prefs.auth_ldap_nameattr eq '' || $prefs.auth_method ne 'auth'}
+          <input type="text" name="realName" value="{$user_prefs.realName|escape}" />{else}{$user_prefs.realName}
         {/if}
       </td>
     </tr>
@@ -121,10 +121,10 @@
         <td class="{cycle advance=false}">{tr}Your personal Wiki Page{/tr}:</td>
         <td class="{cycle}">
           {if $userPageExists eq 'y'}
-            <a class="link" href="tiki-index.php?page={$prefs.feature_wiki_userpage_prefix}{$userinfo.login}" title="{tr}View{/tr}">{$prefs.feature_wiki_userpage_prefix}{$userinfo.login|escape}</a> 
+            <a class="link" href="tiki-index.php?page={$prefs.feature_wiki_userpage_prefix}{$userinfo.login}" title="{tr}View{/tr}">{$prefs.feature_wiki_userpage_prefix}{$userinfo.login}</a> 
 	    (<a class="link" href="tiki-editpage.php?page={$prefs.feature_wiki_userpage_prefix}{$userinfo.login}">{tr}Edit{/tr}</a>)
           {else}
-            {$prefs.feature_wiki_userpage_prefix}{$userinfo.login|escape} (<a class="link" href="tiki-editpage.php?page={$prefs.feature_wiki_userpage_prefix}{$userinfo.login}">{tr}Create{/tr}</a>)
+            {$prefs.feature_wiki_userpage_prefix}{$userinfo.login} (<a class="link" href="tiki-editpage.php?page={$prefs.feature_wiki_userpage_prefix}{$userinfo.login}">{tr}Create{/tr}</a>)
           {/if}
         </td>
       </tr>
@@ -476,6 +476,17 @@
       </tr>
     {/if}
 
+    {if $prefs.feature_workflow eq 'y'}
+      {if $tiki_p_use_workflow eq 'y'}
+        <tr>
+          <td class="{cycle advance=false}">{tr}My workflow{/tr}</td>
+          <td class="{cycle}">
+            <input type="checkbox" name="mytiki_workflow" {if $user_prefs.mytiki_workflow eq 'y'}checked="checked"{/if} />
+          </td>
+        </tr>
+      {/if}
+    {/if}
+
     {if $prefs.feature_articles eq 'y'}
       <tr>
         <td class="{cycle advance=false}">{tr}My Articles{/tr}</td>
@@ -503,11 +514,10 @@
     </tr>
   </table>
 </form>
-{/tab}
 {/if}
 
 {if $prefs.change_password neq 'n' or ! ($prefs.login_is_email eq 'y' and $userinfo.login neq 'admin')}
-	{tab name="{tr}Account Information{/tr}"}
+  <h2>{tr}Account Information{/tr}</h2>
   <form action="tiki-user_preferences.php" method="post">
   <input type="hidden" name="view_user" value="{$userwatch|escape}" />
   <table class="normal">
@@ -554,23 +564,5 @@
       </tr>
     </table>
   </form>
-	{/tab}
 {/if}
 
-{if $tiki_p_delete_account eq 'y'}
-{tab name="{tr}Account Deletion{/tr}"}
-<form action="tiki-user_preferences.php" method="post" onsubmit='return confirm("{tr}Are you really sure you want to delete your account ?{/tr}");'>
- <table class="normal">
-  <tr>
-   <td class="{cycle advance=false}"></td>
-   <td class="{cycle}"><input type='checkbox' name='deleteaccountconfirm' value='1'> {tr}Check this box if you really want to delete your account{/tr}</td>
-  </tr>
-    <tr>
-      <td colspan="2"  class="input_submit_container"><input type="submit" name="deleteaccount" value="{tr}Delete my account{/tr}" /></td>
-    </tr>
- </table>
-</form>
-{/tab}
-{/if}
-
-{/tabset}

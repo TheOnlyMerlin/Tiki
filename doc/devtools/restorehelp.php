@@ -9,7 +9,7 @@ require_once("lib/structures/structlib.php");
 
 function tra($s) { return $s; }
 
-$tikilib = new TikiLib;
+$tikilib = new TikiLib($dbTiki);
 
 $categId = '113';
 $structId = '160';
@@ -40,3 +40,4 @@ foreach ($pages as $p) {
 		echo "\n";
 	}
 }
+?>

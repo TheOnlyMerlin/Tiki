@@ -9,7 +9,7 @@
 	{/if}
 {/title}
 
-<div id="calscreen"{if $prefs.calendar_sticky_popup eq 'y'} onclick="nd();"{/if}>
+<div id="calscreen"{if $prefs.calendar_sticky_popup eq 'y'} onClick="nd();"{/if}>
 
 	<div class="navbar">
 		{if $displayedcals|@count eq 1 and $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
@@ -30,7 +30,7 @@
 				{button href="tiki-admin_calendars.php" _text="{tr}Admin Calendar{/tr}"}
 			{/if}
 		{/if}
-{* avoid Add Event being shown if no calendar is displayed *}
+
 		{if $tiki_p_add_events eq 'y'}
 			{button href="tiki-calendar_edit_item.php" _text="{tr}Add Event{/tr}"}
 		{/if}
@@ -65,14 +65,7 @@
 				{button href="" _style="background-color:#fff;padding:0 4px;" _text="{tr}None{/tr}"}
 			{/if}
 		{/if}
-{* show jscalendar if set *}
-{if $prefs.feature_jscalendar eq 'y'}
-<div class="jscalrow">
-<form action="{$myurl}" method="post" name="f">
-{jscalendar date="$focusdate" id="trig" goto="$jscal_url" align="Bc"}
-</form>
-</div>
-{/if}
+
 	</div>
 
 
@@ -103,7 +96,6 @@
 				</div>
 			{/foreach}
 			<div class="calinput">
-				<input type="hidden" name="todate" value="{$focusdate}"/>
 				<input type="submit" name="refresh" value="{tr}Refresh{/tr}"/>
 			</div>
 		</form>
@@ -131,15 +123,15 @@
 		</form>
 	{/if}
 
-	{include file='tiki-calendar_nav.tpl'}
+	{include file="tiki-calendar_nav.tpl"}
 	{if $viewlist eq 'list'}
-		{include file='tiki-calendar_listmode.tpl''}
+		{include file="tiki-calendar_listmode.tpl"'}
 	{elseif $viewmode eq 'day'}
-		{include file='tiki-calendar_daymode.tpl'}
+		{include file="tiki-calendar_daymode.tpl"}
 	{elseif $viewmode eq 'week'}
-		{include file='tiki-calendar_weekmode.tpl'}
+		{include file="tiki-calendar_weekmode.tpl"}
 	{else}
-		{include file='tiki-calendar_calmode.tpl'}
+		{include file="tiki-calendar_calmode.tpl"}
 	{/if}
 <p>&nbsp;</p>
 </div>

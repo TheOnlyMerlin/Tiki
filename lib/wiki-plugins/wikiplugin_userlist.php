@@ -17,7 +17,6 @@ function wikiplugin_userlist_info() {
 		'description' => tra('Displays a list of registered users'),
 		'prefs' => array( 'wikiplugin_userlist' ),
 		'body' => tra('Login Filter'),
-		'icon' => 'pics/icons/group_go.png',
 		'params' => array(
 			'sep' => array(
 				'required' => false,
@@ -113,3 +112,5 @@ function wikiplugin_userlist($data, $params) {
     }
     return $pre.implode ( $sep, $ret ).$post;
 }
+
+?>

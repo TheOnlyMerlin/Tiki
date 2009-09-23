@@ -9,3 +9,5 @@ class DeclFilter_CatchAllUnsetRule extends DeclFilter_UnsetRule
 		return true;
 	}
 }
+
+?>

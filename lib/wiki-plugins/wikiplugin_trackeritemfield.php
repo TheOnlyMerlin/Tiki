@@ -13,7 +13,6 @@ function wikiplugin_trackeritemfield_info() {
 		'description' => tra("Displays the value of a tracker item field or the wiki text if the value of the field is set or has a value(if itemId not specified, use the itemId of the url or the user tracker)."),
 		'prefs' => array( 'wikiplugin_trackeritemfield', 'feature_trackers' ),
 		'body' => tra('Wiki text containing an {ELSE} marker.'),
-		'icon' => 'pics/icons/database_go.png',
 		'params' => array(
 			'trackerId' => array(
 				'required' => false,
@@ -187,7 +186,10 @@ function wikiplugin_trackeritemfield($data, $params) {
 				$smarty->assign('showlinks', 'n');
 				return $smarty->fetch('tracker_item_field_value.tpl');
 			}
+		} else {
+			return tra('Incorrect param').': fieldId';
 		}
 	}
 	return $data;
 }
+?>

@@ -14,9 +14,8 @@ class HeaderLib {
 	var $css;
 	var $rssfeeds;
 	var $metatags;
-	var $hasDoneOutput;
 	
-	function __construct() {
+	function HeaderLib() {
 		$this->title = '';
 		$this->jsfiles = array();
 		$this->js = array();
@@ -25,7 +24,6 @@ class HeaderLib {
 		$this->css = array();
 		$this->rssfeeds = array();
 		$this->metatags = array();
-		$this->hasDoneOutput = false;
 	}
 
 	function set_title($string) {
@@ -42,11 +40,6 @@ class HeaderLib {
 		if (empty($this->js[$rank]) or !in_array($script,$this->js[$rank])) {
 			$this->js[$rank][] = $script;
 		}
-		if ($this->hasDoneOutput) {	// if called after smarty parse header.tpl return the script so the caller can do something with it
-			return $this->wrap_js($script);
-		} else {
-			return '';
-		}
 	}
 
 	/**
@@ -58,11 +51,6 @@ class HeaderLib {
 	function add_jq_onready($script,$rank=0) {
 		if (empty($this->jq_onready[$rank]) or !in_array($script,$this->jq_onready[$rank])) {
 			$this->jq_onready[$rank][] = $script;
-		}
-		if ($this->hasDoneOutput) {	// if called after smarty parse header.tpl return the script so the caller can do something with it
-			return $this->wrap_js("\$jq(\"document\").ready(function(){".$script."});\n");
-		} else {
-			return '';
 		}
 	}
 
@@ -110,8 +98,11 @@ class HeaderLib {
 	}
 
 	function output_headers() {
-		global $style_ie6_css, $style_ie7_css, $style_ie8_css;
+		global $style_ie6_css, $style_ie7_css, $style_ie8_css, $prefs;
 
+		ksort($this->jsfiles);
+		ksort($this->js);
+		ksort($this->jq_onready);
 		ksort($this->cssfiles);
 		ksort($this->css);
 		ksort($this->rssfeeds);
@@ -181,31 +172,6 @@ class HeaderLib {
                         }
                         $back .= "<![endif]-->\n";
 
-                        
-        $back .= $this->output_js();	// TODO move to end of page
-        
-		if (count($this->rssfeeds)) {
-			foreach ($this->rssfeeds as $x=>$rssf) {
-				$back.= "<!-- rss $x -->\n";
-				foreach ($rssf as $rsstitle=>$rssurl) {
-					$back.= "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"$rsstitle\" href=\"$rssurl\" />\n";
-				}
-			}
-			$back.= "\n";
-		}
-		$this->hasDoneOutput = true;
-		return $back;
-	}
-	
-	function output_js() {
-		global $prefs;
-		
-		ksort($this->jsfiles);
-		ksort($this->js);
-		ksort($this->jq_onready);
-		
-		$back = "\n";
-		
 		if (count($this->jsfiles)) {
 			foreach ($this->jsfiles as $x=>$jsf) {
 				$back.= "<!-- jsfile $x -->\n";
@@ -217,90 +183,45 @@ class HeaderLib {
 		}
 
 		if (count($this->js)) {
-			$b = '';
+			$back.= "<script type=\"text/javascript\">\n<!--//--><![CDATA[//><!--\n";
 			foreach ($this->js as $x=>$js) {
-				$b.= "// js $x \n";
+				$back.= "// js $x \n";
 				foreach ($js as $j) {
-					$b.= "$j\n";
+					$back.= "$j\n";
 				}
 			}
-			$back.=  $this->wrap_js($b);
+			$back.= "//--><!]]>\n</script>\n\n";
 		}
 		
-		if (count($this->jq_onready)) {
-			$b = '$jq("document").ready(function(){'."\n";
-			foreach ($this->jq_onready as $x=>$js) {
-				$b.= "// jq_onready $x \n";
-				foreach ($js as $j) {
-					$b.= "$j\n";
+		if ($prefs['feature_jquery'] == 'y') {
+			if (count($this->jq_onready)) {
+				$back .= "<script type=\"text/javascript\">\n<!--//--><![CDATA[//><!--\n";
+				$back .= '$jq("document").ready(function(){'."\n";
+				foreach ($this->jq_onready as $x=>$js) {
+					$back.= "// jq_onready $x \n";
+					foreach ($js as $j) {
+						$back.= "$j\n";
+					}
+				}
+				$back .= "});\n";
+				$back.= "//--><!]]>\n</script>\n";
+			}
+		}
+		
+		if (count($this->rssfeeds)) {
+			foreach ($this->rssfeeds as $x=>$rssf) {
+				$back.= "<!-- rss $x -->\n";
+				foreach ($rssf as $rsstitle=>$rssurl) {
+					$back.= "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"$rsstitle\" href=\"$rssurl\" />\n";
 				}
 			}
-			$b .= "});\n";
-			$back .= $this->wrap_js($b);
+			$back.= "\n";
 		}
-		
+
 		return $back;
 	}
-	
-	/**
-	 * Gets JavaScript and jQuery scripts as an array (for AJAX)
-	 * @return array[strings]
-	 */
-	function getJs() {
-		global $prefs;
-		
-		ksort($this->js);
-		ksort($this->jq_onready);
-		$out = array();
-		
-		if (count($this->js)) {
-			foreach ($this->js as $x=>$js) {
-				foreach ($js as $j) {
-					$out[] = "$j\n";
-				}
-			}
-		}
-		if (count($this->jq_onready)) {
-			$b = '$jq("document").ready(function(){'."\n";
-			foreach ($this->jq_onready as $x=>$js) {
-				$b.= "// jq_onready $x \n";
-				foreach ($js as $j) {
-					$b.= "$j\n";
-				}
-			}
-			$b .= "});\n";
-			$out[] = $b;
-		}
-		return $out;
-	}
 
-	/**
-	 * Gets included JavaScript files (for AJAX)
-	 * @return array[strings]
-	 */
-	function getJsfiles() {
-		
-		ksort($this->jsfiles);
-		$out = array();
-		
-		if (count($this->jsfiles)) {
-			foreach ($this->jsfiles as $x=>$jsf) {
-				foreach ($jsf as $jf) {
-					$out[] = "<script type=\"text/javascript\" src=\"$jf\"></script>\n";
-				}
-			}
-		}
-		return $out;
-	}
-
-	function wrap_js($inJs) {
-		return "<script type=\"text/javascript\">\n<!--//--><![CDATA[//><!--\n".$inJs."//--><!]]>\n</script>\n";
-	}
-	
-	function hasOutput() {
-		return $this->hasDoneOutput;
-	}
 }
 
-$headerlib = new HeaderLib;
+$headerlib = new HeaderLib();
 $smarty->assign_by_ref('headerlib', $headerlib);

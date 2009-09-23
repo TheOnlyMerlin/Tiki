@@ -27,11 +27,7 @@ if ($prefs['feature_freetags'] == 'y' and $tiki_p_view_freetags == 'y') {
 	$tagarray = array(); 
 	$taglist = '';
 	for ($i=0; $i<sizeof($tags['data']); $i++) {
-		if (strstr($tags['data'][$i]['tag'], ' ')) {
-			$taglist .= '"'.$tags['data'][$i]['tag'] . '" ';
-		} else {
-			$taglist .= $tags['data'][$i]['tag'] . ' ';
-		}
+	    $taglist .= $tags['data'][$i]['tag'] . ' ';
 	    $tagarray[] = $tags['data'][$i]['tag'];
 	}
 
@@ -57,3 +53,5 @@ if ($prefs['feature_freetags'] == 'y' and $tiki_p_view_freetags == 'y') {
 
     $smarty->assign('tag_suggestion',$suggestion);
 }
+
+?>

@@ -12,7 +12,7 @@ include_once ('lib/dcs/dcslib.php');
 $auto_query_args = array('contentId','sort_mode','offset','find');
 
 if (!isset($dcslib)) {
-	$dcslib = new DCSLib;
+	$dcslib = new DCSLib($dbTiki);
 }
 
 if ($prefs['feature_dynamic_content'] != 'y') {
@@ -121,3 +121,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the template
 $smarty->assign('mid', 'tiki-edit_programmed_content.tpl');
 $smarty->display("tiki.tpl");
+
+?>

@@ -98,4 +98,5 @@ fields[{$c}] = '{$fid}';
 {/if}
 </tr>
 </table>
+<div align='left'>{tr}Items found:{/tr} {$item_count}</div>
 </form>

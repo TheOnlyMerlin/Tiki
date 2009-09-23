@@ -88,3 +88,5 @@ class CatAdminTreeMaker extends TreeMaker {
 		return '';
 	}
 }
+
+?>

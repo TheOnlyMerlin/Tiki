@@ -18,7 +18,6 @@ function wikiplugin_html_info() {
 		'body' => tra('HTML code'),
 		'validate' => 'all',
 		'filter' => 'rawhtml_unsafe',
-		'icon' => 'pics/icons/html.png',
 		'params' => array(
 			'wiki' => array(
 				'required' => false,
@@ -45,3 +44,5 @@ function wikiplugin_html($data, $params) {
 	// return the result
 	return $ret;
 }
+
+?>

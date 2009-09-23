@@ -1929,4 +1929,6 @@ class SheetLib extends TikiLib
 	}
 	
 } // }}}1
-$sheetlib = new SheetLib;
+
+$sheetlib = &new SheetLib( $tikilib->db );
+?>

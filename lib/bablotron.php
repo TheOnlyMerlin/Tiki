@@ -12,8 +12,8 @@ class bablotron extends TikiLib {
 	var $lan;
 	var $tbl;
 
-	function __construct($db, $lan) {
-		parent::__construct();
+	function bablotron($db, $lan) {
+		$this->TikiLib($db);
 		$this->lan = preg_replace('/-/','_',$lan);
 		$this->tbl = 'babl_words_' . $this->lan;
 	}
@@ -103,3 +103,5 @@ class bablotron extends TikiLib {
 	function find_similar($word, $threshold) {
 	}
 }
+
+?>

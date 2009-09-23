@@ -50,3 +50,5 @@ function wikiplugin_agentinfo($data, $params) {
 
 	return $asetup;
 }
+
+?>

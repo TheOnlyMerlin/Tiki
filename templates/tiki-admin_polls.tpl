@@ -7,9 +7,8 @@
 	{button href="tiki-admin_polls.php?activeall=1" _text="{tr}Activate all polls{/tr}"}
 </div>
 
-{tabset}
-<h2>{if $pollId eq '0'}{assign var='title' value='{tr}Create poll{/tr}'}{else}{assign var='title' value='{tr}Edit poll{/tr}'}{/if}</h2>
-{tab name=$title}
+<h2>{if $pollId eq '0'}{tr}Create poll{/tr}{else}{tr}Edit poll{/tr}{/if}</h2>
+
 <form action="tiki-admin_polls.php" method="post">
 <input type="hidden" name="pollId" value="{$pollId|escape}" />
 <table class="normal">
@@ -41,7 +40,7 @@
 	</div>
 </td>
 </tr>
-{include file='categorize.tpl'}
+{include file=categorize.tpl}
 <tr><td class="formcolor">{tr}PublishDate{/tr}:</td><td class="formcolor">
 {html_select_date time=$info.publishDate end_year="+1" field_order=$prefs.display_field_order} {tr}at{/tr} {html_select_time time=$info.publishDate display_seconds=false}
 </td></tr>
@@ -52,9 +51,8 @@
 <tr><td class="formcolor">&nbsp;</td><td class="formcolor"><input type="submit" name="save" value="{tr}Save{/tr}" /></td></tr>
 </table>
 </form>
-{/tab}
 
-{tab name='{tr}Polls{/tr}'}
+<h2>{tr}Polls{/tr}</h2>
 {if $channels or ($find ne '')}
   {include file='find.tpl'}
 {/if}
@@ -97,10 +95,8 @@
 </table>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset }{/pagination_links}
-{/tab}
 
-
-{tab name='{tr}Add poll to pages{/tr}'}
+<h2>{tr}Add poll to pages{/tr}</h2>
 <form action="tiki-admin_polls.php" method="post">
 <table class="normal">
 <tr><td class="formcolor">
@@ -111,9 +107,7 @@
 <option value="{$channels[ix].pollId|escape}"{if $smarty.section.ix.first} selected="selected"{/if}>{tr}{$channels[ix].title}{/tr}</option>
 {/if}
 {/section}
-</select>
-{remarksbox type="tip" title="Tip"}{tr}This menu shows only Polls with 'status': "template"{/tr}{/remarksbox}
-</td></tr>
+</select></td></tr>
 <tr><td class="formcolor">{tr}Title{/tr}</td><td class="formcolor"><input type="text" name="poll_title" /></td></tr>
 <tr><td class="formcolor">
 {tr}Wiki pages{/tr}</td><td class="formcolor">
@@ -127,5 +121,3 @@
 <tr><td class="formcolor">{tr}Lock the pages{/tr}</td><td class="formcolor"><input type="checkbox" name="locked" /></td></tr>
 <tr><td class="formcolor"></td><td class="formcolor"><input type="submit" name="addPoll" value="{tr}Add{/tr}" /></td></tr></table>
 </form>
-{/tab}
-{/tabset}

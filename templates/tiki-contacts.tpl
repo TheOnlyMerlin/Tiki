@@ -126,11 +126,7 @@
 						<a class="link" href="tiki-contacts.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;contactId={$channels[user].contactId}">{$channels[user].lastName}</a>
 					</td>
 					<td class="{cycle advance=false}">
-						{if $prefs.feature_webmail eq 'y'}
-							{self_link _script='tiki-webmail.php' locSection='compose' to=$channels[user].email}{$channels[user].email}{/self_link}
-						{else}
-							<a class="link" href="mailto:{$channels[user].email}">{$channels[user].email}</a>
-						{/if}
+						<a class="link" href="mailto:{$channels[user].email}">{$channels[user].email}</a>
 					</td>
 					<td class="{cycle advance=false}">
 						{$channels[user].nickname}
@@ -211,18 +207,16 @@
 		return ch;
 	}
 
-	function ext_add(extid, text, defaultvalue, pub) {
+	function ext_add(extid, text, defaultvalue) {
 		var option=document.getElementById('ext_option_'+extid);
 		option.disabled='1';
 
 		var tr,td, input;
 		tr=newelem('tr', { 'class':'formcolor', 'id':'tr_ext_'+extid });
 		td=newelem('td', { });
-		if (pub != 'y' || {/literal}{if $tiki_p_admin_group_webmail eq 'y'}1{else}0{/if}{literal}) {	// add button only if not public
-			input=newelem('input', { 'type':'button', 'value':'-', 'onclick':'ext_remove(\''+extid+'\');' });
-			td.appendChild(input);
-		}
-		td.innerHTML += (pub == 'y' ? ' <em>' : ' ') + text + ':' + (pub == 'y' ? '</em>' : '');
+		input=newelem('input', { 'type':'button', 'value':'-', 'onclick':'ext_remove(\''+extid+'\');' });
+		td.appendChild(input);
+		td.innerHTML+=text+':';
 		tr.appendChild(td);
 
 		td=newelem('td', { });
@@ -251,18 +245,18 @@
 		option.disabled='';
 	}
 
-	function extmenu_add(extid, text, defaultvalue, pub) {
+	function extmenu_add(extid, text, defaultvalue) {
 		var selectelem=document.getElementById('select_exts');
 		var option=newelem('option', { 'id':'ext_option_'+extid, 'value':extid });
 		option.innerHTML=text;
 		selectelem.appendChild(option);
 		if (defaultvalue != '')
-			ext_add(extid, text, defaultvalue, pub);
+			ext_add(extid, text, defaultvalue);
 	}
 {/literal}
 
 {foreach from=$exts item=ext key=k}
-	extmenu_add('{$k|escape}', '{$ext.tra|escape}', '{$info.ext[$ext.id]|escape:quotes}', '{$ext.public|escape}');
+	extmenu_add('{$k|escape}', '{$ext.tra|escape}', '{$info.ext[$ext.id]|escape:quotes}');
 {/foreach}
 
 {literal}

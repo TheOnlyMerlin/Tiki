@@ -1,10 +1,6 @@
 {* $Id$ *}
 {title help="Structures"}{tr}Structures{/tr}{/title}
 
-{if $tiki_p_admin eq 'y'}
-	{button href='tiki-import_xml_zip.php' _text='{tr}XML Zip Import{/tr}'}
-{/if}
-
 {if $just_created neq 'n' && $tiki_p_edit_structures == 'y'}
 <br />
 {tr}The structure{/tr} <a class='tablename' href='tiki-edit_structure.php?page_ref_id={$just_created}'>{$just_created_name|escape}</a>&nbsp;&nbsp;<a class='link' href='tiki-index.php?page={$just_created_name|escape:"url"}' title="{tr}View{/tr}">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>&nbsp;&nbsp;{tr}has just been created.{/tr}
@@ -14,9 +10,9 @@
 {if $askremove eq 'y'}
 <div class="simplebox highlight">
 {tr}You will remove structure{/tr}: {$removename|escape}<br />
-{button href="?rremove=$remove&amp;page=$removename" _text='{tr}Destroy the structure leaving the wiki pages{/tr}'}
+<a class="link" href="tiki-admin_structures.php?rremove={$remove|escape:"url"}&amp;page={$removename|escape:"url"}">{tr}Destroy the structure leaving the wiki pages{/tr}</a>
 {if $tiki_p_remove == 'y'}
-{button href="?rremovex=$remove&amp;page=$removename" _text='{tr}Destroy the structure and remove the pages{/tr}'}
+<br /><a class="link" href="tiki-admin_structures.php?rremovex={$remove|escape:"url"}&amp;page={$removename|escape:"url"}">{tr}Destroy the structure and remove the pages{/tr}</a>
 </div>
 {/if}
 {/if}
@@ -52,13 +48,11 @@
 {/foreach}
 <br /><br />
 {/if}
-
-{tabset}
-{tab name='{tr}Structures{/tr}'}
 {if $channels or ($find ne '')}
-  {include file='find.tpl' find_show_languages='y' find_show_categories='y' find_show_num_rows='y' }
+  {include file="find.tpl" find_show_languages='y' find_show_categories='y' find_show_num_rows='y' }
 {/if}
 <br />
+<h2>{tr}Structures{/tr}</h2>
 <table class="normal">
 <tr>
   <th>{tr}Structure ID{/tr}</th>
@@ -87,7 +81,7 @@
   <a title="{tr}View WebHelp{/tr}" class="link" href="whelp/{$channels[ix].pageName}/index.html">{icon _id='book_open' alt="{tr}View WebHelp{/tr}"}</a>
   {/if}
   {if $tiki_p_admin eq 'y'}
-    <a title="{tr}XML Zip{/tr}" class="link" href="tiki-admin_structures.php?zip={$channels[ix].page_ref_id|escape:"url"}">{icon _id='pics/icons/mime/zip.png' alt="{tr}XML Zip{/tr}"}</a>
+    <a title="{tr}Xml Zip{/tr}" class="link" href="tiki-admin_structures.php?zip={$channels[ix].page_ref_id|escape:"url"}">{icon _id='pics/icons/mime/zip.png' alt="{tr}Xml Zip{/tr}"}</a>
   {/if}
   </td>
 </tr>
@@ -99,33 +93,32 @@
 </table>
 
 {pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
-{/tab}
 
 {if $tiki_p_edit_structures == 'y'}
-{tab name='{tr}Create new structure{/tr}'}
+<h2>{tr}Create new structure{/tr}</h2>
 <form action="tiki-admin_structures.php" method="post">
 <table class="normal">
 <tr>
-   <td class="formcolor"><label for="name">{tr}Structure ID{/tr}:</label></td>
-   <td class="formcolor"><input type="text" name="name" id="name" /></td>
+   <td class="formcolor">{tr}Structure ID{/tr}:</td>
+   <td class="formcolor"><input type="text" name="name" /></td>
 </tr>
 <tr>
-   <td class="formcolor"><label for="alias">{tr}Alias{/tr}:</label></td>
-   <td class="formcolor"><input type="text" name="alias" id="alias" /></td>
+   <td class="formcolor">{tr}Alias{/tr}:</td>
+   <td class="formcolor"><input type="text" name="alias" /></td>
 </tr>    
 <tr>
-   <td class="formcolor"><label for="tree">{tr}Tree{/tr}:</label><br />(optional)</td>
-   <td colspan="2" class="formcolor"><textarea rows="5" cols="60" id="tree" name="tree" style="width:95%"></textarea>
+   <td class="formcolor">{tr}Tree{/tr}:<br />(optional)</td>
+   <td colspan="2" class="formcolor"><textarea rows="5" cols="60" name="tree" style="width:95%"></textarea>
 		{remarksbox type="tip" title="{tr}Note{/tr}"}{tr}Use single spaces to indent structure levels{/tr}{/remarksbox}
    </td>
 </tr>    
-{include file='categorize.tpl'}
+{if $tiki_p_view_categories eq 'y'}
+{include file=categorize.tpl}
+{/if}
 <tr>
    <td class="formcolor">&nbsp;</td>
    <td colspan="2" class="formcolor"><input type="submit" value="{tr}Create New Structure{/tr}" name="create" /></td>
 </tr>
 </table>
 </form>
-{/tab}
 {/if}
-{/tabset}

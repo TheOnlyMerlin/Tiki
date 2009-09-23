@@ -54,7 +54,6 @@
 	<input type="hidden" name="comments_parentId" value="{$comments_parentId|escape}" />    
 	<input type="hidden" name="comments_grandParentId" value="{$comments_grandParentId|escape}" />    
 	<input type="hidden" name="comments_reply_threadId" value="{$comments_reply_threadId|escape}" />    
-	<input type="hidden" name="comments_objectId" value="{$comments_objectId|escape}" />
 	<input type="hidden" name="comments_offset" value="0" />
 	{if $smarty.request.topics_offset}<input type="hidden" name="topics_offset" value="{$smarty.request.topics_offset|escape}" />{/if}
 	{if $smarty.request.topics_find}<input type="hidden" name="topics_find" value="{$smarty.request.topics_find|escape}" />{/if}
@@ -176,7 +175,7 @@
 	{/if}
 
 	{section name=rep loop=$comments_coms}
-		{include file='comment.tpl' comment=$comments_coms[rep]}
+		{include file="comment.tpl" comment=$comments_coms[rep]}
 		{if $thread_style != 'commentStyle_plain'}<br />{/if}
 	{/section}
 </form>
@@ -276,7 +275,6 @@
 	<input type="hidden" name="comments_threadId" value="{$comments_threadId|escape}" />
 	<input type="hidden" name="comments_threshold" value="{$comments_threshold|escape}" />
 	<input type="hidden" name="thread_sort_mode" value="{$thread_sort_mode|escape}" />
-	<input type="hidden" name="comments_objectId" value="{$comments_objectId|escape}" />
 
 	{* Traverse request variables that were set to this page adding them as hidden data *}
 	{section name=i loop=$comments_request_data}
@@ -317,18 +315,31 @@
 		{/if}
 		{* End: Xenfasa adding and testing article ratings in comments here *}
 
-		{if $prefs.section_comments_parse eq 'y'}
-	        {assign var=toolbars_html value=true}{* can't find where this gets set in ui-revamp project *}
-	        <tr>
-	    		<td class="formcolor"><label>{tr}Toolbars{/tr}</label></td>
-	            <td class="formcolor">
-	            	{toolbars area_name='editpost2' comments='y'}
-	            </td>
-	        </tr>
+		{if $prefs.feature_smileys eq 'y'}
+		<tr>
+			<td class="formcolor"><label>{tr}Smileys{/tr}</label></td>
+			<td class="formcolor">{include file="tiki-smileys.tpl" area_name="editpost2"}</td>
+		</tr>
 		{/if}
+                
+                {if $quicktags and $prefs.quicktags_over_textarea eq 'y'}
+                  <tr>
+		    <td class="formcolor"><label>{tr}Quicktags{/tr}</label></td>
+                    <td class="formcolor">
+                      {include file=tiki-edit_help_tool.tpl area_name='editpost2'}
+                    </td>
+                  </tr>
+                {/if}
+
 		<tr>
 			<td class="formcolor">
 				<label for="editpost2">{if $forum_mode eq 'y'}{tr}Reply{/tr}{else}{tr}Comment{/tr} <span class="attention">({tr}required{/tr})</span>{/if}</label>
+				<br /><br />
+				{include file="textareasize.tpl" area_name='editpost2' formId='editpostform'}
+				<br /><br />
+                                {if $quicktags and $prefs.quicktags_over_textarea neq 'y'}
+				  {include file=tiki-edit_help_tool.tpl area_name='editpost2'}
+                                {/if}
 			</td>
 			<td class="formcolor">
 				<textarea id="editpost2" name="comments_data" rows="{$rows}" cols="{$cols}">{if $prefs.feature_forum_replyempty ne 'y' || $edit_reply > 0 || $comment_preview eq 'y'}{$comment_data|escape}{/if}</textarea>
@@ -348,16 +359,16 @@
 		{/if}
 
 		{if $prefs.feature_contribution eq 'y'}
-			{include file='contribution.tpl' in_comment="y"}
+			{include file="contribution.tpl" in_comment="y"}
 		{/if}
 
 		{if $prefs.feature_antibot eq 'y'}
-			{include file='antibot.tpl' td_style="formcolor"}
+			{include file="antibot.tpl" td_style="formcolor"}
 		{/if}
 
 		{if !$user}
 			<tr>
-				<td class="formcolor"><label for="anonymus_name">{tr}Enter your name{/tr} ({tr}optional{/tr})</span></label></td>
+				<td class="formcolor"><label for="anonymus_name">{tr}Enter your name{/tr}</label></td>
 				<td class="formcolor"><input type="text" maxlength="50" size="12" id="anonymous_name" name="anonymous_name" /></td>
 			</tr>
 			{if $forum_mode eq 'y'}

@@ -84,7 +84,7 @@ function wikiplugin_iframe_info() {
 				'name' => tra('URL'),
 				'description' => tra('URL'),
 			),
-		), 
+		),
 	);
 }
 

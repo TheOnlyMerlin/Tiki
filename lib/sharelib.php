@@ -215,3 +215,5 @@ class Tiki_ShareObject
 						array( $group->name, $permission, $this->objectType, $this->objectHash ) );
 	} // }}}
 }
+
+?>

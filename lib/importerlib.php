@@ -26,6 +26,13 @@ class Importer extends Comments {
 	var $fi_types    = array('TikiWiki');
 	var $fi_prefixes = array('tiki_');
 
+	// Constructor for the Importer library.
+	function Importer($db) {
+		if (!$db) {
+			die ("Invalid db object passed to importerlib constructor.");
+		}
+		$this->db = $db;
+    	}
 
 /*
  * Functions for the forums
@@ -279,3 +286,4 @@ function parseForumList($dbType, $dbPrefix, $sqlFile) {
 
 
 }
+?>

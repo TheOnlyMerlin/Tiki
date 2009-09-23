@@ -1,6 +1,8 @@
 {title help="notepad"}{tr}Notes{/tr}{/title}
 
-	{include file='tiki-mytiki_bar.tpl'}
+{if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
+	{include file=tiki-mytiki_bar.tpl}
+{/if}
 
 <div class="navbar">
 	{button href="tiki-notepad_write.php" _text="{tr}Write a note{/tr}"}

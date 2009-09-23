@@ -45,3 +45,7 @@ function wikiplugin_banner($data, $params)
 	}
     return '~np~'.$banner.'~/np~';
 }
+
+
+
+?>

@@ -694,3 +694,5 @@ class StaticGridScale extends GridScale // {{{1
 		return array( $begin, $end );
 	}
 } // }}}1
+
+?>

@@ -5,9 +5,9 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
-global $smarty, $prefs;
+global $smarty;
 if ($prefs['feature_minichat'] != 'y') {
-	$module_params['error'] = tra('This feature is disabled').': feature_minichat';
+	$smarty->assign('module_error', tra("This feature is disabled").": feature_minichat");
 } else {
 	if (isset($module_params["channels"])) {
 		$channels=explode(',', $module_params["channels"]);
@@ -28,5 +28,5 @@ if ($prefs['feature_minichat'] != 'y') {
 	}
 
 	$smarty->assign('jscode', $jscode);
-	$smarty->assign('module_rows', $module_rows);
+	$smarty->assign('module_rows', $module_rows*10);
 }

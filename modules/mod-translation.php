@@ -6,7 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-global $pivotLanguage, $tikilib, $smarty, $prefs, $page;
+global $pivotLanguage, $tikilib, $smarty;
 
 if( ! function_exists( 'filter_languages_from_pivot' ) ) {
 	function filter_languages_from_pivot( $langInfo )
@@ -29,7 +29,6 @@ if( isset( $module_params['pivot_language'] ) ) {
 $smarty->assign( 'pivot_language', $pivotLanguage );
 
 if( $prefs['feature_translation'] == 'y' && ! empty( $page ) && is_string($page) ) {
-
 	global $multilinguallib;
 	include_once('lib/multilingual/multilinguallib.php');
 

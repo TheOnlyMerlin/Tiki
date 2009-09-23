@@ -123,3 +123,5 @@ if ($prefs['feature_shoutbox'] == 'y' && $tiki_p_view_shoutbox == 'y') {
 		}
 	}
 }
+
+?>

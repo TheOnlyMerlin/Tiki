@@ -26,7 +26,7 @@ function getSubGraph($params) {
     $queue = array($nodeName);
     $i = 0;
 
-    $tikilib = new TikiLib;
+    $tikilib = new TikiLib($dbTiki);
     $color = $prefs['freetags_3d_existing_page_color'];
 
     while ($i <= $depth && sizeof($queue) > 0) {
@@ -70,3 +70,5 @@ function getSubGraph($params) {
     
     return new XML_RPC_Response(new XML_RPC_Value($response, "struct"));
 }
+
+?>

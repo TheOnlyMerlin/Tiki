@@ -1,9 +1,9 @@
 {* Note: if you edit this file, make sure to make corresponding edits on tiki-edit_article.tpl *}
 
 {popup_init src="lib/overlib.js"}
-{include file='tiki-articles-js.tpl'}
+{include file="tiki-articles-js.tpl"}
 {if $preview}
-	{include file='tiki-preview_article.tpl'}
+	{include file="tiki-preview_article.tpl"}
 {/if}
 
 {assign var=area_name value="body"}
@@ -204,13 +204,19 @@
 				</td>
 			</tr>
 		{/if}
-		{include file='categorize.tpl'}
+		{include file=categorize.tpl}
 		<tr class="formcolor">
 			<td>
 				{tr}Heading{/tr}
+				<br />
+				{if $prefs.quicktags_over_textarea neq 'y'}
+					{include file=tiki-edit_help_tool.tpl area_name='heading' qtnum='1'}
+				{/if}
 			</td>
 			<td>
-				{toolbars area_name='heading' qtnum='1'}
+				{if $prefs.quicktags_over_textarea eq 'y'}
+					{include file=tiki-edit_help_tool.tpl area_name='heading' qtnum='1'}
+				{/if}
 				<textarea class="wikiedit" name="heading" rows="5" cols="80" id='subheading' wrap="virtual">{$heading|escape}</textarea>
 			</td>
 		</tr>
@@ -218,9 +224,17 @@
 		<tr id='heading_only' {if $types.$type.heading_only ne 'y'}style="display:table-row;"{else}style="display:none;"{/if} class="formcolor">
 			<td>
 				{tr}Body{/tr}
+				<br /><br />
+				{include file="textareasize.tpl" area_name='body' formId='editpageform'}
+				{if $prefs.quicktags_over_textarea neq 'y'}
+					<br /><br />
+					{include file=tiki-edit_help_tool.tpl area_name='body' qtnum='2'}
+				{/if}
 			</td>
 			<td>
-				{toolbars area_name='body' qtnum='2'}
+				{if $prefs.quicktags_over_textarea eq 'y'}
+					{include file=tiki-edit_help_tool.tpl area_name='body' qtnum='2'}
+				{/if}
 				<textarea class="wikiedit" id="body" name="body" rows="{$rows}" cols="{$cols}" wrap="virtual">{$body|escape}</textarea>
 				<input type="hidden" name="rows" value="{$rows}" />
 				<input type="hidden" name="cols" value="{$cols}" />
@@ -254,7 +268,7 @@
 				</span>
 			</td>
 		</tr>
-		{include file='freetag.tpl'}
+		{include file=freetag.tpl}
 	</table>
 	
 	{if $tiki_p_use_HTML eq 'y'}
@@ -271,3 +285,4 @@
 </form>
 
 <br />
+{include file=tiki-edit_help.tpl}

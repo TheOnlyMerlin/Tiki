@@ -11,6 +11,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
    user, taskId, title, description, date, status, priority, completed, percentage
 */
 class TaskLib extends TikiLib {
+	function TaskLib($db) {
+		$this->TikiLib($db);
+	}
+	
 	
 	function get_task($user, $taskId, $task_version = null, $admin_mode = false) { 
 		if($admin_mode){
@@ -366,7 +370,7 @@ class TaskLib extends TikiLib {
 			
 		}
 		if(isset($sort_mode) and strlen($sort_mode) > 1){
-			$order_str = "`t_history`.".$this->convertSortMode($sort_mode) . ", ";
+			$order_str = "`t_history`.".$this->convert_sortmode($sort_mode) . ", ";
 		}
 		else $order_str = '';
 
@@ -424,4 +428,7 @@ class TaskLib extends TikiLib {
 	}
 	
 }
-$tasklib = new TaskLib;
+global $dbTiki;
+$tasklib = new TaskLib($dbTiki);
+
+?>

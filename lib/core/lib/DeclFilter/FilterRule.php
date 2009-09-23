@@ -35,3 +35,5 @@ abstract class DeclFilter_FilterRule implements DeclFilter_Rule
 		}
 	}
 }
+
+?>

@@ -112,3 +112,5 @@ function wikiplugin_sf($data, $params) {
 
 	return $back;
 }
+
+?>

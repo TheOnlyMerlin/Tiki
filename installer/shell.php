@@ -15,13 +15,6 @@ require_once('tiki-setup_base.php');
 require_once('installer/installlib.php');
 include $local_php;
 
-class IgnoreErrorHandler {
-	function handle( TikiDb $db, $query, $values, $result ) {
-	}
-}
-
-TikiDb::get()->setErrorHandler( new IgnoreErrorHandler );
-
 echo "Running installer for: $local_php\n";
 
 $installer = new Installer;
@@ -52,3 +45,5 @@ else {
 		}
 	}
 }
+
+?>

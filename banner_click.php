@@ -13,7 +13,7 @@ require_once ('tiki-setup.php');
 include_once ('lib/banners/bannerlib.php');
 
 if (!isset($bannerlib)) {
-	$bannerlib = new BannerLib;
+	$bannerlib = new BannerLib($dbTiki);
 }
 
 // CHECK FEATURE BANNERS HERE
@@ -27,3 +27,5 @@ if ($prefs['feature_banners'] != 'y') {
 $bannerlib->add_click($_REQUEST["id"]);
 $url = urldecode($_REQUEST["url"]);
 header ("location: $url");
+
+?>

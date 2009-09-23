@@ -35,7 +35,7 @@ class Tiki_Profile_List
 			unlink($file);
 		touch($file);
 
-		$content = TikiLib::httprequest( $path );
+		$content = tiki_get_remote_file( $path );
 
 		$parts = explode( "\n", $content );
 		$parts = array_map( 'trim', $parts );
@@ -155,3 +155,5 @@ class Tiki_Profile_List
 		return filemtime( $file );
 	} // }}}
 }
+
+?>

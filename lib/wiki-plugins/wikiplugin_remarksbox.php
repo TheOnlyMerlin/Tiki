@@ -64,3 +64,5 @@ function wikiplugin_remarksbox($data, $params) {
 	$ret = '~np~'.smarty_block_remarksbox($params, '~/np~'.tra($data).'~np~', $smarty).'~/np~';
 	return $ret;
 }
+
+?>

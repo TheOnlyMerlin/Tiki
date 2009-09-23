@@ -124,8 +124,6 @@ class Installer
 			exit(1);
 		}
 
-		$command = "";
-		
 		while(!feof($fp)) {
 			$command.= fread($fp,4096);
 		}
@@ -177,9 +175,15 @@ class Installer
 
 	function query( $query, $values = array() ) // {{{
 	{
+		global $dbTiki, $tikilib;
+
 		$error = '';
-		$db = TikiDb::get();
-		$result = $db->queryError( $query, $error, $values );
+		if( $tikilib ) {
+			$result = $tikilib->queryError( $query, $error, $values );
+		} elseif( $dbTiki && method_exists( $dbTiki, 'Execute' ) ) {
+			$result = $dbTiki->Execute( $query, $values );
+			$error = $dbTiki->ErrorMsg();
+		}
 
 		if( $result ) {
 			$this->success[] = $query;
@@ -236,9 +240,6 @@ class Installer
 			    case 'sqlite':
 	    			$result = $this->query( "SELECT name FROM sqlite_master WHERE type = 'table'" );
 		    		break;
-		    	    case 'pgsql':
-		    	        $result = $this->query( "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'" );
-		    	        break;
 			    default:
 			        $result = $this->query( "show tables" );
 			        break;
@@ -255,3 +256,5 @@ class Installer
 		return count( $this->patches ) > 0 ;
 	} // }}}
 }
+
+?>
