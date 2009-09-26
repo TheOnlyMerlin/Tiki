@@ -25,7 +25,8 @@ body {
 	font-size: .7em;
 	font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif;
 	background: #E7E7E7;
-	color: #333}
+	color: #333;
+	text-align: center}
 
 html>body {font-size: 62.5% !important}
 
@@ -208,6 +209,8 @@ tt {font-size: 1.2em}
 	height: 148px;
 	margin-left: 30px;
 	text-align: center}
+	
+* html #header-top {height: 100%}
 
 #siteheader {padding-top: 30px}
 div#sioptions  {margin-left: 40px}
@@ -257,14 +260,17 @@ div#sioptions  {margin-left: 40px}
 #header a:visited {}
 
 #header a:hover {}
-#tiki-top {text-align: center}
+#tiki-top {
+	text-align: left;
+	position: relative;
+	height: 20px}
+
 #tiki-top table {margin: auto}
 
 #sitesearchbar {
-	float: right;
-	margin-right: 10px;
-	padding-top: 3px;
-	clear: both;
+	position: absolute;
+	right: 10px;
+	top: 0;
 	font-size: 90%;
 	color: #fff}
 
@@ -288,7 +294,6 @@ div#sioptions  {margin-left: 40px}
 	background: #4283B9}
 
 #tiki-top select[name="where"] {
-	font-size: .9em;
 	background: #4283B9;
 	color: #fff}
 
@@ -300,10 +305,15 @@ div#sioptions  {margin-left: 40px}
 	border: 1px solid #8cacbb;
 	background: #fff}
 	
+.cssmenu_vert li ul {/* second-level lists */
+	margin-left: 11.05em;
+	margin-top: -1.35em;
+	padding-bottom: 1px; /*enable border to show */}
+/*
 .cssmenu_vert li ul {
-	margin-left: 10.9em !important;
-	padding-bottom: 1px;}
-
+	background: #cce5ff;
+	border: 1px solid #233039}
+*/
 .cssmenu ul li,
 .cssmenu_vert li ul li,
 .cssmenu_horiz li ul li {border-top: 1px solid #DEDEDE}
@@ -314,7 +324,12 @@ div#sioptions  {margin-left: 40px}
 .cssmenu a,	
 .cssmenu_horiz a,
 .cssmenu_vert a,
-#tiki-top .cssmenu_horiz li a {color: #006699}
+#tiki-top .cssmenu_horiz li a {
+	/*text-decoration: none;
+	display: block;
+	text-decoration: none;
+	padding: 3px 0 3px 6px;*/
+	color: #006699}
 	
 .cssmenu_vert a:link,
 .cssmenu_vert a:visited {color: #006699}
@@ -329,7 +344,11 @@ div#sioptions  {margin-left: 40px}
 .cssmenu_horiz ul a:hover,
 .cssmenu_vert ul a:hover {color: #000}
 
-#tiki-top .cssmenu_horiz {text-align: left; margin-left: 40px}
+#tiki-top .cssmenu_horiz {
+	position: absolute;
+	left: 40px;
+	bottom: 0}
+
 #tiki-top .cssmenu_horiz li.menuSection a {padding-right: 20px}
 #tiki-top .cssmenu_horiz li a {color: #fff}
 #tiki-top .cssmenu_horiz li ul li a {color: #006699}
@@ -341,6 +360,11 @@ div#sioptions  {margin-left: 40px}
 #tiki-top .cssmenu_horiz li:hover ul li .sf-sub-indicator*/ {background: url(kubrick/arrows-2277DD.png) no-repeat -10px -100px}
 
 /** PHP Layers Menus **/
+.horbar {
+	position: absolute;
+	left: 40px;
+	bottom: 0}
+
 .horbar table {
 	white-space: nowrap;
 	padding-top: 3px}
@@ -730,9 +754,8 @@ div.description /* in Directory */ {
 	text-align: left;
 	line-height: 1.4em;
 	font-size: 1.1em;
-	padding: 10px;
-	clear: both;
-	width: auto;
+/*	padding: 10px;
+	width: auto;*/
 	color: #333}
 /*
 .wikitext h2,
@@ -1084,9 +1107,9 @@ img.articleimagenofloat {}
 img.articleimage {margin-right: 20px}
  
 div.articletrailer {
-	float: right;
+	/*float: right;
 	margin: 0 20px 10px 0;
-	clear: both}
+	clear: both*/}
 
 div.articletrailer {text-align: right}
 div.articletrailer .wikitopline {} 
