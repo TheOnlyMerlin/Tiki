@@ -1,0 +1,74 @@
+
+/* Mittwoch CSS for Internet Explorer 7 */
+body {
+	/*font-size: 70%;*/
+}
+
+#sitead {
+	padding-top: 0;
+	margin-top: -15px}
+
+h1.sitetitle a {
+	padding-bottom: 20px;
+	height: 40px}
+
+h1.sitetitle a {
+	line-height: 2.2em}
+
+#sitenavbar {
+	margin-top: -15px}
+
+#c1c2 h1,
+.titlebar {
+	display: block;
+	width: 90%}
+
+.simplebox {
+	width: auto}
+
+#c1c2 {
+	float: left; 
+	margin-left: -242px;
+	padding-left: 242px;
+	width: auto;
+	width: 100%;
+	margin-top: 18px}
+
+#c1c2 #wrapper {
+	min-width: 100%}
+
+#c1c2	#col1 div.marginright {
+	padding-right: 242px}
+
+#c1c2 #wrapper #col1 .content {
+	width: inherit;
+	display: block;
+	margin: 0}
+
+#c1c2 #wrapper #col1 .contentwrapper {
+	/*margin: 0;*/
+}
+
+#c1c2	#col2 {
+		margin-left: 0;
+		float: left;
+		margin-top: -10px}
+	
+#col3 {
+	float: left;
+	margin-right: 0;
+	margin-top: 14px}
+
+
+a.linkmenu {
+	margin-left: 20px}
+
+
+div.blogtitle {
+/*width: 600px;*/
+}
+
+.code,
+pre.codelisting,
+.codelisting {
+	width: 400px}
