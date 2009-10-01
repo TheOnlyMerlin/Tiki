@@ -72,7 +72,8 @@ div#showhide_columns {
 
 #c1c2 #col2 {
 	width: 225px;
-	overflow: display}
+	overflow: visible;
+}
 
 #c1c2 #col2 .content {
 	margin: 0;
@@ -568,7 +569,7 @@ div.mdkverbar {
 .mdkverbar .mdkitem a:link,
 .mdkverbar .mdkitem a:visited,
 .mdkverbar .mdkitem a:hover {
-	padding 0;
+	padding: 0;
 	margin-top: -4px;
 	margin-bottom: -4px}
 
