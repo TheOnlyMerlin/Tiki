@@ -2,8 +2,14 @@
 JQuery/Tiki readme
 -------------------------
 
-jonnybradley September 2009
 - - - - - - - - - - - - -
+jonnybradley October 2009
+
+Added:
+	jquery.async v1.0.0
+
+- - - - - - - - - - - - -
+jonnybradley September 2009
 
 Updates:
 	cluetip-1.0.3 (rolled back from 1.0.4 - still causing problems)
@@ -12,6 +18,8 @@ Updates:
 	js-autocomplete-1.3.2
 	jquery.sheet-0.52
 	superfish-1.4.8
+
+- - - - - - - - - - - - -
 	
 
 This directory /third_party/jquery (/trunk/lib/jquery/) contains the JQuery library and selected plugins for TikiWiki 3.0
