@@ -3,7 +3,7 @@
 	{if $prefs.feature_site_login eq 'y'}
 		{if !$user}
 			<div id="siteloginbar">
-				<a href="tiki-login.php">{tr}Login{/tr}{if $prefs.allowRegister eq 'y'}<a href="tiki-register.php" title="{tr}Click here to register{/tr}"> / {tr}Register{/tr}</a>{/if}		
+				<a href="tiki-login.php">{tr}Login{/tr}</a>{if $prefs.allowRegister eq 'y'}<a href="tiki-register.php" title="{tr}Click here to register{/tr}"> / {tr}Register{/tr}</a>{/if}		
 			</div>
 		{else}
 			{include file="tiki-site_header_login.tpl"}
