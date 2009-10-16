@@ -5,6 +5,9 @@ JQuery/Tiki readme
 - - - - - - - - - - - - -
 jonnybradley October 2009
 
+Updates:
+	colorbox-1.3.1
+
 Added:
 	jquery.async v1.0.0
 
