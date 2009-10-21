@@ -7,6 +7,10 @@ jonnybradley October 2009
 
 Updates:
 	colorbox-1.3.1
+	N.B. commented out IE specific classes in colorbox.css (last 8 lines)
+		because they were causing a significant rendering delay in IE 7 & 8 and don't validate anyway.
+		Seems to be some sort of conflict with the page structure.
+		These lines are now included in js_detect.php if pref.feature_iepngfix for IE6 only (tiki 4.0+).
 
 Added:
 	jquery.async v1.0.0
