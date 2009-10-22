@@ -7,6 +7,7 @@ jonnybradley October 2009
 
 Updates:
 	colorbox-1.3.1
+	Paths to the colorbox styles dir (lib/jquery/colorbox/styles/) needs appending to the IE class definitions in colorbox.css
 
 Added:
 	jquery.async v1.0.0
