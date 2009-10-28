@@ -442,6 +442,9 @@ $smarty->assign('siteTimeZone', $prefs['display_timezone']);
 
 include_once("textareasize.php");
 
+include_once ('lib/quicktags/quicktagslib.php');
+$quicktags = $quicktagslib->list_quicktags(0,100,'taglabel_asc','','articles');
+$smarty->assign_by_ref('quicktags', $quicktags["data"]);
 $smarty->assign('showtags', 'n');
 $smarty->assign('qtcycle', '');
 ask_ticket('edit-submission');
@@ -455,3 +458,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the Index Template
 $smarty->assign('mid', 'tiki-edit_submission.tpl');
 $smarty->display("tiki.tpl");
+
+?>

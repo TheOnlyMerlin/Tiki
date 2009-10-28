@@ -101,3 +101,5 @@ $smarty->assign('priority', 3);
 ask_ticket('contact');
 
 $smarty->display("tiki.tpl");
+
+?>

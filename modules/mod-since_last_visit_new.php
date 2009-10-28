@@ -13,7 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 	exit;
 }
 global $smarty;
-require_once('lib/smarty_tiki/modifier.username.php');
+require_once('lib/smarty_tiki/modifier.userlink.php');
 
 if (!function_exists('mod_since_last_visit_new_help')) {
 	function mod_since_last_visit_new_help() {
@@ -104,7 +104,7 @@ function since_last_visit_new($user, $params = null) {
 			if (isset($ret["items"]["comments"]["list"][$count]["href"])) {
 				$ret["items"]["comments"]["list"][$count]["href"] .= '&comzone=show#threadId'.$res['threadId'];
 			}
-			$ret["items"]["comments"]["list"][$count]["title"] = $tikilib->get_short_datetime($res["commentDate"]) ." ". tra("by") ." ". smarty_modifier_username($res["userName"]);
+			$ret["items"]["comments"]["list"][$count]["title"] = $tikilib->get_short_datetime($res["commentDate"]) ." ". tra("by") ." ". $res["userName"];
 			$ret["items"]["comments"]["list"][$count]["label"] = $res["title"]; 
 			$count++;
 		}
@@ -151,7 +151,7 @@ function since_last_visit_new($user, $params = null) {
 		$count = 0;
 		while ($res = $result->fetchRow()) {
 			if ($userlib->user_has_perm_on_object($user,$res['pageName'], 'wiki page', 'tiki_p_view')) {
-				$ret["items"]["pages"]["list"][$count]["href"]  = filter_out_sefurl('tiki-index.php?page=' . urlencode($res['pageName']), $smarty);;
+				$ret["items"]["pages"]["list"][$count]["href"]  = "tiki-index.php?page=" . urlencode($res["pageName"]);
 				$ret["items"]["pages"]["list"][$count]["title"] = $tikilib->get_short_datetime($res["lastModif"]) ." ". tra("by") ." ". $res["user"];
 				$ret["items"]["pages"]["list"][$count]["label"] = $res["pageName"]; 
 				$count++;

@@ -15,7 +15,7 @@ class TikiSetup extends TikiInit {
 
         \static
     */
-    static function check($tikidomain='') {
+    function check($tikidomain='') {
         static $checked;
 
         if ($checked) {
@@ -87,6 +87,7 @@ class TikiSetup extends TikiInit {
         }
 
         static $dirs = array(
+            'backups',
             'dump',
             'img/wiki',
             'img/wiki_up',

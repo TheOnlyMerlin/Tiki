@@ -7,6 +7,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 class TemplatesLib extends TikiLib {
+	function TemplatesLib($db) {
+		$this->TikiLib($db);
+	}
+
 	function list_all_templates($offset, $maxRecords, $sort_mode, $find) {
 		$bindvars = array();
 		if ($find) {
@@ -17,7 +21,7 @@ class TemplatesLib extends TikiLib {
 			$mid = "";
 		}
 
-		$query = "select `name`,`created`,`templateId` from `tiki_content_templates` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select `name`,`created`,`templateId` from `tiki_content_templates` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_content_templates` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -79,4 +83,7 @@ class TemplatesLib extends TikiLib {
 		return true;
 	}
 }
-$templateslib = new TemplatesLib;
+global $dbTiki;
+$templateslib = new TemplatesLib($dbTiki);
+
+?>

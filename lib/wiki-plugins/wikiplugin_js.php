@@ -16,13 +16,11 @@ function wikiplugin_js_info() {
 			'prefs' => array( 'wikiplugin_js' ),
 			'body' => tra('javascript code'),
 			'validate' => 'all',
-			'filter' => 'rawhtml_unsafe',
 			'params' => array(
 				'file' => array(
 					'required' => false,
 					'name' => tra('File'),
 					'description' => tra('Javascript filename.'),
-					'filter' => 'url',
 				),
 			),
 		);
@@ -39,3 +37,4 @@ function wikiplugin_js($data, $params) {
 	}
 	return $ret;
 }
+?>

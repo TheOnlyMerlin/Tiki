@@ -8,9 +8,9 @@ if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== false) {
 class StructLib extends TikiLib {
 	var $displayLanguageOrder;
 
-	function __construct() {
+	function StructLib($db) {
 		global $prefs;
-		parent::__construct();
+		$this->TikiLib($db);
 
 		$this->displayLanguageOrder = array();
 	}
@@ -183,15 +183,16 @@ class StructLib extends TikiLib {
       \param alias An alias for the wiki page name.
       \return the new entries page_ref_id or null if not created.
   */
-	function s_create_page($parent_id, $after_ref_id, $name, $alias='', $structure_id=null) {
-		global $prefs;
-		$ret = null;
-		// If the page doesn't exist then create a new wiki page!
-		$newpagebody = tra("Table of contents") . ":" . "{toc}"; 
-		$created = $this->create_page($name, 0, $newpagebody, $this->now, tra('created from structure'), 'system', '0.0.0.0', '', false, '', array('parent_id'=>$parent_id));
-		
-		if (!empty($parent_id) || $created || ! $this->page_is_in_structure($name)) { // if were not trying to add a duplicate structure head
-			$query = 'select `page_id` from `tiki_pages` where `pageName`=?';
+  function s_create_page($parent_id, $after_ref_id, $name, $alias='') {
+	  global $prefs;
+    $ret = null;
+    // If the page doesn't exist then create a new wiki page!
+	$newpagebody = tra("Table of contents") . ":" . "{toc}"; 
+	$created = $this->create_page($name, 0, $newpagebody, $this->now, tra('created from structure'), 'system', '0.0.0.0', '', false, '', array('parent_id'=>$parent_id));
+		// if were not trying to add a duplicate structure head
+		if ($created or isset($parent_id)) {
+            //Get the page Id
+		    $query = 'select `page_id` from `tiki_pages` where `pageName`=?';
 			$page_id = $this->getOne($query,array($name));
 			if (isset($after_ref_id)) {
 				$max = $this->getOne('select `pos` from `tiki_structures` where `page_ref_id`=?',array((int)$after_ref_id));
@@ -206,8 +207,8 @@ class StructLib extends TikiLib {
 			}
             //Create a new structure entry
 			$max++;
-			$query = 'insert into `tiki_structures`(`parent_id`,`page_id`,`page_alias`,`pos`, `structure_id`) values(?,?,?,?,?)';
-			$result = $this->query($query,array((int)$parent_id, (int)$page_id, $alias, (int)$max, (int)$structure_id));
+			$query = 'insert into `tiki_structures`(`parent_id`,`page_id`,`page_alias`,`pos`) values(?,?,?,?)';
+			$result = $this->query($query,array((int)$parent_id,(int)$page_id,$alias,(int)$max));
 			//Get the page_ref_id just created
 			if (isset($parent_id)) {
 				$parent_check = ' and `parent_id`=?';
@@ -220,10 +221,6 @@ class StructLib extends TikiLib {
 			$query .= 'where `page_id`=? and `page_alias`=? and `pos`=?';
 			$query .= $parent_check;
 			$ret = $this->getOne($query,$attributes);
-			if (empty($parent_id)) {
-				$query = 'update `tiki_structures` set `structure_id`=? where `page_ref_id`=?';
-				$this->query($query, array($ret, $ret));
-			}
 			if ($prefs['feature_user_watches'] == 'y') {
 				include_once('lib/notifications/notificationemaillib.php');
 				sendStructureEmailNotification(array('action'=>'add', 'page_ref_id'=>$ret, 'name'=>$name));
@@ -394,7 +391,7 @@ class StructLib extends TikiLib {
 		if( !$multilinguallib )
 			include_once('lib/multilingual/multilinguallib.php');
 
-		$this->displayLanguageOrder = $multilinguallib->preferredLangs();
+		$this->displayLanguageOrder = $multilinguallib->preferedLangs();
 	}
 
 	function build_language_order_clause( &$args, $pageTable = 'tp', $structTable = 'ts' )
@@ -425,7 +422,7 @@ class StructLib extends TikiLib {
 	function s_get_page_info($page_ref_id) {
 		if( empty( $this->displayLanguageOrder ) )
 		{
-			$query =  'select `pos`, `page_ref_id`, `parent_id`, ts.`page_id`, `pageName`, `page_alias`, `structure_id` ';
+			$query =  'select `pos`, `page_ref_id`, `parent_id`, ts.`page_id`, `pageName`, `page_alias` ';
 			$query .= 'from `tiki_structures` ts, `tiki_pages` tp ';
 			$query .= 'where ts.`page_id`=tp.`page_id` and `page_ref_id`=?';
 			$result = $this->query($query,array((int)$page_ref_id));
@@ -441,8 +438,7 @@ class StructLib extends TikiLib {
 					`parent_id`, 
 					ts.`page_id`, 
 					`pageName`, 
-					`page_alias`,
-					`structure_id`
+					`page_alias`
 				FROM
 					`tiki_structures` ts
 					LEFT JOIN tiki_translated_objects a ON a.type = 'wiki page' AND a.objId = ts.page_id
@@ -474,7 +470,7 @@ class StructLib extends TikiLib {
 			$args = array();
 			if( ! $this->displayLanguageOrder ) {
 				$query = 'select `page_ref_id`, `pageName`, `page_alias`, tp.`description` from `tiki_structures` ts, `tiki_pages` tp ';
-				$query.= 'where ts.`page_id`=tp.`page_id` and `parent_id`=? order by '.$this->convertSortMode('pos_'.$order);
+				$query.= 'where ts.`page_id`=tp.`page_id` and `parent_id`=? order by '.$this->convert_sortmode('pos_'.$order);
 				$args[] = (int) $id;
 
 			} else {
@@ -500,7 +496,7 @@ class StructLib extends TikiLib {
 					)
 				WHERE
 					parent_id = ?
-				order by ".$this->convertSortMode('pos_'.$order);
+				order by ".$this->convert_sortmode('pos_'.$order);
 				$args[] = (int) $id;
 			}
 			$result = $this->query($query, $args);
@@ -616,7 +612,7 @@ function get_struct_ref_id($pageName) {
 			$query  = 'select `page_ref_id` ';
 			$query .= 'from `tiki_structures` ts ';
 			$query .= 'where `parent_id`=? ';
-			$query .= 'order by '.$this->convertSortMode('pos_asc');
+			$query .= 'order by '.$this->convert_sortmode('pos_asc');
 			$result1 = $this->query($query,array((int)$page_ref_id));
 			if ($result1->numRows()) {
 				$res = $result1->fetchRow();
@@ -632,7 +628,7 @@ function get_struct_ref_id($pageName) {
 		$query  = 'select `page_ref_id` ';
         $query .= 'from `tiki_structures` ts ';
 		$query .= 'where `parent_id`=? and `pos`>? ';
-		$query .= 'order by '.$this->convertSortMode('pos_asc');
+		$query .= 'order by '.$this->convert_sortmode('pos_asc');
 		$result2 = $this->query($query,array((int)$parent_id, (int)$page_pos));
 		if ($result2->numRows()) {
 			$res = $result2->fetchRow();
@@ -648,7 +644,7 @@ function get_struct_ref_id($pageName) {
   	        $query  = 'select `page_ref_id` ';
 		    $query .= 'from `tiki_structures` ts ';
 			$query .= 'where `parent_id`=? ';
-			$query .= 'order by '.$this->convertSortMode('pos_desc');
+			$query .= 'order by '.$this->convert_sortmode('pos_desc');
 			$result = $this->query($query,array($page_ref_id));
 			if ($result->numRows()) {
 				//There are more children
@@ -667,7 +663,7 @@ function get_struct_ref_id($pageName) {
 		$query  = 'select `page_ref_id` ';
 		$query .= 'from `tiki_structures` ts ';
 		$query .= 'where `parent_id`=? and `pos`<? ';
-		$query .= 'order by '.$this->convertSortMode('pos_desc');
+		$query .= 'order by '.$this->convert_sortmode('pos_desc');
 		$result =  $this->query($query,array((int)$parent_id, (int)$pos));
 		if ($result->numRows()) {
 			//There is a previous sibling
@@ -705,7 +701,7 @@ function get_struct_ref_id($pageName) {
 	  $query =  'select `pos`, `page_ref_id`, `parent_id`, ts.`page_id`, `pageName`, `page_alias` ';
 		$query .= 'from `tiki_structures` ts, `tiki_pages` tp ';
     $query .= 'where ts.`page_id`=tp.`page_id` and `parent_id`=? ';
-		$query .= 'order by '.$this->convertSortMode('pos_asc');
+		$query .= 'order by '.$this->convert_sortmode('pos_asc');
         $result = $this->query($query,array((int)$parent_id));
 		while ($res = $result->fetchRow()) {
 			//$ret[] = $this->populate_page_info($res);
@@ -779,7 +775,7 @@ function s_get_structure_pages($page_ref_id) {
  		$query =  'select `pos`, `page_ref_id`, `parent_id`, ts.`page_id`, `pageName`, `page_alias` ';
 		$query .= 'from `tiki_structures` ts, `tiki_pages` tp ';
     		$query .= 'where ts.`page_id`=tp.`page_id` and `parent_id`=? ';
-		$query .= 'order by '.$this->convertSortMode('pos_asc');
+		$query .= 'order by '.$this->convert_sortmode('pos_asc');
    		$result = $this->query($query,array((int)$page_ref_id));
 		while ($res = $result->fetchRow()) {
 			$ret = array_merge($ret,$this->s_get_structure_pages($res['page_ref_id']));
@@ -824,7 +820,7 @@ function list_structures($offset, $maxRecords, $sort_mode, $find='', $exact_matc
 		$query = "select `page_ref_id`,`parent_id`,ts.`page_id`,`page_alias`,`pos`,
 			`pageName`,tp.`hits`,`data`,tp.`description`,`lastModif`,`comment`,`version`,
 			`user`,`ip`,`flag`,`points`,`votes`,`cache`,`wiki_cache`,`cache_timestamp`,
-			`pageRank`,`creator`,`page_size` from `tiki_structures` as ts $join_tables $mid order by ".$this->convertSortMode($sort_mode);
+			`pageRank`,`creator`,`page_size` from `tiki_structures` as ts $join_tables $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_structures` ts $join_tables $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -1049,4 +1045,6 @@ function list_structures($offset, $maxRecords, $sort_mode, $find='', $exact_matc
 	  return array('data'=>$options, 'cant'=>$cant);
   }
 }
-$structlib = new StructLib;
+global $dbTiki;
+$structlib = new StructLib($dbTiki);
+?>

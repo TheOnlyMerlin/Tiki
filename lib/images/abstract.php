@@ -203,3 +203,4 @@ class ImageAbstract {
 		return $this->width;
 	}
 }
+?>

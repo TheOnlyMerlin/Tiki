@@ -1,8 +1,8 @@
-<div class="breadcrumbs"><a class="link" href="tiki-list_blogs.php">{tr}Blogs{/tr}</a> {$prefs.site_crumb_seper} {$title|escape}</div>
+<div class="breadcrumbs"><a class="link" href="tiki-list_blogs.php">{tr}Blogs{/tr}</a> {$prefs.site_crumb_seper} {$title}</div>
 {if strlen($heading) > 0}
   {eval var=$heading}
 {else}
-  {include file='blog-heading.tpl'}
+  {include file="blog-heading.tpl"}
 {/if}
 {if $use_find eq 'y'}
 	<div class="blogtools">
@@ -10,7 +10,7 @@
 		<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
 		<input type="hidden" name="blogId" value="{$blogId|escape}" />
 		{tr}Find:{/tr} 
-		<input type="text" name="find" value="{$find|escape}" /> 
+		<input type="text" name="find" value="{$find|regex_replace:"/\"/":"'"}" /> 
 		<input type="submit" name="search" value="{tr}Find{/tr}" />
 		</form>
 
@@ -58,7 +58,7 @@
 		<div class="clearfix postbody-title">
 			<div class="title"> {* because used in forums, but I don't know purpose *}
 				{if $use_title eq 'y'}
-					<h2><a class="link" href="{$listpages[ix].postId|sefurl:blogpost}">{$listpages[ix].title|escape}</a></h2>
+					<h2>{$listpages[ix].title}</h2>
 				{else}
 					<h2>{$listpages[ix].created|tiki_short_datetime}</h2>
 				{/if}
@@ -129,8 +129,8 @@
   ||  $tiki_p_edit_comments  == 'y')}
 
   <div id="page-bar">
-  	   {include file='comments_button.tpl'}
+  	   {include file=comments_button.tpl}
   </div>
 
-  {include file='comments.tpl'}
+  {include file=comments.tpl}
 {/if}

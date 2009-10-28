@@ -62,3 +62,5 @@ function wikiplugin_objecthits($data, $params) {
 	
   return $statslib->object_hits($object,$type,$days);
 }
+
+?>

@@ -123,9 +123,9 @@ if ($tiki_p_admin != 'y' && $userChoice != 'y') {
 	$ingroups = '';
 $users = $userlib->get_groups($offset, $maxRecords, $sort_mode, $find,'','y', $ingroups, $userChoice);
 
-foreach ($users['data'] as $key=>$gr) {
-	if (isset($user_info['groups'][$gr['groupName']])) {
-		$users['data'][$key]['what'] = $user_info['groups'][$gr['groupName']];
+foreach ($users['data'] as $key=>$group) {
+	if (isset($user_info['groups'][$group['groupName']])) {
+		$users['data'][$key]['what'] = $user_info['groups'][$group['groupName']];
 	}
 }
 			
@@ -142,3 +142,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the template
 $smarty->assign('mid', 'tiki-assignuser.tpl');
 $smarty->display("tiki.tpl");
+
+?>

@@ -47,3 +47,4 @@ $flagmapping = array(
     'tw' 	=> array(  'Taiwan'),
     'uk' 	=> array(  'Ukraine')
 );
+?>

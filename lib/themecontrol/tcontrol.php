@@ -7,6 +7,9 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 class ThemeControlLib extends TikiLib {
+	function ThemeControlLib($db) {
+		$this->TikiLib($db);
+	}
 
 	function tc_assign_category($categId, $theme, $option) {
 		$this->tc_remove_cat($categId);
@@ -81,7 +84,7 @@ class ThemeControlLib extends TikiLib {
 			$bindvars=array();
 		}
 
-		$query = "select tc.`categId`,tc.`name`,`theme` from `tiki_theme_control_categs` ttt,`tiki_categories` tc where ttt.`categId`=tc.`categId` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select tc.`categId`,tc.`name`,`theme` from `tiki_theme_control_categs` ttt,`tiki_categories` tc where ttt.`categId`=tc.`categId` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_theme_control_categs` ttt,`tiki_categories` tc where ttt.`categId`=tc.`categId` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -109,7 +112,7 @@ class ThemeControlLib extends TikiLib {
 			$bindvars=array();
 		}
 
-		$query = "select * from `tiki_theme_control_sections` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_theme_control_sections` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_theme_control_sections` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -136,7 +139,7 @@ class ThemeControlLib extends TikiLib {
 			$bindvars=array($type);
 		}
 
-		$query = "select * from `tiki_theme_control_objects` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_theme_control_objects` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_theme_control_objects` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -170,4 +173,7 @@ class ThemeControlLib extends TikiLib {
 		$this->query($query,array($objId));
 	}
 }
-$tcontrollib = new ThemeControlLib;
+global $dbTiki;
+$tcontrollib = new ThemeControlLib($dbTiki);
+
+?>

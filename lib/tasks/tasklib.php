@@ -11,6 +11,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
    user, taskId, title, description, date, status, priority, completed, percentage
 */
 class TaskLib extends TikiLib {
+	function TaskLib($db) {
+		$this->TikiLib($db);
+	}
+	
 	
 	function get_task($user, $taskId, $task_version = null, $admin_mode = false) { 
 		if($admin_mode){
@@ -119,7 +123,7 @@ class TaskLib extends TikiLib {
 			$comma = ', ';
 		}
 		$query .= " ) VALUES ( " . $query_values . ")";
-		$this->query($query,array_values($values));
+		$this->query($query,$values);
 		return $taskId;
 	}
 	
@@ -136,10 +140,8 @@ class TaskLib extends TikiLib {
 			$query .= " AND (`user` = ?  OR `creator` = ?) ";
 		}
 		$result = $this->query($query,$values_select); 
-		$entries = $result->fetchRow();
-		for($index=0; array_key_exists($index, $entries); $index++) // Hack since PDO fetchRow returns 2 indexes per DB field
-			unset($entries[$index]);
-
+		$entries = $result->fetchRow(); 
+		
 		$query  = "INSERT INTO `tiki_user_tasks_history` (";
 		$query_values = ") VALUES (";
 		
@@ -177,7 +179,7 @@ class TaskLib extends TikiLib {
 			}
 			//echo("$query<br />");
 			$query .= $query_values . ")";
-			$this->query($query,array_values($entries));
+			$this->query($query,$entries);
 		}
 		
 		$insert_values = array();
@@ -193,7 +195,7 @@ class TaskLib extends TikiLib {
 		}
 		$insert_values['taskId'] = (int)$taskId;
 		$query .= "WHERE `taskId`=? ";
-		if($count_values > 0 or $count_values_head > 0) $this->query($query,array_values($insert_values));
+		if($count_values > 0 or $count_values_head > 0) $this->query($query,$insert_values);
 		return $taskId;
 	}
 
@@ -244,9 +246,9 @@ class TaskLib extends TikiLib {
 		$result = $this->query($query,array($user));
 		while ($res = $result->fetchRow()) {
 			$query = "DELETE FROM `tiki_user_tasks_history` WHERE `belongs_to` = ?";
-			$this->query($query,$res['taskId']);
+			$this->query($query,$res);
 			$query  = "DELETE FROM `tiki_user_tasks` WHERE `taskId` = ?";
-			$this->query($query,$res['taskId']);
+			$this->query($query,$res);
 		}
 	}
 
@@ -274,6 +276,7 @@ class TaskLib extends TikiLib {
 	* $show_trash		if on true it shows also the as deleted marked tasks	
 	* $show_completed	if on true it shows also the as completed marked tasks	
 	* $use_admin_mode	shows all shard tasks also if the user is not in the group to view the task
+	* changed by sir-b 18th of January  2005
 	**/
     function list_tasks($user, $offset = 0, $maxRecords = -1, $find = null, $sort_mode = 'priority_asc',
 						$show_private = true, $show_submitted = true, $show_received = true, $show_shared = true, 
@@ -367,7 +370,7 @@ class TaskLib extends TikiLib {
 			
 		}
 		if(isset($sort_mode) and strlen($sort_mode) > 1){
-			$order_str = "`t_history`.".$this->convertSortMode($sort_mode) . ", ";
+			$order_str = "`t_history`.".$this->convert_sortmode($sort_mode) . ", ";
 		}
 		else $order_str = '';
 
@@ -425,4 +428,7 @@ class TaskLib extends TikiLib {
 	}
 	
 }
-$tasklib = new TaskLib;
+global $dbTiki;
+$tasklib = new TaskLib($dbTiki);
+
+?>

@@ -99,3 +99,5 @@ function wikiplugin_catorphans($data, $params) {
 
 	return $orphans;
 }
+
+?>

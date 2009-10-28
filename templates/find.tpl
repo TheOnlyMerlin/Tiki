@@ -21,7 +21,7 @@
 	*		filter_values         : array( filter_fieldX => filter_fieldX_selected_value, ... )
 	*
 	* Usage examples : {include file='find.tpl'}
-	*                  {include file='find.tpl' find_show_languages='y' find_show_categories='y' find_show_num_rows='y'} 
+	*                  {include file="find.tpl" find_show_languages='y' find_show_categories='y' find_show_num_rows='y'} 
 *}
 
 <div class="clearfix">
@@ -52,7 +52,7 @@
 			<option value='' {if $find_type eq ''}selected="selected"{/if}>{tr}any type{/tr}</option>
 			{section name=t loop=$types}
 				<option value="{$types[t].type|escape}" {if $find_type eq $types[t].type}selected="selected"{/if}>
-					{capture}{tr}{$types[t].type}{/tr}{/capture}{$smarty.capture.default|escape}
+					{tr}{$types[t].type}{/tr}
 				</option>
 			{/section}
 		</select>
@@ -65,7 +65,7 @@
 			<option value='' {if $find_topic eq ''}selected="selected"{/if}>{tr}all topic{/tr}</option>
 			{section name=ix loop=$topics}
 				<option value="{$topics[ix].topicId|escape}" {if $find_topic eq $topics[ix].topicId}selected="selected"{/if}>
-					{capture}{tr}{$topics[ix].name}{/tr}{/capture}{$smarty.capture.default|escape}
+					{tr}{$topics[ix].name}{/tr}
 				</option>
 			{/section}
 		</select>
@@ -105,7 +105,7 @@
 			<option value='' {if $find_categId eq ''}selected="selected"{/if}>{tr}any category{/tr}</option>
 			{section name=ix loop=$categories}
 				<option value="{$categories[ix].categId|escape}" {if $find_categId eq $categories[ix].categId}selected="selected"{/if}>
-					{capture}{tr}{$categories[ix].categpath}{/tr}{/capture}{$smarty.capture.default|escape}
+					{tr}{$categories[ix].categpath}{/tr}
 				</option>
 			{/section}
 		</select>
@@ -118,6 +118,15 @@
 			<input type="text" name="maxRecords" id="findnumrows" value="{$maxRecords|escape}" size="3" />
 	</label>
 {/if}
+
+<label class="findsubmit">
+	<input type="submit" name="search" value="{tr}Go{/tr}" />
+	{if $find ne ''}
+		<span class="button">
+			<a href="{$smarty.server.PHP_SELF}?{query find='' types='' topic='' lang='' langOrphan='' exact_match='' categId='' maxRecords=''}" title="{tr}Clear Filter{/tr}">{tr}Clear Filter{/tr}</a>
+		</span>
+	{/if}
+</label>
 
 {if !empty($types) and isset($types_tag) and $types_tag eq 'checkbox' }
 	<div class="findtypes">
@@ -150,14 +159,6 @@
 	</div>
 {/if}
 
-<label class="findsubmit">
-	<input type="submit" name="search" value="{tr}Go{/tr}" />
-	{if $find ne ''}
-		<span class="button">
-			<a href="{$smarty.server.PHP_SELF}?{query find='' types='' topic='' lang='' langOrphan='' exact_match='' categId='' maxRecords=''}" title="{tr}Clear Filter{/tr}">{tr}Clear Filter{/tr}</a>
-		</span>
-	{/if}
-</label>
 
 </form>
 </div>

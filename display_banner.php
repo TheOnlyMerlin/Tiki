@@ -19,7 +19,7 @@ require_once ('tiki-setup.php');
 include_once ('lib/banners/bannerlib.php');
 
 if (!isset($bannerlib)) {
-	$bannerlib = new BannerLib;
+	$bannerlib = new BannerLib($dbTiki);
 }
 
 // CHECK FEATURE BANNERS HERE
@@ -63,4 +63,7 @@ case 'useText':
 
 	break;
 }
+
 print ($raw);
+
+?>

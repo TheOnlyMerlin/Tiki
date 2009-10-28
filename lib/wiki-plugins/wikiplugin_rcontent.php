@@ -23,3 +23,5 @@ function wikiplugin_rcontent( $data, $params) {
 	if( $params['id'] )
 		return $dcslib->get_random_content((int) $params['id']);
 }
+
+?>

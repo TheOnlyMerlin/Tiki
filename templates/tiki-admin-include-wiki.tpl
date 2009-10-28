@@ -3,35 +3,158 @@
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use the 'Quick Edit' module to easily create or edit wiki pages.{/tr} {tr}Select <a class="rbox-link" href="tiki-admin_modules.php">Admin &gt; Modules</a> to add this (or other) modules.{/tr}{/remarksbox}
 
 <form action="tiki-admin.php?page=wiki" method="post">
-<div class="heading input_submit_container" style="text-align: right">
-	<input type="submit" name="wikisetprefs" value="{tr}Change preferences{/tr}" />
+<div class="cbox">
+<table class="admin"><tr><td>
+
+<div align="center" style="padding:1em;"><input type="submit" name="wikisetprefs" value="{tr}Change preferences{/tr}" /></div>
+
+{if $prefs.feature_tabs eq 'y'}
+			{tabs}{strip}
+				{tr}General Preferences{/tr}|
+				{tr}Features{/tr}|
+				{tr}Staging &amp; Approval{/tr}|
+				{tr}Page Listings{/tr}
+			{/strip}{/tabs}
+{/if}
+
+      {cycle name=content values="1,2,3,4,5" print=false advance=false reset=true}
+
+	      <fieldset{if $prefs.feature_tabs eq 'y'} class="tabcontent" id="content{cycle name=content assign=focustab}{$focustab}"{/if}>
+      {if $prefs.feature_tabs neq 'y'}
+        <legend class="heading">
+          <a href="#content{cycle name=content assign=focus}{$focus}" onclick="flip('content{$focus}'); return false;">
+            <span>{tr}General Preferences{/tr}</span>
+          </a>
+        </legend>
+        <div id="content{$focus}" style="display:{if !isset($smarty.session.tiki_cookie_jar.show_content.$focus) and $smarty.session.tiki_cookie_jar.show_content.$focus neq 'y'}none{else}block{/if};">
+      {/if}	
+
+	  
+	  
+<div class="adminoptionbox">
+	<div class="adminoptionlabel"><label for="wikiHomePage">{tr}Home page{/tr}:</label><input type="text" id="wikiHomePage" name="wikiHomePage" value="{$prefs.site_wikiHomePage|escape}" size="40" /><input type="submit" name="setwikihome" value="{tr}Set{/tr}" />{if $prefs.feature_help eq 'y'} {help url="General+Admin"}{/if}
+	<br /><em>{tr}If the page does not exist, it will be created{/tr}.</em></div>
 </div>
 
-	{tabset name="admin_wiki"}
-		{tab name="{tr}General Preferences{/tr}"}
-			{preference name=wikiHomePage}
-			{preference name=wiki_page_regex}
+<input type="hidden" name="setwikiregex" />
+
+<div class="adminoptionbox">
+	<div class="adminoptionlabel"><label for='wiki_page_regex'>{tr}Wiki link format{/tr}:</label>
+    <select name="wiki_page_regex" id="wiki_page_regex">
+    <option value='complete' {if $prefs.wiki_page_regex eq 'complete'}selected="selected"{/if}>{tr}Complete{/tr}</option>
+    <option value='full' {if $prefs.wiki_page_regex eq 'full'}selected="selected"{/if}>{tr}Latin{/tr}</option>
+    <option value='strict' {if $prefs.wiki_page_regex eq 'strict'}selected="selected"{/if}>{tr}English{/tr}</option>
+    </select>
+	<br /><em>{tr}Select the characters that can be used with Wiki link syntax: ((page name)){/tr}.</em></div>
+</div>
+
 
 <fieldset><legend>{tr}Page display{/tr}</legend>
 
-	{preference name=feature_wiki_description label="{tr}Description{/tr}"}
-	{preference name=feature_page_title label="{tr}Title{/tr}"}
-	{preference name=feature_wiki_pageid label="{tr}Page ID{/tr}"}
-	{preference name=wiki_show_version label="{tr}Page version{/tr}"}
+<div class="adminoptionbox">
+	<div class="adminoption"><input type="checkbox" id="feature_wiki_description" name="feature_wiki_description" {if $prefs.feature_wiki_description eq 'y'}checked="checked"{/if}/></div>
+	<div class="adminoptionlabel"><label for="feature_wiki_description">{tr}Description{/tr}</label></div>
+</div>
 
-	{preference name=wiki_pagename_strip}
+<div class="adminoptionbox">
+	<div class="adminoption"><input type="checkbox" id="feature_page_title" name="feature_page_title" {if $prefs.feature_page_title eq 'y'}checked="checked"{/if}/></div>
+	<div class="adminoptionlabel"><label for="feature_page_title">{tr}Title{/tr}</label></div>
+</div>
 
-	{preference name=wiki_authors_style label="{tr}List authors{/tr}"}
+<div class="adminoptionbox">
+	<div class="adminoption"><input type="checkbox" id="feature_wiki_pageid" name="feature_wiki_pageid" {if $prefs.feature_wiki_pageid eq 'y'}checked="checked"{/if}/></div>
+	<div class="adminoptionlabel"><label for="feature_wiki_pageid">{tr}Page ID{/tr}</label></div>
+</div>
 
-	<div class="adminoptionboxchild">
-		{preference name=wiki_authors_style_by_page label="{tr}Allow override per page{/tr}"}
+<div class="adminoptionbox">
+	<div class="adminoption"><input type="checkbox" id="wiki_show_version" name="wiki_show_version" {if $prefs.wiki_show_version eq 'y'}checked="checked"{/if}/></div>
+	<div class="adminoptionlabel"><label for="wiki_show_version">{tr}Page version{/tr}</label></div>
+</div>
+
+<div class="adminoptionbox">
+	<div class="adminoptionlabel"><label for="wiki_pagename_strip">{tr}Page name display stripper{/tr}:</label>
+	<input type="text" id="wiki_pagename_strip" name="wiki_pagename_strip" value="{$prefs.wiki_pagename_strip}" size="5" /> <input type="submit" name="setwikiregex" value="{tr}Set{/tr}" />
+	<br /><em>{tr}Enter a character to use as the delimiter when displaying page names. All characters after the delimiter will be stripped when displaying the page name.</em>{/tr}
 	</div>
+</div>
 
-	{preference name=wiki_actions_bar}
-	{preference name=wiki_page_navigation_bar}
- 	{preference name=wiki_topline_position}
- 	{preference name=page_bar_position}
+{include file='wiki_authors_style.tpl' wiki_authors_style=$prefs.wiki_authors_style}
+
+<div class="adminoptionboxchild">
+	<div class="adminoption"><input type="checkbox" id="wiki_authors_style_by_page" name="wiki_authors_style_by_page" {if $prefs.wiki_authors_style_by_page eq 'y'}checked="checked"{/if}/></div>
+	<div class="adminoptionlabel"><label for="wiki_authors_style_by_page">{tr}Allow override per page{/tr}.</label></div>
+</div>
+
+<div class="adminoptionbox">
+	<div class="adminoption"><input type="checkbox" id="feature_wiki_show_hide_before" name="feature_wiki_show_hide_before" {if $prefs.feature_wiki_show_hide_before eq 'y'}checked="checked"{/if}/></div>
+	<div class="adminoptionlabel"><label for="feature_wiki_show_hide_before">{tr}Display show/hide icon displayed before headings{/tr}.</label></div>
+</div>
+
+<div class="adminoptionbox">
+	<div class="adminoptionlabel"><label for="wiki_actions_bar">{tr}Wiki action bar{/tr}:</label>
+	<select name="wiki_actions_bar" id="wiki_actions_bar">
+    <option value="top" {if $prefs.wiki_actions_bar eq 'top'}selected="selected"{/if}>{tr}Top bar{/tr}</option>
+    <option value="bottom" {if $prefs.wiki_actions_bar eq 'bottom'}selected="selected"{/if}>{tr}Bottom bar{/tr}</option>
+    <option value="both" {if $prefs.wiki_actions_bar eq 'both'}selected="selected"{/if}>{tr}Both{/tr}</option>
+    </select>
+	<br /><em>{tr}Buttons: Save, Preview, Cancel, ...{/tr}</em>
+	</div>
+</div>
+
+<div class="adminoptionbox">
+	<div class="adminoptionlabel"><label for="wiki_page_navigation_bar">{tr}Page navigation bar location{/tr}:</label>
+	<select name="wiki_page_navigation_bar" id="wiki_page_navigation_bar">
+    <option value="top" {if $prefs.wiki_page_navigation_bar eq 'top'}selected="selected"{/if}>{tr}Top bar{/tr}</option>
+    <option value="bottom" {if $prefs.wiki_page_navigation_bar eq 'bottom'}selected="selected"{/if}>{tr}Bottom bar{/tr}</option>
+    <option value="both" {if $prefs.wiki_page_navigation_bar eq 'both'}selected="selected"{/if}>{tr}Both{/tr}</option>
+    </select>
+	<br /><em>{tr}When using the ...page... page break wiki syntax{/tr}.</em>
+	</div>
+</div>
  
+<div class="adminoptionbox">
+	<div class="adminoptionlabel"><label for="wiki_topline_position">{tr}Wiki top line{/tr}: </label>
+	<select name="wiki_topline_position" id="wiki_topline_position">
+    <option value="top" {if $prefs.wiki_topline_position eq 'top'}selected="selected"{/if}>{tr}Top bar{/tr}</option>
+    <option value="bottom" {if $prefs.wiki_topline_position eq 'bottom'}selected="selected"{/if}>{tr}Bottom bar{/tr}</option>
+    <option value="both" {if $prefs.wiki_topline_position eq 'both'}selected="selected"{/if}>{tr}Both{/tr}</option>
+    <option value="none" {if $prefs.wiki_topline_position eq 'none'}selected="selected"{/if}>{tr}Neither{/tr}</option>
+    </select>
+	<br /><em>{tr}Page description, icons, backlinks, ...{/tr}</em>
+	</div>
+</div>
+ 
+<div class="adminoptionbox">
+	<div class="adminoptionlabel"><label for="page_bar_position">{tr}Wiki buttons{/tr}:</label>
+	<select name="page_bar_position" id="page_bar_position">
+    <option value="top" {if $prefs.page_bar_position eq 'top'}selected="selected"{/if}>{tr}Top bar{/tr}</option>
+    <option value="bottom" {if $prefs.page_bar_position eq 'bottom'}selected="selected"{/if}>{tr}Bottom bar{/tr}</option>
+    <option value="none" {if $prefs.page_bar_position eq 'none'}selected="selected"{/if}>{tr}Neither{/tr}</option>
+    </select>
+	<br /><em>{tr}Buttons: Edit, Source, Remove, ...{/tr}</em>
+	</div>
+</div>
+ 
+<div class="adminoptionbox">
+	<div class="adminoptionlabel"><label for="wiki_cache">{tr}Cache wiki pages (global):{/tr}</label>
+	<select name="wiki_cache" id="wiki_cache">
+    <option value="0" {if $prefs.wiki_cache eq 0}selected="selected"{/if}>0 ({tr}no cache{/tr})</option>
+    <option value="60" {if $prefs.wiki_cache eq 60}selected="selected"{/if}>1 {tr}minute{/tr}</option>
+    <option value="300" {if $prefs.wiki_cache eq 300}selected="selected"{/if}>5 {tr}minutes{/tr}</option>
+    <option value="600" {if $prefs.wiki_cache eq 600}selected="selected"{/if}>10 {tr}minutes{/tr}</option>
+    <option value="900" {if $prefs.wiki_cache eq 900}selected="selected"{/if}>15 {tr}minutes{/tr}</option>
+    <option value="1800" {if $prefs.wiki_cache eq 1800}selected="selected"{/if}>30 {tr}minutes{/tr}</option>
+    <option value="3600" {if $prefs.wiki_cache eq 3600}selected="selected"{/if}>1 {tr}hour{/tr}</option>
+    <option value="7200" {if $prefs.wiki_cache eq 7200}selected="selected"{/if}>2 {tr}hours{/tr}</option>
+    </select> 
+	</div>
+</div>
+
+<div class="adminoptionbox">
+	<div class="adminoption"><input type="checkbox" id="feature_wiki_icache" name="feature_wiki_icache" {if $prefs.feature_wiki_icache eq 'y'}checked="checked"{/if}/></div>
+	<div class="adminoptionlabel"><label for="feature_wiki_icache">{tr}Individual cache{/tr}</label></div>
+</div>
+
 </fieldset>
 
 <fieldset><legend>{tr}Edit{/tr}</legend>
@@ -71,7 +194,12 @@
 	<div class="adminoptionlabel"><label for="feature_wiki_undo">{tr}Undo{/tr}</label></div>
 </div>
 
-{preference name=feature_wiki_save_draft}
+<div class="adminoptionbox">
+	<div class="adminoption"><input type="checkbox" id="feature_wiki_save_draft" name="feature_wiki_save_draft" {if $prefs.feature_wiki_save_draft eq 'y'}checked="checked"{/if}/></div>
+	<div class="adminoptionlabel"><label for="feature_wiki_save_draft">{tr}Save draft{/tr}</label>
+	<br /><em>{tr}Requires AJAX{/tr} ({tr}experimental{/tr}).</em>
+	</div>
+</div>
 
 <div class="adminoptionbox">
 	<div class="adminoption"><input type="checkbox" id="feature_wiki_footnotes" name="feature_wiki_footnotes" {if $prefs.feature_wiki_footnotes eq 'y'}checked="checked" {/if}/></div>
@@ -99,11 +227,6 @@
 </div>
 
 <div class="adminoptionbox">
-	<div class="adminoption"><input type="checkbox" id="wiki_edit_icons_toggle" name="wiki_edit_icons_toggle" {if $prefs.wiki_edit_icons_toggle eq 'y'}checked="checked"{/if}/></div>
-	<div class="adminoptionlabel"><label for="wiki_edit_icons_toggle">{tr}Toggle display of section and plugin edit icons{/tr}</label></div>
-</div>
-
-<div class="adminoptionbox">
 	<div class="adminoption"><input type="checkbox" id="wiki_edit_minor" name="wiki_edit_minor" {if $prefs.wiki_edit_minor eq 'y'}checked="checked"{/if}/></div>
 	<div class="adminoptionlabel"><label for="wiki_edit_minor">{tr}Allow minor edits{/tr}.</label>
 	{remarksbox type=note title=Note}{tr}Minor edits do not flag new content for translation and do not send watch notifications.{/tr}.<br />
@@ -118,7 +241,7 @@
 	<option value="-1" {if $prefs.feature_wiki_mandatory_category eq -1 or $prefs.feature_wiki_mandatory_category eq ''}selected="selected"{/if}>{tr}None{/tr}</option>
 	<option value="0" {if $prefs.feature_wiki_mandatory_category eq 0}selected="selected"{/if}>{tr}All{/tr}</option>
 	{section name=ix loop=$catree}
-	<option value="{$catree[ix].categId|escape}" {if $catree[ix].categId eq $prefs.feature_wiki_mandatory_category}selected="selected"{/if}>{if $catree[ix].categpath}{$catree[ix].categpath|escape}{else}{$catree[ix].name|escape}{/if}</option>
+	<option value="{$catree[ix].categId|escape}" {if $catree[ix].categId eq $prefs.feature_wiki_mandatory_category}selected="selected"{/if}>{if $catree[ix].categpath}{$catree[ix].categpath}{else}{$catree[ix].name}{/if}</option>
 	{/section}
 	</select>
 	{if $prefs.feature_categories ne 'y'}<br />{icon _id=information}{tr}Categories are disabled.{/tr} <a href="tiki-admin.php?page=features" title="{tr}Features{/tr}">{tr}Enable now{/tr}</a>.{/if}
@@ -126,7 +249,10 @@
 	</div>
 </div>
 
-
+<div class="adminoptionbox">
+	<div class='adminoption'><input type="checkbox" id="feature_wiki_replace" name="feature_wiki_replace" {if $prefs.feature_wiki_replace eq 'y'}checked="checked"{/if}/></div>
+	<div class="adminoptionlabel"><label for="feature_wiki_replace">{tr}Regex search and replace{/tr}</label>{if $prefs.feature_help eq 'y'} {help url="regex+search+and+replace"}{/if}</div>
+</div>
 <div class="adminoptionbox">
 	<div class="adminoption"><input type="checkbox" id="feature_actionlog_bytes" name="feature_actionlog_bytes" {if $prefs.feature_actionlog_bytes eq 'y'}checked="checked" {/if}/></div>
 	<div class="adminoptionlabel"><label for="feature_actionlog_bytes">{tr}Log bytes changes (+/-) in action logs{/tr}.</label>
@@ -134,9 +260,23 @@
 	</div>
 </div>
 </fieldset>
-		{/tab}
 
-		{tab name="{tr}Features{/tr}"}
+
+      {if $prefs.feature_tabs neq 'y'}</div>{/if}
+    </fieldset>
+
+
+    <fieldset{if $prefs.feature_tabs eq 'y'} class="tabcontent" id="content{cycle name=content assign=focustab}{$focustab}"{/if}>
+      {if $prefs.feature_tabs neq 'y'}
+        <legend class="heading">
+          <a href="#content{cycle name=content assign=focus}{$focus}" onclick="flip('content{$focus}'); return false;">
+            <span>{tr}Features{/tr}</span>
+          </a>
+        </legend>
+        <div id="content{$focus}" style="display:{if !isset($smarty.session.tiki_cookie_jar.show_content.$focus) and $smarty.session.tiki_cookie_jar.show_content.$focus neq 'y'}none{else}block{/if};">
+      {/if}	
+	
+
 <input type="hidden" name="wikifeatures" />    	
 	<div class="adminoptionbox">
 		<div class="adminoption"><input type="checkbox" id="feature_sandbox" name="feature_sandbox" {if $prefs.feature_sandbox eq 'y'}checked="checked" {/if}/></div>
@@ -240,13 +380,6 @@ name="w_displayed_default" {if $prefs.w_displayed_default eq 'y'} checked="check
 	<div class="adminoptionlabel"><label for="feature_wiki_pictures">{tr}Pictures{/tr}</label>{if $prefs.feature_help eq 'y'} {help url="Wiki-Syntax Images"}{/if} <a class="link" href="tiki-assignpermission.php?type=wiki&amp;group=Anonymous" title="{tr}Permission{/tr}">{icon _id="key" alt="{tr}Permission{/tr}"}</a></div>
 
 <div class="adminoptionboxchild" id="usepictures" style="display:{if $prefs.feature_wiki_pictures eq 'y'}block{else}none{/if};">
-
-<div class="adminoptionbox">
-	<div class="adminoption"><input type="checkbox" name="feature_filegals_manager" id="feature_filegals_manager" {if $prefs.feature_filegals_manager eq 'y'}checked="checked" {/if}/> </div>
-	<div class="adminoptionlabel"><label for="feature_filegals_manager">{tr}Use File Galleries to store pictures {/tr}.</label></div>
-</div>
-
-
 <div class="adminoptionbox">
 	<div class="adminoptionlabel"><a class="button" href="tiki-admin.php?page=wiki&amp;rmvunusedpic=1">{tr}Remove unused pictures{/tr}</a></div>
 </div>
@@ -378,9 +511,6 @@ name="w_displayed_default" {if $prefs.w_displayed_default eq 'y'} checked="check
 	<div class="adminoptionlabel"><label for="feature_backlinks">{tr}Backlinks{/tr}</label>{if $prefs.feature_help eq 'y'} {help url="Backlinks"}{/if} <a class="link" href="tiki-assignpermission.php?type=wiki&amp;group=Anonymous" title="{tr}Permission{/tr}">{icon _id="key" alt="{tr}Permission{/tr}"}</a></div>
 </div>
 
-			{preference name=feature_semantic}
-
-
 <div class="adminoptionbox">
 	<div class="adminoption"><input type="checkbox" id="feature_likePages" name="feature_likePages" {if $prefs.feature_likePages eq 'y'}checked="checked" {/if}/></div>
 	<div class="adminoptionlabel"><label for="feature_likePages">{tr}Similar{/tr} ({tr}like pages{/tr})</label></div>
@@ -414,11 +544,6 @@ name="w_displayed_default" {if $prefs.w_displayed_default eq 'y'} checked="check
 <div class="adminoptionbox">
 	<div class="adminoption"><input type="checkbox" id="feature_create_webhelp" name="feature_create_webhelp" {if $prefs.feature_create_webhelp eq 'y'}checked="checked"{/if}/></div>
 	<div class="adminoptionlabel"><label for="feature_create_webhelp">{tr}Create webhelp from structure:{/tr}</label></div>
-</div>
-
-<div class="adminoptionbox">
-	<div class="adminoption"><input type="checkbox" id="page_n_times_in_a_structure" name="page_n_times_in_a_structure" {if $prefs.page_n_times_in_a_structure eq 'y'}checked="checked"{/if}/></div>
-	<div class="adminoptionlabel"><label for="page_n_times_in_a_structure">{tr}A page can occur multiple times in a structure:{/tr}</label></div>
 </div>
 
 </div>	
@@ -468,6 +593,11 @@ name="w_displayed_default" {if $prefs.w_displayed_default eq 'y'} checked="check
 </div>
 
 <div class="adminoptionbox">
+	<div class="adminoption"><input type="checkbox" id="feature_wiki_1like_redirection" name="feature_wiki_1like_redirection" {if $prefs.feature_wiki_1like_redirection eq 'y'}checked="checked"{/if}/></div>
+	<div class="adminoptionlabel"><label for="feature_wiki_1like_redirection">{tr}When viewing a page, if it doesn't exist automatically redirect to a similarly  named page{/tr}.</label></div>
+</div>
+
+<div class="adminoptionbox">
 <fieldset><legend>{tr}Wiki watch{/tr}{if $prefs.feature_help eq 'y'} {help url="Watch"}{/if}</legend>
 {if $prefs.feature_user_watches ne 'y'}
 <div class="adminoptionbox">{icon _id=information} {tr}Feature disabled{/tr}. <a href="tiki-admin.php?page=features" title="{tr}Features{/tr}">{tr}Enable now{/tr}</a>.</div>
@@ -495,9 +625,21 @@ name="w_displayed_default" {if $prefs.w_displayed_default eq 'y'} checked="check
 {/if}
 </fieldset>
 </div>
-		{/tab}
 
-		{tab name="{tr}Staging &amp; Approval{/tr}"}
+      {if $prefs.feature_tabs neq 'y'}</div>{/if}
+    </fieldset>	
+	
+
+    <fieldset{if $prefs.feature_tabs eq 'y'} class="tabcontent" id="content{cycle name=content assign=focustab}{$focustab}"{/if}>
+      {if $prefs.feature_tabs neq 'y'}
+        <legend class="heading">
+          <a href="#content{cycle name=content assign=focus}{$focus}" onclick="flip('content{$focus}'); return false;">
+            <span>{tr}Staging &amp; Approval{/tr}</span>
+          </a>
+        </legend>
+        <div id="content{$focus}" style="display:{if !isset($smarty.session.tiki_cookie_jar.show_content.$focus) and $smarty.session.tiki_cookie_jar.show_content.$focus neq 'y'}none{else}block{/if};">
+      {/if}	
+	  
 <input type="hidden" name="wikiapprovalprefs" />    
 <div class="adminoptionbox">
 	<div class="adminoption"><input type="checkbox" id="feature_wikiapproval" onclick="flip('usestaging');" name="feature_wikiapproval" {if $prefs.feature_wikiapproval eq 'y'}checked="checked" {/if}/></div>
@@ -595,18 +737,35 @@ name="w_displayed_default" {if $prefs.w_displayed_default eq 'y'} checked="check
 </div>
 	</div>
 </div>
-		{/tab}
+	
+      {if $prefs.feature_tabs neq 'y'}</div>{/if}
+    </fieldset>		
 
-		{tab name="{tr}Page Listings{/tr}"}
+
+    <fieldset{if $prefs.feature_tabs eq 'y'} class="tabcontent" id="content{cycle name=content assign=focustab}{$focustab}"{/if}>
+      {if $prefs.feature_tabs neq 'y'}
+        <legend class="heading">
+          <a href="#content{cycle name=content assign=focus}{$focus}" onclick="flip('content{$focus}'); return false;">
+            <span>{tr}Page Listings{/tr}</span>
+          </a>
+        </legend>
+        <div id="content{$focus}" style="display:{if !isset($smarty.session.tiki_cookie_jar.show_content.$focus) and $smarty.session.tiki_cookie_jar.show_content.$focus neq 'y'}none{else}block{/if};">
+      {/if}	
+
 <input type="hidden" name="wikilistprefs" />	  
-
-	{preference name=feature_listPages}
-	{preference name=feature_lastChanges}
-	{preference name=feature_listorphanPages}
+<div class="adminoptionbox">
+	<div class="adminoption"><input type="checkbox" id="feature_listPages" name="feature_listPages" {if $prefs.feature_listPages eq 'y'}checked="checked" {/if}/></div>
+	<div class="adminoptionlabel"><label for="feature_listPages">{tr}List pages{/tr} </label></div>
+</div>	  
+	  
+<div class="adminoptionbox">
+	<div class="adminoption"><input type="checkbox" id="feature_lastChanges" name="feature_lastChanges" {if $prefs.feature_lastChanges eq 'y'}checked="checked" {/if}/></div>
+	<div class="adminoptionlabel"><label for="feature_lastChanges">{tr}Last changes{/tr} </label></div>
+</div>	  
 
 <div class="adminoptionbox">
-	<div class="adminoption"><input type="checkbox" id='feature_listorphanStructure' name="feature_listorphanStructure" {if $prefs.feature_listorphanStructure eq 'y'}checked="checked"{/if}/></div>
-	<div class="adminoptionlabel"><label for="feature_listorphanStructure">{tr}Pages not in structure{/tr} </label></div>
+	<div class="adminoption"><input type="checkbox" id='feature_listorphanPages' name="feature_listorphanPages" {if $prefs.feature_listorphanPages eq 'y'}checked="checked"{/if}/></div>
+	<div class="adminoptionlabel"><label for="feature_listorphanPages">{tr}Orphan page{/tr} </label></div>
 </div>	 
 
 <div class="adminoptionbox">
@@ -639,9 +798,7 @@ name="w_displayed_default" {if $prefs.w_displayed_default eq 'y'} checked="check
 <div class="adminoptionbox">
 	<div class="adminoption"><input type="checkbox" id="wiki_list_name" name="wiki_list_name" {if $prefs.wiki_list_name eq 'y'}checked="checked"{/if} onclick="flip('namelength');" /></div>
 	<div class="adminoptionlabel"><label for="wiki_list_name">{tr}Name{/tr} </label></div>
-	<div class="adminoptionboxchild" id="namelength" style="display:{if $prefs.wiki_list_name eq 'y'}block{else}none{/if};">
-		<div class="adminoptionlabel">{tr}Name length:{/tr} <input type="text" name="wiki_list_name_len" value="{$prefs.wiki_list_name_len}" size="3" /></div>
-	</div>
+	<div class="adminoptionlabel" id="namelength" style="display:{if $prefs.wiki_list_name eq 'y'}block{else}none{/if};">{tr}Name length:{/tr} <input type="text" name="wiki_list_name_len" value="{$prefs.wiki_list_name_len}" size="3" />	</div>
 </div>	 
 
 <div class="adminoptionbox">
@@ -655,7 +812,7 @@ name="w_displayed_default" {if $prefs.w_displayed_default eq 'y'} checked="check
 </div>
 
 <div class="adminoptionbox">
-	<div class="adminoption"><input type="checkbox" id="wiki_list_creator" name="wiki_list_creator" {if $prefs.wiki_list_creator eq 'y'}checked="checked"{/if} /></div>
+	<div class="adminoption"><input type="checkbox" id="wiki_list_creator"name="wiki_list_creator" {if $prefs.wiki_list_creator eq 'y'}checked="checked"{/if} /></div>
 	<div class="adminoptionlabel"><label for="wiki_list_creator">{tr}Creator{/tr}</label></div>
 </div>
 
@@ -672,13 +829,13 @@ name="w_displayed_default" {if $prefs.w_displayed_default eq 'y'} checked="check
 <div class="adminoptionbox">
 	<div class="adminoption"><input type="checkbox" onclick="flip('commentlength');" id="wiki_list_comment" name="wiki_list_comment" {if $prefs.wiki_list_comment eq 'y'}checked="checked"{/if} /></div>
 	<div class="adminoptionlabel"><label for="wiki_list_comment">{tr}Edit comments{/tr}</label></div>
-	<div class="adminoptionboxchild" id="commentlength" style="display:{if $prefs.wiki_list_comment eq 'y'}block{else}none{/if}">{tr}Edit Comments length:{/tr}<input type="text" name="wiki_list_comment_len" value="{$prefs.wiki_list_comment_len}" size="3" /></div>
+	<div class="adminoptionlabel" id="commentlength" style="display:{if $prefs.wiki_list_comment eq 'y'}block{else}none{/if}">{tr}Edit Comments length:{/tr}<input type="text" name="wiki_list_comment_len" value="{$prefs.wiki_list_comment_len}" size="3" /></div>
 </div>
 
 <div class="adminoptionbox">
 	<div class="adminoption"><input type="checkbox" id="wiki_list_description" name="wiki_list_description" {if $prefs.wiki_list_description eq 'y'}checked="checked" {/if} onclick="flip('descriptionlength');" /></div>
 	<div class="adminoptionlabel"><label for="wiki_list_description">{tr}Description{/tr}</label></div>
-	<div class="adminoptionboxchild" id="descriptionlength" style="display:{if $prefs.wiki_list_description eq 'y'}block{else}none{/if};"><label for="wiki_list_description_len">{tr}Description length:{/tr} </label><input type="text" name="wiki_list_description_len" value="{$prefs.wiki_list_description_len}" size="3" id="wiki_list_description_len" /></div>
+	<div class="adminoptionlabel" id="descriptionlength" style="display:{if $prefs.wiki_list_description eq 'y'}block{else}none{/if};"><label for="wiki_list_description_len">{tr}Description length:{/tr} </label><input type="text" name="wiki_list_description_len" value="{$prefs.wiki_list_description_len}" size="3" id="wiki_list_description_len" /></div>
 </div>
 
 <div class="adminoptionbox">
@@ -725,19 +882,15 @@ name="w_displayed_default" {if $prefs.w_displayed_default eq 'y'} checked="check
 
 </fieldset>  
 </div>
-		{/tab}
-		{tab name="{tr}Screencasts{/tr}"}
-			{preference name=feature_wiki_screencasts}
-			{preference name=feature_wiki_screencasts_upload_type label="{tr}Upload Type{/tr}"}
-			{preference name=feature_wiki_screencasts_max_size label="{tr}Maximum size{/tr}"}
-			{preference name=feature_wiki_screencasts_base label="{tr}Data location{/tr}"}
-			{preference name=feature_wiki_screencasts_httpbase label="{tr}HTTP Prefix{/tr}"}
-			{preference name=feature_wiki_screencasts_user label="{tr}WebDav username{/tr}"}
-			{preference name=feature_wiki_screencasts_pass label="{tr}WebDav password{/tr}"}
-		{/tab}
-	{/tabset}
-<div class="heading input_submit_container" style="text-align: center">
-	<input type="submit" name="wikisetprefs" value="{tr}Change preferences{/tr}" />
+
+
+      {if $prefs.feature_tabs neq 'y'}</div>{/if}
+    </fieldset>		
+
+<div align="center" style="padding:1em;"><input type="submit" name="wikisetprefs" value="{tr}Change preferences{/tr}" /></div>
+
+	
+</td></tr></table>
 </div>
 </form>
 

@@ -8,9 +8,9 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 class MultilingualLib extends TikiLib {
 	/** brief add a translation
 	  */
-	  
-	public $mtEnabled = 'y';
-	  
+	function MultilingualLib($db) {
+		parent::TikiLib($db);
+	}
 	/* @brief add an object and its transaltion set into the set of translations of another one
 	 * @param: type = (idem tiki_categ) 'wiki page'...
 	 * @param: srcId = id of the source
@@ -122,7 +122,7 @@ class MultilingualLib extends TikiLib {
 	 */
 	function getTranslations($type, $objId, $objName='', $objLang='', $long=false) {
 		if ($type == 'wiki page') {
-			$query = "select t2.`objId`, t2.`lang`, p.`pageName`as `objName` from `tiki_translated_objects` as t1, `tiki_translated_objects` as t2 LEFT JOIN `tiki_pages` p ON p.`page_id`= " . $this->cast('t2.`objId`','int') . " where t1.`traId`=t2.`traId` and t2.`objId`!= t1.`objId` and t1.`type`=? and  t1.`objId`=?";
+			$query = "select t2.`objId`, t2.`lang`, p.`pageName`as `objName` from `tiki_translated_objects` as t1, `tiki_translated_objects` as t2 LEFT JOIN `tiki_pages` p ON p.`page_id`=t2.`objId` where t1.`traId`=t2.`traId` and t2.`objId`!= t1.`objId` and t1.`type`=? and  t1.`objId`=?";
 		}
 		elseif ($long) {
 			$query = "select t2.`objId`, t2.`lang`, a.`title` as `objName` from `tiki_translated_objects` as t1, `tiki_translated_objects` as t2, `tiki_articles` as a where t1.`traId`=t2.`traId` and t2.`objId`!= t1.`objId` and t1.`type`=? and  t1.`objId`=? and a.`articleId`=t2.`objId`";
@@ -218,10 +218,10 @@ class MultilingualLib extends TikiLib {
         }
 
 
-	/* @brief : returns an ordered list of preferred languages
+	/* @brief : returns an ordered list of prefered languages
 	 * @param $langContext: optional the language the user comes from
 	 */
-	function preferredLangs($langContext = null,$include_browser_lang=TRUE) {
+	function preferedLangs($langContext = null,$include_browser_lang=TRUE) {
 		global $user, $prefs, $tikilib;
 		$langs = array();
 
@@ -271,19 +271,12 @@ class MultilingualLib extends TikiLib {
 			if (!in_array($l, $langs))
 				$langs[] = $l;
 		}
-
-		if( $prefs['available_languages'] && $prefs['language_inclusion_threshold'] >= count($prefs['available_languages']) ) {
-			foreach( array_diff( $prefs['available_languages'], $langs ) as $lang ) {
-				$langs[] = $lang;
-			}
-		}
-
 		return $langs;	
 	}
 	/* @brief : return the root language ex: en-uk returns en
 	 */
 	function rootLang($lang) {
-		return preg_replace("/(.*)-(.*)/", '$1', $lang);
+		return ereg_replace("(.*)-(.*)", "\\1", $lang);
 	}
 
 	/* @brief : fitler a list of object to have only one objet in the set of translations with the best language
@@ -291,7 +284,7 @@ class MultilingualLib extends TikiLib {
 	function selectLangList($type, $listObjs, $langContext = null) {
 		if (!$listObjs || count($listObjs) <= 1)
 			return $listObjs;
-		$langs = $this->preferredLangs($langContext);
+		$langs = $this->preferedLangs($langContext);
 //echo "<pre>";print_r($langs);echo "</pre>";
 		$max = count($listObjs);
 		for ($i = 0; $i < $max; ++$i) {
@@ -349,7 +342,7 @@ class MultilingualLib extends TikiLib {
 		$trads = $this->getTrads($type, $objId);
 		if (!$trads)
 			return $objId;
-		$langs = $this->preferredLangs($langContext);
+		$langs = $this->preferedLangs($langContext);
 		foreach ($langs as $l) {
 			foreach ($trads as $trad) {
 				if ($trad['lang'] == $l)
@@ -504,16 +497,16 @@ class MultilingualLib extends TikiLib {
 				bits.translation_bit_id, bits.page_id
 			FROM
 				tiki_translated_objects a
-				INNER JOIN tiki_translated_objects b ON a.`traId` = b.`traId` AND a.`objId` <> b.`objId`
-				INNER JOIN tiki_pages_translation_bits bits ON " . $this->cast('b.`objId`','int') . " = bits.page_id
+				INNER JOIN tiki_translated_objects b ON a.traId = b.traId AND a.objId <> b.objId
+				INNER JOIN tiki_pages_translation_bits bits ON b.objId = bits.page_id
 				LEFT JOIN tiki_pages_translation_bits self
-					ON bits.`translation_bit_id` = self.`original_translation_bit` AND self.`page_id` = ?
+					ON bits.translation_bit_id = self.original_translation_bit AND self.page_id = ?
 			WHERE
-				a.`type` = 'wiki page'
-				AND b.`type` = 'wiki page'
-				AND a.`objId` = ?
-				AND bits.`original_translation_bit` IS NULL
-				AND self.`original_translation_bit` IS NULL
+				a.type = 'wiki page'
+				AND b.type = 'wiki page'
+				AND a.objId = ?
+				AND bits.original_translation_bit IS NULL
+				AND self.original_translation_bit IS NULL
 				AND $conditions
 		", array( $objId, $objId ) );
 
@@ -536,7 +529,7 @@ class MultilingualLib extends TikiLib {
 
 		$result = $this->query( "
 			SELECT
-				`pageName` page,
+				pageName page,
 				lang,
 				" . $this->subqueryObtainUpdateVersion( 'pages.page_id', '?' ) . " last_update,
 				pages.version current_version
@@ -737,99 +730,7 @@ class MultilingualLib extends TikiLib {
 		}
 		return $flags;
 	}
-	
-	function getLangOfPage($pageName) {
-		$pageInfo = $this->get_page_info($pageName);
-		$lang = $pageInfo['lang'];
-		return $lang;
-	}
-
-    function currentSearchLanguage($searchingOnSecondLanguage) {
-       /*
-        * Set $searchingOnSecondLanguage to true in cases where 
-        * a translator may be searching terms or text in his second language,
-        * in order to find its translation into his first language.
-        */
-       global $_REQUEST, $_SESSION;
-       $lang = '';
-	   if (isset($_REQUEST['lang'])) { //lang='' means all languages
-		   return $_REQUEST['lang'];
-	   }
-       if (array_key_exists('find_page_last_done_in_lang', $_SESSION)) {
-          $lang = $_SESSION['find_page_last_done_in_lang'];
-       } 
-       if ($lang == '') {
-          $userPreferredLangs = $this->preferredLangs();
-          if ($searchingOnSecondLanguage &&
-              array_key_exists(1, $userPreferredLangs)) {
-              //
-              // Translators typically need to search for terms
-              // in their second language, not their first, because
-              // they are interetsed in how to translate them from
-              // second language to their first.
-              //
-              $lang = $userPreferredLangs[1];
-          } else {
-              $lang = $userPreferredLangs[0];
-          }
-       }
-       $this->storeCurrentSearchLanguageInSession($lang);
-
-       return $lang;   
-    }
-    
-    function storeCurrentSearchLanguageInSession($lang) {
-       global $_SESSION;
-       $_SESSION['find_page_last_done_in_lang'] = $lang;
-    }
-
-    function preferredLangsInfo() {
-    
-       global $tikilib;
-
-       // Get IDs of user's preferred languages
-       $userLangIDs = $this->preferredLangs();
-   
-       // Get information about ALL languages supported by Tiki
-       $allLangsInfo = $tikilib->list_languages(false,'y');
-
-       // Create a map of language ID (ex: 'en') to language info
-       $langIDs2Info = array();
-       foreach ($allLangsInfo as $someLangInfo){
-          $langIDs2Info[$someLangInfo['value']] = $someLangInfo;
-       }
-
-       // Create list of language IDs AND names for user's preferred
-       // languages. 
-       $userLangsInfo = array();
-       $lang_index = 0;
-       foreach ($userLangIDs as $index => $someUserLangID) {
-          if ($langIDs2Info[$someUserLangID] != NULL) {
-             $userLangsInfo[$lang_index] = $langIDs2Info[$someUserLangID];
-             $lang_index++;
-           }
-       }
-       
-       return $userLangsInfo;  
-    }
-    
-    
-    function getTemplateIDInLanguage($section, $template_name, $language) {
-       global $tikilib;
-       $all_templates = $tikilib->list_templates($section, 0, -1, 'name_asc', '');
-       $looking_for_template_named = "$template_name-$language";
-       foreach ($all_templates['data'] as $a_template) {
-          $a_template_name = $a_template['name'];
-          if ($a_template_name == $looking_for_template_named) {
-             return $a_template['templateId'];
-          }
-       }
-       return null;
-   }
-
-	function setMachineTranslationFeatureTo($on_or_off) {
-		$this->mtEnabled = $on_or_off;
-	}   
 }
-
-$multilinguallib = new MultilingualLib;
+global $dbTiki;
+$multilinguallib = new MultilingualLib($dbTiki);
+?>

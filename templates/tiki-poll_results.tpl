@@ -82,7 +82,7 @@
 {if $smarty.section.x.total > 1}</a>{/if}
 
 </td>
-    <td class="pollr {cycle}">{quotabar length=$poll_info_arr[x].options[ix].width}  {$poll_info_arr[x].options[ix].percent}% ({$poll_info_arr[x].options[ix].votes})
+    <td class="pollr {cycle}"><img src="img/leftbar.gif" alt="&lt;" /><img src="img/mainbar.gif" alt="-" height="14" width="{$poll_info_arr[x].options[ix].width}" /><img src="img/rightbar.gif" alt="&gt;" />  {$poll_info_arr[x].options[ix].percent}% ({$poll_info_arr[x].options[ix].votes})
     </td>
     </tr>
 {/section}
@@ -148,7 +148,7 @@
   ||  $tiki_p_edit_comments  == 'y')
 }
   <div id="page-bar">
-  	   {include file='comments_button.tpl'}
+  	   {include file=comments_button.tpl}
   </div>
-  {include file='comments.tpl'}
+  {include file=comments.tpl}
 {/if}

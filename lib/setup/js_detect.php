@@ -27,14 +27,13 @@ if ( $prefs['javascript_enabled'] != 'y' ) {
 
 	$prefs['feature_tabs'] = 'n';
 	$prefs['feature_jquery'] = 'n';
+	$prefs['feature_mootools'] = 'n';
 	$prefs['feature_shadowbox'] = 'n';
 	$prefs['feature_wysiwyg'] = 'n';
 	$prefs['feature_ajax'] = 'n';
 	
 } else {	// we have JavaScript
 
-	$prefs['feature_jquery'] = 'y';	// just in case
-	
 	/** Use custom.js in styles or options dir if there **/
 	$custom_js = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], 'custom.js');
 	if (!empty($custom_js)) {
@@ -58,7 +57,7 @@ if ( $prefs['javascript_enabled'] != 'y' ) {
 			if (($fixondom = $prefs['iepngfix_elements']) != '') {
 				$fixondom = "DD_belatedPNG.fixPng($fixondom); // list of HTMLDomElements to fix separated by commas (default is none)";
 			}
-			if ($prefs['feature_use_minified_scripts'] != 'n') {
+			if ($prefs['use_minified_scripts'] != 'n') {
 				$scriptpath = 'lib/iepngfix/DD_belatedPNG.js';
 			} else {
 				$scriptpath = 'lib/iepngfix/DD_belatedPNG-min.js';
@@ -71,8 +70,13 @@ JS
 			);
 		}
 	}
+	
+	// ---------------------------------------------------------------
+	// include jquery smarty prefilter if feature enabled
+	if ($prefs['feature_jquery']) {
+		$smarty->load_filter('pre', 'jq');
+	}
 }
-
 if ($prefs['feature_ajax'] != 'y') {
 	$prefs['feature_ajax_autosave'] = 'n';
 }

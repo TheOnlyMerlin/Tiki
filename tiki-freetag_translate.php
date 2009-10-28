@@ -116,7 +116,7 @@ else
 		$smarty->assign( 'setlang', $_REQUEST['setlang'] );
 }
 
-$languages = $multilinguallib->preferredLangs();
+$languages = $multilinguallib->preferedLangs();
 $used_languages = array();
 foreach ($languages as $l)
 	$used_languages[$l] = true;
@@ -159,3 +159,5 @@ $smarty->assign( 'rootlang', $rootlangs );
 // Display the template
 $smarty->assign('mid', 'tiki-freetag-translate.tpl');
 $smarty->display("tiki.tpl");
+
+?>

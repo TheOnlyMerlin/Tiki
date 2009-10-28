@@ -80,7 +80,7 @@ function wikiplugin_module_info() {
 }
 
 function wikiplugin_module($data, $params) {
-	global $tikilib, $cache_time, $smarty, $dbTiki, $prefs, $ranklib, $tikidomain, $user, $tiki_p_tasks, $tiki_p_create_bookmarks, $imagegallib, $module_params;
+	global $tikilib, $cache_time, $smarty, $dbTiki, $prefs, $ranklib, $tikidomain, $user, $tiki_p_tasks, $tiki_p_create_bookmarks, $imagegallib;
 
 	$out = '';
 	extract ($params,EXTR_SKIP);
@@ -122,17 +122,53 @@ function wikiplugin_module($data, $params) {
 			$args = '';
 		}
 
-		$module_reference = array(
-			'moduleId' => null,
-			'name' => $module,
-			'params' => $params,
-			'rows' => $max,
-			'position' => null,
-			'ord' => null,
-		);
+		$phpfile = 'modules/mod-' . $module . '.php';
+		$template = 'modules/mod-' . $module . '.tpl';
 
-		global $modlib; require_once 'lib/modules/modlib.php';
-		$out = $modlib->execute_module( $module_reference );
+		$module_rows = $max;
+		$module_params = $params;
+		if (!isset($module_params['decorations'])) $module_params['decorations'] = 'n';
+		if (!isset($module_params['flip']) && isset($prefs['user_flip_modules']) && $prefs['user_flip_modules'] != 'module')
+			$module_params['flip'] = $prefs['user_flip_modules'];
+		elseif (!isset($module_params['flip']))
+			$module_params['flip'] = 'n';
+		if (isset($module_params['title'])) { 
+			$smarty->assign('tpl_module_title',tra($module_params['title'])); 
+		} else {
+			$smarty->clear_assign('tpl_module_title');
+		}
+		$smarty->assign_by_ref('module_rows',$module_rows);
+		$smarty->assign_by_ref('module_params', $module_params); // module code can unassign this if it wants to hide params
+
+			if (file_exists($phpfile)) {
+				include ($phpfile);
+			}
+
+			$template_file = 'templates/' . $template;
+			if (file_exists($template_file)) {
+				$out = $smarty->fetch($template);
+			} else {
+				if ($tikilib->is_user_module($module)) {
+					$info = $tikilib->get_user_module($module);
+
+					$smarty->assign_by_ref('user_title', $info["title"]);
+					$smarty->assign_by_ref('user_data', $info["data"]);
+					$out = $smarty->fetch('modules/user_module.tpl');
+				}
+			}
+		$smarty->clear_assign('module_params'); // ensure params not available outside current module
+//			if (!file_exists($nocache)) {
+//				$fp = fopen($cachefile, "w+");
+//				fwrite($fp, $data, strlen($data));
+//				fclose ($fp);
+//			}
+//		} else {
+//			$fp = fopen($cachefile, "r");
+//			$out = fread($fp, filesize($cachefile));
+//			fclose ($fp);
+//		}
+
+//		$out = eregi_replace("\n", "", $out);
 	}
 
 	if ($out) {
@@ -153,3 +189,5 @@ function wikiplugin_module($data, $params) {
 
 	return $data;
 }
+
+?>

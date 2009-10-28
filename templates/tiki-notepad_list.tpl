@@ -1,6 +1,8 @@
 {title help="notepad"}{tr}Notes{/tr}{/title}
 
-	{include file='tiki-mytiki_bar.tpl'}
+{if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
+	{include file=tiki-mytiki_bar.tpl}
+{/if}
 
 <div class="navbar">
 	{button href="tiki-notepad_write.php" _text="{tr}Write a note{/tr}"}
@@ -48,7 +50,7 @@
 						<input type="checkbox" name="note[{$channels[user].noteId}]" />
 					</td>
 					<td class="{cycle advance=false}">
-						<a class="link" href="tiki-notepad_read.php?noteId={$channels[user].noteId}">{$channels[user].name|escape}</a>
+						<a class="link" href="tiki-notepad_read.php?noteId={$channels[user].noteId}">{$channels[user].name}</a>
 					</td>
 					<td class="{cycle advance=false}">{$channels[user].parse_mode}</td>
 					<td class="{cycle advance=false}">{$channels[user].created|tiki_short_datetime}</td>

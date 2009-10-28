@@ -16,7 +16,6 @@ function wikiplugin_sub_info() {
 		'description' => tra('Displays text in subscript.'),
 		'prefs' => array( 'wikiplugin_sub' ),
 		'body' => tra('text'),
-		'icon' => 'pics/icons/text_subscript.png',
 		'params' => array(
 		),
 	);
@@ -29,3 +28,5 @@ function wikiplugin_sub($data, $params)
         extract ($params,EXTR_SKIP);
 	return "<sub>$data</sub>";
 }
+
+?>

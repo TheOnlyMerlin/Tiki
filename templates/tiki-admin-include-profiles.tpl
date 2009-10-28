@@ -1,6 +1,5 @@
-{* $Id$ *}
+{* $Id: tiki-admin-include-ads.tpl 12802 2008-05-12 11:06:16Z sylvieg $ *}
 <script type="text/javascript">
-<!--//--><![CDATA[//><!--
 var baseURI = '{$smarty.server.REQUEST_URI}';
 {literal}
 function refreshCache( entry ) { // {{{
@@ -30,7 +29,6 @@ function refreshCache( entry ) { // {{{
 function showDetails( id, domain, profile ) { // {{{
 	
 	var nid = id + "-sub";
-	var infoId = id + "-info";
 	var prev = document.getElementById( id );
 	var obj = document.getElementById( nid );
 
@@ -41,22 +39,8 @@ function showDetails( id, domain, profile ) { // {{{
 		return;
 	}
 
-	var infoOb = document.getElementById( infoId );
-	if (!infoOb) {
-		infoOb = document.createElement('span');
-		infoOb.innerHTML = " ";
-		infoOb.style.fontStyle = "italic";
-		infoOb.id = infoId;
-		prev.getElementsByTagName("td")[0].appendChild( infoOb );
-	}
-	infoOb.innerHTML = " {/literal}{tr}Loading profile{/tr}{literal}...";
-	
 	var req = getHttpRequest( 'POST', baseURI + '&getinfo&pd=' + escape(domain) + '&pp=' + escape(profile), true );
 	req.onreadystatechange = function (aEvt) {
-		
-		if (infoOb) {
-			infoOb.innerHTML = "";
-		}
 		if (req.readyState == 4) {
 			if(req.status == 200) {
 				var data = eval( "(" + req.responseText + ")" );
@@ -72,7 +56,7 @@ function showDetails( id, domain, profile ) { // {{{
 				if( data.already )
 				{
 					var p = document.createElement( 'p' );
-					p.innerHTML = "A version of this profile is already applied.";
+					p.innerHTML = "A version of this profile is already installed.";
 					p.style.fontWeight = 'bold';
 					cell.appendChild(p);
 
@@ -87,7 +71,7 @@ function showDetails( id, domain, profile ) { // {{{
 					form.appendChild(p);
 					submit.type = 'submit';
 					submit.name = 'forget';
-					submit.value = 'Forget and Re-apply';
+					submit.value = 'Forget and Reinstall';
 					p.appendChild(submit);
 					pd.type = 'hidden';
 					pd.name = 'pd';
@@ -97,9 +81,8 @@ function showDetails( id, domain, profile ) { // {{{
 					pp.name = 'pp';
 					pp.value = profile;
 					p.appendChild(pp);
+					form.setAttribute ( "onsubmit", 'return confirm(\"{/literal}{tr}Are you sure you want to install the profile{/tr}{literal} ' + profile + '?\");' );
 
-					form.setAttribute ( "onsubmit", 'return confirm(\"{/literal}{tr}Are you sure you want to apply the profile{/tr}{literal} ' + profile + '?\");' );
-					
 					cell.appendChild(form);
 				}
 				else if( data.installable )
@@ -142,7 +125,7 @@ function showDetails( id, domain, profile ) { // {{{
 
 					submit.type = 'submit';
 					submit.name = 'install';
-					submit.value = 'Apply Now';
+					submit.value = 'Install Now';
 					p.appendChild(submit);
 					pd.type = 'hidden';
 					pd.name = 'pd';
@@ -152,8 +135,7 @@ function showDetails( id, domain, profile ) { // {{{
 					pp.name = 'pp';
 					pp.value = profile;
 					p.appendChild(pp);
-
-					form.setAttribute ( "onsubmit", 'return confirm(\"{/literal}{tr}Are you sure you want to apply the profile{/tr}{literal} ' + profile + '?\");' );
+					form.setAttribute ( "onsubmit", 'return confirm(\"{/literal}{tr}Are you sure you want to install the profile{/tr}{literal} ' + profile + '?\");' );
 
 					cell.appendChild(form);
 				}
@@ -161,14 +143,14 @@ function showDetails( id, domain, profile ) { // {{{
 				{
 					var p = document.createElement('p');
 					p.style.fontWeight = 'bold';
-					p.innerHTML = "An error occured during the profile validation. This profile cannot be applied. Message: " + data.error;
+					p.innerHTML = "An error occured during the profile validation. This profile cannot be installed. Message: " + data.error;
 					cell.appendChild(p);
 				}
 				else
 				{
 					var p = document.createElement('p');
 					p.style.fontWeight = 'bold';
-					p.innerHTML = "An error occured during the profile validation. This profile cannot be applied.";
+					p.innerHTML = "An error occured during the profile validation. This profile cannot be installed.";
 					cell.appendChild(p);
 				}
 
@@ -189,7 +171,7 @@ function showDetails( id, domain, profile ) { // {{{
 					}
 
 					var p = document.createElement( 'p' );
-					p.innerHTML = 'These profiles will be applied:';
+					p.innerHTML = 'These profiles will be installed:';
 					cell.appendChild( p );
 					cell.appendChild( ul );
 				}
@@ -207,66 +189,41 @@ function showDetails( id, domain, profile ) { // {{{
 				row.id = nid;
 				prev.parentNode.insertBefore( row, prev.nextSibling );
 			}
-		} else {		// readyState not 4 (complete)
-			
-			switch (req.readyState) {
-				case 1: {
-					infoOb.innerHTML = " {/literal}{tr}Loading profile{/tr}{literal}...";
-					break;
-				}
-				case 2: {
-					infoOb.innerHTML = " {/literal}{tr}Sending{/tr}{literal}...";
-					break;
-				}
-				case 3: {
-					infoOb.innerHTML = " {/literal}{tr}Waiting{/tr}{literal}...";
-					break;
-				}
-			}
-			
 		}
 	}
 	req.send('');
 } // }}}
 {/literal}
-//--><!]]>
 </script>
 {remarksbox type="tip" title="{tr}Tip{/tr}"}<a class="rbox-link" href="http://profiles.tikiwiki.org">{tr}TikiWiki Profiles{/tr}</a>{/remarksbox}
 
-<fieldset class="admin">
-<legend>{tr}Status{/tr}</legend>
+
+
+
+<div class="cbox">
+<table class="admin"><tr><td>
+
 <div class="adminoptionbox">
+	<div class="adminoptionlabel">{tr}Status{/tr}:</div>
+	<div>
 	<table class="normal">
-		<tr>
-			<th>{tr}Profile repository{/tr}</th>
-			<th>{tr}Status{/tr}</th>
-			<th>{tr}Last update{/tr}</th>
-		</tr>
-		{foreach key=k item=entry from=$sources}
 			<tr>
-				<td>{$entry.short}</td>
-				<td><img id="profile-status-{$k}" alt="{tr}Status{/tr}" src="img/icons2/status_{$entry.status}.gif"/></td>
-				<td><span id="profile-date-{$k}">{$entry.formatted}</span> <a href="javascript:refreshCache({$k})" class="icon"><img src="pics/icons/arrow_refresh.png" class="icon" alt="{tr}Refresh{/tr}"/></a></td>
+				<th>{tr}Profile repository{/tr}</th>
+				<th>{tr}Status{/tr}</th>
+				<th>{tr}Last update{/tr}</th>
 			</tr>
-		{/foreach}
-	</table>
+			{foreach key=k item=entry from=$sources}
+				<tr>
+					<td>{$entry.short}</td>
+					<td><img id="profile-status-{$k}" src="img/icons2/status_{$entry.status}.gif"/></td>
+					<td><span id="profile-date-{$k}">{$entry.formatted}</span> <a href="javascript:refreshCache({$k})" class="icon"><img src="pics/icons/arrow_refresh.png" class="icon" alt="{tr}Refresh{/tr}"/></a></td>
+				</tr>
+			{/foreach}
+		</table>
+	</div>
 </div>
-</fieldset>
 
 <a name='profile-results'></a>
-{if $profilefeedback}
-	{remarksbox type="note" title="{tr}Note{/tr}"}
-		{cycle values="odd,even" print=false}
-		{tr}The following list of changes has been applied:{/tr}
-		<ul>
-		{section name=n loop=$profilefeedback}
-			<li class="{cycle}">
-				<p>{$profilefeedback[n]}</p>
-			</li>
-		{/section}
-		</ul>
-	{/remarksbox}
-{/if}
 <fieldset><legend>{tr}Profiles{/tr}</legend>
 <form method="get" action="tiki-admin.php#profile-results">
 <div class="adminoptionbox">
@@ -302,7 +259,7 @@ function showDetails( id, domain, profile ) { // {{{
 			</tr>
 			{foreach key=k item=profile from=$result}
 				<tr id="profile-{$k}">
-					<td><a href="javascript:showDetails( 'profile-{$k}', '{$profile.domain|escape}', '{$profile.name|escape}' )">{$profile.name|escape}</a>{if $profile.installed} <em>{tr}applied{/tr}</em>{/if}</td>
+					<td><a href="javascript:showDetails( 'profile-{$k}', '{$profile.domain|escape}', '{$profile.name|escape}' )">{$profile.name|escape}</a>{if $profile.installed} <em>{tr}installed{/tr}</em>{/if}</td>
 					<td>{$profile.domain}</td>
 					<td>{$profile.category}</td>
 				</tr>
@@ -325,7 +282,7 @@ function showDetails( id, domain, profile ) { // {{{
 
 <div class="adminoptionbox">
 	<div class="adminoptionlabel"><label for="profile_channels">{tr}Data Channels{/tr}</label>:</div>
-	<div><textarea id="profile_channels" name="profile_channels" rows="5" cols="80" style="width:95%;">{$prefs.profile_channels|escape}</textarea>
+	<div><textarea id="profile_channels" name="profile_channels" rows="5" rows="60" style="width:95%;">{$prefs.profile_channels|escape}</textarea>
 	<br /><em>{tr}Data channels create a named pipe to run profiles from user space. One channel per line. Each line is comma delimited and contain <strong>channel name, domain, profile, allowed groups</strong>. {/tr}</em>
 	<small><a href="http://profiles.tikiwiki.org/Data+Channels">{tr}More information{/tr}</a></small>
 	</div>
@@ -335,26 +292,8 @@ function showDetails( id, domain, profile ) { // {{{
 </form>
 </fieldset>
 
-{if $prefs.feature_profile_tester eq 'y'}
-	<fieldset><legend>{tr}Profile tester{/tr}</legend>
-		<form action="tiki-admin.php?page=profiles" method="post">
-		{remarksbox type="warning" title="{tr}Warning{/tr}"}
-			Paste or type wiki markup and YAML (including the {literal}{CODE}{/literal} tags) into the text area below<br />
-			<em><strong>{tr}This will run the profile and make potentially unrecoverable changes in your database!{/tr}</strong></em>
-			<div class="adminoptionbox">
-				<div class="adminoptionlabel">
-					<label for="profile_tester_name">{tr}Test Profile Name{/tr}: </label>
-					<input type="text" name="profile_tester_name" id="profile_tester_name" value="Test" />
-				</div>
-				<div>
-					<textarea id="profile_tester" name="profile_tester" rows="5" cols="40" style="width:95%;"></textarea>
-				</div>
-			</div>
-			<div align="center" style="padding:1em;"><input type="submit" name="test" value="{tr}Test{/tr}" /></div>
-		{/remarksbox}
-		</form>
-	</fieldset>
-{/if}
+</td></tr></table>
+</div>
 
 <script type="text/javascript">
 {foreach item=k from=$oldSources}

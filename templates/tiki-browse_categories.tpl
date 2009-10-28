@@ -1,6 +1,6 @@
 {* $Id$ *}
 
-{title}{if $parentId ne 0}{tr}Category{/tr} {$p_info.name|escape}{else}{tr}Categories{/tr}{/if}{/title}
+{title}{if $parentId ne 0}{tr}Category{/tr} {$p_info.name}{else}{tr}Categories{/tr}{/if}{/title}
 
 {if $parentId and $p_info.description}
 	<div class="description">{$p_info.description}</div>
@@ -63,7 +63,7 @@
 			<a {if $type eq 'tracker'} id="highlight"{/if} href="tiki-browse_categories.php?find={$find|escape}&amp;deep={$deep}&amp;type=tracker&amp;parentId={$parentId}&amp;sort_mode={$sort_mode}">{tr}Trackers{/tr}</a>
 		</span>
 		<span class="button">
-			<a {if $type eq 'trackeritem'} id="highlight"{/if} href="tiki-browse_categories.php?find={$find|escape}&amp;deep={$deep}&amp;type=trackeritem&amp;parentId={$parentId}&amp;sort_mode={$sort_mode}">{tr}Trackers Items{/tr}</a>
+			<a {if $type eq 'trackerItem'} id="highlight"{/if} href="tiki-browse_categories.php?find={$find|escape}&amp;deep={$deep}&amp;type=trackerItem&amp;parentId={$parentId}&amp;sort_mode={$sort_mode}">{tr}Trackers Items{/tr}</a>
 		</span>
 	{/if}
 
@@ -117,11 +117,11 @@
 </div>
 
 <form method="post" action="tiki-browse_categories.php">
-	<label>{tr}Find:{/tr} {$p_info.name|escape} <input type="text" name="find" value="{$find|escape}" size="35" /></label><input type="submit" value="{tr}Find{/tr}" name="search" />
-	<label>{tr}in the current category - and its subcategories: {/tr}<input type="checkbox" name="deep" {if $deep eq 'on'}checked="checked"{/if}/></label>
+	{tr}Find:{/tr} {$p_info.name} <input type="text" name="find" value="{$find|escape}" size="35" />
+	{tr}in the current category - and its subcategories: {/tr}<input type="checkbox" name="deep" {if $deep eq 'on'}checked="checked"{/if}/>
 	<input type="hidden" name="parentId" value="{$parentId|escape}" />
 	<input type="hidden" name="type" value="{$type|escape}" />
-	
+	<input type="submit" value="{tr}Find{/tr}" name="search" />
 	<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
 </form>
 
@@ -138,7 +138,7 @@
 		<a href="tiki-browse_categories.php?parentId=0&amp;deep={$deep}&amp;type={$type|escape}" class="categpath">{tr}Top{/tr}</a>
 		{section name=x loop=$path}
 			&nbsp;{$prefs.site_crumb_seper}&nbsp;
-			<a class="categpath" href="tiki-browse_categories.php?parentId={$path[x].categId}&amp;deep={$deep}&amp;type={$type|escape}">{$path[x].name|tr_if|escape}</a>
+			<a class="categpath" href="tiki-browse_categories.php?parentId={$path[x].categId}&amp;deep={$deep}&amp;type={$type|escape}">{$path[x].name|tr_if}</a>
 		{/section}
 	</div>
 
@@ -182,15 +182,17 @@
 					{section name=ix loop=$objects}
 						<tr class="{cycle}" >
 							<td>
-								<a href={if empty($objects[ix].sefurl)}"{$objects[ix].href}"{else}"{$objects[ix].sefurl}"{/if} class="catname">{$objects[ix].name|escape|default:'&nbsp;'}</a>
+								<a href="{$objects[ix].href}" class="catname">{$objects[ix].name|default:'&nbsp;'}</a>
 								<div class="subcomment">{$objects[ix].description}</div>
 							</td>
 							<td>
-								{tr}{$objects[ix].type|replace:"wiki page":"wiki"|replace:"trackeritem":"tracker item"}{/tr}
+								<strong>
+									{tr}{$objects[ix].type|replace:"wiki page":"Wiki"|replace:"article":"Article"|regex_replace:"/tracker [0-9]*/":"tracker item"}{/tr}
+								</strong>
 							</td>
 							{if $deep eq 'on'}
 								<td>
-									{$objects[ix].categName|tr_if|escape}
+									{$objects[ix].categName|tr_if}
 								</td>
 							{/if}
 						</tr>

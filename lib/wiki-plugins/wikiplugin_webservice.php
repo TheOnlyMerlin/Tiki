@@ -51,7 +51,7 @@ function wikiplugin_webservice( $data, $params ) {
 	}
 
 	if( ! empty( $data ) ) {
-		$templateFile = $GLOBALS['tikipath'] . 'temp/cache/' . md5($data); 
+		$templateFile = $GLOBALS['tikipath'] . 'temp/cache/' . md5($data);
 
 		if( ! file_exists( $templateFile ) )
 			file_put_contents( $templateFile, $data );
@@ -89,3 +89,5 @@ function wikiplugin_webservice( $data, $params ) {
 		return '^' . tra('Missing parameters') . '^';
 	}
 }
+
+?>

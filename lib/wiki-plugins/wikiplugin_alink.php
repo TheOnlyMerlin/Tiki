@@ -30,7 +30,6 @@ function wikiplugin_alink_info() {
 		'description' => tra('Creates a link to an anchor within a page. Anchors can be created using the ANAME plugin.'),
 		'prefs' => array('wikiplugin_alink'),
 		'body' => tra('Anchor link label.'),
-		'icon' => 'pics/icons/world_link.png',
 		'params' => array(
 			'aname' => array(
 				'required' => true,
@@ -83,3 +82,5 @@ function wikiplugin_alink($data, $params)
 	    return "<a href=\"#$aname\">$data</a>";
 	}
 }
+
+?>

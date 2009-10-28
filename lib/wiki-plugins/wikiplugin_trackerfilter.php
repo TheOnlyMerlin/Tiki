@@ -262,8 +262,6 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', $for
 			case 'w': //dynamic item lists
 			case 'r': //item link
 			case 'k': //page selector
-			case 'u': // user
-			case 'g': // group
 				if (isset($status)) {
 					$res = $trklib->list_tracker_field_values($trackerId, $fieldId, $status);
 				} else {
@@ -290,3 +288,4 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', $for
 	}
 	return $filters;
 }
+?>

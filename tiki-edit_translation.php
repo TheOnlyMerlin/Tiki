@@ -51,15 +51,7 @@ if ((!isset($_REQUEST['type']) || $_REQUEST['type'] == 'wiki page' || $_REQUEST[
 
 	$edit_data = $info['data'];
 	$smarty->assign('pagedata', TikiLib::htmldecode($edit_data));
-	#
-	# AD (2009-10-14): This message used to say "Translation in progress". But
-	# I observed that translators were confused by it, because they thought
-	# it meant someone else was translating it and that they should not
-	# touch it.
-	#
-	if ($prefs['feature_translation_incomplete_notice'] == 'y') {
-		$smarty->assign('translate_message', "^".tra("Translation of this page is incomplete.")."^\n\n");
-	}
+	$smarty->assign('translate_message', tra('Translation in progress.', $langpage));
 }
 else if ($_REQUEST['id']) {
 	if (!isset($_REQUEST['type'])) {
@@ -269,9 +261,6 @@ foreach( $rawLangs as $langInfo )
 	if( ! in_array( $langInfo['value'], $usedLang ) )
 		$languages[] = $langInfo;
 $smarty->assign_by_ref('languages', $languages);
-if (count($languages) == 1) {
-   $smarty->assign('only_one_language_left', 'y');
-}
 
 ask_ticket('edit-translation');
 
@@ -281,3 +270,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the template
 $smarty->assign('mid', 'tiki-edit_translation.tpl');
 $smarty->display("tiki.tpl");
+
+?>

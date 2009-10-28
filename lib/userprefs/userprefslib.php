@@ -7,6 +7,9 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 class UserPrefsLib extends TikiLib {
+	function UserPrefsLib($db) {
+		$this->TikiLib($db);
+	}
 
 	function set_user_avatar($user, $type, $avatarLibName, $avatarName, $avatarSize, $avatarType, $avatarData) {
 		global $prefs, $userlib;
@@ -59,4 +62,7 @@ class UserPrefsLib extends TikiLib {
 		}
 	}
 }
-$userprefslib = new UserPrefsLib;
+global $dbTiki;
+$userprefslib = new UserPrefsLib($dbTiki);
+
+?>

@@ -1,6 +1,6 @@
 <div id="siteheader" class="clearfix">
 	<div id="header-top">
-		<div id="sitelogo" style="padding-left:70px"><h1><img style="border:medium none; vertical-align:middle" alt="{tr}TikiWiki CMS/Groupware{/tr}" src="img/tiki/tikisitelogo.{if isset($ie6)}gif{else}png{/if}" />
+		<div id="sitelogo" style="padding-left:70px"><h1><img style="border:medium none; vertical-align:middle" alt="{tr}TikiWiki CMS/Groupware{/tr}" src="img/tiki/tiki3.{if isset($ie6)}gif{else}png{/if}" />
 			<span style="vertical-align:middle">{tr}Tiki installer{/tr} v{$tiki_version_name} <a title="{tr}Help{/tr}" href="http://doc.tikiwiki.org/Installation" target="help"><img style="border:0" src='pics/icons/help.png' alt="{tr}Help{/tr}" /></a></span></h1>
 		</div>
 	</div>
@@ -31,7 +31,7 @@
 					{if $prefs.site_language eq $languages[ix].value}selected="selected"{/if}>{$languages[ix].name}</option>
 			{/section}
 		</select>
-		<input type="hidden" name="install_step" value="0" />
+		<input type="hidden" name="install_step" value="1" />
 		{if $multi}		<input type="hidden" name="multi" value="{$multi}" />{/if}
 	</form>
 </div>
@@ -61,7 +61,7 @@
 <h1>{tr}Review the System Requirements{/tr}</h1>
 <div style="float:left;width:60px"><img src="img/webmail/compose.gif" alt="{tr}Review{/tr}" /></div>
 <div class="clearfix">
-	<p>{tr}Before installing Tiki, <a href="http://doc.tikiwiki.org/Requirements" target="_blank">review the documentation</a> and confirm that your system meets the minimum requirements.{/tr}</p>
+	<p>{tr}Before installing Tiki, <a href="http://doc.tikiwiki.org/tiki-index.php?page=Requirements+and+Setup&bl=y" target="_blank">review the documentation</a> and confirm that your system meets the minimum requirements.{/tr}</p>
 	<p>{tr}This installer will perform some basic checks automatically.{/tr}</p>
 	<br />
 	<h2>{tr}Memory{/tr}</h2>
@@ -192,7 +192,7 @@
 			<div style="margin-left:1em">
 			<select name="db" id="db">
 {foreach key=dsn item=dbname from=$dbservers}
-				<option value="{$dsn}"{if isset($smarty.request.db) and $smarty.request.db eq $dsn} selected="selected"{/if}>{$dbname}</option>
+				<option value="{$dsn}">{$dbname}</option>
 {/foreach}
 			</select> <a href="javascript:void(0)" onclick="flip('db_help');" title="{tr}Help{/tr}"><img src="pics/icons/help.png" alt="{tr}Help{/tr}" /></a>
 			<div style="display:none" id="db_help">
@@ -207,7 +207,7 @@
 			<input type="text" name="host" id="host" value="{if isset($smarty.request.host)}{$smarty.request.host|escape:"html"}{else}localhost{/if}" size="40" /> <a href="javascript:void(0)" onclick="flip('host_help');" title="{tr}Help{/tr}"><img src="pics/icons/help.png" alt="{tr}Help{/tr}" /></a>
 			<br /><em>{tr}Enter the host name or IP for your database.{/tr}</em>
 			<div style="display:none;" id="host_help">
-				<p>{tr}Use <strong>localhost</strong> if the database is running on the same machine as Tiki.{/tr}</p>
+				<p>{tr}Use <strong>localhost</strong> if the database is running on the same machine as Tiki.{/tr} {tr}For SQLite, enter the path and filename to your database file.{/tr}</p>
 			</div>
 			</div>
 		</div>
@@ -219,6 +219,12 @@
 			<br /><em>{tr}Enter the name of the database that Tiki will use.{/tr}</em> 
 			<div style="margin-left:1em;display:none;" id="name_help">
 				<p>{tr}The database must already exist. You can create the database using mysqladmin, PHPMyAdmin, cPanel, or ask your hosting provider.  Normally Tiki tables won't conflict with other product names.{/tr}</p>
+				<p>{tr}For Oracle:{/tr}
+				<ul>
+					<li>{tr}Enter your TNS Name here and leave Host empty.{/tr}<br />
+					{tr}or{/tr}</li>
+					<li>{tr}Override tnsnames.ora and put your SID here and enter your hostname:port in the Host field.{/tr}</li>
+				</ul></p>
 			</div>
 			</div>
 		</div>
@@ -474,7 +480,7 @@
 <div style="float:left; width:60px"><img src="pics/large/stock_quit48x48.png" alt="{tr}Login{/tr}" /></div>
 <div class="clearfix">
 	<p>{tr}The installation is complete!{/tr} {tr}Your database has been configured and Tiki is ready to run.{/tr} </p>
-	<p>{tr}Tiki is an open source project, <em>you</em> can <a href='http://info.tikiwiki.org/Join+the+Community' target='_blank'>join the community</a> and help <a href='http://info.tikiwiki.org/Develop+Tiki' target='_blank'>develop Tiki</a>.{/tr} </p>
+	<p>{tr}Tiki is an opensource project, <em>you</em> can <a href='http://info.tikiwiki.org/Join+the+Community' target='_blank'>join the community</a> and help <a href='http://info.tikiwiki.org/tiki-index.php?page=Develop+Tiki' target='_blank'>develop Tiki</a>.{/tr} </p>
 	<p>
 {if isset($smarty.post.scratch)}	{tr}If this is your first install, your admin password is <strong>admin</strong>.{/tr} 
 {/if} 

@@ -20,56 +20,31 @@ require_once ('tiki-setup.php');
 include_once ('lib/wiki/wikilib.php');
 include_once ('lib/structures/structlib.php');
 include_once ('lib/notifications/notificationlib.php');
-if ($prefs['feature_ajax'] == 'y') {
-	require_once ("lib/ajax/ajaxlib.php");
-	require_once ("lib/wiki/wiki-ajax.php");
-}
-require_once ("lib/wiki/editlib.php");
+require_once ("lib/ajax/ajaxlib.php");
+require_once ("lib/wiki/wiki-ajax.php");
 
 // Define all templates files that may be used with the 'zoom' feature
 $zoom_templates = array('wiki_edit');
 
+function isNewTranslationMode()
+{
+	global $prefs;
+
+	return $prefs['feature_multilingual'] == 'y'
+		&& isset( $_REQUEST['translationOf']  )
+		&& ! empty( $_REQUEST['translationOf'] );
+}
+
+function isUpdateTranslationMode()
+{
+	return isset( $_REQUEST['source_page'] )
+		&& isset( $_REQUEST['oldver'] )
+		&& isset( $_REQUEST['newver'] );
+}
+
 if ($prefs['feature_wiki'] != 'y') {
 	$smarty->assign('msg', tra('This feature is disabled').': feature_wiki');
 	$smarty->display('error.tpl');
-	die;
-}
-$editlib->make_sure_page_to_be_created_is_not_an_alias();
-
-$smarty->assign( 'translation_mode', ($editlib->isNewTranslationMode() || $editlib->isUpdateTranslationMode()) ?'y':'n' );
-
-// If page is blank (from quickedit module or wherever) tell user -- instead of editing the default page
-// Dont get the page from default HomePage if not set (surely this would always be an error?)
-if (empty($_REQUEST["page"])) { 
-	$smarty->assign('msg', tra("You must specify a page name, it will be created if it doesn't exist."));
-	$smarty->display("error.tpl");
-	die;
-}
-
-if ($prefs['feature_wikiapproval'] == 'y' && substr($_REQUEST['page'], 0, strlen($prefs['wikiapproval_prefix'])) != $prefs['wikiapproval_prefix'] && !empty($prefs['wikiapproval_master_group']) && !in_array($prefs['wikiapproval_master_group'], $tikilib->get_user_groups($user))) {
-	$_REQUEST['page'] = $prefs['wikiapproval_prefix'] . $_REQUEST['page'];
-}
-
-$page = $_REQUEST["page"];
-$info = $tikilib->get_page_info($page);
-// wysiwyg decision
-include 'lib/setup/editmode.php';
-
-$auto_query_args = array('wysiwyg','page_id','page', 'lang', 'hdr');
-
-$smarty->assign_by_ref('page', $_REQUEST["page"]);
-// Permissions
-$tikilib->get_perm_object($page, 'wiki page', $info, true);
-if ($tiki_p_edit != 'y') {
-	if (empty($user)) {
-		global $cachelib; include_once('lib/cache/cachelib.php');
-		$cacheName = $tikilib->get_ip_address().$tikilib->now;
-		$cachelib->cacheItem($cacheName, http_build_query($_REQUEST, '', '&'), 'edit');
-		$smarty->assign('urllogin', "tiki-editpage.php?cache=$cacheName");
-	}
-	$smarty->assign('errortype', 401);
-	$smarty->assign('msg', tra("Permission denied you cannot edit this page"));
-	$smarty->display("error.tpl");
 	die;
 }
 // Anti-bot feature: if enabled, anon user must type in a code displayed in an image
@@ -79,6 +54,33 @@ if (isset($_REQUEST['save']) && (!$user || $user == 'anonymous') && $prefs['feat
 		$smarty->display("error.tpl");
 		die;
 	}
+}
+
+$smarty->assign( 'translation_mode', (isNewTranslationMode() || isUpdateTranslationMode()) ?'y':'n' );
+
+// If page is blank (from quickedit module or wherever) tell user -- instead of editing the default page
+// Dont get the page from default HomePage if not set (surely this would always be an error?)
+if (empty($_REQUEST["page"])) { 
+	$smarty->assign('msg', tra("You must specify a page name, it will be created if it doesn't exist."));
+	$smarty->display("error.tpl");
+	die;
+}
+
+if ($prefs['feature_wikiapproval'] == 'y' && substr($_REQUEST['page'], 0, strlen($prefs['wikiapproval_prefix'])) != $prefs['wikiapproval_prefix'] && $prefs['wikiapproval_master_group'] && !in_array($prefs['wikiapproval_master_group'], $tikilib->get_user_groups($user))) {
+	$_REQUEST['page'] = $prefs['wikiapproval_prefix'] . $_REQUEST['page'];
+}
+
+$page = $_REQUEST["page"];
+$smarty->assign_by_ref('page', $_REQUEST["page"]);
+
+// Permissions
+$info = $tikilib->get_page_info($page);
+$tikilib->get_perm_object($page, 'wiki page', $info, true);
+if ($tiki_p_edit != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied you cannot edit this page"));
+	$smarty->display("error.tpl");
+	die;
 }
 
 $page_ref_id = '';
@@ -301,19 +303,9 @@ if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_na
 							}
 						}
 
-						$tikilib->update_page($pagename, $part["body"], tra('page imported'), $author, $authorid, $description, 0, $pageLang, false, $hash);
+						$tikilib->update_page($pagename, $part["body"], tra('page imported'), $author, $authorid, $description, null, $pageLang, false, $hash);
 					} else {
 						$tikilib->create_page($pagename, $hits, $part["body"], $lastmodified, tra('created from import'), $author, $authorid, $description, $pageLang, false, $hash);
-						// Check if a WS is active
-						global $perspectivelib; require_once 'lib/perspectivelib.php';
-						global $wslib; require_once 'lib/workspaces/wslib.php';
-						$activeWS = $perspectivelib->get_current_perspective(null);
-						// If there's a WS active and the WS has a homepage, then load the WS homepage
-						if (!empty($activeWS))
-						{
-							$preferences = $perspectivelib->get_preferences($activeWS);
-							$wslib->add_ws_object($preferences['wsId'],$pagename,'wiki page');
-						}
 					}
 
 					// Handle the translation bits after actual creation/update
@@ -335,7 +327,7 @@ if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_na
 							}
 						}
 
-						if( $editlib->isNewTranslationMode() ) {
+						if( isNewTranslationMode() ) {
 							$sourceInfo = $tikilib->get_page_info( $_REQUEST['translationOf'] );
 							$targetInfo = $tikilib->get_page_info( $pagename );
 
@@ -348,7 +340,7 @@ if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_na
 										$targetInfo['version'] );
 							}
 
-						} elseif( $editlib->isUpdateTranslationMode() ) {
+						} elseif( isUpdateTranslationMode() ) {
 							$targetInfo = $tikilib->get_page_info( $pagename );
 
 							if( !isset($_REQUEST['partial_save']) ) {
@@ -432,9 +424,229 @@ if ($prefs['feature_wiki_attachments'] == 'y' && isset($_REQUEST["attach"]) && (
 		}
 	}
 }
-
+/**
+ * \brief Parsed HTML tree walker (used by HTML sucker)
+ *
+ * This is initial implementation (stupid... w/o any intellegence (almost :))
+ * It is rapidly designed version... just for test: 'can this feature be useful'.
+ * Later it should be replaced by well designed one :) don't bash me now :)
+ *
+ * \param &$c array -- parsed HTML
+ * \param &$src string -- output string
+ * \param &$p array -- ['stack'] = closing strings stack,
+                       ['listack'] = stack of list types currently opened
+                       ['first_td'] = flag: 'is <tr> was just before this <td>'
+                       ['first_tr'] = flag: 'is <table> was just before this <tr>'
+ */
+function walk_and_parse(&$c, &$src, &$p, $head_url ) {
+	// If no string
+	if(!$c) { return; }
+	
+	for ($i=0; $i <= $c["contentpos"]; $i++) {
+		// If content type 'text' output it to destination...
+		if ($c[$i]["type"] == "text") {
+			if( ! ctype_space( $c[$i]["data"] ) ) {
+				$add = ltrim( $c[$i]["data"] );
+				$add = str_replace( array("\r","\n"), ' ', $add );
+				$src .= $add;
+			}
+		} elseif ($c[$i]["type"] == "comment") {
+			$src .= preg_replace( '/<!--/', "\n~hc~", preg_replace( '/-->/', "~/hc~\n", $c[$i]["data"] ));
+		} elseif ($c[$i]["type"] == "tag") {
+			if ($c[$i]["data"]["type"] == "open") {
+				// Open tag type
+				switch ($c[$i]["data"]["name"]) {
+					// Tags we don't want at all.
+					case "meta": $c[$i]["content"] = ''; break;
+					
+					case "br": $src .= '%%%'; break;
+					case "hr": $src .= '---'; break;
+					case "title": $src .= "\n!"; $p['stack'][] = array('tag' => 'title', 'string' => "\n"); break;
+					case "p":
+					case "div": // Wiki parsing creates divs for center
+						if( isset($c[$i]['pars']) 
+							&& isset($c[$i]['pars']['style']) 
+							&& $c[$i]['pars']['style']['value'] == 'text-align: center;' ) {
+							$src .= "\n::";
+							$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => "::\n"); 
+						} else {
+							$src .= "\n";
+							$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => "\n"); 
+						}
+						break;
+					case "span":
+						if( isset($c[$i]['pars']) 
+							&& isset($c[$i]['pars']['style']) 
+							&& preg_match( "/background(\-color)?: rgb\((\d+), (\d+), (\d+)\)/", $c[$i]['pars']['style']['value'], $parts ) ) {
+							$src .= "~~#"
+								. str_pad( dechex( 255-$parts[2] ), 2, '0', STR_PAD_LEFT )
+								. str_pad( dechex( 255-$parts[3] ), 2, '0', STR_PAD_LEFT )
+								. str_pad( dechex( 255-$parts[4] ), 2, '0', STR_PAD_LEFT )
+								. ',#'
+								. str_pad( dechex( $parts[2] ), 2, '0', STR_PAD_LEFT )
+								. str_pad( dechex( $parts[3] ), 2, '0', STR_PAD_LEFT )
+								. str_pad( dechex( $parts[4] ), 2, '0', STR_PAD_LEFT )
+								. ':';
+							$p['stack'][] = array('tag' => 'span', 'string' => "~~"); 
+						} elseif( isset($c[$i]['pars']) 
+							&& isset($c[$i]['pars']['style']) 
+							&& preg_match( "/color: rgb\((\d+), (\d+), (\d+)\)/", $c[$i]['pars']['style']['value'], $parts ) ) {
+							$src .= "~~#"
+								. str_pad( dechex( $parts[1] ), 2, '0', STR_PAD_LEFT )
+								. str_pad( dechex( $parts[2] ), 2, '0', STR_PAD_LEFT )
+								. str_pad( dechex( $parts[3] ), 2, '0', STR_PAD_LEFT )
+								. ':';
+							$p['stack'][] = array('tag' => 'span', 'string' => "~~"); 
+						}
+						break;
+					case "b": $src .= '__'; $p['stack'][] = array('tag' => 'b', 'string' => '__'); break;
+					case "i": $src .= "''"; $p['stack'][] = array('tag' => 'i', 'string' => "''"); break;
+					case "em": $src .= "''"; $p['stack'][] = array('tag' => 'em', 'string' => "''"); break;
+					case "strong": $src .= '__'; $p['stack'][] = array('tag' => 'strong', 'string' => '__'); break;
+					case "u": $src .= "=="; $p['stack'][] = array('tag' => 'u', 'string' => "=="); break;
+					case "strike": $src .= "--"; $p['stack'][] = array('tag' => 'strike', 'string' => "--"); break;
+					case "del": $src .= "--"; $p['stack'][] = array('tag' => 'del', 'string' => "--"); break;
+					case "center": $src .= '::'; $p['stack'][] = array('tag' => 'center', 'string' => '::'); break;
+					case "code": $src .= '-+'; $p['stack'][] = array('tag' => 'code', 'string' => '+-'); break;
+					case "dd": $src .= ':'; $p['stack'][] = array('tag' => 'dd', 'string' => "\n"); break;
+					case "dt": $src .= ';'; $p['stack'][] = array('tag' => 'dt', 'string' => ''); break;
+					// headers detection looks like real suxx code...
+					// but possible it run faster :) I don't know where is profiler in PHP...
+					case "h1": $src .= "\n!"; $p['stack'][] = array('tag' => 'h1', 'string' => "\n"); break;
+					case "h2": $src .= "\n!!"; $p['stack'][] = array('tag' => 'h2', 'string' => "\n"); break;
+					case "h3": $src .= "\n!!!"; $p['stack'][] = array('tag' => 'h3', 'string' => "\n"); break;
+					case "h4": $src .= "\n!!!!"; $p['stack'][] = array('tag' => 'h4', 'string' => "\n"); break;
+					case "h5": $src .= "\n!!!!!"; $p['stack'][] = array('tag' => 'h5', 'string' => "\n"); break;
+					case "h6": $src .= "\n!!!!!!"; $p['stack'][] = array('tag' => 'h6', 'string' => "\n"); break;
+					case "pre": $src .= "~pre~\n"; $p['stack'][] = array('tag' => 'pre', 'string' => "~/pre~\n"); break;
+					case "sub": $src .= "{SUB()}"; $p['stack'][] = array('tag' => 'sub', 'string' => "{SUB}"); break;
+					case "sup": $src .= "{SUP()}"; $p['stack'][] = array('tag' => 'sup', 'string' => "{SUP}"); break;
+					// Table parser
+					case "table": $src .= '||'; $p['stack'][] = array('tag' => 'table', 'string' => '||'); $p['first_tr'] = true; break;
+					case "tr": $src .= $p['first_tr'] ? '' : "\n"; $p['first_tr'] = false; $p['first_td'] = true; break;
+					case "td": $src .= $p['first_td'] ? '' : '|'; $p['first_td'] = false; break;
+					// Lists parser
+					case "ul": $p['listack'][] = '*'; break;
+					case "ol": $p['listack'][] = '#'; break;
+					case "li":
+						// Generate wiki list item according to current list depth.
+						// (ensure '*/#' starts from begining of line)
+						$temp_max = count($p['listack']);
+						for ($l = ''; strlen($l) < $temp_max; $l .= end($p['listack']));
+						$src .= "\n$l ";
+						break;
+					case "font":
+						// If color attribute present in <font> tag
+						if (isset($c[$i]["pars"]["color"]["value"])) {
+							$src .= '~~'.$c[$i]["pars"]["color"]["value"].':';
+							$p['stack'][] = array('tag' => 'font', 'string' => '~~');
+						}
+						break;
+					case "img":
+						// If src attribute present in <img> tag
+						if (isset($c[$i]["pars"]["src"]["value"]))
+							// Note what it produce (img) not {img}! Will fix this below...
+							if( strstr( $c[$i]["pars"]["src"]["value"], "http:" ) ) {
+								$src .= '(img src='.$c[$i]["pars"]["src"]["value"].')';
+							} else {
+								$src .= '(img src='.$head_url.$c[$i]["pars"]["src"]["value"].')';
+							}
+						break;
+					case "a":
+						// If href attribute present in <a> tag
+						if (isset($c[$i]["pars"]["href"]["value"])) {
+							if( strstr( $c[$i]["pars"]["href"]["value"], "http:" )) {
+								$src .= '['.$c[$i]["pars"]["href"]["value"].'|';
+							} else {
+								$src .= '['.$head_url.$c[$i]["pars"]["href"]["value"].'|';
+							}
+							$p['stack'][] = array('tag' => 'a', 'string' => ']');
+						}
+						if( isset($c[$i]["pars"]["name"]["value"])) {
+							$src .= '{ANAME()}'.$c[$i]["pars"]["name"]["value"].'{ANAME}';
+						}
+						break;
+				}	// end switch on tag name
+			} else {
+				// This is close tag type. Is that smth we r waiting for?
+				switch ($c[$i]["data"]["name"]) {
+					case "ul":
+						if (end($p['listack']) == '*') array_pop($p['listack']);
+						if( empty($p['listack']) )
+							$src .= "\n";
+						break;
+					case "ol":
+						if (end($p['listack']) == '#') array_pop($p['listack']);
+						if( empty($p['listack']) )
+							$src .= "\n";
+						break;
+					default:
+						$e = end($p['stack']);
+						if ($c[$i]["data"]["name"] == $e['tag'])
+						{
+							$src .= $e['string'];
+							array_pop($p['stack']);
+						}
+						break;
+				}
+			}
+		}
+		// Recursive call on tags with content...
+		if (isset($c[$i]["content"])) {
+//			if (substr($src, -1) != " ") $src .= " ";
+			walk_and_parse($c[$i]["content"], $src, $p, $head_url );
+		}
+	}
+}	// end walk_and_parse
+/**
+ * wrapper around zaufi's HTML sucker code just to use the html to wiki bit
+ *
+ * \param &$c string -- HTML in
+ * \param &$src string -- output string
+ */
+function parse_html(&$inHtml) {
+	//error_reporting(6143);
+	// Read compiled (serialized) grammar
+	$grammarfile = 'lib/htmlparser/htmlgrammar.cmp';
+	if (!$fp = @fopen($grammarfile,'r'))
+	{
+		$smarty->assign('msg', tra("Can't parse HTML data - no grammar file"));
+		$smarty->display("error.tpl");
+		die;
+	}
+	$grammar = unserialize(fread($fp, filesize($grammarfile)));
+	fclose($fp);
+	// create parser object, insert html code and parse it
+	$htmlparser = new HtmlParser($inHtml, $grammar, '', 0);
+	$htmlparser->Parse();
+	// Should I try to convert HTML to wiki?
+	$out_data = '';
+	$p = array('stack' => array(), 'listack' => array(), 'first_td' => false, 'first_tr' => false);
+	walk_and_parse( $htmlparser->content, $out_data, $p, '' );
+	// Is some tags still opened? (It can be if HTML not valid, but this is not reason
+	// to produce invalid wiki :)
+	while (count($p['stack']))
+	{
+		$e = end($p['stack']);
+		$out_data .= $e['string'];
+		array_pop($p['stack']);
+	}
+	// Unclosed lists r ignored... wiki have no special start/end lists syntax....
+	// OK. Things remains to do:
+	// 1) fix linked images
+	$out_data = preg_replace(',\[(.*)\|\(img src=(.*)\)\],mU','{img src=$2 link=$1}', $out_data);
+	// 2) fix remains images (not in links)
+	$out_data = preg_replace(',\(img src=(.*)\),mU','{img src=$1}', $out_data);
+	// 3) remove empty lines
+	$out_data = preg_replace(",[\n]+,mU","\n", $out_data);
+	// 4) remove nbsp's
+	$out_data = preg_replace(",&#160;,mU"," ", $out_data);
+	
+	return $out_data;
+}	// end parse_html
 
 // Suck another page and append to the end of current
+include ('lib/htmlparser/htmlparser.inc');
 $suck_url = isset($_REQUEST["suck_url"]) ? $_REQUEST["suck_url"] : '';
 $parsehtml = isset ($_REQUEST["parsehtml"]) ? ($_REQUEST["parsehtml"] == 'on' ? 'y' : 'n') : ($info['is_html'] ? 'n' : 'y');
 $smarty->assign('parsehtml', $parsehtml);
@@ -459,7 +671,7 @@ if (isset($_REQUEST['do_suck']) && strlen($suck_url) > 0)
 	}
 	// Need to parse HTML?
 	if ($parsehtml == 'y') {
-		$sdta = $editlib->parse_html($sdta);
+		$sdta = parse_html($sdta);
 	}
 	$_REQUEST['edit'] = $jitRequest['edit'] . $sdta;
 }
@@ -495,6 +707,8 @@ $smarty->assign('editable','y');
 $smarty->assign('show_page','n');
 $smarty->assign('comments_show','n');
 
+// wysiwyg decision
+include 'tiki-parsemode_setup.php';
 $smarty->assign_by_ref('data', $info);
 $smarty->assign('footnote', '');
 $smarty->assign('has_footnote', 'n');
@@ -519,9 +733,11 @@ if ($prefs['feature_wiki_footnotes'] == 'y') {
 		}
 	}
 }
+
 if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0 && !isset($_REQUEST['preview']) && !isset($_REQUEST['save'])) {
 	$template_data = $tikilib->get_template($_REQUEST["templateId"]);
 	$_REQUEST["edit"] = $template_data["content"]."\n".$_REQUEST["edit"];
+	$_REQUEST["preview"] = 1;
 	$smarty->assign("templateId", $_REQUEST["templateId"]);
 }
 
@@ -665,93 +881,20 @@ if( isset( $_REQUEST['translation_critical'] ) ) {
 	$smarty->assign( 'translation_critical', 0 );
 }
 
-// Screencasts {{{
-if (($prefs['feature_wiki_screencasts'] == 'y') && (isset($tiki_p_upload_screencast)) && ($tiki_p_upload_screencast == 'y')) {
-	if ( !isset($headerlib) || !is_object($headerlib) ) {
-		include_once("lib/headerlib.php");
-	}
-	$headerlib->add_jsfile('lib/wikiplugin_screencast.js');
-
-	require_once("lib/screencasts/screencastlib.php");
-
-	if ( !isset($cachelib) || !is_object($cachelib) )
-		require_once("lib/cache/cachelib");
-
-	// Get a page hash identical to what images are assigned
-	$pageHash = md5( $pageLang . '/' . ( (strpos($page,$prefs['wikiapproval_prefix'])===0) ? substr($page,1) : $page) );
-	$hashedFileName = join('-', array($pageHash, time(), rand(1,1000)));
-
-	$screencastErrors = array();
-
-	if ( isset($_FILES['flash_screencast']) ) {
-		$cachelib->invalidate($pageHash);
-
-		for ( $i = 0; $i <= count($_FILES['flash_screencast']['name']); $i++ ) {
-
-			if ( $_FILES['flash_screencast']['size'][$i] > $prefs['feature_wiki_screencasts_max_size'] ||
-					$_FILES['flash_screencast']['error'][$i] == 1 || $_FILES['flash_screencast']['error'][$i] == 2 ) {
-
-				$screencastErrors[] = tra("The file you selected is too large to upload") . ' (' . htmlentities($_FILES['flash_screencast']['name'][$i], ENT_QUOTES) . ')';
-				continue;
-			}
-
-			if ( is_uploaded_file($_FILES['flash_screencast']['tmp_name'][$i]) ) {
-				if ( preg_match("/\.((swf)|(flv))$/", $_FILES['flash_screencast']['name'][$i], $ext) ) {
-					if ( !$screencastlib->add($_FILES['flash_screencast']['tmp_name'][$i], $hashedFileName . "-" . $i . "." . $ext[1] ) ) {
-						$screencastErrors[] = tra("An unexpected error occurred while uploading your flash screencast!");
-					}
-				} else {
-					$screencastErrors[] = tra("Incorrect file extension was used for your flash screencast, expecting .swf or .flv");     
-				}
-
-				if ( isset($_FILES['ogg_screencast']) && $_FILES['ogg_screencast']['name'][$i]) {
-					if ( $_FILES['ogg_screencast']['size'][$i] >= $prefs['feature_wiki_screencasts_max_size'] ||
-						$_FILES['ogg_screencast']['error'][$i] == 1 || $_FILES['ogg_screencast']['error'][$i] == 2 ) {
-
-						$screencastErrors[] = tra("The file you selected is too large to upload") . ' (' . htmlentities($_FILES['ogg_screencast']['name'][$i], ENT_QUOTES) . ')';
-							continue;
-					}
-
-					if ( is_uploaded_file($_FILES['ogg_screencast']['tmp_name'][$i]) ) { 
-						if ( preg_match("/\.(ogg)$/", $_FILES['ogg_screencast']['name'][$i], $ext) ) {
-							if ( !$screencastlib->add($_FILES['ogg_screencast']['tmp_name'][$i], $hashedFileName . "-" . $i . "." .  $ext[1])) {
-								$screencastErrors[] = tra("An unexpected error occurred while uploading your Ogg screencast!");
-							}
-						} else {
-							$screencastErrors[] = tra("Incorrect file extension was used for your 0gg screencast, expecting .ogg");
-						}
-					}
-				}
-			}
-		}
-	}
-
-	if ( $cachelib->isCached($pageHash) ) {
-		$screencasts_uploaded = unserialize($cachelib->getCached($pageHash));
-	} else {
-		$screencasts_uploaded = $screencastlib->find($pageHash, true);
-		$cachelib->cacheItem($pageHash, serialize($screencasts_uploaded));
-	}
-
-	$smarty->assign('screencasts_uploaded', $screencasts_uploaded);
-
-	if ( count($screencastErrors) > 0 ) {
-		$smarty->assign('screencasts_errors', array_unique($screencastErrors));
-	}
-} // }}}
-
 // Parse (or not) $edit_data into $parsed
 // Handles switching editor modes
-if (isset($_REQUEST['mode_normal']) && $_REQUEST['mode_normal']=='y') {
+if (isset($_REQUEST['mode_normal'])) {
 	// Parsing page data as first time seeing html page in normal editor
 	$smarty->assign('msg', "Parsing html to wiki");
-	$parsed = $editlib->parseToWiki($edit_data);
+	$parsed = '';
+	$parsed = parse_html($edit_data);
+	$parsed = preg_replace('/\{img src=.*?img\/smiles\/.*? alt=([\w\-]*?)\}/im','(:$1:)', $parsed);	// "unfix" smilies
+	$parsed = preg_replace('/%%%/m',"\n", $parsed);													// newlines
 	$is_html = false;
 	$info['is_html'] = false;
 	$info['wysiwyg'] = false;
 	$smarty->assign('allowhtml','n');
-	
-} elseif (isset($_REQUEST['mode_wysiwyg']) && $_REQUEST['mode_wysiwyg']=='y') {
+} elseif (isset($_REQUEST['mode_wysiwyg'])) {
 	// Parsing page data as first time seeing wiki page in wysiwyg editor
 	$smarty->assign('msg', "Parsing wiki to html");
 	$secedit = $prefs['wiki_edit_section'];
@@ -760,7 +903,14 @@ if (isset($_REQUEST['mode_normal']) && $_REQUEST['mode_normal']=='y') {
 	$prefs['feature_wiki_ext_icon'] = 'n';		// and the external link icons
 	$editplugin = $prefs['wiki_edit_plugin'];
 	$prefs['wiki_edit_plugin'] = 'n';		// and the external link icons
-	$parsed = $editlib->parseToWysiwyg($edit_data);
+	$edit_data = preg_replace('/(!!*)[\+\-]/m','$1', $edit_data);		// remove show/hide headings
+	$parsed = $tikilib->parse_data($edit_data,array('absolute_links'=>true, 'parseimgonly'=>true,'noheaderinc'=>true));
+	$parsed = preg_replace('/<span class=\"img\">(.*?)<\/span>/im','$1', $parsed);					// remove spans round img's
+	$parsed = preg_replace("/src=\"img\/smiles\//im","src=\"".$tikiroot."img/smiles/", $parsed);	// fix smiley src's
+	$parsed = str_replace( 
+		array( '{SUP()}', '{SUP}', '{SUB()}', '{SUB}', '<table' ),
+		array( '<sup>', '</sup>', '<sub>', '</sub>', '<table border="1"' ),
+		$parsed );
 	$smarty->assign('pagedata', $parsed);
 	$prefs['wiki_edit_section'] = $secedit;
 	$prefs['feature_wiki_ext_icon'] = $exticons;
@@ -859,7 +1009,6 @@ if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) != 'sandbox' || $
 	$cat_name = $_REQUEST["page"];
 	$cat_href="tiki-index.php?page=".urlencode($cat_objid);
 	$cat_lang = $_REQUEST['lang'];
-	$cat_object_exists = $tikilib->page_exists( $_REQUEST['page'] );
 	include_once("categorize.php");
 	include_once("poll_categorize.php");
 	include_once("freetag_apply.php");
@@ -881,7 +1030,7 @@ if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) != 'sandbox' || $
 	){
 
 		include_once("lib/copyrights/copyrightslib.php");
-		$copyrightslib = new CopyrightsLib;
+		$copyrightslib = new CopyrightsLib($dbTiki);
 		$copyrightYear = $_REQUEST['copyrightYear'];
 		$copyrightTitle = $_REQUEST['copyrightTitle'];
 		$copyrightAuthors = $_REQUEST['copyrightAuthors'];
@@ -910,19 +1059,9 @@ if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) != 'sandbox' || $
 		   $tikilib->cache_links($cachedlinks);
 		 */
 		$tikilib->create_page($_REQUEST["page"], 0, $edit, $tikilib->now, $_REQUEST["comment"],$user,$tikilib->get_ip_address(),$description, $pageLang, $is_html, $hash, $_REQUEST['wysiwyg'], $wiki_authors_style);
-		// Check if a WS is active
-		global $perspectivelib; require_once 'lib/perspectivelib.php';
-		global $wslib; require_once 'lib/workspaces/wslib.php';
-		$activeWS = $perspectivelib->get_current_perspective(null);
-		// If there's a WS active and the WS has a homepage, then load the WS homepage
-		if (!empty($activeWS))
-		{
-			$preferences = $perspectivelib->get_preferences($activeWS);
-			$wslib->add_ws_object($preferences['wsId'],$_REQUEST["page"],'wiki page');
-		}
 		$info_new = $tikilib->get_page_info($page);
 
-		if( $editlib->isNewTranslationMode() && ! empty( $pageLang ) )
+		if( isNewTranslationMode() && ! empty( $pageLang ) )
 		{
 			include_once("lib/multilingual/multilinguallib.php");
 			$infoSource = $tikilib->get_page_info($_REQUEST['translationOf']);
@@ -951,7 +1090,7 @@ if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) != 'sandbox' || $
 			}
 
 			unset( $tikilib->cache_page_info );
-			if( $editlib->isNewTranslationMode() ) {
+			if( isNewTranslationMode() ) {
 				$sourceInfo = $tikilib->get_page_info( $_REQUEST['translationOf'] );
 				$targetInfo = $tikilib->get_page_info( $_REQUEST['page'] );
 
@@ -974,8 +1113,11 @@ if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) != 'sandbox' || $
 		/*
 		   $tikilib->cache_links($links);
 		 */
-		$minor=(isset($_REQUEST['isminor'])&&$_REQUEST['isminor']=='on') ? 1 : 0;
-
+		if(isset($_REQUEST['isminor'])&&$_REQUEST['isminor']=='on') {
+			$minor=true;
+		} else {
+			$minor=false;
+		}
 		if ((isset($_REQUEST['hdr']) || (!empty($_REQUEST['pos']) && isset($_REQUEST['cell']))) && $prefs['wiki_edit_section'] == 'y') {
 			if (isset($_REQUEST['hdr'])) {
 				if ($_REQUEST['hdr'] == 0) {
@@ -1004,7 +1146,7 @@ if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) != 'sandbox' || $
 			include_once("lib/multilingual/multilinguallib.php");
 			unset( $tikilib->cache_page_info );
 
-			if( $editlib->isUpdateTranslationMode() ) {
+			if( isUpdateTranslationMode() ) {
 				$sourceInfo = $tikilib->get_page_info( $_REQUEST['source_page'] );
 				$targetInfo = $tikilib->get_page_info( $_REQUEST['page'] );
 
@@ -1040,10 +1182,10 @@ if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) != 'sandbox' || $
 				$last_child = $subpages[$max - 1];
 				$last_child_ref_id = $last_child["page_ref_id"];
 			}
-			$page_ref_id = $structlib->s_create_page($_REQUEST['current_page_id'], $last_child_ref_id, $_REQUEST["page"], '', $page_info['structure_id']);
+			$page_ref_id = $structlib->s_create_page($_REQUEST['current_page_id'], $last_child_ref_id, $_REQUEST["page"], '');
 		} else {
 			//Insert page after current page
-			$page_ref_id = $structlib->s_create_page($page_info["parent_id"], $_REQUEST['current_page_id'], $_REQUEST["page"], '', $page_info['structure_id']);
+			$page_ref_id = $structlib->s_create_page($page_info["parent_id"], $_REQUEST['current_page_id'], $_REQUEST["page"], '');
 		}
 		//Criss Holman added the if containing this code of which I don't know the use, but a check before the permissions copy
 		//is definitely needed in case someone has tiki_p_edit/tiki_p_admin_wiki in a page belonging to a structure. chealer
@@ -1112,7 +1254,7 @@ if ($prefs['feature_multilingual'] == 'y') {
 	$languages = $tikilib->list_languages();
 	$smarty->assign_by_ref('languages', $languages);
 
-	if( $editlib->isNewTranslationMode() ) {
+	if( isNewTranslationMode() ) {
 		$smarty->assign( 'translationOf', $_REQUEST['translationOf'] );
 
 		if( $tikilib->page_exists( $page ) ) {
@@ -1132,7 +1274,7 @@ if ($prefs['feature_multilingual'] == 'y') {
 		}
 	}
 
-	if( $editlib->isUpdateTranslationMode() ) {
+	if( isUpdateTranslationMode() ) {
 		include_once('lib/wiki/histlib.php');
 		histlib_helper_setup_diff( $_REQUEST['source_page'], $_REQUEST['oldver'], $_REQUEST['newver'] );
 		$smarty->assign( 'diff_oldver', (int) $_REQUEST['oldver'] );
@@ -1143,7 +1285,6 @@ if ($prefs['feature_multilingual'] == 'y') {
 $cat_type = 'wiki page';
 $cat_objid = $_REQUEST["page"];
 $cat_lang = $pageLang;
-$cat_object_exists = $tikilib->page_exists( $_REQUEST['page'] );
 $smarty->assign('section',$section);
 include_once ('tiki-section_options.php');
 if ($prefs['feature_freetags'] == 'y') {
@@ -1151,7 +1292,7 @@ if ($prefs['feature_freetags'] == 'y') {
 	// if given in the request, set the freetag list (used for preview mode, when coming back from zoom mode, ...)
 	if ( isset($_REQUEST['freetag_string']) ) {
 		$smarty->assign('taglist', $_REQUEST['freetag_string']);
-	} elseif( $editlib->isNewTranslationMode() ) {
+	} elseif( isNewTranslationMode() ) {
 		$tags = $freetaglib->get_all_tags_on_object_for_language($_REQUEST['translationOf'], 'wiki page', $pageLang);
 		$smarty->assign( 'taglist', implode( ' ', $tags ) );
 	}
@@ -1182,7 +1323,6 @@ $smarty->assign_by_ref('plugins', $plugins);
 $smarty->assign('showstructs', array());
 if ($structlib->page_is_in_structure($_REQUEST["page"])) {
 	$structs = $structlib->get_page_structures($_REQUEST["page"]);
-	$smarty->assign('showstructs', $structs);
 }
 // Flag for 'page bar' that currently 'Edit' mode active
 // so no need to show comments & attachments, but need
@@ -1197,13 +1337,17 @@ if (isset($_REQUEST['cat_categorize'])) {
 }
 if ($prefs['wiki_feature_copyrights'] == 'y' && $tiki_p_edit_copyrights == 'y') {
 	include_once ('lib/copyrights/copyrightslib.php');
-	$copyrightslib = new CopyrightsLib;
+	$copyrightslib = new CopyrightsLib($dbTiki);
 	$copyrights = $copyrightslib->list_copyrights($_REQUEST["page"]);
 	if ($copyrights['cant'])
 	$smarty->assign_by_ref('copyrights', $copyrights['data']);
 }
 $defaultRows = $prefs['default_rows_textarea_wiki'];
-include_once ('lib/toolbars/toolbarslib.php');
+include_once("textareasize.php");
+include_once ('lib/quicktags/quicktagslib.php');
+$quicktags = $quicktagslib->list_quicktags(0,-1,'taglabel_asc','','wiki');
+$smarty->assign_by_ref('quicktags', $quicktags["data"]);
+$smarty->assign('quicktagscant', $quicktags["cant"]);
 if (!$user or $user == 'anonymous') {
 	$smarty->assign('anon_user', 'y');
 }
@@ -1254,8 +1398,8 @@ if( $prefs['feature_multilingual'] == 'y' ) {
 	$smarty->assign('trads', $trads);
 }
 
-// Get edit session timeout in seconds
-$smarty->assign('edittimeout', ini_get('session.gc_maxlifetime'));
+// Get edit session timeout in minutes
+$smarty->assign('edittimeout', (ini_get('session.gc_maxlifetime') / 60 ));
 
 ask_ticket('edit-page');
 // disallow robots to index page:
@@ -1266,4 +1410,4 @@ $smarty->assign('showtags', 'n');
 $smarty->assign('qtnum', '1');
 $smarty->assign('qtcycle', '');
 $smarty->display("tiki.tpl");
-
+?>

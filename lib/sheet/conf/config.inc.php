@@ -32,3 +32,4 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 /*Inclusion du moteur d'import des class php*/
 include_once(APATH_ROOT."include/core/APIClass.php");
+?>

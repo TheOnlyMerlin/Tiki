@@ -60,3 +60,5 @@ function wikiplugin_translated($data, $params) {
 
 	return $back;
 }
+
+?>

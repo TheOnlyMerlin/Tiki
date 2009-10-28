@@ -8,7 +8,7 @@
 	{if $prefs.feature_siteloc eq 'page' and $prefs.feature_breadcrumbs eq 'y'}
 		{if $prefs.feature_siteloclabel eq 'y'}{tr}Location : {/tr}{/if}
 		{breadcrumbs type="trail" loc="page" crumbs=$crumbs}
-		{if $prefs.feature_page_title eq 'y'}{breadcrumbs type="pagetitle" loc="page" crumbs=$crumbs machine_translate=$machine_translate_to_lang source_lang=$pageLang target_lang=$machine_translate_to_lang}{/if}
+		{if $prefs.feature_page_title eq 'y'}{breadcrumbs type="pagetitle" loc="page" crumbs=$crumbs}{/if}
 	{/if}
 
 {if $beingStaged eq 'y'}
@@ -88,7 +88,7 @@
 
 {if !$hide_page_header}
 {if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y' and isset($freetags.data[0]) and $prefs.freetags_show_middle eq 'y'}
-{include file='freetag_list.tpl'}
+{include file="freetag_list.tpl"}
 {/if}
 
 {if $pages > 1 and $prefs.wiki_page_navigation_bar neq 'bottom'}
@@ -106,16 +106,19 @@
 	</div>
 {/if}
 
+{**
+ * Page Title as h1 here when the feature is on
+ *}
 {if $prefs.feature_page_title eq 'y'}
-	<h1 class="pagetitle">{breadcrumbs type="pagetitle" loc="page" crumbs=$crumbs machine_translate=$machine_translate_to_lang source_lang=$pageLang target_lang=$machine_translate_to_lang}</h1>
+	<h1 class="pagetitle">{breadcrumbs type="pagetitle" loc="page" crumbs=$crumbs}</h1>
+    
 {/if}
 
 {if $structure eq 'y'}
 <div class="tocnav">
-	<div class="clearfix">
-		<div style="float: left; width: 100px">
-  
-    {if $home_info}{if $home_info.page_alias}{assign var=icon_title value=$home_info.page_alias}{else}{assign var=icon_title value=$home_info.pageName}{/if}<a href="{sefurl page=$home_info.pageName structure=$home_info.pageName page_ref_id=$home_info.page_ref_id}">{icon _id='house' alt="{tr}TOC{/tr}" title=$icon_title}</a>{/if}
+<table>
+<tr>
+  <td>
 
     {if $prev_info and $prev_info.page_ref_id}{if $prev_info.page_alias}{assign var=icon_title value=$prev_info.page_alias}{else}{assign var=icon_title value=$prev_info.pageName}{/if}<a href="{sefurl page=$prev_info.pageName structure=$home_info.pageName page_ref_id=$prev_info.page_ref_id}">{icon _id='resultset_previous' alt="{tr}Previous page{/tr}" title=$icon_title}</a>{else}<img src="img/icons2/8.gif" alt="" height="1" width="8" />{/if}
 
@@ -123,9 +126,11 @@
 
     {if $next_info and $next_info.page_ref_id}{if $next_info.page_alias}{assign var=icon_title value=$next_info.page_alias}{else}{assign var=icon_title value=$next_info.pageName}{/if}<a href="{sefurl page=$next_info.pageName structure=$home_info.pageName page_ref_id=$next_info.page_ref_id}">{icon _id='resultset_next' alt="{tr}Next page{/tr}" title=$icon_title}</a>{else}<img src="img/icons2/8.gif" alt="" height="1" width="8" />{/if}
 
-		</div>
-  		<div style="float: left;">
-{if $struct_editable eq 'y'}
+    {if $home_info}{if $home_info.page_alias}{assign var=icon_title value=$home_info.page_alias}{else}{assign var=icon_title value=$home_info.pageName}{/if}<a href="{sefurl page=$home_info.pageName structure=$home_info.pageName page_ref_id=$home_info.page_ref_id}">{icon _id='house' alt="{tr}TOC{/tr}" title=$icon_title}</a>{/if}
+
+  </td>
+  <td>
+{if $tiki_p_edit_structures eq 'y' and $tiki_p_edit_structures eq 'y' and $struct_editable eq 'y'}
     <form action="tiki-editpage.php" method="post">
       <input type="hidden" name="current_page_id" value="{$page_info.page_ref_id}" />
       <input type="text" name="page" />
@@ -138,10 +143,12 @@
       <input type="submit" name="insert_into_struct" value="{tr}Add Page{/tr}" />
     </form>
 {/if}
-		</div>
-	</div>
-  	<div>
-  	<a href="tiki-edit_structure.php?page_ref_id={$home_info.page_ref_id}">{icon _id='chart_organisation' alt="{tr}Structure{/tr}" title="{tr}Structure{/tr} ($cur_pos)"}</a>&nbsp;&nbsp;
+  </td>
+</tr>
+<tr>
+  <td colspan="2">
+  	<a href="tiki-edit_structure.php?page_ref_id={$home_info.page_ref_id}">{icon _id='chart_organisation' alt="{tr}Structure{/tr}"}</a>&nbsp;&nbsp;
+	({$cur_pos})&nbsp;&nbsp;	
     {section loop=$structure_path name=ix}
       {if $structure_path[ix].parent_id}&nbsp;{$prefs.site_crumb_seper}&nbsp;{/if}
 	  <a href="{sefurl page=$structure_path[ix].pageName structure=$home_info.pageName page_ref_id=$structure_path[ix].page_ref_id}">
@@ -152,17 +159,13 @@
 	  {/if}
 	  </a>
 	{/section}
-	</div>
+  </td>
+</tr>
+</table>
 </div>
 {/if}
-{if $prefs.feature_wiki_ratings eq 'y'}{include file='poll.tpl'}{/if}
+{if $prefs.feature_wiki_ratings eq 'y'}{include file="poll.tpl"}{/if}
 {/if} {*hide_page_header*}
-
-{if $machine_translate_to_lang != ''}
-	{remarksbox type="warning" title="{tr}Warning{/tr}" highlight="y"}
-       {tr}This text was automatically translated by Google Translate from the following page: {/tr}<a href="tiki-index.php?page={$page}">{$page}</a>
-	{/remarksbox}
-{/if}
 
 {if $pageLang eq 'ar' or $pageLang eq 'he'}
 <div style="direction:RTL; unicode-bidi:embed; text-align: right; {if $pageLang eq 'ar'}font-size: large;{/if}">
@@ -171,7 +174,7 @@
 {else}
 {$parsed}
 {/if}
-<hr class="hrwikibottom" style="clear:both; height:0px;"/> {* Information below the wiki content
+<hr style="clear:both; height:0px;"/> {* Information below the wiki content
 must not overlap the wiki content that could contain floated elements *}
 
 {if $pages > 1 and $prefs.wiki_page_navigation_bar neq 'top'}
@@ -217,7 +220,7 @@ must not overlap the wiki content that could contain floated elements *}
    {$contributors[author]|userlink}
   {/section}.<br />
   {tr 0=$lastModif|tiki_long_datetime 1=$lastUser|userlink}Page last modified on %0 by %1{/tr}. {if $prefs.wiki_show_version eq 'y'}({tr}Version{/tr} {$lastVersion}){/if}
-{elseif empty($wiki_authors_style) || $wiki_authors_style eq 'none'}
+{elseif isset($wiki_authors_style) && $wiki_authors_style eq 'none'}
 {elseif isset($wiki_authors_style) && $wiki_authors_style eq 'lastmodif'}
 	{tr}Page last modified on{/tr} {$lastModif|tiki_long_datetime}
 {else}
@@ -246,7 +249,7 @@ must not overlap the wiki content that could contain floated elements *}
   </p> {* end editdate *}
 {/if}
 
-{if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categoryobjects eq 'y'}
+{if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categoryobjects eq 'y' and $tiki_p_view_categories eq 'y'}
 {$display_catobjects}
 {/if}
 
@@ -254,7 +257,7 @@ must not overlap the wiki content that could contain floated elements *}
 {include  file=tiki-wiki_topline.tpl}
 {/if}
 {if $print_page ne 'y'}
-{if (!$prefs.page_bar_position or $prefs.page_bar_position eq 'bottom' or $prefs.page_bar_position eq 'both') and $machine_translate_to_lang == ''}
+{if !$prefs.page_bar_position or $prefs.page_bar_position eq 'bottom' or $prefs.page_bar_position eq 'both'}
 {include  file=tiki-page_bar.tpl}
 {/if}
 {/if}

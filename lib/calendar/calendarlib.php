@@ -9,63 +9,28 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 if (!defined('weekInSeconds')) define('weekInSeconds', 604800);
 
 class CalendarLib extends TikiLib {
-	function convertSortMode($sort_mode) {
+	function convert_sortmode($sort_mode) {
 		$tmp = explode("_",$sort_mode);
 		if (count($tmp) == 2) {
 			if ($tmp[0] == "categoryName" || $tmp[0] == "locationName")
 				return "name " . $tmp[1];
 		}
-		return parent::convertSortMode($sort_mode);
+		return parent::convert_sortmode($sort_mode);
 	}
 
+	function CalendarLib($db) {
+		$this->TikiLib($db);
+	}
+ 
 	function list_calendars($offset = 0, $maxRecords = -1, $sort_mode = 'name_asc', $find = '') {
 		$mid = '';
 		$res = array();
 		$bindvars = array();
 		if ($find) {
-			$mid = "where tcal.`name` like ?";
+			$mid = "where `name` like ?";
 			$bindvars[] = '%'.$find.'%';
 		}
-		// Use perspectives
-		global $categlib; require_once( 'lib/categories/categlib.php' );
-		$category_jails = $categlib->get_jail();
-
-		if( ! isset( $filter['categId'] ) && ! empty( $category_jails ) ) {
-			$filter['categId'] = $category_jails;
-		}
-		
-		$distinct = '';
-		$join_tables = '';
-		if (!empty($filter)) {
-			$tmp_mid = array();
-			foreach ($filter as $type=>$val) {
-				if ($type == 'categId') {
-					$categories = $categlib->get_jailed( (array) $val );
-
-					$cat_count = count( $categories );
-					$join_tables .= " inner join `tiki_objects` as tob on (tob.`itemId`= tcal.`calendarId` and tob.`type`= ?) inner join `tiki_category_objects` as tc on (tc.`catObjectId`=tob.`objectId` and tc.`categId` IN(" . implode(', ', array_fill(0, $cat_count, '?')) . "))";
-					if ($mid = "")
-						$getUncategorized = " where (tob.`itemId`=tcal.`calendarId` and )";
-					else
-						$getUncategorized = "and (tob.`itemId`!=tcal.`calendarId` and tob.`type`='calendar')";
-
-					if( $cat_count > 1 ) {
-						$distinct = ' DISTINCT ';
-					}
-
-					$join_bindvars = array_merge(array('calendar'), $categories);
-				} 
-			}
-			if (!empty($tmp_mid)) {
-				$mid .= empty($mid) ? ' where (' : ' and (';
-				$mid .= implode( ' and ', $tmp_mid ) . ')';
-			}
-		}
-		if (!empty($join_bindvars)) {
-			$bindvars = array_merge($bindvars, $join_bindvars);
-		}
-
-		$query = "select $distinct * from `tiki_calendars` as tcal $join_tables $mid order by tcal.".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_calendars` $mid order by ".$this->convert_sortmode($sort_mode);
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$query_cant = "select count(*) from `tiki_calendars` $mid";
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -233,7 +198,7 @@ class CalendarLib extends TikiLib {
 			$joinCompl = " on i.locationId = compl.callocid ";
 			$tblRef = "compl.";
 		}
-		$query .= "from " . $queryCompl . "`tiki_calendar_items` as i ".$joinCompl." left join `tiki_calendars` as c on i.`calendarId`=c.`calendarId` where ($cond)  order by ". $tblRef . $this->convertSortMode("$sort_mode");
+		$query .= "from " . $queryCompl . "`tiki_calendar_items` as i ".$joinCompl." left join `tiki_calendars` as c on i.`calendarId`=c.`calendarId` where ($cond)  order by ". $tblRef . $this->convert_sortmode("$sort_mode");
 		$result = $this->query($query, $bindvars, $maxRecords, $offset);
 		$ret = array();
 		while ($res = $result->fetchRow()) {
@@ -508,7 +473,7 @@ class CalendarLib extends TikiLib {
 			    if (!in_array($k, $realcolumns)) continue;
 			    $l[]="`$k`";
 			    $z[]='?';
-			    $r[]=($k=='priority')?(string)$v:$v;
+			    $r[]=$v;
 			}
 
 			$query = 'INSERT INTO `tiki_calendar_items` ('.implode(',', $l).') VALUES ('.implode(',', $z).')';
@@ -603,7 +568,7 @@ class CalendarLib extends TikiLib {
 			$bindvars = array();
 		}
 				
-		$query = "select `start`, `name`, `calitemId`, `calendarId`, `user`, `lastModif` from `tiki_calendar_items` ".$cond."order by ".$this->convertSortMode('lastModif_desc');
+		$query = "select `start`, `name`, `calitemId`, `calendarId`, `user`, `lastModif` from `tiki_calendar_items` ".$cond."order by ".$this->convert_sortmode('lastModif_desc');
 	
 		$result = $this->query($query,$bindvars,$maxrows,0);
 		
@@ -617,53 +582,36 @@ class CalendarLib extends TikiLib {
 	}
 	
 	function importCSV($fname, $calendarId) {
-		global $user, $smarty;
-		$fields = false;
-		if ($fhandle = fopen($fname, 'r')) {
-			$fields = fgetcsv($fhandle, 1000);
-		}
+		global $user;
+		$fhandle = fopen($fname, "r");
+		$fields = fgetcsv($fhandle, 1000);
 		if ($fields === false) {
 			$smarty->assign('msg', tra("The file is not a CSV file or has not a correct syntax"));
 			$smarty->display("error.tpl");
 			die;
 		}
-		$nb = 0;
-		while (($data = fgetcsv($fhandle, 1000)) !== FALSE) {
+
+		while (!feof($fhandle)) {
+			$data = fgetcsv($fhandle, 1000);
 			$d = array("calendarId"=>$calendarId, "calitemId"=>"0", "name"=>"", "description" =>"", "locationId"=>"", 
-					   "organizers"=>"", "participants"=>"","status"=>"0","priority"=>"5","categoryId"=>"0","newloc"=>"0","newcat"=>"","nlId"=>"","lang"=>"", 'start'=>'', 'end'=>'');
+					"organizers"=>"", "participants"=>"","status"=>"0","priority"=>"5","categoryId"=>"0","newloc"=>"0","newcat"=>"","nlId"=>"","lang"=>"");
 			foreach ($fields as $field) {
-				$d[$field] = $data[array_search($field, $fields)];
+				$d[strtolower($field)] = $data[array_search($field, $fields)];
 			}
 			if (isset($d["subject"]) && empty($d["name"]))
 				$d["name"] = $d["subject"];
-			if (isset($d['start date'])) {
-				if (isset($d['start time'])) {
-					$d['start'] = strtotime($d['start time'], strtotime($d['start date']));
-				} else {
-					$d['start'] = strtotime($d['start date']);
-				}
-			}
-			if (isset($d['end date'])) {
-				echo 'fff';
-				if (isset($d['end time'])) {
-					$d['end'] = strtotime($d['end time'], strtotime($d['end date']));
-				} else {
-					$d['end'] = strtotime($d['end date']);
-				}
-			}
+			if (isset($d["start date"]) && isset($d["start time"]))
+				$d["start"] = strtotime($d["start time"], strtotime($d["start date"]));
+			if (isset($d["end date"]) && isset($d["end time"]))
+				$d["end"] = strtotime($d["end time"], strtotime($d["end date"]));
 // TODO do a replace if name, calendarId, start, end exists
-			if (!empty($d['start']) && !empty($d['end'])) {		
-				$this->set_item($user, 0, $d);
-				++$nb;
-			}
+			$this->set_item($user, 0, $d);
 		}
 		fclose ($fhandle);
-		return $nb;
+		return true;
 	}
 
-	// Returns an array of a maximum of $maxrows upcoming (but possibly past) events in the given $order. If $calendarId is set, events not in the specified calendars are filtered. $calendarId can be a calendar identifier or an array of calendar identifiers. If $maxDaysEnd is a natural, events ending after $maxDaysEnd days are filtered. If $maxDaysStart is a natural, events starting after $maxDaysStart days are filtered. Events ending more than $priorDays in the past are filtered.
-	// Each event is represented by a string-indexed array with indices start, end, name, description, calitemId, calendarId, user, lastModif, url, allday in the same format as tiki_calendar_items fields, as well as location for the event's locations, parsed for the parsed description and category for the event's calendar category.
-	function upcoming_events($maxrows = -1, $calendarId = 0, $maxDaysEnd = -1, $order = 'start_asc', $priorDays = 0, $maxDaysStart = -1) {
+	function upcoming_events($maxrows = -1, $calendarId = 0, $maxDays = -1, $order = 'start_asc', $priorDays = 0) {
 		$cond = '';
 		$bindvars = array();
 		if(is_array($calendarId) && count($calendarId) > 0) {
@@ -680,24 +628,18 @@ class CalendarLib extends TikiLib {
 		$cond .= " and `end` >= (unix_timestamp(now()) - ?*3600*34)";
 		$bindvars[] = $priorDays;
 
-		if($maxDaysEnd > 0)
+		if($maxDays > 0)
 		{
-			$maxSeconds = ($maxDaysEnd * 24 * 60 * 60);
+			$maxSeconds = ($maxDays * 24 * 60 * 60);
 			$cond .= " and `end` <= (unix_timestamp(now())) +".$maxSeconds;
 		}
-		if ($maxDaysStart > 0)
-		{
-			$maxSeconds = ($maxDaysStart * 24 * 60 * 60);
-			$cond .= " and `start` <= (unix_timestamp(now())) +".$maxSeconds;
-		}
 		$ljoin = "left join `tiki_calendar_locations` as l on i.`locationId`=l.`callocId` left join `tiki_calendar_categories` as c on i.`categoryId`=c.`calcatId`";
-		$query = "select i.`start`, i.`end`, i.`name`, i.`description`, i.`calitemId`, i.`calendarId`, i.`user`, i.`lastModif`, i.`url`, l.`name` as location, i.`allday`, c.`name` as category from `tiki_calendar_items` i $ljoin where 1=1 ".$cond." order by ".$this->convertSortMode($order);
+		$query = "select i.`start`, i.`end`, i.`name`, i.`description`, i.`calitemId`, i.`calendarId`, i.`user`, i.`lastModif`, i.`url`, l.`name` as location, i.`allday`, c.`name` as category from `tiki_calendar_items` i $ljoin where 1=1 ".$cond." order by ".$this->convert_sortmode($order);
 		$result = $this->query($query,$bindvars,$maxrows,0);
 			
 		$ret = array();
 			
 		while ($res = $result->fetchRow()) {
-			$res['parsed'] = $this->parse_data($res['description']);
 			$ret[] = $res;
 		}
 	
@@ -869,4 +811,7 @@ class CalendarLib extends TikiLib {
 		);
 	}
 }
-$calendarlib = new CalendarLib;
+global $dbTiki;
+$calendarlib = new CalendarLib($dbTiki);
+
+?>

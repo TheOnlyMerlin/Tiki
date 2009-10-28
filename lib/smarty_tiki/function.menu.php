@@ -11,9 +11,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  * - css = use suckerfish menu
  * - type = vert|horiz
  * - id = menu ID (mandatory)
- * - tr = y|n , n means no option translation (default y)
- * - menu_cookie=y|n (default y)
- */
+ * - tr = y|n , n means no option translation (default y) */
 function smarty_function_menu($params, &$smarty)
 {
 	global $tikilib, $user, $headerlib, $prefs;
@@ -29,10 +27,6 @@ function smarty_function_menu($params, &$smarty)
 		$translate = 'y';
 	}
 	$smarty->assign_by_ref('translate', $translate);
-	if (empty($menu_cookie)) {
-		$menu_cookie = 'y';
-	}
-	$smarty->assign_by_ref('menu_cookie', $menu_cookie);
 	if (isset($css) and $prefs['feature_cssmenus'] == 'y') {
 		static $idCssmenu = 0;
 		if (isset($type) && ($type == 'vert' || $type == 'horiz')) {
@@ -69,7 +63,7 @@ function smarty_function_menu($params, &$smarty)
 		global $structlib; include_once('lib/structures/structlib.php');
 		$channels = $structlib->build_subtree_toc($structureId);
 		$structure_info =  $structlib->s_get_page_info($structureId);
-		$channels = $structlib->to_menu($channels, $structure_info['pageName']);
+		$channels = $structlib->to_menu($channels, empty($structure_info['page_alias'])? $structure_info['pageName']: $structure_info['page_alias']);
 		$menu_info = array('type'=>'d', 'menuId'=> "s_$structureId");
 		//echo '<pre>'; print_r($channels); echo '</pre>';
 	} else {
@@ -82,9 +76,7 @@ function smarty_function_menu($params, &$smarty)
 
 	$smarty->assign('menu_channels',$channels['data']);
 	$smarty->assign('menu_info',$menu_info);
-	$data = $smarty->fetch($tpl);
-	$data = preg_replace('/<ul>\s*<\/ul>/', '', $data);
-	return $data;
+	return $smarty->fetch($tpl);
 }
 
 function compare_menu_options($a, $b) { return strcmp(tra($a['name']), tra($b['name'])); }

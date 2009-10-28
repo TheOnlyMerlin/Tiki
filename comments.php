@@ -31,6 +31,25 @@ require_once ('lib/tikilib.php'); # httpScheme()
 // user requests that could be used to change thread display settings
 $handled_requests = array('comments_per_page', 'thread_style', 'thread_sort_mode');
 
+// Set global site prefs to initialize vars
+foreach ( $handled_requests as $request_name ) {
+        if ( isset($prefs['forum_'.$request_name]) ) {
+                $$request_name = $prefs['forum_'.$request_name];
+        }
+}
+
+// First override existing values (e.g. coming from forum specific settings) by user specific requests if we allow them
+//   (we empty those user specific requests if they are denied)
+if ( $prefs['forum_thread_user_settings'] == 'y' ) {
+	foreach ( $handled_requests as $request_name ) {
+		if ( isset($_REQUEST[$request_name]) ) {
+			$$request_name = $_REQUEST[$request_name];
+			$smarty->assign($request_name.'_param', '&amp;'.$request_name.'='.$_REQUEST[$request_name]);
+			if ( $prefs['forum_thread_user_settings_keep'] == 'y' ) $_SESSION['forums_'.$request_name] = $_REQUEST[$request_name];
+		}
+	}
+} else foreach ( $handled_requests as $request_name ) unset($_REQUEST[$request_name]);
+
 // Then determine the final value for thread display settings
 if ( isset($forum_mode) && $forum_mode == 'y' ) {
 	// If we are in a forum thread
@@ -171,8 +190,7 @@ if( ! isset( $comments_objectId ) ) {
 
 $feedbacks = array();
 $errors = array();
-if ( isset($_REQUEST['comments_objectId']) && $_REQUEST['comments_objectId'] == $comments_objectId
-	&& (isset($_REQUEST['comments_postComment']) || isset($_REQUEST['comments_postComment_anonymous']) )) {
+if (isset($_REQUEST['comments_postComment']) || isset($_REQUEST['comments_postComment_anonymous'])) {
 	if (isset($forum_mode) && $forum_mode == 'y') {
 		$forum_info = $commentslib->get_forum($_REQUEST['forumId']);
 		$threadId = $commentslib->post_in_forum($forum_info, $_REQUEST, $feedbacks, $errors);
@@ -250,10 +268,6 @@ if ( isset($_REQUEST['comments_objectId']) && $_REQUEST['comments_objectId'] == 
 	}
 	$smarty->assign_by_ref('errors', $errors);
 	$smarty->assign_by_ref('feedbacks', $feedbacks);
-
-	if( isset( $pageCache ) ) {
-		$pageCache->invalidate();
-	}
 }
 
 if (($tiki_p_vote_comments == 'y' && (!isset($forum_mode) || $forum_mode == 'n')) || ($tiki_p_forum_vote == 'y' && isset($forum_mode) && $forum_mode == 'y')) {
@@ -279,7 +293,6 @@ if (($tiki_p_vote_comments == 'y' && (!isset($forum_mode) || $forum_mode == 'n')
 }
 
 // Comments Moderation
-global $tiki_p_admin_comments;
 if ( (!isset($forum_mode) || $forum_mode == 'n') && $tiki_p_admin_comments == 'y' && isset($_REQUEST["comments_threadId"]) && !empty($_REQUEST['comments_approve']) ) {
 
 	if ( $_REQUEST['comments_approve'] == 'y' ) {
@@ -339,7 +352,7 @@ if ($_REQUEST["comments_threadId"] > 0) {
 	// check to see if QUOTE plugin or > should be used -Terence
 	global $prefs;
 	if ( $comment_info["data"] != ''  ) {
-		if ( ($prefs['feature_forum_parse'] == 'y' || $prefs['section_comments_parse'] == 'y') && $prefs['feature_use_quoteplugin'] == 'y' ) {
+		if ( $prefs['feature_forum_parse'] == 'y' && $prefs['feature_use_quoteplugin'] == 'y' ) {
 			$comment_info["data"] = "\n{QUOTE()}" . $comment_info["data"] . '{QUOTE}';
 		} else {
 			$comment_info["data"] = preg_replace( '/\n/', "\n> ", $comment_info["data"] ) ;
@@ -420,11 +433,6 @@ if (isset($_REQUEST["post_reply"]) && isset($_REQUEST["comments_reply_threadId"]
 $threadId_if_reply = $_REQUEST["comments_reply_threadId"];
 else
 $threadId_if_reply = 0;
-if (empty($thread_sort_mode) && !empty($_REQUEST['thread_sort_mode'])) {
-	$thread_sort_mode = $_REQUEST['thread_sort_mode'];
-} else {
-	$thread_sort_mode = 'commentDate_asc';
-}
 
 $comments_coms = $commentslib->get_comments($comments_objectId, $_REQUEST["comments_parentId"],
 		$comments_offset, $comments_per_page, $thread_sort_mode, $_REQUEST["comments_commentFind"],
@@ -513,6 +521,4 @@ if ($prefs['feature_contribution'] == 'y') {
 	include_once('contribution.php');
 }
 
-
-$smarty->assign('comments_objectId', $comments_objectId);
 $smarty->assign('comments_show', $comments_show);

@@ -52,3 +52,5 @@ if( $conflicts->length > 0 )
 
 	error( $message );
 }
+
+?>

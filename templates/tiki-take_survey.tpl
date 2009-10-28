@@ -5,15 +5,15 @@
 <form name="aform" formId='editpageform' action="{$form_action|default:'tiki-take_survey.php'}" method="post">
 <input type="hidden" name="surveyId" value="{$surveyId|escape}" />
 <input type="hidden" name="vote" value="yes" />
-  {if !isset($show_name) or $show_name eq 'y'}<h2>{$survey_info.name|escape}</h2>{/if}
+  {if !isset($show_name) or $show_name eq 'y'}<h2>{$survey_info.name}</h2>{/if}
     <div class="description">{wiki}{$survey_info.description|escape}{/wiki}</div>
     {section name=ix loop=$questions}
     <div class="questionblock">
-      <div class="quizquestion">{$questions[ix].question|escape|nl2br}</div>
+      <div class="quizquestion">{$questions[ix].question}</div>
       {if $questions[ix].type eq 'c'}
         <div class="quizoptions">
           {section name=jx loop=$questions[ix].qoptions}
-            <input type="radio" value="{$questions[ix].qoptions[jx].optionId|escape}" name="question_{$questions[ix].questionId}" />{$questions[ix].qoptions[jx].qoption|escape}<br />
+            <input type="radio" value="{$questions[ix].qoptions[jx].optionId|escape}" name="question_{$questions[ix].questionId}" />{$questions[ix].qoptions[jx].qoption}<br />
           {/section}
         </div>  
       {elseif $questions[ix].type eq 't'}
@@ -27,10 +27,16 @@
           <table class="normal">
             <tr>
               <td valign="top">
-              	&nbsp;
+                {include file="textareasize.tpl" area_name='editwiki' formId='editpageform'}
+                <br /><br />
+                {if $prefs.quicktags_over_textarea neq 'y'}
+                  {include file=tiki-edit_help_tool.tpl area_name=question_$area qtnum='2'}
+                {/if}
               </td>
               <td valign="top">
-                {toolbars area_name=question_$area qtnum='2'}
+                {if $prefs.quicktags_over_textarea eq 'y'}
+                  {include file=tiki-edit_help_tool.tpl area_name=question_$area qtnum='2'}
+                {/if}
                 <textarea id='editwiki' name="question_{$questions[ix].questionId}" rows="{$rows}" cols="{$cols}"></textarea>
               </td>
             </tr>

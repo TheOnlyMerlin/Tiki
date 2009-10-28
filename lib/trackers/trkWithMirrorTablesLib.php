@@ -62,8 +62,8 @@ class TrkWithMirrorTablesLib extends TrackerLib {
 	var $EXPLICIT_PREFIX;
 	var $explicit;
 	
-	function __construct() {
-		parent::__construct();
+	function TrkWithMirrorTablesLib($db) {
+		parent::TrackerLib($db);
 		
 		$this->TABLE_PREFIX	= "tiki_trk_";
 		$this->COL_PREFIX	= "field_";
@@ -531,7 +531,7 @@ class TrkWithMirrorTablesLib extends TrackerLib {
 				$query = "select tti.*, $tableId.$colId, right(lpad($tableId.$colId,40,'0'),40) as ok";
 				$query.= " from `tiki_tracker_items` tti, $tableId";
 				$query.= " $mid and $tableId.`itemId`=tti.`itemId`";
-				$query.= " order by ".$this->convertSortMode('ok_'.$corder);
+				$query.= " order by ".$this->convert_sortmode('ok_'.$corder);
 			} else {
 				$query = "select tti.*, $tableId.$colId";
 				$query.= " from `tiki_tracker_items` tti, $tableId";
@@ -541,7 +541,7 @@ class TrkWithMirrorTablesLib extends TrackerLib {
 			$query_cant = " select count(*) from `tiki_tracker_items` tti, $tableId";
 			$query_cant.= " $mid and tti.`itemId`=$tableId.`itemId`";
 		} else {
-			$query = "select * from `tiki_tracker_items` tti $mid order by ".$this->convertSortMode($sort_mode);
+			$query = "select * from `tiki_tracker_items` tti $mid order by ".$this->convert_sortmode($sort_mode);
 			$query_cant = "select count(*) from `tiki_tracker_items` tti $mid ";
 		}
 		
@@ -633,7 +633,7 @@ class TrkWithMirrorTablesLib extends TrackerLib {
 					global $categlib;
 					if (!is_object($categlib)) include_once 'lib/categories/categlib.php';
 					$mycats = $categlib->get_child_categories($fopt['options']);
-					$zcats = $categlib->get_object_categories('trackeritem',$res['itemId']);
+					$zcats = $categlib->get_object_categories("tracker ".$trackerId,$res["itemId"]);
 					$cats = array();
 					foreach ($mycats as $m) {
 						if (in_array($m['categId'],$zcats)) {
@@ -1132,3 +1132,4 @@ class TrkWithMirrorTablesLib extends TrackerLib {
 		return true;
 	}
 }
+?>

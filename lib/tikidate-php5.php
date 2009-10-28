@@ -69,7 +69,7 @@ class TikiDate {
 		$this->replace = array_values($this->translation_array);
 	}
 
-	static function getTimeZoneList() {
+	function getTimeZoneList() {
 		$tz = array();
 		$now = new DateTime("now",new DateTimeZone("GMT"));
 		$tz_list = DateTimeZone::listIdentifiers();
@@ -162,8 +162,8 @@ class TikiDate {
 		return $this->date->format("e");
 	}
 
-	static function TimezoneIsValidId($id) {
-		return array_key_exists( strtolower($id), timezone_abbreviations_list() );
+	function TimezoneIsValidId($id) {
+		return empty($id) ? FALSE : timezone_open($id) !== FALSE ;
 	}
 
 }
@@ -174,3 +174,5 @@ class Date_Calc {
 		return cal_days_in_month(CAL_GREGORIAN, $month, $year);
 	}
 }
+
+?>

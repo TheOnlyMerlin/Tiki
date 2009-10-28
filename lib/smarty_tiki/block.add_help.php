@@ -30,32 +30,17 @@ function smarty_block_add_help($params, $content, &$smarty, &$repeat) {
 	$help_sections[$params['id']] = $section;
 
 	if (!isset($params['show']) or $params['show'] == 'y') {
-		global $headerlib;
-		$headerlib->include_jquery_ui();
 		require_once $smarty->_get_plugin_filepath('block', 'self_link');
 		$self_link_params['alt'] = $params['title'];
 		$self_link_params['_icon'] = 'help';
-		$self_link_params['_ajax'] = 'n';
-		
-		$headerlib->add_js('
-function openEditHelp() {
-	var opts, edithelp_pos = getCookie("edithelp_position");
-	opts = { width: 460, height: 500, title: "' . $section['title'] . '", autoOpen: false, beforeclose: function(event, ui) {
-		var off = $jq(this).offset();
-   		setCookie("edithelp_position", parseInt(off.left) + "," + parseInt(off.top,10) + "," + $jq(this).width() + "," + $jq(this).height());
-	}}
-	if (edithelp_pos) {edithelp_pos = edithelp_pos.split(",");}
-	if (edithelp_pos && edithelp_pos.length) {
-		opts["position"] = [parseInt(edithelp_pos[0]), parseInt(edithelp_pos[1])];
-		opts["width"] = parseInt(edithelp_pos[2]);
-		opts["height"] = parseInt(edithelp_pos[3]);
-	}
-	$jq("#help_sections").dialog("destroy").dialog(opts).dialog("open");
-	
-};');
-		$self_link_params['_onclick'] = 'openEditHelp();return false;';
- 
-		return smarty_block_self_link($self_link_params,"",$smarty);
+		if ($prefs['feature_shadowbox'] == 'y' and ($prefs['feature_jquery'] == 'y' || $prefs['feature_mootools'] == 'y')) {
+			require_once $smarty->_get_plugin_filepath('function', 'icon');
+			$self_link_params['_id'] = 'help';
+			return '<a href="#'.$section['id'].'" rel="shadowbox[add_help];title='.$params['title'].';">'.smarty_function_icon($self_link_params,$smarty).'</a>';
+		} else {
+			$self_link_params['_onclick'] = "javascript:show('help_sections');show('".$section['id']."');return false";
+			return smarty_block_self_link($self_link_params,"",$smarty);
+		}
 	} else {
 		return ;
 	}

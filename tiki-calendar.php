@@ -32,9 +32,8 @@ $iCalAdvParamsUrl = 'tiki-calendar_params_ical.php';
 $bufid = array();
 $bufdata = array();
 $modifiable = array();
-if (!isset($cookietab)) { $cookietab = '1'; }
+$cookietab = 1;
 $rawcals = $calendarlib->list_calendars();
-$rawcals['data'] = Perms::filter( array( 'type' => 'calendar' ), 'object', $rawcals['data'], array( 'object' => 'calendarId' ), 'view_calendar' );
 $viewOneCal = $tiki_p_view_calendar;
 $modifTab = 0;
 
@@ -42,8 +41,7 @@ $minHourOfDay = 12;
 $maxHourOfDay = 12;
 $manyEvents = array();
 
-foreach ($rawcals["data"] as $cal_data) {
-	$cal_id = $cal_data['calendarId'];
+foreach ($rawcals["data"] as $cal_id=>$cal_data) {
 	$minHourOfDay = min($minHourOfDay,intval($cal_data['startday']/3600));
 	$maxHourOfDay = max($maxHourOfDay,intval(($cal_data['endday']+1)/3600));
 	if ($tiki_p_admin == 'y') {
@@ -64,11 +62,28 @@ foreach ($rawcals["data"] as $cal_data) {
 			$cal_data["tiki_p_change_events"] = 'n';
 		}
 	} else {		
-		$calperms = Perms::get( array( 'type' => 'calendar', 'object' => $cal_id ) );
-		$cal_data["tiki_p_view_calendar"] = $calperms->view_calendar ? 'y' : 'n';
-		$cal_data["tiki_p_view_events"] = $calperms->view_events ? 'y' : 'n';
-		$cal_data["tiki_p_add_events"] = $calperms->add_events ? 'y' : 'n';
-		$cal_data["tiki_p_change_events"] = $calperms->change_events ? 'y' : 'n';
+		if ($userlib->user_has_perm_on_object($user, $cal_id, 'calendar', 'tiki_p_view_calendar')) {
+			$cal_data["tiki_p_view_calendar"] = 'y';
+		} else {
+			$cal_data["tiki_p_view_calendar"] = 'n';
+		}
+		if ($userlib->user_has_perm_on_object($user, $cal_id, 'calendar', 'tiki_p_add_events', 'tiki_p_edit_categorized')) {
+			$cal_data["tiki_p_add_events"] = 'y';
+			$tiki_p_add_events = "y";
+			$smarty->assign("tiki_p_add_events", "y");
+		} else {
+			$cal_data["tiki_p_add_events"] = 'n';
+		}
+		if ($userlib->user_has_perm_on_object($user, $cal_id, 'calendar', 'tiki_p_change_events', 'tiki_p_edit_categorized')) {
+			$cal_data["tiki_p_change_events"] = 'y';
+		} else {
+			$cal_data["tiki_p_change_events"] = 'n';
+		}
+		if ($userlib->user_has_perm_on_object($user, $cal_id, 'calendar', 'tiki_p_admin_calendar')) {
+			$cal_data["tiki_p_view_calendar"] = 'y';
+			$cal_data["tiki_p_add_events"] = 'y';
+			$cal_data["tiki_p_change_events"] = 'y';
+		}
 	}
 	if ($cal_data["tiki_p_view_calendar"] == 'y') {
 		$viewOneCal = 'y';
@@ -85,6 +100,29 @@ foreach ($rawcals["data"] as $cal_data) {
 		$modifTab = 1;
 		$modifiable[] = $cal_id;
 		$visible[] = $cal_id;
+	}
+}
+
+if ($prefs['feature_categories'] == 'y' and isset($_REQUEST['calIds'])) {
+	$is_categorized = FALSE;
+	if (!is_array($_REQUEST['calIds'])) {
+		$_REQUEST['calIds'] = array($_REQUEST['calIds']);
+	}
+	foreach ($_REQUEST['calIds'] as $calId) {
+		$perms_array = $categlib->get_object_categories_perms($user, 'calendar', $calId);
+		if ($perms_array) {
+			foreach ($perms_array as $perm => $value) {
+				$$perm = $value;
+			}
+		} else {
+			$is_categorized = FALSE;
+		}
+		if ($is_categorized && isset($tiki_p_view_categorized) && $tiki_p_view_categorized != 'y') {
+			$smarty->assign('errortype', 401);
+			$smarty->assign('msg',tra("Permission denied you cannot view this page"));
+			$smarty->display("error.tpl");
+			die;
+		}
 	}
 }
 
@@ -231,10 +269,10 @@ $registeredIndexes = array();
       foreach ($listevents["$dday"] as $le) {
 		$nbDaysLeftThisWeek = min(ceil(($le['endTimeStamp'] - $dday)/86400),(7-$w));
 		if ($calendarViewMode == 'month') {
-				$endOfCurrentMonth = $tikilib->make_time(23,59,59,TikiLib::date_format('m',$dday) + 1,0,TikiLib::date_format2('Y',$dday));
+				$endOfCurrentMonth = TikiLib::make_time(23,59,59,TikiLib::date_format('m',$dday) + 1,0,TikiLib::date_format2('Y',$dday));
 				$nbDaysLeftThisWeek = min(ceil(($endOfCurrentMonth - $dday)/86400),$nbDaysLeftThisWeek);
 		} elseif ($calendarViewMode == 'year') {
-			$endOfCurrentYear = $tikilib->make_time(23,59,59,12,31,TikiLib::date_format2('Y',$dday));
+			$endOfCurrentYear = TikiLib::make_time(23,59,59,12,31,TikiLib::date_format2('Y',$dday));
 			$nbDaysLeftThisWeek = min(ceil(($endOfCurrentYear - $dday)/86400),$nbDaysLeftThisWeek);
 		}
 		if (!array_key_exists('nbDaysLeftThisWeek',$le)) {
@@ -407,7 +445,7 @@ if ($calendarViewMode == 'day') {
 		$eventHoraires[$currIndex]['id'] = $dayitems['calitemId'];
 		$eventHoraires[$currIndex]['start'] = $dayitems['time'];
 		$eventHoraires[$currIndex]['end'] =	$dayitems['end'];
-		$eventHoraires[$currIndex]['duree'] = max(1,number_format(($tikilib->make_time(substr($dayitems['end'],0,2),substr($dayitems['end'],2) + 1,0,1,1,2000) - $tikilib->make_time(substr($dayitems['time'],0,2),substr($dayitems['time'],2),0,1,1,2000)) / 3600,2));
+		$eventHoraires[$currIndex]['duree'] = max(1,number_format((TikiLib::make_time(substr($dayitems['end'],0,2),substr($dayitems['end'],2) + 1,0,1,1,2000) - TikiLib::make_time(substr($dayitems['time'],0,2),substr($dayitems['time'],2),0,1,1,2000)) / 3600,2));
 	}
 	$orderedEventHoraires = array();
 	$eventIndexes = array();
@@ -524,7 +562,7 @@ if ($max > 100) {
 			$hrows[$wd]["$rawhour"][] = $dayitems;
 			$eventHoraires[$wd][$dayitems['calitemId']]['start'] = ($dayitems['time'] < $minHourOfDay."00") ? str_pad($minHourOfDay."00",4,'0',STR_PAD_LEFT) : $dayitems['time'];
 			$eventHoraires[$wd][$dayitems['calitemId']]['end'] = ($dayitems['end'] > ($maxHourOfDay + 1)."00") ? str_pad(($maxHourOfDay + 1)."00",4,'0',STR_PAD_LEFT) : $dayitems['end'];
-			$eventHoraires[$wd][$dayitems['calitemId']]['duree'] = max(1,($tikilib->make_time(substr($eventHoraires[$wd][$dayitems['calitemId']]['end'],0,2),substr($eventHoraires[$wd][$dayitems['calitemId']]['end'],2),0,1,1,2000) - $tikilib->make_time(substr($eventHoraires[$wd][$dayitems['calitemId']]['start'],0,2),substr($eventHoraires[$wd][$dayitems['calitemId']]['start'],2),0,1,1,2000)) / 3600);
+			$eventHoraires[$wd][$dayitems['calitemId']]['duree'] = max(1,(TikiLib::make_time(substr($eventHoraires[$wd][$dayitems['calitemId']]['end'],0,2),substr($eventHoraires[$wd][$dayitems['calitemId']]['end'],2),0,1,1,2000) - TikiLib::make_time(substr($eventHoraires[$wd][$dayitems['calitemId']]['start'],0,2),substr($eventHoraires[$wd][$dayitems['calitemId']]['start'],2),0,1,1,2000)) / 3600);
 
 			$tmpRes = array();
 			for ($h=0 ; $h<24 ; $h++) {
@@ -611,7 +649,7 @@ if ($max > 100) {
 					if ($tmpBottom > 100*(1 + $maxHourOfDay))
 						$tmpBottom = str_pad(100*(1 + $maxHourOfDay),4,'0',STR_PAD_LEFT);
 					$top = 36 + 24*((intval(substr($tmpTop,0,2)) + intval(substr($tmpTop,2))/60) - $minHourOfDay);
-					$duree = max(23.9,23.9 * (($tikilib->make_time(substr($tmpBottom,0,2),substr($tmpBottom,2),0,1,1,2000) - $tikilib->make_time(substr($tmpTop,0,2),substr($tmpTop,2),0,1,1,2000)) / 3600));
+					$duree = max(23.9,23.9 * ((TikiLib::make_time(substr($tmpBottom,0,2),substr($tmpBottom,2),0,1,1,2000) - TikiLib::make_time(substr($tmpTop,0,2),substr($tmpTop,2),0,1,1,2000)) / 3600));
 					$manyEvents[$aDay]['top'] = $top;
 					$manyEvents[$aDay]['left'] = 9 + ($aDay*13);
 					$manyEvents[$aDay]['width'] = 12.8;
@@ -718,6 +756,9 @@ include_once ('tiki-section_options.php');
 setcookie('tab',$cookietab);
 $smarty->assign('cookietab',$cookietab);
 
+include_once ('lib/quicktags/quicktagslib.php');
+$quicktags = $quicktagslib->list_quicktags(0,-1,'taglabel_asc','','calendar');
+$smarty->assign_by_ref('quicktags', $quicktags["data"]);
 include_once("textareasize.php");
 
 ask_ticket('calendar');
@@ -734,5 +775,6 @@ else {
 
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
-$smarty->assign('headtitle',tra('Calendar'));
+
 $smarty->display("tiki.tpl");
+?>

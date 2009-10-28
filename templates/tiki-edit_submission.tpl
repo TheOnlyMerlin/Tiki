@@ -1,15 +1,15 @@
 {* Note: if you edit this file, make sure to make corresponding edits on tiki-edit_article.tpl *}
 
 {popup_init src="lib/overlib.js"}
-{include file='tiki-articles-js.tpl'}
+{include file="tiki-articles-js.tpl"}
 {if $preview}
-	{include file='tiki-preview_article.tpl'}
+	{include file="tiki-preview_article.tpl"}
 {/if}
 
 {assign var=area_name value="body"}
 
 {if $subId}
-	{title help="Articles" url="tiki-edit_submission.php?subId=$subId"}{tr}Edit:{/tr} {$title|escape}{/title}
+	{title help="Articles" url="tiki-edit_submission.php?subId=$subId"}{tr}Edit:{/tr} {$title}{/title}
 {else}
 	{title help="Articles"}{tr}Submit article{/tr}{/title}
 {/if}
@@ -87,7 +87,7 @@
 			<td>
 				<select name="topicId">
 					{section name=t loop=$topics}
-						<option value="{$topics[t].topicId|escape}" {if $topicId eq $topics[t].topicId}selected="selected"{/if}>{$topics[t].name|escape}</option>
+						<option value="{$topics[t].topicId|escape}" {if $topicId eq $topics[t].topicId}selected="selected"{/if}>{$topics[t].name}</option>
 					{/section}
 					<option value="" {if $topicId eq 0}selected="selected"{/if}>{tr}None{/tr}</option>
 				</select>
@@ -101,7 +101,7 @@
 			<td>
 				<select id='articletype' name='type' onchange='javascript:chgArtType();'>
 					{foreach from=$types key=typei item=prop}
-						<option value="{$typei|escape}" {if $type eq $typei}selected="selected"{/if}>{tr}{$typei|escape}{/tr}</option>
+						<option value="{$typei|escape}" {if $type eq $typei}selected="selected"{/if}>{tr}{$typei}{/tr}</option>
 					{/foreach}
 				</select>
 				{if $tiki_p_admin_cms eq 'y'}
@@ -204,13 +204,19 @@
 				</td>
 			</tr>
 		{/if}
-		{include file='categorize.tpl'}
+		{include file=categorize.tpl}
 		<tr class="formcolor">
 			<td>
 				{tr}Heading{/tr}
+				<br />
+				{if $prefs.quicktags_over_textarea neq 'y'}
+					{include file=tiki-edit_help_tool.tpl area_name='heading' qtnum='1'}
+				{/if}
 			</td>
 			<td>
-				{toolbars area_name='heading' qtnum='1'}
+				{if $prefs.quicktags_over_textarea eq 'y'}
+					{include file=tiki-edit_help_tool.tpl area_name='heading' qtnum='1'}
+				{/if}
 				<textarea class="wikiedit" name="heading" rows="5" cols="80" id='subheading' wrap="virtual">{$heading|escape}</textarea>
 			</td>
 		</tr>
@@ -218,9 +224,17 @@
 		<tr id='heading_only' {if $types.$type.heading_only ne 'y'}style="display:table-row;"{else}style="display:none;"{/if} class="formcolor">
 			<td>
 				{tr}Body{/tr}
+				<br /><br />
+				{include file="textareasize.tpl" area_name='body' formId='editpageform'}
+				{if $prefs.quicktags_over_textarea neq 'y'}
+					<br /><br />
+					{include file=tiki-edit_help_tool.tpl area_name='body' qtnum='2'}
+				{/if}
 			</td>
 			<td>
-				{toolbars area_name='body' qtnum='2'}
+				{if $prefs.quicktags_over_textarea eq 'y'}
+					{include file=tiki-edit_help_tool.tpl area_name='body' qtnum='2'}
+				{/if}
 				<textarea class="wikiedit" id="body" name="body" rows="{$rows}" cols="{$cols}" wrap="virtual">{$body|escape}</textarea>
 				<input type="hidden" name="rows" value="{$rows}" />
 				<input type="hidden" name="cols" value="{$cols}" />
@@ -228,7 +242,7 @@
 		</tr>
 		{if $prefs.cms_spellcheck eq 'y'}
 			<tr class="formcolor">
-				<td>{tr}Spellcheck:{/tr} </td>
+				<td>{tr}Spellcheck{/tr}: </td>
 				<td>
 					<input type="checkbox" name="spellcheck" {if $spellcheck eq 'y'}checked="checked"{/if}/>
 				</td>
@@ -254,11 +268,11 @@
 				</span>
 			</td>
 		</tr>
-		{include file='freetag.tpl'}
+		{include file=freetag.tpl}
 	</table>
 	
 	{if $tiki_p_use_HTML eq 'y'}
-		<div align="center">{tr}Allow HTML:{/tr} <input type="checkbox" name="allowhtml" {if $allowhtml eq 'y'}checked="checked"{/if}/></div>
+		<div align="center">{tr}Allow HTML{/tr}: <input type="checkbox" name="allowhtml" {if $allowhtml eq 'y'}checked="checked"{/if}/></div>
 	{/if}
 
 	<div align="center">
@@ -271,3 +285,4 @@
 </form>
 
 <br />
+{include file=tiki-edit_help.tpl}

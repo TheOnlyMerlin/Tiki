@@ -7,13 +7,16 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 class UserFilesLib extends TikiLib {
+	function UserFilesLib($db) {
+		$this->TikiLib($db);
+	}
 
 	function userfiles_quota($user) {
 		if ($user == 'admin') {
 			return 0;
 		}
 
-		$part1 = $this->getOne("select sum(" . $this->cast('filesize','int') . ") from `tiki_userfiles` where `user`=?",array($user));
+		$part1 = $this->getOne("select sum(`filesize`) from `tiki_userfiles` where `user`=?",array($user));
 		$part2 = $this->getOne("select sum(`size`) from `tiki_user_notes` where `user`=?",array($user));
 		return $part1 + $part2;
 	}
@@ -36,7 +39,7 @@ class UserFilesLib extends TikiLib {
 			$bindvars=array($user);
 		}
 
-		$query = "select `fileId`,`user`,`name`,`filename`,`filetype`,`filesize`,`created`,`hits` from `tiki_userfiles` where `user`=? $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select `fileId`,`user`,`name`,`filename`,`filetype`,`filesize`,`created`,`hits` from `tiki_userfiles` where `user`=? $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_userfiles` where `user`=? $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -73,4 +76,7 @@ class UserFilesLib extends TikiLib {
 		$this->query($query,array($user,(int) $fileId));
 	}
 }
-$userfileslib = new UserFilesLib;
+global $dbTiki;
+$userfileslib = new UserFilesLib($dbTiki);
+
+?>

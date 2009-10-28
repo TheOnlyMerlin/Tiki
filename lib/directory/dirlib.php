@@ -8,6 +8,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 class DirLib extends TikiLib {
+	function DirLib($db) {
+		$this->TikiLib($db);
+	}
+
 	// Path functions
 	function dir_get_category_path_admin($categId) {
 		global $prefs;
@@ -35,10 +39,10 @@ class DirLib extends TikiLib {
 		global $prefs;
 		$path = '';
 		$info = $this->dir_get_category($categId);
-		$path = '<a class="dirlink" href="tiki-directory_browse.php?parent=' . $info["categId"] . '">' . htmlspecialchars($info["name"]) . '</a>';
+		$path = '<a class="dirlink" href="tiki-directory_browse.php?parent=' . $info["categId"] . '">' . $info["name"] . '</a>';
 		while ($info["parent"] != 0) {
 			$info = $this->dir_get_category($info["parent"]);
-			$path = '<a class="dirlink" href="tiki-directory_browse.php?parent=' . $info["categId"] . '">' . htmlspecialchars($info["name"]) . '</a> ' . $prefs['site_crumb_seper'] . ' ' . $path;
+			$path = '<a class="dirlink" href="tiki-directory_browse.php?parent=' . $info["categId"] . '">' . $info["name"] . '</a> ' . $prefs['site_crumb_seper'] . ' ' . $path;
 		}
 
 		return $path;
@@ -102,7 +106,7 @@ class DirLib extends TikiLib {
 		} else {
 			$mid = "";
 		}
-		$query = "select * from `tiki_directory_categories` where `parent`=? $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_directory_categories` where `parent`=? $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_directory_categories` where `parent`=? $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -110,9 +114,34 @@ class DirLib extends TikiLib {
 
 		while ($res = $result->fetchRow()) {
 			$res["sites"] = $this->getOne("select count(*) from `tiki_category_sites` where `categId`=?",array((int)$res["categId"]));
+			//$res["path"]=$this->dir_get_path_text($res["categId"]);
 
-			// TODO : Any permission to check? Used to verify view_categorized when categorized, what is the real permission?
-			$ret[] = $res;
+		    $add = TRUE;
+		    global $prefs, $userlib, $user, $tiki_p_admin;
+
+		    if ($tiki_p_admin != 'y' && $prefs['feature_categories'] == 'y') {
+		    	global $categlib;
+				if (!is_object($categlib)) {
+					include_once('lib/categories/categlib.php');
+				}
+		    	unset($tiki_p_view_categorized); // unset this var in case it was set previously
+		    	$perms_array = $categlib->get_object_categories_perms($user, 'directory', $res['categId']);
+		    	if ($perms_array) {
+		    		$is_categorized = TRUE;
+			    	foreach ($perms_array as $perm => $value) {
+			    		$$perm = $value;
+			    	}
+		    	} else {
+		    		$is_categorized = FALSE;
+		    	}
+
+		    	if ($is_categorized && isset($tiki_p_view_categorized) && $tiki_p_view_categorized != 'y') {
+		    		$add = FALSE;
+		    	}
+		    }
+		    if ($add) {
+				$ret[] = $res;
+		    }
 		}
 
 		$retval = array();
@@ -132,7 +161,7 @@ class DirLib extends TikiLib {
 		} else {
 			$mid = "";
 		}
-		$query = "select * from `tiki_directory_categories` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_directory_categories` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_directory_categories` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -164,7 +193,7 @@ class DirLib extends TikiLib {
 			$mid .= " and `isValid`=? ";
 			$bindvars[] = $isValid;
 		}
-		$query = "select * from `tiki_directory_sites` tds, `tiki_category_sites` tcs where tds.`siteId`=tcs.`siteId` and tcs.`categId`=? $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_directory_sites` tds, `tiki_category_sites` tcs where tds.`siteId`=tcs.`siteId` and tcs.`categId`=? $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_directory_sites` tds, `tiki_category_sites` tcs where tds.`siteId`=tcs.`siteId` and tcs.`categId`=? $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -191,7 +220,7 @@ class DirLib extends TikiLib {
 		} else {
 			$mid = "";
 		}
-		$query = "select * from `tiki_directory_sites` where `isValid`=? $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_directory_sites` where `isValid`=? $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_directory_sites` where `isValid`=? $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -229,7 +258,7 @@ class DirLib extends TikiLib {
 		} else {
 			$mid = "";
 		}
-		$query = "select * from `tiki_directory_sites` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_directory_sites` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_directory_sites` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -255,7 +284,7 @@ class DirLib extends TikiLib {
 			$bindvars[] = $findesc;
 		}
 
-		$query = "select * from `tiki_directory_sites` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_directory_sites` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_directory_sites` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -281,7 +310,7 @@ class DirLib extends TikiLib {
 		} else {
 			$mid = "";
 		}
-		$query = "select * from `tiki_directory_categories` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_directory_categories` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_directory_categories` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -312,7 +341,7 @@ class DirLib extends TikiLib {
 		} else {
 			$mid = "";
 		}
-		$query = "select * from `tiki_directory_categories` where `categId`<>? $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_directory_categories` where `categId`<>? $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_directory_categories` where `categId`<>? $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -562,7 +591,7 @@ class DirLib extends TikiLib {
 		}
 
 		$words = implode($how, $words);
-		$query = "select * from `tiki_directory_sites` where `isValid`=? and $words  order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_directory_sites` where `isValid`=? and $words  order by ".$this->convert_sortmode($sort_mode);
 		$cant = $this->getOne("select count(*) from tiki_directory_sites where `isValid`=? and $words", $bindvars);
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$ret = array();
@@ -602,7 +631,7 @@ class DirLib extends TikiLib {
 		$words = implode($how, $words);
 		$query = "select distinct tds.`name`, tds.`siteId`, tds.`description`, tds.`url`, tds.`country`, tds.`hits`, ";
 		$query.= " tds.`created`, tds.`lastModif` from `tiki_directory_sites` tds, `tiki_category_sites` tcs, `tiki_directory_categories` tdc ";
-		$query.= " where tds.`siteId`=tcs.`siteId` and tcs.`categId`=tdc.`categId` and `isValid`=? and tdc.`categId`=? and $words order by ".$this->convertSortMode($sort_mode);
+		$query.= " where tds.`siteId`=tcs.`siteId` and tcs.`categId`=tdc.`categId` and `isValid`=? and tdc.`categId`=? and $words order by ".$this->convert_sortmode($sort_mode);
 		$cant = $this->getOne("select count(*) from `tiki_directory_sites` tds,`tiki_category_sites` tcs,`tiki_directory_categories` tdc 
 			where tds.`siteId`=tcs.`siteId` and tcs.`categId`=tdc.`categId` and `isValid`=? and tdc.`categId`=? and $words",$bindvars);
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
@@ -618,9 +647,12 @@ class DirLib extends TikiLib {
 	}
 
 }
-$dirlib = new DirLib;
+global $dbTiki;
+$dirlib = new DirLib($dbTiki);
 
 function compare_paths($p1, $p2) {
 		// must be case insentive to have the same than dir_mist_sites
 	return strcasecmp($p1["path"], $p2["path"]);
 }
+
+?>

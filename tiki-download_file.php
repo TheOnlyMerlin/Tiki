@@ -6,17 +6,11 @@ $force_no_compression = true;
 $skip = false;
 
 if ( isset($_GET['fileId']) && isset($_GET['thumbnail']) && isset($_COOKIE['PHPSESSID']) && count($_GET) == 2 ) {
-
-	$tikiroot = dirname($_SERVER['PHP_SELF']);
-	$session_params = session_get_cookie_params();
-	session_set_cookie_params($session_params['lifetime'],$tikiroot);
-	unset($session_params);
 	session_start();
-
 	if ( isset($_SESSION['allowed'][$_GET['fileId']]) ) {
-		require_once 'tiki-filter-base.php';
 		include('db/tiki-db.php');
-		$db = TikiDb::get();
+		include('lib/tikidblib.php');
+		$db = new TikiDB($dbTiki);
 
 		$query = "select * from `tiki_files` where `fileId`=?";
 		$result = $db->query($query, array((int)$_GET['fileId']));
@@ -323,11 +317,9 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 	}
 }
 
-if ( empty($info['filetype']) || $info['filetype'] == 'application/x-octetstream' || $info['filetype'] == 'application/octet-stream' ) {
-	include_once('lib/mime/mimelib.php');
-	$info['filetype'] = tiki_get_mime($info['filename'], 'application/octet-stream');
-}
+if ( empty($info['filetype']) ) $info['filetype'] = 'application/x-octetstream';
 header('Content-type: '.$info['filetype']);
+
 
 // IE6 can not download file with / in the name (the / can be there from a previous bug)
 $file = basename($info['filename']);

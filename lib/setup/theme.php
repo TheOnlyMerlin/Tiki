@@ -21,16 +21,30 @@ if ( $prefs['useGroupTheme'] == 'y' && $group_style = $userlib->get_user_group_t
 	$prefs['style'] = $group_style;
 	$smarty->assign_by_ref('group_style', $group_style);
 }
-if (empty($prefs['style']) || $tikilib->get_style_path('', '', $prefs['style']) == '') {
+if ($tikilib->get_style_path('', '', $prefs['style']) == '') {
 	$prefs['style'] = 'thenews.css';
 }
 		
+include_once("lib/csslib.php");
+if ( $prefs['transition_style_ver'] == 'css_specified_only' ) {
+	$transition_style = $csslib->transition_css('styles/'.$prefs['style'], '');
+} elseif ( $prefs['transition_style_ver'] != '' && $prefs['transition_style_ver'] != 'none') {
+	$transition_style = $csslib->transition_css('styles/'.$prefs['style'], $prefs['transition_style_ver']);
+} else {
+	$transition_style = '';
+}
+
+if ( $transition_style != '' ) $headerlib->add_cssfile('styles/transitions/'.$transition_style,50);
+
 $headerlib->add_cssfile($tikilib->get_style_path('', '', $prefs['style']), 51);
+
 $style_base = $tikilib->get_style_base($prefs['style']);
 
-// Allow to have a IE specific CSS files for the theme's specific hacks
+// Allow to have an ie6.css file for the theme's specific hacks for IE 6
 $style_ie6_css = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], 'ie6.css');
+
 $style_ie7_css = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], 'ie7.css');
+
 $style_ie8_css = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], 'ie8.css');
 
 // include optional "options" cascading stylesheet if set

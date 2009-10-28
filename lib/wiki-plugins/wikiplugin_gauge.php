@@ -181,3 +181,5 @@ function wikiplugin_gauge($data, $params) {
 	$html .= "</table>";
 	return $html;
 }
+
+?>

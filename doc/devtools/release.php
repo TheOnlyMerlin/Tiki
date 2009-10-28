@@ -250,7 +250,7 @@ function md5_check_dir($root, $dir, $version, &$queries) {
 
 function build_packages($releaseVersion, $svnRelativePath) {
 	$script = TOOLS . '/tikirelease.sh';
-	if ($options['debug-packaging']) {
+	if ($options['-debug-packaging']) {
 	   $debugflag = '-x';
 	} else {
 	   $debugflag = '';
@@ -610,19 +610,19 @@ function update_copyright_file($newVersion) {
 Tiki Copyright
 ----------------
 
-The following list attempts to gather the copyright holders for Tiki
+The following list attempts to gather the copyright holders for tikiwiki
 as of version $newVersion.
 
 Accounts listed below with commits have contributed source code to CVS or SVN. 
 Please note that even more people contributed on various other aspects (documentation, 
 bug reporting, testing, etc.)
 
-This is how we implement the Tiki Social Contract.
-http://tikiwiki.org/Social+Contract
+This is how we implement the Tikiwiki Social Contract.
+http://dev.tikiwiki.org/SocialContract
 
 List of members of the Community
 As of $now, the community has:
-  * $totalContributors members on SourceForge.net,
+  * $totalContributors members on Sourceforge,
   * $nbCommiters of those people who made at least one code commit
 
 This list is automatically generated and alphabetically sorted
@@ -851,9 +851,6 @@ function display_howto() {
    HOWTO release Tiki
 --------------------------
 
-0/ When branching for 4.x, call it branches/4 or branches/4.x (to be discussed) to be clearer than 
-   branches/3.0, because branches/4.x is indeed 4.1, 4.2, etc.
-
 1/ Preliminary manual tasks
    - run the tiki installer and correct anything obviously wrong
    - the "function update_readme_file" in this script will output to the top-level README:
@@ -889,11 +886,11 @@ function display_howto() {
    In case of a major version (x.0), you need at least 3 installations from 3 different people
 
 6/ When the "tarballs" are tested, follow the steps to upload on SourceForge:
-   http://sourceforge.net/apps/trac/sourceforge/wiki/Release%20files%20for%20download
+   http://tinyurl.com/59uubv
 
 7/ Announce the good news on devel mailing-list
-   and ask the Communications Team to launch the announce-spreading process as described on
-   http://tikiwiki.org/Communications+Team+Release
+   and ask the TAG (TikiWiki Admin Group) through the admin mailing-list
+   to launch the announce-speading process (Freshmeat, SourceForge and tikiwiki.org (manually for now).
 
 post/
    Update appropriate http://tikiwiki.org/stable.version file with new release version

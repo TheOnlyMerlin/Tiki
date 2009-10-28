@@ -33,7 +33,7 @@ function LoadSelected()	{
 		document.getElementById( 'txtPage' ).value = oLink.getAttribute( '_wikilink' ) ;
 		document.getElementById( 'txtTitle' ).value = oLink.getAttribute( 'innerHTML' ) ;
 	} else {
-		if ( !oEditor.FCKBrowserInfo.IsIE ) {
+		if ( oEditor.FCKBrowserInfo.IsGecko ) {
 			sSelected = FCK.EditorWindow.getSelection();
 		} else {
 			sSelected = FCK.EditorDocument.selection.createRange().text;

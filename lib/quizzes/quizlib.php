@@ -14,6 +14,9 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 class QuizLib extends TikiLib {
+	function QuizLib($db) {
+		parent::TikiLib($db);
+	}
 
 	// Functions for Quizzes ////
 	function get_user_quiz_result($userResultId) {
@@ -30,7 +33,7 @@ class QuizLib extends TikiLib {
 
 	function list_quiz_question_stats($quizId, $offset = 0, $maxRecords = -1, $sort_mode = 'position_asc', $find = '') {
 
-		$query = "select distinct(tqs.`questionId`) from `tiki_quiz_stats` tqs,`tiki_quiz_questions` tqq where tqs.`questionId`=tqq.`questionId` and tqs.`quizId` = ? order by ".$this->convertSortMode($sort_mode);
+		$query = "select distinct(tqs.`questionId`) from `tiki_quiz_stats` tqs,`tiki_quiz_questions` tqq where tqs.`questionId`=tqq.`questionId` and tqs.`quizId` = ? order by ".$this->convert_sortmode($sort_mode);
 
 		$result = $this->query($query,array((int)$quizId));
 		$ret = array();
@@ -64,7 +67,7 @@ class QuizLib extends TikiLib {
 
 	function download_answer($answerUploadId) {
 
-		$query = "SELECT `filecontent`, `filetype`, `filename`, `filesize` FROM `tiki_user_answers_uploads` WHERE `answerUploadId`=?";
+		$query = "SELECT filecontent, filetype, filename, filesize FROM tiki_user_answers_uploads WHERE answerUploadId=?";
 
 		$result = $this->query($query,array((int)$answerUploadId));
 		$ret = array();
@@ -115,7 +118,7 @@ class QuizLib extends TikiLib {
 				$opt["optionText"] = $res["optionText"];
 				$opt["points"] = $res["points"];
 
-				$query3 = "select `answerUploadId`, `filename` from `tiki_user_answers_uploads` where `userResultId` = ? and `questionId` = ?";
+				$query3 = "select answerUploadId, filename from tiki_user_answers_uploads where userResultId = ? and questionId = ?";
 				$result3 = $this->query($query3,array((int)$userResultId,(int)$questionId));
 
 				while ($res2 = $result3->fetchRow()) {
@@ -178,7 +181,7 @@ class QuizLib extends TikiLib {
 	function list_quiz_stats($quizId, $offset, $maxRecords, $sort_mode, $find) {
 		$this->compute_quiz_stats();
 
-		$query = "select `passingperct` from `tiki_quizzes` where `quizId` = ?";
+		$query = "select passingperct from `tiki_quizzes` where quizId = ?";
 		$passingperct = $this->getOne($query,array((int)$quizId));
 
 		if ($find) {
@@ -188,7 +191,7 @@ class QuizLib extends TikiLib {
 		$mid = " where `quizId`=?";
 		$bindvars=array((int)$quizId);
 
-		$query = "select * from `tiki_user_quizzes` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_user_quizzes` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_user_quizzes` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -339,7 +342,7 @@ class QuizLib extends TikiLib {
 			$bindvars=array((int)$quizId);
 		}
 
-		$query = "select * from `tiki_quiz_results` $mid order by " . $this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_quiz_results` $mid order by " . $this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_quiz_results` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -397,7 +400,7 @@ class QuizLib extends TikiLib {
 			$query = "insert into `tiki_quiz_questions`(`question`,`type`,`quizId`,`position`) values(?,?,?,?)";
 			$bindvars=array($question,$type,(int)$quizId,(int) $position);
 			$result = $this->query($query,$bindvars);
-			$queryid = "select max(`questionId`) from `tiki_quiz_questions` where `question` like ? and `type`=?";
+			$queryid = "select max(`questionId`) from `tiki_quiz_questions` where `question` like ? and type=?";
 			$questionId = $this->getOne($queryid,array(substr($question,0,200)."%",$type));
 		}
 		return $questionId;
@@ -454,7 +457,7 @@ class QuizLib extends TikiLib {
 			$bindvars=array((int) $quizId);
 		}
 
-		$query = "select * from `tiki_quiz_questions` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_quiz_questions` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_quiz_questions` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -484,7 +487,7 @@ class QuizLib extends TikiLib {
 			$bindvars=array();
 		}
 
-		$query = "select * from `tiki_quiz_questions` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_quiz_questions` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_quiz_questions` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -515,7 +518,7 @@ class QuizLib extends TikiLib {
 			$bindvars=array((int)$questionId);
 		}
 
-		$query = "select * from `tiki_quiz_question_options` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_quiz_question_options` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_quiz_question_options` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -634,7 +637,8 @@ class QuizLib extends TikiLib {
   }
 // Function for Quizzes end ////
 }
-$quizlib = new QuizLib;
+global $dbTiki;
+$quizlib = new QuizLib($dbTiki);
 
 
 // Find the next non-blank or return -1
@@ -1000,3 +1004,5 @@ class Quiz {
 
 
 }
+
+?>
