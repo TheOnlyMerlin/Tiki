@@ -372,21 +372,21 @@ div.help_section {
 .tip .rbox-data {}
 
 .warning .rbox-title, .warning span {
-	background: #ffc;
+	background: #ff4;
 	color: #000;
 	border-color: #f00;
-	border-bottom-color: #ffc;
+	border-bottom-color: #ff4;
 }
 
 .warning .rbox-data {
-	background: #ffc;
+	background: #ff4;
 	color: #000;
 	border-color: #f00;
 }
 
 .warning a {
 	color: #333 !important;
-	background: #ffc;
+	background: #ff4;
 }
 
 .simplebox {

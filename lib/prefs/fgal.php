@@ -77,6 +77,7 @@ function prefs_fgal_list() {
 			'name' => tra('Show quota bar in the list page'),
 			'type' => 'flag',
 		),
+		/*
 		'fgal_use_db' => array(
 			'type' => 'radio',
 			'options' => array(
@@ -89,5 +90,6 @@ function prefs_fgal_list() {
 			'type' => 'text',
 			'size' => 50,
 		),
+		*/
 	);
 }

@@ -74,13 +74,11 @@ class WikiLib extends TikiLib {
 			return $ret;
 		}
 		if ($versions) {
-			$ustring = ',`version`';
-			$vstring = '`version`,`user`';
+			$vstring = ',`version`';
 		} else {
-			$ustring = '';
-			$vstring = '`user`';
+			$vstring = '';
 		}
-		$query = "select DISTINCT `user`$ustring from `tiki_history` where `pageName`=? order by $vstring desc";
+		$query = "select DISTINCT `user`$vstring from `tiki_history` where `pageName`=? order by `version` desc";
 		$result = $this->query($query,array($page));
 		$cache_page_contributors = array();
 		$cache_page_contributors['contributors'] = array();

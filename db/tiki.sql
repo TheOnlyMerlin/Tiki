@@ -94,7 +94,7 @@ CREATE TABLE `tiki_actionlog_params` (
   `actionId` int(8) NOT NULL,
   `name` varchar(40) NOT NULL,
   `value` text,
-  KEY `actionIDIndex` (`actionId`),
+  KEY `actionId` (`actionId`),
   KEY `nameValue` (`name`, `value`(200))
 ) ENGINE=MyISAM;
 
@@ -3285,7 +3285,7 @@ CREATE TABLE `tiki_groupalert` (
   `objectType` varchar( 20 ) NOT NULL default '',
   `objectId` varchar(10) NOT NULL default '',
   `displayEachuser` char( 1 ) default NULL ,
-  PRIMARY KEY ( `objectType`, `objectId` )
+  PRIMARY KEY (`groupName`, `objectType`, `objectId` )
 ) ENGINE=MyISAM ;
 
 DROP TABLE IF EXISTS `tiki_sent_newsletters_files`;
@@ -3453,7 +3453,6 @@ CREATE TABLE `tiki_transitions` (
 	KEY `transition_lookup` (`type`, `from`)
 ) ENGINE=MyISAM;
 
-DROP TABLE IF EXISTS `tiki_page_lists`;
 CREATE TABLE IF NOT EXISTS `tiki_page_lists` (
   `list_type_id` int(8) unsigned NOT NULL,
   `priority` int(8) unsigned NOT NULL,
@@ -3462,7 +3461,6 @@ CREATE TABLE IF NOT EXISTS `tiki_page_lists` (
   PRIMARY KEY  (`list_type_id`,`page_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-DROP TABLE IF EXISTS `tiki_page_list_types`;
 CREATE TABLE IF NOT EXISTS `tiki_page_list_types` (
   `id` int(8) unsigned NOT NULL auto_increment,
   `name` varchar(40) NOT NULL,
@@ -3472,16 +3470,3 @@ CREATE TABLE IF NOT EXISTS `tiki_page_list_types` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-DROP TABLE IF EXISTS `tiki_auth_tokens`;
-CREATE TABLE `tiki_auth_tokens` (
-	`tokenId` INT NOT NULL AUTO_INCREMENT,
-	`creation` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	`timeout` INT NOT NULL DEFAULT 0,
-	`token` CHAR(32),
-	`entry` VARCHAR(50),
-	`parameters` VARCHAR(255),
-	`groups` VARCHAR(255),
-	PRIMARY KEY( `tokenId` ),
-	KEY `tiki_auth_tokens_token` (`token`)
-);
--- --------------------------------------------------------

@@ -173,13 +173,11 @@ function get_default_prefs() {
 		'wiki_validate_plugin' => 'y',
 		'wiki_edit_minor' => 'n',
 		'feature_pagelist' => 'n',
-		'wiki_badchar_prevent' => 'n',
 
 		'wikiplugin_agentinfo' => 'n',
 		'wikiplugin_alink' => 'n',
 		'wikiplugin_aname' => 'n',
 		'wikiplugin_annotation' => 'n',
-		'wikiplugin_archivebuilder' => 'n',
 		'wikiplugin_article' => 'y',
 		'wikiplugin_articles' => 'y',
 		'wikiplugin_attach' => 'y',
@@ -275,7 +273,6 @@ function get_default_prefs() {
 		'wikiplugin_sub' => 'y',
 		'wikiplugin_subscribegroup' => 'n',
 		'wikiplugin_subscribegroups' => 'n',
-		'wikiplugin_subscribenewsletter' => 'n',
 		'wikiplugin_sup' => 'y',
 		'wikiplugin_survey' => 'y',
 		'wikiplugin_tag' => 'n',
@@ -307,7 +304,6 @@ function get_default_prefs() {
 		'wikiplugininline_alink' => 'n',
 		'wikiplugininline_aname' => 'n',
 		'wikiplugininline_annotation' => 'n',
-		'wikiplugininline_archivebuilder' => 'n',
 		'wikiplugininline_article' => 'n',
 		'wikiplugininline_articles' => 'n',
 		'wikiplugininline_attach' => 'n',
@@ -403,7 +399,6 @@ function get_default_prefs() {
 		'wikiplugininline_sub' => 'n',
 		'wikiplugininline_subscribegroup' => 'n',
 		'wikiplugininline_subscribegroups' => 'n',
-		'wikiplugininline_subscribenewsletter' => 'n',
 		'wikiplugininline_sup' => 'n',
 		'wikiplugininline_survey' => 'n',
 		'wikiplugininline_tag' => 'n',
@@ -607,7 +602,6 @@ function get_default_prefs() {
 		'forum_thread_style' => 'commentStyle_plain',
 		'forum_thread_sort_mode' => 'commentDate_asc',
 		'forum_match_regex' => '',
-		'forum_reply_notitle' => 'n',
 
 		// articles
 		'feature_articles' => 'n',
@@ -1504,15 +1498,6 @@ function get_default_prefs() {
 
 		'feature_use_minified_scripts' => 'y',		// for debugging
 		'tiki_minify_javascript' => 'n',
-
-		// Token Access
-		'auth_token_access' => 'n',
-		'auth_token_access_maxtimeout' => 30,
-
-		// PDF
-		'print_pdf_from_url' => 'none',
-		'print_pdf_webkit_path' => '',
-		'print_pdf_webservice_url' => '',
 	);
 
 	// spellcheck
