@@ -74,13 +74,11 @@ class WikiLib extends TikiLib {
 			return $ret;
 		}
 		if ($versions) {
-			$ustring = ',`version`';
-			$vstring = '`version`,`user`';
+			$vstring = ',`version`';
 		} else {
-			$ustring = '';
-			$vstring = '`user`';
+			$vstring = '';
 		}
-		$query = "select DISTINCT `user`$ustring from `tiki_history` where `pageName`=? order by $vstring desc";
+		$query = "select DISTINCT `user`$vstring from `tiki_history` where `pageName`=? order by `version` desc";
 		$result = $this->query($query,array($page));
 		$cache_page_contributors = array();
 		$cache_page_contributors['contributors'] = array();
@@ -311,12 +309,12 @@ class WikiLib extends TikiLib {
 				$smarty->assign('mail_date', $this->now);
 				$smarty->assign('mail_user', $user);
 				$foo = parse_url($_SERVER["REQUEST_URI"]);
-				$machine = $tikilib->httpPrefix( true ). $foo["path"];
+				$machine = $tikilib->httpPrefix(). $foo["path"];
 				$smarty->assign('mail_machine', $machine);
 				$parts = explode('/', $foo['path']);
 				if (count($parts) > 1)
 					unset ($parts[count($parts) - 1]);
-				$smarty->assign('mail_machine_raw', $tikilib->httpPrefix( true ). implode('/', $parts));
+				$smarty->assign('mail_machine_raw', $tikilib->httpPrefix(). implode('/', $parts));
 				sendEmailNotification($nots, "watch", "user_watch_wiki_page_renamed_subject.tpl", $_SERVER["SERVER_NAME"], "user_watch_wiki_page_renamed.tpl");
 			}
 		}
@@ -745,7 +743,7 @@ class WikiLib extends TikiLib {
 		}	
 		if ($with_help) {
 			global $cachelib, $headerlib;
-			if (empty($_REQUEST['xjxfun'])) { $headerlib->add_jsfile( 'tiki-jsplugin.php', 'dynamic' ); }
+			if (empty($_REQUEST['xjxfun'])) { $headerlib->add_jsfile( 'tiki-jsplugin.php' ); }
 			$cachetag = 'plugindesc' . $this->get_language() . $area_name;
 			if (!$cachelib->isCached( $cachetag ) ) {
 				$list = $this->plugin_get_list();

@@ -104,7 +104,7 @@ if (isset($_REQUEST["current_page_id"])) {
 	}
 
 	$structure_info = $structlib->s_get_structure_info($_REQUEST['current_page_id']);
-	if ($tiki_p_edit_structures != 'y' || !$tikilib->user_has_perm_on_object($user,$structure_info["pageName"],'wiki page','tiki_p_edit','tiki_p_edit_categorized')) {
+	if ($tiki_p_edit_structures != 'y' || !$tikilib->user_has_perm_on_object($user,$structure_info["pageName"],'wiki page','tiki_p_edit')) {
 		$smarty->assign('errortype', 401);
 		$smarty->assign('msg', tra("Permission denied you cannot edit this page"));
 		$smarty->display("error.tpl");
@@ -512,8 +512,7 @@ if ($prefs['feature_wiki_footnotes'] == 'y') {
 	}
 }
 if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0 && !isset($_REQUEST['preview']) && !isset($_REQUEST['save'])) {
-	$templateLang = isset( $_REQUEST['lang'] ) ? $_REQUEST['lang'] : null;
-	$template_data = $tikilib->get_template($_REQUEST["templateId"], $templateLang);
+	$template_data = $tikilib->get_template($_REQUEST["templateId"]);
 	$_REQUEST["edit"] = $template_data["content"]."\n".$_REQUEST["edit"];
 	$smarty->assign("templateId", $_REQUEST["templateId"]);
 }
@@ -1171,21 +1170,6 @@ if ($prefs['feature_categories'] == 'y') {
 				$categories[$i]['incat'] = 'y';
 		}
 	}
-}
-
-$is_staging_article = ($prefs['wikiapproval_staging_category'] > 0) && (in_array($prefs['wikiapproval_staging_category'], $cats));
-$page_badchars_display = ":/?#[]@!$&'()*+,;=";
-$page_badchars = "/[:\/?#\[\]@!$&'()*+,;=]/";
-if ($is_staging_article && (mb_substr($page, 0, 1) == $prefs['wikiapproval_prefix'])) {
-	$page_name = mb_substr($page, 1);
-}
-else {
-	$page_name = $page;
-}
-
-$matches = preg_match($page_badchars, $page_name);
-if ($matches && ! $tikilib->page_exists($page) ) {
-	$smarty->assign('page_badchars_display', $page_badchars_display);
 }
 
 $plugins = $wikilib->list_plugins(true, 'editwiki');

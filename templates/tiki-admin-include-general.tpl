@@ -263,7 +263,7 @@
 
 <div class="adminoptionbox">
 	<div class="adminoption"><input type="checkbox" id="feature_wiki_1like_redirection" name="feature_wiki_1like_redirection" {if $prefs.feature_wiki_1like_redirection eq 'y'}checked="checked"{/if}/></div>
-	<div class="adminoptionlabel"><label for="feature_wiki_1like_redirection">{tr}When viewing a page, if it doesn't exist automatically redirect to a similarly  named page{/tr}.</label></div>
+	<div class="adminoptionlabel"><label for="feature_wiki_1like_redirection">{tr}If a requested page doesn't exist, redirect to a similarly named page{/tr}.</label></div>
 </div>				
 				
 			<div class="adminoptionbox">
@@ -383,7 +383,6 @@
 					<option value="YMD" {if $prefs.display_field_order=="YMD"}selected="selected"{/if}>{tr}Year{/tr} {tr}Month{/tr} {tr}Day{/tr}</option>
 				</select>
 			</div>
-			{preference name=tiki_same_day_time_only}
 		</div>
 		<div class="adminoptionbox">	
 			{assign var="fcnlink" value="http://www.php.net/manual/en/function.strftime.php"}

@@ -1281,45 +1281,12 @@ class TikiLib extends TikiDb_Bridge {
 	}
 
 	/*shared*/
-	function get_template($templateId, $lang = null) {
+	function get_template($templateId) {
 		$query = "select * from `tiki_content_templates` where `templateId`=?";
 		$result = $this->query($query,array((int)$templateId));
 		if (!$result->numRows()) return false;
 		$res = $result->fetchRow();
-
-
-		if( $res['template_type'] == 'page' ) {
-			if( substr( $res['content'], 0, 5 ) == 'page:' ) {
-				$res['page_name'] = substr( $res['content'], 5 );
-				$res['content'] = $this->get_template_from_page( $res['page_name'], $lang );
-			}
-		} else {
-			$res['page_name'] = '';
-		}
-
-
 		return $res;
-	}
-
-	private function get_template_from_page( $page, $lang ) {
-		global $prefs;
-		$info = $this->get_page_info( $page );
-
-		if( $prefs['feature_multilingual'] == 'y' ) {
-			global $multilinguallib; require_once 'lib/multilingual/multilinguallib.php';
-
-			if( $lang && $info['lang'] && $lang != $info['lang'] ) {
-				$bestLangPageId = $multilinguallib->selectLangObj( 'wiki page', $info['page_id'], $lang );
-
-				if ($info['page_id'] != $bestLangPageId) {
-					$info = $this->get_page_info_from_id($bestLangPageId);
-				}
-			}
-		}
-
-		if( $info ) {
-			return TikiLib::htmldecode( $info['data'] );
-		}
 	}
 	// templates ////
 
@@ -2966,7 +2933,7 @@ class TikiLib extends TikiDb_Bridge {
 		$ret = array();
 
 		while ($res = $result->fetchRow()) {
-			if( (!empty($user) and $user == $res['user']) || $tiki_p_blog_admin == 'y' || ($res['public'] == 'y' && $this->user_has_perm_on_object($user, $res['blogId'], 'blog', 'tiki_p_blog_post', 'tiki_p_edit_categorized')))
+			if( (!empty($user) and $user == $res['user']) || $tiki_p_blog_admin == 'y' || ($res['public'] == 'y' && $this->user_has_perm_on_object($user, $res['blogId'], 'blog', 'tiki_p_blog_post'))) 
 				$ret[] = $res;
 		}
 		return $ret;
@@ -3775,7 +3742,7 @@ class TikiLib extends TikiDb_Bridge {
 		//  Deal with mail notifications.
 		include_once('lib/notifications/notificationemaillib.php');
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
-		$machine = $this->httpPrefix( true ). dirname( $foo["path"] );
+		$machine = $this->httpPrefix(). dirname( $foo["path"] );
 		$page_info = $this->get_page_info($page);
 		sendWikiEmailNotification('wiki_page_deleted', $page, $user, $comment, 1, $page_info['data'], $machine);
 		
@@ -4184,7 +4151,7 @@ class TikiLib extends TikiDb_Bridge {
 	// - category permission
 	// if O.K. this function shall replace similar constructs in list_pages and other functions above.
 	// $categperm is the category permission that should grant $perm. if none, pass 0
-	function user_has_perm_on_object($user,$object,$objtype,$perm,$categperm='tiki_p_view_categorized') {
+	function user_has_perm_on_object($user,$object,$objtype,$perm) {
 		global $userlib;
 		$groups = $userlib->get_user_groups( $user );
 
@@ -4812,7 +4779,7 @@ class TikiLib extends TikiDb_Bridge {
 			include_once('lib/notifications/notificationemaillib.php');
 
 			$foo = parse_url($_SERVER["REQUEST_URI"]);
-			$machine = $this->httpPrefix( true ). dirname( $foo["path"] );
+			$machine = $this->httpPrefix(). dirname( $foo["path"] );
 			sendWikiEmailNotification('wiki_page_created', $name, $user, $comment, 1, $data, $machine, '', false, $hash['contributions']);
 			if ($prefs['feature_contribution'] == 'y') {
 				global $contributionlib; include_once('lib/contribution/contributionlib.php');
@@ -7572,7 +7539,7 @@ class TikiLib extends TikiDb_Bridge {
 				global $histlib; include_once ("lib/wiki/histlib.php");
 				$old = $histlib->get_version($pageName, $old_version);
 				$foo = parse_url($_SERVER["REQUEST_URI"]);
-				$machine = $this->httpPrefix( true ). dirname( $foo["path"] );
+				$machine = $this->httpPrefix(). dirname( $foo["path"] );
 				require_once('lib/diff/difflib.php');
 				$diff = diff2($old["data"] , $edit_data, "unidiff");
 				sendWikiEmailNotification('wiki_page_changed', $pageName, $edit_user, $edit_comment, $old_version, $edit_data, $machine, $diff, $edit_minor, $hash['contributions']);
@@ -8030,16 +7997,9 @@ class TikiLib extends TikiDb_Bridge {
 		return $url_scheme;
 	}
 
-	function httpPrefix( $isUserSpecific = false ) {
-		global $url_scheme, $url_host, $url_port, $prefs;
-
-		if( $isUserSpecific && $prefs['https_external_links_for_users'] == 'y' ) {
-			$scheme = 'https';
-		} else {
-			$scheme = $url_scheme;
-		}
-
-		return $scheme.'://'.$url_host.(($url_port!='')?":$url_port":'');    
+	function httpPrefix() {
+		global $url_scheme, $url_host, $url_port;
+		return $url_scheme.'://'.$url_host.(($url_port!='')?":$url_port":'');    
 	}
 
 	function distance($lat1,$lon1,$lat2,$lon2) {
@@ -8564,12 +8524,36 @@ function detect_browser_language() {
 	return $aproximate_lang;
 }
 
-function validate_email($email) {
+function validate_email($email,$checkserver='n') {
 	global $prefs;
-	require_once 'lib/core/lib/Zend/Validate/EmailAddress.php';
-	$validate = new Zend_Validate_EmailAddress;
-	
-	return $validate->isValid( $email );
+	$valid_syntax = eregi($prefs['valid_email_regex'], $email);
+	if (!$valid_syntax) {
+		return false;
+	} elseif ($checkserver == 'y') {
+		include_once('Net/DNS.php');
+		$resolver = new Net_DNS_Resolver();
+		$domain = substr(strstr($email,'@'),1);
+		$answer = $resolver->query($domain,'MX');
+		if (!$answer) {
+			return false;
+		} else {
+			foreach ($answer->answer as $server) {
+				$mxserver[$server->preference] = $server->exchange;
+			}
+			krsort($mxserver);
+			foreach ($mxserver as $server) {
+				$test = fsockopen($server,25,$errno,$errstr,15);
+				if ($test) {
+					fclose($test);
+					return true;
+				}
+				fclose($test);
+			}
+			return false;
+		}
+	} else {
+		return true;
+	}
 }
 
 /* Editor configuration

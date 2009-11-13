@@ -48,7 +48,7 @@ class ScreencastLib {
 	 * @return array
 	 */
 	function find($string, $showBase=false) {			
-		if( !empty($this->handler) ) {
+		if( $this->handler ) {
 			return $this->handler->find($string, $showBase);	
 		} else {
 			return array();

@@ -307,67 +307,34 @@ if (isset($_REQUEST["find_objects"])) {
 } else {
 	$find_objects = '';
 }
-
-$maximum = 0;
-$maxRecords = 50;
-$offset = (int) $_GET['offset'];
-
 $smarty->assign('find_objects', $find_objects);
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 $smarty->assign_by_ref('find', $find);
 $objects = $categlib->list_category_objects($_REQUEST["parentId"], $offset, $maxRecords, $sort_mode, '', $find, false);
 $smarty->assign_by_ref('objects', $objects["data"]);
 $smarty->assign_by_ref('cant_pages', $objects["cant"]);
-$maximum = max( $objects['cant'], $maximum );
-
-$galleries = $tikilib->list_galleries($offset, $maxRecords, 'name_desc', 'admin', $find_objects);
+$galleries = $tikilib->list_galleries(0, -1, 'name_desc', 'admin', $find_objects);
 $smarty->assign_by_ref('galleries', $galleries["data"]);
-$maximum = max( $galleries['cant'], $maximum );
-
-$file_galleries = $filegallib->list_file_galleries($offset, $maxRecords, 'name_desc', 'admin', $find_objects, $prefs['fgal_root_id']);
+$file_galleries = $filegallib->list_file_galleries(0, -1, 'name_desc', 'admin', $find_objects, $prefs['fgal_root_id']);
 $smarty->assign_by_ref('file_galleries', $file_galleries["data"]);
-$maximum = max( $file_galleries['cant'], $maximum );
-
-$forums = $commentslib->list_forums($offset, $maxRecords, 'name_asc', $find_objects);
+$forums = $commentslib->list_forums(0, -1, 'name_asc', $find_objects);
 $smarty->assign_by_ref('forums', $forums["data"]);
-$maximum = max( $forums['cant'], $maximum );
-
-$polls = $polllib->list_polls($offset, $maxRecords, 'title_asc', $find_objects);
+$polls = $polllib->list_polls(0, -1, 'title_asc', $find_objects);
 $smarty->assign_by_ref('polls', $polls["data"]);
-$maximum = max( $polls['cant'], $maximum );
-
-$blogs = $tikilib->list_blogs($offset, $maxRecords, 'title_asc', $find_objects);
+$blogs = $tikilib->list_blogs(0, -1, 'title_asc', $find_objects);
 $smarty->assign_by_ref('blogs', $blogs["data"]);
-$maximum = max( $blogs['cant'], $maximum );
-
-$pages = $tikilib->list_pageNames($offset, $maxRecords, 'pageName_asc', $find_objects);
+$pages = $tikilib->list_pageNames(0, -1, 'pageName_asc', $find_objects);
 $smarty->assign_by_ref('pages', $pages["data"]);
-$maximum = max( $pages['cant'], $maximum );
-
-$faqs = $tikilib->list_faqs($offset, $maxRecords, 'title_asc', $find_objects);
+$faqs = $tikilib->list_faqs(0, -1, 'title_asc', $find_objects);
 $smarty->assign_by_ref('faqs', $faqs["data"]);
-$maximum = max( $faqs['cant'], $maximum );
-
-$quizzes = $tikilib->list_quizzes($offset, $maxRecords, 'name_asc', $find_objects);
+$quizzes = $tikilib->list_quizzes(0, -1, 'name_asc', $find_objects);
 $smarty->assign_by_ref('quizzes', $quizzes["data"]);
-$maximum = max( $quizzes['cant'], $maximum );
-
-$trackers = $trklib->list_trackers($offset, $maxRecords, 'name_asc', $find_objects);
+$trackers = $trklib->list_trackers(0, -1, 'name_asc', $find_objects);
 $smarty->assign_by_ref('trackers', $trackers["data"]);
-$maximum = max( $trackers['cant'], $maximum );
-
-$articles = $tikilib->list_articles($offset, $maxRecords, 'title_asc', $find_objects, '', '', $user, '', '', 'n');
+$articles = $tikilib->list_articles(0, -1, 'title_asc', $find_objects, '', '', $user, '', '', 'n');
 $smarty->assign_by_ref('articles', $articles["data"]);
-$maximum = max( $articles['cant'], $maximum );
-
-$directories = $dirlib->dir_list_all_categories($offset, $maxRecords, 'name_asc', $find_objects);
+$directories = $dirlib->dir_list_all_categories(0, -1, 'name_asc', $find_objects);
 $smarty->assign_by_ref('directories', $directories["data"]);
-$maximum = max( $directories['cant'], $maximum );
-
-$smarty->assign( 'maxRecords', $maxRecords );
-$smarty->assign( 'offset', $offset );
-$smarty->assign( 'maximum', $maximum );
-
 ask_ticket('admin-categories');
 if (!empty($errors)) $smarty->assign_by_ref('errors', $errors);
 // disallow robots to index page:

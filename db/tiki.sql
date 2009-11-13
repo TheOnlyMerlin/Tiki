@@ -1479,7 +1479,7 @@ CREATE TABLE `tiki_modules` (
   KEY `moduleId` (`moduleId`)
 ) ENGINE=MyISAM;
 
-INSERT INTO tiki_modules (name,position,ord,cache_time,params,groups) VALUES ('Application_Menu','l',30,0,'flip=y','a:1:{i:0;s:10:"Registered";}');
+INSERT INTO tiki_modules (name,position,ord,cache_time,params,groups) VALUES ('Application Menu','l',30,0,'flip=y','a:1:{i:0;s:10:"Registered";}');
 
 DROP TABLE IF EXISTS `tiki_newsletter_subscriptions`;
 CREATE TABLE `tiki_newsletter_subscriptions` (
@@ -2345,7 +2345,7 @@ CREATE TABLE `tiki_user_modules` (
   PRIMARY KEY (`name`)
 ) ENGINE=MyISAM;
 
-INSERT INTO tiki_user_modules (name, title, data, parse) VALUES ('Application_Menu', 'Menu', '{menu id=42}', 'n');
+INSERT INTO tiki_user_modules (name, title, data, parse) VALUES ('Application Menu', 'Menu', '{menu id=42}', 'n');
 
 DROP TABLE IF EXISTS `tiki_user_notes`;
 CREATE TABLE `tiki_user_notes` (
@@ -3454,7 +3454,6 @@ CREATE TABLE `tiki_transitions` (
 	KEY `transition_lookup` (`type`, `from`)
 ) ENGINE=MyISAM;
 
-DROP TABLE IF EXISTS `tiki_page_lists`;
 CREATE TABLE IF NOT EXISTS `tiki_page_lists` (
   `list_type_id` int(8) unsigned NOT NULL,
   `priority` int(8) unsigned NOT NULL,
@@ -3463,7 +3462,6 @@ CREATE TABLE IF NOT EXISTS `tiki_page_lists` (
   PRIMARY KEY  (`list_type_id`,`page_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-DROP TABLE IF EXISTS `tiki_page_list_types`;
 CREATE TABLE IF NOT EXISTS `tiki_page_list_types` (
   `id` int(8) unsigned NOT NULL auto_increment,
   `name` varchar(40) NOT NULL,
@@ -3473,16 +3471,3 @@ CREATE TABLE IF NOT EXISTS `tiki_page_list_types` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-DROP TABLE IF EXISTS `tiki_auth_tokens`;
-CREATE TABLE `tiki_auth_tokens` (
-	`tokenId` INT NOT NULL AUTO_INCREMENT,
-	`creation` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	`timeout` INT NOT NULL DEFAULT 0,
-	`token` CHAR(32),
-	`entry` VARCHAR(50),
-	`parameters` VARCHAR(255),
-	`groups` VARCHAR(255),
-	PRIMARY KEY( `tokenId` ),
-	KEY `tiki_auth_tokens_token` (`token`)
-);
--- --------------------------------------------------------

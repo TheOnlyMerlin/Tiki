@@ -49,7 +49,7 @@
 {remarksbox type="note" title="{tr}Note{/tr}"}{$saved_msg}{/remarksbox}
 {/if}
 
-<div class="navbar" style="clear: both; text-align: right">
+<div class="categbar" style="clear: both; text-align: right">
     {if $user and $prefs.feature_user_watches eq 'y'}
         {if $category_watched eq 'y'}
             {tr}Watched by categories{/tr}:
@@ -84,7 +84,7 @@
 	{/section}
 {/if}
 
-<div id="top" class="wikitext clearfix">
+<div class="wikitext clearfix">
 
 {if !$hide_page_header}
 {if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y' and isset($freetags.data[0]) and $prefs.freetags_show_middle eq 'y'}

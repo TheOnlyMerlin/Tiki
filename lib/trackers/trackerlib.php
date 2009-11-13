@@ -221,12 +221,12 @@ class TrackerLib extends TikiLib {
 			$smarty->assign('mail_attId', $attId);
 			$smarty->assign('mail_data', $filename."\n".$comment."\n".$version."\n".$longdesc);
 			$foo = parse_url($_SERVER["REQUEST_URI"]);
-			$machine = $this->httpPrefix( true ). $foo["path"];
+			$machine = $this->httpPrefix(). $foo["path"];
 			$smarty->assign('mail_machine', $machine);
 			$parts = explode('/', $foo['path']);
 			if (count($parts) > 1)
 				unset ($parts[count($parts) - 1]);
-			$smarty->assign('mail_machine_raw', $this->httpPrefix( true ). implode('/', $parts));
+			$smarty->assign('mail_machine_raw', $this->httpPrefix(). implode('/', $parts));
 			if (!isset($_SERVER["SERVER_NAME"])) {
 				$_SERVER["SERVER_NAME"] = $_SERVER["HTTP_HOST"];
 			}
@@ -275,12 +275,12 @@ class TrackerLib extends TikiLib {
 			$smarty->assign('mail_trackerId', $trackerId);
 			$smarty->assign('mail_trackerName', $trackerName);
 			$foo = parse_url($_SERVER["REQUEST_URI"]);
-			$machine = $this->httpPrefix( true ). $foo["path"];
+			$machine = $this->httpPrefix(). $foo["path"];
 			$smarty->assign('mail_machine', $machine);
 			$parts = explode('/', $foo['path']);
 			if (count($parts) > 1)
 				unset ($parts[count($parts) - 1]);
-			$smarty->assign('mail_machine_raw', $this->httpPrefix( true ). implode('/', $parts));
+			$smarty->assign('mail_machine_raw', $this->httpPrefix(). implode('/', $parts));
 			if (!isset($_SERVER["SERVER_NAME"])) {
 				$_SERVER["SERVER_NAME"] = $_SERVER["HTTP_HOST"];
 			}
@@ -774,23 +774,12 @@ class TrackerLib extends TikiLib {
 
 				if ( $filter['type'] == 'e' && $prefs['feature_categories'] == 'y' ) { //category
 
+					$cat_table .= " INNER JOIN `tiki_objects` tob$ff ON (tob$ff.`itemId` = tti.`itemId`)"
+						." INNER JOIN `tiki_category_objects` tco$ff ON (tob$ff.`objectId` = tco$ff.`catObjectId`)";
+					$mid .= " AND tob$ff.`type` = 'trackeritem' AND tco$ff.`categId` IN ( ";
 					$value = empty($fv) ? $ev : $fv;
-					if ( ! is_array($value) && $value != '' ) {
+					if ( ! is_array($value) && $value != '' )
 						$value = array($value);
-						$not = '';
-					} elseif (is_array($value) && array_key_exists('not', $value)) {
-						$value = $value['not'];
-						$not = 'not';
-					}
-					if (empty($not)) {
-						$cat_table .= " INNER JOIN `tiki_objects` tob$ff ON (tob$ff.`itemId` = tti.`itemId`)"
-							." INNER JOIN `tiki_category_objects` tco$ff ON (tob$ff.`objectId` = tco$ff.`catObjectId`)";
-						$mid .= " AND tob$ff.`type` = 'trackeritem' AND tco$ff.`categId` IN ( ";
-					} else {
-						$cat_table .= " left JOIN `tiki_objects` tob$ff ON (tob$ff.`itemId` = tti.`itemId`)"
-							." left JOIN `tiki_category_objects` tco$ff ON (tob$ff.`objectId` = tco$ff.`catObjectId`)";
-						$mid .= " AND tob$ff.`type` = 'trackeritem' AND tco$ff.`categId` NOT IN ( ";
-					}
 					$first = true;
 					foreach ( $value as $catId ) {
 						$bindvars[] = $catId;
@@ -801,9 +790,6 @@ class TrackerLib extends TikiLib {
 						$mid .= '?';
 					}
 					$mid .= " ) ";
-					if (!empty($not)) {
-						$mid .= "OR tco$ff.`categId` IS NULL ";
-					}
 
 				} elseif ($ev) {
 					if (is_array($ev)) {
@@ -1536,12 +1522,12 @@ class TrackerLib extends TikiLib {
 					$smarty->assign('mail_trackerName', $trackerName);
 					$smarty->assign('server_name', $_SERVER['SERVER_NAME']);
 					$foo = parse_url($_SERVER["REQUEST_URI"]);
-					$machine = $this->httpPrefix( true ). $foo["path"];
+					$machine = $this->httpPrefix(). $foo["path"];
 					$smarty->assign('mail_machine', $machine);
 					$parts = explode('/', $foo['path']);
 					if (count($parts) > 1)
 						unset ($parts[count($parts) - 1]);
-					$smarty->assign('mail_machine_raw', $this->httpPrefix( true ). implode('/', $parts));
+					$smarty->assign('mail_machine_raw', $this->httpPrefix(). implode('/', $parts));
 					$smarty->assign_by_ref('status', $status);
 					foreach ($watchers as $watcher) {
 						if ($itemId) {
@@ -1569,12 +1555,12 @@ class TrackerLib extends TikiLib {
 				} else {
 			    		// Use simple email
 					$foo = parse_url($_SERVER["REQUEST_URI"]);
-					$machine = $this->httpPrefix( true ). $foo["path"];
+					$machine = $this->httpPrefix(). $foo["path"];
 					$parts = explode('/', $foo['path']);
 					if (count($parts) > 1) {
 						unset ($parts[count($parts) - 1]);
 					}
-					$machine = $this->httpPrefix( true ). implode('/', $parts);
+					$machine = $this->httpPrefix(). implode('/', $parts);
 					if (!$itemId) {
 						$itemId = $new_itemId;
 					}
@@ -2074,12 +2060,12 @@ class TrackerLib extends TikiLib {
 			$smarty->assign('mail_trackerName', $trackerName);
 			$smarty->assign('mail_data', '');
 			$foo = parse_url($_SERVER["REQUEST_URI"]);
-			$machine = $this->httpPrefix( true ). $foo["path"];
+			$machine = $this->httpPrefix(). $foo["path"];
 			$smarty->assign('mail_machine', $machine);
 			$parts = explode('/', $foo['path']);
 			if (count($parts) > 1)
 				unset ($parts[count($parts) - 1]);
-			$smarty->assign('mail_machine_raw', $this->httpPrefix( true ). implode('/', $parts));
+			$smarty->assign('mail_machine_raw', $this->httpPrefix(). implode('/', $parts));
 			if (!isset($_SERVER["SERVER_NAME"])) {
 				$_SERVER["SERVER_NAME"] = $_SERVER["HTTP_HOST"];
 			}

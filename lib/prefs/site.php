@@ -55,19 +55,5 @@ function prefs_site_list() {
 				'desc' => tra('Description'),
 			),
 		),
-		'site_favicon' => array(
-			'name' => tra('Favicon icon file name'),
-			'type' => 'text',
-			'size' => '15',
-		),
-		'site_favicon_type' => array(
-			'name' => tra('Favicon icon MIME type'),
-			'type' => 'list',
-			'options' => array(
-				'image/png' => tra('image/png'),
-				'image/bmp' => tra('image/bmp'),
-				'image/x-icon' => tra('image/x-icon'),
-			),
-		),
 	);
 }
