@@ -3,14 +3,6 @@
 	(http://celo.wordpress.com/) and uses the *litecss source-ordered layout
 	solution by luci (http://sourceforge.net/projects/litecss). For more
 	information, please visit http://themes.tikiwiki.org or http://zukakakina.com.
- 
-	abse.css is comprised of these sections:
-	XHTML elements, Siteheader & Identity; Menus, Links;
-	Misc. Center Col.; Misc. Global; Boxes; Tables, Tabs;
-	Wiki (inc. plugins, etc.); Articles; Blogs; Forums;
-	Galleries; Trackers; Categories, Tags; Polls; FAQs;
-	Quizzes;	Shoutbox; Directory; Messages; TikiSheets;
-	Calendar; Admin; and Ajax, jquery, etc.
 */
  
 /* Import layout foundation CSS file. */
@@ -590,16 +582,26 @@ table {font-size: 1em}
 table.normal, 
 table.admin {border: solid 1px #909090}
 
-tr.odd td {background: #000 url(abse/menubg.jpg) repeat-y}
-tr.even {background: #0e150e}
-
-td.odd {
+tr.odd,
+tr.odd td,
+td.odd,
+li.odd {
 	background: #000 url(abse/menubg.jpg) repeat-y;
-	border-right: 1px solid #636f65}
+	color: #fff;
+}
 
-td.even {
+tr.even,
+td.even,
+tr.even td,
+li.even {
 	background: #0e150e;
-	border-right: 1px solid #636f65}
+	color: #fff;
+}
+
+td.odd, {
+td.even {
+	border-right: 1px solid #636f65;
+}
 
 table.normal td.heading {font-size: 1em}
 
