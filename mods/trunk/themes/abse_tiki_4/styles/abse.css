@@ -226,7 +226,9 @@ option:hover,
 .calbuttonBox a:hover {
 	background: url(abse/titlebgon.png) repeat-x 0 1px;
 	color: #fff/*#BDCEC3*/;
-	text-decoration: none}
+	text-decoration: none;
+	padding: 0 4px;
+}
 
 select[name="theme"]:hover,
 option:hover {
