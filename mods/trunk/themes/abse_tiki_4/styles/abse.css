@@ -234,7 +234,9 @@ select[name="theme"]:hover,
 option:hover {
 	text-decoration: none;
 	color: #fff;
-	background: #586858 url(abse/menubg.jpg) repeat-y}
+	background: #586858 url(abse/menubg.jpg) repeat-y:
+	padding: 0 4px;
+}
 
 select[multiple] {height: 10em}
 
