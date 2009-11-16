@@ -12,7 +12,6 @@ function prefs_search_list() {
 		),
 		'search_refresh_rate' => array(
 			'name' => tra('Refresh rate'),
-			'hint' => tra('Use 0 for no refresh'),
 			'type' => 'text',
 			'size' => '4',
 		),
@@ -43,7 +42,6 @@ function prefs_search_list() {
 		),
 		'search_parsed_snippet' => array(
 			'name' => tra('Parse the results'),
-			'hint' => tra('May impact performance'),
 			'type' => 'flag',
 		),
 	);

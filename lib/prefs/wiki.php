@@ -100,23 +100,6 @@ function prefs_wiki_list() {
 			'type' => 'flag',
 			'hint' => 'Requires javascript',
 		),
-		'wiki_badchar_prevent' => array(
-			'name' => tra('Prevent special characters in page names'),
-			'description' => tra('Some characters may prevent the pages from being easily accessible from the URL or through wiki links. This option prevents from creating pages with such characters.'),
-			'type' => 'flag',
-		),
-		'wiki_ranking_reload_probability' => array(
-			'name' => tra('Page ranking reload probability'),
-			'description' => tra('Calculation of page rankings is an expensive task that cannot be performed at every page load. It will be calculated at random page loads based on a dice roll. This option indicates the amount of faces on the dice. Larger numbers lead to less load, but less accurate ranking.'),
-			'type' => 'text',
-			'size' => 7,
-			'filter' => 'digits',
-		),
-		'wiki_encourage_contribution' => array(
-			'name' => tra('Encourage contribution to wiki pages by anonymnous'),
-			'description' => tra('When a page is not editable and the user is anonymous, display the edit links anyway. The visitor will be prompted with a login screen and be encouraged to register.'),
-			'type' => 'flag',
-		),
 	);
 }
 

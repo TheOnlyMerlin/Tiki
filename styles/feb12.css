@@ -284,14 +284,7 @@ div#tiki-main #tikimidtbl {
 
 #sioptions, #sioptionscentered {
 	margin: 0;
-	padding: 10px;
-}
-
-#sitelogo {
-	margin-top: 0;
-}
-#sitelogo img {
-	padding: 0 10px !important;/* important put here because div#sitelogo img is too forcible in design.css */
+	padding-top: 10px;
 }
 
 div#sitead {
@@ -330,17 +323,22 @@ div#sitead {
 
 /* Site title and subtitle */
 #sitetitles {
-	text-shadow: 0 0 10px #fff;/* text-shadow; CSS3 valid property, values are <offset x> <offset y> <blur> and <color>; ex: 0 0 10px #fff */
+	color: #052653;
 	font-weight: bold;
-	height: 4em;
+	margin: 1em;
+}
+
+#sitetitle,
+#sitesubtitle {
+	color: #052653;
+	font-weight: bold;
 	margin: 0;
-	position: relative;
+	padding: 0;
 }
 
 #sitetitle {
 	font-size: 2.2em;
-	position: relative;
-	top: 0.5em;
+	margin-top: 20px;
 }
 
 #sitetitle a,
@@ -356,11 +354,8 @@ div#sitead {
 }
 
 #sitesubtitle {
-	color: #fff;
 	font-size: 1.3em;
-	padding-top: 4em;
-	position: relative;
-	margin-top: -3em;
+	padding-top: 8px;
 }
 
 /* tiki-top_bar.tpl - menu and search */

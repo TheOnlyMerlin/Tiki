@@ -40,6 +40,7 @@
 		{/if}
 		
 		<a class="link" href="tiki-admin_categories.php?parentId={$catree[dx].parentId}&amp;categId={$catree[dx].categId}" title="{tr}Edit{/tr}">{icon _id='page_edit' hspace="5" vspace="1"}</a>
+		<a class="link" href="tiki-admin_categories.php?parentId={$catree[dx].categId}" title="{tr}View{/tr}">{icon _id='magnifier' hspace="5" vspace="1"}</a>
 		<a class="link" href="tiki-admin_categories.php?parentId={$catree[dx].parentId}&amp;removeCat={$catree[dx].categId}" title="{tr}Delete{/tr}">{icon _id='cross' hspace="5" vspace="1"}</a>
 		
 		{if $catree[dx].has_perm eq 'y'}
@@ -199,7 +200,6 @@
 						</td>
 					</tr>
 				</table>
-				{pagination_links cant=$maximum step=$maxRecords offset=$offset}{/pagination_links}
 				<form action="tiki-admin_categories.php" method="post">
 					<input type="hidden" name="parentId" value="{$parentId|escape}" />
 					<table>
@@ -361,7 +361,6 @@
 
 					</table>
 				</form>
-				{pagination_links cant=$maximum step=$maxRecords offset=$offset}{/pagination_links}
 			</div>
 		</div>
 {/if}

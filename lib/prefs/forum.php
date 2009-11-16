@@ -18,7 +18,6 @@ function prefs_forum_list() {
 		'forum_thread_user_settings' => array(
 			'name' => tra('Display thread configuration bar'),
 			'type' => 'flag',
-			'hint' => tra('Allows users to override the defaults'),
 		),
 		'forum_thread_user_settings_threshold' => array(
                         'name' => tra('Display thread configuration bar only when number of posts exceed'),
@@ -85,11 +84,6 @@ function prefs_forum_list() {
 			'type' => 'text',
 			'size' => '5',
 			'filter' => 'digits',
-		),
-		'forum_reply_notitle' => array(
-			'name' => tra('Hide titles for forum threads'),
-			'description' => tra('Most titles are left untouched because they are a direct reply to the parent thread. This feature hides the title altogether from the forms and display.'),
-			'type' => 'flag',
 		),
 	);
 }

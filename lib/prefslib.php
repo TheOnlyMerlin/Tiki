@@ -53,7 +53,7 @@ class PreferencesLib
 	}
 
 	function applyChanges( $handled, $data, $limitation = null ) {
-		global $tikilib;
+		global $tikilib, $user_overrider_prefs;
 
 		if( is_array( $limitation ) ) {
 			$handled = array_intersect( $handled, $limitation );
@@ -65,7 +65,7 @@ class PreferencesLib
 			$function = '_get' . ucfirst( $info['type'] ) . 'Value';
 			$value = $this->$function( $info, $data );
 
-			if( $tikilib->get_preference( $pref ) != $value ) {
+			if( in_array($pref, $user_overrider_prefs) || $tikilib->get_preference( $pref ) != $value ) {
 				$tikilib->set_preference( $pref, $value );
 				$changes[$pref] = $value;
 			}
@@ -217,19 +217,6 @@ class PreferencesLib
 		$options = array_keys( $options );
 
 		return array_intersect( $value, $options );
-	}
-	private function _getRadioValue( $info, $data ) {
-		$name = $info['preference'];
-		$value = $data[$name];
-
-		$options = $info['options'];
-		$options = array_keys( $options );
-
-		if (in_array($value, $options)) {
-			return $value;
-		} else {
-			return '';
-		}
 	}
 }
 

@@ -5,6 +5,11 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id: /cvsroot/tikiwiki/tiki/tiki-admin_content_templates.php,v 1.21 2007-10-12 07:55:23 nyloth Exp $
 require_once ('tiki-setup.php');
+if ($prefs['feature_wiki_templates'] != 'y' && $prefs['feature_cms_templates'] != 'y') {
+	$smarty->assign('msg', tra('Feature is disabled:').' '.'feature_wiki_templates'.' '.'feature_cms_templates');
+	$smarty->display('error.tpl');
+	die;
+}
 include_once ('lib/templates/templateslib.php');
 if ($tiki_p_edit_content_templates != 'y') {
 	$smarty->assign('errortype', 401);
@@ -51,7 +56,6 @@ if ($_REQUEST["templateId"]) {
 } else {
 	$info = array();
 	$info["name"] = '';
-	$info['template_type'] = 'static';
 	$info["content"] = '';
 	$info["section_cms"] = 'n';
 	$info["section_html"] = 'n';
@@ -59,7 +63,6 @@ if ($_REQUEST["templateId"]) {
 	$info["section_newsletters"] = 'n';
 	$info["section_event"] = 'n';
 }
-
 $smarty->assign('info', $info);
 if (isset($_REQUEST["remove"])) {
 	$area = 'delcontenttemplate';
@@ -112,21 +115,11 @@ if (isset($_REQUEST["preview"])) {
 	}
 	$info["content"] = $_REQUEST["content"];
 	$info["name"] = $_REQUEST["name"];
-	$info['page_name'] = $_REQUEST['page_name'];
-	$info['template_type'] = $_REQUEST['template_type'];
 	$smarty->assign('info', $info);
 }
 if (isset($_REQUEST["save"])) {
 	check_ticket('admin-content-templates');
-	$type = $_REQUEST['template_type'];
-
-	if( $type == 'page' ) {
-		$content = 'page:' . $_REQUEST['page_name'];
-	} else {
-		$content = $_REQUEST["content"];
-	}
-
-	$tid = $templateslib->replace_template($_REQUEST["templateId"], $_REQUEST["name"], $content, $type);
+	$tid = $templateslib->replace_template($_REQUEST["templateId"], $_REQUEST["name"], $_REQUEST["content"]);
 	$smarty->assign("templateId", '0');
 	$info["name"] = '';
 	$info["content"] = '';

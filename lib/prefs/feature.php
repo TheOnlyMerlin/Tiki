@@ -807,7 +807,6 @@ function prefs_feature_list() {
 		),
 		'feature_search_show_forbidden_cat' => array(
 			'name' => tra('Ignore category viewing restrictions'),
-			'hint' => tra('Will improve performance, but may show forbidden results'),
 			'type' => 'flag',
 			'help' => 'WYSIWYCA+Search',
 		),
@@ -887,7 +886,6 @@ function prefs_feature_list() {
 		),
 		'feature_search_fulltext' => array(
 			'name' => tra('Database search'),
-			'hint' => tra('This search uses the MySQL Full-Text feature. The indexation is always updated.'),
 			'type' => 'flag',
 			'help' => 'Search',
 		),
@@ -993,22 +991,18 @@ function prefs_feature_list() {
 		'feature_forum_replyempty' => array(
 			'name' => tra('Replies are empty'),
 			'type' => 'flag',
-			'hint' => tra('If disabled, replies will quote the original post'),
 		),
 		'feature_forums_allow_thread_titles' => array(
 			'name' => tra('First post of a thread can have an empty body'),
 			'type' => 'flag',
-			'hint' => tra('Will be a thread title'),
 		),
 		'feature_forums_name_search' => array(
 			'name' => tra('Forum name search'),
 			'type' => 'flag',
-			'hint' => tra('When listing forums'),
 		),
 		'feature_forums_search' => array(
 			'name' => tra('Forum content search'),
 			'type' => 'flag',
-			'hint' => tra('When listing forums'),
 		),
 		'feature_forum_content_search' => array(
 			'name' => tra('Topic content search'),
@@ -1049,258 +1043,6 @@ function prefs_feature_list() {
 			'dependencies' => array(
 				'feature_bot_bar',
 			),			
-		),
-		'feature_editcss' => array(
-			'name' => tra('Edit CSS'),
-			'type' => 'flag',
-			'help' => 'Edit+CSS',
-		),
-		'feature_theme_control' => array(
-			'name' => tra('Theme Control'),
-			'type' => 'flag',
-		),
-		'feature_view_tpl' => array(
-			'name' => tra('Tiki Template Viewing'),
-			'type' => 'flag',
-			'help' => 'View+Templates',
-		),
-		'feature_edit_templates' => array(
-			'name' => tra('Edit Templates'),
-			'type' => 'flag',
-			'help' => 'Edit+Templates',
-		),
-		'feature_custom_html_head_content' => array(
-			'name' => tra('Custom HTML <head> Content'),
-			'hint' => tra('Example') . "{if \$page eq 'Slideshow'}{literal}<style type=\"text/css\">.slideshow { height: 232px; width: 232px; }</style>{/literal}{/if}",
-			'type' => 'textarea',
-			'size' => '6',
-		),
-		'feature_sitemycode' => array(
-			'name' => tra('Custom Site Header'),
-			'type' => 'flag',
-		),
-		'feature_sitelogo' => array(
-			'name' => tra('Site Logo and Title'),
-			'type' => 'flag',
-		),
-		'feature_sitesearch' => array(
-			'name' => tra('Search Bar'),
-			'type' => 'flag',
-		),
-		'feature_site_login' => array(
-			'name' => tra('Login Bar'),
-			'type' => 'flag',
-		),
-		'feature_topbar_debug' => array(
-			'name' => tra('Debugger Console'),
-			'type' => 'flag',
-		),
-		'feature_topbar_custom_code' => array(
-			'name' => tra('Custom code'),
-			'type' => 'textarea',
-			'size' => '6',
-		),
-		'feature_topbar_version' => array(
-			'name' => tra('Display current Tiki version'),
-			'type' => 'flag',
-		),
-		'feature_sitemenu' => array(
-			'name' => tra('Site menu bar'),
-			'type' => 'flag',
-		),
-		'feature_topbar_id_menu' => array(
-			'name' => tra('Menu ID'),
-			'type' => 'text',
-			'size' => '5',
-			'dependencies' => array(
-				'feature_phplayers',
-			),
-		),
-		'feature_top_bar' => array(
-			'name' => tra('Top Bar'),
-			'type' => 'flag',
-		),
-		'feature_custom_center_column_header' => array(
-			'name' => tra('Custom Center Column Header'),
-			'hint' => tra('Example') . ' ' . "{if \$page eq 'Travel'}banner zone=5}{/if}",
-			'type' => 'textarea',
-			'size' => '6',
-		),
-		'feature_left_column' => array(
-			'name' => tra('Left column'),
-			'type' => 'list',
-			'help' => 'Users+Flip+Columns',
-			'options' => array(
-				'yes' => tra('Only if module'),
-				'fixed' => tra('Always'),
-				'user' => tra('User Decides'),
-				'n' => tra('Never'),
-			),
-		),
-		'feature_Right_column' => array(
-			'name' => 'Right Column',
-			'type' => 'list',
-			'help' => 'Users+Flip+Columns',
-			'options' => array(
-				'yes' => tra('Only if module'),
-				'fixed' => tra('Always'),
-				'user' => tra('User Decides'),
-				'n' => tra('Never'),
-			),
-		),
-		'feature_siteloclabel' => array(
-			'name' => tra('Prefix breadcrumbs with "Location : "'),
-			'type' => 'flag',
-		),
-		'feature_siteloc' => array(
-			'name' => tra('Site location bar'),
-			'type' => 'list',
-			'options' => array(
-				'y' => tra('Top of page'),
-				'page' => tra('Top of center column'),
-				'n' => tra('None'),
-			),
-		),
-		'feature_sitetitle' => array(
-			'name' => tra('Larger font for'),
-			'type' => 'list',
-			'options' => array(
-				'y' => tra('Entire location'),
-				'title' => tra('Page name'),
-				'n' => tra('None'),
-			),
-		),
-		'feature_sitedesc' => array(
-			'name' => tra('Use page description'),
-			'type' => 'list',
-			'options' => array(
-				'y' => tra('Top of page'),
-				'page' => tra('Top of center column'),
-				'n' => tra('None'),
-			),
-			'dependencies' => array(
-				'feature_wiki_description',
-			),
-		),
-		'feature_bot_logo' => array(
-			'name' => tra('Custom Site Footer'),
-			'type' => 'flag',
-		),
-		'feature_endbody_code' => array(
-			'name' => tra('Custom End of <body> Code'),
-			'hint' => tra('Example:') . ' ' . "{wiki}{literal}{GOOGLEANALYTICS(account=xxxx) /}{/literal}{/wiki}",
-			'type' => 'textarea',
-			'size' => '6',
-		),
-		'feature_bot_bar' => array(
-			'name' => tra('Bottom bar'),
-			'type' => 'flag',
-		),
-		'feature_bot_bar_icons' => array(
-			'name' => tra('Bottom bar icons'),
-			'type' => 'flag',
-		),
-		'feature_bot_bar_debug' => array(
-			'name' => tra('Bottom bar debug'),
-			'type' => 'flag',
-		),
-		'feature_bot_bar_rss' => array(
-			'name' => tra('Bottom bar (RSS)'),
-			'type' => 'flag',
-		),
-		'feature_site_report' => array(
-			'name' => tra('Webmaster Report'),
-			'type' => 'flag',
-		),
-		'feature_site_report_email' => array(
-			'name' => tra('Webmaster Email'),
-			'hint' => tra('Leave blank to use the default sender email'),
-			'type' => 'text',
-			'size' => '20',
-			'dependencies' => array(
-				'sender_email',
-			),
-		),
-		'feature_site_send_link' => array(
-			'name' => tra('Email this page'),
-			'type' => 'flag',
-		),
-		'feature_layoutshadows' => array(
-			'name' => tra('Shadow layer'),
-			'hint' => tra('Additional layers for shadows, rounded corners or other decorative styling'),
-			'type' => 'flag',
-		),
-		'feature_jquery_tooltips' => array(
-			'name' => tra('Tooltips'),
-			'type' => 'flag',
-			'help' => 'JQuery#Tooltips',
-		),
-		'feature_jquery_autocomplete' => array(
-			'name' => tra('Autocomplete'),
-			'type' => 'flag',
-			'help' => 'JQuery#Autocomplete',
-		),
-		'feature_jquery_superfish' => array(
-			'name' => tra('Superfish'),
-			'type' => 'flag',
-			'help' => 'JQuery#Superfish',
-		),
-		'feature_jquery_reflection' => array(
-			'name' => tra('Reflection'),
-			'type' => 'flag',
-			'help' => 'JQuery#Reflection',
-		),
-		'feature_jquery_ui' => array(
-			'name' => tra('JQuery UI'),
-			'type' => 'flag',
-			'help' => 'JQuery#UI',
-		),
-		'feature_jquery_ui_theme' => array(
-			'name' => tra('JQuery UI Theme'),
-			'help' => 'JQuery#UI',
-			'type' => 'list',
-			'options' => array(
-				'black-tie' => 'black-tie',
-				'blitzer' => 'blitzer',
-				'cupertino' => 'cupertino',
-				'dot-luv' => 'dot-luv',
-				'excite-bike' => 'excite-bike',
-				'hot-sneaks' => 'hot-sneaks',
-				'humanity' => 'humanity',
-				'mint-choc' => 'mint-choc',
-				'redmond' => 'redmond',
-				'smoothness' => 'smoothness',
-				'south-street' => 'south-street',
-				'start' => 'start',
-				'swanky-purse' => 'swanky-purse',
-				'trontastic' => 'trontastic',
-				'ui-darkness' => 'ui-darkness',
-				'ui-lightness' => 'ui-lightness',
-				'vader' => 'vader',
-			), 
-		),
-		'feature_jquery_cycle' => array(
-			'name' => tra('Cycle (slideshow)'),
-			'type' => 'flag',
-			'help' => 'JQuery#Cycle',
-		),
-		'feature_jquery_sheet' => array(
-			'name' => tra('JQuery Sheet'),
-			'type' => 'flag',
-			'help' => 'JQuery#Cycle',
-		),
-		'feature_jquery_tablesorter' => array(
-			'name' => tra('JQuery Sortable Tables'),
-			'type' => 'flag',
-			'help' => 'JQuery#TableSorter',
-		),
-		'feature_tabs' => array(
-			'name' => tra('Use Tabs'),
-			'type' => 'flag',
-		),
-		'feature_iepngfix' => array(
-			'name' => tra('Correct PNG images alpha transparency in IE6 (experimental)'),
-			'type' => 'flag',
 		),
 	);
 }

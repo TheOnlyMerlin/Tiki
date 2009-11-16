@@ -4462,8 +4462,6 @@ CREATE TABLE "tiki_transitions" (
 CREATE INDEX "tiki_transitions_transition_lookup" ON "tiki_transitions" ("type","from");
 
 
-DROP TABLE IF EXISTS "tiki_page_lists";
-
 CREATE TABLE IF NOT EXISTS "tiki_page_lists" (
   "list_type_id" integer NOT NULL,
   "priority" integer NOT NULL,
@@ -4472,8 +4470,6 @@ CREATE TABLE IF NOT EXISTS "tiki_page_lists" (
   PRIMARY KEY  ("list_type_id","page_name")
 ) DEFAULT CHARSET=latin1;
 
-
-DROP TABLE IF EXISTS "tiki_page_list_types";
 
 CREATE TABLE IF NOT EXISTS "tiki_page_list_types" (
   "id" serial,
@@ -4485,20 +4481,5 @@ CREATE TABLE IF NOT EXISTS "tiki_page_list_types" (
 ) DEFAULT CHARSET=latin1 ;
 
 
-DROP TABLE IF EXISTS "tiki_auth_tokens";
-
-CREATE TABLE "tiki_auth_tokens" (
-	"tokenId" bigserial,
-	"creation" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	"timeout" INT NOT NULL DEFAULT 0,
-	"token" CHAR(32),
-	"entry" VARCHAR(50),
-	"parameters" VARCHAR(255),
-	"groups" VARCHAR(255),
-	PRIMARY KEY ("tokenId")
-);
-CREATE INDEX "tiki_auth_tokens_tiki_auth_tokens_token" ON "tiki_auth_tokens" ("token");
-
--- --------------------------------------------------------
 ;
 

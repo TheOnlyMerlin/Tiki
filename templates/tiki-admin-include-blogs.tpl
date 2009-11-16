@@ -36,6 +36,7 @@
 				<input type="hidden" name="blogfeatures" />
 				{preference name=feature_blog_rankings}
 				{preference name=blog_spellcheck}
+				<em>{tr}Requires a separate download{/tr}. </em>
 				{preference name=feature_blog_heading}
 
 				{if $prefs.feature_categories eq 'y'}
@@ -75,21 +76,18 @@
 		{tab name="{tr}Blogs Listings{/tr}"}
 			<input type="hidden" name="bloglistconf" />
 			{preference name=blog_list_order}
-
-			<fieldset>
-				<legend>{tr}Select which items to display when listing blogs{/tr}:</legend>
-				{preference name=blog_list_title}
-				<div class="adminoptionboxchild" id="blog_list_title_childcontainer">
-					{preference name=blog_list_title_len}
-				</div>
-				{preference name=blog_list_description}
-				{preference name=blog_list_created}
-				{preference name=blog_list_lastmodif}
-				{preference name=blog_list_user}
-				{preference name=blog_list_posts}
-				{preference name=blog_list_visits}
-				{preference name=blog_list_activity}
-			</fieldset>
+			{tr}Select which items to display when listing blogs{/tr}:
+			{preference name=blog_list_title}
+			<div class="adminoptionboxchild" id="blog_list_title_childcontainer">
+				{preference name=blog_list_title_len}
+			</div>
+			{preference name=blog_list_description}
+			{preference name=blog_list_created}
+			{preference name=blog_list_lastmodif}
+			{preference name=blog_list_user}
+			{preference name=blog_list_posts}
+			{preference name=blog_list_visits}
+			{preference name=blog_list_activity}
 		{/tab}
 	{/tabset}
 	<div class="heading input_submit_container" style="text-align: center">
