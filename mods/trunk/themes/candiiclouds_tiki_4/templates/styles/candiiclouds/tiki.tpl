@@ -55,6 +55,7 @@
 				{/if}
 					<td id="centercolumn" valign="top"{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
 {/if}
+						<div id="col1">
 						{if $smarty.session.fullscreen neq 'y'}
 							{if $prefs.feature_left_column eq 'user' or $prefs.feature_right_column eq 'user'}
         						<div id="showhide_columns">
@@ -89,6 +90,7 @@
 								{$right_modules[homeix].data}
 							{/section}
 						</div>
+					</div>
 					</td>
 				{/if}
 					{*<td id="rightborder"><img src=" " alt="." /></td> Right graphic border. *}

@@ -61,6 +61,7 @@
 					{/if}
 				<td id="centercolumn" valign="top"{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
 			{/if}
+				<div id="col1">
 			<hr class="hidden" /> {* for semantic separation of center and side columns *}
 			{if $smarty.session.fullscreen neq 'y'}
       			{if $prefs.feature_left_column eq 'user' or $prefs.feature_right_column eq 'user'}
@@ -84,6 +85,7 @@
 			{/if}
 			{$mid_data}
 			{show_help}
+		</div>
 		</div>
 		<hr class="hidden" /> {* for semantic separation of center and side columns *}
 {if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}

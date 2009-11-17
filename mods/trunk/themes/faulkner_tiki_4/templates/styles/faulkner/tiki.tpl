@@ -58,7 +58,8 @@
 									</td>
 							{/if}
 									<td id="centercolumn" valign="top"{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
-{/if}
+									
+{/if}								<div id="col1">
 										<hr class="hidden" /> {* for semantic separation of center and side columns *}
 											{if $smarty.session.fullscreen neq 'y'}
       											{if $prefs.feature_left_column eq 'user' or $prefs.feature_right_column eq 'user'}
@@ -85,7 +86,9 @@
 					{show_help}
 				</div>
 				<hr class="hidden" /> {* for semantic separation of center and side columns *}
+				</div>
 				{if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
+				
 				</td>
 	 			{if $prefs.feature_right_column ne 'n' && $right_modules|@count > 0 && $show_columns.right_modules ne 'n'}
 				<td id="rightcolumn" valign="top"{if $prefs.feature_right_column eq 'user'} style="display:{if isset($cookie.show_rightcolumn) and $cookie.show_rightcolumn ne 'y'}none{else}table-cell;_display:block{/if};" {/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>

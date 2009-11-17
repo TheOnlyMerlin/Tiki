@@ -72,6 +72,7 @@
 		{/if}
     	<td id="centercolumn" valign="top">
 		{/if}
+		<div id="col1">
 			<hr class="hidden" /> {* for semantic separation of center and side columns *}
 			{if $smarty.session.fullscreen neq 'y'}
 			<div id="centerwrapper">
@@ -99,6 +100,7 @@
 				{/if}
 				{$mid_data}
 				{show_help}
+			</div>
 			</div>
 			</div>
 			<hr class="hidden" /> {* for semantic separation of center and side columns *}
