@@ -1,0 +1,25 @@
+/* $Id$
+	Fixed width for Smooth theme, TikiWiki CMS/Groupware.
+*/
+
+body {
+	background: #eb1bd2;
+}
+
+#main {
+	background: /*#fff*/;
+}
+#main[id] {
+	margin-top: 18px;
+}
+
+#fixedwidth {
+	display: table;
+	margin: auto;
+	margin-top: 0;
+	margin-bottom: 0px;
+	width: 990px;
+}
+#fixedwidth[id] {
+	height: auto;
+}
