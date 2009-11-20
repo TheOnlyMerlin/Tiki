@@ -199,7 +199,10 @@ input[type=submit]:hover,
 .calbuttonBox a:hover {
 	background: transparent url(milkyway/options/white/mw_menu_active_bg.png) repeat-x;
 	text-decoration: none;
-	color: #000}
+	color: #000;
+	padding: 2px 4px;
+	margin-right: 4px;
+}
 
 form.admin input[name="features"] {margin-bottom: 3px !important}
 select[name="theme"] {width: 145px}
