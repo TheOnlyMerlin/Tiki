@@ -228,7 +228,8 @@ input[type=submit]:hover,
 	background: #edd4ae;
 	color: #660000;
 	border: 1px solid;
-	border-color: #880000 #eccaa3 #eccaa3 #880000}
+	border-color: #880000 #eccaa3 #eccaa3 #880000;
+	padding: 0 4px}
 
 .button a:active,	
 button:active,
@@ -238,7 +239,7 @@ input[type=submit]:active,
 .submitbutton:active {border-color: #223845 #41cbe7 #41cbe7 #223845; }
 
 * html .findtable input {font-size: 1em}
-form.admin input[name="features"] {margin-bottom: 3px !important}
+/*form.admin input[name="features"] {margin-bottom: 3px !important}*/
 select[multiple] {height: 10em}
 small {font-size: .9em}
 label {margin: 0 2px}
