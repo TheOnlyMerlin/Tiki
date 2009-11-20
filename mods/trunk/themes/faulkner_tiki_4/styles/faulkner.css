@@ -645,6 +645,21 @@ td.heading {
 td.form {padding: 0.2em}
 table.normal tr:hover {background: #EDD4AE}
 
+tr.odd,
+li.odd,
+tr.even,
+li.even {
+	background: url(faulkner/parchment.jpg);
+}
+
+tr.odd:hover,
+td.odd:hover,
+li.odd:hover,
+tr.even:hover,
+li.even:hover {
+	background: url(faulkner/parchmentlight.jpg) !important;
+}
+
 /** Tabs **/
 .tabs {
 	margin: 10px 1px -21px 0 !important;
