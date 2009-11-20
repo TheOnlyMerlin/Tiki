@@ -15,7 +15,8 @@
  
 /***** XHTML Elements (body tag here,
 			others follow Layout) *****/ 
-body {
+body,
+body.wikitext {
 	font: 76%/1.5em Arial, Helvetica, sans-serif;
 	color: #f2e7ce;
 	background: #000 url(greenblog/content_bg.jpg) no-repeat center 60px}
@@ -101,6 +102,11 @@ a:link, a:visited {
 a:active, a:hover {
 color: #ffff00;
 text-decoration: underline}
+
+.wikitext a.wiki:link,
+.wikitext a.wiki:visited {
+	color: #ffc64a !important;
+	text-decoration: none}
 
 h1 {
 	margin: 0px;
@@ -618,3 +624,7 @@ a.admbox:hover {
 /***** End New (unsorted) *****/
 
 /* End of File */
+
+
+
+

@@ -115,6 +115,12 @@ a:visited {
 a:hover {
 	color: #808080;
 	text-decoration: underline}
+	
+.wikitext a.wiki:link,
+.wikitext a.wiki:visited {
+	color: #505050 !important;
+	text-decoration: none !important;
+}
 
 h1, h2, h3, h4, h5 {
 	color: #606060;

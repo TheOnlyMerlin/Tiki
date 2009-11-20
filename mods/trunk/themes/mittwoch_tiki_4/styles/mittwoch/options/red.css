@@ -37,6 +37,15 @@ select:hover,
 input.wikiaction:hover,
 button:hover {
 	color: #37ACFF}
+	
+.wikitext a:link.wiki,
+.wikitext a.link:visited {
+	color: #FD0892 !important;
+	text-decoration: none !important}
+
+.wikitext a.link:hover {
+	color: #37ACFF !important;
+	text-decoration: none !important}
 
 ul li,
 .wikicell li {

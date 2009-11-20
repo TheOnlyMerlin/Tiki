@@ -138,6 +138,15 @@ a:visited {
 a:hover {
 	color: #b5d72b;
 	text-decoration: none}
+	
+.wikitext a:link.wiki,
+.wikitext a.link:visited {
+	color: #003bfe !important;
+	text-decoration: none !important}
+
+.wikitext a.link:hover {
+	color: #b5d72b !important;
+	text-decoration: none !important}
 
 h1,
 h2,

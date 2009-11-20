@@ -99,6 +99,12 @@ a:visited {
 a:hover {
 	color: #000;
 	text-decoration: none} 
+	
+.wikitext a.wiki:link,
+.wikitext a.wiki:visited {
+	color: #2277DD !important;
+	text-decoration: none !important;	
+}
 
 caption {font-weight: bold}
 
@@ -1655,7 +1661,13 @@ div.tabrow {
 	background: #eee;
 	border: 1px solid #787878;
 	border-bottom: 0;
-	font-size: 11px} 
+	font-size: 11px}
+	
+.box-data div.tabrow {
+	background: none;
+	border: none;
+	margin: auto;
+}
 
 td.middle {vertical-align: middle}
 

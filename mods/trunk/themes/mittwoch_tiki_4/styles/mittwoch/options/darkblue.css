@@ -36,6 +36,15 @@ select:hover,
 input.wikiaction:hover,
 button:hover {
 	color: #B5D72B}
+	
+.wikitext a:link.wiki,
+.wikitext a.link:visited {
+	color: #003BFE !important;
+	text-decoration: none !important}
+
+.wikitext a.link:hover {
+	color: #B5D72B !important;
+	text-decoration: none !important}
 
 input[type=submit],
 input[type=file],

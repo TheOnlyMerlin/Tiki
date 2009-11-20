@@ -25,6 +25,11 @@ body.fullscreen {
 	margin: 3em;
 	color: #ccc;
 	padding-right: 10em}
+	
+body.wikitext {
+	color: #ccc !important;
+	background: #121A1D url(planetfall/back_fade.jpg) repeat-x !important;
+}
 
  /***** Layout (overrides layout.css;
 		also styling of page layout divs)  *****/
@@ -109,6 +114,17 @@ a:hover {
 	color: #9AB6C2;
 	text-decoration: none;
 	font-weight: bold}
+	
+.wikitext a:link.wiki,
+.wikitext a.link:visited {
+	color: #ff6600 !important;
+	text-decoration: none !important;
+	font-weight: bold !important}
+
+.wikitext a.link:hover {
+	color: #9AB6C2 !important;
+	text-decoration: none !important;
+	font-weight: bold !important}
 
 caption {
   font-size: .9em;

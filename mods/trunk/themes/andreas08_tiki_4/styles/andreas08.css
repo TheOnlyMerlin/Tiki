@@ -528,13 +528,17 @@ th, td.heading {
 
 td.form {padding: 0.2em}
 
+tr.odd,
 tr.odd td,
-td.odd {
+td.odd,
+li.odd {
 	background: #F0F0F0;
 	color: #000}
 
+tr.even,
+td.even,
 tr.even td,
-td.even {
+li.even {
 	background: #DCDCDC;
 	color: #000}
 

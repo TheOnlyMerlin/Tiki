@@ -93,6 +93,17 @@ a:hover {
 	text-decoration: underline;
 	font-weight: normal;
 	color: #0b3768}
+	
+.wikitext a.wiki:link,
+.wikitext a.wiki:visited {
+	color: #135cae !important;
+	font-weight: normal !important;
+	text-decoration: none !important}
+
+.wikitext a.wiki:hover {
+	text-decoration: underline !important;
+	font-weight: normal !important;
+	color: #0b3768 !important}
 
 h1 {
 	padding: 0;
@@ -348,9 +359,11 @@ td.pill_r {
   margin: 0}
 
 /** CSS (suckerfish) menus **/
-
+#topbar_custom_code .cssmenu_horiz li,
+#tiki-center .cssmenu_horiz li,
 .cssmenu_vert li {
 	padding: .3em 1em;
+	font-size: 12px;
 }
 
 /* left column width */
@@ -360,7 +373,7 @@ td#leftcolumn ul.cssmenu_vert {
 
 td#leftcolumn .cssmenu_vert,
 td#leftcolumn .cssmenu_vert li {
-	width: 165px;
+	width: 170px;
 }
 
 /* offset from left column (matches above) */
@@ -483,7 +496,6 @@ a .sf-sub-indicator {
 	font-weight: bold;
 	display: block;
 	height: 24px;
-	/*line-height: 24px;*/
 	padding: 4px 20px;
 	padding-bottom: 0;
 	color: #000;

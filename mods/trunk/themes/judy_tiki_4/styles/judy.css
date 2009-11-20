@@ -164,6 +164,12 @@ a:active, a.active {
   color: #5895be;
 }
 
+.wikitext a.wiki:link,
+.wikitext a.wiki:visited {
+  color: #027AC6 !important;
+  text-decoration: none !important;	
+}
+
 span.button a,
 span.button a:visited,
 button,
