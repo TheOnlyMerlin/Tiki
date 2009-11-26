@@ -5,10 +5,10 @@ revision:
 $Revision: 1.7.2 $
  
 Version:
-2.0
+3.0
 
 lastmodif:
-$Date: 2009-07-11 21:46:22 $
+$Date: 2009-11-26 19:46:22 $
 
 files:
 features/aulawiki/aulawiki-assignments_admin.php aulawiki-assignments_admin.php
@@ -201,10 +201,7 @@ licence:
 GNU/LGPL
 
 Description: 
-AulaWiki offers team collaboration environments (workspaces), allowing you to manage sets of Tiki resources in an easy way. 
-Patched to work on Tiki 1.10svn by sylvieg, rodrigosampaio and Xavi.
-Patched to work on tw-2.x by pingus
-Permission scheme extended by pingus. See: http://dev.tikiwiki.org/bug2297
+AulaWiki offers team collaboration environments (workspaces), allowing you to manage sets of Tiki resources in an easy way. See: http://doc.tikiwiki.org/Mod+AulaWiki
 
 Changelog:
 0.1 initial package
@@ -218,7 +215,7 @@ Changelog:
 1.6 updated to work on Tiki 2.x
 1.7.0 new permission scheme. Works on tw 3.0
 1.7.1 fixed some bugs, deleted some disturbing local tpl (tiki-user_menu.tpl, templates/styles/modules/mod-application_menu.tpl), and fixed display on tiki 2.x and 3.x through patching workspaces.css 
-1.7.2  group admin by non-admins is done. CRSF ticket when deleting a workspace fixed.
+1.7.2  group admin by non-admins is done. CRSF ticket when deleting a workspace fixed. Working without major issues with current Tiki 3 branch (LTS) 
 
 
 sql-install:
