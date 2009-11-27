@@ -2,13 +2,13 @@ contributor:
 $Author: jreyesg $
 
 revision:
-$Revision: 1.7.2 $
+$Revision: 1.7.3 $
  
 Version:
 3.0
 
 lastmodif:
-$Date: 2009-11-26 19:46:22 $
+$Date: 2009-11-27 10:11:22 $
 
 files:
 features/aulawiki/aulawiki-assignments_admin.php aulawiki-assignments_admin.php
@@ -158,8 +158,6 @@ features/aulawiki/templates/modules/mod-aulawiki_view_assignment.tpl templates/m
 features/aulawiki/templates/modules/mod-workspaces_who_is_there.tpl templates/modules/mod-workspaces_who_is_there.tpl
 features/aulawiki/templates/modules/mod-workspaces_who_is_there.tpl.nocache templates/modules/mod-workspaces_who_is_there.tpl.nocache
 features/aulawiki/templates/styles/workspaces/index.php templates/styles/workspaces/index.php
-features/aulawiki/templates/styles/workspaces/module.tpl templates/styles/workspaces/module.tpl
-features/aulawiki/templates/styles/workspaces/tiki-show_page.tpl templates/styles/workspaces/tiki-show_page.tpl
 features/aulawiki/templates/styles/workspaces/tiki-user_edumenu.tpl templates/styles/workspaces/tiki-user_edumenu.tpl
 features/aulawiki/templates/styles/workspaces/tiki-user_information.tpl templates/styles/workspaces/tiki-user_information.tpl
 features/aulawiki/templates/styles/workspaces/tiki-user_preferences.tpl templates/styles/workspaces/tiki-user_preferences.tpl
@@ -215,7 +213,8 @@ Changelog:
 1.6 updated to work on Tiki 2.x
 1.7.0 new permission scheme. Works on tw 3.0
 1.7.1 fixed some bugs, deleted some disturbing local tpl (tiki-user_menu.tpl, templates/styles/modules/mod-application_menu.tpl), and fixed display on tiki 2.x and 3.x through patching workspaces.css 
-1.7.2  group admin by non-admins is done. CRSF ticket when deleting a workspace fixed. Working without major issues with current Tiki 3 branch (LTS) 
+1.7.2 group admin by non-admins is done. CRSF ticket when deleting a workspace fixed. Working without major issues with current Tiki 3 branch (LTS)
+1.7.3 deleted outdated module.tpl and tiki-show_page.tpl so that default (and updated) ones in Tiki are used 
 
 
 sql-install:
