@@ -68,8 +68,10 @@ td#footer .content {
   text-align: center;
 }
 
-div.box-title {
+h3.box-title {
   background-image: url(../images/workspaces/degrada.gif);
+  padding: 5px;
+  margin: 0 0 7px 0em;
 }
 
 div.wsbox-data {
@@ -729,4 +731,5 @@ div.wsbox.box-workspaces_viewpage {
   	clear: both;
   }
 /* end of css file */
+
 
