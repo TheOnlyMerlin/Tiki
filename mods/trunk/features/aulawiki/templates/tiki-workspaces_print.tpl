@@ -1,7 +1,7 @@
 {*
 @author: Javier Reyes Gomez (jreyes@escire.com)
-@date: 27/01/2006
-@copyright (C) 2006 Javier Reyes Gomez (eScire.com)
+@date: 27/11/2009
+@copyright (C) 2006 Javier Reyes Gomez 
 @license http://www.gnu.org/copyleft/lgpl.html GNU/LGPL
 *}
 {include file="header.tpl"}
@@ -11,8 +11,9 @@
 <div class="printstructure">
 {section name=ix loop=$subtree}
    {if $subtree[ix].pos eq '' || !$subtree[ix].last}
-	  {include file="aulawiki-print_page.tpl" strupage=$subtree[ix]}
+	  {include file="tiki-workspaces_print_page.tpl" strupage=$subtree[ix]}
 	{/if}
 {/section}
 </div>
 {include file="footer.tpl"}
+
