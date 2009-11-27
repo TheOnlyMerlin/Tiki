@@ -12,7 +12,7 @@ $Date$
 Files:
 themes/tikipedia_tiki_3/Readme.txt templates/styles/tikipedia/Readme.txt
 themes/tikipedia_tiki_3/styles/tikipedia.css styles/tikipedia.css
-themes/tikipedia_tiki_3/styles/tikipedia/arrows-6d819.png styles/tikipedia/arrows-6d819.png
+themes/tikipedia_tiki_3/styles/tikipedia/arrows-6d819d.png styles/tikipedia/arrows-6d819d.png
 themes/tikipedia_tiki_3/styles/tikipedia/bullet.gif styles/tikipedia/bullet.gif
 themes/tikipedia_tiki_3/styles/tikipedia/headbg.jpg styles/tikipedia/headbg.jpg
 themes/tikipedia_tiki_3/styles/tikipedia/index.php styles/tikipedia/index.php
