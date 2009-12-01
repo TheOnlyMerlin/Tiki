@@ -33,7 +33,7 @@ if (!isset ($workspace)) {
 			$module_params['calIds'][] = $val["objId"];
 		}
     }
-
+$module_params['title'] = tra('Workspace Calendar');
 include ("modules/mod-calendar_new.php");
 }
 
