@@ -43,7 +43,7 @@ if(!$exit_module){
 	$smarty->assign("showAssignmentPanel", false);
 	
 	$smarty->assign('currentWorkspace', $workspace);
-	$smarty->assign('ownurl', $tikilib->httpPrefix().$_SERVER["PHP_SELF"]);
+	$smarty->assign('ownurl', $tikilib->httpPrefix().$_SERVER["REQUEST_URI"]);
 	
 	$activeAssignment = $assignmentsLib->get_assignment_by_id($_REQUEST["activeAssignment"]);
 	if (isset ($activeAssignment)) {

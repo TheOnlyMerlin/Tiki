@@ -55,7 +55,7 @@ if (isset($activeZone) && $activeZone!=""){
 
 $max_columns = array_pop(array_keys($modules));
 
-$ownurlWS = $tikilib->httpPrefix().$_SERVER["PHP_SELF"];
+$ownurlWS = $tikilib->httpPrefix().$_SERVER["REQUEST_URI"];
 $pos = strpos($ownurlWS, "moduleId");
 if ($pos) {
 	$ownurlWS = substr($ownurlWS, 0, $pos -1);

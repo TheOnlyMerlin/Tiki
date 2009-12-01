@@ -7,6 +7,7 @@
 */
 require_once('tiki-setup.php');
 require_once('lib/workspaces/typeslib.php');
+require_once('lib/workspaces/resourceslib.php');
 
 if ($tiki_p_admin != 'y' && (!isset($tiki_p_admin_workspace) || $tiki_p_admin_workspace != 'y')) {
 	$smarty->assign('msg', tra("Permission denied"));
@@ -52,6 +53,11 @@ if(isset($_REQUEST["send"])) {
 	$newResource["desc"] = "";
 	$newResource["type"] = "";
 }
+
+$wsresourceslib=new WorkspaceResourcesLib($dbTiki);
+$types=$wsresourceslib->ws_object_types;
+
+$smarty->assign('types', $types);
 $smarty->assign_by_ref('wstype',$wstype);
 $smarty->assign('mid','tiki-workspaces_types_resources.tpl');
 $smarty->display('tiki.tpl');

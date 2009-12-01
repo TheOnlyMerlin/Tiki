@@ -1,3 +1,9 @@
+./tiki-workspaces_modules.php
+./templates/tiki-workspaces_copy_to_clipboard.tpl
+./templates/modules/mod-workspaces_calendar.tpl
+./modules/mod-workspaces_clipboard.php
+./modules/mod-workspaces_resources.php
+./modules/mod-aulawiki_view_assignment.php
 <?php
 /*
 * @author: Javier Reyes Gomez (jreyes@escire.com)
@@ -68,7 +74,7 @@ $smarty->assign("showAssignmentPanel", false);
 $smarty->assign('currentWorkspace', $workspace);
 $assignments = $assignmentsLib->get_assignments('startDate_desc', $workspace["workspaceId"]);
 $smarty->assign_by_ref('assignments', $assignments);
-$smarty->assign('ownurl', $tikilib->httpPrefix().$_SERVER["PHP_SELF"]);
+$smarty->assign('ownurl', $tikilib->httpPrefix().$_SERVER["REQUEST_URI"]);
 
 if (($firstDayofWeek = $tikilib->get_user_preference($user, "")) == "") { /* 0 for Sundays, 1 for Mondays */
 	$strRef = "First day of week: Sunday (its ID is 0) - translators you need to localize this string!";

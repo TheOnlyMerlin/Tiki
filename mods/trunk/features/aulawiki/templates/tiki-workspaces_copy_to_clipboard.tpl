@@ -6,7 +6,7 @@
 *}
 {php}
 global $tikilib;
-$url = $tikilib->httpPrefix().$_SERVER["PHP_SELF"];
+$url = $tikilib->httpPrefix().$_SERVER["REQUEST_URI"];
 global $smarty; 
 $smarty->assign('rooturl', $url);
 {/php}

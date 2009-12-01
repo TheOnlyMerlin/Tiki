@@ -7,10 +7,32 @@
 */
 class WorkspaceResourcesLib extends TikiDB {
 	var $db; // The PEAR db object used to access the database
+	var $ws_object_types= array(
+		"blog" => array(name=>"Blog",selected=>""),
+		"calendar" => array(name=>"Calendar",selected=>""),
+		"category" => array(name=>"Category",selected=>""),
+		"faq" => array(name=>"FAQs",selected=>""),
+		"file gallery" => array(name=>"File Gallery",selected=>""),
+		"forum" => array(name=>"Forum",selected=>""),
+		"image gallery" => array(name=>"Image Gallery",selected=>""),
+		"quiz" => array(name=>"Quizze",selected=>""),
+		"structure" => array(name=>"Structure",selected=>""),
+		"sheet" => array(name=>"Sheet",selected=>""),
+		"survey" => array(name=>"Survey",selected=>""),
+		"tracker" => array(name=>"Tracker",selected=>""),
+		"wiki page" => array(name=>"Wiki Page",selected=>"")
+		);
+/*
+		"assignments" => array(name=>"Assignments",selected=>""),
+		"article" => array(name=>"Article",selected=>""),
+		"poll" => array(name=>"Poll",selected=>""),
+		"survey" => array(name=>"Survey",selected=>""),
+		"tracker" => array(name=>"Tracker",selected=>""),
+*/
+	
 	function WorkspaceResourcesLib($db) {
 		$this->TikiDB($db);
 	}
-
 	function get_category_by_name($parentId, $catName) {
 		$query = "select * from tiki_categories where parentId=? and name=?";
 		$result = $this->query($query, array ($parentId, $catName));
@@ -902,4 +924,5 @@ class WorkspaceResourcesLib extends TikiDB {
 		return null;
 	}
 }
+
 ?>

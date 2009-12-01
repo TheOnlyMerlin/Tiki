@@ -22,6 +22,7 @@ global $feature_phplayers;
 
 $workspacesLib = new WorkspaceLib($dbTiki);
 $resourcesLib = new WorkspaceResourcesLib($dbTiki);
+$wsresourcestypes=$resourcesLib->ws_object_types;
 if (isset ($_REQUEST["selectCategoryId"])) {
 	if (!is_array($workspace=$workspacesLib->get_workspace_by_catid($_REQUEST["selectCategoryId"]))) # its a ws, not a category
 		{$workspace = $workspacesLib->get_current_workspace();}
@@ -161,7 +162,7 @@ if (!$exit_module){
 	$smarty->assign('workspaceId',$workspace["workspaceId"]) ;
 	$smarty->assign('selectedWsObject', $selectedWsObject);
 
-	$ownurl = $tikilib->httpPrefix().$_SERVER["PHP_SELF"];
+	$ownurl = $tikilib->httpPrefix().$_SERVER["REQUEST_URI"];
 	include_once ('lib/tree/categ_browse_tree.php');
 	$imgWiki = "<img align='bottom' border=0 src='img/icons/page.gif'>";
 	$imgCateg = "<img border=0 valign='center' src='images/workspaces/edu_folder_closed.png'>";
@@ -194,6 +195,7 @@ if (!$exit_module){
 	$tm = new CatBrowseTreeMaker("categ");
 	$res = $tm->make_tree($top, $tree_nodes);
 	$smarty->assign('tree', $res);
+        $smarty->assign('types', $wsresourcestypes);
 	
 	
 	$smarty->assign('ownurl', $ownurl);
