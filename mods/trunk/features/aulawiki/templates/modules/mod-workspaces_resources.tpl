@@ -56,7 +56,7 @@
 
 <!-----------  End Create new object   ---------->
 {/if}
-{if $showAddUser!="n"}
+{if $showAddUser=="y"}
 <!------------  Add USer Button   --------->
 <a  href="./tiki-workspaces_view_module.php?module=workspaces_user_groups&workspaceId={$workspaceId}" >
 <img src='images/workspaces/pageNueva.gif'> Add Users/Groups

@@ -34,6 +34,8 @@ $can_admin_workspace=false;
 $can_admin_all_workspaces=false;
 $can_create_resources = false;
 $can_add_users =false;
+$can_delete_resources = false;
+$can_assign_objectperms = false;
 
 $exit_module=false;
 # echo "CURRENT workspace : ". $workspace["code"]."<p>";
@@ -47,6 +49,9 @@ if ($tiki_p_admin == "y" || $tiki_p_admin_workspace == "y" ) {
 	$can_admin_all_workspaces = "y";
 	$can_admin_workspace = "y";
 	$can_create_resources = "y";
+	$can_delete_resources = "y";
+	$can_assign_objectperms = "y";
+	
 }
 if (!$exit_module && $tiki_p_admin != 'y' && $tiki_p_admin_workspace != 'y') {
 	if (!$userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_view_workspace")) {
@@ -58,11 +63,15 @@ if (!$exit_module && $tiki_p_admin != 'y' && $tiki_p_admin_workspace != 'y') {
 if ($userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")) {
 	$can_create_resources = "y";
 	$can_add_users = _TIKI_P_CREATE_WORKSPACE_RESOUR_CAN_ADD_USERS_ ; # he will be able to add only single users, not groups
+	$can_delete_resources = "n";
+	$can_assign_objectperms = "n";
 	}
 if ($workspacesLib->user_can_admin_workspace_or_upper($user,$workspace)){
 	$can_create_resources = "y";
 	$can_admin_workspace = "y";
 	$can_add_users = "y"; 
+	$can_delete_resources = "y";
+	$can_assign_objectperms = "y";
 }      
 
 if (!$exit_module){
@@ -139,22 +148,29 @@ if (!$exit_module){
                 $smarty->assign('showCreateBar', 'y');
                 $smarty->assign('showAddUser', 'y');
 		$smarty->assign('showButtons', 'y');
+                $smarty->assign('showDeleteButton', 'y');
+                $smarty->assign('showObjPerms', 'y');
 	}elseif($can_create_resources == "y") {
                 $smarty->assign('showAdminBar', 'n');
                 $smarty->assign('showCreateBar', 'y');
-		if (!$can_add_users) {
-			$smarty->assign('showAddUser', 'n');
+		if ($can_delete_resources == "y") {
+	                $smarty->assign('showDeleteButton', 'y');
 			}
-		else {
+		if ($can_add_users== "y") {
 			$smarty->assign('showAddUser', 'y');
+			}
+		if ($can_assign_objectperms== "y") {
+			$smarty->assign('showObjPerms', 'y');
 			}
 		$smarty->assign('showButtons', 'y');
 	}
+
 	else{
                 $smarty->assign('showAdminBar', 'n');
                 $smarty->assign('showCreateBar', 'n');
                 $smarty->assign('showAddUser', 'n');
 		$smarty->assign('showButtons', 'n');
+                $smarty->assign('showDeleteButton', 'n');
 	}
 		$smarty->assign('showCreationDate', 'n');
 #### pingus end
@@ -195,7 +211,7 @@ if (!$exit_module){
 	$tm = new CatBrowseTreeMaker("categ");
 	$res = $tm->make_tree($top, $tree_nodes);
 	$smarty->assign('tree', $res);
-        $smarty->assign('types', $wsresourcestypes);
+####        $smarty->assign('types', $wsresourcestypes);
 	
 	
 	$smarty->assign('ownurl', $ownurl);

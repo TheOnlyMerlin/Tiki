@@ -20,8 +20,12 @@
 		<td class="heading" width="15">&nbsp;</td>
 		{if $showButtons!="n"}	
 			<td class="heading">&nbsp;</td>
-			<td class="heading">&nbsp;</td>
-			<td class="heading">&nbsp;</td>
+			{if $showDeleteButton=="y"}
+				<td class="heading">&nbsp;</td>
+			{/if}
+			{if $showObjPerms=="y"}
+				<td class="heading">&nbsp;</td>
+			{/if}
 		{/if}
 	</tr>
      {foreach key=key item=object from=$resources}
@@ -42,6 +46,7 @@
       		{include file="tiki-workspaces_copy_to_clipboard.tpl" copyIdObj=$object.objId copyType=$object.type copyName=$object.name copyDesc=$object.description copyHref=$object.href} 
       		</td>
       		{if $showButtons!="n"}
+			{if $showObjPerms=="y"}
 	      		<td class="{$parImpar}">
 	      			{if $object.type=="wiki page"}
 		      			<a class="link" href="tiki-workspaces_objectpermissions.php?objectName={$object.name|escape:"url"}&amp;objectType={$object.type|replace:" ":"+"}&amp;permType=wiki&amp;resourceIdName={$object.objId}"><img src='images/workspaces/key.gif' alt='{tr}active perms{/tr}' title='{tr}active perms{/tr}' height="16" width="17" border='0' /></a>
@@ -63,6 +68,7 @@
 	      				<a class="link" href="tiki-workspaces_objectpermissions.php?objectName={$object.name|escape:"url"}&amp;objectType={$object.type|replace:" ":"+"}&amp;permType={$object.type|replace:" ":"+"}s&amp;resourceIdName={$object.objId}"><img src='images/workspaces/key.gif' alt='{tr}active perms{/tr}' title='{tr}active perms{/tr}' height="16" width="17" border='0' /></a>
 	      			{/if}
 	      		</td>
+			{/if}
 	      		<td class="{$parImpar}">
       			{if $object.type!="workspace"}
 	      		<a class="link" href="{$object.adminURL}">
@@ -74,17 +80,16 @@
 				{/if}
 			{/if}
 	      		</td>
+			{if $showDeleteButton=="y"}
 			<td class="{$parImpar}">
-      			{if $object.type!="workspace"}
-	      		<a class="link" href="{$object.removeURL}">
-			<img src='images/workspaces/delete.gif' border='0' alt='{tr}Remove{/tr}' title='{tr}Remove{/tr}' /></a>
-			{else}
-				{if $showAdminBar=="y"}
-	      		<a class="link" href="tiki-workspaces_admin.php?viewWS={$workspaceId}&delete={$object.objId}">
-			 <img src='images/workspaces/delete.gif' border='0' alt='{tr}Remove{/tr}' title='{tr}Remove{/tr}' /></a>
+	      			{if $object.type!="workspace" }
+		      		<a class="link" href="{$object.removeURL}">
+				<img src='images/workspaces/delete.gif' border='0' alt='{tr}Remove{/tr}' title='{tr}Remove{/tr}' /></a>
+		      		<a class="link" href="tiki-workspaces_admin.php?viewWS={$workspaceId}&delete={$object.objId}">
+				<img src='images/workspaces/delete.gif' border='0' alt='{tr}Remove{/tr}' title='{tr}Remove{/tr}' /></a>
 				{/if}
+		    	</td>
 			{/if}
-			    </td>
 		  {/if}
       	</tr>
      {/foreach}
