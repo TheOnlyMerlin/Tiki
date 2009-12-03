@@ -86,7 +86,7 @@ if (!$exit_module){
 		} else {
 			$wscode = $workspace["code"];
 			$wsTypesLib = new WorkspaceTypesLib($dbTiki);
-			$wsType = $wsTypesLib->get_workspace_type_by_id($workspace["type"]);
+			$wsType = $wsTypesLib->get_workspace_type_by_id($workspace["type"]["wstypeId"]);
 # what Prefix on new objects ?
 # original, top cat prefix 
 			$id = $resourcesLib->create_object($wscode."-".$_REQUEST["createObjectName"], $_REQUEST["createObjectDesc"], $_REQUEST["createObjectType"], $_REQUEST["createObjectCategoryId"]);
@@ -211,7 +211,7 @@ if (!$exit_module){
 	$tm = new CatBrowseTreeMaker("categ");
 	$res = $tm->make_tree($top, $tree_nodes);
 	$smarty->assign('tree', $res);
-####        $smarty->assign('types', $wsresourcestypes);
+        $smarty->assign('types', $wsresourcestypes);
 	
 	
 	$smarty->assign('ownurl', $ownurl);
