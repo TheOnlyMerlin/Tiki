@@ -8,19 +8,19 @@
 class WorkspaceResourcesLib extends TikiDB {
 	var $db; // The PEAR db object used to access the database
 	var $ws_object_types= array(
+		"wiki page" => array(name=>"Wiki Page",selected=>""),
 		"blog" => array(name=>"Blog",selected=>""),
 		"calendar" => array(name=>"Calendar",selected=>""),
-		"category" => array(name=>"Category",selected=>""),
-		"faq" => array(name=>"FAQs",selected=>""),
+		"tracker" => array(name=>"Tracker",selected=>""),
 		"file gallery" => array(name=>"File Gallery",selected=>""),
 		"forum" => array(name=>"Forum",selected=>""),
 		"image gallery" => array(name=>"Image Gallery",selected=>""),
-		"quiz" => array(name=>"Quizze",selected=>""),
 		"structure" => array(name=>"Structure",selected=>""),
+		"faq" => array(name=>"FAQs",selected=>""),
+		"category" => array(name=>"Category",selected=>""),
+		"quiz" => array(name=>"Quizze",selected=>""),
 		"sheet" => array(name=>"Sheet",selected=>""),
-		"survey" => array(name=>"Survey",selected=>""),
-		"tracker" => array(name=>"Tracker",selected=>""),
-		"wiki page" => array(name=>"Wiki Page",selected=>"")
+		"survey" => array(name=>"Survey",selected=>"")
 		);
 /*
 		"assignments" => array(name=>"Assignments",selected=>""),
@@ -31,7 +31,21 @@ class WorkspaceResourcesLib extends TikiDB {
 */
 	
 	function WorkspaceResourcesLib($db) {
+		global $prefs;
 		$this->TikiDB($db);
+		if ($prefs['feature_blogs'] != 'y') unset($this->ws_object_types["blog"]);
+		if ($prefs['feature_calendar'] != 'y') unset($this->ws_object_types["calendar"]);
+		if ($prefs['feature_categories'] != 'y') unset($this->ws_object_types["category"]);
+		if ($prefs['feature_faqs'] != 'y') unset($this->ws_object_types["faq"]);
+		if ($prefs['feature_file_galleries'] != 'y') unset($this->ws_object_types["file gallery"]);
+		if ($prefs['feature_forums'] != 'y') unset($this->ws_object_types["forum"]);
+		if ($prefs['feature_galleries'] != 'y') unset($this->ws_object_types["image gallery"]);
+		if ($prefs['feature_quizzes'] != 'y') unset($this->ws_object_types["quiz"]);
+		if ($prefs['feature_wiki_structures'] != 'y') unset($this->ws_object_types["structure"]);
+		if ($prefs['feature_sheet'] != 'y') unset($this->ws_object_types["sheet"]);
+		if ($prefs['feature_surveys'] != 'y') unset($this->ws_object_types["survey"]);
+		if ($prefs['feature_trackers'] != 'y') unset($this->ws_object_types["tracker"]);
+		if ($prefs['feature_wiki'] != 'y') unset($this->ws_object_types["wiki_page"]);
 	}
 	function get_category_by_name($parentId, $catName) {
 		$query = "select * from tiki_categories where parentId=? and name=?";
