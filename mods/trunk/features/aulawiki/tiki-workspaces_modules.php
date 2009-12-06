@@ -69,7 +69,7 @@ if (!strstr($ownurlWS, 'workspaceId')) {
 	}
 }
 $separator = '&amp;';
-$smarty->assign('$ownurlWS', $ownurlWS);
+$smarty->assign('ownurlWS', $ownurlWS);
 
 foreach ($modules as $colid => $workspace_these_modules) {
 
