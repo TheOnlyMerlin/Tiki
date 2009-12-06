@@ -85,6 +85,7 @@
 	      			{if $object.type!="workspace" }
 		      		<a class="link" href="{$object.removeURL}">
 				<img src='images/workspaces/delete.gif' border='0' alt='{tr}Remove{/tr}' title='{tr}Remove{/tr}' /></a>
+				{else}
 		      		<a class="link" href="tiki-workspaces_admin.php?viewWS={$workspaceId}&delete={$object.objId}">
 				<img src='images/workspaces/delete.gif' border='0' alt='{tr}Remove{/tr}' title='{tr}Remove{/tr}' /></a>
 				{/if}
