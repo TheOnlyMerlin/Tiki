@@ -1113,7 +1113,7 @@ Caltrack a:visited {color: #00BD02}
 /***** Admin *****/
 a.admbox {
 	border: 1px solid #aaa;
-	background-color: #578bb8; 
+	background: #578bb8 center no-repeat;
 	color: #c4d6e5}
 
 a.admbox:hover, a.admbox:focus, a.admbox:active  {
