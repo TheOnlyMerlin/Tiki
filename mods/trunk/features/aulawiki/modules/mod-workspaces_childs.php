@@ -24,6 +24,9 @@ $wsuserlib = new WorkspaceUserLib($dbTiki);
 $workspace = $workspacesLib->get_current_workspace();
 if (isset($module_params["workspaceId"])) {
 	$workspace=$workspacesLib->get_workspace_by_id($module_params["workspaceId"]);
+	$wsTypesLib = new WorkspaceTypesLib($dbTiki);
+	$wsType = $wsTypesLib->get_workspace_type_by_id($workspace["type"]);
+	$workspace["type"]=$wsType;
 	}
 else 	{
 	$workspace = $workspacesLib->get_current_workspace();
