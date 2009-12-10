@@ -258,9 +258,15 @@ INSERT INTO `tiki_workspace_roles` (`name`,`uid`,`permgroup`,`description`) VALU
 DELETE FROM `users_groups` WHERE `groupName`='RolePerms-Teacher';
 DELETE FROM `users_groups` WHERE `groupName`='RolePerms-Student';
 DELETE FROM `users_groups` WHERE `groupName`='RolePerms-Owner';
+DELETE FROM `users_groups` WHERE `groupName`='ROLEGRPTeacher';
+DELETE FROM `users_groups` WHERE `groupName`='ROLEGRPStudent';
+DELETE FROM `users_groups` WHERE `groupName`='ROLEGRPOwner';
 INSERT INTO `users_groups` (groupName,groupDesc) VALUES ('RolePerms-Teacher', 'Teacher role permissions template');
 INSERT INTO `users_groups` (groupName,groupDesc) VALUES ('RolePerms-Student', 'Student role permissions template');
 INSERT INTO `users_groups` (groupName,groupDesc) VALUES ('RolePerms-Owner', 'Owner role permissions template');
+INSERT INTO `users_groups` (groupName,groupDesc) VALUES ('ROLEGRPTeacher', 'Teacher role group');
+INSERT INTO `users_groups` (groupName,groupDesc) VALUES ('ROLEGRPStudent', 'Student role group');
+INSERT INTO `users_groups` (groupName,groupDesc) VALUES ('ROLEGRPOwner', 'Owner role group');
 INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('aulawiki_p_admin_assignments','Can admin assignments','admin','assignments','NULL');
 INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('aulawiki_p_view_assignments','Can view assignments','basic','assignments','');
 INSERT INTO users_permissions (permName, permDesc, level, type, admin) VALUES ('aulawiki_p_edit_assignments','Can edit existing assignments','editors','assignments','');
