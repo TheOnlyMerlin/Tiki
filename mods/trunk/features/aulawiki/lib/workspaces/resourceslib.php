@@ -41,7 +41,7 @@ class WorkspaceResourcesLib extends TikiDB {
 		if ($prefs['feature_forums'] != 'y') unset($this->ws_object_types["forum"]);
 		if ($prefs['feature_galleries'] != 'y') unset($this->ws_object_types["image gallery"]);
 		if ($prefs['feature_quizzes'] != 'y') unset($this->ws_object_types["quiz"]);
-		if ($prefs['feature_wiki_structures'] != 'y') unset($this->ws_object_types["structure"]);
+		if ($prefs['feature_wiki_structure'] != 'y') unset($this->ws_object_types["structure"]);
 		if ($prefs['feature_sheet'] != 'y') unset($this->ws_object_types["sheet"]);
 		if ($prefs['feature_surveys'] != 'y') unset($this->ws_object_types["survey"]);
 		if ($prefs['feature_trackers'] != 'y') unset($this->ws_object_types["tracker"]);

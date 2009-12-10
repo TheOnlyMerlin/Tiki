@@ -56,6 +56,8 @@ if(isset($_REQUEST["send"])) {
 
 $wsresourceslib=new WorkspaceResourcesLib($dbTiki);
 $types=$wsresourceslib->ws_object_types;
+$selectedtype=$wstype["resources"][$_REQUEST["edit"]]["type"];
+$types[$selectedtype]["selected"]="selected";
 
 $smarty->assign('types', $types);
 $smarty->assign_by_ref('wstype',$wstype);
