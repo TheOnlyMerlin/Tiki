@@ -566,6 +566,28 @@ h3.box-title a:visited {
 	padding: 15px 15px 10px;
 }
 
+.wikitext .halffloat > div.box {
+	background: none;
+}
+
+.halffloat div.box,
+.wikitext .halffloat div.box {
+	margin: 0 2% 0 0;
+	width: 47%
+}
+
+.thirdfloat div.box,
+.wikitext .thirdfloat div.box {
+	width: 31%;
+	margin: 0 2% 0 0;
+}
+
+.quarterfloat div.box,
+.wikitext .quarterfloat div.box {
+	width: 23%;
+	margin: 0 2% 0 0;
+}
+
 /** Other boxes **/
 .cbox {
 	border: 1px solid #ddd;
