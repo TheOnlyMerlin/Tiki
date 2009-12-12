@@ -572,20 +572,17 @@ h3.box-title a:visited {
 
 .halffloat div.box,
 .wikitext .halffloat div.box {
-	margin: 0 2% 0 0;
 	width: 47%
 }
 
 .thirdfloat div.box,
 .wikitext .thirdfloat div.box {
 	width: 31%;
-	margin: 0 2% 0 0;
 }
 
 .quarterfloat div.box,
 .wikitext .quarterfloat div.box {
 	width: 23%;
-	margin: 0 2% 0 0;
 }
 
 /** Other boxes **/

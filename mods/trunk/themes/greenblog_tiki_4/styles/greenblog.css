@@ -361,8 +361,7 @@ a.flip:hover {color: #ffc64a}
 #col2 .box {
 	width: 178px;
 	padding: 15px 0 10px 0}
-	
-#col1 .box {width: 90%}
+
 #col3 .box {width: 248px}
 a.flipmodtitle:hover img {border: 1px solid #ffc64a !important}
 
@@ -385,6 +384,22 @@ div.simplebox {
 	color: #ffc64a;
 	background: #2f320e;
 	border: 1px dotted #ffc64a}
+	
+.halffloat div.box,
+.wikitext .halffloat div.box {
+	width: 41%;
+ 
+}
+
+.thirdfloat div.box,
+.wikitext .thirdfloat div.box {
+	width: 25%;
+}
+
+.quarterfloat div.box,
+.wikitext .quarterfloat div.box {
+	width: 16%;
+}
 
 /***** Tables, Tabs *****/
 /** Tables **/

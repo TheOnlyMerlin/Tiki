@@ -568,12 +568,11 @@ a.flip:hover,
 
 /***** Boxes *****/
 /** Modules **/
-div.box {
+#leftcolumn div.box,
+#rightcolumn div.box {
 	padding-bottom: 5px;
 	margin-bottom: 1em;
 	width: 180px !important}
-	
-.wikitext div.box {width: auto}
 
 h3.box-title {
 	border-top: 1px solid #98615F;

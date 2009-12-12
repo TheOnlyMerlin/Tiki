@@ -662,6 +662,21 @@ div.box {
 
 #leftcolumn .box,
 #rightcolumn .box {width: 204px}
+
+.halffloat div.box,
+.wikitext .halffloat div.box {
+	margin: 0 2% 1em 0;
+}
+
+.thirdfloat div.box,
+.wikitext .thirdfloat div.box {
+	margin: 0 2% 1em 0;
+}
+
+.quarterfloat div.box,
+.wikitext .quarterfloat div.box {
+	margin: 0 2% 1em 0;
+}
 	
 h3.box-title {
 	display: block;

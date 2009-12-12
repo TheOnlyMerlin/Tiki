@@ -520,9 +520,13 @@ a.linkmenu, .rsslink, .linkmenu:visited, .rsslink:visited {
 div.box {
 	overflow: hidden;
 	margin: 3px;
-	width: 174px;
 	padding-bottom: 10px;
 	text-align: center}
+	
+#leftcolumn div.box,
+#rightcolumn div.box {
+	width: 174px;
+}
 
 h3.box-title {
 	color: #444444;
@@ -543,6 +547,22 @@ div.box-data {
 	font-size: 1em;
 	color: #777777;
 	text-align: left}
+
+.halffloat div.box,
+.wikitext .halffloat div.box {
+	width: 45%;
+}
+
+.thirdfloat div.box,
+.wikitext .thirdfloat div.box {
+	width: 29%;
+}
+
+.quarterfloat div.box,
+.wikitext .quarterfloat div.box {
+	width: 20%;
+}
+
 
 /** Other boxes **/
 .cbox {

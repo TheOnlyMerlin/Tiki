@@ -353,14 +353,11 @@ a > .sf-sub-indicator {
 
 /***** Boxes *****/
 /** Modules **/
-.box {
+#col2 .box,
+#col3 .box {
 	width: 235px;
 	margin-bottom: 10px;
 	text-align: left}
-	
-#tiki-center .box {
-	width: auto;
-}
 
 h3.box-title {
 	height: 35px;

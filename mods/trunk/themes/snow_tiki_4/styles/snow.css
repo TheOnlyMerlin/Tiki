@@ -556,6 +556,21 @@ h3.box-title {
 	background: url(snow/boxbtm.jpg) no-repeat;
 	height: 54px}
 
+.halffloat div.box,
+.wikitext .halffloat div.box {
+	width: 48%;
+ }
+
+.thirdfloat div.box,
+.wikitext .thirdfloat div.box {
+	width: 33%;
+}
+
+.quarterfloat div.box,
+.wikitext .quarterfloat div.box {
+	width: 24%;
+}
+
 /** Other boxes **/
 .wikitext .cbox {
 	overflow: hidden;

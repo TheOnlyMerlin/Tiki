@@ -683,6 +683,21 @@ div.simplebox {
 	color: #000;
 	padding: 4px}
 
+.halffloat div.box,
+.wikitext .halffloat div.box {
+	width: 42%;
+ }
+
+.thirdfloat div.box,
+.wikitext .thirdfloat div.box {
+	width: 29%;
+}
+
+.quarterfloat div.box,
+.wikitext .quarterfloat div.box {
+	width: 20%;
+}
+
 /***** Tables, Tabs *****/
 /** Tables **/
 table.normal, 

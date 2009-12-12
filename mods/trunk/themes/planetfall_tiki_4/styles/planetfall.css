@@ -4,15 +4,14 @@
 	information about and upgrades for this theme.
 */
 
-/* Import the default layout properties file: */
+/* Import the default properties files: */
 @import "layout/layout.css";
-
-/* And design defaults: */
 @import "layout/design.css";
  
 /***** XHTML Elements (body tag here,
 			others follow Layout) *****/ 
-body {
+body,
+body.fullscreen {
 	background: #121A1D url(planetfall/back_fade.jpg) repeat-x;
 	padding: 20px 0;
 	font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
@@ -157,9 +156,9 @@ h6 {
 	margin: 1px 0}
 
 hr  {
-	/*background: #999;
-	height: 1px;
-	border: 1px solid;*/}
+	background: #999;
+	color: #999;
+}
 
 fieldset {
 	color: #9da6b3;
@@ -211,25 +210,29 @@ button,
 input[type=reset],
 input[type=submit],
 span.button input,
-.submitbutton,
-.calbuttonoff,
-.calbuttonon {
+.calbuttonbox {
 	color: #ff6600;
 	font-size: 11px;
 	border: thin solid #9DA6B3;
 	background: #000;
 	text-decoration: none;
-	font-weight: bold}
+	font-weight: bold;
+}
 
 .button a:hover,
 button:hover,
 input[type=reset]:hover,
 input[type=submit]:hover,
 .button input:hover,
-.submitbutton:hover {
+.calbuttonbox:hover  {
 	color: #9AB6C2;
 	text-decoration: none;
 	font-weight: bold}
+	
+button,
+span.button, 
+span.button.highlight {
+}
 	
 input[type=checkbox] {border: 0}
 form.admin input[name="features"] {margin-bottom: 3px !important}
@@ -294,6 +297,10 @@ div#sitead {margin: auto}
 #sitelocbar {float: left}
 #customcodewith_ad {width: 400px}
 
+#sitetitles {
+	margin-top: 18px;
+}
+
 #sitetitle,
 #sitesubtitle {
 	color: #ff6600;
@@ -350,7 +357,7 @@ td#leftcolumn .cssmenu_vert li ul li a {
 }
 
 /* #header (topbar) menu top level */
-#header .cssmenu_horiz li a {
+#tiki-top .cssmenu_horiz li a {
 	padding-top: 5px;
 	padding-bottom: 6px;
 	font-size: 12px;
@@ -358,11 +365,11 @@ td#leftcolumn .cssmenu_vert li ul li a {
 	border-right: 1px solid #9DA6B3;
 }
 
-#header .cssmenu_horiz li a:hover {
+#tiki-top .cssmenu_horiz li a:hover {
 	color: #9ab6c2;
 }
 
-#header .cssmenu_horiz ul li a,
+#tiki-top .cssmenu_horiz ul li a,
 td#leftcolumn .cssmenu_vert li ul li a {
 	border-right: 0;
 	color: #ccc;
@@ -462,7 +469,7 @@ td#leftcolumn .cssmenu_vert li li.sfHover ul {
 .mdksubmenu table {width: 180px}
 
 .mdkitem  {
-	background-image: 0;
+	background-image: none;
 	font-size: 1em}
 
 .mdkitem .mdkfwdarr {
@@ -514,41 +521,18 @@ div.separator, div.separatorline {}
 div.separator + div {padding-left: 20px}
 .separator a:link,
 .separator a:visited {
-/*	background: url(planetfall/menu_bullet.png) no-repeat;
-*/	font-size: 1em;
+	font-size: 1em;
 	font-weight: bold;
 	color: #ff6600;
 	text-align: left;
-	/*padding-left: 15px;
-	margin-bottom: 1px*/}
+}
 
 .separator a:hover {
 /*	background-position: 0 -20px;*/
 	color: #9AB6C2}
 
-div.separator a.separator img {/*display: 0*/}
+div.separator a.separator img {margin-top: -9px;}
 
-/* These maybe conflicting were
-also in 1.9 version 
-.separator {
-	font-size: 1em;
-	color: #ccc;
-	text-decoration: none}
-
-.separator:active {
-	font-size: 1em;
-	text-decoration: none}
-
-.separator:hover {
-	font-size: 1em;
-	color: #FF6600;
-	text-decoration: none}*/
-
-div.option a.linkmenu:hover {}
-a.separator img {}
-.option {}
-div.optionline,
-.option a {}
 .option a:link,
 .option a:visited,
 a.linkmenu, .rsslink, .linkmenu:visited, .rsslink:visited {}
@@ -596,7 +580,7 @@ ol li a.linkmodule {
 	text-decoration: none}
 
 .rsslist {
-	list-style: 0;
+	list-style: none;
 	margin-left: 0}
 
 .rssitem {
@@ -632,7 +616,6 @@ a.flip:hover,
 .tellafriend a:hover {
 	color: #ff6600}
 
-a.flip img {display: 0}
 .tellafriend {text-align: right}
 
 .fullscreen .tellafriend {
@@ -647,14 +630,14 @@ div#tiki-center {
 
 /***** Boxes *****/
 /** Modules **/
-div.box { 
+#leftcolumn div.box,
+#rightcolumn div.box { 
 	padding-left: 4px;
 	padding-right: 4px;
 	width: 180px}
 
 h3.box-title {
 	background: url(planetfall/title_background.png) no-repeat;
-	background: 	
 	vertical-align: middle;
 	font-size: 1em;
 	font-weight: bold;
@@ -678,7 +661,7 @@ div.box-data {
 	font-weight: normal}
 	
 ul.module,
-ol.module {list-style: 0}
+ol.module {list-style: none}
 
 /** Other boxes **/
 .cbox { 
@@ -720,7 +703,8 @@ div.cbox-data {
 .rbox-title,
 .rbox-data {
 	border-color: #ff6600;
-	color: #9ab6c2}
+	color: #9ab6c2;
+	background: #2e4452;}
 
 .rbox-title {
 	background: #ff6600;
@@ -748,15 +732,6 @@ body.tiki_webmail table.normal {color: #436976}
 /* Cells in forms using a background color */
 .formcolor td,
 .editblogform td {padding: 3px}
-
-td.button {
-	color: black;
-	font-size: .9em;
-	background: #293C43; 
-	padding-left: 2px;
-	padding-right: 5px;
-	text-align: center; 
-	vertical-align: middle}
 
 table.findtable {
 	width: 97%;
@@ -788,35 +763,38 @@ tr.even {
 	color: #ccc;
 	padding: 2px}
 
+tr.odd,
 tr.odd td,
-td.odd {
+td.odd,
+li.odd {
 	background: #0D1315;
 	color: #ccc;
 	vertical-align: top;
 	text-align: left}
 
+tr.even,
+td.even,
 tr.even td,
-td.even {
+li.even {
 	background: #151E22;
 	color: #ccc;
 	vertical-align: top;
 	text-align: left}
 
-td.third {
-	font-size: .9em;
-	color: #ccc;
-	background: #3D5963;
-	vertical-align: top;
-	text-align: left}
-
 /* Table headings */
-th, /*div.heading,*/
-table.normal td.heading {
+td.third,
+th,
+td.heading,
+tr.diffheader {
 	background: #3D5963;
 	color: #ccc;
 	font-weight: bold;
 	padding: 3px;
 	font-size: 1em}
+	
+td.third {
+	font-size: .9em;
+	text-align: left}
 
 /** Tabs **/
 .tabs {
@@ -895,7 +873,6 @@ h1.pagetitle {
 	font-weight: bold;
 	color: #ccc;
 	text-align: left;
-	/*text-indent: 15px;*/
 	width: 100%;
 	height: 24px}
 	
@@ -908,11 +885,8 @@ h1.pagetitle a:visited {
 
 h1 a.pagetitle:hover {text-decoration: none}
 
-div.wikitopline {}
-
-.wikitopline table {width: 100%}
-
-div#description {
+#description,
+.description {
 	color: #436976;
 	font-size: 1em;
 	font-style: italic;
@@ -926,18 +900,11 @@ div#description {
 	float: right;
 	font-size: small}
 
-.categpath {}
-
 div.wikitext {
 	font-size: 1em;
 	border: 1px solid #99bec6;
 	clear: both;
 	padding: 1em 2em}
-	
-.wikitext h1, 
-.wikitext h2, 
-.wikitext h3, 
-.wikitext h4 {}
 
 div.titlebar {
 	background: #9DA7B3 url(planetfall/top_bar.jpg);
@@ -950,15 +917,10 @@ div.titlebar {
 	font-weight: bolder;
 	clear: both}
 
-.wikitext ul li {} 
-.wikitext ul li ul li {}
-.wikitext ol {}
-
 /* Be sure this doesn't conflict w/ other boxes.*/
 .wikitext div.box {
 	background: #2C434B}
 
-/* called from tikilib.php */
 table.wikitable {
 	border-collapse: collapse;
 	background: #121A1D}
@@ -969,52 +931,6 @@ td.wikicell {
 	background: #121A1D}
 
 p.editdate {font-size: .9em}
-
-div#page-bar {
-	display: block;
-	float: 0;
-	margin-left: 5px;
-	margin-top: 5px}
-	
-ul.floatleft {
-	display: block;
-	list-style: 0;
-	padding: 0;
-	text-align: left;
-	height: 20px;
-	margin-top: 0}
-
-ul.floatleft li {
-	padding: 4px 2px}
-
-.editdate ul.floatleft {margin-top: 8px}
-
-
-.linkbut {font-size: 1em}
-.linkbut:hover {}
-/* When a cached version of an external link is displayed */
-div.cache {
-	background: #3d5963;
-	border: 1px solid black;
-	padding: 0.1em;
-	margin: 0.1ex 0}
-
-div.cachedpage {
-	border: 1px solid black;
-	padding: 0.1em; 
-	margin: 0.1ex 0}
-
-.wikicache {
-	font-size: 9px;
-	color: #225566}
-
-.wikicache:active {
-	font-size: 9px;
-	color: #225566}
-
-.wikicache:hover {
-	font-size: 9px;
-	color: #225566}
 
 .wiki {
 	color: #ff6600;
@@ -1034,7 +950,6 @@ div.cachedpage {
 	text-decoration: underline;
 	font-weight: bold}
 
-.wiki-edithelp {display: 0}
 .wiki-edithelp {
 	background: #121A1D;
 	border: 1px solid black;
@@ -1049,17 +964,9 @@ img.externallink {
 	margin-left: 3px;
 	margin-right: 2px}
 
-/* Needed esp. for light-on-dark theme */
-div.quicktag {}
-div.quicktag img,
-#wikihelp-tab td img {}
-div#helptool {}
-
 /* Wiki plugins */
 
 /* Code plugin  */
-div.code {}
-
 .codelisting {
 	font-family: "Courier New", Courier, monospace;
 	padding: 2ex;
@@ -1342,10 +1249,9 @@ div.posthead {
 	text-transform: uppercase}
 	
 span.posthead {
-	/*font-size: 1.2em;*/
 	font-weight: bold;
 	color: #ccc;
-	text-transform: 0}
+	text-transform: none}
 	
 span.posthead small {
 	font-size: 1em;
@@ -1381,9 +1287,6 @@ div.postfooter {
 
 /***** Forums *****/
 body.tiki_forums table.normal {margin: auto}
-#forumpost {display: 0}
-#forumpostopen {display: block}
-
 .post {
 	clear: both;
 	margin-top: 6px;
@@ -1557,7 +1460,7 @@ body.tiki_forums table.normal {margin: auto}
 
 /* Comments */
 #comzone {
-	display: 0;
+	display: none;
 	margin: 5px 0;
 	padding: 0}
  
@@ -1759,9 +1662,7 @@ td.categobjectsdataodd {
 
 .catlists a.link:hover {color: #000}
 */
-ul.catfeatures {list-style: 0}
-ul.catfeatures li {}
-ul.catitems {}
+ul.catfeatures {list-style: none}
 ul.catitems li {
 	display: inline;
 	margin-right: 7px}
@@ -1785,11 +1686,6 @@ table.pollresults {
 td.pollr {
 	font-size: 1em;
 	color: black}
-
-#pollopen {display: block}
-#pollzone {display: 0}
-#polledit {display: 0}
-.pollnav {}
 
 /***** FAQs *****/
 div.faqlistquestions {
@@ -1959,17 +1855,6 @@ div.messureadbody {margin-top: 5px}
 	font-size:10px;
 	padding-right: 0px}
 
-.Cal0:before {
-	content: "? ";
-	background: #ff6347} 
-
-.Cal1:before {
-	content: "+ ";
-	background: #FFCC77}
-
-.Cal2:before {
-	content: "X ";
-	background: #3f3f3f}
 
 .Calart,
 .Calblog,
@@ -2062,35 +1947,10 @@ Caltrack a:visited {color: #00BD02}
 .Caltrack a:hover,
 .Calwiki a:hover {color: #F5F5F5}
 
-.Calart:before,
-.Calblog:before,
-.Calchart:before,
-.Caldir:before,
-.Caleph:before,
-.Calfaq:before,
-.Calfgal:before,
-.Calforum:before,
-.Calgal:before,
-.Calnl:before,
-.Calquiz:before,
-.Calsurv:before,
-.Caltrack:before,
-.Calwiki:before {background: #292929}
-
 .caltitle {
 	font-weight: bold;
 	color: #425262}
 
-/*	
-.daterow {
-	background: black;
-	font-weight: bold;
-	margin-left: 3px;
-	border: 1px outset black;
-	padding: 1px 5px 1px 5px;
-	font-size: .9em;
-	cursor: pointer;
-	color: #ff6600}*/
 
 /* checkboxes background is required for rollover display */
 .calcheckbox {
@@ -2102,14 +1962,11 @@ Caltrack a:visited {color: #00BD02}
 
 .opaque {
 	background: #1f363a;
+	color: #ccc;
 	width: auto;
 	border: 1px solid #666;
 	padding: 1px; 
-	max-width: 300px}
-
-.opaque .box-title,
-.opaque, .box-data {
-	width: auto}
+}
 
 .calfocus {
 	font-size: 9px;
@@ -2165,11 +2022,6 @@ Caltrack a:visited {color: #00BD02}
 .Calblog a {
 	color: #443039}
 
-.Calblog:before {
-	content: "b";
-	font-family: monospace;
-	background: #1f363a}
-
 .Calgal {
 	border-top: 1px dashed #ccc;
 	font-size: .9em;
@@ -2179,11 +2031,6 @@ Caltrack a:visited {color: #00BD02}
 
 .Calgal a {
 	color: #303F49}
-
-.Calgal:before {
-	content: "i";
-	font-family: monospace;
-	background: #1f363a}
 
 .Calart {
 	border-top: 1px dashed #ccc;
@@ -2195,11 +2042,6 @@ Caltrack a:visited {color: #00BD02}
 .Calart a {
 	color: #304F30}
 
-.Calart:before {
-	content: "a";
-	font-family: monospace;
-	background: #1f363a}
-
 .Calforum {
 	border-top:1px dashed #ccc;
 	font-size:10px;
@@ -2209,11 +2051,6 @@ Caltrack a:visited {color: #00BD02}
 
 .Calforum a {
 	color: #304F30}
-
-.Calforum:before {
-	content: "o";
-	font-family: monospace;
-	background: #1f363a}
 
 .Caldir {
 	border-top:1px dashed #ccc;
@@ -2225,11 +2062,6 @@ Caltrack a:visited {color: #00BD02}
 .Caldir a {
 	color: #304F30}
 
-.Caldir:before {
-	content: "d";
-	font-family: monospace;
-	background: #1f363a}
-
 .Calfgal {
 	border-top:1px dashed #ccc;
 	font-size:10px;
@@ -2240,10 +2072,6 @@ Caltrack a:visited {color: #00BD02}
 .Calfgal a {
 	color: #304F30}
 
-.Calfgal:before {
-	content: "f";
-	font-family: monospace;
-	background: #1f363a}
 
 .Calfaq {
 	border-top:1px dashed #ccc;
@@ -2255,11 +2083,6 @@ Caltrack a:visited {color: #00BD02}
 .Calfaq a {
 	color: #304F30}
 
-.Calfaq:before {
-	content: "q";
-	font-family: monospace;
-	background: #1f363a}
-
 .Calquiz {
 	border-top:1px dashed #ccc;
 	font-size:10px;
@@ -2269,11 +2092,6 @@ Caltrack a:visited {color: #00BD02}
 
 .Calquiz a {
 	color: #304F30}
-
-.Calquiz:before {
-	content: "z";
-	font-family: monospace;
-	background: #1f363a}
 
 .Caltrack {
 	border-top:1px dashed #ccc;
@@ -2285,11 +2103,6 @@ Caltrack a:visited {color: #00BD02}
 .Caltrack a	{
 	color: #304F30}
 
-.Caltrack:before {
-	content: "t";
-	font-family: monospace;
-	background: #1f363a}
-
 .Calsurv {
 	border-top:1px dashed #ccc;
 	font-size:10px;
@@ -2299,11 +2112,6 @@ Caltrack a:visited {color: #00BD02}
 
 .Calsurv a {
 	color: #304F30}
-
-.Calsurv:before {
-	content: "s";
-	font-family: monospace;
-	background: #1f363a}
 
 .Calnl {
 	border-top:1px dashed #ccc;
@@ -2320,21 +2128,6 @@ Caltrack a:visited {color: #00BD02}
 	font-family: monospace;
 	background: #1f363a}
 
-.Caleph {
-	border-top:1px dashed #ccc;
-	font-size:10px;
-	padding-left:3px;
-	padding-right:3px;
-	color: #43626D}
-
-.Caleph a {
-	color: #304F30}
-
-.Caleph:before	{
-	content: "e";
-	font-family: monospace;
-	background: #1f363a}
-
 .Calchart {
 	border-top:1px dashed #ccc;
 	font-size:10px;
@@ -2345,15 +2138,9 @@ Caltrack a:visited {color: #00BD02}
 .Calchart a {
 	color: #304F30}
 
-.Calchart:before {
-	content: "c";
-	font-family: monospace;
-	background: #1f363a}
-
 .calweb {
 	font-weight: bold;
 	font-size: .9em;
-	
 	padding-left: 3px;
 	padding-right: 3px;
 	color: #336699}
@@ -2470,26 +2257,21 @@ Caltrack a:visited {color: #00BD02}
 	background: #293b42}
 
 .calnavigation a:hover {background: #9AB6C2}
-/*
-td.calnavigation {
-	font-size: 12px;
-	color: #43626D}
 
-The button in calendar navigation panel
-span.daterow {
-	color: #43626D}*/
+.viewmode {
+	line-height: 1.5em;
+}
 
 /***** Admin *****/
 a.admbox {
-	border: 1px solid #aaa;
-	height: 100px;
-	width: 100px;
-	background: #6C6C6C;
+	border: 1px solid #ff6600;
+	color: #ff6600;
+	background: #293c43;
 	background-repeat: no-repeat;
 	background-position: center}
 
 a.admbox:hover, a.admbox:focus, a.admbox:active  {
-	background: #B2B2B2;
+	background: #43626d;
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 	border: 1px solid #292929}
@@ -2506,59 +2288,4 @@ a.admbox.off img {
 
 /***** Ajax, jquery. etc. *****/
 /***** Ajax *****/
-div#ajaxLoading {	display: 0;
-	position: absolute;
-	top: 50px;
-	right: 50%;
-	color: #fff;
-	padding: 3px;
-	font-family: Verdana;
-	font-size: 90%;
-	text-align: center;
-	background: transparent url(../lib/shadowbox/images/loading-light.gif) no-repeat 50% 100%;
-	height: 43px;
-	width: 50px}
-
-
-#shadowbox_title {
-	height: auto !important;
-	padding: 0;
-	overflow: visible}
-
-#shadowbox_title_inner {
-	height: auto !important;
-	font-size: 1em !important;
-	line-height: 1em !important;
-	white-space: normal !important;
-	padding: 5px 0 4px 8px}
-
-.tab-menu  {
-	clear: both;
-	line-height: 17px;
-	list-style-image: 0;
-	list-style-position: outside;
-	list-style-type: 0;
-	padding: 2px 0;
-	margin-bottom: 6px;
-	margin-top: 2px;
-	width: 100%}
-
-.tab-menu li {
-	display: inline;
-	margin: 0 2px;
-	width: 200px;
-	padding-right: 1.5em}
-
-.tab-menu li img {vertical-align: middle}
-
-.tab-wrapper {
-	border: 1px s
-/***** New (unsorted) *****/
-
-/***** End New (unsorted) *****/
-
 /* End of File */
-
-
-
-

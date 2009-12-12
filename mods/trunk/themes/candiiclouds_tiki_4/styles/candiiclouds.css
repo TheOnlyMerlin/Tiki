@@ -450,6 +450,12 @@ h3.box-title {
 	text-indent: 45px;
 	letter-spacing: -0.5px}
 	
+.wikitext h3.box-title {
+	height: 30px;
+	margin-bottom: 4px;
+	padding: 5px 0 0 0;
+}
+	
 .flipmodimage:hover {border: 1px solid #FFCCE2 !important}
 
 .box-data {
@@ -504,6 +510,21 @@ div.simplebox {
 	background: #cff1ff;
 	border-color: #a7e6ff;
 	color: #0076a3}
+	
+.halffloat div.box,
+.wikitext .halffloat div.box {
+	width: 48%;
+}
+
+.thirdfloat div.box,
+.wikitext .thirdfloat div.box {
+	width: 28%;
+}
+
+.quarterfloat div.box,
+.wikitext .quarterfloat div.box {
+	width: 19%;
+}
 
 /***** Tables, Tabs *****/
 /** Tables **/
@@ -602,10 +623,6 @@ div.description {
 .wikitext h4 {
 	margin: 0 0 15px;
 	padding: 0}
-	
-.wikitext h3.box-title {
-	margin-bottom: 4px;
-	padding: auto}
 
 .titlebar {
 	border-top: 1px solid #999;
