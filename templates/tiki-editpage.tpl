@@ -126,28 +126,18 @@
 			{include file='wiki_edit_actions.tpl'}
 		</div>
 	{/if}
-
+	
 	<table class="normal">
 		
 		
 		<tr class="formcolor">
 			<td colspan="2">
-				{if $page_badchars_display}
-					{remarksbox type=tip title="{tr}Tip{/tr}"}
-						{if $prefs.wiki_badchar_prevent eq 'y'}
-							{tr 0=$page_badchars_display|escape}The page name specified contains unallowed characters. It will not be possible to save the page until those are removed: <strong>%0</strong>{/tr}
-						{else}
-							{tr 0=$page_badchars_display|escape}The page name specified contains characters that may render the page hard to access. You may want to consider removing those: <strong>%0</strong>{/tr}
-						{/if}
-					{/remarksbox}
-					<p>{tr}Page name{/tr}: <input type="text" name="page" value="{$page|escape}" /></p>
-				{/if}
 				{tabset name='tabs_editpage'}
 					{tab name="{tr}Edit page{/tr}"}
 						{textarea}{$pagedata}{/textarea}
 						{if $page|lower neq 'sandbox'}
 							<fieldset>
-								<label for="comment">{tr}Describe the change you made{/tr}: {if $prefs.feature_help eq 'y'}{help url='Editing+Wiki+Pages' desc='{tr}Edit comment: Enter some text to describe the changes you are currently making{/tr}'}{/if}</label>
+								<label for="comment">{tr}Edit Comment{/tr}: {if $prefs.feature_help eq 'y'}{help url='Editing+Wiki+Pages' desc='{tr}Edit comment: Enter some text to describe the changes you are currently making{/tr}'}{/if}</label>
 								<input style="width:98%;" class="wikiedit" type="text" id="comment" name="comment" value="{$commentdata|escape}" />
 								{if $show_watch eq 'y'}
 									<label for="watch">{tr}Monitor this page{/tr}:</label>
@@ -468,39 +458,41 @@
 							{if $prefs.feature_wiki_ratings eq 'y' and $tiki_p_wiki_admin_ratings eq 'y'}
 								<fieldset>
 									<legend>{tr}Use rating{/tr}:</legend>
-
-									{foreach from=$poll_rated item=rating}
-										<div>
-											<a href="tiki-admin_poll_options.php?pollId={$rating.info.pollId}">{$rating.info.title}</a>
-											{assign var=thispage value=$page|escape:"url"}
-											{assign var=thispoll_rated value=$rating.info.pollId}
-											{button href="?page=$thispage&amp;removepoll=$thispoll_rated" _text="{tr}Disable{/tr}"}
-										</div>
-									{/foreach}
-
-									{if $tiki_p_admin_poll eq 'y'}
-										{button href="tiki-admin_polls.php" _text="{tr}Admin Polls{/tr}"}
-									{/if}
-
-									{if $poll_rated|@count <= 1 or $prefs.poll_multiple_per_object eq 'y'}
-										<div>
-											{if count($polls_templates)}
-												{tr}Type{/tr}
-												<select name="poll_template">
-													<option value="0">{tr}none{/tr}</option>
-													{foreach item=template from=$polls_templates}
-														<option value="{$template.pollId|escape}"{if $template.pollId eq $poll_template} selected="selected"{/if}>{tr}{$template.title|escape}{/tr}</option>
-													{/foreach}
-												</select>
-												{tr}Title{/tr}
-												<input type="text" name="poll_title" size="22" />
-											{else}
-												{tr}There is no available poll template.{/tr}
-												{if $tiki_p_admin_polls ne 'y'}
-													{tr}You should ask an admin to create them.{/tr}
-												{/if}
+									{if $poll_rated.info}
+										<input type="hidden" name="poll_title" value="{$poll_rated.info.title|escape}" />
+										<a href="tiki-admin_poll_options.php?pollId={$poll_rated.info.pollId}">{$poll_rated.info.title}</a>
+										{assign var=thispage value=$page|escape:"url"}
+										{assign var=thispoll_rated value=$poll_rated.info.pollId}
+										{button href="?page=$thispage&amp;removepoll=$thispoll_rated" _text="{tr}Disable{/tr}"}
+										{if $tiki_p_admin_poll eq 'y'}
+											{button href="tiki-admin_polls.php" _text="{tr}Admin Polls{/tr}"}
+										{/if}
+									{else}
+										{if count($polls_templates)}
+											{tr}Type{/tr}
+											<select name="poll_template">
+												<option value="0">{tr}none{/tr}</option>
+												{section name=ix loop=$polls_templates}
+													<option value="{$polls_templates[ix].pollId|escape}"{if $polls_templates[ix].pollId eq $poll_template} selected="selected"{/if}>{tr}{$polls_templates[ix].title}{/tr}</option>
+												{/section}
+											</select>
+											{tr}Title{/tr}
+											<input type="text" name="poll_title" value="{$poll_title|escape}" size="22" />
+										{else}
+											{tr}There is no available poll template.{/tr}
+											{if $tiki_p_admin_polls ne 'y'}
+												{tr}You should ask an admin to create them.{/tr}
 											{/if}
-										</div>
+										{/if}
+										{if count($listpolls)}
+											{tr}or use{/tr}
+											<select name="olpoll">
+												<option value="">... {tr}an existing poll{/tr}</option>
+												{section name=ix loop=$listpolls}
+													<option value="{$listpolls[ix].pollId|escape}">{tr}{$listpolls[ix].title|default:"<i>... no title ...</i>"}{/tr} ({$listpolls[ix].votes} {tr}votes{/tr})</option>
+												{/section}
+											</select>
+										{/if}
 									{/if}
 								</fieldset>
 							{/if}

@@ -21,7 +21,18 @@
 		{tab name="{tr}General Settings{/tr}"}
 			<input type="hidden" name="cmsprefs" />
 
-			{preference name=art_home_title}
+			<div class="adminoptionbox">
+				<div class="adminoptionlabel">
+					<label for="art_home_title">{tr}Title of articles home page{/tr}:</label>
+					<select name='art_home_title' id='art_home_title'>
+						<option value=''></option>
+						<option value="topic"{if $prefs.art_home_title eq 'topic'} selected="selected"{/if}>{tr}Topic{/tr}</option>
+						<option value="type"{if $prefs.art_home_title eq 'type'} selected="selected"{/if}>{tr}Type{/tr}</option>
+						<option value="articles"{if $prefs.art_home_title eq 'articles'} selected="selected"{/if}>'{tr}Articles{/tr}'</option>
+					</select>
+				</div>
+			</div>
+
 			{preference name=maxArticles}
 
 			<fieldset>
@@ -39,6 +50,7 @@
 				</div>
 
 				{preference name=cms_spellcheck}
+				<em>{tr}Requires a separate download{/tr}.</em>
 				{preference name=feature_cms_templates}
 				{preference name=feature_cms_print}
 				{preference name=feature_cms_emails}

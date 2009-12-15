@@ -4,26 +4,22 @@ class PreferencesLib
 {
 	private $data = array();
 
-	function getPreference( $name, $deps = true, $source = null ) {
-		global $prefs;
+	function getPreference( $name, $deps = true ) {
 		static $id = 0;
 		$data = $this->loadData( $name );
 
 		if( isset( $data[$name] ) ) {
 			$info = $data[$name];
 
-			if( $source == null ) {
-				$source = $prefs;
-			}
-
+			global $prefs;
 			$info['preference'] = $name;
 			if( isset( $info['serialize'] ) ) {
 				$fnc = $info['serialize'];
-				$info['value'] = $fnc( $source[$name] );
+				$info['value'] = $fnc( $prefs[$name] );
 			} else {
-				$info['value'] = $source[$name];
+				$info['value'] = $prefs[$name];
 			}
-			$info['raw'] = $source[$name];
+			$info['raw'] = $prefs[$name];
 			$info['id'] = 'pref-' . ++$id;
 			if( isset( $info['help'] ) && $prefs['feature_help'] == 'y' ) {
 				
@@ -76,30 +72,6 @@ class PreferencesLib
 		}
 
 		return $changes;
-	}
-
-	function getInput( JitFilter $filter, $preferences = array(), $environment ) {
-		$out = array();
-
-		foreach( $preferences as $name ) {
-			$info = $this->getPreference( $name );
-
-			if( $environment == 'perspective' && isset( $info['perspective'] ) && $info['perspective'] === false ) {
-				continue;
-			}
-			
-			if( isset( $info['filter'] ) ) {
-				$filter->replaceFilter( $name, $info['filter'] );
-			}
-
-			if( isset( $info['separator'] ) ) {
-				$out[ $name ] = $filter->asArray( $name, $info['separator'] );
-			} else {
-				$out[ $name ] = $filter[$name];
-			}
-		}
-
-		return $out;
 	}
 
 	private function loadData( $name ) {
@@ -206,16 +178,6 @@ class PreferencesLib
 		}
 	}
 
-	private function _getPasswordValue( $info, $data ) {
-		$name = $info['preference'];
-
-		if( isset($info['filter']) && $filter = TikiFilter::get( $info['filter'] ) ) {
-			return $filter->filter( $data[$name] );
-		} else {
-			return $data[$name];
-		}
-	}
-
 	private function _getTextareaValue( $info, $data ) {
 		$name = $info['preference'];
 
@@ -255,23 +217,6 @@ class PreferencesLib
 		$options = array_keys( $options );
 
 		return array_intersect( $value, $options );
-	}
-	private function _getRadioValue( $info, $data ) {
-		$name = $info['preference'];
-		$value = $data[$name];
-
-		$options = $info['options'];
-		$options = array_keys( $options );
-
-		if (in_array($value, $options)) {
-			return $value;
-		} else {
-			return '';
-		}
-	}
-
-	private function _getMulticheckboxValue( $info, $data ) {
-		return $this->_getMultilistValue( $info, $data );
 	}
 }
 

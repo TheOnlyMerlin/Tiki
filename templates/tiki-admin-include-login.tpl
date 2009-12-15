@@ -23,12 +23,11 @@
 							<option value="cas" {if $prefs.auth_method eq 'cas'} selected="selected"{/if}>{tr}CAS (Central Authentication Service){/tr}</option>
 							<option value="shib" {if $prefs.auth_method eq 'shib'} selected="selected"{/if}>{tr}Shibboleth{/tr}</option>
 							<option value="ws" {if $prefs.auth_method eq 'ws'} selected="selected"{/if}>{tr}Web Server{/tr}</option>
-							<option value="phpbb" {if $prefs.auth_method eq 'phpbb'} selected="selected"{/if}>{tr}phpBB{/tr}</option>
 						</select> {if $prefs.feature_help eq 'y'} {help url="Login+Authentication+Methods"}{/if}
 					</div>
 				</div>	
 			
-				<fieldset><legend>{tr}Registration{/tr} &amp; {tr}Log in{/tr}</legend>
+				<fieldset><legend>{tr}Registration{/tr} &amp; {tr}Login{/tr}</legend>
 					<div class="adminoptionbox">
 						<div class="adminoption">
 							<input type="checkbox" id="allowRegister" name="allowRegister" {if $prefs.allowRegister eq 'y'}checked="checked"{/if} onclick="flip('userscanregister');" />
@@ -174,7 +173,6 @@
 							<div class="adminoptionbox">
 								<div class="adminoptionlabel"><label for="https_port">{tr}HTTPS port:{/tr}</label> <input id="https_port" type="text" name="https_port" size="5" value="{$prefs.https_port|escape}" /> </div>
 							</div>
-							{preference name=https_external_links_for_users}
 						</div>
 	
 						<div class="adminoptionbox">
@@ -363,9 +361,8 @@
                                         <div class="adminoptionbox">
                                                 <div class="adminoptionlabel"><label for="auth_ldap_type">{tr}LDAP Bind Type:{/tr}</label>
                                                         <select name="auth_ldap_type" id="auth_ldap_type">
-                                                                <option value="default" {if $prefs.auth_ldap_type eq "default"} selected="selected"{/if}>{tr}Default: Anonymous Bind{/tr}</option>
-                                                                <option value="full" {if $prefs.auth_ldap_type eq "full"} selected="selected"{/if}>{tr}Full: userattr=username,UserDN,BaseDN{/tr}</option>
-                                                                <option value="ol" {if $prefs.auth_ldap_type eq "ol"} selected="selected"{/if}>{tr}OpenLDAP: userattr=username,BaseDN{/tr}</option>
+                                                                <option value="full" {if $prefs.auth_ldap_type eq "full"} selected="selected"{/if}>{tr}Default: userattr=username,UserDN,BaseDN{/tr}</option>
+                                                                <option value="ol" {if $prefs.auth_ldap_type eq "ol"} selected="selected"{/if}>{tr}userattr=username,BaseDN{/tr}</option>
                                                                 <option value="ad" {if $prefs.auth_ldap_type eq "ad"} selected="selected"{/if}>{tr}Active Directory (username@domain){/tr}</option>
                                                                 <option value="plain" {if $prefs.auth_ldap_type eq "plain"} selected="selected"{/if}>{tr}Plain Username{/tr}</option>
                                                         </select>
@@ -585,84 +582,42 @@
 						</div>
 					{/if}
 
-							{preference name='cas_create_user_tiki'}
-							{preference name='cas_create_user_tiki_ldap'}
-							{preference name='cas_skip_admin'}
-							{preference name='cas_show_alternate_login'}
-							{preference name='cas_version'}
+					{if $phpcas_enabled eq 'y'}
+						{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}You also need to upload the <a target="_blank" href="http://esup-phpcas.sourceforge.net/">phpCAS library</a> separately to lib/phpcas/.{/tr}{/remarksbox}
+
+						<div class="adminoptionbox">
+							<div class="adminoption"><input id="cas_create_user_tiki" type="checkbox" name="cas_create_user_tiki" {if $prefs.cas_create_user_tiki eq 'y'}checked="checked"{/if} /></div>
+							<div class="adminoptionlabel"><label for="cas_create_user_tiki">{tr}Create user if not in Tiki{/tr}.</label></div>
+						</div>
+						<div class="adminoptionbox">
+							<div class="adminoption"><input id="cas_skip_admin" type="checkbox" name="cas_skip_admin" {if $prefs.cas_skip_admin eq 'y'}checked="checked"{/if} /></div>
+							<div class="adminoptionlabel"><label for="cas_skip_admin">{tr}Use Tiki authentication for Admin login{/tr}.</label></div>
+						</div>
+						<div class="adminoptionbox">
+							<div class="adminoptionlabel"><label for="cas_version">{tr}CAS server version:{/tr}</label>
+								<select name="cas_version" id="cas_version">
+									<option value="none" {if $prefs.cas_version neq "1" && $prefs.cas_version neq "2"} selected="selected"{/if}></option>
+									<option value="1.0" {if $prefs.cas_version eq "1.0"} selected="selected"{/if}>{tr}Version 1.0{/tr}</option>
+									<option value="2.0" {if $prefs.cas_version eq "2.0"} selected="selected"{/if}>{tr}Version 2.0{/tr}</option>
+								</select>
+							</div>
+						</div>
 
 						<fieldset><legend>{tr}CAS Server{/tr}</legend>
-							{preference name='cas_hostname' label="{tr}CAS Server Name{/tr}"}
-							{preference name='cas_port' label="{tr}CAS Server Port{/tr}"}
-							{preference name='cas_path' label="{tr}CAS Server Path{/tr}"}
-							{preference name='cas_extra_param' label="{tr}CAS Extra Parameter{/tr}"}
-							{preference name='cas_authentication_timeout'}
+							<div class="adminoptionbox">
+								<div class="adminoptionlabel"><label for="cas_hostname">{tr}Hostname:{/tr}</label> <input type="text" name="cas_hostname" id="cas_hostname" value="{$prefs.cas_hostname|escape}" size="50" /></div>
+							</div>
+							<div class="adminoptionbox">
+								<div class="adminoptionlabel"><label for="cas_port">{tr}Port:{/tr}</label> <input type="text" name="cas_port" id="cas_port" size="5" value="{$prefs.cas_port|escape}" /></div>
+							</div>
+							<div class="adminoptionbox">
+								<div class="adminoptionlabel"><label for="cas_path">{tr}Path:{/tr}</label> <input id="cas_path" type="text" name="cas_path" value="{$prefs.cas_path|escape}" size="50" /></div>
+							</div>
 						</fieldset>
-				</fieldset>	 
-			{/tab}
-			{tab name="{tr}phpBB{/tr}"}
-				<fieldset><legend>{tr}phpBB{/tr} {if $prefs.feature_help eq 'y'}{help url="AuthphpBB" desc="{tr}phpBB User Database Authentication {/tr}"}{/if}</legend>
-					<input type="hidden" name="auth_phpbb" />
-					{if $prefs.auth_method ne 'phpbb'}
-						<div style="padding:0.5em;clear:both" class="simplebox">
-							<div>{icon _id=information} {tr}You must change the Authentication Method to phpBB for these changes to take effect{/tr}.</div>
-						</div>
+					{else}
+						<p>{icon _id=delete} {tr}You must enable PHP CAS first{/tr}. {help url="Mod+phpcas"}</p>
 					{/if}
-
-					<div class="adminoptionbox">
-						<div class="adminoption"><input id="auth_phpbb_create_tiki" type="checkbox" name="auth_phpbb_create_tiki" {if $prefs.auth_phpbb_create_tiki eq 'y'}checked="checked"{/if} /></div>
-						<div class="adminoptionlabel"><label for="auth_phpbb_create_tiki">{tr}Create user if not in Tiki{/tr}.</label></div>
-					</div>
-					<div class="adminoptionbox">
-						<div class="adminoption"><input id="auth_phpbb_skip_admin" type="checkbox" name="auth_phpbb_skip_admin" {if $prefs.auth_phpbb_skip_admin eq 'y'}checked="checked"{/if} /></div>
-						<div class="adminoptionlabel"><label for="auth_phpbb_skip_admin">{tr}Skip admin user{/tr}.</label></div>
-					</div>
-					<div class="adminoptionbox">
-						<div class="adminoption"><input id="auth_phpbb_disable_tikionly" type="checkbox" name="auth_phpbb_disable_tikionly" {if $prefs.auth_phpbb_disable_tikionly eq 'y'}checked="checked"{/if} /></div>
-						<div class="adminoptionlabel"><label for="auth_phpbb_disable_tikionly">{tr}Disable Tiki users who doesn't have a phpBB login. (They could have been deleted).{/tr}.</label></div>
-					</div>
-					<div class="adminoptionbox">
-					<div class="adminoptionlabel"><label for="auth_phpbb_version">{tr}phpBB Version:{/tr}</label>
-						<select name="auth_phpbb_version" id="auth_phpbb_version">
-							<option value="3" {if $prefs.auth_phpbb_version eq '3'} selected="selected"{/if}>{tr}3{/tr}</option>
-						</select>
-					</div>
-					</div>
-					<div style="padding:0.5em;clear:both" class="simplebox">
-						<div>{icon _id=information} {tr}MySql only (for now){/tr}.</div>
-					</div>
-					<div class="adminoptionbox">
-						<div class="adminoptionlabel"><label for="auth_phpbb_dbhost">{tr}phpBB Database Hostname:{/tr}</label>
-						<input type="text" id="auth_phpbb_dbhost" name="auth_phpbb_dbhost" value="{$prefs.auth_phpbb_dbhost}" size="50" />
-						</div>
-					</div>
-					<!-- // commented out - will we use a db port?
-					<div class="adminoptionbox">
-						<div class="adminoptionlabel"><label for="auth_phpbb_dbport">{tr}phpBB Database Port:{/tr}</label>
-						<input type="text" id="auth_phpbb_dbport" name="auth_phpbb_dbport" value="{$prefs.auth_phpbb_dbport}" size="50" />
-						</div>
-					</div> /-->
-					<div class="adminoptionbox">
-						<div class="adminoptionlabel"><label for="auth_phpbb_dbuser">{tr}phpBB Database Username:{/tr}</label>
-						<input type="text" id="auth_phpbb_dbuser" name="auth_phpbb_dbuser" value="{$prefs.auth_phpbb_dbuser}" size="50" />
-						</div>
-					</div>
-					<div class="adminoptionbox">
-						<div class="adminoptionlabel"><label for="auth_phpbb_dbpasswd">{tr}phpBB Database Password:{/tr}</label>
-						<input type="password" id="auth_phpbb_dbpasswd" name="auth_phpbb_dbpasswd" value="{$prefs.auth_phpbb_dbpasswd}" size="50" />
-						</div>
-					</div>
-					<div class="adminoptionbox">
-						<div class="adminoptionlabel"><label for="auth_phpbb_dbname">{tr}phpBB Database Name:{/tr}</label>
-						<input type="text" id="auth_phpbb_dbname" name="auth_phpbb_dbname" value="{$prefs.auth_phpbb_dbname}" size="50" />
-						</div>
-					</div>
-					<div class="adminoptionbox">
-						<div class="adminoptionlabel"><label for="auth_phpbb_table_prefix">{tr}phpBB Table Prefix:{/tr}</label>
-						<input type="text" id="auth_phpbb_table_prefix" name="auth_phpbb_table_prefix" value="{$prefs.auth_phpbb_table_prefix}" size="50" />
-						</div>
-					</div>
-				</fieldset>
+				</fieldset>	 
 			{/tab}
 		{/tabset}
 		<div class="heading input_submit_container" style="text-align: center">

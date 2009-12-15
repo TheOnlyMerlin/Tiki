@@ -52,8 +52,7 @@ function wikiplugin_titlesearch_help() {
     		),
     	);
     }
-class WikiPluginTitleSearch extends PluginsLib
-{
+class WikiPluginTitleSearch extends PluginsLib {
     var $expanded_params = array("exclude", "info");
     function getDescription() {
         return wikiplugin_titlesearch_help();

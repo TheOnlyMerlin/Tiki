@@ -2,8 +2,7 @@
 
 require_once 'lib/core/lib/TikiDb.php';
 
-class TikiDb_Adodb extends TikiDb
-{
+class TikiDb_Adodb extends TikiDb {
 	private $db;
 
 	function __construct( $db ) // {{{

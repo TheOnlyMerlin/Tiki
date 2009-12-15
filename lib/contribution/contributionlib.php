@@ -5,8 +5,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class ContributionLib extends TikiLib
-{
+class ContributionLib extends TikiLib {
 	function add_contribution($name, $description = '') {
 		$query = 'insert into `tiki_contributions`(`name`, `description`) values(?, ?)';
 		$this->query($query, array($name, $description));
@@ -111,11 +110,10 @@ class ContributionLib extends TikiLib
 	}
 	function print_contributions($contributions) {
 		$print = '';
-		foreach($contributions as $contribution) {
-			if ( !empty($print) ) {
+		for ($i = 0; $i < count($contributions); $i++) {
+			if ($i > 0)
 				$print.= ',';
-			}
-			$res = $this->get_contribution($contribution);
+			$res = $this->get_contribution($contributions[$i]);
 			$print .= $res['name'];
 		}
 		return $print;

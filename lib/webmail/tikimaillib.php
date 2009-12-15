@@ -6,8 +6,7 @@ global $access;
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 include_once("lib/webmail/htmlMimeMail.php");
 
-class TikiMail extends HtmlMimeMail
-{
+class TikiMail extends HtmlMimeMail {
 		var $charset;
 
 	/* $user = user you send the mail
@@ -153,8 +152,7 @@ function decode_subject_utf8($string){
  */
 function format_email_reply(&$text, $from, $date) {
 	$lines = preg_split('/[\n\r]+/',wordwrap($text));
-
-	for ($i = 0, $icount_lines = count($lines); $i < $icount_lines; $i++) {
+	for ($i = 0; $i < count($lines); $i++) {
 		$lines[$i] = '> '.$lines[$i]."\n";
 	}
 	$str = !empty($from) ? $from.' wrote' : '';

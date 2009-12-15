@@ -178,8 +178,7 @@ define("FEEDCREATOR_VERSION", "Tiki CMS/Groupware via FeedCreator 1.7.2.1");
  * @author Kai Blankenhorn <kaib@bitfolge.de>
  * @since 1.3
  */
-class FeedItem extends HtmlDescribable
-{
+class FeedItem extends HtmlDescribable {
 	/**
 	 * Mandatory attributes of an item.
 	 */
@@ -226,8 +225,7 @@ class FeedItem extends HtmlDescribable
  * @author Kai Blankenhorn <kaib@bitfolge.de>
  * @since 1.3
  */
-class FeedImage extends HtmlDescribable
-{
+class FeedImage extends HtmlDescribable {
 	/**
 	 * Mandatory attributes of an image.
 	 */
@@ -245,8 +243,7 @@ class FeedImage extends HtmlDescribable
  * An HtmlDescribable is an item within a feed that can have a description that may
  * include HTML markup.
  */
-class HtmlDescribable
-{
+class HtmlDescribable {
 	/**
 	 * Indicates whether the description field should be rendered in HTML.
 	 */
@@ -279,8 +276,7 @@ class HtmlDescribable
  * @author Pascal Van Hecke <feedcreator.class.php@vanhecke.info>
  * @version 1.6
  */
-class FeedHtmlField
-{
+class FeedHtmlField {
 	/**
 	 * Mandatory attributes of a FeedHtmlField.
 	 */
@@ -338,8 +334,7 @@ class FeedHtmlField
  * @since 1.3
  * @author Kai Blankenhorn <kaib@bitfolge.de>
  */
-class UniversalFeedCreator extends FeedCreator
-{
+class UniversalFeedCreator extends FeedCreator {
 	var $_feed;
 	
 	function _setFormat($format) {
@@ -475,8 +470,7 @@ class UniversalFeedCreator extends FeedCreator
  * @author Kai Blankenhorn <kaib@bitfolge.de>
  * @since 1.4
  */
-class FeedCreator extends HtmlDescribable
-{
+class FeedCreator extends HtmlDescribable {
 
 	/**
 	 * Mandatory attributes of a feed.
@@ -720,8 +714,7 @@ class FeedCreator extends HtmlDescribable
  * FeedDate is an internal class that stores a date for a feed or feed item.
  * Usually, you won't need to use this.
  */
-class FeedDate
-{
+class FeedDate {
 	var $unix;
 	
 	/**
@@ -818,8 +811,7 @@ class FeedDate
  * @since 1.7.2.1
  * @author Oliver Hertel <ohertel@tikiwiki.org>
  */
-class PodCastCreator10 extends FeedCreator
-{
+class PodCastCreator10 extends FeedCreator {
 
 	/**
 	 * Builds the RSS feed's text.
@@ -856,7 +848,7 @@ class PodCastCreator10 extends FeedCreator
 			<itunes:category text="TV &amp; Film"/>
 		*/
 
-		for ($i=0, $icount_items = count($this->items); $i<$icount_items; $i++) {
+		for ($i=0;$i<count($this->items);$i++) {
 			$feed.="<item>\n";
 			$feed.= "<title>".htmlspecialchars(strip_tags(strtr($this->items[$i]->title,"\n\r","  ")))."</title>\n";
 			if ($this->items[$i]->author!="") {
@@ -891,8 +883,7 @@ class PodCastCreator10 extends FeedCreator
  * @author Kai Blankenhorn <kaib@bitfolge.de>
  */
 
-class RSSCreator10 extends FeedCreator
-{
+class RSSCreator10 extends FeedCreator {
 
 	/**
 	 * Builds the RSS feed's text. The feed will be compliant to RDF Site Summary (RSS) 1.0.
@@ -922,7 +913,7 @@ class RSSCreator10 extends FeedCreator
 		$feed.= "       <dc:date>".htmlspecialchars($now->iso8601())."</dc:date>\n";
 		$feed.= "        <items>\n";
 		$feed.= "            <rdf:Seq>\n";
-		for ($i=0, $icount_items = count($this->items); $i < $icount_items; $i++) {
+		for ($i=0;$i<count($this->items);$i++) {
 			$feed.= "                <rdf:li rdf:resource=\"".htmlspecialchars($this->items[$i]->link)."\"/>\n";
 		}
 		$feed.= "            </rdf:Seq>\n";
@@ -937,7 +928,7 @@ class RSSCreator10 extends FeedCreator
 		}
 		$feed.= $this->_createAdditionalElements($this->additionalElements, "    ");
 		
-		for ($i=0, $icount_items = count($this->items); $i < $icount_items; $i++) {
+		for ($i=0;$i<count($this->items);$i++) {
 			$feed.= "    <item rdf:about=\"".htmlspecialchars($this->items[$i]->link)."\">\n";
 			//$feed.= "        <dc:type>Posting</dc:type>\n";
 			$feed.= "        <dc:format>text/html</dc:format>\n";
@@ -971,8 +962,7 @@ class RSSCreator10 extends FeedCreator
  * @since 1.3
  * @author Kai Blankenhorn <kaib@bitfolge.de>
  */
-class RSSCreator091 extends FeedCreator
-{
+class RSSCreator091 extends FeedCreator {
 
 	/**
 	 * Stores this RSS feed's version number.
@@ -1064,7 +1054,7 @@ class RSSCreator091 extends FeedCreator
 		}
 		$feed.= $this->_createAdditionalElements($this->additionalElements, "    ");
 
-		for ($i=0, $icount_items = count($this->items); $i < $icount_items; $i++) {
+		for ($i=0;$i<count($this->items);$i++) {
 			$feed.= "        <item>\n";
 			$feed.= "            <title>".FeedCreator::iTrunc(htmlspecialchars(strip_tags($this->items[$i]->title)),100)."</title>\n";
 			$feed.= "            <link>".htmlspecialchars($this->items[$i]->link)."</link>\n";
@@ -1108,8 +1098,7 @@ class RSSCreator091 extends FeedCreator
  * @since 1.7.2.1
  * @author Oliver Hertel <ohertel@tikiwiki.org>
  */
-class RSSCreator09 extends FeedCreator
-{
+class RSSCreator09 extends FeedCreator {
 
 	/**
 	 * Stores this RSS feed's version number.
@@ -1149,7 +1138,7 @@ class RSSCreator09 extends FeedCreator
 //		$feed.= "        <lastBuildDate>".htmlspecialchars($now->rfc822())."</lastBuildDate>\n";
 //		$feed.= "        <generator>".FEEDCREATOR_VERSION."</generator>\n";
 		$feed.= "</channel>\n";
-		for ($i=0, $icount_items = count($this->items); $i < $icount_items; $i++) {
+		for ($i=0;$i<count($this->items);$i++) {
 			$feed.= "<item>\n";
 			$feed.= "<title>".FeedCreator::iTrunc(htmlspecialchars(strip_tags($this->items[$i]->title)),100)."</title>\n";
 			$feed.= "<link>".htmlspecialchars($this->items[$i]->link)."</link>\n";
@@ -1167,8 +1156,7 @@ class RSSCreator09 extends FeedCreator
  * @since 1.3
  * @author Kai Blankenhorn <kaib@bitfolge.de>
  */
-class RSSCreator20 extends RSSCreator091
-{
+class RSSCreator20 extends RSSCreator091 {
 
     function RSSCreator20() {
         parent::_setRSSVersion("2.0");
@@ -1185,8 +1173,7 @@ class RSSCreator20 extends RSSCreator091
  * @since 1.3
  * @author Scott Reynen <scott@randomchaos.com> and Kai Blankenhorn <kaib@bitfolge.de>
  */
-class PIECreator01 extends FeedCreator
-{
+class PIECreator01 extends FeedCreator {
 	
 	function PIECreator01() {
 		$this->encoding = "utf-8";
@@ -1200,7 +1187,7 @@ class PIECreator01 extends FeedCreator
 		$this->truncSize = 500;
 		$feed.= "    <subtitle>".$this->getDescription()."</subtitle>\n";
 		$feed.= "    <link>".$this->link."</link>\n";
-		for ($i=0, $icount_items = count($this->items); $i < $icount_items; $i++) {
+		for ($i=0;$i<count($this->items);$i++) {
 			$feed.= "    <entry>\n";
 			$feed.= "        <title>".FeedCreator::iTrunc(htmlspecialchars(strip_tags($this->items[$i]->title)),100)."</title>\n";
 			$feed.= "        <link>".htmlspecialchars($this->items[$i]->link)."</link>\n";
@@ -1244,8 +1231,7 @@ class PIECreator01 extends FeedCreator
  * @since 1.6
  * @author Kai Blankenhorn <kaib@bitfolge.de>, Scott Reynen <scott@randomchaos.com>
  */
-class AtomCreator03 extends FeedCreator
-{
+class AtomCreator03 extends FeedCreator {
 
 	function AtomCreator03() {
 		$this->contentType = "application/atom+xml";
@@ -1277,7 +1263,7 @@ class AtomCreator03 extends FeedCreator
 		}
 		$feed.= "    <generator>".FEEDCREATOR_VERSION."</generator>\n";
 		$feed.= $this->_createAdditionalElements($this->additionalElements, "    ");
-		for ($i=0, $icount_items = count($this->items); $i < $icount_items; $i++) {
+		for ($i=0;$i<count($this->items);$i++) {
 			$feed.= "    <entry>\n";
 			$feed.= "        <title>".htmlspecialchars(strip_tags($this->items[$i]->title))."</title>\n";
 			$feed.= "        <link rel=\"alternate\" type=\"text/html\" href=\"".htmlspecialchars($this->items[$i]->link)."\"/>\n";
@@ -1313,8 +1299,7 @@ class AtomCreator03 extends FeedCreator
  * @since 1.3
  * @author Kai Blankenhorn <kaib@bitfolge.de>
  */
-class MBOXCreator extends FeedCreator
-{
+class MBOXCreator extends FeedCreator {
 
 	function MBOXCreator() {
 		$this->contentType = "text/plain";
@@ -1358,7 +1343,7 @@ class MBOXCreator extends FeedCreator
 	 */
 	function createFeed() {
 		if (!isset($feed)) $feed="";
-		for ($i=0, $icount_items = count($this->items); $i < $icount_items; $i++) {
+		for ($i=0;$i<count($this->items);$i++) {
 			if ($this->items[$i]->author!="") {
 				$from = $this->items[$i]->author;
 			} else {
@@ -1402,8 +1387,7 @@ class MBOXCreator extends FeedCreator
  * @author Dirk Clemens, Kai Blankenhorn
  * @since 1.5
  */
-class OPMLCreator extends FeedCreator
-{
+class OPMLCreator extends FeedCreator {
 
 	function OPMLCreator() {
 		$this->encoding = "utf-8";
@@ -1432,7 +1416,7 @@ class OPMLCreator extends FeedCreator
 		}
 		$feed.= "    </head>\n";
 		$feed.= "    <body>\n";
-		for ($i=0, $icount_items = count($this->items); $i < $icount_items; $i++) {
+		for ($i=0;$i<count($this->items);$i++) {
 			$feed.= "    <outline type=\"rss\" ";
 			$title = htmlspecialchars(strip_tags(strtr($this->items[$i]->title,"\n\r","  ")));
 			$feed.= " title=\"".$title."\"";
@@ -1460,8 +1444,7 @@ class OPMLCreator extends FeedCreator
  * @author Pascal Van Hecke
  * @since 1.7
  */
-class HTMLCreator extends FeedCreator
-{
+class HTMLCreator extends FeedCreator {
 
 	var $contentType = "text/html";
 	
@@ -1554,7 +1537,7 @@ class HTMLCreator extends FeedCreator
 			$feedArray[] = "<div class='".$this->stylePrefix."header'>".$this->header."</div>";
 		}
 		
-		for ($i=0, $icount_items = count($this->items); $i < $icount_items; $i++) {
+		for ($i=0;$i<count($this->items);$i++) {
 			if ($this->separator and $i > 0) {
 				$feedArray[] = "<div class='".$this->stylePrefix."separator'>".$this->separator."</div>";
 			}
@@ -1607,8 +1590,7 @@ class HTMLCreator extends FeedCreator
  *
  * @author Pascal Van Hecke
  */
-class JSCreator extends HTMLCreator
-{
+class JSCreator extends HTMLCreator {
 	var $contentType = "text/javascript";
 	
 	/**

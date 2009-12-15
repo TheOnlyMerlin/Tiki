@@ -5,7 +5,6 @@
 {include file='find.tpl'}
 
 {tabset name='tabs_print_pages'}
-{if $prefs.feature_wiki_structure eq 'y'}
 	{tab name="{tr}Structures{/tr}"}
   {* --- tab with structures -- *}
       {if $printstructures}
@@ -39,7 +38,7 @@
       </select>
     </form>
 	{/tab}
-{/if}
+
 {tab name="{tr}Pages{/tr}"}
 {* --- tab with pages -- *}
 <table class="admin">
@@ -63,7 +62,6 @@
 {/if}    
     <br />
     <input type="submit" name="addpage" value="{tr}Add Page{/tr}" />
-{if $prefs.feature_wiki_structure eq 'y'}
     <br /><br />
     <h2>{tr}Add Pages from Structures{/tr}</h2>
     <select name="structureId" size="5">
@@ -77,7 +75,6 @@
     </select>
     <br />
     <input type="submit" name="addstructurepages" value="{tr}Add Structure Pages{/tr}"/>
-{/if}
   </form>
 		</td>
 		<td>&nbsp;</td>

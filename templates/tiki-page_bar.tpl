@@ -17,7 +17,7 @@
 		{/if}
 	{else}
 		{* Check that page is not locked and edit permission granted. SandBox can be edited w/o perm *}
-		{if ($editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') or (!$user and $prefs.wiki_encourage_contribution eq 'y')) or $tiki_p_admin_wiki eq 'y' or $canEditStaging eq 'y'}
+		{if ($editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox')) or $tiki_p_admin_wiki eq 'y' or $canEditStaging eq 'y'}
 			{if $needsStaging eq 'y'}
 				{assign var=thisPageName value=$stagingPageName|escape:"url"}
 			{else}
@@ -33,7 +33,7 @@
 			{else}
 				{assign var=thisPageClass value=''}
 			{/if}
-			{button href="tiki-editpage.php?page="|cat:$thisPageName|cat:$thisPageRefId _class=$thisPageClass _text="{tr}Edit this page{/tr}"}
+			{button href="tiki-editpage.php?page="|cat:$thisPageName|cat:$thisPageRefId _class=$thisPageClass _text="{tr}Edit{/tr}"}
 		{/if}
 
 		{if $prefs.feature_source eq 'y' and $tiki_p_wiki_view_source eq 'y'}
@@ -140,7 +140,7 @@
 				{button href="#attachments" _flip_id="attzone$pagemd5" _class=$thisbuttonclass _text=$thistext _flip_default_open=$prefs.w_displayed_default}
 			{/if}{* attachments *}
 
-			{if $prefs.feature_multilingual eq 'y' and ($tiki_p_edit eq 'y' or (!$user and $prefs.wiki_encourage_contribution eq 'y')) and !$lock}
+			{if $prefs.feature_multilingual eq 'y' and $tiki_p_edit eq 'y' and !$lock}
 				{if $beingStaged == 'y'}
 					{button href="tiki-edit_translation.php?page=$thisapprovedPageName" _text="{tr}Translate{/tr}"}
 				{else}

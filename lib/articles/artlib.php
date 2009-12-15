@@ -8,8 +8,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 include_once('lib/reportslib.php');
 
-class ArtLib extends TikiLib
-{
+class ArtLib extends TikiLib {
 	//Special parsing for multipage articles
 	function get_number_of_pages($data) {
 		$parts = explode("...page...", $data);
@@ -52,9 +51,6 @@ class ArtLib extends TikiLib
 			global $categlib; include_once('lib/categories/categlib.php');
 			$categlib->approve_submission($subId, $articleId);
 		}
-		$query = 'update `tiki_objects` set `href`=?, `type`=? where `href`=?';
-		$this->query($query, array("'tiki-read_article.php?articleId=$articleId", 'article', "tiki-edit_submission.php?subId=$subId"));
-
 	}
 
 	function add_article_hit($articleId) {
@@ -103,7 +99,7 @@ class ArtLib extends TikiLib
 				$reportslib->makeReportCache($nots, array("event"=>'article_deleted', "articleId"=>$articleId, "articleTitle"=>$article_data['title'], "authorName"=>$article_data['authorName'], "user"=>$user));
 			}
 		    
-		    if (count($nots) || (!empty($emails) && is_array($emails))) {
+		    if (count($nots) || is_array($emails)) {
 			    include_once("lib/notifications/notificationemaillib.php");
 	
 			    $smarty->assign('mail_site', $_SERVER["SERVER_NAME"]);
@@ -113,12 +109,12 @@ class ArtLib extends TikiLib
 			    $smarty->assign('mail_user', $user);
 			    $smarty->assign('mail_data', $article_data['heading']."\n----------------------\n");
 			    $foo = parse_url($_SERVER["REQUEST_URI"]);
-			    $machine = $tikilib->httpPrefix( true ). $foo["path"];
+			    $machine = $tikilib->httpPrefix(). $foo["path"];
 			    $smarty->assign('mail_machine', $machine);
 			    $parts = explode('/', $foo['path']);
 			    if (count($parts) > 1)
 				    unset ($parts[count($parts) - 1]);
-			    $smarty->assign('mail_machine_raw', $tikilib->httpPrefix( true ). implode('/', $parts));
+			    $smarty->assign('mail_machine_raw', $tikilib->httpPrefix(). implode('/', $parts));
 			    sendEmailNotification($nots, "watch", "user_watch_article_post_subject.tpl", $_SERVER["SERVER_NAME"], "user_watch_article_post.tpl");
 		    }
 
@@ -129,8 +125,9 @@ class ArtLib extends TikiLib
 	function remove_submission($subId) {
 		if ($subId) {
 			$query = "delete from `tiki_submissions` where `subId`=?";
+
 			$result = $this->query($query,array((int) $subId));
-			$this->remove_object('submission', $subId);
+
 			return true;
 		}
 	}
@@ -143,7 +140,7 @@ class ArtLib extends TikiLib
       if ($expireDate < $publishDate) {
          $expireDate = $publishDate;
       }
-		if (empty($imgdata)) $imgdata='';
+		if(empty($imgdata)) $imgdata='';
 		global $notificationlib;
 		if (!is_object($notificationlib)) {
 			require_once('lib/notifications/notificationlib.php');
@@ -218,7 +215,7 @@ class ArtLib extends TikiLib
 			if (count($emails)) {
 				include_once("lib/notifications/notificationemaillib.php");
 				$foo = parse_url($_SERVER["REQUEST_URI"]);
-				$machine = $tikilib->httpPrefix( true ). $foo["path"];
+				$machine = $tikilib->httpPrefix(). $foo["path"];
 				$smarty->assign('mail_site', $_SERVER["SERVER_NAME"]);
 				$smarty->assign('mail_user', $user);
 				$smarty->assign('mail_title', $title);
@@ -230,7 +227,6 @@ class ArtLib extends TikiLib
 				sendEmailNotification($emails, "watch", "submission_notification_subject.tpl", $_SERVER["SERVER_NAME"], "submission_notification.tpl");
 			}
 		}
-		$this->syncParsedText($heading."\n".$body, array('type'=>'submission', 'object'=>$id, 'description'=>substr($heading, 0, 200), 'name'=>$title, 'href'=>"tiki-edit_submission.php?subId=$id"));
 
 		return $id;
 	}
@@ -246,7 +242,7 @@ class ArtLib extends TikiLib
 		    $expireDate = $publishDate;
 		}
 		$hash = md5($title . $heading . $body);
-		if (empty($imgdata)) $imgdata='';
+		if(empty($imgdata)) $imgdata='';
 		// Fixed query. -rlpowell
 		$query = "select `name`  from `tiki_topics` where `topicId` = ?";
 		$topicName = $this->getOne($query, array($topicId) );
@@ -332,12 +328,12 @@ class ArtLib extends TikiLib
 		    $smarty->assign('mail_user', $user);
 		    $smarty->assign('mail_data', $heading."\n----------------------\n".$body);
 		    $foo = parse_url($_SERVER["REQUEST_URI"]);
-		    $machine = $tikilib->httpPrefix( true ). $foo["path"];
+		    $machine = $tikilib->httpPrefix(). $foo["path"];
 		    $smarty->assign('mail_machine', $machine);
 		    $parts = explode('/', $foo['path']);
 		    if (count($parts) > 1)
 			    unset ($parts[count($parts) - 1]);
-		    $smarty->assign('mail_machine_raw', $tikilib->httpPrefix( true ). implode('/', $parts));
+		    $smarty->assign('mail_machine_raw', $tikilib->httpPrefix(). implode('/', $parts));
 		    sendEmailNotification($nots, "watch", "user_watch_article_post_subject.tpl", $_SERVER["SERVER_NAME"], "user_watch_article_post.tpl");
 		    if (is_array($emails) && !empty($from) && $from != $prefs['sender_email']) {
 				$nots = array();
@@ -353,7 +349,6 @@ class ArtLib extends TikiLib
 			require_once('lib/search/refresh-functions.php');
 			refresh_index('articles', $articleId);
 		}
-		$this->syncParsedText($body."\n".$heading, array('type'=>'article', 'object'=>$articleId, 'description'=>substr($heading, 0, 200), 'name'=>$title, 'href'=>"tiki-read_article.php?articleId=$articleId"));
 
 		return $articleId;
     }
@@ -606,7 +601,7 @@ $show_expdate, $show_reads, $show_size, $show_topline, $show_subtitle, $show_lin
 			$msgs[] = tra('The file is not a CSV file or has not a correct syntax');
 			return false;
 		}
-		for ($i = 0, $icount_fds = count($fds); $i < $icount_fds; $i++) {
+		for ($i = 0; $i < count($fds); $i++) {
 			$fields[trim($fds[$i])] = $i;
 		}
 		if (!isset($fields['title'])) $fields['title'] = $i++;
@@ -672,7 +667,7 @@ $show_expdate, $show_reads, $show_size, $show_topline, $show_subtitle, $show_lin
 	function delete_image_cache($image_type,$imageId) {
 		global $prefs;
 		// Input validation: imageId must be a number, and not 0 
-		if (!ctype_digit("$imageId") || !($imageId>0)) {
+		if(!ctype_digit("$imageId") || !($imageId>0)) {
 			return false;
 		}
 		switch ($image_type) {

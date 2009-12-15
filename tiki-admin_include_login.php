@@ -113,6 +113,17 @@ if (isset($_REQUEST["auth_pam"])) {
 	simple_set_toggle('pam_skip_admin');
 	simple_set_value('pam_service');
 }
+if ($phpcas_enabled == 'y') {
+	if (isset($_REQUEST['auth_cas'])) {
+		check_ticket('admin-inc-login');
+		simple_set_toggle('cas_create_user_tiki');
+		simple_set_toggle('cas_skip_admin');
+		simple_set_value('cas_version');
+		simple_set_value('cas_hostname');
+		simple_set_value('cas_port');
+		simple_set_value('cas_path');
+	}
+}
 if (isset($_REQUEST['auth_shib'])) {
 	check_ticket('admin-inc-login');
 	simple_set_toggle('shib_create_user_tiki');
@@ -121,19 +132,7 @@ if (isset($_REQUEST['auth_shib'])) {
 	simple_set_toggle('shib_usegroup');
 	simple_set_value('shib_group');
 }
-if (isset($_REQUEST['auth_phpbb'])) {
-	check_ticket('admin-inc-login');
-	simple_set_toggle('auth_phpbb_create_tiki');
-	simple_set_toggle('auth_phpbb_skip_admin');
-	simple_set_toggle('auth_phpbb_disable_tikionly');
-	simple_set_value('auth_phpbb_dbhost');
-	simple_set_value('auth_phpbb_dbuser');
-	simple_set_value('auth_phpbb_dbpasswd');
-	simple_set_value('auth_phpbb_dbname');
-	simple_set_value('auth_phpbb_table_prefix');
-	simple_set_value('auth_phpbb_version');
-	simple_set_value('auth_phpbb_dbport');
-}
+$smarty->assign("phpcas_enabled", $phpcas_enabled);
 $smarty->assign('gd_lib_found', function_exists('gd_info') ? 'y' : 'n');
 // Get list of available languages
 $languages = array();

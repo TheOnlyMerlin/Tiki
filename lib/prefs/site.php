@@ -1,22 +1,7 @@
 <?php
 
 function prefs_site_list() {
-	global $tikilib;
-
-	$all_styles = $tikilib->list_styles();
-	$styles = array();
-
-	foreach ($all_styles as $style) {
-		$styles[$style] = substr( $style, 0, strripos($style, '.css'));
-	}
-
 	return array (
-		'site_style' => array(
-			'name' => tra('Theme'),
-			'type' => 'list',
-			'help' => 'Themes',
-			'options' => $styles,
-		),
 		'site_closed' => array(
 			'name' => tra('Close site (except for those with permission)'),
 			'description' => tra('Close site (except for those with permission)'),
@@ -68,20 +53,6 @@ function prefs_site_list() {
 				'fulltrail' => tra('Least specific first (site)'),
 				'pagetitle' => tra('Current only'),
 				'desc' => tra('Description'),
-			),
-		),
-		'site_favicon' => array(
-			'name' => tra('Favicon icon file name'),
-			'type' => 'text',
-			'size' => '15',
-		),
-		'site_favicon_type' => array(
-			'name' => tra('Favicon icon MIME type'),
-			'type' => 'list',
-			'options' => array(
-				'image/png' => tra('image/png'),
-				'image/bmp' => tra('image/bmp'),
-				'image/x-icon' => tra('image/x-icon'),
 			),
 		),
 	);

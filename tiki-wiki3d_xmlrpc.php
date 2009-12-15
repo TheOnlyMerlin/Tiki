@@ -29,13 +29,13 @@ function getSubGraph($params) {
     $existing_color = $prefs['wiki_3d_existing_page_color'];
     $missing_color = $prefs['wiki_3d_missing_page_color'];
 
-    while ($i <= $depth && count($queue) > 0) {
+    while ($i <= $depth && sizeof($queue) > 0) {
 	$nextQueue = array();
 	foreach ($queue as $nodeName) {
 
 	    $neighbours = $wikilib->wiki_get_neighbours($nodeName);
 	    
-	    $temp_max = count($neighbours);
+	    $temp_max = sizeof($neighbours);
 	    for ($j = 0; $j < $temp_max; $j++) {
 		if (!isset($passed[$neighbours[$j]])) {
 		    $nextQueue[] = $neighbours[$j];

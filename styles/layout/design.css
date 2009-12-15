@@ -1062,32 +1062,4 @@ table.treeTable .parent td {
 	color: red;
 	margin-top: 10px;
 }
-
-#intertrans-indicator {
-	position: fixed;
-	left: 0;
-	right: 0;
-	top: 0;
-	height: 40;
-	background-color: lightblue;
-}
-
-#intertrans-form {
-	position: fixed;
-	top: 10%;
-	bottom: 10%;
-	left: 10%;
-	right: 10%;
-	overflow: auto;
-	background-color: lightgreen;
-	display: none;
-}
-#intertrans-form table {
-	width: 98%;
-}
-#intertrans-form input {
-	width: 100%;
-}
-
- /* wikiplugin_tracker */
 /* End of file */

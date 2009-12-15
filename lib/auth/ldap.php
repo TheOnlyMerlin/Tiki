@@ -10,8 +10,7 @@
 require_once ("Net/LDAP2.php");
 
 
-class TikiLdapLib
-{
+class TikiLdapLib {
 
 	// var to hold a esablished connection
 	protected $ldaplink = NULL;
@@ -175,12 +174,9 @@ class TikiLdapLib
 				$this->options['binddn'] = $this->user_dn($user);
 				break;
 			case 'ol': // openldap
+			default:
 				$this->options['binddn'] = 'cn='.$user.','.$prefs['auth_ldap_basedn'];
 				break;
-			default:
-				// Anonymous binding
-				unset($this->options['binddn']);
-				unset($this->options['bindpw']);
 		}
 
 			// attributes to fetch

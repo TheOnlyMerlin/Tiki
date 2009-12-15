@@ -24,8 +24,7 @@ define('USER_NOT_VALIDATED', -8);
 //added for Auth v1.3 support
 define ("AUTH_LOGIN_OK", 0);
 
-class UsersLib extends TikiLib
-{
+class UsersLib extends TikiLib {
 # var $db;  // The PEAR db object used to access the database
 
 	// change this to an email address to receive debug emails from the LDAP code
@@ -250,6 +249,16 @@ class UsersLib extends TikiLib
 			}
 		}
 		setcookie($user_cookie_site, '', -3600, $cookie_path, $prefs['cookie_domain']);
+
+		if ($phpcas_enabled == 'y' && $prefs['auth_method'] == 'cas' && $user != 'admin' && $user != '') {
+			require_once ('lib/phpcas/source/CAS/CAS.php');
+			phpCAS::client($prefs['cas_version'], '' . $prefs['cas_hostname'], (int)$prefs['cas_port'], '' . $prefs['cas_path']);
+			phpCAS::logout();
+		}
+		session_unregister('user');
+		unset($_SESSION[$user_cookie_site]);
+		session_destroy();
+		
 		/* change group home page or deactivate if no page is set */
 		if (!empty($redir)) {
 			$url = $redir;
@@ -264,16 +273,6 @@ class UsersLib extends TikiLib
 			$url = (ereg('^/', $url) ? $url_scheme . '://' . $url_host . (($url_port != '') ? ":$url_port" : '') : $base_url) . $url;
 		}
 		if (SID) $url.= '?' . SID;
-
-		if ($phpcas_enabled == 'y' && $prefs['auth_method'] == 'cas' && $user != 'admin' && $user != '') {
-			require_once ('lib/phpcas/source/CAS/CAS.php');
-			phpCAS::client($prefs['cas_version'], '' . $prefs['cas_hostname'], (int)$prefs['cas_port'], '' . $prefs['cas_path']);
-			phpCAS::logoutWithRedirectServiceAndUrl($url,$url);
-		}
-		session_unregister('user');
-		unset($_SESSION[$user_cookie_site]);
-		session_destroy();
-		
 		header('Location: ' . $url);
 		return;
 	}
@@ -321,6 +320,9 @@ class UsersLib extends TikiLib
 	    return false;
 	}
 
+	if (strlen($pass) < $prefs['min_pass_length']) {
+		return false;
+	}
 	// these will help us keep tabs of what is going on
 	$userTiki = false;
 	$userTikiPresent = false;
@@ -339,25 +341,19 @@ class UsersLib extends TikiLib
 	$skip_admin = ($prefs['ldap_skip_admin'] == 'y');
 
 	// read basic cas options
-	$auth_cas = ($prefs['auth_method'] == 'cas');
-	$cas_create_tiki = ($prefs['cas_create_user_tiki'] == 'y');
-	$cas_create_tiki_ldap = ($prefs['cas_create_user_tiki_ldap'] == 'y');
-	$cas_skip_admin = ($prefs['cas_skip_admin'] == 'y');
-
-	// read basic phpbb options
-	$auth_phpbb = ($prefs['auth_method'] == 'phpbb');
-	$phpbb_create_tiki = ($prefs['auth_phpbb_create_tiki'] == 'y');
-	$phpbb_skip_admin = ($prefs['auth_phpbb_skip_admin'] == 'y');
-	$phpbb_disable_tikionly = ($prefs['auth_phpbb_disable_tikionly'] == 'y');
+	global $phpcas_enabled;
+	if ($phpcas_enabled == 'y') {
+		$auth_cas = ($prefs['auth_method'] == 'cas');
+		$cas_create_tiki = ($prefs['cas_create_user_tiki'] == 'y');
+		$cas_skip_admin = ($prefs['cas_skip_admin'] == 'y');
+	} else {
+		$auth_cas = $cas_create_tiki = $cas_skip_admin = false;
+	}
 
 	// see if we are to use Shibboleth
 	$auth_shib = ($prefs['auth_method'] == 'shib');
 	$shib_create_tiki = ($prefs['shib_create_user_tiki'] == 'y');
 	$shib_skip_admin = ($prefs['shib_skip_admin'] == 'y');
-
-	if ( strlen($pass) < $prefs['min_pass_length'] and ($user === 'admin' or (!$auth_cas and !$auth_shib )) ) {
-		return false;
-	}
 
 	// first attempt a login via the standard Tiki system
 	//
@@ -381,9 +377,9 @@ class UsersLib extends TikiLib
 
 	// if we aren't using LDAP this will be quick
 	// if we are using tiki auth or if we're using an alternative auth except for admin
-	if ((!$auth_ldap && !$auth_pam && !$auth_cas && !$auth_shib && !$auth_phpbb) || ((($auth_ldap && $skip_admin) || ($auth_shib && $shib_skip_admin) || ($auth_pam && $pam_skip_admin) || ($auth_cas && $cas_skip_admin) || ($auth_phpbb && $phpbb_skip_admin)) && $user == "admin") || ($auth_ldap && ($prefs['auth_ldap_permit_tiki_users']=='y' && $userTiki))) { // todo: bad hack. better search for a more general solution here
-			// if the user verified ok, log them in
-			if ($userTiki)  //user validated in tiki, update lastlogin and be done
+	if ((!$auth_ldap && !$auth_pam && !$auth_cas && !$auth_shib) || ((($auth_ldap && $skip_admin) || ($auth_shib && $shib_skip_admin) || ($auth_pam && $pam_skip_admin) || ($auth_cas && $cas_skip_admin)) && $user == "admin") || ($auth_ldap && ($prefs['auth_ldap_permit_tiki_users']=='y' && $userTiki))) { // todo: bad hack. better search for a more general solution here
+	    // if the user verified ok, log them in
+	    if ($userTiki)  //user validated in tiki, update lastlogin and be done
 		return array($this->update_lastlogin($user), $user, $result);
 	    // if the user password was incorrect but the account was there, give an error
 	    elseif ($userTikiPresent)  //user ixists in tiki but bad password
@@ -472,10 +468,7 @@ class UsersLib extends TikiLib
 
     	// start off easy
 	    // if the user verified in Tiki and by CAS, log in
-	    if ($userCAS && $userTikiPresent) {
-				if ( $cas_create_tiki_ldap ) {
-					$this->ldap_sync_user_and_groups($user,$pass);
-				}
+	    if ($userCAS && $userTiki) {
 			return array($this->update_lastlogin($user), $user, $result);
 	    }
 	    // if the user wasn't authenticated through CAS, just fail
@@ -491,11 +484,6 @@ class UsersLib extends TikiLib
 			    // in case CAS auth is turned off accidentally;
 			    // we don't want ppl to be able to login as any user with blank passwords
 			    $result = $this->add_user($user, $randompass, '');
-					if ( $cas_create_tiki_ldap) {
-						// We use LDAP information to fill in the Users info
-						//$result = $this->create_user_ldap($user, $pass);
-						$this->ldap_sync_user_and_groups($user,$pass);
-					}
 
 			    // if it worked ok, just log in
 			    if ($result == USER_VALID)
@@ -732,68 +720,6 @@ class UsersLib extends TikiLib
 		return array($this->update_lastlogin($user), $user, $result);
 	}
 
-		elseif ($auth_phpbb) {
-				$result = $this->validate_user_phpbb($user, $pass);
-				switch ($result) {
-				case USER_VALID:
-						$userPhpbb = true;
-						break;
-				case PASSWORD_INCORRECT:
-						$userPhpbb = false;
-						break;
-				}
-
-		// start off easy
-			// if the user verified in Tiki and phpBB, log in
-			if ($userPhpbb && $userTiki) {
-						return array($this->update_lastlogin($user), $user, $result);
-			}
-			// if the user wasn't found in either system, just fail
-			elseif (!$userTikiPresent && !$userPhpbb) {
-						return array(false, $user, USER_UNKNOWN);
-			}
-			// if the user was logged into phpBB but not found in Tiki
-			elseif ($userPhpbb && !$userTikiPresent) {
-						// see if we can create a new account
-						if ($phpbb_create_tiki) {
-								// get the user email and then add the user to Tiki
-								$the_email = $this->phpbbauth->grabEmail($user);
-								$result = $this->add_user($user, $pass, $the_email);
-
-							// if it worked ok, just log in
-							if ($result == USER_VALID)
-										// before we log in, update the login counter
-										return array($this->update_lastlogin($user), $user, $result);
-							// if the server didn't work, do something!
-							elseif ($result == SERVER_ERROR) {
-										// check the notification status for this type of error
-										return array(false, $user, $result);
-							}
-							// otherwise don't log in.
-							else
-										return array(false, $user, $result);
-						}
-						// otherwise
-						else
-							// just say no!
-							return array(false, $user, $result);
-			}
-			// if the user was found in Tiki, but not found in phpBB, we should probably disable the user
-			elseif ($userTikiPresent && !$userPhpbb) {
-				if($phpbb_disable_tikionly) {
-					// would probably be better do flag the user as not active? How do you do that?
-					// and it also would be better to check if the user is active first.. :)
-					$this->invalidate_account($user);
-					global $logslib;
-					$logslib->add_log('auth_phpbb','NOTICE: Invalidated user ' . $user . ' due to missing phpBB account.');
-				}
-				return array(false, $user, ACCOUNT_DISABLED);
-			}
-			// if the user was logged into phpBB and found in Tiki (no password in Tiki user table necessary)
-			elseif ($userPhpbb && $userTikiPresent)
-						return array($this->update_lastlogin($user), $user, $result);
-		}
-
 	// we will never get here
 	return array(false, $user, $result);
     }
@@ -819,153 +745,95 @@ class UsersLib extends TikiLib
     }
 
 	// validate the user through CAS
-		function validate_user_cas(&$user) {
-			global $tikilib, $prefs, $base_url;
-
-			// just make sure we're supposed to be here
-			if ($prefs['auth_method'] != 'cas') {
-				return false;
-			}
-
-			// import phpCAS lib
-			require_once('lib/phpcas/CAS.php');
-
-			// initialize phpCAS
-			if ( !isset($GLOBALS['PHPCAS_CLIENT']) ) {
-				phpCAS::client($prefs['cas_version'], ''.$prefs['cas_hostname'], (int) $prefs['cas_port'], ''.$prefs['cas_path'], false);
-				//phpCAS::setPGTStorageFile('xml',session_save_path());
-				//phpCAS::setPGTStorageFile('plain','/tmp/phpcas_tickets');
-			}
-			// Redirect to this URL after authentication
-
-			if ( !empty($prefs['cas_extra_param']) ) {
-				phpCAS::setFixedServiceURL( $base_url . 'tiki-login.php?cas=y&' . $prefs['cas_extra_param'] );
-			}
-
-			// check CAS authentication
-			phpCAS::setNoCasServerValidation();
-			if ( isset($_SESSION['cas_redirect']) ) {
-				unset($_SESSION['phpCAS']['auth_checked']);
-				$auth = phpCAS::checkAuthentication();
-			} else {
-				$auth = phpCAS::forceAuthentication();
-			}
-			$_SESSION['cas_validation_time'] = time();
-
-			// at this step, the user has been authenticated by the CAS server
-			// and the user's login name can be read with phpCAS::getUser().
-
-			if ( $auth ) {
-				$user = phpCAS::getUser();
-			} elseif ( isset($_SESSION['cas_redirect']) ) {
-				// If the user has logged out from the CAS server
-				// continue as Anonymous
-				$user = null;
-				$cookie_site = ereg_replace("[^a-zA-Z0-9]", "", $prefs['cookie_name']);
-				$user_cookie_site = 'tiki-user-' . $cookie_site;
-				$_SESSION[$user_cookie_site] = null;
-				header('Location: '.$_SESSION['cas_redirect']);
-				unset($_SESSION['cas_redirect']);
-				die();
-			} else {
-				$user = null;
-			}
-
-			if ( isset($user) ) {
-				return USER_VALID;
-			} else {
-				return PASSWORD_INCORRECT;
-			}
+	function validate_user_cas(&$user) {
+		global $tikilib, $phpcas_enabled, $prefs;
+		if ($phpcas_enabled != 'y') {
+			return SERVER_ERROR;
+		}
+		// just make sure we're supposed to be here
+		if ($prefs['auth_method'] != 'cas') {
+		    return false;
 		}
 
-		function init_ldap($user) {
-			global $prefs;
-			if ( !isset($this->ldap) ) {
-				require_once('auth/ldap.php');
-				$ldap_options=array('host' => $prefs['auth_ldap_host'],
-						'port' => $prefs['auth_ldap_port'],
-						'version' => $prefs['auth_ldap_version'],
-						'starttls' => $prefs['auth_ldap_starttls'],
-						'ssl' => $prefs['auth_ldap_ssl'],
-						'basedn' => $prefs['auth_ldap_basedn'],
-						'scope' => $prefs['auth_ldap_scope'],
-						'bind_type' => $prefs['auth_ldap_type'],
-						'username' => $user,
-						'password' => $pass,
-						'userdn' => $prefs['auth_ldap_userdn'],
-						'useroc' => $prefs['auth_ldap_useroc'],
-						'userattr' => $prefs['auth_ldap_userattr'],
-						'fullnameattr' => $prefs['auth_ldap_nameattr'],
-						'emailattr' => $prefs['auth_ldap_emailattr'],
-						'countryattr' => $prefs['auth_ldap_countryattr'],
-						'groupdn' => $prefs['auth_ldap_groupdn'],
-						'groupattr' => $prefs['auth_ldap_groupattr'],
-						'groupoc' => $prefs['auth_ldap_groupoc'],
-						'groupnameattr' => $prefs['auth_ldap_groupnameatr'],
-						'groupdescattr' => $prefs['auth_ldap_groupdescatr'],
-						'groupmemberattr' => $prefs['auth_ldap_memberattr'],
-						'groupmemberisdn' => $prefs['auth_ldap_memberisdn'],
-						'usergroupattr' => $prefs['auth_ldap_usergroupattr'],
-						'groupgroupattr' => $prefs['auth_ldap_groupgroupattr'],
-						'debug' => $prefs['auth_ldap_debug']
-							);
-				// print_r($ldap_options);
-				$this->ldap=new TikiLdapLib($ldap_options);
-			}
+		// import phpCAS lib
+		require_once('lib/phpcas/source/CAS/CAS.php');
+
+		phpCAS::setDebug();
+
+		// initialize phpCAS
+		phpCAS::client($prefs['cas_version'], ''.$prefs['cas_hostname'], (int) $prefs['cas_port'], ''.$prefs['cas_path']);
+
+		// check CAS authentication
+		phpCAS::forceAuthentication();
+
+		// at this step, the user has been authenticated by the CAS server
+		// and the user's login name can be read with phpCAS::getUser().
+
+		$user = phpCAS::getUser();
+
+		if (isset($user)) {
+			return USER_VALID;
+		} else {
+			return PASSWORD_INCORRECT;
 		}
+    }
+
 
     // validate the user via ldap and get a ldap connection
-		function validate_user_ldap($user, $pass) {
-			global $prefs;
-			global $logslib;
-
-			$this->init_ldap($user);
-
-			switch($err=$this->ldap->bind()) {
-				case LDAP_INVALID_CREDENTIALS:
-					return PASSWORD_INCORRECT;
-					break;
-				case LDAP_INVALID_SYNTAX:
-				case LDAP_NO_SUCH_OBJECT:
-				case LDAP_INVALID_DN_SYNTAX:
-					if($prefs['auth_ldap_debug']=='y') $logslib->add_log('ldap','Error'.$err);
-					return USER_NOT_FOUND;
-					break;
-				case LDAP_SUCCESS:
-					if($prefs['auth_ldap_debug']=='y') $logslib->add_log('ldap','Bind successful.');
-					return USER_VALID;
-					break;
-				default:
-					if($prefs['auth_ldap_debug']=='y') $logslib->add_log('ldap','Error'.$err);
-					return SERVER_ERROR;
-			}
-
-			// this should never happen
-			die('Assertion failed '.__FILE__.':'.__LINE__);
-		}
-
-	// validate the user from a phpBB database
-	function validate_user_phpbb($user, $pass) {
-		require_once('auth/phpbb.php');
-		$this->phpbbauth = new TikiPhpBBLib();
-		switch($this->phpbbauth->check($user, $pass)) {
-			case PHPBB_INVALID_CREDENTIALS:
+    function validate_user_ldap($user, $pass) {
+        global $prefs;
+	global $logslib;
+		require_once('auth/ldap.php');
+		$ldap_options=array('host' => $prefs['auth_ldap_host'],
+				'port' => $prefs['auth_ldap_port'],
+				'version' => $prefs['auth_ldap_version'],
+				'starttls' => $prefs['auth_ldap_starttls'],
+				'ssl' => $prefs['auth_ldap_ssl'],
+				'basedn' => $prefs['auth_ldap_basedn'],
+				'scope' => $prefs['auth_ldap_scope'],
+				'bind_type' => $prefs['auth_ldap_type'],
+				'username' => $user,
+				'password' => $pass,
+				'userdn' => $prefs['auth_ldap_userdn'],
+				'useroc' => $prefs['auth_ldap_useroc'],
+				'userattr' => $prefs['auth_ldap_userattr'],
+				'fullnameattr' => $prefs['auth_ldap_nameattr'],
+				'emailattr' => $prefs['auth_ldap_emailattr'],
+				'countryattr' => $prefs['auth_ldap_countryattr'],
+				'groupdn' => $prefs['auth_ldap_groupdn'],
+				'groupattr' => $prefs['auth_ldap_groupattr'],
+				'groupoc' => $prefs['auth_ldap_groupoc'],
+				'groupnameattr' => $prefs['auth_ldap_groupnameatr'],
+				'groupdescattr' => $prefs['auth_ldap_groupdescatr'],
+				'groupmemberattr' => $prefs['auth_ldap_memberattr'],
+				'groupmemberisdn' => $prefs['auth_ldap_memberisdn'],
+				'usergroupattr' => $prefs['auth_ldap_usergroupattr'],
+				'groupgroupattr' => $prefs['auth_ldap_groupgroupattr'],
+				'debug' => $prefs['auth_ldap_debug']
+				);
+		// print_r($ldap_options);
+		$this->ldap=new TikiLdapLib($ldap_options);
+		switch($this->ldap->bind()) {
+			case LDAP_INVALID_CREDENTIALS:
 				return PASSWORD_INCORRECT;
 				break;
-			case PHPBB_INVALID_SYNTAX:
-			case PHPBB_NO_SUCH_USER:
+			case LDAP_INVALID_SYNTAX:
+			case LDAP_NO_SUCH_OBJECT:
+			case LDAP_INVALID_DN_SYNTAX:
 				return USER_NOT_FOUND;
 				break;
-			case PHPBB_SUCCESS:
-				//$logslib->add_log('phpbb','PhpBB user validation successful.');
+			case LDAP_SUCCESS:
+				if($prefs['auth_ldap_debug']=='y') $logslib->add_log('ldap','Bind successful.');
 				return USER_VALID;
 				break;
 			default:
 				return SERVER_ERROR;
 		}
-		// this should never happen
-		die('Assertion failed '.__FILE__.':'.__LINE__);
-	}
+
+	// this should never happen
+	die('Assertion failed '.__FILE__.':'.__LINE__);
+    }
+
 
     // Help function to disable the user password. Used, whenever the user password 
     // shall not be hold in the tiki db but in LDAP or somewhere else
@@ -976,89 +844,81 @@ class UsersLib extends TikiLib
     }
 
     // called after create user or login from ldap
-		function ldap_sync_user_and_groups($user,$pass) {
-			global $prefs;
-			global $logslib;
-			$ret=true;
-			$this->init_ldap($user);
+    function ldap_sync_user_and_groups() {
+	global $prefs;
+	global $logslib;
+	$ret=true;
+	
+        if($prefs['auth_ldap_debug']=='y') $logslib->add_log('ldap','Syncing user and group with ldap');
+	$userattributes=$this->ldap->get_user_attributes();
+	//print("<pre>");print_r($userattributes);print("</pre>");
+	$user=$userattributes[$prefs['auth_ldap_userattr']];
 
-			if($prefs['auth_ldap_debug']=='y') $logslib->add_log('ldap','Syncing user and group with ldap');
-			$userattributes=$this->ldap->get_user_attributes();
-			//var_dump($userattributes);
-			//print("<pre>");print_r($userattributes);print("</pre>");
-			$user=$userattributes[$prefs['auth_ldap_userattr']];
+	// sync user information
+	$this->disable_tiki_auth($user);
 
-			// sync user information
-			$this->disable_tiki_auth($user);
+	
+	$u=array('login'=>$user);
+	if(isset($userattributes[$prefs['auth_ldap_nameattr']])) {
+		$u['realName']=$userattributes[$prefs['auth_ldap_nameattr']];
+	}
 
+	if(isset($userattributes[$prefs['auth_ldap_emailattr']])) {
+		$u['email']=$userattributes[$prefs['auth_ldap_emailattr']];
+	}
+	
+	if(isset($userattributes[$prefs['auth_ldap_countryattr']])) {
+		$u['country']=$userattributes[$prefs['auth_ldap_countryattr']];
+	}
 
-			$u=array('login'=>$user);
-			if(isset($userattributes[$prefs['auth_ldap_nameattr']])) {
-				$u['realName']=$userattributes[$prefs['auth_ldap_nameattr']];
-			}
+	if(count($u)>1) {
+		$this->set_user_fields($u);
+	}
 
-			if(isset($userattributes[$prefs['auth_ldap_emailattr']])) {
-				$u['email']=$userattributes[$prefs['auth_ldap_emailattr']];
-			}
-
-			if(isset($userattributes[$prefs['auth_ldap_countryattr']])) {
-				$u['country']=$userattributes[$prefs['auth_ldap_countryattr']];
-			}
-
-			if(count($u)>1) {
-				$this->set_user_fields($u);
-			}
-
-			// sync external group information of user
-			$ldapgroups=$this->ldap->get_groups();
-			$ldapgroups_simple=array();
-			$tikigroups=$this->get_user_groups($user);
-			foreach($ldapgroups as $group) {
-				$gname=$group[$prefs['auth_ldap_groupattr']];
-				$ldapgroups_simple[]=$gname; // needed later
-				if($this->group_exists($gname) && !$this->group_is_external($gname)) { // group exists
-					//check if we need to sync group information
-					if(isset($group[$prefs['auth_ldap_groupdescattr']])) {
-						$ginfo=$this->get_group_info($gname);
-						if($group[$prefs['auth_ldap_groupdescattr']] != $ginfo['groupDesc']) {
-							$this->set_group_description($gname,$group[$prefs['auth_ldap_groupdescattr']]);
-						}
-					}
-
-				} else if(!$this->group_exists($gname)){ // create group
-					if(isset($group[$prefs['auth_ldap_groupdescattr']])) {
-						$gdesc=$group[$prefs['auth_ldap_groupdescattr']];
-					} else {
-						$gdesc='';
-					}
-					$logslib->add_log('ldap','Creating external group '.$gname);
-					$this->add_group($gname,$gdesc,'',0,0,'','',0,'',0,0,'y');
-				}
-
-				// add user
-				if(!in_array($gname,$tikigroups)) {
-					$logslib->add_log('ldap','Adding user '.$user.' to external group '.$gname);
-					$this->assign_user_to_group($user,$gname);
+	// sync external group information of user
+	$ldapgroups=$this->ldap->get_groups();
+	$ldapgroups_simple=array();
+	$tikigroups=$this->get_user_groups($user);
+	foreach($ldapgroups as $group) {
+		$gname=$group[$prefs['auth_ldap_groupattr']];
+		$ldapgroups_simple[]=$gname; // needed later
+		if($this->group_exists($gname) && !$this->group_is_external($gname)) { // group exists
+			//check if we need to sync group information
+			if(isset($group[$prefs['auth_ldap_groupdescattr']])) {
+				$ginfo=$this->get_group_info($gname);
+				if($group[$prefs['auth_ldap_groupdescattr']] != $ginfo['groupDesc']) {
+					$this->set_group_description($gname,$group[$prefs['auth_ldap_groupdescattr']]);
 				}
 			}
 
-			// now clean up group membership if user has been unassigned from a group in ldap
-			$extgroups=$this->get_user_external_groups($user);
-			foreach($extgroups as $eg) {
-				if(!in_array($eg,$ldapgroups_simple)) {
-					$logslib->add_log('ldap','Removing user '.$user.' from external group '.$eg);
-					$this->remove_user_from_group($user, $eg);
-				}
+		} else if(!$this->group_exists($gname)){ // create group
+			if(isset($group[$prefs['auth_ldap_groupdescattr']])) {
+				$gdesc=$group[$prefs['auth_ldap_groupdescattr']];
+			} else {
+				$gdesc='';
 			}
-
-			// Invalidate cache
-			global $cachelib;
-			require_once("lib/cache/cachelib.php");
-			$cacheKey = 'user_details_'.$user;
-			$cachelib->invalidate($cacheKey);
-
-			return($ret);
+			$logslib->add_log('ldap','Creating external group '.$gname);
+			$this->add_group($gname,$gdesc,'',0,0,'','',0,'',0,0,'y');
 		}
+
+		// add user
+		if(!in_array($gname,$tikigroups)) {
+			$logslib->add_log('ldap','Adding user '.$user.' to external group '.$gname);
+			$this->assign_user_to_group($user,$gname);
+		}
+	}
+
+	// now clean up group membership if user has been unassigned from a group in ldap
+	$extgroups=$this->get_user_external_groups($user);
+	foreach($extgroups as $eg) {
+		if(!in_array($eg,$ldapgroups_simple)) {
+			$logslib->add_log('ldap','Removing user '.$user.' from external group '.$eg);
+			$this->remove_user_from_group($user, $eg);
+		}
+	}
+
+	return($ret);
+    }
 
 	function set_group_description($group,$description) {
 		$query = "update `users_groups` set `groupDesc`=? where `groupName`=?";
@@ -1209,7 +1069,6 @@ class UsersLib extends TikiLib
 	$userattr['email'] = ( $prefs['login_is_email'] == 'y' ) ? $user : $this->getOne("select `email` from `users_users` where `login`=?", array($user));
 
 	// set the Auth options
-		require_once("pear/Auth.php");
 	$a = new Auth("LDAP", $options);
 
 	// check if the login correct
@@ -2596,9 +2455,9 @@ function get_included_groups($group, $recur=true) {
     }
 
     function is_due($user) {
-    	global $prefs;
+    	global $prefs, $phpcas_enabled;
     	// if CAS auth is enabled, don't check if password is due since CAS does not use local Tiki passwords
-    	if ( $prefs['auth_method'] == 'cas' || $prefs['change_password'] != 'y') {
+    	if (($phpcas_enabled == 'y' and $prefs['auth_method'] == 'cas') || $prefs['change_password'] != 'y') {
     		return false;
     	}
 		$confirm = $this->getOne("select `pass_confirm`  from `users_users` where " . $this->convertBinary(). " `login`=?", array($user));
@@ -2831,7 +2690,7 @@ function get_included_groups($group, $recur=true) {
 	    }
     }
 
-	if (count($q) > 0) {
+	if (sizeof($q) > 0) {
 	    $query = "update `users_users` set " . implode(",", $q). " where " .
 		$this->convertBinary(). " `login` = ?";
 	    $bindvars[] = $u['login'];
@@ -3058,8 +2917,8 @@ function get_included_groups($group, $recur=true) {
 		$foo = parse_url($_SERVER['REQUEST_URI']);
 		$foo1 = str_replace(array('tiki-send_mail', 'tiki-register', 'tiki-remind_password', 'tiki-adminusers'), 'tiki-login_validate', $foo['path']);
 		$foo2 = str_replace(array('tiki-send_mail', 'tiki-register', 'tiki-remind_password', 'tiki-adminusers'), 'tiki-assignuser', $foo['path']);
-		$machine = $tikilib->httpPrefix( true ) . $foo1;
-		$machine_assignuser = $tikilib->httpPrefix( true ) . $foo2;
+		$machine = $tikilib->httpPrefix() . $foo1;
+		$machine_assignuser = $tikilib->httpPrefix() . $foo2;
 		$smarty->assign('mail_machine',$machine);
 		$smarty->assign('mail_machine_assignuser',$machine_assignuser);
 		$smarty->assign('mail_site', $_SERVER['SERVER_NAME']);
@@ -3201,7 +3060,7 @@ function get_included_groups($group, $recur=true) {
 		$mail_data = sprintf($mail_data, $_SERVER['SERVER_NAME']);
 		$mail->setSubject($mail_data);
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
-		$mail_machine = $tikilib->httpPrefix( true ).str_replace('tiki-login.php', 'tiki-confirm_user_email.php', $foo['path']);
+		$mail_machine = $tikilib->httpPrefix().str_replace('tiki-login.php', 'tiki-confirm_user_email.php', $foo['path']);
 		$smarty->assign('mail_machine', $mail_machine);
 		$mail_data = $smarty->fetchLang($languageEmail, "mail/$tpl.tpl");
 		$mail->setText($mail_data);

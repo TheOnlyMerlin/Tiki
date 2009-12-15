@@ -9,8 +9,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 include_once('lib/reportslib.php');
 
-class ImageGalsLib extends TikiLib
-{
+class ImageGalsLib extends TikiLib {
 	function __construct() {
 		parent::__construct();
 		global $prefs;
@@ -417,10 +416,10 @@ class ImageGalsLib extends TikiLib
 		if (!$ziplist)
 			return (false); // Archive invalid
 
-		foreach($ziplist as $zipfile) {
-			$file = $zipfile["filename"];
+		for ($i = 0; $i < sizeof($ziplist); $i++) {
+			$file = $ziplist["$i"]["filename"];
 
-			if (!$zipfile["folder"]) {
+			if (!$ziplist["$i"]["folder"]) {
 				//copied
 				$gal_info = $this->get_gallery($galleryId);
 
@@ -436,7 +435,7 @@ class ImageGalsLib extends TikiLib
 						$upl = 0;
 				}
 				//extract file
-				$archive->extractByIndex($zipfile["index"],
+				$archive->extractByIndex($ziplist["$i"]["index"],
 					$prefs['tmpDir'], dirname($file)); //extract and remove (dangerous) pathname
 				$file = basename($file);
 
@@ -905,7 +904,7 @@ class ImageGalsLib extends TikiLib
 			$smarty->assign_by_ref('mail_date', date('U'));
 			$smarty->assign_by_ref('author', $user);
 			$foo = parse_url($_SERVER["REQUEST_URI"]);
-			$machine = $tikilib->httpPrefix( true ). dirname( $foo["path"] );
+			$machine = $tikilib->httpPrefix(). dirname( $foo["path"] );
 			$smarty->assign_by_ref('mail_machine', $machine);
 			$smarty->assign_by_ref('fname', $name);
 			$smarty->assign_by_ref('filename', $filename);
@@ -2027,7 +2026,7 @@ $thumbSizeY,$public,0,$visible,$sortorder,$sortdirection,$galleryimage,(int)$par
 						$uri = parse_url($_SERVER["REQUEST_URI"]);
 						$path = str_replace("tiki-editpage", "show_image", $uri["path"]);
 						$path = str_replace("tiki-edit_article", "show_image", $path);
-						$page_data = str_replace($url, $tikilib->httpPrefix( true ). $path . '?id=' . $imageId, $page_data);
+						$page_data = str_replace($url, $tikilib->httpPrefix(). $path . '?id=' . $imageId, $page_data);
 					} // if strlen
 				} // if $fp
 			}

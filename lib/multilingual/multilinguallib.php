@@ -5,8 +5,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class MultilingualLib extends TikiLib
-{
+class MultilingualLib extends TikiLib {
 	/** brief add a translation
 	  */
 	  
@@ -816,8 +815,8 @@ class MultilingualLib extends TikiLib
     
     
     function getTemplateIDInLanguage($section, $template_name, $language) {
-       global $templateslib; require_once 'lib/templates/templateslib.php';
-       $all_templates = $templateslib->list_templates($section, 0, -1, 'name_asc', '');
+       global $tikilib;
+       $all_templates = $tikilib->list_templates($section, 0, -1, 'name_asc', '');
        $looking_for_template_named = "$template_name-$language";
        foreach ($all_templates['data'] as $a_template) {
           $a_template_name = $a_template['name'];

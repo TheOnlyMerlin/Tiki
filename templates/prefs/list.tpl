@@ -1,4 +1,4 @@
-<div class="adminoptionbox" style="text-align: left;">
+<div style="text-align: left;">
 	<label for="{$p.id|escape}">{$p.name|escape}:</label>
 	<select name="{$p.preference|escape}" id="{$p.id|escape}">
 		{foreach from=$p.options key=value item=label}
@@ -6,9 +6,6 @@
 		{/foreach}
 	</select>
 	{include file=prefs/shared-flags.tpl}
-	{if $p.shorthint}
-		<em>{$p.shorthint|escape}</em>
-	{/if}
 	{if $p.hint}
 		<br/><em>{$p.hint|escape}</em>
 	{/if}

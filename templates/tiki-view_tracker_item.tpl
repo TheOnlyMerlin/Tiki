@@ -76,7 +76,7 @@
 
 {tab name="{tr}View{/tr}"}
 {* --- tab with view ------------------------------------------------------------------------- *}
-{if empty($tracker_info.viewItemPretty)}
+
 <h2>{tr}View Item{/tr}</h2>
 <table class="normal">
 {if $tracker_info.showStatus eq 'y' and ($tracker_info.showStatusAdminOnly ne 'y' or $tiki_p_admin_trackers eq 'y')}
@@ -135,10 +135,6 @@
 	</tr>
 {/if}
 </table>
-
-{else}
-	{include file='tracker_pretty_item.tpl' item=$item_info fields=$ins_fields wiki=$tracker_info.viewItemPretty}
-{/if}
 {/tab}
 
 {* -------------------------------------------------- tab with comments --- *}
@@ -148,7 +144,7 @@
 	{assign var=tabcomment_vtrackit value="{tr}Comments{/tr} (`$commentCount`)"}
 {else}
 	{assign var=tabcomment_vtrackit value="{tr}Comments{/tr}}
-{/if}
+{/if} 
 
 {tab name=$tabcomment_vtrackit}
 
@@ -212,7 +208,6 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>&nbsp;&nbsp;
 <input type="hidden" name="{$fields[ix].id|escape}" value="{$fields[ix].value|escape}" />
 {/if}
 {/section}
-{if $cant}<input type="hidden" name="cant" value="{$cant}" />{/if}
 
 {remarksbox type="note"}<em class='mandatory_note'>{tr}Fields marked with a * are mandatory.{/tr}</em>{/remarksbox}
 <table class="normal">

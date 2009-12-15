@@ -14,8 +14,7 @@ require_once 'Multilingual/Aligner/ShortestPathFinder.php';
  */
  
  
-class  Multilingual_Aligner_ShortestPathFinder
-{
+class  Multilingual_Aligner_ShortestPathFinder {
 	var $visited = array();
 	var $distance = array();
 	var $previousNode = array();

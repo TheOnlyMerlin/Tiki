@@ -1,8 +1,7 @@
 <?php
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 
-class Lslib extends TikiLib
-{
+class Lslib extends TikiLib {
 	function set_operator_id($reqId, $senderId) {
 		$query = "update `tiki_live_support_requests` set `operator_id` = ? where `reqId`=?";
 

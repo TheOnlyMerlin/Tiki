@@ -105,14 +105,13 @@ function get_default_prefs() {
 		'wikiSubmitNotice' => '',
 		'wiki_authors_style' => 'none',
 		'wiki_authors_style_by_page' => 'n',
-		'wiki_dft_list_pages_lang_to_current' => 'n',
+		'wiki_dft_list_pages_lang_to_current' => 'y',
 		'wiki_show_version' => 'n',
 		'wiki_bot_bar' => 'n',
 		'wiki_cache' => 0,
 		'wiki_comments_default_ordering' => 'points_desc',
 		'wiki_comments_displayed_default' => 'n',
 		'wiki_comments_per_page' => 10,
-		'wiki_comments_notitle' => 'n',
 		'wiki_comments_allow_per_page' => 'n',
 		'wiki_creator_admin' => 'n',
 		'wiki_feature_copyrights' => 'n',
@@ -161,7 +160,7 @@ function get_default_prefs() {
 		'wikiapproval_prefix' => '*',
 		'wikiapproval_hideprefix' => 'n',
 		'wikiapproval_delete_staging' => 'n',
-		'wikiapproval_master_group' => '-1',
+		'wikiapproval_master_group' => '',
 		'wikiapproval_staging_category' => '0',
 		'wikiapproval_approved_category' => '0',
 		'wikiapproval_outofsync_category' => '0',
@@ -176,18 +175,11 @@ function get_default_prefs() {
 		'wiki_validate_plugin' => 'y',
 		'wiki_edit_minor' => 'n',
 		'feature_pagelist' => 'n',
-		'wiki_badchar_prevent' => 'n',
-		'wiki_ranking_reload_probability' => 1000,
-		'wiki_encourage_contribution' => 'n',
-		'wiki_timeout_warning' => 'y',
-		'wiki_dynvar_style' => 'single',
-		'wiki_dynvar_multilingual' => 'n',
 
 		'wikiplugin_agentinfo' => 'n',
 		'wikiplugin_alink' => 'n',
 		'wikiplugin_aname' => 'n',
 		'wikiplugin_annotation' => 'n',
-		'wikiplugin_archivebuilder' => 'n',
 		'wikiplugin_article' => 'y',
 		'wikiplugin_articles' => 'y',
 		'wikiplugin_attach' => 'y',
@@ -204,7 +196,6 @@ function get_default_prefs() {
 		'wikiplugin_center' => 'y',
 		'wikiplugin_chart' => 'y',
 		'wikiplugin_code' => 'y',
-		'wikiplugin_colorbox' => 'n',
 		'wikiplugin_content' => 'y',
 		'wikiplugin_cookie' => 'n',
 		'wikiplugin_copyright' => 'y',
@@ -276,7 +267,6 @@ function get_default_prefs() {
 		'wikiplugin_sheet' => 'y',
 		'wikiplugin_showpages' => 'n',
 		'wikiplugin_skype' => 'n',
-		'wikiplugin_smarty' => 'n',
 		'wikiplugin_snarf' => 'n',
 		'wikiplugin_sort' => 'y',
 		'wikiplugin_split' => 'y',
@@ -285,7 +275,6 @@ function get_default_prefs() {
 		'wikiplugin_sub' => 'y',
 		'wikiplugin_subscribegroup' => 'n',
 		'wikiplugin_subscribegroups' => 'n',
-		'wikiplugin_subscribenewsletter' => 'n',
 		'wikiplugin_sup' => 'y',
 		'wikiplugin_survey' => 'y',
 		'wikiplugin_tag' => 'n',
@@ -317,7 +306,6 @@ function get_default_prefs() {
 		'wikiplugininline_alink' => 'n',
 		'wikiplugininline_aname' => 'n',
 		'wikiplugininline_annotation' => 'n',
-		'wikiplugininline_archivebuilder' => 'n',
 		'wikiplugininline_article' => 'n',
 		'wikiplugininline_articles' => 'n',
 		'wikiplugininline_attach' => 'n',
@@ -334,7 +322,6 @@ function get_default_prefs() {
 		'wikiplugininline_center' => 'n',
 		'wikiplugininline_chart' => 'n',
 		'wikiplugininline_code' => 'n',
-		'wikiplugininline_colorbox' => 'n',
 		'wikiplugininline_content' => 'n',
 		'wikiplugininline_cookie' => 'n',
 		'wikiplugininline_copyright' => 'n',
@@ -406,7 +393,6 @@ function get_default_prefs() {
 		'wikiplugininline_sheet' => 'n',
 		'wikiplugininline_showpages' => 'n',
 		'wikiplugininline_skype' => 'n',
-		'wikiplugininline_smarty' => 'y',
 		'wikiplugininline_snarf' => 'n',
 		'wikiplugininline_sort' => 'n',
 		'wikiplugininline_split' => 'n',
@@ -415,7 +401,6 @@ function get_default_prefs() {
 		'wikiplugininline_sub' => 'n',
 		'wikiplugininline_subscribegroup' => 'n',
 		'wikiplugininline_subscribegroups' => 'n',
-		'wikiplugininline_subscribenewsletter' => 'n',
 		'wikiplugininline_sup' => 'n',
 		'wikiplugininline_survey' => 'n',
 		'wikiplugininline_tag' => 'n',
@@ -621,7 +606,6 @@ function get_default_prefs() {
 		'forum_thread_style' => 'commentStyle_plain',
 		'forum_thread_sort_mode' => 'commentDate_asc',
 		'forum_match_regex' => '',
-		'forum_reply_notitle' => 'n',
 
 		// articles
 		'feature_articles' => 'n',
@@ -722,7 +706,6 @@ function get_default_prefs() {
 		'username_pattern' => '/^[ \'\-_a-zA-Z0-9@\.]*$/',
 		'max_username_length' => '50',
 		'min_username_length' => '1',
-		'users_serve_avatar_static' => 'y',
 		'users_prefs_allowMsgs' => 'y',
 		'users_prefs_country' => '',
 		'users_prefs_diff_versions' => 'n',
@@ -842,7 +825,6 @@ function get_default_prefs() {
 		'poll_comments_per_page' => 10,
 		'poll_list_categories' => 'n',
 		'poll_list_objects' => 'n',
-		'poll_multiple_per_object' => 'n',
 		'feature_poll_revote' => 'y',
 
 		// surveys
@@ -875,7 +857,6 @@ function get_default_prefs() {
 		'calendar_end_year' => '+3',
 		'calendar_list_begins_focus' => 'n',
 		'feature_cal_manual_time' => '',
-		'calendar_view_days' => array(0,1,2,3,4,5,6),
 
 		// dates
 		'server_timezone' => isset($tikidate) ? $tikidate->getTimezoneId() : 'UTC',
@@ -884,7 +865,6 @@ function get_default_prefs() {
 		'short_date_format' => '%a %d of %b, %Y',
 		'short_time_format' => '%H:%M %Z',
 		'display_field_order' => 'MDY',
-		'tiki_same_day_time_only' => 'y',
 
 		// rss
 		'rss_forums' => 'n',
@@ -1010,24 +990,11 @@ function get_default_prefs() {
 		'auth_ldap_debug' => 'n',
 		'auth_ldap_ssl' => 'n',
 		'auth_ldap_starttls' => 'n',
-		'auth_ldap_type' => 'default',
+		'auth_ldap_type' => 'full',
 		'auth_ldap_syncuserattr' => 'uid',
 		'auth_ldap_syncgroupattr' => 'cn',
 		
-		'auth_phpbb_version' => 3,
-		'auth_phpbb_skip_admin' => 'y',
-		'auth_phpbb_create_tiki' => 'n',
-		'auth_phpbb_dbhost' => '',
-		'auth_phpbb_dbport' => '',
-		'auth_phpbb_disable_tikionly' => 'n',
-		'auth_phpbb_dbuser' => '',
-		'auth_phpbb_dbpasswd' => '',
-		'auth_phpbb_dbname' => '',
-		'auth_phpbb_dbtype' => 'mysql',
-		'auth_phpbb_table_prefix' => 'phpbb_',
-
 		'https_login' => 'allowed',
-		'https_external_links_for_users' => 'n',
 		'feature_show_stay_in_ssl_mode' => 'y',
 		'feature_switch_ssl_mode' => 'n',
 		'https_port' => 443,
@@ -1351,7 +1318,6 @@ function get_default_prefs() {
 		'feature_user_watches' => 'n',
 		'feature_group_watches' => 'n',
 		'feature_user_watches_translations' => 'n',
-		'feature_user_watches_languages' => 'n',
 		'feature_daily_report_watches' => 'n',
 		'feature_quick_object_perms' => 'n',
 		'feature_xmlrpc' => 'n',
@@ -1446,6 +1412,7 @@ function get_default_prefs() {
 		'feature_iepngfix' => 'n',
 		'iepngfix_selectors' => '#sitelogo a img',
 		'iepngfix_elements' => '',
+		'valid_email_regex' => '^[_a-z0-9\+\.\-]+@[_a-z0-9\.\-]+\.[a-z]{2,4}$',
 		
 		// JQuery
 		'feature_jquery' => 'y',			// Default JS lib for - now "hard-wired" on if javascript_enabled
@@ -1536,25 +1503,6 @@ function get_default_prefs() {
 
 		'feature_use_minified_scripts' => 'y',		// for debugging
 		'tiki_minify_javascript' => 'n',
-
-		// Token Access
-		'auth_token_access' => 'n',
-		'auth_token_access_maxtimeout' => 30,
-
-		// PDF
-		'print_pdf_from_url' => 'none',
-		'print_pdf_webkit_path' => '',
-		'print_pdf_webservice_url' => '',
-
-		// Metrics
-		'feature_metrics_dashboard' => 'n',
-		'metrics_trend_prefix' => '(',
-		'metrics_trend_suffix' => '%)',
-		'metrics_trend_novalue' => '(N/A)',
-		'metrics_pastresults_count' => 50,
-		'metrics_metric_name_length' => 255,
-		'metrics_tab_name_length' => 255,
-		'metrics_cache_output' => 'y',
 	);
 
 	// spellcheck
@@ -1564,17 +1512,15 @@ function get_default_prefs() {
 		$prefs['cms_spellcheck'] = 'n';
 		$prefs['blog_spellcheck'] = 'n';
 	}
-
+	global $phpcas_enabled;
+	if ( $phpcas_enabled == 'y' ) {
 		$prefs['cas_create_user_tiki'] = 'n';
-		$prefs['cas_create_user_tiki_ldap'] = 'n';
 		$prefs['cas_skip_admin'] = 'n';
-		$prefs['cas_show_alternate_login'] = 'y';
 		$prefs['cas_version'] = '1.0';
 		$prefs['cas_hostname'] = '';
 		$prefs['cas_port'] = '';
 		$prefs['cas_path'] = '';
-		$prefs['cas_extra_param'] = '';
-		$prefs['cas_authentication_timeout'] = '0';
+	}
 
 	// Special default values
 
@@ -1632,7 +1578,7 @@ $defaults = get_default_prefs();
 // Set default prefs only if needed
 if ( ! $_SESSION['need_reload_prefs'] ) {
 	$modified = $_SESSION['s_prefs'];
-} else {
+} elseif ( isset($tikilib) ) {
 
 	// Find which preferences need to be serialized/unserialized, based on the default values (those with arrays as values)
 	if ( ! isset($_SESSION['serialized_prefs']) ) {
@@ -1643,6 +1589,15 @@ if ( ! $_SESSION['need_reload_prefs'] ) {
 
 	// Override default prefs with values specified in database
 	$modified = $tikilib->get_db_preferences();
+
+	// Disabled by default so it has to be modified
+	if( isset($modified['feature_perspective']) && $modified['feature_perspective'] == 'y' ) {
+		require_once 'lib/perspectivelib.php';
+		if( $persp = $perspectivelib->get_current_perspective( $modified ) ) {
+			$changes = $perspectivelib->get_preferences( $persp );
+			$modified = array_merge( $modified, $changes );
+		}
+	}
 
 	// Unserialize serialized preferences
 	if ( isset($_SESSION['serialized_prefs']) && is_array($_SESSION['serialized_prefs']) ) {
@@ -1660,15 +1615,6 @@ if ( ! $_SESSION['need_reload_prefs'] ) {
 
 	// Assign prefs to the session
 	$_SESSION['s_prefs'] = $modified;
-}
-
-// Disabled by default so it has to be modified
-if( isset($modified['feature_perspective']) && $modified['feature_perspective'] == 'y' ) {
-	require_once 'lib/perspectivelib.php';
-	if( $persp = $perspectivelib->get_current_perspective( $modified ) ) {
-		$changes = $perspectivelib->get_preferences( $persp );
-		$modified = array_merge( $modified, $changes );
-	}
 }
 
 $prefs = empty($modified) ? $defaults : array_merge( $defaults, $modified );

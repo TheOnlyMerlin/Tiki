@@ -12,8 +12,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class TikiHelpLib
-{
+class TikiHelpLib {
 	// function TikiHelpLib() {
         // }
 /* end of class */

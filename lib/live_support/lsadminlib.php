@@ -1,8 +1,7 @@
 <?php
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 
-class LsAdminlib extends TikiLib
-{
+class LsAdminlib extends TikiLib {
 
 	function add_operator($user) {
 		$this->getOne("delete from `tiki_live_support_operators` where `user`=?",array($user),false);

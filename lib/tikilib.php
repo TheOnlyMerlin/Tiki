@@ -21,8 +21,7 @@ if ( ! defined('DATE_FORMAT_UNIXTIME') ) define('DATE_FORMAT_UNIXTIME', 5);
 
 require_once('lib/core/lib/TikiDb/Bridge.php');
 
-class TikiLib extends TikiDb_Bridge
-{
+class TikiLib extends TikiDb_Bridge {
 	var $buffer;
 	var $flag;
 	var $parser;
@@ -112,42 +111,6 @@ class TikiLib extends TikiDb_Bridge
 			return true;
 		}
 		return $this->getOne("select `dsn`  from `tiki_dsn` where `name`='$name'");
-	}
-
-	function get_db_by_name( $name ) {
-		if( $name == 'local' || empty($name) ) {
-			return TikiDb::get();
-		} else {
-			static $connectionMap = array();
-
-			if( ! isset( $connectionMap[$name] ) ) {
-				$connectionMap[$name] = false;
-
-				$dsnsqlplugin = $this->get_dsn_by_name($name);
-
-				$parsedsn = $dsnsqlplugin;
-				$dbdriver = strtok( $parsedsn, ":" );
-				$parsedsn = substr( $parsedsn, strlen($dbdriver) + 3 );
-				$dbuserid = strtok( $parsedsn, ":" );
-				$parsedsn = substr( $parsedsn, strlen($dbuserid) + 1 );
-				$dbpassword = strtok( $parsedsn, "@" );
-				$parsedsn = substr( $parsedsn, strlen($dbpassword) + 1 );
-				$dbhost = strtok( $parsedsn, "/" );
-				$parsedsn = substr( $parsedsn, strlen($dbhost) + 1 );
-				$database = $parsedsn;
-
-				require_once ('lib/adodb/adodb.inc.php');
-				$dbsqlplugin = ADONewConnection($dbdriver);
-
-				if( $dbsqlplugin->NConnect( $dbhost, $dbuserid, $dbpassword, $database ) ) {
-					require_once 'lib/core/lib/TikiDb/Adodb.php';
-
-					$connectionMap[$name] = new TikiDb_AdoDb( $dbsqlplugin );
-				}
-			}
-
-			return $connectionMap[$name];
-		}
 	}
 
 	/* convert data to iso-8601 format */
@@ -404,10 +367,6 @@ class TikiLib extends TikiDb_Bridge
 			$page_info = $this->get_page_info( $object );
 			$mid = "`event`='wiki_page_in_lang_created' and `object`=? and `type`='lang'";
 			$bindvars[] = $page_info['lang'];
-		} elseif ( $prefs['feature_user_watches_languages'] == 'y' && $event == 'category_changed' ) {
-			$mid = "`object`=? and ((`event`='category_changed_in_lang' and `type`=? ) or (`event`='category_changed'))";
-			$bindvars[] = $object;
-			$bindvars[] = $info['lang'];
 		} elseif ($event == 'forum_post_topic') {
 			$mid = "(`event`=? or `event`=?) and `object`=?";
 			$bindvars[] = $event;
@@ -429,13 +388,10 @@ class TikiLib extends TikiDb_Bridge
 		// Obtain the list of watches on event/object for user watches
 		// Union obtains all users member of groups being watched
 		// Distinct union insures there are no duplicates
-		$query = "select tuw.`watchId`, tuw.`user`, tuw.`event`, tuw.`object`, tuw.`title`, tuw.`type`, tuw.`url`, tuw.`email`, 
-				tup1.`value` as language, tup2.`value` as mailCharset
-			from 
-				`tiki_user_watches` tuw 
-				left join `tiki_user_preferences` tup1 on (tup1.`user`=tuw.`user` and tup1.`prefName`='language') 
-				left join `tiki_user_preferences` tup2 on (tup2.`user`=tuw.`user` and tup2.`prefName`='mailCharset')
-				where $mid
+		$query = "select tuw.*, tup1.`value` as language, tup2.`value` as mailCharset from `tiki_user_watches` tuw 
+			left join `tiki_user_preferences` tup1 on (tup1.`user`=tuw.`user` and tup1.`prefName`='language') 
+			left join `tiki_user_preferences` tup2 on (tup2.`user`=tuw.`user` and tup2.`prefName`='mailCharset')
+			where $mid
 			UNION DISTINCT
 			select tgw.`watchId`, uu.`login`, tgw.`event`, tgw.`object`, tgw.`title`, tgw.`type`, tgw.`url`, uu.`email`,
 				tup1.`value` as language, tup2.`value` as mailCharset
@@ -526,7 +482,6 @@ class TikiLib extends TikiDb_Bridge
 				$objectType="";
 				switch($event) {
 				case 'wiki_page_changed': $objectType="wiki page"; break;
-				case 'wiki_page_created': $objectType="wiki page"; break;
 				case 'blog_post': $objectType="blog"; break;
 				case 'map_changed': $objectType="map_changed"; break;
 				case 'forum_post_topic': $objectType="forum"; break;
@@ -557,7 +512,7 @@ class TikiLib extends TikiDb_Bridge
 					$categs = $categlib->get_object_categories($objectType, $object);
 
 					foreach ($categs as $category) {           		                 
-						$watching_users = $this->get_event_watches('category_changed', $category, $info);
+						$watching_users = $this->get_event_watches('category_changed', $category);
 
 						// Add all users that are not already included
 						foreach ($watching_users as $wu) {
@@ -717,6 +672,21 @@ class TikiLib extends TikiDb_Bridge
 			}
 		}
 		return $ret;
+	}
+
+	/*shared*/
+	function get_actual_content($fieldvalue) {
+		$query = 'SELECT `data` FROM `tiki_programmed_content` WHERE `contentId`=? AND `publishDate`<=? ORDER BY `publishDate` DESC';
+		$data = $this->getOne($query, array((int)$fieldvalue, $this->now));
+		return $data;
+	}
+
+	function get_actual_content_by_label($fieldvalue) {
+		$query = 'SELECT tpc.`data`'
+			.' FROM `tiki_programmed_content` AS tpc, `tiki_content` AS tc'
+			.' WHERE tpc.`contentId` = tc.`contentId` AND tc.`contentLabel`=? AND `publishDate`<=? ORDER BY `publishDate` DESC';
+		$data = $this->getOne($query, array($fieldvalue, $this->now));
+		return $data;
 	}
 
 	/*shared*/
@@ -925,7 +895,7 @@ class TikiLib extends TikiDb_Bridge
 		}
 		$csort_mode = '';
 		if (substr($sort_mode,0,2) == "f_") {
-			list($a,$csort_mode,$corder) = explode('_',$sort_mode, 3);
+			list($a,$csort_mode,$corder) = split('_',$sort_mode);
 		}
 		$trackerId = (int) $trackerId;
 		if ($trackerId == -1) {
@@ -1128,19 +1098,14 @@ class TikiLib extends TikiDb_Bridge
 	//shared
 	// \todo remove all hardcoded html in get_user_avatar()
 	function get_user_avatar($user, $float = "") {
-		global $userlib, $prefs;
+		global $userlib;
 
 		if (empty($user))
 			return '';
 
-		if( is_array( $user ) ) {
-			$res = $user;
-			$user = $user['login'];
-		} else {
-			$query = "select `login`,`avatarType`,`avatarLibName` from `users_users` where `login`=?";
-			$result = $this->query($query,array($user));
-			$res = $result->fetchRow();
-		}
+		$query = "select `login`,`avatarType`,`avatarLibName` from `users_users` where `login`=?";
+		$result = $this->query($query,array($user));
+		$res = $result->fetchRow();
 
 		if (!$res) {
 			return '';
@@ -1164,17 +1129,7 @@ class TikiLib extends TikiDb_Bridge
 				$ret = "<img border='0' width='45' height='45' src='" . $libname . "' " . $style . " alt='$user' />";
 				break;
 			case 'u':
-				$path = "tiki-show_user_avatar.php?user=$user";
-
-				if( $prefs['users_serve_avatar_static'] == 'y' ) {
-					$files = glob( "temp/public/avatar_$user.*" );
-
-					if( count( $files ) ) {
-						$path = $files[0];
-					}
-				}
-
-				$ret = "<img border='0' src='$path' " . $style . " alt='$user' />";
+				$ret = "<img border='0' src='tiki-show_user_avatar.php?user=$user' " . $style . " alt='$user' />";
 				break;
 		}
 		return $ret;
@@ -1289,6 +1244,53 @@ class TikiLib extends TikiDb_Bridge
 		return $ret;
 	}
 
+	// Templates ////
+	/*shared*/
+	function list_templates($section, $offset, $maxRecords, $sort_mode, $find) {
+		$bindvars = array($section);
+		if ($find) {
+			$findesc = '%'.$find.'%';
+			$mid = " and (`content` like ?)";
+			$bindvars[] = $findesc;
+		} else {
+			$mid = "";
+		}
+		$query = "select `name` ,`created`,tcts.`templateId` from `tiki_content_templates` tct, `tiki_content_templates_sections` tcts ";
+		$query.= " where tcts.`templateId`=tct.`templateId` and `section`=? $mid order by ".$this->convertSortMode($sort_mode);
+		$query_cant = "select count(*) from `tiki_content_templates` tct, `tiki_content_templates_sections` tcts ";
+		$query_cant.= "where tcts.`templateId`=tct.`templateId` and `section`=? $mid";
+		$result = $this->query($query,$bindvars,$maxRecords,$offset);
+		$cant = $this->getOne($query_cant,$bindvars);
+		$ret = array();
+		while ($res = $result->fetchRow()) {
+			$query2 = "select `section`  from `tiki_content_templates_sections` where `templateId`=?";
+
+			$result2 = $this->query($query2,array((int)$res["templateId"]));
+			$sections = array();
+			while ($res2 = $result2->fetchRow()) {
+				$sections[] = $res2["section"];
+			}
+			$res["sections"] = $sections;
+			$ret[] = $res;
+		}
+
+		$retval = array();
+		$retval["data"] = $ret;
+		$retval["cant"] = $cant;
+		return $retval;
+	}
+
+	/*shared*/
+	function get_template($templateId) {
+		$query = "select * from `tiki_content_templates` where `templateId`=?";
+		$result = $this->query($query,array((int)$templateId));
+		if (!$result->numRows()) return false;
+		$res = $result->fetchRow();
+		return $res;
+	}
+	// templates ////
+
+	/*shared*/
 	function pick_cookie() {
 		$cant = $this->getOne("select count(*) from `tiki_cookies`",array());
 		if (!$cant) return '';
@@ -1430,7 +1432,7 @@ class TikiLib extends TikiDb_Bridge
 			$user = substr($user,0,strpos($user,'@'));
 			if (isset($prefs['interlist'][$realm])) {
 				$groups = $prefs['interlist'][$realm]['groups'].',Anonymous';
-				return explode(',',$prefs['interlist'][$realm]['groups']);
+				return split(',',$prefs['interlist'][$realm]['groups']);
 			}
 		}
 		if (!isset($this->usergroups_cache[$user])) {
@@ -1749,7 +1751,7 @@ class TikiLib extends TikiDb_Bridge
 
 	/*shared*/
 	function remove_object($type, $id) {
-		global $categlib, $dbTiki, $prefs;
+		global $categlib, $dbTiki;
 
 		if (!is_object($categlib)) {
 			require_once ("lib/categories/categlib.php");
@@ -1774,11 +1776,6 @@ class TikiLib extends TikiDb_Bridge
 		$linkhandle = "objectlink:$type:$id";
 		$query = "delete from `tiki_links` where `fromPage` = ?";
 		$result = $this->query($query, array( $linkhandle ) );
-		// remove fgal backlinks
-		if ( $prefs['feature_file_galleries'] == 'y') {
-			global $filegallib; require_once 'lib/filegals/filegallib.php';
-			$filegallib->deleteBacklinks(array('type'=>$type, 'object'=>$id));
-		}
 		// remove object
 		$objectlib->delete_object($type, $id);
 		return true;
@@ -1985,14 +1982,14 @@ class TikiLib extends TikiDb_Bridge
 		$cant = $channels['cant'];
 		$channels = $channels['data'];
 
-		$temp_max = count($channels);
+		$temp_max = sizeof($channels);
 		for ($i=0; $i < $temp_max; $i++) {
 			$sorted_channels[$i] = $channels[$i];
 			if ($sorted_channels[$i]['type'] == 'r') { // sorted section
 				$sorted_channels[$i]['type'] = 's'; // common section, let's make it transparent
 				$i++;
 				$section = array();
-				while ($i < count($channels) && $channels[$i]['type'] == 'o') {
+				while ($i < sizeof($channels) && $channels[$i]['type'] == 'o') {
 					$section[] = $channels[$i];
 					$i++;
 				}
@@ -2102,7 +2099,7 @@ class TikiLib extends TikiDb_Bridge
 
 	/*shared*/
 	function get_file($id) {
-		$query = "select tf.*, tfg.`backlinkPerms` from `tiki_files` tf left join `tiki_file_galleries` tfg on (tfg.`galleryId`=tf.`galleryId`) where `fileId`=? ";
+		$query = "select * from `tiki_files` where `fileId`=?";
 		$result = $this->query($query, array((int)$id));
 		return $result ? $result->fetchRow() : array();
 	}
@@ -2137,7 +2134,7 @@ class TikiLib extends TikiDb_Bridge
 	 */
 	function get_files($offset, $maxRecords, $sort_mode, $find, $galleryId=-1, $with_archive=false, $with_subgals=false, $with_subgals_size=true, $with_files=true, $with_files_data=false, $with_parent_name=false, $with_files_count=true, $recursive=false, $my_user='', $keep_subgals_together=true, $parent_is_file=false) {
 		global $user, $tiki_p_admin_file_galleries;
-		global $filegallib; require_once('lib/filegals/filegallib.php');
+		global $filegallib; require_once 'lib/filegals/filegallib.php';
 
 		$f_jail_bind = array();
 		$g_jail_bind = array();
@@ -2342,16 +2339,8 @@ class TikiLib extends TikiDb_Bridge
 			//  the user has no rights to view the file gallery AND no rights to list all galleries (in case it's a gallery)
 			if ( $res['perms']['tiki_p_view_file_gallery'] != 'y'
 					&& ( $res['isgal'] == 0 || $res['perms']['tiki_p_list_file_gallery'] != 'y' )
-				 ) {
-				continue;
-			}
-			if (empty($backlinkPerms[$res['galleryId']])) {
-				$info = $filegallib->get_file_gallery_info($res['galleryId']);
-				$backlinkPerms[$res['galleryId']] = $info['backlinkPerms'];
-			}
-			if ($backlinkPerms[$res['galleryId']] == 'y' && $filegallib->hasOnlyPrivateBacklinks($res['id'])) {
-				continue;
-			}
+			   ) continue;
+
 			$n++;
 			if ( ! $need_everything && $offset != -1 && $n < $offset ) continue;
 
@@ -3098,7 +3087,7 @@ class TikiLib extends TikiDb_Bridge
 				$topic = substr($topic,1);
 				$invert = "!";
 			}
-			$rest = explode("\+", $topic);
+			$rest = split("\+", $topic);
 			if ($mid) { $mid .= " and "; } else { $mid = " where "; }
 			$add = $this->in("tiki_articles.topicName", $rest, $bindvars);
 			if ($add <> "") {
@@ -3753,7 +3742,7 @@ class TikiLib extends TikiDb_Bridge
 		//  Deal with mail notifications.
 		include_once('lib/notifications/notificationemaillib.php');
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
-		$machine = $this->httpPrefix( true ). dirname( $foo["path"] );
+		$machine = $this->httpPrefix(). dirname( $foo["path"] );
 		$page_info = $this->get_page_info($page);
 		sendWikiEmailNotification('wiki_page_deleted', $page, $user, $comment, 1, $page_info['data'], $machine);
 		
@@ -4801,7 +4790,7 @@ class TikiLib extends TikiDb_Bridge
 			include_once('lib/notifications/notificationemaillib.php');
 
 			$foo = parse_url($_SERVER["REQUEST_URI"]);
-			$machine = $this->httpPrefix( true ). dirname( $foo["path"] );
+			$machine = $this->httpPrefix(). dirname( $foo["path"] );
 			sendWikiEmailNotification('wiki_page_created', $name, $user, $comment, 1, $data, $machine, '', false, $hash['contributions']);
 			if ($prefs['feature_contribution'] == 'y') {
 				global $contributionlib; include_once('lib/contribution/contributionlib.php');
@@ -4823,9 +4812,6 @@ class TikiLib extends TikiDb_Bridge
 			require_once('lib/search/refresh-functions.php');
 			refresh_index('pages', $name);
 		}
-
-		$this->syncParsedText($data, array('type'=> 'wiki page', 'object'=> $page, 'description'=> $description, 'name'=>$page, 'href'=>"tiki-index.php?page=$page"));
-
 		return true;
 	}
 
@@ -5165,22 +5151,7 @@ class TikiLib extends TikiDb_Bridge
 
 		return $arguments;
 	}
-	// get all the plugins of a text- can be limitted only to some
-	function getPlugins($data, $only=null) {
-		$plugins = array();
-		for (; ;) {
-			$this->plugin_match($data, $plugin);
-			if (empty($plugin)) {
-				break;
-			}
-			if (empty($only) || in_array($plugin[1], $only) || in_array(strtoupper($plugin[1]), $only)) {
-				$plugins[] = $plugin;
-			}
-			$pos = strpos( $data, $plugin[0] );
-			$data = substr_replace($data, '', $pos, strlen($plugin[0]));
-			}
-		return $plugins;
-	}
+
 	// This recursive function handles pre- and no-parse sections and plugins
 	function parse_first(&$data, &$preparsed, &$noparsed, $options=null, $real_start_diff='0') {
 		global $dbTiki, $smarty, $tiki_p_edit, $prefs, $pluginskiplist;
@@ -5993,27 +5964,18 @@ class TikiLib extends TikiDb_Bridge
 
 	//Updates a dynamic variable found in some object
 	/*Shared*/
-	function update_dynamic_variable($name,$value, $lang = null) {
-		$bindvals = array();
-
-		$mid = "where `name`=?";
-		$bindvals[] = $name;
-		if ($lang) {
-			$mid .= " and `lang`=?";
-			$bindvals[] = $lang;
-		} else {
-			$mid .= " and `lang` IS NULL";
-		}
-		$query = "delete from `tiki_dynamic_variables` $mid";
-		$this->query( $query, $bindvals );
-		$query = "insert into `tiki_dynamic_variables`(`name`,`data`,`lang`) values(?,?,?)";
-		$this->query($query,array($name,$value,$lang));
+ function update_dynamic_variable($name,$value) {
+		$query = "delete from `tiki_dynamic_variables` where `name`=?";
+		$this->query($query,array($name),-1,-1,false);
+		$query = "insert into `tiki_dynamic_variables`(`name`,`data`) values(?,?)";
+		$this->query($query,Array($name,$value));
 		return true;
 	}
 
+
 	// split string into a list of
 	function split_tag( $string, $cleanup = TRUE ) {
-		$_splts = explode('&quot;', $string);
+		$_splts = split('&quot;', $string);
 		$inside = FALSE;
 		$parts = array();
 		$index=0;
@@ -6035,7 +5997,7 @@ class TikiLib extends TikiDb_Bridge
 					$parts[] = $i;
 				}
 			} else {        //
-				$_spl = explode(" ", $i);
+				$_spl = split(" ", $i);
 				foreach($_spl as $j) {
 					$parts[$index++] = $j;
 				}
@@ -6116,7 +6078,7 @@ class TikiLib extends TikiDb_Bridge
 			}
 		}
 
-		global $page_regex, $slidemode, $prefs, $ownurl_father, $tiki_p_upload_picture, $page, $page_ref_id, $rsslib, $dbTiki, $structlib, $user, $tikidomain, $tikiroot;
+		global $page_regex, $slidemode, $prefs, $ownurl_father, $tiki_p_edit_dynvar, $tiki_p_upload_picture, $page, $page_ref_id, $rsslib, $dbTiki, $structlib, $user, $tikidomain, $tikiroot;
 		global $wikilib; include_once('lib/wiki/wikilib.php');
 
 		// Handle parsing options
@@ -6301,7 +6263,47 @@ class TikiLib extends TikiDb_Bridge
 		// linebreaks using %%%
 		$data = str_replace("%%%", "<br />", $data);
 
-		$data = $this->parse_data_dynamic_variables( $data, $options['language'] );
+		// Replace dynamic variables
+		// Dynamic variables are similar to dynamic content but they are editable
+		// from the page directly, intended for short data, not long text but text
+		// will work too
+		//     Now won't match HTML-style '%nn' letter codes and some special utf8 situations...
+		if (preg_match_all("/%([^% 0-9A-Z][^% 0-9A-Z][^% ]*)%/",$data,$dvars)) {
+			// remove repeated elements
+			$dvars = array_unique($dvars[1]);
+			// Now replace each dynamic variable by a pair composed of the
+			// variable value and a text field to edit the variable. Each
+			foreach($dvars as $dvar) {
+				$query = "select `data` from `tiki_dynamic_variables` where `name`=?";
+				$result = $this->query($query,Array($dvar));
+				if($result->numRows()) {
+					$value = $result->fetchRow();
+					$value = $value["data"];
+				} else {
+					//Default value is NULL
+					$value = "NaV";
+				}
+				// Now build 2 divs
+				$id = 'dyn_'.$dvar;
+
+				if(isset($tiki_p_edit_dynvar)&& $tiki_p_edit_dynvar=='y') {
+					$span1 = "<span  style='display:inline;' id='dyn_".$dvar."_display'><a class='dynavar' onclick='javascript:toggle_dynamic_var(\"$dvar\");' title='".tra('Click to edit dynamic variable','',true).": $dvar'>$value</a></span>";
+					$span2 = "<span style='display:none;' id='dyn_".$dvar."_edit'><input type='text' name='dyn_".$dvar."' value='".$value."' />".'<input type="submit" name="_dyn_update" value="'.tra('Update variables','',true).'"/></span>';
+				} else {
+					$span1 = "<span class='dynavar' style='display:inline;' id='dyn_".$dvar."_display'>$value</span>";
+					$span2 = '';
+				}
+				$html = $span1.$span2;
+				//It's important to replace only once
+				$dvar_preg = preg_quote( $dvar );
+				$data = preg_replace("+%$dvar_preg%+",$html,$data,1);
+				//Further replacements only with the value
+				$data = str_replace("%$dvar%",$value,$data);
+			}
+			//At the end put an update button
+			//<br /><div align="center"><input type="submit" name="dyn_update" value="'.tra('Update variables','',true).'"/></div>
+			$data='<form method="post" name="dyn_vars">'."\n".$data.'</form>';
+		}
 
 		if (!$simple_wiki) {
 			// Replace boxes
@@ -6578,73 +6580,7 @@ class TikiLib extends TikiDb_Bridge
 		return $data;
 	}
 
-	private function parse_data_dynamic_variables( $data, $lang = null ) {
-		global $tiki_p_edit_dynvar, $prefs;
-
-		$enclose = '%';
-		if( $prefs['wiki_dynvar_style'] == 'disable' ) {
-			return $data;
-		} elseif( $prefs['wiki_dynvar_style'] == 'double' ) {
-			$enclose = '%%';
-		}
-
-		// Replace dynamic variables
-		// Dynamic variables are similar to dynamic content but they are editable
-		// from the page directly, intended for short data, not long text but text
-		// will work too
-		//     Now won't match HTML-style '%nn' letter codes and some special utf8 situations...
-		if (preg_match_all("/$enclose([^% 0-9A-Z][^% 0-9A-Z][^% ]*)$enclose/",$data,$dvars)) {
-			// remove repeated elements
-			$dvars = array_unique($dvars[1]);
-			// Now replace each dynamic variable by a pair composed of the
-			// variable value and a text field to edit the variable. Each
-			foreach($dvars as $dvar) {
-				$value = $this->get_dynamic_variable( $dvar, $lang );
-				// Now build 2 divs
-				$id = 'dyn_'.$dvar;
-
-				if(isset($tiki_p_edit_dynvar)&& $tiki_p_edit_dynvar=='y') {
-					$span1 = "<span  style='display:inline;' id='dyn_".$dvar."_display'><a class='dynavar' onclick='javascript:toggle_dynamic_var(\"$dvar\");' title='".tra('Click to edit dynamic variable','',true).": $dvar'>$value</a></span>";
-					$span2 = "<span style='display:none;' id='dyn_".$dvar."_edit'><input type='text' name='dyn_".$dvar."' value='".$value."' />".'<input type="submit" name="_dyn_update" value="'.tra('Update variables','',true).'"/></span>';
-				} else {
-					$span1 = "<span class='dynavar' style='display:inline;' id='dyn_".$dvar."_display'>$value</span>";
-					$span2 = '';
-				}
-				$html = $span1.$span2;
-				//It's important to replace only once
-				$dvar_preg = preg_quote( $dvar );
-				$data = preg_replace("+$enclose$dvar_preg$enclose+",$html,$data,1);
-				//Further replacements only with the value
-				$data = str_replace("$enclose$dvar$enclose",$value,$data);
-			}
-			//At the end put an update button
-			//<br /><div align="center"><input type="submit" name="dyn_update" value="'.tra('Update variables','',true).'"/></div>
-			$data='<form method="post" name="dyn_vars">'."\n".$data.'</form>';
-		}
-
-		return $data;
-	}
-
-	private function get_dynamic_variable( $name, $lang = null ) {
-		$query = "select `data`, `lang` from `tiki_dynamic_variables` where `name`=?";
-		$result = $this->fetchAll( $query, array( $name ) );
-
-		$value = "NaV";
-
-		foreach( $result as $row ) {
-			if( $row['lang'] == $lang ) {
-				// Exact match
-				return $row['data'];
-			} elseif( empty( $row['lang'] ) ) {
-				// Universal match, keep in case no exact match
-				$value = $row['data'];
-			}
-		}
-
-		return $value;
-	}
-
-	private function parse_data_process_maketoc( &$data, $options) {
+	function parse_data_process_maketoc( &$data, $options) {
 
 		global $prefs;
 
@@ -7631,10 +7567,10 @@ class TikiLib extends TikiDb_Bridge
 				global $histlib; include_once ("lib/wiki/histlib.php");
 				$old = $histlib->get_version($pageName, $old_version);
 				$foo = parse_url($_SERVER["REQUEST_URI"]);
-				$machine = $this->httpPrefix( true ). dirname( $foo["path"] );
+				$machine = $this->httpPrefix(). dirname( $foo["path"] );
 				require_once('lib/diff/difflib.php');
 				$diff = diff2($old["data"] , $edit_data, "unidiff");
-				sendWikiEmailNotification('wiki_page_changed', $pageName, $edit_user, $edit_comment, $old_version, $edit_data, $machine, $diff, $edit_minor, $hash['contributions'], 0, 0, $lang);
+				sendWikiEmailNotification('wiki_page_changed', $pageName, $edit_user, $edit_comment, $old_version, $edit_data, $machine, $diff, $edit_minor, $hash['contributions']);
 			}
 
 			$query = "delete from `tiki_page_drafts` where `user`=? and `pageName`=?";
@@ -7648,14 +7584,6 @@ class TikiLib extends TikiDb_Bridge
 		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
 			require_once('lib/search/refresh-functions.php');
 			refresh_index('pages', $pageName);
-		}
-		$this->syncParsedText($edit_data, array('type'=>'wiki page', 'object'=>$pageName));
-	}
-	function syncParsedText($text, $context) {
-		global $prefs;
-		if ( $prefs['feature_file_galleries'] == 'y') {
-			global $filegallib; require_once 'lib/filegals/filegallib.php';
-			$filegallib->syncFileBacklinks($text, $context);
 		}
 	}
 
@@ -7997,26 +7925,6 @@ class TikiLib extends TikiDb_Bridge
 		return $path;
 	}
 
-	/**
-	 * list_slide_styles 
-	 * 
-	 * @access public
-	 * @return array. List of the slide styles located in styles/slideshow
-	 */
-	function list_slide_styles()
-	{
-	  $slide_styles = array();
-	  $h = opendir("styles/slideshows");
-	  while ($file = readdir($h)) {
-		if (strstr($file, "css")) {
-		  $slide_styles[] = $file;
-		}
-	  }
-	  closedir($h);
-	  return $slide_styles;
-	}
-
-
 	// Comparison function used to sort languages by their name in the
 	// current locale.
 	static function formatted_language_compare($a, $b) {
@@ -8095,7 +8003,7 @@ class TikiLib extends TikiDb_Bridge
 	}
 
 	function read_raw($text) {
-		$file = explode("\n",$text);
+		$file = split("\n",$text);
 		$back = '';
 		foreach ($file as $line) {
 			$r = $s = '';
@@ -8117,16 +8025,9 @@ class TikiLib extends TikiDb_Bridge
 		return $url_scheme;
 	}
 
-	function httpPrefix( $isUserSpecific = false ) {
-		global $url_scheme, $url_host, $url_port, $prefs;
-
-		if( $isUserSpecific && $prefs['https_external_links_for_users'] == 'y' ) {
-			$scheme = 'https';
-		} else {
-			$scheme = $url_scheme;
-		}
-
-		return $scheme.'://'.$url_host.(($url_port!='')?":$url_port":'');    
+	function httpPrefix() {
+		global $url_scheme, $url_host, $url_port;
+		return $url_scheme.'://'.$url_host.(($url_port!='')?":$url_port":'');    
 	}
 
 	function distance($lat1,$lon1,$lat2,$lon2) {
@@ -8509,7 +8410,7 @@ JS;
 	function isValidIP($ip, $ver = 4) {
 		$result = false;
 	
-		$octets = explode("\.", $ip);
+		$octets = split("\.", $ip);
 		if (count($octets) == 4) {
 			for ($c = 0; $c < 4; $c++) {
 				if ($octets[$c] < 0 || $octets[$c] > 255) {
@@ -8651,12 +8552,36 @@ function detect_browser_language() {
 	return $aproximate_lang;
 }
 
-function validate_email($email) {
+function validate_email($email,$checkserver='n') {
 	global $prefs;
-	require_once 'lib/core/lib/Zend/Validate/EmailAddress.php';
-	$validate = new Zend_Validate_EmailAddress;
-	
-	return $validate->isValid( $email );
+	$valid_syntax = eregi($prefs['valid_email_regex'], $email);
+	if (!$valid_syntax) {
+		return false;
+	} elseif ($checkserver == 'y') {
+		include_once('Net/DNS.php');
+		$resolver = new Net_DNS_Resolver();
+		$domain = substr(strstr($email,'@'),1);
+		$answer = $resolver->query($domain,'MX');
+		if (!$answer) {
+			return false;
+		} else {
+			foreach ($answer->answer as $server) {
+				$mxserver[$server->preference] = $server->exchange;
+			}
+			krsort($mxserver);
+			foreach ($mxserver as $server) {
+				$test = fsockopen($server,25,$errno,$errstr,15);
+				if ($test) {
+					fclose($test);
+					return true;
+				}
+				fclose($test);
+			}
+			return false;
+		}
+	} else {
+		return true;
+	}
 }
 
 /* Editor configuration

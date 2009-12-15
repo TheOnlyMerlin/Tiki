@@ -6,8 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class UserMenuLib extends TikiLib
-{
+class UserMenuLib extends TikiLib {
 
 	function add_bk($user) {
 		$query = "select tubu.`name`,`url` from `tiki_user_bookmarks_urls` tubu, `tiki_user_bookmarks_folders` tubf where tubu.`folderId`=tubf.`folderId` and tubf.`parentId`=? and tubu.`user`=?";
@@ -21,6 +20,7 @@ class UserMenuLib extends TikiLib
 				$this->replace_usermenu($user, 0, $res['name'], $res['url'], $start, 'w');
 
 				$start++;
+			} else {
 			}
 		}
 
@@ -34,6 +34,7 @@ class UserMenuLib extends TikiLib
 				$this->replace_usermenu($user, 0, $res['name'], $res['url'], $start, 'w');
 
 				$start++;
+			} else {
 			}
 		}
 	}

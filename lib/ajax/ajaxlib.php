@@ -11,8 +11,7 @@ if ($prefs['feature_ajax'] == 'y') {
 	require_once("lib/ajax/xajax/xajax_core/xajaxAIO.inc.php");
 	if (!defined ('XAJAX_GET')) define ('XAJAX_GET', 0);
 
-class TikiAjax extends xajax
-{
+	class TikiAjax extends xajax {
 
 		/**
 		 * Array of templates that are allowed to be served
@@ -143,8 +142,7 @@ class TikiAjax extends xajax
 	}
 } else {
 	// dumb TikiAjax class
-	class TikiAjax
-{
+	class TikiAjax {
 		function TikiAjax() {}
 #		function __construct() {} // commented out because it causes PHP notice "constructor already defined for class TikiAjax" (no idea, where and why it even goes through this file when ajax feature is not enabled)
 		function registerFunction() {}
@@ -255,7 +253,7 @@ function loadComponent($template, $htmlElementId, $max_tikitabs = 0, $last_user 
 
 	$js_files[] = 'tiki-jsplugin.php';
 
-	if (count($js_files)) {
+	if (sizeof($js_files)) {
 		foreach($js_files as $f) {
 			if (trim($f) != '') {
 				$objResponse->includeScript($f);
@@ -264,7 +262,7 @@ function loadComponent($template, $htmlElementId, $max_tikitabs = 0, $last_user 
 	}
 
 	$objResponse->script("var xajax.config.requestURI =\"".$ajaxlib->sRequestURI."\";\n");
-	if (count($js_script)) {
+	if (sizeof($js_script)) {
 		foreach($js_script as $s) {
 			if (trim($s) != '') {
 				$objResponse->script($s);

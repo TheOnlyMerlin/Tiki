@@ -8,8 +8,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 if (!defined('weekInSeconds')) define('weekInSeconds', 604800);
 
-class CalendarLib extends TikiLib
-{
+class CalendarLib extends TikiLib {
 	function convertSortMode($sort_mode) {
 		$tmp = explode("_",$sort_mode);
 		if (count($tmp) == 2) {
@@ -76,7 +75,6 @@ class CalendarLib extends TikiLib
 	}
 
 	function set_calendar($calendarId, $user, $name, $description, $customflags=array(),$options=array()) {
-		global $prefs;
 		$name = strip_tags($name);
 		$description = strip_tags($description);
 		$now = time();
@@ -111,11 +109,6 @@ class CalendarLib extends TikiLib
 		}
 		$this->query('delete from `tiki_calendar_options` where `calendarId`=?',array((int)$calendarId));
 		if (count($options)) {
-			if ( isset($options['viewdays']) ) {
-				$options['viewdays'] = serialize($options['viewdays']);
-			} else {
-				$options['viewdays'] = serialize($prefs['calendar_view_days']);
-			}
 			foreach ($options as $name=>$value) {
 				$name = preg_replace('/[^-_a-zA-Z0-9]/','',$name);
 				$this->query('insert into `tiki_calendar_options` (`calendarId`,`optionName`,`value`) values (?,?,?)',array((int)$calendarId,$name,$value));
@@ -125,7 +118,6 @@ class CalendarLib extends TikiLib
 	}
 
 	function get_calendar($calendarId) {
-		global $prefs;
 		$res = $this->query("select * from `tiki_calendars` where `calendarId`=?",array((int)$calendarId));
 		$cal = $res->fetchRow();
 		$res2 = $this->query("select `optionName`,`value` from `tiki_calendar_options` where `calendarId`=?",array((int)$calendarId));
@@ -135,11 +127,6 @@ class CalendarLib extends TikiLib
 		if (!isset($cal['startday']) and !isset($cal['endday'])) {
 			$cal['startday'] = 0;
 			$cal['endday'] = 23*60*60;
-		}
-		if ( isset($cal['viewdays']) ) {
-			$cal['viewdays'] = unserialize($cal['viewdays']);
-		} else {
-			$cal['viewdays'] = $prefs['calendar_view_days'];
 		}
 		return $cal;
 	}
@@ -180,7 +167,7 @@ class CalendarLib extends TikiLib
 	/* tsart ans tstop are in user time - the data base is in server time */
 	function list_raw_items($calIds, $user, $tstart, $tstop, $offset, $maxRecords, $sort_mode='start_asc', $find='', $customs=array()) {
 
-		if (count($calIds) == 0) {
+		if (sizeOf($calIds) == 0) {
 		    return array();
 		}
 
@@ -526,7 +513,7 @@ class CalendarLib extends TikiLib
 			$smarty->assign('mail_data', $data);
 			$smarty->assign('mail_calitemId', $calitemId);
 			$foo = parse_url($_SERVER["REQUEST_URI"]);
-			$machine = $tikilib->httpPrefix( true ) . dirname( $foo["path"] );
+			$machine = $tikilib->httpPrefix() . dirname( $foo["path"] );
 			$machine = preg_replace("!/$!", "", $machine); // just incase
  			$smarty->assign('mail_machine', $machine);
 			$defaultLanguage = $prefs['site_language'];
@@ -700,9 +687,7 @@ class CalendarLib extends TikiLib
 		global $user, $prefs, $smarty;
 
 		// Global vars used by tiki-calendar_setup.php (this has to be changed)
-		global $tikilib, $calendarViewMode, $request_day, $request_month,
-$request_year, $dayend, $myurl;
-		global $weekdays, $daysnames, $daysnames_abr;
+		global $tikilib, $calendarViewMode, $request_day, $request_month, $request_year, $dayend, $myurl;
 		include('tiki-calendar_setup.php');
 
 		//FIXME : maxrecords = 50
@@ -842,7 +827,7 @@ $request_year, $dayend, $myurl;
 				}
 			}
 		}
-	
+
 		return array(
 			'cell' => $cell,
 			'listevents' => $listevents,

@@ -4,7 +4,6 @@ function prefs_blog_list() {
 	return array(
 		'blog_spellcheck' => array(
 			'name' => 'Spell cheking',
-			'hint' => tra('Requires a separate download'),
 			'type' => 'flag',
 			'help' => 'Spellcheck',
 		),

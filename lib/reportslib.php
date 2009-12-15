@@ -1,7 +1,6 @@
 <?php 
 
-class reportsLib extends TikiLib
-{
+class reportsLib extends TikiLib{
 
 	//Sends the Email
 	public function sendEmail($user_data, $report_preferences, $report_cache, $tikiUrl) {

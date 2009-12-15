@@ -6,8 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class BanLib extends TikiLib
-{
+class BanLib extends TikiLib {
 	function get_rule($banId) {
 		$query = "select * from `tiki_banning` where `banId`=?";
 

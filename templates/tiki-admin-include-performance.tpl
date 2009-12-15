@@ -13,7 +13,6 @@
 			{preference name=tiki_minify_javascript}
 			{preference name=feature_use_minified_scripts}
 			{preference name=feature_obzip}
-			{preference name=users_serve_avatar_static}
 			<div class="adminoptionboxchild">
 				{if $gzip_handler ne 'none'}
 					<div class="highlight" style="margin-left:30px;">
@@ -29,7 +28,6 @@
 			<legend>{tr}Wiki{/tr}</legend>
 			{preference name=wiki_cache}
 			{preference name=feature_wiki_icache}
-			{preference name=wiki_ranking_reload_probability}
 		</fieldset>
 
 		<fieldset>

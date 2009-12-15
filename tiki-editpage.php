@@ -46,7 +46,7 @@ if (empty($_REQUEST["page"])) {
 	die;
 }
 
-if ($prefs['feature_wikiapproval'] == 'y' && substr($_REQUEST['page'], 0, strlen($prefs['wikiapproval_prefix'])) != $prefs['wikiapproval_prefix'] && ($prefs['wikiapproval_master_group'] != '-1') && !in_array($prefs['wikiapproval_master_group'], $tikilib->get_user_groups($user))) {
+if ($prefs['feature_wikiapproval'] == 'y' && substr($_REQUEST['page'], 0, strlen($prefs['wikiapproval_prefix'])) != $prefs['wikiapproval_prefix'] && !empty($prefs['wikiapproval_master_group']) && !in_array($prefs['wikiapproval_master_group'], $tikilib->get_user_groups($user))) {
 	$_REQUEST['page'] = $prefs['wikiapproval_prefix'] . $_REQUEST['page'];
 }
 
@@ -519,9 +519,7 @@ if ($prefs['feature_wiki_footnotes'] == 'y') {
 	}
 }
 if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0 && !isset($_REQUEST['preview']) && !isset($_REQUEST['save'])) {
-	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$templateLang = isset( $_REQUEST['lang'] ) ? $_REQUEST['lang'] : null;
-	$template_data = $templateslib->get_template($_REQUEST["templateId"], $templateLang);
+	$template_data = $tikilib->get_template($_REQUEST["templateId"]);
 	$_REQUEST["edit"] = $template_data["content"]."\n".$_REQUEST["edit"];
 	$smarty->assign("templateId", $_REQUEST["templateId"]);
 }
@@ -1086,24 +1084,32 @@ if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) != 'sandbox' || $
 } //save
 $smarty->assign('pageAlias',$pageAlias);
 if ($prefs['feature_wiki_templates'] == 'y' && $tiki_p_use_content_templates == 'y') {
-	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$templates = $templateslib->list_templates('wiki', 0, -1, 'name_asc', '');
+	$templates = $tikilib->list_templates('wiki', 0, -1, 'name_asc', '');
 	$smarty->assign_by_ref('templates', $templates["data"]);
 }
 if ($prefs['feature_polls'] =='y' and $prefs['feature_wiki_ratings'] == 'y' && $tiki_p_wiki_admin_ratings == 'y') {
+	function pollnameclean($s) { global $page; if (isset($s['title'])) $s['title'] = substr($s['title'],strlen($page)+2); return $s; }
 	if (!isset($polllib) or !is_object($polllib)) include("lib/polls/polllib_shared.php");
 	if (!isset($categlib) or !is_object($categlib)) include("lib/categories/categlib.php");
 	if (isset($_REQUEST['removepoll'])) {
 		$catObjectId = $categlib->is_categorized($cat_type,$cat_objid);
-		$polllib->remove_object_poll( $cat_type, $cat_objid, $_REQUEST['removepoll'] );
+		$polllib->remove_object_poll($cat_type,$cat_objid);
 	}
 	$polls_templates = $polllib->get_polls('t');
 	$smarty->assign('polls_templates',$polls_templates['data']);
-	$poll_rated = $polllib->get_ratings($cat_type,$cat_objid);
+	$poll_rated = $polllib->get_rating($cat_type,$cat_objid);
+	if (isset($poll_rated['title'])) {
+		$poll_rated = array_map('pollnameclean',$poll_rated);
+	}
 	$smarty->assign('poll_rated',$poll_rated);
+	if (isset($_REQUEST['poll_title'])) {
+		$smarty->assign('poll_title',$_REQUEST['poll_title']);
+	}
 	if (isset($_REQUEST['poll_template'])) {
 		$smarty->assign('poll_template',$_REQUEST['poll_template']);
 	}
+	$listpolls = $polllib->get_polls('o',"$page: ");
+	$smarty->assign('listpolls',$listpolls['data']);
 }
 
 if ($prefs['feature_multilingual'] == 'y') {
@@ -1185,21 +1191,6 @@ if ($prefs['feature_categories'] == 'y') {
 				$categories[$i]['incat'] = 'y';
 		}
 	}
-}
-
-$is_staging_article = ($prefs['wikiapproval_staging_category'] > 0) && (in_array($prefs['wikiapproval_staging_category'], $cats));
-$page_badchars_display = ":/?#[]@!$&'()*+,;=";
-$page_badchars = "/[:\/?#\[\]@!$&'()*+,;=]/";
-if ($is_staging_article && (mb_substr($page, 0, 1) == $prefs['wikiapproval_prefix'])) {
-	$page_name = mb_substr($page, 1);
-}
-else {
-	$page_name = $page;
-}
-
-$matches = preg_match($page_badchars, $page_name);
-if ($matches && ! $tikilib->page_exists($page) ) {
-	$smarty->assign('page_badchars_display', $page_badchars_display);
 }
 
 $plugins = $wikilib->list_plugins(true, 'editwiki');

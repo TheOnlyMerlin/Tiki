@@ -148,8 +148,13 @@ function smarty_modifier_userlink($other_user,$class='link',$idletime='not_set',
 			}
 
 			if ($prefs['feature_community_mouseover_picture'] == 'y') {
-				$img = $tikilib->get_user_avatar( $info );
-
+				if ($info['avatarLibName'] != '') {
+					$img = "<img border='0' width='45' height='45' src='" . $info['avatarLibName']. "'  alt='' />";
+				} else if ($info['avatarData'] != "") {
+					$img = "<img src='tiki-show_user_avatar.php?user=$other_user' width='45' height='45' alt='' />";
+				} else {
+					$img = '';
+				}
 				if (empty($content)) {
 					$content = $img;
 				} elseif ($img != '') {

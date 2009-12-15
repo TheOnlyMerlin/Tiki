@@ -13,8 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  * This utility library is not a complete wrapper for PHP memcache functions, 
  * and only provides a minimal set currently in use in SUMO.
  */
-class Memcachelib
-{
+class Memcachelib {
 
     var $memcache;
     var $options;
@@ -111,8 +110,9 @@ class Memcachelib
 
         // Construct a list of values corresponding to the keys passed in.
         $values_out = array();
-				foreach($keys_built as $kb) {
-            $values_out[] = (isset($values_in[$kb])) ?  $values_in[$kb] : NULL;
+        for ($i=0; $i<count($keys_built); $i++) {
+            $values_out[] = (isset($values_in[$keys_built[$i]])) ?
+                $values_in[$keys_built[$i]] : NULL;
         }
 
         return $values_out;

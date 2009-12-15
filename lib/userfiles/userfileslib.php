@@ -6,8 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class UserFilesLib extends TikiLib
-{
+class UserFilesLib extends TikiLib {
 
 	function userfiles_quota($user) {
 		if ($user == 'admin') {

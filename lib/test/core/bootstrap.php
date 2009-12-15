@@ -16,7 +16,6 @@ function __autoload( $name ) {
 	require_once( $path . '.php' );
 }
 
-$tikidomain = '';
 $api_tiki = null;
 require 'db/local.php';
 

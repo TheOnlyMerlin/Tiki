@@ -14,8 +14,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 include_once("tikihelplib.php");
 
-class Breadcrumb
-{
+class Breadcrumb {
 	var $title;
 	var $description;
 	var $url;
@@ -279,6 +278,6 @@ function breadcrumb_getDescription($crumbs, $loc) {
 
 /* private */
 function _is_assoc($var) {
-   return is_array($var) && array_keys($var)!==range(0,count($var)-1);
+   return is_array($var) && array_keys($var)!==range(0,sizeof($var)-1);
 }
 		

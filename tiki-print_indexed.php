@@ -65,10 +65,10 @@ class ObjectList
 				$renderer->render($smarty, $options);
 			}
 		}
-} // }}}
-abstract class ObjectRenderer
-// {{{
-{
+	} // }}}
+	abstract class ObjectRenderer
+	// {{{
+	{
 		protected $objectType;
 		protected $objectId;
 		function __construct($objectType, $objectId) {
@@ -86,9 +86,9 @@ abstract class ObjectRenderer
 		abstract function _render($smarty, $template);
 		abstract function getIndexValue($key);
 	} // }}}
-class ObjectRenderer_TrackerItem extends ObjectRenderer
-// {{{
-{
+	class ObjectRenderer_TrackerItem extends ObjectRenderer
+	// {{{
+	{
 		private static $trackers = array();
 		private $valid = false;
 		private $tracker;
@@ -136,11 +136,10 @@ class ObjectRenderer_TrackerItem extends ObjectRenderer
 				if ($field['isMain'] == 'y') return $field['value'];
 			}
 		}
-} // }}}
-
-class ObjectRenderer_Wiki extends ObjectRenderer
-// {{{
-{
+	} // }}}
+	class ObjectRenderer_Wiki extends ObjectRenderer
+	// {{{
+	{
 		private $info;
 		function __construct($objectType, $objectId) {
 			parent::__construct($objectType, $objectId);
@@ -161,10 +160,9 @@ class ObjectRenderer_Wiki extends ObjectRenderer
 			}
 		}
 	} // }}}
-
-class ObjectRenderer_MultilingualWiki extends ObjectRenderer
-// {{{
-{
+	class ObjectRenderer_MultilingualWiki extends ObjectRenderer
+	// {{{
+	{
 		private $renderers = array();
 		function __construct($type, $object, $options = array()) {
 			parent::__construct($type, $object, $options);
@@ -199,9 +197,8 @@ class ObjectRenderer_MultilingualWiki extends ObjectRenderer
 			}
 			return reset($this->renderers)->getIndexValue($key);
 		}
-} // }}}
-// End of classes }}}
-
+	} // }}}
+	// End of classes }}}
 	$objectList = new ObjectList;
 	$objectList->addCustomIndex('title');
 	$indexPages = array();

@@ -6,8 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class ThemeControlLib extends TikiLib
-{
+class ThemeControlLib extends TikiLib {
 
 	function tc_assign_category($categId, $theme, $option) {
 		$this->tc_remove_cat($categId);

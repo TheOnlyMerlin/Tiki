@@ -1,8 +1,7 @@
 <?php
 require_once("lib/webdav/webdavlib.php");
 
-class ScreencastLib
-{
+class ScreencastLib {
 	
 	/**
 	 * Constructor initializes the class and handler
@@ -58,8 +57,7 @@ class ScreencastLib
 		
 }
 
-class ScreencastUploadWebdav extends WebDavLib
-{
+class ScreencastUploadWebdav extends WebDavLib {
 		
 	/**
 	 * Constructor function to set class options
@@ -111,8 +109,7 @@ class ScreencastUploadWebdav extends WebDavLib
 	}		
 }
 
-class ScreencastUploadLocal extends ScreencastUploadWebdav
-{
+class ScreencastUploadLocal extends ScreencastUploadWebdav {
 	
 	/**
 	 * Deny the use of data streams for adding files

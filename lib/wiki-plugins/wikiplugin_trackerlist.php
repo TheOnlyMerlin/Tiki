@@ -559,31 +559,7 @@ function wikiplugin_trackerlist($data, $params) {
 					$evs = $exactvalue;
 					unset($exactvalue);
 					for ($i = 0, $count_ff2 = count($filterfield); $i < $count_ff2; ++$i) {
-						if (isset($evs[$i])) {
-							if (preg_match('/(not)?categories\(([0-9]+)\)/', $evs[$i], $matches)) {
-								global $categlib; include_once('lib/categories/categlib.php');
-								$categs = $categlib->list_categs($matches[2]);
-								$l = array($matches[2]);
-								foreach ($categs as $cat) {
-									$l[] = $cat['categId'];
-								}
-								if (empty($matches[1])) {
-									$exactvalue[] = $l;
-								} else {
-									$exactvalue[] = array('not'=>$l);
-								}
-							} elseif (preg_match('/(not)?preference\((.*)\)/', $evs[$i], $matches)) {
-								if (empty($matches[1])) {
-									$exactvalue[] = $prefs[$matches[2]];
-								} else {
-									$exactvalue[] = array('not'=>$prefs[$matches[2]]);
-								}							
-							} else {
-								$exactvalue[] = $evs[$i];
-							}
-						} else {
-							$exactvalue[] = '';
-						}
+						$exactvalue[] = isset($evs[$i])?$evs[$i]:'';
 					}
 				}
 			}
@@ -656,7 +632,7 @@ function wikiplugin_trackerlist($data, $params) {
 				$passfields["{$allfields["data"][$i]['fieldId']}"] = $allfields["data"][$i];
 				if (!in_array($allfields["data"][$i]['fieldId'], $listfields))
 					$allfields["data"][$i]['isPublic'] == 'n'; //don't show it
-				$check['ix'] = count($passfields) -1;
+				$check['ix'] = sizeof($passfields) -1;
 			}
 			if ($allfields["data"][$i]['name'] == 'page' && empty($filterfield) && empty($displayList)) {
 				$filterfield = $allfields["data"][$i]['fieldId'];

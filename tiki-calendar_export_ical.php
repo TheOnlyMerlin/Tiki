@@ -60,13 +60,9 @@ foreach (array_keys($calendars["data"]) as $i) {
 $smarty->assign('calendars',$calendars["data"]);
 
 // export calendar //
-if ( ((is_array($calendarIds) && (count($calendarIds) > 0)) or isset($_REQUEST["calendarItem"]) ) && $_REQUEST["export"]=='y') {
+if (is_array($calendarIds) && (count($calendarIds) > 0) && $_REQUEST["export"]=='y') {
 	// get calendar events 
-	if ( !isset($_REQUEST["calendarItem"]) ) {
-		$events=$calendarlib->list_items($calendarIds, $user, $startTime, $stopTime, -1, $maxRecords, $sort_mode='start_asc', $find='');
-	} else {
-		$events[][]['result'] = $calendarlib->get_item($_REQUEST["calendarItem"]);
-	}
+	$events=$calendarlib->list_items($calendarIds, $user, $startTime, $stopTime, -1, $maxRecords, $sort_mode='start_asc', $find='');
 
 	// create ical array//
 	$iCal = new File_iCal();
@@ -109,7 +105,7 @@ if ( ((is_array($calendarIds) && (count($calendarIds) > 0)) or isset($_REQUEST["
 	$re_encode = stripos($_SERVER['HTTP_USER_AGENT'], 'windows');	// only re-encode to ISO-8859-15 if client on Windows
 	if (function_exists('recode') && $re_encode !== false) {
 		print(recode('utf-8..iso8859-15',$calendar_str));
-	} elseif (function_exists('iconv') && $re_encode !== false) {
+	} else if (function_exists('iconv') && $re_encode !== false) {
 		print(iconv("UTF-8", "ISO-8859-15", $calendar_str));
 	} else {
 		print($calendar_str);	// UTF-8 is good for other platforms

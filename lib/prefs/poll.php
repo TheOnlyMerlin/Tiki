@@ -28,10 +28,5 @@ function prefs_poll_list() {
 			'name' => tra('Show objects'),
 			'type' => 'flag',
 		),
-		'poll_multiple_per_object' => array(
-			'name' => tra('Multiple polls per object'),
-			'description' => tra('When used with the rating features, allow multiple polls to be attached to a single object.'),
-			'type' => 'flag',
-		),
 	);
 }

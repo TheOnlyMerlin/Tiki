@@ -6,8 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class cssLib extends TikiLib
-{
+class cssLib extends TikiLib {
 
 	function list_css($path) {
 		$back = array();

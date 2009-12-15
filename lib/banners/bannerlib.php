@@ -6,8 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class BannerLib extends TikiLib
-{
+class BannerLib extends TikiLib {
 
 	function select_banner_id($zone) {
 		$map = array(0=>'sun', 1=>'mon', 2=>'tue', 3=>'wed', 4=>'thu', 5=>'fri', 6=>'sat');
@@ -290,6 +289,14 @@ class BannerLib extends TikiLib
 		$query = "delete from `tiki_zones` where `zone`=?";
 
 		$result = $this->query($query,array($zone));
+
+/* this code following if (0) is never executed, right?
+		if (0) {
+			$query = "delete from `tiki_banner_zones` where `zoneName`=?";
+
+			$result = $this->query($query,array($zone));
+		}
+*/
 
 		return true;
 	}

@@ -10,9 +10,6 @@ class  AcceptanceTests_ListPagesTest extends TikiSeleniumTestCase
 		$this->fail("don't forget!!");
 	}
 	
-   /**
-    * @group acceptance
-    */ 
     public function testListPagesTableIsWellFormed() {
         $this->openTikiPage('tiki-listpages.php');
         $this->_assertListPagesTableIsWellFormed();
@@ -24,9 +21,6 @@ class  AcceptanceTests_ListPagesTest extends TikiSeleniumTestCase
     	$this->assertEquals("Vers.", $this->getTable("//div[@id='tiki-listpages-content']/form/table.0.5"));
     }    
     
-   /**
-    * @group acceptance
-    */ 
     public function testPageSortingWorks()
     {
     	$this->open("/tiki-trunk/tiki-listpages.php");
@@ -38,9 +32,6 @@ class  AcceptanceTests_ListPagesTest extends TikiSeleniumTestCase
     	$this->assertEquals("EnglishTestPage", $this->getTable("//div[@id='tiki-listpages-content']/form/table.2.1", "Pages were not sorted out in descending order"));
   	}
     
-   /**
-    * @group acceptance
-    */ 
     public function testDeleteAPageFromTheList() {
         $this->openTikiPage('tiki-listpages.php');
         $this->logInIfNecessaryAs('admin');
@@ -51,9 +42,6 @@ class  AcceptanceTests_ListPagesTest extends TikiSeleniumTestCase
     	$this->_assertListedPagesWere(array(0 => "HomePage"), "Listed pages");
     }
     
-   /**
-    * @group acceptance
-    */ 
     public function testLinksInListPagesWork() {
 		$this->openTikiPage('tiki-listpages.php');
 		$this->logInIfNecessaryAs('admin');

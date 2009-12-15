@@ -12,8 +12,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 	exit;
 }
 
-class TikiRegistrationFields extends TikiLib
-{
+class TikiRegistrationFields extends TikiLib {
     function TikiRegistrationFields() {
     }
 

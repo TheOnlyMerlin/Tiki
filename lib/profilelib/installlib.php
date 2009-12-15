@@ -1898,7 +1898,6 @@ class Tiki_Profile_InstallHandler_Template extends Tiki_Profile_InstallHandler /
 
 		$defaults = array(
 			'sections' => array( 'wiki page' ),
-			'type' => 'static',
 		);
 
 		$data = array_merge(
@@ -1933,7 +1932,7 @@ class Tiki_Profile_InstallHandler_Template extends Tiki_Profile_InstallHandler /
 
 		$this->replaceReferences( $data );
 
-		$templateId = $templateslib->replace_template( null, $data['name'], $data['content'], $data['type'] );
+		$templateId = $templateslib->replace_template( null, $data['name'], $data['content'] );
 		foreach( $data['sections'] as $section ) {
 			$templateslib->add_template_to_section( $templateId, $section );
 		}

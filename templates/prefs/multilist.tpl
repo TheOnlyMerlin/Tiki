@@ -6,9 +6,6 @@
 		{/foreach}
 	</select>
 	{include file=prefs/shared-flags.tpl}
-	{if $p.shorthint}
-		<em>{$p.shorthint|escape}</em>
-	{/if}
 	{if $p.hint}
 		<br/><em>{$p.hint|escape}</em>
 	{/if}

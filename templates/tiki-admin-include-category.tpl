@@ -17,6 +17,8 @@
 		{preference name=feature_categorypath}
 		<div class="adminoptionboxchild" id="feature_categorypath_childcontainer">
 			{preference name=categorypath_excluded}
+			<br />
+			<em>{tr}Separate category IDs with a comma (,){/tr}.</em>
 		</div>
 		{preference name=feature_categoryobjects}
 		{preference name=feature_category_use_phplayers}
@@ -26,6 +28,8 @@
 	<fieldset>
 		<legend>{tr}Permissions{/tr}</legend>
 		{preference name=feature_search_show_forbidden_cat}
+		<br />
+		<em>{tr}Will improve performance, but may show forbidden results{/tr}.</em>
 		{preference name=feature_category_reinforce}
 	</fieldset>
 

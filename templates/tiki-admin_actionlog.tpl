@@ -197,65 +197,65 @@
 				</tr>
 				
 				{cycle values="even,odd" print=false}
-				{foreach from=$actionlogs item=actionlog}
+				{section name=ix loop=$actionlogs}
 					<tr>
 						<td class="{cycle advance=false}">
-							{if $actionlog.user}{$actionlog.user}{else}{tr}Anonymous{/tr}{/if}
+							{if $actionlogs[ix].user}{$actionlogs[ix].user}{else}{tr}Anonymous{/tr}{/if}
 						</td>
 						<td class="{cycle advance=false}">
-							{$actionlog.lastModif|tiki_short_datetime}
+							{$actionlogs[ix].lastModif|tiki_short_datetime}
 						</td>
 						<td class="{cycle advance=false}">
-							{tr}{$actionlog.action}{/tr}
+							{tr}{$actionlogs[ix].action}{/tr}
 						</td>
 						<td class="{cycle advance=false}">
-							{tr}{$actionlog.objectType}{/tr}
+							{tr}{$actionlogs[ix].objectType}{/tr}
 						</td>
 						<td class="{cycle advance=false}">
-							{if $actionlog.link}
-								<a href="{$actionlog.link}" target="_blank" title="{tr}View{/tr}">{$actionlog.object|escape}</a>
+							{if $actionlogs[ix].link}
+								<a href="{$actionlogs[ix].link}" target="_blank" title="{tr}View{/tr}">{$actionlogs[ix].object|escape}</a>
 							{else}
-								{$actionlog.object|escape}
+								{$actionlogs[ix].object|escape}
 							{/if}
 						</td>
 						{if !$reportCateg and $showCateg eq 'y'}
 							<td class="{cycle advance=false}">
-								{assign var=ic value=$actionlog.categId}{$categNames[$ic]|escape}
+								{assign var=ic value=$actionlogs[ix].categId}{$categNames[$ic]|escape}
 							</td>
 						{/if}
-						<td class="{cycle advance=false}{if $actionlog.add} diffadded{/if}">
-							{if $actionlog.add or $actionlog.add eq '0'}{$actionlog.add}{else}&nbsp;{/if}
+						<td class="{cycle advance=false}{if $actionlogs[ix].add} diffadded{/if}">
+							{if $actionlogs[ix].add or $actionlogs[ix].add eq '0'}{$actionlogs[ix].add}{else}&nbsp;{/if}
 						</td>
-						<td class="{cycle advance=false}{if $actionlog.del} diffdeleted{/if}">
-							{if $actionlog.del or $actionlog.del eq '0'}{$actionlog.del}{else}&nbsp;{/if}
+						<td class="{cycle advance=false}{if $actionlogs[ix].del} diffdeleted{/if}">
+							{if $actionlogs[ix].del or $actionlogs[ix].del eq '0'}{$actionlogs[ix].del}{else}&nbsp;{/if}
 						</td>
 						{if $prefs.feature_contribution eq 'y'}
 							<td class="{cycle advance=false}">
-								{foreach name=contribution from=$actionlog.contributions item=contribution}
-									{if !$smarty.foreach.contribution.first}, {/if}
-									{$contribution.name}
-								{/foreach}
+								{section name=iy loop=$actionlogs[ix].contributions}
+									{if !$smarty.section.iy.first}, {/if}
+									{$actionlogs[ix].contributions[iy].name}
+								{/section}
 							</td>
 							{if $prefs.feature_contributor_wiki eq 'y'}
 								<td class="{cycle advance=false}">
-									{foreach name=contributor from=$actionlog.contributors item=contributor}
-										{if !$smarty.foreach.contributor.first}, {/if}
-										{$contributor.login}
-									{/foreach}
+									{section name=iy loop=$actionlogs[ix].contributors}
+										{if !$smarty.section.iy.first}, {/if}
+										{$actionlogs[ix].contributors[iy].login}
+									{/section}
 								</td>
 							{/if}
 							{if $tiki_p_admin eq 'y' and ($prefs.feature_contribution eq 'y' or $prefs.feature_categories eq 'y')}
 								<td class="{cycle advance=false}">
-									{if $actionlog.actionId}
-										<a class="link" href="tiki-admin_actionlog.php?actionId={$actionlog.actionId}&amp;startDate={$startDate}&amp;endDate={$endDate}#action" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
-										{self_link _class='link' remove='y' actionId=$actionlog.actionId _icon='cross' _title="{tr}Remove{/tr}"}{/self_link}
+									{if $actionlogs[ix].actionId}
+										<a class="link" href="tiki-admin_actionlog.php?actionId={$actionlogs[ix].actionId}&amp;startDate={$startDate}&amp;endDate={$endDate}#action" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
+										{self_link _class='link' remove='y' actionId=$actionlogs[ix].actionId _icon='cross' _title="{tr}Remove{/tr}"}{/self_link}
 									{/if}
 								</td>
 							{/if}
 						{/if}
 						<!-- {cycle} -->
 					</tr>
-				{/foreach}
+				{/section}
 			</table>
 		{/if}
 
@@ -317,12 +317,12 @@
 
 		{if $showLogin eq 'y' and $logTimes|@count ne 0}
 			<table class="smallnormal">
-				<caption>{tr}Log in{/tr}</caption>
+				<caption>{tr}Login{/tr}</caption>
 				<tr>
 					{if $selectedUsers|@count gt 1}<th>{tr}User{/tr}</th>{/if}
 					<th>{tr}connection time{/tr}</th>
 					<th>{tr}connection seconds{/tr}</th>
-					<th>{tr}Log in{/tr}</th>
+					<th>{tr}Login{/tr}</th>
 				</tr>
 				{foreach key=auser item=time from=$logTimes}
 					<tr>
@@ -353,7 +353,7 @@
 				{foreach key=categId item=vol from=$volCateg}
 					<tr>
 						<td class="{cycle advance=false}">{$vol.category}</td>
-						{foreach item=type from=$typeVol} 
+						{foreach item=type from=$typeVol} {* math equation="round(a/b)" a=$vol[$type].del b=1024 *}
 							<td class="{cycle advance=false}{if $vol[$type].add} diffadded{/if}">{if $vol[$type].add}{$vol[$type].add}{else}0{/if}</td>
 							<td class="{cycle advance=false}{if $vol[$type].del} diffdeleted{/if}">{if $vol[$type].del}{$vol[$type].del}{else}0{/if}</td>
 							<td class="{cycle advance=false}{if $vol[$type].dif > 0} diffadded{elseif $vol[$type].dif < 0} diffdeleted{/if}">{if $vol[$type].dif}{$vol[$type].dif}{else}0{/if}</td>
@@ -380,7 +380,7 @@
 					<tr>
 						<td class="{cycle advance=false}">{$vol.category}</td>
 						<td class="{cycle advance=false}">{$vol.user}</td>
-						{foreach item=type from=$typeVol} 
+						{foreach item=type from=$typeVol} {* math equation="round(a/b)" a=$vol[$type].del b=1024 *}
 							<td class="{cycle advance=false}{if $vol[$type].add} diffadded{/if}">{if $vol[$type].add}{$vol[$type].add}{else}0{/if}</td>
 							<td class="{cycle advance=false}{if $vol[$type].del} diffdeleted{/if}">{if $vol[$type].del}{$vol[$type].del}{else}0{/if}</td>
 							<td class="{cycle advance=false}{if $vol[$type].dif > 0} diffadded{elseif $vol[$type].dif < 0} diffdeleted{/if}">{if $vol[$type].dif}{$vol[$type].dif}{else}0{/if}</td>

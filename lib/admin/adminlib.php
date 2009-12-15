@@ -6,8 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class AdminLib extends TikiLib
-{
+class AdminLib extends TikiLib {
 
 	function list_dsn($offset, $maxRecords, $sort_mode, $find) {
 		
@@ -52,6 +51,13 @@ class AdminLib extends TikiLib
 			$result = $this->query($query,$bindvars);
 		}
 
+		// And now replace the perm if not created
+		$perm_name = 'tiki_p_dsn_' . $name;
+		$query = "delete from `users_permissions` where `permName`=?";
+		$this->query($query,array($perm_name));
+		$query = "insert into `users_permissions`(`permName`,`permDesc`,`type`,`level`) values
+    			(?,?,?,?)";
+		$this->query($query,array($perm_name,'Can use dsn $dsn','dsn','editor'));
 		return true;
 	}
 

@@ -124,6 +124,8 @@ if ( $prefs['session_silent'] != 'y' or isset( $_COOKIE[session_name()] ) ) {
 if ($prefs['feature_fullscreen'] == 'y') require_once ('lib/setup/fullscreen.php');
 // Smarty needs session since 2.6.25
 require_once ("setup_smarty.php");
+// Check if phpCAS mods is installed
+$phpcas_enabled = is_file('lib/phpcas/source/CAS/CAS.php') ? 'y' : 'n';
 // Retrieve all preferences
 require_once ('lib/setup/prefs.php');
 // Handle Smarty Security
@@ -340,16 +342,6 @@ if ($prefs['auth_method'] == 'shib' and isset($_SERVER['REMOTE_USER'])) {
 	if ($userlib->validate_user($_SERVER['REMOTE_USER'], "", "", "")) {
 		$_SESSION["$user_cookie_site"] = $_SERVER['REMOTE_USER'];
 	}
-}
-
-// Check for CAS revalidation
-if ( !empty($_SESSION[$user_cookie_site]) and $_SESSION[$user_cookie_site] != 'admin' and $prefs['auth_method'] == 'cas' and basename($_SERVER["SCRIPT_NAME"]) != 'tiki-login.php' and basename($_SERVER["SCRIPT_NAME"]) != 'tiki-logout.php') {
-		if ( $prefs['cas_authentication_timeout'] and time()-$_SESSION['cas_validation_time'] > $prefs['cas_authentication_timeout'] ) {
-			$_SESSION['cas_redirect'] = $_SERVER['REQUEST_URI'];
-			header('Location: tiki-login.php?cas=y');
-			unset($_SESSION['phpCAS']['user']);
-		 	die();	
-		}
 }
 // if the username is already saved in the session, pull it from there
 if (isset($_SESSION["$user_cookie_site"])) {

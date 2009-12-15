@@ -325,8 +325,7 @@ class SemanticLib
 		return $aliases;
 	} // }}}
 	
-	function onlyKeepAliasesFromPageInLanguage($language, $aliases)
-	{
+	function onlyKeepAliasesFromPageInLanguage($language, $aliases) {
 		global $multilinguallib;
 		if (!$language) {
 			return $aliases;
@@ -337,6 +336,7 @@ class SemanticLib
 			$aliasLang = $multilinguallib->getLangOfPage($aliasInfo['fromPage']);
 			if ($aliasLang === $language) {
 				$aliasesInCorrectLanguage[] = $aliasInfo;
+			} else {
 			}			
 		}
 //		echo "<pre>-- onlyKeepAliasesFromPageInLanguage: exiting</pre>\n";

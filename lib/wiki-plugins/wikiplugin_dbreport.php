@@ -10,8 +10,7 @@ $wikiplugin_dbreport_fields;
 $wikiplugin_dbreport_fields_allowed;
 $wikiplugin_dbreport_record;
 
-class WikipluginDBReportToken
-{
+class WikipluginDBReportToken {
 	var $type; // key=keyword, fld=field, str=string, var=variable, sty=style, eof=end of file
 	var $content;
 	var $start;
@@ -35,8 +34,7 @@ class WikipluginDBReportToken
 	} 
 }
 
-class WikipluginDBReportField
-{
+class WikipluginDBReportField {
 	var $name;
 	var $variable;
 	var $break;
@@ -86,8 +84,7 @@ class WikipluginDBReportField
 	}
 }
 
-class WikipluginDBReportString
-{
+class WikipluginDBReportString {
 	var $literal;
 	function WikipluginDBReportString($text) {
 		$this->literal = stripcslashes($text);
@@ -106,8 +103,7 @@ class WikipluginDBReportString
 	}
 }
 
-class WikipluginDBReportContent
-{
+class WikipluginDBReportContent {
 	var $elements;  
 	function parse_text(&$text) {
 		$parse_state = 0;
@@ -225,8 +221,7 @@ class WikipluginDBReportContent
 	}
 }
 
-class WikipluginDBReportText extends WikipluginDBReportContent
-{
+class WikipluginDBReportText extends WikipluginDBReportContent {
 	var $link;
 	var $style;
 	function code() {
@@ -247,8 +242,7 @@ class WikipluginDBReportText extends WikipluginDBReportContent
 	}
 }
 
-class WikipluginDBReportStyle
-{
+class WikipluginDBReportStyle {
 	var $tag;
 	var $class;
 	var $style;
@@ -317,8 +311,7 @@ class WikipluginDBReportStyle
 	}
 }
 
-class WikipluginDBReportLink
-{
+class WikipluginDBReportLink {
 	var $style;
 	var $contents;
 	function code() {
@@ -358,8 +351,7 @@ class WikipluginDBReportLink
 	}
 }
 
-class WikipluginDBReportCell
-{
+class WikipluginDBReportCell {
 	var $link;
 	var $style;
 	var $colspan;
@@ -405,8 +397,7 @@ class WikipluginDBReportCell
 	}
 }
 
-class WikipluginDBReportLine
-{
+class WikipluginDBReportLine {
 	var $link;
 	var $styles;
 	var $cells;
@@ -433,8 +424,7 @@ class WikipluginDBReportLine
 	}
 }
 
-class WikipluginDBReportTable
-{
+class WikipluginDBReportTable {
 	var $style;
 	var $headers;
 	var $rows;
@@ -497,8 +487,7 @@ class WikipluginDBReportTable
 	}
 }
 
-class WikipluginDBReportGroup
-{
+class WikipluginDBReportGroup {
 	var $link;
 	var $style;
 	var $fields;
@@ -552,8 +541,7 @@ class WikipluginDBReportGroup
 	}
 }
 
-class WikipluginDBReportParameter extends WikipluginDBReportContent
-{
+class WikipluginDBReportParameter extends WikipluginDBReportContent {
 	var $name;
 	function code($indent='') {
 		$result = $indent.'PARAM';
@@ -565,8 +553,7 @@ class WikipluginDBReportParameter extends WikipluginDBReportContent
 	}
 }
 
-class WikipluginDBReportFail
-{
+class WikipluginDBReportFail {
 	var $link;
 	var $style;
 	var $contents;
@@ -588,8 +575,7 @@ class WikipluginDBReportFail
 	}
 }
 
-class WikipluginDBReport
-{
+class WikipluginDBReport {
 	var $sql;
 	var $params;
 	var $groups;

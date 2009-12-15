@@ -6,8 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class bablotron extends TikiLib
-{
+class bablotron extends TikiLib {
 	var $words;
 
 	var $lan;

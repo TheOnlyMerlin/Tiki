@@ -8,8 +8,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 global $usermoduleslib; include_once('lib/usermodules/usermoduleslib.php');
 
-class ModLib extends TikiLib
-{
+class ModLib extends TikiLib {
 
 	function replace_user_module($name, $title, $data, $parse=NULL) {
 		if ((!empty($name)) && (!empty($data))) {

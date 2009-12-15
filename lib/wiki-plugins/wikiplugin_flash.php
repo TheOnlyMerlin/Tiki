@@ -19,14 +19,9 @@ function wikiplugin_flash_info() {
 		'icon' => 'pics/icons/page_white_flash.png',
 		'params' => array(
 			'movie' => array(
-				'required' => false,
+				'required' => true,
 				'name' => tra('Movie URL'),
 				'description' => tra('Complete URL to the movie to include. e.g. files/test.swf'),
-			),
-			'fileId' => array(
-				'required' => false,
-				'name' => tra('fileId'),
-				'description' => tra('Id of a file from a podcast sgllery - will work only with podcast gallery'),
 			),
 			'width' => array(
 				'required' => false,
@@ -48,16 +43,7 @@ function wikiplugin_flash_info() {
 }
 
 function wikiplugin_flash($data, $params) {
-	global $tikilib, $prefs, $userlib, $user;
-	if (isset($params['fileId']) && !isset($params['movie'])) {
-		global $filegallib; include_once ('lib/filegals/filegallib.php');
-		$file_info = $filegallib->get_file_info($params['fileId']);
-		if (!$userlib->user_has_perm_on_object($user, $file_info['galleryId'], 'file gallery', 'tiki_p_view_file_gallery')) {
-			return tra('Permission denied');
-		}
-		$params['movie'] = $prefs['fgal_podcast_dir'].$file_info['path'];
-	}
-		
+	global $tikilib;
 	$code = $tikilib->embed_flash($params);
 
 	if ( $code === false ) {

@@ -11,8 +11,7 @@ if( !defined( 'PLUGINS_DIR' ) ) {
 }
 
 
-class WikiLib extends TikiLib
-{
+class WikiLib extends TikiLib {
 
     //Special parsing for multipage articles
     function get_number_of_pages($data) {
@@ -75,13 +74,11 @@ class WikiLib extends TikiLib
 			return $ret;
 		}
 		if ($versions) {
-			$ustring = ',`version`';
-			$vstring = '`version`,`user`';
+			$vstring = ',`version`';
 		} else {
-			$ustring = '';
-			$vstring = '`user`';
+			$vstring = '';
 		}
-		$query = "select DISTINCT `user`$ustring from `tiki_history` where `pageName`=? order by $vstring desc";
+		$query = "select DISTINCT `user`$vstring from `tiki_history` where `pageName`=? order by `version` desc";
 		$result = $this->query($query,array($page));
 		$cache_page_contributors = array();
 		$cache_page_contributors['contributors'] = array();
@@ -271,12 +268,6 @@ class WikiLib extends TikiLib
 			$_SESSION["breadCrumb"][$pos] = $newName;
 		}
 
-		// polls
-		if ($prefs['feature_polls'] == 'y') {
-			$query = "update `tiki_polls` tp inner join `tiki_poll_objects` tpo on tp.`pollId` = tpo.`pollId` inner join `tiki_objects` tob on tpo.`catObjectId` = tob.`objectId` set tp.`title`=? where tp.`title`=? and tob.`type` = 'wiki page'";
-			$this->query($query, array( $newName, $oldName ) );
-		}
-					 	  	 
 		// Move custom permissions
 		$oldId = md5('wiki page' . strtolower($oldName));
 		$newId = md5('wiki page' . strtolower($newName));
@@ -318,12 +309,12 @@ class WikiLib extends TikiLib
 				$smarty->assign('mail_date', $this->now);
 				$smarty->assign('mail_user', $user);
 				$foo = parse_url($_SERVER["REQUEST_URI"]);
-				$machine = $tikilib->httpPrefix( true ). $foo["path"];
+				$machine = $tikilib->httpPrefix(). $foo["path"];
 				$smarty->assign('mail_machine', $machine);
 				$parts = explode('/', $foo['path']);
 				if (count($parts) > 1)
 					unset ($parts[count($parts) - 1]);
-				$smarty->assign('mail_machine_raw', $tikilib->httpPrefix( true ). implode('/', $parts));
+				$smarty->assign('mail_machine_raw', $tikilib->httpPrefix(). implode('/', $parts));
 				sendEmailNotification($nots, "watch", "user_watch_wiki_page_renamed_subject.tpl", $_SERVER["SERVER_NAME"], "user_watch_wiki_page_renamed.tpl");
 			}
 		}
@@ -377,11 +368,7 @@ class WikiLib extends TikiLib
 			} else {
 				$info = $this->get_page_info($page);
 				if (!empty($info)) {
-					$parse_options = array(
-						'is_html' => $info['is_html'],
-						'language' => $info['lang'],
-					);
-					$content = $this->parse_data($info['data'], $parse_options );
+					$content = $this->parse_data($info['data'],  array('is_html' => $info['is_html']));
 					if (!empty($info['wiki_cache'])) {
 						$this->update_cache($page, $content);
 					}
@@ -390,11 +377,7 @@ class WikiLib extends TikiLib
 		} else {
 			$info = $this->get_page_info($page);
 			if (!empty($info)) {
-				$parse_options = array(
-					'is_html' => $info['is_html'],
-					'language' => $info['lang'],
-				);
-				$content = $this->parse_data($info['data'], $parse_options );
+				$content = $this->parse_data($info['data'], array('is_html' => $info['is_html']));
 			}
 		}
 		return $content;
@@ -763,7 +746,7 @@ class WikiLib extends TikiLib
 		}	
 		if ($with_help) {
 			global $cachelib, $headerlib;
-			if (empty($_REQUEST['xjxfun'])) { $headerlib->add_jsfile( 'tiki-jsplugin.php', 'dynamic' ); }
+			if (empty($_REQUEST['xjxfun'])) { $headerlib->add_jsfile( 'tiki-jsplugin.php' ); }
 			$cachetag = 'plugindesc' . $this->get_language() . $area_name;
 			if (!$cachelib->isCached( $cachetag ) ) {
 				$list = $this->plugin_get_list();

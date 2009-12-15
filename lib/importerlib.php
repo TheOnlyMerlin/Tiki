@@ -22,8 +22,7 @@ require_once ('commentslib.php');
  * @uses Comments
  * @license LGPL. Please, see licence.txt for mode details
  */
-class Importer extends Comments
-{
+class Importer extends Comments {
 	// The types of forums are hard-coded into the library and displayed
 	// in the template. As support for more imports grows, add the type to
 	// the below two arrays, in addition to writing the functions to 
@@ -219,7 +218,7 @@ class Importer extends Comments
 					// represents an SQL record or row.
 					$records = split('\),\(', $c);
 					if (count($records) < 1) { $records[0] = $c; }
-					for ($count = 0, $count_records = count($records); $count < $count_records; $count++) {
+					for ($count = 0; $count < count($records); $count++) {
 						// Each proper record should begin with a numeric value
 						// (at least as far as the tables we will be using).
 						// Check the following record from the current one to see
@@ -249,7 +248,7 @@ class Importer extends Comments
 								// Do nothing... NEXT!
 								continue;
 							} else {
-								for ($z = 0, $zcount_fields = count($fields); $z < $zcount_fields; $z++) {
+								for ($z = 0; $z < count($fields); $z++) {
 									$rec[$headings[$z]] = $fields[$z];
 								}
 								array_push($thash, $rec);

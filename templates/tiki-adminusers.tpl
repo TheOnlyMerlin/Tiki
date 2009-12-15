@@ -454,7 +454,7 @@ $jq("#genepass").keyup(function () {
 					</tr>
 				{/if}
 				<tr class="formcolor">
-					<td>{tr}Last Log in:{/tr}</td>
+					<td>&nbsp;</td>
 					<td>
 						{if $userinfo.userId}
 							<input type="hidden" name="user" value="{$userinfo.userId|escape}" />

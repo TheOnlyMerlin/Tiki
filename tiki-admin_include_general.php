@@ -3,8 +3,9 @@
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// This script may only be included - so its better to die if called directly.
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_include_general.php,v 1.59.2.7 2008-03-08 21:12:22 sylvieg Exp $
+//this script may only be included - so its better to die if called directly.
+//smarty is not there - we need setup
 require_once ('tiki-setup.php');
 $access->check_script($_SERVER["SCRIPT_NAME"], basename(__FILE__));
 if (isset($_REQUEST["new_prefs"])) {
@@ -20,6 +21,7 @@ if (isset($_REQUEST["new_prefs"])) {
 	}
 	check_ticket('admin-inc-general');
 	$pref_toggles = array(
+		"anonCanEdit",
 		"useUrlIndex",
 		"permission_denied_login_box",
 		"feature_wiki_1like_redirection",
@@ -29,14 +31,31 @@ if (isset($_REQUEST["new_prefs"])) {
 	}
 	$pref_simple_values = array(
 		"urlIndex",
+		"ip_can_be_checked",
+		"permission_denied_url",
+		"highlight_group",
 		'zend_mail_handler',
+		'zend_mail_smtp_server',
+		'zend_mail_smtp_auth',
+		'zend_mail_smtp_user',
+		'zend_mail_smtp_pass',
+		'zend_mail_smtp_port',
+		'zend_mail_smtp_security',
+		'urlOnUsername',
 	);
 	foreach($pref_simple_values as $svitem) {
 		simple_set_value($svitem);
 	}
 	$pref_byref_values = array(
+		"display_field_order",
+		"display_timezone",
 		"server_timezone",
+		"long_date_format",
+		"long_time_format",
+		"short_date_format",
+		"short_time_format",
 		"tikiIndex",
+		"users_prefs_display_timezone"
 	);
 	foreach($pref_byref_values as $britem) {
 		byref_set_value($britem);
@@ -106,15 +125,6 @@ if ($prefs['home_file_gallery']) {
 	$smarty->assign("home_fil_name", substr($hgalinfo["name"], 0, 20));
 } else {
 	$smarty->assign("home_fil_name", '');
-}
-if (isset($_REQUEST['testMail'])) {
-	include_once('lib/webmail/tikimaillib.php');
-	$mail = new TikiMail();
-	$mail->setSubject(tra('Test'));
-	$mail->setText(tra('Test'));
-	if (!$mail->send(array($_REQUEST['testMail']))) {
-		$smarty->assign('error_msg', tra('Unable to send mail'));
-	}
 }
 $listgroups = $userlib->get_groups(0, -1, 'groupName_desc', '', '', 'n');
 $smarty->assign("listgroups", $listgroups['data']);

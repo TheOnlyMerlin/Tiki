@@ -191,16 +191,6 @@ if ( isset($_REQUEST['comments_objectId']) && $_REQUEST['comments_objectId'] == 
 				if (!empty($feedbacks)) {
 					$_SESSION['feedbacks'] = $feedbacks;
 				}
-
-				//Watches
-				if ( isset($forum_mode) && $forum_mode == 'y' && $prefs['feature_user_watches'] == 'y') {
-					if ( isset($_REQUEST['watch']) && $_REQUEST['watch'] == 'y') {
-						$tikilib->add_user_watch($user, 'forum_post_thread', $_REQUEST['comments_parentId'], 'forum topic', $forum_info['name'] . ':' . $thread_info['title'], "tiki-view_forum_thread.php?forumId=" . $_REQUEST['forumId'] . "&amp;comments_parentId=" . $_REQUEST['comments_parentId']);
-					} else {
-						$tikilib->remove_user_watch($user, 'forum_post_thread', $_REQUEST['comments_parentId'], 'forum topic');
-					}
-				}
-
 				header('location: ' . $url);
 				die;
 		}
@@ -235,16 +225,16 @@ if ( isset($_REQUEST['comments_objectId']) && $_REQUEST['comments_objectId'] == 
 						$smarty->assign('mail_comment', $_REQUEST["comments_data"]);
 						$smarty->assign('mail_hash', $not['hash']);
 						$foo = parse_url($_SERVER["REQUEST_URI"]);
-						$machine = $tikilib->httpPrefix( true ). dirname( $foo["path"] );
+						$machine = $tikilib->httpPrefix(). dirname( $foo["path"] );
 						$smarty->assign('mail_machine', $machine);
 						$parts = explode('/', $foo['path']);
 
 						if (count($parts) > 1)
 							unset ($parts[count($parts) - 1]);
 
-						$smarty->assign('mail_machine_raw', $tikilib->httpPrefix( true ). implode('/', $parts));
+						$smarty->assign('mail_machine_raw', $tikilib->httpPrefix(). implode('/', $parts));
 						// TODO: mail_machine_site may be required for some sef url with rewrite to sub-directory. To refine. (nkoth)  
-						$smarty->assign('mail_machine_site', $tikilib->httpPrefix( true ));
+						$smarty->assign('mail_machine_site', $tikilib->httpPrefix());
 						$mail = new TikiMail();
 					}
 					global $prefs;// TODO: optimise by grouping user by language

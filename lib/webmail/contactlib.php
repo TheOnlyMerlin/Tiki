@@ -12,8 +12,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class ContactLib extends TikiLib
-{
+class ContactLib extends TikiLib {
 
 	// Contacts
 	function list_contacts($user, $offset=-1, $maxRecords=-1,
@@ -76,7 +75,7 @@ class ContactLib extends TikiLib
 	}
 
 	function parse_nicknames($dirs) {
-		for ($i = 0, $icount_dirs = count($dirs); $i < $icount_dirs; $i++) {
+		for ($i = 0; $i < count($dirs); $i++) {
 			if (!strstr($dirs[$i], '@') && !empty($dirs[$i])) {
 				$query = "select `email` from `tiki_webmail_contacts` where `nickname`=?";
 				$result = $this->query($query, array($dirs[$i]));

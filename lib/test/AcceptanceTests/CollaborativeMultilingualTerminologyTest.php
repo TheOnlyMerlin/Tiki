@@ -30,10 +30,7 @@ class  AcceptanceTests_CollaborativeMultilingualTerminologyTest extends TikiSele
 	public function ___testRememberToReactivateAllTestsInCollaborativeMultilingualTerminologyTest() {
     	$this->fail("Don't forget to do this");
     }
-       
-   /**
-    * @group acceptance
-    */ 
+        
    public function testNevermind() {
     	$this->fail("Nevermind");
    }

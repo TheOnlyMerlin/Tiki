@@ -31,16 +31,10 @@ function module_freetags_current( $mod_reference, $module_params ) {
 				exit;
 			}
 			$smarty->assign('addFreetags', "y");
-			$canTag = true;
-		} else {
-			$canTag = false;
 		}
-
-		$smarty->assign('tpl_module_title', tra('Freetags'));
 
 		$currenttags = $freetaglib->get_tags_on_object( $page, 'wiki page' );
-		if( count( $currenttags['data'] ) || $canTag ) {
-			$smarty->assign('modFreetagsCurrent', $currenttags);
-		}
+		$smarty->assign('modFreetagsCurrent', $currenttags);
+		$smarty->assign('tpl_module_title', tra('Freetags'));
 	}
 }
