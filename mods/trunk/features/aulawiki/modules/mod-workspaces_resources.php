@@ -23,9 +23,16 @@ global $feature_phplayers;
 $workspacesLib = new WorkspaceLib($dbTiki);
 $resourcesLib = new WorkspaceResourcesLib($dbTiki);
 $wsresourcestypes=$resourcesLib->ws_object_types;
+$wsTypesLib = new WorkspaceTypesLib($dbTiki);
 if (isset ($_REQUEST["selectCategoryId"])) {
-	if (!is_array($workspace=$workspacesLib->get_workspace_by_catid($_REQUEST["selectCategoryId"]))) # its a ws, not a category
-		{$workspace = $workspacesLib->get_current_workspace();}
+	$workspace=$workspacesLib->get_workspace_by_catid($_REQUEST["selectCategoryId"]);
+	if (is_array($workspace)) {  # its a ws, not a category 
+		$wstype = $wsTypesLib->get_workspace_type_by_id($workspace["type"]);
+		$workspace["type"]=$wstype;
+	}	
+	else	{
+		$workspace = $workspacesLib->get_current_workspace();
+	}
 	}
 else	{
 	$workspace = $workspacesLib->get_current_workspace();
@@ -199,8 +206,8 @@ if (!$exit_module){
 				$class = "categtree";
 			}
 	
-                        $ownurl=ereg_replace("&(.*)","",$ownurl); //clean url
-			$ownurl=$ownurl."&workspaceId=".$workspace["workspaceId"];
+//                        $ownurl=ereg_replace("&(.*)","",$ownurl); //clean url
+//			$ownurl=$ownurl."&workspaceId=".$workspace["workspaceId"];
 			$tree_nodes[] = array ("id" => $c["categId"], "parent" => $c["parentId"], "data" => '<a class="'.$class.'" href="'.$ownurl.'&selectCategoryId='.$c["categId"].'">'.$imgCateg.'&nbsp;'.$c["name"].'</a><br />');
 //			$tree_nodes[] = array ("id" => $c["categId"], "parent" => $c["parentId"], "data" => '<a class="'.$class.'" href="'.$ownurl.'">'.$imgCateg.'&nbsp;'.$c["name"].'</a><br />');
 		}
