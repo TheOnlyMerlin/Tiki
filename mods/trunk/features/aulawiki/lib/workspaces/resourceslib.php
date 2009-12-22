@@ -503,8 +503,8 @@ class WorkspaceResourcesLib extends TikiDB {
 		global $categlib;
 		include_once ('lib/categories/categlib.php');
 		global $dbTiki;
-		include_once ('lib/structures/structlib.php');
-
+		global $structlib; include_once ('lib/structures/structlib.php');
+		
 		$structure = $this->get_category_object($parentCategoryId, $name, "structure");
 		if (isset ($structure) && $structure["name"] == $name) {
 			return $structure["objId"];
