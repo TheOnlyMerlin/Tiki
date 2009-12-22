@@ -1243,7 +1243,7 @@ class Smarty
             }
         }
 
-        $_smarty_compile_path = $this->_get_compile_path($resource_name);;
+        $_smarty_compile_path = $this->_get_compile_path($resource_name);
 
         // if we just need to display the results, don't perform output
         // buffering - for speed
