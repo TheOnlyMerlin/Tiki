@@ -5,6 +5,11 @@
 	height: 146px;
 }
 
+#siteheader {
+	height: 171px;
+}
+
+
 input[type=reset],
 input[type=submit] {
 	font-family: Verdana, Helvetica, Geneva, Arial, sans-serif;

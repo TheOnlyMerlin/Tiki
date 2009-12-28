@@ -3,16 +3,14 @@
 	from the GPLed WordPress Kubrick theme, version 1.5, by
 	Micheal Heilemann. Released under the GPL license. Because IE7
 	does not support display:table, minimal HTML tables are needed for
-	graphic treatment and column integrity. This
-	version for use with TikiWiki 1.10 and above. For updates
+	graphic treatment and column integrity. For updates
 	and other information on this theme, please visit
 	http://themes.tikiwiki.org. or http://zukakakina.com. 
 */
- 
-/* Import the default layout properties file: */
-@import "layout/layout.css";
 
-/* And design defaults: */
+/* Import basic layout files: */
+@import "lite/lite.css";
+@import "layout/layout.css";
 @import "layout/design.css";
  
 /***** XHTML Elements (body tag here,
@@ -31,59 +29,72 @@ body.fullscreen {
 	text-align: left;
 	padding: 3em;
 	background: #fff}
+	
+/* next two: fixed-width: 960px */
+div#fixedwidth {
+	display: table; 
+	margin: auto; 
+	margin-top: 20px;
+	margin-bottom: 20px;
+	width: 900px;
+	background: #fff;
+} 
+
+*:first-child+html #c1c2 {
+	margin-left: 0;
+	padding-left: 0} 
 
  /***** Layout (overrides layout.css;
 		also styling of page layout divs)  *****/
-table#main {
+#main {
 	font-size: 1.1em;
 	text-align: left;
-	background: #fff}
+}
 
-td#leftmargin {
-	width: 12%;
-	background: #E7E7E7}
-
-td#main-header {
+#header {
 	background: url(kubrick/headerbg.jpg) no-repeat;
 	background-position: right 0px;
 	height: 200px}
 
-#main-header .wrapper {
+#siteheader {
 	background: url(kubrick/headerbg.jpg) no-repeat;
 	height: 200px;
 	margin-right: 32px;
 	margin-bottom: -1px}
 
-td#rightmargin {
-	width: 12%;
-	background: #E7E7E7}
+#c1c2 {
+}
 
-#leftborder {
-	background: url(kubrick/kubrickbg_left.jpg) repeat-y;
-	width: 10px}
-
-#leftcolumn {
+#c1c2 #col2 {
 	width: 180px;
 	background: transparent;
-	padding-top: 1em}
+	padding-top: 1em;
+	overflow: visible;
+}
 
-#centercolumn {
-	background: #fff;
+#tiki-center {
 	padding: 1em}
 
-#rightcolumn {
+#col3 {
 	width: 180px;
+	margin-left: -180px;
 	padding-top: 1em}
 
-#rightborder {
-	background: url(kubrick/kubrickbg_right.jpg) repeat-y;
-	width: 10px}
+#middle {
+	background: #fff url(kubrick/kubrickbg_right.jpg) 100% 0 repeat-y;
+	padding-right: 10px;
+}
 
-td#footer {
+#middle-shadow {
+	background: #fff url(kubrick/kubrickbg_left.jpg) repeat-y;
+	padding-left: 10px;
+}
+
+#footer {
 	background: url(kubrick/footerbg.jpg) no-repeat;
 	height: 90px}
 
-td#footer .content {
+#footer .content {
 	background: url(kubrick/footerbg.jpg) no-repeat;
 	background-position: right;
 	margin-left: 20px;
@@ -152,12 +163,9 @@ select {
 span.button a,
 span.button a:visited,
 button,
-input[type=reset],
-input[type=submit],
 span.button input,
 .submitbutton,
-.calbuttonoff,
-.calbuttonon {
+.calbuttonBox a {
 	font-family: Verdana, Helvetica, Geneva, Arial, sans-serif;
 	font-size: 10px;
 	font-weight: bold;
@@ -166,15 +174,33 @@ span.button input,
 	border: 1px solid;
 	border-color: #c1d3db #8cacbb #8cacbb #c1d3db}
 	
+input[type=reset],
+input[type=submit],
+input[name="search"] {
+	font-family: Verdana, Helvetica, Geneva, Arial, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	color: #2277DD;
+	background: #fff;
+	border: 1px solid;
+	border-color: #c1d3db #8cacbb #8cacbb #c1d3db
+}
+	
+.button:hover,	
 .button a:hover,
 button:hover,
-input[type=reset]:hover,
-input[type=submit]:hover,
 .button input:hover,
-.submitbutton:hover {
+.submitbutton:hover,
+.calbuttonBox a:hover {
 	background: #fff;
 	border-color: #8cacbb #c1d3db #c1d3db #8cacbb;
 	color: #000}
+
+input[type=reset]:hover,
+input[type=submit]:hover,
+input[name="search"]:hover {
+	background: #fff;
+}
 	
 #page-bar .button {line-height: 22px}
 form.admin input[name="features"] {margin-bottom: 3px !important}
@@ -269,7 +295,6 @@ div#sioptions  {margin-left: 40px}
 	background: #4283B9}
 
 #tiki-top select[name="where"] {
-	font-size: .9em;
 	background: #4283B9;
 	color: #fff}
 	
@@ -562,7 +587,6 @@ div.box-data {
 .wikitext .quarterfloat div.box {
 	width: 20%;
 }
-
 
 /** Other boxes **/
 .cbox {
