@@ -1,0 +1,65 @@
+/* LiteJazz-Red theme for TikiWiki CMS/Groupware,
+ * uses visual elements of the LiteJazz theme for
+ * Drupal by roopletheme, which was released under
+ * the GNU/GPL license.
+ * This theme is a color variant of litejazz.css, 
+ * which it imports.
+*/ 
+
+
+body {
+  color: #292929;
+  background: #adadad url(red/bg.png) 0 0 repeat-x;
+}
+
+a:link,
+a:visited,
+a:hover,
+.titleb { color: #B61C1E}
+
+#middle h1,
+#middle h2,
+#middle h3,
+h3.box-title {color:#B61C1E}
+
+/* LiteJazz top section */
+#topbar_custom_code {
+	background: #104A91 url(red/topbar_custcode.png) 0 0 repeat-x !important;
+	color: #F0F0F0}
+	
+#topbar_custom_code a,
+#topbar_custom_code a:link,
+#topbar_custom_code a:visited {color: #FB9E9E}
+
+/*div#botbar_custom_code {
+	background: #170808 url(litejazz/botbar_custcode-red.png) repeat-x;
+	font-size: 1.2em}*/
+	
+#botbar_custom_code h2,
+#botbar_custom_code h3,
+#botbar_custom_code h4 {color: #fff}
+
+#botbar_custom_code a,
+#botbar_custom_code a:link,
+#botbar_custom_code a:visited {color: #FB9E9E;
+}
+
+.mdkitem a,
+.mdkitem a:visited {
+	color: #fff;
+	background: #818181;
+	border-bottom: 1px #999 solid;
+	border-left: 1px #999 solid} 
+	
+.mdkitem a:hover,
+#tiki-top .cssmenu_horiz ul li:hover a,
+.cssmenu_vert li ul li:hover a {
+	background: #b61c1e !important;
+ 	color: #fff;
+	text-decoration: none}
+	
+.mdkitem a:hover,
+#tiki-top .cssmenu_horiz ul li a:hover,
+.cssmenu_vert li ul li a:hover {
+	text-decoration: underline !important;
+}
