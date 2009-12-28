@@ -5,14 +5,9 @@
 	information, please visit http://themes.tikiwiki.org or http://zukakakina.com.
 */
  
-/* Import layout foundation CSS file. */
-/* If *litecss-based theme . . .  */
+/* Import layout foundation CSS files: */
 @import "lite/lite.css";
-
-/* Then import the default layout properties file: */
- @import "layout/layout.css";
- 
-/* And design defaults: */
+@import "layout/layout.css";
 @import "layout/design.css";
 
 /***** XHTML Elements (body tag here,
@@ -172,8 +167,6 @@ option {
 span.button a,
 span.button a:visited,
 button,
-input[type=reset],
-input[type=submit],
 span.button input,
 .submitbutton,
 .calbuttonBox {
@@ -185,9 +178,9 @@ span.button input,
 	font-weight: normal;
 	padding: 0 4px}
 
-* html input[type=reset],
-* html input[type=submit] {
-	background: #586858/* url(abse/titlebgoff.png) repeat-x*/;
+input[type=reset],
+input[type=submit] {
+	background: #586858;
 	border: 1px solid;
 	border-color: #5a5a62 #b5b5c3 #b5b5c3 #5a5a62;
 	color: #b2b2b2;
@@ -216,27 +209,26 @@ select {
 
 .button a:hover,
 button:hover,
-input[type=reset]:hover,
-input[type=submit]:hover,
 .button input:hover,
 .submitbutton:hover,
-select:hover,
-select[name="theme"]:hover,
 option:hover,
 .calbuttonBox a:hover {
 	background: url(abse/titlebgon.png) repeat-x 0 1px;
 	color: #fff/*#BDCEC3*/;
-	text-decoration: none;
-	padding: 0 4px;
-}
+	text-decoration: none}
 
-select[name="theme"]:hover,
+input[type=reset]:hover,
+input[type=submit]:hover {
+	background: url(abse/titlebgon.png) repeat-x 0 1px;
+	color: #fff/*#BDCEC3*/;
+	text-decoration: none;
+}
+	
+select:hover,
 option:hover {
 	text-decoration: none;
 	color: #fff;
-	background: #586858 url(abse/menubg.jpg) repeat-y:
-	padding: 0 4px;
-}
+	background: #586858 url(abse/menubg.jpg) repeat-y}
 
 select[multiple] {height: 10em}
 
@@ -586,26 +578,25 @@ table {font-size: 1em}
 table.normal, 
 table.admin {border: solid 1px #909090}
 
-tr.odd,
-tr.odd td,
-td.odd,
-li.odd {
+tr.odd td {
 	background: #000 url(abse/menubg.jpg) repeat-y;
 	color: #fff;
 }
 
-tr.even,
-td.even,
-tr.even td,
-li.even {
+tr.even {
 	background: #0e150e;
 	color: #fff;
 }
 
-td.odd, {
+td.odd {
+	background: #000 url(abse/menubg.jpg) repeat-y;
+	color: #fff;
+	border-right: 1px solid #636f65}
+
 td.even {
-	border-right: 1px solid #636f65;
-}
+	background: #0e150e;
+	color: #fff;
+	border-right: 1px solid #636f65}
 
 table.normal td.heading {font-size: 1em}
 
