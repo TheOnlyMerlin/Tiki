@@ -1590,7 +1590,7 @@ class Smarty
             }
         } else if ($_return && $this->security) {
             require_once(SMARTY_CORE_DIR . 'core.is_secure.php');
-            if (false && !smarty_core_is_secure($_params, $this)) {
+            if (!smarty_core_is_secure($_params, $this)) {
                 if (!$params['quiet'])
                     $this->trigger_error('(secure mode) accessing "' . $params['resource_name'] . '" is not allowed');
                 $params['source_content'] = null;
