@@ -2,6 +2,11 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley jan 2010
+
+Note:
+	branches/proposals/4.x/lib/jquery external now fixed to r23938
+
 jonnybradley December 2009
 
 Update:
