@@ -16,7 +16,6 @@ function wikiplugin_center_info() {
 		'description' => tra("Centers the plugin content in the wiki page"),
 		'prefs' => array('wikiplugin_center'),
 		'body' => tra('text'),
-		'icon' => 'pics/icons/text_align_center.png',
 		'params' => array(
 		),
 	);
@@ -29,3 +28,5 @@ function wikiplugin_center($data, $params) {
 	$data = '<div align="center">' . trim($data). '</div>';
 	return $data;
 }
+
+?>

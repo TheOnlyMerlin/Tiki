@@ -73,26 +73,15 @@ if (!isset($_REQUEST["try"]))
 $editstyle = preg_replace("/[^-_a-z\d]/i","",$_REQUEST["editstyle"]);
 $styledir = "styles";
 
-function get_style_path($editstyle, $styledir) {
-    global $tikidomain;
-	if ($tikidomain and is_file("$styledir/$tikidomain/$editstyle.css")) {
-		return "$styledir/$tikidomain/$editstyle.css";
-	} else {
-		return "$styledir/$editstyle.css";
-	}    
-}
-
-function get_style_mod($editstyle, $styledir) {
-	$style=get_style_path($editstyle, $styledir);
-	$stat=stat($style);
-	return $stat['mode'] & 0666;
-}
-
 if (isset($_REQUEST["edit"])and $_REQUEST["edit"]) {
-
 	$action = 'edit';
-	$data = load_css2_file(get_style_path($editstyle, $styledir), $styledir);
 
+	//	$data = implode("",file("$styledir/$editstyle.css"));
+	if ($tikidomain and is_file("$styledir/$tikidomain/$editstyle.css")) {
+		$data = load_css2_file("$styledir/$tikidomain/$editstyle.css", $styledir);
+	} else {
+		$data = load_css2_file("$styledir/$editstyle.css", $styledir);
+	}
 } elseif ((isset($_REQUEST["save"]) and $_REQUEST["save"]) or (isset($_REQUEST["save2"]) and $_REQUEST["save2"])) {
 	check_ticket('edit-css');
 	$action = 'edit';
@@ -104,12 +93,10 @@ if (isset($_REQUEST["edit"])and $_REQUEST["edit"]) {
 		$style = "$styledir/$editstyle.css";
 	}
 
-	$mod=NULL;
-	$mod = get_style_mod($editstyle, $styledir);
 	$fp = fopen($style, "w");
 	if (!$fp) {
 		$smarty->assign('errortype', 401);
-		$smarty->assign('msg', tra("You do not have permission to write the style sheet")." $style");
+		$smarty->assign('msg', tra("You do not have permission to write the style sheet"));
 
 		$smarty->display("error.tpl");
 		die;
@@ -117,10 +104,6 @@ if (isset($_REQUEST["edit"])and $_REQUEST["edit"]) {
 
 	fwrite($fp, $_REQUEST["data"]);
 	fclose ($fp);
-	if ($mod !== NULL) {
-		chmod($style, $mod);
-	}
-
 	if ($_REQUEST["save2"]) {
 		$action = 'display';
 		header("location: tiki-edit_css.php?editstyle=$editstyle");
@@ -169,3 +152,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
 $smarty->assign('mid', 'tiki-edit_css.tpl');
 $smarty->display("tiki.tpl");
+
+?>

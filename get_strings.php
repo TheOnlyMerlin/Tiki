@@ -85,11 +85,10 @@ function collect_perms_desc($file)
     // Used when called in $script_mode if no DB has been found
     $matches = array();
     preg_match_all(
-      '/insert\s+into\s+\`?users_permissions\`?\s*\([^\)]+\)\s*values\s*\(\'(tiki_p_[^\'"]+)\',\s*\'(.*)\',/Uim',
+      '/insert\s+into\s+\`?users_permissions\s*\([^\)]+\)\s*values\s*\(\'(tiki_p_[^\'"]+)\',\s*\'(.*)\',/Uim',
       file_get_contents('db/tiki.sql'),
       $matches
     );
-
     foreach ( $matches[2] as $permDesc ) {
       $perm_strings[] = str_replace("\'", "'", $permDesc);
     }
@@ -302,7 +301,8 @@ if ( $script_mode ) {
 
 	if ( file_exists('db/local.php') ) {
 		require_once('db/tiki-db.php');
-		$tikilib = TikiDb::get();
+		require_once('lib/tikidblib.php');
+		$tikilib = new TikiDB($dbTiki);
 	} else {
 		require_once('lib/setup/prefs.php'); // Used to get default prefs
 	}
@@ -817,6 +817,8 @@ foreach ($languages as $ksel => $sel) {
     }
   }
   writeFile_and_User ($fw, '"'.$endMarker.'"=>"'.$endMarker.'");'."\n");
+  if ( $verbose ) formatted_print("?>\n");  
+  fwrite ($fw, '?>'."\n");  
   fclose ($fw);
 
   if ($spelling) {

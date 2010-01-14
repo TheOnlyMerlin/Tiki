@@ -1,5 +1,5 @@
 <?php
-require_once 'lib/graph-engine/abstract.gridbased.php';
+require_once 'graph-engine/abstract.gridbased.php';
 
 class MultilineGraphic extends GridBasedGraphic // {{{1
 {
@@ -155,3 +155,4 @@ class MultilineGraphic extends GridBasedGraphic // {{{1
 		) );
 	}
 } // }}}1
+?>

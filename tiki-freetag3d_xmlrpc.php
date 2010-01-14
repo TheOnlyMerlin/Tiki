@@ -26,10 +26,10 @@ function getSubGraph($params) {
     $queue = array($nodeName);
     $i = 0;
 
-    $tikilib = new TikiLib;
+    $tikilib = new TikiLib($dbTiki);
     $color = $prefs['freetags_3d_existing_page_color'];
 
-    while ($i <= $depth && count($queue) > 0) {
+    while ($i <= $depth && sizeof($queue) > 0) {
 	$nextQueue = array();
 	foreach ($queue as $nodeName) {
 
@@ -39,7 +39,7 @@ function getSubGraph($params) {
 		$neighbours[] = $tag['tag'];
 	    }
 	    
-	    $temp_max = count($neighbours);
+	    $temp_max = sizeof($neighbours);
 	    for ($j = 0; $j < $temp_max; $j++) {
 		if (!isset($passed[$neighbours[$j]])) {
 		    $nextQueue[] = $neighbours[$j];
@@ -70,3 +70,5 @@ function getSubGraph($params) {
     
     return new XML_RPC_Response(new XML_RPC_Value($response, "struct"));
 }
+
+?>

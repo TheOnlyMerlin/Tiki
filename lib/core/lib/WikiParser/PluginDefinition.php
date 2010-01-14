@@ -37,3 +37,5 @@ class WikiParser_PluginDefinition implements ArrayAccess, Countable
 		return count( $this->data );
 	}
 }
+
+?>

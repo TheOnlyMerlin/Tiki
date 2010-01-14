@@ -10,7 +10,7 @@
 
 
 {if $user eq $userwatch}
-	{include file='tiki-mytiki_bar.tpl'}
+	{include file=tiki-mytiki_bar.tpl}
 {else}
 	<div class="navbar">
 		{assign var=thisuserwatch value=$userwatch|escape}
@@ -21,7 +21,7 @@
 <h2>{if $user eq $userwatch}{tr}Your current avatar{/tr}{else}{tr}Avatar{/tr}{/if}</h2>
 {if $avatar}{$avatar}{else}{tr}no avatar{/tr}{/if}
 {if sizeof($avatars) eq 0 and $avatar}
-<a class="link" href="tiki-pick_avatar.php?reset=y&amp;view_user{$userwatch|escape}" title="{tr}reset{/tr}">{icon _id='cross' alt='{tr}reset{/tr}'}</a>
+<a class="link" href="tiki-pick_avatar.php?reset=y" title="{tr}reset{/tr}">{icon _id='cross' alt='{tr}reset{/tr}'}</a>
 {/if}
 
 {if sizeof($avatars) > 0}
@@ -102,7 +102,7 @@ function subavt() {
 <label for="userfile1">{tr}File (only .gif, .jpg and .png images approximately 45px × 45px){/tr}:</label>
 <input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
 <input id="userfile1" name="userfile1" type="file" />
-<input type="submit" name="upload" value="{tr}Upload{/tr}" />
+<input class="button" type="submit" name="upload" value="{tr}Upload{/tr}" />
 </fieldset>
 </form>
 </div>

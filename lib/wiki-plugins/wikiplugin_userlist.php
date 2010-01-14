@@ -17,7 +17,6 @@ function wikiplugin_userlist_info() {
 		'description' => tra('Displays a list of registered users'),
 		'prefs' => array( 'wikiplugin_userlist' ),
 		'body' => tra('Login Filter'),
-		'icon' => 'pics/icons/group_go.png',
 		'params' => array(
 			'sep' => array(
 				'required' => false,
@@ -43,13 +42,7 @@ function wikiplugin_userlist_info() {
 				'required' => false,
 				'name' => tra('Link'),
 				'description' => 'userpage|userinfo|userpref',
-			),
-			'realname' => array(
-				'required' => false,
-				'filter' => 'alpha',
-				'name' => tra('Real Name'),
-				'description' => tra('Display the user\'s real name instead of login name.'),
-			),
+			),			
 		),
 	);
 }
@@ -115,16 +108,9 @@ function wikiplugin_userlist($data, $params) {
 				}
 			}
 		}
-		$displayName = $row['login'];
-		if( $params['realname'] ) {
-			$realName = $tikilib->get_user_preference( $row['login'], 'realName' );
-			
-			if( $realName ) {
-				$displayName = $realName;
-			}
-		}
-
-        $ret[] = $res.$displayName.($res?'</a>':'');
+        $ret[] = $res.$row['login'].($res?'</a>':'');
     }
     return $pre.implode ( $sep, $ret ).$post;
 }
+
+?>

@@ -40,13 +40,13 @@ function smarty_block_tikimodule($params, $content, &$smarty) {
 	if (!isset($content))   return "";
 	if (!isset($error))  $error = '';
 	if (!isset($overflow))  $overflow = false;
-	if (!isset($title))     $title = substr(strip_tags($content),0,12). (strlen(strip_tags($content)) > 12 ? "..." : "");
-	if (!isset($name))      $name  = ereg_replace("[^-_a-zA-Z0-9]","",$title); else $name  = ereg_replace("[^-_a-zA-Z0-9]","",$name);
+	if (!isset($title))     $title = substr(strip_tags($content),0,12)."...";
+	if (!isset($name))      $name  = ereg_replace("[^-_a-zA-Z0-9]","",$title);
 	if (!isset($flip) || ($flip != 'y' && $flip != 'yc')) $flip = 'n';
 	if (!isset($nobox))      $nobox = 'n';
 	if (!isset($notitle))      $notitle = 'n';
 	if ($flip == 'yc') {
-		// can be switched but initially closed
+		// can be switched but initialy closed
 		$flip = 'y';
 		$dstate = 'c';
 	}
@@ -64,8 +64,8 @@ function smarty_block_tikimodule($params, $content, &$smarty) {
 	$smarty->assign('module_nobox', $nobox);
 	$smarty->assign('module_notitle', $notitle);
 	$smarty->assign('module_decorations', $decorations);
-	if ( empty($type) ) $type = "module";
-	$smarty->assign('module_type', $type);
 	$smarty->assign_by_ref('module_content', $content);
 	return $smarty->fetch('module.tpl');
 }
+
+?>

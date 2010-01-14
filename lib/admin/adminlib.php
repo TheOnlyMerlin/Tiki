@@ -6,8 +6,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class AdminLib extends TikiLib
-{
+class AdminLib extends TikiLib {
+	function AdminLib($db) {
+		$this->TikiLib($db);
+	}
 
 	function list_dsn($offset, $maxRecords, $sort_mode, $find) {
 		
@@ -21,7 +23,7 @@ class AdminLib extends TikiLib
 			$mid = "";
 		}
 
-		$query = "select * from `tiki_dsn` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_dsn` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_dsn` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -52,6 +54,13 @@ class AdminLib extends TikiLib
 			$result = $this->query($query,$bindvars);
 		}
 
+		// And now replace the perm if not created
+		$perm_name = 'tiki_p_dsn_' . $name;
+		$query = "delete from `users_permissions` where `permName`=?";
+		$this->query($query,array($perm_name));
+		$query = "insert into `users_permissions`(`permName`,`permDesc`,`type`,`level`) values
+    			(?,?,?,?)";
+		$this->query($query,array($perm_name,'Can use dsn $dsn','dsn','editor'));
 		return true;
 	}
 
@@ -89,7 +98,7 @@ class AdminLib extends TikiLib
 			$mid = "";
 		}
 
-		$query = "select * from `tiki_extwiki` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_extwiki` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_extwiki` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -435,4 +444,7 @@ class AdminLib extends TikiLib
 	}
 
 }
-$adminlib = new AdminLib;
+global $dbTiki;
+$adminlib = new AdminLib($dbTiki);
+
+?>

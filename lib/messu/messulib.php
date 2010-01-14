@@ -6,8 +6,12 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class Messu extends TikiLib
-{
+class Messu extends TikiLib {
+
+	function Messu($db) {
+
+		$this->TikiLib($db);
+	}
 
 	/**
 	 * Put sent message to 'sent' box
@@ -50,8 +54,9 @@ class Messu extends TikiLib
 
 		// Now check if the user should be notified by email
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
-		$machine = $this->httpPrefix( true ). $foo["path"];
+		$machine = $this->httpPrefix(). $foo["path"];
 		$machine = str_replace('messu-compose', 'messu-mailbox', $machine);
+		$machine = str_replace('messu-broadcast', 'messu-mailbox', $machine);
 		if ($this->get_user_preference($user, 'minPrio', 6) <= $priority) {
 			if (!isset($_SERVER["SERVER_NAME"])) {
 				$_SERVER["SERVER_NAME"] = $_SERVER["HTTP_HOST"];
@@ -122,7 +127,7 @@ class Messu extends TikiLib
 			$bindvars[] = $findesc;
 		}
 
-		$query = "select * from `messu_".$dbsource."` where `user`=? $mid order by ".$this->convertSortMode($sort_mode).",".$this->convertSortMode("msgId_desc");
+		$query = "select * from `messu_".$dbsource."` where `user`=? $mid order by ".$this->convert_sortmode($sort_mode).",".$this->convert_sortmode("msgId_desc");
 		$query_cant = "select count(*) from `messu_".$dbsource."` where `user`=? $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -357,4 +362,7 @@ class Messu extends TikiLib
 	}
 
 }
-$messulib = new Messu;
+global $dbTiki;
+$messulib = new Messu($dbTiki);
+
+?>

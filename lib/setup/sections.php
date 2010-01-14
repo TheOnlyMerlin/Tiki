@@ -54,7 +54,7 @@ $sections = array(
 	'forums' => array(
 		'feature' => 'feature_forums',
 		'key' => 'forumId',
-		'itemkey' => 'comments_parentId',
+		'itemkey' => 'postId',
 		'objectType' =>'forum',
 		'itemObjectType' => 'forum post',
 	),
@@ -83,6 +83,11 @@ $sections = array(
 		'feature' => 'feature_messages',
 		'key' => 'msgId',
 		'itemkey' => '',
+	),
+	'newsreader' => array(
+		'feature' => 'feature_newsreader',
+		'key' => 'serverId',
+		'itemkey' => 'id',
 	),
 	'webmail' => array(
 		'feature' => 'feature_webmail',
@@ -140,9 +145,18 @@ $sections = array(
 	'calendar' => array(
 		'feature' => 'feature_calendar',
 		'key' => 'calendarId',
-		'itemkey' => 'viewcalitemId',
+		'itemkey' => 'calitmId',
 		'objectType' => 'calendar',
-		'itemObjectType' => 'event',
+	),
+	'workflow' => array(
+		'feature' => 'feature_workflow',
+		'key' => '',
+		'itemkey' => '',
+	),
+	'charts' => array(
+		'feature' => 'feature_charts',
+		'key' => '',
+		'itemkey' => '',
 	),
 	// tra('Map')
 	'maps' => array(
@@ -161,12 +175,20 @@ $sections = array(
 		'key' => 'categId',
 		'itemkey' => '',
 	),
+	'games' => array(
+		'feature' => 'feature_games',
+		'key' => 'gameId',
+		'itemkey' => '',
+	),
 	// tra('Html Page')
 	'html_pages' => array(
 		'feature' => 'feature_html_pages',
 		'key' => 'pageId',
 		'itemkey' => '',
 		'objectType' => 'html page',
+	),
+	'swfobj' => array(
+		'feature' => 'feature_swfobj',
 	),
 	// tra('Newsletter')
 	'newsletters' => array(
@@ -191,33 +213,5 @@ if ( ! empty($section) ) $smarty->assign('section', $section);
 if ( ! empty($section_class) ) {
 	$smarty->assign('section_class', $section_class);
 }elseif ( ! empty($section) ) {
-	$smarty->assign('section_class', 'tiki_'.str_replace(' ','_',$section));
-}
-
-function current_object() {
-	global $section, $sections, $cat_type, $cat_objid;
-
-	if( $cat_type && $cat_objid ) {
-		return array(
-			'type' => $cat_type,
-			'object' => $cat_objid,
-		);
-	}
-	
-	if( isset( $sections[$section] ) ) {
-		$info = $sections[$section];
-
-		if( isset( $info['itemkey'], $info['itemObjectType'], $_REQUEST[ $info['itemkey'] ] ) ) {
-			$type = isset( $_REQUEST[ $info['key'] ] ) ? $info['key'] : '';
-			return array(
-				'type' => sprintf( $info['itemObjectType'], $type ),
-				'object' => $_REQUEST[ $info['itemkey'] ],
-			);
-		} elseif( isset( $info['key'], $info['objectType'], $_REQUEST[ $info['key'] ] ) ) {
-			return array(
-				'type' => $info['objectType'],
-				'object' => $_REQUEST[ $info['key'] ],
-			);
-		}
-	}
+	$smarty->assign('section_class', str_replace(' ','_',$section));
 }

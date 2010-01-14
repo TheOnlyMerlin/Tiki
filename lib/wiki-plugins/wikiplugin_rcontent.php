@@ -16,15 +16,12 @@ function wikiplugin_rcontent_info() {
 	);
 }
 
-function wikiplugin_rcontent( $data, $params, $offset, $parseOptions) {
+function wikiplugin_rcontent( $data, $params) {
 
 	global $dcslib; include_once('lib/dcs/dcslib.php');
 
-	$lang = null;
-	if( isset( $parseOptions['language'] ) ) {
-		$lang = $parseOptions['language'];
-	}
-
 	if( $params['id'] )
-		return $dcslib->get_random_content((int) $params['id'], $lang);
+		return $dcslib->get_random_content((int) $params['id']);
 }
+
+?>

@@ -3,6 +3,14 @@
 {title url="tiki-blog_post.php?blogId=$blogId&postId=$postId"}{if $postId gt 0}{tr}Edit Post{/tr}{else}{tr}Post{/tr}{/if} - {$blog_data.title|escape}{/title}
 
 <div class="navbar">
+	{if $prefs.feature_wysiwyg eq 'y' and $prefs.wysiwyg_optional eq 'y'}
+		{if $wysiwyg ne 'y'}
+			{button href="tiki-blog_post.php?wysiwyg=y" _auto_args='blogId,postId' _text="{tr}Use Wysiwyg Editor{/tr}"}
+		{else}
+			{button href="tiki-blog_post.php?wysiwyg=n" _auto_args='blogId,postId' _text="{tr}Use Normal Editor{/tr}"}
+		{/if}
+	{/if}
+
 	{if $blogId gt 0 }
 		{assign var=thisblog value=$blogId|sefurl:blog}
 		{button href=$thisblog _text="{tr}View Blog{/tr}"}
@@ -15,12 +23,10 @@
 </div>
 
 {if $contribution_needed eq 'y'}
-	{remarksbox type='Warning' title='{tr}Warning{/tr}'}
-	<div class="highlight"><em class='mandatory_note'>{tr}A contribution is mandatory{/tr}</em></div>
-	{/remarksbox}
+	<div class="simplebox highlight">{tr}A contribution is mandatory{/tr}</div>
 {/if}
 {if $preview eq 'y'}
-	{include file='tiki-preview_post.tpl'}
+	{include file=tiki-preview_post.tpl}
 {/if}
 
 {if $wysiwyg ne 'y'}
@@ -50,20 +56,56 @@
 <table class="normal">
 {/if}
 
+{assign var=area_name value="blogedit"}
+{if $prefs.feature_smileys eq 'y' && not $wysiwyg}
+<tr><td class="editblogform">{tr}Smileys{/tr}</td><td class="editblogform">
+   {include file="tiki-smileys.tpl" area_name='blogedit'}
+</td></tr>
+{/if}
+
+{if $blog_data.use_title eq 'y' || !$blogId}
   <tr>
     <td class="editblogform">{tr}Title{/tr}</td><td class="editblogform">
       <input type="text" size="80" name="title" value="{$title|escape}" />
     </td>
   </tr>
+{/if}
 
-{* show textarea *}
+{* show quicktags over textarea *}
+{if $prefs.quicktags_over_textarea eq 'y' and ($prefs.feature_wysiwyg eq 'n' or ($prefs.feature_wysiwyg eq 'y' and $prefs.wysiwyg_optional eq 'y' and $wysiwyg eq 'n') ) 
+    }
+  <tr>
+    <td class="editblogform"><label>{tr}Quicktags{/tr}</label></td>
+    <td class="editblogform">
+      {include file=tiki-edit_help_tool.tpl area_name='blogedit'}
+    </td>
+  </tr>
+{/if}
+
+{* show quickags on left side from textarea *}
+{if ( $prefs.feature_wysiwyg eq 'n' or ($prefs.feature_wysiwyg eq 'y' and $prefs.wysiwyg_optional eq 'y' and $wysiwyg eq 'n') )}
   <tr>
     <td class="editblogform">
-    	{tr}Body{/tr}
+      <br />
+      {include file="textareasize.tpl" area_name='blogedit' formId='editpageform'}
+      <br />
+
+      {if $prefs.quicktags_over_textarea neq 'y'}
+        <br /><br />
+        {include file=tiki-edit_help_tool.tpl area_name="blogedit"}
+      {/if}
     </td>
+    
     <td class="editblogform">
-      {textarea id='blogedit' class="wikiedit" name="data"}{$data}{/textarea}
-	</td>
+      <textarea id='blogedit' class="wikiedit" name="data" rows="{$rows}" cols="{$cols}" wrap="virtual">{$data|escape}</textarea>
+
+{else}  {* show textarea with wysiwyg editor *}
+  <td class="editblogform" colspan="2">
+    {editform Meat=$data InstanceName='data' ToolbarSet="Tiki"}
+{/if}
+    <input type="hidden" name="rows" value="{$rows}"/>
+    <input type="hidden" name="cols" value="{$cols}"/>
+  </td>
 </tr>
 
 {if $postId > 0 && $wysiwyg ne 'y'}
@@ -101,18 +143,19 @@
 <tr><td class="editblogform">{tr}Spellcheck{/tr}: </td><td class="editblogform"><input type="checkbox" name="spellcheck" {if $spellcheck eq 'y'}checked="checked"{/if} /></td></tr>
 {/if}
 {if $prefs.feature_freetags eq 'y' and $tiki_p_freetags_tag eq 'y'}
-  {include file='freetag.tpl'}
+  {include file=freetag.tpl}
 {/if}
 {if $prefs.feature_contribution eq 'y'}
-{include file='contribution.tpl'}
+{include file="contribution.tpl"}
 {/if}
 <tr><td class="editblogform">&nbsp;</td><td class="editblogform">
-<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false" />
-<input type="submit" class="wikiaction" name="save" value="{tr}Save{/tr}" onclick="needToConfirm=false" />
-<input type="submit" class="wikiaction" name="save_exit" value="{tr}Save and Exit{/tr}" onclick="needToConfirm=false" />
+<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" />
+<input type="submit" class="wikiaction" name="save" value="{tr}Save{/tr}" />
+<input type="submit" class="wikiaction" name="save_exit" value="{tr}Save and Exit{/tr}" />
 <input type="hidden" name="referer" value="{$referer|escape}" />
-&nbsp;&nbsp;&nbsp;<input type="submit" name="cancel" onclick='document.location="{$referer|escape:'html'}";needToConfirm=false;return false;' value="{tr}Cancel{/tr}"/>
+&nbsp;&nbsp;&nbsp;<input type="submit" name="cancel" onclick='document.location="{$referer|escape:'html'}";return false;' value="{tr}Cancel{/tr}"/>
 </td></tr>
 </table>
 </form>
 <br />
+{include file=tiki-edit_help.tpl}

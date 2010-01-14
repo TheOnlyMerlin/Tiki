@@ -25,8 +25,7 @@ require_once ('lib/debug/debugger-ext.php');
  * 6. if (have_another_idea() == true) goto 1
  *
  */
-class DebuggerCommand_Test extends DebuggerCommand
-{
+class DebuggerCommand_Test extends DebuggerCommand {
 	/// \b Must have function to announce command name in debugger console
 	function name() {
 		return "test";
@@ -44,3 +43,5 @@ class DebuggerCommand_Test extends DebuggerCommand
 function dbg_command_factory_test() {
 	return new DebuggerCommand_Test();
 }
+
+?>

@@ -1,8 +1,10 @@
 <?php
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 
-class LsAdminlib extends TikiLib
-{
+class LsAdminlib extends TikiLib {
+	function LsAdminlib($db) {
+		$this->TikiLib($db);
+	}
 
 	function add_operator($user) {
 		$this->getOne("delete from `tiki_live_support_operators` where `user`=?",array($user),false);
@@ -62,7 +64,7 @@ class LsAdminlib extends TikiLib
 			}
 		}
 
-		$query = "select * from `tiki_live_support_messages` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_live_support_messages` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_live_support_messages` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -112,7 +114,7 @@ class LsAdminlib extends TikiLib
 			}
 		}
 
-		$query = "select * from `tiki_live_support_requests` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_live_support_requests` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_live_support_requests` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -169,4 +171,7 @@ class LsAdminlib extends TikiLib
 		return $ret;
 	}
 }
-$lsadminlib = new LsAdminlib;
+global $dbTiki;
+$lsadminlib = new LsAdminlib($dbTiki);
+
+?>

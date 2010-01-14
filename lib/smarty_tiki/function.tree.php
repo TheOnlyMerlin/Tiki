@@ -27,7 +27,6 @@ function smarty_function_tree($params, &$smarty) {
 
 	if ( ! function_exists('data2struct') ) {
 		function data2struct(&$data, $level, &$expanded) {
-			global $prefs, $tikilib;
 			static $cur = 0;
 			$ret = '';
 			if ( is_array($data) && $level > 0 ) {
@@ -44,9 +43,7 @@ function smarty_function_tree($params, &$smarty) {
 				}
 				if ( isset($data['current']) ) $data['name'] = '<b>'.$data['name'].'</b>';
 				$name = $data['name'] . ( isset($data['addon']) ? ' '.$data['addon'] : '' );
-				$tmp_img = $tikilib->get_style_path($prefs['style'], $prefs['style_option'],'pics/icons/folder.png');
-				if (empty($tmp_img)) $tmp_img = 'pics/icons/folder.png';
-				$ret .= str_repeat('.', $level).'|'.$name.'|'.$link.'||'.$tmp_img;
+				$ret .= str_repeat('.', $level).'|'.$name.'|'.$link.'||folder.png';
 				if ( in_array($cur, $expanded) ) $ret .= '||1';
 				$ret .= "\n";
 				if ( is_array($data['data']) ) {
@@ -98,3 +95,4 @@ function smarty_function_tree($params, &$smarty) {
 
 	return $tikiphplayers->mkMenu($structure, '', $params['type'], '', 0, implode('|', $default_expand));
 }
+?>

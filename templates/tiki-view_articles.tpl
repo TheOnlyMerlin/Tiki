@@ -1,32 +1,24 @@
 {if $prefs.art_home_title ne ''}
 {title help="Articles" admpage="cms"}
-{if $prefs.art_home_title eq 'topic' and !empty($topic)}{tr}{$topic|escape}{/tr}
-{elseif $prefs.art_home_title eq 'type' and !empty($type)}{tr}{$type|escape}{/tr}
+{if $prefs.art_home_title eq 'topic' and !empty($topic)}{tr}{$topic}{/tr}
+{elseif $prefs.art_home_title eq 'type' and !empty($type)}{tr}{$type}{/tr}
 {else}{tr}Articles{/tr}{/if}
 {/title}
 {/if}
 {section name=ix loop=$listpages}
 {if $listpages[ix].disp_article eq 'y'}
-{if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y' and $listpages[ix].freetags.data|@count >0}
-	<div class="freetaglist">
-		{foreach from=$listpages[ix].freetags.data item=taginfo}
-		{capture name=tagurl}{if (strstr($taginfo.tag, ' '))}"{$taginfo.tag}"{else}{$taginfo.tag}{/if}{/capture}
-		<a class="freetag" href="tiki-browse_freetags.php?tag={$smarty.capture.tagurl|escape:'url'}">{$taginfo.tag}</a>
-		{/foreach}
-	</div>
-{/if} 
 <div class="article">
-{if $listpages[ix].show_topline eq 'y' and $listpages[ix].topline}<div class="articletopline">{$listpages[ix].topline|escape}</div>{/if}
+{if $listpages[ix].show_topline eq 'y' and $listpages[ix].topline}<div class="articletopline">{$listpages[ix].topline}</div>{/if}
 <div class="articletitle">
-<h2><a href="{$listpages[ix].articleId|sefurl:article}">{$listpages[ix].title|escape}</a></h2>
-{if $listpages[ix].show_subtitle eq 'y' and $listpages[ix].subtitle}<div class="articlesubtitle">{$listpages[ix].subtitle|escape}</div>{/if}
+<h2><a href="{$listpages[ix].articleId|sefurl:article}">{$listpages[ix].title}</a></h2>
+{if $listpages[ix].show_subtitle eq 'y' and $listpages[ix].subtitle}<div class="articlesubtitle">{$listpages[ix].subtitle}</div>{/if}
 {if ($listpages[ix].show_author eq 'y')
  or ($listpages[ix].show_pubdate eq 'y')
  or ($listpages[ix].show_expdate eq 'y')
  or ($listpages[ix].show_reads eq 'y')}	
 <span class="titleb">
 {if $listpages[ix].show_author eq 'y'}	
-{tr}By:{/tr} {$listpages[ix].authorName|escape}&nbsp;
+{tr}By:{/tr} {$listpages[ix].authorName}&nbsp;
 {/if}
 {if $listpages[ix].show_pubdate eq 'y'}
 {tr}on:{/tr} {$listpages[ix].publishDate|tiki_short_datetime}&nbsp;

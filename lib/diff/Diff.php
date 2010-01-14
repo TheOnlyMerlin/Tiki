@@ -13,8 +13,7 @@
  * @package Text_Diff
  * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
  */
-class Text_Diff
-{
+class Text_Diff {
 
     /**
      * Array of changes.
@@ -202,8 +201,7 @@ class Text_Diff
  * @package Text_Diff
  * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
  */
-class Text_MappedDiff extends Text_Diff
-{
+class Text_MappedDiff extends Text_Diff {
 
     /**
      * Computes a diff between sequences of strings.
@@ -230,7 +228,7 @@ class Text_MappedDiff extends Text_Diff
         parent::Text_Diff($mapped_from_lines, $mapped_to_lines);
 
         $xi = $yi = 0;
-        for ($i = 0, $count_edits = count($this->edits); $i < $count_edits; $i++) {
+        for ($i = 0; $i < count($this->edits); $i++) {
             $orig = &$this->edits[$i]->orig;
             if (is_array($orig)) {
                 $orig = array_slice($from_lines, $xi, count($orig));
@@ -256,8 +254,8 @@ class Text_MappedDiff extends Text_Diff
  * @package Text_Diff
  * @access  private
  */
-class Text_Diff_Engine_xdiff
-{
+class Text_Diff_Engine_xdiff {
+
     function diff($from_lines, $to_lines)
     {
         /* Convert the two input arrays into strings for xdiff processing. */
@@ -321,8 +319,7 @@ class Text_Diff_Engine_xdiff
  * @package Text_Diff
  * @access  private
  */
-class Text_Diff_Engine_native
-{
+class Text_Diff_Engine_native {
 
     function diff($from_lines, $to_lines)
     {
@@ -733,8 +730,8 @@ class Text_Diff_Engine_native
  * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
  * @access  private
  */
-class Text_Diff_Op
-{
+class Text_Diff_Op {
+
     var $orig;
     var $final;
 
@@ -760,8 +757,8 @@ class Text_Diff_Op
  * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
  * @access  private
  */
-class Text_Diff_Op_copy extends Text_Diff_Op
-{
+class Text_Diff_Op_copy extends Text_Diff_Op {
+
     function Text_Diff_Op_copy($orig, $final = false)
     {
         if (!is_array($final)) {
@@ -783,8 +780,8 @@ class Text_Diff_Op_copy extends Text_Diff_Op
  * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
  * @access  private
  */
-class Text_Diff_Op_delete extends Text_Diff_Op
-{
+class Text_Diff_Op_delete extends Text_Diff_Op {
+
     function Text_Diff_Op_delete($lines)
     {
         $this->orig = $lines;
@@ -803,8 +800,8 @@ class Text_Diff_Op_delete extends Text_Diff_Op
  * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
  * @access  private
  */
-class Text_Diff_Op_add extends Text_Diff_Op
-{
+class Text_Diff_Op_add extends Text_Diff_Op {
+
     function Text_Diff_Op_add($lines)
     {
         $this->final = $lines;
@@ -823,8 +820,8 @@ class Text_Diff_Op_add extends Text_Diff_Op
  * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
  * @access  private
  */
-class Text_Diff_Op_change extends Text_Diff_Op
-{
+class Text_Diff_Op_change extends Text_Diff_Op {
+
     function Text_Diff_Op_change($orig, $final)
     {
         $this->orig = $orig;

@@ -534,3 +534,5 @@ class Graphic // {{{1
 			$handler->handle( $renderer, $positionData, $series, $index );
 	}
 } // }}}1
+
+?>

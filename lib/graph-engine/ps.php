@@ -6,7 +6,7 @@
  *
  * This file contains the PostScript graphic renderer. (Using PSLib)
  */
-require_once('lib/graph-engine/core.php');
+require_once('graph-engine/core.php');
 
 class PS_GRenderer extends GRenderer // {{{1
 {
@@ -361,3 +361,5 @@ class PS_GRenderer extends GRenderer // {{{1
 		return $size;
 	}
 } // }}}1
+
+?>

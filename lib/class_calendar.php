@@ -35,8 +35,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class Calendar
-{
+class Calendar {
 	var $lan;
 
 	function Calendar($lan = 'en') {
@@ -398,9 +397,15 @@ class Calendar
 		return tra($en[$w], $lan);
 	}
 }
+
+?>
+
+<?php
+
 // example
 //$c=new calendar('en');
 //$x=$c->day_of_week_str(2,3,2000,'po');
 //print("$x\n");
 //'ç'
 
+?>

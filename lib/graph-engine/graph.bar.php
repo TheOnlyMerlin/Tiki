@@ -1,5 +1,5 @@
 <?php
-require_once 'lib/graph-engine/abstract.gridbased.php';
+require_once 'graph-engine/abstract.gridbased.php';
 
 class BarBasedGraphic extends GridBasedGraphic // {{{1
 {
@@ -299,3 +299,5 @@ class MultibarGraphic extends BarBasedGraphic // {{{1
 		) );
 	} 
 } // }}}1
+
+?>

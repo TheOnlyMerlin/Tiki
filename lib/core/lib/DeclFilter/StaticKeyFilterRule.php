@@ -22,3 +22,5 @@ class DeclFilter_StaticKeyFilterRule extends DeclFilter_FilterRule
 		return TikiFilter::get( $this->rules[$key] );
 	}
 }
+
+?>

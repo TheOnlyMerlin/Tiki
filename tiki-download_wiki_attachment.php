@@ -18,9 +18,7 @@ if (empty($info)) {
 	$smarty->display('error.tpl');
 	die;
 }
-
-$perms = Perms::get( array( 'type' => 'wiki page', 'object' => $info['page'] ) );
-if (!$perms->view && !$perms->wiki_view_attachments && !$perms->wiki_admin_attachments) {
+if (!$tikilib->user_has_perm_on_object($user, $info['page'], 'wiki page', 'tiki_p_view') && !$tikilib->user_has_perm_on_object($user, $info['page'], 'wiki page', 'tiki_p_wiki_view_attachments') && !$tikilib->user_has_perm_on_object($user, $info['page'], 'wiki page', 'tiki_p_wiki_admin_attachments')) {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg', tra("You do not have permission to use this feature"));
 	$smarty->display("error.tpl");
@@ -29,10 +27,6 @@ if (!$perms->view && !$perms->wiki_view_attachments && !$perms->wiki_admin_attac
 
 $tikilib->add_wiki_attachment_hit($_REQUEST["attId"]);
 
-if ( empty($info['filetype']) || $info['filetype'] == 'application/x-octetstream' || $info['filetype'] == 'application/octet-stream' ) {
-	include_once('lib/mime/mimelib.php');
-	$info['filetype'] = tiki_get_mime($info['filename'], 'application/octet-stream');
-}
 $type = &$info["filetype"];
 $file = &$info["filename"];
 $content = &$info["data"];
@@ -65,3 +59,5 @@ if ($info["path"]) {
 	header("Content-Length: ". $info[ "filesize" ] );
 	echo "$content";
 }
+
+?>

@@ -60,37 +60,33 @@ foreach (array_keys($calendars["data"]) as $i) {
 $smarty->assign('calendars',$calendars["data"]);
 
 // export calendar //
-if ( ((is_array($calendarIds) && (count($calendarIds) > 0)) or isset($_REQUEST["calendarItem"]) ) && $_REQUEST["export"]=='y') {
+if (is_array($calendarIds) && (count($calendarIds) > 0) && $_REQUEST["export"]=='y') {
 	// get calendar events 
-	if ( !isset($_REQUEST["calendarItem"]) ) {
-		$events=$calendarlib->list_items($calendarIds, $user, $startTime, $stopTime, -1, $maxRecords, $sort_mode='start_asc', $find='');
-	} else {
-		$events[][]['result'] = $calendarlib->get_item($_REQUEST["calendarItem"]);
-	}
+	$events=$calendarlib->list_items($calendarIds, $user, $startTime, $stopTime, -1, $maxRecords, $sort_mode='start_asc', $find='');
 
 	// create ical array//
 	$iCal = new File_iCal();
 	
 	$cal = $iCal->getSkeletonCalendar();
 	foreach ($events as $day=>$day_data) {
-		foreach( $day_data as $dd) {
+		for ($i=0; $i < count($day_data); $i++) {
 			$ea=array();
-			$ea["Summary"]=$dd["result"]["name"];
-			$ea["dateStart"]=$dd["result"]["start"];
-			$ea["dateEnd"]=$dd["result"]["end"];
-			$ea["Description"]=preg_replace("/\n/","\\n",$dd["result"]["description"]);
-			if ($dd["result"]["participants"]) {
-				$ea["Attendees"]=$dd["result"]["participants"];
+			$ea["Summary"]=$day_data[$i]["result"]["name"];
+			$ea["dateStart"]=$day_data[$i]["result"]["start"];
+			$ea["dateEnd"]=$day_data[$i]["result"]["end"];
+			$ea["Description"]=preg_replace("/\n/","\\n",$day_data[$i]["result"]["description"]);
+			if ($day_data[$i]["result"]["participants"]) {
+				$ea["Attendees"]=$day_data[$i]["result"]["participants"];
 			}
-			$ea["LastModified"]=$dd["result"]["lastModif"];
+			$ea["LastModified"]=$day_data[$i]["result"]["lastModif"];
 			// Second character of duration value must be a 'P' ?? 
-			$ea["Duration"]=($dd["result"]["end"] - $dd["result"]["start"]);
-			$ea["Contact"]=array($dd["result"]["user"]);
-			$ea["organizer"]=array($dd["result"]["organizers"]);
-			$ea["URL"]=$dd["result"]["url"];
-			$ea["DateStamp"]=$dd["result"]["created"];
-			//$ea["RequestStatus"]=$dd["result"]["status"];
-			$ea["UID"]="tiki-".$dd["result"]["calendarId"]."-".$dd["result"]["calitemId"];
+			$ea["Duration"]=($day_data[$i]["result"]["end"] - $day_data[$i]["result"]["start"]);
+			$ea["Contact"]=array($day_data[$i]["result"]["user"]);
+			$ea["organizer"]=array($day_data[$i]["result"]["organizers"]);
+			$ea["URL"]=$day_data[$i]["result"]["url"];
+			$ea["DateStamp"]=$day_data[$i]["result"]["created"];
+			//$ea["RequestStatus"]=$day_data[$i]["result"]["status"];
+			$ea["UID"]="tiki-".$day_data[$i]["result"]["calendarId"]."-".$day_data[$i]["result"]["calitemId"];
 			$c = $iCal->factory("Event",$ea);
 			$cal->addEvent($c);
 		}
@@ -109,7 +105,7 @@ if ( ((is_array($calendarIds) && (count($calendarIds) > 0)) or isset($_REQUEST["
 	$re_encode = stripos($_SERVER['HTTP_USER_AGENT'], 'windows');	// only re-encode to ISO-8859-15 if client on Windows
 	if (function_exists('recode') && $re_encode !== false) {
 		print(recode('utf-8..iso8859-15',$calendar_str));
-	} elseif (function_exists('iconv') && $re_encode !== false) {
+	} else if (function_exists('iconv') && $re_encode !== false) {
 		print(iconv("UTF-8", "ISO-8859-15", $calendar_str));
 	} else {
 		print($calendar_str);	// UTF-8 is good for other platforms
@@ -123,3 +119,4 @@ $smarty->assign('iCal', $iCal);
 // Display the template
 $smarty->assign('mid','tiki-calendar_export_ical.tpl');
 $smarty->display("tiki.tpl");
+?>

@@ -14,7 +14,6 @@ function wikiplugin_listpages_info() {
 		'documentation' => 'PluginListpages',
 		'description' => tra('List wiki pages.'),
 		'prefs' => array('wikiplugin_listpages'),
-		'icon' => 'pics/icons/page_white_stack.png',
 		'params' => array(
 			'offset' => array(
 				'required' => false,
@@ -24,7 +23,7 @@ function wikiplugin_listpages_info() {
 			'max' => array(
 				'required' => false,
 				'name' => tra('Result Count'),
-				'description' => tra('Number of results displayed in the list.'),
+				'description' => tra('Amount of results displayed in the list.'),
 			),
 			'initial' => array(
 				'required' => false,
@@ -131,7 +130,7 @@ function wikiplugin_listpages($data, $params) {
 		global $multilinguallib;
 		require_once 'lib/multilingual/multilinguallib.php';
 		if ($translations == 'user') {
-			$translations = $multilinguallib->preferredLangs();
+			$translations = $multilinguallib->preferedLangs();
 		} else {
 			$translations = explode( '|', $translations );
 		}
@@ -151,7 +150,7 @@ function wikiplugin_listpages($data, $params) {
 		$max = -1;
 	}
 	if (!isset($sort)) {
-		$sort = 'pageName_asc';
+		$sort = 'pageName_desc';
 	}
 	if (!isset($find)) {
 		$find = '';
@@ -191,3 +190,4 @@ function wikiplugin_listpages($data, $params) {
 
 	return '~np~'.$ret.'~/np~';
 }
+?>

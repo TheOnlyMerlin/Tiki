@@ -140,3 +140,4 @@ if($tiki_p_map_view != 'y') {
   
   $xajax->register(XAJAX_FUNCTION,"map_redraw");
   $xajax->processRequest();
+?>

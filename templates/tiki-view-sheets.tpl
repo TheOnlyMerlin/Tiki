@@ -1,4 +1,6 @@
 {* $Id$ *}
+<link rel="stylesheet" href="lib/sheet/style.css" type="text/css" />{* this shouldn't be here; links to CSS only allowed in head html tag !!! (luci) *}
+{* here is missing body tag when above link to CSS remains!!! (luci) *}
 
 {title help="Spreadsheet"}{$title}{/title}
 
@@ -25,10 +27,10 @@
 			{button href="#" _onclick="formatCellClick();return false;" _text="{tr}Format Cell{/tr}"}
 		<div id="detail"></div>
 	</div>
-	<form method="post" action="tiki-view_sheets.php?sheetId={$sheetId}" id="Grid"></form>
+	<form method="post" action="tiki-view_sheets.php?mode=edit&sheetId={$sheetId}" id="Grid"></form>
 	<div class='submit'>
 		<input type="submit" onclick='g.target.style.visibility = "hidden"; g.prepareSubmit(); g.target.submit();' value="{tr}Save{/tr}" />
-		{button sheetId="$sheetId" _text="{tr}Cancel{/tr}" _ajax="n"}
+		{button href="tiki-view_sheets.php?sheetId=$sheetId" _text="{tr}Cancel{/tr}" _ajax="n"}
 	</div>
 	<script type="text/javascript" src="lib/sheet/grid.js"></script>
 	<script type="text/javascript" src="lib/sheet/control.js"></script>
@@ -57,27 +59,17 @@
 	</script>
 
 {else}
-	<div class="tiki_sheet">{$grid_content}</div>
+	{$grid_content}
 	<div class="navbar">
 		{if $tiki_p_view_sheet eq 'y' || $tiki_p_sheet_admin eq 'y' || $tiki_p_admin eq 'y'}
 			{button href="tiki-sheets.php" _text="{tr}List Sheets{/tr}"}
 		{/if}
 	
 		{if $tiki_p_edit_sheet eq 'y' || $tiki_p_sheet_admin eq 'y' || $tiki_p_admin eq 'y'}
-			{if $prefs.feature_jquery_sheet eq "y"}
-				{if $editconflict eq 'y'}
-					{assign var="uWarning" value="&lt;br /&gt;{tr}Already being edited by{/tr} $semUser"}
-				{else}
-					{assign var="uWarning" value=""}
-				{/if}
-				{button _id="save_button" _text="{tr}Save{/tr}" _ajax="n" _class="" _title="{tr}Tiki Sheet{/tr} | {tr}Save current spreadsheet{/tr}"}
-				{button _id="edit_button" _text="{tr}Edit{/tr}" _ajax="n" _class="" _title="{tr}Warning{/tr} | {tr}New jQuery.sheet based editing - experimental feature!{/tr}"|cat:$uWarning}
+			{if $editconflict eq 'y'}
+				{button href="tiki-view_sheets.php?sheetId=$sheetId&amp;readdate=$read_date&amp;mode=edit" _title="$semUser" _text="{tr}Edit{/tr}" _ajax="n"}
 			{else}
-				{if $editconflict eq 'y'}
-					{button sheetId="$sheetId" readdate="$read_date" mode="edit" _title="$semUser" _text="{tr}Edit{/tr}" _ajax="n"}
-				{else}
-					{button sheetId="$sheetId" readdate="$read_date" mode="edit" _text="{tr}Edit{/tr}" _ajax="n"}
-				{/if}
+				{button href="tiki-view_sheets.php?sheetId=$sheetId&amp;readdate=$read_date&amp;mode=edit" _text="{tr}Edit{/tr}" _ajax="n"}
 			{/if}
 		{/if}
 
@@ -96,20 +88,5 @@
 		{if $chart_enabled eq 'y'}
 			{button href="tiki-graph_sheet.php?sheetId=$sheetId" _text="{tr}Graph{/tr}"}
 		{/if}
-
-		{if $tiki_p_edit_sheet eq 'y' || $tiki_p_sheet_admin eq 'y' || $tiki_p_admin eq 'y'}
-			{if $prefs.feature_jquery_sheet eq "y"}{* temporary button to edit the previous way *}
-				<br /><br /><br />
-				{remarksbox type="note" icon="bricks" title="jQuery.sheet under development"}
-					Temporary "edit the old way" during jQuery.sheet development<br />
-					{if $editconflict eq 'y'}
-						{button sheetId="$sheetId" readdate="$read_date" mode="edit" _title="$semUser" _text="{tr}Tiki-Sheet Edit{/tr}" _ajax="n"}
-					{else}
-						{button sheetId="$sheetId" readdate="$read_date" mode="edit" _text="{tr}Tiki-Sheet Edit{/tr}" _ajax="n"}
-					{/if}
-				{/remarksbox}
-			{/if}
-		{/if}
-
 	</div>
 {/if}

@@ -22,15 +22,10 @@
 					</td>
 				</tr>
 
-				
-				{if $user eq ''}
-				<tr>
-					<td class="form">{tr}From{/tr}:</td>
-					<td class="form">
-						<input type="text" name="from" value="{$from}" maxlength="255" style="width:25%" />
-					</td>
-				</tr>
+				{if $prefs.feature_antibot eq 'y' && $user eq ''}
+					{include file="antibot.tpl" td_style="form"}
 				{/if}
+
 				<tr>
 					<td class="form">{tr}Subject{/tr}:</td>
 					<td class="form">
@@ -40,12 +35,9 @@
 				<tr>
 					<td class="form">{tr}Message{/tr}:</td>
 					<td class="form">
-						{textarea rows="20" name="body" cols="80" _simple='y'}{$body}{/textarea}
+						{textarea rows="20" name="body" cols="80" _enlarge="y"}{$body}{/textarea}
 					</td>
 				</tr>
-				{if $prefs.feature_antibot eq 'y' && $user eq ''}
-					{include file='antibot.tpl' td_style="form"}
-				{/if}
 				<tr>
 					<td class="form"></td>
 					<td class="form">

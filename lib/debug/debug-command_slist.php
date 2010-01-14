@@ -12,8 +12,7 @@ require_once ('lib/debug/debugger-ext.php');
 /**
  * \brief Debugger command to list smatry vars
  */
-class DbgSList extends DebuggerCommand
-{
+class DbgSList extends DebuggerCommand {
 	/// \b Must have function to announce command name in debugger console
 	function name() {
 		return 'slist';
@@ -80,3 +79,5 @@ class DbgSList extends DebuggerCommand
 function dbg_command_factory_slist() {
 	return new DbgSList();
 }
+
+?>

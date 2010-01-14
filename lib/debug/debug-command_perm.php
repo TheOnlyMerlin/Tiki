@@ -12,8 +12,7 @@ require_once ('lib/debug/debugger-ext.php');
 /**
  * \brief Show current permissions in a convenient way
  */
-class DbgPermissions extends DebuggerCommand
-{
+class DbgPermissions extends DebuggerCommand {
 	/// \b Must have function to announce command name in debugger console
 	function name() {
 		return 'perm';
@@ -74,3 +73,5 @@ class DbgPermissions extends DebuggerCommand
 function dbg_command_factory_perm() {
 	return new DbgPermissions();
 }
+
+?>

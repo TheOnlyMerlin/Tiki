@@ -5,19 +5,12 @@
 
 {if $tiki_p_admin_newsletters eq "y"}
 	<div class="navbar">
-		{button href="tiki-newsletters.php" _text="{tr}List Newsletters{/tr}"}
 		{if $nlId}
 			{button href="tiki-admin_newsletters.php?nlId=$nlId" _text="{tr}Admin Newsletters{/tr}"}
 		{else}
 			{button href="tiki-admin_newsletters.php" _text="{tr}Admin Newsletters{/tr}"}
 		{/if}
 	</div>
-{/if}
-
-{if $upload_err_msg neq ''}
-	{remarksbox type='warning' title="{tr}Warning{/tr}" icon='error'}
-		{$upload_err_msg}
-	{/remarksbox}
 {/if}
 
 {assign var=area_name value="editwiki"}
@@ -27,7 +20,7 @@
 	{/remarksbox}
 	
 	{if $errors}
-		{remarksbox type='warning' title="{tr}Errors{/tr}" icon='error'}
+		<span class="attention">{tr}Errors detected{/tr}<br /></span>
 		<table class="normal">
 			<tr class="formcolor">
 				<th>{tr}User{/tr}</th>
@@ -43,39 +36,39 @@
 				</tr>
 			{/section}
 		</table>
-		{/remarksbox}
+		<br /><br />
 	{/if}
 {/if}
 
 {if $presend eq 'y'}
-	<div id="confirmArea">
-	{remarksbox type='warning' title="{tr}Please Confirm{/tr}"}
+	<br />
+	<div class="title">
+		<h2>{tr}Please Confirm{/tr}</h2>
+	</div>
+	<div class="simplebox highlight">
 		<b>{tr}This newsletter will be sent to {$subscribers} email addresses.{/tr}</b>
-		<br />
-		{tr}Reply to:{/tr} {if empty($replyto)}{$prefs.sender_email|escape} ({tr}default{/tr}){else}{$replyto|escape}{/if}
-	{/remarksbox}
+	</div>
 	<p>
-		<form method="post" action="tiki-send_newsletters.php" target="resultIframe" id='confirmForm'>
+		<form method="post" action="tiki-send_newsletters.php">
 			<input type="hidden" name="nlId" value="{$nlId|escape}" />
-			<input type="hidden" name="sendingUniqId" value="{$sendingUniqId|escape}" />
 			<input type="hidden" name="editionId" value="{$info.editionId}"/>
 			<input type="hidden" name="subject" value="{$subject|escape}" />
 			<input type="hidden" name="data" value="{$data|escape}" />
 			<input type="hidden" name="dataparsed" value="{$dataparsed|escape}" />
 			<input type="hidden" name="cookietab" value="3" />
 			<input type="hidden" name="datatxt" value="{$datatxt|escape}" />
-			<input type="hidden" name="replyto" value="{$replyto|escape}" />
-			<input type="hidden" name="wysiwyg" value="{$wysiwyg|escape}" />
-			<input type="submit" name="send" value="{tr}Send{/tr}" onclick="document.getElementById('confirmArea').style.display = 'none'; document.getElementById('sendingArea').style.display = 'block';" />
+			<input type="submit" name="send" value="{tr}Send{/tr}" />
 			<input type="submit" name="preview" value="{tr}Cancel{/tr}" />
 			{foreach from=$info.files item=newsletterfile key=fileid}
 				<input type='hidden' name='newsletterfile[{$fileid}]' value='{$newsletterfile.id}'/>
 			{/foreach}
 		</form>
 	</p>
-	<h2>{tr}Preview{/tr}</h2>
+	<div class="title">
+		<h2>{tr}Preview{/tr}</h2>
+	</div>
 	<h3>{tr}Subject{/tr}</h3>
-	<div class="simplebox wikitext">{$subject|escape}</div>
+	<div class="simplebox wikitext">{$subject}</div>
 
 	<h3>{tr}HTML version{/tr}</h3>
 	<div class="simplebox wikitext">{$dataparsed}</div>
@@ -94,19 +87,13 @@
 			</li>
 		{/foreach}
 	</ul>
-
-	</div>
-
-	<div id="sendingArea" style="display:none">
-		<h3>{tr}Sending Newsletter{/tr} ...</h3>
-		<iframe id="resultIframe" name="resultIframe" frameborder="0" style="width: 600px; height: 400px"></iframe>
-	</div>
-
 {else}
 	{if $preview eq 'y'}
-		<h2>{tr}Preview{/tr}</h2>
+		<div class="title">
+			<h2>{tr}Preview{/tr}</h2>
+		</div>
 		<h3>{tr}Subject{/tr}</h3>
-		<div class="simplebox wikitext">{$info.subject|escape}</div>
+		<div class="simplebox wikitext">{$info.subject}</div>
 
 		<h3>{tr}HTML version{/tr}</h3>
 		<div class="simplebox wikitext">{$info.dataparsed}</div>
@@ -127,27 +114,44 @@
 		</ul>
 	{/if}
 
-{tabset name='tabs_send_newsletters'}
+	<br />
+	{* --- tab headers --- *}
+	{if $prefs.feature_tabs eq 'y'}
+		{cycle name=tabs values="1,2,3,4" print=false advance=false reset=true}
+		<div class="tabs">
+			<span id="tab{cycle name=tabs advance=false}" class="tabmark">
+				<a href="javascript:tikitabs({cycle name=tabs},4);">{tr}Edit{/tr}</a>				
+			</span>
+			<span id="tab{cycle name=tabs advance=false}" class="tabmark">
+				<a href="javascript:tikitabs({cycle name=tabs},4);">{tr}Drafts{/tr}&nbsp;({$cant_drafts})</a>
+			</span>
+			<span id="tab{cycle name=tabs advance=false}" class="tabmark">
+				<a href="javascript:tikitabs({cycle name=tabs},4);">{tr}Sent editions{/tr}&nbsp;({$cant_editions})</a>
+			</span>
+		</div>
+	{/if}
 
-	{tab name="{tr}Edit{/tr}"}
+	{cycle name=content values="1,2,3,4" print=false advance=false reset=true}
 	{* --- tab with editor --- *}
+	<div id="content{cycle name=content assign=focustab}{$focustab}" class="tabcontent"{if $prefs.feature_tabs eq 'y'} style="display:{if $focustab eq $cookietab}block{else}none{/if};"{/if}>
+
 		<h2>{tr}Prepare a newsletter to be sent{/tr}</h2>
 		<form action="tiki-send_newsletters.php" method="post" id='editpageform' enctype='multipart/form-data'>
 			<input type="hidden" name="editionId" value="{$info.editionId}"/>
 			<table class="normal" id="newstable">
 				<tr class="formcolor">
-					<td class="formcolor">{tr}Subject:{/tr}</td>
+					<td class="formcolor">{tr}Subject{/tr}:</td>
 					<td class="formcolor">
 						<input type="text" maxlength="250" size="80" name="subject" value="{$info.subject|escape}" />
 					</td>
 				</tr>
 				<tr class="formcolor">
-					<td class="formcolor">{tr}Newsletter:{/tr}</td>
+					<td class="formcolor">{tr}Newsletter{/tr}:</td>
 					<td class="formcolor">
 						<select name="nlId" onchange="checkNewsletterTxtArea();">
 							{section loop=$newsletters name=ix}
 								<option value="{$newsletters[ix].nlId|escape}" {if $newsletters[ix].nlId eq $nlId}selected="selected"{/if}>
-									{$newsletters[ix].name|escape}
+									{$newsletters[ix].name}
 								</option>
 							{/section}
 						</select>
@@ -163,7 +167,7 @@
 								<option value="0">{tr}none{/tr}</option>
 								{section name=ix loop=$templates}
 									<option value="{$templates[ix].templateId|escape}" {if $templateId eq $templates[ix].templateId}selected="selected"{/if}>
-										{$templates[ix].name|escape}
+										{$templates[ix].name}
 									</option>
 								{/section}
 							</select>
@@ -187,19 +191,31 @@
 
 				<tr class="formcolor">
 					<td class="formcolor">
-						{tr}Data HTML:{/tr}
+						{tr}Data HTML{/tr}:
+						<br /><br />
+						{include file="textareasize.tpl" area_name='editwiki' formId='editpageform'}
+						{if $prefs.quicktags_over_textarea neq 'y'}
+							<br /><br />
+							{include file=tiki-edit_help_tool.tpl area_name='data'}
+						{/if}
 					</td>
 					<td class="formcolor">
-						{textarea name='data' id='editwiki'}{$info.data}{/textarea}
-						{tr}Must be wiki parsed:{/tr} <input type="checkbox" name="wikiparse" {if empty($info.wikiparse) or $info.wikiparse eq 'y'} checked="checked"{/if} />
+						{if $prefs.quicktags_over_textarea eq 'y'}
+							{include file=tiki-edit_help_tool.tpl area_name='data'}
+						{/if}
+						<textarea id='editwiki' name="data" rows="{$rows}" cols="{$cols}">{$info.data|escape}</textarea>
+						<input type="hidden" name="rows" value="{$rows}"/>
+						<input type="hidden" name="cols" value="{$cols}"/>
+						<br />
+						{tr}Must be wiki parsed{/tr}: <input type="checkbox" name="wikiparse" {if empty($info.wikiparse) or $info.wikiparse eq 'y'} checked="checked"{/if} />
 					</td>
 				</tr>
 
 				<tr class="formcolor">
 					<td class="formcolor" id="txtcol1">
-						{tr}Data Txt:{/tr}
+						{tr}Data Txt{/tr}:
 						<br /><br />
-						{include file='textareasize.tpl' area_name='editwikitxt' formId='editpageform'}
+						{include file="textareasize.tpl" area_name='editwikitxt' formId='editpageform'}
 					</td>
 					<td class="formcolor" id="txtcol2" >
 						<textarea id='editwikitxt' name="datatxt" rows="{$rows}" cols="{$cols}">{$info.datatxt|escape}</textarea>
@@ -226,29 +242,24 @@
 				</tr>
 
 				<tr class="formcolor">
-					<td class="formcolor" id="txtcol1">{tr}Reply To Email{/tr}</td>
-					<td class="formcolor" id="txtcol2" ><input type="text" name="replyto" value="{$replyto|escape}" /> {tr}if not:{/tr} {$prefs.sender_email|escape}</td>
-				</tr>
-
-				<tr class="formcolor">
 					<td class="formcolor">&nbsp;</td>
 					<td class="formcolor">
-						<input type="submit" name="preview" value="{tr}Preview{/tr}" class="wikiaction tips" title="{tr}Send Newsletters{/tr}|{tr}Preview your changes.{/tr}" onclick="needToConfirm=false" />
+						<input type="submit" name="preview" value="{tr}Preview{/tr}" />
 						&nbsp;
-						<input type="submit" name="save_only" value="{tr}Save as Draft{/tr}" class="wikiaction tips" title="{tr}Send Newsletters{/tr}|{tr}Save your changes.{/tr}" onclick="needToConfirm=false" />
+						<input type="submit" name="save_only" value="{tr}Save as Draft{/tr}" />
 					</td>
 				</tr>
 
 				<tr>
 					<td class="formcolor">&nbsp;</td>
-					<td class="formcolor">&nbsp;<input type="submit" name="save" value="{tr}Send Newsletter{/tr}" class="wikiaction tips" title="{tr}Send Newsletters{/tr}|{tr}Save any changes and send to all subscribers.{/tr}" onclick="needToConfirm=false" /></td>
+					<td class="formcolor">&nbsp;<input type="submit" name="save" value="{tr}Send Newsletter{/tr}" /></td>
 				</tr>
 			</table>
 		</form>
-	{/tab}
+	</div>
 
-	{tab name="{tr}Drafts{/tr}&nbsp;(`$cant_drafts`)"}
 	{* --- tab with drafts --- *}
+	<div id="content{cycle name=content assign=focustab}{$focustab}" class="tabcontent"{if $prefs.feature_tabs eq 'y'} style="display:{if $focustab eq $cookietab}block{else}none{/if};"{/if}>
 		{assign var=channels value=$drafts}
 		{assign var=view_editions value='n'}
 		{assign var=offset value=$dr_offset}
@@ -266,11 +277,11 @@
 		{assign var=find_bak value=$ed_find}
 		{assign var=tab value=2}
 		<h2>{tr}Drafts{/tr}&nbsp;({$cant_drafts})</h2>
-		{include file='sent_newsletters.tpl' }
-	{/tab}
+		{include file=sent_newsletters.tpl }
+	</div>
 
-	{tab name="{tr}Sent editions{/tr}&nbsp;($cant_editions)"}
 	{* --- tab with editions --- *}
+	<div id="content{cycle name=content assign=focustab}{$focustab}" class="tabcontent"{if $prefs.feature_tabs eq 'y'} style="display:{if $focustab eq $cookietab}block{else}none{/if};"{/if}>
 		{assign var=channels value=$editions}
 		{assign var=view_editions value='y'}
 		{assign var=offset value=$ed_offset}
@@ -288,9 +299,8 @@
 		{assign var=find_bak value=$dr_find}
 		{assign var=tab value=3}
 		<h2>{tr}Sent editions{/tr}&nbsp;({$cant_editions})</h2>
-		{include file='sent_newsletters.tpl' }
-		{/tab}
-	{/tabset}
+		{include file=sent_newsletters.tpl }
+	</div>
 {/if}
 
 <script type='text/javascript'>
@@ -314,3 +324,4 @@ function remove_newsletter_file(id) {
 
 -->
 </script>
+{include file=tiki-edit_help.tpl}

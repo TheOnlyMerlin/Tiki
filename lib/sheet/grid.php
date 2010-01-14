@@ -1262,7 +1262,7 @@ class TikiSheetDatabaseHandler extends TikiSheetDataHandler
 		$updates[] = $sheet->getRowCount();
 		$updates[] = $sheet->getColumnCount();
 
-		$conditions = str_repeat( "( rowIndex = ? AND columnIndex = ? ) OR ", ( count($updates) - 4 ) / 2 );
+		$conditions = str_repeat( "( rowIndex = ? AND columnIndex = ? ) OR ", ( sizeof($updates) - 4 ) / 2 );
 		if ($prefs['feature_actionlog'] == 'y') { // must keep the previous value to do the difference
 			$query = "SELECT `rowIndex`, `columnIndex`, `value` FROM `tiki_sheet_values` WHERE `sheetId` = ? AND  `end` IS NULL";
 			$result = $tikilib->query($query, array($this->sheetId));
@@ -1274,7 +1274,7 @@ class TikiSheetDatabaseHandler extends TikiSheetDataHandler
 			
 		$tikilib->query( "UPDATE `tiki_sheet_values` SET `end` = ?  WHERE `sheetId` = ? AND `end` IS NULL AND ( {$conditions}`rowIndex` >= ? OR `columnIndex` >= ? )", $updates );
 
-		if( count( $inserts ) > 0 )
+		if( sizeof( $inserts ) > 0 )
 			foreach( $inserts as $values )
 			{
 				$tikilib->query( "INSERT INTO `tiki_sheet_values` (`sheetId`, `begin`, `rowIndex`, `columnIndex`, `value`, `calculation`, `width`, `height`, `format`, `user` ) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )", $values );
@@ -1665,24 +1665,18 @@ class TikiSheetOutputHandler extends TikiSheetDataHandler
 
 			for( $j = 0; $sheet->getColumnCount() > $j; $j++ )
 			{
-				$width = $height = '';
+				$width = $height = "";
 				extract( $sheet->cellInfo[$i][$j] );
-				$append = '';
+				$append = "";
 
 				if( empty( $width ) || empty( $height ) || $width == 0 || $height == 0 )
 					continue;
 
-				$append = ' id="cell_c'.($j+1).'_r'.($i+1).'"';
-					
 				if( $width > 1 )
 					$append .= " colspan='{$width}'";
 
 				if( $height > 1 )
 					$append .= " rowspan='{$height}'";
-				
-				if (!empty($sheet->calcGrid[$i][$j])) {
-					$append .= ' formula="='.$sheet->calcGrid[$i][$j].'"';
-				}
 
 				if( isset( $sheet->dataGrid[$i][$j] ) )
 					$data = $sheet->dataGrid[$i][$j];
@@ -1806,90 +1800,6 @@ class TikiSheetLabeledOutputHandler extends TikiSheetDataHandler
 	}
 } // }}}1
 
-/** TikiSheetHTMLTableHandler
- * Class that imports a sheet from an HTML table
- * Designed to be used with jQuery.sheet.saveSheet
- */
-class TikiSheetHTMLTableHandler extends TikiSheetDataHandler
-{
-
-	var $data;
-	
-	/** Constructor {{{2
-	 * Initializes the the serializer on a wiki page
-	 * @param $file The name of the wiki page to perform actions on.
-	 */
-	function TikiSheetHTMLTableHandler( $inHtml )
-	{
-		$this->data = $inHtml;
-	}
-
-	// _load {{{2
-	function _load( &$sheet ) {
-
-		
-// Unfortunately the output of jQuery.sheet seems not to be valid enough for this approach :(
-//		include_once 'lib/pear/PEAR/XMLParser.php';
-//		$parser = new PEAR_XMLParser();
-//		$parser->parse('<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body>'.$this->data.'</body>/head>');
-//		$res = $parser->getData();
-		
-		preg_match_all('/<TD.*\/TD>/Umis', $this->data, $cells);
-		
-		foreach( $cells[0] as $cell ) {
-			preg_match('/id="(.*?)"/i', $cell, $id);
-			preg_match('/formula="(.*?)"/i', $cell, $formula);
-			preg_match('/<TD.*>(.*)<\/TD>/i', $cell, $val);
-			
-			if (count($id) > 1) {
-				preg_match_all('/_[cr](\d+)/', $id[1], $rc);
-				if (count($rc > 1)) {
-					$col = $rc[1][0];
-					$row = $rc[1][1];
-				}
-			}
-			
-			if ($row && $col) {
-				$val = count($val) > 1 ? $val[1] : '';
-
-				$sheet->initCell( $row-1, $col-1 );
-				$sheet->setValue( $val );
-				$sheet->setSize( 1, 1 );
-				if (count($formula) > 1) {
-					if (substr($formula[1], 0, 1) == '=') {
-						$formula[1] = substr($formula[1], 1, strlen($formula[1])-1);
-					}
-					if (!empty($formula[1])) {
-						$sheet->setCalculation($formula[1]);
-					}
-				}
-			}
-		}
-
-
-		return true;
-	}
-
-	// name {{{2
-	function name()
-	{
-		return "HTML Table";
-	}
-
-	// supports {{{2
-	function supports( $type )
-	{
-		return ( TIKISHEET_LOAD_DATA & $type ) > 0;
-	}
-
-	// version {{{2
-	function version()
-	{
-		return "1.0";
-	}
- } // }}}1
-
-
 // Tikiwiki Sheet Library {{{1
 
 class SheetLib extends TikiLib
@@ -1950,7 +1860,7 @@ class SheetLib extends TikiLib
 			if ($tikilib->user_has_perm_on_object($user, $row['sheetId'], 'sheet', 'tiki_p_view_sheet')) {
 				if ($userlib->object_has_one_permission($row['sheetId'], 'sheet'))
 					$row['individual'] = 'y';
-				$row['tiki_p_edit_sheet'] = ($user && $user == $row['author']) || $tikilib->user_has_perm_on_object($user, $row['sheetId'], 'sheet', 'tiki_p_edit_sheet')?'y': 'n';
+				$row['tiki_p_edit_sheet'] = ($user && $user == $row['author']) || $tikilib->user_has_perm_on_object($user, $row['sheetId'], 'sheet', 'tiki_p_edit_sheet', 'tiki_p_edit_categorized')?'y': 'n';
 				$results['data'][] = $row;
 			}
 		}
@@ -2019,4 +1929,6 @@ class SheetLib extends TikiLib
 	}
 	
 } // }}}1
-$sheetlib = new SheetLib;
+
+$sheetlib = &new SheetLib( $tikilib->db );
+?>

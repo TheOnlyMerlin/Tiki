@@ -31,8 +31,8 @@ function wikiplugin_redirect_info() {
 	);
 }
 
-function wikiplugin_redirect($data, $params, $offset, $options) {
-	global $tikilib;
+function wikiplugin_redirect($data, $params) {
+
 	extract ($params,EXTR_SKIP);
 	$areturn = '';
 
@@ -40,9 +40,6 @@ function wikiplugin_redirect($data, $params, $offset, $options) {
 	if (!isset($url)) {$areturn += "REDIRECT plugin: No url specified!";}
 	if ((isset($_REQUEST['redirectpage']))) {
 		$areturn = "REDIRECT plugin: redirect loop detected!";
-	} else if (isset($options['print']) && $options['print'] == 'y') {
-		$info = $tikilib->get_page_info(isset($page)?$page: $url);
-		return $tikilib->parse_data($info['data'], $options);
 	} else {
 		/* SEO: Redirect with HTTP status 301 - Moved Permanently than default 302 - Found */
 		if (isset($page)) {
@@ -57,3 +54,5 @@ function wikiplugin_redirect($data, $params, $offset, $options) {
 		
 	return $areturn;
 }
+
+?>

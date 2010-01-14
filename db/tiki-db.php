@@ -9,6 +9,10 @@ if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== false) {
 
 require_once('lib/init/initlib.php');
 
+// Define and load Smarty components
+define('SMARTY_DIR', "lib/smarty/libs/");
+require_once ( 'lib/smarty/libs/Smarty.class.php');
+
 // Define lang and load translation functions
 if (!empty($_REQUEST['lang'])) {
 	$language = $prefs['site_language'] = $prefs['language'] = $_REQUEST['lang'];
@@ -22,7 +26,7 @@ include_once('lib/init/tra.php');
 // Otherwise you will be ok.
 //$api_tiki		= 'pear';
 //$api_tiki			= 'pdo';
-$api_tiki			= 'pdo';
+$api_tiki			= 'adodb';
 $db_tiki			= 'mysql';
 $dbversion_tiki = '2.0';
 $host_tiki		= 'localhost';
@@ -45,6 +49,7 @@ $user_tiki   = 'myuser';
 $pass_tiki   = 'mypass';
 $dbs_tiki    = 'mytiki';
 $api_tiki    = 'adodb';
+?>
 
 ** Multi-tiki
 **************************************
@@ -86,129 +91,32 @@ if (is_file('db/virtuals.inc')) {
 	}
 	if (isset($multi)) {
 		$local_php = "db/$multi/local.php";
-		
 		$tikidomain = $multi;
 	}
 }
-$re = false;
-if ( file_exists($local_php) ) $re = include($local_php);
-if ( $re === false ) {
+$re = include($local_php);
+if ( $re === FALSE) {
 	header('location: tiki-install.php');
 	exit;
 }
 
 if ( $dbversion_tiki == '1.10' ) $dbversion_tiki = '2.0';
 
-require_once 'lib/core/lib/TikiDb/ErrorHandler.php';
-class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
-{
-	function handle( TikiDb $db, $query, $values, $result ) // {{{
-	{
-		global $smarty, $prefs, $ajaxlib;
-
-		$msg = $db->getErrorMessage();
-		$q=$query;
-		foreach($values as $v) {
-			if (is_null($v)) $v='NULL';
-			else $v="'".addslashes($v)."'";
-			$pos=strpos($q, '?');
-			if ($pos !== FALSE)
-				$q=substr($q, 0, $pos)."$v".substr($q, $pos+1);
-		}
-
-		if (function_exists('xdebug_get_function_stack')) {
-			function mydumpstack($stack) {
-				$o='';
-				foreach($stack as $line) {
-					$o.='* '.$line['file']." : ".$line['line']." -> ".$line['function']."(".var_export($line['params'], true).")<br />";
-				}
-				return $o;
-			}
-			$stacktrace = mydumpstack(xdebug_get_function_stack());
-		} else {
-			$stacktrace = false;
-		}
-
-
-		if ( ! isset($_SESSION['fatal_error']) ) {
-			// Do not show the error if an error has already occured during the same script execution (error.tpl already called), because tiki should have died before another error.
-			// This happens when error.tpl is called by tiki.sql... and tiki.sql is also called again in error.tpl, entering in an infinite loop.
-
-			require_once 'installer/installlib.php';
-			$installer = new Installer;
-
-			require_once('tiki-setup.php');
-			if ( ! $smarty ) {
-				require_once 'setup_smarty.php';
-			}
-
-			$smarty->assign( 'msg', $msg );
-			$smarty->assign( 'base_query', $query );
-			$smarty->assign( 'values', $values );
-			$smarty->assign( 'built_query', $q );
-			$smarty->assign( 'stacktrace', $stacktrace );
-			$smarty->assign( 'requires_update', $installer->requiresUpdate() );
-
-			if ($prefs['feature_ajax'] == 'y') {
-				global $ajaxlib;
-				include_once('lib/ajax/xajax/xajax_core/xajaxAIO.inc.php');
-				if ($ajaxlib && $ajaxlib->canProcessRequest()) {
-					// this was a xajax request -> return a xajax answer
-					$page = $smarty->fetch( 'database-connection-error.tpl' );
-					$objResponse = new xajaxResponse();
-					$page=addslashes(str_replace(array("\n", "\r"), array(' ', ' '), $page));
-					$objResponse->script("bugwin=window.open('', 'tikierror', 'width=760,height=500,scrollbars=1,resizable=1');".
-							"bugwin.document.write('$page');");
-					echo $objResponse->getOutput();
-					die();
-				}
-			}
-
-			$smarty->display('database-connection-error.tpl');
-			unset($_SESSION['fatal_error']);
-			die;
-		}
-	} // }}}
-}
-
-$dbInitializer = 'db/tiki-db-adodb.php';
 if (extension_loaded("pdo") and $api_tiki == 'pdo' ) {
-	$dbInitializer = 'db/tiki-db-pdo.php';
+	require_once('db/tiki-db-pdo.php');
+} else {
+	require_once('db/tiki-db-adodb.php');
 }
 
-require $dbInitializer;
-init_connection( TikiDb::get() );
+// Forget db info so that malicious PHP may not get password etc.
+$host_tiki = NULL;
+$user_tiki = NULL;
+$pass_tiki = NULL;
+$dbs_tiki = NULL;
 
-if( isset( $shadow_host, $shadow_user, $shadow_pass, $shadow_dbs ) ) {
-	global $dbMaster, $dbSlave;
-	// Set-up the replication
-	$dbMaster = TikiDb::get();
-
-	$host_tiki = $shadow_host;
-	$user_tiki = $shadow_user;
-	$pass_tiki = $shadow_pass;
-	$dbs_tiki = $shadow_dbs;
-	require $dbInitializer;
-	$dbSlave = TikiDb::get();
-	init_connection( $dbSlave );
-
-	require_once 'lib/core/lib/TikiDb/MasterSlaveDispatch.php';
-	$db = new TikiDb_MasterSlaveDispatch( $dbMaster, $dbSlave );
-	TikiDb::set( $db );
-}
-
-unset( $host_map, $db_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $shadow_user, $shadow_pass, $shadow_host, $shadow_dbs );
-
-function init_connection( $db ) {
-	global $db_table_prefix, $common_users_table_prefix, $db_tiki;
-
-	$db->setServerType( $db_tiki );
-	$db->setErrorHandler( new TikiDb_LegacyErrorHandler );
-
-	if( isset( $db_table_prefix ) )
-		$db->setTablePrefix( $db_table_prefix );
-
-	if( isset( $common_users_table_prefix ) )
-		$db->setUsersTablePrefix( $common_users_table_prefix );
-}
-
+unset ($host_map);
+unset ($db_tiki);
+unset ($host_tiki);
+unset ($user_tiki);
+unset ($pass_tiki);
+unset ($dbs_tiki);

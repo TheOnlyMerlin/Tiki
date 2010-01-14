@@ -7,8 +7,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 // this is an abstract class
-class ObjectLib extends TikiLib
-{
+class ObjectLib extends TikiLib {
+	function ObjectLib($db) {
+		parent::TikiLib($db);
+	}
 
     function add_object($type, $itemId, $description = '', $name = '', $href = '') {
 
@@ -47,19 +49,6 @@ class ObjectLib extends TikiLib
     function get_object_id($type, $itemId) {
 	$query = "select `objectId` from `tiki_objects` where `type`=? and `itemId`=?";
 	return $this->getOne($query, array($type, $itemId));
-    }
-
-	// Returns an array containing the object ids of objects of the same type. Each entry uses the item id as key and the object id as key. Items with no object id are ignored.
-	function get_object_ids($type, $itemIds) {
-	$query = "select `objectId`, `itemId` from `tiki_objects` where `type`=? and `itemId` IN (".implode(',', array_fill(0,count($itemIds),'?')).")";
-
-	$result = $this->query($query, array_merge(array($type), $itemIds));
-	$objectIds = array();
-	
-	while ($res = $result->fetchRow()) {
-		$objectIds[$res["itemId"]] = $res["objectId"];
-	}
-	return $objectIds;
     }
 
 	function get_needed_perm($objectType, $action) {
@@ -156,4 +145,6 @@ class ObjectLib extends TikiLib
 	}	
 	
 }
-$objectlib = new ObjectLib;
+global $dbTiki;
+$objectlib = new ObjectLib($dbTiki);
+?>

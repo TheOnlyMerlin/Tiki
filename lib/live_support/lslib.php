@@ -1,8 +1,11 @@
 <?php
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 
-class Lslib extends TikiLib
-{
+class Lslib extends TikiLib {
+	function Lslib($db) {
+		$this->TikiLib($db);
+	}
+
 	function set_operator_id($reqId, $senderId) {
 		$query = "update `tiki_live_support_requests` set `operator_id` = ? where `reqId`=?";
 
@@ -178,4 +181,7 @@ class Lslib extends TikiLib
 		return $this->getOne("select count(*) from `tiki_live_support_operators` where `status`=?",array('online'));
 	}
 }
-$lslib = new Lslib;
+global $dbTiki;
+$lslib = new Lslib($dbTiki);
+
+?>

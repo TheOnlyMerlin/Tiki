@@ -45,7 +45,7 @@ if (is_file($bannercachefile) and (!isset($_REQUEST["reload"]))) {
 } else {
 	include_once ('lib/banners/bannerlib.php');
 	if (!isset($bannerlib)) {
-		$bannerlib = new BannerLib;
+		$bannerlib = new BannerLib($dbTiki);
 	}
 	$data = $bannerlib->get_banner($_REQUEST["id"]);
 	if (!$data) {
@@ -66,3 +66,5 @@ if (is_file($bannercachefile)) {
 } else {
 	echo $data;
 }
+
+?>

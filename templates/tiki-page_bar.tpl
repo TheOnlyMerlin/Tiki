@@ -17,7 +17,7 @@
 		{/if}
 	{else}
 		{* Check that page is not locked and edit permission granted. SandBox can be edited w/o perm *}
-		{if ($editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') or (!$user and $prefs.wiki_encourage_contribution eq 'y')) or $tiki_p_admin_wiki eq 'y' or $canEditStaging eq 'y'}
+		{if ($editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox')) or $tiki_p_admin_wiki eq 'y' or $canEditStaging eq 'y'}
 			{if $needsStaging eq 'y'}
 				{assign var=thisPageName value=$stagingPageName|escape:"url"}
 			{else}
@@ -33,7 +33,7 @@
 			{else}
 				{assign var=thisPageClass value=''}
 			{/if}
-			{button href="tiki-editpage.php?page="|cat:$thisPageName|cat:$thisPageRefId _class=$thisPageClass _text="{tr}Edit this page{/tr}"}
+			{button href="tiki-editpage.php?page="|cat:$thisPageName|cat:$thisPageRefId _class=$thisPageClass _text="{tr}Edit{/tr}"}
 		{/if}
 
 		{if $prefs.feature_source eq 'y' and $tiki_p_wiki_view_source eq 'y'}
@@ -104,14 +104,13 @@
 
 			{* don't show comments if feature disabled or not enough rights *}
 			{if $prefs.feature_wiki_comments == 'y'
-				&& $comments_allowed_on_page == 'y'
 				&& $tiki_p_wiki_view_comments == 'y'
 				&& (($tiki_p_read_comments == 'y'
 				&& $comments_cant != 0)
 				|| $tiki_p_post_comments == 'y'
 				||$tiki_p_edit_comments == 'y')}
 				{assign var=pagemd5 value=$page|@md5}
-				{include file='comments_button.tpl'}
+				{include file=comments_button.tpl}
 			{/if}
 
 			{* don't show attachments button if feature disabled or no corresponding rights or no attached files and r/o*}
@@ -140,16 +139,12 @@
 				{button href="#attachments" _flip_id="attzone$pagemd5" _class=$thisbuttonclass _text=$thistext _flip_default_open=$prefs.w_displayed_default}
 			{/if}{* attachments *}
 
-			{if $prefs.feature_multilingual eq 'y' and ($tiki_p_edit eq 'y' or (!$user and $prefs.wiki_encourage_contribution eq 'y')) and !$lock}
+			{if $prefs.feature_multilingual eq 'y' and $tiki_p_edit eq 'y' and !$lock}
 				{if $beingStaged == 'y'}
 					{button href="tiki-edit_translation.php?page=$thisapprovedPageName" _text="{tr}Translate{/tr}"}
 				{else}
 					{button href="tiki-edit_translation.php?page=$thispage" _text="{tr}Translate{/tr}"}
 				{/if}
-			{/if}
-
-			{if $tiki_p_admin_wiki eq 'y' && $prefs.wiki_keywords eq 'y'}
-				{button href="tiki-admin_keywords.php" page=$page _text="{tr}Keywords{/tr}"}
 			{/if}
 		{/if}
 	{/if}
@@ -157,12 +152,12 @@
 
 {if $wiki_extras eq 'y' && $prefs.feature_wiki_attachments eq 'y' and $tiki_p_wiki_view_attachments eq 'y'}
 	<a name="attachments"></a>
-	{include file='attachments.tpl'}
+	{include file=attachments.tpl}
 {/if}
 
 {if $prefs.feature_wiki_comments eq 'y' and $tiki_p_wiki_view_comments == 'y' and $edit_page ne 'y'}
 	<a name="comments"></a>
-	{include file='comments.tpl'}
+	{include file=comments.tpl}
 {/if}
 
 {/strip}

@@ -1,8 +1,8 @@
 <?php
 /*
- * Tiki ALINK plugin. 
+ * Tiki-Wiki ALINK plugin. Go to http://www.TikiMODS.com for more Tikiwiki Plugins.
  *
- * DESCRIPTION: Creates a link to an anchor in a wiki page. Use in conjunction with the ANAME plugin, which specifies the location and name of the anchor.
+ * DESCRIPTION: Puts a link to an anchor in a wiki page. Use in conjunction with the ANAME plugin, which sets the location and name of the anchor.
  * 
  * INSTALLATION: Just put this file into your Tikiwiki site's lib/wiki-plugins folder.
  * 
@@ -20,7 +20,7 @@
 
 
 function wikiplugin_alink_help() {
-        return tra("Creates a link to an anchor in a wiki page. Use in conjunction with the ANAME plugin, which specifies the location and name of the anchor").":<br />~np~{ALINK(aname=>anchorname,pagename=>Wiki Page Name)}".tra("linktext")."{ALINK}~/np~<br />pagename is optional; if it is not present, links into the current file.";
+        return tra("Puts a link to an anchor in a wiki page. Use in conjunction with the ANAME plugin, which sets the location and name of the anchor").":<br />~np~{ALINK(aname=>anchorname,pagename=>Wiki Page Name)}".tra("linktext")."{ALINK}~/np~<br />pagename is optional; if it is not present, links into the current file.";
 }
 
 function wikiplugin_alink_info() {
@@ -30,7 +30,6 @@ function wikiplugin_alink_info() {
 		'description' => tra('Creates a link to an anchor within a page. Anchors can be created using the ANAME plugin.'),
 		'prefs' => array('wikiplugin_alink'),
 		'body' => tra('Anchor link label.'),
-		'icon' => 'pics/icons/world_link.png',
 		'params' => array(
 			'aname' => array(
 				'required' => true,
@@ -83,3 +82,5 @@ function wikiplugin_alink($data, $params)
 	    return "<a href=\"#$aname\">$data</a>";
 	}
 }
+
+?>

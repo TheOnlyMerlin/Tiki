@@ -6,7 +6,7 @@
  *
  * This file contains the PDF graphic renderer. (Using PDFLib)
  */
-require_once('lib/graph-engine/core.php');
+require_once('graph-engine/core.php');
 
 class PDFLib_GRenderer extends GRenderer // {{{1
 {
@@ -362,3 +362,5 @@ class PDFLib_GRenderer extends GRenderer // {{{1
 		return $size;
 	}
 } // }}}1
+
+?>

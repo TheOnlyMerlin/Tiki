@@ -59,26 +59,6 @@ class Tiki_Profile_ChannelList
 
 		return $profiles;
 	} // }}}
-
-	function addChannel( $name, $domain, $profile, $groups ) // {{{
-	{
-		$this->channels[ $name ] = array(
-			'domain' => $domain,
-			'profile' => $profile,
-			'groups' => $groups,
-		);
-	} // }}}
-
-	function getConfiguration() // {{{
-	{
-		$out = '';
-		foreach( $this->channels as $name => $info ) {
-			$parts = $info['groups'];
-			array_unshift( $parts, $name, $info['domain'], $info['profile'] );
-
-			$out .= implode( ', ', $parts ) . "\n";
-		}
-
-		return trim( $out );
-	} // }}}
 }
+
+?>

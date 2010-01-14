@@ -11,3 +11,5 @@ function save_draft($pageId, $pageDesc, $pageData, $pageComment) {
 
     return new xajaxResponse();
 }
+
+?>

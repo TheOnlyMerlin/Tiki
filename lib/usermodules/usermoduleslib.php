@@ -21,8 +21,11 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  * This list is rebuilt if the user asks for a "restore default"
  *
  */
-class UserModulesLib extends TikiLib
-{
+class UserModulesLib extends TikiLib {
+	function UserModulesLib($db) {
+		$this->TikiLib($db);
+	}
+
 	function unassign_user_module($moduleId, $user) {
 		$query = "delete from `tiki_user_assigned_modules` where `moduleId`=? and `user`=?";
 		$result = $this->query($query,array($moduleId, $user));
@@ -144,7 +147,7 @@ class UserModulesLib extends TikiLib
 	}
 	// Return the list of modules that can be assigned by the user
 	function get_user_assignable_modules($user) {
-		global $prefs,$userlib;
+		global $prefs;
 
 		$query = "select * from `tiki_modules`";
 		$result = $this->query($query,array());
@@ -155,10 +158,11 @@ class UserModulesLib extends TikiLib
 			$mod_ok = 0;
 
 			// The module must not be assigned
-			$isas = $this->getOne("select count(*) from `tiki_user_assigned_modules` where `moduleId`=? and `user`=?",array($res['moduleId'],$user));
+			$isas = $this->getOne(
+				"select count(*) from `tiki_user_assigned_modules` where `moduleId`=? and `user`=?",array($res['moduleId'],$user));
 
 			if (!$isas) {
-				if ($res["groups"] && $prefs['modallgroups'] != 'y' && (!$userlib->user_has_permission($user,'tiki_p_admin'))) {
+				if ($res["groups"] && $prefs['modallgroups'] != 'y' && $user != 'admin') {
 					$groups = unserialize($res["groups"]);
 
 					$ins = array_intersect($groups, $user_groups);
@@ -234,4 +238,7 @@ class UserModulesLib extends TikiLib
 		}
 	} 
 }
-$usermoduleslib = new UserModulesLib;
+global $dbTiki;
+$usermoduleslib = new UserModulesLib($dbTiki);
+
+?>

@@ -88,7 +88,7 @@ define('FILE_LOCK_EXCLUSIVE', LOCK_EX | (FILE_LOCKS_BLOCK ? 0 : LOCK_NB), true);
  * 
  * @static
  */
-class File extends PEAR
+class File extends PEAR 
 {
     /**
      * Destructor
@@ -530,3 +530,5 @@ class File extends PEAR
 }
 
 PEAR::registerShutdownFunc(array('File', '_File'));
+
+?>

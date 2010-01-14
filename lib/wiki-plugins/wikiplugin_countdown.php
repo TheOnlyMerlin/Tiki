@@ -24,7 +24,6 @@ function wikiplugin_countdown_info() {
 		'documentation' => 'PluginCountdown',
 		'description' => tra('Displays a countdown from now until the specified date.'),
 		'prefs' => array('wikiplugin_countdown'),
-		'icon' => 'pics/icons/clock.png',
 		'body' => tra('Text to append to the countdown.'),
 		'params' => array(
 			'enddate' => array(
@@ -57,7 +56,7 @@ function wikiplugin_countdown($data, $params) {
 	$tikidate->setTZbyID($tikilib->get_display_timezone());
 	$tikidate->setDate($then);
 	$tikidate->convertTZByID('UTC');
-	$then = $tikidate->getTime();
+	$then = $tikidate->getDate(DATE_FORMAT_UNIXTIME);
 
 	$difference = $then - $tikilib->now;
 	$num = $difference/86400;
@@ -68,9 +67,8 @@ function wikiplugin_countdown($data, $params) {
 	$mins = intval($num3);
 	$num4 = ($num3 - $mins)*60;
 	$secs = intval($num4);
-	$ret = "$days ".tra("days");
-	if (empty($locatetime) || $locatetime != 'off') {
-		$ret .= ", $hours ".tra("hours").", $mins ".tra("minutes")." ".tra("and")." $secs ".tra("seconds")." $data";
-	}
+	$ret = "$days ".tra("days").", $hours ".tra("hours").", $mins ".tra("minutes")." ".tra("and")." $secs ".tra("seconds")." $data";
 	return $ret;
 }
+
+?>

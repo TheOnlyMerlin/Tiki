@@ -6,7 +6,7 @@
  *
  * This file contains the GD graphic renderer.
  */
-require_once('lib/graph-engine/core.php');
+require_once('graph-engine/core.php');
 
 class GD_GRenderer extends GRenderer // {{{1
 {
@@ -305,3 +305,5 @@ class GD_GRenderer extends GRenderer // {{{1
 		imagestring( $this->gd, $style['font'], $x, $height, $string, $this->_getColor( 'Black' ) );
 	}
 } // }}}1
+
+?>

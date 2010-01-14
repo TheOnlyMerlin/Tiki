@@ -14,7 +14,7 @@
 </div>
 
 {if $listpages or ($find ne '') or ($types ne '') or ($topics ne '') or ($lang ne '') or ($categId ne '')}
-	{include file='find.tpl' find_show_languages='y' find_show_categories='y' find_show_num_rows='y'}
+	{include file="find.tpl" find_show_languages='y' find_show_categories='y' find_show_num_rows='y'}
 {/if}
 
 <table class="normal">
@@ -43,11 +43,6 @@
 		{if $prefs.art_list_author eq 'y'}
 			<th>{self_link _sort_arg='sort_mode' _sort_field='authorName'}{tr}AuthorName{/tr}{/self_link}</th>
 		{/if}
-		{if $prefs.art_list_rating eq 'y'}
-			<th style="text-align:right;">
-				{self_link _sort_arg='sort_mode' _sort_field='rating'}{tr}Rating{/tr}{/self_link}
-			</th>
-		{/if}
 		{if $prefs.art_list_reads eq 'y'}
 			<th style="text-align:right;">
 				{self_link _sort_arg='sort_mode' _sort_field='nbreads'}{tr}Reads{/tr}{/self_link}
@@ -71,7 +66,7 @@
 					{if $tiki_p_read_article eq 'y'}
 						<a class="artname" href="{$listpages[changes].articleId|sefurl:article}" title="{$listpages[changes].title|escape}">
 					{/if}
-					{$listpages[changes].title|truncate:$prefs.art_list_title_len:"...":true|escape}
+					{$listpages[changes].title|truncate:$prefs.art_list_title_len:"...":true}
 					{if $listpages[changes].type eq 'Review'}(r){/if}
 					{if $tiki_p_read_article eq 'y'}
 						</a>
@@ -79,10 +74,10 @@
 				</td>
 			{/if}
 			{if $prefs.art_list_type eq 'y'}	
-				<td class="{cycle advance=false}">{tr}{$listpages[changes].type|escape}{/tr}</td>
+				<td class="{cycle advance=false}">{tr}{$listpages[changes].type}{/tr}</td>
 			{/if}
 			{if $prefs.art_list_topic eq 'y'}	
-				<td class="{cycle advance=false}">{$listpages[changes].topicName|escape}</td>
+				<td class="{cycle advance=false}">{$listpages[changes].topicName}</td>
 			{/if}
 			{if $prefs.art_list_date eq 'y'}
 				<td class="{cycle advance=false}">{$listpages[changes].publishDate|tiki_short_datetime}</td>
@@ -97,10 +92,7 @@
 				<td class="{cycle advance=false}">{tr}{$listpages[changes].lang}{/tr}</td>
 			{/if}
 			{if $prefs.art_list_author eq 'y'}	
-				<td class="{cycle advance=false}">{$listpages[changes].authorName|escape}</td>
-			{/if}
-			{if $prefs.art_list_rating eq 'y'}
-				<td style="text-align:right;" class="{cycle advance=false}">{$listpages[changes].rating}</td>
+				<td class="{cycle advance=false}">{$listpages[changes].authorName}</td>
 			{/if}
 			{if $prefs.art_list_reads eq 'y'}
 				<td style="text-align:right;" class="{cycle advance=false}">{$listpages[changes].nbreads}</td>

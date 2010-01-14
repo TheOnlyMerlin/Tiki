@@ -26,3 +26,5 @@ info( "Branching..." );
 
 if( ! branch( $source, $branch, $revision ) )
 	error( "Branch could not be created." );
+
+?>

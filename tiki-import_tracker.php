@@ -17,7 +17,7 @@ if (!isset($_REQUEST["trackerId"])) {
 
 if ($tiki_p_admin_trackers != 'y') {
 	$smarty->assign('errortype', 401);
-    $smarty->assign('msg',tra("Permission denied. You cannot view this page."));
+    $smarty->assign('msg',tra("Permission denied you cannot view this page"));
 	$smarty->display("error.tpl");
 	die;
 }
@@ -38,3 +38,5 @@ if (isset($_FILES['importfile']) && is_uploaded_file($_FILES['importfile']['tmp_
 }
 header('Location: tiki-view_tracker.php?trackerId='.$_REQUEST["trackerId"]);
 die;
+
+?>

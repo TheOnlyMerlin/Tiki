@@ -11,8 +11,7 @@ require_once("lib/diff/Diff.php");
 require_once("lib/diff/Renderer.php");
 
 /* @brief modif tiki for the renderer lib	*/
-class Tiki_Text_Diff_Renderer extends Text_Diff_Renderer
-{
+class Tiki_Text_Diff_Renderer extends Text_Diff_Renderer {
      function _lines($lines, $prefix = '', $suffix = '')
 //ADD $suffix
     {
@@ -102,7 +101,7 @@ function diff2($page1, $page2, $type='sidediff') {
 		if (strstr($type,"-")) {
 			list($type,$opt) = explode("-", $type, 2);
 			if (strstr($opt,"full")) {
-				$context=count($page1);
+				$context=sizeof($page1);
 			}
 			if (strstr($opt,"char")) {
 				$words=0;
@@ -123,7 +122,7 @@ function diff2($page1, $page2, $type='sidediff') {
 			$renderer = new Text_Diff_Renderer_bytes();
 		} else if ($type == 'htmldiff') {
 			require_once('renderer_htmldiff.php');
-			$renderer = new Text_Diff_Renderer_htmldiff(count($page1));
+			$renderer = new Text_Diff_Renderer_htmldiff(sizeof($page1));
 		} else {
 			return "";
 		}
@@ -151,7 +150,7 @@ function diffChar($orig, $final, $words=0, $function='character') {
 //echo "<pre>";print_r($z);echo "</pre>";
 	require_once("renderer_$function.php");
       $new = "Text_Diff_Renderer_$function";
-	$renderer = new $new(count($line1));
+	$renderer = new $new(sizeof($line1));
 	return $renderer->render($z);
 }
 
@@ -167,3 +166,4 @@ if (!function_exists('is_a')) {
 		}
 	}
 }
+?>

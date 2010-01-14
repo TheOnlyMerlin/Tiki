@@ -7,7 +7,6 @@
 // details.
 
 //this script may only be included - so its better to die if called directly.
-global $access;
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 
 if ( $prefs['error_reporting_level'] == 2047 && $prefs['error_reporting_adminonly'] == 'y' ) {
@@ -28,7 +27,7 @@ if ($prefs['error_reporting_level'] != 0) {
 
 error_reporting($prefs['error_reporting_level']);
 
-if ( $prefs['log_sql'] == 'y' && $api_tiki == 'adodb' ) {
+if ( $prefs['log_sql'] == 'y' ) {
 	$dbTiki->LogSQL();
 	global $ADODB_PERF_MIN;
 	$ADODB_PERF_MIN = $prefs['log_sql_perf_min'];

@@ -17,8 +17,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class TikiDate
-{
+class TikiDate {
 	var $trad = array("January","February","March","April","May","June","July","August","September","October","November","December","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Mon","Tue","Wed","Thu","Fri","Sat","Sun","of");
 	var $translated_trad = array();
 	var $date;
@@ -63,21 +62,6 @@ class TikiDate
 	 * Default constructor
 	 */
 	function TikiDate() {
-
-		if (function_exists('date_default_timezone_set')) {			// function not available < PHP 5.1
-			
-			if (isset($_SERVER['TZ']) && !empty($_SERVER['TZ'])) {	// apache - can be set in .htaccess
-				$tz = $_SERVER['TZ'];
-			} else if (ini_get('date.timezone')) {					// set in php.ini
-				$tz = ini_get( 'date.timezone');
-			} else if (getenv('TZ')) {								// system env setting
-				$tz = getenv('TZ');
-			} else {
-				$tz = 'UTC';
-			}
-			date_default_timezone_set($tz);
-		}
-		
 		$this->date = new DateTime();	// was: DateTime(date("Y-m-d H:i:s Z"))
 										// the Z (timezone) param was causing an error
 										// DateTime constructor defaults to "now" anyway so unnecessary?
@@ -85,7 +69,7 @@ class TikiDate
 		$this->replace = array_values($this->translation_array);
 	}
 
-	static function getTimeZoneList() {
+	function getTimeZoneList() {
 		$tz = array();
 		$now = new DateTime("now",new DateTimeZone("GMT"));
 		$tz_list = DateTimeZone::listIdentifiers();
@@ -156,7 +140,7 @@ class TikiDate
 			$this->date = new DateTime($date);
 		}
 	}
-
+	
 	function setLocalTime($day, $month, $year, $hour, $minute, $second, $partsecond ) {
 		$this->date->setDate($year,$month,$day);
 		$this->date->setTime($hour,$minute,$second);
@@ -178,16 +162,17 @@ class TikiDate
 		return $this->date->format("e");
 	}
 
-	static function TimezoneIsValidId($id) {
-		return array_key_exists( strtolower($id), timezone_abbreviations_list() );
+	function TimezoneIsValidId($id) {
+		return empty($id) ? FALSE : timezone_open($id) !== FALSE ;
 	}
 
 }
 
-class Date_Calc
-{
+class Date_Calc {
 
 	function daysInMonth($month,$year) {
 		return cal_days_in_month(CAL_GREGORIAN, $month, $year);
 	}
 }
+
+?>

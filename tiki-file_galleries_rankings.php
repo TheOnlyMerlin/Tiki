@@ -27,7 +27,7 @@ if ($prefs['feature_file_galleries_rankings'] != 'y') {
 
 if ((isset($tiki_p_list_file_galleries) && $tiki_p_list_file_galleries != 'y') || (!isset($tiki_p_list_file_galleries) && $tiki_p_view_file_gallery != 'y')) {
 	$smarty->assign('errortype', 401);
-	$smarty->assign('msg', tra("Permission denied. You cannot view this section"));
+	$smarty->assign('msg', tra("Permission denied you cannot view this section"));
 
 	$smarty->display("error.tpl");
 	die;
@@ -87,3 +87,5 @@ ask_ticket('fgal-rankings');
 // Display the template
 $smarty->assign('mid', 'tiki-ranking.tpl');
 $smarty->display("tiki.tpl");
+
+?>

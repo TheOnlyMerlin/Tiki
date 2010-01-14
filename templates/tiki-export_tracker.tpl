@@ -18,7 +18,7 @@
 </tr>
 </table>
 </form>
-<form action="tiki-export_tracker{if $prefs.feature_ajax.php eq 'y'}_ajax{/if}.php" method="post" id="export_form">
+<form action="tiki-export_tracker.php" method="post">
 <table class="normal">
 <tr class="formcolor">
 	<td>{tr}File{/tr}</td>
@@ -74,85 +74,8 @@
 <tr class="formcolor">
 	<td>{tr}Filter{/tr}</td>
 	<td>{include file="wiki-plugins/wikiplugin_trackerfilter.tpl" showFieldId="y" inForm="y"}</td></tr>
-{if $prefs.feature_ajax.php eq 'y'}
-	<tr class="formcolor">
-		<td><label for="recordsMax">{tr}Number of records{/tr}</label></td>
-		<td>
-			<input type="text" name="recordsMax" id="recordsMax" value="{$recordsMax}" />
-			<label for="recordsOffset">{tr}Start record{/tr}</label>
-			<input type="text" name="recordsOffset" id="recordsOffset" value="{$recordsOffset}" />
-		</td>
-	</tr>
-	<tr>
-		<td>&nbsp;</td>
-		<td>
-			<p id="export_msg"></p>
-			<div id="export_prog"></div>
-		</td>
-	</tr>
-{/if}
-<tr class="formcolor"><td>&nbsp;</td><td><input type="submit" name="export" id="export_button" value="{tr}Export{/tr}" /></td>
+<tr class="formcolor"><td>&nbsp;</td><td><input type="submit" name="export" value="{tr}Export{/tr}" /></td>
 </tr>
 </table>
 </form>
-<style type="text/css">
-	.ui-progressbar-value {ldelim} background-image: url(lib/jquery/jquery-ui/themes/{$prefs.feature_jquery_ui_theme}/images/pbar-ani.gif); {rdelim}
-</style>
-{if $prefs.feature_ajax.php eq 'y'}{jq}
 
-// setup for AJAX export
-$jq("#export_form").submit( function () { return exportStart(this); });
-
-if (!$jq.ui) { $jq("#export_prog").hide(); }
-
-exportStart = function (el) {
-	
-	if ($jq.ui) {
-		$jq("#export_prog").progressbar("destroy").progressbar({ value: 1 });
-	}
-	$jq("#export_button").hide();
-	
-	var fm = el;
-	$jq(fm).attr('target', 'dl_frame');
-	var $dl_frame = $jq('<iframe id="dl_frame" name="dl_frame"></iframe>');
-	$dl_frame.css({position:'absolute',top:'-500px',left:'-500px'}).appendTo('body');
-	fm.submit();
-	
-//	$jq.post("tiki-export_tracker_ajax.php", $jq(el).serialize(), function (data) {
-//		//alert("done the post");
-//	});
-
-	$jq("#export_msg").text("Starting export...");
-	setTimeout(function () { exportProgress(); }, 2000);
-	return false;
-}
-exportProgress = function () {
-	//console.debug("exportProgress");
-	$jq.getJSON("tiki-export_tracker_monitor.php", { trackerId: {{$trackerId}}, xuser: "{{$user}}" }, function (res) {
-		//console.debug(res);
-		if (res) {
-			if (res.status == "finish") {
-				$jq("#dl_frame").remove();
-				$jq("#export_msg").text("Exported: " + res.current + " records");
-				if ($jq.ui) { $jq("#export_prog").progressbar('option', 'value', 100); }
-				$jq("#export_button").show();
-			} else {
-				if (res.msg) {
-					$jq("#export_msg").text("Message: " + res.msg);
-				} else if (res.current) {
-					var pc = parseInt((res.current / res.total) * 100, 10);
-					$jq("#export_msg").text("Exported: " + res.current + "/" + res.total + " (" + pc + "%)");
-					if ($jq.ui) {
-						$jq("#export_prog").progressbar('option', 'value', pc);
-					}
-				} else if (res.status) {
-					$jq("#export_msg").text("Status: " + res.status);
-				}
-				setTimeout(function () { exportProgress(); }, 1000);
-			}
-		}
-	});
-}
-{/jq}
-{remarksbox type="note" title="Warning"}Please note: Using experimental AJAX export function - work in progress!{/remarksbox}
-{/if}

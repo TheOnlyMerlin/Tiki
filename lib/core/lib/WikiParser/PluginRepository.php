@@ -79,3 +79,5 @@ class WikiParser_PluginRepository
 		return $real;
 	}
 }
+
+?>

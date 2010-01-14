@@ -31,8 +31,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 #  http://www.p3mail.com                                #
 #########################################################
 
-class DecodeMessage
-{
+class DecodeMessage{
   var $header;
   var $body;
   var $fullmessage;
@@ -334,3 +333,5 @@ class DecodeMessage
     return ereg_replace("[<>]","",$this->Headers("Message-ID"));
   }
 };
+
+?>

@@ -43,3 +43,4 @@ function wikiplugin_lang($data, $params) {
 	}
 	return $data;
 }
+?>

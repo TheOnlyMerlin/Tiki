@@ -31,8 +31,10 @@ if (!isset($Debug)) $Debug = false;
  * 
  * @since 1.x
  */
-class NotificationLib extends TikiLib
-{
+class NotificationLib extends TikiLib {
+	function NotificationLib($db) {
+		$this->TikiLib($db);
+	}
 	function list_mail_events($offset, $maxRecords, $sort_mode, $find) {
 		if ($find) {
 			$findesc = '%' . $find . '%';
@@ -42,7 +44,7 @@ class NotificationLib extends TikiLib
 			$mid = " ";
 			$bindvars=array();
 		}
-		$query = "select * from `tiki_user_watches` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_user_watches` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_user_watches` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -55,21 +57,25 @@ class NotificationLib extends TikiLib
 		$retval["cant"] = $cant;
 		return $retval;
 	}
+	function add_mail_event($event, $object, $email) {
+		$query = "insert into `tiki_user_watches`(`event`,`object`,`email`) values(?,?,?)";
+		$result = $this->query($query, array($event,$object,$email) );
+	}
+	function remove_mail_event($event, $object, $email) {
+		$query = "delete from `tiki_user_watches` where `event`=? and `object`=? and `email`=?";
+		$result = $this->query($query,array($event,$object,$email));
+	}
+	
 	function update_mail_address($user, $oldMail, $newMail) {
 		$query = "update `tiki_user_watches` set `email`=? where `user`=? and `email`=?";
 		$result = $this->query($query,array($user,$newMail,$oldMail));
 	}
 	function get_mail_events($event, $object) {
-		global $tikilib;
-		global $categlib; require_once('lib/categories/categlib.php');
-		$query = 'select * from `tiki_user_watches` where `event`=? and (`object`=? or `object`=?)';
-		$result = $this->query($query, array($event, $object, '*') );
+		$query = "select `email` from `tiki_user_watches` where `event`=? and (`object`=? or `object`='*')";
+		$result = $this->query($query, array($event,$object) );
 		$ret = array();
-		$map = CategLib::map_object_type_to_permission();
 		while ($res = $result->fetchRow()) {
-			if (empty($res['user']) || $tikilib->user_has_perm_on_object($res['user'], $object, $res['type'], $map[$res['type']])) {
-				$ret[] = $res['email'];
-			}
+			$ret[] = $res["email"];
 		}
 		return $ret;
 	}
@@ -153,4 +159,6 @@ class NotificationLib extends TikiLib
        		return $success;
 	}
 }
-$notificationlib = new NotificationLib;
+global $dbTiki;
+$notificationlib = new NotificationLib($dbTiki);
+?>

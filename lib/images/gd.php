@@ -2,8 +2,7 @@
 
 require_once('lib/images/abstract.php');
 
-class Image extends ImageAbstract
-{
+class Image extends ImageAbstract {
 	var $gdinfo;
 	var $gdversion;
 	var $havegd = false;
@@ -50,6 +49,10 @@ class Image extends ImageAbstract
 				$this->loaded = true;
 			}
 		}
+	}
+
+	function Image($image, $isfile = false) {
+		Image::__construct($image, $isfile);
 	}
 
 	function _resize($x, $y) {
@@ -201,3 +204,5 @@ class Image extends ImageAbstract
 	}
 
 }
+
+?>

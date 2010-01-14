@@ -12,8 +12,7 @@ require_once ('lib/debug/debugger-ext.php');
 /**
  * \brief Debugger command to exec SQL
  */
-class DbgSQLQuery extends DebuggerCommand
-{
+class DbgSQLQuery extends DebuggerCommand {
 	/// \b Must have function to announce command name in debugger console
 	function name() {
 		return 'sql';
@@ -109,3 +108,5 @@ class DbgSQLQuery extends DebuggerCommand
 function dbg_command_factory_sql() {
 	return new DbgSQLQuery();
 }
+
+?>

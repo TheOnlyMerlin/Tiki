@@ -244,3 +244,5 @@ class Tiki_Webservice_Template
 		return $response->render( $this->engine, $this->output, $outputContext, $this->getTemplateFile() );
 	} // }}}
 }
+
+?>

@@ -20,7 +20,7 @@ $access->check_permission(array('tiki_p_edit_copyrights'), tra("Copyright manage
 
 include_once ("lib/copyrights/copyrightslib.php");
 global $dbTiki;
-$copyrightslib = new CopyrightsLib;
+$copyrightslib = new CopyrightsLib($dbTiki);
 
 if (!isset($_REQUEST["page"])) {
 	$smarty->assign('msg', tra("No page indicated"));
@@ -82,3 +82,5 @@ $smarty->assign('copyrights', $copyrights["data"]);
 // Display the template
 $smarty->assign('mid', 'copyrights.tpl');
 $smarty->display("tiki.tpl");
+
+?>

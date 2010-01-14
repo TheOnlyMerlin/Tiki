@@ -36,3 +36,5 @@ if (!isset($_REQUEST["page"])) {
 	header ("Content-Disposition: inline; filename=$page");
 	echo $data;
 }
+
+?>

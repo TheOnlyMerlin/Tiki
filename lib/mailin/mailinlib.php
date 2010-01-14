@@ -6,8 +6,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class MailinLib extends TikiLib
-{
+class MailinLib extends TikiLib {
+	function MailinLib($db) {
+		$this->TikiLib($db);
+	}
 
 	function list_mailin_accounts($offset, $maxRecords, $sort_mode, $find) {
 
@@ -20,7 +22,7 @@ class MailinLib extends TikiLib
 			$bindvars = array();
 		}
 
-		$query = "select * from `tiki_mailin_accounts` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_mailin_accounts` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_mailin_accounts` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -47,7 +49,7 @@ class MailinLib extends TikiLib
 			$bindvars = array("y");
 		}
 
-		$query = "select * from `tiki_mailin_accounts` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_mailin_accounts` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_mailin_accounts` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -94,4 +96,7 @@ class MailinLib extends TikiLib
 		return $res;
 	}
 }
-$mailinlib = new MailinLib;
+global $dbTiki;
+$mailinlib = new MailinLib($dbTiki);
+
+?>

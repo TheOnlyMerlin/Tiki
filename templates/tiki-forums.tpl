@@ -89,16 +89,16 @@
 <td class="{cycle advance=false}">
 	<span style="float:left">
 		{if ($channels[user].individual eq 'n') or ($tiki_p_admin eq 'y') or ($channels[user].individual_tiki_p_forum_read eq 'y')}
-			<a class="forumname" href="tiki-view_forum.php?forumId={$channels[user].forumId}">{$channels[user].name|escape}</a>
+			<a class="forumname" href="tiki-view_forum.php?forumId={$channels[user].forumId}">{$channels[user].name}</a>
 		{else}
-			{$channels[user].name|escape}
+			{$channels[user].name}
 		{/if}
 	</span>
 
 {if $prefs.forum_list_desc eq 'y'}
 	<br />
 	<div class="subcomment">
-		{$channels[user].description|truncate:$prefs.forum_list_description_len:"...":true|escape|nl2br}
+		{$channels[user].description|truncate:$prefs.forum_list_description_len:"...":true|nl2br}
 	</div>
 {/if}
 </td>
@@ -115,10 +115,7 @@
 <td class="{cycle advance=false}">
 {if isset($channels[user].lastPost)}
 {$channels[user].lastPost|tiki_short_datetime}<br />
-  {if $prefs.forum_reply_notitle neq 'y'}
-    <small><i>{$channels[user].lastPostData.title|escape}</i>
-  {/if}
-  {tr}by{/tr} {$channels[user].lastPostData.userName}</small>
+<small><i>{$channels[user].lastPostData.title}</i> {tr}by{/tr} {$channels[user].lastPostData.userName}</small>
 {/if}
 </td>
 {/if}

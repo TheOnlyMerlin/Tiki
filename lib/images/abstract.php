@@ -1,7 +1,6 @@
 <?php
 
-class ImageAbstract
-{
+class ImageAbstract {
 	var $data = NULL;
 	var $format = 'jpeg';
 	var $height = NULL;
@@ -204,3 +203,4 @@ class ImageAbstract
 		return $this->width;
 	}
 }
+?>

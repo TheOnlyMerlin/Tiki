@@ -20,11 +20,9 @@ if (!isset($_REQUEST["galleryId"])) {
         require_once ('tiki-rss_error.php');
 }
 
-$tikilib->get_perm_object( $_REQUEST['galleryId'], 'image gallery' );
-
-if ($tiki_p_view_image_gallery != 'y') {
+if ($tiki_p_view_image_gallery != 'y' or !$tikilib->user_has_perm_on_object($user,$_REQUEST['galleryId'],'image gallery','tiki_p_view_image_gallery')) {
 	$smarty->assign('errortype', 401);
-	$errmsg=tra("Permission denied. You cannot view this section");
+	$errmsg=tra("Permission denied you cannot view this section");
 	require_once ('tiki-rss_error.php');
 }
 
@@ -53,3 +51,5 @@ if ($output["data"]=="EMPTY") {
 }
 header("Content-type: ".$output["content-type"]);
 print $output["data"];
+
+?>

@@ -1,11 +1,11 @@
 <?php
 // Includes rss feed output in a wiki page
 // Usage:
-// {RSS(id=>feedId,max=>3,date=>1,author=>1,desc=>1,icon=>http://jbotcan.org/favicon.ico)}{RSS}
+// {RSS(id=>feedId,max=>3,date=>1,author=>1,desc=>1)}{RSS}
 //
 
 function wikiplugin_rss_help() {
-	return tra("~np~{~/np~RSS(id=>feedId:feedId2,max=>3,date=>1,desc=>1,author=>1,icon=>http://jbotcan.org/favicon.ico)}{RSS} Insert rss feed output into a wikipage");
+	return tra("~np~{~/np~RSS(id=>feedId:feedId2,max=>3,date=>1,desc=>1,author=>1)}{RSS} Insert rss feed output into a wikipage");
 }
 
 function wikiplugin_rss_info() {
@@ -14,7 +14,6 @@ function wikiplugin_rss_info() {
 		'documentation' => 'PluginRSS',
 		'description' => tra('Inserts an RSS feed output.'),
 		'prefs' => array( 'wikiplugin_rss' ),
-		'icon' => 'pics/icons/rss.png',
 		'params' => array(
 			'id' => array(
 				'required' => true,
@@ -24,7 +23,7 @@ function wikiplugin_rss_info() {
 			'max' => array(
 				'required' => false,
 				'name' => tra('Result Count'),
-				'description' => tra('Number of results displayed.'),
+				'description' => tra('Amount of results displayed.'),
 			),
 			'date' => array(
 				'required' => false,
@@ -40,11 +39,6 @@ function wikiplugin_rss_info() {
 				'required' => false,
 				'name' => tra('Author'),
 				'description' => '0|1',
-			),
-			'icon' => array(
-				'required' => false,
-				'name' => tra('Icon'),
-				'description' => 'url to a favicon to put before each entry',
 			),
 		),
 	);
@@ -88,7 +82,6 @@ function wikiplugin_rss($data,$params) {
 	if ( ! isset($date) ) { $date = 0; }
 	if ( ! isset($desc) ) { $desc = 0; }
 	if ( ! isset($author) ) { $author = 0; }
-	if ( ! isset($icon) ) { $icon = 0; }
 
 	$ids = explode(':', $id);
 
@@ -102,7 +95,6 @@ function wikiplugin_rss($data,$params) {
 		'author' => 'striptags',
 		'pubDate' => 'striptags',
 		'description' => 'striptags',
-		'icon' => 'striptags',
 	) );
 
 	foreach ( $ids as $val ) {
@@ -119,9 +111,6 @@ function wikiplugin_rss($data,$params) {
 
 			if( $desc > 1 && strlen($item['description']) > $desc ) {
 				$item['description'] = substr($item['description'], 0, $desc ) . ' [...]';
-			}
-			if( $icon and $icon != "" ) {
-				$item['icon'] = $icon;
 			}
 		}
 
@@ -148,6 +137,7 @@ function wikiplugin_rss($data,$params) {
 	$smarty->assign('showdate', $date > 0);
 	$smarty->assign('showdesc', $desc > 0);
 	$smarty->assign('showauthor', $author > 0);
-	$smarty->assign('showicon', $icon != "");
 	return '~np~' . $smarty->fetch( 'wiki-plugins/wikiplugin_rss.tpl' ) . '~/np~';
 }
+
+?>

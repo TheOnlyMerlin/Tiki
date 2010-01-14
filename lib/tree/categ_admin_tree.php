@@ -12,8 +12,7 @@ require_once ('lib/tree/tree.php');
 /**
  * \brief Class to render categories browse tree
  */
-class CatAdminTreeMaker extends TreeMaker
-{
+class CatAdminTreeMaker extends TreeMaker {
 	/// Collect javascript cookie set code (internaly used after make_tree() method)
 	var $jsscriptblock;
 
@@ -89,3 +88,5 @@ class CatAdminTreeMaker extends TreeMaker
 		return '';
 	}
 }
+
+?>

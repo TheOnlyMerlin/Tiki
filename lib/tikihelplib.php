@@ -12,8 +12,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class TikiHelpLib
-{
+class TikiHelpLib {
 	// function TikiHelpLib() {
         // }
 /* end of class */
@@ -42,10 +41,11 @@ function help_doclink($params) {
     
     if ($prefs['feature_help'] == 'y' and $url) {
     	if (!isset($desc)) $desc = tra('Help link');
-        $ret = '<a title="'.htmlentities($desc).'" href="'
+        $ret = '<a title="'.$desc.'" href="'
         .$prefs['helpurl'].$url.'" target="tikihelp" class="tikihelp">'
         .'<img src="pics/icons/help.png"'
         .' border="0" height="16" width="16" alt="'.tra('Help','',true).'" /></a>';
     }
     return $ret;
 }
+?>

@@ -345,7 +345,7 @@ function _get_attributes($string) {
 function _output_tag_with_attributes($tag,$attributes,$newline = False,
                                      $terminate_tag = False) {
         $output = "<".$tag;
-        if (count($attributes)) {
+        if (sizeof($attributes)) {
             foreach($attributes as $key=>$value) {
               $output .= " ".$key."=\"".$value."\"";
             }
@@ -367,3 +367,4 @@ function _check_class_attribute(&$attributes,$default_class = "",$add = True) {
             $class .= " ".$attributes["class"];
         $attributes["class"] = $class;
 }
+?>

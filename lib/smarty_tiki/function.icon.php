@@ -17,23 +17,22 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  *  - _menu_text: if set to 'y', will use the 'title' argument as text after the icon and place the whole content between div tags with a 'icon_menu' class (not compatible with '_notag' param set to 'y').
  *  - _menu_icon: if set to 'n', will not show icon image when _menu_text is 'y'.
  *  - _confirm: text to use in a popup requesting the user to confirm it's action (yet only available with javascript)
- *  - _defaultdir: directory to use when the _id param does not include the path
  */
 function smarty_function_icon($params, &$smarty) {
-	if ( ! is_array($params) ) $params = array();
-	global $prefs, $tc_theme, $tc_theme_option;
-	
-	if (empty($tc_theme)) {
-		$current_style = $prefs['style'];
-		$current_style_option = $prefs['style_option'];
-	} else {
-		$current_style = $tc_theme;
-		$current_style_option = !empty($tc_theme_option) ? $tc_theme_option : '';
-	}
-	$serialized_params = serialize(array_merge($params, array($current_style, $current_style_option)));
+	if ( ! is_array($params) || ! isset($params['_id']) ) return;
+	global $prefs;
+
+	$serialized_params = serialize($params);
 	if ( isset($_SESSION['icons'][$serialized_params]) ) {
-		return $_SESSION['icons'][$serialized_params];
+		if ( !empty($_SESSION['icons_theme']) && $_SESSION['icons_theme'] == $prefs['style'] &&
+				!empty($_SESSION['icons_theme_option']) && $_SESSION['icons_theme_option'] == $prefs['style_option']) {
+			return $_SESSION['icons'][$serialized_params];
+		} else {
+			unset($_SESSION['icons']);
+		}
 	}
+	$_SESSION['icons_theme'] = $prefs['style'];
+	$_SESSION['icons_theme_option'] = $prefs['style_option'];
 
 	$basedirs = array('pics/icons', 'images', 'img/icons', 'pics/icons/mime');
 	$icons_extension = '.png';
@@ -46,20 +45,6 @@ function smarty_function_icon($params, &$smarty) {
 	$menu_icon = true;
 	$confirm = '';
 	$html = '';
-
-	if ( empty($params['_id']) ) {
-		if ( isset($params['_defaultdir']) && $params['_defaultdir'] == 'pics/large' ) {
-			$params['_id'] = 'green_question48x48';
-		} else {
-			$params['_id'] = 'green_question';
-		}
-	}
-	if ( ! empty($params['_defaultdir']) ) {
-		array_unshift($basedirs, $params['_defaultdir']);
-		if ( $params['_defaultdir'] == 'pics/large' ) {
-			$default_width = $default_height = ( strpos($params['_id'], '48x48') !== false ) ? 48 : 32;
-		}
-	}
 
 	// Handle _ids that contains the real filename and path
 	if ( strpos($params['_id'], '/') !== false || strpos($params['_id'], '.') !== false ) {

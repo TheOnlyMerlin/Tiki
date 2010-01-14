@@ -12,8 +12,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 	exit;
 }
 
-class TikiMail
-{
+class TikiMail {
 	var $debug = true;	// Defines if we are on a debuggin state or not.
 	
 	var $connection;  	// the mail stream.
@@ -306,3 +305,4 @@ class TikiMail
 		return true;
 	}
 }
+?>

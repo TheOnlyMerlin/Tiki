@@ -11,8 +11,11 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class ScoreLib extends TikiLib
-{
+class ScoreLib extends TikiLib {
+
+	function ScoreLib($db) {
+		$this->TikiLib($db);
+	}
 
 	// User's general classification on site
 	function user_position($user) {
@@ -83,4 +86,8 @@ class ScoreLib extends TikiLib
 	}
 
 }
-$scorelib = new ScoreLib;
+
+global $dbTiki;
+$scorelib = new ScoreLib($dbTiki);
+
+?>

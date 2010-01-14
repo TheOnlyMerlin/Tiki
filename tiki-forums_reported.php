@@ -34,7 +34,27 @@ $forum_info = $commentslib->get_forum($_REQUEST["forumId"]);
 //Check individual permissions for this forum
 $smarty->assign('individual', 'n');
 
-$tikilib->get_perm_object($_REQUEST["forumId"], 'forum');
+if ($userlib->object_has_one_permission($_REQUEST["forumId"], 'forum')) {
+	$smarty->assign('individual', 'y');
+
+	if ($tiki_p_admin != 'y') {
+		$perms = $userlib->get_permissions(0, -1, 'permName_desc', '', 'forums');
+
+		foreach ($perms["data"] as $perm) {
+			$permName = $perm["permName"];
+
+			if ($userlib->object_has_permission($user, $_REQUEST["forumId"], 'forum', $permName)) {
+				$$permName = 'y';
+
+				$smarty->assign("$permName", 'y');
+			} else {
+				$$permName = 'n';
+
+				$smarty->assign("$permName", 'n');
+			}
+		}
+	}
+}
 
 // Now if the user is the moderator then give hime forum admin privs
 if ($user) {
@@ -86,12 +106,20 @@ if (isset($_REQUEST['del']) && isset($_REQUEST['msg'])) {
 // Quickjumpt to other forums
 if ($tiki_p_admin_forum == 'y' || $prefs['feature_forum_quickjump'] == 'y') {
 	$all_forums = $commentslib->list_forums(0, -1, 'name_asc', '');
-	Perms::bulk( array( 'type' => 'forum' ), 'object', $all_forums['data'], 'forumId' );
 
 	$temp_max = count($all_forums["data"]);
 	for ($i = 0; $i < $temp_max; $i++) {
-		$forumperms = Perms::get( array( 'type' => 'forum', 'object' => $channels['data'][$i]['forumId'] ) );
-		$all_forums["data"][$i]["can_read"] = $forumperms->forum_read ? 'y' : 'n';
+		if ($userlib->object_has_one_permission($all_forums["data"][$i]["forumId"], 'forum')) {
+			if ($tiki_p_admin == 'y'
+				|| $userlib->object_has_permission($user, $all_forums["data"][$i]["forumId"], 'forum', 'tiki_p_admin_forum')
+				|| $userlib->object_has_permission($user, $all_forums["data"][$i]["forumId"], 'forum', 'tiki_p_forum_read')) {
+				$all_forums["data"][$i]["can_read"] = 'y';
+			} else {
+				$all_forums["data"][$i]["can_read"] = 'n';
+			}
+		} else {
+			$all_forums["data"][$i]["can_read"] = 'y';
+		}
 	}
 
 	$smarty->assign('all_forums', $all_forums['data']);
@@ -131,8 +159,14 @@ $smarty->assign_by_ref('cant_pages', $items["cant"]);
 
 $smarty->assign_by_ref('items', $items["data"]);
 
+$topics = $commentslib->get_forum_topics($_REQUEST['forumId']);
+$smarty->assign_by_ref('topics', $topics);
 ask_ticket('forum-reported');
+
+include_once ('tiki-section_options.php');
 
 // Display the template
 $smarty->assign('mid', 'tiki-forums_reported.tpl');
 $smarty->display("tiki.tpl");
+
+?>

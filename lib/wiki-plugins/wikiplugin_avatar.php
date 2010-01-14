@@ -54,3 +54,5 @@ function wikiplugin_avatar($data, $params) {
 
 	return $avatar;
 }
+
+?>

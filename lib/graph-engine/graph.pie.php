@@ -1,5 +1,5 @@
 <?php
-require_once 'lib/graph-engine/core.php';
+require_once 'graph-engine/core.php';
 
 class PieChartGraphic extends Graphic // {{{1
 {
@@ -86,3 +86,4 @@ class PieChartGraphic extends Graphic // {{{1
 		) );
 	}
 } // }}}1
+?>

@@ -25,27 +25,15 @@ if ( $prefs['javascript_enabled'] != 'y' ) {
 	// Set the cookie to 'y', through javascript (will override the above cookie set to 'n' and sent by PHP / HTTP headers) - duration: approx. 1 year
 	$headerlib->add_js("var jsedate = new Date();\njsedate.setTime(" . ( 1000 * ( $tikilib->now + 365 * 24 * 3600 ) ) . ");\nsetCookieBrowser('javascript_enabled', 'y', null, jsedate);");
 
-	// the first and second time, we should not trust the absence of javascript_enabled cookie yet, as it could be a redirection and the js will not get a chance to run yet, so we wait until the third run, assuming that js is on before then
-	if ( !isset($_COOKIE['runs_before_js_detect']) ) {
-		$prefs['javascript_enabled'] = 'y';
-		setcookie( 'runs_before_js_detect', '2', ( 1000 * ( $tikilib->now + 365 * 24 * 3600 ) ) );
-	} elseif ( $_COOKIE['runs_before_js_detect'] > 0 ) {
-		$prefs['javascript_enabled'] = 'y';
-		setcookie( 'runs_before_js_detect', $_COOKIE['runs_before_js_detect'] - 1, ( 1000 * ( $tikilib->now + 365 * 24 * 3600 ) ) );
-     	} else {
-		// disable js dependant features
-		$prefs['feature_tabs'] = 'n';
-		$prefs['feature_jquery'] = 'n';
-		$prefs['feature_shadowbox'] = 'n';
-		$prefs['feature_wysiwyg'] = 'n';
-		$prefs['feature_ajax'] = 'n';
-	}
-}
-
-if ($prefs['javascript_enabled'] == 'y') {	// we have JavaScript
-
-	$prefs['feature_jquery'] = 'y';	// just in case
+	$prefs['feature_tabs'] = 'n';
+	$prefs['feature_jquery'] = 'n';
+	$prefs['feature_mootools'] = 'n';
+	$prefs['feature_shadowbox'] = 'n';
+	$prefs['feature_wysiwyg'] = 'n';
+	$prefs['feature_ajax'] = 'n';
 	
+} else {	// we have JavaScript
+
 	/** Use custom.js in styles or options dir if there **/
 	$custom_js = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], 'custom.js');
 	if (!empty($custom_js)) {
@@ -69,7 +57,7 @@ if ($prefs['javascript_enabled'] == 'y') {	// we have JavaScript
 			if (($fixondom = $prefs['iepngfix_elements']) != '') {
 				$fixondom = "DD_belatedPNG.fixPng($fixondom); // list of HTMLDomElements to fix separated by commas (default is none)";
 			}
-			if ($prefs['feature_use_minified_scripts'] != 'n') {
+			if ($prefs['use_minified_scripts'] != 'n') {
 				$scriptpath = 'lib/iepngfix/DD_belatedPNG.js';
 			} else {
 				$scriptpath = 'lib/iepngfix/DD_belatedPNG-min.js';
@@ -82,8 +70,13 @@ JS
 			);
 		}
 	}
+	
+	// ---------------------------------------------------------------
+	// include jquery smarty prefilter if feature enabled
+	if ($prefs['feature_jquery']) {
+		$smarty->load_filter('pre', 'jq');
+	}
 }
-
 if ($prefs['feature_ajax'] != 'y') {
 	$prefs['feature_ajax_autosave'] = 'n';
 }

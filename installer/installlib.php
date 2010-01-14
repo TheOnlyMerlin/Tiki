@@ -1,16 +1,7 @@
 <?php
-
-//this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
-  header("location: index.php");
-  exit;
-}
-
-
 require_once 'lib/setup/twversion.class.php';
-require_once('lib/core/lib/TikiDb/Bridge.php');
 
-class Installer extends TikiDb_Bridge
+class Installer
 {
 	var $patches = array();
 	var $scripts = array();
@@ -51,18 +42,14 @@ class Installer extends TikiDb_Bridge
 	function update() // {{{
 	{
 		if( ! $this->tableExists( 'tiki_schema' ) ) {
-			// DB too old to handle auto update
+			// DB not old enough to handle auto update
 
-			if( file_exists( dirname(__FILE__) . '/../db/custom_upgrade.sql' ) ) {
-				$this->runFile( dirname(__FILE__) . '/../db/custom_upgrade.sql' );
-			} else {
-				// If 1.9
-				if( ! $this->tableExists( 'tiki_minichat' ) ) {
-					$this->runFile( dirname(__FILE__) . '/../db/tiki_1.9to2.0.sql' );
-				}
-
-				$this->runFile( dirname(__FILE__) . '/../db/tiki_2.0to3.0.sql' );
+			// If 1.9
+			if( ! $this->tableExists( 'tiki_minichat' ) ) {
+				$this->runFile( dirname(__FILE__) . '/../db/tiki_1.9to2.0.sql' );
 			}
+
+			$this->runFile( dirname(__FILE__) . '/../db/tiki_2.0to3.0.sql' );
 		}
 
 		$TWV = new TWVersion;
@@ -91,23 +78,18 @@ class Installer extends TikiDb_Bridge
 
 		$pre = "pre_$patch";
 		$post = "post_$patch";
-		$standalone = "upgrade_$patch";
 
 		if( file_exists( $script ) ) {
 			require $script;
 		}
 
-		if( function_exists( $standalone ) )
-			$standalone( $this );
-		else {
-			if( function_exists( $pre ) )
-				$pre( $this );
-	
-			$this->runFile( $schema );
-	
-			if( function_exists( $post ) )
-				$post( $this );
-		}
+		if( function_exists( $pre ) )
+			$pre( $this );
+
+		$this->runFile( $schema );
+
+		if( function_exists( $post ) )
+			$post( $this );
 
 		$this->installed[] = $patch;
 		$this->recordPatch( $patch );
@@ -137,9 +119,13 @@ class Installer extends TikiDb_Bridge
 	{
 		global $db_tiki;
 
-		if ( !is_file($file) || !$command = file_get_contents($file) ) {
+		if ( !is_file($file) || !$fp = fopen($file, "r") ) {
 			print('Fatal: Cannot open '.$file);
 			exit(1);
+		}
+
+		while(!feof($fp)) {
+			$command.= fread($fp,4096);
 		}
 
 		fclose($fp);
@@ -175,24 +161,29 @@ class Installer extends TikiDb_Bridge
 						$do_exec=true;
 					}
 					if($do_exec)
-						if (preg_match('/^\s*(?!-- )/m', $statement)) // If statement is not commented
-							$this->query($statement);
+						$result = $this->query($statement);
 					break;
 				default:
-					if (preg_match('/^\s*(?!-- )/m', $statement)) // If statement is not commented
-						$this->query($statement);
+					$result = $this->query($statement);
 					break;
 				}
 			}
 		}
 
-		$this->query("update `tiki_preferences` set `value`= " . $this->cast('value','int') . " +1 where `name`='lastUpdatePrefs'");
+		$this->query("update `tiki_preferences` set `value`=`value`+1 where `name`='lastUpdatePrefs'");
 	} // }}}
 
-	function query( $query = null, $values = array(), $numrows = -1, $offset = -1, $reporterrors = true ) // {{{
+	function query( $query, $values = array() ) // {{{
 	{
+		global $dbTiki, $tikilib;
+
 		$error = '';
-		$result = $this->queryError( $query, $error, $values );
+		if( $tikilib ) {
+			$result = $tikilib->queryError( $query, $error, $values );
+		} elseif( $dbTiki && method_exists( $dbTiki, 'Execute' ) ) {
+			$result = $dbTiki->Execute( $query, $values );
+			$error = $dbTiki->ErrorMsg();
+		}
 
 		if( $result ) {
 			$this->success[] = $query;
@@ -211,14 +202,6 @@ class Installer extends TikiDb_Bridge
 		foreach( $files as $file ) {
 			$filename = basename( $file );
 			$this->patches[] = substr( $filename, 0, -4 );
-		}
-
-		// Add standalone PHP scripts
-		$files = glob( dirname(__FILE__) . '/schema/*_*.php' );
-		foreach( $files as $file ) {
-			$filename = basename( $file );
-			$patch = substr( $filename, 0, -4 );
-			if (!in_array($patch, $this->patches)) $this->patches[] = $patch;
 		}
 
 		$installed = array();
@@ -249,20 +232,21 @@ class Installer extends TikiDb_Bridge
 	function tableExists( $tableName ) // {{{
 	{
 		global $db_tiki;
-		switch ( $db_tiki ) {
-			case 'sqlite':
-				$result = $this->query( "SELECT name FROM sqlite_master WHERE type = 'table'" );
-				break;
-				case 'pgsql':
-					$result = $this->query( "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'" );
-					break;
-			default:
-				$result = $this->query( "show tables" );
-				break;
+		static $list = null;
+		if( is_null( $list ) )
+		{
+			$list = array();
+			switch ( $db_tiki ) {
+			    case 'sqlite':
+	    			$result = $this->query( "SELECT name FROM sqlite_master WHERE type = 'table'" );
+		    		break;
+			    default:
+			        $result = $this->query( "show tables" );
+			        break;
+			}
+			while( $row = $result->fetchRow() )
+				$list[] = reset( $row );
 		}
-		$list = array();
-		while( $row = $result->fetchRow() )
-			$list[] = reset( $row );
 
 		return in_array( $tableName, $list );
 	} // }}}
@@ -272,3 +256,5 @@ class Installer extends TikiDb_Bridge
 		return count( $this->patches ) > 0 ;
 	} // }}}
 }
+
+?>

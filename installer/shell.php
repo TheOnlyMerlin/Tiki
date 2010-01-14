@@ -15,17 +15,6 @@ require_once('tiki-setup_base.php');
 require_once('installer/installlib.php');
 include $local_php;
 
-// In case of replication, ignore it during installer.
-unset( $shadow_dbs, $shadow_user, $shadow_pass, $shadow_host );
-
-class IgnoreErrorHandler implements TikiDb_ErrorHandler
-{
-	function handle( TikiDb $db, $query, $values, $result ) {
-	}
-}
-
-TikiDb::get()->setErrorHandler( new IgnoreErrorHandler );
-
 echo "Running installer for: $local_php\n";
 
 $installer = new Installer;
@@ -56,3 +45,5 @@ else {
 		}
 	}
 }
+
+?>

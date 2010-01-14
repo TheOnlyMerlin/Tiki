@@ -52,7 +52,7 @@ $uniqueid .= '/'.$articleLang;
 
 if ($topic and !$tikilib->user_has_perm_on_object($user,$topic,'topic','tiki_p_topic_read')) {
 	$smarty->assign('errortype', 401);
-	$errmsg=tra("Permission denied. You cannot view this section");
+	$errmsg=tra("Permission denied you cannot view this section");
 	require_once ('tiki-rss_error.php');
 }
 
@@ -77,11 +77,9 @@ if ($output["data"]=="EMPTY") {
 
 	$changes = $tikilib -> list_articles(0, $prefs['max_rss_articles'], $dateId.'_desc', '', 0, $tikilib->now, $user, '', $topic, 'y', '', '', '', '', $articleLang);
 	$tmp = array();
-	include_once('tiki-sefurl.php');
 	foreach ($changes["data"] as $data)  {
 		$data["$descId"] = $tikilib->parse_data($data[$descId], array('print'=>true));
 		$data["body"] = null;
-		$data['sefurl'] = filter_out_sefurl(sprintf($readrepl, $data['articleId']), $smarty, 'article', $data['title']);
 		$tmp[] = $data;
 	}
 	$changes["data"] = $tmp;
@@ -90,3 +88,5 @@ if ($output["data"]=="EMPTY") {
 }
 header("Content-type: ".$output["content-type"]);
 print $output["data"];
+
+?>

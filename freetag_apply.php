@@ -38,3 +38,5 @@ if ($prefs['feature_freetags'] == 'y' and $tiki_p_freetags_tag == 'y') {
     $freetaglib->update_tags($user, $cat_objid, $cat_type, $tag_string, false, $cat_lang);
 
 }
+
+?>

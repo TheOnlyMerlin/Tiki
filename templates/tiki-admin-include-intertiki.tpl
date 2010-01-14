@@ -1,6 +1,16 @@
 {* $Id$ *}
-{tabset name="admin_interwiki"}
-{tab name="{tr}Intertiki client{/tr}"}
+<div class="cbox">
+<div class="cbox-title">{tr}InterTiki{/tr}
+{help url="Intertiki" desc="{tr}Intertiki exchange feature{/tr}"}
+</div>
+</div>
+
+
+<div class="cbox">
+<div class="cbox-title">
+  {tr}Intertiki client{/tr}
+</div>
+<div class="cbox-data">
 <form action="tiki-admin.php?page=intertiki" method="post" name="intertiki">
 <table class="admin">
 	<tr><td class="form">{tr}Tiki Unique key{/tr}</td><td><input type="text" name="tiki_key" value="{$prefs.tiki_key}" size="32" /></td></tr>
@@ -64,15 +74,17 @@
 <tr><td class="form">{tr}Path{/tr}</td><td><input type="text" name="new[path]" value="" /></td></tr>
 <tr><td class="form">{tr}Groups{/tr}</td><td><input type="text" name="new[groups]" value="" /></td></tr>
 
+<tr><td colspan="2" class="input_submit_container"><input type="submit" name="intertikiclient" value="{tr}Save{/tr}" /></td></tr>
 </table>
-<div class="heading input_submit_container" style="text-align: center">
-	<input type="submit" name="intertikiclient" value="{tr}Save{/tr}" />
-</div>
 </form>
-{/tab}
+</div>
+</div>
 
-{if $prefs.feature_intertiki_mymaster eq ''}
-{tab name="{tr}Intertiki server{/tr}"}
+<div class="cbox" id="admin-server-options" style="display: {if $prefs.feature_intertiki_mymaster eq ''}block{else}none{/if}">
+<div class="cbox-title">
+  {tr}Intertiki server{/tr}
+</div>
+<div class="cbox-data">
 <form action="tiki-admin.php?page=intertiki" method="post" name="intertiki">
 <table class="admin">
 <tr><td class="form">{tr}Intertiki shared cookie for sliding auth under same domain{/tr}:</td><td><input type="checkbox" name="feature_intertiki_sharedcookie" {if $prefs.feature_intertiki_sharedcookie eq 'y'}checked="checked"{/if}/></td></tr>
@@ -99,12 +111,9 @@
 <td><input type="text" name="newhost[contact]" value="" size="22" /></td></tr>
 </table>
 </td></tr>
+<tr><td colspan="2" class="input_submit_container"><input type="submit" name="intertikiserver" value="{tr}Save{/tr}" /></td></tr>
 </table>
-<div class="heading input_submit_container" style="text-align: center">
-	<input type="submit" name="intertikiserver" value="{tr}Save{/tr}" />
-</div>
 </form>
-{/tab}
-{/if}
-{/tabset}
+</div>
+</div>
 

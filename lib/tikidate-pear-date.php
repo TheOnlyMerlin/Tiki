@@ -18,8 +18,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 require_once("lib/pear/Date.php");
-class TikiDate extends Date
-{
+class TikiDate extends Date {
 	var $trad = array("January","February","March","April","May","June","July","August","September","October","November","December","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Mon","Tue","Wed","Thu","Fri","Sat","Sun","of");
 	var $translated_trad = array();
 	
@@ -73,7 +72,7 @@ class TikiDate extends Date
 		return $this->tz->getID();
 	}
 
-	static function TimezoneIsValidId($tz_id) {
+	function TimezoneIsValidId($tz_id) {
 		return Date_TimeZone::isValidID($tz_id);
 	}
 
@@ -81,3 +80,5 @@ class TikiDate extends Date
 		return $GLOBALS['_DATE_TIMEZONE_DATA'];
 	}
 }
+
+?>

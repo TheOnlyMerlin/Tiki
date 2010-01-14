@@ -26,24 +26,18 @@ if ($prefs['feature_freetags'] == 'y' and $tiki_p_view_freetags == 'y') {
 	$tags = $freetaglib->get_tags_on_object($cat_objid, $cat_type);	
 	$tagarray = array(); 
 	$taglist = '';
-	foreach ($tags['data'] as $tag) {
-		if (strstr($tag['tag'], ' ')) {
-			$taglist .= '"'.$tag['tag'] . '" ';
-		} else {
-			$taglist .= $tag['tag'] . ' ';
-		}
-	    $tagarray[] = $tag['tag'];
+	for ($i=0; $i<sizeof($tags['data']); $i++) {
+	    $taglist .= $tags['data'][$i]['tag'] . ' ';
+	    $tagarray[] = $tags['data'][$i]['tag'];
 	}
 
     if ($prefs['feature_wikiapproval'] == 'y' && $prefs['wikiapproval_combine_freetags'] == 'y'
-	 && $cat_type == 'wiki page' && $approved = $tikilib->get_approved_page($cat_objid)) {
+	 && $cat_type == 'wiki page' && substr($cat_objid, 0, strlen($prefs['wikiapproval_prefix'])) == $prefs['wikiapproval_prefix']) {
 	 	// to combine tags from approved page 
-		$approvedPageName = $approved;
+		$approvedPageName = substr($cat_objid, strlen($prefs['wikiapproval_prefix']));
 		$approvedTags = $freetaglib->get_tags_on_object($approvedPageName, $cat_type);
-		foreach($approvedTags['data'] as $approvedTag) {
-	    	if (!in_array($approvedTag['tag'],$tagarray)) {
-					$taglist .= $approvedTag['tag'] . ' ';
-				}
+	 	for ($i=0; $i<sizeof($approvedTags['data']); $i++) {
+	    	if (!in_array($approvedTags['data'][$i]['tag'],$tagarray)) $taglist .= $approvedTags['data'][$i]['tag'] . ' ';
 		}		
 	}
 	
@@ -59,3 +53,5 @@ if ($prefs['feature_freetags'] == 'y' and $tiki_p_view_freetags == 'y') {
 
     $smarty->assign('tag_suggestion',$suggestion);
 }
+
+?>

@@ -21,20 +21,19 @@ $fgal_listing_conf = array(
 	'description' => array('name' => tra('Description')),
 	'size' => array('name' => tra('Size')),
 	'created' => array('name' => tra('Created').' / '.tra('Uploaded')),
-	'lastModif' => array('name' => tra('Last Modified'), 'key' => 'show_modified'),
+	'lastmodif' => array('name' => tra('Last Modified'), 'key' => 'show_modified'),
 	'creator' => array('name' => tra('Creator')),
 	'author' => array('name' => tra('Author')),
 	'last_user' => array('name' => tra('Last editor')),
 	'comment' => array('name' => tra('Comment')),
 	'files' => array('name' => tra('Files')),
 	'hits' => array('name' => tra('Hits')),
-	'lockedby' => array('name' => tra('Locked by'), 'icon' => 'lock_gray'),
-	'backlinks' => array('name' => tra('Backlinks'))
+	'lockedby' => array('name' => tra('Locked by'), 'icon' => 'lock_gray')
 );
 foreach ( $fgal_listing_conf as $k => $v ) {
 
 	if ( $k == 'type' ) $show_k = 'icon';
-	elseif ( $k == 'lastModif' ) $show_k = 'modified';
+	elseif ( $k == 'lastmodif' ) $show_k = 'modified';
 	else $show_k = $k;
 
 	if ( isset($_REQUEST['fgal_list_'.$k]) ) {
@@ -65,12 +64,9 @@ foreach ( $fgal_options as $k_gal => $v ) {
 
 	if ( $k_gal == 'default_view' ) {
 		$fgal_options[$k_gal]['value'] = ( isset($gal_info) && isset($gal_info[$k_gal]) ) ? $gal_info[$k_gal] : $prefs[$k_prefs];
-	} elseif ( !isset($_REQUEST['edit_mode']) ) {
-		// We are in the file gallery admin panel
-		$fgal_options[$k_gal]['value'] = $prefs[$k_prefs];
 	} else {
-		// We are in the edit file gallery page
-		$fgal_options[$k_gal]['value'] = $gal_info[$k_gal];
+		// Only check the current gallery value if the feature (in global prefs) is enabled
+		$fgal_options[$k_gal]['value'] = ( $prefs[$k_prefs] == 'y' && isset($gal_info) && isset($gal_info[$k_gal]) ) ? $gal_info[$k_gal] : $prefs[$k_prefs];
 	}
 }
 

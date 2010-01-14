@@ -13,7 +13,6 @@ function wikiplugin_trackeritemfield_info() {
 		'description' => tra("Displays the value of a tracker item field or the wiki text if the value of the field is set or has a value(if itemId not specified, use the itemId of the url or the user tracker)."),
 		'prefs' => array( 'wikiplugin_trackeritemfield', 'feature_trackers' ),
 		'body' => tra('Wiki text containing an {ELSE} marker.'),
-		'icon' => 'pics/icons/database_go.png',
 		'params' => array(
 			'trackerId' => array(
 				'required' => false,
@@ -55,7 +54,7 @@ function wikiplugin_trackeritemfield_info() {
 }
 
 function wikiplugin_trackeritemfield($data, $params) {
-	global $userTracker, $group, $user, $userlib, $tiki_p_admin_trackers, $prefs, $smarty, $tikilib;
+	global $userTracker, $group, $user, $userlib, $tiki_p_admin_trackers, $prefs, $smarty;
 	global $trklib; include_once('lib/trackers/trackerlib.php');
 	static $memoItemId = 0;
 	static $memoTrackerId = 0;
@@ -63,10 +62,6 @@ function wikiplugin_trackeritemfield($data, $params) {
 	static $memoUserTracker = false;
 
 	extract ($params, EXTR_SKIP);
-
-	if (empty($itemId) && !empty($_REQUEST['itemId'])) {
-		$itemId = $_REQUEST['itemId'];
-	}
 
 	if (empty($itemId) && !empty($trackerId) && ($tracker_info = $trklib->get_tracker($trackerId))) {
 		if ($t = $trklib->get_tracker_options($trackerId)) {
@@ -83,6 +78,9 @@ function wikiplugin_trackeritemfield($data, $params) {
 		}
 		$trackerId = $memoTrackerId;
 	} else {
+		if (empty($itemId) && !empty($_REQUEST['itemId'])) {
+			$itemId = $_REQUEST['itemId'];
+		}
 		if (!empty($trackerId) && !empty($_REQUEST['view_user'])) {
 			$itemId = $trklib->get_user_item($trackerId, $tracker_info, $_REQUEST['view_user']);
 		}
@@ -102,33 +100,17 @@ function wikiplugin_trackeritemfield($data, $params) {
 			return tra('Incorrect param').': trackerId';
 		}
 
+		$memoItemId = $itemId;
 		if (!empty($status) && !$trklib->valid_status($status)) {
 			return tra('Incorrect param').': status';
 		}
 
 		$info = $trklib->get_item_info($itemId);
-		if (!$memoUserTracker) {
-			$perm = ($info['status'] == 'c')? 'view_trackers_closed':(($info['status'] == 'p')?'view_trackers_pending':'view_trackers');
-			$perms = Perms::get(array('type'=>'tracker', 'object'=>$trackerId));
-			if (!$perms->$perm) {
-				$g = $trklib-> get_item_group_creator($trackerId, $itemId);
-				if (in_array($g, $tikilib->get_user_groups($user))) {
-					if (empty($tracker_info)) {
-						$tracker_info = $trklib->get_tracker($info['trackerId']);
-					}
-					$perms = $trklib->get_special_group_tracker_perm($tracker_info, false);
-					if ($perms["tiki_p_$perm"] != 'y') {
-						return false;
-					}
-				}
-			}
-			$perms = Perms::get(array('type'=>'trackeritem', 'object'=>$itemId));
-			if (!$perms->$perm) {
-				return false;
-			}
-		}
 		$memoStatus = $info['status'];
-		$memoItemId = $itemId;
+		//$perm = (isset($status) && $status == 'c')? 'tiki_p_view_trackers_closed':((isset($status) && $status == 'p')?'tiki_p_view_trackers_pending':'tiki_p_view_trackers');
+		//if ((!empty($fieldId)|| isset($fields)) && !$memoUserTracker && $tiki_p_admin_trackers != 'y' && !$userlib->user_has_perm_on_object($user, $trackerId, 'tracker', $perm) && empty($is_user_tracker)) {
+		//	return false;
+		//}
 		$memoTrackerId = $trackerId;
 	}
 	if (!isset($data)) {
@@ -204,7 +186,10 @@ function wikiplugin_trackeritemfield($data, $params) {
 				$smarty->assign('showlinks', 'n');
 				return $smarty->fetch('tracker_item_field_value.tpl');
 			}
+		} else {
+			return tra('Incorrect param').': fieldId';
 		}
 	}
 	return $data;
 }
+?>

@@ -6,8 +6,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class HotwordsLib extends TikiLib
-{
+class HotwordsLib extends TikiLib {
+	function HotwordsLib($db) {
+		$this->TikiLib($db);
+	}
 
 	function list_hotwords($offset = 0, $maxRecords = -1, $sort_mode = 'word_desc', $find = '') {
 
@@ -20,7 +22,7 @@ class HotwordsLib extends TikiLib
 			$bindvars = array();
 		}
 
-		$query = "select * from `tiki_hotwords` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_hotwords` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_hotwords` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -52,4 +54,7 @@ class HotwordsLib extends TikiLib
 		$result = $this->query($query,array($word));
 	}
 }
-$hotwordlib = new HotwordsLib;
+global $dbTiki;
+$hotwordlib = new HotwordsLib($dbTiki);
+
+?>

@@ -15,8 +15,7 @@ require_once ('lib/debug/debugger.php');
 /**
  * \brief Command 'watch'
  */
-class DbgCmd_DebugMessages extends DebuggerCommand
-{
+class DbgCmd_DebugMessages extends DebuggerCommand {
 	/// Function to create interface part of command: return ["button name"] = <html code>
 	function draw_interface() {
 		global $smarty;
@@ -44,3 +43,5 @@ class DbgCmd_DebugMessages extends DebuggerCommand
 function dbg_command_factory_dmsg() {
 	return new DbgCmd_DebugMessages();
 }
+
+?>

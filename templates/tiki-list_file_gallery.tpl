@@ -8,17 +8,13 @@
       {if $galleryId eq 0}
         {tr}Create a File Gallery{/tr}
       {else}
-        {tr}Edit Gallery:{/tr} {if $galleryId eq $prefs.fgal_root_id}
-		{tr}File Galleries{/tr}
-	{else}
-		{$name}
-	{/if}
+        {tr}Edit Gallery{/tr}: {$name}
       {/if}
     {else}
-      {if $galleryId eq $prefs.fgal_root_id}
+      {if $galleryId eq 0}
         {tr}File Galleries{/tr}
       {else}
-        {tr}Gallery:{/tr} {$name|escape}
+        {tr}Gallery{/tr}: {$name}
       {/if}
     {/if}
   {/strip}
@@ -54,9 +50,9 @@
   {/if}
   {if $view eq 'browse'}
     {if $show_details eq 'y'}
-      {self_link show_details='n'}{icon _id='no_information' align='right'}{/self_link}
+      {self_link show_details='n'}{icon _id='no_information' align='right' onload='adjustThumbnails()'}{/self_link}
     {else}
-      {self_link show_details='y'}{icon _id='information' align='right'}{/self_link}
+      {self_link show_details='y'}{icon _id='information' align='right' onload='adjustThumbnails()'}{/self_link}
     {/if}
   {/if}
 
@@ -66,9 +62,6 @@
 
   {if $tiki_p_create_file_galleries eq 'y' and $edit_mode ne 'y'}
     {button _text="{tr}Create a File Gallery{/tr}" href="?edit_mode=1&amp;parentId=$galleryId"}
-  {/if}
-  {if $tiki_p_create_file_galleries eq 'y' and $dup_mode ne 'y'}
-    {button _text="{tr}Duplicate File Gallery{/tr}" dup_mode=1 galleryId=$galleryId}
   {/if}
   
   {if $tiki_p_admin_file_galleries eq 'y' or $user eq $gal_info.user}
@@ -109,14 +102,17 @@
   {if $tiki_p_create_file_galleries eq 'y' and $edit_mode ne 'y'}
     {button _text="{tr}Create a File Gallery{/tr}" href="?edit_mode=1&amp;parentId=-1&amp;galleryId=0"}
   {/if}
+  {if $tiki_p_create_file_galleries eq 'y' and $dup_mode ne 'y'}
+    {button _text="{tr}Duplicate File Gallery{/tr}" href="?dup_mode=1" _auto_args='filegals_manager'}
+  {/if}
   {if $tiki_p_upload_files eq 'y'}
   	  {button _text="{tr}Upload File{/tr}" href="tiki-upload_file.php"}
   {/if}
 
 {/if}
 
-{if $edit_mode neq 'y' and $prefs.fgal_show_slideshow eq 'y' and $gal_info.show_slideshow.value eq 'y'}
-  {button _text="{tr}SlideShow{/tr}" href="#" _onclick="javascript:window.open('tiki-list_file_gallery.php?galleryId=$galleryId&amp;slideshow','','menubar=no,width=600,height=500,resizable=yes');return false;"}
+{if $edit_mode neq 'y' and $fgal_options.show_slideshow.value eq 'y'}
+  {button _text="{tr}SlideShow{/tr}" href="#" _onclick="javascript:window.open('tiki-list_file_gallery.php?galleryId=$galleryId&amp;slideshow','','menubar=no,width=600,height=500,resizable=yes');"}
 {/if}
 
 </div>
@@ -194,13 +190,6 @@ if (getCookie("fgalKeepOpen")) {
 {if $files or ($find ne '')}
   {include file='find.tpl' find_show_num_rows = 'y'}
 {/if}
-{if $prefs.fgal_quota_show eq 'y' && $gal_info.quota}
-	<div style="float:right">
-		{capture name='use'}{math equation="round((100*x)/(1024*1024*y))" x=$gal_info.usedSize y=$gal_info.quota}{/capture}
-		{quotabar length='100' value='$smarty.capture.use'}
-	</div>
-{/if}
-
   {include file='list_file_gallery.tpl'}
 
   {if $galleryId gt 0
@@ -211,10 +200,10 @@ if (getCookie("fgalKeepOpen")) {
     ||  $tiki_p_edit_comments  == 'y')}
 
     <div id="page-bar">
-		  {include file='comments_button.tpl'}
+		  {include file=comments_button.tpl}
     </div>
 
-  {include file='comments.tpl'}
+  {include file=comments.tpl}
   {/if}
 {/if}
 

@@ -44,8 +44,7 @@ unset($tmp);
 // If unallowed chars (regarding to RFC1738) have been found in REQUEST_URI, then urlencode them
 $unallowed_uri_chars = array("'", '"', '<', '>', '{', '}', '|', '\\', '^', '~', '`');
 $unallowed_uri_chars_encoded = array_map('urlencode', $unallowed_uri_chars);
-if(isset($_SERVER['REQUEST_URI']))
-	$_SERVER['REQUEST_URI'] = str_replace($unallowed_uri_chars, $unallowed_uri_chars_encoded, $_SERVER['REQUEST_URI']);
+$_SERVER['REQUEST_URI'] = str_replace($unallowed_uri_chars, $unallowed_uri_chars_encoded, $_SERVER['REQUEST_URI']);
 
 // Same as above, but for PHP_SELF which does not contain URL params
 // Usually, PHP_SELF also differs from REQUEST_URI in that PHP_SELF is URL decoded and REQUEST_URI is exactly what the client sent
@@ -70,25 +69,8 @@ if ($dir_level > 0) {
 if ( substr($tikiroot,-1,1) != '/' ) $tikiroot .= '/';
 if ( substr($tikipath,-1,1) != '/' ) $tikipath .= '/';
 
-// Add global filter for xajax and cookie
-global $inputConfiguration;
-if ( empty($inputConfiguration) ) {
-	$inputConfiguration = array();
-}
-array_unshift($inputConfiguration,array(
-  'staticKeyFilters' => array(
-		'cookietab'	=>	'int',
-		'xjxfun'	=> 'striptags',
-		'xjxr'		=>	'int'
-  ),
-	'staticKeyFiltersForArrays' => array(
-		'xjxargs' => 'striptags',
-	)
-));
-
 require_once('lib/init/initlib.php');
 TikiInit::prependIncludePath($tikipath.'lib/pear');
 TikiInit::appendIncludePath($tikipath.'lib/core/lib');
-TikiInit::appendIncludePath($tikipath);
 require_once('lib/core/lib/DeclFilter.php');
 require_once('lib/core/lib/JitFilter.php');

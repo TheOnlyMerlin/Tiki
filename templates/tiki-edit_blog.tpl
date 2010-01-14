@@ -1,5 +1,5 @@
 {if $blogId > 0}
-  {title help="Blogs" url="tiki-edit_blog.php?blogId=$blogId" admpage="blogs"}{tr}Edit Blog:{/tr} {$title|escape}{/title}
+  {title help="Blogs" url="tiki-edit_blog.php?blogId=$blogId" admpage="blogs"}{tr}Edit Blog:{/tr} {$title}{/title}
 {else}
   {title help="Blogs"}{tr}Create Blog{/tr}{/title}
 {/if}
@@ -14,9 +14,7 @@
 </div>
 
 {if $category_needed eq 'y'}
-	{remarksbox type='Warning' title='{tr}Warning{/tr}'}
-	<div class="highlight"><em class='mandatory_note'>{tr}A category is mandatory{/tr}</em></div>
-	{/remarksbox}
+  <div class="simplebox highlight">{tr}A category is mandatory{/tr}</div>
 {/if}
 
 <h2>{tr}Current heading{/tr}</h2>
@@ -39,7 +37,7 @@
     <tr class="editblogform">
       <td><label for="blog-desc">{tr}Description{/tr}</label>
         <br />
-        {include file='textareasize.tpl' area_name='blog-desc' formId='blog-edit-form'}
+        {include file="textareasize.tpl" area_name='blog-desc' formId='blog-edit-form'}
       </td>
       <td>
         <textarea class="wikiedit" name="description" id="blog-desc" rows="{$rows}" cols="{$cols}" wrap="virtual">{$description|escape}</textarea>
@@ -68,6 +66,10 @@
       <td><input type="checkbox" name="public" id="blogs-allow_others" {if $public eq 'y'}checked='checked'{/if}/></td>
     </tr>
     <tr class="editblogform">
+      <td><label for="blogs-titles">{tr}Use titles in blog posts{/tr}</label></td>
+      <td><input type="checkbox" name="use_title" id="blogs-titles" {if $use_title eq 'y'}checked='checked'{/if}/></td>
+    </tr>
+    <tr class="editblogform">
       <td><label for="blogs-search">{tr}Allow search{/tr}</label></td>
       <td><input type="checkbox" name="use_find" id="blogs-search" {if $use_find eq 'y'}checked='checked'{/if}/></td>
     </tr>
@@ -88,7 +90,7 @@
         <td>
           <label for="blogs-heading">{tr}Blog heading{/tr}</label>
           <br />
-          {include file='textareasize.tpl' area_name='blogs-heading' formId='blog-edit-form'}
+          {include file="textareasize.tpl" area_name='blogs-heading' formId='blog-edit-form'}
         </td>
         <td>
           <textarea name="heading" id="blogs-heading" rows='10' cols='{$cols}'>{$heading|escape}</textarea>
@@ -96,7 +98,7 @@
       </tr>
     {/if}
 
-    {include file='categorize.tpl'}
+    {include file=categorize.tpl}
 
     <tr class="editblogform">
       <td>&nbsp;</td>

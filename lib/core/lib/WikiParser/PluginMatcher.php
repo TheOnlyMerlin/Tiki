@@ -460,3 +460,5 @@ class WikiParser_PluginMatcher_Match
 		return $this->matcher->getChunkFrom( $this->start, $this->end - $this->start );
 	}
 }
+
+?>

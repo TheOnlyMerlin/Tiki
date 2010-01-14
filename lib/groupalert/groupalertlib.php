@@ -10,8 +10,11 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class groupAlertLib extends TikiLib
-{
+class groupAlertLib extends TikiLib {
+
+	function GroupAlertLib($db) {
+		parent::TikiLib($db);
+	}
 
 	function AddGroup ($ObjectType, $ObjectNumber,$GroupName,$displayEachUser) {
 		if ( $displayEachUser == "on" ) $displayEachUser='y';
@@ -42,7 +45,7 @@ class groupAlertLib extends TikiLib
 		}
 		$project=$tikilib->get_preference ("browsertitle");
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
-		$machine = $tikilib->httpPrefix( true ) . dirname( $foo["path"] );
+		$machine = $tikilib->httpPrefix() . dirname( $foo["path"] );
 		$URL=$machine."/".$URI;
 		foreach ( $ListUserToAlert as $user ){
 		$email=$userlib->get_user_email($user);
@@ -56,5 +59,8 @@ class groupAlertLib extends TikiLib
 	}
 	}
 }
-global $groupalertlib;
-$groupalertlib = new groupAlertLib;
+
+
+global $tikilib,$dbTiki;
+$groupalertlib = new groupAlertLib($dbTiki);
+?>

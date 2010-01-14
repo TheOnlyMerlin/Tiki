@@ -7,11 +7,9 @@
 // details.
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
-  header("location: index.php");
-  exit;
-}
+$access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 
+$smarty->assign('fsquery', preg_replace('/(\?|&(amp;)?)fullscreen=(n|y)/','',$_SERVER['QUERY_STRING']));
 if ( isset($_GET['fullscreen']) ) {
 	if ($_GET['fullscreen'] == 'y') {
 		$_SESSION['fullscreen'] = 'y';

@@ -155,3 +155,5 @@ function wikiplugin_lsdir($data, $params) {
 	return $ret;
 
 }
+
+?>

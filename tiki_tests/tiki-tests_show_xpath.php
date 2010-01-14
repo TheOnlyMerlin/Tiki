@@ -45,10 +45,10 @@ function enlight_xpath($url, $xpath) {
 		tidy_diagnose($data);
 	} else {
 		if (!$loaded) {
-			require_once('lib/htmlpurifier_tiki/HTMLPurifier.tiki.php');
-			$config = getHTMLPurifierTikiConfig();
-			$config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
-			$config->set('Attr.EnableID', true);
+			require_once("lib/htmlpurifier/HTMLPurifier.auto.php");
+			$config =& HTMLPurifier_Config::createDefault();
+			$config->set('HTML', 'Doctype', 'XHTML 1.0 Transitional');
+			$config->set('Attr','EnableID', true);
 			$purifier = new HTMLPurifier($config);
 			$loaded = true;
 		}
@@ -98,3 +98,5 @@ foreach($urls as $url) {
 	}
 	$count++;
 }
+
+?>

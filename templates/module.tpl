@@ -1,8 +1,8 @@
 {* $Id$ *}
 {* Module layout with controls *}
 {if $module_nobox neq 'y'}
-{if $prefs.feature_layoutshadows eq 'y'}<div class="box-shadow">{$prefs.box_shadow_start}{/if}
-	<div class="box box-{$module_name|escape}{if $module_type eq 'cssmenu'} cssmenubox{/if}"{if $module_params.overflow == 'y'} style="overflow:visible !important"{/if}>
+{if $prefs.feature_layoutshadows}<div class="box-shadow">{$prefs.box_shadow_start}{/if}
+	<div class="box box-{$module_name|escape}{if $module_type == 'cssmenu'} cssmenubox{/if}"{if $module_params.overflow == 'y'} style="overflow:visible !important"{/if}>
 	{if $module_decorations ne 'n'}
 		<h3 class="box-title clearfix"{if !empty($module_params.bgcolor)} style="background-color:{$module_params.bgcolor};"{/if}>
 		{if $user and $prefs.user_assigned_modules == 'y' and $prefs.feature_modulecontrols eq 'y'}
@@ -31,16 +31,6 @@
 					{icon name=$smarty.capture.name class="flipmodimage" _id="module" alt="[{tr}toggle{/tr}]"}
 				</a>
 			</span>
-			{if $prefs.menus_items_icons eq 'y'}
-			<span class="moduleflip moduleflip-vert" id="moduleflip-vert-{$module_name|cat:$module_position|cat:$module_ord|escape}">
-				<a title="{tr}Toggle module contents{/tr}" class="flipmodtitle" href="javascript:flip_class('main','minimize-modules-left','maximize-modules');{if $prefs.feature_phplayers eq 'y' and isset($phplayers_LayersMenu)}moveLayers();{/if}icntoggle('modv-{$module_name|cat:$module_position|cat:$module_ord|escape}','vmodule.png');">
-					{capture name=name}
-						icnmodv-{$module_name|cat:$module_position|cat:$module_ord|escape}
-					{/capture}
-					{icon name=$smarty.capture.name class="flipmodimage" _id="trans" alt="[{tr}Toggle Vertically{/tr}]" _defaultdir="pics"}
-				</a>
-			</span>
-			{/if}
 		{/if}
 		<!--[if IE]><br class="clear" style="height: 1px !important" /><![endif]--></h3>
 	{elseif $module_notitle ne 'y' }
@@ -80,5 +70,5 @@
 
 		</div>
 	</div>
-{if $prefs.feature_layoutshadows eq 'y'}{$prefs.box_shadow_end}</div>{/if}
+{if $prefs.feature_layoutshadows}{$prefs.box_shadow_end}</div>{/if}
 {/if}

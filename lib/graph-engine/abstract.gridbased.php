@@ -1,5 +1,5 @@
 <?php
-require_once 'lib/graph-engine/core.php';
+require_once 'graph-engine/core.php';
 
 class GridBasedGraphic extends Graphic // {{{1
 {
@@ -694,3 +694,5 @@ class StaticGridScale extends GridScale // {{{1
 		return array( $begin, $end );
 	}
 } // }}}1
+
+?>

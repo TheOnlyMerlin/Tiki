@@ -85,8 +85,7 @@ $smarty->assign('edit_data', 'n');
 $smarty->assign('spellcheck', 'n');
 
 if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0) {
-	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$template_data = $templateslib->get_template($_REQUEST["templateId"]);
+	$template_data = $tikilib->get_template($_REQUEST["templateId"]);
 
 	$_REQUEST["preview"] = 1;
 	$_REQUEST["body"] = $template_data["content"];
@@ -415,8 +414,7 @@ $types = $artlib->list_types_byname();
 $smarty->assign_by_ref('types', $types);
 
 if ($prefs['feature_cms_templates'] == 'y' && $tiki_p_use_content_templates == 'y') {
-	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$templates = $templateslib->list_templates('cms', 0, -1, 'name_asc', '');
+	$templates = $tikilib->list_templates('cms', 0, -1, 'name_asc', '');
 }
 
 $smarty->assign_by_ref('templates', $templates["data"]);
@@ -444,6 +442,9 @@ $smarty->assign('siteTimeZone', $prefs['display_timezone']);
 
 include_once("textareasize.php");
 
+include_once ('lib/quicktags/quicktagslib.php');
+$quicktags = $quicktagslib->list_quicktags(0,100,'taglabel_asc','','articles');
+$smarty->assign_by_ref('quicktags', $quicktags["data"]);
 $smarty->assign('showtags', 'n');
 $smarty->assign('qtcycle', '');
 ask_ticket('edit-submission');
@@ -457,3 +458,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the Index Template
 $smarty->assign('mid', 'tiki-edit_submission.tpl');
 $smarty->display("tiki.tpl");
+
+?>

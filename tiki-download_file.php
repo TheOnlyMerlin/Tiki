@@ -1,21 +1,16 @@
 <?php
 // CVS: $Id: tiki-download_file.php,v 1.33.2.4 2008-03-13 20:12:44 nyloth Exp $
 // Initialization
+
 $force_no_compression = true;
 $skip = false;
 
-if ( isset($_GET['fileId']) && isset($_GET['thumbnail']) && isset($_COOKIE[ session_name() ]) && count($_GET) == 2 ) {
-
-	$tikiroot = dirname($_SERVER['PHP_SELF']);
-	$session_params = session_get_cookie_params();
-	session_set_cookie_params($session_params['lifetime'],$tikiroot);
-	unset($session_params);
+if ( isset($_GET['fileId']) && isset($_GET['thumbnail']) && isset($_COOKIE['PHPSESSID']) && count($_GET) == 2 ) {
 	session_start();
-
 	if ( isset($_SESSION['allowed'][$_GET['fileId']]) ) {
-		require_once 'tiki-filter-base.php';
 		include('db/tiki-db.php');
-		$db = TikiDb::get();
+		include('lib/tikidblib.php');
+		$db = new TikiDB($dbTiki);
 
 		$query = "select * from `tiki_files` where `fileId`=?";
 		$result = $db->query($query, array((int)$_GET['fileId']));
@@ -112,12 +107,6 @@ if (!$skip) {
 		$smarty->display('error.tpl');
 		die;
 	}
-	if ($info['backlinkPerms'] == 'y' && $filegallib->hasOnlyPrivateBacklinks($info['fileId'])) {
-		$smarty->assign('errortype', 401);
-		$smarty->assign('msg', tra('Permission denied'));
-		$smarty->display('error.tpl');
-		die;
-	}		
 }
 
 // Add hits ( if download or display only ) + lock if set
@@ -132,7 +121,7 @@ if ( ! isset($_GET['thumbnail']) && ! isset($_GET['icon']) ) {
 	$statslib->stats_hit($info['filename'], 'file', $info['fileId']);
 
 	if ( $prefs['feature_actionlog'] == 'y' ) {
-		global $logslib; require_once('lib/logs/logslib.php');
+		require_once('lib/logs/logslib.php');
 		$logslib->add_action('Downloaded', $info['galleryId'], 'file gallery', 'fileId='.$info['fileId']);
 	}
 
@@ -328,11 +317,9 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 	}
 }
 
-if ( empty($info['filetype']) || $info['filetype'] == 'application/x-octetstream' || $info['filetype'] == 'application/octet-stream' ) {
-	include_once('lib/mime/mimelib.php');
-	$info['filetype'] = tiki_get_mime($info['filename'], 'application/octet-stream');
-}
+if ( empty($info['filetype']) ) $info['filetype'] = 'application/x-octetstream';
 header('Content-type: '.$info['filetype']);
+
 
 // IE6 can not download file with / in the name (the / can be there from a previous bug)
 $file = basename($info['filename']);

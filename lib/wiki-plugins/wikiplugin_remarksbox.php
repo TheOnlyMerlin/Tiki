@@ -8,8 +8,6 @@
  *  (title=>title text)  				Title text
  *  (highlight=>n|y)  					Add highlight class (default=n)
  *  (icon=>icon_id)  					Optional icon (override defaults, use 'none' for no icon)
- *  (close=>y)  						closable
- *  (width=>'')  						remarksbox width
  * Examples:
  * 
 	{REMARKSBOX(title=>Comment,type=>comment)}What's the difference between a comment and a note?{REMARKSBOX}
@@ -21,7 +19,7 @@
 
 function wikiplugin_remarksbox_help() {
 	return tra('Displays a comment, tip, note or warning box').
-		':<br />~np~{REMARKSBOX(type=>tip|comment|note|warning,title=>title text,highlight=n|y,icon=optional icon_id or none, close=y, width=auto )}'.
+		':<br />~np~{REMARKSBOX(type=>tip|comment|note|warning,title=>title text,highlight=n|y,icon=optional icon_id or none )}'.
 		tra('remarks text').'{REMARKSBOX}~/np~';
 }
 
@@ -53,16 +51,6 @@ function wikiplugin_remarksbox_info() {
 				'name' => tra('Icon'),
 				'description' => tra('Icon ID.'),
 			),
-			'close' => array(
-				'required' => false,
-				'name' => tra('Close'),
-				'description' => tra('y|n Show close button (default y)'),
-			),
-			'width' => array(
-				'required' => false,
-				'name' => tra('Width'),
-				'description' => tra('Width (e.g. 100% or 250px - default "")'),
-			),
 		),
 	);
 }
@@ -76,3 +64,5 @@ function wikiplugin_remarksbox($data, $params) {
 	$ret = '~np~'.smarty_block_remarksbox($params, '~/np~'.tra($data).'~np~', $smarty).'~/np~';
 	return $ret;
 }
+
+?>

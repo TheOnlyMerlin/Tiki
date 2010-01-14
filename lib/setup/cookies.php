@@ -53,28 +53,18 @@ function getCookie($name, $section=null, $default=null) {
 	}
 }
 
-global $cookietab;
 if ($prefs['feature_tabs'] == 'y') {
-	if( isset($_REQUEST['cookietab'])) {
-		$cookietab = $_REQUEST['cookietab'];
-	} elseif (count($_POST) > 0 and preg_replace(array('/\?.*$/','/^http.?:\/\//'),'',$_SERVER['HTTP_REFERER']) == preg_replace('/\?.*$/','',$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']) && isset($_COOKIE['tab'])) {
-		// AJAX call (probably) and same URI, reset cookietab if changed "page"
-		if ($prefs['feature_ajax'] == 'y' && isset($_POST['xjxfun'])) {
-			if (isset($_COOKIE['tab_last_query']) && $_COOKIE['tab_last_query'] != $_SERVER['QUERY_STRING']) {
-				setcookie('tab', '1');
-				$_COOKIE['tab'] = '1';
-			}
-			setcookie('tab_last_query', $_SERVER['QUERY_STRING']);
-		}
-		$cookietab = $_COOKIE['tab'];
-	} elseif (isset($_SERVER['HTTP_REFERER']) && preg_replace(array('/\?.*$/','/^http.?:\/\//'),'',$_SERVER['HTTP_REFERER']) == preg_replace('/\?.*$/','',$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']) && isset($_COOKIE['tab'])) {
+	if( isset($_GET['cookietab'])) {
+		$smarty->assign('cookietab',$_GET['cookietab']);
+	} else if (count($_POST) > 0 and preg_replace(array('/\?.*$/','/^http.?:\/\//'),'',$_SERVER['HTTP_REFERER']) == preg_replace('/\?.*$/','',$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']) && isset($_COOKIE['tab'])) {
+		$smarty->assign('cookietab',$_COOKIE['tab']);
+	} else if (isset($_SERVER['HTTP_REFERER']) && preg_replace(array('/\?.*$/','/^http.?:\/\//'),'',$_SERVER['HTTP_REFERER']) == preg_replace('/\?.*$/','',$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']) && isset($_COOKIE['tab'])) {
 		preg_match('/[\?\&]page=([^\&]*)/', $_SERVER['REQUEST_URI'], $q_match);	// TODO replace with better way to get a param?
 		preg_match('/[\?\&]page=([^\&]*)/', $_SERVER['HTTP_REFERER'], $ref_match);
 		if ($q_match == $ref_match) {	// for admin includes when staying on same panel
-			$cookietab = $_COOKIE['tab'];
+			$smarty->assign('cookietab',$_COOKIE['tab']);
 		}
 	} else {
-		$cookietab = '1';
+		$smarty->assign('cookietab',1);
 	}
-	$smarty->assign('cookietab',$cookietab);
 }

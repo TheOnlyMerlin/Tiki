@@ -6,8 +6,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class CommLib extends TikiLib
-{
+class CommLib extends TikiLib {
+	function CommLib($db) {
+		$this->TikiLib($db);
+	}
 
 	function accept_page($receivedPageId) {
 		$info = $this->get_received_page($receivedPageId);
@@ -80,7 +82,7 @@ class CommLib extends TikiLib
 			$mid = "";
 		}
 
-		$query = "select * from `tiki_received_articles` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_received_articles` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_received_articles` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -192,4 +194,7 @@ class CommLib extends TikiLib
 
 // Functions for the communication center end ////
 }
-$commlib = new CommLib;
+global $dbTiki;
+$commlib = new CommLib($dbTiki);
+
+?>

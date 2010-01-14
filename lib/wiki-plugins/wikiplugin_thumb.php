@@ -11,55 +11,46 @@ function wikiplugin_thumb_info() {
 		'description' => tra('Displays the thumbnail for an image'),
 		'prefs' => array( 'wikiplugin_thumb' ),
 		'body' => tra('description'),
-		'filter' => 'text',
 		'params' => array(
 			'file' => array(
 				'required' => false,
 				'name' => tra('File ID'),
 				'description' => tra('File ID from the file gallery.'),
-				'filter' => 'url',
 			),
 			'id' => array(
 				'required' => false,
 				'name' => tra('Image ID'),
 				'description' => tra('Image ID from the image gallery.'),
-				'filter' => 'digits',
 			),
 			'image' => array(
 				'required' => false,
 				'name' => tra('Image'),
 				'description' => tra('URL to the image.'),
-				'filter' => 'url',
 			),
 			'max' => array(
 				'required' => false,
 				'name' => tra('Maximum Size'),
 				'description' => tra('Maximum width or height for the image.'),
-				'filter' => 'int',
 			),
 			'float' => array(
 				'required' => false,
 				'name' => tra('Floating'),
 				'description' => 'left|right|none',
-				'filter' => 'alpha',
 			),
 			'url' => array(
 				'required' => false,
 				'name' => tra('URL'),
 				'description' => tra('Link target of the image.'),
-				'filter' => 'url',
 			),
 			'original' => array(
 				'required' => false,
 				'name' => tra('Original'),
 				'description' => 'y|n',
-				'filter' => 'alpha',
 			),
 			'sticky' => array(
 				'required' => false,
 				'name' => tra('Sticky'),
 				'description' => 'y|n',
-				'filter' => 'alpha',
 			),
 		),
 	);
@@ -85,7 +76,7 @@ function wikiplugin_thumb($data, $params) {
 		$float = "none";
 	}
 	if (!isset($url)) {
-		$url = "javascript:void(0)";
+		$url = "javascript:void()";
 	}
 
 	if( isset($file) && !empty($file) ) {
@@ -176,3 +167,4 @@ function wikiplugin_thumb($data, $params) {
 	$html.= "<img src='$image' width='$twidth' height='$theight' /></a>";
 	return $html;
 }
+?>

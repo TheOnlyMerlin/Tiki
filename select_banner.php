@@ -17,7 +17,7 @@ require_once ('tiki-setup.php');
 include_once ('lib/banners/bannerlib.php');
 
 if (!isset($bannerlib)) {
-	$bannerlib = new BannerLib;
+	$bannerlib = new BannerLib($dbTiki);
 }
 
 // CHECK FEATURE BANNERS HERE
@@ -29,3 +29,5 @@ if ($prefs['feature_banners'] != 'y') {
 }
 $banner = $bannerlib->select_banner($_REQUEST["zone"]);
 print ($banner);
+
+?>

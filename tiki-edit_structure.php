@@ -51,7 +51,7 @@ $smarty->assign('structure_name', $structure_info["pageName"]);
 
 if (!$tikilib->user_has_perm_on_object($user,$structure_info["pageName"],'wiki page','tiki_p_view')) {
 	$smarty->assign('errortype', 401);
-	$smarty->assign('msg',tra('Permission denied. You cannot view this page.'));
+	$smarty->assign('msg',tra('Permission denied you cannot view this page'));
 	$smarty->display("error.tpl");
 	die;
 }
@@ -105,7 +105,7 @@ if (isset($_REQUEST["sremove"])) {
   if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
     key_check($area);
 		$page = $page_info["pageName"];
-		$delete = $tikilib->user_has_perm_on_object($user, $page_info['pageName'],'wiki page','tiki_p_remove');
+		$delete = $tikilib->user_has_perm_on_object($user, $page_info['pageName'],'wiki page','tiki_p_remove', 'tiki_p_edit_categorized');
 		$structlib->s_remove_page($_REQUEST["sremove"], $delete, empty($_REQUEST['page'])? '': $_REQUEST['page']);
   	$_REQUEST["page_ref_id"] = $page_info["parent_id"];
   } else {
@@ -144,12 +144,12 @@ if (isset($_REQUEST["create"])) {
 		if ($tikilib->page_exists($_REQUEST["name"])) {
 			$smarty->assign('alert_exists', 'y');
 		}
-		$structlib->s_create_page($_REQUEST['page_ref_id'], $after, $_REQUEST['name'], '', $structure_info['page_ref_id']);
+		$structlib->s_create_page($_REQUEST["page_ref_id"], $after, $_REQUEST["name"], '');
 		$userlib->copy_object_permissions($page_info["pageName"], $_REQUEST["name"],'wiki page');
 	} 
 	elseif(!empty($_REQUEST['name2'])) {
 		foreach ($_REQUEST['name2'] as $name) {
-			$new_page_ref_id = $structlib->s_create_page($_REQUEST['page_ref_id'], $after, $name, '', $structure_info['page_ref_id']);
+			$new_page_ref_id = $structlib->s_create_page($_REQUEST["page_ref_id"], $after, $name, '');
       $after = $new_page_ref_id;      
 		}	
 	}
@@ -357,7 +357,7 @@ if ($prefs['feature_wiki_categorize_structure'] == 'y' && $all_editable == 'y') 
 	include_once("categorize_list.php");
 } elseif ($prefs['feature_categories'] == 'y') {
 	global $categlib; include_once('lib/categories/categlib.php');
-	$categories = $categlib->get_all_categories_respect_perms($user, 'view_category');
+	$categories = $categlib->get_all_categories_respect_perms($user, 'tiki_p_view_categories');
 	$smarty->assign_by_ref('categories', $categories);
 }
 
@@ -371,3 +371,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the template
 $smarty->assign('mid', 'tiki-edit_structure.tpl');
 $smarty->display("tiki.tpl");
+
+?>

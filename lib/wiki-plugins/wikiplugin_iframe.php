@@ -84,13 +84,13 @@ function wikiplugin_iframe_info() {
 				'name' => tra('URL'),
 				'description' => tra('URL'),
 			),
-		), 
+		),
 	);
 }
 
 function wikiplugin_iframe($data, $params) {
 
-	extract ($params, EXTR_SKIP);
+	extract ($params);
 	$ret = '<iframe ';
 
 	if (isset($name)) {

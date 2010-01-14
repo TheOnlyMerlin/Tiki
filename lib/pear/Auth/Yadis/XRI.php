@@ -15,7 +15,7 @@ require_once 'Auth/OpenID.php';
 
 function Auth_Yadis_getDefaultProxy()
 {
-    return 'http://xri.net/';
+    return 'http://proxy.xri.net/';
 }
 
 function Auth_Yadis_getXRIAuthorities()
@@ -199,7 +199,7 @@ function Auth_Yadis_getCanonicalID($iname, $xrds)
         return false;
     }
 
-    $canonicalID = $canonicalID_nodes[0];
+    $canonicalID = $canonicalID_nodes[count($canonicalID_nodes) - 1];
     $canonicalID = Auth_Yadis_XRI($parser->content($canonicalID));
 
     $childID = $canonicalID;
@@ -208,13 +208,13 @@ function Auth_Yadis_getCanonicalID($iname, $xrds)
         $xrd = $xrd_list[$i];
 
         $parent_sought = substr($childID, 0, strrpos($childID, '!'));
-        $parentCID = $parser->evalXPath('xrd:CanonicalID', $xrd);
-        if (!$parentCID) {
-            return false;
-        }
-        $parentCID = Auth_Yadis_XRI($parser->content($parentCID[0]));
+        $parent_list = array();
 
-        if (strcasecmp($parent_sought, $parentCID)) {
+        foreach ($parser->evalXPath('xrd:CanonicalID', $xrd) as $c) {
+            $parent_list[] = Auth_Yadis_XRI($parser->content($c));
+        }
+
+        if (!in_array($parent_sought, $parent_list)) {
             // raise XRDSFraud.
             return false;
         }

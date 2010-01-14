@@ -1,5 +1,5 @@
 {strip}
-{title}{tr}Advanced parameters for iCal export{/tr}{/title}
+{title}{tr}Avanced parameters for iCal export{/tr}{/title}
 
 {if $tiki_p_view_calendar eq 'y'}
 	<div class="navbar">
@@ -18,7 +18,7 @@
     <td>
 {foreach item=k from=$listcals}
 	  <input type="checkbox" name="calendarIds[]" value="{$k.calendarId|escape}" id="groupcal_{$k}" {if $k}checked="checked"{/if} />
-	  <label for="groupcal_{$k}" class="calId{$k}">{$k.name|escape}</label><br />
+	  <label for="groupcal_{$k}" class="calId{$k}">{$k.name}</label><br />
 {/foreach}
 	</td>
   </tr>

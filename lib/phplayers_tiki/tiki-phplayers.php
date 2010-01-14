@@ -1,7 +1,6 @@
 <?php
 // $Id: /cvsroot/tikiwiki/tiki/lib/phplayers_tiki/tiki-phplayers.php,v 1.19.2.5 2008-02-27 15:18:45 nyloth Exp $
-class TikiPhplayers extends TikiLib
-{
+class TikiPhplayers extends TikiLib {
 	/* Build the input to the phplayers lib for a category tree  */
 	function mkCatEntry($categId, $indent="", $back, $categories, $urlEnd, $tpl='') {
 		global $smarty, $prefs, $categlib;
@@ -12,7 +11,6 @@ class TikiPhplayers extends TikiLib
 				$kids[] = $cat;
 			}
 		}
-
 		if (count($kids)) {
 			$total = 0;
 			foreach ($kids as $k) {
@@ -33,29 +31,14 @@ class TikiPhplayers extends TikiLib
 				$back .= $subTree;
 			}
 			return array($back, $total);
-		} elseif( $categId == 0 ) {
-			$roots = $categlib->findRoots( $categories );
-			$out = '';
-			$count = 0;
-
-			foreach( $roots as $id ) {
-				list($subTree, $subCount) = $this->mkCatEntry($id,'','', $categories, $urlEnd, $tpl);
-				$out .= $subTree;
-				$count += $subCount;
-			}
-
-			return array( $out, $count );
 		} else {
 			return array('', 0);
 		}
 	}
-
-	function mkMenuEntry($idMenu, &$curOption, $sectionLevel='', $translate='y', &$use_items_icons = null) {
+	function mkMenuEntry($idMenu, &$curOption, $sectionLevel='', $translate='y') {
 		global $tikilib, $wikilib, $mylevel, $prefs;
 		global $menulib; include_once('lib/menubuilder/menulib.php');
 		$menu_info = $tikilib->get_menu($idMenu);
-		$use_items_icons = ( $prefs['menus_items_icons'] == 'y' ) && ( $menu_info['use_items_icons'] == 'y' );
-
 		$channels = $tikilib->list_menu_options($idMenu, 0, -1, 'position_asc', '','',$mylevel);
 		$channels = $menulib->setSelected($channels, $sectionLevel);
 		if (empty($channels['data'])) {
@@ -75,7 +58,6 @@ class TikiPhplayers extends TikiLib
 		}
 		$realKey = 0;
 		$level = 0;
-		$display_icon = false;
 		foreach ($channels['data'] as $key=>$cd) {
 			if ($translate != 'n') {
 				$cd["name"] = tra($cd["name"]);
@@ -110,33 +92,19 @@ class TikiPhplayers extends TikiLib
 						$curOption = $realKey;
 						if ($cd['type'] != 's' && $cd['type'] != 'r') {
 							for ($i = $level - 1; $i >= 0; --$i) {
-								$res = str_replace($cur[$i], $cur[$i].'||1', $res);
+								$res = str_replace($cur[$i], $cur[$i].'||||1', $res);
 							}
 						}
 					}
 				}
 			}
-
-			$res .= ".|".$cd["name"]."|";
-			$res .= ($prefs['feature_sefurl'] == 'y' && !empty($cd['sefurl']))? $cd['sefurl']: $cd['url'];
-			$res .= '||';
-
-			$display_icon = ( $level == 0 || ( $level == 1 && ( $cd['type'] == 's' || $cd['type'] == 'r' ) ) );
-			if ( $use_items_icons && $display_icon ) {
-				global $smarty;
-				require_once('lib/smarty_tiki/function.icon.php');
-				$res .= smarty_function_icon(array(
-					'_id' => $cd['icon'],
-					'_notag' => 'y',
-					'_defaultdir' => $prefs['menus_items_icons_path']
-				), $smarty);
-			}
+			$res.= ".|".$cd["name"]."|";
+			$res.= ($prefs['feature_sefurl'] == 'y' && !empty($cd['sefurl']))? $cd['sefurl']: $cd['url'];
 			if (empty($curOption) && $cd['type'] != 'o' && $cd['type'] != '-') {
 				$cur[$level - 1] = $res;
 			}
  			$res .= "\n";
 		}
-
 		return $res;
 	}
 	function getParamsStyle($style) {
@@ -242,4 +210,6 @@ class TikiPhplayers extends TikiLib
 		return $res;
 	}
 }
-$tikiphplayers = new TikiPhpLayers();
+global $dbTiki;
+$tikiphplayers = new TikiPhpLayers($dbTiki);
+?>

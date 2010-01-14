@@ -59,7 +59,7 @@ if ( $isPre ) {
 } else {
 	$pre = '';
 }
-$mainversion = $version{0};
+$mainversion = $version{0} . '.0';
 
 include_once('lib/setup/twversion.class.php');
 $check_version = strtolower($version.$subrelease);
@@ -84,21 +84,21 @@ if ( ! $options['no-first-update'] && important_step('Update working copy to the
 }
 
 if ( empty($subrelease) ) {
-	$branch = "branches/$mainversion.x";
+	$branch = "branches/$mainversion";
 	$tag = "tags/$version";
 	$packageVersion = $version;
 	if ( ! empty($pre) )
 		$packageVersion .= ".$pre";
 	$secdbVersion = $version;
 } else {
-	$branch = "branches/$mainversion.x";
+	$branch = "branches/$mainversion";
 	$tag = "tags/$version$subrelease";
 	$packageVersion = "$version.$pre$subrelease";
 	$secdbVersion = "$version$subrelease";
 }
 
 if ( ! $options['no-readme-update'] && important_step("Update '" . README_FILENAME . "' file") ) {
-	update_readme_file($secdbVersion, $version);
+	update_readme_file($packageVersion, $version);
 	info('>> ' . README_FILENAME . ' file updated.');
 	important_step('Commit updated ' . README_FILENAME . ' file', true, "[REL] Update " . README_FILENAME . " file for $secdbVersion");
 }
@@ -131,7 +131,7 @@ if ( ! $options['no-changelog-update'] && important_step("Update '" . CHANGELOG_
 
 $nbCommiters = 0;
 if ( ! $options['no-copyright-update'] && important_step("Update '" . COPYRIGHTS_FILENAME . "' file (using final version number '$version')") ) {
-	if ( $ucf = update_copyright_file($mainversion . '.0') ) {
+	if ( $ucf = update_copyright_file($mainversion) ) {
 		info("\r>> Copyrights updated: "
 			. ( $ucf['newContributors'] == 0 ? 'No new contributor, ' : "+{$ucf['newContributors']} contributor(s), " )
 			. ( $ucf['newCommits'] == 0 ? 'No new commit' : "+{$ucf['newCommits']} commit(s)" )
@@ -195,7 +195,6 @@ if ( $isPre ) {
 // Helper functions
 
 function write_secdb( $file, $root, $version ) {
-	$file_exists = @file_exists($file);
 	$fp = @fopen($file, 'w+') or error('The SecDB file "' . $file . '" is not writable or can\'t be created.');
 	$queries = array();
 	md5_check_dir( $root, $root, $version, $queries );
@@ -208,7 +207,7 @@ function write_secdb( $file, $root, $version ) {
 
 	fclose( $fp );
 
-	if ( $file_exists ) {
+	if ( $file_exists = file_exists($file) ) {
 		info(">> Existing SecDB file '$file' has been updated.");
 		`svn add $file 2> /dev/null`;
 	} else {
@@ -251,10 +250,8 @@ function md5_check_dir($root, $dir, $version, &$queries) {
 }
 
 function build_packages($releaseVersion, $svnRelativePath) {
-	global $options;
-
 	$script = TOOLS . '/tikirelease.sh';
-	if ($options['debug-packaging']) {
+	if ($options['-debug-packaging']) {
 	   $debugflag = '-x';
 	} else {
 	   $debugflag = '';
@@ -498,8 +495,8 @@ function important_step($msg, $increment_step = true, $commit_msg = false) {
 		}
 	}
 
-	if ( $commit_msg && $do_step && ( $revision = commit($commit_msg) ) ) {
-		info(">> Commited revision $revision.");
+	if ( $commit_msg && $do_step ) {
+	  $revision = commit($commit_msg) && info(">> Commited revision $revision.");
 	}
 
 	return $do_step;
@@ -614,19 +611,19 @@ function update_copyright_file($newVersion) {
 Tiki Copyright
 ----------------
 
-The following list attempts to gather the copyright holders for Tiki
+The following list attempts to gather the copyright holders for tikiwiki
 as of version $newVersion.
 
 Accounts listed below with commits have contributed source code to CVS or SVN. 
 Please note that even more people contributed on various other aspects (documentation, 
 bug reporting, testing, etc.)
 
-This is how we implement the Tiki Social Contract.
-http://tikiwiki.org/Social+Contract
+This is how we implement the Tikiwiki Social Contract.
+http://dev.tikiwiki.org/SocialContract
 
 List of members of the Community
 As of $now, the community has:
-  * $totalContributors members on SourceForge.net,
+  * $totalContributors members on Sourceforge,
   * $nbCommiters of those people who made at least one code commit
 
 This list is automatically generated and alphabetically sorted
@@ -785,7 +782,7 @@ Version $releaseVersion
 
 DOCUMENTATION
 
-* The documentation for $mainVersion version is ever evolving at http://doc.tikiwiki.org.
+* The documentation for $mainVersion version is under construction on http://doc.tikiwiki.org.
   You're encouraged to contribute.
 
 * It is highly recommended that you refer to the online documentation:
@@ -855,11 +852,6 @@ function display_howto() {
    HOWTO release Tiki
 --------------------------
 
-0/ When branching for 5.x, name it branches/5.x to be 
-   clearer than branches/3.0, because branches/5.x is 
-   indeed 5.1, 5.2, etc.
-   http://dev.tikiwiki.org/SVNTips#Handling_branches
-   
 1/ Preliminary manual tasks
    - run the tiki installer and correct anything obviously wrong
    - the "function update_readme_file" in this script will output to the top-level README:
@@ -872,7 +864,6 @@ function display_howto() {
    - in lib/setup/twversion.class.php
      - increment the version number in the constructor
      - update list of valid releases in getVersions()
-		- Make sure you add all Tiki versions (not just the one you are doing now). Ex.: when 5.0 is released, 4.2 will probably exist, and this was added to branches/4.x but not merged by script. 
      - change the version branch to "unstable", "stable", or "head" as explained in that file
    - commit your changes with this commit message (change \$VERSION by the version of the release):
 	[REL] Preparing \$VERSION release
@@ -896,18 +887,15 @@ function display_howto() {
    In case of a major version (x.0), you need at least 3 installations from 3 different people
 
 6/ When the "tarballs" are tested, follow the steps to upload on SourceForge:
-   http://sourceforge.net/apps/trac/sourceforge/wiki/Release%20files%20for%20download
+   http://tinyurl.com/59uubv
 
 7/ Announce the good news on devel mailing-list
-   and ask the Communications Team to launch the announce-spreading process as described on
-   http://tikiwiki.org/Communications+Team+Release
+   and ask the TAG (TikiWiki Admin Group) through the admin mailing-list
+   to launch the announce-speading process (Freshmeat, SourceForge and tikiwiki.org (manually for now).
 
 post/
    Update appropriate http://tikiwiki.org/stable.version file with new release version
    (or ask the TAG to do this)
-   Increment/update lib/setup/twversion.class.php and db/convertscripts/convertsqls.sh accordingly (depending if major or minor release)
-   Delete trunk/db/*.sql for old versions
-   Regenerate new database files with db/convertscripts/convertsqls.sh
 
 All that process has to be relayed on live irc channel : 
 irc://irc.freenode.net/#tikiwiki

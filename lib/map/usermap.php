@@ -12,8 +12,12 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class MapsLib extends TikiLib
-{
+class MapsLib extends TikiLib {
+
+	function MapsLib($db) {
+		$this->TikiLib($db);
+	}
+
 
 	function makeusermap() {
 		global $prefs, $tikidomain, $smarty;
@@ -67,8 +71,19 @@ class MapsLib extends TikiLib
 			unset($lon);
 			
 			// get the avatar
-			$image = $tikilib->get_user_avatar( $res );
-			$style = "style='float:left;margin-right:5px;'";
+			$image = '';
+	    $style = "style='float:left;margin-right:5px;'";
+			switch ($res["avatarType"]) {
+	    case 'n':
+				$image = '';
+				break;
+	    case 'l':
+				$image = "<img border='0' width='45' height='45' src='" . $res["avatarLibName"] . "' " . $style . " alt='$login' />";
+				break;
+	    case 'u':
+				$image = "<img border='0' width='45' height='45' src='tiki-show_user_avatar.php?user=$login' " . $style . " alt='$login' />";
+				break;
+			}		
 			$gender=tra("unknown");
 			$country=tra("Other");
 			while ($login==substr($res["login"],0,20) && $res) {
@@ -234,5 +249,7 @@ class MapsLib extends TikiLib
 		return (tra("Image Map Generated in:").$prefs['map_path']."data/".$tdo.".shp");
 	}
 }
+global $dbTiki;
 global $mapslib;
-$mapslib = new MapsLib;
+$mapslib = new MapsLib($dbTiki);
+?>

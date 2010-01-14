@@ -149,20 +149,11 @@ if (empty($_REQUEST['CR'])) {
 }
 $smarty->assign_by_ref('CR', $_REQUEST['CR']);
 
-if (!empty($_REQUEST['debug'])) {
+if (!empty($_REQUEST['file'])) {
 	$fp = fopen($prefs['tmpDir'].'/'.tra('tracker')."_".$_REQUEST['trackerId'].".csv", 'w');
 } else {
 	header("Content-type: text/comma-separated-values; charset:".$_REQUEST['encoding']);
-	if (!empty($_REQUEST['file'])) {
-		if (preg_match('/.csv$/', $_REQUEST['file'])) {
-			$file = $_REQUEST['file'];
-		} else {
-			$file = $_REQUEST['file'].'.csv';
-		}
-	} else {
-		$file = tra('tracker').'_'.$_REQUEST['trackerId'].'.csv';
-	}
-	header("Content-Disposition: attachment; filename=$file");
+	header("Content-Disposition: attachment; filename=".tra('tracker')."_".$_REQUEST['trackerId'].".csv");
 	header("Expires: 0");
 	header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
 	header("Pragma: public");

@@ -11,8 +11,7 @@
 
 require "renderer_sidebyside.php";
 
-class Text_Diff_Renderer_inline extends Text_Diff_Renderer_sidebyside
-{
+class Text_Diff_Renderer_inline extends Text_Diff_Renderer_sidebyside {
 
     function Text_Diff_Renderer_inline($context_lines = 4, $words = 1)
     {

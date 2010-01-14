@@ -49,8 +49,7 @@ $smarty->assign('previewId', $previewId);
 $smarty->assign('imageIsChanged', (isset($_REQUEST['imageIsChanged']) && $_REQUEST['imageIsChanged']=='y')?'y':'n');
 
 if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0) {
-	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$template_data = $templateslib->get_template($_REQUEST["templateId"]);
+	$template_data = $tikilib->get_template($_REQUEST["templateId"]);
 
 	$_REQUEST["preview"] = 1;
 	$_REQUEST["body"] = $template_data["content"];
@@ -152,7 +151,7 @@ if (isset($_REQUEST["articleId"]) and $_REQUEST["articleId"] > 0) {
 
 // Now check permissions to access this page
 // echo $tiki_p_edit_article.$article_data["author"].$article_data["creator_edit"];
-if ($tiki_p_admin_cms != 'y' && !$tikilib->user_has_perm_on_object($user, $articleId, 'article', 'tiki_p_edit_article') and ($article_data["author"] != $user or $article_data["creator_edit"] != 'y')) {
+if ($tiki_p_admin_cms != 'y' && !$tikilib->user_has_perm_on_object($user, $articleId, 'article', 'tiki_p_edit_article', 'tiki_p_edit_categorized') and ($article_data["author"] != $user or $article_data["creator_edit"] != 'y')) {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg', tra("Permission denied you cannot edit this article"));
 
@@ -435,7 +434,6 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 	$cat_objid = $artid;
 	$cat_desc = substr($_REQUEST["heading"], 0, 200);
 	$cat_name = $_REQUEST["title"];
-	$cat_object_exists = (bool) $artid;
 	$cat_href = "tiki-read_article.php?articleId=" . $cat_objid;
 	include_once("categorize.php");
 	include_once ("freetag_apply.php");
@@ -461,8 +459,7 @@ $types = $artlib->list_types_byname();
 $smarty->assign_by_ref('types', $types);
 
 if ($prefs['feature_cms_templates'] == 'y' && $tiki_p_use_content_templates == 'y') {
-	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$templates = $templateslib->list_templates('cms', 0, -1, 'name_asc', '');
+	$templates = $tikilib->list_templates('cms', 0, -1, 'name_asc', '');
 }
 
 $smarty->assign_by_ref('templates', $templates["data"]);
@@ -475,7 +472,6 @@ if ($prefs['feature_multilingual'] == 'y') {
 
 $cat_type = 'article';
 $cat_objid = $articleId;
-$cat_object_exists = (bool) $articleId;
 include_once ("categorize_list.php");
 
 if ($prefs['feature_freetags'] == 'y') {
@@ -499,6 +495,10 @@ global $wikilib; include_once('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'body');
 $smarty->assign_by_ref('plugins', $plugins);
 
+include_once ('lib/quicktags/quicktagslib.php');
+$quicktags = $quicktagslib->list_quicktags(0,100,'taglabel_asc','','articles');
+$smarty->assign_by_ref('quicktags', $quicktags["data"]);
+
 ask_ticket('edit-article');
 
 // disallow robots to index page:
@@ -507,3 +507,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the Index Template
 $smarty->assign('mid', 'tiki-edit_article.tpl');
 $smarty->display("tiki.tpl");
+
+?>

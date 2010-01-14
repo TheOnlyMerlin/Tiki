@@ -97,13 +97,11 @@ if (isset($_REQUEST["add_tran"])) {
 	if (strlen($add_tran_source) != 0 && strlen($add_tran_tran) != 0) {
 		$add_tran_source = htmlentities(strip_tags($add_tran_source), ENT_NOQUOTES, "UTF-8");
 		$add_tran_tran = htmlentities(strip_tags($add_tran_tran), ENT_NOQUOTES, "UTF-8");
-		$query = "delete from `tiki_language` where `source` = ? and `lang` = ?";
-		$tikilib->query($query,array($add_tran_source,$edit_language));
 		$query = "insert into `tiki_language` values (?,?,?)";
-		$tikilib->query($query,array($add_tran_source,$edit_language,$add_tran_tran));
+		$result = $tikilib->query($query,array($add_tran_source,$edit_language,$add_tran_tran));
 		// remove from untranslated Table
 		$query = "delete from `tiki_untranslated` where `source`=? and `lang`=?";
-		$tikilib->query($query,array($add_tran_source,$edit_language));
+		$result = $tikilib->query($query,array($add_tran_source,$edit_language));
 	}
 }
 
@@ -208,12 +206,12 @@ if ($whataction == "edit_rec_sw" || $whataction == "edit_tran_sw") {
 	$sort_mode = "source_asc";
 
 	if ($whataction == "edit_tran_sw") {
-		$query = "select `source`, `tran` from `tiki_language` where `lang`=? $squeryedit order by ".$tikilib->convertSortMode($sort_mode);
+		$query = "select `source`, `tran` from `tiki_language` where `lang`=? $squeryedit order by ".$tikilib->convert_sortmode($sort_mode);
 		$nquery = "select count(*) from `tiki_language` where `lang`=? $squeryedit";
 		$untr_numrows= $tikilib->getOne($nquery,$bindvars);
 	        $result = $tikilib->query($query,$bindvars,$maxRecords,$tr_recnum);
 	} elseif ($whataction == "edit_rec_sw") {
-		$query = "select `source` from `tiki_untranslated` where `lang`=? $squeryrec order by ".$tikilib->convertSortMode($sort_mode);
+		$query = "select `source` from `tiki_untranslated` where `lang`=? $squeryrec order by ".$tikilib->convert_sortmode($sort_mode);
 		$nquery = "select count(*) from `tiki_untranslated` where `lang`=? $squeryrec";
 		$untr_numrows= $tikilib->getOne($nquery,$bindvars2);
 	        $result = $tikilib->query($query,$bindvars2,$maxRecords,$tr_recnum);
@@ -258,3 +256,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
 $smarty->assign('mid', 'tiki-edit_languages.tpl');
 $smarty->display("tiki.tpl");
+
+?>

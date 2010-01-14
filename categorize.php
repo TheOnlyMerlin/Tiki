@@ -14,9 +14,8 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 require_once('tiki-setup.php');  
 
 global $prefs;
-$catobjperms = Perms::get( array( 'type' => $cat_type, 'object' => $cat_objid ) );
 
-if ($prefs['feature_categories'] == 'y' && $catobjperms->modify_object_categories ) {
+if ($prefs['feature_categories'] == 'y') {
 	global $categlib; include_once('lib/categories/categlib.php');
 
 	$smarty->assign('cat_categorize', 'n');
@@ -31,7 +30,7 @@ if ($prefs['feature_categories'] == 'y' && $catobjperms->modify_object_categorie
 	} else {
 		$_REQUEST['cat_categories'] = NULL;
 	}
-	if ( $cat_type == 'wiki page' && $tikilib->get_approved_page($cat_objid) ) {		
+	if ($prefs["feature_wikiapproval"] == 'y' && $cat_type == 'wiki page' && substr($cat_objid, 0, strlen($prefs['wikiapproval_prefix'])) == $prefs['wikiapproval_prefix']) {		
 		if ($prefs['wikiapproval_approved_category'] > 0 && in_array($prefs['wikiapproval_approved_category'], $_REQUEST['cat_categories'])) {
 			$_REQUEST['cat_categories'] = array_diff($_REQUEST['cat_categories'],Array($prefs['wikiapproval_approved_category']));
 		}
@@ -42,34 +41,27 @@ if ($prefs['feature_categories'] == 'y' && $catobjperms->modify_object_categorie
 			$_REQUEST['cat_categories'][] = $prefs['wikiapproval_outofsync_category'];	
 		}
 	}
-	if ($cat_type == 'wiki page' && $tikilib->get_staging_page($cat_objid) && in_array($prefs['wikiapproval_staging_category'], $_REQUEST['cat_categories']) && in_array($prefs['wikiapproval_approved_category'], $_REQUEST['cat_categories'])) {
+	if ($prefs["feature_wikiapproval"] == 'y' && $cat_type == 'wiki page' && substr($cat_objid, 0, strlen($prefs['wikiapproval_prefix'])) != $prefs['wikiapproval_prefix'] && in_array($prefs['wikiapproval_staging_category'], $_REQUEST['cat_categories']) && in_array($prefs['wikiapproval_approved_category'], $_REQUEST['cat_categories'])) {
 		// Drop the staging category if page without staging prefix is attempted to be categorized in both staging category and approved category
 		$_REQUEST['cat_categories'] = array_diff($_REQUEST['cat_categories'],Array($prefs['wikiapproval_staging_category']));
 	}
-	$categlib->update_object_categories(isset($_REQUEST['cat_categories'])?$_REQUEST['cat_categories']:'', $cat_objid, $cat_type, $cat_desc, $cat_name, $cat_href, $_REQUEST['cat_managed']);
+	$categlib->update_object_categories(isset($_REQUEST['cat_categories'])?$_REQUEST['cat_categories']:'', $cat_objid, $cat_type, $cat_desc, $cat_name, $cat_href);
 
 	$cats = $categlib->get_object_categories($cat_type, $cat_objid);
 	if (isset($section) && $section == 'wiki' && $prefs['feature_wiki_mandatory_category'] > 0)
 		$categories = $categlib->list_categs($prefs['feature_wiki_mandatory_category']);
 	else
 		$categories = $categlib->list_categs();
-
-	$categories = Perms::filter( array( 'type' => 'category' ), 'object', $categories, array( 'object' => 'categId' ), 'view_category' );
-
 	$num_categories = count($categories);
- 	$can = $catobjperms->modify_object_categories;
-
 	for ($iCat = 0; $iCat < $num_categories; $iCat++) {
-		$catperms = Perms::get( array( 'type' => 'category', 'object' => $categories[$iCat]['categId'] ) );
-
 		if (in_array($categories[$iCat]["categId"], $cats)) {
 			$categories[$iCat]["incat"] = 'y';
-			$categories[$iCat]['canchange'] = ($can && $catperms->remove_object) || isset($cat_object_exists) && ! $cat_object_exists;
 		} else {
 			$categories[$iCat]["incat"] = 'n';
-			$categories[$iCat]['canchange'] = $can && $catperms->add_object;
 		}
 	}
 	$smarty->assign_by_ref('categories', $categories["data"]);
 
 }
+
+?>

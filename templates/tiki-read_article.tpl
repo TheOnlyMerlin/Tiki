@@ -5,23 +5,23 @@
 {/if}
 
 {if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y' and isset($freetags.data[0]) and $prefs.freetags_show_middle eq 'y'}
-	{include file='freetag_list.tpl'}
+	{include file="freetag_list.tpl"}
 {/if}
 
 <div class="article">
 	{if $show_topline eq 'y' and $topline}
-		<div class="articletopline">{$topline|escape}</div>
+		<div class="articletopline">{$topline}</div>
 	{/if}
 	<div class="articletitle">
 		<h2>
-			{$arttitle|escape}
+			{$arttitle}
 		</h2>
 		{if $show_subtitle eq 'y' and $subtitle}
-			<div class="articlesubtitle">{$subtitle|escape}</div>
+			<div class="articlesubtitle">{$subtitle}</div>
 		{/if}
 		
 		<span class="titleb">
-			{if $show_author eq 'y' && $authorName}{tr}By:{/tr} {$authorName|escape} {/if}
+			{if $show_author eq 'y' && $authorName}{tr}By:{/tr} {$authorName} {/if}
 			{if $show_pubdate eq 'y' && $publishDate}{tr}on:{/tr} {$publishDate|tiki_short_datetime} {/if}
 			{if $show_reads eq 'y'}({$reads} {tr}Reads{/tr}){/if}
 		</span>
@@ -30,7 +30,7 @@
 
 	{if $use_ratings eq 'y'}
 		<div class="articleheading">
-			{tr}Rating:{/tr} 
+			{tr}Rating{/tr}: 
 			{repeat count=$rating}
 				{icon _id='star' alt="{tr}star{/tr}"}
 			{/repeat}
@@ -49,7 +49,7 @@
 		</span>
 		<div class="actions">
 		{if $prefs.feature_multilingual eq 'y' and $show_lang eq 'y' and $lang and $prefs.show_available_translations eq 'y'}
-			{include file='translated-lang.tpl' td='y' type='article'}
+			{include file="translated-lang.tpl" td='y' type='article'}
 		{/if}
 		{if $tiki_p_edit_article eq 'y'}
 			<a class="icon" href="tiki-edit_article.php?articleId={$articleId}">{icon _id='page_edit'}</a>
@@ -116,7 +116,7 @@
 
 				<a href="{$articleId|sefurl:article:with_next}page={$prev_page}">{icon _id='resultset_previous' alt='{tr}Previous page{/tr}'}</a>
 
-				<small>{tr}page:{/tr}{$pagenum}/{$pages}</small>
+				<small>{tr}page{/tr}:{$pagenum}/{$pages}</small>
 
 				<a href="{$articleId|sefurl:article:with_next}page={$next_page}">{icon _id='resultset_next' alt='{tr}Next page{/tr}'}</a>
 
@@ -127,7 +127,7 @@
 
 	{if $show_linkto eq 'y' and $linkto}
 		<div class="articlesource">
-			{tr}Source:{/tr} <a href="{$linkto}"{if $prefs.popupLinks eq 'y'} target="_blank"{/if}>{$linkto}</a>
+			{tr}Source{/tr}: <a href="{$linkto}"{if $prefs.popupLinks eq 'y'} target="_blank"{/if}>{$linkto}</a>
 		</div>
 	{/if}
 
@@ -150,10 +150,10 @@
 		(($tiki_p_read_comments == 'y' && $comments_cant != 0) || $tiki_p_post_comments == 'y' || $tiki_p_edit_comments == 'y')}
 
 	<div id="page-bar">
-		{include file='comments_button.tpl'}
+		{include file=comments_button.tpl}
 	</div>
 
-	{include file='comments.tpl'}
+	{include file=comments.tpl}
 {/if}
 
 {if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categoryobjects eq 'y'}

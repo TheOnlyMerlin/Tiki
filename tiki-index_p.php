@@ -61,13 +61,37 @@ if (!($info = $tikilib->get_page_info($page))) {
 	$smarty->display('error.tpl');
 	die;
 }
-
 $tikilib->get_perm_object( $page, 'wiki page', $info);
+
+// Check to see if page is categorized
+$objId = urldecode($page);
+if ($tiki_p_admin != 'y' && $prefs['feature_categories'] == 'y' && !$object_has_perms) {
+    // Check to see if page is categorized
+    $perms_array = $categlib->get_object_categories_perms($user, 'wiki page', $objId);
+    if ($perms_array) {
+	$is_categorized = TRUE;
+    	foreach ($perms_array as $perm => $value) {
+	    $$perm = $value;
+    	}
+    } else {
+	$is_categorized = FALSE;
+    }
+	if ($is_categorized && isset($tiki_p_view_categorized) && $tiki_p_view_categorized != 'y') {
+		$smarty->assign('errortype', 401);
+		$smarty->assign('msg',tra("Permission denied you cannot view this page"));
+		$smarty->display("error.tpl");
+		die;
+	}
+} elseif ($prefs['feature_categories'] == 'y') {
+    $is_categorized = $categlib->is_categorized('wiki page',$objId);
+} else {
+    $is_categorized = FALSE;
+}
 
 // Now check permissions to access this page
 if ($tiki_p_view != 'y') {
 	$smarty->assign('errortype', 401);
-	$smarty->assign('msg', tra("Permission denied. You cannot view this page."));
+	$smarty->assign('msg', tra("Permission denied you cannot view this page"));
 
 	$smarty->display("error.tpl");
 	die;
@@ -243,3 +267,5 @@ wiki_ajax();
 // Display the Index Template
 $smarty->assign('dblclickedit', 'y');
 $smarty->display("tiki-index_p.tpl");
+
+?>

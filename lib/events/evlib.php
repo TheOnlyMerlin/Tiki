@@ -7,8 +7,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 include_once ('lib/webmail/tikimaillib.php');
 
-class EvLib extends TikiLib
-{
+class EvLib extends TikiLib {
+	function EvLib($db) {
+		parent::TikiLib($db);
+	}
 
 	function replace_event($evId, $name, $description, $allowUserSub, $allowAnySub, $unsubMsg, $validateAddr) {
 		if ($evId) {
@@ -56,7 +58,7 @@ class EvLib extends TikiLib
 			// URL to confirm the subscription put valid as 'n'
 			$foo = parse_url($_SERVER["REQUEST_URI"]);
 			$foopath = preg_replace('/tiki-admin_event_subscriptions.php/', 'tiki-events.php', $foo["path"]);
-			$url_subscribe = $tikilib->httpPrefix( true ). $foopath;
+			$url_subscribe = $tikilib->httpPrefix(). $foopath;
 			$query = "delete from `tiki_event_subscriptions` where `evId`=? and `email`=?";
 			$result = $this->query($query,array((int)$evId,$email));
 			$query = "insert into `tiki_event_subscriptions`(`evId`,`email`,`code`,`valid`,`subscribed`,`fname`,`lname`,`company`) values(?,?,?,?,?,?,?,?)";
@@ -89,7 +91,7 @@ class EvLib extends TikiLib
 	function confirm_subscription($code) {
 		global $smarty, $prefs, $userlib, $tikilib;
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
-		$url_subscribe = $tikilib->httpPrefix( true ). $foo["path"];
+		$url_subscribe = $tikilib->httpPrefix(). $foo["path"];
 		$query = "select * from `tiki_event_subscriptions` where `code`=?";
 		$result = $this->query($query,array($code));
 
@@ -123,7 +125,7 @@ class EvLib extends TikiLib
 	function unsubscribe($code) {
 		global $smarty, $prefs, $userlib, $tikilib;
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
-		$url_subscribe = $tikilib->httpPrefix( true ). $foo["path"];
+		$url_subscribe = $tikilib->httpPrefix(). $foo["path"];
 		$query = "select * from `tiki_event_subscriptions` where `code`=?";
 		$result = $this->query($query,array($code));
 
@@ -219,7 +221,7 @@ class EvLib extends TikiLib
 			$mid = " ";
 		}
 
-		$query = "select * from `tiki_events` $mid order by ".$this->convertSortMode("$sort_mode");
+		$query = "select * from `tiki_events` $mid order by ".$this->convert_sortmode("$sort_mode");
 		$query_cant = "select count(*) from `tiki_events` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -251,7 +253,7 @@ class EvLib extends TikiLib
 		}
 
 		$query = "select tsn.`editionId`,tn.`evId`,`subject`,`data`,tsn.`users`,`sent`,`name` from `tiki_events` tn, `tiki_sent_events` tsn ";
-		$query.= " where tn.`evId`=tsn.`evId` $mid order by ".$this->convertSortMode("$sort_mode");
+		$query.= " where tn.`evId`=tsn.`evId` $mid order by ".$this->convert_sortmode("$sort_mode");
 		$query_cant = "select count(*) from `tiki_events` tn, `tiki_sent_events` tsn where tn.`evId`=tsn.`evId` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -278,7 +280,7 @@ class EvLib extends TikiLib
 			$mid = " where `evId`=? ";
 		}
 
-		$query = "select * from `tiki_event_subscriptions` $mid order by ".$this->convertSortMode("$sort_mode");
+		$query = "select * from `tiki_event_subscriptions` $mid order by ".$this->convert_sortmode("$sort_mode");
 		$query_cant = "select count(*) from tiki_event_subscriptions $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -298,7 +300,7 @@ class EvLib extends TikiLib
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
 
 		$foo = str_replace('send_events', 'events', $foo);
-		$url_subscribe = $tikilib->httpPrefix( true ). $foo["path"];
+		$url_subscribe = $tikilib->httpPrefix(). $foo["path"];
 		$code = $this->getOne("select `code` from `tiki_event_subscriptions` where `evId`=? and `email`=?",array((int)$evId,$email));
 		$url_unsub = $url_subscribe . '?unsubscribe=' . $code;
 		$user = $userlib->get_user_by_email($email);
@@ -323,4 +325,7 @@ class EvLib extends TikiLib
 	}
 
 }
-$evlib = new EvLib;
+global $dbTiki;
+$evlib = new EvLib($dbTiki);
+
+?>

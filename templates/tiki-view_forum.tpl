@@ -1,9 +1,9 @@
 {* $Id$ *}
 
-{title help="forums" admpage="forums"}{$forum_info.name|escape}{/title}
+{title help="forums" admpage="forums"}{$forum_info.name}{/title}
 
 {if $forum_info.show_description eq 'y'}
-	<div class="description">{$forum_info.description|escape|nl2br}</div>
+	<div class="description">{$forum_info.description|nl2br}</div>
 {/if}
 
 <div class="navbar">
@@ -23,7 +23,7 @@
 					{button href="tiki-forums.php" _text="{tr}Forum List{/tr}"}
 				{/if}
 				{if $tiki_p_admin_forum eq 'y'}
-					{button href="tiki-admin_forums.php?forumId=$thisforum_info&amp;cookietab=2" _text="{tr}Edit Forum{/tr}"}
+					{button href="tiki-admin_forums.php?forumId=$thisforum_info" _text="{tr}Edit Forum{/tr}"}
 				{/if}
 
 				{if $queued > 0}
@@ -87,7 +87,7 @@
 	</table>
 </div>
 
-<a class="link" href="tiki-forums.php">{tr}Forums{/tr}</a> {$prefs.site_crumb_seper} <a class="link" href="tiki-view_forum.php?forumId={$forumId}">{$forum_info.name|escape}</a>
+<a class="link" href="tiki-forums.php">{tr}Forums{/tr}</a> {$prefs.site_crumb_seper} <a class="link" href="tiki-view_forum.php?forumId={$forumId}">{$forum_info.name}</a>
 
 <br />
 
@@ -118,7 +118,7 @@
 					<tr>
 						<td>
 							<div class="commentheader">
-								<span class="commentstitle">{$comments_preview_title|escape}</span>
+								<span class="commentstitle">{$comments_preview_title}</span>
 								<br />
 								{tr}by{/tr} {$user|userlink}
 							</div>
@@ -198,12 +198,24 @@
 					</tr>
 				{/if}
 
+				{if $prefs.feature_smileys eq 'y'}
+				<tr class="formcolor">
+					<td>{tr}Smileys{/tr}</td>
+					<td>{include file="tiki-smileys.tpl" area_name='editpost'}</td>
+				</tr>
+			{/if}
+
 			<tr class="formcolor">
 				<td>{tr}Edit{/tr}
+					<br /><br />
+					{include file="textareasize.tpl" area_name='editpost' formId='editpageform'}
+					{if $prefs.feature_forum_parse eq 'y' and $prefs.quicktags_over_textarea neq 'y'}
+						{include file=tiki-edit_help_tool.tpl area_name="editpost"}
+					{/if}
 				</td>
 				<td>
-					{if $prefs.feature_forum_parse eq 'y'}
-						{toolbars area_name='editpost'}
+					{if $prefs.feature_forum_parse eq 'y' and $prefs.quicktags_over_textarea eq 'y'}
+						{include file=tiki-edit_help_tool.tpl area_name='editpost'}
 					{/if}
 					<textarea id='editpost' name="comments_data" rows="{$rows}" cols="{$cols}">{$comment_data|escape}</textarea><input type="hidden" name="rows" value="{$rows}"/>
 					<input type="hidden" name="cols" value="{$cols}"/>
@@ -219,15 +231,15 @@
 				{/if}
 			
 				{if $prefs.feature_contribution eq 'y'}
-					{include file='contribution.tpl'}
+					{include file="contribution.tpl"}
 				{/if}
 
 				{if $prefs.feature_antibot eq 'y'}
-					{include file='antibot.tpl' tr_style="formcolor"}
+					{include file="antibot.tpl" tr_style="formcolor"}
 				{/if}
  
 				{if $prefs.feature_freetags eq 'y' and $tiki_p_freetags_tag eq 'y'}
-					{include file='freetag.tpl'}
+					{include file=freetag.tpl}
 				{/if}
 
 				{if $user and $prefs.feature_user_watches eq 'y' and (!isset($comments_threadId) or $comments_threadId eq 0)}
@@ -255,8 +267,8 @@
 						{if empty($user)}
 							{tr}Enter your name{/tr}:&nbsp;<input type="text" maxlength="50" size="12" id="anonymous_name" name="anonymous_name" />
 						{/if}
-						<input type="submit" name="comments_postComment" value="{tr}Post{/tr}" {if empty($user)}onclick="setCookie('anonymous_name',document.getElementById('anonymous_name').value);"{/if} />
 						<input type="submit" name="comments_previewComment" value="{tr}Preview{/tr}" {if empty($user)}onclick="setCookie('anonymous_name',document.getElementById('anonymous_name').value);"{/if} />
+						<input type="submit" name="comments_postComment" value="{tr}Post{/tr}" {if empty($user)}onclick="setCookie('anonymous_name',document.getElementById('anonymous_name').value);"{/if} />
 						<input type="submit" name="comments_postCancel" value="{tr}Cancel{/tr}" {if $comment_preview neq 'y'}onclick="hide('forumpost');window.location='#header';return false;"{/if} />
 					</td>
 				</tr>
@@ -282,7 +294,7 @@
 
 {if $prefs.feature_forum_content_search eq 'y' and $prefs.feature_search eq 'y'}
 	<div class="findtable">
-		<form id="search-form" class="forms" method="get" action="{if $prefs.feature_forum_local_tiki_search eq 'y'}tiki-searchindex.php{else}tiki-searchresults.php{/if}">
+		<form class="forms" method="get" action="{if $prefs.feature_forum_local_tiki_search eq 'y'}tiki-searchindex.php{else}tiki-searchresults.php{/if}">
 				<input name="highlight" size="30" type="text" />
 				<input type="hidden" name="where" value="forums" />
 				<input type="hidden" name="forumId" value="{$forum_info.forumId}" />
@@ -381,9 +393,6 @@
 			{if $forum_info.topics_list_author eq 'y'}
 				<th>{self_link _sort_arg='thread_sort_mode' _sort_field='userName'}{tr}Author{/tr}{/self_link}</th>
 			{/if}
-			{if $forum_info.att_list_nb eq 'y'}
-				<th>{self_link _sort_arg='thread_sort_mode' _sort_field='nb_attachments'}{tr}Atts{/tr}{/self_link}</th>
-			{/if}
 				
 			<th>{tr}Actions{/tr}</th>
 		</tr>
@@ -435,7 +444,7 @@
 				{/if}
 
 				<td class="{cycle advance=false}">
-					<a {if $comments_coms[ix].is_marked}class="forumnameread"{else}class="forumname"{/if} href="tiki-view_forum_thread.php?comments_parentId={$comments_coms[ix].threadId}{if $comments_threshold}&amp;topics_threshold={$comments_threshold}{/if}{if $comments_offset or $smarty.section.ix.index}&amp;topics_offset={math equation="x + y" x=$comments_offset y=$smarty.section.ix.index}{/if}{if $thread_sort_mode ne 'commentDate_desc'}&amp;topics_sort_mode={$thread_sort_mode}{/if}{if $topics_find}&amp;topics_find={$comments_find}{/if}&amp;forumId={$forum_info.forumId}">{$comments_coms[ix].title|escape}</a>
+					<a {if $comments_coms[ix].is_marked}class="forumnameread"{else}class="forumname"{/if} href="tiki-view_forum_thread.php?comments_parentId={$comments_coms[ix].threadId}{if $comments_threshold}&amp;topics_threshold={$comments_threshold}{/if}{if $comments_offset or $smarty.section.ix.index}&amp;topics_offset={math equation="x + y" x=$comments_offset y=$smarty.section.ix.index}{/if}{if $thread_sort_mode ne 'commentDate_desc'}&amp;topics_sort_mode={$thread_sort_mode}{/if}{if $topics_find}&amp;topics_find={$comments_find}{/if}&amp;forumId={$forum_info.forumId}">{$comments_coms[ix].title}</a>
 					{if $forum_info.topic_summary eq 'y'}
 						<div class="subcomment">
 							{$comments_coms[ix].summary|truncate:240:"...":true}
@@ -455,7 +464,7 @@
 					<td class="{cycle advance=false}">{$comments_coms[ix].lastPost|tiki_short_datetime} {* date_format:"%b %d [%H:%M]" *}
 						{if $comments_coms[ix].replies}
 							<br />
-							<small>{if $forum_info.topics_list_lastpost_title eq 'y'}<i>{$comments_coms[ix].lastPostData.title|escape}</i> {/if}{tr}by{/tr} {$comments_coms[ix].lastPostData.userName|userlink}</small>
+							<small><i>{$comments_coms[ix].lastPostData.title}</i> {tr}by{/tr} {$comments_coms[ix].lastPostData.userName|userlink}</small>
 						{/if}
 					</td>
 				{/if}
@@ -463,13 +472,6 @@
 					<td class="{cycle advance=false}">{$comments_coms[ix].userName|userlink}</td>
 				{/if}
 				
-				{if $forum_info.att_list_nb eq 'y'}
-					<td style="text-align:center;" class="{cycle advance=false}">
-						{if !empty($comments_coms[ix].nb_attachments)}<a href="tiki-view_forum_thread.php?comments_parentId={$comments_coms[ix].threadId}&amp;view_atts=y#attachments" title="{tr}Attachments{/tr}">{/if}
-						{$comments_coms[ix].nb_attachments}
-						{if !empty($comments_coms[ix].nb_attachments)}</a>{/if}
-					</td>
-				{/if}
 				<td style="text-align:right;" nowrap="nowrap" class="{cycle}">
 					{if count($comments_coms[ix].attachments) or $tiki_p_admin_forum eq 'y'}
 						{if count($comments_coms[ix].attachments)}
@@ -632,7 +634,7 @@
 				</table>
 			</form>
 </div>
-{if empty($user) and $prefs.javascript_enabled eq "y"}
+{if empty($user)}
 	<script type="text/javascript">
 		<!--//--><![CDATA[//><!--
 			var js_anonymous_name = getCookie('anonymous_name');
@@ -640,3 +642,4 @@
 			//--><!]]>
 	</script>
 {/if}
+{if $prefs.feature_forum_parse == 'y'}{include file=tiki-edit_help.tpl}{/if}

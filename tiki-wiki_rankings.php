@@ -8,7 +8,7 @@
 
 // Initialization
 $section = 'wiki page';
-$section_class = "tiki_wiki_page manage";	// This will be body class instead of $section
+$section_class = "wiki_page manage";	// This will be body class instead of $section
 require_once ('tiki-setup.php');
 
 include_once ('lib/rankings/ranklib.php');
@@ -32,7 +32,7 @@ if ($prefs['feature_wiki_rankings'] != 'y') {
 
 if ($tiki_p_view != 'y') {
 	$smarty->assign('errortype', 401);
-	$smarty->assign('msg', tra("Permission denied. You cannot view this section"));
+	$smarty->assign('msg', tra("Permission denied you cannot view this section"));
 
 	$smarty->display("error.tpl");
 	die;
@@ -89,7 +89,7 @@ $smarty->assign_by_ref('limit', $limit);
 // Top Authors
 $rankings = array();
 
-$rk = $ranklib->$which($limit, $categs, $prefs['language']);
+$rk = $ranklib->$which($limit, $categs);
 $rank["data"] = $rk["data"];
 $rank["title"] = $rk["title"];
 $rank["y"] = $rk["y"];
@@ -104,3 +104,5 @@ include_once ('tiki-section_options.php');
 // Display the template
 $smarty->assign('mid', 'tiki-ranking.tpl');
 $smarty->display("tiki.tpl");
+
+?>

@@ -31,7 +31,7 @@ function wikiplugin_copyright_info() {
 function wikiplugin_copyright($data, $params) {
 	global $dbTiki;
 
-	$copyrightslib = new CopyrightsLib;
+	$copyrightslib = new CopyrightsLib($dbTiki);
 
 	if (!isset($_REQUEST['page'])) {
 		return '';
@@ -57,3 +57,5 @@ function wikiplugin_copyright($data, $params) {
 
 	return $result;
 }
+
+?>

@@ -1,8 +1,11 @@
 <?php
 require_once 'lib/diff.php';
 
-class QuantifyLib extends TikiLib
-{
+class QuantifyLib extends TikiLib {
+
+	function QuantifyLib($db) {
+		$this->TikiLib($db);
+	}
 
 	function recordChangeSize( $pageId, $version, $oldData, $newData )
 	{
@@ -82,5 +85,7 @@ class QuantifyLib extends TikiLib
 		return floor( $value * 100 ); 
 	}
 }
-$quantifylib = new QuantifyLib;
 
+$quantifylib = new QuantifyLib($dbTiki);
+
+?>

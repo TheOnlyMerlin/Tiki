@@ -6,8 +6,7 @@ if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== false) {
   exit;
 }
 
-class TikiInit
-{
+class TikiInit {
 
 	function TikiInit() {
 	}
@@ -62,15 +61,15 @@ class TikiInit
   */
 	static function prependIncludePath($path) {
 		$include_path = ini_get('include_path');
-		$paths = explode(PATH_SEPARATOR, $include_path);
-
-		if ($include_path && !in_array($path, $paths)) {
-			$include_path = $path . PATH_SEPARATOR . $include_path;
-		} else if (!$include_path) {
+		if ($include_path) {
+			$include_path = $path . TikiInit::pathSeparator(). $include_path;
+		} else {
 			$include_path = $path;
-		} 
-
-		return set_include_path ($include_path);
+		}
+		if (phpversion() >= '4.3')
+			return set_include_path ($include_path);
+		else
+			return ini_set('include_path', $include_path);
 	}
 
 
@@ -79,15 +78,15 @@ class TikiInit
   */
 	static function appendIncludePath($path) {
 		$include_path = ini_get('include_path');
-		$paths = explode(PATH_SEPARATOR, $include_path);
-
-		if ($include_path && !in_array($path, $paths)) {
-			$include_path .= PATH_SEPARATOR . $path;
-		} else if (!$include_path) {
+		if ($include_path) {
+			$include_path .= TikiInit::pathSeparator(). $path;
+		} else {
 			$include_path = $path;
-		} 
-
-		return set_include_path ($include_path);
+		}
+		if (phpversion() >= '4.3')
+			return set_include_path ($include_path);
+		else
+			return ini_set('include_path', $include_path);		
 	}
 
 

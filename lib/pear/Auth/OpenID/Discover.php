@@ -475,7 +475,7 @@ function Auth_OpenID_discoverWithoutYadis($uri, &$fetcher)
 {
     $http_resp = @$fetcher->get($uri);
 
-    if ($http_resp->status != 200 and $http_resp->status != 206) {
+    if ($http_resp->status != 200) {
         return array($uri, array());
     }
 

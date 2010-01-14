@@ -13,12 +13,11 @@ if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== FALSE) {
 }
 
 require_once 'lib/setup/third_party.php';
-require_once (defined('SMARTY_DIR') ? SMARTY_DIR : 'lib/smarty/libs/') . 'Smarty.class.php';
+require_once SMARTY_DIR.'Smarty.class.php';
 
-class Smarty_Tikiwiki extends Smarty
-{
+class Smarty_Tikiwiki extends Smarty {
+	
 	function Smarty_Tikiwiki($tikidomain = '') {
-		parent::Smarty();
 		if ($tikidomain) { $tikidomain.= '/'; }
 		$this->template_dir = 'templates/';
 		$this->compile_dir = "templates_c/$tikidomain";
@@ -41,15 +40,14 @@ class Smarty_Tikiwiki extends Smarty
 
 		$this->security_settings['MODIFIER_FUNCS'] = array_merge(
 			$this->security_settings['MODIFIER_FUNCS'],
-			array('addslashes', 'ucfirst', 'ucwords', 'urlencode', 'md5', 'implode', 'explode', 'is_array', 'htmlentities', 'var_dump')
+			array('addslashes', 'ucfirst', 'ucwords', 'urlencode', 'md5', 'implode', 'explode', 'is_array', 'htmlentities')
 		);
 		$this->security_settings['IF_FUNCS'] = array_merge(
 			$this->security_settings['IF_FUNCS'],
-			array('tra', 'strlen', 'strstr', 'strtolower', 'basename', 'ereg', 'array_key_exists', 'preg_match', 'in_array')
+			array('tra', 'strlen', 'strstr', 'strtolower', 'basename', 'ereg', 'array_key_exists')
 		);
 		$secure_dirs[] = 'img/icons2';
 		$this->secure_dir = $secure_dirs;
-		$this->security_settings['ALLOW_SUPER_GLOBALS'] = true;
 	}
 
 	function _smarty_include($params) {
@@ -93,14 +91,12 @@ class Smarty_Tikiwiki extends Smarty
 					$_smarty_tpl_file = 'tiki_full.tpl';
 					$tpl = $_REQUEST['zoom'].'.tpl';
 					$prefs['feature_fullscreen'] = 'n';
-					$this->assign('zoom_mode', 'y');
 				}
 			}
 
 			// Enable AJAX
 			if ( $prefs['feature_ajax'] == 'y' && $_smarty_display ) {
 				global $ajaxlib; require_once('lib/ajax/ajaxlib.php');
-				$ajaxlib->registerTemplate('tiki-site_header_login.tpl');
 				$ajaxlib->registerTemplate($tpl);
 			}
 
@@ -121,7 +117,6 @@ class Smarty_Tikiwiki extends Smarty
 			if ( $prefs['feature_ajax'] == 'y' && $_smarty_display ) {
 				$_POST['xajaxargs'][0] = $_smarty_tpl_file;
 				global $ajaxlib; require_once('lib/ajax/ajaxlib.php');
-				$ajaxlib->registerTemplate('tiki-site_header_login.tpl');
 				$ajaxlib->registerTemplate($_smarty_tpl_file);
 				$ajaxlib->processRequests();
 			}
@@ -209,21 +204,6 @@ class Smarty_Tikiwiki extends Smarty
 		return parent::clear_cache($_smarty_tpl_file, $_smarty_cache_id, $_smarty_compile_id, $_smarty_exp_time);
 	}
 	function display($resource_name, $cache_id=null, $compile_id = null, $content_type = 'text/html; charset=utf-8') {
-		
-		global $prefs;
-		if ( !empty($prefs['feature_htmlpurifier_output']) and $prefs['feature_htmlpurifier_output'] == 'y' ) {
-			static $loaded = false;
-			static $purifier = null;
-			if (!$loaded) {
-				require_once('lib/htmlpurifier_tiki/HTMLPurifier.tiki.php');
-				$config = getHTMLPurifierTikiConfig();
-				$config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
-				$config->set('HTML.TidyLevel', 'light');
-				$purifier = new HTMLPurifier($config);
-				$loaded = true;
-			}
-		}
-
 		//
 		// By default, display is used with text/html content in UTF-8 encoding
 		// If you want to output other data from smarty,
@@ -233,11 +213,7 @@ class Smarty_Tikiwiki extends Smarty
 		if ( $content_type != '' && ! headers_sent() ) {
 			header('Content-Type: '.$content_type);
 		}
-		if ( !empty($prefs['feature_htmlpurifier_output']) and $prefs['feature_htmlpurifier_output'] == 'y' ) {
-			return $purifier->purify(parent::display($resource_name, $cache_id, $compile_id));
-		} else {
-			return parent::display($resource_name, $cache_id, $compile_id); 
-		}
+		return parent::display($resource_name, $cache_id, $compile_id);
 	}
 	// Returns the file name associated to the template name
 	function get_filename($template) {
