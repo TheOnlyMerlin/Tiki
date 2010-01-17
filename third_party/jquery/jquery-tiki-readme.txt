@@ -2,10 +2,23 @@
 JQuery/Tiki readme
 -------------------------
 
+- - - - - - - - - - - - -
+
+jonnybradley 17 jan 2010
+
+Update:
+	jquery.cluetip.js updated to 1.0.6 from GitHub (http://github.com/kswedberg/jquery-cluetip)
+	Fixes problems with multiple tips in Google Chrome and doesn't seem to introduce the issues found with 1.0.4
+	Needs more testing and replacing with final 1.0.6 release version before Tiki 5.0 release
+
+- - - - - - - - - - - - -
+
 jonnybradley jan 2010
 
 Note:
 	branches/proposals/4.x/lib/jquery external now fixed to r23938
+
+- - - - - - - - - - - - -
 
 jonnybradley December 2009
 
