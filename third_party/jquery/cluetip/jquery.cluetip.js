@@ -1,7 +1,7 @@
 /*
  * jQuery clueTip plugin
- * Version 1.0.6  (January 13, 2010)
- * @requires jQuery v1.3+
+ * Version 1.0.3  (May 29, 2009)
+ * @requires jQuery v1.2.6+
  *
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
@@ -18,16 +18,15 @@
 */
 
 ;(function($) { 
-  $.cluetip = {version: '1.0.6'};
+  $.cluetip = {version: '1.0.3'};
   var $cluetip, $cluetipInner, $cluetipOuter, $cluetipTitle, $cluetipArrows, $cluetipWait, $dropShadow, imgCount;
-  
   $.fn.cluetip = function(js, options) {
     if (typeof js == 'object') {
       options = js;
       js = null;
     }
     if (js == 'destroy') {
-      return this.removeData('thisInfo').unbind('.cluetip');
+      return this.unbind('.cluetip');
     }
     return this.each(function(index) {
       var link = this, $this = $(this);
@@ -66,14 +65,12 @@
         $dropShadow = $([]);
         for (var i=0; i < dropShadowSteps; i++) {
           $dropShadow = $dropShadow.add($('<div></div>').css({zIndex: cluezIndex-1, opacity:.1, top: 1+i, left: 1+i}));
-        }
+        };
         $dropShadow.css({position: 'absolute', backgroundColor: '#000'})
         .prependTo($cluetip);
       }
       var tipAttribute = $this.attr(opts.attribute), ctClass = opts.cluetipClass;
-      if (!tipAttribute && !opts.splitTitle && !js) {
-        return true;
-      }
+      if (!tipAttribute && !opts.splitTitle && !js) return true;
       // if hideLocal is set to true, on DOM ready hide the local content that will be displayed in the clueTip
       if (opts.local && opts.localPrefix) {tipAttribute = opts.localPrefix + tipAttribute;}
       if (opts.local && opts.hideLocal) { $(tipAttribute + ':first').hide(); }
@@ -92,7 +89,7 @@
       var tipParts;
       var tipTitle = (opts.attribute != 'title') ? $this.attr(opts.titleAttribute) : '';
       if (opts.splitTitle) {
-        if (tipTitle == undefined) {tipTitle = '';}
+        if(tipTitle == undefined) {tipTitle = '';}
         tipParts = tipTitle.split(opts.splitTitle);
         tipTitle = tipParts.shift();
       }
@@ -101,7 +98,6 @@
       }
       
       var localContent;
-      function returnFalse() { return false; }
 
 /***************************************      
 * ACTIVATION
@@ -159,7 +155,7 @@
 ***************************************/
       if (js) {
         if (typeof js == 'function') {
-          js = js.call(link);
+          js = js(link);
         }
         $cluetipInner.html(js);
         cluetipShow(pY);
@@ -172,7 +168,7 @@
 
       else if (tipParts) {
         var tpl = tipParts.length;
-        $cluetipInner.html(tpl ? tipParts[0] : '');
+        $cluetipInner.html(tipParts[0]);
         if (tpl > 1) {
           for (var i=1; i < tpl; i++){
             $cluetipInner.append('<div class="split-body">' + tipParts[i] + '</div>');
@@ -184,7 +180,7 @@
 * load external file via ajax          
 ***************************************/
 
-      else if (!opts.local && tipAttribute.indexOf('#') !== 0) {
+      else if (!opts.local && tipAttribute.indexOf('#') != 0) {
         if (/\.(jpe?g|tiff?|gif|png)$/i.test(tipAttribute)) {
           $cluetipInner.html('<img src="' + tipAttribute + '" alt="' + tipTitle + '" />');
           cluetipShow(pY);
@@ -232,7 +228,7 @@
                   imgCount--;
                   if (imgCount<1) {
                     $cluetipWait.hide();
-                    if (isActive) { cluetipShow(pY); }
+                    if (isActive) cluetipShow(pY);
                   }
                 }); 
               } else {
@@ -265,6 +261,7 @@
         $cluetipInner.html($truncloaded);
       }
       function doNothing() {}; //empty function
+
       tipTitle ? $cluetipTitle.show().html(tipTitle) : (opts.showTitle) ? $cluetipTitle.show().html('&nbsp;') : $cluetipTitle.hide();
       if (opts.sticky) {
         var $closeLink = $('<div id="cluetip-close"><a href="#">' + opts.closeText + '</a></div>');
@@ -274,11 +271,18 @@
           return false;
         });
         if (opts.mouseOutClose) {
-          $cluetip.bind('mouseleave.cluetip', function() {
-            cluetipClose();
-          });
+          if ($.fn.hoverIntent && opts.hoverIntent) { 
+            $cluetip.hoverIntent({
+              over: doNothing, 
+              timeout: opts.hoverIntent.timeout,  
+              out: function() { $closeLink.trigger('click.cluetip'); }
+            });
+          } else {
+            $cluetip.hover(doNothing, 
+            function() {$closeLink.trigger('click.cluetip'); });
+          }
         } else {
-          $cluetip.unbind('mouseleave.cluetip');
+          $cluetip.unbind('mouseout');
         }
       }
 // now that content is loaded, finish the positioning 
@@ -317,7 +321,7 @@
 
 // (first hide, then) ***SHOW THE CLUETIP***
       $dropShadow.hide();
-      $cluetip.hide()[opts.fx.open](opts.fx.openSpeed || 0);
+      $cluetip.hide()[opts.fx.open](opts.fx.open != 'show' && opts.fx.openSpeed);
       if (opts.dropShadow) { $dropShadow.css({height: tipHeight, width: tipInnerWidth, zIndex: $this.data('thisInfo').zIndex-1}).show(); }
       if ($.fn.bgiframe) { $cluetip.bgiframe(); }
       // delayed close (not fully tested)
@@ -337,7 +341,7 @@
       if (!opts.sticky || (/click|toggle/).test(opts.activation) ) {
         cluetipClose();
         clearTimeout(closeOnDelay);        
-      }
+      };
       if (opts.hoverClass) {
         $this.removeClass(opts.hoverClass);
       }
@@ -352,9 +356,7 @@
         $this.attr(opts.titleAttribute, tipTitle);
       }
       $this.css('cursor','');
-      if (opts.arrows) {
-        $cluetipArrows.css({top: ''});
-      }
+      if (opts.arrows) $cluetipArrows.css({top: ''});
     };
 
     $(document).bind('hideCluetip', function(e) {
@@ -385,9 +387,13 @@
           inactivate(event);
         });
   // activate by hover
+    // clicking is returned false if cluetip url is same as href url
       } else {
-        // clicking is returned false if clickThrough option is set to false
-        $this[opts.clickThrough ? 'unbind' : 'bind']('click', returnFalse);
+        $this.bind('click.cluetip', function() {
+          if ($this.attr('href') && $this.attr('href') == tipAttribute && !opts.clickThrough) {
+            return false;
+          }
+        });
         //set up mouse tracking
         var mouseTracks = function(evt) {
           if (opts.tracking == true) {
@@ -419,11 +425,14 @@
             $this.unbind('mousemove.cluetip');
           });
         }
-        $this.bind('mouseover.cluetip', function(event) {
+        // remove default title tooltip on hover
+        $this.bind('mouseenter.cluetip', function(event) {
           $this.attr('title','');
-        }).bind('mouseleave.cluetip', function(event) {
+        })
+        .bind('mouseleave.cluetip', function(event) {
           $this.attr('title', $this.data('thisInfo').title);
         });
+        
       }
     });
   };
@@ -476,7 +485,7 @@
     closePosition:    'top',    // location of close text for sticky cluetips; can be 'top' or 'bottom' or 'title'
     closeText:        'Close',  // text (or HTML) to to be clicked to close sticky clueTips
     truncate:         0,        // number of characters to truncate clueTip's contents. if 0, no truncation occurs
-    
+
     // effect and speed for opening clueTips
     fx: {             
                       open:       'show', // can be 'show' or 'slideDown' or 'fadeIn'
