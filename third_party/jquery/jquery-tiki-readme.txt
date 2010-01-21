@@ -2,6 +2,15 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 20 jan 2010
+
+New:
+	Add Infinite Carousel 2 for new slideshow
+
+Kil:
+	columnManager (was once used in tiki-objectpermissions)
+	malsup-cycle (slideshow, never used)
+
 - - - - - - - - - - - - -
 
 jonnybradley 17 jan 2010
