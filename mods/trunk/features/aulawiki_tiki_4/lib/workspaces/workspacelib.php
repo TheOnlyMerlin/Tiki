@@ -152,7 +152,7 @@ class WorkspaceLib extends TikiDb_Bridge {
 	}
 	
 	function create_workspace($code, $name, $desc, $startDate, $endDate, $closed, $parentId, $type, $parentCategoryId = null, $owner = null, $isuserws = "n", $hide = "n") {
-		global $categlib;
+		global $categlib,$prefs;
 		include_once ('lib/categories/categlib.php');
 		$resourcesLib = new WorkspaceResourcesLib($this->db);
 		$wsTypesLib = new WorkspaceTypesLib($this->db);
@@ -165,8 +165,13 @@ class WorkspaceLib extends TikiDb_Bridge {
 		//Categorize workspace
 		$idCatObj = $categlib->add_categorized_object("workspace", $workspace["workspaceId"], $name, $code, "tiki-workspaces_desktop.php?workspaceId=".$workspace["workspaceId"]);
 		$categlib->categorize($idCatObj, $categoryId);
-		$this->assign_permissions($code, "workspace", $workspace["workspaceId"],$wsType);
-
+		# if categories are on use categ perms
+		if ($prefs["feature_categories"]=="y") {
+			$this->assign_permissions($code, "category", $categoryId,$wsType);
+		}		
+		else {
+			$this->assign_permissions($code, "workspace", $workspace["workspaceId"],$wsType);
+		}
 		if (isset ($resources) && $resources != "" && count($resources) > 0) {
 			foreach ($resources as $key => $resource) {
 				$funcname = "create_".str_replace(" ", "", $resource["type"]);
@@ -177,7 +182,13 @@ class WorkspaceLib extends TikiDb_Bridge {
 					$id = $resourcesLib-> $funcname ($code."-".$resource["name"], $resource["desc"], $categoryId, $workspace["workspaceId"]);
 				}
 				if (isset ($id)) {
-					$this->assign_permissions($code, $resource["type"], $id,$wsType);
+					# if categories are on use categ perms
+					if ($prefs["feature_categories"]=="y") {
+						$categlib->categorize_any($id, $resource["type"], $categoryId);
+					}
+					else {
+						$this->assign_permissions($code, $resource["type"], $id,$wsType);
+					}
 				}
 			}
 		}
@@ -220,7 +231,7 @@ class WorkspaceLib extends TikiDb_Bridge {
 	
 	function update_workspace_info($id, $code, $name, $desc, $startDate, $endDate, $closed, $parentId, $type, $categoryId, $parentCategoryId = null, $owner = null, $isuserws = "n", $hide = "n") {
 		global $dbTiki;
-		global $categlib;
+		global $categlib, $prefs;
 		include_once ('lib/categories/categlib.php');
 		$categlib3 = new CategLib($dbTiki);
 		$resourcesLib = new WorkspaceResourcesLib($this->db);
@@ -237,20 +248,23 @@ class WorkspaceLib extends TikiDb_Bridge {
 			$resources = unserialize($wsType["resources"]);
 			$this->create_workspace_groups($code, $wsType, $owner);
 			//$this->create_workspace_user($code, $wsType);
-			$this->assign_permissions($code, "workspace", $id,$wsType);
-			if (isset ($resources) && $resources != "" && count($resources) > 0) {
-				foreach ($resources as $key => $resource) {
-					$funcname = "create_".str_replace(" ", "", $resource["type"]);
-					$objid = null;
-					if ($resource["type"] != "assignments") {
-						$objid = $resourcesLib-> $funcname ($code."-".$resource["name"], $resource["desc"], $categoryId);
-					} else {
-						$objid = $resourcesLib-> $funcname ($code."-".$resource["name"], $resource["desc"], $categoryId, $id);
+			if ($prefs["feature_categories"]!="y")
+				{
+				$this->assign_permissions($code, "workspace", $id,$wsType);
+				if (isset ($resources) && $resources != "" && count($resources) > 0) {
+					foreach ($resources as $key => $resource) {
+						$funcname = "create_".str_replace(" ", "", $resource["type"]);
+						$objid = null;
+						if ($resource["type"] != "assignments") {
+							$objid = $resourcesLib-> $funcname ($code."-".$resource["name"], $resource["desc"], $categoryId);
+						} else {
+							$objid = $resourcesLib-> $funcname ($code."-".$resource["name"], $resource["desc"], $categoryId, $id);
+						}
+						if (isset ($id)) {
+							$this->assign_permissions($code,$resource["type"], $objid,$wsType);
+						}
 					}
-					if (isset ($id)) {
-						$this->assign_permissions($code,$resource["type"], $objid,$wsType);
-					}
-				}
+				}	
 			}
 		}
 	}
@@ -379,7 +393,7 @@ class WorkspaceLib extends TikiDb_Bridge {
 	}
 		
 	function get_topmost_workspace_Iadmin ($theuser,$currentWS) {
-		global $userlib;
+		global $userlib,$tikilib;
 		if (! isset($currentWS))
 			return false;
 		$path = $this->get_workspace_path($currentWS["parentId"]);		
@@ -387,7 +401,8 @@ class WorkspaceLib extends TikiDb_Bridge {
 		foreach ($path as $k => $d){
 			foreach ($d as $k1 => $d1){
 				if ($k1 == "workspaceId" && $d1 != 0) {
-					if ($userlib->object_has_permission($theuser, $d1, 'workspace', "tiki_p_admin_workspace"))
+//					if ($userlib->object_has_permission($theuser, $d1, 'workspace', "tiki_p_admin_workspace"))
+					if ($tikilib->user_has_perm_on_object($theuser, $d1, 'workspace', "tiki_p_admin_workspace"))
 						{
 						$topmost_workspace_Iadmin=$d1;
 						return $topmost_workspace_Iadmin;
@@ -455,6 +470,9 @@ class WorkspaceLib extends TikiDb_Bridge {
 			case "survey" :
 				$permType = "surveys";
 				break;
+			case "category" :
+				$permType = "all";
+				break;
 			default :
 				$permType = $objectType;
 		endswitch;
@@ -503,6 +521,15 @@ class WorkspaceLib extends TikiDb_Bridge {
 					}
 			}
 		}*/
+	}
+	function remove_all_object_permissions ($objId,$objectType) {
+		$objectId = md5($objectType . strtolower($objId));
+
+		$query = "delete from `users_objectpermissions`
+			where `objectId` = ?
+			and `objectType` = ?";
+		$bindvars = array($objectId, $objectType);
+		$result = $this->query($query, $bindvars);
 	}
 	
 	function get_user_workspaces($wsuser) {

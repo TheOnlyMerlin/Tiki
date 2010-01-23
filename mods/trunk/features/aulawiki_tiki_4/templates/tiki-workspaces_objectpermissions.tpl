@@ -10,17 +10,43 @@
 <h2>{tr}Current permissions for this object{/tr}:</h2>
 <table class="normal">
 <tr><td class="heading">{tr}group{/tr}</td><td class="heading">{tr}permission{/tr}</td><td class="heading">{tr}action{/tr}</td></tr>
+<form method="post" action="tiki-workspaces_objectpermissions.php">
+{if $obj_has_object_perms}
+<tr><td colspan="3" class="odd">
+{tr}Remove all individual permissions for this object {/tr} 
+{if $obj_has_category_perms}
+	<b>{tr}and fallback to category perms{/tr}</b><br>
+{/if}
+<input type="submit" name="removeall" value="{tr}Remove all perms{/tr}" />
+</td></tr>
+{/if}
 {cycle values="odd,even" print=false}
 {section  name=pg loop=$page_perms}
 <tr><td class="{cycle advance=false}">{$page_perms[pg].groupName}</td>
 <td class="{cycle advance=false}">{$page_perms[pg].permName}</td>
 <td class="{cycle advance=true}"><a class="link" href="tiki-workspaces_objectpermissions.php?referer={$referer|escape:"url"}&amp;action=remove&amp;objectName={$objectName}&amp;resourceIdName={$resourceIdName}&amp;objectType={$objectType}&amp;permType={$permType}&amp;page={$page|escape:"url"}&amp;perm={$page_perms[pg].permName}&amp;group={$page_perms[pg].groupName}" title="{tr}Delete{/tr}"><img src="img/icons2/delete.gif" width="12" height="12" alt="{tr}delete{/tr}" border="0"></a></td></tr>
 {sectionelse}
-<tr><td colspan="3" class="odd">{tr}No individual permissions global permissions apply{/tr}</td></tr>
+{if $obj_has_object_perms==""}
+<tr><td colspan="3" class="odd"><b> {tr}No individual permissions {/tr}</b><br>
+{/if}
+{if $obj_has_category_perms}
+	<b><a class="link" href="tiki-objectpermissions.php?objectType=category&amp;objectId={$categoryId}&amp;objectName={$categoryName}&amp;permType=all">{tr}Category perms apply{/tr}</a></b>
+</td></tr>
+<tr><td colspan="3" class="odd">
+{tr}Assign individual permissions for this object{/tr} <br>
+<input type="submit" name="copyfromwstype" value="{tr}Copy the Default Perms for the Workspace{/tr}" />
+{else}
+	<b>{tr}Global perms apply{/tr}</b>
+{/if}
+</td></tr>
+<tr><td colspan="3" class="odd">
+
+</td></tr>
+
 {/section}
+
 </table>
 <h2>{tr}Assign permissions to this object{/tr}</h2>
-<form method="post" action="tiki-workspaces_objectpermissions.php">
 <input type="hidden" name="page" value="{$page|escape}" />
 <input type="hidden" name="referer" value="{$referer|escape}" />
 <input type="hidden" name="objectName" value="{$objectName|escape}" />

@@ -28,8 +28,8 @@ $can_create_groups=false;
 $can_add_users =false;
 $can_admin_all_workspaces =false;
 # first base setup of priviliges
-if ($userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")
-	&& !$userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_admin_workspace")) {
+if ($tikilib->user_has_perm_on_object($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")
+	&& !$tikilib->user_has_perm_on_object($user, $workspace["workspaceId"], 'workspace', "tiki_p_admin_workspace")) {
 	$can_add_users =_TIKI_P_CREATE_WORKSPACE_RESOUR_CAN_ADD_USERS_;
 	$can_create_resources = true;
 	}

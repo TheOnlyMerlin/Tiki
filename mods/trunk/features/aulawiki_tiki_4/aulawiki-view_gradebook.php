@@ -26,7 +26,8 @@ if (!isset ($workspace) || $workspace == null || $workspace == "") {
 
 global $userlib;
 if ($tiki_p_admin != 'y') {
-	if (!$userlib->object_has_permission($user, $workspace["workspaceId"], 'assignments', "aulawiki_p_admin_assignments")) {
+//	if (!$userlib->object_has_permission($user, $workspace["workspaceId"], 'assignments', "aulawiki_p_admin_assignments")) {
+	if (!$tikilib->user_has_perm_on_object($user, $workspace["workspaceId"], 'assignments', "aulawiki_p_admin_assignments")) {
 		$smarty->assign('msg', tra("Permission denied you cannot view this page"));
 		$smarty->display("error.tpl");
 		die;

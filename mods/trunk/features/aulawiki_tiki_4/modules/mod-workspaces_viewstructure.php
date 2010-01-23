@@ -46,9 +46,12 @@ if (!$exit_module && isset ($module_params["name"]) && $module_params["name"] !=
 	$exit_module = true;
 }
 
-$admWikiPerm = $userlib->object_has_permission($user,$page,"wiki page","tiki_p_admin_wiki");
-$editStructPerm = $userlib->object_has_permission($user,$page,"wiki page","tiki_p_edit_structures");
-$adminWorkspacePerm = $userlib->object_has_permission($user,$workspace["workspaceId"],"workspace","tiki_p_admin_workspace");
+//$admWikiPerm = $userlib->object_has_permission($user,$page,"wiki page","tiki_p_admin_wiki");
+$admWikiPerm = $tikilib->user_has_perm_on_object($user,$page,"wiki page","tiki_p_admin_wiki");
+//$editStructPerm = $userlib->object_has_permission($user,$page,"wiki page","tiki_p_edit_structures");
+$editStructPerm = $tikilib->user_has_perm_on_object($user,$page,"wiki page","tiki_p_edit_structures");
+// $adminWorkspacePerm = $userlib->object_has_permission($user,$workspace["workspaceId"],"workspace","tiki_p_admin_workspace");
+$adminWorkspacePerm = $tikilib->user_has_perm_on_object($user,$workspace["workspaceId"],"workspace","tiki_p_admin_workspace");
 
 $canadmin = $tiki_p_admin=="y"||$tiki_p_admin_workspace=="y"||$adminWorkspacePerm||$admWikiPerm||$editStructPerm;
 $smarty->assign('canadmin', $canadmin);
@@ -57,8 +60,9 @@ $smarty->assign('canadmin', $canadmin);
 if($canadmin && isset($module_params["createObjectName"]) && $module_params["createObjectName"]!=""){
 	$id = $resourcesLib->create_object($workspace["code"]."-".$module_params["createObjectName"], $module_params["createObjectDesc"], "wiki page", $workspace["categoryId"]);
 	$wsType = $workspace["type"];
-	$workspacesLib->assign_permissions($workspace["code"], "wiki page", $id,$wsType);
-  
+	if ($prefs["feature_categories"] != "y") {
+		$workspacesLib->assign_permissions($workspace["code"], "wiki page", $id,$wsType);
+	}
 	$subpages = $structlib->s_get_pages($module_params["parentPage".$module_params["structureId"]]);
 	$max = count($subpages);
 	$last_child_ref_id = null;

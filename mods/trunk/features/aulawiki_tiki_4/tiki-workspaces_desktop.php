@@ -24,18 +24,19 @@ global $userlib;
 
 
 if ($tiki_p_admin != 'y' && $tiki_p_admin_workspace!='y') {
-	if ($userlib->object_has_one_permission($workspace["workspaceId"], 'workspace')) {
-		if (!$userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_view_workspace") && !$userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_admin_workspace")) {
+//	if ($userlib->object_has_one_permission($workspace["workspaceId"], 'workspace')) {
+//		if (!$userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_view_workspace") && !$userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_admin_workspace")) {
+		if (!$tikilib->user_has_perm_on_object($user, $workspace["workspaceId"], 'workspace', "tiki_p_view_workspace") && !$tikilib->user_has_perm_on_object($user, $workspace["workspaceId"], 'workspace', "tiki_p_admin_workspace")) {
 			$smarty->assign('msg', tra("Permission denied you cannot view this page"));
 			$smarty->display("error.tpl");
 			die;
 		}
-	}elseif($tiki_p_view_workspace != 'y'){
+/*	}elseif($tiki_p_view_workspace != 'y'){
 			$smarty->assign('msg', tra("Permission denied you cannot view this page"));
 			$smarty->display("error.tpl");
 			die;
 	}
-	
+*/	
 	$now = date("U");
 	if ( (($workspace["startDate"]>$now || $workspace["endDate"]<$now) && ceil($workspace["startDate"]/60)!=ceil($workspace["endDate"]/60) ) || $workspace["closed"] == "y") {
 		$smarty->assign('msg', tra("Closed Workspace"));

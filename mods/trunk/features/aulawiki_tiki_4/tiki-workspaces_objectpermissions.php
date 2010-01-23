@@ -12,21 +12,20 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 include_once ("tiki-setup.php");
 require_once ('lib/workspaces/workspacelib.php');
-
 $workspacesLib = new WorkspaceLib($dbTiki);
 $workspace = $workspacesLib->get_current_workspace();
 $WorkspaceUserLib = new WorkspaceUserLib($dbTiki);
 $can_admin_workspace =false;
 $can_admin_all_workspaces =false;
 $can_admin_resources= false;
-
 if ( $tiki_p_admin == 'y' 
    || $tiki_p_admin_workspace =='y' ) {
    	$can_admin_all_workspaces = true;
 }elseif($workspacesLib->user_can_admin_workspace_or_upper($user,$workspace)) {
 	$can_admin_workspace = true;
 }
-if ($userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")) {
+// if ($userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")) {
+if ($tikilib->user_has_perm_on_object($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")) {
 	$can_admin_resources =true;
 }
    
@@ -43,6 +42,12 @@ if (isset($_REQUEST["referer"])) {
 if (!isset(
 	$_REQUEST["objectName"]) || !isset($_REQUEST["objectType"]) || !isset($_REQUEST["resourceIdName"]) || !isset($_REQUEST["permType"])) {
 	$smarty->assign('msg', tra("Not enough information to display this page"));
+
+	$smarty->display("error.tpl");
+	die;
+}
+if (!isset($workspace)) {
+	$smarty->assign('msg', tra("Workpace not selected"));
 
 	$smarty->display("error.tpl");
 	die;
@@ -96,6 +101,16 @@ if (!$can_admin_workspace && !$can_admin_all_workspaces
 	}
 ##### pingus end
 
+// Process the form to copy wstype perms for this object
+if (isset($_REQUEST["copyfromwstype"])) {
+	check_ticket('object-perms');
+	$workspacesLib->assign_permissions($workspace["code"], $_REQUEST["objectType"],$_REQUEST["resourceIdName"],  $workspace["type"]);
+}
+// Process the form to remove all object perms for this object
+if (isset($_REQUEST["removeall"])) {
+	check_ticket('object-perms');
+	$workspacesLib->remove_all_object_permissions($_REQUEST["resourceIdName"],$_REQUEST["objectType"]);
+}
 // Process the form to assign a new permission to this page
 if (isset($_REQUEST["assign"])) {
 	check_ticket('object-perms');
@@ -113,8 +128,26 @@ if (isset($_REQUEST["action"])) {
 
 // Now we have to get the individual page permissions if any
 $page_perms = $userlib->get_object_permissions($_REQUEST["resourceIdName"], $_REQUEST["objectType"]);
+if (empty($page_perms)) {
+  $obj_has_object_perms=false;
+}
+else {
+  $obj_has_object_perms=true;
+}
 $smarty->assign_by_ref('page_perms', $page_perms);
-
+# categ perms
+if ($userlib->object_has_one_permission($workspace['categoryId'], 'category')) {
+  $obj_has_category_perms = true;
+  include_once ('lib/categories/categlib.php');
+  $categlib = new CategLib($dbTiki);
+  $categoryName=$categlib->get_category_name($workspace["categoryId"]);
+  $smarty->assign('categoryId', $workspace["categoryId"]);
+  $smarty->assign('categoryName', $categoryName);
+} else {
+  $obj_has_category_perms = false;
+}
+$smarty->assign('obj_has_category_perms', $obj_has_category_perms);
+$smarty->assign('obj_has_object_perms', $obj_has_object_perms);
 // Get a list of groups
 if ($can_admin_all_workspaces) {  # he can choose among all site groups
 	$groups = $workspacesLib->get_child_workspaces_groups("0", $includeParent = FALSE);

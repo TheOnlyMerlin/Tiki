@@ -30,7 +30,8 @@ if (!isset ($workspace)) {
 	$smarty->display("error.tpl");
 	die;
 }
-if ($tiki_p_admin != 'y' && !$userlib->object_has_permission($user, $workspace["workspaceId"], 'assignments', "aulawiki_p_view_assignments")) {
+// if ($tiki_p_admin != 'y' && !$userlib->object_has_permission($user, $workspace["workspaceId"], 'assignments', "aulawiki_p_view_assignments")) {
+if ($tiki_p_admin != 'y' && !$tikilib->user_has_perm_on_object($user, $workspace["workspaceId"], 'assignments', "aulawiki_p_view_assignments")) {
 	$smarty->assign('msg', tra("Permission denied you cannot view this page"));
 	$smarty->display("error.tpl");
 	die;
@@ -44,7 +45,8 @@ $periods = $periodsLib->get_periods_of_type(1);
 $smarty->assign("periods", $periods);
 
 if (isset ($_REQUEST["sendAssignment"]) && isset ($_REQUEST["assignmentId"]) && $_REQUEST["assignmentId"] != "") {
-	if ($tiki_p_admin != 'y' && !$userlib->object_has_permission($user, $workspace["workspaceId"], 'assignments', "aulawiki_p_edit_assignments")) {
+//	if ($tiki_p_admin != 'y' && !$userlib->object_has_permission($user, $workspace["workspaceId"], 'assignments', "aulawiki_p_edit_assignments")) {
+	if ($tiki_p_admin != 'y' && !$tikilib->user_has_perm_on_object($user, $workspace["workspaceId"], 'assignments', "aulawiki_p_edit_assignments")) {
 		$smarty->assign('msg', tra("Permission denied you cannot edit assignments"));
 		$smarty->display("error.tpl");
 		die;
@@ -52,7 +54,8 @@ if (isset ($_REQUEST["sendAssignment"]) && isset ($_REQUEST["assignmentId"]) && 
 	$assignmentsLib->update_assignment($_REQUEST["periodId"], $_REQUEST["gradeWeight"], $_REQUEST["name"], $_REQUEST["description"], $_REQUEST["wikipage"], $_REQUEST["startDate"], $_REQUEST["endDate"], $_REQUEST["type"], $_REQUEST["assignmentId"]);
 } else
 	if (isset ($_REQUEST["sendAssignment"])) {
-		if ($tiki_p_admin != 'y' && !$userlib->object_has_permission($user, $workspace["workspaceId"], 'assignments', "aulawiki_p_create_assignments")) {
+//		if ($tiki_p_admin != 'y' && !$userlib->object_has_permission($user, $workspace["workspaceId"], 'assignments', "aulawiki_p_create_assignments")) {
+		if ($tiki_p_admin != 'y' && !$tikilib->user_has_perm_on_object($user, $workspace["workspaceId"], 'assignments', "aulawiki_p_create_assignments")) {
 			$smarty->assign('msg', tra("Permission denied you cannot create assignments"));
 			$smarty->display("error.tpl");
 			die;
@@ -61,7 +64,8 @@ if (isset ($_REQUEST["sendAssignment"]) && isset ($_REQUEST["assignmentId"]) && 
 		$uid = $assignmentsLib->add_assignment($workspace["workspaceId"], $_REQUEST["periodId"], $_REQUEST["gradeWeight"], $_REQUEST["name"], $_REQUEST["description"], $_REQUEST["wikipage"], $user, $_REQUEST["startDate"], $_REQUEST["endDate"], $_REQUEST["type"]);
 	} else
 		if (isset ($_REQUEST["removeAssignment"])) {
-			if ($tiki_p_admin != 'y' && !$userlib->object_has_permission($user, $workspace["workspaceId"], 'assignments', "aulawiki_p_remove_assignments")) {
+//			if ($tiki_p_admin != 'y' && !$userlib->object_has_permission($user, $workspace["workspaceId"], 'assignments', "aulawiki_p_remove_assignments")) {
+			if ($tiki_p_admin != 'y' && !$tikilib->user_has_perm_on_object($user, $workspace["workspaceId"], 'assignments', "aulawiki_p_remove_assignments")) {
 				$smarty->assign('msg', tra("Permission denied you cannot remove assignments"));
 				$smarty->display("error.tpl");
 				die;

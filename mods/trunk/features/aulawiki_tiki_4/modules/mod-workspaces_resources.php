@@ -61,13 +61,15 @@ if ($tiki_p_admin == "y" || $tiki_p_admin_workspace == "y" ) {
 	
 }
 if (!$exit_module && $tiki_p_admin != 'y' && $tiki_p_admin_workspace != 'y') {
-	if (!$userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_view_workspace")) {
+//	if (!$userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_view_workspace")) {
+	if (!$tikilib->user_has_perm_on_object($user, $workspace["workspaceId"], 'workspace', "tiki_p_view_workspace")) {
 		$smarty->assign('error_msg', tra("Permission denied you cannot view this page"));
 		$exit_module = true;
 	}
 }
 
-if ($userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")) {
+//if ($userlib->object_has_permission($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")) {
+if ($tikilib->user_has_perm_on_object($user, $workspace["workspaceId"], 'workspace', "tiki_p_create_workspace_resour")) {
 	$can_create_resources = "y";
 	$can_add_users = _TIKI_P_CREATE_WORKSPACE_RESOUR_CAN_ADD_USERS_ ; # he will be able to add only single users, not groups
 	$can_delete_resources = "n";
@@ -97,7 +99,10 @@ if (!$exit_module){
 # original, top cat prefix 
 			$id = $resourcesLib->create_object($wscode."-".$_REQUEST["createObjectName"], $_REQUEST["createObjectDesc"], $_REQUEST["createObjectType"], $_REQUEST["createObjectCategoryId"]);
 # without prefix	$id = $resourcesLib->create_object($_REQUEST["createObjectName"], $_REQUEST["createObjectDesc"], $_REQUEST["createObjectType"], $_REQUEST["createObjectCategoryId"]);
-			$workspacesLib->assign_permissions($wscode, $_REQUEST["createObjectType"], $id,$wsType);
+			# if categories not featured, assign individual objectperms			
+			if ($prefs["feature_categories"]!="y") {
+				$workspacesLib->assign_permissions($wscode, $_REQUEST["createObjectType"], $id,$wsType);
+			}
 //  no immediately edit an object just created, so there's time to change its perms before
 #			$resourcesLib->redirect($id, $wscode."-".$_REQUEST["createObjectName"], $_REQUEST["createObjectType"]);
 			//$smarty->assign('error_msg', $tikilib->httpPrefix()."/tiki-index.php");
@@ -112,7 +117,7 @@ if (!$exit_module){
 	global $categlib;
 	include_once ('lib/categories/categlib.php');
 	$categlib2 = new CategLib($dbTiki);
-	$ctall = $categlib2->get_all_categories_respect_perms($user, 'tiki_p_view_categories');
+	$ctall = $categlib2->get_all_categories_respect_perms($user, 'tiki_p_view_category');
 	
 	if (isset ($module_params["type"])) {
 		$type = $module_params["type"];
@@ -128,7 +133,6 @@ if (!$exit_module){
 	$urlEnd .= "&amp;deep=$deep";
 	
 	$categId = $workspace["categoryId"];
-	
 	if ($categId == 0)
 		$name = tra("Top");
 	else {
@@ -205,7 +209,7 @@ if (!$exit_module){
 			} else {
 				$class = "categtree";
 			}
-	
+
 //                        $ownurl=ereg_replace("&(.*)","",$ownurl); //clean url
 //			$ownurl=$ownurl."&workspaceId=".$workspace["workspaceId"];
 			$tree_nodes[] = array ("id" => $c["categId"], "parent" => $c["parentId"], "data" => '<a class="'.$class.'" href="'.$ownurl.'&selectCategoryId='.$c["categId"].'">'.$imgCateg.'&nbsp;'.$c["name"].'</a><br />');
