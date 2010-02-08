@@ -154,15 +154,13 @@ input, select {
 
 * html .wikitopline select {font-size: .9em}
 
-
 span.button a,
 button,
-input[type=reset],
-input[type=submit],
 span.button input,
 .submitbutton,
 .calbuttonBox a {
 	background: url(milkyway/mw_menu_normal_bg.png) repeat-x;
+	background-position: 0 -2px;
 	margin-right: 4px;
 	margin-bottom: 3px;
 	border-left: 1px solid #dedede;
@@ -175,8 +173,8 @@ span.button input,
 	line-height: 24px;
 	padding: 2px 4px}
 
-* html input[type=reset],
-* html input[type=submit] {
+input[type="reset"],
+input[type="submit"] {
 	background: url(milkyway/mw_menu_normal_bg.png) repeat-x;
 	margin-right: 4px;
 	margin-bottom: 3px;
@@ -192,8 +190,8 @@ span.button input,
 
 .button a:hover,
 button:hover,
-input[type=reset]:hover,
-input[type=submit]:hover,
+input[type="reset"]:hover,
+input[type="submit"]:hover,
 .button input:hover,
 .submitbutton:hover,
 .calbuttonBox a:hover {
@@ -221,23 +219,28 @@ body.wikitext {
 div#header {
 	background: url(milkyway/options/white/header.jpg) no-repeat;
 	background-position: right 0;
-	height: 122px;
+	min-height: 122px;
 	position: relative;
 	overflow: hidden;}
 	
 #header .wrapper {
 	background: url(milkyway/options/white/header.jpg) no-repeat;
-	height: 102px !important;
 	margin-right: 32px;
 	margin-bottom: -1px;
 	padding: 20px 0 0 20px}
+	
+#header-top {
+	position: relative;
+	min-height: 102px;
+}
 
 #siteheader {
 	text-align: left;
 	background: transparent;
 	vertical-align: middle;
-	padding: 0 40px;
-	margin: 0}
+	padding: 0 0px;
+	margin: 0;
+}
 
 div#sioptions {
 	width: 100%;
@@ -255,8 +258,8 @@ div#sitead {margin: auto}
 
 #siteloginbar {
 	position: absolute;
-	bottom: 20px;
-	right: 20px}
+	bottom: 0;
+	right: 0}
 
 input[id="sl-login-user"],
 input[id="sl-login-pass"] {}
@@ -304,6 +307,7 @@ input[id="sl-login-pass"] {}
 #tiki-top table {
 	width: auto;
 	margin: auto;
+	margin-bottom: -15px;
 	text-align: left}
 
 #sitesearchbar {
@@ -312,6 +316,7 @@ input[id="sl-login-pass"] {}
 	text-align: right;
 	display: block;
 	margin: 0;
+	margin-top: 15px;
 	text-align: left}
 
 input#fuser,
@@ -468,6 +473,10 @@ td#leftcolumn .cssmenu_vert li li.sfHover ul {
 
 #tiki-top .cssmenu_horiz li ul li ul {
 	margin-top: -1px;	
+}
+
+#tiki-top .cssmenu_horiz ul li:hover a {
+	text-decoration: underline;
 }
 
 .cssmenu_horiz .sf-sub-indicator,
