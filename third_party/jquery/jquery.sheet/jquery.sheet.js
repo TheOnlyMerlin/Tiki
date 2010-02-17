@@ -1,6 +1,6 @@
 /*
 	jQuery.sheet() Spreadsheet with Calculations Plugin
-	Verison: 0.53
+	Verison: 0.53 - Modified for Tiki 5 - jonnb Feb 2010 (numerous missing semicolons for JSLint and row height fixes for addRow)
 	Copywrite Robert Plummer 2008-2009
 	
 	Dimensions Info:
@@ -114,33 +114,33 @@ var jS = jQuery.sheet = {
 	version: 0.53,
 	s: {},//s = settings object, used for shorthand, populated from jQuery.sheet
 	obj: {//obj = object references
-		parent: 		function() { return jQuery(jS.s.parent) },
-		ui:				function() { return jQuery('#' + jS.id.ui) },
-		sheet: 			function() { return jQuery('#' + jS.id.sheet) },
-		bar:			function() { return jQuery('.' + jS.cl.bar) },
-		barTop: 		function() { return jQuery('#' + jS.id.barTop) },
-		barTopParent: 	function() { return jQuery('#' + jS.id.barTopParent) },
-		barLeft: 		function() { return jQuery('#' + jS.id.barLeft) },
-		barLeftParent: 	function() { return jQuery('#' + jS.id.barLeftParent) },
-		barCorner:		function() { return jQuery('#' + jS.id.barCorner) },
-		barCornerParent:function() { return jQuery('#' + jS.id.barCornerParent) },
-		barSelected:	function() { return jQuery('.' + jS.cl.barSelected) },
-		cell: 			function() { return jQuery('.' + jS.cl.cell) },
-		controls:		function() { return jQuery('#' + jS.id.controls) },
-		formula: 		function() { return jQuery('#' + jS.id.formula) },
-		label: 			function() { return jQuery('#' + jS.id.label) },
-		fx:				function() { return jQuery('#' + jS.id.fx) },
-		pane: 			function() { return jQuery('#' + jS.id.pane) },
-		log: 			function() { return jQuery('#' + jS.id.log) },
-		menu:			function() { return jQuery('#' + jS.id.menu) },
-		title:			function() { return jQuery('#' + jS.id.title) },
-		uiDefault:		function() { return jQuery('.' + jS.cl.uiDefault) },
-		uiActive:		function() { return jQuery('.' + jS.cl.uiActive) },
-		uiBase:			function() { return jQuery('.' + jS.cl.uiBase) },
-		uiCell:			function() { return jQuery('.' + jS.cl.uiCell) },
-		toggle:			function() { return jQuery('.' + jS.cl.toggle) },
-		tableBody: 		function() { return document.getElementById(jS.id.sheet) },
-		title: 	function() { return jQuery('#' + jS.id.title) }
+		parent: 		function() { return jQuery(jS.s.parent); },
+		ui:				function() { return jQuery('#' + jS.id.ui); },
+		sheet: 			function() { return jQuery('#' + jS.id.sheet); },
+		bar:			function() { return jQuery('.' + jS.cl.bar); },
+		barTop: 		function() { return jQuery('#' + jS.id.barTop); },
+		barTopParent: 	function() { return jQuery('#' + jS.id.barTopParent); },
+		barLeft: 		function() { return jQuery('#' + jS.id.barLeft); },
+		barLeftParent: 	function() { return jQuery('#' + jS.id.barLeftParent); },
+		barCorner:		function() { return jQuery('#' + jS.id.barCorner); },
+		barCornerParent:function() { return jQuery('#' + jS.id.barCornerParent); },
+		barSelected:	function() { return jQuery('.' + jS.cl.barSelected); },
+		cell: 			function() { return jQuery('.' + jS.cl.cell); },
+		controls:		function() { return jQuery('#' + jS.id.controls); },
+		formula: 		function() { return jQuery('#' + jS.id.formula); },
+		label: 			function() { return jQuery('#' + jS.id.label); },
+		fx:				function() { return jQuery('#' + jS.id.fx); },
+		pane: 			function() { return jQuery('#' + jS.id.pane); },
+		log: 			function() { return jQuery('#' + jS.id.log); },
+		menu:			function() { return jQuery('#' + jS.id.menu); },
+		title:			function() { return jQuery('#' + jS.id.title); },
+		uiDefault:		function() { return jQuery('.' + jS.cl.uiDefault); },
+		uiActive:		function() { return jQuery('.' + jS.cl.uiActive); },
+		uiBase:			function() { return jQuery('.' + jS.cl.uiBase); },
+		uiCell:			function() { return jQuery('.' + jS.cl.uiCell); },
+		toggle:			function() { return jQuery('.' + jS.cl.toggle); },
+		tableBody: 		function() { return document.getElementById(jS.id.sheet); },
+		title: 	function() { return jQuery('#' + jS.id.title); }
 	},
 	id: {//id = id's references
 		sheet: 			'jSheet',//This con probably be just about any value as long as it's not a duplicated id
@@ -181,7 +181,7 @@ var jS = jQuery.sheet = {
 		uiCellHighlighted: 'ui-state-highlight',
 		toggle:			'cellStyleToggle'
 	},
-	ERROR: function() { return cE.ERROR },
+	ERROR: function() { return cE.ERROR; },
 	tuneTableForSheetUse: function(obj, r) {
 		obj
 			.addClass(jS.cl.sheet)
@@ -235,7 +235,7 @@ var jS = jQuery.sheet = {
 			
 			switch(from) {
 				case 'cell':
-					obj = (obj ? obj : jS.obj.barLeft().find('div').eq(i))
+					obj = (obj ? obj : jS.obj.barLeft().find('div').eq(i));
 					h = jS.attrH.height(jQuery(jS.getTd(null, i + 1, 1)).parent().andSelf(), skipCorrection);
 					break;
 				case 'bar':
@@ -261,14 +261,14 @@ var jS = jQuery.sheet = {
 		if (url) { //This is our standard way of detecting height when a sheet loads from a url
 			heightFn = function(i, objSource, objBar) {
 				objBar.height(parseInt(objSource.outerHeight()) - jS.attrH.boxModelCorrection());
-			}
+			};
 		} else { //This way of detecting height is used becuase the object has some problems getting
 				//height because both tr and td have height set
 				//This corrects the problem
 				//This is only used when a sheet is already loaded in the pane
 			heightFn = function(i, objSource, objBar) {
 				objBar.height(parseInt(objSource.css('height').replace('px','')) - jS.attrH.boxModelCorrection());
-			}
+			};
 		}
 		jS.obj.sheet().find('tr').each(function(i) {
 			
@@ -291,12 +291,12 @@ var jS = jQuery.sheet = {
 			parents = jS.obj.pane().find('tr:first td');
 			widthFn = function(obj) {
 				return jS.attrH.width(obj);
-			}
+			};
 		} else {
 			parents = jS.obj.pane().find('col');
 			widthFn = function(obj) {
 				return parseInt(jQuery(obj).css('width').replace('px','')) - jS.attrH.boxModelCorrection();
-			}
+			};
 		}
 		
 		parents.each(function(i) {
@@ -519,7 +519,7 @@ var jS = jQuery.sheet = {
 		}
 	},
 	getCss: function(url, id) {
-		jQuery('head').append('<link rel="stylesheet" type="text/css" href="' + url + '"></link>')
+		jQuery('head').append('<link rel="stylesheet" type="text/css" href="' + url + '"></link>');
 	},
 	themeRoller: {
 		start: function() {
@@ -528,7 +528,7 @@ var jS = jQuery.sheet = {
 			jS.obj.parent().addClass(jS.cl.uiParent);
 			jS.obj.sheet().addClass(jS.cl.uiParent);
 			//Style bars
-			jS.obj.barLeft().find('div').addClass(jS.cl.uiBar)
+			jS.obj.barLeft().find('div').addClass(jS.cl.uiBar);
 			jS.obj.barTop().find('div').addClass(jS.cl.uiBar);
 			jS.obj.barCornerParent().addClass(jS.cl.uiBar);
 			
@@ -907,7 +907,7 @@ var jS = jQuery.sheet = {
 		//Switch is much faster than if statements
 		//I found that it's much easier to go from the origin key (up, down, left, right, tab, enter) and then detect if the ctrl key or shift keys are down.
 		//It's just difficult to look at later on and it's probably faster overall
-		return (isTextArea ? jS.keyDownHandler.textAreaKeyDown(evt) : jS.keyDownHandler.formulaKeyDown(evt))
+		return (isTextArea ? jS.keyDownHandler.textAreaKeyDown(evt) : jS.keyDownHandler.formulaKeyDown(evt));
 	},
 	cellStyleToggle: function(setClass, removeClass) {
 		//Lets check to remove any style classes
@@ -1143,7 +1143,7 @@ var jS = jQuery.sheet = {
 						.mousedown(jS.cellOnMouseDown)
 						.click(jS.getCellClickFn())
 				);
-			}
+			};
 		} else {
 			addNewCellFn = function(obj) {
 				jQuery(obj).find('td' + atColumn).after(
@@ -1151,7 +1151,7 @@ var jS = jQuery.sheet = {
 						.mousedown(jS.cellOnMouseDown)
 						.click(jS.getCellClickFn())
 				);
-			}
+			};
 		}
 		
 		jS.obj.sheet().find('tr').each(function(i) {
@@ -1673,11 +1673,11 @@ var jS = jQuery.sheet = {
 					o.resizeFn = function(size) {
 						o.setDesinationSize(size);
 						o.setSize(target, size);
-					}
+					};
 				} else {
 					o.resizeFn = function(size) {
 						o.setSize(target, size);
-					}
+					};
 				}
 				
 				//We start the drag sequence
@@ -1695,7 +1695,7 @@ var jS = jQuery.sheet = {
 					newSize = Math.max(v, o.min);
 				}
 
-				o.resizeFn(newSize)
+				o.resizeFn(newSize);
 				return false;
 			},
 			stop: function(evt) {	
@@ -1713,7 +1713,7 @@ var jS = jQuery.sheet = {
 				
 				jS.log('stop resizing');
 			}
-		}
+		};
 		barResizer.start(evt);
 	},
 	cellFind: function(v) {
@@ -1804,7 +1804,7 @@ var jS = jQuery.sheet = {
 		var firstLabel = cE.columnLabelString(firstCellLoc[1]) + firstCellLoc[0];
 		var lastCellLoc = jS.getTdLocation(cells.eq(cells.length - 1));
 		var lastLabel = cE.columnLabelString(lastCellLoc[1]) + lastCellLoc[0];
-		return firstLabel + ":" + lastLabel
+		return firstLabel + ":" + lastLabel;
 	},
 	getTdId: function(row, col) {
 		return 'cell_c' + col + '_r' + row;
@@ -1903,7 +1903,7 @@ var jS = jQuery.sheet = {
 		
 		return jQuery('<img>').attr('src', api.make(o));
 	}
-}
+};
 
 jS.tableCellProvider.prototype = {
 	getCell: function(row, col) {
@@ -2251,7 +2251,7 @@ var cE = jQuery.calculationEngine = {
 			setFormula	 = 		function(v) { this.formula = v; },
 			getFormulaFunc = 	function()  { return this.formulaFunc; },
 			setFormulaFunc = 	function(v) { this.formulaFunc = v; },
-			toString = 			function() { return "Cell:[" + this.getFormula() + ": " + this.getValue() + ": " + this.getError() + "]"; }
+			toString = 			function() { return "Cell:[" + this.getFormula() + ": " + this.getValue() + ": " + this.getError() + "]"; };
 		}
 	}, // Prototype setup is later.
 	columnLabelIndex: function(str) {
@@ -2470,7 +2470,7 @@ var cE = jQuery.calculationEngine = {
 	makeCellVisit: function(row, col) {
 		var fn = function() { 
 			return cE.visitCell(row, col);
-		}
+		};
 		fn.row = row;
 		fn.col = col;
 		return fn;
