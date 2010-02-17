@@ -1034,19 +1034,21 @@ var jS = jQuery.sheet = {
 		jS.setTdIds();
 	},
 	addRow: function(atRow, insertBefore) {
-		if (!atRow) {
+		if (!atRow || jS.cellEditLastLoc[1] < 1) {
 			//if atRow has no value, lets just add it to the end.
-			atRow = ':last';
+			atRowQ = ':last';
+			atRow = false;
 		} else if (atRow == true) {//if atRow is boolean, then lets add it just after the currently selected row.
-			atRow = ':eq(' + (jS.cellEditLastLoc[1] - 1) + ')';
+			atRowQ = ':eq(' + (jS.cellEditLastLoc[1] - 1) + ')';
 		} else {
 			//If atRow is a number, lets add it at that row
-			atRow = ':eq(' + (atRow - 1) + ')';
+			atRowQ = ':eq(' + (atRow - 1) + ')';
 		}
 		
 		jS.cellEditAbandon();
-		var currentRow = jS.obj.sheet().find('tr' + atRow);
+		var currentRow = jS.obj.sheet().find('tr' + atRowQ);
 		var newRow = currentRow.clone();
+		newRow.find('td').andSelf().height(currentRow.find('td:first').height());
 		
 		jQuery('td', newRow)
 			.html('')
@@ -1057,7 +1059,10 @@ var jS = jQuery.sheet = {
 			.unbind('click')
 			.unbind('mousedown')
 			.mousedown(jS.cellOnMouseDown)
-			.click(jS.getCellClickFn());
+			.click(jS.getCellClickFn()
+			.keydown(function(e) {
+				return jS.formulaKeyDown(e, true);
+			}));
 
 		if (insertBefore) {
 			newRow.insertBefore(currentRow);
@@ -1065,7 +1070,7 @@ var jS = jQuery.sheet = {
 			newRow.insertAfter(currentRow);
 		}
 		
-		var currentBar = jS.obj.barLeft().find('div' + atRow);
+		var currentBar = jS.obj.barLeft().find('div' + atRowQ);
 		var newBar = currentBar.clone();
 		
 		jS.themeRoller.newBar(newBar);
@@ -1074,7 +1079,7 @@ var jS = jQuery.sheet = {
 			newBar
 				.html(parseInt(currentBar.text()) + 1)
 				.removeClass(jS.cl.uiActive)
-				.height(jS.attrH.height(newRow))
+				.height(jS.attrH.height(newRow, true))
 		);
 		
 		jS.log('New row at: ' + (parseInt(currentBar.text()) + 1));
