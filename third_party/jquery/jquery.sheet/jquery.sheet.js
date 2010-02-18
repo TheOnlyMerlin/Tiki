@@ -1,6 +1,6 @@
 /*
 	jQuery.sheet() Spreadsheet with Calculations Plugin
-	Verison: 0.53 - Modified for Tiki 5 - jonnb Feb 2010 (numerous missing semicolons for JSLint and row height fixes for addRow)
+	Verison: 0.53 - Modified for Tiki 5 - jonnyb Feb 2010 (numerous missing semicolons for JSLint and row height fixes for addRow)
 	Copywrite Robert Plummer 2008-2009
 	
 	Dimensions Info:
@@ -830,6 +830,7 @@ var jS = jQuery.sheet = {
 					
 					jS.obj.formula().focus().select();
 					jS.cellIsEdit = false;
+					jS.setDirty(true);
 				}
 				break;
 			default:
@@ -1048,7 +1049,7 @@ var jS = jQuery.sheet = {
 		jS.cellEditAbandon();
 		var currentRow = jS.obj.sheet().find('tr' + atRowQ);
 		var newRow = currentRow.clone();
-		newRow.find('td').andSelf().height(currentRow.find('td:first').height());
+		newRow.height(currentRow.height() - 1);
 		
 		jQuery('td', newRow)
 			.html('')
@@ -1059,10 +1060,7 @@ var jS = jQuery.sheet = {
 			.unbind('click')
 			.unbind('mousedown')
 			.mousedown(jS.cellOnMouseDown)
-			.click(jS.getCellClickFn()
-			.keydown(function(e) {
-				return jS.formulaKeyDown(e, true);
-			}));
+			.click(jS.getCellClickFn());
 
 		if (insertBefore) {
 			newRow.insertBefore(currentRow);
@@ -1082,6 +1080,7 @@ var jS = jQuery.sheet = {
 				.height(jS.attrH.height(newRow, true))
 		);
 		
+		jS.setDirty(true);
 		jS.log('New row at: ' + (parseInt(currentBar.text()) + 1));
 		
 		if (insertBefore) {
@@ -1127,6 +1126,7 @@ var jS = jQuery.sheet = {
 		//This is just to get the new label
 		var currentIndex = cE.columnLabelIndex(currentBar.text());
 		var newLabel = cE.columnLabelString(currentIndex + 1);
+		jS.setDirty(true);
 		jS.log('New Column: ' + currentIndex + ', ' + newLabel);
 		
 		if (insertBefore) {
@@ -1164,6 +1164,7 @@ var jS = jQuery.sheet = {
 			j++;
 		});
 		
+		jS.setDirty(true);
 		jS.log('Sheet length: ' + j);		
 		
 		if (atColumn) {//If atColumn equals anything it means that we inserted at a point, because of this we need to update the labels
@@ -1187,6 +1188,7 @@ var jS = jQuery.sheet = {
 				jS.obj.formula().val('');
 				jS.setTdIds();
 				jS.refreshLabelsRows();
+				jS.setDirty(true);
 			}
 		}
 		jS.obj.pane().scroll();
@@ -1209,6 +1211,7 @@ var jS = jQuery.sheet = {
 				var w = jS.refreshLabelsColumns();
 				jS.setTdIds();
 				jS.obj.sheet().width(w);
+				jS.setDirty(true);
 			}
 		}
 		jS.obj.pane().scroll();
@@ -1266,6 +1269,7 @@ var jS = jQuery.sheet = {
 			dataType: 'html',
 			success: function(data) {
 				alert('Success! - ' + data);
+				jS.setDirty(false);
 			}
 		});
 	},
@@ -1455,6 +1459,7 @@ var jS = jQuery.sheet = {
 			} else {
 				jS.calc(jS.obj.sheet());
 			}
+			jS.setDirty(false);
 			jS.log('End startup');
 		}
 		if (skipNotify ? true : confirm("Are you sure you want to open a different sheet?  All unsaved changes will be lost.")) {
@@ -1907,7 +1912,9 @@ var jS = jQuery.sheet = {
 		}
 		
 		return jQuery('<img>').attr('src', api.make(o));
-	}
+	},
+	isDirty:  false,
+	setDirty: function(dirty) { jS.isDirty = dirty; }
 };
 
 jS.tableCellProvider.prototype = {
