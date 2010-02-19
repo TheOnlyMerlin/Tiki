@@ -7,8 +7,10 @@
 
 #jSheetControls_formula
 {
-	width: 99%;
-    height: 30px;
+	height:1.5em;
+	line-height:1.5em;
+	padding-left:0.2em;
+	width:99%;
 }
 
 #jSheetLog

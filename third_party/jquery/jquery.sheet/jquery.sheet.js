@@ -1935,6 +1935,7 @@ var jS = jQuery.sheet = {
 		//Get labels for locationa and return them
 		
 		var cells = jS.obj.uiCell().not('.' + jS.cl.cell);
+		if (cells.length === 0) { return ""; }
 		var firstCellLoc = jS.getTdLocation(cells.eq(0));
 		var firstLabel = cE.columnLabelString(firstCellLoc[1]) + firstCellLoc[0];
 		var lastCellLoc = jS.getTdLocation(cells.eq(cells.length - 1));
