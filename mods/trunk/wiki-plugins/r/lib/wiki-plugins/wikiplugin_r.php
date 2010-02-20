@@ -105,6 +105,9 @@ function wikiplugin_r($data, $params) {
 	defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664 '));
 	defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --vanilla --quiet'));
 
+	defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp' );
+	defined('output_file_name')  || define('output_file_name', 'output.png');
+
 	if ($type == "text/csv") {
 		$path = $_SERVER["SCRIPT_NAME"];
 		$data = "data <- read.csv(\"$filepath\")\n$data";
@@ -149,6 +152,7 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws) {
 		$fd = fopen ($rst, 'w') or error ('R', 'can not open file: ' . $rst, $input . $err);
 		if ($r_exitcode == 0) {
 			fwrite ($fd, $prg . '<pre>' . $cont . '</pre>');
+			fwrite ($fd, $prg . '<img src="' . graph_dir . DIRECTORY_SEPARATOR . output_file_name . '">');
 	 	} else {
 			fwrite ($fd, $prg . '<pre>' . $cont . '<span style="color:red">' . $err . '</span>' . '</pre>');
 	 	}
