@@ -131,7 +131,8 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws) {
 	if (!file_exists($rst) or onsave) {
 		$content = '';
 		$content .= 'rfiles<-"' . r_dir . '"' . "\n";
-		$content .= 'source("' . r_ext . DIRECTORY_SEPARATOR . 'StatWiki.r")' . "\n";
+//		$content .= 'source("' . r_ext . DIRECTORY_SEPARATOR . 'StatWiki.r")' . "\n";
+		$content = 'png(filename = "' . r_dir . DIRECTORY_SEPARATOR . 'output.png", width = 600, height = 600, bg = "transparent", res = 72)' . "\n";
 		$content .= $input . "\n";
 		$content .= 'q()';
 		$fn = r_dir . '/' . $sha1 . '.R';
