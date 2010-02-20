@@ -106,7 +106,7 @@ function wikiplugin_r($data, $params) {
 	defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --vanilla --quiet'));
 
 	defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp' );
-	defined('output_file_name')  || define('output_file_name', 'output.png');
+	defined('output_file_name')  || define('output_file_name', $sha1 . '.png');
 
 	if ($type == "text/csv") {
 		$path = $_SERVER["SCRIPT_NAME"];
@@ -135,7 +135,7 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws) {
 		$content = '';
 		$content .= 'rfiles<-"' . r_dir . '"' . "\n";
 //		$content .= 'source("' . r_ext . DIRECTORY_SEPARATOR . 'StatWiki.r")' . "\n";
-		$content = 'png(filename = "' . r_dir . DIRECTORY_SEPARATOR . 'output.png", width = 600, height = 600, bg = "transparent", res = 72)' . "\n";
+		$content = 'png(filename = "' . r_dir . DIRECTORY_SEPARATOR . output_file_name . '", width = 600, height = 600, bg = "transparent", res = 72)' . "\n";
 		$content .= $input . "\n";
 		$content .= 'q()';
 		$fn = r_dir . '/' . $sha1 . '.R';
