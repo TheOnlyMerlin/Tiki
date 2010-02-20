@@ -106,7 +106,7 @@ function wikiplugin_r($data, $params) {
 	defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --vanilla --quiet'));
 
 	defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp' );
-	defined('output_file_name')  || define('output_file_name', $sha1 . '.png');
+	defined('graph_file_name')  || define('graph_file_name', $sha1 . '.png');
 
 	if ($type == "text/csv") {
 		$path = $_SERVER["SCRIPT_NAME"];
@@ -131,11 +131,15 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws) {
 	$err = "\n";
 	$rws = r_dir . DIRECTORY_SEPARATOR;
 	$rst  = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.html';
+	$rgo  = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.png';
+	$rgo_rel  = graph_dir . DIRECTORY_SEPARATOR . $sha1 . '.png';
+
 	if (!file_exists($rst) or onsave) {
 		$content = '';
 		$content .= 'rfiles<-"' . r_dir . '"' . "\n";
 //		$content .= 'source("' . r_ext . DIRECTORY_SEPARATOR . 'StatWiki.r")' . "\n";
-		$content = 'png(filename = "' . r_dir . DIRECTORY_SEPARATOR . output_file_name . '", width = 600, height = 600, bg = "transparent", res = 72)' . "\n";
+//		$content = 'png(filename = "' . $rgo . '", width = 600, height = 600, bg = "transparent", res = 72)' . "\n";
+		$content = 'png(filename = "' . $rgo . '", bg = "transparent", res = 72)' . "\n";
 		$content .= $input . "\n";
 		$content .= 'q()';
 		$fn = r_dir . '/' . $sha1 . '.R';
@@ -152,7 +156,9 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws) {
 		$fd = fopen ($rst, 'w') or error ('R', 'can not open file: ' . $rst, $input . $err);
 		if ($r_exitcode == 0) {
 			fwrite ($fd, $prg . '<pre>' . $cont . '</pre>');
-			fwrite ($fd, $prg . '<img src="' . graph_dir . DIRECTORY_SEPARATOR . output_file_name . '">');
+			if (file_exists($rgo)) {
+				fwrite ($fd, $prg . '<img src="' . $rgo_rel . '" alt="' . $rgo_rel . '">');
+		 	}
 	 	} else {
 			fwrite ($fd, $prg . '<pre>' . $cont . '<span style="color:red">' . $err . '</span>' . '</pre>');
 	 	}
