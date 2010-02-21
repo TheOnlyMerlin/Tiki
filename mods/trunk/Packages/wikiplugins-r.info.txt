@@ -2,14 +2,12 @@ contributor:
 $Author: xavi $
 
 revision: 
-$Revision: 0.1 $
+$Revision: 0.2 $
 
 lastmodif:
-$Date: 2009-08-04 17:36:00 $
+$Date: 2010-02-21 01:12:00 $
 
 files: 
-wiki-plugins/r/lib/r/StatWiki.r lib/r/StatWiki.r
-wiki-plugins/r/lib/r/index.php lib/r/index.php
 wiki-plugins/r/lib/wiki-plugins/wikiplugin_r.php lib/wiki-plugins/wikiplugin_r.php
 
 Author:
@@ -22,7 +20,7 @@ licence:
 GNU/GPL
 
 Description: 
-In wiki syntax type {R(rdata=>)}{R}
+Allows using R syntax for statistics, scientific computing & graphs (see http://www.r-project.org). In wiki syntax, type {R()}{R} or with params for tracker item attachments. See documentation
 
 Docurl:
 http://dev.tikiwiki.org/PluginR
@@ -32,3 +30,4 @@ http://dev.tikiwiki.org/PluginR
 
 Changelog:
 0.1 initial package
+0.2 Graphs also allowed inside wiki pages, as png images. Removed the need for StatWiki.r file. 
