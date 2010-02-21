@@ -48,7 +48,7 @@ jQuery.fn.extend({
 			parent: 		this, 	//don't change
 			colMargin: 		18, 	//If text size make cell bigger than this number the bars will be off on loadtime
 			fnBefore: 		function() {},
-			fnAfter: 			function() { jS.obj.formula().focus().select(); },
+			fnAfter: 		function() { jS.obj.formula().focus().select(); },
 			fnSave: 		function() { jS.saveSheet(); },
 			fnOpen: 		function() { 
 				var t = prompt('Paste your table html here');
@@ -1456,7 +1456,7 @@ var jS = jQuery.sheet = {
 			jS.setDirty(false);
 			jS.log('End startup');
 		}
-		if (skipNotify ? true : confirm("Are you sure you want to open a different sheet?  All unsaved changes will be lost.")) {
+		if ((skipNotify || !jS.isDirty) ? true : confirm("Are you sure you want to open a different sheet?  All unsaved changes will be lost.")) {
 			jS.cellEditAbandon(true);
 			if (!size) {
 				if (url) {
@@ -1472,6 +1472,9 @@ var jS = jQuery.sheet = {
 			} else {
 				initSheet();
 			}
+			return true;
+		} else {
+			return false;
 		}
 	},
 	newSheet: function() {
