@@ -2,6 +2,15 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 1 march 2010
+
+Upgrade:
+	jquery 1.3.1 to 1.4.2
+	jquery-ui 1.7.2 to 1.8rc2
+		All in lib/jquery/jquery-ui now (some docs were separate in last version)
+		Not included "demos" and "tests" directories.
+		Also, Google CDN hasn't updated to 1.8 yet, so TODO in tiki-setup.php line 161
+
 jonnybradley 19 feb 2010
 
 Upgrade:
