@@ -1,10 +1,12 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-webmail_contacts.php,v 1.15 2007-10-12 07:55:33 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 require_once ('tiki-setup.php');
 include_once ('lib/webmail/webmaillib.php');
 include_once ('lib/webmail/contactlib.php');
@@ -77,7 +79,7 @@ $maxRecords = 20;
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 
 if (!isset($_REQUEST["initial"])) {
-	$contacts = $contactlib->list_contacts($user, $offset, $maxRecords, $sort_mode, $find, true);
+	$contacts = $contactlib->list_contacts($user, $offset, $maxRecords, $sort_mode, $find);
 } else {
 	$contacts = $contactlib->list_contacts_by_letter($user, $offset, $maxRecords, $sort_mode, $_REQUEST["initial"]);
 }
@@ -106,3 +108,5 @@ ask_ticket('webmail-contact');
 
 //$smarty->display("tiki-webmail_contacts.tpl");
 $smarty->display("tiki-webmail_contacts.tpl");
+
+?>

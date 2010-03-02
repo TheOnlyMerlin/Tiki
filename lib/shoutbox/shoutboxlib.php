@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,8 +6,11 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class ShoutboxLib extends TikiLib
-{
+class ShoutboxLib extends TikiLib {
+	function ShoutboxLib($db) {
+		$this->TikiLib($db);
+	}
+
 	function list_shoutbox($offset, $maxRecords, $sort_mode, $find) {
 		global $prefs;
 		if ($find) {
@@ -23,7 +21,7 @@ class ShoutboxLib extends TikiLib
 			$bindvars = array();
 		}
 
-		$query = "select * from `tiki_shoutbox` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_shoutbox` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_shoutbox` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -50,8 +48,7 @@ class ShoutboxLib extends TikiLib
       // if not in tag or on a space or doesn't contain a html entity we split all plain text strings longer than 25 chars using the empty span tag again
       $wrap_at = 25;
       $res["message"] = preg_replace('/(\s*)([^\;>\s]{'.$wrap_at.',})([^&]<|$)/e', "'\\1'.wordwrap('\\2', '".$wrap_at."', '<span></span>', 1).'\\3'", $res["message"]);
-		// emoticons support
-		$res["message"] = $this->parse_smileys($res["message"]);
+      
 			$ret[] = $res;
 		}
 		$retval = array();
@@ -128,13 +125,13 @@ class ShoutboxLib extends TikiLib
                         $bindvars = array();
                 }
 
-                $query = "select * from `tiki_shoutbox_words` $mid order by ".$this->convertSortMode($sort_mode);
+                $query = "select * from `tiki_shoutbox_words` $mid order by ".$this->convert_sortmode($sort_mode);
                 $query_cant = "select count(*) from `tiki_shoutbox_words` $mid";
                 $result = $this->query($query,$bindvars,$maxRecords,$offset);
                 $cant = $this->getOne($query_cant,$bindvars);
                 $ret = array();
 
-                while ($res = $result->fetchRow()) {
+                while ($res = $result->fetchRow(DB_FETCHMODE_ASSOC)) {
                         $ret[] = $res;
                 }
 
@@ -161,4 +158,7 @@ class ShoutboxLib extends TikiLib
 
 
 }
-$shoutboxlib = new ShoutboxLib;
+global $dbTiki;
+$shoutboxlib = new ShoutboxLib($dbTiki);
+
+?>

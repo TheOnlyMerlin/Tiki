@@ -1,10 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/lib/diff/renderer_inline.php,v 1.3 2006-02-04 17:16:47 jdrexler Exp $
 /**
  * "Inline" diff renderer.
  *
@@ -16,8 +11,7 @@
 
 require "renderer_sidebyside.php";
 
-class Text_Diff_Renderer_inline extends Text_Diff_Renderer_sidebyside
-{
+class Text_Diff_Renderer_inline extends Text_Diff_Renderer_sidebyside {
 
     function Text_Diff_Renderer_inline($context_lines = 4, $words = 1)
     {

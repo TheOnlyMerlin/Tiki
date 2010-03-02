@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -14,8 +9,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 /*
  * This class describe the main informations of a module
  */
-class TikiMod
-{
+class TikiMod {
 	var $modname;
 	var $name;
 	var $type;
@@ -50,8 +44,7 @@ class TikiMod
  * This class describe the informations of a module that are available
  * from a 00_list.txt style file
  */
-class TikiModAvailable extends TikiMod
-{
+class TikiModAvailable extends TikiMod {
 	var $repository;      /* string */
 	var $description;     /* array */
 	var $licence;         /* string */
@@ -145,8 +138,7 @@ class TikiModAvailable extends TikiMod
  * This class contain full information of a module,
  * like there are available in it's .info.txt file
  */
-class TikiModInfo extends TikiModAvailable
-{
+class TikiModInfo extends TikiModAvailable {
 	var $configuration;         /* array */
 	var $configuration_help;    /* array */
 	var $files;                 /* array */
@@ -354,8 +346,7 @@ class TikiModInfo extends TikiModAvailable
 /*
  * This class represent one dependence for an another package
  */
-class TikiModDepend extends TikiMod
-{
+class TikiModDepend extends TikiMod {
 	var $tests;
 
 	function TikiModDepend($type, $name=FALSE) {
@@ -409,14 +400,13 @@ class TikiModDepend extends TikiMod
 /*
  * This is the class that manage every modules
  */
-class ModsLib
-{
+class ModsLib {
 
 	var $feedback_listeners;
 	var $types;
 	var $versions;
 
-	function __construct() { 
+	function ModsLib() { 
 		$this->types = array();
 		$this->feedback_listeners = array();
 		$this->versions = array('Unspecified' => -1,'1.x' => 1.0,'1.9.x' => 1.9,'2.x' => 2.0,'3.x' => 3.0, '4.x' => 4.0);
@@ -652,7 +642,7 @@ class ModsLib
 	function revision_compare($a, $b) {
 		$ra=explode('.', $a);
 		$rb=explode('.', $b);
-		for ($i=0, $max_counts = max(count($ra), count($rb)); $i<$max_counts; $i++) {
+		for ($i=0; $i<max(count($ra), count($rb)); $i++) {
 			$suba=isset($ra[$i]) ? (int)$ra[$i] : 0;
 			$subb=isset($rb[$i]) ? (int)$rb[$i] : 0;
 			if ($suba > $subb) return 1;
@@ -809,16 +799,12 @@ class ModsLib
 								// it is not compatible
 								$moddep->errors[]="revision failure";
 								$deps['unavailable'][]=$moddep;								
-							}
-/*							 else {
+							} else {
 								// it is compatible, let it.
 							}
-*/
-						}
-/*						 else {
+						} else {
 							// not newer, let it
 						}
-*/
 					} else {
 						$deps['toinstall'][$mod->modname]=$mod;
 						$this->_find_deps($repos, $mod, $deps);
@@ -931,7 +917,7 @@ class ModsLib
 				} else {
 					$smarty->assign('help','');
 				}
-				for ($i=0, $count_config = count($info->configuration); $i < $count_config; $i++) {
+				for ($i=0; $i < count($info->configuration); $i++) {
 					$info->configuration[$i][2] = preg_replace('/\\$([_A-Z]*)/e','$conf[\'_SERVER\'][\'\\1\']',$info->configuration[$i][2]);
 				}
 				$smarty->assign('type',$info->type);
@@ -1030,11 +1016,13 @@ class ModsLib
 function newer($a,$b) {
 	$aa = split('\.',$a);
 	$bb = split('\.',$b);
-	for ($i=0, $max_counts = max(count($aa), count($bb)); $i<$max_counts; $i++) {
+	for($i=0;$i<max(count($aa), count($bb));$i++) {
 		if (!isset($bb[$i])) { $bb[$i] = '0'; }
 		if (!isset($aa[$i])) { $aa[$i] = '0'; }
 		if ($aa[$i] != $bb[$i]) { return $aa[$i] > $bb[$i]? 1: -1; }
 	} 
 	return 0;
 } 
-$modslib = new ModsLib;
+
+$modslib = new ModsLib();
+?>

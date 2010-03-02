@@ -1,9 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+// $Id: /cvsroot/tikiwiki/tiki/tiki-forum_rss.php,v 1.26 2007-10-12 07:55:27 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once('tiki-setup.php');
 require_once('lib/tikilib.php');
@@ -14,17 +14,15 @@ if ($prefs['rss_forum'] != 'y') {
         require_once ('tiki-rss_error.php');
 }
 
+if ($tiki_p_forum_read != 'y' or !$tikilib->user_has_perm_on_object($user,$_REQUEST['forumId'],'forum','tiki_p_forum_read')) {
+	$smarty->assign('errortype', 401);
+	$errmsg=tra("Permission denied you cannot view this section");
+	require_once ('tiki-rss_error.php');
+}
+
 if(!isset($_REQUEST["forumId"])) {
         $errmsg=tra("No forumId specified");
         require_once ('tiki-rss_error.php');
-}
-
-$tikilib->get_perm_object( $_REQUEST['forumId'], 'forum' );
-
-if ($tiki_p_forum_read != 'y') {
-	$smarty->assign('errortype', 401);
-	$errmsg=tra("Permission denied. You cannot view this section");
-	require_once ('tiki-rss_error.php');
 }
 
 require_once('lib/commentslib.php');
@@ -58,3 +56,5 @@ if ($output["data"]=="EMPTY") {
 }
 header("Content-type: ".$output["content-type"]);
 print $output["data"];
+
+?>

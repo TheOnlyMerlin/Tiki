@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 // class_calendar.php EXTENDS: None Abstract: No.
 // 
 // The calendar class provides basic functions to build calendars,
@@ -41,8 +35,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class Calendar
-{
+class Calendar {
 	var $lan;
 
 	function Calendar($lan = 'en') {
@@ -404,9 +397,15 @@ class Calendar
 		return tra($en[$w], $lan);
 	}
 }
+
+?>
+
+<?php
+
 // example
 //$c=new calendar('en');
 //$x=$c->day_of_week_str(2,3,2000,'po');
 //print("$x\n");
 //'ç'
 
+?>

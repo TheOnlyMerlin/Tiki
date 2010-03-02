@@ -1,21 +1,18 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-/** 
+/** \file
+ * $Id: /cvsroot/tikiwiki/tiki/lib/debug/debug-command_features.php,v 1.3 2003-08-07 04:34:03 rossta Exp $
+ *
  * \brief Show features state in a convenient way
+ *
  * \author zaufi <zaufi@sendmail.ru>
+ *
  */
 require_once ('lib/debug/debugger-ext.php');
 
 /**
  * \brief Debugger command to show features on/off state
  */
-class DbgFeatures extends DebuggerCommand
-{
+class DbgFeatures extends DebuggerCommand {
 	/// \b Must have function to announce command name in debugger console
 	function name() {
 		return 'features';
@@ -67,3 +64,5 @@ class DbgFeatures extends DebuggerCommand
 function dbg_command_factory_features() {
 	return new DbgFeatures();
 }
+
+?>

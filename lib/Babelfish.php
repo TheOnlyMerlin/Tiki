@@ -1,9 +1,12 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/lib/Babelfish.php,v 1.14 2007-03-06 19:29:58 sylvieg Exp $
+
+// Tiki is copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+
+// This file copyright (c) 2002-2003, Ross Smith II
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -14,8 +17,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 /*!
 	\static
 */
-class Babelfish
-{
+class Babelfish {
 	/*!
 		Return the host name of the server
 		
@@ -186,3 +188,5 @@ class Babelfish
 	}
 
 }
+
+?>

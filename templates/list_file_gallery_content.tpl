@@ -1,4 +1,3 @@
-{* $Id$ *}
 {if empty($sort_arg)}{assign var='sort_arg' value='sort_mode'}{/if}
 <table class="normal">
   <tr>
@@ -46,14 +45,14 @@
 
       {if $propname eq 'name' and ( $gal_info.show_name eq 'a' or $gal_info.show_name eq 'f' ) }
         {assign var=nbCols value=`$nbCols+1`}
-        <th{$td_args}>{self_link _sort_arg=$sort_arg _sort_field='filename'}{tr}Filename{/tr}{/self_link}</th>
+        <th{$td_args}>{self_link _sort_arg=$sort_arg _sort_field='filename'}{if empty($galleryId)}{tr}Name{/tr}{else}{tr}Filename{/tr}{/if}{/self_link}</th>
       {/if}
       {if !($galleryId eq 0 and $propname eq 'lockedby') and ($propname neq 'name' or ( $gal_info.show_name eq 'a' or $gal_info.show_name eq 'n' )) }
         {assign var=nbCols value=`$nbCols+1`}
         <th{$td_args}>
            {self_link _sort_arg=$sort_arg _sort_field=$propname _title=$link_title}
              {if $propicon}{icon _id=$propicon alt=$link_title}{else}{$propval}{/if}
-           {/self_link}
+		   {/self_link}
         </th>
       {/if}
     {/if}
@@ -106,7 +105,7 @@
       <div class='opaque'>
         <div class='box-title'>{tr}Actions{/tr}</div>
         <div class='box-data'>
-          {include file='fgal_context_menu.tpl' menu_icon=$prefs.use_context_menu_icon menu_text=$prefs.use_context_menu_text}
+          {include file=fgal_context_menu.tpl menu_icon=$prefs.use_context_menu_icon menu_text=$prefs.use_context_menu_text}
         </div>
       </div>
       {/strip}{/capture}
@@ -115,7 +114,7 @@
     {capture name=over_preview}{strip}
     {if $files[changes].type|truncate:6:'':true eq 'image/'}
     <div class='opaque'>
-      <img src="{$files[changes].id|sefurl:thumbnail}" />
+      <img src="tiki-download_file.php?fileId={$files[changes].id}&amp;thumbnail" />
     </div>
     {/if}
     {/strip}{/capture}
@@ -135,14 +134,12 @@
           {assign var=propval value=$files[changes].$propname}
   
           {* Format property values *}
-          {if $propname eq 'created' or $propname eq 'lastModif' or $propname eq 'lastDownload'}
+          {if $propname eq 'created' or $propname eq 'lastmodif'}
             {assign var=propval value=$propval|tiki_long_date}
           {elseif $propname eq 'last_user' or $propname eq 'author' or $propname eq 'creator'}
             {assign var=propval value=$propval|username}
           {elseif $propname eq 'size'}
             {assign var=propval value=$propval|kbsize:true}
-          {elseif $propname eq 'backlinks'}
-            {assign var=propval value=$files[changes].nbBacklinks}
           {/if}
     
           {if isset($gal_info.$propkey) and $propval neq '' and ( $gal_info.$propkey eq 'a' or $gal_info.$propkey eq 'o' ) }
@@ -196,16 +193,16 @@
           href="tiki-list_file_gallery.php?galleryId={$files[changes].id}{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}"
         {else}
           {if $filegals_manager neq ''}
-            {assign var=seturl value=$files[changes].id|sefurl:display}
+            {assign var=seturl value="`$url_path`tiki-download_file.php?fileId=`$files[changes].id`&display"}
 
             {* Note: When using this code inside FCKeditor, SetMyUrl function is not defined and we use FCKeditor SetUrl native function *}
-            href="javascript:if (typeof window.opener.SetMyUrl != 'undefined') window.opener.SetMyUrl('{$filegals_manager|escape}','{$seturl}'); else window.opener.SetUrl('{$tikiroot}{$seturl}'); checkClose();"  title="{tr}Click Here to Insert in Wiki Syntax{/tr}"
+            href="javascript:if (typeof window.opener.SetMyUrl != 'undefined') window.opener.SetMyUrl('{$filegals_manager|escape}','{$seturl}'); else window.opener.SetUrl('{$seturl}'); checkClose();"  title="{tr}Download{/tr}"
 
           {elseif $tiki_p_download_files eq 'y'}
             {if $gal_info.type eq 'podcast' or $gal_info.type eq 'vidcast'}
               href="{$prefs.fgal_podcast_dir}{$files[changes].path}" title="{tr}Download{/tr}"
             {else}
-              href="{$files[changes].id|sefurl:file}" title="{tr}Download{/tr}"
+              href="tiki-download_file.php?fileId={$files[changes].id}" title="{tr}Download{/tr}"
             {/if}
           {/if}
           {if $smarty.capture.over_preview neq ''}
@@ -223,7 +220,7 @@
         {else}
           {assign var=propval value="<a class='fgalname' $link>$propval</a>"}
         {/if}
-      {elseif $propname eq 'created' or $propname eq 'lastModif' or $propname eq 'lastDownload'}
+      {elseif $propname eq 'created' or $propname eq 'lastmodif'}
         {assign var=propval value=$propval|tiki_short_date}
       {elseif $propname eq 'last_user' or $propname eq 'author' or $propname eq 'creator'}
         {assign var=propval value=$propval|userlink}
@@ -246,19 +243,11 @@
         {else}
           {assign var=propval value=$propval|userlink}
         {/if}
-      {elseif $propname eq 'backlinks'}
-        {if empty($files[changes].nbBacklinks)}
-          {assign var=propval value=$files[changes].nbBacklinks}
-        {else}
-          {assign var=propval value=$files[changes].nbBacklinks}
-		  {assign var=fid value=$files[changes].id}
-          {assign var=propval value="<a class='fgalbacklink' href='list-file_backlinks_ajax.php?fileId=$fid' rel='list-file_backlinks_ajax.php?fileId=$fid'>$propval</a>"}
-        {/if}
       {/if}
-
+  
       {if $propname eq 'name' and ( $gal_info.show_name eq 'a' or $gal_info.show_name eq 'f' ) }
         <td class="{cycle advance=false}">
-          {if $link neq ''}<a class='fgalname' {$link}>{/if}{$files[changes].filename|escape}{if $link neq ''}</a>{/if}
+          {if $link neq ''}<a class='fgalname' {$link}>{/if}{$files[changes].filename}{if $link neq ''}</a>{/if}
         </td>
       {/if}
       {if $other_columns_selected neq '' and $propname eq $other_columns_selected}
@@ -276,7 +265,7 @@
   {/if}
   
   {if ( $prefs.use_context_menu_icon neq 'y' and $prefs.use_context_menu_text neq 'y' ) or $gal_info.show_action eq 'y' or $prefs.javascript_enabled neq 'y'}
-    <td class="{cycle advance=false}">{include file='fgal_context_menu.tpl'}</td>
+    <td class="{cycle advance=false}">{include file=fgal_context_menu.tpl}</td>
   {/if}
   
   {if ( $other_columns neq '' or $other_columns_selected neq '' ) and $prefs.javascript_enabled eq 'y'}
@@ -310,4 +299,3 @@
   {/if}
 
 </table>
-{jq}$jq('a.fgalbacklink').cluetip({showTitle:false, sticky:true});{/jq}

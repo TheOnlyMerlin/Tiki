@@ -1,9 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for
+// details.
 
 //this script may only be included - so its better to die if called directly.
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
@@ -21,6 +21,9 @@ $phplayers_headers .= file_get_contents('lib/phplayers/libjs/layersmenu-browser_
 $phplayers_headers .= <<<EOS
 //--><!]]>
 </script>
+<script type="text/javascript" src="lib/phplayers/libjs/layersmenu-library.js"></script>
+<script type="text/javascript" src="lib/phplayers/libjs/layersmenu.js"></script>
+<script type="text/javascript" src="lib/phplayers/libjs/layerstreemenu-cookies.js"></script>
 EOS;
 
 global $LayersMenu, $TreeMenu, $PHPTreeMenu, $PlainMenu;

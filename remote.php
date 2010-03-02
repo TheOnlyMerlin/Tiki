@@ -1,9 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+// $Id: /cvsroot/tikiwiki/tiki/remote.php,v 1.8.2.8 2008-03-22 05:12:47 mose Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 $version = "0.2";
 
@@ -75,8 +75,7 @@ function validate($params) {
 		}
 	} 
 	if ($prefs['intertiki_logfile']) logit($prefs['intertiki_logfile'],"logged",$login,INTERTIKI_OK,$prefs['known_hosts'][$key]['name']);
-	$userInfo = $userlib->get_user_info($login);
-	$userlib->create_user_cookie($userInfo['userId'], $hashkey);
+	$userlib->create_user_cookie($login,$hashkey);
 
 	if ($slave) {
 	    $logslib->add_log('intertiki','auth granted from '.$prefs['known_hosts'][$key]['name'],$login);
@@ -120,9 +119,8 @@ function logout($params) {
 		$logslib->add_log('intertiki',$msg.' from '.$prefs['known_hosts'][$key]['name'],$login);
 		return new XML_RPC_Response(0, 101, $msg);
 	}
-	$userlib->user_logout($login, true);
-	$userInfo = $this->get_user_info($login);
-	$userlib->delete_user_cookie($userInfo['userId']);
+	$userlib->user_logout($login);
+	$userlib->delete_user_cookie($login);
 	if ($prefs['intertiki_logfile']) logit($prefs['intertiki_logfile'],"logout",$login,INTERTIKI_OK,$prefs['known_hosts'][$key]['name']);
 	$logslib->add_log('intertiki','auth revoked from '.$prefs['known_hosts'][$key]['name'],$login);
 	return new XML_RPC_Response(new XML_RPC_Value(1, "boolean"));
@@ -138,7 +136,7 @@ function cookie_check($params) {
 		$logslib->add_log('intertiki',$msg.' from '.$prefs['known_hosts'][$key]['name'],$login);
 		return new XML_RPC_Response(0, 101, $msg);
 	}
-	$result = $userlib->get_user_by_cookie($hash);
+	$result = $userlib->get_user_by_cookie($hash,true);
 	// $fp=fopen('temp/interlogtest','a+');fputs($fp,"main      -- ".$hash."\n");fclose($fp);
 	if ($result) {
 		return new XML_RPC_Response(new XML_RPC_Value($result, "string"));
@@ -177,3 +175,5 @@ function get_user_info($params) {
 	$ret['email'] = new XML_RPC_Value($email, "string");
 	return new XML_RPC_Response(new XML_RPC_Value($ret, "struct"));
 }
+
+?>

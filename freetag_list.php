@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/freetag_list.php,v 1.5.2.7 2008-02-26 18:27:49 nkoth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to err & die if called directly.
 //smarty is not there - we need setup
@@ -25,26 +26,18 @@ if ($prefs['feature_freetags'] == 'y' and $tiki_p_view_freetags == 'y') {
 	$tags = $freetaglib->get_tags_on_object($cat_objid, $cat_type);	
 	$tagarray = array(); 
 	$taglist = '';
-	if (!empty($tags['data'])) {
-		foreach ($tags['data'] as $tag) {
-			if (strstr($tag['tag'], ' ')) {
-				$taglist .= '"'.$tag['tag'] . '" ';
-			} else {
-				$taglist .= $tag['tag'] . ' ';
-			}
-		    $tagarray[] = $tag['tag'];
-		}
+	for ($i=0; $i<sizeof($tags['data']); $i++) {
+	    $taglist .= $tags['data'][$i]['tag'] . ' ';
+	    $tagarray[] = $tags['data'][$i]['tag'];
 	}
 
     if ($prefs['feature_wikiapproval'] == 'y' && $prefs['wikiapproval_combine_freetags'] == 'y'
-	 && $cat_type == 'wiki page' && $approved = $tikilib->get_approved_page($cat_objid)) {
+	 && $cat_type == 'wiki page' && substr($cat_objid, 0, strlen($prefs['wikiapproval_prefix'])) == $prefs['wikiapproval_prefix']) {
 	 	// to combine tags from approved page 
-		$approvedPageName = $approved;
+		$approvedPageName = substr($cat_objid, strlen($prefs['wikiapproval_prefix']));
 		$approvedTags = $freetaglib->get_tags_on_object($approvedPageName, $cat_type);
-		foreach($approvedTags['data'] as $approvedTag) {
-	    	if (!in_array($approvedTag['tag'],$tagarray)) {
-					$taglist .= $approvedTag['tag'] . ' ';
-				}
+	 	for ($i=0; $i<sizeof($approvedTags['data']); $i++) {
+	    	if (!in_array($approvedTags['data'][$i]['tag'],$tagarray)) $taglist .= $approvedTags['data'][$i]['tag'] . ' ';
 		}		
 	}
 	
@@ -60,3 +53,5 @@ if ($prefs['feature_freetags'] == 'y' and $tiki_p_view_freetags == 'y') {
 
     $smarty->assign('tag_suggestion',$suggestion);
 }
+
+?>

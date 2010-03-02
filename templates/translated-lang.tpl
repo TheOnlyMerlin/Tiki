@@ -6,17 +6,19 @@
 				<form action="tiki-read_article.php" method="get">
 				<select name="articleId" onchange="this.form.submit()">
 					{section name=i loop=$trads}
-					<option value="{$trads[i].objId|escape}">{$trads[i].langName|escape}</option>
+					<option value="{$trads[i].objId}">{$trads[i].langName}</option>
 					{/section}
 				</select>
 				</form>
 			{else} {* get method to have the param in the url *}
-				{jq notonready=true}
-				{{if $beingStaged == 'y'}
-					var page_to_translate = '{$approvedPageName|escape:"quotes"}';
+				<script type="text/javascript">
+				<!--//--><![CDATA[//><!--
+				{if $beingStaged == 'y'}
+					page_to_translate = "{$approvedPageName}";
 				{else}
-					var page_to_translate = '{$page|escape:"quotes"}';
-				{/if}}
+					page_to_translate = "{$page}";
+				{/if}
+				{literal}
 				function quick_switch_language( element )
 				{
 					var index = element.selectedIndex;
@@ -26,38 +28,23 @@
 						return;
 					else if( option.value == "_translate_" ) {
 						element.form.action = "tiki-edit_translation.php";
-						element.value = page_to_translate;					
+						element.value = page_to_translate;
 						element.form.submit();
 					} else if( option.value == "_all_" ) {
 						element.form.action = "tiki-all_languages.php";
 						element.value = page_to_translate;
 						element.form.submit();
-				 	} else if (option.text.charAt(option.text.length - 1) == "*") {
-				 		element.form.machine_translate_to_lang.value = element.form.page.options[element.form.page.selectedIndex].value;
-						element.value = page_to_translate;
-						element.form.submit();				 		
 					} else
 						element.form.submit();
 				}
-				{/jq}
+				{/literal}
+				//--><!]]>
+				</script>
 				<form action="tiki-index.php" method="get">
-				{if $prefs.feature_machine_translation eq 'y'}
-				<input type="hidden" name="machine_translate_to_lang" value="" />
-				{/if}
-				<input type="hidden" name="no_bl" value="y" /> 
-				<select name="page" onchange="quick_switch_language( this )"> 
-					{if $prefs.feature_machine_translation eq 'y'}
-					<option value="Human Translations" disabled="disabled" style="color:black;font-weight:bold">{tr}Human Translations{/tr}</option>
-					{/if}
+				<select name="page" onchange="quick_switch_language( this )">
 					{section name=i loop=$trads}
-					<option value="{$trads[i].objName|escape}">{tr}{$trads[i].langName|escape}{/tr}</option>
+					<option value="{$trads[i].objName}">{$trads[i].langName}</option>
 					{/section}
-					{if $prefs.feature_machine_translation eq 'y'}
-					<option value="Machine Translations" disabled="disabled" style="color:black;font-weight:bold">{tr}Machine Translations{/tr}</option>
-					{section name=i loop=$langsCandidatesForMachineTranslation}
-					<option value="{$langsCandidatesForMachineTranslation[i].lang|escape}">{tr}{$langsCandidatesForMachineTranslation[i].langName|escape}{/tr} *</option>
-					{/section}
-					{/if}
 					{if $prefs.feature_multilingual_one_page eq 'y'}
 					<option value="-">---</option>
 					<option value="_all_"{if basename($smarty.server.PHP_SELF) eq 'tiki-all_languages.php'} selected="selected"{/if}>{tr}All{/tr}</option>

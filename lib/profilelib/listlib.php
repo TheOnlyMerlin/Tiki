@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 class Tiki_Profile_List
 {
@@ -33,7 +28,6 @@ class Tiki_Profile_List
 
 	function refreshCache( $path ) // {{{
 	{
-		global $tikilib;
 		$file = $this->getCacheLocation( $path );
 
 		// Replace existing with blank file
@@ -41,7 +35,7 @@ class Tiki_Profile_List
 			unlink($file);
 		touch($file);
 
-		$content = $tikilib->httprequest( $path );
+		$content = tiki_get_remote_file( $path );
 
 		$parts = explode( "\n", $content );
 		$parts = array_map( 'trim', $parts );
@@ -94,7 +88,7 @@ class Tiki_Profile_List
 		return( array_unique( $category_list ) );
 	} // }}}
 							
-	function getList( $source = '', $categories = array(), $profilename = '' ) // {{{
+	function getList( $source = '', $category = '', $profile = '' ) // {{{
 	{
 		$installer = new Tiki_Profile_Installer;
 		$list = array();
@@ -120,18 +114,20 @@ class Tiki_Profile_List
 
 				$key = "{$s['url']}#{$i}";
 
-				if( $profilename && stripos( $i, $profilename ) === false )
+				if( $category && stripos( $c, $category ) === false )
+					continue;
+				if( $profile && stripos( $i, $profile ) === false )
 					continue;
 
 				if( array_key_exists( $key, $list ) )
 				{
-					$list[$key]['categories'][] = $c;
+					$list[$key]['category'] .= ", $c";
 				}
 				else
 				{
 					$list[$key] = array(
 						'domain' => $s['domain'],
-						'categories' => array($c),
+						'category' => $c,
 						'name' => $i,
 						'installed' => $installer->isKeyInstalled( $s['domain'], $i ),
 					);
@@ -139,26 +135,6 @@ class Tiki_Profile_List
 			}
 
 			fclose($fp);
-
-			// Apply category filter
-			foreach ($list as $pkey => $profile) {
-				$in = true; // If there are no required categories, don't filter anything.
-				foreach ($categories as $category) {
-					$in = false; // Start assuming this required category isn't in this profile's categories
-					foreach ($profile['categories'] as $pcategory) {
-						if( $category == $pcategory ) {
-							$in = true;
-							break;
-						}
-					}
-					if (!$in) {
-						break;
-					}
-				}
-				if (!$in) {
-					unset($list[$pkey]);
-				}
-			}
 		}
 
 		return array_values( $list );
@@ -179,3 +155,5 @@ class Tiki_Profile_List
 		return filemtime( $file );
 	} // }}}
 }
+
+?>

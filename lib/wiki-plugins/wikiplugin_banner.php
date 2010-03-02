@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -35,14 +30,11 @@ function wikiplugin_banner_info() {
 
 function wikiplugin_banner($data, $params)
 {
-    global $tikilib, $prefs;
-	if ($prefs['feature_banners'] != 'y') {
-		return;
-	}
+    global $tikilib;
     global $bannerlib;include_once('lib/banners/bannerlib.php');
 
-	extract ($params, EXTR_SKIP);
-		
+    extract($params);
+
     if (empty($zone)) {
         return tra('missing parameter');
     }
@@ -53,3 +45,7 @@ function wikiplugin_banner($data, $params)
 	}
     return '~np~'.$banner.'~/np~';
 }
+
+
+
+?>

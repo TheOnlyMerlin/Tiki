@@ -1,9 +1,11 @@
 #!/usr/bin/env python
-# (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-# 
+
+# $Id$
+
+# Copyright (c) 2004 George G. Geller
 # All Rights Reserved. See copyright.txt for details and a complete list of authors.
 # Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-# $Id$
+
 
 # NOTICE:
 # 1. This script is intended to be run as root.
@@ -266,6 +268,8 @@ os.mkdir("./img/wiki_up/" + sNewDomain)
 os.chown("./img/wiki_up/" + sNewDomain, sApacheUID, sApacheGID)
 os.mkdir("./installer/" + sNewDomain)
 os.chown("./installer/" + sNewDomain, sApacheUID, sApacheGID)
+os.mkdir("./lib/Galaxia/processes/" + sNewDomain)
+os.chown("./lib/Galaxia/processes/" + sNewDomain, sApacheUID, sApacheGID)
 os.mkdir("./maps/" + sNewDomain)
 os.chown("./maps/" + sNewDomain, sApacheUID, sApacheGID)
 os.mkdir("./mods/" + sNewDomain)

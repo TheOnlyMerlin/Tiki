@@ -1,8 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+
 // $Id$
 
 // \brief Wiki plugin to redirect to another page.
@@ -34,8 +31,8 @@ function wikiplugin_redirect_info() {
 	);
 }
 
-function wikiplugin_redirect($data, $params, $offset, $options) {
-	global $tikilib;
+function wikiplugin_redirect($data, $params) {
+
 	extract ($params,EXTR_SKIP);
 	$areturn = '';
 
@@ -43,9 +40,6 @@ function wikiplugin_redirect($data, $params, $offset, $options) {
 	if (!isset($url)) {$areturn += "REDIRECT plugin: No url specified!";}
 	if ((isset($_REQUEST['redirectpage']))) {
 		$areturn = "REDIRECT plugin: redirect loop detected!";
-	} else if (isset($options['print']) && $options['print'] == 'y') {
-		$info = $tikilib->get_page_info(isset($page)?$page: $url);
-		return $tikilib->parse_data($info['data'], $options);
 	} else {
 		/* SEO: Redirect with HTTP status 301 - Moved Permanently than default 302 - Found */
 		if (isset($page)) {
@@ -60,3 +54,5 @@ function wikiplugin_redirect($data, $params, $offset, $options) {
 		
 	return $areturn;
 }
+
+?>

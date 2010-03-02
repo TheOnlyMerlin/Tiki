@@ -40,8 +40,7 @@ require_once('BaseComponent.php');
  * @category File
  * @package iCal
  */
-class File_iCal_TimeZone extends File_iCal_BaseComponent
-{
+class File_iCal_TimeZone extends File_iCal_BaseComponent {
     public function addComment($c) {
         File_iCal_BaseComponent::addComment($c);
     }
@@ -161,4 +160,10 @@ class File_iCal_TimeZone extends File_iCal_BaseComponent
     public function getTimeZoneURL() {
 
     }
+
+
+
+
 }
+
+?>

@@ -143,3 +143,5 @@ class OOoImg extends absOOo {
 		$nodeContent->appendChild($imageNode);
 	}
 } 
+
+?>

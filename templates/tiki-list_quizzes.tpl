@@ -1,17 +1,14 @@
 {* $Id$ *}
 {title help="Quiz"}{tr}Quizzes{/tr}{/title}
 
-<div class="navbar">
-	{if $tiki_p_admin_quizzes eq 'y'}
-			{button href="tiki-edit_quiz.php" _text="{tr}Admin Quizzes{/tr}"}
-	{/if}
-	{if $tiki_p_view_quiz_stats eq 'y'}
+{if $tiki_p_view_quiz_stats eq 'y'}
+	<div class="navbar">
 		{button href="tiki-quiz_stats.php" _text="{tr}Quiz Stats{/tr}"}
-	{/if}
-</div>
+	</div>
 
-{if $channels or ($find ne '')}
-	{include file='find.tpl'}
+	{if $channels or ($find ne '')}
+		{include file='find.tpl'}
+	{/if}
 {/if}
 
 <table class="normal">
@@ -36,7 +33,7 @@
 		{if ($tiki_p_admin eq 'y') or ($channels[user].individual eq 'n' and $tiki_p_take_quiz eq 'y') or ($channels[user].individual_tiki_p_take_quiz eq 'y')}
 			<tr>
 				<td class="{cycle advance=false}">
-					<a class="tablename" href="tiki-take_quiz.php?quizId={$channels[user].quizId}">{$channels[user].name|escape}</a>
+					<a class="tablename" href="tiki-take_quiz.php?quizId={$channels[user].quizId}">{$channels[user].name}</a>
 					<div class="subcomment">
 						{$channels[user].description|escape|nl2br}
 					</div>

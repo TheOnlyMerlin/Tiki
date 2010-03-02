@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /* Tiki-Wiki plugin example 
  *
  * This is an example plugin to let you know how to create
@@ -96,9 +90,9 @@ EOF;
 	}
 
 	// Build required objects
-	$sheet = new TikiSheet;
-	$db = new TikiSheetDatabaseHandler( $id );
-	$out = new TikiSheetOutputHandler( $data );
+	$sheet = &new TikiSheet;
+	$db = &new TikiSheetDatabaseHandler( $id );
+	$out = &new TikiSheetOutputHandler( $data );
 
 	// Fetch sheet from database
 	$sheet->import( $db );
@@ -114,3 +108,5 @@ EOF;
 	
 	return $ret;
 }
+
+?>

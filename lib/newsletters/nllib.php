@@ -1,10 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/lib/newsletters/nllib.php,v 1.63.2.2 2008-01-17 15:47:10 sylvieg Exp $
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
@@ -13,8 +8,11 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 include_once ('lib/webmail/tikimaillib.php');
 
-class NlLib extends TikiLib
-{
+class NlLib extends TikiLib {
+	function NlLib($db) {
+		parent::TikiLib($db);
+	}
+
 	function replace_newsletter($nlId, $name, $description, $allowUserSub, $allowAnySub, $unsubMsg, $validateAddr,$allowTxt, $frequency , $author) {
 		if ($nlId) {
 			$query = "update `tiki_newsletters` set `name`=?, 
@@ -62,21 +60,21 @@ class NlLib extends TikiLib
 		return $nlId;
 	}
 
-	function replace_edition($nlId, $subject, $data, $users, $editionId=0, $draft=false, $datatxt='', $files=array(), $wysiwyg=null) {
+	function replace_edition($nlId, $subject, $data, $users, $editionId=0, $draft=false, $datatxt='', $files=array()) {
 		if ($draft == false) {
 			if( $editionId > 0 && $this->getOne('select `sent` from `tiki_sent_newsletters` where `editionId`=?', array( (int)$editionId )) == -1 ) {
 				// save and send a draft
-				$query = "update `tiki_sent_newsletters` set `subject`=?, `data`=?, `sent`=?, `users`=? , `datatxt`=?, `wysiwyg`=? ";
+				$query = "update `tiki_sent_newsletters` set `subject`=?, `data`=?, `sent`=?, `users`=? , `datatxt`=? ";
 				$query.= "where editionId=? and nlId=?";
-				$result = $this->query($query,array($subject,$data, (int)$this->now, $users, $datatxt, $wysiwyg, (int)$editionId,(int)$nlId));
+				$result = $this->query($query,array($subject,$data, (int)$this->now, $users, $datatxt, (int)$editionId,(int)$nlId));
 				$query = "update `tiki_newsletters` set `editions`= `editions`+ 1 where `nlId`=? ";
 				$result = $this->query($query,array((int)$nlId));
 				$query = "delete from `tiki_sent_newsletters_files` where `editionId`=?";
 				$result = $this->query($query,array((int)$editionId));
 			} else {
 				 // save and send an edition
-				$query = "insert into `tiki_sent_newsletters`(`nlId`,`subject`,`data`,`sent`,`users` ,`datatxt`, `wysiwyg`) values(?,?,?,?,?,?,?)";
-				$result = $this->query($query,array((int)$nlId,$subject,$data,(int)$this->now,$users,$datatxt, $wysiwyg));
+				$query = "insert into `tiki_sent_newsletters`(`nlId`,`subject`,`data`,`sent`,`users` ,`datatxt`) values(?,?,?,?,?,?)";
+				$result = $this->query($query,array((int)$nlId,$subject,$data,(int)$this->now,$users,$datatxt));
 				$query = "update `tiki_newsletters` set `editions`= `editions`+ 1 where `nlId`=?";
 				$result = $this->query($query,array((int)$nlId));
 				$editionId = $this->getOne('select max(`editionId`) from `tiki_sent_newsletters`');
@@ -84,15 +82,15 @@ class NlLib extends TikiLib
 		} else {
 			if( $editionId > 0 && $this->getOne('select `sent` from `tiki_sent_newsletters` where `editionId`=?', array( (int)$editionId )) == -1 ) {
 				// save an existing draft
-				$query = "update `tiki_sent_newsletters` set `subject`=?, `data`=?, `datatxt`=?, `wysiwyg`=? ";
+				$query = "update `tiki_sent_newsletters` set `subject`=?, `data`=?, `datatxt`=?";
 				$query.= "where editionId=? and nlId=?";
-				$result = $this->query($query,array($subject,$data,$datatxt,$wysiwyg, (int)$editionId,(int)$nlId));
+				$result = $this->query($query,array($subject,$data,$datatxt,(int)$editionId,(int)$nlId));
 				$query = "delete from `tiki_sent_newsletters_files` where `editionId`=?";
 				$result = $this->query($query,array((int)$editionId));
 			} else {
 				// save a new draft
-				$query = "insert into `tiki_sent_newsletters`(`nlId`,`subject`,`data`,`sent`,`users`,`datatxt`, `wysiwyg`) values(?,?,?,?,?,?,?)";
-				$result = $this->query($query,array((int)$nlId,$subject,$data,-1,0,$datatxt,$wysiwyg));
+				$query = "insert into `tiki_sent_newsletters`(`nlId`,`subject`,`data`,`sent`,`users`,`datatxt`) values(?,?,?,?,?,?)";
+				$result = $this->query($query,array((int)$nlId,$subject,$data,-1,0,$datatxt));
 				$editionId = $this->getOne('select max(`editionId`) from `tiki_sent_newsletters`');
 			}
 		}
@@ -104,9 +102,9 @@ class NlLib extends TikiLib
 	}
 
 	/* get only the email subscribers */
-	function get_subscribers($nlId, $isEmail='y') {
-		$query = "select `email` from `tiki_newsletter_subscriptions` where `valid`=? and `nlId`=? and isUser !=?";
-		$result = $this->query($query, array('y',(int)$nlId, $isEmail) );
+	function get_subscribers($nlId) {
+		$query = "select `email` from `tiki_newsletter_subscriptions` where `valid`=? and `nlId`=? and isUser !='y'";
+		$result = $this->query($query, array('y',(int)$nlId));
 		$ret = array();
 		while ($res = $result->fetchRow()) {
 			$ret[] = $res["email"];
@@ -266,13 +264,11 @@ class NlLib extends TikiLib
 			$add = $userlib->get_user_email($add);
 			$isUser="n";
 		}
-		$query = "select * from `tiki_newsletter_subscriptions` where `nlId`=? and `email`=? and `isUser`=?";
-		$result = $this->query($query,array((int)$nlId,$add,$isUser));
+		$query = "select * from `tiki_newsletter_subscriptions` where `nlId`=? and `email`=? and `isUser`=? and `valid`=?";
+		$result = $this->query($query,array((int)$nlId,$add,$isUser, 'y'));
 		if ($res = $result->fetchRow()) {
-			if ($res['valid'] == 'y') {
-				return false; /* already subscribed and valid - keep the same valid status */
+			return false; /* already subscribed and valid - keep the same valid status */
 			}
-		}
 		$code = $this->genRandomString($add);
 		$info = $this->get_newsletter($nlId);
 		if ($info["validateAddr"] == 'y' && $validateAddr != 'n') {
@@ -285,16 +281,9 @@ class NlLib extends TikiLib
 			// URL to confirm the subscription put valid as 'n'
 			$foo = parse_url($_SERVER["REQUEST_URI"]);
 			$foopath = preg_replace('/tiki-admin_newsletter_subscriptions.php/', 'tiki-newsletters.php', $foo["path"]);
-			$url_subscribe = $tikilib->httpPrefix( true ). $foopath;
-			if (empty($res)) {
-				$query = "insert into `tiki_newsletter_subscriptions`(`nlId`,`email`,`code`,`valid`,`subscribed`,`isUser`,`included`) values(?,?,?,?,?,?,?)";
-				$bindvars = array((int)$nlId,$add,$code,'n',(int)$this->now,$isUser,'n');
-			} else {
-				// if already sub'ed but not validated then update code and timestamp (a.k.a. `subscribed`) and resend mail
-				$query = "UPDATE `tiki_newsletter_subscriptions` SET `code`=?,`subscribed`=? WHERE `nlId`=? AND `email`=? AND `isUser`=? AND `valid`='n' AND `included`='n'";
-				$bindvars = array($code,(int)$this->now,(int)$nlId,$add,$isUser);
-			}
-			$result = $this->query($query, $bindvars);
+			$url_subscribe = $tikilib->httpPrefix(). $foopath;
+			$query = "insert into `tiki_newsletter_subscriptions`(`nlId`,`email`,`code`,`valid`,`subscribed`,`isUser`,`included`) values(?,?,?,?,?,?,?)";
+			$result = $this->query($query,array((int)$nlId,$add,$code,'n',(int)$this->now,$isUser,'n'));
 			// Now send an email to the address with the confirmation instructions
 			$smarty->assign('info', $info);
 			$smarty->assign('mail_date', $this->now);
@@ -315,7 +304,6 @@ class NlLib extends TikiLib
 		} else {
 			$query = "insert into `tiki_newsletter_subscriptions`(`nlId`,`email`,`code`,`valid`,`subscribed`,`isUser`,`included`) values(?,?,?,?,?,?,?)";
 			$result = $this->query($query,array((int)$nlId,$add,$code,'y',(int)$this->now,$isUser,'n'));
-			return true;
 		}
 		/*$this->update_users($nlId);*/
 		return false;
@@ -324,7 +312,7 @@ class NlLib extends TikiLib
 	function confirm_subscription($code) {
 		global $smarty, $tikilib, $prefs, $userlib;
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
-		$url_subscribe = $tikilib->httpPrefix( true ). $foo["path"];
+		$url_subscribe = $tikilib->httpPrefix(). $foo["path"];
 		$query = "select * from `tiki_newsletter_subscriptions` where `code`=?";
 		$result = $this->query($query,array($code));
 
@@ -364,7 +352,7 @@ class NlLib extends TikiLib
 	function unsubscribe($code,$mailit=false) {
 		global $smarty, $prefs, $userlib, $tikilib;
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
-		$url_subscribe = $tikilib->httpPrefix( true ). $foo["path"];
+		$url_subscribe = $tikilib->httpPrefix(). $foo["path"];
 		$query = "select * from `tiki_newsletter_subscriptions` where `code`=?";
 		$result = $this->query($query,array($code));
 
@@ -499,21 +487,21 @@ class NlLib extends TikiLib
 		$bindvars = array();
 		if ($find) {
 			$findesc = '%' . $find . '%';
-			$mid = " where (tn.`name` like ? or tn.`description` like ?)";
+			$mid = " where (`name` like ? or `description` like ?)";
 			$bindvars[] = $findesc;
 			$bindvars[] = $findesc;
 		} else {
-			$mid = '';
+			$mid = " ";
 		}
 
-		$query = "select tn.*, max(tsn.`sent`) as lastSent from `tiki_newsletters` tn left join `tiki_sent_newsletters` tsn on (tn.`nlId` = tsn.`nlId`) $mid group by tn.`nlId` order by ".$this->convertSortmode("$sort_mode");
+		$query = "select * from `tiki_newsletters` $mid order by ".$this->convert_sortmode("$sort_mode");
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
-		$query_cant = "select count(*) from  `tiki_newsletters` as tn $mid";
+		$query_cant = "select count(*) from  `tiki_newsletters` $mid";
 		$cant = $this->getOne($query_cant,$bindvars);
 		$ret = array();
 
 		while ($res = $result->fetchRow()) {
-			$objperm = $this->get_perm_object($res['nlId'], 'newsletter', '', false);
+	    $objperm = $this->get_perm_object($res['nlId'], 'newsletter', '', false);
 			$res['tiki_p_admin_newsletters'] = $objperm['tiki_p_admin_newsletters'];
 			$res['tiki_p_send_newsletters'] = $objperm['tiki_p_send_newsletters'];
 			$res['tiki_p_subscribe_newsletters'] = $objperm['tiki_p_subscribe_newsletters'];
@@ -581,7 +569,7 @@ class NlLib extends TikiLib
 		$mid.=($drafts ? ' and tsn.`sent`=-1' : ' and tsn.`sent`<>-1');
 
 		$query = "select tsn.`editionId`,tn.`nlId`,`subject`,`data`,tsn.`users`,`sent`,`name` from `tiki_newsletters` tn, `tiki_sent_newsletters` tsn ";
-		$query.= " where tn.`nlId`=tsn.`nlId` $mid order by ".$this->convertSortMode("$sort_mode");
+		$query.= " where tn.`nlId`=tsn.`nlId` $mid order by ".$this->convert_sortmode("$sort_mode");
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$ret = array();
 		$query_cant = "select count(*) from `tiki_newsletters` tn, `tiki_sent_newsletters` tsn where tn.`nlId`=tsn.`nlId` $mid";
@@ -589,7 +577,7 @@ class NlLib extends TikiLib
 
 		while ($res = $result->fetchRow()) {
 			if ($nlId) {
-				if ($tiki_p_admin_newsletters != 'y' && $perm && $$perm == 'n')
+				if ($perm && $$perm == 'n')
 					continue;
 				$res['tiki_p_admin_newsletters'] = $tiki_p_admin_newsletters;
 				$res['tiki_p_send_newsletters'] = $tiki_p_send_newsletters;
@@ -620,7 +608,7 @@ class NlLib extends TikiLib
 			$mid = " where `nlId`=? and `isUser`!='g' ";
 		}
 
-		$query = "select * from `tiki_newsletter_subscriptions` $mid order by ".$this->convertSortMode("$sort_mode").", email asc";
+		$query = "select * from `tiki_newsletter_subscriptions` $mid order by ".$this->convert_sortmode("$sort_mode").", email asc";
 		$query_cant = "select count(*) from tiki_newsletter_subscriptions $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -645,7 +633,7 @@ class NlLib extends TikiLib
 			$mid = " where `nlId`=? ";
 		}
 
-		$query = "select * from `tiki_newsletter_groups` $mid order by ".$this->convertSortMode("$sort_mode");
+		$query = "select * from `tiki_newsletter_groups` $mid order by ".$this->convert_sortmode("$sort_mode");
 		$query_cant = "select count(*) from `tiki_newsletter_groups` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -687,11 +675,11 @@ class NlLib extends TikiLib
 
 	function get_unsub_msg($nlId, $email, $lang, $code='', $user='') {
 		global $smarty, $userlib, $tikilib;
-		$pth = $tikilib->httpPrefix( true ). substr($_SERVER["REQUEST_URI"],0,strpos($_SERVER["REQUEST_URI"],'tiki-'));
+		$pth = $tikilib->httpPrefix(). substr($_SERVER["REQUEST_URI"],0,strpos($_SERVER["REQUEST_URI"],'tiki-'));
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
 		 $smarty->assign('url',$pth);
 		$foo = str_replace('send_newsletters', 'newsletters', $foo);
-		$url_subscribe = $tikilib->httpPrefix( true ). $foo["path"];
+		$url_subscribe = $tikilib->httpPrefix(). $foo["path"];
 		if ($code == '') {
 			$isUser = $user? "y": "n";
 			$code = $this->getOne("select `code` from `tiki_newsletter_subscriptions` where `nlId`=? and `email`=? and `isUser`=?",array((int)$nlId, $email, $isUser));
@@ -781,4 +769,7 @@ class NlLib extends TikiLib
 		$this->query($query, array((int)$editionId));
 	}
 }
-$nllib = new NlLib;
+global $dbTiki;
+$nllib = new NlLib($dbTiki);
+
+?>

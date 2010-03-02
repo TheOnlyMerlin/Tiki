@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 /*
   this page is used as doxygen output mainpage,
@@ -14,7 +9,8 @@
 \mainpage
 
 
-TikiWiki CMS/Groupware is Free and Open Source Software (FOSS). It is a community-driven project which exists and improves thanks to the participation of people just like YOU.
+TikiWiki CMS/Groupware is Free and Open Source Software (FOSS). It is a community-driven project.
+It exists and improves by the participation of people just like YOU.
 
 
 IMPORTANT LINKS
@@ -61,6 +57,7 @@ Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for detail
 */
 
 // I call index.php because tiki may not be setup when people attempt to call this.
-header ("location: index.php");
-die;
+	header ("location: index.php");
+	die;
 
+?>

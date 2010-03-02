@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /*
  *
  * IFRAME plugin. Creates an iframe and loads the specified page within the frame.
@@ -90,13 +84,13 @@ function wikiplugin_iframe_info() {
 				'name' => tra('URL'),
 				'description' => tra('URL'),
 			),
-		), 
+		),
 	);
 }
 
 function wikiplugin_iframe($data, $params) {
 
-	extract ($params, EXTR_SKIP);
+	extract ($params);
 	$ret = '<iframe ';
 
 	if (isset($name)) {

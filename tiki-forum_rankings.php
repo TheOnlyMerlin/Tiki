@@ -1,19 +1,40 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-forum_rankings.php,v 1.15.2.2 2007-12-15 17:59:40 nkoth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 $section = 'forums';
 require_once ('tiki-setup.php');
 
 include_once ('lib/rankings/ranklib.php');
 
 $smarty->assign('headtitle',tra('Rankings'));
-$access->check_feature('feature_forums');
-$access->check_feature('feature_forum_rankings');
-$access->check_permission('tiki_p_forum_read');
+
+if ($prefs['feature_forums'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_forums");
+
+	$smarty->display("error.tpl");
+	die;
+}
+
+if ($prefs['feature_forum_rankings'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_forum_rankings");
+
+	$smarty->display("error.tpl");
+	die;
+}
+
+if ($tiki_p_forum_read != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied you cannot view this section"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 $allrankings = array(
 	array(
@@ -83,3 +104,5 @@ ask_ticket('forum-rankings');
 // Display the template
 $smarty->assign('mid', 'tiki-ranking.tpl');
 $smarty->display("tiki.tpl");
+
+?>

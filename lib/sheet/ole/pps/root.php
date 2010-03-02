@@ -17,7 +17,7 @@
 // | Based on OLE::Storage_Lite by Kawai, Takanori                        |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: root.php,v 1.1 2004-05-01 21:44:23 lphuberdeau Exp $
 
 
 /**
@@ -514,3 +514,4 @@ class OLE_PPS_Root extends OLE_PPS
         }
     }
 }
+?>

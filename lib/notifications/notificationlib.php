@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /**
  * @class NotificationLib
  *
@@ -13,6 +7,7 @@
  * @license GNU LGPL
  * @copyright Tiki Community
  * @date created:
+ * @date last-modified: 2005-08-26 13:01
  */
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -36,8 +31,10 @@ if (!isset($Debug)) $Debug = false;
  * 
  * @since 1.x
  */
-class NotificationLib extends TikiLib
-{
+class NotificationLib extends TikiLib {
+	function NotificationLib($db) {
+		$this->TikiLib($db);
+	}
 	function list_mail_events($offset, $maxRecords, $sort_mode, $find) {
 		if ($find) {
 			$findesc = '%' . $find . '%';
@@ -47,7 +44,7 @@ class NotificationLib extends TikiLib
 			$mid = " ";
 			$bindvars=array();
 		}
-		$query = "select * from `tiki_user_watches` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_user_watches` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_user_watches` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -60,24 +57,108 @@ class NotificationLib extends TikiLib
 		$retval["cant"] = $cant;
 		return $retval;
 	}
+	function add_mail_event($event, $object, $email) {
+		$query = "insert into `tiki_user_watches`(`event`,`object`,`email`) values(?,?,?)";
+		$result = $this->query($query, array($event,$object,$email) );
+	}
+	function remove_mail_event($event, $object, $email) {
+		$query = "delete from `tiki_user_watches` where `event`=? and `object`=? and `email`=?";
+		$result = $this->query($query,array($event,$object,$email));
+	}
+	
 	function update_mail_address($user, $oldMail, $newMail) {
 		$query = "update `tiki_user_watches` set `email`=? where `user`=? and `email`=?";
 		$result = $this->query($query,array($user,$newMail,$oldMail));
 	}
 	function get_mail_events($event, $object) {
-		global $tikilib;
-		global $categlib; require_once('lib/categories/categlib.php');
-		$query = 'select * from `tiki_user_watches` where `event`=? and (`object`=? or `object`=?)';
-		$result = $this->query($query, array($event, $object, '*') );
+		$query = "select `email` from `tiki_user_watches` where `event`=? and (`object`=? or `object`='*')";
+		$result = $this->query($query, array($event,$object) );
 		$ret = array();
-		$map = CategLib::map_object_type_to_permission();
 		while ($res = $result->fetchRow()) {
-			if (empty($res['user']) || $tikilib->user_has_perm_on_object($res['user'], $object, $res['type'], $map[$res['type']])) {
-				$ret[] = $res['email'];
-			}
+			$ret[] = $res["email"];
 		}
 		return $ret;
 	}
-
+	/**
+	 *  Request a callback
+	 *  @param event the event about which we want to be
+	 *  notified
+	 *  @param callback type - one of "early", "standard", "late".
+	 *  Early: Request a callback before the standard callback
+	 *  functions are called.  This is useful for setting
+	 *  up temporary data structures needed by the standard
+	 *  callback functions, or pre-processing event data.
+	 *  Standard: Request a standard callback
+	 *  Late: Request a callback after the standard callback
+	 *  functions are called. This is useful for destroying
+	 *  temporary data structures needed by the standard
+	 *  callback functions, or post-processing event data.
+	 *  @param method the callback function to call when
+	 *  the event is raised
+	 *  @param self the object raising the event
+	 *  @access public
+	 */
+	function register_callback( $event,
+                                    $callback_type, 
+                                    $method, 
+                                    $class ) {
+        	// clobber any already registered callbacks
+        	$this->unregister_callback($event, $callback_type, $method, $class);
+        	// if (is_signal($event) && is_callable(array(get_class($class), $method))) {
+        	//  case $callback_type
+        	//    early:
+        	//    standard:
+        	//    late:
+        	//      insert into tiki_signals( $event, $callback_type, $self, $func );
+        	//      break;
+        	//    default:
+        	//      return fault;
+    		// }
+ 	}
+	/**
+	 *  Raise a Tikiwiki event
+	 *  @param event the event to raise
+	 *  @param data the data associated with the event
+	 *  @param self the object raising the event
+	 */
+	function raise_event( $event, $data, $raisedBy ) {
+		global $Debug;
+		if ($Debug) print "event raised: $event<br />";
+		$maxRecords = 3*100;
+       		// get list of early objects that want to be notified about
+       		// this event, order by callback_type.order
+       		$query = "select * from `tiki_events` where event like ? order by `callback_type`, `order`";
+		$bindvars=array('%'.$event.'%');
+		$query_cant = "select count(*) from `tiki_events` where event like ?";
+		$result = $this->query($query,$bindvars,$maxRecords);
+                $cant = $this->getOne($query_cant,$bindvars);
+		$continue = true;
+                while ($continue && $res = $result->fetchRow()) {
+			$class = $res['object'];
+			$method = $res['method'];
+			global $$class;
+                        include_once( $res['file'] );
+			if ($Debug) print $class . "=>" . $method ."<br />";
+			if ( is_callable(array(get_class($$class), $method)) ) {
+				if ($Debug) print $class . "=>" . $method . "<br />";
+				$continue = $$class->$method($raisedBy, $data);
+			}
+                }
+	}
+ 
+	/**
+	 *  Cancel callback requests.
+	 *  @param event the event to cencel
+	 *  @param callback_type the callback type - see register_callback
+	 *  @param func the function to call
+	 *  @param self the object requesting the callback
+	 *  @return true if database has changed
+	 */
+	function unregister_callback( $event, $callback_type, $func, $self ) {
+       		// delete from tiki_signal where event == $event and func == $func and self == $self;
+       		return $success;
+	}
 }
-$notificationlib = new NotificationLib;
+global $dbTiki;
+$notificationlib = new NotificationLib($dbTiki);
+?>

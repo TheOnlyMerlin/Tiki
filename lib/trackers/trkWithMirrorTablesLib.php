@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -60,16 +55,15 @@ table for each tracker:
 	+------+----------+----------+----------+...+----------+
 */
 
-class TrkWithMirrorTablesLib extends TrackerLib
-{
+class TrkWithMirrorTablesLib extends TrackerLib {
 		
 	var $TABLE_PREFIX;
 	var $COL_PREFIX;
 	var $EXPLICIT_PREFIX;
 	var $explicit;
 	
-	function __construct() {
-		parent::__construct();
+	function TrkWithMirrorTablesLib($db) {
+		parent::TrackerLib($db);
 		
 		$this->TABLE_PREFIX	= "tiki_trk_";
 		$this->COL_PREFIX	= "field_";
@@ -465,7 +459,7 @@ class TrkWithMirrorTablesLib extends TrackerLib
 		$bindvars = array((int) $trackerId);
 		
 		if ($status) {
-			if (count($status > 1)) {
+			if (sizeof($status > 1)) {
 				if ($tiki_p_view_trackers_pending != 'y') $status = str_replace('p','',$status);
 				if ($tiki_p_view_trackers_closed != 'y') $status = str_replace('c','',$status);
 				$sts = preg_split('//', $status, -1, PREG_SPLIT_NO_EMPTY);
@@ -537,7 +531,7 @@ class TrkWithMirrorTablesLib extends TrackerLib
 				$query = "select tti.*, $tableId.$colId, right(lpad($tableId.$colId,40,'0'),40) as ok";
 				$query.= " from `tiki_tracker_items` tti, $tableId";
 				$query.= " $mid and $tableId.`itemId`=tti.`itemId`";
-				$query.= " order by ".$this->convertSortMode('ok_'.$corder);
+				$query.= " order by ".$this->convert_sortmode('ok_'.$corder);
 			} else {
 				$query = "select tti.*, $tableId.$colId";
 				$query.= " from `tiki_tracker_items` tti, $tableId";
@@ -547,7 +541,7 @@ class TrkWithMirrorTablesLib extends TrackerLib
 			$query_cant = " select count(*) from `tiki_tracker_items` tti, $tableId";
 			$query_cant.= " $mid and tti.`itemId`=$tableId.`itemId`";
 		} else {
-			$query = "select * from `tiki_tracker_items` tti $mid order by ".$this->convertSortMode($sort_mode);
+			$query = "select * from `tiki_tracker_items` tti $mid order by ".$this->convert_sortmode($sort_mode);
 			$query_cant = "select count(*) from `tiki_tracker_items` tti $mid ";
 		}
 		
@@ -639,7 +633,7 @@ class TrkWithMirrorTablesLib extends TrackerLib
 					global $categlib;
 					if (!is_object($categlib)) include_once 'lib/categories/categlib.php';
 					$mycats = $categlib->get_child_categories($fopt['options']);
-					$zcats = $categlib->get_object_categories('trackeritem',$res['itemId']);
+					$zcats = $categlib->get_object_categories("tracker ".$trackerId,$res["itemId"]);
 					$cats = array();
 					foreach ($mycats as $m) {
 						if (in_array($m['categId'],$zcats)) {
@@ -821,12 +815,12 @@ class TrkWithMirrorTablesLib extends TrackerLib
 				$smarty->assign('mail_trackerId', $trackerId);
 				$smarty->assign('mail_trackerName', $trackerName);
 				$foo = parse_url($_SERVER["REQUEST_URI"]);
-				$machine = $this->httpPrefix( true ). $foo["path"];
+				$machine = $this->httpPrefix(). $foo["path"];
 				$smarty->assign('mail_machine', $machine);
 				$parts = explode('/', $foo['path']);
 				if (count($parts) > 1)
 					unset ($parts[count($parts) - 1]);
-				$smarty->assign('mail_machine_raw', $this->httpPrefix( true ). implode('/', $parts));
+				$smarty->assign('mail_machine_raw', $this->httpPrefix(). implode('/', $parts));
 
 
 				$mail_data = $smarty->fetch('mail/tracker_changed_notification.tpl');
@@ -1138,3 +1132,4 @@ class TrkWithMirrorTablesLib extends TrackerLib
 		return true;
 	}
 }
+?>

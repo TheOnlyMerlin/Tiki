@@ -75,11 +75,11 @@
   {assign var=section_old value=$section}
 	{if ($tiki_p_admin eq 'y' or $tiki_p_admin_forum eq 'y')} 
 		<tr>
-			<td class="third" colspan="7">{$section|escape}</td>
+			<td class="third" colspan="7">{$section}</td>
 		</tr>
 	{else}
 		<tr>
-			<td class="third" colspan="6">{$section|escape}</td>
+			<td class="third" colspan="6">{$section}</td>
 		</tr>
 	{/if}
 {/if}
@@ -89,21 +89,16 @@
 <td class="{cycle advance=false}">
 	<span style="float:left">
 		{if ($channels[user].individual eq 'n') or ($tiki_p_admin eq 'y') or ($channels[user].individual_tiki_p_forum_read eq 'y')}
-			<a class="forumname" href="tiki-view_forum.php?forumId={$channels[user].forumId}">{$channels[user].name|escape}</a>
+			<a class="forumname" href="tiki-view_forum.php?forumId={$channels[user].forumId}">{$channels[user].name}</a>
 		{else}
-			{$channels[user].name|escape}
+			{$channels[user].name}
 		{/if}
 	</span>
 
 {if $prefs.forum_list_desc eq 'y'}
 	<br />
 	<div class="subcomment">
-		{capture name="parsedDesc"}{wiki}{$channels[user].description}{/wiki}{/capture}
-		{if strlen($smarty.capture.parsedDesc) < $prefs.forum_list_description_len}
-			{$smarty.capture.parsedDesc}
-		{else}
-			{$smarty.capture.parsedDesc|strip_tags|truncate:$prefs.forum_list_description_len:"...":true}
-		{/if}
+		{$channels[user].description|truncate:$prefs.forum_list_description_len:"...":true|nl2br}
 	</div>
 {/if}
 </td>
@@ -120,10 +115,7 @@
 <td class="{cycle advance=false}">
 {if isset($channels[user].lastPost)}
 {$channels[user].lastPost|tiki_short_datetime}<br />
-  {if $prefs.forum_reply_notitle neq 'y'}
-    <small><i>{$channels[user].lastPostData.title|escape}</i>
-  {/if}
-  {tr}by{/tr} {$channels[user].lastPostData.userName|username}</small>
+<small><i>{$channels[user].lastPostData.title}</i> {tr}by{/tr} {$channels[user].lastPostData.userName}</small>
 {/if}
 </td>
 {/if}
@@ -133,7 +125,7 @@
 
 {if ($tiki_p_admin eq 'y') or (($channels[user].individual eq 'n') and ($tiki_p_admin_forum eq 'y')) or ($channels[user].individual_tiki_p_admin_forum eq 'y')}
 	<td style="text-align:right;" class="{cycle advance=false}">
-		<a class="admlink" title="{tr}Configure Forum{/tr}" href="tiki-admin_forums.php?forumId={$channels[user].forumId}&cookietab=2">{icon _id='page_edit'}</a>
+		<a class="admlink" title="{tr}Configure Forum{/tr}" href="tiki-admin_forums.php?forumId={$channels[user].forumId}">{icon _id='page_edit'}</a>
 	</td>
 {/if}
 

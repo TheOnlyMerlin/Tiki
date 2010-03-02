@@ -83,7 +83,6 @@
           {/if}
           {if $tiki_p_admin_file_galleries eq 'y'}
             {icon _id='cross' _tag='input_image' _confirm='{tr}Are you sure you want to delete the selected files?{/tr}' name='delsel' alt='{tr}Delete{/tr}' style='vertical-align: middle;'}
-			{icon _id='arrow_refresh' _tag='input_image' _confirm='{tr}Are you sure you want to reset the default gallery list table settings?{/tr}' name='defaultsel' alt='{tr}Reset to default gallery list table settings{/tr}' style='vertical-align: middle;'}
           {/if}
           {icon _id='pics/icons/mime/zip.png' _tag='input_image' name='zipsel' alt='{tr}Download the zip{/tr}' style='vertical-align: middle;'}
           {if $tiki_p_assign_perm_file_gallery eq 'y'}
@@ -95,7 +94,9 @@
             {tr}Move to{/tr}:
             <select name="moveto">
               {section name=ix loop=$all_galleries}
-                  <option value="{$all_galleries[ix].id}">{$all_galleries[ix].label|escape}</option>
+                {if $all_galleries[ix].id ne $gal_info.galleryId}
+                  <option value="{$all_galleries[ix].id|escape}">{if $all_galleries[ix].parentName}{$all_galleries[ix].parentName|escape} > {/if}{$all_galleries[ix].name|escape}</option>
+                {/if}
               {/section}
             </select>
             <input type='submit' name='movesel' value='{tr}Move{/tr}' />

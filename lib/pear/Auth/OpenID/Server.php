@@ -765,17 +765,12 @@ class Auth_OpenID_CheckIDRequest extends Auth_OpenID_Request {
 
     function Auth_OpenID_CheckIDRequest($identity, $return_to,
                                         $trust_root = null, $immediate = false,
-                                        $assoc_handle = null, $server = null,
-                                        $claimed_id = null)
+                                        $assoc_handle = null, $server = null)
     {
         $this->namespace = Auth_OpenID_OPENID2_NS;
         $this->assoc_handle = $assoc_handle;
         $this->identity = $identity;
-        if ($claimed_id === null) {
-            $this->claimed_id = $identity;
-        } else {
-            $this->claimed_id = $claimed_id;
-        }
+        $this->claimed_id = $identity;
         $this->return_to = $return_to;
         $this->trust_root = $trust_root;
         $this->server =& $server;
@@ -1064,13 +1059,9 @@ class Auth_OpenID_CheckIDRequest extends Auth_OpenID_Request {
 
             $response->fields->updateArgs(Auth_OpenID_OPENID_NS,
                    array('mode' => $mode,
+                         'op_endpoint' => $server_url,
                          'return_to' => $this->return_to,
                          'response_nonce' => Auth_OpenID_mkNonce()));
-
-            if (!$this->message->isOpenID1()) {
-                $response->fields->setArg(Auth_OpenID_OPENID_NS,
-                                          'op_endpoint', $server_url);
-            }
 
             if ($response_identity !== null) {
                 $response->fields->setArg(
@@ -1103,8 +1094,7 @@ class Auth_OpenID_CheckIDRequest extends Auth_OpenID_Request {
                                                 $this->trust_root,
                                                 false,
                                                 $this->assoc_handle,
-                                                $this->server,
-                                                $this->claimed_id);
+                                                $this->server);
                 $setup_request->message = $this->message;
 
                 $setup_url = $setup_request->encodeToURL($server_url);

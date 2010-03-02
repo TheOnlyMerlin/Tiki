@@ -1,11 +1,14 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-edit_css.php,v 1.15.2.2 2007-12-22 01:56:52 mose Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// $Id: tiki-edit_css.php,v 1.15.2.2 2007-12-22 01:56:52 mose Exp $
 include_once ("tiki-setup.php");
+
 include_once ("lib/csslib.php");
 
 //
@@ -42,8 +45,21 @@ if (!isset($prefs['feature_editcss']))
 
 if (!isset($tiki_p_create_css))
 	$tiki_p_create_css = 'n';
-$access->check_feature('feature_editcss');
-$access->check_permission('tiki_p_create_css');
+
+if ($prefs['feature_editcss'] != 'y') {
+	$smarty->assign('msg', tra("Feature disabled"));
+
+	$smarty->display("error.tpl");
+	die;
+}
+
+if ($tiki_p_create_css != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (!isset($_REQUEST["editstyle"]))
 	$_REQUEST["editstyle"] = '';
@@ -57,26 +73,15 @@ if (!isset($_REQUEST["try"]))
 $editstyle = preg_replace("/[^-_a-z\d]/i","",$_REQUEST["editstyle"]);
 $styledir = "styles";
 
-function get_style_path($editstyle, $styledir) {
-    global $tikidomain;
-	if ($tikidomain and is_file("$styledir/$tikidomain/$editstyle.css")) {
-		return "$styledir/$tikidomain/$editstyle.css";
-	} else {
-		return "$styledir/$editstyle.css";
-	}    
-}
-
-function get_style_mod($editstyle, $styledir) {
-	$style=get_style_path($editstyle, $styledir);
-	$stat=stat($style);
-	return $stat['mode'] & 0666;
-}
-
 if (isset($_REQUEST["edit"])and $_REQUEST["edit"]) {
-
 	$action = 'edit';
-	$data = load_css2_file(get_style_path($editstyle, $styledir), $styledir);
 
+	//	$data = implode("",file("$styledir/$editstyle.css"));
+	if ($tikidomain and is_file("$styledir/$tikidomain/$editstyle.css")) {
+		$data = load_css2_file("$styledir/$tikidomain/$editstyle.css", $styledir);
+	} else {
+		$data = load_css2_file("$styledir/$editstyle.css", $styledir);
+	}
 } elseif ((isset($_REQUEST["save"]) and $_REQUEST["save"]) or (isset($_REQUEST["save2"]) and $_REQUEST["save2"])) {
 	check_ticket('edit-css');
 	$action = 'edit';
@@ -88,12 +93,10 @@ if (isset($_REQUEST["edit"])and $_REQUEST["edit"]) {
 		$style = "$styledir/$editstyle.css";
 	}
 
-	$mod=NULL;
-	$mod = get_style_mod($editstyle, $styledir);
 	$fp = fopen($style, "w");
 	if (!$fp) {
 		$smarty->assign('errortype', 401);
-		$smarty->assign('msg', tra("You do not have permission to write the style sheet")." $style");
+		$smarty->assign('msg', tra("You do not have permission to write the style sheet"));
 
 		$smarty->display("error.tpl");
 		die;
@@ -101,10 +104,6 @@ if (isset($_REQUEST["edit"])and $_REQUEST["edit"]) {
 
 	fwrite($fp, $_REQUEST["data"]);
 	fclose ($fp);
-	if ($mod !== NULL) {
-		chmod($style, $mod);
-	}
-
 	if ($_REQUEST["save2"]) {
 		$action = 'display';
 		header("location: tiki-edit_css.php?editstyle=$editstyle");
@@ -153,3 +152,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
 $smarty->assign('mid', 'tiki-edit_css.tpl');
 $smarty->display("tiki.tpl");
+
+?>

@@ -1,10 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-article_types.php,v 1.18.2.1 2007-11-08 21:47:51 ricks99 Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 $section = 'cms';
 require_once ('tiki-setup.php');
 
@@ -12,10 +12,21 @@ include_once ('lib/articles/artlib.php');
 
 $smarty->assign('headtitle',tra('Admin Article Types'));
 
-$access->check_feature('feature_articles');
+if ($prefs['feature_articles'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_articles");
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 // PERMISSIONS: NEEDS p_admin or tiki_p_articles_admin_types
-$access->check_permission(array('tiki_p_articles_admin_types'));
+if ($tiki_p_admin_cms != 'y' && $tiki_p_articles_admin_types != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 if(isset($_REQUEST["add_type"])) {
 	$artlib->add_type($_REQUEST["new_type"]);
@@ -80,3 +91,5 @@ include_once ('tiki-section_options.php');
 
 $smarty->assign('mid', 'tiki-article_types.tpl');
 $smarty->display("tiki.tpl");
+
+?>

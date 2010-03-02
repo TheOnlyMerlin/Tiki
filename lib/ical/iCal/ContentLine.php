@@ -46,8 +46,7 @@ require_once('Parameter.php');
  *  @category File
  *  @package iCal
  */
-class File_iCal_ContentLine
-{
+class File_iCal_ContentLine {
     /**
      * The contentline stores data in a File_iCal_Property
      *
@@ -74,7 +73,8 @@ class File_iCal_ContentLine
         //if we ar econstructing a contentline out of an existing property
         if (is_a($line, "File_iCal_Property")) {
             $this->_property = $line;
-        } else {
+        }
+        else {
 
             //remove all special characters from beginning and end
             $line = trim($line);
@@ -125,17 +125,20 @@ class File_iCal_ContentLine
                             $t = $m[1];
                             $i += strlen($t);
 
-                        } else if ($present_colon && $tokens[count($tokens) -1] == ':') {
+                        }
+                        else if ($present_colon && $tokens[count($tokens) -1] == ':') {
                             //if the last token is a colon, read out the value
                             $t = substr($line, $i);
                             $i += strlen($t);
 
-                        } else if ($present_semi && $tokens[count($tokens) -1] == ';') {
+                        }
+                        else if ($present_semi && $tokens[count($tokens) -1] == ';') {
                             //if the last token is a semicolon
                             $t = substr($line, $i, strpos($line, ':', $i) - $i);
                             $i += strlen($t);
 
-                        } else {
+                        }
+                        else {
                             $t = $line{$i};
                             $i++;
                         }
@@ -279,3 +282,5 @@ class File_iCal_ContentLine
         return str_replace(array("\\\\", "\\,", "\\\"", "\\\'", "\\;", "\\:"), array("\\", ",", "\"", "'", ";", ":"), $s);
     }
 }
+
+?>

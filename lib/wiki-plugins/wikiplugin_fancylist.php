@@ -1,19 +1,14 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 function wikiplugin_fancylist_help() {
-	return tra("Creates a fancy-looking list").": ~np~{FANCYLIST()}".tra("num").")".tra("item text")."{FANCYLIST}~/np~ - ''".tra("one item per line")."''";
+	return tra("Creates a fancy looking list").": ~np~{FANCYLIST()}".tra("num").")".tra("item text")."{FANCYLIST}~/np~ - ''".tra("one item per line")."''";
 }
 
 function wikiplugin_fancylist_info() {
 	return array(
 		'name' => tra('Fancy List'),
 		'documentation' => 'PluginFancyList',		
-		'description' => tra("Creates a fancy-looking list"),
+		'description' => tra("Creates a fancy looking list"),
 		'prefs' => array('wikiplugin_fancylist'),
 		'body' => tra('One item per line starting with anything followed by ")".'),
 		'params' => array(
@@ -25,7 +20,7 @@ function wikiplugin_fancylist_info() {
 		 	'class' => array(
 			 	'required' => false,
 				'name' => tra('Class'),
-				'description' => tra('CSS class for the fancylist'),
+				'description' => tra('CSS class of the fancylist'),
 			 ),
 																		 
 		),
@@ -46,7 +41,7 @@ function wikiplugin_fancylist($data, $params) {
 			$result = '<ol class="fancylist'.(isset($class) ? " $class" : "").'">';
 			}
 	// split data by lines (trimed whitespace from start and end)
-	$lines = preg_split("/\n/", trim($data));
+	$lines = split("\n", trim($data));
 	foreach ($lines as $line) {
 		// replace all before and including the ")"
 		$part = preg_replace("/[\w]+\)(.*)/", "$1", $line);
@@ -64,3 +59,5 @@ function wikiplugin_fancylist($data, $params) {
 	}
 	return $result;
 }
+
+?>

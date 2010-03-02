@@ -1,9 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// CVS: $Id: modifier.sefurl.php,v 1.1.2.2 2008-02-16 22:40:31 sylvieg Exp $
 
 // Translate only if feature_multilingual is on
 
@@ -13,15 +9,14 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 	exit;
 }
 
-function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_langs='' ) {
+function smarty_modifier_sefurl($source, $type='wiki', $with_next = '' ) {
 	global $prefs, $wikilib, $smarty;
 	include_once('lib/wiki/wikilib.php');
 
 	switch($type){
 	case 'wiki page':
-		$type = 'wiki';
 	case 'wiki':
-		return $wikilib->sefurl($source, $with_next, $all_langs);
+		return $wikilib->sefurl($source, $with_next);
 	case 'blog':
 		$href = 'tiki-view_blog.php?blogId='.$source;
 		break;
@@ -31,35 +26,8 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 	case 'gallery':
 		$href = 'tiki-browse_gallery.php?galleryId='. $source;
 		break;
-	case 'videogallery':
-		$href = 'tiki-browse_video_gallery.php?galleryId='. $source;
-		break;
 	case 'article':
 		$href = 'tiki-read_article.php?articleId='. $source;
-		break;
-	case 'file':
-		$href = 'tiki-download_file.php?fileId='. $source;
-		break;
-	case 'thumbnail':
-		$href = 'tiki-download_file.php?fileId='. $source.'&amp;thumbnail';
-		break;
-	case 'display':
-		$href = 'tiki-download_file.php?fileId='. $source.'&amp;display';
-		break;
-	case 'preview':
-		$href = 'tiki-download_file.php?fileId='. $source.'&amp;preview';
-		break;
-	case 'tracker item':
-		$type = 'trackeritem';
-	case 'trackeritem':
-		$href = 'tiki-view_tracker_item.php?itemId='. $source;
-		break;
-	case 'tracker':
-		$href = 'tiki-view_tracker.php?trackerId='.$source;
-		break;
-	case 'filegallery':
-	case 'file gallery':
-		$href = 'tiki-list_file_gallery.php?galleryId='.$source;
 		break;
 	default:
 		$href = $source;
@@ -70,7 +38,7 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 	}
 	if ($prefs['feature_sefurl'] == 'y') {
 		include_once('tiki-sefurl.php');
-		return filter_out_sefurl($href, $smarty, $type, '', $with_next);
+		return filter_out_sefurl($href, $smarty, $type);
 	} else {
 		return $href;
 	}

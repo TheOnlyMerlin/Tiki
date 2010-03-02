@@ -1,15 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /*
+ *
  * Google Docs plugin. Creates an iframe and loads the Google Doc within the frame.
  *
  * MatWho 13/09/08
  */
+
 
 function wikiplugin_googledoc_help() {
 	return tra("googledoc").":~np~{GOOGLEDOC(type=sheet|doc|pres|spreadsheet|document|presentation, key=XXXXX name=xxx, size=small|medium|large, width=100, height=100, align=top|middle|bottom|left|right, frameborder=1|0, marginheight=0, marginwidth=0, scrolling=yes|no|auto, editLink=top|bottom|both)}{GOOGLEDOC}~/np~";
@@ -34,7 +30,7 @@ function wikiplugin_googledoc_info() {
 					'safe' => true,
 					'required' => true,
 					'name' => tra('key'),
-					'description' => tra('Google doc key - for example: pXsHENf1bGGY92X1iEeJJI'),
+					'description' => tra('Google doc key - for example pXsHENf1bGGY92X1iEeJJI'),
 				),
 			'name' => array(
 				'safe' => true,
@@ -102,7 +98,7 @@ function wikiplugin_googledoc_info() {
 
 function wikiplugin_googledoc($data, $params) {
 
-	extract ($params, EXTR_SKIP);
+	extract ($params);
 	
 	if (empty($type)) {
 		return tra('Required parameter "type" missing');

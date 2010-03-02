@@ -1,13 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /**
+ * @version $Id: tiki_registration_fields.php,v 1.3 2007-03-02 19:49:11 luciash Exp $
  * @package Tikiwiki
  * @subpackage db
+ * @copyright (C) 2005 the Tiki community
+ * @license http://www.gnu.org/copyleft/lgpl.html GNU/LGPL
  */
 
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -15,16 +12,28 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 	exit;
 }
 
-class TikiRegistrationFields extends TikiLib
-{
+class TikiRegistrationFields extends TikiDBTable {
+    var $id=null;
+    var $name=null;
+    var $value=null;
+    var $module=null;
+    var $meta=null;
+    
     function TikiRegistrationFields() {
+        global $tikilib;
+        $this->TikiDBTable('tiki_registration_fields', 'id', $tikilib);
+    }
+
+    function getVisibleFields() {
+        $this->setQuery('SELECT `id`, `field` as `prefName`, `name` as `label`, `type`, `show`, `size` FROM '.$this->_tbl.' WHERE `show`=1;');
+        return $this->loadObjectList();
     }
 
     function getVisibleFields2($user=false) {
         global $tikilib;
 
-		$query = 'SELECT `id`, `field` as `prefName`, `name` as `label`, `type`, `show`, `size` FROM `tiki_registration_fields` WHERE `show`=?';
-        $result = $tikilib->query($query, array(1));
+        $this->setQuery('SELECT `id`, `field` as `prefName`, `name` as `label`, `type`, `show`, `size` FROM '.$this->_tbl.' WHERE `show`="1";');
+        $result = $this->query();
 
         $ret = array();
 
@@ -39,8 +48,8 @@ class TikiRegistrationFields extends TikiLib
 
     function getHiddenFields() {
         global $tikilib;
-		$query = 'SELECT `field` FROM `tiki_registration_fields` WHERE `show`=?';
-		$result = $tikilib->query($query, array(0));
+        $this->setQuery('SELECT `field` FROM '.$this->_tbl.' WHERE `show`="0";');
+        $result = $this->query();
 
         $ret = array();
 
@@ -51,3 +60,5 @@ class TikiRegistrationFields extends TikiLib
     }
 
 }
+
+?>

@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+/**
+ * $Id$
+ * Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
+ * All Rights Reserved. See copyright.txt for details and a complete list of authors.
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+ */
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,8 +12,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class TikiHelpLib
-{
+class TikiHelpLib {
 	// function TikiHelpLib() {
         // }
 /* end of class */
@@ -41,10 +41,11 @@ function help_doclink($params) {
     
     if ($prefs['feature_help'] == 'y' and $url) {
     	if (!isset($desc)) $desc = tra('Help link');
-        $ret = '<a title="'.htmlentities($desc,ENT_COMPAT,"UTF-8").'" href="'
+        $ret = '<a title="'.$desc.'" href="'
         .$prefs['helpurl'].$url.'" target="tikihelp" class="tikihelp">'
         .'<img src="pics/icons/help.png"'
         .' border="0" height="16" width="16" alt="'.tra('Help','',true).'" /></a>';
     }
     return $ret;
 }
+?>

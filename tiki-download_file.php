@@ -1,25 +1,16 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// CVS: $Id: tiki-download_file.php,v 1.33.2.4 2008-03-13 20:12:44 nyloth Exp $
+// Initialization
 
 $force_no_compression = true;
 $skip = false;
 
-if ( isset($_GET['fileId']) && isset($_GET['thumbnail']) && isset($_COOKIE[ session_name() ]) && count($_GET) == 2 ) {
-
-	$tikiroot = dirname($_SERVER['PHP_SELF']);
-	$session_params = session_get_cookie_params();
-	session_set_cookie_params($session_params['lifetime'],$tikiroot);
-	unset($session_params);
+if ( isset($_GET['fileId']) && isset($_GET['thumbnail']) && isset($_COOKIE['PHPSESSID']) && count($_GET) == 2 ) {
 	session_start();
-
 	if ( isset($_SESSION['allowed'][$_GET['fileId']]) ) {
-		require_once 'tiki-filter-base.php';
 		include('db/tiki-db.php');
-		$db = TikiDb::get();
+		include('lib/tikidblib.php');
+		$db = new TikiDB($dbTiki);
 
 		$query = "select * from `tiki_files` where `fileId`=?";
 		$result = $db->query($query, array((int)$_GET['fileId']));
@@ -49,7 +40,12 @@ if ( isset($_GET['fileId']) && isset($_GET['thumbnail']) && isset($_COOKIE[ sess
 if (!$skip) {
 	require_once('tiki-setup.php');
 	include_once('lib/filegals/filegallib.php');
-	$access->check_feature('feature_file_galleries');
+
+	if ( $prefs['feature_file_galleries'] != 'y' ) {
+		$smarty->assign('msg', tra('This feature is disabled'));
+		$smarty->display('error.tpl');
+		die;
+	}
 }
 
 if ( ! ini_get('safe_mode') ) {
@@ -94,8 +90,6 @@ if (!$skip) {
 	} elseif ( isset($_REQUEST['fileId']) && is_array($_REQUEST['fileId'])) {
 		$info = $filegallib->zip($_REQUEST['fileId'], $error);
 		$zip = true;
-	} elseif ( !empty($_REQUEST['randomGalleryId'])) {
-		$info =  $tikilib->get_file(0, $_REQUEST['randomGalleryId']);
 	} else {
 		$smarty->assign('msg', tra('Incorrect param'));
 		$smarty->display('error.tpl');
@@ -106,8 +100,8 @@ if (!$skip) {
 		$smarty->display('error.tpl');
 		die;
 	}
-	//var_dump($filegallib->hasOnlyPrivateBacklinks($info['fileId'])); die;
-	if ( !$zip && $tiki_p_admin_file_galleries != 'y' && !$userlib->user_has_perm_on_object($user, $info['galleryId'], 'file gallery', 'tiki_p_download_files') && !($info['backlinkPerms'] == 'y' && !$filegallib->hasOnlyPrivateBacklinks($info['fileId']))) {
+
+	if ( !$zip && $tiki_p_admin_file_galleries != 'y' && !$userlib->user_has_perm_on_object($user, $info['galleryId'], 'file gallery', 'tiki_p_download_files')) {
 		$smarty->assign('errortype', 401);
 		$smarty->assign('msg', tra('Permission denied'));
 		$smarty->display('error.tpl');
@@ -127,7 +121,7 @@ if ( ! isset($_GET['thumbnail']) && ! isset($_GET['icon']) ) {
 	$statslib->stats_hit($info['filename'], 'file', $info['fileId']);
 
 	if ( $prefs['feature_actionlog'] == 'y' ) {
-		global $logslib; require_once('lib/logs/logslib.php');
+		require_once('lib/logs/logslib.php');
 		$logslib->add_action('Downloaded', $info['galleryId'], 'file gallery', 'fileId='.$info['fileId']);
 	}
 
@@ -177,12 +171,7 @@ if ( ! empty($info['path']) )  {
 // ETag: Entity Tag used for strong cache validation.
 if ( ! isset($_GET['display']) || isset($_GET['x']) || isset($_GET['y']) || isset($_GET['scale']) || isset($_GET['max']) || isset($_GET['format']) ) {
   // if image will be modified, emit a different ETag for modifications.
-	$str = isset($_GET['x']) ? $_GET['x'] . 'x' : '';
-	$str .= isset($_GET['y']) ? $_GET['y'] . 'y' : '';
-	$str .= isset($_GET['scale']) ? $_GET['scale'] . 's' : '';
-	$str .= isset($_GET['max']) ? $_GET['max'] . 'm' : '';
-	$str .= isset($_GET['format']) ? $_GET['format'] . 'f' : '';
-	$etag = '"' . $md5 . '-' . crc32($md5) . '-' . crc32( $str ) . '"';
+  $etag = '"' . $md5 . '-' . crc32($md5) . '-' . crc32( $_GET['x'] . 'x' . $_GET['y'] . 'y' . $_GET['scale'] . 's' . $_GET['max'] . 'm' . $_GET['format'] . 'f' ) . '"';
 } else {
   $etag = '"' . $md5 . '-' . crc32($md5) . '"';
 }
@@ -204,7 +193,7 @@ if ( isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && $last_modified == strtotime(cu
 
 header("Pragma: ");
 header('Expires: ');
-header('Cache-Control: '.( !empty($user) ? 'private' : 'public' ).',must-revalidate,post-check=0,pre-check=0');
+header('Cache-Control: '.( $user ? 'private' : 'public' ).',must-revalidate,post-check=0,pre-check=0');
 
 if ( $use_client_cache ) {
 	header('Status: 304 Not Modified', true, 304);
@@ -218,25 +207,20 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 	$use_cache = false;
 
 	// Cache only thumbnails to avoid DOS attacks
-	$cacheName = '';
-	$cacheType = '';
 	if ( ( isset($_GET['thumbnail']) || isset($_GET['preview']) ) && ! isset($_GET['display']) && ! isset($_GET['icon']) && ! isset($_GET['scale']) && ! isset($_GET['x']) && ! isset($_GET['y']) && ! isset($_GET['format']) && ! isset($_GET['max']) ) {
-		global $cachelib; include_once('lib/cache/cachelib.php');
+	        global $cachelib; include_once('lib/cache/cachelib.php');
 		$cacheName = $md5;
-		$cacheType = ( isset($_GET['thumbnail']) ? 'thumbnail_' : 'preview_' ) . ((int)$_REQUEST['fileId']).'_';
+	        $cacheType = ( isset($_GET['thumbnail']) ? 'thumbnail_' : 'preview_' ) . ((int)$_REQUEST['fileId']).'_';
 		$use_cache = true;
 	}
 
 	$build_content = true;
-	$content_temp = $cachelib->getCached($cacheName, $cacheType);
-	if ( $use_cache && $content_temp ) {
-		if ($content_temp !== serialize(false) and $content_temp != "") {
-			$build_content = false;
-			$content = $content_temp;
-		}
+        if ( $use_cache && $cachelib->isCached($cacheName, $cacheType) ) {
+		$content = null; // Explicitely free memory before getting cache
+		$content = $cachelib->getCached($cacheName, $cacheType);
+		if ($content !== serialize(false) and $content != "") $build_content = false;
 		$content_changed = true;
 	}
-	unset($content_temp);
 
 	if ($build_content) {
 
@@ -322,7 +306,7 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 			}
 		}
 		
-		if ( $use_cache && !empty($content) ) {
+		if ( $use_cache ) {
 			// Remove all existing thumbnails for this file, to avoid taking too much disk space
 			// (only one thumbnail size is handled at the same time)
 			$cachelib->empty_type_cache($cacheType);
@@ -333,11 +317,9 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 	}
 }
 
-if ( empty($info['filetype']) || $info['filetype'] == 'application/x-octetstream' || $info['filetype'] == 'application/octet-stream' ) {
-	include_once('lib/mime/mimelib.php');
-	$info['filetype'] = tiki_get_mime($info['filename'], 'application/octet-stream');
-}
+if ( empty($info['filetype']) ) $info['filetype'] = 'application/x-octetstream';
 header('Content-type: '.$info['filetype']);
+
 
 // IE6 can not download file with / in the name (the / can be there from a previous bug)
 $file = basename($info['filename']);

@@ -28,7 +28,7 @@
 				</option>
 			{/section}
 			</select>
-			{if $filters[if].format eq "m"}{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple options{/tr}{/remarksbox}{/if}
+			{if $filters[if].format eq "m"} {tr}Tip: Hold down CTRL to select multiple{/tr}{/if}
 {*------text *} 
 		{elseif $filters[if].format eq 't' or $filters[if].format eq 'T' or $filters[if].format eq 'i'}
 			{if $filters[if].format eq 'i'}
@@ -36,36 +36,11 @@
 				{initials_filter_links _initial=$smarty.capture.i_f}
 			{/if}
 			<input id="f_{$filters[if].fieldId}" type="text" name="f_{$filters[if].fieldId}" value="{$filters[if].selected}"/>
-{*------sqlsearch *}
-		{elseif $filters[if].format eq 'sqlsearch'}
-			{capture name=tpl_advanced_search_help}
-				{include file='advanced_search_help.tpl'}
-			{/capture}
-			<input id="f_{$filters[if].fieldId}" type="text" name="f_{$filters[if].fieldId}" value="{$filters[if].selected}"/>
-			{add_help show='y' title="{tr}Help{/tr}" id="advanced_search_help_filter"}
-				{$smarty.capture.tpl_advanced_search_help}
-			{/add_help}
-{*------rating *}
-		{elseif $filters[if].format eq '*'}
-			<select id="f_{$filters[if].fieldId}" name="f_{$filters[if].fieldId}">
-			<option value="">{tr}Any{/tr}</option>
-			{foreach from=$filters[if].opts item=option}
-				<option value="{$option.id|escape}"{if $option.selected eq 'y'} selected="selected"{/if}>{$option.name|escape}</option>
-			{/foreach}
-			</select>
 {*------checkbox, radio *}
 		{else}
-			<input {if $filters[if].format eq "c"}type="checkbox"{else}type="radio"{/if}
-					name="f_{$filters[if].fieldId}{if $filters[if].format eq "c"}[]{/if}"
-					value=""{if !$filters[if].selected} checked="checked"{/if} />
-			{tr}Any{/tr}{if $line ne 'y'}<br />{/if}
+			<input {if $filters[if].format eq "c"}type="checkbox"{else}type="radio"{/if} name="f_{$filters[if].fieldId}{if $filters[if].format eq "c"}[]{/if}" value=""{if !$filters[if].selected} checked="checked"{/if} /> {tr}Any{/tr}</input>{if $line ne 'y'}<br />{/if}
 			{section name=io loop=$filters[if].opts}
-				<input {if $filters[if].format eq "c"}type="checkbox"{else}type="radio"{/if}
-						name="f_{$filters[if].fieldId}{if $filters[if].format eq "c"}[]{/if}"
-						value="{$filters[if].opts[io].id|escape}"
-						{if $filters[if].opts[io].selected eq "y"} checked="checked"{/if} />
-				{$filters[if].opts[io].name|tr_if}
-				{if $line ne 'y'}<br />{/if}
+				<input {if $filters[if].format eq "c"}type="checkbox"{else}type="radio"{/if} name="f_{$filters[if].fieldId}{if $filters[if].format eq "c"}[]{/if}" value="{$filters[if].opts[io].id|escape}"{if $filters[if].opts[io].selected eq "y"} checked="checked"{/if} /> {$filters[if].opts[io].name|tr_if}</input>{if $line ne 'y'}<br />{/if}
 			{/section}
 		{/if}
 		</td>
@@ -73,13 +48,7 @@
 {/section}
 {if $line ne 'y' and $action}<tr>{/if}
 {if $action}
-<td>&nbsp;</td><td><input class="button submit" type="submit" name="filter" value="{if empty($action)}{tr}Filter{/tr}{else}{tr}{$action}{/tr}{/if}" /></td>
-{/if}
-{if !empty($sortchoice)}
-	{if $line ne 'y'}<tr>{/if}
-	<td>{tr}Sort{/tr}</td>
-	<td>{include file='tracker_sort_input.tpl' iTRACKERLIST=$iTrackerFilter}
-	{if $line ne 'y'}</tr>{/if}
+<td>&nbsp;</td><td><input type="submit" name="filter" value="{if empty($action)}{tr}Filter{/tr}{else}{tr}{$action}{/tr}{/if}" /></td>
 {/if}
 {if $line ne 'y' and $action}</tr>{/if}
 </table>

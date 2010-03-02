@@ -17,7 +17,7 @@
 // | Based on OLE::Storage_Lite by Kawai, Takanori                        |
 // +----------------------------------------------------------------------+
 //
-// $Id$
+// $Id: pps.php,v 1.1 2004-05-01 21:44:22 lphuberdeau Exp $
 
 /**
 * Class for creating PPS's for OLE containers
@@ -212,3 +212,4 @@ class OLE_PPS extends PEAR
         return $this->No;
     }
 }
+?>

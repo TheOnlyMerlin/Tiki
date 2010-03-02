@@ -1,9 +1,6 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+
+// $Id: /cvsroot/tikiwiki/tiki/lib/wiki-plugins/wikiplugin_agentinfo.php,v 1.5.2.1 2007-12-07 12:55:20 pkdille Exp $
 
 // Wiki plugin to display a proposal acceptance widget
 
@@ -17,7 +14,7 @@ function wikiplugin_proposal_info() {
 		'documentation' => 'PluginProposal',			
 		'description' => tra('Provides a widget for users to vote on a proposal and view the current decision.'),
 		'prefs' => array( 'wikiplugin_proposal' ),
-		'body' => tra('The list of votes cast. One vote per line. Either 0, +1 or -1 followed by a username.'),
+		'body' => tra('The list of votes casted. One vote per line. Either 0, +1 or -1 followed by a username.'),
 		'params' => array(
 			'caption' => array(
 				'required' => false,
@@ -73,3 +70,5 @@ function wikiplugin_proposal($data, $params) {
 
 	return "~np~$content~/np~";
 }
+
+?>

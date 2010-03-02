@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 // Includes an article field
 // Usage:
@@ -97,7 +92,7 @@ function wikiplugin_bloglist($data, $params) {
 	} else {
 		global $bloglib; include_once('lib/blogs/bloglib.php');
 		
-		$blogItems = $bloglib->list_blog_posts($params['Id'], false, $params['offset'], $params['Items'],  $params['sort_mode'], $params['find'], $dateStartTS, $dateEndTS);
+		$blogItems = $bloglib->list_blog_posts($params['Id'], $params['offset'], $params['Items'],  $params['sort_mode'], $params['find'], $dateStartTS, $dateEndTS);
 		$temp_max = count($blogItems["data"]);
 		for ($i = 0; $i < $temp_max; $i++) {
 			$blogItems["data"][$i]["parsed_data"] = $tikilib->parse_data($bloglib->get_page($blogItems["data"][$i]["data"], 1));

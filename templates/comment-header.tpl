@@ -86,15 +86,15 @@
 	</div>
 	{/if}
 
-	{if $comment.title neq '' && $comment.title neq 'Untitled' && $comment.title neq $page}
+	{if $comment.title neq ''}
 	<div class="title">
 	{if $first eq 'y'}
-		<h2>{$comment.title|escape}</h2>
-	{elseif ( $forum_mode neq 'y' and $prefs.wiki_comments_notitle neq 'y' ) or $prefs.forum_reply_notitle neq 'y'}
+		<h2>{$comment.title}</h2>
+	{else}
 		{if $comments_reply_threadId == $comment.threadId}
 		{icon _id='flag_blue'}<span class="highlight">
 		{/if}
-		<a class="link" href="{$comments_complete_father}comments_parentId={$comment.threadId}&amp;comments_per_page=1&amp;thread_style={$thread_style}">{$comment.title|escape}</a>
+		<a class="link" href="{$comments_complete_father}comments_parentId={$comment.threadId}&amp;comments_per_page=1&amp;thread_style={$thread_style}">{$comment.title}</a>
 		{if $comments_reply_threadId == $comment.threadId}
 		</span>
 		{/if}
@@ -104,7 +104,7 @@
 	{/if}
 
 	{if $thread_style eq 'commentStyle_headers'}
-		{include file='comment-footer.tpl'  comment=$comments_coms[rep]}
+		{include file="comment-footer.tpl"  comment=$comments_coms[rep]}
 	{/if}
 	<br class="clear" />
 </div>

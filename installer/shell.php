@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 if( ! isset( $_SERVER['argc'] ) )
 	die( "Usage: php installer/shell.php\n" );
@@ -19,17 +14,6 @@ require_once('lib/setup/tikisetup.class.php');
 require_once('tiki-setup_base.php');
 require_once('installer/installlib.php');
 include $local_php;
-
-// In case of replication, ignore it during installer.
-unset( $shadow_dbs, $shadow_user, $shadow_pass, $shadow_host );
-
-class IgnoreErrorHandler implements TikiDb_ErrorHandler
-{
-	function handle( TikiDb $db, $query, $values, $result ) {
-	}
-}
-
-TikiDb::get()->setErrorHandler( new IgnoreErrorHandler );
 
 echo "Running installer for: $local_php\n";
 
@@ -61,3 +45,5 @@ else {
 		}
 	}
 }
+
+?>

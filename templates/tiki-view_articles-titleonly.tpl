@@ -1,4 +1,3 @@
-{if !empty($container_class)}<div class="{$container_class}">{/if}
 {section name=ix loop=$listpages}
 	<div class="articletitle">
 		<span class="newsitem">
@@ -7,4 +6,3 @@
 		<br />
 	</div>
 {/section}
-{if !empty($container_class)}</div>{/if}

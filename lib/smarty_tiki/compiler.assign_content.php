@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /* 
 * Smarty plugin 
 * ------------------------------------------------------------- 
@@ -46,3 +40,7 @@ function smarty_compiler_assign_content($tag_attrs, &$compiler) {
 	return "include_once('lib/smarty_tiki/function.$func_name.php');\n"
 		.'$this->assign('.$_params['var'].", smarty_function_$func_name(".$str_params.', $this));';
 }
+
+/* vim: set expandtab: */
+
+?>

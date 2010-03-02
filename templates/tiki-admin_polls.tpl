@@ -5,12 +5,10 @@
 	{button href="tiki-admin_polls.php?setlast=1" _text="{tr}Set last poll as current{/tr}"}
 	{button href="tiki-admin_polls.php?closeall=1" _text="{tr}Close all polls but last{/tr}"}
 	{button href="tiki-admin_polls.php?activeall=1" _text="{tr}Activate all polls{/tr}"}
-	{if $pollId neq '0'}{button pollId=0 cookietab=1 _text="{tr}Create poll{/tr}"}{/if}
 </div>
 
-{tabset}
-{if $pollId eq '0'}{assign var='title' value='{tr}Create poll{/tr}'}{else}{assign var='title' value='{tr}Edit poll{/tr}'}{/if}
-{tab name=$title}
+<h2>{if $pollId eq '0'}{tr}Create poll{/tr}{else}{tr}Edit poll{/tr}{/if}</h2>
+
 <form action="tiki-admin_polls.php" method="post">
 <input type="hidden" name="pollId" value="{$pollId|escape}" />
 <table class="normal">
@@ -42,7 +40,7 @@
 	</div>
 </td>
 </tr>
-{include file='categorize.tpl'}
+{include file=categorize.tpl}
 <tr><td class="formcolor">{tr}PublishDate{/tr}:</td><td class="formcolor">
 {html_select_date time=$info.publishDate end_year="+1" field_order=$prefs.display_field_order} {tr}at{/tr} {html_select_time time=$info.publishDate display_seconds=false}
 </td></tr>
@@ -53,9 +51,8 @@
 <tr><td class="formcolor">&nbsp;</td><td class="formcolor"><input type="submit" name="save" value="{tr}Save{/tr}" /></td></tr>
 </table>
 </form>
-{/tab}
 
-{tab name="{tr}Polls{/tr}"}
+<h2>{tr}Polls{/tr}</h2>
 {if $channels or ($find ne '')}
   {include file='find.tpl'}
 {/if}
@@ -76,7 +73,7 @@
 {section name=user loop=$channels}
 <tr>
 <td class="{cycle advance=false}">{$channels[user].pollId}</td>
-<td class="{cycle advance=false}"><a class="tablename" href="tiki-poll_results.php?pollId={$channels[user].pollId}">{$channels[user].title|escape}</a></td>
+<td class="{cycle advance=false}"><a class="tablename" href="tiki-poll_results.php?pollId={$channels[user].pollId}">{$channels[user].title}</a></td>
 {if $prefs.poll_list_categories eq 'y'}<td class="{cycle advance=false}">
 {section name=cat loop=$channels[user].categories}{$channels[user].categories[cat].name}{if !$smarty.section.cat.last}<br />{/if}{/section}</td>{/if}
 {if $prefs.poll_list_objects eq 'y'}<td class="{cycle advance=false}">{section name=obj loop=$channels[user].objects}<a href="{$channels[user].objects[obj].href}">{$channels[user].objects[obj].name}</a>{if !$smarty.section.obj.last}<br />{/if}{/section}</td>{/if}
@@ -98,10 +95,8 @@
 </table>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset }{/pagination_links}
-{/tab}
 
-
-{tab name="{tr}Add poll to pages{/tr}"}
+<h2>{tr}Add poll to pages{/tr}</h2>
 <form action="tiki-admin_polls.php" method="post">
 <table class="normal">
 <tr><td class="formcolor">
@@ -112,21 +107,17 @@
 <option value="{$channels[ix].pollId|escape}"{if $smarty.section.ix.first} selected="selected"{/if}>{tr}{$channels[ix].title}{/tr}</option>
 {/if}
 {/section}
-</select>
-{remarksbox type="tip" title="Tip"}{tr}This menu shows only Polls with 'status': "template"{/tr}{/remarksbox}
-</td></tr>
+</select></td></tr>
 <tr><td class="formcolor">{tr}Title{/tr}</td><td class="formcolor"><input type="text" name="poll_title" /></td></tr>
 <tr><td class="formcolor">
 {tr}Wiki pages{/tr}</td><td class="formcolor">
 <select name="pages[]" multiple="multiple" size="20">
 {section name=ix loop=$listPages}
-<option value="{$listPages[ix].pageName|escape}">{tr}{$listPages[ix].pageName|escape}{/tr}</option>
+<option value="{$listPages[ix].pageName|escape}">{tr}{$listPages[ix].pageName}{/tr}</option>
 {/section}
 </select>
-{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple options{/tr}{/remarksbox}
+{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple pages.{/tr}{/remarksbox}
 </td></tr>
 <tr><td class="formcolor">{tr}Lock the pages{/tr}</td><td class="formcolor"><input type="checkbox" name="locked" /></td></tr>
 <tr><td class="formcolor"></td><td class="formcolor"><input type="submit" name="addPoll" value="{tr}Add{/tr}" /></td></tr></table>
 </form>
-{/tab}
-{/tabset}

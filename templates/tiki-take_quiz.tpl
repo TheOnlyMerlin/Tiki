@@ -8,7 +8,8 @@
 
 {if $ans eq 'n'}
 {if $quiz_info.timeLimited eq 'y'}
-{jq}
+<script type='text/javascript'>
+{literal}
 var itid;
 function settimeleft() {
   document.getElementById('timeleft').value -= 1;
@@ -21,19 +22,20 @@ function settimeleft() {
 }
 itid = window.setInterval('settimeleft();',1000); 
 settimeleft(itid);
-{/jq}
+{/literal}
+</script>
 {/if}
 {/if}
 
-<h2>{$quiz_info.name|escape}</h2>
+<h2>{$quiz_info.name}</h2>
 <div class="description">{$quiz_info.description|escape}</div>
 {if $ans eq 'n'}
 {section name=ix loop=$questions}
 <div class="questionblock">
-<div class="quizquestion">{$questions[ix].question|escape}</div>
+<div class="quizquestion">{$questions[ix].question}</div>
 <div class="quizoptions">
   {section name=jx loop=$questions[ix].options}
-  <input type="radio" value="{$questions[ix].options[jx].optionId|escape}" name="question_{$questions[ix].questionId}" />{$questions[ix].options[jx].optionText|escape}<br />
+  <input type="radio" value="{$questions[ix].options[jx].optionId|escape}" name="question_{$questions[ix].questionId}" />{$questions[ix].options[jx].optionText}<br />
   {/section}
 </div>  
 {if $questions[ix].type eq "f" }
@@ -50,7 +52,7 @@ Supporting Documentation: <input name="question_upload_{$questions[ix].questionI
 {tr}Result{/tr}:
 <div class="quizanswer">
 {if $result.answer}
-{$result.answer|escape|nl2br}
+{$result.answer}
 {else}
 {tr}Thank you for your submission{/tr}.
 {/if}

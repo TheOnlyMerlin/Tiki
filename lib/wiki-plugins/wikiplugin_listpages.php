@@ -1,10 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Header: /cvsroot/tikiwiki/_mods/wiki-plugins/listpages/wiki-plugins/wikiplugin_listpages.php,v 1.3 2007-04-19 16:22:47 sylvieg Exp $
 function wikiplugin_listpages_help() {
 	$help = tra("List wiki pages.");
 	$help .= "<br />";
@@ -19,7 +14,6 @@ function wikiplugin_listpages_info() {
 		'documentation' => 'PluginListpages',
 		'description' => tra('List wiki pages.'),
 		'prefs' => array('wikiplugin_listpages'),
-		'icon' => 'pics/icons/page_white_stack.png',
 		'params' => array(
 			'offset' => array(
 				'required' => false,
@@ -29,7 +23,7 @@ function wikiplugin_listpages_info() {
 			'max' => array(
 				'required' => false,
 				'name' => tra('Result Count'),
-				'description' => tra('Number of results displayed in the list.'),
+				'description' => tra('Amount of results displayed in the list.'),
 			),
 			'initial' => array(
 				'required' => false,
@@ -136,7 +130,7 @@ function wikiplugin_listpages($data, $params) {
 		global $multilinguallib;
 		require_once 'lib/multilingual/multilinguallib.php';
 		if ($translations == 'user') {
-			$translations = $multilinguallib->preferredLangs();
+			$translations = $multilinguallib->preferedLangs();
 		} else {
 			$translations = explode( '|', $translations );
 		}
@@ -156,7 +150,7 @@ function wikiplugin_listpages($data, $params) {
 		$max = -1;
 	}
 	if (!isset($sort)) {
-		$sort = 'pageName_asc';
+		$sort = 'pageName_desc';
 	}
 	if (!isset($find)) {
 		$find = '';
@@ -196,3 +190,4 @@ function wikiplugin_listpages($data, $params) {
 
 	return '~np~'.$ret.'~/np~';
 }
+?>

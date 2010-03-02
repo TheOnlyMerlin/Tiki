@@ -1,15 +1,19 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+// $Id: /cvsroot/tikiwiki/tiki/tiki-file_archives.php,v 1.9.2.2 2008-03-03 20:16:13 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 $section = 'file_galleries';
 require_once ('tiki-setup.php');
+
 include_once ('lib/filegals/filegallib.php');
 
-$access->check_feature('feature_file_galleries');
+if ($prefs['feature_file_galleries'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_file_galleries");
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (empty($_REQUEST['fileId']) || !($fileInfo = $filegallib->get_file_info($_REQUEST['fileId']))) {
 	$smarty->assign('msg', tra("Incorrect param"));
@@ -87,7 +91,25 @@ $smarty->assign_by_ref('file', $file);
 $smarty->assign_by_ref('cant', $files['cant']);
 $smarty->assign_by_ref('file_info', $fileInfo);
 
-$gal_info = array_merge($filegallib->default_file_gallery(), $gal_info);
+$gal_info = array_merge($gal_info, array(
+	'show_id' => 'n',
+	'show_icon' => 'y',
+	'show_name' => 'f',
+	'show_description' => 'o',
+	'show_size' => 'o',
+	'show_created' => 'o',
+	'show_modified' => 'y',
+	'show_creator' => 'o',
+	'show_author' => 'o',
+	'show_last_user' => 'o',
+	'show_comment' => 'y',
+	'show_files' => 'n',
+	'show_hits' => 'n',
+	'show_lockedby' => 'n',
+	'show_checked' => 'y',
+	'show_userlink' => 'y',
+//	'show_checked' = 'n'
+));
 $smarty->assign_by_ref('gal_info', $gal_info);
 
 include_once ('tiki-section_options.php');
@@ -104,3 +126,5 @@ include_once('fgal_listing_conf.php');
 
 $smarty->assign('mid', 'tiki-file_archives.tpl');
 $smarty->display("tiki.tpl");
+
+?>

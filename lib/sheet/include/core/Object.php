@@ -132,3 +132,4 @@ class Object{
 		return (is_object($object) && ($object->className()==$classname || is_subclass_of($object, $classname)));
 	}
 }
+?>

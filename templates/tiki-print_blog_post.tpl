@@ -7,7 +7,7 @@
 <table ><tr><td align="left">
 <span class="posthead">
 {if $blog_data.use_title eq 'y'}
-	{$post_info.title|escape}<br />
+	{$post_info.title}<br />
 	<small> {tr}Posted by{/tr} {$post_info.user} on {$post_info.created|tiki_short_datetime}</small>
 {else}
 	{$post_info.created|tiki_short_datetime}<small> {tr}Posted by{/tr} {$post_info.user}</small>

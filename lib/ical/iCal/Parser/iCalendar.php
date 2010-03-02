@@ -42,8 +42,7 @@ require_once('File/iCal/Event.php');
  * @package iCal
  * @category File
  */
-class File_iCal_iCalendar
-{
+class File_iCal_iCalendar {
         protected $_properties = array();   //an array of Properties
         protected $_components = array();   //an array of Components
 
@@ -315,3 +314,4 @@ class File_iCal_iCalendar
         }
 
 }
+?>

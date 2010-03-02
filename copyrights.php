@@ -1,17 +1,26 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/copyrights.php,v 1.18 2007-10-12 07:55:23 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once ('tiki-setup.php');
-$access->check_feature('wiki_feature_copyrights');
+
+if ($prefs['wiki_feature_copyrights'] != 'y') {
+	$smarty->assign('msg', tra("The copyright management feature is not enabled."));
+
+	$smarty->display("error.tpl");
+	die;
+}
+
+
 $access->check_permission(array('tiki_p_edit_copyrights'), tra("Copyright management"));
 
 include_once ("lib/copyrights/copyrightslib.php");
 global $dbTiki;
-$copyrightslib = new CopyrightsLib;
+$copyrightslib = new CopyrightsLib($dbTiki);
 
 if (!isset($_REQUEST["page"])) {
 	$smarty->assign('msg', tra("No page indicated"));
@@ -73,3 +82,5 @@ $smarty->assign('copyrights', $copyrights["data"]);
 // Display the template
 $smarty->assign('mid', 'copyrights.tpl');
 $smarty->display("tiki.tpl");
+
+?>

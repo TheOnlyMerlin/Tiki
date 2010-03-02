@@ -1,10 +1,6 @@
-{* $Id$ *}
+{* $Id: tiki-listpages.tpl 14254 2008-08-14 15:31:06Z pkdille $ *}
 
-{title}{tr}XML Zip Import{/tr}{/title}
-
-<div class="navbar">
-	 {button href='tiki-admin_structures.php' _text='{tr}Structures{/tr}'}
-</div>
+{title}{tr}XML Zip{/tr}{/title}
 
 {if $error}
 	<div class="simplebox highlight">

@@ -3,7 +3,7 @@
 <input type="hidden" name="polls_pollId" value="{$menu_info.pollId|escape}" />
 {if $tiki_p_vote_poll ne 'n' && ($user ||  $prefs.feature_poll_anonymous == 'y')}
 {section name=ix loop=$channels}
-  <label><input type="radio" name="polls_optionId" value="{$channels[ix].optionId|escape}" />{tr}{$channels[ix].title|escape}{/tr}</label><br />
+  <input type="radio" name="polls_optionId" value="{$channels[ix].optionId|escape}" />{tr}{$channels[ix].title|escape}{/tr}<br />
 {/section}
 {else}
   <ul>
@@ -23,9 +23,9 @@
 </div>
 {if $prefs.feature_poll_comments and $comments_cant and !isset($module_params)}
   <br />
-{include file='comments_button.tpl'}
+{include file=comments_button.tpl}
 </div>
 {/if}
 </form>
-{if !$user && !isset($smarty.cookies.PHPSESSID)}<i>{tr}For you to vote, cookies must be allowed{/tr}</i>{/if}
+{if !$user && !isset($smarty.cookies.PHPSESSID)}<i>{tr}Cookies must be allowed to vote{/tr}</i>{/if}
 

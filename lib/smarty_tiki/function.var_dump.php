@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -12,8 +7,11 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 /** \file
+ * $Id: /cvsroot/tikiwiki/tiki/lib/smarty_tiki/function.var_dump.php,v 1.4 2005-05-18 11:01:44 mose Exp $
+ *
  * \author zaufi <zaufi@sendmail.ru>
  */
+
 
 /**
  * \brief Smarty plugin to add variable dump to debug console log
@@ -37,3 +35,5 @@ function smarty_function_var_dump($params, &$smarty)
     $debugger->msg("Smarty var_dump: Parameter 'var' not specified");
   return '<!-- var_dump('.$v.') -->';
 }
+
+?>
