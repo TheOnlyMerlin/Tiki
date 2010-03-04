@@ -2,6 +2,12 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 4 march 2010
+
+Upgrade:
+	jQuery.sheet from 0.54 to 1.0 b
+	Other tidying up of jQueryUI from previous incomplete commit.
+
 jonnybradley 1 march 2010
 
 Upgrade:
