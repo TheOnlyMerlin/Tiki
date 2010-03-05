@@ -9,6 +9,7 @@ New:
 
 Upgrade:
 	cluetip from 1.0.6 to 1.0.7
+	More for jQuery.sheet
 
 jonnybradley 4 march 2010
 
