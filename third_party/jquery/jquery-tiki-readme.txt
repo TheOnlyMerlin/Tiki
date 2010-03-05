@@ -2,6 +2,11 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 5 march 2010
+
+New:
+	jqs5 - slideshow lib (experimental - small modification to jqs5.js to alias $jq to $)
+
 jonnybradley 4 march 2010
 
 Upgrade:
