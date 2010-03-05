@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 // \todo extract HTML from here !!
 
 //this script may only be included - so its better to die if called directly.
@@ -13,8 +7,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class DirLib extends TikiLib
-{
+class DirLib extends TikiLib {
 	// Path functions
 	function dir_get_category_path_admin($categId) {
 		global $prefs;
@@ -54,7 +47,7 @@ class DirLib extends TikiLib
 	function dir_build_breadcrumb_trail($categId) {
 		$crumbs = array();
 		$info = $this->dir_get_category($categId);
-		if (isset($info["name"])) {
+		if(isset($info["name"])) {
 			$crumbs[] = new Breadcrumb($info["name"],  
 				'',            
 				'tiki-directory_browse.php?parent=' . $info["categId"],
@@ -548,7 +541,7 @@ class DirLib extends TikiLib
 		$words = split(' ', $words);
 
 		$bindvars = array('y');
-		for ($i = 0, $icount_words = count($words); $i < $icount_words; $i++) {
+		for ($i = 0; $i < count($words); $i++) {
 			$words[$i] = trim($words[$i]);
 			$word = $words[$i];
 			if (!empty($word)) {
@@ -588,7 +581,7 @@ class DirLib extends TikiLib
 		// we'll search by name, url, description and cache, the relevance will be calculated using hits
 		$words = split(' ', $words);
 		$bindvars = array('y',(int)$parent);
-		for ($i = 0, $icount_words = count($words); $i < $icount_words; $i++) {
+		for ($i = 0; $i < count($words); $i++) {
 			$words[$i] = trim($words[$i]);
 			$word = $words[$i];
 			// Check if the term is in the stats then add it or increment it

@@ -27,7 +27,7 @@ require_once 'Auth/OpenID/KVForm.php';
 /**
  * @access private
  */
-require_once 'Auth/OpenID/HMAC.php';
+require_once 'Auth/OpenID/HMACSHA1.php';
 
 /**
  * This class represents an association between a server and a
@@ -609,5 +609,3 @@ class Auth_OpenID_SessionNegotiator {
         return $this->allowed_types[0];
     }
 }
-
-?>

@@ -51,7 +51,7 @@
 				<td>{$channels[user].lastModif|tiki_short_date}</td>
 				<td style="text-align:right;" >{$channels[user].items}</td>
 				<td class="auto">
-					<a title="{tr}Edit{/tr}" href="tiki-admin_trackers.php?trackerId={$channels[user].trackerId}&show=mod">{icon _id='page_edit'}</a>
+					<a title="{tr}Edit{/tr}" href="tiki-admin_trackers.php?trackerId={$channels[user].trackerId}">{icon _id='page_edit'}</a>
 					<a title="{tr}View{/tr}" href="tiki-view_tracker.php?trackerId={$channels[user].trackerId}">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>
 					<a title="{tr}Fields{/tr}" class="link" href="tiki-admin_tracker_fields.php?trackerId={$channels[user].trackerId}">{icon _id='table' alt="{tr}Fields{/tr}"}</a>
 					{if $channels[user].individual eq 'y'}
@@ -112,7 +112,11 @@
 					<div id="trackerDesc" style="display:none;" >
 						{toolbars qtnum="trackerDesc" area_name="trackerDescription"}
 						{if $descriptionIsParsed eq 'y'}
-							{jq}toggleBlock('trackerDesc');{/jq}
+							<script language="javascript">
+								<!--//--><![CDATA[//><!--
+								toggleBlock('trackerDesc');
+								//--><!]]>
+							</script>
 						{/if}
 					</div>
 					<textarea id="trackerDescription" name="description" rows="4" cols="40">{$description|escape}</textarea>
@@ -423,7 +427,6 @@
 							<td>{tr}Version{/tr}</td>
 							<td>{tr}Filetype{/tr}</td>
 							<td>{tr}LongDesc{/tr}</td>
-							<td>{tr}User{/tr}</td>
 						</tr>
 						<tr>
 							<td><input type="text" size="2" name="ui[filename]" value="{$ui.filename}" /></td>
@@ -434,7 +437,6 @@
 							<td><input type="text" size="2" name="ui[version]" value="{$ui.version}" /></td>
 							<td><input type="text" size="2" name="ui[filetype]" value="{$ui.filetype}" /></td>
 							<td><input type="text" size="2" name="ui[longdesc]" value="{$ui.longdesc}" /></td>
-							<td><input type="text" size="2" name="ui[user]" value="{$ui.user}" /></td>
 						</tr>
 					</table>
 				</td>
@@ -491,12 +493,6 @@
 			{/if}
 
 			<tr class="formcolor">
-				<td>{tr}Wiki page to display an item{/tr}</td>
-				<td><input type="text" name="viewItemPretty" value="{$info.viewItemPretty|escape}" />
-				<br /><em>{tr}wiki:pageName for a wiki page or tpl:tplName for a template{/tr}</td>
-			</tr>
-
-			<tr class="formcolor">
 				<td></td>
 				<td><input type="submit" name="save" value="{tr}Save{/tr}" /></td>
 			</tr>
@@ -505,11 +501,10 @@
 {/tab}
 
 {if $trackerId}
-{jq}if ($jq.ui && $jq(".tabs").length) { $jq("#content3").tiki("accordion", {heading: "h2"});}{/jq}
 {tab name="{tr}Import/Export{/tr}"}
 {* --- tab with raw form --- *}
 <h2>{tr}Import/export trackers{/tr}</h2>
-	<div>
+
 	<form action="tiki-admin_trackers.php" method="post">
 		<input type="hidden" name="trackerId" value="{$trackerId|escape}" />
 		<input type="hidden" name="import" value="1" />
@@ -548,13 +543,11 @@ categories = {$catsdump}
 		<br />
 		<input type="submit" name="save" value="{tr}Import{/tr}" />
 	</form>
-	</div>
-	
+
 	{if $trackerId}
 		{include file='tiki-export_tracker.tpl'}
 
 		<h2>{tr}Import CSV data{/tr}</h2>
-		<div>
 		<form action="tiki-import_tracker.php?trackerId={$trackerId}" method="post" enctype="multipart/form-data">
 			<table class="normal">
 				<tr class="formcolor">
@@ -583,20 +576,11 @@ categories = {$catsdump}
 					</td>
 				</tr>
 				<tr class="formcolor">
-					<td>{tr}Separator{/tr}</td>
-					<td><input type="text" name="separator" value="," size="2" /></td>
-				</tr>
-				<tr class="formcolor">
-					<td>{tr}Add as new items:{/tr}</td>
-					<td><input type="checkbox" name="add_items" /></td>
-				</tr>
-				<tr class="formcolor">
 					<td>&nbsp;</td>
-					<td><input type="submit" name="save" value="{tr}Import{/tr}" /></td>
+					<td><input type="submit" name="save" value="{tr}Save{/tr}" /></td>
 				</tr>
 			</table>
 		</form>
-		</div>
 	{/if}
 {/tab}
 {/if}
@@ -619,7 +603,11 @@ categories = {$catsdump}
 					<div id="duplicateTrackerDesc" style="display:none;" >
 						{toolbars qtnum="duplicateTrackerDesc" area_name="duplicateTrackerDescription"}
 						{if $descriptionIsParsed eq 'y'}
-							{jq}toggleBlock('duplicateTrackerDesc');{/jq}
+							<script language="javascript">
+							<!--//--><![CDATA[//><!--
+							toggleBlock('duplicateTrackerDesc');
+							//--><!]]>
+							</script>
 						{/if}
 					</div>
 					<br />

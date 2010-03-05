@@ -1,8 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
@@ -44,6 +41,10 @@ abstract class Toolbar
 			return $tag;
 		elseif( $tagName == 'fullscreen' )
 			return new ToolbarFullscreen;
+		elseif( $tagName == 'enlarge' )
+			return new ToolbarTextareaResize( 'enlarge' );
+		elseif( $tagName == 'reduce' )
+			return new ToolbarTextareaResize( 'reduce' );
 		elseif( $tagName == 'tikiimage' )
 			return new ToolbarFileGallery;
 		elseif( $tagName == 'help' )
@@ -52,8 +53,6 @@ abstract class Toolbar
 			return new ToolbarSwitchEditor;
 		elseif( $tagName == '-' )
 			return new ToolbarSeparator;
-		elseif( $tag = ToolbarSheet::fromName( $tagName ) )
-			return $tag;
 	} // }}}
 
 	public static function getList() // {{{
@@ -119,23 +118,13 @@ abstract class Toolbar
 			'fontsize',
 			'source',
 			'fullscreen',
+			'enlarge',
+			'reduce',
 			'help',
 			'tikiimage',
 			'switcheditor',
 			'autosave',
 			'nonparsed',
-		
-			'sheetsave',	// spreadsheet ones
-			'addrow',
-			'addrowmulti',
-			'deleterow',
-			'addcolumn',
-			'deletecolumn',
-			'addcolumnmulti',
-			'sheetgetrange',
-			'sheetfind',
-			'sheetrefresh',
-			'sheetclose',
 		), $plugins ));
 	} // }}}
 	
@@ -361,6 +350,7 @@ abstract class Toolbar
 		if (strpos($class, 'qt-plugin') !== false && !empty($title)) {
 			$params['_menu_text'] = 'y';
 			$params['_menu_icon'] = 'y';
+		} else {
 		}
 		return smarty_block_self_link($params, $content, $smarty);
 	} // }}}
@@ -383,7 +373,7 @@ class ToolbarSeparator extends Toolbar
 }
 
 class ToolbarFckOnly extends Toolbar
-{
+{ 
 	private function __construct( $token, $icon = '' ) // {{{
 	{
 		$fck_icon_path = 'lib/fckeditor_tiki/fckeditor-icons/';
@@ -688,13 +678,11 @@ class ToolbarPicker extends Toolbar
 			$icon = tra('pics/icons/palette.png');
 			$rawList = array();
 			
-			$hex = array('0', '3', '6', '9', 'c', 'f');
-			$count_hex = count($hex);
-
-			for ($r = 0; $r < $count_hex; $r++){ // red
-				for ($g = 0; $g < $count_hex; $g++){ // green
-					for ($b = 0; $b < $count_hex; $b++){ // blue
-						$color = $hex[$r] . $hex[$g] . $hex[$b];
+			$hex = array("0", "3", "6", "9", "c", "f");
+			for ($r = 0; $r < count($hex); $r++){ // red
+				for ($g = 0; $g < count($hex); $g++){ // green
+					for ($b = 0; $b < count($hex); $b++){ // blue
+						$color = $hex[$r].$hex[$g].$hex[$b];
 						$rawList[] = $color;
 					}
 				}
@@ -711,12 +699,10 @@ class ToolbarPicker extends Toolbar
 			$icon = tra('pics/icons/palette_bg.png');
 			$wysiwyg = 'BGColor';
 
-			$hex = array('0', '3', '6', '9', 'c', 'f');
-			$count_hex = count($hex);
-
-			for ($r = 0; $r < $count_hex; $r++){ // red
-				for ($g = 0; $g < $count_hex; $g++){ // green
-					for ($b = 0; $b < $count_hex; $b++){ // blue
+			$hex = array("0", "3", "6", "9", "c", "f");
+			for ($r = 0; $r < count($hex); $r++){ // red
+				for ($g = 0; $g < count($hex); $g++){ // green
+					for ($b = 0; $b < count($hex); $b++){ // blue
 						$color = $hex[$r].$hex[$g].$hex[$b];
 						$rawList[] = $color;
 					}
@@ -1290,6 +1276,7 @@ if (textarea.selectionEnd != tempSelectionEnd) {
 		global $headerlib;
 
 		if( ! $dialogAdded ) {
+			$headerlib->include_jquery_ui();
 			$headerlib->add_js( <<<JS
 window.dialogData = [];
 var dialogDiv;
@@ -1370,15 +1357,49 @@ class ToolbarFullscreen extends Toolbar
 
 	function getWikiHtml( $areaName ) // {{{
 	{
-		
-		return $this->getSelfLink('toggleFullScreen(\''.$areaName.'\');return false;',
-							htmlentities($this->label, ENT_QUOTES, 'UTF-8'), 'qt-fullscreen');
-		
-		
-//		if( isset($_REQUEST['zoom']) )
-//			$name = 'preview';
-//		return '<input type="image" name="'.$name.'" alt="' . htmlentities($this->label, ENT_QUOTES, 'UTF-8') . '" class="toolbar qt-fullscreen" '.
-//				'title="' . htmlentities($this->label, ENT_QUOTES, 'UTF-8') . '" value="wiki_edit" onclick="needToConfirm=false;" src="' . htmlentities($this->icon, ENT_QUOTES, 'UTF-8') . '"/>';
+		$name = 'zoom';
+		if( isset($_REQUEST['zoom']) )
+			$name = 'preview';
+		return '<input type="image" name="'.$name.'" alt="' . htmlentities($this->label, ENT_QUOTES, 'UTF-8') . '" class="toolbar qt-fullscreen" '.
+				'title="' . htmlentities($this->label, ENT_QUOTES, 'UTF-8') . '" value="wiki_edit" onclick="needToConfirm=false;" src="' . htmlentities($this->icon, ENT_QUOTES, 'UTF-8') . '"/>';
+	} // }}}
+}
+
+class ToolbarTextareaResize extends Toolbar
+{
+	private $diff;
+
+	function __construct( $type ) // {{{
+	{
+		switch( $type ) {
+		case 'reduce':
+			$this->setLabel( tra('Reduce area height') )
+				->setIcon( tra('pics/icons/arrow_in.png') )
+					->setType('TextareaResize');
+			$this->diff = '-10';
+			break;
+
+		case 'enlarge':
+			$this->setLabel( tra('Enlarge area height') )
+				->setIcon( tra('pics/icons/arrow_out.png') )
+					->setType('TextareaResize');
+			$this->diff = '+10';
+			break;
+
+		default:
+			throw new Exception('Unknown resize icon type type');
+		}
+	} // }}}
+
+	function getWikiHtml( $areaName ) // {{{
+	{
+		return $this->getSelfLink('textareasize(\'' . $areaName . '\', ' . $this->diff . ', 0)',
+							htmlentities($this->label, ENT_QUOTES, 'UTF-8'), 'qt-resize');
+	} // }}}
+
+	function isAccessible() // {{{
+	{
+		return parent::isAccessible() && ! isset($_REQUEST['zoom']);
 	} // }}}
 }
 
@@ -1404,12 +1425,10 @@ class ToolbarHelptool extends Toolbar
 		
 	} // }}}
 
-/* Useless
 	function isAccessible() // {{{
 	{
 		return parent::isAccessible();
 	} // }}}
-*/
 }
 
 class ToolbarFileGallery extends Toolbar
@@ -1513,8 +1532,7 @@ class ToolbarWikiplugin extends Toolbar
 	function isAccessible() // {{{
 	{
 		global $tikilib;
-		$dummy_output = '';
-		return parent::isAccessible() && $tikilib->plugin_enabled( $this->pluginName, $dummy_output );
+		return parent::isAccessible() && $tikilib->plugin_enabled( $this->pluginName );
 	} // }}}
 
 	private static function getToken( $name ) // {{{
@@ -1535,105 +1553,6 @@ class ToolbarWikiplugin extends Toolbar
 							$label, 'qt-plugin');
 	} // }}}
 }
-
-class ToolbarSheet extends Toolbar
-{
-	protected $syntax;
-
-	public static function fromName( $tagName ) // {{{
-	{
-		switch( $tagName ) {
-			case 'sheetsave':
-				$label = tra('Save Sheet');
-				$icon = tra('pics/icons/disk.png');
-				$syntax = '$jq.sheet.saveSheet();';
-				break;
-			case 'addrow':
-				$label = tra('Add Row');
-				$icon = tra('pics/icons/sheet_row_add.png');
-				$syntax = 'jS.controlFactory.addRow(true);';	// add row after current or at end if none selected
-				break;
-			case 'addrowmulti':
-				$label = tra('Add Multi-Rows');
-				$icon = tra('pics/icons/sheet_row_add_multi.png');
-				$syntax = 'jS.controlFactory.addRowMulti();';
-				break;
-			case 'deleterow':
-				$label = tra('Delete Row');
-				$icon = tra('pics/icons/sheet_row_delete.png');
-				$syntax = 'jS.deleteRow();';
-				break;
-			case 'addcolumn':
-				$label = tra('Add Column');
-				$icon = tra('pics/icons/sheet_col_add.png');
-				$syntax = 'jS.controlFactory.addColumn(true);';	// add col after current or at end if none selected
-				break;
-			case 'deletecolumn':
-				$label = tra('Delete Column');
-				$icon = tra('pics/icons/sheet_col_delete.png');
-				$syntax = 'jS.deleteColumn();';
-				break;
-			case 'addcolumnmulti':
-				$label = tra('Add Multi-Columns');
-				$icon = tra('pics/icons/sheet_col_add_multi.png');
-				$syntax = 'jS.controlFactory.addColumnMulti();';
-				break;
-			case 'sheetgetrange':
-				$label = tra('Get Cell Range');
-				$icon = tra('pics/icons/sheet_get_range.png');
-				$syntax = 'insertAt("jSheetControls_formula", jS.getTdRange());';
-				break;
-			case 'sheetfind':
-				$label = tra('Find');
-				$icon = tra('pics/icons/find.png');
-				$syntax = 'jS.cellFind();';
-				break;
-			case 'sheetrefresh':
-				$label = tra('Refresh Calculations');
-				$icon = tra('pics/icons/arrow_refresh.png');
-				$syntax = 'jS.calc(jS.obj.tableBody());';
-				break;
-			case 'sheetclose':
-				$label = tra('Finish Editing');
-				$icon = tra('pics/icons/close.png');
-				$syntax = '$jq("#edit_button").click();';	// temporary workaround TODO properly
-				break;
-				
-			default:
-				return;
-		}
-
-		$tag = new self;
-		$tag->setLabel( $label )
-			->setIcon( !empty($icon) ? $icon : 'pics/icons/shading.png' )
-				->setSyntax( $syntax )
-					->setType('Sheet');
-		
-		return $tag;
-	} // }}}
-
-	function getSyntax() // {{{
-	{
-		return $this->syntax;
-	} // }}}
-	
-	protected function setSyntax( $syntax ) // {{{
-	{
-		$this->syntax = $syntax;
-
-		return $this;
-	} // }}}
-
-	function getWikiHtml( $areaName ) // {{{
-	{
-		return $this->getSelfLink(addslashes(htmlentities($this->syntax, ENT_COMPAT, 'UTF-8')),
-							htmlentities($this->label, ENT_QUOTES, 'UTF-8'), 'qt-sheet');
-
-	} // }}}
-	
-}
-
-
 
 class ToolbarsList
 {
@@ -1680,7 +1599,7 @@ class ToolbarsList
 		if ( $unique && $this->contains($name) ) {
 			return false;
 		}
-		$this->lines[count($this->lines)-1][0][0][] = Toolbar::getTag( $name );
+		$this->lines[sizeof($this->lines)-1][0][0][] = Toolbar::getTag( $name );
 		return true;
 	}
 
@@ -1695,7 +1614,7 @@ class ToolbarsList
 	private function addLine( array $tags, array $rtags = array() ) // {{{
 	{
 		$elements = array();
-		$j = count($rtags) > 0 ? 2 : 1;
+		$j = count($rtags) > 1 ? 2 : 1;
 		
 		for ($i = 0; $i <  $j; $i++) {
 			$group = array();
@@ -1776,7 +1695,7 @@ class ToolbarsList
 			}
 			
 			// $line[0] is left part, $line[1] right floated section
-			for ($bitx = 0, $bitxcount_line = count($line); $bitx < $bitxcount_line; $bitx++ ) {
+			for ($bitx = 0; $bitx < count($line); $bitx++ ) {
 				$lineBit = '';
 				
 				if ($c == 0 && $bitx == 1 && ($tiki_p_admin == 'y' or $tiki_p_admin_toolbars == 'y')) {

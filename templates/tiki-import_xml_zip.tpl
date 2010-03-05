@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Id: tiki-listpages.tpl 14254 2008-08-14 15:31:06Z pkdille $ *}
 
 {title}{tr}XML Zip Import{/tr}{/title}
 

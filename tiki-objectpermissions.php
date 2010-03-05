@@ -1,10 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-
 include_once ("tiki-setup.php");
 error_reporting(E_ALL);
 if (!empty($_REQUEST['objectType']) && $_REQUEST['objectType'] != 'global') {
@@ -40,7 +39,12 @@ if ($_REQUEST['objectType'] == 'wiki page') {
 		$tikilib->get_perm_object($_REQUEST['objectId'], $_REQUEST['objectType'], $info);
 	}
 } else if ($_REQUEST['objectType'] == 'global') {
-	$access->check_permission('tiki_p_admin');
+	if ($tiki_p_admin != 'y') {						// is there a better perm for this?
+		$smarty->assign('errortype', 401);
+		$smarty->assign('msg', tra("Permission denied you cannot assign permissions for this object"));
+		$smarty->display("error.tpl");
+		die;
+	}
 } else {
 	$tikilib->get_perm_object($_REQUEST['objectId'], $_REQUEST['objectType']);
 	if ($_REQUEST['objectType'] == 'tracker') {
@@ -167,19 +171,6 @@ if ($group_filter === false) {
 		$smarty->assign('groupsFiltered', 'y');
 	}
 	$tikilib->set_user_preference($user, 'objectperm_admin_groups', serialize($group_filter));
-}
-
-if (isset($_REQUEST['group'])) {
-	$grp_id = 0;
-	foreach($groups['data'] as $grp) {
-		if ($grp['groupName'] == $_REQUEST['group']) {
-			$grp_id = $grp['id'];
-			break; 
-		}
-	}
-	if ($grp_id > 0 && !in_array($grp_id, $group_filter)) {
-		$group_filter[] = $grp_id;
-	}
 }
 
 // Process the form to assign a new permission to this object
@@ -456,12 +447,6 @@ JS;
 JS;
 	$i++;
 }	// end of for $groupNames loop
-
-if (!empty($_REQUEST['textFilter'])) {
-	$js .= '
-$jq("#treetable_1_filter").val("'.$_REQUEST['textFilter'].'");
-setTimeout(function(){$jq("#treetable_1_filter").keyup();}, 500);';
-}
 
 $headerlib->add_jq_onready($js);
 

@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /**
  *  Tikiwiki MCALENDAR plugin.
  *  Convert date from Gregorian to Mayan Calendars: Tzolkin, Haab, Long Count.
@@ -26,8 +20,7 @@
  */
 
 
-class MCalendar
-{
+ class MCalendar {
 
    // GMT correlation initiated on August 11, 3114 BC (Gregorian).
    // For another popular GMT correlation initiated on August 13, 3114 BC 

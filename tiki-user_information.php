@@ -1,10 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-user_information.php,v 1.45.2.4 2008-01-16 15:50:48 sylvieg Exp $
 require_once ('tiki-setup.php');
 if ($prefs['feature_ajax'] == "y") {
 	require_once ('lib/ajax/ajaxlib.php');
@@ -30,10 +29,14 @@ if (isset($_REQUEST['userId'])) {
 		die;
 	}
 } else {
-	$access->check_user($user);
-	$userwatch = $user;
+	if ($user) {
+		$userwatch = $user;
+	} else {
+		$smarty->assign('msg', tra("You are not logged in and no user indicated"));
+		$smarty->display("error.tpl");
+		die;
+	}
 }
-
 $smarty->assign('userwatch', $userwatch);
 // Custom fields
 $customfields = array();
@@ -85,8 +88,7 @@ $smarty->assign_by_ref('user_prefs', $user_preferences[$userwatch]);
 $user_style = $tikilib->get_user_preference($userwatch, 'theme', $prefs['site_style']);
 $smarty->assign_by_ref('user_style', $user_style);
 $user_language = $tikilib->get_language($userwatch);
-$user_language_text = $tikilib->format_language_list(array($user_language));
-$smarty->assign_by_ref('user_language', $user_language_text[0]['name']);
+$smarty->assign_by_ref('user_language', $user_language);
 $realName = $tikilib->get_user_preference($userwatch, 'realName', '');
 $gender = $tikilib->get_user_preference($userwatch, 'gender', '');
 $country = $tikilib->get_user_preference($userwatch, 'country', 'Other');
@@ -143,40 +145,6 @@ if ($prefs['feature_display_my_to_others'] == 'y') {
 		$user_forum_topics = $commentslib->get_user_forum_comments($userwatch, -1, 'topics');
 		$smarty->assign_by_ref('user_forum_topics', $user_forum_topics);
 	}
-	if ($prefs['user_who_viewed_my_stuff'] == 'y') {
-		$mystuff = array();
-		if (isset($user_pages)) {
-			$stuffType = 'wiki page';
-			foreach ($user_pages as $obj) {
-				$mystuff[] = array( 'object' => $obj["pageName"], 'objectType' => $stuffType, 'comment' => '' );
-			}
-		}
-		if (isset($user_blogs)) {
-			$stuffType = 'blog';
-			foreach ($user_blogs as $obj) {
-				$mystuff[] = array( 'object' => $obj["blogId"], 'objectType' => $stuffType, 'comment' => '' );
-			}
-		}
-		if (isset($user_articles)) {
-			$stuffType = 'article';
-			foreach ($user_articles as $obj) {
-				$mystuff[] = array( 'object' => $obj["articleId"], 'objectType' => $stuffType, 'comment' => '' );
-			}
-		}
-		if (isset($user_forum_topics)) {
-			$stuffType = 'forum';
-			foreach ($user_forum_topics as $obj) {
-				$forum_comment = 'comments_parentId=' . $obj["threadId"];
-				$mystuff[] = array( 'object' => $obj["object"], 'objectType' => $stuffType, 'comment' => $forum_comment );
-			}
-		}
-		global $logslib;
-		if (!is_object($logslib)) {
-			require_once("lib/logs/logslib.php");		
-		}
-		$whoviewed = $logslib->get_who_viewed($mystuff, false);
-		$smarty->assign('whoviewed', $whoviewed);
-	}
 }
 if ($prefs['user_tracker_infos']) {
 	// arg passed 11,56,58,68=trackerId,fieldId...
@@ -200,13 +168,6 @@ if ($prefs['feature_ajax'] == "y") {
 		$ajaxlib->processRequests();
 	}
 	user_information_ajax();
-}
-// Get full user picture if it is set
-if ($prefs["user_store_file_gallery_picture"] == 'y') {
-	require_once ('lib/userprefs/userprefslib.php');
-	if ($user_picture_id = $userprefslib->get_user_picture_id($userwatch)) {	
-		$smarty->assign('user_picture_id', $user_picture_id);
-	}	
 }
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');

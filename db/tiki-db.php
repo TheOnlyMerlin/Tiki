@@ -1,9 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+/* $Id$ */
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== false) {
@@ -74,37 +70,30 @@ if (!isset($local_php) or !is_file($local_php)) {
 } else {
 	$local_php = preg_replace(array('/\.\./','/^db\//'),array('',''),$local_php);
 }
-$tikidomain = '';
 if (is_file('db/virtuals.inc')) {
-	if (isset($_SERVER['TIKI_VIRTUAL']) and is_file('db/'.$_SERVER['TIKI_VIRTUAL'].'/local.php')) {
-		$tikidomain = $_SERVER['TIKI_VIRTUAL'];
-	} elseif (isset($_SERVER['SERVER_NAME']) and is_file('db/'.$_SERVER['SERVER_NAME'].'/local.php')) {
-		$tikidomain = $_SERVER['SERVER_NAME'];
-	} else if (isset($_REQUEST['multi']) && is_file('db/'.$_REQUEST['multi'].'/local.php')) {
-		$tikidomain = $_REQUEST['multi'];
-	} elseif (isset($_SERVER['HTTP_HOST'])) {
-		if (is_file('db/'.$_SERVER['HTTP_HOST'].'/local.php')) {
-			$tikidomain = $_SERVER['HTTP_HOST'];
-		} else if (is_file('db/'.preg_replace('/^www\./','',$_SERVER['HTTP_HOST']).'/local.php')) {
-			$tikidomain = preg_replace('/^www\./','',$_SERVER['HTTP_HOST']);
+	if (!isset($multi)) {
+		if (isset($_SERVER['TIKI_VIRTUAL']) and is_file('db/'.$_SERVER['TIKI_VIRTUAL'].'/local.php')) {
+			$multi = $_SERVER['TIKI_VIRTUAL'];
+		} elseif (isset($_SERVER['SERVER_NAME']) and is_file('db/'.$_SERVER['SERVER_NAME'].'/local.php')) {
+			$multi = $_SERVER['SERVER_NAME'];
+		} elseif (isset($_SERVER['HTTP_HOST'])) {
+			if (is_file('db/'.$_SERVER['HTTP_HOST'].'/local.php')) {
+				$multi = $_SERVER['HTTP_HOST'];
+			} else if (is_file('db/'.preg_replace('/^www\./','',$_SERVER['HTTP_HOST']).'/local.php')) {
+				$multi = preg_replace('/^www\./','',$_SERVER['HTTP_HOST']);
+			}
 		}
 	}
-	if (!empty($tikidomain)) {
-		$local_php = "db/$tikidomain/local.php";
+	if (isset($multi)) {
+		$local_php = "db/$multi/local.php";
+		$tikidomain = $multi;
 	}
 }
-$tikidomainslash = (!empty($tikidomain) ? $tikidomain . '/' : '');
-
 $re = false;
 if ( file_exists($local_php) ) $re = include($local_php);
 if ( $re === false ) {
-	if ( $in_installer != 1) {
-		header('location: tiki-install.php');
-		exit;
-	} else {
-		// we are in the installer don't redirect...
-		return ;
-  }
+	header('location: tiki-install.php');
+	exit;
 }
 
 if ( $dbversion_tiki == '1.10' ) $dbversion_tiki = '2.0';
@@ -158,8 +147,6 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 			$smarty->assign( 'built_query', $q );
 			$smarty->assign( 'stacktrace', $stacktrace );
 			$smarty->assign( 'requires_update', $installer->requiresUpdate() );
-
-			header("Cache-Control: no-cache, pre-check=0, post-check=0");
 
 			if ($prefs['feature_ajax'] == 'y') {
 				global $ajaxlib;

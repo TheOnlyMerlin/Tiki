@@ -1,11 +1,7 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /** \file
+ * $Id: /cvsroot/tikiwiki/tiki/lib/tree/tree.php,v 1.10 2006-10-26 11:23:27 luciash Exp $
+ *
  * \brief Base tree maker
  *
  * \author zaufi@sendmail.ru
@@ -32,8 +28,7 @@ require_once ('lib/debug/debugger.php');
  *  data   => user provided data to be placed as node text
  *
  */
-class TreeMaker
-{
+class TreeMaker {
 	/// Unique prefix for cookies generated for this tree
 	var $prefix;
 

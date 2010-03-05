@@ -23,7 +23,6 @@
 		<span class="titleb">
 			{if $show_author eq 'y' && $authorName}{tr}By:{/tr} {$authorName|escape} {/if}
 			{if $show_pubdate eq 'y' && $publishDate}{tr}on:{/tr} {$publishDate|tiki_short_datetime} {/if}
-			{if $show_expdate eq 'y' && $expireDate}{tr}expires:{/tr} {$expireDate|tiki_short_datetime} {/if}
 			{if $show_reads eq 'y'}({$reads} {tr}Reads{/tr}){/if}
 		</span>
 		<br />
@@ -40,11 +39,6 @@
 			{/if}
 			({$rating}/10)
 		</div>
-	{/if}
-	{if $prefs.article_user_rating eq 'y' && $tiki_p_rate_article eq 'y'}
-		<form method="post" action="">
-			{rating type=article id=$articleId}
-		</form>
 	{/if}
 
 	<div class="articletrailer">
@@ -101,16 +95,7 @@
 						</td>
 						<td valign="top">
 					{/if}
-					<div class="articleheadingtext">
-						{if $article_attributes}
-						<div class="articleattributes">
-							{foreach from=$article_attributes key=attname item=attvalue}
-							{tr}{$attname|escape}{/tr}: {$attvalue|escape}<br />
-							{/foreach}
-						</div>
-						{/if}
-						{$parsed_heading}
-					</div>
+					<div class="articleheadingtext">{$parsed_heading}</div>
 				</td>
 			</tr>
 		</table>
@@ -146,15 +131,18 @@
 		</div>
 	{/if}
 
-	{capture name='copyright_section'}
-		{include file='show_copyright.tpl'}
-	{/capture}
-
-	{* When copyright section is not empty show it *}
-	{if $smarty.capture.copyright_section neq ''}
-		<p class="editdate">
-			{$smarty.capture.copyright_section}
-		</p>
+	{if $prefs.articles_feature_copyrights eq 'y' and $prefs.wikiLicensePage}
+		{if $prefs.wikiLicensePage == $page}
+			{if $tiki_p_edit_copyrights eq 'y'}
+				<p class="editdate">
+					{tr}To edit the copyright notices{/tr} <a href="copyrights.php?page={$copyrightpage}">{tr}Click Here{/tr}</a>.
+				</p>
+			{/if}
+		{else}
+			<p class="editdate">
+				{tr}The content on this page is licensed under the terms of the{/tr} <a href="tiki-index.php?page={$prefs.wikiLicensePage}&amp;copyrightpage={$page|escape:"url"}">{$prefs.wikiLicensePage}</a>.
+			</p>
+		{/if}
 	{/if}
 </div>
 

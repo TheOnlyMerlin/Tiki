@@ -1,25 +1,23 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-register.php,v 1.91.2.4 2008/03/23 14:12:05 sylvieg Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/registration/registrationlib.php');
 include_once ('lib/notifications/notificationlib.php');
-$smarty->assign('headtitle', tra('Register'));
 // Permission: needs p_register and not to be a slave
 if ($prefs['allowRegister'] != 'y' || ($prefs['feature_intertiki'] == 'y' && !empty($prefs['feature_intertiki_mymaster']))) {
 	header("location: index.php");
 	die;
 }
-// NOTE that this is not a standard access check, it checks for the opposite of that, i.e. whether logged in already
 if (!empty($user)) {
 	$smarty->assign('msg', tra('You are already logged in'));
 	$smarty->display('error.tpl');
 	die;
 }
+	
 $smarty->assign('showmsg', 'n');
 // novalidation is set to yes if a user confirms his email is correct after tiki fails to validate it
 if (!isset($_REQUEST['novalidation'])) {
@@ -50,14 +48,6 @@ if ($nbChoiceGroups) {
 }
 if (isset($_REQUEST['register']) && !empty($_REQUEST['name']) && (isset($_REQUEST['pass']) || isset($_SESSION['openid_url']))) {
 	check_ticket('register');
-	$cookie_name = $prefs['session_cookie_name'];
-
-	if( ini_get('session.use_cookie') && ! isset( $_COOKIE[$cookie_name] ) ) {
-		$smarty->assign('msg',tra("You have to enable cookies to be able to login to this site"));
-		$smarty->display("error.tpl");
-		exit;
-	}
-
 	$smarty->assign('errortype', 'no_redirect_login');
 	if ($novalidation != 'yes' and ($_REQUEST["pass"] <> $_REQUEST["passAgain"]) and !isset($_SESSION['openid_url'])) {
 		$smarty->assign('msg', tra("The passwords don't match"));
@@ -106,8 +96,7 @@ if (isset($_REQUEST['register']) && !empty($_REQUEST['name']) && (isset($_REQUES
 		$smarty->display("error.tpl");
 		die;
 	}
-	$newPass = $_REQUEST["pass"] ? $_REQUEST["pass"] : $_REQUEST["genepass"];
-	$polerr = $userlib->check_password_policy($newPass);
+	$polerr = $userlib->check_password_policy($_REQUEST["pass"]);
 	if (!isset($_SESSION['openid_url']) && (strlen($polerr) > 0)) {
 		$smarty->assign('msg', $polerr);
 		$smarty->display("error.tpl");
@@ -163,11 +152,11 @@ if (isset($_REQUEST['register']) && !empty($_REQUEST['name']) && (isset($_REQUES
 		if ($prefs['validateUsers'] == 'y' || (isset($prefs['validateRegistration']) && $prefs['validateRegistration'] == 'y')) {
 			$apass = addslashes(md5($tikilib->genPass()));
 			$userlib->send_validation_email($_REQUEST['name'], $apass, $_REQUEST['email'], '', '', isset($_REQUEST['chosenGroup']) ? $_REQUEST['chosenGroup'] : '');
-			$userlib->add_user($_REQUEST["name"], $newPass, $_REQUEST["email"], '', false, $apass, $openid_url , $prefs['validateRegistration'] == 'y'?'a':'u');
+			$userlib->add_user($_REQUEST["name"], $_REQUEST['pass'], $_REQUEST["email"], '', false, $apass, $openid_url , $prefs['validateRegistration'] == 'y'?'a':'u');
 			$logslib->add_log('register', 'created account ' . $_REQUEST["name"]);
 			$smarty->assign('showmsg', 'y');
 		} else {
-			$userlib->add_user($_REQUEST["name"], $newPass, $_REQUEST["email"], '', false, NULL, $openid_url);
+			$userlib->add_user($_REQUEST["name"], $_REQUEST["pass"], $_REQUEST["email"], '', false, NULL, $openid_url);
 			$logslib->add_log('register', 'created account ' . $_REQUEST["name"]);
 			$smarty->assign('msg', $smarty->fetch('mail/user_welcome_msg.tpl'));
 			$smarty->assign('showmsg', 'y');

@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/fgal_listing_conf.php,v 1.1.2.2 2008-03-16 00:06:53 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to err & die if called directly.
 //smarty is not there - we need setup
@@ -27,9 +28,7 @@ $fgal_listing_conf = array(
 	'comment' => array('name' => tra('Comment')),
 	'files' => array('name' => tra('Files')),
 	'hits' => array('name' => tra('Hits')),
-	'lastDownload' => array('name' => tra('Last download')),
-	'lockedby' => array('name' => tra('Locked by'), 'icon' => 'lock_gray'),
-	'backlinks' => array('name' => tra('Backlinks'))
+	'lockedby' => array('name' => tra('Locked by'), 'icon' => 'lock_gray')
 );
 foreach ( $fgal_listing_conf as $k => $v ) {
 

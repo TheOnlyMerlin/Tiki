@@ -1,24 +1,24 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-browse_image.php,v 1.46.2.4 2008-03-06 19:45:42 sampaioprimo Exp $
 $section = "galleries";
 require_once ('tiki-setup.php');
 include_once ("lib/imagegals/imagegallib.php");
 include_once ('lib/stats/statslib.php');
-
-$access->check_feature('feature_galleries');
-
 if ($prefs['feature_categories'] == 'y') {
 	global $categlib;
 	if (!is_object($categlib)) {
 		include_once ('lib/categories/categlib.php');
 	}
 }
-
+if ($prefs['feature_galleries'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_galleries");
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST['imageId'])) {
 	$smarty->assign('msg', tra("No image indicated"));
 	$smarty->display("error.tpl");
@@ -35,13 +35,19 @@ if (!$galleryId) {
 }
 
 $tikilib->get_perm_object( $galleryId, 'image gallery' );
-$access->check_permission('tiki_p_view_image_gallery');
 
+if ( $tiki_p_view_image_gallery != 'y' ) {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied you can not view this section"));
+	$smarty->display("error.tpl");
+	die;
+}
 $gal_info = $imagegallib->get_gallery($galleryId);
 $scalesize = 0;
 if (isset($_REQUEST["scalesize"])) {
 	if (is_numeric($_REQUEST["scalesize"]) && $_REQUEST["scalesize"] > 0) {
 		$scalesize = $_REQUEST["scalesize"];
+	} else {
 	}
 } elseif ($gal_info['defaultscale'] !== 'o') {
 	$scalesize = $gal_info['defaultscale'];
@@ -197,6 +203,7 @@ ask_ticket('browse-image');
 //add a hit
 $statslib->stats_hit($info["name"], "image", $imageId);
 if ($prefs['feature_actionlog'] == 'y') {
+	include_once ('lib/logs/logslib.php');
 	$logslib->add_action('Viewed', $galleryId, 'image gallery');
 }
 // Display the template

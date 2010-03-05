@@ -1,11 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-class KalturaClientBase
+class KalturaClientBase 
 {
 	const KALTURA_API_VERSION = "3.0";
 	const KALTURA_SERVICE_FORMAT_JSON = 1;
@@ -491,7 +485,7 @@ abstract class KalturaObjectBase
 	}
 }
 
-class KalturaException extends Exception
+class KalturaException extends Exception 
 {
 	protected $code;
 	
@@ -548,7 +542,7 @@ class KalturaConfiguration
  * Implement to get Kaltura Client logs
  *
  */
-interface IKalturaLogger
+interface IKalturaLogger 
 {
 	function log($msg); 
 }

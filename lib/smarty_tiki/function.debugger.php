@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id$
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
@@ -58,7 +59,7 @@ function smarty_function_debugger($params, &$smarty) {
 		//       but it is quite suitable for
 		foreach ($tabs_list as $tname => $tcode) {
 			// Generate href code for current button
-			$href = '';
+			$href = 'javascript:';
 		
 			foreach ($tabs_list as $tn => $t)
 				$href .= (($tn == $tname) ? 'show' : 'hide') . "('" . md5($tn). "');";
@@ -67,7 +68,7 @@ function smarty_function_debugger($params, &$smarty) {
 			$tabs[] = array(
 				"button_caption" => $tname,
 				"tab_id" => md5($tname),
-				"button_href" => $href . 'return false;',
+				"button_href" => $href,
 				"tab_code" => $tcode
 			);
 		}
@@ -83,7 +84,7 @@ function smarty_function_debugger($params, &$smarty) {
 		if ($prefs['feature_jquery_ui'] == 'y') {
 			global $headerlib;
 			require_once('lib/headerlib.php');
-			$headerlib->add_jq_onready( "
+			$js = $headerlib->add_jq_onready( "
 \$jq('#debugconsole').draggable({
 	stop: function(event, ui) {
 		var off = \$jq('#debugconsole').offset();
@@ -97,7 +98,7 @@ if (debugconsole_pos) {
 } 
 " );
 		}
-		$ret = $smarty->fetch('debug/function.debugger.tpl');
+		$ret = $smarty->fetch('debug/function.debugger.tpl') . $js;
 		return $ret;
 	}
 }

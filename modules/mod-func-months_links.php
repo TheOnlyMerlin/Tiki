@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -57,8 +52,7 @@ function module_months_links( $mod_reference, $module_params ) {
 	}
 	
 	if ( isset($link)) {
-		global $tikilib, $bloglib;
-		include_once ('lib/blogs/bloglib.php');
+		global $tikilib;
 		$month_names = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
 		$current_month_num = TikiLib::date_format("%m", $tikilib->now);
 		$current_year = TikiLib::date_format("%Y", $tikilib->now);
@@ -78,10 +72,7 @@ function module_months_links( $mod_reference, $module_params ) {
 				$timestamp_month_end = $tikilib->make_time(0, 0, 0, $current_month_num + 1, 1, $current_year) - 1;
 			}
 			$timestamp_month_start = $tikilib->make_time(0, 0, 0, $current_month_num, 1, $current_year);
-			$posts_of_month = $bloglib->list_blog_posts($module_params['id'],true,0,-1,'created_desc','',$timestamp_month_start,$timestamp_month_end);
-			if( $posts_of_month["cant"] > 0 ) {
-				$months[$month_name." (".$posts_of_month["cant"].")"] = sprintf($link, $timestamp_month_start, $timestamp_month_end);
-			}
+			$months[$month_name] = sprintf($link, $timestamp_month_start, $timestamp_month_end);
 		}
 		$title = ucwords($sections[$module_params['feature']][$object_key]).' - '.tra('List by month');
 		$smarty->assign('months', $months);

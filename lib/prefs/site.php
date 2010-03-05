@@ -1,39 +1,16 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 function prefs_site_list() {
-	global $tikilib;
-
-	$all_styles = $tikilib->list_styles();
-	$styles = array();
-
-	foreach ($all_styles as $style) {
-		$styles[$style] = substr( $style, 0, strripos($style, '.css'));
-	}
-
 	return array (
-		'site_style' => array(
-			'name' => tra('Theme'),
-			'type' => 'list',
-			'help' => 'Themes',
-			'description' => tra('Style of the site, sometimes called a skin or CSS. See http://themes.tikiwiki.org for more Tiki themes.'),
-			'options' => $styles,
-		),
 		'site_closed' => array(
 			'name' => tra('Close site (except for those with permission)'),
 			'description' => tra('Close site (except for those with permission)'),
 			'type' => 'flag',
-			'perspective' => false,
 		),
 		'site_closed_msg' => array(
 			'name' => tra('Message to display'),
 			'description' => tra('Message to display'),
 			'type' => 'text',
-			'perspective' => false,
 			'dependencies' => array(
 				'site_closed',
 			),
@@ -42,7 +19,6 @@ function prefs_site_list() {
 			'name' => tra('Message to display'),
 			'description' => tra('Message to display'),
 			'type' => 'text',
-			'perspective' => false,
 			'dependencies' => array(
 				'use_load_threshold',
 			),
@@ -77,20 +53,6 @@ function prefs_site_list() {
 				'fulltrail' => tra('Least specific first (site)'),
 				'pagetitle' => tra('Current only'),
 				'desc' => tra('Description'),
-			),
-		),
-		'site_favicon' => array(
-			'name' => tra('Favicon icon file name'),
-			'type' => 'text',
-			'size' => '15',
-		),
-		'site_favicon_type' => array(
-			'name' => tra('Favicon icon MIME type'),
-			'type' => 'list',
-			'options' => array(
-				'image/png' => tra('image/png'),
-				'image/bmp' => tra('image/bmp'),
-				'image/x-icon' => tra('image/x-icon'),
 			),
 		),
 	);

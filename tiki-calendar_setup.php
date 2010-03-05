@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id$
+
+// Copyright (c) 2002-2008, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__))!=FALSE) {
@@ -32,7 +33,7 @@ if (!empty($_REQUEST['focus'])) {
 if (!empty($_REQUEST['day']) && !empty($_REQUEST['mon']) && !empty($_REQUEST['year'])) {//can come from the event module
         $_REQUEST['todate'] = $tikilib->make_time(23,59,59,intval($_REQUEST['mon']),intval($_REQUEST['day']),intval($_REQUEST['year']));
 } elseif (isset($_REQUEST['todate']) && $_REQUEST['todate']) {
-	$_SESSION['CalendarFocusDate'] = $_REQUEST["todate"];
+
 } elseif (!isset($_REQUEST['todate']) && isset($_SESSION['CalendarFocusDate']) && $_SESSION['CalendarFocusDate']) {
 	$_REQUEST["todate"] = $_SESSION['CalendarFocusDate'];
 } else {
@@ -344,7 +345,6 @@ $daysnames = array();
 $daysnames_abr = array();
 if ($firstDayofWeek == 0) {
 	$daysnames[] = tra("Sunday");
-	$daysnames_abr[] = tra('Su');
 }
 
 array_push($daysnames, 
@@ -361,26 +361,14 @@ array_push($daysnames_abr,
 	tra("We"),
 	tra("Th"),
 	tra("Fr"),
-	tra("Sa")
+	tra("Sa"),
+	tra("Su")
 );
 if ($firstDayofWeek != 0) {
 	$daysnames[] = tra("Sunday");
-	$daysnames_abr[] = tra('Su');
 }
 $weeks = array();
 $cell = array();
-
-if (!function_exists('correct_start_day')) {
-function correct_start_day($d) {
-	global $prefs;
-	
-	$tmp = $d - $prefs['calendar_firstDayofWeek'];
-	if ($tmp < 0 ) {
-		$tmp += 7;
-	}
-	return $tmp;
-}
-}
 
 if (empty($myurl))
 	$myurl = 'tiki-calendar.php';

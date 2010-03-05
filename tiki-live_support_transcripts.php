@@ -1,14 +1,17 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once ('tiki-setup.php');
 include_once ('lib/live_support/lsadminlib.php');
 include_once ('lib/live_support/lslib.php');
-$access->check_feature('feature_live_support');
+if ($prefs['feature_live_support'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_live_support");
+	$smarty->display("error.tpl");
+	die;
+}
 if ($tiki_p_live_support_admin != 'y' && !$lsadminlib->user_is_operator($user)) {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg', tra("You do not have permission to use this feature"));

@@ -1,19 +1,31 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-minical.php,v 1.26.2.1 2007-11-04 21:49:20 nyloth Exp $
 $section = 'calendar';
 require_once ('tiki-setup.php');
 if ($prefs['feature_ajax'] == "y") {
 	require_once ('lib/ajax/ajaxlib.php');
 }
 include_once ('lib/minical/minicallib.php');
-$access->check_feature('feature_minical');
-$access->check_user($user);
-$access->check_permission('tiki_p_minical');
+if ($prefs['feature_minical'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_minical");
+	$smarty->display("error.tpl");
+	die;
+}
+if (!$user) {
+	$smarty->assign('msg', tra("Must be logged to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
+if ($tiki_p_minical != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST["eventId"])) $_REQUEST["eventId"] = 0;
 if (isset($_REQUEST['remove'])) {
 	$area = 'delminicalevent';

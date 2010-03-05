@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,8 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class StatsLib extends TikiLib
-{
+class StatsLib extends TikiLib {
 	// obsolete, but keeped for compatibility purposes
 	// use Tikilib::list_pages() instead
 	function list_orphan_pages($offset = 0, $maxRecords = -1, $sort_mode = 'pageName_desc', $find = '', $onlyCant=false) {
@@ -107,8 +101,8 @@ class StatsLib extends TikiLib
 	function forum_stats() {
 		$stats = array();
 		$stats["forums"] = $this->getOne("select count(*) from `tiki_forums`",array());
-		$stats["topics"] = $this->getOne( "select count(*) from `tiki_comments`,`tiki_forums` where `object`=`forumId` and `objectType`=? and `parentId`=?",array('forum',0));
-		$stats["threads"] = $this->getOne( "select count(*) from `tiki_comments`,`tiki_forums` where `object`=`forumId` and `objectType`=? and `parentId`<>?",array('forum',0));
+		$stats["topics"] = $this->getOne( "select count(*) from `tiki_comments`,`tiki_forums` where `object`=".$this->cast('`forumId`','string')." and `objectType`=? and `parentId`=?",array('forum',0));
+		$stats["threads"] = $this->getOne( "select count(*) from `tiki_comments`,`tiki_forums` where `object`=".$this->cast('`forumId`','string')." and `objectType`=? and `parentId`<>?",array('forum',0));
 		$stats["tpf"] = ($stats["forums"] ? $stats["topics"] / $stats["forums"] : 0);
 		$stats["tpt"] = ($stats["topics"] ? $stats["threads"] / $stats["topics"] : 0);
 		$stats["visits"] = $this->getOne("select sum(`hits`) from `tiki_forums`",array());

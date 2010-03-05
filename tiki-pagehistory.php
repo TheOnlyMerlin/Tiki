@@ -1,21 +1,30 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-pagehistory.php,v 1.45.2.5 2008-01-28 19:03:04 lphuberdeau Exp $
 $section = 'wiki page';
 $section_class = "tiki_wiki_page manage";	// This will be body class instead of $section
 require_once ('tiki-setup.php');
 include_once ('lib/wiki/histlib.php');
-
-$access->check_feature('feature_wiki');
-
+if ($prefs['feature_wiki'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled') . ': feature_wiki');
+	$smarty->display('error.tpl');
+	die;
+}
 if (!isset($_REQUEST["source"])) {
-	$access->check_feature('feature_history');
+	if ($prefs['feature_history'] != 'y') {
+		$smarty->assign('msg', tra('This feature is disabled') . ': feature_history');
+		$smarty->display('error.tpl');
+		die;
+	}
 } else {
-	$access->check_feature('feature_source');
+	if ($prefs['feature_source'] != 'y') {
+		$smarty->assign('msg', tra('This feature is disabled') . ': feature_source');
+		$smarty->display('error.tpl');
+		die;
+	}
 }
 // Get the page from the request var or default it to HomePage
 if (!isset($_REQUEST["page"])) {
@@ -27,15 +36,23 @@ if (!isset($_REQUEST["page"])) {
 	$smarty->assign_by_ref('page', $_REQUEST["page"]);
 }
 
-$auto_query_args = array('page', 'oldver', 'newver', 'compare', 'diff_style', 'show_translation_history', 'show_all_versions', 'history_offset', 'paginate', 'history_pagesize');
-
 $tikilib->get_perm_object( $_REQUEST['page'], 'wiki page' );
 
 // Now check permissions to access this page
 if (!isset($_REQUEST["source"])) {
-	$access->check_permission('tiki_p_wiki_view_history');
+	if ($tiki_p_wiki_view_history != 'y') {
+		$smarty->assign('errortype', 401);
+		$smarty->assign('msg', tra("Permission denied you cannot browse this page history"));
+		$smarty->display("error.tpl");
+		die;
+	}
 } else {
-	$access->check_permission('tiki_p_wiki_view_source');
+	if ($tiki_p_wiki_view_source != 'y') {
+		$smarty->assign('errortype', 401);
+		$smarty->assign('msg', tra("Permission denied you cannot view the source of this page"));
+		$smarty->display("error.tpl");
+		die;
+	}
 }
 $info = $tikilib->get_page_info($page);
 $smarty->assign_by_ref('info', $info);
@@ -53,195 +70,32 @@ if ($prefs['feature_contribution'] == 'y') {
 	$contributions = $contributionlib->get_assigned_contributions($page, 'wiki page');
 	$smarty->assign_by_ref('contributions', $contributions);
 	if ($prefs['feature_contributor_wiki'] == 'y') {
+		global $logslib;
+		include_once ('lib/logs/logslib.php');
 		$contributors = $logslib->get_wiki_contributors($info);
 		$smarty->assign_by_ref('contributors', $contributors);
 	}
 }
-
-$paginate = (isset($_REQUEST['paginate']) && $_REQUEST['paginate'] == 'on') || !isset($_REQUEST['diff_style']);
-$smarty->assign('paginate', $paginate);
-
-if (isset($_REQUEST['history_offset']) && $paginate) {
-	$history_offset = $_REQUEST['history_offset'];
-} else {
-	$history_offset = 0;
-}
-$smarty->assign('history_offset', $history_offset);
-
-if (isset($_REQUEST['history_pagesize']) && $paginate) {
-	$history_pagesize = $_REQUEST['history_pagesize'];
-} else {
-	$history_pagesize = $prefs['maxRecords'];
-}
-$smarty->assign('history_pagesize', $history_pagesize);
-
-if (!isset($_REQUEST['compare'])) {
-	$_REQUEST['diff_style'] = '';
-}
-
-// fetch page history, but omit the actual page content (to save memory)
-$history = $histlib->get_page_history($page, false, $history_offset, $paginate ? $history_pagesize : -1);
-$smarty->assign('history_cant', $histlib->get_nb_history($page));
-
-if (!isset($_REQUEST['show_all_versions'])) {
-	$_REQUEST['show_all_versions'] = "y";
-}
-$sessions = array();
-if (count($history) > 0) {
-	$lastuser = '';		// calculate edit session info
-	$lasttime = 0;		// secs
-	$idletime = 1800; 	// max gap between edits in sessions 30 mins? Maybe should use a pref?
-	for($i = 0, $cnt = count($history); $i < $cnt; $i++) {
-		
-		if ($history[$i]['user'] != $lastuser || $lasttime - $history[$i]['lastModif'] > $idletime) {
-			$sessions[] = $history[$i];
-			//$history[$i]['session'] = $history[$i]['version'];
-		} else if (count($sessions) > 0) {
-			$history[$i]['session'] = $sessions[count($sessions)-1]['version'];
-		}
-		$lastuser = $history[$i]['user'];
-		$lasttime = $history[$i]['lastModif'];
-	}
-	$csesh = count($sessions) + 1;
-	foreach($history as &$h) {	// move ending 'version' into starting 'session'
-		if (!empty($h['session'])) {
-			foreach($history as &$h2) {
-				if ($h2['version'] == $h['session']) {
-					$h2['session'] = $h['version'];
-				}
-			}
-			$h['session'] = '';
-		}
-	}
-	if ($_REQUEST['show_all_versions'] == "n") {
-		for($i = 0, $cnt = count($history); $i < $cnt; $i++) {	// remove versions inside sessions
-			if (!empty($history[$i]['session']) && $i < $cnt - 1) {
-				$seshend = $history[$i]['session'];
-				$i++;
-				for ($i; $i < $cnt; $i++) {
-					if ($history[$i]['version'] >= $seshend) {
-						unset($history[$i]);
-					} else {
-						$i--;
-						break;
-					}
-				}
-			}
-		}
-	}
-}
-$smarty->assign('show_all_versions', $_REQUEST['show_all_versions']);
-$history_versions = array();
-$history_sessions = array();
-reset($history);
-foreach($history as &$h) {	// as $h has been used by reference before it needs to be so again (it seems)
-	$history_versions[] = (int)$h['version'];
-	$history_sessions[] = isset($h['session']) ? (int)$h['session'] : 0;
-}
-$history_versions = array_reverse($history_versions);
-$history_sessions = array_reverse($history_sessions);
-$history_versions[] = $info["version"];	// current is last one
-$history_sessions[] = 0;
-$smarty->assign_by_ref('history', $history);
-
-// for pagination
-$smarty->assign('ver_cant', count($history_versions));
-
-if (isset($_REQUEST['clear_versions'])) {
-	unset($_REQUEST['clear_versions']);
-	unset($_REQUEST['newver']);
-	unset($_REQUEST['newver_idx']);
-	unset($_REQUEST['oldver']);
-	unset($_REQUEST['oldver_idx']);
-	unset($_REQUEST['compare']);
-	unset($_REQUEST['diff_style']);
-}
-// calculate version and offset
-if (isset($_REQUEST['bothver_idx'])) {
-	if ($_REQUEST['bothver_idx'] == 0) {
-		$_REQUEST['bothver_idx'] = 1;
-	}
-	$_REQUEST['oldver_idx'] = $_REQUEST['bothver_idx'] - 1;
-	$_REQUEST['newver_idx'] = $_REQUEST['bothver_idx'];
-	if ($_REQUEST['show_all_versions'] == 'n' && !empty($history_sessions[$_REQUEST['bothver_idx']])) {
-		$_REQUEST['oldver_idx'] = $_REQUEST['bothver_idx'];
-	} else {
-		//$_REQUEST['oldver_idx'] = $_REQUEST['bothver_idx'] - 2;
-	}
-}
-if (isset($_REQUEST['newver_idx'])) {
-	$newver = $history_versions[$_REQUEST['newver_idx']];
-} else {
-	if (isset($_REQUEST['newver']) && $_REQUEST['newver'] > 0) {
-		$newver = (int)$_REQUEST["newver"];
-		if (in_array($newver, $history_versions)) {
-			$_REQUEST['newver_idx'] = array_search($newver, $history_versions);
-		} else {
-			$_REQUEST['newver_idx'] = array_search($newver, $history_sessions);
-		}
-	} else {
-		$newver = $history_versions[count($history_versions)-1];
-		$_REQUEST['newver_idx'] = count($history_versions)-1;
-	}
-}
-if (isset($_REQUEST['oldver_idx'])) {
-	$oldver = $history_versions[$_REQUEST['oldver_idx']];
-	if ($_REQUEST['show_all_versions'] == 'n' && !empty($history_sessions[$_REQUEST['oldver_idx']])) {
-		$oldver = $history_sessions[$_REQUEST['oldver_idx']];
-	}
-} else {
-	if (isset($_REQUEST['oldver']) && $_REQUEST['oldver'] > 0) {
-		$oldver = (int)$_REQUEST["oldver"];
-		if (in_array($oldver, $history_versions)) {
-			$_REQUEST['oldver_idx'] = array_search($oldver, $history_versions);
-		} else {
-			$_REQUEST['oldver_idx'] = array_search($oldver, $history_sessions);
-		}
-	} else {
-		$oldver = $history_versions[count($history_versions)-1];
-		$_REQUEST['oldver_idx'] = count($history_versions)-1;
-	}
-}
-if ($_REQUEST['oldver_idx'] + 1 == $_REQUEST['newver_idx']) {
-	$_REQUEST['bothver_idx'] = $_REQUEST['newver_idx'];
-}
-// source view
-if (isset($_REQUEST['source_idx'])) {
-	$source = $history_versions[$_REQUEST['source_idx']];
-} else {
-	if (isset($_REQUEST['source'])) {
-		$source = (int)$_REQUEST["source"];
-		if ($source > 0) {
-			$_REQUEST['source_idx'] = array_search($source, $history_versions);
-		} else {
-			$_REQUEST['source_idx'] = count($history_versions) - 1;
-			$smarty->assign('noHistory', true);
-		}
-	}
-}
-if (isset($_REQUEST['preview_idx'])) {
-	$preview = $history_versions[$_REQUEST['preview_idx']];
-} else {
-	if (isset($_REQUEST['preview'])) {
-		$preview = (int)$_REQUEST["preview"];
-		if ($_REQUEST['preview'] > 0) {
-			$_REQUEST['preview_idx'] = array_search($preview, $history_versions);
-		} else {
-			$_REQUEST['preview_idx'] = count($history_versions) - 1;
-			$smarty->assign('noHistory', true);
-		}
-	}
-}
-
+if (isset($_REQUEST['oldver'])) {
+	$oldver = (int)$_REQUEST["oldver"];
+} else $oldver = 0;
+if (isset($_REQUEST['newver'])) {
+	$newver = (int)$_REQUEST["newver"];
+} else $newver = 0;
+if (isset($_REQUEST['source'])) $source = $_REQUEST['source'];
 if (isset($_REQUEST['version'])) $rversion = $_REQUEST['version'];
-
+if (isset($_REQUEST['preview'])) $preview = $_REQUEST["preview"];
 $smarty->assign('source', false);
 if (isset($source)) {
 	if ($source == '' && isset($rversion)) {
 		$source = $rversion;
 	}
 	if ($source == $info["version"] || $source == 0) {
-		$smarty->assign('sourced', $info["data"]);
+		if ($info['is_html'] == 1) {
+			$smarty->assign('sourced', $info["data"]);
+		} else {
+			$smarty->assign('sourced', nl2br($info["data"]));
+		}
 		$smarty->assign('source', $info['version']);
 	} else {
 		$version = $histlib->get_version($page, $source);
@@ -253,6 +107,9 @@ if (isset($source)) {
 			}
 			$smarty->assign('source', $source);
 		}
+	}
+	if ($source == 0) {
+		$smarty->assign('noHistory', true);
 	}
 }
 $smarty->assign('preview', false);
@@ -272,18 +129,13 @@ if (isset($preview)) {
 			$smarty->assign('preview', $preview);
 		}
 	}
+	if ($preview == 0) {
+		$smarty->assign('noHistory', true);
+	}
 }
-if (isset($preview)) {
-	$smarty->assign('current', $preview);
-} else if (isset($source)) {
-	$smarty->assign('current', $source);
-} else if ($newver) {
-	$smarty->assign('current', $newver);
-} else if ($oldver) {
-	$smarty->assign('current', $oldver);
-} else {
-	$smarty->assign('current', 0);
-}
+// fetch page history, but omit the actual page content (to save memory)
+$history = $histlib->get_page_history($page, false);
+$smarty->assign_by_ref('history', $history);
 if ($prefs['feature_multilingual'] == 'y' && isset($_REQUEST['show_translation_history'])) {
 	include_once ("lib/multilingual/multilinguallib.php");
 	$smarty->assign('show_translation_history', 1);
@@ -337,44 +189,6 @@ if ($prefs['feature_multilingual'] == 'y') {
 		exit;
 	}
 }
-$current_version = $info["version"];
-$not_comparing = empty($_REQUEST['compare']) ? 'true' : 'false';
-
-$headerlib->add_jq_onready(<<<JS
-\$jq("input[name=oldver], input[name=newver]").change(function () {
-	var ver = \$jq(this).val(), ver2;
-	if (ver == 0) { ver = $current_version; }
-	if (\$jq(this).attr("name") == "oldver") {
-		\$jq("input[name=newver]").each(function () {
-			ver2 = \$jq(this).val();
-			if (ver2 == 0) { ver2 = $current_version; }
-			if (ver2 <= ver) {
-				\$jq(this).attr("disabled", "disabled");
-			} else {
-				\$jq(this).attr("disabled", "");
-			}
-		});
-	} else if (\$jq(this).attr("name") == "newver") {
-		\$jq("input[name=oldver]").each(function () {
-			ver2 = \$jq(this).val();
-			if (ver2 == 0) { ver2 = $current_version; }
-			if (ver2 >= ver) {
-				\$jq(this).attr("disabled", "disabled");
-			} else {
-				\$jq(this).attr("disabled", "");
-			}
-		});
-	}
-});
-if (\$jq("input[name=newver][checked=checked]").length) {
-	\$jq("input[name=newver][checked=checked]").change();
-	\$jq("input[name=oldver][checked=checked]").change();
-} else if ($not_comparing) {
-	\$jq("input[name=newver]:eq(0)").attr("checked", "checked").change();
-	\$jq("input[name=oldver]:eq(1)").attr("checked", "checked").change();
-}
-JS
-);
 if (isset($_REQUEST["compare"])) histlib_helper_setup_diff($page, $oldver, $newver);
 else $smarty->assign('diff_style', $prefs['default_wiki_diff_style']);
 if ($info["flag"] == 'L') $smarty->assign('lock', true);

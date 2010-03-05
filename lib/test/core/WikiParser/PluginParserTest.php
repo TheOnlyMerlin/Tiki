@@ -1,11 +1,5 @@
 <?php
 
-/** 
- * @group unit
- * 
- */
-
-
 class WikiParser_PluginParserTest extends TikiTestCase
 {
 	function testNothingToParse()

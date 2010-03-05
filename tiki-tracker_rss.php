@@ -1,10 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-tracker_rss.php,v 1.12.2.3 2008-01-14 12:44:11 sylvieg Exp $
 require_once ('tiki-setup.php');
 require_once ('lib/tikilib.php');
 require_once ('lib/trackers/trackerlib.php');
@@ -21,8 +20,7 @@ if (!isset($_REQUEST["trackerId"])) {
 	$errmsg = tra("No trackerId specified");
 	require_once ('tiki-rss_error.php');
 }
-$perms = Perms::get(array('type' => 'tracker', 'object' => $_REQUEST['trackerId']));
-if ($tiki_p_admin_trackers != 'y' && (!$perms->view_trackers && !$perms->view_trackers_pending && !$perms->view_trackers_closed)) {
+if ($tiki_p_admin_trackers != 'y' && !$tikilib->user_has_perm_on_object($user, $_REQUEST['trackerId'], 'tracker', 'tiki_p_view_trackers')) {
 	$smarty->assign('errortype', 401);
 	$errmsg = tra("Permission denied. You cannot view this section");
 	require_once ('tiki-rss_error.php');
@@ -72,27 +70,9 @@ if ($output["data"] == "EMPTY") {
 		$filtervalue = null;
 	}
 	if (isset($_REQUEST['status'])) {
-		if (!$trklib->valid_status($_REQUEST['status'])) {
-			$errmsg = tra("Incorrect parameter");
-			require_once ('tiki-rss_error.php');
-		}
 		$status = $_REQUEST['status'];
 	} else {
-		$status = 'opc';
-	}
-	if (!$perms->view_trackers) {
-		$status = str_replace('o', '', $status);
-	}
-	if (!$perms->view_trackers_pending) {
-		$status = str_replace('p', '', $status);
-	}
-	if (!$perms->view_trackers_closed) {
-		$status = str_replace('c', '', $status);
-	}
-	if (empty($status)) {
-		$smarty->assign('errortype', 401);
-		$errmsg = tra("Permission denied. You cannot view this section");
-		require_once ('tiki-rss_error.php');
+		$status = null;
 	}
 	$tmp = $trklib->list_items($_REQUEST[$id], 0, $prefs['max_rss_tracker'], $sort_mode, $fields, $filterfield, $filtervalue, $status, null, $exactvalue);
 	foreach($tmp["data"] as $data) {

@@ -1,15 +1,19 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// Initialization
 require_once('tiki-setup.php');
 include_once('lib/messu/messulib.php');
 
-$access->check_user($user);
-$access->check_feature('feature_friends');
+if(!$user) {
+  $smarty->assign('msg', tra("You must be logged in to use this feature"));
+  $smarty->display("error.tpl");
+  die;
+}
+
+if($prefs['feature_friends'] != 'y') {
+  $smarty->assign('msg',tra("This feature is disabled"));
+  $smarty->display("error.tpl");
+  die;
+}
 
 // TODO: all messages should be translated to receiver language, not sender.
 if (isset($_REQUEST['request_friendship'])) {
@@ -21,7 +25,7 @@ if (isset($_REQUEST['request_friendship'])) {
 	    $lg = $tikilib->get_user_preference($friend, "language", $prefs['site_language']);
 	    $smarty->assign('msg',sprintf(tra("Friendship request sent to %s"), $friend));
 	    $foo = parse_url($_SERVER["REQUEST_URI"]);
-	    $machine = $tikilib->httpPrefix( true ). $foo["path"];
+	    $machine = $tikilib->httpPrefix(). $foo["path"];
 	    $smarty->assign('server_name',$machine);
 	    $messulib->post_message($friend, $user, $friend, '', 
 				    $smarty->fetchLang($lg,'mail/new_friend_invitation_subject.tpl'),

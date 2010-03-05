@@ -1,13 +1,16 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-mobile.php,v 1.14 2007-10-12 07:55:29 nyloth Exp $
 require_once ('tiki-setup.php');
 include_once ("lib/hawhaw/hawtikilib.php");
-$access->check_feature('feature_mobile');
+if ($prefs['feature_mobile'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_mobile");
+	$smarty->display("error.tpl");
+	die;
+}
 $TikiPage = new HAW_deck(HAWIKI_TITLE, HAW_ALIGN_CENTER);
 HAWTIKI_deck_init($TikiPage);
 if (isset($_REQUEST['content']) && $_REQUEST['content'] == "about") {

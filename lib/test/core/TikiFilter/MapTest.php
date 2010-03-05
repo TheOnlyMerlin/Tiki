@@ -1,10 +1,5 @@
 <?php
 
-/** 
- * @group unit
- * 
- */
-
 class TikiFilter_MapTest extends TikiTestCase
 {
 	private $array;

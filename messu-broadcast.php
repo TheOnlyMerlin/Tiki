@@ -1,16 +1,38 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/messu-broadcast.php,v 1.30.2.1 2007-11-22 17:09:02 sylvieg Exp $
 $section = 'user_messages';
 require_once ('tiki-setup.php');
 include_once ('lib/messu/messulib.php');
-$access->check_user($user);
-$access->check_feature('feature_messages');
-$access->check_permission('tiki_p_broadcast');
+if (!$user) {
+	if ($prefs['feature_redirect_on_error'] == 'y') {
+		header('location: ' . $prefs['tikiIndex']);
+		die;
+	} else {
+		$smarty->assign('msg', tra("You are not logged in"));
+		$smarty->display("error.tpl");
+		die;
+	}
+}
+if ($prefs['feature_messages'] != 'y') {
+	if ($prefs['feature_redirect_on_error'] == 'y') {
+		header('location: ' . $prefs['tikiIndex']);
+		die;
+	} else {
+		$smarty->assign('msg', tra("This feature is disabled") . ": feature_messages");
+		$smarty->display("error.tpl");
+		die;
+	}
+}
+if ($tiki_p_broadcast != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied"));
+	$smarty->display("error.tpl");
+	die;
+}
 $auto_query_args = array('to', 'cc', 'bcc', 'subject', 'body', 'priority', 'replyto_hash', 'groupbr');
 if (!isset($_REQUEST['to'])) $_REQUEST['to'] = '';
 if (!isset($_REQUEST['cc'])) $_REQUEST['cc'] = '';
@@ -99,7 +121,7 @@ if (isset($_REQUEST['send']) || isset($_REQUEST['preview'])) {
 			}
 		}
 		// Insert a copy of the message in the sent box of the sender
-		$messulib->save_sent_message($user, $user, $_REQUEST['groupbr'], $_REQUEST['cc'], $_REQUEST['subject'], $_REQUEST['body'], $_REQUEST['priority'], $_REQUEST['replyto_hash']);
+		$messulib->save_sent_message($user, $user, $_REQUEST['to'], $_REQUEST['cc'], $_REQUEST['subject'], $_REQUEST['body'], $_REQUEST['priority'], $_REQUEST['replyto_hash']);
 		$smarty->assign('message', $message);
 		if ($prefs['feature_actionlog'] == 'y') {
 			$logslib->add_action('Posted', '', 'message', 'add=' . strlen($_REQUEST['body']));

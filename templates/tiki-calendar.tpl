@@ -24,9 +24,10 @@
 
 		{if $tiki_p_admin_calendar eq 'y' or $tiki_p_admin eq 'y'}
 			{if $displayedcals|@count eq 1}
-				{button href="tiki-admin_calendars.php?calendarId=$displayedcals[0]" _text="{tr}Edit Calendar{/tr}"}
+				{button href="tiki-admin_calendars.php?calendarId=$displayedcals[0]" _text="{tr}Admin Calendar{/tr}"}
+			{else}
+				{button href="tiki-admin_calendars.php" _text="{tr}Admin Calendar{/tr}"}
 			{/if}
-			{button href="tiki-admin_calendars.php" _text="{tr}Admin Calendars{/tr}"}
 		{/if}
 {* avoid Add Event being shown if no calendar is displayed *}
 		{if $tiki_p_add_events eq 'y'}
@@ -34,7 +35,7 @@
 		{/if}
 
 		{if $tiki_p_admin_calendar eq 'y'}
-			{button href="#" _onclick="toggle('exportcal');return false;" _text="{tr}Export Calendars{/tr}" _title="{tr}Click to export calendars{/tr}"}
+			{button href="#" _onclick="javascript:toggle('exportcal');" _text="{tr}Export Calendars{/tr}" _title="{tr}Click to export calendars{/tr}"}
 		{/if}
 
 		{if $viewlist eq 'list'}
@@ -46,7 +47,7 @@
 		{/if}
 
 		{if count($listcals) >= 1}
-			{button href="#" _onclick="toggle('filtercal');return false;" _text="{tr}Visible Calendars{/tr}" _title="{tr}Click to select visible calendars{/tr}"}
+			{button href="#" _onclick="javascript:toggle('filtercal');" _text="{tr}Visible Calendars{/tr}" _title="{tr}Click to select visible calendars{/tr}"}
 
 			{if count($thiscal)}
 				<div id="configlinks">
@@ -55,7 +56,7 @@
 						{assign var=thiscustombgcolor value=$infocals.$k.custombgcolor}
 						{assign var=thiscustomfgcolor value=$infocals.$k.customfgcolor}
 						{assign var=thisinfocalsname value=$infocals.$k.name|escape}
-						{button href="#" _style="background-color:#$thiscustombgcolor;color:#$thiscustomfgcolor;border:1px solid #$thiscustomfgcolor;" _onclick="toggle('filtercal');return false;" _text="$thisinfocalsname"}
+						{button href="#" _style="background-color:#$thiscustombgcolor;color:#$thiscustomfgcolor;border:1px solid #$thiscustomfgcolor;" _onclick="toggle('filtercal');" _text="$thisinfocalsname"}
 					{/if}
 				{/foreach}
 				</div>
@@ -124,8 +125,7 @@
 				<a href="{$iCalAdvParamsUrl}">{tr}advanced parameters{/tr}</a>
 			</div>
 			<div class="calinput">
-				<input type="submit" name="ical" value="{tr}Export as iCal{/tr}"/>
-				<input type="submit" name="csv" value="{tr}Export as CSV{/tr}"/>
+				<input type="submit" name="valid" value="{tr}Export{/tr}"/>
 			</div>
 		</form>
 	{/if}

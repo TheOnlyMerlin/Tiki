@@ -1,10 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: tiki-index.php 17851 2009-04-08 13:25:53Z sylvieg $
 require_once 'tiki-setup.php';
 $access->check_feature('wiki_validate_plugin');
 $access->check_permission('tiki_p_plugin_approve');

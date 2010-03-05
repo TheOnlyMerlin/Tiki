@@ -1,34 +1,27 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-edit_translation.php,v 1.16.2.12 2008-03-04 15:44:58 lphuberdeau Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //TODO: add permission, sea surfing controlling, add new object type
 //TODO: list_articles must be replaced by something lighter
 //TODO: list languages must used browser preferences
 //QUESTION: can we translated all the objects or only those the user can see - if yes filter list_pages
 
-$tracesOn = false;
-
+// Initialization
 require_once('tiki-setup.php');
 
 include_once('lib/multilingual/multilinguallib.php');
-include_once('modules/mod-func-translation.php');
 
-if ($tracesOn) {
-	echo "<pre>-- tiki-edit_translation: \$_REQUEST="; var_dump($_REQUEST); echo "</pre>\n";
+if ($prefs['feature_multilingual'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_multilingual");
+	$smarty->display("error.tpl");
+	die;
 }
 
-execute_module_translation();
-
-$access->check_feature('feature_multilingual');
-
-if (isset($_REQUEST['page'])) {
-	$smarty->assign('page', $_REQUEST['page']);
-}
-	
 if (!(isset($_REQUEST['page']) && $_REQUEST['page']) && !(isset($_REQUEST['id']) && $_REQUEST['id'])) {
 	$smarty->assign('msg',tra("No object indicated"));
 	$smarty->display("error.tpl");
@@ -38,7 +31,7 @@ if (!(isset($_REQUEST['page']) && $_REQUEST['page']) && !(isset($_REQUEST['id'])
 include_once("lang/langmapping.php");
 
 if ((!isset($_REQUEST['type']) || $_REQUEST['type'] == 'wiki page' || $_REQUEST['type'] == 'wiki') && isset($_REQUEST['page']) && $_REQUEST['page']) {
-	if ( $tikilib->get_approved_page($_REQUEST['page']) ) {		
+	if ($prefs['feature_wikiapproval'] == 'y' && substr($_REQUEST['page'], 0, strlen($prefs['wikiapproval_prefix'])) == $prefs['wikiapproval_prefix']) {		
 		$smarty->assign('msg',tra("Page is a staging copy. Translation must begin from the approved copy."));
 		$smarty->display("error.tpl");
 		die;
@@ -55,8 +48,6 @@ if ((!isset($_REQUEST['type']) || $_REQUEST['type'] == 'wiki page' || $_REQUEST[
 	$langpage = $info['lang'];
 	$fullLangName = $langmapping[$langpage][0];
 	$smarty->assign( 'languageName', $fullLangName );
-	$cat_type = 'wiki page';
-	$cat_objid = $name;
 
 	$edit_data = $info['data'];
 	$smarty->assign('pagedata', TikiLib::htmldecode($edit_data));
@@ -87,12 +78,9 @@ else if ($_REQUEST['id']) {
 		$type = "wiki page";
 		$objId = $info['page_id'];
 		$langpage = $info['lang'];
-		$cat_type = 'wiki page';
-		$cat_objid = $name;
 	}
 	else if ($_REQUEST['type'] == "article") {
-		global $artlib; require_once 'lib/articles/artlib.php';
-		$info = $artlib->get_article($_REQUEST["id"]);
+		$info = $tikilib->get_article($_REQUEST["id"]);
 		if (empty($info)) {
 			$smarty->assign('msg', tra("Article not found"));
 			$smarty->display("error.tpl");
@@ -102,20 +90,14 @@ else if ($_REQUEST['id']) {
 		$type = "article";
 		$objId = $_REQUEST['id'];
 		$langpage = $info['lang'];
-		$articles = $artlib->list_articles(0, -1, 'title_asc', '', '', '', $user);
-		$smarty->assign('articles', $articles["data"]);
-		$cat_type = 'article';
-		$cat_objid = $objId;
+		$articles = $tikilib->list_articles(0, -1, 'title_asc', '', '', '', $user);
+		$smarty->assign_by_ref('articles', $articles["data"]);
 	}
 }
 
 $smarty->assign('name', $name);
-$smarty->assign('target_page', $name);
-
 $smarty->assign('type', $type);
 $smarty->assign('id', $objId);
-
-include_once 'categorize_list.php';
 
 if (isset($_REQUEST['langpage']) && !empty($_REQUEST['langpage']) && $_REQUEST['langpage'] != "NULL"
 				&& $langpage != $_REQUEST['langpage']) { // update the language
@@ -156,7 +138,7 @@ if (isset($_REQUEST['detach']) && isset($_REQUEST['srcId']) && $tiki_p_detach_tr
 }
  else if (isset($_REQUEST['set']) && !empty($_REQUEST['srcName'])) { // attach to a translation set
 	check_ticket('edit-translation');
-	if ($prefs['feature_wikiapproval'] == 'y' && $tikilib->get_approved_page($_REQUEST['srcName']) ) {
+	if ($prefs['feature_wikiapproval'] == 'y' && substr($_REQUEST['srcName'], 0, strlen($prefs['wikiapproval_prefix'])) == $prefs['wikiapproval_prefix']) {
 		$smarty->assign('msg',tra("Page is a staging copy. Translation must begin from the approved copy."));
 		$smarty->display("error.tpl");
 		die;
@@ -193,8 +175,7 @@ else if  (isset($_REQUEST['set']) && !empty($_REQUEST['srcId'])) {
 		$smarty->assign('error', $error);
 	}
 	else {
-		global $artlib; require_once 'lib/articles/artlib.php';
-		$srcInfo = $artlib->get_article($_REQUEST["srcId"]);
+		$srcInfo = $tikilib->get_article($_REQUEST["srcId"]);
 	if (empty($srcInfo)) {
 			$error = "srcExists";
 			$smarty->assign('error', $error);
@@ -258,7 +239,7 @@ if ($type == "wiki page") {
   	// staging pages should be excluded from list as translation always happens only from the approved pages
   	$pages_data = array();
   	foreach($pages["data"] as $p) {
-  		if ( $tikilib->get_staging_page($p['pageName']) ) {
+  		if (substr($p["pageName"], 0, strlen($prefs['wikiapproval_prefix'])) != $prefs['wikiapproval_prefix']) {
 			$t_pages_data[] = $p;
   		}
   	}
@@ -300,15 +281,3 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the template
 $smarty->assign('mid', 'tiki-edit_translation.tpl');
 $smarty->display("tiki.tpl");
-
-function execute_module_translation() { 
-	global $smarty;
-	$module_reference = array(
-		'name' => 'translation',
-	);
-
-	global $modlib; require_once 'lib/modules/modlib.php';	
-
-	$out = $modlib->execute_module( $module_reference );
-	$smarty->assign('content_of_update_translation_section', $out);
-}

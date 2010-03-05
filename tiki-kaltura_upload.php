@@ -1,16 +1,24 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 require_once ('tiki-setup.php');
-$access->check_feature('feature_kaltura');
+
+if ($prefs['feature_kaltura'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_kaltura");
+	$smarty->display("error.tpl");
+	die;
+}
 
 include_once ("lib/videogals/KalturaClient_v3.php");
 
-$access->check_permission(array('tiki_p_upload_videos'));
+if ($tiki_p_upload_videos != 'y' && $tiki_p_admin_kaltura != 'y' && $tiki_p_admin != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied: You cannot upload videos"));
+	$smarty->display('error.tpl');
+	die;
+}
 
 $secret = $prefs['secret'];
 $admin_secret = $prefs['adminSecret'];

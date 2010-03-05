@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once('tikiimporter_wiki.php');
 require_once('Text/Wiki/Mediawiki.php');
@@ -394,6 +389,4 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
     }
 }
 
-class ImporterParserException extends Exception
-{
-}
+class ImporterParserException extends Exception {}

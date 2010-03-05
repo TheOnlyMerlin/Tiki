@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /**
 * Plugin Lib
 *
@@ -36,8 +30,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class PluginsLib extends TikiLib
-{
+class PluginsLib extends TikiLib {
 	var $_errors;
 	var $_data;
 	var $_params;
@@ -159,8 +152,7 @@ class PluginsLib extends TikiLib
 /**
 * Class with utilities for Plugins
 */
-class PluginsLibUtil
-{
+class PluginsLibUtil {
 	/**
 	* Create a table with information from pages
 	* @param array key ["data"] from one of the functions that retrieve informaci�n about pages

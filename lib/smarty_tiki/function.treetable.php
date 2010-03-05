@@ -1,9 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+//
 // $Id$
+
 
 /**
  * Tree Table Smarty func - smarty_function_treetable()
@@ -79,11 +81,11 @@ function smarty_function_treetable($params, &$smarty) {
 	$_openall = isset($_openall) ? $_openall : 'n';
 	
 	if (is_string($_checkbox) && strpos($_checkbox, ',') !== false) {
-		$_checkbox = preg_split('/,/', trim($_checkbox));
+		$_checkbox = split(',', trim($_checkbox));
 	}
 	if (!empty($_checkboxColumnIndex)) {
 		if (is_string($_checkboxColumnIndex) && strpos($_checkboxColumnIndex, ',') !== false) {
-			$_checkboxColumnIndex = preg_split('/,/', trim($_checkboxColumnIndex));
+			$_checkboxColumnIndex = split(',', trim($_checkboxColumnIndex));
 		}
 		if (count($_checkbox) != count($_checkboxColumnIndex)) {
 			return tra('{treetable}: Number of items in _checkboxColumnIndex doesn not match items in _checkbox');
@@ -92,7 +94,7 @@ function smarty_function_treetable($params, &$smarty) {
 	if (!empty($_checkboxTitles)) {
 		if (is_string($_checkboxTitles)) {
 			if (strpos($_checkboxTitles, ',') !== false) {
-				$_checkboxTitles = preg_split('/,/', trim($_checkboxTitles));
+				$_checkboxTitles = split(',', trim($_checkboxTitles));
 			} else {
 				$_checkboxTitles = array(trim($_checkboxTitles));
 			}
@@ -149,10 +151,10 @@ function smarty_function_treetable($params, &$smarty) {
 			}
 		}
 	} else if (is_string($_columns)) {
-		$ar = preg_split('/,/', $_columns);
+		$ar = split(',', $_columns);
 		$_columns = array();
 		foreach ($ar as $str) {
-			$ar2 = preg_split('/=/', trim($str));
+			$ar2 = split('=', trim($str));
 			$_columns[trim($ar2[0],' "')] = trim($ar2[1],' "');
 		}
 		unset($ar, $ar2);
@@ -165,13 +167,11 @@ function smarty_function_treetable($params, &$smarty) {
 	}
 	
 	$class = empty($class) ? 'treeTable' : $class;	// treetable
-
-/*	
+	
 	if ($prefs['feature_jquery_tablesorter'] == 'y' && strpos($class, 'sortable') === false) {
 		 //$class .= ' sortable';
 	}
-*/
-
+	
 	if ($_listFilter == 'y' && count($_data) > $_filterMinRows) {
 		require_once($smarty->_get_plugin_filepath('function', 'listfilter'));
 		$html .= smarty_function_listfilter(
@@ -220,11 +220,11 @@ $jq("#'.$id.'_openall").click( function () {
 	$html .= '<thead><tr>';
 	if (!empty($_checkbox)) {
 		include_once('lib/smarty_tiki/function.select_all.php');
-		for ($i = 0, $icount_checkbox = count($_checkbox); $i < $icount_checkbox; $i++) {
+		for ($i = 0; $i < count($_checkbox); $i++) {
 			$html .= '<th class="checkBoxHeader">';
 			$html .= smarty_function_select_all(
 						array('checkbox_names'=>$_checkbox[$i].'[]',
-							  'label' => empty($_checkboxTitles) ? '' : htmlspecialchars($_checkboxTitles[$i])), $smarty);
+							  'label' => empty($_checkboxTitles) ? '' : $_checkboxTitles[$i]), $smarty);
 			$html .= '</th>';
 		}
 	}
@@ -248,7 +248,7 @@ $jq("#'.$id.'_openall").click( function () {
 			$childRowClass = '';
 			if (!empty($_sortColumnDelimiter)) {	// nested
 				$parts = array_reverse(explode($_sortColumnDelimiter, $treeType));
-				for ($i = 0, $icount_parts = count($parts); $i < $icount_parts; $i++) {
+				for ($i = 0; $i < count($parts); $i++) {
 					$part = preg_replace('/\s+/', '_', $parts[$i]);
 					if (in_array($part, $treeSectionsAdded) && $i > 0) {
 						$treeParentId = preg_replace('/\s+/', '_', $parts[$i]);
@@ -278,9 +278,9 @@ $jq("#'.$id.'_openall").click( function () {
 					// write a sub-header
 					$html .= '<tr class="subHeader'.$childRowClass.'">';
 					if (!empty($_checkbox)) {
-						for ($i = 0, $icount_checkbox = count($_checkbox); $i < $icount_checkbox; $i++) {
+						for ($i = 0; $i < count($_checkbox); $i++) {
 							$html .= '<td class="checkBoxHeader">';
-							$html .= empty($_checkboxTitles) ? '' : htmlspecialchars($_checkboxTitles[$i]);
+							$html .= empty($_checkboxTitles) ? '' : $_checkboxTitles[$i];
 							$html .= '</td>';
 						}
 					}
@@ -309,15 +309,15 @@ $jq("#'.$id.'_openall").click( function () {
 		$html .= '<tr class="'.$rowClass.'"'.$rowId.'>';
 		// add the checkbox
 		if (!empty($_checkbox)) {
-			for ($i = 0, $icount_checkbox = count($_checkbox); $i < $icount_checkbox; $i++) {
+			for ($i = 0; $i < count($_checkbox); $i++) {
 				// get checkbox's "value"
 				$cbxVal = htmlspecialchars($row[$_checkboxColumnIndex[$i]]);
 				$rowVal = htmlspecialchars($row[$_valueColumnIndex]);
-				$cbxTit = empty($_checkboxTitles) ? $cbxVal : htmlspecialchars($_checkboxTitles[$i]);
+				$cbxTit = empty($_checkboxTitles) ? $cbxVal : $_checkboxTitles[$i];
 				$html .= '<td class="checkBoxCell">';
-				$html .= '<input type="checkbox" name="'.htmlspecialchars($_checkbox[$i]).'[]" value="'.$rowVal.'"'.($cbxVal=='y' ? ' checked="checked"' : '').' title="'.$cbxTit.'" />';
+				$html .= '<input type="checkbox" name="'.$_checkbox[$i].'[]" value="'.$rowVal.'"'.($cbxVal=='y' ? ' checked="checked"' : '').' title="'.$cbxTit.'" />';
 				if ($cbxVal == 'y') {
-					$html .= '<input type="hidden" name="old_'.htmlspecialchars($_checkbox[$i]).'[]" value="'.$rowVal.'" />';
+					$html .= '<input type="hidden" name="old_'.$_checkbox[$i].'[]" value="'.$rowVal.'" />';
 				}
 				$html .= '</td>';
 			}

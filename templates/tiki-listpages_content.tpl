@@ -11,7 +11,7 @@
 {/if}
 
 {if $find ne '' and $listpages|@count ne '0'}
-	<p>{tr}Found{/tr} &quot;{$find|escape}&quot; {tr}in{/tr} {$listpages|@count} {tr}pages{/tr}.</p>
+	<p>{tr}Found{/tr} &quot;{$find}&quot; {tr}in{/tr} {$listpages|@count} {tr}pages{/tr}.</p>
 {/if}
 
 
@@ -52,7 +52,7 @@
 
 		{if $prefs.wiki_list_hits eq 'y'}
 			{assign var='cntcol' value=$cntcol+1}
-			<th>{self_link _sort_arg='sort_mode' _sort_field='hits'}{tr}Hits{/tr}{/self_link}</th>
+			<th style="text-align:right;">{self_link _sort_arg='sort_mode' _sort_field='hits'}{tr}Hits{/tr}{/self_link}</th>
 		{/if}
 
 		{if $prefs.wiki_list_lastmodif eq 'y' or $prefs.wiki_list_comment eq 'y'}
@@ -167,13 +167,13 @@
 
 		{if $prefs.wiki_list_id eq 'y'}
 			<td class="{cycle advance=false}">
-				<a href="{$listpages[changes].pageName|sefurl}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].pageName|escape}">{$listpages[changes].page_id}</a>
+				<a href="{$listpages[changes].pageName|sefurl}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].pageName}">{$listpages[changes].page_id}</a>
 			</td>
 		{/if}
 
 		{if $prefs.wiki_list_name eq 'y'}
 			<td class="{cycle advance=false}">
-				<a href="{$listpages[changes].pageName|sefurl:'wiki':'':$all_langs}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].pageName|escape}">
+				<a href="{$listpages[changes].pageName|sefurl:'wiki':'':$all_langs}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].pageName}">
 					{$listpages[changes].pageName|truncate:$prefs.wiki_list_name_len:"...":true|escape}
 				</a>
 				{if $prefs.wiki_list_description eq 'y' && $listpages[changes].description neq ""}
@@ -187,8 +187,8 @@
 		{foreach from=$wplp_used key=lc item=ln}
 			<td class="{cycle advance=false}">
 				{if $listpages[changes].translations[$lc]}
-					<a href="{$listpages[changes].translations[$lc]|sefurl}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].translations[$lc]|escape}">
-						{$listpages[changes].translations[$lc]|escape}
+					<a href="{$listpages[changes].translations[$lc]|sefurl}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].translations[$lc]}">
+						{$listpages[changes].translations[$lc]}
 					</a>
 				{/if}
 			</td>
@@ -328,7 +328,7 @@
 	{sectionelse}
 		<tr>
 			<td colspan="{$cntcol}" class="odd">
-				<b>{tr}No pages found{/tr}{if $find ne ''} {tr}with{/tr} &quot;{$find|escape}&quot;{/if}{if $initial ne ''}{tr} {if $find ne ''}and {/if}starting with{/tr} &quot;{$initial}&quot;{/if}.</b>
+				<b>{tr}No pages found{/tr}.{if $find ne ''} {tr}with{/tr} &quot;{$find}&quot;{/if}{if $initial ne ''}{tr} {if $find ne ''}and {/if}starting with{/tr} &quot;{$initial}&quot;{/if}</b>
 				{if $aliases_were_found == 'y'}<br><b>{tr}However, some page aliases fitting the query were found (see Aliases section above).{/tr}</b>{/if}
 			</td>
 		</tr>
@@ -337,7 +337,7 @@
 
 {if $checkboxes_on eq 'y' && count($listpages) > 0} {* what happens to the checked items? *}
 	<p align="left"> {*on the left to have it close to the checkboxes*}
-		<label for="submit_mult">{tr}Perform action with checked:{/tr}</label>
+		<label for="submit_mult">{tr}Perform action with checked{/tr}:</label>
 		<select name="submit_mult" id="submit_mult" onchange="this.form.submit();">
 			<option value="" selected="selected">...</option>
 			{if $tiki_p_remove eq 'y'} 
@@ -370,10 +370,8 @@
 {/if}
 
 {if $find and $tiki_p_edit eq 'y' and $pagefound eq 'n' and $alias_found eq 'n'}
-	{capture assign='find_htmlescaped'}{$find|escape}{/capture}
-	{capture assign='find_urlescaped'}{$find|escape:'url'}{/capture}
 	<div class="navbar">
-		 {button _text="{tr}Create Page:{/tr} $find_htmlescaped" href="tiki-editpage.php?page=$find_urlescaped&lang=$find_lang&templateId=$template_id&template_name=$template_name&categId=$create_page_with_categId" _title="{tr}Create{/tr}"}
+		 {button _text="{tr}Create Page{/tr}: $find" href="tiki-editpage.php?page=$find&lang=$find_lang&templateId=$template_id" _title="{tr}Create{/tr}"}
 	</div>
 {/if}
 {if $checkboxes_on eq 'y'}

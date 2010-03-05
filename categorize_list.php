@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id$
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to err & die if called directly.
 //smarty is not there - we need setup
@@ -34,11 +35,11 @@ if ($prefs['feature_categories'] == 'y' && isset($cat_type) && isset($cat_objid)
 		$cats = $categlib->get_default_categories();
 	}
 	
-	if ($prefs['wikiapproval_sync_categories'] == 'y' && !$cats
-	 && $cat_type == 'wiki page' && ( $approved = $tikilib->get_approved_page($cat_objid) )
+	if ($prefs['feature_wikiapproval'] == 'y' && $prefs['wikiapproval_sync_categories'] == 'y' && !$cats
+	 && $cat_type == 'wiki page' && substr($cat_objid, 0, strlen($prefs['wikiapproval_prefix'])) == $prefs['wikiapproval_prefix']
 	 && !$tikilib->page_exists($cat_objid) ) {
 	 	// to pre-populate categories of original page if this is the first creation of a staging page
-		$approvedPageName = $approved;
+		$approvedPageName = substr($cat_objid, strlen($prefs['wikiapproval_prefix']));
 		$cats = $categlib->get_object_categories($cat_type, $approvedPageName);
 		$cats = array_diff($cats,Array($prefs['wikiapproval_approved_category']));		
 	}
@@ -87,7 +88,28 @@ if ($prefs['feature_categories'] == 'y' && isset($cat_type) && isset($cat_objid)
 		}
 	}
 
-	$smarty->assign('cat_tree', $categlib->generate_cat_tree($categories));
+	include_once ('lib/tree/categ_picker_tree.php');
+	$tree_nodes = array();
+	$roots = $categlib->findRoots( $categories );
+	foreach ($categories as $c) {
+		if (isset($c['name']) || $c['parentId'] != 0) {
+			$smarty->assign( 'category_data', $c );
+			$tree_nodes[] = array(
+				'id' => $c['categId'],
+				'parent' => $c['parentId'],
+				'data' => $smarty->fetch( 'category_tree_entry.tpl' ),
+			);
+			if (in_array( $c['parentId'], $roots )) {
+				$tree_nodes[count($tree_nodes) - 1]['data'] = '<strong>'.$tree_nodes[count($tree_nodes) - 1]['data'].'</strong>';
+			}
+		}
+	}
+	$tm = new CatPickerTreeMaker("categorize");
+	$res = '';
+	foreach( $roots as $root ) {
+		$res .= $tm->make_tree($root, $tree_nodes);
+	}
+	$smarty->assign('cat_tree', $res);
 	
 	if (!empty($cats))
 		$smarty->assign('catsdump', implode(',',$cats));

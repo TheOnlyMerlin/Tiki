@@ -1,16 +1,24 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-received_pages.php,v 1.18.2.1 2007-10-24 13:51:07 sylvieg Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/commcenter/commlib.php');
 include_once ('lib/wiki/wikilib.php');
 $auto_query_args = array('receivedPageId', 'sort_mode', 'offset', 'find', 'sort_modes');
-$access->check_feature('feature_comm');
-$access->check_permission('tiki_p_admin_received_pages');
+if ($prefs['feature_comm'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_comm");
+	$smarty->display("error.tpl");
+	die;
+}
+if ($tiki_p_admin_received_pages != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST["receivedPageId"])) {
 	$_REQUEST["receivedPageId"] = 0;
 }

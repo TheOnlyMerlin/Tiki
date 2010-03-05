@@ -1,11 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+
 // $Id$
 
-$in_installer = 1;
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+
 if (!isset($title)) $title = 'Tiki Installer';
 if (!isset($content)) $content = 'No content specified. Something went wrong.<br/>Please tell your administrator.<br/>If you are the administrator, you may want to check for / file a bug report.';
 if (!isset($dberror)) $dberror = false;
@@ -16,8 +16,6 @@ if (version_compare(PHP_VERSION, '5.0.0', '<')) {
 	$content = '<p>Please contact your system administrator ( if you are not the one ;) ).</p>';
 	createPage($title, $content);
 }
-
-include_once('db/tiki-db.php');	// to set up multitiki etc if there
 
 // if tiki installer is locked (probably after previous installation) display notice
 if (file_exists('db/lock')) {
@@ -51,8 +49,8 @@ class InstallerDatabaseErrorHandler implements TikiDb_ErrorHandler
 }
 
 // Were database details defined before? If so, load them
-if (file_exists('db/'.$tikidomainslash.'local.php')) {
-	include 'db/'.$tikidomainslash.'local.php';
+if (file_exists('db/local.php')) {
+	include 'db/local.php';
 
 	// In case of replication, ignore it during installer.
 	unset( $shadow_dbs, $shadow_user, $shadow_pass, $shadow_host );
@@ -90,9 +88,9 @@ if (isset($_SESSION['accessible'])) {
 							<p>To verify that you are a site administrator, enter your <strong><em>database</em></strong> credentials (database username and password) here.</p>
 							<p>If you have forgotten your database credentials, find the directory where you have unpacked your Tiki and have a look inside the <strong><code>db</code></strong> folder into the <strong><code>local.php</code></strong> file.</p>
 							<form method="post" action="tiki-install.php">
-								<p><label for="dbuser">Database username</label>: <input type="text" name="dbuser" /></p>
-								<p><label for="dbpass">Database password</label>: <input type="password" name="dbpass" /></p>
-								<p><input type="submit" value=" Validate and Continue " /></p>
+								<p><label for="dbuser">Database username</label>: <input type="text" name="dbuser"/></p>
+								<p><label for="dbpass">Database password</label>: <input type="password" name="dbpass"/></p>
+								<p><input type="submit" value=" Validate and Continue "/></p>
 							</form>
 							<p>&nbsp;</p>';
 	createPage($title, $content);

@@ -32,11 +32,6 @@
 <form method="post" action="tiki-edit_blog.php" id="blog-edit-form">
   <input type="hidden" name="blogId" value="{$blogId|escape}" />
   <table class="normal">
-  	<tr class="editblogform">
-  		<td colspan="2">
-  			<b>{tr}General Settings{/tr}</b>
-  		</td>
-  	</tr>
     <tr class="editblogform">
       <td><label for="blog-title">{tr}Title{/tr}</label></td>
       <td><input type="text" name="title" id="blog-title" value="{$title|escape}" /></td>
@@ -56,55 +51,21 @@
         <select name="creator">
           {if $tiki_p_admin eq 'y' or $tiki_p_blog_admin eq 'y'}
             {foreach from=$users key=userId item=u}
-              <option value="{$u|escape}"{if $u eq $creator} selected="selected"{/if}>{$u|escape}</option>
+              <option value="{$u|escape}"{if $u eq $creator} selected="selected"{/if}>{$u}</option>
             {/foreach}
           {else}
-            <option value="{$user|escape}" selected="selected">{$user|escape}</option>
+            <option value="{$user|escape}" selected="selected">{$user}</option>
           {/if}
         </select> 
       </td>
-    </tr>
-    <tr class="editblogform">
-    	<td colspan="2">
-    		<hr />
-    		<br />
-    		<b>{tr}Display Options{/tr}</b>
-    	</td>
     </tr>
     <tr class="editblogform">
       <td><label for="blogs-number">{tr}Number of posts to show{/tr}</label></td>
       <td><input type="text" name="maxPosts" id="blogs-number" value="{$maxPosts|escape}" /></td>
     </tr>
     <tr class="editblogform">
-     <td><label for="blogs-titles">{tr}Display titles in blog posts{/tr}</label></td>	 
-       <td><input type="checkbox" name="use_title" id="blogs-titles" {if $use_title eq 'y'}checked='checked'{/if}/></td>	 
-    </tr>	 
-	<tr class="editblogform">
-     <td><label for="blogs-author">{tr}Display author in blog posts{/tr}</label></td>	 
-       <td><input type="checkbox" name="use_author" id="blogs-author" {if $use_author eq 'y'}checked='checked'{/if}/></td>	 
-    </tr>
-    <tr class="editblogform">
-     <td><label for="blogs-date">{tr}Display published date in blog posts{/tr}</label></td>	 
-       <td><input type="checkbox" name="add_date" id="blogs-date" {if $add_date eq 'y'}checked='checked'{/if}/></td>	 
-    </tr>	
-    <tr class="editblogform">
-      <td>{tr}Show user avatar{/tr}</td>
-      <td><input type="checkbox" name="show_avatar" {if $show_avatar eq 'y'}checked='checked'{/if} /></td>
-    </tr>
-    <tr class="editblogform">
-    	<td colspan="2">
-    		<hr />
-    		<br />
-    		<b>{tr}Other Options{/tr}</b>
-    	</td>
-    </tr>
-    <tr class="editblogform">
-      <td><label for="blogs-allow_others">{tr}Allow other users to post in this blog{/tr}</label></td>
+      <td><label for="blogs-allow_others">{tr}Allow other user to post in this blog{/tr}</label></td>
       <td><input type="checkbox" name="public" id="blogs-allow_others" {if $public eq 'y'}checked='checked'{/if}/></td>
-    </tr>	
-    <tr class="editblogform">
-      <td><label for="blogs-always_owner">{tr}If others post to blog, Author should always be Owner{/tr}</label></td>
-      <td><input type="checkbox" name="alwaysOwner" id="blogs-always_owner" {if $alwaysOwner eq 'y'}checked='checked'{/if}/></td>
     </tr>
     <tr class="editblogform">
       <td><label for="blogs-search">{tr}Allow search{/tr}</label></td>
@@ -117,7 +78,10 @@
         {if $prefs.feature_blogposts_comments ne 'y'}Global post-level comments is disabled.{/if}
       </td>
     </tr>
-
+    <tr class="editblogform">
+      <td>{tr}Show user avatar{/tr}</td>
+      <td><input type="checkbox" name="show_avatar" {if $show_avatar eq 'y'}checked='checked'{/if} /></td>
+    </tr>
 
     {if $prefs.feature_blog_heading eq 'y' and $tiki_p_edit_templates eq 'y'}
       <tr class="editblogform">

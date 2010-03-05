@@ -1,17 +1,34 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-file_galleries_rankings.php,v 1.16 2007-10-12 07:55:27 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 require_once ('tiki-setup.php');
+
 include_once ('lib/rankings/ranklib.php');
-$access->check_feature(array('feature_file_galleries','feature_file_galleries_rankings'));
+
+if ($prefs['feature_file_galleries'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_file_galleries");
+
+	$smarty->display("error.tpl");
+	die;
+}
+
+if ($prefs['feature_file_galleries_rankings'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_file_galleries_rankings");
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 if ((isset($tiki_p_list_file_galleries) && $tiki_p_list_file_galleries != 'y') || (!isset($tiki_p_list_file_galleries) && $tiki_p_view_file_gallery != 'y')) {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg', tra("Permission denied. You cannot view this section"));
+
 	$smarty->display("error.tpl");
 	die;
 }

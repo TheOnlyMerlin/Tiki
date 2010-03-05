@@ -4,10 +4,7 @@
 * Automated acceptance tests for Multilingual Features.
 *************************************************************/
 
-/**
- * @group gui
- */
- 
+
 require_once 'TikiSeleniumTestCase.php';
 
 class  AcceptanceTests_MultilingualTest extends TikiSeleniumTestCase
@@ -17,9 +14,6 @@ class  AcceptanceTests_MultilingualTest extends TikiSeleniumTestCase
     	$this->fail("Don't forget to do this");
     }
         
-   /**
-    * @group gui
-    */ 
    public function testHomePageIsMultilingual() {
    		$this->openTikiPage('tiki-index.php');
    		$this->logInIfNecessaryAs('admin');
@@ -27,9 +21,6 @@ class  AcceptanceTests_MultilingualTest extends TikiSeleniumTestCase
    		$this->assertLanguagePicklistHasLanguages(array('English' => 'HomePage'));
    }
     
-   /**
-    * @group gui
-    */ 
     public function testMultilingualPageDisplaysLanguagePicklist() {
        	$this->openTikiPage('tiki-index.php?page=Multilingual+Test+Page+1');
        	$this->logInIfNecessaryAs('admin');
@@ -37,9 +28,6 @@ class  AcceptanceTests_MultilingualTest extends TikiSeleniumTestCase
                                                     'Français' => 'Page de test multilingue 1'));                                                    
     }
 
-   /**
-    * @group gui
-    */ 
     public function testSwitchBetweenLanguages() {
        $this->openTikiPage('tiki-index.php?page=Multilingual+Test+Page+1');
        $this->logInIfNecessaryAs('admin');
@@ -48,9 +36,6 @@ class  AcceptanceTests_MultilingualTest extends TikiSeleniumTestCase
     }
     
   	
-   /**
-    * @group gui
-    */ 
   	public function testLanguageLinkLeadsToTranslatedPageInThatLanguage() {
   		$this->openTikiPage('tiki-index.php?page=Multilingual+Test+Page+1');
   		$this->logInIfNecessaryAs('admin');
@@ -62,9 +47,6 @@ class  AcceptanceTests_MultilingualTest extends TikiSeleniumTestCase
                                                     ));	
   	}
   	
-   /**
-    * @group gui
-    */ 
   	public function testTranslateOptionAppearsOnlyWhenLoggedIn() {
   		$this->openTikiPage('tiki-index.php');
   		$this->logOutIfNecessary();
@@ -74,9 +56,6 @@ class  AcceptanceTests_MultilingualTest extends TikiSeleniumTestCase
   		$this->assertLanguagePicklistHasTranslateOption();
   	}
 
-   /**
-    * @group gui
-    */ 
     public function testClickOnTranslateShowsTranslatePage() {
     	$this->openTikiPage('tiki-index.php');
     	$this->logInIfNecessaryAs('admin');
@@ -86,9 +65,6 @@ class  AcceptanceTests_MultilingualTest extends TikiSeleniumTestCase
   	}
 
   	
-   /**
-    * @group gui
-    */ 
   	public function testListOfLanguagesOnTranslatePageDoesNotContainAlreadyTranslatedLanguages() {
   		$this->openTikiPage('tiki-index.php?page=Multilingual+Test+Page+1');
     	$this->logInIfNecessaryAs('admin');
@@ -100,9 +76,6 @@ class  AcceptanceTests_MultilingualTest extends TikiSeleniumTestCase
 					  "English should not have been present in the list of languages.");
   	}
     
-   /**
-    * @group gui
-    */ 
     public function testCannotGiveATranslationTheNameOfAnExistingPage() {
     	//NB. This is in fact wrong. If you have similar languages, say English and British English, 
     	//or Serbian (latin alphabet) and Croatian, the title of the page is bound to be the same. Here we force
@@ -121,9 +94,6 @@ class  AcceptanceTests_MultilingualTest extends TikiSeleniumTestCase
         
     }
     
-   /**
-    * @group gui
-    */ 
     public function testShouldNotChangeLanguageOfThePageInCaseCreateTranslationFails() {
     	//In case when a page already exists create translation gives an error message which is ok.
     	//But it shouldn't change the language of the existing page to the language chosen for translation. 
@@ -146,9 +116,6 @@ class  AcceptanceTests_MultilingualTest extends TikiSeleniumTestCase
     }
     
     
-   /**
-    * @group gui
-    */ 
     public function testUpToDatenessIs100percentForTheCompletelyTranslatedPages(){
     	$this->openTikiPage('tiki-index.php?page=Page+de+test+multilingue+1');
     	$this->logInIfNecessaryAs('admin');
@@ -157,9 +124,6 @@ class  AcceptanceTests_MultilingualTest extends TikiSeleniumTestCase
     }
  
 
-   /**
-    * @group gui
-    */ 
     public function testUponAddingNewContentTranslationsThatNeedImprovementAppears() {
     	$this->openTikiPage('tiki-index.php?page=Multilingual+Test+Page+1');
     	$this->logInIfNecessaryAs('admin');
@@ -175,9 +139,6 @@ class  AcceptanceTests_MultilingualTest extends TikiSeleniumTestCase
     	$this->assertTextPresent("Better translations: Multilingual Test Page 1 (en)");
     }
     
-   /**
-    * @group gui
-    */ 
     public function testCompleteTranslationBringsBackUpToDatenessTo100() {
     	$this->openTikiPage('tiki-index.php?page=Multilingual+Test+Page+1');
     	$this->logInIfNecessaryAs('admin');
@@ -194,9 +155,6 @@ class  AcceptanceTests_MultilingualTest extends TikiSeleniumTestCase
     	$this->assertTextPresent("Up-to-date-ness: 100%");
     }
     
-   /**
-    * @group gui
-    */ 
     public function testPartialTranslationBringsUpUpToDatenessPourcentage() {
 		$this->openTikiPage('tiki-index.php?page=Multilingual+Test+Page+1');
     	$this->logInIfNecessaryAs('admin');
@@ -220,9 +178,6 @@ class  AcceptanceTests_MultilingualTest extends TikiSeleniumTestCase
     }
     
     
-   /**
-    * @group gui
-    */ 
     public function testMachineTranslationOfAPageCausesErrorMessageIfNotEnabled() {
     	$this->logInIfNecessaryAs('admin');
     	$this->_setMachineTranslationFeatureTo('n');
@@ -239,7 +194,6 @@ class  AcceptanceTests_MultilingualTest extends TikiSeleniumTestCase
 
     protected function setUp()
     {
-    	$this->markTestSkipped("These tests are still too experimental, so skipping it.");    	    	
         $this->setBrowserUrl('http://localhost/');
         $this->current_test_db = "multilingualTestDump.sql";
         $this->restoreDBforThisTest();

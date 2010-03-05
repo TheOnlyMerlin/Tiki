@@ -1,10 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-index.php,v 1.198.2.22 2008-03-12 15:10:01 ricks99 Exp $
 function wikiplugin_invite_info() {
 	return array(
 		'name' => tra( 'Invite' ),
@@ -84,7 +79,7 @@ function wikiplugin_invite( $data, $params) {
 			include_once ('lib/webmail/tikimaillib.php');
 			$mail = new TikiMail();
 			$machine = parse_url($_SERVER['REQUEST_URI']);
-			$machine = $tikilib->httpPrefix( true ).dirname($machine['path']);
+			$machine = $tikilib->httpPrefix().dirname($machine['path']);
 			$smarty->assign_by_ref('machine', $machine);
 			$subject = sprintf($smarty->fetch('mail/mail_invite_subject.tpl'), $_SERVER['SERVER_NAME']);
 			$mail->setSubject($subject);

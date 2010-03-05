@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 require_once 'lib/core/lib/TikiDb.php';
 
 class TikiDb_Bridge extends TikiDb
@@ -27,11 +21,6 @@ class TikiDb_Bridge extends TikiDb
 	function query( $query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = true ) // {{{
 	{
 		return self::get()->query( $query, $values, $numrows, $offset, $reporterrors );
-	} // }}}
-
-	function fetchAll( $query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = true ) // {{{
-	{
-		return self::get()->fetchAll( $query, $values, $numrows, $offset, $reporterrors );
 	} // }}}
 
 	function queryError( $query, &$error, $values = null, $numrows = -1, $offset = -1 ) // {{{
@@ -84,6 +73,11 @@ class TikiDb_Bridge extends TikiDb
 		self::get()->handleQueryError( $query, $values, $result );
 	} // }}}
 
+	protected function convertQuery( &$query ) // {{{
+	{
+		self::get()->convertQuery( $query );
+	} // }}}
+
 	protected function convertQueryTablePrefixes( &$query ) // {{{
 	{
 		self::get()->convertQueryTablePrefixes( $query );
@@ -92,6 +86,16 @@ class TikiDb_Bridge extends TikiDb
 	function convertSortMode( $sort_mode ) // {{{
 	{
 		return self::get()->convertSortMode( $sort_mode );
+	} // }}}
+
+	function convertBinary() // {{{
+	{
+		return self::get()->convertBinary();
+	} // }}}
+	
+	function cast( $var,$type ) // {{{
+	{
+		return self::get()->cast( $var, $type );
 	} // }}}
 
 	function getQuery() // {{{

@@ -1,11 +1,8 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /**
+ * \file
+ * $Id: /cvsroot/tikiwiki/tiki/lib/wiki-plugins/wikiplugin_split.php,v 1.40.2.1 2007-11-28 14:33:28 mose Exp $
+ * 
  * \brief {SPLIT} wiki plugin implementation
  * Usage:
  *
@@ -23,26 +20,26 @@
  *
  */
 
-function wikiplugin_split_info()
-{
+function wikiplugin_split_help() {
+	return tra("Split a page into rows and columns").":<br />~np~{SPLIT(joincols=>[y|n|0|1],fixedsize=>[y|n|0|1],colsize=>size1|size2|...,first=>[col|line], edit=>y|n)}".tra("row1col1")."---".tra("row1col2")."@@@".tra("row2col1")."---".tra("row2col2")."{SPLIT}~/np~";
+}
+
+function wikiplugin_split_info() {
 	return array(
 		'name' => tra('Split'),
 		'documentation' => 'PluginSplit',
 		'description' => tra('Split a page into rows and columns'),
 		'prefs' => array( 'wikiplugin_split' ),
-		'filter' => 'wikicontent',
 		'params' => array(
 			'joincols' => array(
 				'required' => false,
 				'name' => tra('Join Columns'),
 				'description' => 'y|n'.' '.tra('Generate the colspan attribute if columns are missing' ),
-				'filter' => 'alpha',
 			),
 			'fixedsize' => array(
 				'required' => false,
 				'name' => tra('Fixed Size'),
 				'description' => 'y|n'.' '.tra('Generate the width attribute on the columns'),
-				'filter' => 'alpha',
 			),
 			'colsize' => array(
 				'required' => false,
@@ -53,7 +50,6 @@ function wikiplugin_split_info()
 				'required' => false,
 				'name' => tra('First'),
 				'description' => 'col|line',
-				'filter' => 'alpha',
 			),
 			'edit' => array(
 				'required' => false,
@@ -78,8 +74,7 @@ function wikiplugin_split_info()
  *		$data = the preparsed data (plugin, code, np.... already parsed)
  *		$pos is the position in the object where the non-parsed data begins
  */
-function wikiplugin_split($data, $params, $pos)
-{
+function wikiplugin_split($data, $params, $pos) {
 	global $tikilib, $tiki_p_admin_wiki, $tiki_p_admin, $section;
 	global $replacement;
 
@@ -120,10 +115,10 @@ function wikiplugin_split($data, $params, $pos)
 		  if (!isset($tdsize[$i])) {
 		    $tdsize[$i]=0;
 		  } else {
-				$tdsize[$i] = trim($tdsize[$i]);
-				if (strstr($tdsize[$i], '%')) {
-					$percent = true;
-				}
+			$tdsize[$i] = trim($tdsize[$i]);
+			if (strstr($tdsize[$i], '%')) {
+				$percent = true;
+			}
 		  }
 		  $tdtotal+=$tdsize[$i];
 		}
@@ -188,9 +183,9 @@ function wikiplugin_split($data, $params, $pos)
 	$ind = 0;
 	$icell = 0;
 	$result .= '<tr>';
-	$idx = 0;
 	foreach ($rows as $r) {
-		$result .= '<td valign="top" '.(($fixedsize && isset($tdsize))? ' width="'.$tdsize[$idx].(strstr($tdsize[$idx], '%')?'':'%').'"' : '').'>';
+		$idx = 0;
+		$result .= '<td valign="top" '.(($fixedsize && isset($tdsize))? ' width="'.$tdsize[$idx].'%"' : '').'>';
 		foreach ($r as $i) {
 			if (substr($i, 0, 2) == "\r\n") {
 				$i = substr($i, 2);
@@ -198,7 +193,7 @@ function wikiplugin_split($data, $params, $pos)
 			}
 			if ($edit == 'y' && $perm && $section == 'wiki page') {
 				$result .= '<div class="split"><div style="float:right">';
-$result .= "$pos-$icell-".htmlspecialchars(substr($data, $pos, 10));
+$result .= "$pos-$icell-".htmlspecialchars(substr($data,$pos, 10));
  				$result .= '<a href="tiki-editpage.php?page='.$object.'&amp;pos='.$pos.'&amp;cell='.$icell.'">'
   	                    .'<img src="pics/icons/page_edit.png" alt="'.tra('Edit').'" title="'.tra('Edit').'" border="0" width="16" height="16" /></a></div><br />';
  				$ind += strlen($i);
@@ -207,10 +202,10 @@ $result .= "$pos-$icell-".htmlspecialchars(substr($data, $pos, 10));
 			}
 			else
 				$result .= '<div>';
-			$result .= "\n".preg_replace("/\r?\n/", "<br />\r\n", $i). '</div>';
+			$result .= preg_replace("/\r?\n/", "<br />\r\n", $i). '</div>';
+			++$idx;
 			++$icell;
 		}
-		++$idx;
 		$result .= '</td>';
 	}
 	$result .= '</tr>';
@@ -220,12 +215,10 @@ $result .= "$pos-$icell-".htmlspecialchars(substr($data, $pos, 10));
 
 	return $result;
 }
-
 // find the real start and the real end of a cell
 // $pos = start pos in the non parsed data of all the split cells
 // $cell = cellule indice
-function  wikiplugin_split_cell($data, $pos, $cell)
-{
+function  wikiplugin_split_cell($data, $pos, $cell) {
 	$start = $pos;
 	$end = $pos;
 	$no_parsed = '~np~|~pp~|\\<pre\\>|\\<PRE\\>';

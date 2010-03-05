@@ -1,13 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-/**
+/** \file
+ * $Id: /cvsroot/tikiwiki/tiki/lib/debug/debug-command_dmsg.php,v 1.4 2003-08-14 01:00:30 zaufi Exp $
+ *
  * \brief 'debugger command' to show user messages in tab
+ *
  * \author zaufi <zaufi@sendmail.ru>
+ *
  */
 require_once ('lib/debug/debugger-ext.php');
 
@@ -17,8 +15,7 @@ require_once ('lib/debug/debugger.php');
 /**
  * \brief Command 'watch'
  */
-class DbgCmd_DebugMessages extends DebuggerCommand
-{
+class DbgCmd_DebugMessages extends DebuggerCommand {
 	/// Function to create interface part of command: return ["button name"] = <html code>
 	function draw_interface() {
 		global $smarty;

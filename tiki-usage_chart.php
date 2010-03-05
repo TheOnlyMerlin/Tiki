@@ -1,19 +1,19 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-usage_chart.php,v 1.11 2007-10-12 07:55:32 nyloth Exp $
 require_once ('tiki-setup.php');
-
-$access->check_feature('feature_stats', '', 'general');
-$access->check_permission('tiki_p_view_stats');
-
-require_once ('lib/graph-engine/gd.php');
-require_once ('lib/graph-engine/graph.bar.php');
+require_once ("graph-engine/graph.bar.php");
+require_once ("graph-engine/gd.php");
 include_once ('lib/stats/statslib.php');
-
+if ($prefs['feature_stats'] != 'y') {
+	die;
+}
+if ($tiki_p_view_stats != 'y') {
+	die;
+}
 //Define the object
 if (isset($_REQUEST["type"])) {
 	if ($_REQUEST["type"] == "daily") {

@@ -1,9 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// CVS: $Id: modifier.sefurl.php,v 1.1.2.2 2008-02-16 22:40:31 sylvieg Exp $
 
 // Translate only if feature_multilingual is on
 
@@ -19,7 +15,6 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 
 	switch($type){
 	case 'wiki page':
-		$type = 'wiki';
 	case 'wiki':
 		return $wikilib->sefurl($source, $with_next, $all_langs);
 	case 'blog':
@@ -48,18 +43,6 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 		break;
 	case 'preview':
 		$href = 'tiki-download_file.php?fileId='. $source.'&amp;preview';
-		break;
-	case 'tracker item':
-		$type = 'trackeritem';
-	case 'trackeritem':
-		$href = 'tiki-view_tracker_item.php?itemId='. $source;
-		break;
-	case 'tracker':
-		$href = 'tiki-view_tracker.php?trackerId='.$source;
-		break;
-	case 'filegallery':
-	case 'file gallery':
-		$href = 'tiki-list_file_gallery.php?galleryId='.$source;
 		break;
 	default:
 		$href = $source;

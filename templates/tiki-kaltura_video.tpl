@@ -137,8 +137,10 @@
 	{/if}
 	</div>
 
-{jq}
-    function CloseClick(isModified) {
+<script type="text/javascript">
+{literal}
+        
+        function CloseClick(isModified) {
 			window.location="./tiki-list_kaltura_entries.php";
 		}
 
@@ -149,6 +151,7 @@
 		function closeEditorHandler() {
 			window.location="./tiki-list_kaltura_entries.php";
 		}
-{/jq}
+{/literal}
+</script>
 
 

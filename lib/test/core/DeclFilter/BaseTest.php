@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @group unit
- * 
- */
-
 class DeclFilter_BaseTest extends TikiTestCase
 {
 	function testSimple()

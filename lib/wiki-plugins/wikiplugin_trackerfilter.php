@@ -1,10 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/lib/wiki-plugins/wikiplugin_trackerfilter.php,v 1.14.2.18 2008-03-17 21:10:11 sylvieg Exp $
 function wikiplugin_trackerfilter_help() {
   $help = tra("Filters the items of a tracker, fields are indicated with numeric ids.").":\n";
   $help .= "~np~{TRACKERFILTER(filters=>2/d:4/r:5,action=>Name of submit button,displayList=y|n,line=y|n,TRACKERLIST_params )}Notice{TRACKERFILTER}~/np~";
@@ -18,7 +13,7 @@ function wikiplugin_trackerfilter_info() {
 		'filters' => array(
 			'required' => true,
 			'name' => tra('Filters'),
-			'description' => tra('Example:') . '2/d:4/r:5:(6:7)/sqlsearch',
+			'description' => tra('Example:') . '2/d:4/r:5',
 		),
 		'action' => array(
 			'required' => false,
@@ -50,7 +45,6 @@ return array(
 function wikiplugin_trackerfilter($data, $params) {
 	global $smarty, $prefs;
 	global $trklib;	include_once('lib/trackers/trackerlib.php');
-	static $iTrackerFilter = 0;
 	if ($prefs['feature_trackers'] != 'y') {
 		return $smarty->fetch("wiki-plugins/error_tracker.tpl");
 	}
@@ -62,11 +56,10 @@ function wikiplugin_trackerfilter($data, $params) {
 	if (!isset($filters)) {
 		return tra('missing parameters').' filters';
 	}
-	
-	$listfields = wikiplugin_trackerFilter_split_filters($filters);
+	$listfields = split(':',$filters);
 	foreach ($listfields as $i=>$f) {
 		if (strchr($f, '/')) {
-			list($fieldId, $format) = explode('/',$f);
+			list($fieldId, $format) = split('/',$f);
 			$listfields[$i] = $fieldId;
 			$formats[$fieldId] = $format;
 		} else {
@@ -90,18 +83,6 @@ function wikiplugin_trackerfilter($data, $params) {
 			}
 		}
 	}
-	if (!isset($sortchoice)) {
-		$sortchoice = '';
-	} else {
-		unset($params['sortchoice']);
-		if (isset($_REQUEST["tr_sort_mode$iTrackerFilter"])) {
-			$params['sort_mode'] = $_REQUEST["tr_sort_mode$iTrackerFilter"];
-		}
-		foreach ($sortchoice as $i=>$sc) {
-			$sc = explode('|', $sc);
-			$sortchoice[$i] = array('value'=>$sc[0], 'label'=>empty($sc[1])?$sc[0]: $sc[1]);
-		}
-	}
 	if (empty($trackerId) || !($tracker = $trklib->get_tracker($trackerId))) {
 		return $smarty->fetch("wiki-plugins/error_tracker.tpl");
 	}
@@ -114,11 +95,7 @@ function wikiplugin_trackerfilter($data, $params) {
 		foreach ($_REQUEST as $key =>$val) {
 			if (substr($key, 0, 2) == 'f_' && !empty($val) && (!is_array($val) || !empty($val[0]))) {
 				$fieldId = substr($key, 2);
-				if (!is_numeric($fieldId)) { // composite filter
-					$ffs[] = array('sqlsearch'=>explode(':', str_replace(array('(', ')'), '', $fieldId)));
-				} else {
-					$ffs[] = $fieldId;
-				}
+				$ffs[] = $fieldId;
 				if (isset($formats[$fieldId]) && ($formats[$fieldId] == 't' || $formats[$fieldId] == 'i')) {
 					$exactValues[] = '';
 					$values[] = ($formats[$fieldId] == 'i')? "$val%": $val;
@@ -129,16 +106,15 @@ function wikiplugin_trackerfilter($data, $params) {
 			}
 		}
 		$params['fields'] = $fields;
-		if (empty($params['trackerId'] )) {
+		if (empty($params['trackerId'] ))
 			$params['trackerId'] = $trackerId;
-		}
-		unset($params['filterfield']); unset($params['filtervalue']); unset($params['exactrvalue']);
+		unset($params['filterfield']); unset($params['filtervalue']);
 		if (!empty($ffs)) {
 			$params['filterfield'] = $ffs;
 			$params['exactvalue'] = $exactValues;
 			$params['filtervalue'] = $values;
 		}
-		$params['max'] = $prefs['maxRecords'];
+		//echo '<pre>'; print_r($params);echo '</pre>';
 		include_once('lib/wiki-plugins/wikiplugin_trackerlist.php');
 		$dataRes .= wikiplugin_trackerlist($data, $params);
 		$dataRes .= '<br />';
@@ -146,7 +122,6 @@ function wikiplugin_trackerfilter($data, $params) {
 		$data = '';
 	}
 
-	$smarty->assign_by_ref('sortchoice', $sortchoice);
 	$filters = wikiplugin_trackerFilter_get_filters($trackerId, $listfields, $formats);
 	if (!is_array($filters)) {
 		return $filters;
@@ -155,6 +130,7 @@ function wikiplugin_trackerfilter($data, $params) {
 	//echo '<pre>';print_r($filters); echo '</pre>';
 	$smarty->assign_by_ref('trackerId', $trackerId);
 	$smarty->assign_by_ref('line', $line);
+	static $iTrackerFilter = 0;
 	$smarty->assign('iTrackerFilter', $iTrackerFilter++);
 	if ($displayList == 'n' || !empty($_REQUEST['filter'])) {
 		$open = 'y';
@@ -166,40 +142,9 @@ function wikiplugin_trackerfilter($data, $params) {
 		$action = 'Filter';//tra('Filter')
 	}
 	$smarty->assign_by_ref('action', $action);
+
 	$dataF = $smarty->fetch('wiki-plugins/wikiplugin_trackerfilter.tpl');
-
-	static $first = true;
-
-	if( $first ) {
-		$first = false;
-		global $headerlib;
-		$headerlib->add_js('$jq(".trackerfilter-result .prevnext").click( function( e ) {
-			e.preventDefault();
-			$jq(".trackerfilter-result form")
-				.attr("action", $jq(this).attr("href"))
-				.submit();
-		} );' );
-	}
-
-	return '<div class="trackerfilter-result">' . $data.$dataF.$dataRes . '</div>';
-}
-
-function wikiplugin_trackerFilter_split_filters($filters) {
-	$in = false;
-	for ($i=0, $max=strlen($filters); $i < $max; ++$i) {
-		if ($filters[$i] == '(') {
-			$in = true;
-		} elseif ($filters[$i] == ')') {
-			$in = false;
-		} elseif ($in && $filters[$i] == ':') {
-			$filters[$i] = ',';
-		}
-	}
-	$list = explode(':', $filters);
-	foreach ($list as $i=> $filter) {
-		$list[$i] = str_replace(',', ':', $filter);
-	}
-	return $list;
+	return $data.$dataF.$dataRes;
 }
 
 function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', $formats='') {
@@ -212,24 +157,8 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', $for
 	}
 
 	$fields = $trklib->list_tracker_fields($trackerId, 0, -1, 'position_asc', '', true, empty($listfields)?'': array('fieldId'=>$listfields));
-	if (empty($listfields)) {
-		foreach ($fields['data'] as $field) {
-			$listfields[] = $field['fieldId'];
-		}
-	}
 
-	$iField = 0;
-	foreach ($listfields as $fieldId) {
-		if (!is_numeric($fieldId)) { // composite field
-			$filter = array('name'=> 'Text', 'fieldId'=> $fieldId, 'format'=>'sqlsearch');
-			If (!empty($_REQUEST['f_'.$fieldId])) {
-				$filter['selected'] = $_REQUEST['f_'.$fieldId];
-			}
-			$filters[] = $filter;
-			continue;
-		}
-		$field = &$fields['data'][$iField];
-		++$iField;
+	foreach ($fields['data'] as $field) {
 		if (($field['isHidden'] == 'y' || $field['isHidden'] == 'c') && $tiki_p_admin_trackers != 'y') {
 			continue;
 		}
@@ -253,9 +182,6 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', $for
 				break;
 			case 'R': // radio
 				$formats[$fieldId] = 'r';
-				break;
-			case '*': //rating
-				$formats[$fieldId] = '*';
 				break;
 			default:
 				$formats[$fieldId] = 't';
@@ -293,15 +219,9 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', $for
 				break;
 			case 'd': // drop down list
 			case 'R': // radio buttons
-			case '*': // stars
-				$cumul = '';
 				foreach ($field['options_array'] as $val) {
 					$opt['id'] = $val;
-					if ($field['type'] == '*') {
-						$cumul = $opt['name'] = "$cumul*";
-					} else {
-						$opt['name'] = $val;
-					}
+					$opt['name'] = $val;
 					if (!empty($_REQUEST['f_'.$fieldId]) && ((!is_array($_REQUEST['f_'.$fieldId]) && $_REQUEST['f_'.$fieldId] == $val) || (is_array($_REQUEST['f_'.$fieldId]) && in_array($val, $_REQUEST['f_'.$fieldId])))) {
 						$opt['selected'] = 'y';
 						$selected = true;

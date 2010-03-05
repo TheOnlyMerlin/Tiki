@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once 'lib/core/lib/Perms/ResolverFactory.php';
 
@@ -48,10 +43,10 @@ class Perms_ResolverFactory_ObjectFactory implements Perms_ResolverFactory
 		$db = TikiDb::get();
 
 		$bindvars = array( $baseContext['type'] );
-		$result = $db->fetchAll( 'SELECT `objectId`, `groupName`, `permName` FROM users_objectpermissions WHERE `objectType` = ? AND ' . $db->in( 'objectId', array_keys( $objects ), $bindvars ), $bindvars );
+		$result = $db->query( 'SELECT `objectId`, `groupName`, `permName` FROM users_objectpermissions WHERE `objectType` = ? AND ' . $db->in( 'objectId', array_keys( $objects ), $bindvars ), $bindvars );
 		$found = array();
 
-		foreach( $result as $row ) {
+		while( $row = $result->fetchRow() ) {
 			$object = $row['objectId'];
 			$group = $row['groupName'];
 			$perm = $this->sanitize( $row['permName'] );

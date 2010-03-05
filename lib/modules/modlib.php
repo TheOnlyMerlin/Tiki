@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -13,11 +8,8 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 global $usermoduleslib; include_once('lib/usermodules/usermoduleslib.php');
 
-class ModLib extends TikiLib
-{
+class ModLib extends TikiLib {
 
-	public $pref_errors = array();
-	
 	function replace_user_module($name, $title, $data, $parse=NULL) {
 		if ((!empty($name)) && (!empty($data))) {
 			$query = "delete from `tiki_user_modules` where `name`=?";
@@ -203,9 +195,7 @@ class ModLib extends TikiLib
 			$user_groups = array( 'Anonymous' );
 		}
 		$pass = 'y';
-		if ($tiki_p_admin == 'y' && $prefs['modhideanonadmin'] == 'y' && $module_info['groups'] == serialize(array('Anonymous'))) {
-			$pass = 'n';
-		} elseif ($tiki_p_admin != 'y' && $prefs['modallgroups'] != 'y') {
+		if ($tiki_p_admin != 'y' && $prefs['modallgroups'] != 'y') {
 			if ($module_info['groups']) {
 				$module_groups = unserialize($module_info['groups']);
 			} else {
@@ -286,7 +276,6 @@ class ModLib extends TikiLib
 		$module_info = $this->get_module_info( $module['name'] );
 		foreach( $module_info['prefs'] as $p ) {
 			if( $prefs[$p] != 'y' ) {
-				$this->add_pref_error($module['name'], $p);
 				return false;
 			}
 		}
@@ -367,10 +356,6 @@ class ModLib extends TikiLib
 					return false;
 				}
 			}
-		}
-		
-		if ($module['name'] == 'login_box' && basename($_SERVER['SCRIPT_NAME']) == 'tiki-login_scr.php') {
-			return false;
 		}
 
 		return true;
@@ -568,10 +553,6 @@ class ModLib extends TikiLib
 				}
 			}
 
-			global $prefs;
-			$ck = getCookie('mod-'.$mod_reference['name'].$mod_reference['position'].$mod_reference['ord'], 'menu', 'o');
-			$smarty->assign('module_display', ($prefs['javascript_enabled'] == 'n' || $ck == 'o'));
-			
 			$smarty->assign_by_ref('module_rows',$mod_reference['rows']);
 			$smarty->assign_by_ref('module_params', $module_params); // module code can unassign this if it wants to hide params
 			$smarty->assign('module_ord', $mod_reference['ord']);
@@ -708,10 +689,6 @@ class ModLib extends TikiLib
 		}
 
 		return http_build_query( $expanded, '', '&' );
-	}
-	
-	function add_pref_error($module_name, $preference_name) {
-		$this->pref_errors[] = array('mod_name' => $module_name, 'pref_name' => $preference_name);
 	}
 }
 $modlib = new ModLib;

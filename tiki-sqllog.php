@@ -1,20 +1,21 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/lib/logs/logslib.php,v 1.54.2.5 2008-01-22 16:58:23 sylvieg Exp $
 include_once ('tiki-setup.php');
-
-$access->check_permission('tiki_p_admin');
-
+if ($tiki_p_admin != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 if ($api_tiki != 'adodb') {
 	$smarty->assign('msg', tra('This feature is disabled') . ': adodb');
 	$smarty->display('error.tpl');
 	die;
 }
-
 $query = "show tables like 'adodb_logsql'";
 $result = $tikilib->query($query, array());
 if (!$result->numRows()) {
@@ -28,6 +29,7 @@ if (!$result->numRows()) {
 //	$smarty->display('error.tpl');
 //	die;
 //}
+include_once ('lib/logs/logslib.php');
 if (isset($_REQUEST['clean'])) {
 	$area = 'cleanlogs';
 	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {

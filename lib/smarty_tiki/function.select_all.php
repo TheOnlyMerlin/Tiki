@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -32,7 +27,7 @@ function smarty_function_select_all($params, &$smarty) {
 	}
 	$onclick = '';
 	$checkbox_names = explode(',', $params['checkbox_names']);
-	foreach ( $checkbox_names as $cn ) $onclick .= "switchCheckboxes(this.form,'" . htmlspecialchars(addslashes($cn)) . "',this.checked);";
+	foreach ( $checkbox_names as $cn ) $onclick .= "switchCheckboxes(this.form,'$cn',this.checked);";
 
 	return "<div>\n"
 		. '<input name="switcher'.$id.'" id="clickall'.$id.'" type="checkbox" onclick="' . $onclick . '"'

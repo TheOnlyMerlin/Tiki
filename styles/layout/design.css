@@ -455,9 +455,6 @@ td.form {
 	padding: 0.2em;
 }
 
-caption {
-	font-weight: bold;
-}
 /** Tabs **/
 
 .tabactive {
@@ -536,16 +533,6 @@ p.editdate {
 .plugin-mouseover {
 	background: #F5F5F5;
 	border: 1px solid #bbb;
-}
-
-/* img plugin */
-div.imgbox {
-	    border: 1px solid darkgray;
-        background-color: #f9f9f9;
-}
-
-div.thumbcaption {
-		font-size: 90%;
 }
 
 /* TOC */
@@ -709,11 +696,6 @@ div.multiselect div.even {
 div.multiselect div.selection {
 	border: 1px solid #80b1e2;
 	background: #fff;
-}
-
-div.multiselect,
-div.multiselect div.selection {
-	border: 1px solid transparent;
 }
 
 div.multiselect:hover,
@@ -1085,40 +1067,9 @@ table.treeTable .parent td {
 }
 
 .mandatory_note {
+	display: block;
 	font-style: italic;
 	color: red;
 	margin-top: 10px;
 }
-
-#intertrans-indicator {
-	position: fixed;
-	left: 0;
-	right: 0;
-	top: 0;
-	height: 40;
-	background-color: lightblue;
-}
-
-#intertrans-form {
-	position: fixed;
-	top: 10%;
-	bottom: 10%;
-	left: 10%;
-	right: 10%;
-	overflow: auto;
-	background-color: lightgreen;
-	display: none;
-}
-#intertrans-form table {
-	width: 98%;
-}
-#intertrans-form input {
-	width: 100%;
-}
-.popup-backlinks {
-	display: none;
-	width: 100px;
-}
- /* wikiplugin_tracker */
-.trackerCategoryName {white-space:nowrap;}
 /* End of file */

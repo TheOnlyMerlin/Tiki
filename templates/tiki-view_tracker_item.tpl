@@ -52,16 +52,34 @@
 {/pagination_links}
 {/if}
 
-{include file='tracker_error.tpl'}
+{****  Display warnings about incorrect values and missing mandatory fields ***}
+{if count($err_mandatory) > 0}
+{remarksbox type='Warning' title='{tr}Warning{/tr}'}
+<div class="highlight"><em class='mandatory_note'>
+{tr}Following mandatory fields are missing{/tr}</em>&nbsp;:<br/>
+	{section name=ix loop=$err_mandatory}
+{$err_mandatory[ix].name|escape}{if !$smarty.section.ix.last},&nbsp;{/if}
+	{/section}
+</div>	{/remarksbox}<br />
+{/if}
+{if count($err_value) > 0}
+{remarksbox type='Warning' title='{tr}Warning{/tr}'}
+<div class="highlight"><em class='mandatory_note'>
+{tr}Following fields are incorrect{/tr}</em>&nbsp;:<br/>
+	{section name=ix loop=$err_value}
+{$err_value[ix].name|escape}{if !$smarty.section.ix.last},&nbsp;{/if}
+	{/section}
+</div>	{/remarksbox}<br />
+{/if}
 
 {tabset name='tabs_view_tracker_item'}
 
 {tab name="{tr}View{/tr}"}
 {* --- tab with view ------------------------------------------------------------------------- *}
-{if empty($tracker_info.viewItemPretty)}
+
 <h2>{tr}View Item{/tr}</h2>
 <table class="normal">
-{if $tracker_info.showStatus eq 'y' or ($tracker_info.showStatusAdminOnly eq 'y' and $tiki_p_admin_trackers eq 'y')}
+{if $tracker_info.showStatus eq 'y' and ($tracker_info.showStatusAdminOnly ne 'y' or $tiki_p_admin_trackers eq 'y')}
   {assign var=ustatus value=$info.status|default:"p"}
   <tr class="formcolor">
     <td class="formlabel">{tr}Status{/tr}</td><td>{$status_types.$ustatus.label}</td>
@@ -117,10 +135,6 @@
 	</tr>
 {/if}
 </table>
-
-{else}
-	{include file='tracker_pretty_item.tpl' item=$item_info fields=$ins_fields wiki=$tracker_info.viewItemPretty}
-{/if}
 {/tab}
 
 {* -------------------------------------------------- tab with comments --- *}
@@ -130,7 +144,7 @@
 	{assign var=tabcomment_vtrackit value="{tr}Comments{/tr} (`$commentCount`)"}
 {else}
 	{assign var=tabcomment_vtrackit value="{tr}Comments{/tr}}
-{/if}
+{/if} 
 
 {tab name=$tabcomment_vtrackit}
 
@@ -194,7 +208,6 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>&nbsp;&nbsp;
 <input type="hidden" name="{$fields[ix].id|escape}" value="{$fields[ix].value|escape}" />
 {/if}
 {/section}
-{if $cant}<input type="hidden" name="cant" value="{$cant}" />{/if}
 
 {remarksbox type="note"}<em class='mandatory_note'>{tr}Fields marked with a * are mandatory.{/tr}</em>{/remarksbox}
 <table class="normal">
@@ -211,16 +224,21 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>&nbsp;&nbsp;
 {/if}
 </td></tr>
 {* ------------------- *}
-{if $tracker_info.showStatus eq 'y' or ($tracker_info.showStatusAdminOnly eq 'y' and $tiki_p_admin_trackers eq 'y')}
+{if $tracker_info.showStatus eq 'y' or $tiki_p_admin_trackers eq 'y'}
 <tr class="formcolor">
 <td class="formlabel">{tr}Status{/tr}</td>
 <td class="formcontent">
-{include file='tracker_status_input.tpl' item=$item_info form_status=edstatus}
+<select name="edstatus">
+{foreach key=st item=stdata from=$status_types}
+<option value="{$st}" {if $item_info.status eq $st} selected="selected" {/if}
+style="background-image:url('{$stdata.image}');background-repeat:no-repeat;padding-left:17px;">{$stdata.label}</option>
+{/foreach}
+</select>
 </td></tr>
 {/if}
 
 {foreach from=$ins_fields key=ix item=cur_field}
-{if ($cur_field.isHidden eq 'n' or $tiki_p_admin_trackers eq 'y' or $cur_field.isHidden eq 'c') and (empty($cur_field.visibleBy) or in_array($default_group, $cur_field.visibleBy) or $tiki_p_admin_trackers eq 'y')  and ($cur_field.type ne 'A' or $tiki_p_attach_trackers eq 'y') and ($cur_field.type ne '*')}
+{if ($cur_field.isHidden eq 'n' or $tiki_p_admin_trackers eq 'y' or $cur_field.isHidden eq 'c') and (empty($cur_field.visibleBy) or in_array($default_group, $cur_field.visibleBy) or $tiki_p_admin_trackers eq 'y')  and ($cur_field.type ne 'A' or $tiki_p_attach_trackers eq 'y')}
 
 {if $cur_field.type eq 's' and ($cur_field.name eq "Rating" or $cur_field.name eq tra("Rating")) and ($tiki_p_tracker_view_ratings eq 'y' || $tiki_p_tracker_vote_ratings eq 'y') and (empty($cur_field.visibleBy) or in_array($default_group, $cur_field.visibleBy) or $tiki_p_admin_trackers eq 'y')}
 	<tr class="formcolor">
@@ -391,7 +409,12 @@ $jq("#user_selector_{{$cur_field.id}}").tiki("autocomplete", "username", {mustMa
 {include file='tracker_item_field_input.tpl' field_value=$cur_field}
 
 {elseif $cur_field.type eq 'r'}
-{include file='tracker_item_field_input.tpl' field_value=$cur_field item=$item_info}
+<select name="ins_{$cur_field.id}" {if $cur_field.http_request}onchange="selectValues('trackerIdList={$cur_field.http_request[0]}&amp;fieldlist={$cur_field.http_request[3]}&amp;filterfield={$cur_field.http_request[1]}&amp;status={$cur_field.http_request[4]}&amp;mandatory={$cur_field.http_request[6]}&amp;filtervalue='+escape(this.value),'{$cur_field.http_request[5]}')"{/if}>
+{if $cur_field.isMandatory}<option value=""></option>{/if}
+{foreach key=id item=label from=$cur_field.list}
+<option value="{$label|escape}" {if $cur_field.value eq $label}selected="selected"{/if}>{if $cur_field.listdisplay[$id] eq ""}{$label}{else}{$cur_field.listdisplay[$id]}{/if}</option>
+{/foreach}
+</select>
 
 {elseif $cur_field.type eq 'w'}
 {include file='tracker_item_field_input.tpl' field_value=$cur_field item=$item_info}
@@ -443,7 +466,7 @@ or $cur_field.type eq 'i'}
 {include file='tracker_item_field_input.tpl' field_value=$cur_field}
 {/if}
 
-{if $cur_field.type ne 'S'}
+{if $cur_field.type ne 'a' and $cur_field.type ne 'S'}
 {if $cur_field.description}
 <br />{if $cur_field.descriptionIsParsed eq 'y'}{wiki}{$cur_field.description}{/wiki}{else}<em>{$cur_field.description|escape}</em>{/if}
 {/if}
@@ -525,8 +548,10 @@ or $cur_field.type eq 'i'}
 
 {foreach from=$ins_fields key=ix item=cur_field}
 {if $cur_field.http_request}
-{jq}
-selectValues('trackerIdList={{$cur_field.http_request[0]}}&fieldlist={{$cur_field.http_request[3]}}&filterfield={{$cur_field.http_request[1]}}&status={{$cur_field.http_request[4]}}&mandatory={{$cur_field.http_request[6]}}&filtervalue={{$cur_field.http_request[7]|escape:"url"}}&selected={{$cur_field.http_request[8]|escape:"url"}}','{{$cur_field.http_request[5]}}')
-{/jq}
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+selectValues('trackerIdList={$cur_field.http_request[0]}&fieldlist={$cur_field.http_request[3]}&filterfield={$cur_field.http_request[1]}&status={$cur_field.http_request[4]}&mandatory={$cur_field.http_request[6]}&filtervalue={$cur_field.http_request[7]|escape:"url"}&selected={$cur_field.http_request[8]|escape:"url"}','{$cur_field.http_request[5]}')
+//--><!]]>
+</script>
 {/if}
 {/foreach}

@@ -1,48 +1,40 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-/**
+/** \file
+ * $Id: /cvsroot/tikiwiki/tiki/lib/debug/debug-command_tikitables.php,v 1.3 2003-08-07 04:34:03 rossta Exp $
+ *
  * \brief Show list of Tiki tables in DB schema
+ *
  * \author zaufi <zaufi@sendmail.ru>
+ *
  */
 require_once ('lib/debug/debugger-ext.php');
 
 /**
  * \brief Show list of Tiki tables in DB schema
  */
-class DbgSQLTables extends DebuggerCommand
-{
+class DbgSQLTables extends DebuggerCommand {
 	/// \b Must have function to announce command name in debugger console
-	function name()
-	{
+	function name() {
 		return 'tikitables';
 	}
 
 	/// \b Must have function to provide help to debugger console
-	function description()
-	{
+	function description() {
 		return 'Show list of Tiki tables in DB schema';
 	}
 
 	/// \b Must have function to provide help to debugger console
-	function syntax()
-	{
+	function syntax() {
 		return 'tikitables [partial-name]';
 	}
 
 	/// \b Must have function to show example of usage of given command
-	function example()
-	{
+	function example() {
 		return 'tikitables' . "\n" . 'tikitables user' . "\n" . 'tikitables ions$';
 	}
 
 	/// Execute command with given set of arguments.
-	function execute($params)
-	{
+	function execute($params) {
 		$this->set_result_type(TPL_RESULT);
 
 		$this->set_result_tpl('debug/tiki-debug_tikitables.tpl');
@@ -87,7 +79,6 @@ class DbgSQLTables extends DebuggerCommand
 }
 
 /// Class factory to create instances of defined commands
-function dbg_command_factory_tikitables()
-{
+function dbg_command_factory_tikitables() {
 	return new DbgSQLTables();
 }

@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+
 // $Id$
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for
+// details.
 
 //this script may only be included - so its better to die if called directly.
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
@@ -41,11 +42,8 @@ if (strstr($_SERVER['SCRIPT_NAME'], 'tiki-index.php') || strstr($_SERVER['SCRIPT
 		$_REQUEST['page'] = $userlib->get_user_default_homepage2($user);
 		$check = true;
 	}
-	$change_language = isset($_REQUEST['bl']) || isset($_REQUEST['best_lang']) && $_REQUEST['best_lang'] == 'y' || 
-						isset($_REQUEST['switchLang']);
+	$change_language = isset($_REQUEST['bl']) || isset($_REQUEST['best_lang']) || isset($_REQUEST['switchLang']);
 
-//	echo "<pre>-- wiki.php: before feature_multilingual, \$_REQUEST="; var_dump($_REQUEST); echo "</pre>\n";
-	
 	if (($prefs['feature_multilingual'] == 'y' || ($prefs['feature_wiki_structure'] == 'y' && $prefs['feature_multilingual_structures'] == 'y'))
 		&& $change_language
 		&& (isset($_REQUEST['page']) || isset($_REQUEST['page_ref_id']) || isset($_REQUEST['page_id']))) { // perhaps we have to go to an another page
@@ -62,7 +60,7 @@ if (strstr($_SERVER['SCRIPT_NAME'], 'tiki-index.php') || strstr($_SERVER['SCRIPT
 			$_REQUEST['page_id'] = $info['page_id'];
 		}
 		if (!empty($_REQUEST['page_id'])) {
-			if (isset($_REQUEST['bl']) || isset($_REQUEST['best_lang'])  && $_REQUEST['best_lang'] == 'y') {
+			if (isset($_REQUEST['bl']) || isset($_REQUEST['best_lang'])) {
 				global $multilinguallib; include_once('lib/multilingual/multilinguallib.php');
 				$_REQUEST['page_id'] = $multilinguallib->selectLangObj('wiki page', $_REQUEST['page_id']);
 			} elseif (isset($_REQUEST['switchLang']) && $info['lang'] != $_REQUEST['switchLang']) {
@@ -75,8 +73,6 @@ if (strstr($_SERVER['SCRIPT_NAME'], 'tiki-index.php') || strstr($_SERVER['SCRIPT
 		}
 	}
 
-//	echo "<pre>-- wiki.php: after feature_multilingual, \$_REQUEST="; var_dump($_REQUEST); echo "</pre>\n";
-	
 	if ($check && !$tikilib->page_exists($_REQUEST['page'])) {
 		$tikilib->create_page($_REQUEST['page'], 0,tra('_HOMEPAGE_CONTENT_'),$tikilib->now,'Tiki initialization', 'admin', '0.0.0.0', '', 'en', false, null, 'n', '');
 	}

@@ -1,14 +1,12 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-view_blog_post.php,v 1.46.2.1 2007-11-24 15:28:37 nyloth Exp $
 $section = 'blogs';
 require_once ('tiki-setup.php');
 include_once ('lib/blogs/bloglib.php');
-
 $auto_query_args = array(
 	'postId',
 	'blogId',
@@ -19,9 +17,12 @@ $auto_query_args = array(
 	'mode',
 	'show_comments'
 );
-
-$access->check_feature('feature_blogs');
-
+// first of all , we just die if blogs feature is not set
+if ($prefs['feature_blogs'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_blogs");
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST['blogId']) && !isset($_REQUEST['postId'])) {
 	$parts = parse_url($_SERVER['REQUEST_URI']);
 	$paths = explode('/', $parts['path']);
@@ -45,8 +46,12 @@ if (!$blog_data) {
 
 $tikilib->get_perm_object($blogId, 'blog');
 
-$access->check_permission('tiki_p_read_blog');
-
+if ($tiki_p_read_blog != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied you can not view this section"));
+	$smarty->display("error.tpl");
+	die;
+}
 $ownsblog = 'n';
 if ($user && $user == $blog_data["user"]) {
 	$ownsblog = 'y';
@@ -116,7 +121,7 @@ if ($prefs['feature_blogposts_comments'] == 'y') {
 $cat_type = 'blog';
 $cat_objid = $blogId;
 include_once ('tiki-section_options.php');
-if ($user && $prefs['feature_notepad'] == 'y' && $tiki_p_notepad == 'y' && isset($_REQUEST['savenotepad'])) {
+if ($user && $tiki_p_notepad == 'y' && $prefs['feature_notepad'] == 'y' && isset($_REQUEST['savenotepad'])) {
 	check_ticket('view-blog-post');
 	$tikilib->replace_note($user, 0, $post_info['title'] ? $post_info['title'] : $tikilib->date_format("%d/%m/%Y [%H:%M]", $post_info['created']) , $post_info['data']);
 }

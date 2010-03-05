@@ -1,14 +1,17 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-minical_reminders.php,v 1.16.2.1 2008-03-01 17:12:48 lphuberdeau Exp $
 include_once ("lib/init/initlib.php");
 include_once ('tiki-setup_base.php');
 include_once ('lib/minical/minicallib.php');
-$access->check_feature('feature_minical');
+if ($prefs['feature_minical'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_minical");
+	$smarty->display("error.tpl");
+	die;
+}
 if (!$prefs['minical_reminders']) die;
 //$refresh=$_REQUEST['refresh']*1000;
 $refresh = 1000 * 60 * 1;

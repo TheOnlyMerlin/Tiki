@@ -1,6 +1,7 @@
 {* test for caps lock*}
-{jq notonready=true}
 {literal}
+	<script type="text/javascript">
+	<!--
 		function regCapsLock(e){
 			kc = e.keyCode?e.keyCode:e.which;
 			sk = e.shiftKey?e.shiftKey:((kc == 16)?true:false);
@@ -29,8 +30,9 @@
 			}
 			return true;
 		}
+	// -->
+	</script>
 {/literal}
-{/jq}
 {if isset($new_user_validation) && $new_user_validation eq 'y'}
 	{title}{tr}Your account has been validated.{/tr}<br />{tr}You have to choose a password to use this account.{/tr}{/title}
 {else}
@@ -63,7 +65,7 @@
 <tr>
   <td class="formcolor"><label for="pass">{tr}New password:{/tr}</label></td>
   <td class="formcolor">
-						<div style="float:right;width:175px;margin-left:5px;">
+						<div style="float:right;width:150px;margin-left:5px;">
 							<div id="mypassword_text"></div>
 							<div id="mypassword_bar" style="font-size: 5px; height: 2px; width: 0px;"></div> 
 						</div>

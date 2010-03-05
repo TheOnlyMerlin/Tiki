@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -76,12 +71,12 @@ function smarty_function_icon($params, &$smarty) {
 		if ( ($pos = strrpos($params['_id'], '.')) !== false )
 			$icons_extension = substr($params['_id'], $pos);
 
-		$params['_id'] = preg_replace('/^'.str_replace('/', '\/',$icons_basedir).'|'.$icons_extension.'$/', '', $params['_id']);
+		$params['_id'] = ereg_replace('(^'.$icons_basedir.'|'.$icons_extension.'$)', '', $params['_id']);
 	} else {
 		$icons_basedir = $basedirs[0].'/';
 	}
 
-	if ( ! preg_match('/^[a-z0-9_-]+$/i', $params['_id']) )
+	if ( ! eregi('^[a-z0-9_-]+$', $params['_id']) )
 		return;
 
 	global $url_path, $base_url, $tikipath, $tikilib;

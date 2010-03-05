@@ -1,10 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-notepad_list.php,v 1.26 2007-10-12 07:55:29 nyloth Exp $
 $section = 'mytiki';
 require_once ('tiki-setup.php');
 if ($prefs['feature_ajax'] == "y") {
@@ -12,9 +11,23 @@ if ($prefs['feature_ajax'] == "y") {
 }
 include_once ('lib/notepad/notepadlib.php');
 include_once ('lib/userfiles/userfileslib.php');
-$access->check_feature('feature_notepad');
-$access->check_user($user);
-$access->check_permission('tiki_p_notepad');
+if ($prefs['feature_notepad'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_notepad");
+	$smarty->display("error.tpl");
+	die;
+}
+if (!$user) {
+	$smarty->assign('msg', tra("Must be logged to use this feature"));
+	$smarty->assign('errortype', '402');
+	$smarty->display("error.tpl");
+	die;
+}
+if ($tiki_p_notepad != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 // Process upload here
 if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_name'])) {
 	check_ticket('notepad-list');

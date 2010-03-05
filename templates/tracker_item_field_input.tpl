@@ -61,11 +61,11 @@
 	{if $field_value.options_array[0] eq 0 or $tiki_p_admin_trackers eq 'y'}
 		<select name="{$field_value.ins_id}" {if $field_value.http_request}onchange="selectValues('trackerIdList={$field_value.http_request[0]}&amp;fieldlist={$field_value.http_request[3]}&amp;filterfield={$field_value.http_request[1]}&amp;status={$field_value.http_request[4]}&amp;mandatory={$field_value.http_request[6]}&amp;filtervalue='+escape(this.value),'{$listfields.$fid.http_request[5]}')"{/if}>
 			<option value="">{tr}None{/tr}</option>
-				{foreach from=$field_value.list item=group}
-				{if ( ! isset($field_value.itemChoices) || $field_value.itemChoices|@count eq 0 || in_array($group, $field_value.itemChoices) )}
-					<option value="{$group|escape}" {if $input_err and $field_value.value eq $group} selected="selected"{/if}>{$group|escape}</option>
+				{section name=ux loop=$field_value.list}
+				{if ( ! isset($field_value.itemChoices) || $field_value.itemChoices|@count eq 0 || in_array($groups[ux], $field_value.itemChoices) )}
+					<option value="{$groups[ux]|escape}" {if $input_err and $field_value.value eq $groups[ux]} selected="selected"{/if}>{$groups[ux]}</option>
 				{/if}
-			{/foreach}
+			{/section}
 		</select>
 	{elseif $field_value.options_array[0] eq 1}
 		{if empty($field_value.value)}
@@ -91,14 +91,13 @@
 		{foreach key=ku item=cat from=$field_value.list}
 			<option value="{$cat.categId}"{if (!is_array($field_value.value) and $field_value.value eq $cat.categId) or (is_array($field_value.value) and in_array($cat.categId, $field_value.value))} selected="selected"{/if}>{$cat.name|escape}</option>
 		{/foreach}
-		</select>
 	{else}
 	{assign var=fca value=$field_value.options}
 	<table width="100%">
 		<tr>{cycle name=2_$fca values=",</tr><tr>" advance=false print=false}
 		{foreach key=ku item=iu from=$field_value.list name=eforeach}
 		{assign var=fcat value=$iu.categId }
-		<td width="50%"  class="trackerCategoryName"><input type={if $field_value.options_array[1] eq "radio"}"radio"{else}"checkbox"{/if} name="{$field_value.ins_id}[]" value="{$iu.categId}" id="cat{$iu.categId}" {if (!is_array($field_value.value) and $field_value.value eq $fcat) or (is_array($field_value.value) and in_array($fcat, $field_value.value))} checked="checked"{/if}/><label for="cat{$iu.categId}">{$iu.name|escape}</label></td>{if !$smarty.foreach.eforeach.last}{cycle name=2_$fca}{else}{if $field_value.list|@count%2}<td></td>{/if}{/if}
+		<td width="50%" nowrap="nowrap"><input type={if $field_value.options_array[1] eq "radio"}"radio"{else}"checkbox"{/if} name="{$field_value.ins_id}[]" value="{$iu.categId}" id="cat{$iu.categId}" {if (!is_array($field_value.value) and $field_value.value eq $fcat) or (is_array($field_value.value) and in_array($fcat, $field_value.value))} checked="checked"{/if}/><label for="cat{$iu.categId}">{$iu.name|escape}</label></td>{if !$smarty.foreach.eforeach.last}{cycle name=2_$fca}{else}{if $field_value.list|@count%2}<td></td>{/if}{/if}
 		{/foreach}
 		</tr>
 	</table>
@@ -113,6 +112,22 @@
 		<a href="{$smarty.server.PHP_SELF}?{query removeImage='y' fieldId=`$field_value.fieldId` itemId=`$item.itemId` trackerId=`$item.trackerId` fieldName=`$field_value.name`}">{icon _id='cross' alt='{tr}Remove Image{/tr}'}</a>
    {/if}
 
+{* -------------------- multimedia -------------------- *}
+{elseif $field_value.type eq 'M'}
+	{if ($field_value.options_array[0] > '2')}
+		<input type="file" name="{$field_value.ins_id}"  value="{$field_value.value}" />
+	{else}
+		<input type="text" name="{$field_value.ins_id}" value="{$field_value.value}" />
+	{/if}
+	{assign var='Height' value=$prefs.MultimediaDefaultHeight}
+	{assign var='Length' value=$prefs.MultimediaDefaultLength}
+
+	{if $field_value.value ne ''}	
+		{if isset($cur_field.options_array[1]) and $field_value.options_array[1] ne '' } {assign var=$Length value=$field_value.options_array[1] }{/if}
+		{if isset($cur_field.options_array[2]) and $field_value.options_array[2] ne '' } {assign var=$Height value=$field_value.options_array[2] }{/if}
+		{if $ModeVideo eq 'y' } { assign var="Height" value=$Height+$prefs.VideoHeight}{/if}
+		{include file='multiplayer.tpl' url=$field_value.value w=$Length h=$Height video=$ModeVideo}
+	{/if}
 
 {* -------------------- file -------------------- *}
 {elseif $field_value.type eq 'A'}
@@ -158,8 +173,9 @@
 			{/jq}
 		{/if}
 	{else}
+		<table>
     	{foreach from=$field_value.lingualvalue item=ling}
-    		<label for="{$field_value.ins_id|replace:'[':'_'|replace:']':''}_{$ling.lang}">{$ling.lang|langname}</label><br />
+    		<tr><td>{$ling.lang}</td><td>
             {*prepend*}{if $field_value.options_array[2]}<span class="formunit">{$field_value.options_array[2]}&nbsp;</span>{/if}
         	<input type="text" id="{$field_value.ins_id|replace:'[':'_'|replace:']':''}_{$ling.lang}" name="{$field_value.ins_id}[{$ling.lang}]" value="{$ling.value|escape}" {if $field_value.options_array[1]}size="{$field_value.options_array[1]}" maxlength="{$field_value.options_array[1]}"{/if} /> {*@@ missing value*}
         	{*append*}{if $field_value.options_array[3]}<span class="formunit">&nbsp;{$field_value.options_array[3]}</span>{/if}
@@ -174,7 +190,9 @@
 					 });
 				{/jq}
 			{/if}
+   		</td></tr>
 		{/foreach}
+		</table>
 	{/if}
 
 {* -------------------- page selector  -------------------- *}
@@ -211,6 +229,9 @@
 
 {* -------------------- textarea -------------------- *}
 {elseif $field_value.type eq 'a'}
+	{if $field_value.description}
+		<span class="trackerplugindesc">{$field_value.description|escape|nl2br}</span><br />
+	{/if}
 	{if $field_value.isMultilingual ne 'y'}
 		{if $field_value.options_array[0] eq 1}
     		{toolbars qtnum=$field_value.fieldId area_name="area_"|cat:$field_value.fieldId section="trackers"}
@@ -239,8 +260,11 @@
 			</div>
 		{/if}
 	{else}
+		<table>
 		{foreach from=$field_value.lingualvalue item=ling}
-			<label for="area_{$field_value.fieldId}_{$ling.lang}">{$ling.lang|langname}</label><br />
+    	<tr>
+			<td>{$ling.lang}</td>
+      		<td>
 				{if $field_value.options_array[0] eq 1}
         			{toolbars qtnum=$field_value.id area_name=area_`$field_value.id`_`$ling.lang`}
         		{/if}
@@ -248,7 +272,10 @@
 					{$ling.value|escape}
 				</textarea>
 				{if $field_value.options_array[5]}<div class="wordCount">{tr}Word Count:{/tr} <input type="text" id="cpt_{$field_value.fieldId}_{$ling.lang}" size="4" readOnly=true{if !empty($ling.value)} value="{$ling.value|count_words}"{/if} />{if $field_value.options_array[5] > 0}{tr}Max:{/tr} {$field_value.options_array[5]}{/if}</div>{/if}
+      		</td>
+    	</tr>
 		{/foreach}
+		</table>
 {/if}
 
 {* -------------------- date and time -------------------- *}

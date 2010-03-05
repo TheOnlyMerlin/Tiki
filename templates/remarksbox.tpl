@@ -1,4 +1,3 @@
-{strip}
 {* $Id$ *}
 {* Simple remarks box used by Smarty entity block.remarksbox.php & wikiplugin_remarksbox.php *}
 <div class="rbox {$remarksbox_type}">
@@ -14,8 +13,7 @@
 		<span>{$remarksbox_title}</span>
 	</div>
 {/if}
-	<div class="rbox-data{$remarksbox_highlight}"{if !empty($remarksbox_width)} style="width:{$remarksbox_width}"{/if}>
+	<div class="rbox-data{$remarksbox_highlight}"{if !empty($remarksbox_width)} style="width:{$remarksbox_width}{/if}">
 		{$remarksbox_content}
 	</div>
 </div>
-{/strip}

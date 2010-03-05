@@ -21,20 +21,27 @@
 		{tab name="{tr}General Settings{/tr}"}
 			<input type="hidden" name="cmsprefs" />
 
-			{preference name=art_home_title}
+			<div class="adminoptionbox">
+				<div class="adminoptionlabel">
+					<label for="art_home_title">{tr}Title of articles home page{/tr}:</label>
+					<select name='art_home_title' id='art_home_title'>
+						<option value=''></option>
+						<option value="topic"{if $prefs.art_home_title eq 'topic'} selected="selected"{/if}>{tr}Topic{/tr}</option>
+						<option value="type"{if $prefs.art_home_title eq 'type'} selected="selected"{/if}>{tr}Type{/tr}</option>
+						<option value="articles"{if $prefs.art_home_title eq 'articles'} selected="selected"{/if}>'{tr}Articles{/tr}'</option>
+					</select>
+				</div>
+			</div>
+
 			{preference name=maxArticles}
 
 			<fieldset>
 				<legend>
-					{tr}Features{/tr}{help url="Articles"}
+					{tr}Features{/tr}{if $prefs.feature_help eq 'y'}  {help url="Articles+Config"}{/if}
 				</legend>
 
 				{preference name=feature_submissions}
 				{preference name=feature_cms_rankings}
-				{preference name=article_user_rating}
-				<div class="adminoptionboxchild" id="article_user_rating_childcontainer">
-					{preference name=article_user_rating_options}
-				</div>
 
 				{preference name=feature_article_comments}
 				<div class="adminoptionboxchild" id="feature_article_comments_childcontainer">
@@ -43,12 +50,10 @@
 				</div>
 
 				{preference name=cms_spellcheck}
+				<em>{tr}Requires a separate download{/tr}.</em>
 				{preference name=feature_cms_templates}
 				{preference name=feature_cms_print}
 				{preference name=feature_cms_emails}
-
-				{preference name=article_paginate}
-				{preference name=article_custom_attributes}
 
 				<input type="hidden" name="cmsfeatures" />
 			</fieldset>
@@ -84,7 +89,6 @@
 		{tab name="{tr}Articles Listing{/tr}"}
 			<div class="adminoptionbox">
 				{tr}Select which items to display when listing articles{/tr}: 	  
-				<a class="rbox-link" href="tiki-list_articles.php">tiki-list_articles.php</a>
 			</div>
 			<input type="hidden" name="artlist" />
 
@@ -92,7 +96,6 @@
 			<div class="adminoptionboxchild" id="art_list_title_childcontainer">
 				{preference name=art_list_title_len}
 			</div>
-			{preference name=art_list_id}
 			{preference name=art_list_type}
 			{preference name=art_list_topic}
 			{preference name=art_list_date}

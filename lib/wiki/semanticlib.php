@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 class SemanticLib
 {
@@ -330,8 +325,7 @@ class SemanticLib
 		return $aliases;
 	} // }}}
 	
-	function onlyKeepAliasesFromPageInLanguage($language, $aliases)
-	{
+	function onlyKeepAliasesFromPageInLanguage($language, $aliases) {
 		global $multilinguallib;
 		if (!$language) {
 			return $aliases;
@@ -342,6 +336,7 @@ class SemanticLib
 			$aliasLang = $multilinguallib->getLangOfPage($aliasInfo['fromPage']);
 			if ($aliasLang === $language) {
 				$aliasesInCorrectLanguage[] = $aliasInfo;
+			} else {
 			}			
 		}
 //		echo "<pre>-- onlyKeepAliasesFromPageInLanguage: exiting</pre>\n";

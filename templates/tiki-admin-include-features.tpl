@@ -74,7 +74,6 @@
 				{preference name=feature_group_watches}
 				{preference name=feature_daily_report_watches}
 				{preference name=feature_user_watches_translations}
-				{preference name=feature_user_watches_languages}
 				{preference name=feature_groupalert}				
 			</div>
 		</fieldset>		
@@ -105,6 +104,7 @@
 						{preference name=feature_webservices}
 						{preference name=feature_webmail}
 						{preference name=feature_sefurl}
+						{preference name=feature_pagelist}
 				</fieldset>
 			</div>
 
@@ -122,6 +122,7 @@
 						{preference name=feature_html_pages}
 						{preference name=feature_galleries}
 						{preference name=feature_faqs}
+						{preference name=feature_multimedia}
 				</fieldset>
 
 				<fieldset>
@@ -147,7 +148,7 @@
 						{preference name=feature_wysiwyg}
 						{preference name=feature_ajax_autosave}
 						{preference name=feature_wiki_save_draft}
-						{preference name=feature_webdav}
+						{preference name=feature_search_preferences}
 				</fieldset>
 
 			</div>

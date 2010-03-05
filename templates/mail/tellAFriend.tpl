@@ -3,6 +3,6 @@
 {else}
 {tr}Look at this link:{/tr}
 {/if}
-{$url_for_friend|replace:' ':'+'}
+{$prefix}{$url|replace:' ':'+'}
 
 {$name}

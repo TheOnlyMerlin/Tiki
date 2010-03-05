@@ -1,21 +1,41 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-edit_structure.php,v 1.46.2.4 2008-02-01 01:07:18 nkoth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+
+// Initialization
 
 $section = 'wiki page';
 require_once ('tiki-setup.php');
 
 include_once ('lib/structures/structlib.php');
-$access->check_feature(array('feature_wiki','feature_wiki_structure'));
+
+if($prefs['feature_wiki'] != 'y') {
+    $smarty->assign('msg', tra('This feature is disabled').': feature_wiki');
+    $smarty->display('error.tpl');
+    die;  
+}
+if($prefs['feature_wiki_structure'] != 'y') {
+    $smarty->assign('msg', tra('This feature is disabled').': feature_wiki_structure');
+    $smarty->display('error.tpl');
+    die;  
+}
 if (!isset($_REQUEST["page_ref_id"])) {
 	$smarty->assign('msg', tra("No structure indicated"));
 	$smarty->display("error.tpl");
 	die;
 }
-$access->check_permission('tiki_p_view');
+if ($tiki_p_view != 'y') {
+// This allows tiki_p_view in, in order to see structure tree - security hardening for editing features below.
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (isset($_REQUEST['move_to'])) {
 	check_ticket('edit-structure');

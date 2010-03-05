@@ -90,11 +90,6 @@ if ($jq("#assignstructure").attr("checked")) {
 			{/if}
 		</div>
 	</form>
-	
-	{remarksbox type="note" title="{tr}Note{/tr}"}
-		{tr}Previous version of assign permissions page can still be found{/tr} <a href="tiki-assignpermission.php?group=Anonymous">{tr}here{/tr}</a>
-	{/remarksbox}
-	
 	{/tab}
 
 	{tab name="{tr}Select groups{/tr}"}
@@ -150,7 +145,7 @@ if ($jq("#assignstructure").attr("checked")) {
 
 			{if empty($filegals_manager)}
 				{remarksbox type="warning" title="{tr}Warning{/tr}"}{tr}These permissions override any global permissions or category permissions affecting this object.{/tr}<br />
-					{if $tiki_p_admin eq 'y'}{tr}To edit global permissions{/tr} {self_link objectType='global' permType=$permType}{tr}click here{/tr}{/self_link}.{/if}
+					{if $tiki_p_admin eq 'y'}{tr}To edit global permissions <a class="rbox-link" href="tiki-objectpermissions.php?objectType=global">click here</a>.{/tr}{/if}
 				{/remarksbox}
 			{/if}
 

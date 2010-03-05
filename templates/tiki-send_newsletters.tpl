@@ -5,7 +5,6 @@
 
 {if $tiki_p_admin_newsletters eq "y"}
 	<div class="navbar">
-		{button href="tiki-newsletters.php" _text="{tr}List Newsletters{/tr}"}
 		{if $nlId}
 			{button href="tiki-admin_newsletters.php?nlId=$nlId" _text="{tr}Admin Newsletters{/tr}"}
 		{else}
@@ -48,16 +47,14 @@
 {/if}
 
 {if $presend eq 'y'}
-	<div id="confirmArea">
 	{remarksbox type='warning' title="{tr}Please Confirm{/tr}"}
 		<b>{tr}This newsletter will be sent to {$subscribers} email addresses.{/tr}</b>
 		<br />
 		{tr}Reply to:{/tr} {if empty($replyto)}{$prefs.sender_email|escape} ({tr}default{/tr}){else}{$replyto|escape}{/if}
 	{/remarksbox}
 	<p>
-		<form method="post" action="tiki-send_newsletters.php" target="resultIframe" id='confirmForm'>
+		<form method="post" action="tiki-send_newsletters.php">
 			<input type="hidden" name="nlId" value="{$nlId|escape}" />
-			<input type="hidden" name="sendingUniqId" value="{$sendingUniqId|escape}" />
 			<input type="hidden" name="editionId" value="{$info.editionId}"/>
 			<input type="hidden" name="subject" value="{$subject|escape}" />
 			<input type="hidden" name="data" value="{$data|escape}" />
@@ -66,7 +63,7 @@
 			<input type="hidden" name="datatxt" value="{$datatxt|escape}" />
 			<input type="hidden" name="replyto" value="{$replyto|escape}" />
 			<input type="hidden" name="wysiwyg" value="{$wysiwyg|escape}" />
-			<input type="submit" name="send" value="{tr}Send{/tr}" onclick="document.getElementById('confirmArea').style.display = 'none'; document.getElementById('sendingArea').style.display = 'block';" />
+			<input type="submit" name="send" value="{tr}Send{/tr}" />
 			<input type="submit" name="preview" value="{tr}Cancel{/tr}" />
 			{foreach from=$info.files item=newsletterfile key=fileid}
 				<input type='hidden' name='newsletterfile[{$fileid}]' value='{$newsletterfile.id}'/>
@@ -94,14 +91,6 @@
 			</li>
 		{/foreach}
 	</ul>
-
-	</div>
-
-	<div id="sendingArea" style="display:none">
-		<h3>{tr}Sending Newsletter{/tr} ...</h3>
-		<iframe id="resultIframe" name="resultIframe" frameborder="0" style="width: 600px; height: 400px"></iframe>
-	</div>
-
 {else}
 	{if $preview eq 'y'}
 		<h2>{tr}Preview{/tr}</h2>
@@ -293,19 +282,24 @@
 	{/tabset}
 {/if}
 
-{jq}
-{{if $allowTxt eq 'n'}
+<script type='text/javascript'>
+<!--
+{if $allowTxt eq 'n'}
 document.getElementById('txtcol1').style.display='none';
 document.getElementById('txtcol2').style.display='none';
-{/if}}
+{/if}
 
-var newsletterfileid={{$info.files|@count}};
+var newsletterfileid={$info.files|@count};
+{literal}
 function add_newsletter_file() {
-	document.getElementById('newsletterfileshack').innerHTML='<div id="newsletterfileid_'+newsletterfileid+'"><a href="javascript:remove_newsletter_file('+newsletterfileid+');">[{{tr}remove{/tr}}]</a> <input type="file" name="newsletterfile['+newsletterfileid+']"/></div>';
+	document.getElementById('newsletterfileshack').innerHTML='<div id="newsletterfileid_'+newsletterfileid+'"><a href="javascript:remove_newsletter_file('+newsletterfileid+');">[{tr}remove{/tr}]</a> <input type="file" name="newsletterfile['+newsletterfileid+']"/></div>';
 	document.getElementById('newsletterfiles').appendChild(document.getElementById('newsletterfileid_'+newsletterfileid));
 	newsletterfileid++;
 }
 function remove_newsletter_file(id) {
 	document.getElementById('newsletterfiles').removeChild(document.getElementById('newsletterfileid_'+id));
 }
-{/jq}
+{/literal}
+
+-->
+</script>

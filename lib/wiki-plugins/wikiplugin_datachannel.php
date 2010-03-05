@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 function wikiplugin_datachannel_info()
 {
@@ -18,12 +13,6 @@ function wikiplugin_datachannel_info()
 				'required' => true,
 				'name' => tra('Channel Name'),
 				'description' => tra('Name of the channel as registered by the administrator.'),
-			),
-			'debug' => array(
-				'required' => false,
-				'name' => tra('debug'),
-				'description' => 'y | n'.tra('Be careful, if debug is on, the page will not be refreshed and previous modules can be obsolete'),
-				'default' => 'n'
 			),
 		),
 	);
@@ -68,27 +57,21 @@ function wikiplugin_datachannel( $data, $params )
 
 			Tiki_Profile::useUnicityPrefix(uniqid());
 			$installer = new Tiki_Profile_Installer;
-			//TODO: What is the following line for? Future feature to limit capabilities of data channels?
-			//$installer->limitGlobalPreferences( array() );
+			$installer->limitGlobalPreferences( array() );
 
 			$profiles = $config->getProfiles( array( $params['channel'] ) );
 			$profile = reset($profiles);
 
 			$installer->setUserData( $userInput );
-			if (empty($params['debug']) || $params['debug'] != 'y') {
-				$installer->setDebug();
-			}
 			$installer->install( $profile );
 
-			if (empty($params['debug']) || $params['debug'] != 'y') {
-				header( 'Location: ' . $_SERVER['REQUEST_URI'] );
-				die;
-			}
-			$smarty->assign('datachannel_feedbacks', array_merge($installer->getFeedback(), $profile->getFeedback()) );
-		}
-		$smarty->assign( 'datachannel_fields', $fields );
-		$smarty->assign( 'datachannel_execution', $executionId );
+			header( 'Location: ' . $_SERVER['REQUEST_URI'] );
+		} else {
 
-		return '~np~' . $smarty->fetch( 'wiki-plugins/wikiplugin_datachannel.tpl' ) . '~/np~';
+			$smarty->assign( 'datachannel_fields', $fields );
+			$smarty->assign( 'datachannel_execution', $executionId );
+
+			return '~np~' . $smarty->fetch( 'wiki-plugins/wikiplugin_datachannel.tpl' ) . '~/np~';
+		}
 	}
 }

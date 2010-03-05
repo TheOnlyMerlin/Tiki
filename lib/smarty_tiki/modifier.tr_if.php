@@ -1,9 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// CVS: $Id: modifier.tr_if.php,v 1.3.2.1 2007-11-04 12:39:15 nyloth Exp $
 
 // Translate only if feature_multilingual is on
 

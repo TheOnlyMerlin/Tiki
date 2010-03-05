@@ -1,15 +1,18 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+// $Id: /cvsroot/tikiwiki/tiki/tiki-calendar_edit_item.php,v 1.21.2.4 2008-01-17 15:53:26 tombombadilom Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 $section = 'calendar';
 require_once ('tiki-setup.php');
 
-$access->check_feature('feature_calendar');
-
+if ($prefs['feature_calendar'] != 'y') {
+  $smarty->assign('msg', tra("This feature is disabled").": feature_calendar");
+  $smarty->display("error.tpl");
+  die;
+}
 include_once ('lib/calendar/calendarlib.php');
 include_once ('lib/newsletters/nllib.php');
 include_once ('lib/calendar/calrecurrence.php');
@@ -105,7 +108,12 @@ if ($calendar['personal'] == 'y') {
 	$tiki_p_change_events = $ownCal;
 }
 
-$access->check_permission('tiki_p_view_calendar');
+if( $tiki_p_view_calendar != 'y' ) {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg',tra("Permission denied. You cannot view this page."));
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (isset($_REQUEST['save']) && !isset($_REQUEST['preview']) && !isset($_REQUEST['act'])) {
 	$_REQUEST['changeCal'] = 'y';
@@ -279,12 +287,14 @@ if (isset($_POST['act'])) {
 					if (empty($user) && !empty($save['calitemId']) and $caladd["$newcalid"]['tiki_p_change_events']) { 
 						$logslib->add_log('calendar','Calendar item '.$calitemId.' changed in calendar '.$save['calendarId']);
 					}
-            if ($prefs['feature_groupalert'] == 'y') {
-              $groupalertlib->Notify($_REQUEST['listtoalert'],"tiki-calendar_edit_item.php?viewcalitemId=".$calitemId);
-            }
-            header('Location: tiki-calendar.php?todate='.$save['start']);
-            die;
 			}
+
+			if ($prefs['feature_groupalert'] == 'y') {
+				$groupalertlib->Notify($_REQUEST['listtoalert'],"tiki-calendar_edit_item.php?viewcalitemId=".$calitemId);
+			}
+
+			header('Location: tiki-calendar.php?todate='.$save['start']);
+			die;
 		}
 	}
 }
@@ -349,7 +359,7 @@ if (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["ca
 		$calendar = $calendarlib->get_calendar($calitem['calendarId']);
   }
 	$smarty->assign('edit',true);
-	$hour_minmax = ceil(($calendar['startday']-1)/(60*60)).'-'. ceil(($calendar['endday'])/(60*60));
+	$hour_minmax = floor(($calendar['startday']-1)/(60*60)).'-'. ceil(($calendar['endday'])/(60*60));
 } elseif (isset($_REQUEST['preview']) || $impossibleDates) {
 	$save['parsed'] = $tikilib->parse_data($save['description']);
 	$save['parsedName'] = $tikilib->parse_data($save['name']);
@@ -419,7 +429,7 @@ if (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["ca
 		);
 	$id = 0;
 	$smarty->assign('edit',true);
-	$hour_minmax = ceil(($calendar['startday']-1)/(60*60)).'-'. ceil(($calendar['endday'])/(60*60));
+	$hour_minmax = floor(($calendar['startday']-1)/(60*60)).'-'. ceil(($calendar['endday'])/(60*60));
 } else {
   $smarty->assign('errortype', 401);
   $smarty->assign('msg', tra("Permission denied you can not view this page"));
@@ -482,23 +492,6 @@ if ($calitem['recurrenceId'] > 0) {
 	$cr = new CalRecurrence($calitem['recurrenceId']);
 	$smarty->assign('recurrence',$cr->toArray());
 }
-$headerlib->add_js('
-function checkDateOfYear(day,month) {
-	var mName = new Array("-","'.tra('January').'","'.tra('February').'","'.tra('March').'","'.tra('April').'","'.tra('May').'","'.tra('June').'","'.tra('July').'","'.tra('August').'","'.tra('September').'","'.tra('October').'","'.tra('November').'","'.tra('December').'}");
-	var error = false;
-	if (month == 4 || month == 6 || month == 9 || month == 11)
-		if (day == 31)
-			error = true;
-	if (month == 2)
-		if (day > 29)
-			error = true;
-	if (error) {
-		document.getElementById("errorDateOfYear").innerHTML = "<em>'.tra('There\'s no such date as').' " + day + " '.tra('of').' " + mName[month] + "</em>";
-	} else {
-		document.getElementById("errorDateOfYear").innerHTML = "";
-	}
-}
-');
 $smarty->assign('calitem', $calitem);
 $smarty->assign('calendar', $calendar);
 $smarty->assign('calendarId', $calID);

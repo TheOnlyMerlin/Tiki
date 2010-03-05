@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /*
  * Tiki ALINK plugin. 
  *
@@ -86,6 +80,6 @@ function wikiplugin_alink($data, $params)
 			'"  class="wiki wikinew">?</a>';
 	    }
 	} else {
-	    return "<a href=\"".$_REQUEST["page"]."#$aname\">$data</a>";
+	    return "<a href=\"#$aname\">$data</a>";
 	}
 }

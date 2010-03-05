@@ -14,15 +14,9 @@
 	{/if}
 	<div class="postbody">
 	<div class="clearfix postbody-title">
-	    {if $blog_data.show_avatar eq 'y'}
-			{$post_info.avatar}
-		{/if}
-		
-		{if $blog_data.use_title eq 'y'}
 		<div class="title">		
 				<h2>{$post_info.title|escape}</h2>
 		</div>
-		{/if}
 	</div>
 	<div class="content">
 		<div class="author_actions clearfix">
@@ -38,17 +32,10 @@
 {/if}
 			</div>
 		<div class="author_info">
-		
-			{if $blog_data.use_author eq 'y' || $blog_data.add_date eq 'y'}
-			{tr}Published {/tr}
-			{/if}
-			
-			{if $blog_data.use_author eq 'y'}
-				{tr}by{/tr} {$post_info.user} 
-			{/if}
-			
-			{if $blog_data.add_date eq 'y'}
-				{tr}on{/tr} {$post_info.created|tiki_short_datetime}
+			{if $blog_data.use_title eq 'y'}
+				{tr}By{/tr} {$post_info.user} {tr}on{/tr} {$post_info.created|tiki_short_datetime}
+			{else}
+				{tr}By{/tr} {$post_info.user}
 			{/if}
 		</div>
 	</div>

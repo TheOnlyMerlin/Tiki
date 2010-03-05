@@ -1,15 +1,22 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-assignpermission.php,v 1.35.2.1 2007-12-29 16:30:00 jyhem Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 // This script is used to assign permissions to a particular group
 // ASSIGN PERMISSIONS TO GROUPS
+// Initialization
 require_once ('tiki-setup.php');
 
-$access->check_permission('tiki_p_admin');
+if ($tiki_p_admin != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (!isset($_REQUEST["group"])) {
 	$smarty->assign('msg', tra("Unknown group"));
@@ -61,6 +68,8 @@ if (isset($_REQUEST["action"])) {
 	}
 }
 if (isset($_REQUEST['do']) && $_REQUEST['do'] == 'temp_cache') {
+	global $cachelib; include_once('lib/cache/cachelib.php');
+	global $logslib; include_once('lib/logs/logslib.php');
 	$cachelib->erase_dir_content("temp/cache/$tikidomain");
 	$logslib->add_log('system','erased temp/cache content');
 }

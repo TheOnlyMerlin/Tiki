@@ -1,13 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 include_once ('tiki-setup.php');
-
-$access->check_feature('wiki_feature_3d');
-
+if($prefs['wiki_feature_3d'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled').': wiki_feature_3d');
+	$smarty->display('error.tpl');
+	die;  
+}
 $smarty->assign('page', $_REQUEST['page']);
 $smarty->display('tiki-wiki3d.tpl');

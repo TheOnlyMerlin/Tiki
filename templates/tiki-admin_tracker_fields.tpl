@@ -32,8 +32,6 @@
 </td>
 </tr>
 </table>
-
-<form>
 <table class="normal">
 <tr>
 <th>&nbsp;</th>
@@ -50,7 +48,7 @@
 <th>{self_link _sort_arg='sort_mode' _sort_field='isPublic' _title='{tr}Field is public? (viewed in trackerlist plugin){/tr}'}{tr}Public{/tr}{/self_link}</th>
 <th>{self_link _sort_arg='sort_mode' _sort_field='isHidden'}{tr}Hidden{/tr}{/self_link}</th>
 <th>{self_link _sort_arg='sort_mode' _sort_field='description'}{tr}Description{/tr}{/self_link}</th>
-<th>{select_all checkbox_names='action[]'}</th>
+<th>&nbsp;</th>
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}
@@ -78,22 +76,10 @@
 <td>{if $tracker_info.useRatings ne 'y' or $channels[user].name ne "Rating"}
 <a class="link" href="tiki-admin_tracker_fields.php?trackerId={$trackerId}{if $max and $max ne $prefs.maxRecords}&amp;max={$max}{/if}{if $offset}&amp;offset={$offset}{/if}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].fieldId}" title="{tr}Remove{/tr}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a> 
 <a class="link" href="tiki-admin_tracker_fields.php?trackerId={$trackerId}&amp;fieldId={$channels[user].fieldId}&amp;up=1{if $offset > 1}&amp;offset={$offset}{/if}{if $max and $max ne $prefs.maxRecords}&amp;max={$max}{/if}">{icon _id='resultset_down'}</a>
-<input type="checkbox" name="action[]" value='{$channels[user].fieldId}' />
 {/if}</td>
 </tr>
 {/section}
 </table>
-
-<div style="text-align:right">
-{tr}Perform action with checked{/tr}:
-<select name="batchaction">
-<option value="">{tr}...{/tr}</option>
-<option value="delete">{tr}Delete{/tr}</option>
-</select>
-<input type="hidden" name="trackerId" value="{$trackerId}" />
-<input type="submit" name="act" value="{tr}OK{/tr}" />
-</div>
-</form>
 
 {pagination_links cant=$cant step=$max offset=$offset}{/pagination_links}
 {/tab}
@@ -160,11 +146,11 @@
 
 <tr class="formcolor"><td>{tr}Order{/tr}:</td><td><input type="text" size="5" name="position" value="{$position}" /></td></tr>
 <tr class="formcolor"><td>{tr}Field is mandatory?{/tr}</td><td><input type="checkbox" name="isMandatory" {if $isMandatory eq 'y'}checked="checked"{/if} /></td></tr>
-<tr class="formcolor"><td>{tr}Is column visible when listing tracker items?{/tr}</td><td><input type="checkbox" name="isTblVisible" {if empty($fieldId) || $isTblVisible eq 'y'}checked="checked"{/if} /></td></tr>
-<tr class="formcolor"><td>{tr}Column links to edit/view item?{/tr}</td><td><input type="checkbox" name="isMain" {if empty($fieldId) ||$isMain eq 'y'}checked="checked"{/if} /></td></tr>
+<tr class="formcolor"><td>{tr}Is column visible when listing tracker items?{/tr}</td><td><input type="checkbox" name="isTblVisible" {if $isTblVisible eq 'y'}checked="checked"{/if} /></td></tr>
+<tr class="formcolor"><td>{tr}Column links to edit/view item?{/tr}</td><td><input type="checkbox" name="isMain" {if $isMain eq 'y'}checked="checked"{/if} /></td></tr>
 <tr class="formcolor" id='multilabelRow'{if $type neq 'a' && $type neq 't' && $type neq 'o' && $type neq '' && $type neq 'C'} style="display:none;"{/if}><td>{tr}Multilingual content{/tr}:</td><td><input type="checkbox" name="isMultilingual" {if $isMultilingual eq 'y'}checked="checked"{/if} /></td></tr>
 <tr class="formcolor"><td>{tr}Column is searchable?{/tr}</td><td><input type="checkbox" name="isSearchable" {if $isSearchable eq 'y'}checked="checked"{/if} /></td></tr>
-<tr class="formcolor"><td>{tr}Field is public? (viewed in trackerlist plugin){/tr}</td><td><input type="checkbox" name="isPublic" {if empty($fieldId) || $isPublic eq 'y'}checked="checked"{/if} /></td></tr>
+<tr class="formcolor"><td>{tr}Field is public? (viewed in trackerlist plugin){/tr}</td><td><input type="checkbox" name="isPublic" {if $isPublic eq 'y'}checked="checked"{/if} /></td></tr>
 <tr class="formcolor"><td>{tr}Field is hidden?{/tr}</td><td>
 <select name="isHidden">
 <option value="n"{if $isHidden eq 'n'} selected="selected"{/if}>{tr}not hidden{/tr}</option>

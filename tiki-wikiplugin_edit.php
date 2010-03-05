@@ -1,14 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 require 'tiki-setup.php';
 
 if( ! isset( $_POST['page'], $_POST['content'], $_POST['index'], $_POST['type'], $_SERVER['HTTP_REFERER'] ) )
 	die( 'Missing parameters' );
+
+if( ! isset( $_POST['message'] ) )
+	$_POST['message'] = tra('Plugin modified by editor.');
 
 $page = $_POST['page'];
 
@@ -17,9 +14,6 @@ $type = strtoupper( $plugin );
 
 if( ! $meta = $tikilib->plugin_info( $plugin ) )
 	exit;
-
-if( ! isset( $_POST['message'] ) )
-	$_POST['message'] = (isset($meta['name']) ? tra($meta['name']) : $plugin) . ' ' . tra('Plugin modified by editor.');
 
 $info = $tikilib->get_page_info($page);
 $tikilib->get_perm_object($page, 'wiki page', $info, true);
@@ -70,7 +64,7 @@ while( true )
 			$endparamA = strpos( $current, '/}', $pos );
 			$endparamB = strpos( $current, ')}', $pos );
 			if( false === $endparamA && false === $endparamB )
-				die( 'Failed to find end of plugin code.' );
+				die( 'oops.' );
 			if( ( false !== $endparamA 
 				&& ( false !== $endparamB && $endparamA < $endparamB ) )
 				|| $endparamB === false )
@@ -92,7 +86,7 @@ while( true )
 			$body = $endparam;
 			$endbody = strpos( $current, "{{$type}}", $endparam );
 			if( false === $endbody )
-				die( 'Failed to find end of plugin body.' );
+				die( 'oops.' );
 
 			$before = substr( $current, 0, $body );
 			$after = substr( $current, $endbody + strlen("{{$type}}") );

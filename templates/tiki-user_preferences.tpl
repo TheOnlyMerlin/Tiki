@@ -23,7 +23,6 @@
     {section name=n loop=$tikifeedback}<div>{$tikifeedback[n].mes}</div>{/section}
   </div>
 {/if}
-{cycle values="odd,even" print=false}
 {tabset name="mytiki_user_preference"}
 
 {if $prefs.feature_userPreferences eq 'y'}
@@ -32,6 +31,7 @@
   <input type="hidden" name="view_user" value="{$userwatch|escape}" />
 
 
+  {cycle values="odd,even" print=false}
   <table class="normal">
     <tr>
       <td class="{cycle advance=false}">{tr}User:{/tr}</td>
@@ -499,7 +499,7 @@
     {/if}
 
     <tr>
-      <td colspan="2" class="input_submit_container"><input type="submit" name="new_prefs" value="{tr}Save changes{/tr}" /></td>
+      <td colspan="2" class="input_submit_container"><input type="submit" name="new_prefs" value="{tr}Change preferences{/tr}" /></td>
     </tr>
   </table>
 </form>
@@ -550,7 +550,7 @@
       {/if}
     
       <tr>
-        <td colspan="2" class="input_submit_container"><input type="submit" name="chgadmin" value="{tr}Save changes{/tr}" /></td>
+        <td colspan="2" class="input_submit_container"><input type="submit" name="chgadmin" value="{tr}Change administrative info{/tr}" /></td>
       </tr>
     </table>
   </form>

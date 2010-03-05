@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Id: tiki-browse_image.tpl 17641 2009-03-26 14:24:18Z sylvieg $ *}
 
 
   {title}{tr}Browsing Video:{/tr}&nbsp;{$name}{/title}
@@ -109,16 +109,18 @@
 
 {if $listVideoId}
 
-{jq}
+<script type='text/javascript'>
+<!--
 var tmp = window.location.search.match(/delay=(\d+)/);
 tmp = tmp ? parseInt(tmp[1]) : 3000;
-var thepix = new Diaporama('thepix', [{{$listImgId}}], {
-	  startId: {{$videoId}},
-	  root: '{{$rootid}}browse_image',
+var thepix = new Diaporama('thepix', [{$listImgId}], {ldelim}
+	  startId: {$videoId},
+	  root: '{$rootid}browse_image',
 	  resetUrl: 1,
 	  delay: tmp
-	});
-{/jq}
+	{rdelim});
+//-->
+</script>
 
 {/if}
 

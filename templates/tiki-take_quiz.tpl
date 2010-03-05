@@ -8,7 +8,8 @@
 
 {if $ans eq 'n'}
 {if $quiz_info.timeLimited eq 'y'}
-{jq}
+<script type='text/javascript'>
+{literal}
 var itid;
 function settimeleft() {
   document.getElementById('timeleft').value -= 1;
@@ -21,7 +22,8 @@ function settimeleft() {
 }
 itid = window.setInterval('settimeleft();',1000); 
 settimeleft(itid);
-{/jq}
+{/literal}
+</script>
 {/if}
 {/if}
 

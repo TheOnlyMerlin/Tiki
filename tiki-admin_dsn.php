@@ -1,15 +1,17 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_dsn.php,v 1.15.2.1 2007-11-25 21:42:34 sylvieg Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/admin/adminlib.php');
-
-$access->check_permission('tiki_p_admin');
-
+if ($tiki_p_admin != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra('You do not have permission to use this feature'));
+	$smarty->display('error.tpl');
+	die;
+}
 if (!isset($_REQUEST["dsnId"])) {
 	$_REQUEST["dsnId"] = 0;
 }

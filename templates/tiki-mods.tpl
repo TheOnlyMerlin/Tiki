@@ -130,14 +130,16 @@
 		{elseif $installask.wantedtoremove}
 			<input type='submit' id='button_install' name='button-remove' value='{tr}Remove{/tr}'{if $installask.unavailable} style='display: none;'{/if} />
 		{/if}
-{jq}
+		{literal}<script type="text/javascript">
+<!--//--><![CDATA[//><!--
 function update_button_install() {
 	var button=document.getElementById('button_install');
 	button.name='button-check';
 	button.value='Check again';
 	button.style.display='';
 }
-{/jq}
+//--><!]]>
+		</script>{/literal}
 	</div>
 </form>
 {/if}

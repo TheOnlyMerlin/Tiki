@@ -1,27 +1,23 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-/**
+/** \file
+ * $Id: /cvsroot/tikiwiki/tiki/lib/debug/debug-command_watch.php,v 1.3 2003-08-07 04:34:03 rossta Exp $
+ *
  * \brief Watch command for debugger
+ *
  * \author zaufi <zaufi@sendmail.ru>
+ *
  */
 require_once ('lib/debug/debugger-ext.php');
 
 /**
  * \brief Command 'watch'
  */
-class DbgCmd_Watch extends DebuggerCommand
-{
+class DbgCmd_Watch extends DebuggerCommand {
 	/// Array of variables to watch in format: [md5hash] = var_name
 	var $watches;
 
 	/// Restore watches list at construction time
-	function DbgCmd_Watch()
-	{
+	function DbgCmd_Watch() {
 		global $user;
 
 		$this->watches = array();
@@ -36,28 +32,23 @@ class DbgCmd_Watch extends DebuggerCommand
 		}
 	}
 
-	function name()
-	{
+	function name() {
 		return "watch";
 	}
 
-	function description()
-	{
+	function description() {
 		return 'Manage variables watch list';
 	}
 
-	function syntax()
-	{
+	function syntax() {
 		return 'watch (add|rm) $php_var1 smarty_var2 $php_var3 smarty_var4 ...';
 	}
 
-	function example()
-	{
+	function example() {
 		return 'watch add $user tiki_p_view' . "\n" . 'watch rm user $_REQUEST $_SERVER["HTTP_USER_AGENT"]';
 	}
 
-	function execute($params)
-	{
+	function execute($params) {
 		global $user;
 
 		// NOTE: Don't forget to set result type! By default it is NO_RESULT.
@@ -110,16 +101,14 @@ class DbgCmd_Watch extends DebuggerCommand
 	}
 
 	/// Return the name of watches file
-	function watchfile()
-	{
+	function watchfile() {
 		global $user;
 
 		return "temp/dbg-watch." . $user;
 	}
 
 	/// Save watchlist for given user. If current list is empty --> remove file.
-	function store_watches()
-	{
+	function store_watches() {
 		if (count($this->watches) > 0) {
 			$s = serialize($this->watches);
 
@@ -133,8 +122,7 @@ class DbgCmd_Watch extends DebuggerCommand
 	}
 
 	/// Function to create interface part of command: return ["button name"] = <html code>
-	function draw_interface()
-	{
+	function draw_interface() {
 		$result = array();
 
 		// Iterate through all variables
@@ -152,8 +140,7 @@ class DbgCmd_Watch extends DebuggerCommand
 	}
 
 	///
-	function value_of_smarty_var($v)
-	{
+	function value_of_smarty_var($v) {
 		global $smarty;
 
 		$result = '';
@@ -171,8 +158,7 @@ class DbgCmd_Watch extends DebuggerCommand
 	}
 
 	///
-	function value_of_php_var($v)
-	{
+	function value_of_php_var($v) {
 		global $debugger;
 
 		require_once ('lib/debug/debugger.php');
@@ -180,20 +166,17 @@ class DbgCmd_Watch extends DebuggerCommand
 	}
 
 	/// Function to return caption string to draw plugable tab in interface
-	function caption()
-	{
+	function caption() {
 		return "watches";
 	}
 
 	/// Need to display button if we have smth to show
-	function have_interface()
-	{
+	function have_interface() {
 		return count($this->watches) > 0;
 	}
 }
 
 /// Class factory
-function dbg_command_factory_watch()
-{
+function dbg_command_factory_watch() {
 	return new DbgCmd_Watch();
 }

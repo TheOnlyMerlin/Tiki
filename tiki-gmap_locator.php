@@ -1,13 +1,12 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 include 'tiki-setup.php';
 include_once ('lib/trackers/trackerlib.php');
-$access->check_feature('feature_gmap');
+
+if ($prefs['feature_gmap'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled').": feature_gmap");
+	$smarty->display("error.tpl");
+	die;
+}
 $auto_query_args = array('for', 'itemId', 'fieldId', 'trackerId', 'view_user');
 
 if ($tiki_p_admin == 'y' and isset($_REQUEST['view_user']) and $userlib->user_exists($_REQUEST['view_user'])) {
@@ -16,12 +15,6 @@ if ($tiki_p_admin == 'y' and isset($_REQUEST['view_user']) and $userlib->user_ex
 } else {
 	$userwatch = $user;
 }
-
-if ($prefs["feature_ajax"] == 'y') {
-	// Ajax version using new plugin
-	$smarty->assign('userwatch', $userwatch);
-} else {
-	// Old non-ajax version which can be removed once Ajax becomes always on 
 if (!isset($_REQUEST['for']))
 	$_REQUEST['for'] = '';
 
@@ -72,7 +65,7 @@ if (isset($_REQUEST['set_default']) && ($user == $userwatch || $tiki_p_admin =='
       				}
     			}
   		}
-		$xyz = explode(',', $trklib->get_item_value($_REQUEST['trackerId'],$_REQUEST['itemId'],$_REQUEST['fieldId']));
+		$xyz = split(',', $trklib->get_item_value($_REQUEST['trackerId'],$_REQUEST['itemId'],$_REQUEST['fieldId']));
   		$pointx = $xyz['0'];
   		$pointy = $xyz['1'];
   		$pointz = $xyz['2'];
@@ -97,6 +90,6 @@ if (($_REQUEST['for'] == 'user' && ($user == $userwatch || $tiki_p_admin == 'y')
 	$smarty->assign('input','y');
 }
 $smarty->assign('for',$_REQUEST['for']);
-} //end if feature_ajax
+
 $smarty->assign('mid','tiki-gmap_locator.tpl');
 $smarty->display('tiki.tpl');

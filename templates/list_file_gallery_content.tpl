@@ -1,4 +1,3 @@
-{* $Id$ *}
 {if empty($sort_arg)}{assign var='sort_arg' value='sort_mode'}{/if}
 <table class="normal">
   <tr>
@@ -53,7 +52,7 @@
         <th{$td_args}>
            {self_link _sort_arg=$sort_arg _sort_field=$propname _title=$link_title}
              {if $propicon}{icon _id=$propicon alt=$link_title}{else}{$propval}{/if}
-           {/self_link}
+		   {/self_link}
         </th>
       {/if}
     {/if}
@@ -135,14 +134,12 @@
           {assign var=propval value=$files[changes].$propname}
   
           {* Format property values *}
-          {if $propname eq 'created' or $propname eq 'lastModif' or $propname eq 'lastDownload'}
+          {if $propname eq 'created' or $propname eq 'lastModif'}
             {assign var=propval value=$propval|tiki_long_date}
           {elseif $propname eq 'last_user' or $propname eq 'author' or $propname eq 'creator'}
             {assign var=propval value=$propval|username}
           {elseif $propname eq 'size'}
             {assign var=propval value=$propval|kbsize:true}
-          {elseif $propname eq 'backlinks'}
-            {assign var=propval value=$files[changes].nbBacklinks}
           {/if}
     
           {if isset($gal_info.$propkey) and $propval neq '' and ( $gal_info.$propkey eq 'a' or $gal_info.$propkey eq 'o' ) }
@@ -223,7 +220,7 @@
         {else}
           {assign var=propval value="<a class='fgalname' $link>$propval</a>"}
         {/if}
-      {elseif $propname eq 'created' or $propname eq 'lastModif' or $propname eq 'lastDownload'}
+      {elseif $propname eq 'created' or $propname eq 'lastModif'}
         {assign var=propval value=$propval|tiki_short_date}
       {elseif $propname eq 'last_user' or $propname eq 'author' or $propname eq 'creator'}
         {assign var=propval value=$propval|userlink}
@@ -246,16 +243,8 @@
         {else}
           {assign var=propval value=$propval|userlink}
         {/if}
-      {elseif $propname eq 'backlinks'}
-        {if empty($files[changes].nbBacklinks)}
-          {assign var=propval value=$files[changes].nbBacklinks}
-        {else}
-          {assign var=propval value=$files[changes].nbBacklinks}
-		  {assign var=fid value=$files[changes].id}
-          {assign var=propval value="<a class='fgalbacklink' href='list-file_backlinks_ajax.php?fileId=$fid' rel='list-file_backlinks_ajax.php?fileId=$fid'>$propval</a>"}
-        {/if}
       {/if}
-
+  
       {if $propname eq 'name' and ( $gal_info.show_name eq 'a' or $gal_info.show_name eq 'f' ) }
         <td class="{cycle advance=false}">
           {if $link neq ''}<a class='fgalname' {$link}>{/if}{$files[changes].filename|escape}{if $link neq ''}</a>{/if}
@@ -310,4 +299,3 @@
   {/if}
 
 </table>
-{jq}$jq('a.fgalbacklink').cluetip({showTitle:false, sticky:true});{/jq}

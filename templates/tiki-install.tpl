@@ -26,13 +26,13 @@
 	</ul>
 
 	<form action="tiki-install.php" method="post">
-		<label>{tr}Select your language:{/tr}
-		<select name="lang" id="general-lang" onchange="javascript:submit()" title="{tr}Select your language:{/tr}">
+		{tr}Select your language:{/tr}
+		<select name="lang" id="general-lang" onchange="javascript:submit()">
 			{section name=ix loop=$languages}
 				<option value="{$languages[ix].value|escape}"
 					{if $prefs.site_language eq $languages[ix].value}selected="selected"{/if}>{$languages[ix].name}</option>
 			{/section}
-		</select></label>
+		</select>
 		<input type="hidden" name="install_step" value="0" />
 		{if $multi}		<input type="hidden" name="multi" value="{$multi}" />{/if}
 	</form>
@@ -50,7 +50,7 @@
 <h1>{tr}Read the License{/tr}</h1>
 <p>{tr}Tiki is software distributed under the LGPL license.{/tr} {tr} <a href="http://creativecommons.org/licenses/LGPL/2.1/" target="_blank">Here is a human-readable summary of the license below, including many translations.</a>{/tr}</p>
 <div align="center" style="margin-top:1em;">
-<iframe src="license.txt" width="700" height="300" style="width:700px;height:300px"> </iframe>
+<iframe src="license.txt" width="700px" height="300px"> </iframe>
 	<form action="tiki-install.php" method="post">
 {if $multi}			<input type="hidden" name="multi" value="{$multi}" />{/if}
 {if $lang}			<input type="hidden" name="lang" value="{$lang}" />{/if}
@@ -69,7 +69,7 @@
 	<h2>{tr}Memory{/tr}</h2>
 {if $php_memory_limit <= 0}
 	<div style="border: solid 1px #000; padding: 5px; background: #a9ff9b;">
-		<p align="center"><img src="pics/icons/accept.png" alt="{tr}Success{/tr}" style="vertical-align:middle" /> {tr}Tiki has not detected your PHP memory_limit.{/tr} {tr}This probably means you have no set limit (all is well).{/tr} </p>
+		<p align="center"><img src="pics/icons/accept.png" alt="{tr}Success{/tr}" style="vertical-align:middle"/> {tr}Tiki has not detected your PHP memory_limit.{/tr} {tr}This probably means you have no set limit (all is well).{/tr} </p>
 	</div>	
 {elseif $php_memory_limit < 32 * 1024 * 1024}
 	<div style="border-style: solid; border-width: 1; padding: 5px; background: #FF0000">
@@ -82,14 +82,14 @@
 	<div style="border: solid 1px #000; padding: 4px; background-color: #a9ff9b;">
 		<p align="center">
 		  <span style="font-size: large; padding: 4px;">
-		  <img src="pics/icons/accept.png" alt="{tr}Success{/tr}" style="vertical-align:middle" /> {tr}Tiki has detected your PHP memory_limit at:{/tr} {$php_memory_limit|kbsize:true:0}. 
+		  <img src="pics/icons/accept.png" alt="{tr}Success{/tr}" style="vertical-align:middle"/> {tr}Tiki has detected your PHP memory_limit at:{/tr} {$php_memory_limit|kbsize:true:0}. 
 		  </span>
 		</p>
 	</div>	
 {/if}			
 
 	<br />
-	<h2>{tr}Mail{/tr}</h2><a name="mail"> </a>
+	<h2>{tr}Mail{/tr}</h2><A NAME="mail"></A>
 	<p>{tr}Tiki uses the PHP <strong>mail</strong> function to send email notifications and messages.{/tr}</p>
 {if $perform_mail_test ne 'y'}
 	<p>{tr}To test your system configuration, Tiki will attempt to send a test message to you.{/tr}</p>
@@ -97,7 +97,7 @@
 	<form action="tiki-install.php#mail" method="post">
 		<div style="padding:1em 7em;">
 			<label for="admin_email_test">{tr}Test email:{/tr}</label>
-			<input type="text" size="40" name="email_test_to" id="email_test_to" value="{if isset($email_test_to)}{$email_test_to}{/if}" />
+			<input type="text" size="40" name="email_test_to" id="email_test_to" value="{if isset($email_test_to)}{$email_test_to}{/if}"/>
 			{if isset($email_test_err)}<span class="attention"><em>{$email_test_err}</em></span>
 			{else}<em>{tr}Email address to send test to.{/tr}</em>{/if}
 			<br /><br />
@@ -133,13 +133,6 @@
 {if $gd_test eq 'y'}
 	<div style="border: solid 1px #000; padding: 5px; background: #a9ff9b;">
 		<p align="center"><img src="pics/icons/accept.png" alt="{tr}Success{/tr}" style="vertical-align:middle" /> {tr}Tiki detected:{/tr} <strong>GD {$gd_info}</strong>.</p>
-{if $sample_image eq 'y'}
-		<p align="center"><img src="pics/icons/accept.png" alt="{tr}Success{/tr}" style="vertical-align:middle" /> {tr}Tiki can create images.{/tr}</p>
-{else}
-	<div style="border: solid 1px #000; padding: 5px; background: #FF0000">
-		<p align="center"><img src="pics/icons/delete.png" alt="{tr}Alert{/tr}" style="vertical-align:middle" /> {tr}Tiki was not able to create a sample image. Please check your GD library configuration.{/tr}.</p>
-	</div>
-{/if}
 	</div>
 {else}
 	<div style="border: solid 1px #000; padding: 5px; background: #FF0000">
@@ -185,7 +178,7 @@
 	<br />
 {section name=n loop=$tikifeedback}
 	<div class="simplebox {if $tikifeedback[n].num > 0} highlight{/if}">
-		<img src="pics/icons/{if $tikifeedback[n].num > 0}delete.png" alt="{tr}Error{/tr}"{else}accept.png" alt="{tr}Success{/tr}"{/if} style="vertical-align:middle" /> {$tikifeedback[n].mes}
+		<img src="pics/icons/{if $tikifeedback[n].num > 0}delete.png" alt="{tr}Error{/tr}"{else}accept.png" alt="{tr}Success{/tr}"{/if} style="vertical-align:middle"/> {$tikifeedback[n].mes}
 	</div>
 {/section}
 {/if}
@@ -255,15 +248,17 @@
 {tr}Failed to set max_execution_time to 0 for PHP. You may experience problems when creating/upgrading the database on a slow system. This will manitest itself by a blank page.{/tr}
 {/remarksbox}
 {/if}
+<div style="float:left; width:60px"><img src="pics/large/profiles48x48.png" alt="{tr}Profiles{/tr}" /></div>
 <div class="clearfix">
 <p>
 {if $tikidb_created}
-	{tr}This install will populate (or upgrade) the database.{/tr}<br /><br />
+	{tr}This install will populate (or upgrade) the database.{/tr}<br/><br/>
 	{tr}If you want to upgrade from a previous Tiki release, ensure that you have read and understood the <a href="http://doc.tikiwiki.org/Upgrade" target="_blank">Upgrade instructions</a>.{/tr}
 {else}
 	{tr}A new install will populate the database.{/tr}
 {/if}
 </p>
+{* <p>{tr}Profiles can be used to pre-configure your site with specific features and settings.{/tr} {tr}Visit <a href="http://profiles.tikiwiki.org" target="_blank">http://profiles.tikiwiki.org</a> for more information.{/tr}</p>  *}
 	  {if $dbdone eq 'n'}
 		  {if $logged eq 'y'}
 		    {* we are logged if no admin account is found or if the admin user is logged in*}
@@ -277,14 +272,16 @@
 		<td valign="top">
 			<fieldset><legend>{tr}Install{/tr}</legend>
 				{if $tikidb_created}
-				<script type='text/javascript'><!--//--><![CDATA[//><!--
-				{literal}
+				<script type="text/javascript">
+				<!--//--><![CDATA[//><!--
+					{literal}
 					function install() {
 						document.getElementById('install-link').style.display='none';
 						document.getElementById('install-table').style.visibility='';
 					}
-				{/literal}
-				//--><!]]></script>
+					{/literal}
+				//--><!]]>
+				</script>
 				<div id="install-link">
 				
 				<p style="text-align:center"><a class="button" href="javascript:install()">{tr}Reinstall the database{/tr}</a></p>
@@ -294,9 +291,9 @@
 				{else}
 				<div id="install-table">
 				{/if}
-				{if $tikidb_created}<p style="text-align:center"><img src="pics/icons/sticky.png" alt="{tr}Warning{/tr}" style="vertical-align:middle" /> <strong>{tr}Warning:{/tr}</strong> {tr}This will destroy your current database.{/tr}</p>{/if}
+				{if $tikidb_created}<p style="text-align:center"><img src="pics/icons/sticky.png" alt="{tr}Warning{/tr}" style="vertical-align:middle"/> <strong>{tr}Warning:{/tr}</strong> {tr}This will destroy your current database.{/tr}</p>{/if}
 				<p align="center">
-					<input type="submit" name="scratch" value=" {if $tikidb_created}{tr}Reinstall{/tr}{else}{tr}Install{/tr}{/if} " style="margin: 32px;" />
+					<input type="submit" name="scratch" value=" {if $tikidb_created}{tr}Reinstall{/tr}{else}{tr}Install{/tr}{/if} " style="margin: 32px;"/>
 				</p>
 
 			</div>
@@ -307,7 +304,7 @@
 			<fieldset><legend>{tr}Upgrade{/tr}</legend>
 			{if $tikidb_oldPerms gt 0}
 				{remarksbox type="warning" title="{tr}Warning: Category Permissions Will Not Be Upgraded{/tr}" close="n"}
-					{tr}Category permissions have been revamped since version 3. If you have been using category permissions, note that they may not work properly after upgrading to version 4 onwards, and it will be necessary to reconfigure them.{/tr}
+					{tr}Category permissions have been revamped in version 4. If you have been using category permissions, note that they may not work properly after upgrading to version 4, and it will be necessary to reconfigure them.{/tr}
 				{/remarksbox}
 			{/if}
 			<p>{tr}Automatically upgrade your existing database to v{/tr}{$tiki_version_name}.</p>
@@ -320,7 +317,7 @@
  {else}
 			{* we are not logged then no admin account found and user not logged *}
 			<p><img src="pics/icons/delete.png" alt="{tr}Alert{/tr}" style="vertical-align:middle" />  <span style="font-weight:bold">{tr}This site has an admin account configured.{/tr}</span></p>
-		   <p>{tr}Please log in with your admin password to continue.{/tr}</p>
+		   <p>{tr}Please login with your admin password to continue.{/tr}</p>
 
      <form name="loginbox" action="tiki-install.php" method="post">
 			<input type="hidden" name="login" value="admin" />
@@ -329,7 +326,7 @@
           <table>
           <tr><td class="module">{tr}User:{/tr}</td><td><input value="admin" disabled="disabled" size="20" /></td></tr>
           <tr><td class="module">{tr}Pass:{/tr}</td><td><input type="password" name="pass" size="20" /></td></tr>
-          <tr><td colspan="2"><p align="center"><input type="submit" name="login" value="{tr}Log in{/tr}" /></p></td></tr>
+          <tr><td colspan="2"><p align="center"><input type="submit" name="login" value="{tr}Login{/tr}" /></p></td></tr>
           </table>
       </form>
 
@@ -349,7 +346,7 @@
 		</p>
 		</div>
 {if $installer->success|@count gt 0}
-	<p><img src="pics/icons/accept.png" alt="{tr}Success{/tr}" style="vertical-align:middle" /> <span style="font-weight:bold">
+	<p><img src="pics/icons/accept.png" alt="{tr}Success{/tr}" style="vertical-align:middle"/> <span style="font-weight:bold">
 	{if isset($smarty.post.update)}
 		{tr}Upgrade operations executed successfully:{/tr}
 	{else}
@@ -358,18 +355,20 @@
 	</span>
 	{$installer->success|@count} {tr}SQL queries.{/tr}</p>
 {else}
-	<p><img src="pics/icons/accept.png" alt="{tr}Success{/tr}" style="vertical-align:middle" /> <span style="font-weight: bold">{tr}Database was left unchanged.{/tr}</span></p>
+	<p><img src="pics/icons/accept.png" alt="{tr}Success{/tr}" style="vertical-align:middle"/> <span style="font-weight: bold">{tr}Database was left unchanged.{/tr}</span></p>
 {/if}
 {if $installer->failures|@count > 0}
-	<script type='text/javascript'><!--//--><![CDATA[//><!--
+			<script type="text/javascript">
+			<!--//--><![CDATA[//><!--
 				{literal}
 				function sql_failed() {
 					document.getElementById('sql_failed_log').style.display='block';
 				}
 				{/literal}
-	//--><!]]></script>
+			//--><!]]>
+			</script>
 
-<p><img src="pics/icons/delete.png" alt="{tr}Failed{/tr}" style="vertical-align:middle" /> <strong>{tr}Operations failed:{/tr}</strong> {$installer->failures|@count} {tr}SQL queries.{/tr}
+<p><img src="pics/icons/delete.png" alt="{tr}Failed{/tr}" style="vertical-align:middle"/> <strong>{tr}Operations failed:{/tr}</strong> {$installer->failures|@count} {tr}SQL queries.{/tr}
 <a href="javascript:sql_failed()">{tr}Display details.{/tr}</a>
 
 <div id="sql_failed_log" style="display:none">
@@ -422,7 +421,7 @@
 		</div>
 	</fieldset>
 <br />
-	<fieldset><legend>{tr}Secure Log in{/tr} <a href="http://doc.tikiwiki.org/login+config&amp;bl=y" target="_blank" title="{tr}Help{/tr}"><img src="pics/icons/help.png" alt="{tr}Help{/tr}" /></a></legend>
+	<fieldset><legend>{tr}Secure Login{/tr} <a href="http://doc.tikiwiki.org/login+config&amp;bl=y" target="_blank" title="{tr}Help{/tr}"><img src="pics/icons/help.png" alt="{tr}Help{/tr}" /></a></legend>
 		<div style="padding:5px; clear:both"><label for="https_login">{tr}HTTPS login:{/tr}</label>
 	<select name="https_login" id="https_login" onchange="hidedisabled('httpsoptions',this.value);">
 		<option value="disabled"{if $prefs.https_login eq 'disabled'} selected="selected"{/if}>{tr}Disabled{/tr}</option>
@@ -467,7 +466,7 @@
 
 {elseif $install_step eq '7'}
 <h1>{tr}Enter Your Tiki{/tr}</h1>
-<div style="float:left; width:60px"><img src="pics/large/stock_quit48x48.png" alt="{tr}Log in{/tr}" /></div>
+<div style="float:left; width:60px"><img src="pics/large/stock_quit48x48.png" alt="{tr}Login{/tr}" /></div>
 <div class="clearfix">
 	<p>{tr}The installation is complete!{/tr} {tr}Your database has been configured and Tiki is ready to run.{/tr} </p>
 	<p>{tr}Tiki is an open source project, <em>you</em> can <a href='http://info.tikiwiki.org/Join+the+Community' target='_blank'>join the community</a> and help <a href='http://info.tikiwiki.org/Develop+Tiki' target='_blank'>develop Tiki</a>.{/tr} </p>
@@ -478,18 +477,18 @@
 	</p>
 
 {if isset($smarty.post.scratch)}
-	<h3><img src="pics/icons/information.png" alt="{tr}Note{/tr}" style="vertical-align:middle" /> {tr}Installation{/tr}</h3>
+	<h3><img src="pics/icons/information.png" alt="{tr}Note{/tr}" style="vertical-align:middle"/> {tr}Installation{/tr}</h3>
 	<p>{tr}If this is a first time installation, go to <strong>tiki-admin.php</strong> after login to start configuring your new Tiki installation.{/tr}</p>
 {/if}
 
 {if isset($smarty.post.update)}
-	<h3><img src="pics/icons/information.png" alt="{tr}Note{/tr}" style="vertical-align:middle" /> {tr}Upgrade{/tr}</h3>
+	<h3><img src="pics/icons/information.png" alt="{tr}Note{/tr}" style="vertical-align:middle"/> {tr}Upgrade{/tr}</h3>
 	<p>{tr}If this is an upgrade, clean the Tiki caches manually (the <strong>templates_c</strong> directory) or by using the <strong>Admin &gt; System</strong> option from the Admin menu.{/tr}</p>
 {/if}
 
 {if $tikidb_is20}
-		<span class="button"><a href="tiki-install.php?lockenter&amp;install_type={$install_type}">{tr}Enter Tiki and Lock Installer{/tr} ({tr}Recommended{/tr})</a></span>
-		<span class="button"><a href="tiki-install.php?nolockenter&amp;install_type={$install_type}">{tr}Enter Tiki Without Locking Installer{/tr}</a></span>
+		<span class="button"><a href="tiki-install.php?lockenter&install_type={$install_type}">{tr}Enter Tiki and Lock Installer{/tr} ({tr}Recommended{/tr})</a></span>
+		<span class="button"><a href="tiki-install.php?nolockenter&install_type={$install_type}">{tr}Enter Tiki Without Locking Installer{/tr}</a></span>
 {/if}
 
 </div>
@@ -536,8 +535,8 @@
 				{tr}Are you upgrading an existing Tiki site?{/tr}
 				{tr}Go directly to the <strong>Install/Upgrade</strong> step.{/tr}
 				{if $dbcon eq 'y' or isset($smarty.post.scratch) or isset($smarty.post.update)}
-					<a href="tiki-install.php?install_step=4{if $multi}&amp;multi={$multi}{/if}{if $lang}&amp;lang={$lang}{/if}" title="{tr}Install/Upgrade{/tr}">
-							<img src="pics/icons/arrow_right.png" height="16" width="16" />
+					<a href="tiki-install.php?install_step=4{if $multi}&multi={$multi}{/if}{if $lang}&lang={$lang}{/if}" title="{tr}Install/Upgrade{/tr}">
+							<img src="pics/icons/arrow_right.png" height=16 width=16/>
 					</a>
 				{/if}
 				</div>
@@ -554,14 +553,14 @@
 				<h3 class="box-title">{tr}Installation{/tr}</h3>
 				<div class="clearfix box-data">
 				<ol>
-					<li>{if $install_step eq '0'}<strong>{else}<a href="tiki-install.php?reset=y{if $multi}&amp;multi={$multi}{/if}{if $lang}&amp;lang={$lang}{/if}" title="{tr}Welcome{/tr} / {tr}Restart the installer.{/tr}">{/if}{tr}Welcome{/tr}{if $install_step eq '0'}</strong>{else}</a>{/if}</li>
-					<li>{if $install_step eq '1'}<strong>{else}<a href="tiki-install.php?install_step=1{if $multi}&amp;multi={$multi}{/if}{if $lang}&amp;lang={$lang}{/if}" title="{tr}Read the License{/tr}">{/if}{tr}Read the License{/tr}{if $install_step eq '1'}</strong>{else}</a>{/if}</li>
-					<li>{if $install_step eq '2'}<strong>{elseif $install_step ge '3' or $dbcon eq 'y'}<a href="tiki-install.php?install_step=2{if $multi}&amp;multi={$multi}{/if}{if $lang}&amp;lang={$lang}{/if}" title="{tr}Review the System Requirements{/tr}">{/if}{tr}Review the System Requirements{/tr}{if $install_step eq '2'}</strong>{elseif $install_step ge '3' or $dbcon eq 'y'}</a>{/if}</li>
-					<li>{if $install_step eq '3'}<strong>{elseif $dbcon eq 'y'}<a href="tiki-install.php?install_step=3{if $multi}&amp;multi={$multi}{/if}{if $lang}&amp;lang={$lang}{/if}" title="{tr}Database Connection{/tr}">{/if}{if $dbcon eq 'y'}{tr}Reset the Database Connection{/tr}{else}{tr}Database Connection{/tr}{/if}{if $install_step eq '3'}</strong>{elseif $dbcon eq 'y'}</a>{/if}</li>
-					<li>{if $install_step eq '4'}<strong>{elseif $dbcon eq 'y' or isset($smarty.post.scratch) or isset($smarty.post.update)}<a href="tiki-install.php?install_step=4{if $multi}&amp;multi={$multi}{/if}{if $lang}&amp;lang={$lang}{/if}" title="{if $tikidb_created}{tr}Install/Upgrade{/tr}{else}{tr}Install{/tr}{/if}">{/if}{if $tikidb_created}<em>{tr}Install/Upgrade{/tr}</em>{else}{tr}Install{/tr}{/if}{if $install_step eq '4'}</strong>{elseif ($dbcon eq 'y') or (isset($smarty.post.scratch)) or (isset($smarty.post.update))}</a>{/if}</li>
-					<li>{if $install_step eq '5'}<strong>{elseif $tikidb_is20}<a href="tiki-install.php?install_step=5{if $multi}&amp;multi={$multi}{/if}{if $lang}&amp;lang={$lang}{/if}" title="{if isset($smarty.post.update)}{tr}Review the Upgrade{/tr}{else}{tr}Review the Installation{/tr}{/if}">{/if}{if isset($smarty.post.update)}{tr}Review the Upgrade{/tr}{else}{tr}Review the Installation{/tr}{/if}{if $install_step eq '5'}</strong>{elseif $tikidb_is20}</a>{/if}</li>
-					<li>{if $install_step eq '6'}<strong>{elseif $tikidb_is20 and !isset($smarty.post.update)}<a href="tiki-install.php?install_step=6{if $multi}&amp;multi={$multi}{/if}{if $lang}&amp;lang={$lang}{/if}" title="{tr}Configure the General Settings{/tr}">{/if}{tr}Configure the General Settings{/tr}{if $install_step eq '6'}</strong>{elseif $tikidb_is20 and !isset($smarty.post.update)}</a>{/if}</li>
-					<li>{if $install_step eq '7'}<strong>{elseif $tikidb_is20}<a href="tiki-install.php?install_step=7{if $multi}&amp;multi={$multi}{/if}{if $lang}&amp;lang={$lang}{/if}" title="{tr}Enter Your Tiki{/tr}">{/if}{tr}Enter Your Tiki{/tr}{if $install_step eq '7'}</strong>{elseif $tikidb_is20}</a>{/if}</li>
+					<li>{if $install_step eq '0'}<strong>{else}<a href="tiki-install.php?reset=y{if $multi}&multi={$multi}{/if}{if $lang}&lang={$lang}{/if}" title="{tr}Welcome{/tr} / {tr}Restart the installer.{/tr}">{/if}{tr}Welcome{/tr}{if $install_step eq '0'}</strong>{else}</a>{/if}</li>
+					<li>{if $install_step eq '1'}<strong>{else}<a href="tiki-install.php?install_step=1{if $multi}&multi={$multi}{/if}{if $lang}&lang={$lang}{/if}" title="{tr}Read the License{/tr}">{/if}{tr}Read the License{/tr}{if $install_step eq '1'}</strong>{else}</a>{/if}</li>
+					<li>{if $install_step eq '2'}<strong>{elseif $install_step ge '3' or $dbcon eq 'y'}<a href="tiki-install.php?install_step=2{if $multi}&multi={$multi}{/if}{if $lang}&lang={$lang}{/if}" title="{tr}Review the System Requirements{/tr}">{/if}{tr}Review the System Requirements{/tr}{if $install_step eq '2'}</strong>{elseif $install_step ge '3' or $dbcon eq 'y'}</a>{/if}</li>
+					<li>{if $install_step eq '3'}<strong>{elseif $dbcon eq 'y'}<a href="tiki-install.php?install_step=3{if $multi}&multi={$multi}{/if}{if $lang}&lang={$lang}{/if}" title="{tr}Database Connection{/tr}">{/if}{if $dbcon eq 'y'}{tr}Reset the Database Connection{/tr}{else}{tr}Database Connection{/tr}{/if}{if $install_step eq '3'}</strong>{elseif $dbcon eq 'y'}</a>{/if}</li>
+					<li>{if $install_step eq '4'}<strong>{elseif $dbcon eq 'y' or isset($smarty.post.scratch) or isset($smarty.post.update)}<a href="tiki-install.php?install_step=4{if $multi}&multi={$multi}{/if}{if $lang}&lang={$lang}{/if}" title="{if $tikidb_created}{tr}Install/Upgrade{/tr}{else}{tr}Install Profile{/tr}{/if}">{/if}{if $tikidb_created}<em>{tr}Install/Upgrade{/tr}</em>{else}{tr}Install Profile{/tr}{/if}{if $install_step eq '4'}</strong>{elseif ($dbcon eq 'y') or (isset($smarty.post.scratch)) or (isset($smarty.post.update))}</a>{/if}</li>
+					<li>{if $install_step eq '5'}<strong>{elseif $tikidb_is20}<a href="tiki-install.php?install_step=5{if $multi}&multi={$multi}{/if}{if $lang}&lang={$lang}{/if}" title="{if isset($smarty.post.update)}{tr}Review the Upgrade{/tr}{else}{tr}Review the Installation{/tr}{/if}">{/if}{if isset($smarty.post.update)}{tr}Review the Upgrade{/tr}{else}{tr}Review the Installation{/tr}{/if}{if $install_step eq '5'}</strong>{elseif $tikidb_is20}</a>{/if}</li>
+					<li>{if $install_step eq '6'}<strong>{elseif $tikidb_is20 and !isset($smarty.post.update)}<a href="tiki-install.php?install_step=6{if $multi}&multi={$multi}{/if}{if $lang}&lang={$lang}{/if}" title="{tr}Configure the General Settings{/tr}">{/if}{tr}Configure the General Settings{/tr}{if $install_step eq '6'}</strong>{elseif $tikidb_is20 and !isset($smarty.post.update)}</a>{/if}</li>
+					<li>{if $install_step eq '7'}<strong>{elseif $tikidb_is20}<a href="tiki-install.php?install_step=7{if $multi}&multi={$multi}{/if}{if $lang}&lang={$lang}{/if}" title="{tr}Enter Your Tiki{/tr}">{/if}{tr}Enter Your Tiki{/tr}{if $install_step eq '7'}</strong>{elseif $tikidb_is20}</a>{/if}</li>
 				</ol>
 				</div>
 			</div>

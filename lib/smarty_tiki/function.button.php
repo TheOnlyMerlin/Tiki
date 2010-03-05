@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -128,10 +123,8 @@ function smarty_function_button($params, &$smarty) {
 		}
 
 		// Remove params that does not start with a '_', since we don't want them to modify the URL except when in auto_query_args
-		if ( ! isset($params['_keepall']) || $params['_keepall'] != 'y') {
-			foreach ( $params as $k => $v ) {
-				if ( $k[0] != '_' && $k != 'href' && (empty($auto_query_args) || !in_array($k,$auto_query_args)) ) unset($params[$k]);
-			}
+		foreach ( $params as $k => $v ) {
+			if ( $k[0] != '_' && $k != 'href' && !in_array($k,$auto_query_args) ) unset($params[$k]);
 		}
 
 		$url_args = array();
@@ -170,5 +163,5 @@ function smarty_function_button($params, &$smarty) {
 	}
 
 	$auto_query_args = $auto_query_args_orig;
-	return '<span class="'.(!empty($params['_noborder']) ? '' : 'button').(!empty($class)?" $class":'').'"'.$id.'>'.$html.'</span>';
+	return '<span class="button'.(!empty($class)?" $class":'').'"'.$id.'>'.$html.'</span>';
 }

@@ -1,19 +1,33 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-contact.php,v 1.25.2.5 2008-02-14 11:10:14 sylvieg Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 require_once ('tiki-setup.php');
 
 include_once ('lib/messu/messulib.php');
 include_once ('lib/userprefs/scrambleEmail.php');
 
 // This feature needs both 'feature_contact' and 'feature_messages' to work
-$access->check_feature(array('feature_contact', 'feature_messages'));
-if($user == ''){
-	$access->check_feature('contact_anon');
+if ($prefs['feature_contact'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled').': feature_contact');
+	$smarty->display('error.tpl');
+	die;
+}
+if ($prefs['feature_messages'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled').': feature_messages');
+	$smarty->display('error.tpl');
+	die;
+}
+
+if ($prefs['contact_anon'] != 'y' && !$user) {
+	$smarty->assign('msg', 'You are not logged in');
+	$smarty->display('error.tpl');
+	die;
 }
 
 $auto_query_args = array();

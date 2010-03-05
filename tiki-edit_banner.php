@@ -1,10 +1,12 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-edit_banner.php,v 1.29.2.3 2007-11-30 20:46:07 sylvieg Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 require_once ('tiki-setup.php');
 
 require_once ('lib/tikilib.php'); # httpScheme()
@@ -14,8 +16,21 @@ if (!isset($bannerlib)) {
 	$bannerlib = new BannerLib;
 }
 
-$access->check_feature('feature_banners');
-$access->check_permission('tiki_p_admin_banners');
+// CHECK FEATURE BANNERS AND ADMIN PERMISSION HERE
+if ($prefs['feature_banners'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_banners");
+
+	$smarty->display("error.tpl");
+	die;
+}
+
+if ($tiki_p_admin_banners != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permissions to edit banners"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (isset($_REQUEST["bannerId"]) && $_REQUEST["bannerId"] > 0) {
 	$info = $bannerlib->get_banner($_REQUEST["bannerId"]);

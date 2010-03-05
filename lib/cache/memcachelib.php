@@ -1,9 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Header$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -17,8 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  * This utility library is not a complete wrapper for PHP memcache functions, 
  * and only provides a minimal set currently in use in SUMO.
  */
-class Memcachelib
-{
+class Memcachelib {
 
     var $memcache;
     var $options;
@@ -37,23 +32,13 @@ class Memcachelib
             $this->memcache = FALSE;
             $this->options  = array( 'enabled' => FALSE );
         } else {
-			if( $memcached_options['compress'] == 'y' ) {
-				$memcached_options['flags'] = MEMCACHE_COMPRESSED;
-				unset( $memcached_options['compress'] );
-			} else {
-				$memcached_options['flags'] = 0;
-			}
-
             $this->options  = $memcached_options;
             $this->memcache = new Memcache();
             foreach ($memcached_servers as $server) {
-				if( $server['host'] == 'localhost' ) {
-					$server['host'] = '127.0.0.1';
-				}
                 $this->memcache->addServer(
-                    $server['host'], (int) $server['port'], 
+                    $server['host'], $server['port'], 
                     isset($server['persistent']) ? $server['persistent'] : FALSE, 
-                    isset($server['weight']) ? (int)$server['weight'] : 1
+                    isset($server['weight']) ? $server['weight'] : 1
                 );
             }
         }
@@ -66,7 +51,7 @@ class Memcachelib
      * Return a reference to the memcache object.
      * @return object
      */
-    function getMemcache() {
+    function &getMemcache() {
         return $this->memcache;
     }
 
@@ -125,8 +110,9 @@ class Memcachelib
 
         // Construct a list of values corresponding to the keys passed in.
         $values_out = array();
-				foreach($keys_built as $kb) {
-            $values_out[] = (isset($values_in[$kb])) ?  $values_in[$kb] : NULL;
+        for ($i=0; $i<count($keys_built); $i++) {
+            $values_out[] = (isset($values_in[$keys_built[$i]])) ?
+                $values_in[$keys_built[$i]] : NULL;
         }
 
         return $values_out;
@@ -175,7 +161,7 @@ class Memcachelib
      * @param  mixed  A string, or an object to be turned into a key.
      * @return string The cache key.
      */
-    function buildKey($key, $use_md5=false) {
+    function buildKey($key, $use_md5=TRUE) {
 
         if (is_string($key)) {
             return (strpos($key, $this->key_prefix) !== 0) ?
@@ -199,5 +185,7 @@ class Memcachelib
                 ( $use_md5 ? md5($str_key) : '['.$str_key.']' );
 
         }
+
     } 
+
 }

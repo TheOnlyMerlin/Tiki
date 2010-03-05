@@ -8,24 +8,27 @@ It exists and improves by the participation of people just like YOU.
 INSTALLATION
 ------------
 The rest of this document includes parts of the online documentation that
-might be enough to get you running Tiki. For more details, please see:
- http://doc.tikiwiki.org/Install
+might be enough to get you running TikiWiki. For more details, please see:
+ http://doc.tikiwiki.org/Installation
 
 
-Before you get started, it is a good idea to know:
+Before you get started it is a good idea to know:
 
     * Your database name, database user name and password
     * Your Apache user and group ID (e.g. www-user and www-data)
-		If not, Tiki will detect
 
 
-These are notes on how to setup and configure Tiki.
+If you are using the RPM that is available you can skip down to step three.
+
+If you are installing on windows with XAMPP, you can also skip down to step three.
+
+These are notes on how to setup and configure TikiWiki.
 
 
 ----------------------------
 Step one: unpack the archive
 ----------------------------
-Unpack the Tiki files to the document root of where you want it installed,
+Unpack the TikiWiki files to the document root of where you want it installed,
 e.g. /var/www/tiki/ 
 
 To unpack the bz2 file, use:
@@ -37,7 +40,7 @@ tar xjf tikiwiki-[version].tar.bz2
 Step two: run setup.sh to set permissions
 -----------------------------------------
 
-Run setup.sh and follow the instructions
+Run .setup and follow the instructions
 
 # sh setup.sh
 
@@ -46,7 +49,7 @@ Run setup.sh and follow the instructions
 --------------------------------------------------------------------
 Step three: create the database
 --------------------------------------------------------------------
-* create a database for Tiki
+* create a database for TikiWiki
   - either using PhpMyAdmin and MySQL
   - or on the command line "mysqladmin create dbname"
     the database name is usually called "tikiwiki" 
@@ -63,7 +66,8 @@ Step four: browser-based setup
   tiki-install.php (e.g. http://localhost/tiki/tiki-install.php)
 * Follow the instructions there
   you'll need the password and user name for your database 
-* To log into Tiki for the first time:
+* use a profile to populate your database.
+* To log into TikiWiki for the first time:
   - user: admin
   - password: admin
 
@@ -71,9 +75,8 @@ Step four: browser-based setup
 ------------------------------
 Step five: configure your site
 ------------------------------
-Next you can configure Tiki to suit your needs:
+Next you can configure TikiWiki to suit your needs:
 
-* Use a profile to populate your database.
 * Choose which features you want enabled
   - go to tiki-admin.php by clicking on the "Admin" or "Admin Home" link
   on the left side of your screen 
@@ -102,9 +105,6 @@ IMPORTANT LINKS
 * Themes & styling
   http://themes.tikiwiki.org
 
-* Profiles
-  http://profiles.tikiwiki.org
-  
 * Security
   http://security.tikiwiki.org
 
@@ -114,5 +114,5 @@ IMPORTANT LINKS
 
 
 ps:
-Now you may want to come to http://tikiwiki.org and join the community!
+Now you may want to come to http://www.tikiwiki.org and join the community!
 

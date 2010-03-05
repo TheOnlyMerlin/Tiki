@@ -1,14 +1,14 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+
 // $Id$
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for
+// details.
 
 // Should generally be instantiated from tiki-setup.php
 
-class TWVersion
-{
+class TWVersion {
 	var $branch;		// Development cycle
 	var $version;		// This version
 	private $latestMinorRelease;		// Latest release in the same major version release series
@@ -22,12 +22,12 @@ class TWVersion
 		// Set the development branch.  Valid are:
 		//   stable   : Represents stable releases.
 		//   unstable : Represents candidate and test/development releases.
-		//   trunk     : Represents next generation development version.
-		$this->branch 	= 'trunk';
+		//   head     : Represents next generation development version.
+		$this->branch 	= 'stable';
 
 		// Set everything else, including defaults.
-		$this->version 	= '5.0';
-		$this->star	= '';
+		$this->version 	= '4.2';
+		$this->star	= 'Aldebaran';
 		$this->releases	= array();
 
 		// Check for Subversion or not
@@ -106,10 +106,13 @@ class TWVersion
 				'3.1',
 				'3.2',
 				'3.3',
+				'3.4',
+				'3.5',
 				'4.0beta1',
 				'4.0RC1',
 				'4.0',
-				'4.1'
+				'4.1',
+				'4.2',
 				);
 	}
 

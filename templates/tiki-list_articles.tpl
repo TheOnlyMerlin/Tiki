@@ -14,16 +14,13 @@
 </div>
 
 {if $listpages or ($find ne '') or ($types ne '') or ($topics ne '') or ($lang ne '') or ($categId ne '')}
-	{include file='find.tpl' find_show_languages='y' find_show_categories_multi='y' find_show_num_rows='y' find_show_date_range='y'}
+	{include file='find.tpl' find_show_languages='y' find_show_categories='y' find_show_num_rows='y'}
 {/if}
 
 <table class="normal">
 	<tr>
 		{if $prefs.art_list_title eq 'y'}
 			<th>{self_link _sort_arg='sort_mode' _sort_field='title'}{tr}Title{/tr}{/self_link}</th>
-		{/if}
-		{if $prefs.art_list_id eq 'y'}
-			<th>{tr}Id{/tr}</th>
 		{/if}
 		{if $prefs.art_list_type eq 'y'}	
 			<th>{self_link _sort_arg='sort_mode' _sort_field='type'}{tr}Type{/tr}{/self_link}</th>
@@ -80,9 +77,6 @@
 						</a>
 					{/if}
 				</td>
-			{/if}
-			{if $prefs.art_list_id eq 'y'}
-				<td class="{cycle advance=false}">{$listpages[changes].articleId}</td>
 			{/if}
 			{if $prefs.art_list_type eq 'y'}	
 				<td class="{cycle advance=false}">{tr}{$listpages[changes].type|escape}{/tr}</td>

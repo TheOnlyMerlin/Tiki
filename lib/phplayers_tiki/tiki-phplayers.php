@@ -1,12 +1,6 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-class TikiPhplayers extends TikiLib
-{
+// $Id: /cvsroot/tikiwiki/tiki/lib/phplayers_tiki/tiki-phplayers.php,v 1.19.2.5 2008-02-27 15:18:45 nyloth Exp $
+class TikiPhplayers extends TikiLib {
 	/* Build the input to the phplayers lib for a category tree  */
 	function mkCatEntry($categId, $indent="", $back, $categories, $urlEnd, $tpl='') {
 		global $smarty, $prefs, $categlib;
@@ -76,7 +70,7 @@ class TikiPhplayers extends TikiLib
 		if (preg_match('/.*tiki.index.php$/', $url)) {
 			$url .= "?page=$homePage";
 		} elseif (preg_match('/tiki-index.php/', $url)) {
-			$url = ($url);
+			$url = strtolower($url);
 		}
 		$realKey = 0;
 		$level = 0;
@@ -106,7 +100,7 @@ class TikiPhplayers extends TikiLib
 					$cd['url'] .= "?page=$homePage";
 				}
 				if (preg_match('/tiki-index.php/', $cd['url'])) {
-					$cd['url'] = ($cd['url']);
+					$cd['url'] = strtolower($cd['url']);
 				}
 				if (($pos = strpos($url, $cd['url'])) !== false && ($pos == 0 || $url[$pos -1] == '/' || $url[$pos - 1] == '\\' || $url[$pos-1] == '=')) {
 					$last = $pos + strlen($cd['url']);

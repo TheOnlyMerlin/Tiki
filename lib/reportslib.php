@@ -1,12 +1,6 @@
 <?php 
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
-class reportsLib extends TikiLib
-{
+class reportsLib extends TikiLib{
 
 	//Sends the Email
 	public function sendEmail($user_data, $report_preferences, $report_cache, $tikiUrl) {

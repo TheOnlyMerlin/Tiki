@@ -1,15 +1,18 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+// $Id: /cvsroot/tikiwiki/tiki/tiki-calendar_edit_item.php,v 1.21.2.4 2008-01-17 15:53:26 tombombadilom Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 $section = 'calendar';
 require_once ('tiki-setup.php');
 
-$access->check_feature('feature_calendar');
-$access->check_permission('tiki_p_admin_calendar');
+if ($prefs['feature_calendar'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_calendar");
+	$smarty->display("error.tpl");
+	die;
+}
 
 include_once ('lib/calendar/calendarlib.php');
 include_once ('lib/categories/categlib.php');

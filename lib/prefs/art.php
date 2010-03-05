@@ -1,22 +1,7 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 function prefs_art_list() {
 	return array(
-		'art_home_title' => array(
-			'name' => tra('Title of articles home page'),
-			'type' => 'list',
-			'options' => array(
-				'' => '',
-				'topic' => tra('Topic'),
-				'type' => tra('Type'),
-				'articles' => tra('Articles'),
-			),
-		),
 		'art_list_title' => array(
 			'name' => tra('Title'),
 			'type' => 'flag',
@@ -69,10 +54,6 @@ function prefs_art_list() {
 		),
 		'art_list_img' => array(
 			'name' => tra('Images'),
-			'type' => 'flag',
-		),
-		'art_list_id' => array(
-			'name' => tra('Id'),
 			'type' => 'flag',
 		),
 	);

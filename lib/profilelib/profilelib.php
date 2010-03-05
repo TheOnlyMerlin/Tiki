@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 require_once( 'lib/Horde/Yaml.php' );
 require_once( 'lib/Horde/Yaml/Loader.php' );
 require_once( 'lib/Horde/Yaml/Node.php' );
@@ -25,29 +19,10 @@ class Tiki_Profile
 	public $pageContent = null;
 	private $data = array();
 
-	private $feedback = array();
-
 	private $objects = null;
 
 	private static $known = array();
 	private static $resolvePrefix = null;
-
-	function setFeedback( $feed ) // {{{
-	{
-		if (is_array( $feed )) {
-			$this->feedback = $feed;
-		} else {
-			$this->feedback[] = $feed;
-		}
-	} // }}}
-	function getFeedback( $index = null ) // {{{
-	{
-		if (! is_null( $index ) && $index < count($this->feedback) ) {
-			return $this->feedback[ $index ];
-		} else {
-			return $this->feedback;
-		}
-	} // }}}
 
 	public static function convertLists( $data, $conversion, $prependKey = false ) // {{{
 	{
@@ -295,15 +270,6 @@ class Tiki_Profile
 
 	public function getPageContent( $pageName ) // {{{
 	{
-		if ($this->domain == 'tiki://local') {
-			global $tikilib;
-			$info = $tikilib->get_page_info($pageName);
-			if (empty($info)) {
-				$this->setFeedback(tra('Page cannot be found').' '.$pageName);
-				return null;
-			}
-			return $info['data'];
-		}
 		$exportUrl = dirname( $this->url ) . '/tiki-export_wiki_pages.php?'
 			. http_build_query( array( 'page' => $pageName ) );
 
@@ -373,10 +339,9 @@ class Tiki_Profile
 				$array = array_merge( $array, $this->traverseForReferences( $v ) );
 		elseif( preg_match( self::SHORT_PATTERN, $value, $parts ) )
 			$array[] = $this->convertReference( $parts );
-		elseif( preg_match_all( self::LONG_PATTERN, $value, $parts, PREG_SET_ORDER ) ) {
+		elseif( preg_match_all( self::LONG_PATTERN, $value, $parts, PREG_SET_ORDER ) )
 			foreach( $parts as $row )
 				$array[] = $this->convertReference( $row );
-		}
 
 		return $array;
 	} // }}}
@@ -597,10 +562,8 @@ class Tiki_Profile
 			if( isset( $data['objects'] ) )
 				foreach( $data['objects'] as $o )
 				{
-					if( !isset($o['type'], $o['id']) ) {
-						$this->setFeedback(tra('Syntax error: ').tra("Permissions' object must have a field 'type' and 'id'"));
+					if( !isset($o['type'], $o['id']) )
 						continue;
-					}
 
 					$perms = Tiki_Profile::convertLists( $o, array( 'allow' => 'y', 'deny' => 'n' ), 'tiki_p_' );
 					$perms = Tiki_Profile::convertYesNo( $perms );
@@ -634,16 +597,8 @@ class Tiki_Profile
 			foreach( $this->data['objects'] as &$entry )
 			{
 				$o = new Tiki_Profile_Object( $entry, $this );
-				if( $o->isWellStructured() ) {
+				if( $o->isWellStructured() )
 					$objects[] = $o;
-				} else {
-					$str = '';
-					foreach ($entry as $k => $v) {
-						$str .= empty($str) ? '' : ', ';
-						$str .= "$k: $v";
-					}
-					$this->setFeedback(tra('Syntax error: ').$str."\n".tra("Needs a 'type' and 'data' field"));
-				}
 			}
 
 		$classified = array();
@@ -655,10 +610,8 @@ class Tiki_Profile
 		while( ! empty( $objects ) )
 		{
 			// Circular dependency found... give what we have
-			if( $counter++ > count($objects) * 2 ) {
-				$this->setFeedback(tra('Circular reference'));
+			if( $counter++ > count($objects) * 2 )
 				break;
-			}
 
 			$object = array_shift( $objects );
 			$refs = $object->getInternalReferences();
@@ -741,8 +694,7 @@ class Tiki_Profile_Object
 	
 	function isWellStructured() // {{{
 	{
-		$is =  isset( $this->data['type'], $this->data['data'] );
-		return $is;
+		return isset( $this->data['type'], $this->data['data'] );
 	} // }}}
 
 	function getType() // {{{

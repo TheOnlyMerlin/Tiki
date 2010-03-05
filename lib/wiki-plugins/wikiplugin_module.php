@@ -1,11 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-/*
+/* $Id: wikiplugin_module.php,v 1.33 2007-10-12 07:55:48 nyloth Exp $
 Displays a module inline in a wiki page
 
 Parameters
@@ -38,20 +32,6 @@ function wikiplugin_module_help() {
 }
 
 function wikiplugin_module_info() {
-	global $modlib, $smarty;
-	require_once ('lib/modules/modlib.php');
-
-	$all_modules = $modlib->get_all_modules();
-	$all_modules_info = array_combine( 
-		$all_modules, 
-		array_map( array( $modlib, 'get_module_info' ), $all_modules ) 
-	);
-	asort($all_modules_info);
-	$modules_options = array();
-	foreach($all_modules_info as $module => $module_info) {
-		$modules_options[] = array('text' => $module_info['name'] . ' (' . $module . ')', 'value' => $module);
-	}
-
 	return array(
 		'name' => tra('Insert Module'),
 		'documentation' => 'PluginModule',
@@ -64,7 +44,6 @@ function wikiplugin_module_info() {
 				'required' => true,
 				'name' => tra('Module Name'),
 				'description' => tra('Module name as known in Tikiwiki.'),
-				'options' => $modules_options
 			),
 			'float' => array(
 				'required' => false,
@@ -150,7 +129,6 @@ function wikiplugin_module($data, $params) {
 			'rows' => $max,
 			'position' => null,
 			'ord' => null,
-			'cache_time'=> 0,
 		);
 
 		global $modlib; require_once 'lib/modules/modlib.php';

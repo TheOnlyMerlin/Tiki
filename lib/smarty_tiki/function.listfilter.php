@@ -1,8 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 // this script may only be included - so it's better to die if called directly
@@ -66,7 +62,7 @@ function smarty_function_listfilter($params, &$smarty) {
 		if (!isset($selectors)) $selectors = ".$id table tr";
 			
 		$content = "
-\$jq('#$id').keypress( function() {
+\$jq('#$id').keyup( function() {
 	var criterias = this.value.toLowerCase().split( /\s+/ );
 	
 	\$jq('$selectors').each( function() {
@@ -96,7 +92,10 @@ function smarty_function_listfilter($params, &$smarty) {
 } );	// end keyup
 		";
 	
-		$headerlib->add_jq_onready($content);
+		$js = $headerlib->add_jq_onready($content);
+		if ($js) {
+			$input .= $js;
+		}
 		return $input;
 	}
 }

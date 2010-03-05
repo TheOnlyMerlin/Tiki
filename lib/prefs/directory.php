@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 function prefs_directory_list() {
 	return array(
@@ -14,10 +9,12 @@ function prefs_directory_list() {
 		),
 		'directory_cool_sites' => array(
 			'name' => tra('Enable cool sites'),
+			'description' => tra(''),
 			'type' => 'flag',
 		),
 		'directory_validate_urls' => array(
 			'name' => tra('Validate URLs'),
+			'description' => tra(''),
 			'type' => 'flag',
 		),
 		'directory_columns' => array(
@@ -35,6 +32,7 @@ function prefs_directory_list() {
 			),
 		'directory_links_per_page' => array(
 			'name' => tra('Links per page'),
+			'description' => tra(''),
 			'type' => 'text',
 			),
 		'directory_open_links' => array(

@@ -1,20 +1,26 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-survey_stats_survey.php,v 1.16 2007-10-12 07:55:32 nyloth Exp $
 $section = 'surveys';
 require_once ('tiki-setup.php');
 include_once ('lib/surveys/surveylib.php');
+if ($prefs['feature_surveys'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_surveys");
+	$smarty->display("error.tpl");
+	die;
+}
 
-$access->check_feature('feature_surveys');
+$tikilib->get_perm_object($_REQUEST["surveyId"], 'survey');
 
-$tikilib->get_perm_object($_REQUEST['surveyId'], 'survey');
-
-$access->check_permission('tiki_p_view_survey_stats');
-
+if ($tiki_p_view_survey_stats != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST["surveyId"])) {
 	$smarty->assign('msg', tra("No survey indicated"));
 	$smarty->display("error.tpl");

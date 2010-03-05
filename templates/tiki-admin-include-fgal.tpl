@@ -45,19 +45,34 @@
 	</div>
 </div>
 
+{*
 	{preference name='fgal_use_db'}
 	<div class="adminoptionboxchild" id="fgal_use_db_childcontainer_1">
 		 {preference name='fgal_use_dir'}
 	</div>
+*}
 	{button href="tiki-admin.php?page=fgal&amp;move=to_fs" _text="{tr}Move files from database to directory{/tr}"}
 	{button href="tiki-admin.php?page=fgal&amp;move=to_db" _text="{tr}Move files from directory to database{/tr}"}
+
+<div class="adminoptionbox">
+	<div class="adminoptionlabel"><input type="radio" id="fgal_use_db1" name="fgal_use_db" value="y"
+              {if $prefs.fgal_use_db eq 'y'}checked="checked"{/if} onclick="flip('storeinfile');" /><label for="fgal_use_db1">{tr}Store in database{/tr}.</label></div>
+	<div class="adminoptionlabel"><input type="radio" id="fgal_use_db2" name="fgal_use_db" value="n"
+            {if $prefs.fgal_use_db eq 'n'}checked="checked"{/if} onclick="flip('storeinfile');" /><label for="fgal_use_db2">{tr}Store in directory{/tr}.</label></div>
+
+<div class="adminoptionboxchild" id="storeinfile" style="display:{if $prefs.fgal_use_db eq 'y'}none{else}block{/if};">
+	<div class="adminoptionlabel"><label for="fgal_use_dir">{tr}Path{/tr}:</label> <input type="text" id="fgal_use_dir" name="fgal_use_dir" value="{$prefs.fgal_use_dir|escape}" size="50" />
+	<br /><em>{tr}The server must be able to read/write the directory.{/tr} {tr}The directory can be outside the web space.{/tr}</em>
+	</div>
+</div>
+</div>
 
 	{preference name='fgal_podcast_dir'}
 
 <input type="hidden" name="filegalfeatures" />
 
 <fieldset>
-	<legend>{tr}Features{/tr}{help url="File+Gallery+Config"}</legend>
+	<legend>{tr}Features{/tr}{if $prefs.feature_help eq 'y'} {help url="File+Gallery+Config"}{/if}</legend>
 
 	{preference name='feature_file_galleries_rankings'}
 
@@ -85,7 +100,7 @@
 </fieldset>
 
 <fieldset>
-	<legend>{tr}Quota{/tr}{help url="File+Gallery+Config#Quota"}</legend>
+	<legend>{tr}Quota{/tr}{if $prefs.feature_help eq 'y'} {help url="File+Gallery+Config#Quota"}{/if}</legend>
 	{preference name='fgal_quota'}{tr}Used:{/tr} {$usedSize|kbsize}
 	<div class="adminoptionboxchild" id="fgal_quota_childcontainer">
 		{if !empty($prefs.fgal_quota)}
@@ -100,7 +115,7 @@
 </fieldset>
 
 <fieldset>
-	<legend>{tr}Upload Regex{/tr}{help url="File+Gallery+Config#Filename_must_match:"}</legend>
+	<legend>{tr}Upload Regex{/tr}{if $prefs.feature_help eq 'y'} {help url="File+Gallery+Config#Filename_must_match:"}{/if}</legend>
 	{preference name='fgal_match_regex'}
 	{preference name='fgal_nmatch_regex'}
 </fieldset>
@@ -126,7 +141,6 @@
 	</div>
 </div>
 	{preference name='fgal_quota_show'}
-	{preference name='fgal_search_in_content'}
 
 <div class="adminoptionbox">
 	<div class="adminoptionlabel">{tr}Select which items to display when listing galleries: {/tr}:</div>
@@ -144,7 +158,7 @@
 
 <input name="filegalhandlers" type="hidden" />
 <div class="adminoptionbox">
-<fieldset><legend>{tr}Handlers{/tr}{help url="File+Gallery+Config#File_galleries_search_indexing"}</legend>
+<fieldset><legend>{tr}Handlers{/tr}{if $prefs.feature_help eq 'y'} {help url="File+Gallery+Config#File_galleries_search_indexing"}{/if}</legend>
 <div class="adminoptionbox">
 	<div class="adminoptionlabel">{tr}Add custom handlers to make your files &quot;searchable&quot; content{/tr}.
     <ul>
@@ -153,14 +167,6 @@
    </ul>
 	</div>
 </div>
-
-{if !empty($missingHandlers)}
-{remarksbox type=warning title='{tr}Missing Handlers{/tr}'}
-{foreach from=$missingHandlers item=mime}
-	{$mime|escape}<br />
-{/foreach}
-{/remarksbox}
-{/if}
 
 <div class="adminoptionbox">
 	<div class="adminoptionlabel">

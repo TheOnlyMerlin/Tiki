@@ -1,10 +1,5 @@
 <?php
 
-/** 
- * @group unit
- * 
- */
-
 class Perms_BaseTest extends TikiTestCase
 {
 	function testWithoutConfiguration() {
@@ -31,13 +26,6 @@ class Perms_BaseTest extends TikiTestCase
 		$accessor = Perms::get( array( 'context' ) );
 
 		$this->assertEquals( array( 'context' ), $accessor->getContext() );
-	}
-
-	function testWithoutArrayContext() {
-		$expect = Perms::get( array( 'type' => 'wiki page', 'object' => 'HomePage' ) );
-		$accessor = Perms::get( 'wiki page', 'HomePage' );
-
-		$this->assertEquals( $expect, $accessor );
 	}
 
 	/**

@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -14,6 +9,8 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 /**
  * \brief Smarty modifier plugin to create user links with optional mouseover info
  * 
+ * $Id$
+ *
  * - type:     modifier
  * - name:     userlink
  * - purpose:  to return a user link
@@ -33,6 +30,8 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 function smarty_modifier_userlink($other_user,$class='link',$idletime='not_set', $fullname='', $max_length=0) {
 	global $tikilib, $userlib, $cachelib, $user, $prefs, $userprefslib;
 
+	$cachePeriod = 60*60*2; // how long does an entry stay in the cache for?  2hr
+
 	$show_mouseover = $prefs['feature_community_mouseover'] == 'y' && $userlib->get_user_preference($user, 'show_mouseover_user_info','y') == 'y';
 	$show_friends = $prefs['feature_friends'] == 'y' && $tikilib->verify_friendship($user, $other_user);
 
@@ -41,9 +40,13 @@ function smarty_modifier_userlink($other_user,$class='link',$idletime='not_set',
 	} else {
 		$cacheItem = 'userlink.'.$other_user.$fullname.$max_length;
 	}
-
-	if( $cached = $cachelib->getCached( $cacheItem ) ) {
-		return $cached;
+	$cacheDate = $cachelib->getCachedDate($cacheItem);
+	if( $cacheDate ) {
+		if( (time() - $cacheDate) < $cachePeriod ) {
+			return $cachelib->getCached($cacheItem);
+		} else {
+			$cachelib->invalidate($cacheItem);
+		}
 	}
 
 	$star = '';
@@ -145,8 +148,13 @@ function smarty_modifier_userlink($other_user,$class='link',$idletime='not_set',
 			}
 
 			if ($prefs['feature_community_mouseover_picture'] == 'y') {
-				$img = $tikilib->get_user_avatar( $info );
-
+				if ($info['avatarLibName'] != '') {
+					$img = "<img border='0' width='45' height='45' src='" . $info['avatarLibName']. "'  alt='' />";
+				} else if ($info['avatarData'] != "") {
+					$img = "<img src='tiki-show_user_avatar.php?user=$other_user' width='45' height='45' alt='' />";
+				} else {
+					$img = '';
+				}
 				if (empty($content)) {
 					$content = $img;
 				} elseif ($img != '') {
@@ -161,13 +169,9 @@ function smarty_modifier_userlink($other_user,$class='link',$idletime='not_set',
 		}
 
 
-		if(empty($prefs['urlOnUsername'])) {
-			$url = 'tiki-user_information.php?userId='.urlencode($info['userId']);
-		} else {
-			$url = preg_replace(array('/%userId%/', '/%user%/'), array($info['userId'], $info['login']),  $prefs['urlOnUsername']);
-		}
+		$url = empty($prefs['urlOnUsername'])? 'tiki-user_information.php?userId='.urlencode($info['userId']): $prefs['urlOnUsername'];
 		if (is_numeric($idletime) && empty($mouseover)) {
-			$ret = "<a class=\"$class\" target=\"_top\" href=\"{$url}\" title=\"".tr('More info about %0 (idle for %1)', $ou, $idletime.tra(' seconds'))."\">$ou</a>$friend$star";
+			$ret = "<a class='$class' target='_top' href='{$url}' title='".tra('More info about $other_user')." ".tra('(idle for $idletime seconds)')."'>$ou</a>$friend$star";
 			$cachelib->cacheItem($cacheItem, $ret);
 			return $ret;
 		} else {

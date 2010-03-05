@@ -1,18 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+// $Id$
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-// If you put some traces in this script, and can't see them
-// because the script automatically forwards to another URL
-// with a call to header(), then you will not see the traces
-// If you want to see the traces, set value below to true.
-// WARNING: DO NOT COMMIT WITH TRUE!!!!
-$dieInsteadOfForwardingWithHeader = false;
-$tracesOn = false;
-
+// Initialization
 
 $inputConfiguration = array(
 	array( 'staticKeyFilters' => array(
@@ -36,112 +27,16 @@ if ($prefs['feature_ajax'] == 'y') {
 }
 require_once ("lib/wiki/editlib.php");
 
-
-function create_staging($cats, $cat_type, $cat_name, $cat_objid, $edit, $description, $pageLang, $is_html, $hash, $page, $user) {
-	global $tikilib, $multilinguallib, $categlib, $prefs;
-
-	// need to automatically create actual staging page on first approval of staging 
-	if ($prefs["feature_wikiapproval"] == 'y' && $cat_type == 'wiki page'		
-		&& $prefs['wikiapproval_approved_category'] > 0 && in_array($prefs['wikiapproval_approved_category'], $_REQUEST['cat_categories'])
-		&& !$tikilib->page_exists($prefs['wikiapproval_prefix'].$cat_objid) ) {
-		$tikilib->create_page($prefs['wikiapproval_prefix'].$_REQUEST["page"], 0, $edit, $tikilib->now, $_REQUEST["comment"],$user,$tikilib->get_ip_address(),$description, $pageLang, $is_html, $hash);
-		$newstaging_cats = $cats;
-		$newstaging_cat_name = $prefs['wikiapproval_prefix'].$cat_name;
-		$newstaging_cat_objid = $prefs['wikiapproval_prefix'].$cat_objid;
-		$newstaging_cat_href="tiki-index.php?page=".urlencode($prefs['wikiapproval_prefix'].$cat_objid);
-		if ($prefs['wikiapproval_staging_category'] > 0) $newstaging_cats[] = $prefs['wikiapproval_staging_category'];
-		if ($prefs['wikiapproval_approved_category'] > 0 && in_array($prefs['wikiapproval_approved_category'], $newstaging_cats)) {	
-			$newstaging_cats = array_diff($newstaging_cats,Array($prefs['wikiapproval_approved_category']));	
-		}
-		$categlib->update_object_categories($newstaging_cats, $newstaging_cat_objid, $cat_type, $cat_desc, $newstaging_cat_name, $newstaging_cat_href);
-		//now to link in translations if any
-		if ($prefs['feature_multilingual'] == 'y') {
-			include_once("lib/multilingual/multilinguallib.php");
-			$oldstaging_pageid = $tikilib->get_page_id_from_name($page);
-			$oldstaging_trads = $multilinguallib->getTrads('wiki page', $oldstaging_pageid);
-			foreach ($oldstaging_trads as $ost) {
-				$oldstaging_tradname = $prefs['wikiapproval_prefix'] . $tikilib->get_page_name_from_id($ost["objId"]);
-				if ($ost["lang"] != $pageLang && $tikilib->page_exists($oldstaging_tradname)) {
-					$multilinguallib->insertTranslation('wiki page', $tikilib->get_page_id_from_name($prefs['wikiapproval_prefix'].$page), $pageLang, $tikilib->get_page_id_from_name($oldstaging_tradname), $ost["lang"]);
-					break;
-				}
-			}
-		}	
-	}
-}
-
-function guess_new_page_attributes_from_parent_pages($page, $page_info) {
-	global $editlib, $smarty, $_REQUEST, $tikilib, $prefs, $need_lang;
-	if (!$page_info) {
-		//
-		// This is a new page being created. See if we can guess some of its attributes
-		// (ex: language) based on those of its parent pages.
-		//
-		$new_page_inherited_attributes = 
-			$editlib->get_new_page_attributes_from_parent_pages($page, $page_info);
-		if ($editlib->user_needs_to_specify_language_of_page_to_be_created($page, $page_info)
-		    && isset($new_page_inherited_attributes['lang'])) {
-		    // 
-		    // Language is not set yet, but it COULD be guessed from parent pages.
-		    // So, set it.
-		    //
-		    $_REQUEST['lang'] = $new_page_inherited_attributes['lang'];
-		} 
-		if ($editlib->user_needs_to_specify_language_of_page_to_be_created($page, $page_info, $new_page_inherited_attributes)) {
-			// 
-			// Language of new page was not defined, and could not be guessed from the
-			// parent pages. User will have to specify it explicitly.
-			//
-			$languages = $tikilib->list_languages(false, true);
-			$smarty->assign('languages', $languages);
-			$smarty->assign('default_lang', $prefs['language']);
-			$need_lang = true;
-			$smarty->assign('_REQUEST', $_REQUEST);
-		}
-	}
-}
-
-function translationsToThisPageAreInProgress($page_id) {
-	global $multilinguallib;
-
-	include_once("lib/multilingual/multilinguallib.php");
-
-	$translations_in_progress = $multilinguallib->getTranslationsInProgressFlags($page_id);
-	$answer = count($translations_in_progress) > 0;
-	return $answer;
-
-}
-
-function execute_module_translation() { 
-	global $smarty;
-// will show the language of the available translations. Chnage to 'n' to show the page name
-	$params['show_language'] = 'y';
-// flag to indicate that the module is appearing within the notification area of the edit page
-	$params['from_edit_page'] = 'y';
-	$params['nobox'] = 'y';
-	$module_reference = array(
-		'name' => 'translation',
-			'params' => array( 'show_language' => $params['show_language'], 'from_edit_page' => $params['from_edit_page'], 'nobox' => $params['nobox'] )
-	);
-
-	global $modlib; require_once 'lib/modules/modlib.php';	
-
-	$out = $modlib->execute_module( $module_reference );
-	$smarty->assign('content_of_update_translation_section', $out);
-}
-
 // Define all templates files that may be used with the 'zoom' feature
-$zoom_templates = array('wiki_edit', 'tiki-editpage');
+$zoom_templates = array('wiki_edit');
 
-$access->check_feature('feature_wiki');
-
-if ($editlib->isNewTranslationMode() || $editlib->isUpdateTranslationMode()) {
-	$translation_mode = 'y';
-	include_once("lib/multilingual/multilinguallib.php");
-} else {
-	$translation_mode = 'n';
+if ($prefs['feature_wiki'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled').': feature_wiki');
+	$smarty->display('error.tpl');
+	die;
 }
-$smarty->assign('translation_mode', $translation_mode);
+
+$smarty->assign( 'translation_mode', ($editlib->isNewTranslationMode() || $editlib->isUpdateTranslationMode()) ?'y':'n' );
 
 // If page is blank (from quickedit module or wherever) tell user -- instead of editing the default page
 // Dont get the page from default HomePage if not set (surely this would always be an error?)
@@ -151,28 +46,14 @@ if (empty($_REQUEST["page"])) {
 	die;
 }
 
-if ( ( $stagingPage = $tikilib->get_staging_page( $_REQUEST['page'] ) ) && ($prefs['wikiapproval_master_group'] != '-1') && !in_array($prefs['wikiapproval_master_group'], $tikilib->get_user_groups($user))) {
-	$_REQUEST['page'] = $stagingPage;
+if ($prefs['feature_wikiapproval'] == 'y' && substr($_REQUEST['page'], 0, strlen($prefs['wikiapproval_prefix'])) != $prefs['wikiapproval_prefix'] && !empty($prefs['wikiapproval_master_group']) && !in_array($prefs['wikiapproval_master_group'], $tikilib->get_user_groups($user))) {
+	$_REQUEST['page'] = $prefs['wikiapproval_prefix'] . $_REQUEST['page'];
 }
 
 $page = $_REQUEST["page"];
-$smarty->assign('page', $page);
 $info = $tikilib->get_page_info($page);
 
-// 2010-01-26: Keep in active until translation refactoring is done.
- if ($editlib->isNewTranslationMode() || $editlib->isUpdateTranslationMode()) {
- 	$editlib->prepareTranslationData();
- }
 $editlib->make_sure_page_to_be_created_is_not_an_alias($page, $info);
-guess_new_page_attributes_from_parent_pages($page, $info);
- 
-if ($translation_mode == 'n' && translationsToThisPageAreInProgress($info['page_id'])) {
-	$smarty->assign('prompt_for_edit_or_translate', 'y');
-	include_once('modules/mod-func-translation.php');
-	execute_module_translation();	
-} else {
-	$smarty->assign('prompt_for_edit_or_translate', 'n');
-}
 
 // wysiwyg decision
 include 'lib/setup/editmode.php';
@@ -245,8 +126,8 @@ function compare_import_versions($a1, $a2) {
 }
 
 if (isset($_REQUEST['cancel_edit'])) {
-	if ( ($approved = $tikilib->get_approved_page($page) ) && !$tikilib->page_exists($page)) {
-		$approvedPageName = $approved;
+	if ($prefs['feature_wikiapproval'] == 'y' && substr($page, 0, strlen($prefs['wikiapproval_prefix'])) == $prefs['wikiapproval_prefix'] && !$tikilib->page_exists($page)) {
+		$approvedPageName = substr($page, strlen($prefs['wikiapproval_prefix']));
 		$page = $approvedPageName;
 	}
 
@@ -260,7 +141,6 @@ if (isset($_REQUEST['cancel_edit'])) {
 		$url .= '&bl=n';
 	}
 
-	if ($dieInsteadOfForwardingWithHeader) die ("-- tiki-editpage: Dying before first call to header(), so we can see traces. Forwarding to: \$url='$url'");
 	header($url);
 	die;
 }
@@ -441,8 +321,8 @@ if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_na
 						include_once("lib/multilingual/multilinguallib.php");
 						unset( $tikilib->cache_page_info );
 
-						if ( $approved = $this->get_approved_page($page) ) {
-							$oldpage = $approved;
+						if ($prefs['feature_wikiapproval'] == 'y' && substr($page, 0, strlen($prefs['wikiapproval_prefix'])) == $prefs['wikiapproval_prefix']) {
+							$oldpage = substr($page, strlen($prefs['wikiapproval_prefix']));
 							$oldpageid = $tikilib->get_page_id_from_name($oldpage);
 							$oldtrads = $multilinguallib->getTrads('wiki page', $oldpageid);
 							foreach ($oldtrads as $ot) {
@@ -455,17 +335,30 @@ if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_na
 						}
 
 						if( $editlib->isNewTranslationMode() ) {
-							if ($editlib->aTranslationWasSavedAs('complete')) {
-								$editlib->saveCompleteTranslation();
-							} else if ($editlib->aTranslationWasSavedAs('partial')) {
-								$editlib->savePartialTranslation();
+							$sourceInfo = $tikilib->get_page_info( $_REQUEST['translationOf'] );
+							$targetInfo = $tikilib->get_page_info( $pagename );
+
+							if( !isset($_REQUEST['partial_save']) ) {
+								$multilinguallib->propagateTranslationBits( 
+										'wiki page',
+										$sourceInfo['page_id'],
+										$targetInfo['page_id'],
+										$sourceInfo['version'],
+										$targetInfo['version'] );
 							}
+
 						} elseif( $editlib->isUpdateTranslationMode() ) {
-							if ($editlib->aTranslationWasSavedAs('complete')) {
-								$editlib->saveCompleteTranslation();
-							} else if ($editlib->aTranslationWasSavedAs('partial')) {
-								$editlib->savePartialTranslation();
+							$targetInfo = $tikilib->get_page_info( $pagename );
+
+							if( !isset($_REQUEST['partial_save']) ) {
+								$multilinguallib->propagateTranslationBits( 
+										'wiki page',
+										$_REQUEST['source_page'],
+										$targetInfo['page_id'],
+										(int) $_REQUEST['newver'],
+										$targetInfo['version'] );
 							}
+
 						} else {
 							$info = $tikilib->get_page_info( $pagename );
 							$flags = array();
@@ -501,8 +394,6 @@ if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_na
 		if ($prefs['feature_best_language'] == 'y') {
 			$url .= '&bl=n';
 		}
-
-		if ($dieInsteadOfForwardingWithHeader) die ("-- tiki-editpage: Dying before second call to header(), so we can see traces. Forwarding to: '$url'");
 		header("location: $url");
 		die;
 	}
@@ -627,23 +518,14 @@ if ($prefs['feature_wiki_footnotes'] == 'y') {
 		}
 	}
 }
-if ((isset($_REQUEST["template_name"]) || isset($_REQUEST["templateId"])) && !isset($_REQUEST['preview']) && !isset($_REQUEST['save'])) {
-	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$templateLang = isset( $_REQUEST['lang'] ) ? $_REQUEST['lang'] : null;
-
-	if (isset($_REQUEST["templateId"]))  {
-		$templateId = $_REQUEST["templateId"];
-	} else {
-		include_once ('lib/multilingual/multilinguallib.php');
-		$templateId = $multilinguallib->getTemplateIDInLanguage('wiki', $_REQUEST["template_name"], $templateLang);
-	}
-	$template_data = $templateslib->get_template($templateId, $templateLang);
+if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0 && !isset($_REQUEST['preview']) && !isset($_REQUEST['save'])) {
+	$template_data = $tikilib->get_template($_REQUEST["templateId"]);
 	$_REQUEST["edit"] = $template_data["content"]."\n".$_REQUEST["edit"];
-	$smarty->assign("templateId", $templateId);
+	$smarty->assign("templateId", $_REQUEST["templateId"]);
 }
 
 if (isset($_REQUEST["categId"]) && $_REQUEST["categId"] > 0) {
-	$categs = explode('+',$_REQUEST["categId"]);
+	$categs = split("\+",$_REQUEST["categId"]);
 	$smarty->assign('categIds',$categs);
 	$smarty->assign('categIdstr',$_REQUEST["categId"]);
 } else {
@@ -680,9 +562,9 @@ if(isset($_REQUEST["edit"])) {
 		} else {
 			$edit_data = $info['data'];
 		}
-	} elseif ( ($approved = $tikilib->get_approved_page($page)) && !$tikilib->page_exists($page)) {
+	} elseif ($prefs['feature_wikiapproval'] == 'y' && substr($page, 0, strlen($prefs['wikiapproval_prefix'])) == $prefs['wikiapproval_prefix'] && !$tikilib->page_exists($page)) {
 	// Handle first creation of staging copy 
-	$oldpage = $approved;
+	$oldpage = substr($page, strlen($prefs['wikiapproval_prefix']));	
 	// Get page data
 		if ($tikilib->page_exists($oldpage)) {
 			$oldinfo = $tikilib->get_page_info($oldpage);
@@ -790,18 +672,86 @@ if (isset($_REQUEST["lang"])) {
 }
 
 $smarty->assign('lang', $pageLang);
-if( $prefs['feature_urgent_translation'] == 'y' ) {
-	$urgent_allowed = true;
-	if( $prefs['feature_urgent_translation_master_only'] == 'y' && $pageLang != $prefs['site_language'] ) {
-		$urgent_allowed = false;
-	}
-	$smarty->assign( 'urgent_allowed', $urgent_allowed );
-}
 if( isset( $_REQUEST['translation_critical'] ) ) {
 	$smarty->assign( 'translation_critical', 1 );
 } else {
 	$smarty->assign( 'translation_critical', 0 );
 }
+
+// Screencasts {{{
+if (($prefs['feature_wiki_screencasts'] == 'y') && (isset($tiki_p_upload_screencast)) && ($tiki_p_upload_screencast == 'y')) {
+	if ( !isset($headerlib) || !is_object($headerlib) ) {
+		include_once("lib/headerlib.php");
+	}
+	$headerlib->add_jsfile('lib/wikiplugin_screencast.js');
+
+	require_once("lib/screencasts/screencastlib.php");
+
+	if ( !isset($cachelib) || !is_object($cachelib) )
+		require_once("lib/cache/cachelib");
+
+	// Get a page hash identical to what images are assigned
+	$pageHash = md5( $pageLang . '/' . ( (strpos($page,$prefs['wikiapproval_prefix'])===0) ? substr($page,1) : $page) );
+	$hashedFileName = join('-', array($pageHash, time(), rand(1,1000)));
+
+	$screencastErrors = array();
+
+	if ( isset($_FILES['flash_screencast']) ) {
+		$cachelib->invalidate($pageHash);
+
+		for ( $i = 0; $i <= count($_FILES['flash_screencast']['name']); $i++ ) {
+
+			if ( $_FILES['flash_screencast']['size'][$i] > $prefs['feature_wiki_screencasts_max_size'] ||
+					$_FILES['flash_screencast']['error'][$i] == 1 || $_FILES['flash_screencast']['error'][$i] == 2 ) {
+
+				$screencastErrors[] = tra("The file you selected is too large to upload") . ' (' . htmlentities($_FILES['flash_screencast']['name'][$i], ENT_QUOTES) . ')';
+				continue;
+			}
+
+			if ( is_uploaded_file($_FILES['flash_screencast']['tmp_name'][$i]) ) {
+				if ( preg_match("/\.((swf)|(flv))$/", $_FILES['flash_screencast']['name'][$i], $ext) ) {
+					if ( !$screencastlib->add($_FILES['flash_screencast']['tmp_name'][$i], $hashedFileName . "-" . $i . "." . $ext[1] ) ) {
+						$screencastErrors[] = tra("An unexpected error occurred while uploading your flash screencast!");
+					}
+				} else {
+					$screencastErrors[] = tra("Incorrect file extension was used for your flash screencast, expecting .swf or .flv");     
+				}
+
+				if ( isset($_FILES['ogg_screencast']) && $_FILES['ogg_screencast']['name'][$i]) {
+					if ( $_FILES['ogg_screencast']['size'][$i] >= $prefs['feature_wiki_screencasts_max_size'] ||
+						$_FILES['ogg_screencast']['error'][$i] == 1 || $_FILES['ogg_screencast']['error'][$i] == 2 ) {
+
+						$screencastErrors[] = tra("The file you selected is too large to upload") . ' (' . htmlentities($_FILES['ogg_screencast']['name'][$i], ENT_QUOTES) . ')';
+							continue;
+					}
+
+					if ( is_uploaded_file($_FILES['ogg_screencast']['tmp_name'][$i]) ) { 
+						if ( preg_match("/\.(ogg)$/", $_FILES['ogg_screencast']['name'][$i], $ext) ) {
+							if ( !$screencastlib->add($_FILES['ogg_screencast']['tmp_name'][$i], $hashedFileName . "-" . $i . "." .  $ext[1])) {
+								$screencastErrors[] = tra("An unexpected error occurred while uploading your Ogg screencast!");
+							}
+						} else {
+							$screencastErrors[] = tra("Incorrect file extension was used for your 0gg screencast, expecting .ogg");
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if ( $cachelib->isCached($pageHash) ) {
+		$screencasts_uploaded = unserialize($cachelib->getCached($pageHash));
+	} else {
+		$screencasts_uploaded = $screencastlib->find($pageHash, true);
+		$cachelib->cacheItem($pageHash, serialize($screencasts_uploaded));
+	}
+
+	$smarty->assign('screencasts_uploaded', $screencasts_uploaded);
+
+	if ( count($screencastErrors) > 0 ) {
+		$smarty->assign('screencasts_errors', array_unique($screencastErrors));
+	}
+} // }}}
 
 // Parse (or not) $edit_data into $parsed
 // Handles switching editor modes
@@ -878,9 +828,9 @@ function parse_output(&$obj, &$parts,$i) {
 	}elseif( $obj['type'] == 'application/x-tikiwiki' ) {
 		$aux["body"] = $obj['body'];
 		$ccc=$obj['header']["content-type"];
-		$items = explode(';',$ccc);
+		$items = split(';',$ccc);
 		foreach($items as $item) {
-			$portions = explode('=',$item);
+			$portions = split('=',$item);
 			if(isset($portions[0])&&isset($portions[1])) {
 				$aux[trim($portions[0])]=trim($portions[1]);
 			}
@@ -904,27 +854,8 @@ if (isset($_REQUEST['save']) && $prefs['feature_categories'] == 'y' && $prefs['f
 	$smarty->assign('category_needed', 'y');
 } else {
 	$category_needed = false;
-}
-if (isset($_REQUEST['save']) && $prefs['wiki_mandatory_edit_summary'] == 'y' && empty($_REQUEST['comment']) ) {
-	$summary_needed = true;
-	$smarty->assign( 'summary_needed', 'y' );
-} else {
-	$summary_needed = false;
-}
-if ($prefs['wiki_mandatory_edit_summary'] == 'y') {
-	$headerlib->add_jq_onready('
-$jq("input[name=save],input[name=minor]").click(function(){
-	if (!$jq("#comment").val()) {
-		var s = prompt("'.tra('Describe the change you made').'");
-		if (!s) return false;
-		$jq("#comment").val(s);
-	}
-	return true;
-})
-');
-}
-
-if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) != 'sandbox' || $tiki_p_admin == 'y') && !$category_needed && !$contribution_needed && ! $summary_needed) {
+}	
+if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) != 'sandbox' || $tiki_p_admin == 'y') && !$category_needed && !$contribution_needed) {
 	check_ticket('edit-page');
 	// Check if all Request values are delivered, and if not, set them
 	// to avoid error messages. This can happen if some features are
@@ -976,8 +907,8 @@ if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) != 'sandbox' || $
 	// apply the optional page edit filters before data storage
 	$edit = $tikilib->apply_postedit_handlers($edit);
 	$exist = $tikilib->page_exists($_REQUEST['page']);
-	if( ! $exist && $prefs['wikiapproval_delete_staging'] == 'y' 
-		&& $approvedPageName = $tikilib->get_approved_page( $_REQUEST['page'] ) ) { //needs to create the first history = initial page for history
+	if (!$exist && $prefs['feature_wikiapproval'] == 'y' && $prefs['wikiapproval_delete_staging'] == 'y' && substr($_REQUEST['page'], 0, strlen($prefs['wikiapproval_prefix'])) == $prefs['wikiapproval_prefix']) { //needs to create the first history = initial page for history
+		$approvedPageName = substr($_REQUEST['page'], strlen($prefs['wikiapproval_prefix']));
 		if ($tikilib->page_exists($approvedPageName)) {
 			$wikilib->duplicate_page($approvedPageName, $_REQUEST['page']);
 			$exist = true;
@@ -999,8 +930,8 @@ if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) != 'sandbox' || $
 		if( $editlib->isNewTranslationMode() && ! empty( $pageLang ) )
 		{
 			include_once("lib/multilingual/multilinguallib.php");
-			$infoSource = $tikilib->get_page_info($editlib->sourcePageName);
-			$infoCurrent = $tikilib->get_page_info($editlib->targetPageName);
+			$infoSource = $tikilib->get_page_info($_REQUEST['translationOf']);
+			$infoCurrent = $tikilib->get_page_info($_REQUEST['page']);
 			if ($multilinguallib->insertTranslation('wiki page', $infoSource['page_id'], $infoSource['lang'], $infoCurrent['page_id'], $pageLang)){
 				$pageLang = $info['lang'];
 				$smarty->assign('msg', tra("The language can't be changed as its set of translations has already this language"));
@@ -1008,13 +939,11 @@ if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) != 'sandbox' || $
 				die;
 			}
 		}
-
-		create_staging($cats, $cat_type, $cat_name, $cat_objid, $edit, $description, $pageLang, $is_html, $hash, $page, $user);
-
 		if ($prefs['feature_multilingual'] == 'y') {
 			include_once("lib/multilingual/multilinguallib.php");
 
-			if ( $oldpage = $tikilib->get_approved_page( $page ) ) {
+			if ($prefs['feature_wikiapproval'] == 'y' && substr($page, 0, strlen($prefs['wikiapproval_prefix'])) == $prefs['wikiapproval_prefix']) {
+				$oldpage = substr($page, strlen($prefs['wikiapproval_prefix']));
 				$oldpageid = $tikilib->get_page_id_from_name($oldpage);
 				$oldtrads = $multilinguallib->getTrads('wiki page', $oldpageid);
 				foreach ($oldtrads as $ot) {
@@ -1028,11 +957,18 @@ if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) != 'sandbox' || $
 
 			unset( $tikilib->cache_page_info );
 			if( $editlib->isNewTranslationMode() ) {
-				if ($editlib->aTranslationWasSavedAs('complete')) {
-					$editlib->saveCompleteTranslation();
-				} else if ($editlib->aTranslationWasSavedAs('partial')) {
-					$editlib->savePartialTranslation();
+				$sourceInfo = $tikilib->get_page_info( $_REQUEST['translationOf'] );
+				$targetInfo = $tikilib->get_page_info( $_REQUEST['page'] );
+
+				if( !isset($_REQUEST['partial_save']) ) {
+					$multilinguallib->propagateTranslationBits( 
+							'wiki page',
+							$sourceInfo['page_id'],
+							$targetInfo['page_id'],
+							$sourceInfo['version'],
+							$targetInfo['version'] );
 				}
+
 			} else {
 				$info = $tikilib->get_page_info( $_REQUEST['page'] );
 				$multilinguallib->createTranslationBit( 'wiki page', $info['page_id'], 1 );
@@ -1066,20 +1002,26 @@ if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) != 'sandbox' || $
 			$edit = preg_replace('/<p>!(.*)<\/p>/u', "!$1\n", $edit);
 		}
 		$tikilib->update_page($_REQUEST["page"],$edit,$_REQUEST["comment"],$user,$tikilib->get_ip_address(),$description,$minor,$pageLang, $is_html, $hash, null, $_REQUEST['wysiwyg'], $wiki_authors_style);
-		create_staging($cats, $cat_type, $cat_name, $cat_objid, $edit, $description, $pageLang, $is_html, $hash, $page, $user);
 		$info_new = $tikilib->get_page_info($page);
 
 		// Handle translation bits
 		if ($prefs['feature_multilingual'] == 'y' && !$minor) {
-			global $multilinguallib; include_once("lib/multilingual/multilinguallib.php");
+			include_once("lib/multilingual/multilinguallib.php");
 			unset( $tikilib->cache_page_info );
 
 			if( $editlib->isUpdateTranslationMode() ) {
-				if ($editlib->aTranslationWasSavedAs('complete')) {
-					$editlib->saveCompleteTranslation();
-				} else if ($editlib->aTranslationWasSavedAs('partial')) {
-					$editlib->savePartialTranslation();
+				$sourceInfo = $tikilib->get_page_info( $_REQUEST['source_page'] );
+				$targetInfo = $tikilib->get_page_info( $_REQUEST['page'] );
+
+				if( !isset($_REQUEST['partial_save']) ) {
+					$multilinguallib->propagateTranslationBits( 
+							'wiki page',
+							$sourceInfo['page_id'],
+							$targetInfo['page_id'],
+							(int) $_REQUEST['newver'],
+							$targetInfo['version'] );
 				}
+
 			} else {
 				$info = $tikilib->get_page_info( $_REQUEST['page'] );
 				$flags = array();
@@ -1128,8 +1070,8 @@ if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) != 'sandbox' || $
 	} else {
 		$url = $wikilib->sefurl($page);
 	}
-	if ($prefs['feature_best_language'] == 'y' || isset($_REQUEST['save'])) {
-		$url .= '&no_bl=y';
+	if ($prefs['feature_best_language'] == 'y') {
+		$url .= '&bl=n';
 	}
 	$_SESSION['saved_msg'] = $_REQUEST["page"];
 
@@ -1137,31 +1079,37 @@ if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) != 'sandbox' || $
 		$tmp = $tikilib->parse_data($edit);			// fills $anch[] so page refreshes at the section being edited
 		$url .= "#".$anch[$_REQUEST['hdr']-1]['id'];
 	}
-	
-	if ($dieInsteadOfForwardingWithHeader) die ("-- tiki-editpage: Dying before third call to header(), so we can see traces. Forwarding to: '$url'");
 	header("location: $url");
 	die;
 } //save
 $smarty->assign('pageAlias',$pageAlias);
 if ($prefs['feature_wiki_templates'] == 'y' && $tiki_p_use_content_templates == 'y') {
-	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$templates = $templateslib->list_templates('wiki', 0, -1, 'name_asc', '');
+	$templates = $tikilib->list_templates('wiki', 0, -1, 'name_asc', '');
 	$smarty->assign_by_ref('templates', $templates["data"]);
 }
 if ($prefs['feature_polls'] =='y' and $prefs['feature_wiki_ratings'] == 'y' && $tiki_p_wiki_admin_ratings == 'y') {
+	function pollnameclean($s) { global $page; if (isset($s['title'])) $s['title'] = substr($s['title'],strlen($page)+2); return $s; }
 	if (!isset($polllib) or !is_object($polllib)) include("lib/polls/polllib_shared.php");
 	if (!isset($categlib) or !is_object($categlib)) include("lib/categories/categlib.php");
 	if (isset($_REQUEST['removepoll'])) {
 		$catObjectId = $categlib->is_categorized($cat_type,$cat_objid);
-		$polllib->remove_object_poll( $cat_type, $cat_objid, $_REQUEST['removepoll'] );
+		$polllib->remove_object_poll($cat_type,$cat_objid);
 	}
 	$polls_templates = $polllib->get_polls('t');
 	$smarty->assign('polls_templates',$polls_templates['data']);
-	$poll_rated = $polllib->get_ratings($cat_type,$cat_objid);
+	$poll_rated = $polllib->get_rating($cat_type,$cat_objid);
+	if (isset($poll_rated['title'])) {
+		$poll_rated = array_map('pollnameclean',$poll_rated);
+	}
 	$smarty->assign('poll_rated',$poll_rated);
+	if (isset($_REQUEST['poll_title'])) {
+		$smarty->assign('poll_title',$_REQUEST['poll_title']);
+	}
 	if (isset($_REQUEST['poll_template'])) {
 		$smarty->assign('poll_template',$_REQUEST['poll_template']);
 	}
+	$listpolls = $polllib->get_polls('o',"$page: ");
+	$smarty->assign('listpolls',$listpolls['data']);
 }
 
 if ($prefs['feature_multilingual'] == 'y') {
@@ -1170,19 +1118,17 @@ if ($prefs['feature_multilingual'] == 'y') {
 	$smarty->assign_by_ref('languages', $languages);
 
 	if( $editlib->isNewTranslationMode() ) {
-		$smarty->assign( 'translationOf', $editlib->sourcePageName );
+		$smarty->assign( 'translationOf', $_REQUEST['translationOf'] );
 
 		if( $tikilib->page_exists( $page ) ) {
 			// Display an error if the page already exists
-			$smarty->assign('msg',
-								tra("Page already exists. Go back and choose a different name.")."<P>".
-								tra("Page name is").": '$page'");
+			$smarty->assign('msg',tra("Page already exists. Go back and choose a different name."));
 			$smarty->display("error.tpl");
 			die;
 		}
 
-		global $multilinguallib; include_once("lib/multilingual/multilinguallib.php");
-		$sourceInfo = $tikilib->get_page_info( $editlib->sourcePageName );
+		include_once("lib/multilingual/multilinguallib.php");
+		$sourceInfo = $tikilib->get_page_info( $_REQUEST['translationOf'] );
 		if( $multilinguallib->getTranslation('wiki page', $sourceInfo['page_id'], $_REQUEST['lang'] ) ) {
 			// Display an error if the page already exists
 			$smarty->assign('msg',tra("The translation set already contains a page in this language."));
@@ -1191,11 +1137,23 @@ if ($prefs['feature_multilingual'] == 'y') {
 		}
 	}
 
-	if( $editlib->isTranslationMode() ) {
+	if( $editlib->isUpdateTranslationMode() ) {
 		include_once('lib/wiki/histlib.php');
-		histlib_helper_setup_diff( $editlib->sourcePageName, $editlib->oldSourceVersion, $editlib->newSourceVersion );
-		$smarty->assign( 'diff_oldver', (int) $editlib->oldSourceVersion );
-		$smarty->assign( 'diff_newver', (int) $editlib->newSourceVersion );
+		histlib_helper_setup_diff( $_REQUEST['source_page'], $_REQUEST['oldver'], $_REQUEST['newver'] );
+		$smarty->assign( 'diff_oldver', (int) $_REQUEST['oldver'] );
+		$smarty->assign( 'diff_newver', (int) $_REQUEST['newver'] );
+		$smarty->assign( 'source_page', $_REQUEST['source_page'] );
+		/* 
+		   Use Full Screen mode when translating an update, because 
+		   user needs to see both diffs that have happened in the source language
+		   and the edit form for the  target language. This requires a lot of real-estate
+		   
+		   AD (2009-11-09): For now, keep that line commented because the 
+		   side-by-side source and target layout in wiki-edit is a bit 
+		   screwed up. Will reactivate as soon as I get the CSS right for
+		   that.
+		 */
+//		$_REQUEST['zoom'] = 'wiki_edit';
 		$smarty->assign('update_translation', 'y');
 	}
 }
@@ -1211,7 +1169,7 @@ if ($prefs['feature_freetags'] == 'y') {
 	if ( isset($_REQUEST['freetag_string']) ) {
 		$smarty->assign('taglist', $_REQUEST['freetag_string']);
 	} elseif( $editlib->isNewTranslationMode() ) {
-		$tags = $freetaglib->get_all_tags_on_object_for_language($editlib->sourcePageName, 'wiki page', $pageLang);
+		$tags = $freetaglib->get_all_tags_on_object_for_language($_REQUEST['translationOf'], 'wiki page', $pageLang);
 		$smarty->assign( 'taglist', implode( ' ', $tags ) );
 	}
 }
@@ -1233,21 +1191,6 @@ if ($prefs['feature_categories'] == 'y') {
 				$categories[$i]['incat'] = 'y';
 		}
 	}
-}
-
-$is_staging_article = ($prefs['wikiapproval_staging_category'] > 0) && (in_array($prefs['wikiapproval_staging_category'], $cats));
-$page_badchars_display = ":/?#[]@!$&'()*+,;=<>";
-$page_badchars = "/[:\/?#\[\]@!$&'()*+,;=<>]/";
-if ($is_staging_article && $approved = $tikilib->get_approved_page($page) ) {
-	$page_name = $approved;
-}
-else {
-	$page_name = $page;
-}
-
-$matches = preg_match($page_badchars, $page_name);
-if ($matches && ! $tikilib->page_exists($page) ) {
-	$smarty->assign('page_badchars_display', $page_badchars_display);
 }
 
 $plugins = $wikilib->list_plugins(true, 'editwiki');
@@ -1285,15 +1228,15 @@ if ($prefs['feature_contribution'] == 'y') {
 	include_once('contribution.php');
 }
 if ($prefs['feature_wikiapproval'] == 'y') {
-	if ( $approvedPageName = $tikilib->get_approved_page( $page ) ) {
+	if (substr($page, 0, strlen($prefs['wikiapproval_prefix'])) == $prefs['wikiapproval_prefix']) {
+		$approvedPageName = substr($page, strlen($prefs['wikiapproval_prefix']));	
 		$smarty->assign('beingStaged', 'y');
 		$smarty->assign('approvedPageName', $approvedPageName);
 		$approvedPageExists = $tikilib->page_exists($approvedPageName);
 		$smarty->assign('approvedPageExists', $approvedPageExists);
 	} elseif ($prefs['wikiapproval_approved_category'] > 0 && in_array($prefs['wikiapproval_approved_category'], $cats)) {		
 		$stagingPageName = $prefs['wikiapproval_prefix'] . $page;
-		if ($prefs['wikiapproval_block_editapproved'] == 'y') {			
-			if ($dieInsteadOfForwardingWithHeader) die ("-- tiki-editpage: Dying before fourth call to header(), so we can see traces. Forwarding to: 'tiki-editpage.php?page=$stagingPageName'");
+		if ($prefs['wikiapproval_block_editapproved'] == 'y') {
 			header("location: tiki-editpage.php?page=$stagingPageName");
 		}
 		$smarty->assign('needsStaging', 'y');
@@ -1322,7 +1265,8 @@ if ($prefs['feature_wikiapproval'] == 'y') {
 }
 
 if( $prefs['feature_multilingual'] == 'y' ) {
-	global $multilinguallib; include_once('lib/multilingual/multilinguallib.php');
+	global $multilinguallib;
+	include_once('lib/multilingual/multilinguallib.php');
 	$trads = $multilinguallib->getTranslations('wiki page', $info['page_id'], $page, $info['lang']);
 	$smarty->assign('trads', $trads);
 }
@@ -1334,13 +1278,14 @@ $smarty->assign('edittimeout', ini_get('session.gc_maxlifetime'));
 // tools tab
 if (($prefs['feature_wiki_templates'] == 'y' && $tiki_p_use_content_templates == 'y') ||
 	($prefs['feature_wiki_usrlock'] == 'y' && ($tiki_p_lock == 'y' || $tiki_p_admin_wiki == 'y')) ||
-	($prefs['feature_wiki_replace'] == 'y' && $_SESSION['wysiwyg'] != 'y') ||
+	($prefs['feature_wiki_replace'] == 'y' && $wysiwyg != 'y') ||
 	$prefs['wiki_spellcheck'] == 'y' ||
-	($prefs['feature_wiki_allowhtml'] == 'y' && $tiki_p_use_HTML == 'y' && $_SESSION['wysiwyg'] != 'y') ||
+	($prefs['feature_wiki_allowhtml'] == 'y' && $tiki_p_use_HTML == 'y' && $wysiwyg != 'y') ||
 	$prefs['feature_wiki_import_html'] == 'y' ||
 	$prefs['wiki_comments_allow_per_page'] != 'n' ||
 	($tiki_p_admin_wiki == 'y' && $prefs['feature_wiki_import_page'] == 'y') ||
-	($_SESSION['wysiwyg'] != 'y' && ($prefs['feature_wiki_attachments'] == 'y' && ($tiki_p_wiki_attach_files == 'y' && $tiki_p_wiki_admin_attachments == 'y')))) {
+	($wysiwyg != 'y' && ($prefs['feature_wiki_attachments'] == 'y' && ($tiki_p_wiki_attach_files == 'y' && $tiki_p_wiki_admin_attachments == 'y')) ||
+						($prefs['feature_wiki_screencasts'] == 'y' && $tiki_p_upload_screencast == 'y'))) {
 	$smarty->assign('showToolsTab', 'y');
 }
 if (strtolower($page) != 'sandbox' &&
@@ -1361,12 +1306,8 @@ if (strtolower($page) != 'sandbox' &&
 ask_ticket('edit-page');
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
-// Display the Edit Template or language check
-if ($need_lang) {
-	$smarty->assign('mid', 'tiki-choose_page_language.tpl');
-} else {
-	$smarty->assign('mid', 'tiki-editpage.tpl');
-}
+// Display the Index Template
+$smarty->assign('mid', 'tiki-editpage.tpl');
 $smarty->assign('showtags', 'n');
 $smarty->assign('qtnum', '1');
 $smarty->assign('qtcycle', '');

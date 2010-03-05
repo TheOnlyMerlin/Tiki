@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Id: tiki-user_information.tpl 16912 2009-02-25 03:38:43Z luciash $ *}
 <form class="admin" method="post" action="tiki-admin.php?page=sefurl">
 	<div class="heading input_submit_container" style="text-align: right;">
 		<input type="submit" name="save" value="{tr}Change preferences{/tr}" />
@@ -6,11 +6,7 @@
 	<fieldset class="admin">
 		{if $needtowarn}
 		{remarksbox type="warning" title="{tr}Warning{/tr}"}	
-		{tr}SEFURL will not work unless Tiki specific directives are deployed to the .htaccess file.{/tr}	
-		{tr}To enable this file, simply rename the <strong>_htaccess</strong> file (located in the main directory of your Tiki installation) to <strong>.htaccess</strong>.{/tr}
-		{tr}If you need to keep an existing (non Tiki) .htaccess file, just add Tiki directives to it.{/tr}
-		{tr}When you upgrade (ex.: from Tiki4 to Tiki5), make sure to use the new _htaccess file.{/tr}
-
+		{tr}SEFURL will not work unless Tiki specific directives are deployed to the .htaccess file. You will need to execute htaccess.sh or manually configure the .htaccess file.{/tr}	
 		{/remarksbox}
 		{/if}
 		<legend>{tr}Settings{/tr}</legend>

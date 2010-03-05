@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -17,7 +12,7 @@ function module_last_modif_events_info() {
 		'description' => tra('Displays the specified number of calendar events, starting from the most recently modified.'),
 		'prefs' => array("feature_calendar"),
 		'params' => array(
-			'calendarId' => array(
+			'calendarid' => array(
 				'name' => tra('Calendar identifier'),
 				'description' => tra('If set to a calendar identifier, restricts the events to those in the identified calendar.') . " " . tra('Example value: 13.') . " " . tra('Not set by default.')
 			),

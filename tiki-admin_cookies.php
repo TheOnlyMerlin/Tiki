@@ -1,15 +1,17 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_cookies.php,v 1.17 2007-10-12 07:55:23 nyloth Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/taglines/taglinelib.php');
-
-$access->check_permission('tiki_p_edit_cookies');
-
+if ($tiki_p_edit_cookies != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST["cookieId"])) {
 	$_REQUEST["cookieId"] = 0;
 }

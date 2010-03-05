@@ -13,7 +13,7 @@
 
 	{self_link page="features" _class="admbox" _style="background-image: url('pics/large/boot48x48.png')" _title="{tr}Features{/tr}"}<span>{tr}Features{/tr}</span>{/self_link}
 
-	{self_link page="login" _class="admbox" _style="background-image: url('pics/large/stock_quit48x48.png')" _title="{tr}Log in{/tr}"}<span>{tr}Log in{/tr}</span>{/self_link}
+	{self_link page="login" _class="admbox" _style="background-image: url('pics/large/stock_quit48x48.png')" _title="{tr}Login{/tr}"}<span>{tr}Login{/tr}</span>{/self_link}
 
 	{self_link page="community" _class="admbox" _style="background-image: url('pics/large/users48x48.png')" _title="{tr}Community{/tr}"}<span>{tr}Community{/tr}</span>{/self_link}
 
@@ -70,6 +70,8 @@
 	{self_link page="maps" _class="admbox" _style="background-image: url('pics/large/maps48x48.png')" _selected="'`$prefs.feature_maps`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Maps{/tr}" title="{tr}Maps{/tr}{if $prefs.feature_maps ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Maps{/tr}</span>{/self_link}
 	
 	{self_link page="gmap" _class="admbox" _style="background-image: url('pics/large/google_maps48x48.png')" _selected="'`$prefs.feature_gmap`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Google Maps{/tr}" title="{tr}Google Maps{/tr}{if $prefs.feature_gmap ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Google Maps{/tr}</span>{/self_link}
+
+	{self_link page="multimedia" _class="admbox" _style="background-image: url('pics/large/multimedia48x48.png')" _selected="'`$prefs.feature_multimedia`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Multimedia{/tr}" title="{tr}Multimedia{/tr}{if $prefs.feature_multimedia ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Multimedia{/tr}</span>{/self_link}
 
 	{self_link page="copyright" _class="admbox" _style="background-image: url('pics/large/copyright48x48.png')" _selected="'`$prefs.feature_copyright`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Copyright{/tr}" title="{tr}Copyright{/tr}{if $prefs.feature_copyright ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Copyright{/tr}</span>{/self_link}
 

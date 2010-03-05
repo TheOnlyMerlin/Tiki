@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Id: mod-calendar_new.tpl 12242 2008-03-30 13:22:01Z luciash $ *}
 {if $show_calendar_module eq 'y'}
 {tikimodule error=$module_params.error title=$tpl_module_title name=$name flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
 {if $viewlist eq 'list'}
@@ -51,7 +51,7 @@
 		{/section}
 	</table>
 {/if}
-{if $tiki_p_add_events eq 'y' && (empty($module_params.showaction) || $module_params.showaction ne 'n')}
+{if $tiki_p_add_events eq 'y' }
 	<p><a href="tiki-calendar_edit_item.php"><img src=pics/icons/add.png link="tiki-calendar_edit_item.php"> {tr}Add event{/tr}</a></p>
 {/if}
 {/tikimodule}

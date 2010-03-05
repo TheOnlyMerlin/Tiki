@@ -1,10 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-
 $section = 'admin';
 require_once ('tiki-setup.php');
 include_once ('lib/admin/adminlib.php');
@@ -12,17 +11,12 @@ $tikifeedback = array();
 $auto_query_args = array(
 	'page'
     );
-$access->check_permission('tiki_p_admin');
-
-/**
- * Display feedback on prefs changed
- * 
- * @param $name		Name of feature
- * @param $message	Other message
- * @param $st		Type of change (0=disabled, 1=enabled, 2=changed, 3=info)
- * @param $num		unknown
- * @return void
- */
+if ($tiki_p_admin != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 function add_feedback( $name, $message, $st, $num = null ) {
 	global $tikifeedback;
 	$tikifeedback[] = array(
@@ -118,22 +112,10 @@ if( isset( $_REQUEST['lm_preference'] ) ) {
 if( isset( $_REQUEST['lm_criteria'] ) ) {
 	global $prefslib; require_once 'lib/prefslib.php';
 
-	set_time_limit(0);
-	try {
-		$smarty->assign( 'lm_criteria', $_REQUEST['lm_criteria'] );
-		$results = $prefslib->getMatchingPreferences( $_REQUEST['lm_criteria'] );
-		$results = array_slice( $results, 0, 10 );
-		$smarty->assign( 'lm_searchresults', $results );
-		$smarty->assign( 'lm_error', '' );
-	} catch(Zend_Search_Lucene_Exception $e) {
-		$smarty->assign( 'lm_criteria', $_REQUEST['lm_criteria'] );
-		$smarty->assign( 'lm_error', $e->getMessage() );
-		$smarty->assign( 'lm_searchresults', '' );
-	}
-} else {
-	$smarty->assign( 'lm_criteria', '' );
-	$smarty->assign( 'lm_searchresults', '' );
-	$smarty->assign( 'lm_error', '' );
+	$results = $prefslib->getMatchingPreferences( $_REQUEST['lm_criteria'] );
+	$results = array_slice( $results, 0, 10 );
+	$smarty->assign( 'lm_criteria', $_REQUEST['lm_criteria'] );
+	$smarty->assign( 'lm_searchresults', $results );
 }
 
 if (isset($_REQUEST["page"])) {
@@ -318,6 +300,11 @@ if (isset($_REQUEST["page"])) {
 		$description = "Text area"; //get_strings tra("Text area")
 		$helpUrl = "Text+area";
 		include_once ('tiki-admin_include_textarea.php');
+	} else if ($adminPage == "multimedia") {
+		$admintitle = "Multimedia"; //get_strings tra("Multimedia")
+		$description = "Multimedia"; //get_strings tra("Multimedia")
+		$helpUrl = "Multimedia";
+		include_once ('tiki-admin_include_multimedia.php');
 	} else if ($adminPage == "ads") {
 		$admintitle = "Site Ads and Banners"; // this is already translated
 		$description = "Configure Site Ads and Banners"; //get_strings tra("Configure Site Ads and Banners")
@@ -358,11 +345,6 @@ if (isset($_REQUEST["page"])) {
 		$helpUrl = "Connect";
 		$description = "Connect";
 		include_once ('tiki-admin_include_connect.php');
-	} else if ($adminPage == "rating") {
-		$admintitle = "Advanced Rating";
-		$helpUrl = "Advanced+Rating";
-		$description = "Advanced Rating";
-		include_once ('tiki-admin_include_rating.php');
 	} else {
 		$helpUrl = '';
 	}

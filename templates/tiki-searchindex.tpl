@@ -12,7 +12,7 @@
 	{/if}
 
 	{if $prefs.feature_search_show_search_box eq 'y'}
-		<form action="tiki-searchindex.php" method="get" id="search-form" class="findtable" role="search">
+		<form action="tiki-searchindex.php" method="get" id="search-form" class="findtable">
 			<label class="findtitle">
 				{tr}Find{/tr} <input name="highlight" size="14" type="text" accesskey="s" value="{$words}" />
 			</label>
@@ -62,9 +62,6 @@
 					<input type="hidden" name="where" value="{$where|escape}" />
 					{if $forumId}<input type="hidden" name="forumId" value="{$forumId}" />{/if}
 				{/if}
-			{elseif !empty($where)}
-				<input type="hidden" name="where" value="{$where|escape}" />
-				{if $forumId}<input type="hidden" name="forumId" value="{$forumId|escape}" />{/if}	
 			{/if}
 			<label class="findsubmit">
 				<input type="submit" name="search" value="{tr}Go{/tr}"/>

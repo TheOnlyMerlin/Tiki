@@ -1,9 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// Copyright (c)2002-2003
+// Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
+// All Rights Reserved. See copyright.txt for details and a complete list of
+// authors. Licensed under the GNU LESSER GENERAL PUBLIC LICENSE.
+// See license.txt for details.
 
 // This script may only be included! Die if called directly...
 if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
@@ -22,8 +22,7 @@ require_once ('commentslib.php');
  * @uses Comments
  * @license LGPL. Please, see licence.txt for mode details
  */
-class Importer extends Comments
-{
+class Importer extends Comments {
 	// The types of forums are hard-coded into the library and displayed
 	// in the template. As support for more imports grows, add the type to
 	// the below two arrays, in addition to writing the functions to 
@@ -219,7 +218,7 @@ class Importer extends Comments
 					// represents an SQL record or row.
 					$records = split('\),\(', $c);
 					if (count($records) < 1) { $records[0] = $c; }
-					for ($count = 0, $count_records = count($records); $count < $count_records; $count++) {
+					for ($count = 0; $count < count($records); $count++) {
 						// Each proper record should begin with a numeric value
 						// (at least as far as the tables we will be using).
 						// Check the following record from the current one to see
@@ -249,7 +248,7 @@ class Importer extends Comments
 								// Do nothing... NEXT!
 								continue;
 							} else {
-								for ($z = 0, $zcount_fields = count($fields); $z < $zcount_fields; $z++) {
+								for ($z = 0; $z < count($fields); $z++) {
 									$rec[$headings[$z]] = $fields[$z];
 								}
 								array_push($thash, $rec);

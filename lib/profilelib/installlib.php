@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 class Tiki_Profile_Installer
 {
@@ -17,7 +12,6 @@ class Tiki_Profile_Installer
 		'file_gallery' => 'Tiki_Profile_InstallHandler_FileGallery',
 		'module' => 'Tiki_Profile_InstallHandler_Module',
 		'menu' => 'Tiki_Profile_InstallHandler_Menu',
-		'menu_option' => 'Tiki_Profile_InstallHandler_MenuOption',
 		'blog' => 'Tiki_Profile_InstallHandler_Blog',
 		'blog_post' => 'Tiki_Profile_InstallHandler_BlogPost',
 		'plugin_alias' => 'Tiki_Profile_InstallHandler_PluginAlias',
@@ -42,7 +36,6 @@ class Tiki_Profile_Installer
 	);
 
 	private $userData = false;
-	private $debug = false;
 	
 	private $feedback = array();	// Let users know what's happened
 
@@ -112,11 +105,6 @@ class Tiki_Profile_Installer
 	function setUserData( $userData ) // {{{
 	{
 		$this->userData = $userData;
-	} // }}}
-
-	function setDebug( ) // {{{
-	{
-		$this->debug = true;
 	} // }}}
 
 	function getInstallOrder( Tiki_Profile $profile ) // {{{
@@ -259,7 +247,7 @@ class Tiki_Profile_Installer
 	private function doInstall( Tiki_Profile $profile ) // {{{
 	{
 		global $tikilib, $prefs;
-
+		
 		$this->setFeedback(tra('Applying profile').': '.$profile->profile);
 
 		$this->installed[$profile->getProfileKey()] = $profile;
@@ -305,13 +293,10 @@ class Tiki_Profile_Installer
 		}
 
 		foreach( $permissions as $perm => $v )
-		{
 			if( $v == 'y' )
 				$userlib->assign_permission_to_group( $perm, $groupName );
 			else
 				$userlib->remove_permission_from_group( $perm, $groupName );
-			$this->setFeedback(sprintf(tra('Modifed permission %s for %s'), $perm, $groupName));
-		}
 
 		foreach( $objects as $data )
 			foreach( $data['permissions'] as $perm => $v )
@@ -325,7 +310,6 @@ class Tiki_Profile_Installer
 					$userlib->assign_object_permission( $groupName, $data['id'], $data['type'], $perm );
 				else
 					$userlib->remove_object_permission( $groupName, $data['id'], $data['type'], $perm );
-				$this->setFeedback(sprintf(tra('Modifed permission %s on %s/%s for %s'), $perm, $data['type'], $data['id'], $groupName));
 			}
 
 		global $user;
@@ -584,6 +568,7 @@ class Tiki_Profile_InstallHandler_TrackerField extends Tiki_Profile_InstallHandl
 				'item_list' => 'l',
 				'item_list_dynamic' => 'w',
 				'email' => 'm',
+				'multimedia' => 'M',
 				'auto_increment' => 'q',
 				'user_subscription' => 'U',
 				'map' => 'G',
@@ -909,11 +894,7 @@ class Tiki_Profile_InstallHandler_Category extends Tiki_Profile_InstallHandler /
 		
 		global $categlib;
 		require_once 'lib/categories/categlib.php';
-		if ($id = $categlib->exist_child_category( $this->parent, $this->name )) {
-			$categlib->update_category( $id, $this->name, $this->description, $this->parent );
-		} else {
-			$id = $categlib->add_category( $this->parent, $this->name, $this->description );
-		}
+		$id = $categlib->add_category( $this->parent, $this->name, $this->description );
 
 		foreach( $this->items as $item )
 		{
@@ -938,8 +919,6 @@ class Tiki_Profile_InstallHandler_FileGallery extends Tiki_Profile_InstallHandle
 		$defaults = array(
 			'owner' => 'admin',
 			'public' => 'n',
-			'galleryId' => null,
-			'parent' => -1,
 		);
 
 		$conversions = array(
@@ -981,12 +960,7 @@ class Tiki_Profile_InstallHandler_FileGallery extends Tiki_Profile_InstallHandle
 			}
 
 		unset( $data['galleryId'] );
-		$this->replaceReferences($data);
 
-		if (!empty($data['name'])) {
-			global $filegallib; require_once 'lib/filegals/filegallib.php';
-			$data['galleryId'] = $filegallib->getGalleryId($data['name'], $data['parentId']);
-		}
 		return $this->data = $data;
 	}
 
@@ -995,32 +969,18 @@ class Tiki_Profile_InstallHandler_FileGallery extends Tiki_Profile_InstallHandle
 		$data = $this->getData();
 		if( ! isset( $data['name'] ) )
 			return false;
-		return $this->convertMode($data);
-	}
-	private function convertMode($data)
-	{
-		if (!isset($data['mode'])) {
-			return true; // will duplicate if already exists
-		}
-		switch ($data['mode']) {
-		case 'update':
-			if (empty($data['galleryId'])) {
-				throw new Exception(tra('File gallery does not exist').' '.$data['name']);
-			}
-		case 'create':
-			if (!empty($data['galleryId'])) {
-				throw new Exception(tra('File gallery already exists').' '.$data['name']);
-			}
-		}
+
 		return true;
 	}
+
 	function _install()
 	{
 		global $filegallib;
 		if( ! $filegallib ) require_once 'lib/filegals/filegallib.php';
 
 		$input = $this->getData();
-
+		$this->replaceReferences( $input );
+		
 		return $filegallib->replace_file_gallery( $input );
 	}
 } // }}}
@@ -1240,57 +1200,6 @@ class Tiki_Profile_InstallHandler_Menu extends Tiki_Profile_InstallHandler // {{
 	}
 } // }}}
 
-class Tiki_Profile_InstallHandler_MenuOption extends Tiki_Profile_InstallHandler // {{{
-{
-	function getData()
-	{
-		if( $this->data )
-			return $this->data;
-
-		$defaults = array(
-			'type' => 'o',
-			'optionId' => 0,
-			'position' => 1,
-			'section' => '',
-			'perm' => '',
-			'groups' => array(),
-			'level' => 0,
-			'icon' => '',
-			'menuId' => 0
-		);
-
-
-		$data = $this->obj->getData();
-
-		$data = array_merge( $defaults, $data );
-
-		$this->replaceReferences($data);
-
-		if (!empty($data['menuId']) && !empty($data['url'])) {
-		   global $menulib; require_once 'lib/menubuilder/menulib.php';
-		   $data['optionId'] = $menulib->get_option($data['menuId'], $data['url']);
-		}
-		return $this->data = $data;
-	}
-
-	function canInstall()
-	{
-		$data = $this->getData();
-
-		if( ! isset( $data['url'] ) || ! isset( $data['menuId'] ) )
-			return false;
-		return true;
-	}
-	function _install()
-	{
-		global $menulib; require_once 'lib/menubuilder/menulib.php';
-
-		$data = $this->getData();
-
-		return $menulib->replace_menu_option( $data['menuId'], $data['optionId'], $data['name'], $data['url'], $data['type'], $data['position'], $data['section'], $data['perm'], implode(',', $data['groups']), $data['level'], $data['icon'] );
-	}
-} // }}}
-
 class Tiki_Profile_InstallHandler_Blog extends Tiki_Profile_InstallHandler // {{{
 {
 	function getData()
@@ -1338,8 +1247,8 @@ class Tiki_Profile_InstallHandler_Blog extends Tiki_Profile_InstallHandler // {{
 
 		$this->replaceReferences( $data );
 
-		$blogId = $bloglib->replace_blog( $data['title'], $data['description'], $data['user'], $data['public'], $data['max_posts'], 0, $data['heading'], $data['use_title'], $data['use_author'], $data['add_date'], $data['use_find'], $data['allow_comments'], $data['show_avatar'] );
-		
+		$blogId = $bloglib->replace_blog( $data['title'], $data['description'], $data['user'], $data['public'], $data['max_posts'], 0, $data['heading'], $data['use_title'], $data['use_find'], $data['allow_comments'], $data['show_avatar'] );
+
 		return $blogId;
 	}
 } // }}}
@@ -1861,10 +1770,7 @@ class Tiki_Profile_InstallHandler_Forum extends Tiki_Profile_InstallHandler // {
 			'list_topic_replies' => 'n',
 			'list_topic_points' => 'n',
 			'list_topic_last_post' => 'n',
-			'list_topic_last_post_title' => 'n',
-			'list_topic_last_post_avatar' => 'n',
 			'list_topic_author' => 'n',
-			'list_topic_author_avatar' => 'n',
 
 			'show_description' => 'n',
 
@@ -1976,11 +1882,7 @@ class Tiki_Profile_InstallHandler_Forum extends Tiki_Profile_InstallHandler // {
 			$data['forum_last_n'],
 			$data['comments_per_page'],
 			$data['thread_style'],
-			$data['is_flat'],
-			$data['list_att_nb'],
-			$data['list_topic_last_post_title'],
-			$data['list_topic_last_post_avatar'],
-			$data['list_topic_author_avatar']
+			$data['is_flat']
 		);
 
 		return $id;
@@ -1996,7 +1898,6 @@ class Tiki_Profile_InstallHandler_Template extends Tiki_Profile_InstallHandler /
 
 		$defaults = array(
 			'sections' => array( 'wiki page' ),
-			'type' => 'static',
 		);
 
 		$data = array_merge(
@@ -2031,7 +1932,7 @@ class Tiki_Profile_InstallHandler_Template extends Tiki_Profile_InstallHandler /
 
 		$this->replaceReferences( $data );
 
-		$templateId = $templateslib->replace_template( null, $data['name'], $data['content'], $data['type'] );
+		$templateId = $templateslib->replace_template( null, $data['name'], $data['content'] );
 		foreach( $data['sections'] as $section ) {
 			$templateslib->add_template_to_section( $templateId, $section );
 		}
@@ -2204,42 +2105,15 @@ class Tiki_Profile_InstallHandler_Calendar extends Tiki_Profile_InstallHandler /
 		if( $this->data )
 			return $this->data;
 
-		$data = $this->obj->getData();
-		$this->replaceReferences($data);
-
-		if (!empty($data['name'])) {
-			global $calendarlib; include_once('lib/calendar/calendarlib.php');
-			$data['calendarId'] = $calendarlib->get_calendarId_from_name($data['name']);
-		}
-
-		return $this->data = $data;
+		return $this->data = $this->obj->getData();
 	}
 	
 	function canInstall()
 	{
 		$data = $this->getData();
 		
-		if (!isset($data['name'])) {
-			return false;
-		}
-		return $this->convertMode($data);
-	}
-	private function convertMode($data)
-	{
-		if (!isset($data['mode'])) {
-			return true; // will duplicate if already exists
-		}
-		switch ($data['mode']) {
-		case 'update':
-			if (empty($data['calendarId'])) {
-				throw new Exception(tra('Calendar does not exist').' '.$data['name']);
-			}
-		case 'create':
-			if (!empty($data['calendarId'])) {
-				throw new Exception(tra('Calendar already exists').' '.$data['name']);
-			}
-		}
-		return true;
+		if (isset($data)) return true;
+		else return false;
 	}
 	
 	function _install()
@@ -2248,13 +2122,18 @@ class Tiki_Profile_InstallHandler_Calendar extends Tiki_Profile_InstallHandler /
 		{
 			global $calendarlib; if (!$calendarlib) require_once 'lib/calendar/calendarlib.php';
 			
-			$calendar = $this->getData();
+			$data = $this->getData();
 			
-			global $user;
-			$customflags = isset($calendar['customflags']) ? $calendar['customflags']  : array();
-			$options = isset($calendar['options']) ? $calendar['options']  : array();
-			$id = $calendarlib->set_calendar($calendar['calendarId'], $user, $calendar['name'], $calendar['description'], $customflags,$options);
-			return $id;
+			foreach ($data as $calendar)
+			{
+				if ((isset ($calendar['name'])) && (!empty ($calendar['name'])))
+				{
+					$customflags = isset($calendar['customflags']) ? $calendar['customflags']  : array();
+					$options = isset($calendar['options']) ? $calendar['options']  : array();
+					$calendarlib->set_calendar(null, $user, $calendar['name'], $calendar['description'], $customflags,$options);
+				}
+			}
+			return 1;
 		}
 	}
 } // }}}
@@ -2266,10 +2145,8 @@ class Tiki_Profile_InstallHandler_User extends Tiki_Profile_InstallHandler // {{
 	{
 		if( $this->data )
 			return $this->data;
-		$data = $this->obj->getData();
-		$this->replaceReferences($data);
 
-		return $this->data = $data;
+		return $this->data = $this->obj->getData();
 	}
 	
 	function canInstall()

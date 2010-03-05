@@ -65,7 +65,7 @@
   {/if}
 
   {if $tiki_p_create_file_galleries eq 'y' and $edit_mode ne 'y'}
-    {button _text="{tr}Create a File Gallery{/tr}" href="?edit_mode=1&amp;parentId=$galleryId&amp;cookietab=1"}
+    {button _text="{tr}Create a File Gallery{/tr}" href="?edit_mode=1&amp;parentId=$galleryId"}
   {/if}
   {if $tiki_p_create_file_galleries eq 'y' and $dup_mode ne 'y'}
     {button _text="{tr}Duplicate File Gallery{/tr}" dup_mode=1 galleryId=$galleryId}
@@ -116,7 +116,7 @@
 {/if}
 
 {if $edit_mode neq 'y' and $prefs.fgal_show_slideshow eq 'y' and $gal_info.show_slideshow.value eq 'y'}
-  {button _text="{tr}SlideShow{/tr}" href="#" _onclick="javascript:window.open('tiki-list_file_gallery.php?galleryId=$galleryId&amp;slideshow','','menubar=no,width=600,height=500,resizable=yes');return false;"}
+  {button _text="{tr}SlideShow{/tr}" href="#" _onclick="javascript:window.open('tiki-list_file_gallery.php?galleryId=$galleryId&amp;slideshow','','menubar=no,width=600,height=500,resizable=yes');"}
 {/if}
 
 </div>
@@ -125,7 +125,8 @@
   {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Be careful to set the right permissions on the files you link to{/tr}.{/remarksbox}
   <label for="keepOpenCbx">{tr}Keep gallery window open{/tr}</label>
   <input type="checkbox" name="keepOpenCbx" id="keepOpenCbx" onchange="keepOpenChanged(this);">
-{jq notonready=true}
+  <script type="text/javascript">{literal}
+<!--//--><![CDATA[//><!--
 function keepOpenChanged(cbx) {
 	if (cbx.checked) {
 		setCookie("fgalKeepOpen", "1");
@@ -146,7 +147,8 @@ function checkClose() {
 if (getCookie("fgalKeepOpen")) {
 	document.getElementById("keepOpenCbx").checked = "checked";
 }
-{/jq}
+//--><!]]>
+  {/literal}</script>
 
 {/if}
 {if isset($fileChangedMessage) and $fileChangedMessage neq ''}
@@ -190,22 +192,8 @@ if (getCookie("fgalKeepOpen")) {
 
 {else}
 {if $files or ($find ne '')}
-  {include file='find.tpl' find_show_num_rows = 'y' find_show_num_rows = 'y' find_show_categories_multi='y'}
+  {include file='find.tpl' find_show_num_rows = 'y'}
 {/if}
-
-{if $prefs.fgal_search_in_content eq 'y' and $galleryId > 0}
-	<div class="findtable">
-		<form id="search-form" class="forms" method="get" action="tiki-search{if $prefs.feature_forum_local_tiki_search eq 'y'}index{else}results{/if}.php">
-				<input type="hidden" name="where" value="files" />
-				<input type="hidden" name="galleryId" value="{$galleryId}" />
-			  	<label>{tr}Search in content{/tr}
-				<input name="highlight" size="30" type="text" />
-				</label>
-				<input type="submit" class="wikiaction" name="search" value="{tr}Go{/tr}"/>
-		</form>
-	</div>
-{/if}
-
 {if $prefs.fgal_quota_show eq 'y' && $gal_info.quota}
 	<div style="float:right">
 		{capture name='use'}{math equation="round((100*x)/(1024*1024*y))" x=$gal_info.usedSize y=$gal_info.quota}{/capture}

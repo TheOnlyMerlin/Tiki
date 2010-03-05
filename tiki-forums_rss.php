@@ -1,19 +1,23 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+// $Id: /cvsroot/tikiwiki/tiki/tiki-forums_rss.php,v 1.27 2007-10-12 07:55:27 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once ('tiki-setup.php');
 require_once ('lib/tikilib.php');
 require_once ('lib/rss/rsslib.php');
 
-$access->check_feature('feature_forums');
+if ($prefs['feature_forums'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_forums");
+	$smarty->display("error.tpl");
+	die;
+}
 
 if ($prefs['rss_forums'] != 'y') {
-	$errmsg=tra("rss feed disabled");
-	require_once ('tiki-rss_error.php');
+        $errmsg=tra("rss feed disabled");
+        require_once ('tiki-rss_error.php');
 }
 
 $res=$access->authorize_rss(array('tiki_p_admin_forum','tiki_p_forum_read'));

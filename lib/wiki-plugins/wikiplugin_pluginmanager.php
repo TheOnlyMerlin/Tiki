@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 function wikiplugin_pluginmanager_help() {
 	return tra("Displays a list of plugins available in this wiki.").":<br />~np~{PLUGINMANAGER(info=>version|description|arguments)}{PLUGINMANAGER}~/np~";
@@ -27,8 +22,7 @@ require_once "lib/wiki/pluginslib.php";
 * @author Claudio Bustos
 * @version $Revision: 1.11 $
 */
-class WikiPluginPluginManager extends PluginsLib
-{
+class WikiPluginPluginManager extends PluginsLib {
     var $expanded_params = array("info");
     function getDefaultArguments() {
         return array('info' => "version|description|arguments");

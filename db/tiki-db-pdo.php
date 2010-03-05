@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== false) {
@@ -14,7 +9,12 @@ if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== false) {
 // Set the host string for PDO dsn.
 $db_hoststring = "host=$host_tiki";
 
-if ($db_tiki == 'mysqli') {
+switch ($db_tiki) {
+	case 'postgres7':
+	case 'postgres8':
+		$db_tiki = 'pgsql';
+		break;
+	case 'mysqli':
 		$db_tiki = 'mysql';
 
 		// If using mysql and it is set to use sockets instead of hostname,
@@ -24,6 +24,14 @@ if ($db_tiki == 'mysqli') {
 		if (isset($socket_tiki)) {
 			$db_hoststring = "unix_socket=$socket_tiki";
 		}
+		break;
+	case 'oracle':
+		$db_tiki = 'oci';
+}
+
+if ($db_tiki == 'sybase') {
+	// avoid database change messages
+	ini_set('sybct.min_server_severity', '11');
 }
 
 try {
@@ -32,6 +40,10 @@ try {
 	$dbTiki->setAttribute(PDO::ATTR_CASE,PDO::CASE_NATURAL);
 	$dbTiki->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_WARNING);
 	$dbTiki->setAttribute(PDO::ATTR_ORACLE_NULLS,PDO::NULL_EMPTY_STRING);
+
+	if ($db_tiki == 'sybase') {
+		$dbTiki->exec('set quoted_identifier on');
+	}
 
 	require_once 'lib/core/lib/TikiDb/Pdo.php';
 	TikiDb::set( new TikiDb_Pdo( $dbTiki ) );

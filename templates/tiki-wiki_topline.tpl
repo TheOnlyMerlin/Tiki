@@ -38,7 +38,7 @@
 			{/jq}
 		<a title="{tr}View edit icons{/tr}" href="#" id="wiki_plugin_edit_view">{icon _id='wiki_plugin_edit_view' title="{tr}View edit icons{/tr}"}</a>
 		{/if}
-		<a title="{tr}Edit this page{/tr}" {ajax_href template="tiki-editpage.tpl" htmlelement="tiki-center"}tiki-editpage.php?page={if $needsStaging eq 'y'}{$stagingPageName|escape:"url"}{else}{$page|escape:"url"}{/if}{if !empty($page_ref_id) and $needsStaging neq 'y'}&amp;page_ref_id={$page_ref_id}{/if}{/ajax_href}>{icon _id='page_edit' alt="{tr}Edit this page{/tr}"}</a>
+		<a title="{tr}Edit{/tr}" {ajax_href template="tiki-editpage.tpl" htmlelement="tiki-center"}tiki-editpage.php?page={if $needsStaging eq 'y'}{$stagingPageName|escape:"url"}{else}{$page|escape:"url"}{/if}{if !empty($page_ref_id) and $needsStaging neq 'y'}&amp;page_ref_id={$page_ref_id}{/if}{/ajax_href}>{icon _id='page_edit'}</a>
 	{/if}
 	{if $prefs.feature_morcego eq 'y' && $prefs.wiki_feature_3d eq 'y'}
 				<a title="{tr}3d browser{/tr}" href="javascript:wiki3d_open('{$page|escape}',{$prefs.wiki_3d_width}, {$prefs.wiki_3d_height})">{icon _id='wiki3d' alt="{tr}3d browser{/tr}"}</a>
@@ -58,9 +58,9 @@
 	{/if}
 	{if $user and $prefs.feature_user_watches eq 'y'}
 		{if $user_watching_page eq 'n'}
-				<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;watch_object={$page|escape:"url"}&amp;watch_action=add{if $structure eq 'y'}&amp;structure={$home_info.pageName|escape:'url'}{/if}" class="icon">{icon _id='eye' alt="{tr}Page is NOT being monitored. Click icon to START monitoring.{/tr}"}</a>
+				<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;watch_object={$page|escape:"url"}&amp;watch_action=add{if $structure eq 'y'}&amp;structure={$home_info.pageName|escape:'url'}{/if}" class="icon">{icon _id='eye' alt='{tr}Monitor this Page{/tr}'}</a>
 		{else}
-				<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;watch_object={$page|escape:"url"}&amp;watch_action=remove{if $structure eq 'y'}&amp;structure={$home_info.pageName|escape:'url'}{/if}" class="icon">{icon _id='no_eye' alt="{tr}Page IS being monitored. Click icon to STOP monitoring.{/tr}"}</a>
+				<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;watch_object={$page|escape:"url"}&amp;watch_action=remove{if $structure eq 'y'}&amp;structure={$home_info.pageName|escape:'url'}{/if}" class="icon">{icon _id='no_eye' alt='{tr}Stop Monitoring this Page{/tr}'}</a>
 		{/if}
 		{if $structure == 'y' and $tiki_p_watch_structure eq 'y'}
 			{if $user_watching_structure ne 'y'}
@@ -81,12 +81,10 @@
 
 	{if $prefs.feature_backlinks eq 'y' and $backlinks and $tiki_p_view_backlink eq 'y'}
 			<form action="tiki-index.php" method="get" style="display: block; float: left">
-				<select name="page" onchange="this.form.submit()" title="{tr}Backlinks{/tr}">
+				<select name="page" onchange="this.form.submit()">
 					<option>{tr}Backlinks{/tr}...</option>
 		{section name=back loop=$backlinks}
-					<option value="{$backlinks[back].fromPage}" title="{$backlinks[back].fromPage}">
-					{if $prefs.wiki_backlinks_name_len ge '1'}{$backlinks[back].fromPage|truncate:$prefs.wiki_backlinks_name_len:"...":true}{else}{$backlinks[back].fromPage}{/if}
-					</option>
+					<option value="{$backlinks[back].fromPage}">{$backlinks[back].fromPage}</option>
 		{/section}
 				</select>
 			</form>

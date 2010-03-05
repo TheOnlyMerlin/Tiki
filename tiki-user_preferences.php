@@ -1,10 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-user_preferences.php,v 1.102.2.13 2008-03-05 19:06:23 sylvieg Exp $
 $section = 'mytiki';
 require_once ('tiki-setup.php');
 if ($prefs['feature_ajax'] == "y") {
@@ -14,13 +13,17 @@ include_once ('lib/modules/modlib.php');
 include_once ('lib/userprefs/scrambleEmail.php');
 include_once ('lib/userprefs/userprefslib.php');
 // User preferences screen
-if ($prefs['feature_userPreferences'] != 'y' && $prefs['change_password'] != 'y' && $tiki_p_admin_users != 'y') {
+if ($prefs['feature_userPreferences'] != 'y' && $prefs['change_password'] != 'y' && $tiki_p_admin != 'y') {
 	$smarty->assign('msg', tra("This feature is disabled") . ": feature_userPreferences");
 	$smarty->display("error.tpl");
 	die;
 }
-$access->check_user($user);
-
+if (!$user) {
+	$smarty->assign('msg', tra("You are not logged in"));
+	$smarty->assign('errortype', '402');
+	$smarty->display("error.tpl");
+	die;
+}
 // Make sure user preferences uses https if set
 if (!$https_mode && isset($https_login) && $https_login == 'required') {
 	header('Location: ' . $base_url_https . 'tiki-user_preferences.php');
@@ -34,16 +37,25 @@ if (isset($_REQUEST['userId']) || isset($_REQUEST['view_user'])) {
 			$smarty->assign('msg', tra("Unknown user"));
 			$smarty->display("error.tpl");
 			die;
-		} else {
-			$access->check_permission('tiki_p_admin_users');
+		} elseif ($tiki_p_admin != 'y' and $tiki_p_admin_users != 'y') {
+			$smarty->assign('errortype', 401);
+			$smarty->assign('msg', tra("You do not have permission to view other users data"));
+			$smarty->display("error.tpl");
+			die;
 		}
 	}
 } elseif (isset($_REQUEST["view_user"])) {
 	if ($_REQUEST["view_user"] != $user) {
-		$access->check_permission('tiki_p_admin_users');
-		$userwatch = $_REQUEST["view_user"];
-		if (!$userlib->user_exists($userwatch)) {
-			$smarty->assign('msg', tra("Unknown user"));
+		if ($tiki_p_admin == 'y' or $tiki_p_admin_users == 'y') {
+			$userwatch = $_REQUEST["view_user"];
+			if (!$userlib->user_exists($userwatch)) {
+				$smarty->assign('msg', tra("Unknown user"));
+				$smarty->display("error.tpl");
+				die;
+			}
+		} else {
+			$smarty->assign('errortype', 401);
+			$smarty->assign('msg', tra("You do not have permission to view other users data"));
 			$smarty->display("error.tpl");
 			die;
 		}
@@ -146,13 +158,7 @@ if ($prefs['feature_userPreferences'] == 'y' && isset($_REQUEST["new_prefs"])) {
 	foreach($customfields as $custpref => $prefvalue) {
 		if (isset($_REQUEST[$customfields[$custpref]['prefName']])) $tikilib->set_user_preference($userwatch, $customfields[$custpref]['prefName'], $_REQUEST[$customfields[$custpref]['prefName']]);
 	}
-	if (isset($_REQUEST["realName"]) && ($prefs['auth_ldap_nameattr'] == '' || $prefs['auth_method'] != 'ldap')) {
-     $tikilib->set_user_preference($userwatch, 'realName', $_REQUEST["realName"]);
-     if ( $prefs['user_show_realnames'] == 'y' ) {
-       global $cachelib;
-       $cachelib->invalidate('userlink.'.$user.'0');
-     }
-   }
+	if (isset($_REQUEST["realName"]) && ($prefs['auth_ldap_nameattr'] == '' || $prefs['auth_method'] != 'ldap')) $tikilib->set_user_preference($userwatch, 'realName', $_REQUEST["realName"]);
 	if ($prefs['feature_community_gender'] == 'y') {
 		if (isset($_REQUEST["gender"])) $tikilib->set_user_preference($userwatch, 'gender', $_REQUEST["gender"]);
 	}

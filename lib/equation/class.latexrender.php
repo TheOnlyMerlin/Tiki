@@ -23,8 +23,7 @@
  *
  */
 
-class LatexRender
-{
+class LatexRender {
 
     // ====================================================================================
     // Variable Definitions
@@ -147,8 +146,8 @@ class LatexRender
             }
 
             // security filter: try to match against LaTeX-Tags Blacklist
-						foreach($this->_latex_tags_blacklist as $backlist) {
-                if (stristr($latex_formula,$blacklist)) {
+            for ($i=0;$i<sizeof($this->_latex_tags_blacklist);$i++) {
+                if (stristr($latex_formula,$this->_latex_tags_blacklist[$i])) {
                 	$this->_errorcode = 2;
                     return false;
                 }

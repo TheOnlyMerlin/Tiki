@@ -1,11 +1,6 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /*
+ * $Header: /cvsroot/tikiwiki/_mods/wiki-plugins/mouseover/wiki-plugins/wikiplugin_mouseover.php,v 1.2 2008-03-17 17:59:19 sylvieg Exp $
  * PLugin mouseover - See documentation http://www.bosrup.com/web/overlib/?Documentation
  */
 function wikiplugin_mouseover_help() {
@@ -13,15 +8,6 @@ function wikiplugin_mouseover_help() {
 }
 
 function wikiplugin_mouseover_info() {
-	global $prefs;
-	include_once('lib/prefs/jquery.php');
-	$jqprefs = prefs_jquery_list();
-	$jqjx = array();
-	foreach($jqprefs['jquery_effect']['options'] as $k => $v) {
-		$jqfx[] = array('text' => $v, 'value' => $k);
-	}
-	
-	
 	return array(
 		'name' => tra('Mouseover'),
 		'documentation' => 'PluginMouseover',
@@ -110,26 +96,14 @@ function wikiplugin_mouseover_info() {
 			'effect' => array(
 				'required' => false,
 				'name' => tra('Effect'),
-				'options' => $jqfx,
-				'description' => 'Show/hide animation',
-				'filter' => 'striptags',
+				'description' => 'Options: None|Default|Slide|Fade (and with jQuery UI enabled: Blind|Clip|Drop|Explode|Fold|Puff|Slide)',
+				'filter' => 'alpha',
 			),
 			'speed' => array(
 				'required' => false,
 				'name' => tra('Effect speed'),
-				'options' => array(
-					array('text' => tra('Normal'), 'value' => ''), 
-					array('text' => tra('Fast'), 'value' => 'fast'), 
-					array('text' => tra('Slow'), 'value' => 'slow'), 
-				),
-				'description' => '',
+				'description' => 'Options: Fast|Normal|Slow',
 				'filter' => 'alpha',
-			),
-			'closeDelay' => array(
-				'required' => false,
-				'name' => tra('Close delay'),
-				'description' => 'Number of seconds before popup closes',
-				'filter' => 'digits',
 			),
 		),
 	);
@@ -153,7 +127,6 @@ function wikiplugin_mouseover( $data, $params ) {
 	$padding = isset( $params['padding'] ) ? 'padding: '.$params['padding'].'px;' : '';
 	$effect = !isset( $params['effect'] ) || $params['effect'] == 'Default' ? '' : strtolower($params['effect']);
 	$speed = !isset( $params['speed'] ) ? 'normal' : strtolower($params['speed']);
-	$closeDelay = isset( $params['closeDelay'] ) ? (int) $params['closeDelay'] : 0;
 	
 	if (empty($params['label']) && empty($params['text'])) {
 		$label = tra('No label specified');
@@ -163,10 +136,6 @@ function wikiplugin_mouseover( $data, $params ) {
 	}
 
 	$text = trim($text);
-	
-	if (empty($text)) {
-		return $label;
-	}
 
 	if( $parse ) {
 		// Default output of the plugin is in ~np~, so escape it if content has to be parsed.
@@ -179,19 +148,13 @@ function wikiplugin_mouseover( $data, $params ) {
 	$url = htmlentities( $url, ENT_QUOTES, 'UTF-8' );
 
 	global $headerlib;
-	
-	if ($closeDelay && $sticky) {
-		$closeDelayStr = "setTimeout(function() {hideJQ('#$id', '$effect', '$speed')}, ".($closeDelay * 1000).");";
-	} else {
-		$closeDelayStr = '';
-	}
 
 	$js = "\$jq('#$id-link').mouseover(function(event) {
-	\$jq('#$id').css('left', event.pageX + $offsetx).css('top', event.pageY + $offsety); showJQ('#$id', '$effect', '$speed'); $closeDelayStr });";
+	\$jq('#$id').css('left', event.pageX + $offsetx).css('top', event.pageY + $offsety); showJQ('#$id', '$effect', '$speed'); });";
 	if ($sticky) {
 		$js .= "\$jq('#$id').click(function(event) { hideJQ('#$id', '$effect', '$speed'); }).css('cursor','pointer');\n";
 	} else {
-		$js .= "\$jq('#$id-link').mouseout(function(event) { setTimeout(function() {hideJQ('#$id', '$effect', '$speed')}, ".($closeDelay * 1000)."); });";
+		$js .= "\$jq('#$id-link').mouseout(function(event) { setTimeout(function() {hideJQ('#$id', '$effect', '$speed')}, 250); });";
 	}
 	$headerlib->add_jq_onready($js);
 	

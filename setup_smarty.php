@@ -1,10 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/setup_smarty.php,v 1.45.2.3 2008-01-23 18:05:42 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-  
+
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== FALSE) {
   header('location: index.php');
@@ -14,15 +15,15 @@ if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== FALSE) {
 require_once 'lib/setup/third_party.php';
 require_once (defined('SMARTY_DIR') ? SMARTY_DIR : 'lib/smarty/libs/') . 'Smarty.class.php';
 
-class Smarty_Tikiwiki extends Smarty
+class Smarty_Tikiwiki extends Smarty 
 {
 	function Smarty_Tikiwiki($tikidomain = '') {
 		parent::Smarty();
 		if ($tikidomain) { $tikidomain.= '/'; }
-		$this->template_dir = realpath('templates/');
-		$this->compile_dir = realpath("templates_c/$tikidomain");
-		$this->config_dir = realpath('configs/');
-		$this->cache_dir = realpath("templates_c/$tikidomain");
+		$this->template_dir = 'templates/';
+		$this->compile_dir = "templates_c/$tikidomain";
+		$this->config_dir = 'configs/';
+		$this->cache_dir = "templates_c/$tikidomain";
 		$this->caching = 0;
 		$this->assign('app_name', 'Tikiwiki');
 		$this->plugins_dir = array(	// the directory order must be like this to overload a plugin
@@ -40,7 +41,7 @@ class Smarty_Tikiwiki extends Smarty
 
 		$this->security_settings['MODIFIER_FUNCS'] = array_merge(
 			$this->security_settings['MODIFIER_FUNCS'],
-			array('addslashes', 'ucfirst', 'ucwords', 'urlencode', 'md5', 'implode', 'explode', 'is_array', 'htmlentities', 'var_dump', 'strip_tags')
+			array('addslashes', 'ucfirst', 'ucwords', 'urlencode', 'md5', 'implode', 'explode', 'is_array', 'htmlentities', 'var_dump')
 		);
 		$this->security_settings['IF_FUNCS'] = array_merge(
 			$this->security_settings['IF_FUNCS'],
@@ -99,7 +100,6 @@ class Smarty_Tikiwiki extends Smarty
 			// Enable AJAX
 			if ( $prefs['feature_ajax'] == 'y' && $_smarty_display ) {
 				global $ajaxlib; require_once('lib/ajax/ajaxlib.php');
-				$ajaxlib->registerTemplate('tiki-site_header_login.tpl');
 				$ajaxlib->registerTemplate($tpl);
 			}
 
@@ -120,7 +120,6 @@ class Smarty_Tikiwiki extends Smarty
 			if ( $prefs['feature_ajax'] == 'y' && $_smarty_display ) {
 				$_POST['xajaxargs'][0] = $_smarty_tpl_file;
 				global $ajaxlib; require_once('lib/ajax/ajaxlib.php');
-				$ajaxlib->registerTemplate('tiki-site_header_login.tpl');
 				$ajaxlib->registerTemplate($_smarty_tpl_file);
 				$ajaxlib->processRequests();
 			}

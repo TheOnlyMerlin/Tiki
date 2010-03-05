@@ -1,16 +1,21 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-edit_wiki_section.php,v 1.3.2.3 2008-03-01 17:12:54 leyan Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 if (isset($_REQUEST['type']))
 	$section = $_REQUEST['type'];
 require_once ('tiki-setup.php');
 global $objectlib; include_once('lib/objectlib.php');
 
-$access->check_feature('feature_wiki');
+if ($prefs['feature_wiki'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_wiki");
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (isset($_REQUEST['page']))
 	$_REQUEST['object'] = $_REQUEST['page'];

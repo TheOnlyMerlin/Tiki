@@ -1,9 +1,8 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 include_once ('tiki-setup.php');
 if ($prefs['feature_xmlrpc'] != 'y' || $prefs['wiki_feature_3d'] != 'y') {
@@ -24,7 +23,7 @@ function getSubGraph($params) {
 	$queue = array($nodeName);
 	$i = 0;
 	$neighbours = array();
-	while ($i <= $depth && count($queue) > 0) {
+	while ($i <= $depth && sizeof($queue) > 0) {
 		$nextQueue = array();
 		foreach($queue as $nodeName) {
 			$similar = $userlib->related_users($nodeName, 5);
@@ -37,7 +36,7 @@ function getSubGraph($params) {
 				$myNeighbours[] = $user['login'];
 				$neighbours[$user['login']][] = $nodeName;
 			}
-			$temp_max = count($myNeighbours);
+			$temp_max = sizeof($myNeighbours);
 			for ($j = 0; $j < $temp_max; $j++) {
 				if (!isset($passed[$myNeighbours[$j]])) {
 					$nextQueue[] = $myNeighbours[$j];

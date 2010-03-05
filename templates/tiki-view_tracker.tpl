@@ -64,7 +64,30 @@
 	<div class="wikitext">{$mail_msg}</div>
 {/if}
 
-{include file='tracker_error.tpl'}
+{if count($err_mandatory) > 0}
+	{remarksbox type='Warning' title='{tr}Warning{/tr}'}
+	<div class="highlight"><em class='mandatory_note'>{tr}Following mandatory fields are missing{/tr}&nbsp;</em>:
+		<br/>
+		{section name=ix loop=$err_mandatory}
+			{$err_mandatory[ix].name}
+			{if !$smarty.section.ix.last},&nbsp;{/if}
+		{/section}
+	</div>
+	{/remarksbox}
+	<br />
+{/if}
+
+{if count($err_value) > 0}
+	{remarksbox type='Warning' title='{tr}Warning{/tr}'}
+	<div class="highlight"><em class='mandatory_note'>
+		{tr}Following fields are incorrect{/tr}</em>&nbsp;:<br/>
+		{section name=ix loop=$err_value}
+			{$err_value[ix].name}{if !$smarty.section.ix.last},&nbsp;{/if}
+		{/section}
+	</div>
+	{/remarksbox}
+	<br />
+{/if}
 
 {tabset name='tabs_view_tracker'}
 
@@ -239,7 +262,12 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 {if $tracker_info.showStatus eq 'y' and ($tracker_info.showStatusAdminOnly ne 'y' or $tiki_p_admin_trackers eq 'y')}
 <tr class="formcolor"><td>{tr}Status{/tr}</td>
 <td>
-{include file='tracker_status_input.tpl' tracker=$tracker_info form_status=status}
+<select name="status">
+{foreach key=st item=stdata from=$status_types}
+<option value="{$st}" {if $tracker_info.newItemStatus eq $st} selected="selected"{/if}
+style="background-image:url('{$stdata.image}');background-repeat:no-repeat;padding-left:17px;">{$stdata.label}</option>
+{/foreach}
+</select>
 </td></tr>
 {/if}
 
@@ -247,7 +275,7 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 {assign var=fid value=$field_value.fieldId}
 {* -------------------- header and others -------------------- *}
 {if $field_value.isHidden eq 'n' or $field_value.isHidden eq 'c'  or $tiki_p_admin_trackers eq 'y'}
-{if $field_value.type ne 'x' and $field_value.type ne 'l' and $field_value.type ne 'q' and (($field_value.type ne 'u' and $field_value.type ne 'g' and $field_value.type ne 'I') or !$field_value.options_array[0] or $tiki_p_admin_trackers eq 'y') and (empty($field_value.visibleBy) or in_array($default_group, $field_value.visibleBy) or $tiki_p_admin_trackers eq 'y')and (empty($field_value.editableBy) or in_array($default_group, $field_value.editableBy) or $tiki_p_admin_trackers eq 'y') and ($field_value.type ne 'A' or $tiki_p_attach_trackers eq 'y') and $field_value.type ne 'N' and $field_value.type ne '*' and !($field_value.type eq 's' and $field_value.name eq 'Rating')}
+{if $field_value.type ne 'x' and $field_value.type ne 'l' and $field_value.type ne 'q' and (($field_value.type ne 'u' and $field_value.type ne 'g' and $field_value.type ne 'I') or !$field_value.options_array[0] or $tiki_p_admin_trackers eq 'y') and (empty($field_value.visibleBy) or in_array($default_group, $field_value.visibleBy) or $tiki_p_admin_trackers eq 'y')and (empty($field_value.editableBy) or in_array($default_group, $field_value.editableBy) or $tiki_p_admin_trackers eq 'y') and ($field_value.type ne 'A' or $tiki_p_attach_trackers eq 'y') and $field_value.type ne 'N'}
 {if $field_value.type eq 'h'}
 </table>
 <h2>{$field_value.name|escape}</h2>
@@ -258,7 +286,7 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 {elseif $stick eq 'y'}
 <td class="formlabel right">{$field_value.name|escape}{if $field_value.isMandatory eq 'y'}<strong class='mandatory_star'> *</strong>{/if}</td><td >
 {else}
-<tr class="formcolor"><td class="formlabel" >{$field_value.name|escape}{if $field_value.isMandatory eq 'y'}<strong class='mandatory_star'> *</strong>{/if}
+<tr class="formcolor"><td class="formlabel" >{$field_value.name|escape}{if $field_value.isMandatory eq 'y'}<strong class='mandatory_star'> *<strong>{/if}
 </td><td colspan="3" class="formcontent" >
 {/if}
 {/if}
@@ -270,10 +298,6 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 
 {* -------------------- system -------------------- *}
 {if $field_value.type eq 's' and ($field_value.name eq "Rating" or $field_value.name eq tra("Rating")) and $tiki_p_tracker_vote_ratings eq 'y'}
-	{include file='tracker_item_field_input.tpl'}
-{/if}
-{* -------------------- system -------------------- *}
-{if $field_value.type eq '*'}
 	{include file='tracker_item_field_input.tpl'}
 {/if}
 
@@ -356,6 +380,14 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 {elseif $field_value.type eq 'k'}
 {include file='tracker_item_field_input.tpl'}
 
+{* -------------------- multimedia -------------------- *}
+{elseif $field_value.type eq 'M'}
+{if ($field_value.options_array[0] > '2')}
+<input type="file" name="{$field_value.ins_id}" /><br />
+{else}
+<input type="text" name="{$field_value.ins_id}" value="{$field_value.value}" /><br />
+{/if}
+
 {* -------------------- text field / email -------------------- *}
 {elseif $field_value.type eq 't'}
 {include file='tracker_item_field_input.tpl'}
@@ -402,7 +434,12 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 
 {* -------------------- item link -------------------- *}
 {elseif $field_value.type eq 'r'}
-{include file='tracker_item_field_input.tpl'}
+<select name="{$field_value.ins_id}" {if $listfields.$fid.http_request}onchange="selectValues('trackerIdList={$listfields.$fid.http_request[0]}&amp;fieldlist={$listfields.$fid.http_request[3]}&amp;filterfield={$listfields.$fid.http_request[1]}&amp;status={$listfields.$fid.http_request[4]}&amp;mandatory={$listfields.$fid.http_request[6]}&amp;filtervalue='+escape(this.value),'{$listfields.$fid.http_request[5]}')"{/if}>
+{if $field_value.isMandatory ne 'y'}<option value=""></option>{/if}
+{foreach key=id item=label from=$field_value.list}
+<option value="{$label|escape}" {if $input_err}{if $field_value.value eq $label}selected="selected"{/if}{elseif $defaultvalues.$fid eq $label}selected="selected"{/if}>{if $field_value.listdisplay.$id eq ''}{$label}{else}{$field_value.listdisplay.$id}{/if}</option>
+{/foreach}
+</select>
 
 {* -------------------- dynamic list -------------------- *}
 {elseif $field_value.type eq 'w'}
@@ -429,7 +466,7 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 </select>
 
 {/if}
-{if $field_value.type ne 'S'}
+{if $field_value.type ne 'a' and $field_value.type ne 'S'}
 {if $field_value.description}
 <br />{if $field_value.descriptionIsParsed eq 'y'}{wiki}{$field_value.description}{/wiki}{else}<em>{$field_value.description|escape}</em>{/if}
 {/if}
@@ -493,8 +530,10 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 {foreach from=$fields key=ix item=field_value}
 {assign var=fid value=$field_value.fieldId}
 {if $listfields.$fid.http_request}
-{jq}
-selectValues('trackerIdList={{$listfields.$fid.http_request[0]}}&fieldlist={{$listfields.$fid.http_request[3]}}&filterfield={{$listfields.$fid.http_request[1]}}&status={{$listfields.$fid.http_request[4]}}&mandatory={{$listfields.$fid.http_request[6]}}','{{$listfields.$fid.http_request[5]}}','{{$field_value.ins_id}}')
-{/jq}
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+selectValues('trackerIdList={$listfields.$fid.http_request[0]}&fieldlist={$listfields.$fid.http_request[3]}&filterfield={$listfields.$fid.http_request[1]}&status={$listfields.$fid.http_request[4]}&mandatory={$listfields.$fid.http_request[6]}','{$listfields.$fid.http_request[5]}','{$field_value.ins_id}')
+//--><!]]>
+</script>
 {/if}
 {/foreach}

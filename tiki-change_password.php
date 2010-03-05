@@ -1,13 +1,20 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-change_password.php,v 1.20.2.2 2008/03/20 17:03:31 jyhem Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 require_once ('tiki-setup.php');
 
-$access->check_feature('change_password');
+if ($prefs['change_password'] != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied"));
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (!isset($_REQUEST["user"]))
 	$_REQUEST["user"] = '';
@@ -65,6 +72,7 @@ if (isset($_REQUEST["change"])) {
 	$userlib->change_user_password($_REQUEST["user"], $_REQUEST["pass"]);
 	// Login the user and display Home page
 	$_SESSION["$user_cookie_site"] = $_REQUEST["user"];
+	global $logslib; include_once("lib/logs/logslib.php");
 	$logslib->add_log('login', 'logged from change_password', $_REQUEST['user'], '', '', $tikilib->now);
 	header ('Location: '.$prefs['tikiIndex']);
 }

@@ -4,13 +4,13 @@
  */
  
 /* Import *lite as the base: */ 
-@import url("lite/lite.css");
+@import "lite/lite.css";
 
 /* Then import the default layout properties file: */
-@import url("layout/layout.css");
+@import "layout/layout.css";
 
 /* And design defaults: */
-@import url("layout/design.css");
+@import "layout/design.css";
  
 /***** XHTML Elements ******/
 body {
@@ -376,6 +376,7 @@ input[name="search"] {
 #siteloginbar {
 	position: relative;
 	font-size: inherit;
+	text-align: left;
 }
 
 #sitelocbar {
@@ -1019,6 +1020,7 @@ h1 a:hover {
 }
 
 .wikitopline .content br {
+	display: none;
 }
 
 div#description,
@@ -1104,9 +1106,6 @@ div#page-bar {
 	line-height: 20px;
 }
 
-p.editdate {
-	border-top: 1px solid #8CACBB;
-}
 
 #wikihelp-tab table,
 #wikihelp-tab table td {
@@ -1177,12 +1176,6 @@ div.quotebody {
 .minichat {
 	border: 1px solid #527ca6;
 	background: #f5f5f5;
-}
-
-/* fancytable (sortable) plugin */
-
-.fancysort .header:hover {
-	color: #82AC78;
 }
 
 /** Wiki tocs **/
@@ -1571,6 +1564,7 @@ div.commentsedithelp {
 
 .freetagitemlist {
 	margin-top: 5px;
+	background: #ccdceb;
 }
 
 
@@ -1968,7 +1962,6 @@ table.default td {
 	border: solid 1px #a9a9a9;
 	background: white;
 }
-
 .highlight_word_0,
 .highlight_word_1,
 .highlight_word_2,

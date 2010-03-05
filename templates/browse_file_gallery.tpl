@@ -185,9 +185,9 @@
     </div> {* thumbnailcontener *}
   {/if}
 
-{jq}
+<script type="text/javascript">
 	adjustThumbnails()	
-{/jq}
+</script>
 
   {sectionelse}
     <div>

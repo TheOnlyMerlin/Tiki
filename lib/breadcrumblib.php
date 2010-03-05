@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+/**
+ * $Id$
+ * Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
+ * All Rights Reserved. See copyright.txt for details and a complete list of authors.
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+ */
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -13,8 +14,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 include_once("tikihelplib.php");
 
-class Breadcrumb
-{
+class Breadcrumb {
 	var $title;
 	var $description;
 	var $url;
@@ -215,7 +215,7 @@ function breadcrumb_getTitle($crumbs, $loc) {
  */
 /* static */
 function _breadcrumb_getTitle($crumbs, $loc) {
-    global $prefs, $print_page, $info, $structure, $structure_path, $tikilib;
+    global $prefs, $print_page, $info, $structure, $structure_path;
 
     if ( $prefs['feature_breadcrumbs'] == 'n' || $prefs['feature_sitetitle'] == 'title' ) {
         $ret = '<strong><a title="';
@@ -237,8 +237,8 @@ function _breadcrumb_getTitle($crumbs, $loc) {
     $ret .= '" href="'.$crumbs[$len-1]->url.'">';
     if ($prefs['feature_breadcrumbs'] == 'n' && $loc == "admin")
         $ret .= tra("Administration:")." ";
-        if ($prefs['wikiapproval_hideprefix'] == 'y' && $approved = $tikilib->get_approved_page( $crumbs[$len-1]->title ) ) { 
-        	$crumbs[$len-1]->title = $approved;
+        if ($prefs['feature_wikiapproval'] == 'y' && $prefs['wikiapproval_hideprefix'] == 'y' && substr($crumbs[$len-1]->title, 0, strlen($prefs['wikiapproval_prefix'])) == $prefs['wikiapproval_prefix']) { 
+        	$crumbs[$len-1]->title = substr($crumbs[$len-1]->title, strlen($prefs['wikiapproval_prefix']));            	
 		}
     			if (!empty($prefs['wiki_pagename_strip'])) {
     				include_once('lib/smarty_tiki/modifier.pagename.php');
@@ -272,12 +272,12 @@ function breadcrumb_getDescription($crumbs, $loc) {
             return '<span id="description">'.tra($crumbs[$len-1]->description).'</span>';
         }
     } else if ( !($prefs['feature_wiki_description'] == 'n' && $info)) {
-        return tra($crumbs[$len-1]->description);
+        return '<span id="description">'.tra($crumbs[$len-1]->description).'</span>';
     }
 }
 
 /* private */
 function _is_assoc($var) {
-   return is_array($var) && array_keys($var)!==range(0,count($var)-1);
+   return is_array($var) && array_keys($var)!==range(0,sizeof($var)-1);
 }
 		

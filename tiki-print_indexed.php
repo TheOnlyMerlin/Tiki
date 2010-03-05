@@ -1,14 +1,17 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once 'tiki-setup.php';
 require_once 'lib/categories/categlib.php';
 
-$access->check_feature('feature_print_indexed');
+if ($prefs['feature_print_indexed'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_print_indexed");
+	$smarty->display("error.tpl");
+	die;
+}
 
 $inputConfiguration = array(array('staticKeyFilters' => array('list' => 'alpha',)), array('staticKeyFiltersForArrays' => array('languages' => 'alpha', 'categId' => 'digits',)), array('catchAllUnset' => null),);
 
@@ -62,10 +65,10 @@ class ObjectList
 				$renderer->render($smarty, $options);
 			}
 		}
-} // }}}
-abstract class ObjectRenderer
-// {{{
-{
+	} // }}}
+	abstract class ObjectRenderer
+	// {{{
+	{
 		protected $objectType;
 		protected $objectId;
 		function __construct($objectType, $objectId) {
@@ -83,9 +86,9 @@ abstract class ObjectRenderer
 		abstract function _render($smarty, $template);
 		abstract function getIndexValue($key);
 	} // }}}
-class ObjectRenderer_TrackerItem extends ObjectRenderer
-// {{{
-{
+	class ObjectRenderer_TrackerItem extends ObjectRenderer
+	// {{{
+	{
 		private static $trackers = array();
 		private $valid = false;
 		private $tracker;
@@ -133,11 +136,10 @@ class ObjectRenderer_TrackerItem extends ObjectRenderer
 				if ($field['isMain'] == 'y') return $field['value'];
 			}
 		}
-} // }}}
-
-class ObjectRenderer_Wiki extends ObjectRenderer
-// {{{
-{
+	} // }}}
+	class ObjectRenderer_Wiki extends ObjectRenderer
+	// {{{
+	{
 		private $info;
 		function __construct($objectType, $objectId) {
 			parent::__construct($objectType, $objectId);
@@ -158,10 +160,9 @@ class ObjectRenderer_Wiki extends ObjectRenderer
 			}
 		}
 	} // }}}
-
-class ObjectRenderer_MultilingualWiki extends ObjectRenderer
-// {{{
-{
+	class ObjectRenderer_MultilingualWiki extends ObjectRenderer
+	// {{{
+	{
 		private $renderers = array();
 		function __construct($type, $object, $options = array()) {
 			parent::__construct($type, $object, $options);
@@ -196,9 +197,8 @@ class ObjectRenderer_MultilingualWiki extends ObjectRenderer
 			}
 			return reset($this->renderers)->getIndexValue($key);
 		}
-} // }}}
-// End of classes }}}
-
+	} // }}}
+	// End of classes }}}
 	$objectList = new ObjectList;
 	$objectList->addCustomIndex('title');
 	$indexPages = array();

@@ -1,14 +1,17 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_tracker_fields.php,v 1.47.2.3 2007-11-23 12:57:18 nyloth Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/trackers/trackerlib.php');
 
-$access->check_feature('feature_trackers');
+if ($prefs['feature_trackers'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled') . ': feature_trackers');
+	$smarty->display('error.tpl');
+	die;
+}
 
 if (!isset($_REQUEST['trackerId'])) {
 	$smarty->assign('msg', tra('No tracker indicated'));
@@ -106,6 +109,7 @@ if (isset($_REQUEST["remove"]) and ($tracker_info['useRatings'] != 'y' or $info[
 	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
 		key_check($area);
 		$trklib->remove_tracker_field($_REQUEST["remove"], $_REQUEST["trackerId"]);
+		$logslib->add_log('admintrackerfields', 'removed tracker field ' . $_REQUEST["remove"] . ' from tracker ' . $tracker_info['name']);
 	} else {
 		key_get($area);
 	}
@@ -209,12 +213,6 @@ function replace_tracker_from_request($tracker_info) {
 }
 if (isset($_REQUEST['refresh']) && isset($_REQUEST['exportAll'])) {
 	$smarty->assign('export_all', 'y');
-}
-if (isset($_REQUEST['batchaction']) and $_REQUEST['batchaction'] == 'delete') {
-	check_ticket('admin-tracker-fields');
-	foreach($_REQUEST['action'] as $batchid) {
-		$trklib->remove_tracker_field($batchid, $_REQUEST['trackerId']);
-	}
 }
 if (isset($_REQUEST["save"])) {
 	if (isset($_REQUEST['import']) and isset($_REQUEST['rawmeat'])) {
