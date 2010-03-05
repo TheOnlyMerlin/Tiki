@@ -1307,7 +1307,7 @@ var jS = jQuery.sheet = {
 				var controlsHeight;
 				var parent = jQuery(jS.s.parent);
 				
-				parent.resizable({
+				parent.resizable( 'destroy' ).resizable({
 					minWidth: jS.s.width * 0.5,
 					resize: function() {
 						o = jS.obj.ui();
@@ -1765,7 +1765,10 @@ var jS = jQuery.sheet = {
 					jS.themeRoller.resize();
 				}
 			};
-			
+			if ( typeof obj == "string") {
+				jS.s.urlGet = obj;
+				obj = null;
+			}
 			if (!obj) {
 				jQuery('<div />').load(jS.s.urlGet, function() {
 					var sheets = jQuery(this).find('table');
