@@ -7,6 +7,9 @@ jonnybradley 5 march 2010
 New:
 	jqs5 - slideshow lib (experimental - small modification to jqs5.js to alias $jq to $)
 
+Upgrade:
+	cluetip from 1.0.6 to 1.0.7
+
 jonnybradley 4 march 2010
 
 Upgrade:
