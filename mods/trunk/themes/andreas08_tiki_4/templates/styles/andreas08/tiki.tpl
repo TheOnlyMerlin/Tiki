@@ -97,7 +97,7 @@
 			</tr>
 		{if $prefs.feature_bot_bar eq 'y'}
 			<tr>
-				<td colspan="3{* change to 5 if the 2 border tds are used *}" id="footer" colspan="3"{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
+				<td  id="footer" colspan="3"{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
 					<div class="wrapper"> 
 		  				<div class="content">
     						{include file="tiki-bot_bar.tpl"}
