@@ -3,7 +3,7 @@ body{
 	font-size:13px;
 	color:black;
 }
-body{background:url(../../../images/bgnds/screenBgnd.gif)}
+/*body{background:url(../../../images/bgnds/screenBgnd.gif)}*/
 
 .rootVoices{
 	background-color:#f3f3f3;
@@ -92,7 +92,7 @@ body{background:url(../../../images/bgnds/screenBgnd.gif)}
 }
 .menuContainer .selected td{
 	background-color:#f3f3f3;
-	background-image:url("../images/bgnd_sel_2.jpg")
+	/*background-image:url("../images/bgnd_sel_2.jpg")*/
 }
 .menuContainer .selected td a{
 	color:#000;
@@ -101,7 +101,7 @@ body{background:url(../../../images/bgnds/screenBgnd.gif)}
 	color: #cccccc;
 }
 .menuContainer .subMenuOpener{
-	background-image:url("../images/menuArrow.gif");
+	/*background-image:url("../images/menuArrow.gif");*/
 	background-repeat:no-repeat;
 	background-position:right;
 }
@@ -127,7 +127,7 @@ vertical menu
 	cursor: pointer;
 }
 .rootVerticalVoices td.selected{
-	background-image:url("../images/bgnd_sel_4.png");
+	/*background-image:url("../images/bgnd_sel_4.png");*/
 	color:#ffffff;
 	cursor: pointer;
 }
@@ -179,7 +179,7 @@ vertical menu
 	color: #c3c3c3;
 }
 .verticalMenu .selected td{
-	background-image:url("../images/bgnd_sel_4.png");
+	/*background-image:url("../images/bgnd_sel_4.png");*/
 }
 .verticalMenu .selected td a{
 	color:#fff;
@@ -190,7 +190,7 @@ vertical menu
 
 
 .verticalMenu .subMenuOpener{
-	background-image:url("../images/menuArrow_w.gif");
+	/*background-image:url("../images/menuArrow_w.gif");*/
 	background-repeat:no-repeat;
 	background-position:right;
 }
