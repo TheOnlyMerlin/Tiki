@@ -1792,7 +1792,7 @@ var jS = jQuery.sheet = {
 	},
 	openSheetURL: function ( url ) {
 		jS.s.urlGet = url;
-		openSheet();
+		return jS.openSheet();
 	},
 	openSheet: function(o) {
 		if (!jS.isDirty ? true : confirm("Are you sure you want to open a different sheet?  All unsaved changes will be lost.")) {
@@ -1826,6 +1826,9 @@ var jS = jQuery.sheet = {
 					}, false);
 				});
 			}
+			return true;
+		} else {
+			return false;
 		}
 	},
 	newSheetDialog: "What size would you like to make your spreadsheet? Example: '5x10' creates a sheet that is 5 columns by 10 rows.",
