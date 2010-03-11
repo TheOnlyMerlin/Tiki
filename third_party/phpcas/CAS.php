@@ -35,7 +35,7 @@ if (version_compare(PHP_VERSION,'5','>=')) {
 /**
  * phpCAS version. accessible for the user by phpCAS::getVersion().
  */
-define('PHPCAS_VERSION','1.1.0RC1');
+define('PHPCAS_VERSION','1.1.0RC7');
 
 // ------------------------------------------------------------------------
 //  CAS VERSIONS
@@ -796,7 +796,7 @@ class phpCAS
 		if ( gettype($table) != 'string' ) {
 			phpCAS::error('type mismatched for parameter $table (should be `string\')');
 		}
-		$PHPCAS_CLIENT->setPGTStorageDB($this,$user,$password,$hostname,$port,$database,$table);
+		$PHPCAS_CLIENT->setPGTStorageDB($user,$password,$database_type,$hostname,$port,$database,$table);
 		phpCAS::traceEnd();
 		}
 	
@@ -1148,6 +1148,71 @@ class phpCAS
 		$PHPCAS_CLIENT->setServerLoginURL($url);
 		phpCAS::traceEnd();
 		}
+		
+		
+	/**
+	 * Set the serviceValidate URL of the CAS server.
+	 * @param $url the serviceValidate URL
+	 * @since 1.1.0 by Joachim Fritschi
+	 */
+	function setServerServiceValidateURL($url='')
+		{
+		global $PHPCAS_CLIENT;
+		phpCAS::traceBegin();
+		if ( !is_object($PHPCAS_CLIENT) ) {
+			phpCAS::error('this method should only be called after
+				'.__CLASS__.'::client()');
+		}
+		if ( gettype($url) != 'string' ) {
+			phpCAS::error('type mismatched for parameter $url (should be
+			`string\')');
+		}
+		$PHPCAS_CLIENT->setServerServiceValidateURL($url);
+		phpCAS::traceEnd();
+		}
+		
+		
+	 /**
+	 * Set the proxyValidate URL of the CAS server.
+	 * @param $url the proxyValidate URL
+	 * @since 1.1.0 by Joachim Fritschi
+	 */
+	function setServerProxyValidateURL($url='')
+		{
+		global $PHPCAS_CLIENT;
+		phpCAS::traceBegin();
+		if ( !is_object($PHPCAS_CLIENT) ) {
+			phpCAS::error('this method should only be called after
+				'.__CLASS__.'::client()');
+		}
+		if ( gettype($url) != 'string' ) {
+			phpCAS::error('type mismatched for parameter $url (should be
+			`string\')');
+		}
+		$PHPCAS_CLIENT->setServerProxyValidateURL($url);
+		phpCAS::traceEnd();
+		}
+		
+     /**
+	 * Set the samlValidate URL of the CAS server.
+	 * @param $url the samlValidate URL
+	 * @since 1.1.0 by Joachim Fritschi
+	 */
+	function setServerSamlValidateURL($url='')
+		{
+		global $PHPCAS_CLIENT;
+		phpCAS::traceBegin();
+		if ( !is_object($PHPCAS_CLIENT) ) {
+			phpCAS::error('this method should only be called after
+				'.__CLASS__.'::client()');
+		}
+		if ( gettype($url) != 'string' ) {
+			phpCAS::error('type mismatched for parameter $url (should be
+			`string\')');
+		}
+		$PHPCAS_CLIENT->setServerSamlValidateURL($url);
+		phpCAS::traceEnd();
+		}			
 	
 	/**
 	 * This method returns the URL to be used to login.

@@ -351,6 +351,43 @@ class CASClient
 		{
 		return $this->_server['login_url'] = $url;
 		}
+		
+		
+	/**
+	 * This method sets the serviceValidate URL of the CAS server.
+	 * @param $url the serviceValidate URL
+	 * @private
+	 * @since 1.1.0 by Joachim Fritschi
+	 */
+	function setServerServiceValidateURL($url)
+		{
+		return $this->_server['service_validate_url'] = $url;
+		}
+		
+		
+	/**
+	 * This method sets the proxyValidate URL of the CAS server.
+	 * @param $url the proxyValidate URL
+	 * @private
+	 * @since 1.1.0 by Joachim Fritschi
+	 */
+	function setServerProxyValidateURL($url)
+		{
+		return $this->_server['proxy_validate_url'] = $url;
+		}
+		
+		
+	/**
+	 * This method sets the samlValidate URL of the CAS server.
+	 * @param $url the samlValidate URL
+	 * @private
+	 * @since 1.1.0 by Joachim Fritschi
+	 */
+	function setServerSamlValidateURL($url)
+		{
+		return $this->_server['saml_validate_url'] = $url;
+		}
+			
 	
 	/**
 	 * This method is used to retrieve the service validating URL of the CAS server.
@@ -519,30 +556,45 @@ class CASClient
 		if (version_compare(PHP_VERSION,'5','>=') && ini_get('zend.ze1_compatibility_mode')) {
 			phpCAS::error('phpCAS cannot support zend.ze1_compatibility_mode. Sorry.');
 		}
+		// skip Session Handling for logout requests and if don't want it'
+		if ($start_session && !$this->isLogoutRequest()) {
+			phpCAS::trace("Starting session handling");
+			// Check for Tickets from the CAS server
+			if (empty($_GET['ticket'])){
+				phpCAS::trace("No ticket found");
+				// only create a session if necessary
+				if (!isset($_SESSION)) {
+					phpCAS::trace("No session found, creating new session");
+					session_start();
+				}
+			}else{
+				phpCAS::trace("Ticket found");
+				// We have to copy any old data before renaming the session
+				if (isset($_SESSION)) {
+					phpCAS::trace("Old active session found, saving old data and destroying session");
+					$old_session = $_SESSION;
+					session_destroy();	
+				}else{
+					session_start();
+					phpCAS::trace("Starting possible old session to copy variables");
+					$old_session = $_SESSION;
+					session_destroy();	
+				}
+				// set up a new session, of name based on the ticket
+				$session_id = preg_replace('/[^\w]/','',$_GET['ticket']);
+				phpCAS::LOG("Session ID: " . $session_id);
+				session_id($session_id);
+				session_start();
+				// restore old session vars
+				if(isset($old_session)){
+					phpCAS::trace("Restoring old session vars");
+					$_SESSION = $old_session;
+				}
+			}
+		}else{
+			phpCAS::trace("Skipping session creation");
+		}
 
-		if (!$this->isLogoutRequest() && !empty($_GET['ticket']) && $start_session) {
-            // copy old session vars and destroy the current session
-            if (!isset($_SESSION)) {
-            	session_start();
-            }
-            $old_session = $_SESSION;
-            session_destroy();
-            
-            // set up a new session, of name based on the ticket
-			$session_id = preg_replace('/[^\w]/','',$_GET['ticket']);
-			phpCAS::LOG("Session ID: " . $session_id);
-			session_id($session_id);
-            if (!isset($_SESSION)) {
-            	session_start();
-            }
-            // restore old session vars
-            $_SESSION = $old_session;
-		}
-		
-		// activate session mechanism if desired
-		if (!$this->isLogoutRequest() && $start_session) {
-			session_start();
-		}
 		
 		// are we in proxy mode ?
 		$this->_proxy = $proxy;
@@ -615,8 +667,12 @@ class CASClient
 					}
 					break;
 				case CAS_VERSION_2_0: // check for a Service or Proxy Ticket
-					if( preg_match('/^[SP]T-/',$ticket) ) {
-						phpCAS::trace('ST or PT \''.$ticket.'\' found');
+					if (preg_match('/^ST-/', $ticket)) {
+						phpCAS::trace('ST \'' . $ticket . '\' found');
+						$this->setST($ticket);
+						unset ($_GET['ticket']);
+					} else if (preg_match('/^PT-/', $ticket)) {
+						phpCAS::trace('PT \'' . $ticket . '\' found');
 						$this->setPT($ticket);
 						unset($_GET['ticket']);
 					} else if ( !empty($ticket) ) {
@@ -980,7 +1036,9 @@ class CASClient
 			if ( $this->isSessionAuthenticated() ) {
 				// authentication already done
 				$this->setUser($_SESSION['phpCAS']['user']);
-				$this->setAttributes($_SESSION['phpCAS']['attributes']);
+				if(isset($_SESSION['phpCAS']['attributes'])){
+					$this->setAttributes($_SESSION['phpCAS']['attributes']);
+				}
 				phpCAS::trace('user = `'.$_SESSION['phpCAS']['user'].'\''); 
 				$auth = TRUE;
 			} else {
@@ -1106,10 +1164,10 @@ class CASClient
 			}
 			$client_ip = $_SERVER['REMOTE_ADDR'];
 			$client = gethostbyaddr($client_ip);
-			phpCAS::log("Client: ".$client);
+			phpCAS::log("Client: ".$client."/".$client_ip); 
 			$allowed = false;
 			foreach ($allowed_clients as $allowed_client) {
-				if ($client == $allowed_client) {
+				if (($client == $allowed_client) or ($client_ip == $allowed_client)) { 
 					phpCAS::log("Allowed client '".$allowed_client."' matches, logout request is allowed");
 					$allowed = true;
 					break;
@@ -1493,20 +1551,23 @@ class CASClient
 
            $attr_array = array();
 
-                if (($dom = DOMDocument::loadXML($text_response))) {
-                   $xPath = new DOMXpath($dom);
-                   $xPath->registerNameSpace('samlp', 'urn:oasis:names:tc:SAML:1.0:protocol');
-                   $xPath->registerNameSpace('saml', 'urn:oasis:names:tc:SAML:1.0:assertion');
-                   $attrs = $xPath->query("//saml:Attribute");
-                   foreach($attrs as $attr) {
-                      phpCAS::trace($attr->getAttribute('AttributeName'));
-                      $values = $xPath->query("saml:AttributeValue", $attr);
+                if (($dom = domxml_open_mem($text_response))) {
+                   $xPath = $dom->xpath_new_context();
+                   $xPath->xpath_register_ns('samlp', 'urn:oasis:names:tc:SAML:1.0:protocol');
+                   $xPath->xpath_register_ns('saml', 'urn:oasis:names:tc:SAML:1.0:assertion');
+                   $nodelist = $xPath->xpath_eval("//saml:Attribute");
+                   $attrs = $nodelist->nodeset;
+                   phpCAS::trace($text_response);
+                  foreach($attrs as $attr){
+                      $xres = $xPath->xpath_eval("saml:AttributeValue", $attr);
+                      $name = $attr->get_attribute("AttributeName");
                       $value_array = array();
-                      foreach($values as $value) {
-                          $value_array[] = $value->nodeValue;
-                          phpCAS::trace("* " . $value->nodeValue);
+                      foreach($xres->nodeset as $node){
+                          $value_array[] = $node->get_content();
+                         
                       }
-                      $attr_array[$attr->getAttribute('AttributeName')] = $value_array;
+                      phpCAS::trace("* " . $name . "=" . $value_array);
+                      $attr_array[$name] = $value_array;
                    }
                    $_SESSION[SAML_ATTRIBUTES] = $attr_array;
 		   // UGent addition...
@@ -1825,7 +1886,7 @@ class CASClient
 		}
 		
 		// create the storage object
-		$this->_pgt_storage = &new PGTStorageFile($this,$format,$path);
+		$this->_pgt_storage = new PGTStorageFile($this,$format,$path);
 		}
 	
 	/**
@@ -1862,7 +1923,7 @@ class CASClient
 		trigger_error('PGT storage into database is an experimental feature, use at your own risk',E_USER_WARNING);
 		
 		// create the storage object
-		$this->_pgt_storage = & new PGTStorageDB($this,$user,$password,$database_type,$hostname,$port,$database,$table);
+		$this->_pgt_storage = new PGTStorageDB($this,$user,$password,$database_type,$hostname,$port,$database,$table);
 		}
 	
 	// ########################################################################
@@ -2525,15 +2586,21 @@ class CASClient
 				}
 			}
 			
-			$final_uri .= strtok($_SERVER['REQUEST_URI'],"?");
-			$cgi_params = '?'.strtok("?");
-			// remove the ticket if present in the CGI parameters
-			$cgi_params = preg_replace('/&ticket=[^&]*/','',$cgi_params);
-			$cgi_params = preg_replace('/\?ticket=[^&;]*/','?',$cgi_params);
-			$cgi_params = preg_replace('/\?%26/','?',$cgi_params);
-			$cgi_params = preg_replace('/\?&/','?',$cgi_params);
-			$cgi_params = preg_replace('/\?$/','',$cgi_params);
-			$final_uri .= $cgi_params;
+			$baseurl = split("\?", $_SERVER['REQUEST_URI'], 2);
+			$final_uri .= $baseurl[0];
+			$query_string = '';
+			if ($_GET) {
+				$kv = array();
+				foreach ($_GET as $key => $value) {
+					if($key !== "ticket"){
+						$kv[] = urlencode($key). "=" . urlencode($value);
+					}
+				}
+				$query_string = join("&", $kv);
+			}
+			if($query_string){
+				$final_uri .= "?" . $query_string;
+			}
 			$this->setURL($final_uri);
 		}
 		phpCAS::traceEnd($this->_url);
