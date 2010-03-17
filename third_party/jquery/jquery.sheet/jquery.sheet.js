@@ -3,7 +3,7 @@ jQuery.sheet() Spreadsheet with Calculations Plugin
 Version: 1b
 http://code.google.com/p/jquerysheet/
 		
-Copyright (C) 2009 Robert Plummer
+Copyright (C) 2010 Robert Plummer
 Dual licensed under the LGPL and GPL licenses.
 http://www.gnu.org/licenses/
 */
@@ -13,6 +13,42 @@ http://www.gnu.org/licenses/
 		When dealing with size, it seems that outerHeight is generally the most stable cross browser
 		attribute to use for bar sizing.  We try to use this as much as possible.  But because col's
 		don't have boarders, we subtract or add jS.attrH.boxModelCorrection() for those browsers.
+	tr/td column and row Index VS cell/column/row index
+		DOM elements are all 0 based (tr/td/table)
+		Spreadsheet elements are all 1 based (A1, A1:B4, TABLE2:A1, TABLE2:A1:B4)
+		Column/Row/Cell
+	sheet import and export methods structure (jS.importSheet.xml(obj), jS.importSheet.json(obj), jS.exportSheet.xml(), jS.exportSheet.json());
+		xml structure:
+			//xml
+			<documents>
+				<document> //repeats
+					<metadata>
+						<columns>{Column_Count}</columns>
+						<rows>{Row_Count}</rows>
+						<title></title>
+					</metadata>
+					<data>
+						<r{Row_Index}> //repeats
+							<c{Column_Index}></c{Column_Index}> //repeats
+						</r{Row_Index}>
+					</data>
+				</document>
+			</documents>
+		json structure:
+			var documents = [
+				document: { //repeats
+					metadata: {
+						columns: Column_Count,
+						rows: Row_Count,
+						title: ''
+					},
+					data: {
+						r{Row_Index}: { //repeats
+							c{Column_Index}: '' //repeats
+						}
+					}
+				}
+			];
 */
 
 jQuery.fn.extend({
@@ -90,6 +126,12 @@ jQuery.fn.extend({
 				cE.fn[kLower] = cE.fn[k];
 			}
 		}
+		
+		jQuery(window).resize(function() {
+			jS.s.width = jQuery(jS.s.parent).width() - jS.obj.barLeft().width() - (jS.attrH.boxModelCorrection() * 2);
+			jS.s.height = jQuery(jS.s.parent).height() - jS.attrH.boxModelCorrection();
+			jS.sheetSyncSize();
+		});
 		
 		jS.openSheet(obj);		
 	}
@@ -228,7 +270,7 @@ var jS = jQuery.sheet = {
 			jQuery(newRow).find('td')
 				.html('')
 				.attr('class', '')
-				.removeAttr('function')
+				.removeAttr('formula')
 				.keydown(function(e) {
 					return jS.evt.formulaKeyDown(e, true);
 				});
@@ -248,7 +290,7 @@ var jS = jQuery.sheet = {
 				.removeClass(jS.cl.uiActive)
 				.height(jS.attrH.height(newRow));
 			
-			jS.log('New row at: ' + (parseInt(currentBar.text()) + 1));
+			//jS.log('New row at: ' + (parseInt(currentBar.text()) + 1));
 			
 			if (insertBefore) {
 				newBar.insertBefore(currentBar);
@@ -331,7 +373,7 @@ var jS = jQuery.sheet = {
 				j++;
 			});
 			
-			jS.log('Sheet length: ' + j);		
+			//jS.log('Sheet length: ' + j);		
 			
 			if (atColumn) {//If atColumn equals anything it means that we inserted at a point, because of this we need to update the labels
 				jS.obj.barTop().find('div').each(function(i) {
@@ -753,27 +795,27 @@ var jS = jQuery.sheet = {
 						}
 						
 						td.removeAttr('prevVal');
-						v = jS.manageTextToHtml(v);
+						var vHTML = jS.manageTextToHtml(v);
 						if (noEditFormula) {
 							td.html(tdPrevVal);
 						} else if (editedFormulaToFormula) {
 							recalc = true;
-							td.attr('formula', v).html('');
+							td.attr('formula', v.replace(/\n/g, ' ')).html('');
 						} else if (editedFormulaToReg) {
 							recalc = true;
-							td.removeAttr('formula').html(v);
+							td.removeAttr('formula').html(vHTML);
 						} else if (editedRegToFormula) {
 							recalc = true;
-							td.removeAttr('formula').html(v);
+							td.removeAttr('formula').html(vHTML);
 						} else if (editedRegToReg) {
-							td.html(v);
+							td.html(vHTML);
 						} else if (noEditNumber) {
-							td.html(v); 
+							td.html(vHTML); 
 						} else if (noEditNull) {
-							td.html(v);
+							td.html(vHTML);
 						} else if (editedNumberToNumber) {
 							recalc = true;
-							td.html(v);
+							td.html(vHTML);
 						} else if (editedToNull) {
 							recalc = true;
 							td.removeAttr('formula').html('');
@@ -948,7 +990,7 @@ var jS = jQuery.sheet = {
 						.focus()
 						.select();
 					
-					jQuery(e.target).parent().css('cursor', 'pointer');
+					target.parent().css('cursor', 'pointer');
 					
 					jS.log('stop resizing');
 				}
@@ -1336,30 +1378,24 @@ var jS = jQuery.sheet = {
 				parent.resizable( 'destroy' ).resizable({
 					minWidth: jS.s.width * 0.5,
 					minHeight: jS.s.height * 0.5,
-					resize: function() {
-						o = jS.obj.ui();
-						barTop = jS.obj.barTopParent()
-							.add(jS.obj.pane().parent().andSelf());
-						barLeft = jS.obj.barLeftParent()
-							.add(jS.obj.ui())
-							.add(jS.obj.pane());
-						controlsHeight = jS.obj.controls().height();
-						
-						jS.s.width = parent.width() - jS.s.colMargin + jS.attrH.boxModelCorrection();
-						jS.s.height = parent.height();
-						
-						o
-							.width(jS.s.width)
-							.height(jS.s.height - controlsHeight);
-						
-						barTop
-							.width(jS.s.width);
-						barLeft
-							.height(jS.s.height - controlsHeight - jS.s.colMargin + jS.s.boxModelCorrection);
+					ghost: true,
+					stop: function() {						
+						jS.s.width = parent.width() - jS.obj.barLeft().width() - (jS.attrH.boxModelCorrection() * 2);
+						jS.s.height = parent.height() - jS.attrH.boxModelCorrection();
+						jS.sheetSyncSize();
 					}
 				});
 				// resizable formula area - a bit hard to grab the handle but is there!
-				//jS.obj.formula().resizable({minHeight: 20, maxHeight: 62, handles: "s"});
+				var formulaResizeParent = jQuery('<span />');
+				jS.obj.formula().wrap(formulaResizeParent).parent().resizable({
+					minHeight: jS.obj.formula().height(), 
+					maxHeight: 78,
+					handles: 's',
+					resize: function(e, ui) {
+						jS.obj.formula().height(ui.size.height);
+						jS.sheetSyncSize();
+					}
+				});
 			}
 		}
 	},
@@ -1839,7 +1875,7 @@ var jS = jQuery.sheet = {
 		}
 	},
 	importRow: function(rowArray) {
-		jS.controlFactory.addRow();
+		jS.controlFactory.addRow(null, null, ':last');
 
 		var error = "";
 		jS.obj.sheet().find('tr:last td').each(function(i) {
@@ -1891,12 +1927,40 @@ var jS = jQuery.sheet = {
 		jS.calc(jS.i);
 	},
 	importSheet: {
+		xml: function (data) { //Will not accept CDATA tags
+			var table = jQuery('<table />');
+			var tbody = jQuery('<tbody />').appendTo(table);
+			
+			jQuery(data).find('document').each(function() { //document
+				var metaData = jQuery(this).find('metadata');
+				var columnCount = metaData.find('columns').text();
+				var rowCount = metaData.find('rows').text();
+				var title = metaData.find('title').html();
+				jQuery(this).find('data').children().each(function(i) { //rows
+					var thisRow = jQuery('<tr />');
+					jQuery(this).children().each(function(j) { //columns
+						var o = jQuery(this).html();
+						if (o.charAt(0) == '=') {
+							thisRow.append('<td formula="' + o + '" />');
+						} else {
+							thisRow.append('<td>' + o + '</td>');
+						}
+					});
+					tbody.append(thisRow);
+				});
+			});
+			
+			return table;
+		},
 		json: function(data) {
 			jS.i = jS.sheetCount + 1;
 			sheet = eval('(' + data + ')');
 			size_c = sheet["metadata"]["columns"] * 1 + 5;
 			size_r = sheet["metadata"]["rows"] * 1 + 1;
-			var table = jQuery("<table id='" + jS.id.sheet + jS.i + "' class='" + jS.cl.sheet + "' />");
+			title = sheet["metadata"]["title"];
+			title = (title ? title : "");
+			
+			var table = jQuery("<table id='" + jS.id.sheet + jS.i + "' class='" + jS.cl.sheet + "' title='" + title + "' />");
 			
 			var cur_row;
 			for(var x = 1; x <= size_r; x++)
@@ -1916,7 +1980,7 @@ var jS = jQuery.sheet = {
 					cur_val = sheet["data"][row][column];
 					cur_column = table.find('table' + jS.i + '_' + 'cell_' + column + '_r' + row).text(cur_val);
 					
-					if (cur_val.substr(0,1) == '=')
+					if (cur_val.charAt(0) == '=')
 					{
 						cur_column.attr("formula", cur_val);
 					}
@@ -1932,6 +1996,8 @@ var jS = jQuery.sheet = {
 			var result = "";
 			jQuery(sheetClone).each(function() {
 				var x = '';
+				var title = jQuery(this).attr('title');
+				
 				var count = 0;
 				var cur_column = cur_row = '';
 				var max_column = max_row = 0;
@@ -1975,6 +2041,7 @@ var jS = jQuery.sheet = {
 							'<metadata>' + 
 								'<columns>' + max_column + '</columns>' + 
 								'<rows>' + max_row + '</rows>' + 
+								'<title>' + title + '</title>' + 
 							'</metadata>' + 
 							'<data>' + x + '</data>' + 
 						'</document>';
@@ -1987,7 +2054,13 @@ var jS = jQuery.sheet = {
 			var docs = []; //documents
 			
 			jQuery(sheetClone).each(function() {
-				var doc = {metadata:{},data:{}};
+				var doc = {
+					metadata:{},
+					data:{}
+				};
+				
+				doc.metadata.title = jQuery(this).attr('title');
+				
 				var count = 0;
 				var cur_column = cur_row = '';
 				var max_column = max_row = 0;
@@ -2032,6 +2105,9 @@ var jS = jQuery.sheet = {
 				docs.push(doc); //append to documents
 			});
 			return docs;
+		},
+		html: function() {
+			return jS.sheetDecorateRemove(true);
 		}
 	},
 	sheetSyncSizeToDivs: function() {
@@ -2249,13 +2325,10 @@ jS.tableCellProvider.prototype = {
 		var key = tableI + "," + row + "," + col;
 		var cell = this.cells[key];
 		if (!cell) {
-			//var tableBody = jS.obj.tableBody();
-			//if (tableBody) {
 			var td = jS.getTd(tableI, row - 1, col - 1);
 			if (td) {
 				cell = this.cells[key] = new jS.tableCell(tableI, row, col);
 			}
-			//}
 		}
 		return cell;
 	},
@@ -2371,7 +2444,7 @@ var cE = jQuery.calculationEngine = {
 				obj: function() { return jQuery('<select style="width: 100%;" onchange="cE.cFN.input.setValue(jQuery(this).val(), jQuery(this).parent());" class="clickable" />'); }
 			},
 			radio: {
-				obj: function(v) {v
+				obj: function(v) {
 					var radio = jQuery('<span class="clickable" />');
 					var name = cE.cFN.input.radio.name();
 					for (var i = 0; i < (v.length <= 25 ? v.length : 25); i++) {
@@ -2421,7 +2494,9 @@ var cE = jQuery.calculationEngine = {
 		CEILING: 	function(v) { return Math.ceil(cE.fn.N(v)); },
 		FLOOR: 		function(v) { return Math.floor(cE.fn.N(v)); },
 		INT: 		function(v) { return Math.floor(cE.fn.N(v)); },
-		ROUND: 		function(v) { return Math.round(cE.fn.N(v)); },
+		ROUND: 		function(v, decimals) {
+			return cE.fn.FIXED(v, (decimals ? decimals : 0), false);
+		},
 		RAND: 		function(v) { return Math.random(); },
 		RND: 		function(v) { return Math.random(); },
 		TRUE: 		function() { return 'TRUE'; },
@@ -2548,7 +2623,7 @@ var cE = jQuery.calculationEngine = {
 					}
 				}
 				
-				selectObj.val(cE.cFN.input.getValue())
+				selectObj.val(cE.cFN.input.getValue());
 				
 				return selectObj;
 			},
@@ -2561,7 +2636,7 @@ var cE = jQuery.calculationEngine = {
 				
 				o.find('input[value="' + cE.cFN.input.getValue() + '"]').attr('CHECKED', 'true');
 				
-				return o
+				return o;
 			},
 			RADIOVAL: function(v) {
 				v = cE.foldPrepare(v, arguments);
@@ -2609,6 +2684,9 @@ var cE = jQuery.calculationEngine = {
 			},
 			PIE:	function(v, legend, axisLabels, w, h) {
 				return jS.controlFactory.chart('p', cE.foldPrepare(v, arguments), legend, axisLabels, w, h, cE.calcState.row - 1);
+			},
+			PIETHREED:	function(v, legend, axisLabels, w, h) {
+				return jS.controlFactory.chart('p3', cE.foldPrepare(v, arguments), legend, axisLabels, w, h, cE.calcState.row - 1);
 			},
 			CUSTOM:	function(type, v, legend, axisLabels, w, h) {
 				return jS.controlFactory.chart(type, cE.foldPrepare(v, arguments), legend, axisLabels,  w, h, cE.calcState.row - 1);
@@ -2826,7 +2904,7 @@ var cE = jQuery.calculationEngine = {
 						return null;
 					}
 
-					if (cE.calcState.col >= cE.calcState.cellProvider.getNumberOfColumns(cE.calcState.row)) {
+					if (cE.calcState.col >= cE.calcState.cellProvider.getNumberOfColumns(cE.calcState.row - 1)) {
 						cE.calcState.row++;
 						cE.calcState.col =  1;
 					} else {
@@ -2841,6 +2919,8 @@ var cE = jQuery.calculationEngine = {
 			return cE.calcState.calcMore;
 		}
 	},
+	formula: null,
+	formulaFunc: null,
 	visitCell: function(tableI, r, c) { // Returns true if done with all cells.
 		var cell = cE.calcState.cellProvider.getCell(tableI, r, c);
 		if (cell == null) {
@@ -2848,35 +2928,34 @@ var cE = jQuery.calculationEngine = {
 		} else {
 			var value = cell.getValue();
 			if (value == null) {
-				var formula = cell.getFormula();
-				if (formula) {
-					var firstChar = formula.charAt(0);
-					if (firstChar == '=') {
-						var formulaFunc = cell.getFormulaFunc();
-						if (formulaFunc == null ||
-							formulaFunc.formula != formula) {
-							formulaFunc = null;
+				this.formula = cell.getFormula();
+				if (this.formula) {
+					if (this.formula.charAt(0) == '=') {
+						this.formulaFunc = cell.getFormulaFunc();
+						if (this.formulaFunc == null ||
+							this.formulaFunc.formula != this.formula) {
+							this.formulaFunc = null;
 							try {
 								var dependencies = {};
-								var body = cE.parseFormula(formula.substring(1), dependencies);
-								formulaFunc = function() {
+								var body = cE.parseFormula(this.formula.substring(1), dependencies);
+								this.formulaFunc = function() {
 									with (cE.fn) {
 										return eval(body);
 									}
 								};
 								
-								formulaFunc.formula = formula;
-								formulaFunc.dependencies = dependencies;
-								cell.setFormulaFunc(formulaFunc);
+								this.formulaFunc.formula = this.formula;
+								this.formulaFunc.dependencies = dependencies;
+								cell.setFormulaFunc(this.formulaFunc);
 							} catch (e) {
 								cell.setValue(cE.ERROR + ': ' + e);
 							}
 						}
-						if (formulaFunc) {
-							cE.calcState.stack.push(cE.makeFormulaEval(cell, r, c, formulaFunc));
+						if (this.formulaFunc) {
+							cE.calcState.stack.push(cE.makeFormulaEval(cell, r, c, this.formulaFunc));
 
 							// Push the cell's dependencies, first checking for any cycles. 
-							var dependencies = formulaFunc.dependencies;
+							var dependencies = this.formulaFunc.dependencies;
 							for (var k in dependencies) {
 								if (dependencies[k] instanceof Array &&
 									(cE.checkCycles(dependencies[k][0], dependencies[k][1], dependencies[k][2]) == true) //same cell on same sheet
@@ -2893,7 +2972,7 @@ var cE = jQuery.calculationEngine = {
 							}
 						}
 					} else {
-						cell.setValue(cE.parseFormulaStatic(formula));
+						cell.setValue(cE.parseFormulaStatic(this.formula));
 					}
 				}
 			}
