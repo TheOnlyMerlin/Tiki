@@ -2,6 +2,14 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 22 March 2010
+
+Update:
+	jquery-ui 1.8rc2 to 1.8
+		Google CDN still hasn't updated to 1.8 yet, so TODO in tiki-setup.php line 161
+	jQuery.sheet from 1.0 b to 1.0 RC
+
+
 jonnybradley 5 march 2010
 
 New:
