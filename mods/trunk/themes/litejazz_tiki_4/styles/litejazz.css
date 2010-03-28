@@ -273,11 +273,11 @@ div#sitead {margin: auto}
 	text-decoration: none}
 	
 #tiki-top .cssmenu_horiz li ul {
-	top: 2.7em;
+	margin-top: 3px;
 }
 
 #tiki-top .cssmenu_horiz li ul li ul {
-	top: 0;
+	margin-top: 0;
 }
 	
 .box-data .cssmenu_vert a {

@@ -391,13 +391,11 @@ li {
 /* ul ul top compensation for padding */
 .cssmenu_horiz li:hover ul,
 .cssmenu_horiz li.sfHover ul {
-	top: 2.3em;
+	margin-top: 12px;
 }
 
 #tiki-top .cssmenu_horiz {
-	position: absolute;
-	left: 30px;
-	bottom: 0;
+	margin-left: 30px;
 }
 
 #tiki-top .cssmenu_horiz li {
@@ -419,7 +417,7 @@ li {
 }
 
 #tiki-top .cssmenu_horiz li ul {
-	top: 28px;
+	margin-top: 0;
 	background: #f6f6f6 url(mollio/featurebox_bg.gif) no-repeat 100% 100%;
 	border-left: 1px solid #c00;
 	width: 15.8em;

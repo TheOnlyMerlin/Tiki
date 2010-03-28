@@ -352,11 +352,11 @@ ul, ol {text-align: left}
 }
 
 #tiki-top .cssmenu_horiz li ul {
-	top: 40px;
+	margin-top: 12px;
 }
 
 #tiki-top .cssmenu_horiz li ul li ul {
-	top: 4px;;
+	margin-top: 4px;
 }
 
 #tiki-top .cssmenu_horiz li ul li:first-child {
