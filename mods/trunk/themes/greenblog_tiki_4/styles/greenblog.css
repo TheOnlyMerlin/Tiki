@@ -3,15 +3,10 @@
 	Visit http://themes.tikiwiki.org for more information.
 */
  
-/* Import layout foundation CSS file. */
-/* If *litecss-based theme . . .  */
-@import "lite/lite.css";
-
-/* Then import the default layout properties file: */
- @import "layout/layout.css";
-
-/* And design defaults: */
-@import "layout/design.css";
+/* Import foundation CSS files. */
+@import url("lite/lite.css");
+@import url("layout/layout.css");
+@import url("layout/design.css");
  
 /***** XHTML Elements (body tag here,
 			others follow Layout) *****/ 
@@ -142,9 +137,9 @@ p {
 	padding: 0 0 10px 0;
 	text-align: justify}
 
-input[type=text],
-input[type=password] {
-	background: 0;
+input[type="text"],
+input[type="password"] {
+	background: #2f320e;
 	border: 1px solid #b6ba63;
 	color: #fff;
 	font-size: 13px;
@@ -155,7 +150,7 @@ input[type=password] {
 	
 textarea,
 fieldset {
-	background: 0;
+	background: none;
 	border: 1px solid #b6ba63;
 	color: #fff;
 	font-size: 1em}
@@ -172,8 +167,8 @@ legend {color: #f2e7ce}
 span.button a,
 span.button a:visited,
 button,
-input[type=reset],
-input[type=submit],
+input[type="reset"],
+input[type="submit"],
 span.button input,
 .submitbutton,
 .calbuttonBox {
@@ -185,8 +180,8 @@ span.button input,
 	padding: 0 4px;
 	margin: 1px}
 	
-input[type=reset],
-input[type=submit] {
+input[type="reset"],
+input[type="submit"] {
 	font-size: 94%;
 	color: #ffc64a;
 	background: #434504;
@@ -197,8 +192,8 @@ input[type=submit] {
 	
 .button a:hover,
 button:hover,
-input[type=reset]:hover,
-input[type=submit]:hover,
+input[type="reset"]:hover,
+input[type="submit"]:hover,
 .button input:hover,
 .submitbutton:hover,
 .calbuttonBox:hover {
@@ -611,10 +606,10 @@ div.freetagitemlist {
 
 /***** Calendar *****/
 .caldark {
-	background: 0;
+	background: none;
 	border: 0}
 
-.caldark .calfocus {background: 0}
+.caldark .calfocus {background: none;}
 .calodd, .caleven {border: 1px solid #b6ba63}
 .calodd .calfocus {background: url(greenblog/menu_panel_bg.jpg) center top}
 /*.calodd .calfocus, .calodd .calfocuson*/
@@ -639,7 +634,3 @@ a.admbox:hover {
 /***** End New (unsorted) *****/
 
 /* End of File */
-
-
-
-
