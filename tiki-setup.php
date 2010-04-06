@@ -41,6 +41,27 @@ require_once ('lib/setup/absolute_urls.php');
 if (($prefs['feature_wysiwyg'] != 'n' && $prefs['feature_wysiwyg'] != 'y') || $prefs['case_patched'] == 'n') require_once ('lib/setup/patches.php');
 require_once ('lib/setup/sections.php');
 require_once ('lib/headerlib.php');
+
+if( $prefs['tiki_domain_prefix'] == 'strip' ) {
+	if( substr( $_SERVER['HTTP_HOST'], 0, 4 ) == 'www.' ) {
+		$prefix = $tikilib->httpPrefix();
+		$prefix = str_replace( '://www.', '://', $prefix );
+		$url = $prefix . $_SERVER['REQUEST_URI'];
+
+		$access->redirect( $url );
+		exit;
+	}
+} elseif( $prefs['tiki_domain_prefix'] == 'force' ) {
+	if( substr( $_SERVER['HTTP_HOST'], 0, 4 ) != 'www.' ) {
+		$prefix = $tikilib->httpPrefix();
+		$prefix = str_replace( '://', '://www.', $prefix );
+		$url = $prefix . $_SERVER['REQUEST_URI'];
+
+		$access->redirect( $url, null, 301 );
+		exit;
+	}
+}
+
 if (isset($_REQUEST['PHPSESSID'])) $tikilib->setSessionId($_REQUEST['PHPSESSID']);
 elseif (function_exists('session_id')) $tikilib->setSessionId(session_id());
 require_once ('lib/setup/cookies.php');
@@ -51,10 +72,6 @@ require_once ('lib/setup/wiki.php');
 if ($prefs['feature_polls'] == 'y') require_once ('lib/setup/polls.php');
 if ($prefs['feature_mailin'] == 'y') require_once ('lib/setup/mailin.php');
 if ($prefs['useGroupHome'] == 'y') require_once ('lib/setup/default_homepage.php');
-if ($prefs['feature_sefurl'] == 'y' && $prefs['tikiIndex'] == 'tiki-index.php' && $prefs['wikiHomePage']) {
-	include_once('lib/wiki/wikilib.php');
-	$prefs['tikiIndex'] = $wikilib->sefurl($prefs['wikiHomePage']);
-}
 require_once ('lib/setup/theme.php');
 if ($prefs['feature_babelfish'] == 'y' || $prefs['feature_babelfish_logo'] == 'y') require_once ('lib/setup/babelfish.php');
 if (!empty($varcheck_errors)) {

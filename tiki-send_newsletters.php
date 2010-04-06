@@ -39,7 +39,6 @@ if ($_REQUEST["nlId"]) {
 	$nl_info = $nllib->get_newsletter($_REQUEST["nlId"]);
 	if (!isset($_REQUEST["editionId"])) $_REQUEST["editionId"] = 0;
 	$smarty->assign('allowTxt', $nl_info['allowTxt']);
-	$smarty->assign('allowArticleClip', $nl_info['allowArticleClip']);
 	if ($_REQUEST["editionId"]) {
 		$info = $nllib->get_edition($_REQUEST["editionId"]);
 	} else {
@@ -55,24 +54,14 @@ if ($_REQUEST["nlId"]) {
 } else {
 	//No newsletter selected -> Check if the textarea for the first has to be displayed
 	$smarty->assign('allowTxt', $newsletters['data'][0]['allowTxt']);
-	$smarty->assign('allowArticleClip', $newsletters['data'][0]['allowTxt']);
 }
 // Display to newsletter txtarea or not depending on the preferences
 $showBoxCheck = "
 	<script type='text/javascript'>
 	<!--
-	function checkNewsletterTxtArea(nlIndex){
+	function checkNewsletterTxtArea(){
 	browser();
-	var allowTxt = new Array();
-	var allowArticleClip = new Array();
-	";
-for ($i = 0; $i < count($newsletters['data']); $i++) {
-$showBoxCheck .= "allowTxt[$i] = '" . $newsletters['data'][$i]['allowTxt'] . "';
-	allowArticleClip[$i] = '" . $newsletters['data'][$i]['allowArticleClip'] . "';
-	";
-}
-// allowTxt
-$showBoxCheck .= "	if (document.getElementById('txtcol1').style.display=='none' && allowTxt[nlIndex] == 'y'){";
+	if (document.getElementById('txtcol1').style.display=='none'){";
 if (preg_match("/gecko/i", $_SERVER['HTTP_USER_AGENT'])) {
 	$showBoxCheck.= "document.getElementById('txtcol1').style.display='table-cell';";
 	$showBoxCheck.= "document.getElementById('txtcol2').style.display='table-cell';";
@@ -81,26 +70,10 @@ if (preg_match("/gecko/i", $_SERVER['HTTP_USER_AGENT'])) {
 	$showBoxCheck.= "document.getElementById('txtcol2').style.display='inline';";
 };
 $showBoxCheck.= "
-    	}else if (allowTxt[nlIndex] == 'n') {
+    	}else{
 	document.getElementById('txtcol1').style.display='none';
 	document.getElementById('txtcol2').style.display='none';
-    	}";
-// allowArticleClip
-$showBoxCheck .= "	if (document.getElementById('clipcol1').style.display=='none' && allowArticleClip[nlIndex] == 'y'){";
-if (preg_match("/gecko/i", $_SERVER['HTTP_USER_AGENT'])) {
-	$showBoxCheck.= "document.getElementById('clipcol1').style.display='table-cell';";
-	$showBoxCheck.= "document.getElementById('clipcol2').style.display='table-cell';";
-} else {
-	$showBoxCheck.= "document.getElementById('clipcol1').style.display='inline';	";
-	$showBoxCheck.= "document.getElementById('clipcol2').style.display='inline';";
-};
-$showBoxCheck.= "
-    	}else if (allowArticleClip[nlIndex] == 'n') {
-	document.getElementById('clipcol1').style.display='none';
-	document.getElementById('clipcol2').style.display='none';
-    	}";
-// end of function
-$showBoxCheck .= "
+    	}
 	}
 	-->
 	</script>
@@ -129,6 +102,9 @@ if (isset($_REQUEST['mode_normal']) && $_REQUEST['mode_normal']=='y') {
 	$smarty->assign('msg', "Parsing wiki to html");
 	$info["data"] = $editlib->parseToWysiwyg($_REQUEST["data"]);
 }
+
+
+
 
 if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0 && (!isset($_REQUEST['previousTemplateId']) || $_REQUEST['previousTemplateId'] != $_REQUEST['templateId'])) {
 	global $templateslib; require_once 'lib/templates/templateslib.php';
@@ -218,13 +194,7 @@ if (isset($_REQUEST["preview"])) {
 	if (!empty($_REQUEST['replyto'])) {
 		$smarty->assign('replyto', $_REQUEST['replyto']);
 	}
-	$previewdata = $info['dataparsed'];
-	if ($nl_info["allowArticleClip"] == 'y' && $nl_info["autoArticleClip"] == 'y') {
-		$articleClip = $nllib->clip_articles($_REQUEST["nlId"]);
-		$previewdata = str_replace("~~~articleclip~~~", $articleClip, $previewdata);
-	}
 	$smarty->assign('info', $info);
-	$smarty->assign('previewdata', $previewdata);
 }
 $smarty->assign('presend', 'n');
 if (isset($_REQUEST["save"])) {
@@ -256,12 +226,6 @@ if (isset($_REQUEST["save"])) {
 	if (stristr($parsed, "<body") === false) {
 		$parsed = "<html><body>$parsed</body></html>";
 	}
-	$previewdata = $parsed;
-	if ($nl_info["allowArticleClip"] == 'y' && $nl_info["autoArticleClip"] == 'y') {
-		$articleClip = $nllib->clip_articles($_REQUEST["nlId"]);
-		$previewdata = str_replace("~~~articleclip~~~", $articleClip, $previewdata);
-	}
-	$smarty->assign('previewdata', $previewdata);
 	$smarty->assign('dataparsed', $parsed);
 	$smarty->assign('subject', $_REQUEST["subject"]);
 	$cant = count($subscribers);
@@ -304,10 +268,6 @@ if ( isset($_REQUEST["send"]) && ! empty($_REQUEST["sendingUniqId"]) ) {
 		$html = "<html><body>" . $tikilib->parse_data($_REQUEST["dataparsed"], array('absolute_links' => true, 'suppress_icons' => true)) . "</body></html>";
 	} else {
 		$html = $_REQUEST["dataparsed"];
-	}
-	if ($nl_info["allowArticleClip"] == 'y' && $nl_info["autoArticleClip"] == 'y') {
-		$articleClip = $nllib->clip_articles($_REQUEST["nlId"]);
-		$html = str_replace("~~~articleclip~~~", $articleClip, $html);
 	}
 	if (stristr($html, '<base') === false) {
 		if (stristr($html, '<header') === false) {
@@ -442,28 +402,6 @@ if ( isset($_REQUEST["send"]) && ! empty($_REQUEST["sendingUniqId"]) ) {
 	unset($_SESSION["sendingUniqIds"][ $_REQUEST["sendingUniqId"] ]);
 	exit; // Stop here since we are in an iframe and don't want to use smarty display
 }
-
-// Article Clipping
-if ($nl_info["allowArticleClip"] == 'y' && !$articleClip) {
-	if ($nl_info["autoArticleClip"] == 'y' || isset($_REQUEST["clipArticles"])) {
-		$articleClip = $nllib->clip_articles($_REQUEST["nlId"]);
-		// prevent clearing of keyed in info if any
-		if (!$info["data"] && isset($_REQUEST["data"])) {
-			$info["data"] = $_REQUEST["data"];
-		}
-		if (!$info["datatxt"] && isset($_REQUEST["datatxt"])) {
-			$info["datatxt"] = $_REQUEST["datatxt"];
-		}
-		if (!$info["subject"] && isset($_REQUEST["subject"])) {
-			$info["subject"] = $_REQUEST["subject"];
-		}		
-	} elseif (isset($_REQUEST["articleClip"]) && $_REQUEST["articleClip"]) {
-		$articleClip = $_REQUEST["articleClip"];
-	}
-} else {
-	$articleClip = '';
-}
-$smarty->assign('articleClip', $articleClip);
 
 if (isset($_REQUEST["save_only"])) {
 	if (!isset($txt) || empty($_REQUEST['datatxt'])) $txt = "";

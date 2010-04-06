@@ -41,7 +41,7 @@ function wikiplugin_category_info() {
 			'types' => array(
 				'required' => false,
 				'name' => tra('Types'),
-				'description' => tra('List of object types to include in the list separated by plus signs. ex: article+blog+faq+fgal<br />+forum+igal+newsletter<br />+event+poll+quiz+survey<br />+tracker+wiki+img'),
+				'description' => tra('List of object types to include in the list separated by plus signs. ex: article+blog+faq+fgal+forum+igal+newsletter+event+poll+quiz+survey+tracker+wiki+img'),
 				'filter' => 'alpha'
 			),
 			'sort' => array(
@@ -89,7 +89,13 @@ function wikiplugin_category_info() {
 				'default' => 'y',
 				'filter' => 'alpha',
 			),
-		
+			'one' => array(
+				'required' => false,
+				'name' => tra('Show one object per line'),
+				'description' => 'y|n',
+				'default' => 'n',
+				'filter' => 'alpha',
+			),		
 		),
 	);
 }
@@ -105,6 +111,8 @@ function wikiplugin_category($data, $params) {
 		return "<span class='warn'>" . tra("Categories are disabled"). "</span>";
 	}
 
+	$default = array('one' => 'n');
+	$params = array_merge($default, $params);
 	extract ($params,EXTR_SKIP);
 
 	// TODO: use categ name instead of id (alternative)

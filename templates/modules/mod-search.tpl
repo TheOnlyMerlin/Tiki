@@ -46,6 +46,7 @@
 				{/add_help}
 			{/if}
 		{/if}
+		{var_dump var="module_params"}
 	    {if $module_params.show_search_button eq 'y'}
 	    	<input type = "submit" class = "wikiaction{if $module_params.default_button eq 'search'} button_default{/if}"
 	    			name = "search" value = "{tr}{$module_params.search_submit}{/tr}"

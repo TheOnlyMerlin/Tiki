@@ -44,6 +44,7 @@
 				{preference name=site_title_location}
 				{preference name=site_title_breadcrumb}
 				{preference name=sender_email}
+				{preference name=tiki_domain_prefix}
 
 				<div class="adminoptionbox">
 					{tr}Go to <a href="tiki-admin.php?page=look" title=""><strong>Look & Feel</strong></a> section for additional site related customization preferences{/tr}.
@@ -181,8 +182,7 @@
 					<br />
 					{preference name=permission_denied_url}
 				</div>
-				{preference name='url_anonymous_page_not_found'}
-				{preference name='url_after_validation'}
+				{preference name='url_after_validation'}	
 			</fieldset>
 
 			<fieldset>

@@ -660,15 +660,13 @@ class TrackerLib extends TikiLib
 	}
 	/* to filter filterfield is an array of fieldIds
 	 * and the value of each field is either filtervalue or exactvalue
-	 * ex: filterfield=array('1','2', 'sqlsearch'=>array('3', '4'), '5')
-	 * ex: filtervalue=array(array('this', '*that'), '')
-	 * ex: exactvalue= array('', array('there', 'those'), 'these', array('>'=>10))
-	 * will filter items with fielId 1 with a value %this% or %that, and fieldId 2 with the value there or those, and fieldId 3 or 4 containing these and fieldId 5 > 10
+	 * ex: filterfield=array('1','2', 'sqlsearch'=>array('3', '4')), filtervalue=array(array('this', '*that'), ''), exactvalue('', array('there', 'those'), 'these', 'xxx')
+	 * will filter items with fielId 1 with a value %this% or %that, and fieldId with the value there or those, and fieldId 3 with a value these
 	 * listfields = array(fieldId=>array('type'=>, 'name'=>...), ...)
 	 * allfields is only for performance issue - check if one field is a category
 	 */
 	function list_items($trackerId, $offset=0, $maxRecords=-1, $sort_mode ='' , $listfields='', $filterfield = '', $filtervalue = '', $status = '', $initial = '', $exactvalue = '', $filter='', $allfields=null) {
-		// echo '<pre>FILTERFIELD:'; print_r($filterfield); echo '<br />FILTERVALUE:';print_r($filtervalue); echo '<br />EXACTVALUE:'; print_r($exactvalue); echo '<br />STATUS:'; print_r($status); echo '</pre>';
+		//echo '<pre>FILTERFIELD:'; print_r($filterfield); echo '<br />FILTERVALUE:';print_r($filtervalue); echo '<br />EXACTVALUE:'; print_r($exactvalue); echo '<br />STATUS:'; print_r($status); echo '</pre>';
 		global $prefs;
 
 		$cat_table = '';
@@ -810,14 +808,8 @@ class TrackerLib extends TikiLib
 					}
 				} elseif ($ev) {
 					if (is_array($ev)) {
-						$keys = array_keys($ev);
-						if (in_array($keys[0], array('<', '>', '<=', '>='))) {
-							$mid .= " AND ttif$i.`value`".$keys[0].'?';
-							$bindvars[] = $ev[$keys[0]];
-						} else {
-							$mid .= " AND ttif$i.`value` in (".implode(',', array_fill(0,count($ev),'?')).")";
-							$bindvars = array_merge($bindvars, $ev);
-						}
+						$mid .= " AND ttif$i.`value` in (".implode(',', array_fill(0,count($ev),'?')).")";
+						$bindvars = array_merge($bindvars, $ev);
 					} elseif (is_array($ff['sqlsearch'])) {
 						$mid .= " AND MATCH(ttif$i.`value`) AGAINST(? IN BOOLEAN MODE)";
 						$bindvars[] = $ev;
@@ -2686,13 +2678,20 @@ class TrackerLib extends TikiLib
 		return $this->getOne("select `fieldId` from `tiki_tracker_fields` where `trackerId`=? and `name`=?",array((int)$trackerId,$name));
 	}
 
-	function get_field_id_from_type($trackerId, $type, $option=NULL) {
+	function get_field_id_from_type($trackerId, $type, $option=NULL, $first=true) {
 		static $memo;
 		if (isset($memo[$trackerId][$type][$option])) {
 			return $memo[$trackerId][$type][$option];
 		}
-		$mid = ' `trackerId`=? and `type`=? ';
-		$bindvars = array((int)$trackerId, $type);
+		if (is_array($type)) {
+			$mid = '`type` in ('.implode(',', array_fill(0,count($type),'?')).')';
+			$bindvars = $type;
+		} else {
+			$mid = '`type`=? ';
+			$bindvars[] = $type;
+		}
+		$mid .= ' and `trackerId`=?';
+		$bindvars[] = (int)$trackerId;
 		if (!empty($option)) {
 			if (strstr($option, '%') === false) {
 				$mid .= ' and `options`=? ';
@@ -2701,9 +2700,15 @@ class TrackerLib extends TikiLib
 			}
 			$bindvars[] = $option;
 		}
-		$fieldId = $this->getOne("select `fieldId` from `tiki_tracker_fields` where $mid",$bindvars);
-		$memo[$trackerId][$type][$option] = $fieldId;
-		return $fieldId;
+		$query = "select `fieldId` from `tiki_tracker_fields` where $mid";
+		if ($first) {
+			$fieldId = $this->getOne($query, $bindvars);
+			$memo[$trackerId][$type][$option] = $fieldId;
+			return $fieldId;
+		} else {
+			$fields = $this->fetchAll($query, $bindvars);
+			return $fields;
+		}
 	}
 
 /*
@@ -3627,7 +3632,6 @@ class TrackerLib extends TikiLib
 		foreach ($fields as $i=>$ff) { // get the item link field
 			if ($ff['fieldId'] == $refFieldId) {
 				$refFieldId = $i;
-				break;
 			}
 		}
 		if (!isset($fields[$refFieldId]['http_request'])) {
@@ -3647,10 +3651,8 @@ class TrackerLib extends TikiLib
 		$fields[$refFieldId]['http_request'][6] .=
 				($fields[$refFieldId]['http_request'][6] ? "," : "") .
 				$field['isMandatory'];
-		$fields[$refFieldId]['http_request'][7] = $fields[$refFieldId]['value'];
+		$fields[$refFieldId]['http_request'][7] .= $fields[$refFieldId]['value'];
 		$fields[$refFieldId]['http_request'][8] .= ($fields[$refFieldId]['http_request'][8] ? "," : "") . $field['value'];
-
-		/* the list of potential value is calculated by a javascript call to selectValues at the end of the tpl */
 	}
 
 }

@@ -1542,10 +1542,6 @@ CREATE TABLE `tiki_newsletters` (
   `frequency` int(14) default NULL,
   `allowTxt` char(1) default 'y',
   `author` varchar(200) default NULL,
-  `allowArticleClip` char(1) default 'y',
-  `autoArticleClip` char(1) default 'n',
-  `articleClipTypes` text  default '',
-  `articleClipRange` int(14) default NULL,
   PRIMARY KEY (`nlId`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
@@ -2628,7 +2624,6 @@ CREATE TABLE `users_groups` (
   `groupTheme` varchar(255) default '',
   `isExternal` char(1) default 'n',
   `expireAfter` int(14) default 0,
-  `emailPattern`  varchar(255) default '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `groupName` (`groupName`),
   KEY `expireAfter` (`expireAfter`)

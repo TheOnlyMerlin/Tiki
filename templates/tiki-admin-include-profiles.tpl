@@ -68,16 +68,45 @@ function showDetails( id, domain, profile ) { // {{{
 
 				row.appendChild( cell );
 				cell.colSpan = 3;
-				
-				if( data.installable || data.already ) {
-				
+
+				if( data.already )
+				{
+					var p = document.createElement( 'p' );
+					p.innerHTML = "A version of this profile is already applied.";
+					p.style.fontWeight = 'bold';
+					cell.appendChild(p);
+
+					var form = document.createElement( 'form' );
+					var p = document.createElement('p');
+					var submit = document.createElement('input');
+					var pd = document.createElement('input');
+					var pp = document.createElement('input');
+					form.method = 'post';
+					form.action = document.location.href;
+
+					form.appendChild(p);
+					submit.type = 'submit';
+					submit.name = 'forget';
+					submit.value = 'Forget and Re-apply';
+					p.appendChild(submit);
+					pd.type = 'hidden';
+					pd.name = 'pd';
+					pd.value = domain;
+					p.appendChild(pd);
+					pp.type = 'hidden';
+					pp.name = 'pp';
+					pp.value = profile;
+					p.appendChild(pp);
+
+					form.setAttribute ( "onsubmit", 'return confirm(\"{/literal}{tr}Are you sure you want to apply the profile{/tr}{literal} ' + profile + '?\");' );
+					
+					cell.appendChild(form);
+				}
+				else if( data.installable )
+				{	
 					var pStep = document.createElement('p');
 					pStep.style.fontWeight = 'bold';
-					if( data.installable ) {
-						pStep.innerHTML = "Step 3: Click on Apply Now to apply Profile";
-					} else if ( data.already ) {
-						pStep.innerHTML = "A version of this profile is already applied.";
-					}
+					pStep.innerHTML = "Step 3: Click on Apply Now to apply Profile";
 					
 					var form = document.createElement( 'form' );
 					var p = document.createElement('p');				
@@ -116,16 +145,8 @@ function showDetails( id, domain, profile ) { // {{{
 					form.appendChild(p);
 
 					submit.type = 'submit';
-					if( data.installable ) {
-						submit.name = 'install';
-						submit.value = 'Apply Now';
-						form.setAttribute ( "onsubmit", 'return confirm(\"{/literal}{tr}Are you sure you want to apply the profile{/tr}{literal} ' + profile + '?\");' );
-					} else if ( data.already ) {
-						submit.name = 'forget';
-						submit.value = 'Forget and Re-apply';
-						form.setAttribute ( "onsubmit", 'return confirm(\"{/literal}{tr}Are you sure you want to re-apply the profile{/tr}{literal} ' + profile + '?\");' );
-					}					
-					
+					submit.name = 'install';
+					submit.value = 'Apply Now';
 					p.appendChild(submit);
 					pd.type = 'hidden';
 					pd.name = 'pd';
@@ -136,6 +157,8 @@ function showDetails( id, domain, profile ) { // {{{
 					pp.name = 'pp';
 					pp.value = profile;
 					p.appendChild(pp);
+
+					form.setAttribute ( "onsubmit", 'return confirm(\"{/literal}{tr}Are you sure you want to apply the profile{/tr}{literal} ' + profile + '?\");' );
 
 					cell.appendChild(form);
 				}
@@ -245,17 +268,17 @@ function showDetails( id, domain, profile ) { // {{{
 				{/if}
 					
 				<fieldset><legend>{tr}Profiles{/tr}</legend>
-				<form method="get" action="tiki-admin.php">
+				<form method="get" action="tiki-admin.php#profile-results">
 					<div class="adminoptionbox">
 						<b>Step 1: Use the Quick or Manual Filter option to see a list of Profiles you can apply</b>
 						<table class="normal">
 							<tr>
-								<th width="50%" class="quickmode_notes">{tr}Option 1: Quick Filter{/tr}</th>
+								<th width="50%">{tr}Option 1: Quick Filter{/tr}</th>
 	
 								<th width="50%">{tr}Option 2: Manual Filter{/tr}</th>
 							</tr>
 							<tr>
-								<td class="quickmode_notes">
+								<td>
 									<br/>
 									{assign var=profilesFilterUrlStart value='tiki-admin.php?profile=&categories%5B%5D='}
 									{assign var=profilesFilterUrlMid value='x&categories%5B%5D='}
@@ -287,45 +310,28 @@ function showDetails( id, domain, profile ) { // {{{
 		
 								</td>
 								<td>
+									<div class="adminoptionlabel">{tr}Filter the list of profiles:{/tr}</div>
 									<div class="adminoptionboxchild">
-										<div class="adminoptionlabel">{tr}Filter the list of profiles:{/tr}</div>
-										<div class="adminoptionlabel">
-											<label for="profile">{tr}Profile:{/tr} </label>
-											<input type="text" name="profile" id="profile" value="{$profile|escape}" /></div>
-											{if isset($category_list) and count($category_list) gt 0}
-												<div class="adminoptionlabel"><label for="categories">{tr}Categories:{/tr} </label>
-													<select multiple="multiple" name="categories[]" id="categories" style="max-height: 10em">
-													{foreach item=cat from=$category_list}
-														<option value="{$cat|escape}"{if !empty($categories) and in_array($cat, $categories)} selected="selected"{/if}>{$cat|escape}</option>
-													{/foreach}
-													</select>
-												</div>
-											{/if}
-		
-										<div class="adminoptionlabel"><label for="repository">{tr}Repository:{/tr} </label>
-											<select name="repository" id="repository">
-												<option value="">{tr}All{/tr}</option>
-												{foreach item=source from=$sources}
-													<option value="{$source.url|escape}"{if $repository eq $source.url} selected="selected"{/if}>{$source.short|escape}</option>
+									<div class="adminoptionlabel"><label for="profile">{tr}Profile:{/tr} </label><input type="text" name="profile" id="profile" value="{$profile|escape}" /></div>
+										{if isset($category_list) and count($category_list) gt 0}
+											<div class="adminoptionlabel"><label for="categories">{tr}Categories:{/tr} </label>
+												<select multiple="multiple" name="categories[]" id="categories">
+												{foreach item=cat from=$category_list}
+													<option value="{$cat|escape}"{if !empty($categories) and  in_array($cat, $categories)} selected="selected"{/if}>{$cat|escape}</option>
 												{/foreach}
-											</select>
-										</div>
-										<input type="hidden" name="page" value="profiles"/>
-										{jq}
-if ($jq("#profile-0").length > 0) {
-	$jq(".quickmode_notes").hide();
-	$jq(window).scrollTop($jq("a[name=step2]").offset().top);
-} else {
-	$jq(".quickmode_notes").show();
-}
-$jq("#repository, #categories").change(function(){
-	if ($jq(this).val()) {
-		$jq(".quickmode_notes").hide(400);
-	} else {
-		$jq(".quickmode_notes").show(400);
-	}
-});
-										{/jq}
+												</select>
+											</div>
+										{/if}
+	
+									<div class="adminoptionlabel"><label for="repository">{tr}Repository:{/tr} </label>
+										<select name="repository" id="repository">
+											<option value="">{tr}All{/tr}</option>
+											{foreach item=source from=$sources}
+												<option value="{$source.url|escape}"{if $repository eq $source.url} selected="selected"{/if}>{$source.short|escape}</option>
+											{/foreach}
+										</select>
+									</div>
+									<input type="hidden" name="page" value="profiles"/>
 									</div>
 								<div align="center"><input type="submit" name="list" value="{tr}List{/tr}" /></div>
 							</td>
