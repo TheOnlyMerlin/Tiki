@@ -2,6 +2,11 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 9 April 2010
+
+Update:
+	jQuery.sheet from 1.0 to 1.0.2
+
 jonnybradley 30 March 2010
 
 Update:
