@@ -12,7 +12,7 @@ http://www.gnu.org/licenses/
 	Dimensions Info:
 		When dealing with size, it seems that outerHeight is generally the most stable cross browser
 		attribute to use for bar sizing.  We try to use this as much as possible.  But because col's
-		don't have boarders, we subtract or add jS.attrH.boxModelCorrection() for those browsers.
+		don't have boarders, we subtract or add jS.s.boxModelCorrection for those browsers.
 	tr/td column and row Index VS cell/column/row index
 		DOM elements are all 0 based (tr/td/table)
 		Spreadsheet elements are all 1 based (A1, A1:B4, TABLE2:A1, TABLE2:A1:B4)
@@ -29,14 +29,14 @@ http://www.gnu.org/licenses/
 					</metadata>
 					<data>
 						<r{Row_Index}> //repeats
-							<c{Column_Index}></c{Column_Index}> //repeats
+							<c{Column_Index} style=""></c{Column_Index}> //repeats
 						</r{Row_Index}>
 					</data>
 				</document>
 			</documents>
 		json structure:
 			[//documents
-				{ //document
+				{ //document repeats
 					metadata: {
 						columns: Column_Count,
 						rows: Row_Count,
@@ -44,19 +44,10 @@ http://www.gnu.org/licenses/
 					},
 					data: {
 						r{Row_Index}: { //repeats
-							c{Column_Index}: '' //repeats
-						}
-					}
-				},
-				{ //document
-					metadata: {
-						columns: Column_Count,
-						rows: Row_Count,
-						title: ''
-					},
-					data: {
-						r{Row_Index}: { //repeats
-							c{Column_Index}: '' //repeats
+							c{Column_Index}: { //repeats
+								value: '',
+								style: ''
+							}
 						}
 					}
 				}
@@ -95,14 +86,15 @@ jQuery.fn.extend({
 					jS.openSheet(t);
 				}
 			},
-			fnClose: 		function() {}, //fn, default clase function, more of a proof of concept
-			joinedResizing: false, //bool, this joins the column/row with the resize bar
-			boxModelCorrection: 2 //int, attempts to correct the differences found in heights and widths of different browsers, if you mess with this, get ready for the must upsetting and delacate js ever
+			fnClose: 		function() {}, 					//fn, default clase function, more of a proof of concept
+			joinedResizing: false, 							//bool, this joins the column/row with the resize bar
+			boxModelCorrection: 2, 							//int, attempts to correct the differences found in heights and widths of different browsers, if you mess with this, get ready for the must upsetting and delacate js ever
+			showErrors:		true							//bool, will make cells value an error if spreadsheet function isn't working correctly or is broken
 		}, settings);
 		jQuery.fn.sheet.settings = jS.s = settings;
 		jS.s.fnBefore();
 		
-		var obj;
+		var obj; var emptyFN = function() {};
 		if (jS.s.buildSheet) {//override urlGet, this has some effect on how the topbar is sized
 			if (typeof(jS.s.buildSheet) == 'object') {
 				obj = jS.s.buildSheet;
@@ -120,14 +112,24 @@ jQuery.fn.extend({
 		jS.s.width = jQuery(this).width();
 		jS.s.height = jQuery(this).height();
 		
+		
+		// Drop functions if they are not needed & save time in recursion
 		if (jS.s.log) {
 			jQuery(jS.s.parent).after('<textarea id="' + jS.id.log + '" />');
 		} else {
-			jS.log = function() {}; //save time in recursion
+			jS.log = emptyFN;
+		}
+		
+		if (!jS.s.showErrors) {
+			cE.makeError = emptyFN;
+		}
+		
+		if (!jQuery.support.boxModel) {
+			jS.s.boxModelCorrection = 0;
 		}
 		
 		if (!jQuery.scrollTo) {
-			jS.followMe = function() {};
+			jS.followMe = emptyFN;
 		}
 		
 		jS.log('Startup');
@@ -357,7 +359,7 @@ var jS = jQuery.sheet = {
 			var currentCol = jS.obj.sheet().find('col' + atColumn);
 			
 			//Lets create our new bar, cell, and col
-			var newBar = currentBar.clone().width(jS.s.newColumnWidth - jS.attrH.boxModelCorrection());
+			var newBar = currentBar.clone().width(jS.s.newColumnWidth - jS.s.boxModelCorrection);
 			var newCol = currentCol.clone().width(jS.s.newColumnWidth);
 			var newCell = jQuery('<td></td>');
 			
@@ -416,14 +418,14 @@ var jS = jQuery.sheet = {
 			var heightFn;
 			if (reload) { //This is our standard way of detecting height when a sheet loads from a url
 				heightFn = function(i, objSource, objBar) {
-					objBar.height(parseInt(objSource.outerHeight()) - jS.attrH.boxModelCorrection());
+					objBar.height(parseInt(objSource.outerHeight()) - jS.s.boxModelCorrection);
 				};
 			} else { //This way of detecting height is used becuase the object has some problems getting
 					//height because both tr and td have height set
 					//This corrects the problem
 					//This is only used when a sheet is already loaded in the pane
 				heightFn = function(i, objSource, objBar) {
-					objBar.height(parseInt(objSource.css('height').replace('px','')) - jS.attrH.boxModelCorrection());
+					objBar.height(parseInt(objSource.css('height').replace('px','')) - jS.s.boxModelCorrection);
 				};
 			}
 			
@@ -452,7 +454,7 @@ var jS = jQuery.sheet = {
 			} else {
 				parents = o.find('col');
 				widthFn = function(obj) {
-					return parseInt(jQuery(obj).css('width').replace('px','')) - jS.attrH.boxModelCorrection();
+					return parseInt(jQuery(obj).css('width').replace('px','')) - jS.s.boxModelCorrection;
 				};
 			}
 			
@@ -737,15 +739,60 @@ var jS = jQuery.sheet = {
 						break;
 				}
 			},
+			pasteOverCells: function(e) { //used for pasting from other spreadsheets
+				if (e.ctrlKey) {
+					var formula = jS.obj.formula(); //so we don't have to keep calling the function and wasting memory
+					var oldVal = formula.val();
+					formula.val('');  //we use formula to catch the pasted data
+					jQuery(document).one('keyup', function() {
+						var loc = jS.getTdLocation(jS.cellLast.td); //save the currrent cell
+						var val = formula.val(); //once ctrl+v is hit formula now has the data we need
+						var firstValue = '';
+						formula.val(''); 
+						
+						var row = val.split(/\n/g); //break at rows
+						for (var i = 0; i < row.length; i++) {
+							var col = row[i].split(/\t/g); //break at columns
+							for (var j = 0; j < col.length; j++) {
+								if (col[j]) {
+									var td = jQuery(jS.getTd(jS.i, i + loc[0], j + loc[1]))
+										.html(col[j])
+										.removeAttr('formula'); //we get rid of formula because we don't know if it was a formula, to check may take too long
+									
+									if ((col[j] + '').charAt(0) == '=') { //we need to know if it's a formula here
+										td.attr('formula', col[j]);
+									}
+									
+									if (i == 0 && j == 0) { //we have to finish the current edit
+										firstValue = col[j];
+									}
+								}
+							}
+						}
+						
+						
+						formula.val(firstValue);
+						jS.setDirty(true);
+						jS.evt.cellEditDone();
+					});
+				}
+				return true;
+			},
 			formulaKeyDown: function(e) {
 				switch (e.keyCode) {
-					case key.ESCAPE: 	jS.evt.cellEditAbandon();					break;
-					case key.TAB: 		return jS.evt.keyDownHandler.tab(e);		break;
-					case key.ENTER: 	return jS.evt.keyDownHandler.enter(e);	break;
+					case key.ESCAPE: 	jS.evt.cellEditAbandon();
+						break;
+					case key.TAB: 		return jS.evt.keyDownHandler.tab(e);
+						break;
+					case key.ENTER: 	return jS.evt.keyDownHandler.enter(e);
+						break;
 					case key.LEFT:
 					case key.UP:
 					case key.RIGHT:
-					case key.DOWN:		return jS.evt.cellClick(e.keyCode);		break;
+					case key.DOWN:		return jS.evt.cellClick(e.keyCode);
+						break;
+					case key.V:			return jS.evt.keyDownHandler.pasteOverCells(e);
+						break;
 					default: 			jS.cellLast.isEdit = true;
 				}
 			}
@@ -912,11 +959,12 @@ var jS = jQuery.sheet = {
 		cellOnMouseDown: function(e) {
 			if (e.altKey) {
 				jS.cellSetActiveMulti(e);
-				jQuery(document).mouseup(function() {
-					jQuery(this).unbind('mouseup');
+				jQuery(document).one('mouseup', function() {
 					var v = jS.obj.formula().val();
 					jS.obj.formula().val(v + jS.getTdRange());
 				});
+				
+				return false;
 			} else {
 				return jS.cellSetActiveMulti(e);
 			}			
@@ -1140,26 +1188,21 @@ var jS = jQuery.sheet = {
 			.attr('id', jS.id.sheet + jS.i)
 			.attr('border', '1px');
 		obj.find('.' + jS.cl.uiCell).removeClass(jS.cl.uiCell);
-		obj.find('td')
-			.css('background-color', '')
-			.css('color', '')
-			.css('height', '')
-			.attr('height', '');
 	},
 	attrH: {//Attribute Helpers
 	//I created this object so I could see, quickly, which attribute was most stable.
 	//As it turns out, all browsers are different, thus this has evolved to a much uglier beast
 		width: function(obj, skipCorrection) {
-			return jQuery(obj).outerWidth() - jS.attrH.boxModelCorrection(skipCorrection);
+			return jQuery(obj).outerWidth() - (skipCorrection ? 0 : jS.s.boxModelCorrection);
 		},
 		widthReverse: function(obj, skipCorrection) {
-			return jQuery(obj).outerWidth() + jS.attrH.boxModelCorrection(skipCorrection);
+			return jQuery(obj).outerWidth() + (skipCorrection ? 0 : jS.s.boxModelCorrection);
 		},
 		height: function(obj, skipCorrection) {
-			return jQuery(obj).outerHeight() - jS.attrH.boxModelCorrection(skipCorrection);
+			return jQuery(obj).outerHeight() - (skipCorrection ? 0 : jS.s.boxModelCorrection);
 		},
 		heightReverse: function(obj, skipCorrection) {
-			return jQuery(obj).outerHeight() + jS.attrH.boxModelCorrection(skipCorrection);
+			return jQuery(obj).outerHeight() + (skipCorrection ? 0 : jS.s.boxModelCorrection);
 		},
 		syncSheetWidthFromTds: function(obj) {
 			var entireWidth = 0;
@@ -1168,13 +1211,6 @@ var jS = jQuery.sheet = {
 				entireWidth += jQuery(this).width();
 			});
 			obj.width(entireWidth);
-		},
-		boxModelCorrection: function(skipCorrection) {
-			var correction = 0;
-			if (jQuery.support.boxModel && !skipCorrection) {
-				correction = jS.s.boxModelCorrection;
-			}
-			return correction;
 		},
 		setHeight: function(i, from, skipCorrection, obj) {
 			var correction = 0;
@@ -1343,6 +1379,115 @@ var jS = jQuery.sheet = {
 			jS.obj.sheet().width(w);
 		}
 	},
+	merge: function() {
+		var cellsValue = "";
+		var cellValue = "";
+		var cells = jS.obj.uiCell();
+		var formula;
+		var cellFirstLoc = jS.getTdLocation(cells.first());
+		var cellLastLoc = jS.getTdLocation(cells.last());
+		//var rowI = (cellLastLoc[0] - cellFirstLoc[0]) + 1;
+		var colI = (cellLastLoc[1] - cellFirstLoc[1]) + 1;
+		
+		if (cells.length > 1) {
+			cells.each(function(i) {
+				var cell = jQuery(this).hide();
+				formula = cell.attr('formula');
+				cellValue = cell.html();
+				
+				cellValue = (cellValue ? cellValue + ' ' : '');
+				
+				cellsValue = (formula ? "(" + formula.replace('=', '') + ")" : cellValue) + cellsValue;
+				
+				if (i) {
+					cell
+						.attr('formula', '')
+						.html('')
+						.hide();
+				}
+			});
+			
+			var cell = cells.first()
+				.show()
+				.attr('colspan', colI)
+				.html(cellsValue);
+			
+			/* Doesn't work with IE
+			if (rowI > 1) {
+				cell.attr('rowspan', rowI);
+			}
+			*/
+			
+			jS.setDirty(true);
+			jS.calc(jS.i);
+		}
+	},
+	unmerge: function() {
+		var cell = jS.obj.uiCell().first();
+		var loc = jS.getTdLocation(cell);
+		var formula = cell.attr('formula');
+		var v = cell.html();
+		v = (formula ? formula : v);
+		
+		var rowI = cell.attr('rowspan');
+		var colI = cell.attr('colspan');
+		
+		rowI = parseInt(rowI ? rowI : 1); //we have to have a minimum here;
+		colI = parseInt(colI ? colI : 1);
+		
+		var td = '<td />';
+		
+		var tds = '';
+		
+		if (colI) {
+			for (var i = 0; i < colI; i++) {
+				tds += td;
+			}
+		}
+		
+		for (var i = loc[0]; i < rowI; i++) {
+			for (var j = loc[1]; j < colI; j++) {
+				jQuery(jS.getTd(jS.i, i, j)).show();
+			}
+		}
+		
+		cell
+			.removeAttr('rowspan')
+			.removeAttr('colspan');
+		
+		jS.setDirty(true);
+		jS.calc(jS.i);
+	},
+	fillUpOrDown: function(goUp) { //default behavior is to go down var goUp changes it
+		var td = jS.cellLast.td;
+		var loc = [jS.cellLast.row, jS.cellLast.col];
+		jS.evt.cellEditDone();
+		var v = td.html();
+		var formula = td.attr('formula');
+		v = (formula ? formula : v); //formula overrides innerValue
+		formula = v;
+		
+		function fill(i, j, col) {
+			for (var i = i; i <= j; i++) {
+				var td = jQuery(jS.getTd(jS.i, i, col))
+						.html(v ? v : '');
+				
+				if ((v + '').charAt(0) == '=') {
+					td.attr('formula', v);
+				}
+			}
+		}
+		
+		if (goUp) {
+			var firstLoc = jS.getTdLocation(jS.obj.sheet().find('td:first'));
+			fill(firstLoc[0], loc[0], loc[1]);
+		} else {
+			var lastLoc = jS.getTdLocation(jS.obj.sheet().find('td:last'));
+			fill(loc[0], lastLoc[0], loc[1]);
+		}
+		
+		jS.calc(jS.i);
+	},
 	addTab: function() {
 		jQuery('<span class="ui-corner-bottom ui-widget-header">' + 
 				'<a class="' + jS.cl.tab + '" id="' + jS.id.tab + jS.i + '" i="' + jS.i + '">' + jS.sheetTab(true) + '</a>' + 
@@ -1365,7 +1510,7 @@ var jS = jQuery.sheet = {
 			o.remove('colgroup');
 			var colgroup = jQuery('<colgroup />');
 			o.find('tr:first').find('td').each(function() {
-				var w = jQuery(this).outerWidth() + (jS.attrH.boxModelCorrection() * 2);
+				var w = jQuery(this).outerWidth() + (jS.s.boxModelCorrection * 2);
 				jQuery('<col />')
 					.width(w)
 					.css('width', (w) + 'px')
@@ -1401,13 +1546,12 @@ var jS = jQuery.sheet = {
 			if (td) {
 				jQuery(td)
 					.addClass(jS.cl.uiCellHighlighted)
-					.addClass(jS.cl.uiCell);;
+					.addClass(jS.cl.uiCell);
 			}
 		},
 		clearCell: function() {
 			jS.obj.uiActive().removeClass(jS.cl.uiActive);
 			jS.obj.uiCell()
-				.removeAttr('style')
 				.removeClass(jS.cl.uiCellHighlighted)
 				.removeClass(jS.cl.uiCell);
 		},
@@ -1559,11 +1703,7 @@ var jS = jQuery.sheet = {
 	cellStyleToggle: function(setClass, removeClass) {
 		//Lets check to remove any style classes
 		if (removeClass) {
-			removeClass = removeClass.split(',');
-			
-			jQuery(removeClass).each(function() {
-				jS.obj.uiCell().removeClass(this);
-			});
+			jS.obj.uiCell().removeClass(removeClass);
 		}
 		//Now lets add some style
 		if (jS.obj.uiCell().hasClass(setClass)) {
@@ -1614,13 +1754,13 @@ var jS = jQuery.sheet = {
 				jS.obj.formula().attr('disabled', 'true');
 				
 				var textArea = jQuery('<textarea id="tempText" class="clickable" />');
-				var h = jS.attrH.height(td);
+				var h = jS.attrH.height(td) - (jS.s.boxModelCorrection * 2);
 				
 				//There was an error in some browsers where they would mess this up.
-				td.parent().height(h + jS.attrH.boxModelCorrection());
+				//td.parent().height(h);
 				//create text area.  Agian, strings are faster than DOM.
 				textArea
-					.height(h < 75 ? 75 : h)
+					//.height(h < 75 ? 75 : h)
 					.val(v)
 					.click(function(){
 						return false;
@@ -2028,8 +2168,9 @@ var jS = jQuery.sheet = {
 					var thisRow = jQuery('<tr />');
 					jQuery(this).children().each(function(j) { //columns
 						var o = jQuery(this).html();
+						var style = jQuery(this).attr('style');
 						if (o.charAt(0) == '=') {
-							thisRow.append('<td formula="' + o + '" />');
+							thisRow.append('<td formula="' + o + '"' + (style ? ' style=\"' + style + '\"' : '') + ' />');
 						} else {
 							thisRow.append('<td>' + o + '</td>');
 						}
@@ -2058,15 +2199,19 @@ var jS = jQuery.sheet = {
 					var cur_row = jQuery('<tr />').appendTo(table);
 					
 					for(var y = 0; y <= size_c; y++) {	
-						var cur_val = sheet[i].data["r" + (x + 1)]["c" + (y + 1)];
-					
-						var cur_td = jQuery('<td id="' + 'table' + jS.i + '_' + 'cell_c' + y + '_r' + x + '" />');
+						var cur_val = sheet[i].data["r" + (x + 1)]["c" + (y + 1)].value;
+						var style = sheet[i].data["r" + (x + 1)]["c" + (y + 1)].style;
+						
+						var cur_td = jQuery('<td id="' + 'table' + jS.i + '_' + 'cell_c' + y + '_r' + x + '" ' + (style ? ' style=\"' + style + '\"' : '' ) + ' />');
 						try {
-							if (cur_val.charAt(0) == '=')
-							{
-								cur_td.attr("formula", cur_val);
-							} else {
+							if(typeof(cur_val) == "number") {
 								cur_td.html(cur_val);
+							} else {
+								if (cur_val.charAt(0) == '=') {
+									cur_td.attr("formula", cur_val);
+								} else {
+									cur_td.html(cur_val);
+								}
 							}
 						} catch (e) {}
 					
@@ -2125,7 +2270,9 @@ var jS = jQuery.sheet = {
 								txt = formula;
 							}
 							
-							x += '<c' + cur_column + '>' + cdata[0] + txt + cdata[1] + '</c' + cur_column + '>';
+							var style = jQuery(this).attr('style');
+							
+							x += '<c' + cur_column + '' + (style ? ' style=\"' + style + '\"' : '') + '>' + cdata[0] + txt + cdata[1] + '</c' + cur_column + '>';
 						}
 					});
 					
@@ -2184,8 +2331,14 @@ var jS = jQuery.sheet = {
 							{
 								txt = formula;
 							}
+							
+							var style = jQuery(this).attr('style');
+							
 							try {
-								doc['data']['r'+cur_row]['c'+cur_column] = txt;
+								doc['data']['r'+cur_row]['c'+cur_column] = {
+									value: txt,
+									style: style
+								};
 							} catch (e) {}
 						}
 					});
@@ -2194,9 +2347,9 @@ var jS = jQuery.sheet = {
 					cur_column = cur_row = '';
 				});
 				doc['metadata'] = {
-					"columns": parseInt(max_column) + 1, //length is 1 based, index is 0 based
-					"rows": parseInt(max_row) + 1, //length is 1 based, index is 0 based
-					"title": jQuery(this).attr('title')
+					columns: parseInt(max_column) + 1, //length is 1 based, index is 0 based
+					rows: parseInt(max_row) + 1, //length is 1 based, index is 0 based
+					title: jQuery(this).attr('title')
 				};
 				docs.push(doc); //append to documents
 			});
@@ -2230,9 +2383,9 @@ var jS = jQuery.sheet = {
 		
 		jS.obj.parent().height(h);
 		
-		var w = jS.s.width - jS.attrH.width(jS.obj.barLeftParent()) - (jS.attrH.boxModelCorrection());
+		var w = jS.s.width - jS.attrH.width(jS.obj.barLeftParent()) - (jS.s.boxModelCorrection);
 		
-		h = h - jS.attrH.height(jS.obj.controls()) - jS.attrH.height(jS.obj.barTopParent()) - (jS.attrH.boxModelCorrection() * 2);
+		h = h - jS.attrH.height(jS.obj.controls()) - jS.attrH.height(jS.obj.barTopParent()) - (jS.s.boxModelCorrection * 2);
 		
 		jS.obj.pane()
 			.height(h)
@@ -2274,17 +2427,21 @@ var jS = jQuery.sheet = {
 			}
 		}
 	},
-	cellSetActiveMulti: function(e) {	
+	cellSetActiveMulti: function(e) {
 		var o = {
 			startRow: e.target.parentNode.rowIndex,
 			startColumn: e.target.cellIndex
 		};//These are the events used to selected multiple rows.
 		jS.obj.sheet()
 			.mousemove(function(e) {
+				jS.themeRoller.clearCell();
+				jS.themeRoller.clearBar();
+				
 				o.endRow = e.target.parentNode.rowIndex;
 				o.endColumn = e.target.cellIndex;
-				for (var i = o.startRow; i <= o.endRow; i++) {
-					for (var j = o.startColumn; j <= o.endColumn; j++) {
+				
+				for (var i = (o.startRow < o.endRow ? o.startRow : o.endRow) ; i <= (o.startRow > o.endRow ? o.startRow : o.endRow); i++) {
+					for (var j = (o.startColumn < o.endColumn ? o.startColumn : o.endColumn); j <= (o.startColumn > o.endColumn ? o.startColumn : o.endColumn); j++) {
 						var td = jS.getTd(jS.i, i, j);
 						jQuery(td)
 							.addClass(jS.cl.uiCell)
@@ -2554,7 +2711,8 @@ var key = {
 	SHIFT: 				16,
 	SPACE: 				32,
 	TAB: 				9,
-	UP: 				38
+	UP: 				38,
+	V:					86
 };
 
 var cE = jQuery.calculationEngine = {
@@ -3142,13 +3300,19 @@ var cE = jQuery.calculationEngine = {
 				cell.setValue(v);
 				
 			} catch (e) {
-				//This shouldn't need to be used, usually throws an error when a cell is empty
-				//cell.setValue(cE.ERROR + ': ' + e);
+				cE.makeError(v, e, cell);
 			}
 		};
 		fn.row = row;
 		fn.col = col;
 		return fn;
+	},
+	makeError: function(v, e, cell) {
+		try {
+			if (v) {
+				cell.setValue(cE.ERROR + ': ' + e);
+			}
+		} catch(e2) {}
 	},
 	checkCycles: function(row, col, tableI) {
 		for (var i = 0; i < cE.calcState.stack.length; i++) {
