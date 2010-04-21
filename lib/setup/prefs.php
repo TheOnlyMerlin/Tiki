@@ -580,7 +580,7 @@ function get_default_prefs() {
 		'fgal_list_lastDownload_admin' => 'n',
 		'fgal_list_lockedby_admin' => 'n',
 		'fgal_list_backlinks_admin' => 'y',
-		'fgal_keep_fileId' => 'n',
+
 
 		// imagegals
 		'feature_galleries' => 'n',
@@ -844,7 +844,6 @@ function get_default_prefs() {
 		'search_refresh_index_mode' => 'normal',
 		'search_parsed_snippet' => 'y',
 		'search_default_where' => '',
-		'search_autocomplete' => 'n',
 
 		// webmail
 		'feature_webmail' => 'n',
@@ -1396,12 +1395,11 @@ function get_default_prefs() {
 		'feature_newsletters' => 'n',
 		'feature_obzip' => 'n',
 		'feature_perspective' => 'n', // If enabling by default, update further in this file
-		'feature_phplayers' => 'n', // Not enabled by default so we make a better file gallery tree explorer in the future
+		'feature_phplayers' => 'y', // Enabled by default for a better file gallery tree explorer
 		'feature_cssmenus' => 'y',
 		'feature_projects' => 'n',
 		'feature_ranking' => 'n',
 		'feature_redirect_on_error' => 'n',
-		'url_anonymous_page_not_found' => '',
 		'feature_referer_highlight' => 'n',
 		'feature_referer_stats' => 'n',
 		'feature_score' => 'n',

@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Id: wikiplugin_freetagged.tpl 26601 2010-04-13 11:25:49Z jonnybradley $ *}
 
 {if isset($objects) && count($objects) gt 0}
 <ul class="freetagged">

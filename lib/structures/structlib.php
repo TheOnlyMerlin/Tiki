@@ -204,17 +204,12 @@ class StructLib extends TikiLib
 			} else {
 				$max = 0;
 			}
-			if ($after_ref_id != 0) {
-				if ($max > 0) {
+			if ($max > 0) {
 				//If max is 5 then we are inserting after position 5 so we'll insert 5 and move all
 				// the others
-					$query = 'update `tiki_structures` set `pos`=`pos`+1 where `pos`>? and `parent_id`=?';
-					$result = $this->query($query,array((int)$max, (int)$parent_id));
-				}
-			} else {
-				$max = $this->getOne('select max(`pos`) from `tiki_structures` where `parent_id`=?',array((int)$parent_id));
+				$query = 'update `tiki_structures` set `pos`=`pos`+1 where `pos`>? and `parent_id`=?';
+				$result = $this->query($query,array((int)$max, (int)$parent_id));
 			}
-			// 	
             //Create a new structure entry
 			$max++;
 			$query = 'insert into `tiki_structures`(`parent_id`,`page_id`,`page_alias`,`pos`, `structure_id`) values(?,?,?,?,?)';

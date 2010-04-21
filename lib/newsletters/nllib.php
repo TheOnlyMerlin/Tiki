@@ -15,7 +15,7 @@ include_once ('lib/webmail/tikimaillib.php');
 
 class NlLib extends TikiLib
 {
-	function replace_newsletter($nlId, $name, $description, $allowUserSub, $allowAnySub, $unsubMsg, $validateAddr,$allowTxt, $frequency , $author, $allowArticleClip = 'y', $autoArticleClip = 'n', $articleClipRange = null, $articleClipTypes = '') {
+	function replace_newsletter($nlId, $name, $description, $allowUserSub, $allowAnySub, $unsubMsg, $validateAddr,$allowTxt, $frequency , $author) {
 		if ($nlId) {
 			$query = "update `tiki_newsletters` set `name`=?, 
 								`description`=?, 
@@ -24,18 +24,8 @@ class NlLib extends TikiLib
 								`allowAnySub`=?, 
 								`unsubMsg`=?, 
 								`validateAddr`=?, 
-								`frequency`=?, 
-								`allowArticleClip`=?,
-								`autoArticleClip`=?,
-								`articleClipRange`=?,
-								`articleClipTypes`=?																
-								where `nlId`=?";
-			$result = $this->query($query, array($name, $description, $allowUserSub, $allowTxt, $allowAnySub, $unsubMsg, $validateAddr, $frequency,
-							$allowArticleClip,
-							$autoArticleClip,
-							$articleClipRange,
-							$articleClipTypes,
-							(int)$nlId));
+								`frequency`=? where `nlId`=?";
+			$result = $this->query($query, array($name, $description, $allowUserSub, $allowTxt, $allowAnySub, $unsubMsg, $validateAddr, $frequency, (int)$nlId));
 		} else {
 			$query = "insert into `tiki_newsletters`(
 								`name`,
@@ -50,13 +40,9 @@ class NlLib extends TikiLib
 								`unsubMsg`,
 								`validateAddr`,
 								`frequency`,
-								`author`,
-								`allowArticleClip`,
-								`autoArticleClip`,
-								`articleClipRange`,
-								`articleClipTypes`
+								`author`
 								) ";
-      $query.= " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      $query.= " values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			$result = $this->query($query, array($name,
 							$description,
 							(int)$this->now,
@@ -69,12 +55,7 @@ class NlLib extends TikiLib
 							$unsubMsg,
 							$validateAddr,
 							NULL,
-							$author,
-							$allowArticleClip,
-							$autoArticleClip,
-							$articleClipRange,
-							$articleClipTypes
-							));
+							$author));
 			$queryid = "select max(`nlId`) from `tiki_newsletters` where `created`=?";
 			$nlId = $this->getOne($queryid, array((int)$this->now));
 		}
@@ -805,42 +786,6 @@ class NlLib extends TikiLib
 	function remove_edition_errors($editionId) {
 		$query = 'delete from `tiki_sent_newsletters_errors` where `editionId`=?';
 		$this->query($query, array((int)$editionId));
-	}
-	
-	function clip_articles($nlId) {
-		global $artlib, $smarty;
-		require_once 'lib/articles/artlib.php';
-		$query = 'select `articleClipTypes`, `articleClipRange` from `tiki_newsletters` where nlId = ?';
-		$result = $this->fetchAll($query, array($nlId));
-		$articleClipTypes = unserialize($result[0]['articleClipTypes']);
-		$date_min = $this->now - $result[0]['articleClipRange'];
-		$date_max = $this->now;
-		$articles = array();
-		$articleClip = '';
-		# Order array by publishDate
-		if (!function_exists('cmp')) {
-			function cmp($a,$b) {
-				if ($a['publishDate'] == $b['publishDate']) return 0;
-				return ($a['publishDate'] < $b['publishDate']) ? -1 : 1;
-			}
-		} 
-		foreach ($articleClipTypes as $articleType) {
-			$t_articles = $artlib->list_articles( 0, -1, 'publishDate_desc', '', $date_min, $date_max, false, $articleType);
-			foreach ($t_articles["data"] as $t) {
-				$articles[$t["articleId"]] = $t;	
-			}
-		}
-		usort($articles,'cmp');
-		foreach ($articles as $art) {
-			$smarty->assign("nlArticleClipId", $art["articleId"]);
-			$smarty->assign("nlArticleClipTitle", $art["title"]);
-			$smarty->assign("nlArticleClipSubtitle", $art["subtitle"]);
-			$smarty->assign("nlArticleClipParsedheading", $this->parse_data($art["heading"]));
-			$smarty->assign("nlArticleClipPublishDate", $art["publishDate"]);
-			$smarty->assign("nlArticleClipAuthorName", $art["authorName"]);
-			$articleClip .= $smarty->fetch("mail/newsletter_articleclip.tpl");
-		}
-		return $articleClip;
 	}
 }
 $nllib = new NlLib;

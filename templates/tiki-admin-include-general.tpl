@@ -182,8 +182,7 @@
 					<br />
 					{preference name=permission_denied_url}
 				</div>
-				{preference name='url_anonymous_page_not_found'}
-				{preference name='url_after_validation'}
+				{preference name='url_after_validation'}	
 			</fieldset>
 
 			<fieldset>

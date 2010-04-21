@@ -14,6 +14,7 @@ if ($prefs['allowRegister'] != 'y' || ($prefs['feature_intertiki'] == 'y' && !em
 	header("location: index.php");
 	die;
 }
+$smarty->assign('allowRegister', 'y'); // Used for OpenID associations
 // NOTE that this is not a standard access check, it checks for the opposite of that, i.e. whether logged in already
 if (!empty($user)) {
 	$smarty->assign('msg', tra('You are already logged in'));
@@ -181,8 +182,8 @@ if (isset($_REQUEST['register']) && !empty($_REQUEST['name']) && (isset($_REQUES
 			$userlib->set_default_group($_REQUEST['name'], $_REQUEST['chosenGroup']);
 		} elseif (empty($_REQUEST['chosenGroup']) && isset($_SESSION['in_tracker'])) {
 			$userlib->set_default_group($_REQUEST['name'], 'Registered'); // to have tiki-user_preferences links par default to the registration tracker
+			
 		}
-		$userlib->set_email_group($_REQUEST['name'], $_REQUEST['email']);
 		unset($_SESSION['in_tracker']);
 		// save default user preferences
 		$tikilib->set_user_preference($_REQUEST['name'], 'theme', $prefs['style']);
@@ -284,5 +285,6 @@ function chkRegEmail($mail) {
 
 if (empty($module) || !$module) {
 	$smarty->assign('mid', 'tiki-register.tpl');
+	$smarty->assign('openid_associate', 'n');
 	$smarty->display('tiki.tpl');
 }

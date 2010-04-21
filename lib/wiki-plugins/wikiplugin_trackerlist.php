@@ -278,12 +278,6 @@ function wikiplugin_trackerlist_info() {
 				'description' => 'y|n',
 				'filter' => 'alpha'
 			),
-			'inside_pretty' => array(
-				'required' => false,
-				'name' => tra('Inside Pretty Tracker'),
-				'description' => tra('Set to y to use inside a pretty tracker with field reference replacement (default=n)'),
-				'filter' => 'alpha'
-			),
 		),
 	);
 }
@@ -295,11 +289,6 @@ function wikiplugin_trackerlist($data, $params) {
 	static $iTRACKERLIST = 0;
 	++$iTRACKERLIST;
 	$smarty->assign('iTRACKERLIST', $iTRACKERLIST);
-	
-	if (isset($params['inside_pretty']) && $params['inside_pretty'] == 'y') {
-		$trklib->replace_pretty_tracker_refs($params);
-	}
-	
 	extract ($params,EXTR_SKIP);
 
 	if ($prefs['feature_trackers'] != 'y' || !isset($trackerId) || !($tracker_info = $trklib->get_tracker($trackerId))) {
@@ -686,9 +675,7 @@ function wikiplugin_trackerlist($data, $params) {
 					unset($exactvalue);
 					for ($i = 0, $count_ff2 = count($filterfield); $i < $count_ff2; ++$i) {
 						if (isset($evs[$i])) {
-							if (is_array($evs[$i])) { // already processed
-								$exactvalue[] = $evs[$i];
-							} elseif (preg_match('/(not)?categories\(([0-9]+)\)/', $evs[$i], $matches)) {
+							if (preg_match('/(not)?categories\(([0-9]+)\)/', $evs[$i], $matches)) {
 								global $categlib; include_once('lib/categories/categlib.php');
 								$categs = $categlib->list_categs($matches[2]);
 								$l = array($matches[2]);
@@ -728,9 +715,6 @@ function wikiplugin_trackerlist($data, $params) {
 								} else {
 									$exactvalue[] = array('not'=>$l);
 								}
-							} elseif (preg_match('/(less|greater|lessequal|greaterequal)\((.+)\)/', $evs[$i], $matches)) {
-								$conv = array('less'=>'<', 'greater'=>'>', 'lessequal'=>'<=', 'greaterequal'=>'>=');
-								$exactvalue[] = array($conv[$matches[1]]=>$matches[2]);
 							} else {
 								$exactvalue[] = $evs[$i];
 							}

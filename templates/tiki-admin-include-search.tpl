@@ -68,7 +68,6 @@
 				{preference name=search_parsed_snippet}
 
 				{preference name=feature_search_stats}
-				{preference name=search_autocomplete}
 			</fieldset>
 
 			<fieldset>
