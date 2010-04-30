@@ -563,14 +563,14 @@ class CASClient
 			if (empty($_GET['ticket'])){
 				phpCAS::trace("No ticket found");
 				// only create a session if necessary
-				if (!isset($_SESSION)) {
+				if (session_id() !== '') {
 					phpCAS::trace("No session found, creating new session");
 					session_start();
 				}
 			}else{
 				phpCAS::trace("Ticket found");
 				// We have to copy any old data before renaming the session
-				if (isset($_SESSION)) {
+				if (session_id() !== '') {
 					phpCAS::trace("Old active session found, saving old data and destroying session");
 					$old_session = $_SESSION;
 					session_destroy();	
@@ -667,12 +667,8 @@ class CASClient
 					}
 					break;
 				case CAS_VERSION_2_0: // check for a Service or Proxy Ticket
-					if (preg_match('/^ST-/', $ticket)) {
-						phpCAS::trace('ST \'' . $ticket . '\' found');
-						$this->setST($ticket);
-						unset ($_GET['ticket']);
-					} else if (preg_match('/^PT-/', $ticket)) {
-						phpCAS::trace('PT \'' . $ticket . '\' found');
+					if( preg_match('/^[SP]T-/',$ticket) ) {
+						phpCAS::trace('ST or PT \''.$ticket.'\' found');
 						$this->setPT($ticket);
 						unset($_GET['ticket']);
 					} else if ( !empty($ticket) ) {
@@ -1322,7 +1318,7 @@ class CASClient
 	 * This method is used to validate a ST; halt on failure, and sets $validate_url,
 	 * $text_reponse and $tree_response on success. These parameters are used later
 	 * by CASClient::validatePGT() for CAS proxies.
-	 * 
+	 * Used for all CAS 1.0 validations
 	 * @param $validate_url the URL of the request to the CAS server.
 	 * @param $text_response the response of the CAS server, as is (XML text).
 	 * @param $tree_response the response of the CAS server, as a DOM XML tree.
@@ -2433,8 +2429,8 @@ class CASClient
 	 */  
 	
 	/**
-	 * This method is used to validate a PT; halt on failure
-	 * 
+	 * This method is used to validate a ST or PT; halt on failure
+	 * Used for all CAS 2.0 validations
 	 * @return bool TRUE when successfull, halt otherwise by calling CASClient::authError().
 	 *
 	 * @private
@@ -2586,7 +2582,7 @@ class CASClient
 				}
 			}
 			
-			$baseurl = split("\?", $_SERVER['REQUEST_URI'], 2);
+			$baseurl = explode("?", $_SERVER['REQUEST_URI'], 2);
 			$final_uri .= $baseurl[0];
 			$query_string = '';
 			if ($_GET) {
