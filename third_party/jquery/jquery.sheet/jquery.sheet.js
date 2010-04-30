@@ -1,6 +1,6 @@
 /*
 jQuery.sheet() Spreadsheet with Calculations Plugin
-Version: 1.0.2 SVN
+Version: 1.0.2
 http://code.google.com/p/jquerysheet/
 		
 Copyright (C) 2010 Robert Plummer
