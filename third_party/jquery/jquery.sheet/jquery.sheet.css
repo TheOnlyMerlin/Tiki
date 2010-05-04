@@ -22,7 +22,6 @@
 #jSheetControls, #jSheetControls table
 {
 	padding: 0px ! important;
-	background-color: transparent ! important;
 	border: none ! important;
 	width: 100%; 
 	margin: 0px; 
@@ -254,6 +253,19 @@
 .safeImg
 {
 	display: inline;
+}
+
+#jSheetInPlaceEdit
+{
+	position: absolute;
+}
+
+.colorPickers *
+{
+	display: inline-block;
+	width: 16px ! important;
+	height: 16px ! important;
+	background-color: transparent ! important;
 }
 
 /* Cell styler classes */
