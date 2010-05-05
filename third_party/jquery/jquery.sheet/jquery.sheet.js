@@ -4,7 +4,7 @@ Version: 1.1.0 SVN
 http://code.google.com/p/jquerysheet/
 		
 Copyright (C) 2010 Robert Plummer
-Dual licensed under the LGPL and GPL licenses.
+Dual licensed under the LGPL v2 and GPL v2 licenses.
 http://www.gnu.org/licenses/
 */
 
@@ -1450,37 +1450,55 @@ var jS = jQuery.sheet = {
 		jS.calc(jS.i);
 	},
 	fillUpOrDown: function(goUp, skipOffsetForumals) { //default behavior is to go down var goUp changes it
-		var td = jS.cellLast.td;
-		var loc = [jS.cellLast.row, jS.cellLast.col];
-		jS.evt.cellEditDone();
-		var v = td.html();
-		var formula = td.attr('formula');
-		v = (formula ? formula : v); //formula overrides innerValue
-		formula = v;
+		var cells = jS.obj.cellHighlighted();
+		var cellActive = jS.obj.cellActive();
+		var cellActiveClone = cellActive.clone();
+		var startFromActiveCell = cellActive.hasClass(jS.cl.uiCellHighlighted);
+		var locFirst = jS.getTdLocation(cells.first());
+		var locLast = jS.getTdLocation(cells.last());
 		
-		function fill(i, j, col) {
-			var td = jQuery(jS.getTd(jS.i, i, col));
-			
-			if ((v + '').charAt(0) == '=') {
-				td.attr('formula', (skipOffsetForumals ? v : jS.offsetFormula(v, j + 1, 0))); //we subtract one here because cells are 1 based and indexes are 0 based
-			} else {
-				td
+		var v = jS.obj.formula().val();
+		var fn;
+		
+		var formulaOffset = (startFromActiveCell ? 0 : 1);
+		
+		if ((v + '').charAt(0) == '=') {
+			fn = function(o, i) {
+				o
+					.attr('formula', (skipOffsetForumals ? v : jS.offsetFormula(v, i + formulaOffset, 0)))
+					.html(''); //we subtract one here because cells are 1 based and indexes are 0 based
+			}
+		} else {
+			fn = function (o) {
+				o
 					.removeAttr('formula')
 					.html(v);
 			}
 		}
 		
+		function fill(r, c, i) {
+			var td = jQuery(jS.getTd(jS.i, r, c));
+			fn(td, i);
+		}
+		
+		var k = 0;
 		if (goUp) {
-			var firstLoc = [0, 0];
-			for (var i = (loc[0] - 1); i >= firstLoc[0]; i--) {
-				fill(i, i - (loc[0] + 1), loc[1]); //we subtract one here because we don't want to re-edit the current cell
+			for (var i = locLast[0]; i >= locFirst[0]; i--) {
+				for (var j = locLast[1]; j >= locFirst[1]; j--) {
+					fill(i, j, k);
+					k++;
+				}
 			}
 		} else {
-			var lastLoc = jS.sheetSize();
-			for (var i = (loc[0] + 1); i <= lastLoc[0]; i++) {
-				fill(i, i - (loc[0] + 1), loc[1]); //we subtract one here because we don't want to re-edit the current cell
+			for (var i = locFirst[0]; i <= locLast[0]; i++) {
+				for (var j = locFirst[1]; j <= locLast[1]; j++) {
+					fill(i, j, k);
+					k++;
+				}
 			}
 		}
+		
+		cellActive.replaceWith(cellActiveClone); //this is to make sure the original doesn't increment;
 		
 		jS.calc(jS.i);
 	},
@@ -1501,10 +1519,10 @@ var jS = jQuery.sheet = {
 		}
 		
 		function isInFormula(loc) {
-			if ((loc[0] - 1) >= shiftedRange.first[0] &&
-				(loc[1] - 1) >= shiftedRange.first[1] &&
-				(loc[0] - 1) <= shiftedRange.last[0] &&
-				(loc[1] - 1) <= shiftedRange.last[1]
+			if ((loc[0]) >= shiftedRange.first[0] &&
+				(loc[1]) >= shiftedRange.first[1] &&
+				(loc[0]) <= shiftedRange.last[0] &&
+				(loc[1]) <= shiftedRange.last[1]
 			) {
 				return true;
 			} else {
@@ -1621,7 +1639,7 @@ var jS = jQuery.sheet = {
 				charAt[0] = (charAt[0] ? charAt[0] : '');
 				charAt[1] = (charAt[1] ? charAt[1] : '');
 				
-				if (!colStr.match('SHEET') || 
+				if (colStr.match('SHEET') || 
 					charAt[0] == ':' || 
 					charAt[1] == ':'
 				) { //verify it's not a range or an exact location
