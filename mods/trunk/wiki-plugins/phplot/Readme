@@ -1,4 +1,4 @@
-PHPlot Wikiplugin for TikiWiki
+PHPlot Wikiplugin for Tiki
 ==============================
 
 PHPlot wiki plugin, uses an existing installation of phplot to draw charts.
@@ -6,3 +6,6 @@ Data is entered in the same way as in the fancytable plugin.
 
 License: LGPL
 Project Admin: gmuslera
+
+
+Note: PHPlot was changed to LGPL in 2009, thus, this plugin could become part of Tiki core.
