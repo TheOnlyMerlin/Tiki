@@ -3,8 +3,8 @@
  * File containing the ezcWebdavFileBackend class.
  *
  * @package Webdav
- * @version 1.1.3
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.1.4
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 /**
@@ -26,7 +26,7 @@
  * dead properties. This backend uses a special path for each resource to store
  * this information in its XML representation.
  *
- * @version 1.1.3
+ * @version 1.1.4
  * @package Webdav
  * @mainclass
  */
@@ -136,6 +136,16 @@ class ezcWebdavFileBackend extends ezcWebdavSimpleBackend implements ezcWebdavLo
         $lockStart = microtime( true );
 
         $lockFileName = $this->root . '/' . $this->options->lockFileName;
+
+        if ( is_file( $lockFileName ) && !is_writable( $lockFileName )
+             || !is_file( $lockFileName ) && !is_writable(dirname( $lockFileName ) ) )
+        {
+            throw new ezcBaseFilePermissionException(
+                $lockFileName,
+                ezcBaseFileException::WRITE,
+                'Cannot be used as lock file.'
+            );
+        }
 
         // fopen in mode 'x' will only open the file, if it does not exist yet.
         // Even this is is expected it will throw a warning, if the file
@@ -275,7 +285,7 @@ class ezcWebdavFileBackend extends ezcWebdavSimpleBackend implements ezcWebdavLo
         
         try
         {
-            $this->lock( $this->options->waitForLock, 2000000 );
+            $this->lock( $this->options->waitForLock, $this->options->lockTimeout );
         }
         catch ( ezcWebdavLockTimeoutException $e )
         {
@@ -647,7 +657,7 @@ class ezcWebdavFileBackend extends ezcWebdavSimpleBackend implements ezcWebdavLo
 
             case 'displayname':
                 $property = new ezcWebdavDisplayNameProperty();
-                $property->displayName = basename( $path );
+                $property->displayName = urldecode( basename( $path ) );
                 return $property;
 
             case 'getcontenttype':

@@ -3,8 +3,8 @@
  * File containing the ezcWebdavPutRequest class.
  *
  * @package Webdav
- * @version 1.1.3
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.1.4
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 /**
@@ -15,7 +15,7 @@
  * @property string $body
  *           The request body of a PUT request.
  *
- * @version 1.1.3
+ * @version 1.1.4
  * @package Webdav
  */
 class ezcWebdavPutRequest extends ezcWebdavRequest

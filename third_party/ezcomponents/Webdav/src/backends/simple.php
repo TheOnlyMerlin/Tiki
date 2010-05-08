@@ -3,8 +3,8 @@
  * File containing the abstract ezcWebdavSimpleBackend class.
  *
  * @package Webdav
- * @version 1.1.3
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.1.4
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 /**
@@ -20,7 +20,7 @@
  * capable of manual handling those features directly extend from {@link
  * ezcWebdavBackend}.
  *
- * @version 1.1.3
+ * @version 1.1.4
  * @package Webdav
  * @mainclass
  */
@@ -616,7 +616,7 @@ abstract class ezcWebdavSimpleBackend extends ezcWebdavBackend implements ezcWeb
                 foreach ( $unauthorizedPaths as $unauthorizedPath )
                 {
                     // Check if a parent path was already determined as unauthorized
-                    if ( substr( $node->path, $unauthorizedPath ) === 0 )
+                    if ( substr_compare( $node->path, $unauthorizedPath, 0, strlen( $unauthorizedPath ) ) === 0 )
                     {
                         // Skip this node completely, since we already have a
                         // parent node with 403
@@ -872,8 +872,18 @@ abstract class ezcWebdavSimpleBackend extends ezcWebdavBackend implements ezcWeb
             return $res;
         }
 
+        $successProps = new ezcWebdavBasicPropertyStorage();
+        foreach(  $request->updates as $updatedProperty )
+        {
+            $successProp = clone $updatedProperty;
+            $successProp->clear();
+            $successProps->attach( $successProp );
+        }
+
+        // RFC update requires multi-status even if everything worked properly
         return new ezcWebdavPropPatchResponse(
-            $node
+            $node,
+            new ezcWebdavPropStatResponse( $successProps )
         );
     }
 

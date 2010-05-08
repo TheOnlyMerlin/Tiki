@@ -3,8 +3,8 @@
  * File containing the ezcWebdavMemoryBackend class.
  *
  * @package Webdav
- * @version 1.1.3
- * @copyright Copyright (C) 2005-2009 eZ Systems AS. All rights reserved.
+ * @version 1.1.4
+ * @copyright Copyright (C) 2005-2010 eZ Systems AS. All rights reserved.
  * @license http://ez.no/licenses/new_bsd New BSD License
  * @access private
  */
@@ -35,7 +35,7 @@
  * This backend does not implement any special features to test the servers
  * capabilities to work with those features.
  *
- * @version 1.1.3
+ * @version 1.1.4
  * @package Webdav
  * @access private
  */
@@ -233,7 +233,7 @@ class ezcWebdavMemoryBackend extends ezcWebdavSimpleBackend implements ezcWebdav
 
             // Define default display name
             $propertyStorage->attach(
-                new ezcWebdavDisplayNameProperty( basename( $name ) )
+                new ezcWebdavDisplayNameProperty( basename( urldecode( $name ) ) )
             );
 
             // Define default language
@@ -282,6 +282,31 @@ class ezcWebdavMemoryBackend extends ezcWebdavSimpleBackend implements ezcWebdav
         }
 
         return $propertyStorage;
+    }
+
+    /**
+     * Clones the given $fromStorage for $toPath.
+     *
+     * Initializes a new property storage for $toPath with new live properties 
+     * and clones all non exsitent properties from $fromStorage to it.
+     * 
+     * @param string $toPath 
+     * @param bool $isCollection 
+     * @param ezcWebdavBasicPropertyStorage $fromStorage 
+     * @return void
+     */
+    private function cloneProperties( $toPath, $isCollection, ezcWebdavBasicPropertyStorage $fromStorage )
+    {
+        $toStorage = $this->initializeProperties( $toPath, $isCollection );
+        
+        foreach ( $fromStorage as $prop )
+        {
+            if ( !$toStorage->contains( $prop->name, $prop->namespace ) )
+            {
+                $toStorage->attach( clone $prop );
+            }
+        }
+        $this->props[$toPath] = $toStorage;
     }
 
     /**
@@ -559,10 +584,11 @@ class ezcWebdavMemoryBackend extends ezcWebdavSimpleBackend implements ezcWebdav
             }
 
             // Copy properties
-            $this->props[$toPath] = clone $this->props[$fromPath];
-
-            // Update modification date
-            // $this->props[$toPath]['getlastmodified'] = time();
+            $this->cloneProperties(
+                $toPath,
+                is_array( $this->content[$toPath] ),
+                $this->props[$fromPath]
+            );
 
             // Add to parent node
             $this->content[dirname( $toPath )][] = $toPath;
@@ -632,10 +658,11 @@ class ezcWebdavMemoryBackend extends ezcWebdavSimpleBackend implements ezcWebdav
                 $this->content[$newResourceName] = $this->content[$resource];
 
                 // Copy properties
-                $this->props[$newResourceName] = $this->props[$resource];
-
-                // Update modification date
-                // $this->props[$newResourceName]['getlastmodified'] = time();
+                $this->cloneProperties(
+                    $newResourceName,
+                    is_array( $this->content[$resource] ),
+                    $this->props[$resource]
+                );
 
                 // Add to parent node
                 $this->content[dirname( $newResourceName )][] = $newResourceName;
