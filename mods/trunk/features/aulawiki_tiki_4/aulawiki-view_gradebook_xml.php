@@ -47,7 +47,7 @@ $ziptmp->addRegularFile("content.xml", $content, false);
 
 $contentzip = $ziptmp->finish();
 header("Content-type: application/x-zip-compressed");
-header( "Content-Disposition: attachment; filename=/""."GradeBook-".$workspace["workspaceId"].".sxc/"" );
+header( "Content-Disposition: attachment; filename=/\""."GradeBook-".$workspace["workspaceId"].".sxc/\"" );
 //header( "Content-Disposition: attachment; filename=/""."GradeBook-1.zip/"" );
 
 header("Content-Length: ". strlen($contentzip) );
