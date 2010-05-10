@@ -1,7 +1,7 @@
 <?php
 /**********************************************************************
  *
- * $Id: tile.php,v 1.1 2007-02-21 23:59:22 franck Exp $
+ * $Id$
  *
  * purpose: a simple phpmapscript-based tile renderer that implements
  *          rudimentary caching for reasonable efficiency.  Note the

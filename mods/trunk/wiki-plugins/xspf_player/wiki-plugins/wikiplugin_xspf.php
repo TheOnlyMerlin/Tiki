@@ -1,6 +1,6 @@
 <?php
 
-// $Id: $
+// $Id$
 
 // \brief Wiki plugin to play mp3 files
 // @author damian aka damosoft, 30 March 2004

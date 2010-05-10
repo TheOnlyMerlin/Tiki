@@ -17,7 +17,7 @@
 // |          Christian Stocker <chregu@bitflux.ch>                       |
 // +----------------------------------------------------------------------+
 //
-// $Id: Server.php,v 1.1 2006-01-14 16:05:13 jreyesg Exp $
+// $Id$
 //
 require_once "_parse_propfind.php";
 require_once "_parse_proppatch.php";

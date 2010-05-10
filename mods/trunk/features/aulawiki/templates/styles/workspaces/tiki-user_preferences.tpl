@@ -1,4 +1,4 @@
-{* $Id: tiki-user_preferences.tpl 17704 2009-03-30 20:44:00Z marclaporte $ *}
+{* $Id$ *}
 
 {if $userwatch ne $user}
   {title help="User+Preferences"}{tr}User Preferences:{/tr} {$userwatch}{/title}

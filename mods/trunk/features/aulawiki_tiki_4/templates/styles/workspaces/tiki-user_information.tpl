@@ -1,4 +1,4 @@
-{* $Id: tiki-user_information.tpl 17737 2009-03-31 19:55:58Z sylvieg $ *}
+{* $Id$ *}
 
 {title url="tiki-user_information.php?view_user=$userwatch"}{tr}User Information{/tr}{/title}
 

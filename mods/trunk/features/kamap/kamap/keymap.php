@@ -1,7 +1,7 @@
 <?php
 /**********************************************************************
  *
- * $Id: keymap.php,v 1.1 2007-02-21 23:59:22 franck Exp $
+ * $Id$
  *
  * purpose: server-side support for keymap
  *

@@ -1,7 +1,7 @@
 <?php
 /**********************************************************************
  *
- * $Id: legend.php,v 1.1 2007-02-21 23:59:22 franck Exp $
+ * $Id$
  *
  * purpose: server-side support for a mapserver-based legend.  This is
  *          deprecated by a new client-side only legend.

@@ -1,4 +1,4 @@
-{* $Id: tiki-show_page.tpl 13616 2008-07-12 19:30:31Z jonnybradley $ *} 
+{* $Id$ *} 
 {if $prefs.feature_ajax == 'y'}
   <script type="text/javascript" src="lib/wiki/wiki-ajax.js"></script>
 {/if}

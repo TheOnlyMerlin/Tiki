@@ -13,7 +13,7 @@
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
 //
-// $Id: GraphViz.php,v 1.1 2005-02-24 14:56:23 ang23 Exp $
+// $Id$
 //
 
 //this script may only be included - so its better to die if called directly.

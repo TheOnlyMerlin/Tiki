@@ -1,5 +1,5 @@
 <?php
-// $Id: /cvsroot/tikiwiki/tiki/tiki-view_sheets.php,v 1.16 2007-10-12 07:55:33 nyloth Exp $
+// $Id$
 // This batch allows to fix the position recorded in the database to have a linear progression of these pos
 // (this was seen in tiki-index.php - the number was incorrect)
   // Installation: put the batch in the tikiwiki root - after use, better to move or delete the script

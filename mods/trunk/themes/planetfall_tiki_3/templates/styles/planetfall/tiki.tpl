@@ -1,4 +1,4 @@
-{* $Id: tiki.tpl 12618 2008-04-21 05:43:35Z chibaguy $ *}
+{* $Id$ *}
 <!DOCTYPE html 
 	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

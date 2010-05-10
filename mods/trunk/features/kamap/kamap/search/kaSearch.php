@@ -2,7 +2,7 @@
 
 /**********************************************************************
  *
- * $Id: kaSearch.php,v 1.1 2007-02-21 23:59:23 franck Exp $
+ * $Id$
  *
  * purpose: search system for ka-Map (bug 1509)
  *         

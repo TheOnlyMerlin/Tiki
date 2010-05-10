@@ -1,7 +1,7 @@
 <?php
 /**********************************************************************
  *
- * $Id: getcjs.php,v 1.1 2007-02-21 23:59:21 franck Exp $
+ * $Id$
  *
  * purpose: compress a javascript file by removing white space and
  *          comments

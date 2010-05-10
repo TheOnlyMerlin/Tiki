@@ -1,4 +1,4 @@
-{* $Id: tiki-site_header.tpl 12244 2008-03-30 13:32:53Z luciash $ *}
+{* $Id$ *}
 {* Template for Tikiwiki site identity header *}{if $prefs.feature_sitemycode eq 'y' && ($prefs.sitemycode_publish eq 'y' or $tiki_p_admin eq 'y')}
 	{if $prefs.feature_sitead eq 'y' && ($prefs.sitead_publish eq 'y' or $tiki_p_admin eq 'y')}
 		<div id="customcodewith_ad">

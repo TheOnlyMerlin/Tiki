@@ -1,6 +1,6 @@
 <?php
 /**********************************************************************
- * $Id: map_query_float.php,v 1.1 2007-02-21 23:59:22 franck Exp $
+ * $Id$
  * 
  * purpose: a simple map query script 
  *
