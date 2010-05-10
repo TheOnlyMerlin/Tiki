@@ -2,20 +2,16 @@
 JQuery/Tiki readme
 -------------------------
 
-jonnybradley 4 May 2010
+jonnybradley 10 May 2010
 
 Update:
-	jQuery.sheet from 1.0.2 to 1.1.0 SVN
+	jQuery.sheet from 1.1.0 to 1.0.x (hopefully the last before tiki 5.,0)
+	colorobx from 1.3.1 to 1.3.6 (with jQuery 1.4 fixes)
 
-jonnybradley 9 April 2010
-
-Update:
-	jQuery.sheet from 1.0 to 1.0.2
-
-jonnybradley 30 March 2010
+jonnybradley April/May 2010
 
 Update:
-	jQuery.sheet from 1.0 RC1 to 1.0 RC2
+	jQuery.sheet changes (working with the developer)
 
 jonnybradley 22 March 2010
 
