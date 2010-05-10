@@ -10,29 +10,29 @@ Lastmodif:
 $Date$
 
 Files:
-themes/candiiclouds/Readme.txt styles/candiiclouds/Readme.txt
-themes/candiiclouds/styles/candiiclouds.css styles/candiiclouds.css
-themes/candiiclouds/styles/candiiclouds/banstars.gif styles/candiiclouds/banstars.gif
-themes/candiiclouds/styles/candiiclouds/bcloud.gif styles/candiiclouds/bcloud.gif
-themes/candiiclouds/styles/candiiclouds/bluu.gif styles/candiiclouds/bluu.gif
-themes/candiiclouds/styles/candiiclouds/cclog.gif candiiclouds/cclog.gif
-themes/candiiclouds/styles/candiiclouds/cloudsbdr.gif candiiclouds/cloudsbdr.gif
-themes/candiiclouds/styles/candiiclouds/headercloud.jpg styles/candiiclouds/headercloud.jpg
-themes/candiiclouds/styles/candiiclouds/leftmarginbg.png styles/candiiclouds/leftmarginbg.png
-themes/candiiclouds/styles/candiiclouds/logo.png styles/candiiclouds/logo.png
-themes/candiiclouds/styles/candiiclouds/piink.gif styles/candiiclouds/piink.gif
-themes/candiiclouds/styles/candiiclouds/rightmarginbg.png styles/candiiclouds/rightmarginbg.png
-themes/candiiclouds/styles/candiiclouds/s-stars.gif styles/candiiclouds/s-stars.gif
-themes/candiiclouds/styles/candiiclouds/sbihead.gif styles/candiiclouds/sbihead.gif
-themes/candiiclouds/styles/candiiclouds/star.gif styles/candiiclouds/star.gif
-themes/candiiclouds/templates/styles/candiiclouds/credits.tpl templates/styles/candiiclouds/credits.tpl
-themes/candiiclouds/templates/styles/candiiclouds/header.tpl templates/styles/candiiclouds/header.tpl
-themes/candiiclouds/templates/styles/candiiclouds/index.php templates/styles/candiiclouds/index.php
-themes/candiiclouds/templates/styles/candiiclouds/tiki.tpl templates/styles/candiiclouds/tiki.tpl
-themes/candiiclouds/templates/styles/candiiclouds/tiki-bot_bar.tpl templates/styles/candiiclouds/tiki-bot_bar.tpl
-themes/candiiclouds/templates/styles/candiiclouds/tiki-read_article.tpl templates/styles/candiiclouds/tiki-read_article.tpl
-themes/candiiclouds/templates/styles/candiiclouds/tiki-site_header.tpl templates/styles/candiiclouds/tiki-site_header.tpl
-themes/candiiclouds/templates/styles/candiiclouds/tiki-top_bar.tpl templates/styles/candiiclouds/tiki-top_bar.tpl
+themes/candiiclouds_tiki_2/Readme.txt styles/candiiclouds/Readme.txt
+themes/candiiclouds_tiki_2/styles/candiiclouds.css styles/candiiclouds.css
+themes/candiiclouds_tiki_2/styles/candiiclouds/banstars.gif styles/candiiclouds/banstars.gif
+themes/candiiclouds_tiki_2/styles/candiiclouds/bcloud.gif styles/candiiclouds/bcloud.gif
+themes/candiiclouds_tiki_2/styles/candiiclouds/bluu.gif styles/candiiclouds/bluu.gif
+themes/candiiclouds_tiki_2/styles/candiiclouds/cclog.gif candiiclouds/cclog.gif
+themes/candiiclouds_tiki_2/styles/candiiclouds/cloudsbdr.gif candiiclouds/cloudsbdr.gif
+themes/candiiclouds_tiki_2/styles/candiiclouds/headercloud.jpg styles/candiiclouds/headercloud.jpg
+themes/candiiclouds_tiki_2/styles/candiiclouds/leftmarginbg.png styles/candiiclouds/leftmarginbg.png
+themes/candiiclouds_tiki_2/styles/candiiclouds/logo.png styles/candiiclouds/logo.png
+themes/candiiclouds_tiki_2/styles/candiiclouds/piink.gif styles/candiiclouds/piink.gif
+themes/candiiclouds_tiki_2/styles/candiiclouds/rightmarginbg.png styles/candiiclouds/rightmarginbg.png
+themes/candiiclouds_tiki_2/styles/candiiclouds/s-stars.gif styles/candiiclouds/s-stars.gif
+themes/candiiclouds_tiki_2/styles/candiiclouds/sbihead.gif styles/candiiclouds/sbihead.gif
+themes/candiiclouds_tiki_2/styles/candiiclouds/star.gif styles/candiiclouds/star.gif
+themes/candiiclouds_tiki_2/templates/styles/candiiclouds/credits.tpl templates/styles/candiiclouds/credits.tpl
+themes/candiiclouds_tiki_2/templates/styles/candiiclouds/header.tpl templates/styles/candiiclouds/header.tpl
+themes/candiiclouds_tiki_2/templates/styles/candiiclouds/index.php templates/styles/candiiclouds/index.php
+themes/candiiclouds_tiki_2/templates/styles/candiiclouds/tiki.tpl templates/styles/candiiclouds/tiki.tpl
+themes/candiiclouds_tiki_2/templates/styles/candiiclouds/tiki-bot_bar.tpl templates/styles/candiiclouds/tiki-bot_bar.tpl
+themes/candiiclouds_tiki_2/templates/styles/candiiclouds/tiki-read_article.tpl templates/styles/candiiclouds/tiki-read_article.tpl
+themes/candiiclouds_tiki_2/templates/styles/candiiclouds/tiki-site_header.tpl templates/styles/candiiclouds/tiki-site_header.tpl
+themes/candiiclouds_tiki_2/templates/styles/candiiclouds/tiki-top_bar.tpl templates/styles/candiiclouds/tiki-top_bar.tpl
 
 Description:
 Candii Clouds theme by Mark Schulz (elpirtxis), licensed Creative Commons Attribution 2.5 and

@@ -10,20 +10,20 @@ Lastmodif:
 $Date$
 
 Files:
-themes/greenblog/Readme.txt styles/greenblog/Readme.txt
-themes/greenblog/styles/greenblog.css styles/greenblog.css
-themes/greenblog/styles/greenblog/comment_icon.gif styles/greenblog/comment_icon.gif
-themes/greenblog/styles/greenblog/comment_bg.jpg styles/greenblog/comment_bg.jpg
-themes/greenblog/styles/greenblog/comment_bottom.jpg styles/greenblog/comment_bottom.jpg
-themes/greenblog/styles/greenblog/footer_bg.jpg styles/greenblog/footer_bg.jpg
-themes/greenblog/styles/greenblog/greenblog.png styles/greenblog/greenblog.png
-themes/greenblog/styles/greenblog/menu_panel_bg.jpg styles/greenblog/menu_panel_bg.jpg
-themes/greenblog/styles/greenblog/post_bg.jpg styles/greenblog/post_bg.jpg
-themes/greenblog/styles/greenblog/right_section_bg.jpg styles/greenblog/right_section_bg.jpg
-themes/greenblog/styles/greenblog/index.php styles/greenblog/index.php
-themes/greenblog/templates/styles/greenblog/credits.tpl templates/styles/greenblog/credits.tpl
-themes/greenblog/templates/styles/greenblog/index.php templates/styles/greenblog/index.php
-themes/greenblog/templates/styles/greenblog/tiki-site_header.tpl templates/styles/greenblog/tiki-site_header.tpl
+themes/greenblog_tiki_3/Readme.txt styles/greenblog/Readme.txt
+themes/greenblog_tiki_3/styles/greenblog.css styles/greenblog.css
+themes/greenblog_tiki_3/styles/greenblog/comment_icon.gif styles/greenblog/comment_icon.gif
+themes/greenblog_tiki_3/styles/greenblog/comment_bg.jpg styles/greenblog/comment_bg.jpg
+themes/greenblog_tiki_3/styles/greenblog/comment_bottom.jpg styles/greenblog/comment_bottom.jpg
+themes/greenblog_tiki_3/styles/greenblog/footer_bg.jpg styles/greenblog/footer_bg.jpg
+themes/greenblog_tiki_3/styles/greenblog/greenblog.png styles/greenblog/greenblog.png
+themes/greenblog_tiki_3/styles/greenblog/menu_panel_bg.jpg styles/greenblog/menu_panel_bg.jpg
+themes/greenblog_tiki_3/styles/greenblog/post_bg.jpg styles/greenblog/post_bg.jpg
+themes/greenblog_tiki_3/styles/greenblog/right_section_bg.jpg styles/greenblog/right_section_bg.jpg
+themes/greenblog_tiki_3/styles/greenblog/index.php styles/greenblog/index.php
+themes/greenblog_tiki_3/templates/styles/greenblog/credits.tpl templates/styles/greenblog/credits.tpl
+themes/greenblog_tiki_3/templates/styles/greenblog/index.php templates/styles/greenblog/index.php
+themes/greenblog_tiki_3/templates/styles/greenblog/tiki-site_header.tpl templates/styles/greenblog/tiki-site_header.tpl
 
 Description:
 The Green Blog theme has a dark jungle-like quality, uses the *litecss source-ordered layout method ([http://sourceforge.net/projects/litecss]), and imports layout/layout.css for non-design properties. For more information, please see the documentation pages for Tiki 3 themes and this theme. If possible, please keep the link to TemplateMo.com in the page footer.

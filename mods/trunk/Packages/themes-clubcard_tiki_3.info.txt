@@ -10,22 +10,22 @@ Lastmodif:
 $Date$
 
 Files:
-themes/clubcard/Readme.txt styles/clubcard/Readme.txt
-themes/clubcard/styles/clubcard.css styles/clubcard.css
-themes/clubcard/styles/clubcard/clubcard.png styles/clubcard/clubcard.png
-themes/clubcard/styles/clubcard/ie6.css styles/clubcard/ie6.css
-themes/clubcard/styles/clubcard/img01.jpg styles/clubcard/img01.jpg
-themes/clubcard/styles/clubcard/img02.jpg styles/clubcard/img02.jpg
-themes/clubcard/styles/clubcard/img03.jpg styles/clubcard/img03.jpg
-themes/clubcard/styles/clubcard/img04.jpg styles/clubcard/img04.jpg
-themes/clubcard/styles/clubcard/img05.jpg styles/clubcard/img05.jpg
-themes/clubcard/styles/clubcard/img06.jpg styles/clubcard/img06.jpg
-themes/clubcard/styles/clubcard/index.php styles/clubcard/index.php
-themes/clubcard/styles/clubcard/options/index.php styles/clubcard/options/index.php
-themes/clubcard/styles/clubcard/options/wide.css styles/clubcard/options/wide.css
-themes/clubcard/styles/clubcard/options/wide/wide.png styles/clubcard/options/wide/wide.png
-themes/clubcard/templates/styles/clubcard/credits.tpl templates/styles/clubcard/credits.tpl
-themes/clubcard/templates/styles/clubcard/index.php templates/styles/clubcard/index.php
+themes/clubcard_tiki_3/Readme.txt styles/clubcard/Readme.txt
+themes/clubcard_tiki_3/styles/clubcard.css styles/clubcard.css
+themes/clubcard_tiki_3/styles/clubcard/clubcard.png styles/clubcard/clubcard.png
+themes/clubcard_tiki_3/styles/clubcard/ie6.css styles/clubcard/ie6.css
+themes/clubcard_tiki_3/styles/clubcard/img01.jpg styles/clubcard/img01.jpg
+themes/clubcard_tiki_3/styles/clubcard/img02.jpg styles/clubcard/img02.jpg
+themes/clubcard_tiki_3/styles/clubcard/img03.jpg styles/clubcard/img03.jpg
+themes/clubcard_tiki_3/styles/clubcard/img04.jpg styles/clubcard/img04.jpg
+themes/clubcard_tiki_3/styles/clubcard/img05.jpg styles/clubcard/img05.jpg
+themes/clubcard_tiki_3/styles/clubcard/img06.jpg styles/clubcard/img06.jpg
+themes/clubcard_tiki_3/styles/clubcard/index.php styles/clubcard/index.php
+themes/clubcard_tiki_3/styles/clubcard/options/index.php styles/clubcard/options/index.php
+themes/clubcard_tiki_3/styles/clubcard/options/wide.css styles/clubcard/options/wide.css
+themes/clubcard_tiki_3/styles/clubcard/options/wide/wide.png styles/clubcard/options/wide/wide.png
+themes/clubcard_tiki_3/templates/styles/clubcard/credits.tpl templates/styles/clubcard/credits.tpl
+themes/clubcard_tiki_3/templates/styles/clubcard/index.php templates/styles/clubcard/index.php
 
 Description:
 Club Card (clubcard.css) is meant to use the left and center columns only; the right column should be turned off. To use all three columns, use the theme's option "wide" (select it on the Look and Feel admin page). For more information, please see the documentation pages for this theme. To comply with the license, retain the link to Free CSS Templates in the page footer.

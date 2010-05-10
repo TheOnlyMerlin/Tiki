@@ -8,32 +8,32 @@ lastmodif:
 $Date$
 
 files:
-themes/tikipedia/Readme.txt templates/styles/tikipedia/Readme.txt
-themes/tikipedia/lib/wiki-plugins/wikiplugin_thumbdiv.php lib/wiki-plugins/wikiplugin_thumbdiv.php
-themes/tikipedia/lib/wiki-plugins/wikiplugin_twocolortitlebox.php lib/wiki-plugins/wikiplugin_twocolortitlebox.php
-themes/tikipedia/styles/tikipedia.css styles/tikipedia.css
-themes/tikipedia/styles/tikipedia/bullet.gif styles/tikipedia/bullet.gif
-themes/tikipedia/styles/tikipedia/headbg.jpg styles/tikipedia/headbg.jpg
-themes/tikipedia/styles/tikipedia/index.php styles/tikipedia/index.php
-themes/tikipedia/styles/tikipedia/logo.png styles/tikipedia/logo.png
-themes/tikipedia/styles/tikipedia/logo-indexed.gif styles/tikipedia/logo-indexed.gif
-themes/tikipedia/styles/tikipedia/user.gif styles/tikipedia/user.gif
+themes/tikipedia_tiki_2/Readme.txt templates/styles/tikipedia/Readme.txt
+themes/tikipedia_tiki_2/lib/wiki-plugins/wikiplugin_thumbdiv.php lib/wiki-plugins/wikiplugin_thumbdiv.php
+themes/tikipedia_tiki_2/lib/wiki-plugins/wikiplugin_twocolortitlebox.php lib/wiki-plugins/wikiplugin_twocolortitlebox.php
+themes/tikipedia_tiki_2/styles/tikipedia.css styles/tikipedia.css
+themes/tikipedia_tiki_2/styles/tikipedia/bullet.gif styles/tikipedia/bullet.gif
+themes/tikipedia_tiki_2/styles/tikipedia/headbg.jpg styles/tikipedia/headbg.jpg
+themes/tikipedia_tiki_2/styles/tikipedia/index.php styles/tikipedia/index.php
+themes/tikipedia_tiki_2/styles/tikipedia/logo.png styles/tikipedia/logo.png
+themes/tikipedia_tiki_2/styles/tikipedia/logo-indexed.gif styles/tikipedia/logo-indexed.gif
+themes/tikipedia_tiki_2/styles/tikipedia/user.gif styles/tikipedia/user.gif
 
-themes/tikipedia/templates/styles/tikipedia/credits.tpl templates/styles/tikipedia/credits.tpl
-themes/tikipedia/templates/styles/tikipedia/header.tpl templates/styles/tikipedia/header.tpl
-themes/tikipedia/templates/styles/tikipedia/index.php templates/styles/tikipedia/index.php
-themes/tikipedia/templates/styles/tikipedia/mod-toolbox.tpl templates/styles/tikipedia/mod-toolbox.tpl
-themes/tikipedia/templates/styles/tikipedia/tiki.tpl templates/styles/tikipedia/tiki.tpl
-themes/tikipedia/templates/styles/tikipedia/tiki-bot_bar.tpl templates/styles/tikipedia/tiki-bot_bar.tpl
-themes/tikipedia/templates/styles/tikipedia/tiki-likepages.tpl templates/styles/tikipedia/tiki-likepages.tpl
-themes/tikipedia/templates/styles/tikipedia/tiki-pagehistory.tpl templates/styles/tikipedia/tiki-pagehistory.tpl
-themes/tikipedia/templates/styles/tikipedia/tiki-read_article.tpl templates/styles/tikipedia/tiki-read_article.tpl
-themes/tikipedia/templates/styles/tikipedia/tiki-rename_page.tpl templates/styles/tikipedia/tiki-rename_page.tpl
-themes/tikipedia/templates/styles/tikipedia/tiki-rollback.tpl templates/styles/tikipedia/tiki-rollback.tpl
-themes/tikipedia/templates/styles/tikipedia/tiki-show_page.tpl templates/styles/tikipedia/tiki-show_page.tpl
-themes/tikipedia/templates/styles/tikipedia/tiki-site_header.tpl templates/styles/tikipedia/tiki-site_header.tpl
-themes/tikipedia/templates/styles/tikipedia/tiki-stats.tpl templates/styles/tikipedia/tiki-stats.tpl
-themes/tikipedia/templates/styles/tikipedia/tiki-top_bar.tpl templates/styles/tikipedia/tiki-top_bar.tpl
+themes/tikipedia_tiki_2/templates/styles/tikipedia/credits.tpl templates/styles/tikipedia/credits.tpl
+themes/tikipedia_tiki_2/templates/styles/tikipedia/header.tpl templates/styles/tikipedia/header.tpl
+themes/tikipedia_tiki_2/templates/styles/tikipedia/index.php templates/styles/tikipedia/index.php
+themes/tikipedia_tiki_2/templates/styles/tikipedia/mod-toolbox.tpl templates/styles/tikipedia/mod-toolbox.tpl
+themes/tikipedia_tiki_2/templates/styles/tikipedia/tiki.tpl templates/styles/tikipedia/tiki.tpl
+themes/tikipedia_tiki_2/templates/styles/tikipedia/tiki-bot_bar.tpl templates/styles/tikipedia/tiki-bot_bar.tpl
+themes/tikipedia_tiki_2/templates/styles/tikipedia/tiki-likepages.tpl templates/styles/tikipedia/tiki-likepages.tpl
+themes/tikipedia_tiki_2/templates/styles/tikipedia/tiki-pagehistory.tpl templates/styles/tikipedia/tiki-pagehistory.tpl
+themes/tikipedia_tiki_2/templates/styles/tikipedia/tiki-read_article.tpl templates/styles/tikipedia/tiki-read_article.tpl
+themes/tikipedia_tiki_2/templates/styles/tikipedia/tiki-rename_page.tpl templates/styles/tikipedia/tiki-rename_page.tpl
+themes/tikipedia_tiki_2/templates/styles/tikipedia/tiki-rollback.tpl templates/styles/tikipedia/tiki-rollback.tpl
+themes/tikipedia_tiki_2/templates/styles/tikipedia/tiki-show_page.tpl templates/styles/tikipedia/tiki-show_page.tpl
+themes/tikipedia_tiki_2/templates/styles/tikipedia/tiki-site_header.tpl templates/styles/tikipedia/tiki-site_header.tpl
+themes/tikipedia_tiki_2/templates/styles/tikipedia/tiki-stats.tpl templates/styles/tikipedia/tiki-stats.tpl
+themes/tikipedia_tiki_2/templates/styles/tikipedia/tiki-top_bar.tpl templates/styles/tikipedia/tiki-top_bar.tpl
 
 author:
 Gary Cunningham-Lee (chibaguy)

@@ -10,33 +10,33 @@ Lastmodif:
 $Date$
 
 Files:
-themes/darkshine/Readme.txt styles/darkshine/Readme.txt
-themes/darkshine/styles/darkshine.css styles/darkshine.css
-themes/darkshine/styles/darkshine/ad.gif styles/darkshine/ad.gif
-themes/darkshine/styles/darkshine/blue.gif styles/darkshine/blue.gif
-themes/darkshine/styles/darkshine/border.jpg styles/darkshine/border.jpg
-themes/darkshine/styles/darkshine/box.jpg styles/darkshine/box.jpg
-themes/darkshine/styles/darkshine/green.jpg styles/darkshine/green.jpg
-themes/darkshine/styles/darkshine/hover_list.jpg styles/darkshine/hover_list.jpg
-themes/darkshine/styles/darkshine/index.php styles/darkshine/index.php
-themes/darkshine/styles/darkshine/main.gif styles/darkshine/main.gif
-themes/darkshine/styles/darkshine/nav.gif styles/darkshine/nav.gif
-themes/darkshine/styles/darkshine/orange.jpg styles/darkshine/orange.jpg
-themes/darkshine/styles/darkshine/print.css styles/darkshine/print.css
-themes/darkshine/styles/darkshine/red.jpg styles/darkshine/red.jpg
-themes/darkshine/styles/darkshine/stripes.gif styles/darkshine/stripes.gif
-themes/darkshine/styles/darkshine/stripes_small.gif styles/darkshine/stripes_small.gif
-themes/darkshine/styles/darkshine/title_background.jpg styles/darkshine/title_background.jpg
-themes/darkshine/templates/styles/darkshine/credits.tpl templates/styles/darkshine/credits.tpl
-themes/darkshine/templates/styles/darkshine/header.tpl templates/styles/darkshine/header.tpl
-themes/darkshine/templates/styles/darkshine/index.php templates/styles/darkshine/index.php
-themes/darkshine/templates/styles/darkshine/sicustomcode.tpl templates/styles/darkshine/sicustomcode.tpl
-themes/darkshine/templates/styles/darkshine/tiki.tpl templates/styles/darkshine/tiki.tpl
-themes/darkshine/templates/styles/darkshine/tiki-bot_bar.tpl templates/styles/darkshine/tiki-bot_bar.tpl
-themes/darkshine/templates/styles/darkshine/tiki-list_blogs.tpl templates/styles/darkshine/tiki-list_blogs.tpl
-themes/darkshine/templates/styles/darkshine/tiki-read_article.tpl templates/styles/darkshine/tiki-read_article.tpl
-themes/darkshine/templates/styles/darkshine/tiki-site_header.tpl templates/styles/darkshine/tiki-site_header.tpl
-themes/darkshine/templates/styles/darkshine/tiki-top_bar.tpl templates/styles/darkshine/tiki-top_bar.tpl
+themes/darkshine_tiki_2/Readme.txt styles/darkshine/Readme.txt
+themes/darkshine_tiki_2/styles/darkshine.css styles/darkshine.css
+themes/darkshine_tiki_2/styles/darkshine/ad.gif styles/darkshine/ad.gif
+themes/darkshine_tiki_2/styles/darkshine/blue.gif styles/darkshine/blue.gif
+themes/darkshine_tiki_2/styles/darkshine/border.jpg styles/darkshine/border.jpg
+themes/darkshine_tiki_2/styles/darkshine/box.jpg styles/darkshine/box.jpg
+themes/darkshine_tiki_2/styles/darkshine/green.jpg styles/darkshine/green.jpg
+themes/darkshine_tiki_2/styles/darkshine/hover_list.jpg styles/darkshine/hover_list.jpg
+themes/darkshine_tiki_2/styles/darkshine/index.php styles/darkshine/index.php
+themes/darkshine_tiki_2/styles/darkshine/main.gif styles/darkshine/main.gif
+themes/darkshine_tiki_2/styles/darkshine/nav.gif styles/darkshine/nav.gif
+themes/darkshine_tiki_2/styles/darkshine/orange.jpg styles/darkshine/orange.jpg
+themes/darkshine_tiki_2/styles/darkshine/print.css styles/darkshine/print.css
+themes/darkshine_tiki_2/styles/darkshine/red.jpg styles/darkshine/red.jpg
+themes/darkshine_tiki_2/styles/darkshine/stripes.gif styles/darkshine/stripes.gif
+themes/darkshine_tiki_2/styles/darkshine/stripes_small.gif styles/darkshine/stripes_small.gif
+themes/darkshine_tiki_2/styles/darkshine/title_background.jpg styles/darkshine/title_background.jpg
+themes/darkshine_tiki_2/templates/styles/darkshine/credits.tpl templates/styles/darkshine/credits.tpl
+themes/darkshine_tiki_2/templates/styles/darkshine/header.tpl templates/styles/darkshine/header.tpl
+themes/darkshine_tiki_2/templates/styles/darkshine/index.php templates/styles/darkshine/index.php
+themes/darkshine_tiki_2/templates/styles/darkshine/sicustomcode.tpl templates/styles/darkshine/sicustomcode.tpl
+themes/darkshine_tiki_2/templates/styles/darkshine/tiki.tpl templates/styles/darkshine/tiki.tpl
+themes/darkshine_tiki_2/templates/styles/darkshine/tiki-bot_bar.tpl templates/styles/darkshine/tiki-bot_bar.tpl
+themes/darkshine_tiki_2/templates/styles/darkshine/tiki-list_blogs.tpl templates/styles/darkshine/tiki-list_blogs.tpl
+themes/darkshine_tiki_2/templates/styles/darkshine/tiki-read_article.tpl templates/styles/darkshine/tiki-read_article.tpl
+themes/darkshine_tiki_2/templates/styles/darkshine/tiki-site_header.tpl templates/styles/darkshine/tiki-site_header.tpl
+themes/darkshine_tiki_2/templates/styles/darkshine/tiki-top_bar.tpl templates/styles/darkshine/tiki-top_bar.tpl
 
 Description: The TikiWiki adaptation of this design uses one table to keep things sliding smoothly for IE7. The site title can be added with site identity custom code. A dynamic content block can display content in the narrow black space next to the search link. A section at the top of the content area that in the original design held a row of thumbnails can be configured with Look & Feel top bar custom code.
  

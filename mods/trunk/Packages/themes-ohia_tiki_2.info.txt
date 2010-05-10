@@ -10,17 +10,17 @@ Lastmodif:
 $Date$
 
 Files:
-themes/ohia/Readme.txt styles/ohia/Readme.txt
-themes/ohia/styles/ohia.css styles/ohia.css
-themes/ohia/styles/ohia/index.png styles/ohia/index.php
-themes/ohia/styles/ohia/body.jpg styles/ohia/body.jpg
-themes/ohia/templates/styles/ohia/credits.tpl templates/styles/ohia/credits.tpl
-themes/ohia/templates/styles/ohia/header.tpl templates/styles/ohia/header.tpl
-themes/ohia/templates/styles/ohia/index.php templates/styles/ohia/index.php
-themes/ohia/templates/styles/ohia/tiki.tpl templates/styles/ohia/tiki.tpl
-themes/ohia/templates/styles/ohia/tiki-bot_bar.tpl templates/styles/ohia/tiki-bot_bar.tpl
-themes/ohia/templates/styles/ohia/tiki-site_header.tpl templates/styles/ohia/tiki-site_header.tpl
-themes/ohia/templates/styles/ohia/tiki-top_bar.tpl templates/styles/ohia/tiki-top_bar.tpl
+themes/ohia_tiki_2/Readme.txt styles/ohia/Readme.txt
+themes/ohia_tiki_2/styles/ohia.css styles/ohia.css
+themes/ohia_tiki_2/styles/ohia/index.png styles/ohia/index.php
+themes/ohia_tiki_2/styles/ohia/body.jpg styles/ohia/body.jpg
+themes/ohia_tiki_2/templates/styles/ohia/credits.tpl templates/styles/ohia/credits.tpl
+themes/ohia_tiki_2/templates/styles/ohia/header.tpl templates/styles/ohia/header.tpl
+themes/ohia_tiki_2/templates/styles/ohia/index.php templates/styles/ohia/index.php
+themes/ohia_tiki_2/templates/styles/ohia/tiki.tpl templates/styles/ohia/tiki.tpl
+themes/ohia_tiki_2/templates/styles/ohia/tiki-bot_bar.tpl templates/styles/ohia/tiki-bot_bar.tpl
+themes/ohia_tiki_2/templates/styles/ohia/tiki-site_header.tpl templates/styles/ohia/tiki-site_header.tpl
+themes/ohia_tiki_2/templates/styles/ohia/tiki-top_bar.tpl templates/styles/ohia/tiki-top_bar.tpl
 
 Description:
 Ohia is an original design for TikiWiki CMS/Groupware and uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss). 

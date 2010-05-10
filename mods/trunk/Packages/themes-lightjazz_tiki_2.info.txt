@@ -10,32 +10,32 @@ Lastmodif:
 $Date$
 
 Files:
-themes/lightjazz/Readme.txt styles/lightjazz/Readme.txt
-themes/lightjazz/styles/lightjazz.css styles/lightjazz.css
-themes/lightjazz/styles/lightjazz-green.css styles/lightjazz-green.css
-themes/lightjazz/styles/lightjazz-red.css styles/lightjazz-red.css
-themes/lightjazz/styles/lightjazz/bg.png styles/lightjazz/bg.png
-themes/lightjazz/styles/lightjazz/body-bg.gif styles/lightjazz/body-bg.gif
-themes/lightjazz/styles/lightjazz/footer.jpg styles/lightjazz/footer.jpg
-themes/lightjazz/styles/lightjazz/header.jpg styles/lightjazz/header.jpg
-themes/lightjazz/styles/lightjazz/index.php styles/lightjazz/index.php
-themes/lightjazz/styles/lightjazz/menu-bg.png styles/lightjazz/menu-bg.png
-themes/lightjazz/styles/lightjazz/menu-div.png styles/lightjazz/menu-div.png
-themes/lightjazz/styles/lightjazz/menubg-over.gif styles/lightjazz/menubg-over.gif
-themes/lightjazz/styles/litejazz/topbar_custcode-blue.png styles/litejazz/topbar_custcode-blue.png
-themes/lightjazz/styles/litejazz/topbar_custcode-green.png styles/litejazz/topbar_custcode-green.png
-themes/lightjazz/styles/litejazz/topbar_custcode-red.png styles/litejazz/topbar_custcode-red.png
-themes/lightjazz/templates/styles/lightjazz/credits.tpl templates/styles/lightjazz/credits.tpl
-themes/lightjazz/templates/styles/lightjazz/header.tpl templates/styles/lightjazz/header.tpl
-themes/lightjazz/templates/styles/lightjazz/index.php templates/styles/lightjazz/index.php
-themes/lightjazz/templates/styles/litejazz/litejazz_bottom.tpl templates/styles/litejazz/litejazz_bottom.tpl
-themes/lightjazz/templates/styles/litejazz/litejazz_top.tpl templates/styles/litejazz/litejazz_top.tpl
-themes/lightjazz/templates/styles/lightjazz/tiki.tpl templates/styles/lightjazz/tiki.tpl
-themes/lightjazz/templates/styles/lightjazz/tiki-bot_bar.tpl templates/styles/lightjazz/tiki-bot_bar.tpl
-themes/lightjazz/templates/styles/litejazz/tiki-browse_image.tpl templates/styles/litejazz/tiki-browse_image.tpl
-themes/lightjazz/templates/styles/lightjazz/tiki-read_article.tpl templates/styles/lightjazz/tiki-read_article.tpl
-themes/lightjazz/templates/styles/lightjazz/tiki-site_header.tpl templates/styles/lightjazz/tiki-site_header.tpl
-themes/lightjazz/templates/styles/lightjazz/tiki-top_bar.tpl templates/styles/lightjazz/tiki-top_bar.tpl
+themes/lightjazz_tiki_2/Readme.txt styles/lightjazz/Readme.txt
+themes/lightjazz_tiki_2/styles/lightjazz.css styles/lightjazz.css
+themes/lightjazz_tiki_2/styles/lightjazz-green.css styles/lightjazz-green.css
+themes/lightjazz_tiki_2/styles/lightjazz-red.css styles/lightjazz-red.css
+themes/lightjazz_tiki_2/styles/lightjazz/bg.png styles/lightjazz/bg.png
+themes/lightjazz_tiki_2/styles/lightjazz/body-bg.gif styles/lightjazz/body-bg.gif
+themes/lightjazz_tiki_2/styles/lightjazz/footer.jpg styles/lightjazz/footer.jpg
+themes/lightjazz_tiki_2/styles/lightjazz/header.jpg styles/lightjazz/header.jpg
+themes/lightjazz_tiki_2/styles/lightjazz/index.php styles/lightjazz/index.php
+themes/lightjazz_tiki_2/styles/lightjazz/menu-bg.png styles/lightjazz/menu-bg.png
+themes/lightjazz_tiki_2/styles/lightjazz/menu-div.png styles/lightjazz/menu-div.png
+themes/lightjazz_tiki_2/styles/lightjazz/menubg-over.gif styles/lightjazz/menubg-over.gif
+themes/lightjazz_tiki_2/styles/litejazz/topbar_custcode-blue.png styles/litejazz/topbar_custcode-blue.png
+themes/lightjazz_tiki_2/styles/litejazz/topbar_custcode-green.png styles/litejazz/topbar_custcode-green.png
+themes/lightjazz_tiki_2/styles/litejazz/topbar_custcode-red.png styles/litejazz/topbar_custcode-red.png
+themes/lightjazz_tiki_2/templates/styles/lightjazz/credits.tpl templates/styles/lightjazz/credits.tpl
+themes/lightjazz_tiki_2/templates/styles/lightjazz/header.tpl templates/styles/lightjazz/header.tpl
+themes/lightjazz_tiki_2/templates/styles/lightjazz/index.php templates/styles/lightjazz/index.php
+themes/lightjazz_tiki_2/templates/styles/litejazz/litejazz_bottom.tpl templates/styles/litejazz/litejazz_bottom.tpl
+themes/lightjazz_tiki_2/templates/styles/litejazz/litejazz_top.tpl templates/styles/litejazz/litejazz_top.tpl
+themes/lightjazz_tiki_2/templates/styles/lightjazz/tiki.tpl templates/styles/lightjazz/tiki.tpl
+themes/lightjazz_tiki_2/templates/styles/lightjazz/tiki-bot_bar.tpl templates/styles/lightjazz/tiki-bot_bar.tpl
+themes/lightjazz_tiki_2/templates/styles/litejazz/tiki-browse_image.tpl templates/styles/litejazz/tiki-browse_image.tpl
+themes/lightjazz_tiki_2/templates/styles/lightjazz/tiki-read_article.tpl templates/styles/lightjazz/tiki-read_article.tpl
+themes/lightjazz_tiki_2/templates/styles/lightjazz/tiki-site_header.tpl templates/styles/lightjazz/tiki-site_header.tpl
+themes/lightjazz_tiki_2/templates/styles/lightjazz/tiki-top_bar.tpl templates/styles/lightjazz/tiki-top_bar.tpl
 
 Description:
 Adaptation for TikiWiki CMS/Groupware of the LiteJazz theme for Drupal by Roopletheme (http://roopletheme.com). Styling is provided for the topbar and bottombar custom code page sections, and there are three color variations, with the red and green versions importing litejazz.css as a CSS base.

@@ -10,30 +10,30 @@ Lastmodif:
 $Date$
 
 Files:
-themes/andreas09/Readme.txt styles/andreas09/Readme.txt
-themes/andreas09/styles/andreas09.css styles/andreas09.css
-themes/andreas09/styles/andreas09/bodybg.jpg styles/andreas09/bodybg.jpg
-themes/andreas09/styles/andreas09/footerbg.jpg styles/andreas09/footerbg.jpg
-themes/andreas09/styles/andreas09/index.php styles/andreas09/index.php
-themes/andreas09/styles/andreas09/menuhover.jpg styles/andreas09/menuhover.jpg
-themes/andreas09/templates/styles/andreas09/credits.tpl templates/styles/andreas09/credits.tpl
-themes/andreas09/templates/styles/andreas09/index.php templates/styles/andreas09/index.php
-themes/andreas09/templates/styles/andreas09/header.tpl templates/styles/andreas09/header.tpl
-themes/andreas09/templates/styles/andreas09/tiki.tpl templates/styles/andreas09/tiki.tpl
-themes/andreas09/templates/styles/andreas09/tiki-bot_bar.tpl templates/styles/andreas09/tiki-bot_bar.tpl
-themes/andreas09/templates/styles/andreas09/tiki-site_header.tpl templates/styles/andreas09/tiki-site_header.tpl
-themes/andreas09/templates/styles/andreas09/tiki-top_bar.tpl templates/styles/andreas09/tiki-top_bar.tpl
-themes/andreas09/styles/andreas09/alt-img/bodybg-black.jpg styles/andreas09/alt-img/bodybg-black.jpg
-themes/andreas09/styles/andreas09/alt-img/bodybg-green.jpg styles/andreas09/alt-img/bodybg-green.jpg
-themes/andreas09/styles/andreas09/alt-img/bodybg-orange.jpg styles/andreas09/alt-img/bodybg-orange.jpg
-themes/andreas09/styles/andreas09/alt-img/bodybg-purple.jpg styles/andreas09/alt-img/bodybg-purple.jpg
-themes/andreas09/styles/andreas09/alt-img/bodybg-red.jpg styles/andreas09/alt-img/bodybg-red.jpg
-themes/andreas09/styles/andreas09/alt-img/index.php styles/andreas09/alt-img/index.php
-themes/andreas09/styles/andreas09/alt-img/menubg-black.jpg styles/andreas09/alt-img/menubg-black.jpg
-themes/andreas09/styles/andreas09/alt-img/menubg-green.jpg styles/andreas09/alt-img/menubg-green.jpg
-themes/andreas09/styles/andreas09/alt-img/menubg-orange.jpg styles/andreas09/alt-img/menubg-orange.jpg
-themes/andreas09/styles/andreas09/alt-img/menubg-purple.jpg styles/andreas09/alt-img/menubg-purple.jpg
-themes/andreas09/styles/andreas09/alt-img/menubg-red.jpg styles/andreas09/alt-img/menubg-red.jpg
+themes/andreas09_tiki_2/Readme.txt styles/andreas09/Readme.txt
+themes/andreas09_tiki_2/styles/andreas09.css styles/andreas09.css
+themes/andreas09_tiki_2/styles/andreas09/bodybg.jpg styles/andreas09/bodybg.jpg
+themes/andreas09_tiki_2/styles/andreas09/footerbg.jpg styles/andreas09/footerbg.jpg
+themes/andreas09_tiki_2/styles/andreas09/index.php styles/andreas09/index.php
+themes/andreas09_tiki_2/styles/andreas09/menuhover.jpg styles/andreas09/menuhover.jpg
+themes/andreas09_tiki_2/templates/styles/andreas09/credits.tpl templates/styles/andreas09/credits.tpl
+themes/andreas09_tiki_2/templates/styles/andreas09/index.php templates/styles/andreas09/index.php
+themes/andreas09_tiki_2/templates/styles/andreas09/header.tpl templates/styles/andreas09/header.tpl
+themes/andreas09_tiki_2/templates/styles/andreas09/tiki.tpl templates/styles/andreas09/tiki.tpl
+themes/andreas09_tiki_2/templates/styles/andreas09/tiki-bot_bar.tpl templates/styles/andreas09/tiki-bot_bar.tpl
+themes/andreas09_tiki_2/templates/styles/andreas09/tiki-site_header.tpl templates/styles/andreas09/tiki-site_header.tpl
+themes/andreas09_tiki_2/templates/styles/andreas09/tiki-top_bar.tpl templates/styles/andreas09/tiki-top_bar.tpl
+themes/andreas09_tiki_2/styles/andreas09/alt-img/bodybg-black.jpg styles/andreas09/alt-img/bodybg-black.jpg
+themes/andreas09_tiki_2/styles/andreas09/alt-img/bodybg-green.jpg styles/andreas09/alt-img/bodybg-green.jpg
+themes/andreas09_tiki_2/styles/andreas09/alt-img/bodybg-orange.jpg styles/andreas09/alt-img/bodybg-orange.jpg
+themes/andreas09_tiki_2/styles/andreas09/alt-img/bodybg-purple.jpg styles/andreas09/alt-img/bodybg-purple.jpg
+themes/andreas09_tiki_2/styles/andreas09/alt-img/bodybg-red.jpg styles/andreas09/alt-img/bodybg-red.jpg
+themes/andreas09_tiki_2/styles/andreas09/alt-img/index.php styles/andreas09/alt-img/index.php
+themes/andreas09_tiki_2/styles/andreas09/alt-img/menubg-black.jpg styles/andreas09/alt-img/menubg-black.jpg
+themes/andreas09_tiki_2/styles/andreas09/alt-img/menubg-green.jpg styles/andreas09/alt-img/menubg-green.jpg
+themes/andreas09_tiki_2/styles/andreas09/alt-img/menubg-orange.jpg styles/andreas09/alt-img/menubg-orange.jpg
+themes/andreas09_tiki_2/styles/andreas09/alt-img/menubg-purple.jpg styles/andreas09/alt-img/menubg-purple.jpg
+themes/andreas09_tiki_2/styles/andreas09/alt-img/menubg-red.jpg styles/andreas09/alt-img/menubg-red.jpg
 
 Description:
 Andreas09 is based on the original design by Andreas Viklund (http://andreasviklund.com/templates/) and uses the *litecss source-ordered layout method ([http://sourceforge.net/projects/litecss]).

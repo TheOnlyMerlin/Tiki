@@ -10,26 +10,26 @@ Lastmodif:
 $Date$
 
 Files:
-themes/judy/Readme.txt styles/judy/Readme.txt
-themes/judy/styles/judy.css styles/judy.css
-themes/judy/styles/judy/arrows-467aa7.png styles/judy/arrows-467aa7.png
-themes/judy/styles/judy/header.png styles/judy/header.png
-themes/judy/styles/judy/ie6.css styles/judy/ie6.css
-themes/judy/styles/judy/bg-content.png styles/judy/bg-content.png
-themes/judy/styles/judy/bg-content-left.png styles/judy/bg-content-left.png
-themes/judy/styles/judy/bg-content-right.png styles/judy/bg-content-right.png
-themes/judy/styles/judy/bg-navigation-item.png styles/judy/bg-navigation-item.png
-themes/judy/styles/judy/bg-navigation-item-hover.png styles/judy/bg-navigation-item-hover.png
-themes/judy/styles/judy/bg-topbar.jpg styles/judy/bg-topbar.jpg
-themes/judy/styles/judy/body.png styles/judy/body.png
-themes/judy/styles/judy/duplicon-watermark.png styles/judy/duplicon-watermark.png
-themes/judy/styles/judy/gradient-inner.png styles/judy/gradient-inner.png
-themes/judy/styles/judy/index.php styles/judy/index.php
-themes/judy/styles/judy/judy.png styles/judy/judy.png
-themes/judy/templates/styles/judy/credits.tpl templates/styles/judy/credits.tpl
-themes/judy/templates/styles/judy/index.php templates/styles/judy/index.php
-themes/judy/templates/styles/judy/tiki.tpl templates/styles/judy/tiki.tpl
-themes/judy/templates/styles/judy/tiki-site_header.tpl templates/styles/judy/tiki-site_header.tpl
+themes/judy_tiki_3/Readme.txt styles/judy/Readme.txt
+themes/judy_tiki_3/styles/judy.css styles/judy.css
+themes/judy_tiki_3/styles/judy/arrows-467aa7.png styles/judy/arrows-467aa7.png
+themes/judy_tiki_3/styles/judy/header.png styles/judy/header.png
+themes/judy_tiki_3/styles/judy/ie6.css styles/judy/ie6.css
+themes/judy_tiki_3/styles/judy/bg-content.png styles/judy/bg-content.png
+themes/judy_tiki_3/styles/judy/bg-content-left.png styles/judy/bg-content-left.png
+themes/judy_tiki_3/styles/judy/bg-content-right.png styles/judy/bg-content-right.png
+themes/judy_tiki_3/styles/judy/bg-navigation-item.png styles/judy/bg-navigation-item.png
+themes/judy_tiki_3/styles/judy/bg-navigation-item-hover.png styles/judy/bg-navigation-item-hover.png
+themes/judy_tiki_3/styles/judy/bg-topbar.jpg styles/judy/bg-topbar.jpg
+themes/judy_tiki_3/styles/judy/body.png styles/judy/body.png
+themes/judy_tiki_3/styles/judy/duplicon-watermark.png styles/judy/duplicon-watermark.png
+themes/judy_tiki_3/styles/judy/gradient-inner.png styles/judy/gradient-inner.png
+themes/judy_tiki_3/styles/judy/index.php styles/judy/index.php
+themes/judy_tiki_3/styles/judy/judy.png styles/judy/judy.png
+themes/judy_tiki_3/templates/styles/judy/credits.tpl templates/styles/judy/credits.tpl
+themes/judy_tiki_3/templates/styles/judy/index.php templates/styles/judy/index.php
+themes/judy_tiki_3/templates/styles/judy/tiki.tpl templates/styles/judy/tiki.tpl
+themes/judy_tiki_3/templates/styles/judy/tiki-site_header.tpl templates/styles/judy/tiki-site_header.tpl
 
 Description:
 Judy is an implementation of the Garland theme for Drupal, for TikiWiki CMS/Groupware. For more information, please see the documentation pages for this theme.

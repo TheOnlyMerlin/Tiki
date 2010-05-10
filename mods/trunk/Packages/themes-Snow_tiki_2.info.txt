@@ -10,31 +10,31 @@ Lastmodif:
 $Date$
 
 Files:
-themes/Snow/Readme.txt styles/snow/Readme.txt
-themes/Snow/resources/Flash/snowfall.fla styles/snow/resources/Flash/snowfall.fla
-themes/Snow/theme/styles/snow.css styles/snow.css
-themes/Snow/theme/styles/snow/boxbtm.jpg styles/snow/boxbtm.jpg
-themes/Snow/theme/styles/snow/boxmid.jpg styles/snow/boxmid.jpg
-themes/Snow/theme/styles/snow/boxtop.jpg styles/snow/boxtop.jpg
-themes/Snow/theme/styles/snow/flakesptn.jpg styles/snow/flakesptn.jpg
-themes/Snow/theme/styles/snow/flakesptn2.jpg styles/snow/flakesptn2.jpg
-themes/Snow/theme/styles/snow/flakesptn3.jpg styles/snow/flakesptn3.jpg
-themes/Snow/theme/styles/snow/header-bg.jpg styles/snow/header-bg.jpg
-themes/Snow/theme/styles/snow/index.php styles/snow/index.php
-themes/Snow/theme/styles/snow/logo.jpg styles/snow/logo.jpg
-themes/Snow/theme/styles/snow/pagetitle-bg.jpg styles/snow/pagetitle-bg.jpg
-themes/Snow/theme/styles/snow/pagetitle-bullet.gif styles/snow/pagetitle-bullet.gif
-themes/Snow/theme/styles/snow/pagetitle-bullet-sm.gif styles/snow/pagetitle-bullet-sm.gif
-themes/Snow/theme/styles/snow/Flash/index.php styles/snow/Flash/index.php
-themes/Snow/theme/styles/snow/Flash/snowfall.swf styles/snow/Flash/snowfall.swf
-themes/Snow/theme/templates/styles/snow/credits.tpl templates/styles/snow/credits.tpl
-themes/Snow/theme/templates/styles/snow/header.tpl templates/styles/snow/header.tpl
-themes/Snow/theme/templates/styles/snow/index.php templates/styles/snow/index.php
-themes/Snow/theme/templates/styles/snow/tiki.tpl templates/styles/snow/tiki.tpl
-themes/Snow/theme/templates/styles/snow/tiki-bot_bar.tpl templates/styles/snow/tiki-bot_bar.tpl
-themes/Snow/theme/templates/styles/snow/tiki-read_article.tpl templates/styles/snow/tiki-read_article.tpl
-themes/Snow/theme/templates/styles/snow/tiki-site_header.tpl templates/styles/snow/tiki-site_header.tpl
-themes/Snow/theme/templates/styles/snow/tiki-top_bar.tpl templates/styles/snow/tiki-top_bar.tpl
+themes/Snow_tiki_2/Readme.txt styles/snow/Readme.txt
+themes/Snow_tiki_2/resources/Flash/snowfall.fla styles/snow/resources/Flash/snowfall.fla
+themes/Snow_tiki_2/theme/styles/snow.css styles/snow.css
+themes/Snow_tiki_2/theme/styles/snow/boxbtm.jpg styles/snow/boxbtm.jpg
+themes/Snow_tiki_2/theme/styles/snow/boxmid.jpg styles/snow/boxmid.jpg
+themes/Snow_tiki_2/theme/styles/snow/boxtop.jpg styles/snow/boxtop.jpg
+themes/Snow_tiki_2/theme/styles/snow/flakesptn.jpg styles/snow/flakesptn.jpg
+themes/Snow_tiki_2/theme/styles/snow/flakesptn2.jpg styles/snow/flakesptn2.jpg
+themes/Snow_tiki_2/theme/styles/snow/flakesptn3.jpg styles/snow/flakesptn3.jpg
+themes/Snow_tiki_2/theme/styles/snow/header-bg.jpg styles/snow/header-bg.jpg
+themes/Snow_tiki_2/theme/styles/snow/index.php styles/snow/index.php
+themes/Snow_tiki_2/theme/styles/snow/logo.jpg styles/snow/logo.jpg
+themes/Snow_tiki_2/theme/styles/snow/pagetitle-bg.jpg styles/snow/pagetitle-bg.jpg
+themes/Snow_tiki_2/theme/styles/snow/pagetitle-bullet.gif styles/snow/pagetitle-bullet.gif
+themes/Snow_tiki_2/theme/styles/snow/pagetitle-bullet-sm.gif styles/snow/pagetitle-bullet-sm.gif
+themes/Snow_tiki_2/theme/styles/snow/Flash/index.php styles/snow/Flash/index.php
+themes/Snow_tiki_2/theme/styles/snow/Flash/snowfall.swf styles/snow/Flash/snowfall.swf
+themes/Snow_tiki_2/theme/templates/styles/snow/credits.tpl templates/styles/snow/credits.tpl
+themes/Snow_tiki_2/theme/templates/styles/snow/header.tpl templates/styles/snow/header.tpl
+themes/Snow_tiki_2/theme/templates/styles/snow/index.php templates/styles/snow/index.php
+themes/Snow_tiki_2/theme/templates/styles/snow/tiki.tpl templates/styles/snow/tiki.tpl
+themes/Snow_tiki_2/theme/templates/styles/snow/tiki-bot_bar.tpl templates/styles/snow/tiki-bot_bar.tpl
+themes/Snow_tiki_2/theme/templates/styles/snow/tiki-read_article.tpl templates/styles/snow/tiki-read_article.tpl
+themes/Snow_tiki_2/theme/templates/styles/snow/tiki-site_header.tpl templates/styles/snow/tiki-site_header.tpl
+themes/Snow_tiki_2/theme/templates/styles/snow/tiki-top_bar.tpl templates/styles/snow/tiki-top_bar.tpl
 
 Description:
 Snow is an original design for TikiWiki CMS/Groupware and uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss). A Flash .fla and .swf file are included but not tested with this version of the theme.

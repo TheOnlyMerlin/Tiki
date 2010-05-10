@@ -10,25 +10,25 @@ Lastmodif:
 $Date$
 
 Files:
-themes/underground/Readme.txt styles/underground/Readme.txt
-themes/underground/styles/underground.css styles/underground.css
-themes/underground/styles/underground/bg.gif styles/underground/bg.gif
-themes/underground/styles/underground/bullet.gif styles/underground/bullet.gif
-themes/underground/styles/underground/footerbg.gif styles/underground/footerbg.gif
-themes/underground/styles/underground/headerbg.gif styles/underground/headerbg.gif
-themes/underground/styles/underground/index.php styles/underground/index.php
-themes/underground/styles/underground/quote.gif styles/underground/quote.gif
-themes/underground/styles/underground/tableft.gif styles/underground/tableft.gif
-themes/underground/styles/underground/tabright.gif styles/underground/tabright.gif
-themes/underground/templates/styles/underground/credits.tpl templates/styles/underground/credits.tpl
-themes/underground/templates/styles/underground/header.tpl templates/styles/underground/header.tpl
-themes/underground/templates/styles/underground/index.php templates/styles/underground/index.php
-themes/underground/templates/styles/underground/tiki.tpl templates/styles/underground/tiki.tpl
-themes/underground/templates/styles/underground/tiki-bot_bar.tpl templates/styles/underground/tiki-bot_bar.tpl
-themes/underground/templates/styles/underground/tiki-list_blogs.tpl templates/styles/underground/tiki-list_blogs.tpl
-themes/underground/templates/styles/underground/tiki-read_article.tpl templates/styles/underground/tiki-read_article.tpl
-themes/underground/templates/styles/underground/tiki-site_header.tpl templates/styles/underground/tiki-site_header.tpl
-themes/underground/templates/styles/underground/tiki-view_articles.tpl templates/styles/underground/tiki-view_articles.tpl
+themes/underground_tiki_2/Readme.txt styles/underground/Readme.txt
+themes/underground_tiki_2/styles/underground.css styles/underground.css
+themes/underground_tiki_2/styles/underground/bg.gif styles/underground/bg.gif
+themes/underground_tiki_2/styles/underground/bullet.gif styles/underground/bullet.gif
+themes/underground_tiki_2/styles/underground/footerbg.gif styles/underground/footerbg.gif
+themes/underground_tiki_2/styles/underground/headerbg.gif styles/underground/headerbg.gif
+themes/underground_tiki_2/styles/underground/index.php styles/underground/index.php
+themes/underground_tiki_2/styles/underground/quote.gif styles/underground/quote.gif
+themes/underground_tiki_2/styles/underground/tableft.gif styles/underground/tableft.gif
+themes/underground_tiki_2/styles/underground/tabright.gif styles/underground/tabright.gif
+themes/underground_tiki_2/templates/styles/underground/credits.tpl templates/styles/underground/credits.tpl
+themes/underground_tiki_2/templates/styles/underground/header.tpl templates/styles/underground/header.tpl
+themes/underground_tiki_2/templates/styles/underground/index.php templates/styles/underground/index.php
+themes/underground_tiki_2/templates/styles/underground/tiki.tpl templates/styles/underground/tiki.tpl
+themes/underground_tiki_2/templates/styles/underground/tiki-bot_bar.tpl templates/styles/underground/tiki-bot_bar.tpl
+themes/underground_tiki_2/templates/styles/underground/tiki-list_blogs.tpl templates/styles/underground/tiki-list_blogs.tpl
+themes/underground_tiki_2/templates/styles/underground/tiki-read_article.tpl templates/styles/underground/tiki-read_article.tpl
+themes/underground_tiki_2/templates/styles/underground/tiki-site_header.tpl templates/styles/underground/tiki-site_header.tpl
+themes/underground_tiki_2/templates/styles/underground/tiki-view_articles.tpl templates/styles/underground/tiki-view_articles.tpl
 
 Description:
 Underground uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss). Due to the limited page-top space, not all Look & Feel options may be available. Although this theme can be used with all three columns, the present column margins were specified for a two-column layout (left and center) to emulate the look of the original design. For more information, please see the documentation pages for this theme. Please do not remove the link to Styleshout.com from the page footer.

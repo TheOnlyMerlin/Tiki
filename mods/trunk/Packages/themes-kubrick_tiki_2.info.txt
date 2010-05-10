@@ -8,20 +8,20 @@ lastmodif:
 $Date: 2006-02-19 06:05:18 $
 
 files:
-themes/kubrick/README-FIRST.txt templates/styles/kubrick/README-FIRST.txt
-themes/kubrick/theme_details-kubrick.txt templates/styles/kubrick/theme_details-kubrick.txt
-themes/kubrick/styles/kubrick.css styles/kubrick.css
-themes/kubrick/styles/kubrick/footerbg.jpg styles/kubrick/footerbg.jpg
-themes/kubrick/styles/kubrick/headerbg.jpg styles/kubrick/headerbg.jpg
-themes/kubrick/styles/kubrick/index.php styles/kubrick/index.php
-themes/kubrick/styles/kubrick/kubrickbg_left.jpg styles/kubrick/kubrickbg_left.jpg
-themes/kubrick/styles/kubrick/kubrickbg_right.jpg styles/kubrick/kubrickbg_right.jpg
-themes/kubrick/templates/styles/kubrick/tiki.tpl templates/styles/kubrick/tiki.tpl
-themes/kubrick/templates/styles/kubrick/credits.tpl templates/styles/kubrick/credits.tpl
-themes/kubrick/templates/styles/kubrick/header.tpl templates/styles/kubrick/header.tpl
-themes/kubrick/templates/styles/kubrick/tiki-bot_bar.tpl templates/styles/kubrick/tiki-bot_bar.tpl
-themes/kubrick/templates/styles/kubrick/tiki-site_header.tpl templates/styles/kubrick/tiki-site_header.tpl
-themes/kubrick/templates/styles/kubrick/tiki-top_bar.tpl templates/styles/kubrick/tiki-top_bar.tpl
+themes/kubrick_tiki_2/README-FIRST.txt templates/styles/kubrick/README-FIRST.txt
+themes/kubrick_tiki_2/theme_details-kubrick.txt templates/styles/kubrick/theme_details-kubrick.txt
+themes/kubrick_tiki_2/styles/kubrick.css styles/kubrick.css
+themes/kubrick_tiki_2/styles/kubrick/footerbg.jpg styles/kubrick/footerbg.jpg
+themes/kubrick_tiki_2/styles/kubrick/headerbg.jpg styles/kubrick/headerbg.jpg
+themes/kubrick_tiki_2/styles/kubrick/index.php styles/kubrick/index.php
+themes/kubrick_tiki_2/styles/kubrick/kubrickbg_left.jpg styles/kubrick/kubrickbg_left.jpg
+themes/kubrick_tiki_2/styles/kubrick/kubrickbg_right.jpg styles/kubrick/kubrickbg_right.jpg
+themes/kubrick_tiki_2/templates/styles/kubrick/tiki.tpl templates/styles/kubrick/tiki.tpl
+themes/kubrick_tiki_2/templates/styles/kubrick/credits.tpl templates/styles/kubrick/credits.tpl
+themes/kubrick_tiki_2/templates/styles/kubrick/header.tpl templates/styles/kubrick/header.tpl
+themes/kubrick_tiki_2/templates/styles/kubrick/tiki-bot_bar.tpl templates/styles/kubrick/tiki-bot_bar.tpl
+themes/kubrick_tiki_2/templates/styles/kubrick/tiki-site_header.tpl templates/styles/kubrick/tiki-site_header.tpl
+themes/kubrick_tiki_2/templates/styles/kubrick/tiki-top_bar.tpl templates/styles/kubrick/tiki-top_bar.tpl
 
 author:
 Gary Cunningham-Lee (chibaguy)

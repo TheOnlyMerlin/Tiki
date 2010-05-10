@@ -10,26 +10,26 @@ Lastmodif:
 $Date$
 
 Files:
-themes/smooth/Readme.txt styles/smooth/Readme.txt
-themes/smooth/styles/smooth.css styles/smooth.css
-themes/smooth/styles/smooth/img01.gif styles/smooth/img01.gif
-themes/smooth/styles/smooth/img02.gif styles/smooth/img02.gif
-themes/smooth/styles/smooth/img03.gif styles/smooth/img03.gif
-themes/smooth/styles/smooth/img04.gif styles/smooth/img04.gif
-themes/smooth/styles/smooth/img05.gif styles/smooth/img05.gif
-themes/smooth/styles/smooth/img06.gif styles/smooth/img06.gif
-themes/smooth/styles/smooth/img07.gif styles/smooth/img07.gif
-themes/smooth/styles/smooth/img08.jpg styles/smooth/img08.jpg
-themes/smooth/styles/smooth/index.php styles/smooth/index.php
-themes/smooth/templates/styles/smooth/credits.tpl templates/styles/smooth/credits.tpl
-themes/smooth/templates/styles/smooth/index.php templates/styles/smooth/index.php
-themes/smooth/templates/styles/smooth/header.tpl templates/styles/smooth/header.tpl
-themes/smooth/templates/styles/smooth/sicustomcode.tpl templates/styles/smooth/sicustomcode.tpl
-themes/smooth/templates/styles/smooth/tiki.tpl templates/styles/smooth/tiki.tpl
-themes/smooth/templates/styles/smooth/tiki-bot_bar.tpl templates/styles/smooth/tiki-bot_bar.tpl
-themes/smooth/templates/styles/smooth/tiki-list_blogs.tpl templates/styles/smooth/tiki-list_blogs.tpl
-themes/smooth/templates/styles/smooth/tiki-read_article.tpl templates/styles/smooth/tiki-read_article.tpl
-themes/smooth/templates/styles/smooth/tiki-site_header.tpl templates/styles/smooth/tiki-site_header.tpl
+themes/smooth_tiki_2/Readme.txt styles/smooth/Readme.txt
+themes/smooth_tiki_2/styles/smooth.css styles/smooth.css
+themes/smooth_tiki_2/styles/smooth/img01.gif styles/smooth/img01.gif
+themes/smooth_tiki_2/styles/smooth/img02.gif styles/smooth/img02.gif
+themes/smooth_tiki_2/styles/smooth/img03.gif styles/smooth/img03.gif
+themes/smooth_tiki_2/styles/smooth/img04.gif styles/smooth/img04.gif
+themes/smooth_tiki_2/styles/smooth/img05.gif styles/smooth/img05.gif
+themes/smooth_tiki_2/styles/smooth/img06.gif styles/smooth/img06.gif
+themes/smooth_tiki_2/styles/smooth/img07.gif styles/smooth/img07.gif
+themes/smooth_tiki_2/styles/smooth/img08.jpg styles/smooth/img08.jpg
+themes/smooth_tiki_2/styles/smooth/index.php styles/smooth/index.php
+themes/smooth_tiki_2/templates/styles/smooth/credits.tpl templates/styles/smooth/credits.tpl
+themes/smooth_tiki_2/templates/styles/smooth/index.php templates/styles/smooth/index.php
+themes/smooth_tiki_2/templates/styles/smooth/header.tpl templates/styles/smooth/header.tpl
+themes/smooth_tiki_2/templates/styles/smooth/sicustomcode.tpl templates/styles/smooth/sicustomcode.tpl
+themes/smooth_tiki_2/templates/styles/smooth/tiki.tpl templates/styles/smooth/tiki.tpl
+themes/smooth_tiki_2/templates/styles/smooth/tiki-bot_bar.tpl templates/styles/smooth/tiki-bot_bar.tpl
+themes/smooth_tiki_2/templates/styles/smooth/tiki-list_blogs.tpl templates/styles/smooth/tiki-list_blogs.tpl
+themes/smooth_tiki_2/templates/styles/smooth/tiki-read_article.tpl templates/styles/smooth/tiki-read_article.tpl
+themes/smooth_tiki_2/templates/styles/smooth/tiki-site_header.tpl templates/styles/smooth/tiki-site_header.tpl
 
 Description:
 Smooth has a clean pastel pink and green look and uses the *litecss source-ordered layout method ([http://sourceforge.net/projects/litecss]). For more information, please see the documentation pages for this theme. Please do not remove the link to freecsstemplates.com from the page footer.

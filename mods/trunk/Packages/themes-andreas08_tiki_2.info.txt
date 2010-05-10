@@ -10,16 +10,16 @@ Lastmodif:
 $Date$
 
 Files:
-themes/andreas08/Readme.txt styles/andreas08/Readme.txt
-themes/andreas08/styles/andreas08.css styles/andreas08.css
-themes/andreas08/templates/styles/andreas08/credits.tpl templates/styles/andreas08/credits.tpl
-themes/andreas08/templates/styles/andreas08/header.tpl templates/styles/andreas08/header.tpl
-themes/andreas08/templates/styles/andreas08/index.php templates/styles/andreas08/index.php
-themes/andreas08/templates/styles/andreas08/tiki.tpl templates/styles/andreas08/tiki.tpl
-themes/andreas08/templates/styles/andreas08/tiki-bot_bar.tpl templates/styles/andreas08/tiki-bot_bar.tpl
-themes/andreas08/templates/styles/andreas08/tiki-read_article.tpl templates/styles/andreas08/tiki-read_article.tpl
-themes/andreas08/templates/styles/andreas08/tiki-site_header.tpl templates/styles/andreas08/tiki-site_header.tpl
-themes/andreas08/templates/styles/andreas08/tiki-top_bar.tpl templates/styles/andreas08/tiki-top_bar.tpl
+themes/andreas08_tiki_2/Readme.txt styles/andreas08/Readme.txt
+themes/andreas08_tiki_2/styles/andreas08.css styles/andreas08.css
+themes/andreas08_tiki_2/templates/styles/andreas08/credits.tpl templates/styles/andreas08/credits.tpl
+themes/andreas08_tiki_2/templates/styles/andreas08/header.tpl templates/styles/andreas08/header.tpl
+themes/andreas08_tiki_2/templates/styles/andreas08/index.php templates/styles/andreas08/index.php
+themes/andreas08_tiki_2/templates/styles/andreas08/tiki.tpl templates/styles/andreas08/tiki.tpl
+themes/andreas08_tiki_2/templates/styles/andreas08/tiki-bot_bar.tpl templates/styles/andreas08/tiki-bot_bar.tpl
+themes/andreas08_tiki_2/templates/styles/andreas08/tiki-read_article.tpl templates/styles/andreas08/tiki-read_article.tpl
+themes/andreas08_tiki_2/templates/styles/andreas08/tiki-site_header.tpl templates/styles/andreas08/tiki-site_header.tpl
+themes/andreas08_tiki_2/templates/styles/andreas08/tiki-top_bar.tpl templates/styles/andreas08/tiki-top_bar.tpl
 
 Description:
 Andreas08 is based on the original design by Andreas Viklund (http://andreasviklund.com/templates/) Until IE7 supports display:table, use of one HTML table is needed for graphic treatment and column integrity when pages widen dynamically.

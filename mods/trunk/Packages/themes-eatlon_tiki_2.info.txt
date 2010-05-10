@@ -10,27 +10,27 @@ Lastmodif:
 $Date$
 
 Files:
-themes/eatlon/Readme.txt styles/eatlon/Readme.txt
-themes/eatlon/styles/eatlon.css styles/eatlon.css
-themes/eatlon/styles/eatlon/banner.gif styles/eatlon/banner.gif
-themes/eatlon/styles/eatlon/body_bg.gif styles/eatlon/body_bg.gif
-themes/eatlon/styles/eatlon/bottom_bg.gif styles/eatlon/bottom_bg.gif
-themes/eatlon/styles/eatlon/feed.gif styles/eatlon/feed.gif
-themes/eatlon/styles/eatlon/head_bg.gif styles/eatlon/head_bg.gif
-themes/eatlon/styles/eatlon/image.gif styles/eatlon/image.gif
-themes/eatlon/styles/eatlon/index.php styles/eatlon/index.php
-themes/eatlon/styles/eatlon/layouts.gif styles/eatlon/layouts.gif
-themes/eatlon/styles/eatlon/menu_bg.png styles/eatlon/menu_bg.png
-themes/eatlon/templates/styles/eatlon/credits.tpl templates/styles/eatlon/credits.tpl
-themes/eatlon/templates/styles/eatlon/header.tpl templates/styles/eatlon/header.tpl
-themes/eatlon/templates/styles/eatlon/index.php templates/styles/eatlon/index.php
-themes/eatlon/templates/styles/eatlon/sicustomcode.tpl templates/styles/eatlon/sicustomcode.tpl
-themes/eatlon/templates/styles/eatlon/tiki.tpl templates/styles/eatlon/tiki.tpl
-themes/eatlon/templates/styles/eatlon/tiki-bot_bar.tpl templates/styles/eatlon/tiki-bot_bar.tpl
-themes/eatlon/templates/styles/eatlon/tiki-list_blogs.tpl templates/styles/eatlon/tiki-list_blogs.tpl
-themes/eatlon/templates/styles/eatlon/tiki-read_article.tpl templates/styles/eatlon/tiki-read_article.tpl
-themes/eatlon/templates/styles/eatlon/tiki-site_header.tpl templates/styles/eatlon/tiki-site_header.tpl
-themes/eatlon/templates/styles/eatlon/tiki-top_bar.tpl templates/styles/eatlon/tiki-top_bar.tpl
+themes/eatlon_tiki_2/Readme.txt styles/eatlon/Readme.txt
+themes/eatlon_tiki_2/styles/eatlon.css styles/eatlon.css
+themes/eatlon_tiki_2/styles/eatlon/banner.gif styles/eatlon/banner.gif
+themes/eatlon_tiki_2/styles/eatlon/body_bg.gif styles/eatlon/body_bg.gif
+themes/eatlon_tiki_2/styles/eatlon/bottom_bg.gif styles/eatlon/bottom_bg.gif
+themes/eatlon_tiki_2/styles/eatlon/feed.gif styles/eatlon/feed.gif
+themes/eatlon_tiki_2/styles/eatlon/head_bg.gif styles/eatlon/head_bg.gif
+themes/eatlon_tiki_2/styles/eatlon/image.gif styles/eatlon/image.gif
+themes/eatlon_tiki_2/styles/eatlon/index.php styles/eatlon/index.php
+themes/eatlon_tiki_2/styles/eatlon/layouts.gif styles/eatlon/layouts.gif
+themes/eatlon_tiki_2/styles/eatlon/menu_bg.png styles/eatlon/menu_bg.png
+themes/eatlon_tiki_2/templates/styles/eatlon/credits.tpl templates/styles/eatlon/credits.tpl
+themes/eatlon_tiki_2/templates/styles/eatlon/header.tpl templates/styles/eatlon/header.tpl
+themes/eatlon_tiki_2/templates/styles/eatlon/index.php templates/styles/eatlon/index.php
+themes/eatlon_tiki_2/templates/styles/eatlon/sicustomcode.tpl templates/styles/eatlon/sicustomcode.tpl
+themes/eatlon_tiki_2/templates/styles/eatlon/tiki.tpl templates/styles/eatlon/tiki.tpl
+themes/eatlon_tiki_2/templates/styles/eatlon/tiki-bot_bar.tpl templates/styles/eatlon/tiki-bot_bar.tpl
+themes/eatlon_tiki_2/templates/styles/eatlon/tiki-list_blogs.tpl templates/styles/eatlon/tiki-list_blogs.tpl
+themes/eatlon_tiki_2/templates/styles/eatlon/tiki-read_article.tpl templates/styles/eatlon/tiki-read_article.tpl
+themes/eatlon_tiki_2/templates/styles/eatlon/tiki-site_header.tpl templates/styles/eatlon/tiki-site_header.tpl
+themes/eatlon_tiki_2/templates/styles/eatlon/tiki-top_bar.tpl templates/styles/eatlon/tiki-top_bar.tpl
 
 Description:
 Flexible "fixed-width" theme in light blues and greys. Please retain the link to eatlon.com in the page footer to be in compliance with the terms of use.

@@ -10,32 +10,32 @@ Lastmodif:
 $Date$
 
 Files:
-themes/faulkner/Readme.txt styles/faulkner/Readme.txt
-themes/faulkner/styles/faulkner.css styles/faulkner.css
-themes/faulkner/styles/faulkner/bullet.gif styles/faulkner/bullet.gif
-themes/faulkner/styles/faulkner/entrybg.gif styles/faulkner/entrybg.gif
-themes/faulkner/styles/faulkner/foot.jpg styles/faulkner/foot.jpg
-themes/faulkner/styles/faulkner/h3bg.jpg styles/faulkner/h3bg.jpg
-themes/faulkner/styles/faulkner/index.php styles/faulkner/index.php
-themes/faulkner/styles/faulkner/leftmargin.jpg styles/faulkner/leftmargin.jpg
-themes/faulkner/styles/faulkner/menu.gif styles/faulkner/menu.gif
-themes/faulkner/styles/faulkner/menuhover.jpg styles/faulkner/menuhover.jpg
-themes/faulkner/styles/faulkner/ornament.gif styles/faulkner/ornament.gif
-themes/faulkner/styles/faulkner/parchment.jpg styles/faulkner/parchment.jpg
-themes/faulkner/styles/faulkner/parchmentleft.jpg styles/faulkner/parchmentleft.jpg
-themes/faulkner/styles/faulkner/parchmentlight.jpg styles/faulkner/parchmentlight.jpg
-themes/faulkner/styles/faulkner/parchmentright.jpg styles/faulkner/parchmentright.jpg
-themes/faulkner/styles/faulkner/rightmargin.jpg styles/faulkner/rightmargin.jpg
-themes/faulkner/styles/faulkner/title_left.gif styles/faulkner/title_left.gif
-themes/faulkner/styles/faulkner/title_right.gif styles/faulkner/title_right.gif
-themes/faulkner/templates/styles/faulkner/credits.tpl templates/styles/faulkner/credits.tpl
-themes/faulkner/templates/styles/faulkner/header.tpl templates/styles/faulkner/header.tpl
-themes/faulkner/templates/styles/faulkner/index.php templates/styles/faulkner/index.php
-themes/faulkner/templates/styles/faulkner/sicustomcode.tpl templates/styles/faulkner/sicustomcode.tpl
-themes/faulkner/templates/styles/faulkner/tiki.tpl templates/styles/faulkner/tiki.tpl
-themes/faulkner/templates/styles/faulkner/tiki-bot_bar.tpl templates/styles/faulkner/tiki-bot_bar.tpl
-themes/faulkner/templates/styles/faulkner/tiki-site_header.tpl templates/styles/faulkner/tiki-site_header.tpl
-themes/faulkner/templates/styles/faulkner/tiki-top_bar.tpl templates/styles/faulkner/tiki-top_bar.tpl
+themes/faulkner_tiki_2/Readme.txt styles/faulkner/Readme.txt
+themes/faulkner_tiki_2/styles/faulkner.css styles/faulkner.css
+themes/faulkner_tiki_2/styles/faulkner/bullet.gif styles/faulkner/bullet.gif
+themes/faulkner_tiki_2/styles/faulkner/entrybg.gif styles/faulkner/entrybg.gif
+themes/faulkner_tiki_2/styles/faulkner/foot.jpg styles/faulkner/foot.jpg
+themes/faulkner_tiki_2/styles/faulkner/h3bg.jpg styles/faulkner/h3bg.jpg
+themes/faulkner_tiki_2/styles/faulkner/index.php styles/faulkner/index.php
+themes/faulkner_tiki_2/styles/faulkner/leftmargin.jpg styles/faulkner/leftmargin.jpg
+themes/faulkner_tiki_2/styles/faulkner/menu.gif styles/faulkner/menu.gif
+themes/faulkner_tiki_2/styles/faulkner/menuhover.jpg styles/faulkner/menuhover.jpg
+themes/faulkner_tiki_2/styles/faulkner/ornament.gif styles/faulkner/ornament.gif
+themes/faulkner_tiki_2/styles/faulkner/parchment.jpg styles/faulkner/parchment.jpg
+themes/faulkner_tiki_2/styles/faulkner/parchmentleft.jpg styles/faulkner/parchmentleft.jpg
+themes/faulkner_tiki_2/styles/faulkner/parchmentlight.jpg styles/faulkner/parchmentlight.jpg
+themes/faulkner_tiki_2/styles/faulkner/parchmentright.jpg styles/faulkner/parchmentright.jpg
+themes/faulkner_tiki_2/styles/faulkner/rightmargin.jpg styles/faulkner/rightmargin.jpg
+themes/faulkner_tiki_2/styles/faulkner/title_left.gif styles/faulkner/title_left.gif
+themes/faulkner_tiki_2/styles/faulkner/title_right.gif styles/faulkner/title_right.gif
+themes/faulkner_tiki_2/templates/styles/faulkner/credits.tpl templates/styles/faulkner/credits.tpl
+themes/faulkner_tiki_2/templates/styles/faulkner/header.tpl templates/styles/faulkner/header.tpl
+themes/faulkner_tiki_2/templates/styles/faulkner/index.php templates/styles/faulkner/index.php
+themes/faulkner_tiki_2/templates/styles/faulkner/sicustomcode.tpl templates/styles/faulkner/sicustomcode.tpl
+themes/faulkner_tiki_2/templates/styles/faulkner/tiki.tpl templates/styles/faulkner/tiki.tpl
+themes/faulkner_tiki_2/templates/styles/faulkner/tiki-bot_bar.tpl templates/styles/faulkner/tiki-bot_bar.tpl
+themes/faulkner_tiki_2/templates/styles/faulkner/tiki-site_header.tpl templates/styles/faulkner/tiki-site_header.tpl
+themes/faulkner_tiki_2/templates/styles/faulkner/tiki-top_bar.tpl templates/styles/faulkner/tiki-top_bar.tpl
 
 Description:
 The Faulkner theme for TikiWiki CMS/Groupware is adapted from the original WordPress template by Demus Designs. In a departure from the original design, two page-layout tables are used to enable expanding content area and side-column-independent background gradients. This was necessary to support Tiki's flexible content-display options. Look & Feel custom code is used to display the site title and text ornaments.

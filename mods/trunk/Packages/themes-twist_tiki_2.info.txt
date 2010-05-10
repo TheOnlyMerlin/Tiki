@@ -8,23 +8,23 @@ lastmodif:
 $Date$
 
 files:
-themes/twist/Readme.txt styles/twist/Readme.txt
-themes/twist/styles/twist.css styles/twist.css
-themes/twist/styles/twist/background.gif styles/twist/background.gif
-themes/twist/styles/twist/bullet.gif styles/twist/bullet.gif
-themes/twist/styles/twist/fo.gif styles/twist/fo.gif
-themes/twist/styles/twist/header.jpg styles/twist/header.jpg
-themes/twist/styles/twist/index.php styles/twist/index.php
-themes/twist/styles/twist/ofo.gif styles/twist/ofo.gif
-themes/twist/templates/styles/twist/credits.tpl templates/styles/twist/credits.tpl
-themes/twist/templates/styles/twist/header.tpl templates/styles/twist/header.tpl
-themes/twist/templates/styles/twist/index.php templates/styles/twist/index.php
-themes/twist/templates/styles/twist/tiki.tpl templates/styles/twist/tiki.tpl
-themes/twist/templates/styles/twist/tiki-bot_bar.tpl templates/styles/twist/tiki-bot_bar.tpl
-themes/twist/templates/styles/twist/tiki-browse_image.tpl templates/styles/twist/tiki-browse_image.tpl
-themes/twist/templates/styles/twist/tiki-read_article.tpl templates/styles/twist/tiki-read_article.tpl
-themes/twist/templates/styles/twist/tiki-site_header.tpl templates/styles/twist/tiki-site_header.tpl
-themes/twist/templates/styles/twist/tiki-top_bar.tpl templates/styles/twist/tiki-top_bar.tpl
+themes/twist_tiki_2/Readme.txt styles/twist/Readme.txt
+themes/twist_tiki_2/styles/twist.css styles/twist.css
+themes/twist_tiki_2/styles/twist/background.gif styles/twist/background.gif
+themes/twist_tiki_2/styles/twist/bullet.gif styles/twist/bullet.gif
+themes/twist_tiki_2/styles/twist/fo.gif styles/twist/fo.gif
+themes/twist_tiki_2/styles/twist/header.jpg styles/twist/header.jpg
+themes/twist_tiki_2/styles/twist/index.php styles/twist/index.php
+themes/twist_tiki_2/styles/twist/ofo.gif styles/twist/ofo.gif
+themes/twist_tiki_2/templates/styles/twist/credits.tpl templates/styles/twist/credits.tpl
+themes/twist_tiki_2/templates/styles/twist/header.tpl templates/styles/twist/header.tpl
+themes/twist_tiki_2/templates/styles/twist/index.php templates/styles/twist/index.php
+themes/twist_tiki_2/templates/styles/twist/tiki.tpl templates/styles/twist/tiki.tpl
+themes/twist_tiki_2/templates/styles/twist/tiki-bot_bar.tpl templates/styles/twist/tiki-bot_bar.tpl
+themes/twist_tiki_2/templates/styles/twist/tiki-browse_image.tpl templates/styles/twist/tiki-browse_image.tpl
+themes/twist_tiki_2/templates/styles/twist/tiki-read_article.tpl templates/styles/twist/tiki-read_article.tpl
+themes/twist_tiki_2/templates/styles/twist/tiki-site_header.tpl templates/styles/twist/tiki-site_header.tpl
+themes/twist_tiki_2/templates/styles/twist/tiki-top_bar.tpl templates/styles/twist/tiki-top_bar.tpl
 
 author:
 Gary Griffin (gg)

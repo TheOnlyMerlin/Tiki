@@ -10,22 +10,22 @@ Lastmodif:
 $Date$
 
 Files:
-themes/abse/Readme.txt styles/abse/Readme.txt
-themes/abse/styles/abse.css styles/abse.css
-themes/abse/styles/abse/crimeboy_design.png styles/abse/crimeboy_design.png
-themes/abse/styles/abse/index.png styles/abse/index.png
-themes/abse/styles/abse/menubg.jpg styles/abse/menubg.jpg
-themes/abse/styles/abse/titlebgoff.png styles/abse/titlebgoff.png
-themes/abse/styles/abse/titlebgon.png styles/abse/titlebgon.png
-themes/abse/styles/abse/wgreenwall.png styles/abse/wgreenwall.png
-themes/abse/templates/styles/abse/credits.tpl templates/styles/abse/credits.tpl
-themes/abse/templates/styles/abse/header.tpl templates/styles/abse/header.tpl
-themes/abse/templates/styles/abse/index.php templates/styles/abse/index.php
-themes/abse/templates/styles/abse/tiki.tpl templates/styles/abse/tiki.tpl
-themes/abse/templates/styles/abse/tiki-bot_bar.tpl templates/styles/abse/tiki-bot_bar.tpl
-themes/abse/templates/styles/abse/tiki-read_article.tpl templates/styles/abse/tiki-read_article.tpl
-themes/abse/templates/styles/abse/tiki-site_header.tpl templates/styles/abse/tiki-site_header.tpl
-themes/abse/templates/styles/abse/tiki-top_bar.tpl templates/styles/abse/tiki-top_bar.tpl
+themes/abse_tiki_2/Readme.txt styles/abse/Readme.txt
+themes/abse_tiki_2/styles/abse.css styles/abse.css
+themes/abse_tiki_2/styles/abse/crimeboy_design.png styles/abse/crimeboy_design.png
+themes/abse_tiki_2/styles/abse/index.png styles/abse/index.png
+themes/abse_tiki_2/styles/abse/menubg.jpg styles/abse/menubg.jpg
+themes/abse_tiki_2/styles/abse/titlebgoff.png styles/abse/titlebgoff.png
+themes/abse_tiki_2/styles/abse/titlebgon.png styles/abse/titlebgon.png
+themes/abse_tiki_2/styles/abse/wgreenwall.png styles/abse/wgreenwall.png
+themes/abse_tiki_2/templates/styles/abse/credits.tpl templates/styles/abse/credits.tpl
+themes/abse_tiki_2/templates/styles/abse/header.tpl templates/styles/abse/header.tpl
+themes/abse_tiki_2/templates/styles/abse/index.php templates/styles/abse/index.php
+themes/abse_tiki_2/templates/styles/abse/tiki.tpl templates/styles/abse/tiki.tpl
+themes/abse_tiki_2/templates/styles/abse/tiki-bot_bar.tpl templates/styles/abse/tiki-bot_bar.tpl
+themes/abse_tiki_2/templates/styles/abse/tiki-read_article.tpl templates/styles/abse/tiki-read_article.tpl
+themes/abse_tiki_2/templates/styles/abse/tiki-site_header.tpl templates/styles/abse/tiki-site_header.tpl
+themes/abse_tiki_2/templates/styles/abse/tiki-top_bar.tpl templates/styles/abse/tiki-top_bar.tpl
 
 Description:
 absE is based on the visual design of the absE theme for openbox by crimeboy (http://celo.wordpress.com/) and uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss).
