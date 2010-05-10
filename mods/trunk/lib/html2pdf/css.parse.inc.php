@@ -357,4 +357,3 @@ function parse_css_media($css, $baseindex = 0) {
     };
   };
 }
-?>

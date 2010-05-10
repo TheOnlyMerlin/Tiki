@@ -34,5 +34,3 @@ function process_p($sample_html) {
 
   return $sample_html;
 };
-
-?>

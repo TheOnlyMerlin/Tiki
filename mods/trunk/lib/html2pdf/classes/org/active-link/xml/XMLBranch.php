@@ -38,7 +38,8 @@ import("org.active-link.xml.XML");
   *	@see		Tree
   */
 
-class XMLBranch extends XML {
+class XMLBranch extends XML
+{
 
 	var $parentXML;
 
@@ -67,5 +68,3 @@ class XMLBranch extends XML {
 	}
 
 }
-
-?>

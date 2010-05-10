@@ -21,4 +21,3 @@ $enc='cp1252';
 $diff='';
 $file='timesbd.z';
 $originalsize=398372;
-?>

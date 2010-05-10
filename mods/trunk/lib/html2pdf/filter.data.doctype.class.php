@@ -1,5 +1,6 @@
 <?php
-class DataFilterDoctype extends DataFilter {
+class DataFilterDoctype extends DataFilter
+{
   function DataFilterDoctype() { }
 
   function process(&$data) {
@@ -47,4 +48,3 @@ class DataFilterDoctype extends DataFilter {
     return $data;
   }
 }
-?>

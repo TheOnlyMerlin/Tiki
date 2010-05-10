@@ -285,4 +285,3 @@
                            "hearts" => "9829", /* black heart suit = valentine,U+2665 ISOpub  */
                            "diams" => "9830", /* black diamond suit, U+2666 ISOpub  */
                            );
-?>

@@ -29,4 +29,3 @@ function wikiplugin_author($data, $params) {
 	}
 	return $ok? $data: $dataelse;
 }
-?>

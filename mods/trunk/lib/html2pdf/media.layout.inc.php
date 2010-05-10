@@ -10,7 +10,8 @@ function add_predefined_media($name, $height, $width) {
   $g_predefined_media[$name] = array('height' => $height, 'width' => $width);
 }
 
-class Media {
+class Media
+{
   var $margins;
   var $size;
   var $pixels;
@@ -79,5 +80,3 @@ class Media {
 $this->to_ps_landscape();
   }
 }
-
-?>

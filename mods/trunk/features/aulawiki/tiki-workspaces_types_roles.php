@@ -104,4 +104,3 @@ $smarty->assign_by_ref('wstypes', $wstypesData["data"]);
 $smarty->assign_by_ref('wstype', $wstype);
 $smarty->assign('mid', 'tiki-workspaces_types_roles.tpl');
 $smarty->display('tiki.tpl');
-?>

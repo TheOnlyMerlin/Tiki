@@ -65,7 +65,8 @@ if (!function_exists('is_a')) {
  * @link       http://pear.php.net/package/PHPUnit
  * @since      Class available since Release 1.0.0
  */
-class PHPUnit_TestResult {
+class PHPUnit_TestResult
+{
     /**
      * @var    array
      * @access protected
@@ -113,7 +114,7 @@ class PHPUnit_TestResult {
     function addError(&$test, &$t) {
         $this->_errors[] = new PHPUnit_TestFailure($test, $t);
 
-        for ($i = 0; $i < sizeof($this->_listeners); $i++) {
+        for ($i = 0; $i < count($this->_listeners); $i++) {
             $this->_listeners[$i]->addError($test, $t);
         }
     }
@@ -129,7 +130,7 @@ class PHPUnit_TestResult {
     function addFailure(&$test, &$t) {
         $this->_failures[] = new PHPUnit_TestFailure($test, $t);
 
-        for ($i = 0; $i < sizeof($this->_listeners); $i++) {
+        for ($i = 0; $i < count($this->_listeners); $i++) {
             $this->_listeners[$i]->addFailure($test, $t);
         }
     }
@@ -164,7 +165,7 @@ class PHPUnit_TestResult {
      * @access public
      */
     function endTest(&$test) {
-        for ($i = 0; $i < sizeof($this->_listeners); $i++) {
+        for ($i = 0; $i < count($this->_listeners); $i++) {
             $this->_listeners[$i]->endTest($test);
         }
     }
@@ -176,7 +177,7 @@ class PHPUnit_TestResult {
      * @access public
      */
     function errorCount() {
-        return sizeof($this->_errors);
+        return count($this->_errors);
     }
 
     /**
@@ -196,7 +197,7 @@ class PHPUnit_TestResult {
      * @access public
      */
     function failureCount() {
-        return sizeof($this->_failures);
+        return count($this->_failures);
     }
 
     /**
@@ -227,7 +228,7 @@ class PHPUnit_TestResult {
      * @access public
      */
     function removeListener(&$listener) {
-        for ($i = 0; $i < sizeof($this->_listeners); $i++) {
+        for ($i = 0; $i < count($this->_listeners); $i++) {
             if ($this->_listeners[$i] === $listener) {
                 unset($this->_listeners[$i]);
             }
@@ -273,7 +274,7 @@ class PHPUnit_TestResult {
      * @access public
      */
     function startTest(&$test) {
-        for ($i = 0; $i < sizeof($this->_listeners); $i++) {
+        for ($i = 0; $i < count($this->_listeners); $i++) {
             $this->_listeners[$i]->startTest($test);
         }
     }
@@ -344,4 +345,3 @@ class PHPUnit_TestResult {
  * c-hanging-comment-ender-p: nil
  * End:
  */
-?>

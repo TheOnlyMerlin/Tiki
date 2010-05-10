@@ -21,7 +21,8 @@ DEFINE("PIE_VALUE_ADJPER",2);
 // CLASS PiePlot
 // Description: Draws a pie plot
 //===================================================
-class PiePlot {
+class PiePlot
+{
     public $posx=0.5,$posy=0.5;
     protected $radius=0.3;
     protected $explode_radius=array(),$explode_all=false,$explode_r=20;
@@ -933,7 +934,8 @@ class PiePlot {
 // Description: Same as a normal pie plot but with a 
 // filled circle in the center
 //===================================================
-class PiePlotC extends PiePlot {
+class PiePlotC extends PiePlot
+{
     private $imidsize=0.5;		// Fraction of total width
     private $imidcolor='white';
     public $midtitle='';
@@ -1121,7 +1123,8 @@ class PiePlotC extends PiePlot {
 // CLASS PieGraph
 // Description: 
 //===================================================
-class PieGraph extends Graph {
+class PieGraph extends Graph
+{
     private $posx, $posy, $radius;		
     private $legends=array();	
     public $plots=array();
@@ -1349,6 +1352,3 @@ class PieGraph extends Graph {
 	}
     }
 } // Class
-
-/* EOF */
-?>

@@ -1,6 +1,7 @@
 <?php
 
-class PSL2ImageEncoderStream {
+class PSL2ImageEncoderStream
+{
   var $last_image_id;
 
   function PSL2ImageEncoderStream() {
@@ -255,4 +256,3 @@ class PSL2ImageEncoderStream {
   }
 
 }
-?>

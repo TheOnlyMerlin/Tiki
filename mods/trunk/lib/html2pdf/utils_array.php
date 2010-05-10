@@ -71,4 +71,3 @@ function expand_to($size, $array) {
 
   return $array;
 }
-?>

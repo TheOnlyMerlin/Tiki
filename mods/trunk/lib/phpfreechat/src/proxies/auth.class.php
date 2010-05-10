@@ -112,5 +112,3 @@ class pfcProxyCommand_auth extends pfcProxyCommand
     return $this->next->run($xml_reponse, $p);
   }
 }
-
-?>

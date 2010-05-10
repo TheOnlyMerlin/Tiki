@@ -265,5 +265,3 @@ if (isset($_REQUEST['xajax'])) {
 } else {
     tiki_edit_invoice::init();
 }
-
-?>

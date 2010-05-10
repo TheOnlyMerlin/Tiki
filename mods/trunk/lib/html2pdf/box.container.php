@@ -18,7 +18,8 @@
  * some minor float related-functions.
  * 
  */
-class GenericContainerBox extends GenericBox {
+class GenericContainerBox extends GenericBox
+{
   /**
    * @var Array A list of contained elements (of type GenericBox)
    * @access public
@@ -1016,5 +1017,3 @@ class GenericContainerBox extends GenericBox {
     };
   }
 }
-
-?>

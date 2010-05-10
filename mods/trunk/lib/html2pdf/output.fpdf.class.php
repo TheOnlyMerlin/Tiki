@@ -4,7 +4,8 @@
 include('fpdf/fpdf.php');
 include('fpdf/font/makefont/makefont.php');
 
-class OutputDriverFPDF extends OutputDriverGenericPDF {
+class OutputDriverFPDF extends OutputDriverGenericPDF
+{
   var $pdf;
 
   var $locallinks;
@@ -360,4 +361,3 @@ class OutputDriverFPDF extends OutputDriverGenericPDF {
     return $this->pdf->GetStringWidth($string);
   }
 }
-?>

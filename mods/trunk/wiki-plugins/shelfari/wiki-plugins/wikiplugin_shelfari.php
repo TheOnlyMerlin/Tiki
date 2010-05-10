@@ -76,5 +76,3 @@ function wikiplugin_shelfari($data, $params) {
 	return $asetup;
 
 }
-?>
-

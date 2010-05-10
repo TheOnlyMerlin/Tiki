@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/css.background.inc.php,v 1.1 2008-01-15 09:20:30 mose Exp $
 
-class CSSBackground extends CSSProperty {
+class CSSBackground extends CSSProperty
+{
   var $default_value;
 
   function CSSBackground() {
@@ -44,5 +45,3 @@ register_css_property('background-color'      ,new CSSBackgroundColor($bg, '_col
 register_css_property('background-image'      ,new CSSBackgroundImage($bg, '_image'));
 register_css_property('background-repeat'     ,new CSSBackgroundRepeat($bg, '_repeat'));
 register_css_property('background-position'   ,new CSSBackgroundPosition($bg, '_position'));
-
-?>

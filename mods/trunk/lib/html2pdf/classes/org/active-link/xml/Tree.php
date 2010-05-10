@@ -31,7 +31,8 @@
   *	@see		Branch, Leaf
   */
 
-class Tree {
+class Tree
+{
 
 	// protected variables
 	var $nodes;
@@ -90,5 +91,3 @@ class Tree {
 	}
 
 }
-
-?>

@@ -181,5 +181,3 @@ ask_ticket('object-perms');
 
 $smarty->assign('mid', 'tiki-workspaces_objectpermissions.tpl');
 $smarty->display("tiki.tpl");
-
-?>

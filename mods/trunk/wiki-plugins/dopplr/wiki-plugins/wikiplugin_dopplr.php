@@ -25,4 +25,3 @@ function wikiplugin_dopplr($data, $params) {
 	$end = "";
 	return $begin . $data . $end;
 }
-?>

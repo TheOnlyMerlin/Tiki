@@ -122,4 +122,3 @@ function wikiplugin_mindmap($data, $params) {
 	}
 	return $ret;
 }
-?>

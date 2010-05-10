@@ -126,4 +126,3 @@ if ($exit){
 }
 $smarty->assign('mid', 'tiki-workspaces_roles.tpl');
 $smarty->display('tiki.tpl');
-?>

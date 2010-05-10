@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/box.legend.php,v 1.1 2008-01-15 09:20:27 mose Exp $
 
-class LegendBox extends GenericContainerBox {
+class LegendBox extends GenericContainerBox
+{
   function &create(&$root) {
     $box = new LegendBox($root);
     $box->create_content($root);
@@ -52,4 +53,3 @@ class LegendBox extends GenericContainerBox {
     return GenericContainerBox::show($driver);
   }
 }
-?>

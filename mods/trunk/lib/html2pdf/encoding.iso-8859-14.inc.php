@@ -259,4 +259,3 @@ $g_iso_8859_14 = array(
 "\xFE" => code_to_utf8(0x0177),	//	LATIN SMALL LETTER Y WITH CIRCUMFLEX
 "\xFF" => code_to_utf8(0x00FF)	//	LATIN SMALL LETTER Y WITH DIAERESIS
                       );
-?>

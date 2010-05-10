@@ -29,5 +29,3 @@ function module_workspaces_owner_params() {
 	
 	return $param;
 }
-
-?>

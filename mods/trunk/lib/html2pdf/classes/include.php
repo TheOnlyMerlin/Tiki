@@ -35,5 +35,3 @@ function import($classPath) {
 	$importFile = str_replace(".", "/", $classPath) . ".php";
 	require_once($GLOBALS["IORCA"]["BASE"]["PATH"] . $importFile);
 }
-
-?>

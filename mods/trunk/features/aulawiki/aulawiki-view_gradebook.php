@@ -108,4 +108,3 @@ $smarty->assign_by_ref('assignments', $assignments);
 
 $smarty->assign('mid', 'aulawiki-view_gradebook.tpl');
 $smarty->display('tiki.tpl');
-?>

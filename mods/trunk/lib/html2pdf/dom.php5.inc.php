@@ -1,5 +1,6 @@
 <?php
-class DOMTree {
+class DOMTree
+{
   var $domelement;
   var $content;
   
@@ -63,4 +64,3 @@ class DOMTree {
 
   function tagname() { return $this->domelement->localName; }
 }
-?>

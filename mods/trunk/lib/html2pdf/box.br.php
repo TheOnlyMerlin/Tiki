@@ -16,7 +16,8 @@
  *
  * @link http://www.w3.org/TR/html4/struct/text.html#edef-BR HTML 4.01 Forcing a line break: the BR element 
  */
-class BRBox extends GenericBox {
+class BRBox extends GenericBox
+{
   /**
    * Create new BR element
    */
@@ -160,4 +161,3 @@ class BRBox extends GenericBox {
     $linebox_started = false;
   }
 }
-?>

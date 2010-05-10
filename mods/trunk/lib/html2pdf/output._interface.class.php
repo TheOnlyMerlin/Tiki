@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/output._interface.class.php,v 1.1 2008-01-15 09:21:07 mose Exp $
 
-class OutputDriver {
+class OutputDriver
+{
   function add_link($x, $y, $w, $h, $target) { }
   function add_local_link($left, $top, $width, $height, $anchor) { }
   function circle($x, $y, $r) { }
@@ -52,4 +53,3 @@ class OutputDriver {
   function stringwidth($string, $name, $encoding, $size) { }
   function stroke() { }
 }
-?>

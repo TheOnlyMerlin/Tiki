@@ -4,7 +4,8 @@
 define('BORDER_COLLAPSE', 1);
 define('BORDER_SEPARATE', 2);
 
-class CSSBorderCollapse extends CSSProperty {
+class CSSBorderCollapse extends CSSProperty
+{
   function CSSBorderCollapse() { $this->CSSProperty(true, true); }
 
   function default_value() { return BORDER_SEPARATE; }
@@ -21,5 +22,3 @@ class CSSBorderCollapse extends CSSProperty {
 }
 
 register_css_property('border-collapse', new CSSBorderCollapse);
-
-?>

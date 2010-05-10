@@ -15,5 +15,3 @@ function get_table_border() {
 }
 
 $g_table_border     = array(default_border());
-
-?>

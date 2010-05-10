@@ -40,7 +40,8 @@ import("org.active-link.xml.Leaf");
   *	@see		XML
   */
 
-class XMLLeaf extends Leaf {
+class XMLLeaf extends Leaf
+{
 
 	var $parentXML;
 
@@ -69,5 +70,3 @@ class XMLLeaf extends Leaf {
 	}
 
 }
-
-?>

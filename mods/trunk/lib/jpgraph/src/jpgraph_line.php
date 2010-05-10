@@ -21,7 +21,8 @@ DEFINE("LP_AREA_NO_BORDER",true);
 // CLASS LinePlot
 // Description: 
 //===================================================
-class LinePlot extends Plot{
+class LinePlot extends Plot
+{
     public $mark=null;
     protected $filled=false;
     protected $fill_color='blue';
@@ -347,7 +348,7 @@ class LinePlot extends Plot{
 	    $minY = $yscale->Translate($yscale->GetMinVal());
 	    $factor = ($this->step_style ? 4 : 2);
 
-	    for($i = 0; $i < sizeof($this->filledAreas); ++$i) {
+	    for($i = 0; $i < count($this->filledAreas); ++$i) {
 		// go through all filled area elements ordered by insertion
 		// fill polygon array
 		$areaCoords[] = $cord[$this->filledAreas[$i][0] * $factor];
@@ -358,7 +359,7 @@ class LinePlot extends Plot{
 				array_slice($cord,
 					    $this->filledAreas[$i][0] * $factor,
 					    ($this->filledAreas[$i][1] - $this->filledAreas[$i][0] + ($this->step_style ? 0 : 1))  * $factor));
-		$areaCoords[] = $areaCoords[sizeof($areaCoords)-2]; // last x
+		$areaCoords[] = $areaCoords[count($areaCoords)-2]; // last x
 		$areaCoords[] = $minY; // last y
 	    
 		if($this->filledAreas[$i][3]) {
@@ -414,7 +415,8 @@ class LinePlot extends Plot{
 // CLASS AccLinePlot
 // Description: 
 //===================================================
-class AccLinePlot extends Plot {
+class AccLinePlot extends Plot
+{
     protected $plots=null,$nbrplots=0;
     private $iStartEndZero=true;
 //---------------
@@ -613,7 +615,3 @@ class AccLinePlot extends Plot {
 	}
     }
 } // Class
-
-
-/* EOF */
-?>

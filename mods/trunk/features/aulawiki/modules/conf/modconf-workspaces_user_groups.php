@@ -32,5 +32,3 @@ function module_workspaces_user_groups_params() {
 	$param["activeParentGroup"]["hide"]="y";
 	return $param;
 }
-
-?>

@@ -258,4 +258,3 @@ $g_windows_1251 = array(
 "\xFE" => code_to_utf8(0x044E),	//CYRILLIC SMALL LETTER YU
 "\xFF" => code_to_utf8(0x044F)	//CYRILLIC SMALL LETTER YA
 );
-?>

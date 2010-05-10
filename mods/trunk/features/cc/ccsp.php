@@ -10,4 +10,3 @@ header("Content-type: text/plain");
 foreach ($thelist['data'] as $id=>$l) {
 	echo '"'.$l['owner_id'].'","'.$id.'","'.$l['cc_name'].'","'. addslashes(str_replace("\n","",trim($l['cc_description']))).'","'.$l['requires_approval']."\"\n";
 }
-?>

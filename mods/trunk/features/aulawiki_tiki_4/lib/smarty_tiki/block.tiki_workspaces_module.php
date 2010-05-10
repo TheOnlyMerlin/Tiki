@@ -56,4 +56,3 @@ if ($decorations == 'y') {
 	return $content.$module_error;
 }
 }
-?>

@@ -76,5 +76,3 @@ class pfcCommand_join extends pfcCommand
   }
   
 }
-
-?>

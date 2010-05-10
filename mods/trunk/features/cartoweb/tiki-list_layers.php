@@ -131,5 +131,3 @@ ask_ticket('list-layers');
 // Display the template
 $smarty->assign('mid', 'tiki-list_layers.tpl');
 $smarty->display("tiki.tpl");
-
-?>

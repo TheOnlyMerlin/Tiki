@@ -205,5 +205,4 @@ $g_dingbats = array(
 "\xFC" => code_to_utf8(0X27BC),	// WEDGE-TAILED RIGHTWARDS ARROW	// a189
 "\xFD" => code_to_utf8(0X27BD),	// HEAVY WEDGE-TAILED RIGHTWARDS ARROW	// a190
 "\xFE" => code_to_utf8(0X27BE)	// OPEN-OUTLINED RIGHTWARDS ARROW	// a191
-)
-?>
+);

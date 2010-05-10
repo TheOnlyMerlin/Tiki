@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/box.null.php,v 1.1 2008-01-15 09:20:27 mose Exp $
 
-class NullBox extends GenericInlineBox {
+class NullBox extends GenericInlineBox
+{
   function get_min_width(&$context) { return 0; }
   function get_max_width(&$context) { return 0; }
   function get_height() { return 0; }
@@ -35,4 +36,3 @@ class NullBox extends GenericInlineBox {
     // Just do nothing
   }
 }
-?>

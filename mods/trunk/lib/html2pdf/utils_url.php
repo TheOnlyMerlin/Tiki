@@ -36,4 +36,3 @@
     preg_match("!^(.*)/[^/]*$!",$baseurl,$matches);
     return $matches[1] . "/";    
   };
-?>

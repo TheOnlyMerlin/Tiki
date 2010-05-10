@@ -36,5 +36,3 @@ if (!isset ($workspace)) {
 $module_params['title'] = tra('Workspace Calendar');
 include ("modules/mod-calendar_new.php");
 }
-
-?>

@@ -137,5 +137,3 @@ class pfcUserConfig
     return $list;
   }  
 }
-
-?>

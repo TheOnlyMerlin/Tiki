@@ -11,7 +11,8 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class WorkspaceModulesLib extends TikiLib {
+class WorkspaceModulesLib extends TikiLib
+{
 	function WorkspaceModulesLib($db) {
 //		parent::TikiLib($db);
 //		$this->TikiLib($db);
@@ -185,5 +186,3 @@ class WorkspaceModulesLib extends TikiLib {
 }
 
 $wsmoduleslib = new WorkspaceModulesLib($dbTiki);
-
-?>

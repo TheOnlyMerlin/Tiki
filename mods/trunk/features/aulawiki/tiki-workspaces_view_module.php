@@ -76,4 +76,3 @@ $smarty->assign_by_ref('modulecode',$data);
 
 $smarty->assign('mid','tiki-workspaces_view_module.tpl');
 $smarty->display('tiki.tpl');
-?>

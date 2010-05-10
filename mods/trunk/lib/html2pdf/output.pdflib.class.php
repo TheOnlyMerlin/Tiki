@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/output.pdflib.class.php,v 1.1 2008-01-15 09:21:07 mose Exp $
 
-class OutputDriverPdflib extends OutputDriverGenericPDF {
+class OutputDriverPdflib extends OutputDriverGenericPDF
+{
   var $pdf;
 
   /**
@@ -376,4 +377,3 @@ class OutputDriverPdflib extends OutputDriverGenericPDF {
     return pdf_stringwidth($this->pdf, $string, $this->findfont($name, $encoding), $size); 
   }
 }
-?>

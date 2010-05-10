@@ -254,4 +254,3 @@ $g_windows_1252 = array(
                         "\xFE" => code_to_utf8(0x00FE), //LATIN SMALL LETTER THORN
                         "\xFF" => code_to_utf8(0x00FF) //LATIN SMALL LETTER Y WITH DIAERESIS
                         );
-?>

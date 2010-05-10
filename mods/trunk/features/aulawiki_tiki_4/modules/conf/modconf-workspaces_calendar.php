@@ -17,5 +17,3 @@ function module_workspaces_calendar_title() {
 function module_workspaces_calendar_params() {
 	return null;
 }
-
-?>

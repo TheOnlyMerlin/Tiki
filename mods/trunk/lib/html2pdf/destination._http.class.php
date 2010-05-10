@@ -1,5 +1,6 @@
 <?php
-class DestinationHTTP extends Destination {  
+class DestinationHTTP extends Destination
+{
   function DestinationHTTP($filename) {
     $this->Destination($filename);
   }
@@ -20,4 +21,3 @@ class DestinationHTTP extends Destination {
     echo(file_get_contents($tmp_filename));
   }
 }
-?>

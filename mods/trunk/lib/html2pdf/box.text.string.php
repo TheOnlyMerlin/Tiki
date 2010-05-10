@@ -4,7 +4,8 @@
 // TODO: from my POV, it wll be better to pass the font- or CSS-controlling object to the constructor
 // instead of using globally visible functions in 'show'.
 
-class TextBoxString extends TextBox {
+class TextBoxString extends TextBox
+{
   function &create($text, $encoding) {
     $box =& new TextBoxString($text, $encoding);
     return $box;
@@ -58,4 +59,3 @@ class TextBoxString extends TextBox {
     return $this->width;
   }
 }
-?>

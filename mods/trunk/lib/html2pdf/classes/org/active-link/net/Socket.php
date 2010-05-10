@@ -30,7 +30,8 @@
   *	@version	0.4.0
   */
 
-class Socket {
+class Socket
+{
 
 	// protected properties
 	var $host;

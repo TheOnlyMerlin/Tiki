@@ -89,4 +89,3 @@ if (!isset ($workspace)) {
 	$smarty->assign('nonums', isset ($module_params["nonums"]) ? $module_params["nonums"] : 'y');
 	$smarty->assign('body', isset ($module_params["body"]) ? $module_params["body"] : 'y');
 }
-?>

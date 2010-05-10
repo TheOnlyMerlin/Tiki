@@ -259,4 +259,3 @@ $g_koi8_r = array(
 "\xFE" => code_to_utf8(0x0427),	//	CYRILLIC CAPITAL LETTER CHE
 "\xFF" => code_to_utf8(0x042A)	//	CYRILLIC CAPITAL LETTER HARD SIGN
                       );
-?>

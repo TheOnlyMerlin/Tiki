@@ -53,5 +53,3 @@ class pfcProxyCommand extends pfcCommand
     $this->next =& $cmd;
   }
 }
-
-?>

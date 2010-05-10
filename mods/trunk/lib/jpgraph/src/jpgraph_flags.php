@@ -16,7 +16,8 @@ DEFINE('FLAGSIZE2',2);
 DEFINE('FLAGSIZE3',3);
 DEFINE('FLAGSIZE4',4);
 
-class FlagImages {
+class FlagImages
+{
 
     private $iCountryNameMap = array(
     'Afghanistan' => 'afgh',
@@ -366,8 +367,3 @@ class FlagImages {
 	}
     }
 }
-
-
-
-
-?>

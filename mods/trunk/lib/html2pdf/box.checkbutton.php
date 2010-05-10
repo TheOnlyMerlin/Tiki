@@ -24,7 +24,8 @@
  *
  * @todo add "disabled" state
  */
-class CheckBox extends GenericBox {
+class CheckBox extends GenericBox
+{
   /**
    * @var Boolean Flag indicating whether the check mark should be drawn
    * @access private
@@ -195,4 +196,3 @@ class CheckBox extends GenericBox {
     return true;
   }
 }
-?>

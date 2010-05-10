@@ -43,5 +43,3 @@ if (!function_exists('utf8_char2byte_pos')) {
     return $i;
   }
 }
-
-?>

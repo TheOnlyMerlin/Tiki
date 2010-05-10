@@ -30,7 +30,8 @@
   *	@version	0.4.0
   */
 
-class File {
+class File
+{
 
 	// protected variables
 	var $filename;
@@ -149,5 +150,3 @@ class File {
 	}
 
 }
-
-?>

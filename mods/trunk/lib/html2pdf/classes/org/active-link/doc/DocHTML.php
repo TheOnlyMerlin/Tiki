@@ -36,7 +36,8 @@ import("org.active-link.doc.Method");
   *	@see		PHPClass
   */
 
-class DocHTML {
+class DocHTML
+{
 
 	var $CSSFile;
 	var $CSSFileTag;

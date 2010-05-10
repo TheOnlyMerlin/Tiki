@@ -1,6 +1,7 @@
 <?php
 
-class MarginSideValue {
+class MarginSideValue
+{
   var $value;
   var $auto;
   var $percentage;
@@ -33,7 +34,8 @@ class MarginSideValue {
   }
 }
 
-class MarginValue {
+class MarginValue
+{
   var $top;
   var $bottom;
   var $left;
@@ -82,7 +84,8 @@ class MarginValue {
   }
 }
 
-class CSSMargin extends CSSProperty {
+class CSSMargin extends CSSProperty
+{
   var $default_value;
 
   function CSSMargin() { 
@@ -125,19 +128,23 @@ class CSSMargin extends CSSProperty {
   }
 }
    
-class CSSMarginTop extends CSSSubProperty {
+class CSSMarginTop extends CSSSubProperty
+{
   function parse($value) { return MarginSideValue::init($value); }
 }
 
-class CSSMarginRight extends CSSSubProperty {
+class CSSMarginRight extends CSSSubProperty
+{
   function parse($value) { return MarginSideValue::init($value); }
 }
 
-class CSSMarginLeft extends CSSSubProperty {
+class CSSMarginLeft extends CSSSubProperty
+{
   function parse($value) { return MarginSideValue::init($value); }
 }
 
-class CSSMarginBottom extends CSSSubProperty {
+class CSSMarginBottom extends CSSSubProperty
+{
   function parse($value) { return MarginSideValue::init($value); }
 }
 
@@ -147,5 +154,3 @@ register_css_property('margin-left'  ,new CSSMarginLeft($mh, 'left'));
 register_css_property('margin-right' ,new CSSMarginRight($mh, 'right'));
 register_css_property('margin-top'   ,new CSSMarginTop($mh, 'top'));
 register_css_property('margin-bottom',new CSSMarginBottom($mh, 'bottom'));
-
-?>

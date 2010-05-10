@@ -11,7 +11,8 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 define ("_TIKI_P_CREATE_WORKSPACE_RESOUR_CAN_ADD_USERS_",false); # can objperm tiki_p_create_resour add users to ws groups?
-class WorkspaceUserLib extends TikiLib {
+class WorkspaceUserLib extends TikiLib
+{
 	function WorkspaceUserLib($db) {
 		$this->TikiLib($db);
 	}
@@ -128,4 +129,3 @@ class WorkspaceUserLib extends TikiLib {
 	}
 
 }
-?>

@@ -14,7 +14,8 @@
 // Description: Utility class to help generate data for function plots. 
 // The class supports both parametric and regular functions.
 //===================================================
-class FuncGenerator {
+class FuncGenerator
+{
     private $iFunc='',$iXFunc='',$iMin,$iMax,$iStepSize;
 	
     function FuncGenerator($aFunc,$aXFunc='') {
@@ -51,7 +52,8 @@ class FuncGenerator {
 //              normally isn't available directly on the keyboard, for example
 //              mathematical and greek symbols.
 //=============================================================================
-class  SymChar {
+class  SymChar
+{
     static function Get($aSymb,$aCapital=FALSE) {
         $iSymbols = array(
     /* Greek */
@@ -137,7 +139,8 @@ DEFINE('DSUTILS_YEAR2',12); // Major ticks on a bi-yearly basis
 DEFINE('DSUTILS_YEAR5',13); // Major ticks on a five-yearly basis
 
 
-class DateScaleUtils {
+class DateScaleUtils
+{
     private $starthour,$startmonth, $startday, $startyear;
     private $endmonth, $endyear, $endday;
     private $tickPositions=array(),$minTickPositions=array();
@@ -516,5 +519,3 @@ Class ReadFileData {
 	return $cnt;
     }
 }
-
-?>

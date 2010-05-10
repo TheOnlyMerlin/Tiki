@@ -69,4 +69,3 @@ if (!$exit_module){
 
 	$smarty->assign_by_ref('workspace', $workspace);
 }
-?>

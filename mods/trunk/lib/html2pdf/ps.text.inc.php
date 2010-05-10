@@ -37,5 +37,3 @@ function quote_ps($psdata) {
   
   return $str;
 }
-
-?>

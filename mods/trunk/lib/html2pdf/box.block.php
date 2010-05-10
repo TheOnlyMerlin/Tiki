@@ -17,7 +17,8 @@
  *
  * @link http://www.w3.org/TR/CSS21/visuren.html#block-box CSS 2.1 Block-level elements and block boxes
  */
-class BlockBox extends GenericContainerBox {
+class BlockBox extends GenericContainerBox
+{
   /**
    * Create empty block element
    */
@@ -490,4 +491,3 @@ class BlockBox extends GenericContainerBox {
     return GenericContainerBox::show_fixed($driver);
   }
 }
-?>

@@ -2199,4 +2199,3 @@ $arr = array_merge($files_ko,$files_ok);
 foreach($arr as $file)
   echo $file;
 echo "</pre>\n";
-?>

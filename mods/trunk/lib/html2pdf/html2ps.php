@@ -171,5 +171,3 @@ if ($status == null) {
   error_log("Error in conversion pipeline");
   die();
 }
-
-?>

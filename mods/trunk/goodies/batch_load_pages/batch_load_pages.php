@@ -77,5 +77,3 @@ while (($page = fgetcsv($handle, $_REQUEST['max'])) !== FALSE) {
 			echo "Incorrect category: ".$data['category'];
 	}
 }
-
-?>

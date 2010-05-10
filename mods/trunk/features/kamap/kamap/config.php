@@ -280,4 +280,3 @@ function normalizeString($szString)
     // becomes "http___my_host_com_cgi_bin_mywms_"
     return preg_replace("/(\W)/", "_", $szString);
 }
-?>

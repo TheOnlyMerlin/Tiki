@@ -14,7 +14,8 @@
 // Description: Handles the plot marks in graphs
 //===================================================
 
-class PlotMark {
+class PlotMark
+{
     public $title, $show=true;
     public $type,$weight=1;
     public $iFormatCallback="", $iFormatCallback2="";
@@ -428,7 +429,8 @@ class PlotMark {
 // Description: Base class for all image data classes that contains the 
 // real image data.
 //========================================================================
-class ImgData {
+class ImgData
+{
     protected $name = '';		// Each subclass gives a name
     protected $an = array();		// Data array names
     protected $colors = array();	// Available colors
@@ -466,7 +468,8 @@ $_gFlagCache=array(
     4 => null,
 );
 // Only supposed to b called as statics
-class FlagCache {
+class FlagCache
+{
     function GetFlagImgByName($aSize,$aName) {
 	global $_gFlagCache;
 	require_once('jpgraph_flags.php');
@@ -478,5 +481,3 @@ class FlagCache {
 	return $f->GetImgByIdx($idx);
     }
 }
-
-?>

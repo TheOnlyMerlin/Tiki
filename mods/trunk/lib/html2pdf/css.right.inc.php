@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/css.right.inc.php,v 1.1 2008-01-15 09:20:39 mose Exp $
 
-class CSSRight extends CSSProperty {
+class CSSRight extends CSSProperty
+{
   function CSSRight() { $this->CSSProperty(false, false); }
 
   function default_value() { return null; }
@@ -23,5 +24,3 @@ class CSSRight extends CSSProperty {
 }
 
 register_css_property('right', new CSSRight);
-
-?>

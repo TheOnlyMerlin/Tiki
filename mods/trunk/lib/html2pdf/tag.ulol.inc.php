@@ -33,4 +33,3 @@ function list_item_end() {
   global $g_list_item_nums;
   $g_list_item_nums[0]++;
 }
-?>

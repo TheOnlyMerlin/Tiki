@@ -140,5 +140,3 @@ class pfcCommand_leave extends pfcCommand
     }
   }
 }
-
-?>

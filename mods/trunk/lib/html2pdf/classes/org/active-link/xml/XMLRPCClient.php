@@ -41,7 +41,8 @@ import("org.active-link.xml.XMLDocument");
   *	@see		HTTPClient
   */
 
-class XMLRPCClient extends HTTPClient {
+class XMLRPCClient extends HTTPClient
+{
 
 	var $xml;
 	var $xmlDoc;
@@ -116,5 +117,3 @@ class XMLRPCClient extends HTTPClient {
 	}
 
 }
-
-?>

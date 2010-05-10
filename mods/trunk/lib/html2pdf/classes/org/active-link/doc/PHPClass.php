@@ -34,7 +34,8 @@ import("org.active-link.doc.Method");
   *	@see		PHPClass
   */
 
-class PHPClass {
+class PHPClass
+{
 
 	var $methods;
 	var $properties;
@@ -192,5 +193,3 @@ class PHPClass {
 	}
 
 }
-
-?>

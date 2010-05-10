@@ -1,6 +1,7 @@
 <?php
 
-class FetcherLocalFile {
+class FetcherLocalFile
+{
   var $protocol;
   var $host;
   var $port;
@@ -38,4 +39,3 @@ class FetcherLocalFile {
     return $this->error_message;
   }
 }
-?>

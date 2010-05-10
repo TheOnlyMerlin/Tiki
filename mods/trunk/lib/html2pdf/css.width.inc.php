@@ -4,7 +4,8 @@
 define('WIDTH_AUTO',-1);
 define('WIDTH_INHERIT',-2);
 
-class CSSWidth extends CSSProperty {
+class CSSWidth extends CSSProperty
+{
   function CSSWidth() { $this->CSSProperty(false, false); }
 
   function default_value() { return new WCNone; }
@@ -33,5 +34,3 @@ class CSSWidth extends CSSProperty {
 }
 
 register_css_property('width', new CSSWidth);
-
-?>

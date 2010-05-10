@@ -257,4 +257,3 @@ function get_request_params(){
 		return $_REQUEST["params"];
 	}
 }
-?>

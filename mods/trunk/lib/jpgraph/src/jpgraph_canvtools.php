@@ -21,7 +21,8 @@ DEFINE('CORNER_BOTTOMLEFT',3);
 // can abstract away with absolute pixels
 //===================================================
  
-class CanvasScale {
+class CanvasScale
+{
     private $g;
     private $w,$h;
     private $ixmin=0,$ixmax=10,$iymin=0,$iymax=10;
@@ -66,7 +67,8 @@ class CanvasScale {
 // CLASS Shape
 // Description: Methods to draw shapes on canvas
 //===================================================
-class Shape {
+class Shape
+{
     private $img,$scale;
 
     function Shape($aGraph,$scale) {
@@ -372,7 +374,8 @@ class Shape {
 // Description: Draws a text paragraph inside a 
 // rounded, possible filled, rectangle.
 //===================================================
-class CanvasRectangleText {
+class CanvasRectangleText
+{
     private $ix,$iy,$iw,$ih,$ir=4;
     private $iTxt,$iColor='black',$iFillColor='',$iFontColor='black';
     private $iParaAlign='center';
@@ -510,6 +513,3 @@ class CanvasRectangleText {
     }
 
 }
-
-
-?>

@@ -80,5 +80,3 @@ class WikiGraphLib extends TikiLib {
         return $aux;
     }
 }
-
-?>

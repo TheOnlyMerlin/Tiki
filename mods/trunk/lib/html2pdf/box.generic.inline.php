@@ -1,5 +1,6 @@
 <?php
-class GenericInlineBox extends GenericContainerBox {
+class GenericInlineBox extends GenericContainerBox
+{
 
   // Checks if current inline box should cause a line break inside the parent box
   //
@@ -76,4 +77,3 @@ class GenericInlineBox extends GenericContainerBox {
     return $first->get_descender();
   }
 }
-?>

@@ -3,7 +3,8 @@
 
 require_once('doc.anchor.class.php');
 
-class GenericBox {
+class GenericBox
+{
   var $uid;
 
   function collapse_margin(&$parent, &$context) {
@@ -1168,4 +1169,3 @@ class GenericBox {
     };
   }
 }
-?>

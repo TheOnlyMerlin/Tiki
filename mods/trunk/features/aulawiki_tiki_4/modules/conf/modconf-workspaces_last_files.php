@@ -35,5 +35,3 @@ function module_workspaces_last_files_params() {
 	$param["offset"]["hide"]="y";
 	return $param;
 }
-
-?>

@@ -101,5 +101,3 @@ ask_ticket('list-maps');
 // Display the template
 $smarty->assign('mid', 'tiki-mapeditor_maps.tpl');
 $smarty->display("tiki.tpl");
-
-?>

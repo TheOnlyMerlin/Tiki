@@ -1,5 +1,6 @@
 <?php
-class FetchedDataFile extends FetchedDataHTML {
+class FetchedDataFile extends FetchedDataHTML
+{
   var $content;
   var $path;
 
@@ -32,4 +33,3 @@ class FetchedDataFile extends FetchedDataHTML {
     $this->content = $data;
   }
 }
-?>

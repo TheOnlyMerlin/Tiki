@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/css.left.inc.php,v 1.1 2008-01-15 09:20:34 mose Exp $
 
-class CSSLeft extends CSSProperty {
+class CSSLeft extends CSSProperty
+{
   function CSSLeft() { $this->CSSProperty(false, false); }
 
   function default_value() { return null; }
@@ -16,5 +17,3 @@ class CSSLeft extends CSSProperty {
 }
 
 register_css_property('left', new CSSLeft);
-
-?>

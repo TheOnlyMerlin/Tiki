@@ -443,4 +443,3 @@ class Image_GraphViz {
         return false;
     }
 }
-?>

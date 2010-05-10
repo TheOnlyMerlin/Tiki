@@ -9,4 +9,3 @@
   	
   	$server  = new TikiDAV_Server();
     	$server->ServeRequest(); 
-?>

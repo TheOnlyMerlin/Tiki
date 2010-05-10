@@ -259,4 +259,3 @@ $g_cp866 = array(
 "\xfe" => code_to_utf8(0x25a0),	//BLACK SQUARE
 "\xff" => code_to_utf8(0x00a0),	//NO-BREAK SPACE
 );
-?>

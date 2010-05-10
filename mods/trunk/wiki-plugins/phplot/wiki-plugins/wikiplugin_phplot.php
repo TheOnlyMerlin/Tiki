@@ -82,5 +82,3 @@ function wikiplugin_phplot($data, $params) {
 
 	return $wret;
 }
-
-?>

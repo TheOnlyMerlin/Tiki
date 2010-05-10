@@ -109,5 +109,3 @@ define('DEFAULT_CHAR_WIDTH', 600);
 define('WHITESPACE_FONT_SIZE_FRACTION', 0.25);
 
 define('DEFAULT_ENCODING', 'iso-8859-1');
-
-?>

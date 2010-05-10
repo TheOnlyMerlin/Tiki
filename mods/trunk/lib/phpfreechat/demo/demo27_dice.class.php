@@ -15,7 +15,8 @@
  * xdxxx-x
  */
 
-class Dice {
+class Dice
+{
 
   var $command;
 
@@ -132,5 +133,3 @@ class Dice {
   $d = new Dice();
   $d->test();
 //*/
-
-?>

@@ -102,4 +102,3 @@ function mod_urltopdf($url = null, $filename = 'file.pdf', $options = null, $dis
 	session_id($current_session_id);
 	session_start();
 }
-?>

@@ -28,7 +28,8 @@ DEFINE("GRAD_DIAGONAL",11);
 // Description: Handles gradient fills. This is to be
 // considered a "friend" class of Class Image.
 //===================================================
-class Gradient {
+class Gradient
+{
     private $img=null, $numcolors=100;
 //---------------
 // CONSTRUCTOR
@@ -419,5 +420,3 @@ class Gradient {
 	}
     }	
 } // Class
-
-?>

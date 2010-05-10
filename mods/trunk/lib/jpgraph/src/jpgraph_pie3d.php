@@ -14,7 +14,8 @@
 // Description: Plots a 3D pie with a specified projection 
 // angle between 20 and 70 degrees.
 //===================================================
-class PiePlot3D extends PiePlot {
+class PiePlot3D extends PiePlot
+{
     private $labelhintcolor="red",$showlabelhint=true;
     private $angle=50;	
     private $edgecolor="", $edgeweight=1;
@@ -908,6 +909,3 @@ class PiePlot3D extends PiePlot {
 
     }	
 } // Class
-
-/* EOF */
-?>

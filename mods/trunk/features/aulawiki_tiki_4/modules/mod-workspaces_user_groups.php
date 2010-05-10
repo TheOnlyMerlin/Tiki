@@ -241,5 +241,3 @@ if (!$exit_module){
 	$smarty->assign('activeGroup', $module_params["activeGroup"]);
 	$smarty->assign('activeParentGroup', $module_params["activeParentGroup"]);
 }
-
-?>

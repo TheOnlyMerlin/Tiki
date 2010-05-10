@@ -11,5 +11,3 @@ function process_style(&$html) {
     $html = preg_replace("#(<style[^>]*>.*)/\*.*\*/(.*</style>)#is","\\1\\2",$html);
   };
 }
-
-?>

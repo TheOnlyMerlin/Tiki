@@ -91,5 +91,3 @@ class pfcContainerInterface
     return $str;
   }  
 }
-
-?>

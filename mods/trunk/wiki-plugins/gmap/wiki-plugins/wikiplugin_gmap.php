@@ -212,5 +212,3 @@ function wikiplugin_gmap($data, $params) {
 	return '~pp~' . $repl . '~/pp~';
 
 }
-
-?>

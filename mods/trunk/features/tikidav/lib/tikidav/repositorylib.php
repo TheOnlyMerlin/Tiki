@@ -20,7 +20,8 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	header("location: index.php");
 }
 
-class RepositoryLib extends TikiLib {
+class RepositoryLib extends TikiLib
+{
 	var $subrepositories = array ("blog", "news");
 
 	function RepositoryLib() {
@@ -934,4 +935,3 @@ class RepositoryLib extends TikiLib {
 		return $calendar;
 	}
 }
-?>

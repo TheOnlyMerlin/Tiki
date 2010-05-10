@@ -20,5 +20,3 @@ if (!function_exists('ctype_space')) {
     return preg_match('/^[\s]$/', $string);
   }
 } 
-
-?>

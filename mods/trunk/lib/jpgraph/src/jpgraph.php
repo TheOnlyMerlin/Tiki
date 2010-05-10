@@ -311,7 +311,8 @@ function GenImgName() {
     return $fname;
 }
 
-class LanguageConv {
+class LanguageConv
+{
     private $g2312 = null ;
 
     function Convert($aTxt,$aFF) {
@@ -406,7 +407,8 @@ class LanguageConv {
 // time measurement of generating graphs. Multiple
 // timers can be started.
 //===================================================
-class JpgTimer {
+class JpgTimer
+{
     private $start, $idx;	
 //---------------
 // CONSTRUCTOR
@@ -439,7 +441,8 @@ $gJpgBrandTiming = BRAND_TIMING;
 // CLASS DateLocale
 // Description: Hold localized text used in dates
 //===================================================
-class DateLocale {
+class DateLocale
+{
  
     public $iLocale = 'C'; // environmental locale be used by default
     private $iDayAbb = null, $iShortDay = null, $iShortMonth = null, $iMonthName = null;
@@ -537,7 +540,8 @@ $gJpgDateLocale = new DateLocale();
 // CLASS Footer
 // Description: Encapsulates the footer line in the Graph
 //=======================================================
-class Footer {
+class Footer
+{
     public $iLeftMargin = 3, $iRightMargin = 3, $iBottomMargin = 3 ;
     public $left,$center,$right;
 
@@ -577,7 +581,8 @@ class Footer {
 // CLASS Graph
 // Description: Main class to handle graphs
 //===================================================
-class Graph {
+class Graph
+{
     public $cache=null;		// Cache object (singleton)
     public $img=null;			// Img object (singleton)
     public $plots=array();	// Array of all plot object in the graph (for Y 1 axis)
@@ -2885,7 +2890,8 @@ class Graph {
 // CLASS TTF
 // Description: Handle TTF font names
 //===================================================
-class TTF {
+class TTF
+{
     private $font_files,$style_names;
 //---------------
 // CONSTRUCTOR
@@ -2946,7 +2952,8 @@ class TTF {
 // CLASS LineProperty
 // Description: Holds properties for a line
 //===================================================
-class LineProperty {
+class LineProperty
+{
     public $iWeight=1, $iColor="black",$iStyle="solid",$iShow=true;
 	
 //---------------
@@ -2988,7 +2995,8 @@ class LineProperty {
 // CLASS Text
 // Description: Arbitrary text object that can be added to the graph
 //===================================================
-class Text {
+class Text
+{
     public $t,$margin=0;
     public $x=0,$y=0,$halign="left",$valign="top",$color=array(0,0,0);
     public $hide=false, $dir=0;
@@ -3233,7 +3241,8 @@ class Text {
     }
 } // Class
 
-class GraphTabTitle extends Text{
+class GraphTabTitle extends Text
+{
     private $corner = 6 , $posx = 7, $posy = 4;
     private $fillcolor='lightyellow',$bordercolor='black';
     private $align = 'left', $width=TABTITLE_WIDTHFIT;
@@ -3357,7 +3366,8 @@ class GraphTabTitle extends Text{
 // CLASS SuperScriptText
 // Description: Format a superscript text
 //===================================================
-class SuperScriptText extends Text {
+class SuperScriptText extends Text
+{
     private $iSuper="";
     private $sfont_family="",$sfont_style="",$sfont_size=8;
     private $iSuperMargin=2,$iVertOverlap=4,$iSuperScale=0.65;
@@ -3533,7 +3543,8 @@ class SuperScriptText extends Text {
 // CLASS Grid
 // Description: responsible for drawing grid lines in graph
 //===================================================
-class Grid {
+class Grid
+{
     protected $img;
     protected $scale;
     protected $grid_color='#DDDDDD',$grid_mincolor='#DDDDDD';
@@ -3683,7 +3694,8 @@ class Grid {
 // This was a design decision to make the code easier to
 // follow. 
 //===================================================
-class AxisPrototype {
+class AxisPrototype
+{
     public $scale=null; 
     public $img=null;
     public $hide=false,$hide_labels=false;
@@ -3931,7 +3943,8 @@ class AxisPrototype {
 // This was a design decision to make the code easier to
 // follow. 
 //===================================================
-class Axis extends AxisPrototype {
+class Axis extends AxisPrototype
+{
 
     function Axis($img,$aScale,$color=array(0,0,0)) {
 	parent::Axis($img,$aScale,$color);
@@ -4150,7 +4163,8 @@ class Axis extends AxisPrototype {
 // Description: Abstract base class for drawing linear and logarithmic
 // tick marks on axis
 //===================================================
-class Ticks {
+class Ticks
+{
     public $label_formatstr='';   // C-style format string to use for labels
     public $label_formfunc='';
     public $direction=1; // Should ticks be in(=1) the plot area or outside (=-1)
@@ -4276,7 +4290,8 @@ class Ticks {
 // CLASS LinearTicks
 // Description: Draw linear ticks on axis
 //===================================================
-class LinearTicks extends Ticks {
+class LinearTicks extends Ticks
+{
     public $minor_step=1, $major_step=2;
     public $xlabel_offset=0,$xtick_offset=0;
     public $maj_ticks_pos = array(), $maj_ticklabels_pos = array(), 
@@ -4632,7 +4647,8 @@ class LinearTicks extends Ticks {
 // CLASS LinearScale
 // Description: Handle linear scaling between screen and world 
 //===================================================
-class LinearScale {
+class LinearScale
+{
     public $textscale=false; // Just a flag to let the Plot class find out if
     // we are a textscale or not. This is a cludge since
     // this ionformatyion is availabale in Graph::axtype but
@@ -5187,7 +5203,8 @@ class LinearScale {
 // CLASS RGB
 // Description: Color definitions as RGB triples
 //===================================================
-class RGB {
+class RGB
+{
     public $rgb_table; 
     public $img;
 
@@ -5746,7 +5763,8 @@ class RGB {
 // Description: Wrapper class with some goodies to form the
 // Interface to low level image drawing routines.
 //===================================================
-class Image {
+class Image
+{
     public $left_margin=30,$right_margin=30,$top_margin=20,$bottom_margin=30;
     public $img=null;
     public $plotwidth=0,$plotheight=0;
@@ -7078,7 +7096,8 @@ class Image {
 // Description: Exactly as Image but draws the image at
 // a specified angle around a specified rotation point.
 //===================================================
-class RotImage extends Image {
+class RotImage extends Image
+{
     public $a=0;
     public $dx=0,$dy=0,$transx=0,$transy=0; 
     private $m=array();
@@ -7233,7 +7252,8 @@ class RotImage extends Image {
 // CLASS ImgStreamCache
 // Description: Handle caching of graphs to files
 //===================================================
-class ImgStreamCache {
+class ImgStreamCache
+{
     private $cache_dir, $img=null, $timeout=0; 	// Infinite timeout
     //---------------
     // CONSTRUCTOR
@@ -7369,7 +7389,7 @@ class ImgStreamCache {
 	    $dirs[] = $aFile;
 	    $aFile = dirname($aFile);
 	}
-	for ($i = sizeof($dirs)-1; $i>=0; $i--) {
+	for ($i = count($dirs)-1; $i>=0; $i--) {
 	    if(! @mkdir($dirs[$i],0777) )
 		JpGraphError::RaiseL(25118,$aFile);//(" Can't create directory $aFile. Make sure PHP has write permission to this directory.");
 	    // We also specify mode here after we have changed group. 
@@ -7394,7 +7414,8 @@ class ImgStreamCache {
 // all the legend text for the graph
 //===================================================
 DEFINE('_DEFAULT_LPM_SIZE',8);
-class Legend {
+class Legend
+{
     public $txtcol=array();
     private $color=array(0,0,0); // Default fram color
     private $fill_color=array(235,235,235); // Default fill color
@@ -7761,7 +7782,8 @@ class Legend {
 // CLASS DisplayValue
 // Description: Used to print data values at data points
 //===================================================
-class DisplayValue {
+class DisplayValue
+{
     public $margin=5;
     public $show=false;
     public $valign="",$halign="center";
@@ -7876,7 +7898,8 @@ class DisplayValue {
 // CLASS Plot
 // Description: Abstract base class for all concrete plot classes
 //===================================================
-class Plot {
+class Plot
+{
     public $numpoints=0;
     public $value;
     public $legend='';
@@ -8068,7 +8091,8 @@ class Plot {
 // Usefull to add static borders inside a plot to show
 // for example set-values
 //===================================================
-class PlotLine {
+class PlotLine
+{
     public $scaleposition, $direction=-1; 
     protected $weight=1;
     protected $color="black";
@@ -8123,6 +8147,3 @@ class PlotLine {
 	    JpGraphError::RaiseL(25125);//(" Illegal direction for static line");
     }
 }
-
-// <EOF>
-?>

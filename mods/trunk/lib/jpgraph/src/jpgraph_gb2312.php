@@ -9,7 +9,8 @@
 //========================================================================
 
 
-class GB2312toUTF8 {
+class GB2312toUTF8
+{
 // --------------------------------------------------------------------
 // This code table is used to translate GB2312 code (key) to 
 // it's corresponding Unicode value (data)
@@ -1548,5 +1549,3 @@ class GB2312toUTF8 {
     }
 
 } // END Class 
-
-?>

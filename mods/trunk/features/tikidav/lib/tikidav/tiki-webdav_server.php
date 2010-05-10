@@ -12,7 +12,8 @@
 require_once "lib/pear/HTTP/WebDAV/Server.php";
 require_once ('tiki-setup.php');
 
-class TikiDAV_Server extends HTTP_WebDAV_Server {
+class TikiDAV_Server extends HTTP_WebDAV_Server
+{
 
 	function TikiDAV_Server() {
 		HTTP_WebDAV_Server :: HTTP_WebDAV_Server();
@@ -371,4 +372,3 @@ class TikiDAV_Server extends HTTP_WebDAV_Server {
 		fwrite($gestor, "[".date("d/m/y H:i")."] [".$_REQUEST['REMOTE_ADDR']."] [".$msg."] [".$_REQUEST['HTTP_USER_AGENT']."]\n");
 	}
 }
-?>

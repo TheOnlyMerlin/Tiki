@@ -1,5 +1,6 @@
 <?php
-class LayoutEngineDefault extends LayoutEngine {
+class LayoutEngineDefault extends LayoutEngine
+{
   function process(&$box, &$media, &$driver) {
     // Calculate the size of text boxes
     if (is_null($box->reflow_text($driver))) {
@@ -89,4 +90,3 @@ class LayoutEngineDefault extends LayoutEngine {
     return $context;
   }
 }
-?>

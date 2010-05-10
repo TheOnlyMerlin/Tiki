@@ -49,4 +49,3 @@ $smarty->assign('contacts', $contacts);
 // Display the template
 $smarty->assign('mid', 'tiki-tinvoice_list.tpl');
 $smarty->display("tiki.tpl");
-?>

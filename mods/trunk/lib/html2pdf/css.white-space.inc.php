@@ -5,7 +5,8 @@ define('WHITESPACE_NORMAL',0);
 define('WHITESPACE_PRE',1);
 define('WHITESPACE_NOWRAP',2);
 
-class CSSWhiteSpace extends CSSProperty {
+class CSSWhiteSpace extends CSSProperty
+{
   function CSSWhiteSpace() { $this->CSSProperty(true, true); }
 
   function default_value() { return WHITESPACE_NORMAL; }
@@ -38,5 +39,3 @@ class CSSWhiteSpace extends CSSProperty {
 }
 
 register_css_property('white-space', new CSSWhiteSpace);
-  
-?>

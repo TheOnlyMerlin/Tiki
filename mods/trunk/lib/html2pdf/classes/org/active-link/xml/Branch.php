@@ -35,8 +35,6 @@ import("org.active-link.xml.Tree");
   *	@see		Tree, Leaf
   */
 
-class Branch extends Tree {
-
+class Branch extends Tree
+{
 }
-
-?>

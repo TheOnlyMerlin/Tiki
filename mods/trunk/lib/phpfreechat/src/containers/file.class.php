@@ -286,4 +286,3 @@ class pfcContainer_File extends pfcContainerInterface
     return urldecode($str);
   }
 }
-?>

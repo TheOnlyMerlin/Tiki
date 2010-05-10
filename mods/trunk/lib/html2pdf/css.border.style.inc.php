@@ -1,6 +1,7 @@
 <?php
 
-class CSSBorderStyle {
+class CSSBorderStyle
+{
   function value2ps($value) {
     switch ($value) {
     case BS_SOLID:
@@ -25,4 +26,3 @@ class CSSBorderStyle {
     };
   }
 }
-?>

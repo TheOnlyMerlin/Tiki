@@ -48,4 +48,3 @@ if (isset ($resource) && $resource != "") {
 
 $smarty->assign('msg', tra("Resource not found"));
 $smarty->display("error.tpl");
-?>

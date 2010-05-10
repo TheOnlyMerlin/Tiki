@@ -20,7 +20,8 @@ DEFINE("BAND_DIAGCROSS",8); // Diagonal crosses
 
 
 // Utility class to hold coordinates for a rectangle
-class Rectangle {
+class Rectangle
+{
     public $x,$y,$w,$h;
     public $xe, $ye;
     function Rectangle($aX,$aY,$aWidth,$aHeight) {
@@ -40,7 +41,8 @@ class Rectangle {
 // must at least implement method DoPattern($aImg) which is responsible
 // for drawing the pattern onto the graph.
 //=====================================================================
-class RectPattern {
+class RectPattern
+{
     protected $color;
     protected $weight;
     protected $rect=null;
@@ -103,7 +105,8 @@ class RectPattern {
 // Class RectPatternSolid
 // Implements a solid band
 //=====================================================================
-class RectPatternSolid extends RectPattern {
+class RectPatternSolid extends RectPattern
+{
 
     function RectPatternSolid($aColor="black",$aWeight=1) {
 	parent::RectPattern($aColor,$aWeight);
@@ -120,7 +123,8 @@ class RectPatternSolid extends RectPattern {
 // Class RectPatternHor
 // Implements horizontal line pattern
 //=====================================================================
-class RectPatternHor extends RectPattern {
+class RectPatternHor extends RectPattern
+{
 		
     function RectPatternHor($aColor="black",$aWeight=1,$aLineSpacing=7) {
 	parent::RectPattern($aColor,$aWeight);
@@ -142,7 +146,8 @@ class RectPatternHor extends RectPattern {
 // Class RectPatternVert
 // Implements vertical line pattern
 //=====================================================================
-class RectPatternVert extends RectPattern {
+class RectPatternVert extends RectPattern
+{
 		
     function RectPatternVert($aColor="black",$aWeight=1,$aLineSpacing=7) {
 	parent::RectPattern($aColor,$aWeight);
@@ -168,7 +173,8 @@ class RectPatternVert extends RectPattern {
 // Class RectPatternRDiag
 // Implements right diagonal pattern
 //=====================================================================
-class RectPatternRDiag extends RectPattern {
+class RectPatternRDiag extends RectPattern
+{
 		
     function RectPatternRDiag($aColor="black",$aWeight=1,$aLineSpacing=12) {
 	parent::RectPattern($aColor,$aWeight);
@@ -237,7 +243,8 @@ class RectPatternRDiag extends RectPattern {
 // Class RectPatternLDiag
 // Implements left diagonal pattern
 //=====================================================================
-class RectPatternLDiag extends RectPattern {
+class RectPatternLDiag extends RectPattern
+{
 		
     function RectPatternLDiag($aColor="black",$aWeight=1,$aLineSpacing=12) {
 	$this->linespacing = $aLineSpacing;
@@ -301,7 +308,8 @@ class RectPatternLDiag extends RectPattern {
 // Class RectPattern3DPlane
 // Implements "3D" plane pattern
 //=====================================================================
-class RectPattern3DPlane extends RectPattern {
+class RectPattern3DPlane extends RectPattern
+{
     private $alpha=50;  // Parameter that specifies the distance
     // to "simulated" horizon in pixel from the
     // top of the band. Specifies how fast the lines
@@ -418,7 +426,8 @@ class RectPattern3DPlane extends RectPattern {
 // Class RectPatternCross
 // Vert/Hor crosses
 //=====================================================================
-class RectPatternCross extends RectPattern {
+class RectPatternCross extends RectPattern
+{
     private $vert=null;
     private $hor=null;
     function RectPatternCross($aColor="black",$aWeight=1) {
@@ -454,7 +463,8 @@ class RectPatternCross extends RectPattern {
 // Vert/Hor crosses
 //=====================================================================
 
-class RectPatternDiagCross extends RectPattern {
+class RectPatternDiagCross extends RectPattern
+{
     private $left=null;
     private $right=null;
     function RectPatternDiagCross($aColor="black",$aWeight=1) {
@@ -490,7 +500,8 @@ class RectPatternDiagCross extends RectPattern {
 // Class RectPatternFactory
 // Factory class for rectangular pattern 
 //=====================================================================
-class RectPatternFactory {
+class RectPatternFactory
+{
     function RectPatternFactory() {
 	// Empty
     }
@@ -535,7 +546,8 @@ class RectPatternFactory {
 // It is responsible for factoring the corresponding pattern
 // concrete class.
 //=====================================================================
-class PlotBand {
+class PlotBand
+{
     public $depth; // Determine if band should be over or under the plots
     private $prect=null;
     private $dir, $min, $max;
@@ -630,6 +642,3 @@ class PlotBand {
 	}
     }
 }
-
-
-?>

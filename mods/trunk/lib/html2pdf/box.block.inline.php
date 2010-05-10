@@ -9,7 +9,8 @@
  *
  * @link http://www.w3.org/TR/CSS21/visuren.html#value-def-inline-block CSS 2.1 description of 'display: inline-block'
  */
-class InlineBlockBox extends GenericContainerBox {
+class InlineBlockBox extends GenericContainerBox
+{
   /** 
    * Create new 'inline-block' element; add content from the parsed HTML tree automatically.
    *
@@ -170,4 +171,3 @@ class InlineBlockBox extends GenericContainerBox {
     $parent->_current_x = $this->get_right_margin();
   }
 }
-?>

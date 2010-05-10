@@ -1,5 +1,6 @@
 <?php
-class ContentType {
+class ContentType
+{
   var $default_extension;
   var $mime_type;
 
@@ -20,4 +21,3 @@ class ContentType {
     return new ContentType('ps', 'application/postscript');
   }
 }
-?>

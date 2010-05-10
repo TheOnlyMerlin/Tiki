@@ -1,5 +1,6 @@
 <?php
-class DataFilterUTF8 extends DataFilter {
+class DataFilterUTF8 extends DataFilter
+{
   function DataFilterUTF8($encoding) {
     $this->encoding = $encoding;
   }
@@ -23,4 +24,3 @@ class DataFilterUTF8 extends DataFilter {
     return $data;
   }
 }
-?>

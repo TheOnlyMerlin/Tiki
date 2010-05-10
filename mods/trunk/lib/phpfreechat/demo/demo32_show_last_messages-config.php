@@ -6,5 +6,3 @@ $params["serverid"] = md5($params["title"]); // calculate a unique id for this c
 $params["max_msg"]  = 20;
 $params["channels"] = array("channel1");
 $pfc_config =& pfcGlobalConfig::Instance( $params );
-
-?>

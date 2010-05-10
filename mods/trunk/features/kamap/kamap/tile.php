@@ -377,4 +377,3 @@ function gmttime() {
    $ts -= $theTime[8] * 3600; //daylight savings???
    return $ts;
 }
-?>

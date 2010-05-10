@@ -4,7 +4,8 @@
 define('OVERFLOW_VISIBLE',0);
 define('OVERFLOW_HIDDEN',1);
 
-class CSSOverflow extends CSSProperty {
+class CSSOverflow extends CSSProperty
+{
   function CSSOverflow() { $this->CSSProperty(false, false); }
 
   function default_value() { return OVERFLOW_VISIBLE; }
@@ -32,5 +33,3 @@ class CSSOverflow extends CSSProperty {
 }
 
 register_css_property('overflow', new CSSOverflow);
-
-?>

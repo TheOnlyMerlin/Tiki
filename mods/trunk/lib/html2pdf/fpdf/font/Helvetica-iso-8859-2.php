@@ -21,4 +21,3 @@ $enc='iso-8859-2';
 $diff='128 /.notdef 130 /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 142 /.notdef 145 /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 158 /.notdef /.notdef 161 /Aogonek /breve /Lslash 165 /Lcaron /Sacute 169 /Scaron /Scedilla /Tcaron /Zacute 174 /Zcaron /Zdot 177 /aogonek /ogonek /lslash 181 /lcaron /sacute /caron 185 /scaron /scedilla /tcaron /zacute /hungarumlaut /zcaron /zdot /Racute 195 /Abreve 197 /Lacute /Cacute 200 /Ccaron 202 /Eogonek 204 /Ecaron 207 /Dcaron /Dslash /Nacute /Ncaron 213 /Odblacute 216 /Rcaron /Uring 219 /Udblacute 222 /Tcedilla 224 /racute 227 /abreve 229 /lacute /cacute 232 /ccaron 234 /eogonek 236 /ecaron 239 /dcaron /dmacron /nacute /ncaron 245 /odblacute 248 /rcaron /uring 251 /udblacute 254 /tcedilla /dotaccent';
 $file='arial.z';
 $originalsize=367112;
-?>

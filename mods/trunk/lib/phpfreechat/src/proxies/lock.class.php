@@ -59,5 +59,3 @@ class pfcProxyCommand_lock extends pfcProxyCommand
     }
   }
 }
-
-?>

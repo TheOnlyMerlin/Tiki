@@ -70,5 +70,3 @@ function autoclose_tag_cleanup(&$sample_html, $offset, $tags_raw, $nested, $clos
   
   return $offset;
 }
-
-?>

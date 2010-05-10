@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/css.line-height.inc.php,v 1.1 2008-01-15 09:20:35 mose Exp $
 
-class LineHeight_Absolute {
+class LineHeight_Absolute
+{
   var $length;
 
   function apply($value) { 
@@ -25,7 +26,8 @@ class LineHeight_Absolute {
   }
 }
 
-class LineHeight_Relative {
+class LineHeight_Relative
+{
   var $fraction;
 
   function apply($value) { 
@@ -93,4 +95,3 @@ function css_line_height($value, $root) {
 };
 
 $g_line_height = array(default_line_height());
-?>

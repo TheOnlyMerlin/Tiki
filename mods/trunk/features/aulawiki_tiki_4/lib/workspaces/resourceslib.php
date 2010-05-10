@@ -5,7 +5,8 @@
 * @copyright (C) 2006 Javier Reyes Gomez (eScire.com)
 * @license http://www.gnu.org/copyleft/lgpl.html GNU/LGPL
 */
-class WorkspaceResourcesLib extends TikiDb_Bridge {
+class WorkspaceResourcesLib extends TikiDb_Bridge
+{
 	var $db; // The PEAR db object used to access the database
 	var $ws_object_types= array(
 		"wiki page" => array(name=>"Wiki Page",selected=>""),
@@ -939,5 +940,3 @@ class WorkspaceResourcesLib extends TikiDb_Bridge {
 		return null;
 	}
 }
-
-?>

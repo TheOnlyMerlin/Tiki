@@ -96,5 +96,3 @@ function apply_css_rule_obj($properties, $baseurl, $root) {
 
   $g_baseurl = $old_baseurl;
 }
-
-?>

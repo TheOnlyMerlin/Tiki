@@ -57,4 +57,3 @@ if (!isset ($workspace)) {
 	$smarty->assign_by_ref('workspaces', $workspacesData["data"]);
 	$smarty->assign_by_ref('currentWorkspace', $workspace);
 }
-?>

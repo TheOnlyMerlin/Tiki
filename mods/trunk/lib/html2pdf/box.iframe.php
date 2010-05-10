@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/box.iframe.php,v 1.1 2008-01-15 09:20:26 mose Exp $
 
-class IFrameBox extends InlineBlockBox {
+class IFrameBox extends InlineBlockBox
+{
   function &create(&$root) {
     return new IFrameBox($root);
   }
@@ -94,5 +95,3 @@ class IFrameBox extends InlineBlockBox {
     $psdata->write("add-child\n");    
   }
 }
-
-?>

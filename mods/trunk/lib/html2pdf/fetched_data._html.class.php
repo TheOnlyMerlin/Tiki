@@ -1,5 +1,6 @@
 <?php
-class FetchedDataHTML extends FetchedData {
+class FetchedDataHTML extends FetchedData
+{
   function detect_encoding() {
     die("Unoverridden 'detect_encoding' called in ".get_class($this));
   }
@@ -12,4 +13,3 @@ class FetchedDataHTML extends FetchedData {
     };
   }
 }
-?>

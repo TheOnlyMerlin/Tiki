@@ -13,7 +13,8 @@
  
  * @link http://www.w3.org/TR/CSS21/colors.html#q2 CSS 2.1 "The background"
  */
-class BackgroundImage {
+class BackgroundImage
+{
   /**
    * @var string URL of the background image file (may be NULL in case no background image specified).
    * @access private
@@ -217,5 +218,3 @@ class BackgroundImage {
     $driver->restore();
   }
 }
-
-?>

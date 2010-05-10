@@ -23,5 +23,3 @@ function module_workspaces_resources_params() {
 	$param["showBar"]["defaultValue"]="y";
 	return $param;
 }
-
-?>

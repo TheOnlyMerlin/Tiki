@@ -21,5 +21,3 @@ function process_deflists(&$sample_html, $offset) {
                        array("dl" => "process_dl"),
                        "");
 };
-
-?>

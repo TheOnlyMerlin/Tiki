@@ -466,5 +466,3 @@ foreach ($urls as $url) {
     print("Error in conversion pipeline<br/>");
   };
 };
-
-?>

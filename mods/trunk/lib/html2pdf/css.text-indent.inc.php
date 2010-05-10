@@ -5,7 +5,8 @@
 // string value of text-indent proprty and 
 // boolean flag indication of this value is relative (true) or absolute (false)
 
-class TextIndentValuePDF {
+class TextIndentValuePDF
+{
   var $raw_value;
 
   function calculate(&$box) {
@@ -42,7 +43,8 @@ class TextIndentValuePDF {
   }
 }
 
-class CSSTextIndent extends CSSProperty {
+class CSSTextIndent extends CSSProperty
+{
   function CSSTextIndent() { $this->CSSProperty(true, true); }
 
   function default_value() { return new TextIndentValuePDF(array(0,false)); }
@@ -57,5 +59,3 @@ class CSSTextIndent extends CSSProperty {
 }
 
 register_css_property('text-indent', new CSSTextIndent());
-
-?>

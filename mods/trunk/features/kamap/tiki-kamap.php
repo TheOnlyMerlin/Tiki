@@ -40,4 +40,3 @@ $section = 'maps';
 include_once ('tiki-section_options.php');
 $smarty->assign('mid','map/tiki-kamap.tpl');
 $smarty->display("tiki.tpl");
-?>

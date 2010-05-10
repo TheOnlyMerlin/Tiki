@@ -4,7 +4,8 @@ $g_last_assigned_font_id = 0;
 
 // Note that ALL font dimensions are measured in 1/1000 of font size units;
 //
-class Font {
+class Font
+{
   var $underline_position;
   var $underline_thickness;
   var $ascender;
@@ -149,4 +150,3 @@ class Font {
     return $this->underline_thickness;
   }
 }
-?>

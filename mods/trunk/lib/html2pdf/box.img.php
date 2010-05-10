@@ -6,7 +6,8 @@ define('SCALE_WIDTH',1);
 define('SCALE_HEIGHT',2);
 
 // class GenericImgBox extends GenericInlineBox {
-class GenericImgBox extends TextBox {
+class GenericImgBox extends TextBox
+{
   function get_min_width(&$context) { 
     return $this->get_full_width(); 
   }
@@ -117,7 +118,8 @@ class GenericImgBox extends TextBox {
   }
 }
 
-class BrokenImgBox extends GenericImgBox {
+class BrokenImgBox extends GenericImgBox
+{
   var $alt;
 
   function BrokenImgBox(&$node) {
@@ -189,7 +191,8 @@ class BrokenImgBox extends GenericImgBox {
   }
 }
 
-class ImgBox extends GenericImgBox {
+class ImgBox extends GenericImgBox
+{
   function &create($root) {
     // Open image referenced by HTML tag
     // Some crasy HTML writers add leading and trailing spaces to SRC attribute value - we need to remove them
@@ -283,4 +286,3 @@ class ImgBox extends GenericImgBox {
     return true;
   }
 }
-?>

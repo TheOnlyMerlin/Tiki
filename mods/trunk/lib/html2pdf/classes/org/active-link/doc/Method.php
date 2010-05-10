@@ -31,7 +31,8 @@
   *	@see		PHPClass
   */
 
-class Method {
+class Method
+{
 
 	var $params;
 	var $info;

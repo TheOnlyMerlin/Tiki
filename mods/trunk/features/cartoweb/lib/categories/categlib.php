@@ -12,7 +12,8 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class CategLib extends TikiLib {
+class CategLib extends TikiLib
+{
 
 	function CategLib($db) {
 		$this->TikiLib($db);
@@ -1087,5 +1088,3 @@ class CategLib extends TikiLib {
 
 global $dbTiki;
 $categlib = new CategLib($dbTiki);
-
-?>

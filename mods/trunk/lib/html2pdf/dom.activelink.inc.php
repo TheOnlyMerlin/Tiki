@@ -1,7 +1,8 @@
 <?php
 
 // Wrapper for ActiveLink pure PHP DOM extension
-class ActiveLinkDOMTree {
+class ActiveLinkDOMTree
+{
   var $xml;
   var $index;
   var $parent_indices;
@@ -96,5 +97,3 @@ class ActiveLinkDOMTree {
     return $node;
   }
 }
-
-?>

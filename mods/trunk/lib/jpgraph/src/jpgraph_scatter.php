@@ -14,7 +14,8 @@ require_once ('jpgraph_plotmark.inc.php');
 // CLASS FieldArrow
 // Description: Draw an arrow at (x,y) with angle a
 //===================================================
-class FieldArrow {
+class FieldArrow
+{
     public $iColor='black';
     public $iSize=10;  // Length in pixels for  arrow
     public $iArrowSize = 2;
@@ -60,7 +61,8 @@ class FieldArrow {
 // CLASS FieldPlot
 // Description: Render a field plot
 //===================================================
-class FieldPlot extends Plot {
+class FieldPlot extends Plot
+{
     private $iAngles;
     private $iCallback='';
     function FieldPlot($datay,$datax,$angles) {
@@ -127,7 +129,8 @@ class FieldPlot extends Plot {
 // CLASS ScatterPlot
 // Description: Render X and Y plots
 //===================================================
-class ScatterPlot extends Plot {
+class ScatterPlot extends Plot
+{
     private $impuls = false;
     private $linkpoints = false, $linkpointweight=1, $linkpointcolor="black";
 //---------------
@@ -220,5 +223,3 @@ class ScatterPlot extends Plot {
 	}
     }	
 } // Class
-/* EOF */
-?>

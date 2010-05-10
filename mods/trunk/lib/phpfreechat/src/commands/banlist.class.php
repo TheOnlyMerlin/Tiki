@@ -42,5 +42,3 @@ class pfcCommand_banlist extends pfcCommand
     $xml_reponse->script("pfc.handleResponse('".$this->name."', 'ok', '".addslashes($msg)."');");
   }
 }
-
-?>

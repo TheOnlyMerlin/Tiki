@@ -34,5 +34,3 @@ class pfcCommand_notice extends pfcCommand
     }
   }
 }
-
-?>

@@ -12,7 +12,8 @@ require_once("tiki-setup.php");
 global $dbTiki;
 require_once ('lib/blogs/bloglib.php');
 
-class blogSubrep{
+class blogSubrep
+{
 
 function getObjectMetaInfo($blogObjMI,$relativepath,$user){
 	global $dbTiki;
@@ -82,4 +83,3 @@ function createRepositoryObject($blogpost,$parentId,$path) {
 
 
 }
-?>

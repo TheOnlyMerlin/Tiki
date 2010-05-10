@@ -885,7 +885,7 @@ function GenerateFootnotesFromRefs($params) {
 			$footnotes[$m[1]] = sprintf(_("[%d] See [%s]"), $m[1], rawurldecode($reference));
 	}
 
-	if (sizeof($footnotes) > 0) {
+	if (count($footnotes) > 0) {
 		ksort ($footnotes);
 
 		return "-----\n" . "!" . _("References"). "\n" . join("\n%%%\n", $footnotes). "\n";
@@ -996,5 +996,3 @@ function ParseMimeifiedPages($data) {
 // c-hanging-comment-ender-p: nil
 // indent-tabs-mode: nil
 // End:   
-
-?>

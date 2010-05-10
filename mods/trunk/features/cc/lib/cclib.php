@@ -5,7 +5,8 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class CcLib extends UsersLib {
+class CcLib extends UsersLib
+{
 
 	var $db;
 	var $date;
@@ -379,5 +380,3 @@ class CcLib extends UsersLib {
 }
 
 $cclib = new CcLib($dbTiki);
-
-?>

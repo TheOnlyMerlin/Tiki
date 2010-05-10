@@ -195,5 +195,3 @@ ask_ticket('edit-layer');
 // Display the template
 $smarty->assign('mid', 'tiki-mapeditor_edit_layer.tpl');
 $smarty->display("tiki.tpl");
-
-?>

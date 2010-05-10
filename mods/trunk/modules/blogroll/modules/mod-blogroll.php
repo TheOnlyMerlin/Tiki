@@ -24,5 +24,3 @@ $content = $tikilib->get_file($module_params["fileId"]);
 $smarty->assign('feeds', $feeds);
 $smarty->assign('fileId', $module_params['fileId']);
 $smarty->assign('nonums', isset($module_params["nonums"]) ? $module_params["nonums"] : 'n');
-
-?>

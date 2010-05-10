@@ -30,5 +30,3 @@ function wikiplugin_phpfreechat($data, $params) {
 
 	return "<!--<pre>-->".$chat->printChat(true)."<!--</pre>-->";
 }
-
-?>

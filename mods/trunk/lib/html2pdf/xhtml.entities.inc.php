@@ -74,5 +74,3 @@ function escape_gt($html) {
 
   return $html;
 };
-
-?>

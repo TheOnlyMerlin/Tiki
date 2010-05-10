@@ -39,5 +39,3 @@ if (!function_exists('utf8_substr')) {
     else    return $str;
   }
 }
-
-?>

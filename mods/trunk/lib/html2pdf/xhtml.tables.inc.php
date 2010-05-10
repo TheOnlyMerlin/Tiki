@@ -102,5 +102,3 @@ function process_tables(&$sample_html, $offset) {
                        array("table" => "process_table"),
                        "");
 };
-
-?>

@@ -84,5 +84,3 @@ class Gmapwikiplugin extends TikiLib {
     
 global $dbTiki;
 $gmapwikipluginlib = new Gmapwikiplugin($dbTiki);
-
-?>

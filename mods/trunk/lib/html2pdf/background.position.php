@@ -7,7 +7,8 @@
  * 
  * @link http://www.w3.org/TR/CSS21/colors.html#propdef-background-position CSS 2.1 'background-position' property description
  */
-class BackgroundPosition {
+class BackgroundPosition
+{
   /**
    * @var string X-offset value
    * @access public
@@ -83,5 +84,3 @@ class BackgroundPosition {
     };
   }
 }
-
-?>

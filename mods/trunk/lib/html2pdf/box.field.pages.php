@@ -3,7 +3,8 @@
  * Handles the '##PAGES##' text field.
  *
  */
-class BoxTextFieldPages extends TextBoxString {
+class BoxTextFieldPages extends TextBoxString
+{
   function BoxTextFieldPages() { }
 
   function from_box(&$box) {
@@ -85,4 +86,3 @@ class BoxTextFieldPages extends TextBoxString {
     return true;
   }
 }
-?>

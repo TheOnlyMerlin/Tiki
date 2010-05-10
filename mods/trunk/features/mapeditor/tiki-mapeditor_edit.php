@@ -184,5 +184,3 @@ ask_ticket('edit-map');
 // Display the template
 $smarty->assign('mid', 'tiki-mapeditor_edit.tpl');
 $smarty->display("tiki.tpl");
-
-?>

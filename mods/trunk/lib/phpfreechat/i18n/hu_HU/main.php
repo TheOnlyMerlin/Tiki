@@ -410,5 +410,3 @@ $GLOBALS["i18n"]["Chosen nickname is already used"] = "";
 
 // line 458 in phpfreechat.class.php
 $GLOBALS["i18n"]["Chosen nickname is not allowed"] = "";
-
-?>

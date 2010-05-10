@@ -21,4 +21,3 @@ $enc='iso-8859-1';
 $diff='128 /.notdef 130 /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 142 /.notdef 145 /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 158 /.notdef /.notdef';
 $file='timesbd.z';
 $originalsize=398372;
-?>

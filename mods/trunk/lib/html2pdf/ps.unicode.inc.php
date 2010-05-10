@@ -37,4 +37,3 @@ $g_utf8_converters = array(
                            'windows-1252' => array($g_windows_1251,"Windows-1252-Encoding")
                            // 'cp866'       => array($g_cp866,"")
                            );
-?>

@@ -37,10 +37,7 @@ import("org.active-link.xml.XML");
   *	@see		XML
   */
 
-class XPath {
-
+class XPath
+{
 	var $xml;
-
 }
-
-?>

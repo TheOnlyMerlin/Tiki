@@ -1,7 +1,8 @@
 <?php
 
 // TODO: this works for PS encoding names only
-class ManagerEncoding {
+class ManagerEncoding
+{
   function get_glyph_to_code_mapping($encoding) {
     global $g_unicode_glyphs;
 
@@ -38,4 +39,3 @@ class ManagerEncoding {
 }
 
 $g_manager_encodings = new ManagerEncoding;
-?>

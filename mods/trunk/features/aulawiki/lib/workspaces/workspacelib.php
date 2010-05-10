@@ -9,7 +9,8 @@ include_once ('typeslib.php');
 include_once ('resourceslib.php');
 include_once ('userlib.php');
 
-class WorkspaceLib extends TikiDB {
+class WorkspaceLib extends TikiDB
+{
 	var $db; // The PEAR db object used to access the database
 	function WorkspaceLib($db) {
 		$this->TikiDB($db);
@@ -634,4 +635,3 @@ class WorkspaceLib extends TikiDB {
 		return $response;
 	}
 }
-?>

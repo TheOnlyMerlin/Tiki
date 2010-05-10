@@ -60,5 +60,3 @@ $five = "\" class=\"internal\" title=\"Enlarge\"><img src=\"./img/icons2/icn_vie
 
 return $one.$imgid.$two.$imgid.$three.$four.$imgid.$five;
 }
-
-?>

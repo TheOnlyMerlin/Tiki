@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/converter.class.php,v 1.1 2008-01-15 09:20:29 mose Exp $
 
-class Converter {
+class Converter
+{
   function create() {
     if (function_exists('iconv')) {
       return new IconvConverter;
@@ -11,13 +12,15 @@ class Converter {
   }
 }
 
-class IconvConverter {
+class IconvConverter
+{
   function to_utf8($html, $encoding) {
     return iconv(strtoupper($encoding), "UTF-8", $html);
   }
 }
 
-class PurePHPConverter {
+class PurePHPConverter
+{
   function to_utf8($html, $encoding) {
     global $g_utf8_converters;
     
@@ -32,4 +35,3 @@ class PurePHPConverter {
     };
   }
 }
-?>

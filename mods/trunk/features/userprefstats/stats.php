@@ -26,4 +26,3 @@ $smarty->assign('show',$show);
 
 $smarty->assign('mid', 'stats.tpl');
 $smarty->display("tiki.tpl");
-?>

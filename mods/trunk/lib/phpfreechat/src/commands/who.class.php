@@ -68,5 +68,3 @@ class pfcCommand_who extends pfcCommand
     return $js;
   }
 }
-
-?>

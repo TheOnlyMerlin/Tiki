@@ -15,7 +15,8 @@
  *
  * @see GenericBox::reflow_anchors
  */
-class Anchor {
+class Anchor
+{
   /**
    * @var string Symbolic name of the location
    * @access public
@@ -55,5 +56,3 @@ class Anchor {
     $this->y    = $y;
   }
 }
-
-?>

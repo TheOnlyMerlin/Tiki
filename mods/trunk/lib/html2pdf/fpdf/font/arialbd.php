@@ -21,4 +21,3 @@ $enc='cp1252';
 $diff='';
 $file='arialbd.z';
 $originalsize=352224;
-?>

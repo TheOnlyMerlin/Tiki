@@ -2,7 +2,8 @@
 
 define('HTTP_OK',200);
 
-class FetcherUrl {
+class FetcherUrl
+{
   var $protocol;
   var $host;
   var $port;
@@ -272,4 +273,3 @@ class FetcherUrl {
       return false;
     };
   }}
-?>

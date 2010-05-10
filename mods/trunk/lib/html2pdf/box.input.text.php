@@ -3,7 +3,8 @@
 
 /// define('SIZE_SPACE_KOEFF',1.65); (defined in tag.input.inc.php)
 
-class TextInputBox extends InlineControlBox {
+class TextInputBox extends InlineControlBox
+{
   /**
    * @var String contains the default value of this text field
    * @access private
@@ -75,4 +76,3 @@ class TextInputBox extends InlineControlBox {
     return $status;
   }
 }
-?>

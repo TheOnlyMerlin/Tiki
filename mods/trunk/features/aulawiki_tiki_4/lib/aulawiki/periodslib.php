@@ -13,7 +13,8 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-class PeriodsLib extends TikiLib {
+class PeriodsLib extends TikiLib
+{
 	function PeriodsLib($db) {
 		$this->TikiLib($db);
 	}
@@ -66,4 +67,3 @@ class PeriodsLib extends TikiLib {
 	}
 
 }
-?>

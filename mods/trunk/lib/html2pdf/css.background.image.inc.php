@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/css.background.image.inc.php,v 1.1 2008-01-15 09:20:30 mose Exp $
 
-class CSSBackgroundImage extends CSSSubProperty {
+class CSSBackgroundImage extends CSSSubProperty
+{
   function default_value() { 
     return new BackgroundImage(null); 
   }
@@ -19,5 +20,3 @@ class CSSBackgroundImage extends CSSSubProperty {
     return new BackgroundImage(null);
   }
 }
-
-?>

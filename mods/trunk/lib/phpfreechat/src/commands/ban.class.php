@@ -69,5 +69,3 @@ class pfcCommand_ban extends pfcCommand
     $ct->setChanMeta($recipient, 'banlist_nickid', serialize($banlist));
   }
 }
-
-?>

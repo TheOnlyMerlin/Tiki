@@ -99,7 +99,8 @@ require_once 'PHPUnit/TestDecorator.php';
  * @link       http://pear.php.net/package/PHPUnit
  * @since      Class available since Release 1.0.0
  */
-class PHPUnit_RepeatedTest extends PHPUnit_TestDecorator {
+class PHPUnit_RepeatedTest extends PHPUnit_TestDecorator
+{
     /**
      * @var    integer
      * @access private
@@ -151,4 +152,3 @@ class PHPUnit_RepeatedTest extends PHPUnit_TestDecorator {
  * c-hanging-comment-ender-p: nil
  * End:
  */
-?>

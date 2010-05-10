@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/box.inline.php,v 1.1 2008-01-15 09:20:26 mose Exp $
 
-class LineBox {
+class LineBox
+{
   var $top;
   var $right;
   var $bottom;
@@ -69,7 +70,8 @@ class LineBox {
   }
 }
 
-class InlineBox extends GenericInlineBox {
+class InlineBox extends GenericInlineBox
+{
   function &create(&$root) {
     // Create contents of this inline box
     if ($root->node_type() == XML_TEXT_NODE) {
@@ -475,4 +477,3 @@ class InlineBox extends GenericInlineBox {
     $psdata->write("add-child\n");    
   }
 }
-?>

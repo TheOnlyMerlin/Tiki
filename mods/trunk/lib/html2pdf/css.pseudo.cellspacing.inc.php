@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/css.pseudo.cellspacing.inc.php,v 1.1 2008-01-15 09:20:38 mose Exp $
 
-class CSSCellSpacing extends CSSProperty {
+class CSSCellSpacing extends CSSProperty
+{
   function CSSCellSpacing() { $this->CSSProperty(false, false); }
 
   // this pseudo value should be inherited only by the table cells/rows; nested tables 
@@ -30,5 +31,3 @@ class CSSCellSpacing extends CSSProperty {
 }
 
 register_css_property('-cellspacing', new CSSCellSpacing);
-
-?>

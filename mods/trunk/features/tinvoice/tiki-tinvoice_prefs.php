@@ -20,7 +20,8 @@ if ($tiki_p_tinvoice != 'y') {
 	$smarty->display("error.tpl");
 	die;
 }
-class tiki_invoice_prefs {
+class tiki_invoice_prefs
+{
     var $tinvoicelib;
 
     /*public*/ function tiki_invoice_prefs() {
@@ -109,6 +110,3 @@ class tiki_invoice_prefs {
 }
 
 new tiki_invoice_prefs();
-
-
-?>

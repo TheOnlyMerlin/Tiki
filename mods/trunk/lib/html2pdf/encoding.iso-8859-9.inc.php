@@ -259,4 +259,3 @@ $g_iso_8859_9 = array(
 "\xFE" => code_to_utf8(0x015F),	//	LATIN SMALL LETTER S WITH CEDILLA
 "\xFF" => code_to_utf8(0x00FF)	//	LATIN SMALL LETTER Y WITH DIAERESIS
                       );
-?>

@@ -91,5 +91,3 @@ if ($page_ref_id) {
     } else {
       header ("location: tiki-index.php?page=$page");
     }
-    
-?>

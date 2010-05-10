@@ -784,4 +784,3 @@ $g_unicode_glyphs = array(
                           code_to_utf8(0xF8FD) => "bracerightmid", 
                           code_to_utf8(0xF8FE) => "bracerightbt"
                           );
-?>

@@ -1,6 +1,7 @@
 <?php
 
-class CSSZIndex extends CSSProperty {
+class CSSZIndex extends CSSProperty
+{
   function CSSZIndex() { $this->CSSProperty(false, false); }
 
   function default_value() { return 0; }
@@ -13,5 +14,3 @@ class CSSZIndex extends CSSProperty {
 }
 
 register_css_property('z-index', new CSSZIndex);
-
-?>

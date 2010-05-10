@@ -49,5 +49,3 @@ if ($_REQUEST["bankId"]) {
 // Display the template
 $smarty->assign('mid', 'tiki-tinvoice_bank_edit.tpl');
 $smarty->display("tiki.tpl");
-
-?>

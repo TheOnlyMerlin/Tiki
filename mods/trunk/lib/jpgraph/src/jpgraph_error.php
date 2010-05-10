@@ -14,7 +14,8 @@
 // Description: Error plot with min/max value for
 // each datapoint
 //===================================================
-class ErrorPlot extends Plot {
+class ErrorPlot extends Plot
+{
     private $errwidth=2;
 //---------------
 // CONSTRUCTOR
@@ -83,7 +84,8 @@ class ErrorPlot extends Plot {
 // THIS IS A DEPRECATED PLOT TYPE JUST KEPT FOR
 // BACKWARD COMPATIBILITY
 //===================================================
-class ErrorLinePlot extends ErrorPlot {
+class ErrorLinePlot extends ErrorPlot
+{
     public $line=null;
 //---------------
 // CONSTRUCTOR
@@ -116,7 +118,8 @@ class ErrorLinePlot extends ErrorPlot {
 // CLASS LineErrorPlot
 // Description: Combine a line and error plot
 //===================================================
-class LineErrorPlot extends ErrorPlot {
+class LineErrorPlot extends ErrorPlot
+{
     public $line=null;
 //---------------
 // CONSTRUCTOR
@@ -150,7 +153,3 @@ class LineErrorPlot extends ErrorPlot {
 	$this->line->Stroke($img,$xscale,$yscale);
     }
 } // Class
-
-
-/* EOF */
-?>

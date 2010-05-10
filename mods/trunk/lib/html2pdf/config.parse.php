@@ -159,4 +159,3 @@ function parse_config_file($filename) {
     };
   } while ($child = $child->next_sibling());
 }
-?>

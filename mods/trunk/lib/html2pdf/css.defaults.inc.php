@@ -254,5 +254,3 @@ $g_css_defaults_obj = new CSSObject;
 foreach ($g_css_defaults as $rule) {
   $g_css_defaults_obj->add_rule($rule);
 }
-
-?>

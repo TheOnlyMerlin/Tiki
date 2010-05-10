@@ -19,5 +19,3 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 $smarty->assign('key', isset($module_params["key"]) ? $module_params["key"] : '');
 $smarty->assign('map', isset($module_params["map"]) ? $module_params["map"] : '');
- 
-?>

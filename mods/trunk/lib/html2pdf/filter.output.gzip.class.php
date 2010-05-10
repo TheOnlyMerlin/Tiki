@@ -1,6 +1,7 @@
 <?php
 
-class OutputFilterGZip extends OutputFilter {
+class OutputFilterGZip extends OutputFilter
+{
   function content_type() {
     return null;
     //    return ContentType::gz();
@@ -17,4 +18,3 @@ class OutputFilterGZip extends OutputFilter {
     return $output_file;
   }
 }
-?>

@@ -5,5 +5,3 @@ $params["serverid"]           = md5(__FILE__); // calculate a unique id for this
 $params["title"]              = "A chat with one script for client and on script for server";
 $params["nick"]               = "guest";
 $params["server_script_path"] = dirname(__FILE__)."/demo3_server.php";
-
-?>

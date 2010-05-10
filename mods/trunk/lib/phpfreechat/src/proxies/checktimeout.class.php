@@ -75,5 +75,3 @@ class pfcProxyCommand_checktimeout extends pfcProxyCommand
     return $this->next->run($xml_reponse, $p);
   }
 }
-
-?>

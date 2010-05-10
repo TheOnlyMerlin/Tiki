@@ -1,5 +1,6 @@
 <?php
-class FlowViewport {
+class FlowViewport
+{
   var $left;
   var $top;
   var $width;
@@ -25,4 +26,3 @@ class FlowViewport {
   function get_height() { return $this->height; }
   function get_width() { return $this->width; }
 }
-?>

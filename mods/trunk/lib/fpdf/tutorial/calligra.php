@@ -21,4 +21,3 @@ $enc='cp1252';
 $diff='';
 $file='calligra.z';
 $originalsize=40120;
-?>

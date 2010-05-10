@@ -139,7 +139,8 @@ if (!function_exists('array_fill')) {
 // CLASS GanttActivityInfo
 // Description: 
 //===================================================
-class GanttActivityInfo {
+class GanttActivityInfo
+{
     public $iShow=true;
     public $iLeftColMargin=4,$iRightColMargin=1,$iTopColMargin=1,$iBottomColMargin=3;
     public $vgrid = null;
@@ -328,7 +329,8 @@ class GanttActivityInfo {
 // CLASS GanttGraph
 // Description: Main class to handle gantt graphs
 //===================================================
-class GanttGraph extends Graph {
+class GanttGraph extends Graph
+{
     public $scale;		// Public accessible
     public $hgrid=null;
     private $iObj=array();				// Gantt objects
@@ -1123,7 +1125,8 @@ DEFINE('GICON_FOLDEROPEN',10);
 DEFINE('GICON_FOLDER',11);
 DEFINE('GICON_TEXTIMPORTANT',12);
 
-class PredefIcons {
+class PredefIcons
+{
     private $iBuiltinIcon = null, $iLen = -1 ;
 
     function GetLen() {
@@ -1428,7 +1431,8 @@ $_gPredefIcons = new PredefIcons();
 // CLASS IconImage
 // Description: Holds properties for an icon image 
 //===================================================
-class IconImage {
+class IconImage
+{
     private $iGDImage=null;
     private $iWidth,$iHeight;
     private $ixalign='left',$iyalign='center';
@@ -1495,7 +1499,8 @@ class IconImage {
 // CLASS TextProperty
 // Description: Holds properties for a text
 //===================================================
-class TextProperty {
+class TextProperty
+{
     public $iShow=true;
     public $csimtarget='',$csimalt='';
     private $iFFamily=FF_FONT1,$iFStyle=FS_NORMAL,$iFSize=10;
@@ -1724,7 +1729,8 @@ class TextProperty {
 // Description: Data encapsulating class to hold property 
 // for each type of the scale headers
 //===================================================
-class HeaderProperty {
+class HeaderProperty
+{
     public $grid;
     public $iShowLabels=true,$iShowGrid=true;
     public $iTitleVertMargin=3,$iFFamily=FF_FONT0,$iFStyle=FS_NORMAL,$iFSize=8;
@@ -1829,7 +1835,8 @@ class HeaderProperty {
 // converting dates to position in the chart as well as stroking the
 // date headers (days, week, etc).
 //===================================================
-class GanttScale {
+class GanttScale
+{
     public $minute,$hour,$day,$week,$month,$year;
     public $divider,$dividerh,$tableTitle;
     public $iStartDate=-1,$iEndDate=-1;
@@ -2904,7 +2911,8 @@ class GanttScale {
 // CLASS GanttConstraint
 // Just a structure to store all the values for a constraint
 //===================================================
-class GanttConstraint {
+class GanttConstraint
+{
     public $iConstrainRow;
     public $iConstrainType;
     public $iConstrainColor;
@@ -2927,7 +2935,8 @@ class GanttConstraint {
 // CLASS GanttPlotObject
 // The common signature for a Gantt object
 //===================================================
-class GanttPlotObject {
+class GanttPlotObject
+{
     public $title,$caption;
     public $csimarea='',$csimtarget='',$csimalt='';
     public $constraints = array();    
@@ -3022,7 +3031,8 @@ class GanttPlotObject {
 // Holds parameters for the progress indicator 
 // displyed within a bar
 //===================================================
-class Progress {
+class Progress
+{
     public $iProgress=-1;
     public $iPattern=GANTT_SOLID;
     public $iColor="black", $iFillColor='black';
@@ -3057,7 +3067,8 @@ DEFINE('GANTT_HGRID2',1);
 // CLASS HorizontalGridLine
 // Responsible for drawinf horizontal gridlines and filled alternatibg rows
 //===================================================
-class HorizontalGridLine {
+class HorizontalGridLine
+{
     private $iGraph=NULL;
     private $iRowColor1 = '', $iRowColor2 = '';
     private $iShow=false;
@@ -3136,7 +3147,8 @@ class HorizontalGridLine {
 // CLASS GanttBar
 // Responsible for formatting individual gantt bars
 //===================================================
-class GanttBar extends GanttPlotObject {
+class GanttBar extends GanttPlotObject
+{
     public $progress;
     public $leftMark,$rightMark;
     private $iEnd;
@@ -3367,7 +3379,8 @@ class GanttBar extends GanttPlotObject {
 // CLASS MileStone
 // Responsible for formatting individual milestones
 //===================================================
-class MileStone extends GanttPlotObject {
+class MileStone extends GanttPlotObject
+{
     public $mark;
 	
 //---------------
@@ -3453,7 +3466,8 @@ class MileStone extends GanttPlotObject {
 // Responsible for formatting individual milestones
 //===================================================
 
-class TextPropertyBelow extends TextProperty {
+class TextPropertyBelow extends TextProperty
+{
     function TextPropertyBelow($aTxt='') {
 	parent::TextProperty($aTxt);
     }
@@ -3465,7 +3479,8 @@ class TextPropertyBelow extends TextProperty {
     }
 }
 
-class GanttVLine extends GanttPlotObject {
+class GanttVLine extends GanttPlotObject
+{
 
     private $iLine,$title_margin=3, $iDayOffset=1;
 	
@@ -3515,7 +3530,8 @@ class GanttVLine extends GanttPlotObject {
 // CLASS LinkArrow
 // Handles the drawing of a an arrow 
 //===================================================
-class LinkArrow {
+class LinkArrow
+{
     private $ix,$iy;
     private $isizespec = array(
 	array(2,3),array(3,5),array(3,8),array(6,15),array(8,22));
@@ -3587,7 +3603,8 @@ class LinkArrow {
 // Handles the drawing of a link line between 2 points
 //===================================================
 
-class GanttLink {
+class GanttLink
+{
     private $ix1,$ix2,$iy1,$iy2;
     private $iPathType=2,$iPathExtend=15;
     private $iColor='black',$iWeight=1;
@@ -3768,6 +3785,3 @@ class GanttLink {
 	$arrow->Stroke($aImg);
     }
 }
-
-// <EOF>
-?>

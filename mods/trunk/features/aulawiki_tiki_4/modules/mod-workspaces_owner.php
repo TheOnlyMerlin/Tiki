@@ -45,4 +45,3 @@ if (!isset ($workspace)) {
 	$smarty->assign('showName', isset ($module_params["showName"]) ? $module_params["showName"] : 'y');
 	$smarty->assign('showWorkspaces', isset ($module_params["showWorkspaces"]) ? $module_params["showWorkspaces"] : 'y');
 }
-?>

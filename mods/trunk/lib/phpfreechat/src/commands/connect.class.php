@@ -134,5 +134,3 @@ class pfcCommand_connect extends pfcCommand
   }
   
 }
-
-?>

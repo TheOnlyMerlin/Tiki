@@ -35,4 +35,3 @@ function do_image_open_wrapped($filename) {
   };
   return null;
 };
-?>

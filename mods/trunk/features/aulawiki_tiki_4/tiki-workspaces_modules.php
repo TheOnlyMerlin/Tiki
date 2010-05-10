@@ -223,4 +223,3 @@ $smarty->assign('title', $workspace["name"]." : ".$zonename);
 $module_isflippable = array('flip' => 'y');
 $smarty->assign('module_nodecorations', $module_nodecorations);
 $smarty->assign('module_isflippable', $module_isflippable);*/
-?>

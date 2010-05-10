@@ -36,5 +36,3 @@ $smarty->assign('msg',$cclib->msg);
 
 $smarty->assign('mid', 'cc/admin.tpl');
 $smarty->display('tiki.tpl');
-
-?>

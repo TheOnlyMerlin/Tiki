@@ -259,4 +259,3 @@ $g_iso_8859_4 = array(
 "\xFE" => code_to_utf8(0x016B),	//	LATIN SMALL LETTER U WITH MACRON
 "\xFF" => code_to_utf8(0x02D9)	//	DOT ABOVE
                       );
-?>

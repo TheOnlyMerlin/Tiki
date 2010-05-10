@@ -21,4 +21,3 @@ $enc='cp1252';
 $diff='';
 $file='courbi.z';
 $originalsize=236148;
-?>

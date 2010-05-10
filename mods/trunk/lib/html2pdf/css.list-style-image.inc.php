@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/css.list-style-image.inc.php,v 1.1 2008-01-15 09:20:35 mose Exp $
 
-class CSSListStyleImage extends CSSSubProperty {
+class CSSListStyleImage extends CSSSubProperty
+{
   // CSS 2.1: default value for list-style-image is none
   function default_value() { return null; }
 
@@ -23,5 +24,3 @@ class CSSListStyleImage extends CSSSubProperty {
     return null;
   }
 }
-
-?>

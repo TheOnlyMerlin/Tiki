@@ -12,7 +12,8 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-class WorkspaceRolesLib extends TikiLib {
+class WorkspaceRolesLib extends TikiLib
+{
 	function WorkspaceRolesLib($db) {
 		parent::__construct($db);
 //		$this->TikiLib($db);
@@ -98,4 +99,3 @@ class WorkspaceRolesLib extends TikiLib {
 	}
 
 }
-?>

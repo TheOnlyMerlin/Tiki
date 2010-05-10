@@ -50,5 +50,3 @@ class pfcJSON
       return json_decode($v);
   }
 }
-
-?>

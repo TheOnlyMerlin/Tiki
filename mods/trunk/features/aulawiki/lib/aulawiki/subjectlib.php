@@ -6,7 +6,8 @@
 * @copyright (C) 2006 Javier Reyes Gomez (eScire.com)
 * @license http://www.gnu.org/copyleft/lgpl.html GNU/LGPL
 */
-class SubjectLib extends TikiDB {
+class SubjectLib extends TikiDB
+{
 	var $db; // The PEAR db object used to access the database
 	function SubjectLib($db) {
 		if (!$db) {
@@ -86,4 +87,3 @@ class SubjectLib extends TikiDB {
 	}
 
 }
-?>

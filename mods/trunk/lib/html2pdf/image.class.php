@@ -13,7 +13,8 @@
 //
 $g_image_cache = array();
 
-class Image {
+class Image
+{
   // Static funcion; checks if given URL is already cached and either returns 
   // cached object or downloads the requested image
   //
@@ -103,4 +104,3 @@ class Image {
     $g_image_cache = array();
   }
 }
-?>

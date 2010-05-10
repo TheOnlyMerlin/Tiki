@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/css.color.inc.php,v 1.1 2008-01-15 09:20:33 mose Exp $
 
-class CSSColor extends CSSProperty {
+class CSSColor extends CSSProperty
+{
   function CSSColor() { $this->CSSProperty(true, true); }
 
   function default_value() { return new Color(array(0,0,0),false); }
@@ -22,5 +23,3 @@ class CSSColor extends CSSProperty {
 }
 
 register_css_property('color', new CSSColor);
-
-?>

@@ -94,4 +94,3 @@ class pfcCommand_invite extends pfcCommand
     $cmd->run($xml_reponse, $cmdp);    
   }
 }
-?>

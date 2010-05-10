@@ -5,7 +5,8 @@ define('FLOAT_NONE',0);
 define('FLOAT_LEFT',1);
 define('FLOAT_RIGHT',2);
 
-class CSSFloat extends CSSProperty {
+class CSSFloat extends CSSProperty
+{
   function CSSFloat() { $this->CSSProperty(false, false); }
 
   function default_value() { return FLOAT_NONE; }
@@ -28,5 +29,3 @@ class CSSFloat extends CSSProperty {
 }
 
 register_css_property('float', new CSSFloat);
-
-?>

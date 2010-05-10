@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/box.table.cell.php,v 1.1 2008-01-15 09:20:27 mose Exp $
 
-class TableCellBox extends GenericContainerBox {
+class TableCellBox extends GenericContainerBox
+{
   var $colspan;
   var $rowspan;
   var $column;
@@ -157,7 +158,8 @@ class TableCellBox extends GenericContainerBox {
   }
 }
 
-class FakeTableCellBox extends TableCellBox {
+class FakeTableCellBox extends TableCellBox
+{
   var $colspan;
   var $rowspan;
 
@@ -183,5 +185,3 @@ class FakeTableCellBox extends TableCellBox {
     $psdata->write("add-child\n");
   }
 }
-
-?>

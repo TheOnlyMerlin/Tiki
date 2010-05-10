@@ -1,6 +1,7 @@
 <?php
 
-class LayerLib extends TikiLib {
+class LayerLib extends TikiLib
+{
 
 	function LayerLib($db,$db2) {
 		$this->TikiLib($db);
@@ -551,4 +552,3 @@ global $dbTiki2;
 
 global $layerlib;
 $layerlib = new LayerLib($dbTiki,$dbTiki2);
-?>

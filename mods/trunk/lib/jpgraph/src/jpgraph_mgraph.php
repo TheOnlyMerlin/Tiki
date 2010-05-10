@@ -13,7 +13,8 @@
 // CLASS MGraph
 // Description: Create a container image that can hold several graph 
 //=============================================================================
-class MGraph {
+class MGraph
+{
 
     protected $img=NULL;
     protected $iCnt=0,$iGraphs = array(); // image_handle, x, y, fx, fy, sizex, sizey
@@ -383,5 +384,3 @@ HTTP headers have already been sent.</font></td></tr><tr><td><b>Explanation:</b>
 	}
     }
 }
-
-?>

@@ -11,7 +11,8 @@ define('BS_DASHED', 6);
 define('BS_DOTTED', 7);
 define('BS_DOUBLE', 8);
 
-class EdgePDF {
+class EdgePDF
+{
   var $_width;
   var $color;
   var $style;
@@ -202,7 +203,8 @@ class EdgePDF {
   }
 }
 
-class BorderPDF {
+class BorderPDF
+{
   function BorderPDF($border) {
     $this->left   = new EdgePDF($border['left']);
     $this->right  = new EdgePDF($border['right']);
@@ -549,5 +551,3 @@ function css_border_width($value, $root) {
 }
 
 $g_border           = array(default_border());
-
-?>

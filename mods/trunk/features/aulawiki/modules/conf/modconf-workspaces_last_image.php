@@ -35,5 +35,3 @@ function module_workspaces_last_image_params() {
 	$param["offset"]["hide"]="y";
 	return $param;
 }
-
-?>

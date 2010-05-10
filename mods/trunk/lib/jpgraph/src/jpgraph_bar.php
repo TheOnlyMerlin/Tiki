@@ -27,7 +27,8 @@ DEFINE('PATTERN_STRIPE2',10);
 // CLASS BarPlot
 // Description: Main code to produce a bar plot 
 //===================================================
-class BarPlot extends Plot {
+class BarPlot extends Plot
+{
     public $fill=false,$fill_color="lightblue"; // Default is to fill with light blue
     public $iPattern=-1,$iPatternDensity=80,$iPatternColor='black';
     public $valuepos='top';
@@ -527,7 +528,8 @@ class BarPlot extends Plot {
 // CLASS GroupBarPlot
 // Description: Produce grouped bar plots
 //===================================================
-class GroupBarPlot extends BarPlot {
+class GroupBarPlot extends BarPlot
+{
     private $plots, $nbrplots=0;
 //---------------
 // CONSTRUCTOR
@@ -617,7 +619,8 @@ class GroupBarPlot extends BarPlot {
 // CLASS AccBarPlot
 // Description: Produce accumulated bar plots
 //===================================================
-class AccBarPlot extends BarPlot {
+class AccBarPlot extends BarPlot
+{
     private $plots=null,$nbrplots=0;
 //---------------
 // CONSTRUCTOR
@@ -957,6 +960,3 @@ class AccBarPlot extends BarPlot {
 	return true;
     }
 } // Class
-
-/* EOF */
-?>

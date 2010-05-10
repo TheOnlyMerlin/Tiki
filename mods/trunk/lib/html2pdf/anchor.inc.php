@@ -1,6 +1,7 @@
 <?php
 
-class Anchor {
+class Anchor
+{
   var $name;
   var $page;
   var $x;
@@ -13,5 +14,3 @@ class Anchor {
     $this->y    = $y;
   }
 }
-
-?>

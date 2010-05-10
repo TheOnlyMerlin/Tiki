@@ -5,7 +5,8 @@ define('FASTPS_STATUS_DOCUMENT_INITIALIZED',0);
 define('FASTPS_STATUS_OUTPUT_STARTED',1);
 define('FASTPS_STATUS_OUTPUT_TERMINATED',2);
 
-class OutputDriverFastPS extends OutputDriverGenericPS {
+class OutputDriverFastPS extends OutputDriverGenericPS
+{
   var $found_fonts;
   var $used_encodings;
   var $font_factory;
@@ -390,4 +391,3 @@ class OutputDriverFastPS extends OutputDriverGenericPS {
     fwrite($this->data, $footer);
   }
 }
-?>

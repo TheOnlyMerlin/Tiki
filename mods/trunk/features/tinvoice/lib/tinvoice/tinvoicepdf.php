@@ -8,7 +8,8 @@ $GFONT="FreeSans";
 //$GFONT="Times";
 //$GFONT="Helvetica";
 
-class Tinvoicepdf {
+class Tinvoicepdf
+{
     /*private*/ var $invoice;
     
     /*public*/ function Tinvoicepdf($invoice) {
@@ -295,6 +296,3 @@ class Tinvoicepdf {
     }
 
 }
-
-
-?>

@@ -6,7 +6,8 @@ define('CLEAR_LEFT',1);
 define('CLEAR_RIGHT',2);
 define('CLEAR_BOTH',3);
 
-class CSSClear extends CSSProperty {
+class CSSClear extends CSSProperty
+{
   function CSSClear() { $this->CSSProperty(false, false); }
 
   function default_value() { return CLEAR_NONE; }
@@ -27,5 +28,3 @@ class CSSClear extends CSSProperty {
 }
 
 register_css_property('clear', new CSSClear);
-
-?>

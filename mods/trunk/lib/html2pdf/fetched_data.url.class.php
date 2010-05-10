@@ -1,5 +1,6 @@
 <?php
-class FetchedDataURL extends FetchedDataHTML {
+class FetchedDataURL extends FetchedDataHTML
+{
   var $content;
   var $headers;
   var $url;
@@ -44,4 +45,3 @@ class FetchedDataURL extends FetchedDataHTML {
     $this->content = $data;
   }
 }
-?>

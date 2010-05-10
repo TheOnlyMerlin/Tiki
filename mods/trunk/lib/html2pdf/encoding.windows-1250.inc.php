@@ -259,4 +259,3 @@ $g_windows_1250 = array(
                         "\xFE" => code_to_utf8(0x0163), // LATIN SMALL LETTER T WITH CEDILLA
                         "\xFF" => code_to_utf8(0x02D9) // DOT ABOVE
                         );
-                        ?>

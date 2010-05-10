@@ -11,7 +11,8 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-class AssignmentsLib extends TikiLib {
+class AssignmentsLib extends TikiLib
+{
 	function AssignmentsLib($db) {
 		$this->TikiLib($db);
 	}
@@ -166,4 +167,3 @@ class AssignmentsLib extends TikiLib {
 	}
 
 }
-?>

@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/css.text-decoration.inc.php,v 1.1 2008-01-15 09:20:39 mose Exp $
 
-class CSSTextDecoration extends CSSProperty {
+class CSSTextDecoration extends CSSProperty
+{
   function CSSTextDecoration() { $this->CSSProperty(false, true); }
 
   // Inherit text-decoration from inline element (so that <a><i>TEXT</i></a> constructs have TEXT underlined)
@@ -33,5 +34,3 @@ class CSSTextDecoration extends CSSProperty {
 }
 
 register_css_property("text-decoration", new CSSTextDecoration);
-
-?>

@@ -50,5 +50,3 @@ function wikiplugin_flowplayer($data, $params) {
 
 	return $flowplayer;
 }
-
-?>

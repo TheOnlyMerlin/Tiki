@@ -71,5 +71,3 @@ function tail_read($file, $lines) {
 		return $back;
 	}
 }
-
-?>

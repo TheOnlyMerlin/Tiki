@@ -290,5 +290,3 @@ class PipelineFactory {
     return $pipeline;
   }
 }
-
-?>

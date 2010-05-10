@@ -277,6 +277,3 @@ function getCmd ($pre, $cmd, $post) {
   }
   error ($cmd, 'command not found', '');
 }
-
-
-?>

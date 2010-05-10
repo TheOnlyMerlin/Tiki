@@ -315,5 +315,3 @@ class pfcContainer_Mysql extends pfcContainerInterface
   }
   
 }
-
-?>

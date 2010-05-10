@@ -31,5 +31,3 @@ class pfcCommand_deop extends pfcCommand
     $this->forceWhoisReload($nicktodeopid);
   }
 }
-
-?>

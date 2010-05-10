@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/box.radiobutton.php,v 1.1 2008-01-15 09:20:27 mose Exp $
 
-class RadioBox extends GenericBox {
+class RadioBox extends GenericBox
+{
   var $checked;
 
   /**
@@ -94,4 +95,3 @@ class RadioBox extends GenericBox {
     return true;
   }
 }
-?>

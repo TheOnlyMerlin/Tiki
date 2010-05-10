@@ -36,8 +36,9 @@ function ImprovedTable($header,$data)
 	//Column widths
 	$w=array(40,35,40,45);
 	//Header
-	for($i=0;$i<count($header);$i++)
+	for($i=0, $tmp_count = count($header); $i < $tmp_count; $i++) {
 		$this->Cell($w[$i],7,$header[$i],1,0,'C');
+	}
 	$this->Ln();
 	//Data
 	foreach($data as $row)
@@ -63,8 +64,9 @@ function FancyTable($header,$data)
 	$this->SetFont('','B');
 	//Header
 	$w=array(40,35,40,45);
-	for($i=0;$i<count($header);$i++)
+	for($i=0, $tmp_count = count($header); $i < $tmp_count; $i++) {
 		$this->Cell($w[$i],7,$header[$i],1,0,'C',1);
+	}
 	$this->Ln();
 	//Color and font restoration
 	$this->SetFillColor(224,235,255);
@@ -98,4 +100,3 @@ $pdf->ImprovedTable($header,$data);
 $pdf->AddPage();
 $pdf->FancyTable($header,$data);
 $pdf->Output();
-?>

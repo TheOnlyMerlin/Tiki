@@ -1,5 +1,6 @@
 <?php
-class PreTreeFilterHeaderFooter extends PreTreeFilter {
+class PreTreeFilterHeaderFooter extends PreTreeFilter
+{
   var $header_html;
   var $footer_html;
   var $watermark_html;
@@ -13,4 +14,3 @@ class PreTreeFilterHeaderFooter extends PreTreeFilter {
   function process(&$tree) {
   }
 }
-?>

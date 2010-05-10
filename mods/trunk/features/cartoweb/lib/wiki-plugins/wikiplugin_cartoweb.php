@@ -57,5 +57,3 @@ function wikiplugin_cartoweb($data, $params) {
 	}
 	return $map;
 }
-
-?>

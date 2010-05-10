@@ -33,7 +33,8 @@ DEFINE('POLAR_180',2);
 //--------------------------------------------------------------------------
 // class PolarPlot
 //--------------------------------------------------------------------------
-class PolarPlot {
+class PolarPlot
+{
     public $line_style='solid',$mark;
     public $legendcsimtarget='';
     public $legendcsimalt='';
@@ -149,7 +150,8 @@ class PolarPlot {
 //--------------------------------------------------------------------------
 // class PolarAxis
 //--------------------------------------------------------------------------
-class PolarAxis extends Axis {
+class PolarAxis extends Axis
+{
     private $angle_step=15,$angle_color='lightgray',$angle_label_color='black';
     private $angle_fontfam=FF_FONT1,$angle_fontstyle=FS_NORMAL,$angle_fontsize=10;
     private $angle_fontcolor = 'navy';
@@ -573,7 +575,8 @@ class PolarAxis extends Axis {
     }
 }
 
-class PolarScale extends LinearScale {
+class PolarScale extends LinearScale
+{
     private $graph;
 
     function PolarScale($aMax=0,$graph) {
@@ -606,7 +609,8 @@ class PolarScale extends LinearScale {
     }
 }
 
-class PolarLogScale extends LogScale {
+class PolarLogScale extends LogScale
+{
     private $graph;
     function PolarLogScale($aMax=1,$graph) {
 	parent::LogScale(0,$aMax,'x');
@@ -638,7 +642,8 @@ class PolarLogScale extends LogScale {
     }
 }
 
-class PolarGraph extends Graph {
+class PolarGraph extends Graph
+{
     public $scale;
     public $axis;
     public $iType=POLAR_360;
@@ -840,7 +845,3 @@ class PolarGraph extends Graph {
 	}
     }
 }
-
-
-
-?>

@@ -1,5 +1,6 @@
 <?php
-class ParserXHTML {
+class ParserXHTML
+{
   function &process($html) {
     // Run the XML parser on the XHTML we've prepared
     $dom_tree = TreeBuilder::build($html);
@@ -28,4 +29,3 @@ class ParserXHTML {
     return $box;
   }
 }
-?>

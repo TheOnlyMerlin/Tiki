@@ -26,5 +26,3 @@ function module_workspaces_viewpage_params() {
 	$param["showBar"]["defaultValue"]="y";
 	return $param;
 }
-
-?>

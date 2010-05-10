@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/box.table.section.php,v 1.1 2008-01-15 09:20:28 mose Exp $
 
-class TableSectionBox extends GenericContainerBox {
+class TableSectionBox extends GenericContainerBox
+{
   function &create(&$root) {
     $box =& new TableSectionBox($root);
     return $box;
@@ -42,4 +43,3 @@ class TableSectionBox extends GenericContainerBox {
     };
   }
 }
-?>

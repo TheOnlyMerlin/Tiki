@@ -21,4 +21,3 @@ $enc='cp1252';
 $diff='';
 $file='symbol.z';
 $originalsize=69464;
-?>

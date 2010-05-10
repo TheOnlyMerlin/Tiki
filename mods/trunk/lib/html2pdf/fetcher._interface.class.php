@@ -1,5 +1,6 @@
 <?php
-class Fetcher {
+class Fetcher
+{
   /**
    * Fetches the data identified by $data_id, wraps it into FetchedData object together with 
    * any auxiliary information (like HTTP response headers, number of redirect, fetched file information
@@ -24,4 +25,3 @@ class Fetcher {
     die("Oops. Inoverridden 'error_message' method called in ".get_class($this));
   }
 }
-?>

@@ -395,5 +395,3 @@ function lowercase_closing_tags($html) {
 
   return $result.$html;
 };
-
-?>

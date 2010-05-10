@@ -80,5 +80,3 @@ function scan_styles($root) {
     break;
   };
 };
-
-?>

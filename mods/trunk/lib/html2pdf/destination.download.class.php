@@ -12,4 +12,3 @@ class DestinationDownload extends DestinationHTTP {
                  );
   }
 }
-?>

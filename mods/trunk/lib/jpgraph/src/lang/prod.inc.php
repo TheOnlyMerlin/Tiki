@@ -350,5 +350,3 @@ HTTP headers have already been sent.<br>Caused by output from file <b>%s</b> at 
 27014 => array(DEFAULT_ERROR_MESSAGE.'27014',0),
 27015 => array(DEFAULT_ERROR_MESSAGE.'27015',0),
 );
-
-?>

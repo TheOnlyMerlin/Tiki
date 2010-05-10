@@ -17,7 +17,8 @@
 // graphic which benefits from all the functionality in the
 // graph liek caching for example. 
 //===================================================
-class CanvasGraph extends Graph {
+class CanvasGraph extends Graph
+{
 //---------------
 // CONSTRUCTOR
     function CanvasGraph($aWidth=300,$aHeight=200,$aCachedName="",$timeout=0,$inline=1) {
@@ -90,6 +91,3 @@ class CanvasGraph extends Graph {
 	}
     }
 } // Class
-
-/* EOF */
-?>

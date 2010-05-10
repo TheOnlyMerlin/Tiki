@@ -514,4 +514,3 @@ function is_span(&$box) {
 function is_table_cell(&$box) {
   return is_a($box, "TableCellBox");
 }
-?>

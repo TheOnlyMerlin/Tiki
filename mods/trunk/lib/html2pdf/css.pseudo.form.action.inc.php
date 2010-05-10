@@ -1,6 +1,7 @@
 <?php
 
-class CSSPseudoFormAction extends CSSProperty {
+class CSSPseudoFormAction extends CSSProperty
+{
   function CSSPseudoFormAction() { $this->CSSProperty(true, true); }
 
   function default_value() { return null; }
@@ -11,5 +12,3 @@ class CSSPseudoFormAction extends CSSProperty {
 }
 
 register_css_property('-html2ps-form-action', new CSSPseudoFormAction);
-
-?>

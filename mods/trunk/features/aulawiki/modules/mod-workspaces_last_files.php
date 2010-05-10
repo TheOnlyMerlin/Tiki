@@ -82,4 +82,3 @@ if (!isset ($workspace)) {
 	$smarty->assign('nonums', isset($module_params["nonums"]) ? $module_params["nonums"] : 'n');
 	$smarty->assign_by_ref('fileGals',$fileGals);
 }
-?>

@@ -12,7 +12,8 @@
 //===================================================
 // CLASS StockPlot
 //===================================================
-class StockPlot extends Plot {
+class StockPlot extends Plot
+{
     protected $iTupleSize = 4;
     private $iWidth=9;
     private $iEndLines=1;
@@ -156,7 +157,8 @@ class StockPlot extends Plot {
 //===================================================
 // CLASS BoxPlot
 //===================================================
-class BoxPlot extends StockPlot {
+class BoxPlot extends StockPlot
+{
     private $iPColor='black',$iNColor='white';
     function BoxPlot($datay,$datax=false) {
 	$this->iTupleSize=5;
@@ -178,6 +180,3 @@ class BoxPlot extends StockPlot {
 	$img->Line($xl,$y,$xr,$y);
     }
 }
-
-/* EOF */
-?>

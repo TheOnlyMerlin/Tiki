@@ -101,4 +101,3 @@ if (isset ($structureId) && $structureId != "") {
 } else {
 	$smarty->assign('subtree', null);
 }
-?>

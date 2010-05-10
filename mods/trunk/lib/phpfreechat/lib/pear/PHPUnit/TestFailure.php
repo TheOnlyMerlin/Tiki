@@ -58,7 +58,8 @@
  * @link       http://pear.php.net/package/PHPUnit
  * @since      Class available since Release 1.0.0
  */
-class PHPUnit_TestFailure {
+class PHPUnit_TestFailure
+{
     /**
      * @var    object
      * @access private
@@ -127,4 +128,3 @@ class PHPUnit_TestFailure {
  * c-hanging-comment-ender-p: nil
  * End:
  */
-?>

@@ -252,4 +252,3 @@ $g_iso_8859_3 = array(
                       "\xFE" => code_to_utf8(0x015D),	//	LATIN SMALL LETTER S WITH CIRCUMFLEX
                       "\xFF" => code_to_utf8(0x02D9)	//	DOT ABOVE                      
                       );
-?>

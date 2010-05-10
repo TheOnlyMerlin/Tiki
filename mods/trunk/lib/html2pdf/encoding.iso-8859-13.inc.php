@@ -259,4 +259,3 @@ $g_iso_8859_13 = array(
 "\xFE" => code_to_utf8(0x017E),	//	LATIN SMALL LETTER Z WITH CARON
 "\xFF" => code_to_utf8(0x2019)	//	RIGHT SINGLE QUOTATION MARK
                       );
-?>

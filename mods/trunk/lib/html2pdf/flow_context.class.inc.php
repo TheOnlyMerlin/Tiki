@@ -1,5 +1,6 @@
 <?php
-class FlowContext {
+class FlowContext
+{
   var $absolute_positioned;
   var $fixed_positioned;
 
@@ -349,4 +350,3 @@ function cmp_boxes_by_z_index($a, $b) {
   if ($a->z_index == $b->z_index) return 0;
   return ($a->z_index < $b->z_index) ? -1 : 1;
 }
-?>

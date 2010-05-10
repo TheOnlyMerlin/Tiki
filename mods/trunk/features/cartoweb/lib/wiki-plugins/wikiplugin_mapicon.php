@@ -55,5 +55,3 @@ function wikiplugin_mapicon($data, $params) {
 	}
 	return $map;
 }
-
-?>

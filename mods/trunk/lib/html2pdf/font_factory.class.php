@@ -1,5 +1,6 @@
 <?php
-class FontFactory {
+class FontFactory
+{
   var $fonts;
   var $error_message;
 
@@ -27,5 +28,3 @@ class FontFactory {
     return $this->fonts[$name][$encoding];
   }
 }
-
-?>

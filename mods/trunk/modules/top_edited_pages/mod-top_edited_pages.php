@@ -58,5 +58,3 @@ $smarty->assign('module_rows', $module_rows);
 $smarty->assign('edited_pages', $edited_pages);
 $smarty->assign('url', $_SERVER["REQUEST_URI"]);
 $smarty->assign('nb_mod_top_edited_pages', $nb_mod_top_edited_pages);
-
-?>

@@ -141,7 +141,7 @@ class PHPUnit_GUI_HTML
         $numExecutedTests = 0;
 
         foreach ($suiteResults as $aSuiteResult) {
-            if (sizeof(@$aSuiteResult['counts'])) {
+            if (count(@$aSuiteResult['counts'])) {
                 foreach ($aSuiteResult['counts'] as $key=>$aCount) {
                     if (!isset($final['counts'][$key])) {
                         $final['counts'][$key] = 0;
@@ -249,4 +249,3 @@ class PHPUnit_GUI_HTML
  * c-hanging-comment-ender-p: nil
  * End:
  */
-?>

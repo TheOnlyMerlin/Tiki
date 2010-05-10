@@ -14,7 +14,8 @@ include_once ('lib/mime/mimelib.php');
 include_once ("lib/init/initlib.php");
 include_once ('lib/tikidav/docbooklib.php');
 
-class DocBookLib extends TikiLib {
+class DocBookLib extends TikiLib
+{
 	function DocBookLib($db) {
 		$this->TikiLib($db);
 	}
@@ -705,4 +706,3 @@ class DocBookLib extends TikiLib {
 
 
 }
-?>

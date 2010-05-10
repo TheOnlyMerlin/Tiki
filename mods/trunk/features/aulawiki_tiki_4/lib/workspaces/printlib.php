@@ -12,7 +12,8 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class PrintLib extends TikiLib {
+class PrintLib extends TikiLib
+{
 	function PrintLib($db) {
 		$this->TikiLib($db);
 	}
@@ -115,4 +116,3 @@ function s_toc_structure_tree($structure_id, $level = 0) {
 		return $ret;	
 	}
 }
-?>

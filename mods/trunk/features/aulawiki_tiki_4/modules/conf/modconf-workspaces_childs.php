@@ -17,5 +17,3 @@ function module_workspaces_childs_title() {
 function module_workspaces_childs_params() {
 	return null;
 }
-
-?>

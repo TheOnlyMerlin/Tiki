@@ -138,4 +138,3 @@ $szResult .= "this.imgSrc = '".$szURL."keymap.php?loadImage=true';";
 $szResult .= "this.imgWidth = ".$width.";";
 $szResult .= "this.imgHeight = ".$height.";";
 echo $szResult;
-?>

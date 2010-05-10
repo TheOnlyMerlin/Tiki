@@ -33,5 +33,3 @@ function module_workspaces_last_blog_posts_params() {
 	
 	return $param;
 }
-
-?>

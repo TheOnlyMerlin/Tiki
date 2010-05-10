@@ -1,5 +1,6 @@
 <?php
-class LayoutEnginePS extends LayoutEngine {
+class LayoutEnginePS extends LayoutEngine
+{
   function process(&$box, &$media, &$driver) {
     // Calculate the size of text boxes
     $box->reflow_text($driver);    
@@ -34,4 +35,3 @@ class LayoutEnginePS extends LayoutEngine {
     $box->to_ps($driver);
   }
 };
-?>

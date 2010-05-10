@@ -18,7 +18,8 @@
  *
  * @link http://www.w3.org/TR/html4/interact/forms.html#h-17.4 HTML 4.01 The INPUT element
  */
-class ButtonBox extends InlineControlBox {
+class ButtonBox extends InlineControlBox
+{
   /**
    * @var String URL to post the form to; may be null if this is not a 'submit' button
    * @access private
@@ -152,4 +153,3 @@ class ButtonBox extends InlineControlBox {
     return $status;
   }
 }
-?>

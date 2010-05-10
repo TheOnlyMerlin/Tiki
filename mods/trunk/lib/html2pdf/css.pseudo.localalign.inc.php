@@ -5,7 +5,8 @@ define('LA_LEFT',0);
 define('LA_CENTER',1);
 define('LA_RIGHT',2);
 
-class CSSLocalAlign extends CSSProperty {
+class CSSLocalAlign extends CSSProperty
+{
   function CSSLocalAlign() { $this->CSSProperty(false, false); }
 
   function default_value() { return LA_LEFT; }
@@ -30,5 +31,3 @@ class CSSLocalAlign extends CSSProperty {
 }
 
 register_css_property('-localalign', new CSSLocalAlign);
-
-?>

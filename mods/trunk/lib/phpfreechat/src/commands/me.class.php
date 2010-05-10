@@ -33,5 +33,3 @@ class pfcCommand_me extends pfcCommand
     $ct->write($recipient, "*me*", $this->name, $u->getNickname()." ".$msg);
   }
 }
-
-?>

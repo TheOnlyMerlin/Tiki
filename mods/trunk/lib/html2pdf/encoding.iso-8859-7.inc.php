@@ -256,4 +256,3 @@ $g_iso_8859_7 = array(
 "\xFD" => code_to_utf8(0x03CD),	//	GREEK SMALL LETTER UPSILON WITH TONOS
 "\xFE" => code_to_utf8(0x03CE)	//	GREEK SMALL LETTER OMEGA WITH TONOS
 );
-?>

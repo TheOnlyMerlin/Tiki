@@ -17,5 +17,3 @@ $phpi->addPage('Pre-Install Check',file_get_contents($phpinstaller_path.'/create
 $phpi->addInstallerPages();
 $phpi->addPath($pfcpath);
 $phpi->generate($archivename);
-
-?>

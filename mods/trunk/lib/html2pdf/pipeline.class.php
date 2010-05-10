@@ -1,6 +1,7 @@
 <?php
 
-class Pipeline {
+class Pipeline
+{
   var $fetchers;
   var $data_filters;
   var $error_message;
@@ -137,5 +138,3 @@ class Pipeline {
     return $message;
   }
 }
-
-?>

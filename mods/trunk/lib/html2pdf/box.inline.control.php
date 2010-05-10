@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/box.inline.control.php,v 1.1 2008-01-15 09:20:26 mose Exp $
 
-class InlineControlBox extends InlineBox {
+class InlineControlBox extends InlineBox
+{
   // get_max_width is inherited from GenericContainerBox
   function get_min_width(&$context) { 
     return $this->get_max_width($context);
@@ -52,4 +53,3 @@ class InlineControlBox extends InlineBox {
     $parent->extend_height($this->get_bottom_margin());
   }
 }
-?>

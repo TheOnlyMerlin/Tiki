@@ -86,4 +86,3 @@ function is_workspace_teacher($workspace, $eduuserlib) {
 	}
 	return false;
 }
-?>

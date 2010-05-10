@@ -6,7 +6,8 @@ define('BR_REPEAT_X',1);
 define('BR_REPEAT_Y',2);
 define('BR_NO_REPEAT',3);
 
-class CSSBackgroundRepeat extends CSSSubProperty {
+class CSSBackgroundRepeat extends CSSSubProperty
+{
   function default_value() { return BR_REPEAT; }
 
   function parse($value) {
@@ -40,5 +41,3 @@ class CSSBackgroundRepeat extends CSSSubProperty {
     };
   }
 }
-
-?>

@@ -12,5 +12,3 @@ clearstatcache();
 $time2 = filemtime($filename);
 unlink($filename);
 echo ($time2-$time1 == $timetowait) ? "filemtime test passed successfully\n" : "filemtime test failed\n";
-
-?>

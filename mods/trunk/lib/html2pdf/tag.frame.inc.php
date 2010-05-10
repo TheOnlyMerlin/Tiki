@@ -56,5 +56,3 @@ function guess_lengths($lengths_src, $total) {
 
   return $values;
 }
-
-?>

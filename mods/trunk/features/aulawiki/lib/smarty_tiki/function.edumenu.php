@@ -55,5 +55,3 @@ function smarty_function_edumenu($params, &$smarty)
 /*function compare_menu_options($a, $b) { return strcmp(tra($a['name']), tra($b['name'])); }
 */
 /* vim: set expandtab: */
-
-?>

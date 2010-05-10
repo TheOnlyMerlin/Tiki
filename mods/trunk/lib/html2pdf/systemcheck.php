@@ -26,4 +26,3 @@ function check_requirements() {
   //
   Image::check_cache_dir();
 }
-?>

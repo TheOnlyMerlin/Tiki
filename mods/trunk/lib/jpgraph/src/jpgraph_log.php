@@ -17,7 +17,8 @@ DEFINE('LOGLABELS_MAGNITUDE',1);
 // CLASS LogScale
 // Description: Logarithmic scale between world and screen
 //===================================================
-class LogScale extends LinearScale {
+class LogScale extends LinearScale
+{
 //---------------
 // CONSTRUCTOR
 
@@ -102,7 +103,8 @@ class LogScale extends LinearScale {
 // CLASS LogTicks
 // Description: 
 //===================================================
-class LogTicks extends Ticks{
+class LogTicks extends Ticks
+{
     private $label_logtype=LOGLABELS_MAGNITUDE;
 //---------------
 // CONSTRUCTOR
@@ -262,5 +264,3 @@ class LogTicks extends Ticks{
 	return true;
     }
 } // Class
-/* EOF */
-?>

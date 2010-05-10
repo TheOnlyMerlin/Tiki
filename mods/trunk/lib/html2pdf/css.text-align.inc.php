@@ -6,7 +6,8 @@ define('TA_RIGHT',1);
 define('TA_CENTER',2);
 define('TA_JUSTIFY',3);
 
-class CSSTextAlign extends CSSProperty {
+class CSSTextAlign extends CSSProperty
+{
   function CSSTextAlign() { $this->CSSProperty(true, true); }
   
   function default_value() { return TA_LEFT; }
@@ -64,5 +65,3 @@ class CSSTextAlign extends CSSProperty {
 }
 
 register_css_property('text-align', new CSSTextAlign);
-
-?>

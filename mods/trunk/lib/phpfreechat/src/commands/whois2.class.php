@@ -25,5 +25,3 @@ require_once(dirname(__FILE__)."/whois.class.php");
 class pfcCommand_whois2 extends pfcCommand_whois
 {
 }
-
-?>

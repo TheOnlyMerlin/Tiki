@@ -626,5 +626,3 @@ function attr_start_before(&$root) {
 }
 function attr_start_after_styles(&$root) {}
 function attr_start_after(&$root) {}
-
-?>

@@ -93,7 +93,7 @@
                         </tr>
                     <?php endif ?>
 
-                    <?php if(isset($aResult['results']['failures']) && sizeof($aResult['results']['failures']))
+                    <?php if(isset($aResult['results']['failures']) && count($aResult['results']['failures']))
                         foreach($aResult['results']['failures'] as $aFailure): ?>
                         <tr>
                             <td class="failure"><?php echo $aFailure['testName'] ?></td>
@@ -116,7 +116,7 @@
                         </tr>
                     <?php endforeach ?>
 
-                    <?php if(isset($aResult['results']['errors']) && sizeof($aResult['results']['errors']))
+                    <?php if(isset($aResult['results']['errors']) && count($aResult['results']['errors']))
                         foreach($aResult['results']['errors'] as $aError): ?>
                         <tr>
                             <td class="failure"><?php echo $aError['testName'] ?></td>
@@ -126,7 +126,7 @@
                         </tr>
                     <?php endforeach ?>
 
-                    <?php if(isset($aResult['results']['passed']) && sizeof($aResult['results']['passed']))
+                    <?php if(isset($aResult['results']['passed']) && count($aResult['results']['passed']))
                         foreach($aResult['results']['passed'] as $aPassed): ?>
                         <tr>
                             <td class="success"><?php echo $aPassed['testName'] ?></td>

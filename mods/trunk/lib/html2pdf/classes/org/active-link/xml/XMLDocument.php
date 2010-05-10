@@ -40,7 +40,8 @@ import("org.active-link.xml.Tag");
   *	@see		XML
   */
 
-class XMLDocument extends File {
+class XMLDocument extends File
+{
 
 	// protected variables
 	var $xml;

@@ -1,13 +1,15 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/box.table.php,v 1.1 2008-01-15 09:20:28 mose Exp $
 
-class CellSpan {
+class CellSpan
+{
   var $row;
   var $column;
   var $size;
 }
 
-class TableBox extends GenericContainerBox {
+class TableBox extends GenericContainerBox
+{
   var $cwc;
 
   function &cell($r, $c) {
@@ -1280,4 +1282,3 @@ class TableBox extends GenericContainerBox {
     $psdata->write("add-child\n");
   }
 }
-?>

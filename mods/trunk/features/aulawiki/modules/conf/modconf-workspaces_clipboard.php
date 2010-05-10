@@ -17,5 +17,3 @@ function module_workspaces_clipboard_title() {
 function module_workspaces_clipboard_params() {
 	return null;
 }
-
-?>

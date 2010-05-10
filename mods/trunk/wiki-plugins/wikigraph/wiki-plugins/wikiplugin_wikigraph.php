@@ -95,5 +95,3 @@ $garg = array(
 	$ret .= "<map name='$mapname'>$mapdata</map></div>";
 	return $ret;
 }
-
-?>

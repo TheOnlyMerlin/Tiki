@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/box.table.row.php,v 1.1 2008-01-15 09:20:28 mose Exp $
 
-class TableRowBox extends GenericContainerBox {
+class TableRowBox extends GenericContainerBox
+{
   var $rows;
   var $colspans;
   var $rowspans;
@@ -235,4 +236,3 @@ class TableRowBox extends GenericContainerBox {
 
   // Flow-control
 }
-?>

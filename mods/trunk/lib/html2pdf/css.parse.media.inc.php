@@ -12,5 +12,3 @@ function is_allowed_media($media_list) {
   
   return $allowed_found;
 }
-
-?>

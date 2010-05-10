@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/css.pseudo.cellpadding.inc.php,v 1.1 2008-01-15 09:20:38 mose Exp $
 
-class CSSCellPadding extends CSSProperty {
+class CSSCellPadding extends CSSProperty
+{
   function CSSCellPadding() { $this->CSSProperty(false, false); }
 
   // this pseudo value should be inherited only by the table cells/rows; nested tables 
@@ -30,5 +31,3 @@ class CSSCellPadding extends CSSProperty {
 }
 
 register_css_property('-cellpadding', new CSSCellPadding);
-
-?>

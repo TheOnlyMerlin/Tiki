@@ -7,7 +7,8 @@ define('PA_RIGHT',2);
 
 // This is a pseudo CSS property for 
 
-class CSSPseudoAlign extends CSSProperty {
+class CSSPseudoAlign extends CSSProperty
+{
   function CSSPseudoAlign() { $this->CSSProperty(true, true); }
   function default_value() { return PA_LEFT; }
 
@@ -77,5 +78,3 @@ class CSSPseudoAlign extends CSSProperty {
 }
 
 register_css_property('-align', new CSSPseudoAlign);
-
-?>

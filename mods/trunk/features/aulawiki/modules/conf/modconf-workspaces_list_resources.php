@@ -39,5 +39,3 @@ function module_workspaces_list_resources_params() {
 	$param["showButtons"]["defaultValue"]="n";
 	return $param;
 }
-
-?>

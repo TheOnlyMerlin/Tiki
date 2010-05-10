@@ -87,7 +87,3 @@ $asetup .= "<td class=\"lfmPopup\" style=\"width:25px;\"><a href=\"http://www.la
 
 	return $asetup;
 }
-
-
-
-?>

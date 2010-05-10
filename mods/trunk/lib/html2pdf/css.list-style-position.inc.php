@@ -4,7 +4,8 @@
 define('LSP_OUTSIDE',0);
 define('LSP_INSIDE',1);
 
-class CSSListStylePosition extends CSSSubProperty {
+class CSSListStylePosition extends CSSSubProperty
+{
   // CSS 2.1: default value for list-style-position is 'outside'
   function default_value() { return LSP_OUTSIDE; }
 
@@ -32,5 +33,3 @@ class CSSListStylePosition extends CSSSubProperty {
     return "/outside";
   }
 }
-
-?>

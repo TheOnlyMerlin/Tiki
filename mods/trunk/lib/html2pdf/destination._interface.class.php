@@ -1,5 +1,6 @@
 <?php
-class Destination {
+class Destination
+{
   var $filename;
 
   function Destination($filename) {
@@ -16,4 +17,3 @@ class Destination {
 
   function set_filename($filename) { $this->filename = $filename; }
 }
-?>

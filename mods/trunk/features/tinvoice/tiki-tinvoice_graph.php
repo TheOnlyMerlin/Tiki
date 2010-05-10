@@ -98,4 +98,3 @@ $smarty->assign("xajax_js",$xajax->getJavascript('','lib/ajax/xajax_js/xajax.js'
 // Display the template
 $smarty->assign('mid', 'tiki-tinvoice_graph.tpl');
 $smarty->display("tiki.tpl");
-?>

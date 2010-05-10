@@ -56,4 +56,3 @@ $str = $wikigraphlib->wiki_get_link_structure($_REQUEST['page'], $_REQUEST['leve
 $graph = new Image_GraphViz();
 $wikigraphlib->wiki_page_graph($str, $graph, $garg);
 $graph->image();
-?>

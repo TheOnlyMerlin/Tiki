@@ -223,12 +223,3 @@ if (!$exit_module){
 	$smarty->assign('ownurl', $ownurl);
 	global $short_date_format;
 }
-
-
-
-
-
-
-
-
-?>

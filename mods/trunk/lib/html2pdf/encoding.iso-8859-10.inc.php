@@ -259,4 +259,3 @@ $g_iso_8859_10 = array(
 "\xFE" => code_to_utf8(0x00FE),	//	LATIN SMALL LETTER THORN (Icelandic)
 "\xFF" => code_to_utf8(0x0138)	//	LATIN SMALL LETTER KRA
                       );
-?>

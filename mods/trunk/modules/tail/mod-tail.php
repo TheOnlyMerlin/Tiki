@@ -38,5 +38,3 @@ if (!isset($module_params["file"])or !$module_params["file"] or !is_file($module
 
 $smarty->assign('tailtitle', $module_params["title"]);
 $smarty->assign('tail', $tail);
-
-?>

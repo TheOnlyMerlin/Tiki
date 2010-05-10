@@ -14,7 +14,8 @@
 GLOBAL $__jpg_err_locale ;
 $__jpg_err_locale = DEFAULT_ERR_LOCALE;
 
-class ErrMsgText {
+class ErrMsgText
+{
     private $lt=NULL;
     function ErrMsgText() {
 	GLOBAL $__jpg_err_locale;
@@ -91,7 +92,8 @@ class ErrMsgText {
 // (to hide the global error parameter and avoid having a GLOBAL directive
 // in all methods.
 //
-class JpGraphError {
+class JpGraphError
+{
     private static $__jpg_err;
     public static function Install($aErrObject) {
 	self::$__jpg_err = new $aErrObject;
@@ -117,7 +119,8 @@ class JpGraphError {
 //=============================================================
 // The default trivial text error handler.
 //=============================================================
-class JpGraphErrObject {
+class JpGraphErrObject
+{
 
     protected $iTitle = "JpGraph Error";
     protected $iDest = false;
@@ -156,7 +159,8 @@ class JpGraphErrObject {
 //==============================================================
 // An image based error handler
 //==============================================================
-class JpGraphErrObjectImg extends JpGraphErrObject {
+class JpGraphErrObjectImg extends JpGraphErrObject
+{
 
     function Raise($aMsg,$aHalt=true) {
 	$img_iconerror = 
@@ -273,6 +277,3 @@ if( USE_IMAGE_ERROR_HANDLER ) {
 else {
     JpGraphError::Install("JpGraphErrObject");
 }
-
-
-?>

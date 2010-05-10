@@ -32,4 +32,3 @@ function wikiplugin_twocolortitlebox($data, $params) {
 	$end = "</div></div></div>";
 	return $div1 . $div2 . $t1style . $title1color .$t1styleend . $title1 .  $t2style . $title2color . $t2styleend .  $title2 . $middle.$data.$end;
 }
-?>

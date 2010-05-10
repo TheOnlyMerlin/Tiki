@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/box.frame.php,v 1.1 2008-01-15 09:20:25 mose Exp $
 
-class FrameBox extends GenericContainerBox {
+class FrameBox extends GenericContainerBox
+{
   function &create(&$root) {
     return new FrameBox($root);
   }
@@ -109,7 +110,8 @@ class FrameBox extends GenericContainerBox {
   }
 }
 
-class FramesetBox extends GenericContainerBox {
+class FramesetBox extends GenericContainerBox
+{
   var $rows;
   var $cols;
 
@@ -214,4 +216,3 @@ class FramesetBox extends GenericContainerBox {
     $psdata->write("add-child\n");
   }
 }
-?>

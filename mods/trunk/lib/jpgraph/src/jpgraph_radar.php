@@ -11,7 +11,8 @@
 
 require_once('jpgraph_plotmark.inc.php');
 
-class RadarLogTicks extends Ticks {
+class RadarLogTicks extends Ticks
+{
 //---------------
 // CONSTRUCTOR
     function RadarLogTicks() {
@@ -87,7 +88,8 @@ class RadarLogTicks extends Ticks {
     }		
 }
 	
-class RadarLinearTicks extends Ticks { // extends LinearTicks {
+class RadarLinearTicks extends Ticks
+{ // extends LinearTicks {
 
     private $minor_step=1, $major_step=2;
     private $xlabel_offset=0,$xtick_offset=0;
@@ -197,7 +199,8 @@ class RadarLinearTicks extends Ticks { // extends LinearTicks {
 // CLASS RadarAxis
 // Description: Implements axis for the radar graph
 //===================================================
-class RadarAxis extends AxisPrototype {
+class RadarAxis extends AxisPrototype
+{
     private $title_color="navy";
     public $title=null;
 //---------------
@@ -315,7 +318,8 @@ class RadarAxis extends AxisPrototype {
 // CLASS RadarGrid
 // Description: Draws grid for the radar graph
 //===================================================
-class RadarGrid { //extends Grid {
+class RadarGrid
+{ //extends Grid {
     private $type='solid';
     private $grid_color='#DDDDDD';
     private $show=false, $weight=1;
@@ -378,7 +382,8 @@ class RadarGrid { //extends Grid {
 // CLASS RadarPlot
 // Description: Plot a radarplot
 //===================================================
-class RadarPlot {
+class RadarPlot
+{
     public $mark=null;
     public $legend="";
     private $data=array();
@@ -498,7 +503,8 @@ class RadarPlot {
 // CLASS RadarGraph
 // Description: Main container for a radar graph
 //===================================================
-class RadarGraph extends Graph {
+class RadarGraph extends Graph
+{
     public $grid,$axis=null;
     private $posx,$posy;
     private $len;		
@@ -728,6 +734,3 @@ class RadarGraph extends Graph {
 	}
     }
 } // Class
-
-/* EOF */
-?>

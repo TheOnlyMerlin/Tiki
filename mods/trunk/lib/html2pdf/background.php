@@ -7,7 +7,8 @@
  *
  * @link http://www.w3.org/TR/CSS21/colors.html#propdef-background CSS 2.1 'background' property description
  */
-class Background {
+class Background
+{
   /**
    * @var Color Contains the 'background-color' CSS subproperty value
    * @access private
@@ -126,5 +127,3 @@ class Background {
     $this->_position->units2pt($font_size);
   }
 }
-
-?>

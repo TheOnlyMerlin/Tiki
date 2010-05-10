@@ -30,5 +30,3 @@ require_once(dirname(__FILE__)."/join.class.php");
 class pfcCommand_join2 extends pfcCommand_join
 {
 }
-
-?>

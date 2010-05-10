@@ -259,4 +259,3 @@ $g_iso_8859_5 = array(
 "\xFE" => code_to_utf8(0x045E),	//	CYRILLIC SMALL LETTER SHORT U
 "\xFF" => code_to_utf8(0x045F)	//	CYRILLIC SMALL LETTER DZHE
                       );
-?>

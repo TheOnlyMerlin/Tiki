@@ -1,5 +1,6 @@
 <?php
-class FetcherString extends FetchedDataURL {
+class FetcherString extends FetchedDataURL
+{
   var $content;
   var $headers;
   var $url;
@@ -29,4 +30,3 @@ class FetcherString extends FetchedDataURL {
   	return true;
   }
 }
-?>

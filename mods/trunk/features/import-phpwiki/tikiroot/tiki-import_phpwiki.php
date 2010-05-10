@@ -206,5 +206,3 @@ ask_ticket('import-phpwiki');
 
 $smarty->assign('mid', 'tiki-import_phpwiki.tpl');
 $smarty->display("tiki.tpl");
-
-?>

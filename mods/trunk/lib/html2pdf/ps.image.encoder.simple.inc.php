@@ -3,7 +3,8 @@
 // Deprecated. Big. Slow. Causes /limitcheck Ghostcript error on big images.
 // Use another encoder.
 
-class PSImageEncoderSimple {
+class PSImageEncoderSimple
+{
   var $last_image_id;
 
   function PSImageEncoderSimple() {
@@ -213,4 +214,3 @@ class PSImageEncoderSimple {
   }
 
 }
-?>

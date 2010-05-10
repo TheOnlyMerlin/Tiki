@@ -1,5 +1,6 @@
 <?php
-class OutputDriverPS extends OutputDriverGenericPS {
+class OutputDriverPS extends OutputDriverGenericPS
+{
   var $stream;
 
   function close() {
@@ -156,4 +157,3 @@ class OutputDriverPS extends OutputDriverGenericPS {
     fwrite($this->stream, $data);
   }
 }
-?>

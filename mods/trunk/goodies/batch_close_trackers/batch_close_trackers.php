@@ -43,4 +43,3 @@ foreach($items['data'] as $item) {
 if ($cpt) {
 	echo "$cpt closed\n";
 }
-?>

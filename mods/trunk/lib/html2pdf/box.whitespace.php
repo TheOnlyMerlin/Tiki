@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/box.whitespace.php,v 1.1 2008-01-15 09:20:28 mose Exp $
 
-class WhitespaceBox extends TextBox {
+class WhitespaceBox extends TextBox
+{
   function &create() {
     $box =& new WhitespaceBox();
     return $box;
@@ -129,4 +130,3 @@ class WhitespaceBox extends TextBox {
     $psdata->write("add-child\n");    
   }
 }
-?>

@@ -4,7 +4,8 @@
 // TODO: from my POV, it wll be better to pass the font- or CSS-controlling object to the constructor
 // instead of using globally visible functions in 'show'.
 
-class TextBox extends GenericInlineBox {
+class TextBox extends GenericInlineBox
+{
   var $word;
 
   var $encoding;
@@ -236,4 +237,3 @@ class TextBox extends GenericInlineBox {
     GenericInlineBox::offset($dx, $dy);
   }
 }
-?>

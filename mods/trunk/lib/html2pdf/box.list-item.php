@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/box.list-item.php,v 1.1 2008-01-15 09:20:27 mose Exp $
 
-class ListItemBox extends BlockBox {
+class ListItemBox extends BlockBox
+{
   var $size;
 
   function &create(&$root) {
@@ -158,5 +159,3 @@ class ListItemBox extends BlockBox {
     $imagebox->show($viewport);
   }
 }
-
-?>

@@ -222,6 +222,3 @@ DEFINE("_CSIM_DISPLAY","_jpg_csimd");
 // then the image will NOT be streamed to browser of file. Instead the
 // Stroke call will return the handler for the created GD image.
 DEFINE("_IMG_HANDLER","__handle");
-
-
-?>

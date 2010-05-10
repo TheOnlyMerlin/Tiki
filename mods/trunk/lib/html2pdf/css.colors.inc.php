@@ -221,5 +221,3 @@ function parse_color_declaration($decl, $defcol) {
 function is_transparent($color) { 
   return $color[0] < 0; 
 }
-
-?>

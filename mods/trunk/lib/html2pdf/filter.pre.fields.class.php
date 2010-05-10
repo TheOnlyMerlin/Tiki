@@ -1,5 +1,6 @@
 <?php
-class PreTreeFilterHTML2PSFields extends PreTreeFilter {
+class PreTreeFilterHTML2PSFields extends PreTreeFilter
+{
   var $filename;
   var $filesize;
   var $timestamp;
@@ -44,4 +45,3 @@ class PreTreeFilterHTML2PSFields extends PreTreeFilter {
     };
   }
 }
-?>

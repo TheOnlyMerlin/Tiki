@@ -196,5 +196,4 @@ $g_symbol = array(
 "\xFC" => code_to_utf8(0XF8FC),	// RIGHT CURLY BRACKET TOP	// bracerighttp (CUS)
 "\xFD" => code_to_utf8(0XF8FD),	// RIGHT CURLY BRACKET MID	// bracerightmid (CUS)
 "\xFE" => code_to_utf8(0XF8FE),	// RIGHT CURLY BRACKET BOTTOM	// bracerightbt (CUS)
-)
-?>
+);

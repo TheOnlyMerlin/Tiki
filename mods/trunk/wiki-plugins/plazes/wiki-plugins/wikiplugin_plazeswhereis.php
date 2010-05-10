@@ -27,5 +27,3 @@ function wikiplugin_plazeswhereis($data, $params) {
 	
 	return $asetup;
 }
-
-?>

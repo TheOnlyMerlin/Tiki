@@ -232,4 +232,3 @@ $smarty->assign('view', $view);
 $smarty->assign('page', $page);
 $smarty->assign('mid', $mid);
 $smarty->display('tiki.tpl');
-?>

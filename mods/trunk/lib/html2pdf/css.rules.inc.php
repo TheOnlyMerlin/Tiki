@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/css.rules.inc.php,v 1.1 2008-01-15 09:20:39 mose Exp $
 
-class CSSRule {
+class CSSRule
+{
   var $selector;
   var $body;
   var $baseurl;
@@ -90,5 +91,3 @@ function cmp_rule_objs($r1, $r2) {
 
   return $r1->get_order() < $r2->get_order() ? -1 : 1;
 }
-
-?>

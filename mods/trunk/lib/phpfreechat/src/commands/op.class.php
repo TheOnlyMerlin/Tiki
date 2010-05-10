@@ -37,5 +37,3 @@ class pfcCommand_op extends pfcCommand
     $this->forceWhoisReload($nicktoopid);
   }
 }
-
-?>

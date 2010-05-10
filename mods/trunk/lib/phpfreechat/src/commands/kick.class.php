@@ -50,5 +50,3 @@ class pfcCommand_kick extends pfcCommand
     pfcCommand::AppendCmdToPlay($otherid, $cmdstr, $cmdp);
   }
 }
-
-?>

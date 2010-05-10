@@ -18,5 +18,3 @@ function process_selects(&$sample_html, $offset) {
                        array("select" => "process_select"), 
                        "");  
 };
-
-?>

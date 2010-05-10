@@ -92,4 +92,3 @@ function paste_workspace($objectToPaste){
 		}
 	}
 }
-?>

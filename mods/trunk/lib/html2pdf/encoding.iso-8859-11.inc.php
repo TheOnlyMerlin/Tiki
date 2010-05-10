@@ -251,4 +251,3 @@ $g_iso_8859_11 = array(
 "\xFA" => code_to_utf8(0x0E5A),	//	THAI CHARACTER ANGKHANKHU
 "\xFB" => code_to_utf8(0x0E5B)	//	THAI CHARACTER KHOMUT
                       );
-?>

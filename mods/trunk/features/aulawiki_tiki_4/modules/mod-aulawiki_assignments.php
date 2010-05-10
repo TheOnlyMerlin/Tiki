@@ -27,4 +27,3 @@ if (!isset ($workspace)) {
 	$assignments = $assignmentsLib->get_assignments('startDate_desc', $workspace["workspaceId"]);
 	$smarty->assign_by_ref('assignments', $assignments);
 }
-?>

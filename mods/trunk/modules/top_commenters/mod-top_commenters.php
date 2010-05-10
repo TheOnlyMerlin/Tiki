@@ -78,5 +78,3 @@ $smarty->assign('module_rows', $module_rows);
 $smarty->assign('commenters', $commenters);
 $smarty->assign('url', $_SERVER["REQUEST_URI"]);
 $smarty->assign('nb_mod_top_commenters', $nb_mod_top_commenters);
-
-?>

@@ -7,7 +7,8 @@
 * @license http://www.gnu.org/copyleft/lgpl.html GNU/LGPL
 */
 
-class StudiesLib extends TikiDB {
+class StudiesLib extends TikiDB
+{
 	var $db; // The PEAR db object used to access the database
 	function StudiesLib($db) {
 		if (!$db) {
@@ -86,4 +87,3 @@ class StudiesLib extends TikiDB {
 	}
 
 }
-?>

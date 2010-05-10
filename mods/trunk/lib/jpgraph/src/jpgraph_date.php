@@ -46,7 +46,8 @@ DEFINE('SECPERHOUR',3600);
 DEFINE('SECPERMIN',60);
 
 
-class DateScale extends LinearScale {
+class DateScale extends LinearScale
+{
     private $date_format = '';
     private $iStartAlign = false, $iEndAlign = false;
     private $iStartTimeAlign = false, $iEndTimeAlign = false;
@@ -494,6 +495,3 @@ class DateScale extends LinearScale {
 	    $this->ticks->SetLabelDateFormat($this->date_format);
     }
 }
-
-
-?>

@@ -5,7 +5,8 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
     exit;
 }
 
-class TinvoiceLib extends TikiLib {
+class TinvoiceLib extends TikiLib
+{
     /*private*/ var $prefs=NULL;
     /*private*/ var $userid;
 
@@ -331,7 +332,8 @@ class TinvoiceLib extends TikiLib {
     }
 }
 
-class Tinvoice {
+class Tinvoice
+{
     /*private*/ var $tinvoicelib;
     /*private*/ var $id_invoice;
     /*private*/ var $invoice;
@@ -785,5 +787,3 @@ class Tinvoice {
     }
 
 }
-
-?>

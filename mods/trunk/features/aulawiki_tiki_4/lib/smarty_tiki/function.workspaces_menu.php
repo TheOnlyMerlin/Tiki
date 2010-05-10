@@ -57,4 +57,3 @@ function smarty_function_workspaces_menu($params, &$smarty)
     $smarty->display('tiki-workspaces_menu.tpl', "$cache_id");
     $smarty->caching = false;
 }
-?>

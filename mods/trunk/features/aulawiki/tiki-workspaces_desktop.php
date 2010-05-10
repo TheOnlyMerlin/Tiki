@@ -65,4 +65,3 @@ $smarty->assign_by_ref('workspace', $workspace);
 $smarty->assign_by_ref('path', $path);
 $smarty->assign('mid', 'tiki-workspaces_desktop.tpl');
 $smarty->display('tiki.tpl');
-?>

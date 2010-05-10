@@ -14,7 +14,8 @@
 // Create a new data array from an existing data array but with more points.
 // The new points are interpolated using a cubic spline algorithm
 //------------------------------------------------------------------------
-class Spline {
+class Spline
+{
     // 3:rd degree polynom approximation
 
     private $xdata,$ydata;   // Data vectors
@@ -109,7 +110,8 @@ class Spline {
 // CLASS Bezier
 // Create a new data array from a number of control points
 //------------------------------------------------------------------------
-class Bezier {
+class Bezier
+{
 /**
  * @author Thomas Despoix, openXtrem company
  * @license released under QPL
@@ -197,6 +199,3 @@ class Bezier {
 	return array($newx, $newy);
     }
 }
-
-// EOF
-?>

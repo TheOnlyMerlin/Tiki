@@ -38,7 +38,8 @@ import("org.active-link.net.Socket");
   *	@see		Socket
   */
 
-class HTTPServer extends Socket {
+class HTTPServer extends Socket
+{
 
 	// protected properties
     var $defaultServer;

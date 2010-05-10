@@ -115,5 +115,3 @@ class pfcCommand_privmsg extends pfcCommand
     $xml_reponse->script("pfc.handleResponse('".$this->name."', 'ok', Array('".$pvrecipientid."','".addslashes($pvname)."'));");    
   }
 }
-
-?>

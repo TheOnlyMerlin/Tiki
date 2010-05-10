@@ -13,7 +13,8 @@ function merge_width_constraint($wc1, $wc2) {
 // the second parameter of 'apply' method may be null; it means that 
 // parent have 'fit' width and depends on the current constraint itself
 
-class WCNone {
+class WCNone
+{
   function applicable(&$box) { return false; }
 
   function apply($w, $pw) { return $w; }
@@ -25,7 +26,8 @@ class WCNone {
   function units2pt($base) { return; }
 }
 
-class WCConstant {
+class WCConstant
+{
   var $width;
 
   function applicable(&$box) { return true; }
@@ -49,7 +51,8 @@ class WCConstant {
   }
 }
 
-class WCFraction {
+class WCFraction
+{
   var $fraction;
 
   function applicable(&$box) {
@@ -78,4 +81,3 @@ class WCFraction {
   function copy() { return new WCFraction($this->fraction); }
   function units2pt($base) { }
 }
-?>

@@ -26,5 +26,3 @@ function process_lists(&$sample_html, $offset) {
                              "ol" => "process_ol"),
                        "");
 };
-
-?>

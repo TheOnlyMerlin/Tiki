@@ -63,5 +63,3 @@ $smarty->assign('types', $types);
 $smarty->assign_by_ref('wstype',$wstype);
 $smarty->assign('mid','tiki-workspaces_types_resources.tpl');
 $smarty->display('tiki.tpl');
-
-?>

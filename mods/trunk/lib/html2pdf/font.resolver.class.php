@@ -3,7 +3,8 @@
 
 require_once('font.constants.inc.php');
 
-class FontResolver {
+class FontResolver
+{
   var $families;
   var $aliases;
   var $overrides;
@@ -142,5 +143,3 @@ class FontResolver {
 
 $g_font_resolver = new FontResolver();
 $g_font_resolver_pdf = new FontResolver();
-
-?>

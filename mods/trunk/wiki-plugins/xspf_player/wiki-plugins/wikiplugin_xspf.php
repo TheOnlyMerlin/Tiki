@@ -46,5 +46,3 @@ function wikiplugin_xspf($data, $params) {
 
 	return $xspf;
 }
-
-?>

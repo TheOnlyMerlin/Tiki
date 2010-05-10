@@ -118,4 +118,3 @@ $smarty->assign('daformat', $tikilib->get_long_date_format()." ".tra("at")." %H:
 include_once ('tiki-jscalendar.php');
 $smarty->assign('mid', 'aulawiki-assignments_admin.tpl');
 $smarty->display('tiki.tpl');
-?>

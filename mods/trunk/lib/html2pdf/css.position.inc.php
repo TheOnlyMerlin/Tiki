@@ -6,7 +6,8 @@ define('POSITION_RELATIVE',1);
 define('POSITION_ABSOLUTE',2);
 define('POSITION_FIXED',3);
 
-class CSSPosition extends CSSProperty {
+class CSSPosition extends CSSProperty
+{
   function CSSPosition() { $this->CSSProperty(false, false); }
 
   function default_value() { return POSITION_STATIC; }
@@ -47,5 +48,3 @@ class CSSPosition extends CSSProperty {
 }
 
 register_css_property('position', new CSSPosition);
-
-?>

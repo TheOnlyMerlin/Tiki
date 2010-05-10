@@ -460,4 +460,3 @@ else echo "<h6>no matching results</h6>";
 </div>
 <?php
 */
-?>

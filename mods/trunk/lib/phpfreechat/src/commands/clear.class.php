@@ -12,5 +12,3 @@ class pfcCommand_clear extends pfcCommand
     $xml_reponse->script("pfc.handleResponse('".$this->name."', 'ok', '');");
   }
 }
-
-?>

@@ -1,6 +1,7 @@
 <?php
 
-class PaddingSideValue {
+class PaddingSideValue
+{
   var $value;
   var $auto;
   var $percentage;
@@ -41,7 +42,8 @@ class PaddingSideValue {
   }
 }
 
-class PaddingValue {
+class PaddingValue
+{
   var $top;
   var $bottom;
   var $left;
@@ -90,7 +92,8 @@ class PaddingValue {
   }
 }
 
-class CSSPadding extends CSSProperty {
+class CSSPadding extends CSSProperty
+{
   var $default_value;
 
   function CSSPadding() { 
@@ -132,19 +135,23 @@ class CSSPadding extends CSSProperty {
   }
 }
    
-class CSSPaddingTop extends CSSSubProperty {
+class CSSPaddingTop extends CSSSubProperty
+{
   function parse($value) { return PaddingSideValue::init($value); }
 }
 
-class CSSPaddingRight extends CSSSubProperty {
+class CSSPaddingRight extends CSSSubProperty
+{
   function parse($value) { return PaddingSideValue::init($value); }
 }
 
-class CSSPaddingLeft extends CSSSubProperty {
+class CSSPaddingLeft extends CSSSubProperty
+{
   function parse($value) { return PaddingSideValue::init($value); }
 }
 
-class CSSPaddingBottom extends CSSSubProperty {
+class CSSPaddingBottom extends CSSSubProperty
+{
   function parse($value) { return PaddingSideValue::init($value); }
 }
 
@@ -154,5 +161,3 @@ register_css_property('padding-left'  ,new CSSPaddingLeft($ph,   'left'));
 register_css_property('padding-right' ,new CSSPaddingRight($ph,  'right'));
 register_css_property('padding-top'   ,new CSSPaddingTop($ph,    'top'));
 register_css_property('padding-bottom',new CSSPaddingBottom($ph, 'bottom'));
-
-?>

@@ -150,4 +150,3 @@ function compressJS( $szJSfile, $szCJSfile, $szTSfile )
     fwrite($fh, $ts);
     fclose($fh);
 }
-?>

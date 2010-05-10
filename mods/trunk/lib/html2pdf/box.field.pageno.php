@@ -1,5 +1,6 @@
 <?php
-class BoxTextFieldPageNo extends TextBoxString {
+class BoxTextFieldPageNo extends TextBoxString
+{
   function BoxTextFieldPageNo() {}
 
   function from_box(&$box) {
@@ -77,4 +78,3 @@ class BoxTextFieldPageNo extends TextBoxString {
     return true;
   }
 }
-?>

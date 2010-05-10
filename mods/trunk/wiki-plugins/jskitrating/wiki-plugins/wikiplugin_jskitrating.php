@@ -55,5 +55,3 @@ function wikiplugin_jskitrating($data, $params) {
 		
 	return $asetup;
 }
-
-?>

@@ -52,5 +52,3 @@ if ($_REQUEST["tId"]) {
 // Display the template
 $smarty->assign('mid', 'tiki-tinvoice_transaction_edit.tpl');
 $smarty->display("tiki.tpl");
-
-?>

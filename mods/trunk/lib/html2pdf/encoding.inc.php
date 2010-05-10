@@ -31,4 +31,3 @@ function something_to_utf8($html, &$mapping) {
   };
   return $html;
 }
-?>

@@ -11,7 +11,8 @@ define('TEXT_REGEXP',"\b(?:top|bottom|left|right|center)\b");
 define('BG_POSITION_SUBVALUE_TYPE_HORZ',1);
 define('BG_POSITION_SUBVALUE_TYPE_VERT',2);
 
-class CSSBackgroundPosition extends CSSSubProperty {
+class CSSBackgroundPosition extends CSSSubProperty
+{
   function default_value() {
     return new BackgroundPosition(0,true,
                                   0,true);
@@ -93,4 +94,3 @@ class CSSBackgroundPosition extends CSSSubProperty {
                                   $value[1][0], $value[1][1]);
   }
 }
-?>

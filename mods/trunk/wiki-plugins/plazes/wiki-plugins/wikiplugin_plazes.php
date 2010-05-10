@@ -33,5 +33,3 @@ function wikiplugin_plazes($data, $params) {
 
 	return $asetup;
 }
-
-?>

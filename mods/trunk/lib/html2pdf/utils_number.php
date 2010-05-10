@@ -16,4 +16,3 @@ function arabic_to_roman($num) {
 
   return $result;
 }
-?>

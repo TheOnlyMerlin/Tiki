@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/output._generic.pdf.class.php,v 1.1 2008-01-15 09:21:07 mose Exp $
 
-class OutputDriverGenericPDF extends OutputDriverGeneric {
+class OutputDriverGenericPDF extends OutputDriverGeneric
+{
   var $pdf_version;
 
   function OutputDriverGenericPDF() {
@@ -23,4 +24,3 @@ class OutputDriverGenericPDF extends OutputDriverGeneric {
     $this->pdf_version = $version;
   }
 }
-?>

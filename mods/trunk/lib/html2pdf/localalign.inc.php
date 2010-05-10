@@ -29,6 +29,3 @@
 // function ps_local_align($value) {
 //   return $value." 1 index put-local-align\n";
 // }
-
-
-?>

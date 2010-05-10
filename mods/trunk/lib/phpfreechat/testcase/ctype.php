@@ -43,5 +43,3 @@ foreach ($test as $a)
 {
     echo $a .  " : " . ((my_ctype_alpha($a)) ? "true" : "false") ." : " . ((ctype_alpha($a)) ? "true" : "false") ."<br />";
 }
-
-?>

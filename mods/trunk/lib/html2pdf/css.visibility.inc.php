@@ -5,7 +5,8 @@ define('VISIBILITY_VISIBLE',0);
 define('VISIBILITY_HIDDEN',1);
 define('VISIBILITY_COLLAPSE',2); // TODO: currently treated is hidden
 
-class CSSVisibility extends CSSProperty {
+class CSSVisibility extends CSSProperty
+{
   function CSSVisibility() { $this->CSSProperty(false, false); }
 
   function default_value() { return VISIBILITY_VISIBLE; }
@@ -26,5 +27,3 @@ class CSSVisibility extends CSSProperty {
 }
 
 register_css_property('visibility', new CSSVisibility);
-
-?>

@@ -270,4 +270,3 @@ include_once ('tiki-jscalendar.php');
 
 $smarty->assign('mid', 'tiki-workspaces_admin.tpl');
 $smarty->display('tiki.tpl');
-?>

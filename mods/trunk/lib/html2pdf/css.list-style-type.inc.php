@@ -13,7 +13,8 @@ define('LST_UPPER_ROMAN',7);
 define('LST_LOWER_LATIN',8);
 define('LST_UPPER_LATIN',9);
 
-class CSSListStyleType extends CSSSubProperty {
+class CSSListStyleType extends CSSSubProperty
+{
   // CSS 2.1: default value for list-style-type is 'disc'
   function default_value() { return LST_DISC; }
 
@@ -90,5 +91,3 @@ class CSSListStyleType extends CSSSubProperty {
     }
   }
 }
-
-?>

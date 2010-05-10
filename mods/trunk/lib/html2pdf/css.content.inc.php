@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/css.content.inc.php,v 1.1 2008-01-15 09:20:33 mose Exp $
 
-class CSSContent extends CSSProperty {
+class CSSContent extends CSSProperty
+{
   function CSSContent() { $this->CSSProperty(false, false); }
 
   function default_value() { return ""; }
@@ -19,5 +20,3 @@ class CSSContent extends CSSProperty {
 }
 
 register_css_property('content', new CSSContent);
-
-?>

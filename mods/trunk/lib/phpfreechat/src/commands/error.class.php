@@ -19,5 +19,3 @@ class pfcCommand_error extends pfcCommand
       $xml_reponse->script("pfc.setError('".addslashes(stripslashes($errors))."', Array());");
   }
 }
-
-?>

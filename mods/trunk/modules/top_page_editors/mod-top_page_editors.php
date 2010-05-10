@@ -76,5 +76,3 @@ $smarty->assign('module_rows', $module_rows);
 $smarty->assign('editors', $editors);
 $smarty->assign('url', $_SERVER["REQUEST_URI"]);
 $smarty->assign('nb_mod_top_page_editors', $nb_mod_top_page_editors);
-
-?>

@@ -34,7 +34,8 @@ import("org.active-link.xml.XML");
   *	@see		XML
   */
 
-class RSS {
+class RSS
+{
 
 	var $xml;
 	var $rootTags;
@@ -104,5 +105,3 @@ class RSS {
 	}
 
 }
-
-?>

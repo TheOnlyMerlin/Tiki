@@ -80,5 +80,3 @@ function css_import($src) {
 
   $g_baseurl = $old_base;
 };
-
-?>

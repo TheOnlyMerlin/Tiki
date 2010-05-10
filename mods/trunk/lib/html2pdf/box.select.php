@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/box.select.php,v 1.1 2008-01-15 09:20:27 mose Exp $
 
-class SelectBox extends InlineControlBox {
+class SelectBox extends InlineControlBox
+{
   function &create(&$root) {
     $box =& new SelectBox($root);
     return $box;
@@ -127,4 +128,3 @@ class SelectBox extends InlineControlBox {
     $psdata->write("add-child\n");
   }
 }
-?>

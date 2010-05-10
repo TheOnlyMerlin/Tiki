@@ -1872,4 +1872,3 @@ class HTTP_WebDAV_Server
    * c-basic-offset: 4
    * End:
    */
-?>

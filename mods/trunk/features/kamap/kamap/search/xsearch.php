@@ -290,10 +290,4 @@ function printer($results,$szSearchfield,$layer){
       }
 
   }
-
-
-
 //-------------------------------------create print end--------------------------
-
-?>
-

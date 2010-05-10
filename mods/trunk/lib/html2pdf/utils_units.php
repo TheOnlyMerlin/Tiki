@@ -8,7 +8,8 @@ define('UNIT_CM', 3);
 define('UNIT_EM', 4);
 define('UNIT_EX', 5);
 
-class Value {
+class Value
+{
   var $unit;
   var $number;
 
@@ -121,5 +122,3 @@ function ps_units($value) {
     return (double)$value . " px ";
   };
 }
-
-?>

@@ -30,5 +30,3 @@ $smarty->assign("banks",$banks);
 // Display the template
 $smarty->assign('mid', 'tiki-tinvoice_banks.tpl');
 $smarty->display("tiki.tpl");
-
-?>

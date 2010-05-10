@@ -768,5 +768,3 @@ class pfcContainer extends pfcContainerInterface
     return $this->_container->decode($str);
   }    
 }
-
-?>

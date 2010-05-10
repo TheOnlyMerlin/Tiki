@@ -8,7 +8,8 @@
 // Copyright (c) Aditus Consulting. All rights reserved.
 //========================================================================
 
-class HandDigits {
+class HandDigits
+{
     public $digits = array();
     public $iHeight=30, $iWidth=30;
 
@@ -152,7 +153,8 @@ class HandDigits {
     } 
 }
 
-class AntiSpam {
+class AntiSpam
+{
 
     var $iNumber='';
 
@@ -201,5 +203,3 @@ class AntiSpam {
 	return true;
     }
 }
-
-?>

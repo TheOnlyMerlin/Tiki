@@ -105,5 +105,3 @@ if (!$exit_module && isset($module_params["name"]) && $module_params["name"]!=""
 }
 $smarty->assign('showBar', isset ($module_params["showBar"]) ? $module_params["showBar"] : 'y');
 $smarty->assign('module_history', isset ($_SESSION["module_history_".$mod_reference["moduleId"]]) ? $_SESSION["module_history_".$mod_reference["moduleId"]] : "");
-
-?>

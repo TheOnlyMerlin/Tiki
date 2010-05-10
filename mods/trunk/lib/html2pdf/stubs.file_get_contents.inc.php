@@ -10,4 +10,3 @@ function file_get_contents($file) {
   };
 }
 }
-?>

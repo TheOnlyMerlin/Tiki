@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/output._generic.ps.class.php,v 1.1 2008-01-15 09:21:07 mose Exp $
 
-class OutputDriverGenericPS extends OutputDriverGeneric {
+class OutputDriverGenericPS extends OutputDriverGeneric
+{
   var $language_level;
   var $image_encoder;
  
@@ -34,4 +35,3 @@ class OutputDriverGenericPS extends OutputDriverGeneric {
     $this->language_level = $version;
   }
 }
-?>

@@ -36,7 +36,8 @@ import("org.active-link.xml.Tree");
   *	@see		Tree
   */
 
-class XML extends Tree {
+class XML extends Tree
+{
 
 	// protected variables
 	var $tag;
@@ -222,7 +223,7 @@ class XML extends Tree {
 		$tags = explode($this->pathSeparator, $tagPath);
 		$attributeValue = false;
 		if($this->tag->getTagName() == $tags[0]) {
-			if(sizeof($tags) == 1) {
+			if(count($tags) == 1) {
 				if($this->tag->attributeExists($attributeName))
 					$attributeValue = $this->tag->getTagAttribute($attributeName);
 			}
@@ -251,7 +252,7 @@ class XML extends Tree {
 		$tags = explode($this->pathSeparator, $tagPath);
 		$tagValue = false;
 		if($this->tag->getTagName() == $tags[0]) {
-			if(sizeof($tags) == 1)
+			if(count($tags) == 1)
 				$tagValue = $this->getXMLContent();
 			else {
 				foreach($this->nodes as $node) {
@@ -505,7 +506,7 @@ class XML extends Tree {
 		$success = true;
 		$tags = explode($this->pathSeparator, $tagPath);
 		if($this->tag->getTagName() == $tags[0]) {
-			if(sizeof($tags) == 1)
+			if(count($tags) == 1)
 				$this->tag->setAttribute($attributeName, $attributeValue);
 			else {
 				$nodeTagFound = false;
@@ -542,7 +543,7 @@ class XML extends Tree {
 		$success = true;
 		$tags = explode($this->pathSeparator, $tagPath);
 		if($this->tag->getTagName() == $tags[0]) {
-			if(sizeof($tags) == 1) {
+			if(count($tags) == 1) {
 				//$this->nodes = array(new XMLLeaf($content));
 				$this->removeAllNodes();
 				$this->addXMLLeaf(new XMLLeaf($content));
@@ -576,5 +577,3 @@ class XML extends Tree {
 
 import("org.active-link.xml.XMLBranch");
 import("org.active-link.xml.XMLLeaf");
-
-?>

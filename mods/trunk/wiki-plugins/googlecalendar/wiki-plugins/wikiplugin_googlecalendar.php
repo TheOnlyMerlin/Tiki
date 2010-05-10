@@ -104,4 +104,3 @@ function wikiplugin_googlecalendar($data, $params) {
 	
 	return $data;
 }
-?>

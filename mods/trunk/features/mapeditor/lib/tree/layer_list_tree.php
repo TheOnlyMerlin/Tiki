@@ -5,7 +5,8 @@ require_once ('lib/tree/tree.php');
 /**
  * \brief Class to render layer list browse tree
  */
-class layerTreeMaker extends TreeMaker {
+class layerTreeMaker extends TreeMaker
+{
 	/// Collect javascript cookie set code (internaly used after make_tree() method)
 	var $jsscriptblock;
 
@@ -81,5 +82,3 @@ class layerTreeMaker extends TreeMaker {
 		return '';
 	}
 }
-
-?>

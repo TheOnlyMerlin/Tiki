@@ -572,5 +572,3 @@ if (pfc_connect_at_startup) pfc.connect_disconnect();
   }
   
 }
-
-?>

@@ -1,6 +1,7 @@
 <?php
 
-class CSSPseudoLinkDestination extends CSSProperty {
+class CSSPseudoLinkDestination extends CSSProperty
+{
   function CSSPseudoLinkDestination() { $this->CSSProperty(true, true); }
 
   function default_value() { return ""; }
@@ -15,5 +16,3 @@ class CSSPseudoLinkDestination extends CSSProperty {
 }
 
 register_css_property('-html2ps-link-destination', new CSSPseudoLinkDestination);
-
-?>

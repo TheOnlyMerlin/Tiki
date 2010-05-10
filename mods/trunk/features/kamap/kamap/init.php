@@ -323,4 +323,3 @@ $szResult .= "this.tileURL = 'tile.php';";
 
 $szResult .= "this.selectMap('$szMap');";
 echo $szResult;
-?>

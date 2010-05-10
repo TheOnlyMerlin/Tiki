@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/css.height.inc.php,v 1.1 2008-01-15 09:20:34 mose Exp $
 
-class CSSHeight extends CSSProperty {
+class CSSHeight extends CSSProperty
+{
   function CSSHeight() { $this->CSSProperty(false, false); }
 
   function inherit() { 
@@ -34,7 +35,8 @@ class CSSHeight extends CSSProperty {
   }
 }
 
-class CSSMinHeight extends CSSProperty {
+class CSSMinHeight extends CSSProperty
+{
   function CSSMinHeight() { $this->CSSProperty(false, false); }
 
   function inherit() { 
@@ -65,7 +67,8 @@ class CSSMinHeight extends CSSProperty {
   }
 }
 
-class CSSMaxHeight extends CSSProperty {
+class CSSMaxHeight extends CSSProperty
+{
   function CSSMaxHeight() { $this->CSSProperty(false, false); }
 
   function inherit() { 
@@ -96,5 +99,3 @@ class CSSMaxHeight extends CSSProperty {
 register_css_property("height",     new CSSHeight);
 register_css_property("min-height", new CSSMinHeight);
 register_css_property("max-height", new CSSMaxHeight);
-
-?>

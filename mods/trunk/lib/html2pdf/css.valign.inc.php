@@ -44,4 +44,3 @@ function pop_valign() {
 function ps_valign() {
   return get_valign()." 1 index put-valign\n";
 }
-?>

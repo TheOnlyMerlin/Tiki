@@ -21,4 +21,3 @@ $enc='cp1252';
 $diff='';
 $file='ariali.z';
 $originalsize=207808;
-?>

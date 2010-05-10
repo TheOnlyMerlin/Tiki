@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/output._generic.class.php,v 1.1 2008-01-15 09:21:06 mose Exp $
 
-class OutputDriverGeneric extends OutputDriver {
+class OutputDriverGeneric extends OutputDriver
+{
   var $media;
   var $bottom;
   var $left;
@@ -170,4 +171,3 @@ class OutputDriverGeneric extends OutputDriver {
     $this->current_page = 1;
   }
 }
-?>

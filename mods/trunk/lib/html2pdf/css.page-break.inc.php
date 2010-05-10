@@ -5,7 +5,8 @@ define('PAGE_BREAK_AVOID' ,2);
 define('PAGE_BREAK_LEFT'  ,3);
 define('PAGE_BREAK_RIGHT' ,4);
 
-class CSSPageBreak extends CSSProperty {
+class CSSPageBreak extends CSSProperty
+{
   function CSSPageBreak() { 
     $this->CSSProperty(false, false); 
   }
@@ -46,4 +47,3 @@ class CSSPageBreak extends CSSProperty {
     };
   }
 }
-?>

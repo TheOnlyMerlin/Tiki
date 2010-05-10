@@ -87,4 +87,3 @@ header( 'Content-type: image/png' );
 $oImg = $oMap->drawLegend();
 
 $szURL = $oImg->saveImage("");
-?>

@@ -12,7 +12,8 @@
 // Class ImgTrans
 // Perform some simple image transformations. 
 //------------------------------------------------------------------------
-class ImgTrans {
+class ImgTrans
+{
     private $gdImg=null;
 
     function ImgTrans($aGdImg) {
@@ -218,6 +219,3 @@ class ImgTrans {
     }
     
 }
-
-
-?>

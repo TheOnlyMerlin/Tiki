@@ -45,4 +45,3 @@ echo "</div>";
   $content = file_get_contents($filename);
   highlight_string($content);
   echo "</pre>";
-?>

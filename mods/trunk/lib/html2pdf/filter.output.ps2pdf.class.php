@@ -26,7 +26,8 @@ function safe_exec($cmd, &$output) {
   };
 }
 
-class OutputFilterPS2PDF extends OutputFilter {
+class OutputFilterPS2PDF extends OutputFilter
+{
   var $pdf_version;
 
   function content_type() {
@@ -48,4 +49,3 @@ class OutputFilterPS2PDF extends OutputFilter {
     return $pdf_file;
   }
 }
-?>

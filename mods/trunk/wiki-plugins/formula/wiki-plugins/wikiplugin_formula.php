@@ -108,5 +108,3 @@ function wikiplugin_formula($data, $params) {
 	return $html;
 
 }
-
-?>

@@ -14,7 +14,8 @@
 // Description: Make it possible to add a (small) image
 // to the graph
 //===================================================
-class IconPlot {
+class IconPlot
+{
     public $iX=0,$iY=0,$iScale=1.0,$iMix=100;
     private $iHorAnchor='left',$iVertAnchor='top';
     private $iFile='';
@@ -186,5 +187,3 @@ class IconPlot {
 			 $this->iMix);
     }
 }
-
-?>

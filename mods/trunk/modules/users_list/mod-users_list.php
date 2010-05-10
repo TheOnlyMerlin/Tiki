@@ -52,4 +52,3 @@ if (isset($module_params['log']) && $module_params['log'] == 'y' && $prefs['feat
  }
 $smarty->assign_by_ref('users', $users['data']);
 $smarty->assign_by_ref('module_params_users_list', $module_params);
-?>

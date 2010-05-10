@@ -21,4 +21,3 @@ $enc='cp1252';
 $diff='';
 $file='timesi.z';
 $originalsize=248368;
-?>

@@ -3,7 +3,8 @@
 
 // 'background-color' and color part of 'background' CSS properies handler
 
-class CSSBackgroundColor extends CSSSubProperty {
+class CSSBackgroundColor extends CSSSubProperty
+{
   function default_value() {
     // Transparent color
     return new Color(array(0,0,0), true);
@@ -41,5 +42,3 @@ class CSSBackgroundColor extends CSSSubProperty {
     return array(255,255,255);
   }
 }
-
-?>

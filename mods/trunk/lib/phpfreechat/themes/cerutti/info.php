@@ -1,3 +1,2 @@
 <?php
 $author = "Victor Cerutti";
-?>

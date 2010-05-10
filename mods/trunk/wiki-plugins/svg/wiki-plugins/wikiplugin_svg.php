@@ -53,5 +53,3 @@ function wikiplugin_svg($data, $params) {
 	 ~/np~";
 	return $ret;
 }
-
-?>

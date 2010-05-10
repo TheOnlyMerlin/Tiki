@@ -26,5 +26,3 @@ function module_workspaces_viewstructure_params() {
 	$param["showControls"]["defaultValue"]="y";
 	return $param;
 }
-
-?>

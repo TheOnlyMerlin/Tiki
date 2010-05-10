@@ -1,6 +1,7 @@
 <?php
 
-class PSImageEncoderImageMagick {
+class PSImageEncoderImageMagick
+{
   var $last_image_id;
 
   function PSImageEncoderImageMagick() {
@@ -302,4 +303,3 @@ class PSImageEncoderImageMagick {
   }
 
 }
-?>

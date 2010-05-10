@@ -72,5 +72,3 @@ if (isset ($user) && $user != "") {
 	$smarty->assign_by_ref('userWorkspaces', $userWorkspacesTmp);
 }
 $smarty->assign('selectedWorkspaces', $selectedWorkspaces);
-
-?>

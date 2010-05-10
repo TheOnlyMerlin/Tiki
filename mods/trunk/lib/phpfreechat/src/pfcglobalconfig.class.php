@@ -1147,5 +1147,3 @@ class pfcGlobalConfig
     return $nickname;
   }
 }
-
-?>

@@ -10,7 +10,8 @@ define('VA_BASELINE'   ,5);
 define('VA_TEXT_TOP'   ,6);
 define('VA_TEXT_BOTTOM',7);
 
-class VerticalAlignSuper { 
+class VerticalAlignSuper
+{ 
 //   function apply(&$child, &$parent) { 
 //     $child->baseline /= 2; 
 //   } 
@@ -20,7 +21,8 @@ class VerticalAlignSuper {
   }
 }
 
-class VerticalAlignSub   { 
+class VerticalAlignSub
+{ 
 //   function apply(&$child, &$parent) { 
 //     $child->baseline = $child->baseline/2 - $parent->_line_baseline; 
 //   } 
@@ -30,7 +32,8 @@ class VerticalAlignSub   {
   }
 }
 
-class VerticalAlignTop { 
+class VerticalAlignTop
+{ 
 //   function apply(&$child, &$parent) { 
 //     return; // Do nothing 
 //   } 
@@ -40,7 +43,8 @@ class VerticalAlignTop {
   }
 }
 
-class VerticalAlignMiddle {
+class VerticalAlignMiddle
+{
 //   function apply(&$child, &$parent) {
 //     if ($parent->_line_baseline > $child->baseline) {
 //       $child->baseline = $parent->_line_baseline;
@@ -66,7 +70,8 @@ class VerticalAlignMiddle {
   }
 }
 
-class VerticalAlignBottom {
+class VerticalAlignBottom
+{
   function apply_cell(&$cell, $row_height, $row_baseline) {
     $delta = ($row_height - $cell->get_real_full_height());
 
@@ -76,7 +81,8 @@ class VerticalAlignBottom {
   }
 }
 
-class VerticalAlignBaseline {
+class VerticalAlignBaseline
+{
   function apply_cell(&$cell, $row_height, $row_baseline) {
     $delta = ($row_baseline - $cell->get_cell_baseline());
 
@@ -86,7 +92,8 @@ class VerticalAlignBaseline {
   }
 }
 
-class VerticalAlignTextTop {
+class VerticalAlignTextTop
+{
 //   function apply(&$child, &$parent) {
 //     // FIXME
 //   }
@@ -96,7 +103,8 @@ class VerticalAlignTextTop {
   }
 }
 
-class VerticalAlignTextBottom {
+class VerticalAlignTextBottom
+{
 //   function apply(&$child, &$parent) {
 //     if (-$parent->_line_baseline > $child->baseline) {
 //       $child->baseline = -($parent->_line_baseline);
@@ -125,7 +133,8 @@ class VerticalAlignTextBottom {
   }
 }
 
-class CSSVerticalAlign extends CSSProperty {
+class CSSVerticalAlign extends CSSProperty
+{
   function CSSVerticalAlign() { 
     // Note that in general, parameters 'true' and 'false' are non meaningful in out case,
     // as we anyway override 'inherit' and 'inherit_text' in this class.
@@ -224,5 +233,3 @@ class CSSVerticalAlign extends CSSProperty {
 }
 
 register_css_property('vertical-align', new CSSVerticalAlign);
-
-?>

@@ -115,5 +115,3 @@ class pfcCommand_getnewmsg extends pfcCommand
     
   }
 }
-
-?>

@@ -50,4 +50,3 @@ function ta_justify(&$box, &$context, $lastline) {
     $box->_line[$i]->offset($offset*$i, 0);
   };
 }
-?>

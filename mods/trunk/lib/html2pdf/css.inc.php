@@ -1,7 +1,8 @@
 <?php
 // $Header: /cvsroot/tikiwiki/_mods/lib/html2pdf/css.inc.php,v 1.1 2008-01-15 09:20:34 mose Exp $
 
-class CSSObject {
+class CSSObject
+{
   var $rules;
   var $tag_filtered;
   
@@ -175,7 +176,8 @@ function register_css_property($property, &$handler) {
 
 // ------------------
 
-class CSSProperty {
+class CSSProperty
+{
   var $_stack;
   var $_inheritable;
   var $_inheritable_text;
@@ -217,7 +219,8 @@ class CSSProperty {
   function replace($value) { $this->_stack[0] = array($value, true); }
 }
 
-class CSSSubProperty extends CSSProperty {
+class CSSSubProperty extends CSSProperty
+{
   var $_owner;
   var $_owner_field;
 
@@ -254,4 +257,3 @@ class CSSSubProperty extends CSSProperty {
   function pop()           { }
 
 }
-?>

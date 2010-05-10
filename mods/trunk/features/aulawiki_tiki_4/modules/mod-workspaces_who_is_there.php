@@ -50,4 +50,3 @@ foreach ($workspace_users as $key => $wsuser) {
 
 $smarty->assign('online_users', $on_users);
 $smarty->assign('offline_users', $off_users);
-?>

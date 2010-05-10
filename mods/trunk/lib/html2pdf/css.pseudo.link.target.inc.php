@@ -1,6 +1,7 @@
 <?php
 
-class CSSPseudoLinkTarget extends CSSProperty {
+class CSSPseudoLinkTarget extends CSSProperty
+{
   function CSSPseudoLinkTarget() { $this->CSSProperty(true, true); }
 
   function default_value() { return ""; }
@@ -41,5 +42,3 @@ class CSSPseudoLinkTarget extends CSSProperty {
 }
 
 register_css_property('-html2ps-link-target', new CSSPseudoLinkTarget);
-
-?>
