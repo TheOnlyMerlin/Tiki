@@ -177,7 +177,7 @@ class WikiLib extends TikiLib
 			$is_wiki_page = true;
 			if (substr($page,0,11) == 'objectlink:') {
 				$is_wiki_page = false;
-				$objectlinkparts = explode(':', $page);
+				$objectlinkparts = split(':', $page);
 				$type = $objectlinkparts[1];
 				$objectId = $objectlinkparts[2];
 			}

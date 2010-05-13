@@ -289,7 +289,6 @@ function wikiplugin_trackerlist($data, $params) {
 	static $iTRACKERLIST = 0;
 	++$iTRACKERLIST;
 	$smarty->assign('iTRACKERLIST', $iTRACKERLIST);
-	
 	extract ($params,EXTR_SKIP);
 
 	if ($prefs['feature_trackers'] != 'y' || !isset($trackerId) || !($tracker_info = $trklib->get_tracker($trackerId))) {
@@ -388,7 +387,7 @@ function wikiplugin_trackerlist($data, $params) {
 			foreach ($allfields['data'] as $f) {
 				if ($f['type'] == 's' && isset($tracker_info['useRatings']) and $tracker_info['useRatings'] == 'y' && ($f['name'] == 'Rating' || $f['name'] = tra('Rating'))) {
 					$i = $f['fieldId'];
-					if (isset($_REQUEST["ins_$i"]) && ($_REQUEST["ins_$i"] == 'NULL' || in_array($_REQUEST["ins_$i"], explode(',',$tracker_info['ratingOptions'])))) {
+					if (isset($_REQUEST["ins_$i"]) && ($_REQUEST["ins_$i"] == 'NULL' || in_array($_REQUEST["ins_$i"], split(',',$tracker_info['ratingOptions'])))) {
 						$trklib->replace_rating($trackerId, $_REQUEST['itemId'], $i, $user, $_REQUEST["ins_$i"]);
 						$hasVoted = true; 
 					}
@@ -549,7 +548,7 @@ function wikiplugin_trackerlist($data, $params) {
 			$smarty->right_delimiter = $rdelim;
 
 		if (isset($checkbox)) {
-			$cb = explode('/', $checkbox);
+			$cb = split('/', $checkbox);
 			if (isset($cb[0]))
 				$check['fieldId'] = $cb[0];
 			if (isset($cb[1]))
@@ -612,7 +611,7 @@ function wikiplugin_trackerlist($data, $params) {
 			  //$query_array['tr_initial'] = $_REQUEST['tr_initial'];
 				$tr_initial = $_REQUEST['tr_initial'];
 			}
-			$smarty->assign('initials', explode(' ','a b c d e f g h i j k l m n o p q r s t u v w x y z'));
+			$smarty->assign('initials', split(' ','a b c d e f g h i j k l m n o p q r s t u v w x y z'));
 		}
 		$smarty->assign_by_ref('tr_initial', $tr_initial);
 
@@ -687,9 +686,7 @@ function wikiplugin_trackerlist($data, $params) {
 					unset($exactvalue);
 					for ($i = 0, $count_ff2 = count($filterfield); $i < $count_ff2; ++$i) {
 						if (isset($evs[$i])) {
-							if (is_array($evs[$i])) { // already processed
-								$exactvalue[] = $evs[$i];
-							} elseif (preg_match('/(not)?categories\(([0-9]+)\)/', $evs[$i], $matches)) {
+							if (preg_match('/(not)?categories\(([0-9]+)\)/', $evs[$i], $matches)) {
 								global $categlib; include_once('lib/categories/categlib.php');
 								$categs = $categlib->list_categs($matches[2]);
 								$l = array($matches[2]);
@@ -734,9 +731,6 @@ function wikiplugin_trackerlist($data, $params) {
 								} else {
 									$exactvalue[] = array('not'=>$l);
 								}
-							} elseif (preg_match('/(less|greater|lessequal|greaterequal)\((.+)\)/', $evs[$i], $matches)) {
-								$conv = array('less'=>'<', 'greater'=>'>', 'lessequal'=>'<=', 'greaterequal'=>'>=');
-								$exactvalue[] = array($conv[$matches[1]]=>$matches[2]);
 							} else {
 								$exactvalue[] = $evs[$i];
 							}

@@ -19,13 +19,9 @@ $smarty->assign('fckstyle',$tikilib->get_style_path('', '', $prefs['style']));
 $smarty->assign('fckstyleoption',$tikilib->get_style_path($prefs['style'], $prefs['style_option'], $prefs['style_option']));
 
 $section = isset($_GET['section']) ? $_GET['section'] : 'wiki page';
+
 $toolbars = ToolbarsList::fromPreference( $section );
 //file_put_contents('temp/cache/foo', print_r($toolbars->getWysiwygArray(), true));
-
-if ( $prefs['wysiwyg_htmltowiki'] === 'y' ) {
-	$toolbars->addTag('source', true);
-}
-
 $smarty->assign('toolbar', $toolbars->getWysiwygArray() );
 
 $smarty->display('setup_fckeditor.tpl', null, null, 'application/javascript');

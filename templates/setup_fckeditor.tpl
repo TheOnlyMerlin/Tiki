@@ -7,7 +7,7 @@ var _QuickUploadLanguage      = 'php' ;
 var _FileBrowserExtension     = 'php' ;
 
 FCKConfig.BodyClass = 'wikitext';
-FCKConfig.FontNames =  '{$prefs.wysiwyg_fonts}';
+FCKConfig.FontNames = 'sans serif;serif;monospace;Arial;Comic Sans MS;Courier New;Tahoma;Times New Roman;Verdana' ;
 
 FCKConfig.ToolbarSets["Tiki"] = [ 
 {if $prefs.feature_ajax == 'y' and $prefs.feature_ajax_autosave eq 'y'}
@@ -80,22 +80,6 @@ FCKConfig.Plugins.Add( 'dragresizetable' );
 
    // Sensitivity to key strokes
    FCKConfig.ajaxAutoSaveSensitivity = 2 ;
-{/if}
-
-/*
- * FCKeditor Extension for MediaWiki specific settings.
-*/
-
-{if $prefs.wysiwyg_htmltowiki eq 'y'}
-	// When using the modified image dialog you must set this variable. It must
-	// correspond to $wgScriptPath in LocalSettings.php.
-	FCKConfig.mwScriptPath = '' ;     
-	// Load the extension plugins.
-	FCKConfig.Plugins.Add( 'tikiwiki', 'en,pl',  _TikiRoot + 'lib/fckeditor_tiki/plugins/') ;
-	FCKConfig.ForcePasteAsPlainText = true ;
-	FCKConfig.FontFormats  = 'p;h1;h2;h3;h4;h5;h6;pre' ;
-	FCKConfig.AutoDetectLanguage   = true ;
-	// FCKConfig.DisableObjectResizing = true ;
 {/if}
 
 // as tikiwiki, we prefer <br> instead of <p> for newlines

@@ -89,7 +89,7 @@ function batchImportUsers() {
 					$local[] = discardUser($u, tra('Password is required'));
 				}
 			}
-			if (empty($u['email']) && !$pass_first_login) {
+			if (empty($u['email'])) {
 				$local[] = discardUser($u, tra("Email is required"));
 			}
 		}

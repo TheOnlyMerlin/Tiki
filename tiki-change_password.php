@@ -61,15 +61,6 @@ if (isset($_REQUEST["change"])) {
 		$smarty->display("error.tpl");
 		die;
 	}
-	if (isset($_REQUEST['email'])) {
-		if (empty($_REQUEST['email']) || !validate_email($_REQUEST['email'], $prefs['validateEmail'])) {
-			$smarty->assign('msg', tra('Your email could not be validated; make sure you email is correct'));
-			$smarty->assign('errortype', 'no_redirect_login');
-			$smarty->display("error.tpl");
-			die;			
-		}
-		$userlib->change_user_email_only($_REQUEST['user'], $_REQUEST['email']);
-	}
 
 	$userlib->change_user_password($_REQUEST["user"], $_REQUEST["pass"]);
 	// Login the user and display Home page
@@ -81,8 +72,7 @@ ask_ticket('change-password');
 
 // Display the template
 global $prefs;
-$prefs['language'] = $tikilib->get_user_preference($_REQUEST['user'], 'language', $prefs['site_language']);
-$smarty->assign('email', $userlib->get_user_email($_REQUEST['user']));
+$prefs['language'] = $tikilib->get_user_preference($_REQUEST["user"], "language", $prefs['site_language']);
 
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');

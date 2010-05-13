@@ -95,7 +95,7 @@ if (isset($_REQUEST['register']) && !empty($_REQUEST['name']) && (isset($_REQUES
 		die;
 	}
 	if ($prefs['lowercase_username'] == 'y') {
-		if (preg_match('/[[:upper:]]/', $_REQUEST["name"])) {
+		if (ereg("[[:upper:]]", $_REQUEST["name"])) {
 			$smarty->assign('msg', tra("Username cannot contain uppercase letters"));
 			$smarty->display("error.tpl");
 			die;
@@ -182,8 +182,8 @@ if (isset($_REQUEST['register']) && !empty($_REQUEST['name']) && (isset($_REQUES
 			$userlib->set_default_group($_REQUEST['name'], $_REQUEST['chosenGroup']);
 		} elseif (empty($_REQUEST['chosenGroup']) && isset($_SESSION['in_tracker'])) {
 			$userlib->set_default_group($_REQUEST['name'], 'Registered'); // to have tiki-user_preferences links par default to the registration tracker
+			
 		}
-		$userlib->set_email_group($_REQUEST['name'], $_REQUEST['email']);
 		unset($_SESSION['in_tracker']);
 		// save default user preferences
 		$tikilib->set_user_preference($_REQUEST['name'], 'theme', $prefs['style']);
@@ -275,7 +275,7 @@ function chkRegEmail($mail) {
 	$objResponse = new xajaxResponse();
 	if (empty($mail)) {
 		$objResponse->assign("ajax_msg_mail", "innerHTML", $pre_no.tra("Missing Email"));
-	} elseif (!preg_match('/^[_a-z0-9\.\-]+@[_a-z0-9\.\-]+\.[a-z]{2,4}$/i', $mail)) {
+	} elseif (!eregi("^[_a-z0-9\.\-]+@[_a-z0-9\.\-]+\.[a-z]{2,4}$", $mail)) {
 		$objResponse->assign("ajax_msg_mail", "innerHTML", $pre_no.tra('This is not a valid mail adress'));
 	} else {
 		$objResponse->assign("ajax_msg_mail", "innerHTML", $pre_yes.tra("Valid Email"));

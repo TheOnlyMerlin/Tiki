@@ -1,6 +1,6 @@
 <div class="payment">
 	<h2>{$payment_info.description|escape}</h2>
-	<p>{tr}Status{/tr}: <strong>{$payment_info.state|escape}</strong></p>
+	<p>{tr}State{/tr}: <strong>{$payment_info.state|escape}</strong></p>
 	{if $payment_info.fullview}
 		<div class="clearfix wikitext">
 			{$payment_detail}
@@ -25,7 +25,7 @@
 			</form>
 		{/if}
 	</p>
-	<p>{tr 0=$payment_info.frequest_date 1=$payment_info.fdue_date}Payment request was sent on %0 and is due by %1.{/tr}
+	<p>{tr 0=$payment_info.request_date 1=$payment_info.due_date}Payment request was sent on %0 and is due by %1.{/tr}
 
 	{if $payment_info.fullview && $payment_info.payments|@count}
 		<ol>
@@ -48,7 +48,7 @@
 				<fieldset>
 					<legend>{tr}Manual payment entry{/tr}</legend>
 
-					<p><input type="text" name="manual_amount" class="right"/>&nbsp;{$payment_info.currency|escape}</p>
+					<p><input type="text" name="manual_amount"/>&nbsp;{$payment_info.currency|escape}</p>
 					<p><label for="payment-note">{tr}Note{/tr}</label></p>
 					<p><textarea id="payment-note" name="note" style="width: 98%;" rows="6"></textarea></p>
 					<p><input type="submit" value="{tr}Enter payment{/tr}"/><input type="hidden" name="invoice" value="{$payment_info.paymentRequestId|escape}"/></p>

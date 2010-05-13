@@ -42,7 +42,7 @@ class RegistrationLib extends TikiLib
     // $Return[1] : Processing result save.
 
     //Fix by suilinma
-    if (!preg_match('/^[-_a-z0-9+]+(\\.[-_a-z0-9+]+)*\\@([-a-z0-9]+\\.)*([a-z]{2,4})$/i', $Email)) {
+    if (!eregi("^[-_a-z0-9+]+(\\.[-_a-z0-9+]+)*\\@([-a-z0-9]+\\.)*([a-z]{2,4})$", $Email)) {
 	// luci's regex that also works
 	//	if (!eregi("^[_a-z0-9\.\-]+@[_a-z0-9\.\-]+\.[a-z]{2,4}$", $Email)) {
         $Return[0]=false;
@@ -57,7 +57,7 @@ class RegistrationLib extends TikiLib
     // $Domain : ebeecomm.com
     // list function reference : http://www.php.net/manual/en/function.list.php
     // split function reference : http://www.php.net/manual/en/function.split.php
-    list ($Username, $Domain) = explode ("@", $Email);
+    list ($Username, $Domain) = split ("@", $Email);
 	
 	if($prefs['validateEmail'] == 'n') {
 		$Return[0]=true;
@@ -104,7 +104,7 @@ class RegistrationLib extends TikiLib
 						echo "Connection succeeded to {$ConnectAddress} SMTP.<br>";
 	        // Judgment is that service is preparing though begin by 220 getting string after connection .
 	        // fgets function reference : http://www.php.net/manual/en/function.fgets.php
-	        if ( preg_match('/^220/', $Out = fgets ($Connect, 1024 ))) {
+	        if ( ereg ("^220", $Out = fgets ($Connect, 1024 ))) {
 	            // Inform client's reaching to server who connect.
 	            fputs ( $Connect, "HELO $HTTP_HOST\r\n" );
                 if ($Debug) echo "Run : HELO $HTTP_HOST<br>";
@@ -129,7 +129,7 @@ class RegistrationLib extends TikiLib
                 // Server's answering cord about MAIL and TO command checks.
                 // Server about listener's address reacts to 550 codes if there does not exist
                 // checking that mailbox is in own E-Mail account.
-                if (!preg_match('/^250/', $From ) || !preg_match ( '/^250/', $To)) {
+                if (!ereg ("^250", $From ) || !ereg ( "^250", $To)) {
                     $Return[0] = false;
                     $Return[1] = 'not_recognized';
                     if ($Debug) echo "{$Email} is not recognized by the mail server.<br>";

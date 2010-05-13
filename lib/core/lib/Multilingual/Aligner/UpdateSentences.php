@@ -85,6 +85,10 @@ class Multilingual_Aligner_UpdateSentences1
 				$changed_diff_unchanged[$ii]=substr($value,1);
 		
 			}
+			else
+			{
+				//do nothing--sentence is added
+			}
 		}//outer if
 		$ii=$ii+1;
 	}//foreach
@@ -128,9 +132,9 @@ class Multilingual_Aligner_UpdateSentences1
 	public function text_diff($unchangedSentence_array,$changedSentence_array)
 	{
 	$changed_diff_unchanged=array();
-	$diff = &new Text_Diff($unchangedSentence_array,$changedSentence_array);
+	$diff = new Text_Diff($unchangedSentence_array,$changedSentence_array);
 	$context=count($unchangedSentence_array);
-	$renderer = &new Text_Diff_Renderer_unified($context);
+	$renderer = new Text_Diff_Renderer_unified($context);
 	$arr=$renderer->render($diff);
 	$kk=0;
 	$body=0;
@@ -197,7 +201,7 @@ class Multilingual_Aligner_UpdateSentences1
 			$source_sent=$segmentor->segment(trim($key_value));
 			$index=$this->array_search_function($value,$changed_diff_unchanged);
 			$jj=0;
-			for ($ii=$index; $ii<count($source_sent)+$index+$jj; $ii++)
+			for($ii=$index;$ii<count($source_sent)+$index+$jj;$ii++)
 			{
 				if($changed_diff_unchanged[$ii]=="" || $changed_diff_unchanged[$ii][0]!="+")
 				{		

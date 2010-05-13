@@ -241,11 +241,6 @@ class Tiki_Profile
 
 		return true;
 	} // }}}
-	
-	public function refreshYaml() {
-		$this->objects = null;
-		$this->loadYaml($this->pageContent);
-	}
 
 	private function loadYaml( $content ) // {{{
 	{
@@ -255,11 +250,11 @@ class Tiki_Profile
 
 		$this->data = array();
 
-		while( false !== $base = $this->findNextPluginStart($content, $pos) )
+		while( false !== $base = strpos( $content, '{CODE(caption=>YAML', $pos ) )
 		{
 			$begin = strpos( $content, ')}', $base ) + 2;
 			$end = strpos( $content, '{CODE}', $base );
-			$pos = $end + 6;
+			$pos = $end;
 
 			if( false === $base || false === $begin || false === $end )
 				return false;
@@ -280,16 +275,6 @@ class Tiki_Profile
 		$this->fetchExternals();
 		$this->getObjects();
 	} // }}}
-	
-	private function findNextPluginStart($content, $pos) {
-		preg_match('/\{CODE\(\s*caption\s*=[>]?\s*[\'"]?YAML/', substr($content, $pos), $matches);
-		if (count($matches) > 0) {
-			$pattern = $matches[0];
-		} else {
-			$pattern = '{CODE(caption=>YAML';
-		}
-		return strpos( $content, $pattern, $pos );
-	}
 
 	private function fetchExternals() // {{{
 	{
@@ -298,16 +283,13 @@ class Tiki_Profile
 	
 	private function traverseForExternals( &$data ) // {{{
 	{
-		if( is_array( $data ) ) {
-			foreach( $data as &$value ) {
+		if( is_array( $data ) )
+			foreach( $data as &$value )
 				$this->traverseForExternals( $value );
-			}
-		} else if ( 0 === strpos( $data, 'wikicontent:' ) ) {
+		elseif( 0 === strpos( $data, 'wikicontent:' ) )
+		{
 			$pageName = substr( $data, strlen('wikicontent:') );
 			$data = $this->getPageContent( $pageName );
-		} else if ( 0 === strpos( $data, 'wikiparsed:' ) ) {
-			$pageName = substr( $data, strlen('wikiparsed:') );
-			$data = $this->getPageParsed( $pageName );
 		}
 	} // }}}
 
@@ -333,27 +315,6 @@ class Tiki_Profile
 			return substr( $content, $begin + 2 );
 		else
 			return null;
-	} // }}}
-
-	public function getPageParsed( $pageName ) // {{{
-	{
-		if ($this->domain == 'tiki://local' || strpos($this->domain, 'localhost') === 0) {
-			global $tikilib;
-			$info = $tikilib->get_page_info($pageName, true, true);
-			if (empty($info)) {
-				$this->setFeedback(tra('Page cannot be found').' '.$pageName);
-				return null;
-			}
-			return $tikilib->parse_data($info['data']);
-		}
-		$pageUrl = dirname( $this->url ) . '/tiki-index_raw.php?'
-			. http_build_query( array( 'page' => $pageName ) );
-
-		$content = TikiLib::httprequest( $pageUrl );
-		// index_raw replaces index.php with itself, so undo that here
-		$content = str_replace( 'tiki-index_raw.php', 'tiki-index.php', $content );
-
-		return $content;
 	} // }}}
 
 	function mergeData( $old, $new ) // {{{
@@ -836,11 +797,6 @@ class Tiki_Profile_Object
 	public function replaceReferences( &$data, $suppliedUserData = false ) // {{{
 	{
 		$this->profile->replaceReferences( $data, $suppliedUserData );
-	} // }}}
-
-	public function refreshExternals() // {{{
-	{
-		$this->profile->refreshYaml();
 	} // }}}
 
 	private function traverseForReferences( $value ) // {{{

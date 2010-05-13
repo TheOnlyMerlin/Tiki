@@ -157,13 +157,6 @@
 						
 				</fieldset>
 				
-				<fieldset>
-                                        <legend class="heading">{icon _id="new"}<span>{tr}Fresh out of the stove{/tr}</span></legend>
-
-					{preference name=feature_socialnetworks}
-				</fieldset>
-
-			</div>
 
 {/tab}
 {/tabset}

@@ -549,17 +549,12 @@ class ToolbarBlock extends ToolbarInline // Will change in the future
 
 	public static function fromName( $tagName ) // {{{
 	{
-		global $prefs;
 		switch( $tagName ) {
 		case 'center':
 			$label = tra('Align Center');
 			$icon = tra('pics/icons/text_align_center.png');
 			$wysiwyg = 'JustifyCenter';
-			if ($prefs['feature_use_three_colon_centertag'] == 'y') {
-				$syntax = ":::text:::";
-			} else {
-				$syntax = "::text::";
-			}
+			$syntax = "::text::";
 			break;
 		case 'rule':
 			$label = tra('Horizontal Bar');
