@@ -1,0 +1,49 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/greenblog_tiki_5/Readme.txt styles/greenblog/Readme.txt
+themes/greenblog_tiki_5/styles/greenblog.css styles/greenblog.css
+themes/greenblog_tiki_5/styles/greenblog/comment_icon.gif styles/greenblog/comment_icon.gif
+themes/greenblog_tiki_5/styles/greenblog/comment_bg.jpg styles/greenblog/comment_bg.jpg
+themes/greenblog_tiki_5/styles/greenblog/comment_bottom.jpg styles/greenblog/comment_bottom.jpg
+themes/greenblog_tiki_5/styles/greenblog/footer_bg.jpg styles/greenblog/footer_bg.jpg
+themes/greenblog_tiki_5/styles/greenblog/greenblog.png styles/greenblog/greenblog.png
+themes/greenblog_tiki_5/styles/greenblog/greenblog3cols.png styles/greenblog/greenblog3cols.png
+themes/greenblog_tiki_5/styles/greenblog/menu_panel_bg.jpg styles/greenblog/menu_panel_bg.jpg
+themes/greenblog_tiki_5/styles/greenblog/post_bg.jpg styles/greenblog/post_bg.jpg
+themes/greenblog_tiki_5/styles/greenblog/right_section_bg.jpg styles/greenblog/right_section_bg.jpg
+themes/greenblog_tiki_5/styles/greenblog/index.php styles/greenblog/index.php
+themes/greenblog_tiki_5/templates/styles/greenblog/credits.tpl templates/styles/greenblog/credits.tpl
+themes/greenblog_tiki_5/templates/styles/greenblog/index.php templates/styles/greenblog/index.php
+themes/greenblog_tiki_5/templates/styles/greenblog/tiki-site_header.tpl templates/styles/greenblog/tiki-site_header.tpl
+hemes/greenblog_tiki_5/templates/styles/greenblog/tiki-site_header_top.tpl templates/styles/greenblog/tiki-site_header_top.tpl
+
+Description:
+The Green Blog theme has a dark jungle-like quality. For more information, please see the documentation pages for this theme. If possible, please keep the link to TemplateMo.com in the page footer.
+ 
+Docurl:
+http://themes.tikiwiki.org
+http://zukakakina.com
+ 
+Licence:
+This theme is a derived work using visual elements of the Green Blog theme by TemplateMo.com (http://TemplateMo.com), which was released without conditions for use. This theme for TikiWiki CMS/Groupware is licensed GNU/LGPL.
+
+Author:
+Gary Cunningham-Lee (chibaguy)
+ 
+Version:
+5.0
+
+Changelog:
+3 updated for Tiki 5
+2 updated for Tiki 4
+1 initial package
