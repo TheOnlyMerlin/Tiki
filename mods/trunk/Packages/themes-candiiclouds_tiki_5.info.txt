@@ -1,0 +1,54 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/candiiclouds_tiki_5/Readme.txt styles/candiiclouds/Readme.txt
+themes/candiiclouds_tiki_5/styles/candiiclouds.css styles/candiiclouds.css
+themes/candiiclouds_tiki_5/styles/candiiclouds/arrows-00adef.png styles/candiiclouds/arrows-00adef.png
+themes/candiiclouds_tiki_5/styles/candiiclouds/banstars.gif styles/candiiclouds/banstars.gif
+themes/candiiclouds_tiki_5/styles/candiiclouds/bcloud.gif styles/candiiclouds/bcloud.gif
+themes/candiiclouds_tiki_5/styles/candiiclouds/bluu.gif styles/candiiclouds/bluu.gif
+themes/candiiclouds_tiki_5/styles/candiiclouds/candiiclouds.png styles/candiiclouds/candiiclouds.png
+themes/candiiclouds_tiki_5/styles/candiiclouds/cclog.gif candiiclouds/cclog.gif
+themes/candiiclouds_tiki_5/styles/candiiclouds/cloudsbdr.gif candiiclouds/cloudsbdr.gif
+themes/candiiclouds_tiki_5/styles/candiiclouds/index.php candiiclouds/index.php
+themes/candiiclouds_tiki_5/styles/candiiclouds/leftmarginbg.png styles/candiiclouds/leftmarginbg.png
+themes/candiiclouds_tiki_5/styles/candiiclouds/logo.png styles/candiiclouds/logo.png
+themes/candiiclouds_tiki_5/styles/candiiclouds/piink.gif styles/candiiclouds/piink.gif
+themes/candiiclouds_tiki_5/styles/candiiclouds/rightmarginbg.png styles/candiiclouds/rightmarginbg.png
+themes/candiiclouds_tiki_5/styles/candiiclouds/s-stars.gif styles/candiiclouds/s-stars.gif
+themes/candiiclouds_tiki_5/styles/candiiclouds/sbihead.gif styles/candiiclouds/sbihead.gif
+themes/candiiclouds_tiki_5/styles/candiiclouds/star.gif styles/candiiclouds/star.gif
+themes/candiiclouds_tiki_5/templates/styles/candiiclouds/credits.tpl templates/styles/candiiclouds/credits.tpl
+themes/candiiclouds_tiki_5/templates/styles/candiiclouds/tiki.tpl templates/styles/candiiclouds/tiki.tpl
+themes/candiiclouds_tiki_5/templates/styles/candiiclouds/tiki-site_header_top.tpl templates/styles/candiiclouds/tiki-site_header_top.tpl
+
+Description:
+Candii Clouds theme by Mark Schulz (elpirtxis), licensed Creative Commons Attribution 2.5 and
+adapted for TikiWiki CMS/Groupware by Gary Cunningham-Lee (chibaguy).
+ 
+Docurl:
+http://themes.tikiwiki.org/Candiiclouds
+http://zukakakina.com/Candiiclouds
+ 
+Licence:
+The visual aspects of this theme are a CCA2.5 derived work.
+
+Author:
+Gary Cunningham-Lee (chibaguy)
+ 
+Version:
+Tiki 5
+ 
+Changelog:
+3 updated for Tiki 5 features
+2 modified to import layout/layout.css; suckerfish menu arrows image added
+1 initial package
