@@ -2,13 +2,14 @@ contributor:
 $Author: xavi $
 
 revision: 
-$Revision: 0.2 $
+$Revision: 0.3 $
 
 lastmodif:
-$Date: 2010-02-21 01:12:00 $
+$Date: 2010-05-21 15:34:00 $
 
 files: 
 wiki-plugins/r/lib/wiki-plugins/wikiplugin_r.php lib/wiki-plugins/wikiplugin_r.php
+wiki-plugins/r/temp/.htaccess temp/.htaccess
 
 Author:
 Xavier de Pedro (xavi)
@@ -31,3 +32,4 @@ http://dev.tikiwiki.org/PluginR
 Changelog:
 0.1 initial package
 0.2 Graphs also allowed inside wiki pages, as png images. Removed the need for StatWiki.r file. 
+0.3 Png can be loaded in pages (allowed by local .htaccess file in ./temp folder)

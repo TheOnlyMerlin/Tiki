@@ -25,7 +25,7 @@ function wikiplugin_r_info() {
 	return array(
 		'name' => tra('R syntax'),
 		'documentation' => 'PluginR',
-		'description' => tra('Parses R syntax and shows the output either from the code introduced between the plugin tags or from the file Id from an r script in a Tiki file gallery'),
+		'description' => tra('Parses R syntax and shows the output either from the code introduced between the plugin tags or from the file attached to a tracker item sent through PluginTracker'),
 		'prefs' => array( 'wikiplugin_r' ),
 		'validate' => 'all',
 		'params' => array(
