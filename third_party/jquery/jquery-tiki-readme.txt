@@ -2,6 +2,10 @@
 JQuery/Tiki readme
 -------------------------
 
+nkoth 25 May 2010
+
+Added jquery-validate v1.7 (used for new Tracker validation feature)
+
 jonnybradley 10 May 2010
 
 Update:
