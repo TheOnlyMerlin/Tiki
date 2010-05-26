@@ -1,17 +1,17 @@
 /* Controls styling */
-#jSheetControls_loc, #jSheetControls_fx
+.jSheetControls_loc, .jSheetControls_fx
 {
-	border: none;
+	border-width: 0px ! important;
 	background: none ! important;
 }
 
-#jSheetControls_formula
+.jSheetControls_formula
 {
 	width: 99%;
     height: 17px;
 }
 
-#jSheetLog
+.jSheetLog
 {
 	height: 100px;
 	width: 100%;
@@ -19,7 +19,7 @@
 	position: relative;
 }
 
-#jSheetControls, #jSheetControls table
+.jSheetControls, .jSheetControls table
 {
 	padding: 0px ! important;
 	border: none ! important;
@@ -27,7 +27,7 @@
 	margin: 0px; 
 }
 
-#jSheetMenu
+.jSheetMenu
 {
 	cursor: pointer;
 	background-color: transparent ! important;
@@ -36,7 +36,7 @@
 	border: none ! important;
 }
 
-#jSheetMenu *
+.jSheetMenu *
 {
 	color: inherit ! important;
 	background-color: inherit ! important;
@@ -44,11 +44,6 @@
 .menu
 {
 	display: none;
-}
-.rootVoice, .rootVoice .selected
-{
-	padding: 2px ! important;
-	font-size: 1em ! important;
 }
 #titleHolder
 {
@@ -59,30 +54,20 @@
 	width: inherit ! important;
 	border-color: inherit ! important;
 }
-#jSheetTabContainer
+.jSheetTabContainer
 {
 	vertical-align: bottom;
 	text-align: left ! important;
 }
-#jSheetTabContainer span
+.jSheetTabContainer span
 {
 	
 	padding: 2px 5px 0 5px ! important;
 	cursor: pointer;
 }
-#jSheetTabContainer *, .menuDiv *
+.jSheetTabContainer *, .menuDiv *
 {
 	font-size: 1em ! important;
-}
-#sheetTitle
-{
-	border: none ! important;
-}
-
-#sheetTitle a
-{
-	font-weight: bold;
-	cursor: pointer;
 }
 
 .tableControl
@@ -97,18 +82,18 @@
 /* Sheet styling */
 .jSheet
 {
+	position: relative ! important;
 	margin-top: -1px ! important;
 	margin-left: -1px ! important;
     table-layout: fixed;
     empty-cells: show;
 	background-image: none ! important;
-	margin-bottom: 20px ! important;
-	margin-right: 20px ! important;
 	font-family: arial, serif;
 	overflow: hidden;
 	height: auto ! important;
 	border-spacing: 0px ! important;
 	border-width: 1px ! important;
+	margin-bottom: 20px ! important;
 }
 .jSheet tbody
 {
@@ -144,31 +129,11 @@
 	min-width: 25px ! important;
 }
 
-.jSheet textarea
-{
-	font-family: inherit;
-	border: inherit ! important;
-	font-size: 1em ! important;
-	color: inherit ! important;
-	background-color: inherit ! important;
-	margin: -2px ! important;
-	padding: 0px ! important;
-	width: 100%;
-	left: inherit;
-	height: inherit ! important;
-	position: relative;
-	font-weight: inherit;
-	text-align: inherit;
-}
-
 .jSheet colgroup col
 {
 	border: none ! important;
 }
- .jSheetUI, .jSheetUI tr, .jSheetUI td, .jSheetUI tbody, .jSheetUI #jSheetControls textarea
-{
-	border-width: 1px ! important;
-}
+
 /* Containers styleing*/
 .jSheetBarCorner
 {
@@ -203,9 +168,10 @@
 
 .jSheetEditPane
 {
-    overflow: auto;
+    overflow: auto ! important;
 	background-image: none ! important;
 	border-width: 0px;
+	position: relative ! important;
 }
 /* Bar item styling */
 
@@ -213,12 +179,14 @@
 {
     position: relative ! important;
 	border-width: 0px ! important;
+	min-width: 100000px;
 }
 
 .jSheetBarLeft
 {
 	position: relative ! important;
 	border-width: 0px ! important;
+	min-height: 100000px;
 }
 .jSheetBarLeft div
 {
@@ -245,7 +213,7 @@
 	min-width: 25px ! important;
 }
 
-#jSheetControls img
+.jSheetControls img
 {
 	border: none;
 }
@@ -255,7 +223,7 @@
 	display: inline;
 }
 
-#jSheetInPlaceEdit
+.jSheetInPlaceEdit
 {
 	position: absolute;
 }
@@ -266,6 +234,24 @@
 	width: 16px ! important;
 	height: 16px ! important;
 	background-color: transparent ! important;
+}
+
+.jSheetFullScreen
+{
+	top: 5px;
+	left: 5px;
+	position: fixed;
+	top: expression(eval(document.body.scrollTop + 15) + "px");
+	left: expression(eval(document.body.scrollLeft) + "px");
+}
+
+.jSheetFullScreenTabContainer
+{
+	bottom: 10px;
+	left: 10px;
+	position: fixed;
+	top: expression(eval(document.body.scrollTop + 15) + "px");
+	left: expression(eval(document.body.scrollLeft) + "px");
 }
 
 /* Cell styler classes */

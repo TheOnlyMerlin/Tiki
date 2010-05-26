@@ -2,6 +2,12 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 25 May 2010
+
+Update:
+	jQuery.sheet from 1.0.2 to 1.1.0 SVN (trunk only)
+
+
 nkoth 25 May 2010
 
 Added jquery-validate v1.7 (used for new Tracker validation feature)
