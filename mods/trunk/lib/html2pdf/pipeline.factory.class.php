@@ -264,7 +264,8 @@ require_once('xml.validation.inc.php');
 
 require_once('content_type.class.php');
 
-class PipelineFactory {
+class PipelineFactory
+{
   function create_default_pipeline($encoding, $filename) {
     $pipeline = new Pipeline(); 
 

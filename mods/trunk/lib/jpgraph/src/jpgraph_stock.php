@@ -3,7 +3,7 @@
 // File: 	JPGRAPH_STOCK.PHP
 // Description:	Stock plot extension for JpGraph
 // Created: 	2003-01-27
-// Ver:		$Id: jpgraph_stock.php,v 1.1 2007-03-10 12:51:46 tombombadilom Exp $
+// Ver:		$Id$
 //
 // Copyright (c) Aditus Consulting. All rights reserved.
 //========================================================================

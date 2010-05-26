@@ -43,7 +43,8 @@ function merge_height_constraint($hc1, $hc2) {
 // Note that constraint can be given as a diapason from min to max height
 // It is applied only of no strict height constraint is given
 //
-class HCConstraint {
+class HCConstraint
+{
   var $constant;
   var $min;
   var $max;

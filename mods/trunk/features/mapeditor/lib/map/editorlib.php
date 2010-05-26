@@ -370,7 +370,7 @@ class LayerLib extends TikiLib
   				}
 				if (isset($name) && isset($image)) {
 					$imagename= substr($image,24);
-					$imagenameonly= split("[.]",$imagename);
+					$imagenameonly= explode('.',$imagename);
 					$imagepath="generated/icons/Sigfreed/World/".$imagenameonly[0]."_class_0.png";
 					$icon['line']=array($name,$imagepath);	
 					array_push($icon, $icon['line']);

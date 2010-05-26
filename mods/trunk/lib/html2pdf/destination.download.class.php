@@ -1,5 +1,6 @@
 <?php
-class DestinationDownload extends DestinationHTTP {
+class DestinationDownload extends DestinationHTTP
+{
   function DestinationDownload($filename) {
     $this->DestinationHTTP($filename);
   }

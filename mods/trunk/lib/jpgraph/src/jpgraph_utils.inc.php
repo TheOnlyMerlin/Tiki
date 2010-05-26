@@ -3,7 +3,7 @@
 // File: 	JPGRAPH_UTILS.INC
 // Description: Collection of non-essential "nice to have" utilities 
 // Created: 	2005-11-20
-// Ver:		$Id: jpgraph_utils.inc.php,v 1.1 2007-03-10 12:51:46 tombombadilom Exp $
+// Ver:		$Id$
 //
 // Copyright (c) Aditus Consulting. All rights reserved.
 //========================================================================
@@ -480,7 +480,8 @@ class DateScaleUtils
 //=============================================================================
 // Class ReadFileData
 //=============================================================================
-Class ReadFileData {
+Class ReadFileData
+{
 
     //----------------------------------------------------------------------------
     // Desciption:

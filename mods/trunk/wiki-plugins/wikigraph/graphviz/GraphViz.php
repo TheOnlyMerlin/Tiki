@@ -60,7 +60,8 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 *          Dr. Volker Göbbels <vmg@arachnion.de>
 * @package Image
 */
-class Image_GraphViz {
+class Image_GraphViz
+{
     /**
     * Path to GraphViz/dot command
     *

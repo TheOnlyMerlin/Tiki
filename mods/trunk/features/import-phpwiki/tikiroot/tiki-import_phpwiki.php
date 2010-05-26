@@ -29,10 +29,10 @@ function parse_output(&$obj, &$parts, $i) {
 		$aux["body"] = $obj->body;
 
 		$ccc = $obj->headers["content-type"];
-		$items = split(';', $ccc);
+		$items = explode(';', $ccc);
 
 		foreach ($items as $item) {
-		    $portions = split('=', $item);
+		    $portions = explode('=', $item);
 
 		    if (isset($portions[0]) && isset($portions[1])) {
 			$aux[trim($portions[0])] = trim($portions[1]);
@@ -46,10 +46,10 @@ function parse_output(&$obj, &$parts, $i) {
 		$aux["body"] = $obj->body;
 
 		$ccc = $obj->headers["content-type"];
-		$items = split(';', $ccc);
+		$items = explode(';', $ccc);
 
 		foreach ($items as $item) {
-		    $portions = split('=', $item);
+		    $portions = explode('=', $item);
 
 		    if (isset($portions[0]) && isset($portions[1])) {
 			$aux[trim($portions[0])] = trim($portions[1]);

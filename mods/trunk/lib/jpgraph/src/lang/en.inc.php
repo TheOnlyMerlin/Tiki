@@ -3,7 +3,7 @@
 // File: 	EN.INC.PHP
 // Description: English language file for error messages
 // Created: 	2006-01-25
-// Ver:		$Id: en.inc.php,v 1.1 2007-06-14 10:55:55 tombombadilom Exp $
+// Ver:		$Id$
 //
 // Copyright (c) Aditus Consulting. All rights reserved.
 //========================================================================

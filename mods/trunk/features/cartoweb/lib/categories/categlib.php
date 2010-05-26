@@ -821,14 +821,14 @@ class CategLib extends TikiLib
 	function get_link_categories($link) {
 		$ret=array();
 		$parsed=parse_url($link);
-		$urlPath = split("/",$parsed["path"]);
+		$urlPath = explode("/",$parsed["path"]);
 		$parsed["path"]=end($urlPath);
 		if(!isset($parsed["query"])) return($ret);
 		/* not yet used. will be used to get the "base href" of a page
 		$params=array();
 		$a = explode('&', $parsed["query"]);
 		for ($i=0; $i < count($a);$i++) {
-			$b = split('=', $a[$i]);
+			$b = explode('=', $a[$i]);
 			$params[htmlspecialchars(urldecode($b[0]))]=htmlspecialchars(urldecode($b[1]));
 		}
 		*/
@@ -965,7 +965,7 @@ class CategLib extends TikiLib
 		if ($types == '*') {
 			$typesallowed = array_keys($typetitles);
 		} elseif (strpos($types,'+')) {
-			$alltypes = split('\+',$types);
+			$alltypes = explode('+',$types);
 			foreach ($alltypes as $t) {
 				if (isset($typetokens["$t"])) {
 					$typesallowed[] = $typetokens["$t"];

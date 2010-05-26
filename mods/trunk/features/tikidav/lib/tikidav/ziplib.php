@@ -460,7 +460,8 @@ define('ZIP_CENTHEAD_MAGIC', "PK\001\002");
 define('ZIP_LOCHEAD_MAGIC', "PK\003\004");
 define('ZIP_ENDDIR_MAGIC', "PK\005\006");
 
-class ZipWriter {
+class ZipWriter
+{
 	//var $zipcontent="";
 	
 	function ZipWriter($comment = "", $zipname = "archive.zip") {
@@ -585,7 +586,8 @@ $this->zipcontent="";
  *
  * Right now we ignore the file mod date and time, since we don't need it.
  */
-class ZipReader {
+class ZipReader
+{
 	function ZipReader($zipfile) {
 		if (!is_string($zipfile))
 			$this->fp = $zipfile; // File already open
@@ -778,7 +780,7 @@ function MimeifyPageRevision($page) {
 	$out = MimeContentTypeHeader('application', 'x-tikiwiki', $params);
 	$out .= sprintf("Content-Transfer-Encoding: %s\r\n", 'binary');
 	$out .= "\r\n";
-	$lines = split("\n", $page["data"]);
+	$lines = explode("\n", $page["data"]);
 
 	foreach ($lines as $line) {
 		// This is a dirty hack to allow saving binary text files. See above.

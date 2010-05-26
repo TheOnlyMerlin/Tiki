@@ -3,7 +3,7 @@
 // File:	IMGDATA_SQUARES.INC
 // Description:	Base64 encoded images for squares
 // Created: 	2003-03-20
-// Ver:		$Id: imgdata_squares.inc,v 1.1 2007-03-10 12:51:45 tombombadilom Exp $
+// Ver:		$Id$
 //
 // Copyright (c) Aditus Consulting. All rights reserved.
 //========================================================================

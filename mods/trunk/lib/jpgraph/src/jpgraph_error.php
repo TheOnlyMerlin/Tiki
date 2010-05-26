@@ -3,7 +3,7 @@
 // File: 	JPGRAPH_ERROR.PHP
 // Description:	Error plot extension for JpGraph
 // Created: 	2001-01-08
-// Ver:		$Id: jpgraph_error.php,v 1.1 2007-03-10 12:51:45 tombombadilom Exp $
+// Ver:		$Id$
 //
 // Copyright (c) Aditus Consulting. All rights reserved.
 //========================================================================

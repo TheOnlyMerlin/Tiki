@@ -305,7 +305,7 @@ class CcLib extends UsersLib
 	}
 
 	function decsv($str) {
-		$ar = split('","',substr($str,1,-1));
+		$ar = explode('","',substr($str,1,-1));
 	}
 
 	function list_providers($url,$refresh=false) {
@@ -321,7 +321,7 @@ class CcLib extends UsersLib
 					$req = "GET /ccsp.txt HTTP/1.1\r\rHost: $url\r\nConnection: Close\r\n";
 					fwrite($fp,$req);
 					while (!feof($fp)) {
-						$pr[] = split(',',fgets($fp,1024));
+						$pr[] = explode(',',fgets($fp,1024));
 						if ($pr[0] != $cc_cpun and count($pr) == 3) {
 							$pr[3] = time();
 							$pr[4] = 'y';
@@ -355,7 +355,7 @@ class CcLib extends UsersLib
 							$req = "GET /ccsp.php HTTP/1.1\r\rHost: ".$p[1]."\r\nConnection: Close\r\n";
 							fwrite($fp,$req);
 							while (!feof($fp)) {
-								$a = split('","',substr(fgets($fp,1025),1,-1));
+								$a = explode('","',substr(fgets($fp,1025),1,-1));
 								$this->replace_currency($a[0],$a[1],$a[2],stripslashes($a[3]),$a[4],'y',false,$p[0]);
 							}
 							fclose($fp);

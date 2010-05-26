@@ -3,7 +3,7 @@
 // File:	JPGRAPH_RADAR.PHP
 // Description: Radar plot extension for JpGraph
 // Created: 	2001-02-04
-// Ver:		$Id: jpgraph_radar.php,v 1.1 2007-03-10 12:51:46 tombombadilom Exp $
+// Ver:		$Id$
 //
 // Copyright (c) Aditus Consulting. All rights reserved.
 //========================================================================
@@ -89,7 +89,8 @@ class RadarLogTicks extends Ticks
 }
 	
 class RadarLinearTicks extends Ticks
-{ // extends LinearTicks {
+{
+ // extends LinearTicks {
 
     private $minor_step=1, $major_step=2;
     private $xlabel_offset=0,$xtick_offset=0;
@@ -319,7 +320,8 @@ class RadarAxis extends AxisPrototype
 // Description: Draws grid for the radar graph
 //===================================================
 class RadarGrid
-{ //extends Grid {
+{
+ //extends Grid {
     private $type='solid';
     private $grid_color='#DDDDDD';
     private $show=false, $weight=1;

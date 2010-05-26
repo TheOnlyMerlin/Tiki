@@ -59,7 +59,7 @@ function wikiplugin_phplot($data, $params) {
 	if (! ($xspecified)) { $url.="&XSIZE_in=" . $XSIZE; }
 	if (! ($yspecified)) { $url.="&YSIZE_in=" . $YSIZE; }
 
-	$lines = split("\n", $data);
+	$lines = explode("\n", $data);
 	$lineno=0;
 	foreach ($lines as $line) {
 		$line = trim($line);

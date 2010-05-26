@@ -17,7 +17,8 @@
 if (!class_exists('FPDF')) {
   define('FPDF_VERSION','1.53');
 
-  class PDFIndirectObject {
+  class PDFIndirectObject
+	{
     var $object_id;
     var $generation_id;
     
@@ -73,7 +74,8 @@ if (!class_exists('FPDF')) {
     }
   }
 
-  class PDFPage extends PDFIndirectObject {
+  class PDFPage extends PDFIndirectObject
+	{
     var $annotations;
 
     function PDFPage($object_id, $generation_id) {
@@ -89,7 +91,8 @@ if (!class_exists('FPDF')) {
     }
   }
 
-  class PDFAppearanceStream extends PDFIndirectObject {
+  class PDFAppearanceStream extends PDFIndirectObject
+	{
     var $content;
 
     function PDFAppearanceStream($object_id, $content, $generation_id) {
@@ -117,13 +120,15 @@ if (!class_exists('FPDF')) {
     }
   }
 
-  class PDFAnnotation extends PDFIndirectObject {
+  class PDFAnnotation extends PDFIndirectObject
+	{
     function PDFAnnotation($object_id, $generation_id) {
       $this->PDFIndirectObject($object_id, $generation_id);
     }
   }
 
-  class PDFRect {
+  class PDFRect
+	{
     var $x;
     var $y;
     var $w;
@@ -161,7 +166,8 @@ if (!class_exists('FPDF')) {
     }
   }
 
-  class PDFAnnotationExternalLink extends PDFAnnotation {
+  class PDFAnnotationExternalLink extends PDFAnnotation
+	{
     var $rect;
     var $link;
 
@@ -197,7 +203,8 @@ if (!class_exists('FPDF')) {
     }
   }
 
-  class PDFAnnotationInternalLink extends PDFAnnotation {
+  class PDFAnnotationInternalLink extends PDFAnnotation
+	{
     var $rect;
     var $link;
 
@@ -245,7 +252,8 @@ if (!class_exists('FPDF')) {
     }
   }
 
-  class PDFAnnotationWidget extends PDFAnnotation {
+  class PDFAnnotationWidget extends PDFAnnotation
+	{
     /**
      * @var PDFAppearanceStream 
      * @access protected
@@ -269,7 +277,8 @@ if (!class_exists('FPDF')) {
     }
   }
 
-  class PDFFieldCheckBox extends PDFAnnotationWidget {
+  class PDFFieldCheckBox extends PDFAnnotationWidget
+	{
     function PDFFieldCheckBox($object_id, 
                               $rect, 
                               $generation_id) {
@@ -311,7 +320,8 @@ if (!class_exists('FPDF')) {
     }
   }
 
-  class PDFFieldPushButton extends PDFAnnotationWidget {
+  class PDFFieldPushButton extends PDFAnnotationWidget
+	{
     var $link;
     var $fontindex;
     var $fontsize;
@@ -391,7 +401,8 @@ if (!class_exists('FPDF')) {
     }
   }
 
-  class PDFFieldRadio extends PDFAnnotationWidget {
+  class PDFFieldRadio extends PDFAnnotationWidget
+	{
     var $parent;
 
     function PDFFieldRadio($object_id, 
@@ -433,7 +444,8 @@ if (!class_exists('FPDF')) {
     }
   }
 
-  class PDFFieldRadioGroup extends PDFIndirectObject {
+  class PDFFieldRadioGroup extends PDFIndirectObject
+	{
     /**
      * @var String Keeps the name of the radio button group
      * @access private
@@ -486,7 +498,8 @@ if (!class_exists('FPDF')) {
     }
   }
 
-  class PDFFieldText extends PDFAnnotationWidget {
+  class PDFFieldText extends PDFAnnotationWidget
+	{
     var $fontindex;
     var $fontsize;
 
@@ -554,7 +567,8 @@ if (!class_exists('FPDF')) {
     }
   }
 
-  class FPDF {
+  class FPDF
+	{
     //Private properties
     
     var $page;               //current page number

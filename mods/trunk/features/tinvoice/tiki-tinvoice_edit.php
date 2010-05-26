@@ -47,7 +47,8 @@ function getthedate($str) {
 }
 
 /*static*/
-class tiki_edit_invoice {
+class tiki_edit_invoice
+{
     /*static public*/ function init() {
 	global $smarty;
 	global $dbTiki;

@@ -4,7 +4,7 @@
 // Description: German language file for error messages
 // Created: 	2006-03-06
 // Author:	Timo Leopold (timo@leopold-hh.de)
-// Ver:		$Id: de.inc.php,v 1.1 2007-06-14 10:55:55 tombombadilom Exp $
+// Ver:		$Id$
 //
 // Copyright (c)
 //========================================================================

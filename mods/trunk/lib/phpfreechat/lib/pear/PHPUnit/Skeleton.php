@@ -41,7 +41,7 @@
  * @author     Scott Mattocks <scott@crisscott.com>
  * @copyright  2002-2005 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    CVS: $Id: Skeleton.php,v 1.8 2005/11/10 09:47:14 sebastian Exp $
+ * @version    CVS: $Id$
  * @link       http://pear.php.net/package/PHPUnit
  * @since      File available since Release 1.1.0
  */

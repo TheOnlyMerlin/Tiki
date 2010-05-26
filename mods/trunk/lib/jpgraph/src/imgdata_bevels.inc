@@ -3,7 +3,7 @@
 // File:	IMGDATA_BEVELS.INC
 // Description:	Base64 encoded images for round bevels
 // Created: 	2003-03-20
-// Ver:		$Id: imgdata_bevels.inc,v 1.1 2007-03-10 12:51:44 tombombadilom Exp $
+// Ver:		$Id$
 //
 // Copyright (c) Aditus Consulting. All rights reserved.
 //========================================================================

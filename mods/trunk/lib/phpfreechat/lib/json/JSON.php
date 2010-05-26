@@ -51,7 +51,7 @@
  * @author      Matt Knapp <mdknapp[at]gmail[dot]com>
  * @author      Brett Stimmerman <brettstimmerman[at]gmail[dot]com>
  * @copyright   2005 Michal Migurski
- * @version     CVS: $Id: JSON.php,v 1.31 2006/06/28 05:54:17 migurski Exp $
+ * @version     CVS: $Id$
  * @license     http://www.opensource.org/licenses/bsd-license.php
  * @link        http://pear.php.net/pepr/pepr-proposal-show.php?id=198
  */
@@ -779,7 +779,7 @@ class Services_JSON
 if (class_exists('PEAR_Error')) {
 
     class Services_JSON_Error extends PEAR_Error
-    {
+		{
         function Services_JSON_Error($message = 'unknown error', $code = null,
                                      $mode = null, $options = null, $userinfo = null)
         {
@@ -793,7 +793,7 @@ if (class_exists('PEAR_Error')) {
      * @todo Ultimately, this class shall be descended from PEAR_Error
      */
     class Services_JSON_Error
-    {
+		{
         function Services_JSON_Error($message = 'unknown error', $code = null,
                                      $mode = null, $options = null, $userinfo = null)
         {

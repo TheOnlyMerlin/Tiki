@@ -3,7 +3,7 @@
 // File:	JPGRAPH_PIE.PHP
 // Description:	Pie plot extension for JpGraph
 // Created: 	2001-02-14
-// Ver:		$Id: jpgraph_pie.php,v 1.1 2007-03-10 12:51:46 tombombadilom Exp $
+// Ver:		$Id$
 //
 // Copyright (c) Aditus Consulting. All rights reserved.
 //========================================================================

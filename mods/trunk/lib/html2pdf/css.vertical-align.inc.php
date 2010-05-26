@@ -22,7 +22,7 @@ class VerticalAlignSuper
 }
 
 class VerticalAlignSub
-{ 
+{
 //   function apply(&$child, &$parent) { 
 //     $child->baseline = $child->baseline/2 - $parent->_line_baseline; 
 //   } 
@@ -33,7 +33,7 @@ class VerticalAlignSub
 }
 
 class VerticalAlignTop
-{ 
+{
 //   function apply(&$child, &$parent) { 
 //     return; // Do nothing 
 //   } 

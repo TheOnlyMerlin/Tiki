@@ -3,7 +3,7 @@
 // File:	JPGRAPH.PHP
 // Description:	PHP Graph Plotting library. Base module.
 // Created: 	2001-01-08
-// Ver:		$Id: jpgraph.php,v 1.1 2007-03-10 12:51:45 tombombadilom Exp $
+// Ver:		$Id$
 //
 // Copyright 2006 (c) Aditus Consulting. All rights reserved.
 //========================================================================
@@ -230,8 +230,8 @@ DEFINE("_FORCE_IMGDIR",'/tmp/jpgimg/');
 
 function CheckPHPVersion($aMinVersion)
 {
-    list($majorC, $minorC, $editC) = split('[/.-]', PHP_VERSION);
-    list($majorR, $minorR, $editR) = split('[/.-]', $aMinVersion);
+    list($majorC, $minorC, $editC) = preg_split('#[/.-]#', PHP_VERSION);
+    list($majorR, $minorR, $editR) = preg_split('#[/.-]#', $aMinVersion);
   
     if ($majorC > $majorR) return true;
     if ($majorC < $majorR) return false;
@@ -5992,7 +5992,7 @@ class Image
 
     // Get the specific height for a text string
     function GetTextHeight($txt="",$angle=0) {
-	$tmp = split("\n",$txt);
+	$tmp = explode("\n",$txt);
 	$n = count($tmp);
 	$m=0;
 	for($i=0; $i< $n; ++$i)
@@ -6037,7 +6037,7 @@ class Image
     // Get actual width of text in absolute pixels
     function GetTextWidth($txt,$angle=0) {
 
-	$tmp = split("\n",$txt);
+	$tmp = explode("\n",$txt);
 	$n = count($tmp);
 	if( $this->font_family <= FF_FONT2+1 ) {
 
@@ -6188,8 +6188,8 @@ class Image
 	    }
 	}
 	else {
-	    if( ereg("\n",$txt) ) { 
-		$tmp = split("\n",$txt);
+	    if( preg_match("/\n/",$txt) ) { 
+		$tmp = explode("\n",$txt);
 		for($i=0; $i < count($tmp); ++$i) {
 		    $w1 = $this->GetTextWidth($tmp[$i]);
 		    if( $paragraph_align=="left" ) {
@@ -6320,7 +6320,7 @@ class Image
 	    $oy=$y;
 	}
 
-	if( !ereg("\n",$txt) || ($dir>0 && ereg("\n",$txt)) ) {
+	if( !preg_match("/\n/",$txt) || ($dir>0 && preg_match("/\n/",$txt)) ) {
 	    // Format a single line
 
 	    $txt = $this->AddTxtCR($txt);
@@ -6396,7 +6396,7 @@ class Image
 	    $w=$this->GetTextWidth($txt);
 
 	    $y -= $linemargin/2;
-	    $tmp = split("\n",$txt);
+	    $tmp = explode("\n",$txt);
 	    $nl = count($tmp);
 	    $h = $nl * $fh;
 

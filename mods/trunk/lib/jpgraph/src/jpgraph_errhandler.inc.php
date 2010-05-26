@@ -5,7 +5,7 @@
 //		error messages. All localized error messages are stored
 //		in a separate file under the "lang/" subdirectory.
 // Created: 	2006-09-24
-// Ver:		$Id: jpgraph_errhandler.inc.php,v 1.1 2007-03-10 12:51:45 tombombadilom Exp $
+// Ver:		$Id$
 //
 // Copyright 2006 (c) Aditus Consulting. All rights reserved.
 //========================================================================

@@ -3,7 +3,7 @@
 // File:	IMGDATA_ROUNDBALLS.INC
 // Description:	Base64 encoded images for small round markers
 // Created: 	2003-03-20
-// Ver:		$Id: imgdata_balls.inc,v 1.1 2007-03-10 12:51:44 tombombadilom Exp $
+// Ver:		$Id$
 //
 // Copyright (c) Aditus Consulting. All rights reserved.
 //========================================================================

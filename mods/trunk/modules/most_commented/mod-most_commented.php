@@ -110,7 +110,7 @@ else
 	$lastdays = "";
 $smarty->assign('lastdays', $lastdays);
 if (isset($module_params["lastdaysList"])) { // separator is the first char
-	$lastdaysList = split(substr($module_params["lastdaysList"], 1, 1), $module_params["lastdaysList"]);
+	$lastdaysList = explode(substr($module_params["lastdaysList"], 1, 1), $module_params["lastdaysList"]);
 }
 else
 	$lastdaysList = array("1", "7", "14", "30", "60");

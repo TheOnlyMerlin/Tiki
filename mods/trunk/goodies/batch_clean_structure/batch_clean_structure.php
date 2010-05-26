@@ -40,7 +40,7 @@ foreach ($list_structures['data'] as $page_ref_id) {
 	foreach ($tree as $node) {
 		echo $node['pos']. ' '.$node['pageName'].'<br />';
 		if (!empty($node['pos']) && ! empty($node['db_pos'])) {
-			$nodes = split('\.', $node['pos']);
+			$nodes = explode('.', $node['pos']);
 			$last = $nodes[count($nodes) - 1];
 			if ($last != $node['db_pos']) {
 				++$modif;

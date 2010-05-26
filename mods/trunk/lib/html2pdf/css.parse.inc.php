@@ -270,7 +270,7 @@ function parse_css_property($property) {
 }
 
 function parse_css_properties($raw_properties) {
-  $properties = split(";",$raw_properties);
+  $properties = explode(';',$raw_properties);
   $results = array();
   foreach ($properties as $property) {
     $results = array_merge($results, parse_css_property(trim($property)));

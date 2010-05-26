@@ -3,7 +3,7 @@
 // File: 	JPGRAPH_CANVTOOLS.PHP
 // Description:	Some utilities for text and shape drawing on a canvas
 // Created: 	2002-08-23
-// Ver:		$Id: jpgraph_canvtools.php,v 1.1 2007-03-10 12:51:45 tombombadilom Exp $
+// Ver:		$Id$
 //
 // Copyright (c) Aditus Consulting. All rights reserved.
 //========================================================================
