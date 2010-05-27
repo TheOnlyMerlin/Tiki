@@ -27,7 +27,7 @@
  * @author Hartmut Holzgraefe <hholzgra@php.net>
  * @version 0.99.1dev
  */
-class _parse_propfind 
+class _parse_propfind
 {
 	/**
 	 * success state flag

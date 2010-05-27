@@ -92,7 +92,7 @@ $oMap->preparequery();
 <html>
 <head>
 <title>
-Query for: <?=$mX?> - <?=$mY?>
+Query for: <?php echo $mX ?> - <?php echo $mY ?>
 </title>
 <style type="text/css">
 body {

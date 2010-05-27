@@ -448,7 +448,7 @@ class DocBookLib extends TikiLib
 				$cols = array ();
 
 				for ($i = 0; $i < count($tables[0]); $i ++) {
-					$rows = split("\n|\<br\/\>", $tables[0][$i]);
+					$rows = preg_split("#(\n|\<br\/\>)#", $tables[0][$i]);
 
 					$col[$i] = array ();
 

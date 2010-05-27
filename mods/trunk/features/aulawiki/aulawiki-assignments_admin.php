@@ -80,7 +80,7 @@ if (($firstDayofWeek = $tikilib->get_user_preference($user, "")) == "") { /* 0 f
 	$strRef = "First day of week: Sunday (its ID is 0) - translators you need to localize this string!";
 	//get_strings tra("First day of week: Sunday (its ID is 0) - translators you need to localize this string!");
 	if (($str = tra($strRef)) != $strRef) {
-		$firstDayofWeek = ereg_replace("[^0-9]", "", $str);
+		$firstDayofWeek = preg_replace('/[^0-9]/', '', $str);
 		if ($firstDayofWeek < 0 || $firstDayofWeek > 9)
 			$firstDayofWeek = 0;
 	} else

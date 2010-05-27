@@ -20,7 +20,8 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 	exit;
 }
 
-class Gmapwikiplugin extends TikiLib {
+class Gmapwikiplugin extends TikiLib
+{
 #  var $db;  // The PEAR db object used to access the database    
 
     function Gmapwikiplugin($db) {

@@ -9,7 +9,8 @@ if( !defined( 'PLUGINS_DIR' ) ) {
    define('PLUGINS_DIR', 'lib/wiki-plugins');
 }
 
-class WikiGraphLib extends TikiLib {
+class WikiGraphLib extends TikiLib
+{
 
     function WikiGraphLib($db) {
         $this->TikiLib($db);

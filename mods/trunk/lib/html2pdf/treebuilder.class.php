@@ -6,7 +6,7 @@ if (!defined('XML_TEXT_NODE')) { define('XML_TEXT_NODE',2); };
 if (!defined('XML_DOCUMENT_NODE')) { define('XML_DOCUMENT_NODE',3); };
 
 class TreeBuilder
-{ 
+{
   function build($xmlstring) {
     // Detect if we're using PHP 4 (DOM XML extension) 
     // or PHP 5 (DOM extension)

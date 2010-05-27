@@ -11,7 +11,7 @@ define('VA_TEXT_TOP'   ,6);
 define('VA_TEXT_BOTTOM',7);
 
 class VerticalAlignSuper
-{ 
+{
 //   function apply(&$child, &$parent) { 
 //     $child->baseline /= 2; 
 //   } 

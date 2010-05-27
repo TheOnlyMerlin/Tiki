@@ -58,7 +58,8 @@ require(dirname(__FILE__).'/class.csstidy_optimise.php');
  * @author Florian Schmitz (floele at gmail dot com) 2005-2006
  * @version 1.2
  */
-class csstidy {
+class csstidy
+{
 
 /**
  * Saves the parsed CSS

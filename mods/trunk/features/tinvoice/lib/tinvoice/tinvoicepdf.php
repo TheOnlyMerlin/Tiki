@@ -167,19 +167,19 @@ class Tinvoicepdf
 	    $func="get_$key";
 	    $value=$this->invoice->$func();
 	    if (($value !== NULL) && ($value !== ''))
-		$this->pdf_add_left_line(&$hl, $pdf, $title, $value);
+		$this->pdf_add_left_line($hl, $pdf, $title, $value);
 	}
 	for($i=0; $i<4; $i++) {
 	    $value=$this->invoice->get_ref('custom'.$i);
 	    if ($value !== NULL) {
 		$value=explode("\x01", $value);
-		$this->pdf_add_left_line(&$hl, $pdf, $value[0], $value[1]);
+		$this->pdf_add_left_line($hl, $pdf, $value[0], $value[1]);
 	    }
 	}
 
 	// add the table header
 	$hl=110;
-	$this->pdf_add_table_header(&$hl, $pdf);
+	$this->pdf_add_table_header($hl, $pdf);
 
 	// add the table content
 	$tht=0;
@@ -203,7 +203,7 @@ class Tinvoicepdf
 		$pdf->SetXY(120, $hl);
 		$pdf->MultiCell(80, 3.8, "Page $page sur {nb}", 0, "R");
 		$hl+=10;
-		$this->pdf_add_table_header(&$hl, $pdf);
+		$this->pdf_add_table_header($hl, $pdf);
 		$pdf->SetFont($GFONT, "", 10);
 	    }
 
@@ -290,7 +290,7 @@ class Tinvoicepdf
 
 	$hl=$hl_left > $hl_right ? $hl_left : $hl_right;
 	
-	$this->pdf_add_rib(&$hl, $pdf);
+	$this->pdf_add_rib($hl, $pdf);
 	// output the pdf
 	$pdf->Output();
     }

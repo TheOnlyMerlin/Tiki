@@ -31,7 +31,8 @@
   *	@see		XML
   */
 
-class Tag {
+class Tag
+{
 
 	// protected variables
 	var $tagStartOpen;

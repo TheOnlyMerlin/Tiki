@@ -45,7 +45,7 @@ function wikiplugin_formula($data, $params) {
 	extract ($params, EXTR_SKIP);
 
 	$data=trim($data);
-	if ( ereg ("^[-a-zA-Z+*/=,0-9 <>^_{}()]*$", $data ))  {
+	if ( preg_match ('#^[-a-zA-Z+*/=,0-9 <>^_{}()]*$#', $data ))  {
  		#
 	 	# Simple LaTeX, only polynom markup
  		# handle in HTML
@@ -54,7 +54,7 @@ function wikiplugin_formula($data, $params) {
  		$letters= preg_split("//", $data);
  		$html= "<i>";
  		foreach($letters as $letter) {
- 			if ( ereg ( "[-a-zA-Z+*/=,0-9 <>()]", $letter ) ) {
+ 			if ( preg_match ('#[-a-zA-Z+*/=,0-9 <>()]#', $letter ) ) {
  				$html .= htmlentities($letter);
  				if (end($state) == "SUP") {
  					array_pop($state);

@@ -35,7 +35,7 @@ function smarty_block_tiki_workspaces_module($params, $content, &$smarty) {
 	extract($params);
 	if (!isset($content))   return "";
 	if (!isset($title))     $title = substr($content,0,12)."...";
-	if (!isset($name))      $name  = ereg_replace("[^-_a-zA-Z0-9]","",$title);
+	if (!isset($name))      $name  = preg_replace('/[^-_a-zA-Z0-9]/', '', $title);
 	if (!isset($flip) || $flip != 'y') $flip = 'n';
 	if (!isset($decorations) || $decorations != 'n') $decorations = 'y';
 
