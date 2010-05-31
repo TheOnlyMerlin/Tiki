@@ -68,7 +68,7 @@
 		{/if}
 
 		{if $prefs.feature_wiki_undo eq 'y' and $canundo eq 'y'}
-			{button href="tiki-index.php?page=$thispage&amp;undo=1" _text="{tr}Undo{/tr}"}
+			{button href="tiki-index.php?page=$thispage&amp;undo=1" _text="{tr}Undo{/tr}" _ajax='n'}
 		{/if}
 
 		{if $prefs.feature_wiki_make_structure eq 'y' and $tiki_p_edit_structures eq 'y' and $editable and $structure eq 'n' and count($showstructs) eq 0}
@@ -89,7 +89,8 @@
 		{/if}
 
 		{if $prefs.feature_wiki_discuss eq 'y' && $show_page eq 'y' && $beingStaged ne 'y' && $tiki_p_forum_post eq 'y'}
-			{assign var=thiswiki_discussion_string value=$wiki_discussion_string|escape:"url"}
+			{capture name='wiki_discussion_string'}{include file='wiki-discussion.tpl}{/capture}
+			{assign var=thiswiki_discussion_string value=$smarty.capture.wiki_discussion_string|escape:"url"}
 			{button href="tiki-view_forum.php?forumId=`$prefs.wiki_forum_id`&amp;comments_postComment=post&amp;comments_title=$thispage&amp;comments_data=$thiswiki_discussion_string%3A+%5Btiki-index.php%3Fpage=$thispage%7C$thispage%5D&amp;comment_topictype=n" _text="{tr}Discuss{/tr}"}
 		{/if}
 

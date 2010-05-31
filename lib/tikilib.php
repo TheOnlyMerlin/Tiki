@@ -11,7 +11,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 	exit;
 }
 
-if ( ! defined('DATE_FORMAT_UNIXTIME') ) define('DATE_FORMAT_UNIXTIME', 5);
+//if ( ! defined('DATE_FORMAT_UNIXTIME') ) define('DATE_FORMAT_UNIXTIME', 5);
 
 // performance collecting:
 //require_once ('lib/tikidblib-debug.php');
@@ -2408,6 +2408,7 @@ class TikiLib extends TikiDb_Bridge
 		$n = -1;
 		$need_everything = ( $with_subgals_size && ( $sort_mode == 'size_asc' || $sort_mode == 'filesize_asc' ) );
 		global $cachelib; include_once('lib/cache/cachelib.php');
+		//TODO: perms cache for file perms (now we are using cache only for file gallery perms)
 		$cacheName = md5("group:".implode("\n", $this->get_user_groups($user)));
 		$cacheType = 'fgals_perms_'.$galleryId."_";
 		if ($galleryId > 0 && $cachelib->isCached($cacheName, $cacheType)) {
@@ -2417,14 +2418,22 @@ class TikiLib extends TikiDb_Bridge
 		}
 		foreach( $result as $res ) {
 			$object_type = ( $res['isgal'] == 1 ? 'file gallery' : 'file');
-			if (isset($fgal_perms[$res['id']])) {
-				$res['perms'] = $fgal_perms[$res['id']];
+			$galleryId = $res['isgal'] == 1 ? $res['id'] : $res['galleryId'];
+
+			// if file is categorized uses category permisions, otherwise uses parent file gallery permissions
+			// note that the file will not be displayed if categorized but its categories has no file gallery related permissions
+			if ($object_type == 'file' && $categlib->is_categorized($object_type, $res['id'])) {
+				$res['perms'] = $this->get_perm_object($res['id'], 'file', array(), false);
+			} else if (isset($fgal_perms[$galleryId])) {
+				$res['perms'] = $fgal_perms[$galleryId];
 			} else {
-				$fgal_perms[$res['id']] = $res['perms'] = $this->get_perm_object($res['id'], $object_type, array(), false);
+				$fgal_perms[$galleryId] = $res['perms'] = $this->get_perm_object($galleryId, 'file gallery', array(), false);
 			}
+			
 			if ($galleryId <=0) {
-				$cachelib->cacheItem($cacheName, serialize($fgal_perms), 'fgals_perms_'.$res['id'].'_');
+				$cachelib->cacheItem($cacheName, serialize($fgal_perms), 'fgals_perms_'.$galleryId.'_');
 			}
+
 			// Don't return the current item, if :
 			//  the user has no rights to view the file gallery AND no rights to list all galleries (in case it's a gallery)
 			if ( ( $res['perms']['tiki_p_view_file_gallery'] != 'y' && ! $this->user_has_perm_on_object($user,$res['id'], $object_type, 'tiki_p_view_file_gallery') )
@@ -5174,7 +5183,7 @@ class TikiLib extends TikiDb_Bridge
 						//echo '<pre>'; debug_print_backtrace(); echo '</pre>';
 						global $headerlib;
 						$headerlib->add_jsfile( 'tiki-jsplugin.php?language='.$prefs['language'], 'dynamic' );
-						if( $options['fck'] !== 'y' && $this->plugin_is_editable( $plugin_name ) && (empty($options['preview_mode']) || !$options['preview_mode']) && (empty($options['print']) || !$options['print']) && !$options['suppress_icons'] ) {
+						if( $this->plugin_is_editable( $plugin_name ) && (empty($options['preview_mode']) || !$options['preview_mode']) && (empty($options['print']) || !$options['print']) && !$options['suppress_icons'] ) {
 							include_once('lib/smarty_tiki/function.icon.php');
 							global $page;
 							$id = 'plugin-edit-' . $plugin_name . $current_index;
@@ -5601,7 +5610,6 @@ class TikiLib extends TikiDb_Bridge
 	}
 
 	function plugin_execute( $name, $data = '', $args = array(), $offset = 0, $validationPerformed = false, $parseOptions = array() ) {
-		global $prefs;
 		$outputFormat = 'wiki';
 		if( isset($parseOptions['context_format']) ) {
 			$outputFormat = $parseOptions['context_format'];
@@ -5668,16 +5676,6 @@ class TikiLib extends TikiDb_Bridge
 			}
 		}
 
-		if ($prefs['wysiwyg_htmltowiki'] === 'y' and isset($parseOptions['fck']) and $parseOptions['fck'] === 'y' ) {
-			$fck_editor_plugin = '{'.strtoupper($name).'(';
-			if (!empty($args)) {
-				foreach( $args as $argKey => $argValue ) {
-					$fck_editor_plugin .= $argKey.'="'.$argValue.'" ';
-				}
-			}
-			$fck_editor_plugin .= ')}'.$data.'{'.strtoupper($name).'}';
-		}
-
 		if( function_exists( $func_name ) ) {
 			$pluginFormat = 'wiki';
 			if( isset( $info['format'] ) ) {
@@ -5686,12 +5684,7 @@ class TikiLib extends TikiDb_Bridge
 
 			$output = $func_name( $data, $args, $offset, $parseOptions );
 
-			$plugin_result =  $this->convert_plugin_output( $output, $pluginFormat, $outputFormat, $parseOptions );
-			if ($prefs['wysiwyg_htmltowiki'] === 'y' and isset($parseOptions['fck']) and $parseOptions['fck'] === 'y' ) {
-				return '<span plugin="'.$func_name.'"  _plugin="'.urlencode($fck_editor_plugin).'">'.$plugin_result.'</span>';
-			} else {
-				return $plugin_result;
-			}
+			return $this->convert_plugin_output( $output, $pluginFormat, $outputFormat, $parseOptions );
 		} elseif( $info = $this->plugin_alias_info( $name ) ) {
 			$name = $info['implementation'];
 
@@ -5729,16 +5722,16 @@ class TikiLib extends TikiDb_Bridge
 	
 	private function convert_plugin_output( $output, $from, $to, $parseOptions ) {
 		if( ! $output instanceof WikiParser_PluginOutput ) {
-			if( $from === 'wiki' ) {
+			if( $from == 'wiki' ) {
 				$output = WikiParser_PluginOutput::wiki( $output );
-			} elseif( $from === 'html' ) {
+			} elseif( $from == 'html' ) {
 				$output = WikiParser_PluginOutput::html( $output );
 			}
 		}
 
-		if( $to === 'html' ) {
+		if( $to == 'html' ) {
 			return $output->toHtml( $parseOptions );
-		} elseif( $to === 'wiki' ) {
+		} elseif( $to == 'wiki' ) {
 			return $output->toWiki();
 		}
 	}
@@ -5791,7 +5784,7 @@ class TikiLib extends TikiDb_Bridge
 			}
 		}
 
-		$result = explode($splitter, $repl_string);
+		$result = split($splitter, $repl_string);
 
 		if( $matches ) {
 			// Loop through the result sections
@@ -6025,7 +6018,6 @@ class TikiLib extends TikiDb_Bridge
 		$options['suppress_icons'] = isset($options['suppress_icons']) ? (bool)$options['suppress_icons'] : false;
 		$options['parsetoc'] = isset($options['parsetoc']) ? (bool)$options['parsetoc'] : true;
 		$options['inside_pretty'] = isset($options['inside_pretty']) ? $options['inside_pretty'] : false;
-		if (empty($options['fck'])) $options['fck'] = 'n';
 		
 		
 		// if simple_wiki is true, disable some wiki syntax
@@ -6172,25 +6164,10 @@ class TikiLib extends TikiDb_Bridge
 		if (!$simple_wiki) {
 			// Replace boxes
 			$data = preg_replace("/\^([^\^]+)\^/", "<div class=\"simplebox\">$1</div>", $data);
-			if ( $options['fck'] === 'y' ) {
-				// Underlined text
-				$data = preg_replace("/===(.+?)===/", "<u>$1</u>", $data);
-				// Center text
-				if ($prefs['feature_use_three_colon_centertag'] == 'y') {
-					$data = preg_replace("/:::(.+?):::/", "<center>$1</center>", $data);
-				} else {
-					$data = preg_replace("/::(.+?)::/", "<center>$1</center>", $data);
-				}
-			} else {
-				// Underlined text
-				$data = preg_replace("/===(.+?)===/", "<span style=\"text-decoration:underline;\">$1</span>", $data);
-				// Center text
-				if ($prefs['feature_use_three_colon_centertag'] == 'y') {
-					$data = preg_replace("/:::(.+?):::/", "<div style=\"text-align: center;\">$1</div>", $data);
-				} else {
-					$data = preg_replace("/::(.+?)::/", "<div style=\"text-align: center;\">$1</div>", $data);
-				}
-			}
+			// Underlined text
+			$data = preg_replace("/===(.+?)===/", "<span style=\"text-decoration:underline;\">$1</span>", $data);
+			// Center text
+			$data = preg_replace("/::(.+?)::/", "<div style=\"text-align: center;\">$1</div>", $data);
 		}
 
 		// definitively put out the protected words ))protectedWord((
@@ -6399,7 +6376,7 @@ class TikiLib extends TikiDb_Bridge
 					$cols = array();
 					$temp_max5 = count($tables[0]);
 					for ($i = 0; $i < $temp_max5; $i++) {
-						$rows = preg_split("/(\n|\<br\/\>)/", $tables[0][$i]);
+						$rows = split("\n|\<br\/\>", $tables[0][$i]);
 						$col[$i] = array();
 						$temp_max6 = count($rows);
 						for ($j = 0; $j < $temp_max6; $j++) {
@@ -6560,11 +6537,7 @@ class TikiLib extends TikiDb_Bridge
 
 		global $prefs;
 
-		if ( $options['fck'] === 'y' ) {
-			$need_maketoc = false ;
-		} else {
-			$need_maketoc = strpos($data, "{maketoc");
-		}
+		$need_maketoc = strpos($data, "{maketoc");
 		$need_autonumbering = ( preg_match('/^\!+[\-\+]?#/m', $data) > 0 );
 
 		$anch = array();
@@ -6735,10 +6708,8 @@ class TikiLib extends TikiDb_Bridge
 								$listate = substr($line, $listlevel, 1);
 								if (($listate == '+' || $listate == '-') && !($litype == '*' && !strstr(current($listbeg), '</ul>') || $litype == '#' && !strstr(current($listbeg), '</ol>'))) {
 									$thisid = 'id' . microtime() * 1000000;
-									if ( $options['fck'] !== 'y' ) {
-										$data .= '<br /><a id="flipper' . $thisid . '" class="link" href="javascript:flipWithSign(\'' . $thisid . '\')">[' . ($listate == '-' ? '+' : '-') . ']</a>';
-									}
-									$listyle = ' id="' . $thisid . '" style="display:' . ($listate == '+' || $options['fck'] === 'y' ? 'block' : 'none') . ';"';
+									$data .= '<br /><a id="flipper' . $thisid . '" class="link" href="javascript:flipWithSign(\'' . $thisid . '\')">[' . ($listate == '-' ? '+' : '-') . ']</a>';
+									$listyle = ' id="' . $thisid . '" style="display:' . ($listate == '+' ? 'block' : 'none') . ';"';
 									$addremove = 1;
 								}
 							}
@@ -6752,10 +6723,8 @@ class TikiLib extends TikiDb_Bridge
 						$listate = substr($line, $listlevel, 1);
 						if (($listate == '+' || $listate == '-')) {
 							$thisid = 'id' . microtime() * 1000000;
-							if ( $options['fck'] !== 'y' ) {
-								$data .= '<br /><a id="flipper' . $thisid . '" class="link" href="javascript:flipWithSign(\'' . $thisid . '\')">[' . ($listate == '-' ? '+' : '-') . ']</a>';
-							}
-							$listyle = ' id="' . $thisid . '" style="display:' . ($listate == '+' || $options['fck'] === 'y' ? 'block' : 'none') . ';"';
+							$data .= '<br /><a id="flipper' . $thisid . '" class="link" href="javascript:flipWithSign(\'' . $thisid . '\')">[' . ($listate == '-' ? '+' : '-') . ']</a>';
+							$listyle = ' id="' . $thisid . '" style="display:' . ($listate == '+' ? 'block' : 'none') . ';"';
 							$addremove = 1;
 						}
 						$data .= ($litype == '*' ? "<ul$listyle>" : "<ol$listyle>");
@@ -6876,14 +6845,10 @@ class TikiLib extends TikiDb_Bridge
 						if ($divstate == '+' || $divstate == '-') {
 							// OK. Must insert flipper after HEADER, and then open new div...
 							$thisid = 'id' . preg_replace('/[^a-zA-z0-9]/', '',urlencode($options['page'])) .$nb_hdrs;
-							if ($options['fck'] !== 'y') {
-								$aclose = '<a id="flipper' . $thisid . '" class="link" href="javascript:flipWithSign(\'' . $thisid . '\')">[' . ($divstate == '-' ? '+' : '-') . ']</a>';
-								global $headerlib;
-								$headerlib->add_jq_onready( "setheadingstate('$thisid');" );
-							} else {
-								$aclose = '';
-							}
-							$aclose2 = '<div id="' . $thisid . '" class="showhide_heading" style="display:' . ($divstate == '+' || $options['fck'] !== 'y' ? 'block' : 'none') . ';">';
+							$aclose = '<a id="flipper' . $thisid . '" class="link" href="javascript:flipWithSign(\'' . $thisid . '\')">[' . ($divstate == '-' ? '+' : '-') . ']</a>';
+							$aclose2 = '<div id="' . $thisid . '" class="showhide_heading" style="display:' . ($divstate == '+' ? 'block' : 'none') . ';">';
+							global $headerlib;
+							$headerlib->add_jq_onready( "setheadingstate('$thisid');" );
 							array_unshift($divdepth, $hdrlevel);
 							$addremove += 1;
 						}
@@ -6924,7 +6889,7 @@ class TikiLib extends TikiDb_Bridge
 										);
 						//}
 						global $tiki_p_edit, $section;
-						if ($options['fck'] !== 'y' && $prefs['wiki_edit_section'] === 'y' && $section === 'wiki page' && $tiki_p_edit === 'y' and ( $prefs['wiki_edit_section_level'] == 0 or $hdrlevel <= $prefs['wiki_edit_section_level']) && (empty($options['print']) || !$options['print']) && !$options['suppress_icons'] ){
+						if ($prefs['wiki_edit_section'] == 'y' && $section == 'wiki page' && $tiki_p_edit == 'y' and ( $prefs['wiki_edit_section_level'] == 0 or $hdrlevel <= $prefs['wiki_edit_section_level']) && (empty($options['print']) || !$options['print']) && !$options['suppress_icons'] ){
 							global $smarty;
 							include_once('lib/smarty_tiki/function.icon.php');
 							$button = '<div class="icon_edit_section"><a href="tiki-editpage.php?';
@@ -6994,7 +6959,7 @@ class TikiLib extends TikiDb_Bridge
 									// A normal in-paragraph line or a consecutive blank line.
 									// Leave it as is.
 								}
-							} elseif (empty($options['is_html']) || !$options['is_html']) {
+							} else {
 								$line .= '<br />';
 							}
 						}
@@ -7029,129 +6994,127 @@ class TikiLib extends TikiDb_Bridge
 		 */
 		$new_data = '';
 		$search_start = 0;
-		if ( $options['fck'] !== 'y') {
-			while ( ($maketoc_start = strpos($data, "{maketoc", $search_start)) !== false ) {
-				$maketoc_length = strpos($data, "}", $maketoc_start) + 1 - $maketoc_start;
-				$maketoc_string = substr($data, $maketoc_start, $maketoc_length);
+		while ( ($maketoc_start = strpos($data, "{maketoc", $search_start)) !== false ) {
+			$maketoc_length = strpos($data, "}", $maketoc_start) + 1 - $maketoc_start;
+			$maketoc_string = substr($data, $maketoc_start, $maketoc_length);
 
-				// Handle old type definition for type "box" (and preserve environment for the title also)
-				if ( $maketoc_length > 12 && strtolower(substr($maketoc_string, 8, 4)) == ':box' ) {
-					$maketoc_string = "{maketoc type=box showhide=y title='".tra('index', $options['language'], true).'"'.substr($maketoc_string, 12);
+			// Handle old type definition for type "box" (and preserve environment for the title also)
+			if ( $maketoc_length > 12 && strtolower(substr($maketoc_string, 8, 4)) == ':box' ) {
+				$maketoc_string = "{maketoc type=box showhide=y title='".tra('index', $options['language'], true).'"'.substr($maketoc_string, 12);
+			}
+
+			$maketoc_string = str_replace('&quot;', '"', $maketoc_string);
+			$maketoc_regs = array();
+
+			if ( $maketoc_length == 9 || preg_match_all("/([^\s=\(]+)=([^\"\s=\)\}]+|\"[^\"]*\")/", $maketoc_string, $maketoc_regs) ) {
+
+				if ( $maketoc_start > 0 ) {
+					$new_data .= substr($data, 0, $maketoc_start);
 				}
 
-				$maketoc_string = str_replace('&quot;', '"', $maketoc_string);
-				$maketoc_regs = array();
+				// Set maketoc default values
+				$maketoc_args = array(
+						'type' => '',
+						'maxdepth' => 0, // No limit
+						'title' => tra('Table of contents', $options['language'], true),
+						'showhide' => '',
+						'nolinks' => '',
+						'nums' => ''
+						);
 
-				if ( $maketoc_length == 9 || preg_match_all("/([^\s=\(]+)=([^\"\s=\)\}]+|\"[^\"]*\")/", $maketoc_string, $maketoc_regs) ) {
-
-					if ( $maketoc_start > 0 ) {
-						$new_data .= substr($data, 0, $maketoc_start);
+				// Build maketoc arguments list (and remove " chars if they are around the value)
+				if ( isset($maketoc_regs[1]) ) {
+					$nb_args = count($maketoc_regs[1]);
+					for ( $a = 0; $a < $nb_args ; $a++ ) {
+						$maketoc_args[strtolower($maketoc_regs[1][$a])] = trim($maketoc_regs[2][$a], '"');
 					}
+				}
 
-					// Set maketoc default values
-					$maketoc_args = array(
-							'type' => '',
-							'maxdepth' => 0, // No limit
-							'title' => tra('Table of contents', $options['language'], true),
-							'showhide' => '',
-							'nolinks' => '',
-							'nums' => ''
-							);
-
-					// Build maketoc arguments list (and remove " chars if they are around the value)
-					if ( isset($maketoc_regs[1]) ) {
-						$nb_args = count($maketoc_regs[1]);
-						for ( $a = 0; $a < $nb_args ; $a++ ) {
-							$maketoc_args[strtolower($maketoc_regs[1][$a])] = trim($maketoc_regs[2][$a], '"');
-						}
-					}
-
-					if ( $maketoc_args['title'] != '' ) {
-						// Translate maketoc title
-						$maketoc_summary = ' summary="'.tra($maketoc_args['title'], $options['language'], true).'"';
-						$maketoc_title = "<div id='toctitle'><h3>".tra($maketoc_args['title'], $options['language']).'</h3></div>';
-					} else {
-						$maketoc_summary = '';
-						$maketoc_title = '';
-					}
-
-					// Build maketoc
-					switch ( $maketoc_args['type'] ) {
-						case 'box': 
-							$maketoc_header = '';
-							$maketoc = "<table id='toc' class='toc'$maketoc_summary>\n<tr><td>$maketoc_title<ul>";
-							$maketoc_footer = "</ul></td></tr></table>\n";
-							$link_class = 'toclink';
-							break;
-						default: 
-							$maketoc = '';
-							$maketoc_header = "<div id='toc'>".$maketoc_title;
-							$maketoc_footer = '</div>';
-							$link_class = 'link';
-					}
-					if ( count($anch) and $need_maketoc !== false) {
-						foreach ( $anch as $tocentry ) {
-							if ( $maketoc_args['maxdepth'] > 0 && $tocentry['hdrlevel'] > $maketoc_args['maxdepth'] ) {
-								continue;
-							}
-
-							// Generate the toc entry title (with nums)
-							if ( $maketoc_args['nums'] == 'n' ) {
-								$tocentry_title = '';
-							} elseif ( $maketoc_args['nums'] == 'force' && ! $need_autonumbering ) {
-								$tocentry_title = $tocentry['title_real_num'];
-							} else {
-								$tocentry_title = $tocentry['title_displayed_num'];
-							}
-							$tocentry_title .= $tocentry['title'];
-
-							// Generate the toc entry link
-							$tocentry_link = '#'.$tocentry['id'];
-							if ( $tocentry['pagenum'] > 1 ) {
-								$tocentry_link = $_SERVER['PHP_SELF'].'?page='.$options['page'].'&pagenum='.$tocentry['pagenum'].$tocentry_link;
-							}
-							if ( $maketoc_args['nolinks'] != 'y' ) {
-								$tocentry_title = "<a href='$tocentry_link' class='link'>".$tocentry_title.'</a>';
-							}
-
-							if ( $maketoc != '' ) $maketoc.= "\n";
-							switch ( $maketoc_args['type'] ) {
-								case 'box':
-									$maketoc .= "<li class='toclevel-".$tocentry['hdrlevel']."'>".$tocentry_title."</li>";
-									break;
-								default:
-									$maketoc .= str_repeat('*', $tocentry['hdrlevel']).$tocentry_title;
-							}
-						}
-						$maketoc = $this->parse_data($maketoc);
-						$maketoc = preg_replace("/^<ul>/", '<ul class="toc">', $maketoc);
-
-						if ( $link_class != 'link' ) {
-							$maketoc = preg_replace("/'link'/", "'$link_class'", $maketoc);
-						}
-					}
-					$maketoc = $maketoc_header.$maketoc.$maketoc_footer;
-
-					// Add a Show/Hide link
-					if ( isset($maketoc_args['showhide']) && $maketoc_args['showhide'] == 'y' ) {
-						$maketoc .= "<script type='text/javascript'>\n"
-							. "//<![CDATA[\n"
-							. " if (window.showTocToggle) { var tocShowText = '".tra('Show','',true)."'; var tocHideText = '".tra('Hide','',true)."'; showTocToggle(); }\n"
-							. "//]]>;\n"
-							. "</script>\n";
-					}
-
-					$new_data .= $maketoc;
-					$data = substr($data, $maketoc_start + $maketoc_length);
-					$search_start = 0; // Reinitialize search start cursor, since data now begins after the last replaced maketoc
+				if ( $maketoc_args['title'] != '' ) {
+					// Translate maketoc title
+					$maketoc_summary = ' summary="'.tra($maketoc_args['title'], $options['language'], true).'"';
+					$maketoc_title = "<div id='toctitle'><h3>".tra($maketoc_args['title'], $options['language']).'</h3></div>';
 				} else {
-					$search_start = $maketoc_start + $maketoc_length;
+					$maketoc_summary = '';
+					$maketoc_title = '';
 				}
+
+				// Build maketoc
+				switch ( $maketoc_args['type'] ) {
+					case 'box': 
+						$maketoc_header = '';
+						$maketoc = "<table id='toc' class='toc'$maketoc_summary>\n<tr><td>$maketoc_title<ul>";
+						$maketoc_footer = "</ul></td></tr></table>\n";
+						$link_class = 'toclink';
+						break;
+					default: 
+						$maketoc = '';
+						$maketoc_header = "<div id='toc'>".$maketoc_title;
+						$maketoc_footer = '</div>';
+						$link_class = 'link';
+				}
+				if ( count($anch) and $need_maketoc !== false) {
+					foreach ( $anch as $tocentry ) {
+						if ( $maketoc_args['maxdepth'] > 0 && $tocentry['hdrlevel'] > $maketoc_args['maxdepth'] ) {
+							continue;
+						}
+
+						// Generate the toc entry title (with nums)
+						if ( $maketoc_args['nums'] == 'n' ) {
+							$tocentry_title = '';
+						} elseif ( $maketoc_args['nums'] == 'force' && ! $need_autonumbering ) {
+							$tocentry_title = $tocentry['title_real_num'];
+						} else {
+							$tocentry_title = $tocentry['title_displayed_num'];
+						}
+						$tocentry_title .= $tocentry['title'];
+
+						// Generate the toc entry link
+						$tocentry_link = '#'.$tocentry['id'];
+						if ( $tocentry['pagenum'] > 1 ) {
+							$tocentry_link = $_SERVER['PHP_SELF'].'?page='.$options['page'].'&pagenum='.$tocentry['pagenum'].$tocentry_link;
+						}
+						if ( $maketoc_args['nolinks'] != 'y' ) {
+							$tocentry_title = "<a href='$tocentry_link' class='link'>".$tocentry_title.'</a>';
+						}
+
+						if ( $maketoc != '' ) $maketoc.= "\n";
+						switch ( $maketoc_args['type'] ) {
+							case 'box':
+								$maketoc .= "<li class='toclevel-".$tocentry['hdrlevel']."'>".$tocentry_title."</li>";
+								break;
+							default:
+								$maketoc .= str_repeat('*', $tocentry['hdrlevel']).$tocentry_title;
+						}
+					}
+					$maketoc = $this->parse_data($maketoc);
+					$maketoc = preg_replace("/^<ul>/", '<ul class="toc">', $maketoc);
+
+					if ( $link_class != 'link' ) {
+						$maketoc = preg_replace("/'link'/", "'$link_class'", $maketoc);
+					}
+				}
+				$maketoc = $maketoc_header.$maketoc.$maketoc_footer;
+
+				// Add a Show/Hide link
+				if ( isset($maketoc_args['showhide']) && $maketoc_args['showhide'] == 'y' ) {
+					$maketoc .= "<script type='text/javascript'>\n"
+						. "//<![CDATA[\n"
+						. " if (window.showTocToggle) { var tocShowText = '".tra('Show','',true)."'; var tocHideText = '".tra('Hide','',true)."'; showTocToggle(); }\n"
+						. "//]]>;\n"
+						. "</script>\n";
+				}
+
+				$new_data .= $maketoc;
+				$data = substr($data, $maketoc_start + $maketoc_length);
+				$search_start = 0; // Reinitialize search start cursor, since data now begins after the last replaced maketoc
+			} else {
+				$search_start = $maketoc_start + $maketoc_length;
 			}
 		}
 		$data = $new_data.$data;
 		// Add icon to edit the text before the first section (if there is some)
-		if ($options['fck'] !== 'y' && $prefs['wiki_edit_section'] === 'y' && isset($section) && $section === 'wiki page' && $tiki_p_edit === 'y' && (empty($options['print']) || !$options['print'])  && strpos($data, '<div class="icon_edit_section">') != 0 && !$options['suppress_icons']){
+		if ($prefs['wiki_edit_section'] == 'y' && isset($section) && $section == 'wiki page' && $tiki_p_edit == 'y' && (empty($options['print']) || !$options['print'])  && strpos($data, '<div class="icon_edit_section">') != 0 && !$options['suppress_icons']){
 			global $smarty;
 			include_once('lib/smarty_tiki/function.icon.php');
 			$button = '<div class="icon_edit_section"><a href="tiki-editpage.php?';
@@ -7690,11 +7653,11 @@ class TikiLib extends TikiDb_Bridge
 		return $short_datetime_format;
 	}
 
-	static function date_format2($format, $timestamp = false, $_user = false, $input_format = DATE_FORMAT_UNIXTIME) {
+	static function date_format2($format, $timestamp = false, $_user = false, $input_format = 5/*DATE_FORMAT_UNIXTIME*/) {
 		return TikiLib::date_format($format, $timestamp, $_user, $input_format, false);
 	}
 
-	static function date_format($format, $timestamp = false, $_user = false, $input_format = DATE_FORMAT_UNIXTIME, $is_strftime_format = true) {
+	static function date_format($format, $timestamp = false, $_user = false, $input_format = 5/*DATE_FORMAT_UNIXTIME*/, $is_strftime_format = true) {
 		global $tikidate, $tikilib;
 		if ( ! $timestamp ) {
 			$timestamp = time();
@@ -7744,15 +7707,6 @@ class TikiLib extends TikiDb_Bridge
 
 	function get_short_datetime($timestamp, $user = false) {
 		return $this->date_format($this->get_short_datetime_format(), $timestamp, $user);
-	}
-	
-	function format_sql_date($sqlstamp) {
-		global $user, $tikilib;
-		$tz = $tikilib->get_display_timezone($user);
-		$unixstamp = strtotime($sqlstamp . $tz);
-		$format = $tikilib->get_short_date_format();
-		$date = strftime($format, $unixstamp);
-		return $date;
 	}
 
 	/**
@@ -8114,7 +8068,7 @@ class TikiLib extends TikiDb_Bridge
 	function get_attach_hash_file_name($file_name) {
 		global $prefs;
 		do {
-			$fhash = '§'.md5($file_name.date('U').rand()).'§';
+			$fhash = md5($file_name.date('U').rand());
 		} while (file_exists($prefs['w_use_dir'].$fhash));
 		return $fhash;
 		}

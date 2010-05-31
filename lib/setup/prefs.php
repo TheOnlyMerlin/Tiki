@@ -231,7 +231,6 @@ function get_default_prefs() {
 		'wikiplugin_fancylist' => 'y',
 		'wikiplugin_fancytable' => 'y',
 		'wikiplugin_file' => 'y',
-		'wikiplugin_filelink' => 'y',
 		'wikiplugin_files' => 'y',
 		'wikiplugin_flash' => 'y',
 		'wikiplugin_footnote' => 'n',
@@ -483,8 +482,6 @@ function get_default_prefs() {
 		'wysiwyg_wiki_semi_parsed' => 'n',
 		'wysiwyg_toolbar_skin' => 'default',
 		'wysiwyg_ckeditor' => 'n',
-		'wysiwyg_htmltowiki' => 'n',
-		'wysiwyg_fonts' => 'sans serif;serif;monospace;Arial;Century Gothic;Comic Sans MS;Courier New;Tahoma;Times New Roman;Verdana',
 
 		// wiki3d
 		'wiki_feature_3d' => 'n',
@@ -583,7 +580,7 @@ function get_default_prefs() {
 		'fgal_list_lastDownload_admin' => 'n',
 		'fgal_list_lockedby_admin' => 'n',
 		'fgal_list_backlinks_admin' => 'y',
-		'fgal_keep_fileId' => 'n',
+
 
 		// imagegals
 		'feature_galleries' => 'n',
@@ -711,8 +708,6 @@ function get_default_prefs() {
 		'user_who_viewed_my_stuff' => 'n',
 		'user_who_viewed_my_stuff_days' => 90,
 		'user_who_viewed_my_stuff_show_others' => 'n',
-		'user_register_prettytracker' => 'n',
-		'user_register_prettytracker_tpl' => '',
 		'feature_mytiki' => 'n',
 		'feature_userPreferences' => 'n',
 		'feature_user_bookmarks' => 'n',
@@ -849,7 +844,6 @@ function get_default_prefs() {
 		'search_refresh_index_mode' => 'normal',
 		'search_parsed_snippet' => 'y',
 		'search_default_where' => '',
-		'search_autocomplete' => 'n',
 
 		// webmail
 		'feature_webmail' => 'n',
@@ -1221,6 +1215,7 @@ function get_default_prefs() {
 		'feature_sitemenu_custom_code' => '',
 		'feature_secondary_sitemenu_custom_code' => '',
 		'feature_topbar_version' => 'n',
+		'feature_topbar_debug' => 'n',
 		'feature_topbar_id_menu' => '42',
 		'feature_topbar_custom_code' => '',
 		'feature_sitetitle' => 'y',
@@ -1283,7 +1278,7 @@ function get_default_prefs() {
 
 		// admin
 		'browsertitle' => '',
-		'site_title_location' => 'after',
+		'site_title_location' => 'none',
 		'site_title_breadcrumb' => 'invertfull',
 		'tmpDir' => 'temp',
 
@@ -1400,12 +1395,11 @@ function get_default_prefs() {
 		'feature_newsletters' => 'n',
 		'feature_obzip' => 'n',
 		'feature_perspective' => 'n', // If enabling by default, update further in this file
-		'feature_phplayers' => 'n', // Not enabled by default so we make a better file gallery tree explorer in the future
+		'feature_phplayers' => 'y', // Enabled by default for a better file gallery tree explorer
 		'feature_cssmenus' => 'y',
 		'feature_projects' => 'n',
 		'feature_ranking' => 'n',
 		'feature_redirect_on_error' => 'n',
-		'url_anonymous_page_not_found' => '',
 		'feature_referer_highlight' => 'n',
 		'feature_referer_stats' => 'n',
 		'feature_score' => 'n',
@@ -1420,7 +1414,6 @@ function get_default_prefs() {
 		'feature_top_banner' => 'n',
 		'feature_usability' => 'n',
 		'feature_use_quoteplugin' => 'n',
-		'feature_use_three_colon_centertag' => 'n',
 		'feature_user_watches' => 'n',
 		'feature_group_watches' => 'n',
 		'feature_user_watches_translations' => 'n',
@@ -1544,7 +1537,6 @@ function get_default_prefs() {
 		'feature_jquery_jqs5' => 'n',			// slide-show TODO: implement (more)
 		'feature_jquery_tablesorter' => 'n',	// sortable tables ([will] override existing)
 		'feature_jquery_carousel' => 'n',		// slideshow/carousel for file gals etc
-		'feature_jquery_validation' => 'y',		// validation on Trackers etc
 
 		// SefUrl
 		'feature_sefurl' => 'n',
@@ -1632,19 +1624,11 @@ function get_default_prefs() {
 
 		// Payment
 		'payment_feature' => 'n',
-		'payment_system' => 'paypal',
 		'payment_currency' => 'USD',
 		'payment_default_delay' => 30,
 		'payment_paypal_business' => '',
 		'payment_paypal_environment' => 'https://www.paypal.com/cgi-bin/webscr',
 		'payment_paypal_ipn' => 'y',
-		'payment_cclite_registry' => '',
-	 	'payment_cclite_gateway' => '',
-		'payment_cclite_merchant_key' => '',
-		'payment_cclite_merchant_user' => 'manager',
-		'payment_cclite_mode' => 'test',
-		'payment_cclite_notify' => 'y',
-		'payment_cclite_hashing_algorithm' => '',
 
 		// Rating
 		'rating_advanced' => 'n',

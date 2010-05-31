@@ -27,13 +27,6 @@ if ( file_exists($dump_path.'/new.tar') ) {
 }
 $smarty->assign('wiki_dump_exists', $wiki_dump_exists);
 
-// Wiki discussion
-
-if ( $prefs['feature_wiki_discuss'] == 'y' ) {
-	$wiki_discussion_string = $smarty->fetchLang($prefs['language'], 'wiki-discussion.tpl');
-	$smarty->assign('wiki_discussion_string', $wiki_discussion_string);
-}
-
 // find out the page name if url=tiki-index_x.php (can be needed in module)
 if (strstr($_SERVER['SCRIPT_NAME'], 'tiki-index.php') || strstr($_SERVER['SCRIPT_NAME'], 'tiki-index_p.php') || strstr($_SERVER['SCRIPT_NAME'], 'tiki-index_raw.php')) {
 	$check = false;
@@ -41,7 +34,9 @@ if (strstr($_SERVER['SCRIPT_NAME'], 'tiki-index.php') || strstr($_SERVER['SCRIPT
 		$_REQUEST['page'] = $userlib->get_user_default_homepage2($user);
 		$check = true;
 	}
-		
+	
+//	echo "<pre>-- wiki.php: before feature_multilingual, \$_REQUEST="; var_dump($_REQUEST); echo "</pre>\n";
+	
 	if ( $prefs['feature_multilingual'] == 'y' && (isset($_REQUEST['page']) || isset($_REQUEST['page_ref_id']) || isset($_REQUEST['page_id']))) { // perhaps we have to go to an another page
 		
 		global $multilinguallib; include_once('lib/multilingual/multilinguallib.php');
@@ -73,6 +68,8 @@ if (strstr($_SERVER['SCRIPT_NAME'], 'tiki-index.php') || strstr($_SERVER['SCRIPT
 		}
 
 	}
+
+//	echo "<pre>-- wiki.php: after feature_multilingual, \$_REQUEST="; var_dump($_REQUEST); echo "</pre>\n";
 	
 	if ($check && !$tikilib->page_exists($_REQUEST['page'])) {
 		$tikilib->create_page($_REQUEST['page'], 0,tra('_HOMEPAGE_CONTENT_'),$tikilib->now,'Tiki initialization', 'admin', '0.0.0.0', '', 'en', false, null, 'n', '');

@@ -154,13 +154,8 @@
 						{preference name=feature_ajax_autosave}
 						{preference name=feature_wysiwyg}
 						{preference name=feature_wiki_save_draft}
+						
 				</fieldset>
-
-				<fieldset>
-					<legend class="heading">{icon _id="new"}<span>{tr}Fresh out of the oven{/tr}</span></legend>
-					{preference name=feature_socialnetworks}
-				</fieldset>
-
 			</div>
 
 {/tab}

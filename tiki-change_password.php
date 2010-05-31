@@ -9,12 +9,8 @@ require_once ('tiki-setup.php');
 
 $access->check_feature('change_password');
 
-if (empty($_REQUEST['user']) || !$userlib->user_exists($_REQUEST['user'])) {
-	$smarty->assign('msg', tra('Invalid username'));
-	$smarty->assign('errortype', 'login');
-	$smarty->display("error.tpl");
-	die;
-}
+if (!isset($_REQUEST["user"]))
+	$_REQUEST["user"] = '';
 
 if (!isset($_REQUEST["oldpass"]))
 	$_REQUEST["oldpass"] = '';
@@ -60,19 +56,10 @@ if (isset($_REQUEST["change"])) {
 	// Check that provided user name could log in with old password, otherwise display error and exit
 	list($isvalid, $_REQUEST["user"], $error) = $userlib->validate_user($_REQUEST["user"], $_REQUEST["oldpass"], '', '');
 	if (!$isvalid) {
-		$smarty->assign('msg', tra("Invalid old password"));
+		$smarty->assign('msg', tra("Invalid old password or unknown user"));
 		$smarty->assign('errortype', 'no_redirect_login');
 		$smarty->display("error.tpl");
 		die;
-	}
-	if (isset($_REQUEST['email'])) {
-		if (empty($_REQUEST['email']) || !validate_email($_REQUEST['email'], $prefs['validateEmail'])) {
-			$smarty->assign('msg', tra('Your email could not be validated; make sure you email is correct'));
-			$smarty->assign('errortype', 'no_redirect_login');
-			$smarty->display("error.tpl");
-			die;			
-		}
-		$userlib->change_user_email_only($_REQUEST['user'], $_REQUEST['email']);
 	}
 
 	$userlib->change_user_password($_REQUEST["user"], $_REQUEST["pass"]);
@@ -85,8 +72,7 @@ ask_ticket('change-password');
 
 // Display the template
 global $prefs;
-$prefs['language'] = $tikilib->get_user_preference($_REQUEST['user'], 'language', $prefs['site_language']);
-$smarty->assign('email', $userlib->get_user_email($_REQUEST['user']));
+$prefs['language'] = $tikilib->get_user_preference($_REQUEST["user"], "language", $prefs['site_language']);
 
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');

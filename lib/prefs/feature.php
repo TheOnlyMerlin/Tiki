@@ -1104,6 +1104,10 @@ function prefs_feature_list() {
 			'name' => tra('Login Bar'),
 			'type' => 'flag',
 		),
+		'feature_topbar_debug' => array(
+			'name' => tra('Debugger Console'),
+			'type' => 'flag',
+		),
 		'feature_topbar_custom_code' => array(
 			'name' => tra('Custom code'),
 			'type' => 'textarea',
@@ -1317,12 +1321,6 @@ function prefs_feature_list() {
 				'ui-lightness' => 'ui-lightness',
 				'vader' => 'vader',
 			), 
-		),
-		'feature_jquery_validation' => array(
-			'name' => tra('Validation'),
-			'type' => 'flag',
-			'description' => tra('Provides various validation possibilities like in Trackers.'),
-			'help' => 'JQuery#Validation',
 		),
 		'feature_jquery_sheet' => array(
 			'name' => tra('JQuery Sheet'),
@@ -1585,6 +1583,7 @@ function prefs_feature_list() {
 		),
 		'feature_wiki_paragraph_formatting' => array(
 			'name' => tra('Wiki paragraph formatting'),
+			'description' => tra('Because the Wiki paragraph formatting feature is on, all groups of non-blank lines are collected into paragraphs.  Lines can be of any length, and will be wrapped together with the next line.  Paragraphs are separated by blank lines.').' '.tra('Because the Wiki paragraph formatting feature is off, each line will be presented as you write it.  This means that if you want paragraphs to be wrapped properly, a paragraph should be all together on one line.'),
 			'type' => 'flag',
 		),
 		'feature_wiki_paragraph_formatting_add_br' => array(
@@ -1625,10 +1624,6 @@ function prefs_feature_list() {
 			'dependencies' => array(
 				'wikiplugin_quote',
 			),
-		),
-		'feature_use_three_colon_centertag' => array(
-			'name' => tra('Use three colons instead of two to center text. Avoids conflict with C++ resolution scope operator.'),
-			'type' => 'flag',
 		),
 		'feature_community_gender' => array(
 			'name' => tra('Users can choose to show their gender'),
@@ -1729,12 +1724,6 @@ function prefs_feature_list() {
 			'type' => 'flag',
 			'description' => tra('Constrains the site display to 990px wide.'),
 			'warning' => tra('You can modify at styles/layout/fixed_width.css'),
-		),
-		'feature_socialnetworks' => array(
-			'name' => tra('Social networks'),
-			'description' => tra('Integration with different social networks like twitter or facebook'),
-			'type' => 'flag',
-			'keywords' => 'social networks',
 		),
 		'feature_group_transition' => array(
 			'name' => tra('Group Transition'),

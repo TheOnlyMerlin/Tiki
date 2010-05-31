@@ -77,7 +77,6 @@
 					{/remarksbox}
 					{preference name='fgal_delete_after_email'}
 				</div>
-				{preference name='fgal_keep_fileId'}
 			</fieldset>
 
 			<fieldset>

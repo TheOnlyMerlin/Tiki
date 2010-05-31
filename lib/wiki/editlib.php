@@ -193,33 +193,25 @@ class EditLib
 	}
 
 	function parseToWiki(&$inData) {
-		global $prefs;
-		if ($prefs['wysiwyg_htmltowiki'] === 'y') {
-			$parsed = $inData;
-		} else {
-			// Parsing page data as first time seeing html page in normal editor
-			$parsed = $this->parse_html($inData);
-		}
+		// Parsing page data as first time seeing html page in normal editor
+		$parsed = '';
+		$parsed = $this->parse_html($inData);
 		$parsed = preg_replace('/\{img src=.*?img\/smiles\/.*? alt=([\w\-]*?)\}/im','(:$1:)', $parsed);	// "unfix" smilies
 		$parsed = preg_replace('/%%%/m',"\n", $parsed);													// newlines
 		return $parsed;
 	}
 	
 	function parseToWysiwyg(&$inData) {
-		global $tikilib, $tikiroot, $prefs;
+		global $tikilib, $tikiroot;
 		// Parsing page data as first time seeing wiki page in wysiwyg editor
 		$parsed = preg_replace('/(!!*)[\+\-]/m','$1', $inData);		// remove show/hide headings
-		if ($prefs['wysiwyg_htmltowiki'] === 'y') {
-			$parsed = $tikilib->parse_data($parsed,array('absolute_links'=>true, 'noparseplugins'=>false,'noheaderinc'=>true, 'fck' => 'y'));
-		} else {
-			$parsed = $tikilib->parse_data($parsed,array('absolute_links'=>true, 'parseimgonly'=>true,'noheaderinc'=>true));
-		}
+		$parsed = $tikilib->parse_data($parsed,array('absolute_links'=>true, 'parseimgonly'=>true,'noheaderinc'=>true, 'suppress_icons' => true));
 		$parsed = preg_replace('/<span class=\"img\">(.*?)<\/span>/im','$1', $parsed);					// remove spans round img's
 		$parsed = preg_replace("/src=\"img\/smiles\//im","src=\"".$tikiroot."img/smiles/", $parsed);	// fix smiley src's
 		$parsed = str_replace( 
-				array( '{SUP()}', '{SUP}', '{SUB()}', '{SUB}', '<table' ),
-				array( '<sup>', '</sup>', '<sub>', '</sub>', '<table border="1"' ),
-				$parsed );
+			array( '{SUP()}', '{SUP}', '{SUB()}', '{SUB}', '<table' ),
+			array( '<sup>', '</sup>', '<sub>', '</sub>', '<table border="1"' ),
+			$parsed );
 		return $parsed;
 	}
 	
@@ -268,13 +260,8 @@ class EditLib
 							if( isset($c[$i]['pars']) 
 								&& isset($c[$i]['pars']['style']) 
 								&& $c[$i]['pars']['style']['value'] == 'text-align: center;' ) {
-									if ($prefs['feature_use_three_colon_centertag'] == 'y') {
-										$src .= "\n:::";
-										$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => ":::\n");
-									} else {
-										$src .= "\n::";
-										$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => "::\n");
-									}
+								$src .= "\n::";
+								$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => "::\n"); 
 							} else {
 								$src .= "\n";
 								$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => "\n"); 
@@ -312,15 +299,7 @@ class EditLib
 						case "u": $src .= "=="; $p['stack'][] = array('tag' => 'u', 'string' => "=="); break;
 						case "strike": $src .= "--"; $p['stack'][] = array('tag' => 'strike', 'string' => "--"); break;
 						case "del": $src .= "--"; $p['stack'][] = array('tag' => 'del', 'string' => "--"); break;
-						case "center":
-							if ($prefs['feature_use_three_colon_centertag'] == 'y') {
-								$src .= ':::';
-								$p['stack'][] = array('tag' => 'center', 'string' => ':::');
-							} else {
-								$src .= '::';
-								$p['stack'][] = array('tag' => 'center', 'string' => '::');
-							}
-							break;
+						case "center": $src .= '::'; $p['stack'][] = array('tag' => 'center', 'string' => '::'); break;
 						case "code": $src .= '-+'; $p['stack'][] = array('tag' => 'code', 'string' => '+-'); break;
 						case "dd": $src .= ':'; $p['stack'][] = array('tag' => 'dd', 'string' => "\n"); break;
 						case "dt": $src .= ';'; $p['stack'][] = array('tag' => 'dt', 'string' => ''); break;

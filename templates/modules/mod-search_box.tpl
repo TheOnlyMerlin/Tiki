@@ -3,13 +3,9 @@
 {if $tiki_p_search eq 'y'}
 {tikimodule error=$module_error title=$tpl_module_title name="search_box" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
 {if $type neq 'none'}
-    <form class="forms" id="search-module-form" method="get" role="search" action="tiki-search{if $type eq 'tiki'}index{else}results{/if}.php">
+    <form class="forms" id="search-module-form" method="get" action="tiki-search{if $type eq 'tiki'}index{else}results{/if}.php">
     <input id="fuser" name="highlight" size="14" type="text" accesskey="s" /> 
-	{if $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y' and $prefs.search_autocomplete eq 'y'}
-		{jq}
-			$jq("#fuser").tiki("autocomplete", "pagename");
-		{/jq}
-	{/if}	
+	
  	{if $prefs.feature_search_show_object_filter eq 'y'}
 
 	{tr}in:{/tr}<br />
