@@ -56,6 +56,12 @@ function wikiplugin_r_info() {
 function wikiplugin_r($data, $params) {
 	global $smarty, $trklib, $tikilib;
 
+	$rejected = checkCommands( $data );
+	if( count($rejected) > 0 ) {
+		$str = tra('Blocked commands found: ') . implode(', ', $rejected);
+		return "^$str^";
+	}
+
 	$output = 'text';
 	$style = '';
 	$ws = '';
@@ -229,22 +235,22 @@ function checkCommands ($input) {
         	'vi', 'write', 'write.dta', 'write.ftable', 'write.socket',
         	'write.table', 'writeBin', 'writeLines', 'x11', 
         	'xedit', 'xemacs', 'xfig', 'zip.file.extract',
+			'readdataSK',
         	'call', 'eval' );     # added by suggestion of M. Cassin 
-	if (security==2) { # if you use security==2 then you should not allow to read data from foreigners 
-		$banned[] = 'readdataSK';
-	}
 	# 'pdf',
-	$n = count($banned);
-	for ($i=0; $i<$n; $i++) {
-		if (substr_count($input, $banned[$i])>0) {
+	$found = array();
+
+	foreach( $banned as $b ) {
+		if (false !== strpos($input, $b)) {
 			// okay, we found something forbidden, now we need a regular expression to check if it is a function call like 'name  (', 'name =' or 'name.' !
-			$pattern = '/\b' . str_replace ('.', '\.', $banned[$i]) . '[\W]*[\(\=\.]+/';
-			if (preg_match ($pattern, $input, $match) > 0) { return $banned[$i]; }
-			#      preg_match ($pattern, $input, $match);
-			#      error('Check', '', print_r($match, true));
+			$pattern = '/\b' . preg_quote($b,'/') . '[\W]*[\(\=\.]+/';
+			if (preg_match ($pattern, $input, $match)) {
+				$found[] = $b;
+			}
 		}
 	}
-	return '';
+
+	return $found;
 }
 
 function error ($cmd, $msg, $input) {
