@@ -39,15 +39,15 @@ function wikiplugin_r_info() {
 				'name' => tra('type'),
 				'description' => tra('Choose the source file type in the appropriate mimetype syntax. Options: text/csv|text/xml. ex: text/csv. (default). For text/xml, you need to have installed library ("R4X") in R at the server. See documentation for more details'),
 			),
-			'iframe' => array(
+/*			'iframe' => array(
 				'required' => false,
 				'name' => tra('iframe'),
 				'description' => tra('Show output on an html page inside the wiki page. ex: 1. (default)'),
 			),
-			'security' => array(
+*/			'security' => array(
 				'required' => false,
 				'name' => tra('security'),
-				'description' => tra('Set the secutiry level for the R commands allowed by the plugin. Show output on an html page inside the wiki page. ex: 1. (default)'),
+				'description' => tra('Set the secutiry level for the R commands allowed by the plugin. ex: 1. (default), 0 for no security checking.'),
 			),
 		),
 	);
@@ -56,10 +56,14 @@ function wikiplugin_r_info() {
 function wikiplugin_r($data, $params) {
 	global $smarty, $trklib, $tikilib;
 
-	$rejected = checkCommands( $data );
-	if( count($rejected) > 0 ) {
-		$str = tra('Blocked commands found: ') . implode(', ', $rejected);
-		return "^$str^";
+	if (isset($params["security"]) && $params["security"]==0) {
+		/* do nothing: i.e. don't check for security in the command sent to R*/
+	}else{ 		/* default: check for security in the commands sent to R*/
+		$rejected = checkCommands( $data );
+		if( count($rejected) > 0 ) {
+			$str = tra('Blocked commands found: ') . implode(', ', $rejected);
+			return "^$str^";
+		}
 	}
 
 	$output = 'text';
@@ -103,7 +107,7 @@ function wikiplugin_r($data, $params) {
 
 	defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp' );
 	defined('r_ext') || define('r_ext', getcwd() . DIRECTORY_SEPARATOR . 'lib/r' );
-	defined('security')  || define('security',  0);
+	defined('security')  || define('security',  1);
 	defined('sudouser')  || define('sudouser', 'rd');
 
 	defined('convert')   || define('convert',   getCmd('', 'convert', ''));
@@ -175,16 +179,16 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws) {
 
 function runRinShell ($cmd, $chmf, &$r_exitcode) {
    $stdout = "";
-   if (security>1) {
+/*   if (security>1) {
      $msg = shell_exec (sudo . $cmd);
      if ($chmf!='') {
        $cmd = sudo . chmod . $chmf;
        exec ($cmd, $stdout, $r_exitcode);
 #      error ('R', $cmd, $msg);
      }
-   } else {
+   } else { */
      exec ($cmd, $stdout, $r_exitcode);
-   }
+//   }
 
 // Alex, got error message here if no output
    if (is_array($stdout)) { 
@@ -215,10 +219,10 @@ function checkCommands ($input) {
         	'file.choose', 'file.copy', 'file.create', 'file.exists', 'file.info',
         	'file.path', 'file.remove', 'file.rename', 'file.show', 'file.symlink',
         	'fix', 'getConnection', 'getwd', 'graphics.off', 'gzcon',
-        	'gzfile', 'INSTALL', 'install.packages', 'jpeg', 'library.dynam',
+        	'gzfile', 'INSTALL', 'install.packages', 'library.dynam',
         	'list.files','loadhistory', 'locator', 'lookup.xport', 'make.packages.html',
         	'make.socket', 'menu', 'open', 'parent.frame', 'path.expand',
-        	'pico', 'pictex', 'pipe', 'png',
+        	'pico', 'pictex', 'pipe',
         	'postscript', 'print.socket', 'prompt', 'promptData', 'quartz',
         	'R.home', 'R.version', 'read.00Index', 'read.dta', 'read.epiinfo',
         	'read.fwf', 'read.mtp', 'read.socket', 'read.spss', 'read.ssd',
@@ -235,7 +239,8 @@ function checkCommands ($input) {
         	'vi', 'write', 'write.dta', 'write.ftable', 'write.socket',
         	'write.table', 'writeBin', 'writeLines', 'x11', 
         	'xedit', 'xemacs', 'xfig', 'zip.file.extract',
-			'readdataSK',
+        	'readdataSK',
+        	'png', 'jpeg',
         	'call', 'eval' );     # added by suggestion of M. Cassin 
 	# 'pdf',
 	$found = array();
