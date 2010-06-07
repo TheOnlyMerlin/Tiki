@@ -15,7 +15,7 @@ if ($prefs['feature_jquery'] != 'y' || $prefs['feature_jquery_autocomplete'] != 
 	exit;
 }
 
-if (!$user) {	// only registered users so far - pending proper perms control TODO!
+if (!$user) {	// only registered users so far - pending proper perms control
 	header("location: index.php");
 	exit;
 }
@@ -61,33 +61,7 @@ if ($access->is_serializable_request() && isset($_REQUEST['listonly'])) {
 
 		$tags = $freetaglib->get_tags_containing( $_REQUEST['q'] );
 		$access->output_serialized( $tags );
-	} elseif( $_REQUEST['listonly'] == 'icons' ) {
-
-		$dir = 'pics/icons';
-		$max = isset($_REQUEST['max']) ? $_REQUEST['max'] : 10;
-		$icons = array();
-		$style_dir = $tikilib->get_style_path($prefs['style'], $prefs['style_option']);
-		if ($style_dir && is_dir($style_dir . $dir)) {
-			read_icon_dir($style_dir . $dir, $icons, $max);
-		}
-		read_icon_dir($dir, $icons, $max);
-		$access->output_serialized($icons);
-	} elseif( $_REQUEST['listonly'] == 'shipping' && $prefs['shipping_service'] == 'y' ) {
-		global $shippinglib; require_once 'lib/shipping/shippinglib.php';
-
-		$access->output_serialized( $shippinglib->getRates( $_REQUEST['from'], $_REQUEST['to'], $_REQUEST['packages'] ) );
 	}
+
 }
 
-function read_icon_dir($dir, &$icons, $max) {
-	$fp = opendir($dir);
-	while(false !== ($f = readdir($fp))) {
-		preg_match('/^([^\.].*)\..*$/', $f, $m);
-		if (count($m) > 0 && count($icons) < $max &&
-				stripos($m[1], $_REQUEST['q']) !== false &&
-				!in_array($dir . '/' . $f, $icons)) {
-			
-			$icons[] = $dir . '/' . $f;
-		}
-	}
-}

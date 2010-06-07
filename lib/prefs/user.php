@@ -81,24 +81,6 @@ function prefs_user_list() {
 			'type' => 'list',
 			'options' => UserListOrder(),
 		),
-		'user_register_prettytracker' => array(
-			'name' => tra('Use pretty trackers for registration form'),
-			'help' => 'Pretty+Trackers',
-			'description' => tra('Use pretty trackers for registration form'),
-			'type' => 'flag',
-			'dependencies' => array(
-				'userTracker',
-			),
-		),
-		'user_register_prettytracker_tpl' => array(
-			'name' => tra('Registration pretty tracker template'),
-			'description' => tra('Use wiki page name or template file with .tpl extension'),
-			'type' => 'text',
-			'size' => '20',
-			'dependencies' => array(
-				'user_register_pretty_tracker',
-			),
-		),
 	);
 }
 

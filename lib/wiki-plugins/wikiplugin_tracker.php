@@ -41,7 +41,6 @@ function wikiplugin_tracker_info()
 				'required' => false,
 				'name' => tra('Action'),
 				'description' => tra('Label on the submit button'),
-				'separator' => ':',
 			),
 			'showtitle' => array(
 				'required' => false,
@@ -82,8 +81,7 @@ function wikiplugin_tracker_info()
 				'required' => false,
 				'name' => tra('URL'),
 				'description' => tra('URL used for the field links'),
-				'filter' => 'url',
-				'separator' => ':',
+				'filter' => 'url'
 			),
 			'target' => array(
 				'required' => false,
@@ -157,12 +155,6 @@ function wikiplugin_tracker_info()
 				'description' => tra('Colon-separated values corresponding to autosavefields'),
 				'filter' => 'text',
 				'separator' => ':'
-			),
-			'registration' => array(
-				'required' => false,
-				'name' => tra('Add registration fields'),
-				'description' => tra('y|n Add registration fields such as Username and Password'),
-				'filter' => 'alpha'
 			),
 		),
 	);
@@ -242,7 +234,7 @@ function wikiplugin_tracker($data, $params)
 		$sort = 'n';
 	}
 	if (!isset($action)) {
-		$action[0] = 'Save';
+		$action = 'Save';
 	}
 	if (isset($preview)) {
 		if (empty($preview)) {
@@ -302,10 +294,6 @@ function wikiplugin_tracker($data, $params)
 			}
 		}
 	}
-	if (!empty($itemId)) {
-		global $logslib; include_once('lib/logs/logslib.php');
-		$logslib->add_action('Viewed', $itemId, 'trackeritem', $_SERVER['REQUEST_URI']);
-	}
 
 	if (isset($_REQUEST['removeattach']) && $tracker['useAttachments'] == 'y') {
 		$owner = $trklib->get_item_attachment_owner($_REQUEST['removeattach']);
@@ -334,14 +322,6 @@ function wikiplugin_tracker($data, $params)
 				return;
 			$outf = array();
 			if (!empty($fields)  || !empty($wiki) || !empty($tpl)) {
-				if ($registration == 'y' && $prefs["user_register_prettytracker"] == 'y' && !empty($prefs["user_register_prettytracker_tpl"])) {
-					$smarty->assign('register_login', $smarty->fetch('register-login.tpl'));
-					$smarty->assign('register_email', $smarty->fetch('register-email.tpl'));
-					$smarty->assign('register_pass', $smarty->fetch('register-pass.tpl'));
-					$smarty->assign('register_pass2', $smarty->fetch('register-pass2.tpl'));
-					$smarty->assign('register_passcode', $smarty->fetch('register-passcode.tpl'));
-					$smarty->assign('register_groupchoice', $smarty->fetch('register-groupchoice.tpl'));
-				}
 				if (!empty($fields)) {
 					$outf = preg_split('/ *: */', $fields);$fields;
 				} elseif (!empty($wiki)) {
@@ -363,13 +343,6 @@ function wikiplugin_tracker($data, $params)
 
 			if ($thisIsThePlugin) {
 				/* ------------------------------------- Recup all values from REQUEST -------------- */
-				foreach ($flds['data'] as $fl) {
-					// First convert track_xx to array (need to be up here before setting autosave fields)
-					$incomingTrackName = 'track_' . $fl["fieldId"];
-					if (isset($_REQUEST[$incomingTrackName])) {
-						$_REQUEST['track'][$fl["fieldId"]] = $_REQUEST[$incomingTrackName];
-					}
-				}
 				if (!empty($_REQUEST['autosavefields'])) {
 					$autosavefields = explode(':', $_REQUEST['autosavefields']);
 					$autosavevalues = explode(':', $_REQUEST['autosavevalues']);
@@ -537,7 +510,7 @@ function wikiplugin_tracker($data, $params)
 				/* ------------------------------------- Check field values for each type and presence of mandatory ones ------------------- */
 				$field_errors = $trklib->check_field_values($ins_fields, $categorized_fields, $trackerId, empty($itemId)?'':$itemId);
 
-				if (empty($user) && $prefs['feature_antibot'] == 'y' && $registration != 'y') {
+				if (empty($user) && $prefs['feature_antibot'] == 'y' && !$_SESSION['in_tracker']) {
 					// in_tracker session var checking is for tiki-register.php
 					if((!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $_REQUEST['antibotcode'])) {
 						$field_errors['err_antibot'] = 'y';
@@ -625,16 +598,10 @@ function wikiplugin_tracker($data, $params)
 							return '';
 						}
 					} else {
-						$key = 0;
-						foreach ($action as $key=>$act) {
-							if (!empty($_REQUEST["action$key"])) {
-								break;
-							}
+						if (strstr($url, 'itemId')) {
+							$url = str_replace('itemId', 'itemId='.$rid, $url);
 						}
-						if (strstr($url[$key], 'itemId')) {
-							$url[$key] = str_replace('itemId', 'itemId='.$rid, $url[$key]);
-						}
-						header('Location: '.$url[$key]);
+						header("Location: $url");
 						die;
 					}
 					/* ------------------------------------- end save the item ---------------------------------- */
@@ -767,52 +734,7 @@ function wikiplugin_tracker($data, $params)
 			if (!empty($page))
 				$back .= '~np~';
 			$smarty->assign_by_ref('tiki_p_admin_trackers', $perms['tiki_p_admin_trackers']);
-			$smarty->assign('trackerEditFormId', $iTRACKER);
-			if ($prefs['feature_jquery'] == 'y' && $prefs['feature_jquery_validation'] == 'y') {
-				global $validatorslib;
-				include_once('lib/validatorslib.php');
-				$customvalidation = '';
-				$customvalidation_m = '';
-				if ($registration == 'y') {
-					// email validation
-					$customvalidation .= 'email: { ';
-					$customvalidation .= 'required: true, ';
-					$customvalidation .= 'email: true }, ';
-					$customvalidation_m .= 'email: { email: "'. tra("Invalid email") .  '"}, ';
-					// password validation
-					$customvalidation .= 'pass: { ';
-					$customvalidation .= 'required: true, ';
-					$customvalidation .= 'remote: { ';
-					$customvalidation .= 'url: "validate-ajax.php", ';
-					$customvalidation .= 'type: "post", ';
-					$customvalidation .= 'data: { ';
-					$customvalidation .= 'validator: "password", ';
-					$customvalidation .= 'input: function() { ';
-					$customvalidation .= 'return $jq("#pass1").val(); ';
-					$customvalidation .= '} } } ';
-					$customvalidation .= '}, ';
-					// password repeat validation
-					$customvalidation .= 'passAgain: { equalTo: "#pass1" }, ';
-					$customvalidation_m .= 'passAgain: { equalTo: "'. tra("Passwords do not match") .  '"}, ';
-					// username validation
-					$customvalidation .= 'name: { ';
-					$customvalidation .= 'required: true, ';
-					$customvalidation .= 'remote: { ';
-					$customvalidation .= 'url: "validate-ajax.php", ';
-					$customvalidation .= 'type: "post", ';
-					$customvalidation .= 'data: { ';
-					$customvalidation .= 'validator: "username", ';
-					$customvalidation .= 'input: function() { ';
-					$customvalidation .= 'return $jq("#name").val(); ';
-					$customvalidation .= '} } } ';
-					$customvalidation .= '}, ';
-				}
-				$validationjs = $validatorslib->generateTrackerValidateJS( $flds['data'], "track_", $customvalidation, $customvalidation_m );
-
-				$smarty->assign('validationjs', $validationjs);
-				$back .= $smarty->fetch('wiki-plugins/tracker_validator.tpl');
-			}
-			$back .= '<form name="editItemForm' . $iTRACKER . '" id="editItemForm' . $iTRACKER . '" enctype="multipart/form-data" method="post"'.(isset($target)?' target="'.$target.'"':'').' action="'. $_SERVER['REQUEST_URI'] .'"><input type="hidden" name="trackit" value="'.$trackerId.'" />';
+			$back.= '<form enctype="multipart/form-data" method="post"'.(isset($target)?' target="'.$target.'"':'').' action="'. $_SERVER['REQUEST_URI'] .'"><input type="hidden" name="trackit" value="'.$trackerId.'" />';
 			$back .= '<input type="hidden" name="iTRACKER" value="'.$iTRACKER.'" />';
 			$back .= '<input type="hidden" name="refresh" value="1" />';
 			if (isset($_REQUEST['page']))
@@ -860,7 +782,7 @@ function wikiplugin_tracker($data, $params)
 			}
 			foreach ($flds['data'] as $i=>$f) { // collect additional infos
 				if (in_array($f['fieldId'], $outf)) {
-					$flds['data'][$i]['ins_id'] = ($f['type'] == 'e')?'ins_cat_'.$f['fieldId']: 'track_'.$f['fieldId'];
+					$flds['data'][$i]['ins_id'] = ($f['type'] == 'e')?'ins_cat_'.$f['fieldId']: (($f['type'] == 'f')?'track_'.$f['fieldId']: 'track['.$f['fieldId'].']');
 					if ($f['isHidden'] == 'c' && !empty($itemId) && !isset($item['creator'])) {
 						$item['creator'] = $trklib->get_item_creator($trackerId, $itemId);
 					}
@@ -874,14 +796,9 @@ function wikiplugin_tracker($data, $params)
 						}
 					}
 					if ($f['type'] == 'r') {
-						if (!isset($f['options_array'][3])) {
 						$flds['data'][$i]['list'] = array_unique($trklib->get_all_items($f['options_array'][0], $f['options_array'][1], isset($f['options_array'][4])?$f['options_array'][4]:'poc'));
-						}
-						else {
-						$flds['data'][$i]['list'] = $trklib->get_all_items($f['options_array'][0], $f['options_array'][1], isset($f['options_array'][4])?$f['options_array'][4]:'poc');
-						}
 						if (isset($f['options_array'][3])) {
-							$flds['data'][$i]['listdisplay'] = array_unique($trklib->concat_all_items_from_fieldslist($f['options_array'][0], $f['options_array'][3], isset($f['options_array'][4])?$f['options_array'][4]:'poc'));
+							$flds['data'][$i]['displayedList'] = array_unique($trklib->concat_all_items_from_fieldslist($f['options_array'][0], $f['options_array'][3], isset($f['options_array'][4])?$f['options_array'][4]:'poc'));
 						}
 					} elseif ($f['type'] == 'y') {
 						$flds['data'][$i]['flags'] = $tikilib->get_flags(true, true, isset($f['options_array'][1])&&$f['options_array'][1]==1?false:true);
@@ -948,18 +865,11 @@ function wikiplugin_tracker($data, $params)
 				$status_input = $smarty->fetch('tracker_status_input.tpl');
 			}
 
-			if ($registration == "y") {
-				$back .= '<input type="hidden" name="register" value="Register" />';
-			}
-			
 			// Loop on tracker fields and display form
 			if (empty($tpl) && empty($wiki)) {
 				$back.= '<table class="wikiplugin_tracker">';
 				if (!empty($showstatus) && $showstatus == 'y') {
 					$back .= '<tr><td>'.tra('Status').'</td><td>'.$status_input.'</td></tr>';
-				}
-				if ($registration == 'y') {
-					$back .= $smarty->fetch('register-form.tpl');
 				}
 			} else {
 				$back .= '<div class="wikiplugin_tracker">';
@@ -1054,7 +964,7 @@ function wikiplugin_tracker($data, $params)
 				$smarty->security = true;
 				$back .= $smarty->fetch('wiki:'.$wiki);
 			}
-			if ($prefs['feature_antibot'] == 'y' && empty($user) && ($registration != 'y' || $prefs['rnd_num_reg'] == 'y')) {
+			if ($prefs['feature_antibot'] == 'y' && empty($user) && !$_SESSION['in_tracker']) {
 				// in_tracker session var checking is for tiki-register.php
 				$back .= $smarty->fetch('antibot.tpl');
 			}
@@ -1071,9 +981,7 @@ function wikiplugin_tracker($data, $params)
 			if (!empty($preview)) {
 				$back .= "<input class='button submit preview' type='submit' name='tr_preview' value='".tra($preview)."' />";
 			}
-			foreach ($action as $key=>$act) {
-				$back .= "	<input class='button submit' type='submit' name='action$key' value='".tra($act)."' />";
-			}
+			$back .= "	<input class='button submit' type='submit' name='action' value='".tra($action)."' />";
 			$back .= '</div>';
 			if ($showmandatory == 'y' and $onemandatory) {
 				$back.= "<em class='mandatory_note'>".tra("Fields marked with a * are mandatory.")."</em>";

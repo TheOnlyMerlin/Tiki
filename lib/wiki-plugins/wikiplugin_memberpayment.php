@@ -26,33 +26,23 @@ function wikiplugin_memberpayment_info() {
 				'description' => tr('Price per period (%0).', $prefs['payment_currency']),
 				'filter' => 'text',
 			),
-			'currentuser' => array(
-				'required' => false,
-				'name' => tra('Membership only for the current user'),
-				'description' => 'y|n',
-				'filter' => 'alpha',
-				'default' => 'n',
-			),
 		),
 	);
 }
 
 function wikiplugin_memberpayment( $data, $params, $offset ) {
-	global $smarty, $userlib, $prefs, $user;
+	global $smarty, $userlib, $prefs;
 	global $paymentlib; require_once 'lib/payment/paymentlib.php';
 
 	$params['price'] = floatval( $params['price'] );
-	$default = array( 'currentuser'=>'n' );
-	$params = array_merge( $default, $params );
 
 	if( ( $info = $userlib->get_group_info( $params['group'] ) ) && $info['expireAfter'] > 0 ) {
 		$smarty->assign( 'wp_member_offset', $offset );
 		$smarty->assign( 'wp_member_price', $params['price'] );
 		$smarty->assign( 'wp_member_group', $info );
-		$smarty->assign( 'wp_member_currentuser', $params['currentuser'] );
 
 		if( isset($_POST['wp_member_offset']) && $_POST['wp_member_offset'] == $offset ) {
-			$users = $params['currentuser'] == 'y'? array($user): explode( '|', $_POST['wp_member_users'] );
+			$users = explode( '|', $_POST['wp_member_users'] );
 			$users = array_map( 'trim', $users );
 			$users = array_filter( $users, array( $userlib, 'user_exists' ) );
 			$users = array_filter( $users );
@@ -75,14 +65,8 @@ function wikiplugin_memberpayment( $data, $params, $offset ) {
 		}
 
 		return '~np~' . $smarty->fetch( 'wiki-plugins/wikiplugin_memberpayment.tpl' ) . '~/np~';
-	} elseif ($info['expireAfter'] == 0 && $params['group'] == $info['groupName']) {
-		return '{REMARKSBOX(type=warning, title=Plugin Memberpayment Error)}' . tra('The group ') . '<em>' . $info['groupName'] 
-				. '</em>' . tra(' does not have a membership term.') . tra(' Go to ') . '<em>' . tra('Admin > Groups') . '</em>' 
-				. tra(' to specify a term for this group by automatically unassigning users after a certain number of days.') 
-				. '{REMARKSBOX}';
 	} else {
-		return '{REMARKSBOX(type=warning, title=Plugin Memberpayment Error)}' . tra('The group ') . '<em>' . $params['group'] 
-				. '</em>' . tra(' does not exist') . '{REMARKSBOX}';
+		return tra('Group does not exist: ' . $params['group']);
 	}
 }
 

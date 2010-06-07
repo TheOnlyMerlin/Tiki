@@ -414,7 +414,7 @@ class CalendarLib extends TikiLib
 		if ($caldata['customparticipants'] == 'y') {
 			$roles = array();
 			if ($data["organizers"]) {
-				$orgs = explode(',', $data["organizers"]);
+				$orgs = split(',', $data["organizers"]);
 				foreach ($orgs as $o) {
 					if (trim($o)) {
 						$roles['6'][] = trim($o);
@@ -422,11 +422,11 @@ class CalendarLib extends TikiLib
 				}
 			}
 			if ($data["participants"]) {
-				$parts = explode(',', $data["participants"]);
+				$parts = split(',', $data["participants"]);
 				foreach ($parts as $pa) {
 					if (trim($pa)) {
 						if (strstr($pa,':')) {
-							$p = explode(':', trim($pa));
+							$p = split('\:', trim($pa));
 							$roles["$p[0]"][] = trim($p[1]);
 						} else {
 							$roles[0][] = trim($pa);

@@ -313,21 +313,6 @@ if ($tiki_p_view_trackers != 'y' and $tracker_info["writerCanModify"] != 'y' and
 	$smarty->display("error.tpl");
 	die;
 }
-
-if (!empty($_REQUEST['moveto']) && $tiki_p_admin_trackers == 'y') { // mo to another tracker fields with same name
-	$perms = Perms::get('tracker', $_REQUEST['moveto']);
-	if ($perms->create_tracker_items) {
-		$trklib->move_item($_REQUEST['trackerId'], $_REQUEST['itemId'], $_REQUEST['moveto']);
-		header('Location: '.filter_out_sefurl('tiki-view_tracker_item.php?itemId=' . $_REQUEST['itemId']));
-		exit;
-	} else {
-		$smarty->assign('errortype', 401);
-		$smarty->assign('msg', tra("Permission denied"));
-		$smarty->display("error.tpl");
-		die;
-	}
-}
-
 $status_types = $trklib->status_types();
 $smarty->assign('status_types', $status_types);
 $fields = array();
@@ -776,12 +761,7 @@ if ($_REQUEST["itemId"]) {
 				} elseif ($fields["data"][$i]["type"] == 'r') {
 					$ins_fields["data"][$i]["linkId"] = $trklib->get_item_id($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][1], $info[$fid]);
 					$ins_fields["data"][$i]["value"] = $info[$fid];
-					if (!isset($fields["data"][$i]["options_array"][3])) {
-						$ins_fields["data"][$i]["list"] = array_unique($trklib->get_all_items($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][1], 'poc', false));
-					} 
-					else {	
-						$ins_fields["data"][$i]["list"] = $trklib->get_all_items($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][1]);	
-					}
+					$ins_fields["data"][$i]["list"] = array_unique($trklib->get_all_items($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][1], 'poc', false));
 					if (isset($fields["data"][$i]["options_array"][3])) {
 						$ins_fields["data"][$i]["displayedvalue"] = $trklib->concat_item_from_fieldslist($fields["data"][$i]["options_array"][0], $trklib->get_item_id($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][1], $info[$fid]) , $fields["data"][$i]["options_array"][3]);
 						$ins_fields["data"][$i]["listdisplay"] = $trklib->concat_all_items_from_fieldslist($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][3]);
@@ -1115,11 +1095,6 @@ if ($tracker_info["useAttachments"] == 'y') {
 	$smarty->assign('attfields', $attfields);
 	$smarty->assign('attextra', $attextra);
 }
-if (isset($_REQUEST['moveto']) && empty($_REQUEST['moveto'])) {
-	$trackers = $tikilib->list_trackers();
-	$smarty->assign_by_ref('trackers', $trackers['data']);
-	$_REQUEST['show'] = 'mod';
-}
 if (isset($_REQUEST['show'])) {
 	if ($_REQUEST['show'] == 'view') {
 		$tabi = 1;
@@ -1151,17 +1126,6 @@ if ($prefs['feature_ajax'] == 'y') {
 	$ajaxlib->registerTemplate('tiki-view_tracker_item.tpl');
 	$ajaxlib->processRequests();
 }
-global $logslib; include_once('lib/logs/logslib.php');
-$logslib->add_action('Viewed', $_REQUEST['itemId'], 'trackeritem');
-
-// Generate validation js
-if ($prefs['feature_jquery'] == 'y' && $prefs['feature_jquery_validation'] == 'y') {
-	global $validatorslib;
-	include_once('lib/validatorslib.php');
-	$validationjs = $validatorslib->generateTrackerValidateJS( $fields['data'] );
-	$smarty->assign('validationjs', $validationjs);
-}
-
 // Display the template
 $smarty->assign('mid', 'tiki-view_tracker_item.tpl');
 

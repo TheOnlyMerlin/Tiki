@@ -74,30 +74,24 @@ class CartLib
 	}
 
 	function request_payment() {
-		global $prefs, $user;
+		global $prefs;
 		global $paymentlib; require_once 'lib/payment/paymentlib.php';
 
 		$total = $this->get_total();
 
 		if( $total > 0 ) {
-			$description = tra('Cart Check-Out') . (empty($user) ? '' : " ($user)" );
-			$invoice = $paymentlib->request_payment( $description, $total, $prefs['payment_default_delay'], $this->get_description() );
+			$invoice = $paymentlib->request_payment( tra('Cart Check-Out'), $total, $prefs['payment_default_delay'], $this->get_description() );
 
 			foreach( $this->get_behaviors() as $behavior ) {
 				$paymentlib->register_behavior( $invoice, $behavior['event'], $behavior['behavior'], $behavior['arguments'] );
 			}
 
-			//$_SESSION['cart'] = array();
-			// don't empty cart when going to choose payment, but when should it be cleared?
+			$_SESSION['cart'] = array();
 
 			return $invoice;
 		}
 
 		return 0;
-	}
-
-	function empty_cart() {
-		$_SESSION['cart'] = array();
 	}
 
 	private function get_behaviors() {

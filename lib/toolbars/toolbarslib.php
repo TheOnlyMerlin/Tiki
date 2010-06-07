@@ -379,7 +379,7 @@ abstract class Toolbar
 		$content = $title;
 		$params['_icon'] = $this->icon;
 			
-		if (strpos($class, 'qt-plugin') !== false && $this->icon == 'pics/icons/plugin.png') {
+		if (strpos($class, 'qt-plugin') !== false && !empty($title)) {
 			$params['_menu_text'] = 'y';
 			$params['_menu_icon'] = 'y';
 		}
@@ -573,17 +573,12 @@ class ToolbarBlock extends ToolbarInline // Will change in the future
 
 	public static function fromName( $tagName ) // {{{
 	{
-		global $prefs;
 		switch( $tagName ) {
 		case 'center':
 			$label = tra('Align Center');
 			$icon = tra('pics/icons/text_align_center.png');
 			$wysiwyg = 'JustifyCenter';
-			if ($prefs['feature_use_three_colon_centertag'] == 'y') {
-				$syntax = ":::text:::";
-			} else {
-				$syntax = "::text::";
-			}
+			$syntax = "::text::";
 			break;
 		case 'rule':
 			$label = tra('Horizontal Bar');
@@ -1556,8 +1551,13 @@ class ToolbarWikiplugin extends Toolbar
 
 	function getWikiHtml( $areaName ) // {{{
 	{
+		if ($this->icon != 'pics/icons/plugin.png') {
+			$label = '';
+		} else {
+			$label = htmlentities($this->label, ENT_QUOTES, 'UTF-8');
+		}
 		return $this->getSelfLink('popup_plugin_form(\'' . $areaName . '\',\'' . $this->pluginName . '\')',
-							htmlentities($this->label, ENT_QUOTES, 'UTF-8'), 'qt-plugin');
+							$label, 'qt-plugin');
 	} // }}}
 }
 
@@ -1576,47 +1576,47 @@ class ToolbarSheet extends Toolbar
 			case 'addrow':
 				$label = tra('Add Row');
 				$icon = tra('pics/icons/sheet_row_add.png');
-				$syntax = '$jq.sheet.instance[0].controlFactory.addRow(null, null, ":last");';	// add row after end to workaround bug in jquery.sheet.js 1.0.2
+				$syntax = 'jS.controlFactory.addRow(null, null, ":last");';	// add row after end to workaround bug in jquery.sheet.js 1.0.2
 				break;														// TODO fix properly for 5.1
 			case 'addrowmulti':
 				$label = tra('Add Multi-Rows');
 				$icon = tra('pics/icons/sheet_row_add_multi.png');
-				$syntax = '$jq.sheet.instance[0].controlFactory.addRowMulti();';
+				$syntax = 'jS.controlFactory.addRowMulti();';
 				break;
 			case 'deleterow':
 				$label = tra('Delete Row');
 				$icon = tra('pics/icons/sheet_row_delete.png');
-				$syntax = '$jq.sheet.instance[0].deleteRow();';
+				$syntax = 'jS.deleteRow();';
 				break;
 			case 'addcolumn':
 				$label = tra('Add Column');
 				$icon = tra('pics/icons/sheet_col_add.png');
-				$syntax = '$jq.sheet.instance[0].controlFactory.addColumn(true);';	// add col after current or at end if none selected
+				$syntax = 'jS.controlFactory.addColumn(true);';	// add col after current or at end if none selected
 				break;
 			case 'deletecolumn':
 				$label = tra('Delete Column');
 				$icon = tra('pics/icons/sheet_col_delete.png');
-				$syntax = '$jq.sheet.instance[0].deleteColumn();';
+				$syntax = 'jS.deleteColumn();';
 				break;
 			case 'addcolumnmulti':
 				$label = tra('Add Multi-Columns');
 				$icon = tra('pics/icons/sheet_col_add_multi.png');
-				$syntax = '$jq.sheet.instance[0].controlFactory.addColumnMulti();';
+				$syntax = 'jS.controlFactory.addColumnMulti();';
 				break;
 			case 'sheetgetrange':
 				$label = tra('Get Cell Range');
 				$icon = tra('pics/icons/sheet_get_range.png');
-				$syntax = '$jq.sheet.instance[0].appendToFormula($jq.sheet.instance[0].getTdRange());';
+				$syntax = 'jS.appendToFormula(jS.getTdRange());';
 				break;
 			case 'sheetfind':
 				$label = tra('Find');
 				$icon = tra('pics/icons/find.png');
-				$syntax = '$jq.sheet.instance[0].cellFind();';
+				$syntax = 'jS.cellFind();';
 				break;
 			case 'sheetrefresh':
 				$label = tra('Refresh Calculations');
 				$icon = tra('pics/icons/arrow_refresh.png');
-				$syntax = '$jq.sheet.instance[0].calc($jq.sheet.instance[0].obj.tableBody());';
+				$syntax = 'jS.calc(jS.obj.tableBody());';
 				break;
 			case 'sheetclose':
 				$label = tra('Finish Editing');

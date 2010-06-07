@@ -194,14 +194,14 @@ $jq("#edit_button").click( function () {
 			ajaxLoadingHide();
 		}
 	} else {
-		if (!$jq.sheet.instance[0].isDirty ? true : confirm("Are you sure you want to finish editing?  All unsaved changes will be lost.")) {
+		if (!jS.isDirty ? true : confirm("Are you sure you want to finish editing?  All unsaved changes will be lost.")) {
 			window.location.replace(window.location.href.replace("parse=edit", "parse=y"));
 		}
 	}
 	return false;
 });
 $jq("#save_button").click( function () {
-	$jq.sheet.instance[0].evt.cellEditDone();
+	jS.evt.cellEditDone();
 	$jq.sheet.saveSheet(true);
 	return false;
 }).hide();
@@ -220,7 +220,7 @@ window.showFeedback = function(message, delay, redirect) {
 };
 
 window.setEditable = function(isEditable) {
-	$jq.sheet.instance[0].s.editable = isEditable;
+	jS.s.editable = isEditable;
 	if (isEditable) {
 		$jq("#save_button").show();
 		//$jq("#edit_button a").click( function () { window.location.replace(window.location.href); return false; } );

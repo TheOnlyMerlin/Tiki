@@ -1104,6 +1104,10 @@ function prefs_feature_list() {
 			'name' => tra('Login Bar'),
 			'type' => 'flag',
 		),
+		'feature_topbar_debug' => array(
+			'name' => tra('Debugger Console'),
+			'type' => 'flag',
+		),
 		'feature_topbar_custom_code' => array(
 			'name' => tra('Custom code'),
 			'type' => 'textarea',
@@ -1318,12 +1322,6 @@ function prefs_feature_list() {
 				'vader' => 'vader',
 			), 
 		),
-		'feature_jquery_validation' => array(
-			'name' => tra('Validation'),
-			'type' => 'flag',
-			'description' => tra('Provides various validation possibilities like in Trackers.'),
-			'help' => 'JQuery#Validation',
-		),
 		'feature_jquery_sheet' => array(
 			'name' => tra('JQuery Sheet'),
 			'type' => 'flag',
@@ -1529,6 +1527,8 @@ function prefs_feature_list() {
 			'type' => 'flag',
 			'help' => 'Wiki+Page+Staging+and+Approval',
 			'perspective' => false,
+			'warning' => tra('This feature is experimental'),
+			'description' => tra('Allows wiki pages to be staged (drafted) before they are approved (published)'),
 		),
 		'feature_listorphanStructure' => array(
 			'name' => tra('Pages not in structure'),
@@ -1626,10 +1626,6 @@ function prefs_feature_list() {
 			'dependencies' => array(
 				'wikiplugin_quote',
 			),
-		),
-		'feature_use_three_colon_centertag' => array(
-			'name' => tra('Use three colons instead of two to center text. Avoids conflict with C++ resolution scope operator.'),
-			'type' => 'flag',
 		),
 		'feature_community_gender' => array(
 			'name' => tra('Users can choose to show their gender'),
@@ -1730,12 +1726,6 @@ function prefs_feature_list() {
 			'type' => 'flag',
 			'description' => tra('Constrains the site display to 990px wide.'),
 			'warning' => tra('You can modify at styles/layout/fixed_width.css'),
-		),
-		'feature_socialnetworks' => array(
-			'name' => tra('Social networks'),
-			'description' => tra('Integration with different social networks like twitter or facebook'),
-			'type' => 'flag',
-			'keywords' => 'social networks',
 		),
 		'feature_group_transition' => array(
 			'name' => tra('Group Transition'),

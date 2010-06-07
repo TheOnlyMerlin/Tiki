@@ -98,7 +98,7 @@
 		{elseif $viewmode eq "semester"}
 			{self_link _ajax=$ajax todate=$semesterbefore _title="{tr}Semester{/tr}" _alt="{tr}Semester{/tr}" _icon=resultset_previous"}{/self_link}
 		{elseif $viewmode eq "year"}
-			{self_link _ajax=$ajax todate=$yearbefore _title="{tr}Year{/tr}" _alt="{tr}Year{/tr}" _icon=resultset_previous"}{/self_link}
+			{self_link _ajax=$ajax todate=$yearbefore _title="{tr}Semester{/tr}" _alt="{tr}Semester{/tr}" _icon=resultset_previous"}{/self_link}
 		{/if}
 	{/if}
 

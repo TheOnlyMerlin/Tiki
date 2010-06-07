@@ -10,7 +10,7 @@ require_once ('tiki-setup.php');
 
 $access->check_feature('feature_trackers');
 
-global $trklib; include_once ('lib/trackers/trackerlib.php');
+include_once ('lib/trackers/trackerlib.php');
 if ($prefs['feature_groupalert'] == 'y') {
 	include_once ('lib/groupalert/groupalertlib.php');
 }
@@ -386,12 +386,7 @@ for ($i = 0; $i < $temp_max; $i++) {
 				$fields["data"][$i]["value"] = '';
 			}
 			if ($fields["data"][$i]["type"] == 'r') { // item link
-				if (!isset($fields["data"][$i]["options_array"][3])) {
-					$fields["data"][$i]["list"] = array_unique($trklib->get_all_items($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][1], isset($fields['data'][$i]['options_array'][4])?$fields['data'][$i]['options_array'][4]:'poc'));
-				} 
-				else {	
-					$fields["data"][$i]["list"] = $trklib->get_all_items($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][1]);	
-				}
+				$fields["data"][$i]["list"] = array_unique($trklib->get_all_items($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][1], isset($fields['data'][$i]['options_array'][4])?$fields['data'][$i]['options_array'][4]:'poc'));
 				if (isset($fields["data"][$i]["options_array"][3])) $fields["data"][$i]["listdisplay"] = array_unique($trklib->concat_all_items_from_fieldslist($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][3], isset($fields['data'][$i]['options_array'][4])?$fields['data'][$i]['options_array'][4]:'poc'));
 			} elseif (($fields["data"][$i]["type"] == 'M') && ($fields["data"][$i]["options_array"][0] >= '3')) {
 				if (isset($_FILES["$ins_id"]) && is_uploaded_file($_FILES["$ins_id"]['tmp_name'])) {
@@ -723,7 +718,7 @@ if ($tiki_p_export_tracker == 'y') {
 	$smarty->assign_by_ref('filters', $filters);
 	if (!empty($_REQUEST['displayedFields'])) {
 		if (is_string($_REQUEST['displayedFields'])) {
-			$smarty->assign('displayedFields', preg_split('/[:,]/', $_REQUEST['displayedFields']));
+			$smarty->assign('displayedFields', split('[:,]', $_REQUEST['displayedFields']));
 		} else {
 			$smarty->assign_by_ref('displayedFields', $_REQUEST['displayedFields']);
 		}
@@ -750,15 +745,6 @@ if (isset($tracker_info['useRatings']) && $tracker_info['useRatings'] == 'y' && 
 setcookie('tab', $cookietab);
 $smarty->assign('cookietab', $cookietab);
 ask_ticket('view-trackers');
-
-// Generate validation js
-if ($prefs['feature_jquery'] == 'y' && $prefs['feature_jquery_validation'] == 'y') {
-	global $validatorslib;
-	include_once('lib/validatorslib.php');
-	$validationjs = $validatorslib->generateTrackerValidateJS( $fields['data'] );
-	$smarty->assign('validationjs', $validationjs);
-}
-
 // Display the template
 $smarty->assign('mid', 'tiki-view_tracker.tpl');
 $smarty->display("tiki.tpl");

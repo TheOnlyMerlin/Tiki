@@ -49,8 +49,6 @@ function wikiplugin_archivebuilder( $data, $params ) {
 					$archive->addFromString( $name, $content );
 					$files[] = $name;
 				}
-			} else {
-				return tra('Incorrect param').' '.$handler;
 			}
 		}
 

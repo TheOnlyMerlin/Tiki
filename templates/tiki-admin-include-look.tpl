@@ -116,6 +116,7 @@
 					{preference name=feature_topbar_id_menu}
 				</div>
 				{preference name=feature_topbar_version}
+				{preference name=feature_topbar_debug}
 				{preference name=feature_sitesearch}
 				{preference name=feature_topbar_custom_code}
 			</div>
@@ -210,7 +211,6 @@
 					{preference name=feature_jquery_reflection}
 					{preference name=feature_jquery_ui}
 					{preference name=feature_jquery_ui_theme}
-					{preference name=feature_jquery_validation}
 
 					<div class="adminoptionbox">
 						<div class="adminoptionlabel">
