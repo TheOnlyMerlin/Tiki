@@ -1,10 +1,8 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_modules.php,v 1.52.2.1 2007-11-25 21:42:35 sylvieg Exp $
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 $section = 'admin';
 require_once ('tiki-setup.php');
 include_once ('lib/menubuilder/menulib.php');
@@ -33,7 +31,13 @@ $smarty->assign('wysiwyg', 'n');
 if (isset($_REQUEST['wysiwyg']) && $_REQUEST['wysiwyg'] == 'y') {
     $smarty->assign('wysiwyg', 'y');
 }
-$access->check_permission(array('tiki_p_admin_modules'));
+// PERMISSIONS: NEEDS p_admin
+if ($tiki_p_admin != 'y') {
+    $smarty->assign('errortype', 401);
+    $smarty->assign('msg', tra('You do not have permission to use this feature'));
+    $smarty->display('error.tpl');
+    die;
+}
 $auto_query_args = array();
 
 // Values for the user_module edit/create form
@@ -97,8 +101,12 @@ if (!empty($_REQUEST['edit_assign'])) {
 if (!empty($_REQUEST['unassign'])) {
     check_ticket('admin-modules');
     $info = $modlib->get_assigned_module($_REQUEST['unassign']);
-	$modlib->unassign_module($_REQUEST['unassign']);
-	$logslib->add_log('adminmodules', 'unassigned module ' . $info['name']);
+    if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+        $modlib->unassign_module($_REQUEST['unassign']);
+        $logslib->add_log('adminmodules', 'unassigned module ' . $info['name']);
+    } else {
+        key_get($area, tra('Unassign module:') . ' ' . $info['name']);
+    }
 }
 if (!empty($_REQUEST['modup'])) {
     check_ticket('admin-modules');
@@ -302,49 +310,21 @@ for ($i = 0;$i < $temp_max;$i++) {
         $allgroups[$i]["selected"] = 'n';
     }
 }
-
 $smarty->assign("groups", $allgroups);
-
-if (!isset($_REQUEST["offset"])) {
-	$offset = 0;
-} else {
-	$offset = $_REQUEST["offset"];
-}
-$maximum = 0;
-$maxRecords = $prefs['maxRecords'];
-
-$galleries = $tikilib->list_galleries($offset, $maxRecords, 'lastModif_desc', $user, '');
+$galleries = $tikilib->list_galleries(0, -1, 'lastModif_desc', $user, '');
 $smarty->assign('galleries', $galleries["data"]);
-$maximum = max( $maximum, $galleries['cant'] );
-
-$polls = $polllib->list_active_polls($offset, $maxRecords, 'publishDate_desc', '');
+$polls = $polllib->list_active_polls(0, -1, 'publishDate_desc', '');
 $smarty->assign('polls', $polls["data"]);
-$maximum = max( $maximum, $polls['cant'] );
-
-$contents = $dcslib->list_content($offset, $maxRecords, 'contentId_desc', '');
+$contents = $dcslib->list_content(0, -1, 'contentId_desc', '');
 $smarty->assign('contents', $contents["data"]);
-$maximum = max( $maximum, $contents['cant'] );
-
-$rsss = $rsslib->list_rss_modules($offset, $maxRecords, 'name_desc', '');
+$rsss = $rsslib->list_rss_modules(0, -1, 'name_desc', '');
 $smarty->assign('rsss', $rsss["data"]);
-$maximum = max( $maximum, $rsss['cant'] );
-
-$menus = $menulib->list_menus($offset, $maxRecords, 'menuId_desc', '');
+$menus = $menulib->list_menus(0, -1, 'menuId_desc', '');
 $smarty->assign('menus', $menus["data"]);
-$maximum = max( $maximum, $menus['cant'] );
-
 $banners = $bannerlib->list_zones();
 $smarty->assign('banners', $banners["data"]);
-$maximum = max( $maximum, $banners['cant'] );
-
 $wikistructures = $structlib->list_structures('0', '100', 'pageName_asc', '');
 $smarty->assign('wikistructures', $wikistructures["data"]);
-$maximum = max( $maximum, $wikistructures['cant'] );
-
-$smarty->assign( 'maxRecords', $maxRecords );
-$smarty->assign( 'offset', $offset );
-$smarty->assign( 'maximum', $maximum );
-
 $left = $tikilib->get_assigned_modules('l');
 $right = $tikilib->get_assigned_modules('r');
 $smarty->assign_by_ref('left', $left);

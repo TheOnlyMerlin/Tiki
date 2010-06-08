@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,8 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class CommLib extends TikiLib
-{
+class CommLib extends TikiLib {
 
 	function accept_page($receivedPageId) {
 		$info = $this->get_received_page($receivedPageId);
@@ -74,7 +68,7 @@ class CommLib extends TikiLib
 		return true;
 	}
 
-	function list_received_articles($offset, $maxRecords, $sort_mode = 'publishDate_desc', $find = '') {
+	function list_received_articles($offset, $maxRecords, $sort_mode = 'publishDate_desc', $find) {
 		$bindvars = array();
 		if ($find) {
 			$findesc = '%' . $find . '%';

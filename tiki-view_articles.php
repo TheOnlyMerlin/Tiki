@@ -1,29 +1,42 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-view_articles.php,v 1.41.2.1 2007-11-08 21:47:51 ricks99 Exp $
 $section = 'cms';
 require_once ('tiki-setup.php');
 include_once ('lib/articles/artlib.php');
 include_once ("lib/commentslib.php");
-if ($prefs['feature_freetags'] == 'y') {
-	include_once ('lib/freetag/freetaglib.php');
-}
 if ($prefs['feature_categories'] == 'y') {
 	include_once ('lib/categories/categlib.php');
 }
 $commentslib = new Comments($dbTiki);
-
-$access->check_feature('feature_articles');
-$access->check_permission_either( array('tiki_p_read_article', 'tiki_p_articles_read_heading') );
-
+if ($prefs['feature_articles'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_articles");
+	$smarty->display("error.tpl");
+	die;
+}
+if (($tiki_p_read_article != 'y') && ($tiki_p_articles_read_heading != 'y')) {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied. You cannot view this section"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (isset($_REQUEST["remove"])) {
-	$access->check_permission('tiki_p_remove_article');
-	$access->check_authenticity();
-	$artlib->remove_article($_REQUEST["remove"]);
+	if ($tiki_p_remove_article != 'y') {
+		$smarty->assign('errortype', 401);
+		$smarty->assign('msg', tra("Permission denied you cannot remove articles"));
+		$smarty->display("error.tpl");
+		die;
+	}
+	$area = 'delarticle';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$artlib->remove_article($_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 // This script can receive the thresold
 // for the information as the number of
@@ -95,7 +108,7 @@ if (!isset($_REQUEST['lang'])) {
 	$_REQUEST['lang'] = '';
 }
 // Get a list of last changes to the Wiki database
-$listpages = $artlib->list_articles($offset, $prefs['maxArticles'], $sort_mode, $find, $date_min, $date_max, $user, $type, $topic, 'y', $topicName, $categId, '', '', $_REQUEST['lang'], $min_rating, $max_rating);
+$listpages = $tikilib->list_articles($offset, $prefs['maxArticles'], $sort_mode, $find, $date_min, $date_max, $user, $type, $topic, 'y', $topicName, $categId, '', '', $_REQUEST['lang'], $min_rating, $max_rating);
 if ($prefs['feature_multilingual'] == 'y') {
 	include_once ("lib/multilingual/multilinguallib.php");
 	$listpages['data'] = $multilinguallib->selectLangList('article', $listpages['data']);
@@ -109,9 +122,6 @@ for ($i = 0; $i < $temp_max; $i++) {
 	$comments_object_var = $listpages["data"][$i]["articleId"];
 	$comments_objectId = $comments_prefix_var . $comments_object_var;
 	$listpages["data"][$i]["comments_cant"] = $commentslib->count_comments($comments_objectId);
-	if ($prefs['feature_freetags'] == 'y') { // And get the Tags for the posts
-		$listpages["data"][$i]["freetags"] = $freetaglib->get_tags_on_object($listpages["data"][$i]["articleId"], "article");
-	}
 }
 if (!empty($topicName) && !strstr($topicName, '!') && !strstr($topicName, '+')) {
 	$smarty->assign_by_ref('topic', $topicName);

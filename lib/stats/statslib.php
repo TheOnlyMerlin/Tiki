@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,8 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class StatsLib extends TikiLib
-{
+class StatsLib extends TikiLib {
 	// obsolete, but keeped for compatibility purposes
 	// use Tikilib::list_pages() instead
 	function list_orphan_pages($offset = 0, $maxRecords = -1, $sort_mode = 'pageName_desc', $find = '', $onlyCant=false) {
@@ -107,8 +101,8 @@ class StatsLib extends TikiLib
 	function forum_stats() {
 		$stats = array();
 		$stats["forums"] = $this->getOne("select count(*) from `tiki_forums`",array());
-		$stats["topics"] = $this->getOne( "select count(*) from `tiki_comments`,`tiki_forums` where `object`=`forumId` and `objectType`=? and `parentId`=?",array('forum',0));
-		$stats["threads"] = $this->getOne( "select count(*) from `tiki_comments`,`tiki_forums` where `object`=`forumId` and `objectType`=? and `parentId`<>?",array('forum',0));
+		$stats["topics"] = $this->getOne( "select count(*) from `tiki_comments`,`tiki_forums` where `object`=".$this->cast('`forumId`','string')." and `objectType`=? and `parentId`=?",array('forum',0));
+		$stats["threads"] = $this->getOne( "select count(*) from `tiki_comments`,`tiki_forums` where `object`=".$this->cast('`forumId`','string')." and `objectType`=? and `parentId`<>?",array('forum',0));
 		$stats["tpf"] = ($stats["forums"] ? $stats["topics"] / $stats["forums"] : 0);
 		$stats["tpt"] = ($stats["topics"] ? $stats["threads"] / $stats["topics"] : 0);
 		$stats["visits"] = $this->getOne("select sum(`hits`) from `tiki_forums`",array());
@@ -153,49 +147,21 @@ class StatsLib extends TikiLib
 	function site_stats() {
 		global $tikilib;
 		$stats = array();
-		$rows = $this->getOne("select count(*) from `tiki_pageviews`",array());
-		if ($rows > 0) {
-			//get max pageview number
-			//sum by day as there are sometimes multiple unixstamps per day
-			$max = $this->fetchAll("SELECT SUM(`pageviews`) AS views, `day` AS unixtime
-									FROM `tiki_pageviews`
-									GROUP BY FROM_UNIXTIME(`day`, '%Y-%m-%d')
-									ORDER BY views DESC 
-									LIMIT 1");
-			$maxvar = $max[0]['views'];
-			//get min pageview number
-			$min = $this->fetchAll("SELECT SUM(`pageviews`) AS views, `day` AS unixtime
-									FROM `tiki_pageviews`
-									GROUP BY FROM_UNIXTIME(`day`, '%Y-%m-%d')
-									ORDER BY views ASC 
-									LIMIT 1");
-			$minvar = $min[0]['views'];
-			//pull all dates with max or min because there may be more than one for each
-			$views = $this->fetchAll("SELECT SUM(`pageviews`) AS views, FROM_UNIXTIME(`day`, '%Y-%m-%d') AS date, `day` AS unixtime
-									FROM `tiki_pageviews`
-									GROUP BY FROM_UNIXTIME(`day`, '%Y-%m-%d')
-									HAVING views = '$maxvar' OR views = '$minvar'
-									ORDER BY date ASC");
-			$start = $this->getOne("select min(`day`) from `tiki_pageviews`",array());
-			$stats['started'] = $tikilib->get_long_date($start);
-			$stats['days'] = floor(($tikilib->now - $start)/86400);
+		$stats['viewrows'] = $this->getOne("select count(*) from `tiki_pageviews`",array());
+		if ($stats['viewrows'] > 0) {
+			$timestamp = $this->getOne("select min(`day`) from `tiki_pageviews`",array());
+			$stats['started'] = $tikilib->get_long_date($timestamp);
+			$stats['days'] = floor(($tikilib->now - $timestamp)/86400);
 			$stats['pageviews'] = $this->getOne("select sum(`pageviews`) from `tiki_pageviews`");
 			$stats['ppd'] = sprintf("%.2f", ($stats['days'] ? $stats['pageviews'] / $stats['days'] : 0));
-			$b = 0;
-			$w = 0;
-			//for each in case there's more than one max day and more than one min day
-			foreach ($views as $view) {
-				if ($view['views'] == $maxvar) {
-					$stats['bestday'] .= $tikilib->get_long_date($view['unixtime']) . ' (' . $maxvar . ' ' . tra('pvs') . ')<br />';
-					$b > 0 ? $stats['bestdesc'] = tra('Days with the most pageviews') : $stats['bestdesc'] = tra('Day with the most pageviews');
-					$b++;
-				} 
-				if ($view['views'] == $minvar) {
-					$stats['worstday'] .= $tikilib->get_long_date($view['unixtime']) . ' (' . $minvar . ' ' . tra('pvs') . ')<br />';
-					$w > 0 ? $stats['worstdesc'] = tra('Days with the least pageviews') : $stats['worstdesc'] = tra('Day with the least pageviews');
-					$w++;
-				}
-			}
+			$stats['bestpvs'] = $this->getOne("select max(`pageviews`) from `tiki_pageviews`",array());
+			$stats['bestday'] = $tikilib->get_long_date($this->getOne("select `day` from `tiki_pageviews` where 
+`pageviews`=?",array((int)$stats['bestpvs'])))
+									. ' (' . $stats['bestpvs'] . ' ' . tra('pvs') . ')';
+			$stats['worstpvs'] = $this->getOne("select min(`pageviews`) from `tiki_pageviews`",array());
+			$stats['worstday'] = $tikilib->get_long_date($this->getOne("select `day` from `tiki_pageviews` where 
+`pageviews`=?",array((int)$stats['worstpvs'])))
+									. ' (' . $stats['worstpvs'] . ' ' . tra('pvs') . ')';
 		} else {
 			$stats['started'] = tra('No pageviews yet');
 			$stats['days'] = tra('n/a');

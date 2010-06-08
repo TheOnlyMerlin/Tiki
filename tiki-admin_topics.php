@@ -1,18 +1,25 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_topics.php,v 1.23.2.1 2007-11-08 21:47:51 ricks99 Exp $
 $section = 'cms';
 require_once ('tiki-setup.php');
 include_once ('lib/articles/artlib.php');
 $smarty->assign('headtitle', tra('Admin topics'));
-$access->check_feature('feature_articles');
+if ($prefs['feature_articles'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_articles");
+	$smarty->display("error.tpl");
+	die;
+}
 // PERMISSIONS: NEEDS p_admin or tiki_p_articles_admin_topics
-$access->check_permission(array('tiki_p_articles_admin_topics'));
-
+if ($tiki_p_admin_cms != 'y' && $tiki_p_articles_admin_topics != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (isset($_REQUEST["addtopic"])) {
 	check_ticket('admin-topics');
 	if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_name'])) {
@@ -32,12 +39,22 @@ if (isset($_REQUEST["addtopic"])) {
 	$artlib->add_topic($_REQUEST["name"], $imgname, $imgtype, $imgsize, $data);
 }
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity(tra('Are you sure you want to remove this topic?'));
-	$artlib->remove_topic($_REQUEST["remove"]);
+	$area = 'delarttopic';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$artlib->remove_topic($_REQUEST["remove"]);
+	} else {
+		key_get($area, tra('Are you sure you want to remove this topic?'));
+	}
 }
 if (isset($_REQUEST["removeall"])) {
-	$access->check_authenticity(tra('Are you sure you want to remove this topic AND all the articles related?'));
-	$artlib->remove_topic($_REQUEST["removeall"], 1);
+	$area = 'delarttopicall';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$artlib->remove_topic($_REQUEST["removeall"], 1);
+	} else {
+		key_get($area, tra('Are you sure you want to remove this topic AND all the articles related?'));
+	}
 }
 if (isset($_REQUEST["activate"])) {
 	check_ticket('admin-topics');

@@ -1,50 +1,56 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 require_once ('tiki-setup.php');
-$access->check_feature('feature_kaltura');
+
+if ($prefs['feature_kaltura'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_kaltura");
+	$smarty->display("error.tpl");
+	die;
+}
 
 include_once ("lib/videogals/KalturaClient_v3.php");
 
-$access->check_permission(array('tiki_p_upload_videos'));
+if ($tiki_p_upload_videos != 'y' && $tiki_p_admin_kaltura != 'y' && $tiki_p_admin != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied: You cannot upload videos"));
+	$smarty->display('error.tpl');
+	die;
+}
 
 $secret = $prefs['secret'];
 $admin_secret = $prefs['adminSecret'];
 $partner_id = $prefs['partnerId'];
 $SESSION_ADMIN = 2;
 $SESSION_USER = 0;
-$kuser = $url_host;
 
 if (empty($partner_id) || !is_numeric($partner_id) || empty($secret) || empty($admin_secret)) {
 	$smarty->assign('msg', tra("You need to set your Kaltura account details: ") . '<a href="tiki-admin.php?page=kaltura">' . tra('here') . '</a>');
 	$smarty->display('error.tpl');
 	die;
 }
-$smarty->assign('headtitle', tra('Kalture Upload'));
 
-try {
-	$kconf = new KalturaConfiguration($partner_id);
-	$kclient = new KalturaClient($kconf);
-	$ksession = $kclient->session->start($secret,$kuser,$SESSION_USER);
-} catch (Exception $e) {
-	$smarty->assign('msg', tra('Could not establish Kaltura session. Try again') . '<br /><em>' . $e->getMessage() . '</em>');
+$kconf = new KalturaConfiguration($partner_id);
+$kclient = new KalturaClient($kconf);
+$ksession = $kclient->session->start($secret,$user,$SESSION_USER);
+
+if(!isset($ksession)) {
+	$smarty->assign('msg', tra("Could not establish Kaltura session. Try again"));
 	$smarty->display('error.tpl');
 	die;
 }
 $kclient->setKs($ksession);
 
 $cwflashVars = array();
-$cwflashVars["uid"]               = $kuser;
+$cwflashVars["uid"]               = $user;
 $cwflashVars["partnerId"]         = $partner_id;
-$cwflashVars["ks"]                = $ksession;
+$cwflashVars["ks"]                  = $ksession;
 $cwflashVars["afterAddEntry"]     = "afterAddEntry";
-$cwflashVars["close"]             = "onContributionWizardClose";
+$cwflashVars["close"]       = "onContributionWizardClose";
 $cwflashVars["showCloseButton"]   = false;
-$cwflashVars["Permissions"]       = 1;		// 1=public, 2=private, 3=group, 4=friends
+$cwflashVars["Permissions"]       = 1; 
 
 $smarty->assign_by_ref('cwflashVars',json_encode($cwflashVars));
 
@@ -54,5 +60,5 @@ if($_REQUEST['kcw']){
 	$smarty->assign_by_ref('count',$count);
 }
 // Display the template
-$smarty->assign('mid','tiki-kaltura_upload.tpl');
-$smarty->display("tiki.tpl");
+	$smarty->assign('mid','tiki-kaltura_upload.tpl');
+	$smarty->display("tiki.tpl");

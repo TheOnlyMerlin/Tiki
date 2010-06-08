@@ -1,11 +1,6 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /**
+ * $Id: $
  * Smarty plugin for Tiki using jQuery ClueTip instead of OverLib
  */
 
@@ -121,10 +116,12 @@ function smarty_function_popup($params, &$smarty)
 		$append .= ',\'' . $trigger . '\'';
 	}
 
-	$text = preg_replace(array('/\\\\r\n/','/\\\\n/','/\\\\r/'), "", $text);	// Remove newlines to avoid JavaScript statement over several lines
-	$retval = $trigger . '="return convertOverlib(this,\''.$text.'\'';
+	$retval = $trigger . '="return convertOverlib(this,\''.urlencode(TikiLib::htmldecode($text)).'\'';
 	$append = trim($append, ',');
     $retval .= ',[' . $append . ']);"';
+//    if ($trigger == 'onmouseover')
+//       $retval .= ' onmouseout="nd();"';
+
 
     return $retval;
 }

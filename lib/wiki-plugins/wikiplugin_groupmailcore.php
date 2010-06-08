@@ -1,8 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+
 // $Id$
 
 // Wiki plugin to display controls etc for GroupMail 
@@ -37,32 +34,32 @@ function wikiplugin_groupmailcore_info() {
 			),
 			'operatorFId' => array(
 				'required' => true,
-				'name' => tra('Operator Field Id'),
+				'name' => tra('operator Field Id'),
 				'description' => tra('Id of GroupMail Logs tracker field (usually set up in alias by profile).'),
 			),
 			'subjectFId' => array(
 				'required' => true,
-				'name' => tra('Subject Field Id'),
+				'name' => tra('subject Field Id'),
 				'description' => tra('Id of GroupMail Logs tracker field (usually set up in alias by profile).'),
 			),
 			'messageFId' => array(
 				'required' => true,
-				'name' => tra('Message Field Id'),
+				'name' => tra('message Field Id'),
 				'description' => tra('Id of GroupMail Logs tracker field (usually set up in alias by profile).'),
 			),
 			'contentFId' => array(
 				'required' => true,
-				'name' => tra('Content Field Id'),
+				'name' => tra('content Field Id'),
 				'description' => tra('Id of GroupMail Logs tracker field (usually set up in alias by profile).'),
 			),
 			'accountFId' => array(
 				'required' => true,
-				'name' => tra('Account Field Id'),
+				'name' => tra('account Field Id'),
 				'description' => tra('Id of GroupMail Logs tracker field (usually set up in alias by profile).'),
 			),
 			'datetimeFId' => array(
 				'required' => true,
-				'name' => tra('Datetime Field Id'),
+				'name' => tra('datetime Field Id'),
 				'description' => tra('Id of GroupMail Logs tracker field (usually set up in alias by profile).'),
 			),
 		),

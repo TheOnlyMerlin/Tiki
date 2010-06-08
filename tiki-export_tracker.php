@@ -1,13 +1,19 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-export_tracker.php,v 1.12.2.10 2008-03-10 22:37:44 sylvieg Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 @ini_set('max_execution_time', 0); //will not work in safe_mode is on
 require_once('tiki-setup.php');
-$access->check_feature('feature_trackers');
+
+if ($prefs['feature_trackers'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled').': feature_trackers');
+	$smarty->display('error.tpl');
+	die;
+}
 if (!isset($_REQUEST['trackerId'])) {
 	$smarty->assign('msg', tra('No tracker indicated'));
 	$smarty->display('error.tpl');
@@ -28,7 +34,12 @@ $smarty->assign_by_ref('trackerId', $_REQUEST['trackerId']);
 $smarty->assign_by_ref('tracker_info', $tracker_info);
 
 $tikilib->get_perm_object($_REQUEST['trackerId'], 'tracker', $tracker_info);
-$access->check_permission('tiki_p_export_tracker');
+if ($tiki_p_view_trackers != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra('You do not have permission to use this feature'));
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (isset($_REQUEST['dump_tracker'])) {
 	$access->check_permission('tiki_p_tracker_dump');
@@ -40,7 +51,7 @@ if (isset($_REQUEST['dump_tracker'])) {
 $filters = array();
 if (!empty($_REQUEST['listfields'])) {
 	if (is_string($_REQUEST['listfields'])) {
-		$filters['fieldId'] = preg_split('/[,:]/', $_REQUEST['listfields']);
+		$filters['fieldId'] = split('[,:]', $_REQUEST['listfields']);
 	} elseif (is_array($_REQUEST['listfields'])) {
 		$filters['fieldId'] = $_REQUEST['listfields'];
 	}

@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /* Tiki-Wiki Countdown plugin
  *
  * This is an example plugin to indicate a countdown to a date.
@@ -111,7 +105,7 @@ function wikiplugin_countdown($data, $params) {
 	//  (the string was specified using the user timezone)
 	$tikidate->setTZbyID($tikilib->get_display_timezone());
 	$tikidate->setDate($then);
-	$tikidate->setTZbyID('UTC');
+	$tikidate->convertTZByID('UTC');
 	$then = $tikidate->getTime();
 
 	$difference = $then - $tikilib->now;

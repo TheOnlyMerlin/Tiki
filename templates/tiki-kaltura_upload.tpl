@@ -13,24 +13,29 @@
 <br>		
 <div id="kcwFlashObject"></div>
 
-{jq notonready=true}
-var params = {
-       allowScriptAccess: "always",
-       allowNetworking: "all",
-       wmode: "opaque"
-};
+<script type="text/javascript">
+{literal}
+	var params = {
+       	allowScriptAccess: "always",
+       	allowNetworking: "all",
+       	wmode: "opaque"
+	};
 	
-function afterAddEntry (entries) {	
-	var tmp='';
-	for( var i = 0; i < entries.length; i++) {
-		tmp += '<input type="hidden" name="entryId[]" value="'+entries[i].entryId+'"/>';
-	}
-	document.getElementById('new_entries').innerHTML = tmp;
-	document.kcw.submit();
-}
-var flashVars = {{$cwflashVars}};
-swfobject.embedSWF("http://www.kaltura.com/kcw/ui_conf_id/1000741", "kcwFlashObject", "680", "360", "9.0.0", "expressInstall.swf", flashVars, params);
-{/jq}
+	function afterAddEntry (entries) {	
+		var tmp='';
+			
+			for( var i = 0; i < entries.length; i++)
+			{
+				tmp += '<input type="hidden" name="entryId[]" value="'+entries[i].entryId+'"/>';
+				
+			}
+		document.getElementById('new_entries').innerHTML = tmp;
+		document.kcw.submit();
+		}
+{/literal}
+	var flashVars = {$cwflashVars};
+	swfobject.embedSWF("http://www.kaltura.com/kcw/ui_conf_id/1000741", "kcwFlashObject", "680", "360", "9.0.0", "expressInstall.swf", flashVars, params);
+</script>
 		
 <form name='kcw' id='kcw' action='tiki-kaltura_upload.php' method='post' enctype='multipart/form-data' style='margin:0px; padding:0px'>
 	<input type="hidden" name="kcw" value="true"/>

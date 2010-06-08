@@ -1,13 +1,16 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-newsletter_archives.php,v 1.8 2007-10-12 07:55:29 nyloth Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/newsletters/nllib.php');
-$access->check_feature('feature_newsletters');
+if ($prefs['feature_newsletters'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_newsletters");
+	$smarty->display("error.tpl");
+	die;
+}
 if (!empty($_REQUEST['nlId'])) {
 	$smarty->assign('nlId', $_REQUEST["nlId"]);
 	$nl_info = $nllib->get_newsletter($_REQUEST["nlId"]);
@@ -19,8 +22,13 @@ if (isset($_REQUEST['remove']) && !empty($_REQUEST['nlId'])) {
 		$smarty->display("error.tpl");
 		die;
 	}
-	$access->check_authenticity();
-	$nllib->remove_edition($_REQUEST["nlId"], $_REQUEST["remove"]);
+	$area = 'delnewsletter';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$nllib->remove_edition($_REQUEST["nlId"], $_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 if (!empty($_REQUEST['error'])) {
 	$edition_errors = $nllib->get_edition_errors($_REQUEST['error']);
@@ -50,9 +58,9 @@ if (isset($_REQUEST["ed_find"])) {
 $smarty->assign('ed_find', $ed_find);
 $smarty->assign_by_ref('ed_sort_mode', $ed_sort_mode);
 if (isset($_REQUEST["nlId"])) {
-	$channels = $nllib->list_editions($_REQUEST["nlId"], $ed_offset, $maxRecords, $ed_sort_mode, $ed_find, false, 'tiki_p_view_newsletter');
+	$channels = $nllib->list_editions($_REQUEST["nlId"], $ed_offset, $maxRecords, $ed_sort_mode, $ed_find, false, 'tiki_p_subscribe_newsletters');
 } else {
-	$channels = $nllib->list_editions(0, $ed_offset, $maxRecords, $ed_sort_mode, $ed_find, false, 'tiki_p_view_newsletter');
+	$channels = $nllib->list_editions(0, $ed_offset, $maxRecords, $ed_sort_mode, $ed_find, false, 'tiki_p_subscribe_newsletters');
 }
 $cant_pages = ceil($channels["cant"] / $maxRecords);
 $smarty->assign_by_ref('cant_pages', $cant_pages);

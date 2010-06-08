@@ -1,13 +1,12 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-// This script may only be included - so its better to die if called directly.
-if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
-	header('location: index.php');
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_include_intertiki.php,v 1.9.2.1 2008-03-22 05:12:47 mose Exp $
+//this script may only be included - so its better to die if called directly.
+if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+	header("location: index.php");
 	exit;
 }
 if (!isset($_REQUEST['interlist'])) $_REQUEST['interlist'] = array();

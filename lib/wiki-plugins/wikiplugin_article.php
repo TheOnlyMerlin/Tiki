@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 // Includes an article field
 // Usage:
@@ -65,7 +60,6 @@ function wikiplugin_article($data, $params) {
 	      $add="";
 	}
 
-	global $artlib; require_once 'lib/articles/artlib.php';
-	$article_data = $artlib->get_article($Id);
+	$article_data = $tikilib->get_article($Id);
 	return $article_data[$Field].$add;
 }

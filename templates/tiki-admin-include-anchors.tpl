@@ -4,7 +4,7 @@
 
 {self_link page="features" _class="icon tips" _title="{tr}Features{/tr}|{tr}Switches for major features{/tr}"}{icon _id="pics/large/boot.png" alt="{tr}Features{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
 
-{self_link page="login" _class="icon tips" _title="{tr}Log in{/tr}|{tr}User registration, remember me cookie settings and authentication methods{/tr}"}{icon _id="pics/large/stock_quit.png" alt="{tr}Log in{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
+{self_link page="login" _class="icon tips" _title="{tr}Login{/tr}|{tr}User resistration, remember me cookie settings and authentication methods{/tr}"}{icon _id="pics/large/stock_quit.png" alt="{tr}Login{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
 
 {self_link page="community" _class="icon tips" _title="{tr}Community{/tr}|{tr}User specific features and settings{/tr}"}{icon _id="pics/large/users.png" alt="{tr}Community{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
 
@@ -96,6 +96,10 @@
 {self_link page="gmap" _class="icon tips" _title="{tr}Google Maps{/tr}|{tr}Defaults and API key for Google Maps{/tr}"}{icon _id="pics/large/google_maps.png" alt="{tr}Google Maps{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
 {/if}
 
+{if $prefs.feature_multimedia eq 'y'}
+{self_link page="multimedia" _class="icon tips" _title="{tr}Multimedia{/tr}|{tr}??{/tr}"}{icon _id="pics/large/multimedia.png" alt="{tr}Multimedia{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
+{/if}
+
 {if $prefs.feature_copyright eq 'y'}
 {self_link page="copyright" _class="icon tips" _title="{tr}Copyright{/tr}|{tr}Site-wide copyright information{/tr}"}{icon _id="pics/large/copyright.png" alt="{tr}Copyright{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
 {/if}
@@ -138,14 +142,6 @@
 
 {if $prefs.feature_kaltura eq 'y'}
 {self_link page="kaltura" _class="icon tips" _title="{tr}Kaltura{/tr}|{tr}Kaltura video configuration{/tr}"}{icon _id="pics/large/kaltura.png" alt="{tr}Kaltura{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
-{/if}
-
-{if $prefs.payment_feature eq 'y'}
-{self_link page="payment" _class="icon tips" _title="{tr}Payment{/tr}|{tr}Payment{/tr}"}{icon _id="pics/large/payment.png" alt="{tr}Payment{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
-{/if}
-
-{if $prefs.feature_socialnetworks eq 'y'}
-{self_link page="socialnetworks" _class="icon tips" _title="{tr}Social networks{/tr}|{tr}Configure social networks integration{/tr}"}{icon _id="img/mytiki/socialnetworks_32.png" alt="{tr}Social networks{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
 {/if}
 
 {if $prefs.feature_ajax eq 'y' and $prefs.feature_jquery_reflection eq 'y'}{jq}$jq('img.reflect').reflect({});{/jq}{/if}{* for ajax *}

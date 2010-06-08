@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== false) {
@@ -17,6 +12,15 @@ if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== false) {
 	require_once ('lib/adodb/adodb.inc.php');
 	include_once ('lib/adodb/adodb-pear.inc.php');
 
+	if ($db_tiki == 'pgsql') {
+		$db_tiki = 'postgres7';
+	}
+
+	if ($db_tiki == 'sybase') {
+		// avoid database change messages
+		ini_set('sybct.min_server_severity', '11');
+	}
+
 	$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
 
 // ADODB_FETCH_BOTH appears to be buggy for null values
@@ -29,14 +33,8 @@ if (!@$dbTiki->Connect($host_tiki, $user_tiki, $pass_tiki, $dbs_tiki)) {
 	require_once 'setup_smarty.php';
 
 	$smarty->assign( 'msg', $dbTiki->ErrorMsg() );
-	$smarty->assign( 'where', 'connection');
 	echo $smarty->fetch( 'database-connection-error.tpl' );
 	exit;
-}
-
-// Set the Client Charset
-if ( ! empty( $client_charset ) ) {
-	@ $dbTiki->Execute("SET CHARACTER SET '$client_charset'");
 }
 
 if (!@$dbTiki->Execute('select login from users_users limit 1')) {
@@ -55,6 +53,10 @@ if (!@$dbTiki->Execute('select login from users_users limit 1')) {
 				"		<p>".tra("Please see <a href=\"http://doc.tikiwiki.org/\">the documentation</a> for more information.")."</p>\n";
 	$dberror = true;
 	include_once('tiki-install.php');
+}
+
+if ($db_tiki == 'sybase') {
+	$dbTiki->Execute('set quoted_identifier on');
 }
 
 if( ! function_exists( 'close_connection' ) ) {

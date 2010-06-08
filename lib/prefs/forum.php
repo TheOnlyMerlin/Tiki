@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 function prefs_forum_list() {
 	return array(
@@ -23,7 +18,6 @@ function prefs_forum_list() {
 		'forum_thread_user_settings' => array(
 			'name' => tra('Display thread configuration bar'),
 			'type' => 'flag',
-			'hint' => tra('Allows users to override the defaults'),
 		),
 		'forum_thread_user_settings_threshold' => array(
                         'name' => tra('Display thread configuration bar only when number of posts exceed'),
@@ -90,11 +84,6 @@ function prefs_forum_list() {
 			'type' => 'text',
 			'size' => '5',
 			'filter' => 'digits',
-		),
-		'forum_reply_notitle' => array(
-			'name' => tra('Hide titles for forum threads'),
-			'description' => tra('Most titles are left untouched because they are a direct reply to the parent thread. This feature hides the title altogether from the forms and display.'),
-			'type' => 'flag',
 		),
 	);
 }

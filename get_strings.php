@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/get_strings.php,v 1.49.2.1 2007-12-26 17:27:37 pkdille Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 /** \file
  * $Id: /cvsroot/tikiwiki/tiki/get_strings.php
@@ -308,7 +309,7 @@ if ( $script_mode ) {
 
 	$_REQUEST = array();
 	for ( $k = 1 ; $k < $_SERVER['argc'] ; $k++ ) {
-		list($key, $value) = explode('=', $_SERVER['argv'][$k], 2);
+		list($key, $value) = split('=', $_SERVER['argv'][$k], 2);
 		$_REQUEST[$key] = $value ? $value : 'y';
 	}
 
@@ -483,12 +484,6 @@ foreach ($languages as $ksel => $sel) {
   if (!$nohelp && !$completion) {
     // Good to have instructions for translators in the release file.
     // The comments get filtered away by Smarty anyway
-    writeFile_and_User ($fw, "// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project\n");
-    writeFile_and_User ($fw, "// \n");
-    writeFile_and_User ($fw, "// All Rights Reserved. See copyright.txt for details and a complete list of authors.\n");
-    writeFile_and_User ($fw, "// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.\n");
-    writeFile_and_User ($fw, "// \$Id$");
-    writeFile_and_User ($fw, "\n");
     writeFile_and_User ($fw, "// Parameters:\n\n");
     writeFile_and_User ($fw, "// lang=xx    : only translates language 'xx',\n");
     writeFile_and_User ($fw, "//              if not given all languages are translated\n");

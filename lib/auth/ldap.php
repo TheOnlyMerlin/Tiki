@@ -1,9 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+
 
 /* 
  *  Class that adds LDAP Authentication to Tiki and aids Tiki to get User/Group Information
@@ -14,8 +10,7 @@
 require_once ("Net/LDAP2.php");
 
 
-class TikiLdapLib
-{
+class TikiLdapLib {
 
 	// var to hold a esablished connection
 	protected $ldaplink = NULL;
@@ -188,15 +183,16 @@ class TikiLdapLib
 				$options_anonymous['binddn'] = '';
 				$options_anonymous['bindpw'] = '';
 				$this->ldaplink= Net_LDAP2::connect($options_anonymous);
-		    if(Net_LDAP2::isError($this->ldaplink)) {
-		      $this->add_log('ldap','Error: '.$this->ldaplink->getMessage().' at line '.__LINE__.' in '.__FILE__);
+				if(Net_LDAP2::isError($this->ldaplink)) {
+					$this->add_log('ldap','Error: '.$this->ldaplink->getMessage().' at line '.__LINE__.' in '.__FILE__);
 				}
-		
+
 				self::get_user_attributes();
 				$this->options['binddn'] = $this->user_attributes['dn'];
 				$this->ldaplink->disconnect();
 		}
-		// attributes to fetch
+
+			// attributes to fetch
 /*
         $options['attributes'] = array();
         if ( $nameattr = $prefs['auth_ldap_nameattr'] ) $options['attributes'][] = $nameattr;
@@ -222,7 +218,7 @@ class TikiLdapLib
 			return($this->ldaplink->getCode());
 		}
 		
-		return 'LDAP_SUCCESS';
+		return LDAP_SUCCESS;
 	} // End bind()
 
 	

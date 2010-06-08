@@ -1,16 +1,23 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-received_articles.php,v 1.26.2.1 2007-11-26 14:41:03 sylvieg Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/commcenter/commlib.php');
 include_once ('lib/articles/artlib.php');
-$access->check_feature('feature_comm');
-$access->check_permission('tiki_p_admin_received_articles');
-
+if ($prefs['feature_comm'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_comm");
+	$smarty->display("error.tpl");
+	die;
+}
+if ($tiki_p_admin_received_articles != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST["receivedArticleId"])) {
 	$_REQUEST["receivedArticleId"] = 0;
 }
@@ -98,8 +105,13 @@ $smarty->assign('rating', $info["rating"]);
 $smarty->assign('parsed_heading', $tikilib->parse_data($info["heading"]));
 $smarty->assign('parsed_body', $tikilib->parse_data($info["body"]));
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$commlib->remove_received_article($_REQUEST["remove"]);
+	$area = 'delreceivedarticle';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$commlib->remove_received_article($_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 if (isset($_REQUEST["save"])) {
 	check_ticket('received-articles');

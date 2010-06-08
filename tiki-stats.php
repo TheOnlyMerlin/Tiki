@@ -1,15 +1,33 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-stats.php,v 1.17 2007-10-12 07:55:32 nyloth Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/stats/statslib.php');
+if ($prefs['feature_stats'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_stats");
+	$smarty->display("error.tpl");
+	die;
+}
+if ($tiki_p_view_stats != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 
-$access->check_feature('feature_stats');
-$access->check_permission('tiki_p_view_stats');
+if (isset($_REQUEST['startDate_Year']) || isset($_REQUEST['endDate_Year'])) {
+	$start_date = $tikilib->make_time(23, 59, 59, $_REQUEST['startDate_Month'], $_REQUEST['startDate_Day'], $_REQUEST['startDate_Year']);
+	$end_date = $tikilib->make_time(23, 59, 59, $_REQUEST['endDate_Month'], $_REQUEST['endDate_Day'], $_REQUEST['endDate_Year']);
+	$smarty->assign( 'startDate', $start_date);
+	$smarty->assign( 'endDate', $end_date);
+} else {
+	$start_date = $tikilib->make_time(23, 59, 59, 9, 01, 2008);
+	$end_date = $tikilib->make_time(23, 59, 59, date("m"), date("d"), date("Y"));
+	$smarty->assign( 'startDate', $start_date );
+}
 
 if (!isset($_REQUEST["days"])) $_REQUEST["days"] = 7;
 $smarty->assign('pv_chart', 'n');
@@ -79,23 +97,15 @@ $user_stats = $statslib->user_stats();
 $smarty->assign_by_ref('user_stats', $user_stats);
 $site_stats = $statslib->site_stats();
 $smarty->assign_by_ref('site_stats', $site_stats);
-if (isset($_REQUEST['startDate_Year']) || isset($_REQUEST['endDate_Year'])) {
-	$start_date = $tikilib->make_time(23, 59, 59, $_REQUEST['startDate_Month'], $_REQUEST['startDate_Day'], $_REQUEST['startDate_Year']);
-	$end_date = $tikilib->make_time(23, 59, 59, $_REQUEST['endDate_Month'], $_REQUEST['endDate_Day'], $_REQUEST['endDate_Year']);
-	$smarty->assign( 'startDate', $start_date);
-	$smarty->assign( 'endDate', $end_date);
-} else {
-	$start_date = $site_stats['started'];
-	$end_date = $tikilib->make_time(23, 59, 59, date("m"), date("d"), date("Y"));
-	$smarty->assign( 'startDate', $start_date );
-}
-$smarty->assign('start_year', date('Y', $site_stats['started']));
-$smarty->assign('end_year', date('Y', $tikilib->now));
+$best_objects_stats = $statslib->best_overall_object_stats(20);
+$smarty->assign_by_ref('best_objects_stats', $best_objects_stats);
 $best_objects_stats_lastweek = $statslib->best_overall_object_stats(20, 7);
 $smarty->assign_by_ref('best_objects_stats_lastweek', $best_objects_stats_lastweek);
+if ($end_date) {
 $best_objects_stats_between = $statslib->best_overall_object_stats(20, 0, $start_date, $end_date);
 $smarty->assign_by_ref('best_objects_stats_between', $best_objects_stats_between);
-
+}
 ask_ticket('stats');
+// Display the template
 $smarty->assign('mid', 'tiki-stats.tpl');
 $smarty->display("tiki.tpl");

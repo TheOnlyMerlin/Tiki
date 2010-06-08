@@ -1,10 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/setup_smarty.php,v 1.45.2.3 2008-01-23 18:05:42 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-  
+
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== FALSE) {
   header('location: index.php');
@@ -14,15 +15,15 @@ if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== FALSE) {
 require_once 'lib/setup/third_party.php';
 require_once (defined('SMARTY_DIR') ? SMARTY_DIR : 'lib/smarty/libs/') . 'Smarty.class.php';
 
-class Smarty_Tikiwiki extends Smarty
+class Smarty_Tikiwiki extends Smarty 
 {
 	function Smarty_Tikiwiki($tikidomain = '') {
 		parent::Smarty();
 		if ($tikidomain) { $tikidomain.= '/'; }
-		$this->template_dir = realpath('templates/');
-		$this->compile_dir = realpath("templates_c/$tikidomain");
-		$this->config_dir = realpath('configs/');
-		$this->cache_dir = realpath("templates_c/$tikidomain");
+		$this->template_dir = 'templates/';
+		$this->compile_dir = "templates_c/$tikidomain";
+		$this->config_dir = 'configs/';
+		$this->cache_dir = "templates_c/$tikidomain";
 		$this->caching = 0;
 		$this->assign('app_name', 'Tikiwiki');
 		$this->plugins_dir = array(	// the directory order must be like this to overload a plugin
@@ -40,7 +41,7 @@ class Smarty_Tikiwiki extends Smarty
 
 		$this->security_settings['MODIFIER_FUNCS'] = array_merge(
 			$this->security_settings['MODIFIER_FUNCS'],
-			array('addslashes', 'ucfirst', 'ucwords', 'urlencode', 'md5', 'implode', 'explode', 'is_array', 'htmlentities', 'var_dump', 'strip_tags')
+			array('addslashes', 'ucfirst', 'ucwords', 'urlencode', 'md5', 'implode', 'explode', 'is_array', 'htmlentities', 'var_dump')
 		);
 		$this->security_settings['IF_FUNCS'] = array_merge(
 			$this->security_settings['IF_FUNCS'],
@@ -79,35 +80,6 @@ class Smarty_Tikiwiki extends Smarty
 			$_SESSION['last_mid_template'] = $tpl;
 			$_SESSION['last_mid_php'] = $_SERVER['REQUEST_URI'];
 
-			// set the first part of the browser title for admin pages
-			if (!isset($this->_tpl_vars['headtitle'])) {
-				$script_name = basename($_SERVER['SCRIPT_NAME']);
-				if ($script_name != 'tiki-admin.php' && strpos($script_name, 'tiki-admin') === 0) {
-					$str = substr($script_name, 10, strpos($script_name, '.php') - 10);
-					$str = ucwords(trim(str_replace('_', ' ', $str)));
-					$this->assign('headtitle', tra('Admin ' . $str));
-					// get_strings tra('Admin Calendar') tra('Admin Actionlog') tra('Admin Banners') tra('Admin Calendars') tra('Admin Categories') tra('Admin Content Templates')
-					//			tra('Admin Contribution') tra('Admin Cookies') tra('Admin Dsn') tra('Admin External Wikis') tra('Admin Forums') tra('Admin Hotwords') tra('Admin Html Page Content') 
-					//			tra('Admin Html Pages') tra('Admin Integrator Rules') tra('Admin Integrator') tra('Admin Keywords') tra('Admin Layout') tra('Admin Links') tra('Admin Mailin')
-					//			tra('Admin Menu Options') tra('Admin Menus') tra('Admin Metrics') tra('Admin Modules') tra('Admin Newsletter Subscriptions') tra('Admin Newsletters') tra('Admin Notifications') 
-					//			tra('Admin Poll Options') tra('Admin Polls') tra('Admin Rssmodules') tra('Admin Security') tra('Admin Shoutbox Words') tra('Admin Structures') tra('Admin Survey Questions')
-					//			tra('Admin Surveys') tra('Admin System') tra('Admin Toolbars') tra('Admin Topics') tra('Admin Tracker Fields') tra('Admin Trackers')
-				} else if (strpos($script_name, 'tiki-list') === 0) {
-					$str = substr($script_name, 9, strpos($script_name, '.php') - 9);
-					$str = ucwords(trim(str_replace('_', ' ', $str)));
-					$this->assign('headtitle', tra('List ' . $str));
-					// get_strings tra('List Articles') tra('List Banners') tra('List Blogs') tra('List Cache') tra('List Comments') tra('List Contents') tra('List Faqs') tra('List File Gallery')
-					//			tra('List Gallery') tra('List Integrator Repositories') tra('List Kaltura Entries') tra('List Object Permissions') tra('List Posts') tra('List Quizzes') tra('List Submissions')
-					//			tra('List Surveys') tra('List Trackers') tra('List Users') tra('List Pages')
-				} else if (strpos($script_name, 'tiki-view') === 0) {
-					$str = substr($script_name, 9, strpos($script_name, '.php') - 9);
-					$str = ucwords(trim(str_replace('_', ' ', $str)));
-					$this->assign('headtitle', tra('View ' . $str));
-					// get_strings tra('View Articles') tra('View Banner') tra('View Blog Post Image') tra('View Blog Post') tra('View Blog') tra('View Cache') tra('View Faq') tra('View Forum Thread')
-					//			 tra('View Minical Topic') tra('View Sheets') tra('View Tracker Item') tra('View Tracker More Info') tra('View Tracker')
-				}
-			}
-			
 			// Enable Template Zoom
 			if ( $prefs['feature_template_zoom'] == 'y' && isset($zoom_templates) ) {
 				if ( ! isset($_REQUEST['zoom']) && isset($_REQUEST['zoom_value']) && isset($_REQUEST['zoom_x']) && isset($_REQUEST['zoom_y']) ) {
@@ -128,7 +100,6 @@ class Smarty_Tikiwiki extends Smarty
 			// Enable AJAX
 			if ( $prefs['feature_ajax'] == 'y' && $_smarty_display ) {
 				global $ajaxlib; require_once('lib/ajax/ajaxlib.php');
-				$ajaxlib->registerTemplate('tiki-site_header_login.tpl');
 				$ajaxlib->registerTemplate($tpl);
 			}
 
@@ -149,7 +120,6 @@ class Smarty_Tikiwiki extends Smarty
 			if ( $prefs['feature_ajax'] == 'y' && $_smarty_display ) {
 				$_POST['xajaxargs'][0] = $_smarty_tpl_file;
 				global $ajaxlib; require_once('lib/ajax/ajaxlib.php');
-				$ajaxlib->registerTemplate('tiki-site_header_login.tpl');
 				$ajaxlib->registerTemplate($_smarty_tpl_file);
 				$ajaxlib->processRequests();
 			}
@@ -202,7 +172,7 @@ class Smarty_Tikiwiki extends Smarty
 			include ('lang/'.$prefs['language'].'/language.php');
 		}
 
-		return preg_replace("/^[ \t]*/", '', $res);
+		return ereg_replace("^[ \t]*", '', $res);
 	}
 	function is_cached($_smarty_tpl_file, $_smarty_cache_id = null, $_smarty_compile_id = null) {
 		global $prefs, $style_base, $tikidomain;
@@ -277,13 +247,12 @@ class Smarty_Tikiwiki extends Smarty
   		} elseif (is_file($this->template_dir.'/styles/'.$style_base.'/'.$template)) {
 			$file = "/styles/$style_base/";
   		} else {
-    			$file = '/';
+    			$file = '';
   		}
 		return $this->template_dir.$file.$template;
 	}
 }
 
-if (!isset($tikidomain)) { $tikidomain = ''; }
 $smarty = new Smarty_Tikiwiki($tikidomain);
 $smarty->load_filter('pre', 'tr');
 $smarty->load_filter('pre', 'jq');

@@ -1,9 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// Copyright (c)2002-2003
+// Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
+// All Rights Reserved. See copyright.txt for details and a complete list of
+// authors. Licensed under the GNU LESSER GENERAL PUBLIC LICENSE.
+// See license.txt for details.
 
 // This script may only be included! Die if called directly...
 if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
@@ -22,8 +22,7 @@ require_once ('commentslib.php');
  * @uses Comments
  * @license LGPL. Please, see licence.txt for mode details
  */
-class Importer extends Comments
-{
+class Importer extends Comments {
 	// The types of forums are hard-coded into the library and displayed
 	// in the template. As support for more imports grows, add the type to
 	// the below two arrays, in addition to writing the functions to 
@@ -143,7 +142,7 @@ class Importer extends Comments
 
 		while ($a = strpos($record, ",")) {
 			// If field is a string...
-			if (preg_match("/^'/", substr($record, 0, $a))) {
+			if (ereg("^'", substr($record, 0, $a))) {
 				$offset = 1;
 				while ($b = strpos($record, "'", $offset)) {
 					// If close quote is not escaped
@@ -195,9 +194,9 @@ class Importer extends Comments
 		while ($fL = fgets($fH)) {
 			// If we find a create table block, parse the
 			// entire block.
-			if (preg_match('/'.$lookFor1.'/', $fL)) {
+			if (ereg($lookFor1, $fL)) {
 				$fL = fgets($fH);
-				while (preg_match('/^  `/', $fL)) {
+				while (ereg("^  `", $fL)) {
 					$a = substr($fL, 3);
 					$b = strpos($a, "`");
 					$c = substr($a, 0, $b);
@@ -208,8 +207,8 @@ class Importer extends Comments
 
 			// Now that we've parsed the create table block,
 			// look for the insert block.
-			if (preg_match('/'.$lookFor2.'/', $fL)) {
-				while (preg_match('/'.$lookFor2.'/', $fL)) {
+			if (ereg($lookFor2, $fL)) {
+				while (ereg($lookFor2, $fL)) {
 					$a = strpos($fL, "(");
 					$b = strpos($fL, ");\n");
 					$c = substr($fL, $a + 1, $b - $a - 1);
@@ -217,9 +216,9 @@ class Importer extends Comments
 					// Do a rudimentary parsing of what generally would be
 					// record boundaries, such that each element in $records
 					// represents an SQL record or row.
-					$records = preg_split('/\),\(/', $c);
+					$records = split('\),\(', $c);
 					if (count($records) < 1) { $records[0] = $c; }
-					for ($count = 0, $count_records = count($records); $count < $count_records; $count++) {
+					for ($count = 0; $count < count($records); $count++) {
 						// Each proper record should begin with a numeric value
 						// (at least as far as the tables we will be using).
 						// Check the following record from the current one to see
@@ -228,7 +227,7 @@ class Importer extends Comments
 						// the next record, and skip the current one. Repeat
 						// checking the next record until both the current one
 						// and its follower are proper.
-						while (isset($records[$count + 1]) && !preg_match('/^[0-9]/', $records[$count + 1])) {
+						while (isset($records[$count + 1]) && !ereg("^[0-9]", $records[$count + 1])) {
 							$newrec = $records[$count] . '),(' . $records[$count + 1];
 							$count++;
 							$records[$count] = $newrec;
@@ -249,7 +248,7 @@ class Importer extends Comments
 								// Do nothing... NEXT!
 								continue;
 							} else {
-								for ($z = 0, $zcount_fields = count($fields); $z < $zcount_fields; $z++) {
+								for ($z = 0; $z < count($fields); $z++) {
 									$rec[$headings[$z]] = $fields[$z];
 								}
 								array_push($thash, $rec);

@@ -1,15 +1,28 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+/**
+ * $Id: /cvsroot/tikiwiki/tiki/tiki-admin_integrator_rules.php,v 1.26 2007-10-12 07:55:24 nyloth Exp $
+ *
+ * Admin interface for rules management
+ *
+ */
 require_once ('tiki-setup.php');
 require_once ('lib/integrator/integrator.php');
 // If Integrator is ON, check permissions...
-$access->check_feature('feature_integrator');
-$access->check_permission(array('tiki_p_admin_integrator'));
+if ($prefs['feature_integrator'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_integrator");
+	$smarty->display("error.tpl");
+	die;
+}
+if (($tiki_p_admin_integrator != 'y') && ($tiki_p_admin != 'y')) {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 // Setup local variables from request or set default values
 $repID = (isset($_REQUEST["repID"]) && strlen($_REQUEST["repID"]) > 0) ? $_REQUEST["repID"] : 0;
 $ruleID = (isset($_REQUEST["ruleID"]) && strlen($_REQUEST["ruleID"]) > 0) ? $_REQUEST["ruleID"] : 0;
@@ -118,8 +131,13 @@ if (isset($_REQUEST["action"])) {
 
 		case 'rm':
 			if ($ruleID != 0) {
-				$access->check_authenticity();
-				$integrator->remove_rule($ruleID);
+				$area = "delintegratorrule";
+				if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+					key_check($area);
+					$integrator->remove_rule($ruleID);
+				} else {
+					key_get($area);
+				}
 			}
 			break;
 

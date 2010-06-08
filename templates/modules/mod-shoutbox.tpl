@@ -45,9 +45,6 @@
 		{if $prefs.feature_antibot eq 'y' && $user eq ''}
 			<table>{include file="antibot.tpl"}</table>
 		{/if}
-		{if $prefs.feature_socialnetworks eq 'y' && $user neq '' && $prefs.socialnetworks_twitter_consumer_key neq '' && $tweet eq '1'}
-			<input type="checkbox" name="tweet" value='1' /> {tr}Tweet with twitter{/tr}<br />
-                {/if}
 	    <input type="submit" id="shout_send" name="shout_send" value="{$buttontext}" />
       </div>
       </form>
@@ -76,7 +73,7 @@
       </div>
     {/section}
     <div style="text-align: center">
-      <a href="tiki-shoutbox.php" class="linkmodule more">{tr}Read More{/tr}&hellip;</a>
+      <a href="tiki-shoutbox.php" class="linkmodule">{tr}Read More{/tr}&hellip;</a>
     </div>
   {/tikimodule}
 {/if}

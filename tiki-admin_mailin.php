@@ -1,16 +1,24 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_mailin.php,v 1.23 2007-10-12 07:55:24 nyloth Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/mailin/mailinlib.php');
 //check if feature is on
-$access->check_feature('feature_mailin');
-$access->check_permission(array('tiki_p_admin_mailin'));
-
+if ($prefs['feature_mailin'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_mailin");
+	$smarty->display("error.tpl");
+	die;
+}
+//check permissions
+if ($tiki_p_admin_mailin != 'y' and $tiki_p_admin != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 function account_ok($pop, $user, $pass) {
 	//include_once ("lib/webmail/pop3.php");
 	include_once ("lib/webmail/net_pop3.php");
@@ -50,8 +58,13 @@ if (isset($_REQUEST["new_acc"])) {
 	$smarty->assign('confirmation', 0);
 }
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$mailinlib->remove_mailin_account($_REQUEST["remove"]);
+	$area = 'delmailin';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$mailinlib->remove_mailin_account($_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 if ($_REQUEST["accountId"]) {
 	$info = $mailinlib->get_mailin_account($_REQUEST["accountId"]);
@@ -77,7 +90,7 @@ $smarty->assign('info', $info);
 $accounts = $mailinlib->list_mailin_accounts(0, -1, 'account_asc', '');
 $smarty->assign('accounts', $accounts["data"]);
 if (isset($_REQUEST["mailin_autocheck"])) {
-	if ($_REQUEST["mailin_autocheck"] == 'y' && !(preg_match('/[0-9]+/', $_REQUEST["mailin_autocheckFreq"]) && $_REQUEST["mailin_autocheckFreq"] > 0)) {
+	if ($_REQUEST["mailin_autocheck"] == 'y' && !(ereg("[0-9]+", $_REQUEST["mailin_autocheckFreq"]) && $_REQUEST["mailin_autocheckFreq"] > 0)) {
 		$smarty->assign('msg', tra("Frequency should be a positive integer!"));
 		$smarty->display("error.tpl");
 		die;

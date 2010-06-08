@@ -1,10 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_calendars.php,v 1.34.2.2 2008-02-12 19:20:11 sylvieg Exp $
 $section = 'calendar';
 require_once ('tiki-setup.php');
 require_once ('lib/categories/categlib.php');
@@ -12,8 +11,12 @@ include_once ('lib/calendar/calendarlib.php');
 if ($prefs['feature_groupalert'] == 'y') {
 	include_once ('lib/groupalert/groupalertlib.php');
 }
-$access->check_permission(array('tiki_p_admin_calendar'));
-$auto_query_args = array('calendarId', 'sort_mode', 'find', 'offset');
+if ($tiki_p_admin_calendar != 'y' and $tiki_p_admin != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST["calendarId"])) {
 	$_REQUEST["calendarId"] = 0;
 } else {
@@ -41,9 +44,14 @@ if (!isset($_REQUEST["calendarId"])) {
 	
 }
 if (isset($_REQUEST["drop"])) {
-	$access->check_authenticity();
-	$calendarlib->drop_calendar($_REQUEST["drop"]);
-	$_REQUEST["calendarId"] = 0;
+	$area = "delcalendar";
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$calendarlib->drop_calendar($_REQUEST["drop"]);
+		$_REQUEST["calendarId"] = 0;
+	} else {
+		key_get($area);
+	}
 }
 if (isset($_REQUEST["save"])) {
 	check_ticket('admin-calendars');
@@ -86,7 +94,6 @@ if (isset($_REQUEST["save"])) {
 			$options["show_$ex"] = 'n';
 		}
 	}
-	$options['viewdays'] = $_REQUEST['viewdays'];
 	$_REQUEST["calendarId"] = $calendarlib->set_calendar($_REQUEST["calendarId"], $user, $_REQUEST["name"], $_REQUEST["description"], $customflags, $options);
 	if ($prefs['feature_groupalert'] == 'y') {
 		$groupalertlib->AddGroup('calendar', $_REQUEST["calendarId"], $_REQUEST['groupforAlert'], !empty($_REQUEST['showeachuser']) ? $_REQUEST['showeachuser'] : 'n');
@@ -103,7 +110,7 @@ if (isset($_REQUEST["save"])) {
 		$cat_desc = $_REQUEST["description"];
 		$cat_name = $_REQUEST["name"];
 		$cat_href = "tiki-calendar.php?calIds[]=" . $_REQUEST["calendarId"];
-		include_once("categorize.php");
+		include_once ("categorize.php");
 	}
 }
 if (isset($_REQUEST['clean']) && isset($_REQUEST['days'])) {
@@ -147,13 +154,11 @@ if ($_REQUEST["calendarId"]) {
 	$info["show_language"] = 'n';
 	$info["show_participants"] = 'n';
 	$info["show_url"] = 'n';
-	$info['show_status'] = 'n';
 	$info["user"] = "$user";
 	$info["personal"] = 'n';
 	$info["startday"] = '25200';
 	$info["endday"] = '72000';
-	$info["defaulteventstatus"] = 1;
-	$info['viedays'] = $prefs['calendar_view_days'];
+	$info["defaulteventstatus"] = 0;
 	if (!empty($_REQUEST['show']) && $_REQUEST['show'] == 'mod') {
 		$cookietab = '2';
 	} else {
@@ -257,17 +262,6 @@ foreach(array_keys($calendars["data"]) as $i) {
 }
 $smarty->assign_by_ref('cant', $calendars['cant']);
 $smarty->assign_by_ref('calendars', $calendars["data"]);
-$days_names = array(
-	tra("Sunday"),
-	tra("Monday"),
-	tra("Tuesday"),
-	tra("Wednesday"),
-	tra("Thursday"),
-	tra("Friday"),
-	tra("Saturday")
-);
-$smarty->assign('days_names',$days_names);
-;
 // $cat_type = 'calendar';
 // $cat_objid = $_REQUEST["calendarId"];
 // include_once ("categorize_list.php");

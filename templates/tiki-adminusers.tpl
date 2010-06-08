@@ -123,9 +123,6 @@
 				{if $prefs.login_is_email neq 'y'}
 					<th>{self_link _sort_arg='sort_mode' _sort_field='email}{tr}Email{/tr}{/self_link}</th>
 				{/if}
-				{if $prefs.auth_method eq 'openid'}
-					<th>{self_link _sort_arg='sort_mode' _sort_field='openID'}{tr}OpenID{/tr}{/self_link}</th>
-				{/if}
 				<th>{self_link _sort_arg='sort_mode' _sort_field='currentLogin'}{tr}Last login{/tr}{/self_link}</th>
 				<th colspan="2">{tr}Groups{/tr}</th>
 				<th>{tr}Action{/tr}</th>
@@ -142,28 +139,18 @@
 						</td>
 	
 						<td>
-							{capture name=username}{$users[user].user|username}{/capture}
-							<a class="link" href="tiki-adminusers.php?offset={$offset}&amp;numrows={$numrows}&amp;sort_mode={$sort_mode}&amp;user={$users[user].userId}{if $prefs.feature_tabs ne 'y'}#2{/if}" title="{tr}Edit Account Settings:{/tr} {$smarty.capture.username}">
-							   {$users[user].user|escape}
-							</a>
-							{if $prefs.user_show_realnames eq 'y' and $smarty.capture.username ne $users[user].user}
-								<div class="subcomment">
-									{$smarty.capture.username|escape}
-								</div>
-							{/if}
+							<a class="link" href="tiki-adminusers.php?offset={$offset}&amp;numrows={$numrows}&amp;sort_mode={$sort_mode}&amp;user={$users[user].userId}{if $prefs.feature_tabs ne 'y'}#2{/if}" title="{tr}Edit Account Settings:{/tr} {$users[user].user|username}">{$users[user].user|username}</a>
 						</td>
 	
 						{if $prefs.login_is_email ne 'y'}
 							<td>{$users[user].email}</td>
 						{/if}
-						{if $prefs.auth_method eq 'openid'}
-							<td>{$users[user].openid_url|default:'{tr}N{/tr}'}</td>
-						{/if}	
+	
 						<td>
 							{if $users[user].currentLogin eq ''}
 								{tr}Never{/tr} <em>({tr}Registered{/tr} {$users[user].age|duration_short} {tr}ago{/tr})</em>
 							{else}
-								{$users[user].currentLogin|tiki_long_datetime}
+								{$users[user].currentLogin|dbg|tiki_long_datetime}
 							{/if}
 					
 							{if $users[user].waiting eq 'u'}
@@ -181,8 +168,7 @@
 								<div style="white-space:nowrap">
 									{if $grs != "Anonymous" and ($tiki_p_admin eq 'y' || in_array($grs, $all_groups))}
 										{if $what ne 'included' and $grs != "Registered"}
-											{capture assign=grse}{$grs|escape}{/capture}
-											{self_link _class='link' user=$users[user].user action='removegroup' group=$grs _icon='cross' _title="{tr}Remove{/tr} `$username` {tr}from{/tr} $grse"}{/self_link}
+											{self_link _class='link' user=$users[user].user action='removegroup' group=$grs _icon='cross' _title="{tr}Remove{/tr} `$username` {tr}from{/tr} $grs"}{/self_link}
 										{else}
 											{icon _id='bullet_white'}
 										{/if}
@@ -269,7 +255,7 @@
 								</select></label>
 								<br />
 								<input type="submit" value="{tr}OK{/tr}" />
-								{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple options{/tr}{/remarksbox}
+								<div class="simplebox">{tr}Tip: Hold down CTRL to select multiple{/tr}</div>
 							{elseif $set_default_groups_mode eq 'y'}
 								<label>{tr}Set the default group of the selected users to:{/tr}
 								<br />
@@ -378,7 +364,7 @@
 					</tr>
 				{else}
 					<tr class="formcolor">
-						<td><label for="pass1">{tr}Password:{/tr}</label>{if !$userinfo.userId}<br />({tr}required{/tr}){/if}</td>
+						<td><label for="pass1">{tr}Password:{/tr}</label></td>
 						<td>
 							<input type="password" name="pass" id="pass1" onkeyup="runPassword(this.value, 'mypassword');checkPasswordsMatch('#pass2', '#pass1', '#mypassword2_text')" />
 							<div style="float:right;margin-left:5px;">
@@ -395,7 +381,7 @@
 						</td>
 					</tr>
 					<tr class="formcolor">
-						<td><label for="pass2">{tr}Repeat Password:{/tr}</label>{if !$userinfo.userId}<br />({tr}required{/tr}){/if}</td>
+						<td><label for="pass2">{tr}Repeat Password:{/tr}</label></td>
 						<td>
 							<input type="password" name="pass2" id="pass2" onkeyup="checkPasswordsMatch('#pass2', '#pass1', '#mypassword2_text')" />
 							<div style="float:right;margin-left:5px;">
@@ -405,28 +391,23 @@
 					</tr>
 					{if ! ( $prefs.auth_method eq 'ldap' and ( $prefs.ldap_create_user_tiki eq 'n' or $prefs.ldap_skip_admin eq 'y' ) and $prefs.ldap_create_user_ldap eq 'n' ) }
 						<tr><td>&nbsp;</td><td>
-							<input id='genepass' name="genepass" type="text" tabindex="0" style="display: none" />
+							<input id='genepass' name="genpass" type="text" />
 							{jq}
-								$jq("#genPass span").click(function () {
-									$jq('#pass1, #pass2').val('');
-									$jq('#mypassword_text, #mypassword2_text').hide();
-									$jq("#genepass").show();
-								});
-								$jq("#pass1, #pass2").change(function () {
-									$jq('#mypassword_text, #mypassword2_text').show();
-									document.RegForm.genepass.value='';
-									$jq("#genepass").hide();
-								});
-							{/jq}
-							<span id="genPass">{button href="#" _onclick="genPass('genepass');runPassword(document.RegForm.genepass.value, 'mypassword');checkPasswordsMatch('#pass2', '#pass1', '#mypassword2_text');return false;" _text="{tr}Generate a password{/tr}"}</div>
+$jq("#genepass").keyup(function () {
+  $jq('#pass1').val($jq(this).val());
+  $jq('#pass2').val($jq(this).val());
+  runPassword($jq(this).val(), 'mypassword');
+  checkPasswordsMatch("#pass2", "#pass1", "#mypassword2_text");
+});{/jq}
+							{button href="#" _onclick="genPass('genepass','pass1','pass2');runPassword(document.RegForm.genpass.value, 'mypassword');checkPasswordsMatch('#pass2', '#pass1', '#mypassword2_text');return false;" _text="{tr}Generate a password{/tr}"}
 						</td></tr>
 					{/if}
-					{if $userinfo.login neq 'admin'}
+					{if $userinfo.login neq 'admin' and empty($userinfo.userId)}
 						<tr class="formcolor">
 							<td>&nbsp;</td>
 							<td>
 								<label><input type="checkbox" name="pass_first_login"{if $userinfo.pass_confirm eq '0'} checked="checked"{/if} /> 
-								{tr}User must change password at next login{/tr}.</label>
+								{tr}User must change password at first login{/tr}.</label>
 							</td>
 						</tr>
 					{/if}
@@ -512,7 +493,7 @@
 				<td>
 					<label for="csvlist">
 						{tr}CSV File:{/tr}
-						{help url="Users+Management#Adding_new_users_in_bulk" desc='{tr}CSV file layout{/tr}: {tr}login,password,email,groups,default_group,realName<br />user1,pass1,email1,group1,group1<br />user2,pass2,email2,"group1,group2",group1{/tr}<br /><br />{tr}Only login, password, email are mandatory.Use an empty password for automatic password generation. Use same login and email if the login use email. Groups are separated by comma. With group name with comma, double the comma.{/tr}'}
+						{if $prefs.feature_help eq 'y'}{help url="Users+Management#Adding_new_users_in_bulk" desc="{tr}CSV file layout{/tr}: {tr}login,password,email<br />user1,pass1,email1<br />user2,pass2,email2{/tr}"}{/if}
 					</label>
 				</td>
 				<td>
@@ -526,11 +507,7 @@
 					<br />
 					<label>{tr}Overwrite groups:{/tr} <input type="checkbox" name="overwriteGroup" /></label>
                     <br />
-					<label>{tr}Create groups:{/tr} <input type="checkbox" name="createGroup" /></label>
-                    <br />
-                     <label>{tr}User must change password at first login:{/tr} <input type="checkbox" name="forcePasswordChange" /></label>
-					<br />
-                    <label>{tr}Send an email to the user in order to allow him to validate his account.{/tr} <input type="checkbox" name="notification" /></label>
+                    <label>{tr}User must change password at first login:{/tr} <input type="checkbox" name="forcePasswordChange" /></label>
 				</td>
 			</tr>
 			<tr class="formcolor">

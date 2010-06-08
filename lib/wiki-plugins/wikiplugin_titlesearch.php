@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /**
 * Include the library {@link PluginsLib}
 */
@@ -58,8 +52,7 @@ function wikiplugin_titlesearch_help() {
     		),
     	);
     }
-class WikiPluginTitleSearch extends PluginsLib
-{
+class WikiPluginTitleSearch extends PluginsLib {
     var $expanded_params = array("exclude", "info");
     function getDescription() {
         return wikiplugin_titlesearch_help();

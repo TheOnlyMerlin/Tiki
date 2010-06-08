@@ -1,7 +1,5 @@
 <?php
-// From Kaltura client libraries
-
-class KalturaClientBase
+class KalturaClientBase 
 {
 	const KALTURA_API_VERSION = "3.0";
 	const KALTURA_SERVICE_FORMAT_JSON = 1;
@@ -226,19 +224,18 @@ class KalturaClientBase
 		$formattedData = http_build_query($params , "", "&");
 		$params = array('http' => array(
 					"method" => "POST",
-					'header' => 
-						"Accept-language: en\r\n"
-						. "Content-type: application/x-www-form-urlencoded\r\n",
+					"Accept-language: en\r\n".
+					"Content-type: application/x-www-form-urlencoded\r\n",
 					"content" => $formattedData
 		          ));
 
 		$ctx = stream_context_create($params);
-		$fp = fopen($url, 'rb', false, $ctx);
+		$fp = @fopen($url, 'rb', false, $ctx);
 		if (!$fp) {
 			$phpErrorMsg = "";
 			throw new Exception("Problem with $url, $phpErrorMsg");
 		}
-		$response = stream_get_contents($fp);
+		$response = @stream_get_contents($fp);
 		if ($response === false) {
 		   throw new Exception("Problem reading data from $url, $phpErrorMsg");
 		}
@@ -488,7 +485,7 @@ abstract class KalturaObjectBase
 	}
 }
 
-class KalturaException extends Exception
+class KalturaException extends Exception 
 {
 	protected $code;
 	
@@ -545,7 +542,7 @@ class KalturaConfiguration
  * Implement to get Kaltura Client logs
  *
  */
-interface IKalturaLogger
+interface IKalturaLogger 
 {
 	function log($msg); 
 }

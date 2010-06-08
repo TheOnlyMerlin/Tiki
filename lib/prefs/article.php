@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 function prefs_article_list() {
 	return array(
@@ -23,23 +18,6 @@ function prefs_article_list() {
 			),
 
 		),
-		'article_paginate' => array(
-			'name' => tra('Paginate articles'),
-			'description' => tra('Divide articles into multiple pages with pagebreak markers.'),
-			'type' => 'flag',
-		),
-		'article_user_rating' => array(
-			'name' => tra('User ratings on articles'),
-			'description' => tra('Allows users to rate the articles.'),
-			'type' => 'flag',
-		),
-		'article_user_rating_options' => array(
-			'name' => tra('Article rating options'),
-			'description' => tra('List of options available for the rating of articles.'),
-			'type' => 'text',
-			'separator' => ',',
-			'filter' => 'int',
-		),
 		'article_image_size_x' => array(
 			'name' => tra('Default article image width'),
 			'type' => 'text',
@@ -53,11 +31,6 @@ function prefs_article_list() {
 			'size' => 3,
 			'filter' => 'int',
 			'hint' => tra('0 for original image size.') ,
-		),
-		'article_custom_attributes' => array(
-			'name' => tra('Custom attributes for article types'),
-			'description' => tra('Allow additional custom fields for article types'),
-			'type' => 'flag',
 		),
 	);
 }

@@ -1,10 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// Function created 2008-07-14 SEWilco (scot@wilcoxon.org)
+// 2009-01-12 SEWilco (scot@wilcoxon.org) Modified for feature_sefurl_filter.
 if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	header("location: index.php");
 	exit;
@@ -20,7 +20,7 @@ function filter_out_sefurl($tpl_output, &$smarty, $type = null, $title = null, $
 	global $cachelib;
 	include_once ('lib/cache/cachelib.php');
 	if (!is_array($sefurl_regex_out)) {
-		if (! $sefurl_regex_out = $cachelib->getSerialized('sefurl_regex_out')) {
+		if (!$cachelib->isCached('sefurl_regex_out')) {
 			$query = 'select * from `tiki_sefurl_regex_out` where `silent` != ? order by `order` asc';
 			$result = $tikilib->query($query, array('y'));
 			$sefurl_regex_out = array();
@@ -32,6 +32,8 @@ function filter_out_sefurl($tpl_output, &$smarty, $type = null, $title = null, $
 				}
 			}
 			$cachelib->cacheItem('sefurl_regex_out', serialize($sefurl_regex_out));
+		} else {
+			$sefurl_regex_out = unserialize($cachelib->getCached('sefurl_regex_out'));
 		}
 	}
 	$title = '';

@@ -1,14 +1,17 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-quiz_result_stats.php,v 1.15 2007-10-12 07:55:31 nyloth Exp $
 $section = 'quizzes';
 require_once ('tiki-setup.php');
 include_once ('lib/quizzes/quizlib.php');
-$access->check_feature('feature_quizzes');
+if ($prefs['feature_quizzes'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_quizzes");
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST["quizId"])) {
 	$smarty->assign('msg', tra("No quiz indicated"));
 	$smarty->display("error.tpl");
@@ -17,7 +20,13 @@ if (!isset($_REQUEST["quizId"])) {
 $smarty->assign('individual', 'n');
 
 $tikilib->get_perm_object($_REQUEST["quizId"], 'quiz');
-$access->check_permission('tiki_p_view_user_results');
+
+if ($tiki_p_view_user_results != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 $smarty->assign('quizId', $_REQUEST["quizId"]);
 $quiz_info = $quizlib->get_quiz($_REQUEST["quizId"]);
 $smarty->assign('quiz_info', $quiz_info);

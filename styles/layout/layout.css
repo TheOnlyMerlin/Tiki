@@ -10,15 +10,6 @@ body {
 	width: 100%;
 }
 
-body.db_error {
-	background: none;
-}
-
-body.db_error #tiki-main {
-	max-width: 800px;
-	margin: 1em auto;
-}
-
 html[dir=ltr]>body {
 	display: block;
 	padding: 1em;
@@ -44,21 +35,14 @@ input[type=submit] {
 	white-space: nowrap;
 	cursor: pointer;
 }
-
-/* submit buttons input type="submit" in a container */
-.input_submit_container {
-	padding: 1px;
-}
-
+	
 div.iconmenu {
 	display: inline;
 }
 
-/*
 select[multiple] {
 	height: 10em;
 }
-*/
 
 #col2 select,
 #col3 select,
@@ -122,10 +106,6 @@ div#sitead {
 	margin: auto;
 }
 
-div.sl-login {
-	display: inline;
-}
-
 #siteloginbar #register,
 #siteloginbar #pass {
 	float: right;
@@ -139,175 +119,6 @@ div.sl-login {
 #siteloginbar form {
 	padding-right: 0;
 }
-
-/* Sitelogin Popup */
-.tiki_register_login {
-	bottom: 3px;
-	position: absolute;
-	right: 10px;
-}
-
-#siteloginbar_popup {
-	bottom: 0;
-	position: absolute;
-	right: 4em;
-}
-
-#siteloginbar_popup .tabcontent fieldset {
-	margin: 0;
-	margin-left: -4px;
-	border: none;
-}
-
-#siteloginbar_popup h1 {
-	font-size: 1em;
-	font-weight: normal;
-	margin: auto;
-}
-
-li#register_link {
-	margin-right: 5px;
-}
-
-.tabmark a.register_link,
-.tabmark a.login_link {
-	padding-right: 26px !important;
-}
-
-#siteloginbar_popup .cssmenu_horiz #register_link ul {
-	margin-left: -5.5em;
-}
-
-#siteloginbar_popup .cssmenu_horiz #login_link ul {
-	margin-left: -9em;
-}
-
-#siteloginbar_popup .cssmenu_horiz #logout_link ul {
-	margin-left: -2.5em;
-}
-
-#siteloginbar_popup #siteloginbar {
-	bottom: auto;
-	font-size: auto;
-	position: static;
-	right: auto;
-	text-align: left;
-}
-
-#siteloginbar_popup #siteloginbar * {
-	white-space: normal;
-}
-
-#siteloginbar_popup .cssmenu_horiz ul li {
-	width: 100%;
-	font-size: auto;
-}
-
-#siteloginbar_popup form {
-	text-align: left;
-	width: auto;
-	white-space: normal !important;
-}
-
-#siteloginbar_popup .sl-login,
-#siteloginbar_popup span.pass {
-	display: block;
-	width: auto;
-	margin-bottom: 4px;
-}
-
-#sitesubtitle { 
-	line-height: 0.9em;
-}
-
-span.pass a,
-span.pass a:visited,
-span.pass a:hover,
-span.register a,
-span.register a:visited,
-span.register a:hover,
-div.logged-in a,
-li.login_link ul li a {
-	background: none !important;
-}
-	/*
-li#login_link span.register {
-	display: none;
-}*/
-
-li#logout_link a {
-	padding-right: 40px;
-}
-
-/* from r27359 */
-#siteloginbar_popup #logout_link .cbox {
-	text-align: center;
-}
-
-#siteloginbar_popup .cssmenu_horiz div {
-	
-}
-
-#siteloginbar_popup .cssmenu_horiz div a {
-	display: inline;
-}
-
-#siteloginbar_popup .cbox {
-	padding: 10px;
-	margin: 2px 2px 3px 1px;
-}
-
-#siteloginbar_popup .cbox * {
-	line-height: 14px;
-	margin: 2px;
-}
-
-#siteloginbar_popup .cbox label {
-	clear: both; float: left;
-}
-
-#siteloginbar_popup .cbox div {
-	clear: both;
-}
-
-#siteloginbar_popup #sl-login-user,
-#siteloginbar_popup #sl-login-pass {
-	float: right;
-	width: 60%;
-}
-
-#siteloginbar_popup .rme {
-	display: block;
-	padding: 5px 0;
-	text-align: right;
-}
-
-#siteloginbar_popup span.pass {
-	display: inline;
-}
-
-#siteloginbar_popup .pass a {
-	float: left;
-	margin: 0;
-	padding: 0;
-	text-align: center;
-	width: 30%;
-}
-
-#siteloginbar_popup .register a {
-	float: right;
-	margin: 0;
-	padding: 0;
-	text-align: center;
-	width: 30%;
-}
-#siteloginbar_popup .wikiaction {
-	clear: both;
-	float: right;
-}
-/* end from r27359 */
-
-/* end Sitelogin Popup */
 
 #sitesearchbar {
 	float: right;
@@ -539,17 +350,18 @@ span.moduleflip-vert {
 	display: inline;
 }
 
+.error,
+#error {
+	background: yellow;
+	color: red;
+}
+
 #show-errors-button {
 	z-index: 1024;
 }
 
 #errors {
 	z-index: 1023;
-}
-
-.error .rbox-data .adminoption,
-.error .rbox-data .adminoptionlabel {
-	display: inline;
 }
 
 /** off-screen **/
@@ -776,21 +588,15 @@ span.toolbar-list {
 
 .toolbars-picker {
 	position: absolute;
-	width: 288px;
+	width: 300px;
 	z-index: 300;
 	background-color: #fff;
 	color: #000;
-	line-height: 12px;
 }
 
 .toolbars-picker a {
-	padding: 0;
+	padding: 4px 2px;
 	display: inline-block;
-	border: #fff 1px solid;
-}
-
-.toolbars-picker a:hover {
-	border: #f00 1px solid;
 }
 
 .fckeditzone {
@@ -805,20 +611,22 @@ div#tikihelp {
 
 div.help_sections {
 	width: 360px;
-	overflow: hidden !important;
+	overflow: auto;
 	height: 500px;
 }
 
 div.help_section {
+	/*overflow: hidden !important;*/
+	height: auto;
 }
 
 div.help_sections h3 {
+	padding-left: 24px;
+	line-height: 3ex;
 }
 
 div.help_sections > div {
 	font-size: .9em;
-	height: 100%;
-	overflow: auto;
 }
 
 #site_report {
@@ -846,9 +654,9 @@ div.help_sections > div {
 }
 
 h3.box-title {
+	position: relative;
 	display: block;
 	padding-top: 0;
-	position: relative;
 }
 
 span.moduleflip,
@@ -990,14 +798,10 @@ tr.diffheader {
 
 /** Tabs **/
 .tabs {
-	margin: 10px 3px -1px 3px;
+	margin: 10px 3px -18px 3px;
 	padding: 0;
 	position: relative;
 	z-index: 2;
-}
-
-.tabs br {
-	display: none;
 }
 
 .tabmark {
@@ -1018,28 +822,36 @@ tr.diffheader {
 	border-bottom: none;
 	border-top-width: 2px;
 	position: relative;
-	top: 0;
+	top: -2px;
 }
 	
+[class].tabactive {
+	top: -1px;
+}
+
 .tabinactive {
 	border-bottom: none;
 	position: relative;
-	top: 0;
+	top: -3px;
 }
 	
+[class].tabinactive {
+	top: -2px;
+}
+
 .tabcontent {
 	z-index: 1;
 	position: relative;
-	padding: 4px;
-/*	padding-top: 21px;
+	padding: 2px;
+	padding-top: 21px;
 	margin-bottom: 25px;
-	margin-top: -1px;*/
+	margin-top: -1px;
 }
 
 .tabcontent table {
-/*	margin: 1% auto 2% auto; */
+	margin: 1% auto 2% auto; 
 	text-align: left;
-	width: auto;
+	width: 95%;
 	background: transparent;
 }
 
@@ -1157,31 +969,6 @@ ul.floatleft li {
 	z-index: 500;
 	display:none;
 	padding: .4em;
-}
-
-/* fancytable (sortable) plugin */
-
-.fancysort .header {
-	cursor: pointer;
-}
-
-/* img plugin */
-div.imgbox {
-        padding: 5px;
-}
-
-div.thumbcaption {
-        padding: 2px;
-}
-
-div.magnify {
-        float: right;
-        padding-top: 0.1cm;
-}
-
-img.magnify {
-        height: 12px;
-        width: 12px;
 }
 
 /** Wiki tocs **/
@@ -1407,10 +1194,6 @@ body.tiki_forums table.normal {
 	float: right;
 	text-align: right;
 }
-.post .postfooter .rating {
-	display: inline;
-}
-
 
 .post .postfooter .actions,
 .post .postfooter .status {
@@ -1674,7 +1457,7 @@ a.categpath {
 	padding: 0;
 }
 
-.catfeatures .catitems li {
+.catfeatures li {
 	display: inline;
 	margin-right: 7px;
 }
@@ -1857,8 +1640,8 @@ div#ajaxLoading {
 	color: #fff;
 	display: none;
 	position: fixed;
-	top: 50%;
-	left: 50%;
+	top: 50% !important;
+	left: 50% !important;
 	padding: 3px;
 	color: #333;
 	text-align: center;
@@ -1874,11 +1657,34 @@ div#ajaxLoadingBG {
 	z-index: 9999;
 	display: none;
 	position: fixed;
-	left: 0;
-	top: 0;
+	left: 0 !important; top: 0 !important;
 	background: transparent url(../../img/overlay-light.png);
-	width: 100%;
-	height: 100%;
+	width: 100% !important;
+	height: 100% !important;
+}
+
+#shadowbox_title {
+	height: auto !important;
+	padding: 0;
+	overflow: visible
+}
+
+#shadowbox_title_inner{
+	height: auto !important;
+	font-size: 1em !important;
+	line-height: 1em !important;
+	white-space: normal !important;
+	padding: 5px 0 4px 8px;
+}
+	
+#shadowbox_toolbar,
+#shadowbox_toolbar_inner {
+	height: auto;
+}
+	
+#shadowbox_content {
+	background: #f5f5f5;
+	color: #000;
 }
 
 /* ColorBox */
@@ -1931,9 +1737,7 @@ table.webmail_message_headers th {
 
 /* treeTable definitions - used in object-perms so far */
 
-table.treeTable {
-	padding-left: 19px;
-}
+table.treeTable {}
 
 table.treeTable .checkBoxHeader {
 	font-size: .8em;
@@ -1947,48 +1751,250 @@ table.treeTable .parent td {
 	font-style: italic;
 }
 
+/* column manager list styles */
+div#column_switches_div {
+	border: 1px solid gray;
+	background-color: #eee;
+	width: 12em;
+	padding: .2em .4em;
+}
+ul.column_switcher {
+	margin: 0;
+	padding: 0;
+}
+.column_switcher li {
+	font-weight: bold;
+	cursor: pointer;
+	padding-left: 20px;
+	list-style: none;
+}
+.column_switcher li.advon {
+	color: #080;
+	background: url(../../pics/icons/tick.png) no-repeat 0 50%;
+}
+.column_switcher li.advoff {
+	color: #d00;
+	background: url(../../pics/icons/cross.png) no-repeat 0 50%;
+}
+.column_switcher li:hover {
+	background-color: #ccc;
+}
 .thumbnailcontener { border: solid 1px lightgrey; margin: 1px; padding: 2px; text-align: center;}
 
-/* jquery-ui dialogs help */
+/* jquery-ui doalogs help */
 
 .ui-dialog label {
 	display: block;
 }
 
-.ui-datepicker {
-	z-index: 1024;
+.screencast-thumbnail {
+	padding: 8px;
+	display: block;
+	height: 120px;
+	width: 160px;
+	float: left;
+	margin-bottom: 10px;
 }
 
-.ui-accordion-header {
-	padding-left: 28px;
+.screencast-input-wrapper {
+	float: left;
 }
 
-/* Preferencies        */
-.pref_dependency {
-	margin-left: 20px;
-	font-size: 95%;
+.screencast-input-label {
+	display: block;
 }
 
-/* Perspecives (edit) */
+.screencast-player-close {
+	background:transparent url(img/screencast-player-close.png) no-repeat scroll top right;
+	text-align: right;
+	margin: 28px 42px -15px 0;
+	height: 33px;
+	color: #0489B7;
+	cursor: pointer;
+	padding: 8px 33px 0 0;
+}	
 
-.dropzone {
-	color: #000;
-	background-color: #fff;
-	border: #999 solid 2px;
-	border-bottom-color: #ccc;
-	border-right-color: #ccc;
+.screencast-player-msg {
+	width: 100%;
+	text-align: center;
+	color: #0489B7;
+	margin-top: 10px;
+	cursor: pointer;
 }
 
-.dropzone > div:hover {
-	background-color: #eee;
-} 
-
-.podcast {
-	margin-left: -25px;
+.screencast-player-msg:hover {
+	text-decoration: underline;
 }
 
-.podcast div.moduledescription {
-	margin-left: 25px;
+.screencast-no-alt {
+	padding-top: 15px;
 }
 
+.screencast-no-preview {
+	background: transparent url(img/screencast-no-video.png) no-repeat scroll 0 0;
+	width: 160px;
+	height: 120px;
+}
+
+.screencast-thumb-text {
+	display: block;
+	width: 100%;
+	text-align: center;
+  color: #0489B7;
+	cursor: pointer;
+	margin-top: 3px;
+}
+
+.screencast-thumb-text:hover {
+	text-decoration: underline;
+}
+
+.screencast-no-preview > .screencast-thumb-text {
+	padding-top: 120px;
+}
+
+.screencast-no-preview-text {
+	display: block;
+	width: 100%;
+	text-align: center;
+ color: #FFFFFF;
+	margin-top: -35px;
+	margin-bottom: 25px;
+}
+
+#screencast-loader {
+	width: 1px;
+	height: 1px;
+	display: none;
+	left: 1500px;
+}
+
+#screencast-upload-now {
+	margin-top: 18px;
+}
+
+#screencast-add-another {
+	display: block;
+	margin: 10px;
+	float: left;
+}
+
+#screencast-player-overlay {
+	background:#FFFFFF none repeat scroll 0 0;
+	left:0;
+	opacity:0.6;
+	position:absolute;
+	top:0;
+	width:100%;
+	height: 100%;
+	z-index:500;
+}
+
+#screencast-player-window {
+	background:transparent url(img/screencast-player-frame.png) no-repeat scroll 0 0;
+	height:630px;
+	left:50%;
+	margin-left:-417px;
+	position:absolute;
+	top:0;
+	width:858px;
+	z-index:1000;
+	opacity:1;
+}
+
+.screencast-content {
+	background:transparent url(img/screencast-bar.png) no-repeat scroll 0 0;
+	font-size: 130%;
+	cursor: pointer;
+	height: 56px;
+	margin: .5em 0;
+}
+
+.screencast-content-msg {
+	padding-left: 75px;
+	padding-top: 20px;
+	color: #0489B7;
+}
+
+.pagelist-wrapper {
+  width: 100%;
+}
+
+.pagelist-table {
+  font-size: .9em;
+  width: 100%;
+  font-weight: bold;
+  display: inline-table;
+}
+
+.pagelist-title {
+  background: none !important;
+  margin-top: 0px !important; 
+}
+
+.pagelist-table tr {
+  padding: 2px;
+}
+
+.pagelist-table td {
+  padding: 5px;
+}
+.pagelist-table .odd {
+  background: #F0F0F0 none repeat scroll 0 0;
+}
+
+.pagelist-status {
+  width: 25%; 
+}
+
+.pagelist-needs-review,.pagelist-draft,.pagelist-needs-updating {
+  background: #ffff81;
+  border: 1px solid #FFFFFF; 
+}
+
+.pagelist-translated {
+  background: #00f382;
+  border: 1px solid #FFFFFF; 
+}
+
+.pagelist-needs-translation,.pagelist-unknown {
+  background: #ffacac;
+  border: 1px solid #FFFFFF; 
+}
+
+.pagelist-page {
+  width: 62%;
+}
+
+.listprogress-progress {
+  height:19px;
+  position:relative;
+  width:253px;
+  border: 2px ridge #CCCCCC;
+  display: inline-table;
+}
+
+.listprogress-progress span {
+  background:transparent url(img/listprogress-bar.png) no-repeat scroll 0 0;
+  display:block;
+  height:21px;
+  overflow:hidden;
+  position:absolute;
+  width:253px;
+}
+
+.listprogress-progress em {
+  background:transparent url(img/listprogress-slider.png) repeat-x scroll 0 0;
+  display:block;
+  height:19px;
+  position:absolute;
+  top:-1;
+  width:253px;
+}
+
+.listprogress-status {
+  margin: 0 10px;
+  position: absolute;
+  font-weight: bold;
+}
 /* End of File */

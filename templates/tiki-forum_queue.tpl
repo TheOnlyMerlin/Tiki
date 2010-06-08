@@ -1,6 +1,6 @@
 {popup_init src="lib/overlib.js"}
 
-{title help="forums" admpage="forums"}{tr}Message queue for forum{/tr} {$forum_info.name|escape}{/title}
+{title help="forums" admpage="forums"}{tr}Message queue for forum{/tr} {$forum_info.name}{/title}
 
 <div class="navbar">
 	{button href="tiki-view_forum.php?forumId=$forumId" _text="{tr}Back to forum{/tr}"}
@@ -25,7 +25,7 @@
 	<td class="formcolor">
 		<select name="parentId">
 			{section name=ix loop=$topics}
-			<option value="{$topics[ix].threadId|escape}" {if $topics[ix].threadId eq $msg_info.parentId}selected="selected"{/if}>{$topics[ix].title|escape}</option>
+			<option value="{$topics[ix].threadId|escape}" {if $topics[ix].threadId eq $msg_info.parentId}selected="selected"{/if}>{$topics[ix].title}</option>
 			{/section}
 		</select>
 	</td>
@@ -37,7 +37,7 @@
 		<select name="parentId">
 			<option value="0" {if $topics[ix].threadId eq $msg_info.parentId}selected="selected"{/if}>{tr}None, this is a thread message{/tr}</option>
 			{section name=ix loop=$topics}
-			<option value="{$topics[ix].threadId|escape}" {if $topics[ix].threadId eq $msg_info.parentId}selected="selected"{/if}>{$topics[ix].title|escape}</option>
+			<option value="{$topics[ix].threadId|escape}" {if $topics[ix].threadId eq $msg_info.parentId}selected="selected"{/if}>{$topics[ix].title}</option>
 			{/section}
 		</select>
 	</td>
@@ -56,11 +56,11 @@
 	<td class="formcolor">{tr}Type{/tr}</td>
 	<td class="formcolor">
       <select name="type">
-      <option value="n" {if $msg_info.type eq 'n'}selected="selected"{/if}>{tr}Normal{/tr}</option>
-      <option value="a" {if $msg_info.type eq 'a'}selected="selected"{/if}>{tr}Announce{/tr}</option>
-      <option value="h" {if $msg_info.type eq 'h'}selected="selected"{/if}>{tr}Hot{/tr}</option>
-      <option value="s" {if $msg_info.type eq 's'}selected="selected"{/if}>{tr}Sticky{/tr}</option>
-      <option value="l" {if $msg_info.type eq 'l'}selected="selected"{/if}>{tr}Locked{/tr}</option>
+      <option value="n" {if $msg_info.type eq 'n'}selected="selected"{/if}>{tr}normal{/tr}</option>
+      <option value="a" {if $msg_info.type eq 'a'}selected="selected"{/if}>{tr}announce{/tr}</option>
+      <option value="h" {if $msg_info.type eq 'h'}selected="selected"{/if}>{tr}hot{/tr}</option>
+      <option value="s" {if $msg_info.type eq 's'}selected="selected"{/if}>{tr}sticky{/tr}</option>
+      <option value="l" {if $msg_info.type eq 'l'}selected="selected"{/if}>{tr}locked{/tr}</option>
       </select>
 	  {if $forum_info.topic_smileys eq 'y'}
       <select name="topic_smiley">
@@ -140,16 +140,16 @@
   
 	<td class="{cycle}" style="text-align:left;">
 		{if $items[ix].parentId > 0}
-			[{tr}Topic:{/tr} {$items[ix].topic_title|escape}]
+			[{tr}Topic{/tr}: {$items[ix].topic_title}]
 		{else}
 			[{tr}New Topic{/tr}]
 		{/if}
-		<b><a class="link" href="tiki-forum_queue.php?forumId={$forumId}&amp;qId={$items[ix].qId}">{$items[ix].title|escape}</a></b>
-		by {$items[ix].user|username} on {$items[ix].timestamp|tiki_short_datetime}
+		<b><a class="link" href="tiki-forum_queue.php?forumId={$forumId}&amp;qId={$items[ix].qId}">{$items[ix].title}</a></b>
+		by {$items[ix].user} on {$items[ix].timestamp|tiki_short_datetime}
 		<br />
 		{if $items[ix].parentId eq 0 and $forum_info.topic_summary eq 'y'}
 			{if strlen($items[ix].summary) > 0}
-				<i>{$items[ix].summary|escape}</i><br />
+				<i>{$items[ix].summary}</i><br />
 			{else}
 				<i>{tr}no summary{/tr}</i>
 			{/if}

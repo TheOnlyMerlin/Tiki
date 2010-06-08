@@ -16,22 +16,17 @@
 	{if $files[changes].perms.tiki_p_assign_perm_file_gallery eq 'y'}
             <a href="tiki-objectpermissions.php?objectName={$files[changes].name|escape:"url"}&amp;objectType=file+gallery&amp;permType=file+galleries&amp;objectId={$files[changes].id}{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}">
             {if $files[changes].public neq 'y'}
-							{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='key_private' alt="{tr}Private Gallery{/tr}"}
+							{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='key_private' alt='{tr}Private Gallery{/tr}'}
             {elseif $files[changes].perms.has_special_perm eq 'y'}
-							{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='key_active' alt="{tr}Active Perms{/tr}"}
+							{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='key_active' alt='{tr}Active Perms{/tr}'}
             {else}
-                {icon _menu_text=$menu_text _menu_icon=$menu_icon _id='key' alt="{tr}Perms{/tr}"}
+                {icon _menu_text=$menu_text _menu_icon=$menu_icon _id='key' alt='{tr}Perms{/tr}'}
             {/if}
 						</a>
         {/if}
-	  {if $prefs.feature_webdav eq 'y'}
-    	{assign var=virtual_path value=$files[changes].id|virtual_path:'filegal'}
-			<a style="behavior: url(#default#AnchorClick);" href="{$virtual_path}" folder="{$virtual_path}">{icon _id="tree_folder_open"}{tr}Open as WebFolder{/tr}</a>
-  	{/if}
-
 
 	{if $files[changes].perms.tiki_p_create_file_galleries eq 'y'}
-		{self_link _icon='cross' _menu_text=$menu_text _menu_icon=$menu_icon removegal=$files[changes].id}{tr}Delete{/tr}{/self_link}
+		{self_link _icon='cross' _menu_text=$menu_text _menu_icon=$menu_icon _ajax='n' removegal=$files[changes].id}{tr}Delete{/tr}{/self_link}
 	{/if}
 {else}
 	{if $prefs.javascript_enabled eq 'y'}
@@ -62,7 +57,7 @@
 		{else}
 			<a href="{$files[changes].id|sefurl:file}">
 		{/if}
-		{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='disk' alt="{tr}Download{/tr}"}</a> 
+		{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='disk' alt='{tr}Download{/tr}'}</a> 
 	{/if}
 
 	{if $gal_info.archives gt -1}
@@ -70,14 +65,14 @@
 			{assign var=nb_archives value=$files[changes].nbArchives}
 			<a href="tiki-file_archives.php?fileId={$files[changes].fileId}{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='disk_multiple' alt="{tr}Archives{/tr} ($nb_archives)"}</a>
 		{else}
-			{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='disk_multiple_gray' alt="{tr}Archives{/tr}"}
+			{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='disk_multiple_gray' alt='{tr}Archives{/tr}'}
 		{/if}
 		{assign var=replace_action_title value="{tr}Upload New Version{/tr}"}
 	{else}
 		{assign var=replace_action_title value="{tr}Replace{/tr}"}
 	{/if}
 
-	{* can edit if I am admin or the owner of the file or the locker of the file or if I have the perm to edit file on this gallery *}
+	{* can edit if I am admin or the owner of the file or the locker of the file or if I have the perm to edit file on this gall *}
 	{if $files[changes].perms.tiki_p_admin_file_galleries eq 'y'
 		or ($files[changes].lockedby and $files[changes].lockedby eq $user)
 		or (!$files[changes].lockedby and (($user and $user eq $files[changes].user) or $files[changes].perms.tiki_p_edit_gallery_file eq 'y')) }
@@ -101,46 +96,37 @@
 
 			{else}
 				{* for the moment, no-javascript version is simply a link to the edit page where you can also upload *}
-				<a href="tiki-upload_file.php?galleryId={$files[changes].galleryId}&amp;fileId={$files[changes].id}{if $filegals_manager eq 'y'}&amp;filegals_manager={$filegals_manager|escape}{/if}">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='database_refresh' alt="{tr}Upload New Version{/tr}"}</a>
+				<a href="tiki-upload_file.php?galleryId={$gal_info.galleryId}&amp;fileId={$files[changes].id}{if $filegals_manager eq 'y'}&amp;filegals_manager={$filegals_manager|escape}{/if}">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='database_refresh' alt='{tr}Upload New Version{/tr}'}</a>
 				
 			{/if}
 
-			<a href="tiki-upload_file.php?galleryId={$files[changes].galleryId}&amp;fileId={$files[changes].id}{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='page_edit' alt="{tr}Properties{/tr}"}</a>
+			<a href="tiki-upload_file.php?galleryId={$gal_info.galleryId}&amp;fileId={$files[changes].id}{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='page_edit' alt='{tr}Properties{/tr}'}</a>
 			{/if}
 
 			{if $gal_info.lockable eq 'y' and $files[changes].isgal neq 1}
 				{if $files[changes].lockedby}
-					{self_link _icon='lock_delete' _menu_text=$menu_text _menu_icon=$menu_icon lock='n' fileId=$files[changes].fileId galleryId=$files[changes].galleryId}{tr}Unlock{/tr}{/self_link}
+					{self_link _icon='lock_delete' _menu_text=$menu_text _menu_icon=$menu_icon lock='n' fileId=$files[changes].fileId}{tr}Unlock{/tr}{/self_link}
 				{else}
 					{if $prefs.javascript_enabled eq 'y'}
 
 					{* with javascript, the main page will be reloaded to lock the file and change it's lockedby informations *}
-					<a href="#" onclick="window.open('{$files[changes].fileId|sefurl:file}&lock=y'); document.location.href = '{self_link _type='absolute_uri' _tag='n' fileId=$files[changes].fileId lock=y galleryId=$files[changes].galleryId}{/self_link}'; return false;">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='disk_lock' alt="{tr}Download and lock{/tr}"}</a>
+					<a href="#" onclick="window.open('{$files[changes].fileId|sefurl:file}&lock=y'); document.location.href = '{self_link _type='absolute_uri' _tag='n' fileId=$files[changes].fileId lock=y}{/self_link}'; return false;">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='disk_lock' alt='{tr}Download and lock{/tr}'}</a>
 
 					{else}
 
 					{* without javascript, the lockedby informations won't be refreshed until the user do it itself *}
-					<a href="{$files[changes].fileId|sefurl:file}&amp;lock=y">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='disk_lock' alt="{tr}Download and lock{/tr}"}</a>
+					<a href="{$files[changes].fileId|sefurl:file}&amp;lock=y">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='disk_lock' alt='{tr}Download and lock{/tr}'}</a>
 
 					{/if}
-					{self_link _icon='lock_add' _menu_text=$menu_text _menu_icon=$menu_icon lock='y' fileId=$files[changes].fileId galleryId=$files[changes].galleryId}{tr}Lock{/tr}{/self_link}
+					{self_link _icon='lock_add' _menu_text=$menu_text _menu_icon=$menu_icon lock='y' fileId=$files[changes].fileId}{tr}Lock{/tr}{/self_link}
 				{/if}
 			{/if}
 		{/if}
 	{/if}
 
-	{if $prefs.feature_webdav eq 'y'}
-		{assign var=virtual_path value=$files[changes].fileId|virtual_path}
-		{self_link _icon="tree_folder_open" _menu_text=$menu_text _menu_icon=$menu_icon _script="javascript:open_webdav('$virtual_path')" _noauto="y" _ajax="n"}{tr}Open in WebDAV{/tr}{/self_link}
-	{/if}
-
-	{if $prefs.feature_tell_a_friend eq 'y' and $tiki_p_tell_a_friend eq 'y'}
-		<a href="tiki-tell_a_friend.php?url={$tikiroot}{$files[changes].id|sefurl:file|escape:'url'}">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='email_go' alt="{tr}Email a link to this file{/tr}"}</a>
-	{/if}
-
 	{if $files[changes].perms.tiki_p_admin_file_galleries eq 'y'
 		or (!$files[changes].lockedby and (($user and $user eq $files[changes].user) or $files[changes].perms.tiki_p_edit_gallery_file eq 'y')) }
-			{self_link _icon='cross' _menu_text=$menu_text _menu_icon=$menu_icon remove=$files[changes].fileId galleryId=$files[changes].galleryId}{tr}Delete{/tr}{/self_link}
+			{self_link _icon='cross' _menu_text=$menu_text _menu_icon=$menu_icon _ajax='n' remove=$files[changes].fileId}{tr}Delete{/tr}{/self_link}
 	{/if}
 
 	{if $prefs.javascript_enabled eq 'y'}

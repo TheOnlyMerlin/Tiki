@@ -52,9 +52,11 @@
 <input type="hidden" name="flag" value="{$flag|escape}" />
 <input type="hidden" name="flagval" value="{$flagval|escape}" />
 <input type="hidden" name="priority" value="{$priority|escape}" />
-{jq}
-var CHECKBOX_LIST = [{{section name=user loop=$items}'msg[{$items[user].msgId}]'{if not $smarty.section.user.last},{/if}{/section}}];
-{/jq}
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+var CHECKBOX_LIST = [{section name=user loop=$items}'msg[{$items[user].msgId}]'{if not $smarty.section.user.last},{/if}{/section}];
+//--><!]]>
+</script>
 <table class="normal">
   <tr>
     <th>{if $items}<input title="{tr}Select All{/tr}" type="checkbox" name="checkall" onclick="checkbox_list_check_all('form_messu_mailbox',CHECKBOX_LIST,this.checked);" />{/if}</th>
@@ -69,14 +71,14 @@ var CHECKBOX_LIST = [{{section name=user loop=$items}'msg[{$items[user].msgId}]'
   {section name=user loop=$items}
   <tr>
     <td class="prio{$items[user].priority}"><input type="checkbox" name="msg[{$items[user].msgId}]" /></td>
-    <td class="prio{$items[user].priority}">{if $items[user].isFlagged eq 'y'}{icon _id='flag_blue' alt="{tr}Flagged{/tr}"}{/if}</td>
+    <td class="prio{$items[user].priority}">{if $items[user].isFlagged eq 'y'}{icon _id='flag_blue' alt='{tr}Flagged{/tr}'}{/if}</td>
     <td {if $items[user].isRead eq 'n'}style="font-weight:bold"{/if} class="prio{$items[user].priority}">{$items[user].user_from|userlink}</td>
     <td {if $items[user].isRead eq 'n'}style="font-weight:bold"{/if} class="prio{$items[user].priority}"><a class="readlink" href="messu-read.php?offset={$offset}&amp;flag={$flag}&amp;priority={$items[user].priority}&amp;flagval={$flagval}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;msgId={$items[user].msgId}">{$items[user].subject|escape}</a></td>
     <td {if $items[user].isRead eq 'n'}style="font-weight:bold"{/if} class="prio{$items[user].priority}">{$items[user].date|tiki_short_datetime}</td><!--date_format:"%d %b %Y [%H:%I]"-->
 		<td class="prio{$items[user].priority}">
 		{if $items[user].replyto_hash eq ""}&nbsp;{else}
 			<a class="readlink" href="messu-mailbox.php?origto={$items[user].replyto_hash}">
-		    {icon _id='email_go' alt="{tr}Find replied message{/tr}"}
+		    {icon _id='email_go' alt='{tr}Find replied message{/tr}'}
 			</a>
 		{/if}
 		</td>

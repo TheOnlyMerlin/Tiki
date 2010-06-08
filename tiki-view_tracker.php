@@ -1,16 +1,17 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-view_tracker.php,v 1.141.2.19 2008-03-21 21:50:39 sylvieg Exp $
 $section = 'trackers';
 require_once ('tiki-setup.php');
-
-$access->check_feature('feature_trackers');
-
-global $trklib; include_once ('lib/trackers/trackerlib.php');
+if ($prefs['feature_trackers'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_trackers");
+	$smarty->display("error.tpl");
+	die;
+}
+include_once ('lib/trackers/trackerlib.php');
 if ($prefs['feature_groupalert'] == 'y') {
 	include_once ('lib/groupalert/groupalertlib.php');
 }
@@ -94,9 +95,6 @@ if ($tiki_p_create_tracker_items == 'y' && !empty($t['end'])) {
 		$smarty->assign('tiki_p_create_tracker_items', 'n');
 	}
 }
-
-$access->check_permission_either( array('tiki_p_view_trackers', 'tiki_p_create_tracker_items') );
-
 if ($tiki_p_view_trackers != 'y') {
 	$userCreatorFieldId = $trklib->get_field_id_from_type($_REQUEST['trackerId'], 'u', '1%');
 	$groupCreatorFieldId = $trklib->get_field_id_from_type($_REQUEST['trackerId'], 'g', '1%');
@@ -104,6 +102,11 @@ if ($tiki_p_view_trackers != 'y') {
 		$my = $user;
 	} elseif ($user && !$ours and isset($tracker_info['writerGroupCanModify']) and $tracker_info['writerGroupCanModify'] == 'y' and !empty($groupCreatorFieldId)) {
 		$ours = $group;
+	} elseif ($tiki_p_create_tracker_items != 'y') {
+		$smarty->assign('errortype', 401);
+		$smarty->assign('msg', tra("You do not have permission to use this feature"));
+		$smarty->display("error.tpl");
+		die;
 	}
 }
 $smarty->assign('my', $my);
@@ -149,35 +152,7 @@ $smarty->assign('status_types', $status_types);
 if (count($status_types) == 0) {
 	$tracker_info["showStatus"] = 'n';
 }
-$filterFields = array('isSearchable'=>'y', 'isTblVisible'=>'y', 'type'=>array('q','u','g','I','C','n','j','f'));
-if (!isset($_REQUEST["sort_mode"])) {
-	if (isset($tracker_info['defaultOrderKey'])) {
-		if ($tracker_info['defaultOrderKey'] == - 1) $sort_mode = 'lastModif';
-		elseif ($tracker_info['defaultOrderKey'] == - 2) $sort_mode = 'created';
-		elseif ($tracker_info['defaultOrderKey'] == - 3) $sort_mode = 'itemId';
-		elseif ($orderkey) {
-			$sort_mode = 'f_' . $tracker_info['defaultOrderKey'];
-			$filterFields['fieldId'] = $tracker_info['defaultOrderKey'];
-		} else {
-			$sort_mode = 'lastModif';
-		}
-		if (isset($tracker_info['defaultOrderDir'])) {
-			$sort_mode.= "_" . $tracker_info['defaultOrderDir'];
-		} else {
-			$sort_mode.= "_asc";
-		}
-	} else {
-		$sort_mode = '';
-	}
-} else {
-	$sort_mode = $_REQUEST["sort_mode"];
-	if (preg_match('/f_([0-9]+)_/', $sort_mode, $matches)) {
-			$filterFields['fieldId'] = $matches[1];
-	}
-}
-$smarty->assign_by_ref('sort_mode', $sort_mode);
-
-$xfields = $trklib->list_tracker_fields($_REQUEST["trackerId"], 0, -1, 'position_asc');
+$xfields = $trklib->list_tracker_fields($_REQUEST["trackerId"], 0, -1, 'position_asc', '');
 if (!empty($tracker_info['showPopup'])) {
 	$popupFields = explode(',', $tracker_info['showPopup']);
 	$smarty->assign_by_ref('popupFields', $popupFields);
@@ -210,7 +185,6 @@ for ($i = 0; $i < $temp_max; $i++) {
 		$creatorSelector = false;
 	}
 	if (($xfields["data"][$i]['isTblVisible'] == 'y' or in_array($fid, $popupFields)) and ($xfields["data"][$i]['isHidden'] == 'n' or $xfields["data"][$i]['isHidden'] == 'p' or $tiki_p_admin_trackers == 'y' or ($xfields["data"][$i]['type'] == 's' and $xfields['data'][$i]['name'] == 'Rating' and $tiki_p_tracker_view_ratings == 'y'))) {
-		$listfields[$fid]['fieldId'] = $xfields['data'][$i]['fieldId'];
 		$listfields[$fid]['type'] = $xfields["data"][$i]["type"];
 		$listfields[$fid]['name'] = $xfields["data"][$i]["name"];
 		$listfields[$fid]['options'] = $xfields["data"][$i]["options"];
@@ -227,19 +201,7 @@ for ($i = 0; $i < $temp_max; $i++) {
 			$parentId = $listfields[$fid]['options_array'][0];
 			$listfields[$fid]['categories'] = $categlib->get_viewable_child_categories($parentId);
 		}
-		if ($listfields[$fid]['type'] == 'C') {
-			$allfields=null;
-			$infoComputed = $trklib->get_computed_info($listfields[$fid]['options'], $_REQUEST['trackerId'], $allfields);
-			if (!empty($infoComputed)) {
-				$listfields[$fid] = array_merge($infoComputed , $listfields[$fid]);
-			}
-		}
-		if (isset($xfields['data'][$i]['otherField'])) {
-			$listfields[$fid]['otherField'] = $xfields['data'][$i]['otherField'];
-		}
-		if ($listfields[$fid]['type'] == '*' && $tiki_p_tracker_vote_ratings == 'y' && !empty($_REQUEST['vote']) && !empty($ratedItemId) && isset($_REQUEST['ins_'.$listfields[$fid]['fieldId']])) { // star
-			$trklib->replace_star($_REQUEST['ins_'.$listfields[$fid]['fieldId']], $_REQUEST['trackerId'], $ratedItemId, $listfields[$fid], $user, true);
-		}
+		if (isset($xfields['data'][$i]['otherField'])) $listfields[$fid]['otherField'] = $xfields['data'][$i]['otherField'];
 	}
 	if ($creatorSelector or $xfields["data"][$i]['isHidden'] == 'n' or $xfields["data"][$i]['isHidden'] == 'c' or $xfields["data"][$i]['isHidden'] == 'p' or $tiki_p_admin_trackers == 'y' or ($xfields["data"][$i]['type'] == 's' and $xfields['data'][$i]['name'] == 'Rating' and $tiki_p_tracker_view_ratings == 'y')) {
 		$ins_fields["data"][$i] = $xfields["data"][$i];
@@ -367,8 +329,10 @@ for ($i = 0; $i < $temp_max; $i++) {
 			// Get flags here
 			if (isset($fields["data"][$i]["options_array"][1]) && $fields["data"][$i]["options_array"][1] == 1) {
 				$fields["data"][$i]['flags'] = $trklib->get_flags(true, true, false); // Sort in english names order
+				
 			} else {
 				$fields["data"][$i]['flags'] = $trklib->get_flags(true, true, true); // Sort in translated names order (default)
+				
 			}
 			$fields["data"][$i]['defaultvalue'] = 'None';
 		} else {
@@ -386,13 +350,8 @@ for ($i = 0; $i < $temp_max; $i++) {
 				$fields["data"][$i]["value"] = '';
 			}
 			if ($fields["data"][$i]["type"] == 'r') { // item link
-				if (!isset($fields["data"][$i]["options_array"][3])) {
-					$fields["data"][$i]["list"] = array_unique($trklib->get_all_items($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][1], isset($fields['data'][$i]['options_array'][4])?$fields['data'][$i]['options_array'][4]:'poc'));
-				} 
-				else {	
-					$fields["data"][$i]["list"] = $trklib->get_all_items($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][1]);	
-				}
-				if (isset($fields["data"][$i]["options_array"][3])) $fields["data"][$i]["listdisplay"] = array_unique($trklib->concat_all_items_from_fieldslist($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][3], isset($fields['data'][$i]['options_array'][4])?$fields['data'][$i]['options_array'][4]:'poc'));
+				$fields["data"][$i]["list"] = array_unique($trklib->get_all_items($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][1], 'poc'));
+				if (isset($fields["data"][$i]["options_array"][3])) $fields["data"][$i]["listdisplay"] = array_unique($trklib->concat_all_items_from_fieldslist($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][3]));
 			} elseif (($fields["data"][$i]["type"] == 'M') && ($fields["data"][$i]["options_array"][0] >= '3')) {
 				if (isset($_FILES["$ins_id"]) && is_uploaded_file($_FILES["$ins_id"]['tmp_name'])) {
 					$fp = fopen($_FILES["$ins_id"]['tmp_name'], 'rb');
@@ -460,8 +419,13 @@ for ($i = 0; $i < $temp_max; $i++) {
 if (!empty($_REQUEST['remove'])) {
 	$item_info = $trklib->get_item_info($_REQUEST['remove']);
 	if ($tiki_p_admin_trackers == 'y' || ($tiki_p_modify_tracker_items == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c') || ($tiki_p_modify_tracker_items_pending == 'y' && $item_info['status'] == 'p') || ($tiki_p_modify_tracker_items_closed == 'y' && $item_info['status'] == 'c')) {
-		$access->check_authenticity();
-		$trklib->remove_tracker_item($_REQUEST['remove']);
+		$area = 'deltrackeritem';
+		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+			key_check($area);
+			$trklib->remove_tracker_item($_REQUEST['remove']);
+		} else {
+			key_get($area);
+		}
 	}
 } elseif (isset($_REQUEST["batchaction"]) and $_REQUEST["batchaction"] == 'delete') {
 	check_ticket('view-trackers');
@@ -542,7 +506,7 @@ if (isset($_REQUEST['import'])) {
 				$categorized_fields[] = $m[1];
 			}
 		}
-		$field_errors = $trklib->check_field_values($ins_fields, $categorized_fields, $_REQUEST['trackerId'], empty($_REQUEST['itemId'])?'':$_REQUEST['itemId']);
+		$field_errors = $trklib->check_field_values($ins_fields, $categorized_fields);
 		$smarty->assign('err_mandatory', $field_errors['err_mandatory']);
 		$smarty->assign('err_value', $field_errors['err_value']);
 		// values are OK, then lets add a new item
@@ -587,6 +551,28 @@ if (isset($_REQUEST['import'])) {
 		}
 	}
 }
+if (!isset($_REQUEST["sort_mode"])) {
+	if (isset($tracker_info['defaultOrderKey'])) {
+		if ($tracker_info['defaultOrderKey'] == - 1) $sort_mode = 'lastModif';
+		elseif ($tracker_info['defaultOrderKey'] == - 2) $sort_mode = 'created';
+		elseif ($tracker_info['defaultOrderKey'] == - 3) $sort_mode = 'itemId';
+		elseif ($orderkey) {
+			$sort_mode = 'f_' . $tracker_info['defaultOrderKey'];
+		} else {
+			$sort_mode = 'lastModif';
+		}
+		if (isset($tracker_info['defaultOrderDir'])) {
+			$sort_mode.= "_" . $tracker_info['defaultOrderDir'];
+		} else {
+			$sort_mode.= "_asc";
+		}
+	} else {
+		$sort_mode = '';
+	}
+} else {
+	$sort_mode = $_REQUEST["sort_mode"];
+}
+$smarty->assign_by_ref('sort_mode', $sort_mode);
 if (!isset($_REQUEST["offset"])) {
 	$offset = 0;
 } else {
@@ -638,7 +624,7 @@ if ($my and $writerfield) {
 $smarty->assign('filtervalue', $filtervalue);
 $smarty->assign('status', $_REQUEST["status"]);
 if (isset($_REQUEST["trackerId"])) $trackerId = $_REQUEST["trackerId"];
-if (isset($tracker_info['useRatings']) and $tracker_info['useRatings'] == 'y' and $user and $tiki_p_tracker_vote_ratings == 'y' and !empty($_REQUEST['trackerId']) and !empty($ratedItemId) and isset($newItemRate) and ($newItemRate == 'NULL' || in_array($newItemRate, explode(',', $tracker_info['ratingOptions'])))) {
+if (isset($tracker_info['useRatings']) and $tracker_info['useRatings'] == 'y' and $user and $tiki_p_tracker_vote_ratings == 'y' and !empty($_REQUEST['trackerId']) and !empty($ratedItemId) and isset($newItemRate) and ($newItemRate == 'NULL' || in_array($newItemRate, split(',', $tracker_info['ratingOptions'])))) {
 	$trklib->replace_rating($_REQUEST['trackerId'], $ratedItemId, $newItemRateField, $user, $newItemRate);
 }
 $items = $trklib->list_items($_REQUEST["trackerId"], $offset, $maxRecords, $sort_mode, $listfields, $filterfield, $filtervalue, $_REQUEST["status"], $initial, $exactvalue,'', $xfields);
@@ -674,37 +660,49 @@ if ($tracker_info['useAttachments'] == 'y' && $tracker_info['showAttachments'] =
 		$items["data"][$itkey]['hits'] = $res['hits'];
 	}
 }
-foreach($xfields['data'] as $xfd) {
-	$fid = $xfd["fieldId"];
-	if ($xfd['isSearchable'] == 'y' and !isset($listfields[$fid]) and ($xfd['isHidden'] == 'n' or $xfd['isHidden'] == 'p' or $tiki_p_admin_trackers == 'y' or ($xfd['type'] == 's' and $xfd['name'] == 'Rating' and $tiki_p_tracker_view_ratings == 'y'))) {
-		$listfields[$fid]['type'] = $xfd["type"];
-		$listfields[$fid]['name'] = $xfd["name"];
-		$listfields[$fid]['options'] = $xfd["options"];
-		$listfields[$fid]['options_array'] = $xfd['options_array'];
-		$listfields[$fid]['isMain'] = $xfd["isMain"];
-		$listfields[$fid]['isTblVisible'] = $xfd["isTblVisible"];
-		$listfields[$fid]['isHidden'] = $xfd["isHidden"];
-		$listfields[$fid]['isSearchable'] = $xfd["isSearchable"];
-		$listfields[$fid]['isMandatory'] = $xfd["isMandatory"];
-		$listfields[$fid]['description'] = $xfd["description"];
-		$listfields[$fid]['visibleBy'] = $xfd['visibleBy'];
-		$listfields[$fid]['editableBy'] = $xfd['editableBy'];
+for ($i = 0; $i < count($xfields['data']); $i++) {
+	$fid = $xfields["data"][$i]["fieldId"];
+	if ($xfields["data"][$i]['isSearchable'] == 'y' and !isset($listfields[$fid]) and ($xfields["data"][$i]['isHidden'] == 'n' or $xfields["data"][$i]['isHidden'] == 'p' or $tiki_p_admin_trackers == 'y' or ($xfields["data"][$i]['type'] == 's' and $xfields['data'][$i]['name'] == 'Rating' and $tiki_p_tracker_view_ratings == 'y'))) {
+		$listfields[$fid]['type'] = $xfields["data"][$i]["type"];
+		$listfields[$fid]['name'] = $xfields["data"][$i]["name"];
+		$listfields[$fid]['options'] = $xfields["data"][$i]["options"];
+		$listfields[$fid]['options_array'] = $xfields["data"][$i]['options_array'];
+		$listfields[$fid]['isMain'] = $xfields["data"][$i]["isMain"];
+		$listfields[$fid]['isTblVisible'] = $xfields["data"][$i]["isTblVisible"];
+		$listfields[$fid]['isHidden'] = $xfields["data"][$i]["isHidden"];
+		$listfields[$fid]['isSearchable'] = $xfields["data"][$i]["isSearchable"];
+		$listfields[$fid]['isMandatory'] = $xfields["data"][$i]["isMandatory"];
+		$listfields[$fid]['description'] = $xfields["data"][$i]["description"];
+		$listfields[$fid]['visibleBy'] = $xfields['data'][$i]['visibleBy'];
+		$listfields[$fid]['editableBy'] = $xfields['data'][$i]['editableBy'];
 		if ($listfields[$fid]['type'] == 'e' && $prefs['feature_categories'] == 'y') { //category
 			$parentId = $listfields[$fid]['options_array'][0];
 			$listfields[$fid]['categories'] = $categlib->get_viewable_child_categories($parentId);
 		}
-		if (isset($xfd['otherField'])) {
-			$listfields[$fid]['otherField'] = $xfd['otherField'];
-		}
+		if (isset($xfields['data'][$i]['otherField'])) $listfields[$fid]['otherField'] = $xfields['data'][$i]['otherField'];
 	}
 }
 // dynamic list process
 foreach($listfields as $sfid => $oneitem) {
-	if ($listfields[$sfid]['type'] == 'w') { // need to set the httprequest on item link
-		$trklib->prepare_dynamic_items_list($listfields[$sfid], $fields['data']);
+	if ($listfields[$sfid]['type'] == 'w') {
+		if (!isset($listfields[$listfields[$sfid]['options_array'][2]]['http_request'])) $listfields[$listfields[$sfid]['options_array'][2]]['http_request'] = array(
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			'',
+			''
+		);
+		for ($i = 0; $i < 5; $i++) {
+			$listfields[$listfields[$sfid]['options_array'][2]]['http_request'][$i].= ($listfields[$listfields[$sfid]['options_array'][2]]['http_request'][$i] ? "," : "") . isset($listfields[$sfid]['options_array'][$i]) ? $listfields[$sfid]['options_array'][$i] : '';
+		}
+		$listfields[$listfields[$sfid]['options_array'][2]]['http_request'][5].= ($listfields[$listfields[$sfid]['options_array'][2]]['http_request'][5] ? "," : "") . $sfid;
+		$listfields[$listfields[$sfid]['options_array'][2]]['http_request'][6].= ($listfields[$listfields[$sfid]['options_array'][2]]['http_request'][6] ? "," : "") . $listfields[$sfid]['isMandatory'];
 	}
 }
-
 $smarty->assign('trackerId', $_REQUEST["trackerId"]);
 $smarty->assign('tracker_info', $tracker_info);
 $smarty->assign('fields', $fields['data']);
@@ -723,20 +721,18 @@ if ($tiki_p_export_tracker == 'y') {
 	$smarty->assign_by_ref('filters', $filters);
 	if (!empty($_REQUEST['displayedFields'])) {
 		if (is_string($_REQUEST['displayedFields'])) {
-			$smarty->assign('displayedFields', preg_split('/[:,]/', $_REQUEST['displayedFields']));
+			$smarty->assign('displayedFields', split('[:,]', $_REQUEST['displayedFields']));
 		} else {
 			$smarty->assign_by_ref('displayedFields', $_REQUEST['displayedFields']);
 		}
 	}
-	$smarty->assign('recordsMax', $items['cant']);
-	$smarty->assign('recordsOffset', 1);
 }
 include_once ('tiki-section_options.php');
 $smarty->assign('uses_tabs', 'y');
 $smarty->assign('show_filters', 'n');
 if (count($fields['data']) > 0) {
 	foreach($fields['data'] as $it) {
-		if ($it['isSearchable'] == 'y') {
+		if ($it['isSearchable'] == 'y' and $it['isTblVisible'] == 'y') {
 			$smarty->assign('show_filters', 'y');
 			break;
 		}
@@ -750,15 +746,6 @@ if (isset($tracker_info['useRatings']) && $tracker_info['useRatings'] == 'y' && 
 setcookie('tab', $cookietab);
 $smarty->assign('cookietab', $cookietab);
 ask_ticket('view-trackers');
-
-// Generate validation js
-if ($prefs['feature_jquery'] == 'y' && $prefs['feature_jquery_validation'] == 'y') {
-	global $validatorslib;
-	include_once('lib/validatorslib.php');
-	$validationjs = $validatorslib->generateTrackerValidateJS( $fields['data'] );
-	$smarty->assign('validationjs', $validationjs);
-}
-
 // Display the template
 $smarty->assign('mid', 'tiki-view_tracker.tpl');
 $smarty->display("tiki.tpl");

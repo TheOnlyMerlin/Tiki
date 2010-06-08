@@ -4,13 +4,13 @@
  */
  
 /* Import *lite as the base: */ 
-@import url("lite/lite.css");
+@import "lite/lite.css";
 
 /* Then import the default layout properties file: */
-@import url("layout/layout.css");
+@import "layout/layout.css";
 
 /* And design defaults: */
-@import url("layout/design.css");
+@import "layout/design.css";
  
 /***** XHTML Elements ******/
 body {
@@ -376,6 +376,7 @@ input[name="search"] {
 #siteloginbar {
 	position: relative;
 	font-size: inherit;
+	text-align: left;
 }
 
 #sitelocbar {
@@ -605,16 +606,11 @@ a.phplmselected:hover {
 	color: #5a7ea2;
 }
 
-#header .cssmenu_horiz li a:link,
-#header .cssmenu_horiz li a:visited {
+#tiki-top .cssmenu_horiz li a:link,
+#tiki-top .cssmenu_horiz li a:visited {
 	text-decoration: none;
 	background: inherit;
 	color: #cfe3fb;
-}
-
-#secondary_site_menu .cssmenu_horiz li ul li a:link,
-#secondary_site_menu .cssmenu_horiz li ul li a:visited {
-	color: #295C83;
 }
 
 .cssmenu_vert li a {
@@ -1024,6 +1020,7 @@ h1 a:hover {
 }
 
 .wikitopline .content br {
+	display: none;
 }
 
 div#description,
@@ -1109,9 +1106,6 @@ div#page-bar {
 	line-height: 20px;
 }
 
-p.editdate {
-	border-top: 1px solid #8CACBB;
-}
 
 #wikihelp-tab table,
 #wikihelp-tab table td {
@@ -1182,12 +1176,6 @@ div.quotebody {
 .minichat {
 	border: 1px solid #527ca6;
 	background: #f5f5f5;
-}
-
-/* fancytable (sortable) plugin */
-
-.fancysort .header:hover {
-	color: #82AC78;
 }
 
 /** Wiki tocs **/
@@ -1576,6 +1564,7 @@ div.commentsedithelp {
 
 .freetagitemlist {
 	margin-top: 5px;
+	background: #ccdceb;
 }
 
 
@@ -1765,12 +1754,8 @@ div.multiselect {
 }
 
 .calfocuson {
-	font-size: 100%;
-	background: #8df378;
-}
-
-.calHeadingOn, .calHeadingOn a {
-	background: #8df378;
+	font-size: 90%;
+	background: #fff;
 }
 
 .calprio1 a,
@@ -1820,14 +1805,11 @@ div.multiselect {
 	background: red;
 }
 
+.caltable .calfocuson,
 .box-data td.fc a.today,
 .box-data td a.today {
 	background: #8df378;
 	border: solid 1px #696969;
-}
-
-.caltable .calfocuson {
-	background: #8df378;
 }
 
 .caltable .calfocuson a {
@@ -1852,15 +1834,7 @@ div.multiselect {
 }
 
 .calfocuson + .calcontent {
-	background: #8df378;
-}
-
-div#calscreen td.calfocuson {
-	background: #8df378;
-}
-
-.calfocuson a {
-	font-size: 90%;
+	background: #f5f5f5;
 }
 
 .days {
@@ -1988,7 +1962,6 @@ table.default td {
 	border: solid 1px #a9a9a9;
 	background: white;
 }
-
 .highlight_word_0,
 .highlight_word_1,
 .highlight_word_2,
@@ -2026,20 +1999,4 @@ a.admbox.off:focus,
 a.admbox.off:active {
 	border: 1px solid #a9a9a9;
 }
-
-/* Fixed-width rules */
-body.fixed_width {
-	background: #ccdceb;
-}
-
-body.fixed_width #main {
-	background: #fff;
-}
-
-body.fixed_width #main[id] {
-	border: 1px solid #527ca6;
-	margin-top: 18px;
-	margin-bottom: 5px;
-}
-
 /* end of file */

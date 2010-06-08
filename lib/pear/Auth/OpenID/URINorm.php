@@ -27,17 +27,6 @@ function Auth_OpenID_getEncodedPattern()
     return '/%([0-9A-Fa-f]{2})/';
 }
 
-# gen-delims  = ":" / "/" / "?" / "#" / "[" / "]" / "@"
-#
-# sub-delims  = "!" / "$" / "&" / "'" / "(" / ")"
-#                  / "*" / "+" / "," / ";" / "="
-#
-# unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
-function Auth_OpenID_getURLIllegalCharRE()
-{
-    return "/([^-A-Za-z0-9:\/\?#\[\]@\!\$&'\(\)\*\+,;=\._~\%])/";
-}
-
 function Auth_OpenID_getUnreserved()
 {
     $_unreserved = array();
@@ -150,13 +139,6 @@ function Auth_OpenID_urinorm($uri)
         }
     }
 
-    $illegal_matches = array();
-    preg_match(Auth_OpenID_getURLIllegalCharRE(),
-               $uri, $illegal_matches);
-    if ($illegal_matches) {
-        return null;
-    }
-
     $scheme = $uri_matches[2];
     if ($scheme) {
         $scheme = strtolower($scheme);
@@ -245,5 +227,3 @@ function Auth_OpenID_urinorm($uri)
 
     return $scheme . '://' . $authority . $path . $query . $fragment;
 }
-
-

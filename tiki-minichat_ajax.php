@@ -1,12 +1,15 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once ('tiki-setup.php');
-$access->check_feature('feature_minichat');
+if ($prefs['feature_minichat'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled') . ': feature_minichat');
+	$smarty->display('error.tpl');
+	die;
+}
 header("Pragma: public");
 header("Pragma: no-cache");
 header("Cache-Control: no-cache, must-revalidate, no-store, post-check=0, pre-check=0, max-age=0");
@@ -102,6 +105,7 @@ if (substr($msg, 0, 1) == '/') {
 			$msgtotal = str_replace(":-D", "<img border='0' src='img/smiles/icon_biggrin.gif' width='15' height='15'>", $msgtotal);
 			$msgtotal = str_replace(":D", "<img border='0' src='img/smiles/icon_biggrin.gif' width='15' height='15'>", $msgtotal);
 			$msgtotal = str_replace(":-/", "<img border='0' src='img/smiles/icon_confused.gif' width='15' height='15'>", $msgtotal);
+			$msgtotal = str_replace(":/", "<img border='0' src='img/smiles/icon_confused.gif' width='15' height='15'>", $msgtotal);
 			$msgtotal = str_replace("8-)", "<img border='0' src='img/smiles/icon_cool.gif' width='19' height='25'>", $msgtotal);
 			$msgtotal = str_replace("8)", "<img border='0' src='img/smiles/icon_cool.gif' width='19' height='25'>", $msgtotal);
 			$msgtotal = str_replace(":-)", "<img border='0' src='img/smiles/icon_smile.gif' width='16' height='16'>", $msgtotal);

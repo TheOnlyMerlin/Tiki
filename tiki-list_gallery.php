@@ -1,15 +1,18 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-list_gallery.php,v 1.29.2.1 2007-12-07 05:56:38 mose Exp $
 $section = 'galleries';
 require_once ('tiki-setup.php');
 include_once ('lib/categories/categlib.php');
 include_once ("lib/imagegals/imagegallib.php");
-$access->check_feature('feature_galleries');
+if ($prefs['feature_galleries'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_galleries");
+	$smarty->display("error.tpl");
+	die;
+}
 if (empty($_REQUEST["galleryId"]) && $_REQUEST["galleryId"] != '0') {
 	$smarty->assign('msg', tra("No gallery indicated"));
 	$smarty->display("error.tpl");
@@ -22,7 +25,13 @@ if ($_REQUEST["galleryId"] != '0' && $imagegallib->get_gallery($_REQUEST["galler
 }
 
 $tikilib->get_perm_object( $_REQUEST['galleryId'], 'image gallery' );
-$access->check_permission('tiki_p_view_image_gallery');
+
+if ($tiki_p_view_image_gallery != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied you cannot access this gallery"));
+	$smarty->display("error.tpl");
+	die;
+}
 /*
 if($tiki_p_upload_images != 'y') {
 $smarty->assign('errortype', 401);
@@ -65,8 +74,13 @@ if (isset($_REQUEST["remove"])) {
 		$smarty->display("error.tpl");
 		die;
 	}
-	$access->check_authenticity();
-	$imagegallib->remove_image($_REQUEST["remove"], $user);
+	$area = 'delgallery';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$imagegallib->remove_image($_REQUEST["remove"], $user);
+	} else {
+		key_get($area);
+	}
 }
 if (isset($_REQUEST["rebuild"])) {
 	check_ticket('list-gal');
@@ -147,6 +161,7 @@ $cat_objid = $_REQUEST["galleryId"];
 include_once ('tiki-section_options.php');
 ask_ticket('list-gal');
 if ($prefs['feature_actionlog'] == 'y') {
+	include_once ('lib/logs/logslib.php');
 	$logslib->add_action('Viewed', $_REQUEST['galleryId'], 'image gallery');
 }
 // Display the template

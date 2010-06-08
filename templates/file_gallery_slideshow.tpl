@@ -6,19 +6,25 @@
 {include file="header.tpl"}
 	</head>
 	<body class="file_gallery slideshow">
-{jq}
+		<script type="text/javascript">
+		<!--//--><![CDATA[//><!--
+		{literal}
+		$jq(document).ready(function(){
 			$jq("a[rel*='shadowbox']").colorbox({
-				open: true,
+				open: true,{/literal}
 				slideshowStart: "{tr}Start the Slideshow{/tr}",
 				slideshowStop: "{tr}Pause the Slideshow{/tr}",
 				
-				{{if ($slideshow_noclose)}
+				{if ($slideshow_noclose)}
 				slideshowAuto: false,
 				overlayClose: false,
 				close: ''
-				{/if}}
+				{/if}{literal}
 			});
-{/jq}
+		});
+		{/literal}
+		//--><!]]>
+		</script>
 	
 {if (!$slideshow_noclose)}
 		<div style="position:fixed; top:5px; right:10px;">{button href='#' _onclick='javascript:window.close(); return false' _text="{tr}Close{/tr}"}</div>
@@ -34,10 +40,5 @@
 {/foreach}
 			</ul>
 		</div>
-<!-- Put JS at the end -->
-{if $headerlib}
-  {$headerlib->output_js_files()}
-  {$headerlib->output_js()}
-{/if}
 	</body>
 </html>

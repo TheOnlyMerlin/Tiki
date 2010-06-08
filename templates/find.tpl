@@ -14,12 +14,8 @@
 	* find_show_languages   : If value = 'y' adds lang dropdown with languages value dropdown
 	*		find_lang             : lang dropdown selected value
 	* find_show_categories  : If value = 'y' adds categories dropdown with categories array values
-	* find_show_categories_multi  : If value = 'y' adds categories dropdown with categories array values with multi selector
 	*		find_categId          : categories selected value
 	* find_show_num_rows    : If value = 'y' adds maxRecords field. Value: maxRecords
-	* find_show_date_range  : If value = 'y' adds date range to filter within
-	* find_show_orphans		: If value = 'y' adds a checkbox orphan
-	* find_show_sub	: If value = 'y' add a checkbox in all the tree
 	* filters               : array( filter_field1 => array( option1_value => option1_text, ... ), filter_field2 => ... )
 	*		filter_names          : array( filter_field1 => filter_field1_name, ... )
 	*		filter_values         : array( filter_fieldX => filter_fieldX_selected_value, ... )
@@ -32,7 +28,7 @@
 		<form method="post" action="{$smarty.server.PHP_SELF}" class="findtable">
 		{if $filegals_manager neq ''}<input type="hidden" name="filegals_manager" value="{$filegals_manager|escape}" />{/if}
 
-		{query _type='form_input' maxRecords='NULL' type='NULL' types='NULL' find='NULL' topic='NULL' lang='NULL' exact_match='NULL' categId='NULL' cat_categories='NULL' filegals_manager='NULL' save='NULL' offset='NULL'}
+		{query _type='form_input' maxRecords='NULL' type='NULL' types='NULL' find='NULL' topic='NULL' lang='NULL' exact_match='NULL' categId='NULL' filegals_manager='NULL' save='NULL' offset='NULL'}
 
 	<label class="findtitle">
 		{if empty($whatlabel)}
@@ -47,13 +43,6 @@
 	<label class="findexactmatch" for="findexactmatch">
 			{tr}Exact&nbsp;match{/tr}
 		<input type="checkbox" name="exact_match" id="findexactmatch" {if $exact_match ne 'n'}checked="checked"{/if}/>
-	</label>
-{/if}
-
-{if !empty($find_show_sub) and $find_show_sub eq 'y'}
-	<label class="findsub">
-		{tr}and all the sub-objects{/tr}
-		<input type="checkbox" name="find_sub" id="find_sub" {if $find_sub eq 'y'}checked="checked"{/if}/>
 	</label>
 {/if}
 
@@ -110,54 +99,24 @@
 	</label>
 {/if}
 
-{if $find_show_date_range eq 'y'}
-	<div id="date_range_find">
-		<label class="findDateFrom">
-			{tr}From{/tr}
-			{html_select_date time="2009-01-01" prefix="find_from_" start_year="-2" end_year="+2" month_format="%m" field_order=$prefs.display_field_order}
-		</label>
-		<label class="findDateTo">
-			{tr}to{/tr}
-			{html_select_date prefix="find_to_" start_year="-2" end_year="+2" month_format="%m" field_order=$prefs.display_field_order}
-		</label>
-	</div>
+{if $find_show_categories eq 'y' and $prefs.feature_categories eq 'y' and !empty($categories)}
+	<label class="findcateg"> 
+		<select name="categId">
+			<option value='' {if $find_categId eq ''}selected="selected"{/if}>{tr}any category{/tr}</option>
+			{section name=ix loop=$categories}
+				<option value="{$categories[ix].categId|escape}" {if $find_categId eq $categories[ix].categId}selected="selected"{/if}>
+					{capture}{tr}{$categories[ix].categpath}{/tr}{/capture}{$smarty.capture.default|escape}
+				</option>
+			{/section}
+		</select>
+	</label>
 {/if}
 
-{if ($find_show_categories eq 'y' or $find_show_categories_multi eq 'y') and $prefs.feature_categories eq 'y' and !empty($categories)}
-	<div class="category_find">
-	<div id="category_singleselect_find" style="display: {if $find_show_categories_multi eq 'y' && $find_cat_categories|@count > 1}none{else}block{/if};">
-		<label class="findcateg"> 
-			<select name="categId">
-				<option value='' {if $find_categId eq ''}selected="selected"{/if}>{tr}any category{/tr}</option>
-				{section name=ix loop=$categories}
-					<option value="{$categories[ix].categId|escape}" {if $find_categId eq $categories[ix].categId}selected="selected"{/if}>
-						{capture}{tr}{$categories[ix].categpath}{/tr}{/capture}{$smarty.capture.default|escape}
-					</option>
-				{/section}
-			</select>
-		</label>
-		{if $prefs.javascript_enabled eq 'y' && $find_show_categories_multi eq 'y'}<a href="#" onclick="show('category_multiselect_find');hide('category_singleselect_find');">{tr}Multiple select{/tr}</a>{/if}
-	</div>
-	<div id="category_multiselect_find" style="display: {if $find_show_categories_multi eq 'y' && $find_cat_categories|@count > 1}block{else}none{/if};">
-  		<div class="multiselect"> 
-  			{if count($categories) gt 0}
-				{$cat_tree}
-				<div class="clear">
-				{if $tiki_p_admin_categories eq 'y'}
-    				<div class="floatright"><a href="tiki-admin_categories.php" class="link">{tr}Admin Categories{/tr} {icon _id='wrench'}</a></div>
-				{/if}
-				{select_all checkbox_names='cat_categories[]' label="{tr}Select/deselect all categories{/tr}"}
-			{else}
-				<div class="clear">
- 				{if $tiki_p_admin_categories eq 'y'}
-    				<div class="floatright"><a href="tiki-admin_categories.php" class="link">{tr}Admin Categories{/tr} {icon _id='wrench'}</a></div>
- 				{/if}
-    			{tr}No categories defined{/tr}
-  			{/if}
-			</div> {* end .clear *}
-		</div> {* end #multiselect *}
-	</div> {* end #category_multiselect_find *}
-	</div>
+{if $find_show_num_rows eq 'y'}
+	<label class="findnumrows" for="findnumrows">
+			{tr}Number of displayed rows{/tr}
+			<input type="text" name="maxRecords" id="findnumrows" value="{$maxRecords|escape}" size="3" />
+	</label>
 {/if}
 
 {if !empty($types) and isset($types_tag) and $types_tag eq 'checkbox' }
@@ -189,29 +148,6 @@
 			</select>
 		{/foreach}
 	</div>
-{/if}
-
-{if !empty($find_durations)}
-	{foreach key=key item=duration from=$find_durations}
-		<label class="find_duration">
-		{tr}{$duration.label}{/tr}
-		{html_select_duration prefix=$duration.prefix default=$duration.default default_unit=$duration.default_unit}
-		</label>
-	{/foreach}
-{/if}
-
-{if !empty($show_find_orphans) and $show_find_orphans eq 'y'}
-	<label class="find_orphans" for="find_orphans">
-		   {tr}Orphans{/tr}
-		   <input type="checkbox" name="find_orphans" id="find_orphans" {if $find_orphans eq 'y'}checked="checked"{/if}/>
-	</label>
-{/if}
-
-{if $find_show_num_rows eq 'y'}
-	<label class="findnumrows" for="findnumrows">
-			{tr}Number of displayed rows{/tr}
-			<input type="text" name="maxRecords" id="findnumrows" value="{$maxRecords|escape}" size="3" />
-	</label>
 {/if}
 
 <label class="findsubmit">

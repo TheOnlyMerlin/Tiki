@@ -37,7 +37,7 @@
         {/if}
 
 		{* Display a form to add or edit a site *}
-        <h2>{if $siteId}{tr}Edit a site{/tr}{else}{tr}Add a Site{/tr}{/if}</h2>
+        <h2>{if $siteId}{tr}Edit a site{/tr}{else}{tr}Add a site{/tr}{/if}</h2>
         <form action="tiki-directory_add_site.php" method="post">
   <input type="hidden" name="parent" value="{$parent|escape}" />
   <input type="hidden" name="siteId" value="{$siteId|escape}" />
@@ -71,7 +71,7 @@
 				    
         </select>
                 {if $categs|@count ge '2'}
-                {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple options{/tr}{/remarksbox}
+                {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple directory categories.{/tr}{/remarksbox}
                 {/if} </td>
     </tr>
             {if $prefs.directory_country_flag eq 'y'}

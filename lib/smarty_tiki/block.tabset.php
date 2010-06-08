@@ -1,9 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+/* $Id:  $ */
 
 // this script may only be included - so it's better to die if called directly
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -29,14 +25,12 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  */
 
 function smarty_block_tabset($params, $content, &$smarty, &$repeat) {
-	global $prefs, $smarty_tabset_name, $smarty_tabset, $smarty_tabset_i_tab, $cookietab, $headerlib;
+	global $prefs, $smarty_tabset_name, $smarty_tabset;
+	static $i_tabset;
 
 	if ( $repeat ) {
 		// opening 
 		$smarty_tabset = array();
-		if (!isset($smarty_tabset_i_tab)) {
-			$smarty_tabset_i_tab = 1;
-		}
 		if ( isset($params['name']) and !empty($params['name']) ) {
 			$smarty_tabset_name = $params['name'];
 		} else {
@@ -45,10 +39,6 @@ function smarty_block_tabset($params, $content, &$smarty, &$repeat) {
 		global $smarty_tabset_name, $smarty_tabset;
 		return;
 	} else {
-		$content = trim($content);
-		if (empty($content)) {
-			return '';
-		}
 		$ret = '';
 		//closing
 		if ( $prefs['feature_tabs'] == 'y') {
@@ -70,20 +60,19 @@ function smarty_block_tabset($params, $content, &$smarty, &$repeat) {
 		if ( isset($_COOKIE["tabbed_$smarty_tabset_name"]) && $_COOKIE["tabbed_$smarty_tabset_name"] == 'n' ) {
 			return $ret.$content;
 		}
-		$ret .= '<div class="clearfix tabs">
+		$ret .= '<div class="tabs">
 			';
-		$max = $smarty_tabset_i_tab - 1;
-		$ini = $smarty_tabset_i_tab - count($smarty_tabset);
-		$focus = $ini;
+		$max = sizeof($smarty_tabset);
+		if (empty($i_tabset)) {
+			$i_tabset = 1;
+		}
 		foreach ($smarty_tabset as $value) {
-			$ret .= '	<span id="tab'.$focus.'" class="tabmark '.($focus == $cookietab ? 'tabactive' : 'tabinactive').'"><a href="#content'.$focus.'" onclick="javascript:tikitabs('.$focus.','.$max.','.$ini.'); return false;">'.$value.'</a></span>
+			$ret .= '	<span id="tab'.$i_tabset.'" class="tabmark tabinactive"><a href="#content'.$i_tabset.'" onclick="javascript:tikitabs('.$i_tabset.','.$max.'); return false;">'.$value.'</a></span>
 				';
-			++$focus;
+			$i_tabset++;
 		}
+		//$ret .= '<span class="tabmark tabinactive"><a href="#">'.$notabs.'</a></span></div>'.$content;
 		$ret .= "</div>$content";
-		if ($cookietab < $ini || $cookietab > $max) { // todo:: need to display the first tab
-			$headerlib->add_jq_onready("tikitabs($ini, $max, $ini);");
-		}
 		return $ret;
 	}
 }

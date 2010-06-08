@@ -1,16 +1,20 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Copyright (c) 2009, Clemens John
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 include_once ('tiki-setup.php');
 include_once('lib/reportslib.php');
 
-$access->check_user($user);
-$access->check_feature('feature_daily_report_watches');
-
+if (!$user) {
+	$smarty->assign('msg', tra("You must log in to use this feature"));
+	$smarty->assign('errortype', '402');
+	$smarty->display("error.tpl");
+	die;
+}
+if ($prefs['feature_daily_report_watches'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_daily_report_watches");
+	$smarty->display("error.tpl");
+	die;
+}
 include_once ('lib/reportslib.php');
 //Enable User Reports
 if (isset($_POST['report_preferences']) && $_POST['use_daily_reports'] == "true") {

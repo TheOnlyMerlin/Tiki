@@ -1,9 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: /cvsroot/tikiwiki/tiki/lib/imagegals/imagegallib.php,v 1.97.2.4 2008-03-06 19:45:42 sampaioprimo Exp $
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -13,8 +9,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 include_once('lib/reportslib.php');
 
-class ImageGalsLib extends TikiLib
-{
+class ImageGalsLib extends TikiLib {
 	function __construct() {
 		parent::__construct();
 		global $prefs;
@@ -93,14 +88,32 @@ class ImageGalsLib extends TikiLib
 	}
 
 	function max_img_upload_size() {
-		global $tikilib;
-	   $this->upload_max_filesize=$tikilib->return_bytes($this->upload_max_filesize);
-	   $this->post_max_size=$tikilib->return_bytes($this->post_max_size);
+	   $this->upload_max_filesize=$this->return_bytes($this->upload_max_filesize);
+	   $this->post_max_size=$this->return_bytes($this->post_max_size);
 	   if($this->file_uploads==0) {
 		  return(0);
 	   } else {
 		  return(($this->post_max_size > $this->upload_max_filesize) ? $this->post_max_size : $this->upload_max_filesize);
 	   }
+	}
+
+
+
+	// from php manual. one of the rare circumstances where
+	// a break in the switch-case is not needed
+	function return_bytes($val) {
+	  $val = trim($val);
+	  $last = strtolower($val{strlen($val)-1});
+	  switch($last) {
+			// The 'G' modifier is available since PHP 5.1.0
+			case 'g':
+				$val *= 1024;
+ 			case 'm':
+ 				$val *= 1024;
+ 			case 'k':
+ 				$val *= 1024;
+ 		}
+		return $val;
 	}
 
 	// Features
@@ -403,10 +416,10 @@ class ImageGalsLib extends TikiLib
 		if (!$ziplist)
 			return (false); // Archive invalid
 
-		foreach($ziplist as $zipfile) {
-			$file = $zipfile["filename"];
+		for ($i = 0; $i < sizeof($ziplist); $i++) {
+			$file = $ziplist["$i"]["filename"];
 
-			if (!$zipfile["folder"]) {
+			if (!$ziplist["$i"]["folder"]) {
 				//copied
 				$gal_info = $this->get_gallery($galleryId);
 
@@ -422,7 +435,7 @@ class ImageGalsLib extends TikiLib
 						$upl = 0;
 				}
 				//extract file
-				$archive->extractByIndex($zipfile["index"],
+				$archive->extractByIndex($ziplist["$i"]["index"],
 					$prefs['tmpDir'], dirname($file)); //extract and remove (dangerous) pathname
 				$file = basename($file);
 
@@ -891,7 +904,7 @@ class ImageGalsLib extends TikiLib
 			$smarty->assign_by_ref('mail_date', date('U'));
 			$smarty->assign_by_ref('author', $user);
 			$foo = parse_url($_SERVER["REQUEST_URI"]);
-			$machine = $tikilib->httpPrefix( true ). dirname( $foo["path"] );
+			$machine = $tikilib->httpPrefix(). dirname( $foo["path"] );
 			$smarty->assign_by_ref('mail_machine', $machine);
 			$smarty->assign_by_ref('fname', $name);
 			$smarty->assign_by_ref('filename', $filename);
@@ -1069,7 +1082,8 @@ where i.`imageId`=d.`imageId` and i.`galleryId`=? and d.`type`=? order by ';
 				if (!$sort_mode) {
 					// first image in default gallery sortorder
 					$query2='select `sortorder`,`sortdirection` from `tiki_galleries` where `galleryId`=?';
-					$result=$this->query($query2, array($galleryId));
+					$bindvars2=array($galleryId);
+					$result=$this->query($query2,$bindvars2);
 					$res = $result->fetchRow();
 					$sort_mode=$res['sortorder'].'_'.$res['sortdirection'];
 				}
@@ -1091,7 +1105,8 @@ where i.`imageId`=d.`imageId` and i.`galleryId`=? and d.`type`=? order by ';
 				} else {
 					// last image in default gallery sortorder
 					$query2='select `sortorder`,`sortdirection` from `tiki_galleries` where `galleryId`=?';
-					$result=$this->query($query2,$bindvars);
+					$bindvars2=array($galleryId);
+					$result=$this->query($query2,$bindvars2);
 					$res = $result->fetchRow();
 					if($res['sortdirection'] == 'asc') {
 						$res['sortdirection']='desc';
@@ -1811,7 +1826,7 @@ $thumbSizeY,$public,0,$visible,$sortorder,$sortdirection,$galleryimage,(int)$par
 	function remove_gallery($id) {
 		global $prefs;
 
-		$query = "select `imageId`,path from `tiki_images` where `galleryId`=?";
+		$query = "select `imageId`,`path` from `tiki_images` where `galleryId`=?";
 		$result = $this->query($query,array((int) $id));
 
 		while ($res = $result->fetchRow()) {
@@ -2013,7 +2028,7 @@ $thumbSizeY,$public,0,$visible,$sortorder,$sortdirection,$galleryimage,(int)$par
 						$uri = parse_url($_SERVER["REQUEST_URI"]);
 						$path = str_replace("tiki-editpage", "show_image", $uri["path"]);
 						$path = str_replace("tiki-edit_article", "show_image", $path);
-						$page_data = str_replace($url, $tikilib->httpPrefix( true ). $path . '?id=' . $imageId, $page_data);
+						$page_data = str_replace($url, $tikilib->httpPrefix(). $path . '?id=' . $imageId, $page_data);
 					} // if strlen
 				} // if $fp
 			}

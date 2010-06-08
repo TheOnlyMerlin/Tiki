@@ -1,21 +1,41 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-edit_structure.php,v 1.46.2.4 2008-02-01 01:07:18 nkoth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+
+// Initialization
 
 $section = 'wiki page';
 require_once ('tiki-setup.php');
 
 include_once ('lib/structures/structlib.php');
-$access->check_feature(array('feature_wiki','feature_wiki_structure'));
+
+if($prefs['feature_wiki'] != 'y') {
+    $smarty->assign('msg', tra('This feature is disabled').': feature_wiki');
+    $smarty->display('error.tpl');
+    die;  
+}
+if($prefs['feature_wiki_structure'] != 'y') {
+    $smarty->assign('msg', tra('This feature is disabled').': feature_wiki_structure');
+    $smarty->display('error.tpl');
+    die;  
+}
 if (!isset($_REQUEST["page_ref_id"])) {
 	$smarty->assign('msg', tra("No structure indicated"));
 	$smarty->display("error.tpl");
 	die;
 }
-$access->check_permission('tiki_p_view');
+if ($tiki_p_view != 'y') {
+// This allows tiki_p_view in, in order to see structure tree - security hardening for editing features below.
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (isset($_REQUEST['move_to'])) {
 	check_ticket('edit-structure');
@@ -70,17 +90,27 @@ if (isset($_REQUEST["remove"])) {
 }
 
 if (isset($_REQUEST["rremove"])) {
-	$access->check_authenticity();
+  $area = 'delstructure';
+  if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+    key_check($area);
 	$structlib->s_remove_page($_REQUEST["rremove"], false, empty($_REQUEST['page'])? '': $_REQUEST['page']);
-	$_REQUEST["page_ref_id"] = $page_info["parent_id"];
+  	$_REQUEST["page_ref_id"] = $page_info["parent_id"];
+  } else {
+    key_get($area);
+  }
 }
 # TODO : Case where the index page of the structure is removed seems to be unexpected, leaving a corrupted structure
 if (isset($_REQUEST["sremove"])) {
-	$access->check_authenticity();
-	$page = $page_info["pageName"];
-	$delete = $tikilib->user_has_perm_on_object($user, $page_info['pageName'],'wiki page','tiki_p_remove');
-	$structlib->s_remove_page($_REQUEST["sremove"], $delete, empty($_REQUEST['page'])? '': $_REQUEST['page']);
-	$_REQUEST["page_ref_id"] = $page_info["parent_id"];
+  $area = 'delstructureandpages';
+  if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+    key_check($area);
+		$page = $page_info["pageName"];
+		$delete = $tikilib->user_has_perm_on_object($user, $page_info['pageName'],'wiki page','tiki_p_remove');
+		$structlib->s_remove_page($_REQUEST["sremove"], $delete, empty($_REQUEST['page'])? '': $_REQUEST['page']);
+  	$_REQUEST["page_ref_id"] = $page_info["parent_id"];
+  } else {
+    key_get($area);
+  }
 }
 
  if ($prefs['feature_user_watches'] == 'y' && $tiki_p_watch_structure == 'y' && $user && !empty($_REQUEST['watch_object']) && !empty($_REQUEST['watch_action'])) {

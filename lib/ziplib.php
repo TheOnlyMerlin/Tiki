@@ -1,12 +1,7 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -21,16 +16,14 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  * checksum, and since not all PHP's have gzcompress(), we'll just
  * stick with gzopen().
  */
-function gzip_cleanup()
-{
+function gzip_cleanup() {
 	global $gzip_tmpfile;
 
 	if ($gzip_tmpfile)
 		@unlink ($gzip_tmpfile);
 }
 
-function gzip_tempnam()
-{
+function gzip_tempnam() {
 	global $gzip_tmpfile;
 
 	if (!$gzip_tmpfile) {
@@ -43,8 +36,7 @@ function gzip_tempnam()
 	return $gzip_tmpfile;
 }
 
-function gzip_compress($data)
-{
+function gzip_compress($data) {
 	$filename = gzip_tempnam();
 
 	if (!($fp = gzopen($filename, "wb")))
@@ -70,8 +62,7 @@ function gzip_compress($data)
 	return $z;
 }
 
-function gzip_uncompress($data)
-{
+function gzip_uncompress($data) {
 	$filename = gzip_tempnam();
 
 	if (!($fp = fopen($filename, "wb")))
@@ -100,8 +91,7 @@ function gzip_uncompress($data)
 /**
  * CRC32 computation.  Hacked from Info-zip's zip-2.3 source code.
  */
-function zip_crc32($str, $crc = 0)
-{
+function zip_crc32($str, $crc = 0) {
 	static $zip_crc_table;
 
 	if (empty($zip_crc_table)) {
@@ -370,7 +360,7 @@ function zip_crc32($str, $crc = 0)
 
 	$crc = ~$crc;
 
-	for ($i = 0, $istrlen_str = strlen($str); $i < $istrlen_str; $i++) {
+	for ($i = 0; $i < strlen($str); $i++) {
 		$crc = ($zip_crc_table[($crc ^ ord($str[$i])) & 0xff] ^ (($crc >> 8) & 0xffffff));
 	}
 
@@ -380,8 +370,7 @@ function zip_crc32($str, $crc = 0)
 define('GZIP_MAGIC', "\037\213");
 define('GZIP_DEFLATE', 010);
 
-function zip_deflate($content)
-{
+function zip_deflate($content) {
 	// Compress content, and suck information from gzip header.
 	$z = gzip_compress($content);
 
@@ -412,8 +401,7 @@ function zip_deflate($content)
 	);
 }
 
-function zip_inflate($data, $crc32, $uncomp_size)
-{
+function zip_inflate($data, $crc32, $uncomp_size) {
 	if (!function_exists('gzopen')) {
 		global $request;
 
@@ -426,8 +414,7 @@ function zip_inflate($data, $crc32, $uncomp_size)
 	return gzip_uncompress(pack("a2CxV@10", GZIP_MAGIC, GZIP_DEFLATE, $mtime). $data . pack("VV", $crc32, $uncomp_size));
 }
 
-function unixtime2dostime($unix_time)
-{
+function unixtime2dostime($unix_time) {
 	if ($unix_time % 1)
 		$unix_time++; // Round up to even seconds.
 
@@ -452,8 +439,7 @@ function unixtime2dostime($unix_time)
 	);
 }
 
-function dostime2unixtime($dosdate, $dostime)
-{
+function dostime2unixtime($dosdate, $dostime) {
 	$mday = $dosdate & 0x1f;
 
 	$month = ($dosdate >> 5) & 0x0f;
@@ -475,10 +461,8 @@ define('ZIP_CENTHEAD_MAGIC', "PK\001\002");
 define('ZIP_LOCHEAD_MAGIC', "PK\003\004");
 define('ZIP_ENDDIR_MAGIC', "PK\005\006");
 
-class ZipWriter
-{
-	function ZipWriter($comment = "", $zipname = "archive.zip")
-	{
+class ZipWriter {
+	function ZipWriter($comment = "", $zipname = "archive.zip") {
 		$this->comment = $comment;
 
 		$this->nfiles = 0;
@@ -491,8 +475,7 @@ class ZipWriter
 	//header( "Content-Disposition: inline; filename=$zipname" );
 	}
 
-	function addRegularFile($filename, $content, $attrib = false)
-	{
+	function addRegularFile($filename, $content, $attrib = false) {
 		if (!$attrib)
 			$attrib = array();
 
@@ -561,8 +544,7 @@ class ZipWriter
 		$this->nfiles++;
 	}
 
-	function finish()
-	{
+	function finish() {
 		// Output the central directory
 		echo $this->dir;
 
@@ -595,18 +577,15 @@ class ZipWriter
  *
  * Right now we ignore the file mod date and time, since we don't need it.
  */
-class ZipReader
-{
-	function ZipReader($zipfile)
-	{
+class ZipReader {
+	function ZipReader($zipfile) {
 		if (!is_string($zipfile))
 			$this->fp = $zipfile; // File already open
 		else if (!($this->fp = fopen($zipfile, "rb")))
 			trigger_error(sprintf(_("Can't open zip file '%s' for reading"), $zipfile), E_USER_ERROR);
 	}
 
-	function _read($nbytes)
-	{
+	function _read($nbytes) {
 		$chunk = fread($this->fp, $nbytes);
 
 		if (strlen($chunk) != $nbytes)
@@ -615,15 +594,13 @@ class ZipReader
 		return $chunk;
 	}
 
-	function done()
-	{
+	function done() {
 		fclose ($this->fp);
 
 		return false;
 	}
 
-	function readFile()
-	{
+	function readFile() {
 		$head = $this->_read(30);
 
 		extract (unpack("a4magic/vreq_version/vflags/vcomp_type" . "/vmod_time/vmod_date" . "/Vcrc32/Vcomp_size/Vuncomp_size" . "/vfilename_len/vextrafld_len", $head));
@@ -682,8 +659,7 @@ class ZipReader
 /**
  * Routines for quoted-printable en/decoding.
  */
-function QuotedPrintableEncode($string)
-{
+function QuotedPrintableEncode($string) {
 	// Quote special characters in line.
 	$quoted = "";
 
@@ -706,8 +682,7 @@ function QuotedPrintableEncode($string)
 	return preg_replace('/(?=.{77})(.{10,74}[ \t]|.{71,73}[^=][^=])/s', "\\1=\r\n", $quoted);
 }
 
-function QuotedPrintableDecode($string)
-{
+function QuotedPrintableDecode($string) {
 	// Eliminate soft line-breaks.
 	$string = preg_replace('/=[ \t\r]*\n/', '', $string);
 
@@ -716,8 +691,7 @@ function QuotedPrintableDecode($string)
 
 define('MIME_TOKEN_REGEXP', "[-!#-'*+.0-9A-Z^-~]+");
 
-function MimeContentTypeHeader($type, $subtype, $params)
-{
+function MimeContentTypeHeader($type, $subtype, $params) {
 	$header = "Content-Type: $type/$subtype";
 
 	reset ($params);
@@ -733,8 +707,7 @@ function MimeContentTypeHeader($type, $subtype, $params)
 	return "$header\r\n";
 }
 
-function MimeMultipart($parts)
-{
+function MimeMultipart($parts) {
 	global $mime_multipart_count;
 
 	// The string "=_" can not occur in quoted-printable encoded data.
@@ -768,8 +741,7 @@ function MimeMultipart($parts)
  * automatically convert encodings to a safe type if they receive
  * mail encoded in '8bit' and/or 'binary' encodings.
  */
-function MimeifyPageRevision($page)
-{
+function MimeifyPageRevision($page) {
 	//$page = $revision->getPage();
 	// FIXME: add 'hits' to $params 
 	$params = array(
@@ -798,7 +770,7 @@ function MimeifyPageRevision($page)
 	$out = MimeContentTypeHeader('application', 'x-tikiwiki', $params);
 	$out .= sprintf("Content-Transfer-Encoding: %s\r\n", 'binary');
 	$out .= "\r\n";
-	$lines = explode("\n", $page["data"]);
+	$lines = split("\n", $page["data"]);
 
 	foreach ($lines as $line) {
 		// This is a dirty hack to allow saving binary text files. See above.
@@ -813,8 +785,7 @@ function MimeifyPageRevision($page)
 /**
  * Routines for parsing Mime-ified phpwiki pages.
  */
-function ParseRFC822Headers(&$string)
-{
+function ParseRFC822Headers(&$string) {
 	if (preg_match("/^From (.*)\r?\n/", $string, $match)) {
 		$headers['from '] = preg_replace('/^\s+|\s+$/', '', $match[1]);
 
@@ -840,8 +811,7 @@ function ParseRFC822Headers(&$string)
 	return $headers;
 }
 
-function ParseMimeContentType($string)
-{
+function ParseMimeContentType($string) {
 	// FIXME: Remove (RFC822 style comments).
 
 	// Get type/subtype
@@ -873,8 +843,7 @@ function ParseMimeContentType($string)
 	);
 }
 
-function ParseMimeMultipart($data, $boundary)
-{
+function ParseMimeMultipart($data, $boundary) {
 	if (!$boundary)
 		ExitWiki ("No boundary?");
 
@@ -887,9 +856,8 @@ function ParseMimeMultipart($data, $boundary)
 			$parts = array(); // First time through: discard leading chaff
 		else {
 			if ($content = ParseMimeifiedPages($match[1]))
-				foreach($content as $p ) {
+				for (reset($content); $p = current($content); next($content))
 					$parts[] = $p;
-				}
 		}
 
 		if ($match[2])
@@ -899,8 +867,7 @@ function ParseMimeMultipart($data, $boundary)
 	ExitWiki ("No end boundary?");
 }
 
-function GenerateFootnotesFromRefs($params)
-{
+function GenerateFootnotesFromRefs($params) {
 	$footnotes = array();
 
 	reset ($params);
@@ -910,7 +877,7 @@ function GenerateFootnotesFromRefs($params)
 			$footnotes[$m[1]] = sprintf(_("[%d] See [%s]"), $m[1], rawurldecode($reference));
 	}
 
-	if (count($footnotes) > 0) {
+	if (sizeof($footnotes) > 0) {
 		ksort ($footnotes);
 
 		return "-----\n" . "!" . _("References"). "\n" . join("\n%%%\n", $footnotes). "\n";
@@ -921,8 +888,7 @@ function GenerateFootnotesFromRefs($params)
 // Convert references in meta-data to footnotes.
 // Only zip archives generated by phpwiki 1.2.x or earlier should have
 // references.
-function ParseMimeifiedPages($data)
-{
+function ParseMimeifiedPages($data) {
 	if (!($headers = ParseRFC822Headers($data)) || empty($headers['content-type'])) {
 		//trigger_error( sprintf(_("Can't find %s"),'content-type header'),
 		//               E_USER_WARNING );

@@ -1,6 +1,4 @@
 <?php
-// From Kaltura client libraries
-
 require_once("KalturaClientBase_v3.php");
 
 class KalturaAspectRatioType
@@ -3466,6 +3464,7 @@ class KalturaMixingService extends KalturaServiceBase
 		$resultObject = $this->client->doQueue();
 		$this->client->throwExceptionIfError($resultObject);
 		$this->client->validateObjectType($resultObject, "KalturaMixEntry");
+echo $resultObject;
 		return $resultObject;
 	}
 

@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 require_once 'lib/graph-engine/core.php';
 
 class GridBasedGraphic extends Graphic // {{{1
@@ -57,10 +51,10 @@ class GridBasedGraphic extends Graphic // {{{1
 		switch( $layout["grid-$type-scale"] )
 		{
 		case 'linear':
-			$this->$type = new LinearGridScale( $type, $layout, $this->_getMinValue( $type ), $this->_getMaxValue( $type ) );
+			$this->$type = &new LinearGridScale( $type, $layout, $this->_getMinValue( $type ), $this->_getMaxValue( $type ) );
 			break;
 		case 'static':
-			$this->$type = new StaticGridScale( $type, $layout, $this->_getLabels( $type ) );
+			$this->$type = &new StaticGridScale( $type, $layout, $this->_getLabels( $type ) );
 			break;
 		}
 

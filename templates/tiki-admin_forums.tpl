@@ -4,16 +4,16 @@
 
 <div class="navbar">
 	{if $forumId > 0 or $dup_mode eq 'y'}
-		{button href="?" _text="{tr}Create New Forum{/tr}"}
+		{button href="?" _text="{tr}Create new forum{/tr}"}
 	{/if}
 	{if $dup_mode ne 'y'}
-		{button href="tiki-admin_forums.php?dup_mode=y" _text="{tr}Duplicate Forum{/tr}"}
+		{button href="tiki-admin_forums.php?dup_mode=y" _text="{tr}Duplicate forum{/tr}"}
 	{/if}
 	{if $forumId > 0}
 		{button href="tiki-view_forum.php?forumId=$forumId" _text="{tr}View this forum{/tr}"}
 	{/if}
 	{button href="tiki-forum_import.php" _text="{tr}Import forums{/tr}"}
-	{button href="tiki-forums.php" _text="{tr}List forums{/tr}"}
+	{button href="#editforums" _text="{tr}List forums{/tr}"}
 </div>
 
 {tabset}
@@ -161,7 +161,7 @@
 						<option value="" {if $forumSection eq ""}selected="selected"{/if}>{tr}None{/tr}</option>
 						<option value="__new__">{tr}Create new{/tr}</option>
 						{section name=ix loop=$sections}
-							<option {if $forumSection eq $sections[ix]}selected="selected"{/if} value="{$sections[ix]|escape}">{$sections[ix]|escape}</option>
+							<option {if $forumSection eq $sections[ix]}selected="selected"{/if} value="{$sections[ix]|escape}">{$sections[ix]}</option>
 						{/section}
 					</select>
 					<input name="new_section" type="text" />
@@ -170,15 +170,23 @@
 			<tr>
 				<td class="formcolor">{tr}Moderator user:{/tr}</td>
 				<td class="formcolor">
-					<input id="moderator_user" type="text" name="moderator" value="{$moderator|escape}"/>
-					{jq}$jq('#moderator_user').tiki('autocomplete', 'username');{/jq}
+					<select name="moderator">
+						<option value="" {if $moderator eq ''}selected="selected"{/if}>{tr}None{/tr}</option>
+						{foreach key=id item=one from=$users}
+							<option value="{$one|escape}" {if $moderator eq $one}selected="selected"{/if}>{$one|username}</option>
+							{/foreach}
+					</select>
 				</td>
 			</tr>
 			<tr>
 				<td class="formcolor">{tr}Moderator group:{/tr}</td>
 				<td class="formcolor">
-					<input id="moderator_group" type="text" name="moderator_group" value="{$moderator_group|escape}"/>
-					{jq}$jq('#moderator_group').tiki('autocomplete', 'groupname');{/jq}
+					<select name="moderator_group">
+						<option value="" {if $moderator_group eq ''}selected="selected"{/if}>{tr}None{/tr}</option>
+							{section name=ix loop=$groups}
+						<option value="{$groups[ix]|escape}" {if $moderator_group eq $groups[ix]}selected="selected"{/if}>{$groups[ix]}</option>
+						{/section}
+					</select>
 				</td>
 			</tr>
 			<tr>
@@ -234,10 +242,7 @@
 							<td class="formcolor">{tr}Reads{/tr}</td>
 							<td class="formcolor">{tr}Points{/tr}</td>
 							<td class="formcolor">{tr}Last post{/tr}</td>
-							<td class="formcolor">{tr}Last post title{/tr}</td>
-							<td class="formcolor">{tr}Last post avatar{/tr}</td>
 							<td class="formcolor">{tr}Author{/tr}</td>
-							<td class="formcolor">{tr}Author avatar{/tr}</td>
 						</tr>
 						<tr>
 							<td>
@@ -253,18 +258,8 @@
 								<input type="checkbox" name="topics_list_lastpost" {if $topics_list_lastpost eq 'y'}checked="checked"{/if} />
 							</td>
 							<td>
-								<input type="checkbox" name="topics_list_lastpost_title" {if $topics_list_lastpost_title eq 'y'}checked="checked"{/if} />
-							</td>
-							<td>
-								<input type="checkbox" name="topics_list_lastpost_avatar" {if $topics_list_lastpost_avatar eq 'y'}checked="checked"{/if} />
-							</td>
-							<td>
 								<input type="checkbox" name="topics_list_author" {if $topics_list_author eq 'y'}checked="checked"{/if} />
 							</td>
-							<td>
-								<input type="checkbox" name="topics_list_author_avatar" {if $topics_list_author_avatar eq 'y'}checked="checked"{/if} />
-							</td>
-
 						</tr>
 					</table>
 				</td>
@@ -406,11 +401,6 @@
 						<tr>
 							<td class="formcolor">
 								{tr}Max attachment size (bytes):{/tr} <input type="text" name="att_max_size" value="{$att_max_size|escape}" /><br /><i>{tr}Max:{/tr} {$maxAttachSize|escape} ({$maxAttachSize|kbsize})</i>
-							</td>
-						</tr>
-						<tr>
-							<td class="formcolor">
-								<input type="checkbox" name="att_list_nb"{if $att_list_nb eq 'y'} checked="checked"{/if} id="att_list_nb" /><label for="att_list_nb">{tr}Shows number of attachments of the all thread in forum list{/tr}</label>
 							</td>
 						</tr>
 					</table>

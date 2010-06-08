@@ -1,8 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
@@ -36,17 +33,12 @@ function module_categories_info() {
 				'name' => tra('Category ID'),
 				'description' => tra('Limits displayed categories to a subtree of categories starting with the category with the given ID. Example value: 11. Default: 0 (don\'t limit display).'),
 				'filter' => 'int'
-			),
-			'categParentIds' => array(
-				'name' => tra('Show these categories and their children'),
-				'description' => tra('Show only these categories and the immediate child categories of these. Example values: 3,5,6.'),
-				'filter' => 'striptags'
-			),
+			)
 		),
 	);
 }
 
-function module_categories( $mod_reference, &$module_params ) {
+function module_categories( $mod_reference, $module_params ) {
 	global $smarty, $prefs;
 	global $user;
 	global $categlib; include_once ('lib/categories/categlib.php');
@@ -77,18 +69,6 @@ function module_categories( $mod_reference, &$module_params ) {
 		}
 	} else
 		$categId = 0;
-		
-	if (isset($module_params['categParentIds'])) {
-		$categParentIds = explode(',', $module_params['categParentIds']);
-		$filtered_categories = array();
-		foreach ($categories as $cat) {
-			if (in_array($cat['categId'], $categParentIds) || in_array($cat['parentId'], $categParentIds) ) {
-				$filtered_categories[] = $cat;
-			}
-		}
-		$categories = $filtered_categories;
-		unset($filtered_categories);
-	}
 
 	if (isset($module_params['style']))
 		$style = $module_params['style'];

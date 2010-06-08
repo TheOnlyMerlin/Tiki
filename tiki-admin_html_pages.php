@@ -1,14 +1,22 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_html_pages.php,v 1.16.2.1 2007-10-29 22:14:01 pkdille Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/htmlpages/htmlpageslib.php');
-$access->check_feature('feature_html_pages');
-$access->check_permission('tiki_p_edit_html_pages');
+if ($prefs['feature_html_pages'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_html_pages");
+	$smarty->display("error.tpl");
+	die;
+}
+if ($tiki_p_edit_html_pages != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 include_once ("textareasize.php");
 if (!isset($_REQUEST["pageName"])) {
 	$_REQUEST["pageName"] = '';
@@ -25,12 +33,16 @@ if ($_REQUEST["pageName"]) {
 }
 $smarty->assign('info', $info);
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$htmlpageslib->remove_html_page($_REQUEST["remove"]);
+	$area = 'delhtmlpage';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$htmlpageslib->remove_html_page($_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0) {
-	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$template_data = $templateslib->get_template($_REQUEST["templateId"]);
+	$template_data = $tikilib->get_template($_REQUEST["templateId"]);
 	$_REQUEST["content"] = $template_data["content"];
 	$_REQUEST["preview"] = 1;
 }
@@ -78,8 +90,7 @@ $channels = $htmlpageslib->list_html_pages($offset, $maxRecords, $sort_mode, $fi
 $smarty->assign_by_ref('cant_pages', $channels["cant"]);
 $smarty->assign_by_ref('channels', $channels["data"]);
 if ($tiki_p_use_content_templates == 'y') {
-	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$templates = $templateslib->list_templates('html', 0, -1, 'name_asc', '');
+	$templates = $tikilib->list_templates('html', 0, -1, 'name_asc', '');
 }
 $smarty->assign_by_ref('templates', $templates["data"]);
 ask_ticket('admin-html-pages');

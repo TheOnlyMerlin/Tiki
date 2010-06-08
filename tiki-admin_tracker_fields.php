@@ -1,14 +1,17 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_tracker_fields.php,v 1.47.2.3 2007-11-23 12:57:18 nyloth Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/trackers/trackerlib.php');
 
-$access->check_feature('feature_trackers');
+if ($prefs['feature_trackers'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled') . ': feature_trackers');
+	$smarty->display('error.tpl');
+	die;
+}
 
 if (!isset($_REQUEST['trackerId'])) {
 	$smarty->assign('msg', tra('No tracker indicated'));
@@ -81,7 +84,7 @@ if ($_REQUEST["fieldId"]) {
 }
 if (isset($_REQUEST['up']) && $_REQUEST['fieldId']) {
 	if (empty($_REQUEST['delta'])) $_REQUEST['delta'] = 1;
-	$trklib->move_up_last_fields($_REQUEST['trackerId'], $_REQUEST["fieldId"], $_REQUEST['delta']);
+	$trklib->move_up_last_fields($_REQUEST['trackerId'], $info['position'], $_REQUEST['delta']);
 	$info['position']+= $_REQUEST['delta'];
 }
 $smarty->assign('name', $info["name"]);
@@ -101,12 +104,15 @@ $smarty->assign('errorMsg', $info['errorMsg']);
 $smarty->assign_by_ref('itemChoices', $info['itemChoices']);
 $smarty->assign_by_ref('visibleBy', $info['visibleBy']);
 $smarty->assign_by_ref('editableBy', $info['editableBy']);
-$smarty->assign('validation', $info['validation']);
-$smarty->assign('validationParam', $info['validationParam']);
-$smarty->assign('validationMessage', $info['validationMessage']);
 if (isset($_REQUEST["remove"]) and ($tracker_info['useRatings'] != 'y' or $info['name'] != 'Rating')) {
-	$access->check_authenticity();
-	$trklib->remove_tracker_field($_REQUEST["remove"], $_REQUEST["trackerId"]);
+	$area = 'deltrackerfield';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$trklib->remove_tracker_field($_REQUEST["remove"], $_REQUEST["trackerId"]);
+		$logslib->add_log('admintrackerfields', 'removed tracker field ' . $_REQUEST["remove"] . ' from tracker ' . $tracker_info['name']);
+	} else {
+		key_get($area);
+	}
 }
 function replace_tracker_from_request($tracker_info) {
 	global $trklib, $logslib, $smarty;
@@ -184,7 +190,7 @@ function replace_tracker_from_request($tracker_info) {
 		$_REQUEST['itemChoices'] = '';
 	}
 	//$_REQUEST["name"] = str_replace(' ', '_', $_REQUEST["name"]);
-	$trklib->replace_tracker_field($_REQUEST["trackerId"], $_REQUEST["fieldId"], $_REQUEST["name"], $_REQUEST["type"], $isMain, $isSearchable, $isTblVisible, $isPublic, $isHidden, $isMandatory, $_REQUEST["position"], $_REQUEST["options"], $_REQUEST['description'], $isMultilingual, $_REQUEST["itemChoices"], $_REQUEST['errorMsg'], $_REQUEST['visibleBy'], $_REQUEST['editableBy'], $_REQUEST['descriptionIsParsed'], $_REQUEST['validation'], $_REQUEST['validationParam'], $_REQUEST['validationMessage']);
+	$trklib->replace_tracker_field($_REQUEST["trackerId"], $_REQUEST["fieldId"], $_REQUEST["name"], $_REQUEST["type"], $isMain, $isSearchable, $isTblVisible, $isPublic, $isHidden, $isMandatory, $_REQUEST["position"], $_REQUEST["options"], $_REQUEST['description'], $isMultilingual, $_REQUEST["itemChoices"], $_REQUEST['errorMsg'], $_REQUEST['visibleBy'], $_REQUEST['editableBy'], $_REQUEST['descriptionIsParsed']);
 	$logslib->add_log('admintrackerfields', 'changed or created tracker field ' . $_REQUEST["name"] . ' in tracker ' . $tracker_info['name']);
 	$smarty->assign('fieldId', 0);
 	$smarty->assign('name', '');
@@ -204,18 +210,9 @@ function replace_tracker_from_request($tracker_info) {
 	$smarty->assign('visibleBy', array());
 	$smarty->assign('editableBy', array());
 	$smarty->assign('position', $trklib->get_last_position($_REQUEST["trackerId"]) + 1);
-	$smarty->assign('validation', '');
-	$smarty->assign('validationParam', '');
-	$smarty->assign('validationMessage', '');
 }
 if (isset($_REQUEST['refresh']) && isset($_REQUEST['exportAll'])) {
 	$smarty->assign('export_all', 'y');
-}
-if (isset($_REQUEST['batchaction']) and $_REQUEST['batchaction'] == 'delete') {
-	check_ticket('admin-tracker-fields');
-	foreach($_REQUEST['action'] as $batchid) {
-		$trklib->remove_tracker_field($batchid, $_REQUEST['trackerId']);
-	}
 }
 if (isset($_REQUEST["save"])) {
 	if (isset($_REQUEST['import']) and isset($_REQUEST['rawmeat'])) {
@@ -250,13 +247,7 @@ $smarty->assign('find', $find);
 if (isset($_REQUEST["max"])) {
 	$max = $_REQUEST["max"];
 } else {
-	$channels = $trklib->list_tracker_fields($_REQUEST["trackerId"], 0, 0);
-	if ($channels['cant'] > $maxRecords && $channels['cant'] < $maxRecords * 2) {
-		// if there's a page and a half of fields show them all
-		$max = $channels['cant'];
-	} else {
-		$max = $maxRecords;
-	}
+	$max = $maxRecords;
 }
 $smarty->assign('max', $max);
 $smarty->assign_by_ref('sort_mode', $sort_mode);
@@ -279,11 +270,6 @@ $smarty->assign_by_ref('cant', $channels['cant']);
 $allGroups = $userlib->list_all_groups();
 $smarty->assign_by_ref('allGroups', $allGroups);
 $smarty->assign_by_ref('channels', $channels["data"]);
-
-global $validatorslib;
-require_once('lib/validatorslib.php');
-$smarty->assign('validators', $validatorslib->available); 
-
 ask_ticket('admin-tracker-fields');
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');

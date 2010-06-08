@@ -42,9 +42,6 @@
 {* ******************** field handling emptiness in a specific way  ******************** *}
 {* -------------------- category -------------------- *}
 {if $field_value.type eq 'e'}
-	{if !empty($field_value.value) and $history == 'y'} {*history*}
-		{$field_value.value|escape}
-	{/if}
 	{foreach from=$field_value.categs item=categ name=fcategs}
 		{$categ.name|tr_if}
 		{if !$smarty.foreach.fcategs.last}<br />{/if}
@@ -91,7 +88,7 @@
 	{/if}
 
 {* -------------------- empty field -------------------- *}
-{elseif empty($field_value.value) and $field_value.value != '0' and $field_value.type ne 'U' and $field_value.type ne '*' and $field_value.type ne 's' and $field_value.type ne 'q' and $field_value.type ne 'n' and $field_value.type ne 'C'}
+{elseif empty($field_value.value) and $field_value.value != '0' and $field_value.type ne 'U' and $field_value.type ne 's' and $field_value.type ne 'q' and $field_value.type ne 'n' and $field_value.type ne 'C'}
 	{if $list_mode ne 'csv' and $is_link eq 'y'}&nbsp;{/if} {* to have something to click on *}
 
 {* -------------------- text field, numeric, drop down, radio,user/group/IP selector, autopincrement, dynamic list *}
@@ -109,8 +106,6 @@
 			{$field_value.value|username:true:true:false|truncate:255:"..."|escape|default:"&nbsp;"}
 		{elseif !empty($field_value.value) || $is_link eq 'y'}			
 			{$field_value.value|truncate:255:"..."|escape|default:"&nbsp;"}
-		{elseif empty($field_value.value) && ($field_value.type eq 'n' or ($field_value.type eq 'C' and $field_value.computedtype ne 'f'))}
-			{$field_value.value}
 		{/if}		
 	{elseif $list_mode eq 'csv'}
 		{$field_value.value}
@@ -173,7 +168,7 @@
 		{if strstr($field_value.options_array[0], 't')}
 			{$field_value.info.filename|iconify}&nbsp;
 		{/if}
-		{if strstr($field_value.options_array[0], 'm') && (strstr($field_value.info.filetype, 'audio') || strstr($field_value.info.filetype, 'video'))}
+		{if strstr($field_value.options_array[0], 'm')}
 			{if $field_value.value ne ''}
 			{wiki}{literal}{MEDIAPLAYER(mp3="tiki-download_item_attachment.php?attId={/literal}{$field_value.value}",style="max"){literal}}{/literal}{/wiki}
 			{/if}
@@ -192,9 +187,7 @@
 
 {* -------------------- page selector ------------------------- *} 
 {elseif $field_value.type eq  'k'}
-	{if isset($field_value.options_array[3]) && $field_value.options_array[3] eq 'n'}
-		{$field_value.value}
-	{elseif $list_mode eq 'y'}
+	{if $list_mode eq 'y'}
 		{wiki}(({$field_value.value|escape})){/wiki}
 	{elseif $list_mode eq 'csv'}
 		{$field_value.value}
@@ -261,7 +254,7 @@
 	{if !empty($field_value.value) and $field_value.value ne 'None'}
 		{assign var=o_opt value=$field_value.options_array[0]}
 		{capture name=flag}
-		{tr}{$field_value.value|replace:'_':' '}{/tr}
+		{tr}{$field_value.value}{/tr}
 		{/capture}
 		{if $o_opt ne '1' and $list_mode ne 'csv'}<img src="img/flags/{$field_value.value}.gif" title="{$smarty.capture.flag|replace:'_':' '}" alt="{$smarty.capture.flag|replace:'_':' '}" />{/if}
 		{if $o_opt ne '1' and $o_opt ne '2' and $list_mode ne 'csv'}&nbsp;{/if}
@@ -290,8 +283,8 @@
 		{wiki line='1'}{$field_value.value}{/wiki}
 	{/if}
 
-{* -------------------- rating, star -------------------- *}
-{elseif ($field_value.type eq '*' or ($field_value.type eq 's' and ($field_value.name eq "Rating" or $field_value.name eq tra("Rating")))) and $tiki_p_tracker_view_ratings eq 'y'}
+{* -------------------- rating -------------------- *}
+{elseif $field_value.type eq 's' and ($field_value.name eq "Rating" or $field_value.name eq tra("Rating")) and $tiki_p_tracker_view_ratings eq 'y'}
 	{if $list_mode eq 'csv'}
 		{$field_value.value}/{$field_value.voteavg}
 	{else}
@@ -299,19 +292,19 @@
 			{if empty($field_value.numvotes)}
 				{tr}Number of votes{/tr}: 0
 			{else}
-				{tr}Number of votes{/tr}: {$field_value.numvotes|default:"0"}, {tr}Average{/tr}: {$field_value.voteavg|default:"0"}
+				{tr}Number of votes{/tr}: {$field_value.numvotes|default:"0"}, {tr}Average{/tr}: {$field_value.voteavg|default:"0"},
 				{if $tiki_p_tracker_vote_ratings eq 'y'}
-					, {if isset($field_value.my_rate) && $field_value.my_rate !== false}{tr}Your rating{/tr}: {$field_value.my_rate}{else}{tr}You did not vote yet{/tr}{/if}
+					{if $item.my_rate}{tr}Your rating{/tr}: {$item.my_rate}{else}{tr}You did not vote yet{/tr}{/if}
 				{/if}
 			{/if}
 		{/capture}
 		{capture name=myvote}
-			{tr}My rating:{/tr} {$field_value.my_rate}
+			{tr}My rating:{/tr} {$item.my_rate}
 		{/capture}
 		<span class="rating">
 		<span style="white-space:nowrap">
 		{section name=i loop=$field_value.options_array}
-			{if $tiki_p_tracker_vote_ratings eq 'y' and isset($field_value.my_rate) and $field_value.options_array[i] === $field_value.my_rate}
+			{if $tiki_p_tracker_vote_ratings eq 'y' and isset($item.my_rate) and $field_value.options_array[i] === $item.my_rate}
 				<b class="highlight">
 					{if $field_value.voteavg >= $field_value.options_array[i]}
 				   		{icon _id='star' alt=$field_value.options_array[i] title=$smarty.capture.myvote}
@@ -320,18 +313,16 @@
 					{/if}
 				</b>
 			{else}
-				{if ($tiki_p_tracker_vote_ratings eq 'y' && (!isset($field_value.my_rate) || $field_value.my_rate === false)) ||
-					($tiki_p_tracker_revote_ratings eq 'y' && isset($field_value.my_rate) && $field_value.my_rate !== false)}
+				{if $tiki_p_tracker_vote_ratings eq 'y'}
 					{capture name=thisvote}{tr}Click to vote for this value:{/tr} {$field_value.options_array[i]}{/capture}
-					<a href="{$smarty.server.REQUEST_URI}{if empty($smarty.server.QUERY_STRING)}?{else}&amp;{/if}itemId={$item.itemId}&amp;ins_{$field_value.fieldId}={$field_value.options_array[i]}&amp;vote=y">
+					<a href="{$smarty.server.PHP_SELF}?trackerId={$item.trackerId}&amp;itemId={$item.itemId}&amp;ins_{$field_value.fieldId}={$field_value.options_array[i]}{if $page}&amp;page={$page|escape:url}{/if}">
 				{/if}
 				{if $field_value.voteavg >= $field_value.options_array[i]}
 					{icon _id='star' alt=$field_value.options_array[i] title=$smarty.capture.thisvote}
 				{else}
 					{icon _id='star_grey' alt=$field_value.options_array[i] title=$smarty.capture.thisvote}
 				{/if}
-				{if ($tiki_p_tracker_vote_ratings eq 'y' && (!isset($field_value.my_rate) || $field_value.my_rate === false)) ||
-					($tiki_p_tracker_revote_ratings eq 'y' && isset($field_value.my_rate) && $field_value.my_rate !== false)}
+				{if $tiki_p_tracker_vote_ratings eq 'y'}
 					</a>
 				{/if}	
 			{/if}
@@ -344,8 +335,8 @@
 			</small>
 			{icon _id='help' title=$smarty.capture.stat}
 		{/if}
-		{if $tiki_p_tracker_revote_ratings eq 'y' and  isset($field_value.my_rate) and in_array($field_value.my_rate, $field_value.options_array)}
-			<a href="{$smarty.server.REQUEST_URI}{if empty($smarty.server.QUERY_STRING)}?{else}&amp;{/if}itemId={$item.itemId}&amp;ins_{$field_value.fieldId}=NULL&amp;vote=y" title="{tr}Clik to delete your vote{/tr}">x</a>
+		{if $tiki_p_tracker_vote_ratings eq 'y' and  isset($item.my_rate) and in_array($item.my_rate, $field_value.options_array)}
+			<a href="{$smarty.server.PHP_SELF}{if $query_string}?{$query_string}{else}?{/if}trackerId={$item.trackerId}&amp;itemId={$item.itemId}&amp;ins_{$field_value.fieldId}=NULL{if $page}&amp;page={$page|escape:url}{/if}" title="{tr}Clik to delete your vote{/tr}">x</a>
 		{/if}
 		<span>
 	{/if}

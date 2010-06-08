@@ -57,7 +57,7 @@
 <td>
 	<a title="{tr}Edit{/tr}" class="link" href="tiki-admin_calendars.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;calendarId={$id}">{icon _id='page_edit'}</a>
 	<a title="{tr}View Calendar{/tr}" class="link" href="tiki-calendar.php?calIds[]={$id}">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>
-	<a title="{tr}Delete{/tr}" class="link" href="tiki-admin_calendars.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;drop={$id}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
+	<a title="{tr}Delete{/tr}" class="link" href="tiki-admin_calendars.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;drop={$id}" title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 	<a title="{tr}Add Event{/tr}" class="link" href="tiki-calendar_edit_item.php?calendarId={$id}">{icon _id='add' alt="{tr}Add Event{/tr}"}</a>
 </td>
 </tr>
@@ -156,11 +156,6 @@
 </td></tr>
 <tr class="formcolor"><td>{tr}End of day{/tr}:</td><td>
 <select name="endday_Hour">{foreach item=h from=$hours}<option value="{$h}"{if $h eq $endday} selected="selected"{/if}>{$h}</option>{/foreach}</select>{tr}h{/tr}
-</td></tr>
-<tr class="formcolor"><td>{tr}Days to display{/tr}:</td><td>
-{section name="viewdays" start=0 loop=7}
-{$days_names[$smarty.section.viewdays.index]}&nbsp;<input type="checkbox" name="viewdays[]" value="{$smarty.section.viewdays.index}" {if !empty($info.viewdays) &&  in_array($smarty.section.viewdays.index,$info.viewdays)} checked="checked" {/if} />
-{/section}
 </td></tr>
 <tr class="formcolor"><td>{tr}Standard Colors{/tr}:</td><td>
 	<select name="options[customcolors]" onChange="javascript:document.getElementById('fgColorField').disabled=(this.options[this.selectedIndex].value != 0);document.getElementById('bgColorField').disabled=(this.options[this.selectedIndex].value != 0);">

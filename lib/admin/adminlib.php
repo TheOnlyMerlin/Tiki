@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,8 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class AdminLib extends TikiLib
-{
+class AdminLib extends TikiLib {
 
 	function list_dsn($offset, $maxRecords, $sort_mode, $find) {
 		
@@ -57,6 +51,13 @@ class AdminLib extends TikiLib
 			$result = $this->query($query,$bindvars);
 		}
 
+		// And now replace the perm if not created
+		$perm_name = 'tiki_p_dsn_' . $name;
+		$query = "delete from `users_permissions` where `permName`=?";
+		$this->query($query,array($perm_name));
+		$query = "insert into `users_permissions`(`permName`,`permDesc`,`type`,`level`) values
+    			(?,?,?,?)";
+		$this->query($query,array($perm_name,'Can use dsn $dsn','dsn','editor'));
 		return true;
 	}
 
@@ -389,6 +390,54 @@ class AdminLib extends TikiLib
 		unset ($tar);
 		global $logslib; include_once('lib/logs/logslib.php');
 		$logslib->add_log('dump', 'dump created');
+	}
+
+	function list_content_tables() {
+		global $TWV;
+	   // this function lists all tables and fields that hold textual content.
+	   // used in System Admin -> Fix UTF-8 Errors.
+
+	   $tikisql=file('db/tiki-'.$TWV->getBaseVersion().'-mysql.sql');
+	   $tabfields=array();
+	   foreach($tikisql as $item) {
+	      if(preg_match('/^CREATE TABLE ([a-zA-Z0-9_]+)/',$item,$tmatch)) {
+		 $table=$tmatch[1];
+	      }
+	      if(preg_match('/^  ([a-zA-Z0-9_]+) (varchar|text|mediumtext|longtext)/',$item,$fmatch)) {
+		 $field=$fmatch[1];
+		 $tabfields[]=array('table'=>$table,'field' => $field);
+	      }
+	   }
+	   return($tabfields);
+	}
+
+	function check_utf8($table,$field) {
+	   // this function checks for utf8 errors in a table and field
+	   $utf8ok=true;
+	   $query='select `'.$field.'` from `'.$table.'`';
+	   $result = $this->query($query,array());
+	   while ($res = $result->fetchRow()) {
+	      if($res[$field]!=utf8_encode($res[$field])) {
+		 $utf8ok=false;
+		 break;
+	      }
+	   }
+	   return($utf8ok);
+	}
+
+	function fix_utf8($table,$field) {
+	   // this function fixes utf8 errors in a table and field
+	   $errc=0;
+	   $query='select `'.$field.'` from `'.$table.'`';
+	   $result = $this->query($query,array());
+	   while ($res = $result->fetchRow()) {
+	      if($res[$field]!=utf8_encode($res[$field])) {
+		 $query2='update `'.$table.'` set `'.$field.'`=? where `'.$field.'`=?';
+		 $result2=$this->query($query2,array(utf8_encode($res[$field]),$res[$field]));
+		 $errc++;
+	      }
+	   }
+	   return($errc);
 	}
 
 }

@@ -53,9 +53,11 @@
 <input type="submit" name="delete" value="{tr}Delete{/tr}" />
 <input type="submit" name="archive" value="{tr}move to archive{/tr}" />
 <input type="submit" name="download" value="{tr}Download{/tr}" />
-{jq}
-var CHECKBOX_LIST = [{{section name=user loop=$items}'msg[{$items[user].msgId}]'{if not $smarty.section.user.last},{/if}{/section}}];
-{/jq}
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+var CHECKBOX_LIST = [{section name=user loop=$items}'msg[{$items[user].msgId}]'{if not $smarty.section.user.last},{/if}{/section}];
+//--><!]]>
+</script>
 <table class="normal" >
   <tr>
     <th><input type="checkbox" name="checkall" onclick="checkbox_list_check_all('form_messu_sent',CHECKBOX_LIST,this.checked);" /></th>
@@ -70,7 +72,7 @@ var CHECKBOX_LIST = [{{section name=user loop=$items}'msg[{$items[user].msgId}]'
   {section name=user loop=$items}
   <tr>
     <td class="prio{$items[user].priority}"><input type="checkbox" name="msg[{$items[user].msgId}]" /></td>
-    <td class="prio{$items[user].priority}">{if $items[user].isFlagged eq 'y'}{icon _id='flag_blue' alt="{tr}Flagged{/tr}"}{/if}</td>
+    <td class="prio{$items[user].priority}">{if $items[user].isFlagged eq 'y'}{icon _id='flag_blue' alt='{tr}Flagged{/tr}'}{/if}</td>
     <td {if $items[user].isRead eq 'n'}style="font-weight:bold"{/if} class="prio{$items[user].priority}">{$items[user].user_to|username}</td>
     <td {if $items[user].isRead eq 'n'}style="font-weight:bold"{/if} class="prio{$items[user].priority}"><a class="readlink" href="messu-read_sent.php?offset={$offset}&amp;flag={$flag}&amp;priority={$items[user].priority}&amp;flagval={$flagval}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;msgId={$items[user].msgId}">{$items[user].subject|escape}</a></td>
     <td {if $items[user].isRead eq 'n'}style="font-weight:bold"{/if} class="prio{$items[user].priority}">{$items[user].date|tiki_short_datetime}</td><!--date_format:"%d %b %Y [%H:%I]"-->
@@ -78,7 +80,7 @@ var CHECKBOX_LIST = [{{section name=user loop=$items}'msg[{$items[user].msgId}]'
 	<td {if $items[user].isRead eq 'n'}style="font-weight:bold"{/if} class="prio{$items[user].priority}">
     {if $items[user].isReplied eq 'n'}{tr}No{/tr}{else}
 	<a class="readlink" href="messu-mailbox.php?replyto={$items[user].hash}">
-	    {icon _id='email_go' alt="{tr}Replied{/tr}"}
+	    {icon _id='email_go' alt='{tr}Replied{/tr}'}
 	</a>
 	&nbsp;
 	

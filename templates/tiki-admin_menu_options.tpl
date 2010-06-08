@@ -69,7 +69,7 @@
 											{foreach key=k item=i from=$option_groups}<option value="{$k|escape}" {$i}>{$k|escape}</option>{/foreach}
 										</select>
 										{if $option_groups|@count ge '2'}
-										{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple options{/tr}<br />{tr}Selecting 2 groups means that the option will be seen if the user belongs to the 2 groups. If you want the 2 groups to see the option, create 2 options with one group each.{/tr}<br />{tr}If the url is ((PageName)), you do not need to put the groups, the option will be displayed only if the page can be displayed.{/tr}{/remarksbox}
+										{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple groups.{/tr}<br />{tr}Selecting 2 groups means that the option will be seen if the user belongs to the 2 groups. If you want the 2 groups to see the option, create 2 options with one group each.{/tr}<br />{tr}If the url is ((PageName)), you do not need to put the groups, the option will be displayed only if the page can be displayed.{/tr}{/remarksbox}
 										{/if}
 									</td>
 								</tr>
@@ -194,7 +194,7 @@
 											<option value=",,,">{tr}Choose{/tr} ...</option>
 											<option value="tiki-list_blogs.php,{tr}List Blogs{/tr},feature_blogs,tiki_p_read_blog">{tr}List Blogs{/tr}</option>
 											<option value="tiki-blog_rankings.php,{tr}Rankings{/tr},feature_blog_rankings,tiki_p_read_blog">{tr}Rankings{/tr}</option>
-											<option value="tiki-edit_blog.php,{tr}Create Blog{/tr},feature_blogs,tiki_p_create_blogs">{tr}Create Blog{/tr}</option>
+											<option value="tiki-edit_blog.php,{tr}Create blog{/tr},feature_blogs,tiki_p_create_blogs">{tr}Create blog{/tr}</option>
 											<option value="tiki-blog_post.php,{tr}Post{/tr},feature_blogs,tiki_p_blog_post">{tr}Post{/tr}</option>
 										</select>
 									</td>
@@ -261,7 +261,7 @@
 				</tr>
 			</table>
 		</td>
-		<td valign="top" rowspan="2">
+		<td valign="top">
 			<h2>{tr}Preview menu{/tr}</h2>
 			<div class="box">
 				<div class="box-title">{$editable_menu_info.name|escape}</div>
@@ -271,94 +271,91 @@
 			</div>
 		</td>
 	</tr>
-	<tr>
-		<td>
-			<a name="options"></a>
-			<h2>{tr}Menu options{/tr}</h2>
-			{if $channels or ($find ne '')}
-				{include file='find.tpl' find_show_num_rows='y'}
-			{/if}
-			
-			<form method="get" action="tiki-admin_menu_options.php">
-				<input type="hidden" name="find" value="{$find|escape}" />
-				<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
-				<input type="hidden" name="menuId" value="{$menuId}" />
-				<input type="hidden" name="offset" value="{$offset}" />
-				<table class="normal">
-					<tr>
-						<th>
-							{if $channels}
-								{select_all checkbox_names='checked[]'}
-							{/if}
-						</th>
-						<th>{self_link _sort_arg='sort_mode' _sort_field='optionId'}{tr}ID{/tr}{/self_link}</th>
-						<th>{self_link _sort_arg='sort_mode' _sort_field='position'}{tr}Position{/tr}{/self_link}</th>
-						<th>{self_link _sort_arg='sort_mode' _sort_field='name'}{tr}Name{/tr}{/self_link}</th>
-						<th>{self_link _sort_arg='sort_mode' _sort_field='type'}{tr}Type{/tr}{/self_link}</th>
-						{if $prefs.feature_userlevels eq 'y'}
-							<th>{self_link _sort_arg='sort_mode' _sort_field='userlevel'}{tr}Level{/tr}{/self_link}</th>
-						{/if}
-						<th>{tr}Action{/tr}</th>
-					</tr>
-					{cycle values="odd,even" print=false}
-					{section name=user loop=$channels}
-						<tr>
-							<td class="{cycle advance=false}">
-								<input type="checkbox" name="checked[]" value="{$channels[user].optionId|escape}"  {if $smarty.request.checked and in_array($channels[user].optionId,$smarty.request.checked)}checked="checked"{/if} />
-							</td>
-							<td class="{cycle advance=false}">{$channels[user].optionId}</td>
-							<td class="{cycle advance=false}">{$channels[user].position}</td>
-							<td class="{cycle advance=false}">
-								<a href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;optionId={$channels[user].optionId}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}" title="{tr}Edit{/tr}">{$channels[user].name|escape}</a>
-								<div style="margin-left:10px;">
-									{if $channels[user].url}
-										{tr}URL:{/tr} <a href="{$channels[user].url|escape}" class="link" target="_new" title="{$channels[user].canonic}">{$channels[user].canonic|truncate:40:' ...'}</a>
-									{/if}
-									{if $channels[user].section}<br />{tr}Sections:{/tr} {$channels[user].section}{/if}
-									{if $channels[user].perm}<br />{tr}Permissions:{/tr} {$channels[user].perm}{/if}
-									{if $channels[user].groupname}<br />{tr}Groups:{/tr} {$channels[user].groupname|escape}{/if}
-								</div>
-							</td>
-							<td class="{cycle advance=false}">{$channels[user].type_description}</td>
-			
-							{if $prefs.feature_userlevels eq 'y'}
-								{assign var=it value=$channels[user].userlevel}
-								<td class="{cycle advance=false}">{$prefs.userlevels.$it}</td>
-							{/if}
-							
-							<td class="{cycle advance=true}">
-								<a class="link" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;optionId={$channels[user].optionId}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
-								{if !$smarty.section.user.first}
-									<a class="link" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;up={$channels[user].optionId}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}#options" title="{tr}switch with previous option{/tr}">{icon _id='resultset_up'}</a>
-								{/if}
-								{if !$smarty.section.user.last}
-									<a class="link" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;down={$channels[user].optionId}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}#options" title="{tr}switch with next option{/tr}">{icon _id='resultset_down'}</a>
-								{/if}
-								<a class="link" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].optionId}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}" title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
-							</td>
-						</tr>
-					{sectionelse}
-						<tr>
-							<td class="odd" colspan="11">
-								<strong>{tr}No records found.{/tr}</strong>
-							</td>
-						</tr>
-					{/section}
-				</table>
-				
-				{if $channels}
-					<div align="left">
-						{tr}Perform action with checked:{/tr}
-						<input type="image" name="delsel" src='pics/icons/cross.png' alt={tr}Delete{/tr}' title='{tr}Delete{/tr}' />
-					</div>
-				{/if}
-			</form>
-			
-			{pagination_links cant=$cant_pages step=$maxRecords offset=$offset}{/pagination_links}
-
-		</td>
-	</tr>
 </table>
+<br />
+<a name="options"></a>
+<br />
+<h2>{tr}Menu options{/tr}</h2>
+{if $channels or ($find ne '')}
+	{include file='find.tpl' find_show_num_rows='y'}
+{/if}
+
+<form method="get" action="tiki-admin_menu_options.php">
+	<input type="hidden" name="find" value="{$find|escape}" />
+	<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
+	<input type="hidden" name="menuId" value="{$menuId}" />
+	<input type="hidden" name="offset" value="{$offset}" />
+	<table class="normal">
+		<tr>
+			<th>
+				{if $channels}
+					{select_all checkbox_names='checked[]'}
+				{/if}
+			</th>
+			<th>{self_link _sort_arg='sort_mode' _sort_field='optionId'}{tr}ID{/tr}{/self_link}</th>
+			<th>{self_link _sort_arg='sort_mode' _sort_field='position'}{tr}Position{/tr}{/self_link}</th>
+			<th>{self_link _sort_arg='sort_mode' _sort_field='name'}{tr}Name{/tr}{/self_link}</th>
+			<th>{self_link _sort_arg='sort_mode' _sort_field='type'}{tr}Type{/tr}{/self_link}</th>
+			{if $prefs.feature_userlevels eq 'y'}
+				<th>{self_link _sort_arg='sort_mode' _sort_field='userlevel'}{tr}Level{/tr}{/self_link}</th>
+			{/if}
+			<th>{tr}Action{/tr}</th>
+		</tr>
+		{cycle values="odd,even" print=false}
+		{section name=user loop=$channels}
+			<tr>
+				<td class="{cycle advance=false}">
+					<input type="checkbox" name="checked[]" value="{$channels[user].optionId|escape}"  {if $smarty.request.checked and in_array($channels[user].optionId,$smarty.request.checked)}checked="checked"{/if} />
+				</td>
+				<td class="{cycle advance=false}">{$channels[user].optionId}</td>
+				<td class="{cycle advance=false}">{$channels[user].position}</td>
+				<td class="{cycle advance=false}">
+					<a href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;optionId={$channels[user].optionId}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}" title="{tr}Edit{/tr}">{$channels[user].name|escape}</a>
+					<div style="margin-left:10px;">
+						{if $channels[user].url}
+							{tr}URL:{/tr} <a href="{$channels[user].url|escape}" class="link" target="_new" title="{$channels[user].canonic}">{$channels[user].canonic|truncate:40:' ...'}</a>
+						{/if}
+						{if $channels[user].section}<br />{tr}Sections:{/tr} {$channels[user].section}{/if}
+						{if $channels[user].perm}<br />{tr}Permissions:{/tr} {$channels[user].perm}{/if}
+						{if $channels[user].groupname}<br />{tr}Groups:{/tr} {$channels[user].groupname|escape}{/if}
+					</div>
+				</td>
+				<td class="{cycle advance=false}">{$channels[user].type_description}</td>
+
+				{if $prefs.feature_userlevels eq 'y'}
+					{assign var=it value=$channels[user].userlevel}
+					<td class="{cycle advance=false}">{$prefs.userlevels.$it}</td>
+				{/if}
+				
+				<td class="{cycle advance=true}">
+					<a class="link" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;optionId={$channels[user].optionId}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
+					{if !$smarty.section.user.first}
+						<a class="link" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;up={$channels[user].optionId}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}#options" title="{tr}switch with previous option{/tr}">{icon _id='resultset_up'}</a>
+					{/if}
+					{if !$smarty.section.user.last}
+						<a class="link" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;down={$channels[user].optionId}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}#options" title="{tr}switch with next option{/tr}">{icon _id='resultset_down'}</a>
+					{/if}
+					<a class="link" href="tiki-admin_menu_options.php?menuId={$menuId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].optionId}{if !empty($nbRecords)}&amp;nbRecords={$nbRecords}{/if}" title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
+				</td>
+			</tr>
+		{sectionelse}
+			<tr>
+				<td class="odd" colspan="11">
+					<strong>{tr}No records found.{/tr}</strong>
+				</td>
+			</tr>
+		{/section}
+	</table>
+	
+	{if $channels}
+		<div align="left">
+			{tr}Perform action with checked:{/tr}
+			<input type="image" name="delsel" src='pics/icons/cross.png' alt={tr}Delete{/tr}' title='{tr}Delete{/tr}' />
+		</div>
+	{/if}
+</form>
+
+{pagination_links cant=$cant_pages step=$maxRecords offset=$offset}{/pagination_links}
 
 <a name="export"></a>
 <h2>{tr}Export CSV data{/tr}</h2>

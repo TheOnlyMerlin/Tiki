@@ -1,5 +1,4 @@
-<div class="container">
-{if $prefs.feature_bot_logo eq 'y'}<div id="custom_site_footer">{eval var=$prefs.bot_logo_code}</div>{/if}
+{if $prefs.feature_bot_logo eq 'y'}{eval var=$prefs.bot_logo_code}{/if}
 {if ($prefs.feature_site_report eq 'y' && $tiki_p_site_report eq 'y') || ($prefs.feature_site_send_link eq 'y' and $prefs.feature_tell_a_friend eq 'y' and $tiki_p_tell_a_friend eq 'y')}
 	<div id="site_report">
 		{if $prefs.feature_site_report eq 'y'}
@@ -12,9 +11,9 @@
 {/if}
 {if $prefs.feature_bot_bar_icons eq 'y'}
 	<div id="power_icons">
-		<a href="http://tikiwiki.org/" title="Tiki"><img alt="{tr}Powered by{/tr} Tiki" src="img/tiki/tikibutton2.png" /></a>
-		<a href="http://php.net/" title="PHP"><img alt="{tr}Powered by{/tr} PHP" src="img/php.png" /></a>
-		<a href="http://smarty.net/" title="Smarty"><img alt="{tr}Powered by{/tr} Smarty" src="img/smarty.gif"  /></a>
+		<a href="http://tikiwiki.org/" title="Tikiwiki"><img alt="{tr}Powered by{/tr} Tikiwiki" src="img/tiki/tikibutton2.png" /></a>
+		<a href="http://www.php.net/" title="PHP"><img alt="{tr}Powered by{/tr} PHP" src="img/php.png" /></a>
+		<a href="http://www.smarty.net/" title="Smarty"><img alt="{tr}Powered by{/tr} Smarty" src="img/smarty.gif"  /></a>
 		<a href="http://adodb.sourceforge.net/" title="ADOdb"><img alt="{tr}Powered by{/tr} ADOdb" src="img/adodb.png" /></a>
 		<a href="http://www.w3.org/Style/CSS/" title="CSS"><img alt="{tr}Made with{/tr} CSS" src="img/css1.png" /></a>
 		<a href="http://www.w3.org/RDF/" title="RDF"><img alt="{tr}Powered by{/tr} RDF" src="img/rdf.gif"  /></a>
@@ -32,11 +31,11 @@
 				<a title="{tr}Wiki RSS{/tr}" href="tiki-wiki_rss.php?ver={$prefs.rssfeed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
 				<small>{tr}Wiki{/tr}</small>
 		{/if}
-		{if $prefs.feature_blogs eq 'y' and $prefs.rss_blogs eq 'y' and ($tiki_p_read_blog eq 'y' or $tiki_p_blog_view_ref eq 'y')}
+		{if $prefs.feature_blogs eq 'y' and $prefs.rss_blogs eq 'y' and $tiki_p_read_blog eq 'y'}
 				<a title="{tr}Blogs RSS{/tr}" href="tiki-blogs_rss.php?ver={$prefs.rssfeed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
 				<small>{tr}Blogs{/tr}</small>
 		{/if}
-		{if $prefs.feature_articles eq 'y' and $prefs.rss_articles eq 'y' and ($tiki_p_read_article eq 'y' or $tiki_p_articles_read_heading eq 'y')}
+		{if $prefs.feature_articles eq 'y' and $prefs.rss_articles eq 'y' and $tiki_p_read_article eq 'y'}
 				<a title="{tr}Articles RSS{/tr}" href="tiki-articles_rss.php?ver={$prefs.rssfeed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
 				<small>{tr}Articles{/tr}</small>
 		{/if}
@@ -71,22 +70,22 @@
 {/if}
 <div id="power">
 	{if $prefs.feature_bot_bar_power_by_tw ne 'n'}
-		{tr}Powered by{/tr} <a href="http://info.tikiwiki.org" title="&#169; 2002&#8211;{$smarty.now|date_format:"%Y"} {tr}The Tiki Community{/tr}">{tr}Tiki Wiki CMS Groupware{/tr}</a> {if $prefs.feature_topbar_version eq 'y'} v{$tiki_version} {if $tiki_uses_svn eq 'y'} (SVN){/if} -{$tiki_star}- {/if} | 
+		{tr}Powered by{/tr} <a href="http://info.tikiwiki.org" title="&#169; 2002&#8211;{$smarty.now|date_format:"%Y"} {tr}The TikiWiki Community{/tr}">{tr}TikiWiki CMS/Groupware{/tr}</a> {if $prefs.feature_topbar_version eq 'y'} v{$tiki_version} {if $tiki_uses_svn eq 'y'} (SVN){/if} -{$tiki_star}- {/if} | 
 	{/if}
 	<div id="credits">
 		{include file='credits.tpl'}
 	</div>
 </div>
-</div>
+
 {if $prefs.feature_bot_bar_debug eq 'y'}
 <div id="loadstats" style="text-align: center">
 	<small>[ {tr}Execution time{/tr}: {elapsed} {tr}secs{/tr} ] &nbsp; [ {tr}Memory usage{/tr}: {memusage} ] &nbsp; [ {$num_queries} {tr}database queries used in {/tr} {$elapsed_in_db|truncate:3:''} {tr}secs{/tr} ]{if $server_load and $server_load ne '?'} &nbsp; [ {tr}Server load{/tr}: {$server_load} ]{/if}</small>
 </div>
 {/if}
 
-{if !empty($lastup)}
-<div class="cvsup" style="font-size:x-small;text-align:center;color:#999;">{tr}Last update from SVN{/tr} ({$tiki_version}): {$lastup|tiki_long_datetime}
+{if $lastup}
+<div class="cvsup" style="font-size:x-small;text-align:center;color:#999;">{tr}Last update from SVN{/tr}({$tiki_version}): {$lastup|tiki_long_datetime}
 {/if}
-{if !empty($svnrev)}
+{if $svnrev}
  - REV {$svnrev}
 {/if}

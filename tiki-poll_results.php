@@ -1,14 +1,23 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-poll_results.php,v 1.21.2.4 2007-12-06 14:14:11 nkoth Exp $
 $section = 'poll';
 require_once ('tiki-setup.php');
-$access->check_feature('feature_polls');
-$access->check_permission('tiki_p_view_poll_results');
+if ($prefs['feature_polls'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled') . ': feature_polls');
+	$smarty->display('error.tpl');
+	die;
+}
+// Now check permissions to access this page
+if ($tiki_p_view_poll_results != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra('Permission denied. You cannot view this page.'));
+	$smarty->display('error.tpl');
+	die;
+}
 global $pollib;
 include_once ('lib/polls/polllib.php');
 $auto_query_args = array('offset', 'pollId', 'maxRecords', 'scoresort_desc', 'scoresort_asc', 'sort_mode', 'list', 'vote_from_date', 'vote_to_date', 'which_date', 'from_Day', 'from_Month', 'from_Year', 'to_Day', 'to_Month', 'to_Year');
@@ -69,6 +78,7 @@ foreach($pollIds as $pK => $pId) { // iterate each poll
 		$vote_from_date = $vote_to_date = 0;
 	}
 	$options = $polllib->list_poll_options($pId, $vote_from_date, $vote_to_date);
+	//echo '<pre>'; print_r($options); echo '</pre>';
 	$poll_info_arr[$pK] = $poll_info;
 	if ($vote_from_date != 0) {
 		$poll_info_arr[$pK]['votes'] = 0;
@@ -100,7 +110,7 @@ foreach($pollIds as $pK => $pId) { // iterate each poll
 	$poll_info_arr[$pK]['options'] = $options;
 	$poll_info_arr[$pK]['total'] = $total;
 } // end iterate each poll
-
+//echo '<pre>'; print_r($poll_info_arr); echo '</pre>';
 function scoresort($a, $b) {
 	if (isset($_REQUEST['scoresort_asc'])) {
 		$i = $_REQUEST['scoresort_asc'];

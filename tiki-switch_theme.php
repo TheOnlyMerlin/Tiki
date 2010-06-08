@@ -1,9 +1,8 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once ('tiki-setup.php');
 include_once ('lib/tikilib.php');
@@ -39,7 +38,7 @@ if (isset($_REQUEST['theme-option'])) {
 	$new_theme_option = $_REQUEST['theme-option'];
 	if ($prefs['change_theme'] == 'y') {
 		if ($user && ($prefs['feature_userPreferences'] == 'y' || $tikilib->get_user_preference($user, 'theme-option') ) && empty($group_style)) {
-			  $tikilib->set_user_preference($user, 'theme-option', empty($new_theme_option) ? 'None' : $new_theme_option);
+			  $tikilib->set_user_preference($user, 'theme-option', $new_theme_option);
 			  $prefs['style_option'] = $new_theme_option;
 		} else {
 			  $prefs['style_option'] = $new_theme_option;

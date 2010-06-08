@@ -1,10 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-blog_rss.php,v 1.35.2.1 2008-01-17 17:47:01 sylvieg Exp $
 require_once ('tiki-setup.php');
 require_once ('lib/tikilib.php');
 require_once ('lib/blogs/bloglib.php');
@@ -40,7 +39,7 @@ if ($output["data"] == "EMPTY") {
 	$authorId = "user";
 	$titleId = "title";
 	$readrepl = "tiki-view_blog_post.php?postId=%s";
-	$changes = $bloglib->list_blog_posts($_REQUEST["$id"], false, 0, $prefs['max_rss_blog'], $dateId . '_desc', '', '', $tikilib->now);
+	$changes = $bloglib->list_blog_posts($_REQUEST["$id"], 0, $prefs['max_rss_blog'], $dateId . '_desc', '', '', $tikilib->now);
 	$tmp = array();
 	include_once ('tiki-sefurl.php');
 	foreach($changes["data"] as $data) {

@@ -15,7 +15,7 @@
 	{if $edit}
 		{button href="tiki-calendar_edit_item.php?viewcalitemId=$id" _text="{tr}View event{/tr}"}
 	{elseif $tiki_p_change_events eq 'y'}
-		{button href="tiki-calendar_edit_item.php?calitemId=$id" _text="{tr}Edit/Delete event{/tr}"}
+		{button href="tiki-calendar_edit_item.php?calitemId=$id" _text="{tr}Edit event{/tr}"}
 	{/if}
 {/if}
 {if $tiki_p_admin_calendar eq 'y'}
@@ -50,7 +50,6 @@
 	{/if}
 		<select name="save[calendarId]" id="calid" onchange="javascript:document.getElementById('editcalitem').submit();">
 			{foreach item=it key=itid from=$listcals}
-				{if $it.tiki_p_add_events eq 'y'}
 				<option value="{$it.calendarId}" style="background-color:#{$it.custombgcolor};color:#{$it.customfgcolor};"
 				{if $calitem.calendarId}
 					{if $calitem.calendarId eq $itid} selected="selected"{/if}
@@ -63,7 +62,6 @@
 						{/if}
 					{/if}
 				{/if}>{$it.name|escape}</option>
-				{/if}
 			{/foreach}
 		</select>
 {else}
@@ -153,13 +151,13 @@
 {/if}
 {if $recurrence.id eq 0 or $recurrence.yearly}
 			  {tr}Each{/tr}&nbsp;
-			  <select name="dateOfYear_day" onChange="checkDateOfYear(this.options[this.selectedIndex].value,document.forms['f'].elements['dateOfYear_month'].options[document.forms['f'].elements['dateOfYear_month'].selectedIndex].value);">
+			  <select name="dateOfYear_day" onChange="javascript: checkDateOfYear(this.options[this.selectedIndex].value,document.forms['f'].elements['dateOfYear_month'].options[document.forms['f'].elements['dateOfYear_month'].selectedIndex].value);">
 				{section name=k start=1 loop=32}
 				<option value="{$smarty.section.k.index}" {if $recurrence.dateOfYear_day eq $smarty.section.k.index}selected="selected"{/if}>{if $smarty.section.k.index lt 10}0{/if}{$smarty.section.k.index}</option>
 				{/section}
 			  </select>
 			  &nbsp;{tr}of{/tr}&nbsp;
-			  <select name="dateOfYear_month" onChange="checkDateOfYear(document.forms['f'].elements['dateOfYear_day'].options[document.forms['f'].elements['dateOfYear_day'].selectedIndex].value,this.options[this.selectedIndex].value);">
+			  <select name="dateOfYear_month" onChange="javascript: checkDateOfYear(document.forms['f'].elements['dateOfYear_day'].options[document.forms['f'].elements['dateOfYear_day'].selectedIndex].value,this.options[this.selectedIndex].value);">
 				<option value="1"  {if $recurrence.dateOfYear_month eq '1'}selected="selected"{/if}>{tr}January{/tr}</option>
 				<option value="2"  {if $recurrence.dateOfYear_month eq '2'}selected="selected"{/if}>{tr}February{/tr}</option>
 				<option value="3"  {if $recurrence.dateOfYear_month eq '3'}selected="selected"{/if}>{tr}March{/tr}</option>
@@ -173,7 +171,27 @@
 				<option value="11" {if $recurrence.dateOfYear_month eq '11'}selected="selected"{/if}>{tr}November{/tr}</option>
 				<option value="12" {if $recurrence.dateOfYear_month eq '12'}selected="selected"{/if}>{tr}December{/tr}</option>
 			  </select>
-&nbsp;&nbsp;
+			  <script type="text/javascript">
+{literal}
+			    function checkDateOfYear(day,month) {
+{/literal}
+					var mName = new Array("-","{tr}January{/tr}","{tr}February{/tr}","{tr}March{/tr}","{tr}April{/tr}","{tr}May{/tr}","{tr}June{/tr}","{tr}July{/tr}","{tr}August{/tr}","{tr}September{/tr}","{tr}October{/tr}","{tr}November{/tr}","{tr}December{/tr}");
+{literal}
+					var error = false;
+					if (month == 4 || month == 6 || month == 9 || month == 11)
+						if (day == 31)
+							error = true;
+					if (month == 2)
+						if (day > 29)
+							error = true;
+					if (error) {
+{/literal}
+						document.getElementById('errorDateOfYear').innerHTML = "<em>{tr}There's no such date as{/tr} " + day + " {tr}of{/tr} " + mName[month] + "</em>";
+{literal}
+					}
+				}
+{/literal}
+			  </script>&nbsp;&nbsp;
 			  <span id="errorDateOfYear" style="color:#900;"></span>
 		<br /><br /><hr />
 {/if}
@@ -265,7 +283,7 @@
 					   			toggleSpan('duratione');
 					   			toggleSpan('durminplus');
 					   			toggleSpan('durminminus');"
-					   value="true" {if $calitem.allday} checked="checked" {/if} /> {tr}All day{/tr}</label>
+					   value="true" {if $calitem.allday} checked="checked" {/if} /> {tr}All-Day{/tr}</label>
 			</td>
 		</tr>
 		<tr>
@@ -430,7 +448,7 @@
 <tr class="formcolor"><td>
 {tr}Priority{/tr}</td><td>
 {if $edit}
-<select name="save[priority]" style="background-color:#{$listprioritycolors[$calitem.priority]};font-size:150%;"
+<select name="save[priority]" style="background-color:#{$listprioritycolors[$calitem.priority]};font-size:150%;width:40%;"
 onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 {foreach item=it from=$listpriorities}
 <option value="{$it}" style="background-color:#{$listprioritycolors[$it]};"{if $calitem.priority eq $it} selected="selected"{/if}>{$it}</option>
@@ -450,7 +468,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 <select name="save[categoryId]">
 <option value=""></option>
 {foreach item=it from=$listcats}
-<option value="{$it.categoryId}"{if $calitem.categoryId eq $it.categoryId} selected="selected"{/if}>{$it.name|escape}</option>
+<option value="{$it.categoryId}"{if $calitem.categoryId eq $it.categoryId} selected="selected"{/if}>{$it.name}</option>
 {/foreach}
 </select>
 {tr}or new{/tr} {/if}
@@ -468,7 +486,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 <select name="save[locationId]">
 <option value=""></option>
 {foreach item=it from=$listlocs}
-<option value="{$it.locationId}"{if $calitem.locationId eq $it.locationId} selected="selected"{/if}>{$it.name|escape}</option>
+<option value="{$it.locationId}"{if $calitem.locationId eq $it.locationId} selected="selected"{/if}>{$it.name}</option>
 {/foreach}
 </select>
 {tr}or new{/tr} {/if}
@@ -531,9 +549,9 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 <td>
 {if $edit}
 	{if $preview or $changeCal}
-		<input type="text" name="save[organizers]" value="{$calitem.organizers|escape}" style="width:90%;" />
+		<input type="text" name="save[organizers]" value="{$calitem.organizers}" style="width:90%;" />
 	{else}
-		<input type="text" name="save[organizers]" value="{foreach item=org from=$calitem.organizers name=organizers}{if $org neq ''}{$org|escape}{if !$smarty.foreach.organizers.last},{/if}{/if}{/foreach}" style="width:90%;" />
+		<input type="text" name="save[organizers]" value="{foreach item=org from=$calitem.organizers name=organizers}{if $org neq ''}{$org}{if !$smarty.foreach.organizers.last},{/if}{/if}{/foreach}" style="width:90%;" />
 	{/if}
 {else}
 {foreach item=org from=$calitem.organizers}

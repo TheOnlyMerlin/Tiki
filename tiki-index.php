@@ -1,9 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+// $Id$
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 $inputConfiguration = array(
 	array( 'staticKeyFilters' => array(
@@ -80,6 +80,8 @@ if (isset($_REQUEST['page_id'])) {
     //TODO: introduce a get_info_from_id to save a sql request
 }
 
+$use_best_language = false;
+
 if ((!isset($_REQUEST['page']) || $_REQUEST['page'] == '') and !isset($_REQUEST['page_ref_id'])) {
 	if ($objectperms->view) {
 		$access->display_error( $page, tra('Permission denied. You cannot view this page.'), '401');
@@ -88,7 +90,7 @@ if ((!isset($_REQUEST['page']) || $_REQUEST['page'] == '') and !isset($_REQUEST[
 	}
 }
 
-$use_best_language = $multilinguallib->useBestLanguage();
+$use_best_language = $use_best_language || isset($_REQUEST['bl']) || isset($_REQUEST['best_lang']) || isset($_REQUEST['switchLang']);
 
 $info = null;
 
@@ -135,7 +137,6 @@ if( $prefs['feature_wiki_structure'] == 'y' ) {
 
 if (!empty($page_ref_id)) {
     $page_info = $structlib->s_get_page_info($page_ref_id);
-    
     $info = null;
     // others still need a good set page name or they will get confused.
     // comments of home page were all visible on every structure page
@@ -145,7 +146,6 @@ if (!empty($page_ref_id)) {
 	$smarty->assign('showstructs', $structs_with_perm);
 	$smarty->assign('page_ref_id', $page_ref_id);
 }
-
 $page = $_REQUEST['page'];
 $smarty->assign_by_ref('page',$page);
 
@@ -165,9 +165,6 @@ if (!$info) {
 	
 // If the page doesn't exist then display an error
 if(empty($info) && !($user && $prefs['feature_wiki_userpage'] == 'y' && strcasecmp($prefs['feature_wiki_userpage_prefix'].$user, $page) == 0)) {
-	if (!empty($prefs['url_anonymous_page_not_found']) && empty($user)) {
-		$access->redirect($prefs['url_anonymous_page_not_found']);
-	}
 	if ($user && $prefs['feature_wiki_userpage'] == 'y' && strcasecmp($prefs['feature_wiki_userpage_prefix'], $page) == 0) {
 		$url = 'tiki-index.php?page='.$prefs['feature_wiki_userpage_prefix'].$user;
 		if ($prefs['feature_sefurl'] == 'y') {
@@ -193,8 +190,7 @@ if(empty($info) && !($user && $prefs['feature_wiki_userpage'] == 'y' && strcasec
 }
 
 
-if (empty($info) && $user && $prefs['feature_wiki_userpage'] == 'y' && (strcasecmp($prefs['feature_wiki_userpage_prefix'].$user, $page) == 0 || strcasecmp($prefs['feature_wiki_userpage_prefix'], $page) == 0 )) {	
-	
+if (empty($info) && $user && $prefs['feature_wiki_userpage'] == 'y' && (strcasecmp($prefs['feature_wiki_userpage_prefix'].$user, $page) == 0 || strcasecmp($prefs['feature_wiki_userpage_prefix'], $page) == 0 )) {
 	header('Location: tiki-editpage.php?page='.$prefs['feature_wiki_userpage_prefix'].$user);
     	die;
 }
@@ -326,19 +322,25 @@ if($user
 // Process an undo here
 if ( isset($_REQUEST['undo']) ) {
 	if ( $pageRenderer->canUndo() ) {
-		$access->check_authenticity();
+		$area = 'delundopage';
+		if ( $prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"])) ) {
+			key_check($area);
 
-		// Remove the last version	
-		$wikilib->remove_last_version($page);
+			// Remove the last version	
+			$wikilib->remove_last_version($page);
 
-		// If page was deleted then re-create
-		if ( ! $tikilib->page_exists($page) ) {
-			$tikilib->create_page($page, 0, '', $tikilib->now, 'Tiki initialization'); 
+			// If page was deleted then re-create
+			if ( ! $tikilib->page_exists($page) ) {
+				$tikilib->create_page($page, 0, '', $tikilib->now, 'Tiki initialization'); 
+			}
+
+			// Restore page information
+			$info = $tikilib->get_page_info($page);
+			$pageRenderer->setInfos($info);
+
+		} else {
+			key_get($area);
 		}
-
-		// Restore page information
-		$info = $tikilib->get_page_info($page);
-		$pageRenderer->setInfos($info);
 	}	
 }
 
@@ -367,8 +369,13 @@ if($prefs['feature_wiki_attachments'] == 'y') {
 	check_ticket('index');
 	$owner = $wikilib->get_attachment_owner($_REQUEST['removeattach']);
 	if( ($user && ($owner == $user) ) || $objectperms->wiki_admin_attachments ) {
-		$access->check_authenticity();
-		$wikilib->remove_wiki_attachment($_REQUEST['removeattach']);
+		$area = 'removeattach';
+	    if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+			key_check($area);
+			$wikilib->remove_wiki_attachment($_REQUEST['removeattach']);
+		} else {
+			key_get($area);
+		}
 	}
 	$pageRenderer->setShowAttachments( 'y' );
     }
@@ -428,6 +435,7 @@ ask_ticket('index');
 //add a hit
 $statslib->stats_hit($page,'wiki');
 if ($prefs['feature_actionlog'] == 'y') {
+	global $logslib; include_once('lib/logs/logslib.php');
 	$logslib->add_action('Viewed', $page);
 }
 
@@ -445,7 +453,6 @@ if (!empty($_REQUEST['machine_translate_to_lang'])) {
 } 
 
 $smarty->assign('mid','tiki-show_page.tpl');
-
 $smarty->display("tiki.tpl");
 
 // xdebug_dump_function_profile(XDEBUG_PROFILER_CPU);

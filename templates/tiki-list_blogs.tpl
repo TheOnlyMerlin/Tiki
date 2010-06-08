@@ -27,13 +27,13 @@
 	<th><a href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_desc'}user_asc{else}user_desc{/if}">{tr}User{/tr}</a></th>
 {/if}
 {if $prefs.blog_list_posts eq 'y'}
-	<th><a href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'posts_desc'}posts_asc{else}posts_desc{/if}">{tr}Posts{/tr}</a></th>
+	<th style="text-align:right;"><a href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'posts_desc'}posts_asc{else}posts_desc{/if}">{tr}Posts{/tr}</a></th>
 {/if}
 {if $prefs.blog_list_visits eq 'y'}
-	<th><a href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'hits_desc'}hits_asc{else}hits_desc{/if}">{tr}Visits{/tr}</a></th>
+	<th style="text-align:right;"><a href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'hits_desc'}hits_asc{else}hits_desc{/if}">{tr}Visits{/tr}</a></th>
 {/if}
 {if $prefs.blog_list_activity eq 'y'}
-	<th><a href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'activity_desc'}activity_asc{else}activity_desc{/if}">{tr}Activity{/tr}</a></th>
+	<th style="text-align:right;"><a href="tiki-list_blogs.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'activity_desc'}activity_asc{else}activity_desc{/if}">{tr}Activity{/tr}</a></th>
 {/if}
 <th>{tr}Action{/tr}</th>
 </tr>
@@ -55,7 +55,7 @@
 			</a>
 		{/if}
 		{if $prefs.blog_list_description eq 'y'}
-			<div class="subcomment">{$listpages[changes].description|escape|nl2br}</div>
+			<div class="subcomment">{$listpages[changes].description}</div>
 		{/if}
 	</td>
 {/if}
@@ -72,7 +72,7 @@
 	<td class="{cycle advance=false}">&nbsp;{$listpages[changes].user|avatarize}&nbsp;<br />
 	&nbsp;{$listpages[changes].user|userlink}&nbsp;</td>
 {else}
-	<td class="{cycle advance=false}">&nbsp;{$listpages[changes].user|escape}&nbsp;</td>
+	<td class="{cycle advance=false}">&nbsp;{$listpages[changes].user}&nbsp;</td>
 {/if}
 {/if}
 {if $prefs.blog_list_posts eq 'y'}

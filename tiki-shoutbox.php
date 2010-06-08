@@ -1,16 +1,22 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-
 require_once ('tiki-setup.php');
 include_once ('lib/shoutbox/shoutboxlib.php');
-
-$access->check_feature('feature_shoutbox');
-$access->check_permission('tiki_p_view_shoutbox');
-
+if ($prefs['feature_shoutbox'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_shoutbox");
+	$smarty->display("error.tpl");
+	die;
+}
+if ($tiki_p_view_shoutbox != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST["msgId"])) {
 	$_REQUEST["msgId"] = 0;
 }
@@ -32,8 +38,13 @@ if ($_REQUEST["msgId"]) {
 $smarty->assign('message', $info["message"]);
 if ($tiki_p_admin_shoutbox == 'y' || $user == $owner) {
 	if (isset($_REQUEST["remove"])) {
-		$access->check_authenticity();
-		$shoutboxlib->remove_shoutbox($_REQUEST["remove"]);
+		$area = 'delshoutboxitem';
+		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+			key_check($area);
+			$shoutboxlib->remove_shoutbox($_REQUEST["remove"]);
+		} else {
+			key_get($area);
+		}
 	} elseif (isset($_REQUEST["shoutbox_admin"])) {
 		$prefs['shoutbox_autolink'] = (isset($_REQUEST["shoutbox_autolink"])) ? 'y' : 'n';
 		$tikilib->set_preference('shoutbox_autolink', $prefs['shoutbox_autolink']);
@@ -46,7 +57,7 @@ if ($tiki_p_post_shoutbox == 'y') {
 			$smarty->assign('msg', tra("You have mistyped the anti-bot verification code; please try again."));
 			if (!empty($_REQUEST['message'])) $smarty->assign_by_ref('message', $_REQUEST['message']);
 		} else {
-			$shoutboxlib->replace_shoutbox($_REQUEST['msgId'], $owner, $_REQUEST['message'], ($_REQUEST['tweet']==1));
+			$shoutboxlib->replace_shoutbox($_REQUEST['msgId'], $owner, $_REQUEST['message']);
 			$smarty->assign('msgId', '0');
 			$smarty->assign('message', '');
 		}
@@ -76,7 +87,7 @@ function processShout($formValues, $destDiv = 'mod-shoutbox') {
 			$smarty->assign('shout_error', tra('You have mistyped the anti-bot verification code; please try again.'));
 			$smarty->assign_by_ref('shout_msg', $formValues['shout_msg']);
 		} else {
-			$shoutboxlib->replace_shoutbox(0, $user, $formValues['shout_msg'], ($formValues['shout_tweet']==1));
+			$shoutboxlib->replace_shoutbox(0, $user, $formValues['shout_msg']);
 		}
 	} else if (array_key_exists('shout_remove', $formValues) && $formValues['shout_remove'] > 0) {
 		$info = $shoutboxlib->get_shoutbox($formValues['shout_remove']);

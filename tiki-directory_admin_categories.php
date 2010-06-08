@@ -1,15 +1,22 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-directory_admin_categories.php,v 1.19 2007-10-12 07:55:25 nyloth Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/directory/dirlib.php');
-$access->check_feature('feature_directory');
-$access->check_permission('tiki_p_admin_directory_cats');
-
+if ($prefs['feature_directory'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_directory");
+	$smarty->display("error.tpl");
+	die;
+}
+if ($tiki_p_admin_directory_cats != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied"));
+	$smarty->display("error.tpl");
+	die;
+}
 // If no parent category then the parent category is 0
 if (!isset($_REQUEST["parent"])) $_REQUEST["parent"] = 0;
 $smarty->assign('parent', $_REQUEST["parent"]);
@@ -42,8 +49,13 @@ if ($_REQUEST["categId"]) {
 $smarty->assign_by_ref('info', $info);
 // Remove a category
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$dirlib->dir_remove_category($_REQUEST["remove"]);
+	$area = 'deldircateg';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$dirlib->dir_remove_category($_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 // Replace (add or edit) a category
 if (isset($_REQUEST["save"])) {

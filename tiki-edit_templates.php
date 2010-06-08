@@ -1,13 +1,19 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-edit_templates.php,v 1.23 2007-10-12 07:55:27 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 require_once ('tiki-setup.php');
 
-$access->check_feature(array('feature_edit_templates','feature_view_tpl'));
+if ($prefs['feature_edit_templates'] != 'y' && $prefs['feature_view_tpl'] != 'y') {
+	$smarty->assign('msg', tra("Feature disabled"));
+	$smarty->display("error.tpl");
+	die;
+}
 
 // you have to have the perm view and edit to continue:
       // if view perm is set: continue
@@ -75,10 +81,15 @@ if ($tiki_p_edit_templates == 'y') {
 	}
 	
 	if (isset($_REQUEST['delete']) && !empty($_REQUEST['template'])) {
-		$access->check_authenticity();
-		$file = $smarty->get_filename($_REQUEST['template']);
-		unlink($file);
-		unset($_REQUEST['template']);
+		$area = 'deltpl';
+		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+	    		key_check($area);
+			$file = $smarty->get_filename($_REQUEST['template']);
+			unlink($file);
+			unset($_REQUEST['template']);
+		} else {
+			 key_get($area);
+		}
 	}
 }
 

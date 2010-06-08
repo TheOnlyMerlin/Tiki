@@ -1,10 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// $Id$
+
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-
 if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) != FALSE) {
 	header('location: index.php');
 	exit;
@@ -23,7 +24,7 @@ if ($prefs['feature_wysiwyg'] == 'y') {
 		$_SESSION['wysiwyg'] = 'n';
 	} elseif ($prefs['wysiwyg_optional'] == 'n') {
 		$_SESSION['wysiwyg'] = 'y';
-	} elseif ($prefs['wysiwyg_memo'] == 'y' and !empty($info['wysiwyg'])) {
+	} elseif ($prefs['wysiwyg_memo'] == 'y' and !empty($info)) {
 		$_SESSION['wysiwyg'] = $info['wysiwyg'];
 	} elseif ($prefs['wysiwyg_default'] == 'y' and !isset($_REQUEST['wysiwyg'])) {
 		$_SESSION['wysiwyg'] = 'y';

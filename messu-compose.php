@@ -1,16 +1,38 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/messu-compose.php,v 1.40 2007-10-12 07:55:23 nyloth Exp $
 $section = 'user_messages';
 require_once ('tiki-setup.php');
 include_once ('lib/messu/messulib.php');
-$access->check_user($user);
-$access->check_feature('feature_messages');
-$access->check_permission('tiki_p_messages');
+if (!$user) {
+	if ($prefs['feature_redirect_on_error'] == 'y') {
+		header('location: ' . $prefs['tikiIndex']);
+		die;
+	} else {
+		$smarty->assign('msg', tra("You are not logged in"));
+		$smarty->display("error.tpl");
+		die;
+	}
+}
+if ($prefs['feature_messages'] != 'y') {
+	if ($prefs['feature_redirect_on_error'] == 'y') {
+		header('location: ' . $prefs['tikiIndex']);
+		die;
+	} else {
+		$smarty->assign('msg', tra("This feature is disabled") . ": feature_messages");
+		$smarty->display("error.tpl");
+		die;
+	}
+}
+if ($tiki_p_messages != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied"));
+	$smarty->display("error.tpl");
+	die;
+}
 if ($prefs['allowmsg_is_optional'] == 'y') {
 	if ($tikilib->get_user_preference($user, 'allowMsgs', 'y') != 'y') {
 		$smarty->assign('msg', tra("You have to be able to receive messages in order to send them. Goto your user preferences and enable 'Allow messages from other users'"));
@@ -32,7 +54,7 @@ if (!isset($_REQUEST['replyto_hash'])) $_REQUEST['replyto_hash'] = '';
 if (!isset($_REQUEST['priority'])) $_REQUEST['priority'] = 3;
 // Strip Re:Re:Re: from subject
 if (!empty($_REQUEST['reply']) || !empty($_REQUEST['replyall'])) {
-	$_REQUEST['subject'] = tra("Re:") . preg_replace('/^(' . tra('Re:') . ')+/', '', $_REQUEST['subject']);
+	$_REQUEST['subject'] = tra("Re:") . ereg_replace("^(" . tra("Re:") . ")+", "", $_REQUEST['subject']);
 	$smarty->assign('reply', 'y');
 }
 foreach(array(
@@ -132,7 +154,7 @@ if (isset($_REQUEST['send'])) {
 		$users_formatted = array();
 		foreach ($users as $rawuser)
 			$users_formatted[] = htmlspecialchars($rawuser);
-		$message.= tra("Message has been sent to: ") . implode(',', $users_formatted) . "<br />";
+		$message.= tra("Message will be sent to: ") . implode(',', $users_formatted) . "<br />";
 	} else {
 		$message.= tra('ERROR: No valid users to send the message');
 		$smarty->assign('message', $message);
@@ -155,11 +177,9 @@ if (isset($_REQUEST['send'])) {
 	$messulib->save_sent_message($user, $user, $_REQUEST['to'], $_REQUEST['cc'], $_REQUEST['subject'], $_REQUEST['body'], $_REQUEST['priority'], $_REQUEST['replyto_hash']);
 	$smarty->assign('message', $message);
 	if ($prefs['feature_actionlog'] == 'y') {
-		if (isset($_REQUEST['reply']) && $_REQUEST['reply'] == 'y') {
-			$logslib->add_action('Replied', '', 'message', 'add=' . $tikilib->strlen_quoted($_REQUEST['body']));
-		} else {
-			$logslib->add_action('Posted', '', 'message', 'add=' . strlen($_REQUEST['body']));
-		}
+		include_once ('lib/logs/logslib.php');
+		if (isset($_REQUEST['reply']) && $_REQUEST['reply'] == 'y') $logslib->add_action('Replied', '', 'message', 'add=' . $tikilib->strlen_quoted($_REQUEST['body']));
+		else $logslib->add_action('Posted', '', 'message', 'add=' . strlen($_REQUEST['body']));
 	}
 }
 $allowMsgs = $prefs['allowmsg_is_optional'] != 'y' || $tikilib->get_user_preference($user, 'allowMsgs', 'y');

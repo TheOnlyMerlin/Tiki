@@ -1,10 +1,13 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-graph_sheet.php,v 1.10 2007-10-12 07:55:27 nyloth Exp $
+
+// Based on tiki-galleries.php
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 require_once ('tiki-setup.php');
 require_once ('lib/sheet/grid.php');
 require_once ('lib/graph-engine/gd.php');
@@ -27,7 +30,13 @@ function handle_series( $serie, &$sheet )
 
 // Various validations {{{1
 
-$access->check_feature('feature_sheet');
+// Now check permissions to access this page
+if ($prefs['feature_sheet'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_sheet");
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 if ($tiki_p_admin != 'y' && $tiki_p_admin_sheet != 'y' && !$tikilib->user_has_perm_on_object($user, $_REQUEST['sheetId'], 'sheet', 'tiki_p_view_sheet')) {
 	$smarty->assign('msg', tra("Access Denied").": feature_sheet");
@@ -72,7 +81,7 @@ $smarty->assign('page_mode', 'form' );
 
 // Process the insertion or modification of a gallery here
 
-$grid = new TikiSheet;
+$grid = &new TikiSheet;
 
 $sheetId = $_REQUEST['sheetId'];
 
@@ -88,19 +97,19 @@ if( isset( $_REQUEST['title'] ) )
 	switch( $_REQUEST['renderer'] )
 	{
 	case 'PNG':
-		$renderer = new GD_GRenderer( $_REQUEST['width'], $_REQUEST['height'], 'png' );
+		$renderer = &new GD_GRenderer( $_REQUEST['width'], $_REQUEST['height'], 'png' );
 		$ext = 'png';
 		break;
 	case 'JPEG':
-		$renderer = new GD_GRenderer( $_REQUEST['width'], $_REQUEST['height'], 'jpg' );
+		$renderer = &new GD_GRenderer( $_REQUEST['width'], $_REQUEST['height'], 'jpg' );
 		$ext = 'jpg';
 		break;
 	case 'PDF':
-		$renderer = new PDFLib_GRenderer( $_REQUEST['format'], $_REQUEST['orientation'] );
+		$renderer = &new PDFLib_GRenderer( $_REQUEST['format'], $_REQUEST['orientation'] );
 		$ext = 'pdf';
 		break;
 	case 'PS':
-		$renderer = new PS_GRenderer( $_REQUEST['format'], $_REQUEST['orientation'] );
+		$renderer = &new PS_GRenderer( $_REQUEST['format'], $_REQUEST['orientation'] );
 		$ext = 'ps';
 		break;
 	default:
@@ -117,7 +126,7 @@ if( isset( $_REQUEST['title'] ) )
 		exit;
 	}
 
-	$handler = new TikiSheetDatabaseHandler( $sheetId );
+	$handler = &new TikiSheetDatabaseHandler( $sheetId );
 	$grid->import( $handler );
 
 	$graph = $_REQUEST['graphic'];
@@ -188,7 +197,7 @@ else
 
 		ob_start();
 
-		$handler = new TikiSheetDatabaseHandler( $sheetId );
+		$handler = &new TikiSheetDatabaseHandler( $sheetId );
 		$grid->import( $handler );
 
 		$grid->export( new TikiSheetLabeledOutputHandler );

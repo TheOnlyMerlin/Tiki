@@ -12,28 +12,6 @@
 </div>
 	{/if}
 
-	{if $user_watching_tracker eq 'n'}
-		<a href="{$smarty.server.REQUEST_URI}{if strstr($smarty.server.REQUEST_URI, '?')}&amp;{else}?{/if}trackerId={$trackerId}&amp;watch=add" title="{tr}Monitor{/tr}" class="trackerlistwatch">
-			{icon _id='eye' align="right" hspace="1" alt="{tr}Monitor{/tr}"}
-		</a>
-	{elseif $user_watching_tracker eq 'y'}
-		<a href="{$smarty.server.REQUEST_URI}{if strstr($smarty.server.REQUEST_URI, '?')}&amp;{else}?{/if}trackerId={$trackerId}&amp;watch=stop" title="{tr}Stop Monitor{/tr}" class="trackerlistwatch">
-		   {icon _id='no_eye' align="right" hspace="1" alt="{tr}Stop Monitor{/tr}"}
-		</a>
-	{/if}
-	{if $showrss eq 'y'}
-			<a href="tiki-tracker_rss.php?trackerId={$trackerId}">{icon _id='feed' align="right" hspace="1" alt="{tr}RSS feed{/tr}"}</a>
-	{/if}
-
-{if !empty($sortchoice)}
-	<div class="trackerlistsort">
-		<form method="post">
-			{include file='tracker_sort_input.tpl'}
-			<input type="submit" name="sort" value="{tr}Sort{/tr}" />
-		</form>
-	</div>
-{/if}
-
 	{if $shownbitems eq 'y'}<div class="nbitems">{tr}Items found:{/tr} {$count_item}</div>{/if}
 
 	{if $cant_pages > 1 or $tr_initial or $showinitials eq 'y'}
@@ -117,7 +95,7 @@
 
 	<tr class="{cycle}">
 			{if $checkbox}
-		<td><input type="checkbox" name="{$checkbox.name}[]" value="{if isset($items[user].field_values[$checkbox.ix])}{$items[user].field_values[$checkbox.ix].value|escape}{else}{$items[user].itemId}{/if}" /></td>
+		<td><input type="checkbox" name="{$checkbox.name}[]" value="{$items[user].field_values[$checkbox.ix].value}" /></td>
 			{/if}
 			{if ($showstatus ne 'n') and ($tracker_info.showStatus eq 'y' or ($tracker_info.showStatusAdminOnly eq 'y' and $tiki_p_admin_trackers eq 'y'))}
 		<td class="auto" style="width:20px;">
@@ -171,7 +149,27 @@ link="{tr}List Attachments{/tr}"><img src="img/icons/folderin.gif" alt="{tr}List
 
 		{else}{* a pretty tpl *}
 {* ------------------------------------ *}
-   			{include file='tracker_pretty_item.tpl' fields=$items[user].field_values item=$items[user] wiki=$tpl}
+			{if !isset($list_mode)}{assign var=list_mode value="n"}{/if}
+			{section name=ix loop=$items[user].field_values}
+				{if $items[user].field_values[ix].isPublic eq 'y' and ($items[user].field_values[ix].isHidden eq 'n' or ($items[user].field_values[ix].isHidden eq 'c' and $items[user].itemUser eq $user) or $items[user].field_values[ix].isHidden eq 'p' or $tiki_p_admin_trackers eq 'y') and $items[user].field_values[ix].type ne 'x' and $items[user].field_values[ix].type ne 'h' and in_array($items[user].field_values[ix].fieldId, $listfields) and ($items[user].field_values[ix].type ne 'p' or $items[user].field_values[ix].options_array[0] ne 'password') and (empty($items[user].field_values[ix].visibleBy) or in_array($default_group, $items[user].field_values[ix].visibleBy) or $tiki_p_admin_trackers eq 'y')}
+					{capture name=value}
+						{if isset($perms)}
+							{include file='tracker_item_field_value.tpl' item=$items[user] field_value=$items[user].field_values[ix] list_mode=$list_mode
+		tiki_p_view_trackers=$perms.tiki_p_view_trackers tiki_p_modify_tracker_items=$perms.tiki_p_modify_tracker_items tiki_p_modify_tracker_items_pending=$perms.tiki_p_modify_tracker_items_pending tiki_p_modify_tracker_items_closed=$perms.tiki_p_modify_tracker_items_closed tiki_p_comment_tracker_items=$perms.tiki_p_comment_tracker_items}
+						{else}
+							{include file='tracker_item_field_value.tpl' item=$items[user] field_value=$items[user].field_values[ix] list_mode=$list_mode}
+						{/if}
+					{/capture}
+					{set var=f_`$items[user].field_values[ix].fieldId` value=$smarty.capture.value}
+				{else}
+					{set var=f_`$items[user].field_values[ix].fieldId` value=''}
+				{/if}
+			{/section}
+			{set var=f_created value=$items[user].created}
+			{set var=f_lastmodif value=$items[user].lastModif}
+			{set var=f_itemId value=$items[user].itemId}
+{* ------------------------------------ *}
+			{include file="$tpl" item=$items[user]}
 		{/if}
 	{/section}
 
@@ -217,7 +215,7 @@ link="{tr}List Attachments{/tr}"><img src="img/icons/folderin.gif" alt="{tr}List
 		{capture assign=moreUrl}
 			{if $moreurl}{$moreurl}{else}tiki-view_tracker.php{/if}?trackerId={$trackerId}{if isset($tr_sort_mode)}&amp;sort_mode={$tr_sort_mode}{/if}
 		{/capture}
-		{button class='more' href="$moreUrl" _text="{tr}More...{/tr}"}
+		{button href="$moreUrl" _text="{tr}More...{/tr}"}
 	</div>
 	{elseif $showpagination ne 'n'}
 		{pagination_links cant=$count_item step=$max offset=$tr_offset offset_arg=tr_offset}{/pagination_links}

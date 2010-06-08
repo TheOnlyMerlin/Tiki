@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 function prefs_error_list() {
 	return array(
@@ -21,7 +16,6 @@ function prefs_error_list() {
 				2047 => tra('Report all PHP errors except strict'),
 				-1 => tra('Report all PHP errors'),
 				2039 => tra('Report all PHP errors except notices'),
-				1 => tra('According to PHP configuration')
 			),
 		),
 	);

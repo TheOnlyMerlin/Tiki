@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /* Tiki-Wiki plugin example 
  *
  * This is an example plugin to let you know how to create
@@ -21,7 +15,7 @@
  * wiki page.
  */
 function wikiplugin_sheet_help() {
-	return tra("TikiSheet").":<br />~np~{SHEET(id=>x, simple=>n)}".tra("Sheet Heading")."{SHEET}~/np~";
+	return tra("TikiSheet").":<br />~np~{SHEET(id=>)}".tra("Sheet Heading")."{SHEET}~/np~";
 }
 
 function wikiplugin_sheet_info() {
@@ -36,11 +30,6 @@ function wikiplugin_sheet_info() {
 				'required' => true,
 				'name' => tra('Sheet ID'),
 				'description' => tra('Internal ID of the TikiSheet.'),
-			),
-			'simple' => array(
-				'required' => false,
-				'name' => tra('Simple'),
-				'description' => tra('Simple table view y/n (Default: n = jquery.sheet view if feature enabled).'),
 			),
 		),
 	);
@@ -84,7 +73,7 @@ document.getElementById('$formId').submit();
 EOF;
 			} else {
 				$intro = tra('Incomplete call to plugin: No target sheet.');
-				$label = tra('Create New Sheet');
+				$label = tra('Create new sheet');
 				return <<<EOF
 ~np~
 <form method="post" action="">
@@ -101,7 +90,7 @@ EOF;
 	}
 
 	// Build required objects
-	$sheet = new TikiSheet($id);
+	$sheet = new TikiSheet;
 	$db = new TikiSheetDatabaseHandler( $id );
 	$out = new TikiSheetOutputHandler( $data );
 
@@ -114,20 +103,8 @@ EOF;
 	$ret = ob_get_contents();
 	ob_end_clean();
 
-	if ($prefs['feature_jquery_sheet'] == 'y') {
-		if (!isset($simple) || $simple != 'y') {
-			global $headerlib;
-			$headerlib->add_jq_onready('if (typeof ajaxLoadingShow == "function") { ajaxLoadingShow("role_main"); }
-setTimeout (function () { $jq("div.tiki_sheet").tiki("sheet", "",{editable:false});}, 100);', 500);
-		}
-		$ret = '<div class="tiki_sheet">' . $ret . '</div>';
-		if( $tiki_p_edit_sheet == 'y' || $tiki_p_admin_sheet == 'y' || $tiki_p_admin == 'y') {
-			$ret .= "<a href='tiki-view_sheets.php?sheetId=$id&parse=edit' class='linkbut'>" . tra("Edit Sheet") . "</a>";
-		}
-	} else {
-		if( $tiki_p_edit_sheet == 'y' || $tiki_p_admin_sheet == 'y' || $tiki_p_admin == 'y') {
-			$ret .= "<a href='tiki-view_sheets.php?sheetId=$id&readdate=" . time() . "&mode=edit' class='linkbut'>" . tra("Edit Sheet") . "</a>";
-		}
-	}
+	if( $tiki_p_edit_sheet == 'y' || $tiki_p_admin_sheet == 'y' || $tiki_p_admin == 'y')
+		$ret .= "<a href='tiki-view_sheets.php?sheetId=$id&readdate=" . time() . "&mode=edit' class='linkbut'>" . tra("Edit Sheet") . "</a>";
+	
 	return $ret;
 }

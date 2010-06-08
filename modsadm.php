@@ -1,10 +1,5 @@
 #!/usr/bin/php
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 if (!defined('STDOUT') || !defined('STDIN') || !defined('STDERR'))
      die("<p>shell only</p>");
@@ -177,9 +172,9 @@ function command_list($goption, $coption, $cparams) {
 
 
 	foreach($merged as $k => $meat) {
-		ksort($merged[$k]);
+		ksort(&$merged[$k]);
 	}
-	ksort($merged);
+	ksort(&$merged);
 	foreach($merged as $type => $meat) {
 		echo $type.":\n";
 		foreach($meat as $name => $submeat) {

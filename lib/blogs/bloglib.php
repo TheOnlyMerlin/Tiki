@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 // This script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
@@ -21,8 +16,7 @@ include_once('lib/reportslib.php');
  * @version
  * @license LGPL. See licence.txt for more details
  */
-class BlogLib extends TikiLib
-{
+class BlogLib extends TikiLib {
 
 	/**
 	 * get_number_of_pages Returns the number of pages
@@ -156,24 +150,22 @@ class BlogLib extends TikiLib
 	 * @access public
 	 * @return int blogId
 	 */
-	function replace_blog($title, $description, $user, $public, $maxPosts, $blogId, $heading, $use_title, $use_author, $add_date, $use_find, $allow_comments, $show_avatar, $alwaysOwner) {
+	function replace_blog($title, $description, $user, $public, $maxPosts, $blogId, $heading, $use_title, $use_find, $allow_comments, $show_avatar) {
 		global $prefs;
 		if ($blogId) {
-			$query = "update `tiki_blogs` set `title`=? ,`description`=?,`user`=?,`public`=?,`lastModif`=?,`maxPosts`=?,`heading`=?,`use_title`=?,`use_author`=?,`add_date`=?,`use_find`=?,`allow_comments`=?,`show_avatar`=?,`always_owner`=? where `blogId`=?";
+			$query = "update `tiki_blogs` set `title`=? ,`description`=?,`user`=?,`public`=?,`lastModif`=?,`maxPosts`=?,`heading`=?,`use_title`=?,`use_find`=?,`allow_comments`=?,`show_avatar`=? where `blogId`=?";
 
-			$result = $this->query($query, array($title, $description, $user, $public, $this->now, $maxPosts, $heading, $use_title, $use_author, $add_date, $use_find, $allow_comments, $show_avatar, $alwaysOwner, $blogId));
-			$this->syncParsedText($heading, array('type'=>'blog', 'object'=>$blogId));
+			$result = $this->query($query, array($title, $description, $user, $public, $this->now, $maxPosts, $heading, $use_title, $use_find, $allow_comments, $show_avatar, $blogId));
 		} else {
-			$query = "insert into `tiki_blogs`(`created`,`lastModif`,`title`,`description`,`user`,`public`,`posts`,`maxPosts`,`hits`,`heading`,`use_title`,`use_author`,`add_date`,`use_find`,`allow_comments`,`show_avatar`,`always_owner`) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			$query = "insert into `tiki_blogs`(`created`,`lastModif`,`title`,`description`,`user`,`public`,`posts`,`maxPosts`,`hits`,`heading`,`use_title`,`use_find`,`allow_comments`,`show_avatar`) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-			$result = $this->query($query, array((int) $this->now, (int) $this->now, $title, $description, $user, $public, 0, (int) $maxPosts, 0, $heading, $use_title, $use_author, $add_date, $use_find, $allow_comments, $show_avatar, $alwaysOwner));
+			$result = $this->query($query, array((int) $this->now, (int) $this->now, $title, $description, $user, $public, 0, (int) $maxPosts, 0, $heading, $use_title, $use_find, $allow_comments, $show_avatar));
 			$query2 = "select max(`blogId`) from `tiki_blogs` where `lastModif`=?";
 			$blogId = $this->getOne($query2, array((int) $this->now));
 
 			if ($prefs['feature_score'] == 'y') {
 				$this->score_event($user, 'blog_new');
 			}
-			$this->syncParsedText($heading, array('type'=>'blog', 'object'=>$blogId, 'description'=>$description, 'name'=>$title, 'href'=>"tiki-view_blog.php?blogId=$blogId"));
 		}
 
 		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
@@ -184,10 +176,9 @@ class BlogLib extends TikiLib
 	}
 
 	/**
-	 * list_blog_posts Returns all the posts for the blog $blogId
+	 * list_blog_posts Returns al the posts for the blog $blogId
 	 *
 	 * @param int $blogId
-	 * @param bool $allowDrafts
 	 * @param int $offset
 	 * @param int $maxRecords
 	 * @param string $sort_mode
@@ -198,61 +189,36 @@ class BlogLib extends TikiLib
 	 * @access public
 	 * @return array posts
 	 */
-	function list_blog_posts($blogId = 0, $allowDrafts = false, $offset = 0, $maxRecords = -1, $sort_mode = 'created_desc', $find = '', $date_min = '', $date_max = '', $approved = 'y') {
-		global $tiki_p_admin_comments, $tiki_p_admin, $tiki_p_blog_admin, $tiki_p_blog_post, $user;
+	function list_blog_posts($blogId = 0, $offset = 0, $maxRecords = -1, $sort_mode = 'created_desc', $find = '', $date_min = '', $date_max = '', $approved = 'y') {
+		global $tiki_p_admin_comments;
 
 		$mid = array();
 		$bindvars = array();
 
 		if ( $blogId > 0 ) {
-			$mid[] = "tbp.`blogId`=?";
+			$mid[] = "`blogId`=?";
 			$bindvars[] = (int)$blogId;
-
-			$blog_data = $this->get_blog($blogId);
-			if ($user && $user == $blog_data["user"]) {
-				$ownsblog = 'y';
-			}
-		}
-		$mid[] = "tbp.blogId = tb.blogId";
-
-		if ( !$allowDrafts ){
-			$mid[] = "`priv`!='y'";
-		}else{
-			// Private posts can be accessed on the following conditions:
-			// user has tiki_p_admin or tiki_p_blog_admin or has written the post
-			// If blog is configured with 'Allow other user to post in this blog', then also if user has tiki_p_blog_post or is owner of this blog
-			if ( ($tiki_p_admin != 'y')
-			     and ($tiki_p_blog_admin != 'y')
-			     and ( (! isset($blog_data["public"])) || $blog_data["public"] != 'y' || $tiki_p_blog_post != 'y')
-			     and ($blog_data["public"] != 'y' || $ownsblog != 'y') ) {
-				if ( isset($user) ) {
-					$mid[] = "(tbp.`priv`!='y' or tbp.`user`=?)";
-					$bindvars[] = "$user";
-				} else {
-					$mid[] = "tbp.`priv`!='y'";
-				}
-			}
 		}
 
 		if ( $find ) {
 			$findesc = '%' . $find . '%';
-			$mid[] = "(tbp.`data` like ? or tbp.`title` like ?)";
+			$mid[] = "(`data` like ? or `title` like ?)";
 			$bindvars[] = $findesc;
 			$bindvars[] = $findesc;
 		}
 
 		if ( $date_min ) {
-			$mid[] = "tbp.`created`>=?";
+			$mid[] = "`created`>=?";
 			$bindvars[] = (int)$date_min;
 		}
 		if ( $date_max ) {
-			$mid[] = "tbp.`created`<=?";
+			$mid[] = "`created`<=?";
 			$bindvars[] = (int)$date_max;
 		}
-
 		$mid = empty($mid) ? '' : 'where ' . implode(' and ', $mid);
-		$query = "select tbp.*,tb.title as blogTitle from `tiki_blog_posts` as tbp, `tiki_blogs` as tb $mid order by ".$this->convertSortMode($sort_mode);
-		$query_cant = "select count(*) from `tiki_blog_posts` as tbp, `tiki_blogs` as tb $mid";
+
+		$query = "select * from `tiki_blog_posts` $mid order by ".$this->convertSortMode($sort_mode);
+		$query_cant = "select count(*) from `tiki_blog_posts` $mid";
 		$result = $this->query($query, $bindvars, $maxRecords, $offset);
 		$cant = $this->getOne($query_cant, $bindvars);
 		$ret = array();
@@ -289,7 +255,7 @@ class BlogLib extends TikiLib
 	 * @access public
 	 * @return void
 	 */
-	function list_blog_post_comments($approved = 'y', $maxRecords = -1, $ref='') {
+	function list_blog_post_comments($approved = 'y', $maxRecords = -1) {
 		global $user;
 
 		$query = "SELECT b.`title`, b.`postId`, c.`threadId`, c.`title` as commentTitle, `commentDate`, `userName` FROM `tiki_comments` c, `tiki_blog_posts` b WHERE `objectType`='post' AND b.`postId`=c.`object`";
@@ -308,7 +274,7 @@ class BlogLib extends TikiLib
 
 		$ret = array();
 		while ( $res = $result->fetchRow() ) {
-			if ( $this->user_has_perm_on_object($user, $res['postId'], 'post', 'tiki_p_read_blog') || ($ref == 'post' && $this->user_has_perm_on_object($user, $res['postId'], 'post', 'tiki_p_blog_post_view_ref'))) {
+			if ( $this->user_has_perm_on_object($user, $res['postId'], 'post', 'tiki_p_read_blog') ) {
 
 				/// check if the blog post is marked private
 				$priv = ( $res2 = $this->get_post($res['postId']) ) ? $res2['priv'] : '';
@@ -333,7 +299,7 @@ class BlogLib extends TikiLib
 	 * @access public
 	 * @return void
 	 */
-	function list_all_blog_posts($offset = 0, $maxRecords = -1, $sort_mode = 'created_desc', $find = '', $date = '', $ref='') {
+	function list_all_blog_posts($offset = 0, $maxRecords = -1, $sort_mode = 'created_desc', $find = '', $date = '') {
 
 		if ($find) {
 			$findesc = '%' . $find . '%';
@@ -360,7 +326,7 @@ class BlogLib extends TikiLib
 		$cant = $this->getOne($query_cant, $bindvars);
 		$ret = array();
 
-		$result = Perms::filter( array( 'type' => 'blog' ), 'object', $result, array( 'object' => 'blogId' ), array('read_blog', 'blog_view_ref') );
+		$result = Perms::filter( array( 'type' => 'blog' ), 'object', $result, array( 'object' => 'blogId' ), 'read_blog' );
 
 		global $prefs;
 		foreach( $result as $res ) {
@@ -388,21 +354,17 @@ class BlogLib extends TikiLib
 	 * @access public
 	 * @return int postId
 	 */
-	function blog_post($blogId, $data, $user, $title = '', $contributions = '', $priv = 'n', $created = 0) {
+	function blog_post($blogId, $data, $user, $title = '', $contributions = '', $priv = 'n') {
 		// update tiki_blogs and call activity functions
 		global $smarty, $tikilib, $prefs, $reportslib;
-		
-		if(!$created) {
-			$created = $this->now;	
-		}
-		
+
 		$data = strip_tags($data, '<a><b><i><h1><h2><h3><h4><h5><h6><ul><li><ol><br><p><table><tr><td><img><pre>');
 		$query = "insert into `tiki_blog_posts`(`blogId`,`data`,`created`,`user`,`title`,`priv`) values(?,?,?,?,?,?)";
-		$result = $this->query($query, array((int) $blogId, $data, (int) $created, $user, $title, $priv));
+		$result = $this->query($query, array((int) $blogId, $data, (int) $this->now, $user, $title, $priv));
 		$query = "select max(`postId`) from `tiki_blog_posts` where `created`=? and `user`=?";
-		$id = $this->getOne($query, array((int) $created, $user));
+		$id = $this->getOne($query, array((int) $this->now, $user));
 		$query = "update `tiki_blogs` set `lastModif`=?,`posts`=`posts`+1 where `blogId`=?";
-		$result = $this->query($query, array((int) $created, (int) $blogId));
+		$result = $this->query($query, array((int) $this->now, (int) $blogId));
 		$this->add_blog_activity($blogId);
 
 		if ($prefs['feature_user_watches'] == 'y') {
@@ -458,7 +420,7 @@ class BlogLib extends TikiLib
 			require_once('lib/search/refresh-functions.php');
 			refresh_index('blog_posts', $id);
 		}
-		$this->syncParsedText($data, array('type'=>'blog post', 'object'=>$id, 'description'=>substr($edit_data, 0, 200), 'name'=>$title, 'href'=>"tiki-view_blog_post.php?postId=$id"));
+
 		return $id;
 	}
 
@@ -533,7 +495,6 @@ class BlogLib extends TikiLib
 		$result = $this->query($query, array((int) $postId));
 		if ($result->numRows()) {
 			$res = $result->fetchRow();
-			$res['avatar'] = $this->get_user_avatar($res['user']);		
 		} else {
 			return false;
 		}
@@ -554,14 +515,10 @@ class BlogLib extends TikiLib
 	 * @access public
 	 * @return void
 	 */
-	function update_post($postId, $blogId, $data, $user, $title = '', $contributions = '', $old_data = '', $priv='n', $created = 0) {
+	function update_post($postId, $blogId, $data, $user, $title = '', $contributions = '', $old_data = '', $priv='n') {
 		global $prefs;
-		
-		if(!$created) {
-			$created = $this->now;	
-		}
-		$query = "update `tiki_blog_posts` set `blogId`=?,`data`=?,`created`=?,`user`=?,`title`=?, `priv`=? where `postId`=?";
-		$result = $this->query($query, array($blogId, $data, $created,$user, $title, $priv, $postId));
+		$query = "update `tiki_blog_posts` set `blogId`=?,`data`=?,`user`=?,`title`=?, `priv`=? where `postId`=?";
+		$result = $this->query($query, array($blogId, $data, $user, $title, $priv, $postId));
 		if ($prefs['feature_actionlog'] == 'y') {
 			global $logslib; include_once('lib/logs/logslib.php');
 			$logslib->add_action('Updated', $blogId, 'blog', "blogId=$blogId&amp;postId=$postId#postId$postId", '', '', '', '', $contributions);
@@ -570,7 +527,6 @@ class BlogLib extends TikiLib
 			require_once('lib/search/refresh-functions.php');
 			refresh_index('blog_posts', $postId);
 		}
-		$this->syncParsedText($data, array('type'=>'blog post', 'object'=>$postId));
 	}
 
 	/**

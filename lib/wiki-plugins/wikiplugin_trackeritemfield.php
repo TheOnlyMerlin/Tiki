@@ -1,10 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Header: /cvsroot/tikiwiki/_mods/wiki-plugins/trackeritemfield/wiki-plugins/wikiplugin_trackeritemfield.php,v 1.6 2007/07/17 13:03:52 sylvieg Exp $
 function wikiplugin_trackeritemfield_help() {
 	$help = tra("Displays the value of a tracker item field or the wiki text if the value of the field is set or has a value(if itemId not specified, use the itemId of the url or the user tracker).").":\n";
 	$help .= "~np~{TRACKERITEMFIELD(trackerId=1, itemId=1, fieldId=1, fields=1:2, status=o|p|c|op|oc|pc|opc, test=1|0, value=x)}".tra('Wiki text')."{ELSE}".tra('Wiki text')."{TRACKERITEMFIELD}~/np~";
@@ -103,16 +98,16 @@ function wikiplugin_trackeritemfield($data, $params) {
 		if (empty($itemId) && empty($test) && empty($status)) {// need an item
 			return tra('Incorrect param').': itemId';
 		}
+		if (empty($trackerId)) {
+			return tra('Incorrect param').': trackerId';
+		}
 
 		if (!empty($status) && !$trklib->valid_status($status)) {
 			return tra('Incorrect param').': status';
 		}
 
 		$info = $trklib->get_item_info($itemId);
-		if (!empty($info) && empty($trackerId)) {
-			$trackerId = $info['trackerId'];
-		}
-		if (!empty($info) && !$memoUserTracker) {
+		if (!$memoUserTracker) {
 			$perm = ($info['status'] == 'c')? 'view_trackers_closed':(($info['status'] == 'p')?'view_trackers_pending':'view_trackers');
 			$perms = Perms::get(array('type'=>'tracker', 'object'=>$trackerId));
 			if (!$perms->$perm) {
@@ -134,7 +129,7 @@ function wikiplugin_trackeritemfield($data, $params) {
 		}
 		$memoStatus = $info['status'];
 		$memoItemId = $itemId;
-		$memoTrackerId = $info['trackerId'];
+		$memoTrackerId = $trackerId;
 	}
 	if (!isset($data)) {
 		$data = $dataelse = '';
@@ -149,15 +144,11 @@ function wikiplugin_trackeritemfield($data, $params) {
 			return $dataelse;
 		}
 	}
-	if (empty($itemId) && !empty($test)) {
-		return $dataelse;
-	} elseif (empty($itemId)) {
-		return tra('Incorrect param').': itemId';
-	} elseif (isset($fields)) {
+	if (isset($fields)) {
 		$all_fields = $trklib->list_tracker_fields($trackerId, 0, -1);
 		$all_fields = $all_fields['data'];
 		if (!empty($fields)) {
-			$fields = explode(':', $fields);
+			$fields = split(':', $fields);
 			foreach ($all_fields as $i=>$fopt) {
 				if (!in_array($fopt['fieldId'], $fields)) {
 					unset($all_fields[$i]);

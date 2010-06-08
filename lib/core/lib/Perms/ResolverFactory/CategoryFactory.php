@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once 'lib/core/lib/Perms/ResolverFactory.php';
 
@@ -95,7 +90,7 @@ class Perms_ResolverFactory_CategoryFactory implements Perms_ResolverFactory
 			$key = $this->objectKey( array_merge( $baseContext, array( 'object' => $v ) ) );
 
 			if( ! isset( $this->knownObjects[$key] ) ) {
-				$objects[strtolower($v)] = $key;
+				$objects[$v] = $key;
 				$this->knownObjects[$key] = array();
 			}
 		}
@@ -106,13 +101,13 @@ class Perms_ResolverFactory_CategoryFactory implements Perms_ResolverFactory
 
 		$db = TikiDb::get();
 		$bindvars = array( $baseContext['type'] );
-		$result = $db->fetchAll( 'SELECT `categId`, `itemId` FROM `tiki_category_objects` INNER JOIN `tiki_objects` ON `catObjectId` = `objectId` WHERE `type` = ? AND ' . $db->in( 'itemId', array_keys( $objects ), $bindvars ) . ' ORDER BY `catObjectId`, `categId`', $bindvars );
+		$result = $db->query( 'SELECT `categId`, `itemId` FROM `tiki_category_objects` INNER JOIN `tiki_objects` ON `catObjectId` = `objectId` WHERE `type` = ? AND ' . $db->in( 'itemId', array_keys( $objects ), $bindvars ) . ' ORDER BY `catObjectId`, `categId`', $bindvars );
 
 		$categories = array();
 
-		foreach( $result as $row ) {
+		while( $row = $result->fetchRow() ) {
 			$category = (int) $row['categId'];
-			$object = strtolower($row['itemId']);
+			$object = $row['itemId'];
 			$key = $objects[$object];
 			
 			$this->knownObjects[$key][] = $category;
@@ -136,9 +131,9 @@ class Perms_ResolverFactory_CategoryFactory implements Perms_ResolverFactory
 		$db = TikiDb::get();
 
 		$bindvars = array();
-		$result = $db->fetchAll( 'SELECT `objectId`, `groupName`, `permName` FROM `users_objectpermissions` WHERE `objectType` = \'category\' AND ' . $db->in( 'objectId', array_keys( $objects ), $bindvars ), $bindvars );
+		$result = $db->query( 'SELECT `objectId`, `groupName`, `permName` FROM `users_objectpermissions` WHERE `objectType` = \'category\' AND ' . $db->in( 'objectId', array_keys( $objects ), $bindvars ), $bindvars );
 
-		foreach( $result as $row ) {
+		while( $row = $result->fetchRow() ) {
 			$object = $row['objectId'];
 			$group = $row['groupName'];
 			$categ = $objects[$object];

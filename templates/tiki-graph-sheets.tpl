@@ -53,7 +53,8 @@
 </form>
 {/if}
 {if ($mode eq 'param')}
-{jq}
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
 {literal}
 function renderWikiPlugin()
 {
@@ -100,7 +101,8 @@ function _renValRad( name )
 			return name + '=>' + rads[i].value;
 }
 {/literal}
-{/jq}
+//--><!]]>
+</script>
 
 <form name="chartParam" method="get" action="tiki-graph_sheet.php">
 <input type="hidden" name="sheetId" value="{$sheetId}"/>

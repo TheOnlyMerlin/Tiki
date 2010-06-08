@@ -7,11 +7,6 @@
 * See: http://profiles.tikiwiki.org/Collaborative_Multilingual_Terminology
 *************************************************************/
 
-/**
- * @group gui
- */
- 
-
 
 require_once 'TikiSeleniumTestCase.php';
 
@@ -20,7 +15,6 @@ class  AcceptanceTests_CollaborativeMultilingualTerminologyTest extends TikiSele
 
     protected function setUp()
     {
-    	$this->markTestSkipped("This test still too experimental, so skipping it.");    	
         $this->current_test_db = "multilingualTestDump.sql";
         $this->restoreDBforThisTest();
 #        $this->applyProfile('Collaborative_Multilingual_Terminology',
@@ -36,6 +30,9 @@ class  AcceptanceTests_CollaborativeMultilingualTerminologyTest extends TikiSele
 	public function ___testRememberToReactivateAllTestsInCollaborativeMultilingualTerminologyTest() {
     	$this->fail("Don't forget to do this");
     }
-       
+        
+   public function testNevermind() {
+    	$this->fail("Nevermind");
+   }
     
 }

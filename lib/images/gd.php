@@ -1,14 +1,8 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once('lib/images/abstract.php');
 
-class Image extends ImageAbstract
-{
+class Image extends ImageAbstract {
 	var $gdinfo;
 	var $gdversion;
 	var $havegd = false;
@@ -37,7 +31,7 @@ class Image extends ImageAbstract
 	function _load_data() {
 		if (!$this->loaded && $this->havegd) {
 			if (!empty($this->filename)) {
-				$this->format = strtolower(substr($this->filename, strrpos($this->filename, '.') + 1));
+				$this->format = strtolower(substr($image, strrpos($image, '.') + 1));
 				list($this->width, $this->height, $type) = getimagesize($this->filename);
 				if (function_exists("image_type_to_extension")) {
 					$this->format = image_type_to_extension($type,false);
@@ -80,7 +74,7 @@ class Image extends ImageAbstract
 
 		$this->_load_data();
 		if ($this->data) {
-			@ob_end_flush();	// ignore E_NOTICE if no buffer
+			ob_end_flush();
 			ob_start();
 			switch ( strtolower($this->format) ) {
 				case 'jpeg':

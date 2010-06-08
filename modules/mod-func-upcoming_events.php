@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -17,7 +12,7 @@ function module_upcoming_events_info() {
 		'description' => tra('Lists the specified number of calendar events, ordered by their start date.'),
 		'prefs' => array("feature_calendar"),
 		'params' => array(
-			'calendarId' => array(
+			'calendarid' => array(
 				'name' => tra('Calendars filter'),
 				'description' => tra('If set to a list of calendar identifiers, restricts the events to those in the identified calendars. Identifiers are separated by vertical bars ("|"), commas (",") or colons (":").') . " " . tra('Example values:') . '"13", "4,7", "31:49". ' . tra('Not set by default.')
 			),
@@ -69,11 +64,6 @@ function module_upcoming_events_info() {
 				'name' => tra('Maximum length'),
 				'description' => tra('If set to an integer, event names are allowed that number of characters as a maximum before being truncated.'),
 				'filter' => 'int'
-			),
-			'showaction' => array(
-				'name' => tra('Show action'),
-				'description' => 'y|n',
-				'filter' => 'word'
 			)
 		),
 		'common_params' => array('nonums', 'rows')
@@ -87,6 +77,7 @@ function module_upcoming_events( $mod_reference, $module_params ) {
 	$rawcals = $calendarlib->list_calendars();
 	$calIds = array();
 	$viewable = array();
+	
 	foreach ($rawcals["data"] as $cal_id=>$cal_data) {
 		$calIds[] = $cal_id;
 		$canView = 'n';
@@ -109,12 +100,12 @@ function module_upcoming_events( $mod_reference, $module_params ) {
 	$smarty->assign_by_ref('infocals', $rawcals['data']);
 	
 	$events = array();
-	if (!empty($module_params['calendarId'])) {
-		$calIds = preg_split('/[\|:\&,]/', $module_params['calendarId']);
+	if (!empty($module_params['calendarId']) && !is_array($module_params['calendarId']) && !is_numeric($module_params['calendarId'])) {
+		$module_params['calendarId'] = preg_split('/[\|:\&,]/', $module_params['calendarId']);
 	}
 	if (!empty($viewable))
 		$events = $calendarlib->upcoming_events($mod_reference['rows'],
-			array_intersect($calIds, $viewable),
+			array_intersect(isset($module_params['calendarId']) ? (is_array($module_params['calendarId'])? $module_params['calendarId']: array($module_params['calendarId'])) : $calIds, $viewable),
 			-1,
 			'start_asc', 
 			isset($module_params["priorDays"]) ? (int) $module_params["priorDays"] : 0,

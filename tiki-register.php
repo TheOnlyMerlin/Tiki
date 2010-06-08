@@ -1,35 +1,28 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-register.php,v 1.91.2.4 2008/03/23 14:12:05 sylvieg Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/registration/registrationlib.php');
 include_once ('lib/notifications/notificationlib.php');
-$smarty->assign('headtitle', tra('Register'));
 // Permission: needs p_register and not to be a slave
 if ($prefs['allowRegister'] != 'y' || ($prefs['feature_intertiki'] == 'y' && !empty($prefs['feature_intertiki_mymaster']))) {
 	header("location: index.php");
 	die;
 }
-$smarty->assign('allowRegister', 'y'); // Used for OpenID associations
-// NOTE that this is not a standard access check, it checks for the opposite of that, i.e. whether logged in already
 if (!empty($user)) {
 	$smarty->assign('msg', tra('You are already logged in'));
 	$smarty->display('error.tpl');
 	die;
 }
+	
 $smarty->assign('showmsg', 'n');
-// ensure ssl
-if (!$https_mode && $prefs['https_login'] == 'required') {
-	header('Location: ' . $base_url_https . 'tiki-register.php');
-	die;
-}
 // novalidation is set to yes if a user confirms his email is correct after tiki fails to validate it
 if (!isset($_REQUEST['novalidation'])) {
-	$novalidation = '';
+	if (!empty($_REQUEST['trackit'])) $novalidation = 'yes'; // the user has already confirmed manually that SnowCheck is not working
+	else $novalidation = '';
 } else {
 	$novalidation = $_REQUEST['novalidation'];
 }
@@ -53,30 +46,10 @@ if ($nbChoiceGroups) {
 		$smarty->assign_by_ref('theChoiceGroup', $theChoiceGroup);
 	}
 }
-
-if (isset($_REQUEST['register'])) {
+if (isset($_REQUEST['register']) && !empty($_REQUEST['name']) && (isset($_REQUEST['pass']) || isset($_SESSION['openid_url']))) {
 	check_ticket('register');
-	$cookie_name = $prefs['session_cookie_name'];
-
-	if( ini_get('session.use_cookie') && ! isset( $_COOKIE[$cookie_name] ) ) {
-		$smarty->assign('msg',tra("You have to enable cookies to be able to login to this site"));
-		$smarty->display("error.tpl");
-		exit;
-	}
-
 	$smarty->assign('errortype', 'no_redirect_login');
-	
-	if (empty($_REQUEST['name'])) {
-		$smarty->assign('msg', tra("Username is required"));
-		$smarty->display("error.tpl");
-		die;	
-	}
-	if (empty($_REQUEST['pass']) && !isset($_SESSION['openid_url'])) {
-		$smarty->assign('msg', tra("Password is required"));
-		$smarty->display("error.tpl");
-		die;	
-	}
-	if ($novalidation != 'yes' and ($_REQUEST["pass"] != $_REQUEST["passAgain"]) and !isset($_SESSION['openid_url'])) {
+	if ($novalidation != 'yes' and ($_REQUEST["pass"] <> $_REQUEST["passAgain"]) and !isset($_SESSION['openid_url'])) {
 		$smarty->assign('msg', tra("The passwords don't match"));
 		$smarty->display("error.tpl");
 		die;
@@ -86,7 +59,7 @@ if (isset($_REQUEST['register'])) {
 		$smarty->display("error.tpl");
 		die;
 	}
-	if (!$user && $prefs['rnd_num_reg'] == 'y') {
+	if (!$user && $prefs['rnd_num_reg'] == 'y' && !isset($_SESSION['in_tracker'])) {
 		if (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $_REQUEST['antibotcode']) {
 			$smarty->assign('msg', tra("You have mistyped the anti-bot verification code; please try again."));
 			$smarty->display("error.tpl");
@@ -106,7 +79,7 @@ if (isset($_REQUEST['register'])) {
 		die;
 	}
 	if ($prefs['lowercase_username'] == 'y') {
-		if (preg_match('/[[:upper:]]/', $_REQUEST["name"])) {
+		if (ereg("[[:upper:]]", $_REQUEST["name"])) {
 			$smarty->assign('msg', tra("Username cannot contain uppercase letters"));
 			$smarty->display("error.tpl");
 			die;
@@ -123,8 +96,7 @@ if (isset($_REQUEST['register'])) {
 		$smarty->display("error.tpl");
 		die;
 	}
-	$newPass = $_REQUEST["pass"] ? $_REQUEST["pass"] : $_REQUEST["genepass"];
-	$polerr = $userlib->check_password_policy($newPass);
+	$polerr = $userlib->check_password_policy($_REQUEST["pass"]);
 	if (!isset($_SESSION['openid_url']) && (strlen($polerr) > 0)) {
 		$smarty->assign('msg', $polerr);
 		$smarty->display("error.tpl");
@@ -158,6 +130,18 @@ if (isset($_REQUEST['register'])) {
 	$email_valid = 'y';
 	if (!validate_email($_REQUEST["email"], $prefs['validateEmail'])) {
 		$email_valid = 'n';
+	} elseif ($prefs['userTracker'] == 'y') {
+		$re = $userlib->get_group_info(isset($_REQUEST['chosenGroup']) ? $_REQUEST['chosenGroup'] : 'Registered');
+		if (!empty($re['usersTrackerId']) && !empty($re['registrationUsersFieldIds'])) {
+			include_once ('lib/wiki-plugins/wikiplugin_tracker.php');
+			$_SESSION['in_tracker'] = true;
+			$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n'));
+			$smarty->assign('userTrackerData', $userTrackerData);
+			if (!isset($_REQUEST['trackit']) || (isset($_REQUEST['error']) && $_REQUEST['error'] == 'y')) {
+				$email_valid = 'n'; // first pass or error
+				
+			}
+		}
 	}
 	if ($email_valid == 'y') {
 		if (isset($_SESSION['openid_url'])) {
@@ -168,21 +152,22 @@ if (isset($_REQUEST['register'])) {
 		if ($prefs['validateUsers'] == 'y' || (isset($prefs['validateRegistration']) && $prefs['validateRegistration'] == 'y')) {
 			$apass = addslashes(md5($tikilib->genPass()));
 			$userlib->send_validation_email($_REQUEST['name'], $apass, $_REQUEST['email'], '', '', isset($_REQUEST['chosenGroup']) ? $_REQUEST['chosenGroup'] : '');
-			$userlib->add_user($_REQUEST["name"], $newPass, $_REQUEST["email"], '', false, $apass, $openid_url , $prefs['validateRegistration'] == 'y'?'a':'u');
+			$userlib->add_user($_REQUEST["name"], $_REQUEST['pass'], $_REQUEST["email"], '', false, $apass, $openid_url , $prefs['validateRegistration'] == 'y'?'a':'u');
 			$logslib->add_log('register', 'created account ' . $_REQUEST["name"]);
 			$smarty->assign('showmsg', 'y');
 		} else {
-			$userlib->add_user($_REQUEST["name"], $newPass, $_REQUEST["email"], '', false, NULL, $openid_url);
+			$userlib->add_user($_REQUEST["name"], $_REQUEST["pass"], $_REQUEST["email"], '', false, NULL, $openid_url);
 			$logslib->add_log('register', 'created account ' . $_REQUEST["name"]);
 			$smarty->assign('msg', $smarty->fetch('mail/user_welcome_msg.tpl'));
 			$smarty->assign('showmsg', 'y');
 		}
 		if (isset($_REQUEST['chosenGroup']) && $userlib->get_registrationChoice($_REQUEST['chosenGroup']) == 'y') {
 			$userlib->set_default_group($_REQUEST['name'], $_REQUEST['chosenGroup']);
-		} elseif (empty($_REQUEST['chosenGroup'])) {
+		} elseif (empty($_REQUEST['chosenGroup']) && isset($_SESSION['in_tracker'])) {
 			$userlib->set_default_group($_REQUEST['name'], 'Registered'); // to have tiki-user_preferences links par default to the registration tracker
+			
 		}
-		$userlib->set_email_group($_REQUEST['name'], $_REQUEST['email']);
+		unset($_SESSION['in_tracker']);
 		// save default user preferences
 		$tikilib->set_user_preference($_REQUEST['name'], 'theme', $prefs['style']);
 		$tikilib->set_user_preference($_REQUEST['name'], 'userbreadCrumb', $prefs['users_prefs_userbreadCrumb']);
@@ -226,24 +211,6 @@ if (isset($_REQUEST['register'])) {
 		}
 	}
 }
-
-if ($prefs['userTracker'] == 'y') {
-	$re = $userlib->get_group_info(isset($_REQUEST['chosenGroup']) ? $_REQUEST['chosenGroup'] : 'Registered');
-	if (!empty($re['usersTrackerId']) && !empty($re['registrationUsersFieldIds'])) {
-		include_once ('lib/wiki-plugins/wikiplugin_tracker.php');
-		if ($prefs["user_register_prettytracker"] == 'y' && !empty($prefs["user_register_prettytracker_tpl"])) {
-			if (substr($prefs["user_register_prettytracker_tpl"], -4) == ".tpl") {
-				$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'tpl' => $prefs["user_register_prettytracker_tpl"]));
-			} else {
-				$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'wiki' => $prefs["user_register_prettytracker_tpl"]));
-			}	
-		} else {
-			$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y'));
-		}
-		$smarty->assign('userTrackerData', $userTrackerData);
-	}
-}
-
 $smarty->assign('email_valid', $email_valid);
 ask_ticket('register');
 $_VALID = tra("Please enter a valid %s.  No spaces, more than %d characters and contain %s");
@@ -291,7 +258,7 @@ function chkRegEmail($mail) {
 	$objResponse = new xajaxResponse();
 	if (empty($mail)) {
 		$objResponse->assign("ajax_msg_mail", "innerHTML", $pre_no.tra("Missing Email"));
-	} elseif (!preg_match('/^[_a-z0-9\.\-]+@[_a-z0-9\.\-]+\.[a-z]{2,4}$/i', $mail)) {
+	} elseif (!eregi("^[_a-z0-9\.\-]+@[_a-z0-9\.\-]+\.[a-z]{2,4}$", $mail)) {
 		$objResponse->assign("ajax_msg_mail", "innerHTML", $pre_no.tra('This is not a valid mail adress'));
 	} else {
 		$objResponse->assign("ajax_msg_mail", "innerHTML", $pre_yes.tra("Valid Email"));
@@ -301,6 +268,5 @@ function chkRegEmail($mail) {
 
 if (empty($module) || !$module) {
 	$smarty->assign('mid', 'tiki-register.tpl');
-	$smarty->assign('openid_associate', 'n');
 	$smarty->display('tiki.tpl');
 }

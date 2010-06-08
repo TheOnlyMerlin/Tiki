@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /**
  *  Tikiwiki MCALENDAR plugin.
  *  Convert date from Gregorian to Mayan Calendars: Tzolkin, Haab, Long Count.
@@ -26,8 +20,7 @@
  */
 
 
-class MCalendar
-{
+ class MCalendar {
 
    // GMT correlation initiated on August 11, 3114 BC (Gregorian).
    // For another popular GMT correlation initiated on August 13, 3114 BC 
@@ -166,26 +159,13 @@ function wikiplugin_mcalendar_info() {
 			'template' => array(
 				'required' => false,
 				'name' => tra('Template'),
-				'description' => tra('You must use the variable substitution.')
-											. '<br />'
-											. tra('LongCount: ')
-											. '~np~%baktun%, %katun%, %tun%, %winal%, %kin%~/np~'
-											. '<br />'
-											. tra('Tzolkin: ') 
-											. '~np~%tzolkin13%, %tzolkin20%, %tzolkin20name%~/np~'
-											. '<br />'
-											. tra('Haab: ')
-											. '~np~%haabkin%, %haabwinal%, %haabwinalname%~/np~'
-											. '<br />'
-											. tra('Misc: ')
-											. '~np~%longkin%, %julianday%~/np~'
-											. '<br /><br />'
-											. tra('Example: template ')
-											. '~np~"%baktun%.%katun%.%tun%.%winal%.%kin%, %tzolkin13% %tzolkin20name%, %haabkin% %haabwinalname%" ~/np~' 
-											. tra('for 22.05.2009 will return 12.19.16.6.11, 8 CHUEN, 9 SIP.')
-											. '<br /><br />'
-											. tra('Default template: ')
-											. '~np~%baktun%.%katun%.%tun%.%winal%.%kin% %tzolkin13% %tzolkin20name% %haabkin% %haabwinalname%~/np~',
+				'description' => tra('You must use the variable substitution.<br/>'.
+                             'LongCount: %baktun%, %katun%, %tun%, %winal%, %kin%;<br/>'.
+                             'Tzolkin: %tzolkin13%, %tzolkin20%, %tzolkin20name%;<br/>'.
+                             'Haab: %haabkin%, %haabwinal%, %haabwinalname%;<br/>'.
+                             'Misc: %longkin%, %julianday%.<br/><br/>'.
+                             'Example: template "%baktun%.%katun%.%tun%.%winal%.%kin%, %tzolkin13% %tzolkin20name%, %haabkin% %haabwinalname%" for 22.05.2009 will return 12.19.16.6.11, 8 CHUEN, 9 SIP.<br/>'.
+                             'Default template: %baktun%.%katun%.%tun%.%winal%.%kin% %tzolkin13% %tzolkin20name% %haabkin% %haabwinalname%'),
 			),
 			'grdate' => array(
 				'required' => false,

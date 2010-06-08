@@ -1,10 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-view_faq.php,v 1.24.2.3 2008-03-12 13:04:41 ricks99 Exp $
 $section = 'faqs';
 require_once ('tiki-setup.php');
 include_once ('lib/faqs/faqlib.php');
@@ -14,19 +13,25 @@ if ($prefs['feature_categories'] == 'y') {
 		include_once ('lib/categories/categlib.php');
 	}
 }
-
-$access->check_feature('feature_faqs');
-
+if ($prefs['feature_faqs'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_faqs");
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST["faqId"])) {
 	$smarty->assign('msg', tra("No faq indicated"));
 	$smarty->display("error.tpl");
 	die;
 }
 
-$smarty->assign('headtitle', tra('FAQs'));
 $tikilib->get_perm_object( $_REQUEST['faqId'], 'faq' );
 
-$access->check_permission('tiki_p_view_faqs');
+if ($tiki_p_view_faqs != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 
 $faqlib->add_faq_hit($_REQUEST["faqId"]);
 $smarty->assign('faqId', $_REQUEST["faqId"]);

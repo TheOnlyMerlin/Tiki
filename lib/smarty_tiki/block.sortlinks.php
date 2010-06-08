@@ -1,10 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/lib/smarty_tiki/block.sortlinks.php,v 1.7 2007-04-13 14:19:48 sylvieg Exp $
 /* 
 * Smarty plugin 
 * ------------------------------------------------------------- 
@@ -26,7 +21,7 @@ function smarty_block_sortlinks($params, $content, &$smarty)
 { 
 if ($content) { 
   
-  $links=preg_split("/\n/",$content);
+  $links=split("\n",$content);
   $links2=array();
   foreach ($links as $value) {
 	preg_match('/.*(<[^>]*>)(.*)(<\/[^¨>]*>)/U', $value, $splitted);

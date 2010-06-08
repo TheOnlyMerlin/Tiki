@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
@@ -21,11 +15,14 @@ function module_perspective_info() {
 
 function module_perspective( $mod_reference, $module_params ) {
 	global $perspectivelib; require_once 'lib/perspectivelib.php';
-	global $smarty, $prefs;
+	global $smarty;
 	
 	$perspectives = $perspectivelib->list_perspectives();
 	$smarty->assign( 'perspectives', $perspectives );
 
-	$smarty->assign( 'current_perspective', $perspectivelib->get_current_perspective( $prefs ) );
+	if( isset( $_SESSION['current_perspective'] ) ) {
+		$smarty->assign( 'current_perspective', $_SESSION['current_perspective'] );
+	} else {
+		$smarty->assign( 'current_perspective', null );
+	}
 }
-

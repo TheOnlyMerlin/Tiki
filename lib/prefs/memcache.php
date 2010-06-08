@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 function prefs_memcache_list() {
 	return array(
@@ -12,12 +7,13 @@ function prefs_memcache_list() {
 			'description' => tra('Enable connection to memcached servers to store temporary information.'),
 			'type' => 'flag',
 			'hint' => tra('Requires the PHP memcache extension.'),
-			'extensions' => array( 'memcache' ),
 		),
-		'memcache_compress' => array(
-			'name' => tra('Memcache compression'),
-			'description' => tra('Enable compression for memcache storage.'),
-			'type' => 'flag',
+		'memcache_flags' => array(
+			'name' => tra('Memcache flags'),
+			'description' => tra('Configuration switches for memcache connection.'),
+			'type' => 'text',
+			'filter' => 'digits',
+			'size' => 10,
 		),
 		'memcache_servers' => array(
 			'name' => tra('Memcache servers'),
@@ -63,10 +59,8 @@ function prefs_memcache_serialize_servers( $data ) {
 		$data = unserialize( $data );
 	}
 	$out = '';
-	if (is_array($data)) {
-		foreach( $data as $row ) {
-			$out .= "{$row['host']}:{$row['port']} ({$row['weight']})\n";
-		}
+	foreach( $data as $row ) {
+		$out .= "{$row['host']}:{$row['port']} ({$row['weight']})\n";
 	}
 
 	return trim( $out );
@@ -76,11 +70,11 @@ function prefs_memcache_unserialize_servers( $string ) {
 	$data = array();
 
 	foreach( explode( "\n", $string ) as $row ) {
-		if( preg_match( "/^\s*([^:]+):(\d+)\s*(\((\d+)\))?\s*$/", $row, $parts ) ) {
+		if( preg_match( "/^\s*([^:]+):(\d+)\s*\((\d+)\)\s*$/", $row, $parts ) ) {
 			$data[] = array(
 				'host' => $parts[1],
 				'port' => $parts[2],
-				'weight' => isset( $parts[4] ) ? $parts[4] : 1,
+				'weight' => $parts[3],
 			);
 		}
 	}

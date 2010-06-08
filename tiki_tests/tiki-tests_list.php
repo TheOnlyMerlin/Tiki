@@ -1,13 +1,12 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once('../tiki-setup.php');
 
-$access->check_feature('feature_tikitests');
+if ($prefs['feature_tikitests'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled').': feature_tikitests');
+	$smarty->display('error.tpl');
+	die;
+}
 
 if ($tiki_p_admin_tikitests != 'y' and $tiki_p_play_tikitests != 'y') {
 	$smarty->assign('msg', tra('You do not have permission to do that'));
@@ -20,13 +19,18 @@ $smarty->assign("http",extension_loaded("http"));
 $smarty->assign("curl",extension_loaded("curl"));
 
 function delete_test($file) {
-	$access->check_authenticity(tra("You are about to delete a TikiTest file, do you want to continue ?"));
-	// Clean the filename
-	$file = basename($file);
-	if (file_exists("tiki_tests/tests/$file")) {
-		return unlink("tiki_tests/tests/$file");
+	if (isset($_POST['daconfirm']) and isset($_SESSION["ticket_tiki-tests"])) {
+		key_check('tiki-tests');
+		// Clean the filename
+		$file = basename($file);
+		if (file_exists("tiki_tests/tests/$file")) {
+			return unlink("tiki_tests/tests/$file");
+		}
+		return FALSE;
+	} else {
+		key_get('tiki-tests',tra("You are about to delete a TikiTest file, do you want to continue ?"));
 	}
-	return FALSE;
+	return TRUE;
 }
 
 if (isset($_GET['offset']) and ($_GET['offset']+0) > 0 ) {
@@ -57,7 +61,7 @@ if (isset($_REQUEST['action'])) {
 chdir('tiki_tests/tests');
 $files = glob('*.xml');
 chdir('../..');
-$files_number = count($files);
+$files_number = sizeof($files);
 $files = array_slice($files,$offset,$files_per_page);
 
 $smarty->assign_by_ref("files",$files);

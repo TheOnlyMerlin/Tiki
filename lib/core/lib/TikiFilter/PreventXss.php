@@ -1,16 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 class TikiFilter_PreventXss implements Zend_Filter_Interface
 {
 	function filter( $value )
 	{
 		// No need to filter really simple values
-		if( ctype_alnum( $value ) || empty($value) )
+		if( ctype_alnum( $value ) )
 			return $value;
 		else
 			return $this->RemoveXSS( $value );
@@ -72,7 +67,7 @@ class TikiFilter_PreventXss implements Zend_Filter_Interface
 			$search .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 			$search .= '1234567890!@#$%^&*()';
 			$search .= '~`";:?+/={}[]-_|\'\\';
-			for ($i = 0, $istrlen_search = strlen($search); $i < $istrlen_search; $i++) {
+			for ($i = 0; $i < strlen($search); $i++) {
 				// ;? matches the ;, which is optional
 				// 0{0,8} matches any padded zeros,
 				// which are optional and go up to 8 chars
@@ -126,9 +121,9 @@ class TikiFilter_PreventXss implements Zend_Filter_Interface
 			$replacement_end = '';
 		}
 
-		for ($i = 0, $isizeof_ra = count($ra); $i < $isizeof_ra; $i++) {
+		for ($i = 0; $i < sizeof($ra); $i++) {
 			$pattern = $pattern_start;
-			for ($j = 0, $jstrlen_rai = strlen($ra[$i]); $j < $jstrlen_rai; $j++) {
+			for ($j = 0; $j < strlen($ra[$i]); $j++) {
 				if ($j > 0) {
 					$pattern .= $pattern_sep;
 				}

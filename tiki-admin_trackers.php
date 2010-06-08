@@ -1,16 +1,24 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-
 require_once ('tiki-setup.php');
 include_once ('lib/trackers/trackerlib.php');
 include_once ('lib/groupalert/groupalertlib.php');
-$access->check_feature('feature_trackers');
-$access->check_permission('tiki_p_admin_trackers');
-$auto_query_args = array('trackerId');
+if ($prefs['feature_trackers'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_trackers");
+	$smarty->display("error.tpl");
+	die;
+}
+if ($tiki_p_admin_trackers != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You don't have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
+$auto_query_args = array();
 
 if (!isset($_REQUEST["trackerId"])) {
 	$_REQUEST["trackerId"] = 0;
@@ -40,11 +48,18 @@ if (!empty($_REQUEST['duplicate']) && !empty($_REQUEST['name']) && !empty($_REQU
 }
 if (!empty($_REQUEST['show']) && $_REQUEST['show'] == 'mod') {
 	$cookietab = '2';
+} else {
+	if (!isset($cookietab)) { $cookietab = '1'; }
 }
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$trklib->remove_tracker($_REQUEST["remove"]);
-	$logslib->add_log('admintrackers', 'removed tracker ' . $_REQUEST["remove"]);
+	$area = 'deltracker';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$trklib->remove_tracker($_REQUEST["remove"]);
+		$logslib->add_log('admintrackers', 'removed tracker ' . $_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 $cat_type = 'tracker';
 $cat_objid = $_REQUEST["trackerId"];
@@ -261,7 +276,7 @@ if (isset($_REQUEST["save"])) {
 	}
 	if (isset($_REQUEST['ui'])) {
 		if (!is_array($_REQUEST['ui'])) {
-			$_REQUEST['ui'] = explode(',', $_REQUEST['ui']);
+			$_REQUEST['ui'] = split(',', $_REQUEST['ui']);
 		}
 		$showlist = array();
 		$popupinfo = array();
@@ -302,11 +317,6 @@ if (isset($_REQUEST["save"])) {
 	} else {
 		$tracker_options['showPopup'] = '';
 	}
-	if (isset($_REQUEST['viewItemPretty'])) {
-		$tracker_options['viewItemPretty'] = $_REQUEST['viewItemPretty'];
-	} else {
-		$tracker_options['viewItemPretty'] = '';
-	}
 	if (isset($_REQUEST['descriptionIsParsed']) && ($_REQUEST['descriptionIsParsed'] == 'on' || $_REQUEST['descriptionIsParsed'] == 'y')) {
 		$tracker_options['descriptionIsParsed'] = 'y';
 	} else {
@@ -338,7 +348,6 @@ $info["showCreatedBy"] = '';
 $info["useExplicitNames"] = '';
 $info['doNotShowEmptyField'] = '';
 $info['showPopup'] = '';
-$info['viewItemPretty'] = '';
 $info["showStatus"] = '';
 $info["showStatusAdminOnly"] = '';
 $info["simpleEmail"] = '';
@@ -379,15 +388,12 @@ $info['autoAssignGroupItem'] = '';
 if ($_REQUEST["trackerId"]) {
 	$info = array_merge($info, $tikilib->get_tracker($_REQUEST["trackerId"]));
 	$info = array_merge($info, $trklib->get_tracker_options($_REQUEST["trackerId"]));
+	$cookietab = '2';
 	$fields = $trklib->list_tracker_fields($_REQUEST["trackerId"], 0, -1, 'position_asc', '');
 	$smarty->assign('action', '');
 	include_once ('lib/wiki-plugins/wikiplugin_trackerfilter.php');
 	$filters = wikiplugin_trackerFilter_get_filters($_REQUEST['trackerId']);
 	$smarty->assign_by_ref('filters', $filters);
-	
-	$smarty->assign('recordsMax', $info['items']);
-	$smarty->assign('recordsOffset', 1);
-	
 }
 $dstatus = preg_split('//', $info['defaultStatus'], -1, PREG_SPLIT_NO_EMPTY);
 foreach($dstatus as $ds) {
@@ -446,17 +452,17 @@ $smarty->assign_by_ref('info', $info);
 $outatt = array();
 $info["orderPopup"] = '';
 if (strstr($info["orderAttachments"], '|')) {
-	$part = explode('|', $info["orderAttachments"]);
+	$part = split("\|", $info["orderAttachments"]);
 	$info["orderAttachments"] = $part[0];
 	$info["orderPopup"] = $part[1];
 }
 $i = 1;
-foreach(preg_split('/,/', $info["orderAttachments"]) as $it) {
+foreach(split(',', $info["orderAttachments"]) as $it) {
 	$outatt["$it"] = $i;
 	$i++;
 }
 $i = - 1;
-foreach(preg_split('/,/', $info["orderPopup"]) as $it) {
+foreach(split(',', $info["orderPopup"]) as $it) {
 	$outatt["$it"] = $i;
 	$i--;
 }

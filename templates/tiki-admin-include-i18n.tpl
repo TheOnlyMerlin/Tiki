@@ -1,6 +1,8 @@
 {remarksbox type="tip" title="{tr}Tip{/tr}"}<a class="rbox-link" href="http://doc.tikiwiki.org/Internationalization">{tr}Internationalization{/tr}</a>{/remarksbox}
 
-{jq}
+  <script type="text/javascript">
+	<!--//--><![CDATA[//><!--
+  {literal}
 	function updateList( active )
 	{
 		if( ! active )
@@ -10,7 +12,9 @@
 				optionList[i].selected = false;
 		}
 	}
-{/jq}
+  //--><!]]>
+  {/literal}
+  </script>
 
 <form action="tiki-admin.php?page=i18n" method="post">
 	<div class="heading input_submit_container" style="text-align: right">
@@ -22,7 +26,6 @@
 
 {preference name=language default=$prefs.site_language}
 {preference name=wiki_page_regex}
-{preference name=default_mail_charset}
 
 <div class="adminoptionbox">
 	{preference name=feature_multilingual}
@@ -42,19 +45,12 @@
 	{preference name=feature_sync_language}
 	{preference name=feature_translation}
 	{preference name=feature_urgent_translation}
-	<div class="adminoptionboxchild" id="feature_urgent_translation_childcontainer">
-		{preference name=feature_urgent_translation_master_only}
-	</div>
 	{preference name=feature_translation_incomplete_notice}
 	{preference name=feature_multilingual_one_page}
 	{preference name=quantify_changes}
 	{preference name=feature_multilingual_structures}
 	{preference name=freetags_multilingual}
-	{preference name=category_i18n_sync}
-	<div class="adminoptionboxchild category_i18n_sync_childcontainer blacklist whitelist required">
-		{preference name=category_i18n_synced}
-	</div>
-	{preference name=wiki_dynvar_multilingual}
+	{preference name=wiki_dft_list_pages_lang_to_current}
 </div>
 
 {preference name=lang_use_db}
@@ -63,6 +59,7 @@
 {preference name=record_untranslated}
 	
 {preference name=feature_machine_translation}
+
 </div>
 {/tab}
 

@@ -1,10 +1,12 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-edit_banner.php,v 1.29.2.3 2007-11-30 20:46:07 sylvieg Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 require_once ('tiki-setup.php');
 
 require_once ('lib/tikilib.php'); # httpScheme()
@@ -14,8 +16,21 @@ if (!isset($bannerlib)) {
 	$bannerlib = new BannerLib;
 }
 
-$access->check_feature('feature_banners');
-$access->check_permission('tiki_p_admin_banners');
+// CHECK FEATURE BANNERS AND ADMIN PERMISSION HERE
+if ($prefs['feature_banners'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_banners");
+
+	$smarty->display("error.tpl");
+	die;
+}
+
+if ($tiki_p_admin_banners != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permissions to edit banners"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (isset($_REQUEST["bannerId"]) && $_REQUEST["bannerId"] > 0) {
 	$info = $bannerlib->get_banner($_REQUEST["bannerId"]);
@@ -58,8 +73,17 @@ if (isset($_REQUEST["bannerId"]) && $_REQUEST["bannerId"] > 0) {
 	$smarty->assign("use", $info["which"]);
 	$smarty->assign("zone", $info["zone"]);
 	if ($info["which"] == 'useFlash') {
-		$movie = unserialize($info['HTMLData']);
-		$smarty->assign_by_ref('movie', $movie);
+		if (preg_match('/(swfobject|SWFFix)\.embedSWF\([\'" ]*([^,\'"]*)[\'" ]*,[\'" ]*([^,\'"]*)[\'" ]*,[\'" ]*([^,\'"]*)[\'" ]*,[\'" ]*([^,\'"]*)[\'" ]*,[\'" ]*([^,\'"]*)[\'" ]*,[\'" ]*([^,\'"]*)[\'" ]*/m', $info['HTMLData'], $matches)) {
+			$smarty->assign("movieUrl", $matches[2]);
+			$smarty->assign("movieId", $matches[3]);
+			$smarty->assign("movieWidth", $matches[4]);
+			$smarty->assign("movieHeight", $matches[5]);
+			$smarty->assign("movieVersion", $matches[6]);
+		} else if (preg_match('/width="*([0-9]*).*height="*([0-9]*).*"([^"]\.swf"/mi', $info['HTMLData'], $matches)) {
+			$smarty->assign("movieUrl", $matches[3]);
+			$smarty->assign("movieWidth", $matches[1]);
+			$smarty->assign("movieHeight", $matches[2]);
+		}
 	}
 	$smarty->assign("HTMLData", $info["HTMLData"]);
 	$smarty->assign("fixedURLData", $info["fixedURLData"]);
@@ -117,8 +141,13 @@ if (isset($_REQUEST["bannerId"]) && $_REQUEST["bannerId"] > 0) {
 }
 
 if (isset($_REQUEST["removeZone"])) {
-	$access->check_authenticity();
-	$bannerlib->banner_remove_zone($_REQUEST["removeZone"]);
+  $area = 'delbannerzone';
+  if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+    key_check($area);
+		$bannerlib->banner_remove_zone($_REQUEST["removeZone"]);
+  } else {
+    key_get($area);
+  }
 }
 
 // Now assign if the set button was pressed
@@ -280,17 +309,12 @@ if (isset($_REQUEST["save"]) || isset($_REQUEST["create_zone"])) {
 
 	if (!isset($_REQUEST["create_zone"])) {
 		if ($_REQUEST["use"] == "useFlash") {
-			$params = array(
-						  'width' => 425,
-						  'height' => 350,
-						  'quality' => 'high',
-						  'version' => '9.0.0',
-						  );
 			$params['movie'] = $_REQUEST['movieUrl'];
 			if (!empty($_REQUEST['movieWidth'])) $params['width'] = $_REQUEST['movieWidth'];
 			if (!empty($_REQUEST['movieHeight'])) $params['height'] = $_REQUEST['movieHeight'];
 			if (!empty($_REQUEST['movieVersion'])) $params['version'] = $_REQUEST['movieVersion'];
-			$_REQUEST['HTMLData'] = serialize($params);
+			$_REQUEST['HTMLData'] = $tikilib->embed_flash($params, 'y');
+			$_REQUEST['textData'] = $tikilib->embed_flash($params, 'n');
 		}
 		$bannerId = $bannerlib->replace_banner($_REQUEST["bannerId"], $_REQUEST["client"], $_REQUEST["url"], '',
 			'', $_REQUEST["use"], $_REQUEST["imageData"], $_REQUEST["imageType"], $_REQUEST["imageName"], $_REQUEST["HTMLData"],

@@ -1,15 +1,17 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_cookies.php,v 1.17 2007-10-12 07:55:23 nyloth Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/taglines/taglinelib.php');
-
-$access->check_permission('tiki_p_edit_cookies');
-
+if ($tiki_p_edit_cookies != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST["cookieId"])) {
 	$_REQUEST["cookieId"] = 0;
 }
@@ -22,12 +24,22 @@ if ($_REQUEST["cookieId"]) {
 }
 $smarty->assign('cookie', $info["cookie"]);
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$taglinelib->remove_cookie($_REQUEST["remove"]);
+	$area = 'delcookie';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$taglinelib->remove_cookie($_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 if (isset($_REQUEST["removeall"])) {
-	$access->check_authenticity();
-	$taglinelib->remove_all_cookies();
+	$area = 'delcookieall';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$taglinelib->remove_all_cookies();
+	} else {
+		key_get($area);
+	}
 }
 if (isset($_REQUEST["upload"])) {
 	check_ticket('admin-cookies');

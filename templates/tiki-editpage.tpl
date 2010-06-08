@@ -1,4 +1,9 @@
 {* $Id$ *}
+
+{if $prefs.feature_ajax == 'y'}
+  <script type="text/javascript" src="lib/wiki/wiki-ajax.js"></script>
+{/if}
+
 {if $page|lower neq 'sandbox'}
 	{remarksbox type='tip' title='{tr}Tip{/tr}'}
 	{tr}This edit session will expire in{/tr} <span id="edittimeout">{math equation='x / y' x=$edittimeout y=60}</span> {tr}minutes{/tr}. {tr}<strong>Preview</strong> or <strong>Save</strong> your work to restart the edit session timer.{/tr}
@@ -61,11 +66,6 @@
 	<div class="highlight"><em class='mandatory_note'>{tr}A contribution is mandatory{/tr}</em></div>
 	{/remarksbox}
 {/if}
-{if $summary_needed eq 'y'}
-	{remarksbox type='Warning' title='{tr}Warning{/tr}'}
-	<div class="highlight"><em class='mandatory_note'>{tr}An edit summary is mandatory{/tr}</em></div>
-	{/remarksbox}
-{/if}
 {if $likepages}
 	<div>
 		{tr}Perhaps you are looking for:{/tr}
@@ -88,48 +88,28 @@
 	</div>
 {/if}
 
-{if $preview}
+{if $preview && $translation_mode eq 'n'}
 	{include file='tiki-preview.tpl'}
 {/if}
 {if $diff_style}
-	<div id="diff_outer">
-		<div style="overflow:auto;height:20ex;" id="diff_history">
-			{if $translation_mode == 'y'}		
-				<h2>{tr}Translate from:{/tr} {$source_page|escape}</h2>
-				{tr}Changes that need to be translated are highlighted below.{/tr}
-			{/if}
-			{include file='pagehistory.tpl' cant=0}
-		</div>
-		{if $diff_summaries}
-			<div class="wikitext" id="diff_versions">
-				<ul>
-					{foreach item=diff from=$diff_summaries}
-						<li>
-							{tr}Version:{/tr} {$diff.version|escape} - {$diff.comment|escape|default:"<em>{tr}No comment{/tr}</em>"}
-							{if count($diff_summaries) gt 1}
-								{icon _id="arrow_right"  onclick="\$jq('input[name=oldver]').val(`$diff.version`);\$jq('#editpageform').submit();return false;"  _text="{tr}View{/tr}" style="cursor: pointer"}
-							{/if}
-						</li>
-					{/foreach}
-					{button  _onclick="\$jq('input[name=oldver]').val(1);\$jq('#editpageform').submit();return false;"  _text="{tr}All Versions{/tr}" _ajax="n"}
-				</ul>
-			</div>
-		{/if}
-	</div>
+<div style="overflow:auto;height:200px;">
+	{include file='pagehistory.tpl'}
+</div>
 {/if}
-
-{if $prompt_for_edit_or_translate == 'y'}
-	{include file='tiki-edit-page-include-prompt_for_edit_or_translate.tpl'}
-{/if}
-
 <form  enctype="multipart/form-data" method="post" action="tiki-editpage.php?page={$page|escape:'url'}" id='editpageform' name='editpageform'>
-
-	<input type="hidden" name="no_bl" value="y" />
 	{if $diff_style}
-		<select name="diff_style" class="wikiaction"title="{tr}Edit wiki page{/tr}|{tr}Select the style used to display differences to be translated.{/tr}">
-			<option value="htmldiff"{if $diff_style eq "htmldiff"} selected="selected"{/if}>{tr}html{/tr}</option>
-			<option value="inlinediff"{if $diff_style eq "inlinediff"} selected="selected"{/if} >{tr}text{/tr}</option>			  
-			<option value="inlinediff-full"{if $diff_style eq "inlinediff-full"} selected="selected"{/if} >{tr}text full{/tr}</option>			  
+		<select name="diff_style">
+		
+			{if $diff_style eq "htmldiff"}
+				<option value="htmldiff" selected="selected">html</option>
+			{else}
+				<option value="htmldiff">html</option>
+			{/if}
+			{if $diff_style eq "inlinediff"}
+				<option value="inlinediff" selected="selected">text</option>
+			{else}
+				<option value="inlinediff">text</option>
+			{/if}   
 		</select>
 		<input type="submit" class="wikiaction tips" title="{tr}Edit wiki page{/tr}|{tr}Change the style used to display differences to be translated.{/tr}" name="preview" value="{tr}Change diff styles{/tr}" onclick="needToConfirm=false;" />
 	{/if}
@@ -146,40 +126,21 @@
 			{include file='wiki_edit_actions.tpl'}
 		</div>
 	{/if}
-
+	
 	<table class="normal">
 		
 		
 		<tr class="formcolor">
 			<td colspan="2">
-				{if $page_badchars_display}
-					{remarksbox type=tip title="{tr}Tip{/tr}"}
-						{if $prefs.wiki_badchar_prevent eq 'y'}
-							{tr 0=$page_badchars_display|escape}The page name specified contains unallowed characters. It will not be possible to save the page until those are removed: <strong>%0</strong>{/tr}
-						{else}
-							{tr 0=$page_badchars_display|escape}The page name specified contains characters that may render the page hard to access. You may want to consider removing those: <strong>%0</strong>{/tr}
-						{/if}
-					{/remarksbox}
-					<p>{tr}Page name:{/tr} <input type="text" name="page" value="{$page|escape}" /></p>
-				{else}
-					<input type="hidden" name="page" value="{$page|escape}" /> 
-					{* the above hidden field is needed for auto-save to work *}
-				{/if}
 				{tabset name='tabs_editpage'}
 					{tab name="{tr}Edit page{/tr}"}
-						{if $translation_mode == 'y'}
-							<div class="translation_message">
-								<h2>{tr}Translate to:{/tr} {$target_page|escape}</h2>
-								<p>{tr}Reproduce the changes highlighted on the left using the editor below{/tr}.</p>
-							</div>
-						{/if}
 						{textarea}{$pagedata}{/textarea}
 						{if $page|lower neq 'sandbox'}
 							<fieldset>
-								<label for="comment">{tr}Describe the change you made:{/tr} {help url='Editing+Wiki+Pages' desc='{tr}Edit comment: Enter some text to describe the changes you are currently making{/tr}'}</label>
+								<label for="comment">{tr}Edit Comment{/tr}: {if $prefs.feature_help eq 'y'}{help url='Editing+Wiki+Pages' desc='{tr}Edit comment: Enter some text to describe the changes you are currently making{/tr}'}{/if}</label>
 								<input style="width:98%;" class="wikiedit" type="text" id="comment" name="comment" value="{$commentdata|escape}" />
 								{if $show_watch eq 'y'}
-									<label for="watch">{tr}Monitor this page:{/tr}</label>
+									<label for="watch">{tr}Monitor this page{/tr}:</label>
 									<input type="checkbox" id="watch" name="watch" value="1"{if $watch_checked eq 'y'} checked="checked"{/if} />
 								{/if}
 							</fieldset>
@@ -193,7 +154,7 @@
 							{/if}
 							{if $wysiwyg neq 'y' and $prefs.feature_wiki_pictures eq 'y' and $tiki_p_upload_picture eq 'y' and $prefs.feature_filegals_manager neq 'y'}
 								<fieldset>
-									<legend>{tr}Upload picture:{/tr}</legend>
+									<legend>{tr}Upload picture{/tr}:</legend>
 									<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
 									<input type="hidden" name="hasAlreadyInserted" value="" />
 									<input type="hidden" name="prefix" value="/img/wiki_up/{if $tikidomain}{$tikidomain}/{/if}" />
@@ -228,7 +189,7 @@
 						{tab name="{tr}Tools{/tr}"}
 							{if $prefs.feature_wiki_templates eq 'y' and $tiki_p_use_content_templates eq 'y'}
 								<fieldset>
-									<legend>{tr}Apply template:{/tr}</legend>
+									<legend>{tr}Apply template{/tr}:</legend>
 									<select id="templateId" name="templateId" onchange="javascript:document.getElementById('editpageform').submit();" onclick="needToConfirm = false;">
 										<option value="0">{tr}none{/tr}</option>
 										{section name=ix loop=$templates}
@@ -254,7 +215,9 @@
 							{/if}
 				
 							{if $prefs.feature_wiki_replace eq 'y' and $wysiwyg neq 'y'}
-{jq}
+								<script type="text/javascript">
+	<!--//--><![CDATA[//><!--
+	{literal}
 	function searchrep() {
 		c = document.getElementById('caseinsens')
 		s = document.getElementById('search')
@@ -268,31 +231,33 @@
 		var re = new RegExp(s.value,opt)
 		t.value = str.replace(re,r.value)
 	}
-{/jq}
+	{/literal}
+	//--><!]]>
+								</script>
 								<fieldset>
-									<legend>{tr}Regex search:{/tr}</legend>
-									<input style="width:100;" class="wikiedit" type="text" id="search" />
-									<label>{tr}Replace with:{/tr}
-									<input style="width:100;" class="wikiedit" type="text" id="replace" /></label>
+									<legend>{tr}Regex search {/tr}:</legend>
+									<input style="width:100;" class="wikiedit" type="text" id="search"/>
+									<label>{tr}Replace with{/tr}:
+									<input style="width:100;" class="wikiedit" type="text" id="replace"/></label>
 									<label><input type="checkbox" id="caseinsens" />{tr}Case Insensitivity{/tr}</label>
-									<input type="button" value="{tr}Replace{/tr}" onclick="javascript:searchrep();" />
+									<input type="button" value="{tr}Replace{/tr}" onclick="javascript:searchrep();">
 								</fieldset>
 							{/if}
 							{if $prefs.wiki_spellcheck eq 'y'}
 								<fieldset>
-									<legend>{tr}Spellcheck:{/tr}</legend>
+									<legend>{tr}Spellcheck{/tr}:</legend>
 									<input type="checkbox" id="spellcheck"name="spellcheck" {if $spellcheck eq 'y'}checked="checked"{/if}/>
 								</fieldset>
 							{/if}
 							{if $prefs.feature_wiki_allowhtml eq 'y' and $tiki_p_use_HTML eq 'y' and $wysiwyg neq 'y'}
 								<fieldset>
-									<legend>{tr}Allow HTML:{/tr}</legend>
+									<legend>{tr}Allow HTML{/tr}:</legend>
 									<input type="checkbox" id="allowhtml" name="allowhtml" {if $allowhtml eq 'y'}checked="checked"{/if}/>
 								</fieldset>
 							{/if}
 							{if $prefs.feature_wiki_import_html eq 'y'}
 								<fieldset>
-									<legend>{tr}Import HTML:{/tr}</legend>
+									<legend>{tr}Import HTML{/tr}:</legend>
 									<input class="wikiedit" type="text" id="suck_url" name="suck_url" value="{$suck_url|escape}" />&nbsp;
 									<input type="submit" class="wikiaction" name="do_suck" value="{tr}Import{/tr}" onclick="needToConfirm=false;" />&nbsp;
 									<label><input type="checkbox" name="parsehtml" {if $parsehtml eq 'y'}checked="checked"{/if}/>&nbsp;
@@ -302,7 +267,7 @@
 							
 							{if $tiki_p_admin_wiki eq 'y' && $prefs.feature_wiki_import_page eq 'y'}
 								<fieldset>
-									<legend>{tr}Import page:{/tr}</legend>
+									<legend>{tr}Import page{/tr}:</legend>
 									<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
 									<input id="userfile1" name="userfile1" type="file" />
 									{if $prefs.feature_wiki_export eq 'y' and $tiki_p_admin_wiki eq 'y'}
@@ -314,16 +279,77 @@
 							{if $wysiwyg neq 'y'}
 								{if $prefs.feature_wiki_attachments == 'y' and ($tiki_p_wiki_attach_files eq 'y' or $tiki_p_wiki_admin_attachments eq 'y')}
 									<fieldset>
-										<legend>{tr}Upload file:{/tr}</legend>
+										<legend>{tr}Upload file{/tr}:</legend>
 										<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
 										<input type="hidden" name="hasAlreadyInserted2" value="" />
 										<input type="hidden" id="page2" name="page2" value="{$page}" />
 										<input name="userfile2" type="file" id="attach-upload" />
-										 <label>{tr}Comment:{/tr}<input type="text" name="attach_comment" maxlength="250" id="attach-comment" /></label>
+										 <label>{tr}Comment{/tr}:<input type="text" name="attach_comment" maxlength="250" id="attach-comment" /></label>
 										<input type="submit" class="wikiaction" name="attach" value="{tr}Attach{/tr}" onclick="javascript:needToConfirm=false;insertImgFile('editwiki','userfile2','hasAlreadyInserted2','file', 'page2', 'attach_comment'); return true;" />
 									</fieldset>
 								{/if}
 	
+								{if $prefs.feature_wiki_screencasts eq 'y' && $tiki_p_upload_screencast eq 'y'}
+									<fieldset>
+										<legend>{tr}Upload Screencast{/tr}:</legend>
+										<form id="screencast-upload-form" enctype="multipart/form-data" method="post" action="tiki-upload_screencast_ajax.php" target="screencast-loader">
+											<input type="hidden" name="MAX_FILE_SIZE" value="{$prefs.feature_wiki_screencasts_max_size}" />
+											<div id="screencast-error" class="simplebox highlight" {if count($screencasts_errors) < 1}style="display: none;"{/if}>
+												{if count($screencasts_errors) >= 1}
+													<ol>
+														{foreach from=$screencasts_errors item=screencasts_error}
+															<li>{$screencasts_error}</li>
+														{/foreach}
+													</ol>
+												{/if}
+											</div>
+											<div id="screencast-add-wrapper">
+												<script type="text/javascript">
+													{literal}
+													function screencastError(fileType, error) {
+													  if ( fileType == 'flash' ) {
+														if ( error == "400")
+														  return "{/literal}{tr}Incorrect file extension was used for your flash screencast, expecting .swf or .flv{/tr}{literal}";
+														return "{/literal}{tr}An unexpected error occurred while uploading your flash screencast!{/tr}{literal}";
+													  } else if ( fileType == 'ogg' ) {
+														if ( error == "400")
+														  return "{/literal}{tr}Incorrect file extension was used for your Ogg screencast, expecting .ogg{/tr}{literal}";
+														if ( error == "NEEDS_FLASH")
+														  return "{/literal}{tr}A flash screencast is mandatory!{/tr}{literal}";
+														return "{/literal}{tr}An unexpected error occurred while uploading your Ogg screencast!{/tr}{literal}";
+													  }
+													}
+													if ( !screencastThumbText ) { 
+													  var screencastThumbText = "{/literal}{tr}Insert Screencast{/tr}{literal}";
+													}
+													var screencastNoPreview = "{/literal}{tr}Preview not possible{/tr}{literal}";
+													{/literal}
+												</script>
+												<span id="screencast-add-form" class="screencast-add-form">
+													<div class="screencast-input-wrapper">
+														<label for="flash_screencast" class="screencast-input-label">{tr}Flash video (required){/tr}</label>
+														<input name="flash_screencast[]" class="screencast-flash" type="file"/>
+													</div>
+													<div class="screencast-input-wrapper">
+														<label for="ogg_screencast" class="screencast-input-label">{tr}Ogg video (optional){/tr}</label>
+														<input name="ogg_screencast[]" class="screencast-ogg" type="file"/>
+													</div>
+												</span>
+											</div>
+											<input id="screencast-upload-now" type="submit" value="Upload"/>
+											<a id="screencast-add-another">{tr}Add another screencast{/tr}</a> 
+											<iframe id="screencast-loader" name="screencast-loader" style=""></iframe>
+										</form>
+									</fieldset>
+									<fieldset id="screencast-insert-tr" {if count($screencasts_uploaded) < 1 }style="display:none;"{/if}>
+										<legend>{tr}Insert Screencast{/tr}:</legend>
+										<div id="screencast-insert-wrapper">
+											<script type="text/javascript">
+											  var thumb_videos = [{foreach from=$screencasts_uploaded item=screencast name=screencasts}"{$screencast}"{if !$smarty.foreach.screencasts.last},{/if}{/foreach}];
+											</script>
+										</div>
+									</fieldset>
+								{/if}
 							{/if}
 						{/tab}
 					{/if}
@@ -332,7 +358,7 @@
 							{if $page|lower neq 'sandbox'}
 								{if $prefs.wiki_feature_copyrights  eq 'y'}
 									<fieldset>
-										<legend>{tr}Copyright:{/tr}</legend>
+										<legend>{tr}Copyright{/tr}:</legend>
 										<table border="0">
 											<tr class="formcolor">
 												<td><label for="copyrightTitle">{tr}Title:{/tr}</label></td>
@@ -395,10 +421,10 @@
 								{/if}
 								{if $prefs.wiki_feature_copyrights  eq 'y'}
 									<fieldset>
-										<legend>{tr}License:{/tr}</legend>
+										<legend>{tr}License{/tr}:</legend>
 										<a href="{$prefs.wikiLicensePage|sefurl}">{tr}{$prefs.wikiLicensePage}{/tr}</a>
 										{if $prefs.wikiSubmitNotice neq ""}
-											{remarksbox type="note" title="{tr}Important:{/tr}"}
+											{remarksbox type="note" title="{tr}Important{/tr}:"}
 												<strong>{tr}{$prefs.wikiSubmitNotice}{/tr}</strong>
 											{/remarksbox}
 										{/if}
@@ -414,9 +440,9 @@
 							{if $prefs.feature_wiki_description eq 'y' or $prefs.metatag_pagedesc eq 'y'}
 								<fieldset>
 									{if $prefs.metatag_pagedesc eq 'y'}
-										<legend>{tr}Description (used for metatags):{/tr}</legend>
+										<legend>{tr}Description (used for metatags){/tr}:</legend>
 									{else}
-										<legend>{tr}Description:{/tr}</legend>
+										<legend>{tr}Description{/tr}:</legend>
 									{/if}
 									<input style="width:98%;" type="text" id="description" name="description" value="{$description|escape}" />
 								</fieldset>
@@ -424,53 +450,55 @@
 							{if $prefs.feature_wiki_footnotes eq 'y'}
 								{if $user}
 									<fieldset>
-										<legend>{tr}My Footnotes:{/tr}</legend>
+										<legend>{tr}My Footnotes{/tr}:</legend>
 										<textarea id="footnote" name="footnote" rows="8" cols="42" style="width:98%;" >{$footnote|escape}</textarea>
 									</fieldset>
 								{/if}
 							{/if}
 							{if $prefs.feature_wiki_ratings eq 'y' and $tiki_p_wiki_admin_ratings eq 'y'}
 								<fieldset>
-									<legend>{tr}Use rating:{/tr}</legend>
-
-									{foreach from=$poll_rated item=rating}
-										<div>
-											<a href="tiki-admin_poll_options.php?pollId={$rating.info.pollId}">{$rating.info.title}</a>
-											{assign var=thispage value=$page|escape:"url"}
-											{assign var=thispoll_rated value=$rating.info.pollId}
-											{button href="?page=$thispage&amp;removepoll=$thispoll_rated" _text="{tr}Disable{/tr}"}
-										</div>
-									{/foreach}
-
-									{if $tiki_p_admin_poll eq 'y'}
-										{button href="tiki-admin_polls.php" _text="{tr}Admin Polls{/tr}"}
-									{/if}
-
-									{if $poll_rated|@count <= 1 or $prefs.poll_multiple_per_object eq 'y'}
-										<div>
-											{if count($polls_templates)}
-												{tr}Type{/tr}
-												<select name="poll_template">
-													<option value="0">{tr}none{/tr}</option>
-													{foreach item=template from=$polls_templates}
-														<option value="{$template.pollId|escape}"{if $template.pollId eq $poll_template} selected="selected"{/if}>{tr}{$template.title|escape}{/tr}</option>
-													{/foreach}
-												</select>
-												{tr}Title{/tr}
-												<input type="text" name="poll_title" size="22" />
-											{else}
-												{tr}There is no available poll template.{/tr}
-												{if $tiki_p_admin_polls ne 'y'}
-													{tr}You should ask an admin to create them.{/tr}
-												{/if}
+									<legend>{tr}Use rating{/tr}:</legend>
+									{if $poll_rated.info}
+										<input type="hidden" name="poll_title" value="{$poll_rated.info.title|escape}" />
+										<a href="tiki-admin_poll_options.php?pollId={$poll_rated.info.pollId}">{$poll_rated.info.title}</a>
+										{assign var=thispage value=$page|escape:"url"}
+										{assign var=thispoll_rated value=$poll_rated.info.pollId}
+										{button href="?page=$thispage&amp;removepoll=$thispoll_rated" _text="{tr}Disable{/tr}"}
+										{if $tiki_p_admin_poll eq 'y'}
+											{button href="tiki-admin_polls.php" _text="{tr}Admin Polls{/tr}"}
+										{/if}
+									{else}
+										{if count($polls_templates)}
+											{tr}Type{/tr}
+											<select name="poll_template">
+												<option value="0">{tr}none{/tr}</option>
+												{section name=ix loop=$polls_templates}
+													<option value="{$polls_templates[ix].pollId|escape}"{if $polls_templates[ix].pollId eq $poll_template} selected="selected"{/if}>{tr}{$polls_templates[ix].title}{/tr}</option>
+												{/section}
+											</select>
+											{tr}Title{/tr}
+											<input type="text" name="poll_title" value="{$poll_title|escape}" size="22" />
+										{else}
+											{tr}There is no available poll template.{/tr}
+											{if $tiki_p_admin_polls ne 'y'}
+												{tr}You should ask an admin to create them.{/tr}
 											{/if}
-										</div>
+										{/if}
+										{if count($listpolls)}
+											{tr}or use{/tr}
+											<select name="olpoll">
+												<option value="">... {tr}an existing poll{/tr}</option>
+												{section name=ix loop=$listpolls}
+													<option value="{$listpolls[ix].pollId|escape}">{tr}{$listpolls[ix].title|default:"<i>... no title ...</i>"}{/tr} ({$listpolls[ix].votes} {tr}votes{/tr})</option>
+												{/section}
+											</select>
+										{/if}
 									{/if}
 								</fieldset>
 							{/if}
 							{if $prefs.feature_multilingual eq 'y'}
 								<fieldset>
-									<legend>{tr}Language:{/tr}</legend>
+									<legend>{tr}Language{/tr}:</legend>
 									<select name="lang" id="lang">
 										<option value="">{tr}Unknown{/tr}</option>
 										{section name=ix loop=$languages}
@@ -481,15 +509,16 @@
 										<input type="hidden" name="translationOf" value="{$translationOf|escape}"/>
 									{/if}
 								</fieldset>
-								{if $trads|@count > 1 and $urgent_allowed}
+								{if $trads|@count > 1}
 									<fieldset {if $prefs.feature_urgent_translation neq 'y' or $diff_style} style="display:none;"{/if}>
-										<legend>{tr}Translation request:{/tr}</legend>
+										<legend>{tr}Translation request{/tr}:</legend>
 										<input type="hidden" name="lang" value="{$lang|escape}"/>
 										<input type="checkbox" id="translation_critical" name="translation_critical" id="translation_critical"{if $translation_critical} checked="checked"{/if}/>
 										<label for="translation_critical">{tr}Send urgent translation request.{/tr}</label>
 										{if $diff_style}
 											<input type="hidden" name="oldver" value="{$diff_oldver|escape}"/>
 											<input type="hidden" name="newver" value="{$diff_newver|escape}"/>
+											<input type="hidden" name="source_page" value="{$source_page|escape}"/>
 										{/if}
 									</fieldset>
 								{/if}
@@ -515,7 +544,8 @@
 			</tr>
 		{/if}
 	</table>
+	{if $prefs.feature_wiki_allowhtml eq 'y' and $tiki_p_use_HTML eq 'y' and $wysiwyg eq 'y' and $allowhtml eq 'y'}
+	  <input type="hidden" name="allowhtml" checked="checked"/>
+	{/if}
 </form>
 {include file='tiki-page_bar.tpl'}
-{if $prefs.javascript_enabled eq "n"}{include file='tiki-edit_help.tpl'}{/if}
-{include file='tiki-edit_help_plugins.tpl'}

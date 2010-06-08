@@ -1,16 +1,27 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-notepad_write.php,v 1.16 2007-10-12 07:55:29 nyloth Exp $
 $section = 'mytiki';
 require_once ('tiki-setup.php');
 include_once ('lib/notepad/notepadlib.php');
-$access->check_feature('feature_notepad');
-$access->check_user($user);
-$access->check_permission('tiki_p_notepad');
+if ($prefs['feature_notepad'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_notepad");
+	$smarty->display("error.tpl");
+	die;
+}
+if (!$user) {
+	$smarty->assign('msg', tra("Must be logged to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
+if ($tiki_p_notepad != 'y') {
+	$smarty->assign('msg', tra("Permission denied to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (isset($_REQUEST["remove"])) {
 	check_ticket('notepad-write');
 	$notepadlib->remove_note($user, $_REQUEST['remove']);

@@ -1,10 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// CVS: $Id: objectlib.php,v 1.9.2.2 2008-03-04 14:28:37 sept_7 Exp $
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
@@ -12,8 +7,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 // this is an abstract class
-class ObjectLib extends TikiLib
-{
+class ObjectLib extends TikiLib {
 
     function add_object($type, $itemId, $description = '', $name = '', $href = '') {
 
@@ -124,8 +118,8 @@ class ObjectLib extends TikiLib
 				$info = $tikilib->get_page_info($object);
 				return (array('title'=>$object, 'data'=>$info['data'], 'is_html'=>$info['is_html']));
 			case 'article':
-				global $artlib; require_once 'lib/articles/artlib.php';
-				$info = $artlib->get_article($object);
+				global $tikilib; include_once('lib/tikilib.php');
+				$info = $artlib->$tikilib->get_article($object);
 				return (array('title'=>$info['title'], 'data'=>$info['body']));
 		}
 		return (array('error'=>'true'));

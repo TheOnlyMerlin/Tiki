@@ -1,14 +1,20 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-edit_quiz.php,v 1.25.2.2 2007-11-26 14:44:21 sylvieg Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once ('tiki-setup.php');
 include_once ('lib/quizzes/quizlib.php');
 
-$access->check_feature('feature_quizzes');
+if ($prefs['feature_quizzes'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_quizzes");
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (!isset($_REQUEST["quizId"])) {
 	$_REQUEST["quizId"] = 0;
@@ -20,7 +26,13 @@ $smarty->assign('individual', 'n');
 
 $tikilib->get_perm_object($_REQUEST["quizId"], 'quiz');
 
-$access->check_permission('tiki_p_admin_quizzes');
+if ($tiki_p_admin_quizzes != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 $auto_query_args = array(
 			'quizId',
@@ -140,8 +152,13 @@ $smarty->assign('timeLimit', $info["timeLimit"]);
 $smarty->assign('passingperct', $info["passingperct"]);
 
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$quizlib->remove_quiz($_REQUEST["remove"]);
+  $area = 'delquiz';
+  if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+    key_check($area);
+		$quizlib->remove_quiz($_REQUEST["remove"]);
+  } else {
+    key_get($area);
+  }
 }
 
 if (!isset($_REQUEST["sort_mode"])) {

@@ -1,14 +1,17 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 $section = 'mytiki';
 require_once ('tiki-setup.php');
 
-$access->check_feature('feature_contacts');
+if ($prefs['feature_contacts'] != 'y') {
+  $smarty->assign('msg', tra("This feature is disabled").": feature_contacts");
+  $smarty->display("error.tpl");
+  die;
+}
 include_once ('lib/webmail/contactlib.php');
 
 $auto_query_args = array(
@@ -61,13 +64,26 @@ $smarty->assign('info', $info);
 $smarty->assign('exts', $traducted_exts);
 
 if (isset($_REQUEST["remove"])) {
-	$access->check_user($user);
-	$access->check_authenticity();
-	$contactlib->remove_contact($_REQUEST["remove"], $user);
+	if (!$user) {
+		$smarty->assign('msg', tra("You are not logged in"));
+		$smarty->display("error.tpl");
+		die;
+	}
+	$area = "delwebmailcontact";
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$contactlib->remove_contact($_REQUEST["remove"], $user);
+	} else {
+		key_get($area);
+	}
 }
 
 if (isset($_REQUEST["save"])) {
-	$access->check_user($user);
+	if (!$user) {
+		$smarty->assign('msg', tra("You are not logged in"));
+		$smarty->display("error.tpl");
+		die;
+	}
 	check_ticket('webmail-contact');
 	$ext_result=array();
 	foreach($exts as $ext)

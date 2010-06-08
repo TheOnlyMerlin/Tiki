@@ -1,8 +1,7 @@
-{strip}
 {* $Id$ *}
 {* Simple remarks box used by Smarty entity block.remarksbox.php & wikiplugin_remarksbox.php *}
-<div class="clearfix rbox {$remarksbox_type}">
-{if $remarksbox_close eq 'y' and $remarksbox_type ne 'errors' and $remarksbox_type ne 'confirm'}
+<div class="rbox {$remarksbox_type}">
+{if $remarksbox_close eq 'y' and $remarksbox_type ne 'errors'}
 	{icon _id='close' class='rbox-close' onclick='$jq(this).parent().fadeOut();'}
 {/if}
 {if $remarksbox_title ne ''}
@@ -14,8 +13,7 @@
 		<span>{$remarksbox_title}</span>
 	</div>
 {/if}
-	<div class="rbox-data{$remarksbox_highlight}"{if !empty($remarksbox_width)} style="width:{$remarksbox_width}"{/if}>
+	<div class="rbox-data{$remarksbox_highlight}"{if !empty($remarksbox_width)} style="width:{$remarksbox_width}{/if}">
 		{$remarksbox_content}
 	</div>
 </div>
-{/strip}

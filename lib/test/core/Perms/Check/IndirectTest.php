@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @group unit
- * 
- */
-
 class Perms_Check_IndirectTest extends TikiTestCase
 {
 	function testUnknownIndirectionIsFalse() {

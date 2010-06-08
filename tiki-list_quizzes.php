@@ -1,16 +1,24 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-list_quizzes.php,v 1.15 2007-10-12 07:55:28 nyloth Exp $
 $section = 'quizzes';
 require_once ('tiki-setup.php');
 include_once ('lib/quizzes/quizlib.php');
 $auto_query_args = array('sort_mode', 'offset', 'find');
-$access->check_feature('feature_quizzes');
-$access->check_permission('tiki_p_take_quiz');
+if ($prefs['feature_quizzes'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_quizzes");
+	$smarty->display("error.tpl");
+	die;
+}
+if ($tiki_p_take_quiz != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You don't have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST["sort_mode"])) {
 	$sort_mode = 'created_desc';
 } else {

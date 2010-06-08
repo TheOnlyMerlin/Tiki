@@ -46,7 +46,7 @@
 		{if $catree[dx].has_perm eq 'y'}
 			<a title="{tr}Edit permissions for this category{/tr}" href="tiki-objectpermissions.php?objectType=category&amp;objectId={$catree[dx].categId}&amp;objectName={$catree[dx].name|escape:'urlencode'}&amp;permType=all">{icon hspace="5" vspace="1" _id='key_active' alt="{tr}Edit permissions for this category{/tr}"}</a>
 		{else}
-			<a title="{tr}Assign Permissions{/tr}" href="tiki-objectpermissions.php?objectType=category&amp;objectId={$catree[dx].categId}&amp;objectName={$catree[dx].name|escape:'url'}&amp;permType=all">{icon hspace="5" vspace="1" _id='key' alt="{tr}Assign Permissions{/tr}"}</a>
+			<a title="{tr}Assign Permissions{/tr}" href="tiki-objectpermissions.php?objectType=category&amp;objectId={$catree[dx].categId}&amp;objectName={$catree[dx].name|escape:'urlencode'}&amp;permType=all">{icon hspace="5" vspace="1" _id='key' alt="{tr}Assign Permissions{/tr}"}</a>
 		{/if}
 		
 		<div style="display: inline; padding-left:{$catree[dx].deep*30+5}px;">
@@ -69,7 +69,7 @@
 <div class="cbox">
 	<div class="cbox-title">
 		{if $categId > 0}
-			{tr}Edit this category:{/tr} <b>{$name|escape}</b> [<a href="tiki-admin_categories.php?parentId={$parentId}#editcreate" class="cboxtlink">{tr}Create New{/tr}</a>]
+			{tr}Edit this category:{/tr} <b>{$name}</b> [<a href="tiki-admin_categories.php?parentId={$parentId}#editcreate" class="cboxtlink">{tr}Create New{/tr}</a>]
 		{else}
 			{tr}Add new category{/tr}
 		{/if}
@@ -172,34 +172,6 @@
 		</div>
 	</div>
 
-	{if $parentId !=0}
-		<div class="cbox">
-			<div class="cbox-title">
-				{tr}Moving objects between categories{/tr}
-			</div>
-			<div class="cbox-data">
-				<form method="get" action="tiki-admin_categories.php" name="move">
-				<input type="hidden" name="parentId" value="{$parentId|escape}" />
-				<input type="submit" name="unassign" value="{tr}Unassign all objects from this category{/tr}" />
-				<br />
-				<select name="toId">
-				{section name=ix loop=$catree}
-					<option value="{$catree[ix].categId|escape}" {if $catree[ix].categId eq $parentId}selected="selected"{/if}>{$catree[ix].categpath|escape}</option>
-				{/section}
-				</select>
-				<input type="submit" name="move_to" value="{tr}Move all the objects from this category to this one{/tr}" />
-				<br />
-				<select name="to">
-				{section name=ix loop=$catree}
-					<option value="{$catree[ix].categId|escape}" {if $catree[ix].categId eq $parentId}selected="selected"{/if}>{$catree[ix].categpath|escape}</option>
-				{/section}
-				</select>
-				<input type="submit" name="copy_from" value="{tr}Assign all objects of this category to this one{/tr}" />
-				</form>
-			</div>
-		</div>
-	{/if}
-
 	{if $parentId != 0}
 		<div class="cbox">
 			<div class="cbox-title">
@@ -221,11 +193,10 @@
 						</td>
 					</tr>
 				</table>
-				{pagination_links cant=$maximum step=$maxRecords offset=$offset}{/pagination_links}
 				<form action="tiki-admin_categories.php" method="post">
 					<input type="hidden" name="parentId" value="{$parentId|escape}" />
 					<table>
-						{if $prefs.feature_wiki eq 'y' and $pages}
+						{if $prefs.feature_wiki eq 'y'}
 							<tr>
 								<td class="form">{tr}page:{/tr}</td>
 								<td class="form">
@@ -241,7 +212,7 @@
 							</tr>
 						{/if}
 						
-						{if $prefs.feature_articles eq 'y' and $articles}
+						{if $prefs.feature_articles eq 'y'}
 							<tr>
 								<td class="form">{tr}Article:{/tr}</td>
 								<td class="form">
@@ -255,7 +226,7 @@
 							</tr>
 						{/if}
 						
-						{if $prefs.feature_blogs eq 'y' and $blogs}
+						{if $prefs.feature_blogs eq 'y'}
 							<tr>
 								<td class="form">{tr}Blog:{/tr}</td>
 								<td class="form">
@@ -269,7 +240,7 @@
 							</tr>
 						{/if}
 						
-						{if $prefs.feature_directory eq 'y'and $directories}
+						{if $prefs.feature_directory eq 'y'}
 							<tr>
 								<td class="form">{tr}Directory:{/tr}</td>
 								<td class="form">
@@ -283,7 +254,7 @@
 							</tr>
 						{/if}
 
-						{if $prefs.feature_galleries eq 'y' and $galleries}
+						{if $prefs.feature_galleries eq 'y'}
 							<tr>
 								<td class="form">{tr}image gal:{/tr}</td>
 								<td class="form">
@@ -297,7 +268,7 @@
 							</tr>
 						{/if}
 				
-						{if $prefs.feature_file_galleries eq 'y' and $file_galleries}
+						{if $prefs.feature_file_galleries eq 'y'}
 							<tr>
 								<td class="form">{tr}file gal:{/tr}</td>
 								<td class="form">
@@ -311,7 +282,7 @@
 							</tr>
 						{/if}
 				
-						{if $prefs.feature_forums eq 'y' and $forums}
+						{if $prefs.feature_forums eq 'y'}
 							<tr>
 								<td class="form">{tr}Forum:{/tr}</td>
 								<td class="form">
@@ -325,7 +296,7 @@
 							</tr>
 						{/if}
 				
-						{if $prefs.feature_polls eq 'y' and $polls}
+						{if $prefs.feature_polls eq 'y'}
 							<tr>
 								<td class="form">{tr}Poll:{/tr}</td>
 								<td class="form">
@@ -339,7 +310,7 @@
 							</tr>
 						{/if}
 						
-						{if $prefs.feature_faqs eq 'y and $faqs'}
+						{if $prefs.feature_faqs eq 'y'}
 							<tr>
 								<td class="form">{tr}FAQ:{/tr}</td>
 								<td class="form">
@@ -353,7 +324,7 @@
 							</tr> 
 						{/if}
 				
-						{if $prefs.feature_trackers eq 'y' and $trackers}
+						{if $prefs.feature_trackers eq 'y'}
 							<tr>
 								<td class="form">{tr}Tracker:{/tr}</td>
 								<td class="form">
@@ -367,7 +338,7 @@
 							</tr>
 						{/if}
 						
-						{if $prefs.feature_quizzes eq 'y' and $quizzes}
+						{if $prefs.feature_quizzes eq 'y'}
 							<tr>
 								<td class="form">{tr}quiz:{/tr}</td>
 								<td class="form">
@@ -383,7 +354,6 @@
 
 					</table>
 				</form>
-				{pagination_links cant=$maximum step=$maxRecords offset=$offset}{/pagination_links}
 			</div>
 		</div>
 {/if}

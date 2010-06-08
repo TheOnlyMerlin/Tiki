@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @group unit
- * 
- */
-
 class Perms_Reflection_FactoryTest extends TikiTestCase
 {
 	function testEmptyFactory() {

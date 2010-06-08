@@ -5,7 +5,6 @@
 
 {if $tiki_p_admin_newsletters eq "y"}
 	<div class="navbar">
-		{button href="tiki-newsletters.php" _text="{tr}List Newsletters{/tr}"}
 		{if $nlId}
 			{button href="tiki-admin_newsletters.php?nlId=$nlId" _text="{tr}Admin Newsletters{/tr}"}
 		{else}
@@ -48,16 +47,14 @@
 {/if}
 
 {if $presend eq 'y'}
-	<div id="confirmArea">
-	{remarksbox type='note' title="{tr}Please Confirm{/tr}"}
+	{remarksbox type='warning' title="{tr}Please Confirm{/tr}"}
 		<b>{tr}This newsletter will be sent to {$subscribers} email addresses.{/tr}</b>
 		<br />
 		{tr}Reply to:{/tr} {if empty($replyto)}{$prefs.sender_email|escape} ({tr}default{/tr}){else}{$replyto|escape}{/if}
 	{/remarksbox}
 	<p>
-		<form method="post" action="tiki-send_newsletters.php" target="resultIframe" id='confirmForm'>
+		<form method="post" action="tiki-send_newsletters.php">
 			<input type="hidden" name="nlId" value="{$nlId|escape}" />
-			<input type="hidden" name="sendingUniqId" value="{$sendingUniqId|escape}" />
 			<input type="hidden" name="editionId" value="{$info.editionId}"/>
 			<input type="hidden" name="subject" value="{$subject|escape}" />
 			<input type="hidden" name="data" value="{$data|escape}" />
@@ -66,39 +63,19 @@
 			<input type="hidden" name="datatxt" value="{$datatxt|escape}" />
 			<input type="hidden" name="replyto" value="{$replyto|escape}" />
 			<input type="hidden" name="wysiwyg" value="{$wysiwyg|escape}" />
-			<input type="submit" name="send" value="{tr}Send{/tr}" onclick="document.getElementById('confirmArea').style.display = 'none'; document.getElementById('sendingArea').style.display = 'block';" />
+			<input type="submit" name="send" value="{tr}Send{/tr}" />
 			<input type="submit" name="preview" value="{tr}Cancel{/tr}" />
 			{foreach from=$info.files item=newsletterfile key=fileid}
 				<input type='hidden' name='newsletterfile[{$fileid}]' value='{$newsletterfile.id}'/>
 			{/foreach}
 		</form>
 	</p>
-	{if $subscribers gt 0}
-		<h3>{tr}Recipients{/tr} <a id="flipperrecipients" href="javascript:flipWithSign('recipients')">[+]</a></h3>
-		<div id="recipients" class="simplebox" style="display:none; max-height: 250px; overflow: auto;">
-			<table class="small normal">
-				<tr>
-					<th>{tr}Email{/tr}</th>
-					<th>{tr}Validated{/tr}</th>
-					<th>{tr}Is user{/tr}</th>
-				</tr>
-				{cycle values="even,odd" print=false}
-				{foreach from=$subscribers_list item=sub key=ix}
-					<tr>
-						<td class="{cycle advance=false}">{$sub.email|escape}</td>
-						<td class="{cycle advance=false}">{$sub.valid}</td>
-						<td class="{cycle}">{$sub.isUser}</td>
-					</tr>
-				{/foreach}
-			</table>
-		</div>
-	{/if}	
 	<h2>{tr}Preview{/tr}</h2>
 	<h3>{tr}Subject{/tr}</h3>
 	<div class="simplebox wikitext">{$subject|escape}</div>
 
 	<h3>{tr}HTML version{/tr}</h3>
-	<div class="simplebox wikitext">{$previewdata}</div>
+	<div class="simplebox wikitext">{$dataparsed}</div>
 
 	{if $allowTxt eq 'y' }
 		<h3>{tr}Text version{/tr}</h3>
@@ -107,29 +84,13 @@
 	{/if}
 	
 	<h3>{tr}Files{/tr}</h3>
-	<div class="simplebox wikitext">
-		{if $info.file|@count gt 0}
-			<ul>
-				{foreach from=$info.files item=newsletterfile key=fileid}
-					<li>
-						{$newsletterfile.name|escape} ({$newsletterfile.type|escape}, {$newsletterfile.size|escape} {tr}bytes{/tr})
-					</li>
-				{/foreach}
-			</ul>
-		{else}
-			{tr}None{/tr}
-		{/if}
-	</div>
-
-
-	
-	</div>
-
-	<div id="sendingArea" style="display:none">
-		<h3>{tr}Sending Newsletter{/tr} ...</h3>
-		<iframe id="resultIframe" name="resultIframe" frameborder="0" style="width: 600px; height: 400px"></iframe>
-	</div>
-
+	<ul>
+		{foreach from=$info.files item=newsletterfile key=fileid}
+			<li>
+				{$newsletterfile.name|escape} ({$newsletterfile.type|escape}, {$newsletterfile.size|escape} {tr}octets{/tr})
+			</li>
+		{/foreach}
+	</ul>
 {else}
 	{if $preview eq 'y'}
 		<h2>{tr}Preview{/tr}</h2>
@@ -137,7 +98,7 @@
 		<div class="simplebox wikitext">{$info.subject|escape}</div>
 
 		<h3>{tr}HTML version{/tr}</h3>
-		<div class="simplebox wikitext">{$previewdata}</div>
+		<div class="simplebox wikitext">{$info.dataparsed}</div>
 
 		{if $allowTxt eq 'y' }
 			<h3>{tr}Text version{/tr}</h3>
@@ -149,7 +110,7 @@
 		<ul>
 			{foreach from=$info.files item=newsletterfile key=fileid}
 				<li>
-					{$newsletterfile.name|escape} ({$newsletterfile.type|escape}, {$newsletterfile.size|escape} {tr}bytes{/tr})
+					{$newsletterfile.name|escape} ({$newsletterfile.type|escape}, {$newsletterfile.size|escape} {tr}octets{/tr})
 				</li>
 			{/foreach}
 		</ul>
@@ -172,7 +133,7 @@
 				<tr class="formcolor">
 					<td class="formcolor">{tr}Newsletter:{/tr}</td>
 					<td class="formcolor">
-						<select name="nlId" onchange="checkNewsletterTxtArea(this.selectedIndex);">
+						<select name="nlId" onchange="checkNewsletterTxtArea();">
 							{section loop=$newsletters name=ix}
 								<option value="{$newsletters[ix].nlId|escape}" {if $newsletters[ix].nlId eq $nlId}selected="selected"{/if}>
 									{$newsletters[ix].name|escape}
@@ -214,12 +175,10 @@
 				{/if}
 
 				<tr class="formcolor">
-					<td colspan="2" class="formcolor">
+					<td class="formcolor">
 						{tr}Data HTML:{/tr}
 					</td>
-				</tr>
-				<tr>
-					<td colspan="2" class="formcolor">
+					<td class="formcolor">
 						{textarea name='data' id='editwiki'}{$info.data}{/textarea}
 						{tr}Must be wiki parsed:{/tr} <input type="checkbox" name="wikiparse" {if empty($info.wikiparse) or $info.wikiparse eq 'y'} checked="checked"{/if} />
 					</td>
@@ -236,20 +195,6 @@
 					</td>
 				</tr>
 
-				<tr class="formcolor">
-					<td class="formcolor" id="clipcol1">
-						{tr}Article Clip (read only):{/tr}
-						<input type="submit" name="clipArticles" value="{tr}Clip Now{/tr}" class="wikiaction tips" title="{tr}Clip Articles{/tr}" onclick="needToConfirm=false" />
-						<br /><br />
-						{include file='textareasize.tpl' area_name='articlecliptxt' formId='editpageform'}
-					</td>
-					<td class="formcolor" id="clipcol2" >
-						{tr}To include the article clipping into your newsletter, cut and paste it into the contents.{/tr}
-						<br />{tr}If autoclipping is enabled, you can also enter "~~~articleclip~~~" which will be replaced with the latest	clip when sending.{/tr}
-						<textarea id='articlecliptxt' name="articleClip" rows="{$rows}" cols="{$cols}" readonly="readonly">{$articleClip}</textarea>		
-					</td>
-				</tr>				
-				
 				<tr class="formcolor">
 					<td class="formcolor" id="txtcol1">
 						{tr}Attached Files{/tr} :
@@ -337,23 +282,24 @@
 	{/tabset}
 {/if}
 
-{jq}
-{{if $allowTxt eq 'n'}
+<script type='text/javascript'>
+<!--
+{if $allowTxt eq 'n'}
 document.getElementById('txtcol1').style.display='none';
 document.getElementById('txtcol2').style.display='none';
-{/if}}
-{{if $allowArticleClip eq 'n'}
-document.getElementById('clipcol1').style.display='none';
-document.getElementById('clipcol2').style.display='none';
-{/if}}
+{/if}
 
-var newsletterfileid={{$info.files|@count}};
+var newsletterfileid={$info.files|@count};
+{literal}
 function add_newsletter_file() {
-	document.getElementById('newsletterfileshack').innerHTML='<div id="newsletterfileid_'+newsletterfileid+'"><a href="javascript:remove_newsletter_file('+newsletterfileid+');">[{{tr}remove{/tr}}]</a> <input type="file" name="newsletterfile['+newsletterfileid+']"/></div>';
+	document.getElementById('newsletterfileshack').innerHTML='<div id="newsletterfileid_'+newsletterfileid+'"><a href="javascript:remove_newsletter_file('+newsletterfileid+');">[{tr}remove{/tr}]</a> <input type="file" name="newsletterfile['+newsletterfileid+']"/></div>';
 	document.getElementById('newsletterfiles').appendChild(document.getElementById('newsletterfileid_'+newsletterfileid));
 	newsletterfileid++;
 }
 function remove_newsletter_file(id) {
 	document.getElementById('newsletterfiles').removeChild(document.getElementById('newsletterfileid_'+id));
 }
-{/jq}
+{/literal}
+
+-->
+</script>

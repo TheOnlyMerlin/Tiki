@@ -1,10 +1,5 @@
 <?php
 
-/** 
- * @group unit
- * 
- */
-
 class TikiFilter_WordTest extends TikiTestCase
 {
 	private $array;

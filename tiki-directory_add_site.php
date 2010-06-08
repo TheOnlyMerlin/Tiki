@@ -1,16 +1,23 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Header: /cvsroot/tikiwiki/tiki/tiki-directory_add_site.php,v 1.21 2007-10-12 07:55:25 nyloth Exp $
 $section = 'directory';
 require_once ('tiki-setup.php');
 include_once ('lib/directory/dirlib.php');
-$access->check_feature('feature_directory');
-$access->check_permission('tiki_p_submit_link');
-
+if ($prefs['feature_directory'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_directory");
+	$smarty->display("error.tpl");
+	die;
+}
+if ($tiki_p_submit_link != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied"));
+	$smarty->display("error.tpl");
+	die;
+}
 // If no parent category then the parent category is 0
 if (!isset($_REQUEST["parent"])) $_REQUEST["parent"] = 0;
 // If no site category then the site category is -1
@@ -147,7 +154,7 @@ if ($offset > 0) {
 $smarty->assign_by_ref('items', $items["data"]);
 $categs = $dirlib->dir_get_all_categories_accept_sites(0, -1, 'name asc', $find, $_REQUEST["siteId"]);
 if (isset($_REQUEST["save"]) && $msg != "" && isset($_REQUEST["siteCats"])) { // an error occured, the chosen categs have to be set again
-	$temp_max = count($categs);
+	$temp_max = sizeof($categs);
 	foreach($_REQUEST["siteCats"] as $acat) {
 		for ($ix = 0; $ix < $temp_max; ++$ix) {
 			if ($categs[$ix]["categId"] == $acat) $categs[$ix]["belongs"] = 'y';

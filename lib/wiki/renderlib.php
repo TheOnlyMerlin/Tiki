@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 class WikiRenderer
 {
@@ -272,7 +267,7 @@ class WikiRenderer
 			return;
 		}
 
-		$slides = preg_split('/-=[^=]+=-/',$this->info['data']);
+		$slides = split("-=[^=]+=-",$this->info['data']);
 		if(count($slides)>1) {
 			$this->smartyassign('show_slideshow','y');
 		} else {
@@ -302,20 +297,22 @@ class WikiRenderer
 		$this->smartyassign('wiki_authors_style', $wiki_authors_style);
 
 		$this->smartyassign('cached_page','n');
+		$parse_options = array(
+			'is_html' => $this->info['is_html'],
+			'language' => $this->info['lang']
+		);
+
+		if($prefs['wiki_cache']>0 and (is_null($user) or $user == '')) {
+			$this->setPref( 'wiki_cache', $this->info['wiki_cache'] );
+		}
 
 		if ($this->content_to_render == '') {
 			$pdata = $wikilib->get_parse($this->page, $canBeRefreshed);
-
-			if ($canBeRefreshed) {
-				$this->smartyassign('cached_page','y');
-			}
 		} else {
-			$parse_options = array(
-				'is_html' => $this->info['is_html'],
-				'language' => $this->info['lang']
-			);
-
-			$pdata = $wikilib->parse_data($this->content_to_render, $parse_options);
+			$pdata = $wikilib->parse_data($this->content_to_render);
+		}
+		if ($canBeRefreshed) {
+			$this->smartyassign('cached_page','y');
 		}
 
 		$pages = $wikilib->get_number_of_pages($pdata);
@@ -346,9 +343,6 @@ class WikiRenderer
 		$this->smartyassign('description',$this->info['description']);
 
 		$this->smartyassign('parsed',$pdata);
-		if (!empty($this->info['keywords'])) {
-			$this->smartyassign('metatag_local_keywords', $this->info['keywords']);
-		}
 	} // }}}
 
 	private function setupAttachments() // {{{
@@ -451,9 +445,23 @@ class WikiRenderer
 		if ($prefs['feature_polls'] !='y' || $prefs['feature_wiki_ratings'] != 'y' || $tiki_p_wiki_view_ratings != 'y')
 			return;
 
+		if( ! function_exists( 'pollnameclean' ) ) {
+			function pollnameclean($s, $page) {
+				if (isset($s['title'])) 
+					$s['title'] = substr($s['title'], strlen($page)+2); 
+
+				return $s;
+			}	
+		}
+
 		if (!isset($polllib) || !is_object($polllib)) include("lib/polls/polllib_shared.php");
-		$ratings = $polllib->get_ratings('wiki page',$this->page, $this->user );
+		$ratings = $polllib->get_rating('wiki page',$this->page);
+		$ratings['info'] = pollnameclean($ratings['info'], $this->page);
 		$this->smartyassign('ratings',$ratings);
+		if ($this->user) {
+			$user_vote = $tikilib->get_user_vote('poll'.$ratings['info']['pollId'],$this->user);
+			$this->smartyassign('user_vote',$user_vote);
+		}
 	} // }}}
 
 	private function setupBreadcrumbs() // {{{
@@ -493,8 +501,8 @@ class WikiRenderer
 			$canApproveStaging = 'y';
 			$this->smartyassign('canApproveStaging', $canApproveStaging);
 		}		
-		if ( $approved = $tikilib->get_approved_page( $this->page ) ) {
-			$approvedPageName = $approved;
+		if (substr($this->page, 0, strlen($prefs['wikiapproval_prefix'])) == $prefs['wikiapproval_prefix']) {
+			$approvedPageName = substr($this->page, strlen($prefs['wikiapproval_prefix']));	
 			$this->smartyassign('beingStaged', 'y');
 			$this->smartyassign('approvedPageName', $approvedPageName);	
 			$approvedPageExists = $tikilib->page_exists($approvedPageName);

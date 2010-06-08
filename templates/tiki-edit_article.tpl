@@ -50,9 +50,7 @@
 	<table class="normal">
 		<tr class="formcolor" id='show_topline' {if $types.$type.show_topline eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Topline{/tr} *</td>
-			<td>
-				<input type="text" name="topline" value="{$topline|escape}" size="60" />
-			</td>
+			<td><input type="text" name="topline" value="{$topline|escape}" size="60" /></td>
 		</tr>
 		<tr class="formcolor">
 			<td>{tr}Title{/tr}</td>
@@ -219,12 +217,14 @@
 
 		{include file='categorize.tpl'}
 
+
 		<tr class="formcolor">
 			<td>
 				{tr}Heading{/tr}
 			</td>
 			<td>
-				{textarea _simple="y" name="heading" rows="5" cols="80" Height="200px" id="subheading" comments="y"}{$heading}{/textarea}
+				{toolbars area_name='heading'}
+				<textarea class="wikiedit" name="heading" rows="5" cols="80" id='subheading' wrap="virtual">{$heading|escape}</textarea>
 			</td>
 		</tr>
 
@@ -234,15 +234,17 @@
 				{tr}Body{/tr}
 			</td>
 			<td>
-				{textarea name="body" rows=$rows cols=$cols id="body"}{$body}{/textarea}
+				{toolbars area_name='body'}
+				<textarea class="wikiedit" id="body" name="body" rows="{$rows}" cols="{$cols}" wrap="virtual">{$body|escape}</textarea>
+				<input type="hidden" name="rows" value="{$rows}"/>
+				<input type="hidden" name="cols" value="{$cols}"/>
 			</td>
 		</tr>
 
 		{if $prefs.cms_spellcheck eq 'y'}
 			<tr class="formcolor">
 				<td>
-					{tr}Spellcheck:{/tr}
-				</td>
+					{tr}Spellcheck:{/tr} </td>
 				<td>
 					<input type="checkbox" name="spellcheck" {if $spellcheck eq 'y'}checked="checked"{/if}/>
 				</td>
@@ -252,12 +254,9 @@
 		<tr id='show_pubdate' {if $types.$type.show_pubdate eq 'y' || $types.$type.show_pre_publ ne 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor">
 			<td>{tr}Publish Date{/tr}</td>
 			<td>
-				{html_select_date prefix="publish_" time=$publishDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order}
-				{tr}at{/tr}
-				<span dir="ltr">
-					{html_select_time prefix="publish_" time=$publishDateSite display_seconds=false}
-					&nbsp;
-					{$siteTimeZone}
+				{html_select_date prefix="publish_" time=$publishDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order} {tr}at{/tr} 
+				<span dir="ltr">{html_select_time prefix="publish_" time=$publishDateSite display_seconds=false}
+					&nbsp;{$siteTimeZone}
 				</span>
 			</td>
 		</tr>
@@ -265,8 +264,7 @@
 		<tr id='show_expdate' {if $types.$type.show_expdate eq 'y' || $types.$type.show_post_expire ne 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor">
 			<td>{tr}Expiration Date{/tr}</td>
 			<td>
-				{html_select_date prefix="expire_" time=$expireDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order}
-				{tr}at{/tr} 
+				{html_select_date prefix="expire_" time=$expireDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order} {tr}at{/tr} 
 				<span dir="ltr">
 					{html_select_time prefix="expire_" time=$expireDateSite display_seconds=false}
 					&nbsp;
@@ -301,23 +299,17 @@
 				</td>
 			</tr>
 		{/if}
+
 		{include file='freetag.tpl'}
-		{if isset($all_attributes)}
-			{foreach from=$all_attributes item=att key=attname}
-			{assign var='attid' value=$att.itemId|replace:'.':'_'}
-			{assign var='attfullname' value=$att.itemId}
-			<tr id={$attid} {if $types.$type.$attid eq 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor">
-				<td>{$attname|escape}</td>
-				<td><input type="text" name="{$attfullname}" value="{$article_attributes.$attfullname|escape}" size="80" /></td>
-			</tr>
-			{/foreach}
-		{/if}
+
+		<tr class="formcolor">
+			<td></td>
+			<td>
+				<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" />
+				<input type="submit" class="wikiaction" name="save" value="{tr}Save{/tr}" />
+			</td>
+		</tr>
 	</table>
-	
-	<div align="center">
-		<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" />
-		<input type="submit" class="wikiaction" name="save" value="{tr}Save{/tr}" />
-	</div>
 </form>
 
 <br />

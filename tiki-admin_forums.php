@@ -1,18 +1,20 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_forums.php,v 1.48.2.6 2007-12-18 14:08:59 nkoth Exp $
 $section = 'forums';
 require_once ('tiki-setup.php');
 $smarty->assign('headtitle', tra('Admin Forums'));
 if (!isset($_REQUEST["forumId"])) {
 	$_REQUEST["forumId"] = 0;
 }
-$access->check_feature('feature_forums');
-
+if ($prefs['feature_forums'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled') . ': feature_forums');
+	$smarty->display('error.tpl');
+	die;
+}
 $smarty->assign('individual', 'n');
 if ($userlib->object_has_one_permission($_REQUEST["forumId"], 'forum')) {
 	$smarty->assign('individual', 'y');
@@ -30,7 +32,12 @@ if ($userlib->object_has_one_permission($_REQUEST["forumId"], 'forum')) {
 		}
 	}
 }
-$access->check_permission('tiki_p_admin_forum');
+if ($tiki_p_admin_forum != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra('You do not have permission to use this feature'));
+	$smarty->display('error.tpl');
+	die;
+}
 
 $auto_query_args = array(
 			'forumId',
@@ -42,8 +49,13 @@ $auto_query_args = array(
 include_once ("lib/commentslib.php");
 $commentslib = new Comments($dbTiki);
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$commentslib->remove_forum($_REQUEST["remove"]);
+	$area = 'delforum';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_REQUEST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$commentslib->remove_forum($_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 if (isset($_REQUEST['lock']) && isset($_REQUEST['forumId'])) {
 	check_ticket('view-forum');
@@ -86,11 +98,7 @@ if (isset($_REQUEST["save"])) {
 	$_REQUEST['ui_online'] = isset($_REQUEST['ui_online']) ? 'y' : 'n';
 	$_REQUEST['topics_list_pts'] = isset($_REQUEST['topics_list_pts']) ? 'y' : 'n';
 	$_REQUEST['topics_list_lastpost'] = isset($_REQUEST['topics_list_lastpost']) ? 'y' : 'n';
-	$_REQUEST['topics_list_lastpost_title'] = isset($_REQUEST['topics_list_lastpost_title']) ? 'y' : 'n';
-	$_REQUEST['topics_list_lastpost_avatar'] = isset($_REQUEST['topics_list_lastpost_avatar']) ? 'y' : 'n';
 	$_REQUEST['topics_list_author'] = isset($_REQUEST['topics_list_author']) ? 'y' : 'n';
-	$_REQUEST['topics_list_author_avatar'] = isset($_REQUEST['topics_list_author_avatar']) ? 'y' : 'n';
-	$_REQUEST['att_list_nb'] = isset($_REQUEST['att_list_nb']) ? 'y' : 'n';
 	if (empty($_REQUEST['threadOrdering'])) $_REQUEST['threadOrdering'] = '';
 	if (empty($_REQUEST['threadStyle'])) $_REQUEST['threadStyle'] = '';
 	if (empty($_REQUEST['commentsPerPage'])) $_REQUEST['commentsPerPage'] = '';
@@ -99,7 +107,7 @@ if (isset($_REQUEST["save"])) {
 	if (substr($_REQUEST["att_store_dir"], -1) != "\\" && substr($_REQUEST["att_store_dir"], -1) != "/" && $_REQUEST["att_store_dir"] != "") {
 		$_REQUEST["att_store_dir"].= "/";
 	}
-	$fid = $commentslib->replace_forum($_REQUEST["forumId"], $_REQUEST["name"], $_REQUEST["description"], $controlFlood, $_REQUEST["floodInterval"], $_REQUEST["moderator"], $_REQUEST["mail"], $useMail, $usePruneUnreplied, $_REQUEST["pruneUnrepliedAge"], $usePruneOld, $_REQUEST["pruneMaxAge"], $_REQUEST["topicsPerPage"], $_REQUEST["topicOrdering"], $_REQUEST["threadOrdering"], $_REQUEST["section"], $_REQUEST['topics_list_reads'], $_REQUEST['topics_list_replies'], $_REQUEST['topics_list_pts'], $_REQUEST['topics_list_lastpost'], $_REQUEST['topics_list_author'], $_REQUEST['vote_threads'], $_REQUEST['show_description'], $_REQUEST['inbound_pop_server'], 110, $_REQUEST['inbound_pop_user'], $_REQUEST['inbound_pop_password'], trim($_REQUEST['outbound_address']) , $_REQUEST['outbound_mails_for_inbound_mails'], $_REQUEST['outbound_mails_reply_link'], $_REQUEST['outbound_from'], $_REQUEST['topic_smileys'], $_REQUEST['topic_summary'], $_REQUEST['ui_avatar'], $_REQUEST['ui_flag'], $_REQUEST['ui_posts'], $_REQUEST['ui_level'], $_REQUEST['ui_email'], $_REQUEST['ui_online'], $_REQUEST['approval_type'], $_REQUEST['moderator_group'], $_REQUEST['forum_password'], $_REQUEST['forum_use_password'], $_REQUEST['att'], $_REQUEST['att_store'], $_REQUEST['att_store_dir'], $_REQUEST['att_max_size'], $_REQUEST['forum_last_n'], $_REQUEST['commentsPerPage'], $_REQUEST['threadStyle'], $_REQUEST['is_flat'], $_REQUEST['att_list_nb'], $_REQUEST['topics_list_lastpost_title'], $_REQUEST['topics_list_lastpost_avatar'], $_REQUEST['topics_list_author_avatar']);
+	$fid = $commentslib->replace_forum($_REQUEST["forumId"], $_REQUEST["name"], $_REQUEST["description"], $controlFlood, $_REQUEST["floodInterval"], $_REQUEST["moderator"], $_REQUEST["mail"], $useMail, $usePruneUnreplied, $_REQUEST["pruneUnrepliedAge"], $usePruneOld, $_REQUEST["pruneMaxAge"], $_REQUEST["topicsPerPage"], $_REQUEST["topicOrdering"], $_REQUEST["threadOrdering"], $_REQUEST["section"], $_REQUEST['topics_list_reads'], $_REQUEST['topics_list_replies'], $_REQUEST['topics_list_pts'], $_REQUEST['topics_list_lastpost'], $_REQUEST['topics_list_author'], $_REQUEST['vote_threads'], $_REQUEST['show_description'], $_REQUEST['inbound_pop_server'], 110, $_REQUEST['inbound_pop_user'], $_REQUEST['inbound_pop_password'], trim($_REQUEST['outbound_address']) , $_REQUEST['outbound_mails_for_inbound_mails'], $_REQUEST['outbound_mails_reply_link'], $_REQUEST['outbound_from'], $_REQUEST['topic_smileys'], $_REQUEST['topic_summary'], $_REQUEST['ui_avatar'], $_REQUEST['ui_flag'], $_REQUEST['ui_posts'], $_REQUEST['ui_level'], $_REQUEST['ui_email'], $_REQUEST['ui_online'], $_REQUEST['approval_type'], $_REQUEST['moderator_group'], $_REQUEST['forum_password'], $_REQUEST['forum_use_password'], $_REQUEST['att'], $_REQUEST['att_store'], $_REQUEST['att_store_dir'], $_REQUEST['att_max_size'], $_REQUEST['forum_last_n'], $_REQUEST['commentsPerPage'], $_REQUEST['threadStyle'], $_REQUEST['is_flat']);
 	$cat_type = 'forum';
 	$cat_objid = $fid;
 	$cat_desc = substr($_REQUEST["description"], 0, 200);
@@ -174,14 +182,10 @@ if ($_REQUEST["forumId"]) {
 	$info['att_store'] = 'db';
 	$info['att_store_dir'] = '';
 	$info['att_max_size'] = 1000000;
-	$info['att_list_nb'] = 'n';
 	$info["topics_list_reads"] = 'y';
 	$info["topics_list_pts"] = 'n';
 	$info["topics_list_lastpost"] = 'y';
-	$info['topics_list_lastpost_title'] = 'y';
-	$info['topics_list_lastpost_avatar'] = 'n';
 	$info["topics_list_author"] = 'y';
-	$info['topics_list_author_avatar'] = 'n';
 	$info["vote_threads"] = 'n';
 	$info["forum_last_n"] = 0;
 	$info["is_flat"] = 'n';

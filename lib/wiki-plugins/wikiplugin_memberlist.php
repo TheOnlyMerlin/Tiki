@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 function wikiplugin_memberlist_info() {
 	return array(
@@ -98,13 +93,9 @@ function wikiplugin_memberlist_get_members( $groupName ) {
 }
 
 function wikiplugin_memberlist_get_group_details( $groups ) {
-	global $user, $prefs, $userlib;
+	global $user, $prefs;
 	$validGroups = array();
 	foreach( $groups as $groupName ) {
-		if( ! $userlib->group_exists( $groupName ) ) {
-			continue;
-		}
-		
 		$perms = Perms::get( array( 'type' => 'group', 'object' => $groupName ) );
 
 		if( $perms->group_view ) {
@@ -121,7 +112,7 @@ function wikiplugin_memberlist_get_group_details( $groups ) {
 			if( $perms->group_view_members ) {
 				$validGroups[$groupName]['members'] = wikiplugin_memberlist_get_members( $groupName );
 
-				if( $prefs['feature_group_transition'] == 'y' ) {
+				if( $prefs['feature_group_transition'] ) {
 					require_once 'lib/transitionlib.php';
 					$transitionlib = new TransitionLib( 'group' );
 					$validGroups[$groupName]['transitions'] = array();

@@ -16,7 +16,7 @@ prefs.wiki_comments_displayed_default: {$prefs.wiki_comments_displayed_default}<
 prefs.show_comzone: {$prefs.show_comzone}<br />
 cookie_key: {$cookie_key}<br />
 smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$cookie_key}<br />*}
-<div {*do not missed up with the space*}
+<div
 {if $pagemd5}
 	id="comzone{$pagemd5}"
 {else}
@@ -112,9 +112,7 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 		{if $forum_mode neq 'y'}
 			<div class="headers">
 			{if $tiki_p_admin_comments eq 'y' or $tiki_p_lock_comments eq 'y'}
-				{if ($tiki_p_admin_comments eq 'y' and $prefs.feature_comments_moderation eq 'y') or $prefs.feature_comments_locking eq 'y'}
-					<span class="title">{tr}Moderator actions{/tr}</span>
-				{/if}
+				<span class="title">{tr}Moderator actions{/tr}</span>
 				<span class="infos">
 				{if $tiki_p_admin_comments eq 'y' and $prefs.feature_comments_moderation eq 'y'}
 					<a class="link" href="tiki-list_comments.php?types_section={$section}&amp;findfilter_approved=n">{tr}queued:{/tr}{$queued}</a>
@@ -269,10 +267,7 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 	</div>
 
 	{if $comment_preview eq 'y'}
-	<div class="clearfix post_preview" id="preview_comment">
-		{jq}
-			$jq(window).attr('location','#preview_comment');
-		{/jq}
+	<div class="clearfix post_preview">
 		{if $forum_mode neq 'y'}<b>{tr}Preview{/tr}</b>{/if}
 		<div class="post"><div class="inner"><span class="corners-top"><span></span></span><div class="postbody">
 			<div class="postbody-title"><div class="title">{$comments_preview_title|escape}</div></div>
@@ -296,7 +291,6 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 	<input type="hidden" name="comments_threshold" value="{$comments_threshold|escape}" />
 	<input type="hidden" name="thread_sort_mode" value="{$thread_sort_mode|escape}" />
 	<input type="hidden" name="comments_objectId" value="{$comments_objectId|escape}" />
-	<input type="hidden" name="comments_title" value="{if $page}{$page|escape}{else}{tr}Untitled{/tr}{/if}" />
 
 	{* Traverse request variables that were set to this page adding them as hidden data *}
 	{section name=i loop=$comments_request_data}
@@ -304,30 +298,28 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 	{/section}
 
 	<table class="normal">
-		{if ( $forum_mode != 'y' and $prefs.wiki_comments_notitle neq 'y' ) or $prefs.forum_reply_notitle neq 'y' && $forum_mode == 'y'}
-			<tr>
-				<td class="formcolor">
-					<label for="comments-title">{tr}Title{/tr} <span class="attention">({tr}required{/tr})</span> </label>
-				</td>
-				<td class="formcolor">
-				{* 
-				   Alain Désilets: This used to have a size="50" attribute, but I deleted it
-				   because in the Collaborative_Multilingual_Terminology, we may need to view 
-				   two different languages of the same page side by side. And the text length of
-				   50 was causing the language displayed on the right side to be squished into a 
-				   very narrow column, if comments were opened on the left side language
-				   but not on the right side language.
-				   
-				   Unfortunately, without a size specification, the comments box looks 
-				   a bit weird when we only view one language at a time.
-				   
-				   But I don't know how else to deal with this issue.
-				 *}
-					<input type="text" name="comments_title" id="comments-title" value="{$comment_title|escape}" /> 
+		<tr>
+			<td class="formcolor">
+				<label for="comments-title">{tr}Title{/tr} <span class="attention">({tr}required{/tr})</span> </label>
+			</td>
+			<td class="formcolor">
+			{* 
+			   Alain Dï¿½silets: This used to have a size="50" attribute, but I deleted it
+			   because in the Collaborative_Multilingual_Terminology, we may need to view 
+			   two different languages of the same page side by side. And the text length of
+			   50 was causing the language displayed on the right side to be squished into a 
+			   very narrow column, if comments were opened on the left side language
+			   but not on the right side language.
+			   
+			   Unfortunately, without a size specification, the comments box looks 
+			   a bit weird when we only view one language at a time.
+			   
+			   But I don't know how else to deal with this issue.
+			 *}
+				<input type="text" name="comments_title" id="comments-title" value="{$comment_title|escape}" /> 
 
-				</td>
-			</tr>
-		{/if}
+			</td>
+		</tr>
 
 		{* Start: Xenfasa adding and testing article ratings in comments here. Not fully functional yet *}
 		{if $comment_can_rate_article eq 'y'}
@@ -353,7 +345,7 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 		{/if}
 		{* End: Xenfasa adding and testing article ratings in comments here *}
 
-		{if $prefs.section_comments_parse eq 'y' && $forum_mode neq 'y' || $prefs.feature_forum_parse eq 'y' && $forum_mode eq 'y'}
+		{if $prefs.section_comments_parse eq 'y'}
 	        {assign var=toolbars_html value=true}{* can't find where this gets set in ui-revamp project *}
 	        <tr>
 	    		<td class="formcolor"><label>{tr}Toolbars{/tr}</label></td>
@@ -370,15 +362,8 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 				<textarea id="editpost2" name="comments_data" rows="{$rows}" cols="{$cols}">{if $prefs.feature_forum_replyempty ne 'y' || $edit_reply > 0 || $comment_preview eq 'y'}{$comment_data|escape}{/if}</textarea> 
 				<input type="hidden" name="rows" value="{$rows}" />
 				<input type="hidden" name="cols" value="{$cols}" />
-
-				{if $forum_mode eq 'y' and $user and $prefs.feature_user_watches eq 'y'}
-					<div id="watch_thread_on_reply">
-						<input id="watch_thread" type="checkbox" name="watch" value="y"{if $user_watching_topic eq 'y' or $smarty.request.watch eq 'y'} checked="checked"{/if}> <label for="watch_thread">{tr}Send me an e-mail when someone replies{/tr}</label>
-					</div>
-				{/if}
 			</td>
 		</tr>
-
 
 		{if $forum_mode == "y" and (($forum_info.att eq 'att_all') or ($forum_info.att eq 'att_admin' and ($tiki_p_admin_forum eq 'y'  or $forum_info.moderator == $user)) or ($forum_info.att eq 'att_perm' and $tiki_p_forum_attach eq 'y'))}
 		{assign var='can_attach_file' value='y'}
@@ -420,22 +405,22 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 			</td>
 
 			<td class="formcolor">
-				<input type="submit" name="comments_postComment" value="{tr}Post{/tr}" {if empty($user)}onclick="setCookie('anonymous_name',$jq('#anonymous_name').val());"{/if} />
-				{if !empty($user) && $prefs.feature_comments_post_as_anonymous eq 'y'}
-				<input type="submit" name="comments_postComment_anonymous" value="{tr}Post as Anonymous{/tr}" />
-				{/if}
 				<input type="submit" name="comments_previewComment" value="{tr}Preview{/tr}"
 				{if ( isset($can_attach_file) && $can_attach_file eq 'y' ) or empty($user)}{strip}
-					{assign var='file_preview_warning' value="{tr}Please note that the preview does not keep the attached file which you will have to choose before posting.{/tr}"}
+					{assign var='file_preview_warning' value='{tr}Please note that the preview does not keep the attached file which you will have to choose before posting.{/tr}'}
 					onclick="
 					{if empty($user)}
-						setCookie('anonymous_name',$jq('#anonymous_name').val());
+						setCookie('anonymous_name',document.getElementById('anonymous_name').value);
 					{/if}
 					{if isset($can_attach_file) && $can_attach_file eq 'y'}
-						if ($jq('#userfile1').val()) alert('{$file_preview_warning|escape:"javascript"}');
+						if (document.getElementById('userfile1').value) alert('{$file_preview_warning|escape:"javascript"}');
 					{/if}
 					"
 				{/strip}{/if} />
+				<input type="submit" name="comments_postComment" value="{tr}Post{/tr}" {if empty($user)}onclick="setCookie('anonymous_name',document.getElementById('anonymous_name').value);"{/if} />
+				{if !empty($user) && $prefs.feature_comments_post_as_anonymous eq 'y'}
+				<input type="submit" name="comments_postComment_anonymous" value="{tr}Post as Anonymous{/tr}" />
+				{/if}
 				{if $forum_mode eq 'y'}
 				<input type="button" name="comments_cancelComment" value="{tr}Cancel{/tr}" onclick="hide('{$postclass}');" />
 				{elseif $prefs.feature_comments_moderation eq 'y' and $tiki_p_admin_comments neq 'y'}
@@ -467,8 +452,10 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 {if $forum_mode neq 'y'}</div><!-- comzone end -->{/if}
 {*</div>  now this tag causes problems instead of fixing (was added earlier to prevent side columns in *litecss themes from not appearing *}
 {if empty($user) and $prefs.javascript_enabled eq "y"}
-	{jq}
-		var js_anonymous_name = getCookie('anonymous_name');
-		if (js_anonymous_name) $jq('#anonymous_name').val( js_anonymous_name );
-	{/jq}
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+var js_anonymous_name = getCookie('anonymous_name');
+if (js_anonymous_name) document.getElementById('anonymous_name').value = js_anonymous_name;
+//--><!]]>
+</script>
 {/if}

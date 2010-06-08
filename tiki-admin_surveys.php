@@ -1,14 +1,17 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_surveys.php,v 1.20 2007-10-12 07:55:24 nyloth Exp $
 $section = 'surveys';
 require_once ('tiki-setup.php');
 include_once ('lib/surveys/surveylib.php');
-$access->check_feature('feature_surveys');
+if ($prefs['feature_surveys'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_surveys");
+	$smarty->display("error.tpl");
+	die;
+}
 
 $auto_query_args = array(
 	'surveyId',
@@ -39,7 +42,12 @@ if ($userlib->object_has_one_permission($_REQUEST["surveyId"], 'survey')) {
 		}
 	}
 }
-$access->check_permission('tiki_p_admin_surveys');
+if ($tiki_p_admin_surveys != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You don't have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (isset($_REQUEST["save"])) {
 	check_ticket('admin-surveys');
 	$sid = $srvlib->replace_survey($_REQUEST["surveyId"], $_REQUEST["name"], $_REQUEST["description"], $_REQUEST["status"]);
@@ -49,7 +57,6 @@ if (isset($_REQUEST["save"])) {
 	$cat_name = $_REQUEST["name"];
 	$cat_href = "tiki-take_survey.php?surveyId=" . $cat_objid;
 	include_once ("categorize.php");
-	$cookietab = 1;
 }
 if ($_REQUEST["surveyId"]) {
 	$info = $srvlib->get_survey($_REQUEST["surveyId"]);
@@ -62,8 +69,13 @@ if ($_REQUEST["surveyId"]) {
 }
 $smarty->assign('info', $info);
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$srvlib->remove_survey($_REQUEST["remove"]);
+	$area = 'delsurvey';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$srvlib->remove_survey($_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 if (!isset($_REQUEST["sort_mode"])) {
 	$sort_mode = 'created_desc';

@@ -1,27 +1,28 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-view_blog.php,v 1.65.2.1 2007-12-07 05:56:38 mose Exp $
+// 2009-02-23 SEWilco
+// Added blogTitle parameter for access by title.
 $section = 'blogs';
 require_once ('tiki-setup.php');
 include_once ('lib/blogs/bloglib.php');
-
 if ($prefs['feature_freetags'] == 'y') {
 	include_once ('lib/freetag/freetaglib.php');
 }
-
 if ($prefs['feature_categories'] == 'y') {
 	global $categlib;
 	if (!is_object($categlib)) {
 		include_once ('lib/categories/categlib.php');
 	}
 }
-
-$access->check_feature('feature_blogs');
-
+if ($prefs['feature_blogs'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_blogs");
+	$smarty->display("error.tpl");
+	die;
+}
 if (isset($_REQUEST["blogTitle"])) {
 	$blog_data = $tikilib->get_blog_by_title(trim(trim($_REQUEST["blogTitle"]) , "\x22\x27"));
 	if ((!empty($blog_data)) && (!empty($blog_data["blogId"]))) {
@@ -35,9 +36,12 @@ if (!isset($_REQUEST["blogId"])) {
 }
 $tikilib->get_perm_object( $_REQUEST["blogId"], 'blog' ); 
 
-
-$access->check_permission('tiki_p_read_blog');
-
+if ($tiki_p_read_blog != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied you can not view this section"));
+	$smarty->display("error.tpl");
+	die;
+}
 $blog_data = $tikilib->get_blog($_REQUEST["blogId"]);
 $ownsblog = 'n';
 if ($user && $user == $blog_data["user"]) {
@@ -54,8 +58,6 @@ $smarty->assign('blogId', $_REQUEST["blogId"]);
 $smarty->assign('title', $blog_data["title"]);
 $smarty->assign('heading', $blog_data["heading"]);
 $smarty->assign('use_title', $blog_data["use_title"]);
-$smarty->assign('use_author', $blog_data["use_author"]);
-$smarty->assign('add_date', $blog_data["add_date"]);
 $smarty->assign('use_find', $blog_data["use_find"]);
 $smarty->assign('allow_comments', $blog_data["allow_comments"]);
 $smarty->assign('show_avatar', $blog_data["show_avatar"]);
@@ -74,11 +76,21 @@ if (isset($_REQUEST["remove"])) {
 	}
 	if ($ownsblog == 'n') {
 		if (!$user || $data["user"] != $user) {
-			$access->check_permission('tiki_p_blog_admin');
+			if ($tiki_p_blog_admin != 'y') {
+				$smarty->assign('errortype', 401);
+				$smarty->assign('msg', tra("Permission denied you cannot remove the post"));
+				$smarty->display("error.tpl");
+				die;
+			}
 		}
 	}
-	$access->check_authenticity();
-	$bloglib->remove_post($_REQUEST["remove"]);
+	$area = 'delpost';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$bloglib->remove_post($_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 // This script can receive the thresold
 // for the information as the number of
@@ -108,15 +120,12 @@ $smarty->assign('find', $find);
 // Get a list of last changes to the blog database
 $date_min = isset($_REQUEST['date_min']) ? $_REQUEST['date_min'] : '';
 $date_max = isset($_REQUEST['date_max']) ? $_REQUEST['date_max'] : $tikilib->now;
-$listpages = $bloglib->list_blog_posts($_REQUEST["blogId"], true, $offset, $blog_data["maxPosts"], $sort_mode, $find, $date_min, $date_max);
+$listpages = $bloglib->list_blog_posts($_REQUEST["blogId"], $offset, $blog_data["maxPosts"], $sort_mode, $find, $date_min, $date_max);
 $temp_max = count($listpages["data"]);
 for ($i = 0; $i < $temp_max; $i++) {
 	$listpages["data"][$i]["parsed_data"] = $tikilib->parse_data($bloglib->get_page($listpages["data"][$i]["data"], 1));
 	if ($prefs['feature_freetags'] == 'y') { // And get the Tags for the posts
 		$listpages["data"][$i]["freetags"] = $freetaglib->get_tags_on_object($listpages["data"][$i]["postId"], "blog post");
-	}
-	if ($listpages["data"][$i]['priv'] == 'y') {
-		$listpages["data"][$i]['title'] .= ' (' . tra("private") . ')';
 	}
 }
 $maxRecords = $blog_data["maxPosts"];
@@ -180,6 +189,7 @@ if ($prefs['feature_mobile'] == 'y' && isset($_REQUEST['mode']) && $_REQUEST['mo
 	HAWTIKI_view_blog($listpages, $blog_data);
 }
 if ($prefs['feature_actionlog'] == 'y') {
+	include_once ('lib/logs/logslib.php');
 	$logslib->add_action('Viewed', $_REQUEST['blogId'], 'blog', '');
 }
 ask_ticket('blog');

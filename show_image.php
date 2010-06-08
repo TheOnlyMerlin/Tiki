@@ -1,10 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/show_image.php,v 1.34.2.1 2007-12-07 05:56:37 mose Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-  
+
 if (!isset($_REQUEST["nocache"]))
 	session_cache_limiter ('private_no_expire');
 
@@ -96,6 +97,8 @@ if ((!isset($_REQUEST["thumb"])) && (!isset($_REQUEST["nocount"]))) {
 
 $type = $imagegallib->filetype;
 
+//echo"<pre>";print_r(get_defined_vars());echo"</pre>";
+
 // close the session for speedup
 session_write_close();
 
@@ -116,3 +119,4 @@ header ("Content-Disposition: inline; filename=\"" . $imagegallib->filename.'"')
 //} else {
 echo $imagegallib->image;
 //}
+// ????? echo $data;

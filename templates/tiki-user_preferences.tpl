@@ -6,10 +6,6 @@
   {title help="User+Preferences"}{tr}User Preferences{/tr}{/title}
 {/if}
 
-{if $userwatch eq $user or $userwatch eq ""}
-    {include file='tiki-mytiki_bar.tpl'}
-{/if}
-
 {if $tiki_p_admin_users eq 'y'}
 	<div class="navbar">
 		{assign var=thisuser value=$userinfo.login}
@@ -17,13 +13,16 @@
 	</div>
 {/if}
 
+{if $userwatch eq $user or $userwatch eq ""}
+    {include file='tiki-mytiki_bar.tpl'}
+  <br />
+{/if}
 
 {if $tikifeedback}
   <div class="simplebox highlight">
     {section name=n loop=$tikifeedback}<div>{$tikifeedback[n].mes}</div>{/section}
   </div>
 {/if}
-{cycle values="odd,even" print=false}
 {tabset name="mytiki_user_preference"}
 
 {if $prefs.feature_userPreferences eq 'y'}
@@ -32,6 +31,7 @@
   <input type="hidden" name="view_user" value="{$userwatch|escape}" />
 
 
+  {cycle values="odd,even" print=false}
   <table class="normal">
     <tr>
       <td class="{cycle advance=false}">{tr}User:{/tr}</td>
@@ -499,7 +499,7 @@
     {/if}
 
     <tr>
-      <td colspan="2" class="input_submit_container"><input type="submit" name="new_prefs" value="{tr}Save changes{/tr}" /></td>
+      <td colspan="2" class="input_submit_container"><input type="submit" name="new_prefs" value="{tr}Change preferences{/tr}" /></td>
     </tr>
   </table>
 </form>
@@ -550,7 +550,7 @@
       {/if}
     
       <tr>
-        <td colspan="2" class="input_submit_container"><input type="submit" name="chgadmin" value="{tr}Save changes{/tr}" /></td>
+        <td colspan="2" class="input_submit_container"><input type="submit" name="chgadmin" value="{tr}Change administrative info{/tr}" /></td>
       </tr>
     </table>
   </form>

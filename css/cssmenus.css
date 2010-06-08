@@ -115,7 +115,7 @@ ul.cssmenu_vert ul {
 	height: 10px;
 	text-indent: -999em;
 	overflow: hidden;
-	background: url(../lib/jquery/superfish/images/arrows-ffffff.png) no-repeat -10px -100px; /* 8-bit indexed alpha png. IE6 gets solid image only. use url(arrows-000000.png) for black arrows */
+	background: url(../lib/jquery/superfish/images/arrows-ffffff.png) no-repeat -10px -100px; /* 8-bit indexed alpha png. IE6 gets solid image only */
 }
 
 a > .sf-sub-indicator {  /* give all except IE6 the correct values */
@@ -281,4 +281,8 @@ div.navbar .cssmenu_horiz ul li.sfHover > a > .sf-sub-indicator {
 div.navbar .cssmenu_horiz > li > ul {
 	background: transparent;
 	padding: 0;
+	-moz-border-radius-bottomleft: 0;
+	-moz-border-radius-topright: 0;
+	-webkit-border-top-right-radius: 0;
+	-webkit-border-bottom-left-radius: 0;
 }

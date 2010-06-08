@@ -1,11 +1,6 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-/*
+/* $Id:
+ *
  * Tikiwiki CATORPHANS plugin.
  * 
  * Syntax:
@@ -16,7 +11,7 @@
  * {CATORPHANS}
  * 
  * Currently only displays wiki pages; very much a work in progress
- */
+  */
 function wikiplugin_catorphans_help() {
 	return tra("Display Tiki objects that have not been categorized").":<br />~np~{CATORPHANS(objects=>wiki|article|blog|faq|fgal|forum|igal|newsletter|poll|quizz|survey|tracker)}{CATORPHANS}~/np~";
 }
@@ -31,29 +26,23 @@ function wikiplugin_catorphans_info() {
 			'objects' => array(
 				'required' => false,
 				'name' => tra('Objects'),
-				'description' => tra('wiki|article|blog|faq|fgal|forum<br />|igal|newsletter|poll|quizz<br />|survey|tracker'),
-			),
-			'max' => array(
-				'required' => false,
-				'name' => tra('max'),
-				'description' => tra('Maximum number of items').' '.tra('-1 for unlimited'),
-			),
-			'offset' => array(
-				'required' => false,
-				'name' => tra('Result Offset'),
-				'description' => tra('Result number at which the listing should start.'),
+				'description' => tra('wiki|article|blog|faq|fgal|forum|igal|newsletter|poll|quizz|survey|tracker'),
 			),
 		),
 	);
 }
 
 function wikiplugin_catorphans($data, $params) {
-	global $dbTiki, $smarty, $tikilib, $prefs, $access;
-	$access->check_feature('feature_categories');
-	global $categlib; require_once ('lib/categories/categlib.php');
+	global $dbTiki, $smarty, $tikilib, $prefs, $categlib;
 
-	$default = array('offset'=>0, 'max'=>$prefs['maxRecords'], 'objects'=>'wiki');
-	$params = array_merge($default, $params);
+	if (!is_object($categlib)) {
+		require_once ("lib/categories/categlib.php");
+	}
+
+	if ($prefs['feature_categories'] != 'y') {
+		return "<span class='warn'>" . tra("Categories are disabled"). "</span>";
+	}
+
 	extract ($params,EXTR_SKIP);
 
 	// array for converting long type names (as in database) to short names (as used in plugin)
@@ -88,17 +77,25 @@ function wikiplugin_catorphans($data, $params) {
 		"tracker" => "Trackers",
 		"wiki page" => "Wiki"
 	);
-	if (!empty($_REQUEST['offset'])) {
-		$offset = $_REQUEST['offset'];
+
+	// default object is 'wiki'
+	if (!isset($objects)or $objects != 'wiki') {
+		$objects = 'wiki';
 	}
+
+	$orphans = '';
 
 	// currently only supports display of wiki pages
 	if ($objects == 'wiki') {
-		$listpages = $tikilib->list_pages($offset, $max, 'pageName_asc', '', '', true, true, false, false, array('noCateg' => true));
-		$smarty->assign_by_ref('pages', $listpages['data']);
-		$smarty->assign('pagination', array('cant'=>$listpages['cant'], 'step'=>$max, 'offset'=>$offset));
-		return '~np~'.$smarty->fetch('wiki-plugins/wikiplugin_catorphans.tpl').'~/np~';		
-	}
-	return '';
+		$listpages = $tikilib->list_pageNames(0, -1, 'pageName_asc', '');
 
+		foreach ($listpages['data'] as $page) {
+			if (!$categlib->is_categorized('wiki page', $page['pageName'])) {
+				//				$orphans .= '<a href="tiki-index.php?page='.$page['pageName'].'">'.$page['pageName'].'</a><br />';
+				$orphans .= '((' . $page['pageName'] . '))<br />';
+			}
+		}
+	}
+
+	return $orphans;
 }

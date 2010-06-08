@@ -1,10 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-map_history.php,v 1.6.2.1 2008-02-27 00:09:14 franck Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/map/maplib.php');
 if (!isset($prefs['feature_maps']) or $prefs['feature_maps'] != 'y') {
@@ -12,7 +11,12 @@ if (!isset($prefs['feature_maps']) or $prefs['feature_maps'] != 'y') {
 	$smarty->display("error.tpl");
 	die;
 }
-$access->check_permission('tiki_p_map_view');
+if ($tiki_p_map_view != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permissions to view the maps"));
+	$smarty->display("error.tpl");
+	die;
+}
 // Validate to prevent editing any file
 if (isset($_REQUEST["mapfile"])) {
 	if (strstr($_REQUEST["mapfile"], '..')) {

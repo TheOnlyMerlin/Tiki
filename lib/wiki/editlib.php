@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id$
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// Initialization
 
 /****
  * Initially just a collection of the functions dotted around tiki-editpage.php for v4.0
@@ -11,18 +12,10 @@
  * 
  */
 
-class EditLib
-{
-	private $tracesOn = false;
-	
-	// Fields for translation related methods.
-	public $sourcePageName = null;
-	public $targetPageName = null;
-	public $oldSourceVersion = null;
-	public $newSourceVersion = null;
+class EditLib {
 	
 	// general
-		
+	
 	function make_sure_page_to_be_created_is_not_an_alias($page, $page_info) {
 		global $_REQUEST, $semanticlib, $access, $wikilib, $tikilib;
 		require_once 'lib/wiki/semanticlib.php';
@@ -43,183 +36,42 @@ class EditLib
 		}	
 	}	
 	
-	function user_needs_to_specify_language_of_page_to_be_created($page, $page_info, $new_page_inherited_attributes = null) {
-		global $_REQUEST, $multilinguallib, $prefs;
-		if (isset($_REQUEST['need_lang']) && $_REQUEST['need_lang'] == 'n') {
-			return false;
-		}
-		if ($prefs['feature_multilingual'] == 'n') {
-			return false;
-		} 
-		if ($page_info && isset($page_info['lang']) && $page_info['lang'] != '') {
-			return false;
-		}
-		if (isset($_REQUEST['lang']) && $_REQUEST['lang'] != '') { 
-			return false;
-		}
-		if ($new_page_inherited_attributes != null && 
-			isset($new_page_inherited_attributes['lang']) && 
-			$new_page_inherited_attributes['lang'] != '') {
-			return false;
-		}
-
-		return true;
-	}			
-	
 	// translation functions
-	
-	function isTranslationMode() {
-		return $this->isUpdateTranslationMode() || $this->isNewTranslationMode();
-	}
 	
 	function isNewTranslationMode() {
 		global $prefs;
 	
-		if ($prefs['feature_multilingual'] != 'y') {
-			return false;
-		}
-		if (isset( $_REQUEST['translationOf']  )
-			&& ! empty( $_REQUEST['translationOf'] )) {
-
-			return true;
-		}
-		if (isset( $_REQUEST['is_new_translation']  )
-			&& $_REQUEST['is_new_translation'] ==  'y') {
-			return true;
-		}	
-		return false;		
+		return $prefs['feature_multilingual'] == 'y'
+			&& isset( $_REQUEST['translationOf']  )
+			&& ! empty( $_REQUEST['translationOf'] );
 	}
 
 	function isUpdateTranslationMode() {
 		return isset( $_REQUEST['source_page'] )
 			&& isset( $_REQUEST['oldver'] )
-			&& (!isset($_REQUEST['is_new_translation']) || $_REQUEST['is_new_translation'] == 'n')
 			&& isset( $_REQUEST['newver'] );
-	}
-	
-	function prepareTranslationData() {
-		global $_REQUEST, $tikilib, $smarty;
-		$this->setTranslationSourceAndTargetPageNames();		
-		$this->setTranslationSourceAndTargetVersions();
-	}
-	
-	private function setTranslationSourceAndTargetPageNames() {
-		global $_REQUEST, $smarty;
-		
-		if (!$this->isTranslationMode()) {
-			return;
-		}
-		
-		$this->targetPageName = null;
-		if (isset($_REQUEST['target_page'])) {
-			$this->targetPageName = $_REQUEST['target_page'];
-		} elseif (isset($_REQUEST['page'])) {
-			$this->targetPageName = $_REQUEST['page'];		
-		} 
-		$smarty->assign('target_page', $this->targetPageName);
-
-		$this->sourcePageName = null;		
-		if (isset($_REQUEST['translationOf']) && $_REQUEST['translationOf']) {
-			$this->sourcePageName = $_REQUEST['translationOf'];
-		} elseif (isset($_REQUEST['source_page'])) {
-			$this->sourcePageName = $_REQUEST['source_page'];
-		}
-		$smarty->assign('source_page', $this->sourcePageName);
-		
-		if ($this->isNewTranslationMode()) {
-			$smarty->assign('translationIsNew', 'y');
-		} else {
-			$smarty->assign('translationIsNew', 'n');
-			
-		}
-	}
-	
-	private function setTranslationSourceAndTargetVersions() {
-		global $_REQUEST, $tikilib;
-		
-		if (isset($_REQUEST['oldver'])) {
-			$this->oldSourceVersion = $_REQUEST['oldver'];
-		} else {
-			// Note: -1 means a "virtual" empty version.
-			$this->oldsourceVersion = -1;
-		}
-		
-		if (isset($_REQUEST['newver'])) {
-			$this->newSourceVersion = $_REQUEST['newver'];
-		} else {
-			// Note: version number of 0 means the most recent version.
-			$this->newSourceVersion = 0;
-		}
-	}	
-
-	function aTranslationWasSavedAs($complete_or_partial) {	
-		if (!$this->isTranslationMode() ||
-			!isset($_REQUEST['save'])) {
-			return false;
-		}
-		
-		// We are saving a translation. Is it partial or complete?
-		if ($complete_or_partial == 'complete' && isset($_REQUEST['partial_save'])) {
-			return false;
-		} else if ($complete_or_partial == 'partial' && !isset($_REQUEST['partial_save'])) {
-			return false;
-		}
-		return true;
-	} 
-	
-	function saveCompleteTranslation() {
-		global $multilinguallib, $tikilib;
-		
-		$sourceInfo = $tikilib->get_page_info( $this->sourcePageName );
-		$targetInfo = $tikilib->get_page_info( $this->targetPageName );
-				
-		$multilinguallib->propagateTranslationBits( 
-			'wiki page',
-			$sourceInfo['page_id'],
-			$targetInfo['page_id'],
-			$sourceInfo['version'],
-			$targetInfo['version'] );
-		$multilinguallib->deleteTranslationInProgressFlags($targetInfo['page_id'], $sourceInfo['lang']);		
-	}
-	
-	function savePartialTranslation() {
-		global $multilinguallib, $tikilib;
-
-		$sourceInfo = $tikilib->get_page_info( $this->sourcePageName );
-		$targetInfo = $tikilib->get_page_info( $this->targetPageName );
-		
-		$multilinguallib->addTranslationInProgressFlags($targetInfo['page_id'], $sourceInfo['lang']);
-		
 	}
 
 	function parseToWiki(&$inData) {
-		global $prefs;
-		if ($prefs['wysiwyg_htmltowiki'] === 'y') {
-			$parsed = $inData;
-		} else {
-			// Parsing page data as first time seeing html page in normal editor
-			$parsed = $this->parse_html($inData);
-		}
+		// Parsing page data as first time seeing html page in normal editor
+		$parsed = '';
+		$parsed = $this->parse_html($inData);
 		$parsed = preg_replace('/\{img src=.*?img\/smiles\/.*? alt=([\w\-]*?)\}/im','(:$1:)', $parsed);	// "unfix" smilies
 		$parsed = preg_replace('/%%%/m',"\n", $parsed);													// newlines
 		return $parsed;
 	}
 	
 	function parseToWysiwyg(&$inData) {
-		global $tikilib, $tikiroot, $prefs;
+		global $tikilib, $tikiroot;
 		// Parsing page data as first time seeing wiki page in wysiwyg editor
 		$parsed = preg_replace('/(!!*)[\+\-]/m','$1', $inData);		// remove show/hide headings
-		if ($prefs['wysiwyg_htmltowiki'] === 'y') {
-			$parsed = $tikilib->parse_data($parsed,array('absolute_links'=>true, 'noparseplugins'=>false,'noheaderinc'=>true, 'fck' => 'y'));
-		} else {
-			$parsed = $tikilib->parse_data($parsed,array('absolute_links'=>true, 'parseimgonly'=>true,'noheaderinc'=>true));
-		}
+		$parsed = $tikilib->parse_data($parsed,array('absolute_links'=>true, 'parseimgonly'=>true,'noheaderinc'=>true, 'suppress_icons' => true));
 		$parsed = preg_replace('/<span class=\"img\">(.*?)<\/span>/im','$1', $parsed);					// remove spans round img's
 		$parsed = preg_replace("/src=\"img\/smiles\//im","src=\"".$tikiroot."img/smiles/", $parsed);	// fix smiley src's
 		$parsed = str_replace( 
-				array( '{SUP()}', '{SUP}', '{SUB()}', '{SUB}', '<table' ),
-				array( '<sup>', '</sup>', '<sub>', '</sub>', '<table border="1"' ),
-				$parsed );
+			array( '{SUP()}', '{SUP}', '{SUB()}', '{SUB}', '<table' ),
+			array( '<sup>', '</sup>', '<sub>', '</sub>', '<table border="1"' ),
+			$parsed );
 		return $parsed;
 	}
 	
@@ -268,13 +120,8 @@ class EditLib
 							if( isset($c[$i]['pars']) 
 								&& isset($c[$i]['pars']['style']) 
 								&& $c[$i]['pars']['style']['value'] == 'text-align: center;' ) {
-									if ($prefs['feature_use_three_colon_centertag'] == 'y') {
-										$src .= "\n:::";
-										$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => ":::\n");
-									} else {
-										$src .= "\n::";
-										$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => "::\n");
-									}
+								$src .= "\n::";
+								$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => "::\n"); 
 							} else {
 								$src .= "\n";
 								$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => "\n"); 
@@ -312,15 +159,7 @@ class EditLib
 						case "u": $src .= "=="; $p['stack'][] = array('tag' => 'u', 'string' => "=="); break;
 						case "strike": $src .= "--"; $p['stack'][] = array('tag' => 'strike', 'string' => "--"); break;
 						case "del": $src .= "--"; $p['stack'][] = array('tag' => 'del', 'string' => "--"); break;
-						case "center":
-							if ($prefs['feature_use_three_colon_centertag'] == 'y') {
-								$src .= ':::';
-								$p['stack'][] = array('tag' => 'center', 'string' => ':::');
-							} else {
-								$src .= '::';
-								$p['stack'][] = array('tag' => 'center', 'string' => '::');
-							}
-							break;
+						case "center": $src .= '::'; $p['stack'][] = array('tag' => 'center', 'string' => '::'); break;
 						case "code": $src .= '-+'; $p['stack'][] = array('tag' => 'code', 'string' => '+-'); break;
 						case "dd": $src .= ':'; $p['stack'][] = array('tag' => 'dd', 'string' => "\n"); break;
 						case "dt": $src .= ';'; $p['stack'][] = array('tag' => 'dt', 'string' => ''); break;
@@ -463,44 +302,7 @@ class EditLib
 		
 		return $out_data;
 	}	// end parse_html
-
-	function get_new_page_attributes_from_parent_pages($page, $page_info) {
-		global $wikilib, $tikilib;
-		$new_page_attrs = array();
-		$parent_pages = $wikilib->get_parent_pages($page);
-		$parent_pages_info = array();
-		foreach ($parent_pages as $a_parent_page_name) {
-			$this_parent_page_info = $tikilib->get_page_info($a_parent_page_name);
-			$parent_pages_info[] = $this_parent_page_info;
-		}
-		$new_page_attrs = $this->get_newpage_language_from_parent_page($page, $page_info, $parent_pages_info, $new_page_attrs);
-		// Note: in the future, may add some methods below to guess things like
-		//       categories, workspaces, etc...
-		
-		return $new_page_attrs;
-	}
-
-	function get_newpage_language_from_parent_page($page, $page_info, $parent_pages_info, $new_page_attrs) {
-		if (!isset($page_info['lang'])) {
-			$lang = null;
-			foreach ($parent_pages_info as $this_parent_page_info) {
-				if (isset($this_parent_page_info['lang'])) {
-					if ($lang != null and $lang != $this_parent_page_info['lang']) {
-						// If more than one parent pages and they have different languages
-						// then we can't guess which  is the right one.
-						$lang = null;
-						break;
-					} else {
-						$lang = $this_parent_page_info['lang'];
-					}
-				}
-			}
-			if ($lang != null) {
-				$new_page_attrs['lang'] = $lang;
-			}
-		}	
-		return $new_page_attrs;
-	}
+	
 }
 
 

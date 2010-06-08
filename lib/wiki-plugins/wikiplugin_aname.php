@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /*
  * Tiki ANAME plugin.
  *
@@ -46,7 +40,7 @@ function wikiplugin_aname($data, $params)
         
     // the following replace is necessary to maintain compliance with XHTML 1.0 Transitional
 	// and the same behavior as tikilib.php and ALINK. This will change when the world arrives at XHTML 1.0 Strict.
-	$data = preg_replace('/[^a-zA-Z0-9]+/', '_', $data);
+	$data = ereg_replace('[^a-zA-Z0-9]+', '_', $data);
 
 	return "<a id=\"$data\"></a>";
 }

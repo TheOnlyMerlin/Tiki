@@ -1,16 +1,38 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+
 // $Id$
 
-global $headerlib, $ajaxlib, $access;
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+
+// Initialization
+global $headerlib, $ajaxlib;
 require_once ('tiki-setup.php');
 require_once('lib/ajax/ajaxlib.php');
 
-$access->check_feature( array('feature_webmail', 'feature_ajax' ) );
-$access->check_permission_either( array('tiki_p_use_webmail', 'tiki_p_use_group_webmail') );
+
+if ($prefs['feature_webmail'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled').': feature_webmail');
+
+	$smarty->display('error.tpl');
+	die;
+}
+
+if ($prefs['feature_ajax'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled').': feature_ajax');
+
+	$smarty->display('error.tpl');
+	die;
+}
+
+if ($tiki_p_use_webmail != 'y' && $tiki_p_use_group_webmail != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra('Permission denied to use this feature'));
+
+	$smarty->display('error.tpl');
+	die;
+}
 
 if (!isset($_REQUEST['xjxfun'])) {	// "normal" (non-AJAX) page load
 
@@ -147,7 +169,7 @@ function refreshWebmail($destDiv = 'mod-webmail_inbox', $inStart = 0, $inReload 
 	return $objResponse;
 }
 
-function takeGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1) {
+function takeGroupMail($destDiv = 'mod-webmail_inbox', $msgId) {
 	global $prefs, $trklib, $user, $webmaillib, $contactlib, $dbTiki, $tikilib, $categlib, $module_params;
 	
 	include_once ('lib/webmail/webmaillib.php');
@@ -217,7 +239,7 @@ function takeGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1) {
 		$ext = $contactlib->get_ext_by_name($user, tra('Wiki Page'), $contId);
 	}
 	
-	$arr = explode(" ", trim(html_entity_decode($m['sender']['name']), '"\' '), 2);
+	$arr = split(" ", trim(html_entity_decode($m['sender']['name']), '"\' '), 2);
 	if (count($arr) < 2) {
 		$arr[] = '';
 	}
@@ -252,7 +274,7 @@ function takeGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1) {
 	return $objResponse;
 }
 
-function putBackGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1) {
+function putBackGroupMail($destDiv = 'mod-webmail_inbox', $msgId) {
 	global $prefs, $trklib, $user, $webmaillib, $dbTiki, $module_params;
 	
 	if (!isset($webmaillib)) { include_once ('lib/webmail/webmaillib.php'); }

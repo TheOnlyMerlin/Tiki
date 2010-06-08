@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 // Displays the data using the Tikiwiki odd/even table style
 //
 // Usage:
@@ -114,8 +108,11 @@ function wikiplugin_fancytable($data, $params) {
 			$head = str_replace('|', '~|~', $head);
 			$head = preg_replace($patterns, $replace , $head);	
 		}	
-		if (!empty($headclass)) {
-			$tdhdr = "\r\t\t\t<th class=\"$headclass\"";
+		if (isset($headclass)) {
+			if (strpos($headclass,'"')) {
+				$headclass = str_replace('"',"'",$class);
+				$tdhdr = "\r\t\t\t<th $headclass\"";
+			} 
 		} else {
 			$tdhdr = "\r\t\t\t<th";
 		}
@@ -134,7 +131,7 @@ function wikiplugin_fancytable($data, $params) {
 		$data = str_replace('|', '~|~', $data);
 		$data = preg_replace($patterns, $replace , $data);
 	}	
-	$lines = explode("\n", $data);
+	$lines = split("\n", $data);
 	$colsw = isset($colwidths) ?  explode('|', $colwidths) : '';
 	$caligns = isset($colaligns) ?  explode('|', $colaligns) : '';
 	$cvaligns = isset($colvaligns)?  explode('|', $colvaligns) : '';
@@ -150,10 +147,11 @@ function wikiplugin_fancytable($data, $params) {
 			$wret .= tra('The feature must be activated:').' feature_jquery_tablesorter';
 		}
 		if (empty($sortList)) {
-			$js = '$jq("#fancytable_'.$iFancytable.'").tablesorter({widgets: ["zebra"]});';
+			$js = '$jq("#fancytable_'.$iFancytable.'").tablesorter();';
 		} else {
-			$js = '$jq("#fancytable_'.$iFancytable.'").tablesorter({sortList:['.$sortList.'], widgets: ["zebra"]});';
+			$js = '$jq("#fancytable_'.$iFancytable.'").tablesorter({sortList:['.$sortList.']});';
 		}
+		$js .= '$jq("#fancytable_'.$iFancytable.'").tablesorter({widgets: ["zebra"]});';
 		global $headerlib;
 		$headerlib->add_jq_onready($js);
 	}

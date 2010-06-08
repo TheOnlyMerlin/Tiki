@@ -6,17 +6,19 @@
 				<form action="tiki-read_article.php" method="get">
 				<select name="articleId" onchange="this.form.submit()">
 					{section name=i loop=$trads}
-					<option value="{$trads[i].objId|escape}">{$trads[i].langName|escape}</option>
+					<option value="{$trads[i].objId}">{$trads[i].langName}</option>
 					{/section}
 				</select>
 				</form>
 			{else} {* get method to have the param in the url *}
-				{jq notonready=true}
-				{{if $beingStaged == 'y'}
-					var page_to_translate = '{$approvedPageName|escape:"quotes"}';
+				<script type="text/javascript">
+				<!--//--><![CDATA[//><!--
+				{if $beingStaged == 'y'}
+					var page_to_translate = "{$approvedPageName}";
 				{else}
-					var page_to_translate = '{$page|escape:"quotes"}';
-				{/if}}
+					var page_to_translate = "{$page}";
+				{/if}
+				{literal}
 				function quick_switch_language( element )
 				{
 					var index = element.selectedIndex;
@@ -39,23 +41,24 @@
 					} else
 						element.form.submit();
 				}
-				{/jq}
+				{/literal}
+				//--><!]]>
+				</script>
 				<form action="tiki-index.php" method="get">
 				{if $prefs.feature_machine_translation eq 'y'}
 				<input type="hidden" name="machine_translate_to_lang" value="" />
 				{/if}
-				<input type="hidden" name="no_bl" value="y" /> 
-				<select name="page" onchange="quick_switch_language( this )"> 
+				<select name="page" onchange="quick_switch_language( this )">
 					{if $prefs.feature_machine_translation eq 'y'}
-					<option value="Human Translations" disabled="disabled" style="color:black;font-weight:bold">{tr}Human Translations{/tr}</option>
+					<option value="Human Translations" disabled="disabled" style="color:black;font-weight:bold">Human Translations</option>
 					{/if}
 					{section name=i loop=$trads}
-					<option value="{$trads[i].objName|escape}">{tr}{$trads[i].langName|escape}{/tr}</option>
+					<option value="{$trads[i].objName|escape}">{$trads[i].langName}</option>
 					{/section}
 					{if $prefs.feature_machine_translation eq 'y'}
-					<option value="Machine Translations" disabled="disabled" style="color:black;font-weight:bold">{tr}Machine Translations{/tr}</option>
+					<option value="Machine Translations" disabled="disabled" style="color:black;font-weight:bold">Machine Translations</option>
 					{section name=i loop=$langsCandidatesForMachineTranslation}
-					<option value="{$langsCandidatesForMachineTranslation[i].lang|escape}">{tr}{$langsCandidatesForMachineTranslation[i].langName|escape}{/tr} *</option>
+					<option value="{$langsCandidatesForMachineTranslation[i].lang}">{$langsCandidatesForMachineTranslation[i].langName} *</option>
 					{/section}
 					{/if}
 					{if $prefs.feature_multilingual_one_page eq 'y'}

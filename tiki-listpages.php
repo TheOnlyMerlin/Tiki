@@ -1,24 +1,20 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-listpages.php,v 1.54.2.9 2008-03-10 20:15:22 sylvieg Exp $
 $section = 'wiki page';
 $section_class = "tiki_wiki_page manage";	// This will be body class instead of $section
 require_once ('tiki-setup.php');
 require_once ('lib/ajax/ajaxlib.php');
 $auto_query_args = array('initial', 'maxRecords', 'sort_mode', 'find', 'lang', 'langOrphan', 'findfilter_orphan', 'categId', 'category', 'page_orphans', 'structure_orphans', 'exact_match', 'hits_link_to_all_languages', 'create_new_pages_using_template_name');
-
-
-if ($prefs['feature_multilingual'] == 'y' && isset($_REQUEST['lang']) && isset($_REQUEST['term_srch'])) {
+if ($prefs['feature_multilingual'] == 'y' && isset($_REQUEST['lang']) && isset($_REQUEST['create_new_pages_using_template_name'])) {
 	global $multilinguallib;
 	include_once ('lib/multilingual/multilinguallib.php');
-	if (isset($_REQUEST['term_srch'])) {
-		$multilinguallib->storeCurrentTermSearchLanguageInSession($_REQUEST['lang']);
-	}	
-	$smarty->assign('template_name', $_REQUEST['create_new_pages_using_template_name']);
+	$multilinguallib->storeCurrentSearchLanguageInSession($_REQUEST['lang']);
+	$template_id_for_new_pages = $multilinguallib->getTemplateIDInLanguage('wiki', $_REQUEST['create_new_pages_using_template_name'], $_REQUEST['lang']);
+	$smarty->assign('template_id', $template_id_for_new_pages);
 }
 
 if (isset($_REQUEST['hits_link_to_all_languages']) && $_REQUEST['hits_link_to_all_languages'] == 'On') {
@@ -153,24 +149,12 @@ if (!empty($multiprint_pages)) {
 	}
 	$smarty->assign('find', $find);
 	$filter = '';
-	if ($prefs['feature_multilingual'] == 'y' && ((!isset($_REQUEST['lang']) ) || (isset($_REQUEST['lang']) && $_REQUEST['lang'] != ''))) {
+	if ($prefs['feature_multilingual'] == 'y' && ((!isset($_REQUEST['lang']) && $prefs['wiki_dft_list_pages_lang_to_current'] == 'y') || (isset($_REQUEST['lang']) && $_REQUEST['lang'] != ''))) {
 		$filter = setLangFilter($filter);
 	}
 	if (!empty($_REQUEST['langOrphan'])) {
 		$filter['langOrphan'] = $_REQUEST['langOrphan'];
 		$smarty->assign_by_ref('find_langOrphan', $_REQUEST['langOrphan']);
-	}
-	if ($prefs['feature_categories'] == 'y' && !empty($_REQUEST['cat_categories'])) {
-		$filter['categId'] = $_REQUEST['cat_categories'];
-		if (count($_REQUEST['cat_categories']) > 1) {
-			$smarty->assign_by_ref('find_cat_categories', $_REQUEST['cat_categories']);
-			unset($_REQUEST['categId']);
-		} else {
-			$_REQUEST['categId'] = $_REQUEST['cat_categories'][0];
-			unset($_REQUEST['cat_categories']);
-		}
-	} else {
-		$_REQUEST['cat_categories'] = array();
 	}
 	if ($prefs['feature_categories'] == 'y' && !empty($_REQUEST['categId'])) {
 		$filter['categId'] = $_REQUEST['categId'];
@@ -253,8 +237,6 @@ if (!empty($multiprint_pages)) {
 		global $categlib;
 		include_once ('lib/categories/categlib.php');
 		$categories = $categlib->get_all_categories_respect_perms($user, 'view_category');
-		$smarty->assign('notable', 'y');
-		$smarty->assign('cat_tree', $categlib->generate_cat_tree($categories, true, $_REQUEST['cat_categories']));
 		$smarty->assign_by_ref('categories', $categories);
 		if ((isset($prefs['wiki_list_categories']) && $prefs['wiki_list_categories'] == 'y') || (isset($prefs['wiki_list_categories_path']) && $prefs['wiki_list_categories_path'] == 'y')) {
 			foreach($listpages['data'] as $i => $check) {
@@ -314,8 +296,8 @@ if (!empty($multiprint_pages)) {
 }
 function setLangFilter($filter) {
 	global $smarty, $prefs, $multilinguallib;
-	include_once ('lib/multilingual/multilinguallib.php');	
-	$lang = $multilinguallib->currentPageSearchLanguage();
+	include_once ('lib/multilingual/multilinguallib.php');
+	$lang = $multilinguallib->currentSearchLanguage(false);
 	if (isset($_REQUEST['listonly']) && $prefs['feature_jquery_autocomplete'] == 'y' && strlen($lang) > 2) {
 		$lang = substr($lang, 0, 2);		// for autocomplete - use only language filter, not culture as well
 	}
@@ -355,18 +337,4 @@ function possibly_look_for_page_aliases($query) {
 		}
 	}
 	$smarty->assign('alias_found', $alias_found);
-
-	set_category_for_new_page_creation();
-}
-
-function set_category_for_new_page_creation() {
-	global $_REQUEST, $prefs, $smarty;
-
-	$create_page_with_categId = '';
-    if (isset($_REQUEST['create_page_with_search_category'])) {
-		if ($prefs['feature_categories'] == 'y' && !empty($_REQUEST['categId'])) {
-			$create_page_with_categId = $_REQUEST['categId'];
-		}
-	}
-	$smarty->assign('create_page_with_categId', $create_page_with_categId);
 }

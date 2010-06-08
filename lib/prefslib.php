@@ -1,54 +1,25 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 class PreferencesLib
 {
 	private $data = array();
-	private $usageArray;
 
-	function getPreference( $name, $deps = true, $source = null, $get_pages = false ) {
-		global $prefs;
+	function getPreference( $name, $deps = true ) {
 		static $id = 0;
 		$data = $this->loadData( $name );
 
 		if( isset( $data[$name] ) ) {
-			$defaults = array('type' => '',
-								'helpurl' => '',
-								'help' => '',
-								'dependencies' => array(),
-								'extensions' => array(),
-								'options' => array(),
-								'description' => '',
-								'size' => 40,
-								'detail' => '',
-								'warning' => '',
-								'hint' => '',
-								'shorthint' => '',
-								'perspective' => true,
-			);
 			$info = $data[$name];
 
-			if( $source == null ) {
-				$source = $prefs;
-			}
-		
-			$value = $source[$name];
-			if( !empty($value) && is_string( $value ) && $value{0} == ':' && false !== $unserialized = unserialize( $value ) ) {
-				$value = $unserialized;
-			}
-
+			global $prefs;
 			$info['preference'] = $name;
 			if( isset( $info['serialize'] ) ) {
 				$fnc = $info['serialize'];
-				$info['value'] = $fnc( $value );
+				$info['value'] = $fnc( $prefs[$name] );
 			} else {
-				$info['value'] = $value;
+				$info['value'] = $prefs[$name];
 			}
-			$info['raw'] = $source[$name];
+			$info['raw'] = $prefs[$name];
 			$info['id'] = 'pref-' . ++$id;
 			if( isset( $info['help'] ) && $prefs['feature_help'] == 'y' ) {
 				
@@ -62,36 +33,10 @@ class PreferencesLib
 				$info['dependencies'] = $this->getDependencies( $info['dependencies'] );
 			}
 
-			$info['available'] = true;
-
-			if( isset( $info['extensions'] ) ) {
-				$info['available'] = $this->checkExtensions( $info['extensions'] );
-			}
-			$defprefs = get_default_prefs();
-			$info['default_val'] = $defprefs[$name];
-			
-			if ($get_pages) {
-				$info['pages'] = $this->getPreferenceLocations( $name );
-			}
-			
-			$info = array_merge($defaults, $info);
-
 			return $info;
 		}
 
 		return false;
-	}
-
-	private function checkExtensions( $extensions ) {
-		$installed = get_loaded_extensions();
-
-		foreach( $extensions as $ext ) {
-			if( ! in_array( $ext, $installed ) ) {
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	function getMatchingPreferences( $criteria ) {
@@ -114,59 +59,19 @@ class PreferencesLib
 			$handled = array_intersect( $handled, $limitation );
 		}
 
-		$resets = isset( $data['lm_reset'] ) ? (array) $data['lm_reset'] : array();
-
 		$changes = array();
 		foreach( $handled as $pref ) {
-			if( in_array( $pref, $resets ) ) {
-				$defaults = get_default_prefs();
-				$value = $defaults[$pref];
-			} else {
-				$value = $this->formatPreference( $pref, $data );
-			}
-			$realPref = in_array($pref, $user_overrider_prefs)? "site_$pref": $pref;
+			$info = $this->getPreference( $pref );
+			$function = '_get' . ucfirst( $info['type'] ) . 'Value';
+			$value = $this->$function( $info, $data );
 
-			if( $tikilib->get_preference( $realPref ) != $value ) {
+			if( in_array($pref, $user_overrider_prefs) || $tikilib->get_preference( $pref ) != $value ) {
 				$tikilib->set_preference( $pref, $value );
 				$changes[$pref] = $value;
 			}
 		}
 
 		return $changes;
-	}
-
-	function formatPreference( $pref, $data ) {
-		if( false !== $info = $this->getPreference( $pref ) ) {
-			$function = '_get' . ucfirst( $info['type'] ) . 'Value';
-			$value = $this->$function( $info, $data );
-			return $value;
-		} else {
-			return $data[$pref];
-		}
-	}
-	
-	function getInput( JitFilter $filter, $preferences = array(), $environment ) {
-		$out = array();
-
-		foreach( $preferences as $name ) {
-			$info = $this->getPreference( $name );
-
-			if( $environment == 'perspective' && isset( $info['perspective'] ) && $info['perspective'] === false ) {
-				continue;
-			}
-			
-			if( isset( $info['filter'] ) ) {
-				$filter->replaceFilter( $name, $info['filter'] );
-			}
-
-			if( isset( $info['separator'] ) ) {
-				$out[ $name ] = $filter->asArray( $name, $info['separator'] );
-			} else {
-				$out[ $name ] = $filter[$name];
-			}
-		}
-
-		return $out;
 	}
 
 	private function loadData( $name ) {
@@ -244,60 +149,11 @@ class PreferencesLib
 		return Zend_Search_Lucene::open( $file );
 	}
 
-	public function getPreferenceLocations( $name ) {
-		if( ! $this->usageArray ) {
-			$this->loadPreferenceLocations();
-		}
-
-		$pages = array();
-		foreach($this->usageArray as $pg => $pfs) {
-			foreach ($pfs as $pf) {
-				if ($pf == $name) {
-					$pages[] = $pg;
-				}
-			}
-		}
-
-		if (count($pages) == 0 && strpos($name, 'plugin') !== false) {
-			$pages[] = 'textarea';	// plugins are included in textarea admin dynamically
-		}
-
-		return $pages;
-	}
-
-	private function loadPreferenceLocations() {
-		// check for or create array of where each pref is used
-		$file = 'temp/cache/preference-usage-index';
-		if ( !file_exists( $file ) ) {
-			$prefs_usage_array = array();
-			$fp = opendir('templates/');
-			
-			while(false !== ($f = readdir($fp))) {
-				preg_match('/^tiki-admin-include-(.*)\.tpl$/', $f, $m);
-				if (count($m) > 0) {
-					$page = $m[1];
-					$c = file_get_contents('templates/'.$f);
-					preg_match_all('/{preference.*name=[\'"]?(\w*)[\'"]?.*}/i', $c, $m2);
-					if (count($m2) > 0) {
-						$prefs_usage_array[$page] = $m2[1];
-					}
-				}
-			}
-			file_put_contents($file, serialize($prefs_usage_array));
-			
-		} else {
-			$prefs_usage_array = unserialize(file_get_contents($file));
-		}
-
-		$this->usageArray = $prefs_usage_array;
-	}
-
 	private function indexPreference( $pref, $info ) {
 		$doc = new Zend_Search_Lucene_Document();
 		$doc->addField( Zend_Search_Lucene_Field::UnIndexed('preference', $pref) );
 		$doc->addField( Zend_Search_Lucene_Field::Text('name', $info['name']) );
 		$doc->addField( Zend_Search_Lucene_Field::Text('description', $info['description']) );
-		$doc->addField( Zend_Search_Lucene_Field::Text('keywords', $info['keywords']) );
 
 		if( isset( $info['options'] ) ) {
 			$doc->addField( Zend_Search_Lucene_Field::Text('options', implode( ' ', $info['options'] ) ) );
@@ -313,26 +169,6 @@ class PreferencesLib
 	}
 
 	private function _getTextValue( $info, $data ) {
-		$name = $info['preference'];
-
-		if( isset($info['separator']) && is_string( $data[$name] ) ) {
-			$value = explode( $info['separator'], $data[$name] );
-		} else {
-			$value = $data[$name];
-		}
-
-		if( isset($info['filter']) && $filter = TikiFilter::get( $info['filter'] ) ) {
-			if( is_array( $value ) ) {
-				return array_map( array( $filter, 'filter' ), $value );
-			} else {
-				return $filter->filter( $value );
-			}
-		} else {
-			return $value;
-		}
-	}
-
-	private function _getPasswordValue( $info, $data ) {
 		$name = $info['preference'];
 
 		if( isset($info['filter']) && $filter = TikiFilter::get( $info['filter'] ) ) {
@@ -381,23 +217,6 @@ class PreferencesLib
 		$options = array_keys( $options );
 
 		return array_intersect( $value, $options );
-	}
-	private function _getRadioValue( $info, $data ) {
-		$name = $info['preference'];
-		$value = isset($data[$name]) ? $data[$name]: null;
-
-		$options = $info['options'];
-		$options = array_keys( $options );
-
-		if (in_array($value, $options)) {
-			return $value;
-		} else {
-			return '';
-		}
-	}
-
-	private function _getMulticheckboxValue( $info, $data ) {
-		return $this->_getMultilistValue( $info, $data );
 	}
 }
 

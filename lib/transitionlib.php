@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once 'Transition.php';
 
@@ -82,21 +77,6 @@ class TransitionLib
 		return true;
 	}
 
-	function listTransitions( $states ) {
-		$db = TikiDb::get();
-
-		if( empty( $states ) ) {
-			return array();
-		}
-
-		$bindvars = array( $this->transitionType );
-		$query = "SELECT `transitionId`, `preserve`, `name`, `from`, `to`, `guards` FROM `tiki_transitions` WHERE `type` = ? AND ( " . $db->in( 'from', $states, $bindvars ) . ' OR ' . $db->in( 'to', $states, $bindvars ) . ')';
-
-		$result = $db->fetchAll( $query, $bindvars );
-
-		return array_map( array( $this, 'expandGuards' ), $result );
-	}
-
 	// Database interaction
 
 	function addTransition( $from, $to, $name, $preserve = false, array $guards = array() ) {
@@ -107,21 +87,7 @@ class TransitionLib
 		return $db->getOne( 'SELECT MAX(`transitionId`) FROM `tiki_transitions`' );
 	}
 
-	function updateTransition( $transitionId, $from, $to, $label, $preserve ) {
-		$db = TikiDb::get();
-		$db->query( 'UPDATE `tiki_transitions` SET `name` = ?, `from` = ?, `to` = ?, `preserve` = ? WHERE `transitionId` = ?',
-			array( $label, $from, $to, (int) $preserve, (int) $transitionId ) );
-	}
-
-	function updateGuards( $transitionId, array $guards ) {
-		$db = TikiDb::get();
-		$db->query( 'UPDATE `tiki_transitions` SET `guards` = ? WHERE `transitionId` = ?',
-			array( json_encode( $guards ), (int) $transitionId ) );
-	}
-
 	function removeTransition( $transitionId ) {
-		$db = TikiDb::get();
-
 		$db->query( 'DELETE FROM `tiki_transitions` WHERE `transitionId` = ?', array( $transitionId ) );
 	}
 
@@ -140,7 +106,7 @@ class TransitionLib
 		return array_map( array( $this, 'expandGuards' ), $result );
 	}
 
-	function getTransition( $transitionId ) {
+	private function getTransition( $transitionId ) {
 		$db = TikiDb::get();
 
 		$bindvars = array( $this->transitionType, $transitionId );

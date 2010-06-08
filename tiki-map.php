@@ -1,50 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 $_SERVER["SCRIPT_NAME"] = basename(__FILE__);
 require_once ('tiki-setup.php');
-
-// was lib/setup/menus.php but only used here
-function setDisplayMenu($name) {
-	global $smarty;
-	if ( getCookie($name, 'menu', isset($_COOKIE['menu']) ? null : 'o') == 'o' ) {
-		$smarty->assign('mnu_'.$name, 'display:block;');
-		$smarty->assign('icn_'.$name, 'o');
-	} else {
-		$smarty->assign('mnu_'.$name, 'display:none;');
-	}
-}
-
-setDisplayMenu('nlmenu');
-setDisplayMenu('evmenu');
-setDisplayMenu('chartmenu');
-setDisplayMenu('mymenu');
-setDisplayMenu('wfmenu');
-setDisplayMenu('usrmenu');
-setDisplayMenu('friendsmenu');
-setDisplayMenu('wikimenu');
-setDisplayMenu('homeworkmenu');
-setDisplayMenu('srvmenu');
-setDisplayMenu('trkmenu');
-setDisplayMenu('quizmenu');
-setDisplayMenu('formenu');
-setDisplayMenu('dirmenu');
-setDisplayMenu('admmnu');
-setDisplayMenu('faqsmenu');
-setDisplayMenu('galmenu');
-setDisplayMenu('cmsmenu');
-setDisplayMenu('blogmenu');
-setDisplayMenu('filegalmenu');
-setDisplayMenu('mapsmenu');
-setDisplayMenu('layermenu');
-setDisplayMenu('shtmenu');
-setDisplayMenu('prjmenu');
-// end from lib/setup/menus.php
-
 include_once ('lib/stats/statslib.php');
 include_once ('lib/map/map_query.php');
 if (!function_exists('ms_newMapObj')) {
@@ -53,8 +14,22 @@ if (!function_exists('ms_newMapObj')) {
 	$smarty->display('error.tpl');
 	die;
 }
-$access->check_feature(array('feature_maps','feature_ajax'));
-$access->check_permission('tiki_p_map_view');
+if ($prefs['feature_maps'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled') . ': feature_maps');
+	$smarty->display('error.tpl');
+	die;
+}
+if ($prefs['feature_ajax'] != 'y') {
+	$smarty->assign('msg', tra('Feature Ajax Disabled. Please ask your site administrator to enable') . ': feature_ajax');
+	$smarty->display('error.tpl');
+	die;
+}
+if ($tiki_p_map_view != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra('You do not have permission to use this feature'));
+	$smarty->display('error.tpl');
+	die;
+}
 //setting up xajax
 require_once ("lib/ajax/xajax/xajax_core/xajaxAIO.inc.php");
 $xajax = new xajax("x_maps.php");

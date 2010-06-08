@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /**
 * Plugin Lib
 *
@@ -36,8 +30,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class PluginsLib extends TikiLib
-{
+class PluginsLib extends TikiLib {
 	var $_errors;
 	var $_data;
 	var $_params;
@@ -159,8 +152,7 @@ class PluginsLib extends TikiLib
 /**
 * Class with utilities for Plugins
 */
-class PluginsLibUtil
-{
+class PluginsLibUtil {
 	/**
 	* Create a table with information from pages
 	* @param array key ["data"] from one of the functions that retrieve informaci�n about pages
@@ -178,118 +170,36 @@ class PluginsLibUtil
 	        $aInfo=false;
 	    }
 	    // ~contract
-	    $sOutput = '';
+	    $sOutput="";
 	    if ($aInfo) {
 	        $iNumCol=count($aInfo)+1;
-	        $sStyle = '';
-
-	        if (in_array('parameters',$aInfo)) {
-	        	$sOutput .= '<em>Required parameters are in</em> <b>bold</b><br />';
-	        }
+	        $sStyle=" style='width:".(floor(100/$iNumCol))."%' ";
 	        // Header for info
-	        $sOutput  .= '<table class="normal">' . "\n\t" . '<tr>' . "\n\t\t" . '<td class="heading"' . $sStyle. '>' 
-	        	. tra($aPrincipalField['name']) . '</td>';
+	        $sOutput  .= "<table class='normal'><tr><td class='heading' $sStyle>".tra($aPrincipalField["name"])."</td>";
 	        foreach($aInfo as $iInfo => $sHeader) {
-	        	if ($sHeader == 'paraminfo') {
-	        		$sHeader = 'Parameter Info';
-	        	}
-	            $sOutput  .= "\n\t\t" . '<td class="heading"' . $sStyle . '>' . ucfirst(tra($sHeader)) . '</td>';
+	            $sOutput  .= "<td class='heading' $sStyle >".tra($sHeader)."</td>";
 	        }
-	        $sOutput  .= "\n\t" . '</tr>';
+	        $sOutput  .= "</tr>";
 	    }
 	    $iCounter=1;
-	    //Primary row
 	    foreach($aData as $aPage) {
-	    	$rowspan = '';
-	    	if ($aPrincipalField['field'] == 'plugin') {
-	    		$openlink = '';
-	    		$closelink = '';
-	    	} else {
-	    		$openlink = '((';
-	    		$closelink = '))';
-	    	}
+	        $sClass=($iCounter%2)?"odd":"even";
 	        if (!$aInfo) {
-	            $sOutput  .= '*' . $openlink . $aPage[$aPrincipalField['field']] . $closelink . "\n";
-	        //First column
-	        } elseif (isset($aPage[$aPrincipalField['field']])) {
-		        if (is_array($aPage[$aPrincipalField['field']])) {
-		        	$fieldval = $aPage[$aPrincipalField['field']][$aPrincipalField['field']];
-	        		if (isset($aPage[$aPrincipalField['field']]['rowspan']) && $aPage[$aPrincipalField['field']]['rowspan'] != 0) {
-	        			$rowspan = ' rowspan="' . $aPage[$aPrincipalField['field']]['rowspan'] . '" ';
-	        		} else {
-	        			$rowspan = '';
-	        		}
-		        } else {
-		        	$fieldval = $aPage[$aPrincipalField['field']];
-		        	$rowspan = '';
-		        }
-				$sClass = ($iCounter%2) ? 'odd' : 'even';
-		        $sOutput .= "\n\t" . '<tr>' . "\n\t\t" . '<td class="' . $sClass . '"' . $rowspan . '>' 
-	            			. $openlink . $fieldval . $closelink . '</td>';
-	            $colcounter = 2;
-	            //Subsequent columns
+	            $sOutput  .= "*((".$aPage[$aPrincipalField["field"]]."))\n";
+	        } else {
+	            $sOutput  .= "<tr><td class='$sClass'>((".$aPage[$aPrincipalField["field"]]."))</td>";
 	            foreach($aInfo as $sInfo) {
 	                if (isset($aPage[$sInfo])) {
-	                	if (is_array($aPage[$sInfo])) {
-	                		$rowspan2 = '';
-	                		if (isset($aPage[$sInfo]['rowspan']) && $aPage[$sInfo]['rowspan'] > 0) {
-	                			$rowspan2 = ' rowspan="' . $aPage[$sInfo]['rowspan'] . '" ';
-	                			$pcount = count($aPage[$sInfo]) - 1;
-	                		} else {
-	                			$pcount = count($aPage[$sInfo]);
-	                		}
-	                		$i = $pcount;
-	                		foreach ($aPage[$sInfo] as $sInfokey => $sInfoitem) {
-	                			//Potential sub-rows
-				        		if ($i < $pcount && strpos($sInfokey, 'rowspan') === false) {
-				        			$begrow = "\n\t" . '<tr>';
-				        			$endrow = "\n\t" . '</tr>';
-				        		} else {
-				        			$begrow = '';
-				        			if ($colcounter == $iNumCol && strpos($sInfokey, 'rowspan') === false) {
-				        				$endrow = "\n\t" . '</tr>';
-				        			} else {
-				        				$endrow = '';
-				        			}
-				        		}
-	                		//Ignore field added to hold rowspan
-				        		if (strpos($sInfokey, 'rowspan') !== false) {
-				        			$sOutput .= '';
-				        		} else {
-				        			$sOutput .= $begrow . "\n\t\t" . '<td class="' . $sClass . '"' . $rowspan2 . '>';
-				        			if (strpos($sInfokey, 'onekey') !== false) {
-				        				$sOutput .= $sInfoitem;
-				        			} else {
-				        				$sOutput .= $sInfokey;
-				        			}
-				        			$sOutput .= '</td>';
-				        			if (in_array('paraminfo',$aInfo) && $sInfo == 'parameters') {
-				        				$sOutput .= "\n\t\t" . '<td class="' . $sClass . '">';
-				        				if (count($aPage['parameters']) > 0) {
-				        					$sOutput .= $sInfoitem;
-					        			} 
-					        			$sOutput .= '</td>';
-					        		}
-					        	}
-				        		$sOutput .= $endrow;
-			        			$i--;
-	                		}
-	                		$colcounter++;
-	                	} else {
-		                    $sOutput  .= "\n\t\t" . '<td class="' . $sClass . '">' . $aPage[$sInfo] . '</td>';
-		                    if ($colcounter == $iNumCol) {
-		                    	$sOutput  .= "\n\t" . '</tr>';
-		                    }
-		                    $colcounter++;
-	                	}
+	                    $sOutput  .= "<td class='$sClass'>".$aPage[$sInfo]."</td>";
 	                }
 	            }
 	        }
-	    	$iCounter++;
+	        
+	    $iCounter++;
 	    }
-        if ($aInfo) {
-            $sOutput  .= '</table>';
-		}
+	        if ($aInfo) {
+	            $sOutput  .= "</table>";
+	        }
 	return $sOutput;
 	}
 	

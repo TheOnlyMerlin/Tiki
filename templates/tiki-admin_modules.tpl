@@ -52,7 +52,7 @@
 				<td class="{cycle advance=false}">{$left[user].ord}</td>
 				<td class="{cycle advance=false}">{$left[user].cache_time}</td>
 				<td class="{cycle advance=false}">{$left[user].rows}</td>
-				<td class="{cycle advance=false}" style="max-width: 40em; white-space: normal;">{$left[user].params|stringfix:"&":"<br />"}</td>
+				<td class="{cycle advance=false}">{$left[user].params|escape}</td>
 				<td class="{cycle advance=false}">{$left[user].module_groups}</td>
 				<td class="{cycle}">
 					<a class="link" href="tiki-admin_modules.php?edit_assign={$left[user].moduleId}#assign" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
@@ -93,7 +93,7 @@
 				<td class="{cycle advance=false}">{$right[user].ord}</td>
 				<td class="{cycle advance=false}">{$right[user].cache_time}</td>
 				<td class="{cycle advance=false}">{$right[user].rows}</td>
-				<td class="{cycle advance=false}">{$right[user].params|stringfix:"&":"<br />"}</td>
+				<td class="{cycle advance=false}">{$right[user].params|escape}</td>
 				<td class="{cycle advance=false}">{$right[user].module_groups}</td>
 				<td class="{cycle}">
 					<a class="link" href="tiki-admin_modules.php?edit_assign={$right[user].moduleId}#assign" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
@@ -125,8 +125,7 @@
 		<h3>{tr}Preview{/tr}</h3>
 		{$preview_data}
 	{/if}
-	<form method="post" action="tiki-admin_modules.php{if (empty($assign_name))}#assign{/if}">
-	{* on the initial selection of a new module, reload the page to the #assign anchor *}
+	<form method="post" action="tiki-admin_modules.php">
 		{if !empty($info.moduleId)}
 			<input type="hidden" name="moduleId" value="{$info.moduleId}" />
 		{elseif !empty($moduleId)}
@@ -134,7 +133,7 @@
 		{/if}
 		<table class="normal">
 			<tr>
-				<td class="formcolor"><label for="assign_name">{tr}Module Name{/tr}</label></td>
+				<td class="formcolor"><label for="{tr}assign_name">Module Name{/tr}</label></td>
 				<td class="formcolor">
 					<select id="assign_name" name="assign_name" onchange="needToConfirm=false;this.form.preview.click()">
 						<option value=""></option>
@@ -144,9 +143,6 @@
 					</select>
 				</td>
 			</tr>
-
-{if !empty($assign_name)}
-{* because changing the module name willl auto-submit the form, no reason to display these fields until a module is selected *}
 			<tr>
 				<td class="formcolor"><label for="assign_position">{tr}Position{/tr}</label></td>
 				<td class="formcolor">
@@ -188,7 +184,6 @@
 							<input type="text" id="assign_params[{$name|escape}]" name="assign_params[{$name|escape}]" value="{$param.value|escape}"/>
 							<div class="description">
 								{$param.description}
-								{if !empty($param.default)} - {tr}Default:{/tr} {$param.default|escape}{/if}
 							</div>
 						</td>
 					</tr>
@@ -207,7 +202,7 @@
 			<tr>
 				<td class="formcolor"><label for="groups">{tr}Groups{/tr}</label></td>
 				<td class="formcolor">
-					{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple options{/tr}{/remarksbox}
+					{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple groups.{/tr}{/remarksbox}
 					<select multiple="multiple" id="groups" name="groups[]">
 						{section name=ix loop=$groups}
 							<option value="{$groups[ix].groupName|escape}" {if $groups[ix].selected eq 'y'}selected="selected"{/if}>{$groups[ix].groupName|escape}</option>
@@ -252,15 +247,6 @@
 					<input type="submit" name="assign" value="{tr}Assign{/tr}" onclick="needToConfirm=false;" />
 				</td>
 			</tr>
-{else}
-			<tr>
-				<td class="formcolor">&nbsp;</td>
-				<td class="formcolor">
-					<input type="submit" name="preview" value="{tr}Module Options{/tr}" onclick="needToConfirm=false;" />
-				</td>
-			</tr>
-
-{/if}
 		</table>
 	</form>
 {/tab}
@@ -332,7 +318,6 @@
 				</td>
 				<td class="even" style="vertical-align:top">
 					<h3>{tr}Objects that can be included{/tr}</h3>
-					{pagination_links cant=$maximum step=$maxRecords offset=$offset }{/pagination_links}
 					<table>
 						{if $polls}
 							<tr>
@@ -421,7 +406,7 @@
 						{if $menus}
 							<tr>
 								<td class="form">
-									<label for="list_menus">{tr}Default Tiki menus:{/tr}</label>
+									<label for="list_menus">{tr}Menus:{/tr}</label>
 								</td>
 								<td>
 									<select name="menus" id='list_menus'>
@@ -434,33 +419,13 @@
 									<a class="link" href="javascript:setUserModuleFromCombo('list_menus', 'um_data');" title="{tr}Use Menu{/tr}">{icon _id='add' alt='{tr}Use{/tr}'}</a>
 								</td>
 								<td class="form">
-									<a {popup text="Params:<br />id=<br />structureId=<br />css=<br />link_on_section=y <i>or</i> n<br />type=vert <i>or</i> horiz<br />translate=y <i>or</i> n<br />menu_cookie=y <i>or</i> n" width=120 center=true}>{icon _id='help'}</a>
+									<a {popup text="Params: id= structureId= css= link_on_section=y type=vert|horiz translate=y|n menu_cookie=y|n" width=100 center=true}>{icon _id='help'}</a>
 								</td>
 							</tr>
-							{if $prefs.feature_cssmenus eq "y"}
-								<tr>
-									<td class="form">
-										<label for="list_cssmenus">{tr}CSS menus:{/tr}</label>
-									</td>
-									<td>
-										<select name="cssmenus" id='list_cssmenus'>
-											{section name=ix loop=$menus}
-												<option value="{literal}{{/literal}menu id={$menus[ix].menuId} css=y type= {literal}}{/literal}">{$menus[ix].name}</option>
-											{/section}
-										</select>
-									</td>
-									<td class="form">
-										<a class="link" href="javascript:setUserModuleFromCombo('list_cssmenus', 'um_data');" title="{tr}Use CSS menu{/tr}">{icon _id='add' alt='{tr}Use{/tr}'}</a>
-									</td>
-									<td class="form">
-										<a {popup text="Params:<br />id=<br />type=horiz <i>or</i> vert<br />sectionLevel=<br />toLevel= " width=100 center=true}>{icon _id='help'}</a>
-									</td>
-								</tr>
-							{/if}							
 							{if $prefs.feature_phplayers eq "y"}
 								<tr>
 									<td class="form">
-										<label for="list_phpmenus">{tr}PHP Layers menus:{/tr}</label>
+										<label for="list_phpmenus">{tr}phpLayersMenus:{/tr}</label>
 									</td>
 									<td>
 										<select name="phpmenus" id='list_phpmenus'>
@@ -473,7 +438,7 @@
 										<a class="link" href="javascript:setUserModuleFromCombo('list_phpmenus', 'um_data');" title="{tr}Use phplayermenu{/tr}">{icon _id='add' alt='{tr}Use{/tr}'}</a>
 									</td>
 									<td class="form">
-										<a {popup text="Params:<br />id=<br />type=tree <i>or</i> phptree <i>or</i> plain <i>or</i> horiz <i>or</i> vert<br />file=<br />sectionLevel=" width=100 center=true}>{icon _id='help'}</a>
+										<a {popup text="Params: id= type=tree|phptree|plain|horiz|vert file= sectionLevel=" width=100 center=true}>{icon _id='help'}</a>
 									</td>
 								</tr>
 							{/if}
@@ -519,34 +484,31 @@
 							</tr>
 						{/if}
 					</table>
-					{pagination_links cant=$maximum step=$maxRecords offset=$offset }{/pagination_links}
 					{remarksbox type="tip" title="{tr}Tip{/tr}"}
-							{tr}To use a default Tiki menu:{/tr}
-							<ul>
-								<li>{literal}{menu id=X}{/literal}</li>
-							</ul>
-						{if $prefs.feature_cssmenus eq 'y'}
-							{tr}To use a <a target="tikihelp" href="http://users.tpg.com.au/j_birch/plugins/superfish/">CSS (Superfish) menu</a>, use one of these syntaxes:{/tr}
-							<ul>
-								<li>{literal}{menu id=X css=y type=vert}{/literal}</li>
-								<li>{literal}{menu id=X css=y type=horiz}{/literal}</li>
-							</ul>
-						{/if}
 						{if $prefs.feature_phplayers eq "y"}
-						{tr}To use a <a target="tikihelp" href="http://phplayersmenu.sourceforge.net/">PHP Layers menu</a>, use one of these syntaxes (Note: PHP Layers menus are being replaced by CSS menus and may have only basic styling in newer themes.):{/tr}
+						{tr}To use <a target="tikihelp" href="http://phplayersmenu.sourceforge.net/">phplayersmenu</a>, you can use one of the three following syntaxes:{/tr}
 						<ul>
 							<li>{literal}{phplayers id=X}{/literal}</li>
 							<li>{literal}{phplayers id=X type=horiz}{/literal}</li>
 							<li>{literal}{phplayers id=X type=vert}{/literal}</li>
 						</ul>
+						{tr}This will work well (or not!) depending on your theme. To learn more about <a target="tikihelp" href="http://themes.tikiwiki.org">themes</a>{/tr}
 						<br />
+						{/if}
+						{tr}To use a menu in a tiki format:{/tr} {literal}{menu id=X}{/literal}<br />
+						{if $prefs.feature_cssmenus eq 'y'}
+							{tr}To use menu in a css/suckerfish format:{/tr}
+							<ul>
+								<li>{literal}{menu id=X css=y type=vert}{/literal}</li>
+								<li>{literal}{menu id=X css=y type=horiz}{/literal}</li>
+							</ul>
 						{/if}
 					{/remarksbox}
 				</td>
 			</tr>
 			<tr>
 				<td colspan="2" class="odd">{tr}Data{/tr}<br />
-					{textarea name='um_data' id='um_data' rows="6" cols="80" _toolbars='y' _zoom='n' _previewConfirmExit='n'}{$um_data}{/textarea}
+					{textarea name='um_data' id='um_data' rows="6" cols="80" _toolbars='y' _zoom='n' previewConfirmExit='n'}{$um_data}{/textarea}
 					<br />
 					<input type="submit" name="um_update" value="{if $um_title eq ''}{tr}Create{/tr}{else}{tr}Save{/tr}{/if}" onclick="needToConfirm=false" />
 				</td>

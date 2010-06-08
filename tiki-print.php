@@ -1,16 +1,23 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 $section_class="tiki_wiki_page print";
 require_once ('tiki-setup.php');
 include_once ('lib/wiki/wikilib.php');
-
-$access->check_feature( array('feature_wiki', 'feature_wiki_print') );
-
+if ($prefs['feature_wiki'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_wiki");
+	$smarty->display("error.tpl");
+	die;
+}
+if ($prefs['feature_wiki_print'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_wiki_print");
+	$smarty->display("error.tpl");
+	die;
+}
 // Create the HomePage if it doesn't exist
 if (!$tikilib->page_exists($prefs['wikiHomePage'])) {
 	$tikilib->create_page($prefs['wikiHomePage'], 0, '', $tikilib->now, 'Tiki initialization');
@@ -31,7 +38,12 @@ if (!($info = $tikilib->get_page_info($page))) {
 }
 // Now check permissions to access this page
 $tikilib->get_perm_object($page, 'wiki page', $info);
-$access->check_permission('tiki_p_view');
+if ($tiki_p_view != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied. You cannot view this page."));
+	$smarty->display("error.tpl");
+	die;
+}
 
 // Now increment page hits since we are visiting this page
 if ($prefs['count_admin_pvs'] == 'y' || $user != 'admin') {

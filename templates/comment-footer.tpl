@@ -18,11 +18,17 @@
 		<b>{tr}Vote{/tr}</b>:
 
 		{if $first eq 'y'}
-			<form method="post" action="">
-				{rating type=comment id=$comment.threadId changemandated=y}
-			</form>
+		<a class="link" href="tiki-view_forum_thread.php?topics_offset={$smarty.request.topics_offset}{$topics_sort_mode_param}{$topics_threshold_param}{$topics_find_param}&amp;comments_parentId={$comments_parentId}&amp;forumId={$forum_info.forumId}{$comments_threshold_param}&amp;comments_threadId={$comment.threadId}&amp;comments_vote=1&amp;comments_offset={$comments_offset}{$thread_sort_mode_param}{$comments_per_page_param}&amp;comments_parentId={$comments_parentId}">1</a>
+		<a class="link" href="tiki-view_forum_thread.php?topics_offset={$smarty.request.topics_offset}{$topics_sort_mode_param}{$topics_threshold_param}{$topics_find_param}&amp;comments_parentId={$comments_parentId}&amp;forumId={$forum_info.forumId}{$comments_threshold_param}&amp;comments_threadId={$comment.threadId}&amp;comments_vote=2&amp;comments_offset={$comments_offset}{$thread_sort_mode_param}{$comments_per_page_param}&amp;comments_parentId={$comments_parentId}">2</a>
+		<a class="link" href="tiki-view_forum_thread.php?topics_offset={$smarty.request.topics_offset}{$topics_sort_mode_param}{$topics_threshold_param}{$topics_find_param}&amp;comments_parentId={$comments_parentId}&amp;forumId={$forum_info.forumId}{$comments_threshold_param}&amp;comments_threadId={$comment.threadId}&amp;comments_vote=3&amp;comments_offset={$comments_offset}{$thread_sort_mode_param}{$comments_per_page_param}&amp;comments_parentId={$comments_parentId}">3</a>
+		<a class="link" href="tiki-view_forum_thread.php?topics_offset={$smarty.request.topics_offset}{$topics_sort_mode_param}{$topics_threshold_param}{$topics_find_param}&amp;comments_parentId={$comments_parentId}&amp;forumId={$forum_info.forumId}{$comments_threshold_param}&amp;comments_threadId={$comment.threadId}&amp;comments_vote=4&amp;comments_offset={$comments_offset}{$thread_sort_mode_param}{$comments_per_page_param}&amp;comments_parentId={$comments_parentId}">4</a>
+		<a class="link" href="tiki-view_forum_thread.php?topics_offset={$smarty.request.topics_offset}{$topics_sort_mode_param}{$topics_threshold_param}{$topics_find_param}&amp;comments_parentId={$comments_parentId}&amp;forumId={$forum_info.forumId}{$comments_threshold_param}&amp;comments_threadId={$comment.threadId}&amp;comments_vote=5&amp;comments_offset={$comments_offset}{$thread_sort_mode_param}{$comments_per_page_param}&amp;comments_parentId={$comments_parentId}">5</a>
 		{else}
-			{rating type=comment id=$comment.threadId changemandated=y}
+		<a class="link" href="{$comments_complete_father}comments_threshold={$comments_threshold}&amp;comments_threadId={$comment.threadId}&amp;comments_vote=1&amp;comments_offset={$comments_offset}&amp;thread_sort_mode={$thread_sort_mode}&amp;comments_per_page={$comments_per_page}&amp;comments_parentId={$comments_parentId}&amp;thread_style={$thread_style}">1</a>
+		<a class="link" href="{$comments_complete_father}comments_threshold={$comments_threshold}&amp;comments_threadId={$comment.threadId}&amp;comments_vote=2&amp;comments_offset={$comments_offset}&amp;thread_sort_mode={$thread_sort_mode}&amp;comments_per_page={$comments_per_page}&amp;comments_parentId={$comments_parentId}&amp;thread_style={$thread_style}">2</a>
+		<a class="link" href="{$comments_complete_father}comments_threshold={$comments_threshold}&amp;comments_threadId={$comment.threadId}&amp;comments_vote=3&amp;comments_offset={$comments_offset}&amp;thread_sort_mode={$thread_sort_mode}&amp;comments_per_page={$comments_per_page}&amp;comments_parentId={$comments_parentId}&amp;thread_style={$thread_style}">3</a>
+		<a class="link" href="{$comments_complete_father}comments_threshold={$comments_threshold}&amp;comments_threadId={$comment.threadId}&amp;comments_vote=4&amp;comments_offset={$comments_offset}&amp;thread_sort_mode={$thread_sort_mode}&amp;comments_per_page={$comments_per_page}&amp;comments_parentId={$comments_parentId}&amp;thread_style={$thread_style}">4</a>
+		<a class="link" href="{$comments_complete_father}comments_threshold={$comments_threshold}&amp;comments_threadId={$comment.threadId}&amp;comments_vote=5&amp;comments_offset={$comments_offset}&amp;thread_sort_mode={$thread_sort_mode}&amp;comments_per_page={$comments_per_page}&amp;comments_parentId={$comments_parentId}&amp;thread_style={$thread_style}">5</a>
 		{/if}
 
 		{/if}
@@ -46,6 +52,7 @@
 			{if $forum_mode neq 'y'}
 				{button href="?post_reply=1&comments_threshold=`$comments_threshold`&comments_reply_threadId=`$comment.threadId`&comments_offset=`$comments_offset`&thread_sort_mode=`$thread_sort_mode`&comments_per_page=`$comments_per_page`&comments_grandParentId=`$comment.parentId`&comments_parentId=`$comment.threadId`&thread_style=`$thread_style`#form"
 								_auto_args='*'
+								_ajax='n'
 								_text="{tr}Reply{/tr}"
 				}
 								
@@ -55,11 +62,13 @@
 				{elseif $comments_grandParentId}
 					{button href="?post_reply=1&comments_threshold=`$comments_threshold`&comments_reply_threadId=`$comment.threadId`&comments_offset=`$comments_offset`&thread_sort_mode=`$thread_sort_mode`&comments_per_page=`$comments_per_page`&comments_grandParentId=`$comment_grandParentId`&comments_parentId=`$comments_grandParentId`&thread_style=`$thread_style`#form"
 								_auto_args='*'
+								_ajax='n'
 								_text="{tr}Reply{/tr}"
 					}
 				{elseif $forum_info.is_flat neq 'y'}
 					{button href="?post_reply=1&comments_threshold=`$comments_threshold`&comments_reply_threadId=`$comment.threadId`&comments_offset=`$comments_offset`&thread_sort_mode=`$thread_sort_mode`&comments_per_page=`$comments_per_page`&comments_grandParentId=`$comment.parentId`&comments_parentId=`$comment.parentId`&thread_style=`$thread_style`#form"
 								_auto_args='*'
+								_ajax='n'
 								_text="{tr}Reply{/tr}"
 					}
 				{/if}

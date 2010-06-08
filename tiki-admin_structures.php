@@ -1,21 +1,35 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_structures.php,v 1.36.2.3 2008-03-19 01:44:52 luciash Exp $
 $section = 'wiki page';
 require_once ('tiki-setup.php');
 include_once ('lib/structures/structlib.php');
 include_once ('lib/categories/categlib.php');
 include_once ("lib/ziplib.php");
-$access->check_feature(array('feature_wiki', 'feature_wiki_structure'));
-$access->check_permission('tiki_p_view');
-
+if ($tiki_p_view != 'y') {
+	// This allows tiki_p_view in, in order to see structure tree - security hardening for editing features below.
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
+if ($prefs['feature_wiki'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled') . ': feature_wiki');
+	$smarty->display('error.tpl');
+	die;
+}
+if ($prefs['feature_wiki_structure'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled') . ': feature_wiki_structure');
+	$smarty->display('error.tpl');
+	die;
+}
 // start security hardened section
 if ($tiki_p_edit_structures == 'y') {
 	if (isset($_REQUEST['rremove'])) {
+		$area = 'delstruct';
 		$structure_info = $structlib->s_get_structure_info($_REQUEST['rremove']);
 		if (!$tikilib->user_has_perm_on_object($user, $structure_info["pageName"], 'wiki page', 'tiki_p_edit')) {
 			$smarty->assign('errortype', 401);
@@ -23,10 +37,15 @@ if ($tiki_p_edit_structures == 'y') {
 			$smarty->display("error.tpl");
 			die;
 		}
-		$access->check_authenticity();
-		$structlib->s_remove_page($_REQUEST["rremove"], false, empty($_REQUEST['page']) ? '' : $_REQUEST['page']);
+		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+			key_check($area);
+			$structlib->s_remove_page($_REQUEST["rremove"], false, empty($_REQUEST['page']) ? '' : $_REQUEST['page']);
+		} else {
+			key_get($area);
+		}
 	}
 	if (isset($_REQUEST['rremovex'])) {
+		$area = 'delstructandpages';
 		$structure_info = $structlib->s_get_structure_info($_REQUEST['rremovex']);
 		if (!$tikilib->user_has_perm_on_object($user, $structure_info["pageName"], 'wiki page', 'tiki_p_edit')) {
 			$smarty->assign('errortype', 401);
@@ -34,8 +53,12 @@ if ($tiki_p_edit_structures == 'y') {
 			$smarty->display("error.tpl");
 			die;
 		}
-		$access->check_authenticity();
-		$structlib->s_remove_page($_REQUEST["rremovex"], true, empty($_REQUEST['page']) ? '' : $_REQUEST['page']);
+		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+			key_check($area);
+			$structlib->s_remove_page($_REQUEST["rremovex"], true, empty($_REQUEST['page']) ? '' : $_REQUEST['page']);
+		} else {
+			key_get($area);
+		}
 	}
 	if (isset($_REQUEST['export'])) {
 		check_ticket('admin-structures');
@@ -75,20 +98,6 @@ if ($tiki_p_edit_structures == 'y') {
 		header("content-type: text/plain");
 		$structlib->s_export_structure_tree($_REQUEST['export_tree']);
 		die;
-	}
-	if (isset($_REQUEST['batchaction'])) {
-		check_ticket('admin-structures');
-		foreach($_REQUEST['action'] as $batchid) {
-			$structure_info = $structlib->s_get_structure_info($batchid);
-			if (!$tikilib->user_has_perm_on_object($user, $structure_info['pageName'], 'wiki page', 'tiki_p_edit')) {
-				continue;
-			}
-			if ($_REQUEST['batchaction'] == 'delete') {
-				$structlib->s_remove_page($batchid, false, $structure_info['pageName']);
-			} elseif ($_REQUEST['batchaction'] == 'delete_with_page') {
-				$structlib->s_remove_page($batchid, true, $structure_info['pageName']);
-			}
-		}
 	}
 	$smarty->assign('askremove', 'n');
 	if (isset($_REQUEST['remove'])) {

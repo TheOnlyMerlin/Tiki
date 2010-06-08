@@ -1,15 +1,14 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once('tiki-setup.php');
 require_once('lib/importer/tikiimporter.php');
 require_once('lib/importer/tikiimporter_wiki.php');
 
-$access->check_permission('tiki_p_admin_importer');
+if ($tiki_p_admin_importer != 'y') {
+    $smarty->assign('msg', tra("Permission denied. You cannot view this section"));
+    $smarty->display("error.tpl");
+    die;
+}
 
 if (!empty($_POST['importerClassName'])) {
     $importerClassName = $_POST['importerClassName'];
@@ -24,7 +23,6 @@ if (isset($_SESSION['tiki_importer_feedback'])) {
     $smarty->assign('importFeedback', $_SESSION['tiki_importer_feedback']);
     $smarty->assign('importLog', $_SESSION['tiki_importer_log']);
     $smarty->assign('importErrors', $_SESSION['tiki_importer_errors']);
-    $smarty->assign('safe_mode', ini_get('safe_mode'));
     unset($_SESSION['tiki_importer_feedback']);
     unset($_SESSION['tiki_importer_log']);
     unset($_SESSION['tiki_importer_errors']);

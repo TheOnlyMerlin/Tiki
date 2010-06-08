@@ -1,21 +1,22 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-read_article.php,v 1.61.2.2 2007-12-19 16:11:26 sylvieg Exp $
 $section = 'cms';
 require_once ('tiki-setup.php');
-require_once 'lib/articles/artlib.php';
-$access->check_feature('feature_articles');
+if ($prefs['feature_articles'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_articles");
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST["articleId"])) {
 	$smarty->assign('msg', tra("No article indicated"));
 	$smarty->display("error.tpl");
 	die;
 }
-$article_data = $artlib->get_article($_REQUEST["articleId"]);
-$tikilib->get_perm_object($_REQUEST['articleId'], 'article');
+$article_data = $tikilib->get_article($_REQUEST["articleId"]);
 if ($article_data === false) {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg', tra('Permission denied'));
@@ -27,17 +28,11 @@ if (!$article_data) {
 	$smarty->display("error.tpl");
 	die;
 }
-if (($article_data['publishDate'] > $tikilib->now) && ($article_data['author'] != $user && $tiki_p_admin != 'y' && $tiki_p_admin_cms != 'y') && ($article_data['type'] != 'Event')) {
+if (($article_data['publishDate'] > $tikilib->now) && ($tiki_p_admin != 'y' && $tiki_p_admin_cms != 'y') && ($article_data['type'] != 'Event')) {
 	$smarty->assign('msg', tra("Article is not published yet"));
 	$smarty->display("error.tpl");
 	die;
 }
-
-if ($prefs['feature_multilingual'] == 'y' && $prefs['feature_sync_language'] == 'y' && !empty($article_data["lang"])) {
-	$_SESSION['s_prefs']['language'] = $article_data["lang"];
-	$prefs['language'] = $article_data["lang"];
-}
-
 global $statslib;
 include_once ('lib/stats/statslib.php');
 global $artlib;
@@ -97,49 +92,32 @@ if (strlen($article_data["image_data"]) > 0) {
 	$hasImage = 'y';
 }
 $smarty->assign('heading', $article_data["heading"]);
-if( $prefs['article_paginate'] == 'y' ) {
-	if (!isset($_REQUEST['page'])) $_REQUEST['page'] = 1;
-	// Get ~pp~, ~np~ and <pre> out of the way. --rlpowell, 24 May 2004
-	$preparsed = array();
-	$noparsed = array();
-	$tikilib->parse_first($article_data["body"], $preparsed, $noparsed);
-	$pages = $artlib->get_number_of_pages($article_data["body"]);
-	$article_data["body"] = $artlib->get_page($article_data["body"], $_REQUEST['page']);
-	$smarty->assign('pages', $pages);
-	if ($pages > $_REQUEST['page']) {
-		$smarty->assign('next_page', $_REQUEST['page'] + 1);
-	} else {
-		$smarty->assign('next_page', $_REQUEST['page']);
-	}
-	if ($_REQUEST['page'] > 1) {
-		$smarty->assign('prev_page', $_REQUEST['page'] - 1);
-	} else {
-		$smarty->assign('prev_page', 1);
-	}
-	$smarty->assign('first_page', 1);
-	$smarty->assign('last_page', $pages);
-	$smarty->assign('pagenum', $_REQUEST['page']);
-	// Put ~pp~, ~np~ and <pre> back. --rlpowell, 24 May 2004
-	$tikilib->replace_preparse($article_data["body"], $preparsed, $noparsed);
-}
-if ($prefs["article_custom_attributes"] == 'y') {
-	$t_article_attributes = $artlib->get_article_attributes($article_data["articleId"]);
-	$type_attributes = $artlib->get_article_type_attributes($article_data["type"]);
-	$article_attributes = array();
-	foreach ($type_attributes as $attname => $att) {
-		if (in_array($att["itemId"], array_keys($t_article_attributes))) {
-			$article_attributes[$attname] = $t_article_attributes[$att["itemId"]];
-		}
-	} 
-	$smarty->assign('article_attributes', $article_attributes);
+if (!isset($_REQUEST['page'])) $_REQUEST['page'] = 1;
+// Get ~pp~, ~np~ and <pre> out of the way. --rlpowell, 24 May 2004
+$preparsed = array();
+$noparsed = array();
+$tikilib->parse_first($article_data["body"], $preparsed, $noparsed);
+$pages = $artlib->get_number_of_pages($article_data["body"]);
+$article_data["body"] = $artlib->get_page($article_data["body"], $_REQUEST['page']);
+$smarty->assign('pages', $pages);
+if ($pages > $_REQUEST['page']) {
+	$smarty->assign('next_page', $_REQUEST['page'] + 1);
 } else {
-	$smarty->assign('article_attributes', array());
+	$smarty->assign('next_page', $_REQUEST['page']);
 }
+if ($_REQUEST['page'] > 1) {
+	$smarty->assign('prev_page', $_REQUEST['page'] - 1);
+} else {
+	$smarty->assign('prev_page', 1);
+}
+$smarty->assign('first_page', 1);
+$smarty->assign('last_page', $pages);
+$smarty->assign('pagenum', $_REQUEST['page']);
+// Put ~pp~, ~np~ and <pre> back. --rlpowell, 24 May 2004
+$tikilib->replace_preparse($article_data["body"], $preparsed, $noparsed);
 $smarty->assign('body', $article_data["body"]);
 $smarty->assign('publishDate', $article_data["publishDate"]);
-$smarty->assign('expireDate', $article_data["expireDate"]);
 $smarty->assign('show_pubdate', $article_data["show_pubdate"]);
-$smarty->assign('show_expdate', $article_data["show_expdate"]);
 $smarty->assign('edit_data', 'y');
 $body = $article_data["body"];
 $heading = $article_data["heading"];
@@ -159,9 +137,8 @@ if ($prefs['feature_article_comments'] == 'y') {
 	if (isset($_REQUEST['show_comzone']) && $_REQUEST['show_comzone'] == 'y') $smarty->assign('show_comzone', 'y');
 }
 $objId = $_REQUEST['articleId'];
-if ($prefs['feature_categories'] == 'y') {
-	$is_categorized = $categlib->is_categorized('article',$objId);
-}
+//$is_categorized = $categlib->is_categorized('article',$objId);
+// $is_categorized should have been set above
 // Display category path or not (like {catpath()})
 if (isset($is_categorized) && $is_categorized) {
 	$smarty->assign('is_categorized', 'y');
@@ -202,6 +179,8 @@ ask_ticket('article-read');
 //add a hit
 $statslib->stats_hit($article_data["title"], "article", $article_data['articleId']);
 if ($prefs['feature_actionlog'] == 'y') {
+	global $logslib;
+	include_once ('lib/logs/logslib.php');
 	$logslib->add_action('Viewed', $_REQUEST['articleId'], 'article');
 }
 // Display the Index Template

@@ -1,15 +1,17 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-remind_password.php,v 1.34.2.1 2008-01-16 13:48:10 sylvieg Exp $
 require_once ('tiki-setup.php');
-$access->check_feature('forgotPass');
+if ($prefs['forgotPass'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": forgotPass");
+	$smarty->display("error.tpl");
+	die;
+}
 $smarty->assign('showmsg', 'n');
 $smarty->assign('showfrm', 'y');
-$smarty->assign('headtitle', tra('I forgot my password'));
 $isvalid = false;
 if (isset($_REQUEST["user"])) {
 	// this is a 'new password activation':
@@ -31,12 +33,12 @@ if (isset($_REQUEST["remind"])) {
 			$smarty->assign('msg', tra('Invalid or unknown username') . ': ' . $_REQUEST['name']);
 		} else {
 			$info = $userlib->get_user_info($_REQUEST["name"]);
-			if (empty($info['email'])) { //only renew if i can mail the pass
-				$showmsg = 'e';
-				$smarty->assign('msg', tra('Unable to send mail. User has not configured email'));
-			} elseif (!empty($info['valid']) && ($prefs['validateRegistration'] == 'y' || $prefs['validateUsers'] == 'y')) {
+			if (!empty($info['valid']) && ($prefs['validateRegistration'] == 'y' || $prefs['validateUsers'] == 'y')) {
 				$showmsg = 'e';
 				$userlib->send_validation_email($_REQUEST["name"], $info['valid'], $info['email'], 'y');
+			} elseif (empty($info['email'])) { //only renew if i can mail the pass
+				$showmsg = 'e';
+				$smarty->assign('msg', tra('Unable to send mail. User has not configured email'));
 			} else {
 				$_REQUEST['email'] = $info['email'];
 			}
@@ -48,7 +50,6 @@ if (isset($_REQUEST["remind"])) {
 		}
 	} else {
 		$showmsg = 'e';
-		$smarty->assign('msg', tra('Please provide a username or email.'));
 	}
 	if (isset($showmsg) && $showmsg == 'e') {
 		$smarty->assign('showmsg', 'e');
@@ -65,7 +66,7 @@ if (isset($_REQUEST["remind"])) {
 		$languageEmail = $tikilib->get_user_preference($name, "language", $prefs['site_language']);
 		// Now check if the user should be notified by email
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
-		$machine = $tikilib->httpPrefix( true ) . dirname($foo["path"]);
+		$machine = $tikilib->httpPrefix() . dirname($foo["path"]);
 		$machine = preg_replace("!/$!", "", $machine); // just incase
 		$smarty->assign('mail_machine', $machine);
 		$smarty->assign('mail_site', $_SERVER["SERVER_NAME"]);

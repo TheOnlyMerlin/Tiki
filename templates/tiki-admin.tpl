@@ -2,31 +2,26 @@
 {popup_init src="lib/overlib.js"}
 {title help="$helpUrl"}{tr}{$admintitle}{/tr}{/title}
 
-{if $smarty.get.page != 'profiles'} {* We don't want on this page because it results in two search boxes *}
+{if $prefs.feature_search_preferences eq 'y'}
 <form method="post" action="">
 	{remarksbox type="note" title="{tr}Development Notice{/tr}"}
-		{tr}This search feature and the <a href="tiki-edit_perspective.php">perspectives GUI</a> need <a href="http://dev.tikiwiki.org/Dynamic+Preferences">http://dev.tikiwiki.org/Dynamic+Preferences</a>. If you search for something and it's not appearing, please help improve keywords/descriptions.{/tr}
+		{tr}Unless a significant amount of preferences are documented and use dynamic preferences before the 4.0 release, this search feature will become disabled by default.{/tr}
 	{/remarksbox}
 	<p>
-		<label>{tr}Configuration search{/tr}: <input type="text" name="lm_criteria" value="{$lm_criteria|escape}"/>
+		<label>Configuration search: <input type="text" name="lm_criteria" value="{$lm_criteria|escape}"/>
 		<input type="submit" value="{tr}Search{/tr}"/></label>
 	</p>
 </form>
-{if $lm_error}
-	{remarksbox type="warning" title="{tr}Search error{/tr}"}{$lm_error}{/remarksbox}
-{elseif $lm_searchresults}
-<fieldset>
-<legend>{tr}Preferences Search Results{/tr}</legend>
+{if $lm_searchresults}
 	<form method="post" action="">
+		<hr class="clear"/>
 		{foreach from=$lm_searchresults item=prefName}
-			{preference name=$prefName get_pages="y"}
+			{preference name=$prefName}
 		{/foreach}
 		<input type="submit" value="{tr}Change{/tr}" class="clear"/>
 		<input type="hidden" name="lm_criteria" value="{$lm_criteria|escape}"/>
+		<hr class="clear"/>
 	</form>
-</fieldset>
-{elseif $lm_criteria}
-	{remarksbox type="warning" title="{tr}No results{/tr}"}{tr}No preferences were found for your search query.{/tr}{/remarksbox}
 {/if}
 {/if}
 
@@ -40,7 +35,7 @@
 *}
 {if $db_requires_update}
 	{remarksbox type="errors" title="{tr}Database Version Problem{/tr}"}
-	{tr}Your database requires an update to match the current Tiki version. Please proceed to <a href="tiki-install.php">the installer</a>. Using Tiki with an incorrect database version usually provoke errors.{/tr}
+	{tr}Your database requires an update to match the current TikiWiki version. Please proceed to <a href="tiki-install.php">the installer</a>. Using Tiki with an incorrect database version usually provoke errors.{/tr}
 	{tr}If you have shell (SSH) access, you can also use the following, on the command line, from the root of your Tiki installation:{/tr} php installer/shell.php
 	{/remarksbox}
 {/if}
@@ -54,8 +49,8 @@ Add a value in first check when you create a new admin page. *}
 "metatags", "performance", "security", "wikiatt", "score", "community", "messages",
 "calendar", "intertiki", "kaltura", "freetags", "gmap",
 "i18n", "wysiwyg", "copyright", "category", "module", "look", "textarea",
- "ads", "profiles", "semantic", "plugins", "webservices",
-'sefurl', 'connect', 'metrics', 'payment', 'rating'))}
+"multimedia", "ads", "profiles", "semantic", "plugins", "webservices",
+'sefurl', 'connect'))}
   {assign var="include" value=$smarty.get.page}
 {else}
   {assign var="include" value="list-sections"}
@@ -77,28 +72,27 @@ Add a value in first check when you create a new admin page. *}
 			<li class="{cycle}">
 				<p>
 			{if $tikifeedback[n].st eq 0}
-				{icon _id=delete alt="{tr}Disabled{/tr}" style="vertical-align: middle"}
+				{icon _id=delete alt="{tr}disabled{/tr}" style="vertical-align: middle"}
 			{elseif $tikifeedback[n].st eq 1}
-				{icon _id=accept alt="{tr}Enabled{/tr}" style="vertical-align: middle"}
+				{icon _id=accept alt="{tr}enabled{/tr}" style="vertical-align: middle"}
 			{elseif $tikifeedback[n].st eq 2}
-				{icon _id=accept alt="{tr}Changed{/tr}" style="vertical-align: middle"}
+				{icon _id=accept alt="{tr}changed{/tr}" style="vertical-align: middle"}
 			{else}
-				{icon _id=information alt="{tr}Information{/tr}" style="vertical-align: middle"}
+				{icon _id=information alt="{tr}information{/tr}" style="vertical-align: middle"}
 			{/if}
-					{if $tikifeedback[n].st ne 3}{tr}Preference{/tr} {/if}<strong>{tr}{$tikifeedback[n].mes|stringfix}{/tr}</strong><br />
-					{if $tikifeedback[n].st ne 3}(<em>{tr}Preference name:{/tr}</em> {$tikifeedback[n].name}){/if}
+					{if $tikifeedback[n].st ne 3}{tr}preference{/tr} {/if}<strong>{tr}{$tikifeedback[n].mes|stringfix}{/tr}</strong><br />
+					{if $tikifeedback[n].st ne 3}(<em>{tr}preference name:{/tr}</em> {$tikifeedback[n].name}){/if}
 				</p>
 			</li>
 		{/section}
 		</ul>
 	{/remarksbox}
 {/if}
-{* seems to be unused? jonnyb: tiki5 
-if $pagetop_msg}
+{if $pagetop_msg}
 	{remarksbox type="note" title="{tr}Note{/tr}"}
 		{$pagetop_msg}
 	{/remarksbox}
-{/if*}
+{/if}
 
 {include file="tiki-admin-include-$include.tpl"}
 
@@ -119,7 +113,7 @@ if $pagetop_msg}
 	{if $prefs.feature_live_support eq 'y'} <a href="tiki-live_support_admin.php">{tr}Live Support{/tr}</a> {/if}
 	{* TODO: to be fixed {if $prefs.feature_debug_console eq 'y'} <a href="javascript:toggle("debugconsole")">{tr}(debug){/tr}</a> 
 	{/if} *}
-	{if $prefs.feature_contact eq 'y'} <a href="tiki-contact.php">{tr}Contact Us{/tr}</a> {/if}
+	{if $prefs.feature_contact eq 'y'} <a href="tiki-contact.php">{tr}Contact us{/tr}</a> {/if}
 	<hr />
 
 	{tr}Administration features{/tr}:<br />
@@ -130,16 +124,13 @@ if $pagetop_msg}
 	<a href="tiki-syslog.php">{tr}SysLogs{/tr}</a> 
 	<a href="tiki-phpinfo.php">{tr}phpinfo{/tr}</a> 
 	<a href="tiki-mods.php">{tr}Mods{/tr}</a>
-	<a href="tiki-admin.php?page=metrics">{tr}Metrics Dashboard{/tr}</a>
 	{if $prefs.feature_banning eq 'y'}<a href="tiki-admin_banning.php">{tr}Banning{/tr}</a> {/if}
 	{if $prefs.lang_use_db eq 'y'}<a href="tiki-edit_languages.php">{tr}Edit Languages{/tr}</a> {/if}
-	<a href="tiki-admin.php?page=payment">{tr}Payment{/tr}</a>
-	<a href="tiki-admin.php?page=rating">{tr}Advanced Rating{/tr}</a>
+	{if $prefs.feature_pagelist eq 'y'}<a href="tiki-admin_pagelist.php">{tr}Page List{/tr}</a>{/if}
 	<hr />
 
 	{tr}Transversal features{/tr} ({tr}which apply to more than one section{/tr}):<br />
 	<a href="tiki-admin_notifications.php">{tr}Mail Notifications{/tr}</a> 
-	{if $prefs.feature_perspective eq 'y'}<a href="tiki-edit_perspective.php">{tr}Perspectives{/tr}</a>{/if}
 	<hr />
 
 	{tr}Navigation features{/tr}:<br />

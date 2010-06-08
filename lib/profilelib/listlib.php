@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 class Tiki_Profile_List
 {
@@ -76,16 +71,16 @@ class Tiki_Profile_List
 		foreach( $sources as $s )
 		{
 			if( $source && $s['url'] != $source )
-				continue;
+                                continue;
 				
 			if( !$s['lastupdate'] )
-				continue;
+                                continue;
 
-			$fp = fopen( $this->getCacheLocation( $s['url'] ), 'r' );
+                        $fp = fopen( $this->getCacheLocation( $s['url'] ), 'r' );
 
-			while( false !== $row = fgetcsv( $fp, 200, "\t" ) )
-			{
-				$c = $row[0];
+                        while( false !== $row = fgetcsv( $fp, 200, "\t" ) )
+                        {
+				list( $c, $t, $i ) = $row;
 				if ($c) $category_list[] = $c;
 			}
 		}
@@ -143,7 +138,6 @@ class Tiki_Profile_List
 			// Apply category filter
 			foreach ($list as $pkey => $profile) {
 				$in = true; // If there are no required categories, don't filter anything.
-				if (!empty($categories)) {
 				foreach ($categories as $category) {
 					$in = false; // Start assuming this required category isn't in this profile's categories
 					foreach ($profile['categories'] as $pcategory) {
@@ -155,7 +149,6 @@ class Tiki_Profile_List
 					if (!$in) {
 						break;
 					}
-				}
 				}
 				if (!$in) {
 					unset($list[$pkey]);

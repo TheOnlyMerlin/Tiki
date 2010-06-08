@@ -1,10 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-login_openid.php,v 1.9 2007-10-12 07:55:29 nyloth Exp $
 // As a side note beyond the standard heading. Most of the code in this file was taken
 // directly from the OpenID library example files. The code was modified to suit the
 // specific needs.
@@ -33,7 +32,7 @@ function setupFromAddress() // {{{
 	// Remember where the page was requested from (from tiki-login.php)
 	if (!isset($_SESSION['loginfrom'])) {
 		$_SESSION['loginfrom'] = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $prefs['tikiIndex']);
-		if (!preg_match('/^http/', $_SESSION['loginfrom'])) {
+		if (!ereg('^http', $_SESSION['loginfrom'])) {
 			if ($_SESSION['loginfrom'] {
 				0
 			} == '/') $_SESSION['loginfrom'] = $url_scheme . '://' . $url_host . (($url_port != '') ? ":$url_port" : '') . $_SESSION['loginfrom'];
@@ -52,9 +51,7 @@ function getAccountsMatchingIdentifier($identifier) // {{{
 } // }}}
 function loginUser($identifier) // {{{
 {
-	global $user_cookie_site, $userlib;
-	$userlib->update_lastlogin($identifier);
-	$userlib->update_expired_groups();
+	global $user_cookie_site;
 	$_SESSION[$user_cookie_site] = $identifier;
 	header('location: ' . $_SESSION['loginfrom']);
 	unset($_SESSION['loginfrom']);
@@ -72,41 +69,20 @@ function filterExistingInformation(&$data, &$messages) // {{{
 } // }}}
 function displayRegisatrationForms($data, $messages) // {{{
 {
-	global $smarty, $userlib, $prefs;
+	global $smarty;
 	// Default values for the registration form
 	$smarty->assign('username', $data['nickname']);
 	$smarty->assign('email', $data['email']);
 	// Changing some system values to get the login box to display properly in the context
 	$smarty->assign('rememberme', 'disabled');
 	$smarty->assign('forgotPass', 'n');
-	$smarty->assign('allowRegister', ($prefs['allowRegister'] != 'y' || ($prefs['feature_intertiki'] == 'y' && !empty($prefs['feature_intertiki_mymaster']))) ? 'n' : 'y');
+	$smarty->assign('allowRegister', 'n');
 	$smarty->assign('change_password', 'n');
 	$smarty->assign('auth_method', 'tiki');
 	$smarty->assign('feature_switch_ssl_mode', 'n');
-
-	$listgroups = $userlib->get_groups(0, -1, 'groupName_asc', '', '', 'n');
-	$nbChoiceGroups = 0;
-	$mandatoryChoiceGroups = true;
-	foreach($listgroups['data'] as $gr) {
-		if ($gr['registrationChoice'] == 'y') {
-			++$nbChoiceGroups;
-			$theChoiceGroup = $gr['groupName'];
-			if ($gr['groupName'] == 'Registered') $mandatoryChoiceGroups = false;
-		}
-	}
-	if ($nbChoiceGroups) {
-		$smarty->assign('listgroups', $listgroups['data']);
-		if ($nbChoiceGroups == 1) {
-			$smarty->assign_by_ref('theChoiceGroup', $theChoiceGroup);
-		}
-	}
-
 	// Display
-	$smarty->assign('mid', 'tiki-register.tpl');
-	$smarty->assign('openid_associate', 'y');
-	$smarty->assign('registration', 'y');
+	$smarty->assign('mid', 'tiki-openid_register.tpl');
 	$smarty->display('tiki.tpl');
-	exit;
 } // }}}
 function displaySelectionList($data, $messages) // {{{
 {
@@ -114,16 +90,22 @@ function displaySelectionList($data, $messages) // {{{
 	// Display
 	$smarty->assign('mid', 'tiki-openid_select.tpl');
 	$smarty->display('tiki.tpl');
-	exit;
 } // }}}
 function displayError($message) { // {{{
 	global $smarty;
-	$smarty->assign('msg', tra("Failure:") . " " . $message);
+	$smarty->assign('msg', tra("Failure") . ": " . $message);
 	$smarty->assign('errortype', 'login');
 	$smarty->display("error.tpl");
 	die;
 } // }}}
-function getStore() { // {{{
+function &getStore() { // {{{
+	
+	/**
+	 * This is where the example will store its OpenID information.
+	 * You should change this path if you want the example store to be
+	 * created elsewhere.  After you're done playing with the example
+	 * script, you'll have to remove this directory manually.
+	 */
 	$store_path = "temp/openid_consumer";
 	if (!file_exists($store_path) && !mkdir($store_path)) {
 		print "Could not create the FileStore directory '$store_path'. " . " Please check the effective permissions.";
@@ -131,7 +113,7 @@ function getStore() { // {{{
 	}
 	return new Auth_OpenID_FileStore($store_path);
 } // }}}
-function getConsumer() { // {{{
+function &getConsumer() { // {{{
 	
 	/**
 	 * Create a consumer object using the store object created
@@ -156,13 +138,13 @@ function getScheme() { // {{{
 	return $scheme;
 } // }}}
 function getReturnTo() { // {{{
-	$path = str_replace('\\','/',dirname($_SERVER['PHP_SELF']));
+	$path = dirname($_SERVER['PHP_SELF']);
 	$string = sprintf("%s://%s:%s%s/tiki-login_openid.php?action=return", getScheme(), $_SERVER['SERVER_NAME'], $_SERVER['SERVER_PORT'], $path == '/' ? '' : $path);
 	if (isset($_GET['action']) && $_GET['action'] == 'force') $string.= '&force=true';
 	return $string;
 } // }}}
 function getTrustRoot() { // {{{
-	return sprintf("%s://%s:%s%s", getScheme(), $_SERVER['SERVER_NAME'], $_SERVER['SERVER_PORT'], str_replace('\\','/',dirname($_SERVER['PHP_SELF'])));
+	return sprintf("%s://%s:%s%s", getScheme(), $_SERVER['SERVER_NAME'], $_SERVER['SERVER_PORT'], dirname($_SERVER['PHP_SELF']));
 } // }}}
 function runAuth() { // {{{
 	setupFromAddress();
@@ -172,7 +154,7 @@ function runAuth() { // {{{
 	$auth_request = $consumer->begin($openid);
 	// No auth request means we can't begin OpenID.
 	if (!$auth_request) {
-		displayError(tra("Authentication error; not a valid OpenID."));
+		displayError("Authentication error; not a valid OpenID.");
 	}
 	$sreg_request = Auth_OpenID_SRegRequest::build(
 	// Required
@@ -192,7 +174,7 @@ function runAuth() { // {{{
 		// If the redirect URL can't be built, display an error
 		// message.
 		if (Auth_OpenID::isFailure($redirect_url)) {
-			displayError(tra("Could not redirect to server: ") . $redirect_url->message);
+			displayError("Could not redirect to server: " . $redirect_url->message);
 		} else {
 			// Send redirect.
 			header("Location: " . $redirect_url);
@@ -204,7 +186,7 @@ function runAuth() { // {{{
 		// Display an error if the form markup couldn't be generated;
 		// otherwise, render the HTML.
 		if (Auth_OpenID::isFailure($form_html)) {
-			displayError(tra("Could not redirect to server: ") . $form_html->message);
+			displayError("Could not redirect to server: " . $form_html->message);
 		} else {
 			print $form_html;
 		}
@@ -219,10 +201,10 @@ function runFinish() { // {{{
 	// Check the response status.
 	if ($response->status == Auth_OpenID_CANCEL) {
 		// This means the authentication was cancelled.
-		displayError(tra('Verification cancelled.'));
+		displayError('Verification cancelled.');
 	} else if ($response->status == Auth_OpenID_FAILURE) {
 		// Authentication failed; display the error message.
-		displayError(tra("OpenID authentication failed: ") . $response->message);
+		displayError("OpenID authentication failed: " . $response->message);
 	} else if ($response->status == Auth_OpenID_SUCCESS) {
 		// This means the authentication succeeded; extract the
 		// identity URL and Simple Registration data (if it was

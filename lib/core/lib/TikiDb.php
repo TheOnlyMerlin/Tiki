@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 require_once 'lib/core/lib/TikiDb/ErrorHandler.php';
 
 abstract class TikiDb
@@ -48,14 +42,8 @@ abstract class TikiDb
 
 	abstract function query( $query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = true );
 
-	function lastInsertId() // {{{
-	{
-		return $this->getOne( 'SELECT LAST_INSERT_ID()' );
-	} // }}}
-
 	function queryError( $query, &$error, $values = null, $numrows = -1, $offset = -1 ) // {{{
 	{
-		$this->errorMessage = '';
 		$result = $this->query( $query, $values, $numrows, $offset, false );
 		$error = $this->errorMessage;
 
@@ -65,18 +53,11 @@ abstract class TikiDb
 	function getOne( $query, $values = null, $reporterrors = true, $offset = 0 ) // {{{
 	{
 		$result = $this->query( $query, $values, 1, $offset, $reporterrors );
-
-		if ( $result ) {
-			$res = $result->fetchRow();
-
-			if ( empty( $res ) ) {
-				return $res;
-			}
-		
-			return reset( $res );
+		$res = $result->fetchRow();
+		if (empty($res)) {
+			return $res;
 		}
-
-		return false;
+		return reset( $res );
 	} // }}}
 
 	function fetchAll( $query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = true ) // {{{
@@ -89,22 +70,6 @@ abstract class TikiDb
 		}
 
 		return $rows;
-	} // }}}
-
-	function fetchMap( $query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = true ) // {{{
-	{
-		$result = $this->fetchAll( $query, $values, $numrows, $offset, $reporterrors );
-
-		$map = array();
-
-		foreach( $result as $row ) {
-			$key = array_shift( $row );
-			$value = array_shift( $row );
-
-			$map[ $key ] = $value;
-		}
-
-		return $map;
 	} // }}}
 
 	function setErrorHandler( TikiDb_ErrorHandler $handler ) // {{{
@@ -152,6 +117,42 @@ abstract class TikiDb
 		}
 	} // }}}
 
+	protected function convertQuery( &$query ) // {{{
+	{
+		switch ($this->getServerType()) {
+			case "oci8":
+				$query = preg_replace("/`/", "\"", $query);
+
+				// convert bind variables - adodb does not do that
+				$qe = explode("?", $query);
+				$query = '';
+
+				$temp_max = sizeof($qe) - 1;
+				for ($i = 0; $i < $temp_max; $i++) {
+					$query .= $qe[$i] . ":" . $i;
+				}
+
+				$query .= $qe[$i];
+			break;
+
+			case "pgsql":
+			case "postgres7":
+			case "postgres8":
+			case "sybase":
+				$query = preg_replace("/`/", "\"", $query);
+			break;
+
+			case "mssql":
+				$query = preg_replace("/`/","",$query);
+				$query = preg_replace("/\?/","'?'",$query);
+			break;
+
+			case "sqlite":
+				$query = preg_replace("/`/", "", $query);
+			break;
+		}
+	} // }}}
+
 	protected function convertQueryTablePrefixes( &$query ) // {{{
 	{
 		$db_table_prefix = $this->tablePrefix;
@@ -181,7 +182,21 @@ abstract class TikiDb
 		$sort_mode = preg_replace('/[^A-Za-z_,.]/', '', $sort_mode);
 
 		if ($sort_mode == 'random') {
-			return "RAND()";
+			$map = array(	"pgsql" => "RANDOM()",
+					"postgres7" => "RANDOM()",
+					"postgres8" => "RANDOM()",
+					"mysql3" => "RAND()",
+					"mysql" => "RAND()",
+					"mysqli" => "RAND()",
+					"mssql" => "NEWID()",
+					"firebird" => "1", // does this exist in tiki?
+
+					// below is still needed, return 1 just for not breaking query
+					"oci8" => "1",
+					"sqlite" => "1",
+					"sybase" => "1");
+
+			return $map[$this->getServerType()];
 		}
 
 		$sorts=explode(',', $sort_mode);
@@ -197,17 +212,89 @@ abstract class TikiDb
 				$sort .= 'asc';
 			}
 
-			$sort = preg_replace('/_asc$/', '` asc', $sort);
-			$sort = preg_replace('/_desc$/', '` desc', $sort);
-			$sort = '`' . $sort;
-			$sort = str_replace('.', '`.`', $sort);
+			switch ($this->getServerType()) {
+				case "pgsql":
+				case "postgres7":
+				case "postgres8":
+				case "oci8":
+				case "sybase":
+				case "mssql":
+					$sort = preg_replace('/_asc$/', '" asc', $sort);
+					$sort = preg_replace('/_desc$/', '" desc', $sort);
+					$sort = str_replace('.', '"."', $sort);
+					$sort = '"' . $sort;
+				break;
+
+				case "sqlite":
+					$sort = preg_replace('/_asc$/', ' asc', $sort);
+				$sort = preg_replace('/_desc$/', ' desc', $sort);
+				break;
+
+				case "mysql3":
+					case "mysql": 
+					case "mysqli":
+				default:
+					$sort = preg_replace('/_asc$/', '` asc', $sort);
+					$sort = preg_replace('/_desc$/', '` desc', $sort);
+					$sort = '`' . $sort;
+					$sort = str_replace('.', '`.`', $sort);
+					break;
+			}
 			$sorts[$k]=$sort;
 		}
 
 		$sort_mode=implode(',', $sorts);
 		return $sort_mode;
 	} // }}}
+
+	function convertBinary() // {{{
+	{
+		switch ($this->getServerType()) {
+		case "oci8":
+		case "pgsql":
+		case "postgres7":
+		case "postgres8":
+		case "sqlite":
+			return;
+
+		case "mysql3":
+		case "mysql":
+		case "mysqli":
+			return "binary";
+		}
+	} // }}}
 	
+	function cast( $var,$type ) // {{{
+	{
+		switch ($this->getServerType()) {
+		case "pgsql":
+		case "postgres7":
+		case "postgres8":
+			switch ($type) {
+				case "int":
+					return "$var::INT4";
+				case "string":
+					return "$var::VARCHAR";
+				default:
+					return($var);
+			}
+		case "sybase":
+			switch ($type) {
+			case "int":
+				return " CONVERT(numeric(14,0),$var) ";
+			case "string":
+				return " CONVERT(varchar(255),$var) ";
+			case "float":
+				return " CONVERT(numeric(10,5),$var) ";
+			default:
+				return($var);
+			}
+
+		default:
+			return($var);
+		}
+	} // }}}
+
 	function getQuery() // {{{
 	{
 		return $this->savedQuery;
@@ -230,28 +317,8 @@ abstract class TikiDb
 			$part = '`' . $part . '`';
 		$field = implode('.', $parts);
 		$bindvars = array_merge( $bindvars, $values );
-
-		if( count( $values ) > 0 ) {
-			$values = rtrim( str_repeat( '?,', count( $values ) ), ',' );
-			return " $field IN( $values ) ";
-		} else {
-			return " 0 ";
-		}
-	} // }}}
-
-	function parentObjects(&$objects, $table, $childKey, $parentKey) // {{{
-	{
-		$query = "select `$childKey`, `$parentKey` from `$table` where `$childKey` in (".implode(',',array_fill(0, count($objects),'?')).')';
-		foreach ($objects as $object) {
-			$bindvars[] = $object['itemId'];
-		}
-		$result = $this->query($query, $bindvars);
-		while ($res = $result->fetchRow()) {
-			$ret[$res[$childKey]] = $res[$parentKey];
-		}
-		foreach ($objects as $i=>$object) {
-			$objects[$i][$parentKey] = $ret[$object['itemId']];
-		}
+		$values = rtrim( str_repeat( '?,', count( $values ) ), ',' );
+		return " $field IN( $values ) ";
 	} // }}}
 
 	function concat() // {{{
@@ -262,163 +329,5 @@ abstract class TikiDb
 		$s = implode(',',$arr);
 		if (strlen($s) > 0) return "CONCAT($s)";
 		else return '';
-	} // }}}
-
-	function getCharsetVariables() // {{{
-	{
-		$return = array();
-
-		foreach ( array( 'character_set%', 'collation%' ) as $varName ) {
-			$result = $this->query( "show variables like '$varName'" );
-			while ( $res = $result->fetchRow() ) {
-				$return[ $res['Variable_name'] ] = $res['Value'];
-			}
-		}
-
-		return $return;
-	} // }}}
-
-	function getDefaultConfigCharsets() { // {{{
-		$return = false;
-
-		global $api_tiki;
-		if ( $api_tiki == 'pdo' ) {
-			global $local_php;
-			if ( ! empty( $local_php ) && file_exists( $local_php ) ) {
-				include( $local_php );
-
-				$db_hoststring = "host=$host_tiki";
-				if ( $db_tiki == 'mysqli' ) {
-					$db_tiki = 'mysql';
-					if ( isset( $socket_tiki ) ) {
-						$db_hoststring = "unix_socket=$socket_tiki";
-					}
-				}
-
-				if ( $db_tiki == 'mysql' ) {
-					$return = array();
-
-					// Create another PDO connection, to use the "PDO::MYSQL_ATTR_READ_DEFAULT_GROUP" attribute, which allows to get MySQL default config from my.cnf file
-					$tmpPdo = new PDO("$db_tiki:$db_hoststring;dbname=$dbs_tiki", $user_tiki, $pass_tiki, array(PDO::MYSQL_ATTR_READ_DEFAULT_GROUP => true) );
-			                if ( $result = $tmpPdo->query( "show variables like 'character_set_%'" ) ) {
-						while ( $res = $result->fetch() ) {
-							$return[ $res['Variable_name'] ] = $res['Value'];
-						}
-			                }
-				}
-			}
-		}
-
-		return $return;
-	} // }}}
-
-	function detectContentCharset( &$errorMsg, $dbCharsetVariables = null, $dbDefaultConfigCharsets = null, $previousDbApi = null ) { // {{{
-
-		if ( $dbCharsetVariables === null ) {
-			$dbCharsetVariables = $this->getCharsetVariables();
-		}
-		if ( empty( $previousDbApi ) ) {
-			$previousDbApi = $api_tiki;
-		}
-
-		$dbCharset = $dbCharsetVariables['character_set_database'];
-		$utf8DbCharset = ( substr( strtoupper($dbCharset), 0, 3 ) == 'UTF' );
-
-		$dbConnectionCharset = $dbCharsetVariables['character_set_connection'];
-		$utf8ConnectionCharset = ( substr( strtoupper($dbConnectionCharset), 0, 3 ) == 'UTF' );
-
-		if ( $previousDbApi == 'adodb' && $api_tiki != 'adodb' ) {
-			// We are updating Tiki from AdoDB to PDO abstraction layer...
-			//  ... this is why we have to check AdoDB Connection Charset instead
-
-			if ( $dbDefaultConfigCharsets === null ) {
-				$dbDefaultConfigCharsets = $this->getDefaultConfigCharsets();
-			}
-			$utf8ConnectionCharset = ( substr( strtoupper($dbDefaultConfigCharsets['character_set_connection']), 0, 3 ) == 'UTF' );
-		}
-
-		if ( $utf8ConnectionCharset && $utf8DbCharset ) {
-			// FULL UTF-8 installation (UTF-8 DB + UTF-8 connection)
-			return 'utf8';
-		} elseif ( $dbConnectionCharset == $dbCharset ) {
-			// DB is not in UTF-8, but MySQL will try to convert on-the-fly if possible
-			return $dbCharset;
-		} else {
-			// either DB is in UTF-8, but data is wrongly reencoded
-			// or connection is in UTF-8, but DB is in another charset
-			return false;
-		}
-
-		return false;
-	} // }}}
-
-	function detectBestClientCharset( $dbCharsetVariables = null, $dbDefaultConfigCharsets = null, $previousDbApi = null ) { // {{{
-		global $api_tiki;
-
-		if ( empty( $dbCharsetVariables ) ) {
-			$dbCharsetVariables = $this->getCharsetVariables();
-		}
-		if ( empty( $previousDbApi ) ) {
-			$previousDbApi = $api_tiki;
-		}
-
-		$dbClientCharset = $dbCharsetVariables['character_set_client'];
-		$adodbUtf8ClientCharset = $utf8ClientCharset = ( substr( strtoupper($dbClientCharset), 0, 3 ) == 'UTF' );
-
-		if ( $previousDbApi == 'adodb' && $api_tiki != 'adodb' ) {
-			if ( $dbDefaultConfigCharsets === null ) {
-				$dbDefaultConfigCharsets = $this->getDefaultConfigCharsets();
-			}
-			$adodbUtf8ClientCharset = ( substr( strtoupper($dbDefaultConfigCharsets['character_set_client']), 0, 3 ) == 'UTF' );
-		}
-
-		if ( $utf8ClientCharset ) {
-			// The current connection is using UTF-8 for ClientCharset
-			if ( $api_tiki == 'pdo' ) {
-				// The current DB abstraction layer is PDO
-				if ( $previousDbApi == 'pdo' ) {
-					// The data in DB has been stored using PDO
-					return 'utf8';
-				} else {
-					// The data in DB has been stored using AdoDB
-					// (we are most probably in the upgrade process from 4.x to 5.x)
-					if ( $adodbUtf8ClientCharset ) {
-						// AdoDB was using an UTF-8 Client Charset
-						return 'utf8';
-					} else {
-						// AdoDB was using a wrong Client Charset
-						return $dbDefaultConfigCharsets['character_set_client'];
-					}
-				}
-			} else {
-				// The current DB abstraction layer is AdoDB
-				return 'utf8';
-			}
-		} else {
-			// The current connection is using a wrong Client Charset
-			if ( $api_tiki == 'pdo' ) {
-				// The current DB abstraction layer is PDO
-				if ( $previousDbApi == 'pdo' ) {
-					// The data in DB has been stored using PDO
-					return $dbClientCharset;
-				} else {
-					// The data in DB has been stored using AdoDB
-					// (we are most probably in the upgrade process from 4.x to 5.x)
-					if ( $adodbUtf8ClientCharset ) {
-						// AdoDB was using an UTF-8 Client Charset
-						return 'utf8';
-					} else {
-						// AdoDB was using a wrong Client Charset
-						return $dbDefaultConfigCharsets['character_set_client'];
-					}
-				}
-			} else {
-				// The current DB abstraction layer is AdoDB
-				// => ClientCharset can't be forced unless a data reencoding is done
-				return $dbClientCharset;
-			}
-		}
-
-		return false;
 	} // }}}
 }

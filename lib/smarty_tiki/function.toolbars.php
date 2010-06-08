@@ -1,11 +1,7 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /*
+ * $Id: function.toolbars.php 20665 2009-08-07 15:13:18Z jonnybradley $
+ *
  * Smarty plugin to display content only to some groups
  */
 
@@ -34,10 +30,10 @@ function smarty_function_toolbars($params, &$smarty)
 	// some tool filters to help roll out textarea & toolbars to more sections quickly (for 4.0)
 
 	$hidden = array();
-//	if ($params['section'] != 'wiki page' && $params['section'] != 'blogs' && $params['section'] != 'newsletters' && $params['section'] != 'trackers') {
-//		$hidden[] = 'fullscreen';
-//	}
-	if (!in_array($params['section'], array('wiki page', 'blogs', 'newsletters', 'cms'))) {
+	if ($params['section'] != 'wiki page') {
+		$hidden[] = 'fullscreen';
+	}
+	if (!in_array($params['section'], array('wiki page', 'blogs', 'newsletters'))) {
 		$hidden[] = 'switcheditor';
 	}
 	
@@ -47,10 +43,6 @@ function smarty_function_toolbars($params, &$smarty)
 
 	include_once( 'lib/toolbars/toolbarslib.php' );
 	$list = ToolbarsList::fromPreference( $params['section'] . ($comments ? '_comments' : ''), $hidden );
-	if ( isset($params['_wysiwyg']) && $params['_wysiwyg'] == 'y') {
-		return $list->getWysiwygArray();
-	} else {
-		return $list->getWikiHtml( $params['area_name'] );
-	}
+	return $list->getWikiHtml( $params['area_name'] );
 }
 

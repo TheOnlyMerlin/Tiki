@@ -1,24 +1,24 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 $section = 'galleries';
 require_once ('tiki-setup.php');
 include_once ("lib/imagegals/imagegallib.php");
 include_once ('lib/stats/statslib.php');
-
-$access->check_feature('feature_galleries');
-
 if ($prefs['feature_categories'] == 'y') {
 	global $categlib;
 	if (!is_object($categlib)) {
 		include_once ('lib/categories/categlib.php');
 	}
 }
-
+if ($prefs['feature_galleries'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_galleries");
+	$smarty->display("error.tpl");
+	die;
+}
 if ($_REQUEST["galleryId"] == 0 && $tiki_p_admin_galleries != 'y') {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg', tra("Permission denied you cannot access this gallery"));
@@ -34,8 +34,12 @@ $smarty->assign('individual', 'n');
 
 $tikilib->get_perm_object( $_REQUEST['galleryId'], 'image gallery' );
 
-$access->check_permission('tiki_p_view_image_gallery');
-
+if ( $tiki_p_view_image_gallery != 'y' ) {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied you can not view this section"));
+	$smarty->display("error.tpl");
+	die;
+}
 $auto_query_args = array(
 	'offset',
 	'galleryId',
@@ -93,8 +97,13 @@ if (isset($_REQUEST["remove"])) {
 		$smarty->display("error.tpl");
 		die;
 	}
-	$access->check_authenticity();
-	$imagegallib->remove_image($_REQUEST["remove"], $user);
+	$area = 'delgalimage';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$imagegallib->remove_image($_REQUEST["remove"], $user);
+	} else {
+		key_get($area);
+	}
 }
 if (isset($_REQUEST["rebuild"])) {
 	check_ticket('browse-gallery');
@@ -105,7 +114,7 @@ if (isset($_REQUEST["rebuild"])) {
 		$smarty->display("error.tpl");
 		die;
 	}
-	$smarty->assign('advice', tra('You must clear your browser cache.')); //get_strings tra('You must clear your browser cache.');
+	$smarty->assign('advice', 'You must clear your browser cache.'); //get_strings tra('You must clear your browser cache.');
 	$imagegallib->rebuild_thumbnails($_REQUEST["rebuild"]);
 }
 if (isset($_REQUEST["rotateright"])) {
@@ -231,7 +240,8 @@ $smarty->assign_by_ref('find', $find);
 $subgals = $imagegallib->get_subgalleries($offset, $maxImages, $sort_mode, '', $_REQUEST["galleryId"]);
 $remainingImages = $maxImages - count($subgals['data']);
 $newoffset = $offset - $subgals['cant'];
-if ($newoffset < 0) $newoffset=0;
+if ($remainingImages < 0) $remainingImages = 0; //negative values make sql errors
+if ($newoffset < 0) $newoffset = 0;
 $images = $imagegallib->get_images($newoffset, $remainingImages, $sort_mode, $find, $_REQUEST["galleryId"]);
 //get categories for each images
 global $objectlib;
@@ -283,6 +293,7 @@ ask_ticket('browse-gallery');
 //add a hit
 $statslib->stats_hit($gal_info["name"], "image gallery", $_REQUEST["galleryId"]);
 if ($prefs['feature_actionlog'] == 'y') {
+	include_once ('lib/logs/logslib.php');
 	$logslib->add_action('Viewed', $_REQUEST['galleryId'], 'image gallery');
 }
 // Display the template

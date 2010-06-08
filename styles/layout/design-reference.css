@@ -7,11 +7,6 @@
 */
 
 /***** XHTML Elements *****/
-/* print mode only - to make sure print templates will use and print on seamless white bg color */
-html#print {
-	background: #fff;
-	color: #000;
-}
 
 body.fullscreen {
 	text-align: left;
@@ -64,12 +59,6 @@ span.button.highlight a {
 /* Since button background is actually applied to the link within the button, apply button highlight to same bg area as normal button state . */
 span.button.highlight {
 	background: inherit;
-}
-
-/* Highlight effect is just visual distinction, so no need for block element. */
-div.highlight {
-	display: inline;
-	padding: 0 .3em;
 }
 
 input[type=checkbox],
@@ -412,18 +401,14 @@ div.help_section {
 .tip .rbox-title,
 .tip .rbox-data {}
 
-.error .rbox-title,
-.errors .rbox-title,
-.warning .rbox-title {
+.errors .rbox-title, .warning .rbox-title {
 	background: #ffc;
 	color: #000;
 	border-color: #f00;
 	border-bottom-color: #ffc;
 }
 
-.error .rbox-data,
-.errors .rbox-data,
-.warning .rbox-data {
+.errors .rbox-data, .warning .rbox-data {
 	background: #ffc;
 	color: #000;
 	border-color: #f00;
@@ -713,12 +698,6 @@ div.multiselect div.even {
 div.multiselect div.selection {
 	border: 1px solid #80b1e2;
 	background: #fff;
-}
-
-/* transparent border added to keep content from shifting on hover */
-div.multiselect,
-div.multiselect div.selection {
-	border: 1px solid transparent;
 }
 
 div.multiselect:hover,

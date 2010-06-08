@@ -1,10 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_menus.php,v 1.20.2.1 2007-10-26 20:36:40 sylvieg Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/menubuilder/menulib.php');
 $auto_query_args = array(
@@ -12,8 +11,12 @@ $auto_query_args = array(
 	'sort_mode',
 	'menuId'
 );
-$access->check_permission(array('tiki_p_edit_menu'));
-
+if ($tiki_p_admin != 'y' && $tiki_p_edit_menu != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST["menuId"])) {
 	$_REQUEST["menuId"] = 0;
 }
@@ -30,9 +33,14 @@ if ($_REQUEST["menuId"]) {
 }
 $smarty->assign_by_ref('info', $info);
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$menulib->remove_menu($_REQUEST["remove"]);
-	$smarty->clear_cache('tiki-user_menu.tpl', $_REQUEST['menuId']);
+	$area = 'delmenu';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$menulib->remove_menu($_REQUEST["remove"]);
+		$smarty->clear_cache('tiki-user_menu.tpl', $_REQUEST['menuId']);
+	} else {
+		key_get($area);
+	}
 }
 if (isset($_REQUEST["save"])) {
 	check_ticket('admin-menus');

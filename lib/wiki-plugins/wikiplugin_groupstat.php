@@ -1,9 +1,6 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+
+// $Id: /cvsroot/tikiwiki/tiki/lib/wiki-plugins/wikiplugin_trackerstat.php,v 1.14.2.5 2007-12-18 23:03:15 sylvieg Exp $
 
 function wikiplugin_groupstat_info() {
 	return array(
@@ -35,7 +32,7 @@ function wikiplugin_groupstat($data, $params) {
 	global $smarty, $prefs, $userlib, $tikilib;
 
 	if (isset($params['groups'])) {
-		$groups = explode(':', $params['groups']);
+		$groups = split(':', $params['groups']);
 		$query = 'SELECT COUNT(DISTINCT(*)) FROM `users_usergroups` WHERE `groupName` IN('.implode(',', array_fill(0,count($groups),'?')).')';
 		$total = $tikilib->getOne($query, $groups);
 	} else {

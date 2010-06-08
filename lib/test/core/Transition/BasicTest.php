@@ -1,10 +1,5 @@
 <?php
 
-/** 
- * @group unit
- * 
- */
-
 class Transition_BasicTest extends PHPUnit_Framework_TestCase
 {
 	function testSimpleTransition() {

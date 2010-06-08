@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+
 // $Id$
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for
+// details.
 
 //this script may only be included - so its better to die if called directly.
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
@@ -38,7 +39,7 @@ if ( ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' )
 
 $url_scheme = $https_mode ? 'https' : 'http';
 $url_host = (isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST']  : $_SERVER['SERVER_NAME'];
-list($url_host,)=preg_split('/:/',$url_host);	// Strip url port
+list($url_host,)=split(":",$url_host);	// Strip url port
 $url_port = $https_mode ? $prefs['https_port'] : $prefs['http_port'];
 $url_path = $tikiroot;
 $base_host = $url_scheme.'://'.$url_host.(($url_port!='')?':'.$url_port:'');

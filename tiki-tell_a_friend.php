@@ -1,25 +1,38 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-tell_a_friend.php,v 1.8.2.6 2008-03-15 22:21:48 sylvieg Exp $
 require_once ('tiki-setup.php');
 // To include a link in your tpl do
 //<a href="tiki-tell_a_friend.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{tr}Email this page{/tr}</a>
-
-$smarty->assign('headtitle', tra('Send a link to a friend '));
 if (empty($_REQUEST['report'])) {
-	$access->check_feature('feature_tell_a_friend');
-	$access->check_permission('tiki_p_tell_a_friend');
+	if ($prefs['feature_tell_a_friend'] != 'y') {
+		$smarty->assign('msg', tra('This feature is disabled') . ': feature_tell_a_friend');
+		$smarty->display('error.tpl');
+		die;
+	}
+	if ($tiki_p_tell_a_friend != 'y') {
+		$smarty->assign('errortype', 401);
+		$smarty->assign('msg', tra('Permission denied'));
+		$smarty->display('error.tpl');
+		die;
+	}
 }
-
 if (!empty($_REQUEST['report']) && $_REQUEST['report'] == 'y') {
-	$access->check_feature('feature_site_report', '', 'look');
-	$access->check_permission('tiki_p_site_report');
+	if ($prefs['feature_site_report'] != 'y') {
+		$smarty->assign('msg', tra('This feature is disabled') . ': feature_site_report');
+		$smarty->display('error.tpl');
+		die;
+	}
+	if ($tiki_p_site_report != 'y') {
+		$smarty->assign('errortype', 401);
+		$smarty->assign('msg', tra('Permission denied'));
+		$smarty->display('error.tpl');
+		die;
+	}
 }
-
 if (empty($_REQUEST['url']) && !empty($_SERVER['HTTP_REFERER'])) {
 	$u = parse_url($_SERVER['HTTP_REFERER']);
 	if ($u['host'] != $_SERVER['SERVER_NAME']) {
@@ -39,9 +52,8 @@ if (strstr($_REQUEST['url'], 'tiki-tell_a_friend.php')) {
 	$_REQUEST['url'] = preg_replace('/.*tiki-tell_a_friend.php\?url=/', '', $_REQUEST['url']);
 	header('location: tiki-tell_a_friend.php?url=' . $_REQUEST['url']);
 }
-$url_for_friend = $tikilib->httpPrefix( true ) . $_REQUEST['url'];
 $smarty->assign('url', $_REQUEST['url']);
-$smarty->assign('prefix', $tikilib->httpPrefix( true ));
+$smarty->assign('prefix', $tikilib->httpPrefix());
 include_once ("textareasize.php");
 $errors = array();
 if (isset($_REQUEST['send'])) {
@@ -73,11 +85,11 @@ if (isset($_REQUEST['send'])) {
 		}
 	}
 	if (empty($_REQUEST['email'])) {
-		$errors[] = tra('Your email is mandatory');
+		$from = $prefs['sender_email'];
 	} else {
 		$smarty->assign_by_ref('email', $_REQUEST['email']);
 		if (validate_email($_REQUEST['email'])) {
-			$from = str_replace(array("\r", "\n"), '', $_REQUEST['email']);
+			$from = $_REQUEST['email'];
 		} else {
 			$errors[] = tra('Invalid email') . ': ' . $_REQUEST['email'];
 		}
@@ -97,15 +109,6 @@ if (isset($_REQUEST['send'])) {
 		} else {
 			$subject = $smarty->fetch('mail/tellAFriend_subject.tpl');
 		}
-
-		if( $prefs['auth_token_tellafriend'] == 'y' && $prefs['auth_token_access'] == 'y' && isset($_POST['share_access']) ) {
-			require_once 'lib/auth/tokens.php';
-			$tokenlib = AuthTokens::build( $prefs );
-
-			$url_for_friend = $tokenlib->includeToken( $url_for_friend, $globalperms->getGroups() );
-		}
-
-		$smarty->assign( 'url_for_friend', $url_for_friend );
 		$txt = $smarty->fetch('mail/tellAFriend.tpl');
 		$mail->setSubject($subject);
 		$mail->setText($txt);
@@ -115,7 +118,9 @@ if (isset($_REQUEST['send'])) {
 			$ok = $ok && $mail->send(array($email));
 		}
 		if ($ok) {
-			$access->redirect( $_REQUEST['url'], tra('Your link was sent.') );
+			$smarty->assign_by_ref('sent', $_REQUEST['addresses']);
+			$smarty->assign('comment', '');
+			$smarty->assign('addresses', '');
 		} else {
 			$errors = tra("The mail can't be sent. Contact the administrator");
 		}

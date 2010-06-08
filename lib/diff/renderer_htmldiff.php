@@ -1,19 +1,19 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: /cvsroot/tikiwiki/tiki/lib/diff/renderer_htmldiff.php,v 1.1.2.1 2008-03-04 15:48:27 sept_7 Exp $
 
 /**
  * HTML diff renderer.
+ *
  * This class renders the diff of an HTML page with best effort.
+ *
+ * (c) 2007, Stéphane Casset <sept@logidee.com> and Coucil of Europe
+ * Licence : LGPL v2.1
  */
 
 include_once("Renderer.php");
 
-class Text_Diff_Renderer_htmldiff extends Tiki_Text_Diff_Renderer
-{
+class Text_Diff_Renderer_htmldiff extends Tiki_Text_Diff_Renderer {
+
 	function Text_Diff_Renderer_htmldiff($context_lines = 0, $words = 0)
 	{
 		$this->_leading_context_lines = $context_lines;
@@ -30,7 +30,7 @@ class Text_Diff_Renderer_htmldiff extends Tiki_Text_Diff_Renderer
 		$this->rspan = false;
 		$this->lspan = false;
 		//$this->tracked_tags = array ("table","ul","div");
-		$this->tracked_tags = array ("table", "ul");
+		$this->tracked_tags = array ("table","ul");
 	}
 
 	function _endDiff()
@@ -59,10 +59,10 @@ class Text_Diff_Renderer_htmldiff extends Tiki_Text_Diff_Renderer
 	{
 	}
 
-	function _insert_tag($line, $tag, &$span) {
+	function _insert_tag($line,$tag,&$span) {
 		$string = "";
 		if ($line != '') {
-			if (strstr($line, "<") === FALSE) {
+			if (strstr($line,"<") === FALSE) {
 				if ($span === false) {
 					$string .= "<span class='$tag'>";
 					$span = true;
@@ -73,11 +73,11 @@ class Text_Diff_Renderer_htmldiff extends Tiki_Text_Diff_Renderer
 					$string .= "</span class='fin'>";
 					$span = false;
 				}
-				if (strstr($line, "class=")  === FALSE) {
-					$string .= preg_replace("#<([^/> ]+)(.*[^/]?)?>#", "<$1 class='$tag' $2>", $line);
-					$string = preg_replace("#<br class='(.*)'\s*/>#", "<span class='$1'>&crarr;</span><br class='$1' />", $string);
+				if (strstr($line,"class=")  === FALSE) {
+					$string .= preg_replace("#<([^/> ]+)(.*[^/]?)?>#","<$1 class='$tag' $2>",$line);
+					$string = preg_replace("#<br class='(.*)'\s*/>#","<span class='$1'>&crarr;</span><br class='$1' />",$string);
 				} else {
-					$string .= preg_replace("#<([^/> ]+)(.*)class=[\"']?([^\"']+)[\"']?(.*[^/]?)?>#", "<$1$2 class='$3 $tag' $4>", $line);
+					$string .= preg_replace("#<([^/> ]+)(.*)class=[\"']?([^\"']+)[\"']?(.*[^/]?)?>#","<$1$2 class='$3 $tag' $4>",$line);
 				}
 			} 
 		}
@@ -85,30 +85,26 @@ class Text_Diff_Renderer_htmldiff extends Tiki_Text_Diff_Renderer
 	}
 
 	function _count_tags($line, $version) {
-		preg_match("#<(/?)([^ >]+)#", $line, $out);
-		if (count($out) > 1 && in_array($out[2], $this->tracked_tags)) {
-			if (isset($this->tags[$version][$out[2]])) {
-				if ($out[1] == '/') {
-					$this->tags[$version][$out[2]]--;
-				} else {
-					$this->tags[$version][$out[2]]++;
-				}
+		preg_match("#<(/?)([^ >]+)#",$line,$out);
+		if (in_array($out[2],$this->tracked_tags)) {
+			if ($out[1] == '/') {
+				$this->tags[$version][$out[2]]--;
+			} else {
+				$this->tags[$version][$out[2]]++;
 			}
 		}
 	}
 
 	function _can_break($line) {
 
-		if (preg_match("#<(p|h\d|br)#", $line) == 0) {
+		if (preg_match("#<(p|h\d|br)#",$line) == 0) {
 			return false;
 		}
 
-		if (isset($this->tags)) {
-			foreach($this->tags as $v) {
-				foreach($v as $tag) {
-					if ($tag != 0) {
-						return false;
-					}
+		foreach($this->tags as $v) {
+			foreach($v as $tag) {
+				if ($tag != 0) {
+					return false;
 				}
 			}
 		}
@@ -127,8 +123,8 @@ class Text_Diff_Renderer_htmldiff extends Tiki_Text_Diff_Renderer
 						$this->n++;
 					}
 
-					$this->_count_tags($line, 'original');
-					$this->_count_tags($line, 'final');
+					$this->_count_tags($line,'original');
+					$this->_count_tags($line,'final');
 					if ($this->lspan === true) {
 						$this->original[$this->n] .= "</span>";
 						$this->lspan = false;
@@ -137,9 +133,7 @@ class Text_Diff_Renderer_htmldiff extends Tiki_Text_Diff_Renderer
 						$this->final[$this->n] .= "</span>";
 						$this->rspan = false;
 					}
-					if (!isset($this->original[$this->n])) { $this->original[$this->n] = ''; }
 					$this->original[$this->n] .= "$line";
-					if (!isset($this->final[$this->n])) { $this->final[$this->n] = ''; }
 					$this->final[$this->n] .= "$line";
 				}
 				break;
@@ -147,8 +141,8 @@ class Text_Diff_Renderer_htmldiff extends Tiki_Text_Diff_Renderer
 			case 'added':
 				foreach($lines as $line) {
 					if ($line != '') {
-						$this->_count_tags($line, 'final');
-						$this->final[$this->n] .= $this->_insert_tag($line, 'diffadded', $this->rspan);
+						$this->_count_tags($line,'final');
+						$this->final[$this->n] .= $this->_insert_tag($line,'diffadded',$this->rspan);
 						$context = 0;
 					}
 				}
@@ -157,8 +151,8 @@ class Text_Diff_Renderer_htmldiff extends Tiki_Text_Diff_Renderer
 			case 'change-deleted':
 				foreach($lines as $line) {
 					if ($line != '') {
-						$this->_count_tags($line, 'original');
-						$this->original[$this->n] .= $this->_insert_tag($line, 'diffdeleted', $this->lspan);
+						$this->_count_tags($line,'original');
+						$this->original[$this->n] .= $this->_insert_tag($line,'diffdeleted',$this->lspan);
 						$context = 0;
 					}
 				}

@@ -1,20 +1,15 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /*
  * Created on Jan 27, 2009
  *
  */
  
-require_once 'lib/ointegratelib.php';
-require_once 'Multilingual/Aligner/SentenceSegmentor.php'; 
  
-class Multilingual_MachineTranslation_GoogleTranslateWrapper
-{
+ 
+ require_once 'lib/ointegratelib.php';
+ require_once 'Multilingual/Aligner/SentenceSegmentor.php'; 
+ 
+class Multilingual_MachineTranslation_GoogleTranslateWrapper {
 
 //this array should be updated as Google Translate
 //adds more languages
@@ -152,7 +147,7 @@ class Multilingual_MachineTranslation_GoogleTranslateWrapper
    		} else {
    			$chunks = $this->splitInLogicalChunksOf450CharsMax($text);
    			$ii = 0;
-   			while ($ii < count($chunks)) {
+   			while ($ii < sizeof($chunks)) {
    		  		$textToTranslate = $chunks[$ii];
 				$chunkTranslation = $this->getTranslationFromGoogle(urlencode($textToTranslate), urlencode($langpair))." ";
 				$result .= $chunkTranslation;
@@ -170,7 +165,7 @@ class Multilingual_MachineTranslation_GoogleTranslateWrapper
    		$sentences = $segmentor->segment($text); 
    		$ii = 0;
    		$result = "";
-   		while ($ii < count($sentences)) {
+   		while ($ii < sizeof($sentences)) {
    		  $textToTranslate = $sentences[$ii];	
    		  $result .= $this->getTranslationFromGoogle(urlencode($textToTranslate), urlencode($langpair));
           $ii++;
@@ -194,7 +189,7 @@ class Multilingual_MachineTranslation_GoogleTranslateWrapper
    		$sentences = $segmentor->segment($text); 
    		$ii = 0;
    		$chunk = $sentences[$ii];
-   		while ($ii < (count($sentences)-1)) {
+   		while ($ii < (sizeof($sentences)-1)) {
    			$ii++;
    			if (strlen (urlencode($chunk)) < 450) {
    				$chunk = $chunk.$sentences[$ii];

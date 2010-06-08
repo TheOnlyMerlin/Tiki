@@ -1,14 +1,16 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admingroups.php,v 1.62.2.10 2008-03-14 19:51:58 sylvieg Exp $
 require_once ('tiki-setup.php');
-
-$access->check_permission('tiki_p_admin');
-
+if ($tiki_p_admin != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You don't have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 $auto_query_args = array('group');
 
 if (!isset($cookietab)) { $cookietab = '1'; }
@@ -60,7 +62,7 @@ if (isset($_REQUEST["newgroup"])) {
 	} else {
 		$_REQUEST['userChoice'] = (isset($_REQUEST['userChoice']) && $_REQUEST['userChoice'] == 'on') ? 'y' : '';
 		if (empty($_REQUEST['expireAfter'])) $_REQUEST['expireAfter'] = 0;
-		$userlib->add_group($_REQUEST['name'], $_REQUEST['desc'], $ag_home, $ag_utracker, $ag_gtracker, '', $_REQUEST['userChoice'], $ag_defcat, $ag_theme, 0, 0, 'n', $_REQUEST['expireAfter'], $_REQUEST['emailPattern']);
+		$userlib->add_group($_REQUEST['name'], $_REQUEST['desc'], $ag_home, $ag_utracker, $ag_gtracker, '', $_REQUEST['userChoice'], $ag_defcat, $ag_theme, 0, 0, 'n', $_REQUEST['expireAfter']);
 		if (isset($_REQUEST["include_groups"])) {
 			foreach($_REQUEST["include_groups"] as $include) {
 				if ($_REQUEST["name"] != $include) {
@@ -96,7 +98,7 @@ if (isset($_REQUEST["save"]) and isset($_REQUEST["olgroup"]) and !empty($_REQUES
 		$_REQUEST['userChoice'] = '';
 	}
 	if (empty($_REQUEST['expireAfter'])) $_REQUEST['expireAfter'] = 0;
-	$userlib->change_group($_REQUEST['olgroup'], $_REQUEST['name'], $_REQUEST['desc'], $ag_home, $ag_utracker, $ag_gtracker, $ag_ufield, $ag_gfield, $ag_rufields, $_REQUEST['userChoice'], $ag_defcat, $ag_theme, 'n', $_REQUEST['expireAfter'], $_REQUEST['emailPattern']);
+	$userlib->change_group($_REQUEST['olgroup'], $_REQUEST['name'], $_REQUEST['desc'], $ag_home, $ag_utracker, $ag_gtracker, $ag_ufield, $ag_gfield, $ag_rufields, $_REQUEST['userChoice'], $ag_defcat, $ag_theme, 'n', $_REQUEST['expireAfter']);
 	$userlib->remove_all_inclusions($_REQUEST["name"]);
 	if (isset($_REQUEST["include_groups"]) and is_array($_REQUEST["include_groups"])) {
 		foreach($_REQUEST["include_groups"] as $include) {
@@ -111,10 +113,25 @@ if (isset($_REQUEST["save"]) and isset($_REQUEST["olgroup"]) and !empty($_REQUES
 // Process a form to remove a group
 if (isset($_REQUEST["action"])) {
 	if ($_REQUEST["action"] == 'delete') {
-		$access->check_authenticity(tra('Remove group: ') . htmlspecialchars($_REQUEST['group']));
-		$userlib->remove_group($_REQUEST["group"]);
-		$logslib->add_log('admingroups', 'removed group ' . $_REQUEST["group"]);
-		unset($_REQUEST['group']);
+		$area = 'delgroup';
+		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+			key_check($area);
+			$userlib->remove_group($_REQUEST["group"]);
+			$logslib->add_log('admingroups', 'removed group ' . $_REQUEST["group"]);
+			unset($_REQUEST['group']);
+		} else {
+			key_get($area, tra('Remove group: ') . $_REQUEST['group']);
+		}
+	}
+	if ($_REQUEST["action"] == 'remove') {
+		$area = 'delgroupperm';
+		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+			key_check($area);
+			$userlib->remove_permission_from_group($_REQUEST["permission"], $_REQUEST["group"]);
+			$logslib->add_log('admingroups', 'removed permission ' . $_REQUEST["permission"] . ' from group ' . $_REQUEST["group"]);
+		} else {
+			key_get($area, sprintf(tra('Remove permission: %s on %s') , $_REQUEST['permission'], $_REQUEST['group']));
+		}
 	}
 }
 if (isset($_REQUEST['clean'])) {
@@ -156,7 +173,7 @@ if (isset($_REQUEST["find"])) {
 $smarty->assign('find', $find);
 $users = $userlib->get_groups($offset, $numrows, $sort_mode, $find, $initial);
 $inc = array();
-list($groupname, $groupdesc, $grouphome, $userstrackerid, $usersfieldid, $grouptrackerid, $groupfieldid, $defcatfieldid, $themefieldid, $groupperms, $trackerinfo, $memberslist, $userChoice, $groupdefcat, $grouptheme, $expireAfter, $emailPattern) = array('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
+list($groupname, $groupdesc, $grouphome, $userstrackerid, $usersfieldid, $grouptrackerid, $groupfieldid, $defcatfieldid, $themefieldid, $groupperms, $trackerinfo, $memberslist, $userChoice, $groupdefcat, $grouptheme, $expireAfter) = array('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
 if (!empty($_REQUEST["group"])) {
 	$re = $userlib->get_group_info($_REQUEST["group"]);
 	if (isset($re["groupName"])) $groupname = $re["groupName"];
@@ -308,7 +325,7 @@ $smarty->assign('grouptheme', $grouptheme);
 $smarty->assign('groupperms', $groupperms);
 $smarty->assign_by_ref('userChoice', $userChoice);
 $smarty->assign_by_ref('cant_pages', $users["cant"]);
-$smarty->assign('group_info', $re);
+$smarty->assign_by_ref('expireAfter', $expireAfter);
 setcookie('tab', $cookietab);
 $smarty->assign('cookietab', $cookietab);
 ask_ticket('admin-groups');

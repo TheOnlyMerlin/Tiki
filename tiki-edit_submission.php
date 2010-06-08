@@ -1,10 +1,12 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-edit_submission.php,v 1.61 2007-10-12 07:55:26 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 $section = 'cms';
 require_once ('tiki-setup.php');
 include_once ('lib/articles/artlib.php');
@@ -12,8 +14,22 @@ include_once ('lib/articles/artlib.php');
 if ($prefs['feature_freetags'] == 'y') {
     include_once('lib/freetag/freetaglib.php');
 }
-$access->check_feature('feature_submissions');
-$access->check_permission('tiki_p_submit_article');
+
+if ($prefs['feature_submissions'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_submissions");
+
+	$smarty->display("error.tpl");
+	die;
+}
+
+// Now check permissions to access this page
+if ($tiki_p_submit_article != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied you cannot send submissions"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 if ($tiki_p_admin != 'y') {
 	if ($tiki_p_use_HTML != 'y') {
@@ -69,8 +85,7 @@ $smarty->assign('edit_data', 'n');
 $smarty->assign('spellcheck', 'n');
 
 if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0) {
-	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$template_data = $templateslib->get_template($_REQUEST["templateId"]);
+	$template_data = $tikilib->get_template($_REQUEST["templateId"]);
 
 	$_REQUEST["preview"] = 1;
 	$_REQUEST["body"] = $template_data["content"];
@@ -78,7 +93,7 @@ if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0) {
 
 // If the submissionId is passed then get the submission data
 if (isset($_REQUEST["subId"])) {
-	$article_data = $artlib->get_submission($_REQUEST["subId"]);
+	$article_data = $tikilib->get_submission($_REQUEST["subId"]);
 
 	$publishDate = $article_data["publishDate"];
 	$expireDate = $article_data["expireDate"];
@@ -372,19 +387,6 @@ if (isset($_REQUEST["save"]) || isset($_REQUEST["submit"])) {
 	$cat_href = "tiki-edit_submission.php?subId=" . $cat_objid;
 	include_once ("categorize.php");
 	include_once ("freetag_apply.php");
-	// Add attributes
-	if ($prefs["article_custom_attributes"] == 'y') {
-		 $valid_att = $artlib->get_article_type_attributes($_REQUEST["type"]);
-		 $attributeArray = array();
-		 foreach ($valid_att as $att) {
-		 	// need to convert . to _ for matching
-		 	$toMatch = str_replace('.', '_', $att["itemId"]);
-		 	if (isset($_REQUEST[$toMatch])) {
-		 		$attributeArray[$att["itemId"]] = $_REQUEST[$toMatch];
-		 	}	
-		 }
-		 $artlib->set_article_attributes($subid, $attributeArray, true);
-	}
 	// Remove image cache because image may have changed, and we
 	// don't want to show the old image
 	@$artlib->delete_image_cache("submission",$subId);
@@ -409,28 +411,10 @@ $smarty->assign_by_ref('topics', $topics);
 
 // get list of valid types
 $types = $artlib->list_types_byname();
-if ($prefs["article_custom_attributes"] == 'y') {
-	$article_attributes = $artlib->get_article_attributes($_REQUEST["subId"], true);	
-	$smarty->assign('article_attributes', $article_attributes);
-	$all_attributes = array();
-	foreach($types as &$t) {
-		// javascript needs htmlid to show/hide to be properties of basic array
-		$type_attributes = $artlib->get_article_type_attributes($t["type"]);
-		$all_attributes = array_merge($all_attributes, $type_attributes);
-		foreach ($type_attributes as $att) {
-			$htmlid = str_replace('.','_',$att['itemId']);
-			$t[$htmlid] = 'y';
-			$js_string .= "'$htmlid', 'y', ";
-		}
-	}
-	$smarty->assign('all_attributes', $all_attributes);	
-	$headerlib->add_js("articleCustomAttributes = new Array(); articleCustomAttributes = [$js_string];");
-}
 $smarty->assign_by_ref('types', $types);
 
 if ($prefs['feature_cms_templates'] == 'y' && $tiki_p_use_content_templates == 'y') {
-	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$templates = $templateslib->list_templates('cms', 0, -1, 'name_asc', '');
+	$templates = $tikilib->list_templates('cms', 0, -1, 'name_asc', '');
 }
 
 $smarty->assign_by_ref('templates', $templates["data"]);
@@ -457,10 +441,6 @@ $smarty->assign('expireDateSite', $expireDate);
 $smarty->assign('siteTimeZone', $prefs['display_timezone']);
 
 include_once("textareasize.php");
-
-global $wikilib; include_once('lib/wiki/wikilib.php');
-$plugins = $wikilib->list_plugins(true, 'body');
-$smarty->assign_by_ref('plugins', $plugins);
 
 $smarty->assign('showtags', 'n');
 $smarty->assign('qtcycle', '');

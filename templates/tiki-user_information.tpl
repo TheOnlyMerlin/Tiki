@@ -2,8 +2,6 @@
 
 {title url="tiki-user_information.php?view_user=$userwatch"}{tr}User Information{/tr}{/title}
 
-{include file='tiki-mytiki_bar.tpl'}
-
 {if $prefs.feature_tabs neq 'y' and $user and $prefs.feature_messages eq 'y' and $tiki_p_messages eq 'y' and $allowMsgs eq 'y'}
 <div class="navbar">
 	{button href="#message" _text="{tr}Send me a message{/tr}"}
@@ -16,7 +14,7 @@
 		<div style="vertical-align: top">
 					<div class="clearfix">
 		 				<div class="floatleft">
-		 					<h2>{$userinfo.login|userlink}</h2>
+		 					<h2><big>{$userinfo.login|userlink}</big></h2>
 		 				</div>
 						<div class="form floatright">
 		{if $tiki_p_admin eq 'y' or $userinfo.login eq $user}
@@ -28,12 +26,6 @@
 						</div>
 					</div>
 		
-					{if $user_picture_id}
-					<div class="userpicture">
-						{wikiplugin _name="img" fileId="$user_picture_id"}{/wikiplugin}
-					</div>
-					{/if}
-					
 					<div class="simplebox">
 						<div>
 		{if $avatar}
@@ -104,7 +96,7 @@
 			{if $userPage_exists}
 									<a class="link" href="tiki-index.php?page={$prefs.feature_wiki_userpage_prefix|escape:'url'}{$userinfo.login|escape:'url'}">{$prefs.feature_wiki_userpage_prefix}{$userinfo.login}</a>
 			{elseif $user == $userinfo.login}
-				{$prefs.feature_wiki_userpage_prefix}{$userinfo.login}<a class="link" href="tiki-editpage.php?page={$prefs.feature_wiki_userpage_prefix|escape:'url'}{$userinfo.login|escape:'url'}" title="{tr}Create Page{/tr}">?</a>
+				{$prefs.feature_wiki_userpage_prefix}{$userinfo.login}<a class="link" href="tiki-editpage.php?page={$prefs.feature_wiki_userpage_prefix|escape:'url'}{$userinfo.login|escape:'url'}" title="{tr}Create page{/tr}">?</a>
 			{else}&nbsp;{/if}
 								</div>
 							</div>
@@ -281,26 +273,6 @@
 		</div>
 	</div>		
 	{/tab}{/if}
-	
-	
-	{if $prefs.feature_actionlog eq 'y' and $prefs.user_who_viewed_my_stuff eq 'y' and !empty($user) and ($prefs.user_who_viewed_my_stuff_show_others eq 'y' or $user eq $userinfo.login or $tiki_p_admin eq "y")}
-	{tab name="{tr}Who Looks At Stuff?{/tr}"}	
-		<div class="simplebox">
-			<h2 class="center">{if $user eq $userinfo.login}{tr}Who Looks At Your Stuff?{/tr}{else}{tr}Who Looks At His Stuff?{/tr}{/if}</h2>
-			{cycle values="even,odd" print=false}
-			{section name=ix loop=$whoviewed}
-			<div class="clearfix {cycle}">
-		 		<div class="form floatleft">
-					{$whoviewed[ix].user|userlink} - {$whoviewed[ix].lastViewed|tiki_short_datetime}
-		 		</div>
-				<div class="form floatright">
-					<a href="{$whoviewed[ix].link|escape}">{$whoviewed[ix].object|escape} ({$whoviewed[ix].objectType|escape})</a>
-				</div>
-			</div>
-			{/section}
-		</div>
-	{/tab}
-	{/if}
 	
 	{if $user and $prefs.feature_messages eq 'y' and $tiki_p_messages eq 'y' and $allowMsgs eq 'y'}{tab name="{tr}Send Me A Message{/tr}"}
 			<div id="message" class="simplebox">

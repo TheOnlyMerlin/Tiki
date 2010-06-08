@@ -1,32 +1,23 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 include_once ('tiki-setup.php');
-$access->check_permission('tiki_p_admin');
-$all_perms = $userlib->get_permissions();
-
-function is_perm($permName, $objectType) {
-	global $all_perms, $tikilib;
-	$permGroup = $tikilib->get_permGroup_from_objectType($objectType);
-	foreach($all_perms['data'] as $perm) {
-		if ($perm['permName'] == $permName) {
-			return $permGroup == $perm['type'];
-		}
-	}
-	return false;
+if ($tiki_p_admin != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You don't have permission to use this feature"));
+	$smarty->display('error.tpl');
+	die;
 }
-function list_perms($objectId, $objectType, $objectName) {
+function list_perms($objectId, $objectType) {
 	global $userlib, $tikilib, $prefs;
 	$ret = array();
 	$perms = $userlib->get_object_permissions($objectId, $objectType);
 	if (!empty($perms)) {
 		foreach($perms as $perm) {
-			$ret[] = array('group' => $perm['groupName'], 'perm' => $perm['permName'], 'reason' => 'Object',
-					'objectId' => $objectId, 'objectType' => $objectType, 'objectName' => $objectName);
+			$ret[] = array('group' => $perm['groupName'], 'perm' => $perm['permName'], 'reason' => 'Special');
 		}
 	} elseif ($prefs['feature_categories'] == 'y') {
 		global $categlib;
@@ -39,12 +30,8 @@ function list_perms($objectId, $objectType, $objectName) {
 				$config = array();
 				if (!empty($category_perms)) {
 					foreach($category_perms as $category_perm) {
-						if (is_perm($category_perm['permName'], $objectType)) {
-							$config[$category_perm['groupName']][$category_perm['permName']] = 'y';
-							$ret[] = array('group' => $category_perm['groupName'], 'perm' => $category_perm['permName'],
-									'reason' => 'Category', 'objectId' => $categId, 'objectType' => 'category',
-									'objectName' => $categlib->get_category_name($categId));
-						}
+						$config[$category_perm['groupName']][$category_perm['permName']] = 'y';
+						$ret[] = array('group' => $category_perm['groupName'], 'perm' => $category_perm['permName'], 'reason' => 'Category');
 					}
 				}
 			}
@@ -52,8 +39,7 @@ function list_perms($objectId, $objectType, $objectName) {
 	}
 	return array('objectId' => $objectId, 'special' => $ret);
 }
-$types = array('wiki page', 'file gallery', 'tracker', 'forum', 'group');
-include_once ("lib/commentslib.php"); global $commentslib; $commentslib = new Comments($dbTiki);
+$types = array('wiki page', 'file gallery');
 $all_groups = $userlib->list_all_groups();
 $res = array();
 foreach($types as $type) {
@@ -69,44 +55,21 @@ foreach($types as $type) {
 	switch ($type) {
 		case 'wiki page':
 		case 'wiki':
-			$objects = $tikilib->list_pageNames();
-			foreach($objects['data'] as $object) {
-				$res[$type]['objects'][] = list_perms($object['pageName'], $type, $object['pageName']);
+			$pages = $tikilib->list_pageNames();
+			foreach($pages['data'] as $page) {
+				$res[$type]['objects'][] = list_perms($page['pageName'], $type);
 			}
 			break;
 
 		case 'file galleries':
 		case 'file gallery':
-			$objects = $tikilib->list_file_galleries( 0, -1, 'name_asc', '', '', $prefs['fgal_root_id'] );
-			foreach($objects['data'] as $object) {
-				$res[$type]['objects'][] = list_perms($object['id'], $type, $object['name']);
+			$files = $tikilib->list_file_galleries( 0, -1, 'name_desc', '', '', $prefs['fgal_root_id'] );
+			foreach($files['data'] as $file) {
+				$res[$type]['objects'][] = list_perms($file['id'], $type);
 			}
 			break;
 
-		case 'tracker':
-		case 'trackers':
-			$objects = $tikilib->list_trackers();
-			foreach($objects['data'] as $object) {
-				$res[$type]['objects'][] = list_perms($object['trackerId'], $type, $object['name']);
-			}
-			break;
-
-		case 'forum':
-		case 'forums':
-			$objects = $commentslib->list_forums();
-			foreach($objects['data'] as $object) {
-				$res[$type]['objects'][] = list_perms($object['forumId'], $type, $object['name']);
-			}
-			break;
-
-		case 'group':
-		case 'groups':
-			foreach($all_groups as $object) {
-				$res[$type]['objects'][] = list_perms($object, $type, '');
-			}
-			break;
-
-			default:
+		default:
 			break;
 	}
 }

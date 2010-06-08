@@ -1,18 +1,16 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-
 //this script may only be included - so its better to die if called directly.
-global $prefs, $tikilib;
-if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
-	header('location: index.php');
+if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+	header("location: index.php");
 	exit;
 }
 if (version_compare(PHP_VERSION, '5.0.0', '<')) {
-	header('location: tiki-install.php');
+	header("location: tiki-install.php");
 	exit;
 }
 require_once 'lib/setup/third_party.php';
@@ -41,27 +39,6 @@ require_once ('lib/setup/absolute_urls.php');
 if (($prefs['feature_wysiwyg'] != 'n' && $prefs['feature_wysiwyg'] != 'y') || $prefs['case_patched'] == 'n') require_once ('lib/setup/patches.php');
 require_once ('lib/setup/sections.php');
 require_once ('lib/headerlib.php');
-
-if( $prefs['tiki_domain_prefix'] == 'strip' ) {
-	if( substr( $_SERVER['HTTP_HOST'], 0, 4 ) == 'www.' ) {
-		$prefix = $tikilib->httpPrefix();
-		$prefix = str_replace( '://www.', '://', $prefix );
-		$url = $prefix . $_SERVER['REQUEST_URI'];
-
-		$access->redirect( $url );
-		exit;
-	}
-} elseif( $prefs['tiki_domain_prefix'] == 'force' ) {
-	if( substr( $_SERVER['HTTP_HOST'], 0, 4 ) != 'www.' ) {
-		$prefix = $tikilib->httpPrefix();
-		$prefix = str_replace( '://', '://www.', $prefix );
-		$url = $prefix . $_SERVER['REQUEST_URI'];
-
-		$access->redirect( $url, null, 301 );
-		exit;
-	}
-}
-
 if (isset($_REQUEST['PHPSESSID'])) $tikilib->setSessionId($_REQUEST['PHPSESSID']);
 elseif (function_exists('session_id')) $tikilib->setSessionId(session_id());
 require_once ('lib/setup/cookies.php');
@@ -72,10 +49,6 @@ require_once ('lib/setup/wiki.php');
 if ($prefs['feature_polls'] == 'y') require_once ('lib/setup/polls.php');
 if ($prefs['feature_mailin'] == 'y') require_once ('lib/setup/mailin.php');
 if ($prefs['useGroupHome'] == 'y') require_once ('lib/setup/default_homepage.php');
-if ($prefs['feature_sefurl'] == 'y' && $prefs['tikiIndex'] == 'tiki-index.php' && $prefs['wikiHomePage']) {
-	include_once('lib/wiki/wikilib.php');
-	$prefs['tikiIndex'] = $wikilib->sefurl($prefs['wikiHomePage']);
-}
 require_once ('lib/setup/theme.php');
 if ($prefs['feature_babelfish'] == 'y' || $prefs['feature_babelfish_logo'] == 'y') require_once ('lib/setup/babelfish.php');
 if (!empty($varcheck_errors)) {
@@ -86,6 +59,7 @@ if (!empty($varcheck_errors)) {
 if ($prefs['feature_challenge'] == 'y') {
 	require_once ('lib/setup/challenge.php');
 }
+require_once ('lib/setup/menus.php');
 if ($prefs['feature_usermenu'] == 'y') require_once ('lib/setup/usermenu.php');
 if ($prefs['feature_live_support'] == 'y') require_once ('lib/setup/live_support.php');
 if ($prefs['feature_referer_stats'] == 'y' || $prefs['feature_stats'] == 'y') require_once ('lib/setup/stats.php');
@@ -106,7 +80,7 @@ if ($prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' 
 if (isset($_REQUEST['comzone'])) require_once ('lib/setup/comments_zone.php');
 if ($prefs['feature_lastup'] == 'y') require_once ('lib/setup/last_update.php');
 if (!empty($_SESSION['interactive_translation_mode']) && ($_SESSION['interactive_translation_mode'] == 'on')) {
-	include_once ('lib/multilingual/multilinguallib.php');
+	include_once ("lib/multilingual/multilinguallib.php");
 	$cachelib->empty_full_cache();
 }
 if ($prefs['feature_freetags'] == 'y') require_once ('lib/setup/freetags.php');
@@ -148,168 +122,77 @@ $smarty->assign('tiki_branch', $TWV->branch);
 $smarty->assign('tiki_star', $TWV->star);
 $smarty->assign('tiki_uses_svn', $TWV->svn);
 
-if( isset( $_GET['msg'] ) ) {
-	$smarty->assign( 'display_msg', $_GET['msg'] );
-} elseif( isset( $_SESSION['msg'] ) ) {
-	$smarty->assign( 'display_msg', $_SESSION['msg'] );
-	unset($_SESSION['msg']);
-} else {
-	$smarty->assign( 'display_msg', '' );
-}
+$headerlib->add_jsfile( 'lib/tiki-js.js' );	// tiki-js.js gets included even if javascript_enabled==n for the js test
 
-if( $prefs['rating_advanced'] == 'y' && $prefs['rating_recalculation'] == 'randomload' ) {
-	global $ratinglib; require_once 'lib/rating/ratinglib.php';
-	$ratinglib->attempt_refresh();
-}
-
-$headerlib->add_jsfile( 'lib/tiki-js.js' );
-
-if( $prefs['feature_cssmenus'] == 'y' ) {
-	$headerlib->add_cssfile( 'css/cssmenus.css' );
-}
-if( $prefs['feature_bidi'] == 'y' ) {
-	$headerlib->add_cssfile( 'styles/BiDi/BiDi.css' );
-}
-if( $prefs['feature_fixed_width'] == 'y' ) {
-	$headerlib->add_cssfile( 'styles/layout/fixed_width.css' );
-}
-
-if ($prefs['javascript_enabled'] != 'n') {
-
-	$headerlib->add_jsfile( 'lib/swfobject/swfobject.js' );
+if ($prefs['javascript_enabled'] == 'y') {
 	
-	if( isset($prefs['javascript_cdn']) && $prefs['javascript_cdn'] == 'google' ) {
-		$headerlib->add_jsfile( 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js', 'external' );
-	} else {
-		$headerlib->add_jsfile( 'lib/jquery/jquery.js' );
-	}
-
+	$headerlib->add_jsfile( 'lib/jquery/jquery.js' );
 	$headerlib->add_jsfile( 'lib/jquery_tiki/tiki-jquery.js' );
 	
-	if ( $prefs['feature_ajax'] === 'y' ) {
-		$headerlib->add_jsfile('lib/ajax/tiki-ajax.js');
-		$headerlib->add_jsfile('lib/wiki/wiki-ajax.js');
-		if ( $prefs['feature_ajax_autosave'] === 'y' ) {
-			$headerlib->add_jsfile('lib/ajax/autosave.js');
-		}
-	}
-	
 	if( $prefs['feature_jquery_ui'] == 'y' ) {
-		if( isset($prefs['javascript_cdn']) && $prefs['javascript_cdn'] == 'google' ) {
-			$headerlib->add_jsfile( 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js', 'external' );
-		} else {
-			$headerlib->add_jsfile( 'lib/jquery/jquery-ui/ui/jquery-ui.js' );
-		}
+		$headerlib->add_jsfile( 'lib/jquery/jquery-ui/ui/jquery-ui.js' );
 		$headerlib->add_cssfile( 'lib/jquery/jquery-ui/themes/' . $prefs['feature_jquery_ui_theme'] . '/jquery-ui.css' );
 	}
 	
 	if( $prefs['feature_jquery_tooltips'] == 'y' ) {
-		$headerlib->add_jsfile( 'lib/jquery/cluetip/lib/jquery.hoverIntent.js' );
-		$headerlib->add_jsfile( 'lib/jquery/cluetip/lib/jquery.bgiframe.min.js' );
-		$headerlib->add_jsfile( 'lib/jquery/cluetip/jquery.cluetip.js' );
-		$headerlib->add_cssfile( 'lib/jquery/cluetip/jquery.cluetip.css' );
+		$headerlib->add_jsfile( "lib/jquery/cluetip/lib/jquery.hoverIntent.js" );
+		$headerlib->add_jsfile( "lib/jquery/cluetip/lib/jquery.bgiframe.min.js" );
+		$headerlib->add_jsfile( "lib/jquery/cluetip/jquery.cluetip.js" );
+		$headerlib->add_cssfile( "lib/jquery/cluetip/jquery.cluetip.css" );
 	}
 	
 	if( $prefs['feature_jquery_autocomplete'] == 'y' ) {
-		$headerlib->add_jsfile( 'lib/jquery/jquery-autocomplete/lib/jquery.ajaxQueue.js' );
+		$headerlib->add_jsfile( "lib/jquery/jquery-autocomplete/lib/jquery.ajaxQueue.js" );
 		if( $prefs['feature_jquery_tooltips'] != 'y' ) {
-			$headerlib->add_jsfile( 'lib/jquery/jquery-autocomplete/lib/jquery.bgiframe.min.js' );
+			$headerlib->add_jsfile( "lib/jquery/jquery-autocomplete/lib/jquery.bgiframe.min.js" );
 		}
-		$headerlib->add_jsfile( 'lib/jquery/jquery-autocomplete/jquery.autocomplete.js' );
-		$headerlib->add_cssfile( 'lib/jquery/jquery-autocomplete/jquery.autocomplete.css' );
+		$headerlib->add_jsfile( "lib/jquery/jquery-autocomplete/jquery.autocomplete.js" );
+		$headerlib->add_cssfile( "lib/jquery/jquery-autocomplete/jquery.autocomplete.css" );
 	}
 	
 	if( $prefs['feature_jquery_superfish'] == 'y' ) {
-		$headerlib->add_jsfile( 'lib/jquery/superfish/js/superfish.js' );
-		$headerlib->add_jsfile( 'lib/jquery/superfish/js/supersubs.js' );
+		$headerlib->add_jsfile( "lib/jquery/superfish/js/superfish.js" );
+		$headerlib->add_jsfile( "lib/jquery/superfish/js/supersubs.js" );
 	}
 	if( $prefs['feature_jquery_reflection'] == 'y' ) {
-		$headerlib->add_jsfile( 'lib/jquery/reflection-jquery/js/reflection.js' );
+		$headerlib->add_jsfile( "lib/jquery/reflection-jquery/js/reflection.js" );
 	}
 	if( $prefs['feature_jquery_sheet'] == 'y' ) {
-		$headerlib->add_cssfile( 'lib/jquery/jquery.sheet/jquery.sheet.css' );
-		$headerlib->add_jsfile( 'lib/jquery/jquery.sheet/jquery.sheet.js' );
-		$headerlib->add_jsfile( 'lib/jquery/jquery.json-2.2.js' );
-		// plugins
-		$headerlib->add_cssfile( 'lib/jquery/jquery.sheet/plugins/menu.css' );
-		$headerlib->add_jsfile( 'lib/jquery/jquery.sheet/plugins/mbMenu.min.js' );
-		$headerlib->add_jsfile( 'lib/jquery/jquery.sheet/plugins/jquery.scrollTo-min.js' );
-		$headerlib->add_jsfile( 'lib/jquery/jquery.sheet/plugins/jgcharts.min.js' );
-	}
-	if( $prefs['feature_jquery_jqs5'] == 'y' ) {
-		if (strpos($_SERVER['PHP_SELF'], 'tiki-index_raw.php') !== false && isset($_REQUEST['format']) && $_REQUEST['format'] == 'jqs5') {
-			$headerlib->add_cssfile( 'lib/jquery/jqs5/jqs5.css' );
-			//$headerlib->add_cssfile( 'lib/jquery/jqs5/theme/staticfree/style.css' );
-			$headerlib->add_jsfile( 'lib/jquery/jqs5/jqs5.js' );
-			$headerlib->add_jq_onready('jqs5_init("body > div > div > div");', 20);	// late, and tell jqs5 where the page is in tiki
-			$prefs['feature_wiki_description'] = 'n';
-			$prefs['wiki_authors_style'] = 'none';
-			$prefs['feature_page_title'] = 'n';
-			$prefs['wiki_topline_position'] = 'none';
-			$prefs['page_bar_position'] = 'none';
-			$prefs['wiki_edit_section'] = 'n';
-			$prefs['wiki_edit_plugin'] = 'n';
-		}
+		$headerlib->add_cssfile( "lib/jquery/jquery.sheet/jquery.sheet.base.css" );
+		$headerlib->add_jsfile( "lib/jquery/jquery.sheet/jquery.sheet.js" );
 	}
 	if( $prefs['feature_jquery_tablesorter'] == 'y' ) {
-		$headerlib->add_cssfile( 'lib/jquery_tiki/tablesorter/themes/tiki/style.css' );
-		$headerlib->add_jsfile( 'lib/jquery/tablesorter/jquery.tablesorter.js' );
-		$headerlib->add_jsfile( 'lib/jquery/tablesorter/addons/pager/jquery.tablesorter.pager.js' );
+		$headerlib->add_cssfile( "lib/jquery_tiki/tablesorter/themes/tiki/style.css" );
+		$headerlib->add_jsfile( "lib/jquery/tablesorter/jquery.tablesorter.js" );
+		$headerlib->add_jsfile( "lib/jquery/tablesorter/addons/pager/jquery.tablesorter.pager.js" );
 	}
-	if( $prefs['feature_shadowbox'] == 'y' ) {
-		$headerlib->add_jsfile( 'lib/jquery/colorbox/jquery.colorbox.js' );
-		$headerlib->add_cssfile( 'lib/jquery/colorbox/styles/colorbox.css' );
+	if( $prefs['feature_jquery_cycle'] == 'y' ) {
+		$headerlib->add_jsfile( "lib/jquery/malsup-cycle/jquery.cycle.all.js" );
 	}
-	if( $prefs['feature_jquery_carousel'] == 'y' ) {
-		$headerlib->add_jsfile( 'lib/jquery/infinitecarousel/jquery.infinitecarousel2.js' );
-	}
-
-	if( $prefs['feature_jquery_validation'] == 'y' ) {
-		$headerlib->add_jsfile( 'lib/jquery/jquery-validate/jquery.validate.min.js' );
+	if( $prefs['feature_shadowbox'] == "y" ) {
+		$headerlib->add_jsfile( "lib/jquery/colorbox/jquery.colorbox.js" );
+		$headerlib->add_cssfile( "lib/jquery/colorbox/styles/colorbox.css" );
 	}
 	
-	$headerlib->add_jsfile( 'lib/jquery/jquery-ui/external/jquery.cookie.js' );
-	$headerlib->add_jsfile( 'lib/jquery/jquery.async.js', 10 );
-	$headerlib->add_jsfile( 'lib/jquery/treeTable/src/javascripts/jquery.treeTable.js' );
-	$headerlib->add_cssfile( 'lib/jquery/treeTable/src/stylesheets/jquery.treeTable.css' );
+	if( $prefs['feature_jquery_ui'] == 'y' || $prefs['feature_jquery_tooltips'] == 'y' || $prefs['feature_jquery_autocomplete'] == 'y' || $prefs['feature_jquery_superfish'] == 'y' || $prefs['feature_jquery_reflection'] == 'y' || $prefs['feature_jquery_cycle'] == 'y' || $prefs['feature_shadowbox'] == 'y' ) {
+		$headerlib->add_jsfile( "lib/jquery/jquery.cookie.js" );
+		$headerlib->add_jsfile( "lib/jquery/jquery.async.js" );
+		$headerlib->add_jsfile( "lib/jquery/jquery.columnmanager/jquery.columnmanager.js" );
+		$headerlib->add_jsfile( "lib/jquery/treeTable/src/javascripts/jquery.treeTable.js" );
+		$headerlib->add_cssfile( "lib/jquery/treeTable/src/stylesheets/jquery.treeTable.css" );
+	}
 	
 	if( ( $prefs['feature_jquery'] != 'y' || $prefs['feature_jquery_tablesorter'] != 'y' ) && $prefs['javascript_enabled'] == 'y' ) {
 		$headerlib->add_jsfile( 'lib/tiki-js-sorttable.js' );
 	}
 	
 	if( $prefs['feature_phplayers'] == 'y' ) {
-		$headerlib->add_jsfile( 'lib/phplayers/libjs/layersmenu-library.js' );
-		$headerlib->add_jsfile( 'lib/phplayers/libjs/layersmenu.js' );
-		$headerlib->add_jsfile( 'lib/phplayers/libjs/layerstreemenu-cookies.js' );
+		$headerlib->add_jsfile( "lib/phplayers/libjs/layersmenu-library.js" );
+		$headerlib->add_jsfile( "lib/phplayers/libjs/layersmenu.js" );
+		$headerlib->add_jsfile( "lib/phplayers/libjs/layerstreemenu-cookies.js" );
 	}
 	
 	if( $prefs['wikiplugin_flash'] == 'y' ) {
 		$headerlib->add_jsfile( 'lib/swfobject/swfobject.js' );
 	}
-
-	if( $prefs['feature_metrics_dashboard'] == 'y' ) {
-		$headerlib->add_cssfile("css/metrics.css");
-		$headerlib->add_jsfile("lib/jquery/jquery.sparkline.min.js");
-		$headerlib->add_jsfile("lib/metrics.js");
-	}
-
-}	// end if $prefs['javascript_enabled'] != 'n'
-
-if( ! empty( $prefs['header_custom_css'] ) ) {
-	$headerlib->add_css( $prefs['header_custom_css'] );
-}
-
-if( ! empty( $prefs['header_custom_js'] ) ) {
-	$headerlib->add_js( $prefs['header_custom_js'] );
-}
-
-if( session_id() ) {
-	if( $prefs['tiki_cachecontrol_session'] ) {
-		header( 'Cache-Control: ' . $prefs['tiki_cachecontrol_session'] );
-	}
-} else {
-	if( $prefs['tiki_cachecontrol_nosession'] ) {
-		header( 'Cache-Control: ' . $prefs['tiki_cachecontrol_nosession'] );
-	}
-}
-
+}	// end if $prefs['javascript_enabled'] == 'y'

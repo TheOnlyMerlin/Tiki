@@ -9,7 +9,7 @@
 		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 	<fieldset>
-		<legend>{tr}{$crumbs[$crumb]->description}{/tr}{help crumb=$crumbs[$crumb]}</legend>
+		<legend>{tr}{$crumbs[$crumb]->description}{/tr}{if $prefs.feature_help eq 'y'} {help crumb=$crumbs[$crumb]}{/if}</legend>
 
 		{preference name=feature_modulecontrols}
 		{preference name=user_assigned_modules}
@@ -19,9 +19,6 @@
 			{tr}Hint: If you lose your login module, use tiki-login_scr.php to be able to login!{/tr}
 		{/remarksbox}
 		{preference name=modseparateanon}
-		{preference name=modhideanonadmin}
-		{preference name=feature_left_column}
-		{preference name=feature_right_column}
 
 		</fieldset>
 	<div class="heading input_submit_container" style="text-align: center">

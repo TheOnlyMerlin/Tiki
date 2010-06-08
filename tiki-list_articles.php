@@ -3,13 +3,23 @@
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: /cvsroot/tikiwiki/tiki/tiki-list_articles.php,v 1.38.2.2 2008-03-21 23:06:51 sylvieg Exp $
 $section = 'cms';
 require_once ('tiki-setup.php');
 include_once ('lib/articles/artlib.php');
 $smarty->assign('headtitle', tra('List Articles'));
-$access->check_feature('feature_articles');
-$access->check_permission('tiki_p_read_article');
+if ($prefs['feature_articles'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_articles");
+	$smarty->display("error.tpl");
+	die;
+}
+// Now check permissions to access this page
+if ($tiki_p_read_article != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied. You cannot view pages"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (isset($_REQUEST["remove"])) {
 	$artperms = Perms::get( array( 'type' => 'article', 'object' => $_REQUEST['remove'] ) );
 
@@ -19,8 +29,13 @@ if (isset($_REQUEST["remove"])) {
 		$smarty->display("error.tpl");
 		die;
 	}
-	$access->check_authenticity();
-	$artlib->remove_article($_REQUEST["remove"]);
+	$area = 'delarticle';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$artlib->remove_article($_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 // This script can receive the thresold
 // for the information as the number of
@@ -47,11 +62,8 @@ if (!empty($_REQUEST['maxRecords'])) {
 	$maxRecords = $maxRecords;
 }
 $smarty->assign_by_ref('maxRecords', $maxRecords);
-
-$visible_only = 'y';
 if (($tiki_p_admin == 'y') || ($tiki_p_admin_cms == 'y')) {
 	$date_max = '';
-	$visible_only = "n";
 } elseif (isset($_SESSION["thedate"])) {
 	if ($_SESSION["thedate"] < $tikilib->now) {
 		// If the session is older then set it to today
@@ -63,21 +75,6 @@ if (($tiki_p_admin == 'y') || ($tiki_p_admin_cms == 'y')) {
 } else {
 	$date_max = $tikilib->now;
 }
-if (isset($_REQUEST["find_from_Month"]) && isset($_REQUEST["find_from_Day"]) && isset($_REQUEST["find_from_Year"])) {
-	$date_min = $tikilib->make_time(0, 0, 0, $_REQUEST["find_from_Month"], $_REQUEST["find_from_Month"], $_REQUEST["find_from_Year"]);
-	$smarty->assign('find_date_from', $date_min);
-} else {
-	$date_min = 0;
-	$smarty->assign('find_date_from', $tikilib->now - 365*24*3600);
-}
-if (isset($_REQUEST["find_to_Month"]) && isset($_REQUEST["find_to_Day"]) && isset($_REQUEST["find_to_Year"])) {
-	$t_date_max = $tikilib->make_time(0, 0, 0, $_REQUEST["find_to_Month"], $_REQUEST["find_to_Month"], $_REQUEST["find_to_Year"]);
-	if ($t_date_max < $date_max || $date_max == '') {
-		$date_max = $t_date_max;
-		$visible_only = 'y';
-	}
-}
-$smarty->assign('find_date_to', $date_max);
 if (isset($_REQUEST["find"])) {
 	$find = $_REQUEST["find"];
 } else {
@@ -90,36 +87,26 @@ if (!isset($_REQUEST["type"])) {
 if (!isset($_REQUEST["topic"])) {
 	$_REQUEST["topic"] = '';
 }
-
-$filter['categId'] = 0;
-if ($prefs['feature_categories'] == 'y' && !empty($_REQUEST['cat_categories'])) {
-	$filter['categId'] = $_REQUEST['cat_categories'];
-	if (count($_REQUEST['cat_categories']) > 1) {
-		$smarty->assign('find_cat_categories', $_REQUEST['cat_categories']);
-		unset($_REQUEST['categId']);
-	} else {
-		$_REQUEST['categId'] = $_REQUEST['cat_categories'][0];
-		unset($_REQUEST['cat_categories']);
-	}
-} else {
-		$_REQUEST['cat_categories'] = array();
-}
-if ($prefs['feature_categories'] == 'y' && !empty($_REQUEST['categId'])) {
-	$filter['categId'] = $_REQUEST['categId'];
-	$smarty->assign('find_categId', $_REQUEST['categId']);
+if (!isset($_REQUEST["categId"])) {
+	$_REQUEST["categId"] = '';
 }
 if (!isset($_REQUEST['lang'])) {
 	$_REQUEST['lang'] = '';
 }
 $smarty->assign('find_topic', $_REQUEST["topic"]);
 $smarty->assign('find_type', $_REQUEST["type"]);
+$smarty->assign('find_categId', $_REQUEST["categId"]);
 $smarty->assign('find_lang', $_REQUEST['lang']);
+$visible_only = 'y';
+if (($tiki_p_admin == 'y') || ($tiki_p_admin_cms == 'y')) {
+	$visible_only = "n";
+}
 // Get a list of last changes to the Wiki database
-$listpages = $artlib->list_articles($offset, $maxRecords, $sort_mode, $find, $date_min, $date_max, $user, $_REQUEST["type"], $_REQUEST["topic"], $visible_only, '', $filter["categId"], '', '', $_REQUEST['lang']);
+$listpages = $tikilib->list_articles($offset, $maxRecords, $sort_mode, $find, 0, $date_max, $user, $_REQUEST["type"], $_REQUEST["topic"], $visible_only, '', $_REQUEST["categId"], '', '', $_REQUEST['lang']);
 // If there're more records then assign next_offset
 $smarty->assign_by_ref('cant', $listpages['cant']);
 $smarty->assign_by_ref('listpages', $listpages["data"]);
-
+//print_r($listpages["data"]);
 $topics = $artlib->list_topics();
 $smarty->assign_by_ref('topics', $topics);
 $types = $artlib->list_types();
@@ -129,7 +116,6 @@ if ($prefs['feature_categories'] == 'y') {
 	include_once ('lib/categories/categlib.php');
 	$categories = $categlib->get_all_categories_respect_perms(null, 'view_category');
 	$smarty->assign_by_ref('categories', $categories);
-	$smarty->assign('cat_tree', $categlib->generate_cat_tree($categories, true, $_REQUEST['cat_categories']));	
 }
 if ($prefs['feature_multilingual'] == 'y') {
 	$languages = array();

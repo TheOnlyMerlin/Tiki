@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,15 +14,29 @@ $inputConfiguration = array( array(
 	),
 ) );
 
-$auto_query_args = array('section', 'comments', 'autoreload', 'view_mode');
+$auto_query_args = array('section', 'comments', 'autoreload');
 
 require_once 'tiki-setup.php';
 require_once 'lib/toolbars/toolbarslib.php';
 
 $access->check_permission('tiki_p_admin');
-$access->check_feature('javascript_enabled');
 
-$sections = array( 'global', 'wiki page', 'trackers', 'blogs', 'calendar', 'cms', 'faqs', 'newsletters', 'forums', 'maps', 'admin', 'sheet');
+if ($prefs['javascript_enabled'] != 'y') {
+	$smarty->assign('msg', tra("JavaScript is required for this page"));
+	$smarty->display("error.tpl");
+	die;
+}
+
+if ($prefs['feature_jquery_ui'] != 'y') {
+	if ($prefs['feature_use_minified_scripts'] == 'y') {
+		$headerlib->add_jsfile('lib/jquery/jquery-ui/ui/minified/jquery-ui.min.js');
+	} else {
+		$headerlib->add_jsfile('lib/jquery/jquery-ui/ui/jquery-ui.js');
+	}
+	$headerlib->add_cssfile('lib/jquery/jquery-ui/themes/'.$prefs['feature_jquery_ui_theme'].'/jquery-ui.css');
+}
+
+$sections = array( 'global', 'wiki page', 'trackers', 'blogs', 'calendar', 'cms', 'faqs', 'newsletters', 'forums', 'maps', 'admin');
 
 if( isset($_REQUEST['section']) && in_array($_REQUEST['section'], $sections) ) {
 	$section = $_REQUEST['section'];
@@ -33,14 +47,6 @@ if( isset($_REQUEST['comments']) && $_REQUEST['comments'] == 'on') {
 	$comments = true;
 } else {
 	$comments = false;
-}
-
-$smarty->assign('view_mode', isset($_REQUEST['view_mode']) ? $_REQUEST['view_mode'] : '');
-
-if (!empty($_REQUEST['reset_all_custom_tools'])) {
-	$access->check_authenticity(tra('Are you sure you want to delete all your custom tools?'));
-	Toolbar::deleteAllCustomTools();
-	$access->redirect('tiki-admin_toolbars.php');
 }
 
 if( isset($_REQUEST['save'], $_REQUEST['pref']) ) {
@@ -64,8 +70,6 @@ if( isset($_REQUEST['reset_global']) && $section == 'global' ) {
 
 if ( !empty($_REQUEST['save_tool']) && !empty($_REQUEST['tool_name'])) {	// input from the tool edit form
 	Toolbar::saveTool($_REQUEST['tool_name'], $_REQUEST['tool_label'], $_REQUEST['tool_icon'], $_REQUEST['tool_token'], $_REQUEST['tool_syntax'], $_REQUEST['tool_type'], $_REQUEST['tool_plugin']);
-	require_once($smarty->_get_plugin_filepath('function', 'query'));
-	header('location: ?'. smarty_function_query(array('_urlencode'=>'n'), $smarty));
 }
 
 $current = $tikilib->get_preference( 'toolbar_' . $section . ($comments ? '_comments' : '') );
@@ -78,9 +82,12 @@ if (empty($current)) {
 $smarty->assign('not_default', false);
 if ($section == 'global') {
 	global $cachelib;
-	if( $defprefs = $cachelib->getSerialized("tiki_default_preferences_cache") ) {
-		if ($defprefs['toolbar_global' . ($comments ? '_comments' : '')] != $current) {
-			$smarty->assign('not_default', true);
+	if( isset($cachelib) && $cachelib->isCached("tiki_default_preferences_cache") ) {
+		$defprefs = unserialize( $cachelib->getCached("tiki_default_preferences_cache") );
+		if ( $defprefs !== false ) {
+			if ($defprefs['toolbar_global' . ($comments ? '_comments' : '')] != $current) {
+				$smarty->assign('not_default', true);
+			}
 		}
 	}
 }
@@ -134,9 +141,7 @@ foreach( $qtlist as $name ) {
 		continue;
 	}
 	$wys = strlen($tag->getWysiwygToken()) ? 'qt-wys' : '';
-	$test_html = $tag->getWikiHtml('');
-	$wiki = strlen($test_html) > 0 ? 'qt-wiki' : '';
-	$wiki = strpos($test_html, 'qt-sheet') !== false ? 'qt-sheet' : $wiki;
+	$wiki = strlen($tag->getWikiHtml('')) ? 'qt-wiki' : '';
 	$cust = Toolbar::isCustomTool($name) ? 'qt-custom' : '';
 	$avail = $tag->isAccessible() ? '' : 'qt-noaccess';
 	$icon = $tag->getIconHtml();
@@ -151,9 +156,8 @@ foreach( $qtlist as $name ) {
 			$qt_w_list[] = $name;
 		}
 	}
-	$label = htmlspecialchars($label);
 	$label .= '<input type="hidden" name="token" value="'.$tag->getWysiwygToken().'" />';
-	$label .= '<input type="hidden" name="syntax" value="' . htmlspecialchars($tag->getSyntax()) . '" />';
+	$label .= '<input type="hidden" name="syntax" value="'.$tag->getSyntax().'" />';
 	$label .= '<input type="hidden" name="type" value="'.$tag->getType().'" />';
 	if ($tag->getType() == 'Wikiplugin') {
 		$label .= '<input type="hidden" name="plugin" value="'.$tag->getPluginName().'" />';

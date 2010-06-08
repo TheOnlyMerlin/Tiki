@@ -1,11 +1,12 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 // $start_time = microtime(true);
+
+// $Id: /cvsroot/tikiwiki/tiki/comments.php,v 1.80.2.9 2008-02-28 12:56:33 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 
 // This file sets up the information needed to display
 // the comments preferences, post-comment box and the
@@ -192,16 +193,6 @@ if ( isset($_REQUEST['comments_objectId']) && $_REQUEST['comments_objectId'] == 
 				if (!empty($feedbacks)) {
 					$_SESSION['feedbacks'] = $feedbacks;
 				}
-
-				//Watches
-				if ( isset($forum_mode) && $forum_mode == 'y' && $prefs['feature_user_watches'] == 'y') {
-					if ( isset($_REQUEST['watch']) && $_REQUEST['watch'] == 'y') {
-						$tikilib->add_user_watch($user, 'forum_post_thread', $_REQUEST['comments_parentId'], 'forum topic', $forum_info['name'] . ':' . $thread_info['title'], "tiki-view_forum_thread.php?forumId=" . $_REQUEST['forumId'] . "&amp;comments_parentId=" . $_REQUEST['comments_parentId']);
-					} else {
-						$tikilib->remove_user_watch($user, 'forum_post_thread', $_REQUEST['comments_parentId'], 'forum topic');
-					}
-				}
-
 				header('location: ' . $url);
 				die;
 		}
@@ -225,9 +216,8 @@ if ( isset($_REQUEST['comments_objectId']) && $_REQUEST['comments_objectId'] == 
 						$nots[] = array("user"=>"", "hash"=>"", "email"=>$email);
 				}
 				foreach ($nots as $not) {
-					if ($prefs['wiki_watch_editor'] != 'y' && $not['user'] == $user) {
-						continue;
-					}
+					if ($prefs['wiki_watch_editor'] != 'y' && $not['user'] == $user)
+						break;
 					if (!$isBuilt) {
 						$isBuilt = true;
 						$smarty->assign('mail_page', $_REQUEST["page"]);
@@ -237,16 +227,16 @@ if ( isset($_REQUEST['comments_objectId']) && $_REQUEST['comments_objectId'] == 
 						$smarty->assign('mail_comment', $_REQUEST["comments_data"]);
 						$smarty->assign('watchId', $not['watchId']);
 						$foo = parse_url($_SERVER["REQUEST_URI"]);
-						$machine = $tikilib->httpPrefix( true ). dirname( $foo["path"] );
+						$machine = $tikilib->httpPrefix(). dirname( $foo["path"] );
 						$smarty->assign('mail_machine', $machine);
 						$parts = explode('/', $foo['path']);
 
 						if (count($parts) > 1)
 							unset ($parts[count($parts) - 1]);
 
-						$smarty->assign('mail_machine_raw', $tikilib->httpPrefix( true ). implode('/', $parts));
+						$smarty->assign('mail_machine_raw', $tikilib->httpPrefix(). implode('/', $parts));
 						// TODO: mail_machine_site may be required for some sef url with rewrite to sub-directory. To refine. (nkoth)  
-						$smarty->assign('mail_machine_site', $tikilib->httpPrefix( true ));
+						$smarty->assign('mail_machine_site', $tikilib->httpPrefix());
 						$mail = new TikiMail();
 					}
 					global $prefs;// TODO: optimise by grouping user by language
@@ -271,9 +261,24 @@ if ( isset($_REQUEST['comments_objectId']) && $_REQUEST['comments_objectId'] == 
 
 if (($tiki_p_vote_comments == 'y' && (!isset($forum_mode) || $forum_mode == 'n')) || ($tiki_p_forum_vote == 'y' && isset($forum_mode) && $forum_mode == 'y')) {
 	// Process a vote here
-	$smarty->assign( 'rating_is_enabled', 'y' );
-} else {
-	$smarty->assign( 'rating_is_enabled', 'n' );
+
+	if (isset($_REQUEST["comments_vote"]) && isset($_REQUEST["comments_threadId"])) {
+		if (!$user && !isset($_COOKIE['PHPSESSID'])) {
+			$smarty->assign_by_ref('msg',tra('For you to vote, cookies must be allowed'));
+			$smarty->display("error.tpl");
+			die;
+		}
+		$comments_show = 'y';
+
+		if (!$tikilib->user_has_voted($user, 'comment' . $_REQUEST["comments_threadId"])) {
+			$commentslib->vote_comment($_REQUEST["comments_threadId"], $user, $_REQUEST["comments_vote"]);
+
+			$tikilib->register_user_vote($user, 'comment' . $_REQUEST["comments_threadId"]);
+		}
+
+		$_REQUEST["comments_threadId"] = 0;
+		$smarty->assign('comments_threadId', 0);
+	}
 }
 
 // Comments Moderation
@@ -299,11 +304,16 @@ if ( $prefs['feature_comments_locking'] == 'y' && ! empty($_REQUEST['comments_lo
 if (($tiki_p_remove_comments == 'y' && (!isset($forum_mode) || $forum_mode == 'n'))
 		|| (isset($forum_mode) && $forum_mode =='y' && $tiki_p_admin_forum == 'y' ) ) {
 	if (isset($_REQUEST["comments_remove"]) && isset($_REQUEST["comments_threadId"])) {
-		$access->check_authenticity();
-		$comments_show = 'y';
-		$commentslib->remove_comment($_REQUEST["comments_threadId"]);
-		$_REQUEST["comments_threadId"] = 0;
-		$smarty->assign('comments_threadId', 0);
+		$area = 'delcomment';
+		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+			key_check($area);
+			$comments_show = 'y';
+			$commentslib->remove_comment($_REQUEST["comments_threadId"]);
+			$_REQUEST["comments_threadId"] = 0;
+			$smarty->assign('comments_threadId', 0);
+		} else {
+			key_get($area);
+		}
 	}
 }
 

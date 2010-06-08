@@ -1,15 +1,22 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_hotwords.php,v 1.21.2.2 2007-11-25 21:42:35 sylvieg Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/hotwords/hotwordlib.php');
-$access->check_feature('feature_hotwords');
-$access->check_permission('tiki_p_admin');
-
+if ($prefs['feature_hotwords'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled') . ': feature_hotwords');
+	$smarty->display('error.tpl');
+	die;
+}
+if ($tiki_p_admin != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra('You do not have permission to use this feature'));
+	$smarty->display('error.tpl');
+	die;
+}
 // Process the form to add a user here
 if (isset($_REQUEST["add"])) {
 	check_ticket('admin-hotwords');
@@ -21,8 +28,13 @@ if (isset($_REQUEST["add"])) {
 	$hotwordlib->add_hotword($_REQUEST["word"], $_REQUEST["url"]);
 }
 if (isset($_REQUEST["remove"]) && !empty($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$hotwordlib->remove_hotword($_REQUEST["remove"]);
+	$area = 'delhotword';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$hotwordlib->remove_hotword($_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 if (!isset($_REQUEST["sort_mode"])) {
 	$sort_mode = 'word_desc';

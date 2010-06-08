@@ -1,18 +1,27 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Header$
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 $section = 'forums';
 require_once ('tiki-setup.php');
 
-$access->check_feature('feature_forums');
+// Forums must be active
+if ($prefs['feature_forums'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_forums");
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 // forumId must be received
 if (!isset($_REQUEST["forumId"])) {
 	$smarty->assign('msg', tra("No forum indicated"));
+
 	$smarty->display("error.tpl");
 	die;
 }
@@ -31,20 +40,30 @@ $tikilib->get_perm_object($_REQUEST["forumId"], 'forum');
 if ($user) {
 	if ($forum_info["moderator"] == $user) {
 		$tiki_p_admin_forum = 'y';
+
 		$smarty->assign('tiki_p_admin_forum', 'y');
 	} elseif (in_array($forum_info['moderator_group'], $userlib->get_user_groups($user))) {
 		$tiki_p_admin_forum = 'y';
+
 		$smarty->assign('tiki_p_admin_forum', 'y');
 	}
 }
 
-$access->check_permission('tiki_p_admin_forum');
+// Must be admin to manipulate the queue
+if ($tiki_p_admin_forum != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 $smarty->assign_by_ref('forum_info', $forum_info);
 include_once ('tiki-section_options.php');
 
 if ($prefs['feature_theme_control'] == 'y') {
 	$cat_type = 'forum';
+
 	$cat_objid = $_REQUEST["forumId"];
 	include ('tiki-tc.php');
 }
@@ -112,7 +131,11 @@ $smarty->assign_by_ref('cant_pages', $items["cant"]);
 
 $smarty->assign_by_ref('items', $items["data"]);
 
+$topics = $commentslib->get_forum_topics($_REQUEST['forumId']);
+$smarty->assign_by_ref('topics', $topics);
 ask_ticket('forum-reported');
+
+include_once ('tiki-section_options.php');
 
 // Display the template
 $smarty->assign('mid', 'tiki-forums_reported.tpl');

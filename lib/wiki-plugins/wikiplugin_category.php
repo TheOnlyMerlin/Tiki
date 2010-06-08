@@ -1,11 +1,8 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 /*
+ * $Id: /cvsroot/tikiwiki/tiki/lib/wiki-plugins/wikiplugin_category.php,v 1.19 2007-10-12 07:55:48 nyloth Exp $
+ *
  * Tiki-Wiki CATEGORY plugin.
  * 
  * Syntax:
@@ -19,7 +16,8 @@
  *	one=>y|n		# when y displays one categoy per line
  * )}
  * {CATEGORY}
- */
+ * 
+  */
 function wikiplugin_category_help() {
 	return tra("Insert list of items with the current/given category in the wiki page").":<br />~np~{CATEGORY(id=1+2+3, types=article+blog+faq+fgal+forum+igal+newsletter+event+poll+quiz+survey+tracker+wiki+img, sort=[type|created|name|hits|shuffle]_[asc|desc], sub=y|n, split=|n, and=y|n)}{CATEGORY}~/np~";
 }
@@ -41,7 +39,7 @@ function wikiplugin_category_info() {
 			'types' => array(
 				'required' => false,
 				'name' => tra('Types'),
-				'description' => tra('List of object types to include in the list separated by plus signs. ex: article+blog+faq+fgal<br />+forum+igal+newsletter<br />+event+poll+quiz+survey<br />+tracker+wiki+img'),
+				'description' => tra('List of object types to include in the list separated by plus signs. ex: article+blog+faq+fgal+forum+igal+newsletter+event+poll+quiz+survey+tracker+wiki+img'),
 				'filter' => 'alpha'
 			),
 			'sort' => array(
@@ -89,27 +87,7 @@ function wikiplugin_category_info() {
 				'default' => 'y',
 				'filter' => 'alpha',
 			),
-			'one' => array(
-				'required' => false,
-				'name' => tra('Show one object per line'),
-				'description' => 'y|n',
-				'default' => 'n',
-				'filter' => 'alpha',
-			),		
-			'showlinks' => array(
-				'required' => false,
-				'name' => tra('Show children category links'),
-				'description' => 'y|n',
-				'default' => 'y',
-				'filter' => 'alpha',
-			),		
-			'categoryshowlink' => array(
-				'required' => false,
-				'name' => tra('Show top category link'),
-				'description' => 'y|n',
-				'default' => 'y',
-				'filter' => 'alpha',
-			),		
+		
 		),
 	);
 }
@@ -125,8 +103,6 @@ function wikiplugin_category($data, $params) {
 		return "<span class='warn'>" . tra("Categories are disabled"). "</span>";
 	}
 
-	$default = array('one' => 'n', 'showlinks' => 'y', 'categoryshowlink'=>'y');
-	$params = array_merge($default, $params);
 	extract ($params,EXTR_SKIP);
 
 	// TODO: use categ name instead of id (alternative)

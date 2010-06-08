@@ -1,10 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-view_forum.php,v 1.121.2.10 2008-03-10 18:04:42 sylvieg Exp $
 $section = 'forums';
 require_once ('tiki-setup.php');
 if ($prefs['feature_categories'] == 'y') {
@@ -16,9 +15,11 @@ if ($prefs['feature_categories'] == 'y') {
 if ($prefs['feature_freetags'] == 'y') {
 	include_once ('lib/freetag/freetaglib.php');
 }
-
-$access->check_feature('feature_forums');
-
+if ($prefs['feature_forums'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_forums");
+	$smarty->display("error.tpl");
+	die;
+}
 $auto_query_args = array(
 	'forumId',
 	'comment_threadId',
@@ -31,6 +32,20 @@ $auto_query_args = array(
 	'filter_type',
 	'reply_state'
 );
+// the following code is needed to pass $_REQUEST variables that are not passed as URL parameters
+$phpself = $_SERVER['PHP_SELF'];
+if (isset($_POST['daconfirm']) && !empty($_SESSION["requestvars_$phpself"])) {
+	if (!empty($_REQUEST['ticket'])) {
+		$ticket = $_REQUEST['ticket'];
+	} else {
+		// even if there is no ticket, let tikiticketlib handle it
+		$ticket = NULL;
+	}
+	$_REQUEST = $_SESSION["requestvars_$phpself"];
+	$_REQUEST['ticket'] = $ticket;
+	unset($ticket);
+	unset($_SESSION["requestvars_$phpself"]);
+}
 include_once ("lib/commentslib.php");
 $commentslib = new Comments($dbTiki);
 if (!isset($_REQUEST["forumId"]) || !($forum_info = $commentslib->get_forum($_REQUEST["forumId"]))) {
@@ -70,9 +85,12 @@ if ($tiki_p_admin_forum != 'y' && $user) {
 		$smarty->assign('tiki_p_forum_post_topic', 'y');
 	}
 }
-
-$access->check_permission( array('tiki_p_forum_read') );
-
+if ($tiki_p_admin_forum != 'y' && $tiki_p_forum_read != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 $commentslib->forum_add_hit($_REQUEST["forumId"]);
 if (isset($_REQUEST['report']) && $tiki_p_forums_report == 'y') {
 	check_ticket('view-forum');
@@ -80,8 +98,29 @@ if (isset($_REQUEST['report']) && $tiki_p_forums_report == 'y') {
 }
 if ($tiki_p_admin_forum == 'y') {
 	if (isset($_REQUEST['remove_attachment'])) {
-		$access->check_authenticity();
-		$commentslib->remove_thread_attachment($_REQUEST['remove_attachment']);
+		$area = 'delforumattach';
+		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+			key_check($area);
+			$commentslib->remove_thread_attachment($_REQUEST['remove_attachment']);
+		} else {
+			key_get($area);
+		}
+	}
+	if (isset($_REQUEST['delsel_x'])) {
+		$area = 'delforumtopics';
+		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+			key_check($area);
+			if (isset($_REQUEST['forumtopic'])) {
+				foreach(array_values($_REQUEST['forumtopic']) as $topic) {
+					$commentslib->remove_comment($topic);
+					$commentslib->register_remove_post($_REQUEST['forumId'], 0);
+				}
+			}
+		} else {
+			// this SESSION var passes the current REQUEST variables since they are not passed by URL
+			$_SESSION["requestvars_$phpself"] = $_REQUEST;
+			key_get($area);
+		}
 	}
 	if (isset($_REQUEST['lock']) && isset($_REQUEST['forumId'])) {
 		check_ticket('view-forum');
@@ -200,8 +239,9 @@ if ($tiki_p_admin_forum == 'y' || $tiki_p_forum_vote == 'y') {
 	if (isset($_REQUEST["comments_vote"]) && isset($_REQUEST["comments_threadId"])) {
 		check_ticket('view-forum');
 		$comments_show = 'y';
-		if( $tikilib->register_user_vote($user, 'comment' . $_REQUEST["comments_threadId"], $_REQUEST['comments_vote'], range( 1, 5 ) ) ) {
+		if (!$tikilib->user_has_voted($user, 'comment' . $_REQUEST["comments_threadId"])) {
 			$commentslib->vote_comment($_REQUEST["comments_threadId"], $user, $_REQUEST["comments_vote"]);
+			$tikilib->register_user_vote($user, 'comment' . $_REQUEST["comments_threadId"]);
 		}
 		$_REQUEST["comments_threadId"] = 0;
 		$smarty->assign('comments_threadId', 0);
@@ -213,10 +253,15 @@ if ($user) {
 }
 if (isset($_REQUEST["comments_remove"]) && isset($_REQUEST["comments_threadId"])) {
 	if ($tiki_p_admin_forum == 'y' || ($commentslib->user_can_edit_post($user, $_REQUEST["comments_threadId"]) && $tiki_p_forum_post_topic == 'y')) {
-		$access->check_authenticity();
-		$comments_show = 'y';
-		$commentslib->remove_comment($_REQUEST["comments_threadId"]);
-		$commentslib->register_remove_post($_REQUEST["forumId"], 0);
+		$area = 'delforumcomm';
+		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+			key_check($area);
+			$comments_show = 'y';
+			$commentslib->remove_comment($_REQUEST["comments_threadId"]);
+			$commentslib->register_remove_post($_REQUEST["forumId"], 0);
+		} else {
+			key_get($area);
+		}
 	} else { // user can't edit this post
 		$smarty->assign('msg', tra('You are not permitted to remove someone else\'s post!'));
 		$smarty->assign('errortype', 'no_redirect_login');
@@ -295,10 +340,11 @@ if (!isset($_REQUEST['filter_type'])) $type_param = '';
 else $type_param = $_REQUEST['filter_type'];
 if (!isset($_REQUEST['reply_state'])) $reply_state = '';
 else $reply_state = $_REQUEST['reply_state'];
-$comments_coms = $commentslib->get_forum_topics($_REQUEST['forumId'], $comments_offset, $_REQUEST['comments_per_page'], $_REQUEST['thread_sort_mode'], $view_archived_topics, $user_param, $type_param, $reply_state, $forum_info);
-$comments_cant = $commentslib->count_forum_topics($_REQUEST['forumId'], $comments_offset, $_REQUEST['comments_per_page'], $_REQUEST['thread_sort_mode'], $view_archived_topics, $user_param, $type_param, $reply_state);
+$comments_coms = $commentslib->get_forum_topics($_REQUEST['forumId'], $comments_offset, $_REQUEST['comments_per_page'], $_REQUEST['thread_sort_mode'], $view_archived_topics, $user_param, $type_param, $reply_state);
+// Get the last "n" comments to this forum
 $last_comments = $commentslib->get_last_forum_posts($_REQUEST['forumId'], $forum_info['forum_last_n']);
 $smarty->assign_by_ref('last_comments', $last_comments);
+$comments_cant = $commentslib->count_comments_threads($comments_objectId);
 $smarty->assign('comments_cant', $comments_cant);
 $comments_maxRecords = $_REQUEST["comments_per_page"];
 $smarty->assign_by_ref('comments_coms', $comments_coms);

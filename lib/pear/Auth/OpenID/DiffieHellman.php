@@ -16,6 +16,7 @@
 
 require_once 'Auth/OpenID.php';
 require_once 'Auth/OpenID/BigMath.php';
+require_once 'Auth/OpenID/HMACSHA1.php';
 
 function Auth_OpenID_getDefaultMod()
 {
@@ -51,9 +52,9 @@ class Auth_OpenID_DiffieHellman {
                                        $private = null, $lib = null)
     {
         if ($lib === null) {
-            $this->lib = Auth_OpenID_getMathLib();
+            $this->lib =& Auth_OpenID_getMathLib();
         } else {
-            $this->lib = $lib;
+            $this->lib =& $lib;
         }
 
         if ($mod === null) {
@@ -109,5 +110,3 @@ class Auth_OpenID_DiffieHellman {
         return $xsecret;
     }
 }
-
-

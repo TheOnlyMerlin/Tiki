@@ -1,10 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: outputfilter.highlight.php,v 1.21 2007-10-12 07:55:47 nyloth Exp $
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 	header("location: index.php");
@@ -27,9 +22,6 @@ function smarty_outputfilter_highlight($source, &$smarty) {
 	global $prefs;
 
 	if (empty($_REQUEST['highlight'])) {
-		return $source;
-	}
-	if (!strstr($source, 'id="tiki-center"')) {
 		return $source;
 	}
 	$highlight = $_REQUEST['highlight'];
@@ -55,8 +47,8 @@ function smarty_outputfilter_highlight($source, &$smarty) {
 	$matches = array();
 
 	$end = 0;
-	if ( $end = strrpos($source, 'id="col2"') ) $stop_pattern = '(<div[^>]*\s+id="col2".*)';
-	elseif ( $end = strrpos($source, 'id="col3"') ) $stop_pattern = '(<div[^>]*\s+id="col3".*)';
+	if ( $end = strrpos($source, 'id="col3"') ) $stop_pattern = '(<div[^>]*\s+id="col3".*)';
+	elseif ( $end = strrpos($source, 'id="col2"') ) $stop_pattern = '(<div[^>]*\s+id="col2".*)';
 	else $stop_pattern = '';
 
 	$result = false;

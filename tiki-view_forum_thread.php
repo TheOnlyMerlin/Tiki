@@ -1,34 +1,15 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-view_forum_thread.php,v 1.96.2.7 2008-01-29 02:58:11 nkoth Exp $
 $section = 'forums';
 require_once ('tiki-setup.php');
-
-$access->check_feature('feature_forums');
-
-include_once ("lib/commentslib.php");
-$commentslib = new Comments($dbTiki);
-if (!isset($_REQUEST['comments_parentId']) && isset($_REQUEST['threadId'])) {
-	$_REQUEST['comments_parentId'] = $_REQUEST['threadId'];
-}
-if (!isset($_REQUEST['comments_parentId'])) {
-	$smarty->assign('msg', tra("No thread indicated"));
+if ($prefs['feature_forums'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_forums");
 	$smarty->display("error.tpl");
 	die;
-}
-
-if (empty($_REQUEST['forumId'])) {
-	$thread_info = $commentslib->get_comment($_REQUEST['comments_parentId']);
-	if (empty($thread_info['object']) || $thread_info['objectType'] != 'forum') {
-		$smarty->assign('msg', tra('Incorrect thread'));
-		$smarty->display('error.tpl');
-		die;
-	}
-	$_REQUEST['forumId'] = $thread_info['object'];
 }
 
 require_once 'lib/cache/pagecache.php';
@@ -45,6 +26,28 @@ $pageCache = Tiki_PageCache::create()
 	) )
 	->applyCache();
 
+if ($prefs['feature_categories'] == 'y') {
+	global $categlib;
+	if (!is_object($categlib)) {
+		include_once('lib/categories/categlib.php');
+	}
+}
+include_once ("lib/commentslib.php");
+$commentslib = new Comments($dbTiki);
+if (!isset($_REQUEST['comments_parentId'])) {
+	$smarty->assign('msg', tra("No thread indicated"));
+	$smarty->display("error.tpl");
+	die;
+}
+if (empty($_REQUEST['forumId'])) {
+	$thread_info = $commentslib->get_comment($_REQUEST['comments_parentId']);
+	if (empty($thread_info['object']) || $thread_info['objectType'] != 'forum') {
+		$smarty->assign('msg', tra('Incorrect thread'));
+		$smarty->display('error.tpl');
+		die;
+	}
+	$_REQUEST['forumId'] = $thread_info['object'];
+}
 if ($prefs['feature_categories'] == 'y') {
 	global $categlib; include_once ('lib/categories/categlib.php');
 }
@@ -118,9 +121,12 @@ if ($tiki_p_admin_forum == 'y') {
 	$tiki_p_forum_post_topic = 'y';
 	$smarty->assign('tiki_p_forum_post_topic', 'y');
 }
-
-$access->check_permission( array('tiki_p_forum_read') );
-
+if ($tiki_p_admin_forum != 'y' && $tiki_p_forum_read != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 $smarty->assign('topics_next_offset', $_REQUEST['topics_offset'] + 1);
 $smarty->assign('topics_prev_offset', $_REQUEST['topics_offset'] - 1);
 //$end_time = microtime(true);
@@ -151,8 +157,13 @@ if ($tiki_p_admin_forum == 'y') {
 		}
 	}
 	if (isset($_REQUEST['remove_attachment'])) {
-		$access->check_authenticity();
-		$commentslib->remove_thread_attachment($_REQUEST['remove_attachment']);
+		$area = 'delforumattach';
+		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+			key_check($area);
+			$commentslib->remove_thread_attachment($_REQUEST['remove_attachment']);
+		} else {
+			key_get($area);
+		}
 	}
 	if (isset($_REQUEST['movesel'])) {
 		if (isset($_REQUEST['forumthread'])) {
@@ -308,6 +319,7 @@ if ($prefs['feature_mobile'] == 'y' && isset($_REQUEST['mode']) && $_REQUEST['mo
 	HAWTIKI_view_forum_thread($forum_info['name'], $thread_info, $tiki_p_forum_read);
 }
 if ($prefs['feature_actionlog'] == 'y') {
+	include_once ('lib/logs/logslib.php');
 	$logslib->add_action('Viewed', $_REQUEST['forumId'], 'forum', 'comments_parentId=' . $comments_parentId);
 }
 ask_ticket('view-forum');
@@ -317,16 +329,6 @@ if ($prefs['feature_forum_parse'] == 'y') {
 	$plugins = $wikilib->list_plugins(true, 'editpost2');
 	$smarty->assign_by_ref('plugins', $plugins);
 }
-if (!empty($_REQUEST['view_atts']) && $_REQUEST['view_atts'] == 'y') {
-	$fa_offset = isset($_REQUEST['fa_offset'])? $_REQUEST['fa_offset']:0;
-	$fa_maxRecords = isset($_REQUEST['fa_maxRecords'])? $_REQUEST['fa_maxRecords']:$prefs['maxRecords'];
-	$atts = $commentslib->get_all_thread_attachments($_REQUEST['comments_parentId'], $fa_offset, $fa_maxRecords);
-	$atts['offset'] = $fa_offset;
-	$atts['maxRecords'] = $fa_maxRecords;
-	$smarty->assign_by_ref('atts', $atts);
-	$smarty->assign_by_ref('view_atts', $_REQUEST['view_atts']);
-}
-
 // Display the template
 if (isset($_REQUEST['display'])) {
 	// Remove icons and actions that should not be printed

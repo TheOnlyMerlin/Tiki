@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
@@ -84,7 +78,6 @@ function module_articles_info() {
 
 function module_articles( $mod_reference, $module_params ) {
 	global $smarty, $tikilib, $user;
-	global $artlib; require_once 'lib/articles/artlib.php';
 	
 	$urlParams = array(
 		'topicId' => 'topic',
@@ -108,7 +101,7 @@ function module_articles( $mod_reference, $module_params ) {
 	$smarty->assign('min_rating', $min_rating);
 	$smarty->assign('max_rating', $max_rating);
 	
-	$ranking = $artlib->list_articles($start, $mod_reference['rows'], $sort, '', '', '', $user, $type, $topicId, 'y', $topic, $categId, '', '', $langfilter, $min_rating, $max_rating);
+	$ranking = $tikilib->list_articles($start, $mod_reference['rows'], $sort, '', '', '', $user, $type, $topicId, 'y', $topic, $categId, '', '', $langfilter, $min_rating, $max_rating);
 	
 	$smarty->assign_by_ref('urlParams', $urlParams);
 	$smarty->assign('modArticles', $ranking["data"]);

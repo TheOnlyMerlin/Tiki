@@ -1,9 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
-// 
+// $Id: /cvsroot/tikiwiki/tiki/tiki-wiki_rss.php,v 1.43.2.2 2008-01-17 17:52:22 sylvieg Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once ('tiki-setup.php');
 require_once ('lib/tikilib.php');
@@ -11,14 +11,18 @@ require_once ('lib/wiki/histlib.php');
 require_once('lib/wiki/wikilib.php');
 require_once ('lib/rss/rsslib.php'); 
 
-$access->check_feature('feature_wiki');
+if ($prefs['feature_wiki'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_wiki");
+	$smarty->display("error.tpl");
+	die;
+}
 
 if ($prefs['rss_wiki'] != 'y') {
 	$errmsg=tra("rss feed disabled");
 	require_once ('tiki-rss_error.php');
 }
 
-$res=$access->authorize_rss(array('tiki_p_view', 'tiki_p_wiki_view_ref'));
+$res=$access->authorize_rss(array('tiki_p_view'));
 if($res) {
    if($res['header'] == 'y') {
       header('WWW-Authenticate: Basic realm="'.$tikidomain.'"');
@@ -48,16 +52,9 @@ if ($output["data"]=="EMPTY") {
 	}
 	$param = "previous";
 	
-	$changes = $tikilib -> list_pages(0, $prefs['max_rss_wiki'], 'lastModif_desc', '', '', true, false, false, false, '', false, 'y');
+	$changes = $tikilib -> list_pages(0, $prefs['max_rss_wiki'], 'lastModif_desc');
 	$tmp = array();
 	foreach ($changes["data"] as $data) {
-		$result = '';
-		if ($tiki_p_view != 'y') {
-			$data['sefurl'] = $wikilib->sefurl($data['pageName']);
-			unset($data['data']);
-			$tmp[] = $data;
-			continue;
-		}
 		// get last 2 versions of the page and parse them
 		$curr_page = $tikilib->get_page_info($data["pageName"]);
 		$pageversion = (int)$histlib->get_page_latest_version($data["pageName"]);
@@ -76,21 +73,23 @@ if ($output["data"]=="EMPTY") {
 		require_once('lib/diff/difflib.php');
 		$diff = diff2($prev_page_p , $curr_page_p, "unidiff");
 	
+		$result = "<style TYPE=\"text/css\"> .diffchar { color:red; } </style>";
 		
 		foreach ($diff as $part) {
 			if ($part["type"]=="diffdeleted") {
 				foreach ($part["data"] as $chunk) {
-					$result.="<blockquote>- $chunk</blockquote>";
+					$result.="- ".$chunk;
 				}
 			}
 			if ($part["type"]=="diffadded") {
 				foreach ($part["data"] as $chunk) {
-					$result.="<blockquote>+ $chunk</blockquote>";
+					$result.="+ ".$chunk;
 				}
 			}
 		}
 		
 		$data["$descId"] = $result;
+		$data['sefurl'] = $wikilib->sefurl($data['pageName']);
 	
 		// hand over the version of the second page
 		$data["$param"] = $prev_page["version"];

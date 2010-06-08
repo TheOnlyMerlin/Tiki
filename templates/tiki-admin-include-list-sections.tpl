@@ -1,6 +1,6 @@
 {* $Id$ *}
 {*
- * If you want to change this page, check http://tikiwiki.org/tiki-index.php?page=AdministrationDev
+ * If you want to change this page, check http://www.tikiwiki.org/tiki-index.php?page=AdministrationDev
  * there you"ll find attached a gimp image containing this page with icons in separated layers
  *}
 
@@ -13,7 +13,7 @@
 
 	{self_link page="features" _class="admbox" _style="background-image: url('pics/large/boot48x48.png')" _title="{tr}Features{/tr}"}<span>{tr}Features{/tr}</span>{/self_link}
 
-	{self_link page="login" _class="admbox" _style="background-image: url('pics/large/stock_quit48x48.png')" _title="{tr}Log in{/tr}"}<span>{tr}Log in{/tr}</span>{/self_link}
+	{self_link page="login" _class="admbox" _style="background-image: url('pics/large/stock_quit48x48.png')" _title="{tr}Login{/tr}"}<span>{tr}Login{/tr}</span>{/self_link}
 
 	{self_link page="community" _class="admbox" _style="background-image: url('pics/large/users48x48.png')" _title="{tr}Community{/tr}"}<span>{tr}Community{/tr}</span>{/self_link}
 
@@ -71,6 +71,8 @@
 	
 	{self_link page="gmap" _class="admbox" _style="background-image: url('pics/large/google_maps48x48.png')" _selected="'`$prefs.feature_gmap`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Google Maps{/tr}" title="{tr}Google Maps{/tr}{if $prefs.feature_gmap ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Google Maps{/tr}</span>{/self_link}
 
+	{self_link page="multimedia" _class="admbox" _style="background-image: url('pics/large/multimedia48x48.png')" _selected="'`$prefs.feature_multimedia`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Multimedia{/tr}" title="{tr}Multimedia{/tr}{if $prefs.feature_multimedia ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Multimedia{/tr}</span>{/self_link}
+
 	{self_link page="copyright" _class="admbox" _style="background-image: url('pics/large/copyright48x48.png')" _selected="'`$prefs.feature_copyright`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Copyright{/tr}" title="{tr}Copyright{/tr}{if $prefs.feature_copyright ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Copyright{/tr}</span>{/self_link}
 
 	{self_link page="messages" _class="admbox" _style="background-image: url('pics/large/messages48x48.png')" _selected="'`$prefs.feature_messages`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Messages{/tr}" title="{tr}Messages{/tr}{if $prefs.feature_messages ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Messages{/tr}</span>{/self_link}
@@ -92,9 +94,4 @@
 	{self_link page="sefurl" _class="admbox" _style="background-image: url('pics/large/goto48x48.png')" _selected="'`$prefs.feature_sefurl`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Search engine friendly url{/tr}" title="{tr}Search engine friendly url{/tr}{if $prefs.feature_sefurl ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Search engine friendly url{/tr}</span>{/self_link}
 
 	{self_link page="kaltura" _class="admbox" _style="background-image: url('pics/large/kaltura48x48.png')" _selected="'`$prefs.feature_kaltura`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Kaltura{/tr}" title="{tr}Kaltura{/tr}{if $prefs.feature_kaltura ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Kaltura{/tr}</span>{/self_link}
-
-	{self_link page="payment" _class="admbox" _style="background-image: url('pics/large/payment48x48.png')" _selected="'`$prefs.payment_feature`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Payment{/tr}" title="{tr}Payment{/tr}{if $prefs.payment_feature ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Payment{/tr}</span>{/self_link}
-
-	{self_link page="socialnetworks" _class="admbox" _style="background-image: url('img/mytiki/socialnetworks_32.png')" _selected="'`$prefs.feature_socialnetworks`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Social Networks{/tr}" title="{tr}Social networks{/tr}{if $prefs.feature_socialnetworks ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Social networks{/tr}</span>{/self_link}
-
 </div>

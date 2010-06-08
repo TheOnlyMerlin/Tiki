@@ -1,2 +1,2 @@
 {* $Id$ *}
-<div class="clearfix" id="header-top">
+<div id="header-top">

@@ -1,51 +1,39 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_categories.php,v 1.51.2.3 2008-03-19 17:01:02 luciash Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/categories/categlib.php');
+include_once ('lib/filegals/filegallib.php');
+include_once ('lib/polls/polllib.php');
 include_once ('lib/tree/categ_admin_tree.php');
-
-$access->check_feature('feature_categories');
-$access->check_permission('tiki_p_admin_categories');
-
-// Check for parent category or set to 0 if not present
-if (!empty($_REQUEST['parentId']) && !($info = $categlib->get_category($_REQUEST['parentId']))) {
-	$smarty->assign('msg', 'Incorrect param'.' parentId');
-	$smarty->display('error.tpl');
+include_once ('lib/directory/dirlib.php');
+include_once ('lib/trackers/trackerlib.php');
+include_once ('lib/commentslib.php');
+if (!isset($polllib)) {
+	$polllib = new PollLib;
+}
+if (!isset($commentslib)) {
+	$commentslib = new Comments($dbTiki);
+}
+if ($prefs['feature_categories'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_categories");
+	$smarty->display("error.tpl");
 	die;
-}	
-
+}
+if ($tiki_p_admin_categories != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
+// Check for parent category or set to 0 if not present
 if (!isset($_REQUEST["parentId"])) {
 	$_REQUEST["parentId"] = 0;
 }
 $smarty->assign('parentId', $_REQUEST["parentId"]);
-
-if (!empty($_REQUEST['unassign'])) {
-	$access->check_authenticity(tra('Are you sure you want to unassign the objects of this category: ') . htmlspecialchars($info['name']));
-	$categlib->unassign_all_objects($_REQUEST['parentId']);
-}
-if (!empty($_REQUEST['move_to']) && !empty($_REQUEST['toId'])) {
-	check_ticket('admin-categories');
-	if (!$categlib->get_category($_REQUEST['toId'])) {
-		$smarty->assign('msg', 'Incorrect param'.' toId');
-		$smarty->display('error.tpl');
-		die;
-	}
-	$categlib->move_all_objects($_REQUEST['parentId'], $_REQUEST['toId']);
-}
-if (!empty($_REQUEST['copy_from']) && !empty($_REQUEST['to'])) {
-	check_ticket('admin-categories');
-	if (!$categlib->get_category($_REQUEST['to'])) {
-		$smarty->assign('msg', 'Incorrect param'.' fromId');
-		$smarty->display('error.tpl');
-		die;
-	}
-	$categlib->assign_all_objects($_REQUEST['parentId'], $_REQUEST['to']);
-}
 if (isset($_REQUEST["addpage"]) && $_REQUEST["parentId"] != 0) {
 	check_ticket('admin-categories');
 	// Here we categorize a page
@@ -156,28 +144,39 @@ if (isset($_REQUEST["categId"])) {
 	$info["description"] = '';
 }
 if (isset($_REQUEST["removeObject"])) {
-	$access->check_authenticity();
-	$category = $categlib->get_category($_REQUEST["parentId"]);
-	$categorizedObject = $categlib->get_categorized_object_via_category_object_id($_REQUEST["removeObject"]);
-	$categlib->remove_object_from_category($_REQUEST["removeObject"], $_REQUEST["parentId"]);
-	// Notify the users watching this category.
-	$values = array(
-		"categoryId" => $_REQUEST["parentId"],
-		"categoryName" => $category['name'],
-		"categoryPath" => $categlib->get_category_path_string_with_root($_REQUEST["parentId"]) ,
-		"description" => $category['description'],
-		"parentId" => $category['parentId'],
-		"parentName" => $categlib->get_category_name($category['parentId']) ,
-		"action" => "object leaved category",
-		"objectName" => $categorizedObject['name'],
-		"objectType" => $categorizedObject['type'],
-		"objectUrl" => $categorizedObject['href']
-	);
-	$categlib->notify($values);
+	$area = 'delcategobject';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$category = $categlib->get_category($_REQUEST["parentId"]);
+		$categorizedObject = $categlib->get_categorized_object_via_category_object_id($_REQUEST["removeObject"]);
+		$categlib->remove_object_from_category($_REQUEST["removeObject"], $_REQUEST["parentId"]);
+		// Notify the users watching this category.
+		$values = array(
+			"categoryId" => $_REQUEST["parentId"],
+			"categoryName" => $category['name'],
+			"categoryPath" => $categlib->get_category_path_string_with_root($_REQUEST["parentId"]) ,
+			"description" => $category['description'],
+			"parentId" => $category['parentId'],
+			"parentName" => $categlib->get_category_name($category['parentId']) ,
+			"action" => "object leaved category",
+			"objectName" => $categorizedObject['name'],
+			"objectType" => $categorizedObject['type'],
+			"objectUrl" => $categorizedObject['href']
+		);
+		$categlib->notify($values);
+	} else {
+		key_get($area);
+	}
 }
 if (isset($_REQUEST["removeCat"]) && ($info = $categlib->get_category($_REQUEST['removeCat']))) {
-	$access->check_authenticity(tra('Click here to delete the category:') . ' ' . htmlspecialchars($info['name']));
-	$categlib->remove_category($_REQUEST["removeCat"]);
+	$area = "delcateg";
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$categlib->remove_category($_REQUEST["removeCat"]);
+	} else {
+		$confirmation = tra('Click here to delete the category:') . ' ' . $info['name'];
+		key_get($area, $confirmation);
+	}
 }
 if (isset($_REQUEST["save"]) && isset($_REQUEST["name"]) && strlen($_REQUEST["name"]) > 0) {
 	check_ticket('admin-categories');
@@ -296,7 +295,7 @@ if (!isset($_REQUEST["offset"])) {
 } else {
 	$offset = $_REQUEST["offset"];
 }
-$smarty->assign('offset', $offset);
+$smarty->assign_by_ref('offset', $offset);
 if (isset($_REQUEST["find"])) {
 	$find = $_REQUEST["find"];
 } else {
@@ -308,103 +307,36 @@ if (isset($_REQUEST["find_objects"])) {
 } else {
 	$find_objects = '';
 }
-
-function admin_categ_assign( &$max, $data_key, $data = null ) {
-	global $smarty;
-
-	if( is_null( $data ) ) {
-		$data = array( 'data' => array(), 'cant' => 0 );
-	}
-
-	$smarty->assign( $data_key, $data['data'] );
-	$smarty->assign( 'cant_' . $data_key, $data['cant'] );
-
-	$max = max( $max, $data['cant'] );
-}
-
-$articles = $galleries = $file_galleries = $forums = $polls = $blogs = $pages = $faqs = $quizzes = $trackers = $directories = $objects = null;
-
-$maxRecords = $prefs['maxRecords'];
-
 $smarty->assign('find_objects', $find_objects);
-$smarty->assign('sort_mode', $sort_mode);
-$smarty->assign('find', $find);
-
+$smarty->assign_by_ref('sort_mode', $sort_mode);
+$smarty->assign_by_ref('find', $find);
 $objects = $categlib->list_category_objects($_REQUEST["parentId"], $offset, $maxRecords, $sort_mode, '', $find, false);
-
-if( $prefs['feature_galleries'] == 'y' ) {
-	$galleries = $tikilib->list_galleries($offset, $maxRecords, 'name_desc', 'admin', $find_objects);
-}
-
-if( $prefs['feature_file_galleries'] == 'y' ) {
-	include_once ('lib/filegals/filegallib.php');
-	$file_galleries = $filegallib->list_file_galleries($offset, $maxRecords, 'name_desc', 'admin', $find_objects, $prefs['fgal_root_id']);
-}
-
-if( $prefs['feature_forums'] == 'y' ) {
-	include_once ('lib/commentslib.php');
-	if (!isset($commentslib)) {
-		$commentslib = new Comments($dbTiki);
-	}
-	$forums = $commentslib->list_forums($offset, $maxRecords, 'name_asc', $find_objects);
-}
-
-if( $prefs['feature_polls'] == 'y' ) {
-	include_once ('lib/polls/polllib.php');
-	$polls = $polllib->list_polls($offset, $maxRecords, 'title_asc', $find_objects);
-}
-
-if( $prefs['feature_blogs'] == 'y' ) {
-	$blogs = $tikilib->list_blogs($offset, $maxRecords, 'title_asc', $find_objects);
-}
-
-if( $prefs['feature_wiki'] == 'y' ) {
-	$pages = $tikilib->list_pageNames($offset, $maxRecords, 'pageName_asc', $find_objects);
-}
-
-if( $prefs['feature_faqs'] == 'y' ) {
-	$faqs = $tikilib->list_faqs($offset, $maxRecords, 'title_asc', $find_objects);
-}
-
-if( $prefs['feature_quizzes'] == 'y' ) {
-	$quizzes = $tikilib->list_quizzes($offset, $maxRecords, 'name_asc', $find_objects);
-}
-
-if( $prefs['feature_trackers'] == 'y' ) {
-	include_once ('lib/trackers/trackerlib.php');
-	$trackers = $trklib->list_trackers($offset, $maxRecords, 'name_asc', $find_objects);
-}
-
-if( $prefs['feature_articles'] == 'y' ) {
-	global $artlib; require_once 'lib/articles/artlib.php';
-	$articles = $artlib->list_articles($offset, $maxRecords, 'title_asc', $find_objects, '', '', $user, '', '', 'n');
-}
-
-if( $prefs['feature_directory'] == 'y' ) {
-	include_once ('lib/directory/dirlib.php');
-	$directories = $dirlib->dir_list_all_categories($offset, $maxRecords, 'name_asc', $find_objects);
-}
-
-$maximum = 0;
-admin_categ_assign( $maximum, 'objects', $objects );
-admin_categ_assign( $maximum, 'galleries', $galleries );
-admin_categ_assign( $maximum, 'file_galleries', $file_galleries );
-admin_categ_assign( $maximum, 'forums', $forums );
-admin_categ_assign( $maximum, 'polls', $polls );
-admin_categ_assign( $maximum, 'blogs', $blogs );
-admin_categ_assign( $maximum, 'pages', $pages );
-admin_categ_assign( $maximum, 'faqs', $faqs );
-admin_categ_assign( $maximum, 'quizzes', $quizzes );
-admin_categ_assign( $maximum, 'trackers', $trackers );
-admin_categ_assign( $maximum, 'articles', $articles );
-admin_categ_assign( $maximum, 'directories', $directories );
-
-$smarty->assign( 'maxRecords', $maxRecords );
-$smarty->assign( 'offset', $offset );
-$smarty->assign( 'maximum', $maximum );
-
+$smarty->assign_by_ref('objects', $objects["data"]);
+$smarty->assign_by_ref('cant_pages', $objects["cant"]);
+$galleries = $tikilib->list_galleries(0, -1, 'name_desc', 'admin', $find_objects);
+$smarty->assign_by_ref('galleries', $galleries["data"]);
+$file_galleries = $filegallib->list_file_galleries(0, -1, 'name_desc', 'admin', $find_objects, $prefs['fgal_root_id']);
+$smarty->assign_by_ref('file_galleries', $file_galleries["data"]);
+$forums = $commentslib->list_forums(0, -1, 'name_asc', $find_objects);
+$smarty->assign_by_ref('forums', $forums["data"]);
+$polls = $polllib->list_polls(0, -1, 'title_asc', $find_objects);
+$smarty->assign_by_ref('polls', $polls["data"]);
+$blogs = $tikilib->list_blogs(0, -1, 'title_asc', $find_objects);
+$smarty->assign_by_ref('blogs', $blogs["data"]);
+$pages = $tikilib->list_pageNames(0, -1, 'pageName_asc', $find_objects);
+$smarty->assign_by_ref('pages', $pages["data"]);
+$faqs = $tikilib->list_faqs(0, -1, 'title_asc', $find_objects);
+$smarty->assign_by_ref('faqs', $faqs["data"]);
+$quizzes = $tikilib->list_quizzes(0, -1, 'name_asc', $find_objects);
+$smarty->assign_by_ref('quizzes', $quizzes["data"]);
+$trackers = $trklib->list_trackers(0, -1, 'name_asc', $find_objects);
+$smarty->assign_by_ref('trackers', $trackers["data"]);
+$articles = $tikilib->list_articles(0, -1, 'title_asc', $find_objects, '', '', $user, '', '', 'n');
+$smarty->assign_by_ref('articles', $articles["data"]);
+$directories = $dirlib->dir_list_all_categories(0, -1, 'name_asc', $find_objects);
+$smarty->assign_by_ref('directories', $directories["data"]);
 ask_ticket('admin-categories');
-if (!empty($errors)) $smarty->assign('errors', $errors);
+if (!empty($errors)) $smarty->assign_by_ref('errors', $errors);
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the template

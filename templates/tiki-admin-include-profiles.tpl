@@ -1,5 +1,6 @@
 {* $Id$ *}
-{jq notonready=true}
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
 var baseURI = '{$smarty.server.REQUEST_URI}';
 {literal}
 function refreshCache( entry ) { // {{{
@@ -68,16 +69,45 @@ function showDetails( id, domain, profile ) { // {{{
 
 				row.appendChild( cell );
 				cell.colSpan = 3;
-				
-				if( data.installable || data.already ) {
-				
+
+				if( data.already )
+				{
+					var p = document.createElement( 'p' );
+					p.innerHTML = "A version of this profile is already applied.";
+					p.style.fontWeight = 'bold';
+					cell.appendChild(p);
+
+					var form = document.createElement( 'form' );
+					var p = document.createElement('p');
+					var submit = document.createElement('input');
+					var pd = document.createElement('input');
+					var pp = document.createElement('input');
+					form.method = 'post';
+					form.action = document.location.href;
+
+					form.appendChild(p);
+					submit.type = 'submit';
+					submit.name = 'forget';
+					submit.value = 'Forget and Re-apply';
+					p.appendChild(submit);
+					pd.type = 'hidden';
+					pd.name = 'pd';
+					pd.value = domain;
+					p.appendChild(pd);
+					pp.type = 'hidden';
+					pp.name = 'pp';
+					pp.value = profile;
+					p.appendChild(pp);
+
+					form.setAttribute ( "onsubmit", 'return confirm(\"{/literal}{tr}Are you sure you want to apply the profile{/tr}{literal} ' + profile + '?\");' );
+					
+					cell.appendChild(form);
+				}
+				else if( data.installable )
+				{	
 					var pStep = document.createElement('p');
 					pStep.style.fontWeight = 'bold';
-					if( data.installable ) {
-						pStep.innerHTML = "Step 3: Click on Apply Now to apply Profile";
-					} else if ( data.already ) {
-						pStep.innerHTML = "A version of this profile is already applied.";
-					}
+					pStep.innerHTML = "Step 3: Click on Apply Now to apply Profile";
 					
 					var form = document.createElement( 'form' );
 					var p = document.createElement('p');				
@@ -116,16 +146,8 @@ function showDetails( id, domain, profile ) { // {{{
 					form.appendChild(p);
 
 					submit.type = 'submit';
-					if( data.installable ) {
-						submit.name = 'install';
-						submit.value = 'Apply Now';
-						form.setAttribute ( "onsubmit", 'return confirm(\"{/literal}{tr}Are you sure you want to apply the profile{/tr}{literal} ' + profile + '?\");' );
-					} else if ( data.already ) {
-						submit.name = 'forget';
-						submit.value = 'Forget and Re-apply';
-						form.setAttribute ( "onsubmit", 'return confirm(\"{/literal}{tr}Are you sure you want to re-apply the profile{/tr}{literal} ' + profile + '?\");' );
-					}					
-					
+					submit.name = 'install';
+					submit.value = 'Apply Now';
 					p.appendChild(submit);
 					pd.type = 'hidden';
 					pd.name = 'pd';
@@ -136,6 +158,8 @@ function showDetails( id, domain, profile ) { // {{{
 					pp.name = 'pp';
 					pp.value = profile;
 					p.appendChild(pp);
+
+					form.setAttribute ( "onsubmit", 'return confirm(\"{/literal}{tr}Are you sure you want to apply the profile{/tr}{literal} ' + profile + '?\");' );
 
 					cell.appendChild(form);
 				}
@@ -188,11 +212,6 @@ function showDetails( id, domain, profile ) { // {{{
 
 				row.id = nid;
 				prev.parentNode.insertBefore( row, prev.nextSibling );
-
-				if (data.feedback.length) {
-					alert("Profile issues: \n" + data.feedback);
-				}
-
 			}
 		} else {		// readyState not 4 (complete)
 			
@@ -216,9 +235,11 @@ function showDetails( id, domain, profile ) { // {{{
 	req.send('');
 } // }}}
 {/literal}
-{/jq}
+//--><!]]>
+</script>
 
-{remarksbox type="tip" title="{tr}Tip{/tr}"}<a class="rbox-link" href="http://profiles.tikiwiki.org">{tr}Tiki Profiles{/tr}</a>{/remarksbox}
+{remarksbox type="tip" title="{tr}Tip{/tr}"}<a class="rbox-link" href="http://profiles.tikiwiki.org">{tr}TikiWiki Profiles{/tr}</a>{/remarksbox}
+
 
 {if $profilefeedback}
 	{remarksbox type="note" title="{tr}Note{/tr}"}
@@ -236,7 +257,7 @@ function showDetails( id, domain, profile ) { // {{{
 {tabset name='tabs_admin-profiles'}
 	{tab name="{tr}Apply Profiles{/tr}"}
 	
-		<h3>Configure Tiki in 3 easy steps using Profiles</h3>
+		<h3>Configure TikiWiki in 3 easy steps using Profiles</h3>
 		{if $prefs.javascript_enabled eq 'y'}
 				{if $openSources == 'some'}
 					{remarksbox type="warning" title="{tr}A Friendly Warning{/tr}"}
@@ -245,87 +266,62 @@ function showDetails( id, domain, profile ) { // {{{
 				{/if}
 					
 				<fieldset><legend>{tr}Profiles{/tr}</legend>
-				<form method="get" action="tiki-admin.php">
+				<form method="get" action="tiki-admin.php#profile-results">
 					<div class="adminoptionbox">
 						<b>Step 1: Use the Quick or Manual Filter option to see a list of Profiles you can apply</b>
 						<table class="normal">
 							<tr>
-								<th width="50%" class="quickmode_notes">{tr}Option 1: Quick Filter{/tr}</th>
+								<th width="50%">{tr}Option 1: Quick Filter{/tr}</th>
 	
 								<th width="50%">{tr}Option 2: Manual Filter{/tr}</th>
 							</tr>
 							<tr>
-								<td class="quickmode_notes">
+								<td>
 									<br/>
-									{assign var=profilesFilterUrlStart value='tiki-admin.php?profile=&categories%5B%5D='}
-									{assign var=profilesFilterUrlMid value='x&categories%5B%5D='}
-									{assign var=profilesFilterUrlEnd value='&repository=http%3a%2f%2fprofiles.tikiwiki.org%2fprofiles&page=profiles&preloadlist=y&list=List#step2'}
-									
 									<p>
-										{assign var=profilesFilterUrlFeaturedProfiles value='Featured+profiles'}
-										<a href="{$profilesFilterUrlStart}{$tikiMajorVersion}{$profilesFilterUrlMid}{$profilesFilterUrlFeaturedProfiles}{$profilesFilterUrlEnd}">Featured Profiles</a>
-										<br />Featured Profiles is a list of applications that are maintained by the Tiki community and are a great way to get started.
+										<a href="tiki-admin.php?profile=&categories%5B%5D=4.x&categories%5B%5D=Featured+profiles&repository=http%3a%2f%2fprofiles.tikiwiki.org%2fprofiles&page=profiles&preloadlist=y&list=List#step2">Featured Profiles</a>
+										<br />Featured Profiles is a list of applications that are maintained by the TikiWiki community and are a great way to get started.
 									</p>
-									
+		
 									<p>
-										{assign var=profilesFilterUrlFullProfiles value='Full+profile+(out+of+the+box+%26+ready+to+go)'}
-										<a href="{$profilesFilterUrlStart}{$tikiMajorVersion}{$profilesFilterUrlMid}{$profilesFilterUrlFullProfiles}{$profilesFilterUrlEnd}">Full Profiles</a>
+										<a href="tiki-admin.php?profile=&categories%5B%5D=4.x&categories%5B%5D=Full+profile+(out+of+the+box+%26+ready+to+go)&repository=http%3a%2f%2fprofiles.tikiwiki.org%2fprofiles&page=profiles&preloadlist=y&list=List#step2">Full Profiles</a>
 										<br />Full Profiles are full featured out of the box solutions. 
 									</p>
 		
 									<p>
-										{assign var=profilesFilterUrlMiniProfiles value='Mini-profile+(can+be+included+in+other)'}
-										<a href="{$profilesFilterUrlStart}{$tikiMajorVersion}{$profilesFilterUrlMid}{$profilesFilterUrlMiniProfiles}{$profilesFilterUrlEnd}">Mini Profiles</a>
+										<a href="tiki-admin.php?profile=&categories%5B%5D=4.x&categories%5B%5D=Mini-profile+(can+be+included+in+other)&repository=http%3a%2f%2fprofiles.tikiwiki.org%2fprofiles&page=profiles&preloadlist=y&list=List#step2">Mini Profiles</a>
 										<br />Mini Profiles will configure specific features and are a great way to add more functionality to an existing configuration. 
 									</p>
 		
 									<p>
-										{assign var=profilesFilterUrlLearningProfiles value='Learning+profile+(just+to+show+off+feature)'}
-										<a href="{$profilesFilterUrlStart}{$tikiMajorVersion}{$profilesFilterUrlMid}{$profilesFilterUrlLearningProfiles}{$profilesFilterUrlEnd}">Learning Profiles</a>
-										<br />Learning Profiles will allow you to quickly evaluate specific features in Tiki.
+										<a href="tiki-admin.php?profile=&categories%5B%5D=4.x&categories%5B%5D=Learning+profile+(just+to+show+off+feature)&repository=http%3a%2f%2fprofiles.tikiwiki.org%2fprofiles&page=profiles&preloadlist=y&list=List#step2">Learning Profiles</a>
+										<br />Learning Profiles will allow you to quickly evaluate specific features in TikiWiki.
 									</p>
 		
 								</td>
 								<td>
+									<div class="adminoptionlabel">{tr}Filter the list of profiles:{/tr}</div>
 									<div class="adminoptionboxchild">
-										<div class="adminoptionlabel">{tr}Filter the list of profiles:{/tr}</div>
-										<div class="adminoptionlabel">
-											<label for="profile">{tr}Profile:{/tr} </label>
-											<input type="text" name="profile" id="profile" value="{$profile|escape}" /></div>
-											{if isset($category_list) and count($category_list) gt 0}
-												<div class="adminoptionlabel"><label for="categories">{tr}Categories:{/tr} </label>
-													<select multiple="multiple" name="categories[]" id="categories" style="max-height: 10em">
-													{foreach item=cat from=$category_list}
-														<option value="{$cat|escape}"{if !empty($categories) and in_array($cat, $categories)} selected="selected"{/if}>{$cat|escape}</option>
-													{/foreach}
-													</select>
-												</div>
-											{/if}
-		
-										<div class="adminoptionlabel"><label for="repository">{tr}Repository:{/tr} </label>
-											<select name="repository" id="repository">
-												<option value="">{tr}All{/tr}</option>
-												{foreach item=source from=$sources}
-													<option value="{$source.url|escape}"{if $repository eq $source.url} selected="selected"{/if}>{$source.short|escape}</option>
+									<div class="adminoptionlabel"><label for="profile">{tr}Profile:{/tr} </label><input type="text" name="profile" id="profile" value="{$profile|escape}" /></div>
+										{if isset($category_list) and count($category_list) gt 0}
+											<div class="adminoptionlabel"><label for="categories">{tr}Categories:{/tr} </label>
+												<select multiple="multiple" name="categories[]" id="categories">
+												{foreach item=cat from=$category_list}
+													<option value="{$cat|escape}"{if in_array($cat, $categories)} selected="selected"{/if}>{$cat|escape}</option>
 												{/foreach}
-											</select>
-										</div>
-										<input type="hidden" name="page" value="profiles"/>
-										{jq}
-if ($jq("#profile-0").length > 0) {
-	$jq(".quickmode_notes").hide();
-	$jq(window).scrollTop($jq("a[name=step2]").offset().top);
-} else {
-	$jq(".quickmode_notes").show();
-}
-$jq("#repository, #categories").change(function(){
-	if ($jq(this).val()) {
-		$jq(".quickmode_notes").hide(400);
-	} else {
-		$jq(".quickmode_notes").show(400);
-	}
-});
-										{/jq}
+												</select>
+											</div>
+										{/if}
+	
+									<div class="adminoptionlabel"><label for="repository">{tr}Repository:{/tr} </label>
+										<select name="repository" id="repository">
+											<option value="">{tr}All{/tr}</option>
+											{foreach item=source from=$sources}
+												<option value="{$source.url|escape}"{if $repository eq $source.url} selected="selected"{/if}>{$source.short|escape}</option>
+											{/foreach}
+										</select>
+									</div>
+									<input type="hidden" name="page" value="profiles"/>
 									</div>
 								<div align="center"><input type="submit" name="list" value="{tr}List{/tr}" /></div>
 							</td>
@@ -435,8 +431,8 @@ $jq("#repository, #categories").change(function(){
 {/tab}
 {/tabset}
 
-{jq}
-{{foreach item=k from=$oldSources}
+<script type="text/javascript">
+{foreach item=k from=$oldSources}
 	refreshCache({$k});
-{/foreach}}
-{/jq}
+{/foreach}
+</script>

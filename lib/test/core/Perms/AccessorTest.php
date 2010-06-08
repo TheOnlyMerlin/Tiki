@@ -1,10 +1,5 @@
 <?php
 
-/** 
- * @group unit
- * 
- */
-
 class Perms_AccessorTest extends TikiTestCase
 {
 	function testGetSetResolver() {

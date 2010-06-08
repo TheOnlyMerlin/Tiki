@@ -1,13 +1,17 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_menu_options.php,v 1.31.2.3 2007-11-27 14:53:11 sylvieg Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/menubuilder/menulib.php');
-$access->check_permission(array('tiki_p_edit_menu_option'));
+if ($tiki_p_admin != 'y' && $tiki_p_edit_menu_option != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST["menuId"])) {
 	$smarty->assign('msg', tra("No menu indicated"));
 	$smarty->display("error.tpl");
@@ -58,11 +62,17 @@ $smarty->assign('position', $info["position"]);
 $smarty->assign('groupname', $info["groupname"]);
 $smarty->assign('userlevel', $info["userlevel"]);
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$menulib->remove_menu_option($_REQUEST["remove"]);
-	$maxPos = $menulib->get_max_option($_REQUEST["menuId"]);
-	$smarty->assign('position', $maxPos + 1);
-	$smarty->clear_cache(null, "menu" . $_REQUEST["menuId"]);
+	check_ticket('admin-menu-options');
+	$area = 'delmenuoption';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$menulib->remove_menu_option($_REQUEST["remove"]);
+		$maxPos = $menulib->get_max_option($_REQUEST["menuId"]);
+		$smarty->assign('position', $maxPos + 1);
+		$smarty->clear_cache(null, "menu" . $_REQUEST["menuId"]);
+	} else {
+		key_get($area);
+	}
 }
 if (isset($_REQUEST["up"])) {
 	check_ticket('admin-menu-options');

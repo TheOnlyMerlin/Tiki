@@ -1,22 +1,40 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-list_submissions.php,v 1.21 2007-10-12 07:55:28 nyloth Exp $
 $section = 'cms';
 require_once ('tiki-setup.php');
 include_once ('lib/articles/artlib.php');
-$access->check_feature('feature_submissions');
+if ($prefs['feature_submissions'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_submissions");
+	$smarty->display("error.tpl");
+	die;
+}
 if (isset($_REQUEST["remove"])) {
-	$access->check_permission('tiki_p_remove_submission');
-	$access->check_authenticity();
-	$artlib->remove_submission($_REQUEST["remove"]);
+	if ($tiki_p_remove_submission != 'y') {
+		$smarty->assign('errortype', 401);
+		$smarty->assign('msg', tra("Permission denied you cannot remove submissions"));
+		$smarty->display("error.tpl");
+		die;
+	}
+	$area = 'delsubmission';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$artlib->remove_submission($_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 if (isset($_REQUEST["approve"])) {
 	check_ticket('list-submissions');
-	$access->check_permission('tiki_p_approve_submission');
+	if ($tiki_p_approve_submission != 'y') {
+		$smarty->assign('errortype', 401);
+		$smarty->assign('msg', tra("Permission denied you cannot approve submissions"));
+		$smarty->display("error.tpl");
+		die;
+	}
 	$artlib->approve_submission($_REQUEST["approve"]);
 }
 // This script can receive the thresold
@@ -55,7 +73,7 @@ if (isset($_REQUEST["find"])) {
 	$find = '';
 }
 $smarty->assign('find', $find);
-$listpages = $artlib->list_submissions($offset, $maxRecords, $sort_mode, $find, $pdate);
+$listpages = $tikilib->list_submissions($offset, $maxRecords, $sort_mode, $find, $pdate);
 $smarty->assign_by_ref('cant_pages', $listpages["cant"]);
 include_once ('tiki-section_options.php');
 $smarty->assign_by_ref('listpages', $listpages["data"]);

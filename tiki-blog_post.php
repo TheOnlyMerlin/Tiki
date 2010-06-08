@@ -1,26 +1,22 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-blog_post.php,v 1.63.2.2 2007-11-24 15:28:37 nyloth Exp $
 $section = 'blogs';
 require_once ('tiki-setup.php');
 include_once ('lib/categories/categlib.php');
 include_once ('lib/blogs/bloglib.php');
 include_once ('lib/wiki/editlib.php');
 $smarty->assign('headtitle', tra('Edit Post'));
-$access->check_feature('feature_blogs');
 if ($prefs['feature_freetags'] == 'y') {
 	include_once ('lib/freetag/freetaglib.php');
-	
-	if ($prefs['feature_multilingual'] == 'y') {
-		$languages = array();
-		$languages = $tikilib->list_languages();
-		$smarty->assign_by_ref('languages', $languages);
-		$smarty->assign('blog', 'y');
-	}
+}
+if ($prefs['feature_blogs'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_blogs");
+	$smarty->display("error.tpl");
+	die;
 }
 if (isset($_REQUEST['blogId'])) {
 	$blogId = $_REQUEST['blogId'];
@@ -67,8 +63,13 @@ $smarty->assign('referer', !empty($_REQUEST['referer']) ? $_REQUEST['referer'] :
 $blog_data = $bloglib->get_blog($blogId);
 $smarty->assign_by_ref('blog_data', $blog_data);
 if (isset($_REQUEST['remove_image'])) {
-	$access->check_authenticity();
-	$bloglib->remove_post_image($_REQUEST['remove_image']);
+	$area = 'delblogpostimage';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$bloglib->remove_post_image($_REQUEST['remove_image']);
+	} else {
+		key_get($area);
+	}
 }
 // If the articleId is passed then get the article data
 if (isset($_REQUEST["postId"]) && $_REQUEST["postId"] > 0) {
@@ -85,7 +86,7 @@ if (isset($_REQUEST["postId"]) && $_REQUEST["postId"] > 0) {
 		}
 	}
 	if (empty($data["data"])) $data["data"] = '';
-	$smarty->assign('data', $data["data"]);
+	$smarty->assign('data', TikiLib::htmldecode($data["data"]));
 	$smarty->assign('title', $data["title"]);
 	$smarty->assign('created', $data["created"]);
 	$smarty->assign('parsed_data', $tikilib->parse_data($data["data"]));
@@ -109,7 +110,6 @@ if ($postId) {
 	$smarty->assign_by_ref('post_images', $post_images);
 	$cat_type = 'blog post';
 	$cat_objid = $postId;
-	$cat_lang = $_REQUEST['lang'];
 	include_once ('freetag_list.php');
 }
 $smarty->assign('preview', 'n');
@@ -166,7 +166,7 @@ if (isset($_REQUEST["preview"])) {
 			$smarty->assign('spellcheck', 'n');
 		}
 	}
-	$smarty->assign('data', $edit_data);
+	$smarty->assign('data', TikiLib::htmldecode($edit_data));
 	if ($prefs['feature_freetags'] == 'y') {
 		$smarty->assign('taglist', $_REQUEST["freetag_string"]);
 	}
@@ -208,25 +208,11 @@ if ((isset($_REQUEST["save"]) || isset($_REQUEST['save_exit'])) && !$contributio
 	}
 	$edit_data = $imagegallib->capture_images($edit_data);
 	$title = isset($_REQUEST['title']) ? $_REQUEST['title'] : '';
-	if (isset($_REQUEST["publish_Hour"])) {
-
-	$publishDate = $tikilib->make_time($_REQUEST["publish_Hour"], $_REQUEST["publish_Minute"], 0, $_REQUEST["publish_Month"], $_REQUEST["publish_Day"], $_REQUEST["publish_Year"]);
-	} else {
-		$publishDate = $tikilib->now;
-	}
-	
-	
 	if ($_REQUEST["postId"] > 0) {
-		$bloglib->update_post($_REQUEST["postId"], $_REQUEST["blogId"], $edit_data, $data["user"], $title, isset($_REQUEST['contributions']) ? $_REQUEST['contributions'] : '', $data['data'], $blogpriv, $publishDate);
+		$bloglib->update_post($_REQUEST["postId"], $_REQUEST["blogId"], $edit_data, $data["user"], $title, isset($_REQUEST['contributions']) ? $_REQUEST['contributions'] : '', $data['data'], $blogpriv);
 		$postid = $_REQUEST["postId"];
 	} else {
-		if($blog_data['always_owner'] == 'y'){
-			$author = $blog_data['user'];
-		}
-		else {
-			$author = $user;
-		}
-		$postid = $bloglib->blog_post($_REQUEST["blogId"], $edit_data, $author, $title, isset($_REQUEST['contributions']) ? $_REQUEST['contributions'] : '', $blogpriv, $publishDate);
+		$postid = $bloglib->blog_post($_REQUEST["blogId"], $edit_data, $user, $title, isset($_REQUEST['contributions']) ? $_REQUEST['contributions'] : '', $blogpriv);
 		$smarty->assign('postId', $postid);
 	}
 	// TAG Stuff
@@ -235,17 +221,15 @@ if ((isset($_REQUEST["save"]) || isset($_REQUEST['save_exit'])) && !$contributio
 	$cat_desc = substr($edit_data, 0, 200);
 	$cat_name = $title;
 	$cat_href = "tiki-view_blog_post.php?postId=" . urlencode($postid);
-	$cat_lang = $_REQUEST['lang'];
 	include_once ("freetag_apply.php");
 	if (isset($_REQUEST['save_exit'])) {
-		
 		header ("location: tiki-view_blog_post.php?postId=$postid");
 
 		die;
 	}
 	$parsed_data = $tikilib->apply_postedit_handlers($edit_data);
 	$parsed_data = $tikilib->parse_data($parsed_data);
-	$smarty->assign('data', $edit_data);
+	$smarty->assign('data', TikiLib::htmldecode($edit_data));
 	if ($prefs['feature_freetags'] == 'y') {
 		$smarty->assign('taglist', $_REQUEST["freetag_string"]);
 	}
@@ -255,7 +239,7 @@ if ((isset($_REQUEST["save"]) || isset($_REQUEST['save_exit'])) && !$contributio
 if ($contribution_needed) {
 	$smarty->assign('title', $_REQUEST["title"]);
 	$smarty->assign('parsed_data', $tikilib->parse_data($_REQUEST['data']));
-	$smarty->assign('data', $_REQUEST['data']);
+	$smarty->assign('data', TikiLib::htmldecode($_REQUEST['data']));
 	if ($prefs['feature_freetags'] == 'y') {
 		$smarty->assign('taglist', $_REQUEST["freetag_string"]);
 	}

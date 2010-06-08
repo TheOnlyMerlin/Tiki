@@ -13,9 +13,12 @@
 		{tr}Wiki Page Editor{/tr} {icon _id='help' style="vertical-align:middle"}
 	</a>
 	{tr}and{/tr}
-	<a href="{$prefs.helpurl}Wiki+Syntax" target="tikihelp" class="tikihelp" title="{tr}Wiki Syntax{/tr}: {tr}The syntax system used for creating pages in Tiki{/tr}">
+	<a href="{$prefs.helpurl}Wiki+Syntax" target="tikihelp" class="tikihelp" title="{tr}Wiki Syntax{/tr}: {tr}The syntax system used for creating pages in TikiWiki{/tr}">
 		{tr}Wiki Syntax{/tr} {icon _id='help' style="vertical-align:middle"}
 	</a>
+</p>
+<p>	
+	{tr}Also available here:{/tr} <a onclick="$jq('#help_sections').accordion( 'activate' , 1 )[0].scrollTop=0;return false;">{tr}Plugins help{/tr}  {icon _id='plugin'}</a>
 </p>
 {/if}
  

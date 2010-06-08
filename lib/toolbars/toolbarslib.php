@@ -1,8 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
@@ -44,6 +41,10 @@ abstract class Toolbar
 			return $tag;
 		elseif( $tagName == 'fullscreen' )
 			return new ToolbarFullscreen;
+		elseif( $tagName == 'enlarge' )
+			return new ToolbarTextareaResize( 'enlarge' );
+		elseif( $tagName == 'reduce' )
+			return new ToolbarTextareaResize( 'reduce' );
 		elseif( $tagName == 'tikiimage' )
 			return new ToolbarFileGallery;
 		elseif( $tagName == 'help' )
@@ -52,29 +53,24 @@ abstract class Toolbar
 			return new ToolbarSwitchEditor;
 		elseif( $tagName == '-' )
 			return new ToolbarSeparator;
-		elseif( $tag = ToolbarSheet::fromName( $tagName ) )
-			return $tag;
 	} // }}}
 
-	public static function getList( $include_custom = true ) // {{{
+	public static function getList() // {{{
 	{
 		global $tikilib;
 		$plugins = $tikilib->plugin_get_list();
 		
-		foreach( $plugins as & $name ) {
+		$custom = Toolbar::getCustomList();
+		
+		foreach( $plugins as & $name )
 			$name = "wikiplugin_$name";
-		}
 		
-		if ($include_custom) {
-			$custom = Toolbar::getCustomList();
-			$plugins = array_merge($plugins, $custom);
-		}
-		
+		$plugins = array_merge($plugins, $custom);
+
 		return array_unique (array_merge( array(
 			'-',
 			'bold',
 			'italic',
-			'underline',
 			'strike',
 			'sub',
 			'sup',
@@ -115,29 +111,20 @@ abstract class Toolbar
 			'full',
 			'indent',
 			'outdent',
+			'underline',
 			'unlink',
 			'style',
 			'fontname',
 			'fontsize',
 			'source',
 			'fullscreen',
+			'enlarge',
+			'reduce',
 			'help',
 			'tikiimage',
 			'switcheditor',
 			'autosave',
 			'nonparsed',
-		
-			'sheetsave',	// spreadsheet ones
-			'addrow',
-			'addrowmulti',
-			'deleterow',
-			'addcolumn',
-			'deletecolumn',
-			'addcolumnmulti',
-			'sheetgetrange',
-			'sheetfind',
-			'sheetrefresh',
-			'sheetclose',
 		), $plugins ));
 	} // }}}
 	
@@ -175,26 +162,20 @@ abstract class Toolbar
 	public static function saveTool($name, $label, $icon = 'pics/icons/shading.png', $token = '', $syntax = '', $type = 'Inline', $plugin = '') {
 		global $prefs, $tikilib;
 		
-		$name = strtolower( preg_replace('/[\s,\/\|]+/', '_', $tikilib->take_away_accent( $name )) );
-		$standard_names = Toolbar::getList(false);
-		$custom_list = Toolbar::getCustomList();
-		if (in_array($name, $standard_names)) {		// don't allow custom tools with the same name as standard ones
-			$c = 1;
-			while(in_array($name . '_' . $c, $custom_list)) {
-				$c++;
-			}
-			$name = $name . '_' . $c;
-		}
+		$name = strtolower( preg_replace('/[\s,\/\|]+/', '_', $name) );
 
 		$prefName = "toolbar_tool_$name";
 		$data = array('name'=>$name, 'label'=>$label, 'icon'=>$icon, 'token'=>$token, 'syntax'=>$syntax, 'type'=>$type, 'plugin'=>$plugin);
 		
 		$tikilib->set_preference( $prefName, serialize( $data ) );
 		
-		if( !in_array( $name, $custom_list ) ) {
-			$custom_list[] = $name;
-			$tikilib->set_preference( 'toolbar_custom_list', serialize($custom_list) );
-			$tikilib->set_lastUpdatePrefs();
+		$list = array();
+		if( isset($prefs['toolbar_custom_list']) ) {
+			$list = unserialize($prefs['toolbar_custom_list']);
+		}
+		if( !in_array( $name, $list ) ) {
+			$list[] = $name;
+			$tikilib->set_preference( 'toolbar_custom_list', serialize($list) );
 		}
 	}
 
@@ -218,18 +199,6 @@ abstract class Toolbar
 	
 		}
 	}
-
-	public static function deleteAllCustomTools() {
-		global $tikilib;
-		
-		$tikilib->query('DELETE FROM `tiki_preferences` WHERE `name` LIKE \'toolbar_tool_%\'');
-		$tikilib->query('DELETE FROM `tiki_preferences` WHERE `name` = \'toolbar_custom_list\'');
-		
-		//global $cachelib; require_once("lib/cache/cachelib.php");
-		//$cachelib->invalidate('tiki_preferences_cache');
-		$tikilib->set_lastUpdatePrefs();
-	}
-	
 
 	public static function fromData( $tagName, $data ) { // {{{
 		
@@ -365,8 +334,7 @@ abstract class Toolbar
 	
 	function getIconHtml() // {{{
 	{
-		global $headerlib;
-		return '<img src="' . htmlentities($headerlib->convert_cdn($this->icon), ENT_QUOTES, 'UTF-8') . '" alt="' . htmlentities($this->getLabel(), ENT_QUOTES, 'UTF-8') . '" title="' . htmlentities($this->getLabel(), ENT_QUOTES, 'UTF-8') . '" class="icon"/>';
+		return '<img src="' . htmlentities($this->icon, ENT_QUOTES, 'UTF-8') . '" alt="' . htmlentities($this->getLabel(), ENT_QUOTES, 'UTF-8') . '" title="' . htmlentities($this->getLabel(), ENT_QUOTES, 'UTF-8') . '" class="icon"/>';
 	} // }}}
 	
 	function getSelfLink( $click, $title, $class ) { // {{{
@@ -379,9 +347,10 @@ abstract class Toolbar
 		$content = $title;
 		$params['_icon'] = $this->icon;
 			
-		if (strpos($class, 'qt-plugin') !== false && $this->icon == 'pics/icons/plugin.png') {
+		if (strpos($class, 'qt-plugin') !== false && !empty($title)) {
 			$params['_menu_text'] = 'y';
 			$params['_menu_icon'] = 'y';
+		} else {
 		}
 		return smarty_block_self_link($params, $content, $smarty);
 	} // }}}
@@ -404,8 +373,8 @@ class ToolbarSeparator extends Toolbar
 }
 
 class ToolbarFckOnly extends Toolbar
-{
-	function __construct( $token, $icon = '' ) // {{{
+{ 
+	private function __construct( $token, $icon = '' ) // {{{
 	{
 		$fck_icon_path = 'lib/fckeditor_tiki/fckeditor-icons/';
 		if (empty($icon)) {
@@ -460,6 +429,8 @@ class ToolbarFckOnly extends Toolbar
 			return new self( 'Indent' );
 		case 'outdent':
 			return new self( 'Outdent' );
+		case 'underline':
+			return new self( 'Underline' );
 		case 'unlink':
 			return new self( 'Unlink' );
 		case 'style':
@@ -509,12 +480,6 @@ class ToolbarInline extends Toolbar
 			$wysiwyg = 'Italic';
 			$syntax = "''text''";
 			break;
-		case 'underline':
-			$label = tra('Underline');
-			$icon = tra('pics/icons/text_underline.png');
-			$wysiwyg = 'Underline';
-			$syntax = "===text===";
-			break;
 		case 'strike':
 			$label = tra('Strikethrough');
 			$icon = tra('pics/icons/text_strikethrough.png');
@@ -522,7 +487,7 @@ class ToolbarInline extends Toolbar
 			$syntax = '--text--';
 			break;
 		case 'nonparsed':
-			$label = tra('Non-parsed (Wiki syntax does not apply)');
+			$label = tra('Non-parsed');
 			$icon = tra('pics/icons/noparse.png');
 			$wysiwyg = null;
 			$syntax = '~np~text~/np~';
@@ -573,17 +538,12 @@ class ToolbarBlock extends ToolbarInline // Will change in the future
 
 	public static function fromName( $tagName ) // {{{
 	{
-		global $prefs;
 		switch( $tagName ) {
 		case 'center':
 			$label = tra('Align Center');
 			$icon = tra('pics/icons/text_align_center.png');
 			$wysiwyg = 'JustifyCenter';
-			if ($prefs['feature_use_three_colon_centertag'] == 'y') {
-				$syntax = ":::text:::";
-			} else {
-				$syntax = "::text::";
-			}
+			$syntax = "::text::";
 			break;
 		case 'rule':
 			$label = tra('Horizontal Bar');
@@ -707,10 +667,9 @@ class ToolbarPicker extends Toolbar
 			$prefs[] = 'feature_smileys';
 
 			$list = array();
-			global $headerlib;
 			foreach( $rawList as $smiley ) {
 				$tra = htmlentities( tra($smiley), ENT_QUOTES, 'UTF-8' );
-				$list["(:$smiley:)"] = '<img src="' . $headerlib->convert_cdn('img/smiles/icon_' .$smiley . '.gif') . '" alt="' . $tra . '" title="' . $tra . '" border="0" width="15" height="15" />';
+				$list["(:$smiley:)"] = '<img src="img/smiles/icon_' .$smiley . '.gif" alt="' . $tra . '" title="' . $tra . '" border="0" width="15" height="15" />';
 			}
 			break;
 		case 'color':
@@ -719,35 +678,10 @@ class ToolbarPicker extends Toolbar
 			$icon = tra('pics/icons/palette.png');
 			$rawList = array();
 			
-			$hex = array('0', '3', '6', '9', 'C', 'F');
-			$count_hex = count($hex);
-
-			for ($r = 0; $r < $count_hex; $r++){ // red
-				for ($g = 0; $g < $count_hex; $g++){ // green
-					for ($b = 0; $b < $count_hex; $b++){ // blue
-						$color = $hex[$r] . $hex[$g] . $hex[$b];
-						$rawList[] = $color;
-					}
-				}
-			}
-			$list = array();
-			foreach( $rawList as $color) {
-				$list["~~#$color:text~~"] = "<span style='background-color: #$color' title='#$color' />&nbsp;</span>";
-			}
-			$headerlib->add_css('.toolbars-picker span {display: block; width: 14px; height: 12px}');
-			break;
-
-		case 'bgcolor':
-			$label = tra('Background Color');
-			$icon = tra('pics/icons/palette_bg.png');
-			$wysiwyg = 'BGColor';
-
-			$hex = array('0', '3', '6', '9', 'C', 'F');
-			$count_hex = count($hex);
-
-			for ($r = 0; $r < $count_hex; $r++){ // red
-				for ($g = 0; $g < $count_hex; $g++){ // green
-					for ($b = 0; $b < $count_hex; $b++){ // blue
+			$hex = array("0", "3", "6", "9", "c", "f");
+			for ($r = 0; $r < count($hex); $r++){ // red
+				for ($g = 0; $g < count($hex); $g++){ // green
+					for ($b = 0; $b < count($hex); $b++){ // blue
 						$color = $hex[$r].$hex[$g].$hex[$b];
 						$rawList[] = $color;
 					}
@@ -755,9 +689,30 @@ class ToolbarPicker extends Toolbar
 			}
 			$list = array();
 			foreach( $rawList as $color) {
-				$list["~~black,#$color:text~~"] = "<span style='background-color: #$color' title='#$color' />&nbsp;</span>";
+				$list["~~#$color:text~~"] = "<div style='background-color: #$color' title='$color' />&nbsp;</div>";
 			}
-			$headerlib->add_css('.toolbars-picker span {display: block; width: 14px; height: 12px}');
+			$headerlib->add_css('.toolbars-picker div {width: 17px; height:16px}');
+			break;
+
+		case 'bgcolor':
+			$label = tra('Background Color');
+			$icon = tra('pics/icons/palette_bg.png');
+			$wysiwyg = 'BGColor';
+
+			$hex = array("0", "3", "6", "9", "c", "f");
+			for ($r = 0; $r < count($hex); $r++){ // red
+				for ($g = 0; $g < count($hex); $g++){ // green
+					for ($b = 0; $b < count($hex); $b++){ // blue
+						$color = $hex[$r].$hex[$g].$hex[$b];
+						$rawList[] = $color;
+					}
+				}
+			}
+			$list = array();
+			foreach( $rawList as $color) {
+				$list["~~black,#$color:text~~"] = "<div style='background-color: #$color' title='$color' />&nbsp;</div>";
+			}
+			$headerlib->add_css('.toolbars-picker div {width: 17px; height:16px}');
 			break;
 
 		default:
@@ -815,10 +770,9 @@ class ToolbarPicker extends Toolbar
 		global $headerlib;
 
 		if( ! $pickerAdded ) {
-			$pickerAdded = true;
 			$headerlib->add_js( <<<JS
 window.pickerData = [];
-var pickerDiv, displayPicker, displayDialog;
+var pickerDiv;
 
 displayPicker = function( closeTo, list, areaname ) {
 	if (pickerDiv) {
@@ -826,18 +780,18 @@ displayPicker = function( closeTo, list, areaname ) {
 		pickerDiv = false;
 		return;
 	}
-	textarea = getElementById( areaname);
-	// quick fix for Firefox 3.5 losing selection on changes to popup
-	if (typeof textarea.selectionStart != 'undefined') {
-		var tempSelectionStart = textarea.selectionStart;
-		var tempSelectionEnd = textarea.selectionEnd;
-	}		
 	pickerDiv = document.createElement('div');
 	document.body.appendChild( pickerDiv );
 
 	var coord = \$jq(closeTo).offset();
 	coord.bottom = coord.top + \$jq(closeTo).height();
 
+	textarea = getElementById( areaname);
+	// quick fix for Firefox 3.5 losing selection on changes to popup
+	if (typeof textarea.selectionStart != 'undefined') {
+		var tempSelectionStart = textarea.selectionStart;
+		var tempSelectionEnd = textarea.selectionEnd;
+	}		
 	pickerDiv.className = 'toolbars-picker';
 	pickerDiv.style.left = coord.left + 'px';
 	pickerDiv.style.top = (coord.bottom + 8) + 'px';
@@ -845,36 +799,34 @@ displayPicker = function( closeTo, list, areaname ) {
 	// quick fix for Firefox 3.5 losing selection on changes to popup
 	if (typeof textarea.selectionStart != 'undefined' && textarea.selectionStart != tempSelectionStart) {
 		textarea.selectionStart = tempSelectionStart;
-	}
+       	}
 	if (typeof textarea.selectionEnd != 'undefined' && textarea.selectionEnd != tempSelectionEnd) {
-		textarea.selectionEnd = tempSelectionEnd;
-	}  
+                textarea.selectionEnd = tempSelectionEnd;
+       	}  
 
 	var prepareLink = function( link, ins, disp ) {
-		if (!link) return;
-		
-		link.innerHTML = disp.replace('\/', '/');
+		link.innerHTML = disp;
 		link.href = 'javascript:void(0)';
 		link.onclick = function() {
 			insertAt( areaname, ins );
 	
 			textarea = getElementById( areaname);	
 			// quick fix for Firefox 3.5 losing selection on changes to popup
-			if (typeof textarea.selectionStart != 'undefined') {
+                        if (typeof textarea.selectionStart != 'undefined') {
 				var tempSelectionStart = textarea.selectionStart;
-				var tempSelectionEnd = textarea.selectionEnd;	
+                        	var tempSelectionEnd = textarea.selectionEnd;	
 			}
 
 			\$jq('div.toolbars-picker').remove();
 			pickerDiv = false;
 
 			// quick fix for Firefox 3.5 losing selection on changes to popup
-        	if (typeof textarea.selectionStart != 'undefined' && textarea.selectionStart != tempSelectionStart) {
-                textarea.selectionStart = tempSelectionStart;
-     		}
+        		if (typeof textarea.selectionStart != 'undefined' && textarea.selectionStart != tempSelectionStart) {
+            		    textarea.selectionStart = tempSelectionStart;
+     		   	}
 			if (typeof textarea.selectionEnd != 'undefined' && textarea.selectionEnd != tempSelectionEnd) {
-            	textarea.selectionEnd = tempSelectionEnd;
-       		}
+                		textarea.selectionEnd = tempSelectionEnd;
+       			}
 
 			return false;
 		}
@@ -884,9 +836,9 @@ displayPicker = function( closeTo, list, areaname ) {
 		var chr = window.pickerData[list][i];
 		var link = document.createElement( 'a' );
 
-		//pickerDiv.appendChild( document.createTextNode(' ') );
-		prepareLink( link, i, chr );
 		pickerDiv.appendChild( link );
+		pickerDiv.appendChild( document.createTextNode(' ') );
+		prepareLink( link, i, chr );
 	}
 }
 
@@ -897,12 +849,8 @@ JS
 
 	function getWikiHtml( $areaName ) // {{{
 	{
-		global $headerlib, $prefs;
-		$headerlib->add_js( "window.pickerData['$this->name'] = " . str_replace('\/', '/', json_encode($this->list)) . ";" );
-		if ($prefs['feature_jquery_ui'] != 'y') {
-			$headerlib->add_jsfile('lib/jquery/jquery-ui/ui/jquery-ui.js');
-			$headerlib->add_cssfile( 'lib/jquery/jquery-ui/themes/' . $prefs['feature_jquery_ui_theme'] . '/jquery-ui.css' );
-		}
+		global $headerlib;
+		$headerlib->add_js( "window.pickerData['$this->name'] = " . json_encode($this->list) . ";" );
 		
 		return $this->getSelfLink($this->getSyntax($areaName),
 							htmlentities($this->label, ENT_QUOTES, 'UTF-8'), 'qt-picker');
@@ -935,7 +883,7 @@ class ToolbarDialog extends Toolbar
 						$prefs['feature_semantic'] == 'y' ? '<input type="text" id="tbWLinkRel" class="ui-widget-content ui-corner-all" style="width: 100%" />' : '',
 						'{"open": function () {
 $jq("#tbWLinkPage").tiki("autocomplete", "pagename");
-var s = getTASelection($jq(getElementById(areaname))[0]);
+var s = getSelection($jq(getElementById(areaname))[0]);
 var m = /\((.*)\(([^\|]*)\|?([^\|]*)\|?([^\|]*)\|?\)\)/g.exec(s);
 if (m && m.length > 4) {
 	if ($jq("#tbWLinkRel")) { $jq("#tbWLinkRel").val(m[1]); }
@@ -997,7 +945,7 @@ if (typeof textarea.selectionEnd != "undefined" && textarea.selectionEnd != temp
 						$prefs['cachepages'] == 'y' ? '<input type="checkbox" id="tbLinkNoCache" class="ui-widget-content ui-corner-all" />' : '',
 						'{"width": 300, "open": function () {
 $jq("#tbWLinkPage").tiki("autocomplete", "pagename");
-var s = getTASelection($jq(getElementById(areaname))[0]);
+var s = getSelection($jq(getElementById(areaname))[0]);
 var m = /\[([^\|]*)\|?([^\|]*)\|?([^\|]*)\]/g.exec(s);
 if (m && m.length > 3) {
 	$jq("#tbLinkURL").val(m[1]);
@@ -1057,7 +1005,7 @@ if (textarea.selectionEnd != tempSelectionEnd) {
 			$label = tra('Table Builder');
 			$list = array('Table Builder',
 						'{"open": function () {
-var s = getTASelection($jq(getElementById(areaname))[0]);
+var s = getSelection($jq(getElementById(areaname))[0]);
 var m = /\|\|([\s\S]*?)\|\|/mg.exec(s);
 var vals = [], rows=3, cols=3, c, r, i, j;
 if (m) {
@@ -1208,7 +1156,7 @@ if (textarea.selectionEnd != tempSelectionEnd) {
 						'<label for="tbLinkNoCache" style="display:inline;">Case Insensitivity:</label>',
 						'<input type="checkbox" id="tbFindCase" checked="checked" class="ui-widget-content ui-corner-all" />',
 						'{"open": function() {
-	var s = getTASelection($jq(getElementById(areaname))[0]);
+	var s = getSelection($jq(getElementById(areaname))[0]);
 	$jq("#tbFindSearch").val(s);
 						  },'.
 						 '"buttons": { "Close": function() { $jq(this).dialog("close"); },'.
@@ -1258,7 +1206,7 @@ if (textarea.selectionEnd != tempSelectionEnd) {
 						'<br /><label for="tbLinkNoCache" style="display:inline;">Replace All:</label>',
 						'<input type="checkbox" id="tbReplaceAll" checked="checked" class="ui-widget-content ui-corner-all" />',
 						'{"open": function() {
-	var s = getTASelection($jq(getElementById(areaname))[0]);
+	var s = getSelection($jq(getElementById(areaname))[0]);
 	$jq("#tbReplaceSearch").val(s);
 						  },'.
 						 '"buttons": { "Close": function() { $jq(this).dialog("close"); },'.
@@ -1328,7 +1276,7 @@ if (textarea.selectionEnd != tempSelectionEnd) {
 		global $headerlib;
 
 		if( ! $dialogAdded ) {
-			$dialogAdded = true;
+			$headerlib->include_jquery_ui();
 			$headerlib->add_js( <<<JS
 window.dialogData = [];
 var dialogDiv;
@@ -1341,7 +1289,7 @@ displayDialog = function( closeTo, list, areaname ) {
 	}
 	\$jq(dialogDiv).empty();
 	
-	for( i = 0; i < window.dialogData[list].length; i++ ) {
+	for( i in window.dialogData[list] ) {
 		item = window.dialogData[list][i];
 		if (item.indexOf("<") == 0) {	// form element
 			el = \$jq(item);
@@ -1358,8 +1306,12 @@ displayDialog = function( closeTo, list, areaname ) {
 		}
 	}
 	
-	// 2nd version fix for Firefox 3.5 losing selection on changes to popup
-	saveTASelection(areaname);
+	// quick fix for Firefox 3.5 losing selection on changes to popup
+	textarea = getElementById( areaname);
+	if (typeof textarea.selectionStart != 'undefined') {
+		var tempSelectionStart = textarea.selectionStart;
+        	var tempSelectionEnd = textarea.selectionEnd; 
+	}
 
 	if (!obj) { obj = {}; }
 	if (!obj.width) { obj.width = 210; }
@@ -1367,8 +1319,13 @@ displayDialog = function( closeTo, list, areaname ) {
 	obj.autoOpen - false;
 	\$jq(dialogDiv).dialog('destroy').dialog(obj).dialog('option', 'title', tit).dialog('open');
 
-	// 2nd version fix for Firefox 3.5 losing selection on changes to popup
-	restoreTASelection(areaname);
+	// quick fix for Firefox 3.5 losing selection on changes to popup
+	if (textarea.selectionStart != tempSelectionStart) {
+                textarea.selectionStart = tempSelectionStart;
+        }
+        if (textarea.selectionEnd != tempSelectionEnd) {
+                textarea.selectionEnd = tempSelectionEnd;
+        }
 	
 	return false;
 }
@@ -1400,15 +1357,49 @@ class ToolbarFullscreen extends Toolbar
 
 	function getWikiHtml( $areaName ) // {{{
 	{
-		
-		return $this->getSelfLink('toggleFullScreen(\''.$areaName.'\');return false;',
-							htmlentities($this->label, ENT_QUOTES, 'UTF-8'), 'qt-fullscreen');
-		
-		
-//		if( isset($_REQUEST['zoom']) )
-//			$name = 'preview';
-//		return '<input type="image" name="'.$name.'" alt="' . htmlentities($this->label, ENT_QUOTES, 'UTF-8') . '" class="toolbar qt-fullscreen" '.
-//				'title="' . htmlentities($this->label, ENT_QUOTES, 'UTF-8') . '" value="wiki_edit" onclick="needToConfirm=false;" src="' . htmlentities($this->icon, ENT_QUOTES, 'UTF-8') . '"/>';
+		$name = 'zoom';
+		if( isset($_REQUEST['zoom']) )
+			$name = 'preview';
+		return '<input type="image" name="'.$name.'" alt="' . htmlentities($this->label, ENT_QUOTES, 'UTF-8') . '" class="toolbar qt-fullscreen" '.
+				'title="' . htmlentities($this->label, ENT_QUOTES, 'UTF-8') . '" value="wiki_edit" onclick="needToConfirm=false;" src="' . htmlentities($this->icon, ENT_QUOTES, 'UTF-8') . '"/>';
+	} // }}}
+}
+
+class ToolbarTextareaResize extends Toolbar
+{
+	private $diff;
+
+	function __construct( $type ) // {{{
+	{
+		switch( $type ) {
+		case 'reduce':
+			$this->setLabel( tra('Reduce area height') )
+				->setIcon( tra('pics/icons/arrow_in.png') )
+					->setType('TextareaResize');
+			$this->diff = '-10';
+			break;
+
+		case 'enlarge':
+			$this->setLabel( tra('Enlarge area height') )
+				->setIcon( tra('pics/icons/arrow_out.png') )
+					->setType('TextareaResize');
+			$this->diff = '+10';
+			break;
+
+		default:
+			throw new Exception('Unknown resize icon type type');
+		}
+	} // }}}
+
+	function getWikiHtml( $areaName ) // {{{
+	{
+		return $this->getSelfLink('textareasize(\'' . $areaName . '\', ' . $this->diff . ', 0)',
+							htmlentities($this->label, ENT_QUOTES, 'UTF-8'), 'qt-resize');
+	} // }}}
+
+	function isAccessible() // {{{
+	{
+		return parent::isAccessible() && ! isset($_REQUEST['zoom']);
 	} // }}}
 }
 
@@ -1434,12 +1425,10 @@ class ToolbarHelptool extends Toolbar
 		
 	} // }}}
 
-/* Useless
 	function isAccessible() // {{{
 	{
 		return parent::isAccessible();
 	} // }}}
-*/
 }
 
 class ToolbarFileGallery extends Toolbar
@@ -1543,8 +1532,7 @@ class ToolbarWikiplugin extends Toolbar
 	function isAccessible() // {{{
 	{
 		global $tikilib;
-		$dummy_output = '';
-		return parent::isAccessible() && $tikilib->plugin_enabled( $this->pluginName, $dummy_output );
+		return parent::isAccessible() && $tikilib->plugin_enabled( $this->pluginName );
 	} // }}}
 
 	private static function getToken( $name ) // {{{
@@ -1556,109 +1544,15 @@ class ToolbarWikiplugin extends Toolbar
 
 	function getWikiHtml( $areaName ) // {{{
 	{
-		return $this->getSelfLink('popup_plugin_form(\'' . $areaName . '\',\'' . $this->pluginName . '\')',
-							htmlentities($this->label, ENT_QUOTES, 'UTF-8'), 'qt-plugin');
-	} // }}}
-}
-
-class ToolbarSheet extends Toolbar
-{
-	protected $syntax;
-
-	public static function fromName( $tagName ) // {{{
-	{
-		switch( $tagName ) {
-			case 'sheetsave':
-				$label = tra('Save Sheet');
-				$icon = tra('pics/icons/disk.png');
-				$syntax = '$jq.sheet.saveSheet();';
-				break;
-			case 'addrow':
-				$label = tra('Add Row');
-				$icon = tra('pics/icons/sheet_row_add.png');
-				$syntax = '$jq.sheet.instance[0].controlFactory.addRow(null, null, ":last");';	// add row after end to workaround bug in jquery.sheet.js 1.0.2
-				break;														// TODO fix properly for 5.1
-			case 'addrowmulti':
-				$label = tra('Add Multi-Rows');
-				$icon = tra('pics/icons/sheet_row_add_multi.png');
-				$syntax = '$jq.sheet.instance[0].controlFactory.addRowMulti();';
-				break;
-			case 'deleterow':
-				$label = tra('Delete Row');
-				$icon = tra('pics/icons/sheet_row_delete.png');
-				$syntax = '$jq.sheet.instance[0].deleteRow();';
-				break;
-			case 'addcolumn':
-				$label = tra('Add Column');
-				$icon = tra('pics/icons/sheet_col_add.png');
-				$syntax = '$jq.sheet.instance[0].controlFactory.addColumn(true);';	// add col after current or at end if none selected
-				break;
-			case 'deletecolumn':
-				$label = tra('Delete Column');
-				$icon = tra('pics/icons/sheet_col_delete.png');
-				$syntax = '$jq.sheet.instance[0].deleteColumn();';
-				break;
-			case 'addcolumnmulti':
-				$label = tra('Add Multi-Columns');
-				$icon = tra('pics/icons/sheet_col_add_multi.png');
-				$syntax = '$jq.sheet.instance[0].controlFactory.addColumnMulti();';
-				break;
-			case 'sheetgetrange':
-				$label = tra('Get Cell Range');
-				$icon = tra('pics/icons/sheet_get_range.png');
-				$syntax = '$jq.sheet.instance[0].appendToFormula($jq.sheet.instance[0].getTdRange());';
-				break;
-			case 'sheetfind':
-				$label = tra('Find');
-				$icon = tra('pics/icons/find.png');
-				$syntax = '$jq.sheet.instance[0].cellFind();';
-				break;
-			case 'sheetrefresh':
-				$label = tra('Refresh Calculations');
-				$icon = tra('pics/icons/arrow_refresh.png');
-				$syntax = '$jq.sheet.instance[0].calc($jq.sheet.instance[0].obj.tableBody());';
-				break;
-			case 'sheetclose':
-				$label = tra('Finish Editing');
-				$icon = tra('pics/icons/close.png');
-				$syntax = '$jq("#edit_button").click();';	// temporary workaround TODO properly
-				break;
-				
-			default:
-				return;
+		if ($this->icon != 'pics/icons/plugin.png') {
+			$label = '';
+		} else {
+			$label = htmlentities($this->label, ENT_QUOTES, 'UTF-8');
 		}
-
-		$tag = new self;
-		$tag->setLabel( $label )
-			->setIcon( !empty($icon) ? $icon : 'pics/icons/shading.png' )
-				->setSyntax( $syntax )
-					->setType('Sheet');
-		
-		return $tag;
+		return $this->getSelfLink('popup_plugin_form(\'' . $areaName . '\',\'' . $this->pluginName . '\')',
+							$label, 'qt-plugin');
 	} // }}}
-
-	function getSyntax() // {{{
-	{
-		return $this->syntax;
-	} // }}}
-	
-	protected function setSyntax( $syntax ) // {{{
-	{
-		$this->syntax = $syntax;
-
-		return $this;
-	} // }}}
-
-	function getWikiHtml( $areaName ) // {{{
-	{
-		return $this->getSelfLink(addslashes(htmlentities($this->syntax, ENT_COMPAT, 'UTF-8')),
-							htmlentities($this->label, ENT_QUOTES, 'UTF-8'), 'qt-sheet');
-
-	} // }}}
-	
 }
-
-
 
 class ToolbarsList
 {
@@ -1705,7 +1599,7 @@ class ToolbarsList
 		if ( $unique && $this->contains($name) ) {
 			return false;
 		}
-		$this->lines[count($this->lines)-1][0][0][] = Toolbar::getTag( $name );
+		$this->lines[sizeof($this->lines)-1][0][0][] = Toolbar::getTag( $name );
 		return true;
 	}
 
@@ -1720,7 +1614,7 @@ class ToolbarsList
 	private function addLine( array $tags, array $rtags = array() ) // {{{
 	{
 		$elements = array();
-		$j = count($rtags) > 0 ? 2 : 1;
+		$j = count($rtags) > 1 ? 2 : 1;
 		
 		for ($i = 0; $i <  $j; $i++) {
 			$group = array();
@@ -1801,7 +1695,7 @@ class ToolbarsList
 			}
 			
 			// $line[0] is left part, $line[1] right floated section
-			for ($bitx = 0, $bitxcount_line = count($line); $bitx < $bitxcount_line; $bitx++ ) {
+			for ($bitx = 0; $bitx < count($line); $bitx++ ) {
 				$lineBit = '';
 				
 				if ($c == 0 && $bitx == 1 && ($tiki_p_admin == 'y' or $tiki_p_admin_toolbars == 'y')) {

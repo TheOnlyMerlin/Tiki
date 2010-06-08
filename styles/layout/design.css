@@ -5,11 +5,6 @@
 */
 
 /***** XHTML Elements *****/
-/* print mode only */
-html#print {
-	background: #fff;
-	color: #000;
-}
 
 body.fullscreen {
 	text-align: left;
@@ -41,12 +36,6 @@ span.button input,
 	padding: 1px 4px;
 }
 
-span#genPass span.button a,
-span#genPass span.button a:visited,
-span#genPass span.button a:hover {
-	padding: 1px 4px !important;
-}
-
 input[type=reset],
 input[type=submit],
 input[type=reset]:hover,
@@ -63,10 +52,6 @@ span.button.highlight a {
 
 span.button.highlight {
 	background: inherit;
-}
-
-div.highlight {
-	padding: 0 .3em;
 }
 
 input[type=checkbox],
@@ -405,30 +390,17 @@ div.help_section {
 .tip .rbox-title,
 .tip .rbox-data {}
 
-.error .rbox-title,
-.errors .rbox-title,
-.warning .rbox-title {
+.errors .rbox-title, .warning .rbox-title {
 	background: #ffc;
 	color: #000;
 	border-color: #f00;
 	border-bottom-color: #ffc;
 }
 
-.error .rbox-data,
-.errors .rbox-data,
-.warning .rbox-data {
+.errors .rbox-data, .warning .rbox-data {
 	background: #ffc;
 	color: #000;
 	border-color: #f00;
-}
-
-.error .rbox-data label {
-	color: #000;
-}
-
-#error {
-	background: yellow;
-	color: red;
 }
 
 .warning a,
@@ -483,9 +455,6 @@ td.form {
 	padding: 0.2em;
 }
 
-caption {
-	font-weight: bold;
-}
 /** Tabs **/
 
 .tabactive {
@@ -566,16 +535,6 @@ p.editdate {
 	border: 1px solid #bbb;
 }
 
-/* img plugin */
-div.imgbox {
-	    border: 1px solid #a9a9a9;
-        background-color: #f9f9f9;
-}
-
-div.thumbcaption {
-		font-size: 90%;
-}
-
 /* TOC */
 ul.toc {
 	padding-left: 2em;
@@ -604,16 +563,12 @@ ul.toc * {
 .diffadded {
 	background: #ccffcc;
 	color: #000;
-	word-wrap:break-word;
-	max-width: 400px;
 }
 
 .diffdeleted {
 	background: #ffcccc;
 	color: #000;
 	text-decoration: line-through;
-	word-wrap:break-word;
-	max-width: 400px;
 }
 
 .diffinldel {
@@ -741,11 +696,6 @@ div.multiselect div.even {
 div.multiselect div.selection {
 	border: 1px solid #80b1e2;
 	background: #fff;
-}
-
-div.multiselect,
-div.multiselect div.selection {
-	border: 1px solid transparent;
 }
 
 div.multiselect:hover,
@@ -1017,7 +967,6 @@ td.mods_update {
 .cluetip-default h3#cluetip-title {
 	background: #1b3a50;
 	color: #fff;
-	font-weight: bold;
 }
 
 .cluetip-default #cluetip-title a {
@@ -1118,40 +1067,9 @@ table.treeTable .parent td {
 }
 
 .mandatory_note {
+	display: block;
 	font-style: italic;
 	color: red;
 	margin-top: 10px;
 }
-
-#intertrans-indicator {
-	position: fixed;
-	left: 0;
-	right: 0;
-	top: 0;
-	height: 40px;
-	background-color: #add8e6;
-}
-
-#intertrans-form {
-	position: fixed;
-	top: 10%;
-	bottom: 10%;
-	left: 10%;
-	right: 10%;
-	overflow: auto;
-	background-color: #90ee90;
-	display: none;
-}
-#intertrans-form table {
-	width: 98%;
-}
-#intertrans-form input {
-	width: 100%;
-}
-.popup-backlinks {
-	display: none;
-	width: 100px;
-}
- /* wikiplugin_tracker */
-.trackerCategoryName {white-space:nowrap;}
 /* End of file */

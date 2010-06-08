@@ -1,20 +1,15 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-login.php,v 1.85.2.9 2008-03-19 13:17:26 jyhem Exp $
 $bypass_siteclose_check = 'y';
 require_once ('tiki-setup.php');
 if (isset($_REQUEST['cas']) && $_REQUEST['cas'] == 'y' && $prefs['auth_method'] == 'cas') {
 	$_REQUEST['user'] = '';
 } elseif (!(isset($_REQUEST['user']) or isset($_REQUEST['username']))) {
-	if (!$https_mode && $prefs['https_login'] == 'required') {
-		header('Location: ' . $base_url_https . 'tiki-login_scr.php');
-	} else {
-		header('Location: ' . $base_url . 'tiki-login_scr.php');
-	}
+	header('Location: ' . $base_url . 'tiki-login_scr.php');
 	die;
 }
 $smarty->assign('errortype', 'login'); // to avoid any redirection to the login box if error
@@ -44,7 +39,7 @@ if( $prefs['session_silent'] == 'y' ) {
 // Note that loginfrom will always be a complete URL (http://...)
 if (!isset($_SESSION['loginfrom'])) {
 	$_SESSION['loginfrom'] = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $prefs['tikiIndex']);
-	if (!preg_match('/^http/', $_SESSION['loginfrom'])) {
+	if (!ereg('^http', $_SESSION['loginfrom'])) {
 		if ($_SESSION['loginfrom'] {
 			0
 		} == '/') $_SESSION['loginfrom'] = $url_scheme . '://' . $url_host . (($url_port != '') ? ":$url_port" : '') . $_SESSION['loginfrom'];
@@ -53,11 +48,6 @@ if (!isset($_SESSION['loginfrom'])) {
 }
 if ($tiki_p_admin == 'y') {
 	if (isset($_REQUEST['su'])) {
-		if( empty( $_REQUEST['username'] ) ) {
-			$smarty->assign('msg', tra('Username field cannot be empty. Please go back and try again.'));
-			$smarty->display('error.tpl');
-			exit;
-		}
 		if ($userlib->user_exists($_REQUEST['username'])) {
 			$_SESSION[$user_cookie_site] = $_REQUEST['username'];
 			$smarty->assign_by_ref('user', $_REQUEST['username']);
@@ -229,15 +219,21 @@ if ($isvalid) {
 		$url = $_SESSION['loginfrom'];
 		$logslib->add_log('login', 'logged from ' . $url);
 		// Special '?page=...' case. Accept only some values to avoid security problems
-		if ( isset($_REQUEST['page']) and $_REQUEST['page'] === 'tikiIndex') {
-				$url = ${$_REQUEST['page']};
-		} else {	
+		switch ($_REQUEST['page']) {
+			case 'tikiIndex':
+				$url = $ {
+						$_REQUEST['page']
+				};
+				break;
+
+			default:
 				if (!empty($_REQUEST['url'])) {
 					global $cachelib; include_once('lib/cache/cachelib.php');
 					preg_match('/(.*)\?cache=(.*)/', $_REQUEST['url'], $matches);
-					if (!empty($matches[2]) && $cdata = $cachelib->getCached($matches[2], 'edit')) {
+					if (!empty($matches[2]) && $cachelib->isCached($matches[2], 'edit')) {
 						if (!empty($matches[1])) {
-							$url = $matches[1].'?'.$cdata;
+							$url = $matches[1].'?'.$cachelib->getCached($matches[2], 'edit');
+							$cachelib->invalidate($matches[2], 'edit');
 						}
 						$cachelib->invalidate($matches[2], 'edit');
 					}
@@ -253,7 +249,7 @@ if ($isvalid) {
 						//  - http:tiki-something.php => tiki-something.php
 						//  - pageName => tiki-index.php?page=pageName
 						$anonymous_homepage = $userlib->get_group_home('Anonymous');
-						if (!preg_match('#^https?://#', $anonymous_homepage)) {
+						if (!ereg('^https?://', $anonymous_homepage)) {
 							if (substr($anonymous_homepage, 0, 5) == 'http:') {
 								$anonymous_homepage = substr($anonymous_homepage, 5);
 							} else {
@@ -263,7 +259,7 @@ if ($isvalid) {
 						// Determine the complete tikiIndex URL for not logged users
 						// when tikiIndex's page has not been explicitely specified
 						//   (this only handles wiki default page for the moment)
-						if (preg_match('/tiki-index.php$/', $prefs['site_tikiIndex']) || preg_match('/tiki-index.php$/', $anonymous_homepage)) {
+						if (ereg('tiki-index.php$', $prefs['site_tikiIndex']) || ereg('tiki-index.php$', $anonymous_homepage)) {
 							$tikiIndex_full = 'tiki-index.php?page=' . urlencode($prefs['site_wikiHomePage']);
 						} else {
 							$tikiIndex_full = '';
@@ -289,14 +285,15 @@ if ($isvalid) {
 				unset($_SESSION['loginfrom']);
 				// No sense in sending user to registration page or no page at all
 				// This happens if the user has just registered and it's first login
-				if ($url == '' || preg_match('(tiki-register|tiki-login_validate|tiki-login_scr)\.php', $url)) $url = $prefs['tikiIndex'];
+				if ($url == '' || ereg('(tiki-register|tiki-login_validate|tiki-login_scr)\.php', $url)) $url = $prefs['tikiIndex'];
 				// Now if the remember me feature is on and the user checked the rememberme checkbox then ...
-				if ($prefs['rememberme'] != 'disabled' && isset($_REQUEST['rme']) && $_REQUEST['rme'] == 'on') {
-						$userInfo = $userlib->get_user_info($user);
-						$userId = $userInfo['userId'];
-						$secret = $userlib->create_user_cookie($userId);
-						setcookie($user_cookie_site, $secret . '.' . $userId, $tikilib->now + $prefs['remembertime'], $prefs['cookie_path'], $prefs['cookie_domain']);
+				if ($prefs['rememberme'] != 'disabled') {
+					if (isset($_REQUEST['rme']) && $_REQUEST['rme'] == 'on') {
+						$hash = $userlib->create_user_cookie($_REQUEST['user']);
+						$time = substr($hash, strpos($hash, '.') + 1);
+						setcookie($user_cookie_site, $hash . '.' . $user, $time, $prefs['cookie_path'], $prefs['cookie_domain']);
 						$logslib->add_log('login', 'got a cookie for ' . $prefs['remembertime'] . ' seconds');
+					}
 				}
 			}
 		}
@@ -338,7 +335,7 @@ if ($isvalid) {
 
 			case ACCOUNT_WAITING_USER:
 				$error = 'You did not validate your account';
-				$extraButton = array('href'=>'tiki-send_mail.php?user='.$_REQUEST['user'], 'text'=>tra('Resend'), 'comment'=>tra('You should have received an email. Check your mailbox and your spam box. Otherwise click on the button to resend the email')); 
+				$extraButton = array('href'=>'tiki-send_mail.php?user='.$_REQUEST['user'], 'text'=>tra('Resend'), 'comment'=>tra('You should have received an email. Check your mailbox and your spam box.Otherwise click on the button to resend the email')); 
 				break;
 
 			case USER_AMBIGOUS:
@@ -362,30 +359,16 @@ if ($isvalid) {
 		// shouldn't occur that often.
 		sleep(5);
 	}
-
-	if ( isset($user) and $prefs['feature_score'] == 'y' ) {
-		$tikilib->score_event($user, 'login');
-	}
+	if (isset($user) and $prefs['feature_score'] == 'y') $tikilib->score_event($user, 'login');
 	// RFC 2616 defines that the 'Location' HTTP headerconsists of an absolute URI
-	if ( !preg_match('/^https?\:/i', $url) ) {
-		$url = (preg_match('/^\//', $url) ? $url_scheme . '://' . $url_host . (($url_port != '') ? ":$url_port" : '') : $base_url) . $url;
-	}
+	if (!eregi('^https?\:', $url)) $url = (ereg('^/', $url) ? $url_scheme . '://' . $url_host . (($url_port != '') ? ":$url_port" : '') : $base_url) . $url;
 	// Force HTTP mode if needed
-	if ($stay_in_ssl_mode != 'y' || !$https_mode) {
-		$url = str_replace('https://', 'http://', $url);
-	}
+	if ($stay_in_ssl_mode != 'y' || !$https_mode) $url = str_replace('https://', 'http://', $url);
 	// Force Redirection to HTTPS mode of original URL if needed
 	if ($stay_in_ssl_mode == 'y' && $https_mode) {
 		$url = str_replace('http://', 'https://', $url);
 	}
-	if (defined('SID') && SID != '')
-		$url.= ((strpos($url, '?') === false) ? '?' : '&') . SID;
-	if ( isset($_SESSION['cas_redirect']) ) {
-		$url = $_SESSION['cas_redirect'];
-		unset($_SESSION['cas_redirect']);
-		$_SESSION[$user_cookie_site] = $user;
-	} 
-
+	if (defined('SID') && SID != '') $url.= ((strpos($url, '?') === false) ? '?' : '&') . SID;
 	header('Location: ' . $url);
 	exit;
 	

@@ -1,11 +1,15 @@
 {title help="Toolbars"}{tr}Admin Toolbars{/tr}{/title}
-{jq notonready=true}
+<script type='text/javascript'>
+<!--//--><![CDATA[//><!--
+{literal}
 	function toolbars_autoreload() {
 		if (document.forms['toolbars'].elements['autoreload'].checked) {
 			document.forms['toolbars'].submit();
 		}
 	}
-{/jq}
+{/literal}
+//--><!]]>
+</script>
 
 <div class="toolbars-admin clearfix">
 	<form name="toolbars" method="post" action="tiki-admin_toolbars.php" onsubmit="return saveRows()">
@@ -26,11 +30,11 @@
 			<div class="adminoptionbox" style="float: right;">
 				<label for="view_mode">{tr}View mode{/tr}</label>
 				<select id="view_mode" name="view_mode">
-					{if $prefs.feature_wysiwyg eq 'y'}<option value="both"{if $view_mode eq "both"} selected{/if}>{tr}Wiki and WYSIWYG{/tr}</option>{/if}
-					<option value="wiki"{if $view_mode eq "wiki"} selected{/if}>{tr}Wiki only{/tr}</option>
-					{if $prefs.feature_wysiwyg eq 'y'}<option value="wysiwyg"{if $view_mode eq "wysiwyg"} selected{/if}>{tr}WYSIWYG only{/tr}</option>{/if}
-					{if $prefs.feature_sheet eq 'y'}<option value="sheet"{if $view_mode eq "sheet"} selected{/if}>{tr}Spreadsheet{/tr}</option>{/if}
+					<option value="both">{tr}Wiki and WYSIWYG{/tr}</option>
+					<option value="wiki">{tr}Wiki only{/tr}</option>
+					<option value="wysiwyg">{tr}WYSIWYG only{/tr}</option>
 				</select>
+				{if $prefs.feature_wysiwyg neq 'y'}{jq}$jq("#view_mode").val("wiki").change().attr("disabled","disabled");{/jq}{/if}
 			</div>
 			<div class="adminoptionbox">
 				<input name="load" type="submit" value="{tr}Load{/tr}"/>
@@ -62,7 +66,7 @@
 		{/foreach}
 	</div>
 	<div class="lists">
-		<label for="full-list-w">{tr}Formatting Tools:{/tr}</label>
+		<label for="#full-list-w">{tr}Formatting Tools:{/tr}</label>
 		<ul id="full-list-w" class="full">
 		{foreach from=$display_w item=tool}
 			<li class="{$qtelement[$tool].class}">{$qtelement[$tool].html}</li>
@@ -70,7 +74,7 @@
 		</ul>
 	</div>
 	<div class="lists">
-		<label for="full-list-p">{tr}Plugin Tools:{/tr}</label><br/>
+		<label for="#full-list-p">{tr}Plugin Tools:{/tr}</label><br/>
 		<ul id="full-list-p" class="full">
 		{foreach from=$display_p item=tool}
 			<li class="{$qtelement[$tool].class}">{$qtelement[$tool].html}</li>
@@ -80,11 +84,11 @@
 	<div class="lists">
 		<div id="toolbar_edit_div" style="display:none">
 			<form name="toolbar_edit_form" method="post" action="tiki-admin_toolbars.php">
-				<h2>{tr}Edit tool{/tr}</h2>
+				<h2>{tr}Edit tool{/tr} (work in progress)</h2>
 				<fieldset>
-					<label for="tool_name">{tr}Name{/tr}:<small class="dialog_tips error">&nbsp;</small></label>
+					<label for="tool_name">{tr}Name{/tr}:</label>
 					<input type="text" name="tool_name" id="tool_name" class="text ui-widget-content ui-corner-all" />
-					<label for="tool_label">{tr}Label{/tr}:<small class="dialog_tips error">&nbsp;</small></label><small class="dialog_tips error">&nbsp;</small>
+					<label for="tool_label">{tr}Label{/tr}:</label>
 					<input type="text" name="tool_label" id="tool_label" class="text ui-widget-content ui-corner-all" />
 					<label for="tool_icon">{tr}Icon{/tr}:</label>
 					<input type="text" name="tool_icon" id="tool_icon" class="text ui-widget-content ui-corner-all" />
@@ -93,7 +97,7 @@
 					<label for="tool_syntax">{tr}Syntax{/tr}:</label>
 					<input type="text" name="tool_syntax" id="tool_syntax" class="text ui-widget-content ui-corner-all" />
 					<label for="tool_type">{tr}Type{/tr}:</label>
-					<select name="tool_type" id="tool_type" class="select ui-widget-content ui-corner-all">
+					<select type="text" name="tool_type" id="tool_type" class="select ui-widget-content ui-corner-all">
 						<option value="Inline">Inline</option>
 						<option value="Block">Block</option>
 						<option value="LineBased">LineBased</option>
@@ -107,22 +111,21 @@
 						<option value="Wikiplugin">Wikiplugin</option>
 					</select>
 					<label for="tool_plugin">{tr}Plugin name{/tr}:</label>
-					<select name="tool_plugin" id="tool_plugin" class="select ui-widget-content ui-corner-all" style="margin-bottom:0.5em">
+					<select name="tool_plugin" id="tool_plugin" class="select ui-widget-content ui-corner-all">
 						<option value="">{tr}None{/tr}</option>
 						{foreach from=$plugins key=plugin item=info}
 							<option value="{$plugin|escape}">{$info.name|escape}</option>
 						{/foreach}
 					</select>
-					<input type="hidden" value="" name="save_tool" id="save_tool" />
-					<input type="hidden" value="" name="delete_tool" id="delete_tool" />
+					<input type="hidden" value="" name="save_tool" id="save_tool">
+					<input type="hidden" value="" name="delete_tool" id="delete_tool">
 					<input type="hidden" name="section" value="{$loaded}"/>
 					<input type="hidden" name="comments" value="{if $comments}on{/if}"/>
 					<input type="hidden" name="autoreload" value="{if $autoreload}on{/if}"/>
 				</fieldset>
 			</form>
-			{jq}$jq('#tool_icon').tiki('autocomplete', 'icon');{/jq}
 		</div>
-		<label for="full-list-c">{tr}Custom Tools:{/tr}</label>{icon _id="add" title="{tr}Add a new custom tool{/tr}" id="toolbar_add_custom"}<br/>
+		<label for="#full-list-c">{tr}Custom Tools:{/tr}</label>{icon _id="add" title="{tr}Add a new custom tool{/tr}" id="toolbar_add_custom"}<br/>
 		<ul id="full-list-c" class="full">
 		{foreach from=$display_c item=tool}
 			<li class="{$qtelement[$tool].class}">{$qtelement[$tool].html}</li>
@@ -136,10 +139,5 @@
 Drag icons back from the toolbar rows onto the full list to remove them.<br />
 Icons with <strong>bold</strong> labels are for wiki text areas, those that are <em>italic</em> are for WYSIWYG mode, and those that are <strong><em>bold and italic</em></strong> are for both.<br />
 To save the current set use the dropdown (and optionally check the comments checkbox) at the bottom of the page to set where you want these toolbars to appear, and click Save.{/tr}
-{/remarksbox}
-{remarksbox title='Note' type='note'}
-	{tr}If you are experiencing problems with this page after upgrading from Tiki 4 please use this link to delete all your customised tools:{/tr}
-	<strong>{self_link reset_all_custom_tools=y}{tr}Delete all custom tools{/tr}{/self_link}</strong>
-	<em>{tr}Warning: There is no undo!{/tr}</em>
 {/remarksbox}
 </div>

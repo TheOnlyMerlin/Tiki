@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -60,8 +55,7 @@ table for each tracker:
 	+------+----------+----------+----------+...+----------+
 */
 
-class TrkWithMirrorTablesLib extends TrackerLib
-{
+class TrkWithMirrorTablesLib extends TrackerLib {
 		
 	var $TABLE_PREFIX;
 	var $COL_PREFIX;
@@ -465,7 +459,7 @@ class TrkWithMirrorTablesLib extends TrackerLib
 		$bindvars = array((int) $trackerId);
 		
 		if ($status) {
-			if (count($status > 1)) {
+			if (sizeof($status > 1)) {
 				if ($tiki_p_view_trackers_pending != 'y') $status = str_replace('p','',$status);
 				if ($tiki_p_view_trackers_closed != 'y') $status = str_replace('c','',$status);
 				$sts = preg_split('//', $status, -1, PREG_SPLIT_NO_EMPTY);
@@ -515,7 +509,7 @@ class TrkWithMirrorTablesLib extends TrackerLib
 				$colId = $this->get_col_id($csort_mode, $explicit);
 				$mid.= "and $tableId.$colId like ?";
 			} else {
-				list($a,$csort_mode,$corder) = explode('_',$sort_mode);
+				list($a,$csort_mode,$corder) = split('_',$sort_mode);
 				$colId = $this->get_col_id($csort_mode, $explicit);
 				if($colId == "") {
 					$colId = $this->first_field_name($trackerId);
@@ -523,7 +517,7 @@ class TrkWithMirrorTablesLib extends TrackerLib
 			}
 			
 			if (substr($sort_mode,0,2) == "f_") {
-				list($a,$asort_mode,$aorder) = explode('_',$sort_mode);
+				list($a,$asort_mode,$aorder) = split('_',$sort_mode);
 			}
 			
 			// if you select an initial letter
@@ -621,7 +615,7 @@ class TrkWithMirrorTablesLib extends TrackerLib
 				if ($fopt["type"] == 'r') {
 					$fopt["links"] = array();
 					if (!$opts) {
-						$opts = explode(',',$fopt['options']);
+						$opts = split(',',$fopt['options']);
 					}
 					$fopt["linkId"] = $this->get_item_id($opts[0],$opts[1],$fopt["value"]);
 					
@@ -648,7 +642,7 @@ class TrkWithMirrorTablesLib extends TrackerLib
 					}
 					$fopt['categs'] = $cats;	
 				} elseif ($fopt["type"] == 'l') {
-					$optsl = explode(',',$fopt['options']);
+					$optsl = split(',',$fopt['options']);
 					$fopt["links"] = array();
 					$lst = $last[$optsl[2]];
 					if ($lst) {
@@ -660,7 +654,7 @@ class TrkWithMirrorTablesLib extends TrackerLib
 					}
 				}
 				if (isset($fopt["options"])) {
-					$fopt["options_array"] = explode(',',$fopt["options"]);
+					$fopt["options_array"] = split(',',$fopt["options"]);
 				}
 				if (empty($asort_mode) || ($fieldId == $asort_mode)) {
 					$kx = $fopt["value"].'.'.$itid;
@@ -821,12 +815,12 @@ class TrkWithMirrorTablesLib extends TrackerLib
 				$smarty->assign('mail_trackerId', $trackerId);
 				$smarty->assign('mail_trackerName', $trackerName);
 				$foo = parse_url($_SERVER["REQUEST_URI"]);
-				$machine = $this->httpPrefix( true ). $foo["path"];
+				$machine = $this->httpPrefix(). $foo["path"];
 				$smarty->assign('mail_machine', $machine);
 				$parts = explode('/', $foo['path']);
 				if (count($parts) > 1)
 					unset ($parts[count($parts) - 1]);
-				$smarty->assign('mail_machine_raw', $this->httpPrefix( true ). implode('/', $parts));
+				$smarty->assign('mail_machine_raw', $this->httpPrefix(). implode('/', $parts));
 
 
 				$mail_data = $smarty->fetch('mail/tracker_changed_notification.tpl');

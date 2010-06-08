@@ -1,9 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+// $Id: /cvsroot/tikiwiki/tiki/poll_categorize.php,v 1.7 2007-10-12 07:55:23 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to err & die if called directly.
 //smarty is not there - we need setup
@@ -23,7 +23,7 @@ if ($prefs['feature_polls'] == 'y') {
 		if (!$catObjectId) {
 			$catObjectId = $categlib->add_categorized_object($cat_type, $cat_objid, $cat_desc, $cat_name, $cat_href);
 		}
-		if ($polllib->has_object_polls($catObjectId) && $prefs['poll_multiple_per_object'] != 'y') {
+		if ($polllib->has_object_polls($catObjectId)) {
 			$polllib->remove_object_poll($cat_type, $cat_objid);
 		}
 		$pollid = $polllib->create_poll($_REQUEST["poll_template"], $cat_objid .': '. $_REQUEST['poll_title']);

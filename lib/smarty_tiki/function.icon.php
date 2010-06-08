@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -23,11 +18,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  *  - _menu_icon: if set to 'n', will not show icon image when _menu_text is 'y'.
  *  - _confirm: text to use in a popup requesting the user to confirm it's action (yet only available with javascript)
  *  - _defaultdir: directory to use when the _id param does not include the path
- *  - _extension: Filename extension - default 'png'
  */
 function smarty_function_icon($params, &$smarty) {
 	if ( ! is_array($params) ) $params = array();
-	global $prefs, $tc_theme, $tc_theme_option, $cachelib;
+	global $prefs, $tc_theme, $tc_theme_option;
 	
 	if (empty($tc_theme)) {
 		$current_style = $prefs['style'];
@@ -37,13 +31,12 @@ function smarty_function_icon($params, &$smarty) {
 		$current_style_option = !empty($tc_theme_option) ? $tc_theme_option : '';
 	}
 	$serialized_params = serialize(array_merge($params, array($current_style, $current_style_option)));
-	$cache_key = 'icons_' . md5( $serialized_params );
-	if( $cached = $cachelib->getCached( $cache_key ) ) {
-		return $cached;
+	if ( isset($_SESSION['icons'][$serialized_params]) ) {
+		return $_SESSION['icons'][$serialized_params];
 	}
 
 	$basedirs = array('pics/icons', 'images', 'img/icons', 'pics/icons/mime');
-	$icons_extension = empty($params['_extension']) ? '.png' : '.' . $params['_extension'];
+	$icons_extension = '.png';
 	$tag = 'img';
 	$notag = false;
 	$default_class = 'icon';
@@ -78,12 +71,12 @@ function smarty_function_icon($params, &$smarty) {
 		if ( ($pos = strrpos($params['_id'], '.')) !== false )
 			$icons_extension = substr($params['_id'], $pos);
 
-		$params['_id'] = preg_replace('/^'.str_replace('/', '\/',$icons_basedir).'|'.$icons_extension.'$/', '', $params['_id']);
+		$params['_id'] = ereg_replace('(^'.$icons_basedir.'|'.$icons_extension.'$)', '', $params['_id']);
 	} else {
 		$icons_basedir = $basedirs[0].'/';
 	}
 
-	if ( ! preg_match('/^[a-z0-9_-]+$/i', $params['_id']) )
+	if ( ! eregi('^[a-z0-9_-]+$', $params['_id']) )
 		return;
 
 	global $url_path, $base_url, $tikipath, $tikilib;
@@ -183,10 +176,6 @@ function smarty_function_icon($params, &$smarty) {
 					$html .= ' '.htmlspecialchars($k, ENT_QUOTES, 'UTF-8').'="'.htmlspecialchars($v, ENT_QUOTES, 'UTF-8').'"';
 				}
 			}
-			global $headerlib;
-			if (!empty($params['file'])) {
-				$params['file'] = $headerlib->convert_cdn( $params['file'] );
-			}
 			switch ( $tag ) {
 			case 'input_image': $html = '<input type="image"'.$html.' />'; break;
 			case 'img': default: $html = smarty_function_html_image($params, $smarty);
@@ -200,6 +189,6 @@ function smarty_function_icon($params, &$smarty) {
 
 	}
 
-	$cachelib->cacheItem( $cache_key, $html );
-	return $html;
+	$_SESSION['icons'][$serialized_params] = $html;
+	return $_SESSION['icons'][$serialized_params];
 }

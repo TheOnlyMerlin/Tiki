@@ -1,37 +1,38 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-
 $section = 'newsletters';
 require_once ('tiki-setup.php');
 @ini_set('max_execution_time', 0); //will not work if safe_mode is on
 $prefs['feature_wiki_protect_email'] = 'n'; //not to alter the email
 include_once ('lib/newsletters/nllib.php');
 $auto_query_args = array('sort_mode', 'offset', 'find', 'nlId', 'cookietab');
-
-$access->check_feature('feature_newsletters');
-$access->check_permission('tiki_p_send_newsletters');
-
+$sender_email = $userlib->get_user_email($user);
+if ($prefs['feature_newsletters'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_newsletters");
+	$smarty->display("error.tpl");
+	die;
+}
+if ($tiki_p_send_newsletters != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST["nlId"])) {
 	$_REQUEST["nlId"] = 0;
 }
 $smarty->assign('nlId', $_REQUEST["nlId"]);
-$newsletters = $nllib->list_newsletters(0, -1, 'created_desc', '', '', array("tiki_p_admin_newsletters", "tiki_p_send_newsletters"), 'n');
+$newsletters = $nllib->list_newsletters(0, -1, 'created_desc', '', '', array("tiki_p_admin_newsletters", "tiki_p_send_newsletters"));
 if (!$newsletters['cant']) {
 	$smarty->assign('msg', tra("No newsletters available."));
 	$smarty->display("error.tpl");
 	die;
 }
-
-if ( empty($_REQUEST["sendingUniqId"]) ) {
-	$sendingUniqId = $tikilib->genRandomString();
-	$smarty->assign('sendingUniqId', $sendingUniqId);
-}
-
-if(!isset($_REQUEST['cookietab'])) {
+if (!isset($_REQUEST['cookietab'])) {
 	$_REQUEST['cookietab'] = 1;
 }
 $smarty->assign('newsletters', $newsletters["data"]);
@@ -39,7 +40,6 @@ if ($_REQUEST["nlId"]) {
 	$nl_info = $nllib->get_newsletter($_REQUEST["nlId"]);
 	if (!isset($_REQUEST["editionId"])) $_REQUEST["editionId"] = 0;
 	$smarty->assign('allowTxt', $nl_info['allowTxt']);
-	$smarty->assign('allowArticleClip', $nl_info['allowArticleClip']);
 	if ($_REQUEST["editionId"]) {
 		$info = $nllib->get_edition($_REQUEST["editionId"]);
 	} else {
@@ -55,24 +55,14 @@ if ($_REQUEST["nlId"]) {
 } else {
 	//No newsletter selected -> Check if the textarea for the first has to be displayed
 	$smarty->assign('allowTxt', $newsletters['data'][0]['allowTxt']);
-	$smarty->assign('allowArticleClip', $newsletters['data'][0]['allowTxt']);
 }
 // Display to newsletter txtarea or not depending on the preferences
 $showBoxCheck = "
 	<script type='text/javascript'>
 	<!--
-	function checkNewsletterTxtArea(nlIndex){
+	function checkNewsletterTxtArea(){
 	browser();
-	var allowTxt = new Array();
-	var allowArticleClip = new Array();
-	";
-for ($i = 0, $tmp_count = count($newsletters['data']); $i < $tmp_count; $i++) {
-$showBoxCheck .= "allowTxt[$i] = '" . $newsletters['data'][$i]['allowTxt'] . "';
-	allowArticleClip[$i] = '" . $newsletters['data'][$i]['allowArticleClip'] . "';
-	";
-}
-// allowTxt
-$showBoxCheck .= "	if (document.getElementById('txtcol1').style.display=='none' && allowTxt[nlIndex] == 'y'){";
+	if (document.getElementById('txtcol1').style.display=='none'){";
 if (preg_match("/gecko/i", $_SERVER['HTTP_USER_AGENT'])) {
 	$showBoxCheck.= "document.getElementById('txtcol1').style.display='table-cell';";
 	$showBoxCheck.= "document.getElementById('txtcol2').style.display='table-cell';";
@@ -81,34 +71,23 @@ if (preg_match("/gecko/i", $_SERVER['HTTP_USER_AGENT'])) {
 	$showBoxCheck.= "document.getElementById('txtcol2').style.display='inline';";
 };
 $showBoxCheck.= "
-    	}else if (allowTxt[nlIndex] == 'n') {
+    	}else{
 	document.getElementById('txtcol1').style.display='none';
 	document.getElementById('txtcol2').style.display='none';
-    	}";
-// allowArticleClip
-$showBoxCheck .= "	if (document.getElementById('clipcol1').style.display=='none' && allowArticleClip[nlIndex] == 'y'){";
-if (preg_match("/gecko/i", $_SERVER['HTTP_USER_AGENT'])) {
-	$showBoxCheck.= "document.getElementById('clipcol1').style.display='table-cell';";
-	$showBoxCheck.= "document.getElementById('clipcol2').style.display='table-cell';";
-} else {
-	$showBoxCheck.= "document.getElementById('clipcol1').style.display='inline';	";
-	$showBoxCheck.= "document.getElementById('clipcol2').style.display='inline';";
-};
-$showBoxCheck.= "
-    	}else if (allowArticleClip[nlIndex] == 'n') {
-	document.getElementById('clipcol1').style.display='none';
-	document.getElementById('clipcol2').style.display='none';
-    	}";
-// end of function
-$showBoxCheck .= "
+    	}
 	}
 	-->
 	</script>
 	";
 $smarty->assign('showBoxCheck', $showBoxCheck);
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$nllib->remove_edition($_REQUEST["nlId"], $_REQUEST["remove"]);
+	$area = 'delnewsletter';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$nllib->remove_edition($_REQUEST["nlId"], $_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 
 // wysiwyg decision
@@ -130,9 +109,11 @@ if (isset($_REQUEST['mode_normal']) && $_REQUEST['mode_normal']=='y') {
 	$info["data"] = $editlib->parseToWysiwyg($_REQUEST["data"]);
 }
 
+
+
+
 if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0 && (!isset($_REQUEST['previousTemplateId']) || $_REQUEST['previousTemplateId'] != $_REQUEST['templateId'])) {
-	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$template_data = $templateslib->get_template($_REQUEST["templateId"]);
+	$template_data = $tikilib->get_template($_REQUEST["templateId"]);
 	$_REQUEST["data"] = $template_data["content"];
 	if (isset($_SESSION['wysiwyg']) && $_SESSION['wysiwyg'] == 'y') {
 		$_REQUEST['data'] = $tikilib->parse_data($_REQUEST['data'], array('is_html'=>true, 'absolute_links' => true, 'suppress_icons' => true));
@@ -218,13 +199,7 @@ if (isset($_REQUEST["preview"])) {
 	if (!empty($_REQUEST['replyto'])) {
 		$smarty->assign('replyto', $_REQUEST['replyto']);
 	}
-	$previewdata = $info['dataparsed'];
-	if ($nl_info["allowArticleClip"] == 'y' && $nl_info["autoArticleClip"] == 'y') {
-		$articleClip = $nllib->clip_articles($_REQUEST["nlId"]);
-		$previewdata = str_replace("~~~articleclip~~~", $articleClip, $previewdata);
-	}
 	$smarty->assign('info', $info);
-	$smarty->assign('previewdata', $previewdata);
 }
 $smarty->assign('presend', 'n');
 if (isset($_REQUEST["save"])) {
@@ -256,17 +231,10 @@ if (isset($_REQUEST["save"])) {
 	if (stristr($parsed, "<body") === false) {
 		$parsed = "<html><body>$parsed</body></html>";
 	}
-	$previewdata = $parsed;
-	if ($nl_info["allowArticleClip"] == 'y' && $nl_info["autoArticleClip"] == 'y') {
-		$articleClip = $nllib->clip_articles($_REQUEST["nlId"]);
-		$previewdata = str_replace("~~~articleclip~~~", $articleClip, $previewdata);
-	}
-	$smarty->assign('previewdata', $previewdata);
 	$smarty->assign('dataparsed', $parsed);
 	$smarty->assign('subject', $_REQUEST["subject"]);
 	$cant = count($subscribers);
 	$smarty->assign('subscribers', $cant);
-	$smarty->assign_by_ref('subscribers_list', $subscribers);
 	$smarty->assign('info', $info);
 	if (!empty($_REQUEST['replyto'])) {
 		$smarty->assign('replyto', $_REQUEST['replyto']);
@@ -282,54 +250,32 @@ if (empty($txt) && !empty($_REQUEST["data"])) {
 	$txt = preg_replace('/^!(.*?)$/m', "\n$1\n", $txt);
 	$info["datatxt"] = $txt;
 }
-
-if ( isset($_REQUEST["send"]) && ! empty($_REQUEST["sendingUniqId"]) ) {
+if (isset($_REQUEST["send"])) {
 	include_once ('lib/webmail/tikimaillib.php');
 	$editionId = $_REQUEST['editionId'];
 	check_ticket('send-newsletter');
-	@set_time_limit(0);
-
-	if ( ! is_array($_SESSION["sendingUniqIds"]) )
-		$_SESSION["sendingUniqIds"] = array();
-
-	if ( isset( $_SESSION["sendingUniqIds"][ $_REQUEST["sendingUniqId"] ] ) ) {
-		// Avoid sending the same newsletter again if the user reload the page
-		print tra('Error: You can\'t send the same newsletter by refreshing this frame content.');
-		die;
-	} else {
-		$_SESSION["sendingUniqIds"][ $_REQUEST["sendingUniqId"] ] = 1;
-	}
-
+	set_time_limit(0);
 	$mail = new TikiMail();
 	if (stristr($_REQUEST["dataparsed"], "<body") === false) {
-		$html = "<html><body><div id='tiki-center' class='clearfix content'><div class='wikitext'>" . $tikilib->parse_data($_REQUEST["dataparsed"], array('absolute_links' => true, 'suppress_icons' => true)) . "</div></div></body></html>";
+		$html = "<html><body>" . $tikilib->parse_data($_REQUEST["dataparsed"], array('absolute_links' => true, 'suppress_icons' => true)) . "</body></html>";
 	} else {
-		$html = str_ireplace('<body>','<body><div id="tiki-center" class="clearfix content"><div class="wikitext">',$_REQUEST["dataparsed"]);
-		$html = str_ireplace('</body>','</div></div></body>', $html);
-	}
-	if ($nl_info["allowArticleClip"] == 'y' && $nl_info["autoArticleClip"] == 'y') {
-		$articleClip = $nllib->clip_articles($_REQUEST["nlId"]);
-		$html = str_replace("~~~articleclip~~~", $articleClip, $html);
+		$html = $_REQUEST["dataparsed"];
 	}
 	if (stristr($html, '<base') === false) {
 		if (stristr($html, '<header') === false) {
-			$html = str_ireplace('<html>', "<html><header><base href=\"$base_url\" /><style type=\"text/css\">" . $headerlib->get_all_css_content() . "</style></header>", $html);
+			$html = str_ireplace('<html>', "<html><header><base href=\"$base_host\" /></header>", $html);
 		} else {
-			$html = str_ireplace('<header>', "<header><base href=\"$base_url\" />", $html);
+			$html = str_ireplace('<header>', "<header><base href=\"$base_host\" />", $html);
 		}
 	}
 	$sent = array();
 	$unsubmsg = '';
 	$errors = array();
-	$logFileName = $prefs['tmpDir'] . '/public/newsletter-log-' . $_REQUEST["sendingUniqId"] . '.txt';
-	$logFileHandle = @fopen( $logFileName, 'a' );
-
 	if (isset($_REQUEST['errorEditionId'])) {
 		$users = $nllib->get_edition_errors($_REQUEST['errorEditionId']);
 	} else {
-		$users = $nllib->get_all_subscribers($_REQUEST["nlId"], $nl_info["unsubMsg"] == 'y');
+		$users = $nllib->get_all_subscribers($_REQUEST["nlId"], $nl_info["unsubMsg"]);
 	}
-
 	$nllib->memo_subscribers_edition($editionId, $users);
 	$sender_email = $prefs['sender_email'];
 	if (!isset($info['files']) || $info['files'] === null || count($info['files']) <= 0) $info['files'] = $nllib->get_edition_files($editionId);
@@ -337,12 +283,7 @@ if ( isset($_REQUEST["send"]) && ! empty($_REQUEST["sendingUniqId"]) ) {
 		$fpath = isset($f['path']) ? $f['path'] : $prefs['tmpDir'] . '/newsletterfile-' . $f['filename'];
 		$mail->addAttachment(file_get_contents($fpath), $f['name'], $f['type']);
 	}
-
-	$smarty->assign('sectionClass', empty( $section ) ? '' : "tiki_$section " );
-	echo $smarty->fetch('send_newsletter_header.tpl');
-
-	@ini_set('zlib.output_compression', 0);
-	foreach ($users as $us) {
+	foreach($users as $us) {
 		$userEmail = $us["login"];
 		$email = $us["email"];
 		if (!preg_match('/([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+/', trim($email))) {
@@ -359,15 +300,16 @@ if ( isset($_REQUEST["send"]) && ! empty($_REQUEST["sendingUniqId"]) ) {
 		} else {
 			$userEmail = '';
 		}
+		$mail->setFrom($sender_email);
 		if (!empty($_REQUEST['replyto'])) {
 			$mail->setHeader("Reply-To", $_REQUEST['replyto']);
 		}
 		$mail->setSubject($_REQUEST["subject"]); // htmlMimeMail memorised the encoded subject
 		$languageEmail = !$userEmail ? $prefs['site_language'] : $tikilib->get_user_preference($userEmail, "language", $prefs['site_language']);
-		if ($nl_info["unsubMsg"] == 'y' && !empty($us["code"])) {
+		if ($nl_info["unsubMsg"] == 'y') {
 			$unsubmsg = $nllib->get_unsub_msg($_REQUEST["nlId"], $email, $languageEmail, $us["code"], $userEmail);
 			if (stristr($html, "</body>") === false) {
-				$msg = $html . $unsubmsg;
+				$msg = $html . nl2br($unsubmsg);
 			} else {
 				$msg = str_replace("</body>", nl2br($unsubmsg) . "</body>", $html);
 			}
@@ -376,55 +318,15 @@ if ( isset($_REQUEST["send"]) && ! empty($_REQUEST["sendingUniqId"]) ) {
 		}
 		$mail->setHtml($msg, $txt . strip_tags($unsubmsg));
 		$mail->buildMessage(array('text_encoding' => '8bit'));
-
-		if (@ob_get_level() == 0)
-			@ob_start();
-
-		// Browsers needs a certain amount of data, for each flush, to display something
-		print str_repeat(' ', 4096) . "\n";
-
-		print tra("Sending to") . " '<b>$email</b>': <font color=";
-
-		if ( $mail->send(array($email)) ) {
+		if ($mail->send(array($email))) {
 			$sent[] = $email;
-			print "'green'>" . tra('OK');
 			$nllib->delete_edition_subscriber($editionId, $us);
-			$logStatus = 'OK';
 		} else {
-			print "'red'>" . tra('Error') . " - {$mail->errors}";
 			$errors[] = array("user" => $userEmail, "email" => $email, "msg" => $mail->errors);
 			$nllib->mark_edition_subscriber($editionId, $us);
-			$logStatus = 'Error';
 		}
-
-		if ( $logFileHandle )
-			@fwrite( $logFileHandle, "$email : $logStatus\n" );
-
-		print "</font><br />\n";
-
-		// Flush output to force the browser to display email addresses as soon as emails are sent
-		// This should avoid CGI and/or proxy and/or browser timeouts when sending to a lot of emails
-		//
-		@ob_flush();
-		@flush();
-		@ob_end_flush();
 	}
-
-	$nb_sent = count($sent);
-	$nb_errors = count($errors);
-
-	$msg = '<h4>' . sprintf( tra('Newsletter successfully sent to %s users.'), $nb_sent ) . '</h4>';
-	if ( $nb_errors > 0 )
-		$msg .= "\n" . '<font color="red">' . '(' . sprintf( tra('There was %s errors.'), $nb_errors ) . ')' . '</font><br />';
-
-	// If logfile exists and if it is reachable from the web browser, add a download link
-	if ( $logFileHandle && $logFileName[0] != '/' && $logFileName[0] != '.' )
-		$smarty->assign('downloadLink', $logFileName);
-
-	echo str_replace( "'", "\\'", $msg);
-	echo $smarty->fetch('send_newsletter_footer.tpl');
-
-	$smarty->assign('sent', $nb_sent);
+	$smarty->assign('sent', count($sent));
 	$smarty->assign('emited', 'y');
 	if (count($errors) > 0) {
 		$smarty->assign_by_ref('errors', $errors);
@@ -439,34 +341,7 @@ if ( isset($_REQUEST["send"]) && ! empty($_REQUEST["sendingUniqId"]) ) {
 			$info['files'][$k]['path'] = $newpath;
 		}
 	}
-
-	@fclose( $logFileHandle );
-	unset($_SESSION["sendingUniqIds"][ $_REQUEST["sendingUniqId"] ]);
-	exit; // Stop here since we are in an iframe and don't want to use smarty display
 }
-
-// Article Clipping
-if ($nl_info["allowArticleClip"] == 'y' && !$articleClip) {
-	if ($nl_info["autoArticleClip"] == 'y' || isset($_REQUEST["clipArticles"])) {
-		$articleClip = $nllib->clip_articles($_REQUEST["nlId"]);
-		// prevent clearing of keyed in info if any
-		if (!$info["data"] && isset($_REQUEST["data"])) {
-			$info["data"] = $_REQUEST["data"];
-		}
-		if (!$info["datatxt"] && isset($_REQUEST["datatxt"])) {
-			$info["datatxt"] = $_REQUEST["datatxt"];
-		}
-		if (!$info["subject"] && isset($_REQUEST["subject"])) {
-			$info["subject"] = $_REQUEST["subject"];
-		}		
-	} elseif (isset($_REQUEST["articleClip"]) && $_REQUEST["articleClip"]) {
-		$articleClip = $_REQUEST["articleClip"];
-	}
-} else {
-	$articleClip = '';
-}
-$smarty->assign('articleClip', $articleClip);
-
 if (isset($_REQUEST["save_only"])) {
 	if (!isset($txt) || empty($_REQUEST['datatxt'])) $txt = "";
 	$smarty->assign('nlId', $_REQUEST['nlId']);
@@ -542,8 +417,7 @@ $smarty->assign_by_ref('cant_editions', $editions["cant"]);
 $smarty->assign_by_ref('cant_drafts', $drafts["cant"]);
 $smarty->assign('url', "tiki-send_newsletters.php");
 if ($tiki_p_use_content_templates == 'y') {
-	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$templates = $templateslib->list_templates('newsletters', 0, -1, 'name_asc', '');
+	$templates = $tikilib->list_templates('newsletters', 0, -1, 'name_asc', '');
 }
 $smarty->assign_by_ref('templates', $templates["data"]);
 $tpls = $nllib->list_tpls();

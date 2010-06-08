@@ -1,16 +1,20 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-list_banners.php,v 1.16 2007-10-12 07:55:28 nyloth Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/banners/bannerlib.php');
 if (!isset($bannerlib)) {
 	$bannerlib = new BannerLib;
 }
-$access->check_feature('feature_banners');
+// CHECK FEATURE BANNERS HERE
+if ($prefs['feature_banners'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_banners");
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (isset($_REQUEST["remove"])) {
 	if ($tiki_p_admin_banners != 'y') {
@@ -19,8 +23,13 @@ if (isset($_REQUEST["remove"])) {
 		$smarty->display("error.tpl");
 		die;
 	}
-	$access->check_authenticity();
-	$bannerlib->remove_banner($_REQUEST["remove"]);
+	$area = 'delbanner';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$bannerlib->remove_banner($_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 // This script can receive the thresold
 // for the information as the number of

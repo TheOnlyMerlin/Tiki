@@ -1,9 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: /cvsroot/tikiwiki/tiki/lib/diff/renderer_character.php,v 1.3 2005-05-18 11:00:35 mose Exp $
 
 /**
  * "Side-by-Side" diff renderer.
@@ -12,8 +8,7 @@
  *
  * @package Text_Diff
  */
-class Text_Diff_Renderer_character extends Tiki_Text_Diff_Renderer
-{
+class Text_Diff_Renderer_character extends Tiki_Text_Diff_Renderer {
     var $orig;
     var $final;
 
@@ -51,22 +46,22 @@ class Text_Diff_Renderer_character extends Tiki_Text_Diff_Renderer
     {
     	if ($type == 'context') {
 	        foreach ($lines as $line) {
-			$this->orig .= htmlspecialchars($line);
-			$this->final .= htmlspecialchars($line);
+			$this->orig .= $line;
+			$this->final .= $line;
 	        }
     	} elseif ($type == 'added' || $type == 'change-added') {
 	        $l = "";
 	        foreach ($lines as $line) {
-			$l .= htmlspecialchars($line);
+			$l .= $line;
 		 }
 	        if (!empty($l))
-	            $this->final .= '<ins class="diffchar inserted" style="color: green; text-decoration: none"><strong>'.$l."</strong></ins>";
+	            $this->final .= '<span class="diffchar">'.$l."</span>";
     	} elseif ($type == 'deleted' || $type == 'change-deleted') {
 	        $l = "";
 	        foreach ($lines as $line)
-			$l .= htmlspecialchars($line);
+			$l .= $line;
 	        if (!empty($l))
-	            $this->orig .= '<del class="diffchar deleted" style="color: red; text-decoration: none"><strong>'.$l."</strong></del>";
+	            $this->orig .= '<span class="diffchar">'.$l."</span>";
       }
     }
 

@@ -1,9 +1,5 @@
 <?php
 
-/**
- * @group unit
- */
-
 class Perms_Reflection_PermissionComparatorTest extends TikiTestCase
 {
 	function testIdenticalSets() {

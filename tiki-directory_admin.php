@@ -1,15 +1,22 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-directory_admin.php,v 1.13 2007-10-12 07:55:25 nyloth Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/directory/dirlib.php');
-$access->check_feature('feature_directory');
-$access->check_permission_either(array('tiki_p_admin_directory_sites','tiki_p_admin_directory_cats','tiki_p_validate_links'));
-
+if ($prefs['feature_directory'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_directory");
+	$smarty->display("error.tpl");
+	die;
+}
+if ($tiki_p_admin_directory != 'y' && $tiki_p_admin_directory_sites != 'y' && $tiki_p_admin_directory_cats != 'y' && $tiki_p_validate_links != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied"));
+	$smarty->display("error.tpl");
+	die;
+}
 // This will only display a menu to
 // admin_categories
 // admin_sites
@@ -27,5 +34,6 @@ $section = 'directory';
 include_once ('tiki-section_options.php');
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
+// Display the template
 $smarty->assign('mid', 'tiki-directory_admin.tpl');
 $smarty->display("tiki.tpl");

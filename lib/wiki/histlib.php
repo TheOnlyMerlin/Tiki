@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,8 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class HistLib extends TikiLib
-{
+class HistLib extends TikiLib {
 
 	/* 
 		*	Removes a specific version of a page
@@ -141,11 +135,11 @@ class HistLib extends TikiLib
 
 	// Returns all the versions for this page
 	// without the data itself
-	function get_page_history($page, $fetchdata=true, $offset = 0, $limit = -1) {
+	function get_page_history($page, $fetchdata=true) {
 		global $prefs;
 
 		$query = "select * from `tiki_history` where `pageName`=? order by `version` desc";
-		$result = $this->query($query,array($page), $limit, $offset);
+		$result = $this->query($query,array($page));
 		$ret = array();
 
 		while ($res = $result->fetchRow()) {
@@ -357,34 +351,10 @@ function histlib_helper_setup_diff( $page, $oldver, $newver )
 			$smarty->assign_by_ref('new', $new);
 		}
 	}
-
-	$oldver_mod = $oldver;
-	if ($oldver == 0) {
-		$oldver_mod = 1;
-	}
-
-	$query = "SELECT `comment`, `version` from `tiki_history` WHERE `pageName`=? and `version` BETWEEN ? AND ? ORDER BY `version` DESC";
-	$result = $histlib->query($query,array($page,$oldver_mod,$newver));
-	$diff_summaries = array();
-
-	if ($oldver == 0) {
-		$diff_summaries[] = $old['comment'];
-	}
-
-	while ($res = $result->fetchRow()) {
-		$aux = array();
-
-		$aux["comment"] = $res["comment"];
-		$aux["version"] = $res["version"];
-		$diff_summaries[] = $aux;
-	}
-
-	$smarty->assign('diff_summaries', $diff_summaries);
 	
 	if (!isset($_REQUEST["diff_style"]) || $_REQUEST["diff_style"] == "old") {
 		$_REQUEST["diff_style"] = 'unidiff';
 	}
-
 	$smarty->assign('diff_style', $_REQUEST["diff_style"]);
 	if ($_REQUEST["diff_style"] == "sideview") {
 		$old["data"] = $tikilib->parse_data($old["data"], array('preview_mode' => true));
@@ -417,15 +387,6 @@ function histlib_helper_setup_diff( $page, $oldver, $newver )
 			$old['data'] = histlib_strip_irrelevant( $old['data'] );
 			$new['data'] = histlib_strip_irrelevant( $new['data'] );
 		}
-
-                # If the user doesn't have permission to view 
-                # source, strip out all tiki-source-based comments
-                global $tiki_p_wiki_view_source;
-                if ($tiki_p_wiki_view_source != 'y' && $_REQUEST["diff_style"] != "htmldiff") {
-                  $old["data"] = preg_replace(';~tc~(.*?)~/tc~;s', '', $old["data"]);
-                  $new["data"] = preg_replace(';~tc~(.*?)~/tc~;s', '', $new["data"]);
-                }
-
 		$html = diff2($old["data"], $new["data"], $_REQUEST["diff_style"]);
 		$smarty->assign_by_ref('diffdata', $html);
 	}
@@ -435,40 +396,4 @@ function histlib_strip_irrelevant( $data )
 {
 	$data = preg_replace( "/<(h1|h2|h3|h4|h5|h6|h7)\s+([^\\\\>]+)>/i", '<$1>', $data );
 	return $data;
-}
-
-function rollback_page_to_version($page, $version, $check_key = true, $keep_lastModif = false) {
-	global $prefs, $histlib, $tikilib, $categlib, $access;
-	if ($check_key) {
-		$access->check_authenticity();
-	}		
-	$histlib->use_version($page, $version, '', $keep_lastModif);
-	
-	if ( ($approved = $tikilib->get_approved_page($page)) && $prefs['wikiapproval_outofsync_category'] > 0) {
-		
-		$approved_page = $histlib->get_page_from_history($approved, 0, true);
-		$staging_page = $histlib->get_page_from_history($page, $version, true);
-		$cat_type='wiki page';	
-		$staging_cats = $categlib->get_object_categories($cat_type, $page);
-		$s_cat_desc = ($prefs['feature_wiki_description'] == 'y') ? substr($staging_info["description"],0,200) : '';
-		$s_cat_objid = $page;
-		$s_cat_name = $page;
-		$s_cat_href="tiki-index.php?page=".urlencode($s_cat_objid);
-		
-		//Instead of firing up diff, just check if the pages share the same exact data, drop the staging
-		//copy out of the review category if so
-		if ( $approved_page["data"] != $staging_page["data"] ) //compare these only once
-		$pages_diff = true;
-		if ( in_array($prefs['wikiapproval_outofsync_category'], $staging_cats) )
-		$in_staging_cat = true;
-
-		if ( !$pages_diff && $in_staging_cat ) {
-			$staging_cats = array_diff($staging_cats,Array($prefs['wikiapproval_outofsync_category']));
-			$categlib->update_object_categories($staging_cats, $s_cat_objid, $cat_type, $s_cat_desc, $s_cat_name, $s_cat_href);	
-		} elseif ( $pages_diff && !$in_staging_cat ) {
-			$staging_cats[] = $prefs['wikiapproval_outofsync_category'];
-			$categlib->update_object_categories($staging_cats, $s_cat_objid, $cat_type, $s_cat_desc, $s_cat_name, $s_cat_href);	
-		}
-	}	
-	$tikilib->invalidate_cache( $page );
 }

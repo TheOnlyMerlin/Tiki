@@ -16,30 +16,17 @@
 {/if}
 			</div>
 		<div class="author_info">
-			{if $blog_data.use_author eq 'y' || $blog_data.add_date eq 'y'}
-			{tr}Published {/tr}
-			{/if}
-			
-			{if $blog_data.use_author eq 'y'}
-				{tr}by{/tr} {$post_info.user|userlink} 
-			{/if}
-			
-			{if $blog_data.add_date eq 'y'}
-				{tr}at{/tr} {$post_info.created|tiki_short_datetime}
-			{/if}
-			
-			{if $blog_data.show_avatar eq 'y'}
-					{$post_info.avatar}
+			{if $blog_data.use_title eq 'y'}
+				{tr}By{/tr} {$post_info.user|userlink} {tr}on{/tr} {$post_info.created|tiki_short_datetime}
+			{else}
+				{tr}By{/tr} {$post_info.user|userlink}
 			{/if}
 		</div>
 	</div>
 	<div class="clearfix postbody-title">
-		{if $blog_data.use_title eq 'y'}
 		<div class="title">
-			<h2>{$post_info.title|escape}</h2>
+				<h2>{$post_info.title|escape}</h2>
 		</div>
-		{/if}
-		
 	{if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y'}
 		{if $tags.data|@count >0}
 			<div class="freetaglist">
@@ -66,36 +53,19 @@
 	</div>
 {/if}
 {*</div>*}
-	{capture name='copyright_section'}
-		{include file='show_copyright.tpl'}
-	{/capture}
-	
-	{* When copyright section is not empty show it *}
-	{if $smarty.capture.copyright_section neq ''}
-		<p class="editdate">
-			{$smarty.capture.copyright_section}
-		</p>
-	{/if}
+	{if $prefs.blogs_feature_copyrights eq 'y' and $prefs.wikiLicensePage}
+		{if $prefs.wikiLicensePage == $page}
+    {if $tiki_p_edit_copyrights eq 'y'}
+      <p class="editdate">{tr}To edit the copyright notices{/tr} <a href="copyrights.php?page={$copyrightpage}">{tr}Click Here{/tr}</a>.</p>
+    {/if}
+  {else}
+    <p class="editdate">{tr}The content on this page is licensed under the terms of the{/tr} <a href="tiki-index.php?page={$prefs.wikiLicensePage}&amp;copyrightpage={$page|escape:"url"}">{$prefs.wikiLicensePage}</a>.</p>
+  {/if}
+{/if}
 </div>
 <div class="postfooter">
 	<div class="status"> {* renamed to match forum footer layout *}
 		<a href='tiki-print_blog_post.php?postId={$postId}'>{icon _id='printer' alt='{tr}Print{/tr}'}</a>
-		{if $prefs.feature_blog_sharethis eq "y"}
-			{capture name=shared_title}{tr}Share This{/tr}{/capture}
-			{capture name=shared_link_title}{tr}ShareThis via AIM, social bookmarking and networking sites, etc.{/tr}{/capture}
-			{wiki}{literal}<script language="javascript" type="text/javascript">
-				//Create your sharelet with desired properties and set button element to false
-				var object{/literal}{$postId}{literal} = SHARETHIS.addEntry({
-					title:'{/literal}{$smarty.capture.shared_title|replace:'\'':'\\\''}{literal}'
-				},
-				{button:false});
-				//Output your customized button
-				document.write('<span id="share{/literal}{$postId}{literal}"><a title="{/literal}{$smarty.capture.shared_link_title|replace:'\'':'\\\''}{literal}" href="javascript:void(0);"><img src="http://w.sharethis.com/images/share-icon-16x16.png?CXNID=1000014.0NXC" /></a></span>');
-				//Tie customized button to ShareThis button functionality.
-				var element{/literal}{$postId}{literal} = document.getElementById("share{/literal}{$postId}{literal}");
-				object{/literal}{$postId}{literal}.attachButton(element{/literal}{$postId}{literal});
-			</script>{/literal}{/wiki}
-		{/if}
 	</div>
 	<div class="actions"> {* renamed to match forum footer layout *}
 <a class="link" href="{$postId|sefurl:blogpost}">{tr}Permalink{/tr}</a>

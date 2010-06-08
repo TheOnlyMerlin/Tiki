@@ -1,6 +1,6 @@
 {* $Id$ *}
 
-{title help="Permission"}{if $objectType eq 'global'}{tr}Assign global permissions{/tr}{else}{tr}Assign permissions to {/tr}{tr}{$objectType|escape}{/tr}: {$objectName|escape}{/if}{/title}
+{title help="Permission"}{tr}Assign permissions to {/tr}{tr}{$objectType|escape}{/tr}: {$objectName|escape}{/title}
 
 <div class="navbar">
 {if !empty($referer)}{button href="$referer" _text="{tr}Back{/tr}"}{/if}
@@ -15,7 +15,6 @@
 	<h2>{tr}Edit Permissions{/tr}</h2>
 		{/if}
 	<form method="post" action="{$smarty.server.PHP_SELF}?{query}">
-		{capture name="notices"}
 		{if empty($filegals_manager)}
 			{if $objectType eq 'global'}
 				{remarksbox type="note" title="{tr}Note{/tr}"}
@@ -40,10 +39,9 @@
 				{/remarksbox}
 			{/if}
 		{/if}
-		{/capture}
-		{$smarty.capture.notices}
+	
 	<hr />
-		<h2>{if $objectType eq 'global'}{tr}Assign global permissions{/tr}{elseif $objectType eq 'category'}{tr}Assign permissions to this category{/tr}{else}{tr}Assign permissions to this object{/tr}{/if} {icon _id="img/loading-light.gif" id="perms_busy" style="vertical-align:top; display:none;"}</h2>
+		<h2>{if $objectType eq 'global'}{tr}Assign global permissions{/tr}{else}{tr}Assign permissions to this object{/tr}{/if} {icon _id="img/loading-light.gif" id="perms_busy" style="vertical-align:top; display:none;"}</h2>
 
 		<input type="hidden" name="referer" value="{$referer|escape}" />
 		<input type="hidden" name="objectName" value="{$objectName|escape}" />
@@ -55,7 +53,7 @@
 		<div class="input_submit_container" style="text-align: center">
 			<input type="submit" name="assign" value="{tr}Assign{/tr}" />
 			{if $permissions_displayed eq 'direct' and $objectType neq 'global'}
-				<input type="submit" name="remove" value="{if $objectType eq 'category'}{tr}Delete category permissions{/tr}{else}{tr}Delete object permissions{/tr}{/if}" class="tips" title="{tr}Reset Perms{/tr}|{if $objectType neq 'category'}{tr}This will remove all the settings here and permissions will be reset to inherit any category permissions that are set, or the global sitewide permissions.{/tr}{else}{tr}This will remove all the settings here and permissions will be reset to inherit the global sitewide permissions.{/tr}{/if}"/>
+				<input type="submit" name="remove" value="{tr}Reset to Global Perms{/tr}" class="tips" title="{tr}Reset Perms{/tr}|{if $objectType neq 'category'}{tr}This will remove all the settings here and permissions will be reset to inherit any category permissions that are set, or the global sitewide permissions.{/tr}{else}{tr}This will remove all the settings here and permissions will be reset to inherit the global sitewide permissions.{/tr}{/if}"/>
 			{/if}
 			<input type="submit" name="copy" value="{tr}Copy{/tr}" class="tips" title="{tr}Permissions Clipboard{/tr}|{tr}Copy the permissions set here{/tr}" />
 			{if !empty($perms_clipboard_source)}<input type="submit" name="paste" value="{tr}Paste{/tr}" class="tips" title="{tr}Permissions Clipboard{/tr}|{tr}Paste copied permissions from {/tr}<em>{$perms_clipboard_source}</em>" />{/if}
@@ -88,15 +86,10 @@ if ($jq("#assignstructure").attr("checked")) {
 		<div class="input_submit_container" style="text-align: center">
 			<input type="submit" name="assign" value="{tr}Assign{/tr}" />
 			{if $permissions_displayed eq 'direct' and $objectType neq 'global'}
-				<input type="submit" name="remove" value="{if $objectType eq 'category'}{tr}Delete category permissions{/tr}{else}{tr}Delete object permissions{/tr}{/if}" class="tips" title="{tr}Reset Perms{/tr}|{tr}This will remove all the settings here and permissions will be reset to inherit the global sitewide permissions.{/tr}"/>
+				<input type="submit" name="remove" value="{tr}Reset to Global Perms{/tr}" class="tips" title="{tr}Reset Perms{/tr}|{tr}This will remove all the settings here and permissions will be reset to inherit the global sitewide permissions.{/tr}"/>
 			{/if}
 		</div>
 	</form>
-	
-	{remarksbox type="note" title="{tr}Note{/tr}"}
-		{tr}Previous version of assign permissions page can still be found{/tr} <a href="tiki-assignpermission.php?group={if isset($smarty.request.group)}{$smarty.request.group}{else}Anonymous{/if}">{tr}here{/tr}</a>
-	{/remarksbox}
-	
 	{/tab}
 
 	{tab name="{tr}Select groups{/tr}"}
@@ -146,11 +139,15 @@ if ($jq("#assignstructure").attr("checked")) {
 
 		{tab name="{tr}Quick Permissions{/tr}"}
 
-		{if $prefs.feature_tabs neq 'y'}
-			<h2>{tr}Quick Permissions{/tr}</h2>
-		{/if}
+			{if $prefs.feature_tabs neq 'y'}
+		<h2>{tr}Quick Permissions{/tr}</h2>
+			{/if}
 
-		{$smarty.capture.notices}
+			{if empty($filegals_manager)}
+				{remarksbox type="warning" title="{tr}Warning{/tr}"}{tr}These permissions override any global permissions or category permissions affecting this object.{/tr}<br />
+					{if $tiki_p_admin eq 'y'}{tr}To edit global permissions <a class="rbox-link" href="tiki-objectpermissions.php?objectType=global">click here</a>.{/tr}{/if}
+				{/remarksbox}
+			{/if}
 
 		<h2>{tr}Assign Quick-Permissions to this object{/tr}</h2>
 
@@ -191,13 +188,6 @@ if ($jq("#assignstructure").attr("checked")) {
 			<input type="submit" name="assign" value="{tr}Assign{/tr}" />
 		</div>
 		
-		{if empty($filegals_manager)}
-			{remarksbox type="note" icon="bricks" title="{tr}Experimental{/tr}"}
-				{tr}<em>Quick permissions</em> should be considered as an experimental feature.{/tr}<br/>
-				{tr}Although permissions will be set as expected using this form, it doesn't necessarily show the current permissions reliably.{/tr}<br /><br />
-				{tr}There is also no undo - <strong>Use with care!</strong>{/tr}
-			{/remarksbox}
-		{/if}
 	{/tab}
 </form>
 	{/if}

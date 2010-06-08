@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,8 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class cssLib extends TikiLib
-{
+class cssLib extends TikiLib {
 
 	function list_css($path) {
 		$back = array();
@@ -22,7 +16,7 @@ class cssLib extends TikiLib
 		$handle = opendir('.');
 
 		while ($file = basename(readdir($handle))) {
-			if ((substr($file, -4, 4) == ".css") and (preg_match('/^[-_a-zA-Z0-9\.]*$/', $file))) {
+			if ((substr($file, -4, 4) == ".css") and (ereg("^[-_a-zA-Z0-9\.]*$", $file))) {
 				$back[] = substr($file, 0, -4);
 			}
 		}
@@ -63,7 +57,7 @@ class cssLib extends TikiLib
 		$res = preg_replace($find, $repl, $meat);
 		return array(
 			"error" => '',
-			"content" => explode("\n", $res)
+			"content" => split("\n", $res)
 		);
 	}
 
@@ -91,7 +85,7 @@ class cssLib extends TikiLib
 				} elseif (($type == "items") and ($line == "{")) {
 					$type = "attributes";
 				} elseif ($type == "items") {
-					$li = explode(',', $line);
+					$li = split(",", $line);
 
 					foreach ($li as $l) {
 						$l = trim($l);
@@ -107,7 +101,7 @@ class cssLib extends TikiLib
 					$back["$index"]["items"] = array();
 					$back["$index"]["attributes"] = array();
 				} elseif ($type == "attributes") {
-					$parts = explode(':', str_replace(";", "", $line));
+					$parts = split(":", str_replace(";", "", $line));
 
 					if (isset($parts[0]) && isset($parts[1])) {
 						$obj = trim($parts[0]);
@@ -115,7 +109,7 @@ class cssLib extends TikiLib
 						$back["$index"]["attributes"]["$obj"] = trim($parts[1]);
 					}
 				} else {
-					$li = explode(',', $line);
+					$li = split(",", $line);
 
 					foreach ($li as $l) {
 						$l = trim($l);

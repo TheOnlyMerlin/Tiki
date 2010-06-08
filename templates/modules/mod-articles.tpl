@@ -17,7 +17,7 @@
 			<input type="submit" value="{tr}Go{/tr}" />
 		</form>
 	{/if}
-	{modules_list list=$modArticles nonums=$nonums}
+	{if $nonums != 'y'}<ol>{else}<ul>{/if}
 		{section name=ix loop=$modArticles}
 			<li>
 				{if isset($module_params.img)}
@@ -30,7 +30,7 @@
 				</a>
 			</li>
 		{/section}
-	{/modules_list}
+	{if $nonums != 'y'}</ol>{else}</ul>{/if}
 	{if $more eq 'y'}
 		<div class="more">
 			{assign var=queryArgs value=''}

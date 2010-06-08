@@ -1,18 +1,19 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-upload_file.php,v 1.65.2.4 2008-03-11 15:17:54 nyloth Exp $
 $section = 'file_galleries';
 require_once ('tiki-setup.php');
 if ($prefs['feature_categories'] == 'y') {
 	include_once ('lib/categories/categlib.php');
 }
-
-$access->check_feature('feature_file_galleries');
-
+if ($prefs['feature_file_galleries'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_file_galleries");
+	$smarty->display("error.tpl");
+	die;
+}
 include_once ('lib/filegals/filegallib.php');
 if ($prefs['feature_groupalert'] == 'y') {
 	include_once ('lib/groupalert/groupalertlib.php');
@@ -26,7 +27,6 @@ function print_progress($msg) {
 		ob_flush();
 	}
 }
-
 function print_msg($msg, $id) {
 	global $prefs;
 	if ($prefs['javascript_enabled'] == 'y') {
@@ -55,12 +55,10 @@ if (!empty($_REQUEST['fileId'])) {
 } elseif (isset($_REQUEST['galleryId']) && !is_array($_REQUEST['galleryId'])) {
 	$_REQUEST['galleryId'] = array($_REQUEST['galleryId']);
 }
-
 if (isset($_REQUEST['galleryId'][0])) {
 	$gal_info = $tikilib->get_file_gallery((int)$_REQUEST['galleryId'][0]);
 	$tikilib->get_perm_object($_REQUEST['galleryId'][0], 'file gallery', $gal_info, true);
 }
-
 if (empty($_REQUEST['fileId']) && $tiki_p_upload_files != 'y' && $tiki_p_admin_file_galleries != 'y') {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg', tra("Permission denied"));
@@ -70,9 +68,14 @@ if (empty($_REQUEST['fileId']) && $tiki_p_upload_files != 'y' && $tiki_p_admin_f
 if (isset($_REQUEST['galleryId'][1])) {
 	foreach($_REQUEST['galleryId'] as $i => $gal) {
 		if (!$i) continue;
-		// TODO get the good gal_info
+		// TODO get the ggod gal_info
 		$perms = $tikilib->get_perm_object($_REQUEST['galleryId'][$i], 'file gallery', $gal_info, false);
-		$access->check_permission('tiki_p_upload_files');
+		if ($perms['tiki_p_upload_files'] != 'y') {
+			$smarty->assign('errortype', 401);
+			$smarty->assign('msg', tra("Permission denied"));
+			$smarty->display('error.tpl');
+			die;
+		}
 	}
 }
 if (!empty($_REQUEST['fileId'])) {
@@ -87,12 +90,6 @@ if (!empty($_REQUEST['fileId'])) {
 		$smarty->display('error.tpl');
 		die;
 	}
-	if ($gal_info['backlinkPerms'] == 'y' && $filegallib->hasOnlyPrivateBacklinks($_REQUEST['fileId'])) {
-		$smarty->assign('errortype', 401);
-		$smarty->assign('msg', tra("Permission denied you can edit this file"));
-		$smarty->display('error.tpl');
-		die;
-	}		
 	if (isset($_REQUEST['lockedby']) && $fileInfo['lockedby'] != $_REQUEST['lockedby']) {
 		if (empty($fileInfo['lockedby'])) {
 			$smarty->assign('msg', tra(sprintf('The file has been unlocked meanwhile')));
@@ -108,7 +105,6 @@ if (!empty($_REQUEST['fileId'])) {
 		die;
 	}
 }
-
 $foo = parse_url($_SERVER["REQUEST_URI"]);
 $foo1 = str_replace("tiki-upload_file", "tiki-download_file", $foo["path"]);
 $smarty->assign('url_browse', $tikilib->httpPrefix() . $foo1);
@@ -131,7 +127,6 @@ if (!empty($_REQUEST['galleryId'][0]) && $prefs['feature_groupalert'] == 'y') {
 	$smarty->assign_by_ref('groupforalert', $groupforalert);
 	$smarty->assign_by_ref('showeachuser', $showeachuser);
 }
-
 if (isset($_REQUEST['fileId'])) {$editFileId = $_REQUEST['fileId'];} else {$editFileId = 0;}
 $editFile = false;
 if (!empty($editFileId)) {
@@ -160,7 +155,9 @@ if (isset($_REQUEST["upload"])) {
 	$batch_job = false;
 	$didFileReplace = false;
 	foreach($_FILES["userfile"]["error"] as $key => $error) {
-		print_progress('<?xml version="1.0" encoding="UTF-8"?>');
+		if ($prefs['javascript_enabled'] == 'y') {
+			print_progress('<?xml version="1.0" encoding="UTF-8"?>');
+		}
 		$formId = $_REQUEST['formId'];
 		$smarty->assign("FormId", $_REQUEST['formId']);
 		if (empty($_REQUEST['galleryId'][$key])) {
@@ -208,105 +205,16 @@ if (isset($_REQUEST["upload"])) {
 				$errors[] = $error;
 				continue;
 			}
-
-			$size = $_FILES["userfile"]['size'][$key];
-			$type = $_FILES["userfile"]['type'][$key];
-			$name = stripslashes($_FILES["userfile"]['name'][$key]);
-
 			$file_name = $_FILES["userfile"]["name"][$key];
 			$file_tmp_name = $_FILES["userfile"]["tmp_name"][$key];
 			$tmp_dest = $prefs['tmpDir'] . "/" . $file_name . ".tmp";
-
-			// Handle per gallery image size limits
-			$ratio = 0;
-			list(,$subtype)=explode('/',strtolower($type));
-			if ($subtype == "pjpeg")	// supress ie non-mime type (ie sends non standard mime-type for jpeg)
-			{
-				$subtype = "jpeg";
-				$type = "image/jpeg";
+			if (!move_uploaded_file($file_tmp_name, $tmp_dest)) {
+				$errors[] = tra('Errors detected');
+				continue;
 			}
-			// If it's an image format we can handle and gallery has limits on image sizes
-			if ( (in_array($subtype, array("jpg","jpeg","gif","png","bmp","wbmp"))) 
-				&& ( ($gal_info["image_max_size_x"]) || ($gal_info["image_max_size_y"]) && (!$podCastGallery) ) ) {
-				$image_size_info = getimagesize($file_tmp_name);
-				$image_x = $image_size_info[0];
-				$image_y = $image_size_info[1];
-				if($gal_info["image_max_size_x"]) {
-					$rx=$image_x/$gal_info["image_max_size_x"];
-				}else{
-					$rx=0;
-				}
-				if($gal_info["image_max_size_y"]) {
-					$ry=$image_y/$gal_info["image_max_size_y"];
-				}else{
-					$ry=0;
-				}
-				$ratio=max($rx,$ry);
-				if($ratio>1) {	// Resizing will occur
-					$image_new_x=$image_x/$ratio;
-					$image_new_y=$image_y/$ratio;
-					$resized_file = $tmp_dest;
-					$image_resized_p = imagecreatetruecolor($image_new_x, $image_new_y);
-					switch($subtype) {
-						case "gif":
-							$image_p = imagecreatefromgif($file_tmp_name);
-							break;
-						case "png":
-							$image_p = imagecreatefrompng($file_tmp_name);
-							break;
-						case "bmp":
-						case "wbmp":
-							$image_p = imagecreatefromwbmp($file_tmp_name);
-							break;
-						case "jpg":
-						case "jpeg":
-							$image_p = imagecreatefromjpeg($file_tmp_name);
-							break;
-					}
-					if(!imagecopyresampled($image_resized_p, $image_p, 0, 0, 0, 0, $image_new_x, $image_new_y, $image_x, $image_y)) {
-						$errors[] = tra('Cannot resize the file:') . ' ' . $resized_file;
-					}
-					switch($subtype) {
-						case "gif":
-							if (!imagegif($image_resized_p, $resized_file)){
-								$errors[] = tra('Cannot write the file:') . ' ' . $resized_file;
-							}
-							break;
-						case "png":
-							if (!imagepng($image_resized_p, $resized_file)){
-								$errors[] = tra('Cannot write the file:') . ' ' . $resized_file;
-							}
-							break;
-						case "bmp":
-						case "wbmp":
-							if (!image2wbmp($image_resized_p, $resized_file)){
-								$errors[] = tra('Cannot write the file:') . ' ' . $resized_file;
-							}
-							break;
-						case "jpg":
-						case "jpeg":
-							if (!imagejpeg($image_resized_p, $resized_file)){
-								$errors[] = tra('Cannot write the file:') . ' ' . $resized_file;
-							}
-							break;
-					}
-					unlink($image_p);
-					$feedback_message = sprintf(tra('Image was reduced: %s x %s -> %s x %s'),$image_x, $image_y, (int)$image_new_x, (int)$image_new_y);
-					$size = filesize($resized_file);
-				}
-			}
-
-			if ($ratio <=1) {
-				// No resizing
-				if (!move_uploaded_file($file_tmp_name, $tmp_dest)) {
-					$errors[] = tra('Errors detected');
-					continue;
-				}
-			}
-
 			$fp = fopen($tmp_dest, "rb");
 			if (!$fp) {
-				$errors[] = tra('Cannot read the file:') . ' ' . $tmp_dest;
+				$errors[] = tra('Cannot read file:') . ' ' . $tmp_dest;
 			}
 			$data = '';
 			$fhash = '';
@@ -353,7 +261,15 @@ if (isset($_REQUEST["upload"])) {
 				fclose($fw);
 				$data = '';
 			}
-
+			$size = $_FILES["userfile"]['size'][$key];
+			$name = stripslashes($_FILES["userfile"]['name'][$key]);
+			$type = $_FILES["userfile"]['type'][$key];
+			list(,$subtype)=explode('/',strtolower($type));
+			if ($subtype == "pjpeg")	// supress ie non-mime type (ie sends non standard mime-type for jpeg)
+			{
+				$subtype = "jpeg";
+				$type = "image/jpeg";
+			}
 			if (preg_match('/.flv$/', $name)) {
 				$type = "video/x-flv";
 			}
@@ -368,27 +284,21 @@ if (isset($_REQUEST["upload"])) {
 					$errors[] = tra('Warning: Empty file:') . ' ' . $name . '. ' . tra('Please re-upload your file');
 				}
 			}
-
 			if (empty($_REQUEST['name'][$key])) $_REQUEST['name'][$key] = $name;
 			if (empty($_REQUEST['user'][$key])) $_REQUEST['user'][$key] = $user;
 			if (!isset($_REQUEST['description'][$key])) $_REQUEST['description'][$key] = '';
 			if (empty($_REQUEST['author'][$key])) $_REQUEST['author'][$key] = $user;
-			if (empty($_REQUEST['deleteAfter'][$key]) || empty($_REQUEST['deleteAfter_unit'][$key])) {
-				$deleteAfter = null;
-			} else {
-				$deleteAfter = $_REQUEST['deleteAfter'][$key]*$_REQUEST['deleteAfter_unit'][$key];
-			}
-
+			
 			$fileInfo['filename'] = $file_name;
 			if (isset($data)) {
 				if ($editFile) {
 					$didFileReplace = true;
-					$fileId = $filegallib->replace_file($editFileId, $_REQUEST["name"][$key], $_REQUEST["description"][$key], $name, $data, $size, $type, $_REQUEST['user'][$key], $fhash . $extension, $_REQUEST['comment'][$key], $gal_info, $didFileReplace, $_REQUEST['author'][$key], $fileInfo['lastModif'], $fileInfo['lockedby'], $deleteAfter);
+					$fileId = $filegallib->replace_file($editFileId, $_REQUEST["name"][$key], $_REQUEST["description"][$key], $name, $data, $size, $type, $_REQUEST['user'][$key], $fhash . $extension, $_REQUEST['comment'][$key], $gal_info, $didFileReplace, $_REQUEST['author'][$key], $fileInfo['lastModif'], $fileInfo['lockedby']);
 					if ($prefs['fgal_limit_hits_per_file'] == 'y') {
 						$filegallib->set_download_limit($editFileId, $_REQUEST['hit_limit'][$key]);
 					}
 				} else {
-					$fileId = $filegallib->insert_file($_REQUEST["galleryId"][$key], $_REQUEST["name"][$key], $_REQUEST["description"][$key], $name, $data, $size, $type, $_REQUEST['user'][$key], $fhash . $extension, '', $_REQUEST['author'][$key], '', '', $deleteAfter);
+					$fileId = $filegallib->insert_file($_REQUEST["galleryId"][$key], $_REQUEST["name"][$key], $_REQUEST["description"][$key], $name, $data, $size, $type, $_REQUEST['user'][$key], $fhash . $extension, '', $_REQUEST['author'][$key]);
 				}
 				if (!$fileId) {
 					$errors[] = tra('Upload was not successful. Duplicate file content') . ': ' . $name;
@@ -429,7 +339,6 @@ if (isset($_REQUEST["upload"])) {
 						$smarty->assign("fileId", $aux['fileId']);
 						$smarty->assign("dllink", $aux['dllink']);
 						$smarty->assign("nextFormId", $_REQUEST['formId'] + 1);
-						$smarty->assign("feedback_message",$feedback_message);
 						print_progress($smarty->fetch("tiki-upload_file_progress.tpl"));
 					}
 				}
@@ -442,12 +351,7 @@ if (isset($_REQUEST["upload"])) {
 		}
 	}
 	if ($editFile && !$didFileReplace) {
-		if (empty($_REQUEST['deleteAfter']) || empty($_REQUEST['deleteAfter_unit'])) {
-			$deleteAfter = null;
-		} else {
-			$deleteAfter = $_REQUEST['deleteAfter']*$_REQUEST['deleteAfter_unit'];
-		}
-		$filegallib->replace_file($editFileId, $_REQUEST['name'][0], $_REQUEST['description'][0], $fileInfo['filename'], $fileInfo['data'], $fileInfo['filesize'], $fileInfo['filetype'], $fileInfo['user'], $fileInfo['path'], $_REQUEST['comment'][0], $gal_info, $didFileReplace, $_REQUEST['author'][0], $fileInfo['lastModif'], $fileInfo['lockedby'], $deleteAfter);
+		$filegallib->replace_file($editFileId, $_REQUEST['name'][0], $_REQUEST['description'][0], $fileInfo['filename'], $fileInfo['data'], $fileInfo['filesize'], $fileInfo['filetype'], $fileInfo['user'], $fileInfo['path'], $_REQUEST['comment'][0], $gal_info, $didFileReplace, $_REQUEST['author'][0], $fileInfo['lastModif'], $fileInfo['lockedby']);
 		$fileChangedMessage = tra('File update was successful') . ': ' . $_REQUEST['name'];
 		$smarty->assign('fileChangedMessage', $fileChangedMessage);
 		$cat_type = 'file';
@@ -488,11 +392,28 @@ if (empty($_REQUEST['fileId'])) {
 	include_once ('lib/cache/cachelib.php');
 	$cacheName = $filegallib->get_all_galleries_cache_name($user);
 	$cacheType = $filegallib->get_all_galleries_cache_type();
-	if (!$galleries = $cachelib->getSerialized($cacheName, $cacheType)) {
+	if (!$cachelib->isCached($cacheName, $cacheType)) {
 		$galleries = $filegallib->list_file_galleries(0, -1, 'name_asc', $user, '', $prefs['fgal_root_id'], false, true, false, false, false, true, false);
 		$cachelib->cacheItem($cacheName, serialize($galleries), $cacheType);
+	} else {
+		$galleries = unserialize($cachelib->getCached($cacheName, $cacheType));
 	}
-	$galleries['data'] = Perms::filter(array('file gallery'), 'object', $galleries['data'], array('object'=>'id'), 'upload_files');
+	$temp_max = count($galleries["data"]);
+	for ($i = 0; $i < $temp_max; $i++) {
+		if ($userlib->object_has_one_permission($galleries["data"][$i]["galleryId"], 'file gallery')) {
+			$galleries["data"][$i]["individual"] = 'y';
+			if ($userlib->object_has_permission($user, $galleries["data"][$i]["galleryId"], 'file gallery', 'tiki_p_upload_files')) {
+				$galleries["data"][$i]["individual_tiki_p_upload_files"] = 'y';
+			} else {
+				$galleries["data"][$i]["individual_tiki_p_upload_files"] = 'n';
+			}
+			if ($tiki_p_admin == 'y' || $userlib->object_has_permission($user, $galleries["data"][$i]["galleryId"], 'file gallery', 'tiki_p_admin_file_galleries')) {
+				$galleries["data"][$i]["individual_tiki_p_upload_files"] = 'y';
+			}
+		} else {
+			$galleries["data"][$i]["individual"] = 'n';
+		}
+	}
 	$smarty->assign_by_ref('galleries', $galleries["data"]);
 }
 if ($tiki_p_admin_file_galleries == 'y' || $tiki_p_admin == 'y') {
@@ -515,7 +436,7 @@ if ($prefs['javascript_enabled'] != 'y' or !isset($_REQUEST["upload"])) {
 	$smarty->assign('mid', 'tiki-upload_file.tpl');
 	if (!empty($_REQUEST['filegals_manager'])) {
 		$smarty->assign('filegals_manager', $_REQUEST['filegals_manager']);
-		$smarty->display("tiki_full.tpl");
+		$smarty->display("tiki-print.tpl");
 	} else {
 		$smarty->display("tiki.tpl");
 	}

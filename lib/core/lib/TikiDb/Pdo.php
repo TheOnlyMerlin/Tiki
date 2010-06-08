@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once 'lib/core/lib/TikiDb.php';
 
@@ -18,7 +13,7 @@ class TikiDb_Pdo_Result
 	}
 
 	function fetchRow() {
-		return is_array($this->result) ? array_shift($this->result) : 0;
+		return array_shift($this->result);
 	}
 
 	function numRows() {
@@ -26,8 +21,7 @@ class TikiDb_Pdo_Result
 	}
 }
 
-class TikiDb_Pdo extends TikiDb
-{
+class TikiDb_Pdo extends TikiDb {
 	private $db;
 
 	function __construct( $db ) // {{{
@@ -56,6 +50,7 @@ class TikiDb_Pdo extends TikiDb
 			$query = $this->getQuery();
 		}
 
+		$this->convertQuery( $query );
 		$this->convertQueryTablePrefixes( $query );
 
 		if( $offset != -1 && $numrows != -1 )
@@ -65,29 +60,23 @@ class TikiDb_Pdo extends TikiDb
 
 		$starttime=$this->startTimer();
 
-		$result = false;
-		if ( @ $pq = $this->db->prepare($query) ) {
+		$pq = $this->db->prepare($query);
 
-			if ($values and !is_array($values)) {
-				$values = array($values);
-			}
-			if ($values) {
-				$result = $pq->execute( $values );
-			} else {
-				$result = $pq->execute();
-			}
+		if ($values and !is_array($values)) {
+			$values = array($values);
+		}
+		if ($values) {
+			$result = $pq->execute( $values );
+		} else {
+			$result = $pq->execute();
 		}
 
 		$this->stopTimer($starttime);
 
-		if ( ! $result ) {
-			if ( ! $pq ) {
-				$tmp = $this->db->errorInfo();
-			} else {
-				$tmp = $pq->errorInfo();
-				$pq->closeCursor();
-			}
+		if (!$result) {
+			$tmp = $pq->errorInfo();
 			$this->setErrorMessage( $tmp[2] );
+			$pq->closeCursor();
 			return false;
 		} else {
 			$this->setErrorMessage( "" );

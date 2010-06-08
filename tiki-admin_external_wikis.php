@@ -1,15 +1,17 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_external_wikis.php,v 1.15.2.1 2007-11-25 21:42:34 sylvieg Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/admin/adminlib.php');
-
-$access->check_permission('tiki_p_admin');
-
+if ($tiki_p_admin != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra('You do not have permission to use this feature'));
+	$smarty->display('error.tpl');
+	die;
+}
 if (!isset($_REQUEST["extwikiId"])) {
 	$_REQUEST["extwikiId"] = 0;
 }
@@ -23,8 +25,13 @@ if ($_REQUEST["extwikiId"]) {
 }
 $smarty->assign('info', $info);
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$adminlib->remove_extwiki($_REQUEST["remove"]);
+	$area = 'delextwiki';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$adminlib->remove_extwiki($_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 if (isset($_REQUEST["save"])) {
 	check_ticket('admin-external-wikis');

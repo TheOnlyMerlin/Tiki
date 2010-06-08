@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Id: tiki-listpages.tpl 14254 2008-08-14 15:31:06Z pkdille $ *}
 
 {title}{tr}XML Zip Import{/tr}{/title}
 
@@ -7,18 +7,16 @@
 </div>
 
 {if $error}
-	{remarksbox type='errors' title="{tr}Errors{/tr}"}
+	<div class="simplebox highlight">
 		 {$error}
-	{/remarksbox}
+	</div>
 {/if}
 {if $msg}
-	{remarksbox type='feedback' title="{tr}Feedback{/tr}"}
+	<div class="simplebox highlight">
 		 {$msg}
-	{/remarksbox}
+	</div>
 {/if}
 <form enctype='multipart/form-data' method="post" action="{$smarty.server.PHP_SELF}">
-	  <div><input type="file" name="zip" /></div>
-	  <div>{tr}Or{/tr}</div>
-	  <div><label>{tr}Name of the zip file on the server{/tr}<input type="text" name="local" /></label></div>
-	  <input type="submit" name="import" value="{tr}Import{/tr}"/>
+	  <input type="file" name="zip" />
+	  <input type="submit" name="import" value="{tr}Import{/tr}"/>	  
 </form>

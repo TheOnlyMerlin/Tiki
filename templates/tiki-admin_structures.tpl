@@ -2,61 +2,55 @@
 {title help="Structures"}{tr}Structures{/tr}{/title}
 
 {if $tiki_p_admin eq 'y'}
-	<div class="navbar">
-		{button href='tiki-import_xml_zip.php' _text='{tr}XML Zip Import{/tr}'}
-	</div>
+	{button href='tiki-import_xml_zip.php' _text='{tr}XML Zip Import{/tr}'}
 {/if}
 
 {if $just_created neq 'n' && $tiki_p_edit_structures == 'y'}
-{remarksbox type='feedback' title="{tr}Feedback{/tr}"}
+<br />
 {tr}The structure{/tr} <a class='tablename' href='tiki-edit_structure.php?page_ref_id={$just_created}'>{$just_created_name|escape}</a>&nbsp;&nbsp;<a class='link' href='tiki-index.php?page={$just_created_name|escape:"url"}' title="{tr}View{/tr}">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>&nbsp;&nbsp;{tr}has just been created.{/tr}
-{/remarksbox}
+<br /><br />
 {/if}
 
 {if $askremove eq 'y'}
-{remarksbox type='confirm' title="{tr}Please Confirm{/tr}"}
+<div class="simplebox highlight">
 {tr}You will remove structure{/tr}: {$removename|escape}<br />
 {button href="?rremove=$remove&amp;page=$removename" _text='{tr}Destroy the structure leaving the wiki pages{/tr}'}
 {if $tiki_p_remove == 'y'}
 {button href="?rremovex=$remove&amp;page=$removename" _text='{tr}Destroy the structure and remove the pages{/tr}'}
+</div>
 {/if}
-{/remarksbox}
 {/if}
 
 {if count($alert_in_st) > 0}
-{remarksbox type='warning' title="{tr}Warning{/tr}"}
 {tr}Note that the following pages are also part of another structure. Make sure that access permissions (if any) do not conflict:{/tr}
 {foreach from=$alert_in_st item=thest}
 &nbsp;&nbsp;<a class='tablename' href='tiki-index.php?page={$thest|escape:"url"}' target="_blank">{$thest}</a>
 {/foreach}
-{/remarksbox}
+<br /><br />
 {/if}
 
 {if count($alert_categorized) > 0}
-{remarksbox type='feedback' title="{tr}Feedback{/tr}"}
 {tr}The following pages have automatically been categorized with the same categories as the structure:{/tr}
 {foreach from=$alert_categorized item=thecat}
 &nbsp;&nbsp;<a class='tablename' href='tiki-index.php?page={$thecat|escape:"url"}' target="_blank">{$thecat}</a>
 {/foreach}
-{/remarksbox}
+<br /><br />
 {/if}
 
 {if count($alert_to_remove_cats) > 0}
-{remarksbox type='warning' title="{tr}Warning{/tr}"}
 {tr}The following pages have categories but the structure has none. You may wish to uncategorize them to be consistent:{/tr}
 {foreach from=$alert_to_remove_cats item=thecat}
 &nbsp;&nbsp;<a class='tablename' href='tiki-index.php?page={$thecat|escape:"url"}' target="_blank">{$thecat}</a>
 {/foreach}
-{/remarksbox}
+<br /><br />
 {/if}
 
 {if count($alert_to_remove_extra_cats) > 0}
-{remarksbox type='warning' title="{tr}Warning{/tr}"}
 {tr}The following pages are in categories that the structure is not in. You may wish to recategorize them in order to be consistent:{/tr}
 {foreach from=$alert_to_remove_extra_cats item=theextracat}
 &nbsp;&nbsp;<a class='tablename' href='tiki-index.php?page={$theextracat|escape:"url"}' target="_blank">{$theextracat}</a>
 {/foreach}
-{/remarksbox}
+<br /><br />
 {/if}
 
 {tabset}
@@ -65,21 +59,14 @@
   {include file='find.tpl' find_show_languages='y' find_show_categories='y' find_show_num_rows='y' }
 {/if}
 <br />
-<form>
 <table class="normal">
 <tr>
-  {if $tiki_p_admin eq 'y'}<th width="15">{select_all checkbox_names='action[]'}</th>{/if}
   <th>{tr}Structure ID{/tr}</th>
   <th>{tr}Action{/tr}</th>
 </tr>
 {cycle values="odd,even" print=false}
 {section loop=$channels name=ix}
 <tr>
-  {if $tiki_p_admin eq 'y'}  
-  <td>
-    <input type="checkbox" name="action[]" value='{$channels[ix].page_ref_id}' style="border:1px;font-size:80%;" />
-  </td>
-  {/if}
   <td class="{cycle advance=false}">
   <a class="tablename" href="tiki-edit_structure.php?page_ref_id={$channels[ix].page_ref_id}" title="{tr}Edit structure{/tr}">
       {$channels[ix].pageName}
@@ -106,28 +93,16 @@
 </tr>
 {sectionelse}
 <tr>
-  <td colspan="{if $tiki_p_admin eq 'y'}3{else}2{/if}" class="odd">{tr}No records found.{/tr}<td>
+  <td colspan="2" class="odd">{tr}No records found.{/tr}<td>
 </tr>
 {/section}
 </table>
-{if $tiki_p_admin eq 'y'}
-<div style="text-align:left">
-{tr}Perform action with checked{/tr}:
-<select name="batchaction">
-<option value="">{tr}...{/tr}</option>
-<option value="delete">{tr}Delete{/tr}</option>
-<option value="delete_with_page">{tr}Delete with the pages{/tr}</option>
-{/if}
-</select>
-<input type="submit" name="act" value="{tr}OK{/tr}" />
-</form>
-</div>
 
 {pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 {/tab}
 
 {if $tiki_p_edit_structures == 'y'}
-{tab name="{tr}Create New structure{/tr}"}
+{tab name="{tr}Create new structure{/tr}"}
 <form action="tiki-admin_structures.php" method="post">
 <table class="normal">
 <tr>

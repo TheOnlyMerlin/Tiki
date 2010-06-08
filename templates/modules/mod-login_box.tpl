@@ -1,5 +1,7 @@
 {* $Id$ *}
-{jq notonready=true}
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+{literal}
 function capLock(e){
  kc = e.keyCode?e.keyCode:e.which;
  sk = e.shiftKey?e.shiftKey:((kc == 16)?true:false);
@@ -8,22 +10,24 @@ function capLock(e){
  else
   document.getElementById('divCapson').style.visibility = 'hidden';
 }
-{/jq}
-{if !isset($tpl_module_title)}{assign var=tpl_module_title value="{tr}Log in{/tr}"}{/if}{* Left for performance, since tiki-login_scr.php includes this template directly. *}
+{/literal}
+//--><!]]>
+</script>
+{if !isset($tpl_module_title)}{assign var=tpl_module_title value="{tr}Login{/tr}"}{/if}{* Left for performance, since tiki-login_scr.php includes this template directly. *}
 {tikimodule error=$module_params.error title=$tpl_module_title name="login_box" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
     {if $user}
-      <div>{tr}Logged in as:{/tr} <span style="white-space: nowrap">{$user|userlink}</span></div>
+      <div>{tr}Logged in as{/tr}: <span style="white-space: nowrap">{$user|userlink}</span></div>
       <div style="text-align: center;">
-				{button href="tiki-logout.php" _text="{tr}Log out{/tr}"}
+				{button href="tiki-logout.php" _text="{tr}Logout{/tr}"}
 			</div>
       {if $tiki_p_admin eq 'y'}
         <form action="{if $prefs.https_login eq 'encouraged' || $prefs.https_login eq 'required' || $prefs.https_login eq 'force_nocheck'}{$base_url_https}{/if}{$prefs.login_url}" method="post"{if $prefs.desactive_login_autocomplete eq 'y'} autocomplete="off"{/if}>
          <fieldset>
           <legend>{tr}Switch User{/tr}</legend>
-          <label for="login-switchuser">{tr}Username:{/tr}</label>
+          <label for="login-switchuser">{tr}User{/tr}:</label>
           <input type="hidden" name="su" value="1" />
 		  {if $prefs.feature_help eq 'y'}
-			{help url="Switch+User" desc="{tr}Help{/tr}" desc="{tr}Switch User:{/tr}{tr}Enter user name and click 'Switch'.<br />Useful for testing permissions.{/tr}"}
+			{help url="Switch+User" desc="{tr}Help{/tr}" desc="{tr}Switch User{/tr}:{tr}Enter user name and click 'Switch'.<br />Useful for testing permissions.{/tr}"}
 		  {/if}
           <input type="text" name="username" id="login-switchuser" size="{if empty($module_params.input_size)}15{else}{$module_params.input_size}{/if}" />
           <div style="text-align: center"><button type="submit" name="actsu">{tr}Switch{/tr}</button></div>
@@ -46,14 +50,14 @@ function capLock(e){
 		</form>
 	  {/if}
       {elseif $prefs.auth_method eq 'cas' && $showloginboxes neq 'y'}
-		<b><a class="linkmodule" href="tiki-login.php?cas=y">{tr}Log in through CAS{/tr}</a></b>
+		<b><a class="linkmodule" href="tiki-login.php?cas=y">{tr}Login through CAS{/tr}</a></b>
 		{if $prefs.cas_skip_admin eq 'y'}
-		<br /><a class="linkmodule" href="tiki-login_scr.php?user=admin">{tr}Log in as admin{/tr}</a>
+		<br /><a class="linkmodule" href="tiki-login_scr.php?user=admin">{tr}Login as admin{/tr}</a>
       {/if}
       {elseif $prefs.auth_method eq 'shib' && $showloginboxes neq 'y'}
-		<b><a class="linkmodule" href="tiki-login.php">{tr}Log in through Shibboleth{/tr}</a></b>
+		<b><a class="linkmodule" href="tiki-login.php">{tr}Login through Shibboleth{/tr}</a></b>
 		{if $prefs.shib_skip_admin eq 'y'}
-		<br /><a class="linkmodule" href="tiki-login_scr.php?user=admin">{tr}Log in as admin{/tr}</a>
+		<br /><a class="linkmodule" href="tiki-login_scr.php?user=admin">{tr}Login as admin{/tr}</a>
       {/if}
     {else}
      <form name="loginbox" action="{if $prefs.https_login eq 'encouraged' || $prefs.https_login eq 'required' || $prefs.https_login eq 'force_nocheck'}{$base_url_https}{/if}{$prefs.login_url}" method="post" {if $prefs.feature_challenge eq 'y'}onsubmit="doChallengeResponse()"{/if}{if $prefs.desactive_login_autocomplete eq 'y'} autocomplete="off"{/if}> 
@@ -88,8 +92,8 @@ function capLock(e){
      {/if}
 	 {if !empty($urllogin)}<input type="hidden" name="url" value="{$urllogin|escape}" />{/if}
         <fieldset>
-          <legend>{tr}Log in as{/tr}&hellip;</legend>
-            <div><label for="login-user">{if $prefs.login_is_email eq 'y'}{tr}Email{/tr}{else}{tr}Username{/tr}{/if}:</label><br />
+          <legend>{tr}Login as{/tr}&hellip;</legend>
+            <div><label for="login-user">{if $prefs.login_is_email eq 'y'}{tr}Email{/tr}{else}{tr}User{/tr}{/if}:</label><br />
 		{if $loginuser eq ''}
               <input type="text" name="user" id="login-user" size="{if empty($module_params.input_size)}15{else}{$module_params.input_size}{/if}" />
 	  <script type="text/javascript">document.getElementById('login-user').focus();</script>
@@ -98,10 +102,10 @@ function capLock(e){
 		{/if}</div>
 		<script type="text/javascript">document.getElementById('login-user').focus();</script>
           {if $prefs.feature_challenge eq 'y'} <!-- quick hack to make challenge/response work until 1.8 tiki auth overhaul -->
-          <div><label for="login-email">{tr}eMail:{/tr}</label><br />
+          <div><label for="login-email">{tr}eMail{/tr}:</label><br />
           <input type="text" name="email" id="login-email" size="{if empty($module_params.input_size)}15{else}{$module_params.input_size}{/if}" /></div>
           {/if}
-          <div><label for="login-pass">{tr}Password:{/tr}</label><br />
+          <div><label for="login-pass">{tr}Password{/tr}:</label><br />
           <input onkeypress="capLock(event)" type="password" name="pass" id="login-pass" size="{if empty($module_params.input_size)}15{else}{$module_params.input_size}{/if}" />
 		  <div id="divCapson" style="visibility:hidden">{icon _id=error style="vertical-align:middle"} {tr}CapsLock is on.{/tr}</div>
 		  </div>
@@ -113,7 +117,7 @@ function capLock(e){
 			  </div>
             {/if}
           {/if}
-          <div style="text-align: center"><input class="button submit" type="submit" name="login" value="{tr}Log in{/tr}" /></div>
+          <div style="text-align: center"><input class="button submit" type="submit" name="login" value="{tr}Login{/tr}" /></div>
        </fieldset>
           
           {if $prefs.forgotPass eq 'y' and $prefs.allowRegister eq 'y' and $prefs.change_password eq 'y'}
@@ -135,7 +139,7 @@ function capLock(e){
           </div>
           {/if}
           {if $prefs.feature_show_stay_in_ssl_mode eq 'y' && $show_stay_in_ssl_mode eq 'y'}
-                <div><label for="login-stayssl">{tr}Stay in SSL mode:{/tr}</label>?
+                <div><label for="login-stayssl">{tr}Stay in ssl Mode{/tr}:</label>?
                 <input type="checkbox" name="stay_in_ssl_mode" id="login-stayssl" {if $stay_in_ssl_mode eq 'y'}checked="checked"{/if} /></div>
           {/if}
 	{* This is needed as unchecked checkboxes are not sent. The other way of setting hidden field with same name is potentially non-standard *}
@@ -155,10 +159,10 @@ function capLock(e){
 			{/if}
       </form>
     {/if}
-	{if $prefs.auth_method eq 'openid' and !$user and $registration eq 'n'}
+	{if $prefs.auth_method eq 'openid' and !$user}
 		<form method="get" action="tiki-login_openid.php">
 			<fieldset>
-				<legend>{tr}OpenID Log in{/tr}</legend>
+				<legend>{tr}OpenID Login{/tr}</legend>
 				<input class="openid_url" type="text" name="openid_url"/>
 				<input type="submit" value="{tr}Go{/tr}"/>
 				<a class="linkmodule tikihelp" target="_blank" href="http://doc.tikiwiki.org/OpenID">{tr}What is OpenID?{/tr}</a>

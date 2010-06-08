@@ -1,6 +1,6 @@
 {popup_init src="lib/overlib.js"}
 
-{title url="tiki-blog_post.php?blogId=$blogId&amp;postId=$postId"}{if $postId gt 0}{tr}Edit Post{/tr}{else}{tr}Post{/tr}{/if} - {$blog_data.title|escape}{/title}
+{title url="tiki-blog_post.php?blogId=$blogId&postId=$postId"}{if $postId gt 0}{tr}Edit Post{/tr}{else}{tr}Post{/tr}{/if} - {$blog_data.title|escape}{/title}
 
 <div class="navbar">
 	{if $blogId gt 0 }
@@ -25,11 +25,9 @@
 
 {if $wysiwyg ne 'y'}
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
-  {if $prefs.feature_filegals_manager == 'y'}{tr}Images should now be uploaded via the editor toolbar icon instead of the old and soon to be replaced "Upload image for this post" field.{/tr}{/if}
-  {if !$postId} {tr}Uploading images the old way to new posts require saving first, perhaps after setting a future Publish Date, and then reediting it to be able to add images.{/tr}{/if}
-  <hr />
+  {tr}If you want to use images please save the post first and you will be able to edit/post images. Use the &lt;img&gt; snippet to include uploaded images in the textarea editor or use the image URL to include images using the WYSIWYG editor. {/tr}
   {if $wysiwyg eq 'n' and $prefs.wysiwyg_optional eq 'y'}
-    {tr}Use ...page... to separate pages in a multi-page post{/tr}
+    <hr />{tr}Use ...page... to separate pages in a multi-page post{/tr}
   {/if}
 {/remarksbox}
 {/if}
@@ -43,7 +41,7 @@
 <tr><td class="editblogform">{tr}Blog{/tr}</td><td class="editblogform">
 <select name="blogId">
 {section name=ix loop=$blogs}
-<option value="{$blogs[ix].blogId|escape}" {if $blogs[ix].blogId eq $blogId}selected="selected"{/if}>{$blogs[ix].title|escape}</option>
+<option value="{$blogs[ix].blogId|escape}" {if $blogs[ix].blogId eq $blogId}selected="selected"{/if}>{$blogs[ix].title}</option>
 {/section}
 </select>
 </td></tr>
@@ -99,13 +97,6 @@
 
 <tr><td class="editblogform">{tr}Mark entry as private:{/tr}</td>
   <td class="editblogform"><input type="checkbox" name="blogpriv" {if $blogpriv eq 'y'}checked="checked"{/if} /></td></tr>
-<tr id='show_pubdate' class="formcolor">
-			<td>{tr}Publish Date{/tr}</td>
-			<td>
-				{html_select_date prefix="publish_" time=$created start_year="-5" end_year="+10" field_order=$prefs.display_field_order} {tr}at{/tr} 
-				{html_select_time prefix="publish_" time=$created display_seconds=false}
-			</td>
-</tr>
 {if $prefs.blog_spellcheck eq 'y'}
 <tr><td class="editblogform">{tr}Spellcheck{/tr}: </td><td class="editblogform"><input type="checkbox" name="spellcheck" {if $spellcheck eq 'y'}checked="checked"{/if} /></td></tr>
 {/if}
@@ -117,7 +108,8 @@
 {/if}
 <tr><td class="editblogform">&nbsp;</td><td class="editblogform">
 <input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false" />
-<input type="submit" class="wikiaction" name="save_exit" value="{tr}Save{/tr}" onclick="needToConfirm=false" />
+<input type="submit" class="wikiaction" name="save" value="{tr}Save{/tr}" onclick="needToConfirm=false" />
+<input type="submit" class="wikiaction" name="save_exit" value="{tr}Save and Exit{/tr}" onclick="needToConfirm=false" />
 <input type="hidden" name="referer" value="{$referer|escape}" />
 &nbsp;&nbsp;&nbsp;<input type="submit" name="cancel" onclick='document.location="{$referer|escape:'html'}";needToConfirm=false;return false;' value="{tr}Cancel{/tr}"/>
 </td></tr>

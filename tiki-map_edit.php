@@ -1,10 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-map_edit.php,v 1.30.2.1 2008-02-27 00:09:14 franck Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/stats/statslib.php');
 include_once ('lib/map/maplib.php');
@@ -13,7 +12,12 @@ if (!isset($prefs['feature_maps']) or $prefs['feature_maps'] != 'y') {
 	$smarty->display("error.tpl");
 	die;
 }
-$access->check_permission('tiki_p_map_view');
+if ($tiki_p_map_view != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permissions to view the maps"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST["mode"])) {
 	$mode = 'listing';
 } else {
@@ -82,14 +86,19 @@ if (isset($_REQUEST["create"]) && ($tiki_p_map_create == 'y')) {
 }
 $smarty->assign('tiki_p_map_delete', $tiki_p_map_delete);
 if ((isset($_REQUEST["delete"])) && ($tiki_p_map_delete == 'y')) {
-	$access->check_authenticity();
-	if (!unlink($prefs['map_path'] . $_REQUEST["mapfile"])) {
-		$smarty->assign('errortype', 401);
-		$smarty->assign('msg', tra("You do not have permission to delete the mapfile"));
-		$smarty->display("error.tpl");
-		die;
+	$area = 'delmap';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		if (!unlink($prefs['map_path'] . $_REQUEST["mapfile"])) {
+			$smarty->assign('errortype', 401);
+			$smarty->assign('msg', tra("You do not have permission to delete the mapfile"));
+			$smarty->display("error.tpl");
+			die;
+		}
+		$mode = 'listing';
+	} else {
+		key_get($area);
 	}
-	$mode = 'listing';
 }
 // Save the mapfile
 if (isset($_REQUEST["save"])) {

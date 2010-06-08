@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
@@ -14,8 +8,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 if (!defined('weekInSeconds')) define('weekInSeconds', 604800);
 if (!defined('dayInSeconds')) define('dayInSeconds', 86400);
 
-class CalRecurrence extends TikiLib
-{
+class CalRecurrence extends TikiLib {
 	private $id;
 	private $calendarId;
 	private $start;
@@ -529,14 +522,11 @@ class CalRecurrence extends TikiLib
 								$tmp[] = "start='" . TikiLib::make_time($newStartHour, $newStartMin, 0, substr($thisdate,0,2),substr($thisdate,-2), $anEvtStart[0] + $offsetYear) . "'";
 								$tmp[] = "end='" . TikiLib::make_time($newEndHour, $newEndMin, 0, substr($thisdate,0,2),substr($thisdate,-2), $anEvtStart[0] + $offsetYear) . "'";
 							}
-						}
-						
-/*						 elseif ($aField == "_start") {
+						} elseif ($aField == "_start") {
 							// on fera la modif si les trois précédents n'ont pas été concernés
 						} elseif ($aField == "_end") {
 								// on fera la modif si les trois précédents n'ont pas été concernés
 						}
-*/
 					}
 				}
 				if (in_array("_start",$changedFields) && $doWeChangeTimeIfNeeded) {

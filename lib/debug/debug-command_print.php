@@ -1,11 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+//
+// $Id: /cvsroot/tikiwiki/tiki/lib/debug/debug-command_print.php,v 1.3 2003-08-07 02:30:52 rossta Exp $
+//
 // \brief Command to print PHP variables to debug console
+//
 require_once('lib/debug/debugger-ext.php');
 
 /**

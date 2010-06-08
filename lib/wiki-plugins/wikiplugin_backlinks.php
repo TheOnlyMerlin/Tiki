@@ -1,9 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: /cvsroot/tikiwiki/tiki/lib/wiki-plugins/wikiplugin_backlinks.php,v 1.17 2007-06-16 16:01:59 sylvieg Exp $
 
 /**
 * Include the library {@link PluginsLib}
@@ -28,12 +24,10 @@ require_once "lib/wiki/pluginslib.php";
 * @author Claudio Bustos
 * @version $Revision: 1.17 $
 */
-function wikiplugin_backlinks_help()
-{
+function wikiplugin_backlinks_help() {
     return tra("List all pages that link to specific pages").":<br />~np~{BACKLINKS(info=>hits|user,exclude=>HomePage|SandBox,include_self=>1,noheader=>0,page=>HomePage)}{BACKLINKS}~/np~";
 }
-class WikiPluginBackLinks extends PluginsLib
-{
+class WikiPluginBackLinks extends PluginsLib {
     var $expanded_params = array("exclude", "info");
     function getDefaultArguments() {
         return array('exclude' => '',
@@ -42,25 +36,17 @@ class WikiPluginBackLinks extends PluginsLib
             'page' => '[pagename]',
             'info' => false );
     }
-
-    function getName()
-		{
+    function getName() {
         return "BackLinks";
     }
-
-    function getDescription()
-		{
+    function getDescription() {
         return wikiplugin_backlinks_help();
     }
-
-    function getVersion()
-		{
+    function getVersion() {
         return preg_replace("/[Revision: $]/", '',
             "\$Revision: 1.17 $");
     }
-
-    function run ($data, $params)
-		{
+    function run ($data, $params) {
         global $wikilib; include_once('lib/wiki/wikilib.php');
         $params = $this->getParams($params, true);
         $aInfoPreset = array_keys($this->aInfoPresetNames);
@@ -101,7 +87,7 @@ class WikiPluginBackLinks extends PluginsLib
             $aBackRequest[] = $page;
         }
         if (!$aBackRequest) {
-            return tra("No pages link to")." (($page))";
+            return tra("No pages links to")." (($page))";
         } else {
             $aPages = $this->list_pages(0, -1, 'pageName_asc', $aBackRequest);
         }
@@ -125,8 +111,7 @@ class WikiPluginBackLinks extends PluginsLib
     }
 }
 
-function wikiplugin_backlinks_info()
-{
+function wikiplugin_backlinks_info() {
 	return array(
 		'name' => tra('Backlinks'),
 		'documentation' => 'PluginBacklinks',
@@ -162,8 +147,7 @@ function wikiplugin_backlinks_info()
 	);
 }
 
-function wikiplugin_backlinks($data, $params)
-{
+function wikiplugin_backlinks($data, $params) {
     $plugin = new wikipluginbacklinks();
     return $plugin->run($data, $params);
 }

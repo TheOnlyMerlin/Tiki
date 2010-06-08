@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -13,11 +8,8 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 global $usermoduleslib; include_once('lib/usermodules/usermoduleslib.php');
 
-class ModLib extends TikiLib
-{
+class ModLib extends TikiLib {
 
-	public $pref_errors = array();
-	
 	function replace_user_module($name, $title, $data, $parse=NULL) {
 		if ((!empty($name)) && (!empty($data))) {
 			$query = "delete from `tiki_user_modules` where `name`=?";
@@ -203,9 +195,7 @@ class ModLib extends TikiLib
 			$user_groups = array( 'Anonymous' );
 		}
 		$pass = 'y';
-		if ($tiki_p_admin == 'y' && $prefs['modhideanonadmin'] == 'y' && $module_info['groups'] == serialize(array('Anonymous'))) {
-			$pass = 'n';
-		} elseif ($tiki_p_admin != 'y' && $prefs['modallgroups'] != 'y') {
+		if ($tiki_p_admin != 'y' && $prefs['modallgroups'] != 'y') {
 			if ($module_info['groups']) {
 				$module_groups = unserialize($module_info['groups']);
 			} else {
@@ -255,6 +245,7 @@ class ModLib extends TikiLib
 		global $prefs;
 
 		TikiLib::parse_str( $module['params'], $module_params );
+
 		$default_params = array(
 			'decorations' => 'y',
 			'overflow' => 'n',
@@ -263,10 +254,6 @@ class ModLib extends TikiLib
 			'error' => '',
 			'flip' => ( $prefs['user_flip_modules'] == 'module' ) ? 'n' : $prefs['user_flip_modules'],
 		);
-
-		if (!is_array($module_params)) {
-			$module_params = array();
-		}
 
 		$module_params = array_merge( $default_params, $module_params );
 
@@ -289,18 +276,14 @@ class ModLib extends TikiLib
 		$module_info = $this->get_module_info( $module['name'] );
 		foreach( $module_info['prefs'] as $p ) {
 			if( $prefs[$p] != 'y' ) {
-				$this->add_pref_error($module['name'], $p);
 				return false;
 			}
 		}
 
 		$params = $module['params'];
 
-		if( $prefs['feature_perspective'] == 'y' ) {
-			global $perspectivelib; require_once 'lib/perspectivelib.php';
-			if( isset( $params['perspective'] ) && ! in_array( $perspectivelib->get_current_perspective( $prefs ), (array) $params['perspective'] ) ) {
-				return false;
-			}
+		if( isset( $params['perspective'] ) && ! in_array( $_SESSION['current_perspective'], $params['perspective'] ) ) {
+			return false;
 		}
 
 		if( isset( $params["lang"] ) && ! in_array( $prefs['language'], (array) $params["lang"]) ) {
@@ -373,10 +356,6 @@ class ModLib extends TikiLib
 					return false;
 				}
 			}
-		}
-		
-		if ($module['name'] == 'login_box' && basename($_SERVER['SCRIPT_NAME']) == 'tiki-login_scr.php') {
-			return false;
 		}
 
 		return true;
@@ -491,7 +470,7 @@ class ModLib extends TikiLib
 			),
 			'theme' => array(
 				'name' => tra('Theme'),
-				'description' => tra('Module enabled or disabled depending on the theme file name (e.g. "thenews.css"). Specified themes can be either included or excluded. Theme names prefixed by \"!\" are in the exclusion list. Multiple values can be separated by semi-colons.'),
+				'description' => tra('Module enabled or disabled depending on the theme. Specified themes can be either included or excluded. Theme names prefixed by \"!\" are in the exclusion list. Multiple values can be separated by semi-colons.'),
 				'separator' => ';',
 				'filter' => 'themename',
 			),
@@ -574,10 +553,6 @@ class ModLib extends TikiLib
 				}
 			}
 
-			global $prefs;
-			$ck = getCookie('mod-'.$mod_reference['name'].$mod_reference['position'].$mod_reference['ord'], 'menu', 'o');
-			$smarty->assign('module_display', ($prefs['javascript_enabled'] == 'n' || $ck == 'o'));
-			
 			$smarty->assign_by_ref('module_rows',$mod_reference['rows']);
 			$smarty->assign_by_ref('module_params', $module_params); // module code can unassign this if it wants to hide params
 			$smarty->assign('module_ord', $mod_reference['ord']);
@@ -617,12 +592,12 @@ class ModLib extends TikiLib
 				$smarty->assign('module_type','cssmenu');
 			}
 
+			$smarty->assign('user_title', tra($info['title']));
+
 			if (isset($info['parse']) && $info['parse'] == 'y') {
 				$info['data'] = $tikilib->parse_data($info['data']);
-				$info['title'] = $tikilib->parse_data($info['title'], array('noparseplugins' => true));
 			}
 
-			$smarty->assign('user_title', tra($info['title']));
 			$smarty->assign_by_ref('user_data', $info['data']);
 			$smarty->assign_by_ref('user_module_name', $info['name']);
 
@@ -690,7 +665,7 @@ class ModLib extends TikiLib
 			}
 
 			if( isset( $params[$name] ) && ! empty( $params[$name] ) ) {
-				if( isset( $def['separator'] ) && strpos($params[$name], $def['separator']) !== false ) {
+				if( isset( $def['separator'] )  && strstr($def['separator'], $params[$name]) ) {
 					$parts = explode( $def['separator'], $params[$name] );
 					
 					if( $filter ) {
@@ -714,10 +689,6 @@ class ModLib extends TikiLib
 		}
 
 		return http_build_query( $expanded, '', '&' );
-	}
-	
-	function add_pref_error($module_name, $preference_name) {
-		$this->pref_errors[] = array('mod_name' => $module_name, 'pref_name' => $preference_name);
 	}
 }
 $modlib = new ModLib;

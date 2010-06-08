@@ -1,9 +1,14 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+
+function wikiplugin_calendar_help() {
+	$help = tra("Includes a calendar");
+	$help .="<br />";
+	$help .= tra("~np~{CALENDAR(calendarId=>1)}{CALENDAR}");
+	$help .= "<br />";
+	$help .= tra("Id is optional. If not given, all calendars viewable by default are used.");
+
+	return $help;
+}
 
 function wikiplugin_calendar_info() {
 	return array(
@@ -12,11 +17,10 @@ function wikiplugin_calendar_info() {
 		'description' => tra('Includes a calendar and/or a list of calendar events.'),
 		'prefs' => array( 'feature_calendar', 'wikiplugin_calendar' ),
 		'params' => array(
-			'calIds' => array(
-				'name' => tra('Calendars filter'),
-				'description' => tra('If set to a list of calendar identifiers, restricts the events to those in the identified calendars. Identifiers are separated by commas (",").') . " " . tra('Example values:') . '"13", "4,7", "31,49". ' . tra('Not set by default.'),
+			'calendarId' => array(
+				'name' => tra('Calendar filter'),
+				'description' => tra('If set to a calendar identifier, restricts the events displayed to those in the specified calendar.'),
 				'filter' => 'digits',
-				'separator' => ',',
 			),
 			'viewlist' => array(
 				'required' => false,
@@ -47,6 +51,8 @@ function wikiplugin_calendar($data, $params) {
 
 	if ( empty($params['calIds']) ) {
 		$params['calIds'] = array(1);
+	} else {
+		$params['calIds'] = explode(',',$params['calIds']);
 	}
 	if ( empty($params['viewlist']) ) {
 		$params['viewlist'] = 'table';

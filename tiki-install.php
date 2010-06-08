@@ -1,11 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+
 // $Id$
 
-$in_installer = 1;
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+
 if (!isset($title)) $title = 'Tiki Installer';
 if (!isset($content)) $content = 'No content specified. Something went wrong.<br/>Please tell your administrator.<br/>If you are the administrator, you may want to check for / file a bug report.';
 if (!isset($dberror)) $dberror = false;
@@ -16,8 +16,6 @@ if (version_compare(PHP_VERSION, '5.0.0', '<')) {
 	$content = '<p>Please contact your system administrator ( if you are not the one ;) ).</p>';
 	createPage($title, $content);
 }
-
-include_once('db/tiki-db.php');	// to set up multitiki etc if there
 
 // if tiki installer is locked (probably after previous installation) display notice
 if (file_exists('db/lock')) {
@@ -40,7 +38,6 @@ unset($session_params);
 session_start();
 
 require_once 'lib/core/lib/TikiDb/Adodb.php';
-require_once 'lib/core/lib/TikiDb/Pdo.php';
 
 /**
  * 
@@ -52,8 +49,8 @@ class InstallerDatabaseErrorHandler implements TikiDb_ErrorHandler
 }
 
 // Were database details defined before? If so, load them
-if (file_exists('db/'.$tikidomainslash.'local.php')) {
-	include 'db/'.$tikidomainslash.'local.php';
+if (file_exists('db/local.php')) {
+	include 'db/local.php';
 
 	// In case of replication, ignore it during installer.
 	unset( $shadow_dbs, $shadow_user, $shadow_pass, $shadow_host );
@@ -91,9 +88,9 @@ if (isset($_SESSION['accessible'])) {
 							<p>To verify that you are a site administrator, enter your <strong><em>database</em></strong> credentials (database username and password) here.</p>
 							<p>If you have forgotten your database credentials, find the directory where you have unpacked your Tiki and have a look inside the <strong><code>db</code></strong> folder into the <strong><code>local.php</code></strong> file.</p>
 							<form method="post" action="tiki-install.php">
-								<p><label for="dbuser">Database username</label>: <input type="text" id="dbuser" name="dbuser" /></p>
-								<p><label for="dbpass">Database password</label>: <input type="password" id="dbpass" name="dbpass" /></p>
-								<p><input type="submit" value=" Validate and Continue " /></p>
+								<p><label for="dbuser">Database username</label>: <input type="text" name="dbuser"/></p>
+								<p><label for="dbpass">Database password</label>: <input type="password" name="dbpass"/></p>
+								<p><input type="submit" value=" Validate and Continue "/></p>
 							</form>
 							<p>&nbsp;</p>';
 	createPage($title, $content);
@@ -110,7 +107,8 @@ function createPage($title, $content){
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<link type="text/css" rel="stylesheet" href="styles/fivealive.css" />
+		<link type="text/css" rel="stylesheet" href="styles/strasa.css" />
+		<link type="text/css" rel="stylesheet" href="styles/strasa/options/fixed_width.css" />
 		<style type="text/css" media="screen">
 html {
 	background-color: #fff;
@@ -122,20 +120,24 @@ html {
 		<title>$title</title>
 	</head>
 	<body class="tiki_wiki" style="text-align: center;">
-		<div id="header" style="background:url(styles/fivealive/options/blueberry/header.png) no-repeat scroll -300px 0; height: 204px;">
-			<div id="siteheader">
-				<div id="sitelogo" style="text-align: left; padding-left: 30px; padding-top: 30px;">
-					<img alt="Site Logo" src="img/tiki/Tiki_WCG.png" />
-				</div>
+		<div id="siteheader">
+			<div id="sitelogo" style="text-align: center; padding-left: 70px;">
+				<img style="border: medium none ;" alt="Site Logo" src="img/tiki/tikisitelogo.png" />
 			</div>
 		</div>
 		<div id="tiki-main">
-			<div id="tiki-center" style="text-align:center; padding-top: 60px;">
-				<h1 style="position: absolute; left: 50%; top: 80px;">$title</h1>
-				$content
+			<div id="tiki-mid">
+				<table id="tiki-midtbl" width="100%" cellspacing="0" cellpadding="0" border="0">
+					<tr>
+						<td id="centercolumn" style="text-align:center; vertical-align:top">
+							<h1>$title</h1>
+							$content
+						</td>
+					</tr>
+				</table>
 			</div>
-			<div id="tiki-bot" align="center" style="padding-bottom: 20px">
-				<a title="This is Tiki Wiki CMS Groupware" href="http://info.tikiwiki.org" target="_blank"><img src="img/tiki/tikibutton2.png" alt="TikiWiki" border="0" /></a>
+			<div id="tiki-bot" align="center">
+				<a title="This is TikiWiki CMS/Groupware" href="http://info.tikiwiki.org" target="_blank"><img src="img/tiki/tikibutton2.png" alt="TikiWiki" border="0" /></a>
 			</div>
 		</div>
 	</body>

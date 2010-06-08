@@ -1,19 +1,21 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-view_banner.php,v 1.23 2007-10-12 07:55:33 nyloth Exp $
 require_once ('tiki-setup.php');
 require_once ('lib/tikilib.php'); // httpScheme()
 include_once ('lib/banners/bannerlib.php');
 if (!isset($bannerlib)) {
 	$bannerlib = new BannerLib;
 }
-
-$access->check_feature('feature_banners');
-
+if ($prefs['feature_banners'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_banners");
+	$smarty->display("error.tpl");
+	die;
+}
+// CHECK FEATURE BANNERS AND ADMIN PERMISSION HERE
 if (!isset($_REQUEST["bannerId"])) {
 	$smarty->assign('msg', tra("No banner indicated"));
 	$smarty->display("error.tpl");

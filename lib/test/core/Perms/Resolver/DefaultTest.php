@@ -1,10 +1,5 @@
 <?php
 
-/** 
- * @group unit
- * 
- */
-
 class Perms_Resolver_DefaultTest extends TikiTestCase
 {
 	function testAsExpected() {

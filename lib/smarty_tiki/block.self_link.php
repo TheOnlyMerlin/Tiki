@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -76,8 +71,8 @@ function smarty_block_self_link($params, $content, &$smarty, $repeat = false) {
 			}
 			// Complete _script path if needed (not empty, not an anchor, ...)
 			if ( !empty($params['_script']) && $params['_script'][0] != '#' && $params['_script'] != 'javascript:void(0)' ) {
-				if ( $_SERVER['PHP_SELF'][0] == '/' && strpos($params['_script'], '/') === false ) {
-					$self_dir = str_replace('\\','/',dirname($_SERVER['PHP_SELF']));
+				if ( $params['_script'] != '' && $_SERVER['PHP_SELF'][0] == '/' && strpos($params['_script'], '/') === false ) {
+					$self_dir = dirname($_SERVER['PHP_SELF']);
 					$params['_script'] = ( $self_dir == '/' ? '' : $self_dir ).'/'.$params['_script'];
 				}
 				if ( $params['_script'] == $_SERVER['PHP_SELF'] ) {

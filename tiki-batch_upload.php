@@ -1,19 +1,30 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-batch_upload.php,v 1.16 2007-10-12 07:55:24 nyloth Exp $
 $section = 'galleries';
 require_once ('tiki-setup.php');
 include_once ('lib/categories/categlib.php');
 include_once ('lib/imagegals/imagegallib.php');
-$access->check_feature(array('feature_galleries', 'feature_gal_batch'));
-
+if ($prefs['feature_galleries'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_galleries");
+	$smarty->display("error.tpl");
+	die;
+}
+if ($prefs['feature_gal_batch'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_gal_batch");
+	$smarty->display("error.tpl");
+	die;
+}
 // Now check permissions to access this page
-$access->check_permission('tiki_p_batch_upload_image_dir');
-
+if ($tiki_p_batch_upload_image_dir != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied you cannot use the batch directory loading"));
+	$smarty->display("error.tpl");
+	die;
+}
 // check directory path
 if (!isset($prefs['gal_batch_dir']) or !is_dir($prefs['gal_batch_dir'])) {
 	$msg = tra("Incorrect directory chosen for batch upload of images.") . "<br />";

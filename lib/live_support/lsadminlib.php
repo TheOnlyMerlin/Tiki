@@ -1,14 +1,7 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 
-class LsAdminlib extends TikiLib
-{
+class LsAdminlib extends TikiLib {
 
 	function add_operator($user) {
 		$this->getOne("delete from `tiki_live_support_operators` where `user`=?",array($user),false);

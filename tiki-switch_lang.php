@@ -1,14 +1,15 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once ('tiki-setup.php');
-
-$access->check_feature('feature_multilingual');
-
+if ($prefs['feature_multilingual'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_multilingual");
+	$smarty->display("error.tpl");
+	die;
+}
 if (isset($_GET['from'])) $orig_url = $_GET['from'];
 elseif (isset($_SERVER['HTTP_REFERER'])) $orig_url = $_SERVER['HTTP_REFERER'];
 else $orig_url = $prefs['tikiIndex'];
@@ -34,14 +35,14 @@ if (strstr($orig_url, 'tiki-index.php') || strstr($orig_url, 'tiki-read_article.
 	if (!empty($param['page_id'])) {
 		$pageId = $param['page_id'];
 		$type = 'wiki page';
-	} else if (!empty($param['articleId'])) {
-                $pageId = $param['articleId'];
-                $type = 'article';
 	} else if (!empty($param['page'])) {
 		$page = $param['page'];
 		$info = $tikilib->get_page_info($page);
 		$pageId = $info['page_id'];
 		$type = 'wiki page';
+	} else if (!empty($param['articleId'])) {
+		$pageId = $param['articleId'];
+		$type = 'article';
 	} else {
 		global $wikilib;
 		include_once ('lib/wiki/wikilib.php');
@@ -58,7 +59,7 @@ if (strstr($orig_url, 'tiki-index.php') || strstr($orig_url, 'tiki-read_article.
 			$orig_url = preg_replace('/(.*[&?]articleId=)' . $pageId . '(.*)/', '${1}' . $bestLangPageId . '$2', $orig_url);
 		} else {
 			$newPage = $tikilib->get_page_name_from_id($bestLangPageId);
-			$orig_url = preg_replace('/(.*[&?]page=)'.$page.'(.*)/', '${1}'."${newPage}".'$2', $orig_url);
+			$orig_url = preg_replace('/(.*[&?]page=)' . $page . '(.*)/', '${1}' . "${newPage}" . '$2', $orig_url);
 			$orig_url = preg_replace('/(.*)(tiki-index.php)$/', "$1$2?page=$newPage", $orig_url);
 		}
 	}

@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -70,8 +65,8 @@ function smarty_function_menu($params, &$smarty)
 		$cacheType = 'menu_'.$id.'_';
 	}
 
-	if ( $cdata = $cachelib->getSerialized($cacheName, $cacheType) ) {
-		list($menu_info, $channels) = $cdata;
+	if ( $cachelib->isCached($cacheName, $cacheType) ) {
+		list($menu_info, $channels) = unserialize($cachelib->getCached($cacheName, $cacheType));
 	} elseif (isset($structureId)) {
 		global $structlib; include_once('lib/structures/structlib.php');
 		$channels = $structlib->build_subtree_toc($structureId);
@@ -85,14 +80,14 @@ function smarty_function_menu($params, &$smarty)
 		$channels = $tikilib->sort_menu_options($channels);
 		$cachelib->cacheItem($cacheName, serialize(array($menu_info, $channels)), $cacheType);
 	}
-	$channels = $menulib->setSelected($channels, isset($sectionLevel)?$sectionLevel:'', isset($toLevel)?$toLevel: '', $params);
+	$channels = $menulib->setSelected($channels, isset($sectionLevel)?$sectionLevel:'', isset($toLevel)?$toLevel: '');
 
 	$smarty->assign('menu_channels',$channels['data']);
 	$smarty->assign('menu_info',$menu_info);
 	$data = $smarty->fetch($tpl);
 	$data = preg_replace('/<ul>\s*<\/ul>/', '', $data);
 	$data = preg_replace('/<ol>\s*<\/ol>/', '', $data);
-	return '<div role="navigation">' . $data . '</div>';
+	return $data;
 }
 
 function compare_menu_options($a, $b) { return strcmp(tra($a['name']), tra($b['name'])); }

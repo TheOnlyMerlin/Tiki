@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id$
+
+// Copyright (c) 2002-2008, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__))!=FALSE) {
@@ -32,7 +33,7 @@ if (!empty($_REQUEST['focus'])) {
 if (!empty($_REQUEST['day']) && !empty($_REQUEST['mon']) && !empty($_REQUEST['year'])) {//can come from the event module
         $_REQUEST['todate'] = $tikilib->make_time(23,59,59,intval($_REQUEST['mon']),intval($_REQUEST['day']),intval($_REQUEST['year']));
 } elseif (isset($_REQUEST['todate']) && $_REQUEST['todate']) {
-	$_SESSION['CalendarFocusDate'] = $_REQUEST["todate"];
+
 } elseif (!isset($_REQUEST['todate']) && isset($_SESSION['CalendarFocusDate']) && $_SESSION['CalendarFocusDate']) {
 	$_REQUEST["todate"] = $_SESSION['CalendarFocusDate'];
 } else {
@@ -48,14 +49,6 @@ list($focus_day, $focus_month, $focus_year) = array(
 $focuscell = $tikilib->make_time(0,0,0,$focus_month,$focus_day,$focus_year);
 $smarty->assign('focusdate', $focusdate);
 $smarty->assign('focuscell', $focuscell);
-
-//set today unix stamp for today focus
-$now = $tikilib->now;
-$mtoday = TikiLib::date_format("%m", $now);
-$dtoday = TikiLib::date_format("%d", $now);
-$ytoday = TikiLib::date_format("%Y", $now);
-$today = $tikilib->make_time(0,0,0,$mtoday,$dtoday,$ytoday);
-$smarty->assign('today', $today);
 
 // Get viewmode from URL, session or prefs if it has not already been defined by the calling script (for example by modules, to force a month view)
 if ( ! isset($calendarViewMode) ) {
@@ -73,8 +66,6 @@ $smarty->assign_by_ref('viewmode', $calendarViewMode);
 if (isset($_REQUEST["viewlist"])) {
 	$viewlist = $_REQUEST['viewlist'];
 	$_SESSION['CalendarViewList'] = $viewlist;
-} elseif (isset($_REQUEST["viewlistmodule"])) {
-	$viewlist = $_REQUEST['viewlistmodule'];
 } elseif (!empty($_SESSION['CalendarViewList'])) {
 	$viewlist = $_SESSION['CalendarViewList'];
 } else {
@@ -354,7 +345,6 @@ $daysnames = array();
 $daysnames_abr = array();
 if ($firstDayofWeek == 0) {
 	$daysnames[] = tra("Sunday");
-	$daysnames_abr[] = tra('Su');
 }
 
 array_push($daysnames, 
@@ -371,26 +361,14 @@ array_push($daysnames_abr,
 	tra("We"),
 	tra("Th"),
 	tra("Fr"),
-	tra("Sa")
+	tra("Sa"),
+	tra("Su")
 );
 if ($firstDayofWeek != 0) {
 	$daysnames[] = tra("Sunday");
-	$daysnames_abr[] = tra('Su');
 }
 $weeks = array();
 $cell = array();
-
-if (!function_exists('correct_start_day')) {
-function correct_start_day($d) {
-	global $prefs;
-	
-	$tmp = $d - $prefs['calendar_firstDayofWeek'];
-	if ($tmp < 0 ) {
-		$tmp += 7;
-	}
-	return $tmp;
-}
-}
 
 if (empty($myurl))
 	$myurl = 'tiki-calendar.php';

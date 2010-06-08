@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,8 +6,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class BannerLib extends TikiLib
-{
+class BannerLib extends TikiLib {
 
 	function select_banner_id($zone) {
 		$map = array(0=>'sun', 1=>'mon', 2=>'tue', 3=>'wed', 4=>'thu', 5=>'fri', 6=>'sat');
@@ -57,8 +51,8 @@ class BannerLib extends TikiLib
 	}
 
 
-	function select_banner($zone, $target='_blank', $id='') {
-		global $prefs, $tikilib;
+	function select_banner($zone, $target='_blank') {
+		global $prefs;
 
 		// Things to check
 		// UseDates and dates
@@ -67,11 +61,8 @@ class BannerLib extends TikiLib
 		// zone
 		// maxImpressions and impressions
 
-		if (!empty($zone)) {
-			$id = $this->select_banner_id( $zone );
-		}
+		$id = $this->select_banner_id( $zone );
 		$res = $this->get_banner( $id );
-		$class = 'banner' . str_replace(' ','_',$zone);
 
 		$raw = '';
 		switch ($res["which"]) {
@@ -83,14 +74,15 @@ class BannerLib extends TikiLib
 			if ($prefs['javascript_enabled'] == 'y') {
 				global $headerlib; include_once('lib/headerlib.php');
 				$headerlib->add_jsfile( 'lib/swfobject/swfobject.js' );
-			}
-			$raw = $tikilib->embed_flash(unserialize($res['HTMLData']));
+				$raw = $res['HTMLData'];
+			} else
+				$raw = $res['textData'];
 			break;
 
 
 		case 'useImage':
 			$raw
-				= "<div class='banner $class'><a target='$target' href='banner_click.php?id=" . $res["bannerId"] . "&amp;url=" . urlencode($res["url"]). "'><img alt='banner' border='0' src=\"banner_image.php?id=" . $res["bannerId"] . "\" /></a></div>";
+				= "<div align='center' class='banner'><a target='$target' href='banner_click.php?id=" . $res["bannerId"] . "&amp;url=" . urlencode($res["url"]). "'><img alt='banner' border='0' src=\"banner_image.php?id=" . $res["bannerId"] . "\" /></a></div>";
 
 			break;
 
@@ -297,6 +289,14 @@ class BannerLib extends TikiLib
 		$query = "delete from `tiki_zones` where `zone`=?";
 
 		$result = $this->query($query,array($zone));
+
+/* this code following if (0) is never executed, right?
+		if (0) {
+			$query = "delete from `tiki_banner_zones` where `zoneName`=?";
+
+			$result = $this->query($query,array($zone));
+		}
+*/
 
 		return true;
 	}

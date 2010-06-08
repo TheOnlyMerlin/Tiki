@@ -1,14 +1,22 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-directory_validate_sites.php,v 1.18 2007-10-12 07:55:26 nyloth Exp $
 require_once ('tiki-setup.php');
 include_once ('lib/directory/dirlib.php');
-$access->check_feature('feature_directory');
-$access->check_permission('tiki_p_validate_links');
+if ($prefs['feature_directory'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_directory");
+	$smarty->display("error.tpl");
+	die;
+}
+if ($tiki_p_validate_links != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (isset($_REQUEST["validate"]) && isset($_REQUEST['sites'])) {
 	check_ticket('dir-validate');
 	foreach(array_keys($_REQUEST["sites"]) as $siteId) {
@@ -16,8 +24,13 @@ if (isset($_REQUEST["validate"]) && isset($_REQUEST['sites'])) {
 	}
 }
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$dirlib->dir_remove_site($_REQUEST["remove"]);
+	$area = 'deldirvalidate';
+	if ($prefs['feature_ticketlib2'] != 'y' or ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"])))) {
+		key_check($area);
+		$dirlib->dir_remove_site($_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 if (isset($_REQUEST["del"]) && isset($_REQUEST['sites'])) {
 	check_ticket('dir-validate');

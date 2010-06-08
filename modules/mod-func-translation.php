@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -13,17 +8,13 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 function module_translation_info() {
 	return array(
-		'name' => tra('Translate Updates'),
+		'name' => tra('Page translation'),
 		'description' => tra('Links to versions of the wiki page being viewed in other languages, distinguishing between better, equivalent or worse translations. Optionally displays the up-to-dateness of the translation being viewed.'),
 		'prefs' => array("feature_translation"),
 		'params' => array(
 			'pivot_language' => array(
 				'name' => tra('Reference language'),
 				'description' => tra('If set to a language code, restricts the localized pages shown to the reference page, unless that page is being displayed.') . " " . tra('Example values:') . ' en, fr.' . " " . tra('Not set by default.')
-			),
-			'show_language' => array(
-				'name' => tra('Show language'),
-				'description' => tra('If "y" the page language will be shown instead of the page name.') . tra('Default = "y".')
 			)
 		)
 	);
@@ -40,35 +31,14 @@ function filter_languages_from_pivot( $langInfo ) {
 }
 
 function module_translation( $mod_reference, $module_params ) {
-	global $pivotLanguage, $tikilib, $smarty, $prefs, $page, $_REQUEST;
-	
-	
-//are we arriving from the edit page?	
-		if ( isset($module_params['from_edit_page']) && $module_params['from_edit_page'] == 'y') {
-			$smarty->assign( 'from_edit_page', 'y');
-		} else {
-			$smarty->assign( 'from_edit_page', 'n');
-		}
-	
-	
-	
-	if ((!$page or $page == '') and isset($_REQUEST['page'])) {
-		$page = $_REQUEST['page'];
-	}
-	$smarty->assign('page', $page);
-	$smarty->assign( 'show_translation_module', false);
+	global $pivotLanguage, $tikilib, $smarty, $prefs, $page;
 
+	$smarty->assign( 'show_translation_module', false);
 	if( ! empty( $page ) && is_string($page) ) {
 	
 		global $multilinguallib;
 		include_once('lib/multilingual/multilinguallib.php');
-
-		if ( isset($module_params['show_language']) && $module_params['show_language'] == 'n') {
-			$smarty->assign( 'show_language', 'n');
-		} else {
-			$smarty->assign( 'show_language', 'y');
-		}
-		
+	
 		$pivotLanguage = isset( $module_params['pivot_language'] ) ? $module_params['pivot_language'] : '';
 		$langs = $multilinguallib->preferredLangs();
 		if( isset( $GLOBALS['pageLang'] ) )
@@ -97,7 +67,7 @@ function module_translation( $mod_reference, $module_params ) {
 		}
 	
 		unset( $completeList[$transinfo['page_id']] );
-		
+	
 		$smarty->assign( 'show_translation_module', ! empty( $completeList ) );
 		if (empty( $completeList )) {
 			return;

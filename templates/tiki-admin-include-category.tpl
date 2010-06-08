@@ -12,33 +12,25 @@
 
 	<fieldset>
 		<legend>
-			{tr}Features{/tr}{help url="Category"}
+			{tr}Features{/tr}{if $prefs.feature_help eq 'y'} {help url="Category"}{/if}
 		</legend>
-		{preference name=feature_categories}
 		{preference name=feature_categorypath}
 		<div class="adminoptionboxchild" id="feature_categorypath_childcontainer">
 			{preference name=categorypath_excluded}
+			<br />
+			<em>{tr}Separate category IDs with a comma (,){/tr}.</em>
 		</div>
 		{preference name=feature_categoryobjects}
 		{preference name=feature_category_use_phplayers}
-		<div class="adminoptionlabel" style="margin-left:40px">
-		{remarksbox type="note" title="{tr}Note{/tr}"}
-		<em>{tr}With PHPlayers, watch icons are only visible for the top category{/tr}</em>
-		{/remarksbox}
-		</div>
 		{preference name=categories_used_in_tpl}
-		{preference name=category_jail}
-		{preference name=category_defaults}
-
-		{preference name=category_i18n_sync}
-		<div class="adminoptionboxchild category_i18n_sync_childcontainer blacklist whitelist required">
-			{preference name=category_i18n_synced}
-		</div>
 	</fieldset>
 
 	<fieldset>
 		<legend>{tr}Permissions{/tr}</legend>
 		{preference name=feature_search_show_forbidden_cat}
+		<br />
+		<em>{tr}Will improve performance, but may show forbidden results{/tr}.</em>
+		{preference name=feature_category_reinforce}
 	</fieldset>
 
 	<div class="input_submit_container clear" style="text-align: center;">

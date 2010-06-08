@@ -20,11 +20,7 @@
 		{foreach key=pos item=slvn_item from=$slvn_info.items}
 			{if $slvn_item.count > 0 }
 				{assign var=cname value=$slvn_item.cname}
-				{if $slvn_item.count eq $module_rows}
-					<div class="separator"><a class="separator" href="javascript:flip('{$cname}');">{tr}Multiple{/tr} {$slvn_item.label}, {tr}including{/tr}</a></div>
-				{else}
-					<div class="separator"><a class="separator" href="javascript:flip('{$cname}');">{$slvn_item.count}&nbsp;{$slvn_item.label}</a></div>
-				{/if}
+				<div class="separator"><a class="separator" href="javascript:flip('{$cname}');">{$slvn_item.count}&nbsp;{$slvn_item.label}</a></div>
 				{assign var=showcname value=show_$cname}
 
              	{if $pos eq 'trackers' or $pos eq 'utrackers'}

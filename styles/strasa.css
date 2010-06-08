@@ -1,26 +1,27 @@
-/* Strasa theme for Tiki 5.x, original design by Patrick Allard, released under LGPL license.
-   For more information, visit http://themes.tikiwiki.org
-   $Id$ */
+/* Strasa theme for Tiki 4.x, original design by Patrick Allard,
+   released under LGPL license. For more information, visit http://themes.tikiwiki.org
+   $Id$
+*/
 
-/* Import *lite as the base: */
-@import url("lite/lite.css");
+/* import *lite as the base: */
+@import "lite/lite.css"; 
 
 /* Then import the default layout properties file: */
-@import url("layout/layout.css");
+@import "layout/layout.css";
 
 /* And design defaults: */
-@import url("layout/design.css");
+@import "layout/design.css";
 
 /***** XHTML Elements ******/
 html {
 	display: block;
 	height: 100%;
-	background-color: #214d68;
+	background: #2e3035;
 }
 
 body {
 	font: 12px/1.4em Verdana, Geneva, Arial, Helvetica, sans-serif;
-	background-color: #fff;
+	background: #fff;
 }
 
 a,
@@ -64,8 +65,8 @@ h6 {
 	font-size: 1.05em;
 }
 
-.wikitext h1 {color: #000; line-height: .9em;}
-.wikitext h2 {color: #309FC0; line-height: .9em; border-bottom: solid 1px #3090C0; text-transform: uppercase}
+.wikitext h1 {color: #000000}
+.wikitext h2 {color: #309FC0; line-height: .9; border-bottom: solid 1px #3090C0; text-transform: uppercase}
 .wikitext h3 {color: #303030; line-height: .8em; font-style: italic}
 .wikitext h4 {border-bottom: dashed 1px #CCF0FF; color: #3F3F3F}
 .wikitext h5 {color: #6F6F6F; font-style: italic}
@@ -85,16 +86,12 @@ textarea,
 option,
 select,
 body.wikitext {
-	background: #F3FCFE;
+	background: #F3FCFE !important;
 	color: #000;
 }
 
 body.wikitext {
 	height: 100%;	/* for FCKEditor */
-}
-
-html[dir=ltr] {	/* for fck editor */
-	background-color: #F3FCFE;
 }
 
 select {
@@ -121,7 +118,7 @@ input[type=password] {
 	
 input#search {
 	background: #E7F8FD;
-	border: 1px solid #3CF;
+	border: 1px solid #33CCFF;
 	color: #517298;
 	height: 16px;
 	margin-right: 10px;
@@ -175,6 +172,11 @@ span.highlight a:visited {
 	color: #000 !important;
 }
 
+/* submit buttons input type="submit" in a container */
+.input_submit_container {
+	padding: 1px;
+}
+
 form.admin input[name="features"] {
 	margin-bottom: 3px !important;
 }
@@ -196,7 +198,7 @@ label {
 
 .fullscreenbutton:hover,
 #fullscreenbutton:hover {
-	color: #000;
+	color: #000000;
 }
 
 /*** Type 1 (*litecss-based) layout 
@@ -210,9 +212,15 @@ label {
 	min-height: 100%;
 }
 
+#header {
+/*	min-height: 121px;
+	position: relative;*/
+}
+
 #middle {
 	background: #fff;
-	padding: 40px 0;
+	padding-top: 40px;
+	padding-bottom: 40px;
 }
 
 #c1c2 {
@@ -220,7 +228,8 @@ label {
 }
 
 .fullscreen #col1 {
-	margin: 0 30px !important;
+	margin-left: 30px !important;
+	margin-right: 30px !important;
 }
 
 #c1c2 #wrapper .marginleft {
@@ -232,7 +241,8 @@ label {
 }
 
 #c1c2 #wrapper #col1 #tiki-center {
-	margin: 0 20px;
+	margin-left: 20px;
+	margin-right: 20px;
 }
 
 #c1c2 #col2 {
@@ -295,7 +305,7 @@ label {
 .fcol1 ul li,
 .fcol2 ul li,
 .fcol3 ul li {
-	border-bottom: 1px solid #666;
+	border-bottom: 1px solid #666666;
 	padding: 4px 0;
 	list-style: none;
 	margin: 0;
@@ -344,6 +354,7 @@ div#tiki-main {
 #header-top {
 	color: #fff;
 	background: #214d68 url(strasa/headerbg.jpg) repeat-x 0 100%;
+/*	position: static;*/
 }
 
 #siteheader {
@@ -379,11 +390,6 @@ div#sitelogo {
 
 #sitead.floatleft {
 	padding-left: 100px;
-}
-
-#customcode.floatright {
-	margin-top: 30px;
-	margin-right: 120px;
 }
 
 #siteloginbar {
@@ -704,7 +710,7 @@ a.phplmselected:hover {
 	border-top: 1px solid #233039;
 }
 
-#header .cssmenu_horiz li:hover {
+#tiki-top .cssmenu_horiz li:hover {
 	background: #1b3a50;
 }
 
@@ -784,8 +790,8 @@ a.phplmselected:hover {
 	text-align: left;
 }
 
-#header .cssmenu_horiz a,
-#header .cssmenu_horiz a:visited {
+#tiki-top .cssmenu_horiz a,
+#tiki-top .cssmenu_horiz a:visited {
 	padding: 3px 3px 6px 3px;
 	text-decoration: none;
 	font: normal 1em Verdana, Helvetica, Arial, Sans-Serif;
@@ -797,11 +803,11 @@ a.phplmselected:hover {
 	text-align: center;
 }
 
-#header .cssmenu_horiz li.menuSection a {
+#tiki-top .cssmenu_horiz li.menuSection a {
 	padding-right: 2em;
 }
 
-#header .cssmenu_horiz a:hover {
+#tiki-top .cssmenu_horiz a:hover {
 	text-decoration: none;
 	background: url(strasa/headermenuitem-hover.png) bottom center repeat-x;
 	border-color: #336699;
@@ -810,35 +816,36 @@ a.phplmselected:hover {
 	color: #fff;
 }
 
-#header .cssmenu_horiz li ul li a,
-#header .cssmenu_horiz li ul li a:link,
-#header .cssmenu_horiz li ul li a:visited,
-#header .cssmenu_horiz li ul li a:hover {
+#tiki-top .cssmenu_horiz li ul li a,
+#tiki-top .cssmenu_horiz li ul li a:link,
+#tiki-top .cssmenu_horiz li ul li a:visited,
+#tiki-top .cssmenu_horiz li ul li a:hover {
 	text-align: left;
 	border: 0;
 }
 
-#header .cssmenu_horiz li ul li a:hover {
+#tiki-top .cssmenu_horiz li ul li a:hover {
 	background: none;	
 }
 
-#header .cssmenu_horiz li ul li {
+#tiki-top .cssmenu_horiz li ul li,
+#tiki-top .cssmenu_vert li ul li {
 	border: 1px solid #08698f;
 	background: #1b3a50;
 	border-top: 0;
 	margin-bottom: -1px
 }
 
-#header .cssmenu_horiz li ul li:first-child,
-.cssmenu_vert li ul li:first-child {
+#tiki-top .cssmenu_horiz li ul li:first-child,
+#tiki-top .cssmenu_vert li ul li:first-child {
 	border-top: 1px solid #08698f;
 }
 
-.cssmenu_horiz li ul {
+/*#tiki-top */.cssmenu_horiz li ul {
 	margin-top: -7px;
 }
 
-.cssmenu_horiz li ul ul {
+/*#tiki-top */.cssmenu_horiz li ul ul {
 	margin-top: -1px;
 }
 
@@ -848,7 +855,7 @@ a.phplmselected:hover {
 	top: .3em;
 }
 
-.cssmenu_horiz li a .sf-sub-indicator {
+/*#tiki-top */.cssmenu_horiz li a .sf-sub-indicator {
 	background: url(strasa/arrows-a2ecff.png) no-repeat -10px -100px;
 	top: 6px;
 }
@@ -879,11 +886,6 @@ div.separator {
 a.linkmodule:hover {
 	color: #000000;
 }
-
-div.menuSection {
-	padding: 0 0 16px 0;
-	}
-
 
 div.menuSection div.menuSection,
 div.menuSection div.separator {
@@ -1055,7 +1057,7 @@ table.normal td.heading {
 	color: #5ae0ff;
 	background: #1b3a50;
 	min-height: 32px;
-	#text-align: center;
+	text-align: center;
 }
 
 th a:link,
@@ -1834,7 +1836,7 @@ div.multiselect {
 }
 
 .calfocuson {
-	font-size: 100%;
+	font-size: 90%;
 }
 
 .calprio1 a,
@@ -1950,14 +1952,11 @@ div.multiselect {
 	font-weight: bold;
 }
 
+.caltable .calfocuson,
 .box-data td.fc a.today,
 .box-data td a.today {
 	background: #D4D0C8;
 	border: solid 1px #696969;
-}
-
-.caltable .calfocuson {
-	background: #D4D0C8;
 }
 
 .caltable .calfocuson a {
@@ -1975,22 +1974,6 @@ div.multiselect {
 
 .calfocuson + .calcontent {
 	background: #F5F5F5;
-}
-
-div#calscreen td.calfocuson {
-	background: #D4D0C8;
-}
-
-.calfocuson {
-	font-size: 100%;
-}
-
-.calfocuson a {
-	font-size: 90%;
-}
-
-.calHeadingOn, .calHeadingOn a {
-	background: #D4D0C8;
 }
 
 .days {
@@ -2140,42 +2123,5 @@ a.admbox.off:focus,
 a.admbox.off:active {
 	border: 1px solid #a9a9a9;
 }
-
-/* Fixed-width styles */
-
-body.fixed_width {
-	background: #214d68 url(strasa/body-bg_fw.png) repeat-x !important
-}
-
-body.fixed_width #c1c2 #wrapper .marginleft {
- margin-left: 180px;
-}
-
-body.fixed_width #c1c2 #wrapper .marginright {
-	margin-right: 180px;
-}
-
-body.fixed_width #c1c2 #col2 {
-	width: 180px;
-	background: url(strasa/box_top_fw.gif) no-repeat 100% 0;
-}
-
-body.fixed_width #c1c2 #col2 .content {
-	margin-left: 0;
-	background: url(strasa/box_bottom_fw.gif) no-repeat 100% 100%;
-}
-
-body.fixed_width #col3 {
-	margin-left: -180px;
-	width: 180px;
-}
-
-body.fixed_width #col3 .content {
-	margin-right: 0;
-}
-
-body.fixed_width #main[id] {border:1px solid #2E3035; margin-top: 18px; margin-bottom: 5px;}
-
-
 
 /* end of file */

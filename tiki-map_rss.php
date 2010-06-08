@@ -1,14 +1,17 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-map_rss.php,v 1.16 2007-10-12 07:55:29 nyloth Exp $
 require_once ('tiki-setup.php');
 require_once ('lib/tikilib.php');
 require_once ('lib/rss/rsslib.php');
-$access->check_feature('feature_maps');
+if ($prefs['feature_maps'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_maps");
+	$smarty->display("error.tpl");
+	die;
+}
 if ($prefs['rss_mapfiles'] != 'y') {
 	$errmsg = tra("rss feed disabled");
 	require_once ('tiki-rss_error.php');

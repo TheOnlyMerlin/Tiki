@@ -1,10 +1,12 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-edit_image.php,v 1.22.2.1 2007-12-07 05:56:38 mose Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 require_once ('tiki-setup.php');
 
 include_once ("lib/imagegals/imagegallib.php");
@@ -16,7 +18,12 @@ if ($prefs['feature_categories'] == 'y') {
 	}
 }
 
-$access->check_feature('feature_galleries');
+if ($prefs['feature_galleries'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_galleries");
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 // Sanity anyone?
 if (!$_REQUEST['edit'] or !$_REQUEST['galleryId']) {
@@ -28,7 +35,14 @@ if (!$_REQUEST['edit'] or !$_REQUEST['galleryId']) {
 
 $tikilib->get_perm_object( $_REQUEST['galleryId'], 'image gallery' );
 
-$access->check_permission('tiki_p_upload_images');
+// Now check permissions to access this page
+if ($tiki_p_upload_images != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied you cannot edit images"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 $imageId=$_REQUEST['edit'];
 $foo = parse_url($_SERVER["REQUEST_URI"]);
@@ -47,7 +61,13 @@ $smarty->assign('sort_mode', $sort_mode);
 if (isset($_REQUEST["editimage"]) || isset($_REQUEST["editimage_andgonext"])) {
 	check_ticket('edit-image');
 
-	$access->check_permission('tiki_p_upload_images');
+	if ( $tiki_p_upload_images != 'y' ) {
+		$smarty->assign('errortype', 401);
+		$smarty->assign('msg', tra("Permission denied you cannot edit images"));
+
+		$smarty->display("error.tpl");
+		die;
+	}
 
 	if ($gal_info["thumbSizeX"] == 0)
 		$gal_info["thumbSizeX"] = 80;

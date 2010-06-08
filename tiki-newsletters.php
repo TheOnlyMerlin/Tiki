@@ -1,16 +1,23 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-
 $section = 'newsletters';
 require_once ('tiki-setup.php');
 global $nllib; include_once ('lib/newsletters/nllib.php');
-$access->check_feature('feature_newsletters');
-$access->check_permission('tiki_p_list_newsletters');
-
+if ($prefs['feature_newsletters'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_newsletters");
+	$smarty->display("error.tpl");
+	die;
+}
+if ($tiki_p_list_newsletters != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra('Permission denied'));
+	$smarty->display("error.tpl");
+	die;
+}
 $auto_query_args = array('nlId', 'offset', 'sort_mode', 'find');
 $smarty->assign('confirm', 'n');
 //TODO: memorize the charset for each subscription
@@ -47,7 +54,7 @@ $smarty->assign('nlId', $_REQUEST["nlId"]);
 $smarty->assign('subscribe', 'n');
 $smarty->assign('subscribed', 'n');
 $foo = parse_url($_SERVER["REQUEST_URI"]);
-$smarty->assign('url_subscribe', $tikilib->httpPrefix( true ) . $foo["path"]);
+$smarty->assign('url_subscribe', $tikilib->httpPrefix() . $foo["path"]);
 if (isset($_REQUEST["nlId"])) {
 	$tikilib->get_perm_object($_REQUEST["nlId"], 'newsletter');
 }
@@ -68,11 +75,6 @@ if ($tiki_p_subscribe_newsletters == 'y') {
 		check_ticket('newsletters');
 		if ($tiki_p_subscribe_email != 'y') {
 			$_REQUEST["email"] = $userlib->get_user_email($user);
-		}
-		// Save the ip at the log for email subscriptions from anonymous
-		if (empty($user)) { 
-			$logslib->add_log('newsletter','subscribed email '.$_REQUEST["email"].' to newsletter '.$_REQUEST["nlId"]);
-			$smarty->assign('subscribed', 'y'); // will receive en email
 		}
 		// Now subscribe the email address to the newsletter
 		$nl_info = $nllib->get_newsletter($_REQUEST["nlId"]);

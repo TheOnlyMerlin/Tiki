@@ -1,10 +1,21 @@
 /* Tikinewt theme stylesheet (tikinewt.css);
  (imports lite.css, layout.css and design.css) 
 
-/* Import layout and default styles: */
-@import url("lite/lite.css");
-@import url("layout/layout.css");
-@import url("layout/design.css");
+	Theme CSS is comprised of these sections:
+	XHTML elements, Siteheader & Identity; Menus, Links;
+	Misc. Center Col.; Misc. Global; Boxes; Tables, Tabs;
+	Wiki (inc. plugins, etc.); Articles; Blogs; Forums;
+	Galleries; Trackers; Categories, Tags; Polls; FAQs;
+	Quizzes; Shoutbox; Directory; Messages; TikiSheets;
+	Calendar; Admin; and Ajax, jquery, etc. */
+/* Import layout foundation CSS file. */
+@import "lite/lite.css";
+
+/* Then import the default layout properties file: */
+@import "layout/layout.css";
+
+/* And design defaults: */
+@import "layout/design.css";
  
 /***** XHTML Elements (body tag here,
 			others follow Layout) *****/
@@ -103,6 +114,10 @@ a:visited {
 a:hover {
 	color: #2a547b;
 	text-decoration: underline;
+}
+
+caption {
+	font-weight: bold;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -340,19 +355,6 @@ div#sitelogo {
 
 #siteloginbar div {
 	text-align: right;
-}
-
-#siteloginbar_popup {
-	bottom: 4px;
-}
-
-#siteloginbar_popup li.login_link {
-	border: 1px solid #8cacbb;
-	padding: 0;
-}
-
-#siteloginbar_popup .cssmenu_horiz li ul {
-	margin-top: -4px;
 }
 
 #tiki-top {
@@ -2210,19 +2212,6 @@ table.default td {
 	font-weight: bold;
 }
 
-.calfocuson {
-	font-size: 100%; 
-	background: #f3e498;
-}
-
-.calfocuson a {
-	font-size: 90%; 
-}
-
-.calHeadingOn, .calHeadingOn a {
-	background: #f3e498;
-}
-
 /* Style for OverBox */
 .opaque {
 	background: #fff;
@@ -2254,17 +2243,8 @@ div.adminanchors {
 	background: #e9ecef !important;
 }
 
-/* Fixed-width rules */
-body.fixed_width {
-	background: #f4f4f4;
-}
+/***** Ajax, jquery. etc. *****/
+/***** Ajax *****/
 
-body.fixed_width #main {
-	background: #fff;
-}
-
-body.fixed_width #main[id] {
-	border: 1px solid #aaaaaa;
-}
-
+/***** New (unsorted) *****/
 /* end of file */

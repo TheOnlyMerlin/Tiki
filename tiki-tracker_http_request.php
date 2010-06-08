@@ -1,9 +1,8 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once ('tiki-setup.php');
 include_once ('lib/trackers/trackerlib.php');
@@ -55,7 +54,7 @@ for ($index = 0, $count_arrayTrackerId = count($arrayTrackerId); $index < $count
 		$listfields[$fid]['type'] = $xfields["data"][$dfid]["type"];
 		$listfields[$fid]['name'] = $xfields["data"][$dfid]["name"];
 		$listfields[$fid]['options'] = $xfields["data"][$dfid]["options"];
-		$listfields[$fid]['options_array'] = explode(',', $xfields["data"][$dfid]["options"]);
+		$listfields[$fid]['options_array'] = split(',', $xfields["data"][$dfid]["options"]);
 		$listfields[$fid]['isMain'] = $xfields["data"][$dfid]["isMain"];
 		$listfields[$fid]['isTblVisible'] = $xfields["data"][$dfid]["isTblVisible"];
 		$listfields[$fid]['isHidden'] = $xfields["data"][$dfid]["isHidden"];

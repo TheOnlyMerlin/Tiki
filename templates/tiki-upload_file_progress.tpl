@@ -22,9 +22,6 @@
 		{else}
 			<b>{$name} ({$size|kbsize})</b>
 		{/if}
-		{if $feedback_message != ''}
-			<div class="upload_note">{$feedback_message}</div>
-		{/if}
 			{if empty($filegals_manager)}<div>
 			{button href="#" _onclick="javascript:flip('uploadinfos$fileId');flip('close_uploadinfos$fileId','inline');return false;" _text="{tr}Additional Info{/tr}"}
 			<span id="close_uploadinfos{$fileId}" style="display:none">
@@ -44,6 +41,11 @@
 	</tr>
 </table>
 {/capture}
-<script type='text/javascript'><!--//--><![CDATA[//><!--
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
 	parent.progress('{$FormId}','{$msg|escape:"javascript"}');
-//--><!]]></script>
+//--><!]]>
+</script>
+
+
+

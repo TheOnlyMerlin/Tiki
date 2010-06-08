@@ -1,14 +1,8 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once('lib/images/abstract.php');
 
-class Image extends ImageAbstract
-{
+class Image extends ImageAbstract {
 
 	function __construct($image, $isfile = false) {
 		if ( $isfile ) {
@@ -36,7 +30,7 @@ class Image extends ImageAbstract
 
 	function _resize($x, $y) {
 		if ($this->data) {
-			return imagick_scale($this->data, $x, $y);
+			return imagick_scale(&$this->data, $x, $y);
 		}
 	}
 
@@ -63,7 +57,7 @@ class Image extends ImageAbstract
 		$this->_load_data();
 		$this->format = $format;
 		if ($this->data) {
-			imagick_convert($this->data, strtoupper(trim($format)));
+			imagick_convert(&$this->data, strtoupper(trim($format)));
 		}
 	}
 
@@ -81,7 +75,7 @@ class Image extends ImageAbstract
 	function rotate($angle) {
 		$this->_load_data();
 		if ($this->data) {
-			imagick_rotate($this->data, -$angle);
+			imagick_rotate(&$this->data, -$angle);
 			return true;
 		} else {
 			return false;

@@ -1,6 +1,7 @@
 {title help="User+Tasks"}{tr}Tasks{/tr}{/title}
 
-{include file='tiki-mytiki_bar.tpl'}
+  {include file='tiki-mytiki_bar.tpl'}
+  <br /><br />
 
 <div class="navbar">
 	{button href="tiki-user_tasks.php?show_form=y" _text="{tr}New task{/tr}"}

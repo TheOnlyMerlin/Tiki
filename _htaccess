@@ -1,8 +1,5 @@
-# TikiWiki Version: 5.0 [This line is used to check that this htaccess file is up to date. Do not edit this line.]
-#
-# These are suggested Rewrite Rules for use with Tiki.
-# They enhance security and permit short URLs.
-# In your Tiki instance, visit tiki-admin.php?page=sefurl
+# These are suggested Rewrite Rules for use with TikiWiki.
+# They enhance security and permit short URLS. 
 #
 # To use
 # 1- rename _htaccess to .htaccess
@@ -18,31 +15,8 @@
 	deny from all
 </FilesMatch>
 
-<FilesMatch "\.(js|png|gif|jpg|css)$">
-	FileEtag None
-</FilesMatch>
-
-# If the site is stable, might be worth setting the expires header on all files
-#<IfModule mod_expires.c>
-#	<FilesMatch "\.(js|png|gif|jpg|css|ico)$">
-#		ExpiresActive on
-#		ExpiresDefault "access plus 10 years"
-#	</FilesMatch>
-#</IfModule>
-
-
-# Using ETags will lower the YSlow scores
-FileETag none
-
-<IfModule deflate_module>
-	AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/x-javascript application/javascript
-</IfModule>
-
 <IfModule mod_rewrite.c>
 RewriteEngine On
-
-#If your website is a checkout
-RewriteRule	^\.svn/	-	[F,L]
 
 # If the URL points to a file then do nothing
 RewriteCond %{REQUEST_FILENAME} -s [OR]
@@ -54,8 +28,6 @@ RewriteRule (.*) - [L]
 # Rewrite rule to make this Tiki a profiles repository (uncomment to enable)
 # Set the parentId (here set as 1) to the Id of the category containing your profile pages
 # See http://doc.tikiwiki.org/Profiles for more
-# Note: you need to allow tiki_p_view_category and tiki_p_export_wiki for anonymous to be a repository
-#       and enable feature_wiki_export (as well as feature_wiki and feature_categories)
 #RewriteRule ^profiles$             tiki-browse_categories.php?find=&deep=on&type=wiki+page&parentId=1&sort_mode=name_asc&plain&maxRecords=1000000 [L]
 
 # Tiki 3.0 requires PHP5. If your host doesn't offer PHP5 by default, it's possible that it can be activated by using (uncommenting) the lines below. Check with your host.
@@ -86,8 +58,7 @@ RewriteRule ^files$                tiki-list_file_gallery.php               [L]
 RewriteRule ^forums$               tiki-forums.php                          [L]
 RewriteRule ^images$               tiki-galleries.php                       [L]
 RewriteRule ^galleries$            tiki-galleries.php                       [L]
-RewriteRule ^login$                tiki-login_scr.php                       [L]
-RewriteRule ^register$             tiki-register.php                        [L]
+RewriteRule ^login$                tiki-login.php                           [L]
 RewriteRule ^my$                   tiki-my_tiki.php                         [L]
 RewriteRule ^newsletters$          tiki-newsletters.php                     [L]
 RewriteRule ^quizzes$              tiki-list_quizzes.php                    [L]
@@ -135,20 +106,14 @@ RewriteRule ^(lib/wiki3d/.+\.jar)$ $1                                       [L]
 
 RewriteRule \.(css|gif|jpg|png|php|html|js|htm|shtml|cgi|sql|phtml|txt|ihtml)   -       [L]
 RewriteRule ^(.+)$                 tiki-index.php?page=$1                   [QSA,L]
-</IfModule>
-# End of rewrite rules
 
-# Error pages, handled by Apache (not by Tiki)
-# Tiki can catch some errors and deal with them by redirecting to a similar page, sending you to the search, etc. However, some errors bypass Tiki and must be handled by Apache (ex.: impossiblepagename.php) 
+# Error pages, handled by Apache (not by TikiWiki)
+# TikiWiki can catch some errors and deal with them by redirecting to a similar page, sending you to the search, etc. However, some errors bypass TikiWiki and must be handled by Apache (ex.: impossiblepagename.php) 
 # To use Apache error handling, uncomment the following line and adapt the page name. You must create the page before trying to use it. 
 # ErrorDocument 404 /tiki-index.php?page=Page+not+found
 
-# to activate the error display, uncomment the following line
+# to active the error display, uncomment
 #php_flag display_errors on
 
-
-# if you want to use the Web Server Auth
-#AuthType Basic
-#AuthName "Restricted Access"
-#AuthUserFile /etc/httpd/passwords
-#Require valid-user 
+</IfModule>
+# End of rewrite rules

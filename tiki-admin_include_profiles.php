@@ -1,10 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_include_blogs.php,v 1.20.2.1 2007-10-20 05:21:41 pkdille Exp $
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	header("location: index.php");
@@ -26,10 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	if (isset($_POST['forget'], $_POST['pp'], $_POST['pd'])) { // {{{
 		$profile = Tiki_Profile::fromNames($_POST['pd'], $_POST['pp']);
 		$profile->removeSymbols();
-		$data = array();
-		foreach($_POST as $key => $value) if ($key != 'url' && $key != 'forget') $data[str_replace('_', ' ', $key) ] = $value;
 		$installer = new Tiki_Profile_Installer;
-		$installer->setUserData($data);
 		$installer->install($profile);
 		if ($target = $profile->getInstructionPage()) {
 			global $wikilib;
@@ -110,13 +106,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		}
 		$dependencies = array();
 		$userInput = array();
-		foreach($deps as $d) {
+		foreach($deps as $d) if (!$installer->isInstalled($d)) {
 			$dependencies[] = $d->pageUrl;
 			$userInput = array_merge($userInput, $d->getRequiredInput());
 		}
 		$parsed = $tikilib->parse_data($profile->pageContent);
 		$installed = $installer->isInstalled($profile);
-		
 		echo json_encode(array(
 			'dependencies' => $dependencies,
 			'userInput' => $userInput,
@@ -125,7 +120,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			'content' => $parsed,
 			'already' => $installed,
 			'url' => $profile->url,
-			'feedback' => $profile->getFeedback(),
 		));
 		exit;
 	} // }}}
@@ -134,13 +128,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 if (isset($_GET['list'])) { // {{{
 	$params = array_merge(array(
 		'repository' => '',
-		'categories' => '',
+		'category' => '',
 		'profile' => ''
 	) , $_GET);
 	$smarty->assign('categories', $params['categories']);
 	$smarty->assign('profile', $params['profile']);
 	$smarty->assign('repository', $params['repository']);
-	if (isset($_GET['preloadlist']) && $params['repository']) $list->refreshCache($params['repository']);
+	if ($_GET['preloadlist'] && $params['repository']) $list->refreshCache($params['repository']);
 	$profiles = $list->getList($params['repository'], $params['categories'], $params['profile']);
 	foreach ($profiles as &$profile) {
 		$profile['categoriesString'] = "";
@@ -165,15 +159,12 @@ foreach($sources as $key => $source)
 		$openSources++;
 }
 
-if($openSources == count($sources))
+if($openSources == sizeof($sources))
 	$smarty->assign('openSources', 'all');
-elseif (($openSources > 0) &&($openSources < count($sources)))
+elseif (($openSources > 0) &&($openSources < sizeof($sources)))
 	$smarty->assign('openSources', 'some');
 else
 	$smarty->assign('openSources', 'none');
-	
-$smarty->assign('tikiMajorVersion' ,substr($TWV->version,0,2));
-
 	
 
 ask_ticket('admin-inc-profiles');

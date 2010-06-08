@@ -1,11 +1,7 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /** \file
+ * $Id: /cvsroot/tikiwiki/tiki/lib/usermodules/usermoduleslib.php,v 1.35.2.1 2008-01-17 18:38:08 sylvieg Exp $
+ *
  * \brief Manage user assigned modules
  */
 
@@ -25,8 +21,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  * This list is rebuilt if the user asks for a "restore default"
  *
  */
-class UserModulesLib extends TikiLib
-{
+class UserModulesLib extends TikiLib {
 	function unassign_user_module($moduleId, $user) {
 		$query = "delete from `tiki_user_assigned_modules` where `moduleId`=? and `user`=?";
 		$result = $this->query($query,array($moduleId, $user));

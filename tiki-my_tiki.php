@@ -1,10 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-my_tiki.php,v 1.28.2.1 2007-12-13 23:24:45 nkoth Exp $
 $section = 'mytiki';
 require_once ('tiki-setup.php');
 if ($prefs['feature_ajax'] == "y") {
@@ -12,7 +11,12 @@ if ($prefs['feature_ajax'] == "y") {
 }
 include_once ('lib/wiki/wikilib.php');
 include_once ('lib/tasks/tasklib.php');
-$access->check_user($user);
+if (!$user) {
+	$smarty->assign('msg', tra("You are not logged in"));
+	$smarty->assign('errortype', '402');
+	$smarty->display("error.tpl");
+	die;
+}
 $userwatch = $user;
 if (isset($_REQUEST["view_user"])) {
 	if ($_REQUEST["view_user"] <> $user) {

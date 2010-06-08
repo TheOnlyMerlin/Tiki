@@ -1,9 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
-// 
+// $Id: mod-article_archives.php 18886 2009-05-18 15:19:05Z dex $
+
+// Copyright (c) 2002-2009, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -50,7 +50,6 @@ function module_article_archives_info() {
 
 function module_article_archives( $mod_reference, $module_params ) {
 	global $tikilib, $smarty;
-	global $artlib; require_once 'lib/articles/artlib.php';
 	
 	$urlParams = array(
 		'topicId' => 'topic',
@@ -70,7 +69,7 @@ function module_article_archives( $mod_reference, $module_params ) {
 	
 	foreach ( $urlParams as $p => $v ) $smarty->assign($p, $$p);
 	
-	$ranking = $artlib->list_articles(0, -1, 'publishDate_desc', '', '', date("U"), '', $type, $topicId, 'y', $topic, $categId, '', '', $langfilter);
+	$ranking = $tikilib->list_articles(0, -1, 'publishDate_desc', '', '', date("U"), '', $type, $topicId, 'y', $topic, $categId, '', '', $langfilter);
 	
 	// filter the month from the data
 	$artc_archive = array();

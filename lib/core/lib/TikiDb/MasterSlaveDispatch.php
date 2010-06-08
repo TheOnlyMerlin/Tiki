@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 require_once 'lib/core/lib/TikiDb.php';
 
 class TikiDb_MasterSlaveDispatch extends TikiDb
@@ -90,6 +84,11 @@ class TikiDb_MasterSlaveDispatch extends TikiDb
 		$this->getApplicable()->handleQueryError( $query, $values, $result );
 	} // }}}
 
+	protected function convertQuery( &$query ) // {{{
+	{
+		$this->getApplicable( $query )->convertQuery( $query );
+	} // }}}
+
 	protected function convertQueryTablePrefixes( &$query ) // {{{
 	{
 		$this->getApplicable( $query )->convertQueryTablePrefixes( $query );
@@ -98,6 +97,16 @@ class TikiDb_MasterSlaveDispatch extends TikiDb
 	function convertSortMode( $sort_mode ) // {{{
 	{
 		return $this->getApplicable()->convertSortMode( $sort_mode );
+	} // }}}
+
+	function convertBinary() // {{{
+	{
+		return $this->getApplicable()->convertBinary();
+	} // }}}
+	
+	function cast( $var,$type ) // {{{
+	{
+		return $this->getApplicable()->cast( $var, $type );
 	} // }}}
 
 	function getQuery() // {{{

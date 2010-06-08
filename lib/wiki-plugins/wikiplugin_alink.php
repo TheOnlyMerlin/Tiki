@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /*
  * Tiki ALINK plugin. 
  *
@@ -68,7 +62,7 @@ function wikiplugin_alink($data, $params)
 
 	// the following replace is necessary to maintain compliance with XHTML 1.0 Transitional
 	// and the same behavior as tikilib.php. This will change when the world arrives at XHTML 1.0 Strict.
-	$aname = preg_replace('/[^a-zA-Z0-9]+/', '_', $aname);
+	$aname = ereg_replace('[^a-zA-Z0-9]+', '_', $aname);
 		
 	if( isset($pagename) && $pagename ) {
 	    // Stolen, with some modifications, from tikilib.php line 4717-4723
@@ -86,6 +80,6 @@ function wikiplugin_alink($data, $params)
 			'"  class="wiki wikinew">?</a>';
 	    }
 	} else {
-	    return "<a href=\"".$_REQUEST["page"]."#$aname\">$data</a>";
+	    return "<a href=\"#$aname\">$data</a>";
 	}
 }

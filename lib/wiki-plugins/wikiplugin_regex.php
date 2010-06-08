@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 // Performs a regular expression on the $data between the {REGEX()} $data {REGEX} tags 
 // Usage the WikiPageName holds the regex find replace commands 
 // for example /^i/i:: $1 is the first letter
@@ -28,10 +22,10 @@ function wikiplugin_regex_info() {
 		'prefs' => array( 'wikiplugin_regex' ),
 		'body' => tra('one data per line'),
 		'params' => array(
-			'pageName' => array(
+			'search' => array(
 				'required' => true,
-				'name' => tra('Page name'),
-				'description' => tra('Page name containing the regular expression search and replace patterns.'),
+				'name' => tra('Search'),
+				'description' => tra('Page name containing the regular expression.'),
 			),
 		),
 	);
@@ -41,17 +35,15 @@ function wikiplugin_regex($data, $params) {
 global $tikilib;
 
 extract ($params,EXTR_SKIP);
-$pageName = (isset($pageName)) ? $pageName : 'pageName';//gets a page
+$pageName = (isset($pageName)) ? $pageName : "pageName";//gets a page
 $info = $tikilib->get_page_info($pageName);
-$content=$info['data']; 
+$content=$info["data"]; 
 $lines = explode("\n", $content); // separate lines into array no emtpy lines at beginning mid or end
-$i = 0;
 foreach($lines as $line){
-list($pattern[$i],$replace[$i])=explode("::",$line);// use two colons to separate your find and replace
-$i++;
+list($search[],$replace[])=explode("::",$line);// use two colons to separate your find and replace
 }
 
-$data=preg_replace($pattern,$replace,$data);
+$data=preg_replace($search,$replace,$data);
 	$data = trim($data);
 	return $data;
 }

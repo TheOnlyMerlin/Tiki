@@ -43,7 +43,7 @@
  * consumers to add extensions to their requests.  For example, with
  * sites using the Simple Registration
  * Extension
- * (http://openid.net/specs/openid-simple-registration-extension-1_0.html),
+ * (http://www.openidenabled.com/openid/simple-registration-extension/),
  * a user can agree to have their nickname and e-mail address sent to
  * a site when they sign up.
  *
@@ -365,7 +365,7 @@ class Auth_OpenID_CheckAuthRequest extends Auth_OpenID_Request {
         $this->message = null;
     }
 
-    static function fromMessage($message, $server=null)
+    function fromMessage($message, $server=null)
     {
         $required_keys = array('assoc_handle', 'sig', 'signed');
 
@@ -396,7 +396,7 @@ class Auth_OpenID_CheckAuthRequest extends Auth_OpenID_Request {
         return $result;
     }
 
-    function answer($signatory)
+    function answer(&$signatory)
     {
         $is_valid = $signatory->verify($this->assoc_handle, $this->signed);
 
@@ -436,7 +436,7 @@ class Auth_OpenID_PlainTextServerSession {
     var $needs_math = false;
     var $allowed_assoc_types = array('HMAC-SHA1', 'HMAC-SHA256');
 
-    static function fromMessage($unused_request)
+    function fromMessage($unused_request)
     {
         return new Auth_OpenID_PlainTextServerSession();
     }
@@ -469,7 +469,7 @@ class Auth_OpenID_DiffieHellmanSHA1ServerSession {
         $this->consumer_pubkey = $consumer_pubkey;
     }
 
-    static function getDH($message)
+    function getDH($message)
     {
         $dh_modulus = $message->getArg(Auth_OpenID_OPENID_NS, 'dh_modulus');
         $dh_gen = $message->getArg(Auth_OpenID_OPENID_NS, 'dh_gen');
@@ -489,7 +489,7 @@ class Auth_OpenID_DiffieHellmanSHA1ServerSession {
                                 $missing);
         }
 
-        $lib = Auth_OpenID_getMathLib();
+        $lib =& Auth_OpenID_getMathLib();
 
         if ($dh_modulus || $dh_gen) {
             $dh_modulus = $lib->base64ToLong($dh_modulus);
@@ -523,7 +523,7 @@ class Auth_OpenID_DiffieHellmanSHA1ServerSession {
         return array($dh, $consumer_pubkey);
     }
 
-    static function fromMessage($message)
+    function fromMessage($message)
     {
         $result = Auth_OpenID_DiffieHellmanSHA1ServerSession::getDH($message);
 
@@ -538,7 +538,7 @@ class Auth_OpenID_DiffieHellmanSHA1ServerSession {
 
     function answer($secret)
     {
-        $lib = Auth_OpenID_getMathLib();
+        $lib =& Auth_OpenID_getMathLib();
         $mac_key = $this->dh->xorSecret($this->consumer_pubkey, $secret,
                                         $this->hash_func);
         return array(
@@ -560,7 +560,7 @@ class Auth_OpenID_DiffieHellmanSHA256ServerSession
     var $hash_func = 'Auth_OpenID_SHA256';
     var $allowed_assoc_types = array('HMAC-SHA256');
 
-    static function fromMessage($message)
+    function fromMessage($message)
     {
         $result = Auth_OpenID_DiffieHellmanSHA1ServerSession::getDH($message);
 
@@ -582,7 +582,7 @@ class Auth_OpenID_DiffieHellmanSHA256ServerSession
 class Auth_OpenID_AssociateRequest extends Auth_OpenID_Request {
     var $mode = "associate";
 
-    static function getSessionClasses()
+    function getSessionClasses()
     {
         return array(
           'no-encryption' => 'Auth_OpenID_PlainTextServerSession',
@@ -590,14 +590,14 @@ class Auth_OpenID_AssociateRequest extends Auth_OpenID_Request {
           'DH-SHA256' => 'Auth_OpenID_DiffieHellmanSHA256ServerSession');
     }
 
-    function Auth_OpenID_AssociateRequest($session, $assoc_type)
+    function Auth_OpenID_AssociateRequest(&$session, $assoc_type)
     {
-        $this->session = $session;
+        $this->session =& $session;
         $this->namespace = Auth_OpenID_OPENID2_NS;
         $this->assoc_type = $assoc_type;
     }
 
-    static function fromMessage($message, $server=null)
+    function fromMessage($message, $server=null)
     {
         if ($message->isOpenID1()) {
             $session_type = $message->getArg(Auth_OpenID_OPENID_NS,
@@ -696,7 +696,7 @@ class Auth_OpenID_AssociateRequest extends Auth_OpenID_Request {
                                       'session_type',
                                       $preferred_session_type);
         }
-        $response->code = AUTH_OPENID_HTTP_ERROR;
+
         return $response;
     }
 }
@@ -734,7 +734,7 @@ class Auth_OpenID_CheckIDRequest extends Auth_OpenID_Request {
      */
     var $namespace;
     
-    static function make($message, $identity, $return_to, $trust_root = null,
+    function make(&$message, $identity, $return_to, $trust_root = null,
                   $immediate = false, $assoc_handle = null, $server = null)
     {
         if ($server === null) {
@@ -752,7 +752,7 @@ class Auth_OpenID_CheckIDRequest extends Auth_OpenID_Request {
                                             $assoc_handle, $server);
 
         $r->namespace = $message->getOpenIDNamespace();
-        $r->message = $message;
+        $r->message =& $message;
 
         if (!$r->trustRootValid()) {
             return new Auth_OpenID_UntrustedReturnURL($message,
@@ -765,20 +765,15 @@ class Auth_OpenID_CheckIDRequest extends Auth_OpenID_Request {
 
     function Auth_OpenID_CheckIDRequest($identity, $return_to,
                                         $trust_root = null, $immediate = false,
-                                        $assoc_handle = null, $server = null,
-                                        $claimed_id = null)
+                                        $assoc_handle = null, $server = null)
     {
         $this->namespace = Auth_OpenID_OPENID2_NS;
         $this->assoc_handle = $assoc_handle;
         $this->identity = $identity;
-        if ($claimed_id === null) {
-            $this->claimed_id = $identity;
-        } else {
-            $this->claimed_id = $claimed_id;
-        }
+        $this->claimed_id = $identity;
         $this->return_to = $return_to;
         $this->trust_root = $trust_root;
-        $this->server = $server;
+        $this->server =& $server;
 
         if ($immediate) {
             $this->immediate = true;
@@ -817,12 +812,11 @@ class Auth_OpenID_CheckIDRequest extends Auth_OpenID_Request {
      */
     function returnToVerified()
     {
-    	$fetcher = Auth_Yadis_Yadis::getHTTPFetcher();
         return call_user_func_array($this->verifyReturnTo,
-                                    array($this->trust_root, $this->return_to, $fetcher));
+                                    array($this->trust_root, $this->return_to));
     }
-    
-    static function fromMessage($message, $server)
+
+    function fromMessage(&$message, $server)
     {
         $mode = $message->getArg(Auth_OpenID_OPENID_NS, 'mode');
         $immediate = null;
@@ -1065,13 +1059,9 @@ class Auth_OpenID_CheckIDRequest extends Auth_OpenID_Request {
 
             $response->fields->updateArgs(Auth_OpenID_OPENID_NS,
                    array('mode' => $mode,
+                         'op_endpoint' => $server_url,
                          'return_to' => $this->return_to,
                          'response_nonce' => Auth_OpenID_mkNonce()));
-
-            if (!$this->message->isOpenID1()) {
-                $response->fields->setArg(Auth_OpenID_OPENID_NS,
-                                          'op_endpoint', $server_url);
-            }
 
             if ($response_identity !== null) {
                 $response->fields->setArg(
@@ -1098,14 +1088,13 @@ class Auth_OpenID_CheckIDRequest extends Auth_OpenID_Request {
                                   in OpenID 1.x immediate mode.');
                 }
 
-                $setup_request = new Auth_OpenID_CheckIDRequest(
+                $setup_request =& new Auth_OpenID_CheckIDRequest(
                                                 $this->identity,
                                                 $this->return_to,
                                                 $this->trust_root,
                                                 false,
                                                 $this->assoc_handle,
-                                                $this->server,
-                                                $this->claimed_id);
+                                                $this->server);
                 $setup_request->message = $this->message;
 
                 $setup_url = $setup_request->encodeToURL($server_url);
@@ -1184,9 +1173,9 @@ class Auth_OpenID_CheckIDRequest extends Auth_OpenID_Request {
  */
 class Auth_OpenID_ServerResponse {
 
-    function Auth_OpenID_ServerResponse($request)
+    function Auth_OpenID_ServerResponse(&$request)
     {
-        $this->request = $request;
+        $this->request =& $request;
         $this->fields = new Auth_OpenID_Message($this->request->namespace);
     }
 
@@ -1311,10 +1300,10 @@ class Auth_OpenID_Signatory {
     /**
      * Create a new signatory using a given store.
      */
-    function Auth_OpenID_Signatory($store)
+    function Auth_OpenID_Signatory(&$store)
     {
         // assert store is not None
-        $this->store = $store;
+        $this->store =& $store;
     }
 
     /**
@@ -1448,7 +1437,7 @@ class Auth_OpenID_Encoder {
      * Encode an {@link Auth_OpenID_ServerResponse} and return an
      * {@link Auth_OpenID_WebResponse}.
      */
-    function encode($response)
+    function encode(&$response)
     {
         $cls = $this->responseFactory;
 
@@ -1464,13 +1453,9 @@ class Auth_OpenID_Encoder {
                            array('location' => $location));
         } else if ($encode_as == Auth_OpenID_ENCODE_HTML_FORM) {
           $wr = new $cls(AUTH_OPENID_HTTP_OK, array(),
-                         $response->toHTML());
+                         $response->toFormMarkup());
         } else {
             return new Auth_OpenID_EncodingError($response);
-        }
-        /* Allow the response to carry a custom error code (ex: for Association errors) */
-        if(isset($response->code)) {
-            $wr->code = $response->code;
         }
         return $wr;
     }
@@ -1483,16 +1468,16 @@ class Auth_OpenID_Encoder {
  */
 class Auth_OpenID_SigningEncoder extends Auth_OpenID_Encoder {
 
-    function Auth_OpenID_SigningEncoder($signatory)
+    function Auth_OpenID_SigningEncoder(&$signatory)
     {
-        $this->signatory = $signatory;
+        $this->signatory =& $signatory;
     }
 
     /**
      * Sign an {@link Auth_OpenID_ServerResponse} and return an
      * {@link Auth_OpenID_WebResponse}.
      */
-    function encode($response)
+    function encode(&$response)
     {
         // the isinstance is a bit of a kludge... it means there isn't
         // really an adapter to make the interfaces quite match.
@@ -1521,9 +1506,9 @@ class Auth_OpenID_SigningEncoder extends Auth_OpenID_Encoder {
  */
 class Auth_OpenID_Decoder {
 
-    function Auth_OpenID_Decoder($server)
+    function Auth_OpenID_Decoder(&$server)
     {
-        $this->server = $server;
+        $this->server =& $server;
 
         $this->handlers = array(
             'checkid_setup' => 'Auth_OpenID_CheckIDRequest',
@@ -1604,9 +1589,9 @@ class Auth_OpenID_Decoder {
  * @package OpenID
  */
 class Auth_OpenID_EncodingError {
-    function Auth_OpenID_EncodingError($response)
+    function Auth_OpenID_EncodingError(&$response)
     {
-        $this->response = $response;
+        $this->response =& $response;
     }
 }
 
@@ -1679,14 +1664,14 @@ class Auth_OpenID_UntrustedReturnURL extends Auth_OpenID_ServerError {
  * @package OpenID
  */
 class Auth_OpenID_Server {
-    function Auth_OpenID_Server($store, $op_endpoint=null)
+    function Auth_OpenID_Server(&$store, $op_endpoint=null)
     {
-        $this->store = $store;
-        $this->signatory = new Auth_OpenID_Signatory($this->store);
-        $this->encoder = new Auth_OpenID_SigningEncoder($this->signatory);
-        $this->decoder = new Auth_OpenID_Decoder($this);
+        $this->store =& $store;
+        $this->signatory =& new Auth_OpenID_Signatory($this->store);
+        $this->encoder =& new Auth_OpenID_SigningEncoder($this->signatory);
+        $this->decoder =& new Auth_OpenID_Decoder($this);
         $this->op_endpoint = $op_endpoint;
-        $this->negotiator = Auth_OpenID_getDefaultNegotiator();
+        $this->negotiator =& Auth_OpenID_getDefaultNegotiator();
     }
 
     /**
@@ -1704,7 +1689,7 @@ class Auth_OpenID_Server {
     {
         if (method_exists($this, "openid_" . $request->mode)) {
             $handler = array($this, "openid_" . $request->mode);
-            return call_user_func($handler, &$request);
+            return call_user_func($handler, $request);
         }
         return null;
     }
@@ -1712,7 +1697,7 @@ class Auth_OpenID_Server {
     /**
      * The callback for 'check_authentication' messages.
      */
-    function openid_check_authentication($request)
+    function openid_check_authentication(&$request)
     {
         return $request->answer($this->signatory);
     }
@@ -1720,7 +1705,7 @@ class Auth_OpenID_Server {
     /**
      * The callback for 'associate' messages.
      */
-    function openid_associate($request)
+    function openid_associate(&$request)
     {
         $assoc_type = $request->assoc_type;
         $session_type = $request->session->session_type;
@@ -1743,7 +1728,7 @@ class Auth_OpenID_Server {
      * Encodes as response in the appropriate format suitable for
      * sending to the user agent.
      */
-    function encodeResponse($response)
+    function encodeResponse(&$response)
     {
         return $this->encoder->encode($response);
     }
@@ -1761,5 +1746,3 @@ class Auth_OpenID_Server {
         return $this->decoder->decode($query);
     }
 }
-
-

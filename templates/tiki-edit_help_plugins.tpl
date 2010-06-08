@@ -1,8 +1,8 @@
-{* $Id$ *}
+{* $Id: $ *}
 {* \brief Show plugins help 
  * included by tiki-show_help.tpl via smarty_block_add_help() *}
 
-{add_help show='n' id="plugin_help" title="{tr}Plugin Help{/tr}"}
+{add_help show='n' id="plugin_help"}
 
 {if count($plugins) ne 0}
 

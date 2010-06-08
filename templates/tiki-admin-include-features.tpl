@@ -32,7 +32,7 @@
 				{preference name=feature_banners}
 				{preference name=feature_categories}
 				{preference name=feature_freetags}
-				{preference name=feature_search_fulltext}
+				{preference name=feature_search}
 			</div>
 
 		</fieldset>
@@ -74,7 +74,6 @@
 				{preference name=feature_group_watches}
 				{preference name=feature_daily_report_watches}
 				{preference name=feature_user_watches_translations}
-				{preference name=feature_user_watches_languages}
 				{preference name=feature_groupalert}				
 			</div>
 		</fieldset>		
@@ -88,7 +87,6 @@
 				{preference name=feature_debug_console}
 				{preference name=feature_tikitests}
 				{preference name=log_tpl}
-				{preference name=disableJavascript}
 			</div>
 {/tab}
 
@@ -106,16 +104,10 @@
 						{preference name=feature_webservices}
 						{preference name=feature_webmail}
 						{preference name=feature_sefurl}
-						{preference name=feature_sheet}
-						{preference name=feature_webdav}
-						{preference name=bigbluebutton_feature}
-						<div class="adminoptionboxchild" id="bigbluebutton_feature_childcontainer">
-							{preference name=bigbluebutton_server_location}
-							{preference name=bigbluebutton_server_salt}
-						</div>						
-
+						{preference name=feature_pagelist}
 				</fieldset>
 			</div>
+
 
 {/tab}
 
@@ -126,15 +118,16 @@
 
 				<fieldset>
 					<legend class="heading">{icon _id="information_gray"}<span>{tr}Will be phased out{/tr}</span></legend>
-					<p class="description">{tr}These features generally work but will probably be phased out in the future, because they are superseded by other features or because of evolution in Web technology.{/tr}</p>
+					<span class="description">{tr}These features generally work but will probably be phased out in the future, because they are superseded by other features or because of evolution in Web technology{/tr}</span>
 						{preference name=feature_html_pages}
 						{preference name=feature_galleries}
 						{preference name=feature_faqs}
+						{preference name=feature_multimedia}
 				</fieldset>
 
 				<fieldset>
 					<legend class="heading">{icon _id="accept"}<span>{tr}Seem ok but...{/tr}</span></legend>
-					<p class="description">{tr}These features are not reported to be broken, but they are not actively developed and/or widely used.{/tr}</p>
+					<span class="description">{tr}These features are not reported to be broken, but they are not actively developed and/or widely used.{/tr}</span>
 						{preference name=feature_mobile}
 						{preference name=feature_morcego}
 						{preference name=feature_comm}
@@ -144,25 +137,21 @@
 						{preference name=feature_copyright}
 						{preference name=feature_actionlog}
 						{preference name=feature_contribution}
-						{preference name=feature_intertiki}
 				</fieldset>
 
 				<fieldset>
 					<legend class="heading">{icon _id="error"}<span>{tr}Need polish{/tr}</span></legend>
-					<p class="description">{tr}These features are generally known to have issues, and/or need admin help and/or user patience to work.{/tr}</p>
+					<span class="description">{tr}These features are generally known to have issues, and/or need admin help and/or user patience to work{/tr}</span>
 						{preference name=feature_ajax}
-						{preference name=feature_ajax_autosave}
+						{preference name=feature_intertiki}
+						{preference name=feature_sheet}
 						{preference name=feature_wysiwyg}
+						{preference name=feature_ajax_autosave}
 						{preference name=feature_wiki_save_draft}
-				</fieldset>
-
-				<fieldset>
-					<legend class="heading">{icon _id="new"}<span>{tr}Fresh out of the oven{/tr}</span></legend>
-					{preference name=feature_socialnetworks}
+						{preference name=feature_search_preferences}
 				</fieldset>
 
 			</div>
-
 {/tab}
 {/tabset}
 

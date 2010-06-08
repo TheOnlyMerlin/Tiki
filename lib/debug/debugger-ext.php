@@ -1,28 +1,24 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-/**
+/** \file
+ * $Id: /cvsroot/tikiwiki/tiki/lib/debug/debugger-ext.php,v 1.3 2003-08-07 04:34:03 rossta Exp $
+ *
  * \brief Base class for external debugger command
+ *
  * \author zaufi <zaufi@sendmail.ru>
+ *
  */
 require_once ('lib/debug/debugger-common.php');
 
 /**
  * \brief Base class for external debugger command
  */
-class DebuggerCommand extends ResultType
-{
+class DebuggerCommand extends ResultType {
 	/**
 	 * \brief Must have function to announce command name in debugger console
 	 *
 	 * Assume interface extension if no name provided
 	 */
-	function name() 
-	{
+	function name() {
 		return '';
 	}
 	/**
@@ -30,44 +26,37 @@ class DebuggerCommand extends ResultType
 	 *
 	 * Used as title foe interface extentions
 	 */
-	function description() 
-	{
+	function description() {
 		return 'No help available for ' . $this->name();
 	}
 
 	/// \b Must have function to provide help to debugger console
-	function syntax()
-	{
+	function syntax() {
 		return $this->name();
 	}
 
 	/// \b Must have functio to show exampla of usage of given command
-	function example()
-	{
+	function example() {
 		return 'No example available for ' . $this->name();
 	}
 
 	/// Execute command with given set of arguments. Must return string of result.
-	function execute($params)
-	{
+	function execute($params) {
 		return 'No result';
 	}
 
 	/// Say to debugger is this command need to draw some interface on console...
-	function have_interface()
-	{
+	function have_interface() {
 		return false;
 	}
 
 	/// Return HTML code of our interface to debugger
-	function draw_interface()
-	{
+	function draw_interface() {
 		return '';
 	}
 
 	/// Function to return caption string to draw plugable tab in interface
-	function caption()
-	{
+	function caption() {
 		return 'caption';
 	}
 }

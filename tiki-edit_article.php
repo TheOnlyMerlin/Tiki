@@ -1,10 +1,12 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-edit_article.php,v 1.71.2.4 2007-11-26 16:21:07 sylvieg Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 $section = 'cms';
 require_once ('tiki-setup.php');
 include_once ('lib/categories/categlib.php');
@@ -16,7 +18,13 @@ if ($prefs['feature_freetags'] == 'y') {
 	global $freetaglib;
 	include_once('lib/freetag/freetaglib.php');
 }
-$access->check_feature('feature_articles');
+
+if ($prefs['feature_articles'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_articles");
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 if ($tiki_p_admin != 'y') {
 	if ($tiki_p_use_HTML != 'y') {
@@ -42,8 +50,7 @@ $smarty->assign('previewId', $previewId);
 $smarty->assign('imageIsChanged', (isset($_REQUEST['imageIsChanged']) && $_REQUEST['imageIsChanged']=='y')?'y':'n');
 
 if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0) {
-	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$template_data = $templateslib->get_template($_REQUEST["templateId"]);
+	$template_data = $tikilib->get_template($_REQUEST["templateId"]);
 
 	$_REQUEST["preview"] = 1;
 	$_REQUEST["body"] = $template_data["content"];
@@ -75,6 +82,7 @@ $smarty->assign('image_y', $prefs['article_image_size_y']);
 $smarty->assign('heading', '');
 $smarty->assign('body', '');
 $smarty->assign('author', '');
+$smarty->assign('type', 'Article');
 $smarty->assign('rating', 7);
 $smarty->assign('edit_data', 'n');
 $smarty->assign('emails', '');
@@ -82,9 +90,10 @@ $smarty->assign('userEmail', $userlib->get_user_email($user));
 
 // If the articleId is passed then get the article data
 // GGG - You have to check for the actual value of the articleId because it
-//  will be 0 when you select preview while creating a new article.
+//  will be 0 when you select preview while creating a new article. You
+//  really do not want to do $tikilib->get_article if the articleId is 0
 if (isset($_REQUEST["articleId"]) and $_REQUEST["articleId"] > 0) {
-	$article_data = $artlib->get_article($_REQUEST["articleId"]);
+	$article_data = $tikilib->get_article($_REQUEST["articleId"]);
 	if ($article_data === false) {
 		$smarty->assign('errortype', 401);
 		$smarty->assign('msg', tra('Permission denied'));
@@ -98,7 +107,6 @@ if (isset($_REQUEST["articleId"]) and $_REQUEST["articleId"] > 0) {
 		die;
 	}
 
-		$cat_lang = $article_data["lang"];
 	$publishDate = $article_data["publishDate"];
 	$expireDate = $article_data["expireDate"];
 	$smarty->assign('title', $article_data["title"]);
@@ -162,7 +170,7 @@ $errors = array();
 if (empty($_REQUEST['emails']) || $prefs['feature_cms_emails'] != 'y')
 	$emails = '';
 elseif (!empty($_REQUEST['emails'])) {
-	$emails = explode(',', $_REQUEST['emails']);
+	$emails = split(',', $_REQUEST['emails']);
 	foreach ($emails as $email) {
 		if (!validate_email($email, $prefs['validateEmail']))
 			$errors[] = tra('Invalid email:').' '.$email;
@@ -394,7 +402,7 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 			die;
 		}
 	}
-	
+
 	$artid = $artlib->replace_article(strip_tags($_REQUEST["title"], '<a><pre><p><img><hr><b><i>')
 																	, $_REQUEST["authorName"]
 																		, $_REQUEST["topicId"]
@@ -428,23 +436,9 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 	$cat_desc = substr($_REQUEST["heading"], 0, 200);
 	$cat_name = $_REQUEST["title"];
 	$cat_object_exists = (bool) $artid;
-	$cat_lang = $_REQUEST['lang'];
 	$cat_href = "tiki-read_article.php?articleId=" . $cat_objid;
 	include_once("categorize.php");
 	include_once ("freetag_apply.php");
-	// Add attributes
-	if ($prefs["article_custom_attributes"] == 'y') {
-		 $valid_att = $artlib->get_article_type_attributes($_REQUEST["type"]);
-		 $attributeArray = array();
-		 foreach ($valid_att as $att) {
-		 	// need to convert . to _ for matching
-		 	$toMatch = str_replace('.', '_', $att["itemId"]);
-		 	if (isset($_REQUEST[$toMatch])) {
-		 		$attributeArray[$att["itemId"]] = $_REQUEST[$toMatch];
-		 	}	
-		 }
-		 $artlib->set_article_attributes($artid, $attributeArray);
-	}
 	// Remove image cache because image may have changed, and we
 	// don't want to show the old image
 	@$artlib->delete_image_cache("article",$_REQUEST["id"]);
@@ -464,36 +458,10 @@ $smarty->assign_by_ref('topics', $topics);
 
 // get list of valid types
 $types = $artlib->list_types_byname();
-if (array($types)) {
-	foreach ($types as $type=>$val) {
-		break;
-	}
-} else {
-	$type = '';
-}
-$smarty->assign('type', $type);
-if ($prefs["article_custom_attributes"] == 'y') {
-	$article_attributes = $artlib->get_article_attributes($_REQUEST["articleId"]);	
-	$smarty->assign('article_attributes', $article_attributes);
-	$all_attributes = array();
-	foreach($types as &$t) {
-		// javascript needs htmlid to show/hide to be properties of basic array
-		$type_attributes = $artlib->get_article_type_attributes($t["type"]);
-		$all_attributes = array_merge($all_attributes, $type_attributes);
-		foreach ($type_attributes as $att) {
-			$htmlid = str_replace('.','_',$att['itemId']);
-			$t[$htmlid] = 'y';
-			$js_string .= "'$htmlid', 'y', ";
-		}
-	}
-	$smarty->assign('all_attributes', $all_attributes);	
-	$headerlib->add_js("articleCustomAttributes = new Array(); articleCustomAttributes = [$js_string];");
-}
 $smarty->assign_by_ref('types', $types);
 
 if ($prefs['feature_cms_templates'] == 'y' && $tiki_p_use_content_templates == 'y') {
-	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$templates = $templateslib->list_templates('cms', 0, -1, 'name_asc', '');
+	$templates = $tikilib->list_templates('cms', 0, -1, 'name_asc', '');
 }
 
 $smarty->assign_by_ref('templates', $templates["data"]);

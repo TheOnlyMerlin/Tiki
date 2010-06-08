@@ -1,15 +1,19 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+// $Id: /cvsroot/tikiwiki/tiki/tiki-file_galleries_rss.php,v 1.32 2007-10-12 07:55:27 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once ('tiki-setup.php');
 require_once ('lib/tikilib.php');
 require_once ('lib/rss/rsslib.php');
 
-$access->check_feature('feature_file_galleries');
+if ($prefs['feature_file_galleries'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_file_galleries");
+	$smarty->display("error.tpl");
+	die;
+}
 
 if ($prefs['rss_file_galleries'] != 'y') {
         $errmsg=tra("rss feed disabled");

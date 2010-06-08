@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -21,8 +16,8 @@ function module_num_submissions_info() {
 }
 
 function module_num_submissions( $mod_reference, $module_params ) {
-	global $artlib, $smarty; require_once 'lib/articles/artlib.php';
-	$ranking = $artlib->list_submissions(0, -1, 'created_desc', '', '');
+	global $tikilib, $smarty;
+	$ranking = $tikilib->list_submissions(0, -1, 'created_desc', '', '');
 	
 	$smarty->assign('modNumSubmissions', $ranking["cant"]);
 }

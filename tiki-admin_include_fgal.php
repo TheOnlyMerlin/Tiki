@@ -1,13 +1,12 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-// This script may only be included - so its better to die if called directly.
-if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
-	header('location: index.php');
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_include_fgal.php,v 1.28.2.2 2008-03-16 00:06:53 nyloth Exp $
+//this script may only be included - so its better to die if called directly.
+if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+	header("location: index.php");
 	exit;
 }
 include_once ('lib/filegals/filegallib.php');
@@ -27,6 +26,7 @@ if (isset($_REQUEST["filegalfeatures"])) {
 	if (substr($_REQUEST["fgal_batch_dir"], -1) != "\\" && substr($_REQUEST["fgal_batch_dir"], -1) != "/" && $_REQUEST["fgal_batch_dir"] != "") {
 		$_REQUEST["fgal_batch_dir"].= "/";
 	}
+	simple_set_value("fgal_use_db");
 	simple_set_value("fgal_use_dir");
 	simple_set_value("fgal_podcast_dir");
 	simple_set_value("fgal_batch_dir");
@@ -53,8 +53,7 @@ if (!empty($_REQUEST['move'])) {
 	}
 	if (!empty($feedbacks)) {
 		$smarty->assign_by_ref('feedbacks', $feedbacks);
-	}
-}
+	}}
 
 if (isset($_REQUEST["filegallistprefs"])) {
 	check_ticket('admin-inc-fgal');
@@ -71,7 +70,6 @@ if (isset($_REQUEST["filegallistprefs"])) {
 	simple_set_value('fgal_list_comment');
 	simple_set_value('fgal_list_files');
 	simple_set_value('fgal_list_hits');
-	simple_set_value('fgal_list_lastDownload');
 	simple_set_value('fgal_list_lockedby');
 	$_REQUEST['fgal_sort_mode'] = (empty($_REQUEST['fgal_sortorder']) ? 'created' : $_REQUEST['fgal_sortorder']) . '_' . (empty($_REQUEST['fgal_sortdirection']) ? 'desc' : $_REQUEST['fgal_sortdirection']);
 	$prefs['fgal_sort_mode'] = $_REQUEST['fgal_sort_mode'];
@@ -80,23 +78,6 @@ if (isset($_REQUEST["filegallistprefs"])) {
 	simple_set_toggle('fgal_show_path');
 	simple_set_toggle('fgal_show_slideshow');
 	simple_set_value('fgal_default_view');
-	simple_set_value('fgal_list_backlinks');
-	simple_set_value('fgal_list_id_admin');
-	simple_set_value('fgal_list_type_admin');
-	simple_set_value('fgal_list_name_admin');
-	simple_set_value('fgal_list_description_admin');
-	simple_set_value('fgal_list_size_admin');
-	simple_set_value('fgal_list_created_admin');
-	simple_set_value('fgal_list_lastModif_admin');
-	simple_set_value('fgal_list_creator_admin');
-	simple_set_value('fgal_list_author_admin');
-	simple_set_value('fgal_list_last_user_admin');
-	simple_set_value('fgal_list_comment_admin');
-	simple_set_value('fgal_list_files_admin');
-	simple_set_value('fgal_list_hits_admin');
-	simple_set_value('fgal_list_lastDownload_admin');
-	simple_set_value('fgal_list_lockedby_admin');
-	simple_set_value('fgal_list_backlinks_admin');
 }
 
 $usedSize = $filegallib->getUsedSize();
@@ -145,7 +126,7 @@ $smarty->assign_by_ref('options_sortorder', $options_sortorder);
 $handlers = $filegallib->get_file_handlers();
 ksort($handlers);
 $smarty->assign("fgal_handlers", $handlers);
-$missingHandlers = $filegallib->getFiletype(array_keys($handlers));
-$smarty->assign_by_ref('missingHandlers', $missingHandlers);
 include_once ('fgal_listing_conf.php');
+$file_galleries = $tikilib->list_visible_file_galleries(0, -1, 'name_desc', 'admin', '');
+$smarty->assign_by_ref('file_galleries', $file_galleries["data"]);
 ask_ticket('admin-inc-fgal');

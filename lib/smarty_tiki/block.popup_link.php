@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -12,19 +7,21 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 function smarty_block_popup_link($params, $content, &$smarty, $repeat) {
-	global $headerlib, $prefs;
+    global $headerlib, $prefs;
 	static $counter = 0;
 
 	$linkId = 'block-popup-link' . ++$counter;
 	$block = $params['block'];
 
-	if ( $repeat === false ) {
+    if ( $repeat ) {
+		// Do nothing
+	} else {
 		if ($prefs['feature_jquery'] == 'y') {
 			$headerlib->add_js( <<<JS
 \$jq(document).ready( function() {
 
 	\$jq('#$block').hide();
-
+	
 	\$jq('#$linkId').click( function() {
 		var block = \$jq('#$block');
 		if( block.css('display') == 'none' ) {
@@ -39,11 +36,11 @@ function smarty_block_popup_link($params, $content, &$smarty, $repeat) {
 	});
 } );
 JS
-					);
+			);
 		}
-
+		
 		$href = ' href="javascript:void(0)"';
-
+		
 		if (isset($params['class'])) {
 			if ($params['class'] == 'button') {
 				$html = '<a id="' . $linkId . '"' . $href . '>' . $content . '</a>';

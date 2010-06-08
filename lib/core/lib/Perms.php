@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 
 /**
  * Facade class of the permission subsystem. Once configured, the ::get()
@@ -106,15 +100,7 @@ class Perms
 	 * Provides a new accessor configured with the global settings and
 	 * a resolver appropriate to the context requested.
 	 */
-	public static function get( $context = array() ) {
-		if( ! is_array( $context ) ) {
-			$args = func_get_args();
-			$context = array(
-				'type' => $args[0],
-				'object' => $args[1],
-			);
-		}
-
+	public static function get( array $context = array() ) {
 		if( self::$instance ) {
 			return self::$instance->getAccessor( $context );
 		} else {
@@ -230,15 +216,7 @@ class Perms
 		}
 
 		$accessor = self::get( $context );
-		if (is_array($permission)) {
-			foreach ($permission as $perm) {
-				if ($accessor->$perm) {
-					return true;
-				}
-			}
-		} else {
-			return $accessor->$permission;
-		}
+		return $accessor->$permission;
 	}
 
 	public static function mixedFilter( array $baseContext, $discriminator, $bulkKey, $data, $contextMapMap, $permissionMap ) {

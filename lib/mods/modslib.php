@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -14,8 +9,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 /*
  * This class describe the main informations of a module
  */
-class TikiMod
-{
+class TikiMod {
 	var $modname;
 	var $name;
 	var $type;
@@ -50,8 +44,7 @@ class TikiMod
  * This class describe the informations of a module that are available
  * from a 00_list.txt style file
  */
-class TikiModAvailable extends TikiMod
-{
+class TikiModAvailable extends TikiMod {
 	var $repository;      /* string */
 	var $description;     /* array */
 	var $licence;         /* string */
@@ -145,8 +138,7 @@ class TikiModAvailable extends TikiMod
  * This class contain full information of a module,
  * like there are available in it's .info.txt file
  */
-class TikiModInfo extends TikiModAvailable
-{
+class TikiModInfo extends TikiModAvailable {
 	var $configuration;         /* array */
 	var $configuration_help;    /* array */
 	var $files;                 /* array */
@@ -206,13 +198,13 @@ class TikiModInfo extends TikiModAvailable
 				$this->sql_remove[] = trim($line);
 				break;
 			case 'configuration':
-				$this->configuration[] = explode(',',trim($line));
+				$this->configuration[] = split(',',trim($line));
 				break;
 			case 'configuration help':
-				$this->configuration_help[] = explode(',',trim($line));
+				$this->configuration_help[] = split(',',trim($line));
 				break;
 			case 'files':
-				$this->files[] = preg_split('/ +/',trim($line));
+				$this->files[] = split(' +',trim($line));
 				break;
 			case 'contributor':
 				$this->contributor[] = trim(preg_replace('/\$[^:]*:([^\$]*)\$/',"$1",trim($line)));
@@ -354,8 +346,7 @@ class TikiModInfo extends TikiModAvailable
 /*
  * This class represent one dependence for an another package
  */
-class TikiModDepend extends TikiMod
-{
+class TikiModDepend extends TikiMod {
 	var $tests;
 
 	function TikiModDepend($type, $name=FALSE) {
@@ -409,8 +400,7 @@ class TikiModDepend extends TikiMod
 /*
  * This is the class that manage every modules
  */
-class ModsLib
-{
+class ModsLib {
 
 	var $feedback_listeners;
 	var $types;
@@ -597,7 +587,7 @@ class ModsLib
 			while (!feof($fp)) {
 				$line = fgets($fp,4096);
 				if (trim($line) and substr(trim($line),0,1) == "'") {
-					$str = explode("','",substr($line,1,strlen($line)-3));
+					$str = split("','",substr($line,1,strlen($line)-3));
 					if (count($str) < 4) continue; // line must have at least 4 elements
 					if (empty($str[0]) || empty($str[1]) || empty($str[2])) continue; // theses field must be not empty
 
@@ -809,16 +799,12 @@ class ModsLib
 								// it is not compatible
 								$moddep->errors[]="revision failure";
 								$deps['unavailable'][]=$moddep;								
-							}
-/*							 else {
+							} else {
 								// it is compatible, let it.
 							}
-*/
-						}
-/*						 else {
+						} else {
 							// not newer, let it
 						}
-*/
 					} else {
 						$deps['toinstall'][$mod->modname]=$mod;
 						$this->_find_deps($repos, $mod, $deps);
@@ -1028,8 +1014,8 @@ class ModsLib
 }
 
 function newer($a,$b) {
-	$aa = explode('.',$a);
-	$bb = explode('.',$b);
+	$aa = split('\.',$a);
+	$bb = split('\.',$b);
 	for ($i=0, $max_counts = max(count($aa), count($bb)); $i<$max_counts; $i++) {
 		if (!isset($bb[$i])) { $bb[$i] = '0'; }
 		if (!isset($aa[$i])) { $aa[$i] = '0'; }

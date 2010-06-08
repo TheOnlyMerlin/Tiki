@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /**
  * Smarty plugin
  * @package Smarty
@@ -60,21 +54,21 @@ function smarty_modifier_escape($string, $esc_type = 'html', $char_set = 'ISO-88
         case 'hex':
             // escape every character into hex
             $return = '';
-            for ($x=0, $xstrlen_string=strlen($string); $x < $xstrlen_string; $x++) {
+            for ($x=0; $x < strlen($string); $x++) {
                 $return .= '%' . bin2hex($string[$x]);
             }
             return $return;
             
         case 'hexentity':
             $return = '';
-            for ($x=0, $x_strlen_string = strlen($string); $x < $x_strlen_string; $x++) {
+            for ($x=0; $x < strlen($string); $x++) {
                 $return .= '&#x' . bin2hex($string[$x]) . ';';
             }
             return $return;
 
         case 'decentity':
             $return = '';
-            for ($x=0, $x_strlen_string = strlen($string); $x < $x_strlen_string; $x++) {
+            for ($x=0; $x < strlen($string); $x++) {
                 $return .= '&#' . ord($string[$x]) . ';';
             }
             return $return;

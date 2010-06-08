@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 function prefs_smarty_list() {
 	return array(
@@ -14,10 +9,10 @@ function prefs_smarty_list() {
 		),
 		'smarty_security' => array(
 			'name' => tra('Smarty Security'),
-			'description' => tra('Do not allow php code in smarty templates.'),
-			'warning' => tra('You should leave this on unless you know what you are doing.'),
+			'description' => tra('Smarty Security'),
+			'warning' => tra('Do not allow php code in smarty templates.'),
 			'type' => 'flag',
-			'perspective' => false,
+			'help' => tra(''),
 		),
 	);
 }

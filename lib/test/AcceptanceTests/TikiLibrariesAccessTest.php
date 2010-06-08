@@ -1,9 +1,5 @@
 <?php
 
-/**
- * @group gui
- */
- 
 require_once 'TikiTestCase.php';
 
 /* 
@@ -19,17 +15,13 @@ class  AcceptanceTests_TikiLibrariesAccessTest extends TikiTestCase
 
     protected function setUp()
     {
-    	$this->markTestSkipped("TikiLibrariesAccessTest is still experimental. So skipping it for now.");
     }
 
 
-    public function testRememberToReactivateAllTestsInTikiLibrariesAccessTest() {
+    public function ___testRememberToReactivateAllTestsInTikiLibrariesAccessTest() {
        	$this->fail("Don't forget to do this");
     }
        
-   /**
-    * @group gui
-    */ 
     public function testAccessPreferences() {
     	global $tikilib, $prefs;
     	

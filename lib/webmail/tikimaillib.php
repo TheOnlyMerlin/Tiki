@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /** Extension htmlMimeMail
   * set some default params (mainly utf8 as titi is utf8) + use the mailCharset pref from a user
   */
@@ -12,8 +6,7 @@ global $access;
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 include_once("lib/webmail/htmlMimeMail.php");
 
-class TikiMail extends HtmlMimeMail
-{
+class TikiMail extends HtmlMimeMail {
 		var $charset;
 
 	/* $user = user you send the mail
@@ -31,9 +24,9 @@ class TikiMail extends HtmlMimeMail
 		}
 		if ($prefs['zend_mail_handler'] == 'smtp') {
 			if ($prefs['zend_mail_smtp_auth'] == 'login') {
-				$this->setSMTPParams($prefs['zend_mail_smtp_server'], $prefs['zend_mail_smtp_port'], $prefs['zend_mail_smtp_helo'], true, $prefs['zend_mail_smtp_user'], $prefs['zend_mail_smtp_pass'], $prefs['zend_mail_smtp_security']);
+				$this->setSMTPParams($prefs['zend_mail_smtp_server'], $prefs['zend_mail_smtp_port'], $prefs['zend_mail_smtp_helo'], true, $prefs['zend_mail_smtp_user'], $prefs['zend_mail_smtp_pass']);
 			} else {
-				$this->setSMTPParams($prefs['zend_mail_smtp_server'], $prefs['zend_mail_smtp_port'], $prefs['zend_mail_smtp_helo'], false, null, null, $prefs['zend_mail_smtp_security']);
+				$this->setSMTPParams($prefs['zend_mail_smtp_server'], $prefs['zend_mail_smtp_port']);
 			}
 		}
 		if (empty($from)) {
@@ -134,7 +127,7 @@ function encodeString($string, $charset="utf-8") {
 }
 
 function decode_subject_utf8($string){
-	if (preg_match('/=\?.*\?.*\?=/', $string) === false)
+	if (ereg('=\?.*\?.*\?=', $string) === false)
 		return $string;
 	$string = explode('?', $string);
 	$str = strtolower($string[2]) == 'q' ?quoted_printable_decode($string[3]):base64_decode($string[3]);
@@ -159,8 +152,7 @@ function decode_subject_utf8($string){
  */
 function format_email_reply(&$text, $from, $date) {
 	$lines = preg_split('/[\n\r]+/',wordwrap($text));
-
-	for ($i = 0, $icount_lines = count($lines); $i < $icount_lines; $i++) {
+	for ($i = 0; $i < count($lines); $i++) {
 		$lines[$i] = '> '.$lines[$i]."\n";
 	}
 	$str = !empty($from) ? $from.' wrote' : '';

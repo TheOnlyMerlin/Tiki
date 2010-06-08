@@ -1,19 +1,21 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-admin_poll_options.php,v 1.23 2007-10-12 07:55:24 nyloth Exp $
 require_once ('tiki-setup.php');
 require_once ('lib/tikilib.php'); // httpScheme()
 include_once ('lib/polls/polllib.php');
 if (!isset($polllib)) {
 	$polllib = new PollLib;
 }
-$access->check_feature('feature_polls');
-$access->check_permission('tiki_p_admin_polls');
-
+if ($tiki_p_admin_polls != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (!isset($_REQUEST["pollId"])) {
 	$smarty->assign('msg', tra("No poll indicated"));
 	$smarty->display("error.tpl");
@@ -26,8 +28,13 @@ if (!isset($_REQUEST["optionId"])) {
 	$_REQUEST["optionId"] = 0;
 }
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$polllib->remove_poll_option($_REQUEST["remove"]);
+	$area = 'delpolloption';
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$polllib->remove_poll_option($_REQUEST["remove"]);
+	} else {
+		key_get($area);
+	}
 }
 if (isset($_REQUEST["save"])) {
 	check_ticket('admin-poll-options');

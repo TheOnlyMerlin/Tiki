@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 global $prefs;
 
@@ -12,7 +7,17 @@ include_once('lib/multilingual/multilinguallib.php');
 include_once('lib/wiki/wikilib.php');
 include_once('lib/wiki/renderlib.php');
 
-$access->check_feature(array('feature_multilingual', 'feature_multilingual_one_page'));
+if ($prefs['feature_multilingual'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_multilingual");
+	$smarty->display("error.tpl");
+	die;
+}
+
+if ($prefs['feature_multilingual_one_page'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_multilingual_one_page");
+	$smarty->display("error.tpl");
+	die;
+}
 
 if( !isset($_REQUEST['page']) ) {
 	header('Location: tiki-index.php');

@@ -1,17 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// CVS: $Id: structlib.php,v 1.94.2.3 2008-03-04 15:22:26 lphuberdeau Exp $
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== false) {
   header('location: index.php');
   exit;
 }
-class StructLib extends TikiLib
-{
+class StructLib extends TikiLib {
 	var $displayLanguageOrder;
 
 	function __construct() {
@@ -204,17 +198,12 @@ class StructLib extends TikiLib
 			} else {
 				$max = 0;
 			}
-			if ($after_ref_id != 0) {
-				if ($max > 0) {
+			if ($max > 0) {
 				//If max is 5 then we are inserting after position 5 so we'll insert 5 and move all
 				// the others
-					$query = 'update `tiki_structures` set `pos`=`pos`+1 where `pos`>? and `parent_id`=?';
-					$result = $this->query($query,array((int)$max, (int)$parent_id));
-				}
-			} else {
-				$max = $this->getOne('select max(`pos`) from `tiki_structures` where `parent_id`=?',array((int)$parent_id));
+				$query = 'update `tiki_structures` set `pos`=`pos`+1 where `pos`>? and `parent_id`=?';
+				$result = $this->query($query,array((int)$max, (int)$parent_id));
 			}
-			// 	
             //Create a new structure entry
 			$max++;
 			$query = 'insert into `tiki_structures`(`parent_id`,`page_id`,`page_alias`,`pos`, `structure_id`) values(?,?,?,?,?)';
@@ -888,7 +877,7 @@ function list_structures($offset, $maxRecords, $sort_mode, $find='', $exact_matc
 	$tree = '$tree=Array('.$this->structure_to_tree($page_ref_id).');';
 	eval($tree);
 	//Now we have the tree in $tree!
-	$menucode="foldersTree = gFld(\"Contents\", \"content.html\")\n";
+	$menucode="foldersTree = gFld(\"Index\", \"pages/$top.html\")\n";
 	$menucode.=$this->traverse($tree);
 	$base = "whelp/$dir";
 	copy("$base/menu/options.cfg","$base/menu/menuNodes.js");
@@ -914,12 +903,12 @@ function list_structures($offset, $maxRecords, $sort_mode, $find='', $exact_matc
   		$dat = preg_replace("/tiki-index.php\?page=([^\'\" ]+)/","$1.html",$dat);
   		$dat = str_replace('?nocache=1','',$dat);
   		$cs = '';
-  		$data = "<html><head><script src=\"../js/highlight.js\"></script><link rel=\"StyleSheet\"  href=\"../../../styles/$style_base.css\" type=\"text/css\" /><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /> <title>".$res["pageName"]."</title></head><body style=\"padding:10px\" onload=\"doProc();\">$cs<div id='tiki-center'><div class='wikitext'>".$dat.'</div></div></body></html>';
+  		$data = "<html><head><script src=\"../js/highlight.js\"></script><link rel=\"StyleSheet\"  href=\"../../../styles/$style_base.css\" type=\"text/css\" /><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /> <title>".$res["pageName"]."</title></head><body onload=\"doProc();\">$cs<div id='tiki-center'><div class='wikitext'>".$dat.'</div></div></body></html>';
   		$fw=fopen("$base/pages/".$res['pageName'].'.html','wb+');
   		fwrite($fw,$data);
   		fclose($fw);
   		unset($dat);
-  		$page_words = preg_split("/[^A-Za-z0-9\-_]/",$res['data']);
+  		$page_words = split("[^A-Za-z0-9\-_]",$res['data']);
   		foreach($page_words as $word) {
     		$word=strtolower($word);
     		if(strlen($word)>3 && preg_match("/^[A-Za-z][A-Za-z0-9\_\-]*[A-Za-z0-9]$/",$word)) {
@@ -950,14 +939,15 @@ function list_structures($offset, $maxRecords, $sort_mode, $find='', $exact_matc
 	fclose($fw);
 
 // write the title page, using:
-// Browser Title, Logo, Site Title, Site subtitle
+// Browser Title, Site Title, Site subtitle
 	$fw = fopen("$base/content.html",'w+');
-	$titlepage = "<h1>". $prefs['browsertitle'] . "</h1><p><img src='../../".$prefs['sitelogo_src']."' alt='".$prefs['sitelogo_alt']."' align='center' /></p><h2>". $prefs['sitetitle'] ."</h2><h3>".  $prefs['sitesubtitle']  ."</h3>";
+	$titlepage = "<h1>". $prefs['browsertitle'] . "</h1><h2>". $prefs['sitetitle'] ."</h2><h3>".  $prefs['sitesubtitle']  ."</h3>";
+	$titlepage = 
 	fwrite($fw, $titlepage);
 	fclose($fw);
-	}
 
-	function structure_to_tree($page_ref_id) {
+	}
+  function structure_to_tree($page_ref_id) {
 	$query = 'select * from `tiki_structures` ts,`tiki_pages` tp where tp.`page_id`=ts.`page_id` and `page_ref_id`=?';
 	$result = $this->query($query,array((int)$page_ref_id));
 	$res = $result->fetchRow();

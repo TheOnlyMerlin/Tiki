@@ -16,7 +16,7 @@
 			<a title="{tr}Move module to opposite side{/tr}" href="{$current_location|escape}{$mpchar|escape}mc_move={$module_name|escape}">
 				{icon _id="arrow_right-left" alt="[{tr}opp side{/tr}]"}
 			</a>
-			<a title="{tr}Unassign this module{/tr}" href="{$current_location|escape}{$mpchar|escape}mc_unassign={$module_name|escape}" onclick='return confirmTheLink(this,"{tr}Are you sure you want to unassign this module?{/tr}")'>
+			<a title="{tr}Unassign this module{/tr}" href="{$current_location|escape}{$mpchar|escape}mc_unassign={$module_name|escape}" onclick="return confirmTheLink(this,'{tr}Are you sure you want to unassign this module?{/tr}')">
 				{icon _id="cross" alt="[{tr}Remove{/tr}]"}
 			 </a>
 			</span>
@@ -63,15 +63,17 @@
 		{/if}
 		<!--[if IE]><br class="clear" style="height: 1px !important" /><![endif]--></h3>
 	{/if}
-		<div id="mod-{$module_name|cat:$module_position|cat:$module_ord|escape}" style="display: {if !isset($module_display) or $module_display}block{else}none{/if}" class="clearfix box-data">
+		<div id="mod-{$module_name|cat:$module_position|cat:$module_ord|escape}" style="display: block" class="clearfix box-data">
 {/if}
-{$module_content}
+{$module_content}<!--[if IE]><br class="clear" style="height: 1px !important" /><![endif]-->
 {$module_error}
 {if $module_nobox neq 'y'}
 {if $module_flip eq 'y'}
-{*jq}
-				setsectionstate('mod-{{$module_name|cat:$module_position|cat:$module_ord|escape}}','{{$module_dstate}}', 'module.png');
-{/jq*}
+			<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+				setsectionstate('mod-{$module_name|cat:$module_position|cat:$module_ord|escape}','{$module_dstate}', 'module.png');
+//--><!]]>
+			</script>
 {/if}
 		</div>
 		<div class="box-footer">

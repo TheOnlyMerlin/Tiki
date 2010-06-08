@@ -1,10 +1,5 @@
 <?php
 
-/** 
- * @group unit
- * 
- */
-
 class Perms_ApplierTest extends TikiTestCase
 {
 	function testApplyFromNothing() {

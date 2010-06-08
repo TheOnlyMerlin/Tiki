@@ -26,7 +26,7 @@ class Auth_OpenID_KVForm {
      * @static
      * @access private
      */
-    static function toArray($kvs, $strict=false)
+    function toArray($kvs, $strict=false)
     {
         $lines = explode("\n", $kvs);
 
@@ -78,7 +78,7 @@ class Auth_OpenID_KVForm {
      * @static
      * @access private
      */
-    static function fromArray($values)
+    function fromArray($values)
     {
         if ($values === null) {
             return null;
@@ -108,4 +108,3 @@ class Auth_OpenID_KVForm {
         return $serialized;
     }
 }
-

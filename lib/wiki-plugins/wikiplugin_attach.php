@@ -1,10 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-
 // Displays an attachment or a list of attachments
 // Currently works with wiki pages and tracker items.
 // Parameters:
@@ -122,9 +117,10 @@ function wikiplugin_attach_info() {
 function wikiplugin_attach($data, $params) {
 	global $atts;
 	global $mimeextensions;
-	global $wikilib; include_once('lib/wiki/wikilib.php');
+	global $wikilib;
 	global $tikilib;
 	global $user, $section;
+	include_once('lib/wiki/wikilib.php');
 
 	extract ($params,EXTR_SKIP);
 
@@ -137,7 +133,6 @@ function wikiplugin_attach($data, $params) {
 
 		// See if we're being called from a tracker page.
 		if( $section == 'trackers' ) {
-			global $trklib; include_once('lib/trackers/trackerlib.php');
 			$atts_item_name = $_REQUEST["itemId"];
 			$tracker_info = $trklib->get_tracker($atts_item_name);
 			$tracker_info = array_merge($tracker_info,$trklib->get_tracker_options($atts_item_name));
@@ -148,7 +143,7 @@ function wikiplugin_attach($data, $params) {
 				$attextra = 'y';
 			}
 
-			$attfields = explode(',',strtok($tracker_info["orderAttachments"],'|'));
+			$attfields = split(',',strtok($tracker_info["orderAttachments"],'|'));
 
 			$atts = $trklib->list_item_attachments($atts_item_name, 0, -1, 'comment_asc', '');
 		}
@@ -164,12 +159,16 @@ function wikiplugin_attach($data, $params) {
 	$old_atts = $atts;
 	$url = '';
 
+	if( !empty( $page ) ) {
+		if($tikilib->user_has_perm_on_object($user,$page,'wiki page','tiki_p_wiki_view_attachments') || $tikilib->user_has_perm_on_object($user, $_REQUEST['page'], 'wiki page', 'tiki_p_wiki_admin_attachments')) {
+			$atts = $wikilib->list_wiki_attachments($page,0,-1,'created_desc','');
+			$url = "&amp;page=$page";
+		}
+	}
+
 	if (isset($all)) {
 		$atts = $wikilib->list_all_attachements(0,-1,'page_asc','');
 	} elseif (!empty($page)) {
-		if (!$tikilib->page_exists($page)) {
-			return "''".tr('Page "%0" does not exist', $page)."''";
-		}
 		if($tikilib->user_has_perm_on_object($user,$page,'wiki page','tiki_p_wiki_view_attachments') || $tikilib->user_has_perm_on_object($user, $_REQUEST['page'], 'wiki page', 'tiki_p_wiki_admin_attachments')) {
 			$atts = $wikilib->list_wiki_attachments($page,0,-1,'created_desc','');
 			$url = "&amp;page=$page";

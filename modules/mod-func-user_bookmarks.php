@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -78,8 +73,7 @@ function module_user_bookmarks( $mod_reference, $module_params ) {
 	
 				// Check if we are bookmarking an article
 				if (strstr($_SERVER["REQUEST_URI"], 'tiki-read_article')) {
-					global $artlib; require_once 'lib/articles/artlib.php';
-					$info = $artlib->get_article($setup_query_data["articleId"]);
+					$info = $tikilib->get_article($setup_query_data["articleId"]);
 	
 					$name = $info["title"];
 				}

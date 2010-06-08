@@ -1,9 +1,5 @@
 <?php
 
-/**
- * @group gui
- */
- 
 require_once 'PHPUnit/Extensions/SeleniumTestCase.php';
 require_once 'TikiSeleniumTestCase.php';
 
@@ -12,7 +8,6 @@ class  AcceptanceTests_SearchTest extends TikiSeleniumTestCase
 
     protected function setUp()
     {
-    	$this->markTestSkipped("These tests are still too experimental, so skipping it.");    	
         $this->setBrowserUrl('http://localhost/');
         $this->current_test_db = "searchTestDump.sql";
         $this->restoreDBforThisTest();
@@ -23,18 +18,12 @@ class  AcceptanceTests_SearchTest extends TikiSeleniumTestCase
        	$this->fail("Don't forget to do this");
     }
     
-   /**
-    * @group gui
-    */ 
     public function testSearchFormIsWellFormed() {
        	$this->openTikiPage('tiki-index.php');
        	$this->logInIfNecessaryAs('admin');
        	$this->_assertSearchFormIsWellFormed();
     }    
     
-   /**
-    * @group gui
-    */ 
     public function testFillSearchFormAndSubmit() {
     	$this->openTikiPage('tiki-index.php');
     	$this->logInIfNecessaryAs('admin');
@@ -47,9 +36,6 @@ class  AcceptanceTests_SearchTest extends TikiSeleniumTestCase
     }
     
     
-   /**
-    * @group gui
-    */ 
     public function testSearchIsCaseInsensitive() {
        $this->openTikiPage('tiki-index.php');
        $this->logInIfNecessaryAs('admin');	
@@ -60,9 +46,6 @@ class  AcceptanceTests_SearchTest extends TikiSeleniumTestCase
                                         $query, "Bad list of search results for query '$query'. Search should have been case insensitive.");
     }
     
-   /**
-    * @group gui
-    */ 
     public function testByDefaultSearchLooksForAnyOfTheQueryTerms() {
        $this->openTikiPage('tiki-index.php');
        $this->logInIfNecessaryAs('admin');

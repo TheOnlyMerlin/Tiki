@@ -1,8 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 /*
@@ -14,8 +10,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class groupAlertLib extends TikiLib
-{
+class groupAlertLib extends TikiLib {
 
 	function AddGroup ($ObjectType, $ObjectNumber,$GroupName,$displayEachUser) {
 		if ( $displayEachUser == "on" ) $displayEachUser='y';
@@ -46,7 +41,7 @@ class groupAlertLib extends TikiLib
 		}
 		$project=$tikilib->get_preference ("browsertitle");
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
-		$machine = $tikilib->httpPrefix( true ) . dirname( $foo["path"] );
+		$machine = $tikilib->httpPrefix() . dirname( $foo["path"] );
 		$URL=$machine."/".$URI;
 		foreach ( $ListUserToAlert as $user ){
 		$email=$userlib->get_user_email($user);

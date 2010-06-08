@@ -5,13 +5,13 @@
  * Released under LPGL license. */
 
 /* Import *lite as the base: */
-@import url("lite/lite.css"); 
+@import "lite/lite.css"; 
 
 /* Then import the default layout properties file: */
-@import url("layout/layout.css");
+@import "layout/layout.css";
 
 /* And design defaults: */
-@import url("layout/design.css");
+@import "layout/design.css";
 
 /***** XHTML Elements ******/
 body {
@@ -1116,6 +1116,7 @@ div.quotebody {
 
 /* wikiplugin_tracker */
 .mandatory_note {
+	display: block;
 	font-style: italic;
 	margin-top: 10px;
 }
@@ -1566,38 +1567,17 @@ caltrack a:visited {
 	padding: 0;
 }
 
-div#calscreen td.calfocuson {
-	background: #D4D0C8;
-}
-
-.calfocuson {
-	font-size: 100%;
-}
-
-.calfocuson a {
-	font-size: 90%;
-}
-
-.calHeadingOn, .calHeadingOn a {
-	background: #D4D0C8;
-}
-
-
-/*
 .calfocus {
 	font-size: 90%;
 	background: inherit;
 }
 
-*/
 .caldark .calfocus {
 	background: inherit;
 }
 
-/*
 .calodd .calfocuson,
 .caleven .calfocuson,
-*/
 .calfocuson + .calcontent {
 	background: #e6eff8;
 }
@@ -1628,6 +1608,7 @@ div#calscreen td.calfocuson {
 
 .opaque .box-title {
 	border-bottom: 1px solid black;
+	padding-bottom: 7px;
 	background: white;
 }
 
@@ -1645,14 +1626,11 @@ div#calscreen td.calfocuson {
 	font-size: 90%;
 }
 
+.caltable .calfocuson,
 .box-data td.fc a.today,
 .box-data td a.today {
 	background: #D4D0C8;
 	border: solid 1px #696969;
-}
-
-.caltable .calfocuson {
-	background: #D4D0C8;
 }
 
 .buttonon a,
@@ -1806,19 +1784,6 @@ a.admbox.off:active {
 body.tiki_mytiki #tiki-center form {
 	border: 1px solid #aaa;
 	padding: 10px;
-}
-
-/* Fixed-width rules */
-body.fixed_width {
-	background: #f4f4f4;
-}
-
-body.fixed_width #main {
-	background: #fff;
-}
-
-body.fixed_width #main[id] {
-	border: 1px solid #aaa;
 }
 
 /* end of css file */

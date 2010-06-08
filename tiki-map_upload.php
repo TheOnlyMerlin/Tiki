@@ -1,13 +1,21 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/tiki-map_upload.php,v 1.19 2007-10-12 07:55:29 nyloth Exp $
 require_once ('tiki-setup.php');
-$access->check_feature('feature_maps');
-$access->check_permission('tiki_p_map_edit');
+if ($prefs['feature_maps'] != 'y') {
+	$smarty->assign('msg', tra("Feature disabled"));
+	$smarty->display("error.tpl");
+	die;
+}
+if ($tiki_p_map_edit != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permissions to view the layers"));
+	$smarty->display("error.tpl");
+	die;
+}
 if (!is_dir($prefs['map_path'])) {
 	$smarty->assign('msg', tra('Please create a directory named ' . $prefs['map_path'] . ' to hold your map files.'));
 	$smarty->display('error.tpl');
@@ -65,14 +73,24 @@ if (isset($_REQUEST["upload"])) {
 //Do we have a file to delete?
 if (isset($_REQUEST["action"]) && isset($_REQUEST["file"])) {
 	if ($_REQUEST["action"] == "delete") {
-		$access->check_authenticity();
-		if (is_file($directory_path . $DSEP . $_REQUEST["file"]) && !preg_match("/^\./", $_REQUEST["file"])) {
-			$access->check_permission('tiki_p_map_delete');
-			unlink($directory_path . $DSEP . $_REQUEST["file"]);
+		$area = "delmapupload";
+		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+			key_check($area);
+			if (is_file($directory_path . $DSEP . $_REQUEST["file"]) && !preg_match("/^\./", $_REQUEST["file"])) {
+				if ($tiki_p_map_delete != 'y') {
+					$smarty->assign('errortype', 401);
+					$smarty->assign('msg', tra("You do not have permissions to delete a file"));
+					$smarty->display("error.tpl");
+					die;
+				}
+				unlink($directory_path . $DSEP . $_REQUEST["file"]);
+			} else {
+				$smarty->assign('msg', tra("File not found"));
+				$smarty->display("error.tpl");
+				die;
+			}
 		} else {
-			$smarty->assign('msg', tra("File not found"));
-			$smarty->display("error.tpl");
-			die;
+			key_get($area);
 		}
 	}
 }
@@ -80,7 +98,12 @@ if (isset($_REQUEST["action"]) && isset($_REQUEST["file"])) {
 if (isset($_REQUEST["action"]) && isset($_REQUEST["directory"])) {
 	if ($_REQUEST["action"] == "createdir") {
 		if (!preg_match("/\./", $_REQUEST["directory"])) {
-			$access->check_permission('tiki_p_map_create');
+			if ($tiki_p_map_create != 'y') {
+				$smarty->assign('errortype', 401);
+				$smarty->assign('msg', tra("You do not have permissions to create a directory"));
+				$smarty->display("error.tpl");
+				die;
+			}
 			if (!@mkdir($directory_path . $DSEP . $_REQUEST["directory"])) {
 				$smarty->assign('msg', tra("The Directory is not empty"));
 				$smarty->display("error.tpl");
@@ -93,21 +116,36 @@ if (isset($_REQUEST["action"]) && isset($_REQUEST["directory"])) {
 		}
 	}
 	if ($_REQUEST["action"] == "deldir") {
-		$access->check_authenticity();
-		if (!preg_match("/^\./", $_REQUEST["directory"]) || !preg_match("/\.\//", $_REQUEST["directory"])) {
-			$access->check_permission('tiki_p_map_delete');
-			if (!@rmdir($directory_path . $DSEP . $_REQUEST["directory"])) {
-				$smarty->assign('msg', tra("The Directory is not empty"));
-				$smarty->display("error.tpl");
-				die;
+		$area = "delmapdir";
+		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+			key_check($area);
+			if (!preg_match("/^\./", $_REQUEST["directory"]) || !preg_match("/\.\//", $_REQUEST["directory"])) {
+				if ($tiki_p_map_delete != 'y') {
+					$smarty->assign('errortype', 401);
+					$smarty->assign('msg', tra("You do not have permissions to delete a directory"));
+					$smarty->display("error.tpl");
+					die;
+				}
+				if (!@rmdir($directory_path . $DSEP . $_REQUEST["directory"])) {
+					$smarty->assign('msg', tra("The Directory is not empty"));
+					$smarty->display("error.tpl");
+					die;
+				}
 			}
+		} else {
+			key_get($area);
 		}
 	}
 }
 //Do we have an index to create?
 if (isset($_REQUEST["action"]) && isset($_REQUEST["indexfile"]) && isset($_REQUEST["filestoindex"])) {
 	if ($_REQUEST["action"] == "createindex") {
-		$access->check_permission('tiki_p_map_create');
+		if ($tiki_p_map_create != 'y') {
+			$smarty->assign('errortype', 401);
+			$smarty->assign('msg', tra("You do not have permissions to create an index file"));
+			$smarty->display("error.tpl");
+			die;
+		}
 		if (preg_match("/\.\//", $_REQUEST["indexfile"]) || !preg_match("/\.shp/", $_REQUEST["indexfile"])) {
 			$smarty->assign('msg', tra("Invalid file name"));
 			$smarty->display("error.tpl");

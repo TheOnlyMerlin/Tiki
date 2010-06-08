@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @group unit
- * 
- */
-
 class DeclFilter_CatchAllUnsetTest extends TikiTestCase
 {
 	function testMatch()

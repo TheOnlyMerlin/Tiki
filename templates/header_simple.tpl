@@ -8,18 +8,19 @@
 	<head>
 {if $base_url and $dir_level gt 0}		<base href="{$base_url}" />{/if}
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-{if $prefs.metatag_keywords ne '' or $metatag_local_keywords ne ''}<meta name="keywords" content="{$prefs.metatag_keywords|escape} {$metatag_local_keywords|escape}" />
+{if $prefs.metatag_keywords ne ''}<meta name="keywords" content="{$prefs.metatag_keywords}" />
 {/if}
-{if $prefs.metatag_author ne ''}<meta name="author" content="{$prefs.metatag_author|escape}" />
+{if $prefs.metatag_author ne ''}<meta name="author" content="{$prefs.metatag_author}" />
 {/if}
-{if $prefs.metatag_description ne ''}<meta name="description" content="{$prefs.metatag_description|escape}" />
+{if $prefs.metatag_description ne ''}<meta name="description" content="{$prefs.metatag_description}" />
 {/if}
-{if $prefs.metatag_robots ne ''}<meta name="robots" content="{$prefs.metatag_robots|escape}" />
+{if $prefs.metatag_robots ne ''}<meta name="robots" content="{$prefs.metatag_robots}" />
 {/if}
-{if $prefs.metatag_revisitafter ne ''}<meta name="revisit-after" content="{$prefs.metatag_revisitafter|escape}" />
+{if $prefs.metatag_revisitafter ne ''}<meta name="revisit-after" content="{$prefs.metatag_revisitafter}" />
 {/if}
 
 {* --- tikiwiki block --- *}
+<script type="text/javascript" src="lib/tiki-js.js"></script>
 {include file='bidi.tpl'}
 <title>
 {if isset($trail)}{breadcrumbs type="fulltrail" loc="head" crumbs=$trail}
@@ -43,10 +44,19 @@
 {if $prefs.site_favicon}<link rel="icon" href="{$prefs.site_favicon}" />{/if}
 <!--[if lt IE 7]> <link rel="StyleSheet" href="css/ie6.css" type="text/css" /> <![endif]-->
 
+{if ($prefs.feature_jquery neq "y" or $prefs.feature_jquery_tablesorter neq "y") and $prefs.javascript_enabled eq "y"}
+	<script type="text/javascript" src="lib/tiki-js-sorttable.js"></script>
+{/if}
+{if $prefs.feature_jquery eq "y"}
+	{include file='header_jquery.tpl'}
+{/if}
+
 {if $headerlib}{$headerlib->output_headers()}{/if}
 
 </head>
 
-<body{html_body_attributes}>
+<body {if isset($section) and $section eq 'wiki page' and $prefs.user_dbl eq 'y' and $dblclickedit eq 'y' and $tiki_p_edit eq 'y'}ondblclick="location.href='tiki-editpage.php?page={$page|escape:"url"}';"{/if}
+onload="{if $prefs.feature_tabs eq 'y'}tikitabs({if $cookietab neq ''}{$cookietab}{else}1{/if},5);{/if}{if $msgError} javascript:location.hash='msgError'{/if}"
+{if $section_class} class="tiki {$section_class}"{/if}>
 
 {if $prefs.feature_community_mouseover eq 'y'}{popup_init src="lib/overlib.js"}{/if}

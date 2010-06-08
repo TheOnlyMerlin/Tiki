@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -17,9 +12,10 @@ function module_calendar_new_info() {
 		'description' => tra('Includes a calendar or a list of calendar events.'),
 		'prefs' => array( 'feature_calendar' ),
 		'params' => array(
-			'calIds' => array(
-				'name' => tra('Calendars filter'),
-				'description' => tra('If set to a list of calendar identifiers, restricts the events to those in the identified calendars. Identifiers are separated by vertical bars ("|"), commas (",") or colons (":").') . " " . tra('Example values:') . '"13", "4,7", "31:49". ' . tra('Not set by default.')
+			'calendarId' => array(
+				'name' => tra('Calendar filter'),
+				'description' => tra('If set to a calendar identifier, restricts the events displayed to those in the specified calendar.'),
+				'filter' => 'digits',
 			),
 			'month_delta' => array(
 				'name' => tra('Displayed month (relative)'),
@@ -28,39 +24,13 @@ function module_calendar_new_info() {
 			),
 			'viewlist' => array(
 				'name' => tra('View type'),
-				'description' => tra('Determines how to show events.') . ' ' . tra('Possible values:') . ' ' . 'table, list. ',
+				'description' => tra('Determines how to show events.') . ' ' . tra('Possible values:') . ' ' . 'calendar, list. ' . tra('Default value:') . ' calendar.',
 				'filter' => 'word',
-				'default' => 'the url param viewlist, otherwise table',
 			),
 			'viewmode' => array(
 				'name' => tra('Calendar view type time span'),
 				'description' => tra('If in calendar (or "table") view type, determines the time span displayed by the calendar.') . ' ' . tra('Possible values:') . ' year, semester, quarter, month, week, day. A user changing this time span in the calendar can change the time span the module displays for him.',
-				'filter' => 'word',
-				'default' => 'month',
-			),
-			'showaction' => array(
-				'name' => tra('Show action'),
-				'description' => 'y|n',
-				'filter' => 'word',
-				'default' => 'y',
-			),
-			'viewmodelink' => array(
-				'name' => tra('Viewmode when clicking on a day'),
-				'description' => 'week|day',
-				'filter' => 'word',
-				'default' => 'week',
-			),
-			'linkall' => array(
-				'name' => tra('Put a link on all the days , not only those with event'),
-				'description' => 'y|n',
-				'filter' => 'word',
-				'default' => 'n',
-			),
-			'viewnavbar' => array(
-				'name' => tra('View navigation bar'),
-				'description' => 'y|n|partial',
-				'filter' => 'word',
-				'default' => 'y'
+				'filter' => 'word'
 			)
 		)
 	);
@@ -72,8 +42,6 @@ function module_calendar_new( $mod_reference, $module_params ) {
 	global $userlib; include_once('lib/userslib.php');
 	global $headerlib; $headerlib->add_cssfile('css/calendar.css',20);
 	global $calendarViewMode, $focusdate;
-	$default = array('viewnavbar' => 'y', 'viewmodelink' => 'week', 'showaction' => 'y', 'linkall' => 'n');
-	$module_params = array_merge($default, $module_params);
 
 	if (isset($_REQUEST['viewmode'])) $save_viewmode = $_REQUEST['viewmode'];
 	if (!empty($module_params['viewmode']))
@@ -83,6 +51,7 @@ function module_calendar_new( $mod_reference, $module_params ) {
 
 	if (isset($module_params['month_delta'])) {
 		$calendarViewMode = 'month';
+		include('tiki-calendar_setup.php');
 		list($focus_day, $focus_month, $focus_year) = array(
 			TikiLib::date_format("%d", $focusdate),
 			TikiLib::date_format("%m", $focusdate),
@@ -91,64 +60,59 @@ function module_calendar_new( $mod_reference, $module_params ) {
 		$_REQUEST['todate'] = $tikilib->make_time(0,0,0,$focus_month+$module_params['month_delta'],1,$focus_year);
 	}
 
-	if (!empty($module_params['calIds'])) {
-		$calIds = $module_params['calIds'];
-		if (!is_array($module_params['calIds'])) {
-			$calIds = preg_split('/[\|:\&,]/', $calIds);
+	if (isset($module_params['calendarId'])) {
+		$calIds = array($module_params['calendarId']);
+	} // Should ideally support several ids at some point
+
+	if (empty($calIds)) {
+		if (!empty($_SESSION['CalendarViewGroups'])) {
+			$calIds = $_SESSION['CalendarViewGroups'];
+		} elseif ( $prefs['feature_default_calendars'] == 'n' ) {
+			$calIds = $calendarlib->list_calendars();
+			$calIds = array_keys($module_params['calIds']['data']);
+		} elseif ( ! empty($prefs['default_calendars']) ) {
+			$calIds = $_SESSION['CalendarViewGroups'] = is_array($prefs['default_calendars']) ? $prefs['default_calendars'] : unserialize($prefs['default_calendars']);
+		} else {
+			$calIds = array();
 		}
-	} elseif (!empty($_SESSION['CalendarViewGroups'])) {
-		$calIds = $_SESSION['CalendarViewGroups'];
-	} elseif ( $prefs['feature_default_calendars'] == 'n' ) {
-		$calendars = $calendarlib->list_calendars();
-		$calIds = array_keys($calendars['data']);
-	} elseif ( ! empty($prefs['default_calendars']) ) {
-		$calIds = $_SESSION['CalendarViewGroups'] = is_array($prefs['default_calendars']) ? $prefs['default_calendars'] : unserialize($prefs['default_calendars']);
-	} else {
-		$calIds = array();
 	}
-
-
-	$_REQUEST['gbi'] = 'y';
-	if ( !empty($module_params['viewlist']) ) {
-		$_REQUEST['viewlistmodule'] = $module_params['viewlist'];
-	} else {
-		$_REQUEST['viewlistmodule'] = 'table';
-	}
-
 	foreach ($calIds as $i=>$cal_id) {
 		if ($tiki_p_admin_calendars != 'y' && !$userlib->user_has_perm_on_object($user, $cal_id, 'calendar', 'tiki_p_view_calendar')) {
 			unset($calIds[$i]);
 		}
 	}
+	$_REQUEST['gbi'] = 'y';
+	if ( !empty($module_params['viewlist']) ) {
+		$_REQUEST['viewlist'] = $module_params['viewlist'];
+	} else {
+		$_REQUEST['viewlist'] = 'table';
+	}
 
-	if ( !empty($calIds) ) {
-		$tc_infos = $calendarlib->getCalendar($calIds, $viewstart, $viewend, 'day');
-		if ($_REQUEST['viewlistmodule'] == 'list') {
-			foreach ($tc_infos['listevents'] as $i=>$e) {
-				$tc_infos['listevents'][$i]['head'] = '';
-				$tc_infos['listevents'][$i]['group_description'] ='';
-			}
-			$tc_infos['listevents'] = array_unique($tc_infos['listevents']);	
+	include('tiki-calendar_setup.php');
+
+	$tc_infos = $calendarlib->getCalendar($calIds, $viewstart, $viewend, 'day');
+	if ($viewlist == 'list') {
+		foreach ($tc_infos['listevents'] as $i=>$e) {
+			$tc_infos['listevents'][$i]['head'] = '';
+			$tc_infos['listevents'][$i]['group_description'] ='';
 		}
+		$tc_infos['listevents'] = array_unique($tc_infos['listevents']);	
+	}
 
-		foreach ( $tc_infos as $tc_key => $tc_val ) {
-			$smarty->assign($tc_key, $tc_val);
-		}
+	foreach ( $tc_infos as $tc_key => $tc_val ) {
+		$smarty->assign($tc_key, $tc_val);
+	}
 
-		$smarty->assign('name', 'calendar');
+	$smarty->assign('name', 'calendar');
 
-		$smarty->assign('daformat2', $tikilib->get_long_date_format());
-		$smarty->assign('var', '');
-		$smarty->assign('myurl', 'tiki-calendar.php');
-		$smarty->assign('show_calendar_module', 'y');
-		$smarty->assign_by_ref('viewmodelink', $module_params['viewmodelink']);
-		$smarty->assign_by_ref('linkall', $module_params['linkall']);
-		$smarty->assign('calendarViewMode', $calendarViewMode);
+	$smarty->assign('daformat2', $tikilib->get_long_date_format());
+	$smarty->assign('var', '');
+	$smarty->assign('myurl', 'tiki-calendar.php');
+	$smarty->assign('show_calendar_module', 'y');
 
-		if ( isset($save_todate) ) {
-			$_REQUEST['todate'] = $save_todate;
-		} else {
-			unset($_REQUEST['todate']);
-		}
+	if ( isset($save_todate) ) {
+		$_REQUEST['todate'] = $save_todate;
+	} else {
+		unset($_REQUEST['todate']);
 	}
 }

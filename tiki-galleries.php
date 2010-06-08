@@ -1,17 +1,25 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-galleries.php,v 1.58.2.1 2008-03-15 21:11:15 sylvieg Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 $section = 'galleries';
 require_once ('tiki-setup.php');
 
 global $imagegallib; include_once ("lib/imagegals/imagegallib.php");
 global $categlib; include_once ('lib/categories/categlib.php');
 include_once ('lib/map/usermap.php');
-$access->check_feature('feature_galleries');
+
+if ($prefs['feature_galleries'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_galleries");
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (isset($_REQUEST["find"])) {
 	$find = $_REQUEST["find"];
@@ -27,9 +35,17 @@ if (!isset($_REQUEST["galleryId"])) {
 
 $smarty->assign('galleryId', $_REQUEST["galleryId"]);
 
-$access->check_permission('tiki_p_list_image_galleries');
+// This check should be done before checking individual permissions
+if ($tiki_p_list_image_galleries != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied you can not view this section"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 // Individual permissions are checked because we may be trying to edit the gallery
+
 // Check here for indivdual permissions the objectType is 'image galleries' and the id is galleryId
 $smarty->assign('individual', 'n');
 
@@ -236,7 +252,7 @@ if (isset($_REQUEST["edit"]) && $prefs['feature_categories'] == 'y' && $prefs['f
 	#add scales
 	if (isset($_REQUEST["scaleSize"])) {
 		if (strstr($_REQUEST["scaleSize"],',')) {
-			$sc = explode(',',$_REQUEST["scaleSize"]);
+			$sc = split(',',$_REQUEST["scaleSize"]);
 			foreach ($sc as $thisc) {
 				$thisc = trim($thisc);
 				if (is_numeric($thisc)) {
@@ -327,8 +343,13 @@ if (isset($_REQUEST["removegal"])) {
 			die;
 		}
 	}
-	$access->check_authenticity();
-	$imagegallib->remove_gallery($_REQUEST["removegal"]);
+  $area = 'delgal';
+  if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+    key_check($area);
+		$imagegallib->remove_gallery($_REQUEST["removegal"]);
+  } else {
+    key_get($area);
+  }
 }
 $smarty->assign('category_needed', $category_needed);
 
