@@ -37,12 +37,47 @@ function wikiplugin_r_info() {
 			'type' => array(
 				'required' => false,
 				'name' => tra('type'),
-				'description' => tra('Choose the source file type in the appropriate mimetype syntax. Options: text/csv|text/xml. ex: text/csv. (default). For text/xml, you need to have installed library ("R4X") in R at the server. See documentation for more details'),
+				'description' => tra('Choose the source file type in the appropriate mimetype syntax (Optional). Options: text/csv|text/xml. ex: text/csv. (default). For text/xml, you need to have installed library ("R4X") in R at the server. See documentation for more details'),
 			),
 			'wikisyntax' => array(
 				'required' => false,
 				'name' => tra('wikisyntax'),
-				'description' => tra('Choose whether the output should be parsed as wiki syntax. Options: 0 (no parsing, default), 1 (parsing)'),
+				'description' => tra('Choose whether the output should be parsed as wiki syntax (Optional). Options: 0 (no parsing, default), 1 (parsing)'),
+			),
+			'width' => array(
+				'required' => false,
+				'name' => tra('width'),
+				'description' => tra('Width of the graph (Optional). Options: an integer number in inches (default) or in units specified. If ommitted but height is set, width will be proportional to keep aspect ratio'),
+			),
+			'height' => array(
+				'required' => false,
+				'name' => tra('height'),
+				'description' => tra('Height of the graph (Optional). Options: an integer number in inches (default) or in units specified. If ommitted but width is set, height will be proportional to keep aspect ratio'),
+			),
+			'units' => array(
+				'required' => false,
+				'name' => tra('units'),
+				'description' => tra('Choose units for the width and/or height parameters (Optional). Options: px (default) for pixels, in (inches), cm or mm'),
+			),
+			'pointsize' => array(
+				'required' => false,
+				'name' => tra('pointsize'),
+				'description' => tra('The default pointsize of plotted text, interpreted as big points (1/72 inch) at res dpi (optional). Options: interger number such as 12 or bigger'),
+			),
+			'bg' => array(
+				'required' => false,
+				'name' => tra('bg'),
+				'description' => tra('The initial background colour (optional). Options: white, yellow, grey, ... and transparent'),
+			),
+			'res' => array(
+				'required' => false,
+				'name' => tra('res'),
+				'description' => tra('Choose resolution for the graphs generated, if any (Optional). Options: an integer number in dpi (dot per inch). Default: 72 dpi (optimized for screen display). Many common printers have a maximum resolution for printing of 300 or 600 dpi, but higher values can be chosen at will'),
+			),
+			'x11' => array(
+				'required' => false,
+				'name' => tra('x11'),
+				'description' => tra('Choose whether the server can use X11 to produce graphs in R, or alternatively use dev2bitmap instead (Optional). Options: 0 (R has support for X11, default), 1 (no support for X11 thus using dev2bitmap). These capabilities can be checked in the server with the command in the R console: capabilities()'),
 			),
 /*			'iframe' => array(
 				'required' => false,
@@ -86,7 +121,6 @@ function wikiplugin_r($data, $params) {
 
 	if(isset($params["attId"])) {
 		global $trklib; require_once('lib/trackers/trackerlib.php');
-/* *** Mostly copy from tiki-download_item_attachment.php and modified *** */
 
 		$info = $trklib->get_item_attachment($params["attId"]);
 
@@ -153,13 +187,61 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws) {
 	$rgo  = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.png';
 	$rgo_rel  = graph_dir . DIRECTORY_SEPARATOR . $sha1 . '.png';
 
+	if (isset($params["width"])) {
+		$width = $params["width"];
+	}else{ 	
+		$width = "";
+	}
+
+	if (isset($params["height"])) {
+		$height = $params["height"];
+	}else{ 	
+		$height = "";
+	}
+
+	if (isset($params["units"])) {
+		$units = $params["units"];
+	}else{
+		$units = "";
+	}
+
+	if (isset($params["pointsize"])) {
+		$pointsize = $params["pointsize"];
+	}else{ 	
+		$pointsize = "";
+	}
+
+	if (isset($params["bg"])) {
+		$bg = $params["bg"];
+	}else{ 	
+		$bg = "";
+	}
+
+	if (isset($params["res"])) {
+		$res = $params["res"];
+	}else{ 		// if not specified, use 72 dpi, optimized for screen
+		$res = 72;
+	}
+
 	if (!file_exists($rst) or onsave) {
 		$content = '';
 		$content .= 'rfiles<-"' . r_dir . '"' . "\n";
-//		$content .= 'source("' . r_ext . DIRECTORY_SEPARATOR . 'StatWiki.r")' . "\n";
-//		$content = 'png(filename = "' . $rgo . '", width = 600, height = 600, bg = "transparent", res = 72)' . "\n";
-		$content = 'png(filename = "' . $rgo . '", bg = "transparent", res = 72)' . "\n";
-		$content .= $input . "\n";
+		// TODO: check R capabilities on this server and save result on "r_cap" file on disk
+		// if file r_cap doesn't exist, check capabilities and save on disk
+		// if capabilities()[[2]] == FALSE //use dev2bitmap
+		// else //use png()
+		//
+		// Alternatively, request the user to use extra param x11=0 if no X11 on server.
+		if ( (isset($params["X11"]) || isset($params["x11"])) && ($params["X11"]==0 || $params["x11"]==0) ) {
+			$content .= $input . "\n";
+//			$content = 'dev2bitmap("' . $rgo . '", type = "png16", res = 72, height = 7, width = 7)' . "\n";
+			$content = 'dev2bitmap("' . $rgo . '" , width = ' . $width . ', height = ' . $height . ', units = ' . $units . ', pointsize = ' . $pointsize . ', res = ' . $res . ')' . "\n";
+			$content .= 'dev.off()' . "\n";
+		}else{	// png can be used because R was compiled with support for X11
+			//	$content = 'png(filename = "' . $rgo . '", width = 600, height = 600, bg = "transparent", res = 72)' . "\n";
+			$content = 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = ' . $units . ', pointsize = ' . $pointsize . ', bg = ' . $bg . ' , res = ' . $res . ')' . "\n";
+			$content .= $input . "\n";
+		}
 		$content .= 'q()';
 		$fn = r_dir . '/' . $sha1 . '.R';
 		$fd = fopen ($fn, 'w') or error('R', 'Can not open file: ' . $fn, $input . $err);

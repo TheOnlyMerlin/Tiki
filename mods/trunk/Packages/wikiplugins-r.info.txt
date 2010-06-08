@@ -33,4 +33,4 @@ Changelog:
 0.1 initial package
 0.2 Graphs also allowed inside wiki pages, as png images. Removed the need for StatWiki.r file. 
 0.3 Png can be loaded in pages (allowed by local .htaccess file in ./temp folder)
-0.4 Security checking enabled by default and optional params to enable parsing output or disabling security if needed to run some banned command that an admin will review before plugin approval. Thanks LPH for your help.
+0.4 Security checking enabled by default and many new optional params: security, wikisyntax and other graph params. Thanks LPH for your help.
