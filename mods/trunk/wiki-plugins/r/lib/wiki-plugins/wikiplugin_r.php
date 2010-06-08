@@ -39,6 +39,11 @@ function wikiplugin_r_info() {
 				'name' => tra('type'),
 				'description' => tra('Choose the source file type in the appropriate mimetype syntax. Options: text/csv|text/xml. ex: text/csv. (default). For text/xml, you need to have installed library ("R4X") in R at the server. See documentation for more details'),
 			),
+			'wikisyntax' => array(
+				'required' => false,
+				'name' => tra('wikisyntax'),
+				'description' => tra('Choose whether the output should be parsed as wiki syntax. Options: 0 (no parsing, default), 1 (parsing)'),
+			),
 /*			'iframe' => array(
 				'required' => false,
 				'name' => tra('iframe'),
@@ -132,7 +137,11 @@ function wikiplugin_r($data, $params) {
 
 	$ret = file_get_contents ($fn);
 
-	return '~np~'.$ret.'~/np~';
+	if (isset($params["wikisyntax"]) && $params["wikisyntax"]==1) {
+		return $ret;
+	}else{ 		// if wikisyntax != 1 : no parsing of any wiki syntax
+		return '~np~'.$ret.'~/np~';
+	}
 }
 
 function runR ($output, $convert, $sha1, $input, $echo, $ws) {

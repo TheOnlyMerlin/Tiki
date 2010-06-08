@@ -2,10 +2,10 @@ contributor:
 $Author: xavi $
 
 revision: 
-$Revision: 0.3 $
+$Revision: 0.4 $
 
 lastmodif:
-$Date: 2010-05-21 15:34:00 $
+$Date: 2010-06-08 11:00:00 $
 
 files: 
 wiki-plugins/r/lib/wiki-plugins/wikiplugin_r.php lib/wiki-plugins/wikiplugin_r.php
@@ -21,10 +21,10 @@ licence:
 GNU/GPL
 
 Description: 
-Allows using R syntax for statistics, scientific computing & graphs (see http://www.r-project.org). In wiki syntax, type {R()}{R} or with params for tracker item attachments. See documentation
+Allows using R syntax for statistics, scientific computing & graphs (see http://www.r-project.org). In wiki syntax, type {R()}{R} or with some params, as reported at the documentation
 
 Docurl:
-http://dev.tikiwiki.org/PluginR
+http://doc.tikiwiki.org/PluginR
 
 Devurl:
 http://dev.tikiwiki.org/PluginR
@@ -33,3 +33,4 @@ Changelog:
 0.1 initial package
 0.2 Graphs also allowed inside wiki pages, as png images. Removed the need for StatWiki.r file. 
 0.3 Png can be loaded in pages (allowed by local .htaccess file in ./temp folder)
+0.4 Security checking enabled by default and optional params to enable parsing output or disabling security if needed to run some banned command that an admin will review before plugin approval. Thanks LPH for your help.
