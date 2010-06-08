@@ -2,13 +2,13 @@
 {* Note: if you edit this file, make sure to make corresponding edits on tiki-edit_submission.tpl*}
 
 {popup_init src="lib/overlib.js"}
-{include file='tiki-articles-js.tpl'}
+{include file="tiki-articles-js.tpl"}
 
 {assign var=area_name value="body"}
 
 {title help="Articles"}
 	{if $articleId}
-		{tr}Edit:{/tr} {$title|escape}
+		{tr}Edit:{/tr} {$title}
 	{else}
 		{tr}Edit article{/tr}
 	{/if}
@@ -24,7 +24,7 @@
 {/remarksbox}
 
 {if $preview}
-	{include file='tiki-preview_article.tpl'}
+	{include file="tiki-preview_article.tpl"}
 {/if}
 
 {if !empty($errors)}
@@ -50,9 +50,7 @@
 	<table class="normal">
 		<tr class="formcolor" id='show_topline' {if $types.$type.show_topline eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Topline{/tr} *</td>
-			<td>
-				<input type="text" name="topline" value="{$topline|escape}" size="60" />
-			</td>
+			<td><input type="text" name="topline" value="{$topline|escape}" size="60" /></td>
 		</tr>
 		<tr class="formcolor">
 			<td>{tr}Title{/tr}</td>
@@ -96,7 +94,7 @@
 			<td>
 				<select name="topicId">
 					{section name=t loop=$topics}
-						<option value="{$topics[t].topicId|escape}" {if $topicId eq $topics[t].topicId}selected="selected"{/if}>{$topics[t].name|escape}</option>
+						<option value="{$topics[t].topicId|escape}" {if $topicId eq $topics[t].topicId}selected="selected"{/if}>{$topics[t].name}</option>
 					{/section}
 					<option value="" {if $topicId eq 0}selected="selected"{/if}>{tr}None{/tr}</option>
 				</select>
@@ -110,7 +108,7 @@
 			<td>
 				<select id='articletype' name='type' onchange='javascript:chgArtType();'>
 					{foreach from=$types key=typei item=prop}
-						<option value="{$typei|escape}" {if $type eq $typei}selected="selected"{/if}>{tr}{$typei|escape}{/tr}</option>
+						<option value="{$typei|escape}" {if $type eq $typei}selected="selected"{/if}>{tr}{$typei}{/tr}</option>
 					{/foreach}
 				</select>
 				{if $tiki_p_admin_cms eq 'y'}
@@ -217,14 +215,22 @@
 			</tr>
 		{/if}
 
-		{include file='categorize.tpl'}
+		{include file=categorize.tpl}
+
 
 		<tr class="formcolor">
 			<td>
 				{tr}Heading{/tr}
+				<br />
+				{if $prefs.quicktags_over_textarea neq 'y'}
+					{include file=tiki-edit_help_tool.tpl area_name='heading'}
+				{/if}
 			</td>
 			<td>
-				{textarea _simple="y" name="heading" rows="5" cols="80" Height="200px" id="subheading" comments="y"}{$heading}{/textarea}
+				{if $prefs.quicktags_over_textarea eq 'y'}
+					{include file=tiki-edit_help_tool.tpl area_name='heading'}
+				{/if}
+				<textarea class="wikiedit" name="heading" rows="5" cols="80" id='subheading' wrap="virtual">{$heading|escape}</textarea>
 			</td>
 		</tr>
 
@@ -232,17 +238,27 @@
 		<tr id='heading_only' {if $types.$type.heading_only ne 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor">
 			<td>
 				{tr}Body{/tr}
+				<br />
+				{include file="textareasize.tpl" area_name='body' formId='editpageform'}
+				{if $prefs.quicktags_over_textarea neq 'y'}
+					<br />
+					{include file=tiki-edit_help_tool.tpl area_name='body' qtnum='2'}
+				{/if}
 			</td>
 			<td>
-				{textarea name="body" rows=$rows cols=$cols id="body"}{$body}{/textarea}
+				{if $prefs.quicktags_over_textarea eq 'y'}
+					{include file=tiki-edit_help_tool.tpl area_name='body'}
+				{/if}
+				<textarea class="wikiedit" id="body" name="body" rows="{$rows}" cols="{$cols}" wrap="virtual">{$body|escape}</textarea>
+				<input type="hidden" name="rows" value="{$rows}"/>
+				<input type="hidden" name="cols" value="{$cols}"/>
 			</td>
 		</tr>
 
 		{if $prefs.cms_spellcheck eq 'y'}
 			<tr class="formcolor">
 				<td>
-					{tr}Spellcheck:{/tr}
-				</td>
+					{tr}Spellcheck{/tr}: </td>
 				<td>
 					<input type="checkbox" name="spellcheck" {if $spellcheck eq 'y'}checked="checked"{/if}/>
 				</td>
@@ -252,12 +268,9 @@
 		<tr id='show_pubdate' {if $types.$type.show_pubdate eq 'y' || $types.$type.show_pre_publ ne 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor">
 			<td>{tr}Publish Date{/tr}</td>
 			<td>
-				{html_select_date prefix="publish_" time=$publishDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order}
-				{tr}at{/tr}
-				<span dir="ltr">
-					{html_select_time prefix="publish_" time=$publishDateSite display_seconds=false}
-					&nbsp;
-					{$siteTimeZone}
+				{html_select_date prefix="publish_" time=$publishDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order} {tr}at{/tr} 
+				<span dir="ltr">{html_select_time prefix="publish_" time=$publishDateSite display_seconds=false}
+					&nbsp;{$siteTimeZone}
 				</span>
 			</td>
 		</tr>
@@ -265,8 +278,7 @@
 		<tr id='show_expdate' {if $types.$type.show_expdate eq 'y' || $types.$type.show_post_expire ne 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor">
 			<td>{tr}Expiration Date{/tr}</td>
 			<td>
-				{html_select_date prefix="expire_" time=$expireDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order}
-				{tr}at{/tr} 
+				{html_select_date prefix="expire_" time=$expireDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order} {tr}at{/tr} 
 				<span dir="ltr">
 					{html_select_time prefix="expire_" time=$expireDateSite display_seconds=false}
 					&nbsp;
@@ -301,23 +313,19 @@
 				</td>
 			</tr>
 		{/if}
-		{include file='freetag.tpl'}
-		{if isset($all_attributes)}
-			{foreach from=$all_attributes item=att key=attname}
-			{assign var='attid' value=$att.itemId|replace:'.':'_'}
-			{assign var='attfullname' value=$att.itemId}
-			<tr id={$attid} {if $types.$type.$attid eq 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor">
-				<td>{$attname|escape}</td>
-				<td><input type="text" name="{$attfullname}" value="{$article_attributes.$attfullname|escape}" size="80" /></td>
-			</tr>
-			{/foreach}
-		{/if}
+
+		{include file=freetag.tpl}
+
+		<tr class="formcolor">
+			<td></td>
+			<td>
+				<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" />
+				<input type="submit" class="wikiaction" name="save" value="{tr}Save{/tr}" />
+			</td>
+		</tr>
 	</table>
-	
-	<div align="center">
-		<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" />
-		<input type="submit" class="wikiaction" name="save" value="{tr}Save{/tr}" />
-	</div>
 </form>
 
 <br />
+
+{include file=tiki-edit_help.tpl}

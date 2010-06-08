@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /* Tiki-Wiki Countdown plugin
  *
  * This is an example plugin to indicate a countdown to a date.
@@ -30,7 +24,6 @@ function wikiplugin_countdown_info() {
 		'documentation' => 'PluginCountdown',
 		'description' => tra('Displays a countdown from now until the specified date.'),
 		'prefs' => array('wikiplugin_countdown'),
-		'icon' => 'pics/icons/clock.png',
 		'body' => tra('Text to append to the countdown.'),
 		'params' => array(
 			'enddate' => array(
@@ -43,16 +36,6 @@ function wikiplugin_countdown_info() {
 				'name' => tra('Locate Time'),
 				'description' => tra('on|off'),
 			),
-			'show' => array(
-				'required' => false,
-				'name' => tra('Items to show'),
-				'description' => tra('Select: d=days, h=hours, m=minuts, s=seconds. Enter multiple values as: dhms. If blank, all items are shown.'),
-			),
-			'since' => array(
-				'required' => false,
-				'name' => tra('Show time since event'),
-				'description' => tra('If y, will display amount of time since the event (default). If n will simply display that the event is over.'),
-			),
 		),
 	);
 }
@@ -62,48 +45,9 @@ function wikiplugin_countdown($data, $params) {
 	extract ($params,EXTR_SKIP);
 
 	if (!isset($enddate)) {
-		return ("<strong>COUNTDOWN: Missing 'enddate' parameter for plugin</strong><br />");
+		return ("<b>COUNTDOWN: Missing 'enddate' parameter for plugin</b><br />");
 	}
 
-	if (!isset($show)){
-		// Set default. If no explicit SHOW, then show everything.
-		$show_days = 'y';
-		$show_hours = 'y';
-		$show_minutes = 'y';
-		$show_seconds = 'y';
-	} else {
-		$show_days = 'd';
-		$show_hours = 'h';
-		$show_minutes = 'm';
-		$show_seconds = 's';
-
-		// Which items to show? Day, Hour, Minute, Seconds
-		$show_test = strpos($show, $show_days);
-		if ($show_test === false) {
-			$show_days = 'n';
-		} else {
-			$show_days = 'y';
-		}
-		$show_test = strpos($show, $show_hours);
-		if ($show_test === false) {
-			$show_hours = 'n';
-		} else {
-			$show_hours = 'y';
-		}
-		$show_test = strpos($show, $show_minutes);
-		if ($show_test === false) {
-			$show_minutes = 'n';
-		} else {
-			$show_minutes = 'y';
-		}
-		$show_test = strpos($show, $show_seconds);
-		if ($show_test === false) {
-			$show_seconds = 'n';
-		} else {
-			$show_seconds = 'y';
-		}
-	}	
-	
 	// Parse the string and cancel the server environment's timezone adjustment
 	$then = strtotime($enddate) + date('Z');
 
@@ -111,17 +55,10 @@ function wikiplugin_countdown($data, $params) {
 	//  (the string was specified using the user timezone)
 	$tikidate->setTZbyID($tikilib->get_display_timezone());
 	$tikidate->setDate($then);
-	$tikidate->setTZbyID('UTC');
-	$then = $tikidate->getTime();
+	$tikidate->convertTZByID('UTC');
+	$then = $tikidate->getDate(DATE_FORMAT_UNIXTIME);
 
 	$difference = $then - $tikilib->now;
-	// Determine if the event is over (has past)
-	if ($difference >= 0) {
-		$is_over = 'n';
-		} else {
-		$is_over = 'y';
-		}
-	
 	$num = $difference/86400;
 	$days = intval($num);
 	$num2 = ($num - $days)*24;
@@ -130,39 +67,8 @@ function wikiplugin_countdown($data, $params) {
 	$mins = intval($num3);
 	$num4 = ($num3 - $mins)*60;
 	$secs = intval($num4);
-
-if (($is_over == 'n') or (($is_over == 'y') and ($since !== 'n')))
-	{ 
-	// Show time remaining (if not over) or time since (if over AND since)
-	// Use absolute values to avoid negative numbers
-	if ($show_days == 'y') {
-		$days = abs($days);
-		$ret .= "$days ".tra("days").", ";
-	}
-	if (empty($locatetime) || $locatetime != 'off') {
-		if ($show_hours == 'y') {
-			$hours = abs($hours);
-			$ret .= "$hours ".tra("hours").", ";
-		}
-		if ($show_minutes == 'y') {
-			$mins = abs($mins);
-			$ret .= "$mins ".tra("minutes").", ";
-		}
-		if ($show_seconds == 'y') {
-			$secs = abs ($secs);
-			$ret .= "$secs ".tra("seconds").", ";
-		}
-	}
-	if ($is_over == 'y') {
-		$ret .= tra("since ").$data;
-		} else {		
-		$ret .= tra("until ").$data;
-		}
-}
-	
-	if (($is_over == 'y') and ($since == 'y')) {
-			$ret .= $data.tra(" is over");
-	}
-
+	$ret = "$days ".tra("days").", $hours ".tra("hours").", $mins ".tra("minutes")." ".tra("and")." $secs ".tra("seconds")." $data";
 	return $ret;
 }
+
+?>

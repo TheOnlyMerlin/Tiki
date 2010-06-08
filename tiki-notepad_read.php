@@ -1,33 +1,51 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-notepad_read.php,v 1.22 2007-10-12 07:55:29 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 $section = 'mytiki';
 require_once ('tiki-setup.php');
 include_once ('lib/notepad/notepadlib.php');
-$access->check_feature('feature_notepad');
-$access->check_user($user);
-$access->check_permission('tiki_p_notepad');
+
+if ($prefs['feature_notepad'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_notepad");
+	$smarty->display("error.tpl");
+	die;
+}
+
+if (!$user) {
+	$smarty->assign('msg', tra("Must be logged to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
+
+if ($tiki_p_notepad != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
+
 if (!isset($_REQUEST["noteId"])) {
 	$smarty->assign('msg', tra("No note indicated"));
 	$smarty->display("error.tpl");
 	die;
 }
+$area = 'delnote';
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity(tra('Are you sure you want to delete this note?'));
-	$notepadlib->remove_note($user, $_REQUEST['noteId']);
-	header('location: tiki-notepad_list.php');
-	die;
+	if (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"])) {
+		key_check($area);
+		$notepadlib->remove_note($user, $_REQUEST['noteId']);
+		header ('location: tiki-notepad_list.php');
+		die;
+	} else {
+		key_get($area, tra('Are you sure you want to delete this note?'));
+	}
 }
+
 $info = $notepadlib->get_note($user, $_REQUEST["noteId"]);
-if (!$info) {
-	$smarty->assign('msg', tra("Note not found"));
-	$smarty->display("error.tpl");
-	die;
-}
 
 if (isset($_REQUEST['wikify']) || isset($_REQUEST['over'])) {
 	check_ticket('notepad-read');
@@ -69,21 +87,28 @@ if ($tikilib->page_exists($info['name'])) {
 } else {
 	$smarty->assign("wiki_exists", "n");
 }
+
 if (isset($_REQUEST['parse_mode']) and $_REQUEST['parse_mode'] != $info['parse_mode']) {
 	$notepadlib->set_note_parsing($user, $_REQUEST['noteId'], $_REQUEST['parse_mode']);
 	$info['parse_mode'] = $_REQUEST['parse_mode'];
-}
+} 
+
 if ($info['parse_mode'] == 'raw') {
 	$info['parsed'] = nl2br(htmlspecialchars($info['data']));
-	$smarty->assign('wysiwyg', 'n');
+	$smarty->assign('wysiwyg','n');
 } else {
-	include 'lib/setup/editmode.php';
+	include 'tiki-parsemode_setup.php';
 	$info['parsed'] = $tikilib->parse_data($info['data'], array('is_html' => $is_html));
 }
+
 $smarty->assign('noteId', $_REQUEST["noteId"]);
 $smarty->assign('info', $info);
+
 include_once ('tiki-section_options.php');
 include_once ('tiki-mytiki_shared.php');
 ask_ticket('notepad-read');
+
 $smarty->assign('mid', 'tiki-notepad_read.tpl');
 $smarty->display("tiki.tpl");
+
+?>

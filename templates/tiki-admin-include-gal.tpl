@@ -6,16 +6,26 @@
 {tr}You can upload images of a size of {/tr}{$max_img_upload_size|kbsize}. {tr}Alter the php.ini variables file_uploads, upload_max_filesize, post_max_size and database variables (max_allowed_packet for mysql) to change this value{/tr}.
 {/remarksbox}
 
-<fieldset class="admin">
-	<legend>{tr}Home Gallery{/tr}</legend>
-	<form action="tiki-admin.php?page=gal" method="post">
-		{preference name=home_gallery}
-		<input type="submit" name="galset" value="{tr}OK{/tr}" />
-	</form>
-</fieldset>
+<div class="cbox">
+<div class="cbox-title">{tr}Home Gallery{/tr}</div>
+<div class="cbox-data">
+<form action="tiki-admin.php?page=gal" method="post">
+<table class="admin">
+<tr class="form"><td><label>{tr}Home Gallery (main gallery){/tr}</label></td><td>
+<select name="home_gallery">
+{section name=ix loop=$galleries}
+<option value="{$galleries[ix].galleryId|escape}" {if $galleries[ix].galleryId eq $prefs.home_gallery}selected="selected"{/if}>{$galleries[ix].name|truncate:20:"...":true}</option>
+{/section}
+</select></td>
+<td><input type="submit" name="galset" value="{tr}OK{/tr}" /></td></tr>
+</table>
+</form>
+</div>
+</div>
 
-<fieldset class="admin">
-  <legend>{tr}Galleries features{/tr}</legend>
+<div class="cbox">
+  <div class="cbox-title">{tr}Galleries features{/tr}</div>
+  <div class="cbox-data">
     <form action="tiki-admin.php?page=gal" method="post">
     <table class="admin">
     <tr class="form"><td><label>{tr}Rankings{/tr}:</label></td><td><input type="checkbox" name="feature_gal_rankings" {if $prefs.feature_gal_rankings eq 'y'}checked="checked"{/if}/></td></tr>
@@ -25,7 +35,7 @@
     <tr class="form"><td><label>{tr}Use a directory to store images{/tr}:</label></td><td><input type="radio" name="gal_use_db" value="n" {if $prefs.gal_use_db eq 'n'}checked="checked"{/if}/> <label>{tr}Directory path{/tr}:</label><br /><input type="text" name="gal_use_dir" value="{$prefs.gal_use_dir|escape}" size="50" /><br />
        ({tr}Note: if you change this directory, you have to move the contents to the new directory. You can also use the 'Mover' below.{/tr})</td></tr>
     <tr class="form"><td><label>{tr}Library to use for processing images{/tr}:</label></td><td><input type="radio" name="gal_use_lib" value="gd" {if $prefs.gal_use_lib ne 'imagick'}checked="checked"{/if}/>GD: {$gdlib}</td></tr>
-    <tr class="form"><td></td><td><input type="radio" name="gal_use_lib" value="imagick" {if $prefs.gal_use_lib eq 'imagick'}checked="checked"{/if}/>Imagick 0: {$imagicklib}</td></tr>
+    <tr class="form"><td></td><td><input type="radio" name="gal_use_lib" value="imagick" {if $prefs.gal_use_lib eq 'imagick'}checked="checked"{/if}/>Imagick: {$imagicklib}</td></tr>
     <tr class="form"><td><label>{tr}Uploaded image names must match regex{/tr}:</label></td><td><input type="text" name="gal_match_regex" value="{$prefs.gal_match_regex|escape}"/></td></tr>
     <tr class="form"><td><label>{tr}Uploaded image names cannot match regex{/tr}:</label></td><td><input type="text" name="gal_nmatch_regex" value="{$prefs.gal_nmatch_regex|escape}"/></td></tr>
 		<tr><td colspan="2"><b>{tr}Directory Batch Loading{/tr}</b><br />
@@ -64,10 +74,12 @@
     <tr><td colspan="2" class="input_submit_container"><input type="submit" name="galfeatures" value="{tr}Set features{/tr}" /></td></tr>
     </table>
     </form>
-</fieldset>
+  </div>
+</div>
 
-<fieldset class="admin">
-  <legend>{tr}Exterminator{/tr}</legend>
+<div class="cbox">
+  <div class="cbox-title">{tr}Exterminator{/tr}</div>
+  <div class="cbox-data">
 <form action="tiki-admin.php?page=gal" method="post">
 <table class="admin">
 <tr class="form"><td><label>
@@ -77,10 +89,12 @@
 <tr><td colspan="2" class="input_submit_container"--><td><input type="submit" name="button" value="{tr}Remove{/tr}" /></td></tr>
 </table>                 
 </form>
-</fieldset>
+</div>
+</div>
 
-<fieldset class="admin">
-  <legend>{tr}Mover{/tr}</legend>
+<div class="cbox">
+  <div class="cbox-title">{tr}Mover{/tr}</div>
+    <div class="cbox-data">
     <form action="tiki-admin.php?page=gal" method="post">
     <table class="admin">
     <tr class="form"><td>
@@ -95,7 +109,7 @@
 </label>
 <input type="hidden" name="mvimg" value="to_db" />
 {/if}
-</td><td>
+<td>
 <select name="move_gallery">
 <option value="-1">{tr}All galleries{/tr}</option>
 <option value="0">{tr}System Gallery{/tr}</option>
@@ -119,10 +133,12 @@
 {/if}
 </table>
 </form>
-</fieldset>
+</div>
+</div>
 
-<fieldset class="admin">
-  <legend>{tr}Gallery listing configuration{/tr}</legend>
+<div class="cbox">
+  <div class="cbox-title">{tr}Gallery listing configuration{/tr}</div>
+  <div class="cbox-data">
 	<form method="post" action="tiki-admin.php?page=gal">
 	<table class="admin">
 	<tr class="form">
@@ -162,10 +178,12 @@
 
 	</table>	
 	</form>	
-</fieldset>
+  </div>
+</div>
 
-<fieldset class="admin">
-  <legend>{tr}Image galleries comments settings{/tr}</legend>
+<div class="cbox">
+  <div class="cbox-title">{tr}Image galleries comments settings{/tr}</div>
+  <div class="cbox-data">
     <form method="post" action="tiki-admin.php?page=gal">
     <table class="admin">
     <tr class="form"><td><label>{tr}Default number of comments per page{/tr}: </label></td><td><input size="5" type="text" name="image_galleries_comments_per_page" value="{$prefs.image_galleries_comments_per_page|escape}" /></td></tr>
@@ -180,4 +198,5 @@
     <tr><td colspan="2" class="input_submit_container"><input type="submit" name="imagegalcomprefs" value="{tr}Change settings{/tr}" /></td></tr>
     </table>
     </form>
-</fieldset>
+  </div>
+</div>

@@ -1,11 +1,7 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /** \file
+ * $Id$
+ *
  * \brief Categories browse tree
  *
  * \author zaufi@sendmail.ru
@@ -18,8 +14,7 @@ require_once ('lib/tree/tree.php');
 /**
  * \brief Class to render categories browse tree
  */
-class CatPickerTreeMaker extends TreeMaker
-{
+class CatPickerTreeMaker extends TreeMaker {
 	/// Collect javascript cookie set code (internaly used after make_tree() method)
 	var $jsscriptblock;
 
@@ -35,17 +30,14 @@ class CatPickerTreeMaker extends TreeMaker
 
 	/// Generate HTML code for tree. Need to redefine to add javascript cookies block
 	function make_tree($rootid, $ar) {
-		global $headerlib;
+		global $debugger;
 		
 		$r = '<ul class="tree root">'."\n";
 
-		$r .= $this->make_tree_r($rootid, $ar) . "</ul>\n";
-		
-		// java script block that opens the nodes as remembered in cookies
-		$headerlib->add_jq_onready($this->jsscriptblock);
-		
-		// return tree
-		return $r;
+		$r .= $this->make_tree_r($rootid, $ar);
+		// $debugger->var_dump('$r');
+		// return tree with java script block that opens the nodes as remembered in cookies
+		return $r . "</ul>\n<script type='text/javascript'>\n" . $this->jsscriptblock . "\n</script>\n";
 	}
 
 	//
@@ -84,22 +76,22 @@ class CatPickerTreeMaker extends TreeMaker
 		$this->itemID = $this->prefix . 'id' . $nodeinfo["id"];
 
 		$this->jsscriptblock .= "setFlipWithSign('" . $this->itemID . "'); ";
-		return '<a class="link categflipper" id="flipper' . $this->itemID . '" href="#" onclick="flipWithSign(\'' . $this->itemID . '\');return false;">[+]</a>&nbsp;';
+		return '<a class="link categflipper" id="flipper' . $this->itemID . '" href=# onclick="flipWithSign(\'' . $this->itemID . '\');return false">[+]</a>&nbsp;';
 	}
 
 	//
 	function node_data_start_code($nodeinfo) {
-		return '';
+		return '<!-- START_NODE_DATA -->';
 	}
 
 	//
 	function node_data_end_code($nodeinfo) {
-		return "\n";
+		return '<!-- END_NODE_DATA -->'."\n";
 	}
 
 	//
 	function node_child_start_code($nodeinfo) {
-		return '<ul class="tree" id="' . $this->itemID . '">';
+		return '<ul class="tree" id="' . $this->itemID . '" >';
 	}
 
 	//
@@ -112,3 +104,5 @@ class CatPickerTreeMaker extends TreeMaker
 		return "\t" . '</li>';
 	}
 }
+
+?>

@@ -1,7 +1,6 @@
-{title}{tr}Stats for survey:{/tr} {$survey_info.name|escape}{/title}
+{title}{tr}Stats for survey:{/tr}{$survey_info.name}{/title}
 
 <div class="navbar">
-	{self_link print='y'}{icon _id='printer' align='right' hspace='1' alt='{tr}Print{/tr}'}{/self_link}
 	{button href="tiki-list_surveys.php" _text="{tr}List Surveys{/tr}"}
 	{button href="tiki-survey_stats.php" _text="{tr}Survey Stats{/tr}"}
 	{if $tiki_p_admin_surveys eq 'y'}
@@ -15,7 +14,7 @@
 {section name=ix loop=$channels}
   <table class="normal">
   <tr>
-    <th colspan="4">{$channels[ix].question|escape|nl2br}</th>
+    <th colspan="4">{$channels[ix].question}</th>
   </tr>
   {if $channels[ix].type eq 'r'}
     <tr>
@@ -48,12 +47,12 @@
             <br />{fileinfo _id=$channels[ix].qoptions[jx].qoption _field='description'}
           </div>
         {else}
-          {$channels[ix].qoptions[jx].qoption|escape}
+          {$channels[ix].qoptions[jx].qoption}
         {/if}
       </td>
       <td class="odd">{$channels[ix].qoptions[jx].votes}</td>
       <td class="odd">{$channels[ix].qoptions[jx].average|string_format:"%.2f"}%</td>
-      <td class="odd">{quotabar length=$channels[ix].qoptions[jx].width}</td>
+      <td class="odd"><img src="img/leftbar.gif" alt="&lt;" /><img alt="-" src="img/mainbar.gif" height="14" width="{$channels[ix].qoptions[jx].width}" /><img src="img/rightbar.gif" alt="&gt;" /></td>
     </tr>
     {/section}
   {/if}

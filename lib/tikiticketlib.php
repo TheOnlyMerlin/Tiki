@@ -1,11 +1,6 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+/* $Id: /cvsroot/tikiwiki/tiki/lib/tikiticketlib.php,v 1.24 2007-10-12 07:55:38 nyloth Exp $
 
-/*
 Tikiwiki CSRF protection.
 also called Sea-Surfing
 
@@ -19,13 +14,11 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-// Deprecated in favor of key_get($area)
 function ask_ticket($area) {
 	$_SESSION['antisurf'] = $area; 
 	return true;
 }
 
-// Deprecated in favor of key_check($area)
 function check_ticket($area) { 
 	if (!isset($_SESSION['antisurf'])) $_SESSION['antisurf'] = '';
 	if ($_SESSION['antisurf'] != $area) { 
@@ -43,14 +36,21 @@ function check_ticket($area) {
 	return true;
 }
 
-// new valid functions for ticketing:
-	 // * @param string $area No more used
-function key_get($area = null, $confirmation_text = '', $confirmaction='') {
-	global $tikilib,$smarty,$prefs;
+// new valid function for ticketing :
+
+function key_get($area, $confirmation_text = '', $confirmaction='') {
+//confirmaction actin must be set if the param are not transfer via the URI
+	global $tikilib,$smarty,$prefs,$user;
 	if ($prefs['feature_ticketlib2'] == 'y') {
+		if ($user) {
+			$whose = $user;
+		} else { 
+	  		$whose = ' '. md5($tikilib->get_ip_address().$_SERVER['USER_AGENT']);
+		}
 		$ticket = md5(uniqid(rand()));
-		$_SESSION['tickets'][$ticket] = time();
+		$tikilib->set_user_preference($whose,'ticket',$ticket);
 		$smarty->assign('ticket',$ticket);
+		$_SESSION["ticket_$area"] = time();
 		if (empty($confirmation_text)) {
 			$confirmation_text = tra('Click here to confirm your action');
 		}
@@ -70,18 +70,34 @@ function key_get($area = null, $confirmation_text = '', $confirmaction='') {
 		die();
 	}
 }
-	 // * @param string $area No more used
-function key_check($area = null) {
-	global $smarty, $prefs;
-	if ($prefs['feature_ticketlib2'] == 'y') {
-		if (isset($_REQUEST['ticket']) && isset($_SESSION["tickets"][$_REQUEST['ticket']])) {
-			$time = $_SESSION["tickets"][$_REQUEST['ticket']];
-			if ($time < time() && $time > (time()-(60*15))) {
+
+function key_check($area) {
+	global $tikilib,$smarty,$prefs,$user;
+	if ($prefs['feature_ticketlib2'] != 'y') {
+		return true;
+	} else {
+		if (isset($_SESSION["ticket_$area"])
+			and $_SESSION["ticket_$area"] < date('U')
+			and $_SESSION["ticket_$area"] > (date('U')-(60*15))) {
+			$smarty->load_filter('pre', 'ticket');
+			if ($user) {
+				$whose = $user;
+			} else { 
+				$whose = ' '. md5($tikilib->get_ip_address().$_SERVER['USER_AGENT']);
+			}
+			if (isset($_REQUEST) and is_array($_REQUEST)
+				and (!isset($_REQUEST['ticket']) 
+				or $_REQUEST['ticket'] != $tikilib->get_user_preference($whose,'ticket'))) {
+				unset($_REQUEST);
+			} else {
 				return true;
 			}
 		}
+		unset($_SESSION["ticket_$area"]);
 		$smarty->assign('msg',tra('Sea Surfing (CSRF) detected. Operation blocked.'));
 		$smarty->display("error.tpl");
-		exit();
+		die();
 	}
 }
+
+?>

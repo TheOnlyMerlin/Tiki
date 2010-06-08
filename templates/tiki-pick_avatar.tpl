@@ -10,21 +10,18 @@
 
 
 {if $user eq $userwatch}
-	{include file='tiki-mytiki_bar.tpl'}
+	{include file=tiki-mytiki_bar.tpl}
 {else}
 	<div class="navbar">
 		{assign var=thisuserwatch value=$userwatch|escape}
 		{button href="tiki-user_preferences.php?view_user=$thisuserwatch" _text="{tr}User Preferences{/tr}"}
 	</div>
 {/if}
+
 <h2>{if $user eq $userwatch}{tr}Your current avatar{/tr}{else}{tr}Avatar{/tr}{/if}</h2>
-{if $avatar}{$avatar}
-{if $user_picture_id}
-{wikiplugin _name="img" fileId="$user_picture_id"}{/wikiplugin}
-{/if}
-{else}{tr}no avatar{/tr}{/if}
+{if $avatar}{$avatar}{else}{tr}no avatar{/tr}{/if}
 {if sizeof($avatars) eq 0 and $avatar}
-<a class="link" href="tiki-pick_avatar.php?reset=y&amp;view_user{$userwatch|escape}" title="{tr}reset{/tr}">{icon _id='cross' alt='{tr}reset{/tr}'}</a>
+<a class="link" href="tiki-pick_avatar.php?reset=y" title="{tr}reset{/tr}">{icon _id='cross' alt='{tr}reset{/tr}'}</a>
 {/if}
 
 {if sizeof($avatars) > 0}
@@ -38,15 +35,16 @@
 </div>
 {else} 
 
-{jq}
+<script type='text/javascript'>
 var avatars = new Array();
-{{section name=ix loop=$avatars}
+{section name=ix loop=$avatars}
   avatars[{$smarty.section.ix.index}] = '{$avatars[ix]}';
 {if $smarty.section.ix.index eq $yours}
 {assign var="yours" value=$avatars[ix]}
 {/if}
-{/section}}
+{/section}
 var pepe=1;
+{literal}
 function addavt() {
   pepe++;
   if(pepe > avatars.length-1) {
@@ -64,7 +62,8 @@ function subavt() {
   document.getElementById('avtimg').src=avatars[pepe]; 
   document.getElementById('avatar').value=avatars[pepe];
 }
-{/jq}
+{/literal}
+</script>
 
 <h2>{tr}Pick avatar from the library{/tr} <a href="tiki-pick_avatar.php?showall=y">{tr}Show all{/tr}</a> {$numav} {tr}Items{/tr}</h2>
 <form action="tiki-pick_avatar.php" method="post">
@@ -100,10 +99,10 @@ function subavt() {
 <fieldset>
 <legend><strong>{tr}Upload your own avatar{/tr}</strong></legend>
 {if $user ne $userwatch}<input type="hidden" name="view_user" value="{$userwatch|escape}" />{/if}
-<label for="userfile1">{if $prefs.user_store_file_gallery_picture neq 'y'}{tr}File (only .gif, .jpg and .png images approximately 45px × 45px){/tr}{else}{tr}File (only .gif, .jpg and .png images){/tr}{/if}:</label>
+<label for="userfile1">{tr}File (only .gif, .jpg and .png images approximately 45px × 45px){/tr}:</label>
 <input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
 <input id="userfile1" name="userfile1" type="file" />
-<input type="submit" name="upload" value="{tr}Upload{/tr}" />
+<input class="button" type="submit" name="upload" value="{tr}Upload{/tr}" />
 </fieldset>
 </form>
 </div>

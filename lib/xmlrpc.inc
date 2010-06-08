@@ -2026,3 +2026,4 @@ $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 			return $xmlrpc_val;
 		}
 	}
+?>

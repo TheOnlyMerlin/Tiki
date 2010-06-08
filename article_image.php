@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/article_image.php,v 1.18.2.1 2008-03-01 17:12:54 leyan Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 // application to display an image from the database with 
 // option to resize the image dynamically creating a thumbnail on the fly.
@@ -17,12 +18,21 @@
 // If image_type has no value, we default to "article" to preserve previous behaviour
 
 require_once ('tiki-setup.php');
-require_once 'lib/articles/artlib.php';
 
-$access->check_feature('feature_articles');
+if ($prefs['feature_articles'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_articles");
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 // Now check permissions to access this page
-$access->check_permission(array('tiki_p_read_article','tiki_p_articles_read_heading'));
+if(($tiki_p_read_article != 'y') && ($tiki_p_articles_read_heading != 'y')) {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg',tra("Permission denied you cannot view pages"));
+	$smarty->display("error.tpl");
+	die;  
+}
 
 if (!isset($_REQUEST["id"])) {
 	die;
@@ -59,13 +69,13 @@ $cachefile.= "/$image_cache_prefix.".$_REQUEST["id"];
 if ( (isset($_REQUEST["reload"])) || (!is_file($cachefile))) {
 	switch ($_REQUEST["image_type"]) {
 		case "article":
-			$storedData = $artlib->get_article_image($_REQUEST["id"]);
+			$storedData = $tikilib->get_article_image($_REQUEST["id"]);
 			break;
 		case "submission":
-			$storedData = $artlib->get_submission($_REQUEST["id"]);
+			$storedData = $tikilib->get_submission($_REQUEST["id"]);
 			break;
 		case "topic":
-			$storedData = $artlib->get_topic_image($_REQUEST["id"]);
+			$storedData = $tikilib->get_topic_image($_REQUEST["id"]);
 			break;
 		case "preview":
 			// We can't get the data from the database. No fallback solution.
@@ -100,3 +110,5 @@ if (is_file($cachefile)) {
 	header ("Content-type: ".$type);
 	echo $data;
 }
+
+?>

@@ -1,11 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-/*
+/* $Id$
  * file = external javascript file
  * data is the javascript code
  * if you need the data to be interpreted before the file use the JS plugin 2 times
@@ -22,13 +16,11 @@ function wikiplugin_js_info() {
 			'prefs' => array( 'wikiplugin_js' ),
 			'body' => tra('javascript code'),
 			'validate' => 'all',
-			'filter' => 'rawhtml_unsafe',
 			'params' => array(
 				'file' => array(
 					'required' => false,
 					'name' => tra('File'),
 					'description' => tra('Javascript filename.'),
-					'filter' => 'url',
 				),
 			),
 		);
@@ -45,3 +37,4 @@ function wikiplugin_js($data, $params) {
 	}
 	return $ret;
 }
+?>

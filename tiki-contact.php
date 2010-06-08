@@ -1,22 +1,34 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-contact.php,v 1.25.2.5 2008-02-14 11:10:14 sylvieg Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 require_once ('tiki-setup.php');
 
 include_once ('lib/messu/messulib.php');
 include_once ('lib/userprefs/scrambleEmail.php');
 
 // This feature needs both 'feature_contact' and 'feature_messages' to work
-$access->check_feature(array('feature_contact', 'feature_messages'));
-if($user == ''){
-	$access->check_feature('contact_anon');
+if ($prefs['feature_contact'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled').': feature_contact');
+	$smarty->display('error.tpl');
+	die;
+}
+if ($prefs['feature_messages'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled').': feature_messages');
+	$smarty->display('error.tpl');
+	die;
 }
 
-$auto_query_args = array();
+if ($prefs['contact_anon'] != 'y' && !$user) {
+	$smarty->assign('msg', 'You are not logged in');
+	$smarty->display('error.tpl');
+	die;
+}
 
 $smarty->assign('mid', 'tiki-contact.tpl');
 
@@ -33,15 +45,9 @@ if ($user == '' and $prefs['contact_anon'] == 'y') {
 		$message = '';
 		// Validation:
 		// must have a subject or body non-empty (or both)
-		if (empty($_REQUEST['subject']) && empty($_REQUEST['body']) || empty($_REQUEST['from'])) {
-			$smarty->assign('message', tra('ERROR: you must include a subject or a message. You must also make sure to have a valid e-mail in the FROM field'));
+		if (empty($_REQUEST['subject']) && empty($_REQUEST['body'])) {
+			$smarty->assign('message', tra('ERROR: you must include a subject or a message at least'));
 			$smarty->assign('priority', $_REQUEST['priority']);
-			
-			if (!empty($_REQUEST['from'])) $smarty->assign_by_ref('from', $_REQUEST['from']);
-			if (!empty($_REQUEST['subject'])) $smarty->assign_by_ref('subject', $_REQUEST['subject']);
-			if (!empty($_REQUEST['body'])) $smarty->assign_by_ref('body', $_REQUEST['body']);
-			if (!empty($_REQUEST['priority'])) $smarty->assign_by_ref('priority', $_REQUEST['priority']);
-			
 			$smarty->display("tiki.tpl");
 			die;
 		}
@@ -49,7 +55,6 @@ if ($user == '' and $prefs['contact_anon'] == 'y') {
 			if((!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $_REQUEST['antibotcode'])) {
 				$smarty->assign('message',tra("You have mistyped the anti-bot verification code; please try again."));
 				$smarty->assign('errortype', 'no_redirect_login');
-				if (!empty($_REQUEST['from'])) $smarty->assign_by_ref('from', $_REQUEST['from']);
 				if (!empty($_REQUEST['subject'])) $smarty->assign_by_ref('subject', $_REQUEST['subject']);
 				if (!empty($_REQUEST['body'])) $smarty->assign_by_ref('body', $_REQUEST['body']);
 				if (!empty($_REQUEST['priority'])) $smarty->assign_by_ref('priority', $_REQUEST['priority']);
@@ -58,7 +63,7 @@ if ($user == '' and $prefs['contact_anon'] == 'y') {
 			}
 		}
 		$smarty->assign('sent', 1);
-		$messulib->post_message($prefs['contact_user'], $_REQUEST['from'], $_REQUEST['to'],
+		$messulib->post_message($prefs['contact_user'], 'Anonymous', $_REQUEST['to'],
 			'', $_REQUEST['subject'], $_REQUEST['body'], $_REQUEST['priority']);
 		$message = tra('Message sent to'). ': ' . $prefs['contact_user'] . '<br />';
 		$smarty->assign('message', $message);
@@ -96,3 +101,5 @@ $smarty->assign('priority', 3);
 ask_ticket('contact');
 
 $smarty->display("tiki.tpl");
+
+?>

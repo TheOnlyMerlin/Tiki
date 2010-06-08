@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,8 +6,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 	exit;
 }
 
-class PollLibShared extends TikiLib
-{
+class PollLibShared extends TikiLib {
+	function PollLibShared($db) {
+		$this->TikiLib($db);
+	}
 
 	function get_poll($pollId) {
 		$query = "select * from `tiki_polls` where `pollId`=?";
@@ -82,7 +79,7 @@ class PollLibShared extends TikiLib
 		} else {
 			$mid = '';
 		}
-		$query = "select * from `tiki_polls` where `active`=? and `publishDate`>=? and `publishDate`<=? $mid";
+    $query = "select * from `tiki_polls` where `active`=? and `publishDate`>=? and `publishDate`<=? $mid";
 		$query_cant = "select count(*) from `tiki_polls` where `active`=? and `publishDate`>=? and `publishDate`<=? $mid";
 		$result = $this->query($query,$bindvars);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -96,60 +93,43 @@ class PollLibShared extends TikiLib
 		return $retval;
   }
 
-  function poll_vote($user, $pollId, $optionId, $previous_vote) {
-		if (!$previous_vote || $previous_vote == 0) {
+	function poll_vote($user, $pollId, $optionId) {
+		global $smarty;
+		$previous_vote = $this->get_user_vote("poll$pollId",$user);
+		$poll = $this->get_poll($pollId);
+		if( $poll['active'] == 'x' )
+		{
+		    $smarty->assign('msg', tra("This poll is closed."));
+		    $smarty->display("error.tpl");
+		    die;
+		} else {
+		    if (!$previous_vote || $previous_vote == 0) {
 			$query = "update `tiki_polls` set `votes`=`votes`+1 where `pollId`=?";
 			$result = $this->query($query,array((int)$pollId));
 			$query = "update `tiki_poll_options` set `votes`=`votes`+1 where `optionId`=?";
 			$result = $this->query($query,array((int)$optionId));
-		} elseif ($previous_vote != $optionId) {
+		    } elseif ($previous_vote != $optionId) {
 			$query = "update `tiki_poll_options` set `votes`=`votes`-1 where `optionId`=?";
 			$result = $this->query($query,array((int)$previous_vote));
 			$query = "update `tiki_poll_options` set `votes`=`votes`+1 where `optionId`=?";
 			$result = $this->query($query,array((int)$optionId));
+		    }
 		}
 	}
 
-	function get_ratings( $cat_type, $cat_objid, $user = null ) {
-		global $tikilib, $prefs;
-
-		$out = array();
-
-		$result = $this->fetchAll("select `pollId` from `tiki_poll_objects` INNER JOIN `tiki_objects` ON `tiki_objects`.`objectId` = `tiki_poll_objects`.`catObjectId` WHERE `tiki_objects`.`type`=? and `tiki_objects`.`itemId`=?",array($cat_type,$cat_objid));
-		foreach( $result as $row ) {
-			$poll = array();
-			$poll['info'] = $this->get_poll($row['pollId']);
-
-			if( $cat_type == 'wiki page' ) {
-				$poll['info'] = $this->pollnameclean( $poll['info'], $cat_objid );
-			}
-
-			$poll['options'] = $this->list_poll_options($row['pollId']);
-			$poll['title'] = $poll['info']['title'];
-
-			if( $user ) {
-				$poll['vote'] = $tikilib->get_user_vote( 'poll' . $row['pollId'], $user );
-			} else {
-				$poll['vote'] = false;
-			}
-
-			$out[] = $poll;
-
-			// Unless multiple polls per object is enabled, end after the first
-			if( $prefs['poll_multiple_per_object'] != 'y' ) {
-				break;
-			}
+	function get_rating($cat_type,$cat_objid) {
+		$catObjectId = $this->getOne("select `objectId` from `tiki_objects` where `type`=? and `itemId`=?",array($cat_type,$cat_objid));
+    if ($catObjectId and $catObjectId > 0) {
+      $result = $this->query("select * from `tiki_poll_objects` where `catObjectId`=?",array((int)$catObjectId));
+      $res = $result->fetchRow();
+      $poll['info'] = $this->get_poll($res['pollId']);
+			$poll['options'] = $this->list_poll_options($res['pollId']);
+			$poll['title'] = $res['title'];
+			return $poll;
 		}
+		return false;
+  }
 
-		return $out;
-	}
-
-	private function pollnameclean($s, $page) {
-		if (isset($s['title'])) 
-			$s['title'] = substr($s['title'], strlen($page)+2); 
-
-		return $s;
-	}	
 	function remove_poll($pollId) {
 		$query = "delete from `tiki_poll_objects` where `pollId`=?";
 		$result = $this->query($query,array((int) $pollId));
@@ -169,24 +149,16 @@ class PollLibShared extends TikiLib
 		return $this->getOne("select `objectId` from `tiki_objects` where `type`=? and `itemId`=?",array($cat_type,$cat_objid));
 	}
 
-	function has_object_polls($catObjectId) {
-		$query = "select count(*) from `tiki_poll_objects` where `catObjectId`=?";
-		return $this->getOne($query,array((int)$catObjectId));
-	}
+  function has_object_polls($catObjectId) {
+    $query = "select count(*) from `tiki_poll_objects` where `catObjectId`=?";
+    return $this->getOne($query,array((int)$catObjectId));
+  }
 
-	function remove_object_poll($cat_type,$cat_objid, $pollId = null) {
+  function remove_object_poll($cat_type,$cat_objid) {
 		$catObjectId = $this->get_catObjectId($cat_type,$cat_objid);
-		$query = "delete from `tiki_poll_objects` where `catObjectId`=?";
-		$bindvars = array((int)$catObjectId);
-
-		if( $pollId ) {
-			$query .= ' AND `pollId` = ?';
-			$bindvars[] = $pollId;
-		}
-
-		$this->query($query,$bindvars);
+    $this->query("delete from `tiki_poll_objects` where `catObjectId`=?",array((int)$catObjectId));
 		return true;
-	}
+  }
 
   function create_poll($template_id,$title) {
     $pollid = $this->replace_poll(0,$title,"o",date('U'));
@@ -266,4 +238,7 @@ class PollLibShared extends TikiLib
 	}
 
 }
-$polllib = new PollLibShared;
+global $dbTiki;
+$polllib = new PollLibShared($dbTiki);
+
+?>

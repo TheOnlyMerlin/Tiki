@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 // ** This is the main script to release Tiki **
 //
@@ -66,12 +61,12 @@ if ( $isPre ) {
 } else {
 	$pre = '';
 }
-$mainversion = $version{0};
+$mainversion = $version{0} . '.0';
 
 include_once('lib/setup/twversion.class.php');
-$check_version = $version.$subrelease;
+$check_version = strtolower($version.$subrelease);
 $TWV = new TWVersion();
-if ( $TWV->version != $check_version ) {
+if ( strtolower($TWV->version) != $check_version ) {
 	error("The version in the code ".strtolower($TWV->version)." differs from the version provided to the script $check_version.\nThe version should be modified in lib/setup/twversion.class.php to match the released version.");
 }
 
@@ -91,21 +86,21 @@ if ( ! $options['no-first-update'] && important_step('Update working copy to the
 }
 
 if ( empty($subrelease) ) {
-	$branch = "branches/$mainversion.x";
+	$branch = "branches/$mainversion";
 	$tag = "tags/$version";
 	$packageVersion = $version;
 	if ( ! empty($pre) )
 		$packageVersion .= ".$pre";
 	$secdbVersion = $version;
 } else {
-	$branch = "branches/$mainversion.x";
+	$branch = "branches/$mainversion";
 	$tag = "tags/$version$subrelease";
 	$packageVersion = "$version.$pre$subrelease";
 	$secdbVersion = "$version$subrelease";
 }
 
 if ( ! $options['no-readme-update'] && important_step("Update '" . README_FILENAME . "' file") ) {
-	update_readme_file($secdbVersion, $version);
+	update_readme_file($packageVersion, $version);
 	info('>> ' . README_FILENAME . ' file updated.');
 	important_step('Commit updated ' . README_FILENAME . ' file', true, "[REL] Update " . README_FILENAME . " file for $secdbVersion");
 }
@@ -138,7 +133,7 @@ if ( ! $options['no-changelog-update'] && important_step("Update '" . CHANGELOG_
 
 $nbCommiters = 0;
 if ( ! $options['no-copyright-update'] && important_step("Update '" . COPYRIGHTS_FILENAME . "' file (using final version number '$version')") ) {
-	if ( $ucf = update_copyright_file($mainversion . '.0') ) {
+	if ( $ucf = update_copyright_file($mainversion) ) {
 		info("\r>> Copyrights updated: "
 			. ( $ucf['newContributors'] == 0 ? 'No new contributor, ' : "+{$ucf['newContributors']} contributor(s), " )
 			. ( $ucf['newCommits'] == 0 ? 'No new commit' : "+{$ucf['newCommits']} commit(s)" )
@@ -799,7 +794,7 @@ Version $releaseVersion
 
 DOCUMENTATION
 
-* The documentation for $mainVersion version is ever evolving at http://doc.tikiwiki.org.
+* The documentation for $mainVersion version is under construction on http://doc.tikiwiki.org.
   You're encouraged to contribute.
 
 * It is highly recommended that you refer to the online documentation:
@@ -870,28 +865,20 @@ function display_howto() {
    HOWTO release Tiki
 --------------------------
 
-0/ When branching for 5.x, name it branches/5.x to be 
-   clearer than branches/3.0, because branches/5.x is 
-   indeed 5.1, 5.2, etc.
-   http://dev.tikiwiki.org/SVNTips#Handling_branches
-   
 1/ Preliminary manual tasks
-   - Check that all JavaScript can be safely minified with [http://www.jslint.com/|JSLint]
-   - Check DB structure to make sure fresh install and upgrade from previous version have the same structure
-   -- Checkout a fresh Tiki 4.0, upgrade to Tiki5.0 
-   -- Checkout a fresh Tiki5.0
-   -- Compare the mysqldump files of each and resolve any differences 
-   - Run the tiki installer and correct anything obviously wrong
-   - The "function update_readme_file" in this script will output to the top-level README:
-   -- Check if anyone has committed anything manually to README that needs to be brought back into this script
-   -- Check links
-   - Run doc/devtools/securitycheck.php and check each "potentially unsafe" file.
+   - run the tiki installer and correct anything obviously wrong
+   - the "function update_readme_file" in this script will output to the top-level README:
+   -- check if anyone has committed anything manually to README that needs to be brought back into this script
+   -- check links
+   - run doc/devtools/securitycheck.php and check each "potentially unsafe" file.
+   - cd db/convertscripts and run convertsqls.sh
+   --- Check that you do not have spurious quote marks in your db/*.sql file
+   --- the string \" should not appear, if it does, ask nyloth or nkoth3 on IRC
    - in lib/setup/twversion.class.php
      - increment the version number in the constructor
      - update list of valid releases in getVersions()
-		- Make sure you add all Tiki versions (not just the one you are doing now). Ex.: when 5.0 is released, 4.2 will probably exist, and this was added to branches/4.x but not merged by script. 
      - change the version branch to "unstable", "stable", or "head" as explained in that file
-   - Commit your changes with this commit message (change \$VERSION by the version of the release):
+   - commit your changes with this commit message (change \$VERSION by the version of the release):
 	[REL] Preparing \$VERSION release
 
 2/ Create and test pre-release packages by executing the script with the release
@@ -922,7 +909,6 @@ function display_howto() {
 post/
    Update appropriate http://tikiwiki.org/stable.version file with new release version
    (or ask the TAG to do this)
-   Increment/update lib/setup/twversion.class.php (depending if major or minor release)
 
 All that process has to be relayed on live irc channel : 
 irc://irc.freenode.net/#tikiwiki

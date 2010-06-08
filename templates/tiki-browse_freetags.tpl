@@ -1,6 +1,6 @@
 {* $Id$ *}
 
-{title admpage=freetags}{tr}Browse related tags{/tr}{/title}
+{title}{tr}Browse related tags{/tr}{/title}
 
 {if $prefs.feature_morcego eq 'y' and $prefs.freetags_feature_3d eq 'y'}
 	<div class="morcego_embedded">
@@ -50,7 +50,9 @@
 	</div>
 
 	{if $prefs.freetags_browse_show_cloud eq 'y'}
-		{jq notonready=true}
+		<script type="text/javascript">
+			<!--//--><![CDATA[//><!--
+			{literal}
 				function addTag(tag) {
 					if (tag.search(/ /) >= 0) tag = '"'+tag+'"';
 					document.getElementById('tagBox').value = document.getElementById('tagBox').value + ' ' + tag;	
@@ -58,12 +60,14 @@
 				function clearTags() {
 					document.getElementById('tagBox').value = '';
 				}
-		{/jq}
+			{/literal}
+			//--><!]]>
+		</script>
 
 		<div class="freetaglist"> 
 			{foreach from=$most_popular_tags item=popular_tag}
 				{capture name=tagurl}{if (strstr($popular_tag.tag, ' '))}"{$popular_tag.tag}"{else}{$popular_tag.tag}{/if}{/capture}
-				<a class="freetag_{$popular_tag.size}" href="tiki-browse_freetags.php?tag={$smarty.capture.tagurl|escape:'url'}" onclick="javascript:addTag('{$popular_tag.tag|escape:'javascript'}');return false;" ondblclick="location.href=this.href;"{if $popular_tag.color} style="color:{$popular_tag.color}"{/if}>{$popular_tag.tag|escape}</a> 
+				<a class="freetag_{$popular_tag.size}" href="tiki-browse_freetags.php?tag={$smarty.capture.tagurl|escape:'url'}" onclick="javascript:addTag('{$popular_tag.tag|escape:'javascript'}');return false;" ondblclick="location.href=this.href;"{if $popular_tag.color} style="color:{$popular_tag.color}"{/if}>{$popular_tag.tag}</a> 
 			{/foreach}
 		</div>
 
@@ -72,7 +76,7 @@
 				{if empty($maxPopular)}
 					{assign var=maxPopular value=50+$prefs.freetags_browse_amount_tags_in_cloud}
 				{/if}
-				<a class='more' href="{$smarty.server.PHP_SELF}?{query maxPopular=$maxPopular tagString=$tagString}">{tr}More Popular Tags{/tr}</a>
+				<a href="{$smarty.server.PHP_SELF}?{query maxPopular=$maxPopular tagString=$tagString}">{tr}More Popular Tags{/tr}</a>
 			</div>
 
 			<div class="mini">
@@ -120,8 +124,7 @@
 					{/if}
 				
 					{assign var=thistype value=$objectType|escape:'url'}
-					{capture name="fl"}{tr}{$feature_label}{/tr}{/capture}
-					{button _text="`$smarty.capture.fl`" _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
+					{button _text="{tr}$feature_label{/tr}" _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
 					{assign var=cpt value=$cpt+1}
 				{/if}
 
@@ -146,8 +149,7 @@
 					{/if}
 
 					{assign var=thistype value=$objectType|escape:'url'}
-					{capture name="fl"}{tr}{$feature_label}{/tr}{/capture}
-					{button _text="`$smarty.capture.fl`" _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
+					{button _text="{tr}$feature_label{/tr}" _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
 					{assign var=cpt value=$cpt+1}
 				{/if}
 			{/foreach}
@@ -167,7 +169,7 @@
 		{section name=ix loop=$objects}
 			<div class="{cycle} freetagitemlist" >
 				<h3>
-					<a href="{$objects[ix].href}">{$objects[ix].name|escape}</a>
+					<a href="{$objects[ix].href}">{$objects[ix].name}</a>
 					{if $tiki_p_unassign_freetags eq 'y' or $tiki_p_admin eq 'y'}
 						<a href="tiki-browse_freetags.php?del=1&amp;tag={$tag}{if $type}&amp;type={$type|escape:'url'}{/if}&amp;typeit={$objects[ix].type|escape:'url'}&amp;itemit={$objects[ix].name|escape:'url'}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 					{/if}
@@ -176,7 +178,7 @@
 					{tr}{$objects[ix].type|replace:"wiki page":"Wiki"|replace:"article":"Article"|regex_replace:"/tracker [0-9]*/":"tracker item"}{/tr}
 				</div>
 				<div class="description">
-					{$objects[ix].description|escape}&nbsp;
+					{$objects[ix].description}&nbsp;
 				</div>
 			</div>
 		{/section}

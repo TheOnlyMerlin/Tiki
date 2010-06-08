@@ -1,21 +1,18 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-/**
+/** \file
+ * $Id: /cvsroot/tikiwiki/tiki/lib/debug/debug-command_sql.php,v 1.4 2005-12-12 15:18:49 mose Exp $
+ *
  * \brief Exec SQL query on Tiki DB
+ *
  * \author zaufi <zaufi@sendmail.ru>
+ *
  */
 require_once ('lib/debug/debugger-ext.php');
 
 /**
  * \brief Debugger command to exec SQL
  */
-class DbgSQLQuery extends DebuggerCommand
-{
+class DbgSQLQuery extends DebuggerCommand {
 	/// \b Must have function to announce command name in debugger console
 	function name() {
 		return 'sql';
@@ -111,3 +108,5 @@ class DbgSQLQuery extends DebuggerCommand
 function dbg_command_factory_sql() {
 	return new DbgSQLQuery();
 }
+
+?>

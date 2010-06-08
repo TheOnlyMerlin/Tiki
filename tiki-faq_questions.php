@@ -1,17 +1,31 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-faq_questions.php,v 1.28 2007-10-12 07:55:27 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 $section = 'faqs';
 require_once ('tiki-setup.php');
 
 include_once ('lib/faqs/faqlib.php');
 
-$access->check_feature('feature_faqs');
-$access->check_permission('tiki_p_admin_faqs');
+if ($prefs['feature_faqs'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_faqs");
+
+	$smarty->display("error.tpl");
+	die;
+}
+
+if ($tiki_p_admin_faqs != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (!isset($_REQUEST["faqId"])) {
 	$smarty->assign('msg', tra("No questions group indicated"));
@@ -41,8 +55,13 @@ if ($_REQUEST["questionId"]) {
 // $smarty->assign('question',$info["question"]);  AWC moved this
 // $smarty->assign('answer',$info["answer"]);      AWC moved this
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$faqlib->remove_faq_question($_REQUEST["remove"]);
+  $area = 'delfaqquestion';
+  if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+    key_check($area);
+		$faqlib->remove_faq_question($_REQUEST["remove"]);
+  } else {
+    key_get($area);
+  }
 }
 
 if (!isset($_REQUEST["filter"])) {
@@ -116,6 +135,9 @@ $suggested = $faqlib->list_suggested_questions(0, -1, 'created_desc', '', $_REQU
 $smarty->assign_by_ref('suggested', $suggested["data"]);
 
 include_once("textareasize.php");
+include_once ('lib/quicktags/quicktagslib.php');
+$quicktags = $quicktagslib->list_quicktags(0,20,'taglabel_asc','','faqs');
+$smarty->assign_by_ref('quicktags', $quicktags["data"]);
 include_once ('tiki-section_options.php');
 ask_ticket('faq-questions');
 
@@ -127,3 +149,5 @@ $smarty->assign_by_ref('plugins', $plugins);
 // Display the template
 $smarty->assign('mid', 'tiki-faq_questions.tpl');
 $smarty->display("tiki.tpl");
+
+?>

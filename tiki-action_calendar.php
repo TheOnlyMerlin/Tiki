@@ -1,14 +1,20 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 include 'tiki-setup.php';
 include 'lib/calendar/tikicalendarlib.php';
-$access->check_feature('feature_action_calendar');
-$access->check_permission('tiki_p_view_tiki_calendar');
+
+if ($prefs['feature_action_calendar'] != 'y') {
+  $smarty->assign('msg', tra("This feature is disabled").": feature_action_calendar");
+  $smarty->display("error.tpl");
+  die;
+}
+
+if ($tiki_p_view_tiki_calendar != 'y') {
+  $smarty->assign('errortype', 401);
+  $smarty->assign('msg', tra("Permission denied you cannot view the Tiki calendar"));
+	$smarty->display("error.tpl");
+	die;
+}
 
 $headerlib->add_cssfile('css/calendar.css',20);
 

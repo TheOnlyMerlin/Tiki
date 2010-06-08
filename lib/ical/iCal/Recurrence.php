@@ -43,8 +43,7 @@
  * @license     http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
  *
  */
-class File_iCal_Recurrence
-{
+class File_iCal_Recurrence {
     protected $_frequency;
     protected $_count, $_until;
     protected $_interval;
@@ -175,10 +174,12 @@ class File_iCal_Recurrence
         if (ctype_digit($i)) {
             if ($i > 0) {
                 $this->_interval = $i;
-            } else {
+            }
+            else {
                 trigger_error("Count must not be 0", E_USER_WARNING);
             }
-        } else {
+        }
+        else {
             //generate a notice because interval is defined by the constructor
             trigger_error("Interval must be an integer", E_USER_NOTICE);
         }
@@ -384,3 +385,7 @@ class File_iCal_Recurrence
 
 
 }
+
+
+
+?>

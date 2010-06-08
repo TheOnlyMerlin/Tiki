@@ -1,10 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/show_image.php,v 1.34.2.1 2007-12-07 05:56:37 mose Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-  
+
 if (!isset($_REQUEST["nocache"]))
 	session_cache_limiter ('private_no_expire');
 
@@ -41,9 +42,43 @@ if (!$id) {
 }
 
 $galleryId = $imagegallib->get_gallery_from_image($id);
-$galperms = Perms::get( array( 'type' => 'image gallery', 'object' => $galleryId ) );
 
-if ( ! $galperms->view_image_gallery ) {
+if ($userlib->object_has_one_permission($galleryId, 'image gallery')) {
+	if ($tiki_p_admin != 'y') {
+		// Now get all the permissions that are set for this type of permissions 'image gallery'
+		$perms = $userlib->get_permissions(0, -1, 'permName_desc', '', 'image galleries');
+
+		foreach ($perms["data"] as $perm) {
+			$permName = $perm["permName"];
+
+			if ($userlib->object_has_permission($user, $galleryId, 'image gallery', $permName)) {
+				$$permName = 'y';
+			} else {
+				$$permName = 'n';
+			}
+		}
+	}
+} elseif ($tiki_p_admin != 'y' && $prefs['feature_categories'] == 'y') {
+	global $categlib;
+	if (!is_object($categlib)) {
+		include_once('lib/categories/categlib.php');
+	}
+	$perms_array = $categlib->get_object_categories_perms($user, 'image gallery', $galleryId);
+   	if ($perms_array) {
+   		$is_categorized = TRUE;
+    	foreach ($perms_array as $perm => $value) {
+    		$$perm = $value;
+    	}
+   	} else {
+   		$is_categorized = FALSE;
+   	}
+	if ($is_categorized && isset($tiki_p_view_categorized) && $tiki_p_view_categorized != 'y') {
+        header("HTTP/1.0 404 Not Found");
+        die;
+	}
+}
+
+if ($tiki_p_view_image_gallery != 'y' && $tiki_p_admin_galleries != 'y') {
     header("HTTP/1.0 404 Not Found");
     die;
 }
@@ -96,6 +131,8 @@ if ((!isset($_REQUEST["thumb"])) && (!isset($_REQUEST["nocount"]))) {
 
 $type = $imagegallib->filetype;
 
+//echo"<pre>";print_r(get_defined_vars());echo"</pre>";
+
 // close the session for speedup
 session_write_close();
 
@@ -116,3 +153,5 @@ header ("Content-Disposition: inline; filename=\"" . $imagegallib->filename.'"')
 //} else {
 echo $imagegallib->image;
 //}
+// ????? echo $data;
+?>

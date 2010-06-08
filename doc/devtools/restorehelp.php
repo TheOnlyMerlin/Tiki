@@ -1,10 +1,5 @@
 #!/usr/bin/php4 
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 include_once("lib/init/initlib.php");
 require_once("db/tiki-db.php");
@@ -14,12 +9,12 @@ require_once("lib/structures/structlib.php");
 
 function tra($s) { return $s; }
 
-$tikilib = new TikiLib;
+$tikilib = new TikiLib($dbTiki);
 
 $categId = '113';
 $structId = '160';
 
-$pages = explode("\n",`grep -r '{\$helpurl}' templates | sed -e "s/^.*helpurl}\([^\"']*\)[\"'].*$/\\1/" | sort | uniq`);
+$pages = split("\n",`grep -r '{\$helpurl}' templates | sed -e "s/^.*helpurl}\([^\"']*\)[\"'].*$/\\1/" | sort | uniq`);
 $afterid = NULL;
 foreach ($pages as $p) {
 	if ($p) {
@@ -45,3 +40,4 @@ foreach ($pages as $p) {
 		echo "\n";
 	}
 }
+?>

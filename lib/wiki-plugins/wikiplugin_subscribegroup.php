@@ -1,10 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/lib/wiki-plugins/wikiplugin_subscribegroup.php,v 1.1.2.8 2007-12-25 14:42:01 sylvieg Exp $
 // Display wiki text if user is in one of listed groups
 // Usage:
 // {GROUP(groups=>Admins|Developers)}wiki text{GROUP}
@@ -21,7 +16,6 @@ function wikiplugin_subscribegroup_info() {
 		'documentation' => 'PluginSubscribeGroup',		
 		'description' => tra('Subscribe or unsubscribe to a group'),
 		'prefs' => array( 'wikiplugin_subscribegroup' ),
-		'body' => tra('text displyed before the button'),
 		'params' => array(
 			'group' => array(
 				'required' => true,
@@ -54,8 +48,6 @@ function wikiplugin_subscribegroup_info() {
 
 function wikiplugin_subscribegroup($data, $params) {
 	global $tiki_p_subscribe_groups, $userlib, $user, $smarty;
-	static $iSubscribeGroup = 0;
-	++$iSubscribeGroup;
 	if (empty($user)) {
 		return '';
 	}
@@ -83,7 +75,7 @@ function wikiplugin_subscribegroup($data, $params) {
 
 	$groups = $userlib->get_user_groups_inclusion($user);
 
-	if (!empty($_REQUEST['subscribeGroup']) && !empty($_REQUEST['iSubscribeGroup']) && $_REQUEST['iSubscribeGroup'] == $iSubscribeGroup && $_REQUEST['group'] == $group) {
+	if (!empty($_REQUEST['subscribeGroup']) && $_REQUEST['group'] == $group) {
 		if (isset($groups[$group])) {
 			$userlib->remove_user_from_group($user, $group);
 			unset($groups[$group]);
@@ -111,7 +103,6 @@ function wikiplugin_subscribegroup($data, $params) {
 	}
 	$smarty->assign('text', sprintf(tra($text), $group));
 	$smarty->assign('subscribeGroup', $group);
-	$smarty->assign('iSubscribeGroup', $iSubscribeGroup);
-	$data = $data.$smarty->fetch('wiki-plugins/wikiplugin_subscribegroup.tpl');
+	$data = $smarty->fetch('wiki-plugins/wikiplugin_subscribegroup.tpl');
 	return $data;
 }

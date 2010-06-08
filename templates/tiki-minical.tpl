@@ -1,6 +1,12 @@
 {title help="User+Calendar" url="tiki-minical.php?view=$view"}{tr}Mini Calendar{/tr}{/title}
 
-{include file='tiki-mytiki_bar.tpl'}
+{if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
+  {include file=tiki-mytiki_bar.tpl}
+{/if}
+
+{if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
+	{include file=tiki-mytiki_bar.tpl}
+{/if}
 
 <div class="navbar">
 	{button href="tiki-minical.php#add" _text="{tr}Add{/tr} "}
@@ -70,7 +76,7 @@
 			{/if}
     	{/if}
     	
-    	<a title="{$slots[ix].events[jj].start|tiki_short_time}-{$slots[ix].events[jj].end|tiki_short_time}:{$slots[ix].events[jj].description}" class="link" href="tiki-minical.php?view={$view}&amp;eventId={$slots[ix].events[jj].eventId}#add">{$slots[ix].events[jj].title|escape}</a>
+    	<a title="{$slots[ix].events[jj].start|tiki_short_time}-{$slots[ix].events[jj].end|tiki_short_time}:{$slots[ix].events[jj].description}" class="link" href="tiki-minical.php?view={$view}&amp;eventId={$slots[ix].events[jj].eventId}#add">{$slots[ix].events[jj].title}</a>
     	<a class="link" href="tiki-minical.php?view={$view}&amp;remove={$slots[ix].events[jj].eventId}">{icon _id='cross' alt='{tr}Remove{/tr}' style="vertical-align:middle;"}</a>
     	<br />
     	{/section}
@@ -164,7 +170,7 @@
 
 {/if}
 <a name="add"></a>
-<h2>{if $eventId}{tr}Edit Event{/tr}{else}{tr}Add Event{/tr}{/if}</h2>
+<h2>{if $eventId}{tr}Edit event{/tr}{else}{tr}Add event{/tr}{/if}</h2>
 <form action="tiki-minical.php" method="post">
 <input type="hidden" name="eventId" value="{$eventId|escape}" />
 <input type="hidden" name="view" value="{$view|escape}" />

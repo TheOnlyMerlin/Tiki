@@ -37,3 +37,4 @@ class OOoMime extends ErrorManager {
 	}
 
 }	
+?>

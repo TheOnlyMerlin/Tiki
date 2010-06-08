@@ -1,13 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-/**
+/** \file
+ * $Id: /cvsroot/tikiwiki/tiki/lib/debug/debugger-common.php,v 1.3 2003-08-07 04:34:03 rossta Exp $
+ *
  * \brief Commonly used stuff
+ *
  * \author zaufi <zaufi@sendmail.ru>
+ *
  */
 
 /// Result not available
@@ -23,8 +21,7 @@ define('TPL_RESULT', 3);
 /**
  * \brief Every command and debugger itself have a result type.
  */
-class ResultType
-{
+class ResultType {
 	/// Type of result (see consts defined above)
 	var $result_type;
 
@@ -32,40 +29,36 @@ class ResultType
 	var $result_tpl;
 
 	/// Constructor init all
-	function ResultType()
-	{
+	function ResultType() {
 		$this->reset();
 	}
 
 	/// Init all vars to default state
-	function reset()
-	{
+	function reset() {
 		$this->result_tpl = '';
 
 		$this->result_type = NO_RESULT;
 	}
 
 	/// Accessor for result_type
-	function result_type()
-	{
+	function result_type() {
 		return $this->result_type;
 	}
 
-	function set_result_type($type)
-	{
+	function set_result_type($type) {
 		$this->result_tpl = '';
 
 		$this->result_type = ($type == TEXT_RESULT || $type == HTML_RESULT || $type == TPL_RESULT) ? $type : NO_RESULT;
 	}
 
 	/// Accessor for result_tpl
-	function result_tpl()
-	{
+	function result_tpl() {
 		return $this->result_tpl;
 	}
 
-	function set_result_tpl($tpl)
-	{
+	function set_result_tpl($tpl) {
 		$this->result_tpl = $tpl;
 	}
 }
+
+?>

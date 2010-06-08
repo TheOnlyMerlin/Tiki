@@ -1,7 +1,7 @@
 {* $Id$ *}
 
 {title help="forums" admpage="forums"}
-  {tr}Forum:{/tr}&nbsp;{$forum_info.name|escape}
+  {tr}Forum:{/tr}&nbsp;{$forum_info.name}
   {if $prefs.feature_forum_topics_archiving eq 'y' && $thread_info.archived eq 'y'}<em>({tr}Archived{/tr})</em>{/if}
 {/title}
 
@@ -23,7 +23,7 @@
 	<br />
 {/if}
 
-<a class="link" href="tiki-forums.php">{tr}Forums{/tr}</a> {$prefs.site_crumb_seper} <a class="link" href="tiki-view_forum.php?forumId={$forumId}">{$forum_info.name|escape}</a>{if $thread_info.topic.threadId} {$prefs.site_crumb_seper} <a class="link" href="tiki-view_forum_thread.php?topics_offset={$smarty.request.topics_offset}{$topics_sort_mode_param}{$topics_threshold_param}{$topics_find_param}&amp;forumId={$forumId}&amp;comments_parentId={$thread_info.topic.threadId}">{$thread_info.topic.title}</a>{/if} {$prefs.site_crumb_seper} <a class="link" href="tiki-view_forum_thread.php?topics_offset={$smarty.request.topics_offset}{$topics_sort_mode_param}{$topics_threshold_param}{$topics_find_param}&amp;forumId={$forumId}&amp;comments_parentId={$smarty.request.comments_parentId}">{$thread_info.title|escape}</a>
+<a class="link" href="tiki-forums.php">{tr}Forums{/tr}</a> {$prefs.site_crumb_seper} <a class="link" href="tiki-view_forum.php?forumId={$forumId}">{$forum_info.name}</a>{if $thread_info.topic.threadId} {$prefs.site_crumb_seper} <a class="link" href="tiki-view_forum_thread.php?topics_offset={$smarty.request.topics_offset}{$topics_sort_mode_param}{$topics_threshold_param}{$topics_find_param}&amp;forumId={$forumId}&amp;comments_parentId={$thread_info.topic.threadId}">{$thread_info.topic.title}</a>{/if} {$prefs.site_crumb_seper} <a class="link" href="tiki-view_forum_thread.php?topics_offset={$smarty.request.topics_offset}{$topics_sort_mode_param}{$topics_threshold_param}{$topics_find_param}&amp;forumId={$forumId}&amp;comments_parentId={$smarty.request.comments_parentId}">{$thread_info.title}</a>
 
 <div style="text-align: right; margin-bottom: 15px;">
 	<span>
@@ -62,13 +62,13 @@
 
 <div class="top_post">
   {if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y' and isset($freetags.data[0]) and $prefs.freetags_show_middle eq 'y'}
-    {include file='freetag_list.tpl'}
+    {include file="freetag_list.tpl"}
   {/if}
 
-  {include file='comment.tpl' first='y' comment=$thread_info thread_style='commentStyle_plain'}
+  {include file="comment.tpl" first='y' comment=$thread_info thread_style='commentStyle_plain'}
 </div>
 
-{include file='comments.tpl'}
+{include file="comments.tpl"}
 
 <table id="forumjumpto" style="clear:both;" ><tr>
 
@@ -112,26 +112,4 @@
 		</td>
 </tr></table>
 
-{if $view_atts eq 'y'}
-<h2 id="attachments">{tr}Attachments{/tr}</h2>
-<table class="normal">
-	<tr>
-		<th>{tr}Type{/tr}</th>
-		<th>{tr}Filename{/tr}</th>
-		<th>{tr}Size{/tr}</th>
-		<th>{tr}Created{/tr}</th>
-		<th>{tr}Action{/tr}</th>
-	</tr>
-	{cycle values="odd,even" print=false}
-	{foreach from=$atts.data item=att}
-	<tr class="{cycle}">
-		<td>{$att.filename|iconify}</td>
-		<td><a href="tiki-download_forum_attachment.php?attId={$att.attId}" title="{tr}Download{/tr}">{$att.filename|escape}</a></td>
-		<td>{$att.filesize|kbsize}</td>
-		<td>{$att.created|tiki_short_datetime}</td>
-		<td><a href="tiki-download_forum_attachment.php?attId={$att.attId}" title="{tr}Download{/tr}">{icon _id='disk' alt='{tr}Download{/tr}'}</a></td>
-	</tr>
-	{/foreach} 
-</table>
-{pagination_links cant=$atts.cant offset=$atts.offset offset_arg='fa_offset' step=$atts.maxRecords _anchor='attachments'}{/pagination_links}
-{/if}
+{if $prefs.feature_forum_parse == 'y'}{include file=tiki-edit_help.tpl}{/if}

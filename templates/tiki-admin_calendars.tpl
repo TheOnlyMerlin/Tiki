@@ -1,22 +1,26 @@
 {if !empty($calendarId)}
-	{title help=Calendar url="tiki-admin_calendars.php?calendarId=$calendarId" admpage="calendar"}{tr}Admin Calendars{/tr}{/title}
+	{title url="tiki-admin_calendars.php?calendarId=$calendarId" admpage="calendar"}{tr}Admin Calendars{/tr}{/title}
 {else}
-	{title help=Calendar url="tiki-admin_calendars.php" admpage="calendar"}{tr}Admin Calendars{/tr}{/title}
+	{title url="tiki-admin_calendars.php" admpage="calendar"}{tr}Admin Calendars{/tr}{/title}
 {/if}
-
 <div class="navbar">
 {if !empty($calendarId)}
 	{button _text="{tr}Create Calendar{/tr}" href="tiki-admin_calendars.php?show=mod"}
 {/if}
 {button _text="{tr}View Calendars{/tr}" href="tiki-calendar.php"}
-{button _text="{tr}Import{/tr}" href="tiki-calendar_import.php"}
 </div>
 
-{tabset name='tabs_admin_calendars'}
+{if $prefs.feature_tabs eq 'y'}
+	{cycle name=tabs values="1,2,3" print=false advance=false reset=true}
+	<div class="tabs">
+		 <span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark"><a href="javascript:tikitabs({cycle name=tabs},3);">{tr}List of Calendars{/tr}</a></span>
+		 <span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark"><a href="javascript:tikitabs({cycle name=tabs},3);">{if $calendarId}{tr}Edit Calendar{/tr}{else}{tr}Create Calendar{/tr}{/if}</a></span>
+	</div>
+{/if}
 
-{tab name="{tr}List of Calendars{/tr}"}
+{cycle name=content values="1,2,3" print=false advance=false reset=true}
 {* --- tab with list --- *}
-
+<div id="content{cycle name=content assign=focustab}{$focustab}"{if $prefs.feature_tabs eq 'y'} class="tabcontent" style="display:{if $focustab eq $cookietab}block{else}none{/if};"{/if}>
 <h2>{tr}List of Calendars{/tr}</h2>
 {if count($calendars) gt 0}
 {include file='find.tpl'}
@@ -57,7 +61,7 @@
 <td>
 	<a title="{tr}Edit{/tr}" class="link" href="tiki-admin_calendars.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;calendarId={$id}">{icon _id='page_edit'}</a>
 	<a title="{tr}View Calendar{/tr}" class="link" href="tiki-calendar.php?calIds[]={$id}">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>
-	<a title="{tr}Delete{/tr}" class="link" href="tiki-admin_calendars.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;drop={$id}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
+	<a title="{tr}Delete{/tr}" class="link" href="tiki-admin_calendars.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;drop={$id}" title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 	<a title="{tr}Add Event{/tr}" class="link" href="tiki-calendar_edit_item.php?calendarId={$id}">{icon _id='add' alt="{tr}Add Event{/tr}"}</a>
 </td>
 </tr>
@@ -69,18 +73,17 @@
 {else}
 <b>{tr}No records found{/tr}</b>
 {/if}
-{/tab}
+</div>
 
-{tab name="{tr}Create / Edit Calendar{/tr}"}
 {* --- tab with form --- *}
-
+<div id="content{cycle name=content assign=focustab}{$focustab}"{if $prefs.feature_tabs eq 'y'} class="tabcontent" style="display:{if $focustab eq $cookietab}block{else}none{/if};{/if}">
 <h2>{tr}Create/Edit Calendars{/tr}</h2>
 
 <form action="tiki-admin_calendars.php" method="post">
 <input type="hidden" name="calendarId" value="{$calendarId|escape}" />
 <table class="normal">
-{if $tiki_p_modify_object_categories eq 'y'}
-{include file='categorize.tpl'}
+{if $tiki_p_view_categories eq 'y'}
+{include file=categorize.tpl}
 {/if}
 <tr class="formcolor"><td>{tr}Name{/tr}:</td><td><input type="text" name="name" value="{$name|escape}" />
 {tr}Show in popup box{/tr}
@@ -157,11 +160,6 @@
 <tr class="formcolor"><td>{tr}End of day{/tr}:</td><td>
 <select name="endday_Hour">{foreach item=h from=$hours}<option value="{$h}"{if $h eq $endday} selected="selected"{/if}>{$h}</option>{/foreach}</select>{tr}h{/tr}
 </td></tr>
-<tr class="formcolor"><td>{tr}Days to display{/tr}:</td><td>
-{section name="viewdays" start=0 loop=7}
-{$days_names[$smarty.section.viewdays.index]}&nbsp;<input type="checkbox" name="viewdays[]" value="{$smarty.section.viewdays.index}" {if !empty($info.viewdays) &&  in_array($smarty.section.viewdays.index,$info.viewdays)} checked="checked" {/if} />
-{/section}
-</td></tr>
 <tr class="formcolor"><td>{tr}Standard Colors{/tr}:</td><td>
 	<select name="options[customcolors]" onChange="javascript:document.getElementById('fgColorField').disabled=(this.options[this.selectedIndex].value != 0);document.getElementById('bgColorField').disabled=(this.options[this.selectedIndex].value != 0);">
 	  <option value="" />
@@ -197,7 +195,7 @@
 <select id="groupforAlert" name="groupforAlert">
 <option value="">&nbsp;</option>
 {foreach key=k item=i from=$groupforAlertList}
-<option value="{$k|escape}" {$i}>{$k|escape}</option>
+<option value="{$k}" {$i}>{$k}</option>
 {/foreach}
 </select></td>
 </tr>
@@ -209,8 +207,8 @@
 <tr class="formcolor"><td>&nbsp;</td><td><input type="submit" name="save" value="{tr}Save{/tr}" /></td></tr>
 </table>
 <br />
-{if $calendarId}{$name|escape} : {/if}
+{if $calendarId}{$name} : {/if}
 {tr}Delete events older than:{/tr} <input type="text" name="days" value="0"/> {tr}days{/tr} <input type="submit" name="clean" value="{tr}Delete{/tr}" />
 </form>
-{/tab}
-{/tabset}
+
+</div>

@@ -3,11 +3,8 @@
 	{if !empty($confirmation_text)}
 		<div class="cbox-title">{icon _id=information style="vertical-align:middle"} {$confirmation_text}</div>
 	{/if}
-	{if !empty($confirm_detail)}
-		{$confirm_detail}
-	{/if}
 	<br />
-	<div class="cbox-data">
+	<div class="cbox-title">
 		<form name='confirm' action="{$confirmaction|escape}" method="post">
 			{query _type='form_input' _keepall='y' ticket=$ticket daconfirm='y'}
 			{button href="#" _onclick="javascript:document.forms['confirm'].submit();return false;" _text="{tr}Click here to confirm your action{/tr}"}

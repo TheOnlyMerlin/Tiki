@@ -1,15 +1,18 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+// $Id: /cvsroot/tikiwiki/tiki/tiki-calendar_edit_item.php,v 1.21.2.4 2008-01-17 15:53:26 tombombadilom Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 $section = 'calendar';
 require_once ('tiki-setup.php');
 
-$access->check_feature('feature_calendar');
-
+if ($prefs['feature_calendar'] != 'y') {
+  $smarty->assign('msg', tra("This feature is disabled").": feature_calendar");
+  $smarty->display("error.tpl");
+  die;
+}
 include_once ('lib/calendar/calendarlib.php');
 include_once ('lib/newsletters/nllib.php');
 include_once ('lib/calendar/calrecurrence.php');
@@ -19,6 +22,23 @@ if ($prefs['feature_groupalert'] == 'y') {
 if ($prefs['feature_ajax'] == "y") {
 	require_once ('lib/ajax/ajaxlib.php');
 }
+/*
+if (isset($_REQUEST['calendarId']) and $userlib->object_has_one_permission($_REQUEST['calendarId'],'calendar')) {
+  if ($tiki_p_admin != 'y') {
+    $perms = $userlib->get_permissions(0, -1, 'permName_desc', '', 'calendar');
+    foreach ($perms["data"] as $perm) {
+      $permName = $perm["permName"];
+      if ($userlib->object_has_permission($user, $calendarId, 'calendar', $permName)) {
+        $$permName = 'y';
+        $smarty->assign("$permName", 'y');
+      } else {
+        $$permName = 'n';
+        $smarty->assign("$permName", 'n');
+      }
+    }
+  }
+}
+*/
 
 $daysnames = array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Satursday");
 $daysnames_abr = array("Su","Mo","Tu","We","Th","Fr","Sa");
@@ -31,6 +51,17 @@ $smarty->assign('edit',false);
 $smarty->assign('recurrent', '');
 $hours_minmax = '';
 
+if ($tiki_p_admin_calendar == 'y') {
+  $tiki_p_add_events = 'y';
+  $smarty->assign('tiki_p_add_events','y');
+  $tiki_p_change_events = 'y';
+  $smarty->assign('tiki_p_change_events','y');
+  $tiki_p_view_events = 'y';
+  $smarty->assign('tiki_p_view_events','y');
+  $tiki_p_view_calendar = 'y';
+  $smarty->assign('tiki_p_view_calendar','y');
+}
+
 $caladd = array();
 $rawcals = $calendarlib->list_calendars();
 if ($rawcals['cant'] == 0 && $tiki_p_admin_calendar == 'y') {
@@ -38,34 +69,63 @@ if ($rawcals['cant'] == 0 && $tiki_p_admin_calendar == 'y') {
 	$smarty->display("error.tpl");
 	die;
 }
-
-$rawcals['data'] = Perms::filter( array( 'type' => 'calendar' ), 'object', $rawcals['data'], array( 'object' => 'calendarId' ), 'view_calendar' );
-
-foreach ($rawcals["data"] as $cal_data) {
-  $cal_id = $cal_data['calendarId'];
-  $calperms = Perms::get( array( 'type' => 'calendar', 'object' => $cal_id ) );
-  if ($cal_data["personal"] == "y") {
-    if ($user && $user == $cal_data["user"]) {
+foreach ($rawcals["data"] as $cal_id=>$cal_data) {
+  if ($tiki_p_admin == 'y') {
+    $cal_data["tiki_p_view_calendar"] = 'y';
+    $cal_data["tiki_p_view_events"] = 'y';
+    $cal_data["tiki_p_add_events"] = 'y';
+    $cal_data["tiki_p_change_events"] = 'y';
+  } elseif ($cal_data["personal"] == "y") {
+    if ($user) {
       $cal_data["tiki_p_view_calendar"] = 'y';
     	$cal_data["tiki_p_view_events"] = 'y';
       $cal_data["tiki_p_add_events"] = 'y';
       $cal_data["tiki_p_change_events"] = 'y';
     } else {
       $cal_data["tiki_p_view_calendar"] = 'n';
-    	$cal_data["tiki_p_view_events"] = 'n';
+    	$cal_data["tiki_p_view_events"] = 'y';
       $cal_data["tiki_p_add_events"] = 'n';
       $cal_data["tiki_p_change_events"] = 'n';
     }
   } else {
-      $cal_data["tiki_p_view_calendar"] = $calperms->view_calendar ? "y" : "n";
-      $cal_data["tiki_p_view_events"] = $calperms->view_events ? "y" : "n";
-      $cal_data["tiki_p_add_events"] = $calperms->add_events ? "y" : "n";
-      $cal_data["tiki_p_change_events"] = $calperms->change_events ? "y" : "n";
+    if ($userlib->object_has_one_permission($cal_id,'calendar')) {
+      if ($userlib->object_has_permission($user, $cal_id, 'calendar', 'tiki_p_admin_calendar')) {
+        $cal_data["tiki_p_view_calendar"] = 'y';
+        $cal_data["tiki_p_add_events"] = 'y';
+        $cal_data["tiki_p_change_events"] = 'y';
+      } else {
+				if ($userlib->object_has_permission($user, $cal_id, 'calendar', 'tiki_p_view_calendar')) {
+					$cal_data["tiki_p_view_calendar"] = 'y';
+				} else {
+					$cal_data["tiki_p_view_calendar"] = 'n';
+				}
+				if ($userlib->object_has_permission($user, $cal_id, 'calendar', 'tiki_p_view_events')) {
+					$cal_data["tiki_p_view_events"] = 'y';
+				} else {
+					$cal_data["tiki_p_view_events"] = 'n';
+				}
+				if ($userlib->object_has_permission($user, $cal_id, 'calendar', 'tiki_p_add_events')) {
+					$cal_data["tiki_p_add_events"] = 'y';
+					$tiki_p_add_events = "y";
+					$smarty->assign("tiki_p_add_events", "y");
+				} else {
+					$cal_data["tiki_p_add_events"] = 'n';
+				}
+				if ($userlib->object_has_permission($user, $cal_id, 'calendar', 'tiki_p_change_events')) {
+					$cal_data["tiki_p_change_events"] = 'y';
+				} else {
+					$cal_data["tiki_p_change_events"] = 'n';
+				}
+				$smarty->assign("tiki_p_change_events", $cal_data["tiki_p_change_events"] );
+			}
+    } else {
+      $cal_data["tiki_p_view_calendar"] = $tiki_p_view_calendar;
+      $cal_data["tiki_p_view_events"] = $tiki_p_view_events;
+      $cal_data["tiki_p_add_events"] = $tiki_p_add_events;
+      $cal_data["tiki_p_change_events"] = $tiki_p_change_events;
+    }
   }
 	$caladd["$cal_id"] = $cal_data;
-	if ($cal_data['tiki_p_add_events'] == 'y' && empty($calID)) {
-		$calID = $cal_id;
-	}
 }
 $smarty->assign('listcals',$caladd);
 
@@ -78,7 +138,11 @@ if ( ! isset($_REQUEST["calendarId"]) ) {
 } elseif (isset($_REQUEST['calendarId'])) {
 	$calID = $_REQUEST['calendarId'];
 } elseif (isset($_REQUEST['save']) && isset($_REQUEST['save']['calendarId'])) {
-	$calID = $_REQUEST['save']['calendarId'];
+	$calId = $_REQUEST['save']['calendarId'];
+}
+if (!isset($calID) and count($caladd)) {
+	$keys = array_keys($caladd);
+	$calID = array_shift($keys);
 }
 
 if ($prefs['feature_groupalert'] == 'y' && !empty($calID) ) {
@@ -93,18 +157,21 @@ if ($prefs['feature_groupalert'] == 'y' && !empty($calID) ) {
 	$smarty->assign_by_ref('showeachuser',$showeachuser);
 }
 
-$tikilib->get_perm_object( $calID, 'calendar' );
-$calendar = $calendarlib->get_calendar($calID);
-if ($calendar['personal'] == 'y') {
-	$ownCal = ($user && $user == $calendar["user"]) ? 'y' : 'n';
-	$tiki_p_view_calendar = $ownCal;
-	$tiki_p_view_events = $ownCal;
-	$tiki_p_add_events = $ownCal;
-	$tiki_p_change_events = $ownCal;
+if ($prefs['feature_categories'] == 'y') {
+  global $categlib; include_once ('lib/categories/categlib.php');
+  $perms_array = $categlib->get_object_categories_perms($user, 'calendar', $calID);
+  if ($perms_array) {
+    foreach ($perms_array as $p=>$v) {
+      $$p = $v;
+    }
+    if (isset($tiki_p_view_categorized) && $tiki_p_view_categorized != 'y') {
+		$smarty->assign('errortype', 401);
+      $smarty->assign('msg',tra("Permission denied you cannot view this page"));
+      $smarty->display("error.tpl");
+      die;
+    }
+  }
 }
-
-$access->check_permission('tiki_p_view_calendar');
-
 if (isset($_REQUEST['save']) && !isset($_REQUEST['preview']) && !isset($_REQUEST['act'])) {
 	$_REQUEST['changeCal'] = 'y';
 }
@@ -148,9 +215,6 @@ if (isset($_REQUEST['act']) || isset($_REQUEST['preview']) || isset($_REQUEST['c
 			$save['duration'] = max(0, $save['end'] - $save['start']);
 		}
 	} else {
-		if (!empty($_REQUEST['start_Meridian']) && $_REQUEST['start_Meridian'] == 'pm') {
-			$_REQUEST['start_Hour'] += 12;
-		}
 		$save['start'] = TikiLib::make_time(
 			$_REQUEST['start_Hour'],
 			$_REQUEST['start_Minute'],
@@ -164,9 +228,6 @@ if (isset($_REQUEST['act']) || isset($_REQUEST['preview']) || isset($_REQUEST['c
 			$save['duration'] = max(0, $_REQUEST['duration_Hour']*60*60 + $_REQUEST['duration_Minute']*60);
 			$save['end'] = $save['start'] + $save['duration'];
 		} else {
-			if (!empty($_REQUEST['end_Meridian']) && $_REQUEST['end_Meridian'] == 'pm') {
-				$_REQUEST['end_Hour'] += 12;
-			}
 			$save['end'] = TikiLib::make_time(
 				$_REQUEST['end_Hour'],
 				$_REQUEST['end_Minute'],
@@ -196,10 +257,11 @@ if (isset($_POST['act'])) {
 	}
 	if (empty($save['user'])) $save['user'] = $user;
 	$newcalid = $save['calendarId'];
-	if ((empty($save['calitemId']) and $caladd["$newcalid"]['tiki_p_add_events'] == 'y')
-	or (!empty($save['calitemId']) and $caladd["$newcalid"]['tiki_p_change_events'] == 'y')) {
+
+	if ((empty($save['calitemId']) and $caladd["$newcalid"]['tiki_p_add_events'])
+	or (!empty($save['calitemId']) and $caladd["$newcalid"]['tiki_p_change_events'])) {
 		if (empty($save['name'])) $save['name'] = tra("event without name");
-		if (empty($save['priority'])) $save['priority'] = 1;
+		if (empty($save['priority'])) $save['priority'] = 0;
 		if (empty($save['status'])) {
 			if (empty($calendar['defaulteventstatus'])) {
 				$save['status'] = 1; // Confirmed
@@ -207,7 +269,7 @@ if (isset($_POST['act'])) {
 				$save['status'] = $calendar['defaulteventstatus'];
 			}
 		}
-		
+
 		if (array_key_exists('recurrent',$_POST) && ($_POST['recurrent'] == 1) && $_POST['affect']!='event') {
 			$impossibleDates = false;
 			if ($_POST['end_Hour'] < $_POST['start_Hour']) {
@@ -283,27 +345,34 @@ if (isset($_POST['act'])) {
 					if (empty($user) && !empty($save['calitemId']) and $caladd["$newcalid"]['tiki_p_change_events']) { 
 						$logslib->add_log('calendar','Calendar item '.$calitemId.' changed in calendar '.$save['calendarId']);
 					}
-            if ($prefs['feature_groupalert'] == 'y') {
-              $groupalertlib->Notify($_REQUEST['listtoalert'],"tiki-calendar_edit_item.php?viewcalitemId=".$calitemId);
-            }
-            header('Location: tiki-calendar.php?todate='.$save['start']);
-            die;
 			}
+
+			if ($prefs['feature_groupalert'] == 'y') {
+				$groupalertlib->Notify($_REQUEST['listtoalert'],"tiki-calendar_edit_item.php?viewcalitemId=".$calitemId);
+			}
+
+			header('Location: tiki-calendar.php?todate='.$save['start']);
+			die;
 		}
 	}
 }
 
 if (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["calitemId"]) and $tiki_p_change_events == 'y') {
 	// There is no check for valid antibot code if anonymous allowed to delete events since this comes from a JS button at the tpl and bots are not know to use JS
-	$access->check_authenticity();
+  $area = 'delcalevent';
+  if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+    key_check($area);
 	$calitem = $calendarlib->get_item($_REQUEST['calitemId']);
-	$calendarlib->drop_item($user, $_REQUEST["calitemId"]);
+    $calendarlib->drop_item($user, $_REQUEST["calitemId"]);
 	if (empty($user)) { 
 		$logslib->add_log('calendar','Calendar item '.$_REQUEST['calitemId'].' deleted');
 	}
-	$_REQUEST["calitemId"] = 0;
-	header('Location: tiki-calendar.php?todate='.$calitem['start']);
-	exit;
+    $_REQUEST["calitemId"] = 0;
+		header('Location: tiki-calendar.php?todate='.$calitem['start']);
+		die;
+  } else {
+    key_get($area);
+  }
 } elseif (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["recurrenceId"]) and $tiki_p_change_events == 'y') {
 	// There is no check for valid antibot code if anonymous allowed to delete events since this comes from a JS button at the tpl and bots are not know to use JS
 	$calRec = new CalRecurrence($_REQUEST['recurrenceId']);
@@ -348,7 +417,7 @@ if (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["ca
 		$calendar = $calendarlib->get_calendar($calitem['calendarId']);
   }
 	$smarty->assign('edit',true);
-	$hour_minmax = ceil(($calendar['startday']-1)/(60*60)).'-'. ceil(($calendar['endday'])/(60*60));
+	$hour_minmax = floor(($calendar['startday']-1)/(60*60)).'-'. ceil(($calendar['endday'])/(60*60));
 } elseif (isset($_REQUEST['preview']) || $impossibleDates) {
 	$save['parsed'] = $tikilib->parse_data($save['description']);
 	$save['parsedName'] = $tikilib->parse_data($save['name']);
@@ -418,7 +487,7 @@ if (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["ca
 		);
 	$id = 0;
 	$smarty->assign('edit',true);
-	$hour_minmax = ceil(($calendar['startday']-1)/(60*60)).'-'. ceil(($calendar['endday'])/(60*60));
+	$hour_minmax = floor(($calendar['startday']-1)/(60*60)).'-'. ceil(($calendar['endday'])/(60*60));
 } else {
   $smarty->assign('errortype', 401);
   $smarty->assign('msg', tra("Permission denied you can not view this page"));
@@ -471,6 +540,9 @@ if ($prefs['feature_theme_control'] == 'y') {
 
 $headerlib->add_cssfile('css/calendar.css',20);
 
+include_once ('lib/quicktags/quicktagslib.php');
+$quicktags = $quicktagslib->list_quicktags(0,-1,'taglabel_asc','','wiki');
+$smarty->assign_by_ref('quicktags', $quicktags["data"]);
 include_once("textareasize.php");
 
 $smarty->assign('referer', empty($_SERVER['HTTP_REFERER']) ? 'tiki-calendar.php' : $_SERVER['HTTP_REFERER']);
@@ -481,23 +553,6 @@ if ($calitem['recurrenceId'] > 0) {
 	$cr = new CalRecurrence($calitem['recurrenceId']);
 	$smarty->assign('recurrence',$cr->toArray());
 }
-$headerlib->add_js('
-function checkDateOfYear(day,month) {
-	var mName = new Array("-","'.tra('January').'","'.tra('February').'","'.tra('March').'","'.tra('April').'","'.tra('May').'","'.tra('June').'","'.tra('July').'","'.tra('August').'","'.tra('September').'","'.tra('October').'","'.tra('November').'","'.tra('December').'}");
-	var error = false;
-	if (month == 4 || month == 6 || month == 9 || month == 11)
-		if (day == 31)
-			error = true;
-	if (month == 2)
-		if (day > 29)
-			error = true;
-	if (error) {
-		document.getElementById("errorDateOfYear").innerHTML = "<em>'.tra('There\'s no such date as').' " + day + " '.tra('of').' " + mName[month] + "</em>";
-	} else {
-		document.getElementById("errorDateOfYear").innerHTML = "";
-	}
-}
-');
 $smarty->assign('calitem', $calitem);
 $smarty->assign('calendar', $calendar);
 $smarty->assign('calendarId', $calID);
@@ -516,7 +571,8 @@ edit_calendar_ajax();
 global $wikilib; include_once('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'editwiki');
 $smarty->assign_by_ref('plugins', $plugins);
-$smarty->assign('headtitle',tra('Calendar event : ').$calitem['name']);
+
 $smarty->assign('impossibleDates',$impossibleDates);
 $smarty->assign('mid', 'tiki-calendar_edit_item.tpl');
 $smarty->display("tiki.tpl");
+?>

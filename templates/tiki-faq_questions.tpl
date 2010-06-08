@@ -1,4 +1,4 @@
-{title}{tr}Admin FAQ{/tr}: {$faq_info.title|escape}{/title}
+{title}{tr}Admin FAQ{/tr}: {$faq_info.title}{/title}
 
 <div class="navbar">
 	{button href="tiki-list_faqs.php" _text="{tr}List FAQs{/tr}"}
@@ -24,9 +24,17 @@
 
   <tr class="formcolor">
     <td class="formcolor">{tr}Answer{/tr}:
+      <br /> 
+      {include file="textareasize.tpl" area_name='faqans' formId='editpageform'}
+      {if $prefs.quicktags_over_textarea neq 'y'}
+        <br />
+        {include file=tiki-edit_help_tool.tpl area_name="faqans"}
+      {/if}
     </td>
     <td class="formcolor" >
-      {toolbars area_name="faqans"}
+      {if $prefs.quicktags_over_textarea eq 'y'}
+        {include file=tiki-edit_help_tool.tpl area_name="faqans"}
+      {/if}
       <textarea id='faqans' type="text" rows="8" cols="80" name="answer">{$answer|escape}</textarea>
     </td>
   </tr>
@@ -96,10 +104,10 @@
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}
-<tr class="{cycle}">
-<td>{$channels[user].questionId}</td>
-<td>{$channels[user].question|escape}</td>
-<td width="80px">
+<tr>
+<td class="{cycle advance=false}">{$channels[user].questionId}</td>
+<td class="{cycle advance=false}">{$channels[user].question}</td>
+<td class="{cycle}" width="80px">
    <a class="link" href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;questionId={$channels[user].questionId}">{icon _id='page_edit'}</a>
    <a class="link" href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].questionId}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a>
 </td>
@@ -122,10 +130,10 @@
 </tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$suggested}
-<tr class="{cycle}">
-  <td>{$suggested[ix].question|escape} </td>
-  <td>{$suggested[ix].answer|escape}</td>
-  <td width='80px'>
+<tr>
+  <td class="{cycle advance=false}">{$suggested[ix].question} </td>
+  <td class="{cycle advance=false}">{$suggested[ix].answer}</td>
+  <td class="{cycle}" width='80px'>
   <a class="link" href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;approve_suggested={$suggested[ix].sfqId}" alt="{tr}Approve{/tr}">{icon _id=accept alt="{tr}Approve{/tr}"}</a>
   <a class="link" href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove_suggested={$suggested[ix].sfqId}">{icon _id=cross alt="{tr}Remove{/tr}"}</a> 
   </td>
@@ -135,3 +143,5 @@
 {else}
 <h2>{tr}No suggested questions{/tr}</h2>
 {/if}
+
+{include file=tiki-edit_help.tpl}

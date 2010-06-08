@@ -1,10 +1,12 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-index_raw.php,v 1.29 2007-10-12 07:55:28 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 $section = 'wiki page';
 require_once ('tiki-setup.php');
 
@@ -49,7 +51,7 @@ if (!($info = $tikilib->get_page_info($page))) {
 $tikilib->get_perm_object( $page, 'wiki page', $info);
 if ($tiki_p_view != 'y') {
 	$smarty->assign('errortype', 401);
-	$smarty->assign('msg', tra("Permission denied. You cannot view this page."));
+	$smarty->assign('msg', tra("Permission denied you cannot view this page"));
 
 	$smarty->display("error_raw.tpl");
 	die;
@@ -164,13 +166,6 @@ ask_ticket('index-raw');
 
 // Display the Index Template
 $smarty->assign('dblclickedit', 'y');
+$smarty->display("tiki-show_page_raw.tpl");
 
-// add &full to URL to output the whole html head and body
-if (isset($_REQUEST['full']) && $_REQUEST['full'] != 'n') {
-	$smarty->assign('mid','tiki-show_page_raw.tpl');
-	// use tiki_full to include include CSS and JavaScript
-	$smarty->display("tiki_full.tpl");
-} else {
-	// otherwise just the contents of the page without body etc
-	$smarty->display("tiki-show_page_raw.tpl");
-}
+?>

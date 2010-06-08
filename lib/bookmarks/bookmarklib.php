@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,19 +6,22 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class BookmarkLib extends TikiLib
-{
+class BookmarkLib extends TikiLib {
+	function BookmarkLib($db) {
+		$this->TikiLib($db);
+	}
+
 	function get_folder_path($folderId, $user) {
 		$path = '';
 
 		$info = $this->get_folder($folderId, $user);
-		$path = '<a class="link" href=tiki-user_bookmarks.php?parentId="' . $info["folderId"] . '">' . htmlspecialchars($info["name"]) . '</a>';
+		$path = '<a class="link" href=tiki-user_bookmarks.php?parentId="' . $info["folderId"] . '">' . $info["name"] . '</a>';
 
 		while ($info["parentId"] != 0) {
 			$info = $this->get_folder($info["parentId"], $user);
 
 			$path
-				= $path = '<a class="link" href=tiki-user_bookmarks.php?parentId="' . $info["folderId"] . '">' . htmlspecialchars($info["name"]) . '</a>' . '>' . $path;
+				= $path = '<a class="link" href=tiki-user_bookmarks.php?parentId="' . $info["folderId"] . '">' . $info["name"] . '</a>' . '>' . $path;
 		}
 
 		return $path;
@@ -54,7 +52,7 @@ class BookmarkLib extends TikiLib
 	}
 
 	function remove_url($urlId, $user) {
-		$query = "delete from `tiki_user_bookmarks_urls` where `urlId`=? and `user`=?";
+		$query = "delete from `tiki_user_bookmarks_urls` where `urlId`=? and user=?";
 
 		$result = $this->query($query,array($urlId,$user));
 		return true;
@@ -138,7 +136,7 @@ class BookmarkLib extends TikiLib
 			$bindvars=array($folderId,$user);
 		}
 
-		$query = "select * from `tiki_user_bookmarks_urls` where `folderId`=? and `user`=? $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_user_bookmarks_urls` where `folderId`=? and `user`=? $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_user_bookmarks_urls` where `folderId`=? and `user`=? $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -172,4 +170,7 @@ class BookmarkLib extends TikiLib
 		return $ret;
 	}
 }
-$bookmarklib = new BookmarkLib;
+global $dbTiki;
+$bookmarklib = new BookmarkLib($dbTiki);
+
+?>

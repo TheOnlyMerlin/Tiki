@@ -1,14 +1,8 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once 'Multilingual/Aligner/SentenceSegmentor.php';
 
-class Multilingual_Aligner_BilingualAligner
-{
+class Multilingual_Aligner_BilingualAligner {
 
     var $l1_sentences = array();
     var $l2_sentences = array();
@@ -17,16 +11,6 @@ class Multilingual_Aligner_BilingualAligner
     var $cost_matrix = array();
            
 	public function align($l1_sentences, $l2_sentences) {
-		$this->l1_sentences = $l1_sentences;
-		$this->l2_sentences = $l2_sentences;
-		$this->_generate_shortest_path_matrix();
-
-		// TODO: Once the shortest path matrix has been generated, find the shortest
-		//       path using ShortestPathFinder class.
-		
-		// TODO: Once the shortest path has been found, translate that into 
-		//       source-target sentence alignments.
-		
 	    return;
 	}
 	
@@ -248,3 +232,5 @@ class Multilingual_Aligner_BilingualAligner
     }
 	
 }
+
+?>

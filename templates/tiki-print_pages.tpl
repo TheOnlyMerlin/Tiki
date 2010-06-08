@@ -4,13 +4,25 @@
 
 {include file='find.tpl'}
 
-{tabset name='tabs_print_pages'}
-{if $prefs.feature_wiki_structure eq 'y'}
-	{tab name="{tr}Structures{/tr}"}
+{if $prefs.feature_tabs eq 'y'}
+  {cycle name=tabs values="1,2,3" print=false advance=false reset=true}
+    <div class="tabs">
+    <span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark" style="border-color:{if $cookietab eq $tabi}black{else}white{/if};">
+      <a href="javascript:tikitabs({cycle name=tabs},3);">{tr}Structures{/tr}</a>
+    </span>
+    <span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark" style="border-color:{if $cookietab eq $tabi}black{else}white{/if};">
+      <a href="javascript:tikitabs({cycle name=tabs},3);">{tr}Pages{/tr}</a>
+    </span>
+  </div>
+{/if}
+
+{cycle name=content values="1,2,3" print=false advance=false reset=true}
   {* --- tab with structures -- *}
+    <div id="content{cycle name=content assign=focustab}{$focustab}" class="tabcontent"{if $prefs.feature_tabs eq 'y'} style="display:{if $focustab eq $cookietab}block{else}none{/if};"{/if}>
+
       {if $printstructures}
         <h2>{tr}Selected Structures{/tr}</h2>
-        <form method="get" action="tiki-print_multi_pages.php">
+        <form method="post" action="tiki-print_multi_pages.php">
           <input type="hidden" name="printstructures" value="{$form_printstructures|escape}" />
           <input type="hidden" name="find" value="{$find|escape}" />
         <ul>
@@ -38,98 +50,10 @@
         {/section}
       </select>
     </form>
-	{/tab}
-{/if}
-{tab name="{tr}Pages{/tr}"}
+  </div>
+
 {* --- tab with pages -- *}
-			{if $prefs.feature_help eq 'y'}
-				{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple options{/tr}{/remarksbox}
-			{/if}
-<form action="tiki-print_pages.php" method="post">
-	<input type="hidden" name="printpages" value="{$form_printpages|escape}" />
-	<input type="hidden" name="find" value="{$find|escape}" />
-<table class="admin">
-	<tr>
-		<td width="40%">
-			<h2>{tr}Available Pages{/tr}:</h2>
-    <select name="pageName[]" multiple="multiple" size="5" style="width:99%" title="{tr}Available Pages{/tr}">
-      {section name=ix loop=$pages}
-        {if !in_array($pages[ix].pageName,$printpages)}{* don't show the page as available,if it is already selected *}
-          <option value="{$pages[ix].pageName|escape}">{$pages[ix].pageName|escape}</option>
-        {/if}
-      {sectionelse}
-        <option value="" disabled="disabled">{tr}No pages{/tr}</option>
-      {/section}
-{if $pages|@count eq $printpages|@count}
-<option value="" disabled="">{tr}All pages selected{/tr}</option>
-{/if} 
-    </select>
-		</td>
-		<td style="vertical-align:middle" width="20%">
-			<div class="mini">
-{if $pages}
-			<p><input type="submit" name="addpage" title="{tr}Add Page{/tr}" value="{tr}Add Page{/tr} &gt;" /></p>
-{/if}
-{if $printpages}
-			<p><input type="submit" name="removepage" title="{tr}Remove Page{/tr}" value="&lt; {tr}Remove Page{/tr}" /></p>
-			<p><input type="submit" name="clearpages" title="{tr}Clear{/tr}" value="{tr}Clear{/tr}" /></p>
-{/if}
-			</div>
-			
-		</td>
-		<td width="40%">
-			<h2>{tr}Selected Pages{/tr}:</h2>
-		<select name="selectedpages[]" size="15" multiple="multiple" style="width:99%" title="{tr}Selected Pages{/tr}">
-{section name=ix loop=$printpages}
-			<option value="{$smarty.section.ix.index}">{$printpages[ix]}</option>
-{sectionelse}
-			<option value="">{tr}No pages selected.{/tr}</option>
-{/section}
-		</select>
-		</td>
-	</tr>
-	</tr>
-</table>	
-</form>
-{if $printpages}
-<div style="float:right;margin-right:20%;">
-    <form method="get" action="tiki-print_multi_pages.php">
-      <input type="hidden" name="printpages" value="{$form_printpages|escape}" />
-	  <p><input type="submit" name="print" title="{tr}Print{/tr}" value="{tr}Print{/tr}" /></p>
-	</form>
-</div>
-{/if}
-{if $prefs.feature_wiki_structure eq 'y'}
-<form action="tiki-print_pages.php" method="post">
-	<input type="hidden" name="printpages" value="{$form_printpages|escape}" />
-	<input type="hidden" name="find" value="{$find|escape}" />
-<table class="admin">
-  <tbody>
-	<tr>
-		<td>
-    <h2>{tr}Add Pages from Structures{/tr}:</h2>
-    <select name="structureId" size="5" style="width:99%" border="1">
-      {section name=ix loop=$structures}
-        {if !in_array($structures[ix].page_ref_id,$printstructures)}
-          <option value="{$structures[ix].page_ref_id|escape}">{$structures[ix].pageName}</option>
-        {/if}
-      {sectionelse}
-        <option value="" disabled="disabled">{tr}No structures{/tr}</option>
-      {/section}
-    </select>
-    <p class="mini"><input type="submit" name="addstructurepages" value="{tr}Add Pages from Structures{/tr}"/></p>
-		</td>
-		<td width="20%"></td>
-		<td width="40%"></td>		
-	</tr>
-  </tbody>
-</table>
-</form>
-{/if}
-
-
-
-{*
+<div id="content{cycle name=content assign=focustab}{$focustab}" class="tabcontent"{if $prefs.feature_tabs eq 'y'} style="display:{if $focustab eq $cookietab}block{else}none{/if};"{/if}>
 
 <table class="admin">
 	<tr>
@@ -140,7 +64,7 @@
     <input type="hidden" name="find" value="{$find|escape}" />
     <select name="pageName[]" multiple="multiple" size="5">
       {section name=ix loop=$pages}
-        {if !in_array($pages[ix].pageName,$printpages)}
+        {if !in_array($pages[ix].pageName,$printpages)}{* don't show the page as available,if it is already selected *}
           <option value="{$pages[ix].pageName|escape}">{$pages[ix].pageName|escape}</option>
         {/if}
       {sectionelse}
@@ -148,11 +72,10 @@
       {/section}
     </select>
 {if $prefs.feature_help eq 'y'}
-  {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple options{/tr}{/remarksbox}
+  {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple pages{/tr}.{/remarksbox}
 {/if}    
     <br />
     <input type="submit" name="addpage" value="{tr}Add Page{/tr}" />
-{if $prefs.feature_wiki_structure eq 'y'}
     <br /><br />
     <h2>{tr}Add Pages from Structures{/tr}</h2>
     <select name="structureId" size="5">
@@ -166,12 +89,11 @@
     </select>
     <br />
     <input type="submit" name="addstructurepages" value="{tr}Add Structure Pages{/tr}"/>
-{/if}
   </form>
 		</td>
 		<td>&nbsp;</td>
 		<td width="45%">
-    <form method="get" action="tiki-print_multi_pages.php">
+    <form method="post" action="tiki-print_multi_pages.php">
       <input type="hidden" name="printpages" value="{$form_printpages|escape}" />
       <input type="hidden" name="find" value="{$find|escape}" />
       <h2>{tr}Selected Pages{/tr}:</h2>
@@ -193,7 +115,5 @@
 		</td>
 	</tr>
 </table>
-*}
+</div>
 
-{/tab}
-{/tabset}

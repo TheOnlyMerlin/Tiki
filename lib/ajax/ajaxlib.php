@@ -1,14 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-// This script may only be included - so it's better to die if called directly.
+// CVS: $Id$
+//this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 	header("location: index.php");
-	die;
+	exit;
 }
 
 global $prefs;
@@ -16,8 +11,7 @@ if ($prefs['feature_ajax'] == 'y') {
 	require_once("lib/ajax/xajax/xajax_core/xajaxAIO.inc.php");
 	if (!defined ('XAJAX_GET')) define ('XAJAX_GET', 0);
 
-class TikiAjax extends xajax
-{
+	class TikiAjax extends xajax {
 
 		/**
 		 * Array of templates that are allowed to be served
@@ -30,15 +24,25 @@ class TikiAjax extends xajax
 
 
 		/**
+		 * PHP4 constructor.
+		 *
+		 * @access   public
+		 * @return   void
+		 */
+		function TikiAjax() {
+			TikiAjax::__construct();
+		}
+
+		/**
 		 * PHP 5 constructor.
 		 *
 		 * @access   public
 		 * @return   void
 		 */
 		function __construct() {
-			parent::__construct();
+			xajax::xajax();
 
-			$this->aTemplates = array( 'confirm.tpl' => 1, 'error.tpl' => 1);
+			$this->aTemplates = array();
 			$this->deniedFunctions = array();
 
 			$this->configure('waitCursor',true);
@@ -83,12 +87,8 @@ class TikiAjax extends xajax
 		}
 
 		/**
-		 * Register a JavaScript function
 		 * 
-		 * @access	public
-		 * @param	string|array $mFunction - JS function name OR array e.g. array('myFunctionName', array('callback' => 'myCallbackVarName')
-		 * @param	int $sRequestType {XAJAX_GET = 0}
-		 * @return	void
+		 * 
 		 */
 		function registerFunction($mFunction, $sRequestType=XAJAX_GET) {
 			$functionName = is_array($mFunction) ? $mFunction[0] : $mFunction;
@@ -109,11 +109,7 @@ class TikiAjax extends xajax
 					} 
 				} 
 			}
-			if (is_array($mFunction) && count($mFunction) > 1) {
-				xajax::register(XAJAX_FUNCTION,$functionName, $mFunction[1]);
-			} else {
-				xajax::register(XAJAX_FUNCTION,$mFunction);
-			}
+			xajax::register(XAJAX_FUNCTION,$mFunction);
 		}
 
 		/*
@@ -148,10 +144,9 @@ class TikiAjax extends xajax
 	}
 } else {
 	// dumb TikiAjax class
-	class TikiAjax
-{
+	class TikiAjax {
 		function TikiAjax() {}
-#		function __construct() {} // commented out because it causes PHP notice "constructor already defined for class TikiAjax" (no idea, where and why it even goes through this file when ajax feature is not enabled)
+		function __construct() {}
 		function registerFunction() {}
 		function registerTemplate() {}
 		function templateIsRegistered() { return false; }
@@ -165,10 +160,9 @@ $ajaxlib = new TikiAjax();
 $ajaxlib->registerFunction("loadComponent");
 
 function loadComponent($template, $htmlElementId, $max_tikitabs = 0, $last_user = '') {
-	global $smarty, $ajaxlib, $prefs, $user, $headerlib;
+	global $smarty, $ajaxlib, $prefs, $user;
 	global $js_script;
-	$objResponse = new xajaxResponse();
-	$objResponse->setCharacterEncoding('UTF-8');
+	$objResponse = new xajaxResponse('UTF-8');
 
 	if ( $last_user != $user ) {
 
@@ -177,26 +171,44 @@ function loadComponent($template, $htmlElementId, $max_tikitabs = 0, $last_user 
 
 	} elseif ( $ajaxlib->templateIsRegistered($template) ) {
 
-		$content = '';
-		if ($smarty->get_template_vars('mid') == $template) {
-			$content = $smarty->get_template_vars('mid_data');
-		}
-		if (empty($content)) {
-			$content = $smarty->fetch($template);
-		}
+		$content = $smarty->fetch($template);
 		// Help
 		require_once $smarty->_get_plugin_filepath('function', 'show_help');
 		$content .= smarty_function_show_help(null,$smarty); 
+
 		// Handle TikiTabs in order to display only the current tab in the XAJAX response
 		// This has to be done here, since it is tikitabs() is usually called when loading the <body> tag
 		//   which is not done again when replacing content by the XAJAX response
 		//
-
+		$max_tikitabs = (int)$max_tikitabs;
+		if ( $max_tikitabs > 0 && $prefs['feature_tabs'] == 'y' ) {
+			global $cookietab;
+			$tab = ( $cookietab != '' ) ? (int)$cookietab : 1;
+			$objResponse->script("tikitabs($tab,$max_tikitabs);");
+		}
+		
 		// take out javascript from the html response because it needs to be sent specifically as javascript
 		// using $objResponse->script($s) below
-
-		$js_script = $headerlib->getJsFromHTML( $content, true );
 		
+		preg_match_all('/(?:<script.*type=[\'"]?text\/javascript[\'"]?.*>\s*?)(.*)(?:\s*<\/script>)/Umis', $content, $jsarr);
+		if (count($jsarr) > 1 && is_array($jsarr[1])) {
+			$js = preg_replace('/\s*?<\!--\/\/--><\!\[CDATA\[\/\/><\!--\s*?/Umis', '', $jsarr[1]);	// strip out CDATA XML wrapper if there
+			$js = preg_replace('/\s*?\/\/--><\!\]\]>\s*?/Umis', '', $js);
+			
+			// change 'function fName (' to 'fName = function(' (as it seems to work then)
+			$js = preg_replace('/function (.*)\(/Umis', "$1 = function(", $js);
+			//taginsert = function (
+
+			if (!isset($js_script)) {
+				$js_script = array();
+			}
+			$js_script = array_merge($js_script, $js);
+		}
+		// this is very probably possible as a single regexp, maybe a preg_replace_callback
+		// but it was stopping the CDATA group being returned (and life's too short ;)
+		// the one below should work afaics but just doesn't! :(
+		// preg_match_all('/<script.*type=[\'"]?text\/javascript[\'"]?.*>(\s*<\!--\/\/--><\!\[CDATA\[\/\/><\!--)?\s*?(.*)(\s*\/\/--><\!\]\]>\s*)?<\/script>/imsU', $content, $js);
+
 		// do included files too...
 		$js_files = array();
 		preg_match_all('/<script[^>]*src=[\'"]??(.*)[\'"]??>\s*<\/script>/Umis', $content, $jsarr);
@@ -204,20 +216,24 @@ function loadComponent($template, $htmlElementId, $max_tikitabs = 0, $last_user 
 			$js =  $jsarr[1];
 			$js_files = array_merge($js_files, $js);
 		}
-
-		array_push($js_files, 'lib/jquery_tiki/tiki-jquery.js');
+		
+		if (preg_match('/overlib\(/Umis', $content)) {
+			$js_files[] = 'lib/overlib.js';	// just for now... (it stops the JS error on rollover but the tooltip doesn't appear - TODO replace with JQuery tips)
+		}
 
 		// now remove all the js from the source
 		$content = preg_replace('/\s*<script.*javascript.*>.*\/script>\s*/Umis', '', $content);
+
 		// attach the cleaned xhtml to the response
 		$objResponse->Assign($htmlElementId, "innerHTML", $content);
 
 	} elseif ( $ajaxlib->templateIsRegistered('confirm.tpl') ) {
+		global $area;
 
 		$params = array(
-				'_tag' => 'n',
-				'_keepall' => 'y'
-				);
+			'_tag' => 'n',
+			'_keepall' => 'y'
+		);
 
 		if ( $prefs['feature_ticketlib2'] == 'y' ) {
 			$objResponse->confirmCommands(1, $smarty->get_template_vars('confirmation_text'));
@@ -231,18 +247,29 @@ function loadComponent($template, $htmlElementId, $max_tikitabs = 0, $last_user 
 		$uri = smarty_modifier_escape(smarty_block_self_link($params, '', $smarty), 'javascript');
 		$objResponse->call("loadComponent('$uri','$template','$htmlElementId',".((int)$max_tikitabs).",'$last_user')");
 
-	} elseif ( $ajaxlib->templateIsRegistered('error.tpl') ) {
-
-		$content = $smarty->fetch('error.tpl');
-		$objResponse->Assign($htmlElementId, "innerHTML", $content);
-
 	} else {
 		$objResponse->alert(sprintf(tra("Template %s not registered"),$template));
 	}
 
-	$js_files[] = 'tiki-jsplugin.php?language='.$prefs['language'];
-
-	if (count($js_files)) {
+	$objResponse->script("hide('ajaxLoading');");
+	if ($prefs['feature_shadowbox'] == 'y') {
+		$objResponse->script("Shadowbox.init({ skipSetup: true }); Shadowbox.setup();");
+	}
+	$objResponse->script("var xajax.config.requestURI =\"".$ajaxlib->sRequestURI."\";\n");
+	if (sizeof($js_script)) {
+		foreach($js_script as $s) {
+			if (trim($s) != '') {
+				$objResponse->script($s);
+			}
+		}
+		if ($prefs['feature_ajax_autosave'] == 'y') {
+			$objResponse->call("auto_save");
+		}
+	}
+	//$objResponse->includeScript("tiki-jsplugin.php");
+	$js_files[] = 'tiki-jsplugin.php';
+	
+	if (sizeof($js_files)) {
 		foreach($js_files as $f) {
 			if (trim($f) != '') {
 				$objResponse->includeScript($f);
@@ -250,47 +277,9 @@ function loadComponent($template, $htmlElementId, $max_tikitabs = 0, $last_user 
 		}
 	}
 
-	if( $prefs['tiki_minify_javascript'] == 'y' ) {
-		$hjsfiles = $headerlib->getMinifiedJs();
-	} else {
-		$hjsfiles = $headerlib->getJsFilesList();
-	}
-	foreach($hjsfiles as $f) {
-		foreach ($f as $jsf) {
-			if (trim($jsf) != '') {
-				$objResponse->includeScriptOnce($jsf);
-			}
-		}
-	}
-
-	$objResponse->script('xajax.config.requestURI="'.$ajaxlib->getRequestURI().'";');
-	
-	$max_tikitabs = (int)$max_tikitabs;
-	if ( $max_tikitabs > 0 && $prefs['feature_tabs'] == 'y' ) {
-		global $cookietab;
-		$tab = ( $cookietab != '' ) ? (int)$cookietab : 1;
-		$headerlib->add_jq_onready("tikitabs($tab,$max_tikitabs);");
-	}
-	// collect js from headerlib
-	$jscontent = $headerlib->output_js(false);
-	global $tikidomainslash;
-	$tmp_jsfile = 'temp/public/'.$tikidomainslash.md5($jscontent).'.js';
-	if ( ! file_exists( $tmp_jsfile) ) {
-		file_put_contents( $tmp_jsfile, $jscontent );
-	}
-	$objResponse->includeScript($tmp_jsfile);
-	
-	if ($prefs['feature_ajax_autosave'] == 'y') {
-		$objResponse->call("auto_save");
-	}
-	
 	return $objResponse;
 }
 
-if ($prefs['feature_ajax_autosave'] === 'y') {
+if ($prefs['feature_ajax_autosave'] == 'y') {
 	require_once("lib/ajax/autosave.php");
-}
-
-if ($prefs['wysiwyg_htmltowiki'] === 'y') {
-	require_once("lib/ajax/tikitohtml.php");
 }

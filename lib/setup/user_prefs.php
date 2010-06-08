@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+
 // $Id$
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for
+// details.
 
 //this script may only be included - so its better to die if called directly.
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
@@ -40,13 +41,11 @@ if ( $user ) {
 
 	// Copy some user prefs that doesn't have the same name as the related site pref
 	//   in order to symplify the overriding and the use 
-	if ( $prefs['change_theme'] == 'y') {
-		if ( !empty($prefs['theme']) ) {
-			$prefs['style'] = $prefs['theme'];
-			if ( isset($prefs['theme-option']) ) {
-				$prefs['style_option'] = $prefs['theme-option'];
-			}
-		}
+	if ( isset($prefs['theme']) && $prefs['theme'] != '' ) {
+		$prefs['style'] = $prefs['theme'];
+	}
+	if ( isset($prefs['theme-option']) && $prefs['theme-option'] != '' ) {
+		$prefs['style_option'] = $prefs['theme-option'];
 	}
 
 	// Set the userPage name for this user since other scripts use this value.
@@ -64,9 +63,9 @@ $smarty->assign('IP', $tikilib->get_ip_address());
 if ($prefs['users_prefs_display_timezone'] == 'Site' || (isset($user_preferences[$user]['display_timezone']) && $user_preferences[$user]['display_timezone'] == 'Site')) {
 	// Everybody stays in the time zone of the server
 	$prefs['display_timezone'] = $prefs['server_timezone'];
-} elseif ( ! isset($user_preferences[$user]['display_timezone']) || $user_preferences[$user]['display_timezone'] == '' || $user_preferences[$user]['display_timezone'] == 'Local' ) {
+} elseif ( ! isset($user_preferences[$user]['display_timezone']) || $user_preferences[$user]['display_timezone'] == '' ) {
 	// If the display timezone is not known ...
-	if ( isset($_COOKIE['local_tz']) && preg_match('/[a-zA-Z]/', $_COOKIE['local_tz']) ) {
+	if ( isset($_COOKIE['local_tz']) && eregi('[A-Z]', $_COOKIE['local_tz']) ) {
 		//   ... we try to use the timezone detected by javascript and stored in cookies
 		if ( $_COOKIE['local_tz'] == 'CEST' || $_COOKIE['local_tz'] == 'HAEC' ) {
 			// CEST (and HAEC, returned by Safari on Mac) is not recognized as a DST timezone (with daylightsavings) by PEAR Date

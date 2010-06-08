@@ -1,14 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /*
  * \brief Add help via icon to a page
  * @author: Stéphane Casset
  * @date: 06/11/2008
+ * @license http://www.gnu.org/copyleft/lgpl.html GNU/LGPL
+ * $Id$
  */
 
 //this script may only be included - so its better to die if called directly.
@@ -23,48 +19,28 @@ function smarty_block_add_help($params, $content, &$smarty, &$repeat) {
 
 	if (!isset($content)) return ;
 	
-	if ($prefs['javascript_enabled'] != 'y') {
-		return $content;
-	}
-	
 	if (isset($params['title'])) $section['title'] = $params['title'];
 	if (isset($params['id'])) {
 		$section['id'] = $params['id'];
 	} else {
-		$section['id'] = $params['id'] = 'help_section_'.count($help_sections);
+		$section['id'] = $params['id'] = 'help_section_'.sizeof($help_sections);
 	}
 	$section['content'] = $content;
 
 	$help_sections[$params['id']] = $section;
 
 	if (!isset($params['show']) or $params['show'] == 'y') {
-		global $headerlib;
 		require_once $smarty->_get_plugin_filepath('block', 'self_link');
-		$self_link_params['_alt'] = tra('Click for Help');
+		$self_link_params['alt'] = $params['title'];
 		$self_link_params['_icon'] = 'help';
-		$self_link_params['_ajax'] = 'n';
-		
-		$title = tra('Help');
-		
-		$headerlib->add_js('
-var openEditHelp = function() {
-	var opts, edithelp_pos = getCookie("edithelp_position");
-	opts = { width: 460, height: 500, title: "' . $title . '", autoOpen: false, beforeclose: function(event, ui) {
-		var off = $jq(this).offsetParent().offset();
-   		setCookie("edithelp_position", parseInt(off.left) + "," + parseInt(off.top) + "," + $jq(this).offsetParent().width() + "," + $jq(this).offsetParent().height());
-	}}
-	if (edithelp_pos) {edithelp_pos = edithelp_pos.split(",");}
-	if (edithelp_pos && edithelp_pos.length) {
-		opts["position"] = [parseInt(edithelp_pos[0]), parseInt(edithelp_pos[1])];
-		opts["width"] = parseInt(edithelp_pos[2]);
-		opts["height"] = parseInt(edithelp_pos[3]);
-	}
-	$jq("#help_sections").dialog("destroy").dialog(opts).dialog("open");
-	
-};');
-		$self_link_params['_onclick'] = 'openEditHelp();return false;';
- 
-		return smarty_block_self_link($self_link_params,"",$smarty);
+		if ($prefs['feature_shadowbox'] == 'y' and ($prefs['feature_jquery'] == 'y' || $prefs['feature_mootools'] == 'y')) {
+			require_once $smarty->_get_plugin_filepath('function', 'icon');
+			$self_link_params['_id'] = 'help';
+			return '<a href="#'.$section['id'].'" rel="shadowbox[add_help];title='.$params['title'].';">'.smarty_function_icon($self_link_params,$smarty).'</a>';
+		} else {
+			$self_link_params['_onclick'] = "javascript:show('help_sections');show('".$section['id']."');return false";
+			return smarty_block_self_link($self_link_params,"",$smarty);
+		}
 	} else {
 		return ;
 	}

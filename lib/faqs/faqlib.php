@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -14,8 +9,11 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 /* Task properties:
    user, taskId, title, description, date, status, priority, completed, percentage
 */
-class FaqLib extends TikiLib
-{
+class FaqLib extends TikiLib {
+	function FaqLib($db) {
+		$this->TikiLib($db);
+	}
+
 	function add_suggested_faq_question($faqId, $question, $answer, $user) {
 		$question = strip_tags($question, '<a>');
 
@@ -46,7 +44,7 @@ class FaqLib extends TikiLib
 			$mid = "";
 		}
 
-		$query = "select * from `tiki_suggested_faq_questions` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_suggested_faq_questions` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_suggested_faq_questions` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -75,7 +73,7 @@ class FaqLib extends TikiLib
 			$mid = "";
 		}
 
-		$query = "select * from `tiki_faq_questions` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_faq_questions` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_faq_questions` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -140,8 +138,8 @@ class FaqLib extends TikiLib
 		} else {
 			$query = 'delete from `tiki_faq_questions` where `faqId`=? and question=?';
 			$result = $this->query($query, array((int) $faqId, $question), -1, -1, false);
-			$query = 'insert into `tiki_faq_questions`(`faqId`,`question`,`answer`, `created`) values(?,?,?,?)';
-			$result = $this->query($query, array((int) $faqId, $question, $answer, $this->now));
+			$query = 'insert into `tiki_faq_questions`(`faqId`,`question`,`answer`) values(?,?,?)';
+			$result = $this->query($query, array((int) $faqId, $question, $answer));
 			$questionId = $this->getOne('select max(questionId) from `tiki_faq_questions` where `faqId`=?', $faqId);
 		}
 
@@ -177,22 +175,19 @@ class FaqLib extends TikiLib
 		return $faqId;
 	}
 
-	function list_faq_questions($faqId=0, $offset=0, $maxRecords=-1, $sort_mode='question_asc', $find='') {
-		if (!empty($faqId)) {
-			$mid = ' where `faqId`=? ';
-			$bindvars=array((int)$faqId);
-		} else {
-			$mid = '';
-			$bindvars = array();
-		}
-		if (!empty($find)) {
+	function list_faq_questions($faqId, $offset, $maxRecords, $sort_mode, $find) {
+
+		if ($find) {
 			$findesc = '%' . $find . '%';
-			if (empty($mid)) $mid = ' where ';
-			$mid .= ' and (`question` like ? or `answer` like ?)';
-			$bindvars=array($findesc, $findesc);
+
+			$mid = " where `faqId`=? and (`question` like ? or `answer` like ?)";
+			$bindvars=array((int) $faqId,$findesc,$findesc);
+		} else {
+			$mid = " where `faqId`=? ";
+			$bindvars=array((int) $faqId);
 		}
 
-		$query = "select * from `tiki_faq_questions` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_faq_questions` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_faq_questions` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -235,4 +230,7 @@ class FaqLib extends TikiLib
 		return $res;
 	}
 }
-$faqlib = new FaqLib;
+global $dbTiki;
+$faqlib = new FaqLib($dbTiki);
+
+?>

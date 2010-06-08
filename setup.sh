@@ -7,7 +7,11 @@
 # This file is a replacement for setup.sh
 # in test in 1.9 version
 
-DIRS="backups db dump img/wiki img/wiki_up img/trackers modules/cache temp temp/cache temp/public templates_c templates styles maps whelp mods files tiki_tests/tests"
+DIRS="backups db dump img/wiki img/wiki_up img/trackers modules/cache temp temp/cache templates_c templates styles maps whelp mods files tiki_tests/tests"
+
+if [ -d 'lib/Galaxia' ]; then
+	DIRS=$DIRS" lib/Galaxia/processes"
+fi
 
 AUSER=nobody
 AGROUP=nobody
@@ -28,39 +32,8 @@ else
 	if [ "$UNAME" = "CYGWIN" ]; then
 		AUSER=SYSTEM
 		AGROUP=SYSTEM
-	elif [ "$UNAME" = "Darwin" ]; then
-		AUSER=_www
-		AGROUP=_www
 	fi
 fi
-
-usage() {
-	cat <<EOF
-usage: $0 [<switches>] open|fix
--h           show help
--u user      owner of files (default: $AUSER)
--g group     group of files (default: $AGROUP)
--v virtuals  list of virtuals (for multitiki, exemple: "www1 www2")
--n           not interactive mode
-EOF
-}
-
-OPT_AUSER=
-OPT_AGROUP=
-OPT_VIRTUALS=
-OPT_NOTINTERACTIVE=
-
-while getopts "hu:g:v:n" OPTION; do
-	case $OPTION in
-		h) usage ; exit 0 ;;
-		u) OPT_AUSER=$OPTARG ;;
-		g) OPT_AGROUP=$OPTARG ;;
-		v) OPT_VIRTUALS=$OPTARG ;;
-		n) OPT_NOTINTERACTIVE=1 ;;
-		?) usage ; exit 1 ;;
-	esac
-done
-shift $(($OPTIND - 1))
 
 if [ -z $1 ]; then
 	COMMAND=fix
@@ -70,18 +43,13 @@ fi
 
 if [ "$COMMAND" = 'fix' ]; then
 	if [ "$USER" = 'root' ]; then
-		if [ -n "$OPT_AUSER" ]; then
-			AUSER=$OPT_AUSER
-		elif [ -z "$OPT_NOTINTERACTIVE" ]; then
-			echo -n "User [$AUSER]: "
-			read REPLY 
-			if [ -n "$REPLY" ]; then
-				AUSER=$REPLY
-			fi
+		echo -n "User [$AUSER]: "
+		read REPLY 
+		if [ -n "$REPLY" ]; then
+			AUSER=$REPLY
 		fi
 	else
-		if [ -z "$OPT_NOTINTERACTIVE" ]; then
-			echo "You are not root or you are on a shared hosting account. You can now:
+		echo "You are not root or you are on a shared hosting account. You can now:
 
 1- ctrl-c to break now.
 
@@ -91,32 +59,22 @@ or
 but it (the script) will still fix what it can according to the permissions
 of your user. This script will now ask you some questions. If you don't know
 what to answer, just press enter to each question (to use default value)"
-			
-			read WAIT
-			AUSER=$USER
-		fi
+
+		read WAIT
+		AUSER=$USER
 	fi
 
-	if [ -n "$OPT_AGROUP" ]; then
-		AGROUP=$OPT_AGROUP
-	elif [ -z "$OPT_NOTINTERACTIVE" ]; then
-		echo -n "Group [$AGROUP]: "
-		read REPLY
-		if [ -n "$REPLY" ]; then
-			AGROUP=$REPLY
-		fi
+	echo -n "Group [$AGROUP]: "
+	read REPLY
+	if [ -n "$REPLY" ]; then
+		AGROUP=$REPLY
 	fi
 
 	touch db/virtuals.inc
-	if [ -n "$OPT_VIRTUALS" ]; then
-		VIRTUALS=$OPT_VIRTUALS
-	elif [ -n "$OPT_NOTINTERACTIVE" ]; then
-		VIRTUALS=$(cat db/virtuals.inc)
-	else
-		echo -n "Multi ["$(cat db/virtuals.inc)"]: "
-		read VIRTUALS
-		[ -z "$VIRTUALS" ] && VIRTUALS=$(cat db/virtuals.inc)
-	fi
+	echo -n "Multi ["$(< db/virtuals.inc)"]: "
+	read VIRTUALS
+
+	[ ! -n "$VIRTUALS" ] && VIRTUALS=$(< db/virtuals.inc)
 
 	if [ -n "$VIRTUALS" ]; then
 		for vdir in $VIRTUALS; do
@@ -147,7 +105,7 @@ what to answer, just press enter to each question (to use default value)"
 	done
 
 	echo -n "Fix global perms ..."
-	chown -fR $AUSER:$AGROUP .
+	chown -R $AUSER:$AGROUP .
 	echo -n " chowned ..."
 
 #	find . ! -regex '.*^\(devtools\).*' -type f -exec chmod 644 {} \;	
@@ -155,7 +113,7 @@ what to answer, just press enter to each question (to use default value)"
 #	find . -type d -exec chmod 755 {} \;
 #	echo " dirs perms fixed ... done"
 
-	chmod -fR u=rwX,go=rX .
+	chmod -R u=rwX,go=rX .
 
 	echo " done."
 
@@ -163,7 +121,7 @@ what to answer, just press enter to each question (to use default value)"
 	if [ "$USER" = 'root' ]; then
 		chmod -R g+w $DIRS
 	else
-		chmod -fR go+w $DIRS
+		chmod -R go+w $DIRS
 	fi
 
 #	chmod 664 robots.txt tiki-install.php
@@ -171,22 +129,33 @@ what to answer, just press enter to each question (to use default value)"
 
 elif [ "$COMMAND" = 'open' ]; then
 	if [ "$USER" = 'root' ]; then
-		if [ -n "$OPT_AUSER" ]; then
-			AUSER=$OPT_AUSER
-		elif [ -z "$OPT_NOTINTERACTIVE" ]; then
-			echo -n "User [$AUSER]: "
-			read REPLY 
-			if [ -n "$REPLY" ]; then
-				AUSER=$REPLY
-			fi
-		fi
+		echo -n "User [$AUSER]: "
+		read REPLY
+		if [ -n "$REPLY" ]; then
+			AUSER=$REPLY
+		fi		
+		echo -n "Open global perms ..."
 		chown -R $AUSER .
+		echo " done"
 	else
-		echo "You are not root or you are on a shared hosting account. We will not try to change the file owners."
-	fi
+		echo "You are not root or you are on a shared hosting account. You can now:
 
-	chmod -R a=rwX .
-	echo " done"
+1- ctrl-c to break now.
+
+or
+
+2- If you press enter to continue, you will probably get some error messages
+but it (the script) will still fix what it can according to the permissions
+of your user. This script will now ask you some questions. If you don't know
+what to answer, just press enter to each question (to use default value)"
+
+		read WAIT
+		echo -n "Open global perms ..."
+#		find . -type d -exec chmod 777 {} \;
+#		find . -type f -exec chmod 666 {} \;
+		chmod -R a=rwX .
+		echo " done"
+	fi
 else
 	echo "Type 'fix' or 'open' as command argument."
 fi

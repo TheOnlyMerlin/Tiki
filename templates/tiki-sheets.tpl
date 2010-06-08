@@ -1,6 +1,6 @@
 {* $Id$ *}
 
-{title help="Spreadsheet"}{tr}Spreadsheets{/tr}{/title}
+{title help="Spreadsheet"}{tr}TikiSheet{/tr}{/title}
 
 {if $tiki_p_edit_sheet eq 'y'}
 {if $edit_mode eq 'y'}
@@ -27,8 +27,7 @@
 <tr><td class="formcolor">{tr}Class Name{/tr}:</td><td class="formcolor"><input type="text" name="className" value="{$className|escape}"/></td></tr>
 <tr><td class="formcolor">{tr}Header Rows{/tr}:</td><td class="formcolor"><input type="text" name="headerRow" value="{$headerRow|escape}"/></td></tr>
 <tr><td class="formcolor">{tr}Footer Rows{/tr}:</td><td class="formcolor"><input type="text" name="footerRow" value="{$footerRow|escape}"/></td></tr>
-<tr><td class="formcolor">{tr}Wiki Parse Values{/tr}:</td><td class="formcolor"><input type="checkbox" name="parseValues"{if $parseValues eq 'y'} checked="checked"{/if}/></td></tr>
-{include file='categorize.tpl'}
+{include file=categorize.tpl}
 {if $tiki_p_admin eq 'y' or $tiki_p_admin_sheet eq 'y'}
 <tr><td class="formcolor">{tr}Creator{/tr}:</td><td class="formcolor">
 		<select name="creator">
@@ -37,20 +36,13 @@
 		</select>
 </td></tr>
 {/if}
-<tr><td class="formcolor">{tr}Parent SheetId{/tr}:</td><td class="formcolor">
-		<select name="parentSheetId">
-		<option value="">{tr}None{/tr}</option>
-		{section name=sheet loop=$sheets}<option value="{$sheets[sheet].sheetId}"{if $parentSheetId eq $sheets[sheet].sheetId} selected="selected"{/if}>{$sheets[sheet].title|escape}</option>{/section}
-		</select>
-		<em>{tr}Makes this sheet a "child" sheet of a multi-sheet set{/tr}</em>
-</td></tr>
 <tr><td class="formcolor">&nbsp;</td><td class="formcolor"><input type="submit" value="{tr}Save{/tr}" name="edit" /></td></tr>
 </table>
 </form>
 
 <br />
 {else}
-<div class="navbar"><a href="tiki-sheets.php?edit_mode=edit&sheetId=0">{tr}Create New Sheet{/tr}</a></div>
+<div class="navbar"><a href="tiki-sheets.php?edit_mode=edit&sheetId=0">{tr}Create new Sheet{/tr}</a></div>
 {/if}
 {/if}
 

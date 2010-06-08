@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 class Tiki_Profile_ChannelList
 {
@@ -64,26 +59,6 @@ class Tiki_Profile_ChannelList
 
 		return $profiles;
 	} // }}}
-
-	function addChannel( $name, $domain, $profile, $groups ) // {{{
-	{
-		$this->channels[ $name ] = array(
-			'domain' => $domain,
-			'profile' => $profile,
-			'groups' => $groups,
-		);
-	} // }}}
-
-	function getConfiguration() // {{{
-	{
-		$out = '';
-		foreach( $this->channels as $name => $info ) {
-			$parts = $info['groups'];
-			array_unshift( $parts, $name, $info['domain'], $info['profile'] );
-
-			$out .= implode( ', ', $parts ) . "\n";
-		}
-
-		return trim( $out );
-	} // }}}
 }
+
+?>

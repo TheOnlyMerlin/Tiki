@@ -58,15 +58,15 @@
     </tr>
 
     <tr class="formcolor">
-      <td class="formcolor">{tr}Your email{/tr}{if empty($email)} <strong class="mandatory_star">*</strong>{/if}</td>
-      <td class="formcolor"><div class="mandatory_field"><input style="width:95%;" type="text" name="email" value="{$email}" /></div></td>
+      <td class="formcolor">{tr}Your email{/tr}</td>
+      <td class="formcolor"><input style="width:95%;" type="text" name="email" value="{$email}" /></td>
     </tr>
 
     <tr class="formcolor">
       <td class="formcolor">
         {tr}Your comment{/tr}
         <br /><br />
-        {include file='textareasize.tpl' area_name='comment' formId='tellafriend'}
+        {include file="textareasize.tpl" area_name='comment' formId='tellafriend'}
       </td>
       
       <td class="formcolor">
@@ -74,19 +74,13 @@
       </td>
     </tr>
 	{if $prefs.feature_antibot eq 'y' && $user eq ''}
-		{include file='antibot.tpl' td_style="formcolor"}
+		{include file="antibot.tpl" td_style="formcolor"}
 	{/if}
 
     
     <tr>
       <td class="formcolor"></td>
-      <td class="formcolor">
-        <input type="submit" name="send" value="{tr}Send{/tr}" />
-		{if $prefs.auth_token_tellafriend eq 'y'}
-			<input type="checkbox" name="share_access" value="1" id="share_access"/>
-			<label for="share_access">{tr}Share access rights{/tr}</label>
-		{/if}
-      </td>
+      <td class="formcolor"><input type="submit" name="send" value="{tr}Send{/tr}" /></td>
     </tr>
   </table>
 </form>

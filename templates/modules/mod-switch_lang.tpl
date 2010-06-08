@@ -24,7 +24,7 @@
 {if $prefs.feature_multilingual ne 'y'}
 	{tr}This feature is disabled{/tr}
 {elseif $prefs.change_language ne 'n' or $user eq ''}
-{if $mode eq 'flags'}
+{if $module_params.mode eq 'flags'}
 	{section name=ix loop=$languages}
 		{assign var='val' value=$languages[ix].value|escape}
 		{assign var='langname' value=$languages[ix].name|escape}
@@ -36,7 +36,7 @@
 			{button _text="$langname" href="tiki-switch_lang.php?language=$val" _title="$langname" _class="$class" }
 		{/if}
 	{/section}
-{elseif $mode eq 'words'}
+{elseif $module_params.mode eq 'words'}
 	<ul>
 	{section name=ix loop=$languages}
 	  <li>
@@ -51,7 +51,7 @@
        <select name="language" size="1" onchange="this.form.submit();">
         {section name=ix loop=$languages}
         <option value="{$languages[ix].value|escape}"
-          {if $prefs.language eq $languages[ix].value} selected="selected"{/if}>
+          {if $prefs.language eq $languages[ix].value}selected="selected"{/if}>
           {$languages[ix].name}
         </option>
         {/section}

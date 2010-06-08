@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -23,10 +18,9 @@ function refresh_search_index() {
   list($usec, $sec) = explode(" ",microtime());
   srand (ceil($sec+100*$usec));
   if($prefs['search_refresh_rate'] > 0 && rand(1,$prefs['search_refresh_rate'])==1) {
- //    print "<pre>refreshing</pre>\n";
+    // print "<pre>refreshing</pre>\n";
 
-
-    // require_once('lib/search/refresh-functions.php');
+    require_once(dirname(__FILE__).'/refresh-functions.php');
     // get a random location
     $locs=array();
     if ($prefs['feature_wiki'] == 'y') $locs[]="random_refresh_index_wiki";
@@ -68,3 +62,5 @@ function refresh_search_index() {
     call_user_func ($location);
   }
 }
+
+?>

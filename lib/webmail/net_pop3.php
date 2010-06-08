@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 // +-----------------------------------------------------------------------+
 // | Copyright (c) 2002, Richard Heyes                                     |
 // | All rights reserved.                                                  |
@@ -38,8 +32,12 @@
 // | Author: Richard Heyes <richard@phpguru.org>                           |
 // | Co-Author: Damian Fernandez Sosa <damlists@cnba.uba.ar>               |
 // +-----------------------------------------------------------------------+
+//
+// $Id: net_pop3.php,v 1.4 2005-08-08 22:44:53 rlpowell Exp $
 
 require_once('lib/pear/Net/Socket.php');
+
+
 
 /**
 *  +----------------------------- IMPORTANT ------------------------------+
@@ -57,8 +55,7 @@ define('NET_POP3_STATE_DISCONNECTED',  1, true);
 define('NET_POP3_STATE_AUTHORISATION', 2, true);
 define('NET_POP3_STATE_TRANSACTION',   4, true);
 
-class Net_POP3
-{
+class Net_POP3 {
 
     /*
     * Some basic information about the mail drop
@@ -155,7 +152,7 @@ class Net_POP3
         $this->_maildrop  =  array();
         $this->_timeout   =  3;
         $this->_state     =  NET_POP3_STATE_DISCONNECTED;
-        $this->_socket    =  new Net_Socket();
+        $this->_socket    =& new Net_Socket();
         /*
         * Include the Auth_SASL package.  If the package is not available,
         * we disable the authentication methods that depend upon it.
@@ -1241,3 +1238,5 @@ class Net_POP3
 
 
 }
+
+?>

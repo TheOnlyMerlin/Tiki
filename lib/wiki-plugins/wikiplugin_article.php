@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 // Includes an article field
 // Usage:
@@ -45,7 +40,7 @@ function wikiplugin_article_info() {
 
 function wikiplugin_article($data, $params) {
 	global $tikilib,$user,$userlib;
-	global $statslib; include_once('lib/stats/statslib.php');
+	include_once('lib/stats/statslib.php');
 
 	extract ($params,EXTR_SKIP);
 
@@ -59,13 +54,14 @@ function wikiplugin_article($data, $params) {
 		$Field = 'heading';
 	} 
 
-	if ($tiki_p_admin_cms == 'y' || $tikilib->user_has_perm_on_object($user, $articleId, 'article', 'tiki_p_edit_article') || ($article_data["author"] == $user && $article_data["creator_edit"] == 'y')) {
+	if ($tiki_p_admin_cms == 'y' || $tikilib->user_has_perm_on_object($user, $articleId, 'article', 'tiki_p_edit_article', 'tiki_p_edit_categorized') || ($article_data["author"] == $user && $article_data["creator_edit"] == 'y')) {
 	      $add="&nbsp;<a href='tiki-edit_article.php?articleId=$Id'><img src='/pics/icons/page_edit.png' style='border:0px;'></a>";
 	} else {
 	      $add="";
 	}
 
-	global $artlib; require_once 'lib/articles/artlib.php';
-	$article_data = $artlib->get_article($Id);
+	$article_data = $tikilib->get_article($Id);
 	return $article_data[$Field].$add;
 }
+
+?>

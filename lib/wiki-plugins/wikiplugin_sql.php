@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 function wikiplugin_sql_help() {
 	return tra("Run a sql query").":<br />~np~{SQL(db=>dsnname)}".tra("sql query")."{SQL}~/np~";
 }
@@ -28,24 +22,26 @@ function wikiplugin_sql_info() {
 }
 
 function wikiplugin_sql($data, $params) {
-
 	global $tikilib;
+
 	extract ($params,EXTR_SKIP);
 
 	if (!isset($db)) {
 		return tra('Missing db param');
 	}
 
-	$perms = Perms::get( array( 'type' => 'dsn', 'object' => $db ) );
-	if ( ! $perms->dsn_query ) {
-		return tra('You do not have permission to use this feature');
+	$perm_name = 'tiki_p_dsn_' . $db;
+	global $$perm_name;
+
+	if ($$perm_name != 'y') {
+		return (tra('You do not have permission to use this feature'));
 	}
 
 	$bindvars = array();
 	$data = html_entity_decode($data);
 	if ($nb = preg_match_all("/\?/", $data, $out)) {
 		foreach($params as $key => $value) {
-			if (preg_match('/^[0-9]*$/', $key)) {
+			if (ereg("^[0-9]*$", $key)) {
 				if (strpos($value, "$") === 0) {
 					$value = substr($value, 1);
 					global $$value;
@@ -65,25 +61,59 @@ function wikiplugin_sql($data, $params) {
 	$sql_oke = true;
  	$dbmsg = '';
 
-	if ($db = $tikilib->get_db_by_name( $db ) ) {
-		$result = $db->query( $data, $bindvars );
+	if ($db == 'local') {
+		$result = $tikilib->query($data,$bindvars);
 	} else {
-		return '~np~' . tra('Could not obtain valid DSN connection.') . '~/np~';
+
+		$dsnsqlplugin = $tikilib->get_dsn_by_name($db);
+
+		$parsedsn=$dsnsqlplugin;
+		$dbdriver=strtok($parsedsn, ":");
+		$parsedsn=substr($parsedsn,strlen($dbdriver)+3);
+		$dbuserid=strtok($parsedsn, ":");
+		$parsedsn=substr($parsedsn,strlen($dbuserid)+1);
+		$dbpassword=strtok($parsedsn, "@");
+		$parsedsn=substr($parsedsn,strlen($dbpassword)+1);
+		$dbhost=strtok($parsedsn, "/");
+		$parsedsn=substr($parsedsn,strlen($dbhost)+1);
+		$database = $parsedsn;
+
+		$dbsqlplugin = &ADONewConnection($dbdriver);
+		if (!$dbsqlplugin) {
+			$dberror = $dbsqlplugin->ErrorMsg();
+            $dbmsg = "<div>$dberror</div>";
+			$sql_oke = false;
+		} else {
+        		if (!$dbsqlplugin->NConnect($dbhost, $dbuserid, $dbpassword, $database)) {
+					$dberror = $dbsqlplugin->ErrorMsg();
+            	   	$dbmsg = "<div>$dberror</div>";
+					$sql_oke = false;
+				} else {
+           			$result=$dbsqlplugin->Execute($data, $bindvars); 
+					if (!$result) {
+						$dberror = $dbsqlplugin->ErrorMsg();
+               			$dbmsg = "<div>$dberror</div>";
+						$sql_oke = false;
+					}
+				}
+		}
+
 	}
-	
+
 	$first = true;
 	$class = 'even';
-	while ($result && $res = $result->fetchRow() ) {
+
+	while ($sql_oke && $res = $result->fetchRow()) {
 		if ($first) {
-			$ret .= "<table class='normal'><thead><tr>";
+			$ret .= "<div align='center'><table class='sortable'><tr>";
 
 			$first = false;
 
 			foreach (array_keys($res)as $col) {
-				$ret .= "<th>$col</th>";
+				$ret .= "<td class='heading'>$col</td>";
 			}
 
-			$ret .= "</tr></thead>";
+			$ret .= "</tr>";
 		}
 
 		$ret .= "<tr>";
@@ -101,11 +131,17 @@ function wikiplugin_sql($data, $params) {
 	}
 
 	if ($ret) {
-		$ret .= "</table>";
+		$ret .= "</table></div>";
 	}
 	if ($dbmsg) {
 		$ret .= $dbmsg;
 	}
 
-	return '~np~' . $ret . '~/np~';
+	if ($db != 'local') {
+		$dbsqlplugin->Close();
+	}
+
+	return $ret;
 } 
+
+?>

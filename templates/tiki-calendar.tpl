@@ -1,14 +1,15 @@
 {* $Id$ *}
+{popup_init src="lib/overlib.js"}
 
 {title admpage="calendar"}
 	{if $displayedcals|@count eq 1}
-		{tr}Calendar{/tr}: {assign var=x value=$displayedcals[0]}{$infocals[$x].name|escape}
+		{tr}Calendar{/tr}: {assign var=x value=$displayedcals[0]}{$infocals[$x].name}
 	{else}
 		{tr}Calendar{/tr}
 	{/if}
 {/title}
 
-<div id="calscreen">
+<div id="calscreen"{if $prefs.calendar_sticky_popup eq 'y'} onClick="nd();"{/if}>
 
 	<div class="navbar">
 		{if $displayedcals|@count eq 1 and $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
@@ -24,17 +25,18 @@
 
 		{if $tiki_p_admin_calendar eq 'y' or $tiki_p_admin eq 'y'}
 			{if $displayedcals|@count eq 1}
-				{button href="tiki-admin_calendars.php?calendarId=$displayedcals[0]" _text="{tr}Edit Calendar{/tr}"}
+				{button href="tiki-admin_calendars.php?calendarId=$displayedcals[0]" _text="{tr}Admin Calendar{/tr}"}
+			{else}
+				{button href="tiki-admin_calendars.php" _text="{tr}Admin Calendar{/tr}"}
 			{/if}
-			{button href="tiki-admin_calendars.php" _text="{tr}Admin Calendars{/tr}"}
 		{/if}
-{* avoid Add Event being shown if no calendar is displayed *}
+
 		{if $tiki_p_add_events eq 'y'}
 			{button href="tiki-calendar_edit_item.php" _text="{tr}Add Event{/tr}"}
 		{/if}
 
 		{if $tiki_p_admin_calendar eq 'y'}
-			{button href="#" _onclick="toggle('exportcal');return false;" _text="{tr}Export Calendars{/tr}" _title="{tr}Click to export calendars{/tr}"}
+			{button href="#" _onclick="javascript:toggle('exportcal');" _text="{tr}Export Calendars{/tr}" _title="{tr}Click to export calendars{/tr}"}
 		{/if}
 
 		{if $viewlist eq 'list'}
@@ -46,38 +48,24 @@
 		{/if}
 
 		{if count($listcals) >= 1}
-			{button href="#" _onclick="toggle('filtercal');return false;" _text="{tr}Visible Calendars{/tr}" _title="{tr}Click to select visible calendars{/tr}"}
+			{button href="#" _onclick="javascript:toggle('filtercal');" _text="{tr}Visible Calendars{/tr}" _title="{tr}Click to select visible calendars{/tr}"}
 
 			{if count($thiscal)}
 				<div id="configlinks">
-				{assign var='maxCalsForButton' value=20}
-				{if count($checkedCals) > $maxCalsForButton}<select size="5">{/if}
 				{foreach item=k from=$listcals name=listc}
 					{if $thiscal.$k}
 						{assign var=thiscustombgcolor value=$infocals.$k.custombgcolor}
 						{assign var=thiscustomfgcolor value=$infocals.$k.customfgcolor}
-						{assign var=thisinfocalsname value=$infocals.$k.name|escape}
-						{if count($checkedCals) > $maxCalsForButton}
-							<option style="background-color:#{$thiscustombgcolor};color:#{$thiscustomfgcolor};" onclick="toggle('filtercal')">{$thisinfocalsname}</option>
-						{else}
-							{button href="#" _style="background-color:#$thiscustombgcolor;color:#$thiscustomfgcolor;border:1px solid #$thiscustomfgcolor;" _onclick="toggle('filtercal');return false;" _text="$thisinfocalsname"}
-						{/if}
+						{assign var=thisinfocalsname value=$infocals.$k.name}
+						{button href="#" _style="background-color:#$thiscustombgcolor;color:#$thiscustomfgcolor;border:1px solid #$thiscustomfgcolor;" _onclick="toggle('filtercal');" _text="$thisinfocalsname"}
 					{/if}
 				{/foreach}
-				{if count($checkedCals) > $maxCalsForButton}</select>{/if}
 				</div>
 			{else}
 				{button href="" _style="background-color:#fff;padding:0 4px;" _text="{tr}None{/tr}"}
 			{/if}
 		{/if}
-{* show jscalendar if set *}
-{if $prefs.feature_jscalendar eq 'y'}
-<div class="jscalrow">
-<form action="{$myurl}" method="post" name="f">
-{jscalendar date="$focusdate" id="trig" goto="$jscal_url" align="Bc"}
-</form>
-</div>
-{/if}
+
 	</div>
 
 
@@ -104,11 +92,10 @@
 			{foreach item=k from=$listcals}
 				<div class="calcheckbox">
 					<input type="checkbox" name="calIds[]" value="{$k|escape}" id="groupcal_{$k}" {if $thiscal.$k}checked="checked"{/if} />
-					<label for="groupcal_{$k}" class="calId{$k}">{$infocals.$k.name|escape} (id #{$k})</label>
+					<label for="groupcal_{$k}" class="calId{$k}">{$infocals.$k.name} (id #{$k})</label>
 				</div>
 			{/foreach}
 			<div class="calinput">
-				<input type="hidden" name="todate" value="{$focusdate}"/>
 				<input type="submit" name="refresh" value="{tr}Refresh{/tr}"/>
 			</div>
 		</form>
@@ -124,28 +111,27 @@
 			{foreach item=k from=$listcals}
 				<div class="calcheckbox">
 					<input type="checkbox" name="calendarIds[]" value="{$k|escape}" id="groupcal_{$k}" {if $thiscal.$k}checked="checked"{/if} />
-					<label for="groupcal_{$k}" class="calId{$k}">{$infocals.$k.name|escape}</label>
+					<label for="groupcal_{$k}" class="calId{$k}">{$infocals.$k.name}</label>
 				</div>
 			{/foreach}
 			<div class="calcheckbox">
 				<a href="{$iCalAdvParamsUrl}">{tr}advanced parameters{/tr}</a>
 			</div>
 			<div class="calinput">
-				<input type="submit" name="ical" value="{tr}Export as iCal{/tr}"/>
-				<input type="submit" name="csv" value="{tr}Export as CSV{/tr}"/>
+				<input type="submit" name="valid" value="{tr}Export{/tr}"/>
 			</div>
 		</form>
 	{/if}
 
-	{include file='tiki-calendar_nav.tpl'}
+	{include file="tiki-calendar_nav.tpl"}
 	{if $viewlist eq 'list'}
-		{include file='tiki-calendar_listmode.tpl''}
+		{include file="tiki-calendar_listmode.tpl"'}
 	{elseif $viewmode eq 'day'}
-		{include file='tiki-calendar_daymode.tpl'}
+		{include file="tiki-calendar_daymode.tpl"}
 	{elseif $viewmode eq 'week'}
-		{include file='tiki-calendar_weekmode.tpl'}
+		{include file="tiki-calendar_weekmode.tpl"}
 	{else}
-		{include file='tiki-calendar_calmode.tpl'}
+		{include file="tiki-calendar_calmode.tpl"}
 	{/if}
 <p>&nbsp;</p>
 </div>

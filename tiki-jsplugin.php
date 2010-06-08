@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /*
  * This is included in the html generated for each wiki page. It is included for each plugin used on a wiki page.
  * The include is of the form <script type="text/javascript" src="tiki-jsplugin.php?plugin=googledoc"></script>
@@ -12,25 +6,16 @@
  * The java script generated defines tiki_plugins["pluginname"] with meta data for the parameters of the plugin.
  * This is then used to allow a nice way for the editor of the page to use a form to edit the plug-in when they
  * click the little edit icon next to the plug-ins generated html.
- * 
- * Cached by language to allow translations (tiki 5)
+ *
  */
 
-header('content-type: application/x-javascript');
-
-// Apply filters on the body
-include 'lib/core/lib/TikiFilter.php';
-$filter = TikiFilter::get('xss');
-$_REQUEST['plugin'] = isset($_GET['plugin']) ? $filter->filter($_GET['plugin']) : '';
-$_REQUEST['language'] = isset($_GET['language']) ? $filter->filter($_GET['language']) : '';
-
-$all = empty( $_REQUEST['plugin'] );
+$all = !isset( $_GET['plugin'] );
 
 $files = array();
 
 if( $all )
 {
-	$cache = "temp/cache/wikiplugin_ALL_".$_REQUEST['language'];
+	$cache = "temp/cache/wikiplugin_ALL";
 
 	if( file_exists( $cache ) )
 	{
@@ -44,9 +29,9 @@ if( $all )
 }
 else
 {
-	$plugin = basename( $_REQUEST['plugin'] );
+	$plugin = basename( $_GET['plugin'] );
 
-	$cache = 'temp/cache/wikiplugin_'.$plugin.'_'.$_REQUEST['language'];
+	$cache = "temp/cache/wikiplugin_$plugin";
 
 	if( file_exists( $cache ) )
 	{
@@ -62,14 +47,21 @@ else
 ob_start();
 
 ?>
-if( typeof tiki_plugins == 'undefined' ) { var tiki_plugins = {}; }
+
+if( ! tiki_plugins )
+	var tiki_plugins = {};
+
 <?php foreach( $plugins as $plugin ):
 	if( ! $info = $tikilib->plugin_info( $plugin ) )
 		continue;
 ?>
-tiki_plugins.<?php echo $plugin ?> = <?php echo json_encode( $info ) ?>;
+
+tiki_plugins[<?php echo json_encode( $plugin ) ?>] = <?php echo json_encode( $info ) ?>;
+
 <?php endforeach;
 
 $content = ob_get_contents();
 file_put_contents( $cache, $content );
 ob_end_flush();
+	
+?>

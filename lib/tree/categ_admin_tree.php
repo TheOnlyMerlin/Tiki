@@ -1,11 +1,7 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /** \file
+ * $Id: /cvsroot/tikiwiki/tiki/lib/tree/categ_admin_tree.php,v 1.6 2007-03-06 19:30:29 sylvieg Exp $
+ *
  * \brief Categories browse tree
  *
  * \author zaufi@sendmail.ru
@@ -16,8 +12,7 @@ require_once ('lib/tree/tree.php');
 /**
  * \brief Class to render categories browse tree
  */
-class CatAdminTreeMaker extends TreeMaker
-{
+class CatAdminTreeMaker extends TreeMaker {
 	/// Collect javascript cookie set code (internaly used after make_tree() method)
 	var $jsscriptblock;
 
@@ -33,17 +28,12 @@ class CatAdminTreeMaker extends TreeMaker
 
 	/// Generate HTML code for tree. Need to redefine to add javascript cookies block
 	function make_tree($rootid, $ar) {
-		global $headerlib;
-		
-		$r = '<ul class="tree root">'."\n";
+		global $debugger;
 
-		$r .= $this->make_tree_r($rootid, $ar) . "</ul>\n";
-
-		// java script block that opens the nodes as remembered in cookies
-		$headerlib->add_jq_onready($this->jsscriptblock);
-		
-		// return tree
-		return $r;
+		$r = $this->make_tree_r($rootid, $ar);
+		// $debugger->var_dump('$r');
+		// return tree with java script block that opens the nodes as remembered in cookies
+		return $r . "<script type='text/javascript'> " . $this->jsscriptblock . " </script>\n";
 	}
 
 	//
@@ -98,3 +88,5 @@ class CatAdminTreeMaker extends TreeMaker
 		return '';
 	}
 }
+
+?>

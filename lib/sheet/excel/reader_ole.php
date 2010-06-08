@@ -36,8 +36,7 @@ function GetInt4d($data, $pos) {
 }
 
 
-class R_OLE
-{
+class R_OLE {
     var $data = '';
     
     
@@ -242,3 +241,4 @@ class R_OLE
     }
     
 }
+?>

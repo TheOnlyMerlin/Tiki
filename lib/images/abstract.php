@@ -1,12 +1,6 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
-class ImageAbstract
-{
+class ImageAbstract {
 	var $data = NULL;
 	var $format = 'jpeg';
 	var $height = NULL;
@@ -19,7 +13,7 @@ class ImageAbstract
 
 	function __construct($image, $isfile = false) {
 		if ( ! empty($image) || $this->filename !== null ) {
-			if ( is_readable( $this->filename ) && function_exists('exif_thumbnail') && in_array(image_type_to_mime_type(exif_imagetype($this->filename)), array('image/jpeg', 'image/tiff'))) {
+			if ( $this->filename !== null && function_exists('exif_thumbnail') ) {
 				$this->thumb = exif_thumbnail($this->filename, $this->width, $this->height);
 				if (trim($this->thumb) == "") $this->thumb = NULL;
 			}
@@ -209,3 +203,4 @@ class ImageAbstract
 		return $this->width;
 	}
 }
+?>

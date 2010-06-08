@@ -1,8 +1,11 @@
-<fieldset class="admin">
-	<legend>{tr}Wiki attachments{/tr}</legend>
+<div class="cbox">
+	<div class="cbox-title">{tr}Wiki attachments{/tr}</div>
+	<div class="cbox-data">
+		<div class="admin">
+
 			<form action="tiki-admin.php?page=wikiatt" method="post">
 				<input type="text" name="find" value="{$find|escape}" />
-				<input type="submit" name="action" value="{tr}Find{/tr}"/>
+				<input type="submit" name="action" value="{tr}Find{/tr}">
 			</form>
 
 			{cycle values="odd,even" print=false}
@@ -38,7 +41,7 @@
 				{section name=x loop=$attachements}
 					<tr class={cycle}>
 						<td>{$attachements[x].user}</td>
-						<td><a href="tiki-index?page={$attachements[x].page}">{$attachements[x].page}</a></td>
+						<td>{$attachements[x].page}</td>
 						<td>
 							<a href="tiki-download_wiki_attachment.php?attId={$attachements[x].attId}">{$attachements[x].filename}</a>
 						</td>
@@ -55,21 +58,23 @@
 			</table>
 
 			{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
+		</div>
 		
 		<table>
 			<tr>
 				<td>
 					<form action="tiki-admin.php?page=wikiatt" method="post">
 						<input type="hidden" name="all2db" value="1" />
-						<input type="submit" name="action" value="{tr}Change all to db{/tr}"/>
+						<input type="submit" name="action" value="{tr}Change all to db{/tr}">
 					</form>
 				</td>
 				<td>
 					<form action="tiki-admin.php?page=wikiatt" method="post">
 						<input type="hidden" name="all2file" value="1" />
-						<input type="submit" name="action" value="{tr}Change all to file{/tr}"/>
+						<input type="submit" name="action" value="{tr}Change all to file{/tr}">
 					</form>
 				</td>
 			</tr>
 		</table>
-</fieldset>
+	</div>
+</div>

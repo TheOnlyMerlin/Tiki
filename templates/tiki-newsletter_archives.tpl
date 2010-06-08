@@ -1,9 +1,7 @@
-{title help="Newsletters"}{tr}Sent editions{/tr}{if $nl_info}: {$nl_info.name|escape}{/if}{/title}
+{title help="Newsletters"}{tr}Sent editions{/tr}{if $nl_info}: {$nl_info.name}{/if}{/title}
 
 <div class="navbar">
-	{if $tiki_p_list_newsletters eq "y"}
-		{button href="tiki-newsletters.php" _text="{tr}List Newsletters{/tr}"}
-	{/if}
+	{button href="tiki-newsletters.php" _text="{tr}List Newsletters{/tr}"}
 	{if $tiki_p_subscribe_newsletters eq "y"}
 		{button href="tiki-newsletters.php?nlId=$nlId&amp;info=1" _text="{tr}Subscribe{/tr}"}
 	{/if}
@@ -20,7 +18,7 @@
   <h2>{tr}Sent Edition{/tr}</h2>
 </div>
 <h3>{tr}Subject{/tr}</h3>
-<div class="simplebox wikitext">{$edition.subject|escape}</div>
+<div class="simplebox wikitext">{$edition.subject}</div>
 
 <h3>{tr}HTML version{/tr}</h3>
 <div class="simplebox wikitext">{$edition.dataparsed}</div>
@@ -45,7 +43,7 @@
 {assign var=offset_bak value=0}
 {assign var=find value=$ed_find}
 {assign var=find_bak value=''}
-{include file='sent_newsletters.tpl'}
+{include file=sent_newsletters.tpl }
 
 {if $edition_errors}
   <h2>{tr}Errors:{/tr} {$edition_info.subject} / {$edition_info.sent|tiki_short_datetime}</h2>

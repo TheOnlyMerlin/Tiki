@@ -1,10 +1,6 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// diff.php
+//
 // A PHP diff engine for phpwiki.
 //
 // Copyright (C) 2000 Geoffrey T. Dairiki <dairiki@dairiki.org>
@@ -20,7 +16,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 // FIXME: possibly remove assert()'s for production version?
 
 // PHP3 does not have assert()
-define('USE_ASSERTS',false);  // should only ba acitvated for debug purposes - otherwise could cause blank screen problems
+define('USE_ASSERTS', function_exists('assert'));
 
       
 /**
@@ -48,8 +44,8 @@ class _WikiDiffEngine
 
   function _WikiDiffEngine ($from_lines, $to_lines)
       {
-	$n_from = count($from_lines);
-	$n_to = count($to_lines);
+	$n_from = sizeof($from_lines);
+	$n_to = sizeof($to_lines);
 	$endskip = 0;
 
         // Ignore differences in line endings
@@ -71,7 +67,7 @@ class _WikiDiffEngine
 	    $n_to--;
 	    $endskip++;
 	  }
-	for ($skip = 0, $min_from_to = min($n_from, $n_to); $skip < $min_from_to; $skip++)
+	for ( $skip = 0; $skip < min($n_from, $n_to); $skip++)
 	    if ($from_lines[$skip] != $to_lines[$skip])
 		break;
 	$n_from -= $skip;
@@ -104,7 +100,7 @@ class _WikiDiffEngine
 	  }
 
 	// Find the LCS.
-	$this->_compareseq(0, count($this->xv), 0, count($this->yv));
+	$this->_compareseq(0, sizeof($this->xv), 0, sizeof($this->yv));
 
 	// Merge edits when possible
 	$this->_shift_boundaries($xlines, $this->xchanged, $this->ychanged);
@@ -366,9 +362,9 @@ class _WikiDiffEngine
 	$i = 0;
 	$j = 0;
 
-	USE_ASSERTS && assert('count($lines) == count($changed)');
-	$len = count($lines);
-	$other_len = count($other_changed);
+	USE_ASSERTS && assert('sizeof($lines) == sizeof($changed)');
+	$len = sizeof($lines);
+	$other_len = sizeof($other_changed);
 
 	while (1)
 	  {
@@ -481,7 +477,7 @@ class _WikiDiffEngine
 /**
  * Class representing a diff between two files.
  */
-class WikiDiff
+class WikiDiff 
 {
   var $edits;
 
@@ -489,7 +485,7 @@ class WikiDiff
    * Compute diff between files (or deserialize serialized WikiDiff.)
    */
   function WikiDiff($from_lines = false, $to_lines = false)
-  {
+      {
 	if ($from_lines && $to_lines)
 	  {
 	    $compute = new _WikiDiffEngine($from_lines, $to_lines);
@@ -523,9 +519,13 @@ class WikiDiff
 	$x = 0;
 	$rev = new WikiDiff;
 
-	for (reset($this->edits), $currentedits = current($this->edits); $edit = $currentedits; next($this->edits)) {
-	    if (is_array($edit)) { // Was an add, turn it into a delete.
-		$nadd = count($edit);
+	for ( reset($this->edits);
+	      $edit = current($this->edits);
+	      next($this->edits) )
+	  {
+	    if (is_array($edit))
+	      { // Was an add, turn it into a delete.
+		$nadd = sizeof($edit);
 		USE_ASSERTS && assert ($nadd > 0);
 		$edit = -$nadd;
 	      }
@@ -604,7 +604,7 @@ class WikiDiff
 	    else
 	      { // Left op is an add.
 		if (!is_array($left)) die('assertion error');
-		$nleft = count($left);
+		$nleft = sizeof($left);
 		if ($nleft <= abs($right))
 		  {
 		    if ($right > 0)
@@ -646,7 +646,7 @@ class WikiDiff
 	    if (is_array($op) && is_array($newop))
 	      {
 		// Both $op and $newop are adds.
-		for ($i = 0, $sizeof_newop = count($newop); $i < $sizeof_newop; $i++)
+		for ($i = 0; $i < sizeof($newop); $i++)
 		    $op[] = $newop[$i];
 	      }
 	    else if (($op > 0 && $newop > 0) || ($op < 0 && $newop < 0))
@@ -705,7 +705,7 @@ class WikiDiff
   function apply ($from_lines)
       {
 	$x = 0;
-	$xlim = count($from_lines);
+	$xlim = sizeof($from_lines);
 
 	for ( reset($this->edits);
 	      $edit = current($this->edits);
@@ -749,9 +749,9 @@ class WikiDiff
    */
   function isEmpty ()
       {
-	if (count($this->edits) > 1)
+	if (sizeof($this->edits) > 1)
 	    return false;
-	if (count($this->edits) == 0)
+	if (sizeof($this->edits) == 0)
 	    return true;
 	// Test for: only edit is a copy.
 	return !is_array($this->edits[0]) && $this->edits[0] > 0;
@@ -765,7 +765,10 @@ class WikiDiff
   function lcs ()
       {
 	$lcs = 0;
-	for (reset($this->edits), $currentedit = current($this->edits); $edit = $currentedit; next($this->edits)) {
+	for (reset($this->edits);
+	     $edit = current($this->edits);
+	     next($this->edits))
+	  {
 	    if (!is_array($edit) && $edit > 0)
 		$lcs += $edit;
 	  }
@@ -844,7 +847,7 @@ class WikiDiffFormatter
       {
 	$html = '';
 	$x = 0; $y = 0;
-	$xlim = count($from_lines);
+	$xlim = sizeof($from_lines);
 
 	reset($edits);
 	while ($edit = current($edits))
@@ -872,7 +875,7 @@ class WikiDiffFormatter
 		  }
 		if (is_array($edit))
 		  { // Edit op is an add.
-		    $y += count($edit);
+		    $y += sizeof($edit);
 		    $hunk[$this->do_reverse_diff ? 'd' : 'a'] = $edit;
 		  }
 		else
@@ -962,13 +965,17 @@ class WikiDiffFormatter
 		       'a' => '#ccffcc',
 		       'd' => '#ffcccc');
 
-	for (reset($hunks), $currenthunks = current($hunks); $hunk = $currenthunks; next($hunks)) {
+	for (reset($hunks); $hunk = current($hunks); next($hunks))
+	  {
 	    if (!empty($hunk['c']))
-		$html .= $this->_emit_lines($hunk['c'], $this->context_prefix, '#ffffff');
+		$html .= $this->_emit_lines($hunk['c'],
+		                            $this->context_prefix, '#ffffff');
 	    if (!empty($hunk['d']))
-		$html .= $this->_emit_lines($hunk['d'], $this->deletes_prefix, '#ffcccc');
+		$html .= $this->_emit_lines($hunk['d'],
+		                            $this->deletes_prefix, '#ffcccc');
 	    if (!empty($hunk['a']))
-		$html .= $this->_emit_lines($hunk['a'], $this->adds_prefix, '#ccffcc');
+		$html .= $this->_emit_lines($hunk['a'],
+		                            $this->adds_prefix, '#ccffcc');
 	  }
 
 	$html .= "</table></td></tr></table></td></tr>\n";
@@ -1014,3 +1021,5 @@ class WikiUnifiedDiffFormatter extends WikiDiffFormatter
 	return "@@ -$xbeg$xlen +$ybeg$ylen @@";
       }
 }
+
+?>

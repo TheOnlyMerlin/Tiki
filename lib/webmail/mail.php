@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /* TikiMail class
  *
  *  This is the core class for Tikiwiki Mail handling. It takes care of all the
@@ -18,8 +12,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 	exit;
 }
 
-class TikiMail
-{
+class TikiMail {
 	var $debug = true;	// Defines if we are on a debuggin state or not.
 	
 	var $connection;  	// the mail stream.
@@ -312,3 +305,4 @@ class TikiMail
 		return true;
 	}
 }
+?>

@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /**
  * class: TikiDate
  *
@@ -23,8 +17,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class TikiDate
-{
+class TikiDate {
 	var $trad = array("January","February","March","April","May","June","July","August","September","October","November","December","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Mon","Tue","Wed","Thu","Fri","Sat","Sun","of");
 	var $translated_trad = array();
 	var $date;
@@ -69,21 +62,6 @@ class TikiDate
 	 * Default constructor
 	 */
 	function TikiDate() {
-
-		if (function_exists('date_default_timezone_set')) {			// function not available < PHP 5.1
-			
-			if (isset($_SERVER['TZ']) && !empty($_SERVER['TZ'])) {	// apache - can be set in .htaccess
-				$tz = $_SERVER['TZ'];
-			} else if (ini_get('date.timezone')) {					// set in php.ini
-				$tz = ini_get( 'date.timezone');
-			} else if (getenv('TZ')) {								// system env setting
-				$tz = getenv('TZ');
-			} else {
-				$tz = 'UTC';
-			}
-			date_default_timezone_set($tz);
-		}
-		
 		$this->date = new DateTime();	// was: DateTime(date("Y-m-d H:i:s Z"))
 										// the Z (timezone) param was causing an error
 										// DateTime constructor defaults to "now" anyway so unnecessary?
@@ -91,7 +69,7 @@ class TikiDate
 		$this->replace = array_values($this->translation_array);
 	}
 
-	static function getTimeZoneList() {
+	function getTimeZoneList() {
 		$tz = array();
 		$now = new DateTime("now",new DateTimeZone("GMT"));
 		$tz_list = DateTimeZone::listIdentifiers();
@@ -147,13 +125,6 @@ class TikiDate
 			$this->date->modify("$days day");
 	}
 
-	function addMonths($months) {
-		if ($months >= 0)
-			$this->date->modify("+$months months");
-		else
-			$this->date->modify("$months months");
-	}
-
 	function getTime() {
 		return (int)$this->date->format("U");
 	}
@@ -169,125 +140,39 @@ class TikiDate
 			$this->date = new DateTime($date);
 		}
 	}
-
+	
 	function setLocalTime($day, $month, $year, $hour, $minute, $second, $partsecond ) {
 		$this->date->setDate($year,$month,$day);
 		$this->date->setTime($hour,$minute,$second);
 	}
 
 	function setTZbyID($tz_id) {
-		$dtz = null;
-		while (!$dtz) {
-			try {
-				$dtz = new DateTimeZone($tz_id);
-			} catch(Exception $e) {
-				$tz_id = $this->convertMissingTimezone($tz_id);
-			}
+		if (!empty($tz_id)) {
+			$this->date->setTimeZone(new DateTimeZone($tz_id));
 		}
-		$this->date->setTimezone($dtz);
 	}
 
-	// TODO delete in Tiki 6 (if really unused)
 	function convertTZbyID($tz_id) {
-		$this->setTZbyID($tz_id);
-	}
-	
-	function convertMissingTimezone($tz_id) {
-		switch ($tz_id) {		// Convert timezones not in PHP 5
-			case 'A':
-				$tz_id = 'Etc/GMT+1';		// military A to Z
-				break;
-			case 'B':
-				$tz_id = 'Etc/GMT+2';
-				break;
-			case 'C':
-				$tz_id = 'Etc/GMT+3';
-				break;
-			case 'D':
-				$tz_id = 'Etc/GMT+4';
-				break;
-			case 'E':
-				$tz_id = 'Etc/GMT+5';
-				break;
-			case 'F':
-				$tz_id = 'Etc/GMT+6';
-				break;
-			case 'G':
-				$tz_id = 'Etc/GMT+7';
-				break;
-			case 'H':
-				$tz_id = 'Etc/GMT+8';
-				break;
-			case 'I':
-				$tz_id = 'Etc/GMT+9';
-				break;
-			case 'K':
-				$tz_id = 'Etc/GMT+10';
-				break;
-			case 'L':
-				$tz_id = 'Etc/GMT+11';
-				break;
-			case 'M':
-				$tz_id = 'Etc/GMT+12';
-				break;
-			case 'N':
-				$tz_id = 'Etc/GMT-1';
-				break;
-			case 'O':
-				$tz_id = 'Etc/GMT-2';
-				break;
-			case 'P':
-				$tz_id = 'Etc/GMT-3';
-				break;
-			case 'Q':
-				$tz_id = 'Etc/GMT-4';
-				break;
-			case 'R':
-				$tz_id = 'Etc/GMT-5';
-				break;
-			case 'S':
-				$tz_id = 'Etc/GMT-6';
-				break;
-			case 'T':
-				$tz_id = 'Etc/GMT-7';
-				break;
-			case 'U':
-				$tz_id = 'Etc/GMT-8';
-				break;
-			case 'V':
-				$tz_id = 'Etc/GMT-9';
-				break;
-			case 'W':
-				$tz_id = 'Etc/GMT-10';
-				break;
-			case 'X':
-				$tz_id = 'Etc/GMT-11';
-				break;
-			case 'Y':
-				$tz_id = 'Etc/GMT-12';
-				break;
-			case 'Z':
-				$tz_id = 'Etc/GMT';
-			default:
-				$tz_id = 'UTC';
+		if (!empty($tz_id)) {
+			$this->date->setTimeZone(new DateTimeZone($tz_id));
 		}
-		return $tz_id;
 	}
 
 	function getTimezoneId() {
 		return $this->date->format("e");
 	}
 
-	static function TimezoneIsValidId($id) {
-		return array_key_exists( strtolower($id), timezone_abbreviations_list() );
+	function TimezoneIsValidId($id) {
+		return empty($id) ? FALSE : timezone_open($id) !== FALSE ;
 	}
-	
+
 }
 
-class Date_Calc
-{
+class Date_Calc {
 
 	function daysInMonth($month,$year) {
 		return cal_days_in_month(CAL_GREGORIAN, $month, $year);
 	}
 }
+
+?>

@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -44,12 +39,12 @@ function smarty_function_query($params, &$smarty) {
 	
 				$list = explode(",",$param_value);
 				if ( isset($_REQUEST[$param_name]) and in_array($_REQUEST[$param_name],$list) ) {
-					$query[$param_name] = $list[(array_search($_REQUEST[$param_name],$list)+1)%count($list)];
+					$query[$param_name] = $list[(array_search($_REQUEST[$param_name],$list)+1)%sizeof($list)];
 					if ( $query[$param_name] === NULL or $query[$param_name] == 'NULL' ) {
 						unset($query[$param_name]);
 					}
 				} elseif ( isset($query[$param_name]) and in_array($query[$param_name],$list) ) {
-					$query[$param_name] = $list[(array_search($query[$param_name],$list)+1)%count($list)];
+					$query[$param_name] = $list[(array_search($query[$param_name],$list)+1)%sizeof($list)];
 					if ( $query[$param_name] === NULL or $query[$param_name] == 'NULL' ) {
 						unset($query[$param_name]);
 					}
@@ -95,7 +90,29 @@ function smarty_function_query($params, &$smarty) {
         $params['_urlencode'] = 'y';
       }
       $sep = $params['_urlencode'] == 'n' ? '&' : '&amp;';
-      $ret = http_build_query($query, '', $sep);
+      if ( function_exists('http_build_query') && $params['_urlencode'] == 'y' ) {
+        $ret = http_build_query($query, '', $sep);
+      } else {
+        foreach ( $query as $k => $v ) {
+          if ( is_array($v) ) {
+            foreach ( $v as $vk => $vv ) {
+              if ( $ret != '' ) $ret .= $sep;
+              if ( $params['_urlencode'] == 'y' ) {
+                $ret .= urlencode($k.'['.$vk.']').'='.urlencode($vv);
+              } else {
+                $ret .= $k.'['.$vk.']='.$vv;
+              }
+            }
+          } else {
+            if ( $ret != '' ) $ret .= $sep;
+            if ( $params['_urlencode'] == 'y' ) {
+              $ret .= urlencode($k).'='.urlencode($v);
+            } else {
+              $ret .= $k.'='.$v;
+            }
+          }
+        }
+      }
     }
 
   }
@@ -106,7 +123,7 @@ function smarty_function_query($params, &$smarty) {
 		// Check for anchor used as script
 	if ( !empty($params['_script'][0]) && $params['_script'][0] == '#' ) {
 			if ( empty($params['_anchor']) ) {
-				$params['_anchor'] = substr($params['_script'],1);
+				$params['_anchor'] = $params['_script'];
 			}
 			unset($params['_script']);
 		}
@@ -118,7 +135,7 @@ function smarty_function_query($params, &$smarty) {
 
       // If _script does not already specifies the directory and if there is one in PHP_SELF server var, use it
       if ( $php_self != 'javascript:void(0)' && strpos($php_self, '/') === false && $_SERVER['PHP_SELF'][0] == '/' ) {
-        $php_self = str_replace('\\','/',dirname($_SERVER['PHP_SELF'])).'/'.$php_self;
+        $php_self = dirname($_SERVER['PHP_SELF']).'/'.$php_self;
       }
 
     } elseif ( empty($params['_anchor']) || ! empty($ret) ) {

@@ -8,11 +8,11 @@
 	{button _icon="img/mytiki/prefs.gif" _text="{tr}Preferences{/tr}" href="tiki-user_preferences.php" _menu_text="y}
 {/if}
 
-{button _icon="img/mytiki/admin.gif" _text="{tr}MyInfo{/tr}" href="tiki-user_information.php" _menu_text="y}
+{button _icon="img/mytiki/admin.gif" _text="{tr}My Infos{/tr}" href="tiki-user_information.php" _menu_text="y}
 
 {if $prefs.feature_messages eq 'y' and $tiki_p_messages eq 'y'}
 	{if $unread}
-		{button _icon="img/mytiki/messages.gif" _text="{tr}Messages{/tr} ($unread)" href="messu-mailbox.php" _menu_text="y}
+		{button _icon="img/mytiki/messages.gif" _text="{tr}Messages{/tr}($unread)" href="messu-mailbox.php" _menu_text="y}
 	{else}
 		{button _icon="img/mytiki/messages.gif" _text="{tr}Messages{/tr}" href="messu-mailbox.php" _menu_text="y}
 	{/if}
@@ -28,6 +28,10 @@
 
 {if $prefs.user_assigned_modules eq 'y' and $tiki_p_configure_modules eq 'y'}
 	{button _icon="img/mytiki/modules.gif" _text="{tr}Modules{/tr}" href="tiki-user_assigned_modules.php" _menu_text="y}
+{/if}
+
+{if $prefs.feature_newsreader eq 'y' and $tiki_p_newsreader eq 'y'}
+	{button _icon="img/mytiki/news.gif" _text="{tr}Newsreader{/tr}" href="tiki-newsreader_servers.php" _menu_text="y}
 {/if}
 
 {if $prefs.feature_webmail eq 'y' and $tiki_p_use_webmail eq 'y'}
@@ -58,9 +62,5 @@
 	{button _icon="img/mytiki/gnome-vumeter.png" _text="{tr}Action Log{/tr}" href="tiki-admin_actionlog.php?selectedUsers[]=$user" _menu_text="y}
 {/if}
 
-{if $prefs.feature_socialnetworks == 'y' and !empty($user) and ($tiki_p_socialnetworks eq 'y' or $tiki_p_admin_socialnetworks eq 'y')}
-	{button _icon="img/mytiki/socialnetworks_32.png" _text="{tr}Social networks{/tr}" href="tiki-socialnetworks.php" _menu_text="y}
-{/if}
-
 </div>
-<br/>
+

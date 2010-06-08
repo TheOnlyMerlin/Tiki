@@ -14,9 +14,17 @@
 <table class="normal">
 <tr class="formcolor">
   <td>{tr}Edit{/tr}:
+  <br /><br />
+  {include file="textareasize.tpl" area_name='editwiki' formId='editwikiform'}
+  <br /><br />
+  {if $quicktags and $prefs.quicktags_over_textarea neq 'y'}
+    {include file=tiki-edit_help_tool.tpl area_name='editwiki'}
+  {/if}
   </td>
   <td>
-    {toolbars area_name='editwiki'}
+    {if $quicktags and $prefs.quicktags_over_textarea eq 'y'}
+      {include file=tiki-edit_help_tool.tpl area_name='editwiki'}
+    {/if}
     <textarea class="wikiedit" id="editwiki" name="data" rows="{$rows}" cols="{$cols}">{$data|escape}</textarea>
     <input type="hidden" name="rows" value="{$rows}"/>
     <input type="hidden" name="cols" value="{$cols}"/>
@@ -30,12 +38,12 @@
 {if isset($pos)}<input type="hidden" name="pos" value="{$pos}" />{/if}
 {if isset($cell)}<input type="hidden" name="cell" value="{$cell}" />{/if}
 {if isset($hdr)}<input type="hidden" name="hdr" value="{$hdr}" />{/if}
-{if $prefs.feature_ajax_autosave eq "y"}
-	{button _title="{tr}Preview your changes in a separate window.{/tr}" _class="wikiaction tips" _text="{tr}Live Preview{/tr}" _ajax="n" _onclick="ajax_preview(); return false;"}&nbsp;&nbsp;
-{/if}
-<input type="submit" title="{tr}Preview your changes.{/tr}" class="wikiaction tips" name="preview" value="{tr}Preview{/tr}" />&nbsp;&nbsp;
-<input type="submit"  title="{tr}Save the page.{/tr}" class="wikiaction tips" name="save" value="{tr}Save{/tr}" />&nbsp;&nbsp;
-<input type="submit" title="{tr}Cancel the edit, you will lose your changes.{/tr}" class="wikiaction tips" name="cancel_edit" value="{tr}Cancel Edit{/tr}" />
+<input type="submit" onmouseover="return overlib('{tr}Preview your changes.{/tr}');" onmouseout="nd();" class="wikiaction" name="preview" value="{tr}Preview{/tr}" />&nbsp;&nbsp;
+<input type="submit"  onmouseover="return overlib('{tr}Save the page.{/tr}');" onmouseout="nd();" class="wikiaction" name="save" value="{tr}Save{/tr}" />&nbsp;&nbsp;
+<input type="submit" onmouseover="return overlib('{tr}Cancel the edit, you will lose your changes.{/tr}');" onmouseout="nd();" class="wikiaction" name="cancel_edit" value="{tr}Cancel Edit{/tr}" />
 </td></tr>
 </table>
 </form>
+{if !$wysiwyg}
+ {include file=tiki-edit_help.tpl}
+{/if}

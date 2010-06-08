@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once('../tiki-setup.php');
 require_once('lib/diff/difflib.php');
@@ -50,10 +45,10 @@ function enlight_xpath($url, $xpath) {
 		tidy_diagnose($data);
 	} else {
 		if (!$loaded) {
-			require_once('lib/htmlpurifier_tiki/HTMLPurifier.tiki.php');
-			$config = getHTMLPurifierTikiConfig();
-			$config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
-			$config->set('Attr.EnableID', true);
+			require_once("lib/htmlpurifier/HTMLPurifier.auto.php");
+			$config =& HTMLPurifier_Config::createDefault();
+			$config->set('HTML', 'Doctype', 'XHTML 1.0 Transitional');
+			$config->set('Attr','EnableID', true);
 			$purifier = new HTMLPurifier($config);
 			$loaded = true;
 		}
@@ -103,3 +98,5 @@ foreach($urls as $url) {
 	}
 	$count++;
 }
+
+?>

@@ -1,10 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-article_types.php,v 1.18.2.1 2007-11-08 21:47:51 ricks99 Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 $section = 'cms';
 require_once ('tiki-setup.php');
 
@@ -12,17 +12,33 @@ include_once ('lib/articles/artlib.php');
 
 $smarty->assign('headtitle',tra('Admin Article Types'));
 
-$access->check_feature('feature_articles');
+if ($prefs['feature_articles'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_articles");
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 // PERMISSIONS: NEEDS p_admin or tiki_p_articles_admin_types
-$access->check_permission(array('tiki_p_articles_admin_types'));
+if ($tiki_p_admin_cms != 'y' && $tiki_p_articles_admin_types != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 if(isset($_REQUEST["add_type"])) {
 	$artlib->add_type($_REQUEST["new_type"]);
 }
 elseif(isset($_REQUEST["remove_type"])) {
-	$access->check_authenticity();
-	$artlib->remove_type($_REQUEST["remove_type"]);
+	$area = "delarticletype";
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$artlib->remove_type($_REQUEST["remove_type"]);
+	} else {
+		key_get($area);
+	}
 }
 elseif(isset($_REQUEST["update_type"])) {
 	foreach(array_keys($_REQUEST["type_array"]) as $this_type) {
@@ -65,33 +81,15 @@ elseif(isset($_REQUEST["update_type"])) {
 				$_REQUEST["show_image_caption"][$this_type], 
 				$_REQUEST["show_lang"][$this_type], 
 				$_REQUEST["creator_edit"][$this_type]);
-				
-		// Add custom attributes
-		if ($prefs["article_custom_attributes"] == 'y' && !empty($_REQUEST["new_attribute"][$this_type])) {			
-			$ok = $artlib->add_article_type_attribute($this_type, $_REQUEST["new_attribute"][$this_type]);
-			if (!$ok) {
-				$smarty->assign('msg', tra("Failed to add attribute"));
-				$smarty->display("error.tpl");
-				die;
-			}
-		}
 	}
 }
 
 $types = $artlib->list_types();
-
-if ($prefs["article_custom_attributes"] == 'y') {
-	if (isset($_REQUEST["att_type"]) && isset($_REQUEST["att_remove"])) {
-		$artlib->delete_article_type_attribute($_REQUEST["att_type"], $_REQUEST["att_remove"]);
-	}
-	foreach($types as &$t) {
-		$t["attributes"] = $artlib->get_article_type_attributes($t["type"]);
-	}	
-}
-
 $smarty->assign('types', $types);
 
 include_once ('tiki-section_options.php');
 
 $smarty->assign('mid', 'tiki-article_types.tpl');
 $smarty->display("tiki.tpl");
+
+?>

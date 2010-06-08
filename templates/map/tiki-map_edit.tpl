@@ -1,7 +1,7 @@
 {* $Id$ *}
 
 <a class="pagetitle" href="tiki-map_edit.php?mode=listing">{tr}Mapfiles{/tr}</a><br />
-<a href="http://www.mapserver.org/mapfile/reference.html">http://www.mapserver.org/mapfile/reference.html</a><br /><br />
+<a href="http://mapserver.gis.umn.edu/doc/mapfile-reference.html">http://mapserver.gis.umn.edu/doc/mapfile-reference.html</a><br /><br />
 {if $mapfile}<h2>{tr}Mapfile{/tr}: {$mapfile}</h2>{/if}
 {if $mode eq 'listing'}
 <h3>{tr}Available mapfiles{/tr}:</h3>
@@ -88,14 +88,18 @@
 <tr class="formcolor">
 <td>
 <div id='edit-zone'>
-	<div id='textarea-toolbar' style='padding:3px; font-size:10px;'>
-		{toolbars area_name='mapdata'}
+	{if $prefs.quicktags_over_textarea neq 'y'}<table style="border:0; width:100%"><tr><td style="border:0;">{/if}
+	<div id='textarea-toolbar' style='padding:3px; font-size:10px; {if $prefs.quicktags_over_textarea neq 'y'}float:left;{/if}'>
+		<div style='float:left; margin-right:5px'>{include file='textareasize.tpl' area_name='mapdata' formId='editpageform' ToolbarSet='Tiki'}</div>
+		{include file=tiki-edit_help_tool.tpl area_name='mapdata'}
 	</div>
+	{if $prefs.quicktags_over_textarea neq 'y'}</td><td style="border:0;">{/if}
 	<textarea id='mapdata' class='wikiedit' name='pagedata' rows='{$rows}' wrap='virtual' cols='{$cols}' style='width:99%'>{$pagedata|escape}</textarea>
 	<input type="hidden" name="rows" value="{$rows}"/>
 	<input type="hidden" name="cols" value="{$cols}"/>
 	<input type="hidden" name="mapfile" value="{$mapfile}" />
 	<input type="hidden" name="mode" value="{$mode}" />
+	{if $prefs.quicktags_over_textarea neq 'y'}</td></tr></table>{/if}
 </div>
 </td>
 </tr>

@@ -1,16 +1,9 @@
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}To configure your trackers, look for "Admin trackers" under "Trackers" on the application menu, or{/tr} <a class="rbox-link" href="tiki-admin_trackers.php">{tr}Click Here{/tr}</a>.{/remarksbox}
 
-<fieldset class="admin">
-    <form action="tiki-admin.php?page=trackers" method="post">
-	{preference name=tracker_jquery_user_selector_threshold}
-   	<div class="heading input_submit_container" style="text-align: right">
-	<input type="submit" name="trkset" value="{tr}Change preferences{/tr}" />
-	</div> 
-    </form>
-</fieldset>
+<div class="cbox">
+  <div class="cbox-title">{tr}Tracker attachment preferences{/tr}</div>
 
-<fieldset class="admin">
-  <legend>{tr}Tracker attachment preferences{/tr}</legend>
+  <div class="cbox-data">
     <form action="tiki-admin.php?page=trackers" method="post">
       <table class="admin">
         <tr>
@@ -32,18 +25,48 @@
           </td>
         </tr>
 
+        <tr>
+          <td colspan="2" class="input_submit_container">
+            <input type="submit" name="trkset" value="{tr}Change preferences{/tr}" />
+          </td>
+        </tr>
       </table>
-			<div class="heading input_submit_container" style="text-align: right">
-        <input type="submit" name="trkset" value="{tr}Change preferences{/tr}" />
-			</div>
     </form>
-</fieldset>
+  </div>
+</div>
 
+<div class="cbox">
+  <div class="cbox-title">{tr}Trackers with mirror tables{/tr}</div>
+  <div class="cbox-data">
+    <form action="tiki-admin.php?page=trackers" method="post">
+      <table class="admin">
+        <tr>
+          <td class="form">{tr}Use trackers with mirror tables{/tr}:</td>
+          <td>
+            <input type="checkbox" name="trk_with_mirror_tables" {if $prefs.trk_with_mirror_tables eq 'y'}checked="checked"{/if}/>
+          </td>
+        </tr>
+        
+        <tr>
+          <td class="form">{tr}Values are stored in a dedicated table for each tracker, then you can easily manipulate them outside Tikiwiki{/tr}</td>
+          <td class="form">{tr}WARNING : Old and New trackers cannot coexist. Trackers created with new library will not work with old library and conversely{/tr}.</td>
+        </tr>
 
-<fieldset class="admin">
-  <legend>{tr}Tracker attachments{/tr}</legend>
+        <tr>
+          <td colspan="2" class="input_submit_container">
+            <input type="submit" name="trkMirrorTables" value="{tr}Validate choice{/tr}" />
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+</div>
+
+<div class="cbox">
+  <div class="cbox-title">{tr}Tracker attachments{/tr}</div>
+  <div class="cbox-data">
     <div class="admin">
-{if $attachements}
+{if $attachments}
       <form action="tiki-admin.php?page=trackers" method="post">
         <input type="text" name="find" value="{$find|escape}" />
         <input type="submit" name="action" value="{tr}Find{/tr}" />
@@ -76,7 +99,7 @@
           <th>
             <a href="tiki-admin.php?page=trackers&amp;sort_mode=created_{if $sort_mode eq 'created'}asc{else}desc{/if}">{tr}Created{/tr}</a>
           </th>
-          <th>{tr}Switch storage{/tr}</th>
+          <th>&nbsp;</th>
         </tr>
         
         {section name=x loop=$attachements}
@@ -90,7 +113,7 @@
           <td>{if $attachements[x].path}file{else}db{/if}</td>
           <td>{$attachements[x].created|tiki_short_date}</td>
           <td>
-            <a href="tiki-admin.php?page=trackers&amp;attId={$attachements[x].attId}&amp;action={if $attachements[x].path}move2db{else}move2file{/if}">{icon _id='arrow_refresh' title='{tr}Switch storage{/tr}'}</a>
+            <a href="tiki-admin.php?page=trackers&amp;attId={$attachements[x].attId}&amp;action={if $attachements[x].path}move2db{else}move2file{/if}">{tr}Change{/tr}</a>
           </td>
         </tr>
 {sectionelse}
@@ -100,7 +123,7 @@
       
 			{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
     </div>
-{if $attachements}
+{if $attachments}
     <table>
       <tr>
         <td>
@@ -118,33 +141,7 @@
       </tr>
     </table>
 {/if}
-</fieldset>
+<br />
+  </div>
+</div>
 
-
-<fieldset class="admin">
-  <legend>{tr}Trackers with mirror tables{/tr}</legend>
-    <form action="tiki-admin.php?page=trackers" method="post">
-      <table class="admin">
-        <tr>
-          <td class="form">{tr}Use trackers with mirror tables{/tr}:</td>
-          <td>
-            <input type="checkbox" name="trk_with_mirror_tables" {if $prefs.trk_with_mirror_tables eq 'y'}checked="checked"{/if}/>
-          </td>
-        </tr>
-        
-        <tr>
-          <td class="form">{tr}Values are stored in a dedicated table for each tracker, then you can easily manipulate them outside Tikiwiki{/tr}</td>
-          <td class="form">{tr}WARNING : Old and New trackers cannot coexist. Trackers created with new library will not work with old library and conversely{/tr}. {tr}Do not use this feature as it is very buggy and unmaintained. It will be pulled out of the code base later on.{/tr}</td>
-        </tr>
-
-        <tr>
-          <td colspan="2" class="input_submit_container">
-            <input type="submit" name="trkMirrorTables" value="{tr}Validate choice{/tr}" />
-          </td>
-        </tr>
-      </table>
-			<div class="heading input_submit_container" style="text-align: right">
-				<input type="submit" name="trkMirrorTables" value="{tr}Validate choice{/tr}" />
-			</div>
-    </form>
-</fieldset>

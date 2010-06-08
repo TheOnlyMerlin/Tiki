@@ -2,7 +2,10 @@
 
 {title help="MyTiki"}{tr}My Tiki{/tr}{/title}
 
-  {include file='tiki-mytiki_bar.tpl'}
+{if $prefs.feature_mootools eq 'y' and $prefs.feature_ajax eq 'y'}
+  {include file=tiki-mytiki_mootabs.tpl}
+{else}
+  {include file=tiki-mytiki_bar.tpl}
   <br />
 
   {capture name=my}
@@ -51,7 +54,6 @@
               </tr>
             {/section}
           </table>
-		  <div style="text-align:right;">{tr}Records:{/tr} {$user_pages|@count}</div>
         </div>
       </div>
     </div>
@@ -83,7 +85,6 @@
               </tr>
             {/section}
           </table>
-		  <div style="text-align:right;">{tr}Records:{/tr} {$user_galleries|@count}</div>
         </div>
       </div>
     </div>
@@ -115,7 +116,6 @@
               </tr>
             {/section}
           </table>
-		  <div style="text-align:right;">{tr}Records:{/tr} {$user_articles|@count}</div>
         </div>
       </div>
     </div>
@@ -145,10 +145,6 @@
               </tr>
             {/section}
           </table>
-		  <div style="text-align:right;">
-		  	   {tr}Records:{/tr} {$user_items|@count}
-			   {if !empty($nb_item_comments)}<br />{tr}Comments:{/tr} {$nb_item_comments}{/if}
-		  </div>
         </div>
       </div>
     </div>
@@ -180,7 +176,6 @@
               </tr>
             {/section}
           </table>
-		  <div style="text-align:right;">{tr}Records:{/tr} {$msgs|@count}</div>
         </div>
       </div>
     </div>
@@ -206,7 +201,6 @@
               </tr>
             {/section}
           </table>
-		  <div style="text-align:right;">{tr}Records:{/tr} {$tasks|@count}</div>
         </div>
       </div>
     </div>
@@ -236,7 +230,6 @@
               </tr>
             {/section}
           </table>
-		  <div style="text-align:right;">{tr}Records:{/tr} {$user_forum_topics|@count}</div>
         </div>
       </div>
     </div>
@@ -266,7 +259,6 @@
               </tr>
             {/section}
           </table>
-		  <div style="text-align:right;">{tr}Records:{/tr} {$user_forum_replies|@count}</div>
         </div>
       </div>
     </div>
@@ -298,15 +290,22 @@
               </tr>
             {/section}
           </table>
-		  <div style="text-align:right;">{tr}Records:{/tr} {$user_blogs|@count}</div>
         </div>
       </div>
     </div>
   {/if}
 
+  {if $prefs.feature_workflow eq 'y' && $tiki_p_use_workflow eq 'y' && $mytiki_workflow eq 'y'}
+    <div id="content7" class="content">
+      {include file="tiki-g-my_activities.tpl"}
+      <br /><br />
+      {include file="tiki-g-my_instances.tpl"}
+    </div>
+  {/if}
   {/capture}
 
   {$smarty.capture.my}
     {if $smarty.capture.my|strip:'' eq ''}
-      {tr}To display the objects you created or contributed to:{/tr} <a href="tiki-user_preferences.php?tab3#MyTiki">{tr}My Tiki{/tr}</a>
+      {tr}To display the objects you participate:{/tr} <a href="tiki-user_preferences.php?tab3#MyTiki">{tr}My Tiki{/tr}</a>
     {/if}
+{/if}

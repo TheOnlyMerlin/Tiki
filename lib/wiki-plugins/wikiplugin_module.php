@@ -1,12 +1,6 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-/*
-Displays a module inline in a wiki page
+/* $Id: wikiplugin_module.php,v 1.33 2007-10-12 07:55:48 nyloth Exp $
+Displays a module inlined in page
 
 Parameters
 module name : module=>lambda
@@ -34,38 +28,22 @@ so if you need to use params just add them in MODULE()
  */
 
 function wikiplugin_module_help() {
-	return tra("Displays a module inline in a wiki page").":<br />~np~{MODULE(module=>,float=>left|right|none,decorations=>y|n,flip=>y|n,max=>,np=>0|1,notitle=y|n,args...)}{MODULE}~/np~";
+	return tra("Displays a module inlined in page").":<br />~np~{MODULE(module=>,float=>left|right|none,decorations=>y|n,flip=>y|n,max=>,np=>0|1,notitle=y|n,args...)}{MODULE}~/np~";
 }
 
 function wikiplugin_module_info() {
-	global $modlib, $smarty;
-	require_once ('lib/modules/modlib.php');
-
-	$all_modules = $modlib->get_all_modules();
-	$all_modules_info = array_combine( 
-		$all_modules, 
-		array_map( array( $modlib, 'get_module_info' ), $all_modules ) 
-	);
-	asort($all_modules_info);
-	$modules_options = array();
-	foreach($all_modules_info as $module => $module_info) {
-		$modules_options[] = array('text' => $module_info['name'] . ' (' . $module . ')', 'value' => $module);
-	}
-
 	return array(
 		'name' => tra('Insert Module'),
 		'documentation' => 'PluginModule',
-		'description' => tra("Displays a module inline in a wiki page. More parameters can be added, not supported by UI."),
+		'description' => tra("Displays a module inlined in page. More parameters can be added, not supported by UI."),
 		'prefs' => array( 'wikiplugin_module' ),
 		'validate' => 'all',
-		'icon' => 'pics/icons/module.png',
 		'extraparams' =>true,
 		'params' => array(
 			'module' => array(
 				'required' => true,
 				'name' => tra('Module Name'),
 				'description' => tra('Module name as known in Tikiwiki.'),
-				'options' => $modules_options
 			),
 			'float' => array(
 				'required' => false,
@@ -102,10 +80,9 @@ function wikiplugin_module_info() {
 }
 
 function wikiplugin_module($data, $params) {
-	global $tikilib, $cache_time, $smarty, $dbTiki, $prefs, $ranklib, $tikidomain, $user, $tiki_p_tasks, $tiki_p_create_bookmarks, $imagegallib, $module_params;
+	global $tikilib, $cache_time, $smarty, $dbTiki, $prefs, $ranklib, $tikidomain, $user, $tiki_p_tasks, $tiki_p_create_bookmarks, $imagegallib;
 
 	$out = '';
-	
 	extract ($params,EXTR_SKIP);
 
 	if (!isset($float)) {
@@ -145,18 +122,53 @@ function wikiplugin_module($data, $params) {
 			$args = '';
 		}
 
-		$module_reference = array(
-			'moduleId' => null,
-			'name' => $module,
-			'params' => $params,
-			'rows' => $max,
-			'position' => null,
-			'ord' => null,
-			'cache_time'=> 0,
-		);
+		$phpfile = 'modules/mod-' . $module . '.php';
+		$template = 'modules/mod-' . $module . '.tpl';
 
-		global $modlib; require_once 'lib/modules/modlib.php';
-		$out = $modlib->execute_module( $module_reference );
+		$module_rows = $max;
+		$module_params = $params;
+		if (!isset($module_params['decorations'])) $module_params['decorations'] = 'n';
+		if (!isset($module_params['flip']) && isset($prefs['user_flip_modules']) && $prefs['user_flip_modules'] != 'module')
+			$module_params['flip'] = $prefs['user_flip_modules'];
+		elseif (!isset($module_params['flip']))
+			$module_params['flip'] = 'n';
+		if (isset($module_params['title'])) { 
+			$smarty->assign('tpl_module_title',tra($module_params['title'])); 
+		} else {
+			$smarty->clear_assign('tpl_module_title');
+		}
+		$smarty->assign_by_ref('module_rows',$module_rows);
+		$smarty->assign_by_ref('module_params', $module_params); // module code can unassign this if it wants to hide params
+
+			if (file_exists($phpfile)) {
+				include ($phpfile);
+			}
+
+			$template_file = 'templates/' . $template;
+			if (file_exists($template_file)) {
+				$out = $smarty->fetch($template);
+			} else {
+				if ($tikilib->is_user_module($module)) {
+					$info = $tikilib->get_user_module($module);
+
+					$smarty->assign_by_ref('user_title', $info["title"]);
+					$smarty->assign_by_ref('user_data', $info["data"]);
+					$out = $smarty->fetch('modules/user_module.tpl');
+				}
+			}
+		$smarty->clear_assign('module_params'); // ensure params not available outside current module
+//			if (!file_exists($nocache)) {
+//				$fp = fopen($cachefile, "w+");
+//				fwrite($fp, $data, strlen($data));
+//				fclose ($fp);
+//			}
+//		} else {
+//			$fp = fopen($cachefile, "r");
+//			$out = fread($fp, filesize($cachefile));
+//			fclose ($fp);
+//		}
+
+//		$out = eregi_replace("\n", "", $out);
 	}
 
 	if ($out) {
@@ -172,8 +184,10 @@ function wikiplugin_module($data, $params) {
 		}
 	} else {
         // Display error message
-		$data = "<div class=\"highlight\">" . tra("Sorry, no such module"). "<br /><b>$module</b></div>" . $data;
+		$data = "<div class=\"highlight\">" . tra("Sorry no such module"). "<br /><b>$module</b></div>" . $data;
 	}
 
 	return $data;
 }
+
+?>

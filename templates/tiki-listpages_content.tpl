@@ -11,7 +11,7 @@
 {/if}
 
 {if $find ne '' and $listpages|@count ne '0'}
-	<p>{tr}Found{/tr} &quot;{$find|escape}&quot; {tr}in{/tr} {$listpages|@count} {tr}pages{/tr}.</p>
+	<p>{tr}Found{/tr} &quot;{$find}&quot; {tr}in{/tr} {$listpages|@count} {tr}pages{/tr}.</p>
 {/if}
 
 
@@ -52,22 +52,22 @@
 
 		{if $prefs.wiki_list_hits eq 'y'}
 			{assign var='cntcol' value=$cntcol+1}
-			<th>{self_link _sort_arg='sort_mode' _sort_field='hits'}{tr}Hits{/tr}{/self_link}</th>
+			<th style="text-align:right;">{self_link _sort_arg='sort_mode' _sort_field='hits'}{tr}Hits{/tr}{/self_link}</th>
 		{/if}
 
 		{if $prefs.wiki_list_lastmodif eq 'y' or $prefs.wiki_list_comment eq 'y'}
 			{assign var='cntcol' value=$cntcol+1}
 			<th>
 				{assign var='lastmod_sortfield' value='lastModif'}
-				{assign var='lastmod_shorttitle' value="{tr}Last mod{/tr}"}
+				{assign var='lastmod_shorttitle' value='{tr}Last mod{/tr}'}
 				{if $prefs.wiki_list_lastmodif eq 'y' and $prefs.wiki_list_comment eq 'y'}
-					{assign var='lastmod_title' value="{tr}Last modification{/tr} / {tr}Comment{/tr}"}
+					{assign var='lastmod_title' value='{tr}Last modification{/tr} / {tr}Comment{/tr}'}
 				{elseif $prefs.wiki_list_lastmodif eq 'y'}
-					{assign var='lastmod_title' value="{tr}Last modification{/tr}"}
+					{assign var='lastmod_title' value='{tr}Last modification{/tr}'}
 				{else}
-					{assign var='lastmod_title' value="{tr}Comment{/tr}"}
+					{assign var='lastmod_title' value='{tr}Comment{/tr}'}
 					{assign var='lastmod_sortfield' value='comment'}
-					{assign var='lastmod_shorttitle' value="{tr}Comment{/tr}"}
+					{assign var='lastmod_shorttitle' value='{tr}Comment{/tr}'}
 				{/if}
 				{self_link _sort_arg='sort_mode' _sort_field=$lastmod_sortfield _title=$lastmod_title}{$lastmod_shorttitle}{/self_link}
 			</th>
@@ -76,21 +76,21 @@
 		{if $prefs.wiki_list_creator eq 'y'}
 			{assign var='cntcol' value=$cntcol+1}
 			<th>
-				{self_link _sort_arg='sort_mode' _sort_field='creator' _title="{tr}Page creator{/tr}"}{tr}Creator{/tr}{/self_link}
+				{self_link _sort_arg='sort_mode' _sort_field='creator' _title='{tr}Page creator{/tr}'}{tr}Creator{/tr}{/self_link}
 			</th>
 		{/if}
 
 		{if $prefs.wiki_list_user eq 'y'}
 			{assign var='cntcol' value=$cntcol+1}
 			<th>
-				{self_link _sort_arg='sort_mode' _sort_field='user' _title="{tr}Last author{/tr}"}{tr}Last author{/tr}{/self_link}
+				{self_link _sort_arg='sort_mode' _sort_field='user' _title='{tr}Last author{/tr}'}{tr}Last author{/tr}{/self_link}
 			</th>
 		{/if}
 
 		{if $prefs.wiki_list_lastver eq 'y'}
 			{assign var='cntcol' value=$cntcol+1}
 			<th>
-				{self_link _sort_arg='sort_mode' _sort_field='version' _title="{tr}Last version{/tr}"}{tr}Last ver.{/tr}{/self_link}
+				{self_link _sort_arg='sort_mode' _sort_field='version' _title='{tr}Last version{/tr}'}{tr}Last ver.{/tr}{/self_link}
 			</th>
 		{/if}
 
@@ -104,35 +104,35 @@
 		{if $prefs.wiki_list_versions eq 'y'}
 			{assign var='cntcol' value=$cntcol+1}
 			<th>
-				{self_link _sort_arg='sort_mode' _sort_field='versions' _title="{tr}Versions{/tr}"}{tr}Vers.{/tr}{/self_link}
+				{self_link _sort_arg='sort_mode' _sort_field='versions' _title='{tr}Versions{/tr}'}{tr}Vers.{/tr}{/self_link}
 			</th>
 		{/if}
 
 		{if $prefs.wiki_list_links eq 'y'}
 			{assign var='cntcol' value=$cntcol+1}
 			<th>
-				{self_link _sort_arg='sort_mode' _sort_field='links' _title="{tr}Links to other items in page{/tr}"}{tr}Links{/tr}{/self_link}
+				{self_link _sort_arg='sort_mode' _sort_field='links' _title='{tr}Links to other items in page{/tr}'}{tr}Links{/tr}{/self_link}
 			</th>
 		{/if}
 
 		{if $prefs.wiki_list_backlinks eq 'y'}
 			{assign var='cntcol' value=$cntcol+1}
 			<th>
-				{self_link _sort_arg='sort_mode' _sort_field='backlinks' _title="{tr}Links to this page in other pages{/tr}"}{tr}Backl.{/tr}{/self_link}
+				{self_link _sort_arg='sort_mode' _sort_field='backlinks' _title='{tr}Links to this page in other pages{/tr}'}{tr}Backl.{/tr}{/self_link}
 			</th>
 		{/if}
 
 		{if $prefs.wiki_list_size eq 'y'}
 			{assign var='cntcol' value=$cntcol+1}
 			<th>
-				{self_link _sort_arg='sort_mode' _sort_field='size' _title="{tr}Page size{/tr}"}{tr}Size{/tr}{/self_link}
+				{self_link _sort_arg='sort_mode' _sort_field='size' _title='{tr}Page size{/tr}'}{tr}Size{/tr}{/self_link}
 			</th>
 		{/if}
 
 		{if $prefs.wiki_list_language eq 'y'}
 			{assign var='cntcol' value=$cntcol+1}
 			<th>
-				{self_link _sort_arg='sort_mode' _sort_field='lang' _title="{tr}Language{/tr}"}{tr}Lang.{/tr}{/self_link}
+				{self_link _sort_arg='sort_mode' _sort_field='lang' _title='{tr}Language{/tr}'}{tr}Lang.{/tr}{/self_link}
 			</th>
 		{/if}
 
@@ -167,13 +167,13 @@
 
 		{if $prefs.wiki_list_id eq 'y'}
 			<td class="{cycle advance=false}">
-				<a href="{$listpages[changes].pageName|sefurl}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].pageName|escape}">{$listpages[changes].page_id}</a>
+				<a href="{$listpages[changes].pageName|sefurl}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].pageName}">{$listpages[changes].page_id}</a>
 			</td>
 		{/if}
 
 		{if $prefs.wiki_list_name eq 'y'}
 			<td class="{cycle advance=false}">
-				<a href="{$listpages[changes].pageName|sefurl:'wiki':'':$all_langs}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].pageName|escape}">
+				<a href="{$listpages[changes].pageName|sefurl}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].pageName}">
 					{$listpages[changes].pageName|truncate:$prefs.wiki_list_name_len:"...":true|escape}
 				</a>
 				{if $prefs.wiki_list_description eq 'y' && $listpages[changes].description neq ""}
@@ -181,17 +181,14 @@
 						{$listpages[changes].description|truncate:$prefs.wiki_list_description_len:"...":true}
 					</div>
 				{/if}
-				{if !empty($listpages[changes].snippet)}
-					<div class="subcomment">{$listpages[changes].snippet}</div>
-				{/if}
 			</td>
 		{/if}
 
 		{foreach from=$wplp_used key=lc item=ln}
 			<td class="{cycle advance=false}">
 				{if $listpages[changes].translations[$lc]}
-					<a href="{$listpages[changes].translations[$lc]|sefurl}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].translations[$lc]|escape}">
-						{$listpages[changes].translations[$lc]|escape}
+					<a href="{$listpages[changes].translations[$lc]|sefurl}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].translations[$lc]}">
+						{$listpages[changes].translations[$lc]}
 					</a>
 				{/if}
 			</td>
@@ -237,9 +234,9 @@
 		{if $prefs.wiki_list_status eq 'y'}
 			<td style="text-align:center;" class="{cycle advance=false}">
 				{if $listpages[changes].flag eq 'locked'}
-					{icon _id='lock' alt="{tr}Locked{/tr}"}
+					{icon _id='lock' alt='{tr}Locked{/tr}'}
 				{else}
-					{icon _id='lock_break' alt="{tr}unlocked{/tr}"}
+					{icon _id='lock_break' alt='{tr}unlocked{/tr}'}
 				{/if}
 			</td>
 		{/if}
@@ -290,7 +287,7 @@
 			<td class="{cycle advance=false}">
 				{foreach item=categ from=$listpages[changes].categname name=categ}
 					{if !$smarty.foreach.categ.first}<br />{/if}
-					{$categ|escape}
+					{$categ}
 				{/foreach}
 			</td>
 		{/if}
@@ -299,7 +296,7 @@
 			<td class="{cycle advance=false}">
 				{foreach item=categpath from=$listpages[changes].categpath}
 					{if !$smarty.foreach.categpath.first}<br />{/if}
-					{$categpath|escape}
+					{$categpath}
 				{/foreach}
 			</td>
 		{/if}
@@ -311,17 +308,17 @@
 				{/if}
 
 				{if $prefs.feature_history eq 'y' and $listpages[changes].perms.tiki_p_wiki_view_history eq 'y'}
-					<a class="link" href="tiki-pagehistory.php?page={$listpages[changes].pageName|escape:"url"}">{icon _id='page_white_stack' alt="{tr}History{/tr}"}</a>
+					<a class="link" href="tiki-pagehistory.php?page={$listpages[changes].pageName|escape:"url"}">{icon _id='page_white_stack' alt='{tr}History{/tr}'}</a>
 				{/if}
 
 				{if $listpages[changes].perms.tiki_p_assign_perm_wiki_page eq 'y'}
 					<a class="link" href="tiki-objectpermissions.php?objectName={$listpages[changes].pageName|escape:"url"}&amp;objectType=wiki+page&amp;permType=wiki&amp;objectId={$listpages[changes].pageName|escape:"url"}">
-						{icon _id='key' alt="{tr}Perms{/tr}"}
+						{icon _id='key' alt='{tr}Perms{/tr}'}
 					</a>
 				{/if}
 
 				{if $listpages[changes].perms.tiki_p_remove eq 'y'}
-					<a class="link" href="tiki-removepage.php?page={$listpages[changes].pageName|escape:"url"}&amp;version=last">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
+					<a class="link" href="tiki-removepage.php?page={$listpages[changes].pageName|escape:"url"}&amp;version=last">{icon _id='cross' alt='{tr}Remove{/tr}'}</a>
 				{/if}
 			</td>
 		{/if}
@@ -331,8 +328,7 @@
 	{sectionelse}
 		<tr>
 			<td colspan="{$cntcol}" class="odd">
-				<b>{tr}No pages found{/tr}{if $find ne ''} {tr}with{/tr} &quot;{$find|escape}&quot;{/if}{if $initial ne ''}{tr} {if $find ne ''}and {/if}starting with{/tr} &quot;{$initial}&quot;{/if}.</b>
-				{if $aliases_were_found == 'y'}<br><b>{tr}However, some page aliases fitting the query were found (see Aliases section above).{/tr}</b>{/if}
+				<b>{tr}No records found{/tr}{if $find ne ''} {tr}with{/tr} &quot;{$find}&quot;{/if}{if $initial ne ''}{tr} {if $find ne ''}and {/if}starting with{/tr} &quot;{$initial}&quot;{/if}</b>
 			</td>
 		</tr>
 	{/section}
@@ -340,8 +336,8 @@
 
 {if $checkboxes_on eq 'y' && count($listpages) > 0} {* what happens to the checked items? *}
 	<p align="left"> {*on the left to have it close to the checkboxes*}
-		<label for="submit_mult">{tr}Perform action with checked:{/tr}</label>
-		<select name="submit_mult" id="submit_mult" onchange="this.form.submit();">
+		{tr}Perform action with checked{/tr}:
+		<select name="submit_mult" onchange="this.form.submit();">
 			<option value="" selected="selected">...</option>
 			{if $tiki_p_remove eq 'y'} 
 				<option value="remove_pages" >{tr}Remove{/tr}</option>
@@ -372,14 +368,10 @@
 	</noscript>
 {/if}
 
-{if $find and $tiki_p_edit eq 'y' and $pagefound eq 'n' and $alias_found eq 'n'}
-	{capture assign='find_htmlescaped'}{$find|escape}{/capture}
-	{capture assign='find_urlescaped'}{$find|escape:'url'}{/capture}
-	<div class="navbar">
-		 {button _text="{tr}Create Page:{/tr} $find_htmlescaped" href="tiki-editpage.php?page=$find_urlescaped&lang=$find_lang&templateId=$template_id&template_name=$template_name&categId=$create_page_with_categId" _title="{tr}Create{/tr}"}
-	</div>
+{if $find && $tiki_p_edit eq 'y' and $pagefound eq 'n'}
+	{button _text="{tr}Create Page{/tr}: $find" href="tiki-editpage.php?page=$find" _title="{tr}Create{/tr}"}
 {/if}
 {if $checkboxes_on eq 'y'}
 </form>
 {/if}
-{pagination_links cant=$cant step=$maxRecords offset=$offset clean=$clean}{/pagination_links}
+{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}

@@ -1,15 +1,16 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 <title>{tr}Tiki Link - Insert internal link{/tr}</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta content="noindex, nofollow" name="robots">
 {literal}	
+<script type="text/javascript" src="fcktikilink.js"></script>
 <script type="text/javascript">
 <!--
-var oEditor		= window.parent.InnerDialogLoaded(); 
-var FCK			= oEditor.FCK; 
-var FCKConfig	= oEditor.FCKConfig ;
+var oEditor			= window.parent.InnerDialogLoaded(); 
+var FCK					= oEditor.FCK; 
+var FCKConfig		= oEditor.FCKConfig ;
 var FCKTikiLinks = oEditor.FCKTikiLinks ;
  
 // oLink: The actual selected link in the editor.
@@ -22,27 +23,24 @@ window.onload = function ()	{
 	LoadSelected();							//See function below 
 	window.parent.SetOkButton( true );		//Show the "Ok" button. 
 	window.parent.SetAutoSize( true ) ;
-};
+} 
  
 //If an anchor (A) object is currently selected, load the properties into the dialog 
 function LoadSelected()	{
 	var sSelected;
 	var oLink = FCK.Selection.GetSelectedElement() ;
-	if (!oLink) {
-		oLink = FCK.Selection.MoveToAncestorNode('A');
-	}
 	if ( oEditor.FCKBrowserInfo.IsIE && oLink != null ) {
 		document.getElementById( 'txtPage' ).value = oLink.getAttribute( '_wikilink' ) ;
 		document.getElementById( 'txtTitle' ).value = oLink.getAttribute( 'innerHTML' ) ;
 	} else {
-		if ( !oEditor.FCKBrowserInfo.IsIE ) {
+		if ( oEditor.FCKBrowserInfo.IsGecko ) {
 			sSelected = FCK.EditorWindow.getSelection();
 		} else {
 			sSelected = FCK.EditorDocument.selection.createRange().text;
 		}
 		if ( sSelected != "" ) {
 			var listen = document.getElementById( 'txtTitle' );
-			listen.value = sSelected.toString();
+			listen.value = sSelected;
 			var listen1 = document.getElementById( 'txtPage' );
 			if ( oLink != null ) { listen1.value = oLink.getAttribute( 'href' ) ; }
 		}
@@ -124,8 +122,8 @@ function Ok() {
 <br />
 <table cellpadding="0" cellspacing="0" border="0" width="100%">
 {foreach item=page from=$listpages}
-<tr><td><a href="#" onclick="if ( document.getElementById('txtTitle').value == '' || document.getElementById('txtTitle').value == document.getElementById('txtPage').value ) document.getElementById('txtTitle').value = '{$page.pageName|escape|escape:'javascript'}'; document.getElementById('txtPage').value = '{$page.pageName|escape|escape:'javascript'}'; return false;" 
-title="{if $page.description}{$page.description}{else}{$page.pageName|escape}{/if}" class="wikilink">{$page.pageName|escape}</a>
+<tr><td><a href="#" onclick="javascript:document.getElementById('txtPage').value = '{$page.pageName|escape:'javascript'}';" 
+title="{if $page.description}{$page.description}{else}{$page.pageName}{/if}" class="wikilink">{$page.pageName}</a>
 </td><td style="color:#999;">
 {$page.description}
 </td></tr>
@@ -135,12 +133,12 @@ title="{if $page.description}{$page.description}{else}{$page.pageName|escape}{/i
 							</td>
 						</tr>
 						<tr>
-							<td nowrap>{tr}Page name{/tr}&nbsp;</td>
-							<td width="100%" style="align:right;"><input id="txtPage" style="WIDTH: 98%" type="text" name="txtPage" onChange="if ( document.getElementById('txtTitle').value == '' ) document.getElementById('txtTitle').value = getElementById('txtPage').value;"></td>
+							<td nowrap>{tr}Link{/tr}&nbsp;</td>
+							<td width="100%" style="align:right;"><input id="txtTitle" style="WIDTH: 98%" type="text" name="txtTitle"></td>
 						</tr>
 						<tr>
-							<td nowrap>{tr}Link name{/tr}&nbsp;</td>
-							<td width="100%" style="align:right;"><input id="txtTitle" style="WIDTH: 98%" type="text" name="txtTitle" onChange="if ( document.getElementById('txtPage').value == '' ) document.getElementById('txtPage').value = getElementById('txtTitle').value;"></td>
+							<td nowrap>{tr}Page name{/tr}&nbsp;</td>
+							<td width="100%" style="align:right;"><input id="txtPage" style="WIDTH: 98%" type="text" name="txtPage"></td>
 						</tr>
 					</table>
 				</td>

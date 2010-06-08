@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+
 // $Id$
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for
+// details.
 
 //this script may only be included - so its better to die if called directly.
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
@@ -53,7 +54,7 @@ $sections = array(
 	'forums' => array(
 		'feature' => 'feature_forums',
 		'key' => 'forumId',
-		'itemkey' => 'comments_parentId',
+		'itemkey' => 'postId',
 		'objectType' =>'forum',
 		'itemObjectType' => 'forum post',
 	),
@@ -82,6 +83,11 @@ $sections = array(
 		'feature' => 'feature_messages',
 		'key' => 'msgId',
 		'itemkey' => '',
+	),
+	'newsreader' => array(
+		'feature' => 'feature_newsreader',
+		'key' => 'serverId',
+		'itemkey' => 'id',
 	),
 	'webmail' => array(
 		'feature' => 'feature_webmail',
@@ -139,9 +145,18 @@ $sections = array(
 	'calendar' => array(
 		'feature' => 'feature_calendar',
 		'key' => 'calendarId',
-		'itemkey' => 'viewcalitemId',
+		'itemkey' => 'calitmId',
 		'objectType' => 'calendar',
-		'itemObjectType' => 'event',
+	),
+	'workflow' => array(
+		'feature' => 'feature_workflow',
+		'key' => '',
+		'itemkey' => '',
+	),
+	'charts' => array(
+		'feature' => 'feature_charts',
+		'key' => '',
+		'itemkey' => '',
 	),
 	// tra('Map')
 	'maps' => array(
@@ -160,12 +175,20 @@ $sections = array(
 		'key' => 'categId',
 		'itemkey' => '',
 	),
+	'games' => array(
+		'feature' => 'feature_games',
+		'key' => 'gameId',
+		'itemkey' => '',
+	),
 	// tra('Html Page')
 	'html_pages' => array(
 		'feature' => 'feature_html_pages',
 		'key' => 'pageId',
 		'itemkey' => '',
 		'objectType' => 'html page',
+	),
+	'swfobj' => array(
+		'feature' => 'feature_swfobj',
 	),
 	// tra('Newsletter')
 	'newsletters' => array(
@@ -189,35 +212,6 @@ $smarty->assign_by_ref('sections_enabled', $sections_enabled);
 if ( ! empty($section) ) $smarty->assign('section', $section);
 if ( ! empty($section_class) ) {
 	$smarty->assign('section_class', $section_class);
-} elseif ( ! empty($section) ) {
-	$section_class = 'tiki_'.str_replace(' ','_',$section);
-	$smarty->assign('section_class', $section_class);
-}
-
-function current_object() {
-	global $section, $sections, $cat_type, $cat_objid;
-
-	if( $cat_type && $cat_objid ) {
-		return array(
-			'type' => $cat_type,
-			'object' => $cat_objid,
-		);
-	}
-	
-	if( isset( $sections[$section] ) ) {
-		$info = $sections[$section];
-
-		if( isset( $info['itemkey'], $info['itemObjectType'], $_REQUEST[ $info['itemkey'] ] ) ) {
-			$type = isset( $_REQUEST[ $info['key'] ] ) ? $info['key'] : '';
-			return array(
-				'type' => sprintf( $info['itemObjectType'], $type ),
-				'object' => $_REQUEST[ $info['itemkey'] ],
-			);
-		} elseif( isset( $info['key'], $info['objectType'], $_REQUEST[ $info['key'] ] ) ) {
-			return array(
-				'type' => $info['objectType'],
-				'object' => $_REQUEST[ $info['key'] ],
-			);
-		}
-	}
+}elseif ( ! empty($section) ) {
+	$smarty->assign('section_class', str_replace(' ','_',$section));
 }

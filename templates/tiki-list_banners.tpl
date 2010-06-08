@@ -4,11 +4,9 @@
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}To use a banner in a <a class="rbox-link" href="tiki-admin_modules.php">module</a> or a template, use {literal}{banner zone=ABC}{/literal}, where ABC is the name of the zone.{/tr}{/remarksbox}
 
-{if $tiki_p_admin_banners eq 'y'}
-	<div class="navbar">
-		 {button href="tiki-edit_banner.php" _text="{tr}Create banner{/tr}"}
-	</div>
-{/if}
+<div class="navbar">
+	{button href="tiki-edit_banner.php" _text="{tr}Create banner{/tr}"}
+</div>
 
 {if $listpages or ($find ne '')}
   {include file='find.tpl'}
@@ -31,10 +29,10 @@
 {cycle values="odd,even" print=false}
 {section name=changes loop=$listpages}
 <tr>
-<td class="{cycle advance=false}">{if $tiki_p_admin_banners eq 'y'}<a class="link" href="tiki-edit_banner.php?bannerId={$listpages[changes].bannerId}">{/if}{$listpages[changes].bannerId}{if $tiki_p_admin_banners eq 'y'}</a>{/if}</td>
-<td class="{cycle advance=false}">{$listpages[changes].client|username}</td>
+<td class="{cycle advance=false}">{$listpages[changes].bannerId}</td>
+<td class="{cycle advance=false}">{$listpages[changes].client}</td>
 <td class="{cycle advance=false}">{$listpages[changes].url}</td>
-<td class="{cycle advance=false}">{$listpages[changes].zone|escape}</td>
+<td class="{cycle advance=false}">{$listpages[changes].zone}</td>
 <td class="{cycle advance=false}">{$listpages[changes].created|tiki_short_date}</td>
 <td class="{cycle advance=false}">{$listpages[changes].which}</td>
 <td class="{cycle advance=false}">{$listpages[changes].useDates}</td>

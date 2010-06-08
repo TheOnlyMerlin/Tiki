@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,10 +6,11 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-require_once 'lib/socialnetworkslib.php';
+class ShoutboxLib extends TikiLib {
+	function ShoutboxLib($db) {
+		$this->TikiLib($db);
+	}
 
-class ShoutboxLib extends TikiLib
-{
 	function list_shoutbox($offset, $maxRecords, $sort_mode, $find) {
 		global $prefs;
 		if ($find) {
@@ -25,7 +21,7 @@ class ShoutboxLib extends TikiLib
 			$bindvars = array();
 		}
 
-		$query = "select * from `tiki_shoutbox` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_shoutbox` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_shoutbox` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -52,8 +48,7 @@ class ShoutboxLib extends TikiLib
       // if not in tag or on a space or doesn't contain a html entity we split all plain text strings longer than 25 chars using the empty span tag again
       $wrap_at = 25;
       $res["message"] = preg_replace('/(\s*)([^\;>\s]{'.$wrap_at.',})([^&]<|$)/e', "'\\1'.wordwrap('\\2', '".$wrap_at."', '<span></span>', 1).'\\3'", $res["message"]);
-		// emoticons support
-		$res["message"] = $this->parse_smileys($res["message"]);
+      
 			$ret[] = $res;
 		}
 		$retval = array();
@@ -62,20 +57,7 @@ class ShoutboxLib extends TikiLib
 		return $retval;
 	}
 
-	function tweet($message, $user, $msgId) {
-		global $prefs, $socialnetworkslib;
-		
-		$id=$socialnetworkslib->tweet($message,$user);
-		if ($id>0) {
-		    $query="update `tiki_shoutbox` set `tweetId`=? where `user`=? and `msgId`=?";
-		    $bindvars=array($id,$user,$msgId);
-		    $this->query($query,$bindvars);
-		}
-		return $id;
-	}
-
-	function replace_shoutbox($msgId, $user, $message, $tweet=false) {
-
+	function replace_shoutbox($msgId, $user, $message) {
 		$message = strip_tags($message);
 
 		// Check Message for containing bad/banned words
@@ -113,19 +95,10 @@ class ShoutboxLib extends TikiLib
 		}
 
 		$result = $this->query($query,$bindvars);
-		if ($tweet) {
-			$msgId=$this->lastInsertId();
-			$this->tweet($message,$user, $msgId);
-		}
 		return true;
 	}
 
 	function remove_shoutbox($msgId) {
-		global $socialnetworkslib, $user;
-		$tweetId=$this->getOne("select `tweetId` from `tiki_shoutbox` where `msgId`=?",array($msgId));
-		if ($tweetId>0) {
-			$socialnetworkslib->destroyTweet($tweetId,$user);
-		}
 		$query = "delete from `tiki_shoutbox` where `msgId`=?";
 		$result = $this->query($query,array((int)$msgId));
 		return true;
@@ -152,13 +125,13 @@ class ShoutboxLib extends TikiLib
                         $bindvars = array();
                 }
 
-                $query = "select * from `tiki_shoutbox_words` $mid order by ".$this->convertSortMode($sort_mode);
+                $query = "select * from `tiki_shoutbox_words` $mid order by ".$this->convert_sortmode($sort_mode);
                 $query_cant = "select count(*) from `tiki_shoutbox_words` $mid";
                 $result = $this->query($query,$bindvars,$maxRecords,$offset);
                 $cant = $this->getOne($query_cant,$bindvars);
                 $ret = array();
 
-                while ($res = $result->fetchRow()) {
+                while ($res = $result->fetchRow(DB_FETCHMODE_ASSOC)) {
                         $ret[] = $res;
                 }
 
@@ -185,4 +158,7 @@ class ShoutboxLib extends TikiLib
 
 
 }
-$shoutboxlib = new ShoutboxLib;
+global $dbTiki;
+$shoutboxlib = new ShoutboxLib($dbTiki);
+
+?>

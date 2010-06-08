@@ -4,30 +4,18 @@
 <div>
 {else}
 <div id="comments">
+<div
 {if $pagemd5}
 	{assign var=cookie_key value="show_comzone$pagemd5"}
-{else}
-	{assign var=cookie_key value="show_comzone"}
-{/if}
-{*Debug:<br />
-comments_show: {$comments_show}<br />
-show_comzone: {$show_comzone}<br />
-prefs.wiki_comments_displayed_default: {$prefs.wiki_comments_displayed_default}<br />
-prefs.show_comzone: {$prefs.show_comzone}<br />
-cookie_key: {$cookie_key}<br />
-smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$cookie_key}<br />*}
-<div {*do not missed up with the space*}
-{if $pagemd5}
 	id="comzone{$pagemd5}"
 {else}
+	{assign var=cookie_key value="show_comzone"}
 	id="comzone"
 {/if}
-{if (isset($smarty.session.tiki_cookie_jar.$cookie_key) and $smarty.session.tiki_cookie_jar.$cookie_key neq 'y')} {* cookie gets stored here with JS only *}
-	style="display: none;"
-{elseif ((!isset($smarty.session.tiki_cookie_jar.$cookie_key) and $prefs.wiki_comments_displayed_default neq 'y' and $show_comzone neq 'y' and $comments_show neq 'y'))}
-	style="display: none;"
+{if (isset($smarty.session.tiki_cookie_jar.$cookie_key) and $smarty.session.tiki_cookie_jar.$cookie_key eq 'y') or (!isset($smarty.session.tiki_cookie_jar.$cookie_key) and $prefs.wiki_comments_displayed_default eq 'y') or (isset($prefs.show_comzone) and $prefs.show_comzone eq 'y') or $show_comzone eq 'y' or $show_comments or $edit_reply eq '1'}
+	style="display:block;"
 {else}
-	style="display: block;"
+	style="display:none;"
 {/if}
 >
 {/if}
@@ -41,7 +29,7 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 	{/remarksbox}
 {/if}
 {if !empty($feedbacks)}
-	{remarksbox type="feedback"}
+	{remarksbox type="feddback"}
 		{foreach from=$feedbacks item=feedback name=feedback}
 			{$feedback|escape}
 			{if !$smarty.foreach.feedback.first}<br />{/if}
@@ -66,7 +54,6 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 	<input type="hidden" name="comments_parentId" value="{$comments_parentId|escape}" />    
 	<input type="hidden" name="comments_grandParentId" value="{$comments_grandParentId|escape}" />    
 	<input type="hidden" name="comments_reply_threadId" value="{$comments_reply_threadId|escape}" />    
-	<input type="hidden" name="comments_objectId" value="{$comments_objectId|escape}" />
 	<input type="hidden" name="comments_offset" value="0" />
 	{if $smarty.request.topics_offset}<input type="hidden" name="topics_offset" value="{$smarty.request.topics_offset|escape}" />{/if}
 	{if $smarty.request.topics_find}<input type="hidden" name="topics_find" value="{$smarty.request.topics_find|escape}" />{/if}
@@ -92,7 +79,7 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 					<select name="moveto">
 					{section name=ix loop=$topics}
 						{if $topics[ix].threadId ne $comments_parentId}
-						<option value="{$topics[ix].threadId|escape}">{$topics[ix].title|truncate:100|escape}</option>
+						<option value="{$topics[ix].threadId|escape}">{$topics[ix].title}</option>
 						{/if}
 					{/section}
 					</select>
@@ -112,9 +99,7 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 		{if $forum_mode neq 'y'}
 			<div class="headers">
 			{if $tiki_p_admin_comments eq 'y' or $tiki_p_lock_comments eq 'y'}
-				{if ($tiki_p_admin_comments eq 'y' and $prefs.feature_comments_moderation eq 'y') or $prefs.feature_comments_locking eq 'y'}
-					<span class="title">{tr}Moderator actions{/tr}</span>
-				{/if}
+				<span class="title">{tr}Moderator actions{/tr}</span>
 				<span class="infos">
 				{if $tiki_p_admin_comments eq 'y' and $prefs.feature_comments_moderation eq 'y'}
 					<a class="link" href="tiki-list_comments.php?types_section={$section}&amp;findfilter_approved=n">{tr}queued:{/tr}{$queued}</a>
@@ -134,11 +119,10 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 			{/if}
 			</div>
 		{/if}
-
-		{if $comments_cant > $prefs.forum_thread_user_settings_threshold}
 		<div class="actions">
 			<span class="action">
 
+				{if $comments_cant > 10}
 				<label for="comments-maxcomm">{tr}Messages{/tr}:</label>
 				<select name="comments_per_page" id="comments-maxcomm">
 					<option value="10" {if $comments_per_page eq 10 }selected="selected"{/if}>10</option>
@@ -146,7 +130,8 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 					<option value="30" {if $comments_per_page eq 30 }selected="selected"{/if}>30</option>
 					<option value="999999" {if $comments_per_page eq 999999 }selected="selected"{/if}>{tr}All{/tr}</option>
 				</select>
-				
+				{/if}
+
 				{if $forum_mode neq 'y' or $forum_info.is_flat neq 'y' }
 				<label for="comments-style">{tr}Style{/tr}:</label>
 				<select name="thread_style" id="comments-style">
@@ -186,13 +171,11 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 
 			</span>
 		</div>
-		{/if}
-		
 	</div>
 	{/if}
 
 	{section name=rep loop=$comments_coms}
-		{include file='comment.tpl' comment=$comments_coms[rep]}
+		{include file="comment.tpl" comment=$comments_coms[rep]}
 		{if $thread_style != 'commentStyle_plain'}<br />{/if}
 	{/section}
 </form>
@@ -269,16 +252,13 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 	</div>
 
 	{if $comment_preview eq 'y'}
-	<div class="clearfix post_preview" id="preview_comment">
-		{jq}
-			$jq(window).attr('location','#preview_comment');
-		{/jq}
+	<div class="clearfix post_preview">
 		{if $forum_mode neq 'y'}<b>{tr}Preview{/tr}</b>{/if}
 		<div class="post"><div class="inner"><span class="corners-top"><span></span></span><div class="postbody">
-			<div class="postbody-title"><div class="title">{$comments_preview_title|escape}</div></div>
+			<div class="postbody-title"><div class="title">{$comments_preview_title}</div></div>
 			<div class="content">
 				<div class="author"><span class="author_info"><span class="author_post_info">
-				{tr}by{/tr} <span class="author_post_info_by">{if $user}{$user|userlink}{else}{$comments_preview_anonymous_name}{/if}</span>
+				{tr}by{/tr} <span class="author_post_info_by">{$user|userlink}</span>
 	  			</span></span></div>
 				{$comments_preview_data}
 	  		</div>
@@ -287,7 +267,7 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 {*	<br class="clear" />*}
 	{/if}
 
-	<form enctype="multipart/form-data" method="post" action="{$comments_father}#comments" id='editpostform'>
+	<form enctype="multipart/form-data" method="post" action="{$comments_father}" id='editpostform'>
 	<input type="hidden" name="comments_reply_threadId" value="{$comments_reply_threadId|escape}" />    
 	<input type="hidden" name="comments_grandParentId" value="{$comments_grandParentId|escape}" />    
 	<input type="hidden" name="comments_parentId" value="{$comments_parentId|escape}" />
@@ -295,8 +275,6 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 	<input type="hidden" name="comments_threadId" value="{$comments_threadId|escape}" />
 	<input type="hidden" name="comments_threshold" value="{$comments_threshold|escape}" />
 	<input type="hidden" name="thread_sort_mode" value="{$thread_sort_mode|escape}" />
-	<input type="hidden" name="comments_objectId" value="{$comments_objectId|escape}" />
-	<input type="hidden" name="comments_title" value="{if $page}{$page|escape}{else}{tr}Untitled{/tr}{/if}" />
 
 	{* Traverse request variables that were set to this page adding them as hidden data *}
 	{section name=i loop=$comments_request_data}
@@ -304,30 +282,14 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 	{/section}
 
 	<table class="normal">
-		{if ( $forum_mode != 'y' and $prefs.wiki_comments_notitle neq 'y' ) or $prefs.forum_reply_notitle neq 'y' && $forum_mode == 'y'}
-			<tr>
-				<td class="formcolor">
-					<label for="comments-title">{tr}Title{/tr} <span class="attention">({tr}required{/tr})</span> </label>
-				</td>
-				<td class="formcolor">
-				{* 
-				   Alain Désilets: This used to have a size="50" attribute, but I deleted it
-				   because in the Collaborative_Multilingual_Terminology, we may need to view 
-				   two different languages of the same page side by side. And the text length of
-				   50 was causing the language displayed on the right side to be squished into a 
-				   very narrow column, if comments were opened on the left side language
-				   but not on the right side language.
-				   
-				   Unfortunately, without a size specification, the comments box looks 
-				   a bit weird when we only view one language at a time.
-				   
-				   But I don't know how else to deal with this issue.
-				 *}
-					<input type="text" name="comments_title" id="comments-title" value="{$comment_title|escape}" /> 
-
-				</td>
-			</tr>
-		{/if}
+		<tr>
+			<td class="formcolor">
+				<label for="comments-title">{tr}Title{/tr} <span class="attention">({tr}required{/tr})</span> </label>
+			</td>
+			<td class="formcolor">
+				<input type="text" size="50" name="comments_title" id="comments-title" value="{$comment_title|escape}" />
+			</td>
+		</tr>
 
 		{* Start: Xenfasa adding and testing article ratings in comments here. Not fully functional yet *}
 		{if $comment_can_rate_article eq 'y'}
@@ -353,32 +315,38 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 		{/if}
 		{* End: Xenfasa adding and testing article ratings in comments here *}
 
-		{if $prefs.section_comments_parse eq 'y' && $forum_mode neq 'y' || $prefs.feature_forum_parse eq 'y' && $forum_mode eq 'y'}
-	        {assign var=toolbars_html value=true}{* can't find where this gets set in ui-revamp project *}
-	        <tr>
-	    		<td class="formcolor"><label>{tr}Toolbars{/tr}</label></td>
-	            <td class="formcolor">
-	            	{toolbars area_name='editpost2' comments='y'}
-	            </td>
-	        </tr>
+		{if $prefs.feature_smileys eq 'y'}
+		<tr>
+			<td class="formcolor"><label>{tr}Smileys{/tr}</label></td>
+			<td class="formcolor">{include file="tiki-smileys.tpl" area_name="editpost2"}</td>
+		</tr>
 		{/if}
+                
+                {if $quicktags and $prefs.quicktags_over_textarea eq 'y'}
+                  <tr>
+		    <td class="formcolor"><label>{tr}Quicktags{/tr}</label></td>
+                    <td class="formcolor">
+                      {include file=tiki-edit_help_tool.tpl area_name='editpost2'}
+                    </td>
+                  </tr>
+                {/if}
+
 		<tr>
 			<td class="formcolor">
 				<label for="editpost2">{if $forum_mode eq 'y'}{tr}Reply{/tr}{else}{tr}Comment{/tr} <span class="attention">({tr}required{/tr})</span>{/if}</label>
+				<br /><br />
+				{include file="textareasize.tpl" area_name='editpost2' formId='editpostform'}
+				<br /><br />
+                                {if $quicktags and $prefs.quicktags_over_textarea neq 'y'}
+				  {include file=tiki-edit_help_tool.tpl area_name='editpost2'}
+                                {/if}
 			</td>
 			<td class="formcolor">
-				<textarea id="editpost2" name="comments_data" rows="{$rows}" cols="{$cols}">{if $prefs.feature_forum_replyempty ne 'y' || $edit_reply > 0 || $comment_preview eq 'y'}{$comment_data|escape}{/if}</textarea> 
+				<textarea id="editpost2" name="comments_data" rows="{$rows}" cols="{$cols}">{if $prefs.feature_forum_replyempty ne 'y' || $edit_reply > 0 || $comment_preview eq 'y'}{$comment_data|escape}{/if}</textarea>
 				<input type="hidden" name="rows" value="{$rows}" />
 				<input type="hidden" name="cols" value="{$cols}" />
-
-				{if $forum_mode eq 'y' and $user and $prefs.feature_user_watches eq 'y'}
-					<div id="watch_thread_on_reply">
-						<input id="watch_thread" type="checkbox" name="watch" value="y"{if $user_watching_topic eq 'y' or $smarty.request.watch eq 'y'} checked="checked"{/if}> <label for="watch_thread">{tr}Send me an e-mail when someone replies{/tr}</label>
-					</div>
-				{/if}
 			</td>
 		</tr>
-
 
 		{if $forum_mode == "y" and (($forum_info.att eq 'att_all') or ($forum_info.att eq 'att_admin' and ($tiki_p_admin_forum eq 'y'  or $forum_info.moderator == $user)) or ($forum_info.att eq 'att_perm' and $tiki_p_forum_attach eq 'y'))}
 		{assign var='can_attach_file' value='y'}
@@ -391,16 +359,16 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 		{/if}
 
 		{if $prefs.feature_contribution eq 'y'}
-			{include file='contribution.tpl' in_comment="y"}
+			{include file="contribution.tpl" in_comment="y"}
 		{/if}
 
 		{if $prefs.feature_antibot eq 'y'}
-			{include file='antibot.tpl' td_style="formcolor"}
+			{include file="antibot.tpl" td_style="formcolor"}
 		{/if}
 
 		{if !$user}
 			<tr>
-				<td class="formcolor"><label for="anonymous_name">{tr}Enter your name{/tr} ({tr}optional{/tr})</span></label></td>
+				<td class="formcolor"><label for="anonymus_name">{tr}Enter your name{/tr}</label></td>
 				<td class="formcolor"><input type="text" maxlength="50" size="12" id="anonymous_name" name="anonymous_name" /></td>
 			</tr>
 			{if $forum_mode eq 'y'}
@@ -420,22 +388,22 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 			</td>
 
 			<td class="formcolor">
-				<input type="submit" name="comments_postComment" value="{tr}Post{/tr}" {if empty($user)}onclick="setCookie('anonymous_name',$jq('#anonymous_name').val());"{/if} />
-				{if !empty($user) && $prefs.feature_comments_post_as_anonymous eq 'y'}
-				<input type="submit" name="comments_postComment_anonymous" value="{tr}Post as Anonymous{/tr}" />
-				{/if}
 				<input type="submit" name="comments_previewComment" value="{tr}Preview{/tr}"
 				{if ( isset($can_attach_file) && $can_attach_file eq 'y' ) or empty($user)}{strip}
-					{assign var='file_preview_warning' value="{tr}Please note that the preview does not keep the attached file which you will have to choose before posting.{/tr}"}
+					{assign var='file_preview_warning' value='{tr}Please note that the preview does not keep the attached file which you will have to choose before posting.{/tr}'}
 					onclick="
 					{if empty($user)}
-						setCookie('anonymous_name',$jq('#anonymous_name').val());
+						setCookie('anonymous_name',document.getElementById('anonymous_name').value);
 					{/if}
 					{if isset($can_attach_file) && $can_attach_file eq 'y'}
-						if ($jq('#userfile1').val()) alert('{$file_preview_warning|escape:"javascript"}');
+						if (document.getElementById('userfile1').value) alert('{$file_preview_warning|escape:"javascript"}');
 					{/if}
 					"
 				{/strip}{/if} />
+				<input type="submit" name="comments_postComment" value="{tr}Post{/tr}" {if empty($user)}onclick="setCookie('anonymous_name',document.getElementById('anonymous_name').value);"{/if} />
+				{if !empty($user) && $prefs.feature_comments_post_as_anonymous eq 'y'}
+				<input type="submit" name="comments_postComment_anonymous" value="{tr}Post as Anonymous{/tr}" />
+				{/if}
 				{if $forum_mode eq 'y'}
 				<input type="button" name="comments_cancelComment" value="{tr}Cancel{/tr}" onclick="hide('{$postclass}');" />
 				{elseif $prefs.feature_comments_moderation eq 'y' and $tiki_p_admin_comments neq 'y'}
@@ -454,6 +422,10 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 	{else}
 		{assign var=tips_title value="{tr}Posting comments{/tr}"}
 	{/if}
+	{remarksbox type="tip" title=$tips_title}
+		{tr}Use{/tr} [http://www.foo.com] {tr}or{/tr} [http://www.foo.com|{tr}Description{/tr}] {tr}for links{/tr}.<br />
+		{tr}HTML tags are not allowed inside posts{/tr}.<br />
+	{/remarksbox}
 
 	{if $forum_mode eq 'y'}
     </div>
@@ -466,9 +438,11 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 
 {if $forum_mode neq 'y'}</div><!-- comzone end -->{/if}
 {*</div>  now this tag causes problems instead of fixing (was added earlier to prevent side columns in *litecss themes from not appearing *}
-{if empty($user) and $prefs.javascript_enabled eq "y"}
-	{jq}
-		var js_anonymous_name = getCookie('anonymous_name');
-		if (js_anonymous_name) $jq('#anonymous_name').val( js_anonymous_name );
-	{/jq}
+{if empty($user)}
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+var js_anonymous_name = getCookie('anonymous_name');
+if (js_anonymous_name) document.getElementById('anonymous_name').value = js_anonymous_name;
+//--><!]]>
+</script>
 {/if}

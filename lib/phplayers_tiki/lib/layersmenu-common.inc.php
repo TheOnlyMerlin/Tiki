@@ -1,12 +1,7 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 // PHP Layers Menu 3.2.0-rc (C) 2001-2004 Marco Pratesi - http://www.marcopratesi.it/
 // (copy of original, included in lib/smarty_tiki/function.phplayers.php, modified for Tiki purposes, changes marked using "// [MOD] by <sfnick>")
+// CVS: $Id: /cvsroot/tikiwiki/tiki/lib/phplayers_tiki/lib/layersmenu-common.inc.php,v 1.2.2.1 2008-02-27 15:18:47 nyloth Exp $
 
 /**
 * This file contains the code of the LayersMenuCommon class.
@@ -473,7 +468,7 @@ function setMenuStructureFile($tree_file)
 	}
 	$this->menuStructure = '';
 	while ($buffer = fgets($fd, 4096)) {
-		$buffer = str_replace(chr(13), '', $buffer);	// Microsoft Stupidity Suppression
+		$buffer = ereg_replace(chr(13), '', $buffer);	// Microsoft Stupidity Suppression
 		$this->menuStructure .= $buffer;
 	}
 	fclose($fd);
@@ -492,7 +487,7 @@ function setMenuStructureFile($tree_file)
 */
 function setMenuStructureString($tree_string)
 {
-	$this->menuStructure = preg_replace('/'.chr(13).'/', '', $tree_string);	// Microsoft Stupidity Suppression
+	$this->menuStructure = ereg_replace(chr(13), '', $tree_string);	// Microsoft Stupidity Suppression
 	if ($this->menuStructure == '') {
 		$this->error('setMenuStructureString: empty string.');
 		return false;
@@ -798,12 +793,11 @@ function _postParse(
 	for ($cnt=$this->_firstItem[$menu_name]; $cnt<=$this->_lastItem[$menu_name]; $cnt++) {	// this counter scans all nodes of the new menu
 		$this->tree[$cnt]['child_of_root_node'] = ($this->tree[$cnt]['level'] == 1);
 		$this->tree[$cnt]['parsed_text'] = stripslashes($this->tree[$cnt]['text']);
-		$this->tree[$cnt]['parsed_href'] = (preg_replace('/ /', '', $this->tree[$cnt]['href']) == '') ? '#' : $this->prependedUrl . $this->tree[$cnt]['href'];
+		$this->tree[$cnt]['parsed_href'] = (ereg_replace(' ', '', $this->tree[$cnt]['href']) == '') ? '#' : $this->prependedUrl . $this->tree[$cnt]['href'];
 		$this->tree[$cnt]['parsed_title'] = ($this->tree[$cnt]['title'] == '') ? '' : ' title="' . stripslashes($this->tree[$cnt]['title']) . '"';
 
 		$fooimg = $this->icondir . $this->tree[$cnt]['icon'];
-		//if ($this->tree[$cnt]['icon'] != '' && (substr($this->tree[$cnt]['icon'], 0, 7) == 'http://' || substr($this->tree[$cnt]['icon'], 0, 8) == 'https://')) { // Changed original conditions to allow relative URLs for icons
-		if ($this->tree[$cnt]['icon'] != '') {
+		if ($this->tree[$cnt]['icon'] != '' && (substr($this->tree[$cnt]['icon'], 0, 7) == 'http://' || substr($this->tree[$cnt]['icon'], 0, 8) == 'https://')) {
 			$this->tree[$cnt]['parsed_icon'] = $this->tree[$cnt]['icon'];
 			if ($this->issetIconsize) {
 				$this->tree[$cnt]['iconwidth'] = $this->iconsize['width'];
@@ -939,7 +933,7 @@ function setSelectedItemByUrl($menu_name, $url)
 function setSelectedItemByUrlEregi($menu_name, $url_eregi)
 {
 	for ($cnt=$this->_firstItem[$menu_name]; $cnt<=$this->_lastItem[$menu_name]; $cnt++) {  // this counter scans all nodes of the new menu
-		if (preg_match('/'.$url_eregi.'/i', $this->tree[$cnt]['parsed_href'])) {
+		if (eregi($url_eregi, $this->tree[$cnt]['parsed_href'])) {
 			$this->tree[$cnt]['selected'] = true;
 			break;
 		}
@@ -961,3 +955,5 @@ function error($errormsg)
 }
 
 } /* END OF CLASS */
+
+?>

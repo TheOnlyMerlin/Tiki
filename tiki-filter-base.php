@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -49,8 +44,7 @@ unset($tmp);
 // If unallowed chars (regarding to RFC1738) have been found in REQUEST_URI, then urlencode them
 $unallowed_uri_chars = array("'", '"', '<', '>', '{', '}', '|', '\\', '^', '~', '`');
 $unallowed_uri_chars_encoded = array_map('urlencode', $unallowed_uri_chars);
-if(isset($_SERVER['REQUEST_URI']))
-	$_SERVER['REQUEST_URI'] = str_replace($unallowed_uri_chars, $unallowed_uri_chars_encoded, $_SERVER['REQUEST_URI']);
+$_SERVER['REQUEST_URI'] = str_replace($unallowed_uri_chars, $unallowed_uri_chars_encoded, $_SERVER['REQUEST_URI']);
 
 // Same as above, but for PHP_SELF which does not contain URL params
 // Usually, PHP_SELF also differs from REQUEST_URI in that PHP_SELF is URL decoded and REQUEST_URI is exactly what the client sent
@@ -59,39 +53,24 @@ $unallowed_uri_chars_encoded = array_merge($unallowed_uri_chars_encoded, array_m
 $_SERVER['PHP_SELF'] = str_replace($unallowed_uri_chars, $unallowed_uri_chars_encoded, $_SERVER['PHP_SELF']);
 
 // Note: need to susbsitute \ for / for windows.
-$tikiroot = str_replace('\\','/',dirname($_SERVER['PHP_SELF']));
+//$tikiroot = str_replace('\\','/',dirname($_SERVER['PHP_SELF']));
+$tikiroot = dirname($_SERVER['PHP_SELF']);
+$tikipath = str_replace('\\','/',dirname($tiki_script_filename));
 $tikipath = dirname($tiki_script_filename);
 $tikiroot_relative = '';
 
 if ($dir_level > 0) {
 	$tikiroot = preg_replace('#(/[^/]+){'.$dir_level.'}$#','',$tikiroot);
 	$tikipath = preg_replace('#(/[^/]+){'.$dir_level.'}$#','',$tikipath);
-	$tikiroot_relative = str_repeat('../',$dir_level);
-	chdir($tikiroot_relative);
+	chdir(join('../',array_fill(0,$dir_level+1,'')));
+	$tikiroot_relative = join('../',array_fill(0,$dir_level+1,''));
 }
 
 if ( substr($tikiroot,-1,1) != '/' ) $tikiroot .= '/';
 if ( substr($tikipath,-1,1) != '/' ) $tikipath .= '/';
 
-// Add global filter for xajax and cookie
-global $inputConfiguration;
-if ( empty($inputConfiguration) ) {
-	$inputConfiguration = array();
-}
-array_unshift($inputConfiguration,array(
-  'staticKeyFilters' => array(
-		'cookietab'	=>	'int',
-		'xjxfun'	=> 'striptags',
-		'xjxr'		=>	'int'
-  ),
-	'staticKeyFiltersForArrays' => array(
-		'xjxargs' => 'xss',
-	)
-));
-
 require_once('lib/init/initlib.php');
 TikiInit::prependIncludePath($tikipath.'lib/pear');
 TikiInit::appendIncludePath($tikipath.'lib/core/lib');
-TikiInit::appendIncludePath($tikipath);
 require_once('lib/core/lib/DeclFilter.php');
 require_once('lib/core/lib/JitFilter.php');

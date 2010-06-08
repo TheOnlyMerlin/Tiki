@@ -1,5 +1,5 @@
-{title help="Blogs"}{$blog_data.title|escape}{/title}
-<a class="link" href="tiki-list_blogs.php">{tr}Blogs{/tr}</a> {$prefs.site_crumb_seper} <a class="link" href="tiki-view_blog.php?blogId={$post_info.blogId}">{$blog_data.title|escape}</a> {$prefs.site_crumb_seper} {$post_info.title|escape}
+{title help="Blogs"}{$blog_data.title}{/title}
+<a class="link" href="tiki-list_blogs.php">{tr}Blogs{/tr}</a> {$prefs.site_crumb_seper} <a class="link" href="tiki-view_blog.php?blogId={$post_info.blogId}">{$blog_data.title}</a> {$prefs.site_crumb_seper} {$post_info.title}
 
 <div class="post">
 	{if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y'}
@@ -14,15 +14,13 @@
 	{/if}
 	<div class="postbody">
 	<div class="clearfix postbody-title">
-	    {if $blog_data.show_avatar eq 'y'}
-			{$post_info.avatar}
-		{/if}
-		
-		{if $blog_data.use_title eq 'y'}
-		<div class="title">		
-				<h2>{$post_info.title|escape}</h2>
+		<div class="title">
+			{if $blog_data.use_title eq 'y'}
+				<h2>{$post_info.title}</h2>
+			{else}
+				<h2>{$post_info.created|tiki_short_datetime}</h2>
+			{/if}
 		</div>
-		{/if}
 	</div>
 	<div class="content">
 		<div class="author_actions clearfix">
@@ -38,17 +36,10 @@
 {/if}
 			</div>
 		<div class="author_info">
-		
-			{if $blog_data.use_author eq 'y' || $blog_data.add_date eq 'y'}
-			{tr}Published {/tr}
-			{/if}
-			
-			{if $blog_data.use_author eq 'y'}
-				{tr}by{/tr} {$post_info.user} 
-			{/if}
-			
-			{if $blog_data.add_date eq 'y'}
-				{tr}on{/tr} {$post_info.created|tiki_short_datetime}
+			{if $blog_data.use_title eq 'y'}
+				{tr}By{/tr} {$post_info.user} {tr}on{/tr} {$post_info.created|tiki_short_datetime}
+			{else}
+				{tr}By{/tr} {$post_info.user}
 			{/if}
 		</div>
 	</div>
@@ -79,22 +70,7 @@
 <div class="postfooter">
 	<div class="status"> {* renamed to match forum footer layout *}
 		<a href='tiki-print_blog_post.php?postId={$postId}'>{icon _id='printer' alt='{tr}Print{/tr}'}</a>
-		{if $prefs.feature_blog_sharethis eq "y"}
-			{capture name=shared_title}{tr}Share This{/tr}{/capture}
-			{capture name=shared_link_title}{tr}ShareThis via AIM, social bookmarking and networking sites, etc.{/tr}{/capture}
-			{wiki}{literal}<script language="javascript" type="text/javascript">
-				//Create your sharelet with desired properties and set button element to false
-				var object{/literal}{$postId}{literal} = SHARETHIS.addEntry({
-					title:'{/literal}{$smarty.capture.shared_title|replace:'\'':'\\\''}{literal}'
-				},
-				{button:false});
-				//Output your customized button
-				document.write('<span id="share{/literal}{$postId}{literal}"><a title="{/literal}{$smarty.capture.shared_link_title|replace:'\'':'\\\''}{literal}" href="javascript:void(0);"><img src="http://w.sharethis.com/images/share-icon-16x16.png?CXNID=1000014.0NXC" /></a></span>');
-				//Tie customized button to ShareThis button functionality.
-				var element{/literal}{$postId}{literal} = document.getElementById("share{/literal}{$postId}{literal}");
-				object{/literal}{$postId}{literal}.attachButton(element{/literal}{$postId}{literal});
-			</script>{/literal}{/wiki}
-		{/if}
+		<a href='tiki-send_blog_post.php?postId={$postId}'>{icon _id='email' alt='{tr}Email This Post{/tr}'}</a>
 	</div>
 	<div class="actions"> {* renamed to match forum footer layout *}
 <a class="link" href="{$postId|sefurl:blogpost}">{tr}Permalink{/tr}</a>

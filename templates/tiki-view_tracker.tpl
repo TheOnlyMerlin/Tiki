@@ -4,7 +4,7 @@
 {popup_init src="lib/overlib.js"}
 {/if}
 
-{title url="tiki-view_tracker.php?trackerId=$trackerId" adm="trackers"}{tr}Tracker:{/tr} {$tracker_info.name|escape}{/title}
+{title url="tiki-view_tracker.php?trackerId=$trackerId" adm="trackers"}{tr}Tracker:{/tr} {$tracker_info.name}{/title}
 
 <div class="navbar">
 	 {if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
@@ -35,8 +35,9 @@
 	{/if}
 
 	{if $tiki_p_admin_trackers eq 'y'}
+		&nbsp;&nbsp;
 		{button href="tiki-admin_trackers.php" _text="{tr}Admin Trackers{/tr}"}
-		{button href="tiki-admin_trackers.php?trackerId=$trackerId&show=mod" _text="{tr}Edit This Tracker{/tr}"}
+		{button href="tiki-admin_trackers.php?trackerId=$trackerId" _text="{tr}Edit This Tracker{/tr}"}
 		{button href="tiki-admin_tracker_fields.php?trackerId=$trackerId" _text="{tr}Edit Fields{/tr}"}
 	{/if}
 </div>
@@ -61,24 +62,48 @@
 {/if}
 
 {if !empty($mail_msg)}
-	<div class="wikitext">{$mail_msg}</div>
+<div class="wikitext">{$mail_msg}</div>
 {/if}
 
-{include file='tracker_error.tpl'}
+{if count($err_mandatory) > 0}<div class="simplebox highlight">
+{tr}Following mandatory fields are missing{/tr}&nbsp;:<br/>
+	{section name=ix loop=$err_mandatory}
+{$err_mandatory[ix].name}{if !$smarty.section.ix.last},&nbsp;{/if}
+	{/section}
+</div><br />{/if}
+{if count($err_value) > 0}<div class="simplebox highlight">
+{tr}Following fields are incorrect{/tr}&nbsp;:<br/>
+	{section name=ix loop=$err_value}
+{$err_value[ix].name}{if !$smarty.section.ix.last},&nbsp;{/if}
+	{/section}
+</div><br />{/if}
+{if $prefs.feature_tabs eq 'y'}
+{cycle name=tabs values="1,2,3,4" print=false advance=false reset=true}
+<div class="tabs">
+{if $tiki_p_view_trackers eq 'y' or ($tracker_info.writerCanModify eq 'y' and $user)}
+<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark"><a href="javascript:tikitabs({cycle name=tabs},4);">{tr}Tracker Items{/tr}</a></span>
+{/if}
+{if $tiki_p_create_tracker_items eq 'y'}
+<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark"><a href="javascript:tikitabs({cycle name=tabs},4);">{tr}Insert New Item{/tr}</a></span>
+{/if}
+{if $tiki_p_export_tracker eq 'y'}
+	<span id="tab{cycle name=tabs advance=false assign=tabi}{$tabi}" class="tabmark"><a href="javascript:tikitabs({cycle name=tabs},4);">{tr}Export Tracker Items{/tr}</a></span>
+{/if}
 
-{tabset name='tabs_view_tracker'}
 
-{if $tiki_p_view_trackers eq 'y' or (($tracker_info.writerCanModify eq 'y' or $tracker_info.writerGroupCanModify eq 'y') and $user)}
-{tab name="{tr}Tracker Items{/tr}"}
+</div>
+{/if}
+
+{cycle name=content values="1,2,3" print=false advance=false reset=true}
 {* -------------------------------------------------- tab with list --- *}
+{if $tiki_p_view_trackers eq 'y' or ($tracker_info.writerCanModify eq 'y' and $user)}
+<div id="content{cycle name=content assign=focustab}{$focustab}"{if $prefs.feature_tabs eq 'y'} class="tabcontent"{/if}>
 
 {if (($tracker_info.showStatus eq 'y' and $tracker_info.showStatusAdminOnly ne 'y') or $tiki_p_admin_trackers eq 'y') or $show_filters eq 'y'}
-{include file='tracker_filter.tpl'}
+{include file="tracker_filter.tpl"}
 {/if}
 
 {if $cant_pages > 1 or $initial}{initials_filter_links}{/if}
-
-<div align='left'>{tr}Items found:{/tr} {$item_count}</div>
 
 {if $items|@count ge '1'}
 {* ------- list headings --- *}
@@ -98,7 +123,7 @@
 {foreach from=$fields key=ix item=field_value}
 {if ( $field_value.type eq 's' and ($field_value.name eq "Rating" or $field_value.name eq tra("Rating")) and $field_value.isTblVisible eq 'y' ) || ( $field_value.isTblVisible eq 'y' and $field_value.type ne 'x' and $field_value.type ne 'h' and ($field_value.isHidden eq 'n' or $field_value.isHidden eq 'p' or $tiki_p_admin_trackers eq 'y') ) and ($field_value.type ne 'p' or $field_value.options_array[0] ne 'password') and (empty($field_value.visibleBy) or in_array($default_group, $field_value.visibleBy) or $tiki_p_admin_trackers eq 'y') }
 	<th class="auto">
-		{self_link _sort_arg='sort_mode' _sort_field='f_'|cat:$field_value.fieldId}{$field_value.name|truncate:255:"..."|escape|default:"&nbsp;"}{/self_link}
+		{self_link _sort_arg='sort_mode' _sort_field='f_'|cat:$field_value.fieldId}{$field_value.name|truncate:255:"..."|default:"&nbsp;"}{/self_link}
 	</th>
 	{if $field_value.type eq 's' and ($field_value.name eq "Rating" or $field_value.name eq tra("Rating"))}
 		{assign var=rateFieldId value=$field_value.fieldId}
@@ -147,11 +172,7 @@ $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr
 
 {if $field_value.isTblVisible eq 'y' and $field_value.type ne 'x' and $field_value.type ne 'h' and ($field_value.isHidden eq 'n' or $field_value.isHidden eq 'p' or $tiki_p_admin_trackers eq 'y') and ($field_value.type ne 'p' or $field_value.options_array[0] ne 'password') and (empty($field_value.visibleBy) or in_array($default_group, $field_value.visibleBy) or $tiki_p_admin_trackers eq 'y')}
 <td class="auto">
-{if $field_value.isMain eq 'y' and ($tiki_p_view_trackers eq 'y' 
- or ($tiki_p_modify_tracker_items eq 'y' and $item.status ne 'p' and $item.status ne 'c')
- or ($tiki_p_modify_tracker_items_pending eq 'y' and $item.status eq 'p')
- or ($tiki_p_modify_tracker_items_closed eq 'y' and $item.status eq 'c')
- or $tiki_p_comment_tracker_items eq 'y'
+{if $field_value.isMain eq 'y' and ($tiki_p_view_trackers eq 'y' or $tiki_p_modify_tracker_items eq 'y' or $tiki_p_comment_tracker_items eq 'y'
  or ($tracker_info.writerCanModify eq 'y' and $user and $my eq $user) or ($tracker_info.writerCanModify eq 'y' and $group and $ours eq $group))}
 {if !empty($tracker_info.showPopup)}
 	{capture name=popup}
@@ -160,7 +181,7 @@ $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr
 	{cycle values="odd,even" print=false}
 	{foreach from=$items[user].field_values item=f}
 		{if in_array($f.fieldId, $popupFields)}
-			 <tr><th class="{cycle advance=false}">{$f.name}</th><td class="{cycle}">{include file='tracker_item_field_value.tpl' field_value=$f}</th></tr>
+			 <tr><th class="{cycle advance=false}">{$f.name}</th><td class="{cycle}">{include file="tracker_item_field_value.tpl" field_value=$f}</th></tr>
 		{/if}
 	{/foreach}
 	</table>
@@ -172,7 +193,7 @@ $sort_mode eq 'created_desc'}created_asc{else}created_desc{/if}">{tr}Created{/tr
 {/if}
 {/if}
 
-{include file='tracker_item_field_value.tpl' field_value=$field_value list_mode="y" item=$items[user] showlinks="y" reloff=$smarty.section.user.index url=""}
+{include file="tracker_item_field_value.tpl" field_value=$field_value list_mode="y" item=$items[user] showlinks="y" reloff=$smarty.section.user.index url=""}
 
 </td>
 {/if}
@@ -197,7 +218,6 @@ link="{tr}List Attachments{/tr}"><img src="img/icons/folderin.gif" alt="{tr}List
   <td>
     <a class="link" href="tiki-view_tracker.php?status={$status}&amp;trackerId={$trackerId}{if $offset}&amp;offset={$offset}{/if}{if $sort_mode ne ''}&amp;sort_mode={$sort_mode}{/if}&amp;remove={$items[user].itemId}"
 title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
-	<a class="link" href="tiki-tracker_view_history.php?itemId={$items[user].itemId}" title="{tr}History{/tr}">{icon _id='database' alt="{tr}History{/tr}"}</a>
   </td>
 {/if}
 </tr>
@@ -211,7 +231,7 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 <select name="batchaction">
 <option value="">{tr}...{/tr}</option>
 <option value="delete">{tr}Delete{/tr}</option>
-{if $tracker_info.showStatus eq 'y' or ($tracker_info.showStatusAdminOnly eq 'y' and $tiki_p_admin_trackers eq 'y')}
+{if $tracker_info.showStatus eq 'y'}
 <option value="c">{tr}Close{/tr}</option>
 <option value="o">{tr}Open{/tr}</option>
 <option value="p">{tr}Pending{/tr}</option>
@@ -224,28 +244,29 @@ title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 </form>
 {pagination_links cant=$item_count step=$maxRecords offset=$offset}{/pagination_links}
 {/if}
-{/tab}
+</div>
+{else}<!-- {cycle name=content assign=focustab} -->
 {/if}
 
-{if $tiki_p_create_tracker_items eq 'y'}
-{tab name="{tr}Insert New Item{/tr}"}
 {* --------------------------------------------------------------------------------- tab with edit --- *}
-{jq}
-$jq("#newItemForm").validate({
-	{{$validationjs}}
-});
-{/jq}
-<form enctype="multipart/form-data" action="tiki-view_tracker.php" id="newItemForm" method="post">
+{if $tiki_p_create_tracker_items eq 'y'}
+<div id="content{cycle name=content assign=focustab}{$focustab}"{if $prefs.feature_tabs eq 'y'} class="tabcontent"{/if}>
+<form enctype="multipart/form-data" action="tiki-view_tracker.php" method="post">
 <input type="hidden" name="trackerId" value="{$trackerId|escape}" />
 
 <h2>{tr}Insert New Item{/tr}</h2>
-{remarksbox type="note"}<strong class='mandatory_note'>{tr}Fields marked with a * are mandatory.{/tr}</strong>{/remarksbox}
+{remarksbox type="note"}{tr}Fields marked with a * are mandatory.{/tr}{/remarksbox}
 <table class="normal">
 
 {if $tracker_info.showStatus eq 'y' and ($tracker_info.showStatusAdminOnly ne 'y' or $tiki_p_admin_trackers eq 'y')}
 <tr class="formcolor"><td>{tr}Status{/tr}</td>
 <td>
-{include file='tracker_status_input.tpl' tracker=$tracker_info form_status=status}
+<select name="status">
+{foreach key=st item=stdata from=$status_types}
+<option value="{$st}" {if $tracker_info.newItemStatus eq $st} selected="selected"{/if}
+style="background-image:url('{$stdata.image}');background-repeat:no-repeat;padding-left:17px;">{$stdata.label}</option>
+{/foreach}
+</select>
 </td></tr>
 {/if}
 
@@ -253,18 +274,25 @@ $jq("#newItemForm").validate({
 {assign var=fid value=$field_value.fieldId}
 {* -------------------- header and others -------------------- *}
 {if $field_value.isHidden eq 'n' or $field_value.isHidden eq 'c'  or $tiki_p_admin_trackers eq 'y'}
-{if $field_value.type ne 'x' and $field_value.type ne 'l' and $field_value.type ne 'q' and (($field_value.type ne 'u' and $field_value.type ne 'g' and $field_value.type ne 'I') or !$field_value.options_array[0] or $tiki_p_admin_trackers eq 'y') and (empty($field_value.visibleBy) or in_array($default_group, $field_value.visibleBy) or $tiki_p_admin_trackers eq 'y')and (empty($field_value.editableBy) or in_array($default_group, $field_value.editableBy) or $tiki_p_admin_trackers eq 'y') and ($field_value.type ne 'A' or $tiki_p_attach_trackers eq 'y') and $field_value.type ne 'N' and $field_value.type ne '*' and !($field_value.type eq 's' and $field_value.name eq 'Rating')}
+{if $field_value.type ne 'x' and $field_value.type ne 'l' and $field_value.type ne 'q' and (($field_value.type ne 'u' and $field_value.type ne 'g' and $field_value.type ne 'I') or !$field_value.options_array[0] or $tiki_p_admin_trackers eq 'y') and (empty($field_value.visibleBy) or in_array($default_group, $field_value.visibleBy) or $tiki_p_admin_trackers eq 'y')and (empty($field_value.editableBy) or in_array($default_group, $field_value.editableBy) or $tiki_p_admin_trackers eq 'y') and ($field_value.type ne 'A' or $tiki_p_attach_trackers eq 'y')}
 {if $field_value.type eq 'h'}
 </table>
-<h2>{$field_value.name|escape}</h2>
+<h2>{$field_value.name}</h2>
 <table class="normal">
 {else}
 {if ($field_value.type eq 'c' or $field_value.type eq 't' or $field_value.type eq 'n') and $field_value.options_array[0] eq '1'}
-<tr class="formcolor"><td class="formlabel" >{$field_value.name|escape}{if $field_value.isMandatory eq 'y'}<strong class='mandatory_star'> *</strong>{/if}</td><td class="formcontent">
+<tr class="formcolor"><td class="formlabel" >{$field_value.name}{if $field_value.isMandatory eq 'y'} *{/if}</td><td class="formcontent">
 {elseif $stick eq 'y'}
-<td class="formlabel right">{$field_value.name|escape}{if $field_value.isMandatory eq 'y'}<strong class='mandatory_star'> *</strong>{/if}</td><td >
+<td class="formlabel right">{$field_value.name}{if $field_value.isMandatory eq 'y'} *{/if}</td><td >
 {else}
-<tr class="formcolor"><td class="formlabel" >{$field_value.name|escape}{if $field_value.isMandatory eq 'y'}<strong class='mandatory_star'> *</strong>{/if}
+<tr class="formcolor"><td class="formlabel" >{$field_value.name}{if $field_value.isMandatory eq 'y'} *{/if}
+{if $field_value.type eq 'a' and $field_value.options_array[0] eq 1}
+{* --- display quicktags --- *}
+  <br />
+  {if $prefs.quicktags_over_textarea neq 'y'}
+    {include file=tiki-edit_help_tool.tpl qtnum=$fid area_name=$field_value.ins_id}
+  {/if}
+{/if}
 </td><td colspan="3" class="formcontent" >
 {/if}
 {/if}
@@ -276,11 +304,9 @@ $jq("#newItemForm").validate({
 
 {* -------------------- system -------------------- *}
 {if $field_value.type eq 's' and ($field_value.name eq "Rating" or $field_value.name eq tra("Rating")) and $tiki_p_tracker_vote_ratings eq 'y'}
-	{include file='tracker_item_field_input.tpl'}
-{/if}
-{* -------------------- system -------------------- *}
-{if $field_value.type eq '*'}
-	{include file='tracker_item_field_input.tpl'}
+	{section name=i loop=$field_value.options_array}
+		<input name="{$field_value.ins_id}" type="radio" value="{$field_value.options_array[i]|escape}" />{$field_value.options_array[i]}
+	{/section}
 {/if}
 
 {* -------------------- user selector -------------------- *}
@@ -291,9 +317,9 @@ $jq("#newItemForm").validate({
 {foreach key=id item=one from=$users}
 {if ( ! isset($field_value.itemChoices) || $field_value.itemChoices|@count eq 0 || in_array($one, $field_value.itemChoices) )}
 {if $field_value.value}
-<option value="{$one|escape}"{if $one eq $field_value.value} selected="selected"{/if}>{$one|username}</option>
+<option value="{$one|escape}"{if $one eq $field_value.value} selected="selected"{/if}>{$one|username|escape}</option>
 {else}
-<option value="{$one|escape}"{if $one eq $user and $field_value.options_array[0] ne '2'} selected="selected"{/if}>{$one|username}</option>
+<option value="{$one|escape}"{if $one eq $user and $field_value.options_array[0] ne '2'} selected="selected"{/if}>{$one|username|escape}</option>
 {/if}
 {/if}
 {/foreach}
@@ -334,9 +360,7 @@ $jq("#newItemForm").validate({
 {assign var=fca value=$field_value.options}
 {if $field_value.options_array[1] eq 'm' or $field_value.options_array[1] eq 'd'}
 	<select name="ins_cat_{$field_value.fieldId}[]"{if $field_value.options_array[1] eq 'm'} multiple="multiple"{/if}>
-	{if $field_value.options_array[1] eq 'd'  and (empty($field_value.value[0]) or $field_value.isMandatory ne 'y')}
-		<option value=""></option>
-	{/if}
+	{if $field_value.options_array[1] eq 'm' and !$field_value.isMandatory}<option value=""></option>{/if}
 	{foreach key=ku item=iu from=$field_value.categories name=foreache}
 	{assign var=fcat value=$iu.categId }
 	<option value="{$iu.categId}"{if $field_value.cat.$fcat eq 'y'} selected="selected"{/if}>{$iu.name|escape}</option>
@@ -360,7 +384,15 @@ $jq("#newItemForm").validate({
 
 {* -------------------- page -------------------- *}
 {elseif $field_value.type eq 'k'}
-{include file='tracker_item_field_input.tpl'}
+{include file=tracker_item_field_input.tpl}
+
+{* -------------------- multimedia -------------------- *}
+{elseif $field_value.type eq 'M'}
+{if ($field_value.options_array[0] > '2')}
+<input type="file" name="{$field_value.ins_id}" /><br />
+{else}
+<input type="text" name="{$field_value.ins_id}" value="{$field_value.value}" /><br />
+{/if}
 
 {* -------------------- text field / email -------------------- *}
 {elseif $field_value.type eq 't'}
@@ -372,19 +404,21 @@ $jq("#newItemForm").validate({
 
 {* -------------------- static text -------------------- *}
 {elseif $field_value.type eq 'S'}
-{include file='tracker_item_field_input.tpl'}
+	{if $field_value.description}
+    {if $field_value.options_array[0] eq 1}
+      {wiki}{$field_value.description}{/wiki}
+    {else}
+      {$field_value.description|escape|nl2br}
+    {/if}
+	{/if}
 
 {* -------------------- email -------------------- *}
 {elseif $field_value.type eq 'm'}
-{include file='tracker_item_field_input.tpl'}
-
-{* -------------------- url -------------------- *}
-{elseif $field_value.type eq 'L'}
-{include file='tracker_item_field_input.tpl'}
+{include file=tracker_item_field_input.tpl}
 
 {* -------------------- textarea -------------------- *}
 {elseif $field_value.type eq 'a'}
-{include file='tracker_item_field_input.tpl'}
+{include file=tracker_item_field_input.tpl}
 
 {* -------------------- date and time -------------------- *}
 {elseif $field_value.type eq 'f'}
@@ -392,11 +426,11 @@ $jq("#newItemForm").validate({
 
 {* -------------------- drop down -------------------- *}
 {elseif $field_value.type eq 'd' or $field_value.type eq 'D'}
-{include file='tracker_item_field_input.tpl'}
+{include file="tracker_item_field_input.tpl"}
 
 {* -------------------- radio buttons -------------------- *}
 {elseif $field_value.type eq 'R'}
-{include file='tracker_item_field_input.tpl'}
+{include file="tracker_item_field_input.tpl"}
 
 {* -------------------- checkbox -------------------- *}
 {elseif $field_value.type eq 'c'}
@@ -408,7 +442,12 @@ $jq("#newItemForm").validate({
 
 {* -------------------- item link -------------------- *}
 {elseif $field_value.type eq 'r'}
-{include file='tracker_item_field_input.tpl'}
+<select name="{$field_value.ins_id}" {if $listfields.$fid.http_request}onchange="selectValues('trackerIdList={$listfields.$fid.http_request[0]}&amp;fieldlist={$listfields.$fid.http_request[3]}&amp;filterfield={$listfields.$fid.http_request[1]}&amp;status={$listfields.$fid.http_request[4]}&amp;mandatory={$listfields.$fid.http_request[6]}&amp;filtervalue='+escape(this.value),'{$listfields.$fid.http_request[5]}')"{/if}>
+{if $field_value.isMandatory ne 'y'}<option value=""></option>{/if}
+{foreach key=id item=label from=$field_value.list}
+<option value="{$label|escape}" {if $input_err}{if $field_value.value eq $label}selected="selected"{/if}{elseif $defaultvalues.$fid eq $label}selected="selected"{/if}>{if $field_value.listdisplay.$id eq ''}{$label}{else}{$field_value.listdisplay.$id}{/if}</option>
+{/foreach}
+</select>
 
 {* -------------------- dynamic list -------------------- *}
 {elseif $field_value.type eq 'w'}
@@ -425,10 +464,17 @@ $jq("#newItemForm").validate({
 
 {* -------------------- country selector -------------------- *}
 {elseif $field_value.type eq 'y'}
-{include file='tracker_item_field_input.tpl'}
+<select name="{$field_value.ins_id}">
+<option value=""{if $field_value.value eq '' or $field_value.value eq 'None'} selected="selected"{/if}>&nbsp;</option>
+{foreach key=flag_filename item=flag_displayed from=$field_value.flags}
+{if $flag_displayed ne 'None' and ( ! isset($field_value.itemChoices) || $field_value.itemChoices|@count eq 0 || in_array($flag_filename, $field_value.itemChoices) )}
+<option value="{$flag_filename|escape}" {if $input_err}{if $field_value.value eq $flag_filename}selected="selected"{/if}{elseif $flag_filename eq $field_value.defaultvalue}selected="selected"{/if}{if $field_value.options_array[0] ne '1'} style="background-image:url('img/flags/{$flag_filename}.gif');background-repeat:no-repeat;padding-left:25px;padding-bottom:3px;"{/if}>{$flag_displayed}</option>
 {/if}
+{/foreach}
+</select>
 
-{if $field_value.type ne 'S'}
+{/if}
+{if $field_value.type ne 'a' and $field_value.type ne 'S'}
 {if $field_value.description}
 <br />{if $field_value.descriptionIsParsed eq 'y'}{wiki}{$field_value.description}{/wiki}{else}<em>{$field_value.description|escape}</em>{/if}
 {/if}
@@ -445,7 +491,7 @@ $jq("#newItemForm").validate({
 
 {* -------------------- antibot code -------------------- *}
 {if $prefs.feature_antibot eq 'y' && $user eq ''}
-{include file='antibot.tpl' tr_style="formcolor"}
+{include file="antibot.tpl" tr_style="formcolor"}
 {/if}
 
 {if $groupforalert ne ''}
@@ -477,23 +523,24 @@ $jq("#newItemForm").validate({
 </tr>
 </table>
 </form>
-{/tab}
+</div>
 {/if}
 
+{* -------------------------------------------------- tab with export --- *}
 {if $tiki_p_export_tracker eq 'y'}
-	{tab name="{tr}Export Tracker Items{/tr}"}
-	{* -------------------------------------------------- tab with export --- *}
-		{include file='tiki-export_tracker.tpl'}
-	{/tab}
+<div id="content{cycle name=content assign=focustab}{$focustab}"{if $prefs.feature_tabs eq 'y'} class="tabcontent"{/if}>
+{include file=tiki-export_tracker.tpl}
+</div>
 {/if}
-{/tabset}
 
 
 {foreach from=$fields key=ix item=field_value}
 {assign var=fid value=$field_value.fieldId}
 {if $listfields.$fid.http_request}
-{jq}
-selectValues('trackerIdList={{$listfields.$fid.http_request[0]}}&fieldlist={{$listfields.$fid.http_request[3]}}&filterfield={{$listfields.$fid.http_request[1]}}&status={{$listfields.$fid.http_request[4]}}&mandatory={{$listfields.$fid.http_request[6]}}','{{$listfields.$fid.http_request[5]}}','{{$field_value.ins_id}}')
-{/jq}
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+selectValues('trackerIdList={$listfields.$fid.http_request[0]}&fieldlist={$listfields.$fid.http_request[3]}&filterfield={$listfields.$fid.http_request[1]}&status={$listfields.$fid.http_request[4]}&mandatory={$listfields.$fid.http_request[6]}','{$listfields.$fid.http_request[5]}','{$field_value.ins_id}')
+//--><!]]>
+</script>
 {/if}
 {/foreach}

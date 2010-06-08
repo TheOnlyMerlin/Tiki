@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 /**
  * INCLUDE plugin
@@ -54,7 +49,6 @@ function wikiplugin_include_info() {
 				'required' => true,
 				'name' => tra('Page Name'),
 				'description' => tra('Wiki page name to include.'),
-				'filter' => 'pagename'
 			),
 			'start' => array(
 				'required' => false,
@@ -151,6 +145,7 @@ function wikiplugin_include($data, $params) {
 		}	
 		$text = implode("\n", $explText);
 	}
-	$tikilib->parse_wiki_argvariable($text);
 	return $text;
 }
+
+?>

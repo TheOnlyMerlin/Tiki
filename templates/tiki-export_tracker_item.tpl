@@ -25,7 +25,7 @@
 		{/if}
 		{assign var='comma' value='n'}
 	{/if}
-{/strip}{* this line break is necessary to make data starts on the line after the headers *}
+{/strip}
 {foreach from=$items item=item}
 {strip}{* DO NOT ident this strip - the line must not begin with space *}
 		{assign var='comma' value='n'}

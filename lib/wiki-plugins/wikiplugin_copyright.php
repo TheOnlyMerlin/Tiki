@@ -1,11 +1,7 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //require_once ('lib/tikilib.php');
+
 //require_once ('tiki-setup.php');
 require_once ("lib/copyrights/copyrightslib.php");
 
@@ -35,7 +31,7 @@ function wikiplugin_copyright_info() {
 function wikiplugin_copyright($data, $params) {
 	global $dbTiki;
 
-	$copyrightslib = new CopyrightsLib;
+	$copyrightslib = new CopyrightsLib($dbTiki);
 
 	if (!isset($_REQUEST['page'])) {
 		return '';
@@ -61,3 +57,5 @@ function wikiplugin_copyright($data, $params) {
 
 	return $result;
 }
+
+?>

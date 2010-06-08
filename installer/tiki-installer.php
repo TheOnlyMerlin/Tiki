@@ -1,26 +1,28 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id$
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 // To (re-)enable this script the file has to be named tiki-installer.php and the following four lines
 // must start with two '/' and 'stopinstall:'. (Make sure there are no spaces inbetween // and stopinstall: !)
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
+error_reporting (E_ALL);
 require_once( 'tiki-filter-base.php' );
 
 // Define and load Smarty components
+define('SMARTY_DIR', "lib/smarty/libs/");
 require_once ( 'lib/smarty/libs/Smarty.class.php');
 require_once ('installer/installlib.php');
 
-$dbTiki = false;
 $commands = array();
 @ini_set('magic_quotes_runtime',0);
 
@@ -33,12 +35,10 @@ $prefs = array(
 
 // Which step of the installer
 if (empty($_REQUEST['install_step'])) {
-	$install_step = '0';
-} else {
-	$install_step = $_REQUEST['install_step'];
-}
+	$install_step = '0'; } else {
+	$install_step = ($_REQUEST['install_step']);
+} 
 
-// define the language to use, either from user-setting or default
 if (!empty($_REQUEST['lang'])) {
 	$language = $prefs['site_language'] = $prefs['language'] = $_REQUEST['lang'];
 } else {
@@ -46,47 +46,128 @@ if (!empty($_REQUEST['lang'])) {
 }
 include_once('lib/init/tra.php');
 
-function has_tiki_db()
+function list_tables( $dbTiki )
 {
-	global $installer;
-	return $installer->tableExists('users_users');
+	static $list = array();
+	if( $list )
+		return $list;
+
+	$result = $dbTiki->Execute( "show tables" );
+
+	if (!$result) {
+		return $list;
+	}
+
+	while( $row = $result->fetchRow() )
+		$list[] = reset( $row );
+
+	return $list;
 }
 
-function has_tiki_db_20()
+function has_tiki_db( $dbTiki )
 {
-	global $installer;
-	return $installer->tableExists('tiki_pages_translation_bits');
+	return in_array( 'users_users', list_tables( $dbTiki ) );
 }
 
-function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $client_charset = '', $api_tiki = '', $dbversion_tiki = '5.0') {
+function has_tiki_db_20( $dbTiki )
+{
+	return in_array( 'tiki_pages_translation_bits', list_tables( $dbTiki ) );
+}
+
+function process_sql_file($file,$db_tiki) {
+	global $dbTiki;
+	if ( ! is_object($dbTiki) ) return false;
+
+	global $succcommands;
+	global $failedcommands;
+	global $smarty;
+	if(!isset($succcommands)) {
+	  $succcommands=array();
+	  $failedcommands=array();
+	}
+
+	$command = '';
+	if ( !is_file("db/$file") || !$fp = fopen("db/$file", "r") ) {
+		print('Fatal: Cannot open db/'.$file);
+		exit(1);
+	}
+
+	while(!feof($fp)) {
+		$command.= fread($fp,4096);
+	}
+
+	switch ( $db_tiki ) {
+	  case 'sybase': $statements = split("(\r|\n)go(\r|\n)", $command); break;
+          case 'mssql': $statements = split("(\r|\n)go(\r|\n)", $command); break;
+	  case 'oci8': $statements = preg_split("#(;\s*\n)|(\n/\n)#", $command); break;
+	  default: $statements = preg_split("#(;\s*\n)|(;\s*\r\n)#", $command); break;
+	}
+	$prestmt="";
+	$do_exec=true;
+	foreach ($statements as $statement) {
+		//echo "executing $statement </br>";
+			if (trim($statement)) {
+				switch ($db_tiki) {
+				case "oci8":
+					// we have to preserve the ";" in sqlplus programs (triggers)
+					if (preg_match("/BEGIN/",$statement)) {
+						$prestmt=$statement.";";
+						$do_exec=false;
+					}
+					if (preg_match("/END/",$statement)) {
+						$statement=$prestmt."\n".$statement.";";
+						$do_exec=true;
+					}
+					if($do_exec) $result = $dbTiki->Execute($statement);
+					break;
+				default:
+					$result = $dbTiki->Execute($statement);
+					break;
+			}
+
+			if (!$result) {
+				$failedcommands[]= "Command: ".$statement."\nMessage: ".$dbTiki->ErrorMsg()."\n\n";
+				//trigger_error("DB error:  " . $dbTiki->ErrorMsg(). " in query:<br /><pre>" . $command . "<pre/><br />", E_USER_WARNING);
+				// Do not die at the moment. We need some better error checking here
+				//die;
+			} else {
+				$succcommands[]=$statement;
+			}
+		}
+	}
+	$dbTiki->Execute("update `tiki_preferences` set `value`=`value`+1 where `name`='lastUpdatePrefs'");
+	unset($_SESSION['s_prefs']);
+
+	$smarty->assign_by_ref('succcommands', $succcommands);
+	$smarty->assign_by_ref('failedcommands', $failedcommands);
+}
+
+function write_local_php($dbb_tiki,$host_tiki,$user_tiki,$pass_tiki,$dbs_tiki,$dbversion_tiki="3.0") {
 	global $local;
 	global $db_tiki;
-	if ($dbs_tiki && $user_tiki) {
-		$db_tiki = addslashes($dbb_tiki);
-		$host_tiki = addslashes($host_tiki);
-		$user_tiki = addslashes($user_tiki);
-		$pass_tiki = addslashes($pass_tiki);
-		$dbs_tiki = addslashes($dbs_tiki);
+	if ($dbs_tiki and $user_tiki) {
+		$db_tiki=addslashes($dbb_tiki);
+		$host_tiki=addslashes($host_tiki);
+		$user_tiki=addslashes($user_tiki);
+		$pass_tiki=addslashes($pass_tiki);
+		$dbs_tiki=addslashes($dbs_tiki);
 		$fw = fopen($local, 'w');
-		$filetowrite = "<?php\n";
-		$filetowrite .= "\$db_tiki='" . $db_tiki . "';\n";
-		$filetowrite .= "\$dbversion_tiki='" . $dbversion_tiki . "';\n";
-		$filetowrite .= "\$host_tiki='" . $host_tiki . "';\n";
-		$filetowrite .= "\$user_tiki='" . $user_tiki . "';\n";
-		$filetowrite .= "\$pass_tiki='" . $pass_tiki . "';\n";
-		$filetowrite .= "\$dbs_tiki='" . $dbs_tiki . "';\n";
-		if ( ! empty( $api_tiki ) ) {
-			$filetowrite .= "\$api_tiki='" . $api_tiki . "';\n";
-		}
-		$filetowrite .= "\$client_charset='" . "$client_charset" . "';\n";
+		$filetowrite="<?php\n\$db_tiki='".$db_tiki."';\n";
+		$filetowrite.="\$dbversion_tiki='".$dbversion_tiki."';\n";
+		$filetowrite.="\$host_tiki='".$host_tiki."';\n";
+		$filetowrite.="\$user_tiki='".$user_tiki."';\n";
+		$filetowrite.="\$pass_tiki='".$pass_tiki."';\n";
+		$filetowrite.="\$dbs_tiki='".$dbs_tiki."';\n";
+		$filetowrite.="?>";
 		fwrite($fw, $filetowrite);
-		fclose($fw);
+		fclose ($fw);
 	}
 }
 
 function create_dirs($domain=''){
 	global $docroot;
 	$dirs=array(
+		'backups',
 		'db',
 		'dump',
 		'img/wiki',
@@ -100,6 +181,9 @@ function create_dirs($domain=''){
 		'styles',
 		'whelp');
 
+  if (file_exists('lib/Galaxia'))
+    array_push($dirs, 'lib/Galaxia/processes');
+
 	$ret = "";
   foreach ($dirs as $dir) {
 		$dir = $dir.'/'.$domain;
@@ -111,9 +195,9 @@ function create_dirs($domain=''){
 		// Check again and report problems
 		if (!is_dir($dir)) {
 			$ret .= "The directory '$docroot/$dir' does not exist.\n";
-		} else if (!TikiInit::is_writeable($dir)) {
+		} else if (!is_writeable($dir)) {
 			@chmod($dir,02777);
-			if (!TikiInit::is_writeable($dir)) {
+			if (!is_writeable($dir)) {
 				$ret .= "The directory '$docroot/$dir' is not writeable.\n";
 			}
 		}
@@ -131,37 +215,25 @@ function isWindows() {
 	return $windows;
 }
 
-class Smarty_Tikiwiki_Installer extends Smarty
-{
+class Smarty_Tikiwiki_Installer extends Smarty {
 
-	function Smarty_Tikiwiki_Installer($tikidomain) {
-		parent::Smarty();
-		if ($tikidomain) { $tikidomain.= '/'; }
-		$this->template_dir = realpath('templates/');
-		$this->compile_dir = realpath("templates_c/$tikidomain");
-		$this->config_dir = realpath('configs/');
-		$this->cache_dir = realpath("templates_c/$tikidomain");
-		$this->caching = 0;
+	function Smarty_Tikiwiki_Installer() {
+		$this->template_dir = "templates/";
+		$this->compile_dir = "templates_c/";
+		$this->config_dir = "configs/";
+		$this->cache_dir = "cache/";
+		$this->caching = false;
 		$this->assign('app_name', 'Tikiwiki');
-		include_once('lib/setup/third_party.php');
-		$this->plugins_dir = array(	// the directory order must be like this to overload a plugin
-			TIKI_SMARTY_DIR,
-			SMARTY_DIR.'plugins'
+		$this->plugins_dir = array(
+			dirname(dirname(SMARTY_DIR))."/smarty_tiki",
+			SMARTY_DIR."plugins"
 		);
-
-		// In general, it's better that use_sub_dirs = false
-		// If ever you are on a very large/complex/multilingual site and your
-		// templates_c directory is > 10 000 files, (you can check at tiki-admin_system.php)
-		// you can change to true and maybe you will get better performance.
-		// http://smarty.php.net/manual/en/variable.use.sub.dirs.php
-		//
-		$this->use_sub_dirs = false;
-
-		// security_settings['MODIFIER_FUNCS'], ['IF_FUNCS'] and secure_dir not needed in installer
-
-		$this->security_settings['ALLOW_SUPER_GLOBALS'] = true;
-		//$this->debugging = true;
-		//$this->debug_tpl = 'debug.tpl';
+                // we cannot use subdirs in safe mode
+                if(ini_get('safe_mode')) {
+                        $this->use_sub_dirs = false;
+                }
+	//$this->debugging = true;
+	//$this->debug_tpl = 'debug.tpl';
 	}
 
 	function fetch($_smarty_tpl_file, $_smarty_cache_id = null, $_smarty_compile_id = null, $_smarty_display = false) {
@@ -173,26 +245,27 @@ class Smarty_Tikiwiki_Installer extends Smarty
 }
 
 function kill_script() {
+	/*Header ('Location: tiki-install_disable.php');
+	die;*/
+
 	$remove = 'no';
-	if (isset($_REQUEST['remove'])) {
-		$remove = 'yes';
-	}
+	if (isset($_REQUEST['remove'])) $remove = 'yes';
 	$removed = false;
-	
+	$fh = fopen('installer/tiki-installer.php', 'rb');
+	$data = fread($fh, filesize('installer/tiki-installer.php'));
+	fclose($fh);
+
 	if (is_writable("installer/tiki-installer.php")) {
 		/* first try to delete the file if requested */
-		if ( ($remove == 'yes') && @unlink("installer/tiki-installer.php")) {
+		if ($remove=='yes' && @unlink("installer/tiki-installer.php")) {
 			$removed = true;
 		}
 		/* if it fails, then try to rename it */
-		elseif (@rename("installer/tiki-installer.php", "installer/tiki-installer.done")) {
+		else if (@rename("installer/tiki-installer.php","installer/tiki-installer.done")) {
 			$removed = true;
 		}
 		/* otherwise here's an attempt to change the content of the file to prevent execution */
 		else {
-			$fh = fopen('installer/tiki-installer.php', 'rb');
-			$data = fread($fh, filesize('installer/tiki-installer.php'));
-			fclose($fh);
 			$data = preg_replace('/\/\/stopinstall:/', '', $data);
 			$fh = fopen('installer/tiki-installer.php', 'wb');
 			if (fwrite($fh, $data) > 0) {
@@ -204,8 +277,7 @@ function kill_script() {
 
 	if ($removed == true) {
 		header ('location: tiki-index.php');
-	} else {
-		// TODO: display this via translantable error msg template
+	} else { // TODO: display this via translantable error msg template ?
 		print "<html><head><title>Ooops !</title></head><body>
 <h1 style='color: red'>Ooops !</h1>
 <p>Tikiwiki installer failed to rename the <b>installer/tiki-installer.php</b> file.</p>
@@ -216,7 +288,7 @@ function kill_script() {
 <p style='text-align: right'>Thank you</p>
 </body></html>";
 	}
-	exit();
+	die;
 }
 
 function check_session_save_path() {
@@ -229,7 +301,7 @@ function check_session_save_path() {
 		if (empty($open_basedir)) {
         		if (!is_dir($save_path)) {
                 		$errors .= "The directory '$save_path' does not exist or PHP is not allowed to access it (check open_basedir entry in php.ini).\n";
-        		} else if (!TikiInit::is_writeable($save_path)) {
+        		} else if (!is_writeable($save_path)) {
                 		$errors .= "The directory '$save_path' is not writeable.\n";
         		}
 		}
@@ -237,7 +309,7 @@ function check_session_save_path() {
         	if ($errors) {
                 	$save_path = TikiInit::tempdir();
 
-                	if (is_dir($save_path) && TikiInit::is_writeable($save_path)) {
+                	if (is_dir($save_path) && is_writeable($save_path)) {
                         	ini_set('session.save_path', $save_path);
 
                         	$errors = '';
@@ -292,7 +364,7 @@ function error_and_exit() {
         ob_end_clean();
 */
 
-        print "<html><body>\n<h2><IMG SRC=\"img/tiki/Tiki_WCG.png\" ALT=\"\" BORDER=0><br /\>
+        print "<html><body>\n<h2><IMG SRC=\"img/tiki/tikilogo.png\" ALT=\"\" BORDER=0><br /\>
 	<font color='red'>Tiki Installer cannot proceed</font></h2>\n<pre>\n$errors";
 
         if (!isWindows()) {
@@ -333,34 +405,34 @@ $PHP_CONFIG_FILE_PATH/php.ini or $httpd_conf.
 
 
 
-// Try to see if we have an admin account
-function has_admin( $dbTiki, $api_tiki ) {
+function has_admin() {
+        // Try to see if we have an admin account
+	global $dbTiki;
+	global $admin_acc;
         $query = "select hash from users_users where login='admin'";
-	$res = false;
 
-	if ( $api_tiki == 'pdo' ) {
-		if ( @ ( $result = $dbTiki->prepare($query) ) && $result->execute() ) {
-			$res = $result->fetch( PDO::FETCH_ASSOC );
-		}
-	} else {
-	        if ( @ ( $result = $dbTiki->Execute($query) ) && $result->numRows() ) {
-			$res = $result->fetchRow();
-		}
-	}
+        @$result = $dbTiki->Execute($query);
 
-	if ( $res && isset( $res['hash'] ) ) {
-		$admin_acc = 'y';
-	} else {
-		$admin_acc = 'n';
-	}
+        if (!$result) {
+                $admin_acc = 'n';
+        } else {
+                if ($result->numRows()) {
+                        $res = $result->fetchRow();
 
-	return $admin_acc;
+                        if (isset($res['hash'])) {
+                                $admin_acc = 'y';
+                        } else {
+                                $admin_acc = 'n';
+                        }
+                } else {
+                        $admin_acc = 'n';
+                }
+        }
 }
 
 function get_admin_email( $dbTiki ) {
-	global $installer;
 	$query = "SELECT `email` FROM `users_users` WHERE `userId`=1";
-	@$result = $installer->query($query);
+	@$result = $dbTiki->Execute($query);
 
 	if ( $result && $res = $result->fetchRow() ) {
 		return $res['email'];
@@ -368,10 +440,10 @@ function get_admin_email( $dbTiki ) {
 
 	return false;
 }
+
 function update_preferences( $dbTiki, &$prefs ) {
-	global $installer;
 	$query = "SELECT `name`, `value` FROM `tiki_preferences`";
-	@$result = $installer->query($query);
+	@$result = $dbTiki->Execute($query);
 
 	if ( $result ) {
 		while ( $res = $result->fetchRow() ) {
@@ -385,86 +457,52 @@ function update_preferences( $dbTiki, &$prefs ) {
 	return false;
 }
 
-function fix_admin_account( $account ) {
-	global $installer;
+function load_sql_scripts() {
+	global $smarty;
+	global $dbversion_tiki;
+	$files = array();
+	$h = opendir('db/');
+	//echo $dbversion_tiki . "---";
 
-	$result = $installer->query( 'SELECT `id` FROM `users_groups` WHERE `groupName` = "Admins"' );
-	if( ! $row = $result->fetchRow() ) {
-		$installer->query( 'INSERT INTO `users_groups` (`groupName`) VALUES("Admins")' );
+	while ($file = readdir($h)) {
+        	if (preg_match('#\d\..*to.*\.sql$#',$file) || preg_match('#secdb#',$file)) {
+                	$files[] = $file;
+        	}
 	}
-	
-	$installer->query( 'INSERT IGNORE INTO `users_grouppermissions` (`groupName`, `permName`) VALUES("Admins", "tiki_p_admin")' );
 
-	$result = $installer->query( 'SELECT `userId` FROM `users_users` WHERE `login` = ?', array( $account ) );
-	if( $row = $result->fetchRow() ) {
-		$id = $row['userId'];
-		$installer->query( 'INSERT IGNORE INTO `users_usergroups` (`userId`, `groupName`) VALUES(?, "Admins")', array( $id ) );
-	}
+	closedir ($h);
+	rsort($files);
+	reset($files);
+	$smarty->assign('files', $files);
 }
 
-function initTikiDB( &$api, &$driver, $host, $user, $pass, $dbname, $client_charset, &$dbTiki ) {
-	global $tikifeedback;
-	$dbcon = false;
-
-	if ( ( isset($api) && $api == 'adodb' ) || ! extension_loaded('pdo') ) {
-		$api = 'adodb';
-		$dbTiki = ADONewConnection( $driver );
-		$db = new TikiDb_Adodb( $dbTiki );
-		if ( $dbcon = (bool) @$dbTiki->Connect($host, $user, $pass, $dbname) ) {
-			$tikifeedback[] = array( 'num' => 1, 'mes' => $dbTiki->ErrorMsg() );
-		}
-	} else {
-		$dbcon = true;
-		$db_hoststring = "host=$host";
-
-		if ( $driver == 'mysqli' ) {
-			$driver = 'mysql';
-			if ( isset( $socket_tiki ) ) {
-				$db_hoststring = "unix_socket=$socket_tiki";
-			}
-		}
-
-		try {
-			if ( empty( $client_charset ) ) {
-				$dbTiki = new PDO( "$driver:$db_hoststring;dbname=$dbname", $user, $pass );
-			} else {
-				$dbTiki = new PDO( "$driver:$db_hoststring;dbname=$dbname", $user, $pass,
-					array( PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET $client_charset" )
-				);
-			}
-		} catch ( PDOException $e ) {
-			$dbcon = false;
-			$tikifeedback[] = array( 'num' => 1, 'mes'=> $e->getMessage() );
-		}
-		if ( $dbcon ) {
-			$db = new TikiDb_Pdo( $dbTiki );
-		}
+// from PHP manual (ini-get function example)
+function return_bytes( $val ) {
+	$val = trim($val);
+	$last = strtolower($val{strlen($val)-1});
+	switch ( $last ) {
+		// The 'G' modifier is available since PHP 5.1.0
+		case 'g': $val *= 1024;
+		case 'm': $val *= 1024;
+		case 'k': $val *= 1024;
 	}
-
-	if ( $dbcon ) {
-		$db->setErrorHandler(new InstallerDatabaseErrorHandler);
-		TikiDb::set($db);
-	}
-
-	return $dbcon;
+	return $val;
 }
 
 // -----------------------------------------------------------------------------
 // end of functions .. now starts the processing
 
-// TODO: check that this is no longer in use (using lock-file now) and remove this and function
-// After install, this should remove this script.
+// After install. This should remove this script.
 if (isset($_REQUEST['kill'])) {
 	kill_script();
-	exit();
+	die;
 }
 
-// If using multiple Tikis
 if (is_file('db/virtuals.inc')) {
-	$virtuals = array_map('trim', file('db/virtuals.inc'));
+	$virtuals = array_map('trim',file('db/virtuals.inc'));
 	foreach ($virtuals as $v) {
 		if ($v) {
-			if (is_file("db/$v/local.php") && is_readable("db/$v/local.php")) {
+			if (is_file("db/$v/local.php") and is_readable("db/$v/local.php")) {
 				$virt[$v] = 'y';
 			} else {
 				$virt[$v] = 'n';
@@ -477,16 +515,15 @@ if (is_file('db/virtuals.inc')) {
 }
 
 $multi = '';
-// If using multiple Tiki installations (MultiTiki)
 if ($virtuals) {
-	if (isset($_REQUEST['multi']) && in_array($_REQUEST['multi'], $virtuals)) {
+	if (isset($_REQUEST['multi']) and in_array($_REQUEST['multi'],$virtuals)) {
 		$multi = $_REQUEST['multi'];
 	} else {
-		if (isset($_SERVER['TIKI_VIRTUAL']) && is_file('db/'.$_SERVER['TIKI_VIRTUAL'].'/local.php')) {
+		if (isset($_SERVER['TIKI_VIRTUAL']) and is_file('db/'.$_SERVER['TIKI_VIRTUAL'].'/local.php')) {
 			$multi = $_SERVER['TIKI_VIRTUAL'];
-		} elseif (isset($_SERVER['SERVER_NAME']) && is_file('db/'.$_SERVER['SERVER_NAME'].'/local.php')) {
+		} elseif (isset($_SERVER['SERVER_NAME']) and is_file('db/'.$_SERVER['SERVER_NAME'].'/local.php')) {
 			$multi = $_SERVER['SERVER_NAME'];
-		} elseif (isset($_SERVER['HTTP_HOST']) && is_file('db/'.$_SERVER['HTTP_HOST'].'/local.php')) {
+		} elseif (isset($_SERVER['HTTP_HOST']) and is_file('db/'.$_SERVER['HTTP_HOST'].'/local.php')) {
 			$multi = $_SERVER['HTTP_HOST'];
 		}
 	}
@@ -496,27 +533,25 @@ if (!empty($multi)) {
 } else {
 	$local = 'db/local.php';
 }
-
 $tikidomain = $multi;
-$tikidomainslash = (!empty($tikidomain) ? $tikidomain . '/' : '');
-
 include 'lib/cache/cachelib.php';
 $cachelib->empty_full_cache();
 
 $_SESSION["install-logged-$multi"] = 'y';
 
 // Init smarty
-global $tikidomain;
-$smarty = new Smarty_Tikiwiki_Installer($tikidomain);
+$smarty = new Smarty_Tikiwiki_Installer();
 $smarty->load_filter('pre', 'tr');
 $smarty->load_filter('output', 'trimwhitespace');
 $smarty->assign('mid', 'tiki-install.tpl');
-$smarty->assign('virt', isset($virt) ? $virt : null );
-$smarty->assign('multi', isset($multi) ? $multi : null );
-$smarty->assign('lang', $language);
+$smarty->assign('style', 'thenews.css');
+$smarty->assign('virt',$virt);
+$smarty->assign('multi', $multi);
+if ($language != 'en')
+	$smarty->assign('lang', $language);
 
 // Try to set a longer execution time for the installer
-@ini_set('max_execution_time', '0');
+@ini_set('max_execution_time','0');
 $max_execution_time = ini_get('max_execution_time');
 if ($max_execution_time != 0) {
 	$smarty->assign('max_exec_set_failed', 'y');	
@@ -529,8 +564,13 @@ $smarty->assign('tiki_version_name', preg_replace('/^(\d+\.\d+)([^\d])/', '\1 \2
 
 // Available DB Servers
 $dbservers = array();
-if (function_exists('mysqli_connect'))	$dbservers['mysqli'] = tra('MySQL Improved (mysqli)');
-if (function_exists('mysql_connect'))	$dbservers['mysql'] = tra('MySQL classic (mysql)');
+if ( function_exists('mysqli_connect') ) $dbservers['mysqli'] = tra('MySQL Improved (mysqli). Requires MySQL 4.1+');
+if ( function_exists('mysql_connect') ) $dbservers['mysql'] = tra('MySQL classic (mysql)');
+if ( function_exists('pg_connect') ) $dbservers['pgsql'] = tra('PostgeSQL 7.2+');
+if ( function_exists('oci_connect') ) $dbservers['oci8'] = tra('Oracle');
+if ( function_exists('sybase_connect') ) $dbservers['sybase'] = tra('Sybase');
+if ( function_exists('sqlite_open') ) $dbservers['sqlite'] = tra('SQLLite');
+if ( function_exists('mssql_connect') ) $dbservers['mssql'] = tra('MSSQL');
 $smarty->assign_by_ref('dbservers', $dbservers);
 
 $errors = '';
@@ -541,8 +581,8 @@ if (empty($_SERVER['PATH_TRANSLATED'])) {
 	// in PHP5, $_SERVER['PATH_TRANSLATED'] is no longer set
 	// the following is hopefully a good workaround
 	// nope, it wasn't - PHP5 doesn't allow pass-by-reference
-	$includedFiles = get_included_files();
-	$_SERVER['PATH_TRANSLATED'] = array_shift($includedFiles);
+	$myFooVarForIncludeFiles = get_included_files();
+	$_SERVER['PATH_TRANSLATED'] = array_shift($myFooVarForIncludeFiles);
 }
 $docroot = dirname($_SERVER['PATH_TRANSLATED']);
 
@@ -563,222 +603,215 @@ if ($errors) {
 
 //adodb settings
 
-if (!defined('ADODB_FORCE_NULLS')) { define('ADODB_FORCE_NULLS', 1); }
-if (!defined('ADODB_ASSOC_CASE')) { define('ADODB_ASSOC_CASE', 2); }
-if (!defined('ADODB_CASE_ASSOC')) { define('ADODB_CASE_ASSOC', 2); } // typo in adodb's driver for sybase? // so do we even need this without sybase? What's this?
+define('ADODB_FORCE_NULLS', 1);
+define('ADODB_ASSOC_CASE', 2);
+define('ADODB_CASE_ASSOC', 2); // typo in adodb's driver for sybase?
 include_once ('lib/adodb/adodb.inc.php');
 
 include('lib/tikilib.php');
 
 // Get list of available languages
-$languages = TikiLib::list_languages(false, null, true);
+$languages = array();
+$languages = TikiLib::list_languages(false,null,true);
 $smarty->assign_by_ref("languages", $languages);
 
 // next block checks if there is a local.php and if we can connect through this.
 // sets $dbcon to false if there is no valid local.php
-$dbcon = false;
-if ( file_exists($local) ) {
+if (!file_exists($local)) {
+	$dbcon = false;
+	$smarty->assign('dbcon', 'n');
+	if ($install_step == '3') {
+		$install_step = '3';
+	}
+} else {
 	// include the file to get the variables
-	$default_api_tiki = $api_tiki;
-	$api_tiki = '';
-	unset($client_charset);
-	include $local;
-	if ( ! $client_charset_forced = isset($client_charset) ) {
-		$client_charset = '';
-	}
-	$previousDbApi = $api_tiki;
-	if ( empty( $api_tiki ) ) {
-		$api_tiki_forced = false;
-		$api_tiki = $default_api_tiki;
-		if ( ! empty( $dbversion_tiki ) && $dbversion_tiki[0] < 4 ) {
-			$previousDbApi = 'adodb'; // AdoDB was the default DB abstraction layer before 4.0
-		}
-	} else {
-		$api_tiki_forced = true;
-	}
-
-	unset( $default_api_tiki );
-
-	// In case of replication, ignore it during installer.
-	unset( $shadow_dbs, $shadow_user, $shadow_pass, $shadow_host );
-	if ($dbversion_tiki == '1.10') {
-		$dbversion_tiki = '2.0';
-	}
+	include ($local);
+	if ( $dbversion_tiki == '1.10' ) $dbversion_tiki = '2.0';
 
 	if (!isset($db_tiki)) {
-		// if no db is specified, use the first db that this php installation can handle
+		//upgrade from 2.0 : if no db is specified, use the first db that this php installation can handle
 		$db_tiki = reset($dbservers);
-		write_local_php($db_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $client_charset, ($api_tiki_forced ? $api_tiki : ''), $dbversion_tiki);
+		write_local_php($db_tiki,$host_tiki,$user_tiki,$pass_tiki,$dbs_tiki);
+		$_SESSION[$cookie_name] = 'admin';
+	}
+
+	if ($db_tiki == 'sybase') {
+	        // avoid database change messages
+		ini_set('sybct.min_server_severity', '11');
 	}
 
 	$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
 
-	$dbcon = false;
-	if ( isset( $dbservers[$db_tiki] ) ) { // avoid errors in ADONewConnection() (wrong darabase driver etc...)
-		if ( $dbcon = initTikiDB( $api_tiki, $db_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $client_charset, $dbTiki ) ) {
-			$smarty->assign( 'resetdb', isset($_REQUEST['reset']) ? 'y' : 'n' );
+	// avoid errors in ADONewConnection() (wrong darabase driver etc...)
+	if( ! isset($dbservers[$db_tiki]) ) {
+		$dbcon = false;
+		$smarty->assign('dbcon', 'n');
+	} else {
+		$dbTiki = ADONewConnection($db_tiki);
 
-			$installer = new Installer;
-			$installer->setServerType($db_tiki);
-
-			if ( ! $client_charset_forced ) {
-
-				$dbCharsetVariables = $installer->getCharsetVariables();
-				$client_charset = $installer->detectBestClientCharset( $dbCharsetVariables, null, $previousDbApi );
-
-				write_local_php($db_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $client_charset, ($api_tiki_forced ? $api_tiki : ''), $dbversion_tiki);
-
-				// Try to reconnect to the DB using the detected client_charset if not the same as the current one
-				if ( ! empty($client_charset) && $client_charset != $dbCharsetVariables['character_set_client'] ) {
-					$dbcon = initTikiDB( $api_tiki, $db_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $client_charset, $dbTiki );
-				}
+		if (!$dbTiki->Connect($host_tiki, $user_tiki, $pass_tiki, $dbs_tiki)) {
+			$dbcon = false;
+			$smarty->assign('dbcon', 'n');
+			$tikifeedback[] = array('num'=>1,'mes'=>$dbTiki->ErrorMsg());
+		} else {
+			$dbcon = true;
+			if (!isset($_REQUEST['reset'])) {
+				$smarty->assign('dbcon', 'y');
+				$smarty->assign('resetdb', 'n');
+			} else {
+				$smarty->assign('dbcon', 'y');
+				$smarty->assign('resetdb', 'y');
 			}
 		}
 	}
 }
 
-if ( $dbcon ) {
-	$admin_acc = has_admin( $dbTiki, $api_tiki );
-}
-
-if ( $admin_acc == 'n' ) {
-	$smarty->assign('noadmin', 'y');
-} else {
-	$smarty->assign('noadmin', 'n');
-}
-
-
-// We won't update database info unless we can't connect to the database.
-// We won't reset the db connection if there is an admin account set
-// and the admin is not logged
-if (
-	(
-		!$dbcon
-		|| (
-			isset($_REQUEST['resetdb'])
-			&& $_REQUEST['resetdb'] == 'y'
-			&& (
-				$admin_acc == 'n'
-				|| (isset($_SESSION["install-logged-$multi"])
-				&& $_SESSION["install-logged-$multi"] == 'y')
-			)
-		)
-	) && isset($_REQUEST['dbinfo'])
-) {
-	if ( ! empty($_REQUEST['name']) ) {
-		$client_charset = 'utf8';
-		$dbcon = initTikiDB( $api_tiki, $_REQUEST['db'], $_REQUEST['host'], $_REQUEST['user'], $_REQUEST['pass'], $_REQUEST['name'], $client_charset, $dbTiki );
-		write_local_php( $_REQUEST['db'], $_REQUEST['host'], $_REQUEST['user'], $_REQUEST['pass'], $_REQUEST['name'], $client_charset );
-		include $local;
-		// In case of replication, ignore it during installer.
-		unset( $shadow_dbs, $shadow_user, $shadow_pass, $shadow_host );
-		$installer = new Installer;
-		$installer->setServerType($db_tiki);
-	} else {
-		$dbcon = false;
-		$tikifeedback[] = array('num'=>1, 'mes'=>tra("No database name specified"));
-	}
-}
-
-if ( $dbcon ) {
-	$smarty->assign('dbcon', 'y');
-} else {
-	$smarty->assign('dbcon', 'n');
-}
-
 if ($dbcon) {
-	$has_tiki_db = has_tiki_db();
-	$smarty->assign('tikidb_created', $has_tiki_db);
-	$oldPerms = $installer->getOne('SELECT COUNT(*) FROM `users_permissions` WHERE `permDesc` = \'Can view categorized items\'');
-	$smarty->assign('tikidb_oldPerms', $oldPerms);
-	
-	if ($install_step == '6' && $has_tiki_db) {
-		update_preferences($dbTiki, $prefs);
-		$smarty->assign('admin_email', get_admin_email($dbTiki));
-	}
-	$smarty->assign('tikidb_is20',  has_tiki_db_20());
+	has_admin();
 }
 
-if (isset($_REQUEST['restart'])) {
-	$_SESSION["install-logged-$multi"] = '';
+if ($admin_acc=='n') {
+        $smarty->assign('noadmin', 'y');
+} else {
+        $smarty->assign('noadmin', 'n');
 }
+
+
+// We won't update database info unless we can't connect to the
+// database.
+// we won't reset the db connection if there is a admin account set
+// and the admin is not logged
+//debugging:
+/*
+if ($dbcon) echo "dbcon true <br>";
+if ($_REQUEST['resetdb']=='y') echo '$_REQUEST[resetdb]==y<br>';
+if (isset($_REQUEST['dbinfo'])) echo '$_REQUEST[dbinfo] is set<br>';
+if (isset($_SESSION['install-logged'])) {echo '$_SESSION[install-logged] is set<br>';
+ if ($_SESSION['install-logged']=='y') echo '$_SESSION[install-logged]==y<br>';
+}
+echo "admin_acc=$admin_acc<br>";
+*/
+if ((!$dbcon or (isset($_REQUEST['resetdb']) and $_REQUEST['resetdb']=='y' &&
+		($admin_acc=='n' || (isset($_SESSION["install-logged-$multi"]) && $_SESSION["install-logged-$multi"]=='y'))
+	)) && isset($_REQUEST['dbinfo'])) {
+
+	$dbTiki = &ADONewConnection($_REQUEST['db']);
+
+	if (isset($_REQUEST['name']) and $_REQUEST['name']) {
+		if (!@$dbTiki->Connect($_REQUEST['host'], $_REQUEST['user'], $_REQUEST['pass'], $_REQUEST['name'])) {
+			$dbcon = false;
+			$smarty->assign('dbcon', 'n');
+			$tikifeedback[] = array('num'=>1,'mes'=>$dbTiki->ErrorMsg());
+		} else {
+			$dbcon = true;
+			$smarty->assign('dbcon', 'y');
+			write_local_php($_REQUEST['db'], $_REQUEST['host'], $_REQUEST['user'], $_REQUEST['pass'], $_REQUEST['name']);
+			$_SESSION[$cookie_name] = 'admin';
+		}
+	}
+}
+
+if ( $dbcon ) {
+	$has_tiki_db = has_tiki_db( $dbTiki );
+	$smarty->assign( 'tikidb_created', $has_tiki_db );
+	if ( $install_step == '6' && $has_tiki_db ) {
+		update_preferences( $dbTiki, $prefs );
+		$smarty->assign( 'admin_email', get_admin_email( $dbTiki ) );
+	}
+	$smarty->assign( 'tikidb_is20',  has_tiki_db_20( $dbTiki ) );
+}
+
+if ( isset($_REQUEST['restart']) ) $_SESSION["install-logged-$multi"] = '';
+
+
+//Load SQL scripts
+load_sql_scripts();
 
 $smarty->assign('admin_acc', $admin_acc);
 
 // If no admin account then we are logged
-if ($admin_acc == 'n') {
-	$_SESSION["install-logged-$multi"] = 'y';
-}
+if ( $admin_acc == 'n' ) $_SESSION["install-logged-$multi"] = 'y';
 
 $smarty->assign('dbdone', 'n');
 $smarty->assign('logged', $logged);
 
-// Installation steps
-if (
-	isset($dbTiki)
-	&& is_object($dbTiki)
-	&& isset($_SESSION["install-logged-$multi"])
-	&& $_SESSION["install-logged-$multi"] == 'y'
-) {
+if ( $install_step == '4' || $install_step == '5' ) {
+	require_once 'lib/profilelib/profilelib.php';
+	$remote_profile_test = Tiki_Profile::fromNames( 'http://profiles.tikiwiki.org', 'Small_Organization_Web_Presence' );
+	$has_internet_connection = empty($remote_profile_test) ? 'n' : 'y';
+	$smarty->assign('has_internet_connection', $has_internet_connection);
+}
+
+if ( isset($dbTiki) && is_object($dbTiki) && isset($_SESSION["install-logged-$multi"]) && $_SESSION["install-logged-$multi"] == 'y' ) {
 	$smarty->assign('logged', 'y');
 
 	if ( isset($_REQUEST['scratch']) ) {
+		$installer = new Installer;
 		$installer->cleanInstall();
 		$smarty->assign('installer', $installer);
 		$smarty->assign('dbdone', 'y');
 		$install_type = 'scratch';
 		require_once 'lib/tikilib.php';
-		$tikilib = new TikiLib;
+		$tikilib = new TikiLib( $dbTiki );
 		require_once 'lib/userslib.php';
-		$userlib = new UsersLib;
+		$userlib = new UsersLib( $dbTiki );
+		require_once 'lib/profilelib/profilelib.php';
+		require_once 'lib/profilelib/installlib.php';
 		require_once 'lib/setup/compat.php';
 		require_once 'lib/tikidate.php';
 		$tikidate = new TikiDate();
+		
+		$installer = new Tiki_Profile_Installer;
+		//$installer->setUserData( $data ); // TODO
+
+		if ( $has_internet_connection == 'y' && isset($_REQUEST['profile']) and !empty($_REQUEST['profile']) ) {
+			if ( $_REQUEST['profile'] == 'Small_Organization_Web_Presence' ) {
+				$profile = $remote_profile_test;
+			} else {
+				$profile = Tiki_Profile::fromNames( 'http://profiles.tikiwiki.org', $_REQUEST['profile'] );
+			}
+			$installer->install( $profile );
+		}
+		
+		$_SESSION[$cookie_name] = 'admin';
 	}
 
-	if (isset($_REQUEST['update'])) {
+	if ( isset($_REQUEST['update']) ) {
+		$installer = new Installer;
 		$installer->update();
 		$smarty->assign('installer', $installer);
 		$smarty->assign('dbdone', 'y');
 		$install_type = 'update';
 	}
-	
+
 	// Try to activate Apache htaccess file by renaming _htaccess into .htaccess
 	// Do nothing (but warn the user to do it manually) if:
 	//   - there is no  _htaccess file,
 	//   - there is already an existing .htaccess (that is not necessarily the one that comes from TikiWiki),
 	//   - the rename does not work (e.g. due to filesystem permissions)
 	//
-	if ( !file_exists('.htaccess') && ! @rename('_htaccess', '.htaccess') ) {
+	if ( file_exists('_htaccess') && ( file_exists('.htaccess') || ! @rename('_htaccess', '.htaccess') ) ) {
 		$smarty->assign('htaccess_error', 'y');
 	}
 }
 
-if (!isset($install_type)) {
-	if (isset($_REQUEST['install_type'])) {
-		$install_type = $_REQUEST['install_type'];
-	} else {
-		$install_type = '';
-	}
+if( isset( $_GET['lockenter'] ) )
+{
+	touch( 'db/lock' );
+	require('tiki-logout.php');	// logs out then redirects to home page
+	exit;
 }
 
-if ( isset( $_GET['lockenter'] ) || isset( $_GET['nolockenter'] ) ) {
-	if (isset( $_GET['lockenter'])) {
-		touch( 'db/lock' );
-	}
-	
-	global $userlib, $cachelib;
-	if (session_id()) {
-		session_destroy();
-	}
-	include_once 'tiki-setup.php';
-	$cachelib->empty_full_cache();
-	if ($install_type == 'scratch') {
-		$u = 'tiki-change_password.php?user=admin&oldpass=admin';
-	} else {
-		$u = '';
-	}
-	$userlib->user_logout($user, false, $u);	// logs out then redirects to home page or $u
+if( isset( $_GET['nolockenter'] ) )
+{
+	require('tiki-logout.php');	// logs out then redirects to home page
+	exit;
+}
+
+if( isset( $_GET['lockchange'] ) )
+{
+	touch( 'db/lock' );
+	header( 'Location: tiki-change_password.php?user=admin' );
 	exit;
 }
 
@@ -792,7 +825,7 @@ $smarty->assign('email_test_tw', $email_test_tw);
 //  Sytem requirements test. 
 if ($install_step == '2') {
 
-	if (isset($_REQUEST['perform_mail_test']) && $_REQUEST['perform_mail_test'] == 'y') {
+	if (($_REQUEST['perform_mail_test']) == 'y') {
 
 		$email_test_to = $email_test_tw;
 		$email_test_headers = '';
@@ -846,49 +879,27 @@ if ($install_step == '2') {
 		}
 	}
 
-	// copy of most of $tikilib->return_bytes() not available at this stage
-	$memory_limit = trim(ini_get('memory_limit'));
-	$last = strtolower($memory_limit{strlen($memory_limit)-1});
-	switch ( $last ) {
-		// The 'G' modifier is available since PHP 5.1.0
-		case 'g': $memory_limit *= 1024;
-		case 'm': $memory_limit *= 1024;
-		case 'k': $memory_limit *= 1024;
-	}
-	$smarty->assign('php_memory_limit', intval($memory_limit));
-		
+	$php_memory_limit = return_bytes(ini_get('memory_limit'));
+	$smarty->assign('php_memory_limit', intval($php_memory_limit));
+	
 	if ((extension_loaded('gd') && function_exists('gd_info'))) {
 		$gd_test = 'y';
 		$gd_info = gd_info();
 		$smarty->assign('gd_info', $gd_info['GD Version']);
-		
-		$im = @imagecreate(110, 20);
-		if ($im) {
-				$smarty->assign('sample_image', 'y');
-				imagedestroy($im);
-		} else{
-				$smarty->assign('sample_image', 'n');
-		}
-
 		} else {
 		$gd_test = 'n'; }
 	$smarty->assign('gd_test', $gd_test);
-} elseif ($install_step == 6 && !empty($_REQUEST['validPatches'])) {
-	foreach ($_REQUEST['validPatches'] as $patch) {
-		global $installer;
-		$installer->recordPatch($patch);
-	}
 }
 
 unset($TWV);
 
 // write general settings
-if ( isset($_REQUEST['general_settings']) && $_REQUEST['general_settings'] == 'y' ) {
+if ( $_REQUEST['general_settings'] == 'y' ) {
 	global $dbTiki;
 	$switch_ssl_mode = ( isset($_REQUEST['feature_switch_ssl_mode']) && $_REQUEST['feature_switch_ssl_mode'] == 'on' ) ? 'y' : 'n';
 	$show_stay_in_ssl_mode = ( isset($_REQUEST['feature_show_stay_in_ssl_mode']) && $_REQUEST['feature_show_stay_in_ssl_mode'] == 'on' ) ? 'y' : 'n';
 
-	$installer->query("DELETE FROM `tiki_preferences` WHERE `name` IN ('browsertitle', 'sender_email', 'https_login', 'https_port', 'feature_switch_ssl_mode', 'feature_show_stay_in_ssl_mode', 'language')");
+	$dbTiki->Execute("DELETE FROM `tiki_preferences` WHERE `name` IN ('browsertitle', 'sender_email', 'https_login', 'https_port', 'feature_switch_ssl_mode', 'feature_show_stay_in_ssl_mode', 'language')");
 
 	$query = "INSERT INTO `tiki_preferences` (`name`, `value`) VALUES"
 		. " ('browsertitle', '" . $_REQUEST['browsertitle'] . "'),"
@@ -899,53 +910,40 @@ if ( isset($_REQUEST['general_settings']) && $_REQUEST['general_settings'] == 'y
 		. " ('feature_show_stay_in_ssl_mode', '$show_stay_in_ssl_mode'),"
 		. " ('language', '$language')";
 
-	$installer->query($query);
-	$installer->query("UPDATE `users_users` SET `email` = '".$_REQUEST['admin_email']."' WHERE `users_users`.`userId`=1");
-
-	if( isset( $_REQUEST['admin_account'] ) && ! empty( $_REQUEST['admin_account'] ) ) {
-		fix_admin_account( $_REQUEST['admin_account'] );
-	}
+	$dbTiki->Execute($query);
+	$dbTiki->Execute("UPDATE `users_users` SET `email` = '".$_REQUEST['admin_email']."' WHERE `users_users`.`userId`=1");
 }
 
 
 include "lib/headerlib.php";
-$headerlib->add_js("var tiki_cookie_jar=new Array();");
-$headerlib->add_cssfile('styles/fivealive.css');
-$headerlib->add_jsfile( 'lib/tiki-js.js' );
-$headerlib->add_jsfile( 'lib/jquery/jquery.js' );
-$headerlib->add_jsfile( 'lib/jquery_tiki/tiki-jquery.js' );
-	$js = '
-// JS Object to hold prefs for jq
-var jqueryTiki = new Object();
-jqueryTiki.ui = false;
-jqueryTiki.ui_theme = "";
-jqueryTiki.tooltips = false;
-jqueryTiki.autocomplete = false;
-jqueryTiki.superfish = false;
-jqueryTiki.replection = false;
-jqueryTiki.tablesorter = false;
-jqueryTiki.colorbox = false;
-jqueryTiki.cboxCurrent = "{current} / {total}";
-jqueryTiki.sheet = false;
-jqueryTiki.carousel = false;
-jqueryTiki.jqs5 = false;
-
-jqueryTiki.effect = "";
-jqueryTiki.effect_direction = "";
-jqueryTiki.effect_speed = 400;
-jqueryTiki.effect_tabs = "";
-jqueryTiki.effect_tabs_direction = "";
-jqueryTiki.effect_tabs_speed = 400;
-';
-$headerlib->add_js($js, 100);
-
-
+$headerlib->add_cssfile('styles/strasa.css');
+$headerlib->add_cssfile('styles/strasa/options/cold.css');
+$headerlib->add_css('
+html {
+	background-color: #fff;
+}
+#centercolumn {
+	padding: 4em 10em;
+}
+#sitelogo h1, #tiki-clean {
+	margin: 0;
+	padding: 0;
+	color: #000;
+}
+.box-data ol, .box-data ul {
+	margin: 0;
+	padding: 0 0 0 2em;
+}
+.box-data ol strong {
+	color: #024;
+}
+');
 $smarty->assign_by_ref('headerlib',$headerlib);
 
 $smarty->assign('install_step', $install_step);
 $smarty->assign('install_type', $install_type);
 $smarty->assign_by_ref('prefs', $prefs);
-$smarty->assign('detected_https',isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on');
+$smarty->assign('detected_https',$_SERVER["HTTPS"]);
 
 if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6') !== false) {
 	$smarty->assign('ie6', true);
@@ -954,4 +952,4 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6') !== false) {
 $mid_data = $smarty->fetch('tiki-install.tpl');
 $smarty->assign('mid_data', $mid_data);
 
-$smarty->display("tiki-install_screens.tpl");
+$smarty->display("tiki-print.tpl");

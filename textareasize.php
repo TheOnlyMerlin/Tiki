@@ -1,11 +1,6 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-  
-/* \brief: 4 buttoms to change a textArea size - works with textareaSize.tpl template
+/* $Id: /cvsroot/tikiwiki/tiki/textareasize.php,v 1.4 2005-08-25 20:50:04 michael_davey Exp $
+ * \brief: 4 buttoms to change a textArea size - works with textareaSize.tpl template
  * \param: $defaultRows - optional : the number of rows by default
  * \comment: the cols nb is managed by a javascript program to optimize the display perf (seems to work generally with browsers)
  *                  the rows nb is managed by a redisplayed of the page to be effective on different browsers and different styles (specially with floating div column)
@@ -28,3 +23,5 @@ if (isset($_REQUEST['enlargeW']) || isset($_REQUEST['enlargeW_x']))
 elseif ((isset($_REQUEST['reduceW']) || isset($_REQUEST['reduceW_x'])) && $cols >= 40)
 	$cols -= 20;
 $smarty->assign('cols', (int) $cols);
+
+?>

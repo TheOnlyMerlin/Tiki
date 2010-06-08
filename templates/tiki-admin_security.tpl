@@ -24,30 +24,8 @@
 {if !$phpsettings}<tr><td colspan="4" class="odd">{tr}No records found.{/tr}</td></tr>
 {/if}
 </table>
-<h2>{tr}PHP functions{/tr}</h2>
-<table class="normal">
-	<tr>
-		<th>{tr}Function{/tr}</th>
-		<th>{tr}Setting{/tr}</th>
-		<th>{tr}Risk Factor{/tr}</th>
-	</tr>
-	{foreach from=$phpfunctions key=key item=item}
-		<tr class="{cycle}">
-			<td>{$key}</td>
-			<td>{$item.setting}</td>
-			<td>{if $item.risk eq 'safe'}{icon _id=accept alt="$item.risk" style="vertical-align:middle"}
-				{elseif $item.risk eq 'risky'}{icon _id=exclamation alt="$item.risk" style="vertical-align:middle"}
-				{elseif $item.risk eq 'unsafe'}{icon _id=exclamation alt="$item.risk" style="vertical-align:middle"}
-				{elseif $item.risk eq 'unknown'}{icon _id=error alt="$item.risk" style="vertical-align:middle"}
-				{/if}
-				{$item.risk}
-			</td>
-		</tr>
-	{/foreach}
-</table>
-{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}To disallow a function, add a disable_functions=exec,passthru for instance in your php.ini{/tr}{/remarksbox}
 <br />
-<h2>{tr}Tiki settings{/tr}</h2>
+<h2>{tr}TikiWiki settings{/tr}</h2>
 <table class="normal">
 <tr><th>{tr}Tiki variable{/tr}</th>
 <th>{tr}Setting{/tr}</th>
@@ -76,6 +54,7 @@
 <div class="form">
 <a href="tiki-admin_security.php?check_files">{tr}Check all tiki files{/tr}</a><br />
 {tr}Note, that this can take a very long time. You should check your max_execution_time setting in php.ini.{/tr}<br />
+{tr}Note: You have to import security data via installation process (<a href="tiki-install.php">tiki-install.php</a>). Import the *secdb* update files in your database.{/tr}
 <br />
 </div>
 {if $filecheck}

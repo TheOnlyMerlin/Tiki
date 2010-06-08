@@ -1,16 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: /cvsroot/tikiwiki/tiki/lib/wiki-plugins/wikiplugin_articles.php,v 1.27.2.1 2007-12-27 21:46:42 pkdille Exp $
 // Includes articles listing in a wiki page
 // Usage:
 // {ARTICLES(max=>3,topic=>topicId)}{ARTICLES}
+//
 
-function wikiplugin_articles_help()
-{
+function wikiplugin_articles_help() {
         $help = tra("Includes articles listing into a wiki page");
         $help .= "<br />";
         $help .= tra("~np~{ARTICLES(max=>3, topic=>topicName, topicId=>id, type=>type, categId=>Category parent ID, lang=>en, sort=>columnName_asc|columnName_desc), quiet=>y|n, titleonly=>y|n}{ARTICLES}~/np~");
@@ -18,24 +13,17 @@ function wikiplugin_articles_help()
         return $help;
 }
 
-function wikiplugin_articles_info()
-{
+function wikiplugin_articles_info() {
 	return array(
 		'name' => tra('Article List'),
 		'documentation' => 'PluginArticles',
-		'description' => tra('Inserts a list of articles in the page.'),
+		'description' => tra('Includes a list of articles within the page.'),
 		'prefs' => array( 'feature_articles', 'wikiplugin_articles' ),
 		'params' => array(
-			'usePagination' => array(
-				'required' => false,
-				'name' => tra('Use Pagination'),
-				'description' => tra('Activate pagination when articles listing are long. Default is n') . ' (n|y)',
-				'filter' => 'alpha',
-			),
 			'max' => array(
 				'required' => false,
 				'name' => tra('Articles displayed'),
-				'description' => tra('The number of articles to display in the list.') . tra('If Pagination is set to true, this will determine the amount of artilces per page'),
+				'description' => tra('The amount of articles to display in the list.'),
 				'filter' => 'int',
 			),
 			'topic' => array(
@@ -95,20 +83,20 @@ function wikiplugin_articles_info()
 			'start' => array(
 				'required' => false,
 				'name' => tra('Starting article'),
-				'description' => tra('The article number that the list should start with.') . tra('This will not work if Pagination is used.'),
+				'description' => tra('The article number that the list should start with.'),
 				'filter' => 'int',
 			),
 			'dateStart' => array(
 				'required' => false,
 				'name' => tra('Start date'),
 				'description' => tra('Earliest date to select articles from.') . ' (YYYY-MM-DD)',
-				'filter' => 'date',
+				'filter' => 'striptags',
 			),
 			'dateEnd' => array(
 				'required' => false,
 				'name' => tra('End date'),
 				'description' => tra('Latest date to select articles from.') . ' (YYYY-MM-DD)',
-				'filter' => 'date',
+				'filter' => 'striptags',
 			),
 			'overrideDates' => array(
 				'required' => false,
@@ -126,51 +114,37 @@ function wikiplugin_articles_info()
 	);
 }
 
-function wikiplugin_articles($data, $params)
-{
+function wikiplugin_articles($data,$params) {
 	global $smarty, $tikilib, $prefs, $tiki_p_read_article, $tiki_p_articles_read_heading, $dbTiki, $pageLang;
-	global $artlib; require_once 'lib/articles/artlib.php';
 
-	extract($params, EXTR_SKIP);
+	extract($params,EXTR_SKIP);
 	if (($prefs['feature_articles'] !=  'y') || (($tiki_p_read_article != 'y') && ($tiki_p_articles_read_heading != 'y'))) {
 		//	the feature is disabled or the user can't read articles, not even article headings
 		return("");
 	}
-	if(!isset($max))		$max = -1;
-	if(!isset($start))		$start = 0;
+	if(!isset($max)) {$max='3';}
+	if(!isset($start)) {$start='0';}
 
-	if(!isset($usePagination)){
-		$usePagination = 'n';	
-	}
-	
-	if($usePagination == 'y')
-	{
-		//Set offset when pagniation is used
-		if (!isset($_REQUEST["offset"])) {
-			$start = 0;
-		} else {
-			$start = $_REQUEST["offset"];
-		}
-		
-		//Default to 10 when pagination is used
-		if(($max == -1)){
-			$countPagination = 10;
-		}
-	}
+	if(!isset($topicId))
+		$topicId='';
+	if(!isset($topic))
+		$topic='';
 
-	if(!isset($topicId))	$topicId='';
-	if(!isset($topic))		$topic='';
-
-	if (!isset($sort))		$sort = 'publishDate_desc';
+	if (!isset($sort))
+		$sort = 'publishDate_desc';
 
 	// Adds filtering by type if type is passed
-	if(!isset($type))		$type='';
+	if(!isset($type)) 
+		$type='';
 
-	if (!isset($categId))	$categId = '';
+	if (!isset($categId))
+		$categId = '';
 
-	if (!isset($lang))		$lang = '';
+	if (!isset($lang))
+		$lang = '';
 
-	if (!isset($quiet))		$quiet = 'n';
+	if (!isset($quiet))
+		$quiet = 'n';
 	$smarty->assign_by_ref('quiet', $quiet);
 	
 	if(!isset($containerClass)) {$containerClass = 'wikiplugin_articles';}
@@ -193,7 +167,7 @@ function wikiplugin_articles($data, $params)
 	include_once("lib/commentslib.php");
 	$commentslib = new Comments($dbTiki);
 	
-	$listpages = $artlib->list_articles($start, $max, $sort, '', $dateStartTS, $dateEndTS, 'admin', $type, $topicId, 'y', $topic, $categId, '', '', $lang, '', '', ($overrideDates == 'y'));
+	$listpages = $tikilib->list_articles($start, $max, $sort, '', $dateStartTS, $dateEndTS, 'admin', $type, $topicId, 'y', $topic, $categId, '', '', $lang, ($overrideDates == 'y'));
  	if ($prefs['feature_multilingual'] == 'y') {
 		global $multilinguallib;
 		include_once("lib/multilingual/multilinguallib.php");
@@ -230,13 +204,7 @@ function wikiplugin_articles($data, $params)
 	if (!empty($type) && !strstr($type, '!') && !strstr($type, '+')) {
 		$smarty->assign_by_ref('type', $type);
 	}
-	
-	if($usePagination == 'y'){
-		$smarty->assign('maxArticles', $max);
-		$smarty->assign_by_ref('offset', $start);
-		$smarty->assign_by_ref('cant', $listpages['cant']);
-	}
-	
+
 	$smarty->assign_by_ref('listpages', $listpages["data"]);
 
 	if (isset($titleonly) && $titleonly == 'y') {

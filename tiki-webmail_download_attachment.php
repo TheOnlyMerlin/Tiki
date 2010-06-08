@@ -1,14 +1,28 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-webmail_download_attachment.php,v 1.9.2.1 2008-03-01 16:07:36 lphuberdeau Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 require_once ('tiki-setup.php');
 
-$access->check_feature('feature_webmail');
-$access->check_permission('tiki_p_use_webmail');
+if ($prefs['feature_webmail'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_wiki");
+
+	$smarty->display("error.tpl");
+	die;
+}
+
+if ($tiki_p_use_webmail != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied to use this feature"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 require_once ('lib/webmail/webmaillib.php');
 
@@ -36,11 +50,13 @@ $output = Mail_mimeDecode::decode($params);
 $part = $output->parts[$_REQUEST["getpart"]];
 $type = $part->headers["content-type"];
 $content = $part->body;
-$names = explode(';', $part->headers["content-disposition"]);
-$names = explode('=', $names[1]);
+$names = split(';', $part->headers["content-disposition"]);
+$names = split('=', $names[1]);
 $file = $names[1];
 
 header ("Content-type: $type");
 //header( "Content-Disposition: attachment; filename=$file" );
 header ("Content-Disposition: inline; filename=$file");
 echo "$content";
+
+?>

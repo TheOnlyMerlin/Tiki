@@ -3,10 +3,6 @@
    released under LPGL license. For more information, visit http://themes.tikiwiki.org. */
 
 /***** XHTML Elements ******/
-html {
-	background-color:#fff;
-}
-
 body {
 	background: #fff;
 }
@@ -36,15 +32,10 @@ body.wikitext {
 	color: #000;
 }
 
-html[dir=ltr] {	/* for fck editor */
-	background-color: #fafafa;
-}
-
 input[type=text],
 input[type=password] {
 	background: #fafafa;
 	border-color: #878787;
-	color: #222222;
 }
 
 .box-login_box input[type=text],
@@ -68,13 +59,7 @@ input[type=reset],
 input[type=submit],
 span.button input,
 .calbuttonBox,
-#siteloginbar input.wikiaction {
-	color: #fff;
-	background: #565656;
-	border-color: #878787 #343434 #343434 #878787;
-}
-* html input[type=reset],
-* html input[type=submit] {
+#siteloginbar input.wikiaction  {
 	color: #fff;
 	background: #565656;
 	border-color: #878787 #343434 #343434 #878787;
@@ -86,7 +71,7 @@ input[type=reset]:hover,
 input[type=submit]:hover,
 .button input:hover,
 .calbuttonBox:hover,
-#siteloginbar input.wikiaction:hover {
+#siteloginbar input.wikiaction:hover  {
 	background-color: #333333;
 	color: #fff;
 }
@@ -166,10 +151,12 @@ ul.jumplinks a:active {
 }
 
 /* Site Header & Identity */
-#header-top {
-	color: #fff;
-	background: #444 url(mono/headerbg.jpg) repeat-x 0 100%;
 
+div#sioptions,
+#sioptionscentered,
+#customcode,
+#customcodewith_ad {
+	background: #444444 url(mono/headerbg.jpg) repeat-x 0 100%;
 }
 
 #siteloginbar {
@@ -197,9 +184,6 @@ ul.jumplinks a:active {
 }
 
 /* tiki-top_bar.tpl - menu and search */
-*:first-child+html #tiki-top {
-	background-color: #444;
-}
 
 #tiki-top a,
 #tiki-top a:visited {
@@ -320,19 +304,19 @@ a.phplmselected:hover {
 }
 
 /** CSS (suckerfish) menus **/
+.cssmenu ul,
+.cssmenu_vert li ul,
+.cssmenu_horiz li ul {
+	border: 1px solid #a9a9a9;
+	background: #4c4c4c;
+}
 
-.cssmenu_horiz li ul li,
-.cssmenu_vert li ul li {
-	border: 1px solid #233039;
+.cssmenu_vert li ul {
 	background: #e5e5e5;
+	border: 1px solid #233039;
 }
 
-.cssmenu_horiz li ul li:first-child,
-.cssmenu_vert li ul li:first-child {
-	border-top: 1px solid #233039;
-}
-
-#header .cssmenu_horiz li:hover {
+.cssmenu_horiz li:hover {
 	background: #212121;
 }
 
@@ -340,6 +324,7 @@ a.phplmselected:hover {
 	background: none;
 }
 
+.cssmenu a,	
 .cssmenu_horiz a,
 .cssmenu_vert a {
 	color: #666666;
@@ -362,54 +347,6 @@ a.phplmselected:hover {
 
 .cssmenu_vert ul a:hover {
 	color: #000000;
-}
-
-#header .cssmenu_horiz a,
-#header .cssmenu_horiz a:visited {
-	background: none;
-	border: none;
-	color: #fff;
-	padding: 3px 5px 6px 
-}
-
-#header .cssmenu_horiz a:hover {
-	background: #000;
-	border: none;
-	color: #fff;
-}
-
-#header .cssmenu_horiz li ul li {
-	border: 1px solid #a9a9a9;
-	background: #4c4c4c;
-}
-
-#header .cssmenu_horiz li ul li:first-child,
-.cssmenu_vert li ul li:first-child {
-	border-top: 1px solid #a9a9a9;
-}
-
-#header .cssmenu_horiz li ul li a:hover {
-	background: #000;
-}
-
-.cssmenu_vert li a .sf-sub-indicator {
-	background: url(mono/arrows-000000.png) no-repeat 0 0;
-}
-
-.cssmenu_horiz li a .sf-sub-indicator {
-	background: url(mono/arrows-000000.png) no-repeat -10px -100px;	
-}
-
-.cssmenu_horiz li ul li a .sf-sub-indicator {
-	background: url(mono/arrows-000000.png) no-repeat 0 0;	
-}
-
-#header .cssmenu_horiz li a .sf-sub-indicator {
-	background: url(../../../lib/jquery/superfish/images/arrows-ffffff.png) no-repeat -10px -100px;
-}
-
-#header .cssmenu_horiz li ul li a .sf-sub-indicator {
-	background: url(../../../lib/jquery/superfish/images/arrows-ffffff.png) no-repeat 0 0;
 }
 
 /** Links in other menus **/
@@ -477,10 +414,6 @@ div.help_section {
 	border-bottom: 1px solid #aaa;
 }
 
-#col2 .box-title {
-	color: #000;
-}
-
 #col3 .box {
 	border-bottom: 1px solid #cfcfcf;
 }
@@ -494,12 +427,12 @@ a.flipmodtitle:hover img {
 /** Other boxes **/
 
 div.cbox {
-	border: 1px solid #444;
+	border: 1px solid #212121;
 }
 
 .cbox-title {
 	color: #ebebeb;
-	background: #999;
+	background: #212121;
 }
 
 .cbox-title a:link,
@@ -512,12 +445,12 @@ div.cbox {
 }
 
 .rbox-title {
-	border-color: #ccc;
+	background-color: #e5e5e5;
 }
 
 .rbox-data {
 	background-color: #fff;
-	border: solid 1px #ccc;
+	border: solid 1px #e5e5e5;
 }
 
 
@@ -566,7 +499,7 @@ td.third {}
 th,
 table.normal td.heading {
 	color: #ebebeb;
-	background: #444;
+	background: #212121;
 }
 
 th a:link,
@@ -574,16 +507,6 @@ th a:visited,
 td.heading a:link,
 td.heading a:visited {
 	color: #ebebeb;
-}
-
-.tiki_mytiki .cbox-data th {
-	color: #888;
-	background: #eee;
-}
-
-.tiki_mytiki .cbox-data th a:link,
-.tiki_mytiki .cbox-data th a:visited {
-	color: #666;
 }
 
 a.tablename,
@@ -693,16 +616,6 @@ a.pagetitle:hover {
 	border-bottom: 1px solid #696969;
 }
 
-.wikitext h2 {
-	border-bottom-color: #666;
-	color: #3F3F3F;
-}
-
-.wikitext h4 {
-	border-bottom:1px dashed #ccc;
-	color:#3F3F3F;
-}
-
 .wikitext .fancylist li {
 	background: transparent url('mono/list_icon.png') top left no-repeat;
 	color: #f90;
@@ -731,7 +644,7 @@ div.split {
 }
 
 /* Needed esp. for light-on-dark theme */
-div.toolbar {
+div.quicktag {
 }
 
 /* Wiki plugins */
@@ -805,7 +718,7 @@ div.articlesubtitle {
 	color: #fff}
 	
 div.articletitle h2 {
-	background: #666 url(mono/lightbg.jpg) repeat-x 0 100%;
+	background: #f5f5f5 url(mono/headerbg.jpg) repeat-x 0 100%;
 	color: #fff;
 	padding: 10px 5px;
 	margin: 0}
@@ -846,7 +759,7 @@ body.tiki_blogs .author_actions .actions {
 
 body.tiki_blogs .postbody-title,
 .post .postbody-title {
-	background: #111111 url('mono/lightbg.jpg') repeat-x 0 100%;
+	background: #111111 url('mono/headerbg.jpg') repeat-x 0 100%;
 }
 
 .post .postbody-title .title,
@@ -1101,20 +1014,19 @@ div.multiselect {
 	border-color: #878787 #343434 #343434 #878787;
 }
 
-.buttonon a,
 .calbuttonon a,
 .calbuttonoff a {
 	color: #fff;
 }
 
-.caltable .calfocuson,
+#caltable .calfocuson,
 .box-data td.fc a.today,
 .box-data td a.today {
 	background: #D4D0C8;
 	border: solid 1px #696969;
 }
 
-.caltable .calfocuson a {
+#caltable .calfocuson a {
 	color: #000;
 }
 
@@ -1130,7 +1042,7 @@ div.multiselect {
 	color: #e5e5e5;
 }
 
-.caltable .weeks {
+#caltable .weeks {
 	background: #212121;
 	color: #e5e5e5;
 }
@@ -1228,6 +1140,10 @@ div.messureadbody {
 /***** Ajax *****/
 div#ajaxLoading {}
 
+#shadowbox_content {
+	background: #fafafa;
+}
+
 /***** TikiSheet Default Style *****/
 table.default thead td,
 table.default tfoot td {
@@ -1265,13 +1181,13 @@ table.default tfoot td {
 /* css/admin.css overrides */
 a.admbox {
 	border: 1px solid #223845;
-	background-color: #f0f0f0;
+	background: #f0f0f0 center no-repeat;
 }
 
 a.admbox:hover,
 a.admbox:focus,
 a.admbox:active {
-	background-color: #dcdcdc;
+	background: #dcdcdc center no-repeat;
 	border: 1px solid #696969;
 }
 
@@ -1286,40 +1202,5 @@ a.admbox.off:active {
 }
 
 /* MiniChat  */
-
-/* ClueTip tooltips */
-
-.cluetip-default {
-	background: #ccc;
-	color: #000;
-}
-
-.cluetip-default #cluetip-outer {
-	background: #ccc;
-}
-.cluetip-default h3#cluetip-title {
-	background: #444;
-	color: #fff;
-}
-
-.cluetip-default #cluetip-title a {
-	color: #ccc;
-	font-size: 0.95em;
-}
-
-body.fixed_width {
-	background: #424242 url(mono/body-bg_fw.png) repeat-x !important
-}
-
-body.fixed_width #c1c2 #col2 {
-	width: 180px;
-	background: url(mono/box_top_fw.gif) no-repeat 100% 0;
-}
-
-body.fixed_width #c1c2 #col2 .content {
-	margin-left: 0;
-	background: url(mono/box_bottom_fw.gif) no-repeat 100% 100%;
-}
-  
 
 /* end of file */

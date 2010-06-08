@@ -1,7 +1,9 @@
 {* $Id$ *}
 
 {* this script (un/)checks all checkboxes with id 'banning-section' *}
-{jq notonready=true}
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+{literal}
 	function CheckAll() {
 		for (var i = 0; i < document.banningform.elements.length; i++) {
 			var e = document.banningform.elements[i];
@@ -10,7 +12,9 @@
 			}
 		}
 	}
-{/jq}
+{/literal}
+//--><!]]>
+</script>
 
 {title help="Banning+System"}{tr}Banning system{/tr}{/title}
 
@@ -121,11 +125,11 @@
 </td>
 <td class="{cycle advance=false}">
 <a href="tiki-admin_banning.php?banId={$items[user].banId}" class="link">
-{$items[user].title|escape}</a>
+{$items[user].title}</a>
 </td>
 <td style="text-align:right;" class="{cycle advance=false}">
 {if $items[user].mode eq 'user'}
-	{$items[user].user|escape}
+	{$items[user].user}
 {else}
 	{$items[user].ip1}.{$items[user].ip2}.{$items[user].ip3}.{$items[user].ip4}
 {/if}
@@ -137,7 +141,7 @@
 </td>
 <td class="{cycle}">
 &nbsp;&nbsp;<a title="{tr}Delete{/tr}" href="tiki-admin_banning.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;remove={$items[user].banId}" class="link" 
->{icon _id='cross' alt="{tr}Delete{/tr}"}</a>&nbsp;&nbsp;
+>{icon _id='cross' alt='{tr}Delete{/tr}'}</a>&nbsp;&nbsp;
 </td>
 </tr>
 {sectionelse}

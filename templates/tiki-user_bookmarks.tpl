@@ -1,8 +1,12 @@
 {title help="User+Bookmarks"}{tr}User Bookmarks{/tr}{/title}
 
-{include file='tiki-mytiki_bar.tpl'}
+{if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
+  {include file=tiki-mytiki_bar.tpl}
+  <br />
+  <br />
+{/if}
 
-{if $parentId>0}[<a class="link" href="tiki-user_bookmarks.php">{tr}top{/tr}</a>] {/if}{tr}Current folder:{/tr} {$path}<br />
+{if $parentId>0}[<a class="link" href="tiki-user_bookmarks.php">{tr}top{/tr}</a>] {/if}{tr}Current folder{/tr}: {$path}<br />
 <br />
 <h2>{tr}Folders{/tr}</h2>
 <table class="normal">
@@ -13,7 +17,7 @@
 {cycle values="odd,even" print=false}
 {section name=ix loop=$folders}
 <tr>
-  <td class="{cycle advance=false}"><a href="tiki-user_bookmarks.php?parentId={$folders[ix].folderId}">{icon _id='folder' alt='{tr}Folder in{/tr}'}</a>&nbsp;{$folders[ix].name|escape} ({$folders[ix].urls})</td>
+  <td class="{cycle advance=false}"><a href="tiki-user_bookmarks.php?parentId={$folders[ix].folderId}">{icon _id='folder' alt='{tr}Folder in{/tr}'}</a>&nbsp;{$folders[ix].name} ({$folders[ix].urls})</td>
   <td class="{cycle}">
     <a class="link" href="tiki-user_bookmarks.php?parentId={$parentId}&amp;editfolder={$folders[ix].folderId}">{icon _id='page_edit'}</a> &nbsp;
     <a class="link" href="tiki-user_bookmarks.php?parentId={$parentId}&amp;removefolder={$folders[ix].folderId}">{icon _id='cross' alt='{tr}Remove{/tr}' title='{tr}Remove Folder{/tr}'}</a>
@@ -35,7 +39,7 @@
 {cycle values="odd,even" print=false}
 {section name=ix loop=$urls}
 <tr>
-  <td class="{cycle advance=false}"><a class="link" target="_blank" href="{$urls[ix].url}">{$urls[ix].name|escape}</a>
+  <td class="{cycle advance=false}"><a class="link" target="_blank" href="{$urls[ix].url}">{$urls[ix].name}</a>
   {if $tiki_p_cache_bookmarks eq 'y' and $urls[ix].datalen > 0}
   (<a href="tiki-user_cached_bookmark.php?urlid={$urls[ix].urlId}" class="link" target="_blank">{tr}Cache{/tr}</a>)
   {/if}
@@ -67,7 +71,7 @@
       <form action="tiki-user_bookmarks.php" method="post">
       <input type="hidden" name="editfolder" value="{$editfolder|escape}" />
       <input type="hidden" name="parentId" value="{$parentId|escape}" />
-      <tr><td class="formcolor">{tr}Name:{/tr}</td>
+      <tr><td class="formcolor">{tr}Name{/tr}:</td>
           <td class="formcolor"><input type="text" size = "40" name="foldername" value="{$foldername|escape}" /></td>
       </tr>
       <tr><td class="formcolor">&nbsp;</td>
@@ -79,7 +83,7 @@
   </td>
   <td >
     {* form to add a url *}
-    <h3>{if $urlname}{tr}Edit{/tr}{else}{tr}Add{/tr}{/if} {tr}a bookmark{/tr}</h3>
+    <h3>{if $urlname}{tr}Edit{/tr}{else}{tr}Add{/tr}{/if} {tr}a URL{/tr}</h3>
 {if $urlname}
     <a class="link" href="tiki-user_bookmarks.php?parentId={$parentId}&amp;editurl=0">{tr}New{/tr}</a>
 {/if}
@@ -87,10 +91,10 @@
       <form action="tiki-user_bookmarks.php" method="post">
       <input type="hidden" name="editurl" value="{$editurl|escape}" />
       <input type="hidden" name="parentId" value="{$parentId|escape}" />
-      <tr><td class="formcolor">{tr}Name:{/tr}</td>
+      <tr><td class="formcolor">{tr}Name{/tr}:</td>
           <td class="formcolor"><input type="text" size = "40"  name="urlname" value="{$urlname|escape}" /></td>
       </tr>
-      <tr><td class="formcolor">{tr}URL:{/tr}</td>
+      <tr><td class="formcolor">{tr}URL{/tr}:</td>
           <td class="formcolor"><input type="text" size = "40" name="urlurl" value="{$urlurl|escape}" /></td>
       </tr>
       <tr><td class="formcolor">&nbsp;</td>

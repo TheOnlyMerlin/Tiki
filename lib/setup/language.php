@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+
 // $Id$
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for
+// details.
 
 //this script may only be included - so its better to die if called directly.
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
@@ -22,6 +23,9 @@ if (isset($_REQUEST['switchLang'])) { // check can change lang + valid lang
 //echo "U_INFO:".$u_info['prefs']['language']." S_PREFS:".$_SESSION['s_prefs']['language']." PREFS:".$prefs['language'];
 if (isset($_REQUEST['switchLang'])) {
 	$prefs['language'] = $_REQUEST['switchLang'];
+	if ($prefs['feature_best_language'] == 'y' && empty($_REQUEST['bl'])) {
+		$_REQUEST['bl'] = 'y';
+	}
 	if ($user && $prefs['feature_userPreferences'] == 'y') {
 		$tikilib->set_user_preference($user, 'language', $prefs['language']);
 	} else {
@@ -32,6 +36,11 @@ if (isset($_REQUEST['switchLang'])) {
 	if ( ! empty($browser_language) ) {
 		$prefs['language'] = $browser_language;
 	}
+}
+
+// clear bl if bl is 'n' for backward compatibility
+if (isset($_REQUEST['bl']) && $_REQUEST['bl'] == 'n') {
+	unset($_REQUEST['bl']);
 }
 
 if ( $prefs['lang_use_db'] != 'y' ) {

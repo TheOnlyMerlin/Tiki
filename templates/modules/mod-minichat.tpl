@@ -1,7 +1,7 @@
-{tikimodule error=$module_params.error title=$tpl_module_title name="minichat" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
+{tikimodule error=$module_params.error title="minichat" name="minichat" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
 
 <div id='minichatchans' class='minichatchans'></div>
-<div id='minichat' class='minichat' style='overflow-x: hidden; overflow-y: scroll; width: 100%; height: {$module_rows}em;'>
+<div id='minichat' class='minichat' style='overflow-x: hidden; overflow-y: scroll; width: 100%; height: {$module_rows}px;'>
 </div>
 
 <div style='width: 100%; overflow: hidden;'>
@@ -13,7 +13,7 @@
 
 {literal}
 <script language='javascript' type='text/javascript'>
-var minichat_lasttimeout=6000;
+var minichat_lasttimeout=2000;
 
 var minichat_firstchan=null;
 var minichat_lastchan=null;

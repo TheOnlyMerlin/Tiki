@@ -1,17 +1,24 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-assignuser.php,v 1.25.2.3 2007-12-29 16:30:00 jyhem Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 // This script is used to assign groups to a particular user
 // ASSIGN USER TO GROUPS
+// Initialization
 require_once ('tiki-setup.php');
 
 $auto_query_args = array('sort_mode', 'offset', 'find', 'assign_user', 'group', 'maxRecords');
 
-$access->check_permission(array('tiki_p_admin_users', 'tiki_p_subscribe_groups'));
+if ($tiki_p_admin != 'y' && $tiki_p_admin_users != 'y' && $tiki_p_subscribe_groups != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (!isset($_REQUEST["assign_user"]) || ($tiki_p_admin != 'y' && $tiki_p_admin_users != 'y')) {
 	$_REQUEST['assign_user'] = $user;
@@ -57,9 +64,14 @@ if (isset($_REQUEST["action"])) {
 			$logslib->add_log('perms',sprintf("Assigned %s in group %s",$_REQUEST["assign_user"], $_REQUEST["group"]));
 		}			
 	} elseif ($_REQUEST["action"] == 'removegroup' && ($tiki_p_admin == 'y' || ($tiki_p_admin_users == 'y' && array_key_exists($_REQUEST["group"], $groups)))) {
-		$access->check_authenticity();
-		$userlib->remove_user_from_group($_REQUEST["assign_user"], $_REQUEST["group"]);
-		$logslib->add_log('perms',sprintf("Removed %s from group %s",$_REQUEST["assign_user"], $_REQUEST["group"]));
+		$area = 'deluserfromgroup';
+		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+			key_check($area);
+			$userlib->remove_user_from_group($_REQUEST["assign_user"], $_REQUEST["group"]);
+			$logslib->add_log('perms',sprintf("Removed %s from group %s",$_REQUEST["assign_user"], $_REQUEST["group"]));
+		} else {
+			key_get($area);
+		}
 	}
 }
 
@@ -111,9 +123,9 @@ if ($tiki_p_admin != 'y' && $userChoice != 'y') {
 	$ingroups = '';
 $users = $userlib->get_groups($offset, $maxRecords, $sort_mode, $find,'','y', $ingroups, $userChoice);
 
-foreach ($users['data'] as $key=>$gr) {
-	if (isset($user_info['groups'][$gr['groupName']])) {
-		$users['data'][$key]['what'] = $user_info['groups'][$gr['groupName']];
+foreach ($users['data'] as $key=>$group) {
+	if (isset($user_info['groups'][$group['groupName']])) {
+		$users['data'][$key]['what'] = $user_info['groups'][$group['groupName']];
 	}
 }
 			
@@ -130,3 +142,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the template
 $smarty->assign('mid', 'tiki-assignuser.tpl');
 $smarty->display("tiki.tpl");
+
+?>

@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -12,26 +7,28 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 function smarty_block_popup_link($params, $content, &$smarty, $repeat) {
-	global $headerlib, $prefs;
+    global $headerlib, $prefs;
 	static $counter = 0;
 
 	$linkId = 'block-popup-link' . ++$counter;
 	$block = $params['block'];
 
-	if ( $repeat === false ) {
+    if ( $repeat ) {
+		// Do nothing
+	} else {
 		if ($prefs['feature_jquery'] == 'y') {
 			$headerlib->add_js( <<<JS
 \$jq(document).ready( function() {
 
 	\$jq('#$block').hide();
-
+	
 	\$jq('#$linkId').click( function() {
 		var block = \$jq('#$block');
 		if( block.css('display') == 'none' ) {
-			//var coord = \$jq(this).offset();
+			var coord = \$jq(this).offset();
 			block.css( 'position', 'absolute' );
-			//block.css( 'left', coord.left);
-			//block.css( 'top', coord.top + \$jq(this).height() );
+			block.css( 'left', coord.left);
+			block.css( 'top', coord.top + \$jq(this).height() );
 			show( '$block' );
 		} else {
 			hide( '$block' );
@@ -39,19 +36,46 @@ function smarty_block_popup_link($params, $content, &$smarty, $repeat) {
 	});
 } );
 JS
-					);
-		}
+			);
+		} else if ($prefs['feature_mootools'] == 'y') {
+			$headerlib->add_js( <<<JS
+window.addEvent( 'domready', function( event ) {
+	var link = $('$linkId');
+	var block = $('$block');
 
-		$href = ' href="javascript:void(0)"';
+	block.setStyle( 'display', 'none' );
+	link.addEvent( 'click', function( event ) {
 
-		if (isset($params['class'])) {
-			if ($params['class'] == 'button') {
-				$html = '<a id="' . $linkId . '"' . $href . '>' . $content . '</a>';
-				$html = '<span class="button">'.$html.'</span>';
-			} else {
-				$html = '<a id="' . $linkId . '"' . $href . '" class="' . $class . '">' . $content . '</a>';
+		if( block.getStyle( 'display' ) == 'none' ) {
+			if( window.popup_link ) {
+				window.popup_link.setStyle( 'display', 'none' );
 			}
+
+			var coord = link.getCoordinates();
+			block.setStyle( 'position', 'absolute' );
+			block.setStyle( 'left', coord.left + 'px' );
+			block.setStyle( 'top', coord.bottom + 'px' );
+			block.setStyle( 'display', 'block' );
+		} else {
+			block.setStyle( 'display', 'none' );
 		}
-		return $html;
+
+		window.popup_link = block;
+	} );
+} );
+JS
+			);
+		}
+		$href = '';
+		if ($prefs['feature_mootools'] == 'y' || $prefs['feature_jquery'] == 'y') {
+			$href = " href=\"javascript:void(0)\"";
+		} else {
+			$href = " href=\"javascript:alert('" . tr('You need either JQuery or MooTools enabled for this feature') . "')\"";
+		}
+		return '<a id="' . $linkId . '"' . $href . '>' . $content . '</a>';
 	}
 }
+
+
+
+?>

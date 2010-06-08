@@ -1,11 +1,7 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /*
+ * $Id: /cvsroot/tikiwiki/tiki/lib/wiki-plugins/wikiplugin_box.php,v 1.18.2.1 2007-11-28 23:29:23 sylvieg Exp $
+ *
  * Tiki-Wiki BOX plugin.
  * 
  * Syntax:
@@ -13,16 +9,17 @@
  *  {BOX([title=>Title],[bg=>color|#999fff],[width=>num[%]],[align=>left|right|center])}
  *   Content inside box
  *  {BOX}
+ * 
  */
 function wikiplugin_box_help() {
-	return tra("Insert theme-styled box on wiki page").":<br />~np~{BOX(title=>Title, bg=>color, width=>num[%], align=>left|right|center, float=>|left|right),class=class, id=id}".tra("text")."{BOX}~/np~";
+	return tra("Insert theme styled box on wiki page").":<br />~np~{BOX(title=>Title, bg=>color, width=>num[%], align=>left|right|center, float=>|left|right),class=class, id=id}".tra("text")."{BOX}~/np~";
 }
 
 function wikiplugin_box_info() {
 	return array(
 		'name' => tra('Box'),
 		'documentation' => 'PluginBox',
-		'description' => tra('Insert theme-styled box on wiki page'),
+		'description' => tra('Insert theme styled box on wiki page'),
 		'prefs' => array('wikiplugin_box'),
 		'body' => tra('text'),
 		'params' => array(
@@ -49,17 +46,12 @@ function wikiplugin_box_info() {
 			'float' => array(
 				'required' => false,
 				'name' => tra('Float Position'),
-				'description' => 'left|right' . ', ' . tra('for box with width less than 100%, make text wrap around the box.'),
+				'description' => 'left|right' . ', ' . tra('for box with width lesser than 100%, make text wrap around the box.'),
 			),
 			'class' => array(
 				'required' => false,
 				'name' => tra('CSS Class'),
 				'description' => tra('Apply custom CSS class to the box.'),
-			),
-			'id' => array(
-				'required' => false,
-				'name' => tra('ID'),
-				'description' => tra('ID'),
 			),
 		),
 	);
@@ -102,3 +94,5 @@ function wikiplugin_box($data, $params) {
 	//$data = $tikilib->parse_data($data);
 	return $begin . $data . $end;
 }
+
+?>

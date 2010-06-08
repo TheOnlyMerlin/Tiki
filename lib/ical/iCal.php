@@ -35,8 +35,7 @@
  * @category File
  * @package iCal
  */
-class File_iCal
-{
+class File_iCal {
     const VERSION = "0.0.3";
 
     const CLASSIFICATION_PUBLIC = "PUBLIC";
@@ -211,3 +210,5 @@ class File_iCal
     }
 
 }
+
+?>

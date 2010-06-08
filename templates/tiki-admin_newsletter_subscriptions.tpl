@@ -15,12 +15,12 @@
 		<th colspan="2">{tr}Newsletter{/tr}</th>
 	</tr>
 	<tr>
-		<td class="even" width="30%">{tr}Name:{/tr}</td>
-		<td class="even">{$nl_info.name|escape}</td>
+		<td class="even" width="30%">{tr}Name{/tr}:</td>
+		<td class="even">{$nl_info.name}</td>
 	</tr>
 	<tr>
-		<td class="even">{tr}Description:{/tr}</td>
-		<td class="even">{$nl_info.description|escape|nl2br}</td>
+		<td class="even">{tr}Description{/tr}:</td>
+		<td class="even">{$nl_info.description}</td>
 	</tr>
 </table>
 
@@ -29,7 +29,7 @@
 	<input type="hidden" name="nlId" value="{$nlId|escape}" />
 	<table class="normal">
 		<tr>
-			<td class="formcolor" width="30%">{tr}Email:{/tr}</td>
+			<td class="formcolor" width="30%">{tr}Email{/tr}:</td>
 			<td colspan="2" class="formcolor">
 				<textarea cols="70" rows="6" wrap="soft" name="email"></textarea>
 				<br />
@@ -37,7 +37,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="formcolor">{tr}User:{/tr}</td>
+			<td class="formcolor">{tr}User{/tr}:</td>
 			<td class="formcolor">
 				<select name="subuser">
 					<option value="">---</option>
@@ -64,11 +64,11 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="formcolor">{tr}All users:{/tr}</td>
+			<td class="formcolor">{tr}All users{/tr}:</td>
 			<td class="formcolor"><input type="checkbox" name="addall" /></td>
 		</tr>
 		<tr>
-			<td class="formcolor">{tr}Group users:{/tr}</td>
+			<td class="formcolor">{tr}Group users{/tr}:</td>
 			<td class="formcolor">
 				<select name="group">
 					<option value="">---</option>
@@ -111,21 +111,13 @@
 		<input type="hidden" name="nlId" value="{$nlId|escape}" /> 	 
 		<table class="normal"> 	 
 			<tr>
-				<td class="formcolor" width="30%">{tr}File:{/tr}</td>
+				<td class="formcolor" width="30%">{tr}File{/tr}:</td>
 				<td class="formcolor" colspan="2">
 					<input type="file" name="batch_subscription" />
 					<br />
 					<i>{tr}txt file, one e-mail per line{/tr}</i>
 				</td>
 			</tr> 	 
-			{if $nl_info.validateAddr eq "y"}
-				<td class="formcolor" width="30%">
-					{tr}Don't send confirmation mails{/tr}
-				</td>
-				<td colspan="2" class="formcolor">
-					<input type="checkbox" name="confirmEmail" />
-				</td>
-			{/if}
 			<tr>
 				<td class="formcolor">&nbsp;</td>
 				<td class="formcolor" colspan="2">
@@ -133,38 +125,7 @@
 				</td>
 			</tr> 	 
 		</table> 	 
-	</form>
-	<h2>{tr}Batch subscribe from wiki page{/tr}</h2>
-	<form action="tiki-admin_newsletter_subscriptions.php" method="post">
-		<input type="hidden" name="nlId" value="{$nlId|escape}" /> 
-		<table class="normal">
-			<tr>
-				<td class="formcolor" width="30%">Wiki page</td>
-				<td class="formcolor" colspan="2">
-					<input type="text" name="wikiPageName" value=""  />
-					<br />
-					<i>{tr}Wiki page, one e-mail per line{/tr}</i>
-				</td>
-			</tr>
-			{if $nl_info.validateAddr eq "y"}
-				<tr>
-					<td class="formcolor" width="30%">
-						{tr}Don't send confirmation mails{/tr}
-					</td>
-					<td colspan="2" class="formcolor">
-						<input type="checkbox" name="confirmEmail" />
-					</td>
-				</tr>
-			{/if}
-			<tr>
-				<td class="formcolor" width="30%">&nbsp;</td>
-				<td class="formcolor" colspan="2">
-					<input type="submit" name="importPage" value="Add" width="30" />
-				</td>
-			</tr>
-		</table>
-	</form>
-		 
+	</form> 	 
 {/if}
 
 <h2>{tr}Export Subscriber Emails{/tr}</h2>
@@ -185,7 +146,7 @@
 	<input type="hidden" name="nlId" value="{$nlId|escape}" />
 	<table class="normal">
 		<tr>
-			<td class="formcolor" width="30%">{tr}Group:{/tr}</td>
+			<td class="formcolor" width="30%">{tr}Group{/tr}:</td>
 			<td class="formcolor" colspan="2">
 				<select name="group">
 					<option value="">---</option>
@@ -209,7 +170,7 @@
 	<input type="hidden" name="nlId" value="{$nlId|escape}" />
 	<table class="normal">
 		<tr>
-			<td class="formcolor" width="30%">{tr}Newsletter:{/tr}</td>
+			<td class="formcolor" width="30%">{tr}Newsletter{/tr}:</td>
 			<td class="formcolor" colspan="2">
 				<select name="included">
 					<option value="">---</option>
@@ -231,44 +192,6 @@
 	</table>
 </form>
 
-<h2>{tr}Subscribe wiki page{/tr}</h2>
-<form action="tiki-admin_newsletter_subscriptions.php" method="post">
-	<input type="hidden" name="nlId" value="{$nlId|escape}" /> 
-	<table class="normal">
-		<tr>
-			<td class="formcolor" width="30%">Wiki page</td>
-			<td class="formcolor" colspan="2">
-				<input type="text" name="wikiPageName" value=""  />
-				<br />
-				<i>{tr}Wiki page which will be added at each newsletter sending, one e-mail per line{/tr}</i>
-				{jq}$jq("input[name=wikiPageName]").tiki("autocomplete", "pagename");{/jq}
-			</td>
-		</tr>
-		<tr>
-			<td class="formcolor" width="30%">
-				{tr}Don't send confirmation mails{/tr}
-			</td>
-			<td colspan="2" class="formcolor">
-				<input type="checkbox" name="noConfirmEmail" checked="checked" />
-			</td>
-		</tr>
-		<tr>
-			<td class="formcolor" width="30%">
-				{tr}Don't subscribe emails{/tr}
-			</td>
-			<td colspan="2" class="formcolor">
-				<input type="checkbox" name="noSubscribeEmail" checked="checked" />
-			</td>
-		</tr>
-		<tr>
-			<td class="formcolor" width="30%">&nbsp;</td>
-			<td class="formcolor" colspan="2">
-				<input type="submit" name="addPage" value="Add" width="30" />
-			</td>
-		</tr>
-	</table>
-</form>
-
 <h2>{tr}Subscriptions{/tr}</h2>
 {* groups------------------------------------ *}
 {if $nb_groups > 0}
@@ -285,7 +208,6 @@
 				<td class="{cycle advance=false}">{$groups_g[ix].groupName|escape}</td>
 				<td class="{cycle}">
 					<a class="link" href="tiki-admin_newsletter_subscriptions.php?nlId={$nlId|urlencode}&amp;offset={$offset|urlencode}&amp;sort_mode={$sort_mode|urlencode}&amp;remove={$groups_g[ix].nlId|urlencode}&amp;group={$groups_g[ix].groupName|urlencode}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a>
-				</td>
 			</tr>
 		{/section}
 	</table>
@@ -316,30 +238,6 @@
 {/if}
 {* /included------------------------------------ *}
 
-{* pages------------------------------------ *}
-{if $nb_pages > 0}
-	<table class="normal">
-		<tr>
-			<th>{tr}Wiki Page Name{/tr}</th>
-			<th>{tr}Validate Addresses{/tr}</th>
-			<th>{tr}Add To List{/tr}</th>
-			<th>{tr}Action{/tr}</th>
-		</tr>
-		{cycle values="odd,even" print=false}
-		{section name=ix loop=$pages}
-			<tr>
-				<td class="{cycle advance=false}"><a href="{$pages[ix].wikiPageName|sefurl}">{$pages[ix].wikiPageName|escape}</a></td>
-				<td class="{cycle advance=false}">{$pages[ix].validateAddrs|escape}</td>
-				<td class="{cycle advance=false}">{$pages[ix].addToList|escape}</td>
-				<td class="{cycle}">
-					<a class="link" href="tiki-admin_newsletter_subscriptions.php?nlId={$nlId|urlencode}&amp;remove={$pages[ix].nlId|urlencode}&amp;page={$pages[ix].wikiPageName|urlencode}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a>
-				</td>
-			</tr>
-		{/section}
-	</table>
-{/if}
-{* /pages------------------------------------ *}
-
 {include file='find.tpl'}
 
 <table class="normal">
@@ -359,7 +257,7 @@
 	{section name=user loop=$channels}
 		<tr>
 			<td class="{cycle advance=false}">
-				{if $channels[user].isUser == "y"}{$channels[user].email|userlink}{else}{$channels[user].email|escape}{/if}
+				{if $channels[user].isUser == "y"}{$channels[user].email|escape|userlink}{else}{$channels[user].email|escape}{/if}
 			</td>
 			<td class="{cycle advance=false}">
 				{if $channels[user].valid == "n"}

@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,8 +6,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class TagLineLib extends TikiLib
-{
+class TagLineLib extends TikiLib {
+	function TagLineLib($db) {
+		$this->TikiLib($db);
+	}
 
 	function list_cookies($offset, $maxRecords, $sort_mode, $find) {
 		if ($find) {
@@ -22,7 +19,7 @@ class TagLineLib extends TikiLib
 			$mid = "";
 			$bindvars = array();
 		}
-		$query = "select * from `tiki_cookies` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_cookies` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_cookies` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -73,4 +70,7 @@ class TagLineLib extends TikiLib
 		$result = $this->query($query,array());
 	}
 }
-$taglinelib = new TagLineLib;
+global $dbTiki;
+$taglinelib = new TagLineLib($dbTiki);
+
+?>

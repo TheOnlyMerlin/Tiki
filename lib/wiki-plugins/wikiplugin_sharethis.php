@@ -1,10 +1,4 @@
-<?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+﻿<?php
 /* Insert the bookmark button from ShareThis (www.sharethis.com). ShareThis account is not necessary.
 // Developed by Andrew Hafferman for Tiki CMS
 //
@@ -12,6 +6,7 @@
 //   Convert comments to WikiSyntax comments.
 // 2009-07-11 lindon
 //   Update for changes in ShareThis and fix bugs
+//
 */
 function wikiplugin_sharethis_help() {
 	return tra('Insert a ShareThis button from www.sharethis.com').":<br />~np~{SHARETHIS(sendsvcs=> , postfirst=> ,  rotateimage=> y|n, buttontext=> , headertitle=> , headerbg=> , headertxtcolor=> , linkfg=> , popup=> true|false, embed=> true|false)}{SHARETHIS} ~/np~ <br /> ";
@@ -28,31 +23,15 @@ function wikiplugin_sharethis_info() {
 				'name' => tra('Send services'),
 				'description' => tra('By default, email, aim and sms are available. Input one or two of the services separated by a | to limit the choice of send services.'),
 			),
-			'style' => array(
+			'postfirst' => array(
 				'required' => false,
-				'name' => tra('Button style'),
-				'description' => tra('Horizontal, vertical or rotate.'),
-				'options' => array(
-					array('text' => tra('None'), 'value' => ''), 
-					array('text' => tra('Horizontal'), 'value' => 'horizontal'), 
-					array('text' => tra('Vertical'), 'value' => 'vertical'), 
-					array('text' => tra('Rotate'), 'value' => 'rotate'), 
-					),
+				'name' => tra('First post services shown'),
+				'description' => tra('Input a list of post services (like facebook, myspace, digg, etc.) separated by a | to customize the services that are shown in the opening panel of the widget.'),
 			),
 			'rotateimage' => array(
 				'required' => false,
 				'name' => tra('Rotate image'),
 				'description' => tra('A value of y will cause the button icon to rotate every 3 seconds between a few icons, cycling through twice before stopping.'),
-			),
-			'multiple' => array(
-				'required' => false,
-				'name' => tra('Multiple icons'),
-				'description' => tra('Enter list: email | facebook | twitter | sharethis, depending on which icons you\'d like.'),
-			),
-			'postfirst' => array(
-				'required' => false,
-				'name' => tra('First post services shown'),
-				'description' => tra('Input a list of post services (like facebook, myspace, digg, etc.) separated by a | to customize the services that are shown in the opening panel of the widget.'),
 			),
 			'buttontext' => array(
 				'required' => false,
@@ -116,66 +95,35 @@ function wikiplugin_sharethis($data, $params) {
 	// load setting options from $params
 
 	// set post services that appear upon widget opening
-	if(!empty($postfirst))
+	if($postfirst)
 	{
 		$sharethis_options['postfirst'] = str_replace('|',$comma,$postfirst);
 	}
 	// limit send services that will appear
-	if(!empty($sendsvcs))
+	if($sendsvcs)
 	{
 		$sharethis_options['sendsvcs'] = str_replace('|',$comma,$sendsvcs);
 	}
 	// set icon style
-	if(!empty($rotateimage) || !empty($style)) {
-		if ($rotateimage == 'y' || $style == 'rotate') {
+	if($rotateimage)
+	{
+		if($rotateimage == 'y'){
 			$sharethis_options['style'] = 'rotate';
-		} elseif ($style == 'horizontal') {
-			$sharethis_options['style'] = 'horizontal';
-		} elseif ($style == 'vertical') {
-			$sharethis_options['style'] = 'vertical';
 		}
 	}
-	if (!empty($multiple)) {
-		$iconcode = '<style type="text/css">
-					body {font-family:helvetica,sans-serif;font-size:12px;}
-					a.stbar.chicklet img {border:0;height:16px;width:16px;margin-right:3px;vertical-align:middle;}
-					a.stbar.chicklet {height:16px;line-height:16px;}
-					</style>';
-		$icons = explode('|',$multiple);
-		foreach ($icons as $icon) {
-			$iconcode .= '<a id="ck_' . $icon . '" class="stbar chicklet" href="javascript:void(0);">' 
-							. '<img src="http://w.sharethis.com/chicklets/' . $icon . '.gif" style="margin-right:3px;" />';
-			if ($icon == 'sharethis') {
-				$iconcode .= 'ShareThis';
-			}
-			$iconcode .= '</a>'; 
-		}
-		$iconcode .= '<script type="text/javascript">
-						var shared_object = SHARETHIS.addEntry({
-						title: document.title,
-						url: document.location.href
-					});
-					
-					shared_object.attachButton(document.getElementById("ck_sharethis"));
-					shared_object.attachChicklet("email", document.getElementById("ck_email"));
-					shared_object.attachChicklet("facebook", document.getElementById("ck_facebook"));
-					shared_object.attachChicklet("twitter", document.getElementById("ck_twitter"));
-					</script>';
-	}
-	
 	// set button text
-	if(!empty($buttontext))
+	if($buttontext)
 	{
 		$sharethis_options['buttontext'] = $buttontext;
 	}
 	// set header title text. If header title is set by user, then set background color and text color
-	if(!empty($headertitle))
+	if($headertitle)
 	{
 		$sharethis_options['headertitle'] = str_replace(' ',$sp,$headertitle);
-			if(!empty($headerbg)) {
+			if($headerbg) {
 			$sharethis_options['headerbg'] = $headerbg;
 			}
-			if(!empty($headertxtcolor)) {
+			if($headertxtcolor) {
 			$sharethis_options['headertxtcolor'] = $headertxtcolor;
 			}
 		} else {
@@ -183,17 +131,17 @@ function wikiplugin_sharethis($data, $params) {
 			$sharethis_options['headertxtcolor'] = '';
 		}
 	// set link text color for services shown in popup
-	if(!empty($linkfg))
+	if($linkfg)
 	{
 		$sharethis_options['linkfg'] = $linkfg;
 	}
 	// set popup
-	if(!empty($popup))
+	if($popup)
 	{
 		$sharethis_options['popup'] = $popup;
 	}
 	// set embed
-	if(!empty($embed))
+	if($embed)
 	{
 		$sharethis_options['embed'] = $embed;
 	}
@@ -214,9 +162,8 @@ function wikiplugin_sharethis($data, $params) {
 	if(!empty($sharethis_options['headerbg'])) $sharethiscode .= $sep."headerbg=".$lb.$sharethis_options['headerbg'];	
 	if(!empty($sharethis_options['linkfg'])) $sharethiscode .= $sep."linkfg=".$lb.$sharethis_options['linkfg'];
 	if(!empty($sharethis_options['headertitle'])) $sharethiscode .= $sep."headerTitle=".$sharethis_options['headertitle'];
-	if(!empty($iconcode)) $sharethiscode .= ';button=false';
-	$sharethiscode .= "\"></script>\n";
-	if(!empty($iconcode)) $sharethiscode .= $iconcode;	
+
+	$sharethiscode .= "\"></script>";
 	$sharethiscode .= "~hc~ ))ShareThis(( Bookmark Button END ~/hc~";
 
 $result = $sharethiscode;

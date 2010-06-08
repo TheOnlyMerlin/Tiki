@@ -1,10 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-
 // Displays an attachment or a list of attachments
 // Currently works with wiki pages and tracker items.
 // Parameters:
@@ -31,7 +26,7 @@ function wikiplugin_attach_help() {
 	$help .= "<br />";
 	$help .= "image =>" . tra("Says that this file is an image, and should be displayed inline using the img tag");
 	$help .= "<br />";
-	$help .= "inline =>" . tra("Makes the text between the {ATTACH} tags the link text instead of the file name or description");
+	$help .= "inline =>" . tra("Puts the stuff between {ATTACH} tags as the link text instead of the file name or description");
 	$help .= "<br />";
 	$help .= "all => " . tra("Shows all attachments from the whole wiki");
 	$help .= "<br />";
@@ -87,7 +82,7 @@ function wikiplugin_attach_info() {
 			'inline' =>array(
 				'required' => false,
 				'name' => tra('Inline'),
-				'description' => tra("Makes the text between the {ATTACH} tags the link text instead of the file name or description"),
+				'description' => tra("Puts the stuff between {ATTACH} tags as the link text instead of the file name or description"),
 			),
 			'all' => array(
 				'required' => false,
@@ -122,9 +117,10 @@ function wikiplugin_attach_info() {
 function wikiplugin_attach($data, $params) {
 	global $atts;
 	global $mimeextensions;
-	global $wikilib; include_once('lib/wiki/wikilib.php');
+	global $wikilib;
 	global $tikilib;
-	global $user, $section;
+	global $user;
+	include_once('lib/wiki/wikilib.php');
 
 	extract ($params,EXTR_SKIP);
 
@@ -136,8 +132,7 @@ function wikiplugin_attach($data, $params) {
 		// We're being called from a preview or something; try to build the atts ourselves.
 
 		// See if we're being called from a tracker page.
-		if( $section == 'trackers' ) {
-			global $trklib; include_once('lib/trackers/trackerlib.php');
+		if( strstr( $_SERVER['SCRIPT_NAME'], "tiki-view_tracker_item.php" ) ) {
 			$atts_item_name = $_REQUEST["itemId"];
 			$tracker_info = $trklib->get_tracker($atts_item_name);
 			$tracker_info = array_merge($tracker_info,$trklib->get_tracker_options($atts_item_name));
@@ -148,13 +143,13 @@ function wikiplugin_attach($data, $params) {
 				$attextra = 'y';
 			}
 
-			$attfields = explode(',',strtok($tracker_info["orderAttachments"],'|'));
+			$attfields = split(',',strtok($tracker_info["orderAttachments"],'|'));
 
 			$atts = $trklib->list_item_attachments($atts_item_name, 0, -1, 'comment_asc', '');
 		}
 
 		// See if we're being called from a wiki page.
-		if( $section == 'wiki page' ) {
+		if( strstr( $_SERVER['SCRIPT_NAME'], 'tiki-index.php' ) || strstr( $_SERVER['SCRIPT_NAME'], "tiki-editpage.php" ) || strstr( $_SERVER['SCRIPT_NAME'], 'tiki-pagehistory.php') ) {
 			$atts_item_name = $_REQUEST["page"];
 			$atts = $wikilib->list_wiki_attachments($atts_item_name,0,-1,'created_desc','');
 		}
@@ -164,12 +159,16 @@ function wikiplugin_attach($data, $params) {
 	$old_atts = $atts;
 	$url = '';
 
+	if( !empty( $page ) ) {
+		if($tikilib->user_has_perm_on_object($user,$page,'wiki page','tiki_p_wiki_view_attachments') || $tikilib->user_has_perm_on_object($user, $_REQUEST['page'], 'wiki page', 'tiki_p_wiki_admin_attachments')) {
+			$atts = $wikilib->list_wiki_attachments($page,0,-1,'created_desc','');
+			$url = "&amp;page=$page";
+		}
+	}
+
 	if (isset($all)) {
 		$atts = $wikilib->list_all_attachements(0,-1,'page_asc','');
 	} elseif (!empty($page)) {
-		if (!$tikilib->page_exists($page)) {
-			return "''".tr('Page "%0" does not exist', $page)."''";
-		}
 		if($tikilib->user_has_perm_on_object($user,$page,'wiki page','tiki_p_wiki_view_attachments') || $tikilib->user_has_perm_on_object($user, $_REQUEST['page'], 'wiki page', 'tiki_p_wiki_admin_attachments')) {
 			$atts = $wikilib->list_wiki_attachments($page,0,-1,'created_desc','');
 			$url = "&amp;page=$page";
@@ -256,14 +255,14 @@ function wikiplugin_attach($data, $params) {
 					require("lib/mime/mimeextensions.php");
 				}
 				$ext = $atts['data'][$n]['filetype'];
-				if (isset($mimeextensions["$ext"]) and (is_file("pics/icons/mime/".$mimeextensions["$ext"].".png"))) {
-					$link.= '<img src="pics/icons/mime/'.$mimeextensions["$ext"].'.png" />&nbsp;';
+				if (isset($mimeextensions["$ext"]) and (is_file("img/icn/".$mimeextensions["$ext"].".gif"))) {
+					$link.= '<img src="img/icn/'.$mimeextensions["$ext"].'.gif" border="0" />&nbsp;';
 				} else {
 					$string = strtolower(substr($atts['data'][$n]['filename'], strlen($atts['data'][$n]['filename'])-3));
-					if (is_file("pics/icons/mime/".$string.".png"))
-						$link.= '<img src="pics/icons/mime/'.$string.'.png" />&nbsp;';
+					if (is_file("img/icn/".$string.".gif"))
+						$link.= '<img src="img/icn/'.$string.'.gif" border="0" />&nbsp;';
 					else
-						$link.= '<img src="pics/icons/mime/default.png" />&nbsp;';
+						$link.= '<img src="img/icn/else.gif" border="0" />&nbsp;';
 				}
 			}
 
@@ -320,3 +319,5 @@ function wikiplugin_attach($data, $params) {
 
 	return '~np~'.$data.'~/np~';
 }
+
+?>

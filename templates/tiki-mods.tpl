@@ -18,7 +18,7 @@
 {remarksbox type="note" title="{tr}Note{/tr}"}
 	<p><strong>{tr}Tiki "mods" are undergoing refurbishment.{/tr}</strong></p>
 	<p>{tr}You will probably some find mods shown as being compatible with older versions of Tiki will work with later versions with little or no modification.{/tr}</p>
-	<p><em>{tr}Your help is needed! Please visit <a href="http://dev.tikiwiki.org/Mods">dev.tikiwiki.org</a> to find out more.{/tr}</em></p>
+	<p><em>{tr}Your help is needed! Please visit <a href="http://dev.tikiwiki.org/tiki-index.php?page=Mods">dev.tikiwiki.org</a> to find out more.{/tr}</em></p>
 {/remarksbox}
 
 {if $iswritable}
@@ -130,14 +130,16 @@
 		{elseif $installask.wantedtoremove}
 			<input type='submit' id='button_install' name='button-remove' value='{tr}Remove{/tr}'{if $installask.unavailable} style='display: none;'{/if} />
 		{/if}
-{jq}
+		{literal}<script type="text/javascript">
+<!--//--><![CDATA[//><!--
 function update_button_install() {
 	var button=document.getElementById('button_install');
 	button.name='button-check';
 	button.value='Check again';
 	button.style.display='';
 }
-{/jq}
+//--><!]]>
+		</script>{/literal}
 	</div>
 </form>
 {/if}
@@ -164,7 +166,7 @@ function update_button_install() {
 		</select>
 		{tr}for version{/tr}
 		<select name="version" onchange="this.form.submit();">
-			<option value="">{tr}All versions{/tr}</option>
+			<option value="">{tr}all versions{/tr}</option>
 			{foreach key=it item=i from=$versions}
 				<option value="{$i|escape}"{if $i eq $version} selected="selected"{/if}>{$it}</option>
 			{/foreach}

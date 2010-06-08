@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 // Centers the plugin content in the wiki page
 // Usage
@@ -21,7 +16,6 @@ function wikiplugin_center_info() {
 		'description' => tra("Centers the plugin content in the wiki page"),
 		'prefs' => array('wikiplugin_center'),
 		'body' => tra('text'),
-		'icon' => 'pics/icons/text_align_center.png',
 		'params' => array(
 		),
 	);
@@ -34,3 +28,5 @@ function wikiplugin_center($data, $params) {
 	$data = '<div align="center">' . trim($data). '</div>';
 	return $data;
 }
+
+?>

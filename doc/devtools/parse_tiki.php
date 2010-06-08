@@ -1,9 +1,4 @@
-<?php 
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+<?php // $Id$
 
 // heaviled modified get_strings.php
 // dedicated as a tool for use in an eventual test suite
@@ -28,7 +23,7 @@ function collect($dir) {
 		foreach ($list as $l) {
 			// if (count($dirs) > 20) return true;
 			if (strstr($l,'/')) {
-				$s = explode('/',rtrim($l));
+				$s = split('/',rtrim($l));
 				$filepath = $dir.'/'.$s[1];
 				if ($s[0] == 'D') {
 					collect($filepath);

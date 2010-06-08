@@ -1,3 +1,4 @@
+{* start ************ Edit Form ***************}
 <form action="tiki-user_tasks.php" method="post">
 
 <input type="hidden" name="taskId" value="{$taskId|escape}" />
@@ -11,7 +12,7 @@
 <input type="hidden" name="creator" value="{$info.creator|escape}" />
 {if ($tiki_view_mode eq 'view')}
  <span class="tabbut">
-    <a href="tiki-user_tasks.php?taskId={$taskId}&amp;tiki_view_mode=edit" class="tablink">{tr}Edit Task{/tr}</a>
+    <a href="tiki-user_tasks.php?taskId={$taskId}&amp;tiki_view_mode=edit" class="tablink">{tr}Edit task{/tr}</a>
     </span>
 
 {/if}
@@ -91,15 +92,15 @@
 			{if ($receive_users)} 
 				<select name="task_user" {if ($info.taskId > 0 and !$admin_mode) } disabled="disabled" > <option value="{$info.user}">{$info.user}</option></select><input type="hidden" name="task_user" value="{$info.user}" />{else}>
 				{section name=user_i loop=$receive_users} 
-					<option value="{$receive_users[user_i].login|escape}" 
+					<option value="{$receive_users[user_i].login}" 
 						{if ( $receive_users[user_i].login eq $info.user) } selected="selected" {/if}>
-							{$receive_users[user_i].login|escape}
+							{$receive_users[user_i].login}
 					</option>
 				{/section}
 				</select>
 				{/if}
 			{else}
-			<input type="text" name="task_user" value="{$info.user|escape}" />
+			<input  type="text" name="task_user" value="{$info.user|escape}" />
 			{/if}
 			{if (($info.user ne $info.creator) or ($taskId eq 0)) } 
 				&nbsp;
@@ -117,9 +118,15 @@
     </tr>
     <tr>
       <td class="formcolor">{tr}Description{/tr}<br /><br />
+        {include file="textareasize.tpl" area_name='edittask' formId='editpageform'}<br /><br /> 
+        {if $quicktags and $prefs.quicktags_over_textarea neq 'y'}
+          {include file=tiki-edit_help_tool.tpl area_name='description'}
+        {/if}
       </td>
       <td colspan="3" class="formcolor">
-        {toolbars area_name='description'}
+        {if $quicktags and $prefs.quicktags_over_textarea eq 'y'}
+          {include file=tiki-edit_help_tool.tpl area_name='description'}
+        {/if}
         <textarea id='edittask' style="width:98%;" rows="15" cols="80" name="description">{$info.description|escape}</textarea>
       </td>
     </tr>
@@ -181,9 +188,9 @@
 		<select name="public_for_group">
 			<option></option>
 		{section name=groups_i loop=$receive_groups} 
-			<option value="{$receive_groups[groups_i].groupName|escape}" 
+			<option value="{$receive_groups[groups_i].groupName}" 
 				{if ( $receive_groups[groups_i].groupName eq $info.public_for_group) } selected="selected" {/if}>
-					{$receive_groups[groups_i].groupName|escape}
+					{$receive_groups[groups_i].groupName}
 			</option>
 		{/section}
 		</select>
@@ -257,3 +264,7 @@
   </tr>
 </table>
 </form>
+
+{include file=tiki-edit_help.tpl}
+{* end ************ Edit Form ***************}
+

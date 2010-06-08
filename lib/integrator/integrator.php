@@ -1,12 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /** \file
+ * $Id: /cvsroot/tikiwiki/tiki/lib/integrator/integrator.php,v 1.33.2.1 2008-03-16 01:00:38 nyloth Exp $
+ * 
  * \brief Tiki integrator support class
+ *
  */
 
 //this script may only be included - so its better to die if called directly.
@@ -311,7 +308,7 @@ function add_replace_repository($repID, $name, $path, $start, $css, $vis, $cache
             return $data["data"];
 
         // Get file content to string
-        if ( preg_match('#^https?://#', $file) ) {
+        if ( ereg('^https?://', $file) ) {
 		$data = $tikilib->httprequest($file);
 	} else {
 		$data = @file_get_contents($file);
@@ -349,3 +346,5 @@ function add_replace_repository($repID, $name, $path, $start, $css, $vis, $cache
             array($tikilib->httpPrefix()."/%integrator%.php?repID=".$repID.(strlen($file) > 0 ? "&file=".$file : '')));
     }
 }
+
+?>

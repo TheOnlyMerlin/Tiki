@@ -1,11 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-require_once 'lib/graph-engine/core.php';
+require_once 'graph-engine/core.php';
 
 class PieChartGraphic extends Graphic // {{{1
 {
@@ -92,3 +86,4 @@ class PieChartGraphic extends Graphic // {{{1
 		) );
 	}
 } // }}}1
+?>

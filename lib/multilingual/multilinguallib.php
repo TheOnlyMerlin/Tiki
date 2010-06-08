@@ -1,25 +1,16 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-class MultilingualLib extends TikiLib
-{
+class MultilingualLib extends TikiLib {
 	/** brief add a translation
 	  */
-	  
-	private $tracesOn = false;
-	  
-	public $mtEnabled = 'y';
-	  
+	function MultilingualLib($db) {
+		parent::TikiLib($db);
+	}
 	/* @brief add an object and its transaltion set into the set of translations of another one
 	 * @param: type = (idem tiki_categ) 'wiki page'...
 	 * @param: srcId = id of the source
@@ -33,9 +24,10 @@ class MultilingualLib extends TikiLib
 		if ($type == 'wiki page' && $prefs['feature_wikiapproval'] == 'y') {
 			$srcPageName = $this->get_page_name_from_id($srcId);
 			$objPageName = $this->get_page_name_from_id($objId);
-			if ( ($stagingSrc = $this->get_staging_page( $srcPageName )) && ($stagingObj = $this->get_staging_page( $objPageName )) ) {
-				$srcStagingPageName = $stagingSrc;
-				$objStagingPageName = $stagingObj;
+			if (substr($srcPageName, 0, strlen($prefs['wikiapproval_prefix'])) != $prefs['wikiapproval_prefix']
+				&& substr($objPageName, 0, strlen($prefs['wikiapproval_prefix'])) != $prefs['wikiapproval_prefix']) {
+				$srcStagingPageName = $prefs['wikiapproval_prefix'] . $srcPageName;
+				$objStagingPageName = $prefs['wikiapproval_prefix'] . $objPageName;
 				if ($this->page_exists($srcStagingPageName) && $this->page_exists($objStagingPageName)) {
 					$this->insertTranslation($type, $this->get_page_id_from_name($srcStagingPageName), $srcLang, $this->get_page_id_from_name($objStagingPageName), $objLang);
 				}
@@ -91,9 +83,10 @@ class MultilingualLib extends TikiLib
 		if ($type == 'wiki page' && $prefs['feature_wikiapproval'] == 'y') {
 			$srcPageName = $this->get_page_name_from_id($srcId);
 			$objPageName = $this->get_page_name_from_id($objId);
-			if ( ($stagingSrc = $this->get_staging_page( $srcPageName )) && ($stagingObj = $this->get_staging_page( $objPageName )) ) {
-				$srcStagingPageName = $stagingSrc;
-				$objStagingPageName = $stagingObj;
+			if (substr($srcPageName, 0, strlen($prefs['wikiapproval_prefix'])) != $prefs['wikiapproval_prefix']
+				&& substr($objPageName, 0, strlen($prefs['wikiapproval_prefix'])) != $prefs['wikiapproval_prefix']) {
+				$srcStagingPageName = $prefs['wikiapproval_prefix'] . $srcPageName;
+				$objStagingPageName = $prefs['wikiapproval_prefix'] . $objPageName;
 				if ($this->page_exists($srcStagingPageName) && $this->page_exists($objStagingPageName)) {
 					$this->updateTranslation($type, $this->get_page_id_from_name($srcStagingPageName), $this->get_page_id_from_name($objStagingPageName), $objLang);
 				}
@@ -129,7 +122,7 @@ class MultilingualLib extends TikiLib
 	 */
 	function getTranslations($type, $objId, $objName='', $objLang='', $long=false) {
 		if ($type == 'wiki page') {
-			$query = "select t2.`objId`, t2.`lang`, p.`pageName`as `objName` from `tiki_translated_objects` as t1, `tiki_translated_objects` as t2 LEFT JOIN `tiki_pages` p ON p.`page_id`= t2.`objId` where t1.`traId`=t2.`traId` and t2.`objId`!= t1.`objId` and t1.`type`=? and  t1.`objId`=?";
+			$query = "select t2.`objId`, t2.`lang`, p.`pageName`as `objName` from `tiki_translated_objects` as t1, `tiki_translated_objects` as t2 LEFT JOIN `tiki_pages` p ON p.`page_id`=t2.`objId` where t1.`traId`=t2.`traId` and t2.`objId`!= t1.`objId` and t1.`type`=? and  t1.`objId`=?";
 		}
 		elseif ($long) {
 			$query = "select t2.`objId`, t2.`lang`, a.`title` as `objName` from `tiki_translated_objects` as t1, `tiki_translated_objects` as t2, `tiki_articles` as a where t1.`traId`=t2.`traId` and t2.`objId`!= t1.`objId` and t1.`type`=? and  t1.`objId`=? and a.`articleId`=t2.`objId`";
@@ -192,8 +185,8 @@ class MultilingualLib extends TikiLib
 		global $prefs;
 		if ($type == 'wiki page' && $prefs['feature_wikiapproval'] == 'y') {			
 			$objPageName = $this->get_page_name_from_id($objId);
-			if ( $stagingObj = $this->get_staging_page( $objPageName ) ) {
-				$objStagingPageName = $stagingObj;
+			if (substr($objPageName, 0, strlen($prefs['wikiapproval_prefix'])) != $prefs['wikiapproval_prefix']) {				
+				$objStagingPageName = $prefs['wikiapproval_prefix'] . $objPageName;
 				if ($this->page_exists($objStagingPageName)) {
 					$this->detachTranslation($type, $this->get_page_id_from_name($objStagingPageName));
 				}
@@ -225,10 +218,10 @@ class MultilingualLib extends TikiLib
         }
 
 
-	/* @brief : returns an ordered list of preferred languages
+	/* @brief : returns an ordered list of prefered languages
 	 * @param $langContext: optional the language the user comes from
 	 */
-	function preferredLangs($langContext = null,$include_browser_lang=TRUE) {
+	function preferedLangs($langContext = null,$include_browser_lang=TRUE) {
 		global $user, $prefs, $tikilib;
 		$langs = array();
 
@@ -247,6 +240,7 @@ class MultilingualLib extends TikiLib
 
 		if (isset($prefs['read_language'])) {
 			$tok = strtok($prefs['read_language'], ' ');
+
 			while (false !== $tok) {
 				if (!in_array($tok, $langs) )
 					$langs[] = $tok;
@@ -277,19 +271,12 @@ class MultilingualLib extends TikiLib
 			if (!in_array($l, $langs))
 				$langs[] = $l;
 		}
-
-		if( $prefs['available_languages'] && $prefs['language_inclusion_threshold'] >= count($prefs['available_languages']) ) {
-			foreach( array_diff( $prefs['available_languages'], $langs ) as $lang ) {
-				$langs[] = $lang;
-			}
-		}
-
 		return $langs;	
 	}
 	/* @brief : return the root language ex: en-uk returns en
 	 */
 	function rootLang($lang) {
-		return preg_replace("/(.*)-(.*)/", '$1', $lang);
+		return ereg_replace("(.*)-(.*)", "\\1", $lang);
 	}
 
 	/* @brief : fitler a list of object to have only one objet in the set of translations with the best language
@@ -297,7 +284,8 @@ class MultilingualLib extends TikiLib
 	function selectLangList($type, $listObjs, $langContext = null) {
 		if (!$listObjs || count($listObjs) <= 1)
 			return $listObjs;
-		$langs = $this->preferredLangs($langContext);
+		$langs = $this->preferedLangs($langContext);
+//echo "<pre>";print_r($langs);echo "</pre>";
 		$max = count($listObjs);
 		for ($i = 0; $i < $max; ++$i) {
 			if (!isset($listObjs[$i]) || !isset($listObjs[$i]['lang']))
@@ -354,7 +342,7 @@ class MultilingualLib extends TikiLib
 		$trads = $this->getTrads($type, $objId);
 		if (!$trads)
 			return $objId;
-		$langs = $this->preferredLangs($langContext);
+		$langs = $this->preferedLangs($langContext);
 		foreach ($langs as $l) {
 			foreach ($trads as $trad) {
 				if ($trad['lang'] == $l)
@@ -363,71 +351,14 @@ class MultilingualLib extends TikiLib
 		}
 		return $objId;
 	}
+	function getInteractiveTag($content){
+		
+		if (!isset($_SESSION['interactive_translation_mode'])||($_SESSION['interactive_translation_mode']=='off')|| (strlen($content)<2) )
+			return "";
 
-	/*
-	 * Determine if the best language should be used for an object, based on request and preference parameters,
-	 */
-	function useBestLanguage() {
-		/*
-		 * Indicates whether or not content should be displayed in the user's preferred language
-		 * (as expressed in either its Tiki or browser language preferences).
-		 */
-		global $prefs, $_REQUEST;
-		
-		if ($prefs['feature_multilingual'] == 'n') {
-			return false;
-		}
-		if ($prefs['feature_best_language'] == 'n' && !isset($_REQUEST['bl'])) {
-			// If bl is explicitly set then for backward compatibility reasons let through even if feature is off.
-		    return false;
-		} 
-		
-		if (isset($_REQUEST['no_bl']) && $_REQUEST['no_bl'] == 'y') {
-			return false; // no_bl is the new flag which has to be specified as y to have any effect
-		}
-		
-		// The following checks below maintained for backward compatibility
-		if (isset($_REQUEST['best_lang'])  && $_REQUEST['best_lang'] != 'y') {
-			return false; // the old best_lang check was default no, if present without y specified
-		}
-		
-		if (isset($_REQUEST['bl'])  && $_REQUEST['bl'] == 'n') {
-			return false; // the old bl check was default yes once present
-		}
-
-		/*
-		 * Alain D�silets (2010-01-12):
-		 * 
-		 *  There is also a bl= argument, but it seems too be used very inconsistenly. 
-		 *  - Sometimes, the mere presence of bl (no matter its value) s interpreted as meaning
-		 *    that bBest Language should be used.
-		 *  - In other cases, we set bl=n, presumably to signifiy that Best Language should not be used.
-		 *  - Yet, in in lib/setup/language.php, there is a statement which, if unsets bl, if its value was n, so 
-		 *    not clear that all the checks for bl=n are doing anything.
-		 *  - If the purpose of bl is to indicate that Best Language is to be used (when bl is defined),
-		 *    then it's kind of weird, because Best Language cannot be used when multilingual features
-		 *    or best_languge or detec_language are inactive. Yet, when one of those is active, Best Language
-		 *    is always used, so there is no need to say that with an argument. There may be a need to 
-		 *    say that in a particular case, Best Language should NOT be used, but not to say that Best Language
-		 *    SHOULD be used.
-		 *  -- extra note by nkoth: I've cleaned this up - so all the checking is done here now.
- 		 */
-		
-		return true;
-	}
-	
-	function  setUrlNoBestLanguageArg($url, $no_bl_value) {
-		if (preg_match('/[?&]no_bl=/', $url)) {
-			$url = preg_replace('/([?&])no_bl=[yn]{0,1}/', '$1no_bl=$no_bl_value', $url);
-		} elseif (!preg_match('/[?&]lang=/', $url)) {
-			if (strstr($url, '?')) {
-				$url.= '&no_bl=$no_bl_value';
-			} else {
-				$url.= '?no_bl=$no_bl_value';
-			}
-		}
-		
-		return $url;
+		$urcontent=urlencode($content);
+		$ret= "<span  onclick=\"window.open('tiki-interactive_trans.php?content=$urcontent','traduction','toolbar=no,location=no,scrollbars=yes,directories=no,status=no,menubar=no,resizable=no,copyhistory=no,width=600,height=300,left=10,top=10');return false;\">°</span>";
+		return $ret;
 	}
 
 	function getSupportedTranslationBitFlags() {
@@ -566,16 +497,16 @@ class MultilingualLib extends TikiLib
 				bits.translation_bit_id, bits.page_id
 			FROM
 				tiki_translated_objects a
-				INNER JOIN tiki_translated_objects b ON a.`traId` = b.`traId` AND a.`objId` <> b.`objId`
-				INNER JOIN tiki_pages_translation_bits bits ON b.`objId` = bits.page_id
+				INNER JOIN tiki_translated_objects b ON a.traId = b.traId AND a.objId <> b.objId
+				INNER JOIN tiki_pages_translation_bits bits ON b.objId = bits.page_id
 				LEFT JOIN tiki_pages_translation_bits self
-					ON bits.`translation_bit_id` = self.`original_translation_bit` AND self.`page_id` = ?
+					ON bits.translation_bit_id = self.original_translation_bit AND self.page_id = ?
 			WHERE
-				a.`type` = 'wiki page'
-				AND b.`type` = 'wiki page'
-				AND a.`objId` = ?
-				AND bits.`original_translation_bit` IS NULL
-				AND self.`original_translation_bit` IS NULL
+				a.type = 'wiki page'
+				AND b.type = 'wiki page'
+				AND a.objId = ?
+				AND bits.original_translation_bit IS NULL
+				AND self.original_translation_bit IS NULL
 				AND $conditions
 		", array( $objId, $objId ) );
 
@@ -598,7 +529,7 @@ class MultilingualLib extends TikiLib
 
 		$result = $this->query( "
 			SELECT
-				`pageName` page,
+				pageName page,
 				lang,
 				" . $this->subqueryObtainUpdateVersion( 'pages.page_id', '?' ) . " last_update,
 				pages.version current_version
@@ -611,16 +542,13 @@ class MultilingualLib extends TikiLib
 		", array( $pageIdToUpdate, $translationBit, $translationBit ) );
 
 		$pages = array();
-		global $prefs;			
 		while( $row = $result->fetchRow() ) {
 			// add pagename of approved page if it is a staging page
-			if ( $approved = $this->get_approved_page( $row['page'] ) ) {
-				$row['approvedPage'] = $approved;
+			global $prefs;			
+			if ( $prefs['feature_wikiapproval'] == 'y' && substr($row['page'], 0, strlen($prefs['wikiapproval_prefix'])) == $prefs['wikiapproval_prefix'] ) {
+				$row['approvedPage'] = substr($row['page'], strlen($prefs['wikiapproval_prefix']));
 			}
-			
-			if( $prefs['feature_urgent_translation_master_only'] != 'y' || $row['lang'] == $prefs['site_language'] ) {
-				$pages[] = $row;
-			}
+			$pages[] = $row;
 		}
 
 		return $pages;
@@ -703,7 +631,7 @@ class MultilingualLib extends TikiLib
 		*/
 		return "(
 					SELECT 
-						IFNULL( IF(MIN(version) = 1, 0, MIN(version)), 0 ) - 1
+						IFNULL( IF(MIN(version) = 1, 2, MIN(version)), 2 ) - 1
 					FROM
 						tiki_pages_translation_bits
 					WHERE
@@ -718,8 +646,8 @@ class MultilingualLib extends TikiLib
 	function getBetterPages( $pageId )
 	{
 		$pageId = (int) $pageId;
-		
-		$query = "
+
+		$result = $this->query( "
 			SELECT DISTINCT
 				page.page_id,
 				page.pageName page,
@@ -740,8 +668,7 @@ class MultilingualLib extends TikiLib
 					FROM tiki_pages_translation_bits
 					WHERE page_id = b.objId
 				)
-		";
-		$result = $this->query($query, array( $pageId ) );
+		", array( $pageId ) );
 
 		$pages = array();
 		while( $row = $result->fetchRow() ) {
@@ -803,141 +730,7 @@ class MultilingualLib extends TikiLib
 		}
 		return $flags;
 	}
-	
-	function getLangOfPage($pageName) {
-		$pageInfo = $this->get_page_info($pageName);
-		$lang = $pageInfo['lang'];
-		return $lang;
-	}
-
-    function currentPageSearchLanguage() {
-       /*
-        * Returns the language to be used for a normal page find.
-        */
-       global $_REQUEST, $_SESSION;
-       $lang = '';
-       // First look in HTTP 'lang' argument
-	   if (isset($_REQUEST['lang'])) { //lang='' means all languages
-		   $lang = $_REQUEST['lang'];
-	   }
-       return $lang;   
-    }
-
-	function currentTermSearchLanguage() {
-		/*
-		* Returns the language to be used for a Term search (terminology module).
-		* 
-		*/
-		global $_REQUEST, $_SESSION;
-		
-		$lang = '';
-		if (isset($_REQUEST['term_src']) && isset($_REQUEST['lang'])) {
-			$lang = $_REQUEST['lang'];
-		} 
-		if ($lang == '' && array_key_exists('find_term_last_done_in_lang', $_SESSION)) {
-			$lang = $_SESSION['find_term_last_done_in_lang'];
-		}
-		// Remember language of this term search.
-		$this->storeCurrentTermSearchLanguageInSession($lang);
-
- 		return $lang;   
-    }
-
-    
-    function storeCurrentTermSearchLanguageInSession($lang) {
-       global $_SESSION;
-       $_SESSION['find_term_last_done_in_lang'] = $lang;
-    }
-
-    function preferredLangsInfo() {
-    
-       global $tikilib;
-
-       // Get IDs of user's preferred languages
-       $userLangIDs = $this->preferredLangs();
-   
-       // Get information about ALL languages supported by Tiki
-       $allLangsInfo = $tikilib->list_languages(false,'y');
-
-       // Create a map of language ID (ex: 'en') to language info
-       $langIDs2Info = array();
-       foreach ($allLangsInfo as $someLangInfo){
-          $langIDs2Info[$someLangInfo['value']] = $someLangInfo;
-       }
-
-       // Create list of language IDs AND names for user's preferred
-       // languages. 
-       $userLangsInfo = array();
-       $lang_index = 0;
-       foreach ($userLangIDs as $index => $someUserLangID) {
-          if ($langIDs2Info[$someUserLangID] != NULL) {
-             $userLangsInfo[$lang_index] = $langIDs2Info[$someUserLangID];
-             $lang_index++;
-           }
-       }
-       
-       return $userLangsInfo;  
-    }
-        
-	function getTemplateIDInLanguage($section, $template_name, $language) {
-		global $templateslib; require_once 'lib/templates/templateslib.php';
-		$all_templates = $templateslib->list_templates($section, 0, -1, 'name_asc', '');
-		$looking_for_templates_named = array("$template_name-$language");
-		foreach ($looking_for_templates_named as $looking_for_this_template) {
-			$looking_for_this_template = "$template_name-$language";
-			foreach ($all_templates['data'] as $a_template) {
-				$a_template_name = $a_template['name'];
-				if ($a_template_name == $looking_for_this_template) {
-					return $a_template['templateId'];
-				}
-			}
-		}
-
-		return null;
-	}
-
-
-	function setMachineTranslationFeatureTo($on_or_off) {
-		$this->mtEnabled = $on_or_off;
-	} 
-
-	function getTranslationsInProgressFlags($page_id, $language=NULL) {
-		$fields = '`page_id`';
-		$valuesSpec = "?";
-		$values = array($page_id);
-		if ($language) {
-			$fields .= ', `language`';
-			$valuesSpec .= ", ?";
-			$values[] = $language;
-		}
-		$query = "select `language` from `tiki_translations_in_progress` where ($fields)=($valuesSpec)";
-		$flags = $this->fetchAll($query, $values);
-		return $flags;
-	}   
-
-	function addTranslationInProgressFlags($page_id, $language) {
-		//
-		// First, make sure that there isn't already a row in the table
-		// capturing the fact that this page is being translated from that language
-		// 
-		$translationInProgressForThatLanguage = $this->getTranslationsInProgressFlags($page_id, $language);
-		if (count($translationInProgressForThatLanguage) == 0) {
-			$query = "insert into `tiki_translations_in_progress` (`page_id`,`language`) values (?,?)";
-			$results = $this->query($query, array($page_id, $language));
-		}
-	}
-	
-
-	function deleteTranslationInProgressFlags($page_id, $language) {
-		$query = 
-			"DELETE FROM `tiki_translations_in_progress`\n".
-			"   WHERE (`page_id`, `language`) = ('$page_id', '$language')";	
-		$results = $this->query($query, array($page_id, $language));
-	}
-
-
-
 }
-
-
-$multilinguallib = new MultilingualLib;
+global $dbTiki;
+$multilinguallib = new MultilingualLib($dbTiki);
+?>

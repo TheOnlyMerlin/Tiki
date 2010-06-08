@@ -2,7 +2,10 @@
 
 {title help="User+Files"}{tr}User Files{/tr}{/title}
 
-{include file='tiki-mytiki_bar.tpl'}
+{if $prefs.feature_ajax ne 'y' && $prefs.feature_mootools ne 'y'}
+<!-- this bar is created by a ref to {include file=tiki-mytiki_bar.tpl} :) -->
+{include file=tiki-mytiki_bar.tpl}
+{/if}
 
 <div style="text-align:center;">
   <div style="height:20px; width:200px; border:1px solid black; background-color:#666666; text-align:left; margin:0 auto;">
@@ -15,6 +18,8 @@
     <small>{tr}Used space:{/tr} {tr}no limit for admin{/tr}</small>
   {/if}
 </div>
+<br />
+<h2>{tr}User Files{/tr}</h2>
 <form action="tiki-userfiles.php" method="post">
 <table class="normal">
 <tr>

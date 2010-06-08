@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 // CAREFUL: patch for header with  charset iso-8859-1 for tiki
 //
 // +----------------------------------------------------------------------+
@@ -63,8 +57,8 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 * @version $Revision: 1.11 $
 * @package Mail
 */
-class Mail_mimeDecode extends PEAR
-{
+class Mail_mimeDecode extends PEAR {
+
 	/**
 	 * The raw email to decode
 	 * @var    string
@@ -730,3 +724,5 @@ class Mail_mimeDecode extends PEAR
 		return $return;
 	}
 } // End of class
+
+?>

@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 // ##################################################################################
 // Title                     : Class Rdf_parser
 // Version                   : 1.0
@@ -91,8 +85,7 @@ define("RDF_OBJECT_TYPE_RESOURCE",0);
 define("RDF_OBJECT_TYPE_LITERAL",1);
 define("RDF_OBJECT_TYPE_XML",2);
 
-class Rdf_parser
-{
+class Rdf_parser {
 
 var $rdf_parser;
 
@@ -257,11 +250,11 @@ function _is_rdf_property_element( $local_name )
 }
 
 function _istalnum($val) {
-  return preg_match('/[A-Za-z0-9]/',$val);
+  return ereg("[A-Za-z0-9]",$val);
 }
 
 function _istalpha($val) {
-  return preg_match('/[A-Za-z]/',$val);
+  return ereg("[A-Za-z]",$val);
 }
 
 
@@ -764,11 +757,10 @@ function _handle_property_attributes($subject_type, $subject, $attributes, $xml_
                     '' );
             }
         }
-/*        else if( XML_NAMESPACE_URI == $attribute_namespace_uri )
+        else if( XML_NAMESPACE_URI == $attribute_namespace_uri )
         {
             //do nothing
         }
-*/
         else if( $attribute_namespace_uri )
         {
             // is it required that property attributes be in an explicit namespace?
@@ -979,12 +971,11 @@ function _handle_resource_element( $namespace_uri, $local_name, $attributes, $pa
         // now remove the trailing '#'
 
         $len = strlen( $this->rdf_parser["top"]["subject"]);
-/*
+
         if( $len > 0 )
         {
             //$rdf_parser["top"]["subject"][" len - 1 "] = 0;
         }
-*/
     }
 
     if( $bag_id )
@@ -1506,12 +1497,14 @@ function _character_data_handler( $parser,$s)
             $this->rdf_parser["top"]["data"]=$s;
         }
 
-        if( $this->rdf_parser["top"]["state"] == IN_PROPERTY_UNKNOWN_OBJECT ) {
+        if( $this->rdf_parser["top"]["state"] == IN_PROPERTY_UNKNOWN_OBJECT )
+        {
             /* look for non-whitespace */
-            for( $i = 0; (( $i < $len ) && (  preg_match("/ |\n|\t/",$s{ $i }) )); $i++ );
+            for( $i = 0; (( $i < $len ) && (  ereg(" |\n|\t",$s{ $i }) )); $i++ );
             $i++;
             /* if we found non-whitespace, this is a literal */
-            if( $i < $len ) {
+            if( $i < $len )
+            {
                 $this->rdf_parser["top"]["state"] = IN_PROPERTY_LITERAL;
             }
         }
@@ -1639,3 +1632,5 @@ function rdf_resolve_uri($uri_reference,&$buffer)
 }
 
 }
+
+?>
