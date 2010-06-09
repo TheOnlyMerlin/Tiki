@@ -5,7 +5,7 @@ revision:
 $Revision: 0.4 $
 
 lastmodif:
-$Date: 2010-06-08 11:00:00 $
+$Date: 2010-06-09 10:51:00 $
 
 files: 
 wiki-plugins/r/lib/wiki-plugins/wikiplugin_r.php lib/wiki-plugins/wikiplugin_r.php

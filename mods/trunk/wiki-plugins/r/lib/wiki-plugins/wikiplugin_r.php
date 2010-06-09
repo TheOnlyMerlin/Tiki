@@ -72,7 +72,7 @@ function wikiplugin_r_info() {
 			'res' => array(
 				'required' => false,
 				'name' => tra('res'),
-				'description' => tra('Choose resolution for the graphs generated, if any (Optional). Options: an integer number in dpi (dot per inch). Default: 72 dpi (optimized for screen display). Many common printers have a maximum resolution for printing of 300 or 600 dpi, but higher values can be chosen at will'),
+				'description' => tra('The nominal resolution in dpi which will be recorded in the bitmap file (if any). Also used for units other than the default, and to convert points to pixels (Optional). Options: a positive integer (default: 72 dpi). Values higher than 150 usually seem to be too much'),
 			),
 			'x11' => array(
 				'required' => false,
@@ -109,7 +109,7 @@ function wikiplugin_r($data, $params) {
 	$output = 'text';
 	$style = '';
 	$ws = '';
-	$sha1 = md5($data . $output . $style);
+	$sha1 = md5($data . $params . $output . $style);
 
 	if (isset($_REQUEST['itemId'])) {
 		global $trklib; require_once('lib/trackers/trackerlib.php');
@@ -167,7 +167,7 @@ function wikiplugin_r($data, $params) {
 		$data = "library (\"R4X\")\ndata <- xml(\"$filepath\")\n$data";
 	}
 	// execute R program
-	$fn   = runR ($output, $convert, $sha1, $data, $echo, $ws);
+	$fn   = runR ($output, $convert, $sha1, $data, $echo, $ws, $params);
 
 	$ret = file_get_contents ($fn);
 
@@ -178,7 +178,7 @@ function wikiplugin_r($data, $params) {
 	}
 }
 
-function runR ($output, $convert, $sha1, $input, $echo, $ws) {
+function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 	// Generate a graphics
 	$prg = '';
 	$err = "\n";
@@ -202,7 +202,7 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws) {
 	if (isset($params["units"])) {
 		$units = $params["units"];
 	}else{
-		$units = "";
+		$units = "px";
 	}
 
 	if (isset($params["pointsize"])) {
@@ -214,7 +214,7 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws) {
 	if (isset($params["bg"])) {
 		$bg = $params["bg"];
 	}else{ 	
-		$bg = "";
+		$bg = "transparent";
 	}
 
 	if (isset($params["res"])) {
@@ -235,11 +235,11 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws) {
 		if ( (isset($params["X11"]) || isset($params["x11"])) && ($params["X11"]==0 || $params["x11"]==0) ) {
 			$content .= $input . "\n";
 //			$content = 'dev2bitmap("' . $rgo . '", type = "png16", res = 72, height = 7, width = 7)' . "\n";
-			$content = 'dev2bitmap("' . $rgo . '" , width = ' . $width . ', height = ' . $height . ', units = ' . $units . ', pointsize = ' . $pointsize . ', res = ' . $res . ')' . "\n";
+			$content = 'dev2bitmap("' . $rgo . '" , width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', res = ' . $res . ')' . "\n";
 			$content .= 'dev.off()' . "\n";
 		}else{	// png can be used because R was compiled with support for X11
 			//	$content = 'png(filename = "' . $rgo . '", width = 600, height = 600, bg = "transparent", res = 72)' . "\n";
-			$content = 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = ' . $units . ', pointsize = ' . $pointsize . ', bg = ' . $bg . ' , res = ' . $res . ')' . "\n";
+			$content = 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
 			$content .= $input . "\n";
 		}
 		$content .= 'q()';
