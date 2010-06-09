@@ -2,6 +2,11 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 9 june 2010
+
+Update:
+	jQuery.sheet - 1.1.0 RC 3 from SVN
+
 jonnybradley 25 May 2010
 
 Update:
