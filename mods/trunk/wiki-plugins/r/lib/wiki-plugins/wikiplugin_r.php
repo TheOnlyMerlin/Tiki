@@ -25,7 +25,7 @@ function wikiplugin_r_info() {
 	return array(
 		'name' => tra('R syntax'),
 		'documentation' => 'PluginR',
-		'description' => tra('Parses R syntax and shows the output either from the code introduced between the plugin tags or from the file attached to a tracker item sent through PluginTracker'),
+		'description' => tra('Parses R syntax and shows the output either from the code introduced between the plugin tags or from the file attached to a tracker item sent through PluginTracker. It can also be combined with Pretty Trackers to edit params from the script through web forms.'),
 		'prefs' => array( 'wikiplugin_r' ),
 		'validate' => 'all',
 		'params' => array(
@@ -50,7 +50,7 @@ function wikiplugin_r_info() {
 			'width' => array(
 				'required' => false,
 				'name' => tra('width'),
-				'description' => tra('Width of the graph (Optional). Options: an integer number in inches (default) or in units specified. If ommitted but height is set, width will be proportional to keep aspect ratio'),
+				'description' => tra('Width of the graph (Optional). Options: an integer number in pixels (default) or in units specified. If ommitted but height is set, width will be proportional to keep aspect ratio'),
 				'filter' => 'int',
 			),
 			'height' => array(
@@ -97,7 +97,7 @@ function wikiplugin_r_info() {
 */			'security' => array(
 				'required' => false,
 				'name' => tra('security'),
-				'description' => tra('Set the secutiry level for the R commands allowed by the plugin. ex: 1. (default), 0 for no security checking.'),
+				'description' => tra('Set the security level for the R commands allowed by the plugin. ex: 1. (default), 0 for no security checking.'),
 				'filter' => 'int',
 			),
 		),
