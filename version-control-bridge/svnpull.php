@@ -134,7 +134,7 @@ function process_revision( $repositoryName, $repositoryData, $revisionInfo ) {
 		default:
 			$revisionData['add'][] = array(
 				'file' => $path,
-				'content' => @svn_cat( $path, (int) $revisionInfo['rev'] ),
+				'content' => get_content( $path, (int) $revisionInfo['rev'] ),
 			);
 			break;
 		}
@@ -144,7 +144,21 @@ function process_revision( $repositoryName, $repositoryData, $revisionInfo ) {
 	return $revisionData;
 }
 
+function get_content( $path, $rev ) {
+	$content = @svn_cat( $path, $rev );
+
+	if( false !== strpos( $content, 0x00 ) ) {
+		return 'Binary Content';
+	} else {
+		return $content;
+	}
+}
+
 function get_diff( $path, $rev ) {
+	if( false === @svn_cat( $path, $rev ) ) {
+		return '';
+	}
+
 	list( $fp, $errors ) = @svn_diff( $path, $rev - 1, $path, $rev );
 	fclose( $errors );
 

@@ -20,13 +20,11 @@ if( false === $data ) {
 }
 
 foreach( $data as $repository ) {
-	$calls = array();
-
 	foreach( $repository->revisions as $rev ) {
-		$calls = array_merge( $calls, get_channels( $repository->name, $repository->config, $rev ) );
-	}
+		$calls = get_channels( $repository->name, $repository->config, $rev );
 
-	call_channels( $repository->config, $calls );
+		call_channels( $repository->config, $calls );
+	}
 }
 
 function get_channels( $name, $config, $rev ) {
