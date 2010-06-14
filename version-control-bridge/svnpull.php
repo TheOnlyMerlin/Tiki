@@ -88,7 +88,7 @@ foreach( $config as $name => $info ) {
 echo json_encode( $data );
 
 function process_repository( $name, $info, & $start, $count ) {
-	$data = svn_log( $info['repository.base'] . $info['repository.path'], $start + 1, SVN_REVISION_INITIAL, $count );
+	$data = svn_log( $info['repository.base'] . $info['repository.path'], $start + 1, SVN_REVISION_HEAD, $count );
 
 	$revisions = array();
 
