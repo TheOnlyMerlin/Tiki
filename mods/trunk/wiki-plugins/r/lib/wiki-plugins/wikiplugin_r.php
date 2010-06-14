@@ -27,7 +27,7 @@ function wikiplugin_r_info() {
 		'documentation' => 'PluginR',
 		'description' => tra('Parses R syntax and shows the output either from the code introduced between the plugin tags or from the file attached to a tracker item sent through PluginTracker. It can also be combined with Pretty Trackers to edit params from the script through web forms.'),
 		'prefs' => array( 'wikiplugin_r' ),
-		'validate' => 'arguments',
+		'validate' => 'all',
 		'params' => array(
 			'attId' => array(
 				'required' => false,
