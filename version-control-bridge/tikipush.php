@@ -32,6 +32,7 @@ function get_channels( $name, $config, $rev ) {
 
 	$calls[] = array(
 		'channel_name' => 'init_revision',
+		'name' => $name,
 		'repository' => $config->{'repository.base'} . $config->{'repository.path'},
 		'revision' => $rev->revision,
 		'author' => $rev->author,
@@ -39,9 +40,19 @@ function get_channels( $name, $config, $rev ) {
 		'message' => $rev->message,
 	);
 
+	foreach( find_bugs( $rev->message ) as $bug ) {
+		$calls[] = array(
+			'channel_name' => 'bug_mention',
+			'name' => $name,
+			'revision' => $rev->revision,
+			'bug' => $bug,
+		);
+	}
+
 	foreach( $rev->remove as $file ) {
 		$calls[] = array(
 			'channel_name' => 'file_remove',
+			'name' => $name,
 			'revision' => $rev->revision,
 			'file' => $file->file,
 		);
@@ -50,6 +61,7 @@ function get_channels( $name, $config, $rev ) {
 	foreach( $rev->modify as $file ) {
 		$calls[] = array(
 			'channel_name' => 'file_content',
+			'name' => $name,
 			'revision' => $rev->revision,
 			'type' => 'Modify',
 			'file' => $file->file,
@@ -60,6 +72,7 @@ function get_channels( $name, $config, $rev ) {
 	foreach( $rev->add as $file ) {
 		$calls[] = array(
 			'channel_name' => 'file_content',
+			'name' => $name,
 			'revision' => $rev->revision,
 			'type' => 'Add',
 			'file' => $file->file,
@@ -88,5 +101,12 @@ function call_channels( $config, $calls ) {
 
 	$out = file_get_contents( $config->{'instance.url'} . '/tiki-channel.php', false, $context); 
 	var_dump($out);
+}
+
+function find_bugs( $message ) {
+	preg_match_all( '/fix\s+(\d+)/i', $message, $fix, PREG_PATTERN_ORDER );
+	preg_match_all( '/#(\d+)/', $message, $number, PREG_PATTERN_ORDER );
+
+	return array_unique( array_merge( $fix[1], $number[1] ) );
 }
 
