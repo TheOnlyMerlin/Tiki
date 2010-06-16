@@ -570,7 +570,7 @@ jQuery.sheet = {
 					var rowsCount = parseInt(size[1]);
 					
 					//Create elements before loop to make it faster.
-					var newSheet = jQuery('<table border="1px" class="' + jS.cl.sheet + '" id="' + jS.id.sheet + jS.i + '"></table>');
+					var newSheet = jQuery('<table  cellpadding="0" cellspacing="0" border="0" border="1px" class="' + jS.cl.sheet + '" id="' + jS.id.sheet + jS.i + '"></table>');
 					var standardTd = '<td> </td>';
 					var tds = '';
 					
@@ -604,7 +604,7 @@ jQuery.sheet = {
 					var objContainer = jS.controlFactory.table().appendTo(jS.obj.ui());
 					var pane = jS.obj.pane().html(o);
 							
-					jS.tuneTableForSheetUse(o);
+					o = jS.tuneTableForSheetUse(o);
 								
 					jS.sheetDecorate(o);
 					
@@ -3306,53 +3306,65 @@ jQuery.sheet = {
 				//Note, form objects are experimental, they don't work always as expected
 				INPUT: {
 					SELECT:	function(v, noBlank) {
-						v = cE.foldPrepare(v, arguments);
-						
-						var selectObj = jS.controlFactory.input.select();
-						
-						if (!noBlank) {
-							selectObj.append('<option value="">Select a value</option>');
-						}
-						
-						for (var i = 0; i < (v.length <= 50 ? v.length : 50); i++) {
-							if (v[i]) {
-								selectObj.append('<option value="' + v[i] + '">' + v[i] + '</option>');
+						if (s.editable) {
+							v = cE.foldPrepare(v, arguments);
+							
+							var selectObj = jS.controlFactory.input.select();
+							
+							if (!noBlank) {
+								selectObj.append('<option value="">Select a value</option>');
 							}
+							
+							for (var i = 0; i < (v.length <= 50 ? v.length : 50); i++) {
+								if (v[i]) {
+									selectObj.append('<option value="' + v[i] + '">' + v[i] + '</option>');
+								}
+							}
+							
+							selectObj.val(jS.controlFactory.input.getValue(cE.thisCell));
+							
+							return selectObj;
+						} else {
+							return jS.controlFactory.input.getValue(cE.thisCell);
 						}
 						
-						selectObj.val(jS.controlFactory.input.getValue(cE.thisCell));
-						
-						return selectObj;
 					},
 					SELECTVAL:	function(v) {
-						return jQuery(v).val();
+						//v = cE.foldPrepare(v, arguments);
+						return (s.editable ? jQuery(v).val() : v);
 					},
 					RADIO: function(v) {
-						v = cE.foldPrepare(v, arguments);
-						var o = jS.controlFactory.input.radio(v, cE.thisCell);
-						
-						o.find('input[value="' + jS.controlFactory.input.getValue(cE.thisCell) + '"]').attr('CHECKED', 'true');
-						
+						if (s.editable) {
+							v = cE.foldPrepare(v, arguments);
+							var o = jS.controlFactory.input.radio(v, cE.thisCell);
+							
+							o.find('input[value="' + jS.controlFactory.input.getValue(cE.thisCell) + '"]').attr('CHECKED', 'true');
+						} else {
+							return jS.controlFactory.input.getValue(cE.thisCell)
+						}
 						return o;
 					},
 					RADIOVAL: function(v) {
-						v = cE.foldPrepare(v, arguments);
-						return jQuery(v).find('input:checked').val();
+						//v = cE.foldPrepare(v, arguments);
+						return (s.editable ? jQuery(v).find('input:checked').val() : v);
 					},
 					CHECKBOX: function(v) {
-						v = cE.foldPrepare(v, arguments)[0];
-						var o = jS.controlFactory.input.checkbox(v, cE.thisCell);
-						var checked = jS.controlFactory.input.getValue(cE.thisCell);
-						if (checked == 'true' || checked == true) {
-							o.attr('CHECKED', 'TRUE');
+						if (s.editable) {
+							v = cE.foldPrepare(v, arguments)[0];
+							var o = jS.controlFactory.input.checkbox(v, cE.thisCell);
+							var checked = jS.controlFactory.input.getValue(cE.thisCell);
+							if (checked == 'true' || checked == true) {
+								o.attr('CHECKED', 'TRUE');
+							} else {
+								o.removeAttr('CHECKED');
+							}
+							return o;
 						} else {
-							o.removeAttr('CHECKED');
+							return jS.controlFactory.input.getValue(cE.thisCell);
 						}
-						return o;
 					},
 					CHECKBOXVAL: function(v) {
-						v = cE.foldPrepare(v, arguments);
-						return jQuery(v).val();
+						return (s.editable ? jQuery(cE.foldPrepare(v, arguments)).val() : v);
 					},
 					ISCHECKED:		function(v) {
 						var checked = jQuery(v).is(":checked");
