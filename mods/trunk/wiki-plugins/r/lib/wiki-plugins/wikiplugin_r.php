@@ -166,7 +166,7 @@ function wikiplugin_r($data, $params) {
 		$type = $params["type"];
 	}
 
-	defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp' );
+	defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache' );
 	defined('r_ext') || define('r_ext', getcwd() . DIRECTORY_SEPARATOR . 'lib/r' );
 	defined('security')  || define('security',  1);
 	defined('sudouser')  || define('sudouser', 'rd');
@@ -176,7 +176,7 @@ function wikiplugin_r($data, $params) {
 	defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664 '));
 	defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --vanilla --quiet'));
 
-	defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp' );
+	defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/public' );
 	defined('graph_file_name')  || define('graph_file_name', $sha1 . '.png');
 
 	if ($type == "text/csv") {
