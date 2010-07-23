@@ -176,7 +176,7 @@ function wikiplugin_r($data, $params) {
 	defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664 '));
 	defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --vanilla --quiet'));
 
-	defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/public' );
+	defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache' );
 	defined('graph_file_name')  || define('graph_file_name', $sha1 . '.png');
 
 	if ($type == "text/csv") {
