@@ -67,7 +67,7 @@ function has_tiki_db_20()
 	return $installer->tableExists('tiki_pages_translation_bits');
 }
 
-function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $client_charset = '', $api_tiki = '', $dbversion_tiki = 'current') {
+function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $client_charset = '', $api_tiki = '', $dbversion_tiki = '5.0') {
 	global $local;
 	global $db_tiki;
 	if ($dbs_tiki && $user_tiki) {
@@ -79,11 +79,6 @@ function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tik
 		$fw = fopen($local, 'w');
 		$filetowrite = "<?php\n";
 		$filetowrite .= "\$db_tiki='" . $db_tiki . "';\n";
-		if ($dbversion_tiki == 'current') {
-			require_once 'lib/setup/twversion.class.php';
-			$twversion = new TWVersion();
-			$dbversion_tiki = $twversion->getVersion(); 
-		}
 		$filetowrite .= "\$dbversion_tiki='" . $dbversion_tiki . "';\n";
 		$filetowrite .= "\$host_tiki='" . $host_tiki . "';\n";
 		$filetowrite .= "\$user_tiki='" . $user_tiki . "';\n";
@@ -741,7 +736,6 @@ if ($dbcon) {
 	if ($install_step == '6' && $has_tiki_db) {
 		update_preferences($dbTiki, $prefs);
 		$smarty->assign('admin_email', get_admin_email($dbTiki));
-		$smarty->assign('upgradefix', (empty($dbversion_tiki) || $dbversion_tiki[0] < 3) ? 'y' : 'n');
 	}
 	$smarty->assign('tikidb_is20',  has_tiki_db_20());
 }

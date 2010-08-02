@@ -936,9 +936,8 @@ span.moduleflip,
 	bottom: -1px;
 }
 	
-.rbox-title .icon {
-	padding: 0 .35em 0 0;
-	vertical-align: top;
+.rbox img {
+	vertical-align: middle;
 }
 	
 .rbox-data {
@@ -1326,18 +1325,9 @@ span.posthead {
 	display: block;
 }
 
-body.tiki_blogs .post_single {
-	padding-bottom: 30px;
-}
-
 body.tiki_blogs .post .postfooter {
 	clear: both;
 	float: right;
-}
-
-body.tiki_blogs div.author_actions {
-	width: 100%;
-	text-align: right;
 }
 
 /***** Forums *****/

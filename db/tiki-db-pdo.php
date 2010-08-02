@@ -72,7 +72,7 @@ try {
 	unset( $tempDb, $pdo_options, $pdo_post_queries );
 
 } catch( PDOException $e ) {
-	require_once 'lib/init/smarty.php';
+	require_once 'setup_smarty.php';
 
 	$smarty->assign( 'msg', $e->getMessage() );
 	$smarty->assign( 'where', 'connection');

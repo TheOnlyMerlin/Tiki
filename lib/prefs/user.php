@@ -87,50 +87,6 @@ function prefs_user_list() {
 			'type' => 'text',
 			'size' => '5',
 			'dependencies' => array('feature_jquery_autocomplete'),
-		),
-		'user_register_prettytracker' => array(
-			'name' => tra('Use pretty trackers for registration form'),
-			'help' => 'Pretty+Trackers',
-			'description' => tra('Use pretty trackers for registration form'),
-			'type' => 'flag',
-			'dependencies' => array(
-				'userTracker',
-			),
-		),
-		'user_register_prettytracker_tpl' => array(
-			'name' => tra('Registration pretty tracker template'),
-			'description' => tra('Use wiki page name or template file with .tpl extension'),
-			'type' => 'text',
-			'size' => '20',
-			'dependencies' => array(
-				'user_register_pretty_tracker',
-			),
-		),
-		'user_trackersync_trackers' => array(
-			'name' => tra('User tracker IDs to sync prefs from'),
-			'description' => tra('Enter the IDs separated by commas of trackers to sync user prefs from'),
-			'type' => 'text',
-			'size' => '10',
-			'dependencies' => array(
-				'userTracker',
-			),
-		),
-		'user_trackersync_realname' => array(
-			'name' => tra('Tracker field IDs to sync Real Name pref from'),
-			'description' => tra('Enter the IDs separated by commas in priority of being chosen, each item can concatenate multiple fields using +, e.g. 2+3,4'),
-			'type' => 'text',
-			'size' => '10',
-			'dependencies' => array(
-				'userTracker',
-				'user_trackersync_trackers',
-			),
-		),
-		'user_selector_threshold' => array(
-			'name' => tra('Maximum number of users to show in drop down lists'),
-			'description' => tra('Prevents out of memory and performance issues when user list is very large by using a jQuery autocomplete text input box.'),
-			'type' => 'text',
-			'size' => '5',
-			'dependencies' => array('feature_jquery_autocomplete'),
 		)
 	);
 }

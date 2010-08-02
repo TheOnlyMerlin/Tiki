@@ -27,7 +27,7 @@ class Math_Formula_Tokenizer
 				$current .= $chr;
 			}
 
-			if( $end && 0 != strlen( $current ) ) {
+			if( $end && ! empty( $current ) ) {
 				$tokens[] = $current;
 				$current = '';
 			}
@@ -37,7 +37,7 @@ class Math_Formula_Tokenizer
 			}
 		}
 
-		if( strlen( $current ) != 0 ) {
+		if( ! empty( $current ) ) {
 			$tokens[] = $current;
 		}
 

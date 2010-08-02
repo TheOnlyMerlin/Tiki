@@ -12403,10 +12403,5 @@ $lang=Array(
 "TikiTest Replay" => "Rejouer TikiTest",
 "The page is empty" => "La page est vide",
 "You do not have permissions to view the maps" => "Droit d'accès refusé&nbsp;: vous ne pouvez pas voir les cartes",
-"Integer identifying a file in the file galleries" => "Entier identifiant un fichier dans les galeries de fichiers",
-"Displays a link to download a file from a file gallery." => "Affiche un lien pour télécharger un fichier d'une galerie de fichiers.",
-"Text showing on the link" => "Texte montré sur le lien",
-"File link" => "Lien vers un fichier",
-"Pick a file." => "Choisir un fichier.",
 "###end###"=>"###end###");
 

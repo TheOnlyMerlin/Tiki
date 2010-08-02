@@ -9,6 +9,7 @@ $section = 'blogs';
 require_once ('tiki-setup.php');
 include_once ('lib/blogs/bloglib.php');
 
+$smarty->assign('headtitle',tra('Create Blog'));
 $access->check_feature('feature_blogs');
 $access->check_permission('tiki_p_create_blogs');
 
@@ -16,7 +17,6 @@ if (isset($_REQUEST["blogId"])) {
 	$blogId = $_REQUEST["blogId"];
 } else {
 	$blogId = 0;
-	$smarty->assign('headtitle',tra('Create Blog'));
 }
 
 $smarty->assign('individual', 'n');
@@ -49,7 +49,7 @@ if (!isset($lastModif)) {
 
 if (isset($_REQUEST["blogId"]) && $_REQUEST["blogId"] > 0) {
 	// Check permission
-	$data = $bloglib->get_blog($_REQUEST["blogId"]);
+	$data = $tikilib->get_blog($_REQUEST["blogId"]);
 
 	if ($data["user"] != $user || !$user) {
 		if ($tiki_p_blog_admin != 'y') {
@@ -61,7 +61,6 @@ if (isset($_REQUEST["blogId"]) && $_REQUEST["blogId"] > 0) {
 		}
 	}
 
-	$smarty->assign('headtitle', tra('Edit blog:') . ' ' . $data['title']);
 	$smarty->assign('title', $data["title"]);
 	$smarty->assign('description', $data["description"]);
 	$smarty->assign('public', $data["public"]);
@@ -146,10 +145,6 @@ if (isset($_REQUEST['preview']) || $category_needed) {
 	$smarty->assign('maxPosts', $_REQUEST["maxPosts"]);
 	$smarty->assign('heading', $heading);
 	$smarty->assign('creator', $_REQUEST["creator"]);
-
-	// display heading preview
-	$_SESSION['tiki_cookie_jar']['show_blog_heading_preview'] = 'y';
-	$cookietab = 2;
 }
 
 

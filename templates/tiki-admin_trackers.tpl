@@ -179,6 +179,19 @@
 				</tr>
 			{/if}
 
+			{if $prefs.trk_with_mirror_tables eq 'y'}
+				<tr class="formcolor">
+					<td>
+						{tr}Use "explicit" names in the mirror table{/tr}
+						<br />
+						<em>{tr}tracker name must be unique, field names must be unique for a tracker and they must be valid in SQL{/tr}</em>
+					</td>
+					<td>
+						<input type="checkbox" name="useExplicitNames" {if $useExplicitNames eq 'y'}checked="checked"{/if} />
+					</td>
+				</tr>
+			{/if}
+
 			<tr class="formcolor">
 				<td>{tr}Show status{/tr}</td>
 				<td><input type="checkbox" name="showStatus" {if $showStatus eq 'y'}checked="checked"{/if} /></td>
@@ -321,7 +334,7 @@
 			<tr class="formcolor" id="showLastModifUser" {if $showLastModifView ne 'y'}style="display:none;"{/if}>
 				<td class="sub" colspan="2">
 					{tr}Identify lastModif user in tracker item?{/tr}
-					<input type="checkbox" name="showLastModifBy" {if $showLastModifBy eq 'y'}checked="checked"{/if}>
+					<input type="checkbox" name="showLastModifBy" {if $showLastModifBy eq 'y'}checked="checked"{/if} "/>
 				</td>
 			</tr>
 			<tr class="formcolor">
@@ -483,69 +496,6 @@
 				<br /><em>{tr}wiki:pageName for a wiki page or tpl:tplName for a template{/tr}</em></td>
 			</tr>
 
-			{if !empty($info.todos)}
-				<tr class="formcolor">
-					<td>{tr}Status changes list{/tr}</td>
-					<td>
-						{cycle values="odd,even" print=false}
-						<table class="normal">
-						<tr><th>{tr}From{/tr}</th><th>{tr}To{/tr}</th><th>{tr}Delay{/tr}</th><th>{tr}After{/tr}</th><th>{tr}Notification{/tr}</th><th>{tr}Action{/tr}</th></tr>
-						{foreach from=$info.todos item=todo}
-							<tr class="{cycle}">
-								<td>{$todo.from.status|escape}</td>
-								<td>{$todo.to.status|escape}</td>
-								<td>{$todo.after|duration|escape}</td>
-								<td>{tr}{$todo.event}{/tr}</td>
-								<td>
-									{foreach from=$todo.notifs item=notif name=notif}
-										{if !$smarty.foreach.notif.first}<br />{/if}
-										{foreach from=$notif.to key=i item=j name=notif2}
-											{if !$smarty.foreach.notif2.first}<br />{/if}
-											{$i|escape}: {if $i eq 'before'}{$j|duration|escape}{else}{$j|escape}{/if}
-										{/foreach}
-									{/foreach}
-								</td>
-								<td><a title="{tr}Delete todo{/tr}" class="link" href="tiki-admin_trackers.php?trackerId={$trackerId}&amp;deltodo={$todo.todoId}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a></td>
-							</tr>
-						{/foreach}
-						</table>
-					</td>
-				</tr>
-			{/if}
-			<tr class="formcolor">
-				<td>{tr}Status changes{/tr}</td>
-				<td>			
-					<label>
-						{tr}From{/tr}
-						<select name="todo_from">
-							<option value="" />
-							{foreach key=st item=stdata from=$status_types}
-								<option value="{$st|escape}">{$stdata.label|escape}</option>
-							{/foreach}
-						</select>
-					</label>
-					<label>
-						{tr}To{/tr}
-						<select name="todo_to">
-							<option value="" />
-							{foreach key=st item=stdata from=$status_types}
-								<option value="{$st|escape}">{$stdata.label|escape}</option>
-							{/foreach}
-						</select>
-					</label><br />
-					{html_select_duration prefix='todo_after'}
-					<select name="todo_event">
-						<option value="creation">{tr}After creation{/tr}</option>
-						<option value="modification">{tr}After last modification{/tr}</option>
-					</select>
-					<fieldset>
-						<legend>{tr}Notification{/tr}</legend>
-						{tr}Notify creator the change{/tr}{html_select_duration prefix='todo_notif'}{tr}before change{/tr}<br />
-						<label>{tr}Mail subject text{/tr}<input type="text" name="todo_subject" /></label><br />
-						<label>{tr}Mail body ressource{/tr}<input type="text" name="todo_body" /></label><em>{tr}wiki:pageName for a wiki page or tplName.tpl for a template{/tr}</em>
-					</fieldset>
-			</tr>
-				
 			<tr class="formcolor">
 				<td></td>
 				<td><input type="submit" name="save" value="{tr}Save{/tr}" /></td>

@@ -56,8 +56,8 @@ $smarty->assign('save', 'n');
 if (isset($_REQUEST["save"])) {
 	check_ticket('dir-add-site');
 	$msg = "";
-	if (empty($user) && $prefs['feature_antibot'] == 'y' && !$captchalib->validate()) {
-		$msg.= $captchalib->getErrors();
+	if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $_REQUEST['antibotcode'])) {
+		$msg.= tra("You have mistyped the anti-bot verification code; please try again.");
 	}
 	if (empty($_REQUEST["name"])) {
 		$msg.= tra("Must enter a name to add a site. ");

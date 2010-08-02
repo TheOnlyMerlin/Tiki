@@ -42,6 +42,7 @@
 					{preference name=article_comments_default_ordering}
 				</div>
 
+				{preference name=cms_spellcheck}
 				{preference name=feature_cms_templates}
 				{preference name=feature_cms_print}
 				{preference name=feature_cms_emails}
@@ -81,41 +82,28 @@
 		{/tab}
 
 		{tab name="{tr}Articles Listing{/tr}"}
-			<fieldset>
-				<legend>{tr}List Articles{/tr}</legend>
-				<div class="adminoptionbox">
-					{tr}Select which items to display when listing articles{/tr}: 	  
-					<a class="rbox-link" href="tiki-list_articles.php">tiki-list_articles.php</a>
-				</div>
-				<input type="hidden" name="artlist" />
+			<div class="adminoptionbox">
+				{tr}Select which items to display when listing articles{/tr}: 	  
+				<a class="rbox-link" href="tiki-list_articles.php">tiki-list_articles.php</a>
+			</div>
+			<input type="hidden" name="artlist" />
 
-				{preference name=art_sort_mode}
-
-				{preference name=art_list_title}
-				<div class="adminoptionboxchild" id="art_list_title_childcontainer">
-					{preference name=art_list_title_len}
-				</div>
-				{preference name=art_list_id}
-				{preference name=art_list_type}
-				{preference name=art_list_topic}
-				{preference name=art_list_date}
-				{preference name=art_list_expire}
-				{preference name=art_list_visible}
-				{preference name=art_list_lang}
-				{preference name=art_list_author}
-				{preference name=art_list_rating}
-				{preference name=art_list_reads}
-				{preference name=art_list_size}
-				{preference name=art_list_img}
-			</fieldset>
-			<fieldset>
-				<legend>{tr}Articles plugin{/tr} - {tr}Articles Home{/tr}</legend>
-				{preference name=art_view_img_width}
-			</fieldset>
-			<fieldset>
-				<legend>{tr}Article View{/tr}</legend>
-				{preference name=art_trailer_pos}
-			</fieldset>
+			{preference name=art_list_title}
+			<div class="adminoptionboxchild" id="art_list_title_childcontainer">
+				{preference name=art_list_title_len}
+			</div>
+			{preference name=art_list_id}
+			{preference name=art_list_type}
+			{preference name=art_list_topic}
+			{preference name=art_list_date}
+			{preference name=art_list_expire}
+			{preference name=art_list_visible}
+			{preference name=art_list_lang}
+			{preference name=art_list_author}
+			{preference name=art_list_rating}
+			{preference name=art_list_reads}
+			{preference name=art_list_size}
+			{preference name=art_list_img}
 		{/tab}
 	{/tabset}
 	<div class="input_submit_container clear" style="text-align: center;">

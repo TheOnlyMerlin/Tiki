@@ -37,7 +37,7 @@ class PreferencesLib
 			}
 		
 			$value = $source[$name];
-			if( !empty($value) && is_string( $value ) && ($value{0} == ':' || $value{1} == ':') && false !== $unserialized = unserialize( $value ) ) {
+			if( !empty($value) && is_string( $value ) && $value{0} == ':' && false !== $unserialized = unserialize( $value ) ) {
 				$value = $unserialized;
 			}
 
@@ -48,18 +48,16 @@ class PreferencesLib
 			} else {
 				$info['value'] = $value;
 			}
-
 			$info['raw'] = $source[$name];
 			$info['id'] = 'pref-' . ++$id;
-
 			if( isset( $info['help'] ) && $prefs['feature_help'] == 'y' ) {
-				if( preg_match('/^https?:/i', $info['help']) ) {
+				
+				if ( preg_match('/^https?:/i', $info['help']) ) 
+				// If help is an url, return it without adding $helpurl 
 					$info['helpurl'] = $info['help'];
-				} else {
+				else
 					$info['helpurl'] = $prefs['helpurl'] . $info['help'];
-				}
 			}
-
 			if( $deps && isset( $info['dependencies'] ) ) {
 				$info['dependencies'] = $this->getDependencies( $info['dependencies'] );
 			}
@@ -169,15 +167,6 @@ class PreferencesLib
 		}
 
 		return $out;
-	}
-
-	function getExtraSortColumns() {
-		global $prefs;
-		if( $prefs['rating_advanced'] == 'y' ) {
-			return TikiDb::get()->fetchMap( "SELECT CONCAT('adv_rating_', ratingConfigId), name FROM tiki_rating_configs" );
-		} else {
-			return array();
-		}
 	}
 
 	private function loadData( $name ) {

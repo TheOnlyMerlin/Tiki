@@ -11,7 +11,7 @@ require_once ('lib/rss/rsslib.php');
 
 $access->check_feature('feature_forums');
 
-if ($prefs['feed_forums'] != 'y') {
+if ($prefs['rss_forums'] != 'y') {
 	$errmsg=tra("rss feed disabled");
 	require_once ('tiki-rss_error.php');
 }
@@ -31,8 +31,8 @@ $uniqueid = $feed;
 $output = $rsslib->get_from_cache($uniqueid);
 
 if ($output["data"]=="EMPTY") {
-	$title = $prefs['feed_forums_title'];
-	$desc = $prefs['feed_forums_desc'];
+	$title = (!empty($title_rss_forums)) ? $title_rss_forums :  tra("Tiki RSS feed for forums");
+	$desc = (!empty($desc_rss_forums)) ? $desc_rss_forums : tra("Last topics in forums.");
 	$id = 'object';
 	$param = "threadId";
 	$descId = "data";
@@ -41,7 +41,12 @@ if ($output["data"]=="EMPTY") {
 	$titleId = "title";
 	$readrepl = 'tiki-view_forum_thread.php?forumId=%s&comments_parentId=%s';
 
-	$changes = $tikilib -> list_all_forum_topics(0, $prefs['feed_forums_max'], $dateId.'_desc', '');
+        $tmp = $prefs['title_rss_'.$feed];
+        if ($tmp<>'') $title = $tmp;
+        $tmp = $prefs['desc_rss_'.$feed];
+        if ($desc<>'') $desc = $tmp;
+
+	$changes = $tikilib -> list_all_forum_topics(0, $prefs['max_rss_forums'], $dateId.'_desc', '');
 	$output = $rsslib->generate_feed($feed, $uniqueid, '', $changes, $readrepl, $param, $id, $title, $titleId, $desc, $descId, $dateId, $authorId);
 }
 header("Content-type: ".$output["content-type"]);

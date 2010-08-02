@@ -28,7 +28,7 @@ function collect($dir) {
 		foreach ($list as $l) {
 			// if (count($dirs) > 20) return true;
 			if (strstr($l,'/')) {
-				$s = explode('/',rtrim($l));
+				$s = split('/',rtrim($l));
 				$filepath = $dir.'/'.$s[1];
 				if ($s[0] == 'D') {
 					collect($filepath);

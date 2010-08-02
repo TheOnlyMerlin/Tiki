@@ -133,23 +133,21 @@ if ( $start_session ) {
 	$session_params = session_get_cookie_params();
 	session_set_cookie_params($session_params['lifetime'], $tikiroot);
 	unset($session_params);
-
-	try {
-		require_once "Zend/Session.php";
-		Zend_Session::start();
-	} catch( Zend_Session_Exception $e ) {
-		// Ignore
-	}
+	@session_start();
 }
 
 // Moved here from tiki-setup.php because smarty use a copy of session
 if ($prefs['feature_fullscreen'] == 'y') {
 	require_once ('lib/setup/fullscreen.php');
 }
+// Smarty needs session since 2.6.25
+require_once ('setup_smarty.php');
 // Retrieve all preferences
 require_once ('lib/setup/prefs.php');
-// Smarty needs session since 2.6.25
-require_once ('lib/init/smarty.php');
+// Handle Smarty Security
+if ($prefs['smarty_security'] == 'y') {
+	$smarty->security = true;
+}
 require_once ('lib/userslib.php'); global $userlib;
 $userlib = new UsersLib;
 require_once ('lib/tikiaccesslib.php');

@@ -97,18 +97,6 @@ class Cachelib
 		return $back;
 	}
 
-	function flush_opcode_cache() {
-		if( function_exists( 'apc_clear_cache' ) ) {
-			apc_clear_cache();
-		}
-
-		if( function_exists( 'xcache_clear_cache' ) && ! ini_get( 'xcache.admin.enable_auth' ) ) {
-			foreach( range( 0, xcache_count( XC_TYPE_PHP ) - 1 ) as $index ) {
-				xcache_clear_cache( XC_TYPE_PHP, $index );
-			}
-		}
-	}
-
 	function erase_dir_content($path) {
 		global $tikidomain;
 
@@ -153,7 +141,7 @@ class Cachelib
 					if ($ext=="tpl") {
 						$file=substr($path."/".$file,10);
 						$comppath=$smarty->_get_compile_path($file);
-						//rewrite the language thing, see lib/init/smarty.php
+						//rewrite the language thing, see setup_smarty.php
 						if ($smarty->use_sub_dirs) {
 							$comppath=preg_replace("#/".$oldlang."/#","/".$newlang."/",$comppath,1);
 						} else {

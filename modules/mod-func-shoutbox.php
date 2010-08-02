@@ -13,14 +13,6 @@
  * Enable Admin/Wiki/Wiki Features/feature_antibot to prevent spam ("Anonymous editors must input anti-bot code")
  * 
  */
- 
-/*
- * Added twitter+facebook support (joernott for poiesipedia.com May 2010)
- *
- * Requires a site registration with twitter/facebook to receive site consumer key/secret.
- * The user must authorize the site by requesting an oauth token via tiki-socialnetworks.php.
- *
- */
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== false) {
@@ -51,32 +43,20 @@ function module_shoutbox_info() {
 				'name' => tra('Maximum messages shown'),
 				'description' => tra('Number of messages to display.') . ' ' . tra('Default:') . ' 5.',
 				'filter' => 'int'
-			),
-			'tweet' => array(
-				'name'=> tra('Tweet'),
-				'description' => tra('If set to "1" and the user has authorized us to tweet messages with Twitter, the user can decide, if he wants to shout via twitter.'),
-				'filter' => 'word'
-			),
-			'facebook' => array(
-				'name'=> tra('Facebook'),
-				'description' => tra('If set to "1" and the user has authorized us with Facebook, the user can decide, if he wants to add the shout to his facebook wall.'),
-				'filter' => 'word'
 			)
-			
 		)
 	);
 }
 
 function doProcessShout($inFormValues) {
-	global $shoutboxlib, $user, $smarty, $prefs, $captchalib;
-//	$smarty->assign('tweet',$inFormValues['tweet']);
+	global $shoutboxlib, $user, $smarty, $prefs;
+	
 	if (array_key_exists('shout_msg',$inFormValues) && strlen($inFormValues['shout_msg']) > 2) {
-		if (empty($user) && $prefs['feature_antibot'] == 'y' && (!$captchalib->validate())) {
-			$smarty->assign('shout_error', $captchalib->getErrors());
+		if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $inFormValues['antibotcode'])) {
+			$smarty->assign('shout_error', tra('You have mistyped the anti-bot verification code; please try again.'));
 			$smarty->assign_by_ref('shout_msg', $inFormValues['shout_msg']);
 		} else {
-			
-			$shoutboxlib->replace_shoutbox(0, $user, $inFormValues['shout_msg'],($inFormValues['shout_tweet']==1), ($inFormValues['shout_facebook']==1));
+			$shoutboxlib->replace_shoutbox(0, $user, $inFormValues['shout_msg']);
 		}
 	}
 }
@@ -142,8 +122,7 @@ function module_shoutbox( $mod_reference, $module_params ) {
 		$smarty->assign('tooltip', isset($module_params['tooltip']) ? $module_params['tooltip'] : 0);
 		$smarty->assign('buttontext', isset($module_params['buttontext']) ? $module_params['buttontext'] : tra('Post'));
 		$smarty->assign('waittext', isset($module_params['waittext']) ? $module_params['waittext'] : tra('Please wait...'));
-		$smarty->assign('tweet', isset($module_params['tweet']) &&($tikilib->get_user_preference($user,'twitter_token')!='') ? $module_params['tweet'] : "0");
-		$smarty->assign('facebook', isset($module_params['facebook']) &&($tikilib->get_user_preference($user,'facebook_token')!='') ? $module_params['facebook'] : "0");
+		
 		if ($prefs['feature_ajax'] == 'y') {
 			if (!isset($_REQUEST['xajax'])) {
 				$ajaxlib->registerTemplate('mod-shoutbox.tpl');

@@ -7,14 +7,6 @@
 	{/if}
 	{/remarksbox}
 {/if}
-{if $customTip}
-	{remarksbox type='tip' title=$customTipTitle}
-	{tr}{$customTip|escape}{/tr}
-	{/remarksbox}
-{/if}
-{if $wikiHeaderTpl}
-	{include file="wiki:$wikiHeaderTpl"}
-{/if}
 	
 {if $translation_mode eq 'n'}
 	{if $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}{assign var=pp value=$approvedPageName}{else}{assign var=pp value=$page}{/if}
@@ -284,6 +276,12 @@
 									<input style="width:100;" class="wikiedit" type="text" id="replace" /></label>
 									<label><input type="checkbox" id="caseinsens" />{tr}Case Insensitivity{/tr}</label>
 									<input type="button" value="{tr}Replace{/tr}" onclick="javascript:searchrep();" />
+								</fieldset>
+							{/if}
+							{if $prefs.wiki_spellcheck eq 'y'}
+								<fieldset>
+									<legend>{tr}Spellcheck:{/tr}</legend>
+									<input type="checkbox" id="spellcheck"name="spellcheck" {if $spellcheck eq 'y'}checked="checked"{/if}/>
 								</fieldset>
 							{/if}
 							{if $prefs.feature_wiki_allowhtml eq 'y' and $tiki_p_use_HTML eq 'y' and $wysiwyg neq 'y'}

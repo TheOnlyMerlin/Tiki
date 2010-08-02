@@ -33,65 +33,29 @@ function wikiplugin_sheet_info() {
 		'body' => tra('Sheet Heading'),
 		'params' => array(
 			'id' => array(
-				'required' => false,
+				'required' => true,
 				'name' => tra('Sheet ID'),
-				'description' => tra('Internal ID of the TikiSheet.  Either id or url MUST be used.'),
-			),
-			'url' => array(
-				'required' => false,
-				'name' => tra('Sheet Url Location'),
-				'description' => tra('Internal URL of the Table to use as a spreadsheet.  Either id or url MUST be used.'),
+				'description' => tra('Internal ID of the TikiSheet.'),
 			),
 			'simple' => array(
 				'required' => false,
 				'name' => tra('Simple'),
 				'description' => tra('Simple table view y/n (Default: n = jquery.sheet view if feature enabled).'),
 			),
-			'width' => array(
-				'required' => false,
-				'name' => tra('Width'),
-				'description' => tra('In pixels or percentage. Default value is page width. e.g. "200px" or "100%"'),
-			),
 			'height' => array(
 				'required' => false,
 				'name' => tra('Height'),
 				'description' => tra('In pixels or percentage. Default value is complete spreadsheet height.'),
-			),
-			'editable' => array(
-				'required' => false,
-				'name' => tra('Editable'),
-				'description' => tra('y/n. Show edit button. Default \'y\' depending on user\'s permissions.'),
-			),
-			'subsheets' => array(
-				'required' => false,
-				'name' => tra('Show subsheets'),
-				'description' => tra('y/n. Show multi-sheets. Default \'y\'.'),
-			),
-			'range' => array(
-				'required' => false,
-				'name' => tra('Range'),
-				'description' => tra('Show a range of cells (or single cell). Default shows all. e.g. "D1:F3" (or "e14:e14")'),
-			),
-			'class' => array(
-				'required' => false,
-				'name' => tra('CSS Class'),
-				'description' => tra('Apply custom CSS class to the containing div.'),
-				'filter' => 'text',
 			),
 		),
 	);
 }
 
 function wikiplugin_sheet($data, $params) {
-	global $dbTiki, $tiki_p_edit_sheet, $tiki_p_edit, $tiki_p_admin_sheet, $tiki_p_admin, $prefs, $user, $sheetlib, $page, $tikilib, $smarty;
+	global $dbTiki, $tiki_p_edit_sheet, $tiki_p_edit, $tiki_p_admin_sheet, $tiki_p_admin, $prefs, $user, $sheetlib, $page, $tikilib;
 	extract ($params,EXTR_SKIP);
-	$style = (isset($height)) ? "height: $height !important;" : '';
-	$style .= (isset($width)) ? "width: $width;" : '';
-	$urlHeight = (isset($height)) ? "&height=$height" : '';
-	$urlHeight .= (isset($width)) ? "&width=$width" : '';
-	$editable = isset($editable) && $editable == 'n' ? false : true;
-	$subsheets = isset($subsheets) && $subsheets == 'n' ? false : true;
-	$class = (isset($class)) ? " $class"  : '';
+	$style = (isset($height)) ? "height: $height;" : "";
+	$urlHeight = (isset($height)) ? "&height=$height" : "";
 	
 	if( !class_exists( 'TikiSheet' ) )
 		require "lib/sheet/grid.php";
@@ -99,7 +63,7 @@ function wikiplugin_sheet($data, $params) {
 	static $index = 0;
 	++$index;
 
-	if (!isset($id) && !isset($url)) {
+	if (!isset($id)) {
 		if( $tiki_p_edit_sheet != 'y' || $tiki_p_edit != 'y' ) {
 			return ("<b>missing id parameter for plugin</b><br />");
 		} else {
@@ -151,41 +115,28 @@ EOF;
 	// Fetch sheet from database
 	$sheet->import( $db );
 	
-	if (!empty($range)) {
-		$r = $sheet->setRange($range);
-		if (!isset($simple)) {
-			$simple = 'y';
-		}
-	}
-	
 	// Grab sheet output
-	$ret = $sheet->getTableHtml( $subsheets );
+	ob_start();
+	$sheet->export( $out );
+	$ret = ob_get_contents();
+	ob_end_clean();
 	
 	if ($prefs['feature_jquery_sheet'] == 'y') {
 		if (!isset($simple) || $simple != 'y') {
 			global $headerlib;
 			$headerlib->add_jq_onready('if (typeof ajaxLoadingShow == "function") { ajaxLoadingShow("role_main"); }
-setTimeout (function () { $jq("#tiki_sheet' . $sheet->instance . '").tiki("sheet", "",{editable:false'. ( isset($url) ? ',urlGet: "'.$url.'",buildSheet: false': '' ) .'});}, 0);', 500 + $sheet->instance);
-		} else if (preg_match('/^([A-Z]+[0-9]+):\1$/', strtoupper($range))) {
-			return $ret;	// return a single cell raw
+setTimeout (function () { $jq("div.tiki_sheet").tiki("sheet", "",{editable:false});}, 100);', 500);
 		}
-	
-		$ret = '<div id="tiki_sheet' . $sheet->instance . '" class="tiki_sheet' . $class . '" style="overflow:hidden;' . $style . '">' . $ret . '</div>';
+
+		$ret = '<div class="tiki_sheet" style="' . $style . '">' . $ret . '</div>';
 		
-		if( $editable && ($tiki_p_edit_sheet == 'y' || $tiki_p_admin_sheet == 'y' || $tiki_p_admin == 'y')) {
-			require_once $smarty->_get_plugin_filepath('function','button');
-			
-			//If you've given the sheet a url, you can't edit it, disable if not possible
-			if (!isset($url)) {
-				$button_params = array('_text' => tra("Edit Sheet"), '_script' => "tiki-view_sheets.php?sheetId=$id&parse=edit$urlHeight");
-			}
-			
-			$ret .= smarty_function_button( $button_params, $smarty);
+		if( $tiki_p_edit_sheet == 'y' || $tiki_p_admin_sheet == 'y' || $tiki_p_admin == 'y') {
+			$ret .= "<a href='tiki-view_sheets.php?sheetId=$id&parse=edit$urlHeight' class='linkbut'>" . tra("Edit Sheet") . "</a>";
 		}
-	} else {	// non jQuery.sheet behaviour
+	} else {
 		if( $tiki_p_edit_sheet == 'y' || $tiki_p_admin_sheet == 'y' || $tiki_p_admin == 'y') {
 			$ret .= "<a href='tiki-view_sheets.php?sheetId=$id&readdate=" . time() . "&mode=edit' class='linkbut'>" . tra("Edit Sheet") . "</a>";
 		}
 	}
-	return '~np~' . $ret . '~/np~';
+	return $ret;
 }

@@ -70,9 +70,9 @@ class MapLib
 								$i++;					
 								$key = trim($pagedata[$i]);
 								if (strncasecmp($key, "KAMAP", 5) == 0) {
-									$key = preg_replace('/#.*$/', '', $key);
-									list($name,$value) = explode('"', $key);
-									$scale = explode(",", $value);
+									$key = ereg_replace("#.*$", "", $key);
+									list($name,$value) = split('"', $key);
+									$scale = split(",", $value);
 									$title = $scale[0];
 									$scale = array_slice($scale,1);
 									$kmap = array();

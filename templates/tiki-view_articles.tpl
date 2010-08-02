@@ -63,19 +63,8 @@
 												title="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption}{else}{$listpages[ix].topicName}{/if}">
 											<img  {if $listpages[ix].isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} 
 													alt="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption}{else}{$listpages[ix].topicName}{/if}"
-													src="article_image.php?image_type=article&amp;id={$listpages[ix].articleId}
-													{if $listpages[ix].list_image_x > 0}
-														{if $largefirstimage eq 'y' and $smarty.section.ix.first}
-															{if $listpages[ix].image_x > 0}&amp;width={$listpages[ix].image_x}{/if}
-														{else}
-															&amp;width={$listpages[ix].list_image_x}&amp;cache=y
-														{/if}
-													{elseif $listpages[ix].image_x > 0}
-														&amp;width={$listpages[ix].image_x}&amp;cache=y
-													{else}
-														&amp;cache=y
-													{/if}"
-											/>
+													src="article_image.php?image_type=article&amp;id={$listpages[ix].articleId}"
+													{if $listpages[ix].image_x > 0} width="{$listpages[ix].image_x}"{/if}{if $listpages[ix].image_y > 0 } height="{$listpages[ix].image_y}"{/if} />
 										</a>
 									{else}
 										{* Intentionally left blank to allow user add an image from somewhere else through the img tag and no other extra image *}

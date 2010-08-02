@@ -110,7 +110,7 @@ class SurveyLib extends TikiLib
 		}
 
 		if (!empty($options)) {
-			$options = explode(',', $options);
+			$options = split(',', $options);
 		} else {
 			$options = array();
 		}

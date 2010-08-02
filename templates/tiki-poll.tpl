@@ -20,7 +20,7 @@
 	{/if}
 <div align="center">
 {if $prefs.feature_antibot eq 'y' && $user eq ''}
-	{include file='antibot.tpl' antibot_table='n'}
+	<table>{include file='antibot.tpl'}</table>
 {/if}
 {if $tiki_p_vote_poll ne 'n' && ($user ||  $prefs.feature_poll_anonymous == 'y' || $prefs.feature_antibot eq 'y')}
 	<input type="submit" name="pollVote" value="{tr}vote{/tr}" /><br />

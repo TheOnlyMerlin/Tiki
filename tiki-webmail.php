@@ -107,7 +107,7 @@ if ($_REQUEST['locSection'] == 'read') {
 	if (isset($_REQUEST['msgid'])) {
 		$message = $mail->getMessage($_REQUEST['msgid']);
 		$aux = $message->getHeaders();
-		$realmsgid = preg_replace('/[<>]/','',$aux['message-id']);
+		$realmsgid = ereg_replace('[<>]','',$aux['message-id']);
 		$smarty->assign('msgid', $_REQUEST['msgid']);
 		$smarty->assign('realmsgid', $realmsgid);
 		$webmaillib->set_mail_flag($current['accountId'], $user, $realmsgid, 'isRead', 'y');
@@ -191,7 +191,7 @@ if ($_REQUEST['locSection'] == 'read') {
 			}
 		}
 	
-		if (isset($aux['cc']) || preg_match('/,/', $aux['to'])) {
+		if (isset($aux['cc']) || ereg(',', $aux['to'])) {
 			$cc_addresses = '';
 	
 			if (isset($aux['cc']))
@@ -714,7 +714,7 @@ if ($_REQUEST['locSection'] == 'compose') {
 			$mail->setText($_REQUEST['body']);
 		}
 
-		$to_array_1 = preg_split('/[, ;]/', $_REQUEST['to']);
+		$to_array_1 = split('[, ;]', $_REQUEST['to']);
 		$to_array = array();
 
 		foreach ($to_array_1 as $to_1) {
@@ -876,14 +876,10 @@ if ($_REQUEST['locSection'] == 'compose') {
 	if (!isset($_REQUEST['subject']))
 		$_REQUEST['subject'] = '';
 
-	if (!isset($_REQUEST['useHTML']))
-		$_REQUEST['useHTML'] = 'n';
-
 	$smarty->assign('cc', $_REQUEST['cc']);
 	$smarty->assign('to', $_REQUEST['to']);
 	$smarty->assign('bcc', $_REQUEST['bcc']);
 	$smarty->assign('body', $_REQUEST['body']);
-	$smarty->assign('useHTML', $_REQUEST['useHTML']);
 	$smarty->assign('subject', $_REQUEST['subject']);
 	$smarty->assign('attach1', $_REQUEST['attach1']);
 	$smarty->assign('attach2', $_REQUEST['attach2']);

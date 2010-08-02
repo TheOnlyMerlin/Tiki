@@ -405,16 +405,6 @@ class HeaderLib
 		return $js_script;
 	}
 	
-	public function get_all_css_content() {
-		$files = $this->collect_css_files();
-		$minified = '';
-		foreach( $files['screen'] as $file) {
-			$minified .= $this->minify_css( $file );
-		}
-		$minified = $this->handle_css_imports( $minified );
-
-		return $minified;
-	}
 
 	private function output_css_files() {
 		$files = $this->collect_css_files();
@@ -430,6 +420,8 @@ class HeaderLib
 		$back = '';
 
 		if( $prefs['tiki_minify_css'] == 'y' ) {
+			require_once 'lib/pear/Minify/CSS.php';
+
 			if( $prefs['tiki_minify_css_single_file'] == 'y' ) {
 				$files = $this->get_minified_css_single( $files );
 			} else {
@@ -456,7 +448,7 @@ class HeaderLib
 
 			if( ! file_exists( $min ) ) {
 				file_put_contents( $min, $this->minify_css( $file ) );
-				chmod($min, 0644);
+			chmod($min, 0644);
 			}
 
 			$out[] = $min;
@@ -506,7 +498,6 @@ class HeaderLib
 
 	private function minify_css( $file ) {
 		global $tikipath, $tikiroot;
-		require_once 'lib/pear/Minify/CSS.php';
 		if (strpos($file, $tikiroot) === 0) {
 			$file = substr( $file, strlen( $tikiroot ) );
 		}

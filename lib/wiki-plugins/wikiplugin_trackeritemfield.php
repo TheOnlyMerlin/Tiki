@@ -70,14 +70,7 @@ function wikiplugin_trackeritemfield($data, $params) {
 	extract ($params, EXTR_SKIP);
 
 	if (empty($itemId) && !empty($_REQUEST['itemId'])) {
-		if (!empty($trackerId)) {
-			$info = $trklib->get_item_info($_REQUEST['itemId']);
-			if (!empty($info) && $info['trackerId'] == $trackerId) {
-				$itemId = $_REQUEST['itemId'];
-			}
-		} else {
-			$itemId = $_REQUEST['itemId'];
-		}
+		$itemId = $_REQUEST['itemId'];
 	}
 
 	if (empty($itemId) && !empty($trackerId) && ($tracker_info = $trklib->get_tracker($trackerId))) {
@@ -164,7 +157,7 @@ function wikiplugin_trackeritemfield($data, $params) {
 		$all_fields = $trklib->list_tracker_fields($trackerId, 0, -1);
 		$all_fields = $all_fields['data'];
 		if (!empty($fields)) {
-			$fields = explode(':', $fields);
+			$fields = split(':', $fields);
 			foreach ($all_fields as $i=>$fopt) {
 				if (!in_array($fopt['fieldId'], $fields)) {
 					unset($all_fields[$i]);
@@ -198,13 +191,6 @@ function wikiplugin_trackeritemfield($data, $params) {
 			$test = false;
 
 		if (($val = $trklib->get_item_value($trackerId, $itemId, $fieldId)) !== false) {
-			if ($field['type'] == 'F') {
-				global $freetaglib;
-				if (!is_object($freetaglib)) {
-					include_once('lib/freetag/freetaglib.php');
-				}
-				$field['freetags'] = $freetaglib->_parse_tag($val);
-			}
 			if ($field['type'] == 'c' && !empty($value)) {
 				if (strtolower($value) == 'on')
 					$value = 'y';

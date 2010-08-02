@@ -49,7 +49,7 @@ if ($prefs['javascript_enabled'] == 'y') {	// we have JavaScript
 	$prefs['feature_jquery'] = 'y';	// just in case
 	
 	// load translations lang object from /lang/xx/language.js if there
-	if (file_exists('lang/' . $prefs['language'] . '/language.js')) {
+	if ($prefs['feature_multilingual'] == 'y' && file_exists('lang/' . $prefs['language'] . '/language.js')) {
 		// after the usual lib includes (up to 10) but before custom.js (50)
 		$headerlib->add_jsfile('lang/' . $prefs['language'] . '/language.js', 25);
 	}
@@ -80,7 +80,6 @@ jqueryTiki.cboxCurrent = "{current} / {total}";
 jqueryTiki.sheet = '.($prefs['feature_sheet'] == 'y' && $prefs['feature_jquery_sheet'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.carousel = '.($prefs['feature_jquery_carousel'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.jqs5 = '.($prefs['feature_jquery_jqs5'] == 'y' ? 'true' : 'false') . ';
-jqueryTiki.validate = '.($prefs['feature_jquery_validation'] == 'y' ? 'true' : 'false') . ';
 
 jqueryTiki.effect = "'.$prefs['jquery_effect'].'";				// Default effect
 jqueryTiki.effect_direction = "'.$prefs['jquery_effect_direction'].'";	// "horizontal" | "vertical" etc

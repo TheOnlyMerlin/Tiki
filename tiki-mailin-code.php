@@ -51,11 +51,7 @@ global $debugger;
 if (defined($debugger)) $debugger->msg("tiki-mailin-code.php");
 // Get a list of ACTIVE emails accounts configured for mailin procedures
 $accs = $mailinlib->list_active_mailin_accounts(0, -1, 'account_desc', '');
-
-if (empty($accs['data'])) {
-	$content = '';
-	return;
-}
+//print ('<a href="tiki-admin_mailin.php">Admin</a><br /><br />');
 $content = '<br /><br />';
 // foreach account
 foreach($accs['data'] as $acc) {
@@ -101,7 +97,7 @@ foreach($accs['data'] as $acc) {
 					preg_match('/<?([-!#$%&\'*+\.\/0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'*+\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\.\/0-9=?A-Z^_`a-z{|}~]+)>?/', $aux["From"], $mail);
 					$email_from = $mail[1];
 					$aux["msgid"] = $i;
-					$aux["realmsgid"] = preg_replace('/[<>]/', '', $aux["Message-ID"]);
+					$aux["realmsgid"] = ereg_replace("[<>]", "", $aux["Message-ID"]);
 					$message = $pop3->getMsg($i);
 					$output = mime::decode($message);
 					//mailin_parse_output($output, $parts, 0);

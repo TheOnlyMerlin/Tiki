@@ -218,7 +218,7 @@ if (isset($_REQUEST["page"])) {
 		include_once ('tiki-admin_include_webmail.php');
 	} else if ($adminPage == "rss") {
 		$admintitle = "Feeds"; //get_strings tra("Feeds")
-		$helpUrl = "Feeds User";
+		$helpUrl = "Feeds";
 		$description = "Feeds settings"; //get_strings tra("Feeds settings")
 		include_once ('tiki-admin_include_rss.php');
 	} else if ($adminPage == "directory") {
@@ -344,7 +344,7 @@ if (isset($_REQUEST["page"])) {
 	} else if ($adminPage == "semantic") {
 		$admintitle = "Semantic Wiki Links";
 		$description = "Manage semantic tokens used throughout the wiki.";
-		$helpUrl = "Semantic+Admin";
+		$helpUrl = "Semantic";
 		include_once ('tiki-admin_include_semantic.php');
 	} else if ($adminPage == "webservices") {
 		$admintitle = "Webservice Registration";
@@ -356,11 +356,11 @@ if (isset($_REQUEST["page"])) {
 		$description = 'Search engine friendly url';
 		$helpUrl = "Rewrite+Rules";
 		include_once ('tiki-admin_include_sefurl.php');
-	} else if ($adminPage == "video") {
-		$admintitle = "Video";//get_strings tra("Video")
-		$helpUrl = "Kaltura+Config";
-		$description = "Settings for video streaming integration";//get_strings tra("Settings for video streaming integration")
-		include_once ('tiki-admin_include_video.php');
+	} else if ($adminPage == "kaltura") {
+		$admintitle = "Kaltura";//get_strings tra("Kaltura")
+		$helpUrl = "Kaltura";
+		$description = "Kaltura settings";//get_strings tra("Kaltura settings")
+		include_once ('tiki-admin_include_kaltura.php');
 	} else if ($adminPage == "connect") {
 		$admintitle = "Connect";
 		$helpUrl = "Connect";
@@ -376,11 +376,6 @@ if (isset($_REQUEST["page"])) {
 		$helpUrl = 'Payment';
 		$description = 'Payment';
 		include_once ('tiki-admin_include_payment.php');
-	} else if ($adminPage == "socialnetworks") {
-		$admintitle = "Social Networks";
-		$helpUrl = "Social+Networks";
-		$description = "Settings for social networks integration";
-		include_once ('tiki-admin_include_socialnetworks.php');
 	} else {
 		$helpUrl = '';
 	}

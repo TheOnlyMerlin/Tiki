@@ -76,7 +76,7 @@ function smarty_block_self_link($params, $content, &$smarty, $repeat = false) {
 			}
 			// Complete _script path if needed (not empty, not an anchor, ...)
 			if ( !empty($params['_script']) && $params['_script'][0] != '#' && $params['_script'] != 'javascript:void(0)' ) {
-				if ( $_SERVER['PHP_SELF'][0] == '/' && strpos($params['_script'], '/') === false ) {
+				if ( $params['_script'] != '' && $_SERVER['PHP_SELF'][0] == '/' && strpos($params['_script'], '/') === false ) {
 					$self_dir = str_replace('\\','/',dirname($_SERVER['PHP_SELF']));
 					$params['_script'] = ( $self_dir == '/' ? '' : $self_dir ).'/'.$params['_script'];
 				}
@@ -86,7 +86,7 @@ function smarty_block_self_link($params, $content, &$smarty, $repeat = false) {
 			}
 
 			$params['_type'] = $default_type;
-			if ( $prefs['feature_ajax'] == 'y' && $params['_ajax'] == 'y') unset ($params['_anchor']);
+			if ( $params['_ajax'] == 'y') unset ($params['_anchor']);
 			$ret = smarty_function_query($params, $smarty);
 		}
 

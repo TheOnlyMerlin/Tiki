@@ -217,12 +217,6 @@ function prefs_feature_list() {
 			'help' => 'Tell+a+Friend',
 			'type' => 'flag',
 		),
-		'feature_share' => array(
-			'name' => tra('Share a page'),
-			'description' => tra('Add a link "Share this page" in all the pages to send it via e-Mail, Twitter, Facebook, Message, Forums'),
-			'help' => 'Promote-Page',
-			'type' => 'flag',
-		),
 		'feature_html_pages' => array(
 			'name' => tra('HTML pages'),
 			'description' => tra('Static and dynamic HTML content'),
@@ -944,7 +938,19 @@ function prefs_feature_list() {
 			'name' => tra('Custom blog headings'),
 			'type' => 'flag',
 		),
+		'feature_blog_comments' => array(
+			'name' => tra('Blog-level'),
+			'type' => 'flag',
+		),
 		'feature_blogposts_comments' => array(
+			'name' => tra('Post-level'),
+			'type' => 'flag',
+		),
+		'feature_trackbackpings' => array(
+			'name' => tra('Blog-level'),
+			'type' => 'flag',
+		),
+		'feature_blogposts_pings' => array(
 			'name' => tra('Post-level'),
 			'type' => 'flag',
 		),
@@ -1096,6 +1102,10 @@ function prefs_feature_list() {
 		),
 		'feature_site_login' => array(
 			'name' => tra('Login Bar'),
+			'type' => 'flag',
+		),
+		'feature_topbar_debug' => array(
+			'name' => tra('Debugger Console'),
 			'type' => 'flag',
 		),
 		'feature_topbar_custom_code' => array(
@@ -1316,12 +1326,6 @@ function prefs_feature_list() {
 				'vader' => 'vader',
 			), 
 		),
-		'feature_jquery_validation' => array(
-			'name' => tra('Validation'),
-			'type' => 'flag',
-			'description' => tra('Provides various validation possibilities like in Trackers.'),
-			'help' => 'JQuery#Validation',
-		),
 		'feature_jquery_sheet' => array(
 			'name' => tra('JQuery Sheet'),
 			'type' => 'flag',
@@ -1347,13 +1351,7 @@ function prefs_feature_list() {
 			'name' => tra('JQuery Sortable Tables'),
 			'type' => 'flag',
 			'help' => 'JQuery#TableSorter',
-			'description' => tra('Sort in fancytable plugin'),
-		),
-		'feature_jquery_media' => array(
-			'name' => tra('JQuery Media'),
-			'type' => 'flag',
-			'help' => 'JQuery#Media',
-			'description' => tra('Media player'),
+			'description' => tra('As it turns out, an unused experiment...'),
 		),
 		'feature_tabs' => array(
 			'name' => tra('Use Tabs'),
@@ -1633,10 +1631,6 @@ function prefs_feature_list() {
 				'wikiplugin_quote',
 			),
 		),
-		'feature_use_three_colon_centertag' => array(
-			'name' => tra('Use three colons instead of two to center text. Avoids conflict with C++ resolution scope operator.'),
-			'type' => 'flag',
-		),
 		'feature_community_gender' => array(
 			'name' => tra('Users can choose to show their gender'),
 			'type' => 'flag',
@@ -1737,12 +1731,6 @@ function prefs_feature_list() {
 			'description' => tra('Constrains the site display to 990px wide.'),
 			'warning' => tra('You can modify at styles/layout/fixed_width.css'),
 		),
-		'feature_socialnetworks' => array(
-			'name' => tra('Social networks'),
-			'description' => tra('Integration with different social networks like twitter or facebook'),
-			'type' => 'flag',
-			'keywords' => 'social networks',
-		),
 		'feature_group_transition' => array(
 			'name' => tra('Group Transition'),
 			'description' => tra('Enables transitions for users between different groups. Transitions will create a user approval workflow.'),
@@ -1751,11 +1739,6 @@ function prefs_feature_list() {
 		'feature_category_transition' => array(
 			'name' => tra('Category Transition'),
 			'description' => tra('Enables transitions on objects between different categories. Transitions will create a document workflow.'),
-			'type' => 'flag',
-		),
-		'feature_watershed' => array(
-			'name' => tra('Ustream Watershed'),
-			'description' => tra('Integration to Ustream Watershed live video streaming.'),
 			'type' => 'flag',
 		),
 	);

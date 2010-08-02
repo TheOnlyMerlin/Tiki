@@ -188,14 +188,13 @@ class TikiLib extends TikiDb_Bridge
 	/*shared*/
   // Returns IP address or if 127.0.0.1 looks for a proxy address
 	function get_ip_address() {
-		$ip = null;
-
-		if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-			$fwips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-			$ip = $fwips[0];
+		$ip = "127.0.0.1";  // assume localhost
+		if (isset($_SERVER["REMOTE_ADDR"])) {
+			$ip = $_SERVER["REMOTE_ADDR"];
 		}
-		if ((empty($ip) || strtolower($ip) == 'unknown') && isset($_SERVER['REMOTE_ADDR'])) {
-			$ip = $_SERVER['REMOTE_ADDR'];
+		if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
+			$fwips = explode(',', $_SERVER["HTTP_X_FORWARDED_FOR"]);
+			$ip = $fwips[0];
 		}
 		return $ip;
 	}
@@ -1642,6 +1641,70 @@ class TikiLib extends TikiDb_Bridge
 		return $pages;
 	}
 
+	// Spellchecking routine
+	// Parameters:
+	// what: what to spell check (a text)
+	// where: where to replace (maybe the same text)
+	// language: language to use
+	// element: element where the text is going to be replaced (a textarea or similar)
+	/*shared*/
+	// \todo replace the hardcoded html by smarty template
+	function spellcheckreplace($what, $where, $language, $element) {
+		global $smarty,$headerlib;
+
+		$words = preg_split("/\s/", $what);
+
+		foreach ($words as $word) {
+			if (preg_match("/^[A-Z]?[a-z]+$/", $word) && strlen($word) > 1) {
+				$result = $this->spellcheckword($word, $language);
+
+				if (count($result) > 0) {
+					// Replace the word with a warning color in the edit_data
+					// Prepare the replacement
+					$sugs = $result[$word];
+					$first = 1;
+					$repl = '';
+					$popup_text = '';
+					if (count($sugs) > 0) {
+						$asugs = array_keys($sugs);
+						$temp_max = count($asugs);
+						for ($i = 0; $i < $temp_max && $i < 5; $i++) {
+							$sug = $asugs[$i];
+
+							// If you want to use the commented out line below, please remove the \ in <\/script>; it was breaking vim highlighting.  -rlpowell
+							// $repl.="<script type='text/javascript'>param_${word}_$i = new Array(\\\"$element\\\",\\\"$word\\\",\\\"$sug\\\");<\/script><a href=\\\"javascript:replaceLimon(param_${word}_$i);\\"."\">$sug</a><br />";
+							$repl .= "<a href=\'javascript:param=doo_${word}_$i();replaceLimon(param);\'>".addslashes($sug)."</a><br />";
+
+							$headerlib->add_js("function doo_${word}_$i(){ aux = new Array(\"$element\",\"$word\",\"$sug\"); return aux;}");
+						}
+
+						//$popup_text = " <a title=\"".$sug."\" style=\"text-decoration:none; color:red;\" onclick='"."return overlib(".'"'.$repl.'"'.",STICKY,CAPTION,".'"'."SpellChecker suggestions".'"'.");'>".$word.'</a> ';
+						$popup_text = " <a title=\"Click for a list of spelling suggestions\" style=\"text-decoration: none; color:red;\" onclick=\"return overlib('$repl',STICKY,CAPTION,'Spellchecker suggestions');\">$word</a> ";
+					}
+
+					//print("popup: <pre>".htmlentities($popup_text)."</pre><br />");
+					if ($popup_text) {
+						$where = preg_replace("/\s$word\s/", $popup_text, $where);
+					} else {
+						$where = preg_replace("/\s$word\s/", ' <span style="color:red;">' . $word . '</span> ', $where);
+					}
+
+					//$parsed = preg_replace("/\s$word\s/",' <a style="color:red;">'.$word.'</a> ',$parsed);
+				}
+			}
+		}
+		return $where;
+	}
+
+	/*shared*/
+	function spellcheckword($word, $lang) {
+		include_once ("bablotron.php");
+
+		$b = new bablotron($this->db, $lang);
+		$result = $b->spellcheck_word($word);
+		return $result;
+	}
+
 	function list_all_forum_topics($offset, $maxRecords, $sort_mode, $find) {
 		$bindvars = array('forum', 0);
 		if ($find) {
@@ -2119,7 +2182,7 @@ class TikiLib extends TikiDb_Bridge
 	 * @param string $my_user use another user than the current one
 	 * @param bool $keep_subgals_together do not mix files and subgals when sorting (if true, subgals will always be at the top)
 	 * @param bool $parent_is_file use $galleryId param as $fileId (to return only archives of the file)
-	 * @param array filter: creator, categId, lastModif, lastDownload, fileId
+	 * @param array filter: creator, categId, lastModif, lastDownload
 	 * @return array of found files and subgals
 	 */
 	function get_files($offset, $maxRecords, $sort_mode, $find, $galleryId=-1, $with_archive=false, $with_subgals=false, $with_subgals_size=true, $with_files=true, $with_files_data=false, $with_parent_name=false, $with_files_count=true, $recursive=false, $my_user='', $keep_subgals_together=true, $parent_is_file=false, $with_backlink=false, $filter='') {
@@ -2252,10 +2315,6 @@ class TikiLib extends TikiDb_Bridge
 		if ( !empty($filter['lastDownload']) ) {
 			$f_query .= ' AND (tf.`lastDownload` < ? or tf.`lastDownload` is NULL)';
 			$bindvars[] = $filter['lastDownload'];
-		}
-		if (!empty($filter['fileId'])) {
-			$f_query .= ' AND tf.`fileId` in ('.implode(',',array_fill(0, count($filter['fileId']),'?')).')';
-			$bindvars = array_merge($bindvars, $filter['fileId']);
 		}
 		$galleryId_str = '';
 		if ( is_array($galleryId) ) {
@@ -2830,6 +2889,216 @@ class TikiLib extends TikiDb_Bridge
 		}
 
 		return array('data' => $ret, 'cant' => $cant);
+	}
+
+	// BLOG METHODS ////
+	function list_blogs($offset = 0, $maxRecords = -1, $sort_mode = 'created_desc', $find = '', $ref='', $with = '') {
+		global $categlib; if (!$categlib) require_once 'lib/categories/categlib.php';
+		$bindvars = array();
+		$join = '';
+		$where = '';
+
+		if( $jail = $categlib->get_jail() ) {
+			$categlib->getSqlJoin($jail, 'blog', '`tiki_blogs`.`blogId`', $join, $where, $bindvars);
+		}	
+
+		if ($find) {
+			$findesc = '%' . $find . '%';
+			$where .= ' and (`tiki_blogs`.`title` like ? or `tiki_blogs`.`description` like ?) ';
+			$bindvars = array_merge($bindvars, array($findesc, $findesc));
+		}
+		if (isset($with['showlastpost'])) {
+			$query = "SELECT tb.*, tbp.`postId`, tbp.`created` as postCreated,  tbp.`user` as postUser, tbp.`title` as postTitle, tbp.`data` as postData FROM `tiki_blogs` tb, `tiki_blog_posts` tbp  $join where tb.`blogId` = tbp.`blogId` and tbp.`created` = (select max(`created`) from `tiki_blog_posts` tbp2 where tbp2.`blogId`=tb.`blogId` order by `created` desc) $where order by tb.".$this->convertSortMode($sort_mode);
+		} else {
+			$query = "select * from `tiki_blogs` $join WHERE 1=1 $where order by `tiki_blogs`." . $this->convertSortMode($sort_mode); 
+		}
+		$result = $this->fetchAll($query, $bindvars);
+
+		$ret = array();
+		$cant = 0;
+		$nb = 0;
+		$i = 0;
+		//FIXME Perm:filter ?
+		foreach ( $result as $res ) {
+			global $user;
+			if ($objperm = $this->get_perm_object($res['blogId'], 'blog', '', false)) {
+				if ( $objperm['tiki_p_read_blog'] == 'y' || ($ref == 'post' && $objperm['tiki_p_blog_post_view_ref'] == 'y') || ($ref == 'blog' && $objperm['tiki_p_blog_view_ref'] == 'y')) {
+				  ++$cant;
+				  if ($maxRecords == - 1 || ($i >= $offset && $nb < $maxRecords)) {
+					$ret[] = $res;
+					++$nb;
+				  }
+				++$i;
+			  }
+			}
+		}
+		$retval = array();
+		$retval["data"] = $ret;
+		$retval["cant"] = $cant;
+		return $retval;
+	}
+
+	/*shared*/
+	function get_blog($blogId) {
+		global $prefs, $user, $categlib; if (!$categlib) require_once 'lib/categories/categlib.php'; 
+
+		$bindvars = array();
+
+		if( $jail = $categlib->get_jail() ) {
+			$categlib->getSqlJoin($jail, 'blog', '`tiki_blogs`.`blogId`', $join, $where, $bindvars);
+		} else {
+			$join = '';
+			$where = '';
+		}
+		array_push( $bindvars, $blogId );
+		if (!empty($where)) $where = '1=1 '.$where.' AND ';
+		$query = "SELECT * FROM `tiki_blogs` $join WHERE $where `blogId`=?";
+		$result = $this->query($query, $bindvars);
+		if ($result->numRows()) {
+			$res = $result->fetchRow();
+		} else {
+			return false;
+		}
+
+		if ($prefs['feature_score'] == 'y' && $user != $res['user']) {
+			$this->score_event($user, 'blog_read', $blogId);
+			$this->score_event($res['user'], 'blog_is_read', "$user:$blogId");
+		}
+
+		return $res;
+	}
+
+	/*shared*/
+	function get_blog_by_title($blogTitle) {
+		global $prefs, $user;
+
+    // Avoiding select by name so as to avoid SQL injection problems.
+		$query = "select `title`, `blogId` from `tiki_blogs` where `use_title` = 'y' ";
+		$result = $this->fetchAll($query);
+		if ( !empty($result) ) {
+      foreach ( $result as $res ) {
+        if( strtolower($res['title']) == strtolower($blogTitle) ) {
+          return $this->get_blog($res['blogId']);
+        }
+      }
+		}
+
+		return false;
+	}
+
+	// Returns an array of blogs that belong to the user with the given name, or which are public, if $include_public is set to true.
+	// A blog is represented by an array like a tiki_blogs record.
+	function list_user_blogs($user, $include_public = false) {
+		$query = "select * from `tiki_blogs` where `user`=? ";
+		$bindvars=array($user);
+		if ($include_public) {
+			$query .= " or `public`=?";
+			$bindvars[]='y';
+		}
+		$query .= "order by `title` asc";
+		$result = $this->fetchAll($query,$bindvars);
+		$ret = array();
+
+		//FIXME Perm::filter ?
+		foreach ( $result as $res ) {
+			if ($this->user_has_perm_on_object($user, $res['blogId'], 'blog', 'tiki_p_read_blog')) {
+				$ret[] = $res;
+			}
+		}
+		return $ret;
+	}
+
+	function list_blogs_user_can_post() {
+		global $tiki_p_blog_admin, $user;
+		$query = "select * from `tiki_blogs` order by `title` asc";
+		$result = $this->fetchAll($query);
+		$ret = array();
+
+		//FIXME Perm:filter ?
+		foreach ( $result as $res ) {
+			if( (!empty($user) and $user == $res['user']) || $tiki_p_blog_admin == 'y' || ($res['public'] == 'y' && $this->user_has_perm_on_object($user, $res['blogId'], 'blog', 'tiki_p_blog_post'))) 
+				$ret[] = $res;
+		}
+		return $ret;
+	}
+
+	function list_posts($offset = 0, $maxRecords = -1, $sort_mode = 'created_desc', $find = '', $filterByBlogId = -1, $author='', $ref='', $date_min = 0, $date_max = 0) {
+
+		$authorized_blogs = $this->list_blogs(0, -1, 'created_desc', '', $ref);
+		$permit_blogs = array();
+		for ($i = 0; $i < $authorized_blogs["cant"] ; $i++) {
+			$permit_blogs[] = $authorized_blogs["data"][$i]['blogId'];
+		}
+
+		if ($filterByBlogId >= 0) {
+			// get posts for a given blogId:
+			$mid = " where ( `blogId` = ? ) ";
+			$bindvars = array($filterByBlogId);
+		} else {
+			// get posts from all blogs
+			$mid = '';
+			$bindvars = array();
+		}
+
+		if ($find) {
+			$findesc = '%' . $find . '%';
+			if ($mid == "") {
+				$mid = " where ";
+			} else {
+				$mid .= " and ";
+			}
+			$mid .= " ( `data` like ? ) ";
+			$bindvars[] = $findesc;
+		}
+		if ($date_min !== 0 || $date_max !== 0) {
+			if ( $date_max <= 0 ) {
+				// show articles published today
+				$date_max = $this->now;
+			}
+			if ($mid == '') {
+				$mid = ' where ';
+			} else {
+				$mid .= ' and ';
+			}
+			$mid .= '(`created`>=? and `created`<=?)';
+			$bindvars[] = $date_min;
+			$bindvars[] = $date_max;
+		}
+		if (!empty($author)) {
+			if ($mid == '') {
+				$mid = ' where ';
+			} else {
+				$mid .= ' and ';
+			}
+			$mid .= 'user =?';
+			$bindvars[] = $author;
+		}
+
+		$query = "select * from `tiki_blog_posts` $mid order by ".$this->convertSortMode($sort_mode);
+		$query_cant = "select count(*) from `tiki_blog_posts` $mid";
+		$result = $this->fetchAll($query,$bindvars,$maxRecords,$offset);
+		$cant = $this->getOne($query_cant,$bindvars);
+		$ret = array();
+
+		foreach ( $result as $res ) {
+			$blogId = $res["blogId"];
+
+			if ( ! in_array($blogId, $permit_blogs) ) {
+				continue;
+			}
+			$query = "select `title`  from `tiki_blogs` where `blogId`=?";
+			$cant_com = $this->getOne("select count(*) from
+					`tiki_comments` where `object`=? and `objectType` = ?",
+					array((string) $res["postId"],'blog'));
+			$res["comments"] = $cant_com;
+			$res["blogTitle"] = $this->getOne($query,array((int)$blogId));
+			$res["size"] = strlen($res["data"]);
+			$ret[] = $res;
+		}
+		$retval = array();
+		$retval["data"] = $ret;
+		$retval["cant"] = $cant;
+		return $retval;
 	}
 
 	// CMS functions -ARTICLES- & -SUBMISSIONS- ////
@@ -3570,12 +3839,6 @@ class TikiLib extends TikiDb_Bridge
 			$mid .= 'tl.`toPage` IS NULL and ts.`page_id` IS NULL';
 		}
 
-		if ( $prefs['rating_advanced'] == 'y' ) {
-			global $ratinglib; require_once 'lib/rating/ratinglib.php';
-			$join_tables .= $ratinglib->convert_rating_sort($sort_mode, 'wiki page', '`page_id`');
-		}
-
-
 		if (!empty($join_bindvars)) {
 			$bindvars = empty($bindvars)? $join_bindvars : array_merge($join_bindvars, $bindvars);
 		}
@@ -3695,7 +3958,7 @@ class TikiLib extends TikiDb_Bridge
 	 * global = true set the global perm and smarty var, otherwise return an array of perms
 	 */
 	function get_perm_object($objectId, $objectType, $info='', $global=true) {
-		global $smarty, $userlib, $user;
+		global $smarty, $userlib;
 		$perms = Perms::get( array( 'type' => $objectType, 'object' => $objectId ) );
 		$permDescs = $userlib->get_permissions(0, -1, 'permName_desc', '', $this->get_permGroup_from_objectType($objectType));
 
@@ -3711,11 +3974,6 @@ class TikiLib extends TikiDb_Bridge
 			}
 		}
 
-		$ret2 = $this->get_local_perms($user, $objectId, $objectType, $info, true);
-		if ($ret2) {
-			$ret = $ret2;
-		}
-		
 		return $ret;
 	}
 
@@ -4087,11 +4345,6 @@ class TikiLib extends TikiDb_Bridge
 		require_once("lib/cache/cachelib.php");
 		$cachelib->invalidate('user_details_'.$my_user);
 
-		if ($name == "realName") {
-			// attempt to invalidate userlink cache (does not cover all options - only the default)
-			$cachelib->invalidate('userlink.'.$user.'.'.$my_user.'0');
-			$cachelib->invalidate('userlink.'.$my_user.'0');
-		}
 		$user_preferences[$my_user][$name] = $value;
 
 		if ( $my_user == $user ) {
@@ -4172,6 +4425,43 @@ class TikiLib extends TikiDb_Bridge
 	
 		$page_info = $this->get_page_info($pageName, false);
 		
+		if ( $page_info === false ) {
+			if ( $searchAlias ) {
+				global $semanticlib, $prefs;
+
+				if ( $prefs['feature_wiki_pagealias'] == 'y' ) {
+					require_once 'lib/wiki/semanticlib.php';
+
+					$links = $semanticlib->getLinksUsing(
+						explode( ',', $prefs['wiki_pagealias_tokens'] ),
+						array( 'toPage' => $pageName ) );
+
+					if ( count($links) > 0 ) {
+					    // There are multiple aliases for this page. Need to disambiguate.
+					    //
+						// When feature_likePages is set, trying to display the alias itself will
+						// display an error page with the list of aliased pages in the "like pages" section.
+						// This allows the user to pick the appropriate alias.
+						// So, leave the $pageName to the alias.
+						// 
+						// If feature_likePages is not set, then the user will only see that the page does not
+						// exist. So it's better to just pick the first one.
+						//													
+						if ($prefs['feature_likePages'] = 'y') {
+							$desc = true;
+						} else {
+							// If feature_likePages is NOT set, then trying to display the 
+							$pageName = $links[0]['fromPage'];
+							$desc = $this->page_exists_desc( $pageName );
+						}
+						return $desc;
+					}
+				}
+			}
+
+			return false;
+		}
+
 		return empty($page_info['description']) ? $pageName : $page_info['description'];
 	}
 
@@ -4316,9 +4606,7 @@ class TikiLib extends TikiDb_Bridge
 			refresh_index('pages', $name);
 		}
 
-		$this->object_post_save( array( 'type'=> 'wiki page', 'object'=> $name, 'description'=> $description, 'name'=>$page, 'href'=>"tiki-index.php?page=$name" ), array(
-			'content' => $data,
-		) );
+		$this->syncParsedText($data, array('type'=> 'wiki page', 'object'=> $name, 'description'=> $description, 'name'=>$page, 'href'=>"tiki-index.php?page=$name"));
 
 		return true;
 	}
@@ -4618,10 +4906,66 @@ class TikiLib extends TikiDb_Bridge
 	}
 
 	function plugin_split_args( $params_string ) {
-		require_once 'WikiParser/PluginArgumentParser.php';
-		$parser = new WikiParser_PluginArgumentParser;
+		// the following str_replace line is to decode the &gt; char when html is turned off
+		// perhaps the plugin syntax should be changed in 1.8 not to use any html special chars
+		$params_string = str_replace('&gt;', '>', $params_string);
+		$params_string = str_replace('&lt;', '<', $params_string);
+		$params_string = str_replace('&quot;', '"', $params_string);
+		$params_string = str_replace('&apos;', "'", $params_string);
+		$params_string = str_replace('&amp;', '&', $params_string);
 
-		return $parser->parse( $params_string );
+		$arguments = array();
+
+		// Handle parameters one by one
+		while( false !== $pos = strpos( $params_string, '=' ) ) {
+			$name = substr( $params_string, 0, $pos );
+			$name = trim(ltrim( $name, ', ' ));
+			$value = '';
+
+			// Consider =>
+			if( isset($params_string{$pos + 1}) && $params_string{$pos + 1} == '>' )
+				$pos++;
+
+			// Cut off the name part
+			$params_string = substr( $params_string, $pos + 1 );
+			$params_string = ltrim( $params_string );
+
+			if( !empty($params_string) && ($params_string{0} == '"' || $params_string{0} == "'") ) {
+				$quote = 0;
+				// Parameter between quotes, find closing quote not escaped by a \
+				while( false !== $quote = strpos( $params_string, $params_string{0}, $quote + 1 ) ) {
+					if( $params_string{$quote - 1} != "\\" )
+						break;
+				}
+
+				// Closing quote found
+				if( $quote !== false ) {
+					$value = substr( $params_string, 1, $quote - 1 );
+					$arguments[$name] = str_replace( array('\"', "\\'"), array('"', "'"), $value );
+
+					$params_string = substr( $params_string, $quote + 1 );
+					continue;
+				}
+
+				// Not found, fallback as if opening quote was part of the string
+			}
+
+			// If last parameter, consider next as end of string
+			if( preg_match( "/[\s,]\w+=/", $params_string, $parts ) ) {
+				$end = strpos( $params_string, $parts[0] );
+				$value = substr( $params_string, 0, $end );
+				$params_string = substr( $params_string, $end );
+			} else {
+				$value = $params_string;
+				$params_string = '';
+			}
+
+			$value = rtrim( $value, "\n\t\r\0, " );
+			$value = strip_tags($value);
+			$arguments[$name] = $value;
+		}
+
+		return $arguments;
 	}
 	// get all the plugins of a text- can be limitted only to some
 	function getPlugins($data, $only=null) {
@@ -4804,8 +5148,7 @@ class TikiLib extends TikiDb_Bridge
 						} else {
 							
 							// Handle nested plugins.
-							// Comment : in a case like {TRACKERITEMFIELD(test)}{INCLUDE() /}{TRACKERITEMFIELD}. INCLUDE Must not be interpreted if TRACKERITEMFIELD return false
-							//$this->parse_first($plugin_data, $preparsed, $noparsed, $options, $real_start_diff + $pos+strlen($plugin_start));
+							$this->parse_first($plugin_data, $preparsed, $noparsed, $options, $real_start_diff + $pos+strlen($plugin_start));
 
 							if( true === $status = $this->plugin_can_execute( $plugin_name, $plugin_data, $arguments ) ) {
 								if (isset($options['stripplugins']) && $options['stripplugins']) {
@@ -4841,7 +5184,7 @@ class TikiLib extends TikiDb_Bridge
 						//echo '<pre>'; debug_print_backtrace(); echo '</pre>';
 						global $headerlib;
 						$headerlib->add_jsfile( 'tiki-jsplugin.php?language='.$prefs['language'], 'dynamic' );
-						if( $options['fck'] !== 'y' && $this->plugin_is_editable( $plugin_name ) && (empty($options['preview_mode']) || !$options['preview_mode']) && (empty($options['print']) || !$options['print']) && !$options['suppress_icons'] ) {
+						if( $this->plugin_is_editable( $plugin_name ) && (empty($options['preview_mode']) || !$options['preview_mode']) && (empty($options['print']) || !$options['print']) && !$options['suppress_icons'] ) {
 							include_once('lib/smarty_tiki/function.icon.php');
 							global $page;
 							$id = 'plugin-edit-' . $plugin_name . $current_index;
@@ -5268,7 +5611,6 @@ class TikiLib extends TikiDb_Bridge
 	}
 
 	function plugin_execute( $name, $data = '', $args = array(), $offset = 0, $validationPerformed = false, $parseOptions = array() ) {
-		global $prefs;
 		$outputFormat = 'wiki';
 		if( isset($parseOptions['context_format']) ) {
 			$outputFormat = $parseOptions['context_format'];
@@ -5292,95 +5634,105 @@ class TikiLib extends TikiDb_Bridge
 		$func_name = 'wikiplugin_' . $name;
 		
 		if( ! $validationPerformed ) {
-			$this->plugin_apply_filters( $name, $data, $args );
-		}
+			$info = $this->plugin_info( $name );
+			$default = TikiFilter::get('xss');
 
-		if ($prefs['wysiwyg_htmltowiki'] === 'y' and isset($parseOptions['fck']) and $parseOptions['fck'] === 'y' ) {
-			$fck_editor_plugin = '{'.strtoupper($name).'(';
+			// Apply filters on the body
+			$filter = isset($info['filter']) ? TikiFilter::get($info['filter']) : $default;
+			$data = $this->htmldecode($data);
+			$data = $filter->filter($data);
+
+			// Make sure all arguments are declared
+			$params = $info['params'];
+
+			if( ! isset( $info['extraparams'] ) && is_array($params) ) {
+				$args = array_intersect_key( $args, $params );
+			}
+
+			// Apply filters on values individually
 			if (!empty($args)) {
-				foreach( $args as $argKey => $argValue ) {
-					$fck_editor_plugin .= $argKey.'="'.$argValue.'" ';
+				foreach( $args as $argKey => &$argValue ) {
+					if (!isset($params[$argKey])) {
+						continue;// extra params
+					}
+					$paramInfo = $params[$argKey];
+					$filter = isset($paramInfo['filter']) ? TikiFilter::get($paramInfo['filter']) : $default;
+					$argValue = $this->htmldecode($argValue);
+
+					if( isset($paramInfo['separator']) ) {
+						$vals = array();
+
+						foreach( explode( $paramInfo['separator'], $argValue ) as $val ) {
+							$vals[] = $filter->filter($val);
+						}
+
+						$vals = array_map( 'trim', $vals );
+						$vals = array_filter( $vals );
+
+						$argValue = array_values( $vals );
+					} else {
+						$argValue = $filter->filter($argValue);
+					}
 				}
 			}
-			$fck_editor_plugin .= ')}'.$data.'{'.strtoupper($name).'}';
 		}
 
 		if( function_exists( $func_name ) ) {
 			$pluginFormat = 'wiki';
-			$info = $this->plugin_info( $name );
 			if( isset( $info['format'] ) ) {
 				$pluginFormat = $info['format'];
 			}
 
 			$output = $func_name( $data, $args, $offset, $parseOptions );
 
-			$plugin_result =  $this->convert_plugin_output( $output, $pluginFormat, $outputFormat, $parseOptions );
-			if ($prefs['wysiwyg_htmltowiki'] === 'y' and isset($parseOptions['fck']) and $parseOptions['fck'] === 'y' ) {
-				return '<span plugin="'.$func_name.'"  _plugin="'.urlencode($fck_editor_plugin).'">'.$plugin_result.'</span>';
+			return $this->convert_plugin_output( $output, $pluginFormat, $outputFormat, $parseOptions );
+		} elseif( $info = $this->plugin_alias_info( $name ) ) {
+			$name = $info['implementation'];
+
+			// Do the body conversion
+			if( isset($info['body']) ) {
+				if( ( isset($info['body']['input']) && $info['body']['input'] == 'ignore' )
+					|| empty( $data ) )
+					$data = isset($info['body']['default']) ? $info['body']['default'] : '';
+
+				if( isset($info['body']['params']) )
+					$data = $this->plugin_replace_args( $data, $info['body']['params'], $args );
 			} else {
-				return $plugin_result;
+				$data = '';
 			}
-		} elseif( $this->plugin_find_implementation( $name, $data, $args ) ) {
-			return $this->plugin_execute( $name, $data, $args, $offset, $validationPerformed, $parseOptions );
-		}
-	}
 
-	private function plugin_apply_filters( $name, & $data, & $args ) {
-		$info = $this->plugin_info( $name );
-		$default = TikiFilter::get( isset( $info['defaultfilter'] ) ? $info['defaultfilter'] : 'xss');
-
-		// Apply filters on the body
-		$filter = isset($info['filter']) ? TikiFilter::get($info['filter']) : $default;
-		$data = $this->htmldecode($data);
-		$data = $filter->filter($data);
-
-		// Make sure all arguments are declared
-		$params = $info['params'];
-
-		if( ! isset( $info['extraparams'] ) && is_array($params) ) {
-			$args = array_intersect_key( $args, $params );
-		}
-
-		// Apply filters on values individually
-		if (!empty($args)) {
-			foreach( $args as $argKey => &$argValue ) {
-				if (!isset($params[$argKey])) {
-					continue;// extra params
-				}
-				$paramInfo = $params[$argKey];
-				$filter = isset($paramInfo['filter']) ? TikiFilter::get($paramInfo['filter']) : $default;
-				$argValue = $this->htmldecode($argValue);
-
-				if( isset($paramInfo['separator']) ) {
-					$vals = array();
-
-					foreach( explode( $paramInfo['separator'], $argValue ) as $val ) {
-						$vals[] = $filter->filter($val);
+			// Do parameter conversion
+			$params = array();
+			if( isset($info['params']) ) {
+				foreach( $info['params'] as $key => $value ) {
+					if( is_array( $value ) && isset($value['pattern']) && isset($value['params']) ) {
+						$params[$key] = $this->plugin_replace_args( $value['pattern'], $value['params'], $args );
+					} else {
+						// Handle simple values
+						if( isset($args[$key]) )
+							$params[$key] = $args[$key];
+						else
+							$params[$key] = $value;
 					}
-
-					$vals = array_map( 'trim', $vals );
-					$vals = array_filter( $vals );
-
-					$argValue = array_values( $vals );
-				} else {
-					$argValue = $filter->filter($argValue);
 				}
 			}
+
+			return $this->plugin_execute( $name, $data, $params, $offset, $validationPerformed, $parseOptions );
 		}
 	}
 	
 	private function convert_plugin_output( $output, $from, $to, $parseOptions ) {
 		if( ! $output instanceof WikiParser_PluginOutput ) {
-			if( $from === 'wiki' ) {
+			if( $from == 'wiki' ) {
 				$output = WikiParser_PluginOutput::wiki( $output );
-			} elseif( $from === 'html' ) {
+			} elseif( $from == 'html' ) {
 				$output = WikiParser_PluginOutput::html( $output );
 			}
 		}
 
-		if( $to === 'html' ) {
+		if( $to == 'html' ) {
 			return $output->toHtml( $parseOptions );
-		} elseif( $to === 'wiki' ) {
+		} elseif( $to == 'wiki' ) {
 			return $output->toWiki();
 		}
 	}
@@ -5433,7 +5785,7 @@ class TikiLib extends TikiDb_Bridge
 			}
 		}
 
-		$result = explode($splitter, $repl_string);
+		$result = split($splitter, $repl_string);
 
 		if( $matches ) {
 			// Loop through the result sections
@@ -5667,7 +6019,6 @@ class TikiLib extends TikiDb_Bridge
 		$options['suppress_icons'] = isset($options['suppress_icons']) ? (bool)$options['suppress_icons'] : false;
 		$options['parsetoc'] = isset($options['parsetoc']) ? (bool)$options['parsetoc'] : true;
 		$options['inside_pretty'] = isset($options['inside_pretty']) ? $options['inside_pretty'] : false;
-		if (empty($options['fck'])) $options['fck'] = 'n';
 		
 		
 		// if simple_wiki is true, disable some wiki syntax
@@ -5771,15 +6122,14 @@ class TikiLib extends TikiDb_Bridge
 			$this->parse_htmlchar($data);
 		}
 
+		// Extract [link] sections (to be re-inserted later)
+		$noparsedlinks = array();
+
 		if (!$simple_wiki) {
 			// Replace colors ~~foreground[,background]:text~~
 			// must be done before []as the description may contain color change
 			$data = preg_replace("/\~\~([^\:\,]+)(,([^\:]+))?:(.*)\~\~/Ums", "<span style=\"color:$1; background:$3\">$4</span>", $data);
 		}
-
-		// Extract [link] sections (to be re-inserted later)
-		$noparsedlinks = array();
-
 		// This section matches [...].
 		// Added handling for [[foo] sections.  -rlpowell
 		if (!$simple_wiki) {
@@ -5815,76 +6165,11 @@ class TikiLib extends TikiDb_Bridge
 		if (!$simple_wiki) {
 			// Replace boxes
 			$data = preg_replace("/\^([^\^]+)\^/", "<div class=\"simplebox\">$1</div>", $data);
-			if ( $options['fck'] === 'y' ) {
-				// Underlined text
-				$data = preg_replace("/===(.+?)===/", "<u>$1</u>", $data);
-				// Center text
-				if ($prefs['feature_use_three_colon_centertag'] == 'y') {
-					$data = preg_replace("/:::(.+?):::/", "<center>$1</center>", $data);
-				} else {
-					$data = preg_replace("/::(.+?)::/", "<center>$1</center>", $data);
-				}
-			} else {
-				// Underlined text
-				$data = preg_replace("/===(.+?)===/", "<span style=\"text-decoration:underline;\">$1</span>", $data);
-				// Center text
-				if ($prefs['feature_use_three_colon_centertag'] == 'y') {
-					$data = preg_replace("/:::(.+?):::/", "<div style=\"text-align: center;\">$1</div>", $data);
-				} else {
-					$data = preg_replace("/::(.+?)::/", "<div style=\"text-align: center;\">$1</div>", $data);
-				}
-			}
+			// Underlined text
+			$data = preg_replace("/===(.+?)===/", "<span style=\"text-decoration:underline;\">$1</span>", $data);
+			// Center text
+			$data = preg_replace("/::(.+?)::/", "<div style=\"text-align: center;\">$1</div>", $data);
 		}
-
-		$data = $this->parse_data_wikilinks( $data, $simple_wiki );
-
-		// reinsert hash-replaced links into page
-		foreach ($noparsedlinks as $np) {
-			$data = str_replace($np["key"], $np["data"], $data);
-		}
-
-		$data = $this->parse_data_externallinks( $data, $options );
-
-		$data = $this->parse_data_tables( $data, $simple_wiki );
-
-		if (!$simple_wiki && $options['parsetoc']) {
-			$this->parse_data_process_maketoc( $data, $options);
-
-		} // closing if ($simple_wiki)
-
-		// Close BiDi DIVs if any
-		for ($i = 0; $i < $bidiCount; $i++) {
-			$data .= "</div>";
-		}
-
-		// Put removed strings back.
-		$this->replace_preparse($data, $preparsed, $noparsed);
-
-		// Process pos_handlers here
-		foreach ($this->pos_handlers as $handler) {
-			$data = $handler($data);
-		}
-		return $data;
-	}
-
-	function parse_data_simple( $data ) {
-		global $prefs;
-		$words = array();
-
-		if ( $prefs['feature_hotwords'] == 'y' ) {
-			// Get list of HotWords
-			$words = $this->get_hotwords();
-		}
-
-		$data = $this->parse_data_wikilinks( $data, true );
-		$data = $this->parse_data_externallinks( $data, array( 'suppress_icons' => true ) );
-		$data = $this->parse_data_inline_syntax( $data, $words );
-
-		return $data;
-	}
-
-	private function parse_data_wikilinks( $data, $simple_wiki ) {
-		global $page_regex, $prefs;
 
 		// definitively put out the protected words ))protectedWord((
 		if ($prefs['feature_wikiwords'] == 'y' ) {
@@ -5901,7 +6186,9 @@ class TikiLib extends TikiDb_Bridge
 			}
 		}
 
-		// Links with description
+		// New syntax for wiki pages ((name|desc)) Where desc can be anything
+		// preg_match_all("/\(\(($page_regex)\|(.+?)\)\)/", $data, $pages);
+		// match ((name|desc)) as well as ((name|))
 		preg_match_all("/\(([a-z0-9-]+)?\(($page_regex)\|([^\)]*?)\)\)/", $data, $pages);
 
 		$temp_max = count($pages[1]);
@@ -5914,7 +6201,7 @@ class TikiLib extends TikiDb_Bridge
 			$data = str_replace($exactMatch, $replacement, $data);
 		}
 
-		// Wiki page syntax without description
+		// New syntax for wiki pages ((name)) Where name can be anything
 		preg_match_all("/\(([a-z0-9-]+)?\( *($page_regex) *\)\)/", $data, $pages);
 
 		foreach ($pages[2] as $idx => $page_parse) {
@@ -5952,11 +6239,10 @@ class TikiLib extends TikiDb_Bridge
 			$data = str_replace($noParseWikiLinksK, $noParseWikiLinksT, $data);
 		}
 
-		return $data;
-	}
-
-	private function parse_data_externallinks( $data, $options ) {
-		global $prefs;
+		// reinsert hash-replaced links into page
+		foreach ($noparsedlinks as $np) {
+			$data = str_replace($np["key"], $np["data"], $data);
+		}
 
 		// *****
 		// This section handles external links of the form [url] and such.
@@ -5983,164 +6269,56 @@ class TikiLib extends TikiDb_Bridge
 			}
 			if (empty($_SERVER['SERVER_NAME']) || strstr($link, $_SERVER["SERVER_NAME"]) || !strstr($link, '://')) {
 				$target = '';
-			} else {
-				$class = 'class="wiki external"';
-				if ($prefs['feature_wiki_ext_icon'] == 'y' && !$options['suppress_icons']) {
-					global $smarty;
-					include_once('lib/smarty_tiki/function.icon.php');
-					$ext_icon = smarty_function_icon(array('_id'=>'external_link', 'alt'=>tra('(external link)'), '_class' => 'externallink', '_extension' => 'gif', '_defaultdir' => 'img/icons', 'width' => 15, 'height' => 14), $smarty);
-				}
-				$rel='external';
-				if ($prefs['feature_wiki_ext_rel_nofollow'] == 'y') {
-					$rel .= ' nofollow';
-				}
+		} else {
+			$class = 'class="wiki external"';
+			if ($prefs['feature_wiki_ext_icon'] == 'y' && !$options['suppress_icons']) {
+				global $smarty;
+				include_once('lib/smarty_tiki/function.icon.php');
+				$ext_icon = smarty_function_icon(array('_id'=>'external_link', 'alt'=>tra('(external link)'), '_class' => 'externallink', '_extension' => 'gif', '_defaultdir' => 'img/icons', 'width' => 15, 'height' => 14), $smarty);
 			}
+			$rel='external';
+			if ($prefs['feature_wiki_ext_rel_nofollow'] == 'y') {
+				$rel .= ' nofollow';
+			}
+		}
 
-			// The (?<!\[) stuff below is to give users an easy way to
-			// enter square brackets in their output; things like [[foo]
-			// get rendered as [foo]. -rlpowell
+		// The (?<!\[) stuff below is to give users an easy way to
+		// enter square brackets in their output; things like [[foo]
+		// get rendered as [foo]. -rlpowell
 
-			if ($prefs['cachepages'] == 'y' && $this->is_cached($link)) {
-				//use of urlencode for using cached versions of dynamic sites
-				$cosa = "<a class=\"wikicache\" target=\"_blank\" href=\"tiki-view_cache.php?url=".urlencode($link)."\">(cache)</a>";
+		if ($prefs['cachepages'] == 'y' && $this->is_cached($link)) {
+			//use of urlencode for using cached versions of dynamic sites
+			$cosa = "<a class=\"wikicache\" target=\"_blank\" href=\"tiki-view_cache.php?url=".urlencode($link)."\">(cache)</a>";
 
-				$link2 = str_replace("/", "\/", preg_quote($link));
-				$pattern = "/(?<!\[)\[$link2\|([^\]\|]+)\|([^\]\|]+)\|([^\]]+)\]/"; //< last param expected here is always nocache
-				$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$2 $rel\">$1</a>$ext_icon", $data);
-				$pattern = "/(?<!\[)\[$link2\|([^\]\|]+)\|([^\]]+)\]/";//< last param here ($2) is used for relation (rel) attribute (e.g. shadowbox) or nocache
-				preg_match($pattern, $data, $matches);
-				if (isset($matches[2]) && $matches[2]=='nocache') {
-					$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$rel\">$1</a>$ext_icon", $data);
-				} else {
-					$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$2 $rel\">$1</a>$ext_icon $cosa", $data);
-				}
-				$pattern = "/(?<!\[)\[$link2\|([^\]\|]+)\]/";
-				$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$rel\">$1</a>$ext_icon $cosa", $data);
-				$pattern = "/(?<!\[)\[$link2\]/";
-				$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$rel\">$link</a>$ext_icon $cosa", $data);
-			} else {
-				$link2 = str_replace("/", "\/", preg_quote($link));
-				$data = str_replace("|nocache", "", $data);
-
-				$pattern = "/(?<!\[)\[$link2\|([^\]\|]+)\|([^\]]+)\]/";
-				$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$2 $rel\">$1</a>$ext_icon", $data);
-				$pattern = "/(?<!\[)\[$link2\|([^\]\|]+)([^\]])*\]/";
+			$link2 = str_replace("/", "\/", preg_quote($link));
+			$pattern = "/(?<!\[)\[$link2\|([^\]\|]+)\|([^\]\|]+)\|([^\]]+)\]/"; //< last param expected here is always nocache
+			$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$2 $rel\">$1</a>$ext_icon", $data);
+			$pattern = "/(?<!\[)\[$link2\|([^\]\|]+)\|([^\]]+)\]/";//< last param here ($2) is used for relation (rel) attribute (e.g. shadowbox) or nocache
+			preg_match($pattern, $data, $matches);
+			if (isset($matches[2]) && $matches[2]=='nocache') {
 				$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$rel\">$1</a>$ext_icon", $data);
-				$pattern = "/(?<!\[)\[$link2\]/";
-				$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$rel\">$link</a>$ext_icon", $data);
+			} else {
+				$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$2 $rel\">$1</a>$ext_icon $cosa", $data);
 			}
+			$pattern = "/(?<!\[)\[$link2\|([^\]\|]+)\]/";
+			$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$rel\">$1</a>$ext_icon $cosa", $data);
+			$pattern = "/(?<!\[)\[$link2\]/";
+			$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$rel\">$link</a>$ext_icon $cosa", $data);
+		} else {
+			$link2 = str_replace("/", "\/", preg_quote($link));
+			$data = str_replace("|nocache", "", $data);
+
+			$pattern = "/(?<!\[)\[$link2\|([^\]\|]+)\|([^\]]+)\]/";
+			$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$2 $rel\">$1</a>$ext_icon", $data);
+			$pattern = "/(?<!\[)\[$link2\|([^\]\|]+)([^\]])*\]/";
+			$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$rel\">$1</a>$ext_icon", $data);
+			$pattern = "/(?<!\[)\[$link2\]/";
+			$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$rel\">$link</a>$ext_icon", $data);
+		}
 		}
 
 		// Handle double square brackets.  -rlpowell
 		$data = str_replace( "[[", "[", $data );
-
-		// *****
-		// This section handles external links of the form [url] and such.
-		// *****
-
-		$links = $this->get_links($data);
-		$notcachedlinks = $this->get_links_nocache($data);
-		$cachedlinks = array_diff($links, $notcachedlinks);
-		$this->cache_links($cachedlinks);
-
-		// Note that there're links that are replaced
-		foreach ($links as $link) {
-			$target = '';
-			$class = 'class="wiki"';
-			$ext_icon = '';
-			$rel='';
-
-			if ($prefs['popupLinks'] == 'y') {
-				$target = 'target="_blank"';
-			}
-
-			if (!isset($_SERVER['SERVER_NAME']) && isset($_SERVER['HTTP_HOST'])) {
-				$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'];
-			}
-			if (empty($_SERVER['SERVER_NAME']) || strstr($link, $_SERVER["SERVER_NAME"]) || !strstr($link, '://')) {
-				$target = '';
-			} else {
-				$class = 'class="wiki external"';
-				if ($prefs['feature_wiki_ext_icon'] == 'y' && !$options['suppress_icons']) {
-					global $smarty;
-					include_once('lib/smarty_tiki/function.icon.php');
-					$ext_icon = smarty_function_icon(array('_id'=>'external_link', 'alt'=>tra('(external link)'), '_class' => 'externallink', '_extension' => 'gif', '_defaultdir' => 'img/icons', 'width' => 15, 'height' => 14), $smarty);
-				}
-				$rel='external';
-				if ($prefs['feature_wiki_ext_rel_nofollow'] == 'y') {
-					$rel .= ' nofollow';
-				}
-			}
-
-			// The (?<!\[) stuff below is to give users an easy way to
-			// enter square brackets in their output; things like [[foo]
-			// get rendered as [foo]. -rlpowell
-
-			if ($prefs['cachepages'] == 'y' && $this->is_cached($link)) {
-				//use of urlencode for using cached versions of dynamic sites
-				$cosa = "<a class=\"wikicache\" target=\"_blank\" href=\"tiki-view_cache.php?url=".urlencode($link)."\">(cache)</a>";
-
-				$link2 = str_replace("/", "\/", preg_quote($link));
-				$pattern = "/(?<!\[)\[$link2\|([^\]\|]+)\|([^\]\|]+)\|([^\]]+)\]/"; //< last param expected here is always nocache
-				$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$2 $rel\">$1</a>$ext_icon", $data);
-				$pattern = "/(?<!\[)\[$link2\|([^\]\|]+)\|([^\]]+)\]/";//< last param here ($2) is used for relation (rel) attribute (e.g. shadowbox) or nocache
-				preg_match($pattern, $data, $matches);
-				if (isset($matches[2]) && $matches[2]=='nocache') {
-					$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$rel\">$1</a>$ext_icon", $data);
-				} else {
-					$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$2 $rel\">$1</a>$ext_icon $cosa", $data);
-				}
-				$pattern = "/(?<!\[)\[$link2\|([^\]\|]+)\]/";
-				$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$rel\">$1</a>$ext_icon $cosa", $data);
-				$pattern = "/(?<!\[)\[$link2\]/";
-				$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$rel\">$link</a>$ext_icon $cosa", $data);
-			} else {
-				$link2 = str_replace("/", "\/", preg_quote($link));
-				$data = str_replace("|nocache", "", $data);
-
-				$pattern = "/(?<!\[)\[$link2\|([^\]\|]+)\|([^\]]+)\]/";
-				$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$2 $rel\">$1</a>$ext_icon", $data);
-				$pattern = "/(?<!\[)\[$link2\|([^\]\|]+)([^\]])*\]/";
-				$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$rel\">$1</a>$ext_icon", $data);
-				$pattern = "/(?<!\[)\[$link2\]/";
-				$data = preg_replace($pattern, "<a $class $target href=\"$link\" rel=\"$rel\">$link</a>$ext_icon", $data);
-			}
-		}
-
-		// Handle double square brackets.  -rlpowell
-		$data = str_replace( "[[", "[", $data );
-
-		return $data;
-	}
-
-	private function parse_data_inline_syntax( $line, $words ) {
-		global $prefs;
-
-		if ($prefs['feature_hotwords'] == 'y') {
-			// Replace Hotwords before begin
-			$line = $this->replace_hotwords($line, $words);
-		}
-
-		// Make plain URLs clickable hyperlinks
-		if ($prefs['feature_autolinks'] == 'y') {
-			$line = $this->autolinks($line);
-		}
-
-		// Replace monospaced text
-		$line = preg_replace("/(^|\s)-\+(.*?)\+-/", "$1<code>$2</code>", $line);
-		// Replace bold text
-		$line = preg_replace("/__(.*?)__/", "<strong>$1</strong>", $line);
-		// Replace italic text
-		$line = preg_replace("/\'\'(.*?)\'\'/", "<em>$1</em>", $line);
-		// Replace definition lists
-		$line = preg_replace("/^;([^:]*):([^\/\/].*)/", "<dl><dt>$1</dt><dd>$2</dd></dl>", $line);
-		$line = preg_replace("/^;(<a [^<]*<\/a>):([^\/\/].*)/", "<dl><dt>$1</dt><dd>$2</dd></dl>", $line);
-
-		return $line;
-	}
-
-	private function parse_data_tables( $data, $simple_wiki ) {
-		global $prefs;
 
 		/*
 		 * Wiki Tables syntax
@@ -6199,7 +6377,7 @@ class TikiLib extends TikiDb_Bridge
 					$cols = array();
 					$temp_max5 = count($tables[0]);
 					for ($i = 0; $i < $temp_max5; $i++) {
-						$rows = preg_split("/(\n|\<br\/\>)/", $tables[0][$i]);
+						$rows = split("\n|\<br\/\>", $tables[0][$i]);
 						$col[$i] = array();
 						$temp_max6 = count($rows);
 						for ($j = 0; $j < $temp_max6; $j++) {
@@ -6238,6 +6416,23 @@ class TikiLib extends TikiDb_Bridge
 			}
 		}
 
+		if (!$simple_wiki && $options['parsetoc']) {
+			$this->parse_data_process_maketoc( $data, $options);
+
+		} // closing if ($simple_wiki)
+
+		// Close BiDi DIVs if any
+		for ($i = 0; $i < $bidiCount; $i++) {
+			$data .= "</div>";
+		}
+
+		// Put removed strings back.
+		$this->replace_preparse($data, $preparsed, $noparsed);
+
+		// Process pos_handlers here
+		foreach ($this->pos_handlers as $handler) {
+			$data = $handler($data);
+		}
 		return $data;
 	}
 
@@ -6343,11 +6538,7 @@ class TikiLib extends TikiDb_Bridge
 
 		global $prefs;
 
-		if ( $options['fck'] === 'y' ) {
-			$need_maketoc = false ;
-		} else {
-			$need_maketoc = strpos($data, "{maketoc");
-		}
+		$need_maketoc = strpos($data, "{maketoc");
 		$need_autonumbering = ( preg_match('/^\!+[\-\+]?#/m', $data) > 0 );
 
 		$anch = array();
@@ -6358,7 +6549,6 @@ class TikiLib extends TikiDb_Bridge
 		// HotWords will be replace only in ordinal text
 		// It looks __really__ goofy in Headers or Titles
 
-		$words = array();
 		if ( $prefs['feature_hotwords'] == 'y' ) {
 			// Get list of HotWords
 			$words = $this->get_hotwords();
@@ -6475,7 +6665,25 @@ class TikiLib extends TikiDb_Bridge
 				$line = '<tt>' . $line . '</tt>';
 			}
 
-			$line = $this->parse_data_inline_syntax( $line, $words );
+			if ($prefs['feature_hotwords'] == 'y') {
+				// Replace Hotwords before begin
+				$line = $this->replace_hotwords($line, $words);
+			}
+
+			// Make plain URLs clickable hyperlinks
+			if ($prefs['feature_autolinks'] == 'y') {
+				$line = $this->autolinks($line);
+			}
+
+			// Replace monospaced text
+			$line = preg_replace("/(^|\s)-\+(.*?)\+-/", "$1<code>$2</code>", $line);
+			// Replace bold text
+			$line = preg_replace("/__(.*?)__/", "<strong>$1</strong>", $line);
+			// Replace italic text
+			$line = preg_replace("/\'\'(.*?)\'\'/", "<em>$1</em>", $line);
+			// Replace definition lists
+			$line = preg_replace("/^;([^:]*):([^\/\/].*)/", "<dl><dt>$1</dt><dd>$2</dd></dl>", $line);
+			$line = preg_replace("/^;(<a [^<]*<\/a>):([^\/\/].*)/", "<dl><dt>$1</dt><dd>$2</dd></dl>", $line);
 
 			// This line is parseable then we have to see what we have
 			if (substr($line, 0, 3) == '---') {
@@ -6501,10 +6709,8 @@ class TikiLib extends TikiDb_Bridge
 								$listate = substr($line, $listlevel, 1);
 								if (($listate == '+' || $listate == '-') && !($litype == '*' && !strstr(current($listbeg), '</ul>') || $litype == '#' && !strstr(current($listbeg), '</ol>'))) {
 									$thisid = 'id' . microtime() * 1000000;
-									if ( $options['fck'] !== 'y' ) {
-										$data .= '<br /><a id="flipper' . $thisid . '" class="link" href="javascript:flipWithSign(\'' . $thisid . '\')">[' . ($listate == '-' ? '+' : '-') . ']</a>';
-									}
-									$listyle = ' id="' . $thisid . '" style="display:' . ($listate == '+' || $options['fck'] === 'y' ? 'block' : 'none') . ';"';
+									$data .= '<br /><a id="flipper' . $thisid . '" class="link" href="javascript:flipWithSign(\'' . $thisid . '\')">[' . ($listate == '-' ? '+' : '-') . ']</a>';
+									$listyle = ' id="' . $thisid . '" style="display:' . ($listate == '+' ? 'block' : 'none') . ';"';
 									$addremove = 1;
 								}
 							}
@@ -6518,10 +6724,8 @@ class TikiLib extends TikiDb_Bridge
 						$listate = substr($line, $listlevel, 1);
 						if (($listate == '+' || $listate == '-')) {
 							$thisid = 'id' . microtime() * 1000000;
-							if ( $options['fck'] !== 'y' ) {
-								$data .= '<br /><a id="flipper' . $thisid . '" class="link" href="javascript:flipWithSign(\'' . $thisid . '\')">[' . ($listate == '-' ? '+' : '-') . ']</a>';
-							}
-							$listyle = ' id="' . $thisid . '" style="display:' . ($listate == '+' || $options['fck'] === 'y' ? 'block' : 'none') . ';"';
+							$data .= '<br /><a id="flipper' . $thisid . '" class="link" href="javascript:flipWithSign(\'' . $thisid . '\')">[' . ($listate == '-' ? '+' : '-') . ']</a>';
+							$listyle = ' id="' . $thisid . '" style="display:' . ($listate == '+' ? 'block' : 'none') . ';"';
 							$addremove = 1;
 						}
 						$data .= ($litype == '*' ? "<ul$listyle>" : "<ol$listyle>");
@@ -6642,14 +6846,10 @@ class TikiLib extends TikiDb_Bridge
 						if ($divstate == '+' || $divstate == '-') {
 							// OK. Must insert flipper after HEADER, and then open new div...
 							$thisid = 'id' . preg_replace('/[^a-zA-z0-9]/', '',urlencode($options['page'])) .$nb_hdrs;
-							if ($options['fck'] !== 'y') {
-								$aclose = '<a id="flipper' . $thisid . '" class="link" href="javascript:flipWithSign(\'' . $thisid . '\')">[' . ($divstate == '-' ? '+' : '-') . ']</a>';
-								global $headerlib;
-								$headerlib->add_jq_onready( "setheadingstate('$thisid');" );
-							} else {
-								$aclose = '';
-							}
-							$aclose2 = '<div id="' . $thisid . '" class="showhide_heading" style="display:' . ($divstate == '+' || $options['fck'] !== 'y' ? 'block' : 'none') . ';">';
+							$aclose = '<a id="flipper' . $thisid . '" class="link" href="javascript:flipWithSign(\'' . $thisid . '\')">[' . ($divstate == '-' ? '+' : '-') . ']</a>';
+							$aclose2 = '<div id="' . $thisid . '" class="showhide_heading" style="display:' . ($divstate == '+' ? 'block' : 'none') . ';">';
+							global $headerlib;
+							$headerlib->add_jq_onready( "setheadingstate('$thisid');" );
 							array_unshift($divdepth, $hdrlevel);
 							$addremove += 1;
 						}
@@ -6690,7 +6890,7 @@ class TikiLib extends TikiDb_Bridge
 										);
 						//}
 						global $tiki_p_edit, $section;
-						if ($options['fck'] !== 'y' && $prefs['wiki_edit_section'] === 'y' && $section === 'wiki page' && $tiki_p_edit === 'y' and ( $prefs['wiki_edit_section_level'] == 0 or $hdrlevel <= $prefs['wiki_edit_section_level']) && (empty($options['print']) || !$options['print']) && !$options['suppress_icons'] ){
+						if ($prefs['wiki_edit_section'] == 'y' && $section == 'wiki page' && $tiki_p_edit == 'y' and ( $prefs['wiki_edit_section_level'] == 0 or $hdrlevel <= $prefs['wiki_edit_section_level']) && (empty($options['print']) || !$options['print']) && !$options['suppress_icons'] ){
 							global $smarty;
 							include_once('lib/smarty_tiki/function.icon.php');
 							$button = '<div class="icon_edit_section"><a href="tiki-editpage.php?';
@@ -6760,7 +6960,7 @@ class TikiLib extends TikiDb_Bridge
 									// A normal in-paragraph line or a consecutive blank line.
 									// Leave it as is.
 								}
-							} elseif (empty($options['is_html']) || !$options['is_html']) {
+							} else {
 								$line .= '<br />';
 							}
 						}
@@ -6795,132 +6995,130 @@ class TikiLib extends TikiDb_Bridge
 		 */
 		$new_data = '';
 		$search_start = 0;
-		if ( $options['fck'] !== 'y') {
-			while ( ($maketoc_start = strpos($data, "{maketoc", $search_start)) !== false ) {
-				$maketoc_length = strpos($data, "}", $maketoc_start) + 1 - $maketoc_start;
-				$maketoc_string = substr($data, $maketoc_start, $maketoc_length);
+		while ( ($maketoc_start = strpos($data, "{maketoc", $search_start)) !== false ) {
+			$maketoc_length = strpos($data, "}", $maketoc_start) + 1 - $maketoc_start;
+			$maketoc_string = substr($data, $maketoc_start, $maketoc_length);
 
-				// Handle old type definition for type "box" (and preserve environment for the title also)
-				if ( $maketoc_length > 12 && strtolower(substr($maketoc_string, 8, 4)) == ':box' ) {
-					$maketoc_string = "{maketoc type=box showhide=y title='".tra('index', $options['language'], true).'"'.substr($maketoc_string, 12);
+			// Handle old type definition for type "box" (and preserve environment for the title also)
+			if ( $maketoc_length > 12 && strtolower(substr($maketoc_string, 8, 4)) == ':box' ) {
+				$maketoc_string = "{maketoc type=box showhide=y title='".tra('index', $options['language'], true).'"'.substr($maketoc_string, 12);
+			}
+
+			$maketoc_string = str_replace('&quot;', '"', $maketoc_string);
+			$maketoc_regs = array();
+
+			if ( $maketoc_length == 9 || preg_match_all("/([^\s=\(]+)=([^\"\s=\)\}]+|\"[^\"]*\")/", $maketoc_string, $maketoc_regs) ) {
+
+				if ( $maketoc_start > 0 ) {
+					$new_data .= substr($data, 0, $maketoc_start);
 				}
 
-				$maketoc_string = str_replace('&quot;', '"', $maketoc_string);
-				$maketoc_regs = array();
+				// Set maketoc default values
+				$maketoc_args = array(
+						'type' => '',
+						'maxdepth' => 0, // No limit
+						'title' => tra('Table of contents', $options['language'], true),
+						'showhide' => '',
+						'nolinks' => '',
+						'nums' => ''
+						);
 
-				if ( $maketoc_length == 9 || preg_match_all("/([^\s=\(]+)=([^\"\s=\)\}]+|\"[^\"]*\")/", $maketoc_string, $maketoc_regs) ) {
-
-					if ( $maketoc_start > 0 ) {
-						$new_data .= substr($data, 0, $maketoc_start);
+				// Build maketoc arguments list (and remove " chars if they are around the value)
+				if ( isset($maketoc_regs[1]) ) {
+					$nb_args = count($maketoc_regs[1]);
+					for ( $a = 0; $a < $nb_args ; $a++ ) {
+						$maketoc_args[strtolower($maketoc_regs[1][$a])] = trim($maketoc_regs[2][$a], '"');
 					}
+				}
 
-					// Set maketoc default values
-					$maketoc_args = array(
-							'type' => '',
-							'maxdepth' => 0, // No limit
-							'title' => tra('Table of contents', $options['language'], true),
-							'showhide' => '',
-							'nolinks' => '',
-							'nums' => ''
-							);
-
-					// Build maketoc arguments list (and remove " chars if they are around the value)
-					if ( isset($maketoc_regs[1]) ) {
-						$nb_args = count($maketoc_regs[1]);
-						for ( $a = 0; $a < $nb_args ; $a++ ) {
-							$maketoc_args[strtolower($maketoc_regs[1][$a])] = trim($maketoc_regs[2][$a], '"');
-						}
-					}
-
-					if ( $maketoc_args['title'] != '' ) {
-						// Translate maketoc title
-						$maketoc_summary = ' summary="'.tra($maketoc_args['title'], $options['language'], true).'"';
-						$maketoc_title = "<div id='toctitle'><h3>".tra($maketoc_args['title'], $options['language']).'</h3></div>';
-					} else {
-						$maketoc_summary = '';
-						$maketoc_title = '';
-					}
-
-					// Build maketoc
-					switch ( $maketoc_args['type'] ) {
-						case 'box': 
-							$maketoc_header = '';
-							$maketoc = "<table id='toc' class='toc'$maketoc_summary>\n<tr><td>$maketoc_title<ul>";
-							$maketoc_footer = "</ul></td></tr></table>\n";
-							$link_class = 'toclink';
-							break;
-						default: 
-							$maketoc = '';
-							$maketoc_header = "<div id='toc'>".$maketoc_title;
-							$maketoc_footer = '</div>';
-							$link_class = 'link';
-					}
-					if ( count($anch) and $need_maketoc !== false) {
-						foreach ( $anch as $tocentry ) {
-							if ( $maketoc_args['maxdepth'] > 0 && $tocentry['hdrlevel'] > $maketoc_args['maxdepth'] ) {
-								continue;
-							}
-
-							// Generate the toc entry title (with nums)
-							if ( $maketoc_args['nums'] == 'n' ) {
-								$tocentry_title = '';
-							} elseif ( $maketoc_args['nums'] == 'force' && ! $need_autonumbering ) {
-								$tocentry_title = $tocentry['title_real_num'];
-							} else {
-								$tocentry_title = $tocentry['title_displayed_num'];
-							}
-							$tocentry_title .= $tocentry['title'];
-
-							// Generate the toc entry link
-							$tocentry_link = '#'.$tocentry['id'];
-							if ( $tocentry['pagenum'] > 1 ) {
-								$tocentry_link = $_SERVER['PHP_SELF'].'?page='.$options['page'].'&pagenum='.$tocentry['pagenum'].$tocentry_link;
-							}
-							if ( $maketoc_args['nolinks'] != 'y' ) {
-								$tocentry_title = "<a href='$tocentry_link' class='link'>".$tocentry_title.'</a>';
-							}
-
-							if ( $maketoc != '' ) $maketoc.= "\n";
-							switch ( $maketoc_args['type'] ) {
-								case 'box':
-									$maketoc .= "<li class='toclevel-".$tocentry['hdrlevel']."'>".$tocentry_title."</li>";
-									break;
-								default:
-									$maketoc .= str_repeat('*', $tocentry['hdrlevel']).$tocentry_title;
-							}
-						}
-						$maketoc = $this->parse_data($maketoc);
-						if (preg_match("/^<ul>/", $maketoc)) {
-							$maketoc = preg_replace("/^<ul>/", '<ul class="toc">', $maketoc);
-							$maketoc .= '<!--toc-->';
-						}
-
-						if ( $link_class != 'link' ) {
-							$maketoc = preg_replace("/'link'/", "'$link_class'", $maketoc);
-						}
-					}
-					$maketoc = $maketoc_header.$maketoc.$maketoc_footer;
-
-					// Add a Show/Hide link
-					if ( isset($maketoc_args['showhide']) && $maketoc_args['showhide'] == 'y' ) {
-						$maketoc .= "<script type='text/javascript'>\n"
-							. "//<![CDATA[\n"
-							. " if (window.showTocToggle) { var tocShowText = '".tra('Show','',true)."'; var tocHideText = '".tra('Hide','',true)."'; showTocToggle(); }\n"
-							. "//]]>;\n"
-							. "</script>\n";
-					}
-
-					$new_data .= $maketoc;
-					$data = substr($data, $maketoc_start + $maketoc_length);
-					$search_start = 0; // Reinitialize search start cursor, since data now begins after the last replaced maketoc
+				if ( $maketoc_args['title'] != '' ) {
+					// Translate maketoc title
+					$maketoc_summary = ' summary="'.tra($maketoc_args['title'], $options['language'], true).'"';
+					$maketoc_title = "<div id='toctitle'><h3>".tra($maketoc_args['title'], $options['language']).'</h3></div>';
 				} else {
-					$search_start = $maketoc_start + $maketoc_length;
+					$maketoc_summary = '';
+					$maketoc_title = '';
 				}
+
+				// Build maketoc
+				switch ( $maketoc_args['type'] ) {
+					case 'box': 
+						$maketoc_header = '';
+						$maketoc = "<table id='toc' class='toc'$maketoc_summary>\n<tr><td>$maketoc_title<ul>";
+						$maketoc_footer = "</ul></td></tr></table>\n";
+						$link_class = 'toclink';
+						break;
+					default: 
+						$maketoc = '';
+						$maketoc_header = "<div id='toc'>".$maketoc_title;
+						$maketoc_footer = '</div>';
+						$link_class = 'link';
+				}
+				if ( count($anch) and $need_maketoc !== false) {
+					foreach ( $anch as $tocentry ) {
+						if ( $maketoc_args['maxdepth'] > 0 && $tocentry['hdrlevel'] > $maketoc_args['maxdepth'] ) {
+							continue;
+						}
+
+						// Generate the toc entry title (with nums)
+						if ( $maketoc_args['nums'] == 'n' ) {
+							$tocentry_title = '';
+						} elseif ( $maketoc_args['nums'] == 'force' && ! $need_autonumbering ) {
+							$tocentry_title = $tocentry['title_real_num'];
+						} else {
+							$tocentry_title = $tocentry['title_displayed_num'];
+						}
+						$tocentry_title .= $tocentry['title'];
+
+						// Generate the toc entry link
+						$tocentry_link = '#'.$tocentry['id'];
+						if ( $tocentry['pagenum'] > 1 ) {
+							$tocentry_link = $_SERVER['PHP_SELF'].'?page='.$options['page'].'&pagenum='.$tocentry['pagenum'].$tocentry_link;
+						}
+						if ( $maketoc_args['nolinks'] != 'y' ) {
+							$tocentry_title = "<a href='$tocentry_link' class='link'>".$tocentry_title.'</a>';
+						}
+
+						if ( $maketoc != '' ) $maketoc.= "\n";
+						switch ( $maketoc_args['type'] ) {
+							case 'box':
+								$maketoc .= "<li class='toclevel-".$tocentry['hdrlevel']."'>".$tocentry_title."</li>";
+								break;
+							default:
+								$maketoc .= str_repeat('*', $tocentry['hdrlevel']).$tocentry_title;
+						}
+					}
+					$maketoc = $this->parse_data($maketoc);
+					if (preg_match("/^<ul>/", $maketoc)) {
+						$maketoc = preg_replace("/^<ul>/", '<ul class="toc">', $maketoc);
+						$maketoc .= '<!--toc-->';
+					}
+
+					if ( $link_class != 'link' ) {
+						$maketoc = preg_replace("/'link'/", "'$link_class'", $maketoc);
+					}
+				}
+				$maketoc = $maketoc_header.$maketoc.$maketoc_footer;
+
+				// Add a Show/Hide link
+				if ( isset($maketoc_args['showhide']) && $maketoc_args['showhide'] == 'y' ) {
+					$maketoc .= "<script type='text/javascript'>\n"
+						. "//<![CDATA[\n"
+						. " if (window.showTocToggle) { var tocShowText = '".tra('Show','',true)."'; var tocHideText = '".tra('Hide','',true)."'; showTocToggle(); }\n"
+						. "//]]>;\n"
+						. "</script>\n";
+				}
+
+				$new_data .= $maketoc;
+				$data = substr($data, $maketoc_start + $maketoc_length);
+				$search_start = 0; // Reinitialize search start cursor, since data now begins after the last replaced maketoc
+			} else {
+				$search_start = $maketoc_start + $maketoc_length;
 			}
 		}
 		$data = $new_data.$data;
 		// Add icon to edit the text before the first section (if there is some)
-		if ($options['fck'] !== 'y' && $prefs['wiki_edit_section'] === 'y' && isset($section) && $section === 'wiki page' && $tiki_p_edit === 'y' && (empty($options['print']) || !$options['print'])  && strpos($data, '<div class="icon_edit_section">') != 0 && !$options['suppress_icons']){
+		if ($prefs['wiki_edit_section'] == 'y' && isset($section) && $section == 'wiki page' && $tiki_p_edit == 'y' && (empty($options['print']) || !$options['print'])  && strpos($data, '<div class="icon_edit_section">') != 0 && !$options['suppress_icons']){
 			global $smarty;
 			include_once('lib/smarty_tiki/function.icon.php');
 			$button = '<div class="icon_edit_section"><a href="tiki-editpage.php?';
@@ -6934,12 +7132,6 @@ class TikiLib extends TikiDb_Bridge
 
 	function get_wiki_link_replacement( $pageLink, $extra = array() ) {
 		global $prefs, $wikilib, $semanticlib;
-
-		// Fetch all externals once
-		static $externals = false;
-		if( false === $externals ) {
-			$externals = $this->fetchMap( 'SELECT `name`, `extwiki` FROM `tiki_extwiki`' );
-		}
 		
 		$displayLink = $pageLink;
 
@@ -6957,87 +7149,81 @@ class TikiLib extends TikiDb_Bridge
 		if( array_key_exists( 'plural', $extra ) )
 			$processPlural = (boolean) $extra['plural'];
 
-		require_once 'WikiParser/OutputLink.php';
-		$link = new WikiParser_OutputLink;
-		$link->setIdentifier( $pageLink );
-		$link->setQualifier( $reltype );
-		$link->setDescription( $description );
-		$link->setWikiLookup( array( $this, 'parser_helper_wiki_info_getter' ) );
-		$link->setWikiLinkBuilder( array( $this, 'parser_helper_wiki_link_builder' ) );
-		$link->setExternals( $externals );
-		$link->setHandlePlurals( $processPlural );
+		// Replace links to external wikis
+		if (strpos($pageLink, ':')) {
+			$wexs = explode(':', $pageLink);
 
-		if( $prefs['feature_multilingual'] == 'y' && isset( $GLOBALS['pageLang'] ) ) {
-			$link->setLanguage( $GLOBALS['pageLang'] );
+			if (count($wexs) == 2) {
+				$wkname = $wexs[0];
+
+				if ($this->getOne("select count(*) from `tiki_extwiki` where `name`=?",array($wkname)) == 1) {
+					$wkurl = $this->getOne("select `extwiki`  from `tiki_extwiki` where `name`=?",array($wkname));
+					
+					$linktext = ($description) ? $description : $wexs[1];
+					$wkurl = '<a href="' . str_replace('$page', urlencode($wexs[1]), $wkurl). '" class="wiki external ' . $reltype . '">' . $linktext . '</a>';
+					return $wkurl;
+				}
+			}
 		}
 
-		return $link->getHtml();
-	}
+		// 24-Jun-2003, by zaufi
+		// TODO: future optimize: get page description and modification time at once.
+		// text[0] = link description (previous format)
+		// text[1] = timeout in seconds (new field)
+		// text[2..N] = drop
+		$text = explode("|", $description);
 
-	function parser_helper_wiki_link_builder( $pageLink ) {
-		global $wikilib;
-		return $wikilib->bestlang( $wikilib->sefurl($pageLink) );
-	}
-
-	function parser_helper_wiki_info_getter( $pageName ) {
-		global $prefs;
-		$page_info = $this->get_page_info($pageName, false);
+		if ($desc = $this->page_exists_desc($pageLink, true)) {
+			// why the preg_replace? ex: ((page||Page-Desc)) the desc must stay Page-Desc, and not ))Page-Desc((
+			$uri_ref = $wikilib->bestlang( $wikilib->sefurl($pageLink) );
 		
-		if ( $page_info !== false ) {
-			return $page_info;
+			// check to see if desc is blank in ((page|desc))
+			if (strlen(trim($text[0])) > 0) {
+				$linktext = $text[0];
+			} elseif ($desc != $pageLink && $description !== null) {
+				// desc is blank; use the page description instead
+				$linktext = $displayLink . ': ' . $desc;
+			} else {
+				// there is no page description
+				$linktext = $displayLink;
+			}
+
+			$repl = '<a title="'.$desc.'" href="'.$uri_ref.'" class="wiki ' . $reltype . '">' . $linktext . '</a>';
+
+			// Check is timeout expired?
+			if (isset($text[1]) && (time() - intval($this->page_exists_modtime($pageLink))) < intval($text[1])) {
+				// Append small 'new' image. TODO: possible 'updated' image more suitable...
+				$repl .= '&nbsp;<img src="img/icons/new.gif" border="0" alt="'.tra("new","",true).'" />';
+			}
+
+			return $repl;
 		}
 
-		// If page does not exist directly, attempt to find an alias
-		if ( $prefs['feature_wiki_pagealias'] == 'y' ) {
-			global $semanticlib; require_once 'lib/wiki/semanticlib.php';
+		if( $processPlural ) {
+			$plural_tmp = $pageLink;
+			// Plurals like policy / policies
+			$plural_tmp = preg_replace("/ies$/", "y", $plural_tmp);
+			// Plurals like address / addresses
+			$plural_tmp = preg_replace("/sses$/", "ss", $plural_tmp);
+			// Plurals like box / boxes
+			$plural_tmp = preg_replace("/([Xx])es$/", "$1", $plural_tmp);
+			// Others, excluding ending ss like address(es)
+			$plural_tmp = preg_replace("/([A-Za-rt-z])s$/", "$1", $plural_tmp);
 
-			$toPage = $pageName;
-			$tokens = explode( ',', $prefs['wiki_pagealias_tokens'] ); 
-			
-			$prefixes = explode( ',', $prefs["wiki_prefixalias_tokens"]);
-			foreach ($prefixes as $p) {
-				$p = trim($p);
-				if (strlen($p) > 0 && strtolower(substr($pageName, 0, strlen($p))) == strtolower($p)) {
-					$toPage = $p;
-					$tokens = 'prefixalias';
-				}
-			}
-			 
-			$links = $semanticlib->getLinksUsing(
-				$tokens,
-				array( 'toPage' => $toPage ) );
-
-			if ( count($links) > 1 ) {
-				// There are multiple aliases for this page. Need to disambiguate.
-				//
-				// When feature_likePages is set, trying to display the alias itself will
-				// display an error page with the list of aliased pages in the "like pages" section.
-				// This allows the user to pick the appropriate alias.
-				// So, leave the $pageName to the alias.
-				// 
-				// If feature_likePages is not set, then the user will only see that the page does not
-				// exist. So it's better to just pick the first one.
-				//													
-				if ($prefs['feature_likePages'] == 'y' || $tokens == 'prefixalias') {
-					// Even if there is more then one match, if prefix is being redirected then better
-					// to fail than to show possibly wrong page
-					return true;
-				} else {
-					// If feature_likePages is NOT set, then trying to display the first one is fine
-					// $pageName is by ref so it does get replaced 
-					$pageName = $links[0]['fromPage'];
-					return $this->get_page_info( $pageName );
-				}
-			} elseif (count($links)) {
-				// there is exactly one match
-				if ($prefs['feature_wiki_1like_redirection'] == 'y') {
-					return true;
-				} else {
-					$pageName = $links[0]['fromPage'];
-					return $this->get_page_info( $pageName );
-				} 
+			if($desc = $this->page_exists_desc($plural_tmp, true)) {
+				$repl = "<a title='".$desc."' href='".$wikilib->bestlang( $wikilib->sefurl($plural_tmp) )."' class='wiki'>$displayLink</a>";
+				return $repl;
 			}
 		}
+
+		$uri_ref = "tiki-editpage.php?page=" . urlencode($pageLink);
+		if( $prefs['feature_multilingual'] == 'y' && isset( $GLOBALS['pageLang'] ) ) {
+			$uri_ref .= '&amp;lang=' . urlencode($GLOBALS['pageLang']);
+		}
+
+		$repl = (strlen(trim($text[0])) > 0 ? $text[0] : $pageLink) . '<a href="'.$uri_ref.'" title="'.tra("Create page:","",true)." ".urlencode($pageLink).'" class="wiki wikinew">?</a>';
+
+		return $repl;
 	}
 
 	function parse_smileys($data) {
@@ -7094,16 +7280,6 @@ class TikiLib extends TikiDb_Bridge
 	function get_pages($data,$withReltype = false) {
 		global $page_regex, $prefs;
 
-		require_once 'WikiParser/PluginMatcher.php';
-		$matches = WikiParser_PluginMatcher::match( $data );
-		foreach( $matches as $match ) {
-			if( $match->getName() == 'code' ) {
-				$match->replaceWith( '' );
-			}
-		}
-
-		$data = $matches->getText();
-
 		preg_match_all("/\(([a-z0-9-]+)?\( *($page_regex) *\)\)/", $data, $normal);
 		preg_match_all("/\(([a-z0-9-]+)?\( *($page_regex) *\|(.+?)\)\)/", $data, $withDesc);
 
@@ -7146,18 +7322,19 @@ class TikiLib extends TikiDb_Bridge
 	function clear_links($page) {
 		$query = "delete from `tiki_links` where `fromPage`=?";
 		$result = $this->query($query, array($page));
-
-		$query = "delete from `tiki_object_relations` where `source_type` = 'wiki page' AND `source_itemId`=? AND `target_type` = 'wiki page' AND `relation` LIKE 'tiki.link.%'";
-		$result = $this->query($query, array($page));
 	}
 
 	function replace_link($pageFrom, $pageTo, $types = array()) {
-		$query = "insert ignore into `tiki_links`(`fromPage`,`toPage`) values(?, ?)";
+		$query = "delete from `tiki_links` where `fromPage`=? and `toPage`=?";
 		$result = $this->query($query, array($pageFrom,$pageTo));
 
-		global $relationlib; require_once 'lib/attributes/relationlib.php';
-		foreach( $types as $type ) {
-			$relationlib->add_relation( "tiki.link.$type", 'wiki page', $pageFrom, 'wiki page', $pageTo );
+		if( count($types) == 0 ) {
+			$query = "insert into `tiki_links`(`fromPage`,`toPage`) values(?, ?)";
+			$result = $this->query($query, array($pageFrom,$pageTo));
+		} else {
+			sort($types);
+			$query = "insert into `tiki_links`(`fromPage`,`toPage`, `reltype`) values(?, ?, ?)";
+			$result = $this->query($query, array( $pageFrom, $pageTo, implode(',', $types) ));
 		}
 	}
 
@@ -7367,91 +7544,14 @@ class TikiLib extends TikiDb_Bridge
 			require_once('lib/search/refresh-functions.php');
 			refresh_index('pages', $pageName);
 		}
-
-		$this->object_post_save( array( 'type' => 'wiki page', 'object' => $pageName ), array(
-			'content' => $edit_data,
-		) );
+		$this->syncParsedText($edit_data, array('type'=>'wiki page', 'object'=>$pageName));
 	}
-
-	function object_post_save( $context, $data ) {
+	function syncParsedText($text, $context) {
 		global $prefs;
-
-		if ( isset( $data['content'] ) && $prefs['feature_file_galleries'] == 'y') {
+		if ( $prefs['feature_file_galleries'] == 'y') {
 			global $filegallib; require_once 'lib/filegals/filegallib.php';
-			$filegallib->syncFileBacklinks( $data['content'], $context );
+			$filegallib->syncFileBacklinks($text, $context);
 		}
-
-		if( isset( $data['content'] ) ) {
-			$this->apply_plugin_save_handlers( $context, $data );
-		}
-	}
-
-	private function apply_plugin_save_handlers( $context, $data ) {
-		require_once 'WikiParser/PluginMatcher.php';
-		require_once 'WikiParser/PluginArgumentParser.php';
-
-		$argumentParser = new WikiParser_PluginArgumentParser;
-
-		$matches = WikiParser_PluginMatcher::match( $data['content'] );
-
-		foreach( $matches as $match ) {
-			$implementation = $match->getName();
-			$body = $match->getBody();
-			$arguments = $argumentParser->parse( $match->getArguments() );
-
-			if( $this->plugin_enabled( $implementation ) ) {
-				$this->plugin_find_implementation( $implementation, $body, $arguments );
-
-				$func_name = 'wikiplugin_' . $implementation . '_save';
-
-				if( function_exists( $func_name ) ) {
-					$func_name( $context, $body, $arguments );
-				}
-			}
-		}
-	}
-
-	private function plugin_find_implementation( & $implementation, & $body, & $args ) {
-		if( $info = $this->plugin_alias_info( $implementation ) ) {
-			$implementation = $info['implementation'];
-
-			// Do the body conversion
-			if( isset($info['body']) ) {
-				if( ( isset($info['body']['input']) && $info['body']['input'] == 'ignore' )
-					|| empty( $data ) )
-					$data = isset($info['body']['default']) ? $info['body']['default'] : '';
-
-				if( isset($info['body']['params']) )
-					$data = $this->plugin_replace_args( $data, $info['body']['params'], $args );
-			} else {
-				$data = '';
-			}
-
-			// Do parameter conversion
-			$params = array();
-			if( isset($info['params']) ) {
-				foreach( $info['params'] as $key => $value ) {
-					if( is_array( $value ) && isset($value['pattern']) && isset($value['params']) ) {
-						$params[$key] = $this->plugin_replace_args( $value['pattern'], $value['params'], $args );
-					} else {
-						// Handle simple values
-						if( isset($args[$key]) )
-							$params[$key] = $args[$key];
-						else
-							$params[$key] = $value;
-					}
-				}
-			}
-
-			$args = $params;
-
-			// Attempt to find recursively
-			$this->plugin_find_implementation( $implementation, $data, $args );
-
-			return true;
-		}
-
-		return false;
 	}
 
 	function update_page_version($pageName, $version, $edit_data, $edit_comment, $edit_user, $edit_ip, $lastModif, $description = '', $lang='') {
@@ -7616,15 +7716,6 @@ class TikiLib extends TikiDb_Bridge
 
 	function get_short_datetime($timestamp, $user = false) {
 		return $this->date_format($this->get_short_datetime_format(), $timestamp, $user);
-	}
-	
-	function format_sql_date($sqlstamp) {
-		global $user, $tikilib;
-		$tz = $tikilib->get_display_timezone($user);
-		$unixstamp = strtotime($sqlstamp . $tz);
-		$format = $tikilib->get_short_date_format();
-		$date = strftime($format, $unixstamp);
-		return $date;
 	}
 
 	/**

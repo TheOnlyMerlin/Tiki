@@ -19,6 +19,21 @@ $auto_query_args = array(
 );
 $access->check_feature('feature_sheet');
 
+/**
+ * Write the sheet out to the smarty var
+ * 
+ * @return void
+ */
+function outputGrid() {
+	global $grid, $handler, $smarty;
+	
+	$handler = new TikiSheetOutputHandler(null, ($grid->parseValues == 'y' && $_REQUEST['parse'] != 'n'));
+	ob_start();
+	$grid->export($handler);
+	$smarty->assign('grid_content', $smarty->get_template_vars('grid_content') . ob_get_contents());
+	ob_end_clean();
+}
+
 if (!isset($_REQUEST['sheetId'])) {
 	$smarty->assign('msg', tra("A SheetId is required."));
 	$smarty->display("error.tpl");
@@ -125,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['xjxfun'])) {
 	// Load the layout settings from the database
 	$grid = new TikiSheet;
 	$grid->import($handler);
-	$smarty->assign('grid_content', $grid->getTableHtml());
+	outputGrid();
 } else {
 	$handler = new TikiSheetDatabaseHandler($_REQUEST["sheetId"]);
 	$date = time();
@@ -149,8 +164,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['xjxfun'])) {
 			include_once ('contribution.php');
 		}
 	} else {
-		$html = $grid->getTableHtml( true, $date );
-		$smarty->assign('grid_content', $html);
+		$subsheets = $sheetlib->get_sheet_subsheets($_REQUEST["sheetId"]);
+		$smarty->assign('grid_content', '');
+		outputGrid();
+		if (count($subsheets) > 0) {
+			foreach ($subsheets as $sub) {
+				$handler = new TikiSheetDatabaseHandler($sub['sheetId']);
+				$handler->setReadDate($date);
+				$grid = new TikiSheet($sub['sheetId'], true);
+				$grid->import($handler);
+				outputGrid();
+			}
+		}
+		$smarty->assign('subsheet_cant', count($subsheets));
 		$handler = new TikiSheetDatabaseHandler($_REQUEST["sheetId"]);
 		$grid->import($handler);
 	}
@@ -192,7 +218,7 @@ $jq("#edit_button").click( function () {
 });
 $jq("#save_button").click( function () {
 	$jq.sheet.instance[0].evt.cellEditDone();
-	$jq.sheet.saveSheet(0, true);
+	$jq.sheet.saveSheet(true);
 	return false;
 }).hide();
 

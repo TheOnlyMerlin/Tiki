@@ -43,7 +43,7 @@ class Math_Formula_Parser
 		require_once 'Math/Formula/Element.php';
 		$element = new Math_Formula_Element( $type );
 
-		while( strlen( $token = array_shift( $tokens ) ) != 0 && $token != ')' ) {
+		while( ( $token = array_shift( $tokens ) ) && $token != ')' ) {
 			if( $token == '(' ) {
 				array_unshift( $tokens, $token );
 				$token = $this->getElement( $tokens );

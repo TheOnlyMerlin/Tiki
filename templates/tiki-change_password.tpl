@@ -48,14 +48,10 @@
 	<div class="simplebox highlight" id="divRegCapson" style="visibility:hidden">{icon _id=error style="vertical-align:middle"} {tr}CapsLock is on.{/tr}</div>
 <table class="form">
 <tr>
-  <td class="formcolor"><label for="user">{tr}Username:{/tr}</label></td>
+  <td class="formcolor">{tr}Username:{/tr}</td>
   <td class="formcolor">
-  	{if empty($userlogin)}
-		<input type="text" id="user" name="user"/ >
-	{else}
-		<input type="hidden" id="user" name="user" value="{$userlogin|escape}" />
-		<strong>{$userlogin}</strong>
-	{/if}
+	<input type="hidden" name="user" value="{$userlogin|escape}" />
+	<strong>{$userlogin}</strong>
   </td>
 </tr>
 {if empty($smarty.request.actpass) and $new_user_validation neq 'y'}
@@ -85,12 +81,6 @@
   <td class="formcolor"><label for="pass2">{tr}Repeat password:{/tr}</label></td>
   <td class="formcolor"><input type="password" name="pass2" id="pass2" /></td>
 </tr>
-{if empty($email)}
-<tr>
-  <td class="formcolor"><label for="email">{tr}Email:{/tr}</label></td>
-  <td class="formcolor"><input type="text" name="email" id="email" /></td>
-</tr>
-{/if}
 <tr>
   <td class="formcolor">&nbsp;</td>
   <td class="formcolor"><input type="submit" name="change" value="{tr}Change{/tr}" onclick="return match_pass();"/><span id="validate"></span></td>
