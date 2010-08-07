@@ -127,8 +127,7 @@ function module_user_bookmarks( $mod_reference, $module_params ) {
 	
 				// Check if we are bookmarking a weblog
 				if (strstr($_SERVER["REQUEST_URI"], 'tiki-view_blog')) {
-					global $bloglib; require_once('lib/blogs/bloglib.php');
-					$info = $bloglib->get_blog($setup_query_data["blogId"]);
+					$info = $tikilib->get_blog($setup_query_data["blogId"]);
 	
 					$name = $info["title"];
 				}

@@ -936,9 +936,8 @@ span.moduleflip,
 	bottom: -1px;
 }
 	
-.rbox-title .icon {
-	padding: 0 .35em 0 0;
-	vertical-align: top;
+.rbox img {
+	vertical-align: middle;
 }
 	
 .rbox-data {
@@ -1326,18 +1325,9 @@ span.posthead {
 	display: block;
 }
 
-body.tiki_blogs .post_single {
-	padding-bottom: 30px;
-}
-
 body.tiki_blogs .post .postfooter {
 	clear: both;
 	float: right;
-}
-
-body.tiki_blogs div.author_actions {
-	width: 100%;
-	text-align: right;
 }
 
 /***** Forums *****/
@@ -2013,79 +2003,4 @@ table.treeTable .parent td {
 	margin-left: 25px;
 }
 
-/* page contribution by author / wikiplugin_author */
-
-.author0 {
-	color: black;
-}
-
-.author1 {
-	color: blue;
-}
-
-.author2 {
-	color: red;
-}
-
-.author3 {
-	color: green;
-}
-
-.author4 {
-	color: maroon;
-}
-
-.author5 {
-	color: yellow;
-	background-color: gray;
-}
-
-.author6 {
-	color: aqua;
-	background-color: gray;
-}
-
-.author7 {
-	color: fuchsia;
-	background-color: gray;
-}
-
-.author8 {
-	color: teal;
-}
-
-.author9 {
-	color: purple;
-}
-
-.author10 {
-	color: white;
-	background-color: navy;
-}
-
-.author11 {
-	color: olive;
-}
-
-.author12 {
-	color: gray;
-}
-
-.author13 {
-	',  color: navy;
-}
-
-.author14 {
-	color: silver;
-	background-color: blue;
-}
-
-.author15 {
-	color: lime;
-	background-color: gray;
-}
-
-.deleted {
-	text-decoration: line-through;
-}
 /* End of File */

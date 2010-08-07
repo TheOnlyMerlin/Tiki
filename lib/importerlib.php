@@ -143,7 +143,7 @@ class Importer extends Comments
 
 		while ($a = strpos($record, ",")) {
 			// If field is a string...
-			if (preg_match("/^'/", substr($record, 0, $a))) {
+			if (ereg("^'", substr($record, 0, $a))) {
 				$offset = 1;
 				while ($b = strpos($record, "'", $offset)) {
 					// If close quote is not escaped
@@ -195,9 +195,9 @@ class Importer extends Comments
 		while ($fL = fgets($fH)) {
 			// If we find a create table block, parse the
 			// entire block.
-			if (preg_match('/'.$lookFor1.'/', $fL)) {
+			if (ereg($lookFor1, $fL)) {
 				$fL = fgets($fH);
-				while (preg_match('/^  `/', $fL)) {
+				while (ereg("^  `", $fL)) {
 					$a = substr($fL, 3);
 					$b = strpos($a, "`");
 					$c = substr($a, 0, $b);
@@ -208,8 +208,8 @@ class Importer extends Comments
 
 			// Now that we've parsed the create table block,
 			// look for the insert block.
-			if (preg_match('/'.$lookFor2.'/', $fL)) {
-				while (preg_match('/'.$lookFor2.'/', $fL)) {
+			if (ereg($lookFor2, $fL)) {
+				while (ereg($lookFor2, $fL)) {
 					$a = strpos($fL, "(");
 					$b = strpos($fL, ");\n");
 					$c = substr($fL, $a + 1, $b - $a - 1);
@@ -217,7 +217,7 @@ class Importer extends Comments
 					// Do a rudimentary parsing of what generally would be
 					// record boundaries, such that each element in $records
 					// represents an SQL record or row.
-					$records = preg_split('/\),\(/', $c);
+					$records = split('\),\(', $c);
 					if (count($records) < 1) { $records[0] = $c; }
 					for ($count = 0, $count_records = count($records); $count < $count_records; $count++) {
 						// Each proper record should begin with a numeric value
@@ -228,7 +228,7 @@ class Importer extends Comments
 						// the next record, and skip the current one. Repeat
 						// checking the next record until both the current one
 						// and its follower are proper.
-						while (isset($records[$count + 1]) && !preg_match('/^[0-9]/', $records[$count + 1])) {
+						while (isset($records[$count + 1]) && !ereg("^[0-9]", $records[$count + 1])) {
 							$newrec = $records[$count] . '),(' . $records[$count + 1];
 							$count++;
 							$records[$count] = $newrec;

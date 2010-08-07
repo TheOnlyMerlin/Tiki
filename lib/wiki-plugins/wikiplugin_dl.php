@@ -28,7 +28,7 @@ function wikiplugin_dl($data, $params) {
 	if (isset($param))
 		extract ($params,EXTR_SKIP);
 	$result = '<dl>';
-	$lines = explode("\n", $data);
+	$lines = split("\n", $data);
 
 	foreach ($lines as $line) {
 		$parts = explode(":", $line);

@@ -531,8 +531,7 @@ if (isset($_REQUEST["user"]) and $_REQUEST["user"]) {
 					$smarty->display("error.tpl");
 					die;
 				}
-				$pass_first_login = (isset($_REQUEST['pass_first_login']) && $_REQUEST['pass_first_login'] == 'on');
-				if ($userlib->change_user_password($userinfo['login'], $newPass, $pass_first_login)) {
+				if ($userlib->change_user_password($userinfo['login'], $newPass)) {
 					$tikifeedback[] = array(
 						'num' => 0,
 						'mes' => sprintf(tra("%s modified successfully.") , tra("password"))

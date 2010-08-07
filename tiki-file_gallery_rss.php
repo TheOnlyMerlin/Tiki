@@ -9,7 +9,7 @@ require_once ('tiki-setup.php');
 require_once ('lib/tikilib.php');
 require_once ('lib/rss/rsslib.php');
 
-if ($prefs['feed_file_gallery'] != 'y') {
+if ($prefs['rss_file_gallery'] != 'y') {
         $errmsg=tra("rss feed disabled");
         require_once ('tiki-rss_error.php');
 }
@@ -39,13 +39,12 @@ $output = $rsslib->get_from_cache($uniqueid);
 if ($output["data"]=="EMPTY") {
 	if (count($galleryIds) == 1) {
 		$tmp = $tikilib->get_file_gallery($galleryIds[0]);
-		$title = $prefs['feed_file_gallery_title'];
+		$title = empty($prefs['title_rss_file_gallery'])? tra("Tiki RSS feed for the file gallery: "): $prefs['title_rss_file_gallery'];
 		$title .= $tmp['name'];
-		$desc = $prefs['feed_file_gallery_desc'];
-		$desc .= $tmp['description'];
+        	$desc = empty($tmp['description'])? $prefs['desc_rss_file_gallery']: $tmp['description'];
 	} else {
-		$title = (!empty($prefs['feed_file_galleries_title'])) ? $prefs['feed_file_galleries_title'] : tra("Tiki RSS feed for file galleries");
-		$desc = (!empty($prefs['feed_file_galleries_desc'])) ? $prefs['feed_file_galleries_desc'] : tra("Last files uploaded to the file galleries.");
+		$title = (!empty($prefs['title_rss_file_galleries'])) ? $prefs['title_rss_file_galleries'] : tra("Tiki RSS feed for file galleries");
+		$desc = (!empty($prefs['desc_rss_file_galleries'])) ? $prefs['desc_rss_file_galleries'] : tra("Last files uploaded to the file galleries.");
 	}
 	$descId = "description";
 	$dateId = "lastModif";
@@ -63,7 +62,16 @@ if ($output["data"]=="EMPTY") {
 		$readrepl = "tiki-download_file.php?$id=%s";
 	}
 
-	$changes = $tikilib->get_files( 0, $prefs['feed_file_gallery_max'], $dateId.'_desc', '', $galleryIds);
+	if ($title=="") {
+        	$tmp = $prefs['title_rss_'.$feed];
+       		if ($tmp<>'') $title = $tmp;
+	}
+	if ($desc=="") {
+        	$tmp = $prefs['desc_rss_'.$feed];
+	        if ($desc<>'') $desc = $tmp;
+	}
+
+	$changes = $tikilib->get_files( 0, $prefs['max_rss_file_gallery'], $dateId.'_desc', '', $galleryIds);
 	$output = $rsslib->generate_feed($feed, $uniqueid, '', $changes, $readrepl, '', $id, $title, $titleId, $desc, $descId, $dateId, $authorId);
 }
 header("Content-type: ".$output["content-type"]);

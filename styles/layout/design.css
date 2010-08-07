@@ -396,7 +396,8 @@ div.help_section {
 
 .rbox-title {
 	border-bottom-color: #eee;
-	padding: 0.35em 0.9em 0.1em;
+	padding-top: .1em;
+	padding-bottom: .1em;
 	font-weight: bold;
 }
 	
@@ -489,10 +490,6 @@ td.form {
 
 caption {
 	font-weight: bold;
-}
-
-.numeric, td.numeric {
-	text-align: right;
 }
 /** Tabs **/
 
@@ -612,16 +609,12 @@ ul.toc * {
 .diffadded {
 	background: #ccffcc;
 	color: #000;
-	word-wrap:break-word;
-	max-width: 400px;
 }
 
 .diffdeleted {
 	background: #ffcccc;
 	color: #000;
 	text-decoration: line-through;
-	word-wrap:break-word;
-	max-width: 400px;
 }
 
 .diffinldel {
@@ -687,10 +680,6 @@ body.tiki_blogs .post .title {
 
 body.tiki_blogs .post .postfooter {
 	margin-bottom: 2em;
-}
-
-body.tiki_blogs div.author_info {
-	padding: 5px 0px 15px 0px;
 }
 
 /**** Image Galleries ****/
@@ -1168,11 +1157,3 @@ table.treeTable .parent td {
  /* wikiplugin_tracker */
 .trackerCategoryName {white-space:nowrap;}
 /* End of file */
-
-dl.note-list {
-	padding: 5px;
-	margin: 5px;
-	background: white;
-	color: black;
-	border: solid thin black;
-}

@@ -31,7 +31,7 @@
 
 
 	{if $files[changes].perms.tiki_p_create_file_galleries eq 'y'}
-		{self_link _icon='cross' _menu_text=$menu_text _menu_icon=$menu_icon removegal=$files[changes].id}{tr}Delete{/tr}{/self_link}
+		{self_link _icon='cross' _menu_text=$menu_text _menu_icon=$menu_icon _ajax='n' removegal=$files[changes].id}{tr}Delete{/tr}{/self_link}
 	{/if}
 {else}
 	{if $prefs.javascript_enabled eq 'y'}
@@ -133,16 +133,14 @@
 		{assign var=virtual_path value=$files[changes].fileId|virtual_path}
 		{self_link _icon="tree_folder_open" _menu_text=$menu_text _menu_icon=$menu_icon _script="javascript:open_webdav('$virtual_path')" _noauto="y" _ajax="n"}{tr}Open in WebDAV{/tr}{/self_link}
 	{/if}
-	{if $prefs.feature_share eq 'y' and $tiki_p_share eq 'y'}
-		<a href="tiki-share.php?url={$tikiroot}{$files[changes].id|sefurl:file|escape:'url'}">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='share_go' alt="{tr}Share a link to this file{/tr}"}</a>
-	{/if}
+
 	{if $prefs.feature_tell_a_friend eq 'y' and $tiki_p_tell_a_friend eq 'y'}
 		<a href="tiki-tell_a_friend.php?url={$tikiroot}{$files[changes].id|sefurl:file|escape:'url'}">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='email_go' alt="{tr}Email a link to this file{/tr}"}</a>
 	{/if}
 
 	{if $files[changes].perms.tiki_p_admin_file_galleries eq 'y'
 		or (!$files[changes].lockedby and (($user and $user eq $files[changes].user) or $files[changes].perms.tiki_p_edit_gallery_file eq 'y')) }
-			{self_link _icon='cross' _menu_text=$menu_text _menu_icon=$menu_icon remove=$files[changes].fileId galleryId=$files[changes].galleryId}{tr}Delete{/tr}{/self_link}
+			{self_link _icon='cross' _menu_text=$menu_text _menu_icon=$menu_icon _ajax='n' remove=$files[changes].fileId galleryId=$files[changes].galleryId}{tr}Delete{/tr}{/self_link}
 	{/if}
 
 	{if $prefs.javascript_enabled eq 'y'}

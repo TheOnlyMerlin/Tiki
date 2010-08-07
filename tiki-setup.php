@@ -72,20 +72,6 @@ require_once ('lib/setup/wiki.php');
 if ($prefs['feature_polls'] == 'y') require_once ('lib/setup/polls.php');
 if ($prefs['feature_mailin'] == 'y') require_once ('lib/setup/mailin.php');
 if ($prefs['useGroupHome'] == 'y') require_once ('lib/setup/default_homepage.php');
-
-// change $prefs['tikiIndex'] if feature_sefurl is enabled (e.g. tiki-index.php?page=HomePage becomes HomePage)
-if ($prefs['feature_sefurl'] == 'y') {
-	//TODO: need a better way to know which is the type of the tikiIndex URL (wiki page, blog, file gallery etc)
-	//TODO: implement support for types other than wiki page and blog
-	if ($prefs['tikiIndex'] == 'tiki-index.php' && $prefs['wikiHomePage']) {
-		include_once('lib/wiki/wikilib.php');
-		$prefs['tikiIndex'] = $wikilib->sefurl($prefs['wikiHomePage']);
-	} else if (substr($prefs['tikiIndex'], 0, strlen('tiki-view_blog.php')) == 'tiki-view_blog.php') {
-		include_once('tiki-sefurl.php');
-		$prefs['tikiIndex'] = filter_out_sefurl($prefs['tikiIndex'], $smarty, 'blog');
-	}
-}
-
 require_once ('lib/setup/theme.php');
 if ($prefs['feature_babelfish'] == 'y' || $prefs['feature_babelfish_logo'] == 'y') require_once ('lib/setup/babelfish.php');
 if (!empty($varcheck_errors)) {
@@ -129,11 +115,7 @@ if ($prefs['feature_wysiwyg'] == 'y') {
 }
 if ($prefs['feature_phplayers'] == 'y') require_once ('lib/setup/phplayers.php');
 
-if ($prefs['feature_antibot'] == 'y' && is_null($user)) {
-	require_once('lib/captcha/captchalib.php');
-	$smarty->assign_by_ref('captchalib', $captchalib);
-}
-
+require_once ('lib/setup/smarty.php');
 $smarty->assign_by_ref('phpErrors', $phpErrors);
 $smarty->assign_by_ref('num_queries', $num_queries);
 $smarty->assign_by_ref('elapsed_in_db', $elapsed_in_db);
@@ -250,15 +232,12 @@ if ($prefs['javascript_enabled'] != 'n') {
 		$headerlib->add_jsfile( 'lib/jquery/jquery.sheet/plugins/jquery.scrollTo-min.js' );
 		$headerlib->add_jsfile( 'lib/jquery/jquery.sheet/plugins/jgcharts.min.js' );
 	}
-	if( $prefs['feature_jquery_media'] == 'y' ) {
-		$headerlib->add_jsfile( 'lib/jquery/jquery.media.js');
-	}
 	if( $prefs['feature_jquery_jqs5'] == 'y' ) {
 		if (strpos($_SERVER['PHP_SELF'], 'tiki-index_raw.php') !== false && isset($_REQUEST['format']) && $_REQUEST['format'] == 'jqs5') {
-			$headerlib->add_cssfile( 'lib/jquery/jquery.s5/jquery.s5.css' );
+			$headerlib->add_cssfile( 'lib/jquery/jqs5/jqs5.css' );
 			//$headerlib->add_cssfile( 'lib/jquery/jqs5/theme/staticfree/style.css' );
-			$headerlib->add_jsfile( 'lib/jquery/jquery.s5/jquery.s5.js' );
-			$headerlib->add_jq_onready('$jq("body > div > div > div").tiki("s5", "", {});', 20);	// late, and tell jqs5 where the page is in tiki
+			$headerlib->add_jsfile( 'lib/jquery/jqs5/jqs5.js' );
+			$headerlib->add_jq_onready('jqs5_init("body > div > div > div");', 20);	// late, and tell jqs5 where the page is in tiki
 			$prefs['feature_wiki_description'] = 'n';
 			$prefs['wiki_authors_style'] = 'none';
 			$prefs['feature_page_title'] = 'n';
@@ -281,10 +260,6 @@ if ($prefs['javascript_enabled'] != 'n') {
 		$headerlib->add_jsfile( 'lib/jquery/infinitecarousel/jquery.infinitecarousel2.js' );
 	}
 
-	if( $prefs['feature_jquery_validation'] == 'y' ) {
-		$headerlib->add_jsfile( 'lib/jquery/jquery-validate/jquery.validate.js' );
-	}
-	
 	$headerlib->add_jsfile( 'lib/jquery/jquery-ui/external/jquery.cookie.js' );
 	$headerlib->add_jsfile( 'lib/jquery/jquery.async.js', 10 );
 	$headerlib->add_jsfile( 'lib/jquery/treeTable/src/javascripts/jquery.treeTable.js' );

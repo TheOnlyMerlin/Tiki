@@ -10,7 +10,7 @@ require_once ('tiki-setup.php');
 
 $access->check_feature('feature_trackers');
 
-global $trklib; include_once ('lib/trackers/trackerlib.php');
+include_once ('lib/trackers/trackerlib.php');
 if ($prefs['feature_groupalert'] == 'y') {
 	include_once ('lib/groupalert/groupalertlib.php');
 }
@@ -150,16 +150,16 @@ if (count($status_types) == 0) {
 	$tracker_info["showStatus"] = 'n';
 }
 $filterFields = array('isSearchable'=>'y', 'isTblVisible'=>'y', 'type'=>array('q','u','g','I','C','n','j','f'));
-$sort_field = 0;
 if (!isset($_REQUEST["sort_mode"])) {
 	if (isset($tracker_info['defaultOrderKey'])) {
 		if ($tracker_info['defaultOrderKey'] == - 1) $sort_mode = 'lastModif';
 		elseif ($tracker_info['defaultOrderKey'] == - 2) $sort_mode = 'created';
 		elseif ($tracker_info['defaultOrderKey'] == - 3) $sort_mode = 'itemId';
-		else {
-			$sort_field = $tracker_info['defaultOrderKey'];
+		elseif ($orderkey) {
 			$sort_mode = 'f_' . $tracker_info['defaultOrderKey'];
 			$filterFields['fieldId'] = $tracker_info['defaultOrderKey'];
+		} else {
+			$sort_mode = 'lastModif';
 		}
 		if (isset($tracker_info['defaultOrderDir'])) {
 			$sort_mode.= "_" . $tracker_info['defaultOrderDir'];
@@ -172,8 +172,7 @@ if (!isset($_REQUEST["sort_mode"])) {
 } else {
 	$sort_mode = $_REQUEST["sort_mode"];
 	if (preg_match('/f_([0-9]+)_/', $sort_mode, $matches)) {
-		$sort_field = $matches[1];
-		$filterFields['fieldId'] = $matches[1];
+			$filterFields['fieldId'] = $matches[1];
 	}
 }
 $smarty->assign_by_ref('sort_mode', $sort_mode);
@@ -202,7 +201,7 @@ for ($i = 0; $i < $temp_max; $i++) {
 	$xfields["data"][$i]["id"] = $fid;
 	$filter_id = 'filter_' . $fid;
 	$xfields["data"][$i]["filter_id"] = $filter_id;
-	if (!empty($sort_field) and $sort_field == $xfields["data"][$i]['fieldId']) {
+	if (!empty($tracker_info['defaultOrderKey']) and $tracker_info['defaultOrderKey'] == $xfields["data"][$i]['fieldId']) {
 		$orderkey = true;
 	}
 	if (($xfields['data'][$i]['type'] == 'u' || $xfields['data'][$i]['type'] == 'g' || $xfields['data'][$i]['type'] == 'I') && isset($xfields['data'][$i]['options_array'][0]) && $xfields['data'][$i]['options_array'][0] == 1) {
@@ -253,12 +252,7 @@ for ($i = 0; $i < $temp_max; $i++) {
 			}
 		} elseif ($fields["data"][$i]["type"] == 'e' && $prefs['feature_categories'] == 'y') { // category
 			$parentId = $fields["data"][$i]['options_array'][0];
-			if ($fields["data"][$i]['options_array'][3] == 1) {
-				$all_descends = true;
-			} else {
-				$all_descends = false;
-			}
-			$fields["data"][$i]['categories'] = $categlib->get_viewable_child_categories($parentId, $all_descends);
+			$fields["data"][$i]['categories'] = $categlib->get_viewable_child_categories($parentId);
 			$categId = "ins_cat_$fid";
 			if (isset($_REQUEST[$categId])) {
 				if (is_array($_REQUEST[$categId])) {
@@ -392,12 +386,7 @@ for ($i = 0; $i < $temp_max; $i++) {
 				$fields["data"][$i]["value"] = '';
 			}
 			if ($fields["data"][$i]["type"] == 'r') { // item link
-				if (!isset($fields["data"][$i]["options_array"][3])) {
-					$fields["data"][$i]["list"] = array_unique($trklib->get_all_items($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][1], isset($fields['data'][$i]['options_array'][4])?$fields['data'][$i]['options_array'][4]:'poc'));
-				} 
-				else {	
-					$fields["data"][$i]["list"] = $trklib->get_all_items($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][1]);	
-				}
+				$fields["data"][$i]["list"] = array_unique($trklib->get_all_items($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][1], isset($fields['data'][$i]['options_array'][4])?$fields['data'][$i]['options_array'][4]:'poc'));
 				if (isset($fields["data"][$i]["options_array"][3])) $fields["data"][$i]["listdisplay"] = array_unique($trklib->concat_all_items_from_fieldslist($fields["data"][$i]["options_array"][0], $fields["data"][$i]["options_array"][3], isset($fields['data'][$i]['options_array'][4])?$fields['data'][$i]['options_array'][4]:'poc'));
 			} elseif (($fields["data"][$i]["type"] == 'M') && ($fields["data"][$i]["options_array"][0] >= '3')) {
 				if (isset($_FILES["$ins_id"]) && is_uploaded_file($_FILES["$ins_id"]['tmp_name'])) {
@@ -462,9 +451,6 @@ for ($i = 0; $i < $temp_max; $i++) {
 	if (empty($mainfield) and isset($fields['data'][$i]['isMain']) && $fields["data"][$i]["isMain"] == 'y' and !empty($fields["data"][$i]["value"])) {
 		$mainfield = $fields["data"][$i]["value"];
 	}
-}
-if (!$orderkey) {
-	$sort_mode = 'lastModif_asc';
 }
 if (!empty($_REQUEST['remove'])) {
 	$item_info = $trklib->get_item_info($_REQUEST['remove']);
@@ -532,9 +518,8 @@ if (isset($_REQUEST['import'])) {
 	}
 } elseif (isset($_REQUEST["save"])) {
 	if ($tiki_p_create_tracker_items == 'y') {
-		global $captchalib; include_once 'lib/captcha/captchalib.php';
-		if (empty($user) && $prefs['feature_antibot'] == 'y' && !$captchalib->validate()) {
-			$smarty->assign('msg', $captchalib->getErrors());
+		if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $_REQUEST['antibotcode'])) {
+			$smarty->assign('msg', tra("You have mistyped the anti-bot verification code; please try again."));
 			$smarty->assign('errortype', 'no_redirect_login');
 			$smarty->display("error.tpl");
 			die;
@@ -733,7 +718,7 @@ if ($tiki_p_export_tracker == 'y') {
 	$smarty->assign_by_ref('filters', $filters);
 	if (!empty($_REQUEST['displayedFields'])) {
 		if (is_string($_REQUEST['displayedFields'])) {
-			$smarty->assign('displayedFields', preg_split('/[:,]/', $_REQUEST['displayedFields']));
+			$smarty->assign('displayedFields', split('[:,]', $_REQUEST['displayedFields']));
 		} else {
 			$smarty->assign_by_ref('displayedFields', $_REQUEST['displayedFields']);
 		}
@@ -760,15 +745,6 @@ if (isset($tracker_info['useRatings']) && $tracker_info['useRatings'] == 'y' && 
 setcookie('tab', $cookietab);
 $smarty->assign('cookietab', $cookietab);
 ask_ticket('view-trackers');
-
-// Generate validation js
-if ($prefs['feature_jquery'] == 'y' && $prefs['feature_jquery_validation'] == 'y') {
-	global $validatorslib;
-	include_once('lib/validatorslib.php');
-	$validationjs = $validatorslib->generateTrackerValidateJS( $fields['data'] );
-	$smarty->assign('validationjs', $validationjs);
-}
-
 // Display the template
 $smarty->assign('mid', 'tiki-view_tracker.tpl');
 $smarty->display("tiki.tpl");

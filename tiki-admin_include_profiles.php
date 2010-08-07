@@ -26,10 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	if (isset($_POST['forget'], $_POST['pp'], $_POST['pd'])) { // {{{
 		$profile = Tiki_Profile::fromNames($_POST['pd'], $_POST['pp']);
 		$profile->removeSymbols();
-		$data = array();
-		foreach($_POST as $key => $value) if ($key != 'url' && $key != 'forget') $data[str_replace('_', ' ', $key) ] = $value;
 		$installer = new Tiki_Profile_Installer;
-		$installer->setUserData($data);
 		$installer->install($profile);
 		if ($target = $profile->getInstructionPage()) {
 			global $wikilib;
@@ -67,15 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		}
 	} // }}}
 	if (isset($_POST['test'], $_POST['profile_tester'], $_POST['profile_tester_name'])) { // {{{
-		$test_source = $_POST['profile_tester'];
-		if (strpos($test_source, '{CODE}') === false) {	// wrap in CODE tags if none there
-			$test_source = "{CODE(caption=>YAML)}\n$test_source\n{CODE}";
-		}
-		$smarty->assign('test_source', $test_source);
-		$smarty->assign('profile_tester_name', $_POST['profile_tester_name']);
-		$profile = Tiki_Profile::fromString($test_source, $_POST['profile_tester_name']);
-		$profile->removeSymbols();
 		$installer = new Tiki_Profile_Installer;
+		$profile = Tiki_Profile::fromString($_POST['profile_tester'], $_POST['profile_tester_name']);
+		$profile->removeSymbols();
 		$installer->install($profile);
 		if ($target = $profile->getInstructionPage()) {
 			global $wikilib;
@@ -116,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		}
 		$dependencies = array();
 		$userInput = array();
-		foreach($deps as $d) {
+		foreach($deps as $d) if (!$installer->isInstalled($d)) {
 			$dependencies[] = $d->pageUrl;
 			$userInput = array_merge($userInput, $d->getRequiredInput());
 		}

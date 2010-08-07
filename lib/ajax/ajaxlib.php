@@ -38,7 +38,7 @@ class TikiAjax extends xajax
 		function __construct() {
 			parent::__construct();
 
-			$this->aTemplates = array( 'confirm.tpl' => 1, 'error.tpl' => 1);
+			$this->aTemplates = array();
 			$this->deniedFunctions = array();
 
 			$this->configure('waitCursor',true);
@@ -277,7 +277,6 @@ function loadComponent($template, $htmlElementId, $max_tikitabs = 0, $last_user 
 	$tmp_jsfile = 'temp/public/'.$tikidomainslash.md5($jscontent).'.js';
 	if ( ! file_exists( $tmp_jsfile) ) {
 		file_put_contents( $tmp_jsfile, $jscontent );
-		chmod($tmp_jsfile, 0644);
 	}
 	$objResponse->includeScript($tmp_jsfile);
 	
@@ -288,10 +287,6 @@ function loadComponent($template, $htmlElementId, $max_tikitabs = 0, $last_user 
 	return $objResponse;
 }
 
-if ($prefs['feature_ajax_autosave'] === 'y') {
+if ($prefs['feature_ajax_autosave'] == 'y') {
 	require_once("lib/ajax/autosave.php");
-}
-
-if ($prefs['wysiwyg_htmltowiki'] === 'y') {
-	require_once("lib/ajax/tikitohtml.php");
 }

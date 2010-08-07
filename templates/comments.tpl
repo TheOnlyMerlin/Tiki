@@ -110,11 +110,6 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 	{/if}
 
 	{if $forum_mode neq 'y' or $prefs.forum_thread_user_settings eq 'y'}
-	{if $comments_cant > 0 and $section eq 'blogs'}
-		{* displaying just for blogs only because I'm not sure if this is useful for other sections *}
-		{capture name=comments_cant_title}{if $comments_cant == 1}{tr}{$comments_cant} comment so far{/tr}{else}{tr}{$comments_cant} comments so far{/tr}{/if}{/capture}
-		<h2>{$smarty.capture.comments_cant_title}</h2>
-	{/if}
 	<div class="forum_actions">
 		{if $forum_mode neq 'y'}
 			<div class="headers">
@@ -124,7 +119,7 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 				{/if}
 				<span class="infos">
 				{if $tiki_p_admin_comments eq 'y' and $prefs.feature_comments_moderation eq 'y'}
-					<a class="link" href="tiki-list_comments.php?types_section={$section}&amp;findfilter_approved=n{if isset($blogId)}&amp;blogId={$blogId}{/if}">{tr}queued:{/tr} {$queued}</a>
+					<a class="link" href="tiki-list_comments.php?types_section={$section}&amp;findfilter_approved=n">{tr}queued:{/tr}{$queued}</a>
 					&nbsp;&nbsp;
 				{/if}
 				{if $prefs.feature_comments_locking eq 'y'}
@@ -202,45 +197,6 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 		{include file='comment.tpl' comment=$comments_coms[rep]}
 		{if $thread_style != 'commentStyle_plain'}<br />{/if}
 	{/section}
-	{jq}
-		(function($) {
-			$.fn.addnotes = function( container ) {
-				return this.each(function(){
-					var comment = this;
-					var text = $('dt:contains("note")', comment).next('dd').text();
-					var author = $('.author_info', comment).clone();
-					var body = $('.postbody-content', comment).clone();
-					body.find('dt:contains("note")').closest('dl').remove();
-
-					if( text.length > 0 ) {
-						var parents = container.find(':contains("' + text + '")').parent();
-						var node = container.find(':contains("' + text + '")').not(parents)
-							.addClass('highlight')
-							.each( function() {
-								var child = $('dl.note-list',this);
-								if( ! child.length ) {
-									child = $('<dl class="note-list"/>')
-										.appendTo(this)
-										.hide();
-
-									$(this).click( function() {
-										child.toggle();
-									} );
-								}
-
-								child.append( $('<dt/>')
-									.append(author) )
-									.append( $('<dd/>').append(body) );
-							} );
-					}
-				});
-			};
-		})($jq);
-
-		$jq('.postbody dt:contains("note")')
-			.closest('.postbody')
-			.addnotes( $jq('#top') );
-	{/jq}
 </form>
 
 <div class="thread_pagination">
@@ -309,7 +265,7 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 		{if $forum_mode eq 'y'}
 			{if $comments_threadId > 0}{tr}Editing reply{/tr}{elseif $comment_preview eq 'y'}{tr}Preview{/tr}{elseif $parent_com}{tr}Reply to the selected post{/tr}{else}{tr}Post new message{/tr}{/if}
 		{else}
-			{if $comments_threadId > 0}{tr}Editing comment{/tr}{elseif $parent_com}{tr}Reply to the selected comment{/tr}{else}{tr}Post new comment{/tr}{/if}
+			{if $comments_threadId > 0}{tr}Editing comment{/tr}{elseif $parent_com}{tr}Comment on the selected post{/tr}{else}{tr}Post new comment{/tr}{/if}
 		{/if}
 		</h2>
 	</div>
@@ -350,23 +306,10 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 	{/section}
 
 	<table class="normal">
-		{if !$user}
-			<tr>
-				<td class="formcolor"><label for="anonymous_name">{tr}Name{/tr}</span></label></td>
-				<td class="formcolor"><input type="text" maxlength="50" id="anonymous_name" name="anonymous_name" /></td>
-			</tr>
-			{if $forum_mode eq 'y'}
-				<tr>
-					<td class="formcolor"><label for="anonymous_email">{tr}If you would like to be notified when someone replies to this topic<br />please tell us your e-mail address{/tr}</label></td>
-					<td class="formcolor"><input type="text" size="30" id="anonymous_email" name="anonymous_email" /></td>
-				</tr>
-			{/if}
-		{/if}
-
 		{if ( $forum_mode != 'y' and $prefs.wiki_comments_notitle neq 'y' ) or $prefs.forum_reply_notitle neq 'y' && $forum_mode == 'y'}
 			<tr>
 				<td class="formcolor">
-					<label for="comments-title">{tr}Title{/tr} <span class="attention">*</span> </label>
+					<label for="comments-title">{tr}Title{/tr} <span class="attention">({tr}required{/tr})</span> </label>
 				</td>
 				<td class="formcolor">
 				{* 
@@ -415,7 +358,7 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 		{if $prefs.section_comments_parse eq 'y' && $forum_mode neq 'y' || $prefs.feature_forum_parse eq 'y' && $forum_mode eq 'y'}
 	        {assign var=toolbars_html value=true}{* can't find where this gets set in ui-revamp project *}
 	        <tr>
-	    		<td class="formcolor"></td>
+	    		<td class="formcolor"><label>{tr}Toolbars{/tr}</label></td>
 	            <td class="formcolor">
 	            	{toolbars area_name='editpost2' comments='y'}
 	            </td>
@@ -423,50 +366,12 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 		{/if}
 		<tr>
 			<td class="formcolor">
-				<label for="editpost2">{if $forum_mode eq 'y'}{tr}Reply{/tr}{else}{tr}Comment{/tr} <span class="attention">*</span>{/if}</label>
+				<label for="editpost2">{if $forum_mode eq 'y'}{tr}Reply{/tr}{else}{tr}Comment{/tr} <span class="attention">({tr}required{/tr})</span>{/if}</label>
 			</td>
 			<td class="formcolor">
 				<textarea id="editpost2" name="comments_data" rows="{$rows}" cols="{$cols}">{if $prefs.feature_forum_replyempty ne 'y' || $edit_reply > 0 || $comment_preview eq 'y'}{$comment_data|escape}{/if}</textarea> 
 				<input type="hidden" name="rows" value="{$rows}" />
 				<input type="hidden" name="cols" value="{$cols}" />
-				{jq}
-					var annote = $jq('<a href="">{tr}Comment{/tr}</a>')
-						.css('background','white')
-						.click( function( e ) {
-							e.preventDefault();
-							var annotation = $jq(this).attr('annotation');
-							$jq(this).hide();
-
-							$jq('#editpostform').parents().show();
-							$jq('#editpostform textarea').val(';note:' + annotation + "\n\n").focus().scroll();
-						} )
-						.appendTo(document.body);
-
-					$jq('#top').mouseup( function( e ) {
-						var range;
-						if( window.getSelection && window.getSelection().rangeCount ) {
-							range = window.getSelection().getRangeAt(0);
-						} else if( window.selection ) {
-							range = window.selection.getRangeAt(0);
-						}
-
-						if( range ) {
-							var string = $jq.trim( range.toString() );
-
-							if( string.length && -1 === string.indexOf( "\n" ) ) {
-								annote.attr('annotation', string);
-								annote.show().position( {
-									of: e,
-									at: 'bottom left',
-									my: 'top left',
-									offset: '10 10'
-								} );
-							} else {
-								annote.hide();
-							}
-						}
-					} );
-				{/jq}
 
 				{if $forum_mode eq 'y' and $user and $prefs.feature_user_watches eq 'y'}
 					<div id="watch_thread_on_reply">
@@ -492,16 +397,27 @@ smarty.session.tiki_cookie_jar.{$cookie_key}: {$smarty.session.tiki_cookie_jar.$
 		{/if}
 
 		{if $prefs.feature_antibot eq 'y'}
-			{assign var='showmandatory' value='y'}
 			{include file='antibot.tpl' td_style="formcolor"}
 		{/if}
 
+		{if !$user}
+			<tr>
+				<td class="formcolor"><label for="anonymous_name">{tr}Enter your name{/tr} ({tr}optional{/tr})</span></label></td>
+				<td class="formcolor"><input type="text" maxlength="50" size="12" id="anonymous_name" name="anonymous_name" /></td>
+			</tr>
+			{if $forum_mode eq 'y'}
+				<tr>
+					<td class="formcolor"><label for="anonymous_email">{tr}If you would like to be notified when someone replies to this topic<br />please tell us your e-mail address{/tr}</label></td>
+					<td class="formcolor"><input type="text" size="30" id="anonymous_email" name="anonymous_email" /></td>
+				</tr>
+			{/if}
+		{/if}
 		<tr>
 			<td class="formcolor">
 			{if $parent_coms}
 				{tr}Reply to parent post{/tr}
 			{else}
-				{if $forum_mode eq 'y'}{tr}Post new reply{/tr}{/if}
+				{if $forum_mode eq 'y'}{tr}Post new reply{/tr}{else}{tr}Post new comment{/tr}{/if}
 			{/if}
 			</td>
 

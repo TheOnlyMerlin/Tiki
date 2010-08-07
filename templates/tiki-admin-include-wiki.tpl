@@ -45,6 +45,7 @@
 			<fieldset>
 				<legend>{tr}Edit{/tr}</legend>
 
+				{preference name=wiki_spellcheck}
 				{preference name=feature_wiki_templates}
 				{preference name=feature_warn_on_edit}
 				{preference name=warn_on_edit_time}
@@ -205,7 +206,6 @@
 		</div>
 
 		{preference name=feature_semantic}
-		{preference name=wiki_prefixalias_tokens}
 		{preference name=feature_likePages}
 		<div class="adminoptionboxchild" id="wiki_likepages_samelang_only">
 			{preference name=wiki_likepages_samelang_only}

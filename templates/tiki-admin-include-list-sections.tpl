@@ -69,8 +69,8 @@
 
 	{self_link page="maps" _class="admbox" _style="background-image: url('pics/large/maps48x48.png')" _selected="'`$prefs.feature_maps`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Maps{/tr}" title="{tr}Maps{/tr}{if $prefs.feature_maps ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Maps{/tr}</span>{/self_link}
 	
-	{self_link page="gmap" _ajax="n" _class="admbox" _style="background-image: url('pics/large/google_maps48x48.png')" _selected="'`$prefs.feature_gmap`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Google Maps{/tr}" title="{tr}Google Maps{/tr}{if $prefs.feature_gmap ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Google Maps{/tr}</span>{/self_link}
-{* Google map does not load on ajax page load - white screens *}
+	{self_link page="gmap" _class="admbox" _style="background-image: url('pics/large/google_maps48x48.png')" _selected="'`$prefs.feature_gmap`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Google Maps{/tr}" title="{tr}Google Maps{/tr}{if $prefs.feature_gmap ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Google Maps{/tr}</span>{/self_link}
+
 	{self_link page="copyright" _class="admbox" _style="background-image: url('pics/large/copyright48x48.png')" _selected="'`$prefs.feature_copyright`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Copyright{/tr}" title="{tr}Copyright{/tr}{if $prefs.feature_copyright ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Copyright{/tr}</span>{/self_link}
 
 	{self_link page="messages" _class="admbox" _style="background-image: url('pics/large/messages48x48.png')" _selected="'`$prefs.feature_messages`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Messages{/tr}" title="{tr}Messages{/tr}{if $prefs.feature_messages ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Messages{/tr}</span>{/self_link}
@@ -91,10 +91,8 @@
 
 	{self_link page="sefurl" _class="admbox" _style="background-image: url('pics/large/goto48x48.png')" _selected="'`$prefs.feature_sefurl`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Search engine friendly url{/tr}" title="{tr}Search engine friendly url{/tr}{if $prefs.feature_sefurl ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Search engine friendly url{/tr}</span>{/self_link}
 
-	{self_link page="video" _class="admbox" _style="background-image: url('pics/large/gnome-camera-video-48.png')" _selected="'`$prefs.feature_kaltura`' != 'y' && '`$prefs.feature_watershed`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Video{/tr}" title="{tr}Video streaming integration{/tr}{if $prefs.feature_kaltura ne 'y' && $prefs.feature_watershed ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Video{/tr}</span>{/self_link}
+	{self_link page="kaltura" _class="admbox" _style="background-image: url('pics/large/kaltura48x48.png')" _selected="'`$prefs.feature_kaltura`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Kaltura{/tr}" title="{tr}Kaltura{/tr}{if $prefs.feature_kaltura ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Kaltura{/tr}</span>{/self_link}
 
 	{self_link page="payment" _class="admbox" _style="background-image: url('pics/large/payment48x48.png')" _selected="'`$prefs.payment_feature`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Payment{/tr}" title="{tr}Payment{/tr}{if $prefs.payment_feature ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Payment{/tr}</span>{/self_link}
-
-	{self_link page="socialnetworks" _class="admbox" _style="background-image: url('img/mytiki/socialnetworks_32.png')" _selected="'`$prefs.feature_socialnetworks`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Social Networks{/tr}" title="{tr}Social networks{/tr}{if $prefs.feature_socialnetworks ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Social networks{/tr}</span>{/self_link}
 
 </div>

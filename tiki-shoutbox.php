@@ -42,11 +42,11 @@ if ($tiki_p_admin_shoutbox == 'y' || $user == $owner) {
 if ($tiki_p_post_shoutbox == 'y') {
 	if (isset($_REQUEST["save"]) && !empty($_REQUEST['message'])) {
 		check_ticket('shoutbox');
-		if (($prefs['feature_antibot'] == 'y' && empty($user)) && !$captchalib->validate()) {
-			$smarty->assign('msg', $captchalib->getErrors());
+		if (($prefs['feature_antibot'] == 'y' && empty($user)) && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $_REQUEST['antibotcode'])) {
+			$smarty->assign('msg', tra("You have mistyped the anti-bot verification code; please try again."));
 			if (!empty($_REQUEST['message'])) $smarty->assign_by_ref('message', $_REQUEST['message']);
 		} else {
-			$shoutboxlib->replace_shoutbox($_REQUEST['msgId'], $owner, $_REQUEST['message'], ($_REQUEST['tweet']==1));
+			$shoutboxlib->replace_shoutbox($_REQUEST['msgId'], $owner, $_REQUEST['message']);
 			$smarty->assign('msgId', '0');
 			$smarty->assign('message', '');
 		}
@@ -68,22 +68,15 @@ if (isset($_REQUEST["find"])) {
 } else {
 	$find = '';
 }
-if (isset($_REQUEST["get"])) {
-	$get=$_REQUEST["get"];
-} else {
-	$get=0;
-}
 /* additions for ajax (formerly shoutjax) */
 function processShout($formValues, $destDiv = 'mod-shoutbox') {
 	global $shoutboxlib, $user, $smarty, $prefs, $ajaxlib, $tiki_p_admin_shoutbox;
-	$smarty->assign('tweet',$formValues['tweet']);
-	$smarty->assign('facebook',$formValues['facebook']);
 	if (array_key_exists('shout_msg', $formValues) && strlen($formValues['shout_msg']) > 2) {
-		if (empty($user) && $prefs['feature_antibot'] == 'y' && !$captchalib->validate()) {
-			$smarty->assign('shout_error', $captchalib->getErrors());
+		if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $formValues['antibotcode'])) {
+			$smarty->assign('shout_error', tra('You have mistyped the anti-bot verification code; please try again.'));
 			$smarty->assign_by_ref('shout_msg', $formValues['shout_msg']);
 		} else {
-			$shoutboxlib->replace_shoutbox(0, $user, $formValues['shout_msg'], ($formValues['shout_tweet']==1), ($formValues['shout_facebook']==1));
+			$shoutboxlib->replace_shoutbox(0, $user, $formValues['shout_msg']);
 		}
 	} else if (array_key_exists('shout_remove', $formValues) && $formValues['shout_remove'] > 0) {
 		$info = $shoutboxlib->get_shoutbox($formValues['shout_remove']);
@@ -93,7 +86,7 @@ function processShout($formValues, $destDiv = 'mod-shoutbox') {
 	}
 	$ajaxlib->registerTemplate('mod-shoutbox.tpl');
 	include ('lib/wiki-plugins/wikiplugin_module.php');
-	$data = wikiplugin_module('', Array('module' => 'shoutbox', 'max' => 10, 'np' => 0, 'nobox' => 'y', 'notitle' => 'y', 'tweet'=>$formValues['tweet']));
+	$data = wikiplugin_module('', Array('module' => 'shoutbox', 'max' => 10, 'np' => 0, 'nobox' => 'y', 'notitle' => 'y'));
 	$objResponse = new xajaxResponse();
 	$objResponse->assign($destDiv, "innerHTML", $data);
 	return $objResponse;
@@ -108,14 +101,7 @@ if ($prefs['feature_ajax'] == 'y') {
 /* end additions for ajax */
 $smarty->assign('find', $find);
 $smarty->assign_by_ref('sort_mode', $sort_mode);
-if ($get) {
-	$data=$shoutboxlib->get_shoutbox($get);
-	$channels['data']=array($data);
-	$channels['cant']=1;
-} else {
-	$channels = $shoutboxlib->list_shoutbox($offset, $maxRecords, $sort_mode, $find);
-	print_r($channels);
-}
+$channels = $shoutboxlib->list_shoutbox($offset, $maxRecords, $sort_mode, $find);
 $smarty->assign_by_ref('cant_pages', $channels["cant"]);
 $smarty->assign_by_ref('channels', $channels["data"]);
 ask_ticket('shoutbox');

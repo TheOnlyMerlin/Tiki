@@ -34,6 +34,9 @@ class Installer extends TikiDb_Bridge
 
 	function cleanInstall() // {{{
 	{
+		$TWV = new TWVersion;
+		$dbversion_tiki = $TWV->getBaseVersion();
+
 		$this->runFile( dirname(__FILE__) . '/../db/tiki.sql' );
 		$this->buildPatchList();
 		$this->buildScriptList();

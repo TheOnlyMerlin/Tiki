@@ -310,7 +310,6 @@
 	<tr>
 		<td valign="top">
 			<fieldset><legend>{tr}Install{/tr}</legend>
-				{if $tikidb_created}<p style="text-align:center"><img src="pics/icons/sticky.png" alt="{tr}Warning{/tr}" style="vertical-align:middle" /> <strong>{tr}Warning:{/tr}</strong> {tr}This will destroy your current database.{/tr}</p>{/if}
 				{if $tikidb_created}
 				<script type='text/javascript'><!--//--><![CDATA[//><!--
 				{literal}
@@ -321,12 +320,15 @@
 				{/literal}
 				//--><!]]></script>
 				<div id="install-link">
+				
 				<p style="text-align:center"><a style="color: #1174a5;" href="javascript:install()">{tr}Reinstall the database{/tr}</a></p>
+				<p style="text-align:center"><img src="pics/icons/sticky.png" alt="{tr}Warning{/tr}" style="vertical-align:middle" /> <strong>{tr}Warning:{/tr}</strong> {tr}This will destroy your current database.{/tr}</p>
 				</div>
 				<div id="install-table" style="visibility:hidden">
 				{else}
 				<div id="install-table">
 				{/if}
+				{if $tikidb_created}<p style="text-align:center"><img src="pics/icons/sticky.png" alt="{tr}Warning{/tr}" style="vertical-align:middle" /> <strong>{tr}Warning:{/tr}</strong> {tr}This will destroy your current database.{/tr}</p>{/if}
 				<p align="center">
 					<input type="submit" name="scratch" value=" {if $tikidb_created}{tr}Reinstall{/tr}{else}{tr}Install{/tr}{/if} " style="margin: 32px;" />
 				</p>
@@ -522,10 +524,10 @@
 			<br /><em>{tr}This is the email address for your administrator account.{/tr}</em></div>
 		</div>
 	</fieldset>
-	{if $upgradefix eq 'y'}
+	{if $install_type ne "scratch"}
 		<fieldset>
 			<legend>{icon _id=error} {tr}Upgrade fix{/tr}</legend>
-			<p>{tr}Experiencing problems with the upgrade? Your administrator account lost its privileges? This may occur if you upgraded from a very old version of Tiki.</p>
+			<p>{tr}Experiencing problems with the upgrade? Your administrator account lost its privileges? This may occur if you upgraded since a very old version of Tiki.</p>
 			<p>We can fix it! Doing so will:{/tr}</p>
 			<ol>
 				<li>{tr}Create the <em>Admins</em> group, if missing{/tr}</li>

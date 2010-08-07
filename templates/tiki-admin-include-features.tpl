@@ -49,7 +49,6 @@
 				{preference name=feature_gmap}
 				{preference name=feature_live_support}
 				{preference name=feature_tell_a_friend}
-				{preference name=feature_share}
 				{preference name=feature_minichat}
 				{preference name=feature_score}
 				{preference name=feature_fullscreen}
@@ -155,14 +154,8 @@
 						{preference name=feature_ajax_autosave}
 						{preference name=feature_wysiwyg}
 						{preference name=feature_wiki_save_draft}
+						
 				</fieldset>
-
-				<fieldset>
-					<legend class="heading">{icon _id="new"}<span>{tr}Fresh out of the oven{/tr}</span></legend>
-					{preference name=feature_socialnetworks}
-					{preference name=feature_watershed}
-				</fieldset>
-
 			</div>
 
 {/tab}

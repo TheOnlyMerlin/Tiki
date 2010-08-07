@@ -49,7 +49,7 @@
 
 {if $presend eq 'y'}
 	<div id="confirmArea">
-	{remarksbox type='note' title="{tr}Please Confirm{/tr}"}
+	{remarksbox type='warning' title="{tr}Please Confirm{/tr}"}
 		<b>{tr}This newsletter will be sent to {$subscribers} email addresses.{/tr}</b>
 		<br />
 		{tr}Reply to:{/tr} {if empty($replyto)}{$prefs.sender_email|escape} ({tr}default{/tr}){else}{$replyto|escape}{/if}
@@ -73,56 +73,28 @@
 			{/foreach}
 		</form>
 	</p>
-	{if $subscribers gt 0}
-		<h3>{tr}Recipients{/tr} <a id="flipperrecipients" href="javascript:flipWithSign('recipients')">[+]</a></h3>
-		<div id="recipients" class="simplebox" style="display:none; max-height: 250px; overflow: auto;">
-			<table class="small normal">
-				<tr>
-					<th>{tr}Email{/tr}</th>
-					<th>{tr}Validated{/tr}</th>
-					<th>{tr}Is user{/tr}</th>
-				</tr>
-				{cycle values="even,odd" print=false}
-				{foreach from=$subscribers_list item=sub key=ix}
-					<tr>
-						<td class="{cycle advance=false}">{$sub.email|escape}</td>
-						<td class="{cycle advance=false}">{$sub.valid}</td>
-						<td class="{cycle}">{$sub.isUser}</td>
-					</tr>
-				{/foreach}
-			</table>
-		</div>
-	{/if}	
 	<h2>{tr}Preview{/tr}</h2>
 	<h3>{tr}Subject{/tr}</h3>
 	<div class="simplebox wikitext">{$subject|escape}</div>
 
 	<h3>{tr}HTML version{/tr}</h3>
-	<div class="simplebox wikitext">{$previewdata}</div>
+	<div class="simplebox wikitext">{$dataparsed}</div>
 
 	{if $allowTxt eq 'y' }
 		<h3>{tr}Text version{/tr}</h3>
-		{if $info.datatxt}<div class="simplebox wikitext" >{$info.datatxt|escape|nl2br}</div>{/if}
+		{if $info.datatxt}<div class="simplebox wikitext" >{$datatxt|escape|nl2br}</div>{/if}
 		{if $txt}<div class="simplebox wikitext">{$txt|escape|nl2br}</div>{/if}
 	{/if}
 	
 	<h3>{tr}Files{/tr}</h3>
-	<div class="simplebox wikitext">
-		{if $info.file|@count gt 0}
-			<ul>
-				{foreach from=$info.files item=newsletterfile key=fileid}
-					<li>
-						{$newsletterfile.name|escape} ({$newsletterfile.type|escape}, {$newsletterfile.size|escape} {tr}bytes{/tr})
-					</li>
-				{/foreach}
-			</ul>
-		{else}
-			{tr}None{/tr}
-		{/if}
-	</div>
+	<ul>
+		{foreach from=$info.files item=newsletterfile key=fileid}
+			<li>
+				{$newsletterfile.name|escape} ({$newsletterfile.type|escape}, {$newsletterfile.size|escape} {tr}bytes{/tr})
+			</li>
+		{/foreach}
+	</ul>
 
-
-	
 	</div>
 
 	<div id="sendingArea" style="display:none">
@@ -137,7 +109,7 @@
 		<div class="simplebox wikitext">{$info.subject|escape}</div>
 
 		<h3>{tr}HTML version{/tr}</h3>
-		<div class="simplebox wikitext">{$previewdata}</div>
+		<div class="simplebox wikitext">{$info.dataparsed}</div>
 
 		{if $allowTxt eq 'y' }
 			<h3>{tr}Text version{/tr}</h3>
@@ -172,7 +144,7 @@
 				<tr class="formcolor">
 					<td class="formcolor">{tr}Newsletter:{/tr}</td>
 					<td class="formcolor">
-						<select name="nlId" onchange="checkNewsletterTxtArea(this.selectedIndex);">
+						<select name="nlId" onchange="checkNewsletterTxtArea();">
 							{section loop=$newsletters name=ix}
 								<option value="{$newsletters[ix].nlId|escape}" {if $newsletters[ix].nlId eq $nlId}selected="selected"{/if}>
 									{$newsletters[ix].name|escape}
@@ -214,12 +186,10 @@
 				{/if}
 
 				<tr class="formcolor">
-					<td colspan="2" class="formcolor">
+					<td class="formcolor">
 						{tr}Data HTML:{/tr}
 					</td>
-				</tr>
-				<tr>
-					<td colspan="2" class="formcolor">
+					<td class="formcolor">
 						{textarea name='data' id='editwiki'}{$info.data}{/textarea}
 						{tr}Must be wiki parsed:{/tr} <input type="checkbox" name="wikiparse" {if empty($info.wikiparse) or $info.wikiparse eq 'y'} checked="checked"{/if} />
 					</td>
@@ -232,24 +202,10 @@
 						{include file='textareasize.tpl' area_name='editwikitxt' formId='editpageform'}
 					</td>
 					<td class="formcolor" id="txtcol2" >
-						<textarea id='editwikitxt' name="datatxt" rows="{$rows}" cols="{$cols}">{$datatxt|escape}</textarea>
+						<textarea id='editwikitxt' name="datatxt" rows="{$rows}" cols="{$cols}">{$info.datatxt|escape}</textarea>
 					</td>
 				</tr>
 
-				<tr class="formcolor">
-					<td class="formcolor" id="clipcol1">
-						{tr}Article Clip (read only):{/tr}
-						<input type="submit" name="clipArticles" value="{tr}Clip Now{/tr}" class="wikiaction tips" title="{tr}Clip Articles{/tr}" onclick="needToConfirm=false" />
-						<br /><br />
-						{include file='textareasize.tpl' area_name='articlecliptxt' formId='editpageform'}
-					</td>
-					<td class="formcolor" id="clipcol2" >
-						{tr}To include the article clipping into your newsletter, cut and paste it into the contents.{/tr}
-						<br />{tr}If autoclipping is enabled, you can also enter "~~~articleclip~~~" which will be replaced with the latest	clip when sending.{/tr}
-						<textarea id='articlecliptxt' name="articleClip" rows="{$rows}" cols="{$cols}" readonly="readonly">{$articleClip}</textarea>		
-					</td>
-				</tr>				
-				
 				<tr class="formcolor">
 					<td class="formcolor" id="txtcol1">
 						{tr}Attached Files{/tr} :
@@ -341,10 +297,6 @@
 {{if $allowTxt eq 'n'}
 document.getElementById('txtcol1').style.display='none';
 document.getElementById('txtcol2').style.display='none';
-{/if}}
-{{if $allowArticleClip eq 'n'}
-document.getElementById('clipcol1').style.display='none';
-document.getElementById('clipcol2').style.display='none';
 {/if}}
 
 var newsletterfileid={{$info.files|@count}};

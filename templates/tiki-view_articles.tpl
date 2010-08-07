@@ -60,22 +60,11 @@
 								{if $listpages[ix].useImage eq 'y'}
 									{if $listpages[ix].hasImage eq 'y'}
 										<a href="{$listpages[ix].articleId|sefurl:article}"
-												title="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption|escape}{elseif $listpages[ix].topicName}{tr}{$listpages[ix].topicName}{/tr}{else}{tr}Read More{/tr}{/if}">
+												title="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption}{else}{$listpages[ix].topicName}{/if}">
 											<img  {if $listpages[ix].isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} 
-													alt="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption|escape}{else$listpages[ix].topicName}{tr}{$listpages[ix].topicName}{/tr}{/if}"
-													src="article_image.php?image_type=article&amp;id={$listpages[ix].articleId}
-													{if $listpages[ix].list_image_x > 0}
-														{if $largefirstimage eq 'y' and $smarty.section.ix.first}
-															{if $listpages[ix].image_x > 0}&amp;width={$listpages[ix].image_x}{/if}
-														{else}
-															&amp;width={$listpages[ix].list_image_x}&amp;cache=y
-														{/if}
-													{elseif $listpages[ix].image_x > 0}
-														&amp;width={$listpages[ix].image_x}&amp;cache=y
-													{else}
-														&amp;cache=y
-													{/if}"
-											/>
+													alt="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption}{else}{$listpages[ix].topicName}{/if}"
+													src="article_image.php?image_type=article&amp;id={$listpages[ix].articleId}"
+													{if $listpages[ix].image_x > 0} width="{$listpages[ix].image_x}"{/if}{if $listpages[ix].image_y > 0 } height="{$listpages[ix].image_y}"{/if} />
 										</a>
 									{else}
 										{* Intentionally left blank to allow user add an image from somewhere else through the img tag and no other extra image *}
@@ -84,9 +73,9 @@
 									{section name=it loop=$topics}
 										{if ($topics[it].topicId eq $listpages[ix].topicId) and ($topics[it].image_size > 0)}
 											<a href="{$listpages[ix].articleId|sefurl:article}"
-													title="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption|escape}{else}{tr}{$listpages[ix].topicName}{/tr}{/if}">
+													title="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption}{else}{$listpages[ix].topicName}{/if}">
 												<img {if $listpages[ix].isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} 
-														alt="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption|escape}{else}{tr}{$listpages[ix].topicName}{/tr}{/if}"
+														alt="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption}{else}{$listpages[ix].topicName}{/if}"
 														src="article_image.php?image_type=topic&amp;id={$listpages[ix].topicId}" />
 											</a>
 										{/if}

@@ -21,6 +21,7 @@ $cat_type = isset($cat_type) ? isset($cat_type) : $section;
 if ($section == 'wiki page' && !isset($cat_objid)) {
 	$cat_objid = $_REQUEST['page'];
 }
+
 if ($prefs['feature_theme_control']) {
 	include_once 'tiki-tc.php';
 }
@@ -37,11 +38,6 @@ if (!empty($tc_theme)) {
 
 $toolbars = ToolbarsList::fromPreference( $section );
 //file_put_contents('temp/cache/foo', print_r($toolbars->getWysiwygArray(), true));
-
-if ( $prefs['wysiwyg_htmltowiki'] === 'y' ) {
-	$toolbars->addTag('source', true);
-}
-
 $smarty->assign('toolbar', $toolbars->getWysiwygArray() );
 
 $smarty->display('setup_fckeditor.tpl', null, null, 'application/javascript');

@@ -12,7 +12,7 @@ class TWVersion
 	var $branch;		// Development cycle
 	var $version;		// This version
 	private $latestMinorRelease;		// Latest release in the same major version release series
-	var $latestRelease;		// Latest release
+	private $latestRelease;		// Latest release
 	private $isLatestMajorVersion; // Whether or not the current major version is the latest
 	var $releases;		// Array of all releases from website
 	var $star;			// Star being used for this version tree
@@ -23,11 +23,11 @@ class TWVersion
 		//   stable   : Represents stable releases.
 		//   unstable : Represents candidate and test/development releases.
 		//   trunk     : Represents next generation development version.
-		$this->branch 	= 'unstable';
+		$this->branch 	= 'stable';
 
 		// Set everything else, including defaults.
-		$this->version 	= '6.0 SVN';
-		$this->star	= '';
+		$this->version 	= '5.1';
+		$this->star	= 'Vulpeculae';
 		$this->releases	= array();
 
 		// Check for Subversion or not
@@ -109,13 +109,11 @@ class TWVersion
 				'3.3',
 				'3.4',
 				'3.5',
-				'3.6',
 				'4.0beta1',
 				'4.0RC1',
 				'4.0',
 				'4.1',
 				'4.2',
-				'4.3',
 				'5.0alpha',
 				'5.0beta1',
 				'5.0beta2',
@@ -123,6 +121,7 @@ class TWVersion
 				'5.0RC2',
 				'5.0',
 				'5.1RC1',
+				'5.1',
 				);
 	}
 

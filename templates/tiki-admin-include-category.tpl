@@ -20,7 +20,6 @@
 			{preference name=categorypath_excluded}
 		</div>
 		{preference name=feature_categoryobjects}
-		{preference name=feature_category_transition}
 		{preference name=feature_category_use_phplayers}
 		<div class="adminoptionlabel" style="margin-left:40px">
 		{remarksbox type="note" title="{tr}Note{/tr}"}
@@ -30,9 +29,6 @@
 		{preference name=categories_used_in_tpl}
 		{preference name=category_jail}
 		{preference name=category_defaults}
-		{preference name=category_autogeocode_within}
-		{preference name=category_autogeocode_replace}
-		{preference name=category_autogeocode_fudge}
 
 		{preference name=category_i18n_sync}
 		<div class="adminoptionboxchild category_i18n_sync_childcontainer blacklist whitelist required">

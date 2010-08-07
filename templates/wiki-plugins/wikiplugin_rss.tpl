@@ -1,12 +1,12 @@
-{if $title and $showtitle}
+{if $title}
 	<div class="rsstitle">
 		<a target="_blank" href="{$title.url|escape}">{$title.title|escape}</a>
 	</div>
 {/if}
 <ul class="rsslist">
 	{foreach from=$items item=item}
-            {if $icon}
-            <div style="list-style:square inside url({$icon})">
+            {if $item.icon and $showicon}
+            <div style="list-style:square inside url({$item.icon})">
             {/if}
 		<li class="rssitem">
                     <a target="_blank" href="{$item.url|escape}">{$item.title|escape}</a>
@@ -25,7 +25,7 @@
 				</div>
                     {/if}
 		</li>
-            {if $icon}
+            {if $item.icon and $showicon}
             </div>
             {/if}
 	{/foreach}

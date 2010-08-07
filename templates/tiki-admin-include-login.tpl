@@ -3,11 +3,6 @@
 	{button href="tiki-admingroups.php" _text="{tr}Admin Groups{/tr}"}
 	{button href="tiki-adminusers.php" _text="{tr}Admin Users{/tr}"}
 </div>
-{if !empty($feedback)}
-	{remarksbox title="{tr}Feedback{/tr}" type=note}
-		{$feedback}
-	{/remarksbox}
-{/if}
 
 <form action="tiki-admin.php?page=login" class="admin" method="post">
 	<input type="hidden" name="loginprefs" />
@@ -35,6 +30,7 @@
 						{preference name=registerPasscode}
 					</div>
 
+					{preference name=rnd_num_reg}
 					{if $gd_lib_found neq 'y'}
 						<div class="highlight">
 							{icon _id=information} {tr}Requires PHP GD library{/tr}.
@@ -60,15 +56,6 @@
 					</div>
 				</div>
 				{preference name=userTracker}
-				<div class="adminoptionboxchild" id="userTracker_childcontainer">
-				{preference name=user_register_prettytracker}
-					<div class="adminoptionboxchild" id="user_register_prettytracker_childcontainer">
-					{preference name=user_register_prettytracker_tpl}
-					</div>
-				{preference name=user_trackersync_trackers}
-				{preference name=user_trackersync_realname}
-				{preference name=user_trackersync_geo}
-				</div>
 				{preference name=groupTracker}
 				{preference name=email_due}
 				{preference name=unsuccessful_logins}
@@ -127,7 +114,6 @@
 				{preference name=min_pass_length}
 				{preference name=pass_due}
 			</fieldset>
-			{button href="?page=login&amp;refresh_email_group=y" _text="{tr}Assign users to group function of email pattern{/tr}"}
 		{/tab}
 
 		{tab name="{tr}LDAP{/tr}"}

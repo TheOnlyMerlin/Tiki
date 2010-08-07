@@ -15,12 +15,12 @@
 html {
 	display: block;
 	height: 100%;
-	background-color: #214d68;
+	background: /*#2e3035*/#214d68;
 }
 
 body {
 	font: 12px/1.4em Verdana, Geneva, Arial, Helvetica, sans-serif;
-	background-color: #fff;
+	background: #fff;
 }
 
 a,

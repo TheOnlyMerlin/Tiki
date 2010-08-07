@@ -28,14 +28,11 @@ function module_semantic_links( $mod_reference, $module_params ) {
 		global $semanticlib;
 		require_once( 'lib/wiki/semanticlib.php' );
 	
-		$msl_page = $page;
-		$relations = $semanticlib->getRelationList( $msl_page );
-
-		if( count( $relations ) ) {
-			$smarty->assign( 'msl_page', $msl_page );
-			$smarty->assign( 'show_semantic_links_module', true );
-			$smarty->assign( 'msl_relations', $relations );
-			$smarty->clear_assign('tpl_module_title');
-		}
+		$smarty->assign( 'show_semantic_links_module', true );
+	
+		$smarty->assign( 'msl_page', $msl_page = $page );
+	
+		$smarty->assign( 'msl_relations', $semanticlib->getRelationList( $msl_page ) );
+		$smarty->clear_assign('tpl_module_title');
 	}
 }

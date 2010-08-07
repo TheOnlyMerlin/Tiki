@@ -9,6 +9,7 @@ $section = 'blogs';
 require_once ('tiki-setup.php');
 include_once ('lib/blogs/bloglib.php');
 
+$smarty->assign('headtitle',tra('Create Blog'));
 $access->check_feature('feature_blogs');
 $access->check_permission('tiki_p_create_blogs');
 
@@ -16,7 +17,6 @@ if (isset($_REQUEST["blogId"])) {
 	$blogId = $_REQUEST["blogId"];
 } else {
 	$blogId = 0;
-	$smarty->assign('headtitle',tra('Create Blog'));
 }
 
 $smarty->assign('individual', 'n');
@@ -49,7 +49,7 @@ if (!isset($lastModif)) {
 
 if (isset($_REQUEST["blogId"]) && $_REQUEST["blogId"] > 0) {
 	// Check permission
-	$data = $bloglib->get_blog($_REQUEST["blogId"]);
+	$data = $tikilib->get_blog($_REQUEST["blogId"]);
 
 	if ($data["user"] != $user || !$user) {
 		if ($tiki_p_blog_admin != 'y') {
@@ -61,7 +61,6 @@ if (isset($_REQUEST["blogId"]) && $_REQUEST["blogId"] > 0) {
 		}
 	}
 
-	$smarty->assign('headtitle', tra('Edit blog:') . ' ' . $data['title']);
 	$smarty->assign('title', $data["title"]);
 	$smarty->assign('description', $data["description"]);
 	$smarty->assign('public', $data["public"]);
@@ -78,7 +77,7 @@ if (isset($_REQUEST["blogId"]) && $_REQUEST["blogId"] > 0) {
 }
 
 if (isset($_REQUEST["heading"]) and $tiki_p_edit_templates == 'y') {
-	// Sanitization cleanup
+	// Sanatization cleanup
 	$heading = preg_replace('/st<x>yle="[^"]*"/', 'style_dangerous', $_REQUEST["heading"]);
 } elseif (!isset($data["heading"])) {
 	$n = $smarty->get_filename('blog-heading.tpl', 'r');
@@ -92,23 +91,7 @@ if (isset($_REQUEST["heading"]) and $tiki_p_edit_templates == 'y') {
 	$heading = $data["heading"];
 }
 
-if (isset($_REQUEST["post_heading"]) and $tiki_p_edit_templates == 'y') {
-	// Sanitization cleanup
-	$post_heading = preg_replace('/st<x>yle="[^"]*"/', 'style_dangerous', $_REQUEST["post_heading"]);
-} elseif (!isset($data["post_heading"])) {
-	$n = $smarty->get_filename('blog-post-heading.tpl', 'r');
-	@$fp = fopen($n, 'r');
-	if ($fp) {
-		$post_heading = fread($fp, filesize($n));
-		@fclose($fp);
-	} else
-		$post_heading = '';
-} else {
-	$post_heading = $data["post_heading"];
-}
-
 $smarty->assign_by_ref('heading', $heading);
-$smarty->assign_by_ref('post_heading', $post_heading);
 $users = $userlib->list_all_users();
 $smarty->assign_by_ref('users', $users);
 
@@ -136,7 +119,7 @@ if (isset($_REQUEST["save"]) && $prefs['feature_categories'] == 'y' && $prefs['f
 	    $_REQUEST["description"], $_REQUEST["creator"], $public,
 	    $_REQUEST["maxPosts"], $_REQUEST["blogId"],
 	    $heading, $use_title, $use_author, $add_date, $use_find,
-	    $allow_comments, $show_avatar, $alwaysOwner, $post_heading);
+	    $allow_comments, $show_avatar, $alwaysOwner);
 
 	$cat_type = 'blog';
 	$cat_objid = $bid;
@@ -162,10 +145,6 @@ if (isset($_REQUEST['preview']) || $category_needed) {
 	$smarty->assign('maxPosts', $_REQUEST["maxPosts"]);
 	$smarty->assign('heading', $heading);
 	$smarty->assign('creator', $_REQUEST["creator"]);
-
-	// display heading preview
-	$_SESSION['tiki_cookie_jar']['show_blog_heading_preview'] = 'y';
-	$cookietab = 2;
 }
 
 

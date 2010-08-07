@@ -47,8 +47,8 @@ if ($user == '' and $prefs['contact_anon'] == 'y') {
 			die;
 		}
 		if ($prefs['feature_antibot'] == 'y') {
-			if(!$captchalib->validate()) {
-				$smarty->assign('message', $captchalib->getErrors());
+			if((!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $_REQUEST['antibotcode'])) {
+				$smarty->assign('message',tra("You have mistyped the anti-bot verification code; please try again."));
 				$smarty->assign('errortype', 'no_redirect_login');
 				if (!empty($_REQUEST['from'])) $smarty->assign_by_ref('from', $_REQUEST['from']);
 				if (!empty($_REQUEST['subject'])) $smarty->assign_by_ref('subject', $_REQUEST['subject']);

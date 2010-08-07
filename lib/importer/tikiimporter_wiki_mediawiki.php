@@ -320,7 +320,7 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
                     break;
                 case 'text':
                     $text = $this->convertMarkup($node->textContent);
-                    if ( $text instanceof PEAR_Error ) {
+                    if (get_class($text) == 'PEAR_Error') {
                         throw new ImporterParserException($text->message);
                     } else {
                         $data['data'] = $text;

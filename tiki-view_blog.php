@@ -23,7 +23,7 @@ if ($prefs['feature_categories'] == 'y') {
 $access->check_feature('feature_blogs');
 
 if (isset($_REQUEST["blogTitle"])) {
-	$blog_data = $bloglib->get_blog_by_title(trim(trim($_REQUEST["blogTitle"]) , "\x22\x27"));
+	$blog_data = $tikilib->get_blog_by_title(trim(trim($_REQUEST["blogTitle"]) , "\x22\x27"));
 	if ((!empty($blog_data)) && (!empty($blog_data["blogId"]))) {
 		$_REQUEST["blogId"] = $blog_data["blogId"];
 	}
@@ -38,7 +38,7 @@ $tikilib->get_perm_object( $_REQUEST["blogId"], 'blog' );
 
 $access->check_permission('tiki_p_read_blog');
 
-$blog_data = $bloglib->get_blog($_REQUEST["blogId"]);
+$blog_data = $tikilib->get_blog($_REQUEST["blogId"]);
 $ownsblog = 'n';
 if ($user && $user == $blog_data["user"]) {
 	$ownsblog = 'y';
@@ -52,7 +52,6 @@ if (!$blog_data) {
 $bloglib->add_blog_hit($_REQUEST["blogId"]);
 $smarty->assign('blogId', $_REQUEST["blogId"]);
 $smarty->assign('title', $blog_data["title"]);
-$smarty->assign('headtitle', $blog_data['title'] . ' : ' . $blog_data['description']);
 $smarty->assign('heading', $blog_data["heading"]);
 $smarty->assign('use_title', $blog_data["use_title"]);
 $smarty->assign('use_author', $blog_data["use_author"]);
@@ -125,6 +124,16 @@ $smarty->assign('maxRecords', $maxRecords);
 // If there're more records then assign next_offset
 $smarty->assign_by_ref('listpages', $listpages["data"]);
 $smarty->assign_by_ref('cant', $listpages["cant"]);
+if ($prefs['feature_blog_comments'] == 'y') {
+	$comments_per_page = $prefs['blog_comments_per_page'];
+	$thread_sort_mode = $prefs['blog_comments_default_ordering'];
+	$comments_vars = array(
+		'blogId'
+	);
+	$comments_prefix_var = 'blog:';
+	$comments_object_var = 'blogId';
+	include_once ("comments.php");
+}
 include_once ('tiki-section_options.php');
 if ($prefs['feature_theme_control'] == 'y') {
 	$cat_type = 'blog';

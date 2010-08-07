@@ -24,13 +24,6 @@ function wikiplugin_colorbox_info() {
 				'description' => tra('Image gallery ID'),
 				'filter' => 'digits'
 			),
-			'fileId' => array(
-				'required' => false,
-				'name' => tra('Filter on fieldIds in a file gallery'),
-				'description' => tra('Filter on fieldIds in a file gallery'),
-				'filter' => 'digits',
-				'separator' => ':'
-			),
 			'thumb' => array(
 				'required' => false,
 				'name' => tra('Thumb'),
@@ -89,8 +82,7 @@ function wikiplugin_colorbox($data, $params) {
 			return tra('Permission denied');
 		}
 		if (empty($params['sort_mode'])) $params['sort_mode'] = 'created_desc';
-		$filter = empty($params['fileId'])? '': array('fileId'=> $params['fileId']);
-		$files = $tikilib->get_files(0, -1, $params['sort_mode'], '', $params['fgalId'], false, false, false, true, false, false, false, false, '', true, false, false, $filter);
+		$files = $tikilib->get_files(0, -1, $params['sort_mode'], '', $params['fgalId'], false, false, false, true, false, false, false);
 		$smarty->assign('colorboxUrl', 'tiki-download_file.php?fileId=');
 		$smarty->assign('colorboxColumn', 'id');
 		if ($params['thumb'] != 'n') {

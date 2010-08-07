@@ -26,16 +26,10 @@ function wikiplugin_articles_info()
 		'description' => tra('Inserts a list of articles in the page.'),
 		'prefs' => array( 'feature_articles', 'wikiplugin_articles' ),
 		'params' => array(
-			'usePagination' => array(
-				'required' => false,
-				'name' => tra('Use Pagination'),
-				'description' => tra('Activate pagination when articles listing are long. Default is n') . ' (n|y)',
-				'filter' => 'alpha',
-			),
 			'max' => array(
 				'required' => false,
 				'name' => tra('Articles displayed'),
-				'description' => tra('The number of articles to display in the list.') . tra('If Pagination is set to true, this will determine the amount of artilces per page'),
+				'description' => tra('The number of articles to display in the list.'),
 				'filter' => 'int',
 			),
 			'topic' => array(
@@ -95,7 +89,7 @@ function wikiplugin_articles_info()
 			'start' => array(
 				'required' => false,
 				'name' => tra('Starting article'),
-				'description' => tra('The article number that the list should start with.') . tra('This will not work if Pagination is used.'),
+				'description' => tra('The article number that the list should start with.'),
 				'filter' => 'int',
 			),
 			'dateStart' => array(
@@ -122,12 +116,6 @@ function wikiplugin_articles_info()
 				'description' => tra('CSS Class to add to the container DIV.article. (Default="wikiplugin_articles")'),
 				'filter' => 'striptags',
 			),
-			'largefirstimage' => array(
-				'required' => false,
-				'name' => tra('Large first image'),
-				'description' => 'y|n',
-				'filter' => 'alpha',
-			),
 		),
 	);
 }
@@ -136,30 +124,28 @@ function wikiplugin_articles($data, $params)
 {
 	global $smarty, $tikilib, $prefs, $tiki_p_read_article, $tiki_p_articles_read_heading, $dbTiki, $pageLang;
 	global $artlib; require_once 'lib/articles/artlib.php';
-	$default = array('max' => -1, 'start' => 0, 'usePagination' => 'n', 'topicId' => '', 'topic' => '', 'sort' => 'publishDate_desc', 'type' => '', 'lang' => '', 'quiet' => 'n', 'categId' => '', 'largefirstimage' => 'n');
-	$params = array_merge($default, $params);
 
 	extract($params, EXTR_SKIP);
 	if (($prefs['feature_articles'] !=  'y') || (($tiki_p_read_article != 'y') && ($tiki_p_articles_read_heading != 'y'))) {
 		//	the feature is disabled or the user can't read articles, not even article headings
 		return("");
 	}
+	if(!isset($max))		$max = -1;
+	if(!isset($start))		$start = 0;
 
-	if($usePagination == 'y')
-	{
-		//Set offset when pagniation is used
-		if (!isset($_REQUEST["offset"])) {
-			$start = 0;
-		} else {
-			$start = $_REQUEST["offset"];
-		}
-		
-		//Default to 10 when pagination is used
-		if(($max == -1)){
-			$countPagination = 10;
-		}
-	}
+	if(!isset($topicId))	$topicId='';
+	if(!isset($topic))		$topic='';
 
+	if (!isset($sort))		$sort = 'publishDate_desc';
+
+	// Adds filtering by type if type is passed
+	if(!isset($type))		$type='';
+
+	if (!isset($categId))	$categId = '';
+
+	if (!isset($lang))		$lang = '';
+
+	if (!isset($quiet))		$quiet = 'n';
 	$smarty->assign_by_ref('quiet', $quiet);
 	
 	if(!isset($containerClass)) {$containerClass = 'wikiplugin_articles';}
@@ -176,7 +162,7 @@ function wikiplugin_articles($data, $params)
 		$smarty->assign('fullbody', 'n');
 		$fullbody = 'n';
 	}
-	$smarty->assign('largefirstimage', $largefirstimage);
+	
 	if (!isset($overrideDates))	$overrideDates = 'n';
 	
 	include_once("lib/commentslib.php");
@@ -219,13 +205,7 @@ function wikiplugin_articles($data, $params)
 	if (!empty($type) && !strstr($type, '!') && !strstr($type, '+')) {
 		$smarty->assign_by_ref('type', $type);
 	}
-	
-	if($usePagination == 'y'){
-		$smarty->assign('maxArticles', $max);
-		$smarty->assign_by_ref('offset', $start);
-		$smarty->assign_by_ref('cant', $listpages['cant']);
-	}
-	
+
 	$smarty->assign_by_ref('listpages', $listpages["data"]);
 
 	if (isset($titleonly) && $titleonly == 'y') {

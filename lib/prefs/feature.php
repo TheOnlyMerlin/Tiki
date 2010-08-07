@@ -217,12 +217,6 @@ function prefs_feature_list() {
 			'help' => 'Tell+a+Friend',
 			'type' => 'flag',
 		),
-		'feature_share' => array(
-			'name' => tra('Share'),
-			'description' => tra('Add a "Share" link in all pages to send it via e-mail, Twitter, Facebook, message or forums'),
-			'help' => 'Share',
-			'type' => 'flag',
-		),
 		'feature_html_pages' => array(
 			'name' => tra('HTML pages'),
 			'description' => tra('Static and dynamic HTML content'),
@@ -380,6 +374,13 @@ function prefs_feature_list() {
 			'name' => tra('Print Indexed'),
 			'description' => tra('Print Indexed'),
 			'help' => 'Print+Indexed',
+			'type' => 'flag',
+		),
+		'feature_sefurl' => array(
+			'name' => tra('Search engine friendly url'),
+			'description' => tra('If you are using Apache, you can rename _htaccess to .htaccess to get Short URLs'),
+			'help' => 'Rewrite+Rules',
+			'perspective' => false,
 			'type' => 'flag',
 		),
 		'feature_sheet' => array(
@@ -595,7 +596,7 @@ function prefs_feature_list() {
 		),
 		'feature_version_checks' => array(
 			'name' => tra('Check for updates automatically'),
-			'description' => tra('Tiki will check for updates when you access the main Administration page'),
+			'description' => tra('TikiWiki will check for updates when you access the main Administration page'),
 			'type' => 'flag',
 			'perspective' => false,
 		),
@@ -783,12 +784,10 @@ function prefs_feature_list() {
 		),	
 		'feature_sefurl' => array(
 			'name' => tra('Search engine friendly url'),
-			'description' => tra('If you are using Apache, you can rename _htaccess to .htaccess to get Short URLs'),
-			'help' => 'Clean+URLs',
-			'perspective' => false,
+			'help' => 'Rewrite+Rules',
 			'type' => 'flag',
-			'keywords' => 'sefurl sefurls seo rewrite rules short urls',
-		),
+			'perspective' => false,
+		),	
 		'feature_sefurl_filter' => array(
 			'name' => tra('Search engine friendly url Postfilter'),
 			'help' => 'Rewrite+Rules',
@@ -804,14 +803,6 @@ function prefs_feature_list() {
 			'name' => tra('Display blog title in the sefurl'),
 			'type' => 'flag',
 			'perspective' => false,
-		),
-		'feature_sefurl_tracker_prefixalias' => array(
-			'name' => tra('Redirect tiki-view_tracker.php?itemId=yyy to Prefixyyy page'),
-			'description' => tra('This redirection uses the wiki prefix alias feature'),
-			'help' => 'Page+Alias',
-			'perspective' => false,
-			'type' => 'flag',
-			'require' => array('feature_sefurl', 'wiki_prefixalias_tokens'),
 		),	
 		'feature_modulecontrols' => array(
 			'name' => tra('Show module controls'),
@@ -860,12 +851,10 @@ function prefs_feature_list() {
 		),
 		'feature_categorypath' => array(
 			'name' => tra('Category Path'),
-			'description' => tra('Show category tree, above wiki pages'),
 			'type' => 'flag',
 		),
 		'feature_categoryobjects' => array(
 			'name' => tra('Show category objects'),
-			'description' => tra('Show objects sharing the same category, below wiki pages'),
 			'type' => 'flag',
 		),
 		'feature_category_use_phplayers' => array(
@@ -949,7 +938,19 @@ function prefs_feature_list() {
 			'name' => tra('Custom blog headings'),
 			'type' => 'flag',
 		),
+		'feature_blog_comments' => array(
+			'name' => tra('Blog-level'),
+			'type' => 'flag',
+		),
 		'feature_blogposts_comments' => array(
+			'name' => tra('Post-level'),
+			'type' => 'flag',
+		),
+		'feature_trackbackpings' => array(
+			'name' => tra('Blog-level'),
+			'type' => 'flag',
+		),
+		'feature_blogposts_pings' => array(
 			'name' => tra('Post-level'),
 			'type' => 'flag',
 		),
@@ -1101,6 +1102,10 @@ function prefs_feature_list() {
 		),
 		'feature_site_login' => array(
 			'name' => tra('Login Bar'),
+			'type' => 'flag',
+		),
+		'feature_topbar_debug' => array(
+			'name' => tra('Debugger Console'),
 			'type' => 'flag',
 		),
 		'feature_topbar_custom_code' => array(
@@ -1321,12 +1326,6 @@ function prefs_feature_list() {
 				'vader' => 'vader',
 			), 
 		),
-		'feature_jquery_validation' => array(
-			'name' => tra('Validation'),
-			'type' => 'flag',
-			'description' => tra('Provides various validation possibilities like in Trackers.'),
-			'help' => 'JQuery#Validation',
-		),
 		'feature_jquery_sheet' => array(
 			'name' => tra('JQuery Sheet'),
 			'type' => 'flag',
@@ -1352,13 +1351,7 @@ function prefs_feature_list() {
 			'name' => tra('JQuery Sortable Tables'),
 			'type' => 'flag',
 			'help' => 'JQuery#TableSorter',
-			'description' => tra('Sort in fancytable plugin'),
-		),
-		'feature_jquery_media' => array(
-			'name' => tra('JQuery Media'),
-			'type' => 'flag',
-			'help' => 'JQuery#Media',
-			'description' => tra('Media player'),
+			'description' => tra('As it turns out, an unused experiment...'),
 		),
 		'feature_tabs' => array(
 			'name' => tra('Use Tabs'),
@@ -1638,10 +1631,6 @@ function prefs_feature_list() {
 				'wikiplugin_quote',
 			),
 		),
-		'feature_use_three_colon_centertag' => array(
-			'name' => tra('Use three colons instead of two to center text. Avoids conflict with C++ resolution scope operator.'),
-			'type' => 'flag',
-		),
 		'feature_community_gender' => array(
 			'name' => tra('Users can choose to show their gender'),
 			'type' => 'flag',
@@ -1732,13 +1721,9 @@ function prefs_feature_list() {
 		),
 		'feature_webdav' => array(
 			'name' => tra('WebDAV access to Tiki'),
-			'description' => tra('Allow to access File Galleries with WebDAV'),
-			'hint' => tra('use tiki-webdav.php as the URI of the WebDAV repository'),
-			'help' => 'WebDAV',
+			'help' => tra('Allow to acces File Galleries with WebDAV'),
+			'description' => tra('use tiki-webdav.php as the URI of the WebDAV repository'),
 			'type' => 'flag',
-			'dependencies' => array(
-				'feature_file_galleries',
-			),
 		),
 		'feature_fixed_width' => array(
 			'name' => tra('Fixed width'),
@@ -1746,30 +1731,15 @@ function prefs_feature_list() {
 			'description' => tra('Constrains the site display to 990px wide.'),
 			'warning' => tra('You can modify at styles/layout/fixed_width.css'),
 		),
-		'feature_socialnetworks' => array(
-			'name' => tra('Social networks'),
-			'description' => tra('Integration with different social networks like Twitter or Facebook'),
-			'help' => 'Social+Networks',
-			'type' => 'flag',
-			'keywords' => 'social networks',
-		),
 		'feature_group_transition' => array(
 			'name' => tra('Group Transition'),
 			'description' => tra('Enables transitions for users between different groups. Transitions will create a user approval workflow.'),
 			'type' => 'flag',
-			'help' => 'Group+Transitions',
 		),
 		'feature_category_transition' => array(
 			'name' => tra('Category Transition'),
 			'description' => tra('Enables transitions on objects between different categories. Transitions will create a document workflow.'),
 			'type' => 'flag',
-			'help' => 'Category+Transitions',
-		),
-		'feature_watershed' => array(
-			'name' => tra('Ustream Watershed'),
-			'description' => tra('Integration to Ustream Watershed live video streaming.'),
-			'type' => 'flag',
-			'help' => 'Ustream+Watershed',
 		),
 	);
 }

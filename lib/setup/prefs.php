@@ -146,7 +146,6 @@ function get_default_prefs() {
 		'wiki_list_sortorder' => 'pageName',
 		'wiki_list_sortdirection' => 'asc',
 		'wiki_pagealias_tokens' => 'alias',
-		'wiki_prefixalias_tokens' => '',
 		'wiki_page_regex' => 'complete',
 		'wiki_page_separator' => '...page...',
 		'wiki_page_navigation_bar' => 'bottom',
@@ -202,7 +201,6 @@ function get_default_prefs() {
 		'wikiplugin_article' => 'y',
 		'wikiplugin_articles' => 'y',
 		'wikiplugin_attach' => 'y',
-		'wikiplugin_attributes' => 'n',
 		'wikiplugin_avatar' => 'n',
 		'wikiplugin_back' => 'n',
 		'wikiplugin_backlinks' => 'n',
@@ -213,7 +211,6 @@ function get_default_prefs() {
 		'wikiplugin_calendar' => 'y',
 		'wikiplugin_category' => 'y',
 		'wikiplugin_catorphans' => 'y',
-		'wikiplugin_cclite' => 'n',
 		'wikiplugin_catpath' => 'y',
 		'wikiplugin_center' => 'y',
 		'wikiplugin_chart' => 'y',
@@ -234,7 +231,6 @@ function get_default_prefs() {
 		'wikiplugin_fancylist' => 'y',
 		'wikiplugin_fancytable' => 'y',
 		'wikiplugin_file' => 'y',
-		'wikiplugin_filelink' => 'y',
 		'wikiplugin_files' => 'y',
 		'wikiplugin_flash' => 'y',
 		'wikiplugin_footnote' => 'n',
@@ -315,7 +311,6 @@ function get_default_prefs() {
 		'wikiplugin_titlesearch' => 'n',
 		'wikiplugin_toc' => 'y',
 		'wikiplugin_topfriends' => 'y',
-		'wikiplugin_trackercomments' => 'y',
 		'wikiplugin_trackerfilter' => 'y',
 		'wikiplugin_trackeritemfield' => 'y',
 		'wikiplugin_trackerlist' => 'y',
@@ -323,21 +318,16 @@ function get_default_prefs() {
 		'wikiplugin_tracker' => 'y',
 		'wikiplugin_trackerprefill' => 'y',
 		'wikiplugin_trackerstat' => 'y',
-		'wikiplugin_trade' => 'n',
-		'wikiplugin_transclude' => 'y',
 		'wikiplugin_translated' => 'y',
 		'wikiplugin_tr' => 'n',
 		'wikiplugin_usercount' => 'n',
-		'wikiplugin_userlink' => 'y',
 		'wikiplugin_userlist' => 'n',
 		'wikiplugin_userpref' => 'n',
 		'wikiplugin_versions' => 'n',
 		'wikiplugin_vote' => 'y',
-		'wikiplugin_watershed' => 'n',
 		'wikiplugin_wantedpages' => 'n',
 		'wikiplugin_webservice' => 'n',
 		'wikiplugin_youtube' => 'y',
-		'wikiplugin_author' => 'y',
 
 		// Inline wiki plugins have their edit plugin icon disabled
 		'wikiplugininline_addtocart' => 'n',
@@ -349,7 +339,6 @@ function get_default_prefs() {
 		'wikiplugininline_article' => 'n',
 		'wikiplugininline_articles' => 'n',
 		'wikiplugininline_attach' => 'n',
-		'wikiplugininline_attributes' => 'n',
 		'wikiplugininline_avatar' => 'n',
 		'wikiplugininline_back' => 'n',
 		'wikiplugininline_backlinks' => 'n',
@@ -361,7 +350,6 @@ function get_default_prefs() {
 		'wikiplugininline_category' => 'n',
 		'wikiplugininline_catorphans' => 'n',
 		'wikiplugininline_catpath' => 'n',
-		'wikiplugininline_cclite' => 'n',
 		'wikiplugininline_center' => 'n',
 		'wikiplugininline_chart' => 'n',
 		'wikiplugininline_code' => 'n',
@@ -381,7 +369,6 @@ function get_default_prefs() {
 		'wikiplugininline_fancylist' => 'n',
 		'wikiplugininline_fancytable' => 'n',
 		'wikiplugininline_file' => 'y',
-		'wikiplugininline_filelink' => 'y',
 		'wikiplugininline_files' => 'n',
 		'wikiplugininline_flash' => 'n',
 		'wikiplugininline_footnote' => 'n',
@@ -461,7 +448,6 @@ function get_default_prefs() {
 		'wikiplugininline_titlesearch' => 'n',
 		'wikiplugininline_toc' => 'n',
 		'wikiplugininline_topfriends' => 'n',
-		'wikiplugininline_trackercomments' => 'n',
 		'wikiplugininline_trackerfilter' => 'n',
 		'wikiplugininline_trackeritemfield' => 'y',
 		'wikiplugininline_trackerlist' => 'n',
@@ -469,21 +455,16 @@ function get_default_prefs() {
 		'wikiplugininline_tracker' => 'n',
 		'wikiplugininline_trackerprefill' => 'n',
 		'wikiplugininline_trackerstat' => 'n',
-		'wikiplugininline_trade' => 'n',
-		'wikiplugininline_transclude' => 'y',
 		'wikiplugininline_translated' => 'n',
 		'wikiplugininline_tr' => 'n',
 		'wikiplugininline_usercount' => 'n',
-		'wikiplugininline_userlink' => 'n',
 		'wikiplugininline_userlist' => 'n',
 		'wikiplugininline_userpref' => 'n',
 		'wikiplugininline_versions' => 'n',
 		'wikiplugininline_vote' => 'n',
-		'wikiplugininline_watershed' => 'n',
 		'wikiplugininline_wantedpages' => 'n',
 		'wikiplugininline_webservice' => 'n',
 		'wikiplugininline_youtube' => 'n',
-		'wikiplugininline_author' => 'n',
 
 		// webservices
 		'webservice_consume_defaultcache' => 300, // 5 min
@@ -501,8 +482,6 @@ function get_default_prefs() {
 		'wysiwyg_wiki_semi_parsed' => 'n',
 		'wysiwyg_toolbar_skin' => 'default',
 		'wysiwyg_ckeditor' => 'n',
-		'wysiwyg_htmltowiki' => 'n',
-		'wysiwyg_fonts' => 'sans serif;serif;monospace;Arial;Century Gothic;Comic Sans MS;Courier New;Tahoma;Times New Roman;Verdana',
 
 		// wiki3d
 		'wiki_feature_3d' => 'n',
@@ -518,9 +497,10 @@ function get_default_prefs() {
 		'blog_list_order' => 'created_desc',
 		'home_blog' => 0,
 		'feature_blog_rankings' => 'n',
-		'blog_comments_default_ordering' => 'commentDate_asc',
+		'feature_blog_comments' => 'n',
+		'blog_comments_default_ordering' => 'points_desc',
 		'blog_comments_per_page' => 10,
-		'feature_blogposts_comments' => 'y',
+		'feature_blogposts_comments' => 'n',
 		'blog_list_user' => 'text',
 		'blog_list_title' => 'y',
 		'blog_list_title_len' => '35',
@@ -600,7 +580,6 @@ function get_default_prefs() {
 		'fgal_list_lastDownload_admin' => 'n',
 		'fgal_list_lockedby_admin' => 'n',
 		'fgal_list_backlinks_admin' => 'y',
-		'fgal_keep_fileId' => 'n',
 
 		// imagegals
 		'feature_galleries' => 'n',
@@ -667,7 +646,6 @@ function get_default_prefs() {
 		'feature_cms_rankings' => 'n',
 		'feature_cms_print' => 'y',
 		'feature_cms_emails' => 'n',
-		'art_sort_mode' => 'publishDate_desc',
 		'art_list_title' => 'y',
 		'art_list_title_len' => '50',
 		'art_list_id' => 'y',
@@ -690,8 +668,6 @@ function get_default_prefs() {
 		'art_view_size' => 'n',
 		'art_view_img' => 'y',
 		'art_list_lang' => 'n',
-		'art_trailer_pos' => 'top',
-		'art_header_text_pos' => 'next',
 		'feature_article_comments' => 'n',
 		'article_comments_default_ordering' => 'points_desc',
 		'article_comments_per_page' => 10,
@@ -706,6 +682,7 @@ function get_default_prefs() {
 		'cms_left_column' => 'y',
 		'cms_right_column' => 'y',
 		'cms_top_bar' => 'n',
+		'cms_spellcheck' => 'n',
 		'art_home_title' => '',
 
 		// trackers
@@ -714,6 +691,7 @@ function get_default_prefs() {
 		't_use_dir' => '',
 		'groupTracker' => 'n',
 		'userTracker' => 'n',
+		'trk_with_mirror_tables' => 'n',
 		'trackerCreatorGroupName' => ' ',
 
 		// user
@@ -729,11 +707,6 @@ function get_default_prefs() {
 		'user_who_viewed_my_stuff' => 'n',
 		'user_who_viewed_my_stuff_days' => 90,
 		'user_who_viewed_my_stuff_show_others' => 'n',
-		'user_register_prettytracker' => 'n',
-		'user_register_prettytracker_tpl' => '',
-		'user_trackersync_trackers' => '',
-		'user_trackersync_realname' => '',
-		'user_trackersync_geo' => 'n',
 		'feature_mytiki' => 'n',
 		'feature_userPreferences' => 'n',
 		'feature_user_bookmarks' => 'n',
@@ -870,7 +843,6 @@ function get_default_prefs() {
 		'search_refresh_index_mode' => 'normal',
 		'search_parsed_snippet' => 'y',
 		'search_default_where' => '',
-		'search_autocomplete' => 'n',
 
 		// webmail
 		'feature_webmail' => 'n',
@@ -938,121 +910,84 @@ function get_default_prefs() {
 		'server_timezone' => isset($tikidate) ? $tikidate->getTimezoneId() : 'UTC',
 		'long_date_format' => '%A %d of %B, %Y',
 		'long_time_format' => '%H:%M:%S %Z',
-		'short_date_format' => '%Y-%m-%d',
-		'short_time_format' => '%H:%M',
+		'short_date_format' => '%a %d of %b, %Y',
+		'short_time_format' => '%H:%M %Z',
 		'display_field_order' => 'MDY',
 		'tiki_same_day_time_only' => 'y',
 
-		// feed
-		'feed_basic_auth' => 'n',
-		'feed_cache_time' => '0', // 0 = disabled (default)
-		'feed_default_version' => '5',
-		'feed_atom_author_name' => '',
-		'feed_atom_author_email' => '',
-		'feed_atom_author_url' => '',
-		'feed_img' => 'img/tiki/Tiki_WCG.png',
-		'feed_rss_editor_email' => '',
-		'feed_rss_webmaster_email' => '',
-		'feed_language' =>  'en-us',
-		'feed_articles' => 'n',
-		'feed_articles_desc' => tra('Last articles.'),
-		'feed_articles_homepage' => '',
-		'feed_articles_max' => 10,
-		'feed_articles_showAuthor' => 'n',
-		'feed_articles_title' => tra('Tiki RSS feed for articles'),
-		'feed_blog' => 'n',
-		'feed_blog_desc' => '',
-		'feed_blog_homepage' => '',
-		'feed_blog_max' => 10,
-		'feed_blog_showAuthor' => 'n',
-		'feed_blog_title' => '',
-		'feed_blogs' => 'n',
-		'feed_blogs_desc' => tra('Last posts to weblogs.'),
-		'feed_blogs_homepage' => '',
-		'feed_blogs_max' => 10,
-		'feed_blogs_showAuthor' => 'n',
-		'feed_blogs_title' => tra('Tiki RSS feed for weblogs'),
-		'feed_calendar' => 'n',
-		'feed_calendar_desc' => tra('Upcoming events.'),
-		'feed_calendar_homepage' => '',
-		'feed_calendar_max' => 10,
-		'feed_calendar_showAuthor' => 'n',
-		'feed_calendar_title' => tra('Tiki RSS feed for calendars'),
-		'feed_directories' => 'n',
-		'feed_directories_desc' => tra('Last sites.'),
-		'feed_directories_homepage' => '',
-		'feed_directories_max' => 10,
-		'feed_directories_showAuthor' => 'n',
-		'feed_directories_title' => tra('Tiki RSS feed for directory sites'),
-		'feed_file_galleries' => 'n',
-		'feed_file_galleries_desc' => tra('Last files uploaded to the file galleries.'),
-		'feed_file_galleries_homepage' => '',
-		'feed_file_galleries_max' => 10,
-		'feed_file_galleries_showAuthor' => 'n',
-		'feed_file_galleries_title' => tra('Tiki RSS feed for file galleries'),
-		'feed_file_gallery' => 'n',
-		'feed_file_gallery_desc' => tra('Last files uploaded to this file gallery. '),
-		'feed_file_gallery_homepage' => '',
-		'feed_file_gallery_max' => 10,
-		'feed_file_gallery_showAuthor' => 'n',
-		'feed_file_gallery_title' => tra('Tiki RSS feed for the file gallery: '),
-		'feed_forum' => 'n',
-		'feed_forum_desc' => tra('Last posts to this forum. '),
-		'feed_forum_homepage' => '',
-		'feed_forum_max' => 10,
-		'feed_forum_showAuthor' => 'n',
-		'feed_forum_title' => tra('Tiki RSS feed for forum: '),
-		'feed_forums_max' => 10,
-		'feed_forums' => 'n',
-		'feed_forums_desc' => tra('Last topics in forums.'),
-		'feed_forums_showAuthor' => 'n',
-		'feed_forums_title' => tra('Tiki RSS feed for forums'),
-		'feed_image_galleries' => 'n',
-		'feed_image_galleries_desc' => tra('Last images uploaded to the image galleries.'),
-		'feed_image_galleries_homepage' => '',
-		'feed_image_galleries_max' => 10,
-		'feed_image_galleries_showAuthor' => 'n',
-		'feed_image_galleries_title' => tra('Tiki RSS feed for image galleries'),
-		'feed_image_gallery' => 'n',
-		'feed_image_gallery_desc' => tra('Last images uploaded to this image gallery. '),
-		'feed_image_gallery_homepage' => '',
-		'feed_image_gallery_max' => 10,
-		'feed_image_gallery_showAuthor' => 'n',
-		'feed_image_gallery_title' => tra('Tiki RSS feed for the image gallery: '),
-		'feed_maps' => 'n',
-		'feed_maps_desc' => '',
-		'feed_maps_homepage' => '',
-		'feed_maps_max' => '',
-		'feed_maps_showAuthor' => 'n',
-		'feed_maps_title' => '',
-		'feed_shoutbox' => '',
-		'feed_shoutbox_desc' => tra('Last shoutbox messages.'),
-		'feed_shoutbox_homepage' => '',
-		'feed_shoutbox_max' => '',
-		'feed_shoutbox_showAuthor' => '',
-		'feed_shoutbox_title' => tra('Tiki RSS feed for shoutbox messages'),
-		'feed_tracker' => 'n',
-		'feed_tracker_desc' => tra('Last items published on this tracker.'),
-		'feed_tracker_homepage' => '',
-		'feed_tracker_max' => 10,
-		'feed_tracker_showAuthor' => 'n',
-		'feed_tracker_title' => tra('Tiki RSS feed for individual trackers: '),
-		'feed_trackers' => 'n',
-		'feed_trackers_desc' => '',
-		'feed_trackers_homepage' => '',
-		'feed_trackers_max' => 10,
-		'feed_trackers_showAuthor' => 'n',
-		'feed_trackers_title' => '',
-		'feed_wiki' => 'n',
-		'feed_wiki_desc' => tra('Last modifications to the Wiki.'),
-		'feed_wiki_homepage' => '',
-		'feed_wiki_max' => 10,
-		'feed_wiki_showAuthor' => 'n',		
-		'feed_wiki_title' => tra('Tiki RSS feed for the wiki pages'),
-		'max_rss_mapfiles' => 10,
+		// rss
+		'rss_forums' => 'n',
+		'rss_forum' => 'n',
+		'rss_directories' => 'n',
+		'rss_articles' => 'n',
+		'rss_blogs' => 'n',
+		'rss_image_galleries' => 'n',
+		'rss_file_galleries' => 'n',
+		'rss_wiki' => 'n',
+		'rss_image_gallery' => 'n',
+		'rss_file_gallery' => 'n',
+		'rss_blog' => 'n',
+		'rss_tracker' => 'n',
+		'rss_trackers' => 'n',
+		'rss_calendar' => 'n',
 		'rss_mapfiles' => 'n',
+		'rss_cache_time' => '0', // 0 = disabled (default)
+		'title_rss_forums' => '',
+		'title_rss_forum' => '',
+		'title_rss_directories' => '',
+		'title_rss_articles' => '',
+		'title_rss_blogs' => '',
+		'title_rss_image_galleries' => '',
+		'title_rss_file_galleries' => '',
+		'title_rss_wiki' => '',
+		'title_rss_image_gallery' => '',
+		'title_rss_file_gallery' => '',
+		'title_rss_blog' => '',
+		'title_rss_tracker' => '',
+		'title_rss_trackers' => '',
+		'title_rss_calendar' => '',
 		'title_rss_mapfiles' => '',
-
+		'max_rss_forums' => 10,
+		'max_rss_forum' => 10,
+		'max_rss_directories' => 10,
+		'max_rss_articles' => 10,
+		'max_rss_blogs' => 10,
+		'max_rss_image_galleries' => 10,
+		'max_rss_file_galleries' => 10,
+		'max_rss_wiki' => 10,
+		'max_rss_image_gallery' => 10,
+		'max_rss_file_gallery' => 10,
+		'max_rss_blog' => 10,
+		'max_rss_mapfiles' => 10,
+		'max_rss_tracker' => 10,
+		'max_rss_trackers' => 10,
+		'max_rss_calendar' => 10,
+		'summary_rss_blogs' => 'n',
+		'rssfeed_default_version' => '2',
+		'rssfeed_language' =>  'en-us',
+		'rssfeed_editor' => '',
+		'rssfeed_webmaster' => '',
+		'rssfeed_creator' => '',
+		'rssfeed_css' => 'y',
+		'rssfeed_publisher' => '',
+		'rssfeed_img' => 'img/tiki/Tiki_WCG.png',
+		'rss_basic_auth' => 'n',
+		'rss_maps' => 'n',
+		'showAuthor_rss_blogs' => 'n',
+		'showAuthor_rss_blog' => 'n',
+		'showAuthor_rss_articles' => 'n',
+		'showAuthor_rss_image_galleries' => 'n',
+		'showAuthor_rss_image_gallery' => 'n',
+		'showAuthor_rss_file_galleries' => 'n',
+		'showAuthor_rss_file_gallery' => 'n',
+		'showAuthor_rss_wiki' => 'n',		
+		'showAuthor_rss_forums' => 'n',
+		'showAuthor_rss_forum' => 'n',
+		'showAuthor_rss_trackers' => 'n',
+		'showAuthor_rss_tracker' => 'n',
+		'showAuthor_rss_calendar' => 'n',
+		'showAuthor_rss_directories' => 'n',
+		'showAuthor_rss_maps' => 'n',
 	
 		// maps
 		'feature_maps' => 'n',
@@ -1087,6 +1022,7 @@ function get_default_prefs() {
 		'pass_due' => -1,
 		'email_due' => -1,
 		'unsuccessful_logins' => 20,
+		'rnd_num_reg' => 'y',
 		'generate_password' => 'n',
 		'auth_method' => 'tiki',
 		'auth_pear' => 'tiki',
@@ -1193,9 +1129,6 @@ function get_default_prefs() {
 		'category_i18n_sync' => 'n',
 		'category_i18n_synced' => array(),
 		'category_i18n_unsynced' => array(),
-		'category_autogeocode_within' => '',
-		'category_autogeocode_replace' => 'n',
-		'category_autogeocode_fudge' => 'n',
 		'expanded_category_jail' => '',
 		'expanded_category_jail_key' => '',
 		'ws_container' => 0,
@@ -1282,6 +1215,7 @@ function get_default_prefs() {
 		'feature_sitemenu_custom_code' => '',
 		'feature_secondary_sitemenu_custom_code' => '',
 		'feature_topbar_version' => 'n',
+		'feature_topbar_debug' => 'n',
 		'feature_topbar_id_menu' => '42',
 		'feature_topbar_custom_code' => '',
 		'feature_sitetitle' => 'y',
@@ -1350,7 +1284,6 @@ function get_default_prefs() {
 
 		// tell a friend
 		'feature_tell_a_friend' => 'n',
-		'feature_share' => 'n',
 
 		// copyright
 		'feature_copyright' => 'n',
@@ -1413,25 +1346,6 @@ function get_default_prefs() {
 		'bigbluebutton_server_location' => '',
 		'bigbluebutton_server_salt' => '',
 
-		// Shipping
-		'shipping_service' => 'n',
-
-		'shipping_fedex_enable' => 'n',
-		'shipping_fedex_key' => '',
-		'shipping_fedex_password' => '',
-		'shipping_fedex_meter' => '',
-		'shipping_fedex_account' => '',
-
-		'shipping_ups_enable' => 'n',
-		'shipping_ups_username' => '',
-		'shipping_ups_password' => '',
-		'shipping_ups_license' => '',
-
-		// ReCaptcha
-		'recaptcha_enabled' => 'n',
-		'recaptcha_pubkey' => '',
-		'recaptcha_privkey' => '',
-
 		// unsorted features
 		'anonCanEdit' => 'n',
 		'cacheimages' => 'n',
@@ -1442,7 +1356,6 @@ function get_default_prefs() {
 		'error_reporting_level' => 0,
 		'smarty_notice_reporting' => 'n',
 		'smarty_security' => 'y',
-		'smarty_compilation' => 'modified',
 		'feature_htmlpurifier_output' => 'n',
 		'feature_ajax' => 'n',
 		'feature_ajax_autosave' => 'n',
@@ -1487,7 +1400,6 @@ function get_default_prefs() {
 		'feature_projects' => 'n',
 		'feature_ranking' => 'n',
 		'feature_redirect_on_error' => 'n',
-		'url_anonymous_page_not_found' => '',
 		'feature_referer_highlight' => 'n',
 		'feature_referer_stats' => 'n',
 		'feature_score' => 'n',
@@ -1502,7 +1414,6 @@ function get_default_prefs() {
 		'feature_top_banner' => 'n',
 		'feature_usability' => 'n',
 		'feature_use_quoteplugin' => 'n',
-		'feature_use_three_colon_centertag' => 'n',
 		'feature_user_watches' => 'n',
 		'feature_group_watches' => 'n',
 		'feature_user_watches_translations' => 'n',
@@ -1510,7 +1421,6 @@ function get_default_prefs() {
 		'feature_daily_report_watches' => 'n',
 		'feature_quick_object_perms' => 'n',
 		'feature_xmlrpc' => 'n',
-		'feature_watershed' => 'n',
 		'helpurl' => "http://doc.tikiwiki.org/",
 		'layout_section' => 'n',
 		'limitedGoGroupHome' => 'n',
@@ -1545,16 +1455,7 @@ function get_default_prefs() {
 		'log_mail' => 'n',
 		'log_tpl' => 'n',
 		'disableJavascript' => 'n',
-		'feature_socialnetworks' => 'n',
-		'socialnetworks_twitter_consumer_key' =>'',
-		'socialnetworks_twitter_consumer_secret' => '',
-		'socialnetworks_facebook_api_key' =>'',
-		'socialnetworks_facebook_application_secr' => '',
-		'socialnetworks_facebook_application_id' => '',
-		'socialnetworks_bitly_login' => '',
-		'socialnetworks_bitly_key' => '',
-		'socialnetworks_bitly_sitewide' => 'n',
-	
+
 		'case_patched' => 'n',
 		'site_closed' => 'n',
 		'site_closed_msg' => 'Site is closed for maintenance; please come back later.',
@@ -1563,9 +1464,11 @@ function get_default_prefs() {
 		'site_busy_msg' => 'Server is currently too busy; please come back later.',
 
 		'bot_logo_code' => '',
+		'feature_blogposts_pings' => 'n',
 		'feature_create_webhelp' => 'n',
 		'page_n_times_in_a_structure' => 'n',
 		'feature_forums_search' => 'n',
+		'feature_trackbackpings' => 'n',
 		'feature_wiki_ext_icon' => 'y',
 		'feature_wiki_ext_rel_nofollow' => 'y',
 		'feature_wiki_mandatory_category' => -1,
@@ -1630,12 +1533,10 @@ function get_default_prefs() {
 		'feature_jquery_autocomplete' => 'y',	// autocomplete on pages in QuickEdit (more coming soon)
 		'feature_jquery_superfish' => 'y',		// Effects on CSS (Suckerfish) menus
 		'feature_jquery_reflection' => 'n',		// reflection effects on images
-		'feature_jquery_sheet' => 'y',			// spreadsheet
+		'feature_jquery_sheet' => 'n',			// spreadsheet
 		'feature_jquery_jqs5' => 'n',			// slide-show TODO: implement (more)
 		'feature_jquery_tablesorter' => 'n',	// sortable tables ([will] override existing)
 		'feature_jquery_carousel' => 'n',		// slideshow/carousel for file gals etc
-		'feature_jquery_validation' => 'y',		// validation on Trackers etc
-		'feature_jquery_media' => 'n',	
 
 		// SefUrl
 		'feature_sefurl' => 'n',
@@ -1643,7 +1544,6 @@ function get_default_prefs() {
 		'feature_sefurl_paths' => array(),
 		'feature_sefurl_title_article' =>'n',
 		'feature_sefurl_title_blog' =>'n',
-		'feature_sefurl_tracker_prefixalias' =>'n',
 
 		// TikiTests
 		'feature_tikitests' => 'n',
@@ -1706,8 +1606,7 @@ function get_default_prefs() {
 		'auth_token_access_maxtimeout' => 3600*24*7,
 		'auth_token_access_maxhits' => 10,
 		'auth_token_tellafriend' => 'n',
-		'auth_token_promote' => 'n',
-	
+
 		// PDF
 		'print_pdf_from_url' => 'none',
 		'print_pdf_webkit_path' => '',
@@ -1725,42 +1624,37 @@ function get_default_prefs() {
 
 		// Payment
 		'payment_feature' => 'n',
-		'payment_system' => 'paypal',
 		'payment_currency' => 'USD',
 		'payment_default_delay' => 30,
 		'payment_paypal_business' => '',
 		'payment_paypal_environment' => 'https://www.paypal.com/cgi-bin/webscr',
 		'payment_paypal_ipn' => 'y',
-		'payment_cclite_registries' => '',
-		'payment_cclite_currencies' => '',
-	 	'payment_cclite_gateway' => '',
-		'payment_cclite_merchant_key' => '',
-		'payment_cclite_merchant_user' => 'manager',
-		'payment_cclite_mode' => 'test',
-		'payment_cclite_notify' => 'y',
-		'payment_cclite_hashing_algorithm' => '',
-		'payment_manual' => '',
-		'payment_invoice_prefix' => '',
 
 		// Rating
 		'rating_advanced' => 'n',
 		'rating_recalculation' => 'vote',
 		'rating_recalculation_odd' => '100',
 		'rating_recalculation_count' => '100',
-
-		// CAS
-		'cas_create_user_tiki' => 'n',
-		'cas_create_user_tiki_ldap' => 'n',
-		'cas_skip_admin' => 'n',
-		'cas_show_alternate_login' => 'y',
-		'cas_version' => '1.0',
-		'cas_hostname' => '',
-		'cas_port' => '',
-		'cas_path' => '',
-		'cas_extra_param' => '',
-		'cas_authentication_timeout' => '0',
 	);
 
+	// spellcheck
+	if ( file_exists('lib/bablotron.php') ) {
+		$prefs['lib_spellcheck'] = 'y';
+		$prefs['wiki_spellcheck'] = 'n';
+		$prefs['cms_spellcheck'] = 'n';
+		$prefs['blog_spellcheck'] = 'n';
+	}
+
+		$prefs['cas_create_user_tiki'] = 'n';
+		$prefs['cas_create_user_tiki_ldap'] = 'n';
+		$prefs['cas_skip_admin'] = 'n';
+		$prefs['cas_show_alternate_login'] = 'y';
+		$prefs['cas_version'] = '1.0';
+		$prefs['cas_hostname'] = '';
+		$prefs['cas_port'] = '';
+		$prefs['cas_path'] = '';
+		$prefs['cas_extra_param'] = '';
+		$prefs['cas_authentication_timeout'] = '0';
 
 	// Special default values
 
@@ -1862,3 +1756,11 @@ if( isset($modified['feature_perspective']) && $modified['feature_perspective'] 
 
 $prefs = empty($modified) ? $defaults : array_merge( $defaults, $modified );
 
+if ( isset($smarty) ) {
+	// Assign the prefs array in smarty, by reference
+	$smarty->assign_by_ref('prefs', $prefs);
+
+	// Define the special maxRecords global var
+	$maxRecords = $prefs['maxRecords'];
+	$smarty->assign_by_ref('maxRecords', $maxRecords);
+}

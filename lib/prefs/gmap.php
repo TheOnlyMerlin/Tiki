@@ -3,7 +3,7 @@
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: http.php 25210 2010-02-14 20:52:22Z changi67 $
 
 function prefs_gmap_list() {
 	return array(
@@ -45,12 +45,8 @@ function prefs_gmap_list() {
 				13 => 13,
 				14 => 14,
 				15 => 15,
-				16 => tra('village size'),
-				17 => 17,
-				18 => 18,
-				19 => 19,
-				20 => tra('max zoom'),
-			)
+				16 => 16,
+				17 => tra('max zoom'),			)
 		),
 	);	
 }

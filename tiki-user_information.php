@@ -119,8 +119,7 @@ if ($prefs['feature_display_my_to_others'] == 'y') {
 		$smarty->assign_by_ref('user_pages', $user_pages);
 	}
 	if ($prefs['feature_blogs'] == 'y') {
-		require_once('lib/blogs/bloglib.php');
-		$user_blogs = $bloglib->list_user_blogs($userwatch, false);
+		$user_blogs = $tikilib->list_user_blogs($userwatch, false);
 		$smarty->assign_by_ref('user_blogs', $user_blogs);
 	}
 	if ($prefs['feature_galleries'] == 'y') {

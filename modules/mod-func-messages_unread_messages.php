@@ -16,13 +16,7 @@ function module_messages_unread_messages_info() {
 		'name' => tra('Unread inter-user messages'),
 		'description' => tra('Displays to users their number of new inter-user messages and a link to their message box.'),
 		'prefs' => array( 'feature_messages' ),
-		'params' => array(
-			'showempty' => array(
-				'name' => tra('Show If Empty'),
-				'description' => tra('Show the module when there are no messages waiting. y|n ') . tra('Default=y'),
-				'required' => false,
-			)
-		)
+		'params' => array()
 	);
 }
 
@@ -32,9 +26,8 @@ function module_messages_unread_messages( $mod_reference, $module_params ) {
 
 	if ($user && $globalperms->messages) {
 		$modUnread = $tikilib->user_unread_messages($user);
-		if ($modUnread > 0 || !isset($module_params['showempty']) || $module_params['showempty'] == 'y') {
-			$smarty->assign('modUnread', $modUnread);
-			$smarty->assign('tpl_module_title', tra("Messages"));
-		}
+	
+		$smarty->assign('modUnread', $modUnread);
+		$smarty->assign('tpl_module_title', tra("Messages"));
 	}
 }

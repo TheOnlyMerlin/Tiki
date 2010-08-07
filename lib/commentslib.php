@@ -104,7 +104,7 @@ class Comments extends TikiLib
 	}
 
 	/* Add an attachment to a post in a forum */
-	function add_thread_attachment( $forum_info, $threadId, &$errors, $name, $type, $size, $inbound_mail = 0, $qId=0, $fp = '', $data = '') {
+	function add_thread_attachment( $forum_info, $threadId, &$errors, $fp = '', $data = '', $name, $type, $size, $inbound_mail = 0, $qId=0 ) {
 		global $smarty, $tiki_p_admin_forum, $tiki_p_forum_attach, $smarty;
 
 		if( !($forum_info['att'] == 'att_all'
@@ -221,9 +221,9 @@ class Comments extends TikiLib
 				case 'text/plain':
 				case 'TEXT/PLAIN':
 					if (!empty($obj->disposition)AND $obj->disposition == 'attachment') {
-						$names = explode(';', $obj->headers["content-disposition"]);
+						$names = split(';', $obj->headers["content-disposition"]);
 
-						$names = explode('=', $names[1]);
+						$names = split('=', $names[1]);
 						$aux['name'] = $names[1];
 						$aux['content-type'] = $obj->headers["content-type"];
 						$aux['part'] = $i;
@@ -242,9 +242,9 @@ class Comments extends TikiLib
 				case 'text/html':
 				case 'TEXT/HTML':
 					if (!empty($obj->disposition)AND $obj->disposition == 'attachment') {
-						$names = explode(';', $obj->headers["content-disposition"]);
+						$names = split(';', $obj->headers["content-disposition"]);
 
-						$names = explode('=', $names[1]);
+						$names = split('=', $names[1]);
 						$aux['name'] = $names[1];
 						$aux['content-type'] = $obj->headers["content-type"];
 						$aux['part'] = $i;
@@ -256,9 +256,9 @@ class Comments extends TikiLib
 					break;
 
 				default:
-					$names = explode(';', $obj->headers["content-disposition"]);
+					$names = split(';', $obj->headers["content-disposition"]);
 
-					$names = explode('=', $names[1]);
+					$names = split('=', $names[1]);
 					$aux['name'] = $names[1];
 					$aux['content-type'] = $obj->headers["content-type"];
 					$aux['part'] = $i;
@@ -467,10 +467,10 @@ class Comments extends TikiLib
 							} else {
 								$part_name = "Unnamed File";
 							}
-							$this->add_thread_attachment($forum_info, $threadid, $errors,	$part_name, $part['type'], strlen( $part['body'] ),	1, '', $part['body'] );
+							$this->add_thread_attachment($forum_info, $threadid, $errors, '', $part['body'],	$part_name, $part['type'], strlen( $part['body'] ),	1 );
 						} elseif ($part['disposition'] == 'inline') {
 							foreach ($part['parts'] as $p) {
-								$this->add_thread_attachment($forum_info, $threadid, $errors, '-', $p['type'], strlen( $p['body'] ),	1, '', $p['body'] );
+								$this->add_thread_attachment($forum_info, $threadid, $errors, '', $p['body'], '-', $p['type'], strlen( $p['body'] ),	1 );
 							}
 						}
 					}
@@ -1465,7 +1465,7 @@ class Comments extends TikiLib
 	}
 	
 	function get_comment_replies($id, $sort_mode, $offset, $orig_offset, $maxRecords, $orig_maxRecords, $threshold = 0, $find = '', $message_id = "", $forum = 0, $approved = 'y' ) {
-		global $tiki_p_admin_comments, $prefs;
+		global $tiki_p_admin_comments;
 		$retval = array();
 
 		if( $maxRecords <= 0 && $orig_maxRecords != 0)
@@ -1483,12 +1483,6 @@ class Comments extends TikiLib
 		}
 
 		$query = "select `threadId` from `tiki_comments`";
-
-		$initial_sort_mode = $sort_mode;
-		if ( $prefs['rating_advanced'] == 'y' ) {
-			global $ratinglib; require_once 'lib/rating/ratinglib.php';
-			$query .= $ratinglib->convert_rating_sort($sort_mode, 'comment', '`threadId`');
-		}
 
 		if( $forum )
 		{
@@ -1550,12 +1544,12 @@ class Comments extends TikiLib
 			{
 				$res['replies_info'] =
 					$this->get_comment_replies($res['parentId'],
-							$initial_sort_mode, $offset, $orig_offset, $maxRecords, $orig_maxRecords, $threshold, $find,
+							$sort_mode, $offset, $orig_offset, $maxRecords, $orig_maxRecords, $threshold, $find,
 							$res['message_id'], $forum);
 			} else {
 				$res['replies_info'] =
 					$this->get_comment_replies($res['threadId'],
-							$initial_sort_mode, $offset, $orig_offset, $maxRecords, $orig_maxRecords, $threshold, $find);
+							$sort_mode, $offset, $orig_offset, $maxRecords, $orig_maxRecords, $threshold, $find);
 			}
 
 			if( $offset >= 0 && $orig_offset != 0 )
@@ -1666,7 +1660,7 @@ class Comments extends TikiLib
 	}
 
 	function get_comments($objectId, $parentId, $offset = 0, $maxRecords = 0, $sort_mode = 'commentDate_asc', $find = '', $threshold = 0, $style = 'commentStyle_threaded', $reply_threadId=0, $approved='y') {
-		global $userlib, $tiki_p_admin_comments, $prefs;
+		global $userlib, $tiki_p_admin_comments;
 
 		// $start_time = microtime(true);
 		// Turn maxRecords into maxRecords + offset, so we can increment it without worrying too much.
@@ -1732,15 +1726,6 @@ class Comments extends TikiLib
 			$bind_mid[] = $approved;
 		}
 
-		$initial_sort_mode = $sort_mode;
-		if ( $prefs['rating_advanced'] == 'y' ) {
-			global $ratinglib; require_once 'lib/rating/ratinglib.php';
-			$join = $ratinglib->convert_rating_sort($sort_mode, 'comment', '`tc1`.`threadId`');
-		} else {
-			$join = '';
-		}
-
-
 		if( $object[0] == "forum" && $style != 'commentStyle_plain' )
 		{
 			$query = "select `message_id` from `tiki_comments` where `threadId` = ?";
@@ -1750,18 +1735,17 @@ class Comments extends TikiLib
 				left outer join `tiki_comments` as tc2 on tc1.`in_reply_to` = tc2.`message_id`
 				and tc1.`parentId` = ?
 				and tc2.`parentId` = ?
-				$join
 				$mid 
 				and (tc1.`in_reply_to` = ?
 						or (tc2.`in_reply_to` = '' or tc2.`in_reply_to` is null or tc2.`message_id` is null or tc2.`parentId` = 0))
-				$time_cond order by ".$this->convertSortMode($sort_mode).", tc1.`threadId`";
+				$time_cond order by tc1.".$this->convertSortMode($sort_mode).", tc1.`threadId`";
 			$bind_mid_cant = $bind_mid;
 			$bind_mid = array_merge(array($parentId, $parentId), $bind_mid, array($parent_message_id));
 
 			$query_cant = "select count(*) from `tiki_comments` as tc1 $mid $time_cond";
 		} else {
 			$query_cant = "select count(*) from `tiki_comments` as tc1 $mid $time_cond";
-			$query = "select * from `tiki_comments` as tc1 $join $mid $time_cond order by ".$this->convertSortMode($sort_mode).",`threadId`";
+			$query = "select * from `tiki_comments` as tc1 $mid $time_cond order by tc1.".$this->convertSortMode($sort_mode).",`threadId`";
 			$bind_mid_cant = $bind_mid;
 		}
 
@@ -1818,10 +1802,10 @@ class Comments extends TikiLib
 							$ret[$key]['replies_info']['numReplies'] = 0;
 							$ret[$key]['replies_info']['totalReplies'] = 0;
 						} else {
-							$ret[$key]['replies_info'] = $this->get_comment_replies($res["parentId"], $initial_sort_mode, $offset, $orig_offset, $maxRecords, $orig_maxRecords, $threshold, $find, $res["message_id"], 1);
+							$ret[$key]['replies_info'] = $this->get_comment_replies($res["parentId"], $sort_mode, $offset, $orig_offset, $maxRecords, $orig_maxRecords, $threshold, $find, $res["message_id"], 1);
 						}
 					} else {
-						$ret[$key]['replies_info'] = $this->get_comment_replies($res["threadId"], $initial_sort_mode, $offset, $orig_offset, $maxRecords, $orig_maxRecords, $threshold, $find );
+						$ret[$key]['replies_info'] = $this->get_comment_replies($res["threadId"], $sort_mode, $offset, $orig_offset, $maxRecords, $orig_maxRecords, $threshold, $find );
 					}
 
 					/* Trim to maxRecords, including replies! */
@@ -1907,10 +1891,10 @@ class Comments extends TikiLib
 		}
 		if (!empty($objectId)) {
 			if (is_array($objectId)) {
-				$mid .= ' and tc.`object` in ('.implode(',', array_fill(0, count($objectId), '?')).')';
+				$mid .= ' and `object` in ('.implode(',', array_fill(0, count($objectId), '?')).')';
 				$bindvars = array_merge($bindvars, $objectId);
 			} else {
-				$mid .= ' and tc.`object`=?';
+				$mid .= ' and `object`=?';
 				$bindvars[] = $objectId;
 			}
 		}
@@ -1920,7 +1904,7 @@ class Comments extends TikiLib
 		}
 
 		if( $toponly ) {
-			$mid .= ' and tc.`parentId` = 0 ';
+			$mid .= ' and parentId = 0 ';
 		}
 		if ($type == 'forum') {
 			$join .= ' left join `tiki_forums` tf on (tf.`forumId`=tc.`object`)';
@@ -2115,7 +2099,7 @@ class Comments extends TikiLib
 				$type = $object[0].' comment';
 			}
 			$href = $this->getHref($object[0], $object[1], $threadId);
-			$this->object_post_save( array('type'=>$type, 'object'=>$threadId, 'description'=>'', 'href'=>$href, 'name'=>$title), array('content' => $data));
+			$this->syncParsedText($data, array('type'=>$type, 'object'=>$threadId, 'description'=>'', 'href'=>$href, 'name'=>$title));
 			$this->update_comment_links($data, $object[0], $threadId);
 		} // end hash check
 	}
@@ -2279,7 +2263,7 @@ class Comments extends TikiLib
 			$type = $object[0].' comment';
 		}
 		$href = $this->getHref($object[0], $object[1], $threadId);
-		$this->object_post_save( array('type'=>$type, 'object'=>$threadId, 'description'=>'', 'href'=>$href, 'name'=>$title), array( 'content' => $data ));
+		$this->syncParsedText($data, array('type'=>$type, 'object'=>$threadId, 'description'=>'', 'href'=>$href, 'name'=>$title));
 		$this->update_comment_links($data, $object[0], $threadId);
 
 		return $threadId;
@@ -2481,7 +2465,7 @@ class Comments extends TikiLib
  	 * @return the threadId
 	 * @return $feedbacks, $errors */
 	function post_in_forum($forum_info, &$params, &$feedbacks, &$errors) {
-		global $smarty, $tiki_p_admin_forum, $tiki_p_forum_post_topic, $tiki_p_forum_post, $prefs, $user, $tiki_p_forum_autoapp, $captchalib;
+		global $smarty, $tiki_p_admin_forum, $tiki_p_forum_post_topic, $tiki_p_forum_post, $prefs, $user, $tiki_p_forum_autoapp;
 
 		if (!empty($params['comments_grandParentId'])) {
 			$parent_id = $params['comments_grandParentId'];
@@ -2506,8 +2490,8 @@ class Comments extends TikiLib
 			die;
 		}
 
-		if (empty($user) && $prefs['feature_antibot'] == 'y' && !$captchalib->validate()) {
-			$errors[] = $captchalib->getErrors();
+		if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $params['antibotcode'])) {
+			$errors[] = tra('You have mistyped the anti-bot verification code; please try again.');
 		}
 		if ($forum_info['controlFlood'] == 'y' && !$this->user_can_post_to_forum($user, $forumId) ) {
 			$errors = sprintf(tra('Please wait %d seconds between posts'). $forum_info['floodInterval']);
@@ -2622,7 +2606,7 @@ class Comments extends TikiLib
 			if (isset($_FILES['userfile1']) && !empty($_FILES['userfile1']['name'])) {
 				if (is_uploaded_file($_FILES['userfile1']['tmp_name'])) {
 					$fp = fopen($_FILES['userfile1']['tmp_name'], 'rb');
-					$ret = $this->add_thread_attachment($forum_info, $threadId, $errors,	$_FILES['userfile1']['name'], $_FILES['userfile1']['type'],	$_FILES['userfile1']['size'], 0, $qId, $fp, '' );
+					$ret = $this->add_thread_attachment($forum_info, $threadId, $errors, $fp, '',	$_FILES['userfile1']['name'], $_FILES['userfile1']['type'],	$_FILES['userfile1']['size'], 0, $qId );
 					fclose($fp);
 				} else {
 					$errors[] = $this->uploaded_file_error($_FILES['userfile1']['error']);
@@ -2644,7 +2628,7 @@ class Comments extends TikiLib
 	 * @return the threadId
 	 * @return $feedbacks, $errors */
 	function post_in_object($comments_objectId, &$params, &$feedbacks, &$errors) {
-		global $smarty, $tiki_p_admin, $tiki_p_post_comments, $tiki_p_edit_comments, $prefs, $user, $captchalib;
+		global $smarty, $tiki_p_admin, $tiki_p_post_comments, $tiki_p_edit_comments, $prefs, $user;
 
 		if (!empty($params['comments_grandParentId'])) {
 			$parent_id = $params['comments_grandParentId'];
@@ -2681,8 +2665,8 @@ class Comments extends TikiLib
 			}
 		}
 
-		if (empty($user) && $prefs['feature_antibot'] == 'y' && !$captchalib->validate()) {
-			$errors[] = $captchalib->getErrors();
+		if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $params['antibotcode'])) {
+			$errors[] = tra('You have mistyped the anti-bot verification code; please try again.');
 		}
 
 		if ($prefs['feature_contribution'] == 'y' && $prefs['feature_contribution_mandatory_comment'] == 'y' && empty($params['contributions'])) {

@@ -18,6 +18,7 @@
 				</legend>
 				<input type="hidden" name="blogfeatures" />
 				{preference name=feature_blog_rankings}
+				{preference name=blog_spellcheck}
 				{preference name=feature_blog_heading}
 
 				{if $prefs.feature_categories eq 'y'}
@@ -28,9 +29,18 @@
 			<fieldset>
 				<legend>{tr}Comments{/tr}</legend>
 				<input type="hidden" name="blogcomprefs" />
+				{preference name=feature_blog_comments}
 				{preference name=feature_blogposts_comments}
 				{preference name=blog_comments_per_page}
 				{preference name=blog_comments_default_ordering}
+			</fieldset>
+
+			<fieldset>
+				<legend>
+					{tr}Trackback pings{/tr}{help url="Blog#About_Trackback"}
+				</legend>
+				{preference name=feature_trackbackpings}
+				{preference name=feature_blogposts_pings}
 			</fieldset>
 
 			<fieldset>

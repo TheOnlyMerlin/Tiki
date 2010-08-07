@@ -6,10 +6,36 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-require_once('lib/language/Language.php');
 
 $access->check_feature('lang_use_db');
 $access->check_permission('tiki_p_edit_languages');
+
+// Create a language
+if (isset($_REQUEST["createlang"])) {
+	check_ticket('edit-languages');
+	$_REQUEST["cr_lang_short"] = addslashes($_REQUEST["cr_lang_short"]);
+
+	if (strlen($_REQUEST["cr_lang_short"]) < 2) {
+		$crerror = true;
+		$smarty->assign('crmsg', tra("Shortname must be 2 Characters"));
+	} elseif (strlen($_REQUEST["cr_lang_long"]) == 0) {
+		$crerror = true;
+		$smarty->assign('crmsg', tra("You must provide a longname"));
+	} else {
+		// Now we can create it
+		$crerror = false;
+		$query = "insert into `tiki_languages`(`lang`,`language`) values (?,?)";
+		$result = $tikilib->query($query,array($_REQUEST["cr_lang_short"],$_REQUEST["cr_lang_long"]));
+	}
+
+	if ($crerror) { // todo: error handling
+		$smarty->assign('cr_lang_short', $_REQUEST["cr_lang_short"]);
+		$smarty->assign('cr_lang_long', $_REQUEST["cr_lang_long"]);
+	} else {
+		$smarty->assign('crmsg', tra("Language created"). ": " . $_REQUEST["cr_lang_short"] . " " . $_REQUEST["cr_lang_long"]);
+		$smarty->assign('edit_language', $_REQUEST["cr_lang_short"]);
+	}
+}
 
 if (!empty ($_REQUEST['interactive_translation_mode']) && $tiki_p_edit_languages == 'y'){
 	require_once("lib/multilingual/multilinguallib.php");
@@ -22,35 +48,32 @@ if (!isset($_SESSION['interactive_translation_mode']))
 else
 	$smarty->assign('interactive_translation_mode',$_SESSION['interactive_translation_mode']);
 
-// Get available languages
-$languages = $tikilib->list_languages();
-$smarty->assign_by_ref('languages', $languages);
+//Editing things
 
-$db_languages = Language::getDbTranslatedLanguages();
-$db_languages = $tikilib->format_language_list($db_languages);
-$smarty->assign_by_ref('db_languages', $db_languages);
+// Get available languages from DB
+$query = "select `lang` from `tiki_languages`";
+$result = $tikilib->query($query,array());
+$languages = array();
 
-// check if is possible to write to lang/
-// TODO: check if each language file is writable instead of the whole lang/ dir
-if (is_writable('lang/')) {
-	$smarty->assign('langIsWritable', true);
-} else {
-	$smarty->assign('langIsWritable', false);
+while ($res = $result->fetchRow()) {
+	$languages[] = $res["lang"];
 }
+
+$smarty->assign_by_ref('languages', $languages);
 
 // preserving variables
 if (isset($_REQUEST["edit_language"])) {
 	$smarty->assign('edit_language', $_REQUEST["edit_language"]);
+
 	$edit_language = $_REQUEST["edit_language"];
-} else {
-	$smarty->assign('edit_language', $prefs['language']);
+}
+
+if (!isset($edit_language)) {
 	$edit_language = $prefs['language'];
 }
 
 if (isset($_REQUEST["whataction"])) {
 	$smarty->assign('whataction', $_REQUEST["whataction"]);
-} else {
-	$smarty->assign('whataction', '');
 }
 
 // Adding strings
@@ -213,72 +236,10 @@ if ($whataction == "edit_rec_sw" || $whataction == "edit_tran_sw") {
 		$smarty->assign_by_ref('translation', $translation);
 	}
 }
-
-if (isset($_REQUEST["exp_language"])) {
-	$exp_language = $_REQUEST["exp_language"];
-	$language = new Language($exp_language);
-	$smarty->assign('exp_language', $exp_language);
-} else {
-	$smarty->assign('exp_language', '');
-}
-
-if (isset($_REQUEST["imp_language"])) {
-	$imp_language = preg_replace('/\.\./','',$_REQUEST['imp_language']);
-}
-
-// Import
-if (isset($_REQUEST["import"])) {
-	check_ticket('import-lang');
-	
-	// first delete each record from language db table where the lang matches (if any)
-	$query = "select `source` from `tiki_language` where `lang`=?";
-	$result = $tikilib->query($query, array($imp_language));
-	while ($res = $result->fetchRow()) {
-		$query = "delete from `tiki_language` where `lang`=?";
-		$result = $tikilib->query($query, array($imp_language));
-	}
-	
-	// now we can start the import
-	if (!isset(${"lang_$imp_language"})) {
-		init_language($imp_language);
-	}
-
-	$impmsg = tra("Imported:")." lang/$imp_language/language.php";
-
-	while (list($key, $val) = each(${"lang_$imp_language"})) {
-		$query = "insert into `tiki_language` values (?,?,?)";
-		$result = $tikilib->query($query, array($key,$imp_language,$val), -1, -1, false);
-	}
-
-	$smarty->assign('impmsg', $impmsg);
-}
-
-// Export
-if (isset($_REQUEST['downloadFile'])) {
-	check_ticket('import-lang');
-	$data = $language->createCustomFile();
-	header ("Content-type: application/unknown");
-	header ("Content-Disposition: inline; filename=language.php");
-	header ("Content-encoding: UTF-8");
-	echo $data;
-	exit (0);
-}
-
-// Write to custom.php
-if (isset($_REQUEST['exportToCustom'])) {
-	$language->writeCustomFile();
-}
-
-// Write to language.php
-if (isset($_REQUEST['exportToLanguage'])) {
-	$language->writeLanguageFile();
-}
-
 ask_ticket('edit-languages');
 
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
-$headerlib->add_cssfile('css/admin.css');
 $smarty->assign('mid', 'tiki-edit_languages.tpl');
 $smarty->display("tiki.tpl");

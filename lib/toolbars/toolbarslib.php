@@ -379,7 +379,7 @@ abstract class Toolbar
 		$content = $title;
 		$params['_icon'] = $this->icon;
 			
-		if (strpos($class, 'qt-plugin') !== false && $this->icon == 'pics/icons/plugin.png') {
+		if (strpos($class, 'qt-plugin') !== false && !empty($title)) {
 			$params['_menu_text'] = 'y';
 			$params['_menu_icon'] = 'y';
 		}
@@ -573,17 +573,12 @@ class ToolbarBlock extends ToolbarInline // Will change in the future
 
 	public static function fromName( $tagName ) // {{{
 	{
-		global $prefs;
 		switch( $tagName ) {
 		case 'center':
 			$label = tra('Align Center');
 			$icon = tra('pics/icons/text_align_center.png');
 			$wysiwyg = 'JustifyCenter';
-			if ($prefs['feature_use_three_colon_centertag'] == 'y') {
-				$syntax = ":::text:::";
-			} else {
-				$syntax = "::text::";
-			}
+			$syntax = "::text::";
 			break;
 		case 'rule':
 			$label = tra('Horizontal Bar');
@@ -902,7 +897,6 @@ class ToolbarDialog extends Toolbar
 						'<input type="text" id="tbFindSearch" class="ui-widget-content ui-corner-all" />',
 						'<label for="tbLinkNoCache" style="display:inline;">Case Insensitivity:</label>',
 						'<input type="checkbox" id="tbFindCase" checked="checked" class="ui-widget-content ui-corner-all" />',
-						'<p class="description">Note: Uses regular expressions</p>',	// TODO add option to not
 						'{"open": function() { dialogFindOpen(areaname); },'.
 						 '"buttons": { "Close": function() { dialogSharedClose(areaname,this); },'.
 									  '"Find": function() { dialogFindFind(areaname); }}}'
@@ -925,7 +919,6 @@ class ToolbarDialog extends Toolbar
 						'<input type="checkbox" id="tbReplaceCase" checked="checked" class="ui-widget-content ui-corner-all" />',
 						'<br /><label for="tbLinkNoCache" style="display:inline;">Replace All:</label>',
 						'<input type="checkbox" id="tbReplaceAll" checked="checked" class="ui-widget-content ui-corner-all" />',
-						'<p class="description">Note: Uses regular expressions</p>',	// TODO add option to not
 						'{"open": function() { dialogReplaceOpen(areaname); },'.
 						 '"buttons": { "Close": function() { dialogSharedClose(areaname,this); },'.
 									  '"Replace": function() { dialogReplaceReplace(areaname); }}}'
@@ -1031,20 +1024,13 @@ class ToolbarHelptool extends Toolbar
 	function getWikiHtml( $areaName ) // {{{
 	{
 
-		global $wikilib, $smarty, $plugins, $section;
+		global $wikilib, $smarty, $plugins;
 		if (!isset($plugins)) {
 			include_once ('lib/wiki/wikilib.php');
 			$plugins = $wikilib->list_plugins(true);
 		}
-		if ($section == 'sheet') {
-			$sheethelp = $smarty->fetch('tiki-edit_help_sheet.tpl');
-		} else {
-			$sheethelp = '';
-		}
 		$smarty->assign_by_ref('plugins', $plugins);
-		return  $smarty->fetch('tiki-edit_help.tpl') .
-				$smarty->fetch('tiki-edit_help_plugins.tpl') .
-				$sheethelp;
+		return $smarty->fetch("tiki-edit_help.tpl") . $smarty->fetch("tiki-edit_help_plugins.tpl");
 		
 	} // }}}
 
@@ -1170,8 +1156,13 @@ class ToolbarWikiplugin extends Toolbar
 
 	function getWikiHtml( $areaName ) // {{{
 	{
+		if ($this->icon != 'pics/icons/plugin.png') {
+			$label = '';
+		} else {
+			$label = htmlentities($this->label, ENT_QUOTES, 'UTF-8');
+		}
 		return $this->getSelfLink('popup_plugin_form(\'' . $areaName . '\',\'' . $this->pluginName . '\')',
-							htmlentities($this->label, ENT_QUOTES, 'UTF-8'), 'qt-plugin');
+							$label, 'qt-plugin');
 	} // }}}
 }
 

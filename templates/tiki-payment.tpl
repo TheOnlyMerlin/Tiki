@@ -5,23 +5,21 @@
 {/if}
 
 {tabset}
-	{permission name=payment_view}
-		{tab name="{tr}Outstanding{/tr}"}
-			{if $overdue.cant > 0}
-				<p>{tr}Overdue{/tr}</p>
-				{include file=tiki-payment-list.tpl payments=$overdue cancel=1}
-			{/if}
-	
-			<p>{tr}Outstanding{/tr}</p>
-			{include file=tiki-payment-list.tpl payments=$outstanding cancel=1}
-		{/tab}
-		{tab name="{tr}Past{/tr}"}
-			{include file=tiki-payment-list-past.tpl payments=$past}
-		{/tab}
-		{tab name="{tr}Cancelled{/tr}"}
-			{include file=tiki-payment-list.tpl payments=$canceled}
-		{/tab}
-	{/permission}
+	{tab name="{tr}Outstanding{/tr}"}
+		{if $overdue.cant > 0}
+			<p>{tr}Overdue{/tr}</p>
+			{include file=tiki-payment-list.tpl payments=$overdue cancel=1}
+		{/if}
+
+		<p>{tr}Outstanding{/tr}</p>
+		{include file=tiki-payment-list.tpl payments=$outstanding cancel=1}
+	{/tab}
+	{tab name="{tr}Past{/tr}"}
+		{include file=tiki-payment-list.tpl payments=$past}
+	{/tab}
+	{tab name="{tr}Cancelled{/tr}"}
+		{include file=tiki-payment-list.tpl payments=$canceled}
+	{/tab}
 	{permission name=payment_request}
 		{tab name="{tr}Request{/tr}"}
 			<form method="post" action="">
@@ -43,13 +41,13 @@
 
 				<fieldset>
 					<label for="amount">{tr}Amount{/tr}:</label>
-					<input type="text" id="amount" name="amount" class="right"/>
+					<input type="text" id="amount" name="amount"/>
 					{$prefs.payment_currency|escape}
 				</fieldset>
 
 				<fieldset>
 					<label for="payable">{tr}Payable within{/tr}:</label>
-					<input type="text" id="payable" class="right" name="payable" value="{$prefs.payment_default_delay|escape}"/>
+					<input type="text" id="payable" name="payable" value="{$prefs.payment_default_delay|escape}"/>
 					{tr}days{/tr}
 				</fieldset>
 				

@@ -5,9 +5,6 @@
 		{if $prefs.feature_site_report eq 'y'}
 			<a href="tiki-tell_a_friend.php?report=y&amp;url={$smarty.server.REQUEST_URI|escape:'url'}">{tr}Report to Webmaster{/tr}</a>
 		{/if}
-		{if $prefs.feature_share eq 'y' }
-			<a href="tiki-share.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{tr}Share this page{/tr}</a>
-		{/if}
 		{if $prefs.feature_site_send_link eq 'y'}
 			<a href="tiki-tell_a_friend.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{tr}Email this page{/tr}</a>
 		{/if}
@@ -29,45 +26,41 @@
 {/if}
 {if $prefs.feature_bot_bar_rss eq 'y'}
 	<div id="rss" style="text-align: center">
-		{if $prefs.feature_wiki eq 'y' and $prefs.feed_wiki eq 'y' and $tiki_p_view eq 'y'}
-				<a title="{tr}Wiki RSS{/tr}" href="tiki-wiki_rss.php?ver={$prefs.feed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
+		{if $prefs.feature_wiki eq 'y' and $prefs.rss_wiki eq 'y' and $tiki_p_view eq 'y'}
+				<a title="{tr}Wiki RSS{/tr}" href="tiki-wiki_rss.php?ver={$prefs.rssfeed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
 				<small>{tr}Wiki{/tr}</small>
 		{/if}
-		{if $prefs.feature_blogs eq 'y' and $prefs.feed_blogs eq 'y' and ($tiki_p_read_blog eq 'y' or $tiki_p_blog_view_ref eq 'y')}
-				<a title="{tr}Blogs RSS{/tr}" href="tiki-blogs_rss.php?ver={$prefs.feed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
+		{if $prefs.feature_blogs eq 'y' and $prefs.rss_blogs eq 'y' and ($tiki_p_read_blog eq 'y' or $tiki_p_blog_view_ref eq 'y')}
+				<a title="{tr}Blogs RSS{/tr}" href="tiki-blogs_rss.php?ver={$prefs.rssfeed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
 				<small>{tr}Blogs{/tr}</small>
 		{/if}
-		{if $prefs.feature_articles eq 'y' and $prefs.feed_articles eq 'y' and ($tiki_p_read_article eq 'y' or $tiki_p_articles_read_heading eq 'y')}
-				<a title="{tr}Articles RSS{/tr}" href="tiki-articles_rss.php?ver={$prefs.feed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
+		{if $prefs.feature_articles eq 'y' and $prefs.rss_articles eq 'y' and ($tiki_p_read_article eq 'y' or $tiki_p_articles_read_heading eq 'y')}
+				<a title="{tr}Articles RSS{/tr}" href="tiki-articles_rss.php?ver={$prefs.rssfeed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
 				<small>{tr}Articles{/tr}</small>
 		{/if}
-		{if $prefs.feature_galleries eq 'y' and $prefs.feed_image_galleries eq 'y' and $tiki_p_view_image_gallery eq 'y'}
-				<a title="{tr}Image Galleries RSS{/tr}" href="tiki-image_galleries_rss.php?ver={$prefs.feed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
+		{if $prefs.feature_galleries eq 'y' and $prefs.rss_image_galleries eq 'y' and $tiki_p_view_image_gallery eq 'y'}
+				<a title="{tr}Image Galleries RSS{/tr}" href="tiki-image_galleries_rss.php?ver={$prefs.rssfeed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
 				<small>{tr}Image Galleries{/tr}</small>
 		{/if}
-		{if $prefs.feature_file_galleries eq 'y' and $prefs.feed_file_galleries eq 'y' and $tiki_p_view_file_gallery eq 'y'}
-				<a title="{tr}File Galleries RSS{/tr}" href="tiki-file_galleries_rss.php?ver={$prefs.feed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
+		{if $prefs.feature_file_galleries eq 'y' and $prefs.rss_file_galleries eq 'y' and $tiki_p_view_file_gallery eq 'y'}
+				<a title="{tr}File Galleries RSS{/tr}" href="tiki-file_galleries_rss.php?ver={$prefs.rssfeed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
 				<small>{tr}File Galleries{/tr}</small>
 		{/if}
-		{if $prefs.feature_forums eq 'y' and $prefs.feed_forums eq 'y' and $tiki_p_forum_read eq 'y'}
-				<a title="{tr}Forums RSS{/tr}" href="tiki-forums_rss.php?ver={$prefs.feed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
+		{if $prefs.feature_forums eq 'y' and $prefs.rss_forums eq 'y' and $tiki_p_forum_read eq 'y'}
+				<a title="{tr}Forums RSS{/tr}" href="tiki-forums_rss.php?ver={$prefs.rssfeed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
 				<small>{tr}Forums{/tr}</small>
 		{/if}
 		{if $prefs.feature_maps eq 'y' and $prefs.rss_mapfiles eq 'y' and $tiki_p_map_view eq 'y'}
-				<a title="{tr}Maps RSS{/tr}" href="tiki-map_rss.php?ver={$prefs.feed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
+				<a title="{tr}Maps RSS{/tr}" href="tiki-map_rss.php?ver={$prefs.rssfeed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
 				<small>{tr}Maps{/tr}</small>
 		{/if}
-		{if $prefs.feature_directory eq 'y' and $prefs.feed_directories eq 'y' and $tiki_p_view_directory eq 'y'}
-				<a href="tiki-directories_rss.php?ver={$prefs.feed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
+		{if $prefs.feature_directory eq 'y' and $prefs.rss_directories eq 'y' and $tiki_p_view_directory eq 'y'}
+				<a href="tiki-directories_rss.php?ver={$prefs.rssfeed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
 				<small>{tr}Directories{/tr}</small>
 		{/if}
-		{if $prefs.feature_calendar eq 'y' and $prefs.feed_calendar eq 'y' and $tiki_p_view_calendar eq 'y'}
-				<a href="tiki-calendars_rss.php?ver={$prefs.feed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
+		{if $prefs.feature_calendar eq 'y' and $prefs.rss_calendar eq 'y' and $tiki_p_view_calendar eq 'y'}
+				<a href="tiki-calendars_rss.php?ver={$prefs.rssfeed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
 				<small>{tr}Calendars{/tr}</small>
-		{/if}
-		{if $prefs.feature_shoutbox eq 'y' and $prefs.feed_shoutbox eq 'y' and $tiki_p_view_shoutbox eq 'y'}
-				<a href="tiki-shoutbox_rss.php?ver={$prefs.feed_default_version}">{icon style='vertical-align: text-bottom;' _id='feed' alt='{tr}RSS feed{/tr}'}</a>
-				<small>{tr}Shoutbox{/tr}</small>
 		{/if}
 	</div>
 {/if}

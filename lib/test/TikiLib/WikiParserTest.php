@@ -13,8 +13,6 @@ class TikiLib_WikiParserTest extends PHPUnit_Framework_TestCase
      */
 	public function testWikiParser($input, $output)
 	{
-		global $prefs;
-		$prefs['feature_page_title'] = 'y';
         $o = new TikiLib;
         $this->assertEquals($output, $o->parse_data($input));
 	}

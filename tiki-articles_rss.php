@@ -12,7 +12,7 @@ require_once ('lib/rss/rsslib.php');
 
 $access->check_feature('feature_articles');
 
-if ($prefs['feed_articles'] != 'y') {
+if ($prefs['rss_articles'] != 'y') {
 	$errmsg=tra("rss feed disabled");
 	require_once ('tiki-rss_error.php');
 }
@@ -31,7 +31,7 @@ $feed = "articles";
 if (isset($_REQUEST["topic"])) {
     $topic = $_REQUEST["topic"];
     $uniqueid = $feed.".".$topic;
-    $topic = (int) preg_replace('/[^0-9]/','', $topic);
+    $topic = (int) ereg_replace("[^0-9]","", $topic);
 } elseif (isset($_REQUEST['topicname'])) {
 	global $artlib; require_once 'lib/articles/artlib.php';
 	$topic = $artlib->fetchtopicId($_REQUEST['topicname']);
@@ -50,7 +50,7 @@ if (isset($_REQUEST["type"])) {
 
 if (isset($_REQUEST['lang'])) {
 	$articleLang = $_REQUEST['lang'];
-	$prefs['feed_language'] = $articleLang;
+	$prefs['rssfeed_language'] = $articleLang;
 } else {
 	$articleLang = '';
 }
@@ -65,8 +65,10 @@ if ($topic and !$tikilib->user_has_perm_on_object($user,$topic,'topic','tiki_p_t
 $output = $rsslib->get_from_cache($uniqueid);
 
 if ($output["data"]=="EMPTY") {
-	$title = $prefs['feed_articles_title'];
-	$desc = $prefs['feed_articles_desc'];
+	$tmp = tra("Tiki RSS feed for articles");
+	$title = (!empty($title_rss_articles)) ? $title_rss_articles : $tmp;
+	$tmp = tra("Last articles.");
+	$desc = (!empty($desc_rss_articles)) ? $desc_rss_articles : $tmp;
 	$id = "articleId";
 	$titleId = "title";
 	$descId = "heading";
@@ -74,12 +76,12 @@ if ($output["data"]=="EMPTY") {
 	$authorId = "author";
 	$readrepl = "tiki-read_article.php?$id=%s";
 
-	$tmp = $prefs['feed__'.$feed.'_title'];
+	$tmp = $prefs['title_rss_'.$feed];
 	if ($tmp<>'') $title = $tmp;
-	$tmp = $prefs['feed_'.$feed.'_desc'];
+	$tmp = $prefs['desc_rss_'.$feed];
 	if ($desc<>'') $desc = $tmp;
 
-	$changes = $artlib -> list_articles(0, $prefs['feed_articles_max'], $dateId.'_desc', '', 0, $tikilib->now, $user, $type, $topic, 'y', '', '', '', '', $articleLang);
+	$changes = $artlib -> list_articles(0, $prefs['max_rss_articles'], $dateId.'_desc', '', 0, $tikilib->now, $user, $type, $topic, 'y', '', '', '', '', $articleLang);
 	$tmp = array();
 	include_once('tiki-sefurl.php');
 	foreach ($changes["data"] as $data)  {

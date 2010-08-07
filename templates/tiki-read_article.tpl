@@ -47,75 +47,76 @@
 		</form>
 	{/if}
 
-	{if $prefs.art_trailer_pos ne 'between'}{include file='article_trailer.tpl}{/if}
-
+	<div class="articletrailer">
+		<span>
+			{if $show_size eq 'y'}
+				({$size} {tr}bytes{/tr})
+			{/if}
+		</span>
+		<div class="actions">
+		{if $prefs.feature_multilingual eq 'y' and $show_lang eq 'y' and $lang and $prefs.show_available_translations eq 'y'}
+			{include file='translated-lang.tpl' td='y' type='article'}
+		{/if}
+		{if $tiki_p_edit_article eq 'y'}
+			<a class="icon" href="tiki-edit_article.php?articleId={$articleId}">{icon _id='page_edit'}</a>
+		{/if}
+		{if $prefs.feature_cms_print eq 'y'}
+			<a class="icon" href="tiki-print_article.php?articleId={$articleId}">{icon _id='printer' alt='{tr}Print{/tr}'}</a>
+		{/if}
+		{if $prefs.feature_tell_a_friend eq 'y' && $tiki_p_tell_a_friend eq 'y'}
+			<a title="{tr}Send a link{/tr}" href="tiki-tell_a_friend.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{icon _id='email_link' alt="{tr}Send a link{/tr}"}</a>
+		{/if}
+		{if $prefs.feature_multilingual eq 'y' and $tiki_p_edit_article eq 'y'}
+			<a class="icon" href="tiki-edit_translation.php?id={$articleId}&amp;type=article">{icon _id='world' alt='{tr}Translation{/tr}'}</a>
+		{/if}
+		{if $tiki_p_remove_article eq 'y'}
+			<a class="icon" href="tiki-list_articles.php?remove={$articleId}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a>
+		{/if}
+		</div>
+	</div>
+	<br class="clear" />
 	<div class="articleheading">
-		<table cellpadding="0" cellspacing="0" width="100%">
+		<table cellpadding="0" cellspacing="0">
 			<tr>
-				<td valign="top">
-				{capture name=imgTitle}{if $show_image_caption eq 'y' and $image_caption}{$image_caption|escape}{elseif $topicName}{tr}{$topicName}{/tr}{/if}{/capture}
-				{if $topicId}
-					<a href="tiki-view_articles.php?topic={$topicId}" title="{if $show_image_caption and $image_caption}{$image_caption|escape}{else}{tr}List all articles of this same topic{/tr}: {tr}{$topicName}{/tr}{/if}">
-				{/if}
-				{if $prefs.art_header_text_pos eq 'below' && $list_image_x > 0}
-					{assign var="big_image" value=y}
-					 <div class="imgbox" style="margin:auto; width:{$width}px">
-				{/if}
-				{if $useImage eq 'y'}
-					{if $hasImage eq 'y'} {* display article image *}
-						<img 
-							 {if $big_image eq 'y'}class="cboxElement"{elseif $isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if}
-							 alt="{$smarty.capture.imgTitle}" 
-							 src="article_image.php?image_type=article&amp;id={$articleId}"
-							 {if $image_x > 0}width="{$image_x}"{/if}
-							 {if $image_y > 0}height="{$image_y}"{/if} />
-					{elseif $topicId}
-							{tr}{$topics[$topicId].name}{/tr}
-					{/if}
+				{if $isfloat eq 'n'}
+					<td valign="top">
 				{else}
-					{section name=it loop=$topics}
-						{if ($topics[it].topicId eq $topicId) and ($topics[it].image_size > 0)}
-							<img 
-								 {if $big_image eq 'y'}class="cboxElement"{elseif $isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if}
-								 alt="{tr}{$topicName}{/tr}"
-								 src="article_image.php?image_type=topic&amp;id={$topicId}" />
+					<td valign="top">
+				{/if}
+				
+					{if $useImage eq 'y'}
+						{if $hasImage eq 'y'}
+							<a href="tiki-view_articles.php?topic={$topicId}" title="{if $show_image_caption and $image_caption}{$image_caption}{else}{tr}List all articles of this same topic{/tr}: {$topics[$topicId].name|escape}{/if}"><img {if $isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} alt="{if $show_image_caption and $image_caption}{$image_caption}{else}{tr}List all articles of this same topic{/tr}{/if}" src="article_image.php?image_type=article&amp;id={$articleId}"{if $image_x > 0} width="{$image_x}"{/if}{if $image_y > 0 } height="{$image_y}"{/if} /></a>
+						{else}
+								<a class="link" href="tiki-view_articles.php?topic={$topicId}" title="{tr}List all articles of this same topic{/tr}">{$topics[$topicId].name|escape}</a>
 						{/if}
-					{/section}
-				{/if}
-				{if $topicId}</a>{/if}
-				{if $big_image eq 'y'}
-					{if $show_image_caption eq 'y' and $image_caption || $image_x > 0}
-						<div class="mini thumbcaption">
-						{if $image_x > 0}<div class="magnify"><a class="internal cboxElement" rel="box" href="article_image.php?image_type=article&amp;id={$articleId}">{icon _id='magnifier' title=$smarty.capture.imgTitle}</a></div>{/if}
-						{if $show_image_caption eq 'y' and $image_caption}{$image_caption|escape}{else}&nbsp;{/if}
-						</div>
+					{else}
+						{section name=it loop=$topics}
+							{if ($topics[it].topicId eq $topicId) and ($topics[it].image_size > 0)}
+								<a class="link" href="tiki-view_articles.php?topic={$topics[it].topicId}" title="{tr}List all articles of this same topic{/tr}"><img {if $isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} alt="{$topicName}" src="article_image.php?image_type=topic&amp;id={$topicId}" /></a>
+							{/if}
+						{/section}
 					{/if}
-					</div>
-				{/if}
-				{if  $prefs.art_header_text_pos eq 'below' && $list_image_x > 0}
-					 </td></tr><tr><td valign="top">
-				{elseif $isfloat eq 'n'}
-					</td>
-					<td valign="top" width="100%">
-				{/if}
-				<div class="articleheadingtext">
-					{if $article_attributes}
+					{if $isfloat eq 'n'}
+						</td>
+						<td valign="top">
+					{/if}
+					<div class="articleheadingtext">
+						{if $article_attributes}
 						<div class="articleattributes">
 							{foreach from=$article_attributes key=attname item=attvalue}
 							{tr}{$attname|escape}{/tr}: {$attvalue|escape}<br />
 							{/foreach}
 						</div>
-					{/if}
-					{$parsed_heading}
-				</div>
+						{/if}
+						{$parsed_heading}
+					</div>
 				</td>
 			</tr>
 		</table>
 	</div>
 
-	{if $prefs.art_trailer_pos eq 'between'}{include file='article_trailer.tpl}{/if}
-
-	<div class="articlebody clearfix">
+	<div class="articlebody">
 		{if $tiki_p_read_article eq 'y'}
 			{$parsed_body}
 		{else}
@@ -156,7 +157,6 @@
 		</p>
 	{/if}
 </div>
-{wikipluginsubmit}{/wikipluginsubmit}{*droit-inc*}
 
 {if $prefs.feature_article_comments == 'y' && 
 		(($tiki_p_read_comments == 'y' && $comments_cant != 0) || $tiki_p_post_comments == 'y' || $tiki_p_edit_comments == 'y')}

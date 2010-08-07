@@ -7,20 +7,19 @@ require_once(dirname(__FILE__) . '/TikiTestCase.php');
 ini_set( 'display_errors', 'on' );
 error_reporting( CUSTOM_ERROR_LEVEL );
 
-$paths = array(
-	ini_get('include_path'),
-	realpath('.'),
-	realpath('../core/lib'),
-	realpath('../..'),
-	realpath('core'),
-	realpath('../pear'),
-);
+ini_set( 'include_path', ini_get('include_path') . PATH_SEPARATOR . "." . PATH_SEPARATOR . "../core/lib" . PATH_SEPARATOR . "../.." . PATH_SEPARATOR . "core");
 
-ini_set( 'include_path', implode( PATH_SEPARATOR, $paths ) );
+function tr( $string ) {
+	return $string;
+}
+
+function tra( $string ) {
+	return $string;
+}
 
 function __autoload( $name ) {
-	$path = str_replace( '_', '/', $name ) . '.php';
-	@ include_once( $path );
+	$path = str_replace( '_', '/', $name );
+	require_once( $path . '.php' );
 }
 
 $tikidomain = '';
@@ -38,13 +37,10 @@ $db->setServerType( $db_tiki );
 
 $pwd = getcwd();
 chdir( dirname(__FILE__) . '/../..' );
-require_once 'lib/init/smarty.php';
+require_once 'setup_smarty.php';
 require_once 'lib/cache/cachelib.php';
 require_once 'lib/tikilib.php';
 require_once 'lib/userslib.php';
-require_once 'lib/headerlib.php';
-require_once 'lib/init/tra.php';
-
 $tikilib = new TikiLib;
 $userlib = new UsersLib;
 $_SESSION = array(

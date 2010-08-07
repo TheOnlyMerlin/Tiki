@@ -5,7 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 
 function wikiplugin_googlemap_help() {
-	return tra("googlemap").":~np~{GOOGLEMAP(type=locator|user|item|objectlist,trackerfield, mode=normal|satellite|hybrid, key=XXXXX name=xxx, width=500, height=400, frameborder=1|0, defaultx=-79.4, defaulty=43.707, defaultz=14, setdefaultxyz=1|0, locateitemtype=wiki page|..., locateitemid=xxx, hideifnone=0|1, togglehidden=0|1, starthidden=0|1, autozoom=14, controls=n, trackerfieldid=xxx, trackerinputid=xxx)}{GOOGLEMAP}~/np~";
+	return tra("googlemap").":~np~{GOOGLEMAP(type=locator|user|item|objectlist, mode=normal|satellite|hybrid, key=XXXXX name=xxx, width=500, height=400, frameborder=1|0, defaultx=-79.4, defaulty=43.707, defaultz=14, setdefaultxyz=1|0, locateitemtype=wiki page|..., locateitemid=xxx, hideifnone=0|1, togglehidden=0|1, starthidden=0|1, autozoom=14)}{GOOGLEMAP}~/np~";
 }
 
 function wikiplugin_googlemap_info() {
@@ -123,50 +123,20 @@ function wikiplugin_googlemap_info() {
 				'required' => false,
 				'name' => tra('Auto zoom to this level on address find'),
 				'description' => tra('An integer between 0 and 19'),
-			),
-			'controls' => array(
-				'safe' => true,
-				'required' => false,
-				'name' => tra('Show controls'),
-				'description' => tra('y|n'),
-			),
-			'trackerfieldid' => array(
-				'safe' => true,
-				'required' => false,
-				'name' => tra('ID of tracker field'),
-				'description' => tra('Field ID of tracker field if type is trackerfield or locator and locateitemtype is trackeritem'),
-			),
-			'trackerinputid' => array(
-				'safe' => true,
-				'required' => false,
-				'name' => tra('HTML ID of tracker field input box'),
-				'description' => tra('HTML ID of tracker field input box where value is copied to by Javascript, auto set if used as part of entry forms'),
-			),
-			'in_form' => array(
-				'safe' => true,
-				'required' => false,
-				'name' => tra('Set to 1 if this is embedded inside a form'),
-				'description' => tra('1|0, is needed to prevent nested forms which is not allowed in HTML'),
-			),
+			),		
 		),
 	);
 }
 
 function wikiplugin_googlemap($data, $params) {
 
-	global $prefs, $smarty, $tikilib, $access, $ajaxlib, $headerlib;
-
+	global $prefs, $smarty, $tikilib, $access;
+	
 	$access->check_feature('feature_gmap');
 	
 	$type = $params["type"];
 	$smarty->assign_by_ref('gmaptype', $type); // by ref as may be overridden later
 
-	if ($type == 'locator' || isset($params["setdefaultxyz"]) && $params["setdefaultxyz"]) {
-		$access->check_feature('feature_ajax');
-		if (!is_object($ajaxlib)) {
-			include_once ('lib/ajax/ajaxlib.php');	
-		}	
-	}
 	
 	if (isset($params["mode"]) && $params["mode"]) {
 		$smarty->assign( 'gmapmode', $params["mode"] );
@@ -175,14 +145,12 @@ function wikiplugin_googlemap($data, $params) {
 	}
 	
 	if (isset($params["key"]) && $params["key"]) {
-		$gmapkey = $params["key"];
+		$smarty->assign( 'gmapkey', $params["key"] );
 	} elseif ($prefs["gmap_key"]) {
-		$gmapkey = $prefs["gmap_key"];
+		$smarty->assign( 'gmapkey', $prefs["gmap_key"] );
 	} else {
 		return tra("Google Maps API key not set");
 	}
-
-	$headerlib->add_jsfile("http://maps.google.com/maps?file=api&v=2&key=$gmapkey");
 	
 	if (isset($params["name"]) && $params["name"]) {
 		$gmapname = str_replace(' ', '', $params["name"]);
@@ -192,38 +160,28 @@ function wikiplugin_googlemap($data, $params) {
 	$smarty->assign( 'gmapname',  $gmapname);
 	
 	if (isset($params["defaultx"])) {
-		$defaultx = $params["defaultx"];
+		$smarty->assign( 'gmap_defaultx', $params["defaultx"] );
 	} else {
-		$defaultx = $prefs["gmap_defaultx"];
+		$smarty->assign( 'gmap_defaultx', $prefs["gmap_defaultx"] );
 	}
+	
 	if (isset($params["defaulty"])) {
-		$defaulty = $params["defaulty"];
+		$smarty->assign( 'gmap_defaulty', $params["defaulty"] );
 	} else {
-		$defaulty = $prefs["gmap_defaulty"];
+		$smarty->assign( 'gmap_defaulty', $prefs["gmap_defaulty"] );
 	}
+	
 	if (isset($params["defaultz"])) {
-		$defaultz = $params["defaultz"];
+		$smarty->assign( 'gmap_defaultz', $params["defaultz"] );
 	} else {
-		$defaultz = $prefs["gmap_defaultz"];
-	}
-	$smarty->assign( 'gmap_defaultx', $defaultx );
-	$smarty->assign( 'gmap_defaulty', $defaulty );
-	$smarty->assign( 'gmap_defaultz', $defaultz );
-	
-	if (isset($params["controls"])) {
-		$smarty->assign( 'gmap_controls', $params["controls"] );
-	} else {
-		$smarty->assign( 'gmap_controls', 'y' );
-	}
-	
-	if (isset($params["in_form"])) {
-		$smarty->assign( 'gmap_in_form', $params["in_form"] );
-	} else {
-		$smarty->assign( 'gmap_in_form', 0 );
+		$smarty->assign( 'gmap_defaultz', $prefs["gmap_defaultz"] );
 	}
 	
 	if (isset($params["setdefaultxyz"]) && $params["setdefaultxyz"]) {
+		$access->check_feature('feature_ajax');
 		$smarty->assign( 'gmap_defaultset', true) ;
+		global $ajaxlib;
+		include_once ('lib/ajax/ajaxlib.php');
 		$ajaxlib->registerFunction('saveGmapDefaultxyz');
 	} else {
 		$smarty->assign( 'gmap_defaultset', false) ;
@@ -248,7 +206,7 @@ function wikiplugin_googlemap($data, $params) {
 	} else {
 		$smarty->assign( 'gmapframeborder', 0 );
 	}
-
+	
 	if (isset($params["locateitemtype"]) && $params["locateitemtype"]) {
 		$locateitemtype = $params["locateitemtype"];
 	} else {
@@ -277,18 +235,6 @@ function wikiplugin_googlemap($data, $params) {
 		$smarty->assign( 'gmapautozoom', $params["autozoom"] );
 	}
 
-	if (isset($params["trackerfieldid"])) {
-		$smarty->assign( 'gmaptrackerfieldid', $params["trackerfieldid"] );	
-	} else {
-		$smarty->assign( 'gmaptrackerfieldid', 0 );
-	}
-	
-	if (isset($params["trackerinputid"])) {
-		$smarty->assign( 'gmaptrackerinputid', $params["trackerinputid"] );	
-	} else {
-		$smarty->assign( 'gmaptrackerinputid', '' );
-	}
-	
 	// defaults for these could perhaps be specified as params (but they might be overridden below)
 	$pointx = '';
 	$pointy = '';
@@ -317,7 +263,13 @@ function wikiplugin_googlemap($data, $params) {
 			}
 		}
 	}
-
+	
+	if ($type == 'locator') {
+		$access->check_feature('feature_ajax');
+		global $ajaxlib;
+		include_once ('lib/ajax/ajaxlib.php');
+	}
+	
 	if ($type != 'objectlist' && $locateitemtype == 'user') {
 		$smarty->assign('gmapitemtype', 'user');
 		global $userlib, $user, $tiki_p_admin;
@@ -359,97 +311,24 @@ function wikiplugin_googlemap($data, $params) {
 		$smarty->assign('gmapitem', $locateitemid);
 		$smarty->assign('gmapitemtype', $locateitemtype);
 		$attributes = $attributelib->get_attributes( $locateitemtype, $locateitemid );
-		if ($locateitemtype == 'trackeritem' && !empty($params["trackerfieldid"])) {
-			// There could be more than one googlemap field in trackers, thus we are not using object attributes for this purpose
-			global $trklib;
-			if (!is_object($trklib)) {
-				include_once('lib/trackers/trackerlib.php');
-			}
-			$item = $trklib->get_tracker_item($locateitemid);
-				
-			// double check tracker perms
-			if ($item['status'] == 'p' && !$tikilib->user_has_perm_on_object($user, $item['trackerId'], 'tracker', 'tiki_p_view_trackers_pending')
-				|| $item['status'] == 'c' && !$tikilib->user_has_perm_on_object($user, $item['trackerId'], 'tracker', 'tiki_p_view_trackers_closed')
-				|| $item['status'] == 'o' && !$tikilib->user_has_perm_on_object($user, $item['trackerId'], 'tracker', 'tiki_p_view_trackers')) {
-					return '';
-			}
-			if ($type == 'locator') {
-			// if no perm to edit, even if type is set to locator, locator is disabled
-				if ($item['status'] == 'p' && !$tikilib->user_has_perm_on_object($user, $item['trackerId'], 'tracker', 'tiki_p_modify_tracker_items_pending')
-					|| $item['status'] == 'c' && !$tikilib->user_has_perm_on_object($user, $item['trackerId'], 'tracker', 'tiki_p_modify_tracker_items_closed')
-					|| $item['status'] == 'o' && !$tikilib->user_has_perm_on_object($user, $item['trackerId'], 'tracker', 'tiki_p_modify_tracker_items')) {
-						$type = 'trackerfield';
-				}
-			}
-			$f_value = explode(',',$item[$params["trackerfieldid"]]);
-			if ( !empty($f_value[0]) && !empty($f_value[1]) ) {
-				$pointx = $f_value[0];
-				$pointy = $f_value[1];
-			} else {
-				$pointx = $defaultx;
-				$pointy = $defaulty;
-			}
-			if ( !empty($f_value[2]) ) {
-				$pointz = $f_value[2];
-			} else {
-				$pointz = $defaultz;
-			}
-			$fields = $trklib->list_tracker_fields($item['trackerId']);
-			foreach ($fields["data"] as $f) {
-				if ($f["fieldId"] == $params["trackerfieldid"]) {
-					$options_array = $f["options_array"];
-					break;
-				}
-			}
-			if (!empty($options_array[1])) {
-				$markertext = '';
-				$markerfields = explode('|', $options_array[1]);
-				foreach ($markerfields as $k => $m) {
-					if (!empty($item[$m])) {
-						if ($markertext) {
-							$markertext .= '<br /><br />';	
-						}
-						$markertext .= preg_replace("/[\r\n|\r|\n]/", "<br />", htmlspecialchars($item[$m]));					
-					}
-				}
-			}
-			$icon = '';
-			$iconx = '';
-			$icony = '';
-			if (!empty($options_array[2]) && $iconsize = getimagesize($options_array[2])) {
-				if (isset($iconsize[0]) && isset($iconsize[1]) && $iconsize[0] && $iconsize[1]) {
-					$icon = $options_array[2];
-					$icon_x = $iconsize[0];
-					$icon_y = $iconsize[1];
-				}
-			}
-			if (!empty($markertext)) {
-				$markers[] = array($pointy,$pointx,$markertext,$icon,$icon_x,$icon_y);
-			}
-			$smarty->assign('pointicon', $icon);
-			$smarty->assign('pointiconx', $icon_x);
-			$smarty->assign('pointicony', $icon_y);
-		} else {
-			if ( isset($attributes['tiki.geo.lon']) && isset($attributes['tiki.geo.lat']) ) {
-				$pointx = $attributes['tiki.geo.lon'];
-				$pointy = $attributes['tiki.geo.lat'];
-			} else {
-				$pointx = $defaultx;
-				$pointy = $defaulty;
-			}
-			if ( isset($attributes['tiki.geo.google.zoom']) ) {
-				$pointz = $attributes['tiki.geo.google.zoom'];
-			} else {
-				$pointz = $defaultz; 
-			}
+		if ( isset($attributes['tiki.geo.lon']) ) {
+			$pointx = $attributes['tiki.geo.lon'];
 		}
+		if ( isset($attributes['tiki.geo.lat']) ) {
+			$pointy = $attributes['tiki.geo.lat'];
+		}
+		if ( isset($attributes['tiki.geo.google.zoom']) ) {
+			$pointz = $attributes['tiki.geo.google.zoom'];
+		} else {
+			$pointz = $prefs["gmap_defaultz"]; 
+		}	
 		if ($type == 'locator') {
 			$ajaxlib->registerFunction('saveGmapItem');
 		}			
 	}	
 	
 	if ($type == 'objectlist') {
-		// An global array of objects with type, id, title, href, text is read  
+		// An global array of objects with type, id, title, href is read  
 		// This assumes the objects have already been filtered for permissions
 		global $gmapobjectarray;
 		foreach ($gmapobjectarray as $obj) {
@@ -466,33 +345,9 @@ function wikiplugin_googlemap($data, $params) {
 			} else {
 				$lat = '';
 			}
-			
-			$popup = '';
-			if (!empty($obj['href'])) {
-				$popup .= '<a href="' . $obj['href']  . '">';
-			}
-			$popup .= htmlspecialchars($obj['title']);
-			if (!empty($obj['href'])) {
-				$popup .= '</a>';	
-			}
-			if (!empty($obj['text'])) {
-				$popup .= '<br /><br />';
-				$popup .= $obj['text'];
-			}
-			
-			$icon = '';
-			$icon_x = '';
-			$icon_y = '';           
-			if (!empty($obj['icon']) && $iconsize = getimagesize($obj['icon'])) {
-				if (isset($iconsize[0]) && isset($iconsize[1]) && $iconsize[0] && $iconsize[1]) {
-					$icon = $obj['icon'];
-					$icon_x = $iconsize[0];
-					$icon_y = $iconsize[1];
-				}
-			}
-		
+			$popup = '<a href="' . $obj['href']  . '">' . htmlspecialchars($obj['title']) . '</a>';
 			if ($lat && $lon) { 
-				$markers[] = array($lat,$lon,$popup,$icon,$icon_x,$icon_y);
+				$markers[] = array($lat,$lon,$popup);
 			}
 		}
 		// free up memory
@@ -536,7 +391,7 @@ function saveGmapDefaultxyz($feedback, $pointx, $pointy, $pointz) {
 }
 
 function saveGmapUser($feedback, $pointx, $pointy, $pointz, $u) {
-	global $prefs, $tikilib, $ajaxlib, $user, $userlib, $tiki_p_admin_users;
+	global $tikilib, $ajaxlib, $user, $userlib, $tiki_p_admin_users;
 	$objResponse = new xajaxResponse();
 	if (!($u == $user || $tiki_p_admin_users == 'y' && $u != $user && $userlib->user_exists($u))) {		
 		$objResponse->assign($feedback, "innerHTML", tra("You can only set your own location"));
@@ -549,78 +404,29 @@ function saveGmapUser($feedback, $pointx, $pointy, $pointz, $u) {
 	}
 	$tikilib->set_user_preference($u, 'lon', $pointx);
 	$tikilib->set_user_preference($u, 'lat', $pointy);
-	$tikilib->set_user_preference($u, 'zoom', $pointz);
-
-	if ($prefs["user_trackersync_geo"] == 'y') {
-		$userinfo = $userlib->get_user_info($u);
-		$re = $userlib->get_usertracker($userinfo["userId"]);
-		global $trklib;
-		if (!is_object($trklib)) {
-			include_once('lib/trackers/trackerlib.php');
-		} 
-		$itemId = $trklib->get_item_id($re['usersTrackerId'], $re['usersFieldId'], $u);                $item = $trklib->get_tracker_item($itemId);
-		$fields = $trklib->list_tracker_fields($item['trackerId']);
-		$fieldId = 0;
-		foreach ($fields["data"] as $f) {
-			if ($f["type"] == 'G' && $f["options_array"][0] == 'y') {
-				$options_array = $f["options_array"];
-				$fieldId = $f["fieldId"];
-				break;
-			}
-		}
-		if ($fieldId) {
-			$ins_fields["data"][$fieldId] = array('fieldId' => $fieldId, 'options_array' => $options_array, 'value' => "$pointx,$pointy,$pointz", 'type' => 'G');
-			$res = $trklib->replace_item($re['usersTrackerId'], $itemId, $ins_fields);
-		}
-	}
-        
+	$tikilib->set_user_preference($u, 'zoom', $pointz);	
 	$objResponse->assign($feedback, "innerHTML", tra("User location saved for ") . $u);
 	return $objResponse;
 }
 
-function saveGmapItem($feedback, $pointx, $pointy, $pointz, $type, $itemId, $fieldId) {
+function saveGmapItem($feedback, $pointx, $pointy, $pointz, $type, $itemId) {
 	global $tikilib, $ajaxlib, $user, $objectlib, $attributelib;
 	$objResponse = new xajaxResponse();
-	$res = false;
 	include_once('lib/objectlib.php');
-	include_once('lib/attributes/attributelib.php');
+	include_once('lib/attributes/attributelib.php'); 
+	$editPermNeeded = $objectlib->get_needed_perm($type, 'edit');
+	if (!$tikilib->user_has_perm_on_object($user, $itemid, $type, $editPermNeeded)) {
+		$objResponse->assign($feedback, "innerHTML", tra("You cannot edit this object or no such object"));
+		return $objResponse;
+	}
 	if (!is_numeric($pointx) || !is_numeric($pointy) || !is_numeric($pointz) ||
 		 !($pointx > -180 && $pointx < 180 && $pointy > -180 && $pointy < 180 && $pointz >= 0 && $pointz < 20) ) {
 		$objResponse->assign($feedback, "innerHTML", tra("Please select a point to set both Lon. and Lat."));
 		return $objResponse;		
 	}
-	$editPermNeeded = $objectlib->get_needed_perm($type, 'edit');
-	if ($type == 'trackeritem') {
-		global $trklib;
-		if (!is_object($trklib)) {
-			include_once('lib/trackers/trackerlib.php');
-		}
-		$item = $trklib->get_tracker_item($itemId);
-		$fields = $trklib->list_tracker_fields($item['trackerId']);
-		foreach ($fields["data"] as $f) {
-			if ($f["fieldId"] == $fieldId) {
-				$options_array = $f["options_array"];
-				break;
-			}
-		}
-		if ($item['status'] == 'p' && !$tikilib->user_has_perm_on_object($user, $item['trackerId'], 'tracker', 'tiki_p_modify_tracker_items_pending')
-			|| $item['status'] == 'c' && !$tikilib->user_has_perm_on_object($user, $item['trackerId'], 'tracker', 'tiki_p_modify_tracker_items_closed')
-			|| $item['status'] == 'o' && !$tikilib->user_has_perm_on_object($user, $item['trackerId'], 'tracker', 'tiki_p_modify_tracker_items')) {
-				$objResponse->assign($feedback, "innerHTML", tra("You cannot edit this object or no such object"));
-				return $objResponse;
-		}
-		$ins_fields["data"][$fieldId] = array('fieldId' => $fieldId, 'options_array' => $options_array, 'value' => "$pointx,$pointy,$pointz", 'type' => 'G');
-		$res = $trklib->replace_item($item['trackerId'], $itemId, $ins_fields); 
-	} elseif (!$tikilib->user_has_perm_on_object($user, $itemid, $type, $editPermNeeded)) {
-		$objResponse->assign($feedback, "innerHTML", tra("You cannot edit this object or no such object"));
-		return $objResponse;
-	}
-	if (!$res) {
-		// Only set attributes if not set yet (not tracker item)
-		$res = $attributelib->set_attribute($type, $itemId, 'tiki.geo.lon', $pointx);
-		$res = $attributelib->set_attribute($type, $itemId, 'tiki.geo.lat', $pointy);
-		$res = $attributelib->set_attribute($type, $itemId, 'tiki.geo.google.zoom', $pointz);
-	}
+	$res = $attributelib->set_attribute($type, $itemId, 'tiki.geo.lon', $pointx);
+	$res = $attributelib->set_attribute($type, $itemId, 'tiki.geo.lat', $pointy);
+	$res = $attributelib->set_attribute($type, $itemId, 'tiki.geo.google.zoom', $pointz);
 	if ($res) {
 		$objResponse->assign($feedback, "innerHTML", tra("Location saved for object"));
 	} else {

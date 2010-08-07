@@ -40,7 +40,7 @@
 *}
 {if $db_requires_update}
 	{remarksbox type="errors" title="{tr}Database Version Problem{/tr}"}
-	{tr}Your database requires an update to match the current Tiki version. Please proceed to <a href="tiki-install.php">the installer</a>. Using Tiki with an incorrect database version usually provoke errors.{/tr}
+	{tr}Your database requires an update to match the current TikiWiki version. Please proceed to <a href="tiki-install.php">the installer</a>. Using Tiki with an incorrect database version usually provoke errors.{/tr}
 	{tr}If you have shell (SSH) access, you can also use the following, on the command line, from the root of your Tiki installation:{/tr} php installer/shell.php
 	{/remarksbox}
 {/if}
@@ -52,10 +52,10 @@ Add a value in first check when you create a new admin page. *}
 "gal", "fgal", "cms", "polls", "search", "blogs", "forums", "faqs",
 "trackers", "webmail", "rss", "directory", "userfiles", "maps",
 "metatags", "performance", "security", "wikiatt", "score", "community", "messages",
-"calendar", "intertiki", "video", "freetags", "gmap",
+"calendar", "intertiki", "kaltura", "freetags", "gmap",
 "i18n", "wysiwyg", "copyright", "category", "module", "look", "textarea",
  "ads", "profiles", "semantic", "plugins", "webservices",
-'sefurl', 'connect', 'metrics', 'payment', 'rating', 'socialnetworks'))}
+'sefurl', 'connect', 'metrics', 'payment', 'rating'))}
   {assign var="include" value=$smarty.get.page}
 {else}
   {assign var="include" value="list-sections"}
@@ -133,8 +133,8 @@ if $pagetop_msg}
 	<a href="tiki-admin.php?page=metrics">{tr}Metrics Dashboard{/tr}</a>
 	{if $prefs.feature_banning eq 'y'}<a href="tiki-admin_banning.php">{tr}Banning{/tr}</a> {/if}
 	{if $prefs.lang_use_db eq 'y'}<a href="tiki-edit_languages.php">{tr}Edit Languages{/tr}</a> {/if}
+	<a href="tiki-admin.php?page=payment">{tr}Payment{/tr}</a>
 	<a href="tiki-admin.php?page=rating">{tr}Advanced Rating{/tr}</a>
-	<a href="tiki-admin_transitions.php">{tr}Transitions{/tr}</a>
 	<hr />
 
 	{tr}Transversal features{/tr} ({tr}which apply to more than one section{/tr}):<br />

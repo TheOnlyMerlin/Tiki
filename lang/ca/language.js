@@ -2,7 +2,7 @@
  * Javascript translation definition
  * Example in Catalan
  * 
- * $Id$
+ * $Id: language.js 27909 2010-07-09 13:33:31Z jonnybradley $
  */
 
 lang = {
@@ -14,6 +14,7 @@ lang = {
 "Average" : "Intermitja",
 "Weak" : "Fluixa",
 "Very Weak" : "Molt fluixa",
-"Strength" : "Força"
+"Strength" : "Força",
+"Passwords match" : "Les contrasenyes coincideixen"
 
 };

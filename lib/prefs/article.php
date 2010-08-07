@@ -6,20 +6,6 @@
 // $Id$
 
 function prefs_article_list() {
-	$comment_sort_orders = array(
-		'commentDate_desc' => tra('Newest first'),
-		'commentDate_asc' => tra('Oldest first'),
-		'points_desc' => tra('Points'),
-	);
-
-	global $prefslib;
-	$advanced_columns = $prefslib->getExtraSortColumns();
-
-	foreach( $advanced_columns as $key => $label ) {
-		$comment_sort_orders[ $key . '_asc' ] = $label . ' ' . tr('ascending');
-		$comment_sort_orders[ $key . '_desc' ] = $label . ' ' . tr('descending');
-	}
-
 	return array(
 		'article_comments_per_page' => array(
 			'name' => tra('Default number per page'),
@@ -30,7 +16,12 @@ function prefs_article_list() {
 		'article_comments_default_ordering' => array(
 			'name' => tra('Default Ordering'),
 			'type' => 'list',
-			'options' => $comment_sort_orders,
+			'options' => array(
+				'commentDate_desc' => tra('Newest first'),
+				'commentDate_asc' => tra('Oldest first'),
+				'points_desc' => tra('Points'),
+			),
+
 		),
 		'article_paginate' => array(
 			'name' => tra('Paginate articles'),
