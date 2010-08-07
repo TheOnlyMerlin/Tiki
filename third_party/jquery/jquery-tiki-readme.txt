@@ -2,6 +2,12 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 7 august 2010
+
+New:
+	brosho - v 0.1
+	experimental in browser DOM inspector to assist in custom CSS generation (early days)
+
 jonnybradley 9 june 2010
 
 Update:
