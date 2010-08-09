@@ -211,7 +211,7 @@
 })(jQuery);
 
 
-$(function () { $.fn.brosho(); }); //auto execute the brosho plugin
+//$(function () { $.fn.brosho(); }); //auto execute the brosho plugin
 
 
 // *) Somehow jQuery.data() havent worked to store the css string. It got erased everytime a element got clicked and returns 'undefined'
