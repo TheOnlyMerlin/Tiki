@@ -2,7 +2,7 @@ contributor:
 $Author: xavi $
 
 revision: 
-$Revision: 0.4 $
+$Revision: 0.5 $
 
 lastmodif:
 $Date: 2010-06-09 14:56:00 $
@@ -34,3 +34,4 @@ Changelog:
 0.2 Graphs also allowed inside wiki pages, as png images. Removed the need for StatWiki.r file. 
 0.3 Png can be loaded in pages (allowed by local .htaccess file in ./temp folder)
 0.4 Security checking enabled by default and many new optional params: security, wikisyntax and other graph params. Thanks LPH for your help. Params Filtered.
+0.5 parsing xml files fixed. Wrap param added (and enabled by default)
