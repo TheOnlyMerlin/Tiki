@@ -99,6 +99,15 @@ function wikiplugin_r_info() {
 				'description' => tra('Choose whether the server can use X11 to produce graphs in R, or alternatively use dev2bitmap instead (Optional). Options: 1 (R has support for X11, default), 0 (no support for X11 thus using dev2bitmap). These capabilities can be checked in the server with the command in the R console: capabilities()'),
 				'filter' => 'int',
 			),
+			'wrap' => array(
+				'required' => false,
+				'name' => tra('Word Wrap'),
+				'description' => tra('Enable word wrapping on the code to avoid breaking the layout.'),
+				'options' => array(
+					array('text' => tra('No'), 'value' => '0'),
+					array('text' => tra('Yes'), 'value' => '1'),
+				),
+			),
 /*			'iframe' => array(
 				'required' => false,
 				'name' => tra('iframe'),
@@ -245,6 +254,24 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 		$res = 72;
 	}
 
+	if (isset($params["wrap"])) {
+		$wrap = $params["wrap"];
+	}else{ 		// if not specified, use wrapping to avoid breaking layout
+		$wrap = 1;
+	}
+	if ( isset($wrap) && $wrap == 1 ) {
+		// Force wrapping in <pre> tag through a CSS hack
+		$pre_style = 'white-space:pre-wrap;'
+			.' white-space:-moz-pre-wrap !important;'
+			.' white-space:-pre-wrap;'
+			.' white-space:-o-pre-wrap;'
+			.' word-wrap:break-word;';
+	} else {
+		// If there is no wrapping, display a scrollbar (only if needed) to avoid truncating the text
+		$pre_style = 'overflow:auto;';
+	}
+	
+
 	if (!file_exists($rst) or onsave) {
 		$content = '';
 		$content .= 'rfiles<-"' . r_dir . '"' . "\n";
@@ -278,7 +305,7 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 	if (strpos ($cont, '<html>') === false) {
 		$fd = fopen ($rst, 'w') or error ('R', 'can not open file: ' . $rst, $input . $err);
 		if ($r_exitcode == 0) {
-			fwrite ($fd, $prg . '<pre>' . $cont . '</pre>');
+			fwrite ($fd, $prg . '<pre style="'.$pre_style.'">' . $cont . '</pre>');
 			if (file_exists($rgo)) {
 				fwrite ($fd, $prg . '<img src="' . $rgo_rel . '" alt="' . $rgo_rel . '">');
 		 	}
