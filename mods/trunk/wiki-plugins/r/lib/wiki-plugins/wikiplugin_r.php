@@ -186,7 +186,7 @@ function wikiplugin_r($data, $params) {
 
 	if ($type == "text/xml") {
 		$path = $_SERVER["SCRIPT_NAME"];
-		$data = "library(XML)\ndata_tmp <- xml(\"$filepath\")\ndata <- xmlTreeParse(data_tmp,  getDTD = F )\n$data";
+		$data = "library(XML)\ndata_file <- xml(\"$filepath\")\ndata <- xmlTreeParse(data_file,  getDTD = F )\n$data";
 	}
 	// execute R program
 	$fn   = runR ($output, $convert, $sha1, $data, $echo, $ws, $params);
