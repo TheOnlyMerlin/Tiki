@@ -164,7 +164,7 @@ function wikiplugin_r($data, $params) {
 
 		if ( empty($info['filetype']) || $info['filetype'] == 'application/x-octetstream' || $info['filetype'] == 'application/octet-stream' ) {
 			include_once('lib/mime/mimelib.php');
-			$info['filetype'] = tiki_get_mime($info['filename'], 'application/octet-stream');
+			$info['filetype'] = tiki_get_mime($filepath, 'application/octet-stream');
 		}
 
 		$type = $info["filetype"];			
@@ -198,7 +198,7 @@ function wikiplugin_r($data, $params) {
 		$data = "library(XML)\ndata_file <- xml(\"$filepath\")\ndata <- xmlTreeParse(data_file,  getDTD = F )\n$data";
 	}
 	// execute R program
-	$fn   = runR ($output, $convert, $sha1, $data, $echo, $ws, $params);
+	$fn   = runR ($output, convert, $sha1, $data, '', $ws, $params);
 
 	$ret = file_get_contents ($fn);
 
@@ -272,7 +272,7 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 	}
 	
 
-	if (!file_exists($rst) or onsave) {
+	if (!file_exists($rst)) {
 		$content = '';
 		$content .= 'rfiles<-"' . r_dir . '"' . "\n";
 		// TODO: check R capabilities on this server and save result on "r_cap" file on disk
@@ -304,7 +304,7 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 	$cont = file_get_contents ($rst);
 	if (strpos ($cont, '<html>') === false) {
 		$fd = fopen ($rst, 'w') or error ('R', 'can not open file: ' . $rst, $input . $err);
-		if ($r_exitcode == 0) {
+		if (empty($fd)) {
 			fwrite ($fd, $prg . '<pre style="'.$pre_style.'">' . $cont . '</pre>');
 			if (file_exists($rgo)) {
 				fwrite ($fd, $prg . '<img src="' . $rgo_rel . '" alt="' . $rgo_rel . '">');
@@ -319,6 +319,7 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 
 function runRinShell ($cmd, $chmf, &$r_exitcode) {
    $stdout = "";
+   $msg = "";
 /*   if (security>1) {
      $msg = shell_exec (sudo . $cmd);
      if ($chmf!='') {
@@ -416,7 +417,7 @@ function renderFilename ($input) {
 /* need some rework for windows, SK 9 Jul 06 */
 function getCmd ($pre, $cmd, $post) {
   $path = array('/usr/bin/', '/usr/local/bin/', '/bin/');
-  $n    = count(path);  
+  $n    = count($path);  
   for ($i = 0; $i < $n; $i++) {
     $cmdf = $path[$i] . $cmd;
     if (file_exists($cmdf)) { return ($pre . $cmdf . $post); }
