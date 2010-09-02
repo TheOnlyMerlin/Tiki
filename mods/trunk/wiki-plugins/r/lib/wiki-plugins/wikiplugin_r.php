@@ -125,7 +125,7 @@ function wikiplugin_r_info() {
 }
 
 function wikiplugin_r($data, $params) {
-	global $smarty, $trklib, $tikilib;
+	global $smarty, $trklib, $tikilib, $prefs;
 
 	if (isset($params["security"]) && $params["security"]==0) {
 		/* do nothing: i.e. don't check for security in the command sent to R*/
@@ -159,7 +159,7 @@ function wikiplugin_r($data, $params) {
 			$filepath = tempnam( '/tmp', 'r' );
 			file_put_contents( $filepath, $info['data'] );
 		} else {
-			$filepath = $info['path'];
+			$filepath = $prefs['t_use_dir'].$info['path'];
 		}
 
 		if ( empty($info['filetype']) || $info['filetype'] == 'application/x-octetstream' || $info['filetype'] == 'application/octet-stream' ) {
