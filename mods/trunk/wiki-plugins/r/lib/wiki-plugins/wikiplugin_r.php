@@ -35,6 +35,7 @@ function wikiplugin_r_info() {
 				'name' => tra('attId'),
 				'description' => tra('AttId from a tracker Item attachment. ex: 1. (Optional)'),
 				'filter' => 'int',
+				'advanced' => true,
 			),
 			'type' => array(
 				'required' => false,
@@ -42,6 +43,7 @@ function wikiplugin_r_info() {
 				'name' => tra('type'),
 				'description' => tra('Choose the source file type in the appropriate mimetype syntax (Optional). Options: text/csv|text/xml. ex: text/csv. (default). For text/xml, you need to have installed library ("R4X") in R at the server. See documentation for more details'),
 				'filter' => 'striptags',
+				'advanced' => true,
 			),
 			'wikisyntax' => array(
 				'required' => false,
@@ -56,6 +58,7 @@ function wikiplugin_r_info() {
 				'name' => tra('width'),
 				'description' => tra('Width of the graph (Optional). Options: an integer number in pixels (default) or in units specified. If ommitted but height is set, width will be proportional to keep aspect ratio'),
 				'filter' => 'int',
+				'advanced' => true,
 			),
 			'height' => array(
 				'required' => false,
@@ -63,6 +66,7 @@ function wikiplugin_r_info() {
 				'name' => tra('height'),
 				'description' => tra('Height of the graph (Optional). Options: an integer number in inches (default) or in units specified. If ommitted but width is set, height will be proportional to keep aspect ratio'),
 				'filter' => 'int',
+				'advanced' => true,
 			),
 			'units' => array(
 				'required' => false,
@@ -70,6 +74,7 @@ function wikiplugin_r_info() {
 				'name' => tra('units'),
 				'description' => tra('Choose units for the width and/or height parameters (Optional). Options: px (default) for pixels, in (inches), cm or mm'),
 				'filter' => 'alpha',
+				'advanced' => true,
 			),
 			'pointsize' => array(
 				'required' => false,
@@ -77,6 +82,7 @@ function wikiplugin_r_info() {
 				'name' => tra('pointsize'),
 				'description' => tra('The default pointsize of plotted text, interpreted as big points (1/72 inch) at res dpi (optional). Options: interger number such as 12 or bigger'),
 				'filter' => 'int',
+				'advanced' => true,
 			),
 			'bg' => array(
 				'required' => false,
@@ -84,6 +90,7 @@ function wikiplugin_r_info() {
 				'name' => tra('bg'),
 				'description' => tra('The initial background colour (optional). Options: white, yellow, grey, ... and transparent'),
 				'filter' => 'striptags',
+				'advanced' => true,
 			),
 			'res' => array(
 				'required' => false,
@@ -91,6 +98,7 @@ function wikiplugin_r_info() {
 				'name' => tra('res'),
 				'description' => tra('The nominal resolution in dpi which will be recorded in the bitmap file (if any). Also used for units other than the default, and to convert points to pixels (Optional). Options: a positive integer (default: 72 dpi). Values higher than 150 usually seem to be too much'),
 				'filter' => 'int',
+				'advanced' => true,
 			),
 			'x11' => array(
 				'required' => false,
@@ -98,6 +106,7 @@ function wikiplugin_r_info() {
 				'name' => tra('x11'),
 				'description' => tra('Choose whether the server can use X11 to produce graphs in R, or alternatively use dev2bitmap instead (Optional). Options: 1 (R has support for X11, default), 0 (no support for X11 thus using dev2bitmap). These capabilities can be checked in the server with the command in the R console: capabilities()'),
 				'filter' => 'int',
+				'advanced' => true,
 			),
 			'wrap' => array(
 				'required' => false,
@@ -107,18 +116,15 @@ function wikiplugin_r_info() {
 					array('text' => tra('No'), 'value' => '0'),
 					array('text' => tra('Yes'), 'value' => '1'),
 				),
+				'advanced' => false,
 			),
-/*			'iframe' => array(
-				'required' => false,
-				'name' => tra('iframe'),
-				'description' => tra('Show output on an html page inside the wiki page. ex: 1. (default)'),
-			),
-*/			'security' => array(
+			'security' => array(
 				'required' => false,
 				'safe' => false,
 				'name' => tra('security'),
 				'description' => tra('Set the security level for the R commands allowed by the plugin. ex: 1. (default), 0 for no security checking.'),
 				'filter' => 'int',
+				'advanced' => true,
 			),
 		),
 	);
@@ -140,7 +146,6 @@ function wikiplugin_r($data, $params) {
 	$output = 'text';
 	$style = '';
 	$ws = '';
-	$sha1 = md5($data . $params . $output . $style);
 
 	if (isset($_REQUEST['itemId'])) {
 		global $trklib; require_once('lib/trackers/trackerlib.php');
@@ -171,6 +176,15 @@ function wikiplugin_r($data, $params) {
 		$file = $info["filename"];
 	}
 
+	if( isset($params["attId"]) ) {
+		// Moved the hashing after the attId recognition attempt, in order to include the filename (if any) in the hash process
+		// so that if a new filename is passed through attId (and/or itemId), a new R script is generated and processed accordingly
+		// to avoid the former caching issues when dynamically passing a different attId to the same cached R custom script
+		$sha1 = md5($data . $filepath . $params . $output . $style);
+	} else {
+		$sha1 = md5($data . $params . $output . $style);
+	}
+
 	if (isset($params["type"])) {
 		$type = $params["type"];
 	}
@@ -188,17 +202,17 @@ function wikiplugin_r($data, $params) {
 	defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache' );
 	defined('graph_file_name')  || define('graph_file_name', $sha1 . '.png');
 
-	if ($type == "text/csv") {
+	if (isset($params["type"]) && $type == "text/csv") {
 		$path = $_SERVER["SCRIPT_NAME"];
 		$data = "data <- read.csv(\"$filepath\")\n$data";
 	}
 
-	if ($type == "text/xml") {
+	if (isset($params["type"]) && $type == "text/xml") {
 		$path = $_SERVER["SCRIPT_NAME"];
 		$data = "library(XML)\ndata_file <- xml(\"$filepath\")\ndata <- xmlTreeParse(data_file,  getDTD = F )\n$data";
 	}
 	// execute R program
-	$fn   = runR ($output, convert, $sha1, $data, '', $ws, $params);
+	$fn   = runR ($output, $convert, $sha1, $data, '', $ws, $params);
 
 	$ret = file_get_contents ($fn);
 
@@ -304,7 +318,7 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 	$cont = file_get_contents ($rst);
 	if (strpos ($cont, '<html>') === false) {
 		$fd = fopen ($rst, 'w') or error ('R', 'can not open file: ' . $rst, $input . $err);
-		if (empty($fd)) {
+		if ($r_exitcode == 0) {
 			fwrite ($fd, $prg . '<pre style="'.$pre_style.'">' . $cont . '</pre>');
 			if (file_exists($rgo)) {
 				fwrite ($fd, $prg . '<img src="' . $rgo_rel . '" alt="' . $rgo_rel . '">');
