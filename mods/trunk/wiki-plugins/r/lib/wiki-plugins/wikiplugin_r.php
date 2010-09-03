@@ -1,4 +1,5 @@
 <?php
+$Id$
 // Parses R code (r-project.org) and shows the output in a wiki page.
 // Corresponding author: Xavier de Pedro. <xavier.depedro (a) ub.edu> 
 // Contributors: Rodrigo Sampaio, Lukáš Mašek, Louis-Philippe Huberdau, Sylvie Greverend
@@ -18,8 +19,6 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA 
 
 */
-
-
 
 function wikiplugin_r_info() {
 	return array(
@@ -202,7 +201,7 @@ function wikiplugin_r($data, $params) {
 	defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache' );
 	defined('graph_file_name')  || define('graph_file_name', $sha1 . '.png');
 
-	if (isset($params["type"]) && $type == "text/csv") {
+	if (isset($params["type"]) &&  ($type == "text/csv" || $type == "text/comma-separated-values")) {
 		$path = $_SERVER["SCRIPT_NAME"];
 		$data = "data <- read.csv(\"$filepath\")\n$data";
 	}
