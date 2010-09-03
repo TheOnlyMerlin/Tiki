@@ -212,7 +212,7 @@ function wikiplugin_r($data, $params) {
 		$data = "library(XML)\ndata_file <- xml(\"$filepath\")\ndata <- xmlTreeParse(data_file,  getDTD = F )\n$data";
 	}
 	// execute R program
-	$fn   = runR ($output, $convert, $sha1, $data, '', $ws, $params);
+	$fn   = runR ($output, convert, $sha1, $data, '', $ws, $params);
 
 	$ret = file_get_contents ($fn);
 
