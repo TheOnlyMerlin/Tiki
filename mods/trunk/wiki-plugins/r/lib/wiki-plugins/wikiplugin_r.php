@@ -286,7 +286,7 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 	}
 	
 
-	if (!file_exists($rst)) {
+	if (!file_exists($rst) or onsave) {
 		$content = '';
 		$content .= 'rfiles<-"' . r_dir . '"' . "\n";
 		// TODO: check R capabilities on this server and save result on "r_cap" file on disk
