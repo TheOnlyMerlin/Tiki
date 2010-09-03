@@ -4,7 +4,7 @@
 // Contributors: Rodrigo Sampaio, Lukáš Mašek, Louis-Philippe Huberdau, Sylvie Greverend
 // Usage:
 // {R(attId=>attId,type=>csv|xml)}R code{R} 
-//
+// $Id$
 /* 
 
 From the R Plugin for Mediawiki
