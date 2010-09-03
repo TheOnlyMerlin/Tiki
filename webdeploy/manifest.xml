@@ -1,0 +1,25 @@
+<msdeploy.iisapp> 
+
+  <iisapp path="tiki" />
+  
+  <!-- For MySQL  -->
+  <dbmysql path="install.sql" 
+         commandDelimiter="$$" 
+         removeCommandDelimiter="true" />
+  
+  <!--ACLs for Tiki -->
+  <setAcl path="tiki/backups" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+  <setAcl path="tiki/db" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+  <setAcl path="tiki/dump" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+  <setAcl path="tiki/styles" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+  <setAcl path="tiki/whelp" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+  <setAcl path="tiki/temp" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+  <setAcl path="tiki/templates_c" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+  <setAcl path="tiki/templates" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+  <setAcl path="tiki/img/wiki" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+  <setAcl path="tiki/img/wiki_up" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+  <setAcl path="tiki/img/trackers" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+  <setAcl path="tiki/modules/cache" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+  
+</msdeploy.iisapp>
+

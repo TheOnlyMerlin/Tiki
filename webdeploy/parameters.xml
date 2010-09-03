@@ -1,0 +1,94 @@
+<parameters>
+
+  <!-- Prompts where to copy the content files and takes a web site path (such as "contoso.com/app"). -->
+  <parameter name="ApplicationPath" description="Full site path you would like to install your application to (i.e. Default Web Site/tiki)." defaultValue="Default Web Site/tiki" tags="iisapp" >  
+        <parameterEntry type="ProviderPath" scope="iisapp"  match="tiki$" />
+  </parameter>
+
+  <!--Set ACL parameters -->
+  <parameter name="SetAclParameter1" description="Sets the ACL on backups" defaultValue="{ApplicationPath}/backups" tags="Hidden">
+   <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/backups$" />
+  </parameter>
+  <parameter name="SetAclParameter2" description="Sets the ACL on db" defaultValue="{ApplicationPath}/db" tags="Hidden">
+    <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/db$" />
+  </parameter>
+  <parameter name="SetAclParameter3" description="Sets the ACL on dump " defaultValue="{ApplicationPath}/dump" tags="Hidden">
+    <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/dump$" />
+  </parameter>
+  <parameter name="SetAclParameter4" description="Sets the ACL on styles " defaultValue="{ApplicationPath}/styles" tags="Hidden">
+    <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/styles$" />
+  </parameter>
+  <parameter name="SetAclParameter5" description="Sets the ACL on whelp " defaultValue="{ApplicationPath}/whelp" tags="Hidden">
+    <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/whelp$" />
+  </parameter>
+  <parameter name="SetAclParameter6" description="Sets the ACL on temp " defaultValue="{ApplicationPath}/temp" tags="Hidden">
+    <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/temp$" />
+  </parameter>
+  <parameter name="SetAclParameter7" description="Sets the ACL on templates_c " defaultValue="{ApplicationPath}/templates_c" tags="Hidden">
+    <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/templates_c$" />
+  </parameter>
+  <parameter name="SetAclParameter8" description="Sets the ACL on templates " defaultValue="{ApplicationPath}/templates" tags="Hidden">
+    <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/templates$" />
+  </parameter>
+  <parameter name="SetAclParameter9" description="Sets the ACL on img/wiki" defaultValue="{ApplicationPath}/img/wiki" tags="Hidden">
+    <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/img/wiki$" />
+  </parameter>
+  <parameter name="SetAclParameter10" description="Sets the ACL on img/wiki_up" defaultValue="{ApplicationPath}/img/wiki_up" tags="Hidden">
+    <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/img/wiki_up$" />
+  </parameter>
+  <parameter name="SetAclParameter11" description="Sets the ACL on img/trackers" defaultValue="{ApplicationPath}/img/trackers" tags="Hidden">
+    <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/img/trackers$" />
+  </parameter>
+  <parameter name="SetAclParameter12" description="Sets the ACL on modules/cache " defaultValue="{ApplicationPath}/modules/cache" tags="Hidden">
+    <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/modules/cache$" />
+  </parameter>
+
+  <!-- Database Parameters -->
+
+  <!-- Prompts the user for the database server name.-->
+  <parameter name="Database Server" defaultValue="localhost" tags="MySQL,dbServer" >
+    <parameterEntry type="TextFile" scope="install.sql" match="PlaceHolderForServer"  />   
+  </parameter>
+  <parameter name="Automatic database server"     defaultValue="$host_tiki='{Database Server}';" tags="Hidden,MySQL">
+    <parameterEntry type="TextFile" scope="db\\local.php$" match="\$host_tiki[^;]*;"  />
+  </parameter>
+
+  <!-- Prompts the user for the database name.  -->
+  <parameter name="Database Name" defaultValue="tikidb" tags="MySQL,dbName" >
+    <parameterEntry type="TextFile" scope="install.sql" match="PlaceHolderForDb"  />   
+  </parameter>
+  <parameter name="Automatic database name"     defaultValue="$dbs_tiki='{Database Name}';" tags="Hidden,MySQL">
+    <parameterEntry type="TextFile" scope="db\\local.php$" match="\$dbs_tiki[^;]*;"  />
+  </parameter>
+
+  <!--Prompts the user for the database admin username. -->
+  <parameter name="Database Administrator" defaultValue="root" tags="MySQL,DbAdminUsername" />
+
+  <!-- Prompts the user for the database admin user's password.   -->
+  <parameter name="Database Administrator Password" tags="Password,MySQL,DbAdminPassword" />
+
+  <!-- Prompts the user for the database username   -->
+  <parameter name="Database Username" defaultValue="tikiuser"  tags="MySQL,DbUsername">
+    <parameterEntry type="TextFile" scope="install.sql" match="PlaceHolderForUser" /> 
+  </parameter>
+
+  <parameter name="Automatic database username"  defaultValue="$user_tiki='{Database Username}';" tags="Hidden,MySQL">
+    <parameterEntry type="TextFile" scope="db\\local.php$" match="\$user_tiki[^;]*;"  />
+  </parameter>
+
+  <!--  Prompts for the database password -->
+  <parameter name="Database Password" tags="New,Password, MySQL, dbUserPassword">
+    <parameterValidation type="RegularExpression" validationString="^(.){4,}$" />
+    <!-- Parameter substitution for SQL script files -->
+    <parameterEntry type="TextFile" scope="install.sql" match="PlaceHolderForPassword" />
+  </parameter>
+  <parameter name="Automatic database password"     defaultValue="$pass_tiki='{Database Password}';" tags="Hidden,MySQL">
+    <parameterEntry type="TextFile" scope="db\\local.php$" match="\$pass_tiki[^;]*;"  />
+  </parameter>
+  
+  <parameter name="Connection String" description="This is the connection string for the connection request."
+             defaultValue="uid={Database Administrator};Pwd={Database Administrator Password};Database={Database Name};Server={Database Server}"
+             tags="MySQL, Hidden, Validate, MySQLConnectionString">
+    <parameterEntry type="ProviderPath" scope="dbmysql" match="install.sql" />
+  </parameter>
+</parameters>
