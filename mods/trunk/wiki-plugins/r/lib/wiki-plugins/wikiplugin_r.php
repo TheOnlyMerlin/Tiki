@@ -201,14 +201,16 @@ function wikiplugin_r($data, $params) {
 	defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache' );
 	defined('graph_file_name')  || define('graph_file_name', $sha1 . '.png');
 
-	if (isset($params["type"]) &&  ($type == "text/csv" || $type == "text/comma-separated-values")) {
+	if ( isset($params["attId"]) && ($type == "text/csv" || $type == "text/comma-separated-values")) {
 		$path = $_SERVER["SCRIPT_NAME"];
-		$data = "data <- read.csv(\"$filepath\")\n$data";
-	}
-
-	if (isset($params["type"]) && $type == "text/xml") {
+		// record filetype, data_file (path and file name), and data (contents) to be displayed, if desired, from R
+		$data = "file_type <- \"$type\"\ndata_file <- \"$filepath\"\ndata <- read.csv(\"$filepath\")\n$data";
+	} elseif (isset($params["attId"]) && $type == "text/xml") {
 		$path = $_SERVER["SCRIPT_NAME"];
-		$data = "library(XML)\ndata_file <- xml(\"$filepath\")\ndata <- xmlTreeParse(data_file,  getDTD = F )\n$data";
+		// record filetype, data_file (path and file name), and data (contents) to be displayed, if desired, from R
+		$data = "library(XML)\nfile_type <- \"$type\"\ndata_file <- xml(\"$filepath\")\ndata <- xmlTreeParse(data_file,  getDTD = F )\n$data";
+	} else {
+		$data = "data <- \"This file type is not recognized: $type.<br />Read the <a href=http://doc.tiki.org/PluginR>documentation</a> about the allowed filetypes\"\nfile_type <- \"$type\"\ndata_file <- \"$filepath\"\n$data";
 	}
 	// execute R program
 	$fn   = runR ($output, convert, $sha1, $data, '', $ws, $params);
