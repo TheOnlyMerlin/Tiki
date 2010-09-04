@@ -1,5 +1,5 @@
 <?php
-$Id$
+// $Id$
 // Parses R code (r-project.org) and shows the output in a wiki page.
 // Corresponding author: Xavier de Pedro. <xavier.depedro (a) ub.edu> 
 // Contributors: Rodrigo Sampaio, Lukáš Mašek, Louis-Philippe Huberdau, Sylvie Greverend
