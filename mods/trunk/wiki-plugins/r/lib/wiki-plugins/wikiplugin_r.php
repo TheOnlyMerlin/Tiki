@@ -1,10 +1,10 @@
 <?php
-// $Id$
 // Parses R code (r-project.org) and shows the output in a wiki page.
 // Corresponding author: Xavier de Pedro. <xavier.depedro (a) ub.edu> 
 // Contributors: Rodrigo Sampaio, Lukáš Mašek, Louis-Philippe Huberdau, Sylvie Greverend
 // Usage:
-// {R(attId=>attId,type=>csv|xml)}R code{R} 
+// {R()}R code{R}. See documentation: http://doc.tiki.org/PluginR 
+//	
 // $Id$
 /* 
 
