@@ -1,7 +1,8 @@
 /* $Id$
 	MilkyWay stylesheet (milkyway.css) for Tiki Wiki CMS Groupware.
 	This is an implementation of the GPL Joomla theme by Rhuk.
-	
+	This stylesheet and related files are for use with Tiki 5.x.
+*/	
 /* Import foundation CSS files. */
 @import url("layout/layout.css");
 @import url("layout/design.css");
