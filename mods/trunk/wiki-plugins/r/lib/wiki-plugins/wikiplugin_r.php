@@ -397,6 +397,7 @@ function checkCommands ($input) {
         	'xedit', 'xemacs', 'xfig', 'zip.file.extract',
         	'readdataSK',
         	'png', 'jpeg',
+        	'get', 'rgl.init', # Suggested by Carlos J. Gil Bellosta , and Miguel Angel Rodriguez Muinos from list r-help-es
         	'call', 'eval' );     # added by suggestion of M. Cassin 
 	# 'pdf',
 	$found = array();
