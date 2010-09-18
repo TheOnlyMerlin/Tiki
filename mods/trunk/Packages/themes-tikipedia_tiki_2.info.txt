@@ -18,7 +18,6 @@ themes/tikipedia_tiki_2/styles/tikipedia/index.php styles/tikipedia/index.php
 themes/tikipedia_tiki_2/styles/tikipedia/logo.png styles/tikipedia/logo.png
 themes/tikipedia_tiki_2/styles/tikipedia/logo-indexed.gif styles/tikipedia/logo-indexed.gif
 themes/tikipedia_tiki_2/styles/tikipedia/user.gif styles/tikipedia/user.gif
-
 themes/tikipedia_tiki_2/templates/styles/tikipedia/credits.tpl templates/styles/tikipedia/credits.tpl
 themes/tikipedia_tiki_2/templates/styles/tikipedia/header.tpl templates/styles/tikipedia/header.tpl
 themes/tikipedia_tiki_2/templates/styles/tikipedia/index.php templates/styles/tikipedia/index.php
