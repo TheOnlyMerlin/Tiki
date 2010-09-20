@@ -99,6 +99,7 @@ $smarty->assign('referer', $_REQUEST['referer']);
 
 $section = $_REQUEST['type'];
 include_once ('tiki-section_options.php');
+include_once("textareasize.php");
 ask_ticket('edit-wiki-section');
 $smarty->assign('mid', 'tiki-edit_wiki_section.tpl');
 $smarty->display("tiki.tpl");

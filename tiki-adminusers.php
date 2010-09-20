@@ -486,6 +486,7 @@ if (isset($_REQUEST["user"]) and $_REQUEST["user"]) {
 	// If login is e-mail, email field needs to be the same as name (and is generally not send)
 	if ($prefs['login_is_email'] == 'y' && isset($_POST['name'])) $_POST['email'] = $_POST['name'];
 	if (isset($_POST["edituser"]) and isset($_POST['name']) and isset($_POST['email'])) {
+		//var_dump($_POST);die;
 		if (!empty($_POST['name'])) {
 			if ($userinfo['login'] != $_POST['name'] && $userinfo['login'] != 'admin') {
 				if ($userlib->user_exists($_POST['name'])) {
@@ -530,8 +531,7 @@ if (isset($_REQUEST["user"]) and $_REQUEST["user"]) {
 					$smarty->display("error.tpl");
 					die;
 				}
-				$pass_first_login = (isset($_REQUEST['pass_first_login']) && $_REQUEST['pass_first_login'] == 'on');
-				if ($userlib->change_user_password($userinfo['login'], $newPass, $pass_first_login)) {
+				if ($userlib->change_user_password($userinfo['login'], $newPass)) {
 					$tikifeedback[] = array(
 						'num' => 0,
 						'mes' => sprintf(tra("%s modified successfully.") , tra("password"))

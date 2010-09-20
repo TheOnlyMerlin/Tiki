@@ -603,22 +603,19 @@ a.flip:hover {
 	color: #225566;
 }
 
-.tellafriend,
-.share {
+.tellafriend {
 	font-size: 80%;
 	text-align: right;
 	margin-right: 1em;
 	margin: 3px 1em -1px 3px;
 }
 
-.tellafriend a,
-.share a {
+.tellafriend a {
 	text-decoration: none;
 	color: #a9b8c2;
 }
 
-.tellafriend a:hover,
-.share a:hover {
+.tellafriend a:hover {
 	color: #225566;
 }
 
@@ -1556,7 +1553,7 @@ body.tiki_blogs .post .postbody {
 	border: 1px solid #8cacbb;
 	color: #000;
 	font-size: 0.95em;
-	padding: 0;
+	padding: 10px;
 	margin: 5px 0;
 }
 
@@ -1643,7 +1640,6 @@ body.tiki_blogs .postfooter .actions {
 	width: 100% !important;
 }
 
-.tiki_blogs .post div.author_info,
 .post .author {
 	float: left;
 	text-align: left;

@@ -15,7 +15,6 @@ class HeaderLib
 	var $title;
 	var $jsfiles;
 	var $js;
-	var $js_config;
 	var $jq_onready;
 	var $cssfiles;
 	var $css;
@@ -27,7 +26,6 @@ class HeaderLib
 		$this->title = '';
 		$this->jsfiles = array();
 		$this->js = array();
-		$this->js_config = array();
 		$this->jq_onready = array();
 		$this->cssfiles = array();
 		$this->css = array();
@@ -56,17 +54,6 @@ class HeaderLib
 		}
 	}
 
-	function add_js_config($script,$rank=0) {
-		if (empty($this->js_config[$rank]) or !in_array($script,$this->js_config[$rank])) {
-			$this->js_config[$rank][] = $script;
-		}
-		if ($this->hasDoneOutput) {	// if called after smarty parse header.tpl return the script so the caller can do something with it
-			return $this->wrap_js($script);
-		} else {
-			return '';
-		}
-	}
-
 	function add_js($script,$rank=0) {
 		if (empty($this->js[$rank]) or !in_array($script,$this->js[$rank])) {
 			$this->js[$rank][] = $script;
@@ -79,7 +66,7 @@ class HeaderLib
 	}
 
 	/**
-	 * Adds lines or blocks of JQuery JavaScript to $(document).ready handler
+	 * Adds lines or blocks of JQuery JavaScript to $jq(document).ready handler
 	 * @param $script = Script to execute
 	 * @param $rank   = Execution order (default=0)
 	 * @return nothing
@@ -89,7 +76,7 @@ class HeaderLib
 			$this->jq_onready[$rank][] = $script;
 		}
 		if ($this->hasDoneOutput) {	// if called after smarty parse header.tpl return the script so the caller can do something with it
-			return $this->wrap_js("\$(document).ready(function(){".$script."});\n");
+			return $this->wrap_js("\$jq(document).ready(function(){".$script."});\n");
 		} else {
 			return '';
 		}
@@ -250,32 +237,22 @@ class HeaderLib
 		global $tikidomainslash;
 		$hash = md5( serialize( $this->jsfiles ) );
 		$file = 'temp/public/'.$tikidomainslash."minified_$hash.js";
-		$minified_files = array();
 
 		if( ! file_exists( $file ) ) {
+			$complete = $this->getJavascript();
+
 			require_once 'lib/minify/JSMin.php';
 			$minified = '/* ' . print_r( $this->jsfiles, true ) . ' */';
-			foreach( $this->jsfiles as $x => $files ) {
-				foreach( $files as $f ) {
-					$content = file_get_contents( $f );
-					if ( ! preg_match('/min\.js$/', $f) and $x !== 'minified') {
-						$minified .= JSMin::minify( $content );
-					} else {
-						//$minified_files[] = $f;
-						$minified .= "\n// skipping minification for $f \n" . $content;
-					}
-				}
-			}
+			$minified .= JSMin::minify( $complete );
 
 			file_put_contents( $file, $minified );
 			chmod($file, 0644);
 		}
 
-		$minified_files[] = $file;
 		return array(
 			'external' => array(),
 			'dynamic' => array(),
-			$minified_files,
+			array( $file ),
 		);
 	}
 
@@ -291,27 +268,6 @@ class HeaderLib
 		return $content;
 	}
 
-	function output_js_config($wrap = true) {
-		if (count($this->js_config)) {
-			ksort($this->js_config);
-			$back = "\n<!-- js_config before loading JSfile -->\n";
-			$b = "";
-			foreach ($this->js_config as $x=>$js) {
-        $b.= "// js $x \n";
-        foreach ($js as $j) {
-          $b.= "$j\n";
-        }
-      }
-      if ( $wrap === true ) {
-        $back .= $this->wrap_js($b);
-      } else {
-        $back .= $b;
-      }
-    }
-
-		return $back;
-
-	}
 	function output_js($wrap = true) {	// called in tiki.tpl - JS output at end of file now (pre 5.0)
 		global $prefs;
 
@@ -336,7 +292,7 @@ class HeaderLib
 		}
 
 		if (count($this->jq_onready)) {
-			$b = '$(document).ready(function(){'."\n";
+			$b = '$jq(document).ready(function(){'."\n";
 			foreach ($this->jq_onready as $x=>$js) {
 				$b.= "// jq_onready $x \n";
 				foreach ($js as $j) {
@@ -373,7 +329,7 @@ class HeaderLib
 			}
 		}
 		if (count($this->jq_onready)) {
-			$b = '$(document).ready(function(){'."\n";
+			$b = '$jq(document).ready(function(){'."\n";
 			foreach ($this->jq_onready as $x=>$js) {
 				$b.= "// jq_onready $x \n";
 				foreach ($js as $j) {
@@ -449,16 +405,6 @@ class HeaderLib
 		return $js_script;
 	}
 	
-	public function get_all_css_content() {
-		$files = $this->collect_css_files();
-		$minified = '';
-		foreach( $files['screen'] as $file) {
-			$minified .= $this->minify_css( $file );
-		}
-		$minified = $this->handle_css_imports( $minified );
-
-		return $minified;
-	}
 
 	private function output_css_files() {
 		$files = $this->collect_css_files();
@@ -474,6 +420,8 @@ class HeaderLib
 		$back = '';
 
 		if( $prefs['tiki_minify_css'] == 'y' ) {
+			require_once 'lib/pear/Minify/CSS.php';
+
 			if( $prefs['tiki_minify_css_single_file'] == 'y' ) {
 				$files = $this->get_minified_css_single( $files );
 			} else {
@@ -500,7 +448,7 @@ class HeaderLib
 
 			if( ! file_exists( $min ) ) {
 				file_put_contents( $min, $this->minify_css( $file ) );
-				chmod($min, 0644);
+			chmod($min, 0644);
 			}
 
 			$out[] = $min;
@@ -550,7 +498,6 @@ class HeaderLib
 
 	private function minify_css( $file ) {
 		global $tikipath, $tikiroot;
-		require_once 'lib/pear/Minify/CSS.php';
 		if (strpos($file, $tikiroot) === 0) {
 			$file = substr( $file, strlen( $tikiroot ) );
 		}

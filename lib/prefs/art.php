@@ -6,25 +6,7 @@
 // $Id$
 
 function prefs_art_list() {
-	$article_sort_orders = array(
-		'publishDate_desc' => tra('Newest first'),
-	);
-
-	global $prefslib;
-	$advanced_columns = $prefslib->getExtraSortColumns();
-
-	foreach( $advanced_columns as $key => $label ) {
-		$article_sort_orders[ $key . '_asc' ] = $label . ' ' . tr('ascending');
-		$article_sort_orders[ $key . '_desc' ] = $label . ' ' . tr('descending');
-	}
-
 	return array(
-		'art_sort_mode' => array(
-			'name' => tra('Article ordering'),
-			'description' => tra('Default sort mode for the articles on the article listing'),
-			'type' => 'list',
-			'options' => $article_sort_orders,
-		),
 		'art_home_title' => array(
 			'name' => tra('Title of articles home page'),
 			'type' => 'list',
@@ -93,26 +75,5 @@ function prefs_art_list() {
 			'name' => tra('Id'),
 			'type' => 'flag',
 		),
-		'art_trailer_pos' => array(
-			'name' => tra('Trailer position'),
-			'description' => tra('Trailer position'),
-			'type' => 'list',
-			'options' => array(
-				'top' => tra('Top'),
-				'between' => tra('Between heading and body'),
-			),
-			'default' => 'top'
-		),
-		'art_header_text_pos' => array(
-			'name' => tra('Header text position'),
-			'description' => tra('Header text position'). tra('Requires a smaller image for list view'),
-			'type' => 'list',
-			'options' => array(
-				'next' => tra('Next image'),
-				'below' => tra('Below image'),
-			),
-			'default' => 'next'
-		),
-
 	);
 }

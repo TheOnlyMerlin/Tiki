@@ -21,17 +21,17 @@ function smarty_block_popup_link($params, $content, &$smarty, $repeat) {
 	if ( $repeat === false ) {
 		if ($prefs['feature_jquery'] == 'y') {
 			$headerlib->add_js( <<<JS
-\$(document).ready( function() {
+\$jq(document).ready( function() {
 
-	\$('#$block').hide();
+	\$jq('#$block').hide();
 
-	\$('#$linkId').click( function() {
-		var block = \$('#$block');
+	\$jq('#$linkId').click( function() {
+		var block = \$jq('#$block');
 		if( block.css('display') == 'none' ) {
-			//var coord = \$(this).offset();
+			//var coord = \$jq(this).offset();
 			block.css( 'position', 'absolute' );
 			//block.css( 'left', coord.left);
-			//block.css( 'top', coord.top + \$(this).height() );
+			//block.css( 'top', coord.top + \$jq(this).height() );
 			show( '$block' );
 		} else {
 			hide( '$block' );

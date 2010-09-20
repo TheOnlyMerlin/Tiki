@@ -7,10 +7,12 @@
 	</head>
 	<body{html_body_attributes}>
 		<ul class="jumplinks" style="position:absolute;top:-9000px;left:-9000px;z-index:9;">
-			<li><a href="#tiki-center" title="{tr}Jump to Content{/tr}">{tr}Jump to Content{/tr}</a></li>
+			<li><a href="#tiki-center">{tr}Jump to Content{/tr}</a></li>
 		</ul>
 
-{if $prefs.feature_fullscreen eq 'y' and empty($filegals_manager)  and $print_page ne 'y'}
+{if $prefs.feature_community_mouseover eq 'y'}		{popup_init src="lib/overlib.js"}{/if}
+
+{if $prefs.feature_fullscreen eq 'y' and isset($filegals_manager) and $filegals_manager eq '' and $print_page ne 'y'}
 	{if $smarty.session.fullscreen eq 'n'}
 		{self_link fullscreen="y" _class="fullscreenbutton" _ajax='n' _icon=application_get _title="{tr}Fullscreen{/tr}"}{/self_link}
 	{else}
@@ -53,12 +55,12 @@
 							<div class="clearfix" id="showhide_columns">
 		{if  $prefs.feature_left_column eq 'fixed' or ($prefs.feature_left_column eq 'user' && $left_modules|@count > 0 && $show_columns.left_modules ne 'n')}
 								<div style="text-align:left;float:left;">
-									<a class="flip" title="{tr}Show/Hide Left Column{/tr}" href="#" onclick="toggleCols('col2','left'); return false">{icon _name=oleftcol _id="oleftcol" class="colflip" alt="[{tr}Show/Hide Left Column{/tr}]"}</a>
+									<a class="flip" href="#" onclick="toggleCols('col2','left'); return false">{icon _name=oleftcol _id="oleftcol" class="colflip" alt="[{tr}Show/Hide Left Column{/tr}]"}</a>
 								</div>
 		{/if}
 		{if  $prefs.feature_right_column eq 'fixed' or ($prefs.feature_right_column eq 'user'&& $right_modules|@count > 0 && $show_columns.right_modules ne 'n')}
 								<div class="clearfix" style="text-align:right;float:right">
-									<a class="flip" title="{tr}Show/Hide Right Column{/tr}" href="#" onclick="toggleCols('col3','right'); return false">{icon _name=orightcol _id="orightcol" class="colflip" alt="[{tr}Show/Hide Right Column{/tr}]"}</a>
+									<a class="flip" href="#" onclick="toggleCols('col3','right'); return false">{icon _name=orightcol _id="orightcol" class="colflip" alt="[{tr}Show/Hide Right Column{/tr}]"}</a>
 								</div>
 		{/if}
 								<br style="clear:both" />
@@ -66,14 +68,9 @@
 	{/if}
 {/if}
 
-{if $prefs.feature_share eq 'y' && $tiki_p_share eq 'y' and (!isset($edit_page) or $edit_page ne 'y' and $prefs.feature_site_send_link ne 'y')}
-							<div class="share">
-								<a title="{tr}Share this page{/tr}" href="tiki-share.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{tr}Share this page{/tr}</a>
-							</div>
-{/if}
 {if $prefs.feature_tell_a_friend eq 'y' && $tiki_p_tell_a_friend eq 'y' and (!isset($edit_page) or $edit_page ne 'y' and $prefs.feature_site_send_link ne 'y')}
 							<div class="tellafriend">
-								<a title="{tr}Email this page{/tr}" href="tiki-tell_a_friend.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{tr}Email this page{/tr}</a>
+								<a href="tiki-tell_a_friend.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{tr}Email this page{/tr}</a>
 							</div>
 {/if}
 
@@ -112,14 +109,13 @@
 					<h2 class="hidden">Sidebar</h2>
 					<div class="content">
 		{if $module_pref_errors}
-			{remarksbox type="warning" title="{tr}Module errors{/tr}"}
+			{remarksbox  type="warning" title="{tr}Module errors{/tr}"}
 				{tr}The following modules could not be loaded{/tr}
 				<p>
 				{foreach from=$module_pref_errors key=index item=pref_error}
-					<b>{$pref_error.mod_name}:</b><br />
-					{tr}Preference was not set:{/tr} '{$pref_error.pref_name}'<br />
+					<b>{$pref_error.mod_name}:</b><br>
+					{tr}Preference was not set{/tr}: '{$pref_error.pref_name}'<br>
 				{/foreach}
-				</p>
 			{/remarksbox}
 		{/if}
 		{section name=homeix loop=$right_modules}
@@ -156,7 +152,6 @@
 		{interactivetranslation}
 <!-- Put JS at the end -->
 {if $headerlib}
-	{$headerlib->output_js_config()}
 	{$headerlib->output_js_files()}
 	{$headerlib->output_js()}
 {/if}

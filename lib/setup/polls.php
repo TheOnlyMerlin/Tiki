@@ -14,14 +14,13 @@ if ( isset($_REQUEST['pollVote']) && !empty($_REQUEST['polls_pollId']) ) {
 		$ok = false;
 		$smarty->assign('msg_poll', tra('You must choose an option'));
 	} elseif ( $tiki_p_vote_poll == 'y' && ($prefs['feature_poll_anonymous'] == 'y' || $user || $prefs['feature_antibot'] == 'y')) {
-		global $captchalib; require_once('lib/captcha/captchalib.php');
 		if (empty($user) && empty($_COOKIE)) {
 			$ok = false;
 			$smarty->assign('msg_poll', tra('For you to vote, cookies must be allowed'));
 			$smarty->assign_by_ref('polls_optionId', $_REQUEST['polls_optionId']);
-		} elseif (($prefs['feature_antibot'] == 'y' && empty($user)) && (!$captchalib->validate())) {
+		} elseif (($prefs['feature_antibot'] == 'y' && empty($user)) && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $_REQUEST['antibotcode'])) {
 			$ok = false;
-			$smarty->assign('msg_poll', $captchalib->getErrors());
+			$smarty->assign('msg_poll', tra('You have mistyped the anti-bot verification code; please try again.'));
 			$smarty->assign_by_ref('polls_optionId', $_REQUEST['polls_optionId']);
 		} else {
 			global $polllib; include_once('lib/polls/polllib_shared.php');

@@ -26,9 +26,9 @@
 {/if}
 {if $user and $prefs.feature_user_watches eq 'y'}
  {if $user_watching_map[user] eq 'n'}
-  	<a href="tiki-map_edit.php?watch_event=map_changed&amp;watch_object={$files[user]}&amp;watch_action=add" class="icon"><img class="icon" alt="{tr}monitor this map{/tr}" title="{tr}monitor this map{/tr}" src='pics/icons/eye.png' width='16' height='16' /></a>
+  	<a href="tiki-map_edit.php?watch_event=map_changed&amp;watch_object={$files[user]}&amp;watch_action=add" class="icon"><img class="icon" alt='{tr}monitor this map{/tr}' title='{tr}monitor this map{/tr}' src='pics/icons/eye.png' width='16' height='16' /></a>
 	{else}
-		<a class="icon" href="tiki-map_edit.php?watch_event=map_changed&amp;watch_object={$files[user]}&amp;watch_action=remove"><img class="icon" alt="{tr}Stop Monitoring this Map{/tr}" title="{tr}Stop Monitoring this Map{/tr}" src='pics/icons/no_eye.png' width='16' height='16' /></a>
+		<a class="icon" href="tiki-map_edit.php?watch_event=map_changed&amp;watch_object={$files[user]}&amp;watch_action=remove"><img class="icon" alt='{tr}Stop Monitoring this Map{/tr}' title='{tr}Stop Monitoring this Map{/tr}' src='pics/icons/no_eye.png' width='16' height='16' /></a>
 	{/if}
 {/if}
 </td>
@@ -52,9 +52,9 @@
 {/if}
 {if $user and $prefs.feature_user_watches eq 'y'}
  {if $user_watching_map[user] eq 'n'}
-  	<a class="icon" href="tiki-map_edit.php?watch_event=map_changed&amp;watch_object={$files[user]}&amp;watch_action=add"><img  class="icon" alt="{tr}monitor this map{/tr}" title="{tr}monitor this map{/tr}" src='pics/icons/eye.png' width='16' height='16' /></a>
+  	<a class="icon" href="tiki-map_edit.php?watch_event=map_changed&amp;watch_object={$files[user]}&amp;watch_action=add"><img  class="icon" alt='{tr}monitor this map{/tr}' title='{tr}monitor this map{/tr}' src='pics/icons/eye.png' width='16' height='16' /></a>
 	{else}
-		<a class="icon" href="tiki-map_edit.php?watch_event=map_changed&amp;watch_object={$files[user]}&amp;watch_action=remove"><img  class="icon" alt="{tr}Stop Monitoring this Map{/tr}" title="{tr}Stop Monitoring this Map{/tr}" src='pics/icons/no_eye.png' width='16' height='16' /></a>
+		<a class="icon" href="tiki-map_edit.php?watch_event=map_changed&amp;watch_object={$files[user]}&amp;watch_action=remove"><img  class="icon" alt='{tr}Stop Monitoring this Map{/tr}' title='{tr}Stop Monitoring this Map{/tr}' src='pics/icons/no_eye.png' width='16' height='16' /></a>
 	{/if}
 {/if}	
 </td>
@@ -80,6 +80,7 @@
 {if $mode eq 'editing'}
 <a class="link" href="tiki-map_edit.php">{tr}Mapfile listing{/tr}</a><br /><br />
 <form enctype="multipart/form-data" action="tiki-map_edit.php" method="post" id='editpageform'>
+{assign var=area_name value="mapdata"}
 <a class="link" href="tiki-map_edit.php?mapfile={$mapfile}&mode=editing">{tr}Reload{/tr}</a>&nbsp;&nbsp;
 <a class="link" href="tiki-map_history.php?mapfile={$mapfile}">{tr}History{/tr}</a><br />
 
@@ -88,7 +89,7 @@
 <td>
 <div id='edit-zone'>
 	<div id='textarea-toolbar' style='padding:3px; font-size:10px;'>
-		{toolbars area_id='mapdata'}
+		{toolbars area_name='mapdata'}
 	</div>
 	<textarea id='mapdata' class='wikiedit' name='pagedata' rows='{$rows}' wrap='virtual' cols='{$cols}' style='width:99%'>{$pagedata|escape}</textarea>
 	<input type="hidden" name="rows" value="{$rows}"/>

@@ -66,8 +66,8 @@
 				<input type="checkbox" id="propagate_category" name="propagate_category" value="1"/>
 				<label for="propagate_category">{tr}Assign or remove permissions on <em>all</em> child categories{/tr}</label>
 			</p>
-			{jq}$("input[name='assign'],input[name='remove']").click(function(){
-if ($("#propagate_category").attr("checked")) {
+			{jq}$jq("input[name='assign'],input[name='remove']").click(function(){
+if ($jq("#propagate_category").attr("checked")) {
 	return confirm("{tr}Are you sure you want to effect all child categories?\nThere is no undo.{/tr}");
 } }); {/jq}
 		{/if}
@@ -75,15 +75,15 @@ if ($("#propagate_category").attr("checked")) {
 		{if ($objectType eq 'wiki' or $objectType eq 'wiki page') and !empty($inStructure)}
 			<input name="assignstructure" id="assignstructure" type="checkbox" />
 			<label for="assignstructure">{tr}Assign or remove permissions on all pages of the sub-structure{/tr}</label>
-			{jq}$("input[name='assign'],input[name='remove']").click(function(){
-if ($("#assignstructure").attr("checked")) {
+			{jq}$jq("input[name='assign'],input[name='remove']").click(function(){
+if ($jq("#assignstructure").attr("checked")) {
 	return confirm("{tr}Are you sure you want to effect all pages in this sub-structure?\nThere is no undo.{/tr}");
 } }); {/jq}
 		{/if}
 		
 		<h3>{tr}Permissions{/tr}</h3>
 
-		{treetable _data=$perms _checkbox=$permGroups _checkboxTitles=$groupNames _checkboxColumnIndex=$permGroupCols _valueColumnIndex="permName" _columns="\"label\"=\"{tr}Permission{/tr}\"" _sortColumn='type' _openall='y' _showSelected='y' _columnsContainHtml='y'}
+		{treetable _data=$perms _checkbox=$permGroups _checkboxTitles=$groupNames _checkboxColumnIndex=$permGroupCols _valueColumnIndex="permName" _columns="\"label\"=\"{tr}Permission{/tr}\"" _sortColumn='type' _openall='y' _columnsContainHtml='y'}
 
 		<div class="input_submit_container" style="text-align: center">
 			<input type="submit" name="assign" value="{tr}Assign{/tr}" />
@@ -111,11 +111,6 @@ if ($("#assignstructure").attr("checked")) {
 				{remarksbox type="warning" title="{tr}Note{/tr}"}
 					{tr}These groups are not the groups that have permissions on the object. It is only the groups you can see in the columns of the first tab.{/tr}
 				{/remarksbox}
-			{/if}
-			{if $objectId}
-			<div class=navbar">
-				 <input type="submit" name="used_groups" value="{tr}Select only groups that have a perm with the object{/tr}" />
-			</div>
 			{/if}
 
 			<h2>{tr}Groups{/tr}</h2>

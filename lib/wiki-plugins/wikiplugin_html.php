@@ -29,11 +29,7 @@ function wikiplugin_html_info() {
 			'wiki' => array(
 				'required' => false,
 				'name' => tra('Wiki syntax'),
-				'description' => tra('Parse wiki syntax within the html code.'),
-				'options' => array(
-					array('text' => tra('No'), 'value' => '0'),
-					array('text' => tra('Yes'), 'value' => '1'),
-				),
+				'description' => tra('0|1, parse wiki syntax within the html code.'),
 				'filter' => 'int',
 			),
 		),

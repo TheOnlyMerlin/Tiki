@@ -118,7 +118,7 @@ if ( $re === false ) {
 
 if ( $dbversion_tiki == '1.10' ) $dbversion_tiki = '2.0';
 
-require_once 'lib/core/TikiDb/ErrorHandler.php';
+require_once 'lib/core/lib/TikiDb/ErrorHandler.php';
 class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 {
 	function handle( TikiDb $db, $query, $values, $result ) // {{{
@@ -158,7 +158,7 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 
 			require_once('tiki-setup.php');
 			if ( ! $smarty ) {
-				require_once 'lib/init/smarty.php';
+				require_once 'setup_smarty.php';
 			}
 
 			$smarty->assign( 'msg', $msg );
@@ -170,7 +170,7 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 
 			header("Cache-Control: no-cache, pre-check=0, post-check=0");
 
-			if ($prefs['ajax_xajax'] === 'y') {
+			if ($prefs['feature_ajax'] == 'y') {
 				global $ajaxlib;
 				include_once('lib/ajax/xajax/xajax_core/xajaxAIO.inc.php');
 				if ($ajaxlib && $ajaxlib->canProcessRequest()) {
@@ -220,7 +220,7 @@ if( isset( $shadow_host, $shadow_user, $shadow_pass, $shadow_dbs ) ) {
 	$dbSlave = TikiDb::get();
 	init_connection( $dbSlave );
 
-	require_once 'lib/core/TikiDb/MasterSlaveDispatch.php';
+	require_once 'lib/core/lib/TikiDb/MasterSlaveDispatch.php';
 	$db = new TikiDb_MasterSlaveDispatch( $dbMaster, $dbSlave );
 	TikiDb::set( $db );
 }

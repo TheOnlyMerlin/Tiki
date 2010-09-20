@@ -10,7 +10,7 @@ require_once ('lib/tikilib.php');
 require_once ('lib/imagegals/imagegallib.php');
 require_once ('lib/rss/rsslib.php');
 
-if ($prefs['feed_image_gallery'] != 'y') {
+if ($prefs['rss_image_gallery'] != 'y') {
         $errmsg=tra("rss feed disabled");
         require_once ('tiki-rss_error.php');
 }
@@ -34,8 +34,8 @@ $output = $rsslib->get_from_cache($uniqueid);
 
 if ($output["data"]=="EMPTY") {
 	$tmp = $imagegallib->get_gallery($_REQUEST["galleryId"]);
-	$title = $prefs['feed_image_gallery_title'].$tmp["name"];
-	$desc = $prefs['feed_image_gallery_desc'] . $tmp["description"];
+	$title = tra("Tiki RSS feed for the image gallery: ").$tmp["name"];
+	$desc = $tmp["description"]; // TODO: make configurable
 	$id = "imageId";
 	$titleId = "name";
 	$descId = "description";
@@ -43,7 +43,12 @@ if ($output["data"]=="EMPTY") {
 	$dateId = "created";
 	$readrepl = "tiki-browse_image.php?imageId=%s";
 	
-	$changes = $imagegallib->get_images( 0,$prefs['feed_image_gallery_max'],$dateId.'_desc', '', $_REQUEST["galleryId"]);
+        $tmp = $prefs['title_rss_'.$feed];
+        if ($tmp<>'') $title = $tmp;
+        $tmp = $prefs['desc_rss_'.$feed];
+        if ($desc<>'') $desc = $tmp;
+	
+	$changes = $imagegallib->get_images( 0,$prefs['max_rss_image_gallery'],$dateId.'_desc', '', $_REQUEST["galleryId"]);
 	$output = $rsslib->generate_feed($feed, $uniqueid, '', $changes, $readrepl, '', $id, $title, $titleId, $desc, $descId, $dateId, $authorId);
 }
 header("Content-type: ".$output["content-type"]);

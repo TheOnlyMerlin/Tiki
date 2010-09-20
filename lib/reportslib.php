@@ -79,7 +79,7 @@ class reportsLib extends TikiLib
 	}
 	
 	public function makeHtmlEmailBody($report_cache, $report_preferences, $tikiUrl) {
-		global $tikilib, $userlib;		
+		global $tikilib;		
 		$change_array = $this->makeChangeArray($report_cache);
 		$somethingHasHappened = false;
 
@@ -112,8 +112,6 @@ class reportsLib extends TikiLib
 				}
 
 				$body .= $this->makeTime(strtotime($change['time'])).": ";
-				$change['data']['user'] = $userlib->clean_user($change['data']['user']);
-				
 				if ($change['event']=='image_gallery_changed' && empty($change['data']['action'])) {
 					$body .= $change['data']['user']." ".tra("changed the picture gallery")." <a href=\"$tikiUrl/tiki-browse_gallery.php?galleryId=".$change['data']['galleryId']."&offset=0&sort_mode=created_desc\">".$change['data']['galleryName']."</a>.";
 				} elseif ($change['event']=='image_gallery_changed' && $change['data']['action']=="upload image") {
@@ -156,7 +154,7 @@ class reportsLib extends TikiLib
 					$body .= "<u>".$change['data']['user']."</u> ".tra("created the topic")." <a href=\"$tikiUrl/tiki-view_forum_thread.php?comments_parentId=".$change['data']['topicId']."&forumId=".$change['data']['forumId']."\">".$change['data']['threadName']."</a> ".tra("at forum")." <a href=\"$tikiUrl/tiki-view_forum.php?forumId=".$change['data']['forumId']."\">".$change['data']['forumName']."</a>.";
 				} elseif ($change['event']=="forum_post_thread") {
 					global $dbTiki;
-					include_once ("lib/comments/commentslib.php");
+					include_once ("lib/commentslib.php");
 					$commentslib = new Comments($dbTiki);
 					$parent_topic = $commentslib->get_comment($change['data']['topicId']);
 					

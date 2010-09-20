@@ -7,8 +7,8 @@
 
 function wikiplugin_profile_info() {
 	return array(
-		'name' => tra('Profile application'),
-		'description' => tra('Adds controls required to apply a profile.'),
+		'name' => tra('Profile Installer'),
+		'description' => tra('Adds controls required to install a profile.'),
 		'prefs' => array( 'wikiplugin_profile' ),
 		'validate' => 'all',
 		'inline' => true,
@@ -16,7 +16,7 @@ function wikiplugin_profile_info() {
 			'domain' => array(
 				'required' => false,
 				'name' => tra('Domain'),
-				'description' => tra('Profile repository domain. Default value is profiles.tiki.org'),
+				'description' => tra('Profile repository domain. Default value is profiles.tikiwiki.org'),
 			),
 			'name' => array(
 				'required' => true,
@@ -38,7 +38,7 @@ function wikiplugin_profile( $data, $params ) {
 	}
 
 	$params = array_merge( array(
-		'domain' => 'profiles.tiki.org',
+		'domain' => 'profiles.tikiwiki.org',
 	), $params );
 
 	if( !isset( $params['name'] ) ) {

@@ -39,7 +39,6 @@ function wikiplugin_img_info() {
 				'name' => tra('Gallery ID'),
 				'description' => tra('Numeric ID of a File Gallery. Displays a random image from that gallery.'),
 				'filter' => 'int',
-				'advanced' => true,
 			),
 			'attId' => array(
 				'required' => false,
@@ -88,14 +87,12 @@ function wikiplugin_img_info() {
 				'name' => tra('Link relation'),
 				'filter' => 'striptags',
 				'description' => tra('Enter "box" for colorbox effect (like shadowbox and lightbox) or appropriate syntax for link relation.'),
-				'advanced' => true,
 			),
 			'usemap' => array(
 				'required' => false,
 				'name' => tra('Image map'),
 				'filter' => 'striptags',
 				'description' => tra('Name of the image map to use for the image.'),
-				'advanced' => true,
 			),
 			'height' => array(
 				'required' => false,
@@ -120,7 +117,6 @@ function wikiplugin_img_info() {
 				'name' => tra('Align image'),
 				'description' => tra('Aligns the image itself. If the image is inside a box (because of other settings), use the align parameter to align the box.'),
 				'filter' => 'alpha',
-				'advanced' => true,
 				'options' => array(
 					array('text' => tra('None'), 'value' => ''), 
 					array('text' => tra('Right'), 'value' => 'right'), 
@@ -133,14 +129,12 @@ function wikiplugin_img_info() {
 				'name' => tra('Image style'),
 				'description' => tra('Enter "border" to place a dark gray border around the image. Otherwise enter CSS styling syntax for other style effects.'),
 				'filter' => 'striptags',
-				'advanced' => true,
 			),
 			'align' => array(
 				'required' => false,
 				'name' => tra('Align image block'),
 				'description' => tra('Aligns the box containing the image.'),
 				'filter' => 'alpha',
-				'advanced' => true,
 				'options' => array(
 					array('text' => tra('None'), 'value' => ''), 
 					array('text' => tra('Right'), 'value' => 'right'), 
@@ -153,21 +147,18 @@ function wikiplugin_img_info() {
 				'name' => tra('Image block style'),
 				'filter' => 'striptags',
 				'description' => tra('Enter "border" to place a dark gray border frame around the image. Otherwise enter CSS styling syntax for other style effects.'),
-				'advanced' => true,
 			),
 			'styledesc' => array(
 				'required' => false,
 				'name' => tra('Description style'),
 				'filter' => 'striptags',
 				'description' => tra('Enter "right" or "left" to align text accordingly. Otherwise enter CSS styling syntax for other style effects.'),
-				'advanced' => true,
 			),
 			'block' => array(
 				'required' => false,
 				'name' => tra('Wrapping control'),
 				'description' => tra('Control how other items wrap around the image.'),
 				'filter' => 'alpha',
-				'advanced' => true,
 				'options' => array(
 					array('text' => tra('None'), 'value' => ''), 
 					array('text' => tra('Top'), 'value' => 'top'), 
@@ -180,20 +171,18 @@ function wikiplugin_img_info() {
 				'name' => tra('CSS Class'),
 				'filter' => 'striptags',
 				'description' => tra('CSS class to apply to the image.'),
-				'advanced' => true,
 			),
 			'desc' => array(
 				'required' => false,
 				'name' => tra('Caption'),
 				'filter' => 'text',
-				'description' => tra('Image caption. "desc" or "name" or "namedesc" for tiki images, "idesc" or "ititle" for iptc data, otherwise enter your own description.'),
+				'description' => tra('Image caption. "desc" or "name" for tiki images, "idesc" or "ititle" for iptc data, otherwise enter your own description.'),
 			),
 			'title' => array(
 				'required' => false,
 				'name' => tra('Link title'),
 				'filter' => 'text',
-				'description' => tra('Title text. "desc" or "name" or "namedesc", otherwise enter your own title.'),
-				'advanced' => true,
+				'description' => tra('Title text.'),
 			),
 			'alt' => array(
 				'required' => false,
@@ -205,13 +194,11 @@ function wikiplugin_img_info() {
 				'required' => false,
 				'name' => tra('Default config settings'),
 				'description' => tra('Default configuration settings (usually set by admin in the source code or through Plugin Alias).'),
-				'advanced' => true,
 			),
 			'mandatory' => array(
 				'required' => false,
 				'name' => tra('Mandatory admin setting'),
 				'description' => tra('Mandatory configuration settings (usually set by admin in the source code or through Plugin Alias).'),
-				'advanced' => true,
 			),
 		),
 	);
@@ -639,9 +626,6 @@ function wikiplugin_img_info() {
 				$imageObj = new Image($dbinfo['data'], false);
 			} elseif (!empty($dbinfo['path'])) {
 				$imageObj = new Image($basepath . $dbinfo['path'], true);	
-			} elseif (strpos($src,'http://') !== false) {
-				//Image class doesn't seem to work well for external images - no height or width
-				$imagesize = getimagesize($src);
 			} else {
 				$imageObj = new Image($src, true);
 			}
@@ -649,10 +633,10 @@ function wikiplugin_img_info() {
 		//Set the variables for height, width and iptc data
 		$fwidth = '';
 		$fheight = '';
+		//set to null because Image class will place exif_thumbnail dimensions here if thumbnail exists
+		$imageObj->height = NULL;
+		$imageObj->width = NULL;
 		if (is_object($imageObj)) {
-			//set to null first because Image class will place exif_thumbnail dimensions here if thumbnail exists
-			$imageObj->height = NULL;
-			$imageObj->width = NULL;
 			$fwidth = $imageObj->get_width();
 			$fheight = $imageObj->get_height();
 		} else {  
@@ -955,9 +939,6 @@ function wikiplugin_img_info() {
 				case 'ititle':
 					$desconly = $ititle;
 					break;
-				case 'namedesc':
-					$desconly = $imgname.((!empty($imgname) && !empty($desc))?' - ':'').$desc;
-					break;
 				default:
 					$desconly = $imgdata['desc'];
 			}
@@ -968,19 +949,7 @@ function wikiplugin_img_info() {
 		if ( !empty($imgdata['title']) || !empty($desconly)) {
 			$imgtitle = ' title="';
 			if ( !empty($imgdata['title']) ) {
-				switch ($imgdata['title']) {
-				case 'desc':
-					$titleonly = $desc;
-					break;
-				case 'name':
-					$titleonly = $imgname;
-					break;
-				case 'namedesc':
-					$titleonly = $imgname.((!empty($imgname) && !empty($desc))?' - ':'').$desc;
-					break;
-				default:
-					$titleonly = $imgdata['title'];
-				}
+				$titleonly = $imgdata['title'];
 			//use desc setting for title if title is empty
 			} else {										
 				$titleonly = $desconly;
@@ -1110,7 +1079,7 @@ function wikiplugin_img_info() {
 			if (!empty($titleonly)) {
 				$repl .= ' title="' . $titleonly . '"';
 			}
-			$repl .= ">\r\t\t\t\t" . '<img class="magnify" src="./pics/icons/magnifier.png" alt="'.tra('Enlarge').'" /></a>' . "\r\t\t\t</div>";
+			$repl .= ">\r\t\t\t\t" . '<img class="magnify" src="./pics/icons/magnifier.png" alt="Enlarge" /></a>' . "\r\t\t\t</div>";
 		}	
 		//Add description based on user setting (use $desconly from above) and close divs
 		isset($desconly) ? $repl .= $desconly : '';
@@ -1133,7 +1102,7 @@ function wikiplugin_img_info() {
 			if ($imgdata['align'] == 'center') {
 				$alignbox = $center;
 			} else {
-				$alignbox = 'float:' . $imgdata['align'] . '; margin-' . ($imgdata['align'] == 'left'? 'right': 'left') .':5px;';
+				$alignbox = 'float:' . $imgdata['align'] . ';';
 			}
 		}
 		//first set stylebox string if style box is set
@@ -1192,7 +1161,7 @@ function wikiplugin_img_info() {
 	if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'mobile') {
 		$repl = '{img src=' . $src . "\"}\n<p>" . $imgdata['desc'] . '</p>'; 
 	}
-	return '~np~' . $repl. '~/np~';
+	return '~np~'.$repl.'~/np~';
 }
 
 /////////////////////////////////////////Function for getting image data from raw file (no filename)////////////////////////////////

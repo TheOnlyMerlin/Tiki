@@ -74,20 +74,19 @@ class CartLib
 	}
 
 	function request_payment() {
-		global $prefs, $user;
+		global $prefs;
 		global $paymentlib; require_once 'lib/payment/paymentlib.php';
 
 		$total = $this->get_total();
 
 		if( $total > 0 ) {
-			$description = tra('Cart Check-Out') . (empty($user) ? '' : " ($user)" );
-			$invoice = $paymentlib->request_payment( $description, $total, $prefs['payment_default_delay'], $this->get_description() );
+			$invoice = $paymentlib->request_payment( tra('Cart Check-Out'), $total, $prefs['payment_default_delay'], $this->get_description() );
 
 			foreach( $this->get_behaviors() as $behavior ) {
 				$paymentlib->register_behavior( $invoice, $behavior['event'], $behavior['behavior'], $behavior['arguments'] );
 			}
 
-			$this->empty_cart();
+			$_SESSION['cart'] = array();
 
 			return $invoice;
 		}
@@ -95,19 +94,13 @@ class CartLib
 		return 0;
 	}
 
-	function empty_cart() {
-		$_SESSION['cart'] = array();
-	}
-
 	private function get_behaviors() {
 		$behaviors = array();
 
 		foreach( $this->get_content() as $item ) {
-			if( isset( $item['behaviors'] ) ) {
-				foreach( $item['behaviors'] as $behavior ) {
-					for( $i = 0; $item['quantity'] > $i; ++$i ) {
-						$behaviors[] = $behavior;
-					}
+			foreach( $item['behaviors'] as $behavior ) {
+				for( $i = 0; $item['quantity'] > $i; ++$i ) {
+					$behaviors[] = $behavior;
 				}
 			}
 		}

@@ -16,7 +16,7 @@ include_once ('lib/calendar/calrecurrence.php');
 if ($prefs['feature_groupalert'] == 'y') {
 	include_once ('lib/groupalert/groupalertlib.php');
 }
-if ($prefs['ajax_xajax'] == "y") {
+if ($prefs['feature_ajax'] == "y") {
 	require_once ('lib/ajax/ajaxlib.php');
 }
 
@@ -188,8 +188,8 @@ if (isset($save['start']) && isset($save['end'])) {
 
 if (isset($_POST['act'])) {
 	// Check antibot code if anonymous and allowed
-	if (empty($user) && $prefs['feature_antibot'] == 'y' && (!$captchalib->validate())) {
-		$smarty->assign('msg', $captchalib->getErrors());
+	if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $_REQUEST['antibotcode'])) {
+		$smarty->assign('msg', tra("You have mistyped the anti-bot verification code; please try again."));
 		$smarty->assign('errortype', 'no_redirect_login');
 		$smarty->display("error.tpl");
 		die;
@@ -293,22 +293,6 @@ if (isset($_POST['act'])) {
 	}
 }
 
-if (!empty($_REQUEST['viewcalitemId']) && isset($_REQUEST['del_me']) && $tiki_p_calendar_add_my_particip == 'y') {
-	$calendarlib->update_participants($_REQUEST['viewcalitemId'], null, array($user));
-}
-
-if (!empty($_REQUEST['viewcalitemId']) && isset($_REQUEST['add_me']) && $tiki_p_calendar_add_my_particip == 'y') {
-	$calendarlib->update_participants($_REQUEST['viewcalitemId'], array(array('name'=>$user)), null);
-}
-
-if (!empty($_REQUEST['viewcalitemId']) && !empty($_REQUEST['guests']) && isset($_REQUEST['add_guest']) && $tiki_p_calendar_add_guest_particip == 'y') {
-	$guests = preg_split('/ *, */', $_REQUEST['guests']);
-	foreach ($guests as $i=>$guest) {
-		$guests[$i] = array('name'=>$guest);
-	}
-	$calendarlib->update_participants($_REQUEST['viewcalitemId'], $guests);
-}
-
 if (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["calitemId"]) and $tiki_p_change_events == 'y') {
 	// There is no check for valid antibot code if anonymous allowed to delete events since this comes from a JS button at the tpl and bots are not know to use JS
 	$access->check_authenticity();
@@ -347,8 +331,8 @@ if (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["ca
 	die;
 }  elseif (isset($_REQUEST['duplicate']) and $tiki_p_add_events == 'y') {
 	// Check antibot code if anonymous and allowed
-	if (empty($user) && $prefs['feature_antibot'] == 'y' && (!$captchalib->validate())) {
-		$smarty->assign('msg', $captchalib->getErrors());
+	if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $_REQUEST['antibotcode'])) {
+		$smarty->assign('msg', tra("You have mistyped the anti-bot verification code; please try again."));
 		$smarty->assign('errortype', 'no_redirect_login');
 		$smarty->display("error.tpl");
 		die;
@@ -487,6 +471,8 @@ if ($prefs['feature_theme_control'] == 'y') {
 
 $headerlib->add_cssfile('css/calendar.css',20);
 
+include_once("textareasize.php");
+
 $smarty->assign('referer', empty($_SERVER['HTTP_REFERER']) ? 'tiki-calendar.php' : $_SERVER['HTTP_REFERER']);
 $smarty->assign('myurl', 'tiki-calendar_edit_item.php');
 $smarty->assign('id', $id);
@@ -517,7 +503,7 @@ $smarty->assign('calendar', $calendar);
 $smarty->assign('calendarId', $calID);
 if (array_key_exists('CalendarViewGroups',$_SESSION) && count($_SESSION['CalendarViewGroups']) == 1)
 	$smarty->assign('calendarView',$_SESSION['CalendarViewGroups'][0]);
-if ($prefs['ajax_xajax'] == "y") {
+if ($prefs['feature_ajax'] == "y") {
 function edit_calendar_ajax() {
     global $ajaxlib, $xajax;
     $ajaxlib->registerTemplate("tiki-calendar_edit_item.tpl");

@@ -12,7 +12,7 @@ class TWVersion
 	var $branch;		// Development cycle
 	var $version;		// This version
 	private $latestMinorRelease;		// Latest release in the same major version release series
-	var $latestRelease;		// Latest release
+	private $latestRelease;		// Latest release
 	private $isLatestMajorVersion; // Whether or not the current major version is the latest
 	var $releases;		// Array of all releases from website
 	var $star;			// Star being used for this version tree
@@ -23,11 +23,11 @@ class TWVersion
 		//   stable   : Represents stable releases.
 		//   unstable : Represents candidate and test/development releases.
 		//   trunk     : Represents next generation development version.
-		$this->branch 	= 'unstable';
+		$this->branch 	= 'stable';
 
 		// Set everything else, including defaults.
-		$this->version 	= '6.0 SVN';
-		$this->star	= '';
+		$this->version 	= '5.2';
+		$this->star	= 'Vulpeculae';
 		$this->releases	= array();
 
 		// Check for Subversion or not
@@ -110,12 +110,12 @@ class TWVersion
 				'3.4',
 				'3.5',
 				'3.6',
+				'3.7',
 				'4.0beta1',
 				'4.0RC1',
 				'4.0',
 				'4.1',
 				'4.2',
-				'4.3',
 				'5.0alpha',
 				'5.0beta1',
 				'5.0beta2',
@@ -124,6 +124,7 @@ class TWVersion
 				'5.0',
 				'5.1RC1',
 				'5.1',
+				'5.2',
 				);
 	}
 
@@ -151,7 +152,7 @@ class TWVersion
 		$upgrade = 0;
 		$major = 0;
 		$velements = explode('.', $this->version);
-		$body = $tikilib->httprequest("tiki.org/" . $this->branch . '.version'); // .version contains an ordered list of release numbers, one per line. All minor releases from a same major release are grouped.
+		$body = $tikilib->httprequest("tikiwiki.org/" . $this->branch . '.version'); // .version contains an ordered list of release numbers, one per line. All minor releases from a same major release are grouped.
 		$lines = explode("\n", $body);
 		$this->isLatestMajorVersion = true;
 		foreach ($lines as $line) {

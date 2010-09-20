@@ -47,39 +47,25 @@ function wikiplugin_subscribenewsletter($data, $params) {
 	if (empty($info) || $info['allowUserSub'] != 'y') {
 		return tra('Incorrect param');
 	}
-
+	if (empty($user)) {
+		return;
+	}
 	if (!$userlib->user_has_perm_on_object($user, $nlId, 'newsletter', 'tiki_p_subscribe_newsletters')) {
 		return;
 	}
-
-	if ($user) {
-		$alls = $nllib->get_all_subscribers($nlId, false);
-		foreach ($alls as $all) {
-			if ($all['db_email'] == $user)
-				return;
-		}
+	$alls = $nllib->get_all_subscribers($nlId, false);
+	foreach ($alls as $all) {
+		if ($all['db_email'] == $user)
+			return;
 	}
-
 	$wpSubscribe = '';
-	$wpError = '';
-	$subscribeEmail = '';
 	if (isset($_REQUEST['wpSubscribe']) && $_REQUEST['wpNlId'] == $nlId) {
-		if (!$user && empty($_REQUEST['wpEmail'])) {
-			$wpError = tra('Invalid Email');
-		} elseif (!$user && !validate_email($_REQUEST['wpEmail'], $prefs['validateEmail'])) {
-			$wpError = tra('Invalid Email');
-			$subscribeEmail = $_REQUEST['wpEmail'];
-		} elseif (($user && $nllib->newsletter_subscribe($nlId, $user, 'y', 'n'))
-			|| (!$user && $nllib->newsletter_subscribe($nlId, $_REQUEST['wpEmail'], 'n', $info['validateAddr']))) {
+		if ($nllib->newsletter_subscribe($nlId, $user, 'y', 'n')) {
 			$wpSubscribe = 'y';
 			$smarty->assign('subscribeThanks', empty($thanks)?$data: $thanks);
-		} else {
-			$wpError = tra('Already subscribed');
 		}
 	}
 	$smarty->assign_by_ref('wpSubscribe', $wpSubscribe);
-	$smarty->assign_by_ref('wpError', $wpError);
-	$smarty->assign('subscribeEmail', $subscribeEmail);
 	$smarty->assign('subcribeMessage', empty($button)?$data: $button);
 	$smarty->assign_by_ref('subscribeInfo', $info);
 	$res = $smarty->fetch('wiki-plugins/wikiplugin_subscribenewsletter.tpl');

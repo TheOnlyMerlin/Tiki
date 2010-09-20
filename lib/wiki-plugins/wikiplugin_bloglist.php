@@ -91,8 +91,7 @@ function wikiplugin_bloglist($data, $params) {
 	$smarty->assign('container_class', $params['containerClass']);
 	
 	if ($params['simpleList'] == 'y') {
-		global $bloglib; require_once('lib/blogs/bloglib.php');
-		$blogItems = $bloglib->list_posts($params['offset'], $params['Items'], $params['sort_mode'], $params['find'], $params['Id'], $params['author'], '', $dateStartTS, $dateEndTS);
+		$blogItems = $tikilib->list_posts($params['offset'], $params['Items'], $params['sort_mode'], $params['find'], $params['Id'], $params['author'], '', $dateStartTS, $dateEndTS);
 		$smarty->assign_by_ref('blogItems', $blogItems['data']);
 		$template = 'wiki-plugins/wikiplugin_bloglist.tpl';
 	} else {
@@ -108,6 +107,7 @@ function wikiplugin_bloglist($data, $params) {
 			}
 		}
 		$smarty->assign('show_heading', 'n');
+		$smarty->assign('use_title', 'y');	// TODO should be refactored from tiki-view_blog.php into bloglib
 		$smarty->assign('use_author', 'y');
 		$smarty->assign('add_date', 'y');
 		$smarty->assign_by_ref('listpages', $blogItems['data']);

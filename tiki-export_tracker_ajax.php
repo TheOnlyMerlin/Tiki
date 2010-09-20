@@ -43,7 +43,7 @@ $access->check_permission('tiki_p_export_tracker');
 $filters = array();
 if (!empty($_REQUEST['listfields'])) {
 	if (is_string($_REQUEST['listfields'])) {
-		$filters['fieldId'] = preg_split('/[,:]/', $_REQUEST['listfields']);
+		$filters['fieldId'] = split('[,:]', $_REQUEST['listfields']);
 	} elseif (is_array($_REQUEST['listfields'])) {
 		$filters['fieldId'] = $_REQUEST['listfields'];
 	}
@@ -84,9 +84,9 @@ foreach ($_REQUEST as $key =>$val) {
 		$filterFields[] = $fieldId;
 		if (isset($_REQUEST["x_$fieldId"]) && $_REQUEST["x_$fieldId"] == 't' ) {
 			$exactValues[] = '';
-			$values[] = urldecode($val);
+			$values[] = $val;
 		} else {
-			$exactValues[] = urldecode($val);
+			$exactValues[] = $val;
 			$values[] = '';
 		}
 	}
@@ -149,8 +149,8 @@ if ($_REQUEST['debug']) {
 	$fp = fopen($temp_filename, 'w');
 }
 
-include_once 'lib/core/Zend/Log.php';
-include_once 'lib/core/Zend/Log/Writer/Stream.php';
+include_once 'lib/core/lib/Zend/Log.php';
+include_once 'lib/core/lib/Zend/Log/Writer/Stream.php';
 
 $writer = new Zend_Log_Writer_Stream($prefs['tmpDir'].'/tracker_export.log');
 $logger = new Zend_Log($writer);

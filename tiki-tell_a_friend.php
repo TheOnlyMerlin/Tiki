@@ -42,11 +42,12 @@ if (strstr($_REQUEST['url'], 'tiki-tell_a_friend.php')) {
 $url_for_friend = $tikilib->httpPrefix( true ) . $_REQUEST['url'];
 $smarty->assign('url', $_REQUEST['url']);
 $smarty->assign('prefix', $tikilib->httpPrefix( true ));
+include_once ("textareasize.php");
 $errors = array();
 if (isset($_REQUEST['send'])) {
 	check_ticket('tell-a-friend');
-	if (empty($user) && $prefs['feature_antibot'] == 'y' && !$captchalib->validate()) {
-		$errors[] = $captchalib->getErrors();
+	if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $_REQUEST['antibotcode'])) {
+		$errors[] = tra('You have mistyped the anti-bot verification code; please try again.');
 	}
 	if (empty($_REQUEST['report']) || $_REQUEST['report'] != 'y') {
 		$emails = explode(',', str_replace(' ', '', $_REQUEST['addresses']));

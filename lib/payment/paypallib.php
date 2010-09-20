@@ -8,8 +8,7 @@
 class PaypalLib extends TikiDb_Bridge
 {
 	function get_invoice( $ipn_data ) {
-		global $prefs;
-		return isset( $ipn_data['invoice'] ) ? str_replace( $prefs['payment_invoice_prefix'], '', $ipn_data['invoice'] ) : 0;
+		return isset( $ipn_data['invoice'] ) ? $ipn_data['invoice'] : 0;
 	}
 
 	function get_amount( $ipn_data ) {
@@ -58,7 +57,7 @@ class PaypalLib extends TikiDb_Bridge
 	private function confirmed_by_paypal( $ipn_data ) {
 		global $prefs;
 
-		require_once 'lib/core/Zend/Http/Client.php';
+		require_once 'lib/core/lib/Zend/Http/Client.php';
 		$client = new Zend_Http_Client( $prefs['payment_paypal_environment'] );
 
 		$base = array( 'cmd' => '_notify-validate' );  

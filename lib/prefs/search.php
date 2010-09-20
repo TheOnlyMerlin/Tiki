@@ -68,15 +68,5 @@ function prefs_search_list() {
 				'trackers' => tra('Trackers'),
 			),
 		),
-		'search_default_interface_language' => array(
-			'name' => tra('Restrict search language by default'),
-			'description' => tra('If enabled, only search content in the interface language, by default.'),
-			'type' => 'flag',
-		),
-		'search_autocomplete' => array(
-			'name' => tra('Autocomplete on page names'),
-			'type' => 'flag',
-			'dependencies' => array('feature_jquery_autocomplete', 'javascript_enabled'),
-		),
 	);
 }

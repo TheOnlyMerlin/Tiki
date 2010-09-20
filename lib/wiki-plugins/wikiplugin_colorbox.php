@@ -11,110 +11,60 @@ function wikiplugin_colorbox_info() {
 		'documentation' => 'PluginClorBox',
 		'description' => tra("Display all the images of a file gallery in a colorbox popup"),
 		'prefs' => array( 'feature_file_galleries', 'feature_shadowbox', 'wikiplugin_colorbox' ),
-		'introduced' => 5,
 		'params' => array(
 			'fgalId' => array(
 				'required' => false,
 				'name' => tra('File gallery ID'),
 				'description' => tra('File gallery ID'),
-				'filter' => 'digits',
-    			'accepted' => 'ID',
-				'default' => 'none',
-    			'since' => '5.0'
-				),
+				'filter' => 'digits'
+			),
 			'galId' => array(
 				'required' => false,
 				'name' => tra('Image gallery ID'),
 				'description' => tra('Image gallery ID'),
-				'filter' => 'digits',
-    			'accepted' => 'ID',
-				'default' => 'none',
-    			'since' => '5.0'
-				),
-			'fileId' => array(
-				'required' => false,
-				'name' => tra('Filter on fileIds in a file gallery'),
-				'description' => tra('Filter on fileIds in a file gallery. Separate each fileId with \':\''),
-				'filter' => 'digits',
-				'separator' => ':',
-    			'accepted' => 'ID separated with :',
-				'default' => 'none',
-    			'since' => '6.0'
-				),
+				'filter' => 'digits'
+			),
 			'thumb' => array(
 				'required' => false,
 				'name' => tra('Thumb'),
-				'description' => tra('Display as a thumbnail (y) or full size (n)'),
-				'filter' => 'alpha',
-    			'accepted' => 'y or n',
+				'description' => tra('The image in the page is displayed or not in mode thumb:'). 'y|n',
 				'default' => 'y',
-				'since' => '5.0',
-				'options' => array(
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n'),
-					),
-				),
+				'filter' => 'alpha'
+			),
 			'sort_mode' => array(
 				'required' => false,
 				'name' => tra('Sort Mode'),
-				'description' => tra('Sort by database table field name, ascending or descending. Examples: fileId_asc or name_desc.'),
-				'filter' => 'word',
-    			'accepted' => 'fieldname_asc or fieldname_desc with actual table field name in place of \'fieldname\'.',
-				'default' => 'created_desc',
-    			'since' => '5.0'
-				),
+				'description' => tra('Sort Mode'),
+				'filter' => 'word'
+			),
 			'showtitle' => array(
 				'required' => false,
 				'name' => tra('Show file title'),
-				'description' => tra('Show file title'),
+				'description' => 'y|n '. tra('Show file title'),
 				'filter' => 'alpha',
-    			'accepted' => 'y or n',
 				'default' => 'n',
-				'since' => '5.0',
-				'options' => array(
-					array('text' => tra('No'), 'value' => 'n'),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					),
-				),
+			),
 			'showfilename' => array(
 				'required' => false,
 				'name' => tra('Show file name'),
-				'description' => tra('Show file name'),
+				'description' => 'y|n '. tra('Show file name'),
 				'filter' => 'alpha',
-    			'accepted' => 'y or n',
 				'default' => 'n',
-				'since' => '5.0',
-				'options' => array(
-					array('text' => tra('No'), 'value' => 'n'),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					),
-				),
+			),
 			'showallthumbs' => array(
 				'required' => false,
 				'name' => tra('Show all thumbs'),
-				'description' => tra('Show all thumbs'),
+				'description' => 'y|n '. tra('Show all thumbs'),
 				'filter' => 'alpha',
-    			'accepted' => 'y or n',
 				'default' => 'n',
-				'since' => '5.0',
-				'options' => array(
-					array('text' => tra('No'), 'value' => 'n'),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					),
-				),
+			),
 			'parsedescriptions' => array(
 				'required' => false,
 				'name' => tra('Parse descriptions'),
-				'description' => tra('Wiki parse the file descriptions'),
+				'description' => 'y|n '. tra('Wiki parse the file descriptions'),
 				'filter' => 'alpha',
-    			'accepted' => 'y or n',
 				'default' => 'n',
-				'since' => '5.0',
-				'options' => array(
-					array('text' => tra('No'), 'value' => 'n'),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					),
-				),
+			),
 		),
 	);
 }
@@ -132,8 +82,7 @@ function wikiplugin_colorbox($data, $params) {
 			return tra('Permission denied');
 		}
 		if (empty($params['sort_mode'])) $params['sort_mode'] = 'created_desc';
-		$filter = empty($params['fileId'])? '': array('fileId'=> $params['fileId']);
-		$files = $tikilib->get_files(0, -1, $params['sort_mode'], '', $params['fgalId'], false, false, false, true, false, false, false, false, '', true, false, false, $filter);
+		$files = $tikilib->get_files(0, -1, $params['sort_mode'], '', $params['fgalId'], false, false, false, true, false, false, false);
 		$smarty->assign('colorboxUrl', 'tiki-download_file.php?fileId=');
 		$smarty->assign('colorboxColumn', 'id');
 		if ($params['thumb'] != 'n') {

@@ -13,35 +13,12 @@ function prefs_wiki_list() {
 	if ($prefs['feature_forums'] == 'y') {
 		$all_forums = TikiDb::get()->fetchMap( 'SELECT `forumId`, `name` FROM `tiki_forums` ORDER BY `name` ASC' );
 
+
 		if ( count( $all_forums ) ) {
 			$wiki_forums = $all_forums;
 		} else {
 			$wiki_forums[''] = tra('None');
 		}
-	}
-
-	global $prefslib;
-	$advanced_columns = $prefslib->getExtraSortColumns();
-
-	$wiki_sort_columns = array_merge( array(
-		'pageName' => tra('Name'),
-		'lastModif' => tra('LastModif'),
-		'created' => tra('Created'),
-		'creator' => tra('Creator'),
-		'hits' => tra('Hits'),
-		'user' => tra('Last editor'),
-		'page_size' => tra('Size'),
-	), $advanced_columns );
-
-	$comment_sort_orders = array(
-		'commentDate_desc' => tra('Newest first'),
-		'commentDate_asc' => tra('Oldest first'),
-		'points_desc' => tra('Points'),
-	);
-
-	foreach( $advanced_columns as $key => $label ) {
-		$comment_sort_orders[ $key . '_asc' ] = $label . ' ' . tr('ascending');
-		$comment_sort_orders[ $key . '_desc' ] = $label . ' ' . tr('descending');
 	}
 
 	return array(
@@ -137,7 +114,7 @@ function prefs_wiki_list() {
 			),
 		),
 		'wiki_comments_allow_per_page' => array(
-			'name' => tra('Allow comments per wiki page'),
+			'name' => tra('Allow comments per page'),
 			'description' => tra('Enable control for comments on wiki pages individually.'),
 			'type' => 'list',
 			'options' => array(
@@ -181,6 +158,11 @@ function prefs_wiki_list() {
 			'description' => tra('Provide a javascript alert before the user\'s lock on a page times out.'),
 			'type' => 'flag',
 		),
+		'wiki_comments_notitle' => array(
+			'name' => tra('Disable titles for wiki comments'),
+			'description' => tra('Hide the title field on wiki comments and their replies.'),
+			'type' => 'flag',
+		),
 		'wiki_dynvar_style' => array(
 			'name' => tra('Dynamic variables'),
 			'description' => tra('Global snippets of text that can be included in wiki pages and edited in place.'),
@@ -199,6 +181,12 @@ function prefs_wiki_list() {
 			'dependencies' => array(
 				'feature_multilingual',
 			),
+		),
+		'wiki_spellcheck' => array(
+			'name' => tra('Spell checking'),
+			'type' => 'flag',
+			'help' => 'Spellcheck',
+			'hint' => tra('Requires a separate download'),
 		),
 		'wiki_edit_section' => array(
 			'name' => tra('Edit section'),
@@ -237,7 +225,11 @@ function prefs_wiki_list() {
 		'wiki_comments_default_ordering' => array(
 			'name' => tra('Default Ordering'),
 			'type' => 'list',
-			'options' => $comment_sort_orders,
+			'options' => array(
+				'commentDate_desc' => tra('Newest first'),
+				'commentDate_asc' => tra('Oldest first'),
+				'points_desc' => tra('Points'),
+			),
 		),
 		'wiki_uses_slides' => array(
 			'name' => tra('Slideshows'),
@@ -361,7 +353,15 @@ function prefs_wiki_list() {
 		'wiki_list_sortorder' => array(
 			'name' => tra('Default sort order'),
 			'type' => 'list',
-			'options' => $wiki_sort_columns,
+			'options' => array(
+				'pageName' => tra('Name'),
+				'lastModif' => tra('LastModif'),
+				'created' => tra('Created'),
+				'creator' => tra('Creator'),
+				'hits' => tra('Hits'),
+				'user' => tra('Last editor'),
+				'page_size' => tra('Size'),
+			),
 		),
 		'wiki_list_sortdirection' => array(
 			'name' => tra('Sort Direction'),
@@ -528,15 +528,5 @@ function prefs_wiki_list() {
 			'separator' => ',',
 			'filter' => 'int',
 		),
-		'wiki_prefixalias_tokens' => array(
-			'name' => tra('Redirect pages using these prefix alias semantic links'),
-			'description' => tra('Comma separated list of prefixes of which pages will be redirected to page with semantic link'),
-			'type' => 'text',
-			'help' => 'Semantic+Alias',
-			'size' => '30',
-			'dependencies' => array(
-				'feature_wiki_1like_redirection',
-			),
-		),		
 	);
 }

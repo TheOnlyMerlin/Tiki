@@ -19,7 +19,6 @@
 	* find_show_num_rows    : If value = 'y' adds maxRecords field. Value: maxRecords
 	* find_show_date_range  : If value = 'y' adds date range to filter within
 	* find_show_orphans		: If value = 'y' adds a checkbox orphan
-	* find_show_sub	: If value = 'y' add a checkbox in all the tree
 	* filters               : array( filter_field1 => array( option1_value => option1_text, ... ), filter_field2 => ... )
 	*		filter_names          : array( filter_field1 => filter_field1_name, ... )
 	*		filter_values         : array( filter_fieldX => filter_fieldX_selected_value, ... )
@@ -32,7 +31,7 @@
 		<form method="post" action="{$smarty.server.PHP_SELF}" class="findtable">
 		{if $filegals_manager neq ''}<input type="hidden" name="filegals_manager" value="{$filegals_manager|escape}" />{/if}
 
-		{query _type='form_input' maxRecords='NULL' type='NULL' types='NULL' find='NULL' topic='NULL' lang='NULL' exact_match='NULL' categId='NULL' cat_categories='NULL' filegals_manager='NULL' save='NULL' offset='NULL' searchlist='NULL' searchmap='NULL'}
+		{query _type='form_input' maxRecords='NULL' type='NULL' types='NULL' find='NULL' topic='NULL' lang='NULL' exact_match='NULL' categId='NULL' cat_categories='NULL' filegals_manager='NULL' save='NULL' offset='NULL'}
 
 	<label class="findtitle">
 		{if empty($whatlabel)}
@@ -47,13 +46,6 @@
 	<label class="findexactmatch" for="findexactmatch">
 			{tr}Exact&nbsp;match{/tr}
 		<input type="checkbox" name="exact_match" id="findexactmatch" {if $exact_match ne 'n'}checked="checked"{/if}/>
-	</label>
-{/if}
-
-{if !empty($find_show_sub) and $find_show_sub eq 'y'}
-	<label class="findsub">
-		{tr}and all the sub-objects{/tr}
-		<input type="checkbox" name="find_sub" id="find_sub" {if $find_sub eq 'y'}checked="checked"{/if}/>
 	</label>
 {/if}
 
@@ -220,13 +212,6 @@
 		<span class="button">
 			<a href="{$smarty.server.PHP_SELF}?{query find='' types='' topic='' lang='' langOrphan='' exact_match='' categId='' maxRecords=''}" title="{tr}Clear Filter{/tr}">{tr}Clear Filter{/tr}</a>
 		</span>
-	{/if}
-	{if $gmapbuttons and $mapview}
-		<input type="submit" name="searchlist" value="{tr}List View{/tr}" />
-		<input type="hidden" name="mapview" value="y" />
-	{elseif $gmapbuttons}
-		<input type="submit" name="searchmap" value="{tr}Map View{/tr}" />
-		<input type="hidden" name="mapview" value="n" />
 	{/if}
 </label>
 

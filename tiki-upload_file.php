@@ -148,9 +148,7 @@ if (!empty($_REQUEST['galleryId'][0])) {
 	$smarty->assign_by_ref('gal_info', $gal_info);
 	$podCastGallery = $filegallib->isPodCastGallery((int)$_REQUEST["galleryId"][0], $gal_info);
 }
-if (empty($_REQUEST['returnUrl'])) {
-	include ('lib/filegals/max_upload_size.php');
-}
+include ('lib/filegals/max_upload_size.php');
 
 // Process an upload here
 if (isset($_REQUEST["upload"])) {
@@ -162,9 +160,7 @@ if (isset($_REQUEST["upload"])) {
 	$batch_job = false;
 	$didFileReplace = false;
 	foreach($_FILES["userfile"]["error"] as $key => $error) {
-		if (empty($_REQUEST['returnUrl'])) {
-			print_progress('<?xml version="1.0" encoding="UTF-8"?>');
-		}
+		print_progress('<?xml version="1.0" encoding="UTF-8"?>');
 		$formId = $_REQUEST['formId'];
 		$smarty->assign("FormId", $_REQUEST['formId']);
 		if (empty($_REQUEST['galleryId'][$key])) {
@@ -431,7 +427,7 @@ if (isset($_REQUEST["upload"])) {
 					}
 					include_once ('categorize.php');
 					// Print progress
-					if (empty($_REQUEST['returnUrl']) && $prefs['javascript_enabled'] == 'y') {
+					if ($prefs['javascript_enabled'] == 'y') {
 						if (!empty($_REQUEST['filegals_manager'])) {
 							$smarty->assign('filegals_manager', $_REQUEST['filegals_manager']);
 						}
@@ -447,7 +443,7 @@ if (isset($_REQUEST["upload"])) {
 			}
 		}
 	}
-	if (empty($_REQUEST['returnUrl']) && count($errors)) {
+	if (count($errors)) {
 		foreach($errors as $error) {
 			print_msg($error, $formId);
 		}
@@ -482,15 +478,6 @@ if (isset($_REQUEST["upload"])) {
 		header("location: tiki-list_file_gallery.php?galleryId=" . $_REQUEST["galleryId"][0]);
 		die;
 	}
-	if (!empty($_REQUEST['returnUrl'])) {
-		if (!empty($errors)) {
-			$smarty->assign('msg', implode($errors, '<br />'));
-			$smarty->display('error.tpl');
-			die;
-		}
-		header('location: '.$_REQUEST['returnUrl']);
-		die;
-	}
 } else {
 	$smarty->assign('errors', array());
 	$smarty->assign('uploads', array());
@@ -514,6 +501,10 @@ if (empty($_REQUEST['fileId'])) {
 	}
 	$galleries['data'] = Perms::filter(array('file gallery'), 'object', $galleries['data'], array('object'=>'id'), 'upload_files');
 	$smarty->assign_by_ref('galleries', $galleries["data"]);
+}
+if ($tiki_p_admin_file_galleries == 'y' || $tiki_p_admin == 'y') {
+	$users = $tikilib->list_users(0, -1, 'login_asc', '', false);
+	$smarty->assign_by_ref('users', $users['data']);
 }
 if ($prefs['fgal_limit_hits_per_file'] == 'y') {
 	$smarty->assign('hit_limit', $filegallib->get_download_limit($_REQUEST['fileId']));

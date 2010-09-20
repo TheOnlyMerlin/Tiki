@@ -46,7 +46,7 @@ switch ($_REQUEST['type']) {
 		break;
 
 	case 'forum':
-		require_once ('lib/comments/commentslib.php');
+		require_once ('lib/commentslib.php');
 		if (!isset($commentslib)) {
 			$commentslib = new Comments($dbTiki);
 		}
@@ -57,8 +57,7 @@ switch ($_REQUEST['type']) {
 		break;
 
 	case 'blog':
-		require_once('lib/blogs/bloglib.php');
-		$objects = $bloglib->list_blogs(0, -1, 'title_asc', $find_objects);
+		$objects = $tikilib->list_blogs(0, -1, 'title_asc', $find_objects);
 		$smarty->assign_by_ref('objects', $objects["data"]);
 		$objects = $objects['data'];
 		correct_array($objects, 'blogId', 'title');

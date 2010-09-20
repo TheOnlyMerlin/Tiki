@@ -7,7 +7,7 @@
 
 $section = 'mytiki';
 require_once ('tiki-setup.php');
-if ($prefs['ajax_xajax'] == "y") {
+if ($prefs['feature_ajax'] == "y") {
 	require_once ('lib/ajax/ajaxlib.php');
 }
 include_once ('lib/wiki/wikilib.php');
@@ -45,8 +45,7 @@ if ($prefs['feature_wiki'] == 'y') {
 if ($prefs['feature_blogs'] == 'y') {
 	$mytiki_blogs = $tikilib->get_user_preference($user, 'mytiki_blogs', 'y');
 	if ($mytiki_blogs == 'y') {
-		require_once('lib/blogs/bloglib.php');
-		$user_blogs = $bloglib->list_user_blogs($userwatch, false);
+		$user_blogs = $tikilib->list_user_blogs($userwatch, false);
 		$smarty->assign_by_ref('user_blogs', $user_blogs);
 		$smarty->assign('mytiki_blogs', 'y');
 	}
@@ -73,7 +72,7 @@ if ($prefs['feature_trackers'] == 'y') {
 if ($prefs['feature_forums'] == 'y') {
 	$mytiki_forum_replies = $tikilib->get_user_preference($user, 'mytiki_forum_replies', 'y');
 	if ($mytiki_forum_replies == 'y') {
-		include_once ("lib/comments/commentslib.php");
+		include_once ("lib/commentslib.php");
 		$commentslib = new Comments($dbTiki);
 		$user_forum_replies = $commentslib->get_user_forum_comments($userwatch, -1, 'replies');
 		$smarty->assign_by_ref('user_forum_replies', $user_forum_replies);
@@ -81,7 +80,7 @@ if ($prefs['feature_forums'] == 'y') {
 	}
 	$mytiki_forum_topics = $tikilib->get_user_preference($user, 'mytiki_forum_topics', 'y');
 	if ($mytiki_forum_topics == 'y') {
-		include_once ("lib/comments/commentslib.php");
+		include_once ("lib/commentslib.php");
 		$commentslib = new Comments($dbTiki);
 		$user_forum_topics = $commentslib->get_user_forum_comments($userwatch, -1, 'topics');
 		$smarty->assign_by_ref('user_forum_topics', $user_forum_topics);
@@ -117,7 +116,7 @@ if ($prefs['feature_articles'] == 'y') {
 	}
 }
 include_once ('tiki-section_options.php');
-if ($prefs['ajax_xajax'] == "y") {
+if ($prefs['feature_ajax'] == "y") {
 	function mytiki_ajax() {
 		global $ajaxlib, $xajax;
 		$ajaxlib->registerTemplate("tiki-my_tiki.tpl");

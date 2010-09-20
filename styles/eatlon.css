@@ -5,7 +5,7 @@
 	page footer to be in compliance with the terms of use. Because IE7
 	does not support display:table, minimal HTML tables are needed for
 	graphic treatment and column integrity. For more information, please visit
-	http://themes.tiki.org	or http://zukakakina.com.
+	http://themes.tikiwiki.org	or http://zukakakina.com.
 */
  
 /* Import the default layout properties files: */
@@ -25,27 +25,25 @@ html>body {font-size: 76% !important}
 body.fullscreen {padding: 3em}
 
 /* next two: fixed-width: 960px */
-body.fixed_width div#fixedwidth {
+div#fixedwidth {
+	display: table; 
+	margin: auto; 
 	margin-bottom: 20px;
 	width: 900px;
 	background: #fff;
 } 
 
-body.fixed_width *:first-child+html #c1c2 {
+*:first-child+html #c1c2 {
 	margin-left: 0;
 	padding-left: 0} 
 	
-body.fixed_width #main[id] {
+#main[id] {
 	margin-bottom:0;
 	margin-top: 0;
 }
 
  /***** Layout (overrides layout.css;
 		also styling of page layout divs)  *****/
-#main {
-		background: #fff;
-}
-
 #middle {
 	text-align: left;
 	min-height: 450px/*;
@@ -507,16 +505,12 @@ a.phplmselected:hover {color: #d7e5f3}
 a.flip,
 a.flip:visited,
 .tellafriend a,
-.share a,
-.tellafriend a:visited,
-.share a:visited {color: #ADBAC3}
+.tellafriend a:visited {color: #ADBAC3}
 
 a.flip:hover,
-.tellafriend a:hover,
-.share a:hover {color: #505050}
+.tellafriend a:hover {color: #505050}
 
-.tellafriend,
-.share {padding-right: 6px}
+.tellafriend {padding-right: 6px}
 #tiki-center {font-size: 1.1em}
 
 /****** Misc. Global ****/

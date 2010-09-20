@@ -33,18 +33,28 @@ class SemanticLib
 		if( is_array($this->newTokens) )
 			return;
 
-		$db = TikiDb::get();
-		$result = $db->fetchAll( "SELECT DISTINCT relation FROM tiki_object_relations WHERE relation LIKE 'tiki.link.%'" );
-		
-		$tokens = array();
-		foreach( $result as $row ) {
-			$tokens[] = substr( $row['relation'], strlen( 'tiki.link.' ) );
-		}
-
 		$this->loadKnownTokens();
+
+		$this->newTokens = array();
+
+		global $tikilib;
+
 		$existing = array_keys( $this->knownTokens );
 
-		$this->newTokens = array_diff( $tokens, $existing );
+		$result = $tikilib->query( "SELECT DISTINCT reltype FROM tiki_links" );
+		while( $row = $result->fetchRow() ) {
+			if( empty($row['reltype']) )
+				continue;
+
+			$new = array_diff(
+				explode( ',', $row['reltype'] ),
+				$existing
+			);
+
+			$this->newTokens = array_merge( $new, $this->newTokens );
+		}
+
+		$this->newTokens = array_unique( $this->newTokens );
 	} // }}}
 
 	function getToken( $name, $field = null ) // {{{
@@ -88,52 +98,43 @@ class SemanticLib
 		return $this->newTokens;
 	} // }}}
 
-	function getAllTokens() // {{{
-	{
-		$this->loadKnownTokens();
-		$this->loadNewTokens();
-
-		return array_merge( array_keys( $this->knownTokens ), $this->newTokens );
-	} // }}}
-
 	function getLinksUsing( $token, $conditions = array() ) // {{{
 	{
-		$db = TikiDb::get();
+		global $tikilib;
 
 		$token = (array) $token;
+		$tokenConds = array();
 		$bindvars = array();
 
 		// Multiple tokens can be fetched at the same time
-		$values = array();
 		foreach( $token as $name ) {
-			$values[] = "tiki.link.$name";
+			$tokenConds[] = '`reltype` LIKE ?';
+			$bindvars[] = "%$name%";
 		}
 
-		$mid = array( $db->in( 'relation', $values, $bindvars ) );
+
+		$mid = array( '`reltype` IS NOT NULL' );
+		$mid[] = '( ' . implode( ' OR ', $tokenConds ) . ' )';
 
 		// Filter on source and destination
 		foreach( $conditions as $field => $value ) {
-			if( $field == 'fromPage' ) {
-				$field = 'source_itemId';
-			} elseif( $field == 'toPage' ) {
-				$field = 'target_itemId';
-			} else {
+			if( ! in_array( $field, array( 'fromPage', 'toPage' ) ) )
 				continue;
-			}
 
 			$mid[] = "`$field` = ?";
 			$bindvars[] = $value;
 		}
 
 		$mid = implode( ' AND ', $mid );
-		$result = $db->query( $q= "SELECT `source_itemId` `fromPage`, `target_itemId` `toPage`, GROUP_CONCAT(SUBSTR(`relation` FROM 11) SEPARATOR ',') `reltype` FROM tiki_object_relations WHERE $mid AND `source_type` = 'wiki page' AND `target_type` = 'wiki page' AND `relation` LIKE 'tiki.link.%' GROUP BY `fromPage`, `toPage` ORDER BY `fromPage`, `toPage`",
+		$result = $tikilib->query( $q= "SELECT `fromPage`, `toPage`, reltype FROM tiki_links WHERE $mid ORDER BY `fromPage`, `toPage`",
 			$bindvars );
 		
 		$links = array();
 		while( $row = $result->fetchRow() ) {
 			$row['reltype'] = explode( ',', $row['reltype'] );
 
-			$links[] = $row;
+			if( count( array_intersect( $token, $row['reltype'] ) ) > 0 )
+				$links[] = $row;
 		}
 
 		return $links;
@@ -199,6 +200,13 @@ class SemanticLib
 		$pagesDone = array();
 		foreach( $links as $link )
 		{
+			// Update tiki_links
+			$link['reltype'] = array_diff( $link['reltype'], array($oldName) );
+			if( ! empty( $newName ) )
+				$link['reltype'] = array_merge( $link['reltype'], array($newName) );
+			sort( $link['reltype'] );
+			$tikilib->replace_link( $link['fromPage'], $link['toPage'], $link['reltype'] );
+
 			// Page body only needs to be replaced once
 			if( ! array_key_exists( $link['fromPage'], $pagesDone ) ) {
 				$info = $tikilib->get_page_info( $link['fromPage'] );
@@ -210,12 +218,6 @@ class SemanticLib
 
 				$pagesDone[ $link['fromPage'] ] = true;
 			}
-		}
-
-		if( $newName ) {
-			$tikilib->query( 'UPDATE tiki_object_relations SET relation = ? WHERE relation = ? AND source_type = "wiki page" AND target_type = "wiki page"', array( "tiki.link.$newName", "tiki.link.$oldName" ) );
-		} else {
-			$tikilib->query( 'DELETE FROM tiki_object_relations WHERE relation = ? AND source_type = "wiki page" AND target_type = "wiki page"', array( "tiki.link.$oldName" ) );
 		}
 
 		return true;
@@ -267,33 +269,36 @@ class SemanticLib
 		global $tikilib, $wikilib;
 		$relations = array();
 
-		$result = $tikilib->fetchAll( "SELECT `target_itemId` `toPage`, SUBSTR(`relation` FROM 11) `reltype` FROM tiki_object_relations WHERE `source_itemId` = ? AND `source_type` = 'wiki page' AND `target_type` = 'wiki page' AND `relation` LIKE 'tiki.link.%'", array($page) );
+		$result = $tikilib->query( "SELECT `toPage`, `reltype` FROM tiki_links WHERE `fromPage` = ? AND reltype IS NOT NULL", array($page) );
+		while( $row = $result->fetchRow() ) {
+			foreach( explode( ',', $row['reltype'] ) as $reltype ) {
+				if( false === $label = $this->getToken( $reltype, 'label' ) )
+					continue;
 
-		foreach( $result as $row ) {
-			if( false === $label = $this->getToken( $row['reltype'], 'label' ) )
-				continue;
+				$label = tra($label);
 
-			$label = tra($label);
+				if( ! array_key_exists( $label, $relations ) )
+					$relations[$label] = array();
 
-			if( ! array_key_exists( $label, $relations ) )
-				$relations[$label] = array();
-
-			if( ! array_key_exists( $row['toPage'], $relations[$label] ) )
-				$relations[$label][ $row['toPage'] ] = $wikilib->sefurl( $row['toPage'] );
+				if( ! array_key_exists( $row['toPage'], $relations[$label] ) )
+					$relations[$label][ $row['toPage'] ] = $wikilib->sefurl( $row['toPage'] );
+			}
 		}
 
-		$result = $tikilib->fetchAll( "SELECT `source_itemId` `fromPage`, SUBSTR(`relation` FROM 11) `reltype` FROM tiki_object_relations WHERE `target_itemId` = ? AND `source_type` = 'wiki page' AND `target_type` = 'wiki page' AND `relation` LIKE 'tiki.link.%'", array($page) );
-		foreach( $result as $row ) {
-			if( false === $label = $this->getInvert( $row['reltype'], 'label' ) )
-				continue;
+		$result = $tikilib->query( "SELECT `fromPage`, `reltype` FROM tiki_links WHERE `toPage` = ? AND `reltype` IS NOT NULL", array($page) );
+		while( $row = $result->fetchRow() ) {
+			foreach( explode( ',', $row['reltype'] ) as $reltype ) {
+				if( false === $label = $this->getInvert( $reltype, 'label' ) )
+					continue;
 
-			$label = tra($label);
+				$label = tra($label);
 
-			if( ! array_key_exists( $label, $relations ) )
-				$relations[$label] = array();
+				if( ! array_key_exists( $label, $relations ) )
+					$relations[$label] = array();
 
-			if( ! array_key_exists( $row['fromPage'], $relations[$label] ) )
-				$relations[$label][ $row['fromPage'] ] = $wikilib->sefurl( $row['fromPage'] );
+				if( ! array_key_exists( $row['fromPage'], $relations[$label] ) )
+					$relations[$label][ $row['fromPage'] ] = $wikilib->sefurl( $row['fromPage'] );
+			}
 		}
 
 		ksort( $relations );
@@ -305,36 +310,22 @@ class SemanticLib
 
 	function getAliasContaining( $query, $exact_match = false, $in_lang = NULL ) // {{{
 	{
-		global $tikilib, $prefs;
+		global $tikilib;
 		$orig_query = $query;
 		if (!$exact_match) {
 			$query = "%$query%";
 		}
-		
-		$mid = "((`target_type` = 'wiki page' AND `target_itemId` LIKE ?)";
-		$bindvars = array($query);
-		
-		$prefixes = explode( ',', $prefs["wiki_prefixalias_tokens"]);
-		$haveprefixes = false;
-		foreach ($prefixes as $p) {
-			$p = trim($p);
-			if (strlen($p) > 0 && strtolower(substr($query, 0, strlen($p))) == strtolower($p)) {
-				$mid .= " OR ( `target_type` = 'wiki page' AND `target_itemId` LIKE ?)";
-				$bindvars[] = "$p%";
-				$haveprefixes = true;
+		$result = $tikilib->query( "SELECT `fromPage`, `toPage`, `reltype` FROM `tiki_links` WHERE `toPage` LIKE ? AND `reltype` IS NOT NULL", array($query) );
+
+		$aliases = array();
+		while( $row = $result->fetchRow() ) {
+			$types = explode( ',', $row['reltype'] );
+
+			if( in_array( 'alias', $types ) ) {
+				unset( $row['reltype'] );
+				$aliases[] = $row;
 			}
-		}
-		 
-		$mid .= ") AND ( `relation` = 'tiki.link.alias' ";
-		
-		if( $haveprefixes ) {
-			$mid .= " OR `relation` = 'tiki.link.prefixalias' ";
-		}
-
-		$mid .= ")";
-		$querystring = "SELECT `source_itemId` `fromPage`, `target_itemId` `toPage` FROM `tiki_object_relations` WHERE $mid";
-		$aliases = $tikilib->fetchAll( $querystring, $bindvars );
-
+		}		
 		$aliases = $this->onlyKeepAliasesFromPageInLanguage($in_lang, $aliases);
 		return $aliases;
 	} // }}}
@@ -355,20 +346,6 @@ class SemanticLib
 		}
 //		echo "<pre>-- onlyKeepAliasesFromPageInLanguage: exiting</pre>\n";
 		return $aliasesInCorrectLanguage;
-	}
-	
-	function getItemsFromTracker($page, $suffix) {
-		$t_links = $this->getLinksUsing('trackerid', array( 'fromPage' => $page ) );
-		$f_links = $this->getLinksUsing('titlefieldid', array( 'fromPage' => $page ) );
-		$ret = array();
-		if (count($t_links) && count($f_links) && ctype_digit($t_links[0]['toPage']) && ctype_digit($f_links[0]['toPage'])) {
-			global $trklib; include_once ('lib/trackers/trackerlib.php');
-			$items = $trklib->list_items($t_links[0]['toPage'], 0, -1, '', '', $f_links[0]['toPage'], '', '', '', $suffix);
-			foreach ($items["data"] as $i) {
-				$ret[] = $i["itemId"];
-			}
-		}
-		return $ret;
 	}
 }
 

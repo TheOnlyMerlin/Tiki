@@ -381,15 +381,12 @@ div#sitead {
 a.flip,
 a.flip:visited,
 .tellafriend a,
-.share a,
-.tellafriend a:visited,
-.share a:visited {
+.tellafriend a:visited {
 	color: #ADBAC3;
 }
 
 a.flip:hover,
-.tellafriend a:hover,
-.share a:hover {
+.tellafriend a:hover {
 	color: #505050;
 	text-decoration: none;
 }

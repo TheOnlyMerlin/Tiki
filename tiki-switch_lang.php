@@ -7,7 +7,7 @@
 
 require_once ('tiki-setup.php');
 
-$access->check_feature('change_language');
+$access->check_feature('feature_multilingual');
 
 if (isset($_GET['from'])) $orig_url = $_GET['from'];
 elseif (isset($_SERVER['HTTP_REFERER'])) $orig_url = $_SERVER['HTTP_REFERER'];
@@ -57,7 +57,7 @@ if (strstr($orig_url, 'tiki-index.php') || strstr($orig_url, 'tiki-read_article.
 		} elseif (!empty($param['articleId'])) {
 			$orig_url = preg_replace('/(.*[&?]articleId=)' . $pageId . '(.*)/', '${1}' . $bestLangPageId . '$2', $orig_url);
 		} else {
-			$newPage = urlencode($tikilib->get_page_name_from_id($bestLangPageId));
+			$newPage = $tikilib->get_page_name_from_id($bestLangPageId);
 			$orig_url = preg_replace('/(.*[&?]page=)'.$page.'(.*)/', '${1}'."${newPage}".'$2', $orig_url);
 			$orig_url = preg_replace('/(.*)(tiki-index.php)$/', "$1$2?page=$newPage", $orig_url);
 		}

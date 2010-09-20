@@ -15,7 +15,7 @@ include_once ('lib/webmail/tikimaillib.php');
 
 class NlLib extends TikiLib
 {
-	function replace_newsletter($nlId, $name, $description, $allowUserSub, $allowAnySub, $unsubMsg, $validateAddr,$allowTxt, $frequency , $author, $allowArticleClip = 'y', $autoArticleClip = 'n', $articleClipRange = null, $articleClipTypes = '') {
+	function replace_newsletter($nlId, $name, $description, $allowUserSub, $allowAnySub, $unsubMsg, $validateAddr,$allowTxt, $frequency , $author) {
 		if ($nlId) {
 			$query = "update `tiki_newsletters` set `name`=?, 
 								`description`=?, 
@@ -24,18 +24,8 @@ class NlLib extends TikiLib
 								`allowAnySub`=?, 
 								`unsubMsg`=?, 
 								`validateAddr`=?, 
-								`frequency`=?, 
-								`allowArticleClip`=?,
-								`autoArticleClip`=?,
-								`articleClipRange`=?,
-								`articleClipTypes`=?																
-								where `nlId`=?";
-			$result = $this->query($query, array($name, $description, $allowUserSub, $allowTxt, $allowAnySub, $unsubMsg, $validateAddr, $frequency,
-							$allowArticleClip,
-							$autoArticleClip,
-							$articleClipRange,
-							$articleClipTypes,
-							(int)$nlId));
+								`frequency`=? where `nlId`=?";
+			$result = $this->query($query, array($name, $description, $allowUserSub, $allowTxt, $allowAnySub, $unsubMsg, $validateAddr, $frequency, (int)$nlId));
 		} else {
 			$query = "insert into `tiki_newsletters`(
 								`name`,
@@ -50,13 +40,9 @@ class NlLib extends TikiLib
 								`unsubMsg`,
 								`validateAddr`,
 								`frequency`,
-								`author`,
-								`allowArticleClip`,
-								`autoArticleClip`,
-								`articleClipRange`,
-								`articleClipTypes`
+								`author`
 								) ";
-      $query.= " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      $query.= " values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			$result = $this->query($query, array($name,
 							$description,
 							(int)$this->now,
@@ -69,12 +55,7 @@ class NlLib extends TikiLib
 							$unsubMsg,
 							$validateAddr,
 							NULL,
-							$author,
-							$allowArticleClip,
-							$autoArticleClip,
-							$articleClipRange,
-							$articleClipTypes
-							));
+							$author));
 			$queryid = "select max(`nlId`) from `tiki_newsletters` where `created`=?";
 			$nlId = $this->getOne($queryid, array((int)$this->now));
 		}
@@ -139,7 +120,6 @@ class NlLib extends TikiLib
 		$all_users = array();
 		$group_users = array();
 		$included_users = array();
-		$page_included_emails = array();
 
 		// Get list of the root groups (groups explicitely subscribed to this newsletter)
 		//
@@ -237,33 +217,6 @@ class NlLib extends TikiLib
 				}
 			}
 		}
-		
-		$page_emails = $this->list_newsletter_pages( $nlId );
-		if ($page_emails['cant'] > 0) {
-			foreach ( $page_emails['data'] as $page) {
-				$emails = $this->get_emails_from_page($page['wikiPageName']);
-				if (!is_array($emails))
-					continue;
-				foreach ( $emails as $email ) {
-					if (!empty($email)) {
-						$res = array(
-							'valid' => $page['validateAddrs'] == 'y' ? 'n' : 'y',
-							'subscribed' => $this->now,
-							'isUser' => 'n',
-							'db_email' => $email,
-							'email' => $email,
-							'included' => 'n',
-						);
-						
-						if ($page['addToList'] == 'y') {
-							$res['code'] = $this->genRandomString($email);
-							$all_users[$email] = $res;
-						}
-						$page_included_emails[$email] = $res;
-					}
-				}
-			}
-		}
 
 		// Update database if requested
 		//
@@ -287,38 +240,14 @@ class NlLib extends TikiLib
 		foreach ( $all_users as $r ) {
 			if ( $r['valid'] == 'y' ) $return[] = $r;
 		}
-		
-		$return = array_merge($all_users, $page_included_emails);
 
 		return $return;
 	}
 
-	/**
-	 * Removes newsletters subscriptions 
-	 * 
-	 * @param integer $nlId 
-	 * @param string $email 
-	 * @param boolean $isUser 
-	 * @access public
-	 * @return void
-	 */
-	function remove_newsletter_subscription($nlId, $email, $isUser)
-	{
+	function remove_newsletter_subscription($nlId, $email, $isUser) {
 		$query = "delete from `tiki_newsletter_subscriptions` where `nlId`=? and `email`=? and `isUser`=?";
-		$result = $this->query($query, array((int)$nlId, $email, $isUser), -1, -1, false);
-	}
-
-	/**
-	 * Removes newsletters subscriptions with only the code as parameter
-	 * 
-	 * @param string $code 
-	 * @access public
-	 * @return void
-	 */
-	function remove_newsletter_subscription_code($code)
-	{
-		$query = 'delete from `tiki_newsletter_subscriptions` where `code`=?';
-		$result = $this->query($query, array($code), -1, -1, false);
+		$result = $this->query($query, array((int)$nlId,$email, $isUser),-1, -1, false);
+		/*$this->update_users($nlId);*/
 	}
 
 	function remove_newsletter_group($nlId, $group) {
@@ -815,13 +744,13 @@ class NlLib extends TikiLib
 		if (is_dir("templates/$tikidomain/newsletters/")) {
 			$h = opendir("templates/$tikidomain/newsletters/");
  			while ($file = readdir($h)) {
-				if (preg_match('/\.tpl$/', $file))
+				if (ereg("\.tpl$", $file))
 					$tpls[] = $file;
 			}
 		} elseif (is_dir("templates/newsletters/")) {
 			$h = opendir("templates/newsletters/");
  			while ($file = readdir($h)) {
-				if (preg_match('/\.tpl$/', $file))
+				if (ereg("\.tpl$", $file))
 					$tpls[] = $file;
 			}
 		}
@@ -858,269 +787,5 @@ class NlLib extends TikiLib
 		$query = 'delete from `tiki_sent_newsletters_errors` where `editionId`=?';
 		$this->query($query, array((int)$editionId));
 	}
-	
-	function clip_articles($nlId) {
-		global $artlib, $smarty;
-		require_once 'lib/articles/artlib.php';
-		$query = 'select `articleClipTypes`, `articleClipRange` from `tiki_newsletters` where nlId = ?';
-		$result = $this->fetchAll($query, array($nlId));
-		$articleClipTypes = unserialize($result[0]['articleClipTypes']);
-		$date_min = $this->now - $result[0]['articleClipRange'];
-		$date_max = $this->now;
-		$articles = array();
-		$articleClip = '';
-		# Order array by publishDate
-		if (!function_exists('cmp')) {
-			function cmp($a,$b) {
-				if ($a['publishDate'] == $b['publishDate']) return 0;
-				return ($a['publishDate'] < $b['publishDate']) ? -1 : 1;
-			}
-		} 
-		foreach ($articleClipTypes as $articleType) {
-			$t_articles = $artlib->list_articles( 0, -1, 'publishDate_desc', '', $date_min, $date_max, false, $articleType);
-			foreach ($t_articles["data"] as $t) {
-				$articles[$t["articleId"]] = $t;	
-			}
-		}
-		usort($articles,'cmp');
-		foreach ($articles as $art) {
-			$smarty->assign("nlArticleClipId", $art["articleId"]);
-			$smarty->assign("nlArticleClipTitle", $art["title"]);
-			$smarty->assign("nlArticleClipSubtitle", $art["subtitle"]);
-			$smarty->assign("nlArticleClipParsedheading", $this->parse_data($art["heading"]));
-			$smarty->assign("nlArticleClipPublishDate", $art["publishDate"]);
-			$smarty->assign("nlArticleClipAuthorName", $art["authorName"]);
-			$articleClip .= $smarty->fetch("mail/newsletter_articleclip.tpl");
-		}
-		return $articleClip;
-	}
-
-	// functions for getting email addresses from wiki pages
-	
-	function get_emails_from_page($wikiPageName) {
-		global $prefs, $wikilib;
-		
-		include_once 'lib/wiki/wikilib.php';
-		$emails = false;
-		
-		$canBeRefreshed = false;
-		$o1 = $prefs['feature_wiki_protect_email'];
-		$o2 = $prefs['feature_autolinks'];
-		$prefs['feature_wiki_protect_email'] = 'n';
-		$prefs['feature_autolinks'] = 'n';
-		$pageContent = $wikilib->get_parse($wikiPageName, $canBeRefreshed);
-		$prefs['feature_wiki_protect_email'] = $o1;
-		$prefs['feature_autolinks'] = $o2;
-		
-		if (!empty($pageContent)) {
-			$pageContent = strip_tags($pageContent);
-			$pageContent = preg_replace('/[\\n\\r]/', "\n", $pageContent);	// in case there are MS lineends
-			$pageContent = preg_replace('/\\n\\n/', "\n", $pageContent);	// remove blank lines
-			$ary = explode("\n", $pageContent);
-			$emails = array();
-			foreach($ary as $a) {
-				preg_match('/[a-z0-9\-_.]+?@[\w\-\.]+/i', $a, $m);
-				if (count($m) > 0) {
-					if (validate_email($m[0])) {
-						$emails[] = $m[0];
-					}
-				}
-			}
-		}
-		
-		return $emails;
-	}
-	
-	function add_page($nlId, $wikiPageName, $validate = 'n', $addToList = 'n') {
-		$query = "delete from `tiki_newsletter_pages` where `nlId`=? and `wikiPageName`=?";
-		$this->query($query, array( (int)$nlId, $wikiPageName), -1, -1, false);
-		$query = "insert into `tiki_newsletter_pages` (`nlId`,`wikiPageName`,`validateAddrs`,`addToList`) values(?,?,?,?)";
-		$this->query($query, array( (int)$nlId, $wikiPageName, $validate, $addToList));
-	}
-	
-	function remove_newsletter_page($nlId, $wikiPageName) {
-		$query = "delete from `tiki_newsletter_pages` where `nlId`=? and `wikiPageName`=?";
-		$this->query($query, array( (int)$nlId, $wikiPageName), -1, -1, false);
-	}
-
-	function list_newsletter_pages($nlId, $offset=-1, $maxRecords=-1, $sort_mode='wikiPageName_asc', $find='') {
-		$bindvars = array((int)$nlId);
-		if ($find) {
-			$findesc = '%' . $find . '%';
-			$mid = " where `nlId`=? and `wikiPageName` like ?";
-			$bindvars[] = $findesc;
-		} else {
-			$mid = " where `nlId`=? ";
-		}
-
-		$query = "select * from `tiki_newsletter_pages` $mid order by ".$this->convertSortMode("$sort_mode");
-		$query_cant = "select count(*) from `tiki_newsletter_pages` $mid";
-		$result = $this->query($query,$bindvars,$maxRecords,$offset);
-		$cant = $this->getOne($query_cant,$bindvars);
-		$ret = array();
-
-		while ($res = $result->fetchRow()) {
-			$ret[] = $res;
-		}
-		$retval = array();
-		$retval["data"] = $ret;
-		$retval["cant"] = $cant;
-		return $retval;
-	}
-	// info: subject, data, datatxt, dataparsed, wysiwyg, sendingUniqId, files, errorEditionId, editionId
-	// browser: true if on the browser
-	function send($nl_info, $info, $browser=true, &$sent, &$errors, &$logFileName) {
-		global $prefs, $smarty, $userlib, $tikilib;
-		global $headerlib; include_once('lib\headerlib.php');
-		if (empty($info['editionId'])) {
-			$info['editionId'] = $this->replace_edition($nl_info['nlId'], $info['subject'], $info['data'], 0, 0, true, $info['datatxt'], $info['files'], $info['wysiwyg']);
-		}
-		$sent = array();
-		$errors = array();
-		$logFileName = $prefs['tmpDir'] . '/public/newsletter-log-' . $info['editionId'] . '.txt';
-		if (($logFileHandle = fopen( $logFileName, 'a' )) == false) {
-			$logFileName = '';
-		}
-		include_once ('lib/webmail/tikimaillib.php');
-		$mail = new TikiMail();
-
-		// build the html
-		$beginHtml = '<body><div id="tiki-center" class="clearfix content"><div class="wiitext">';
-		$endHtml = '</div></div></body>';
-		if (stristr($info['dataparsed'], '<body') === false) {
-			$html = "<html>$beginHtml" . $tikilib->parse_data($info['dataparsed'], array('absolute_links' => true, 'suppress_icons' => true)) . "$endHtml</html>";
-		} else {
-			$html = str_ireplace('<body>', $beginHtml,$info['dataparsed']);
-			$html = str_ireplace('</body>', $endHtml, $html);
-		}
-
-		if ($nl_info['allowArticleClip'] == 'y' && $nl_info['autoArticleClip'] == 'y') {
-			$articleClip = $tis->clip_articles($nl_info['nlId']);
-			$txtArticleClip = generateTxtVersion($articleClip);
-			$info['datatxt'] = str_replace('~~~articleclip~~~', $txtArticleClip, $info['datatxt']);
-			$html = str_replace('~~~articleclip~~~', $articleClip, $html);
-		}
-
-		if (stristr($html, '<base') === false) {
-			if (stristr($html, '<header') === false) {
-				$html = str_ireplace('<html>', "<html><header><base href=\"$base_url\" /><style type=\"text/css\">" . $headerlib->get_all_css_content() . "</style></header>", $html);
-			} else {
-				$html = str_ireplace('<header>', "<header><base href=\"$base_url\" />", $html);
-			}
-		}
-
-		//users
-		if (isset($edition_info['errorEditionId'])) {
-			$users = $this->get_edition_errors($edition_info['errorEditionId']);
-		} else {
-			$users = $this->get_all_subscribers($nl_info['nlId'], $nl_info['unsubMsg'] == 'y');
-		}
-		$this->memo_subscribers_edition($info['editionId'], $users);
-	
-		// files
-		if (!isset($info['files']) || $info['files'] === null || count($info['files']) <= 0) {
-			$info['files'] = $this->get_edition_files($edition['editionId']);
-		}
-		foreach($info['files'] as $f) {
-			$fpath = isset($f['path']) ? $f['path'] : $prefs['tmpDir'] . '/newsletterfile-' . $f['filename'];
-			$mail->addAttachment(file_get_contents($fpath), $f['name'], $f['type']);
-		}
-		$smarty->assign('sectionClass', empty( $section ) ? '' : "tiki_$section " );
-		if ($browser) {
-			echo $smarty->fetch('send_newsletter_header.tpl');
-		}
-
-		if ($browser) {
-			@ini_set('zlib.output_compression', 0);
-		}
-		foreach ($users as $us) {
-			$userEmail = $us['login'];
-			$email = $us['email'];
-			if ($userEmail == '') {
-				$userEmail = $userlib->get_user_by_email($email);
-			}
-			$email = trim($email);
-			if (in_array($email, $sent))
-				continue; // do not send the mail again
-			if (!preg_match('/([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+/', trim($email))) {
-				$errors[] = array("user" => $userEmail, "email" => $email, "msg" => tra("invalid email"));
-				continue;
-			}
-			if ($userEmail) {
-				$mail->setUser($userEmail);
-			} else {
-				$userEmail = '';
-			}
-			if (!empty($info['replyto'])) {
-				$mail->setHeader('Reply-To', $info['replyto']);
-			}
-			$mail->setSubject($info['subject']); // htmlMimeMail memorised the encoded subject
-			$languageEmail = !$userEmail ? $prefs['site_language'] : $tikilib->get_user_preference($userEmail, "language", $prefs['site_language']);
-			if ($nl_info["unsubMsg"] == 'y' && !empty($us["code"])) {
-				$unsubmsg = $this->get_unsub_msg($_REQUEST["nlId"], $email, $languageEmail, $us["code"], $userEmail);
-				if (stristr($html, '</body>') === false) {
-					$msg = $html . $unsubmsg;
-				} else {
-					$msg = str_replace("</body>", nl2br($unsubmsg) . "</body>", $html);
-				}
-			} else {
-				$msg = $html;
-			}
-			$mail->setHtml($msg, $txt . strip_tags($unsubmsg));
-			$mail->buildMessage(array('text_encoding' => '8bit'));
-
-
-			if ($browser) {
-				if (@ob_get_level() == 0)
-					@ob_start();
-				// Browsers needs a certain amount of data, for each flush, to display something
-				print str_repeat(' ', 4096) . "\n";
-				print tra("Sending to") . " '<b>$email</b>': <font color=";
-			}
-
-			if ( $mail->send(array($email)) ) {
-				$sent[] = $email;
-				if ($browser)
-					print "'green'>" . tra('OK');
-				$this->delete_edition_subscriber($info['editionId'], $us);
-				$logStatus = 'OK';
-			} else {
-				if ($browser)
-					print "'red'>" . tra('Error') . " - {$mail->errors}";
-				$errors[] = array("user" => $userEmail, "email" => $email, "msg" => $mail->errors);
-				$this->mark_edition_subscriber($info['editionId'], $us);
-				$logStatus = 'Error';
-			}
-
-			if ( $logFileHandle )
-				@fwrite( $logFileHandle, "$email : $logStatus\n" );
-
-			if ($browser) {
-				print "</font><br />\n";
-
-				// Flush output to force the browser to display email addresses as soon as emails are sent
-				// This should avoid CGI and/or proxy and/or browser timeouts when sending to a lot of emails
-				@ob_flush();
-				@flush();
-				@ob_end_flush();
-			}
-		}
-		$info['editionId'] = $this->replace_edition($nl_info['nlId'], $info['subject'], $info['data'], count($sent), $info['editionId'], false, !empty($info['datatxt']) ? $txt : '', $info['files'], $info['wysiwyg']);
-		foreach($info['files'] as $k => $f) {
-			if ($f['savestate'] == 'tikitemp') {
-				$newpath = $prefs['tmpDir'] . '/newsletterfile-' . $f['filename'];
-				rename($f['path'], $newpath);
-				unlink($f['path'] . '.infos');
-				$info['files'][$k]['savestate'] = 'tiki';
-				$info['files'][$k]['path'] = $newpath;
-			}
-		}
-		if ($logFileHandle) {
-			@fclose( $logFileHandle );
-		}
-	}
-
-
 }
-
 $nllib = new NlLib;

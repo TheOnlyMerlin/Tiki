@@ -90,7 +90,7 @@ function listfgal_pref()
  */
 function listforum_pref()
 {
-	include_once ('lib/comments/commentslib.php');
+	include_once ('lib/commentslib.php');
 	$commentslib = new Comments();
 	$allforums = $commentslib->list_forums(0, -1, 'name_desc', '');
 
@@ -115,9 +115,9 @@ function listforum_pref()
  */
 function listblog_pref()
 {
-	global $bloglib; require_once('lib/blogs/bloglib.php');
+	global $tikilib;
 
-	$allblogs = $bloglib->list_blogs(0, -1, 'created_desc', '');
+	$allblogs = $tikilib->list_blogs(0, -1, 'created_desc', '');
 	$listblogs = array();
 
 	if ($allblogs['cant'] > 0) {

@@ -3,7 +3,7 @@
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: wikiplugin_freetagged.php 26601 2010-04-13 11:25:49Z jonnybradley $
 
 /**
  * Freetagged plugin (derived from Title Search Plugin)

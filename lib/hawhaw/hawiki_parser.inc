@@ -1,6 +1,6 @@
 <?php
 
-// HAWIKI parser for Tiki
+// HAWIKI parser for Tikiwiki
 // Last modified: 5. June 2005
 
 // token definitions
@@ -28,7 +28,7 @@ define("HAWIKI_TOKEN_DUMMY",      20);
 
 function HAWIKI_parser(&$input, $isFirstColumn)
 {
-  // lexical analyser for tiki pages
+  // lexical analyser for tikiwiki pages
 
   $po = array(); // array for parser output
 
@@ -239,7 +239,7 @@ function HAWIKI_parser(&$input, $isFirstColumn)
 
     if (count($link) > 2)
     {
-      // hawhaw voice specific enhancement (not part of Tiki syntax!)
+      // hawhaw voice specific enhancement (not part of Tikiwiki syntax!)
       if (preg_match("/^dtmf=([0-9\*#])$/", $link[2], $matches))
       {
         // forced assignment of given dtmf key to linked wiki page

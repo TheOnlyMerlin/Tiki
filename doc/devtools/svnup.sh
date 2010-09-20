@@ -32,7 +32,7 @@
 # of shell and PHP scripts to install, update, backup, 
 # restore and monitor (check security of) a large number 
 # of Tiki installations (instances).
-# http://doc.tiki.org/TRIM 
+# http://doc.tikiwiki.org/TRIM 
 #
 # TODO:
 # Add option to have this information in html comments instead of visible to the public

@@ -11,18 +11,18 @@
   <br />
 {/if}
 <form method="post" action="tiki-edit_wiki_section.php" id='editwikiform'>
-<table class="formcolor">
-<tr>
+<table class="normal">
+<tr class="formcolor">
   <td>{tr}Edit{/tr}:
   </td>
   <td>
-    {toolbars area_id='editwiki'}
+    {toolbars area_name='editwiki'}
     <textarea class="wikiedit" id="editwiki" name="data" rows="{$rows}" cols="{$cols}">{$data|escape}</textarea>
     <input type="hidden" name="rows" value="{$rows}"/>
     <input type="hidden" name="cols" value="{$cols}"/>
   </td>
 </tr>
-<tr><td colspan="3">
+<tr><td class="formcolor" colspan="3">
 <input type="hidden" name="referer" value="{$referer}" />
 <input type="hidden" name="title" value="{$title}" />
 <input type="hidden" name="object" value="{$object}" />
@@ -30,7 +30,7 @@
 {if isset($pos)}<input type="hidden" name="pos" value="{$pos}" />{/if}
 {if isset($cell)}<input type="hidden" name="cell" value="{$cell}" />{/if}
 {if isset($hdr)}<input type="hidden" name="hdr" value="{$hdr}" />{/if}
-{if $prefs.ajax_autosave eq "y"}
+{if $prefs.feature_ajax_autosave eq "y"}
 	{button _title="{tr}Preview your changes in a separate window.{/tr}" _class="wikiaction tips" _text="{tr}Live Preview{/tr}" _ajax="n" _onclick="ajax_preview(); return false;"}&nbsp;&nbsp;
 {/if}
 <input type="submit" title="{tr}Preview your changes.{/tr}" class="wikiaction tips" name="preview" value="{tr}Preview{/tr}" />&nbsp;&nbsp;

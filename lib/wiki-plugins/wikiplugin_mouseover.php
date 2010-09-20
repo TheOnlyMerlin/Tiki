@@ -6,7 +6,7 @@
 // $Id$
 
 /*
- * Plugin mouseover
+ * PLugin mouseover - See documentation http://www.bosrup.com/web/overlib/?Documentation
  */
 function wikiplugin_mouseover_help() {
 	return tra("Create a mouseover feature on some text").":<br />~np~{MOUSEOVER(url=url,text=text,parse=y,width=300,height=300)}".tra('text')."{MOUSEOVER}~/np~";
@@ -47,42 +47,36 @@ function wikiplugin_mouseover_info() {
 				'name' => tra('Text'),
 				'description' => tra('DEPRECATED').' '.tra('Text displayed on the mouseover. The body contains the text of the page.'),
 				'filter' => 'striptags',
-				'advanced' => true,
 			),
 			'width' => array(
 				'required' => false,
 				'name' => tra('Width'),
 				'description' => tra('Mouseover box width. Default: 400px'),
 				'filter' => 'digits',
-				'advanced' => true,
 			),
 			'height' => array(
 				'required' => false,
 				'name' => tra('Height'),
 				'description' => tra('Mouseover box height. Default: 200px'),
 				'filter' => 'digits',
-				'advanced' => true,
 			),
 			'offsetx' => array(
 				'required' => false,
 				'name' => tra('Offset X'),
 				'description' => tra('Shifts the overlay to the right by the specified number of pixels relative to the cursor. Default: 5px'),
 				'filter' => 'digits',
-				'advanced' => true,
 			),
 			'offsety' => array(
 				'required' => false,
 				'name' => tra('Offset Y'),
 				'description' => tra('Shifts the overlay lower by the specified number of pixels relative to the cursor. Default: 0px'),
 				'filter' => 'digits',
-				'advanced' => true,
 			),
 			'parse' => array(
 				'required' => false,
 				'name' => tra('Parse Body'),
 				'description' => tra('y|n, parse the body of the plugin as wiki content. (Default to y)'),
 				'filter' => 'alpha',
-				'advanced' => true,
 			),
 			'parselabel' => array(
 				'required' => false,
@@ -90,42 +84,36 @@ function wikiplugin_mouseover_info() {
 				'description' => 'y|n '.tra('parse label'),
 				'filter' => 'alpha',
 				'default' => 'y',
-				'advanced' => true,
 			),
 			'class' => array(
 				'required' => false,
 				'name' => tra('CSS Class'),
 				'description' => 'Default: plugin-mouseover',
 				'filter' => 'alpha',
-				'advanced' => true,
 			),
 			'bgcolor' => array(
 				'required' => false,
 				'name' => tra('Background color of the popup'),
 				'description' => tra(''),
 				'filter' => 'striptags',
-				'advanced' => true,
 			),
 			'textcolor' => array(
 				'required' => false,
 				'name' => tra('Text color in the popup'),
 				'description' => tra(''),
 				'filter' => 'striptags',
-				'advanced' => true,
 			),
 			'sticky' => array(
 				'required' => false,
 				'name' => tra('Sticky'),
 				'description' => 'y|n, when enabled, popup stays visible until it is clicked.',
 				'filter' => 'alpha',
-				'advanced' => true,
 			),				
 			'padding' => array(
 				'required' => false,
 				'name' => tra('Padding'),
 				'description' => 'Default: 5px',
 				'filter' => 'digits',
-				'advanced' => true,
 			),
 			'effect' => array(
 				'required' => false,
@@ -133,7 +121,6 @@ function wikiplugin_mouseover_info() {
 				'options' => $jqfx,
 				'description' => 'Show/hide animation',
 				'filter' => 'striptags',
-				'advanced' => true,
 			),
 			'speed' => array(
 				'required' => false,
@@ -145,14 +132,12 @@ function wikiplugin_mouseover_info() {
 				),
 				'description' => '',
 				'filter' => 'alpha',
-				'advanced' => true,
 			),
 			'closeDelay' => array(
 				'required' => false,
 				'name' => tra('Close delay'),
 				'description' => 'Number of seconds before popup closes',
 				'filter' => 'digits',
-				'advanced' => true,
 			),
 		),
 	);
@@ -173,7 +158,7 @@ function wikiplugin_mouseover( $data, $params ) {
 	$height = isset( $params['height'] ) ? (int) $params['height'] : 200;
 	$offsetx = isset( $params['offsetx'] ) ? (int) $params['offsetx'] : 5;
 	$offsety = isset( $params['offsety'] ) ? (int) $params['offsety'] : 0;
-	$parse = ! isset($params['parse']) || (strcasecmp($params['parse'], 'n') != 0);
+	$parse = ! isset($params['parse']) || $params['parse'] != 'n';
 	$sticky = isset($params['sticky']) && $params['sticky'] == 'y';
 	$padding = isset( $params['padding'] ) ? 'padding: '.$params['padding'].'px;' : '';
 	$effect = !isset( $params['effect'] ) || $params['effect'] == 'Default' ? '' : strtolower($params['effect']);
@@ -217,12 +202,12 @@ function wikiplugin_mouseover( $data, $params ) {
 		$closeDelayStr = '';
 	}
 
-	$js = "\$('#$id-link').mouseover(function(event) {
-	\$('#$id').css('left', event.pageX + $offsetx).css('top', event.pageY + $offsety); showJQ('#$id', '$effect', '$speed'); $closeDelayStr });";
+	$js = "\$jq('#$id-link').mouseover(function(event) {
+	\$jq('#$id').css('left', event.pageX + $offsetx).css('top', event.pageY + $offsety); showJQ('#$id', '$effect', '$speed'); $closeDelayStr });";
 	if ($sticky) {
-		$js .= "\$('#$id').click(function(event) { hideJQ('#$id', '$effect', '$speed'); }).css('cursor','pointer');\n";
+		$js .= "\$jq('#$id').click(function(event) { hideJQ('#$id', '$effect', '$speed'); }).css('cursor','pointer');\n";
 	} else {
-		$js .= "\$('#$id-link').mouseout(function(event) { setTimeout(function() {hideJQ('#$id', '$effect', '$speed')}, ".($closeDelay * 1000)."); });";
+		$js .= "\$jq('#$id-link').mouseout(function(event) { setTimeout(function() {hideJQ('#$id', '$effect', '$speed')}, ".($closeDelay * 1000)."); });";
 	}
 	$headerlib->add_jq_onready($js);
 	

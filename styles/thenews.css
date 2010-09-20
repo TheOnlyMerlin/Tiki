@@ -1,7 +1,7 @@
 /* 
  * The News theme for Tiki CMS/Groupware -- uses the layout methods of litecss,
  * source ordered layout solution by luci (http://sourceforge.net/projects/litecss).
- * For more information, please visit http://themes.tiki.org or http://zukakakina.com.
+ * For more information, please visit http://themes.tikiwiki.org or http://zukakakina.com.
  * Released under LPGL license. */
 
 /* Import *lite as the base: */
@@ -342,23 +342,19 @@ a.flip:hover {
 	color: #505050;
 }
 
-.tellafriend,
-.share {
+.tellafriend {
 	margin-right: 2px;
 }
 
-.tellafriend a,
-.share a {
+.tellafriend a {
 	color: #adbac3;
 }
 
-.tellafriend a:hover,
-.share a:hover {
+.tellafriend a:hover {
 	color: #505050;
 }
 
-.fullscreen .tellafriend,
-.fullscreen .share {
+.fullscreen .tellafriend {
 	margin-top: 2px;
 }
 

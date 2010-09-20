@@ -38,11 +38,9 @@
 			<input type="hidden" name="save[calitemId]" value="{$id}" />
 		{/if}
 {/if}
-{if $prefs.calendar_addtogooglecal == 'y'}
-	{wikiplugin _name="addtogooglecal" calitemid=$id}{/wikiplugin}
-{/if}
-<table class="formcolor{if !$edit} vevent{/if}">
-<tr>
+
+<table class="normal{if !$edit} vevent{/if}">
+<tr class="formcolor">
 	<td>{tr}Calendar{/tr}</td>
 	<td style="background-color:#{$calendar.custombgcolor};color:#{$calendar.customfgcolor};">
 {if $edit}
@@ -74,7 +72,7 @@
 	</td>
 </tr>
 
-<tr>
+<tr class="formcolor">
 <td>{tr}Title{/tr}</td>
 <td>
 {if $edit}
@@ -84,7 +82,7 @@
 {/if}
 </td>
 </tr>
-<tr>
+<tr class="formcolor">
 	<td>{tr}Recurrence{/tr}</td>
 	<td>
 {if $edit}
@@ -99,7 +97,7 @@
 {/if}
 	</td>
 </tr>
-<tr>
+<tr class="formcolor">
 	<td>&nbsp;</td>
 	<td style="padding:5px 10px">
 {if $edit}
@@ -221,7 +219,7 @@
 {/if}
 	</td>
 </tr>
-<tr>
+<tr class="formcolor">
 <td>{tr}Start{/tr}</td>
 <td>
 {if $edit}
@@ -293,7 +291,7 @@
 {/if}
 </td>
 </tr>
-<tr>
+<tr class="formcolor">
 	<td>{tr}End{/tr}</td><td>
 	{if $edit}
 		<input type="hidden" name="save[end_or_duration]" value="end" id="end_or_duration" />
@@ -380,11 +378,16 @@
 {/if}
 </td>
 </tr>
-<tr>
+<tr class="formcolor">
 <td>{tr}Description{/tr}
+{if $edit}
+  <br /><br />
+  {include file='textareasize.tpl' area_name="editwiki" formId="editcalitem"}<br /><br />
+{/if}
+
 </td><td>
 {if $edit}
-  {toolbars area_id="save[description]"}
+  {toolbars area_name="save[description]"}
   <textarea id='editwiki' class="wikiedit" cols="{$cols}" rows="{$rows}" name="save[description]" style="width:98%">{$calitem.description|escape}</textarea>
   <input type="hidden" name="rows" value="{$rows}"/>
   <input type="hidden" name="cols" value="{$cols}"/>
@@ -394,7 +397,7 @@
 </td></tr>
 
 {if $calendar.customstatus ne 'n'}
-<tr><td>{tr}Status{/tr}</td><td>
+<tr class="formcolor"><td>{tr}Status{/tr}</td><td>
 
 <div class="statusbox{if $calitem.status eq 0} status0{/if}">
 {if $edit}
@@ -424,7 +427,7 @@
 {/if}
 
 {if $calendar.custompriorities eq 'y'}
-<tr><td>
+<tr class="formcolor"><td>
 {tr}Priority{/tr}</td><td>
 {if $edit}
 <select name="save[priority]" style="background-color:#{$listprioritycolors[$calitem.priority]};font-size:150%;"
@@ -439,8 +442,8 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 
 </td></tr>
 {/if}
-<tr style="display:{if $calendar.customcategories eq 'y'}tablerow{else}none{/if};" id="calcat">
-<td>{tr}Classification{/tr}</td>
+<tr class="formcolor" style="display:{if $calendar.customcategories eq 'y'}tablerow{else}none{/if};" id="calcat">
+<td>{tr}Category{/tr}</td>
 <td>
 {if $edit}
 {if count($listcats)}
@@ -457,7 +460,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 {/if}
 </td>
 </tr>
-<tr style="display:{if $calendar.customlocations eq 'y'}tablerow{else}none{/if};" id="calloc">
+<tr class="formcolor" style="display:{if $calendar.customlocations eq 'y'}tablerow{else}none{/if};" id="calloc">
 <td>{tr}Location{/tr}</td>
 <td>
 {if $edit}
@@ -475,7 +478,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 {/if}
 </td>
 </tr>
-<tr>
+<tr class="formcolor">
 <td>{tr}URL{/tr}</td>
 <td>
 {if $edit}
@@ -485,7 +488,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 {/if}
 </td>
 </tr>
-<tr style="display:{if $calendar.customlanguages eq 'y'}tablerow{else}none{/if};" id="callang">
+<tr class="formcolor" style="display:{if $calendar.customlanguages eq 'y'}tablerow{else}none{/if};" id="callang">
 <td>{tr}Language{/tr}</td>
 <td>
 {if $edit}
@@ -503,7 +506,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 
 {if $groupforalert ne ''}
 {if $showeachuser eq 'y' }
-<tr>
+<tr class="formcolor">
 <td>{tr}Choose users to alert{/tr}</td>
 <td>
 {/if}
@@ -520,10 +523,10 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 
 
 {if $calendar.customparticipants eq 'y'}
-	<tr><td colspan="2">&nbsp;</td></tr>
+	<tr class="formcolor"><td colspan="2">&nbsp;</td></tr>
 {/if}
 
-<tr style="display:{if $calendar.customparticipants eq 'y'}tablerow{else}none{/if};" id="calorg">
+<tr class="formcolor" style="display:{if $calendar.customparticipants eq 'y'}tablerow{else}none{/if};" id="calorg">
 <td>{tr}Organized by{/tr}</td>
 <td>
 {if $edit}
@@ -540,7 +543,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 </td>
 </tr>
 
-<tr style="display:{if $calendar.customparticipants eq 'y'}tablerow{else}none{/if};" id="calpart">
+<tr class="formcolor" style="display:{if $calendar.customparticipants eq 'y'}tablerow{else}none{/if};" id="calpart">
 <td>{tr}Participants{/tr}
 {if $edit}
 <a href="#" onclick="flip('calparthelp');">{icon _id='help'}</a>
@@ -556,22 +559,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 {else}
 {foreach item=ppl from=$calitem.participants}
 {$ppl.name|userlink} {if $listroles[$ppl.role]}({$listroles[$ppl.role]}){/if}<br />
-{if $ppl.name eq $user}{assign var='in_particip' value='y'}{/if}
 {/foreach}
-{if $tiki_p_calendar_add_my_particip eq 'y'}
-	{if $in_particip eq 'y'}
-		{button _text="{tr}Withdraw me from the list of participants{/tr}" href="?del_me=y&viewcalitemId=$id"}
-	{else}
-		{button _text="{tr}Add me to the list of participants{/tr}" href="?add_me=y&viewcalitemId=$id"}
-	{/if}
-{/if}
-{if $tiki_p_calendar_add_guest_particip eq 'y'}
-	<form action="tiki-calendar_edit_item.php" method="post">
-	<input type ="hidden" name="viewcalitemId" value="{$id}" />
-	<input type="text" name="guests" />{help desc="{tr}Format{/tr}: {tr}Participant names separated by comma{/tr}" url='calendar'}
-	<input type="submit" name="add_guest" value="Add guests" />
-	</form>
-{/if}
 {/if}
 </td>
 </tr>
@@ -611,7 +599,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 </td></tr>
 {/if}
 {if !$user and $prefs.feature_antibot eq 'y'}
-	{include file='antibot.tpl'}
+	{include file='antibot.tpl' tr_style="formcolor"}
 {/if}
 <tr><td><input type="submit" name="act" value="{tr}Save{/tr}" />
 {if $id}&nbsp;<input type="submit" onclick='document.location="tiki-calendar_edit_item.php?calitemId={$id}&amp;delete=y";return false;' value="{tr}Delete event{/tr}"/>{/if}

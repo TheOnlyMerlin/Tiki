@@ -1,4 +1,5 @@
 {* $Id$ *}
+{popup_init src="lib/overlib.js"}
 
 {title help="Users+Management" admpage="login" url="tiki-adminusers.php"}{tr}Admin Users{/tr}{/title}
 
@@ -75,11 +76,11 @@
 			<tr>
 				<td colspan="2"></td>
 				<td colspan="3">
-					<a href="javascript:toggleBlock('search')" class="link">{icon _id='add' alt="{tr}more{/tr}"}&nbsp;{tr}More Criteria{/tr}</a>
+					<a href="javascript:toggleBlock('search')" class="link">{icon _id='add' alt='{tr}more{/tr}'}&nbsp;{tr}More Criteria{/tr}</a>
 				</td>
 			</tr>
 		</table>
-		{jq}$("#find").tiki("autocomplete", "username"){/jq}
+		{jq}$jq("#find").tiki("autocomplete", "username"){/jq}
 
 		<div id="search" {if $filterGroup or $filterEmail}style="display:block;"{else}style="display:none;"{/if}>
 			<table class="findtable">
@@ -134,7 +135,7 @@
 				{if $users[user].editable}
 					{capture assign=username}{$users[user].user|escape}{/capture}
 					<tr class="{cycle}">
-						<td>
+						<td class="thin">
 							{if $users[user].user ne 'admin'}
 								<input type="checkbox" name="checked[]" value="{$users[user].user|escape}" {if $users[user].checked eq 'y'}checked="checked" {/if}/>
 							{/if}
@@ -156,7 +157,7 @@
 							<td>{$users[user].email}</td>
 						{/if}
 						{if $prefs.auth_method eq 'openid'}
-							<td>{$users[user].openid_url|default:"{tr}N{/tr}"}</td>
+							<td>{$users[user].openid_url|default:'{tr}N{/tr}'}</td>
 						{/if}	
 						<td>
 							{if $users[user].currentLogin eq ''}
@@ -171,7 +172,7 @@
 							{/if}
 						</td>
 	
-						<td>
+						<td class="thin">
 							<a class="link" href="tiki-assignuser.php?assign_user={$users[user].user|escape:url}" title="{tr}Assign to group{/tr}">{icon _id='group_key' alt="{tr}Assign{/tr} `$username` {tr}to groups{/tr} "}</a>
 						</td>
 	
@@ -211,7 +212,7 @@
 							{/if}
 		
 							{if $users[user].user ne 'admin'}
-								<a class="link" href="{$smarty.server.PHP_SELF}?{query action=delete user=$users[user].user}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
+								<a class="link" href="{$smarty.server.PHP_SELF}?{query action=delete user=$users[user].user}" title="{tr}Delete{/tr}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 								{if $users[user].valid && $users[user].waiting eq 'a'}
 									<a class="link" href="tiki-login_validate.php?user={$users[user].user|escape:url}&amp;pass={$users[user].valid|escape:url}" title="{tr}Validate user:{/tr} {$users[user].user|username}">{icon _id='accept' alt="{tr}Validate user:{/tr} `$username`"}</a>
 								{/if}
@@ -232,7 +233,7 @@
 			{/section}
 		
 			<tr>
-				<td colspan="18">
+				<td class="form" colspan="18">
 					<a name="multiple"></a>
 					{if $users}
 						<p align="left"> {*on the left to have it close to the checkboxes*}
@@ -312,7 +313,7 @@
 {if $userinfo.userId}
 	{capture assign=add_edit_user_tablabel}{tr}Edit user{/tr} <i>{$userinfo.login|escape}</i>{/capture}
 {else}
-	{assign var=add_edit_user_tablabel value="{tr}Add a New User{/tr}"}
+	{assign var=add_edit_user_tablabel value='{tr}Add a New User{/tr}'}
 {/if}
 
 {tab name=$add_edit_user_tablabel}
@@ -327,8 +328,8 @@
 	{/if}
 	{if $userinfo.editable}
 		<form action="tiki-adminusers.php" method="post" enctype="multipart/form-data" name="RegForm" autocomplete="off">
-			<table class="formcolor">
-				<tr>
+			<table class="normal">
+				<tr class="formcolor">
 					<td><label for="name">
 						{if $prefs.login_is_email eq 'y'}
 							{tr}Email:{/tr}
@@ -368,7 +369,7 @@
 					--> AND Tiki won't create the user in the ldap 
 				*}
 				{if $prefs.auth_method eq 'ldap' and ( $prefs.ldap_create_user_tiki eq 'n' or $prefs.ldap_skip_admin eq 'y' ) and $prefs.ldap_create_user_ldap eq 'n' and $userinfo.login neq 'admin' and $auth_ldap_permit_tiki_users eq 'n'}
-					<tr>
+					<tr class="formcolor">
 						<td colspan="2">
 							<b>{tr}No password is required{/tr}</b>
 							<br />
@@ -376,7 +377,7 @@
 						</td>
 					</tr>
 				{else}
-					<tr>
+					<tr class="formcolor">
 						<td><label for="pass1">{tr}Password:{/tr}</label>{if !$userinfo.userId}<br />({tr}required{/tr}){/if}</td>
 						<td>
 							<input type="password" name="pass" id="pass1" onkeyup="runPassword(this.value, 'mypassword');checkPasswordsMatch('#pass2', '#pass1', '#mypassword2_text')" />
@@ -393,7 +394,7 @@
 							{/if}
 						</td>
 					</tr>
-					<tr>
+					<tr class="formcolor">
 						<td><label for="pass2">{tr}Repeat Password:{/tr}</label>{if !$userinfo.userId}<br />({tr}required{/tr}){/if}</td>
 						<td>
 							<input type="password" name="pass2" id="pass2" onkeyup="checkPasswordsMatch('#pass2', '#pass1', '#mypassword2_text')" />
@@ -406,33 +407,33 @@
 						<tr><td>&nbsp;</td><td>
 							<input id='genepass' name="genepass" type="text" tabindex="0" style="display: none" />
 							{jq}
-								$("#genPass span").click(function () {
-									$('#pass1, #pass2').val('');
-									$('#mypassword_text, #mypassword2_text').hide();
-									$("#genepass").show();
+								$jq("#genPass span").click(function () {
+									$jq('#pass1, #pass2').val('');
+									$jq('#mypassword_text, #mypassword2_text').hide();
+									$jq("#genepass").show();
 								});
-								$("#pass1, #pass2").change(function () {
-									$('#mypassword_text, #mypassword2_text').show();
+								$jq("#pass1, #pass2").change(function () {
+									$jq('#mypassword_text, #mypassword2_text').show();
 									document.RegForm.genepass.value='';
-									$("#genepass").hide();
+									$jq("#genepass").hide();
 								});
 							{/jq}
 							<span id="genPass">{button href="#" _onclick="genPass('genepass');runPassword(document.RegForm.genepass.value, 'mypassword');checkPasswordsMatch('#pass2', '#pass1', '#mypassword2_text');return false;" _text="{tr}Generate a password{/tr}"}</div>
 						</td></tr>
 					{/if}
-					{if $userinfo.login neq 'admin'}
-						<tr>
+					{if $userinfo.login neq 'admin' and empty($userinfo.userId)}
+						<tr class="formcolor">
 							<td>&nbsp;</td>
 							<td>
 								<label><input type="checkbox" name="pass_first_login"{if $userinfo.pass_confirm eq '0'} checked="checked"{/if} /> 
-								{tr}User must change password at next login{/tr}.</label>
+								{tr}User must change password at first login{/tr}.</label>
 							</td>
 						</tr>
 					{/if}
 				{/if}
 				
 				{if $prefs.login_is_email neq 'y'}
-					<tr>
+					<tr class="formcolor">
 						<td><label for="email">{tr}Email:{/tr}</label></td>
 						<td>
 							<input type="text" id="email" name="email" size="30" value="{$userinfo.email|escape}" />
@@ -440,7 +441,7 @@
 					</tr>
 				{/if}
 				{if $userinfo.login neq 'admin' and ($prefs.validateUsers eq 'y' or $prefs.validateRegistration eq 'y')}
-					<tr>
+					<tr class="formcolor">
 						<td>&nbsp;</td>
 						<td>
 							<label><input type="checkbox" name="need_email_validation" {if ($userinfo.login eq '' and ($prefs.validateUsers eq 'y' or $prefs.validateRegistration eq 'y')) or $userinfo.provpass neq ''}checked="checked" {/if}/> 
@@ -452,17 +453,17 @@
 					</tr>
 				{/if}
 				{if $userinfo.userId != 0}
-					<tr>
+					<tr class="formcolor">
 						<td>{tr}Created:{/tr}</td>
 						<td>{$userinfo.created|tiki_long_datetime}</td>
 					</tr>
 					{if $userinfo.login neq 'admin'}
-						<tr>
+						<tr class="formcolor">
 							<td>{tr}Registered:{/tr}</td>
 							<td>{if $userinfo.registrationDate}{$userinfo.registrationDate|tiki_long_datetime}{/if}</td>
 						</tr>
 					{/if}
-					<tr>
+					<tr class="formcolor">
 						<td>{tr}Last Login:{/tr}</td>
 						<td>
 							{if $userinfo.lastLogin}
@@ -471,7 +472,7 @@
 						</td>
 					</tr>
 				{/if}
-				<tr>
+				<tr class="formcolor">
 					<td>&nbsp;</td>
 					<td>
 						{if $userinfo.userId}
@@ -506,12 +507,12 @@
 	<h2>{tr}Batch upload (CSV file):{/tr}</h2>
 
 	<form action="tiki-adminusers.php" method="post" enctype="multipart/form-data">
-		<table class="formcolor">
-			<tr>
+		<table class="normal">
+			<tr class="formcolor">
 				<td>
 					<label for="csvlist">
 						{tr}CSV File:{/tr}
-						{help url="Users+Management#Adding_new_users_in_bulk" desc="{tr}CSV file layout{/tr}: {tr}login,password,email,groups,default_group,realName<br />user1,pass1,email1,group1,group1<br />user2,pass2,email2,"group1,group2",group1{/tr}<br /><br />{tr}Only login, password, email are mandatory.Use an empty password for automatic password generation. Use same login and email if the login use email. Groups are separated by comma. With group name with comma, double the comma.{/tr}"}
+						{help url="Users+Management#Adding_new_users_in_bulk" desc='{tr}CSV file layout{/tr}: {tr}login,password,email,groups,default_group,realName<br />user1,pass1,email1,group1,group1<br />user2,pass2,email2,"group1,group2",group1{/tr}<br /><br />{tr}Only login, password, email are mandatory.Use an empty password for automatic password generation. Use same login and email if the login use email. Groups are separated by comma. With group name with comma, double the comma.{/tr}'}
 					</label>
 				</td>
 				<td>
@@ -532,7 +533,7 @@
                     <label>{tr}Send an email to the user in order to allow him to validate his account.{/tr} <input type="checkbox" name="notification" /></label>
 				</td>
 			</tr>
-			<tr>
+			<tr class="formcolor">
 				<td>&nbsp;</td>
 				<td>
 					<input type="submit" name="batch" value="{tr}Add{/tr}" />

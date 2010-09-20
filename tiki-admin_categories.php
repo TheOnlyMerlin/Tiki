@@ -342,7 +342,7 @@ if( $prefs['feature_file_galleries'] == 'y' ) {
 }
 
 if( $prefs['feature_forums'] == 'y' ) {
-	include_once ('lib/comments/commentslib.php');
+	include_once ('lib/commentslib.php');
 	if (!isset($commentslib)) {
 		$commentslib = new Comments($dbTiki);
 	}
@@ -355,8 +355,7 @@ if( $prefs['feature_polls'] == 'y' ) {
 }
 
 if( $prefs['feature_blogs'] == 'y' ) {
-	require_once('lib/blogs/bloglib.php');
-	$blogs = $bloglib->list_blogs($offset, $maxRecords, 'title_asc', $find_objects);
+	$blogs = $tikilib->list_blogs($offset, $maxRecords, 'title_asc', $find_objects);
 }
 
 if( $prefs['feature_wiki'] == 'y' ) {

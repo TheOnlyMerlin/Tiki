@@ -20,7 +20,7 @@
 	</h2>
 	{if $info.version ne $preview and $tiki_p_rollback eq 'y'}
 		<div class="navbar">
-			{self_link  _script="tiki-rollback.php" page=$page version=$preview _title="{tr}Rollback{/tr}"}{tr}Rollback to this version{/tr}{/self_link}
+			<a href="tiki-rollback.php?page={$page|escape:"url"}&amp;version={$preview}" title="{tr}Rollback{/tr}">{tr}Rollback to this version{/tr}</a>
 		</div>
 	{/if}
 	<div>
@@ -41,7 +41,7 @@
 		{if $info.version eq $source}<small><small>{tr}(current){/tr}</small></small>{/if}
 	</h2>
 	{if $info.version ne $source and $tiki_p_rollback eq 'y'}
-		<div class="navbar">{self_link  _script="tiki-rollback.php" page=$page version=$source _title="{tr}Rollback{/tr}"}{tr}Rollback to this version{/tr}{/self_link}</div>
+		<div class="navbar"><a href="tiki-rollback.php?page={$page|escape:"url"}&amp;version={$source}" title="{tr}Rollback{/tr}">{tr}Rollback to this version{/tr}</a></div>
 	{/if}
 	<div>
 		{if !isset($noHistory)}
@@ -53,7 +53,7 @@
 		{/if}
 	</div>
 	<textarea class="wikiedit readonly" style="width:100%;height:400px" readonly="readonly" id="page_source">{$sourced}</textarea>
-	{if $prefs.feature_jquery_ui eq "y"}{jq}$("#page_source").resizable();{/jq}{/if}
+	{if $prefs.feature_jquery_ui eq "y"}{jq}$jq("#page_source").resizable();{/jq}{/if}
 {/if}
 
 {include file='pagehistory.tpl'}
@@ -70,19 +70,19 @@
 				<div style=" text-align:right;">
 					{if $prefs.javascript_enabled eq "y"}{button _text="{tr}Advanced{/tr}" _id="toggle_diffs" _ajax="n"}
 					{jq}
-$("#toggle_diffs a").click(function(){
-	if ($(this).text() == "{tr}Advanced{/tr}") {
-		$(this).text("{tr}Simple{/tr}");
-		$("#diff_style_all").show().attr("name", "diff_style");
-		$("#diff_style_simple").hide().attr("name", "");
+$jq("#toggle_diffs a").click(function(){
+	if ($jq(this).text() == "{tr}Advanced{/tr}") {
+		$jq(this).text("{tr}Simple{/tr}");
+		$jq("#diff_style_all").show().attr("name", "diff_style");
+		$jq("#diff_style_simple").hide().attr("name", "");
 	} else {
-		$(this).text("{tr}Advanced{/tr}");
-		$("#diff_style_all").hide().attr("name", "");
-		$("#diff_style_simple").show().attr("name", "diff_style");
+		$jq(this).text("{tr}Advanced{/tr}");
+		$jq("#diff_style_all").hide().attr("name", "");
+		$jq("#diff_style_simple").show().attr("name", "diff_style");
 	}
 	return false;
 });
-{{if $diff_style neq "htmldiff" and $diff_style neq "sidediff"}$("#toggle_diffs a").click();{/if}}
+{{if $diff_style neq "htmldiff" and $diff_style neq "sidediff"}$jq("#toggle_diffs a").click();{/if}}
 					{/jq}{/if}
 					<select name="diff_style" id="diff_style_all"{if $prefs.javascript_enabled eq "y"} style="display: none"{/if}>
 						<option value="htmldiff" {if $diff_style == "htmldiff"}selected="selected"{/if}>{tr}HTML diff{/tr}</option>
@@ -141,14 +141,14 @@ $("#toggle_diffs a").click(function(){
 							{if $translation_sources[$info.version]}
 								{foreach item=source from=$translation_sources[$info.version]}
 									<div>
-										{tr}Updated from:{/tr} {self_link  _script="tiki-index.php" page=$source.page|escape}{$source.page}{/self_link} at version {$source.version}
+										{tr}Updated from:{/tr} <a href="tiki-index.php?page={$source.page|escape}">{$source.page}</a> at version {$source.version}
 									</div>
 								{/foreach}
 							{/if}
 							{if $translation_targets[$info.version]}
 								{foreach item=target from=$translation_targets[$info.version]}
 								<div>
-									{tr}Used to update:{/tr} {self_link  _script="tiki-index.php" page=$target.page|escape}{$target.page}{/self_link} to version {$target.version}
+									{tr}Used to update:{/tr} <a href="tiki-index.php?page={$target.page|escape}">{$target.page}</a> to version {$target.version}
 								</div>
 								{/foreach}
 							{/if}
@@ -162,9 +162,9 @@ $("#toggle_diffs a").click(function(){
 							</td>
 						{/if}
 						<td class="odd button">{if $current eq $info.version}<strong>{/if}{$info.version}<br />{tr}Current{/tr}{if $current eq $info.version}</strong>{/if}</td>
-						<td class="odd button">{self_link page=$page preview=$info.version _title="{tr}View{/tr}"}v{/self_link}
+						<td class="odd button">&nbsp;<a class="link" href="tiki-pagehistory.php?page={$page|escape:"url"}&amp;preview={$info.version}" title="{tr}View{/tr}">v</a>
 						{if $tiki_p_wiki_view_source eq "y" and $prefs.feature_source eq "y"}
-							&nbsp;{self_link page=$page source=$info.version _title="{tr}Source{/tr}"}s{/self_link}
+							&nbsp;<a class="link" href="tiki-pagehistory.php?page={$page|escape:"url"}&amp;source={$info.version}" title="{tr}Source{/tr}">s</a>
 						{/if}
 						</td>
 						{if $prefs.default_wiki_diff_style ne "old" and $history}
@@ -179,41 +179,41 @@ $("#toggle_diffs a").click(function(){
 				</tr>
 				{cycle values="odd,even" print=false}
 				{foreach name=hist item=element from=$history}
-					<tr class="{cycle}">
+					<tr>
 						{if $tiki_p_remove eq 'y'}
-							<td class="button"><input type="checkbox" name="hist[{$element.version}]" /></td>
+							<td class="{cycle advance=false} button"><input type="checkbox" name="hist[{$element.version}]" /></td>
 						{/if}
-						<td>{$element.lastModif|tiki_short_datetime}</td>
-						{if $tiki_p_wiki_view_author ne 'n'}<td>{$element.user|userlink}</td>{/if}
-						{if $prefs.feature_wiki_history_ip ne 'n'}<td>{$element.ip}</td>{/if}
-						<td>
+						<td class="{cycle advance=false}">{$element.lastModif|tiki_short_datetime}</td>
+						{if $tiki_p_wiki_view_author ne 'n'}<td class="{cycle advance=false}">{$element.user|userlink}</td>{/if}
+						{if $prefs.feature_wiki_history_ip ne 'n'}<td class="{cycle advance=false}">{$element.ip}</td>{/if}
+						<td class="{cycle advance=false}">
 							{if $element.comment}{$element.comment|escape}{else}&nbsp;{/if}
 							{if $translation_sources[$element.version]}
 								{foreach item=source from=$translation_sources[$element.version]}
 								<div>
-									{tr}Updated from:{/tr} {self_link  _script="tiki-index.php" page=$source.page|escape}{$source.page}{/self_link} at version {$source.version}
+									{tr}Updated from:{/tr} <a href="tiki-index.php?page={$source.page|escape}">{$source.page}</a> at version {$source.version}
 								</div>
 								{/foreach}
 							{/if}
 							{if $translation_targets[$element.version]}
 								{foreach item=target from=$translation_targets[$element.version]}
 								<div>
-									{tr}Used to update:{/tr} {self_link  _script="tiki-index.php" page=$target.page|escape}{$target.page}{/self_link} to version {$target.version}
+									{tr}Used to update:{/tr} <a href="tiki-index.php?page={$target.page|escape}">{$target.page}</a> to version {$target.version}
 								</div>
 								{/foreach}
 							{/if}
 						</td>
 						{if $prefs.feature_contribution eq 'y'}
-							<td>
+							<td class="{cycle advance=false}">
 								{section name=ix loop=$element.contributions}{if !$smarty.section.ix.first}&nbsp;{/if}{$element.contributions[ix].name|escape}{/section}
 							</td>
 						{/if}
 						{if $prefs.feature_contribution eq 'y' and $prefs.feature_contributor_wiki eq 'y'}
-							<td>
+							<td class="{cycle advance=false}">
 								{section name=ix loop=$element.contributors}{if !$smarty.section.ix.first},{/if}{$element.contributors[ix].login|username}{/section}
 							</td>
 						{/if}
-						<td class="button">
+						<td class="{cycle advance=false} button">
 							{if $current eq $element.version}<strong>{/if}
 							{if $show_all_versions eq "n" and not empty($element.session)}
 								<em>{$element.session} - {$element.version}</em>
@@ -222,21 +222,22 @@ $("#toggle_diffs a").click(function(){
 							{/if}
 							{if $current eq $element.version}</strong>{/if}
 						</td>
-						<td class="button">
-							{self_link page=$page preview=$element.version _title="{tr}View{/tr}"}v{/self_link}
+						<td class="{cycle advance=false} button">
+							&nbsp;<a class="link" href="tiki-pagehistory.php?page={$page|escape:"url"}&amp;preview={$element.version}" title="{tr}View{/tr}">v</a>
 							{if $tiki_p_wiki_view_source eq "y" and $prefs.feature_source eq "y"}
-								&nbsp;{self_link page=$page source=$element.version _title="{tr}Source{/tr}"}s{/self_link}
+								&nbsp;<a class="link" href="tiki-pagehistory.php?page={$page|escape:"url"}&amp;source={$element.version}" title="{tr}Source{/tr}">s</a>
 							{/if}
 							{if $prefs.default_wiki_diff_style eq "old"}
-								&nbsp;{self_link page=$page diff2=$element.version diff_style="sideview" _title="{tr}Compare{/tr}"}c{/self_link}
-								&nbsp;{self_link page=$page diff2=$element.version diff_style="unidiff" _title="{tr}Diff{/tr}"}d{/self_link}
+								&nbsp;<a class="link" href="tiki-pagehistory.php?page={$page|escape:"url"}&amp;diff2={$element.version}&amp;diff_style=sideview" title="{tr}Compare{/tr}">c</a>
+								&nbsp;<a class="link" href="tiki-pagehistory.php?page={$page|escape:"url"}&amp;diff2={$element.version}&amp;diff_style=unidiff" title="{tr}Diff{/tr}">d</a>
 							{/if}
 							{if $tiki_p_rollback eq 'y' && $lock neq true}
-								&nbsp;{self_link  _script="tiki-rollback.php" page=$page version=$element.version _title="{tr}Rollback{/tr}"}b{/self_link}
+								&nbsp;<a class="link" href="tiki-rollback.php?page={$page|escape:"url"}&amp;version={$element.version}" title="{tr}Rollback{/tr}">b</a>
 							{/if}
+							&nbsp;
 						</td>
 						{if $prefs.default_wiki_diff_style ne "old"}
-						<td class="button">
+						<td class="{cycle advance=false} button">
 							{if $show_all_versions eq 'n' and not empty($element.session)}
 								<input type="radio" name="oldver" value="{$element.session}"
 									title="{tr}Older Version{/tr}" {if $old.version == $element.session or (!$smarty.request.diff_style and $smarty.foreach.hist.first)}checked="checked"{/if}/>
@@ -245,7 +246,7 @@ $("#toggle_diffs a").click(function(){
 									title="{tr}Older Version{/tr}" {if $old.version == $element.version or (!$smarty.request.diff_style and $smarty.foreach.hist.first)}checked="checked"{/if}/>
 							{/if}
 						</td>
-						<td class="button">
+						<td class="{cycle} button">
 							{* if $smarty.foreach.hist.last &nbsp; *}
 							<input type="radio" name="newver" value="{$element.version}" title="Select a newer version for comparison" {if $new.version == $element.version}checked="checked"{/if} />
 						</td>

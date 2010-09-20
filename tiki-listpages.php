@@ -11,17 +11,6 @@ require_once ('tiki-setup.php');
 require_once ('lib/ajax/ajaxlib.php');
 $auto_query_args = array('initial', 'maxRecords', 'sort_mode', 'find', 'lang', 'langOrphan', 'findfilter_orphan', 'categId', 'category', 'page_orphans', 'structure_orphans', 'exact_match', 'hits_link_to_all_languages', 'create_new_pages_using_template_name');
 
-if ($prefs["gmap_page_list"] == 'y') {
-	$smarty->assign('gmapbuttons', true);
-} else {
-	$smarty->assign('gmapbuttons', false);
-}
-if (isset($_REQUEST["mapview"]) && $_REQUEST["mapview"] == 'y' && !isset($_REQUEST["searchmap"]) && !isset($_REQUEST["searchlist"]) || isset($_REQUEST["searchmap"]) && !isset($_REQUEST["searchlist"])) {
-	$smarty->assign('mapview', true);
-}
-if (isset($_REQUEST["mapview"]) && $_REQUEST["mapview"] == 'n' && !isset($_REQUEST["searchmap"]) && !isset($_REQUEST["searchlist"]) || isset($_REQUEST["searchlist"]) && !isset($_REQUEST["searchmap"]) ) {
-	$smarty->assign('mapview', false);
-}
 
 if ($prefs['feature_multilingual'] == 'y' && isset($_REQUEST['lang']) && isset($_REQUEST['term_srch'])) {
 	global $multilinguallib;
@@ -283,19 +272,6 @@ if (!empty($multiprint_pages)) {
 		$languages = $tikilib->list_languages(false, 'y');
 		$smarty->assign_by_ref('languages', $languages);
 	}
-	
-	if ($prefs["gmap_page_list"] == 'y') {
-		// Generate Google map plugin data
-		global $gmapobjectarray;
-		$gmapobjectarray = array();
-		foreach ($listpages["data"] as $p) {
-			$gmapobjectarray[] = array('type' => 'wiki page',
-				'id' => $p["pageName"],
-				'title' => $p["pageName"],
-				'href' => "tiki-index.php?page=" . urlencode($p["pageName"]) . "&bl=y",
-			);
-		}
-	}
 	$smarty->assign_by_ref('listpages', $listpages["data"]);
 	$smarty->assign_by_ref('cant', $listpages['cant']);
 	ask_ticket('list-pages');
@@ -327,7 +303,7 @@ if (!empty($multiprint_pages)) {
 			require_once 'lib/ointegratelib.php';
 			$response = OIntegrate_Response::create(array('list' => $pages), '1.0');
 			$response->addTemplate('smarty', 'tikiwiki', 'files/templates/listpages/smarty-tikiwiki-1.0-shortlist.txt');
-			$response->schemaDocumentation = 'http://dev.tiki.org/WebserviceListpages';
+			$response->schemaDocumentation = 'http://dev.tikiwiki.org/WebserviceListpages';
 			$response->send();
 		}
 	} else {

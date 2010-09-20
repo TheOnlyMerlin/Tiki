@@ -9,7 +9,7 @@ require_once ('tiki-setup.php');
 require_once ('lib/tikilib.php');
 require_once ('lib/trackers/trackerlib.php');
 require_once ('lib/rss/rsslib.php');
-if ($prefs['feed_tracker'] != 'y') {
+if ($prefs['rss_tracker'] != 'y') {
 	$errmsg = tra("rss feed disabled");
 	require_once ('tiki-rss_error.php');
 }
@@ -43,12 +43,12 @@ if ($output["data"] == "EMPTY") {
 		$errmsg = tra("Incorrect param");
 		require_once ('tiki-rss_error.php');
 	}
-	$title = $prefs['feed_tracker_title'] . $tmp["name"];
-	$desc = $prefs['feed_tracker_desc'] . $tmp["description"];
+	$title = tra("Tiki RSS feed for individual trackers: ") . $tmp["name"];
+	$desc = $tmp["description"];
 	$tmp = null;
-	$tmp = $prefs['feed_' . $feed . '_title'];
+	$tmp = $prefs['title_rss_' . $feed];
 	if ($tmp <> '') $title = $tmp;
-	$tmp = $prefs['feed_' . $feed . '_desc'];
+	$tmp = $prefs['desc_rss_' . $feed];
 	if ($desc <> '') $desc = $tmp;
 	$titleId = "rss_subject";
 	$descId = "rss_description";
@@ -98,7 +98,7 @@ if ($output["data"] == "EMPTY") {
 		$errmsg = tra("Permission denied. You cannot view this section");
 		require_once ('tiki-rss_error.php');
 	}
-	$tmp = $trklib->list_items($_REQUEST[$id], 0, $prefs['feed_tracker_max'], $sort_mode, $fields, $filterfield, $filtervalue, $status, null, $exactvalue);
+	$tmp = $trklib->list_items($_REQUEST[$id], 0, $prefs['max_rss_tracker'], $sort_mode, $fields, $filterfield, $filtervalue, $status, null, $exactvalue);
 	foreach($tmp["data"] as $data) {
 		$data[$titleId] = tra('Tracker item:') . ' #' . $data[$urlparam];
 		$data[$descId] = '';

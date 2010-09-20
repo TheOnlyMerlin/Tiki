@@ -32,5 +32,4 @@ if( $prefs['users_serve_avatar_static'] == 'y' ) {
 	$image = "temp/public/$tikidomain/avatar_{$_REQUEST['user']}.$ext";
 
 	file_put_contents( $image, $info['avatarData'] );
-	chmod($image, 0644);
 }

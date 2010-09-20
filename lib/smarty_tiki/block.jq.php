@@ -21,19 +21,19 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  * 
  * Usage:
  *    {jq [notonready=false|true], [nojquery='Optional markup for when feature_jquery is off']}
- *        $("#exampleId").hide()
+ *        $jq("#exampleId").hide()
  *    {/jq}
  * 
  * Examples:
  * 
  *  Simple, no escaping - result wrapped in {literal}{/literal}
- *    {jq}$(#exampleId").click(function() { alert("Clicked!"); });{/jq}
+ *    {jq}$jq(#exampleId").click(function() { alert("Clicked!"); });{/jq}
  * 
  *  Smarty markup between {{ and }} - result parsed and wrapped in literals
- *    {jq}$(#exampleId").show({{if $animation_fast eq 'y'}"fast"{else}"slow"{/if}}){/jq}
+ *    {jq}$jq(#exampleId").show({{if $animation_fast eq 'y'}"fast"{else}"slow"{/if}}){/jq}
  * 
  *  Escaped already - not re-parsed, not wrapped in literals
- *    {jq}{literal}$(#exampleId").show({/literal}{if $animation_fast eq 'y'}"fast"{else}"slow"{/if}){/jq}
+ *    {jq}{literal}$jq(#exampleId").show({/literal}{if $animation_fast eq 'y'}"fast"{else}"slow"{/if}){/jq}
  */
 
 function smarty_block_jq($params, $content, &$smarty) {

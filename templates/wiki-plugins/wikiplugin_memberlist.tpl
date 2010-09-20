@@ -50,5 +50,5 @@
 	{/if}
 </form>
 {jq}
-$('.username-input').tiki('autocomplete','username');
+$jq('.username-input').tiki('autocomplete','username');
 {/jq}

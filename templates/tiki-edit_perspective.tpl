@@ -2,7 +2,7 @@
 {tabset}
 	{tab name="{tr}List{/tr}"}
 		<a href="tiki-switch_perspective.php">{tr}Return to default perspective{/tr}</a>
-		<table class="normal">
+		<table class="data">
 			<tr>
 				<th>{tr}Perspective{/tr}</th>
 				<th>{tr}Actions{/tr}</th>
@@ -11,15 +11,15 @@
 				<tr>
 					<td>{$persp.name|escape}</td>
 					<td>
-						<a href="tiki-switch_perspective.php?perspective={$persp.perspectiveId|escape:url}">{icon _id=arrow_right alt="{tr}Switch to{/tr}"}</a>
+						<a href="tiki-switch_perspective.php?perspective={$persp.perspectiveId|escape:url}">{icon _id=arrow_right alt='{tr}Switch to{/tr}'}</a>
 						{if $persp.can_edit}
 							{self_link _icon=page_edit action=edit _ajax='y' id=$persp.perspectiveId cookietab=3}{tr}Edit{/tr}{/self_link}
 						{/if}
 						{if $persp.can_remove}
-							{self_link action=remove id=$persp.perspectiveId}{icon _id=cross alt="{tr}Delete{/tr}"}{/self_link}
+							{self_link action=remove id=$persp.perspectiveId}{icon _id=cross alt='{tr}Delete{/tr}'}{/self_link}
 						{/if}
 						{if $persp.can_perms}
-							<a href="tiki-objectpermissions.php?objectName={$persp.name|escape:"url"}&objectType=perspective&permType=perspective&objectId={$persp.perspectiveId|escape:"url"}">{icon _id=key alt="{tr}Permissions{/tr}"}</a>
+							<a href="tiki-objectpermissions.php?objectName={$persp.name|escape:"url"}&objectType=perspective&permType=perspective&objectId={$persp.perspectiveId|escape:"url"}">{icon _id=key alt='{tr}Permissions{/tr}'}</a>
 						{/if}
 					</td>
 				</tr>
@@ -62,19 +62,19 @@
 				<fieldset id="resultzone" class="dropzone" style="text-align: left;"></fieldset>
 			</form>
 			{jq}
-				$('#preferences')
+				$jq('#preferences')
 					.droppable( {
 						activeClass: 'ui-state-highlight',
 						drop: function( e, ui ) {
-							$('#preferences').append( ui.draggable );
-							$(ui.draggable)
+							$jq('#preferences').append( ui.draggable );
+							$jq(ui.draggable)
 								.draggable('destroy')
 								.draggable( {
 									distance: 50,
 									handle: 'label',
 									axis: 'x',
 									stop: function( e, ui ) {
-										$(this).remove();
+										$jq(this).remove();
 									}
 								} );
 						}
@@ -84,14 +84,14 @@
 						handle: 'label',
 						axis: 'x',
 						stop: function( e, ui ) {
-							$(this).remove();
+							$jq(this).remove();
 						}
 					} );
-				$('#searchform').submit( function(e) {
+				$jq('#searchform').submit( function(e) {
 					e.preventDefault();
 					if (typeof ajaxLoadingShow == 'function') { ajaxLoadingShow('resultzone'); }
-					$('#resultzone').load( this.action, $(this).serialize(), function() {
-						$('#resultzone div.adminoptionbox').draggable( {
+					$jq('#resultzone').load( this.action, $jq(this).serialize(), function() {
+						$jq('#resultzone div.adminoptionbox').draggable( {
 							handle: 'label',
 							axis: 'y',
 							helper: 'clone'
