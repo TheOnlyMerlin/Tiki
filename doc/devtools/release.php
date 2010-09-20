@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 // ** This is the main script to release Tiki **
 //
@@ -30,8 +25,6 @@ define( 'LICENSE_FILENAME', 'license.txt' );
 // Display all errors and warnings, including strict level
 define( 'ERROR_REPORTING_LEVEL', E_ALL | E_STRICT );
 error_reporting( ERROR_REPORTING_LEVEL );
-
-chdir(ROOT .'/');
 
 require_once ROOT . '/lib/setup/third_party.php';
 require_once TOOLS . '/svntools.php';
@@ -68,12 +61,12 @@ if ( $isPre ) {
 } else {
 	$pre = '';
 }
-$mainversion = $version{0};
+$mainversion = $version{0} . '.0';
 
 include_once('lib/setup/twversion.class.php');
-$check_version = $version.$subrelease;
+$check_version = strtolower($version.$subrelease);
 $TWV = new TWVersion();
-if ( $TWV->version != $check_version ) {
+if ( strtolower($TWV->version) != $check_version ) {
 	error("The version in the code ".strtolower($TWV->version)." differs from the version provided to the script $check_version.\nThe version should be modified in lib/setup/twversion.class.php to match the released version.");
 }
 
@@ -93,21 +86,21 @@ if ( ! $options['no-first-update'] && important_step('Update working copy to the
 }
 
 if ( empty($subrelease) ) {
-	$branch = "branches/$mainversion.x";
+	$branch = "branches/$mainversion";
 	$tag = "tags/$version";
 	$packageVersion = $version;
 	if ( ! empty($pre) )
 		$packageVersion .= ".$pre";
 	$secdbVersion = $version;
 } else {
-	$branch = "branches/$mainversion.x";
+	$branch = "branches/$mainversion";
 	$tag = "tags/$version$subrelease";
 	$packageVersion = "$version.$pre$subrelease";
 	$secdbVersion = "$version$subrelease";
 }
 
 if ( ! $options['no-readme-update'] && important_step("Update '" . README_FILENAME . "' file") ) {
-	update_readme_file($secdbVersion, $version);
+	update_readme_file($packageVersion, $version);
 	info('>> ' . README_FILENAME . ' file updated.');
 	important_step('Commit updated ' . README_FILENAME . ' file', true, "[REL] Update " . README_FILENAME . " file for $secdbVersion");
 }
@@ -140,7 +133,7 @@ if ( ! $options['no-changelog-update'] && important_step("Update '" . CHANGELOG_
 
 $nbCommiters = 0;
 if ( ! $options['no-copyright-update'] && important_step("Update '" . COPYRIGHTS_FILENAME . "' file (using final version number '$version')") ) {
-	if ( $ucf = update_copyright_file($mainversion . '.0') ) {
+	if ( $ucf = update_copyright_file($mainversion) ) {
 		info("\r>> Copyrights updated: "
 			. ( $ucf['newContributors'] == 0 ? 'No new contributor, ' : "+{$ucf['newContributors']} contributor(s), " )
 			. ( $ucf['newCommits'] == 0 ? 'No new commit' : "+{$ucf['newCommits']} commit(s)" )
@@ -313,8 +306,7 @@ function check_smarty_syntax(&$error_msg) {
 	);
 
 	// Load Tiki Smarty
-	require_once 'lib/init/smarty.php';
-	set_error_handler('check_smarty_syntax_error_handler');
+	require_once 'setup_smarty.php';
 
 	$templates_dir = $smarty->template_dir;
 	$templates_dir_length = strlen($templates_dir);
@@ -329,52 +321,25 @@ function check_smarty_syntax(&$error_msg) {
 	for ( $i = 0 ; $i < $nbEntries ; $i++ ) {
 		display_progress_percentage($i, $nbEntries, '%d%% of files passed the Smarty syntax check');
 
-//		try {
-		if (strpos($entries[$i], 'tiki-mods.tpl') === false) {
-			ob_start();
-			$template_file = substr($entries[$i], $templates_dir_length + 1);
-			$smarty->_compile_resource($template_file, $temp_compile_file);
-			$compilation_output = ob_get_clean();
+		ob_start();
+		$template_file = substr($entries[$i], $templates_dir_length + 1);
+		$smarty->_compile_resource($template_file, $temp_compile_file);
+		$compilation_output = ob_get_clean();
 
-			unlink($temp_compile_file);
-		}
-//		} catch (Exception $e) {
-//			$msg = $e->getMessage();
-//			if (0 or strpos($msg, 'tiki-mods.tpl') !== false && strpos($msg, 'revision_compare') !== false) {
-//				print(color("\nNote: ignoring error in tiki-mods.tpl:\n        $msg", 'yellow'));
-//			} else {
-//				$compilation_output = "\n*** " . $e->getMessage();
-//			}
-//		}
+		unlink($temp_compile_file);
 
-	/* This is most odd (jonnyb aug 2010 tiki 5.1)
-	 * 
-	 * There is an "error" in tiki-mods.tpl that causes an error that the existing code (pre r28273) couldn't trap
-	 * I added an Exception which works fine in the debugger but dies in the commend line (unless you supply all
-	 * the "skip" params --no-check-php --no-check-php-warnings etc), when it works as expected.
-	 * 
-	 * Nasty fix now by not checking that file
-	 * Better fix (or TODO KIL mods) required so leaving commented code behond - excuse the mess ;)
-	 */
-		
 		if ( ! empty($compilation_output) ) {
 			$error_msg = "\nError while compiling {$entries[$i]}."
 				. "\nThis may happen if one of the tiki smarty plugins (located in lib/smarty_tiki)"
 				. " used in the template outputs something when loaded (using php include)."
-				. "\nFor example, a white space after the PHP closing TAG of a smarty plugin can cause this.\n"
+				. "\nFor example, a white space after the PHP closing TAG of a smarty plugin can cause this."
 				. trim($compilation_output);
 			return false;
 		}
 	}
-	restore_error_handler();
 
 	echo "\n";
 	return true;
-}
-
-function check_smarty_syntax_error_handler($errno, $errstr, $errfile = '', $errline = 0, $errcontext = array()) {
-//	throw new Exception($errstr);
-	error($errstr);
 }
 
 function check_php_syntax(&$dir, &$error_msg, $hide_php_warnings, $retry = 10) {
@@ -552,7 +517,7 @@ function update_changelog_file($newVersion) {
 		error('The changelog file "' . CHANGELOG . '" is not readable or writable.');
 	
 	$isNewMajorVersion = substr($newVersion, -1) == 0;
-	$releaseNotesURL = '<http://tiki.org/ReleaseNotes'.str_replace('.', '', $newVersion).'>';
+	$releaseNotesURL = '<http://tikiwiki.org/ReleaseNotes'.str_replace('.', '', $newVersion).'>';
 	$parseLogs = $sameFinalVersion = $skipBuffer = false;
 	$lastReleaseMajorNumber = -1;
 	$minRevision = $currentParsedRevision = 0;
@@ -666,7 +631,7 @@ Please note that even more people contributed on various other aspects (document
 bug reporting, testing, etc.)
 
 This is how we implement the Tiki Social Contract.
-http://tiki.org/Social+Contract
+http://tikiwiki.org/Social+Contract
 
 List of members of the Community
 As of $now, the community has:
@@ -819,8 +784,8 @@ function update_readme_file($releaseVersion, $mainVersion) {
 	$copyrights_file = COPYRIGHTS_FILENAME;
 	$license_file = LICENSE_FILENAME;
 
-	$release_notes_url = 'http://tiki.org/ReleaseNotes' . str_replace('.', '', $mainVersion);
-	// For example, Tiki 3.x release notes are on http://tiki.org/ReleaseNotes30
+	$release_notes_url = 'http://tikiwiki.org/ReleaseNotes' . str_replace('.', '', $mainVersion);
+	// For example, Tiki 3.x release notes are on http://tikiwiki.org/ReleaseNotes30
 
 	$readme = <<<EOF
 Tiki! The wiki with a lot of features!
@@ -829,11 +794,11 @@ Version $releaseVersion
 
 DOCUMENTATION
 
-* The documentation for $mainVersion version is ever evolving at http://doc.tiki.org.
+* The documentation for $mainVersion version is under construction on http://doc.tikiwiki.org.
   You're encouraged to contribute.
 
 * It is highly recommended that you refer to the online documentation:
-* http://doc.tiki.org/Installation for a setup guide
+* http://doc.tikiwiki.org/Installation for a setup guide
 
 * Notes about this release are accessible from $release_notes_url
 * Tikiwiki has an active IRC channel, #tikiwiki on irc.freenode.net
@@ -841,11 +806,11 @@ DOCUMENTATION
 INSTALLATION
 
 * There is a file INSTALL in this directory with notes on how to setup and
-  configure Tiki. Again, see http://doc.tiki.org/Installation for the latest install help.
+  configure Tiki. Again, see http://doc.tikiwiki.org/Installation for the latest install help.
 
 UPGRADES
 
-* Read the online instructions if you want to upgrade your Tiki from a previous release http://doc.tiki.org/Upgrade
+* Read the online instructions if you want to upgrade your Tiki from a previous release http://doc.tikiwiki.org/Upgrade
 
 COPYRIGHT
 
@@ -900,28 +865,20 @@ function display_howto() {
    HOWTO release Tiki
 --------------------------
 
-0/ When branching for 5.x, name it branches/5.x to be 
-   clearer than branches/3.0, because branches/5.x is 
-   indeed 5.1, 5.2, etc.
-   http://dev.tiki.org/SVNTips#Handling_branches
-   
 1/ Preliminary manual tasks
-   - Check that all JavaScript can be safely minified with [http://www.jslint.com/|JSLint]
-   - Check DB structure to make sure fresh install and upgrade from previous version have the same structure
-   -- Checkout a fresh Tiki 4.0, upgrade to Tiki5.0 
-   -- Checkout a fresh Tiki5.0
-   -- Compare the mysqldump files of each and resolve any differences 
-   - Run the tiki installer and correct anything obviously wrong
-   - The "function update_readme_file" in this script will output to the top-level README:
-   -- Check if anyone has committed anything manually to README that needs to be brought back into this script
-   -- Check links
-   - Run doc/devtools/securitycheck.php and check each "potentially unsafe" file.
+   - run the tiki installer and correct anything obviously wrong
+   - the "function update_readme_file" in this script will output to the top-level README:
+   -- check if anyone has committed anything manually to README that needs to be brought back into this script
+   -- check links
+   - run doc/devtools/securitycheck.php and check each "potentially unsafe" file.
+   - cd db/convertscripts and run convertsqls.sh
+   --- Check that you do not have spurious quote marks in your db/*.sql file
+   --- the string \" should not appear, if it does, ask nyloth or nkoth3 on IRC
    - in lib/setup/twversion.class.php
      - increment the version number in the constructor
      - update list of valid releases in getVersions()
-		- Make sure you add all Tiki versions (not just the one you are doing now). Ex.: when 5.0 is released, 4.2 will probably exist, and this was added to branches/4.x but not merged by script. 
      - change the version branch to "unstable", "stable", or "head" as explained in that file
-   - Commit your changes with this commit message (change \$VERSION by the version of the release):
+   - commit your changes with this commit message (change \$VERSION by the version of the release):
 	[REL] Preparing \$VERSION release
 
 2/ Create and test pre-release packages by executing the script with the release
@@ -947,12 +904,11 @@ function display_howto() {
 
 7/ Announce the good news on devel mailing-list
    and ask the Communications Team to launch the announce-spreading process as described on
-   http://tiki.org/Communications+Team+Release
+   http://tikiwiki.org/Communications+Team+Release
 
 post/
-   Update appropriate http://tiki.org/stable.version file with new release version
+   Update appropriate http://tikiwiki.org/stable.version file with new release version
    (or ask the TAG to do this)
-   Increment/update lib/setup/twversion.class.php (depending if major or minor release)
 
 All that process has to be relayed on live irc channel : 
 irc://irc.freenode.net/#tikiwiki

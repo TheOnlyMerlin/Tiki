@@ -1030,3 +1030,4 @@ class Spreadsheet_Excel_Writer_Format extends PEAR
         $this->_font_name = $font_family;
     }
 }
+?>

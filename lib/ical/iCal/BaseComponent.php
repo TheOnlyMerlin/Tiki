@@ -44,8 +44,7 @@
  *  @author Gregory Szorc <gregory.szorc@case.edu>
  *  @abstract
  */
-abstract class File_iCal_BaseComponent
-{
+abstract class File_iCal_BaseComponent {
     /**
      *  A document associated with the component
      *
@@ -346,8 +345,7 @@ abstract class File_iCal_BaseComponent
  *  @author Gregory Szorc <gregory.szorc@case.edu>
  *  @abstract
  */
-abstract class File_iCal_BaseComponent_EFJT extends File_iCal_BaseComponent
-{
+abstract class File_iCal_BaseComponent_EFJT extends File_iCal_BaseComponent {
     /**
      *  {@inheritdoc}
      *  @access public
@@ -533,8 +531,7 @@ abstract class File_iCal_BaseComponent_EFJT extends File_iCal_BaseComponent
  *  @package iCal
  *  @abstract
  */
-abstract class File_iCal_BaseComponent_EJT extends File_iCal_BaseComponent_EFJT
-{
+ abstract class File_iCal_BaseComponent_EJT extends File_iCal_BaseComponent_EFJT {
     //make some methods public
     public function addAttachment($a) {
         File_iCal_BaseComponent::addAttachment($a);
@@ -814,8 +811,7 @@ abstract class File_iCal_BaseComponent_EJT extends File_iCal_BaseComponent_EFJT
  *  @package iCal
  *  @abstract
  */
-class File_iCal_BaseComponent_ET extends File_iCal_BaseComponent_EJT
-{
+class File_iCal_BaseComponent_ET extends File_iCal_BaseComponent_EJT {
     function assignFrom($array) 
     {
         foreach($array as $k=>$v) {
@@ -970,3 +966,5 @@ class File_iCal_BaseComponent_ET extends File_iCal_BaseComponent_EJT
     }
 
 }
+
+?>

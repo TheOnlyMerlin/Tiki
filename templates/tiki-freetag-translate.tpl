@@ -10,10 +10,11 @@
 	universal (i.e. is the same tag in all languages) until a language has been set for the tag.{/tr}
 	{tr}Until then, they cannot be translated.{/tr}</p>
 <form method="post" action="tiki-freetag_translate.php">
-	<input type="hidden" name="type" value="{$type|escape}"/>
-	<input type="hidden" name="objId" value="{$objId|escape}"/>
-	<input type="hidden" name="offset" value="{$freetags_offset|escape}"/>
-{jq}
+	<input type="hidden" name="type" value="{$type}"/>
+	<input type="hidden" name="objId" value="{$objId}"/>
+	<script type="text/javascript">
+	<!--//--><![CDATA[//><!--
+	{literal}
 	function show_cleartra_checkboxes()
 	{
 		var table = document.getElementById( 'tagtranslationtable' );
@@ -26,16 +27,13 @@
 
 		document.getElementById('scblink').style.display = 'none';
 	}
-{/jq}
+	{/literal}
+	//--><!]]>
+	</script>
 		
 {button _onclick="javascript:show_cleartra_checkboxes()" id="scblink" _text="{tr}Show checkboxes to clear language information on tags{/tr}"}
 
-<div class="resultspagelinks">
-	{if $previous}<a class="neatlink" href="{$previous|escape}">&laquo; {tr}Previous{/tr}</a>{/if}
-	<a class="neatlink" href="{$next|escape}">{tr}Next{/tr} &raquo;</a>
-</div>
-
-<table class="formcolor" id="tagtranslationtable">
+<table id="tagtranslationtable">
 	<thead>
 		<tr>
 		{foreach item=lang from=$languageList}
@@ -54,7 +52,7 @@
 		</tr>
 	{/if}
 	{foreach item=tag key=group from=$tagList}
-		<tr>
+		<tr class="formcolor">
 		{if $tag[$blank] eq ''}
 		{foreach item=lang from=$languageList}
 		{if $lang neq ''}

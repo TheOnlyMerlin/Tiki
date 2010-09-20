@@ -1,8 +1,8 @@
-{* $Id$ *}
+{* $Id: tiki-adminusers.tpl 14918 2008-09-30 15:28:29Z ricks99 $ *}
 {title admpage="general"}{tr}Log SQL{/tr}{/title}
 
 {if $prefs.log_sql ne 'y'}
-	{remarksbox type="warning" title="{tr}Notice{/tr}"}{tr}This feature is disabled{/tr}<br />{tr}You will not see the latest queries.{/tr}{/remarksbox}
+	{remarksbox type="warning" title="{tr}Notice{/tr}"}}{tr}This feature is disabled{/tr}<br />{tr}You will not see the latest queries.{/tr}{/remarksbox}
 {/if}
 
 <div class="navbar">

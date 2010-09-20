@@ -1,8 +1,8 @@
 {strip}
 {* param: field_value(id, ins_id, type, value,options_array, http_request,flags,defaultvalue, isMandatory, itemChoice, list, isHidden), tiki_p_.... item(creator, my_rate), input_err, ling, groups, item(creator,rating,trackerId)*}
 
-{if $field_value.isMandatory eq 'y' and $showmandatory eq 'y'}
-	<div class="mandatory_field">
+{if $field_value.isMandatory eq 'y'}
+	<span class="mandatory_field">
 {/if}
 
 {* ---- visible admin only ---- *}
@@ -16,11 +16,11 @@
 	{if $field_value.value}{$field_value.value|escape}{/if}
 
 {* -- visible for some groups -- *}
-{elseif !empty($field_value.visibleBy) and !in_array($default_group, $field_value.visibleBy) and !($user eq '' and in_array('Anonymous', $field_value.visibleBy)) and $tiki_p_admin_trackers ne 'y'}
+{elseif !empty($field_value.visibleBy) and !in_array($default_group, $field_value.visibleBy) and $tiki_p_admin_trackers ne 'y'}
 
 {* -- editable for some groups -- *}
-{elseif !empty($field_value.editableBy) and !in_array($default_group, $field_value.editableBy) and !($user eq '' and in_array('Anonymous', $field_value.editableBy)) and $tiki_p_admin_trackers ne 'y'}
-	{include file='tracker_item_field_value.tpl'}
+{elseif !empty($field_value.editableBy) and !in_array($default_group, $field_value.editableBy) and $tiki_p_admin_trackers ne 'y'}
+	{include file="tracker_item_field_value.tpl"}
 
 {* -------------------- system -------------------- *}
 {elseif $field_value.type eq 's' and ($field_value.name eq "Rating" or $field_value.name eq tra("Rating")) and $tiki_p_tracker_vote_ratings eq 'y'}
@@ -31,41 +31,20 @@
 {* -------------------- user selector -------------------- *}
 {elseif $field_value.type eq 'u'}
 	{if empty($field_value.options_array) or ($field_value.options_array[0] !=1 and $field_value.options_array[0] !=2) or $tiki_p_admin_trackers eq 'y'}
-		{if $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y' and $field_value.list|@count > $prefs.user_selector_threshold and $field_value.isMandatory ne 'y'}
-			{* since autocomplete allows blank entry it can't be used for mandatory selection. *}
-			<input id="user_selector_{$field_value.fieldId}" type="text" size="20" name="{$field_value.ins_id}" value="{if $field_value.options_array[0] eq '2'}{$user}{else}{$field_value.value}{/if}" />
-			{if $prefs.user_selector_realnames_tracker == 'y'}
-			{jq}
-				$("#user_selector_{{$field_value.fieldId}}").tiki("autocomplete", "userrealname", {mustMatch: true});
-			{/jq}
-			{else}
-			{jq}
-				$("#user_selector_{{$field_value.fieldId}}").tiki("autocomplete", "username", {mustMatch: true});
-			{/jq}
-			{/if}
-		{else}
 		<select name="{$field_value.ins_id}" {if $field_value.http_request}onchange="selectValues('trackerIdList={$field_value.http_request[0]}&amp;fieldlist={$field_value.http_request[3]}&amp;filterfield={$field_value.http_request[1]}&amp;status={$field_value.http_request[4]}&amp;mandatory={$field_value.http_request[6]}&amp;filtervalue='+escape(this.value),'{$listfields.$fid.http_request[5]}')"{/if}>
-		{if $field_value.isMandatory ne 'y'}
-			<option value=""{if empty($field_value.value) && !empty($item.itemId)} selected="selected"{/if}>{tr}None{/tr}</option>
-		{/if}
+		<option value="">{tr}None{/tr}</option>
 		{foreach key=id item=one from=$field_value.list}
 			{if ( ! isset($field_value.itemChoices) || $field_value.itemChoices|@count eq 0 || in_array($one, $field_value.itemChoices) )}
-				<option value="{$one|escape}"
-				{if empty($item.itemId) and $one eq $user}
-					selected="selected"
-				{elseif $field_value.options_array[0] eq 2 and $one eq $user}
-					selected="selected"
-				{elseif $one eq $field_value.value}
-					selected="selected"
-				{/if}>
-					{$one|username}
-				</option>
+				{if $field_value.options_array[0] ne '2'}
+					<option value="{$one|escape}"{if $one eq $field_value.value} selected="selected"{/if}>{$one|username|escape}</option>
+				{else}
+					<option value="{$one|escape}"{if $one eq $user} selected="selected"{/if}>{$one|username|escape}</option>
+				{/if}
 			{/if}
 		{/foreach}
 		</select>
-		{/if}
 	{else}
-		{$user|username}
+		{$user|username|escape}
 	{/if}
 
 {* -------------------- IP selector -------------------- *}
@@ -82,11 +61,11 @@
 	{if $field_value.options_array[0] eq 0 or $tiki_p_admin_trackers eq 'y'}
 		<select name="{$field_value.ins_id}" {if $field_value.http_request}onchange="selectValues('trackerIdList={$field_value.http_request[0]}&amp;fieldlist={$field_value.http_request[3]}&amp;filterfield={$field_value.http_request[1]}&amp;status={$field_value.http_request[4]}&amp;mandatory={$field_value.http_request[6]}&amp;filtervalue='+escape(this.value),'{$listfields.$fid.http_request[5]}')"{/if}>
 			<option value="">{tr}None{/tr}</option>
-				{foreach from=$field_value.list item=group}
-				{if ( ! isset($field_value.itemChoices) || $field_value.itemChoices|@count eq 0 || in_array($group, $field_value.itemChoices) )}
-					<option value="{$group|escape}" {if $input_err and $field_value.value eq $group} selected="selected"{/if}>{$group|escape}</option>
+				{section name=ux loop=$field_value.list}
+				{if ( ! isset($field_value.itemChoices) || $field_value.itemChoices|@count eq 0 || in_array($groups[ux], $field_value.itemChoices) )}
+					<option value="{$groups[ux]|escape}" {if $input_err and $field_value.value eq $groups[ux]} selected="selected"{/if}>{$groups[ux]}</option>
 				{/if}
-			{/foreach}
+			{/section}
 		</select>
 	{elseif $field_value.options_array[0] eq 1}
 		{if empty($field_value.value)}
@@ -106,20 +85,19 @@
 	{/if}
 	{if $field_value.options_array[1] eq 'd' || $field_value.options_array[1] eq 'm'}
 		<select name="{$field_value.ins_id}[]"{if $field_value.options_array[1] eq 'm'} multiple="multiple"{/if}>
-		{if $field_value.options_array[1] eq 'd' and (empty($field_value.value[0]) or $field_value.isMandatory ne 'y')}
+		{if $field_value.options_array[1] eq 'd' and $field_value.isMandatory ne 'y'}
 	   		<option value=""></option>
 		{/if}
 		{foreach key=ku item=cat from=$field_value.list}
 			<option value="{$cat.categId}"{if (!is_array($field_value.value) and $field_value.value eq $cat.categId) or (is_array($field_value.value) and in_array($cat.categId, $field_value.value))} selected="selected"{/if}>{$cat.name|escape}</option>
 		{/foreach}
-		</select>
 	{else}
 	{assign var=fca value=$field_value.options}
 	<table width="100%">
 		<tr>{cycle name=2_$fca values=",</tr><tr>" advance=false print=false}
 		{foreach key=ku item=iu from=$field_value.list name=eforeach}
 		{assign var=fcat value=$iu.categId }
-		<td width="50%"  class="trackerCategoryName"><input type={if $field_value.options_array[1] eq "radio"}"radio"{else}"checkbox"{/if} name="{$field_value.ins_id}[]" value="{$iu.categId}" id="cat{$iu.categId}" {if (!is_array($field_value.value) and $field_value.value eq $fcat) or (is_array($field_value.value) and in_array($fcat, $field_value.value))} checked="checked"{/if}/><label for="cat{$iu.categId}">{$iu.name|escape}</label></td>{if !$smarty.foreach.eforeach.last}{cycle name=2_$fca}{else}{if $field_value.list|@count%2}<td></td>{/if}{/if}
+		<td width="50%" nowrap="nowrap"><input type={if $field_value.options_array[1] eq "radio"}"radio"{else}"checkbox"{/if} name="{$field_value.ins_id}[]" value="{$iu.categId}" id="cat{$iu.categId}" {if (!is_array($field_value.value) and $field_value.value eq $fcat) or (is_array($field_value.value) and in_array($fcat, $field_value.value))} checked="checked"{/if}/><label for="cat{$iu.categId}">{$iu.name|escape}</label></td>{if !$smarty.foreach.eforeach.last}{cycle name=2_$fca}{else}{if $field_value.list|@count%2}<td></td>{/if}{/if}
 		{/foreach}
 		</tr>
 	</table>
@@ -131,49 +109,44 @@
 	{if $field_value.value ne ''}
 		<br />
 		<img src="{$field_value.value}" alt="" width="{$field_value.options_array[2]}" height="{$field_value.options_array[3]}" />
-		{if $field_value.isMandatory ne 'y'}
-			<a href="{$smarty.server.PHP_SELF}?{query removeImage='y' fieldId=`$field_value.fieldId` itemId=`$item.itemId` trackerId=`$item.trackerId` fieldName=`$field_value.name`}">{icon _id='cross' alt="{tr}Remove Image{/tr}"}</a>
-		{/if}
+		<a href="{$smarty.server.PHP_SELF}?{query removeImage='y' fieldId=`$field_value.fieldId` itemId=`$item.itemId` trackerId=`$item.trackerId` fieldName=`$field_value.name`}">{icon _id='cross' alt='{tr}Remove Image{/tr}'}</a>
    {/if}
 
+{* -------------------- multimedia -------------------- *}
+{elseif $field_value.type eq 'M'}
+	{if ($field_value.options_array[0] > '2')}
+		<input type="file" name="{$field_value.ins_id}"  value="{$field_value.value} />
+	{else}
+		<input type="text" name="{$field_value.ins_id}" value="{$field_value.value}" />
+	{/if}
+	{assign var='Height' value=$prefs.MultimediaDefaultHeight}
+	{assign var='Length' value=$prefs.MultimediaDefaultLength}
+
+	{if $field_value.value ne ''}	
+		{if isset($cur_field.options_array[1]) and $field_value.options_array[1] ne '' } {assign var=$Length value=$field_value.options_array[1] }{/if}
+		{if isset($cur_field.options_array[2]) and $field_value.options_array[2] ne '' } {assign var=$Height value=$field_value.options_array[2] }{/if}
+		{if $ModeVideo eq 'y' } { assign var="Height" value=$Height+$prefs.VideoHeight}{/if}
+		{include file=multiplayer.tpl url=$field_value.value w=$Length h=$Height video=$ModeVideo}
+	{/if}
 
 {* -------------------- file -------------------- *}
 {elseif $field_value.type eq 'A'}
-	{if $tiki_p_attach_trackers ne 'y'}
-		{tr}Permission denied{/tr}
-	{else}
-		<input type="file" name="{$field_value.ins_id}"{if isset($input_err)} value="{$field_value.value}"{/if} />
-	{/if}
-	{if $field_value.value ne ''}
+	<input type="file" name="{$field_value.ins_id}"{if isset($input_err)} value="{$field_value.value}"{/if} />
+	{if !isset($input_err) and $field_value.value ne ''}
 		<br />
 		{$field_value.info.filename}&nbsp;
 		<a href="tiki-download_item_attachment.php?attId={$field_value.value}" title="{tr}Download{/tr}">{icon _id='disk' alt="{tr}Download{/tr}"}</a>
-		{if ($tiki_p_admin_trackers eq 'y' or $field_value.info.user eq $user) and $field_value.isMandatory ne 'y'}
-			<a href="{$smarty.server.PHP_SELF}?{query removeattach=$field_value.value}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
+		{if $tiki_p_admin_trackers eq 'y' or $field_value.info.user eq $user}
+			<a href="{$smarty.server.PHP_SELF}?{query removeattach=$field_value.value}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a>
 		{/if}
 	{/if}
 
-{* -------------------- user groups -------------------- *}
-{elseif $field_value.type eq 'usergroups'}
-	
 {* -------------------- preference --------------------- *}
 {elseif $field_value.type eq 'p'}
 	{if $field_value.options_array[0] eq 'password'}
 		{if ($prefs.auth_method neq 'cas' || ($prefs.cas_skip_admin eq 'y' && $user eq 'admin')) and $prefs.change_password neq 'n'}
 			<input type="password" name="{$field_value.ins_id}" />
 		{/if}
-	{elseif $field_value.options_array[0] eq 'language'}
-		<select name="{$field_value.ins_id}">
-			{section name=ix loop=$languages}
-				{if count($prefs.available_languages) == 0 || in_array($languages[ix].value, $prefs.available_languages)}
-					<option value="{$languages[ix].value|escape}"
-					{if $user_prefs.language eq $languages[ix].value}selected="selected"{/if}>
-					{$languages[ix].name}
-					</option>
-				{/if}
-			{/section}
-			<option value='' {if !$user_prefs.language}selected="selected"{/if}>{tr}Site default{/tr}</option>
-		</select>
 	{else}
 			<input type="text" name="{$field_value.ins_id}" value="{$field_value.value}" />
 	{/if}
@@ -182,74 +155,34 @@
 {elseif $field_value.type eq 't'}
 	{if $field_value.isMultilingual ne 'y'}
 		{*prepend*}{if $field_value.options_array[2]}<span class="formunit">{$field_value.options_array[2]}&nbsp;</span>{/if}
-		<input type="text" id="{$field_value.ins_id|replace:'[':'_'|replace:']':''}" name="{$field_value.ins_id}" {if $field_value.options_array[1]}size="{$field_value.options_array[1]}"{/if} {if $field_value.options_array[4]}maxlength="{$field_value.options_array[4]}"{/if} value="{if $field_value.value}{$field_value.value|escape}{else}{$field_value.defaultvalue|escape}{/if}" />
+		<input type="text" name="{$field_value.ins_id}" {if $field_value.options_array[1]}size="{$field_value.options_array[1]}" maxlength="{$field_value.options_array[1]}"{/if} value="{if $field_value.value}{$field_value.value|escape}{else}{$field_value.defaultvalue|escape}{/if}" />
 		{*append*}{if $field_value.options_array[3]}<span class="formunit">&nbsp;{$field_value.options_array[3]}</span>{/if}
-		{if $field_value.options_array[5] eq 'y' && $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y'}
-			{jq}
-			$("#{{$field_value.ins_id|replace:'[':'_'|replace:']':''}}")
-				.autocomplete('list-tracker_field_values_ajax.php?trackerId={{$item.trackerId}}&fieldId={{$field_value.fieldId}}',
-					{extraParams: {'httpaccept': 'text/javascript'},
-					 dataType: "json",
-					 parse: parseAutoJSON,
-					 formatItem: function(row) { return row; }
-				 	});
-			{/jq}
-		{/if}
 	{else}
-    	{foreach from=$field_value.lingualvalue item=ling name=multi}
-    		<label for="{$field_value.ins_id|replace:'[':'_'|replace:']':''}_{$ling.lang}">{$ling.lang|langname}</label>
-			<br />
+		<table>
+    	{foreach from=$field_value.lingualvalue item=ling}
+    		<tr><td>{$ling.lang}</td><td>
             {*prepend*}{if $field_value.options_array[2]}<span class="formunit">{$field_value.options_array[2]}&nbsp;</span>{/if}
-        	<input type="text" id="{$field_value.ins_id|replace:'[':'_'|replace:']':''}_{$ling.lang}" name="{$field_value.ins_id}[{$ling.lang}]" value="{$ling.value|escape}" {if $field_value.options_array[1]}size="{$field_value.options_array[1]}"{/if} {if $field_value.options_array[4]}maxlength="{$field_value.options_array[4]}"{/if} /> {*@@ missing value*}
+        	<input type="text" name="{$field_value.ins_id}[{$ling.lang}]" value="{$ling.value|escape}" {if $field_value.options_array[1]}size="{$field_value.options_array[1]}" maxlength="{$field_value.options_array[1]}"{/if} /> {*@@ missing value*}
         	{*append*}{if $field_value.options_array[3]}<span class="formunit">&nbsp;{$field_value.options_array[3]}</span>{/if}
-			{if $field_value.options_array[5] eq 'y' && $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y'}
-				{jq}
-				$("#{{$field_value.ins_id|replace:'[':'_'|replace:']':''}_{$ling.lang}}")
-					.autocomplete('list-tracker_field_values_ajax.php?trackerId={{$item.trackerId}}&fieldId={{$field_value.fieldId}}&lang={{$ling.lang}}',
-					{extraParams: {'httpaccept': 'text/javascript'},
-					 dataType: "json",
-					 parse: parseAutoJSON,
-					 formatItem: function(row) { return row; }
-					 });
-				{/jq}
-			{/if}
-			{if !$smarty.foreach.multi.last}<br />{/if}
+    		</td></tr>
 		{/foreach}
+		</table>
 	{/if}
 
 {* -------------------- page selector  -------------------- *}
 {elseif $field_value.type eq 'k'}
-	{if $field_value.options[0] != 1 || $tiki_p_admin_trackers == 'y'}
-		<input type="text" id="page_selector_{$field_value.fieldId}" name="{$field_value.ins_id}" {if $field_value.options_array[1] gt 0}size="{$field_value.options_array[1]}"{/if} value="{if $field_value.value}{$field_value.value|escape}{else}{$field_value.defaultvalue|escape}{/if}" />
-		{if $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y' and $field_value.isMandatory ne 'y'} {* since autocomplete allows blank entry it can't be used for mandatory selection. *}     
-			{jq}
-			$("#page_selector_{{$field_value.fieldId}}").tiki("autocomplete", "pagename" );
-			{/jq}
-		{/if}
-	{else}
-		{$field_value.value|escape}
-	{/if}
+	<input type="text" name="{$field_value.ins_id}" {if $field_value.options_array[1] gt 0}size="{$field_value.options_array[1]}"{/if} value="{if $field_value.value}{$field_value.value|escape}{else}{$field_value.defaultvalue|escape}{/if}" />
+	
 
 {* -------------------- email  -------------------- *}
 {elseif $field_value.type eq 'm'}
-	<input type="text" name="{$field_value.ins_id}" id="{$field_value.ins_id}" value="{$field_value.value|escape}" />
+	<input type="text" name="{$field_value.ins_id}" value="{$field_value.value|escape}" />
 
-{* -------------------- url  -------------------- *}
-{elseif $field_value.type eq 'L'}
-	<input type="text" name="{$field_value.ins_id}" id="{$field_value.ins_id}" value="{$field_value.value|escape}" />
-
-{* -------------------- numeric and currency -------------------- *}
-{elseif $field_value.type eq 'n' or $field_value.type eq 'b'}
-	{*prepend*}
-	{if $field_value.options_array[2]}
-		<span class="formunit">{$field_value.options_array[2]}&nbsp;</span>
-	{/if}
-	<input type="text" class="numeric" name="{$field_value.ins_id}" {if $field_value.options_array[1]}size="{$field_value.options_array[1]}" 
-		 maxlength="{$field_value.options_array[1]}"{/if} value="{$field_value.value|escape}" id="{$field_value.ins_id}" />
-	{*append*}
-	{if $field_value.options_array[3]}
-		<span class="formunit">&nbsp;{$field_value.options_array[3]}</span>
-	{/if}
+{* -------------------- numeric field -------------------- *}
+{elseif $field_value.type eq 'n'}
+	{*prepend*}{if $field_value.options_array[2]}<span class="formunit">{$field_value.options_array[2]}&nbsp;</span>{/if}
+	<input type="text" name="{$field_value.ins_id}" {if $field_value.options_array[1]}size="{$field_value.options_array[1]}" maxlength="{$field_value.options_array[1]}"{/if} value="{$field_value.value|escape}" />
+	{*append*}{if $field_value.options_array[3]}<span class="formunit">&nbsp;{$field_value.options_array[3]}</span>{/if}
 
 {* -------------------- static text -------------------- *}
 {elseif $field_value.type eq 'S'}
@@ -263,49 +196,40 @@
 
 {* -------------------- textarea -------------------- *}
 {elseif $field_value.type eq 'a'}
+	{if $field_value.description}
+		<em>{$field_value.description|escape|nl2br}</em><br />
+	{/if}
 	{if $field_value.isMultilingual ne 'y'}
-		{if $field_value.options_array[2] == 1}
-			{if $field_value.options_array[0] eq 1}
-    			{toolbars qtnum=$field_value.fieldId area_id="area_"|cat:$field_value.fieldId section="trackers"}
-			{/if}
-			<input type="text" id="area_{$field_value.fieldId}" name="{$field_value.ins_id}"{if $field_value.options_array[1] > 0} size="{$field_value.options_array[1]}"{/if}{if $field_value.options_array[3]>0} maxlength="{$field_value.options_array[3]}"{/if} value="{$field_value.value|escape}"{if $field_value.options_array[5]} onkeyup="wordCount({$field_value.options_array[5]}, this, 'cpt_{$field_value.fieldId}', "{tr}Word Limit Exceeded{/tr}")"{/if} {if $field_value.options_array[3]} onkeyup="charCount({$field_value.options_array[3]}, this, 'cpt_{$field_value.fieldId}', "{tr}Character Limit Exceeded{/tr}")"{/if} />
-		{else}
-			{capture name=textarea_id}area_{$field_value.fieldId}{/capture}
-			{capture name=textarea_toolbars}{if $field_value.options_array[0] eq 1}y{else}n{/if}{/capture}
-			{capture name=textarea_cols}{if $field_value.options_array[1] >= 1}{$field_value.options_array[1]}{else}50{/if}{/capture}
-			{capture name=textarea_rows}{if $field_value.options_array[2] >= 1}{$field_value.options_array[2]}{else}4{/if}{/capture}
-			{capture name=textarea_onkeyup}{if $field_value.options_array[5]}wordCount({$field_value.options_array[5]}, this, 'cpt_{$field_value.fieldId}', '{tr}Word Limit Exceeded{/tr}'){elseif $field_value.options_array[3]}charCount({$field_value.options_array[3]}, this, 'cpt_{$field_value.fieldId}', '{tr}Character Limit Exceeded{/tr}'){/if}{/capture}
-			{textarea id=$smarty.capture.textarea_id name=$field_value.ins_id _toolbars=$smarty.capture.textarea_toolbars cols=$smarty.capture.textarea_cols rows=$smarty.capture.rows onkeyup=$smarty.capture.textarea_onkeyup}
-				{$field_value.value}
-			{/textarea}
+		{if $prefs.quicktags_over_textarea eq 'y' and $field_value.options_array[0] eq 1}
+    		{include file=tiki-edit_help_tool.tpl qtnum=$field_value.fieldId area_name="area_"|cat:$field_value.fieldId}
 		{/if}
-		{if $field_value.options_array[3]}
-			<div class="charCount">
-				{if $prefs.javascript_enabled eq 'y'}
-				 	 {tr}Character Count:{/tr} <input type="text" id="cpt_{$field_value.fieldId}" size="4" readOnly=true{if !empty($field_value.value)} value="{$field_value.value|count_characters}"{/if} />
-				{/if}
-				{if $field_value.options_array[3] > 0} {tr}Max:{/tr} {$field_value.options_array[3]}{/if}
-			</div>
+		{if $field_value.options_array[2] == 1}
+				<input type="text" name="{$field_value.ins_id}"{if $field_value.options_array[1] > 0} size="{$field_value.options_array[1]}"{/if}{if $field_value.options_array[3]>0} maxlength="{$field_value.options_array[3]}"{/if} value="{$field_value.value|escape}"{if $field_value.options_array[5]} onKeyUp="wordCount({$field_value.options_array[5]}, this, 'cpt_{$field_value.fieldId}', '{tr}Word Limit Exceeded{/tr}')"{/if} />
+		{else}
+			<textarea id="area_{$field_value.fieldId}" name="{$field_value.ins_id}" cols="{if $field_value.options_array[1] >= 1}{$field_value.options_array[1]}{else}50{/if}" rows="{if $field_value.options_array[2] >= 1}{$field_value.options_array[2]}{else}4{/if}"{if $field_value.options_array[5]} onKeyUp="wordCount({$field_value.options_array[5]}, this, 'cpt_{$field_value.fieldId}', '{tr}Word Limit Exceeded{/tr}')"{/if}>
+				{$field_value.value}
+			</textarea>
 		{/if}
 		{if $field_value.options_array[5]}
-			<div class="wordCount">
-				{if $prefs.javascript_enabled eq 'y'}
-					 {tr}Word Count:{/tr} <input type="text" id="cpt_{$field_value.fieldId}" size="4" readOnly=true{if !empty($field_value.value)} value="{$field_value.value|count_words}"{/if} />
-				{/if}
-				{if $field_value.options_array[5] > 0} {tr}Max:{/tr} {$field_value.options_array[5]}{/if}
-			</div>
+			<div class="wordCount">{tr}Word Count:{/tr} <input type="text" id="cpt_{$field_value.fieldId}" size="4" readOnly=true{if !empty($field_value.value)} value="{$field_value.value|count_words}"{/if} />{if $field_value.options_array[5] > 0} {tr}Max:{/tr} {$field_value.options_array[5]}{/if}</div>
 		{/if}
 	{else}
+		<table>
 		{foreach from=$field_value.lingualvalue item=ling}
-			<label for="area_{$field_value.fieldId}_{$ling.lang}">{$ling.lang|langname}</label><br />
-				{if $field_value.options_array[0] eq 1}
-        			{toolbars qtnum=$field_value.id area_id=area_`$field_value.id`_`$ling.lang`}
+    	<tr>
+			<td>{$ling.lang}</td>
+      		<td>
+				{if $prefs.quicktags_over_textarea eq 'y' and $field_value.options_array[0] eq 1}
+        			{include file=tiki-edit_help_tool.tpl qtnum=$field_value.id area_name=area_`$field_value.id`_`$ling.lang`}
         		{/if}
-				<textarea id="area_{$field_value.fieldId}_{$ling.lang}" name="{$field_value.ins_id}[{$ling.lang}]" cols="{if $field_value.options_array[1] gt 1}{$field_value.options_array[1]}{else}50{/if}" rows="{if $field_value.options_array[2] gt 1}{$field_value.options_array[2]}{else}4{/if}"{if $field_value.options_array[5] > 0} onkeyup="wordCount({$field_value.options_array[5]}, this, 'cpt_{$field_value.fieldId}_{$ling.lang}', '{tr}Word Limit Exceeded{/tr}')"{/if}>
+				<textarea id="area_{$field_value.fieldId}_{$ling.lang}" name="{$field_value.ins_id}[{$ling.lang}]" cols="{if $field_value.options_array[1] gt 1}{$field_value.options_array[1]}{else}50{/if}" rows="{if $field_value.options_array[2] gt 1}{$field_value.options_array[2]}{else}4{/if}"{if $field_value.options_array[5] > 0} onKeyUp="wordCount({$field_value.options_array[5]}, this, 'cpt_{$field_value.fieldId}_{$ling.lang}', '{tr}Word Limit Exceeded{/tr}')"{/if}>
 					{$ling.value|escape}
 				</textarea>
 				{if $field_value.options_array[5]}<div class="wordCount">{tr}Word Count:{/tr} <input type="text" id="cpt_{$field_value.fieldId}_{$ling.lang}" size="4" readOnly=true{if !empty($ling.value)} value="{$ling.value|count_words}"{/if} />{if $field_value.options_array[5] > 0}{tr}Max:{/tr} {$field_value.options_array[5]}{/if}</div>{/if}
+      		</td>
+    	</tr>
 		{/foreach}
+		</table>
 {/if}
 
 {* -------------------- date and time -------------------- *}
@@ -317,7 +241,7 @@
 		{assign var=start value=$prefs.calendar_start_year}
 	{else}
 		{assign var=start value=-4}
-	{/if}
+	{/if}	
 	{if $field_value.year > 0 and $field_value.year < $start}
 			{assign var=start value=$field_value.year}
 	{/if}
@@ -346,15 +270,8 @@
 			{html_select_date prefix=$field_value.ins_id time=$time start_year=$start end_year=$end field_order=$prefs.display_field_order}
 		{/if}
 	{/if}
-	{if $field_value.options_array[0] eq 'dt'}
-		{tr}at{/tr} 
-	{/if}
 	{if $field_value.options_array[0] ne 'd'}
-		{if $field_value.isMandatory ne 'y' and (isset($field_value.options_array[3]) and $field_value.options_array[3] eq 'blank')}
-			{html_select_time prefix=$field_value.ins_id time=$time display_seconds=false all_empty=" "}
-		{else}
-			{html_select_time prefix=$field_value.ins_id time=$time display_seconds=false}
-		{/if}
+		{tr}at{/tr} {html_select_time prefix=$field_value.ins_id time=$time display_seconds=false}
 	{/if}
 
 {* -------------------- drop down -------------------- *}
@@ -365,7 +282,7 @@
 			<option value="">&nbsp;</option>
 		{/if}
 		{section name=jx loop=$field_value.options_array}
-			<option value="{$field_value.options_array[jx]|escape}" {if !empty($item.itemId) && $field_value.value eq $field_value.options_array[jx]}{assign var=otherValue value=''}selected="selected"{elseif (empty($item.itemId) || !isset($field_value.value)) && $field_value.defaultvalue eq $field_value.options_array[jx]}selected="selected"{/if}>{$field_value.options_array[jx]|tr_if}</option>
+			<option value="{$field_value.options_array[jx]|escape}" {if !empty($item.itemId) && $field_value.value eq $field_value.options_array[jx]}{assign var=otherValue value=''}selected="selected"{elseif empty($item.itemId) && $field_value.defaultvalue eq $field_value.options_array[jx]}selected="selected"{/if}>{$field_value.options_array[jx]|tr_if}</option>
 		{/section}
 	</select>
 	{if $field_value.type eq 'D'}
@@ -384,7 +301,7 @@
 		{/if}
 		{if !$smarty.section.jx.first or $sepR ne '<br />'}
 			<input type="radio" name="{$field_value.ins_id}" value="{$field_value.options_array[jx]|escape}" {if $field_value.value eq $field_value.options_array[jx] or $field_value.defaultvalue eq $field_value.options_array[jx]}checked="checked"{/if} id="{$field_value.ins_id[jx]}" />
-			<label for="{$field_value.ins_id[jx]}">{$field_value.options_array[jx]|tr_if}</label>
+			<label for="{$field_value.ins_id[jx]}">{$field_value.options_array[jx]|escape}</label>
 			{if !$smarty.section.jx.last}{$sepR}{/if}
 		{/if}
 	{/section}
@@ -396,11 +313,8 @@
 {* -------------------- jscalendar ------------------- *}
 {elseif $field_value.type eq 'j'}
 	{if $field_value.options_array[0] eq 'd'}
-		{if empty($field_value.value) and empty($inForm)}
+		{if empty($field_value.value)}
 			{jscalendar id=$field_value.ins_id fieldname=$field_value.ins_id showtime="n"}
-		{elseif !empty($inForm)}
-			{* inside form set by tiki-export_tracker.tpl - so use a clear date so we can export all by default *}
-			{jscalendar date="" id=$field_value.ins_id fieldname=$field_value.ins_id showtime="n"}
 		{else}
 			{jscalendar date=$field_value.value id=$field_value.ins_id fieldname=$field_value.ins_id showtime="n"}
 		{/if}
@@ -420,7 +334,7 @@
 		{/if}
 		{foreach key=id item=label from=$field_value.list}
 			<option value="{$label|escape}" {if $field_value.value eq $label or $defaultvalues.$fid eq $label or $field_value.defaultvalue eq $label}selected="selected"{/if}>
-				{if $field_value.listdisplay[$id] eq ""}{$label}{else}{$field_value.listdisplay[$id]}{/if}
+				{if $field_value.displayedList.$id eq ''}{$label}{else}{$field_value.displayedList.$id}{/if}
 			</option>
 		{/foreach}
 	</select>
@@ -445,68 +359,35 @@
 
 {* -------------------- Google Map -------------------- *}
 {elseif $field_value.type eq 'G'}
-	<input type="text" name="{$field_value.ins_id}" id="{$field_value.ins_id}" value="{$field_value.value}" size="60" />
-	<br />{tr}Format: x,y,zoom where x is the longitude, and y is the latitude. Zoom is between 0(view Earth) and 19.{/tr}
-
-	{if $prefs.feature_ajax eq 'y'}
-		{if isset($item.trackerId)}
-			{wikiplugin _name=googlemap type=locator trackerinputid=`$field_value.ins_id` trackerfieldid=`$field_value.fieldId` locateitemtype=trackeritem locateitemid=`$item.itemId` name=locator_`$item.itemId`_`$field_value.fieldId` in_form=1}{/wikiplugin}
-		{else}
-			{wikiplugin _name=googlemap type=locator trackerinputid=`$field_value.ins_id` trackerfieldid=`$field_value.fieldId` locateitemtype=trackeritem locateitemid=0 name=locator_0_`$field_value.fieldId` in_form=1}{/wikiplugin}
-		{/if}	
-	{elseif isset($item.trackerId)}
-		{tr}You can use{/tr} <a href="tiki-gmap_locator.php?for=item&amp;itemId={$item.itemId}&amp;trackerId={$item.trackerId}&amp;fieldId={$field_value.fieldId}{if !empty($page)}&amp;fromPage={$page}{/if}">{tr}Google Map Locator{/tr}</a>.
-	{/if}
+	<input type="text" name="{$field_value.ins_id}" value="{$field_value.value}" />
+	<br />{tr}Format: x,y,zoom where x is the longitude, and y is the latitude. Zoom is between 0(view Earth) and 19. You can use <a href="tiki-gmap_locator.php?for=item&amp;itemId={$item.itemId}&amp;trackerId={$item.trackerId}&amp;fieldId={$field_value.fieldId}">{tr}Google Map Locator{/tr}</a>.{/tr}
 
 {* -------------------- country selector -------------------- *}
 {elseif $field_value.type eq 'y'}
 	<select name="{$field_value.ins_id}" {if $field_value.http_request}onchange="selectValues('trackerIdList={$field_value.http_request[0]}&amp;fieldlist={$field_value.http_request[3]}&amp;filterfield={$field_value.http_request[1]}&amp;status={$field_value.http_request[4]}&amp;mandatory={$field_value.http_request[6]}&amp;filtervalue='+escape(this.value),'{$field_value.http_request[5]}')"{/if}>
-		{if $field_value.isMandatory ne 'y' || empty($field_value.value)}
+		{if $field_value.isMandatory ne 'y' || empty($field.value)}
 			<option value=""{if $field_value.value eq '' or $field_value.value eq 'None'} selected="selected"{/if}>&nbsp;</option>
 		{/if}
-		{if empty($field_value.itemChoices)}
-			<option value="Other"{if $field_value.value eq 'None'} selected="selected"{/if}{if $field_value.options_array[0] ne '1'} style="background-image:url('img/flags/Other.gif');background-repeat:no-repeat;padding-left:25px;padding-bottom:3px;"{/if}>{tr}Other{/tr}</option>
-		{/if}
-
-		{foreach key=flagicon item=flag from=$field_value.flags}
-			{if $flagicon ne 'None' and $flagicon ne 'Other' and ( ! isset($field_value.itemChoices) || $field_value.itemChoices|@count eq 0 || in_array($flagicon, $field_value.itemChoices) )}
-				 <option value="{$flagicon|escape}" {if $field_value.value eq $flagicon}selected="selected"{elseif $flagicon eq $field_value.defaultvalue}selected="selected"{/if}{if $field_value.options_array[0] ne '1'} style="background-image:url('img/flags/{$flagicon}.gif');background-repeat:no-repeat;padding-left:25px;padding-bottom:3px;"{/if}>{$flag|escape}</option>
-			 {/if}
-		{/foreach} 
+		{sortlinks}
+			{foreach item=flag from=$field_value.flags}
+				 {if $flag ne 'None' and ( ! isset($field_value.itemChoices) || $field_value.itemChoices|@count eq 0 || in_array($flag, $field_value.itemChoices) )}
+				 {capture name=flag}{tr}{$flag}{/tr}{/capture}
+				 <option value="{$flag|escape}" {if $field_value.value eq $flag}selected="selected"{elseif $flag eq $field_value.defaultvalue}selected="selected"{/if}{if $field_value.options_array[0] ne '1'} style="background-image:url('img/flags/{$flag}.gif');background-repeat:no-repeat;padding-left:25px;padding-bottom:3px;"{/if}>{$smarty.capture.flag|replace:'_':' '}</option>
+				 {/if}
+		{/foreach}
+		{/sortlinks}
 	</select>
 
 {* -------------------- auto increment -------------------- *}
 {elseif $field_value.type eq 'q'}
 	<input type="hidden" name="track[{$field_value.fieldId}]" />
 	<input type="hidden" name="{$field_value.ins_id}" value="{$field_field.value|escape}" />
-	{include file='tracker_item_field_value.tpl'}
+	{$field_value.value|escape}
 
-{* -------------------- freetags -------------------- *}
-
-{elseif $field_value.type eq 'F'}
-	{if $field_value.options_array[1] neq 'y'}{tr}Put tags separated by spaces. For tags with more than one word, use no spaces and put words together or enclose them with double quotes.{/tr}{/if}
-	<br />
-	<input type="text" id="{$field_value.ins_id|replace:'[':'_'|replace:']':''}" name="{$field_value.ins_id}" {if $field_value.options_array[0]}size="{$field_value.options_array[0]}"{/if} value="{$field_value.value|escape}" />
-	{if $field_value.options_array[2] neq 'y'}
-	<br />
-	{foreach from=$field_value.tag_suggestion item=t}
-		{jq notonready=true}
-		function addTag{{$field_value.ins_id|replace:"[":"_"|replace:"]":""}}(tag) {
-			document.getElementById('{{$field_value.ins_id|replace:"[":"_"|replace:"]":""}').value = document.getElementById('{$field_value.ins_id|replace:"[":"_"|replace:"]":""}}').value + ' ' + tag;
-		}
-		{/jq}
-		{capture name=tagurl}{if (strstr($t, ' '))}"{$t}"{else}{$t}{/if}{/capture}
-		<a href="javascript:addTag{$field_value.ins_id|replace:"[":"_"|replace:"]":""}('{$smarty.capture.tagurl|escape:'javascript'|escape}');" onclick="javascript:needToConfirm=false">{$t|escape}</a>&nbsp; &nbsp; 
-	{/foreach}
-	{/if}
-		
-{* -------------------- in group -------------------- *}
-{elseif $field_value.type eq 'N'}
-	{include file='tracker_item_field_value.tpl'}
 {/if}
 
-{if $field_value.isMandatory eq 'y' and $showmandatory eq 'y'}
-	<strong class='mandatory_star'>*</strong></div>
+{if $field_value.isMandatory eq 'y'}
+	</span>
 {/if}
 
 {/strip}

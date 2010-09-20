@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -14,8 +9,11 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 /* Task properties:
    user, taskId, title, description, date, status, priority, completed, percentage
 */
-class NotepadLib extends TikiLib
-{
+class NotepadLib extends TikiLib {
+	function NotepadLib($db) {
+		$this->TikiLib($db);
+	}
+
 	function get_note($user, $noteId) {
 		$query = "select * from `tiki_user_notes` where `user`=? and `noteId`=?";
 		$result = $this->query($query,array($user,(int)$noteId));
@@ -46,7 +44,7 @@ class NotepadLib extends TikiLib
 			$mid = "";
 		}
 
-		$query = "select * from `tiki_user_notes` where `user`=? $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_user_notes` where `user`=? $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_user_notes` where `user`=? $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -64,4 +62,7 @@ class NotepadLib extends TikiLib
 		return $retval;
 	}
 }
-$notepadlib = new NotepadLib;
+global $dbTiki;
+$notepadlib = new NotepadLib($dbTiki);
+
+?>

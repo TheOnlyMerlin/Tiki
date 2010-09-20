@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,54 +6,13 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class BannerLib extends TikiLib
-{
-
-	function select_banner_id($zone) {
-		$map = array(0=>'sun', 1=>'mon', 2=>'tue', 3=>'wed', 4=>'thu', 5=>'fri', 6=>'sat');
-		$dw = $map[$this->date_format("%w")];
-
-		$hour = $this->date_format("%H"). $this->date_format("%M");
-		$cookieName = "banner_$zone";
-		$mid = '';
-		$views = array();
-		$bindvars = array('y', $hour, $hour, 'y', (int) $this->now, (int) $this->now, 'n', -1, -1, $zone);
-		if (isset($_COOKIE[$cookieName])) {
-			$views = unserialize($_COOKIE[$cookieName]);
-			$mid = 'and (`bannerId` not in ('.implode(',',array_fill(0, count($views),'?')).') or ';
-			foreach ($views as $bId=>$bView) {
-				$bindvars[] = $bId;
-			}
-			foreach ($views as $bId=>$bView) {
-				$mids[] = '(`bannerId` = ? and `maxUserImpressions` > ?)';
-				$bindvars[] = $bId;
-				$bindvars[] = $bView;
-			}
-			$mid .= implode('or', $mids).')';
-		}
-		
-		$query = "select `bannerId` from `tiki_banners` where `$dw` = ? and  `hourFrom`<=? and `hourTo`>=? and
-		( ((`useDates` = ?) and (`fromDate`<=? and `toDate`>=?)) or (`useDates` = ?) ) and
-		(`impressions`<`maxImpressions`  or `maxImpressions`=?) and (`clicks`<`maxClicks` or `maxClicks`=? or `maxClicks` is NULL) and `zone`=? $mid order by ".$this->convertSortMode('random');
-
-		$result = $this->query($query,$bindvars,1,0);
-		if (!($res = $result->fetchRow())) {
-			return false;
-		}
-		$id = $res["bannerId"];
-		
-		// Increment banner impressions here
-		if ($id) {
-			$query = "update `tiki_banners` set `impressions` = `impressions` + 1 where `bannerId` = ?";
-			$result = $this->query($query,array($id));
-		}
-	
-		return $id;
+class BannerLib extends TikiLib {
+	function BannerLib($db) {
+		$this->TikiLib($db);
 	}
 
-
-	function select_banner($zone, $target='_blank', $id='') {
-		global $prefs, $tikilib;
+	function select_banner($zone, $target='_blank') {
+		global $prefs;
 
 		// Things to check
 		// UseDates and dates
@@ -66,12 +20,21 @@ class BannerLib extends TikiLib
 		// weekdays
 		// zone
 		// maxImpressions and impressions
+		# TODO localize
+		$map = array(0=>'sun', 1=>'mon', 2=>'tue', 3=>'wed', 4=>'thu', 5=>'fri', 6=>'sat');
+		$dw = $map[$this->date_format("%w")];
 
-		if (!empty($zone)) {
-			$id = $this->select_banner_id( $zone );
+		$hour = $this->date_format("%H"). $this->date_format("%M");
+
+		$query = "select * from `tiki_banners` where $dw = ? and  `hourFrom`<=? and `hourTo`>=? and
+		( ((`useDates` = ?) and (`fromDate`<=? and `toDate`>=?)) or (`useDates` = ?) ) and
+		(`impressions`<`maxImpressions`  or `maxImpressions`=?) and (`clicks`<`maxClicks` or `maxClicks`=? or `maxClicks` is NULL) and `zone`=? order by ".$this->convert_sortmode('random');
+		$bindvars=array('y',$hour,$hour,'y',(int) $this->now,(int) $this->now,'n',-1,-1,$zone);
+		$result = $this->query($query,$bindvars,1,0);
+		if (!($res = $result->fetchRow())) {
+			return false;
 		}
-		$res = $this->get_banner( $id );
-		$class = 'banner' . str_replace(' ','_',$zone);
+		$id = $res["bannerId"];
 
 		$raw = '';
 		switch ($res["which"]) {
@@ -83,14 +46,15 @@ class BannerLib extends TikiLib
 			if ($prefs['javascript_enabled'] == 'y') {
 				global $headerlib; include_once('lib/headerlib.php');
 				$headerlib->add_jsfile( 'lib/swfobject/swfobject.js' );
-			}
-			$raw = $tikilib->embed_flash(unserialize($res['HTMLData']));
+				$raw = $res['HTMLData'];
+			} else
+				$raw = $res['textData'];
 			break;
 
 
 		case 'useImage':
 			$raw
-				= "<div class='banner $class'><a target='$target' href='banner_click.php?id=" . $res["bannerId"] . "&amp;url=" . urlencode($res["url"]). "'><img alt='banner' border='0' src=\"banner_image.php?id=" . $res["bannerId"] . "\" /></a></div>";
+				= "<div align='center' class='banner'><a target='$target' href='banner_click.php?id=" . $res["bannerId"] . "&amp;url=" . urlencode($res["url"]). "'><img alt='banner' border='0' src=\"banner_image.php?id=" . $res["bannerId"] . "\" /></a></div>";
 
 			break;
 
@@ -115,17 +79,13 @@ class BannerLib extends TikiLib
 			break;
 		}
 
-		// Increment banner impressions done in select_banner_id()
-		// Now to set view limiting cookie for user
-		$cookieName = "banner_$zone";
-		$views = array();
-		if (isset($_COOKIE[$cookieName])) {
-			$views = unserialize($_COOKIE[$cookieName]);
-		} 
-		if ($res['maxUserImpressions'] > 0) {
-			$views[$res['bannerId']] = isset($views[$res['bannerId']]) ? $views[$res['bannerId']]+1: 1;
-			$expire = $res['useDates']? $res['toDate']: $tikilib->now+60*60*24*90; //90 days 
-			setcookie($cookieName, serialize($views), $expire);
+		// Increment banner impressions here
+		$id = $res["bannerId"];
+
+		if ($id) {
+			$query = "update `tiki_banners` set `impressions` = `impressions` + 1 where `bannerId` = ?";
+
+			$result = $this->query($query,array($id));
 		}
 
 		return $raw;
@@ -158,7 +118,7 @@ class BannerLib extends TikiLib
 			}
 		}
 
-		$query = "select * from `tiki_banners` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_banners` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_banners` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -212,7 +172,7 @@ class BannerLib extends TikiLib
 
 	function replace_banner($bannerId, $client, $url, $title = '', $alt = '', $use, $imageData, $imageType, $imageName, $HTMLData,
 		$fixedURLData, $textData, $fromDate, $toDate, $useDates, $mon, $tue, $wed, $thu, $fri, $sat, $sun, $hourFrom, $hourTo,
-		$maxImpressions, $maxClicks,$zone,$maxUserImpressions=-1) {
+		$maxImpressions, $maxClicks,$zone) {
 		$imageData = urldecode($imageData);
 		//$imageData = '';
 
@@ -237,11 +197,11 @@ class BannerLib extends TikiLib
                 `hourFrom` = ?,
                 `hourTo` = ?,
                 `mon` = ? ,`tue` = ?, `wed` = ?, `thu` = ?, `fri` = ?, `sat` = ?, `sun` = ?,
-                `maxImpressions` = ?, `maxUserImpressions`=?, `maxClicks` = ? where `bannerId`=?";
+                `maxImpressions` = ?, `maxClicks` = ? where `bannerId`=?";
 
                 $bindvars=array($client,$url,$title,$alt,$use,$imageData,$imageType,$imageName,$HTMLData,
                                 $fixedURLData, $textData, $fromDate, $toDate, $useDates,$this->now,$zone,$hourFrom,$hourTo,
-                                $mon,$tue,$wed,$thu,$fri,$sat,$sun,$maxImpressions,$maxUserImpressions,$maxClicks,$bannerId);
+                                $mon,$tue,$wed,$thu,$fri,$sat,$sun,$maxImpressions,$maxClicks,$bannerId);
 
 				$result = $this->query($query,$bindvars);
 
@@ -254,14 +214,14 @@ class BannerLib extends TikiLib
 		} else {
 			$query = "insert into `tiki_banners`(`client`, `url`, `title`, `alt`, `which`, `imageData`, `imageType`, `HTMLData`,
                 `fixedURLData`, `textData`, `fromDate`, `toDate`, `useDates`, `mon`, `tue`, `wed`, `thu`, `fri`, `sat`, `sun`,
-                `hourFrom`, `hourTo`, `maxImpressions`,`maxUserImpressions`,`maxClicks`,`created`,`zone`,`imageName`,`impressions`,`clicks`)
-                values(?,?,?,?,?,?,?,?,?,
+                `hourFrom`, `hourTo`, `maxImpressions`,`maxClicks`,`created`,`zone`,`imageName`,`impressions`,`clicks`)
+                values(?,?,?,?,?,?,?,?,
                 ?,?,?,?,?,?,?,?,?,
                 ?,?,?,?,?,?,?,?,?,?,?,?)";
 
                 $bindvars=array($client,$url,$title,$alt,$use,$imageData,$imageType,$HTMLData,
                                 $fixedURLData, $textData, $fromDate, $toDate, $useDates, $mon,$tue,$wed,$thu,
-                                $fri,$sat,$sun,$hourFrom,$hourTo,$maxImpressions,$maxUserImpressions,$maxClicks,$this->now,$zone,$imageName,0,0);
+                                $fri,$sat,$sun,$hourFrom,$hourTo,$maxImpressions,$maxClicks,$this->now,$zone,$imageName,0,0);
 
 
 			$result = $this->query($query,$bindvars);
@@ -298,7 +258,18 @@ class BannerLib extends TikiLib
 
 		$result = $this->query($query,array($zone));
 
+/* this code following if (0) is never executed, right?
+		if (0) {
+			$query = "delete from `tiki_banner_zones` where `zoneName`=?";
+
+			$result = $this->query($query,array($zone));
+		}
+*/
+
 		return true;
 	}
 }
-$bannerlib = new BannerLib;
+global $dbTiki;
+$bannerlib = new BannerLib($dbTiki);
+
+?>

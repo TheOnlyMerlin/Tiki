@@ -1,34 +1,45 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-export_tracker.php,v 1.12.2.10 2008-03-10 22:37:44 sylvieg Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+@ini_set('max_execution_time', 0); //will not work in safe_mode is on
 require_once('tiki-setup.php');
-$access->check_feature('feature_trackers');
+
+if ($prefs['feature_trackers'] != 'y') {
+	$smarty->assign('msg', tra('This feature is disabled').': feature_trackers');
+	$smarty->display('error.tpl');
+	die;
+}
 if (!isset($_REQUEST['trackerId'])) {
 	$smarty->assign('msg', tra('No tracker indicated'));
 	$smarty->display('error.tpl');
 	die;
 }
 include_once('lib/trackers/trackerlib.php');
-@ini_set('max_execution_time', 0); //will not work in safe_mode is on
 
 $tracker_info = $trklib->get_tracker($_REQUEST['trackerId']);
 if (empty($tracker_info)) {
 	$smarty->assign('msg', tra('No tracker indicated'));
-	$smarty->display('error.tpl');
+	$smarty->assign('msg', tra('No tracker indicated'));
 	die;
 }
 if ($t = $trklib->get_tracker_options($_REQUEST['trackerId'])) {
 	$tracker_info = array_merge($tracker_info,$t);
 }
-$tikilib->get_perm_object($_REQUEST['trackerId'], 'tracker', $tracker_info);
-$access->check_permission('tiki_p_export_tracker');
-
 $smarty->assign_by_ref('trackerId', $_REQUEST['trackerId']);
 $smarty->assign_by_ref('tracker_info', $tracker_info);
+
+$tikilib->get_perm_object($_REQUEST['trackerId'], 'tracker', $tracker_info);
+if ($tiki_p_view_trackers != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra('You do not have permission to use this feature'));
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (isset($_REQUEST['dump_tracker'])) {
 	$access->check_permission('tiki_p_tracker_dump');
@@ -40,7 +51,7 @@ if (isset($_REQUEST['dump_tracker'])) {
 $filters = array();
 if (!empty($_REQUEST['listfields'])) {
 	if (is_string($_REQUEST['listfields'])) {
-		$filters['fieldId'] = preg_split('/[,:]/', $_REQUEST['listfields']);
+		$filters['fieldId'] = split('[,:]', $_REQUEST['listfields']);
 	} elseif (is_array($_REQUEST['listfields'])) {
 		$filters['fieldId'] = $_REQUEST['listfields'];
 	}
@@ -81,9 +92,9 @@ foreach ($_REQUEST as $key =>$val) {
 		$filterFields[] = $fieldId;
 		if (isset($_REQUEST["x_$fieldId"]) && $_REQUEST["x_$fieldId"] == 't' ) {
 			$exactValues[] = '';
-			$values[] = urldecode($val);
+			$values[] = $val;
 		} else {
-			$exactValues[] = urldecode($val);
+			$exactValues[] = $val;
 			$values[] = '';
 		}
 	}
@@ -145,49 +156,11 @@ if (empty($_REQUEST['CR'])) {
 }
 $smarty->assign_by_ref('CR', $_REQUEST['CR']);
 
-if (!empty($_REQUEST['debug'])) {
+if (!empty($_REQUEST['file'])) {
 	$fp = fopen($prefs['tmpDir'].'/'.tra('tracker')."_".$_REQUEST['trackerId'].".csv", 'w');
 } else {
-	// Compression of the stream may corrupt files on windows
-	ob_end_clean();
-	ini_set('zlib.output_compression','Off');
-
-	$extension = empty($_REQUEST['zip'])?'.csv':'.zip';
-	if (!empty($_REQUEST['file'])) {
-		if (preg_match('/'.$extension.'$/', $_REQUEST['file'])) {
-			$file = $_REQUEST['file'];
-		} else {
-			$file = $_REQUEST['file'].$extension;
-		}
-	} else {
-		$file = tra('tracker').'_'.$_REQUEST['trackerId'].$extension;
-	}
-	if (!empty($_REQUEST['zip'])) {
-		$tmpCsv = tempnam( $prefs['tmpDir'], 'tracker_'.$_REQUEST['trackerId'] ) . '.csv';
-		/*debug*/$tmpCsv = $prefs['tmpDir'].'/'.'tracker_'.$_REQUEST['trackerId']. '.csv';
-		if (!($fp = fopen( $tmpCsv, 'w' ))) {
-			$smarty->assign('msg', tra('Can not open the file'). ' '.$tmpCsv);
-			$smarty->display('error.tpl');
-			die;
-		}			
-		if ( !($archive = new ZipArchive()) ) {
-			$smarty->assign('msg', tra('Problem zip initialisation'));
-			$smarty->display('error.tpl');
-			die;
-		}
-		$tmpZip = $prefs['tmpDir'].'/'.$file;
-		if ( !($archive->open( $tmpZip, ZIPARCHIVE::OVERWRITE )) ) {
-			$smarty->assign('msg', tra('Can not open the file'). ' '.$prefs['tmpDir'].'/'.$file);
-			$smarty->display('error.tpl');
-			die;
-		}
-
-		header('Content-Type: application/zip');
-		header('Content-Transfer-Encoding: binary'); 
-	} else {
-		header("Content-type: text/comma-separated-values; charset:".$_REQUEST['encoding']);
-	}
-	header("Content-Disposition: attachment; filename=$file");
+	header("Content-type: text/comma-separated-values; charset:".$_REQUEST['encoding']);
+	header("Content-Disposition: attachment; filename=".tra('tracker')."_".$_REQUEST['trackerId'].".csv");
 	header("Expires: 0");
 	header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
 	header("Pragma: public");
@@ -228,28 +201,12 @@ while (($items = $trklib->list_items($_REQUEST['trackerId'], $offset, $maxRecord
 	$offset += $maxRecords;
 	$heading = 'n';
 	if (!empty($fp)) {
+		echo $offset.' ';
 		fwrite($fp, $data);
-	} else {
+	} else
 		echo $data;
-	}
-	if ($tracker_info['useAttachments'] == 'y' && !empty($_REQUEST['zip'])) {
-		foreach ($items['data'] as $v) {
-			if (!$trklib->export_attachment($v['itemId'], $archive)) {
-				$smarty->assign('msg', tra('Problem zip'));
-				$smarty->display('error.tpl');
-				die;
-			}
-		}
-	}
 }
 if (!empty($fp)) {
 	fclose($fp);
-}
-if (!empty($_REQUEST['zip'])) {
-	$archive->addFile($tmpCsv, str_replace('.zip', '.csv', $file));
-	$archive->close();
-	readfile( $tmpZip );
-	unlink( $tmpZip );
-	unlink( $tmpCsv );
 }
 die;

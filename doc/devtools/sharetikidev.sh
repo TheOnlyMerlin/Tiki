@@ -1,20 +1,16 @@
 #!/bin/bash
-# (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-# 
-# All Rights Reserved. See copyright.txt for details and a complete list of authors.
-# Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-# $Id$
 
+# $Id$
 # that script prepares a dump of tiki for selective duplication
 # tested on debian only for now
 # 
 # mose@tw.o
 
-RHOST="dev.tiki.org"
+RHOST="dev.tikiwiki.org"
 RTIKI="/usr/local/tikidev"
 RTMPDIR="/tmp"
 ARCHDIR="/usr/local/tikidev/duplidev"
-VIRTUAL="dev.tiki.org"
+VIRTUAL="dev.tikiwiki.org"
 
 OLDIR=`pwd`
 
@@ -25,8 +21,8 @@ RDBUSER=${user_tiki:-'root'}
 RDBPASS=${pass_tiki:-''}
 
 DATE=`date +%Y-%m-%d`
-DUMP="dev.tiki.org.$DATE.sql"
-DUMPLIGHT="dev.tiki.org_light.$DATE.sql"
+DUMP="dev.tikiwiki.org.$DATE.sql"
+DUMPLIGHT="dev.tikiwiki.org_light.$DATE.sql"
 cd $ARCHDIR
 
 mysqldump -e -f --add-drop-table -h$RDBHOST -u$RDBUSER -p$RDBPASS $RDBNAME tiki_pages > $DUMPLIGHT

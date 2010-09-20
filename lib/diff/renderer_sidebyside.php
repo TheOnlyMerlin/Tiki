@@ -1,9 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: /cvsroot/tikiwiki/tiki/lib/diff/renderer_sidebyside.php,v 1.10 2006-02-01 21:06:13 jdrexler Exp $
 
 /**
  * "Side-by-Side" diff renderer.
@@ -12,8 +8,8 @@
  *
  * @package Text_Diff
  */
-class Text_Diff_Renderer_sidebyside extends Tiki_Text_Diff_Renderer
-{
+class Text_Diff_Renderer_sidebyside extends Tiki_Text_Diff_Renderer {
+
     function Text_Diff_Renderer_sidebyside($context_lines = 4, $words = 1)
     {
         $this->_leading_context_lines = $context_lines;
@@ -41,7 +37,7 @@ class Text_Diff_Renderer_sidebyside extends Tiki_Text_Diff_Renderer
 
     function _startBlock($header)
     {
-        $h = explode(",", $header);
+        $h = split(",", $header);
         echo '<tr class="diffheader"><td colspan="2">';
         if ($h[1] == 1)
            echo tra('Line:')."&nbsp;".$h[0];

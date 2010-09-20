@@ -21,11 +21,11 @@
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$files}
-  <tr class="{cycle}">
-    <td><a class="link" href="tiki-edit_templates.php?template={$files[user]}">{$files[user]}</a></td>
+  <tr>
+    <td class="{cycle}"><a class="link" href="tiki-edit_templates.php?template={$files[user]}">{$files[user]}</a></td>
   </tr>
 {sectionelse}
-  <tr class="{cycle}"><td colspan="2">{tr}No records found{/tr}</td></tr>
+  <tr><td colspan="2" class="{cycle}">{tr}No records found{/tr}</td></tr>
 {/section}
 </table>
 {/if}
@@ -37,7 +37,7 @@
 	<p>{tr}You should only modify default header.tpl and other important files via text code editor, through console, or SSH, or FTP edit commands. And only if you know what you are doing ! ;-){/tr}</p>
 
 	<p>{tr}Maybe You just want to modify the top of your Tiki site?{/tr}<br />
-	{tr}Please consider using the Look & Feel preferences custom code areas or modify tiki-top_bar.tpl which you can do safely via the web-based interface.{/tr}</p>
+	{tr}Please consider using the Look &amp; Feel preferences custom code areas or modify tiki-top_bar.tpl which you can do safely via the web-based interface.{/tr}</p>
     {/remarksbox}
 
 <form action="tiki-edit_templates.php" method="post">

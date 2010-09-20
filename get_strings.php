@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/get_strings.php,v 1.49.2.1 2007-12-26 17:27:37 pkdille Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 /** \file
  * $Id: /cvsroot/tikiwiki/tiki/get_strings.php
@@ -40,7 +41,7 @@
 
  */
 
-require_once('lib/language/Language.php');
+
 
 ////////////////////////////////////////////////////////////////////////////
 /// functions
@@ -52,9 +53,16 @@ require_once('lib/language/Language.php');
 $script_mode = ! isset( $_SERVER['REQUEST_METHOD'] ) && isset($_SERVER['argc']);
 
 $punctuations = array(':', '!', ';', '.', ',', '?'); // Modify lib/init/tra.php accordingly
+$addPHPslashes = Array ("\n" => '\n',
+			"\r" => '\r',
+			"\t" => '\t',
+			'\\' => '\\\\',
+			'$'  => '\$',
+			'"'  => '\"');
+
 
 /**
-  * Reads all the permission descriptions in tiki database and writes
+  * Reads all the permission descriptions in tikiwiki database and writes
   *   it to the file $file. All the strings will be surrounded by smarty translate tags
   *     ex: {tr}perm description{/tr}
   *
@@ -77,11 +85,10 @@ function collect_perms_desc($file)
     // Used when called in $script_mode if no DB has been found
     $matches = array();
     preg_match_all(
-      '/insert\s+into\s+\`?users_permissions\`?\s*\([^\)]+\)\s*values\s*\(\'(tiki_p_[^\'"]+)\',\s*\'(.*)\',/Uim',
+      '/insert\s+into\s+\`?users_permissions\s*\([^\)]+\)\s*values\s*\(\'(tiki_p_[^\'"]+)\',\s*\'(.*)\',/Uim',
       file_get_contents('db/tiki.sql'),
       $matches
     );
-
     foreach ( $matches[2] as $permDesc ) {
       $perm_strings[] = str_replace("\'", "'", $permDesc);
     }
@@ -103,7 +110,7 @@ function collect_perms_desc($file)
 }
 
 /**
-  * Get all preferences names from get_default_prefs() function or reads them all from tiki database
+  * Get all preferences names from get_default_prefs() function or reads them all from tikiwiki database
   * and writes it to the file $file. All the strings will be surrounded by smarty translate tags
   *     ex: {tr}preference name{/tr}
   *
@@ -137,6 +144,50 @@ function collect_prefs_names($file) {
     fwrite ($pstr,  "{tr}" . str_replace('_',' ',$strg) . "{/tr}" . "\n");
   }
   fclose($pstr);
+}
+
+function addphpslashes ($string) {
+  // Translate as in "Table 7-1 Escaped characters" in the PHP manual
+  // $string = str_replace ("\n", '\n',   $string);
+  // $string = str_replace ("\r", '\r',   $string);
+  // $string = str_replace ("\t", '\t',   $string);
+  // $string = str_replace ('\\', '\\\\', $string);
+  // $string = str_replace ('$',  '\$',   $string);
+  // $string = str_replace ('"',  '\"',   $string);
+  // We skip the exotic regexps for octal an hexadecimal
+  // notation - \{0-7]{1,3} and \x[0-9A-Fa-f]{1,2} -
+  // since they should not apper in english strings.
+  // return $string;
+  global $addPHPslashes;
+  return strtr ($string, $addPHPslashes);
+}
+
+
+$removePHPslashes = Array ('\n'   => "\n",
+			   '\r'   => "\r",
+			   '\t'   => "\t",
+			   '\\\\' => '\\',
+			   '\$'   => '$',
+			   '\"'   => '"');
+
+function removephpslashes ($string) {
+  // $string = str_replace ('\n',   "\n", $string); 
+  // $string = str_replace ('\r',   "\r", $string);
+  // $string = str_replace ('\t',   "\t", $string);
+  // $string = str_replace ('\\\\', '\\', $string);
+  // $string = str_replace ('\$',   '$',  $string);
+  // $string = str_replace ('\"',   '"',  $string);
+  // We skip the exotic regexps for octal an hexadecimal
+  // notation - \{0-7]{1,3} and \x[0-9A-Fa-f]{1,2} - since they 
+  // should not apper in english strings.
+  if (preg_match ('/\{0-7]{1,3}|\x[0-9A-Fa-f]{1,2}/', $string, $match)) {
+    trigger_error ("Octal or hexadecimal string '".$match[1]."' not supported",
+		   E_WARNING);
+
+  }
+  // return $string;
+  global $removePHPslashes;
+  return strtr ($string, $removePHPslashes);
 }
 
 function hardwire_file ($file) {
@@ -199,7 +250,7 @@ function addToWordlist (&$wordlist, &$sentence) {
 
 
 function writeFile_and_User (&$fd, $outstring) {
-	global $verbose;
+	global $verbose, $script_mode;
 	if ( $verbose ) {
 		formatted_print($outstring);
 	}
@@ -208,8 +259,8 @@ function writeFile_and_User (&$fd, $outstring) {
 
 function writeTranslationPair (&$fd, &$key, &$val) {
   writeFile_and_User ($fd, 
-		      '"' . Language::addPhpSlashes ($key) . '"' . " => " .
-		      '"' . Language::addPhpSlashes ($val) . '",');
+		      '"' . addphpslashes ($key) . '"' . " => " .
+		      '"' . addphpslashes ($val) . '",');
 }
 
 /* \brief: give the closest translation
@@ -250,14 +301,15 @@ if ( $script_mode ) {
 
 	if ( file_exists('db/local.php') ) {
 		require_once('db/tiki-db.php');
-		$tikilib = TikiDb::get();
+		require_once('lib/tikidblib.php');
+		$tikilib = new TikiDB($dbTiki);
 	} else {
 		require_once('lib/setup/prefs.php'); // Used to get default prefs
 	}
 
 	$_REQUEST = array();
 	for ( $k = 1 ; $k < $_SERVER['argc'] ; $k++ ) {
-		list($key, $value) = explode('=', $_SERVER['argv'][$k], 2);
+		list($key, $value) = split('=', $_SERVER['argv'][$k], 2);
 		$_REQUEST[$key] = $value ? $value : 'y';
 	}
 
@@ -432,12 +484,6 @@ foreach ($languages as $ksel => $sel) {
   if (!$nohelp && !$completion) {
     // Good to have instructions for translators in the release file.
     // The comments get filtered away by Smarty anyway
-    writeFile_and_User ($fw, "// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project\n");
-    writeFile_and_User ($fw, "// \n");
-    writeFile_and_User ($fw, "// All Rights Reserved. See copyright.txt for details and a complete list of authors.\n");
-    writeFile_and_User ($fw, "// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.\n");
-    writeFile_and_User ($fw, "// \$Id$");
-    writeFile_and_User ($fw, "\n");
     writeFile_and_User ($fw, "// Parameters:\n\n");
     writeFile_and_User ($fw, "// lang=xx    : only translates language 'xx',\n");
     writeFile_and_User ($fw, "//              if not given all languages are translated\n");
@@ -499,7 +545,7 @@ foreach ($languages as $ksel => $sel) {
 		writeFile_and_User ($fw, "// ###\n");
 		writeFile_and_User ($fw, "// ### Technical justification:\n");
 		writeFile_and_User ($fw, "// ### If a string ending with colon needs translating (like \"{tr}Login:{/tr}\")\n");
-		writeFile_and_User ($fw, "// ### then Tiki tries to translate 'Login' and ':' separately.\n");
+		writeFile_and_User ($fw, "// ### then TikiWiki tries to translate 'Login' and ':' separately.\n");
 		writeFile_and_User ($fw, "// ### This allows to have only one translation for \"{tr}Login{/tr}\" and \"{tr}Login:{/tr}\"\n");
 		writeFile_and_User ($fw, "// ### and it still allows to translate \":\" as \"&nbsp;:\" for languages that\n");
 		writeFile_and_User ($fw, "// ### need it (like french)\n");
@@ -580,7 +626,7 @@ foreach ($languages as $ksel => $sel) {
 	// Strip the extracted strings from escapes
 	// (these will be reinserted during generation)
 	
-	$word = Language::removePhpSlashes ($dqword);
+	$word = removephpslashes ($dqword);
 	$words["$word"] = "$word";                               
       }
     }
@@ -674,7 +720,7 @@ foreach ($languages as $ksel => $sel) {
       writeFile_and_User ($fw, "// ### Please remove manually!\n");
       writeFile_and_User ($fw, "// ### N.B. Legitimate strings may be marked");
       writeFile_and_User ($fw, "// ### as unused!\n");
-      writeFile_and_User ($fw, "// ### Please see http://tiki.org/UnusedWords for further info\n");
+      writeFile_and_User ($fw, "// ### Please see http://tikiwiki.org/tiki-index.php?page=UnusedWords for further info\n");
     }
     foreach ($unused as $key => $val) {
       writeTranslationPair ($fw, $key, $val);
@@ -720,8 +766,8 @@ foreach ($languages as $ksel => $sel) {
 	  }
 	  
 	  if ($dist < 1 + strlen ($key)/5) {
-	    $closeText = ' // ## CLOSE: "' . Language::addPhpSlashes ($closeEnglish) .
-	                 '" => "' . Language::addPhpSlashes ($closeTrans) . '",';
+	    $closeText = ' // ## CLOSE: "' . addphpslashes ($closeEnglish) .
+	                 '" => "' . addphpslashes ($closeTrans) . '",';
 	  }
 	}
 
@@ -771,6 +817,8 @@ foreach ($languages as $ksel => $sel) {
     }
   }
   writeFile_and_User ($fw, '"'.$endMarker.'"=>"'.$endMarker.'");'."\n");
+  if ( $verbose ) formatted_print("?>\n");  
+  fwrite ($fw, '?>'."\n");  
   fclose ($fw);
 
   if ($spelling) {

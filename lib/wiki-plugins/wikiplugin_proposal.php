@@ -1,11 +1,12 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+
+// $Id: /cvsroot/tikiwiki/tiki/lib/wiki-plugins/wikiplugin_agentinfo.php,v 1.5.2.1 2007-12-07 12:55:20 pkdille Exp $
 
 // Wiki plugin to display a proposal acceptance widget
+
+function wikiplugin_proposal_help() {
+        return tra("Displays a proposal acceptance widget").":<br />~np~{AGENTINFO(info=>IP or SVRSW or BROWSER)/}~/np~";
+}
 
 function wikiplugin_proposal_info() {
 	return array(
@@ -13,7 +14,7 @@ function wikiplugin_proposal_info() {
 		'documentation' => 'PluginProposal',			
 		'description' => tra('Provides a widget for users to vote on a proposal and view the current decision.'),
 		'prefs' => array( 'wikiplugin_proposal' ),
-		'body' => tra('The list of votes cast. One vote per line. Either 0, +1 or -1 followed by a username.'),
+		'body' => tra('The list of votes casted. One vote per line. Either 0, +1 or -1 followed by a username.'),
 		'params' => array(
 			'caption' => array(
 				'required' => false,
@@ -24,53 +25,7 @@ function wikiplugin_proposal_info() {
 	);
 }
 
-function wikiplugin_proposal_save( $context, $data, $params ) {
-	global $attributelib; require_once 'lib/attributes/attributelib.php';
-
-	static $objects = array();
-	$key = $context['type'] . ':' . $context['object'];
-
-	if( ! isset( $objects[$key] ) ) {
-		$objects[$key] = array( '+1' => 0, '0' => 0, '-1' => 0 );
-	}
-
-	$counts = wikiplugin_proposal_get_counts( $data );
-
-	$objects[$key]['+1'] += count( $counts['+1'] );
-	$objects[$key]['0'] += count( $counts['0'] );
-	$objects[$key]['-1'] += count( $counts['-1'] );
-	
-	$attributelib->set_attribute( $context['type'], $context['object'], 'tiki.proposal.accept', $objects[$key]['+1'] );
-	$attributelib->set_attribute( $context['type'], $context['object'], 'tiki.proposal.undecided', $objects[$key]['0'] );
-	$attributelib->set_attribute( $context['type'], $context['object'], 'tiki.proposal.reject', $objects[$key]['-1'] );
-}
-
 function wikiplugin_proposal($data, $params) {
-	$counts = wikiplugin_proposal_get_counts( $data );
-
-	global $smarty, $user, $tiki_p_edit;
-	$smarty->assign( 'counts', $counts );
-
-	if( $user && $tiki_p_edit == 'y' )
-	{
-		$availableVotes = array(
-			tra('Accept proposal') => "$data\n+1 $user",
-			tra('Still undecided') => "$data\n0 $user",
-			tra('Reject proposal') => "$data\n-1 $user",
-		);
-
-		$smarty->assign( 'available_votes', $availableVotes );
-	}
-
-	static $passes;
-	$smarty->assign( 'passes', ++$passes );
-	$smarty->assign( 'params', $params );
-	$content = $smarty->fetch( 'wiki-plugins/wikiplugin_proposal.tpl' );
-
-	return "~np~$content~/np~";
-}
-
-function wikiplugin_proposal_get_counts( $data ) {
 	$voteData = explode( "\n", $data );
 	$votes = array();
 
@@ -94,6 +49,26 @@ function wikiplugin_proposal_get_counts( $data ) {
 	foreach( $votes as $voter => $vote )
 		$counts[$vote][] = $voter;
 	
-	return $counts;
+	global $smarty, $user, $tiki_p_edit;
+	$smarty->assign( 'counts', $counts );
+
+	if( $user && $tiki_p_edit == 'y' )
+	{
+		$availableVotes = array(
+			tra('Accept proposal') => "$data\n+1 $user",
+			tra('Still undecided') => "$data\n0 $user",
+			tra('Reject proposal') => "$data\n-1 $user",
+		);
+
+		$smarty->assign( 'available_votes', $availableVotes );
+	}
+
+	static $passes;
+	$smarty->assign( 'passes', ++$passes );
+	$smarty->assign( 'params', $params );
+	$content = $smarty->fetch( 'wiki-plugins/wikiplugin_proposal.tpl' );
+
+	return "~np~$content~/np~";
 }
 
+?>

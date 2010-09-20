@@ -1,11 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-require_once 'lib/graph-engine/abstract.gridbased.php';
+require_once 'graph-engine/abstract.gridbased.php';
 
 class BarBasedGraphic extends GridBasedGraphic // {{{1
 {
@@ -136,10 +130,10 @@ class BarBasedGraphic extends GridBasedGraphic // {{{1
 			switch( $this->independant->orientation )
 			{
 			case 'vertical':
-				$ren = new Fake_GRenderer( $renderer, 0, $range[0], 1, $range[1] );
+				$ren = &new Fake_GRenderer( $renderer, 0, $range[0], 1, $range[1] );
 				break;
 			case 'horizontal':
-				$ren = new Fake_GRenderer( $renderer, $range[0], 0, $range[1], 1 );
+				$ren = &new Fake_GRenderer( $renderer, $range[0], 0, $range[1], 1 );
 				break;
 			}
 			$positions = $this->_drawColumn( $ren, $values, $zero );
@@ -305,3 +299,5 @@ class MultibarGraphic extends BarBasedGraphic // {{{1
 		) );
 	} 
 } // }}}1
+
+?>

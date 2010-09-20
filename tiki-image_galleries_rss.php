@@ -1,18 +1,22 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+// $Id: /cvsroot/tikiwiki/tiki/tiki-image_galleries_rss.php,v 1.32 2007-10-12 07:55:28 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once ('tiki-setup.php');
 require_once ('lib/tikilib.php');
 require_once ('lib/imagegals/imagegallib.php');
 require_once ('lib/rss/rsslib.php');
 
-$access->check_feature('feature_galleries');
+if ($prefs['feature_galleries'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_galleries");
+	$smarty->display("error.tpl");
+	die;
+}
 
-if ($prefs['feed_image_galleries'] != 'y') {
+if ($prefs['rss_image_galleries'] != 'y') {
         $errmsg=tra("rss feed disabled");
         require_once ('tiki-rss_error.php');
 }
@@ -32,8 +36,8 @@ $uniqueid = $feed;
 $output = $rsslib->get_from_cache($uniqueid);
 
 if ($output["data"]=="EMPTY") {
-	$title = $prefs['feed_image_galleries_title'];
-	$desc = $prefs['feed_image_galleries_desc'];
+	$title = (!empty($title_rss_image_galleries)) ? $title_rss_image_galleries : tra("Tiki RSS feed for image galleries");
+	$desc = (!empty($desc_rss_image_galleries)) ? $desc_rss_image_galleries : tra("Last images uploaded to the image galleries.");
 	
 	$id = "imageId";
 	$titleId = "name";
@@ -42,8 +46,15 @@ if ($output["data"]=="EMPTY") {
 	$authorId = "user";
 	$readrepl = "tiki-browse_image.php?imageId=%s";
 	
-	$changes = $imagegallib->list_images(0,$prefs['feed_image_galleries_max'],$dateId.'_desc', '');
+        $tmp = $prefs['title_rss_'.$feed];
+        if ($tmp<>'') $title = $tmp;
+        $tmp = $prefs['desc_rss_'.$feed];
+        if ($desc<>'') $desc = $tmp;
+	
+	$changes = $imagegallib->list_images(0,$prefs['max_rss_image_galleries'],$dateId.'_desc', '');
 	$output = $rsslib->generate_feed($feed, $uniqueid, '', $changes, $readrepl, '', $id, $title, $titleId, $desc, $descId, $dateId, $authorId);
 }
 header("Content-type: ".$output["content-type"]);
 print $output["data"];
+
+?>

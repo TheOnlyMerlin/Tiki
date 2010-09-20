@@ -1,4 +1,5 @@
 {* $Id$ *}
+{popup_init src="lib/overlib.js"}
 
 {title}
   {tr}File Archive{/tr}: {if empty($file_info.name)}{$file_info.filename|escape}{else}{$file_info.name}{/if}
@@ -26,4 +27,4 @@
 	{/if}
 </div>
 
-{include file='list_file_gallery.tpl'}
+{include file=list_file_gallery.tpl}

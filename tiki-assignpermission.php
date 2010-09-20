@@ -1,15 +1,22 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-assignpermission.php,v 1.35.2.1 2007-12-29 16:30:00 jyhem Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 // This script is used to assign permissions to a particular group
 // ASSIGN PERMISSIONS TO GROUPS
+// Initialization
 require_once ('tiki-setup.php');
 
-$access->check_permission('tiki_p_admin');
+if ($tiki_p_admin != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (!isset($_REQUEST["group"])) {
 	$smarty->assign('msg', tra("Unknown group"));
@@ -50,12 +57,19 @@ if (isset($_REQUEST["action"])) {
 	}
 
 	if ($_REQUEST["action"] == 'remove') {
-		$access->check_authenticity(sprintf(tra('Unassign perm %s from group %s'), $_REQUEST['permission'], $group));
-		$userlib->remove_permission_from_group($_REQUEST["permission"], $group);
-		$logslib->add_log('perms',"unassigned perm ".$_REQUEST['permission']." from group $group");
+		$area = 'delpermassign';
+		if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+			key_check($area);
+			$userlib->remove_permission_from_group($_REQUEST["permission"], $group);
+			$logslib->add_log('perms',"unassigned perm ".$_REQUEST['permission']." from group $group");
+		} else {
+			key_get($area, sprintf(tra('Unassign perm %s from group %s'), $_REQUEST['permission'], $group));
+		}
 	}
 }
 if (isset($_REQUEST['do']) && $_REQUEST['do'] == 'temp_cache') {
+	global $cachelib; include_once('lib/cache/cachelib.php');
+	global $logslib; include_once('lib/logs/logslib.php');
 	$cachelib->erase_dir_content("temp/cache/$tikidomain");
 	$logslib->add_log('system','erased temp/cache content');
 }
@@ -101,9 +115,7 @@ if (isset($_REQUEST["createlevel"])) {
 if (isset($_REQUEST['update'])) {
 	check_ticket('admin-perms');
 	foreach (array_keys($_REQUEST['permName'])as $per) {
-		if (isset( $_REQUEST['level'][$per])) {
-			$userlib->change_permission_level($per, $_REQUEST['level'][$per]);
-		}
+		$userlib->change_permission_level($per, $_REQUEST['level'][$per]);
 
 		if (isset($_REQUEST['perm'][$per])) {
 			$userlib->assign_permission_to_group($per, $group);
@@ -118,16 +130,12 @@ $levels = $userlib->get_permission_levels();
 sort($levels);
 $smarty->assign('levels', $levels);
 
-// Get the list of permissions
-$group_info = $userlib->get_group_info($group);
-$smarty->assign_by_ref('group_info', $group_info);
-
 $perms = $userlib->get_permissions(0, -1, $sort_mode, $find, $_REQUEST["type"], $group);
 
 foreach ($perms['data'] as $perm) {
  	if ($perm['admin'] == 'y' && $perm['hasPerm'] == 'y') {
 		foreach ($perms['data'] as $key=>$p) {
-			if ($p['type'] == $perm['type'] && $perm['permName'] != $p['permName'] && !in_array($p['permName'], $group_info['perms'])) {
+			if ($p['type'] == $perm['type'] && $perm['permName'] != $p['permName']) {
 				$perms['data'][$key]['from_admin'] = 'y';
 				$perms['data'][$key]['hasPerm'] = 'y';
 			}
@@ -135,24 +143,25 @@ foreach ($perms['data'] as $perm) {
 	}
 }
 
-// If Anonymous is not always included in other groups unless explicitly specified as in 4.0, then the following should not execute, but commented remain here for reference as per other comment by jonnyb in tikilib.php get_user_groups()
-//if ($group != 'Anonymous') {
+if ($group != 'Anonymous') {
 	// Get the list of permissions for anony
-	//$ifa = $userlib->get_permissions(0, -1, $sort_mode, $find,$_REQUEST["type"],'Anonymous');
-	//$smarty->assign_by_ref('inherited_from_anon', $ifa['data']);
-//}
-
-if ($group != 'Registered' && $group != 'Anonymous') {
-	$ifr = $userlib->get_permissions(0, -1, $sort_mode, $find,$_REQUEST["type"],'Registered');
-	$smarty->assign_by_ref('inherited_from_reg', $ifr['data']);
+	$ifa = $userlib->get_permissions(0, -1, $sort_mode, $find,$_REQUEST["type"],'Anonymous');
+	$smarty->assign_by_ref('inherited_from_anon', $ifa['data']);
+	if ($group != 'Registered') {
+		$ifr = $userlib->get_permissions(0, -1, $sort_mode, $find,$_REQUEST["type"],'Registered');
+		$smarty->assign_by_ref('inherited_from_reg', $ifr['data']);
+		$incgroups = $userlib->get_included_groups($group);
+		foreach($incgroups as $ig) {
+			$ixr = $userlib->get_permissions(0, -1, $sort_mode, $find,$_REQUEST["type"],$ig);
+			$back[$ig] = $ixr['data'];
+		}
+		$smarty->assign_by_ref('inherited_groups_perms',$back);
+	}
 }
 
-$incgroups = $userlib->get_included_groups($group);
-foreach($incgroups as $ig) {
-	$ixr = $userlib->get_permissions(0, -1, $sort_mode, $find,$_REQUEST["type"],$ig);
-	$back[$ig] = $ixr['data'];
-}
-$smarty->assign_by_ref('inherited_groups_perms',$back);
+// Get the list of permissions
+$group_info = $userlib->get_group_info($group);
+$smarty->assign_by_ref('group_info', $group_info);
 
 // Get users (list of users)
 $smarty->assign_by_ref('perms', $perms["data"]);
@@ -165,3 +174,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the template
 $smarty->assign('mid', 'tiki-assignpermission.tpl');
 $smarty->display("tiki.tpl");
+
+?>

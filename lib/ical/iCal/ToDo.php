@@ -40,8 +40,7 @@ require_once('BaseComponent.php');
  * @category File
  * @package iCal
  */
-class File_iCal_ToDo extends File_iCal_BaseComponent_ET
-{
+class File_iCal_ToDo extends File_iCal_BaseComponent_ET {
     /**
      *  The percentage complete of the ToDo
      */
@@ -100,3 +99,5 @@ class File_iCal_ToDo extends File_iCal_BaseComponent_ET
     }
 
 }
+
+?>

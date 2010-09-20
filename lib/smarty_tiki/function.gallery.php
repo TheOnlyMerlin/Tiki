@@ -1,10 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+/* $Id: /cvsroot/tikiwiki/tiki/lib/smarty_tiki/function.gallery.php,v 1.11 2006-08-29 20:19:10 sylvieg Exp $ */
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
@@ -41,3 +36,4 @@ function smarty_function_gallery($params, &$smarty)
     } 
     print('</div>');
 }    
+?>

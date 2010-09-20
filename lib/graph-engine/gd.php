@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /* This library is LGPL
  * written by Louis-Philippe Huberdeau
  *
@@ -12,7 +6,7 @@
  *
  * This file contains the GD graphic renderer.
  */
-require_once('lib/graph-engine/core.php');
+require_once('graph-engine/core.php');
 
 class GD_GRenderer extends GRenderer // {{{1
 {
@@ -311,3 +305,5 @@ class GD_GRenderer extends GRenderer // {{{1
 		imagestring( $this->gd, $style['font'], $x, $height, $string, $this->_getColor( 'Black' ) );
 	}
 } // }}}1
+
+?>

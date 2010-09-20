@@ -1,18 +1,19 @@
+{if $error_msg neq ''}
+	{remarksbox type="warning" title="{tr}Warning{/tr}"}{$error_msg}{/remarksbox}
+	<br />
+{/if}
 <form name="aform" formId='editpageform' action="{$form_action|default:'tiki-take_survey.php'}" method="post">
 <input type="hidden" name="surveyId" value="{$surveyId|escape}" />
 <input type="hidden" name="vote" value="yes" />
-  {if !isset($show_name) or $show_name eq 'y'}{title}{$survey_info.name|escape}{/title}{/if}
-	{if $error_msg neq ''}
-		{remarksbox type="warning" title="{tr}Warning{/tr}"}{$error_msg}{/remarksbox}
-	{/if}
-    <div class="description">{wiki}{$survey_info.description}{/wiki}</div>
+  {if !isset($show_name) or $show_name eq 'y'}<h2>{$survey_info.name}</h2>{/if}
+    <div class="description">{wiki}{$survey_info.description|escape}{/wiki}</div>
     {section name=ix loop=$questions}
     <div class="questionblock">
-      <div class="quizquestion">{$questions[ix].question|escape|nl2br}</div>
+      <div class="quizquestion">{$questions[ix].question}</div>
       {if $questions[ix].type eq 'c'}
         <div class="quizoptions">
           {section name=jx loop=$questions[ix].qoptions}
-            <input type="radio" value="{$questions[ix].qoptions[jx].optionId|escape}" name="question_{$questions[ix].questionId}" />{$questions[ix].qoptions[jx].qoption|escape}<br />
+            <input type="radio" value="{$questions[ix].qoptions[jx].optionId|escape}" name="question_{$questions[ix].questionId}" />{$questions[ix].qoptions[jx].qoption}<br />
           {/section}
         </div>  
       {elseif $questions[ix].type eq 't'}
@@ -22,27 +23,21 @@
       {elseif $questions[ix].type eq 'x'}
         {assign var='area' value=$questions[ix].questionId}
 
-				{if $questions[ix].explode.0 > 0}
-					{assign var='textrows' value=$questions[ix].explode.0}
-				{else}
-					{assign var='textrows' value=$rows}
-				{/if}
-
-				{if $questions[ix].explode.1 > 0}
-					{assign var='textcols' value=$questions[ix].explode.1}
-				{else}
-					{assign var='textcols' value=$cols}
-				{/if}
-
         <div class="quizoptions">
           <table class="normal">
             <tr>
               <td valign="top">
-              	&nbsp;
+                {include file="textareasize.tpl" area_name='editwiki' formId='editpageform'}
+                <br /><br />
+                {if $prefs.quicktags_over_textarea neq 'y'}
+                  {include file=tiki-edit_help_tool.tpl area_name=question_$area qtnum='2'}
+                {/if}
               </td>
               <td valign="top">
-                {toolbars area_id=question_$area qtnum='2'}
-                <textarea id="question_{$questions[ix].questionId}" name="question_{$questions[ix].questionId}" rows="{$textrows}" cols="{$textcols}"></textarea>
+                {if $prefs.quicktags_over_textarea eq 'y'}
+                  {include file=tiki-edit_help_tool.tpl area_name=question_$area qtnum='2'}
+                {/if}
+                <textarea id='editwiki' name="question_{$questions[ix].questionId}" rows="{$rows}" cols="{$cols}"></textarea>
               </td>
             </tr>
           </table>

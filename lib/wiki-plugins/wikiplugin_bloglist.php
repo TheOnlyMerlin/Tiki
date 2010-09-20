@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 // Includes an article field
 // Usage:
@@ -91,14 +86,13 @@ function wikiplugin_bloglist($data, $params) {
 	$smarty->assign('container_class', $params['containerClass']);
 	
 	if ($params['simpleList'] == 'y') {
-		global $bloglib; require_once('lib/blogs/bloglib.php');
-		$blogItems = $bloglib->list_posts($params['offset'], $params['Items'], $params['sort_mode'], $params['find'], $params['Id'], $params['author'], '', $dateStartTS, $dateEndTS);
+		$blogItems = $tikilib->list_posts($params['offset'], $params['Items'], $params['sort_mode'], $params['find'], $params['Id'], $params['author'], '', $dateStartTS, $dateEndTS);
 		$smarty->assign_by_ref('blogItems', $blogItems['data']);
 		$template = 'wiki-plugins/wikiplugin_bloglist.tpl';
 	} else {
 		global $bloglib; include_once('lib/blogs/bloglib.php');
 		
-		$blogItems = $bloglib->list_blog_posts($params['Id'], false, $params['offset'], $params['Items'],  $params['sort_mode'], $params['find'], $dateStartTS, $dateEndTS);
+		$blogItems = $bloglib->list_blog_posts($params['Id'], $params['offset'], $params['Items'],  $params['sort_mode'], $params['find'], $dateStartTS, $dateEndTS);
 		$temp_max = count($blogItems["data"]);
 		for ($i = 0; $i < $temp_max; $i++) {
 			$blogItems["data"][$i]["parsed_data"] = $tikilib->parse_data($bloglib->get_page($blogItems["data"][$i]["data"], 1));
@@ -108,6 +102,7 @@ function wikiplugin_bloglist($data, $params) {
 			}
 		}
 		$smarty->assign('show_heading', 'n');
+		$smarty->assign('use_title', 'y');	// TODO should be refactored from tiki-view_blog.php into bloglib
 		$smarty->assign('use_author', 'y');
 		$smarty->assign('add_date', 'y');
 		$smarty->assign_by_ref('listpages', $blogItems['data']);

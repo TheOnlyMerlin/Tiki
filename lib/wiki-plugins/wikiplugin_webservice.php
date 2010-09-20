@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 function wikiplugin_webservice_info() {
 	return array(
@@ -56,7 +51,7 @@ function wikiplugin_webservice( $data, $params ) {
 	}
 
 	if( ! empty( $data ) ) {
-		$templateFile = $GLOBALS['tikipath'] . 'temp/cache/' . md5($data); 
+		$templateFile = $GLOBALS['tikipath'] . 'temp/cache/' . md5($data);
 
 		if( ! file_exists( $templateFile ) )
 			file_put_contents( $templateFile, $data );
@@ -94,3 +89,5 @@ function wikiplugin_webservice( $data, $params ) {
 		return '^' . tra('Missing parameters') . '^';
 	}
 }
+
+?>

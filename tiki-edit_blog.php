@@ -1,45 +1,74 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-edit_blog.php,v 1.39.2.1 2007-11-08 21:38:33 ricks99 Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 $section = 'blogs';
 require_once ('tiki-setup.php');
 include_once ('lib/blogs/bloglib.php');
 
-$access->check_feature('feature_blogs');
-$access->check_permission('tiki_p_create_blogs');
+$smarty->assign('headtitle',tra('Create Blog'));
+
+if ($prefs['feature_blogs'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_blogs");
+
+	$smarty->display("error.tpl");
+	die;
+}
+
+// Now check permissions to access this page
+if ($tiki_p_create_blogs != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied you cannot create or edit blogs"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (isset($_REQUEST["blogId"])) {
 	$blogId = $_REQUEST["blogId"];
 } else {
 	$blogId = 0;
-	$smarty->assign('headtitle',tra('Create Blog'));
 }
 
 $smarty->assign('individual', 'n');
 
-$tikilib->get_perm_object($blogId, 'blog');
+if ($userlib->object_has_one_permission($blogId, 'blog')) {
+	$smarty->assign('individual', 'y');
+
+	if ($tiki_p_admin != 'y') {
+		// Now get all the permissions that are set for this type of permissions 'image gallery'
+		$perms = $userlib->get_permissions(0, -1, 'permName_desc', '', 'blogs');
+
+		foreach ($perms["data"] as $perm) {
+			$permName = $perm["permName"];
+
+			if ($userlib->object_has_permission($user, $_REQUEST["blogId"], 'blog', $permName)) {
+				$$permName = 'y';
+
+				$smarty->assign("$permName", 'y');
+			} else {
+				$$permName = 'n';
+
+				$smarty->assign("$permName", 'n');
+			}
+		}
+	}
+}
 
 $smarty->assign('blogId', $blogId);
 $smarty->assign('title', '');
 $smarty->assign('description', '');
 $smarty->assign('public', 'n');
 $smarty->assign('use_find', 'y');
-$smarty->assign('add_date', 'y');
 $smarty->assign('use_title', 'y');
-$smarty->assign('use_title_in_post', 'y');
-$smarty->assign('use_description', 'y');
-$smarty->assign('use_breadcrumbs', 'n');
-$smarty->assign('use_author', 'y');
 $smarty->assign('allow_comments', 'y');
 $smarty->assign('show_avatar', 'n');
-$smarty->assign('show_related', 'n');
-$smarty->assign('related_max', 5);
 $smarty->assign('maxPosts', 10);
-$smarty->assign('use_excerpt', 'n');
 $smarty->assign('creator', $user);
 
 
@@ -55,7 +84,7 @@ if (!isset($lastModif)) {
 
 if (isset($_REQUEST["blogId"]) && $_REQUEST["blogId"] > 0) {
 	// Check permission
-	$data = $bloglib->get_blog($_REQUEST["blogId"]);
+	$data = $tikilib->get_blog($_REQUEST["blogId"]);
 
 	if ($data["user"] != $user || !$user) {
 		if ($tiki_p_blog_admin != 'y') {
@@ -67,33 +96,23 @@ if (isset($_REQUEST["blogId"]) && $_REQUEST["blogId"] > 0) {
 		}
 	}
 
-	$smarty->assign('headtitle', tra('Edit blog:') . ' ' . $data['title']);
 	$smarty->assign('title', $data["title"]);
 	$smarty->assign('description', $data["description"]);
 	$smarty->assign('public', $data["public"]);
-	$smarty->assign('add_date', $data["add_date"]);
 	$smarty->assign('use_title', $data["use_title"]);
-	$smarty->assign('use_title_in_post', $data["use_title_in_post"]);
-	$smarty->assign('use_description', $data["use_description"]);
-	$smarty->assign('use_breadcrumbs', $data["use_breadcrumbs"]);
-	$smarty->assign('use_author', $data["use_author"]);
 	$smarty->assign('allow_comments', $data["allow_comments"]);
 	$smarty->assign('show_avatar',$data["show_avatar"]);
-	$smarty->assign('show_related',$data["show_related"]);
-	$smarty->assign('related_max',$data["related_max"]);
 	$smarty->assign('use_find', $data["use_find"]);
 	$smarty->assign('maxPosts', $data["maxPosts"]);
-	$smarty->assign('use_excerpt', $data["use_excerpt"]);
 	$smarty->assign('creator', $data["user"]);
-	$smarty->assign('alwaysOwner', $data["always_owner"]);
 
 }
 
 if (isset($_REQUEST["heading"]) and $tiki_p_edit_templates == 'y') {
-	// Sanitization cleanup
+	// Sanatization cleanup
 	$heading = preg_replace('/st<x>yle="[^"]*"/', 'style_dangerous', $_REQUEST["heading"]);
 } elseif (!isset($data["heading"])) {
-	$n = $smarty->get_filename('blog_heading.tpl', 'r');
+	$n = $smarty->get_filename('blog-heading.tpl', 'r');
 	@$fp = fopen($n, 'r');
 	if ($fp) {
 		$heading = fread($fp, filesize($n));
@@ -104,23 +123,7 @@ if (isset($_REQUEST["heading"]) and $tiki_p_edit_templates == 'y') {
 	$heading = $data["heading"];
 }
 
-if (isset($_REQUEST["post_heading"]) and $tiki_p_edit_templates == 'y') {
-	// Sanitization cleanup
-	$post_heading = preg_replace('/st<x>yle="[^"]*"/', 'style_dangerous', $_REQUEST["post_heading"]);
-} elseif (!isset($data["post_heading"])) {
-	$n = $smarty->get_filename('blog_post_heading.tpl', 'r');
-	@$fp = fopen($n, 'r');
-	if ($fp) {
-		$post_heading = fread($fp, filesize($n));
-		@fclose($fp);
-	} else
-		$post_heading = '';
-} else {
-	$post_heading = $data["post_heading"];
-}
-
 $smarty->assign_by_ref('heading', $heading);
-$smarty->assign_by_ref('post_heading', $post_heading);
 $users = $userlib->list_all_users();
 $smarty->assign_by_ref('users', $users);
 
@@ -136,25 +139,16 @@ if (isset($_REQUEST["save"]) && $prefs['feature_categories'] == 'y' && $prefs['f
 		$public = 'n';
 	}
 
+	$use_title = isset($_REQUEST['use_title']) ? 'y' : 'n';
 	$allow_comments = isset($_REQUEST["allow_comments"]) ? 'y' : 'n';
 	$show_avatar = isset($_REQUEST['show_avatar']) ? 'y' : 'n';	
-	$show_related = isset($_REQUEST['show_related']) ? 'y' : 'n';	
-	$related_max = isset($_REQUEST['related_max']) ? $_REQUEST['related_max'] : 5;	
-	$use_excerpt = isset($_REQUEST['use_excerpt']) ? 'y' : 'n';	
 	$use_find = isset($_REQUEST['use_find']) ? 'y' : 'n';
-	$use_title = isset($_REQUEST['use_title']) ? 'y' : 'n';
-	$use_title_in_post = isset($_REQUEST['use_title_in_post']) ? 'y' : 'n';
-	$use_description = isset($_REQUEST['use_description']) ? 'y' : 'n';
-	$use_breadcrumbs = isset($_REQUEST['use_breadcrumbs']) ? 'y' : 'n';
-	$use_author = isset($_REQUEST['use_author']) ? 'y' : 'n';
-	$add_date = isset($_REQUEST['add_date']) ? 'y' : 'n';
-	$alwaysOwner = isset($_REQUEST['alwaysOwner']) ? 'y' : 'n';
 
 	$bid = $bloglib->replace_blog($_REQUEST["title"],
 	    $_REQUEST["description"], $_REQUEST["creator"], $public,
 	    $_REQUEST["maxPosts"], $_REQUEST["blogId"],
-	    $heading, $use_title, $use_title_in_post, $use_description, $use_breadcrumbs, $use_author, $add_date, $use_find,
-	    $allow_comments, $show_avatar, $alwaysOwner, $post_heading, $show_related, $related_max, $use_excerpt);
+	    $heading, $use_title, $use_find,
+	    $allow_comments, $show_avatar);
 
 	$cat_type = 'blog';
 	$cat_objid = $bid;
@@ -174,23 +168,10 @@ if (isset($_REQUEST['preview']) || $category_needed) {
 	$smarty->assign('public', isset($_REQUEST["public"]) ? 'y' : 'n');
 	$smarty->assign('use_find', isset($_REQUEST["use_find"]) ? 'y' : 'n');
 	$smarty->assign('use_title', isset($_REQUEST["use_title"]) ? 'y' : 'n');
-	$smarty->assign('use_title_in_post', isset($_REQUEST["use_title_in_post"]) ? 'y' : 'n');
-	$smarty->assign('use_description', isset($_REQUEST["use_description"]) ? 'y' : 'n');
-	$smarty->assign('use_breadcrumbs', isset($_REQUEST["use_breadcrumbs"]) ? 'y' : 'n');
-	$smarty->assign('use_author', isset($_REQUEST["use_author"]) ? 'y' : 'n');
-	$smarty->assign('show_avatar', isset($_REQUEST["show_avatar"]) ? 'y' : 'n');
-	$smarty->assign('show_related', isset($_REQUEST["show_related"]) ? 'y' : 'n');
-	$smarty->assign('related_max', isset($_REQUEST['related_max']) ? $_REQUEST['related_max'] : 5);
-	$smarty->assign('use_excerpt', isset($_REQUEST['use_excerpt']) ? 'y' : 'n');
-	$smarty->assign('add_date', isset($_REQUEST["add_date"]) ? 'y' : 'n');
 	$smarty->assign('allow_comments', isset($_REQUEST["allow_comments"]) ? 'y' : 'n');
 	$smarty->assign('maxPosts', $_REQUEST["maxPosts"]);
 	$smarty->assign('heading', $heading);
 	$smarty->assign('creator', $_REQUEST["creator"]);
-
-	// display heading preview
-	$_SESSION['tiki_cookie_jar']['show_blog_heading_preview'] = 'y';
-	$cookietab = 2;
 }
 
 
@@ -199,6 +180,7 @@ $cat_objid = $blogId;
 include_once ("categorize_list.php");
 
 $defaultRows = 5;
+include_once("textareasize.php");
 
 ask_ticket('edit-blog');
 
@@ -210,3 +192,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the Index Template
 $smarty->assign('mid', 'tiki-edit_blog.tpl');
 $smarty->display("tiki.tpl");
+
+?>

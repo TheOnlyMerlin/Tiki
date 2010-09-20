@@ -47,7 +47,7 @@
 </tr>
 <tr>
   <td>{tr}Click ratio{/tr}:</td>
-  <td>{$ctr|@truncate:'7':"%":"true"}</td>
+  <td>{$ctr}</td>
 </tr>
 <tr>
   <td>{tr}Method{/tr}:</td>

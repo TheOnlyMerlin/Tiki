@@ -1,14 +1,12 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 // Includes rss feed output in a wiki page
 // Usage:
-// {RSS(id=>feedId,max=>3,date=>1,author=>1,desc=>1,icon=>http://jbotcan.org/favicon.ico)}{RSS}
+// {RSS(id=>feedId,max=>3,date=>1,author=>1,desc=>1)}{RSS}
 //
+
+function wikiplugin_rss_help() {
+	return tra("~np~{~/np~RSS(id=>feedId:feedId2,max=>3,date=>1,desc=>1,author=>1)}{RSS} Insert rss feed output into a wikipage");
+}
 
 function wikiplugin_rss_info() {
 	return array(
@@ -16,98 +14,130 @@ function wikiplugin_rss_info() {
 		'documentation' => 'PluginRSS',
 		'description' => tra('Inserts an RSS feed output.'),
 		'prefs' => array( 'wikiplugin_rss' ),
-		'icon' => 'pics/icons/rss.png',
-		'format' => 'html',
-		'filter' => 'striptags',
 		'params' => array(
 			'id' => array(
 				'required' => true,
 				'name' => tra('IDs'),
-				'separator' => ':',
-				'filter' => 'int',
 				'description' => tra('List of feed IDs separated by colons. ex: feedId:feedId2'),
 			),
 			'max' => array(
 				'required' => false,
 				'name' => tra('Result Count'),
-				'filter' => 'int',
-				'description' => tra('Number of results displayed.'),
+				'description' => tra('Amount of results displayed.'),
 			),
 			'date' => array(
 				'required' => false,
 				'name' => tra('Date'),
-				'filter' => 'int',
 				'description' => '0|1',
 			),
 			'desc' => array(
 				'required' => false,
 				'name' => tra('Description'),
-				'filter' => 'int',
 				'description' => '0|1|max length',
 			),
 			'author' => array(
 				'required' => false,
 				'name' => tra('Author'),
-				'filter' => 'int',
 				'description' => '0|1',
-			),
-			'icon' => array(
-				'required' => false,
-				'name' => tra('Icon'),
-				'filter' => 'url',
-				'description' => 'url to a favicon to put before each entry',
-			),
-			'showtitle' => array(
-				'required' => false,
-				'name' => tra('Show Title'),
-				'filter' => 'int',
-				'description' => 'Set to 0 to not show the title for the feed (1 to show, which is also the default)',
 			),
 		),
 	);
 }
 
-function wikiplugin_rss($data,$params) {
-	global $smarty;
-	global $rsslib; require_once 'lib/rss/rsslib.php';
-
-	$params = array_merge( array(
-		'max' => 10,
-		'date' => 0,
-		'desc' => 0,
-		'author' => 0,
-		'icon' => '',
-                'showtitle' => 1,
-	), $params );
-
-	if ( ! isset( $params['id'] ) ) {
-		return WikiParser_PluginOutput::argumentError( array( 'id' ) );
+function rss_sort($a,$b) {
+	if (isset($a["pubDate"])) {
+	$datea=strtotime($a["pubDate"]);
+	} else {
+		$datea=time();
 	}
-
-	$params['id'] = (array) $params['id'];
-
-	$items = $rsslib->get_feed_items( $params['id'], $params['max'] );
-
-	$title = null;
-	if( count( $params['id'] ) == 1 ) {
-		$module = $rsslib->get_rss_module( reset( $params['id'] ) );
-
-		if( $module['sitetitle'] ) {
-			$title = array(
-				'title' => $module['sitetitle'],
-				'link' => $module['siteurl'],
-			);
-		}
+	if (isset($b["pubDate"])) {
+		$dateb=strtotime($b["pubDate"]);
+	} else {
+		$dateb=time();
+	}	
+	
+	if ($datea==$dateb) {
+		return 0;
+	} elseif ($datea>$dateb) {
+		return -1;
+	} else {
+		return 1;
 	}
-
-	global $smarty;
-	$smarty->assign( 'title', $title );
-	$smarty->assign( 'items', $items );
-	$smarty->assign( 'showdate', $params['date'] > 0 );
-	$smarty->assign( 'showtitle', $params['showtitle'] > 0 );
-	$smarty->assign( 'showdesc', $params['desc'] > 0 );
-	$smarty->assign( 'showauthor', $params['author'] > 0 );
-	$smarty->assign( 'icon', $params['icon'] );
-	return $smarty->fetch( 'wiki-plugins/wikiplugin_rss.tpl' );
 }
 
+function wikiplugin_rss($data,$params) {
+	global $smarty;
+	global $tikilib;
+	global $dbTiki;
+	global $rsslib;
+
+	if ( ! isset($rsslib) ) {
+		include_once('lib/rss/rsslib.php');
+	}
+
+	extract($params,EXTR_SKIP);
+
+	if ( ! isset($max) ) { $max = '10'; }
+	if ( ! isset($id) ) { return tra('You need to specify a RSS Id'); }
+	if ( ! isset($date) ) { $date = 0; }
+	if ( ! isset($desc) ) { $desc = 0; }
+	if ( ! isset($author) ) { $author = 0; }
+
+	$ids = explode(':', $id);
+
+	$repl = '';		
+	$items = array();
+
+	$filter = new DeclFilter;
+	$filter->addStaticKeyFilters( array(
+		'link' => 'url',
+		'title' => 'striptags',
+		'author' => 'striptags',
+		'pubDate' => 'striptags',
+		'description' => 'striptags',
+	) );
+
+	foreach ( $ids as $val ) {
+		if ( ! ($rssdata = $rsslib->get_rss_module_content($val)) ) {
+			$repl = tra('RSS Id incorrect:').' '.$val;
+		}
+		$itemsrss = $rsslib->parse_rss_data($rssdata, $val, $rssdata);
+
+		foreach($itemsrss as & $item) {
+			foreach( $item as &$v ) {
+				$v = TikiLib::htmldecode($v);
+			}
+			$item = $filter->filter($item);
+
+			if( $desc > 1 && strlen($item['description']) > $desc ) {
+				$item['description'] = substr($item['description'], 0, $desc ) . ' [...]';
+			}
+		}
+
+		$items = array_merge($items, $itemsrss);		
+	}
+ 
+	$title = null;
+	if ( isset($items[0]) && $items[0]['isTitle'] == 'y' ) {
+		$title = array_shift($items);
+	}
+
+	// No need to waste time sorting with only one feed
+	if( count( $ids ) > 1 ) {
+		usort($items, 'rss_sort');
+	}
+
+	$items = array_slice($items, 0, $max);
+
+	if ( count($items) < $max ) $max = count($items);
+
+	global $smarty;
+	$smarty->assign('title', $title);
+	$smarty->assign('items', $items);
+	$smarty->assign('showdate', $date > 0);
+	$smarty->assign('showdesc', $desc > 0);
+	$smarty->assign('showauthor', $author > 0);
+	return '~np~' . $smarty->fetch( 'wiki-plugins/wikiplugin_rss.tpl' ) . '~/np~';
+}
+
+?>

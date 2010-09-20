@@ -1,7 +1,9 @@
 {* $Id$ *}
 
 {* this script (un/)checks all checkboxes with id 'banning-section' *}
-{jq notonready=true}
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+{literal}
 	function CheckAll() {
 		for (var i = 0; i < document.banningform.elements.length; i++) {
 			var e = document.banningform.elements[i];
@@ -10,30 +12,32 @@
 			}
 		}
 	}
-{/jq}
+{/literal}
+//--><!]]>
+</script>
 
 {title help="Banning+System"}{tr}Banning system{/tr}{/title}
 
 <h2>{tr}Add or edit a rule{/tr}</h2>
 <form action="tiki-admin_banning.php" name="banningform" method="post">
 <input type="hidden" name="banId" value="{$banId|escape}" />
-<table class="formcolor">
+<table class="normal">
 <tr>
-	<td><label for="banning-title">{tr}Rule title{/tr}</label></td>
-	<td>
+	<td class="formcolor"><label for="banning-title">{tr}Rule title{/tr}</label></td>
+	<td class="formcolor">
 		<input type="text" name="title" id="banning-title" value="{$info.title|escape}" maxlength="200" />
 	</td>
 </tr>
 <tr>
-	<td><label for="banning-userregex">{tr}Username regex matching{/tr}:</label></td>
-	<td>
+	<td class="formcolor"><label for="banning-userregex">{tr}Username regex matching{/tr}:</label></td>
+	<td class="formcolor">
 		<input type="radio" name="mode" value="user" {if $info.mode eq 'user'}checked="checked"{/if} />
 		<input type="text" name="userreg" id="banning-userregex" value="{$info.user|escape}" />
 	</td>
 </tr>
 <tr>
-	<td><label for="banning-ipregex">{tr}IP regex matching{/tr}:</label></td>
-	<td>
+	<td class="formcolor"><label for="banning-ipregex">{tr}IP regex matching{/tr}:</label></td>
+	<td class="formcolor">
 		<input type="radio" name="mode" value="ip" {if $info.mode eq 'ip'}checked="checked"{/if} />
 		<input type="text" name="ip1" id="banning-ipregex" value="{$info.ip1|escape}" size="3" />.
 		<input type="text" name="ip2" value="{$info.ip2|escape}" size="3" />.
@@ -42,8 +46,8 @@
 	</td>
 </tr>
 <tr>
-	<td>{tr}Banned from sections{/tr}:</td>
-	<td>
+	<td class="formcolor">{tr}Banned from sections{/tr}:</td>
+	<td class="formcolor">
 		<div class="toggle">
 			<input type="checkbox" name="checkall" onclick="CheckAll();" />
 			<label for="sectionswitch">{tr}Check / Uncheck All{/tr}</label>
@@ -51,7 +55,7 @@
 
 		<table><tr>
 		{foreach key=sec name=ix item=it from=$sections}
-        <td>
+        <td class="formcolor">
 			<input type="checkbox" name="section[{$sec}]" id="banning-section" {if in_array($sec,$info.sections)}checked="checked"{/if} /> <label for="banning-section">{tr}{$sec}{/tr}</label>
         </td>
         {if $smarty.foreach.ix.index mod 2}
@@ -62,32 +66,32 @@
 	</td>
 </tr>
 <tr>
-	<td><label for="banning-actdates">{tr}Rule activated by dates{/tr}</label></td>
-	<td>
+	<td class="formcolor"><label for="banning-actdates">{tr}Rule activated by dates{/tr}</label></td>
+	<td class="formcolor">
 		<input type="checkbox" name="use_dates" id="banning-actdates" {if $info.use_dates eq 'y'}checked="checked"{/if} />
 	</td>
 </tr>
 <tr>
-	<td>{tr}Rule active from{/tr}</td>
-	<td>
+	<td class="formcolor">{tr}Rule active from{/tr}</td>
+	<td class="formcolor">
 		{html_select_date prefix="date_from" time="$info.date_from" field_order=$prefs.display_field_order}
 	</td>
 </tr>
 <tr>
-	<td>{tr}Rule active until{/tr}</td>
-	<td>
+	<td class="formcolor">{tr}Rule active until{/tr}</td>
+	<td class="formcolor">
 		{html_select_date prefix="date_to" time="$info.date_to" field_order=$prefs.display_field_order}
 	</td>
 </tr>
 <tr>
-	<td><label for="banning-mess">{tr}Custom message to the user{/tr}</label></td>
-	<td>
+	<td class="formcolor"><label for="banning-mess">{tr}Custom message to the user{/tr}</label></td>
+	<td class="formcolor">
 		<textarea rows="4" cols="40" name="message">{$info.message|escape}</textarea>
 	</td>
 </tr>
 <tr>
-	<td>&nbsp;</td>
-	<td>
+	<td class="formcolor">&nbsp;</td>
+	<td class="formcolor">
 		<input type="submit" name="save" value="{tr}Save{/tr}" />
 	</td>
 </tr>
@@ -115,29 +119,29 @@
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$items}
-<tr class="{cycle}">
-<td>
+<tr>
+<td class="{cycle advance=false}">
 <input type="checkbox" name="delsec[{$items[user].banId}]" />
 </td>
-<td>
+<td class="{cycle advance=false}">
 <a href="tiki-admin_banning.php?banId={$items[user].banId}" class="link">
-{$items[user].title|escape}</a>
+{$items[user].title}</a>
 </td>
-<td style="text-align:right;">
+<td style="text-align:right;" class="{cycle advance=false}">
 {if $items[user].mode eq 'user'}
-	{$items[user].user|escape}
+	{$items[user].user}
 {else}
 	{$items[user].ip1}.{$items[user].ip2}.{$items[user].ip3}.{$items[user].ip4}
 {/if}
 </td>
-<td style="text-align:right;">
+<td style="text-align:right;" class="{cycle advance=false}">
 {section name=ix loop=$items[user].sections}
 	{$items[user].sections[ix].section}{if not $smarty.section.ix.last},{/if}
 {/section}
 </td>
-<td>
+<td class="{cycle}">
 &nbsp;&nbsp;<a title="{tr}Delete{/tr}" href="tiki-admin_banning.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;remove={$items[user].banId}" class="link" 
->{icon _id='cross' alt="{tr}Delete{/tr}"}</a>&nbsp;&nbsp;
+>{icon _id='cross' alt='{tr}Delete{/tr}'}</a>&nbsp;&nbsp;
 </td>
 </tr>
 {sectionelse}

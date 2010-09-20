@@ -1,8 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 // \brief Wiki plugin to output something like <a_tag style=a_style>...</a_tag>
@@ -10,7 +6,7 @@
 //	would produce <STRIKE style="color:#FF0000">toto</STRIKE>
 
 function wikiplugin_tag_help() {
-	return tra("Displays text between HTML tags").":<br />~np~{TAG(tag=a_tag, style=a_style)}text{TAG}~/np~";
+	return tra("Displays text between an html tag").":<br />~np~{TAG(tag=a_tag, style=a_style)}text{TAG}~/np~";
 }
 
 function wikiplugin_tag_info() {
@@ -30,7 +26,7 @@ function wikiplugin_tag_info() {
 			'style' => array(
 				'required' => false,
 				'name' => tra('CSS Style'),
-				'description' => tra('Equivalent to the style attribute of an HTML tag.'),
+				'description' => tra('Equivalent of the style attribute on the HTML tag.'),
 			),
 		),
 	);
@@ -53,3 +49,4 @@ function wikiplugin_tag($data, $params) {
 	}
 	return "<$tag$style>$data</$tag>";
 }
+?>

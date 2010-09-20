@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,8 +6,12 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class Messu extends TikiLib
-{
+class Messu extends TikiLib {
+
+	function Messu($db) {
+
+		$this->TikiLib($db);
+	}
 
 	/**
 	 * Put sent message to 'sent' box
@@ -38,7 +37,7 @@ class Messu extends TikiLib
 	/**
 	 * Send a message to a user
 	 */
-	function post_message($user, $from, $to, $cc, $subject, $body, $priority, $replyto_hash='', $replyto_email='', $bcc_sender = '') {
+	function post_message($user, $from, $to, $cc, $subject, $body, $priority, $replyto_hash='') {
 		global $smarty, $userlib, $prefs;
 
 		$subject = strip_tags($subject);
@@ -55,8 +54,9 @@ class Messu extends TikiLib
 
 		// Now check if the user should be notified by email
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
-		$machine = $this->httpPrefix( true ). $foo["path"];
+		$machine = $this->httpPrefix(). $foo["path"];
 		$machine = str_replace('messu-compose', 'messu-mailbox', $machine);
+		$machine = str_replace('messu-broadcast', 'messu-mailbox', $machine);
 		if ($this->get_user_preference($user, 'minPrio', 6) <= $priority) {
 			if (!isset($_SERVER["SERVER_NAME"])) {
 				$_SERVER["SERVER_NAME"] = $_SERVER["HTTP_HOST"];
@@ -77,21 +77,13 @@ class Messu extends TikiLib
 				$mail->setSubject(sprintf($s, $_SERVER["SERVER_NAME"]));
 				$mail_data = $smarty->fetchLang($lg, 'mail/messu_message_notification.tpl');
 				$mail->setText($mail_data);
-				
-				$from_email = $userlib->get_user_email($from);
-				if ($bcc_sender === 'y' && !empty($from_email)) {
-					$mail->setHeader("Bcc", $from_email);
+
+				if ($userlib->get_user_preference($from,'email is public','n') == 'y') {
+					$prefs['sender_email'] = $userlib->get_user_email($from);
 				}
-				if ($replyto_email !== 'y' && $userlib->get_user_preference($from,'email is public','n') !== 'y') {
-					$from_email = '';	// empty $from_email if not to be used - saves getting it twice
-				}
-				if (!empty($from_email)) {
-					$mail->setHeader("Reply-To", $from_email);
-				}
-				if (!empty($prefs['sender_email'])) {
+				if (strlen( $prefs['sender_email'] ) > 1 ) {
+					$mail->setHeader("Reply-To", $prefs['sender_email']);
 					$mail->setHeader("From", $prefs['sender_email']);
-				} else if (!empty($from_email)) {
-					$mail->setHeader("From", $from_email);
 				}
 
 				if (!$mail->send(array($email), 'mail'))
@@ -135,7 +127,7 @@ class Messu extends TikiLib
 			$bindvars[] = $findesc;
 		}
 
-		$query = "select * from `messu_".$dbsource."` where `user`=? $mid order by ".$this->convertSortMode($sort_mode).",".$this->convertSortMode("msgId_desc");
+		$query = "select * from `messu_".$dbsource."` where `user`=? $mid order by ".$this->convert_sortmode($sort_mode).",".$this->convert_sortmode("msgId_desc");
 		$query_cant = "select count(*) from `messu_".$dbsource."` where `user`=? $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -370,4 +362,7 @@ class Messu extends TikiLib
 	}
 
 }
-$messulib = new Messu;
+global $dbTiki;
+$messulib = new Messu($dbTiki);
+
+?>
