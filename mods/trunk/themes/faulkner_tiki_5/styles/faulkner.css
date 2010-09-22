@@ -593,7 +593,7 @@ h3.box-title {
 	padding-left: 0}
 
 ul.module,
-ul.module li {list-style: 0}
+ul.module li {list-style: none}
 
 /** Other boxes **/
 .cbox {
@@ -799,8 +799,8 @@ div.articletopline {
 div.articletitle {
 	padding-top: 16px;
 	margin-top: 6px;
-	margin-bottom:	15px;
-	text-align:	left}
+	margin-bottom: 15px;
+	text-align: left}
  
 div.articletitle h2 {
 	font-size: 1.5em;
@@ -834,7 +834,7 @@ div.bloginfo {
 	text-align: center;
 	padding: 3px;
 	line-height: 150%;
-	text-transform: 0}
+	text-transform: none}
 /*	
 * html .bloginfo table {font-size: 11px}
 */
@@ -995,7 +995,7 @@ div.messureadbody {background: #ffedbd}
 table.default thead td,
 table.default tfoot td {
 	font-weight: bold;
-	text-align:	center;
+	text-align: center;
 	background: #660000;
 	color: #fff3d4}
 

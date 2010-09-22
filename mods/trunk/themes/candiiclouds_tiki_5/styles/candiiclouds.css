@@ -84,7 +84,7 @@ a:hover {
 a:active {color: #9e005d}
 fieldset {border: 1px solid #f06ea9}
 
-h1, h2, h3, h4 {letter-spacing: 90%}
+h1, h2, h3, h4 {letter-spacing: normal}
 
 h1 {
 	font-size: 1.4em;
@@ -186,7 +186,7 @@ u {
 
 img#bcloud {
 	float: left;
-	clear: 0;
+	clear: none;
 	margin-right: 50px}
 
 #siteheader {
@@ -199,7 +199,7 @@ div#sioptions  {background: url(candiiclouds/banstars.gif);}
 
 div#sitelogo {
 	float: left;
-	clear: 0;
+	clear: none;
 	margin: 0;
 	padding: 0}
 
@@ -684,7 +684,7 @@ div#page-bar {
 
 ul.floatleft {
 	display: block;
-	list-style: 0;
+	list-style: none;
 	padding: 0;
 	text-align: left;
 	height: 20px;
@@ -825,7 +825,7 @@ div.articletopline {
 div.articletitle {
 	padding: 10px 4px 4px;
 	margin-top: 6px;
-	margin-bottom:	15px;
+	margin-bottom: 15px;
 	background: url(candiiclouds/bluu.gif);
 	border-bottom: 1px solid #ACCCDD}
  
@@ -888,7 +888,7 @@ div.bloginfo {
 	text-align: center;
 	padding: 3px;
 	line-height: 150%;
-	text-transform: 0}
+	text-transform: none}
 
 * html .bloginfo table {font-size: 11px}
 
@@ -1158,7 +1158,7 @@ div.messureadbody {
 table.default thead td,
 table.default tfoot td {
 	font-weight: bold;
-	text-align:	center;
+	text-align: center;
 	background: black;
 	color: #D8D8D8}
 

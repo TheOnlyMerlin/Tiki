@@ -10,11 +10,10 @@ body {
 	position: relative;
 	background: #fff;
 	margin: 20px auto;
-	text-align: left
+	text-align: left;
 	display: table; 
 	width: 600px} 
 
 *:first-child+html #c1c2 {
 	margin-left: 0;
-	padding-left: 0} 
-}
+	padding-left: 0}

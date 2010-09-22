@@ -176,7 +176,7 @@ td textarea {font-size: 1.3em}
 
 div#sioptions {padding: 1em}
 #sioptionscentered {margin: 1em}
-#sitead {clear: 0}
+#sitead {clear: none}
 
 input[id="fuser"] {
 	background: #578bb8;
@@ -189,7 +189,7 @@ input[id="sl-login-user"],
 input[id="sl-login-pass"] {
 	background: #467aa7;
 	color: #fff;
-	text-transform: 0;
+	text-transform: none;
 	font-size: 1.3em}
 
 #siteloginbar input.wikiaction {
@@ -237,7 +237,7 @@ input[id="sl-login-pass"] {
 }
 
 #sitesearchbar {
-	margin-right: 10px;
+	margin-right:  10px;
 	padding-top: 3px;
 	font-size: 90%;
 	border-left: 1px solid #fff}
@@ -276,7 +276,7 @@ input#fuser {line-height: 90%}
 
 .cssmenu_horiz li ul li,
 .cssmenu_vert li ul li {
-	background:	#578bb8;
+	background: #578bb8;
 	border: 1px solid #fff;
 	border-top: 0;
 	margin-bottom: -1px
@@ -703,8 +703,8 @@ div.articletopline {
 div.articletitle {
 	padding-top: 16px;
 	margin-top: 6px;
-	margin-bottom:	15px;
-	text-align:	left}
+	margin-bottom: 15px;
+	text-align: left}
  
 div.articletitle h2 {
 	font-size: 1.5em;
@@ -732,7 +732,7 @@ div.bloginfo {
 	text-align: center;
 	padding: 3px;
 	line-height: 150%;
-	text-transform: 0}
+	text-transform: none}
 
 .postinfo div {margin-top: 30%}
 
@@ -1055,7 +1055,7 @@ div.messureadbody {background: #DEDEDE}
 table.default thead td,
 table.default tfoot td {
 	font-weight: bold;
-	text-align:	center;
+	text-align: center;
 	background: black;
 	color: #D8D8D8}
 
@@ -1235,9 +1235,9 @@ a.admbox.off:active {border: 1px solid #9f9f9f}
 .tab-menu  {
 	clear: both;
 	line-height: 17px;
-	list-style-image: 0;
+	list-style-image: none;
 	list-style-position: outside;
-	list-style-type: 0;
+	list-style-type: none;
 	padding: 2px 0;
 	margin-bottom: 6px;
 	margin-top: 2px;
