@@ -2044,8 +2044,8 @@ div#ajaxLoading {
 
 /* TikiSheet Default Style {{{1 */
 table.default	thead	td,	table.default	tfoot	td {
-	font-weight:		bold;
-	text-align:			center;
+	font-weight: bold;
+	text-align: center;
 	background-color: #E5EEF6;
 }
 

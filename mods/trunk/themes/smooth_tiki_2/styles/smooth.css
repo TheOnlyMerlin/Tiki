@@ -1,5 +1,5 @@
 /* Smooth theme for TikiWiki CMS/Groupware is a derived work by Gary Cunningham-Lee
-(aka Chibaguy) based on the original design by Free CSS Templates 
+(aka Chibaguy) based on the original design by Free CSS Templates
 (http://www.freecsstemplates.org/preview/smooth), which is distributed under
 a Creative Commons Attribution 2.5 License. Please do not remove the link
 to Free CSS Templates in the footer.
@@ -8,7 +8,7 @@ For more information on the Tiki implementation of this theme, please
 visit http://zukakakina.com or http://themes.tikiwiki.org. */
 
  @import "lite/lite.css"; /* here we import *lite as the base */
- 
+
 /***** XHTML Elements ******/
 
 body {
@@ -137,7 +137,7 @@ li {}
 ul.jumplinks {
 	font-size: 0.8em;
 	list-style-type: none}
-	
+
 ul.jumplinks,
 .jumplinks {
 	position: absolute;
@@ -163,14 +163,14 @@ ul.jumplinks a:active {
 	right: 10px;
 	z-index: 10;
 	font-size: 80%}
-	
+
 #fullscreenbutton:hover {}
 
 #tiki-clean {
 	text-align: left;
 	padding: 1em}
 
-/*** Type 1 (*litecss-based) layout 
+/*** Type 1 (*litecss-based) layout
 	(overrides lite.css) ***/
 #main {text-align: left;
 		background: transparent;
@@ -291,7 +291,7 @@ div#sitead {margin: auto}
 	position: absolute;
 	top: 30px;
 	right: 40px}
-	
+
 #siteloginbar * {text-align: right}
 
 input[id="sl-login-user"],
@@ -323,7 +323,7 @@ div#customcode {}
 	left: 40px;
 	bottom: 0;
 	color: #000}
-	
+
 #sitetitle,
 #sitesubtitle {}
 
@@ -408,17 +408,17 @@ a.flip img {display: none}
 #power {
 	padding: 0 1em 1em;
 	font-size: .9em}
-	
+
 #credits {display: inline}
 
 /* end layout divs, etc. */
 
 /** Border boxes (if any) **/
-	
+
 /****** Menus ******/
 /** PHP Layers Menus **/
 
-.horbar {width: 100%} 
+.horbar {width: 100%}
 
 .horbar table {
 	width: auto;
@@ -441,15 +441,15 @@ a.flip img {display: none}
 	padding-right: 10px;
 	text-align: center;
 	text-decoration: none;
-	white-space: nowrap;} 
+	white-space: nowrap;}
 
 .horbaritem a:hover {
 	background-image: url(smooth/img03.gif);
 	color: #000000 !important;
-	text-decoration: none} 
+	text-decoration: none}
 
 * html .horbaritem a {font-size: .8em}
-.mdkverbar {} 
+.mdkverbar {}
 
 .mdksubmenu {
 	z-index: 999;
@@ -460,7 +460,7 @@ a.flip img {display: none}
 	visibility: hidden;
 	margin-top: 0}
 
-.mdksubmenu table {width: auto} 
+.mdksubmenu table {width: auto}
 
 .mdksubframe {
 	z-index: 1000;
@@ -468,17 +468,17 @@ a.flip img {display: none}
 	display: block;
 	border: 1px solid #e431d0;
 	border-top: 1px solid #FFFFFF;
-	background: #fcf8ff url(smooth/img08.jpg) repeat-x} 
+	background: #fcf8ff url(smooth/img08.jpg) repeat-x}
 
 .mdkitem {
 	position: relative;
 	text-align: left;
-	white-space: nowrap} 
+	white-space: nowrap}
 
 .mdkitem .mdkfwdarr {
 	position: absolute;
 	top: 5px;
-	right: 12px} 
+	right: 12px}
 
 .mdkitem a {
 	padding: 3px 6px;
@@ -486,22 +486,22 @@ a.flip img {display: none}
 	display: block;
 	font-weight: normal;
 	font-size: 1em;
-	color: #000000} 
+	color: #000000}
 
 .mdkitem a:link,
 .cssmenu_vert li a {
 	font-weight: normal;
-	text-decoration: none} 
+	text-decoration: none}
 
-.mdkitem a:visited {text-decoration: none} 
+.mdkitem a:visited {text-decoration: none}
 
-.mdkitem a:hover, 
+.mdkitem a:hover,
 .cssmenu_vert li a:hover {
 	color: #000;
 	text-decoration: none;
-	background: #fff url(smooth/img06.gif) repeat-x} 
+	background: #fff url(smooth/img06.gif) repeat-x}
 
-.mdkitem a:active {} 
+.mdkitem a:active {}
 
 .cssmenu_vert li {}
 .cssmenu_ver li a ul {border: 0}
@@ -752,7 +752,7 @@ div.cbox {
 .rbox-data {
 	padding: 1px 3px;
 	background: #e3fcd6}
-	
+
 .rbox-title {
 	display: inline-block;
 	margin-bottom: -1px;
@@ -787,7 +787,7 @@ div.simplebox {
 
 table {font-size: 1em}
 
-table.normal, 
+table.normal,
 table.admin,
 table.bloglist {
 	padding: 0;
@@ -795,7 +795,7 @@ table.bloglist {
 	border-collapse: collapse;
 	width: 100%}
 
-* html table.normal, 
+* html table.normal,
 * html table.admin,
 * html table.bloglist {width: 97%}
 
@@ -863,7 +863,7 @@ td.bloglistheading {
 	background: #A923FF url(smooth/img07.gif) repeat-x /* s ienna */;
 	min-height: 32px;
 	text-align: center}
-	
+
 th a, table.normal td.heading a {
 	color: white;
 	text-decoration: underline  }
@@ -887,7 +887,7 @@ td.formcontent {}
 /* links to view an object from a table listing objects can be generalized to this link */
 a.fgalname {}
 a.fgalname:hover {}
- 
+
 a.tablename,
 a.galname,
 a.imagename,
@@ -928,7 +928,7 @@ form.admin .tabs {
 	position: relative;
 	z-index: 201}
 
-/*	
+/*
 .tabactive {
 	border: solid 1px #82e641 !important;
 	border-bottom: none !important;
@@ -977,7 +977,7 @@ form.admin .tabs {
 	background: #e3fcd6}
 
 .tabcontent table {
-	margin: 1% auto 2% auto; 
+	margin: 1% auto 2% auto;
 	text-align: left;
 	width: 95%}
 
@@ -1026,7 +1026,7 @@ a.pagetitle:visited,
 a.pagetitle:hover {
 	color: #fff;
 	text-decoration: none}
-	
+
 body.tiki_wiki #tiki-center h1 {
 	margin-top: 0;
 	margin-left: -1em;
@@ -1037,7 +1037,7 @@ body.tiki_wiki #tiki-center h1 {
 	background-image: none !important;
 	background: transparent !important;
 	border-top: none !important}
-	
+
 .wikiactions * {margin: 1px}
 
 div#description,
@@ -1060,8 +1060,8 @@ div.description {
 	border-top:1px solid #FFFFFF;
 	color:#666666}
 
-.wikitext h2, 
-.wikitext h3, 
+.wikitext h2,
+.wikitext h3,
 .wikitext h4,
 .wikitext h5 {}
 
@@ -1071,7 +1071,7 @@ div.description {
 	border-bottom: 1px solid #e431d0;
 	margin: 10px 0}
 
-.wikitext ul li {} 
+.wikitext ul li {}
 .wikitext ul li ul li {}
 .wikitext ol {}
 
@@ -1085,7 +1085,7 @@ table.wikitable {
 	border: 1px solid #bd53ff;
 	border: 1px solid #bd53ff;
 	border-collapse: collapse}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #bd53ff;
@@ -1122,7 +1122,7 @@ div.button2,
 div.button2 a:hover, .button3 a:hover {}
 
 /* From han.css - Check ?? */
-#page-bar p span.button2 {} 
+#page-bar p span.button2 {}
 #page-bar table a.linkbut {}
 
 .linkbut {}
@@ -1169,7 +1169,7 @@ div.code {
 	background: #fff url(smooth/img06.gif) repeat-x;
 	margin: 4px;
 	border: 1px dashed #e431d0;
-	overflow: auto; 
+	overflow: auto;
    width: 500px}
 
 .codecaption {
@@ -1196,7 +1196,7 @@ div.tocnav {
 	padding: 3px;
 	margin-bottom: 4px;
 	clear: both}
- 
+
 #tocnavicons {float: left}
 #tocnavaddpage {float: right}
 #tocnavlinks {clear: both}
@@ -1240,7 +1240,7 @@ div.articletopline {
 
 div.articletitle {
 	}
- 
+
 span.titlea {
 	display: block;
 	height: 28px;
@@ -1251,12 +1251,12 @@ span.titlea {
 	font-weight: bold;
 	font-size: 1.2em;
 	text-transform: uppercase}
-	
+
 span.titleb {
 	font-size: .9em;
 	color: #666;
 	padding-left: 20px}
- 
+
 div.articlesubtitle {font-size: 0.9em}
 div.articleheading {padding: 1em}
 
@@ -1287,7 +1287,7 @@ div.articletrailer {
 	background: inherit;
 	border-top: 1px dotted #A923FF}
 
-div.articletrailer .wikitopline {float: left} 
+div.articletrailer .wikitopline {float: left}
 .trailer, a.linkbut {font-size: .9em}
 .trailer:hover {}
 div.articlebody {padding: 1em}
@@ -1395,7 +1395,7 @@ div.posthead h3 {
 	font-weight: bold;
 	font-size: 1.2em;
 	text-transform: uppercase}
- 
+
 div.postbody {
 	margin-right: 8px;
 	line-height: 1.2em;
@@ -1425,7 +1425,7 @@ body.tiki_forums table.normal {margin: auto}
 	padding: 0;
 	background: transparent;
 	font-size: 1em}
-	
+
 * html .post .postbody {font-size: 11px}
 
 .post .postbody-title {
@@ -1444,7 +1444,7 @@ body.tiki_forums table.normal {margin: auto}
 	font-weight: bold;
 	margin-left: 5px;
 	margin-top: 3px}
-	
+
 .title a.link {color: #fff; text-decoration: none}
 
 .post .postbody .content {
@@ -1495,7 +1495,7 @@ body.tiki_forums table.normal {margin: auto}
 	color:  #666666;
 	margin: 0;
 	padding-top: 3px;}
-	
+
 .postbody-content {margin: 3px; padding: 4px}
 
 .post .postbody .attachments {
@@ -1573,12 +1573,12 @@ body.tiki_forums table.normal {margin: auto}
 	display: none;
 	margin: 5px 0;
 	padding: 0}
- 
+
 #comzoneopen {
 	display: block;
 	margin: 5px 0;
 	padding: 0}
- 
+
 span.commentstitle {
 	font-weight: bold;
 	font-size: 1.2em}
@@ -1646,7 +1646,7 @@ a.freetag_1 {
 a.freetag_2 {
 	text-decoration: none;
 	font-size: .9em}
-	
+
 a.freetag_3 {
 	text-decoration: none;
 	font-size: 1em}
@@ -1794,8 +1794,8 @@ div.gallerypath a:hover {}
 /***** Calendar *****/
 /* Overrides calendar.css, etc. */
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {font-size: 90%}
 
 .Calart,
@@ -1864,7 +1864,7 @@ div.gallerypath a:hover {}
 .Caltrack,
 .Caltrack a,
 .Caltrack a:visited {color: #00BD02}
-	
+
 .Calweb {font-size: 90%}
 
 .Calwiki,
@@ -1953,7 +1953,7 @@ div.pollresults {
 	margin-top: 5px;
 	font-size: 1.2em;
 	padding: 0 5px}
-	
+
 table.pollresults {width: 100%}
 td.pollr {color: #666}
 #pollopen {display: block}
@@ -2094,7 +2094,7 @@ div#ajaxLoading {
 	line-height: 1em !important;
 	white-space: normal !important;
 	padding: 5px 0 4px 8px}
-	
+
 /* MyTiki Preferences Ajax */
 
 
@@ -2126,7 +2126,7 @@ div#ajaxLoading {
 table.default thead td,
 table.default tfoot td {
 	font-weight: bold;
-	text-align:	center;
+	text-align: center;
 	background: #82e641;
 	color: #fff}
 

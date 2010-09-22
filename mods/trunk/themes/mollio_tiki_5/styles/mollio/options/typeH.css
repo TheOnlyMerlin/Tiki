@@ -1,4 +1,4 @@
-/* "TypeH" variation of Mollio theme - 
+/* "TypeH" variation of Mollio theme -
 "Fixed width"
 */
 body {
@@ -11,8 +11,8 @@ body {
 	background: #fff;
 	margin: 20px auto;
 	text-align: left;
-	display: table; 
-	width: 600px} 
+	display: table;
+	width: 600px}
 
 *:first-child+html #c1c2 {
 	margin-left: 0;

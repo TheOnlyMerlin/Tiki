@@ -7,7 +7,7 @@
 	minimal HTML tables are needed for graphic treatment and column integrity.
 	For more information, visit http://themes.tikiwiki.org or
 	http://zukakakina.com.
- 
+
 	litejazz.css is comprised of these sections:
 	XHTML elements, Siteheader & Identity; Menus, Links;
 	Misc. Center Col.; Misc. Global; Boxes; Tables, Tabs;
@@ -16,12 +16,12 @@
 	Quizzes;	Shoutbox; Directory; Messages; TikiSheets;
 	Calendar; Admin; and Ajax, jquery, etc.
 */
- 
+
 /* Import the default layout properties file: */
  @import "layout/layout.css";
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	font: 76%/130% Verdana,Helvetica,Arial,sans-serif;
 	color: #292929;
@@ -56,7 +56,7 @@ td#leftcolumn {
 	width: 180px;
 	padding-left: 20px;
 	padding-top: 10px}
- 
+
 td#centercolumn {
 	padding: 1em;
 	padding-right: 3em}
@@ -69,7 +69,7 @@ td#rightcolumn {
 #footer {
 	text-align: center;
 	font-size: .9em;
-	background: #170808; 
+	background: #170808;
 	color: #fff}
 
 td#footer .wrapper {padding: 1em}
@@ -88,7 +88,7 @@ td#footer .wrapper {padding: 1em}
 #botbar_bottom > .wrapper {
 	background: url(litejazz/footer.jpg) 0 100% no-repeat;
 	margin-right: 15px}
-	
+
 #power a,
 #power a:visited {color: #fff}
 
@@ -118,7 +118,7 @@ hr {
 fieldset {
 	border: solid 1px #a9a9a9;
 	padding: 10px}
-	
+
 legend {color: #a9a9a9}
 
 textarea,
@@ -143,7 +143,7 @@ span.button input,
 	font-weight: normal;
 	color: #fff;
 	background: url(litejazz/bg.png) repeat-x bottom}
-	
+
 * html input[type=reset],
 * html input[type=submit] {
 	font-family: Verdana, Helvetica, Geneva, Arial, sans-serif;
@@ -217,7 +217,7 @@ div#sitead {margin: auto}
 .cssmenu_horiz li ul {
 	border-bottom: 1px #aaa solid;
 	border-left: 1px #999 solid}
-	
+
 .cssmenu ul li,
 .cssmenu_vert li ul li,
 .cssmenu_horiz li ul li {
@@ -233,8 +233,8 @@ div#sitead {margin: auto}
 	background: #104a91;
  	color: #fff;
 	text-decoration: none}
-	
-.cssmenu a,	
+
+.cssmenu a,
 .cssmenu_horiz a,
 .cssmenu_vert a {
 	font: 12px Verdana, Geneva, Arial, Helvetica, sans-serif;
@@ -258,7 +258,7 @@ div#sitead {margin: auto}
 	background: #818181 url(litejazz/menubg-over.png) repeat-x;
 	text-decoration: none;
 	border-right: #999 solid 1px}
-	
+
 #tiki-top .cssmenu_horiz li.menuSection a {padding-right: 20px}
 #tiki-top .cssmenu_horiz ul li a {background: #818181 !important}
 
@@ -266,9 +266,9 @@ div#sitead {margin: auto}
 	background: #104a91 !important;
  	color: #fff;
 	text-decoration: none}
-	
+
 #tiki-top .cssmenu_horiz ul li a .sf-sub-indicator {top: 1.2em}
-	
+
 .box-data .cssmenu_vert a {
 	color: #104A91;
 	font-weight: bold}
@@ -289,7 +289,7 @@ div#sitead {margin: auto}
 /** PHP Layers Menus **/
 .horbar {
 	bottom: 0;
-	line-height: 30px} 
+	line-height: 30px}
 
 .horbaritem a,
 .horbaritem a:visited {
@@ -312,7 +312,7 @@ div#sitead {margin: auto}
 	color: white;
 	background: #818181 url(litejazz/menubg-over.png) repeat-x;
 	text-decoration: none;
-	border-right: #999 solid 1px} 
+	border-right: #999 solid 1px}
 
 .mdksubmenu {background: #fff}
 
@@ -322,12 +322,12 @@ div#sitead {margin: auto}
 	background: #818181;
 	border-bottom: 1px #aaa solid;
 	border-left: 1px #999 solid;
-	font-weight: normal} 
+	font-weight: normal}
 
 .mdkitem a:link,
 .mdkitem a:visited {
 	font-weight: normal;
-	text-decoration: none} 
+	text-decoration: none}
 
 .mdkitem a:hover {
 	background: #104a91;
@@ -366,9 +366,9 @@ a.phplmselected:hover {color: #808080}
 div#tiki-bot {
 	text-align: center;
 	font-size: .9em;
-	background: #170808; 
+	background: #170808;
 	color:#fff}
-	
+
 a.flip,
 a.flip:visited,
 div.tellafriend a,
@@ -391,7 +391,7 @@ div.tellafriend a:hover {color: #505050}
 div#botbar_custom_code {
 	background: #170808 url(litejazz/botbar_custcode.png) repeat-x;
 	font-size: 1.2em}
-	
+
 * html div#botbar_custom_code {height: 50px}
 
 #botbar_custom_code .codewrapper {
@@ -465,7 +465,7 @@ img.flipmodimage:hover {border: 1px solid #aaa !important}
 .rbox-data {
 	border-color: #e1e1e1;
 	background: url(litejazz/body-bg.png) repeat-x}
-	
+
 .rbox-title {}
 .rbox-data {}
 
@@ -478,7 +478,7 @@ div.simplebox {
 /***** Tables, Tabs *****/
 /** Tables **/
 
-table.normal, 
+table.normal,
 table.admin,
 table.sortable,
 table.admin tr td div#page-bar {
@@ -501,7 +501,7 @@ td.odd {
 	background: #F5F5F5;
 	border-right: 1px solid #DDDDDD}
 
-tr.even td, 
+tr.even td,
 td.even {
 	background: #ECECEC;
 	border-right: 1px solid #DDDDDD}
@@ -515,7 +515,7 @@ td.normal,
 	margin: 0;
 	padding: 0.2em;
 	vertical-align: top}
-	
+
 th,
 td.heading  {
 	background: #DCDCDC;
@@ -545,11 +545,11 @@ td.form {padding: 0.2em}
 .tabmark a:hover {
 	color: black;
 	background: #f0f9ff}
-	
+
 .tabactive {
 	background: #104a91;
 	border-color: #696969}
-	
+
 .tabactive a:hover {
 	background: #abcdef;
 	color: #fff}
@@ -564,7 +564,7 @@ td.form {padding: 0.2em}
 	background: #f0f9ff}
 
 .tabcontent table {
-	margin: 1% auto 2% auto; 
+	margin: 1% auto 2% auto;
 	text-align: left;
 	width: 95%}
 
@@ -599,14 +599,14 @@ div.wikitopline {
 .categpath {}
 .wikitext {}
 
-.wikitext h2, 
-.wikitext h3, 
+.wikitext h2,
+.wikitext h3,
 .wikitext h4,
 .wikitext h5{
 	margin: 0 0 15px;
 	padding: 0}
 
-.wikitext ul li {} 
+.wikitext ul li {}
 .wikitext ul li ul li {}
 .wikitext ol {}
 
@@ -619,7 +619,7 @@ div.wikitopline {
 table.wikitable {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #999;
@@ -647,7 +647,7 @@ ul.floatleft li {
 
 .editdate ul.floatleft {
 	margin-top: 8px}
- 
+
 span.button2,
 div.button2,
 .button3 {margin-right: 5px}
@@ -657,9 +657,9 @@ div.button2,
 div.button2 a:hover, .button3 a:hover {}
 
 /* From han.css - Check ?? */
-#page-bar p span.button2 {} 
+#page-bar p span.button2 {}
 #page-bar table a.linkbut {}
- 
+
 .linkbut {}
 .linkbut:hover {}
 div.cache {}
@@ -706,7 +706,7 @@ div.code {
 	background: #F5F5F5;
 	margin: 4px;
 	border: 1px dashed #ADACAF;
-	overflow: auto; 
+	overflow: auto;
    width: 500px}
 
 .codecaption {
@@ -733,7 +733,7 @@ div.tocnav {
 	padding: 3px;
 	margin-bottom: 4px;
 	clear: both}
- 
+
 #tocnavicons {	float: left}
 #tocnavaddpage{float: right}
 #tocnavlinks {clear: both}
@@ -770,9 +770,9 @@ div.articletopline {
 
 div.articletitle {
 	margin-top: 6px;
-	margin-bottom:	15px;
-	text-align:	left}
- 
+	margin-bottom: 15px;
+	text-align: left}
+
 div.articletitle h2 {
 	font-size: 1.5em;
 	font-weight: normal}
@@ -780,7 +780,7 @@ div.articletitle h2 {
 span.titleb {
 	font-size: 0.9em;
 	color: #104A91}
- 
+
 div.articlesubtitle {font-size: 0.9em}
 div.articleheading {
 	margin: 6px 0;
@@ -811,7 +811,7 @@ div.articletrailer .wikitopline {float: left}
 .trailer {}
 .trailer:hover {}
 div.articlebody {}
- 
+
 div.articlesource {
 	margin-top: 5px;
 	font-style: italic;
@@ -845,7 +845,7 @@ div.bloginfo {
 	padding: 3px;
 	line-height: 150%;
 	text-transform: 0}
-	
+
 * html .bloginfo table {font-size: 11px}
 
 div.blogtools {
@@ -853,7 +853,7 @@ div.blogtools {
 	text-align: right}
 
 .blogpost {}
- 
+
 /*.postinfo div a img,*/
 a.blogt,
 a.blog:visited {
@@ -887,13 +887,13 @@ span.posthead {
 	display: block;
 	font-weight: normal;
 	font-size: 85%}
- 
+
 div.posthead h3 {
 	/*font-size: 1.2em*/}
- 
+
 div.postbody {
 	margin: 0}
-	
+
 * html .postbody table {font-size: 11px}
 
 div.postfooter {
@@ -914,17 +914,17 @@ body.tiki_forums table.normal {margin: auto}
 	border: 1px solid #DDD;
 	border-collapse: collapse;
 	text-align: left}
-	
+
 * html .post .postbody {font-size: 11px}
 
 .postbody .content {
 	padding: .3em}
-	
+
 .postbody .content p {}
- 
+
 .post .postbody-title {
 	display: block;
-	background: #DCDCDC; 
+	background: #DCDCDC;
 	padding: 2px}
 
 .post .postbody-title .checkbox {float: left}
@@ -942,7 +942,7 @@ body.tiki_forums table.normal {margin: auto}
 	margin: -0.3em 10px 10px -0.3em;
 	padding: .3em}
 
-.post .author_post_info {}	
+.post .author_post_info {}
 .post .author_post_info_by {font-weight: bold}
 .post .author_info .icons {}
 .post .author_info .icons .actions {}
@@ -998,7 +998,7 @@ body.tiki_forums table.normal {margin: auto}
 .post_preview, .top_post {margin-bottom: 15px}
 /*.post .postbody .signature {float: left}*/
 
-/* Comments */	
+/* Comments */
 
 form#editpostform table.normal td {border: 0 !important}
 
@@ -1006,16 +1006,16 @@ form#editpostform table.normal td {border: 0 !important}
 	display: 0;
 	margin: 5px 0;
 	padding: 0}
- 
+
 #comzoneopen {
 	display: block;
 	margin: 5px 0;
 	padding: 0}
- 
+
 span.commentstitle {
 	font-weight: bold;
 	font-size: 1em}
-	
+
 textarea#editpost2 {
 	width: 100%}
 
@@ -1063,7 +1063,7 @@ img.athumb {
 /***** Categories, Tags *****/
 
 /***** Tags (freetags) *****/
-	
+
 /*****  Polls  *****/
 
 /***** FAQs *****/
@@ -1110,8 +1110,8 @@ div.dirfooter {margin-top: 10px}
 
 /***** TikiSheets *****/
 table.default	thead	td,	table.default	tfoot	td {
-	font-weight:		bold;
-	text-align:			center;
+	font-weight: bold;
+	text-align: center;
 	background: black;
 	color: #D8D8D8}
 
@@ -1123,12 +1123,12 @@ table.default	td {
 .calodd {background: #eee}
 .caleven {background: #f9f9f9}
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {
 	color: #000;
 	font-size: 90%}
-	
+
 .Calart,
 .Calblog,
 .Calchart,
@@ -1332,39 +1332,39 @@ a.admbox.off:hover, a.admbox.off:focus, a.admbox.off:active {
 #tab-block-1 h5 {width: 120px; float: left}
 
 .tab-wrapper {
-	padding: 0; 
-	border: 1px solid #eee; 
-} 
+	padding: 0;
+	border: 1px solid #eee;
+}
 .tab-menu {
-	list-style: 0; 
-	padding: 2px 0; 
-	clear:  both; 
-	line-height: 17px; 
-	font-size: 12px; 
-} 
+	list-style: 0;
+	padding: 2px 0;
+	clear:  both;
+	line-height: 17px;
+	font-size: 12px;
+}
 .tab-menu li {
-	width: 200px; 
-	display: inline; 
-	margin: 0 2px; 
-} 
+	width: 200px;
+	display: inline;
+	margin: 0 2px;
+}
 .tab-menu li a 	{
-	padding: 1px 5px; 
-	background: #f5f5f5; 
-	color:  #222; 
-	font-weight: bold; 
-	text-decoration: none; 
-} 
-.tab-menu li a:hover, 
+	padding: 1px 5px;
+	background: #f5f5f5;
+	color:  #222;
+	font-weight: bold;
+	text-decoration: none;
+}
+.tab-menu li a:hover,
 .tab-menu li a:focus {
-	background: #FAEC8F; 
-	border-bottom-color:    #999; 
-} 
+	background: #FAEC8F;
+	border-bottom-color:    #999;
+}
 .tab-menu li a:hover {
-	background: #FAEC8F; 
-	border-bottom-color: #999; 
-} 
+	background: #FAEC8F;
+	border-bottom-color: #999;
+}
 .tab-menu li.tab-selected a {
-	background: #BCEC8F; 
+	background: #BCEC8F;
 }
 
 /***** New (unsorted) *****/

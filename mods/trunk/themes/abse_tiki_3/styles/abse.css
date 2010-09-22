@@ -3,7 +3,7 @@
 	(http://celo.wordpress.com/) and uses the *litecss source-ordered layout
 	solution by luci (http://sourceforge.net/projects/litecss). For more
 	information, please visit http://themes.tikiwiki.org or http://zukakakina.com.
- 
+
 	abse.css is comprised of these sections:
 	XHTML elements, Siteheader & Identity; Menus, Links;
 	Misc. Center Col.; Misc. Global; Boxes; Tables, Tabs;
@@ -12,16 +12,16 @@
 	Quizzes;	Shoutbox; Directory; Messages; TikiSheets;
 	Calendar; Admin; and Ajax, jquery, etc.
 */
- 
+
 /* Import layout foundation CSS file. */
 /* If *litecss-based theme . . .  */
 @import "lite/lite.css";
 
 /* Then import the default layout properties file: */
  @import "layout/layout.css";
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 
 body {
 	background: #000 url(abse/wgreenwall.png) fixed;
@@ -63,7 +63,7 @@ html>body {font-size: .7em !important}
 
 html>body #c1c2 #wrapper #col1 #tiki-center:hover {
 	background: #0E1D10 url(abse/titlebgon.png) repeat-x}
-	
+
 #c1c2 #col2 {
 	background: transparent;
 	width: 200px;
@@ -126,7 +126,7 @@ img {border: 0}
 fieldset {
 	border: solid 1px #3f6041;
 	padding: 10px}
-	
+
 hr {
 	color: #bdcec3;
 	background: #bdcec3}
@@ -173,7 +173,7 @@ option {
 	text-decoration: none;
 	color: #ccccff;
 	background: #586858 url(abse/menubg.jpg) repeat-y}
-	
+
 span.button a,
 span.button a:visited,
 button,
@@ -211,7 +211,7 @@ span.button input,
 	color: #b2b2b2;
 	padding: 0 4px;
 	margin-right: 3px}
-	
+
 * html .wikitopline select {font-size: .9em}
 
 select {
@@ -266,7 +266,7 @@ body.wikitext {
 	padding-top: 4px;
 	padding-bottom: 4px;
 	min-height: 74px}
-	
+
 * html #siteheader {height: 74px}
 
 div#sioptions {
@@ -318,14 +318,14 @@ div#sioptions {
 .cssmenu_vert li a {
 	color: #fff;
 	text-decoration: none}
-	
+
 .cssmenu li a:hover,
 .cssmenu_horiz li a:hover,
 .cssmenu_vert li a:hover  {
 	background: #010101 url(abse/menubg.jpg) repeat-y;
 	color: #ccccff;
 	text-decoration: none}
-	
+
 .cssmenu_vert li {padding-bottom: 4px}
 .cssmenu_ver li a ul {border: 0}
 .cssmenu_vert li.selected > a {background: #86a48a url(abse/menubg.jpg) repeat-y}
@@ -373,7 +373,7 @@ a.phplm:active {
 .phplmnormal {
 	background: #586858;
 	border: 1px solid #aaa}
-	
+
 a.phplm:hover {
 	color: #ccccff;
 	background: #586858}
@@ -415,7 +415,7 @@ div.option a.linkmenu:hover {
 	text-decoration: none;
 	color: #ccccff;
 	background: #010101 url(abse/menubg.jpg) repeat-y}
-	
+
 .separator a:link,
 .separator a:visited,
 .separator a:hover {text-decoration: none}
@@ -456,7 +456,7 @@ html>body div.box:hover {background: #0e1d10}
 	font-size: 1em;
 	font-weight: normal;
 	margin: 0 0 12px}
-	
+
 .box:hover .box-title,
 * html .box-title {
 	background: #4f5d50 url(abse/titlebgon.png) repeat-x}
@@ -498,9 +498,9 @@ img.flipmodimage:hover {border: 1px solid #55914E !important}
 	background: inherit;
 	border: 1px solid #909090;
 	margin: 6px}
-	
-* html .cbox {background: #192919} 
- 
+
+* html .cbox {background: #192919}
+
 .cbox-title {
 	text-align: left;
 	text-indent: 1em;
@@ -535,13 +535,13 @@ img.flipmodimage:hover {border: 1px solid #55914E !important}
 div.simplebox {
 	border: 1px solid #666;
 	padding: 4px}
- 
+
 /***** Tables, Tabs ****/
 /** Tables **/
 
 table {font-size: 1em}
 
-table.normal, 
+table.normal,
 table.admin {border: solid 1px #909090}
 
 tr.odd td {background: #000 url(abse/menubg.jpg) repeat-y}
@@ -625,7 +625,7 @@ div.description {
 	border-right: 1px solid #696969;
 	border-bottom: 1px solid #696969;
 	vertical-align: top}
- 
+
 td.wikicell {
 	padding: 3px;
 	border-right: 1px solid #a9a9a9;
@@ -703,20 +703,20 @@ div.articletitle {
 	padding: 3px;
 	background: #010101 url(abse/menubg.jpg) repeat-y;
 	margin-bottom: 1em}
- 
+
 div.articletitle h2 {font-size: 1.4em}
 
 div.articletitle h2 a,
 div.articletitle h2 a:visited {text-decoration: none}
- 
+
 div.articlesubtitle {
 	font-size: 90%;
 	font-style: italic}
- 
+
 div.articleheading {
 	margin-top: 6px;
 	line-height:1.5em}
- 
+
 div.articleheadingtext {color: #D8D8D8}
 
 img.topicimage,
@@ -735,16 +735,16 @@ img.articleimage {
 	border: 1px solid #989898}
 
 div.articletrailer .wikitopline {float: left}
- 
+
 div.articlebody {
 	color: #D8D8D8;
 	line-height: 1.5em}
- 
+
 div.articlesource {
 	margin-top: 5px;
 	font-style: italic;
 	font-size: 90%}
- 
+
 /***** Blogs *****/
 div.blogtitle {
 	font-size: 1.5em;
@@ -772,7 +772,7 @@ div.bloginfo {
 .blogpost {
 	margin-top: 2em;
 	margin-bottom: 2em}
- 
+
 .postinfo {
 	margin-bottom: 6px;
 	padding: 2px}
@@ -804,7 +804,7 @@ span.posthead {
 	display: block;
 	font-weight: bold;
 	letter-spacing: .4pt}
- 
+
 div.posthead h3 {
 	text-align: left;
 	margin-bottom: 10px;
@@ -813,7 +813,7 @@ div.posthead h3 {
 	letter-spacing: -1px;
 	margin: 0 0 15px;
 	padding: 0}
- 
+
 div.postbody {
 	margin-right: 8px;
 	line-height: 1.5em}
@@ -825,7 +825,7 @@ div.postbody {
 	background: #000 url(abse/menubg.jpg) repeat-y;
 	font-size: 1em;
 	border: solid 1px #909090}
-	
+
 * html .post .postbody {font-size: 1em}
 /* *:first-child+html .postbody {min-width: 100% !important} */
 
@@ -834,7 +834,7 @@ div.postbody {
 	margin-bottom: 4px;
 	padding-top: 2px;
 	background: #000}
-	
+
 .post .postbody-title .checkbox {float: left}
 
 .post .postbody-title .title {
@@ -885,19 +885,19 @@ div.postbody {
 	padding: 0 3px 3px 3px;
 	text-align: left;
 	color: #BDCEC3}
-	
+
 .post .postbody .attachments {
 	clear: both;
 	border-top: 1px dotted #d9d9d9;
 	margin-top: 5px}
-	
+
 .post .postbody .attachments img {vertical-align: text-bottom}
 
 .post .postfooter .actions, .post .postfooter .status {
 	display: inline;
 	margin-left: 5px;
 	vertical-align: top}
-	
+
 .post .postfooter .status {font-size: .9em}
 
 .post .postfooter {
@@ -910,7 +910,7 @@ div.postbody {
 	background: #f0f8ff;
 	border: 1px solid #d7e5f3;
 	padding: 0 2px}
-	
+
 .post .avatar {
 	float: right;
 	margin-bottom: 5px;
@@ -955,7 +955,7 @@ div.showimage {padding: 6px}
 td.oddthumb {
 	background: #0E150E;
 	border: 3px solid black}
- 
+
 td.eventhumb {
 	background: #0E150E;
 	border: 3px solid black}
@@ -966,7 +966,7 @@ div.gallerypath, div.gallerypath a {
 	color: #bdcec3;
 	margin-left: 3px;
 	text-decoration: none}
-	
+
 div.gallerypath a:hover {color: #ccccff}
 .fgalexplorer {border: 1px solid #3f6041}
 
@@ -1051,8 +1051,8 @@ table.default	td {
 	background: #000}
 
 /***** Calendar *****/
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {
 	color: #000;
 	font-size: 90%}
@@ -1071,7 +1071,7 @@ table.default	td {
 .Calsurv,
 .Caltrack,
 .Calwiki {font-size: 90%}
-	
+
 .Calart:before,
 .Calblog:before,
 .Calchart:before,
@@ -1087,7 +1087,7 @@ table.default	td {
 .Caltrack:before,
 .Calwiki:before {
 	background: #000;
-	font-size: 1.2em} 
+	font-size: 1.2em}
 
 .Calart,
 .Calart a,
@@ -1136,7 +1136,7 @@ table.default	td {
 .Caltrack,
 .Caltrack a,
 .Caltrack a:visited {color: #00bd02}
-	
+
 .Calweb {font-size: 1em}
 .Calweb:hover {color: #996633}
 
@@ -1239,20 +1239,20 @@ table.default	td {
 .tab-wrapper {border: 1px solid #eee}
 
 .tab-menu li a {
-	background: #586858; 
-	color: #fff; 
-	font-weight: bold; 
-	text-decoration: none} 
+	background: #586858;
+	color: #fff;
+	font-weight: bold;
+	text-decoration: none}
 
-.tab-menu li a:hover, 
+.tab-menu li a:hover,
 .tab-menu li a:focus {
-	background: #faec8f; 
+	background: #faec8f;
 	color: #000;
-	border-bottom-color: #999} 
+	border-bottom-color: #999}
 
 .tab-menu li a:hover {
-	background: #faec8f; 
-	border-bottom-color: #999} 
+	background: #faec8f;
+	border-bottom-color: #999}
 
 .tab-menu li.tab-selected a {
 	background: #bcec8f;

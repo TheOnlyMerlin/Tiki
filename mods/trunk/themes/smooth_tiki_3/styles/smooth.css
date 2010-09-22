@@ -1,10 +1,10 @@
 /* Smooth theme for TikiWiki CMS/Groupware is a derived work by Gary Cunningham-Lee
-	(aka Chibaguy) based on the original design by Free CSS Templates 
+	(aka Chibaguy) based on the original design by Free CSS Templates
 	(http://www.freecsstemplates.org/preview/smooth), which is distributed under
 	a Creative Commons Attribution 2.5 License. Please do not remove the link
 	to Free CSS Templates in the footer.
 	For more information on the Tiki implementation of this theme, please
-	visit http://zukakakina.com or http://themes.tikiwiki.org. 
+	visit http://zukakakina.com or http://themes.tikiwiki.org.
 
 	smooth.css is comprised of these sections:
 	XHTML elements, Siteheader & Identity; Menus, Links;
@@ -14,14 +14,14 @@
 	Quizzes;	Shoutbox; Directory; Messages; TikiSheets;
 	Calendar; Admin; and Ajax, jquery, etc.
 */
- 
+
 /* Import layout foundation CSS file. */
 /* *litecss-based theme, so . . .  */
 @import "lite/lite.css";
 
 /* Then import the default layout properties file: */
  @import "layout/layout.css";
- 
+
 /***** XHTML Elements (body tag here,
 			others follow Layout) *****/
 
@@ -198,7 +198,7 @@ div#sitelogo {width: 33%}
 	top: 30px;
 	right: 40px;
 	bottom: auto}
-	
+
 #siteloginbar * {text-align: right}
 
 input[id="sl-login-user"],
@@ -264,12 +264,12 @@ select[name="where"] option {padding: 0}
 
 .cssmenu_vert li a {
 	font-weight: normal;
-	text-decoration: none} 
+	text-decoration: none}
 
 .cssmenu_vert li a:hover {
 	color: #000;
 	text-decoration: none;
-	background: #fff url(smooth/img06.gif) repeat-x} 
+	background: #fff url(smooth/img06.gif) repeat-x}
 
 #tiki-top .cssmenu_horiz li.menuLevel0 a,
 #tiki-top .cssmenu_horiz li.menuLevel0 a:visited {
@@ -286,13 +286,13 @@ select[name="where"] option {padding: 0}
 	text-align: center;
 	text-decoration: none;
 	white-space: nowrap}
-	
+
 #tiki-top .cssmenu_horiz li.menuLevel0 a:hover,
 #tiki-top .cssmenu_horiz li.selected a {
 	background: url(smooth/img03.gif) repeat-x;
 	color: #000;
 	text-decoration: none}
-	
+
 #tiki-top .cssmenu_horiz li.menuSection0 a {padding-right: 20px !important}
 
 #tiki-top .cssmenu_horiz li.menuLevel1 a,
@@ -315,11 +315,11 @@ select[name="where"] option {padding: 0}
 	border: 1px solid #e431d0;
 	border-top: 1px solid #fff;
 	/*padding: 0 1px 1px 1px*/}
-	
+
 #tiki-top .cssmenu_horiz li ul li ul {border: 1px solid #e431d0}
 
 /** PHP Layers Menus **/
-.horbar {} 
+.horbar {}
 
 .horbar table {float: right}
 
@@ -339,40 +339,40 @@ select[name="where"] option {padding: 0}
 	padding-right: 10px;
 	text-align: center;
 	text-decoration: none;
-	white-space: nowrap} 
+	white-space: nowrap}
 
 .horbaritem a:hover {
 	background-image: url(smooth/img03.gif) repeat-x;
 	color: #000 !important;
-	text-decoration: none} 
+	text-decoration: none}
 
 .mdksubmenu {
 	background: #fff;
 	margin-top: 0}
 
-.mdksubmenu table {width: auto} 
+.mdksubmenu table {width: auto}
 
 .mdksubframe {
 	border: 1px solid #e431d0;
 	border-top: 1px solid #fff;
-	background: #fcf8ff url(smooth/img08.jpg) repeat-x} 
+	background: #fcf8ff url(smooth/img08.jpg) repeat-x}
 
 .mdkitem a {
 	padding: 3px 6px;
 	font-weight: normal;
 	font-size: 1em;
-	color: #000} 
+	color: #000}
 
 .mdkitem a:link {
 	font-weight: normal;
-	text-decoration: none} 
+	text-decoration: none}
 
-.mdkitem a:visited {text-decoration: none} 
+.mdkitem a:visited {text-decoration: none}
 
 .mdkitem a:hover {
 	color: #000;
 	text-decoration: none;
-	background: #fff url(smooth/img06.gif) repeat-x} 
+	background: #fff url(smooth/img06.gif) repeat-x}
 
 .phplmnormal,
 a.phplmnormal:hover,
@@ -468,7 +468,7 @@ div.cbox {
 .rbox-data {
 	padding: 1px 3px;
 	background: #e3fcd6}
-	
+
 .rbox-title,
 .rbox-data {border: 1px solid #a4ed75}
 
@@ -482,7 +482,7 @@ div.simplebox {
 /***** Tables, Tabs *****/
 /** Tables **/
 
-table.normal, 
+table.normal,
 table.admin {border: solid 1px #e431d0}
 
 tr.odd {background: #fff url(smooth/img06.gif) repeat-x}
@@ -515,7 +515,7 @@ table.normal td.heading {
 	color: #fff;
 	background: #a923ff url(smooth/img07.gif) repeat-x /* s ienna */;
 	min-height: 32px}
-	
+
 th a, table.normal td.heading a {
 	color: #fff;
 	text-decoration: underline }
@@ -523,7 +523,7 @@ th a, table.normal td.heading a {
 th a:visited, table.normal td.heading a:visited {
 	color: white;
 	text-decoration: none }
- 
+
 a.tablename,
 a.galname,
 a.imagename,
@@ -576,7 +576,7 @@ a.pagetitle:visited,
 a.pagetitle:hover {
 	color: #fff;
 	text-decoration: none}
-	
+
 body.tiki_wiki #tiki-center h1 {
 	margin-top: 0;
 	margin-left: -1em;
@@ -587,7 +587,7 @@ body.tiki_wiki #tiki-center h1 {
 	background-image: 0 !important;
 	background: transparent !important;
 	border-top: 0 !important}
-	
+
 .wikiactions * {margin: 1px}
 
 div#description,
@@ -611,7 +611,7 @@ table.wikitable,
 td.wikicell {
 	border: 1px solid #bd53ff;
 	border-collapse: collapse}
- 
+
 td.wikicell {padding: 3px}
 .editdate {border-top:1px dotted #a923ff}
 
@@ -638,7 +638,7 @@ div.code {
 	background: #fff url(smooth/img06.gif) repeat-x;
 	margin: 4px;
 	border: 1px dashed #e431d0;
-	overflow: auto; 
+	overflow: auto;
    width: 500px}
 
 .codecaption {
@@ -665,7 +665,7 @@ div.tocnav {
 	padding: 3px;
 	margin-bottom: 4px;
 	clear: both}
- 
+
 #tocnavicons {float: left}
 #tocnavaddpage {float: right}
 #tocnavlinks {clear: both}
@@ -689,7 +689,7 @@ body.tiki_cms h1 {
 div.articletopline {
 	font-size: 90%;
 	font-style: italic}
- 
+
 div.articletitle h2 {
 	display: block;
 	height: 28px;
@@ -699,18 +699,18 @@ div.articletitle h2 {
 	font-weight: bold;
 	font-size: 1.2em;
 	text-transform: uppercase}
-	
+
 div.articletitle h2 a,
 div.articletitle h2 a:visited,
 div.articletitle h2 a:hover {
 	color: #fff;
 	text-decoration: none}
-	
+
 span.titleb {
 	font-size: .9em;
 	color: #666;
 	padding-left: 20px}
- 
+
 div.articlesubtitle {font-size: 0.9em}
 div.articleheading {padding: 1em}
 
@@ -769,7 +769,7 @@ div.posthead h3 {
 	font-weight: bold;
 	font-size: 1.2em;
 	text-transform: uppercase}
- 
+
 div.postbody {
 	margin-right: 8px;
 	line-height: 1.2em;
@@ -795,7 +795,7 @@ div.postbody {
 	color: #fff;
 	text-transform: uppercase;
 	font-weight: bold}
-	
+
 .title a.link {color: #fff; text-decoration: none}
 
 .post .postbody .content {
@@ -828,14 +828,14 @@ div.postbody {
 .post .postbody-title .actions {
 	font-size: 1em;
 	color: #fff}
-	
+
 .post .postbody-title .actions a,
 .post .postbody-title .actions a:visited {color: #fff}
 
 .post .postbody .content {
 	color:  #666;
 	padding-top: 3px}
-	
+
 .postbody-content {
 	margin: 3px;
 	padding: 4px}
@@ -906,7 +906,7 @@ div.gallerypath a:hover {
 /***** Categories, Tags *****/
 
 /***** Tags (freetags) *****/
-	
+
 /*****  Polls  *****/
 
 /***** FAQs *****/
@@ -947,8 +947,8 @@ div.messureadbody {background: #f4abec}
 /***** TikiSheets *****/
 
 /***** Calendar *****/
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {font-size: 90%}
 
 .Calart,
@@ -1017,7 +1017,7 @@ div.messureadbody {background: #f4abec}
 .Caltrack,
 .Caltrack a,
 .Caltrack a:visited {color: #00BD02}
-	
+
 .Calweb {font-size: 90%}
 
 .Calwiki,

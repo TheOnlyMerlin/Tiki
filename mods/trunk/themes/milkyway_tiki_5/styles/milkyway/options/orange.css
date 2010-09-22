@@ -16,7 +16,7 @@ div#header {background: url(orange/header.jpg) no-repeat 100% 0}
 #topbar_custom_code {background: white url(orange/borderr.png) 100% 0 repeat-y}
 #topbar_cc_liner {background: white url(orange/borderl.png) repeat-y 0 0}
 #tiki-top .cssmenu_horiz li.menuLevel0 a:hover,
-.horbaritem a:hover {background: /*#2b2b2b*/ url(orange/mw_menu_active_bg.png) 0 0 repeat-x;color: #fff} 
+.horbaritem a:hover {background: /*#2b2b2b*/ url(orange/mw_menu_active_bg.png) 0 0 repeat-x;color: #fff}
 .bt {background: url(orange/modbox.jpg) no-repeat 100% 0}
 .bt div {background: url(orange/modbox.jpg) no-repeat 0 0}
 .bb {background: url(orange/modbox.jpg) no-repeat 100% 100%}
@@ -24,13 +24,13 @@ div#header {background: url(orange/header.jpg) no-repeat 100% 0}
 .i1 {background: url(orange/modboxl.jpg) repeat-y 0 0}
 .i2 {background: url(orange/modboxr.jpg) repeat-y 100% 0}
 .box-titlebottom {background: url(orange/modboxtitlebottom.jpg) no-repeat 100% 0}
-.box-titlebottom div {background: url(orange/modboxtitlebottom.jpg) no-repeat 0 0}	
+.box-titlebottom div {background: url(orange/modboxtitlebottom.jpg) no-repeat 0 0}
 
 h3.box-title,
 span.highlight {
 	background: #d4641a;
 	color: #fff}
-	
+
 .sf-sub-indicator {background: url(orange/arrows-a04e17.png) no-repeat -10px -100px}
 
 .button a:hover,

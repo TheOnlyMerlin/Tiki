@@ -17,13 +17,13 @@
 @import "matrix/matrix-calendar.css";
 .catblock {
   border: 1px solid #aaaaaa;
-} 
+}
 .catlists {
   border-top: 1px solid #ffffff;
   padding: 1px 6px 1px 6px;
   background-color: transparent;
   color: #666666;
-} 
+}
 .catlists:last-child {
   border-bottom: 1px solid #ffffff;
 }
@@ -31,12 +31,12 @@
   background-color: #dedede;
 }
 .cattitle {
-  color: #000000; 
+  color: #000000;
   background-color: transparent;
   font-weight: bold;
 }
 .catlists a.link {
-  color: #666666; 
+  color: #666666;
   background-color: transparent;
   padding: 0px 4px 0px 4px;
   border: 1px solid #aaaaaa;
@@ -45,7 +45,7 @@
 .catlists a.link:hover {
   color: #000000;
   background-color: transparent;
-} 
+}
 /* TikiIntegrator: By default copy rules dialog not shown */
 div#rules-copy-panel {
     display: none;
@@ -59,7 +59,7 @@ div#rules-copy-panel {
   padding: 1px 3px 1px 5px;
   margin: 2px;
   cursor: pointer;
-  font-weight:bold; 
+  font-weight:bold;
 }
 
 TABLE.admin { width: 100%; }
@@ -73,11 +73,11 @@ div#loadstats {
 
 /* phplayers style */
 .box-data table {
-  width: 100%; 
-} 
+  width: 100%;
+}
 .mdkverbar  {
   margin: 0px;
-} 
+}
 .mdksubmenu {
   z-index: 999;
   position: absolute;
@@ -155,7 +155,7 @@ div#loadstats {
 #clear {
 	clear:both;
 	}
-	
+
 
 /* tiki tabs */
 
@@ -167,11 +167,11 @@ div#loadstats {
 	margin: 0px;
 	margin-right: 5px;
 	padding: 1px 0px 1px 0px;
-	-moz-border-radius : 5px 5px 0 0;  
+	-moz-border-radius : 5px 5px 0 0;
 }
-.tabmark a { 
-	-moz-border-radius : 5px 5px 0 0; 
-	border-bottom : 0; 
+.tabmark a {
+	-moz-border-radius : 5px 5px 0 0;
+	border-bottom : 0;
 	color: #666666;
 	font-weight: bold !important;
 	padding: 1px 5px 1px 5px;
@@ -212,7 +212,7 @@ div#loadstats {
 }
 
 /**** coloration for c o d e plugin *****/
-.codelisting 
+.codelisting
 { font-family : monospace; padding : 2ex;
 background-color : #32CD32;
 margin : 1ex; border : 1px dashed #adacaf; }

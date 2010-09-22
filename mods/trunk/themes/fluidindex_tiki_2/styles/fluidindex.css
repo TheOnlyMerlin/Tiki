@@ -10,7 +10,7 @@
  * For more information, please visit http://themes.tikiwiki.org or http://zukakakina.com.
  *
  */
- 
+
 @import "lite/lite.css"; /* here we import *lite as the base */
 
 /***** XHTML Elements ******/
@@ -77,7 +77,7 @@ hr {
 	border-width: 0px;
 	padding: 0px;
 	color: #4f657f}
-	
+
 p {
 	line-height: 1.5em;
 	margin: 0 0 15px}
@@ -101,7 +101,7 @@ fieldset {padding: 10px}
 form {
 	margin: 0;
 	padding: 0}
-	
+
 legend {
 	white-space: pre-wrap;
 	color: #000}
@@ -137,7 +137,7 @@ select {
 button,
 input[type=submit],
 input[type=reset] {
-	vertical-align: middle;	
+	vertical-align: middle;
 	font-weight: bold;
 	margin: 2px;
 	vertical-align: middle}
@@ -163,7 +163,7 @@ ul {
 ol li {
 	list-style: decimal;
 	background-image: none}
-	
+
 tt { font-size: 1.2em }
 
 /***** Page Layout *****/
@@ -184,7 +184,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	position: absolute;
 	top: 9010px;
 	left: 9010px;
-	background-color: #339999; 
+	background-color: #339999;
 	color: #fff;
 	padding: 5px;
 	font-weight: bold;
@@ -198,14 +198,14 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	right: 10px;
 	z-index: 10;
 	font-size: 80%}
-	
+
 #fullscreenbutton:hover {}
 
 #tiki-clean {
 	text-align: left;
 	padding: 1em}
 
-/*** Type 1 (*litecss-based) layout 
+/*** Type 1 (*litecss-based) layout
 	(overrides lite.css) ***/
 #main {
 	padding: 0;
@@ -263,7 +263,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	font-weight: normal;
 	font-size: 1em;
 	text-align: center}
-	
+
 #footer small { font-size: 1em }
 
 #footer a:link,
@@ -393,7 +393,7 @@ input[id="sl-login-pass"] {}
 #tiki-top {
 	font-size: 1em;
 	text-align: left}
-	
+
 * html #tiki-top { padding-top: 4px}
 
 #tiki-top table {width: auto}
@@ -444,7 +444,7 @@ a.flip img {display: none}
 /* end layout divs, etc. */
 
 /** Border boxes (if any) **/
-	
+
 /****** Menus ******/
 /** PHP Layers Menus **/
 
@@ -513,7 +513,7 @@ a.flip img {display: none}
 
 .box-data .mdkverbar {}
 
-.mdkverbar .mdkitem a, 
+.mdkverbar .mdkitem a,
 .box .mdkitem a {
 	padding-top: 4px;
 	padding-bottom: 2px;
@@ -633,7 +633,7 @@ div.option a:hover,
 div.option a:active {
 	color: #4F657F;
 	text-decoration: underline}
-	
+
 a.linkmodule {
 	color: #6D809F;
 	text-decoration: none;
@@ -769,7 +769,7 @@ div.box {
 	margin-left: 7px;
 	margin-right: 7px;
 	overflow: hidden}
-	
+
 .wikitext .box { width: 200px }
 .wikitext .box-title { letter-spacing: normal }
 
@@ -798,7 +798,7 @@ h3.box-title {
 * html .box a.flipmodtitle img {border: none; right: 14px}
 a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
 
-.box-data { 
+.box-data {
 	font-size: 0.9em;
 	line-height: 1.4em;
 	margin: /*-10px 0 16px 10px*/;
@@ -812,8 +812,8 @@ a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
 	text-align: start}
 
 .box-data ul {list-style: none}
-	
-.box-data div ul {/* lists in usermodules 
+
+.box-data div ul {/* lists in usermodules
 	padding-left: -2em;
 	margin-left: -2.5em*/}
 
@@ -860,7 +860,7 @@ a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
 .cbox {
 	border: 1px solid #999999;
 	margin: 6px}
- 
+
 .cbox-title {
 	text-align: left;
 	text-indent: 1em;
@@ -916,7 +916,7 @@ div.simplebox {
 /***** Tables, Tabs and Lists ****/
 /** Tables **/
 
-table.normal, 
+table.normal,
 table.admin,
 table.bloglist {
 	font-size: 1em;
@@ -924,7 +924,7 @@ table.bloglist {
 	border-collapse: collapse;
 	width: 100%}
 
-* html table.normal, 
+* html table.normal,
 * html table.admin,
 * html table.bloglist {
 	font-size: 11px;
@@ -951,12 +951,12 @@ table.email td.heading {}
 table.email td.closeButton {}
 .button {}
 
-tr.odd td, 
+tr.odd td,
 td.odd {
 	background: #F5F5F5;
 	border-left: 1px solid #DDDDDD}
 
-tr.even td, 
+tr.even td,
 td.even {
 	background: #ECECEC;
 	border-left: 1px solid #DDDDDD}
@@ -972,7 +972,7 @@ td.odd,
 td.even {margin: 0;
 	padding: 0.2em;
 	vertical-align: top}
-	
+
 /* headings */
 
 td.heading {font-size: 1em}
@@ -991,7 +991,7 @@ form.admin legend.heading a span {}
 form.admin legend.heading a:hover span {}
 div.heading {}
 
-td.form {padding: 0.2em}	
+td.form {padding: 0.2em}
 
 /* cells in tracker items display */
 td.formlabel {background: #ececec;}
@@ -1000,7 +1000,7 @@ td.formcontent {background: #dfdac3;}
 /* links to view an object from a table listing objects can be generalized to this link */
 a.fgalname {}
 a.fgalname:hover {}
- 
+
 a.tablename,
 a.galname,
 a.imagename,
@@ -1059,7 +1059,7 @@ a.forumnameread {}
 	margin: 5px;
 	margin-top: 0;
 	background-color : #DCDCDC}
-	
+
 form fieldset.tabcontent {}
 .tabcontent table td {}
 form.admin .tabs {}
@@ -1088,12 +1088,12 @@ form.admin .tabs {}
 .tab-menu li img {
 	vertical-align: middle}
 
-.tab-menu li a {} 
+.tab-menu li a {}
 
-.tab-menu li a:hover, 
-.tab-menu li a:focus {} 
+.tab-menu li a:hover,
+.tab-menu li a:focus {}
 
-.tab-menu li a:hover {} 
+.tab-menu li a:hover {}
 .tab-menu li.tab-selected a {}
 table.admin div#content1 div.tabcontent div.cbox {background-color: transparent}
 
@@ -1142,8 +1142,8 @@ div.description {
 .categpath {}
 .wikitext {line-height: 1.5em}
 
-.wikitext h2, 
-.wikitext h3, 
+.wikitext h2,
+.wikitext h3,
 .wikitext h4,
 .wikitext h5 {
 	color: #606060;
@@ -1162,10 +1162,10 @@ div.description {
 	padding: 0.1em;
 	margin-bottom: 0.5em;
 	margin-top: 1em}
- 
+
 .wikitext ul li {
 	padding-left: 10px;
-	background: url(fluidindex/star.gif) no-repeat 0 3px} 
+	background: url(fluidindex/star.gif) no-repeat 0 3px}
 
 .wikitext ul li ul li {
 	padding-left: 10px;
@@ -1178,7 +1178,7 @@ table.wikitable {
 	border-right: 1px solid #696969;
 	border-bottom: 1px solid #696969;
 	vertical-align: top}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #A9A9A9;
@@ -1204,15 +1204,15 @@ ul.floatleft li {
 
 .editdate ul.floatleft {
 	margin-top: 8px}
- 
-span.button2, 
+
+span.button2,
 div.button2,
 .button3 {
 	margin-right: 2px;
 	border: 1px solid #8c9eaa;
 	background: #E9E7DB;
 	padding: 0 2px}
- 
+
 a.linkbut {
 	/*white-space: nowrap;*/
 	font-size: .85em}
@@ -1244,7 +1244,7 @@ div.quicktag {}
 div.quicktag img,
 #wikihelp-tab td img {}
 div#helptool {}
- 
+
 /* Wiki plugins */
 
 /* Code plugin  */
@@ -1296,7 +1296,7 @@ div.tocnav {
 	padding: 3px;
 	margin-bottom: 4px;
 	clear: both}
- 
+
 #tocnavicons {
 	float: left}
 
@@ -1343,7 +1343,7 @@ div.articletitle {
 	margin-bottom: 15px;
 	text-align: left;
 	background: url(fluidindex/page.gif) 0px 17px no-repeat}
- 
+
 span.titlea {
 	font-size: 1.2em;
 	font-weight: bold}
@@ -1353,10 +1353,10 @@ span.titleb {}
 div.articlesubtitle {
 	font-size: 90%;
 	font-style: italic}
- 
+
 div.articleheading {
 	margin-top: 6px}
- 
+
 div.articleheadingtext {
 	color: black;
 	line-height: 1.5em}
@@ -1385,7 +1385,7 @@ img.articleimage {
 div.articletrailer {text-align: right}
 
 div.articletrailer .wikitopline {
-	float: right} 
+	float: right}
 
 .trailer {}
 .trailer:hover {}
@@ -1394,12 +1394,12 @@ div.articlebody {
 	color: black;
 	line-height: 1.5em;
 	margin-top: 2em}
- 
+
 div.articlesource {
 	margin-top: 5px;
 	font-style: italic;
 	font-size: 90%}
- 
+
 /***** Blogs *****/
 
 div.blogheading {
@@ -1466,7 +1466,7 @@ span.posthead {
 	font-weight: bold;
 	letter-spacing: .4pt;
 	border-bottom: 1px solid #2F3E4F}
- 
+
 div.posthead h3 {
 	color: #6D809F;
 	font-weight: bold;
@@ -1478,14 +1478,14 @@ div.posthead h3 {
 	background: url(fluidindex/page.gif) 0 17px no-repeat;
 	margin-bottom: 10px;
 	font-size: 1.2em}
- 
+
 div.postbody {
 	margin-right: 8px;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	color: black;
 	margin-bottom: 1em;
 	line-height: 1.5em}
-	
+
 * html .postbody table {font-size: 11px}
 
 /* Used by custom tpl not yet in 1.10 */
@@ -1526,7 +1526,7 @@ table.commentinfo {
 	margin: 0;
 	padding: 0;
 	background-color: white}
-	
+
 * html .post .postbody {font-size: 11px}
 
 .post .postbody-title {
@@ -1546,7 +1546,7 @@ table.commentinfo {
 	font-size: 1.1em;
 	margin-left: 5px;
 	margin-top: 0}
-	
+
 .post .postbody-title .title h2 { margin-top: 0 }
 
 .title a.link {color: #666666}
@@ -1559,7 +1559,7 @@ table.commentinfo {
 	width: 100%;
 	background: #ececec;}
 
-.post .author {	
+.post .author {
 	float: left;
 	text-align: left;
 	vertical-align: top;
@@ -1592,7 +1592,7 @@ table.commentinfo {
 	width: 70%;
 	border-left: 1px solid #8c9eaa;
 	padding-left: 5px}
-	
+
 .postbody .quoteheader { margin-top: 0 }
 
 .post .postbody .attachments {
@@ -1660,15 +1660,15 @@ table.commentinfo {
 .nb_replies {white-space: nowrap}
 .post_preview, .top_post {margin-bottom: 15px}
 /*.post .postbody .signature { float: left}*/
- 
+
 /* Comments */
 #comzone {display: none}
- 
+
 #comzoneopen {
 	display: block;
 	margin: 5px 0px;
 	padding: 0}
- 
+
 span.commentstitle {
 	font-weight: bold;
 	font-size: 1.2em}
@@ -1718,7 +1718,7 @@ li.freetag {
 	margin: 0 !important;
 	padding: 0 !important;
 	background: none !important}
-	
+
 ul.freetag {
 	margin: 0 !important;
 	padding: 0 !important;
@@ -1733,7 +1733,7 @@ a.freetag_1 {
 a.freetag_2 {
 	text-decoration: none;
 	font-size: .9em}
-	
+
 a.freetag_3 {
 	text-decoration: none;
 	font-size: 1em}
@@ -1781,7 +1781,7 @@ td.oddthumb {
 	background-color: #FFFFFF;
 	border: 3px solid white;
 	border-collapse: collapse}
- 
+
 td.eventhumb {
 	background-color: #FFFFFF;
 	border: 3px solid white;
@@ -1859,13 +1859,13 @@ div.gallerypath a:hover {}
 /***** Calendar *****/
 /* Overrides calendar.css, etc. */
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {
 	color: Black;
 	font-size: 10px;
 	padding-right: 0px}
-	
+
 .Calart,
 .Calblog,
 .Calchart,
@@ -1892,7 +1892,7 @@ div.gallerypath a:hover {}
 
 .Calchart,
 .Calchart a,
-.Calchart a:visited {color: #304F30} 
+.Calchart a:visited {color: #304F30}
 
 .Caldir,
 .Caldir a,
@@ -1912,7 +1912,7 @@ div.gallerypath a:hover {}
 
 .Calforum,
 .Calforum a,
-.Calforum a:visited {color: #808000} 
+.Calforum a:visited {color: #808000}
 
 .Calgal,
 .Calgal a,
@@ -2013,7 +2013,7 @@ div.pollresults {
 	margin-top: 5px;
 	font-size: 1.2em;
 	padding: 0 5px}
-	
+
 table.pollresults {width: 100%}
 td.pollr {color: black}
 #pollopen {display: block}
@@ -2162,7 +2162,7 @@ div#ajaxLoading {	display: none;
 table.default thead td,
 table.default tfoot td {
 	font-weight: bold;
-	text-align:	center;
+	text-align: center;
 	background: black;
 	color: #D8D8D8}
 

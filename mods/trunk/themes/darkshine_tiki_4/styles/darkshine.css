@@ -7,22 +7,22 @@ Dark Shine theme for TikiWiki CMS/Groupware. This is an adaptation
 	display:table, minimal HTML tables are needed for
 	graphic treatment and column integrity.
 */
- 
+
 /* Import the default layout properties file: */
 @import "layout/layout.css";
 
 /* And design defaults: */
 @import "layout/design.css";
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	background: #90140C url(darkshine/stripes.gif) repeat-x;
 	background-position: 50% 40px;
 	font: normal 76%/150% arial, verdana, helvetica, sans-serif}
 
-html>body {font-size: 72% !important}	
-	
+html>body {font-size: 72% !important}
+
 body.fullscreen {
 	background: #90140C url(darkshine/stripes.gif) repeat-x;
 	background-position: 50% 20px;
@@ -141,7 +141,7 @@ select*/ {
 	border: 1px solid #783C1C;
 	font-size: 94%;
 	font-weight: bold}
-	
+
 input[type=reset],
 /*input[type=submit]*/ {
 	background:#FD9339 url(darkshine/hover_list.jpg) repeat-x scroll 0 0;
@@ -184,7 +184,7 @@ div#sitelogo {/*width: 33%*/}
 	margin: auto;
 	margin-top: 66px;
 	background: url(darkshine/title_background.jpg) no-repeat}
-	
+
 * html #sitetitles {
 	margin-top: 0;
 	height: 101px}
@@ -199,7 +199,7 @@ div#sitelogo {/*width: 33%*/}
 	font-size: 3.6em;
 	color: #FE9B27;
 	letter-spacing: 8px}
-	
+
 * html #sitetitle {
 	padding-top: 20px;
 	padding-bottom: 0}
@@ -236,7 +236,7 @@ div#tiki-top {
 .cssmenu_vert li ul li,
 .cssmenu_horiz li ul li {
 	background: #f3f3f3}
-	
+
 /* left column width */
 td#leftcolumn ul.cssmenu_vert {
 	padding-left: 0;
@@ -281,7 +281,7 @@ td#leftcolumn .cssmenu_vert li li.sfHover ul {
 	background: #101010 url(darkshine/nav.gif) repeat-x;
 	background-position: 0 -40px}
 
-#tiki-top ul.cssmenu_horiz li ul a,	
+#tiki-top ul.cssmenu_horiz li ul a,
 #listcontainer ul.cssmenu_horiz li ul a {color: #000}
 
 #tiki-top ul.cssmenu_horiz li ul a:hover,
@@ -337,15 +337,15 @@ td#leftcolumn .cssmenu_vert a .sf-sub-indicator {top: 0.6em}
 	padding: 10px 15px;
 	margin: 0;
 	color: #fff;
-	font-size: 10px; 
+	font-size: 10px;
 	font-weight: bold;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif}
-	
+
 .horbar .mdkitem a:hover {
 	color: #fff;
 	background: url(darkshine/nav.gif) repeat-x;
 	background-position: 0 -40px}
-	
+
 .mdksubframe  {display: block}
 
 .mdksubmenu {
@@ -377,12 +377,12 @@ td#leftcolumn .cssmenu_vert a .sf-sub-indicator {top: 0.6em}
 	color: #fff}
 
 .mdksubmenu a {color: black}
-	
+
 .mdkverbar .mdkitem .mdkfwdarr {
 	position: absolute;
 	top: 5px;
 	right: 25px}
-	
+
 .mdksubmenu .mdkitem {padding: 6px}
 .mdksubmenu .mdkitem a:hover {color: #90140C}
 
@@ -470,7 +470,7 @@ border: 3px solid #FEE5C6}
 	font: bold 11px arial, verdana, helvetica;
 	margin-top: 10px;
 	color: #000}
-	
+
 ul.topcontent {
 	float: right;
 	margin: 0;
@@ -485,7 +485,7 @@ div#topcontent_items {
 span#ticker {
 	color: #fff;
 	display: block}
-	
+
 #topcontent {
 	display: block;
 	border: 15px solid #600000;
@@ -497,7 +497,7 @@ span#ticker {
 	color: #fff;
 	text-align: right;
 	font: normal 10px/32px arial, verdana, helvetica, sans-serif}
-	
+
 * html #topcontent {height: 43px}
 
 #contenttop strong {
@@ -563,7 +563,7 @@ select[name="where"],
 	background: #21C336;
 	color: #fff}
 
-#adspace {	
+#adspace {
 	/*height: 67px;*/
 	background: #71201b url(darkshine/ad.gif) repeat-x;
 	border: 15px solid #600000;
@@ -579,7 +579,7 @@ select[name="where"],
 	border-top: 1px solid #CA807C;
 	border-bottom: 1px solid #3E1B19;
 	height: 100%}
-	
+
 #adspace img {margin: .7em auto}
 
 div#sitead {
@@ -648,7 +648,7 @@ a.flipmodtitle:hover img {border: 1px solid #90140c !important}
 
 .rbox {
 	margin: 5px 10px 5px}
-	
+
 .rbox-title,
 .rbox-data {
 	padding: 1px 3px;
@@ -661,7 +661,7 @@ a.flipmodtitle:hover img {border: 1px solid #90140c !important}
 	border-bottom: 0;
 	bottom: -2px;
 	font-weight: bold}
-	
+
 .rbox-data {
 	display: block;
 	border: 2px solid #90140c}
@@ -676,7 +676,7 @@ div.simplebox {
 /***** Tables, Tabs *****/
 /** Tables **/
 
-table.normal/*, 
+table.normal/*,
 table.admin*/ {
 	border: solid 1px #909090;
 	width: 100%}
@@ -714,14 +714,14 @@ td.form {padding: 0.2em}
 	background: #ececec;
 	border: 1px solid #666;
 	padding: 2px 0}
-	
+
 .tabmark a {
 	color: #666;
 	font-weight: bold}
 
 .tabmark a:active {color: #636466}
 .tabmark a:hover {color: black}
-	
+
 .tabactive {
 	border-color: #7c7b7d !important;
 	border-width: 1px !important}
@@ -740,7 +740,7 @@ table.admin tr td div#page-bar {
 	margin-left: 5px;
 	margin-bottom: 0;
 	background: transparent}
-	
+
 .iconmenutext {white-space: nowrap;}
 
 /***** Wiki *****/
@@ -768,9 +768,9 @@ div#description {
 .categpath {}
 .wikitext {line-height: 1.5em}
 
-.wikitext h1, 
-.wikitext h2, 
-.wikitext h3, 
+.wikitext h1,
+.wikitext h2,
+.wikitext h3,
 .wikitext h4 {
 	margin: 0 0 15px;
 	padding: 0}
@@ -781,8 +781,8 @@ div#description {
 	border-top: 1px solid #999;
 	border-bottom: 1px solid #999;
 	margin:10px 0 10px 0}
- 
-.wikitext ul li {} 
+
+.wikitext ul li {}
 .wikitext ul li ul li {}
 .wikitext ol{}
 
@@ -795,7 +795,7 @@ html>body .wikitopline table {}
 table.wikitable {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #999;
@@ -830,7 +830,7 @@ div.button2, .button3 {
 div.button2 a:hover, .button3 a:hover {}
 
 /* From han.css - Check ?? */
-#page-bar p span.button2 {} 
+#page-bar p span.button2 {}
 #page-bar table a.linkbut {}
 
 .linkbut {
@@ -873,7 +873,7 @@ div.code {
 	padding: 10px;
 	margin: 4px;
 	border: 1px dashed #ADACAF;
-	overflow: auto; 
+	overflow: auto;
    width: 500px}
 
 .codecaption {
@@ -898,7 +898,7 @@ div.tocnav {
 	padding: 3px;
 	margin-bottom: 4px;
 	clear: both}
- 
+
 #tocnavicons {float: left}
 #tocnavaddpage{float: right}
 #tocnavlinks {clear: both}
@@ -933,14 +933,14 @@ div.articletopline {
 div.articletitle {
 	padding-top: 16px;
 	margin-top: 6px;
-	margin-bottom:	15px;
-	text-align:	left}
- 
+	margin-bottom: 15px;
+	text-align: left}
+
 div.articletitle h2 {
 	font-size: 1.5em;
 	font-weight: normal}
 
-span.titleb {font-size: 1.0em} 
+span.titleb {font-size: 1.0em}
 div.articlesubtitle {font-size: 0.9em}
 div.articleheading {margin-top: 6px}
 div.articleheadingtext {}
@@ -965,9 +965,9 @@ img.articleimage {
 	margin-bottom:10px}
 
 div.articletrailer {text-align: right}
-div.articletrailer .wikitopline {float: left} 
+div.articletrailer .wikitopline {float: left}
 div.articlebody {margin-top: 1em}
- 
+
 div.articlesource {
 	margin-top: 5px;
 	font-style: italic;
@@ -1032,9 +1032,9 @@ span.posthead {
 	display: block;
 	font-weight: bold;
 	letter-spacing: .4pt}
- 
+
 div.posthead h3 {}
- 
+
 div.postbody {
 	margin-right: 8px;
 	margin-bottom: 1em}
@@ -1058,7 +1058,7 @@ body.tiki_forums table.normal {margin: auto}
 	padding: 0;
 	background: #F3F3F3;;
 	font-size: 1.1em}
-	
+
 * html .post .postbody {font-size: 11px}
 
 .post .postbody .content {
@@ -1067,7 +1067,7 @@ body.tiki_forums table.normal {margin: auto}
 	text-align: left;
 	color: #000;
 	background: #f3f3f3 !important}
-	
+
 #col1 .post .postbody .content p {}
 
 .post .postbody-title {
@@ -1087,12 +1087,12 @@ body.tiki_forums table.normal {margin: auto}
 	margin-left: 5px;
 	margin-top: 3px;
 	margin-bottom: 3px}
-	
+
 .post .postbody-title .title {font-weight: bold}
 
 .postbody-title .title a,
 .postbody-title .title a:visited {color: #000}
-	
+
 .post .postbody-title .title a.link {}
 .postbody-title br.clear {display: 0}
 
@@ -1206,12 +1206,12 @@ body.tiki_forums table.normal {margin: auto}
 	display: 0;
 	margin: 5px 0;
 	padding: 0}
- 
+
 #comzoneopen {
 	display: block;
 	margin: 5px 0;
 	padding: 0}
- 
+
 span.commentstitle {
 	font-weight: bold;
 	font-size: 1.2em}
@@ -1262,7 +1262,7 @@ div.imgaldescr {}
 /***** Categories, Tags *****/
 
 /***** Tags (freetags) *****/
-	
+
 /*****  Polls  *****/
 
 /***** FAQs *****/
@@ -1310,7 +1310,7 @@ div.messureadbody {
 table.default thead td,
 table.default tfoot td {
 	font-weight: bold;
-	text-align:	center;
+	text-align: center;
 	background: black;
 	color: #D8D8D8}
 
@@ -1320,12 +1320,12 @@ table.default	td {
 
 
 /***** Calendar *****/
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {
 	color: Black;
 	font-size: 1em}
-	
+
 .Calart,
 .Calblog,
 .Calchart,
@@ -1354,7 +1354,7 @@ table.default	td {
 
 .Calchart,
 .Calchart a,
-.Calchart a:visited {color:#304F30} 
+.Calchart a:visited {color:#304F30}
 
 .Caldir,
 .Caldir a,
@@ -1374,7 +1374,7 @@ table.default	td {
 
 .Calforum,
 .Calforum a,
-.Calforum a:visited {color:#808000} 
+.Calforum a:visited {color:#808000}
 
 .Calgal,
 .Calgal a,
@@ -1395,7 +1395,7 @@ table.default	td {
 Caltrack,
 Caltrack a,
 Caltrack a:visited {color:#00BD02}
-	
+
 .Calweb {font-size: 1em}
 
 .Calwiki,
@@ -1475,7 +1475,7 @@ Caltrack a:visited {color:#00BD02}
 #caltable .calfocuson a {
 	color: #000;
 	text-decoration: none}
-	
+
 #caltable .calfocuson a:hover {text-decoration: underline }
 
 .day, .day:visited {}
@@ -1500,7 +1500,7 @@ Caltrack a:visited {color:#00BD02}
 .addevent {
 	padding: 0 5px;
 	float: right}
-	
+
 .calnavigation a:hover {background: #FD9339 url(darkshine/hover_list.jpg) repeat-x; }
 * html .addevent {padding: 0}
 .calodd, .caleven {border: 1px solid #999}
@@ -1560,7 +1560,7 @@ div#ajaxLoading {
 	line-height: 1em !important;
 	white-space: normal !important;
 	padding: 5px 0 4px 8px}
-	
+
 /* MyTiki preferences Ajax */
 
 .tab-wrapper {
@@ -1568,35 +1568,35 @@ div#ajaxLoading {
 	padding: 0}
 
 .tab-menu  {
-	list-style: 0; 
-	padding: 2px 0; 
+	list-style: 0;
+	padding: 2px 0;
 	clear:  both}
 
 .tab-menu li {
-	width: 200px; 
-	display: inline; 
+	width: 200px;
+	display: inline;
 	margin: 0 2px}
 
 .tab-menu li img {
 	vertical-align: middle}
 
 .tab-menu li a {
-	padding: 1px 5px; 
-	background: #f5f5f5; 
+	padding: 1px 5px;
+	background: #f5f5f5;
 	text-decoration: none;
 	border: 1px solid #783C1C;
 	border-width: 1px 0;
-	white-space: nowrap} 
+	white-space: nowrap}
 
-.tab-menu li a:hover, 
+.tab-menu li a:hover,
 .tab-menu li a:focus {
-	background: #FAEC8F; 
-	border-color: #999} 
+	background: #FAEC8F;
+	border-color: #999}
 
 .tab-menu li a:hover {
 	background: #FD9339 url(darkshine/hover_list.jpg) repeat-x;
 	color: #fff}
-	 
+
 .tab-menu li.tab-selected a {background: #BCEC8F}
 
 /***** New (unsorted) *****/

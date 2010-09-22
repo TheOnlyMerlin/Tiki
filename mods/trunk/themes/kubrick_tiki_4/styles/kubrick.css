@@ -5,16 +5,16 @@
 	does not support display:table, minimal HTML tables are needed for
 	graphic treatment and column integrity. For updates
 	and other information on this theme, please visit
-	http://themes.tikiwiki.org. or http://zukakakina.com. 
+	http://themes.tikiwiki.org. or http://zukakakina.com.
 */
 
 /* Import basic layout files: */
 @import "lite/lite.css";
 @import "layout/layout.css";
 @import "layout/design.css";
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	font-size: .7em;
 	font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif;
@@ -29,20 +29,20 @@ body.fullscreen {
 	text-align: left;
 	padding: 3em;
 	background: #fff}
-	
+
 /* next two: fixed-width: 960px */
 div#fixedwidth {
-	display: table; 
-	margin: auto; 
+	display: table;
+	margin: auto;
 	margin-top: 20px;
 	margin-bottom: 20px;
 	width: 900px;
 	background: #fff;
-} 
+}
 
 *:first-child+html #c1c2 {
 	margin-left: 0;
-	padding-left: 0} 
+	padding-left: 0}
 
  /***** Layout (overrides layout.css;
 		also styling of page layout divs)  *****/
@@ -106,15 +106,15 @@ a,
 a:visited {
 	color: #2277DD;
 	text-decoration: none}
- 
+
 a:hover {
 	color: #000;
-	text-decoration: none} 
-	
+	text-decoration: none}
+
 .wikitext a.wiki:link,
 .wikitext a.wiki:visited {
 	color: #2277DD !important;
-	text-decoration: none !important;	
+	text-decoration: none !important;
 }
 
 caption {font-weight: bold}
@@ -158,7 +158,7 @@ select {
 	color: #112233;
 	text-indent: 2px;
 	border: thin solid #8cacbb}
-	
+
 
 span.button a,
 span.button a:visited,
@@ -173,7 +173,7 @@ span.button input,
 	background: #fff;
 	border: 1px solid;
 	border-color: #c1d3db #8cacbb #8cacbb #c1d3db}
-	
+
 input[type=reset],
 input[type=submit],
 input[name="search"] {
@@ -185,8 +185,8 @@ input[name="search"] {
 	border: 1px solid;
 	border-color: #c1d3db #8cacbb #8cacbb #c1d3db
 }
-	
-.button:hover,	
+
+.button:hover,
 .button a:hover,
 button:hover,
 .button input:hover,
@@ -201,7 +201,7 @@ input[type=submit]:hover,
 input[name="search"]:hover {
 	background: #fff;
 }
-	
+
 #page-bar .button {line-height: 22px}
 form.admin input[name="features"] {margin-bottom: 3px !important}
 
@@ -279,7 +279,7 @@ div#sioptions  {margin-left: 40px}
 #tiki-top input#fuser {
 	line-height: 90%;
 	background: #4283B9;
-	color: #fff} 
+	color: #fff}
 
 #siteloginbar input,
 #tiki-top input[name=search] {
@@ -287,7 +287,7 @@ div#sioptions  {margin-left: 40px}
 	background: #4283B9;
 	color: #fff;
 	vertical-align: middle;
-	text-transform: uppercase; 
+	text-transform: uppercase;
 	font-size: .9em}
 
 #tiki-top input[name=search]:hover {
@@ -297,7 +297,7 @@ div#sioptions  {margin-left: 40px}
 #tiki-top select[name="where"] {
 	background: #4283B9;
 	color: #fff}
-	
+
 #tiki-top .findtable {
 	margin-bottom: 0;
 }
@@ -308,7 +308,7 @@ div#sioptions  {margin-left: 40px}
 /* colors */
 .cssmenu_horiz li ul li,
 .cssmenu_vert li ul li {
-	background:	#578bb8;
+	background: #578bb8;
 	border: 1px solid #8cacbb;
 	border-top: 0;
 	margin-bottom: -1px
@@ -318,7 +318,7 @@ div#sioptions  {margin-left: 40px}
 .cssmenu_vert li ul li:first-child {
 	border-top: 1px solid #8cacbb;
 }
-	
+
 .cssmenu_vert li ul li,
 .cssmenu_horiz li ul li {
 	background: #fff;
@@ -326,11 +326,11 @@ div#sioptions  {margin-left: 40px}
 
 .cssmenu_vert li ul li,
 .cssmenu_horiz li ul li {border-top: 1px solid #DEDEDE}
-	
+
 .cssmenu_horiz a,
 .cssmenu_vert a,
 #tiki-top .cssmenu_horiz li a {color: #006699}
-	
+
 .cssmenu_vert a:link,
 .cssmenu_vert a:visited {color: #006699}
 
@@ -413,31 +413,31 @@ a .sf-sub-indicator {
 	text-decoration: none;
 	font: 1em Verdana, Helvetica, Arial, Sans-Serif;
 	color: white;
-	margin: 0} 
+	margin: 0}
 
 .horbaritem a:hover {
 	background: #333;
 	color: #eee !important;
-	text-decoration: none} 
+	text-decoration: none}
 
 .mdksubmenu {
 	background: #fff;
 	border: 1px solid #8cacbb}
 
-.mdkitem {border-top: 1px solid #DEDEDE} 
+.mdkitem {border-top: 1px solid #DEDEDE}
 
 .mdkitem a,
 .mdkitem a:visited {
 	padding: 2px 5px;
 	font-weight: normal;
 	border: 0}
-	
+
 .mdkitem a:link,
-.mdkitem a:visited {text-decoration: none} 
+.mdkitem a:visited {text-decoration: none}
 
 .mdkitem a:hover {
 	color: #993300;
-	text-decoration: none} 
+	text-decoration: none}
 
 .phplmnormal,
 a.phplmnormal:hover,
@@ -508,7 +508,7 @@ a.linkmenu, .rsslink, .linkmenu:visited, .rsslink:visited {
 	margin: 0;
 	margin-right: 10px;
 	padding: 1px}
- 
+
 .rssitem {
 	font-weight: normal;
 	padding: 1px 6px 1px 6px;
@@ -547,7 +547,7 @@ div.box {
 	margin: 3px;
 	padding-bottom: 10px;
 	text-align: center}
-	
+
 #leftcolumn div.box,
 #rightcolumn div.box {
 	width: 174px;
@@ -594,7 +594,7 @@ div.box-data {
 	margin: 3px;
    margin-bottom: 6px;
 	border: 1px solid #67ade7}
- 
+
 .cbox-title {
 	color: #fff;
 	background: #67ade7;
@@ -639,7 +639,7 @@ div.cbox-data {
 .tip .rbox-title {
 	background: #ECECEF;
 	border-color: #CCCCDD}
- 
+
 .comment .rbox-data,
 .tip .rbox-data {
 	background: #ECEFEC;
@@ -653,7 +653,7 @@ div.simplebox {
 /***** Tables, Tabs *****/
 /** Tables **/
 
-table.normal, 
+table.normal,
 table.admin,
 table.sortable {border: 1px solid #67ade7}
 
@@ -712,7 +712,7 @@ td.bloglistheading {
 	font-weight: bold;
 	text-align: center;
 	padding: 3px 2px}
-	
+
 a.tablename,
 a.galname,
 a.imagename,
@@ -744,12 +744,12 @@ table.sortable th a.sortheader {color: #fff}
 .tabs {
 	margin-bottom: -32px;
 	border-bottom: solid 1px #d9d9d9}
-	
+
 .tabmark {
 	font-size: 85%;
 	background: #DDDDDD;
 	border: 1px solid #666;
-	border-bottom: solid 1px #d9d9d9} 
+	border-bottom: solid 1px #d9d9d9}
 
 .tabmark a {
 	border-bottom: 0;
@@ -793,7 +793,7 @@ a.forumspagetitle:hover {
 
 div.wikitopline {
 	text-align: left}
- 
+
 .wikitext {
 	text-align: left;
 	line-height: 1.4em;
@@ -802,9 +802,9 @@ div.wikitopline {
 	clear: both;
 	width: auto;
 	color: #333}
- 
+
 .wikitext h2 {font-size: 1.3em}
-.wikitext h3 {font-size: 1.2em} 
+.wikitext h3 {font-size: 1.2em}
 .wikitext h4 {font-size: 1.1em}
 .wikitext h5 {font-size: 1.05em}
 
@@ -817,7 +817,7 @@ div.wikitopline {
 
 table.wikitable {
 	border-collapse: collapse}
- 
+
 td.wikicell {
 	border-collapse: collapse;
 	border: 1px solid #A9B8C2;
@@ -872,12 +872,12 @@ body .button2 {margin-left: 5px}
 	font-weight: normal;
 	border: 1px solid #8cacbb;
 	line-height: 2em}
- 
+
 .linkbut:hover {
 	background: #fff;
 	color: #000;
 	text-decoration: none}
- 
+
 .linkbuttop {}
  .linkbuttop:hover {}
 
@@ -886,22 +886,22 @@ div.cache {
 	border: 1px solid #8cacbb;
 	padding: 10px;
 	margin: 4px}
- 
+
 div.cachedpage {
 	border: 1px solid #8cacbb;
 	padding: 10px;
 	margin: 20px}
- 
+
 .wikicache {
 	font-size: .9em;
 	font-weight: normal;
 	color: #998833;
 	text-decoration: none}
- 
+
 .wikicache:hover {
 	color: #000;
 	background: transparent}
- 
+
 .wiki {
 	text-decoration: none;
 	color: #2277DD;
@@ -922,7 +922,7 @@ div.cachedpage {
 
 #wikihelp-tab table td {padding: 2px}
 textarea.wikiedit {font-size: 1.0em}
- 
+
 .editdate {
 	color: #223344;
 	border-top: 1px solid #8cacbb;
@@ -1024,7 +1024,7 @@ div.tocnav {
 	border-bottom: 1px solid #8cacbb;
 	padding: 2px 0;
 	margin-bottom: 2px}
- 
+
 
 div#tocnavtable {}
 #tocnavicons {float: left}
@@ -1036,11 +1036,11 @@ li.toclevel {margin-left: 2em}
 /* TOC */
 ul.toc {}
 .toc li {margin-top: 3px}
- 
+
 .tocnav {
 	background: #eee;
 	margin-bottom: 16px}
- 
+
 .tocnav a {
 	font-size: 1em;
 	color: #424242}
@@ -1048,7 +1048,7 @@ ul.toc {}
 .tocnav table {
 	width: 100%;
 	background: #fff}
- 
+
 .tocnavlink {color: black}
 .tocnavlink:hover {}
 
@@ -1078,7 +1078,7 @@ div.articletopline a:hover {text-decoration: underline}
 div.articletitle {
 	clear: both;
 	margin-left: 20px}
- 
+
 div.articletitle h2 {
 	font-size: 1.6em;
 	font-weight: bold;
@@ -1087,21 +1087,21 @@ div.articletitle h2 {
 	padding: 0 20px;
 	margin: 3px 0 6px 0;
 	color: #444}
- 
+
 div.articlesubtitle {
 	color: #666;
 	margin: 0 20px}
- 
+
 span.titleb,
 span.titleb:after {
 	font-size: .9em;
 	color: #666;
 	margin: 5px 20px}
- 
+
 div.articleheading {
 	margin: 5px 20px 0 20px;
 	clear: both}
- 
+
 div.articleheadingtext {
 	text-align: left;
 	line-height: 1.5em;
@@ -1111,14 +1111,14 @@ div.articleheadingtext {
 img.topicimage {}
 img.articleimagenofloat {}
 img.articleimage {margin-right: 20px}
- 
+
 div.articletrailer {
 	float: right;
 	margin: 0 20px 10px 0;
 	clear: both}
 
 div.articletrailer {text-align: right}
-div.articletrailer .wikitopline {} 
+div.articletrailer .wikitopline {}
  .trailer {padding: 0 8px 0 0}
 
 div.articlebody {
@@ -1130,7 +1130,7 @@ div.articlebody {
 	color: #333;
 	padding: 20px;
 	margin: 10px 0}
- 
+
 div.articlesource {
 	padding: 0 20px;
 	margin-bottom: 10px;
@@ -1153,7 +1153,7 @@ div.bloginfo {
 	font-size: 1em;
 	color: #424242;
 	margin: 10px}
- 
+
 div.blogdesc {
 	clear: both;
 	margin: 0 10px;
@@ -1180,16 +1180,16 @@ div.posthead h3 {
 	font-weight: bold;
 	letter-spacing: -1px;
 	display: inline}
- 
+
  span.posthead {}
 
 span.posthead small {
 	font-size: .9em;
 	color: #666;
-	font-weight: normal} 
- 
+	font-weight: normal}
+
 div.posthead h3 {font-size: 1.2em}
- 
+
 div.postbody {
 	text-align: left;
 	line-height: 1.5em;
@@ -1223,7 +1223,7 @@ table.commentinfo {
 
 .post .postbody-title {
 	display: block;
-	background: #67ade7; 
+	background: #67ade7;
 	border-bottom: 0;
 	margin-bottom: 4px;
 	padding: 3px}
@@ -1246,7 +1246,7 @@ table.commentinfo {
 	text-align: left;
 	width: 100%}
 
-.post .author {	
+.post .author {
 	float: left;
 	text-align: left;
 	vertical-align: top;
@@ -1281,7 +1281,7 @@ table.commentinfo {
 	height: 100%;
 	text-align: left;
 	color: #000}
-	
+
 .postbody .quoteheader {margin-top: 0}
 
 .post .postbody .attachments {
@@ -1349,9 +1349,9 @@ table.commentinfo {
 .nb_replies {white-space: nowrap}
 .post_preview, .top_post {margin-bottom: 15px}
 /*.post .postbody .signature {float: left}*/
- 
+
 /* Comments */
- 
+
 span.commentstitle {
 	font-weight: bold;
 	font-size: 1.2em}
@@ -1372,7 +1372,7 @@ td.oddthumb {
 	border: 1px solid #8cacbb;
 	border-collapse: collapse;
 	text-align: center}
- 
+
 td.eventhumb {
 	background: #F7F9FA;
 	border: 1px solid #8cacbb;
@@ -1391,7 +1391,7 @@ div.showimage {
 	text-align: center;
 	margin: 5px 0}
 
-div.imgaldescr {margin: 10px} 
+div.imgaldescr {margin: 10px}
 span.sorttitle {margin-left: 10px}
 
 /***** File Galleries *****/
@@ -1441,7 +1441,7 @@ ul.catitems li {
 ul.catitems li a.link {}
 
 /***** Tags (freetags) *****/
-	
+
 /*****  Polls  *****/
 
 /***** FAQs *****/
@@ -1480,14 +1480,14 @@ div.questionblock {
 	background: white;
 	padding: 4px;
 	margin-bottom: 10px}
- 
+
 div.quizquestion {margin-bottom: 5px}
- 
+
 div.quizdescription {
 	border: 1px solid #8cacbb;
 	background: white;
 	margin-bottom: 10px}
- 
+
 div.quizanswer {
 	border: 1px solid #8cacbb;
 	background: white;
@@ -1585,8 +1585,8 @@ div.messureadbody {
 /***** Calendar *****/
 #calendar {width: 100%}
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {font-size: 1em}
 
 .Calart,
@@ -1606,23 +1606,23 @@ div.messureadbody {
 
 .Calart,
 .Calart a,
-.Calart a:visited {color: #304F30} 
+.Calart a:visited {color: #304F30}
 
 .Calblog,
 .Calblog a,
-.Calblog a:visited {color: #443F39} 
+.Calblog a:visited {color: #443F39}
 
 .Calchart,
 .Calchart a,
-.Calchart a:visited {color: #304F30} 
+.Calchart a:visited {color: #304F30}
 
 .Caldir,
 .Caldir a,
-.Caldir a:visited {color: #304F30} 
+.Caldir a:visited {color: #304F30}
 
 .Caleph,
 .Caleph a,
-.Caleph a:visited {color: #304F30} 
+.Caleph a:visited {color: #304F30}
 
 .calfaq,
 .calfaq a,
@@ -1630,14 +1630,14 @@ div.messureadbody {
 
 .Calfgal,
 .Calfgal a,
-.Calfgal a:visited {color: #304F30} 
+.Calfgal a:visited {color: #304F30}
 
 .calfocus {font-size: 90%}
 .calfocuson {font-size: 90%}
 
 .Calforum,
 .Calforum a,
-.Calforum a:visited {color: #304F30} 
+.Calforum a:visited {color: #304F30}
 
 .Calgal,
 .Calgal a,
@@ -1653,7 +1653,7 @@ div.messureadbody {
 
 .Calsurv,
 .Calsurv a,
-.Calsurv a:visited {color: #304F30} 
+.Calsurv a:visited {color: #304F30}
 
 .Caltrack,
 .Caltrack a,
@@ -1692,13 +1692,13 @@ div.messureadbody {
 	background: #fff;
 	width: auto;
 	border: 1px solid #666;
-	padding: 5px} 
+	padding: 5px}
 
 .caltitle {
 	font-weight: bold;
-	color: #425262} 
+	color: #425262}
 
-div.tabcal, div.tabnav {} 
+div.tabcal, div.tabnav {}
 
 div.tabrow {
 	margin-left: 29px;
@@ -1706,7 +1706,7 @@ div.tabrow {
 	border: 1px solid #787878;
 	border-bottom: 0;
 	font-size: 11px}
-	
+
 .box-data div.tabrow {
 	background: none;
 	border: none;
@@ -1715,7 +1715,7 @@ div.tabrow {
 
 td.middle {vertical-align: middle}
 
-.calcheckbox {background: #fff} 
+.calcheckbox {background: #fff}
 
 .calcontent {
 	min-height: 60px;
@@ -1724,11 +1724,11 @@ td.middle {vertical-align: middle}
 
 /* for jscalendar */
 .Calendar {
-	z-index: 200} 
+	z-index: 200}
 
-.daterow {margin-left: 10px} 
+.daterow {margin-left: 10px}
 
-#caltable {width: 100%; font-size: 1em} 
+#caltable {width: 100%; font-size: 1em}
 #caltable td {padding: 0}
 
 .day, .day:visited {

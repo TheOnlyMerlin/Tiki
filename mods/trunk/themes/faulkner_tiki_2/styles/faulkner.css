@@ -65,7 +65,7 @@ h4 {font: 400 1.2em garamond,times,serif;
 	color: #404040;
 	font-style: italic;
 	margin: 0 0 10px 0}
-	
+
 h5 {font: 400 1.2em garamond,times,serif;
 	color: #404040;
 	font-style: italic;
@@ -141,9 +141,9 @@ ol {
 	color: #600;
 	font: 600 garamond,times,serif;
 	font-style: italic}
-	
+
 ol li {padding: 4px 0}
-	
+
 /***** Page Layout *****/
 
 /** off-screen **/
@@ -162,7 +162,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	position: absolute;
 	top: 9010px;
 	left: 9010px;
-	background-color: #339999; 
+	background-color: #339999;
 	color: #fff;
 	padding: 5px;
 	font-weight: bold;
@@ -192,11 +192,11 @@ body.fullscreen a#fullscreenbutton:visited {
 body.fullscreen a#fullscreenbutton:hover {
 	color: #C90;
 	text-decoration: none}
-	
+
 #tiki-clean {
 	text-align: left;
 	padding: 1em}
-	
+
 /*** Type 2 (table-assisted) layout ***/
 
 table#main {
@@ -244,7 +244,7 @@ td#leftborder {
 td#leftcolumn {
 	width: 180px;
 	padding: 1em}
-	
+
 /*
 colgroup.noleft {
 	background: url(faulkner/parchmentleft.jpg) repeat-y 0% 0%}
@@ -442,7 +442,7 @@ div#center {}
 /* end layout divs, etc. */
 
 /** Border boxes (if any) **/
-	
+
 /****** Menus ******/
 /** PHP Layers Menus **/
 
@@ -631,12 +631,12 @@ a.linkmodule {
 a.linkmodule:hover {
 	background: #ECCAA3 url(faulkner/menu.gif) right no-repeat;
 	color: #800}
-	
+
 li a.linkmodule,
 li a.linkmodule:hover {
 	background-image: none;
 	padding-left: 1px }
-	
+
 a.tikihelp,
 a.tikihelp:hover { background: none }
 
@@ -664,7 +664,7 @@ div.menuSection div.separator {padding-left: 5px}
 	list-style-type: none;
 	margin: 0;
 	padding-left: 0}
-	
+
 .floatlist li {float: left}
 
 div#attzone,
@@ -742,7 +742,7 @@ a.tikihelp:visited {
 a.tikihelp:hover {
 	cursor: help;
 	vertical-align: text-top}
-	
+
 #rss img {vertical-align: middle}
 div.adminanchors {}
 
@@ -835,7 +835,7 @@ table {
 	border-collapse: collapse;
 	font-size: 1em}
 
-table.normal, 
+table.normal,
 table.admin,
 table.bloglist {
 	padding: 0;
@@ -843,7 +843,7 @@ table.bloglist {
 	border-collapse: collapse/*;
 	width: 100%*/}
 
-* html table.normal, 
+* html table.normal,
 * html table.admin,
 * html table.bloglist {width: 97%}
 
@@ -926,7 +926,7 @@ td.formcontent {}
 /* links to view an object from a table listing objects can be generalized to this link */
 a.fgalname {}
 a.fgalname:hover {}
- 
+
 a.tablename,
 a.galname,
 a.imagename,
@@ -988,7 +988,7 @@ a.forumnameread {}
 	background: #fff3d4}
 
 .tabcontent table {
-	margin: 1% auto 2% auto; 
+	margin: 1% auto 2% auto;
 	text-align: left;
 	width: 95%}
 
@@ -1054,9 +1054,9 @@ div.description {
 .categpath {}
 .wikitext {line-height: 1.5em}
 
-.wikitext h1, 
-.wikitext h2, 
-.wikitext h3, 
+.wikitext h1,
+.wikitext h2,
+.wikitext h3,
 .wikitext h4,
 .wikitext h5 {
 	/*margin: 0 0 15px;
@@ -1070,8 +1070,8 @@ div.description {
 	border-top: 1px solid #601C2A;
 	border-bottom: 5px inset #763941;
 	line-height: 1.3em}
- 
-.wikitext ul {list-style-type: none} 
+
+.wikitext ul {list-style-type: none}
 
 .wikitext ul li {
 	padding-left: 17px;
@@ -1081,7 +1081,7 @@ div.description {
 .wikitext ol {}
 
 table.wikitable {border-top: 2px solid #660000}
- 
+
 td.wikicell {
 	padding: 4px 7px !important;
 	text-align: left;
@@ -1094,7 +1094,7 @@ td.wikicell {
 div#page-bar {
 	display: block;
 	margin-top: 0}
-	
+
 #page-bar span {float: left}
 
 ul.floatleft {
@@ -1120,7 +1120,7 @@ div.button2,
 div.button2 a:hover, .button3 a:hover {}
 
 /* From han.css - Check ?? */
-#page-bar p span.button2 {} 
+#page-bar p span.button2 {}
 #page-bar table a.linkbut {}
 
 .linkbut {/*font-size:90%;*/}
@@ -1132,7 +1132,7 @@ div.cachedpage {}
 .wiki {}
 .wikinew {}
 .wiki-edithelp { display: none}
- 
+
 #wikihelp-tab table,
 #wikihelp-tab table td {
 	border: solid 1px #909090;
@@ -1164,7 +1164,7 @@ div.code {
 	padding: 10px;
 	margin: 4px;
 	border: 1px dashed #ADACAF;
-	overflow: auto; 
+	overflow: auto;
    width: 500px}
 
 .codecaption {
@@ -1197,7 +1197,7 @@ div.tocnav {
 	padding: 3px;
 	margin-bottom: 4px;
 	clear: both}
- 
+
 #tocnavicons {float: left}
 #tocnavaddpage{float: right}
 #tocnavlinks {clear: both}
@@ -1205,7 +1205,7 @@ div.tocnav {
 ul.toc {
 	padding-left: 2em;
 	margin-bottom: 4px}
-	
+
 ul.toc li { background: none}
 
 ul.toc * {border: none}
@@ -1231,20 +1231,20 @@ div.articletopline {
 div.articletitle {
 	padding-top: 16px;
 	margin-top: 6px;
-	margin-bottom:	15px;
-	text-align:	left}
- 
+	margin-bottom: 15px;
+	text-align: left}
+
 span.titlea {
 	font-size: 1.5em;
 	font-weight: normal}
 
-span.titleb {font-size: 1.0em} 
+span.titleb {font-size: 1.0em}
 div.articlesubtitle {font-size: 0.9em}
- 
+
 div.articleheading {
 	margin-top: 6px;
 	line-height: 1.15em}
- 
+
 div.articleheadingtext {}
 
 img.topicimage,
@@ -1267,11 +1267,11 @@ img.articleimage {
 	margin-bottom: 10px}
 
 div.articletrailer {text-align: right}
-div.articletrailer .wikitopline {float: left} 
+div.articletrailer .wikitopline {float: left}
 .trailer {}
 .trailer:hover {}
 div.articlebody {line-height: 1.5em}
- 
+
 div.articlesource {
 	margin-top: 5px;
 	font-style: italic;
@@ -1305,7 +1305,7 @@ div.bloginfo {
 	padding: 3px;
 	line-height: 150%;
 	text-transform: none}
-	
+
 * html .bloginfo table {font-size: 11px}
 
 div.blogtools {
@@ -1331,9 +1331,9 @@ div.postinfo a.linkmodule {}
 	margin-bottom: 20px;
 	margin-top: 10px;
 	font-size: 1.2em}
- 
+
 .postinfo a {}
-	
+
 .small {} /* Check ?? (from fluidindex */
 
 div.postinfo a.linkmodule {}
@@ -1346,14 +1346,14 @@ span.posthead {
 	display: block;
 	font-weight: bold;
 	letter-spacing: .4pt}
- 
+
 div.posthead h3 {font-size:1.2em}
- 
+
 div.postbody {
 	margin-right: 8px;
 	line-height: 1.2em;
 	margin-bottom: 1em}
-	
+
 * html .postbody table {font-size: 11px}
 
 div.postfooter {
@@ -1365,14 +1365,14 @@ div.postfooter {
 
 body.tiki_forums table.normal {margin: auto}
 
- 
+
 td.threadsevenl {}
 td.threadsevenr {}
 td.threadsoddl {}
 td.threadsoddr {}
 
 table.threads {width: 100%}
- 
+
 #forumpost {display: none}
 #forumpostopen {display: block}
 
@@ -1385,7 +1385,7 @@ table.threads {width: 100%}
 	padding: 0 0 3px 0;
 	background: url(faulkner/parchmentlight.jpg);
 	font-size: 1em}
-	
+
 * html .post .postbody {font-size: 11px}
 
 .post .postbody-title {
@@ -1406,7 +1406,7 @@ table.threads {width: 100%}
 	margin-left: 5px;
 	margin-top: 3px}
 
-.post .author {	
+.post .author {
 	text-align: right;
 	vertical-align: top;
 	background: #EDD4AE}
@@ -1522,7 +1522,7 @@ table.threads {width: 100%}
 #comzone {
 	margin: 5px 0;
 	padding: 0}
- 
+
 #comzoneopen {
 	margin: 5px 0;
 	padding: 0}
@@ -1538,7 +1538,7 @@ span.commentstitle {
 /* Help box*/
 
 div.commentsedithelp {}
-	
+
 textarea#editpost2 {
 	width: 100%;
 	font-size: 1em}
@@ -1596,7 +1596,7 @@ a.freetag_1 {
 a.freetag_2 {
 	text-decoration: none;
 	font-size: .9em}
-	
+
 a.freetag_3 {
 	text-decoration: none;
 	font-size: 1em}
@@ -1638,7 +1638,7 @@ table.galtable {
 	border-collapse: collapse;
 	border: 1px solid #cc9900;
 	width: 100%}
-	
+
 .galtable a.linkmenu { background: none;
 padding: 0 }
 
@@ -1671,7 +1671,7 @@ td.eventhumb {background: #edd4ae;}
 td.eventhumb img {
 	margin-left: 6px;
 	margin-right: 6px}
-	
+
 /* Contains table.galtable */
 div.thumbnails {}
 /* Contains everything in #tiki-center on tiki-browse_image.php */
@@ -1750,10 +1750,10 @@ div.gallerypath a:hover {}
 /***** Calendar *****/
 /* Overrides calendar.css, etc. */
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {font-size: 90%}
-	
+
 .Calart,
 .Calblog,
 .Calchart,
@@ -1770,7 +1770,7 @@ div.gallerypath a:hover {}
 .Calwiki {
 	font-size: 1.1em;
 	border-top: none}
-	
+
 .Calart:before,
 .Calblog:before,
 .Calchart:before,
@@ -1786,7 +1786,7 @@ div.gallerypath a:hover {}
 .Caltrack:before,
 .Calwiki:before {
 	background: inherit;
-	font-size: 1.1em} 
+	font-size: 1.1em}
 
 .Calart,
 .Calart a,
@@ -1798,7 +1798,7 @@ div.gallerypath a:hover {}
 
 .Calchart,
 .Calchart a,
-.Calchart a:visited {color: #304F30} 
+.Calchart a:visited {color: #304F30}
 
 .Caldir,
 .Caldir a,
@@ -1839,7 +1839,7 @@ div.gallerypath a:hover {}
 Caltrack,
 Caltrack a,
 Caltrack a:visited {color: #00BD02}
-	
+
 .Calweb {color: #336699}
 
 .Calwiki,
@@ -1911,7 +1911,7 @@ div.pollresults {
 	margin-top: 5px;
 	font-size: 1.2em;
 	padding: 0 5px}
-	
+
 table.pollresults {width: 100%}
 td.pollr {color: black}
 #pollopen {display: block}
@@ -2056,7 +2056,7 @@ div#ajaxLoading {	display: none;
 table.default thead td,
 table.default tfoot td {
 	font-weight: bold;
-	text-align:	center;
+	text-align: center;
 	background: #660000;
 	color: #fff3d4}
 

@@ -12,14 +12,14 @@
 	color: #fff;
 	border: 0;
 	font-weight: bold}
-	
+
  .findtable input {font-size: 1em}
  #tiki-top {position: static; border: 1px solid green}
 
  .horbaritem a {font-size: .8em}
  #tiki-center {font-size: 1em}
 
- .bloginfo table,	
+ .bloginfo table,
  .post .postbody,
  .postbody table {font-size: 11px}
 

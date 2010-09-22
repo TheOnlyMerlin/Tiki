@@ -1,7 +1,7 @@
 /* Twist for TikiWiki CMS/Broupware 1.9 was created by Gary Griffin and
 	contributed for downloading at http://themes.tikiwiki.org.
 	The Twist theme has been updated For TikiWiki version 2.0 and
-	committed to the Tiki Mods Subversion repository by Gary Cunningham-Lee (chibaguy). 
+	committed to the Tiki Mods Subversion repository by Gary Cunningham-Lee (chibaguy).
 
 	twist.css is comprised of these sections:
 	XHTML elements, Siteheader & Identity; Menus, Links;
@@ -11,12 +11,12 @@
 	Quizzes;	Shoutbox; Directory; Messages; TikiSheets;
 	Calendar; Admin; and Ajax, jquery, etc.
 */
- 
+
 /* Import the default layout properties file: */
  @import "layout/layout.css";
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	margin-top: 21px;
 	background: #0F1644 url(twist/background.gif);
@@ -36,10 +36,10 @@ td#main-header {
 	margin: 0;
 	margin-left: 30px;
 	padding: 0}
-	
+
 td#main-header a,
 td#main-header a:visited {color: #fff}
-	
+
 div#header  {
 	background: url(twist/header.jpg) no-repeat 0 0;
 	margin: 0;
@@ -51,7 +51,7 @@ td#leftcolumn {
 	padding-top: 20px;
 	vertical-align: top;
 	width: 190px}
- 
+
 td#centercolumn {
 	background: #fff;
 	border-bottom: 1px solid #ccc;
@@ -89,7 +89,7 @@ h1 {
 h2 {
 	width: 98%;
 	margin-top: 15px;
-	font-weight: bold; 
+	font-weight: bold;
 	font-size: 1.6em;
 	margin-bottom: 4px;
 	padding-bottom: 3px;
@@ -163,7 +163,7 @@ input[type=submit]:hover,
 	color: #fff;
 	text-decoration: none}
 
-.button a:active,	
+.button a:active,
 button:active,
 input[type=reset]:active,
 input[type=submit]:active,
@@ -241,7 +241,7 @@ div#tiki-top {
 .cssmenu_horiz li.menuSection:hover {
 	color: #fff;
 	background: #ddd}
-	
+
 .cssmenu_horiz ul li:hover,
 .cssmenu_vert ul li:hover,
 .cssmenu_horiz li:hover li {
@@ -252,7 +252,7 @@ div#tiki-top {
 .cssmenu_vert ul {
 	border: #fdfefd 2px outset;
 	background: #efefef}
-	
+
 .cssmenu_vert ul {
 	margin-left: 10.9em !important;
 }
@@ -264,7 +264,7 @@ div#tiki-top {
 	margin-left: 305px;
 	background: #efefef;
 	white-space: nowrap}
-	
+
 .sf-sub-indicator {background: url(twist/arrows-000.png) no-repeat -10px -100px; /* 8-bit indexed alpha png. IE6 gets solid image only; */}
 
 /** PHP Layers Menus **/
@@ -373,7 +373,7 @@ div.optionline {
 	padding-right: 1px;
 	border-top: #efefef 1px solid;
 	border-right: #efefef 1px dotted;
-	border-bottom: #fff 1px solid;	
+	border-bottom: #fff 1px solid;
 	border-left: #fff 1px dotted;
 	color: #003163}
 
@@ -411,7 +411,7 @@ div.option {
 .rssitem {
 	border-top: #dadac9 1px dashed;
 	padding: 1px 6px}
-	
+
 .rssdate {
 	color: #999;
 	font-style: italic}
@@ -473,13 +473,13 @@ h3.box-title {
 .box-data ol,
 .box-data ul {
 	list-style-position: inside;
-} 
+}
 
 .box-data ul,
 ul.module,
 ol.module {
 	margin-left: 0}
-	
+
 *:first-child+html .box-data ul {margin-left: 2em}
 *:first-child+html .box-data ol {margin-left: 2.5em; padding-right: 0; margin-right: -2em}
 
@@ -491,7 +491,7 @@ div.cbox {
 	margin: 4px 8px 0 4px;
 	width: 100%;
 	font-size: 1em}
-	
+
 *:first-child+html .cbox {width: 95%}
 
 .cbox-title {
@@ -526,7 +526,7 @@ div.cbox {
 .rbox-title,
 .warning .rbox-title {
 	font-size: 1em;
-	padding: 0 10px;   
+	padding: 0 10px;
 	margin: 0;
 	font-weight: bold}
 
@@ -534,7 +534,7 @@ div.cbox {
 .warning .rbox-data {
 	background: #eeee99;
 	border: 1px solid #DDDDCC}
-	
+
 .note .rbox-title {background: #CCCCDD}
 
 .note .rbox-data {
@@ -545,7 +545,7 @@ div.cbox {
 .tip .rbox-title {
 	background: #ECECEF;
 	border: 1px solid #CCCCDD}
- 
+
 .comment .rbox-data,
 .tip .rbox-data {
 	background: #ECEFEC;
@@ -566,7 +566,7 @@ table.normal {
 	border: 0;
 	background: #fff}
 
-table.normal, 
+table.normal,
 table.admin {
 	border: #aaa 1px solid;
 	background: white;
@@ -671,7 +671,7 @@ a.sortheader:visited {
 	color: white;
 	text-decoration: underline;
 	font-weight: bold}
-	
+
 
 .heading a.link,
 .heading a.link:visited {
@@ -732,7 +732,7 @@ a.pagetitle:hover,
 a.forumspagetitle:hover {
 	text-decoration: underline;
 	color: #990066}
-	
+
 div.wikitopline {
 	background: #fff;
 	text-align: right}
@@ -751,9 +751,9 @@ div.description {
 	line-height: 15px;
 	font-family: "Lucida Grande", Verdana, Geneva, Arial,  sans-serif}
 
-.wikitext h1, 
-.wikitext h2, 
-.wikitext h3, 
+.wikitext h1,
+.wikitext h2,
+.wikitext h3,
 .wikitext h4 {
 	margin: 0 0 15px;
 	padding: 0}
@@ -772,12 +772,12 @@ div.description {
 table.wikitable {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #999;
 	border-collapse: collapse}
- 
+
 /* Wiki plugin styles * */
 /* code plugin  */
 div.code {
@@ -793,7 +793,7 @@ div.code {
 	background: #F5F5F5;
 	margin: 4px;
 	border: 1px dashed #ADACAF;
-	overflow: auto; 
+	overflow: auto;
    width: 500px}
 
 .codecaption {
@@ -829,15 +829,15 @@ div.articletopline {
 
 div.articletitle {
 	margin-top: 6px;
-	margin-bottom:	15px;
-	text-align:	left}
- 
+	margin-bottom: 15px;
+	text-align: left}
+
 div.articletitle h2 {
 	font-size: 1.5em;
 	font-weight: normal;
 	color: #990066}
 
-span.titleb {font-size: 1.0em} 
+span.titleb {font-size: 1.0em}
 div.articlesubtitle {font-size: 0.9em}
 div.articleheading {margin-top: 6px}
 div.articlebody {margin-top: 1em}
@@ -856,7 +856,7 @@ div.bloginfo {
 	padding: 3px;
 	line-height: 150%;
 	text-transform: 0}
- 
+
 .postinfo a {
 	color: #9CF;
 	text-decoration: none;
@@ -881,7 +881,7 @@ a.blogt:hover {
 span.posthead {
 	font-weight: bold;
 	letter-spacing: .4pt}
- 
+
 div.posthead h3 {font-size: 1.2em}
 
 body.tiki_blogs div.postbody {
@@ -901,25 +901,25 @@ body.tiki_blogs div.postbody {
 	padding: 0;
 	text-align: left;
 	width: 100%}
-	
+
 .post .postbody-title {
 	display: block;
-	background: #eee; 
+	background: #eee;
 	border-bottom: 0;
 	margin-bottom: 0;
 	padding-top: 2px}
-	
+
 .post .postbody-title .title {
 	float: none;
 	color: #fff;
 	font-weight: bold;
 	font-size: 1em}
-	
+
 .postbody-title .title h2 {border-bottom: 0}
 
 .title a.link {color: #000}
 
-.post .author {	
+.post .author {
 	float: left;
 	text-align: left;
 	vertical-align: top;
@@ -1012,7 +1012,7 @@ ul.catitems li {
 	margin-right: 7px}
 
 /***** Tags (freetags) *****/
-	
+
 /*****  Polls  *****/
 
 /***** FAQs *****/
@@ -1062,11 +1062,11 @@ div.messureadbody {background: #DEDEDE}
 /***** TikiSheets *****/
 
 /***** Calendar *****/
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {font-size: 90%}
 
-	
+
 .Calart,
 .Calblog,
 .Calchart,
@@ -1093,7 +1093,7 @@ div.messureadbody {background: #DEDEDE}
 .Calchart,
 .Calchart a,
 .Calchart a:visited {color: #304F30}
-	
+
 .Caldir,
 .Caldir a,
 .Caldir a:visited {color: #800080}

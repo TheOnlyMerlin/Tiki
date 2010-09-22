@@ -44,7 +44,7 @@ button {
 	background-image: url(yellow/button_bg.png)}
 
 input[id="fuser"] {
-	background-image: url(yellow/button_bg.png)}	
+	background-image: url(yellow/button_bg.png)}
 
 .wikitext ul a:hover {
 	list-style: url(yellow/arrow_hover.gif)}
@@ -65,7 +65,7 @@ ul li:hover {
 	background: url(yellow/top_button.gif) no-repeat;
 }
 
-.horbaritem a:hover, 
+.horbaritem a:hover,
 #tiki-top .cssmenu_horiz li a:hover {
 	background: url(yellow/top_button_hover.gif) no-repeat;
 }
@@ -124,7 +124,7 @@ div.articletitle {
 
 div.postbody-title h2 {
 	background: url(yellow/content_head.gif) no-repeat;
-}	
+}
 
 #footer {
 	background: #B7A216 url(yellow/footer.jpg) repeat-x top;

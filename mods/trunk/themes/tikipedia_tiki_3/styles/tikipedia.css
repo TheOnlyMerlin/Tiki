@@ -3,7 +3,7 @@
 	and (from TikiWiki 1.10 and after) uses the *litecss layout method.
 	See http://zukakakina.com or themes.tikiwiki.org for further information
 	about this theme.
-	
+
 	tikipedia.css is comprised of these sections:
 	XHTML elements, Siteheader & Identity; Menus, Links;
 	Misc. Center Col.; Misc. Global; Boxes; Tables, Tabs;
@@ -12,16 +12,16 @@
 	Quizzes;	Shoutbox; Directory; Messages; TikiSheets;
 	Calendar; Admin; and Ajax, jquery, etc.
 */
- 
+
 /* Import layout foundation CSS file. */
 /* If *litecss-based theme . . .  */
 @import "lite/lite.css";
 
 /* Then import the default layout properties file: */
 @import "layout/layout.css";
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	background: #f9f9f9 url(tikipedia/headbg.jpg) 0 0 no-repeat;
 	font: x-small sans-serif;
@@ -90,7 +90,7 @@ body {
 	margin: 0;
 	padding-bottom: 8px;
 }
-	
+
 div#tiki-bot {
 	text-align: center;
 }
@@ -104,10 +104,10 @@ div#tiki-bot {
 	padding: 0;
 	text-align: center;
 }
-	
+
 #footer div.editdate,
 #footer div#wiki-footer p.editdate {
-	padding: 0;	
+	padding: 0;
 }
 
 /***** XHTML Elements (other than body tag) ******/
@@ -177,7 +177,7 @@ h2 {
 	font-size: 150%;
 	margin-bottom: 6px;
 }
-	
+
 h3 {
 	font-size: 132%;
 }
@@ -198,7 +198,7 @@ h3, h4, h5, h6 {
 	border-bottom: 0;
 	font-weight: bold;
 }
-	
+
 hr {
 	color: #aaa;
 	background: #aaa;
@@ -255,14 +255,14 @@ span.button input,
 	background: #fff;
 	font-size: 11px;
 	border: 1px solid #aaa;}
-	
+
 * html span.button a:link,
 * html span.button a:visited {
 	background: #fff;
 	font-size: 11px;
 	border: 1px solid #aaa;
 }
-	
+
 .button a:hover,
 .button2 a:hover,
 button:hover,
@@ -405,7 +405,7 @@ div#sitelogo {
 	padding: 0 8px 12px;
 	text-align: center;
 }
-	
+
 #sitetitle,
 #sitesubtitle {
 	color: #A7A7A7;
@@ -445,12 +445,12 @@ div#sitelogo {
 .cssmenu_vert li a {
 	font-weight: normal;
 	text-decoration: none;
-} 
+}
 
 .cssmenu_vert li a:hover {
 	text-decoration: underline;
-} 
-	
+}
+
 .cssmenu_vert .sf-sub-indicator,
 .cssmenu_horiz ul .sf-sub-indicator {
 	margin-top:-5px;
@@ -463,7 +463,7 @@ div#sitelogo {
 /** PHP Layers Menus **/
 .horbar {
 	margin-left: 10px;
-} 
+}
 
 .horbar table {
 	white-space: nowrap;
@@ -475,7 +475,7 @@ div#sitelogo {
 	text-decoration: none;
 	font-size: 90%;
 	margin: 0;
-} 
+}
 
 * html .horbaritem a {
 	font-size: .8em;
@@ -487,14 +487,14 @@ div#sitelogo {
 
 .mdksubframe {
 	border: 1px solid #aaa;
-} 
+}
 
 .mdkitem a {
 	font-size: 90%;
 	padding: 2px 5px;
 	font-weight: normal;
 }
-	
+
 .box-data .mdkitem a {
 	font-size: 100%;
 }
@@ -502,12 +502,12 @@ div#sitelogo {
 .mdkitem a:link {
 	font-weight: normal;
 	text-decoration: none;
-} 
+}
 
-.mdkitem a:visited, 
+.mdkitem a:visited,
 .mdkitem a:hover {
 	text-decoration: underline;
-} 
+}
 
 .phplmnormal,
 a.phplmnormal:hover,
@@ -564,7 +564,7 @@ a.linkmenu:hover {
 	background-repeat: no-repeat;
 	padding-left: 1.5em;
 }
-	
+
 .menuSection .option {
 	margin-left: 13px;
 }
@@ -611,14 +611,14 @@ div#tiki-center {
 .fullscreen #tiki-center {
 	margin-top: 18px;
 }
-	
+
 /* Tikipedia page tabs */
-#page-bar {	
+#page-bar {
 	position: relative;
 	top: -18px;
 }
 
-body.tiki_wiki div#page-bar, 
+body.tiki_wiki div#page-bar,
 body.tiki_mytiki div#page-bar {
 	white-space: nowrap;
 	margin-left: 20px;
@@ -703,7 +703,7 @@ h3.box-title {
 	color: #000;
 	padding: .2em .8em .3em .5em;
 }
-	
+
 .box-data form {
 	margin: 2px;
  }
@@ -736,7 +736,7 @@ h3.box-title {
 #col3 .box {
 	width: 180px;
 }
-	
+
 .wikitext .box {
 	width: auto;
 }
@@ -817,7 +817,7 @@ div.simplebox {
 
 /***** Tables, Tabs *****/
 /** Tables **/
-table.normal, 
+table.normal,
 table.admin {
 	border: 1px solid #aaa;
 	background: #F9F9F9;
@@ -857,7 +857,7 @@ td.even {
 td.odd,
 td.odddark,
 td.even,
-td.evendark, 
+td.evendark,
 td.third {
 	border: 1px solid #aaa;
 	border-collapse: collapse;
@@ -881,7 +881,7 @@ tr.even {
 	border: 1px solid #aaa;
 	border-collapse: collapse;
 }
- 
+
 a.tablename,
 a.galname,
 a.imagename,
@@ -1002,7 +1002,7 @@ a.pagetitle:hover {
 	text-decoration: none;
 	text-align: left;
 }
-	
+
 div.wikitopline {
 	margin-top: 2px;
 }
@@ -1048,7 +1048,7 @@ table.wikitable {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse;
 }
- 
+
 td.wikicell {
 	border: 1px solid #aaa;
 	border-collapse: collapse;
@@ -1076,7 +1076,7 @@ textarea.wikiedit {
 #edit-zone textarea#editwiki {
 	font-size: 110%;
 }
- 
+
 /* Wiki plugins */
 
 /* Code plugin  */
@@ -1175,7 +1175,7 @@ div.tocnav {
 	padding-bottom: 2px;
 	margin-bottom: 4px;
 }
- 
+
 #tocnavicons {
 	float: left;
 }
@@ -1244,7 +1244,7 @@ div.article {
 	border: 1px solid #aaa;
 	margin: 10px 0 40px;
 }
-	
+
 div.freetaglist {
 	background: #eee;
 	padding-left: 6px;
@@ -1262,12 +1262,12 @@ div.articletitle {
 	border-bottom: 1px solid #aaa;
 	padding: 6px;
 }
-	
+
 * html div.articletitle {
 	background: #fff;
 	border-bottom: 0;
 }
- 
+
 div.articletitle h2 {
 	font-size: 1.5em;
 	font-weight: bold;
@@ -1275,7 +1275,7 @@ div.articletitle h2 {
 
 span.titleb {
 	font-size: 1.0em;
-} 
+}
 
 div.articlesubtitle {
 	font-size: 0.9em;
@@ -1363,7 +1363,7 @@ span.posthead {
 	font-weight: bold;
 	letter-spacing: .4pt;
 }
- 
+
 div.posthead h3 {
 	font-size: 1.2em;
 }
@@ -1374,7 +1374,7 @@ body.tiki_blogs .post .postbody {
 	margin-bottom: 1em;
 	border: 0;
 }
-	
+
 body.tiki_blogs div.author_actions {
 	text-align: right;
 }
@@ -1406,7 +1406,7 @@ table.commentinfo {
 	border: solid 1px #8c9eaa;
 	background: #fff;
 }
-	
+
 * html .post .postbody {
 	font-size: 11px;
 }
@@ -1430,7 +1430,7 @@ body.tiki_wiki_page .post {
 	margin-left: 5px;
 	padding-top: 3px;
 }
-	
+
 .post .postbody-title .title h2 {
 	margin-top: 0;
 	border: 0;
@@ -1450,7 +1450,7 @@ body.tiki_wiki_page .post {
 	background: #ececec;
 }
 
-.post .author {	
+.post .author {
 	float: left;
 	clear: both;
 	text-align: left;
@@ -1489,7 +1489,7 @@ body.tiki_wiki_page .post {
 	border: 1px solid #aaa;
 	padding: 5px;
 }
-	
+
 .postbody .quoteheader {
 	margin-top: 0;
 }
@@ -1559,7 +1559,7 @@ div.commentsedithelp {
 	text-align: center;
 	font-weight: bold;
 }
-	
+
 textarea#editpost2 {
 	width: 95%;
 	font-size: 1.1em;
@@ -1571,7 +1571,7 @@ table.galtable {
 	border: 1px solid #696969;
 	width: 100%;
 }
-	
+
 .galtable a.linkmenu {
 	background: none;
 }
@@ -1598,7 +1598,7 @@ div.showimage {
 	text-align: center;
 	padding: 6px;
 }
-	
+
 td.oddthumb {
 	border-collapse: collapse;
 	vertical-align: top;
@@ -1606,7 +1606,7 @@ td.oddthumb {
 	padding-left: 5px;
 	padding-right: 5px;
 }
- 
+
 td.eventhumb {
 	border-collapse: collapse;
 	vertical-align: top;
@@ -1677,14 +1677,14 @@ span.categpath {
 ul.catfeatures {
 	margin: 3px 0;
 }
-	
+
 ul.catitems li {
 	display: inline;
 	margin-right: 7px;
 }
 
 /***** Tags (freetags) *****/
-	
+
 /*****  Polls  *****/
 
 /***** FAQs *****/
@@ -1756,12 +1756,12 @@ div.dirfooter {
 
 
 /***** Calendar *****/
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {
 	font-size: 90%;
 }
-	
+
 .Calart,
 .Calblog,
 .Calchart,

@@ -17,7 +17,7 @@ div#header {background: url(black/header.jpg) no-repeat 100% 0}
 #topbar_custom_code {background: white url(black/borderr.png) 100% 0 repeat-y}
 #topbar_cc_liner {background: white url(black/borderl.png) repeat-y 0 0}
 #tiki-top .cssmenu_horiz li.menuLevel0 a:hover,
-.horbaritem a:hover {background: /*#2b2b2b*/ url(black/mw_menu_active_bg.png) 0 0 repeat-x; color: #fff} 
+.horbaritem a:hover {background: /*#2b2b2b*/ url(black/mw_menu_active_bg.png) 0 0 repeat-x; color: #fff}
 .bt {background: url(black/modbox.jpg) no-repeat 100% 0}
 .bt div {background: url(black/modbox.jpg) no-repeat 0 0}
 .bb {background: url(black/modbox.jpg) no-repeat 100% 100%}
@@ -25,13 +25,13 @@ div#header {background: url(black/header.jpg) no-repeat 100% 0}
 .i1 {background: url(black/modboxl.jpg) repeat-y 0 0}
 .i2 {background: url(black/modboxr.jpg) repeat-y 100% 0}
 .box-titlebottom {background: url(black/modboxtitlebottom.jpg) no-repeat 100% 0}
-.box-titlebottom div {background: url(black/modboxtitlebottom.jpg) no-repeat 0 0}	
+.box-titlebottom div {background: url(black/modboxtitlebottom.jpg) no-repeat 0 0}
 .sf-sub-indicator {background: url(black/arrows-000.png) no-repeat -10px -100px; /* 8-bit indexed alpha png. IE6 gets solid image only; */}
 
 h3.box-title {
 	background: #333333;
 	color: #fff}
-	
+
 .button a:hover,
 button:hover,
 input[type=reset]:hover,
@@ -41,7 +41,7 @@ input[type=submit]:hover,
 .calbuttonBox:hover {
 	background: /*#2b2b2b*/ url(black/mw_menu_active_bg.png) 0 0 repeat-x;
 	color: #fff}
-	
+
 .adminanchors,
 th,
 td.heading,

@@ -2,13 +2,13 @@
 	MilkyWay stylesheet (milkyway.css) for Tiki Wiki CMS Groupware.
 	This is an implementation of the GPL Joomla theme by Rhuk.
 	This stylesheet and related files are for use with Tiki 5.x.
-*/	
+*/
 /* Import foundation CSS files. */
 @import url("layout/layout.css");
 @import url("layout/design.css");
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	background: #fff;
 	text-align: left;
@@ -44,7 +44,7 @@ td#leftcolumn {
 	background: #fff;
 	text-align: center;
 	overflow: visible}
-	
+
 .colwrapper {
 	margin: 0;
 	padding: 0;
@@ -69,7 +69,7 @@ td#footer {
 	height: 126px;
 	padding: 0;
 	margin: 0}
-	
+
 td#footer .wrapper {
 	background: url(milkyway/options/white/footer.jpg) no-repeat;
 	background-position: right;
@@ -92,7 +92,7 @@ a:hover {
 	text-decoration: underline;
 	font-weight: normal;
 	color: #0b3768}
-	
+
 .wikitext a.wiki:link,
 .wikitext a.wiki:visited {
 	color: #135cae !important;
@@ -221,19 +221,19 @@ div#header {
 	min-height: 122px;
 	position: relative;
 }
-	
+
 #header .wrapper {
 	background: url(milkyway/options/white/header.jpg) no-repeat;
 	margin-right: 32px;
 	margin-bottom: -1px;
 	padding: 20px 0 0 20px}
-	
+
 #header #secondary_site_menu .wrapper {
 	background: none;
 	margin: auto;
 	padding: inherit;
 }
-	
+
 #header-top {
 	position: relative;
 	min-height: 102px;
@@ -282,7 +282,7 @@ input[id="sl-login-pass"] {}
 #sitetitle {
 	font-size: 300%;
 	padding-top: 30px}
-	
+
 #sitesubtitle {padding-top: 10px}
 
 #header a,
@@ -353,7 +353,7 @@ td.pill_l {
   height: 32px;
   padding: 0;
   margin: 0}
-  
+
 table.pill table {
 	margin: 0;
 	padding: 0}
@@ -439,7 +439,7 @@ td#leftcolumn .cssmenu_vert li li.sfHover ul {
 	border-top: 1px solid #dfdfdf;
 }
 
-/* compensate for 1px border 
+/* compensate for 1px border
 .cssmenu_horiz li ul li ul,
 .cssmenu_vert li ul li ul {
 	top: -1px !important;
@@ -447,7 +447,7 @@ td#leftcolumn .cssmenu_vert li li.sfHover ul {
 
 .cssmenu_vert li a {
 	font-weight: normal;
-	color: #135cae; 
+	color: #135cae;
 }
 
 #tiki-top .cssmenu_horiz {
@@ -490,11 +490,11 @@ td#leftcolumn .cssmenu_vert li li.sfHover ul {
 }
 
 #main-header .cssmenu_horiz li ul {
-	margin-top: -7px;	
+	margin-top: -7px;
 }
 
 #main-header .cssmenu_horiz li ul ul {
-	margin-top: -1px;	
+	margin-top: -1px;
 }
 
 #tiki-top .cssmenu_horiz ul li:hover a {
@@ -534,20 +534,20 @@ a .sf-sub-indicator {
 	padding-bottom: 0;
 	color: #000;
 	text-decoration: none;
-	white-space: nowrap} 
+	white-space: nowrap}
 
 .horbaritem a:hover {
 	background: /*#2b2b2b*/ url(milkyway/options/white/mw_menu_active_bg.png) 0 0 repeat-x;
 	color: #fff;
 	text-decoration: none;
-	padding-bottom: 0} 
+	padding-bottom: 0}
 
 * html .horbaritem a {font-size: .8em}
 .mdksubmenu {}
 
 .mdksubframe {
 	border: 1px solid #dfdfdf;
-	background: #f9f9f9} 
+	background: #f9f9f9}
 
 .mdkitem a {
 	font-family: Arial, Helvetica, sans-serif;
@@ -559,20 +559,20 @@ a .sf-sub-indicator {
 	padding: 0 20px;
 	color: #000;
 	text-decoration: none;
-	white-space: nowrap} 
+	white-space: nowrap}
 
 .mdkitem a:link {
 	font-weight: normal;
-	text-decoration: none} 
+	text-decoration: none}
 
-.mdkitem a:visited {text-decoration: none} 
+.mdkitem a:visited {text-decoration: none}
 
 .mdkitem a:hover {
 	background: black url(milkyway/options/white/mw_menu_active_bg.png) 0 0 repeat-x;
 	color: #fff;
-	text-decoration: none} 
+	text-decoration: none}
 
-.mdkitem a:active {} 
+.mdkitem a:active {}
 
 /* Tree menu (also on Browse Categories */
 .treemenudiv {
@@ -675,14 +675,14 @@ span.highlight {
 .i1 {
 	padding: 0 0 0 14px !important;
 	background: url(milkyway/options/white/modboxl.jpg) repeat-y 0 0}
-	
+
 /* Right border */
 .i2 {
 	padding: 0 14px 0 0 !important;
 	background: url(milkyway/options/white/modboxr.jpg) repeat-y 100% 0}
 
 .i3 {
-	padding: 0}	
+	padding: 0}
 
 div.box {
 	overflow: hidden;
@@ -712,7 +712,7 @@ div.box {
 #footer .box {
 	max-width: 90%;
 }
-	
+
 h3.box-title {
 	display: block;
 	position: relative;
@@ -748,14 +748,14 @@ a.flipmodtitle:hover img {border: 1px solid #fff !important}
 	background: url(milkyway/options/white/modboxtitlebottom.jpg) no-repeat 100% 0;
 	margin: 0 0 0 14px;
 	height: 6px}
-	
+
 .box-titlebottom div {
 	background: url(milkyway/options/white/modboxtitlebottom.jpg) no-repeat 0 0;
 	height: 6px;
 	width: 14px;
 	position: relative;
-	left: -14px}	
-	
+	left: -14px}
+
 .box-data {background: #fff}
 
 /** Other boxes **/
@@ -776,14 +776,14 @@ div.cbox {
 .rbox-data {
 	padding: 1px 3px;
 	background: #f6f6f6}
-	
+
 .rbox-title {
 	border: 1px solid #d1d1d1;
 	font-weight: bold}
 
 .rbox-data {
 	border: 1px solid #d1d1d1}
-	
+
 
 div.simplebox {
 	margin-bottom: 8px;
@@ -908,7 +908,7 @@ div.description {
 table.wikitable {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #a9a9a9;

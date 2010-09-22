@@ -4,20 +4,20 @@
 	Visit http://themes.tikiwiki.org/Mollio or
 	http://zukakakina.com/Mollio for more information.
 */
- 
+
 /* Import foundation CSS files. */
 @import "lite/lite.css";
 @import "layout/layout.css";
 @import "layout/design.css";
 
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	font: 76%/1.5em Arial, Helvetica, sans-serif;
 	color: #333;
 	background: #fff url(mollio/body_bg.gif) repeat-x 0 100%;
 }
-	
+
 html>body {
 	font-size: 100%;
 }
@@ -27,7 +27,7 @@ body.wikitext {
 }
  /***** Layout (overrides layout.css;
 		also styling of page layout divs)  *****/
-	
+
 #main {
 	font-size: 83%;
 }
@@ -124,15 +124,15 @@ a:hover {
 	background: transparent;
 	text-decoration: underline;
 	cursor: pointer;
-} 
+}
 
 a {
 	color: #c00;
 }
- 
+
 a:visited {
 	color: #999;
-} 
+}
 
 a:hover,
 a:active {
@@ -205,9 +205,9 @@ fieldset {
 
 textarea,
 fieldset {}
-	
+
 select {}
-	
+
 legend {
 	color: #333;
 	font-weight: bold;
@@ -235,11 +235,11 @@ span.button input,
 	border-style:  solid;
 	border-color: #f3f2f4 #89898b #89898b #f3f2f4;
 }
-	
+
 * html input[type=reset],
 * html input[type=submit] {
 	}
-	
+
 span.button a:hover,
 button:hover,
 input[type=reset]:hover,
@@ -252,7 +252,7 @@ input[type=submit]:hover,
 	border-style:  solid;
 	border-color: #89898b #f3f2f4 #f3f2f4 #89898b;
 	text-decoration: none}
-	
+
 .button a:active,
 button:active,
 input[type=reset]:active,
@@ -292,7 +292,7 @@ span.button.highlight a:hover {
 hr {
 	background: #f2f2f2;
 	color: #f2f2f2}
-	
+
 li {
 	line-height: 1.4em;
 }
@@ -337,8 +337,8 @@ li {
 #sitetitle a,
 #sitetitle a:visited {
 	text-decoration: none;
-}	
-	
+}
+
 #sitesubtitle {
 	font-size: 100%;
 	margin-left: 16px;
@@ -347,7 +347,7 @@ li {
 #siteloginbar {
 	right: 40px;
 }
-	
+
 /****** Menus, Links ******/
 /** CSS (suckerfish) menus **/
 
@@ -461,7 +461,7 @@ li {
 #tiki-top .cssmenu_horiz li ul li a:hover {
 	color: #fff;
 	background: #cc0000;
-	
+
 }
 
 #tiki-top .cssmenu_horiz li ul ul {
@@ -550,7 +550,7 @@ a.separator {
 a.separator:hover,
 div.option a:hover {
 	color: #cc0000;
-	text-decoration: none 
+	text-decoration: none
 }
 
 div.separator div.option a {
@@ -617,7 +617,7 @@ a.prevnext {
 	text-decoration: none;
 	background: #fff;
 	padding: 2px 5px;
-	border: 1px solid #ccc;	
+	border: 1px solid #ccc;
 }
 
 /***** Boxes *****/
@@ -629,7 +629,7 @@ a.prevnext {
 	margin: 0 0 1.5em;
 	background: #f6f6f6 url(mollio/featurebox_bg.gif) no-repeat 100% 100%;
 }
-	
+
 #col2 .box,
 #col2 .box-data {
 	width: 165px;
@@ -700,7 +700,7 @@ h3.box-title {
 	border-bottom: 1px solid #999;
 }
 
-.rbox-title, 
+.rbox-title,
 .rbox-data {border-color: #cc0000}
 
 .rbox-title {
@@ -708,10 +708,10 @@ h3.box-title {
 	color: #fff;
 	font-weight: bold;
 }
-	
+
 .rbox-data {
 	background: #ddd}
-	
+
 div.simplebox {
 	background: #f2f2f2;
 	color: #666;
@@ -725,7 +725,7 @@ div.simplebox {
 	width: 40.5%;
 	margin-right: 1.5%;
 	margin-left: 0;
- 
+
 }
 
 .thirdfloat div.box,
@@ -751,7 +751,7 @@ table.admin*/ {
 	border-collapse: collapse;
 	width: 100%;
 }
-	
+
 table.normal td {
 	  background: #fff url(mollio/sprites_td.png);
 	  padding: 3px;
@@ -783,10 +783,10 @@ table.normal tbody td.heading {
 	padding: 6px;
 }
 
-	 
-table.normal a.link, 
+
+table.normal a.link,
 table.normal a {
-	
+
 }
 th a,
 th a:visited,
@@ -823,7 +823,7 @@ tr.even td,
 td.even {
 	background: #fff url(mollio/td_bg_light.jpg) no-repeat 100% 100%;
 }
-	 
+
 form#editpageform {
 	margin: 0 0 1.5em;
 	width: 100%;
@@ -906,7 +906,7 @@ div.article h2 {
 	padding: 3px;
 	border: 1px solid #fff;
 }
-	
+
 div.code,
 .codelisting {
 	margin-top: 0;
@@ -928,7 +928,7 @@ div.code,
 div#textarea-toolbar {
 
 }
-	
+
 div.help_sections {
 
 }
@@ -941,7 +941,7 @@ body.tiki_cms h1 a.pagetitle:hover {border-bottom: 0}
 div.article {
 	border: none;
 	margin-bottom: 70px;}
-	
+
 div.article h2 {font-size: 126%}
 
 div.article a,
@@ -960,7 +960,7 @@ div.article a:visited {
 div.articletrailer span {
 	margin-left: 5px;
 	padding-left: 20px;}
-	
+
 div.articletrailer div.status a {
 	background: transparent url(mollio/sprites.gif) no-repeat 5px -500px;
 	padding-left: 21px;
@@ -1000,7 +1000,7 @@ body.tiki_blogs .post .title h2 {}
 	text-decoration: none;
 	font-weight: bold;
 	color: #000}
-	
+
 .post .postbody .content {
 	float: none}
 
@@ -1159,7 +1159,7 @@ a.admbox:active {
 	background-repeat: no-repeat;
 	background-position: center
 }
-	
+
 a.admbox:hover span {
 	color: #069;
 }

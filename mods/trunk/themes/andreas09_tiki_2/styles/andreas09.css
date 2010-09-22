@@ -152,7 +152,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	position: absolute;
 	top: 9010px;
 	left: 9010px;
-	background-color: #339999; 
+	background-color: #339999;
 	color: #fff;
 	padding: 5px;
 	font-weight: bold;
@@ -178,7 +178,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	text-align: left;
 	padding: 1em}
 
-/*** Type 1 (*litecss-based) layout 
+/*** Type 1 (*litecss-based) layout
 	(overrides lite.css) ***/
 #main {}
 
@@ -437,7 +437,7 @@ div.mdkitem  {
 
 
 .mdkitem a:hover,
-.mdkitem a:active, 
+.mdkitem a:active,
 .cssmenu_vert li a:hover {
 	background: #f8f9fa;
 	border: 1px solid #909090;
@@ -466,12 +466,12 @@ div.mdkitem  {
 	position: relative}
 
 .mdksubframe .mdkitem {margin-bottom: 0}
- 
+
 .box .mdksubframe div.mdkitem {
 	margin-left: 0;
 	padding-left: 0}
 
-.mdkverbar .mdkitem a, 
+.mdkverbar .mdkitem a,
 .box .mdkitem a {/*vertical menu subitems */
 	/*padding: 4px 2px 2px 8px;*/}
 
@@ -687,7 +687,7 @@ h3.box-title {
 	font-weight: bold;
 	letter-spacing: -1px;
 	margin: 0 0 12px}
-	
+
 h3.box-title span.moduletitle {float: left}
 h3.box-title span.moduleflip {float: right}
 
@@ -742,7 +742,7 @@ span#moduleflip {
 	overflow: hidden;
 	border: 1px solid #999999;
 	margin: 6px}
- 
+
 .cbox-title {
 	text-align: left;
 	text-indent: 1em;
@@ -791,14 +791,14 @@ div.simplebox {
 /** Tables **/
 table {font-size: 1em}
 
-table.normal, 
+table.normal,
 table.admin,
 table.bloglist,
 table.sortable {
 	border: solid 1px #909090;
 	width: 100%}
 
-* html table.normal, 
+* html table.normal,
 * html table.admin,
 * html table.bloglist,
 * html table.sortable {
@@ -867,7 +867,7 @@ td.even {
 	margin: 0;
 	padding: 0.2em;
 	vertical-align: top}
-	
+
 td.form {padding: .2em}
 
 /* cells in tracker items display */
@@ -877,7 +877,7 @@ td.formcontent {}
 /* links to view an object from a table listing objects can be generalized to this link */
 a.fgalname {}
 a.fgalname:hover {}
- 
+
 a.tablename,
 a.galname,
 a.imagename,
@@ -965,10 +965,10 @@ div.content .tabs {}
 	padding-right: 1.5em}
 
 .tab-menu li img {vertical-align: middle}
-.tab-menu li a {} 
-.tab-menu li a:hover, 
-.tab-menu li a:focus {} 
-.tab-menu li a:hover {} 
+.tab-menu li a {}
+.tab-menu li a:hover,
+.tab-menu li a:focus {}
+.tab-menu li a:hover {}
 .tab-menu li.tab-selected a {}
 
 /* Check ?? */
@@ -1045,7 +1045,7 @@ div#description {
 	margin-top: 1em;
 	text-indent: .8em}
 
-.wikitext ul li {} 
+.wikitext ul li {}
 .wikitext ul li ul li {}
 .wikitext ol {}
 
@@ -1058,7 +1058,7 @@ html>body .wikitopline table {}
 table.wikitable {
 	border: 1px solid #A9A9A9;
 	border-collapse: collapse}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #A9A9A9;
@@ -1086,7 +1086,7 @@ ul.floatleft li {
 
 span.button2,
 div.button2, .button3 {margin-right: 5px}
- 
+
 .linkbut {}
 .linkbut:hover {}
 div.cache {}
@@ -1098,7 +1098,7 @@ div.cachedpage {}
 textarea#editwiki {font-size: 1.3em}
 .wiki-edithelp {display: none}
 img.externallink {}
- 
+
 /* Wiki plugins */
 
 /* Code plugin  */
@@ -1152,7 +1152,7 @@ div.tocnav {
 	background: #EBEBEB;
 	padding: 3px;
 	margin-bottom: 4px}
- 
+
 #tocnavicons {float: left}
 #tocnavaddpage {float: right}
 #tocnavlinks {clear: both}
@@ -1189,21 +1189,21 @@ div.articletitle {
 	color: #606060;
 	margin: 0 0 15px;
 	padding: 0}
- 
+
 span.titlea {
 	font-size: 1.6em;
 	font-weight:bold}
 
-span.titleb {} 
+span.titleb {}
 
 div.articlesubtitle {
 	font-size: 90%;
 	font-style: italic}
- 
+
 div.articleheading {
 	margin-top: 6px;
 	line-height: 1.5em}
- 
+
 div.articleheadingtext {color: black}
 
 img.topicimage,
@@ -1228,17 +1228,17 @@ img.articleimage {
 	border: 1px solid #b0b0b0}
 
 div.articletrailer {text-align: right}
-div.articletrailer .wikitopline {float: left} 
- 
+div.articletrailer .wikitopline {float: left}
+
 div.articlebody {
 	color: black;
 	line-height: 1.5em}
- 
+
 div.articlesource {
 	margin-top: 5px;
 	font-style: italic;
 	font-size: 90%}
- 
+
 /***** Blogs *****/
 
 div.blogheading {
@@ -1298,14 +1298,14 @@ span.posthead {
 	font-weight: bold;
 	letter-spacing: .4pt;
 	border-bottom: 1px solid #2F3E4F}
- 
+
 div.posthead h3 {
 	text-align: left;
 	margin-bottom: 10px;
 	font-size: 1.4em}
 
 div.description h1 {font-size: 1.3em}
- 
+
 div.postbody {
 	margin-right: 8px;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
@@ -1335,7 +1335,7 @@ div.postfooter {
 	margin-top: 5px;
 	padding: 3px 0 3px 0px;
 	background-color: #F9FCFF}
-	
+
 * html .post .postbody {font-size: 11px}
 
 .post .postbody-title {
@@ -1344,7 +1344,7 @@ div.postfooter {
 	border-bottom: none;
 	margin-bottom: 4px;
 	padding-top: 2px}
-	
+
 .post .postbody-title .checkbox {float: left}
 
 .post .postbody-title .title {
@@ -1359,7 +1359,7 @@ div.postfooter {
 
 .title h2 {font-size: 1.2em }
 
-.post .author {	
+.post .author {
 	float: left;
 	text-align: left;
 	vertical-align: top;
@@ -1472,12 +1472,12 @@ div.postfooter {
 	display: none;
 	margin: 5px 0;
 	padding: 0}
- 
+
 #comzoneopen {
 	display: block;
 	margin: 5px 0;
 	padding: 0}
- 
+
 span.commentstitle {
 	font-weight: bold;
 	font-size: 1.2em}
@@ -1545,7 +1545,7 @@ a.freetag_1 {
 a.freetag_2 {
 	text-decoration: none;
 	font-size: .9em}
-	
+
 a.freetag_3 {
 	text-decoration: none;
 	font-size: 1em}
@@ -1590,7 +1590,7 @@ td.oddthumb {
 	background-color: #F9F9F9;
 	border: 3px solid white;
 	border-collapse: collapse}
- 
+
 td.eventhumb {
 	background-color: #F9F9F9;
 	border: 3px solid white;
@@ -1674,13 +1674,13 @@ div.gallerypath a:hover {}
 /***** Calendar *****/
 /* Overrides calendar.css, etc. */
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {
 	color: Black;
 	font-size: 1em;
 	padding-right: 0}
-	
+
 .Calart,
 .Calblog,
 .Calchart,
@@ -1706,7 +1706,7 @@ div.gallerypath a:hover {}
 
 .Calchart,
 .Calchart a,
-.Calchart a:visited {color: #304F30} 
+.Calchart a:visited {color: #304F30}
 
 .Caldir,
 .Caldir a,
@@ -1726,7 +1726,7 @@ div.gallerypath a:hover {}
 
 .Calforum,
 .Calforum a,
-.Calforum a:visited {color: #808000} 
+.Calforum a:visited {color: #808000}
 
 .Calgal,
 .Calgal a,
@@ -1747,7 +1747,7 @@ div.gallerypath a:hover {}
 Caltrack,
 Caltrack a,
 Caltrack a:visited {color: #00BD02}
-	
+
 .Calweb {font-size: 1em}
 
 .Calwiki,
@@ -1831,7 +1831,7 @@ Caltrack a:visited {color: #00BD02}
 	color: #000;
 	background: #f0f0f0 url(andreas09/menuhover.jpg) top left repeat-x;
 	cursor: pointer}
-	
+
 .daterow:hover {
 	color: #000;
 	background: #f0f0f0 url(andreas09/menuhover.jpg) top left repeat-x}

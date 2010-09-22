@@ -29,7 +29,7 @@ ol {
 
 /* GENERAL LAYOUT EXPLANATION
  *
- * The tiki application is enclosed as a whole in tiki-main tiki-main contains three divs: tiki-top, 
+ * The tiki application is enclosed as a whole in tiki-main tiki-main contains three divs: tiki-top,
  * tiki-mid and tiki-botthat will be used for the header, application and footer.
  *
  * tiki-mid contains a 3-column table, the columns are called (ids) leftcolumn, centercolumn and rightcolumn
@@ -43,7 +43,7 @@ ol {
 DIV#tiki-main {
 	background-color: #666666;
 	background-color: #434343;
-	background-color: white; 
+	background-color: white;
 	height: 100%;
 	margin-top: 0px;
 	margin-right: 0px;
@@ -104,10 +104,10 @@ TD#rightcolumn {
 TD#centercolumn {
 	background-color: #666666;
 	background-color: #434343;
-	background-color: white; 
+	background-color: white;
 	padding-right: 2px;
 	vertical-align: top;
-	width: 100%;  
+	width: 100%;
 }
 
 /* And this is what lies inside the centercolumn */
@@ -144,7 +144,7 @@ span.off-option {
 /* ********************* GENERAL STYLE PROPERTIES ************************** */
 
 /* BOXES boxes are used to present a box with a title bar and content, they are used for modules and they
-   are also used in the rankings, admin screen etc. 
+   are also used in the rankings, admin screen etc.
    The box class is used for modules while the cbox class is used for other boxes
  */
 
@@ -245,15 +245,15 @@ TD.module {
 }
 
 /* Now the boxes for the rest of Tiki (non-modules) */
-div.cbox { 
-  background-color: white; 
-  background-color: #dddddd; 
-  border: 1px solid #999999; 
-  margin-top: 4px; 
-  margin-left: 4px; 
-  margin-right: 8px; 
+div.cbox {
+  background-color: white;
+  background-color: #dddddd;
+  border: 1px solid #999999;
+  margin-top: 4px;
+  margin-left: 4px;
+  margin-right: 8px;
   margin-bottom: 0px;
-  padding-bottom: 10px; 
+  padding-bottom: 10px;
   color: white;
   width=99%;
 }
@@ -261,7 +261,7 @@ div.cbox {
 /* Boxes are divided in title and data, this is the title */
 div.cbox-title {
 	background-color: #9cba00;
-	background-color: #1c60a8; 
+	background-color: #1c60a8;
 	border-bottom: 1px solid #999999;
 	color: white;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
@@ -341,7 +341,7 @@ div.separator {
 	border: 1px solid #999999;
 	color: black;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-	font-size: 10px; 
+	font-size: 10px;
 	margin-top: 6px;
 	margin-left: 2px;
 	margin-right: 2px;
@@ -395,7 +395,7 @@ div.separator {
   border-top: 0;
 }
 .rssdate {
-  color: #666666; 
+  color: #666666;
   font-size: smaller;
   font-style: italic;
 }
@@ -479,7 +479,7 @@ div.imagerank {
 	margin-bottom: 10px;
 }
 
-/* A simple box is just a div with a border around and some margin 
+/* A simple box is just a div with a border around and some margin
    used for example in the admin screen
  */
 div.simplebox {
@@ -819,8 +819,8 @@ div.button2 {
 	background-color: white;
 	font-size: 10px;
 	font-weight: bold;
-	/* 
-	border: 1px solid #999999; 
+	/*
+	border: 1px solid #999999;
 	padding-left: 0.1em;
 	padding-right: 0.1em;
 	padding-top: 0.1em;
@@ -839,7 +839,7 @@ div.button2 {
 	color: black;
 	background-color: white;
 	text-decoration: none;
-	border: 1px ridge #dddddd; 
+	border: 1px ridge #dddddd;
 	padding: 1px 1px 1px 1px;
 	margin: 2px 2px 2px 2px;
 }
@@ -917,7 +917,7 @@ div.wikitext {
 	background-color: white;
 	background-color: #dddddd;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-	font-size: 11px;  
+	font-size: 11px;
 	border: 1px solid #999999;
 	padding-left: 25px;
 	padding-right: 15px;
@@ -2403,7 +2403,7 @@ div.tabrow {
 	font-size: 11px;
 }
 td.middle {
-	vertical-align: middle; 
+	vertical-align: middle;
 }
 .daterow {
 	margin-left: 10px;
@@ -2417,10 +2417,10 @@ td.middle {
 	background-color: #ffffff;
 	width: auto;
 	border: 1px solid #666666;
-	padding: 1px; 
+	padding: 1px;
 }
 .opaque .box-title,
-.opaque, .box-data 
+.opaque, .box-data
 {
 	width: auto;
 }

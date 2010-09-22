@@ -13,14 +13,14 @@
 	or http://zukakakina.com.
 	This stylesheet and related files are for use with Tiki 5.x.
 */
- 
+
 /* Import foundation CSS files. */
 @import url("lite/lite.css");
 @import url("layout/layout.css");
 @import url("layout/design.css");
 
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	background: #dfdac3;
 	color: #000;
@@ -82,7 +82,7 @@ body.wikitext {background: #dfdac3}
 	font-weight: normal;
 	font-size: 1em;
 	text-align: center}
-	
+
 #footer small {font-size: 1em}
 
 #footer a:link,
@@ -111,7 +111,7 @@ a:visited {
 a:hover {
 	color: #808080;
 	text-decoration: underline}
-	
+
 .wikitext a.wiki:link,
 .wikitext a.wiki:visited {
 	color: #505050 !important;
@@ -151,7 +151,7 @@ h5 {font-size: 100%}
 hr {
 	background: #e9e7db;
 	color: #4f657f}
-	
+
 p {
 	line-height: 1.5em;
 	margin: 0 0 15px}
@@ -214,7 +214,7 @@ span.button input,
 	color: #505050;
 	border: solid 1px #8c9eaa;
 	background: #E9E7DB}
-	
+
 .button a:hover,
 button:hover,
 input[type="reset"]:hover,
@@ -239,7 +239,7 @@ ul {
 ol li {
 	list-style: decimal;
 	background-image: none}
-	
+
 tt {font-size: 1.2em}
 
 /***** Site Header & Identity *****/
@@ -315,7 +315,7 @@ div#sioptions {
 #tiki-top {
 	font-size: 1em;
 	text-align: left}
-	
+
 * html #tiki-top {padding-top: 4px}
 #sitesearchbar {font-size: 77%}
 
@@ -430,7 +430,7 @@ ul.cssmenu_horiz li ul li {
 
 .mdkitem a {font-size: 1.2em}
 
-.mdkverbar .mdkitem a, 
+.mdkverbar .mdkitem a,
 .box .mdkitem a {
 	padding-top: 4px;
 	padding-bottom: 2px;
@@ -518,7 +518,7 @@ div.option a:hover,
 div.option a:active {
 	color: #4F657F;
 	text-decoration: underline}
-	
+
 a.linkmodule {
 	color: #6D809F;
 	text-decoration: none;
@@ -567,7 +567,7 @@ div.box {
 	margin-right: 7px;
 	margin-bottom: 15px;
 }
-	
+
 .wikitext .box {}
 .wikitext .box-title {letter-spacing: normal}
 
@@ -635,7 +635,7 @@ img.flipmodimage:hover {border: 1px solid #6d809f !important}
 	margin: 6px;
 	background: #e9e7db;
 	color: black;}
- 
+
 .cbox-title {
 	text-align: left;
 	text-indent: 1em;
@@ -696,7 +696,7 @@ div.simplebox {
 
 /***** Tables, Tabs *****/
 /** Tables **/
-table.normal, 
+table.normal,
 table.admin,
 table.sortable {
 	font-size: 1em;
@@ -704,18 +704,18 @@ table.sortable {
 	border-collapse: collapse;
 	width: 100%}
 
-* html table.normal, 
+* html table.normal,
 * html table.admin,
 * html table.sortable {
 	font-size: 11px;
 	width: 97%}
 
-tr.odd td, 
+tr.odd td,
 td.odd {
 	background: #F5F5F5;
 	border-left: 1px solid #DDDDDD}
 
-tr.even td, 
+tr.even td,
 td.even {
 	background: #ECECEC;
 	border-left: 1px solid #DDDDDD}
@@ -726,13 +726,13 @@ td.odd,
 td.even {margin: 0;
 	padding: 0.2em;
 	vertical-align: top}
-	
+
 th, table.normal td.heading {
 	font-size: 1em;
 	background: #DCDCDC;
 	text-align: center}
 
-td.form {padding: 0.2em}	
+td.form {padding: 0.2em}
 
 /* cells in tracker items display */
 td.formlabel {background: #ececec}
@@ -794,8 +794,8 @@ div.description {
 
 .wikitext {line-height: 1.5em}
 
-.wikitext h2, 
-.wikitext h3, 
+.wikitext h2,
+.wikitext h3,
 .wikitext h4,
 .wikitext h5 {
 	color: #606060;
@@ -814,10 +814,10 @@ div.description {
 	padding: 0.1em;
 	margin-bottom: 0.5em;
 	margin-top: 1em}
- 
+
 .wikitext ul li {
 	padding-left: 10px;
-	background: url(fluidindex/star.gif) no-repeat 0 3px} 
+	background: url(fluidindex/star.gif) no-repeat 0 3px}
 
 .wikitext ul li ul li {
 	padding-left: 10px;
@@ -830,7 +830,7 @@ table.wikitable {
 	border-right: 1px solid #696969;
 	border-bottom: 1px solid #696969;
 	vertical-align: top}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #a9a9a9;
@@ -915,7 +915,7 @@ div.articletitle {
 	margin-bottom: 15px;
 	text-align: left;
 	background: url(fluidindex/page.gif) 0px 17px no-repeat}
- 
+
 div.articletitle h2 {
 	font-size: 1.2em;
 	font-weight: bold}
@@ -923,10 +923,10 @@ div.articletitle h2 {
 div.articlesubtitle {
 	font-size: 90%;
 	font-style: italic}
- 
+
 div.articleheading {
 	margin-top: 6px}
- 
+
 div.articleheadingtext {
 	color: black;
 	line-height: 1.5em}
@@ -951,7 +951,7 @@ div.articlebody {
 	color: black;
 	line-height: 1.5em;
 	margin-top: 2em}
- 
+
 /***** Blogs *****/
 div.blogtitle {
 	font-size: 1.3em;
@@ -988,7 +988,7 @@ span.posthead {
 	font-weight: bold;
 	letter-spacing: .4pt;
 	border-bottom: 1px solid #2F3E4F}
- 
+
 div.posthead h3 {
 	color: #6D809F;
 	font-weight: bold;
@@ -1000,14 +1000,14 @@ div.posthead h3 {
 	background: url(fluidindex/page.gif) 0 17px no-repeat;
 	margin-bottom: 10px;
 	font-size: 1.2em}
- 
+
 div.postbody {
 	margin-right: 8px;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	color: black;
 	margin-bottom: 1em;
 	line-height: 1.5em}
-	
+
 * html .postbody table {font-size: 11px}
 
 /* Used by custom tpl, not implemented yet */
@@ -1027,7 +1027,7 @@ div.date {
 .post .postbody {
 	border: solid 1px #8c9eaa;
 	background: white}
-	
+
 * html .post .postbody {font-size: 11px}
 
 post .postbody .content {
@@ -1054,11 +1054,11 @@ post .postbody .content {
 	font-weight: bold;
 	font-size: 1.1em;
 	margin-top: 0}
-	
+
 .post .postbody-title .title h2 {margin-top: 0}
 .title a.link {color: #666}
 
-.post .author {	
+.post .author {
 	float: left;
 	text-align: left;
 	width: 25%;
@@ -1087,7 +1087,7 @@ post .postbody .content {
 	width: 70%;
 	border-left: 1px solid #8c9eaa;
 	padding-left: 5px}
-	
+
 .postbody .quoteheader {margin-top: 0}
 
 .post .postbody .attachments {border-top: 1px dotted #8c9eaa}
@@ -1125,7 +1125,7 @@ div.commentsedithelp {
 td.oddthumb {
 	background: #fff;
 	border: 3px solid white}
- 
+
 td.eventhumb {
 	background: #fff;
 	border: 3px solid white}
@@ -1142,7 +1142,7 @@ div#browse_image {background: white}
 /***** Categories, Tags *****/
 
 /***** Tags (freetags) *****/
-	
+
 /*****  Polls  *****/
 
 /***** FAQs *****/
@@ -1189,13 +1189,13 @@ table.default tfoot td {
 table.default td {border: solid 1px #a9a9a9}
 
 /***** Calendar *****/
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {
 	color: Black;
 	font-size: 10px;
 	padding-right: 0px}
-	
+
 .Calart,
 .Calblog,
 .Calchart,
@@ -1222,7 +1222,7 @@ table.default td {border: solid 1px #a9a9a9}
 
 .Calchart,
 .Calchart a,
-.Calchart a:visited {color: #304F30} 
+.Calchart a:visited {color: #304F30}
 
 .Caldir,
 .Caldir a,
@@ -1242,7 +1242,7 @@ table.default td {border: solid 1px #a9a9a9}
 
 .Calforum,
 .Calforum a,
-.Calforum a:visited {color: #808000} 
+.Calforum a:visited {color: #808000}
 
 .Calgal,
 .Calgal a,

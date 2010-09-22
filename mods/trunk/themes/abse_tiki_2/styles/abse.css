@@ -1,14 +1,14 @@
 /* $Id$
- * The absE theme for Tiki CMS/Groupware by Gary Cunningham-Lee (chibaguy) is 
+ * The absE theme for Tiki CMS/Groupware by Gary Cunningham-Lee (chibaguy) is
  * based on the visual design of the absE theme for openbox by crimeboy
  * (http://celo.wordpress.com/) and uses the *litecss source-ordered
  * layout solution by luci (http://sourceforge.net/projects/litecss).
  * For more information, please visit http://themes.tikiwiki.org or http://zukakakina.com.
  */
- 
+
  @import "lite/lite.css"; /* here we import *lite as the base */
 
-/* XHTML Elements */ 
+/* XHTML Elements */
 
 body {
 	background: #000000 url(abse/wgreenwall.png) fixed;
@@ -53,7 +53,7 @@ fieldset {
 form {
 	margin: 0;
 	padding: 0}
-	
+
 legend {color: #A9A9A9}
 
 button,
@@ -155,7 +155,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	position: absolute;
 	top: 9010px;
 	left: 9010px;
-	background: #339999; 
+	background: #339999;
 	color: #fff;
 	padding: 5px;
 	font-weight: bold;
@@ -390,7 +390,7 @@ html>body #c1c2 #wrapper #col1 #tiki-center:hover {
 	background: url(abse/menubg.jpg) repeat-y}
 
 .mdkverbar  {margin: 0}
- 
+
 .mdksubmenu {
 	z-index: 999;
 	position: absolute;
@@ -439,7 +439,7 @@ html>body #c1c2 #wrapper #col1 #tiki-center:hover {
 
 .cssmenu_vert li.selected > a {background: #86a48a url(abse/menubg.jpg) repeat-y;}
 
-.mdkitem a:hover, 
+.mdkitem a:hover,
 .cssmenu_vert li a:hover  {
 	background: url(abse/menubg.jpg) repeat-y;
 	color: #CCCCFF}
@@ -471,7 +471,7 @@ a.phplm:active {
 .phplmnormal {
 	background: #586858;
 	border:1px solid #AAAAAA}
-	
+
 a.phplm:hover {
 	color: #CCCCFF;
 	background: #586858}
@@ -495,7 +495,7 @@ a.phplmselected:hover {
 	border: 0;
 	width: 16px;
 	height: 18px}
-	
+
 /** Links in other menus **/
 div.separator, div.separatorline {color: #F5F5F5;
 	display: block;
@@ -702,7 +702,7 @@ span#moduleflip {
 	float: left;
 	width: 16px;
 	height: 16px}
-	
+
 .modcontrols a span {display: none}
 
 /** Other boxes **/
@@ -710,7 +710,7 @@ div.cbox {
 	overflow: hidden;
 	border: 1px solid #909090;
 	margin: 6px}
- 
+
 div.cbox-title {
 	text-align: left;
 	text-indent: 1em;
@@ -759,14 +759,14 @@ div.cbox-data {
 div.simplebox {
 	border: 1px solid #666;
 	padding: 4px}
- 
+
 /***** Tables, Tabs and Lists ****/
 /** Tables **/
 
 table {font-size: 1em}
 * body table { font-size: 11px }
 
-table.normal, 
+table.normal,
 table.admin,
 table.bloglist {
 	padding: 0;
@@ -775,7 +775,7 @@ table.bloglist {
 	border-collapse: collapse;
 	width: 100%}
 
-* html table.normal, 
+* html table.normal,
 * html table.admin,
 * html table.bloglist,
 * html table.sortable {width: 97%; font-size: 11px}
@@ -833,11 +833,11 @@ form.admin .tabs {
 [class].tabactive {top: -1px}
 .tabactive a {background: #eee}
 
-.tabinactive {border: solid 1px #666 !important; 
+.tabinactive {border: solid 1px #666 !important;
 	border-bottom: none !important;
 	position: relative !important;
 	top: -3px !important}
-	
+
 [class].tabinactive {top: -2px !important}
 */
 .tabmark {
@@ -897,21 +897,21 @@ form.admin .tabs {
 	padding-right: 1.5em}
 
 .tab-menu li a {
-	padding: 1px 5px; 
-	background: #586858; 
-	color: #FFFFFF; 
-	font-weight: bold; 
-	text-decoration: none} 
+	padding: 1px 5px;
+	background: #586858;
+	color: #FFFFFF;
+	font-weight: bold;
+	text-decoration: none}
 
-.tab-menu li a:hover, 
+.tab-menu li a:hover,
 .tab-menu li a:focus {
-	background: #FAEC8F; 
+	background: #FAEC8F;
 	color: #000;
-	border-bottom-color: #999} 
+	border-bottom-color: #999}
 
 .tab-menu li a:hover {
-	background: #FAEC8F; 
-	border-bottom-color: #999} 
+	background: #FAEC8F;
+	border-bottom-color: #999}
 
 .tab-menu li.tab-selected a {
 	background: #BCEC8F;
@@ -985,7 +985,7 @@ html>body .wikitopline table {width: 100%}
 	border-right: 1px solid #696969;
 	border-bottom: 1px solid #696969;
 	vertical-align: top}
- 
+
 td.wikicell {
 	padding: 3px;
 	border-right: 1px solid #A9A9A9;
@@ -1027,7 +1027,7 @@ div.button2 a, .button3 a {
 	text-decoration: none}
 
 #page-bar table a.linkbut {}
- 
+
 .linkbut {
 	font-size: 0.8em;
 	color: #BDCEC3}
@@ -1099,7 +1099,7 @@ div.tocnav {
 	padding: 3px;
 	margin-bottom: 4px;
 	clear: both}
- 
+
 #tocnavicons {float: left}
 #tocnavicons a {text-decoration: none}
 #tocnavaddpage {float: right}
@@ -1147,19 +1147,19 @@ div.articletitle {
 	padding: 3px;
 	background: url(abse/menubg.jpg) repeat-y;
 	margin-bottom: 1em}
- 
+
 span.titlea {
 	font-size: 1.4em;
 	font-weight: bold}
- 
+
 div.articlesubtitle {
 	font-size: 90%;
 	font-style: italic}
- 
+
 div.articleheading {
 	margin-top: 6px;
 	line-height:1.5em}
- 
+
 div.articleheadingtext {color: #D8D8D8}
 
 img.topicimage,
@@ -1184,16 +1184,16 @@ img.articleimage {
 
 div.articletrailer {text-align: right}
 div.articletrailer .wikitopline {float: left}
- 
+
 div.articlebody {
 	color: #D8D8D8;
 	line-height: 1.5em}
- 
+
 div.articlesource {
 	margin-top: 5px;
 	font-style: italic;
 	font-size: 90%}
- 
+
 /***** Blogs *****/
 
 div.blogheading {
@@ -1237,7 +1237,7 @@ div.blogtools {
 .blogpost {
 	margin-top: 2em;
 	margin-bottom: 2em}
- 
+
 .postinfo {
 	margin-bottom: 6px;
 	padding: 2px}
@@ -1272,7 +1272,7 @@ span.posthead {
 	display: block;
 	font-weight: bold;
 	letter-spacing: .4pt}
- 
+
 div.posthead h3 {
 	text-align: left;
 	margin-bottom: 10px;
@@ -1281,7 +1281,7 @@ div.posthead h3 {
 	letter-spacing: -1px;
 	margin: 0 0 15px;
 	padding: 0}
- 
+
 div.postbody {
 	margin-right: 8px;
 	line-height: 1.5em}
@@ -1306,7 +1306,7 @@ body.tiki_forums table.normal {margin: auto}
 	background: #000 url(abse/menubg.jpg) repeat-y;
 	font-size: 1em;
 	border: solid 1px #909090}
-	
+
 * html .post .postbody {font-size: 1em}
 *:first-child+html .postbody {min-width: 100% !important}
 
@@ -1315,7 +1315,7 @@ body.tiki_forums table.normal {margin: auto}
 	margin-bottom: 4px;
 	padding-top: 2px;
 	background: #000}
-	
+
 .post .postbody-title .checkbox {float: left}
 
 .post .postbody-title .title {
@@ -1367,19 +1367,19 @@ body.tiki_forums table.normal {margin: auto}
 	height: 100%;
 	text-align: left;
 	color: #BDCEC3}
-	
+
 .post .postbody .attachments {
 	clear: both;
 	border-top: 1px dotted #D9D9D9;
 	margin-top: 5px}
-	
+
 .post .postbody .attachments img {vertical-align: text-bottom}
 
 .post .postfooter .actions, .post .postfooter .status {
 	display: inline;
 	margin-left: 5px;
 	vertical-align: top}
-	
+
 .post .postfooter .status {font-size: .9em}
 .post .postfooter {float: right; text-align: right}
 .post .inner > .postfooter {clear: both}
@@ -1388,12 +1388,12 @@ body.tiki_forums table.normal {margin: auto}
 	background: #F0F8FF;
 	border: 1px solid #D7E5F3;
 	padding: 0 2px 0 2px}
-	
+
 .post .avatar {
 	float: right;
 	margin-bottom: 5px;
 	padding: 3px}
-	
+
 .sub_comment {padding-left: 20px}
 
 .sub_comment_area {
@@ -1423,11 +1423,11 @@ body.tiki_forums table.normal {margin: auto}
 	float: right;
 	font-size: smaller;
 	padding-top: 2px}
-	
+
 .thread_pagination {
 	text-align: center;
 	margin-bottom: 10px}
-	
+
 .nb_replies {white-space: nowrap}
 .post_preview, .top_post {margin-bottom: 15px}
 
@@ -1436,12 +1436,12 @@ body.tiki_forums table.normal {margin: auto}
 	display: none;
 	margin: 5px 0;
 	padding: 0}
- 
+
 #comzoneopen {
 	display: block;
 	margin: 5px 0;
 	padding: 0}
- 
+
 span.commentstitle {
 	font-weight: bold;
 	font-size: 12px}
@@ -1512,7 +1512,7 @@ a.freetag_1 {
 a.freetag_2 {
 	text-decoration: none;
 	font-size: .9em}
-	
+
 a.freetag_3 {
 	text-decoration: none;
 	font-size: 1em}
@@ -1577,7 +1577,7 @@ td.oddthumb {
 	background: #0E150E;
 	border: 3px solid black;
 	border-collapse: collapse}
- 
+
 td.eventhumb {
 	background: #0E150E;
 	border: 3px solid black;
@@ -1637,11 +1637,11 @@ div.gallerypath, div.gallerypath a {
 	font-weight: normal;
 	margin-left: 3px;
 	text-decoration: none}
-	
+
 div.gallerypath a:hover {
 	color: #CCCCFF;
 	text-decoration: underline}
-	
+
 .fgalexplorer {border: 1px solid #3f6041}
 
 .fgallisting table td {
@@ -1665,8 +1665,8 @@ div.gallerypath a:hover {
 /***** Calendar *****/
 /* Overrides calendar.css, etc. */
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {
 	color: #000;
 	font-size: 90%}
@@ -1685,7 +1685,7 @@ div.gallerypath a:hover {
 .Calsurv,
 .Caltrack,
 .Calwiki {font-size: 90%}
-	
+
 .Calart:before,
 .Calblog:before,
 .Calchart:before,
@@ -1701,7 +1701,7 @@ div.gallerypath a:hover {
 .Caltrack:before,
 .Calwiki:before {
 	background: #000;
-	font-size: 1.2em} 
+	font-size: 1.2em}
 
 .Calart,
 .Calart a,
@@ -1750,7 +1750,7 @@ div.gallerypath a:hover {
 .Caltrack,
 .Caltrack a,
 .Caltrack a:visited {color: #00BD02}
-	
+
 .Calweb {font-size: 1em}
 .Calweb:hover {color: #996633}
 
@@ -1964,7 +1964,7 @@ td.prio5 {background: #F7F9FF}
 div.messureadflag {
 	background: #CCCCCC;
 	padding-left: 5px}
-	
+
 div.messureadhead {
 	background: #DEDEDE;
 	margin-top: 2px}

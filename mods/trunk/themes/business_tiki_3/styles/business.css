@@ -1,5 +1,5 @@
 /* Business theme stylesheet (business.css) for Tikiwiki CMS/Groupware,
-	based on the original by Eatlon.com (http://eatlon.com/work/business/), 
+	based on the original by Eatlon.com (http://eatlon.com/work/business/),
 	and released under the GPL license.
 	Compatible with TikiWiki version 3.
 	Visit http://themes.tikiwiki.org for more information.
@@ -203,7 +203,7 @@ hr {
 	background: #003371 url(business/header.png) repeat-x bottom;
 }
 
-	
+
 * html #header-top {
 	height: 72px;
 }

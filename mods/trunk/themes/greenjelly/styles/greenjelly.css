@@ -1,4 +1,4 @@
-/* 
+/*
 $Header: /cvsroot/tikiwiki/_mods/themes/greenjelly/styles/greenjelly.css,v 1.1 2004-06-30 22:02:58 damosoft Exp $
 
 reNeat theme
@@ -32,14 +32,14 @@ span.tabbut {
 }
 
 .tablink {
-color: #225566; 
-font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  font-size: 10px;   
+color: #225566;
+font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  font-size: 10px;
 text-decoration: none;
 }
 
 /* GENERAL LAYOUT EXPLANATION
  *
- * The tiki application is enclosed as a whole in tiki-main tiki-main contains three divs: tiki-top, 
+ * The tiki application is enclosed as a whole in tiki-main tiki-main contains three divs: tiki-top,
  * tiki-mid and tiki-botthat will be used for the header, application and footer.
  *
  * tiki-mid contains a 3-column table, the columns are called (ids) leftcolumn, centercolumn and rightcolumn
@@ -53,11 +53,11 @@ text-decoration: none;
 DIV#tiki-main { margin: 0px;  }
 
 /* This is the header */
-DIV#tiki-top {  
+DIV#tiki-top {
 background-repeat: no-repeat;
-color: #225566; 
-height: 110px;  
-padding-right: 0px;  
+color: #225566;
+height: 110px;
+padding-right: 0px;
 padding-top: 10px;
 padding-left: 10px;
 font-size: 12px;
@@ -84,38 +84,38 @@ DIV#tiki-loginbar input {color : #000000; background: #EEEEEE; font: normal 10px
 DIV#tiki-loginbar input[type=submit] { -moz-border-radius: 0.8em;}
 DIV#tiki-loginbar input[type=submit]:hover { color: #000000; }
 
-DIV#tiki-top-menu {  
+DIV#tiki-top-menu {
 border-bottom: 1px solid #000000;
-color: #436976; 
+color: #436976;
 /*height: 12px;  */
 padding-left:10px;
 padding-right: 10px;
 padding-bottom: 2px;
 padding-top: 2px;
-font-size: 10px;   
+font-size: 10px;
 }
 
-.tikitopmenu {  
-color: #436976; 
-font-size: 9px;   
+.tikitopmenu {
+color: #436976;
+font-size: 9px;
 text-decoration: none;
 }
 
-.tikitopmenu2 {  
-color: black; 
-font-size: 10px;   
+.tikitopmenu2 {
+color: black;
+font-size: 10px;
 text-decoration: none;
 }
 
 
-DIV#usermenu {  
-background-color: white; 
+DIV#usermenu {
+background-color: white;
 border-bottom: 1px solid #d3ffe0;
-color: black; 
+color: black;
 margin-bottom: 5px;
 padding-right: 10px;
 padding-bottom: 2px;
-font-size: 10px;   
+font-size: 10px;
 }
 
 
@@ -148,23 +148,23 @@ div#debugconsole {
   padding: 5px;
   border: 6px ridge #996600;
   font-size: 12px;
-} 
+}
 span.on-option { color: #00C000; }
 span.off-option { color: #005000; }
 
 /********************************************* GENERAL STYLE PROPERTIES **********************************************/
 
 /* BOXES boxes are used to present a box with a title bar and content, they are used for modules and they
-   are also used in the rankings, admin screen etc. 
+   are also used in the rankings, admin screen etc.
    The box class is used for modules while the cbox class is used for other boxes
 */
 
 /* Boxes used for modules (modules are those boxes in the left/right columns) */
-div.box {  
+div.box {
   background-color: white;
   margin: 4px;
 /*  border: 1px solid #8CACBB; */
-	overflow: hidden; 
+	overflow: hidden;
   width: 170px;
   margin-bottom: 10px;
 }
@@ -174,12 +174,12 @@ div.box-title {
   border-bottom: 1px solid #000000;
   border-top: 1px solid #000000;
   color: #000000;
-	font-size: 14px;   
+	font-size: 14px;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: normal;
   overflow: hidden;
   text-align: left;
-  padding-left: 5px;  
+  padding-left: 5px;
 }
 
 div.box-title table {
@@ -192,7 +192,7 @@ div.box-data {
   background-color: #e4ffe4;
   color: #000000;
   padding: 5px;
-  font-size: 10px;  
+  font-size: 10px;
 }
 
 /* Menus */
@@ -213,7 +213,7 @@ div.separator + div .linkmenu:first-child {
 /*  border-top: 1px solid #dedede;
   margin-top: 2px;
   padding-top: 2px;*/
-} 
+}
 
 /* Links in menus */
 .linkmenu, .rsslink { font-size: 12px;  color : #000000; text-decoration: none;}
@@ -265,9 +265,9 @@ TD.module {   font-size: 10px;  color : black;  text-align: left;}
 
 
 /* Now the boxes for the rest of Tiki (non-modules */
-div.cbox {  
+div.cbox {
   background: white; margin-left: 4px;  margin-right: 4px;  margin-top: 4px;  margin-bottom: 0px;
-  border: 1px solid #d3ffe0;  padding-bottom: 10px;  overflow: hidden; 
+  border: 1px solid #d3ffe0;  padding-bottom: 10px;  overflow: hidden;
 }
 
 /* Boxes are divided in title and data, this is the title */
@@ -275,7 +275,7 @@ div.cbox-title {
   background-color: #E4FFE4;
   color: black;
   border-bottom: 1px solid #d3ffe0;
-  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  font-size: 10px;  
+  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  font-size: 10px;
   overflow: hidden;
   text-align: center;
   padding-left: 0px;  padding-right: 0px;
@@ -308,13 +308,13 @@ div.cbox-data {
 /* Some boxes uses thumbnails this is the image style */
 div.imagerank {  margin-left: 5px;  margin-right: 5px;  margin-bottom: 10px;  margin-top: 10px; }
 
-/* A simple box is just a div with a border around and some margin 
+/* A simple box is just a div with a border around and some margin
  * used for example in the admin screen */
-div.simplebox {  
+div.simplebox {
   margin-left: 1px;  margin-right: 1px;  margin-top: 5px;  margin-bottom: 5px;
   padding-left: 2px;  padding-top: 2px;  padding-bottom: 2px;  padding-right: 2px;
   color: black;
-  border: 1px solid #d3ffe0;  background: white;  
+  border: 1px solid #d3ffe0;  background: white;
    font-size: 10px;
 }
 
@@ -334,9 +334,9 @@ input[type=submit]:hover { color: #000000; background-image: url(greenjelly/tab-
 TD {color: Black;  font-size: 11px; vertical-align: top;}
 
 /* Cells in forms without background color (inside a div for example) */
-TD.form 
+TD.form
 { color: Black;  font-size: 10px; vertical-align: top; text-align: left;}
-TD.formbor 
+TD.formbor
 { border: 1px solid #d3ffe0; color: Black;  font-size: 10px; vertical-align: top; text-align: left;}
 /* Cells in forms using a background color */
 TD.formcolor, td.galform , td.editblogform, td.editfgalform, TD.comform,td.forumform
@@ -352,11 +352,11 @@ table.viewthread
 TABLE.normalnoborder {  width: 97%;}
 
 /* Table headings */
-TD.heading, td.gallistheading, td.listgalheading, td.bloglistheading, td.listfgalheading, 
+TD.heading, td.gallistheading, td.listgalheading, td.bloglistheading, td.listfgalheading,
 td.listfilesheading, td.listartheading, td.forumheading, td.thead
 {
   color: black; font-size: 10px;
-  background-color: #E4FFE4; 
+  background-color: #E4FFE4;
   border: 1px solid #d3ffe0;
   padding-left: 2px;
   padding-right: 5px;
@@ -365,11 +365,11 @@ td.listfilesheading, td.listartheading, td.forumheading, td.thead
 TD.button
 {
   color: black; font-size: 10px;
-  background-color: #E4FFE4; 
+  background-color: #E4FFE4;
   border: 1px solid #d3ffe0;
   padding-left: 2px;
   padding-right: 5px;
-  text-align: center; 
+  text-align: center;
   vertical-align: middle;
 }
 
@@ -483,8 +483,8 @@ div.titlebar {
   background: #E4FFE4;
   color: black;
   border: 1px solid #d3ffe0;
-  padding-left: 1px; 
-  padding-right: 1px; 
+  padding-left: 1px;
+  padding-right: 1px;
   padding-top: 1px;
   padding-bottom: 1px;
   margin: 1px 1px;
@@ -496,7 +496,7 @@ table.wikibar {
 }
 
 /* The bar where the actions for a page are displayed */
-DIV#page-bar {	
+DIV#page-bar {
 margin-left: 5px;
 margin-top: 5px;
 }
@@ -510,16 +510,16 @@ margin-top: 5px;
 /* Links in buttons */
 .linkbut {
 padding: 1px 3px 1px 3px;
-color : #04b404;  
-background: white; 
+color : #04b404;
+background: white;
 text-decoration: none;
 border: 1px solid #c4eec4;
 -moz-border-radius: 0.8ex;
 }
-.linkbut:hover {   
+.linkbut:hover {
 padding: 1px 3px 1px 3px;
-color : #000000; 
-background: #E4FFE4; 
+color : #000000;
+background: #E4FFE4;
 text-decoration: none;
 border: 1px solid #436876;
 }
@@ -605,11 +605,11 @@ div.showimage { text-align: center;  margin-top: 5px;  margin-bottom: 5px;}
 
 /* The header of a weblog post */
 div.posthead {
-	font-size: 11px;  
-  color: black;  
+	font-size: 11px;
+  color: black;
   overflow: hidden;
   text-align: center;
-  padding-left: 0px;  
+  padding-left: 0px;
 	padding-right: 0px;
   margin-bottom: 0px;
 }
@@ -635,11 +635,11 @@ div.postbody {
   overflow: hidden;
   background: white;
   border: 1px solid #aeaeae;
-	font-size: 10px;  
+	font-size: 10px;
 	color: black;
   padding-left: 5px;
-	padding-top: 5px; 
-	padding-bottom: 2px; 
+	padding-top: 5px;
+	padding-bottom: 2px;
   margin-bottom: 10px;
 }
 
@@ -647,7 +647,7 @@ div.postbody {
 div.blogtitle {
   color: black; font-size: 11px; font-weight : bold;
   font-size: 18px;
-  background-color: #E4FFE4; 
+  background-color: #E4FFE4;
   padding-left: 2px;
   padding-right: 5px;
   margin-top: 10px;
@@ -659,8 +659,8 @@ div.blogtitle {
 div.bloginfo {
   background: white;
   border: 1px solid #d3ffe0;
-  padding-left: 0.8em; 
-  padding-right: 0.8em; 
+  padding-left: 0.8em;
+  padding-right: 0.8em;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   margin-bottom: 10px;
@@ -672,8 +672,8 @@ div.bloginfo {
 div.blogdesc {
   background: white;
   border: 1px solid #d3ffe0;
-  padding-left: 0.8em; 
-  padding-right: 0.8em; 
+  padding-left: 0.8em;
+  padding-right: 0.8em;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   margin-bottom: 10px;
@@ -685,8 +685,8 @@ div.blogdesc {
 div.blogtools {
   background: white;
   border: 1px solid #d3ffe0;
-  padding-left: 0.8em; 
-  padding-right: 0.8em; 
+  padding-left: 0.8em;
+  padding-right: 0.8em;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   margin-bottom: 10px;
@@ -698,10 +698,10 @@ div.blogtools {
 
 /* The article title bar */
 /*div.articletitle {
-  color: #424242; font-size: 11px; 
+  color: #424242; font-size: 11px;
   background: white;
   border-bottom: 0px;
-  padding-right: 0.8em; 
+  padding-right: 0.8em;
   padding-bottom: .1em;
   margin-top: 5px;
   clear: both;
@@ -724,7 +724,7 @@ div.articletitle {
 div.articleheading {
   background: white;
   border-bottom: 1px solid #aeaeae;
-  padding-right: 0.8em; 
+  padding-right: 0.8em;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   font-size: 10px;
@@ -746,8 +746,8 @@ div.articletrailer {
 }
 
 /* Text in the article heading */
-div.articleheadingtext {  
-font-size: 10px; 
+div.articleheadingtext {
+font-size: 10px;
 display: inline;
 }
 
@@ -756,8 +756,8 @@ display: inline;
 div.articlebody {
   background: white;
   border: 1px solid #aeaeae;
-  padding-left: 2em; 
-  padding-right: 2em; 
+  padding-left: 2em;
+  padding-right: 2em;
   padding-top: 1em;
   padding-bottom: 1em;
   margin: 10px 0px 10px 0;
@@ -789,7 +789,7 @@ span.trailer {  font-size: 10px; }
 .nav:hover {   font-size: 9px;  color : black;  text-decoration: none;   font-weight : bold; }
 
 .changedate {  font-size: 8px;  color : black;  font-weight : bold;}
-.date {  
+.date {
   font-size: 9px;
   color : black;
   font-weight : bold;
@@ -849,8 +849,8 @@ td.threadsoddl { border: 1px solid #d3ffe0; border-collapse:collapse; font-size:
 td.threadsoddr { border: 1px solid #d3ffe0; border-collapse:collapse; font-size: 13px; background-color: #DDDDDD; vertical-align: top;}
 td.threadseparator { border: 1px solid #d3ffe0; border-collapse:collapse;background-color: #EEEEEE; height: 5px;}
 
-#forumpost { display: none;}   
-#forumpostopen { display: block;}   
+#forumpost { display: none;}
+#forumpostopen { display: block;}
 
 
 div.forumtoolbar {  background: #395AAD;     margin-bottom: 20px;  border: 0px;}
@@ -871,7 +871,7 @@ td.forumtoolbar { color: white;  font-size: 11px;  font-weight : bold; text-deco
 table.tcategpath { margin-bottom: 40px; border-color: #99bec6;  border-style: solid;  border-width: 1px;  width: 97%; border-collapse:collapse;}
 
 /* Table containing the category path */
-td.tdcategpath { 
+td.tdcategpath {
   font-family: Verdana, Arial, Helvetica, sans-serif;
   color: #225566; font-size: 12px; font-weight : bold;
   background-color: #E4FFE4;
@@ -988,8 +988,8 @@ textarea.tshoutbox{
 }
 .wiki-table {
  border-color: gray;
- border-style: solid;  
- border-width: 1px;  
+ border-style: solid;
+ border-width: 1px;
  width: 90%;
 }
 .wiki-tr-a td {
@@ -1152,8 +1152,8 @@ div.messureadbody {
 {
 width:100%;
 }
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2
 {
 border-top:1px dashed #cccccc;
@@ -1210,7 +1210,7 @@ border-bottom: 2px solid #dedede;
 background-color: #ffffff;
 border: 1px solid #666666;
 border-bottom: 2px solid #FFFFFF;
-margin-right: 6px; 
+margin-right: 6px;
 color: #000000;
 }
 a.caltabon
@@ -1253,7 +1253,7 @@ border-bottom: 0;
 font-size: 11px;
 }
 td.middle {
-	vertical-align: middle; 
+	vertical-align: middle;
 }
 .daterow {
 	background-color: #e3d4a8;
@@ -1283,11 +1283,11 @@ margin-bottom: 7px;
 background-color: #ffffff;
 width: auto;
 border: 1px solid #666666;
-padding: 1px; 
+padding: 1px;
 max-width: 300px;
 }
 .opaque .box-title,
-.opaque, .box-data 
+.opaque, .box-data
 {
 width: auto;
 }
@@ -1650,7 +1650,7 @@ color: black;
 .calprio7 { background-color: #DAB0B0; }
 .calprio8 { background-color: #DAAAAA; }
 .calprio9 { background-color: #DA9A9A; }
-.calprio1 a, .calprio2 a, .calprio3 a, .calprio4 a, .calprio5 a, 
+.calprio1 a, .calprio2 a, .calprio3 a, .calprio4 a, .calprio5 a,
 .calprio6 a, .calprio7 a, .calprio8 a, .calprio9 a { color: #000000; }
 /* style of the popup background in case of transparent styles */
 #opaque
@@ -1765,7 +1765,7 @@ TABLE.admin { width: 100%; }
   position: relative;
   display: block;
   text-decoration: none;
-	
+
 }
 .mdkitem a:hover  {
 	padding: 1px 4px 1px 4px;

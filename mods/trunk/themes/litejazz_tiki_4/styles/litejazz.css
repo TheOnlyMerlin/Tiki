@@ -8,14 +8,14 @@
 	For more information, visit http://themes.tikiwiki.org or
 	http://zukakakina.com.
 */
- 
+
 /* Import the default layout files: */
 @import "lite/lite.css";
 @import "layout/layout.css";
 @import "layout/design.css";
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	font: 76%/130% Verdana,Helvetica,Arial,sans-serif;
 	color: #292929;
@@ -32,17 +32,17 @@ body.fullscreen #tiki-center {
  /***** Layout (overrides layout.css;
 		also styling of page layout divs)  *****/
 div#fixedwidth {
-	display: table; 
+	display: table;
 	margin: 20px auto 40px;
 	width: 860px;
 	font-size: 1em;
 	background: #fff;
 }
-	
+
 *:first-child+html #c1c2 {
 	margin-left: 0;
-	padding-left: 0} 
-	
+	padding-left: 0}
+
 #header {
 	background: #170808 url(litejazz/header.jpg) 100% 0 no-repeat;
 	vertical-align: bottom}
@@ -53,7 +53,7 @@ tr#midrow {background: #fff url(litejazz/options/blue/body-bg.png) 0 0 repeat-x}
 	width: 180px;
 	padding-left: 20px;
 	padding-top: 10px}
- 
+
 #c1c2 #wrapper #col1 #tiki-center  {
 	padding: 1em;
 	padding-right: 3em}
@@ -69,7 +69,7 @@ tr#midrow {background: #fff url(litejazz/options/blue/body-bg.png) 0 0 repeat-x}
 	font-size: .9em;
 	background: #170808 url(litejazz/botbar_custcode.png) repeat-x;
 	color: #dedede}
-	
+
 #footer h3.box-title {
 	color: #fff;
 }
@@ -85,7 +85,7 @@ tr#midrow {background: #fff url(litejazz/options/blue/body-bg.png) 0 0 repeat-x}
 
 #footer a:link,
 #footer a:visited {color: #adadad}
-	
+
 #power a,
 #power a:visited {color: #fff}
 
@@ -115,7 +115,7 @@ hr {
 fieldset {
 	border: solid 1px #a9a9a9;
 	padding: 10px}
-	
+
 legend {color: #a9a9a9}
 
 textarea,
@@ -140,7 +140,7 @@ span.button input,
 	font-weight: normal;
 	color: #fff;
 	background: url(litejazz/bg.png) repeat-x bottom}
-	
+
 * html input[type=reset],
 * html input[type=submit] {
 	font-family: Verdana, Helvetica, Geneva, Arial, sans-serif;
@@ -176,7 +176,7 @@ span.button.highlight a {
 	min-height: 78px;
 	color: #fff;
 }
-	
+
 #header-top a,
 #header-top a:visited {
 	color: #f5f5f5
@@ -220,10 +220,10 @@ div#sitead {margin: auto}
 #sitesearchbar {
 	color: #fff;
 	margin-top: 4px;}
-	
+
 /****** Menus, Links ******/
 /** CSS (suckerfish) menus **/
-	
+
 .cssmenu_vert li ul li,
 .cssmenu_horiz li ul li {
 	background: #818181;
@@ -235,7 +235,7 @@ div#sitead {margin: auto}
  	color: #fff;
 	text-decoration: none;
 }
-	
+
 .cssmenu_horiz a,
 .cssmenu_vert a {
 	font: 12px Verdana, Geneva, Arial, Helvetica, sans-serif;
@@ -261,7 +261,7 @@ div#sitead {margin: auto}
 	background: #818181 url(litejazz/menubg-over.png) repeat-x;
 	text-decoration: none;
 	border-right: #999 solid 1px}
-	
+
 #tiki-top .cssmenu_horiz li.menuSection a {padding-right: 20px}
 #tiki-top .cssmenu_horiz ul li {background: #818181}
 
@@ -271,7 +271,7 @@ div#sitead {margin: auto}
 	background: #104a91;
  	color: #fff;
 	text-decoration: none}
-	
+
 #tiki-top .cssmenu_horiz li ul {
 	margin-top: 3px;
 }
@@ -279,7 +279,7 @@ div#sitead {margin: auto}
 #tiki-top .cssmenu_horiz li ul li ul {
 	margin-top: 0;
 }
-	
+
 .box-data .cssmenu_vert a {
 	color: #104A91;
 	font-weight: bold}
@@ -335,7 +335,7 @@ div#sitead {margin: auto}
 #col2 .cssmenu_vert li li.sfHover ul {
 	left: 10em;
 }
-	
+
 #tiki-top .cssmenu_horiz ul li a .sf-sub-indicator {
 	top: 0.9em;
 }
@@ -347,7 +347,7 @@ div#sitead {margin: auto}
 /** PHP Layers Menus **/
 .horbar {
 	bottom: 0;
-	line-height: 30px} 
+	line-height: 30px}
 
 .horbaritem a,
 .horbaritem a:visited {
@@ -370,7 +370,7 @@ div#sitead {margin: auto}
 	color: white;
 	background: #818181 url(litejazz/menubg-over.png) repeat-x;
 	text-decoration: none;
-	border-right: #999 solid 1px} 
+	border-right: #999 solid 1px}
 
 .mdksubmenu {background: #fff}
 
@@ -380,12 +380,12 @@ div#sitead {margin: auto}
 	background: #818181;
 	border-bottom: 1px #aaa solid;
 	border-left: 1px #999 solid;
-	font-weight: normal} 
+	font-weight: normal}
 
 .mdkitem a:link,
 .mdkitem a:visited {
 	font-weight: normal;
-	text-decoration: none} 
+	text-decoration: none}
 
 .mdkitem a:hover {
 	background: #104a91;
@@ -424,9 +424,9 @@ a.phplmselected:hover {color: #808080}
 div#tiki-bot {
 	text-align: center;
 	font-size: .9em;
-	background: #170808; 
+	background: #170808;
 	color:#fff}
-	
+
 a.flip,
 a.flip:visited,
 div.tellafriend a,
@@ -454,7 +454,7 @@ div.box {
 	padding-top: 10px;
 	padding-right: 10px;
 	padding-bottom: 10px}
-	
+
 #col2 div.box,
 #col3 div.box {
 	width: 170px;
@@ -483,7 +483,7 @@ img.flipmodimage:hover {border: 1px solid #aaa !important}
 .halffloat div.box,
 .wikitext .halffloat div.box {
 	width: 46%;
- 
+
 }
 
 .thirdfloat div.box,
@@ -504,7 +504,7 @@ img.flipmodimage:hover {border: 1px solid #aaa !important}
 .rbox-data {
 	border-color: #e1e1e1;
 	background: url(litejazz/body-bg.png) repeat-x}
-	
+
 .rbox-title {}
 .rbox-data {}
 
@@ -517,7 +517,7 @@ div.simplebox {
 /***** Tables, Tabs *****/
 /** Tables **/
 
-table.normal, 
+table.normal,
 table.admin,
 table.sortable,
 table.admin tr td div#page-bar {
@@ -540,7 +540,7 @@ td.odd {
 	background: #F5F5F5;
 	border-right: 1px solid #DDDDDD}
 
-tr.even td, 
+tr.even td,
 td.even {
 	background: #ECECEC;
 	border-right: 1px solid #DDDDDD}
@@ -554,7 +554,7 @@ td.normal,
 	margin: 0;
 	padding: 0.2em;
 	vertical-align: top}
-	
+
 th,
 td.heading  {
 	background: #DCDCDC;
@@ -599,7 +599,7 @@ td.form {padding: 0.2em}
 	color: #fff;
 	background: #818181 url(litejazz/menubg-over.png) repeat-x;
 }
-	
+
 .tabactive {
 /*	background: #104a91;
 	border-color: #696969*/}
@@ -623,8 +623,8 @@ div.wikitopline {
 	width: 90%;
 	margin-bottom: 8px}
 
-.wikitext h2, 
-.wikitext h3, 
+.wikitext h2,
+.wikitext h3,
 .wikitext h4,
 .wikitext h5{
 	margin: 0 0 15px;
@@ -640,7 +640,7 @@ div.wikitopline {
 table.wikitable {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #999;
@@ -662,7 +662,7 @@ div.code {
 	background: #F5F5F5;
 	margin: 4px;
 	border: 1px dashed #ADACAF;
-	overflow: auto; 
+	overflow: auto;
    width: 500px}
 
 .codecaption {
@@ -688,7 +688,7 @@ div.articletitle {
 	margin-top: 6px;
 	margin-bottom: 15px;
 	text-align: left}
- 
+
 div.articletitle h2 {
 	font-size: 1.5em;
 	font-weight: normal}
@@ -696,7 +696,7 @@ div.articletitle h2 {
 span.titleb {
 	font-size: 0.9em;
 	color: #104A91}
- 
+
 div.articlesubtitle {font-size: 0.9em}
 div.articleheading {
 	margin: 6px 0;
@@ -729,7 +729,7 @@ div.bloginfo {
 	padding: 3px;
 	line-height: 150%;
 	text-transform: none}
-	
+
 * html .bloginfo table {font-size: 11px}
 
 div.blogtools {
@@ -759,14 +759,14 @@ span.posthead {
 	display: block;
 	font-weight: normal;
 	font-size: 85%}
- 
+
 div.postbody {
 	margin: 0}
-	
+
 .tiki_blogs .postbody {
 	padding: 1em;
 }
-	
+
 * html .postbody table {font-size: 11px}
 
 div.postfooter {
@@ -781,15 +781,15 @@ div.postfooter {
 	border-collapse: collapse;
 	text-align: left;
 }
-	
+
 * html .post .postbody {font-size: 11px}
 
 .postbody .content {
 	padding: .8em}
-	
+
 .post .postbody-title {
 	display: block;
-	background: #DCDCDC; 
+	background: #DCDCDC;
 	padding: 2px}
 
 .post .postbody-title .checkbox {float: left}
@@ -899,12 +899,12 @@ div.dirfooter {margin-top: 10px}
 .calodd {background: #eee}
 .caleven {background: #f9f9f9}
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {
 	color: #000;
 	font-size: 90%}
-	
+
 .Calart,
 .Calblog,
 .Calchart,

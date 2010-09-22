@@ -2,9 +2,9 @@
  * uses visual elements of the LiteJazz theme for
  * Drupal by roopletheme, which was released under
  * the GNU/GPL license.
- * This theme is a color variant of litejazz.css, 
+ * This theme is a color variant of litejazz.css,
  * which it imports.
-*/ 
+*/
 
 
 body {
@@ -26,7 +26,7 @@ h3.box-title {color:#B61C1E}
 #topbar_custom_code {
 	background: #104A91 url(red/topbar_custcode.png) 0 0 repeat-x !important;
 	color: #F0F0F0}
-	
+
 #topbar_custom_code a,
 #topbar_custom_code a:link,
 #topbar_custom_code a:visited {color: #FB9E9E}
@@ -34,7 +34,7 @@ h3.box-title {color:#B61C1E}
 /*div#botbar_custom_code {
 	background: #170808 url(litejazz/botbar_custcode-red.png) repeat-x;
 	font-size: 1.2em}*/
-	
+
 #botbar_custom_code h2,
 #botbar_custom_code h3,
 #botbar_custom_code h4 {color: #fff}
@@ -49,15 +49,15 @@ h3.box-title {color:#B61C1E}
 	color: #fff;
 	background: #818181;
 	border-bottom: 1px #999 solid;
-	border-left: 1px #999 solid} 
-	
+	border-left: 1px #999 solid}
+
 .mdkitem a:hover,
 #tiki-top .cssmenu_horiz ul li:hover a,
 .cssmenu_vert li ul li:hover a {
 	background: #b61c1e !important;
  	color: #fff;
 	text-decoration: none}
-	
+
 .mdkitem a:hover,
 #tiki-top .cssmenu_horiz ul li a:hover,
 .cssmenu_vert li ul li a:hover {

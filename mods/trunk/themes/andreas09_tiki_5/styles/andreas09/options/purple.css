@@ -24,17 +24,17 @@ input[type="submit"]:hover,
 
 #header-top {background: url(purple/header.jpg) repeat-x bottom}
 #tiki-top {background: url(purple/header.jpg) repeat-x}
-	
+
 #sitesearchbar .button {
 	border: solid 1px #aaa;
 	background: #f0f0f0 url(purple/menuhover.jpg) top left repeat-x;
 	color: #505050}
-	
+
 .horbaritem a:hover,
 #tiki-top .cssmenu_horiz li a:hover {
 	background: #f0f0f0 url(purple/menuhover.jpg) top repeat-x;
 	color: #505050}
-	
+
 #middle {background: url(purple/mid.jpg) repeat-x}
 
 a.phplmselected:link,
@@ -44,7 +44,7 @@ a.phplmselected:active {
 	font: 100% Verdana, Tahoma, Arial, sans-serif;
 	color: black;
 	background: url(purple/menuhover.jpg)}
-	
+
 div.adminanchors {background: url(purple/header.jpg) repeat-x bottom !important}
 
 .tabmark a:hover {
@@ -54,7 +54,7 @@ div.adminanchors {background: url(purple/header.jpg) repeat-x bottom !important}
 .titlebar {
 	background:#f0f0f0 url(purple/menuhover.jpg) top left repeat-x;
 	color:#505050}
-	
+
 .post .postbody-title {background: transparent url(purple/header.jpg) repeat-x bottom}
 .post .author {background: url(purple/mid.jpg) repeat-x}
 .post .author_post_info {display: block}
@@ -65,8 +65,8 @@ div.adminanchors {background: url(purple/header.jpg) repeat-x bottom !important}
 	border: solid 1px #AAAAAA;
 	background: #f0f0f0 url(purple/menuhover.jpg) top left repeat-x;
 	color: #505050}
-	
-.daterow, 
+
+.daterow,
 .daterow:hover,
 .calnavigation a,.calnavigation a:hover {
 	color: #000;

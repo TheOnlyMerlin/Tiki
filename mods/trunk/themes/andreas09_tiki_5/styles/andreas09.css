@@ -4,14 +4,14 @@
 	please visit http://themes.tikiwiki.org or http://zukakakina.com.
 	This stylesheet and related files are for use with Tiki 5.x.
 */
- 
+
 /* Import foundation CSS files. */
 @import url("lite/lite.css");
 @import url("layout/layout.css");
 @import url("layout/design.css");
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	background: #f0f0f0;
 	color: #303030;
@@ -25,7 +25,7 @@ html>body {font-size: 72% !important}
 #middle {
 	padding-top: 20px;
 	background: url(andreas09/options/black/mid.jpg) repeat-x}
-	
+
 
 #c1c2 {
 	text-align: left;
@@ -154,7 +154,7 @@ span.button input,
 	margin: 2px;
 	vertical-align: middle;
 	text-transform: uppercase}
-		
+
 * html input[type="reset"],
 * html input[type="submit"] {
 	border-left: 1px solid #a9a9a9;
@@ -248,7 +248,7 @@ ul, ol {text-align: left}
 	margin-top: 8px;
 	font-size: 95%;
 	color: #303030}
-	
+
 #sitesearchbar form {margin-top: 6px; margin-bottom: -6px}
 
 #sitesearchbar .button {
@@ -300,7 +300,7 @@ ul, ol {text-align: left}
 
 #secondary_site_menu .cssmenu_horiz li a {
 	padding: 3px 1em;
-}	
+}
 
 .cssmenu_horiz li ul li {margin-bottom: 4px}
 #tiki-top .cssmenu_horiz li ul li a {padding: 4px 4px}
@@ -325,7 +325,7 @@ ul, ol {text-align: left}
 	padding: 12px 10px;
 	text-transform: uppercase;
 }
-	
+
 #tiki-top .cssmenu_horiz li.menuSection a,
 #secondary_site_menu .cssmenu_horiz li.menuSection a {
 	padding-right: 20px;
@@ -448,7 +448,7 @@ div.mdkitem  {
 .box .mdksubmenu table {text-align: left}
 
 .mdksubframe .mdkitem {margin-bottom: 0}
- 
+
 .box .mdksubframe div.mdkitem {
 	margin-left: 0;
 	padding-left: 0}
@@ -589,7 +589,7 @@ img.flipmodimage:hover {border: 1px solid #58A7D2 !important}
 .cbox {
 	border: 1px solid #999;
 	margin: 6px}
- 
+
 .cbox-title {
 	text-align: left;
 	text-indent: 1em;
@@ -621,10 +621,10 @@ div.simplebox {
 /***** Tables, Tabs *****/
 /** Tables **/
 
-table.normal, 
+table.normal,
 table.admin {border: solid 1px #909090}
 
-* html table.normal, 
+* html table.normal,
 * html table.admin {
 	width: 97%;
 	font-size: 11px}
@@ -758,14 +758,14 @@ div#description {
 table.wikitable {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
 
 .editdate {padding-bottom: 5px}
- 
+
 /* Wiki plugins */
 
 /* Code plugin  */
@@ -821,7 +821,7 @@ div.quotebody {
 div.tocnav {
 	background: #EBEBEB;
 	padding: 3px}
- 
+
 li.toclevel {margin-left: 2em}
 ul.toc {background: #ebebeb}
 
@@ -834,7 +834,7 @@ div.articletitle {
 	color: #606060;
 	margin: 0 0 15px;
 	padding: 0}
- 
+
 div.articletitle h2 {
 	font-size: 1.6em;
 	font-weight: bold}
@@ -842,11 +842,11 @@ div.articletitle h2 {
 div.articlesubtitle {
 	font-size: 90%;
 	font-style: italic}
- 
+
 div.articleheading {
 	margin-top: 6px;
 	line-height: 1.5em}
- 
+
 div.articleheadingtext {color: black}
 
 img.topicimage,
@@ -867,7 +867,7 @@ img.articleimage {
 /*
 div.articletrailer {text-align: right}
 div.articletrailer .wikitopline {float: left} */
- 
+
 div.articlebody {
 	color: black;
 	line-height: 1.5em}
@@ -885,7 +885,7 @@ div.bloginfo {
 	text-align: right;
 	padding: 3px;
 	line-height: 150%}
-	
+
 .tiki_blogs .post .postbody {border: none}
 
 .blogpost {margin-top: 3.5em}
@@ -900,14 +900,14 @@ span.posthead {
 	font-weight: bold;
 	letter-spacing: .4pt;
 	border-bottom: 1px solid #2F3E4F}*/
- 
+
 .tiki_blogs .postbody-title .title h2 {
 	text-align: left;
 	margin-bottom: 10px;
 	font-size: 1.4em}
 
 div.description h1 {font-size: 1.3em}
- 
+
 div.postbody {
 	margin-right: 8px;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
@@ -923,7 +923,7 @@ div.postfooter {
 	border: solid 1px #E7EAED;
 	padding: 3px 0 3px 0px;
 	background: #F9FCFF}
-	
+
 * html .post .postbody {font-size: 11px}
 
 .post .postbody-title {
@@ -951,7 +951,7 @@ div.postfooter {
 
 .postbody-title .freetaglist {clear: both}
 
-.post .author {	
+.post .author {
 	float: left;
 	text-align: left;
 	width: 30%;
@@ -1019,7 +1019,7 @@ td.oddthumb {
 	background: #F9F9F9;
 	border: 3px solid white;
 	border-collapse: collapse}
- 
+
 td.eventhumb {
 	background: #F9F9F9;
 	border: 3px solid white;
@@ -1078,13 +1078,13 @@ table.default td {
 
 
 /***** Calendar *****/
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {
 	color: Black;
 	font-size: 1em;
 	padding-right: 0}
-	
+
 .Calart,
 .Calblog,
 .Calchart,
@@ -1110,7 +1110,7 @@ table.default td {
 
 .Calchart,
 .Calchart a,
-.Calchart a:visited {color: #304F30} 
+.Calchart a:visited {color: #304F30}
 
 .Caldir,
 .Caldir a,
@@ -1130,7 +1130,7 @@ table.default td {
 
 .Calforum,
 .Calforum a,
-.Calforum a:visited {color: #808000} 
+.Calforum a:visited {color: #808000}
 
 .Calgal,
 .Calgal a,
@@ -1151,7 +1151,7 @@ table.default td {
 Caltrack,
 Caltrack a,
 Caltrack a:visited {color: #00BD02}
-	
+
 .Calweb {font-size: 1em}
 
 .Calwiki,
@@ -1229,7 +1229,7 @@ Caltrack a:visited {color: #00BD02}
 	color: #000;
 	background: #f0f0f0 url(andreas09/options/black/menuhover.jpg) top left repeat-x;
 	cursor: pointer}
-	
+
 .daterow:hover {
 	color: #000;
 	background: #f0f0f0 url(andreas09/options/black/menuhover.jpg) top left repeat-x}

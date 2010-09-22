@@ -1,6 +1,6 @@
 #7FFFD4#7FFFD4/* TIKIWIKI CSS - WINXP FILE */
 
-/* MAIN TAGS 
+/* MAIN TAGS
 
 colorset :
 background: #EEEEEE;
@@ -24,8 +24,8 @@ url(akwa/aqua-menubar.png)
 body {
 	font-family: Verdana, Geneva, Arial, sans-serif;
 	background-color: #EEEEEE;
-	padding: 0; 
-	margin: 0; 
+	padding: 0;
+	margin: 0;
 }
 
 a,a:visited,a:active {
@@ -54,15 +54,15 @@ display: none;
 DIV#tiki-main { margin-top: 0px; margin-bottom: 0px; margin-right: 0px; margin-left: 0px; }
 
 /* This is the header */
-DIV#tiki-top { 
-z-index: 10; 
-position: fixed; 
-top: 0px; 
-width: 100%; 
-height: 16px; 
-padding-left: 10px; 
-padding-right: 10px; 
-background-image: url(akwa/aqua-header.png); 
+DIV#tiki-top {
+z-index: 10;
+position: fixed;
+top: 0px;
+width: 100%;
+height: 16px;
+padding-left: 10px;
+padding-right: 10px;
+background-image: url(akwa/aqua-header.png);
 white-space: nowrap;
 border-bottom: 1px solid #999999;
 color: #424242;
@@ -74,16 +74,16 @@ DIV#tiki-top a { text-decoration: none; }
 DIV#tiki-mid { z-index: 1; height: auto;  margin-bottom: 40px; }
 
 /* And this is the footer */
-DIV#tiki-bot { 
-background-image: url(akwa/aqua-header.png); 
-z-index: 10; 
-background-color: #eeeeee; 
-position: fixed; 
-bottom: 0px; 
-height: 32px; 
-width: 100%; 
-padding: 5px;  
-margin-top: 0px;  
+DIV#tiki-bot {
+background-image: url(akwa/aqua-header.png);
+z-index: 10;
+background-color: #eeeeee;
+position: fixed;
+bottom: 0px;
+height: 32px;
+width: 100%;
+padding: 5px;
+margin-top: 0px;
 border-top: 1px solid #999999;
 }
 
@@ -107,7 +107,7 @@ div#debugconsole {
   padding: 5px;
   border: 6px ridge #5A4A39;
   font-size: 12px;
-} 
+}
 span.on-option { color: #00C000; }
 span.off-option { color: #005000; }
 
@@ -115,21 +115,21 @@ span.off-option { color: #005000; }
 /********************************************* GENERAL STYLE PROPERTIES **********************************************/
 
 /* BOXES boxes are used to present a box with a title bar and content, they are used for modules and they
-   are also used in the rankings, admin screen etc. 
+   are also used in the rankings, admin screen etc.
    The box class is used for modules while the cbox class is used for other boxes
 */
 
 /* Modules (modules are those boxes in the left/right columns) */
 
-div.box {  
+div.box {
 	margin: 5px;
-	overflow: hidden; 
+	overflow: hidden;
   width: 170px;
 }
 
 /* Boxes are divided in title and data, this is the title */
 div.box-title {
-	font-family: Arial, Helvetica, sans-serif;  
+	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	background-image: url(akwa/aqua-tab.png);
 	border: 1px solid #999999;
@@ -150,11 +150,11 @@ div.box-data {
   color: black;
   background-color: #FFFFFF;
   background-image: url(akwa/aqua-header.png);
-  padding: 5px;  
-  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  
+  padding: 5px;
+  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	border: 1px solid #999999;
 	border-top: 1px solid #cccccc;
-	font-size: 11px;  
+	font-size: 11px;
 }
 
 /* When modules display a list of items each item is enclosed in a cell with the following style */
@@ -167,17 +167,17 @@ TD.module {   font-size: 10px;    text-align: left; padding: 0; }
 
 
 /* Now the boxes for the rest of Tiki (non-modules */
-div.cbox {  
-  margin: 5px;  
-  overflow: hidden; 
+div.cbox {
+  margin: 5px;
+  overflow: hidden;
 }
 
 /* Boxes are divided in title and data, this is the title */
 div.cbox-title {
 	background-image: url(akwa/aqua-tab.png);
-  border: 1px solid #999999;  
+  border: 1px solid #999999;
   border-bottom: 0;
-	font-size: 13px;  
+	font-size: 13px;
 	font-weight: bold;
   overflow: hidden;
   text-align: center;
@@ -197,7 +197,7 @@ div.cbox-data {
 	border: 1px solid #999999;
 	border-top: 1px solid #cccccc;
   background-color: white;
-  font-size: 11px;  
+  font-size: 11px;
 	color: black;
 }
 
@@ -260,19 +260,19 @@ div.separator {
 /* Some boxes uses thumbnails this is the image style */
 div.imagerank {  margin-left: 5px;  margin-right: 5px;  margin-bottom: 10px;  margin-top: 10px; }
 
-/* A simple box is just a div with a border around and some margin 
+/* A simple box is just a div with a border around and some margin
  * used for example in the admin screen */
-div.simplebox {  
+div.simplebox {
   margin-left: 1px;  margin-right: 1px;  margin-top: 5px;  margin-bottom: 5px;
   padding-left: 2px;  padding-top: 2px;  padding-bottom: 2px;  padding-right: 2px;
   color: black;
-  border: 1px solid black;  background-color: white;  
+  border: 1px solid black;  background-color: white;
   font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;
 }
 
 /* Prevent forms from generating unwanted padding or margins */
-FORM {  
-margin: 0px;  
+FORM {
+margin: 0px;
 padding: 0px;
 }
 
@@ -296,13 +296,13 @@ table.viewthread, table.jukeboxlist, table.galtable
 TABLE.normalnoborder {  width: 100%; border-spacing: 0; border-collapse: separate; }
 
 /* Table headings */
-TD.heading, td.gallistheading, td.listgalheading, td.jukeboxlistheading, td.bloglistheading, td.listfgalheading, 
+TD.heading, td.gallistheading, td.listgalheading, td.jukeboxlistheading, td.bloglistheading, td.listfgalheading,
 td.listfilesheading, td.listartheading, td.forumheading, td.thead
 {
 	background-image: url(akwa/aqua-menubar.png);
 	border-bottom: 1px solid #999999;
   font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px; 
+	font-size: 11px;
 	font-weight : bold;
 	margin: 0;
 }
@@ -313,7 +313,7 @@ th, th.gallistheading, th.listgalheading, th.jukeboxlistheading, th.bloglisthead
 	background-image: url(akwa/aqua-menubar.png);
 	border-bottom: 1px solid #999999;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px; 
+	font-size: 11px;
 	font-weight : bold;
 	margin: 0;
 }
@@ -323,40 +323,40 @@ TD.button
   background-image: url(akwa/aqua-menubar.png);
   border-bottom: 1px solid #999999;
   font-family: Verdana, Arial, Helvetica, sans-serif;
-  font-size: 11px; 
+  font-size: 11px;
   font-weight : bold;
   margin: 0;
-  text-align: center; 
+  text-align: center;
   vertical-align: middle;
 }
 
 /* Cells where nothing is specified */
-TD { 
-vertical-align: top; 
-margin: 0; 
-padding: 2px; 
+TD {
+vertical-align: top;
+margin: 0;
+padding: 2px;
 padding-left: 10px;
 padding-right: 10px;
 }
-TD:first { 
-border-top: 0; 
+TD:first {
+border-top: 0;
 }
 
 /* Cells in forms without background color (inside a div for example) */
 .form td
 { font-size: 11px; text-align: left;
-border-top: 1px dashed #dedede; 
+border-top: 1px dashed #dedede;
 }
 
 /* Cells in forms using a background color */
-.formcolor td, 
-.galform td, 
-.editblogform td, 
-.editfgalform td, 
-.comform td, 
+.formcolor td,
+.galform td,
+.editblogform td,
+.editfgalform td,
+.comform td,
 .forumform td
 { background-color: #ffffff; font-size: 11px; text-align: left;
-border-top: 1px dashed #dedede; 
+border-top: 1px dashed #dedede;
 }
 
 
@@ -443,23 +443,23 @@ TD.third { font-size: 12px;  background-color: #CCCCCC; }
 a.pagetitle, a.forumspagetitle { text-decoration: none;}
 
 /* Non-linking titles (three levels) */
-H1 { 
-font-weight: bold; 
-font-size: 18px; 
+H1 {
+font-weight: bold;
+font-size: 18px;
 background-image: url(akwa/aqua-menubar.png);
 color : black;
 margin-top: 5px;
 margin-bottom: 0px;
 }
-H2 { 
-font-weight: bold; 
-font-size: 16px; 
+H2 {
+font-weight: bold;
+font-size: 16px;
 margin-top: 5px;
 margin-bottom: 0px;
 }
-H3 { 
-font-weight: bold; 
-font-size: 14px; 
+H3 {
+font-weight: bold;
+font-size: 14px;
 margin-top: 5px;
 margin-bottom: 0px;
 }
@@ -500,7 +500,7 @@ div.titlebar {
   border-bottom: 1px solid #424242;
   border-left: 1px solid #424242;
 	background-image: url(akwa/aqua-tab.png);
-  padding: 1px; 
+  padding: 1px;
   margin-top: 10px;
   margin-bottom: 3px;
 	color: #424242;
@@ -564,7 +564,7 @@ td.wikicell {
 /* Text in wiki pages is displayed using the following style */
 div.wikitext {
   padding:  10px;
-  margin: 0px; 
+  margin: 0px;
 	overflow: hidden;
   clear: both;
 }
@@ -625,28 +625,28 @@ td.imageinfo{font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-si
 div.browseimage {  background-color: #EFEFE7;  width: 100%;}
 
 div.imagetitle {
-font-weight: bold; 
-font-size: 26px; 
+font-weight: bold;
+font-size: 26px;
 color : black;
 }
 div.gallerylink {}
-div.showimage { 
-text-align: center;  
-margin: 5px;  
+div.showimage {
+text-align: center;
+margin: 5px;
 }
 
-div.imageinfo {  
-text-align: center;  
-margin: 10px; 
+div.imageinfo {
+text-align: center;
+margin: 10px;
 }
 td.imageinfo {}
 table.tableinfo {  text-align: center; }
-div.linksinfo {   
-font-size: 9px;  
-color : Black;  
-text-align: center;  
-border: 1px solid #999999;  
-margin-top: 10px;  
+div.linksinfo {
+font-size: 9px;
+color : Black;
+text-align: center;
+border: 1px solid #999999;
+margin-top: 10px;
 margin-bottom: 10px;
 }
 
@@ -658,11 +658,11 @@ div.posthead {
 	-moz-border-radius: 0px 42px 0px 00px;
 	border: 1px solid #999999;
 	border-bottom: 0;
-	font-size: 13px;   
+	font-size: 13px;
   overflow: hidden;
   border-bottom: 0px;
   text-align: center;
-  padding-left: 0px;  
+  padding-left: 0px;
 	padding-right: 0px;
   margin-bottom: 0px;
   margin-top: 10px;
@@ -683,9 +683,9 @@ div.postbody {
   background-color: white;
   border: 1px solid #999999;
   border-top: 1px solid #aeaeae;
-	font-size: 11px;  
+	font-size: 11px;
 	color: black;
-  padding: 5px; 
+  padding: 5px;
 }
 
 /* The weblog title */
@@ -749,8 +749,8 @@ div.fgaldesc {
 
 /* The article title bar */
 div.articletitle {
-  font-size: 11px; 
-  background-color: white; 
+  font-size: 11px;
+  background-color: white;
 	background-image: url(akwa/aqua-header.png);
   border: 1px solid #999999;
   border-bottom: 0px;
@@ -780,7 +780,7 @@ div.articletrailer {
 }
 
 /* Text in the article heading */
-div.articleheading { 
+div.articleheading {
 font-size: 12px;
 display: inline;
 }
@@ -825,7 +825,7 @@ span.trailer {   font-size: 10px;  font-weight: bold;}
 .nav:hover {  }
 
 .changedate {   font-size: 8px;  background-color: white;  color : black;  font-weight : bold;}
-.date {  
+.date {
   font-size: 9px;
   background-color: white;
   color : Black;
@@ -928,8 +928,8 @@ td.threadsoddl {   font-size: 12px; background-color: #DDDDDD; vertical-align: t
 td.threadsoddr {  font-size: 13px; background-color: #DDDDDD; vertical-align: top;}
 td.threadseparator { background-color: #EEEEEE; height: 5px;}
 
-#forumpost { display: none;}   
-#forumpostopen { display: block;}   
+#forumpost { display: none;}
+#forumpostopen { display: block;}
 
 
 div.forumtoolbar {     width: 98%;  margin-bottom: 20px;  border: 0px;}
@@ -942,16 +942,16 @@ td.forumtoolbar {  color: black;  font-size: 11px;  font-weight : bold; text-dec
 
 /************************************************ CATEGORIES **************************************************************/
 
-table.tcategpath { 
+table.tcategpath {
 background-color: #FFFFFF;
 background-image: url(akwa/aqua-menubar.png);
-margin-bottom: 40px; 
-border: 1px solid #999999; 
+margin-bottom: 40px;
+border: 1px solid #999999;
 width: 100%;
 }
 
 /* Table containing the category path */
-td.tdcategpath { 
+td.tdcategpath {
   font-size: 13px; font-weight : bold;
   margin: 0px;
   border-spacing: 0px;
@@ -963,13 +963,13 @@ td.tdcategpath {
 .categpath {   font-size: 12px;  }
 
 /* Table with the subcategories */
-table.subcats { 
-padding-top: 20px; 
-padding-bottom: 20px; 
-width: 100%; 
-border-spacing: 0px;  
-padding-right: 0px;  
-margin-bottom: 10px; 
+table.subcats {
+padding-top: 20px;
+padding-bottom: 20px;
+width: 100%;
+border-spacing: 0px;
+padding-right: 0px;
+margin-bottom: 10px;
 border-color: 1px solid #999999;
 }
 td.tdsubcat {width: 25%;}
@@ -977,13 +977,13 @@ td.tdsubcat {width: 25%;}
 /* Links to subcategories */
 .categlink {  font-weight: bold;}
 
-table.catobjects { 
+table.catobjects {
 background-color: #FFFFFF;
-width: 100%; 
-border-spacing: 0px; 
-padding-right: 0px;  
-margin-bottom: 10px; 
-border: 1px solid #999999; 
+width: 100%;
+border-spacing: 0px;
+padding-right: 0px;
+margin-bottom: 10px;
+border: 1px solid #999999;
 }
 
 td.categobjectsnameeven,td.categobjectsnameodd, {
@@ -1195,8 +1195,8 @@ div.messureadbody {
 {
 width:100%;
 }
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2
 {
 border-top:1px dashed #cccccc;
@@ -1302,7 +1302,7 @@ border-top: 0;
 font-size: 11px;
 }
 td.middle {
-	vertical-align: middle; 
+	vertical-align: middle;
 }
 .daterow {
 	margin-left: 10px;
@@ -1318,7 +1318,7 @@ td.middle {
 background-color: #ffffff;
 }
 .opaque .box-title,
-.opaque, .box-data 
+.opaque, .box-data
 {
 width: auto;
 }
@@ -1765,36 +1765,36 @@ text-decoration: inherit;
 }
 .catblock {
   border: 1px solid #aaaaaa;
-} 
+}
 .catlists {
   border-top: 1px solid #ffffff;
   padding: 1px 6px 1px 6px;
   background-color: none;
   color: #666666;
-} 
+}
 .catlists:last-child {
   border-bottom: 1px solid #ffffff;
-} 
+}
 .catlists:hover {
   background-color: #dedede;
-} 
+}
 .cattitle {
   color: #000000;
   font-weight: bold;
-} 
+}
 .catlists a.link {
   color: #666666;
   padding: 0px 4px 0px 4px;
   border: 1px solid #aaaaaa;
   -moz-border-radius: 6px;
-} 
+}
 .catlists a.link:hover {
   color: #000000;
-} 
+}
 /* TikiIntegrator: By default copy rules dialog not shown */
 div#rules-copy-panel {
     display: none;
-}   
+}
 
 /*
 ** JsCalendar wrapper
@@ -1802,10 +1802,10 @@ div#rules-copy-panel {
 #datrigger {
   border: 2px outset #666666;
   padding: 1px 3px 1px 5px;
-  margin: 2px; 
+  margin: 2px;
   cursor: pointer;
   font-weight:bold;
-} 
+}
 
 TABLE.admin { width: 100%; }
 table.commentinfo { width: 100%; background-color: #FFF7E6; }
@@ -1814,15 +1814,15 @@ div#loadstats {
   font-size: 70%;
   color: #666666;
   padding: 5px;
-} 
+}
 
 /* phplayers style */
 .box-data table {
   width: 100%;
-} 
+}
 .mdkverbar  {
   margin: 0px;
-} 
+}
 
 .mdksubmenu {
   z-index: 999;
@@ -1907,7 +1907,7 @@ div#rules-copy-panel {
 #clear {
 	clear:both;
 	}
-	
+
 /* tiki tabs */
 
 .tabmark {
@@ -1918,11 +1918,11 @@ div#rules-copy-panel {
 	margin: 0px;
 	margin-right: 5px;
 	padding: 1px 0px 1px 0px;
-	-moz-border-radius : 5px 5px 0 0;  
+	-moz-border-radius : 5px 5px 0 0;
 }
-.tabmark a { 
-	-moz-border-radius : 5px 5px 0 0; 
-	border-bottom : 0; 
+.tabmark a {
+	-moz-border-radius : 5px 5px 0 0;
+	border-bottom : 0;
 	color: #666666;
 	font-weight: 700 !important;
 	padding: 1px 5px 1px 5px;
@@ -1964,7 +1964,7 @@ div#rules-copy-panel {
 }
 
 /**** coloration for c o d e plugin *****/
-.codelisting 
+.codelisting
 { font-family : monospace; padding : 2ex; background-color : #DCDCDC; margin : 1ex; border : 1px dashed #adacaf; }
 
 /* Version Plugin Style */

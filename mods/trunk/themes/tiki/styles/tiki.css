@@ -93,12 +93,12 @@ height: 40px;
 
 /* And this is the footer */
 #tiki-bot {
-padding-top: 10px;  
-padding-bottom: 5px; 
-margin: 0px 5px;   
+padding-top: 10px;
+padding-bottom: 5px;
+margin: 0px 5px;
 }
 
-#topmenu {  
+#topmenu {
 background-image: url(tiki/mozilla-menubar.png);
 margin : 5px;
 height : 22px;
@@ -107,21 +107,21 @@ z-index : 10;
 clear : both;
 }
 /* The three columns */
-#leftcolumn {  
+#leftcolumn {
 width : 190px;
 padding-top : 20px;
 }
-#centercolumn { 
+#centercolumn {
 }
 
-#rightcolumn {  
+#rightcolumn {
 width : 190px;
 padding-top : 20px;
 }
 
 /* And this is what lies inside the centercolumn */
-DIV#tiki-center { 
-background-color: #f3f6f9; 
+DIV#tiki-center {
+background-color: #f3f6f9;
 border: 1px solid #46596f;
 border-radius: 6px;
 -moz-border-radius: 6px;
@@ -200,12 +200,12 @@ margin: 0;
 /********************************************* GENERAL STYLE PROPERTIES **********************************************/
 
 /* BOXES boxes are used to present a box with a title bar and content, they are used for modules and they
-   are also used in the rankings, admin screen etc. 
+   are also used in the rankings, admin screen etc.
    The box class is used for modules while the cbox class is used for other boxes
 */
 
 /* Boxes used for modules (modules are those boxes in the left/right columns) */
-div.box {  
+div.box {
 	overflow: hidden;
 	margin-bottom: 12px;
   border-top: 1px solid #8CACBB;
@@ -243,7 +243,7 @@ div.box-data {
   color: black;
 	padding-right: 15px;
 	padding: 5px;
-	font-size: .9em;  
+	font-size: .9em;
 	text-align: left;
 	margin:0;
 }
@@ -252,8 +252,8 @@ div.box-data {
 /* Separators are used to sepparate menu areas in the application menu and user created menus*/
 div.separator, div.separatorline {
 	background-color: #f3f6f9;
-  color: black; 
-  margin: 4px 2px 2px 0px;  
+  color: black;
+  margin: 4px 2px 2px 0px;
 	padding-left: 2px;
 	border-radius: 0px 10px 10px 0px;
 	-moz-border-radius: 0px 10px 10px 0px;
@@ -320,9 +320,9 @@ TD.module {   text-align: left;}
 .linkmodule:hover { font-weight : normal; }
 
 /* Now the boxes for the rest of Tiki (non-modules */
-div.cbox {  
+div.cbox {
 	margin: 4px;
-	overflow: hidden; 
+	overflow: hidden;
 }
 
 /* Boxes are divided in title and data, this is the title */
@@ -343,7 +343,7 @@ div.cbox-title {
 div.cbox-data {
   overflow: hidden;
   padding-left: 5px;  padding-right: 5px;
-  font-size: .9em;  
+  font-size: .9em;
 	color: black;
 }
 
@@ -358,13 +358,13 @@ div.cbox-data {
 /* Some boxes uses thumbnails this is the image style */
 div.imagerank {  margin: 10px 5px 10px 5px; }
 
-/* A simple box is just a div with a border around and some margin 
+/* A simple box is just a div with a border around and some margin
  * used for example in the admin screen */
-div.simplebox {  
+div.simplebox {
   margin-top: 5px;  margin-bottom: 5px;
-  padding: 8px;  
+  padding: 8px;
   color: black;
-  border: 1px solid #8CACBB;  
+  border: 1px solid #8CACBB;
 }
 
 /* Prevent forms from generating unwanted padding or margins */
@@ -373,15 +373,15 @@ FORM {  margin: 0px;  padding: 0px; }
 /* General form elements */
 input, textarea, select {
 font-size: inherit;
-color : #112233; 
+color : #112233;
 }
-input { 
-text-indent : 2px; 
+input {
+text-indent : 2px;
 }
 input[type=checkbox], input[type=radio] {
 border: 0;
 }
-input[type=submit] { 
+input[type=submit] {
 border: 1px solid #46596f;
 background-color: #C7D0D9;
 border-radius: 0px 6px 6px 0px;
@@ -416,11 +416,11 @@ TD {vertical-align: top;}
 /* Cells in forms without background color (inside a div for example) */
 .form td { }
 /* Cells in forms using a background color */
-.formcolor td, 
-.galform td, 
-.editblogform td, 
-.editfgalform td, 
-.comform td, 
+.formcolor td,
+.galform td,
+.editblogform td,
+.editfgalform td,
+.comform td,
 .forumform td
 { border: 1px solid #8CACBB;   background: #DEE7EC; }
 
@@ -445,8 +445,8 @@ table.email td.closeButton {
 TD.heading, td.gallistheading, td.listgalheading, td.bloglistheading, td.listfgalheading, td.jukeboxlistheading,
 td.listfilesheading, td.listartheading, td.forumheading, td.viewthread
 {
-  color: black; 
-  background-color: #DEE7EC; 
+  color: black;
+  background-color: #DEE7EC;
   border: 1px solid #8CACBB;
   padding-left: 2px;
   padding-right: 5px;
@@ -455,8 +455,8 @@ td.listfilesheading, td.listartheading, td.forumheading, td.viewthread
 th, th.gallistheading, th.listgalheading, th.bloglistheading, th.listfgalheading, th.jukeboxlistheading,
 th.listfilesheading, th.listartheading, th.forumheading, th.viewthread
 {
-  color: black; 
-  background-color: #DEE7EC; 
+  color: black;
+  background-color: #DEE7EC;
   border: 1px solid #8CACBB;
   padding-left: 2px;
   padding-right: 5px;
@@ -465,11 +465,11 @@ th.listfilesheading, th.listartheading, th.forumheading, th.viewthread
 TD.button
 {
   color: black;
-  background-color: #DEE7EC; 
+  background-color: #DEE7EC;
   border: 1px solid #8CACBB;
   padding-left: 2px;
   padding-right: 5px;
-  text-align: center; 
+  text-align: center;
   vertical-align: middle;
 }
 
@@ -481,7 +481,7 @@ a.tablename:hover, a.galname:hover, a.imagename:hover, a.jukeboxname:hover, a.bl
 
 a.forumnameread
 { letter-spacing: 1px; color : black; }
-a.forumnameread:hover 
+a.forumnameread:hover
 { }
 
 
@@ -496,20 +496,20 @@ table.findtable { margin-bottom: 1px; padding-bottom: 10px;}
 
 /* Odd rows in several listings */
 tr.odd {
-border: 1px solid #8CACBB;  
-border-collapse: collapse; 
-background-color: #F7F9FA; 
-vertical-align: top; 
+border: 1px solid #8CACBB;
+border-collapse: collapse;
+background-color: #F7F9FA;
+vertical-align: top;
 text-align: left;
 }
 tr.odd:hover {
 background-color: #FFF7E6;
 }
 tr.even {
-border: 1px solid #8CACBB; 
-background-color: #e7e9ea; 
-color : black; 
-vertical-align: top; 
+border: 1px solid #8CACBB;
+background-color: #e7e9ea;
+color : black;
+vertical-align: top;
 text-align: left;
 }
 tr.even:hover {
@@ -526,14 +526,14 @@ td.listfgalactionsodd, td.listfilesnameodd,td.listfilesdescriptionodd,td.listfil
 td.listfilesfilesizeodd,td.listfilescreatedodd,td.listfilesdlsodd,td.listfilesnameodd,td.listfilesuserodd,td.listfilesactionsodd,
 td.listarttitleodd,td.listarttopicodd,td.listartpublishDateodd,td.listartauthorodd,td.listartreadsodd,td.listarthasimageodd,
 td.listartuseimageodd,td.listartactionsodd,td.listartsizeodd,td.forumstableodd,td.forumstableinfoodd,td.topictitleodd,
-td.topicrepliesodd,td.topicreadsodd,td.topicscoreodd,td.topiclastpostodd,td.topicauthorodd, td.jukeboxlistnameodd, 
-td.jukeboxdescriptionodd, td.jukeboxcreatedodd, td.jukeboxlastmodifodd, td.jukeboxlistuserodd, td.jukeboxlisttracksodd, 
+td.topicrepliesodd,td.topicreadsodd,td.topicscoreodd,td.topiclastpostodd,td.topicauthorodd, td.jukeboxlistnameodd,
+td.jukeboxdescriptionodd, td.jukeboxcreatedodd, td.jukeboxlastmodifodd, td.jukeboxlistuserodd, td.jukeboxlisttracksodd,
 td.jukeboxlistvisitsodd
 {
-border: 1px solid #8CACBB;  
-border-collapse: collapse; 
-background-color: #F7F9FA; 
-vertical-align: top; 
+border: 1px solid #8CACBB;
+border-collapse: collapse;
+background-color: #F7F9FA;
+vertical-align: top;
 text-align: left;
 }
 
@@ -548,22 +548,22 @@ td.listfgalactionseven,td.listfilesnameeven ,td.listfilesdescriptioneven,td.list
 td.listfilesfilesizeeven,td.listfilescreatedeven,td.listfilesdlseven,td.listfilesnameeven,td.listfilesusereven,td.listfilesactionseven,
 td.listarttitleeven,td.listarttopiceven,td.listartpublishDateeven,td.listartauthoreven,td.listartreadseven,td.listarthasimageeven,
 td.listartuseimageeven,td.listartactionseven,td.listartsizeeven,td.forumstableeven,td.forumstableinfoeven,td.topictitleeven,
-td.topicreplieseven,td.topicreadseven,td.topicscoreeven,td.topiclastposteven,td.topicauthoreven, td.jukeboxlistnameeven, 
-td.jukeboxdescriptioneven, td.jukeboxcreatedeven, td.jukeboxlastmodifeven, td.jukeboxlistusereven, td.jukeboxlisttrackseven, 
+td.topicreplieseven,td.topicreadseven,td.topicscoreeven,td.topiclastposteven,td.topicauthoreven, td.jukeboxlistnameeven,
+td.jukeboxdescriptioneven, td.jukeboxcreatedeven, td.jukeboxlastmodifeven, td.jukeboxlistusereven, td.jukeboxlisttrackseven,
 td.jukeboxlistvisitseven
 {
-border: 1px solid #8CACBB; 
-background-color: #e7e9ea; 
-color : black; 
-vertical-align: top; 
+border: 1px solid #8CACBB;
+background-color: #e7e9ea;
+color : black;
+vertical-align: top;
 text-align: left;
 }
 
 TD.third {
-border: 1px solid #8CACBB;  
-color : Black; 
-background-color: #8CACBB; 
-vertical-align: top; 
+border: 1px solid #8CACBB;
+color : Black;
+background-color: #8CACBB;
+vertical-align: top;
 text-align: left;
 }
 
@@ -575,10 +575,10 @@ H3 { font-size: 14px;  color : #032936; margin: 0; margin-bottom: 3px; }
 
 /* Titles */
 /* When the page title is a link this is the style */
-.pagetitle, .forumspagetitle { 
-font-size: 18px; 
+.pagetitle, .forumspagetitle {
+font-size: 18px;
 color : #234956;
-margin: 0; 
+margin: 0;
 margin-bottom: 3px;
 }
 
@@ -621,13 +621,13 @@ div.titlebar {
 	-moz-border-radius: 0 0 6px 6px;
 	-khtml-border-radius: 0 0 6px 6px;
 	letter-spacing: 1px;
-  padding: 0 6px 1px 6px; 
+  padding: 0 6px 1px 6px;
   margin: 3px 0 6px 0;
 	font-weight: bold;
 }
 
 /* The bar where the actions for a page are displayed */
-DIV#page-bar {	
+DIV#page-bar {
 	border-bottom: 1px solid #46596f;
 }
 DIV#page-bar table,DIV#page-bar td,DIV#page-bar tr {
@@ -656,9 +656,9 @@ DIV#page-bar table,DIV#page-bar td,DIV#page-bar tr {
 }
 
 /* Links in buttons */
-.linkbut, .linkbut:visited { 
+.linkbut, .linkbut:visited {
 font-size: .9em;
-color : #223344; 
+color : #223344;
 background-color: #C7D0D9;
 padding: 0 6px 1px 6px;
 font-weight: normal;
@@ -669,7 +669,7 @@ border-radius: 6px 6px 0 0;
 -khtml-border-radius: 6px 6px 0 0;
 margin: 0;
 }
-.linkbut:hover { 
+.linkbut:hover {
 background-color: #ffffff;
 color: #000000;
 padding: 0 6px 0px 6px;
@@ -717,7 +717,7 @@ td.wikicell {
 /* Text in wiki pages is displayed using the following style */
 body.wikitext, div.wikitext {
 	background-color: #f3f6f9;
-  margin : 5px; 
+  margin : 5px;
   clear : both;
 }
 div.wikitext {
@@ -733,11 +733,11 @@ body.wikitext a {
 .wiki { }
 
 /* Date displayed for last modification date of pages */
-p.editdate { 
+p.editdate {
 text-align: right;
-color: #223344; 
+color: #223344;
 border-top: 1px solid #8CACBB;
-font-size: 0.9em; 
+font-size: 0.9em;
 padding-left: 10px
 }
 #description {
@@ -746,9 +746,9 @@ padding-left: 10px
   color:   #333300;
 }
 /* The edit-help used to display the wiki syntax when editing a page */
-div.wiki-edithelp { 
-background: white; 
-border: 1px solid black; 
+div.wiki-edithelp {
+background: white;
+border: 1px solid black;
 padding: 10px;
 }
 
@@ -785,10 +785,10 @@ div.showimage { text-align: center;  margin-top: 5px;  margin-bottom: 5px;}
 
 /* The header of a weblog post */
 div.posthead {
-  color: black;  
+  color: black;
   overflow: hidden;
   text-align: center;
-  padding-left: 0px;  
+  padding-left: 0px;
 	padding-right: 0px;
   margin-bottom: 0px;
 }
@@ -813,17 +813,17 @@ span.posthead small { font-size: .8em; color: #676767; font-weight: normal; }
 div.postbody {
   overflow: hidden;
   border: 1px solid #aeaeae;
-	font-size: .9em;  
+	font-size: .9em;
 	color: black;
   padding-left: 5px;
-	padding-top: 5px; 
-	padding-bottom: 2px; 
+	padding-top: 5px;
+	padding-bottom: 2px;
   margin-bottom: 10px;
 }
 
 /* The weblog title */
 div.blogtitle {
-  color: black; 
+  color: black;
 	font-weight : bold;
   font-size: 1.5em;
   padding: 5px 10px 0 10px;
@@ -876,7 +876,7 @@ div.articletitle {
 }
 
 /* The article title */
-span.titlea {    
+span.titlea {
 background: #C7D0D9;
 border-radius: 0 0 6px 6px;
 -moz-border-radius: 0 0 6px 6px;
@@ -891,7 +891,7 @@ font-weight: bold;
 
 /* The author, date and number of reads */
 span.titleb,
-span.titleb:after {  
+span.titleb:after {
 float: left;
 font-size: .9em;
 color: #666666;
@@ -907,7 +907,7 @@ div.articleheading td img {
 margin-right : 20px;
 }
 /* Text in the article heading */
-div.articleheadingtext {    
+div.articleheadingtext {
 	display: inline;
 }
 
@@ -926,7 +926,7 @@ span.trailer {
 div.articlebody {
   border: 1px solid #aeaeae;
 	background-color: #ffffff;
-  padding: 20px; 
+  padding: 20px;
   margin: 10px 0px 10px 0;
   clear: both;
 }
@@ -946,7 +946,7 @@ div.articlebody {
 .nav:hover { color : black;  }
 
 .changedate {    font-size: .8em;  color : black; }
-.date {  
+.date {
   font-size: .9em;
   color : black;
   font-weight : bold;
@@ -985,7 +985,7 @@ div.pollresults {
   padding-left: 5px;
 }
 
-table.pollresults { 
+table.pollresults {
   width: 100%;
   }
 td.pollr {  color: black;}
@@ -1003,18 +1003,18 @@ div.forumspagetitle {  }
 
 table.threads { width: 100%;}
 
-td.viewthreadl { 
-border: 1px solid #8CACBB; 
+td.viewthreadl {
+border: 1px solid #8CACBB;
 border-collapse:collapse;
-background-color: #EFEFEF; 
-height: 10px; 
+background-color: #EFEFEF;
+height: 10px;
 vertical-align: top;
 }
-td.viewthreadr { 
-border: 1px solid #8CACBB; 
-border-collapse: collapse; 
-background-color: #EFEFEF; 
-height: 10px; 
+td.viewthreadr {
+border: 1px solid #8CACBB;
+border-collapse: collapse;
+background-color: #EFEFEF;
+height: 10px;
 vertical-align: top;
 }
 
@@ -1025,8 +1025,8 @@ td.threadsoddl { border: 1px solid #8CACBB; border-collapse:collapse; background
 td.threadsoddr { border: 1px solid #8CACBB; border-collapse:collapse; background-color: #DDDDDD; vertical-align: top;}
 td.threadseparator { border: 1px solid #8CACBB; border-collapse:collapse;background-color: #EEEEEE; height: 5px;}
 
-#forumpost { display: none;}   
-#forumpostopen { display: block;}   
+#forumpost { display: none;}
+#forumpostopen { display: block;}
 
 
 div.forumtoolbar {  background: #395AAD;   margin-bottom: 20px;  border: 0px;}
@@ -1047,8 +1047,8 @@ td.forumtoolbar {  color: white;    font-weight : bold; text-decoration: none; v
 table.tcategpath { margin-bottom: 40px; border: 1px solid #8CACBB;  width: 100%; border-collapse:collapse;}
 
 /* Table containing the category path */
-td.tdcategpath { 
-  color: #578308; 
+td.tdcategpath {
+  color: #578308;
 	font-weight : bold;
   background-color: #CDE2A7;
   padding-left: 2px;
@@ -1063,19 +1063,19 @@ td.tdcategpath {
 .categpath:hover {  }
 
 /* Table with the subcategories */
-table.subcats { 
-padding-top: 20px; 
-padding-bottom: 20px; 
-width: 100%; 
-border-spacing: 0px; 
+table.subcats {
+padding-top: 20px;
+padding-bottom: 20px;
+width: 100%;
+border-spacing: 0px;
 padding-right: 0px;
-margin-bottom: 10px; 
-border: 1px solid #46596f; 
-background: #CDE2A7; 
+margin-bottom: 10px;
+border: 1px solid #46596f;
+background: #CDE2A7;
 border-collapse:collapse;
 }
 td.tdsubcat {
-width: 25%; 
+width: 25%;
 background: #8CACBB;
 }
 
@@ -1084,12 +1084,12 @@ background: #8CACBB;
 .categlink:active { }
 .categlink:hover {  }
 
-table.catobjects { 
-width: 100%; 
-border-spacing: 0px; 
-padding-right: 0px; 
+table.catobjects {
+width: 100%;
+border-spacing: 0px;
+padding-right: 0px;
 margin-bottom: 10px;
-border: 1px solid #46596f; 
+border: 1px solid #46596f;
 border-collapse:collapse;
 }
 td.categobjectsnameeven,td.categobjectsnameodd {
@@ -1345,8 +1345,8 @@ div.messureadbody {
 width:100%;
 }
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2
 {
 color: #425262;
@@ -1411,7 +1411,7 @@ border-radius: 6px 6px 0px 0px;
 -moz-border-radius: 6px 6px 0px 0px;
 -khtml-border-radius: 6px 6px 0px 0px;
 border-bottom: 1px solid #FFFFFF;
-margin-right: 6px; 
+margin-right: 6px;
 color: #000000;
 }
 a.caltabon
@@ -1806,9 +1806,9 @@ color: black;
 .calprio7 { background-color: #DAB0B0; }
 .calprio8 { background-color: #DAAAAA; }
 .calprio9 { background-color: #DA9A9A; }
-.calprio1 a, .calprio2 a, .calprio3 a, .calprio4 a, .calprio5 a, 
-.calprio6 a, .calprio7 a, .calprio8 a, .calprio9 a { 
-color: #000000; 
+.calprio1 a, .calprio2 a, .calprio3 a, .calprio4 a, .calprio5 a,
+.calprio6 a, .calprio7 a, .calprio8 a, .calprio9 a {
+color: #000000;
 font-weight: normal;
 }
 /* style of the popup background in case of transparent styles */
@@ -1828,7 +1828,7 @@ div.tabrow {
 	font-size: 11px;
 }
 td.middle {
-	vertical-align: middle; 
+	vertical-align: middle;
 }
 .daterow {
   padding : 0 5px;
@@ -1851,10 +1851,10 @@ td.middle {
 	background-color: #ffffff;
 	width: auto;
 	border: 1px solid #666666;
-	padding: 1px; 
+	padding: 1px;
 }
 .opaque .box-title,
-.opaque, .box-data 
+.opaque, .box-data
 {
 	width: auto;
 }
@@ -1890,9 +1890,9 @@ div#edithelpzone { display: none;  }
 div#attzone      { display: none; margin-top: 10px; }
 div#attzoneopen      { display: block; margin-top: 10px; }
 
-.highlight { 
-background-color: #ddddAA; 
-color: #000000; 
+.highlight {
+background-color: #ddddAA;
+color: #000000;
 }
 
 /*
@@ -2106,14 +2106,14 @@ TABLE.admin {
 	margin-right: 5px;
 	padding: 1px 0px 1px 0px;
 	border-radius : 5px 5px 0 0;
-	-moz-border-radius : 5px 5px 0 0;  
+	-moz-border-radius : 5px 5px 0 0;
 	-khtml-border-radius : 5px 5px 0 0;
 }
-.tabmark a { 
+.tabmark a {
 	border-radius : 5px 5px 0 0;
-	-moz-border-radius : 5px 5px 0 0; 
+	-moz-border-radius : 5px 5px 0 0;
 	-khtml-border-radius : 5px 5px 0 0;
-	border-bottom : 0; 
+	border-bottom : 0;
 	color: #666666;
 	font-weight: 700 !important;
 	padding: 1px 5px 1px 5px;
@@ -2173,7 +2173,7 @@ font-family : monospace;
 padding : 1ex;
 background-color : #ffffff;
 margin : 0;
-border : 1px solid #adacaf; 
+border : 1px solid #adacaf;
 }
 .codecaption {
 font-size : smaller;
@@ -2193,9 +2193,9 @@ border-radius-topright : 1ex;
 -khtml-border-radius-topright : 1ex;
 }
 /* patch temporaire to see the edit comment textarea */
-textarea#editpost { width: 100%} 
-textarea#editpost2 { width: 100%} 
-textarea#editnl { width: 100%} 
+textarea#editpost { width: 100%}
+textarea#editpost2 { width: 100%}
+textarea#editnl { width: 100%}
 
 /* Version Plugin Style */
 
@@ -2237,15 +2237,15 @@ float : right;
 /* TikiSheet Default Style {{{1 */
 table.default	thead	td,	table.default	tfoot	td
 {
-	font-weight:		bold;
-	text-align:			center;
+	font-weight: bold;
+	text-align: center;
 }
 
 table.default	td
 {
-	border-style:		solid;
-	border-width:		1px;
-	border-color:		#000000;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #000000;
 }
 /* }}}1 */
 /**** coloration for QUOTE plugin *****/

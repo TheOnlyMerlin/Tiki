@@ -3,14 +3,14 @@
 	Gary Cunningham-Lee (http://zukakakina.com). Visit zukakakina.com or themes.tikiwiki.org for
 	updates and other information about this theme.
 */
- 
+
 /* Import layout foundation CSS files. */
 @import "lite/lite.css";
 @import "layout/layout.css";
 @import "layout/design.css";
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	background: #b1c1db url(snow/flakesptn.jpg) repeat;
 	color: #000;
@@ -27,7 +27,7 @@ div#middle {text-align: left}
 #c1c2 {
 	text-align: left;
 	/*font-size: 1.0em*/}
-	
+
 #col1 {background: url(snow/flakesptn3.jpg)}
 
 body.fullscreen #col1 {
@@ -58,7 +58,7 @@ body.fullscreen #col1 {
  	text-align: center;
  	font-size: .9em;
 	min-height: 40px}
-	
+
 * html #footer {height: 40px}
 
 /***** XHTML Elements (other than body tag) ******/
@@ -78,7 +78,7 @@ dt {font-weight: bold}
 h1, h2, h3, h4, h5 {
 	font-weight: bold;
 	color: #6c7b8c}
-	
+
 h1 {font-size: 1.7em}
 
 h1 {
@@ -86,7 +86,7 @@ h1 {
 	min-height: 35px;
 	margin-top: 0;
 	margin-bottom: 0}
-	
+
 *:first-child+html body h1 {}
 
 h2 {font-size: 1.6em}
@@ -181,10 +181,10 @@ input[type=wikiaction] {margin-bottom: 2px}
 
 select {
 	border: 1px solid #6c7b8c;
-	color: #000; 
+	color: #000;
 	background: #ECEEF2;
 	text-decoration: none}
-	
+
 .box select {
 	width: 90%;
 /*	border-top: 1px solid #a9a9a9;
@@ -248,7 +248,7 @@ div#siteloginbar {
 	background:  url(snow/pagetitle-bg.jpg) repeat-x;
 	height: 35px;
 	margin-bottom: 5px}
-	
+
 * html #tiki-top {font-size: 11px}
 #tiki-top table {width: auto}
 
@@ -298,12 +298,12 @@ div#siteloginbar {
 .cssmenu_vert li ul li:first-child {
 	border-top: 1px solid #6a6a6a;
 }
-	
+
 .cssmenu_horiz li:hover,
 .cssmenu_vert li:hover {
 	color: black;
 	background: url(snow/flakesptn.jpg)}
-	
+
 #tiki-top .cssmenu_horiz > li > a {
 	font-size: 12px;
 	font-weight: bold;
@@ -317,7 +317,7 @@ div#siteloginbar {
 #tiki-top .cssmenu_horiz > li > a:hover {
 	color: #6c7b8c;
 	text-decoration: none;
-} 	
+}
 
 #tiki-top .cssmenu_horiz li ul {
 	top: 3em;
@@ -326,7 +326,7 @@ div#siteloginbar {
 #tiki-top .cssmenu_horiz li ul li ul {
 	top: -1px;
 }
-	
+
 /* left column width */
 #col2 ul.cssmenu_vert {
 	padding-left: 0;
@@ -365,7 +365,7 @@ div#siteloginbar {
 /** PHP Layers Menus **/
 .horbar {
 	margin-left: 0;
-	text-align: left} 
+	text-align: left}
 
 .horbaritem {
 	font-size: 1.2em;
@@ -379,23 +379,23 @@ div#siteloginbar {
 	font-weight: bold;
 	color: #393e51;
 	padding: 9px 3px 9px 1em;
-	border-right: 1px solid #6A6A6A} 
+	border-right: 1px solid #6A6A6A}
 
 .horbaritem a:hover {
 	color: #506A5C;
 	font-weight: bold;
-	text-decoration: none} 
+	text-decoration: none}
 
 * html .horbaritem a {font-size: .8em}
 
 .mdksubmenu {
 	left: 20px;
 	width: 125px;
-	border: 1px solid #6A6A6A;	
+	border: 1px solid #6A6A6A;
 	background-image: url(snow/flakesptn2.jpg)}
 
-.mdksubmenu table {width: auto} 
-.mdksubframe {display: block} 
+.mdksubmenu table {width: auto}
+.mdksubframe {display: block}
 
 .mdkitem {
 	width: 125px;
@@ -404,17 +404,17 @@ div#siteloginbar {
 .mdkitem a {
 	color: #393e51;
 	font-size: 1em;
-	padding: 5px 2px 5px 8px} 
+	padding: 5px 2px 5px 8px}
 
 .mdkitem a:link {
 	font-weight: normal;
-	text-decoration: none} 
+	text-decoration: none}
 
-.mdkitem a:visited {text-decoration: none} 
+.mdkitem a:visited {text-decoration: none}
 
 .mdkitem a:hover {
 	background-image: url(snow/flakesptn.jpg);
-	text-decoration: none} 
+	text-decoration: none}
 
 .mdksubframe .mdkitem {font-size: 1em}
 
@@ -422,7 +422,7 @@ div#siteloginbar {
 	text-decoration: none;
 	color: #303030}
 
-.mdkverbar .mdkitem a, 
+.mdkverbar .mdkitem a,
 .box .mdkitem a {/*vertical menu subitems */
 	padding: 4px 2px 2px 8px}
 
@@ -501,9 +501,9 @@ h3.box-title {
 	color: #393e51;
 	font-size: 120%;
 	overflow: hidden;
-	border-bottom: 1px solid #6c7b8c;	
-}	
-	
+	border-bottom: 1px solid #6c7b8c;
+}
+
 #col2 h3.box-title,
 #col3 h3.box-title {
 	padding-top: 8px;
@@ -534,9 +534,9 @@ h3.box-title {
 #col3 .box-title a:link {
 	font-weight: bold;
 	color: #393e51}
-	
+
 .box-data {
-	padding: 0 20px 0 15px;	
+	padding: 0 20px 0 15px;
 	font-size: 1.1em;
 }
 
@@ -576,7 +576,7 @@ h3.box-title {
 	overflow: hidden;
 	border: 2px solid #a1adc7;
 	padding: 2px}
-	
+
 .cbox-title {}
 .cbox-data {}
 
@@ -589,10 +589,10 @@ div.simplebox {
 	overflow: hidden;
 	border: 2px solid #a1adc7;
 	padding: 2px}
-	
+
 .quarterfloat div.box,
 .wikitext .quarterfloat div.box {
-	width: 21.5%;	
+	width: 21.5%;
 }
 
 .thirdfloat div.box,
@@ -603,7 +603,7 @@ div.simplebox {
 /***** Tables, Tabs *****/
 /** Tables **/
 
-table.normal, 
+table.normal,
 table.admin {border: solid 1px #909090}
 
 #tiki-center > table.normal {
@@ -626,7 +626,7 @@ tr.even {
 	background: #E7E9EA;
 	border-collapse: collapse;
 	color: #393e51}
-	
+
 td.normal,
 .wikitable td,
 td.odd,
@@ -634,7 +634,7 @@ td.even {
 	margin: 0;
 	padding: 0.2em;
 	vertical-align: top}
-	
+
 
 th,
 td.heading,
@@ -656,13 +656,13 @@ td.form {
 	padding: 0.2em;
 	background: inherit;
 	color: #000}
- 
+
 /** Tabs **/
 .tabs {
 	margin: 0 2px;
 	margin-bottom: -3px;
 }
-	
+
 /* reset what's in layout.css */
 .tabactive,
 .tabinactive,
@@ -696,7 +696,7 @@ td.form {
 .tabmark:hover {
 	color: black;
 	background: #f0f9ff}
-	
+
 .tabactive {
 	border: solid 1px #6c7b8c !important;
 	border-bottom: 1px solid #eee !important;
@@ -722,7 +722,7 @@ h1.pagetitle {
 	background: url(snow/pagetitle-bg.jpg) repeat-x;
 	min-height: 35px}
 
-h1.pagetitle a,	
+h1.pagetitle a,
 h1.pagetitle a:visited,
 h1.pagetitle a:hover,
 a.pagetitle,
@@ -739,7 +739,7 @@ a.pagetitle:hover {
 	padding-left: 35px;
 	min-height: 35px;
 	letter-spacing: normal}
-	
+
 * html h1 a.pagetitle,
 * html h1 a {margin-top: 6px}
 
@@ -748,7 +748,7 @@ div.wikitopline {
 	position: relative;
 	/*top: -56px;
 	z-index: 1*/}
-	
+
 .wikitopline .content {
 	background: transparent !important;
 	padding: 6px 6px 0 0}
@@ -779,7 +779,7 @@ div.wikitopline {
 
 .wikitext h2 {margin-bottom: 10px}
 
-.wikitext ul li {} 
+.wikitext ul li {}
 .wikitext ul li ul li {}
 .wikitext ol {}
 
@@ -796,7 +796,7 @@ div.wikitopline {
 table.wikitable {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #999;
@@ -818,7 +818,7 @@ ul.floatleft li {
 	padding: 4px 2px}
 
 .editdate ul.floatleft {margin-top: 8px}
- 
+
 span.button2,
 div.button2,
 .button3 {
@@ -866,7 +866,7 @@ div.code {
 	background: #F5F5F5;
 	margin: 4px;
 	border: 1px dashed #ADACAF;
-	overflow: auto; 
+	overflow: auto;
    width: 500px}
 
 .codecaption {
@@ -898,7 +898,7 @@ div.tocnav {
 	padding: 3px;
 	margin-bottom: 4px;
 	clear: both}
- 
+
 #tocnavicons {float: left}
 #tocnavaddpage {float: right}
 #tocnavlinks {clear: both}
@@ -936,7 +936,7 @@ div.articletitle {
 	padding-top: 4px;
 	text-indent: 18px;
 	min-height: 48px}
- 
+
 div.articletitle h2 {
 	display: block;
 	background: url(snow/pagetitle-bullet.gif) no-repeat;
@@ -946,7 +946,7 @@ div.articletitle h2 {
 	height: 28px;
 	text-indent: 34px;
 	padding-top: 4px}
-	
+
 /*
 
 html > body div.articletitle {
@@ -989,13 +989,13 @@ img.articleimage {
 
 div.articletrailer {}
 
-div.articletrailer .wikitopline {float: right} 
- 
+div.articletrailer .wikitopline {float: right}
+
 div.articlebody {
 	margin-top: 6px;
 	padding: 20px 5px 6px
 }
- 
+
 div.articlesource {
 	margin-top: 5px;
 	font-style: italic;
@@ -1066,14 +1066,14 @@ table.commentinfo {background: #fff}
 	border-bottom: 0;
 	min-height: 36px;
 	background: url(snow/pagetitle-bg.jpg) repeat-x}
-	
+
 * html .post .postbody-title {height: 36px}
 
 .post .postbody-title .title {
 	color: #000;
 	margin: 0;
 	padding: 4px}
-	
+
 .title h2 {
 	display: block;
 	padding: 5px !important;
@@ -1088,10 +1088,10 @@ table.commentinfo {background: #fff}
 	height: 100%;
 	padding: 0;
 	font-size: 1em !important}
-	
+
 .postbody-content {background: url(snow/flakesptn3.jpg)}
 
-.post .author {	
+.post .author {
 	float: left;
 	text-align: left;
 	background: #E0EAF4;
@@ -1187,10 +1187,10 @@ textarea.tshoutbox{
 /***** TikiSheets *****/
 /***** Calendar *****/
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {font-size: 90%}
-	
+
 .Calart,
 .Calblog,
 .Calchart,
@@ -1253,7 +1253,7 @@ textarea.tshoutbox{
 Caltrack,
 Caltrack a,
 Caltrack a:visited {color: #00BD02}
-	
+
 .Calweb {
 	font-size: 1em}
 

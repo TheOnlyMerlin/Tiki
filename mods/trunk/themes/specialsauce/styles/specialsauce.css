@@ -213,7 +213,7 @@ div.cbox {
 }
 
 /* When there's a link in a cbox-title */
-a.flip, 
+a.flip,
 a.cboxtlink {
 	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 11pt;
@@ -221,7 +221,7 @@ a.cboxtlink {
 	text-decoration: none;
 }
 
-a.flip:hover, 
+a.flip:hover,
 a.cboxtlink:hover {
 	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 11pt;
@@ -230,9 +230,9 @@ a.cboxtlink:hover {
 }
 
 /* Links in modules */
-.separator, 
-.bannertext, 
-.linkmenu, 
+.separator,
+.bannertext,
+.linkmenu,
 .linkmodule {
 	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 11px;
@@ -240,9 +240,9 @@ a.cboxtlink:hover {
 	text-decoration: none;
 }
 
-.separator:hover, 
-.bannertext:hover, 
-.linkmenu:hover, 
+.separator:hover,
+.bannertext:hover,
+.linkmenu:hover,
 .linkmodule:hover {
 	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 11px;
@@ -269,8 +269,8 @@ div.imagerank {
 }
 
 /* A simple box is just a div with a border and a margin */
-div.fgaldesc, 
-div.galdesc, 
+div.fgaldesc,
+div.galdesc,
 .simplebox {
 	margin-left: 1px;
 	margin-right: 1px;
@@ -329,12 +329,12 @@ td {
 }
 
 /* Cells in forms using a background color */
-.imageinfo td, 
-.formcolor td, 
-.galform td, 
-.editblogform td, 
-.editfgalform td, 
-.comform td, 
+.imageinfo td,
+.formcolor td,
+.galform td,
+.editblogform td,
+.editfgalform td,
+.comform td,
 .forumform td {
 	color: #000000;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
@@ -346,20 +346,20 @@ td {
 }
 
 /* tables */
-table.normal, 
-table.imageinfo, 
-table.listgallery, 
-table.creategalform, 
-table.gallerylisting, 
-table.bloglist, 
-table.editblogform, 
-table.editfgalform, 
-table.listfgal, 
-table.listfiles, 
-table.listarticles, 
-table.forumstable, 
-table.forumformtable, 
-table.viewthread, 
+table.normal,
+table.imageinfo,
+table.listgallery,
+table.creategalform,
+table.gallerylisting,
+table.bloglist,
+table.editblogform,
+table.editfgalform,
+table.listfgal,
+table.listfiles,
+table.listarticles,
+table.forumstable,
+table.forumformtable,
+table.viewthread,
 table.jukeboxlist {
 	border-color: #000000;
 	border-style: solid;
@@ -371,15 +371,15 @@ table.normalnoborder {
 }
 
 /* Table headings */
-td.heading, 
-td.gallistheading, 
-td.listgalheading, 
-td.jukeboxlistheading, 
-td.bloglistheading, 
-td.listfgalheading, 
-td.listfilesheading, 
-td.listartheading, 
-td.forumheading, 
+td.heading,
+td.gallistheading,
+td.listgalheading,
+td.jukeboxlistheading,
+td.bloglistheading,
+td.listfgalheading,
+td.listfilesheading,
+td.listartheading,
+td.forumheading,
 td.viewthread {
 	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
 	border: 0.5px solid #FFDD11;
@@ -389,15 +389,15 @@ td.viewthread {
 	padding-left: 2px;
 }
 
-th, 
-th.gallistheading, 
-th.listgalheading, 
-th.jukeboxlistheading, 
-th.bloglistheading, 
-th.listfgalheading, 
-th.listfilesheading, 
-th.listartheading, 
-th.forumheading, 
+th,
+th.gallistheading,
+th.listgalheading,
+th.jukeboxlistheading,
+th.bloglistheading,
+th.listfgalheading,
+th.listfilesheading,
+th.listartheading,
+th.forumheading,
 th.viewthread {
 	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
 	border: 0.5px solid #FFDD11;
@@ -419,13 +419,13 @@ th.viewthread {
 }
 
 /* Links to view an object from a table listing */
-a.tablename, 
-a.galname, 
-a.imagename, 
-a.jukeboxname, 
-a.blogname, 
-a.fgalname, 
-a.artname, 
+a.tablename,
+a.galname,
+a.imagename,
+a.jukeboxname,
+a.blogname,
+a.fgalname,
+a.artname,
 a.forumname {
 	font-weight: bold;
 	font-size: 11px;
@@ -433,13 +433,13 @@ a.forumname {
 	text-decoration: none;
 }
 
-a.tablename:hover, 
-a.galname:hover, 
-a.jukeboxname:hover, 
-a.imagename:hover, 
-a.blogname:hover, 
-a.fgalname:hover, 
-a.artname:hover, 
+a.tablename:hover,
+a.galname:hover,
+a.jukeboxname:hover,
+a.imagename:hover,
+a.blogname:hover,
+a.fgalname:hover,
+a.artname:hover,
 a.forumname:hover {
 	text-decoration: none;
 	color: #FFDD11;
@@ -457,13 +457,13 @@ a.forumnameread:hover {
 }
 
 /* Links in table headings */
-.tableheading, 
-.gallistheading, 
-.listgalheading, 
-.bloglistheading, 
-.llisfgalheading, 
-.llistfileslink, 
-.llistart, 
+.tableheading,
+.gallistheading,
+.listgalheading,
+.bloglistheading,
+.llisfgalheading,
+.llistfileslink,
+.llistart,
 .lforumheading {
 	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
 	color: #FFFFFF;
@@ -472,13 +472,13 @@ a.forumnameread:hover {
 	text-decoration: none;
 }
 
-.tableheading:hover, 
-.gallistheading:hover, 
-.listgalheading:hover, 
-.bloglistheading:hover, 
-.llisfgalheading:hover, 
-.llistfileslink:hover, 
-.llistart:hover, 
+.tableheading:hover,
+.gallistheading:hover,
+.listgalheading:hover,
+.bloglistheading:hover,
+.llisfgalheading:hover,
+.llistfileslink:hover,
+.llistart:hover,
 .lforumheading:hover {
 	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
 	color: #000000;
@@ -543,9 +543,9 @@ table.findtable {
 }
 
 /* page title */
-.imagetitle, 
-.gallerytitle, 
-.pagetitle, 
+.imagetitle,
+.gallerytitle,
+.pagetitle,
 .forumspagetitle {
 	font-size: 26px;
 	font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
@@ -553,9 +553,9 @@ table.findtable {
 	text-decoration: none;
 }
 
-.imagetitle:hover, 
-.gallerytitle:hover, 
-.pagetitle:hover, 
+.imagetitle:hover,
+.gallerytitle:hover,
+.pagetitle:hover,
 .forumspagetitle:hover {
 	font-size: 26px;
 	font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
@@ -585,14 +585,14 @@ H3 {
 }
 
 /* Links where no special link style apply (usually with the general application background) */
-.link, 
-.gallink, 
-.bloglink, 
-.fgallink, 
-.trailer, 
-.opencomlink, 
-.commentslink, 
-.admlink, 
+.link,
+.gallink,
+.bloglink,
+.fgallink,
+.trailer,
+.opencomlink,
+.commentslink,
+.admlink,
 .forumbutlink {
 	color: #222222;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
@@ -602,14 +602,14 @@ H3 {
 	text-decoration: none;
 }
 
-.link:hover, 
-.gallink:hover, 
-.bloglink:hover, 
-.fgallink:hover, 
-.trailer:hover, 
-.opencomlink:hover, 
-.commentslink:hover, 
-.admlink:hover, 
+.link:hover,
+.gallink:hover,
+.bloglink:hover,
+.fgallink:hover,
+.trailer:hover,
+.opencomlink:hover,
+.commentslink:hover,
+.admlink:hover,
 .forumbutlink:hover {
 	color: #FFFFFF;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
@@ -636,12 +636,12 @@ div.searchdate {
 }
 
 /* prev & next buttons in pagination */
-.prevnext, 
-.galprevnext, 
-.blogprevnext, 
-.fgalprevnext, 
-.artprevnext, 
-.forumprevnext, 
+.prevnext,
+.galprevnext,
+.blogprevnext,
+.fgalprevnext,
+.artprevnext,
+.forumprevnext,
 .jukeboxprevnext {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
@@ -649,12 +649,12 @@ div.searchdate {
 	text-decoration: none;
 }
 
-.prevnext:hover, 
-.galprevnext:hover, 
-.blogprevnext:hover, 
-.fgalprevnext:hover, 
-.artprevnext:hover, 
-.jukeboxprevnext:hover, 
+.prevnext:hover,
+.galprevnext:hover,
+.blogprevnext:hover,
+.fgalprevnext:hover,
+.artprevnext:hover,
+.jukeboxprevnext:hover,
 .forumprevnext:hover {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10px;
@@ -1501,7 +1501,7 @@ td.categobjectsnameeven {
 	border: 1px solid #000000;
 	background-color: #C7C7C7;
 }
-	
+
 td.categobjectsnameodd {
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 10px;
@@ -1847,8 +1847,8 @@ div.messureadbody {
 	width:100%;
 }
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {
 	border-top: 1px dashed #CCCCCC;
 	color: #425262;
@@ -1916,7 +1916,7 @@ a.caltabon:hover {
 	background-color: transparent;
 }
 
-div#tabcal, 
+div#tabcal,
 div#tabnav {
 	margin-top: 10px;
 	margin-left: 30px;
@@ -1928,7 +1928,7 @@ div#tab {
 	margin-bottom: 1px;
 }
 
-div.tabcal, 
+div.tabcal,
 div.tabnav {
 	padding: 10px;
 	background-color: #FFFFFF;
@@ -2282,9 +2282,9 @@ div.tabrow {
 	width: auto;
 	border: 1px solid #666666;
 	width: auto;
-	padding: 1px; 
+	padding: 1px;
 }
-.opaque .box-title, 
+.opaque .box-title,
 .box-data {
 	width: auto;
 }
@@ -2360,7 +2360,7 @@ textarea.wikiedit {
 }
 
 /* help links style */
-a.tikihelp, 
+a.tikihelp,
 a.tikihelp:visited {
 	color: inherit;
 	border: inherit;
@@ -2425,12 +2425,12 @@ div#rules-copy-panel {
 	font-weight: bold;
 }
 
-TABLE.admin { 
+TABLE.admin {
 	width: 100%;
 }
 
-table.commentinfo { 
-	width: 100%; 
+table.commentinfo {
+	width: 100%;
 	background-color: #FFF7E6;
 }
 
@@ -2545,11 +2545,11 @@ div#rules-copy-panel {
 	margin: 0px;
 	margin-right: 5px;
 	padding: 1px 0px 1px 0px;
-	-moz-border-radius : 5px 5px 0 0;  
+	-moz-border-radius : 5px 5px 0 0;
 }
-.tabmark a { 
-	-moz-border-radius : 5px 5px 0 0; 
-	border-bottom : 0; 
+.tabmark a {
+	-moz-border-radius : 5px 5px 0 0;
+	border-bottom : 0;
 	color: #666666;
 	font-weight: 700 !important;
 	padding: 1px 5px 1px 5px;

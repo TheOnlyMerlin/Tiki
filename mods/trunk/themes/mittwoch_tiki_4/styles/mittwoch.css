@@ -17,10 +17,10 @@
 /* Import design defaults. */
 @import "layout/design.css";
 
- 
+
 /***** XHTML ELEMENTS (body tag here,
 			others follow Layout) *****/
-			
+
 body {
 	color: #666;
 	font-size: 76%;
@@ -33,10 +33,10 @@ html > body {
 }
 
 /***** End XHTML elements (body tag) *****/
- 
+
  /***** Layout (overrides layout.css;
 		also styling of page layout divs)  *****/
-		
+
 #middle {
 	background: #fff url(mittwoch/bg.gif) repeat-x;
 	padding-top: 16px;
@@ -87,7 +87,7 @@ div#showhide_columns {
 	margin-right: 0}
 
 #col3 {
-	margin-left: -225px;	
+	margin-left: -225px;
 	margin-top: 9px;
 	overflow: hidden;
 	width: 225px}
@@ -138,7 +138,7 @@ a:visited {
 a:hover {
 	color: #b5d72b;
 	text-decoration: none}
-	
+
 .wikitext a:link.wiki,
 .wikitext a.link:visited {
 	color: #003bfe !important;
@@ -254,7 +254,7 @@ span.button input,
 	height: 20px;
 	margin: 4px;
 }
-	
+
 * html input[type=reset],
 * html input[type=submit] {
 	color: #003bfe;
@@ -265,7 +265,7 @@ span.button input,
 	border: 3px double #cdcdcd;
 	height: 20px;
 	cursor: pointer}
-	
+
 span.button a:hover,
 button:hover,
 input[type=reset]:hover,
@@ -282,9 +282,9 @@ span.button {
 
 span.button.highlight a {
 	background: #FC0;
-	color: #000; 
+	color: #000;
 }
-	
+
 input[type=submit] {
 	padding: 0 5px}
 
@@ -324,7 +324,7 @@ body.wikitext {
 #header {
 	margin: 0;
 	padding: 0}
-	
+
 #siteheader {
 	color: #fff;
 }
@@ -375,7 +375,7 @@ div.floatleft {padding: 1em}
 	color: #fff;
 }
 
-#siteloginbar {	
+#siteloginbar {
 	color: #fff;
 }
 
@@ -426,9 +426,9 @@ div#sitelocbar {
 .cssmenu_vert li,
 .cssmenu_vert li:hover {
 	background-position: 0 6px}
-	
+
 #tiki-top .cssmenu_horiz li a,
-#tiki-top .cssmenu_horiz li a:visited { 
+#tiki-top .cssmenu_horiz li a:visited {
 	background: url(mittwoch/top_button.gif) no-repeat;
 	color: #fff;
 	width: 120px;
@@ -441,7 +441,7 @@ div#sitelocbar {
 	text-align: center;
 	line-height: 37px;
 	font-size: 11px}
-	
+
 #tiki-top .cssmenu_horiz li a:hover {
 	color: #fff;
 	background: url(mittwoch/top_button_hover.gif) no-repeat;
@@ -455,7 +455,7 @@ div#sitelocbar {
 #tiki-top .cssmenu_horiz li ul {
 	line-height: 1;
 	margin-top: 22px;}
-	
+
 #tiki-top .cssmenu_horiz li ul li ul {
 	margin-top: -1px;
 }
@@ -494,7 +494,7 @@ div#sitelocbar {
 	background-image: url(mittwoch/arrow.gif);
 	background-repeat: no-repeat;
 	background-position: 0 5px}
-	
+
 #tiki-top .cssmenu_horiz li ul li a:hover {
 	line-height: 1;
 	height: 17px;
@@ -502,7 +502,7 @@ div#sitelocbar {
 	padding: 3px 3px 3px 18px;
 	background-image: url(mittwoch/arrow_hover.gif);
 	background-repeat: no-repeat;
-	background-position: 0 5px}	
+	background-position: 0 5px}
 
 /* left column width */
 #col2 .cssmenu_vert,
@@ -531,7 +531,7 @@ div#sitelocbar {
 }
 
 #tiki-top .cssmenu_horiz li .sf-sub-indicator {
-	top: 1.5em;	
+	top: 1.5em;
 }
 
 #tiki-top .cssmenu_horiz li ul li .sf-sub-indicator,
@@ -612,7 +612,7 @@ div#sitelocbar {
 
 div.mdkverbar {
 	padding-left: 27px;
-	line-height: normal} 
+	line-height: normal}
 
 .mdkverbar .mdkitem {
 	padding-top: 0;
@@ -750,7 +750,7 @@ h3.box-title a:visited {
 .box:hover a.flipmodtitle img {border: 1px solid transparent}
 a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
 
-.box-data { 
+.box-data {
 	font-size: 0.9em;
 	line-height: 1.4em;
 	margin: 0 0 16px 0}
@@ -828,7 +828,7 @@ a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
 .cbox {
 	border: 1px solid #999999;
 	margin: 6px}
- 
+
 .cbox-title {
 	text-align: center;
 	border-bottom: 1px solid #999999;
@@ -864,7 +864,7 @@ table {
 	font-size: inherit;
 	width: 100%}
 
-table.normal, 
+table.normal,
 table.admin {
 	border: solid 1px #909090;
 	vertical-align: top;
@@ -1031,13 +1031,13 @@ div#description {
 	padding-left: 3em;
 	margin-bottom: 0.5em;
 	margin-top: 1em}
- 
+
 .wikitext ul li {
 	padding-left: 18px;
 	background: url(mittwoch/arrow.gif) no-repeat;
 	background-position: 0 4px;
 	line-height: 160%
-} 
+}
 
 .wikitext ul li:hover {
 	padding-left: 18px;
@@ -1054,7 +1054,7 @@ table.wikitable {
 	border-right: 1px solid #696969;
 	border-bottom: 1px solid #696969;
 	vertical-align: top}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #a9a9a9;
@@ -1063,7 +1063,7 @@ td.wikicell {
 .editdate {
 	padding-bottom: 5px}
 
-	
+
 div#page-bar ul.floatleft li {
 	background: none}
 
@@ -1086,7 +1086,7 @@ div.code {
 	padding: 10px;
 	background: #FFFFFF;
 	border: 1px dashed #ADACAF;
-	overflow: auto; 
+	overflow: auto;
    width: 90%}
 
 pre.codelisting {
@@ -1171,14 +1171,14 @@ div.articletitle {
 	padding-left: 30px;
 	margin: 4px;
 	padding-top: 6px}
- 
+
 span.titlea {
 	font-weight: bold}
 
 div.articlesubtitle {
 	font-size: 90%;
 	font-style: italic}
- 
+
 div.articleheading {
 	margin-top: 46px;
 	line-height: 1.5em}
@@ -1201,7 +1201,7 @@ img.articleimage {
 
 div.articlebody {
 	line-height: 1.5em}
- 
+
 div.articlesource {
 	margin-top: 5px;
 	font-style: italic;
@@ -1235,7 +1235,7 @@ div.postbody-title h2 {
 	background: url(mittwoch/content_head.gif) no-repeat;
 	padding: 3px 0 5px 26px;
 }
-	
+
 body.tiki_blogs div.author_actions {
 	display: block;
 	text-align: right;
@@ -1247,7 +1247,7 @@ body.tiki_blogs div.author_actions {
 	padding: 2px;
 	margin-right: 0;
 }
-	
+
 .post .postbody-title {
 	display: block;
 	background: none;
@@ -1267,7 +1267,7 @@ body.tiki_blogs div.author_actions {
 	padding: 0 5px 10px;
 }
 
-.post .author {	
+.post .author {
 	float: left;
 	text-align: left;
 	width: 30%;
@@ -1276,26 +1276,26 @@ body.tiki_blogs div.author_actions {
 	border: 1px solid #e9e9e9;
 	padding: 3px;
 	position: relative}
-	
+
 .post .avatar {
 	display: block;
 	float: none;
 	text-align: left;
 	margin: 0;
 	background: inherit}
-	
+
 .post .author_post_info {
 	display: block;
 	padding: 0}
 
 .post .author_post_info:first-child {
 	text-transform: capitalize;
-} 
+}
 
 .post .postbody-title .title a.link {
 	font-size: 1.1em;
 	font-weight: bold}
-	
+
 span.icons {
 	position: absolute;
 	top: 3px;
@@ -1306,7 +1306,7 @@ td.oddthumb {
 	background: #f9f9f9;
 	border: 3px solid white;
 	border-collapse: collapse}
- 
+
 td.eventhumb {
 	background: #f9f9f9;
 	border: 3px solid white;
@@ -1383,19 +1383,19 @@ div.dirsite {
 	border-top: 1px solid #a9a9a9;
 	border-right: 1px solid #696969;
 	border-bottom: 1px solid #696969}
-	
+
 .opaque .box-title {
 	background: white;
 	border-bottom: 1px solid black}
 
 .opaque .box-data  {
 	background: white}
-	
+
 .caldark {
 	border: 1px solid #fff;
 	background: #fff;
 }
-	
+
 .caldark .calfocus {
 	background: #fff;
 }
@@ -1404,7 +1404,7 @@ div.dirsite {
 .caleven {
 	border: 1px solid #ddd;
 }
-	
+
 .calodd {
 	background: #F5F5F5;
 }

@@ -37,7 +37,7 @@ select:hover,
 input.wikiaction:hover,
 button:hover {
 	color: #FD32C6}
-	
+
 .wikitext a:link.wiki,
 .wikitext a.link:visited {
 	color: #79B718 !important;
@@ -55,7 +55,7 @@ button {
 	background-image: url(lightgreen/button_bg.png)}
 
 input[id="fuser"] {
-	background-image: url(lightgreen/button_bg.png)}	
+	background-image: url(lightgreen/button_bg.png)}
 
 ul li,
 .wikicell li {
@@ -113,7 +113,7 @@ div.option a.linkmenu:hover {
 .titlebar {
 	background: #93cc31;
 }
-	
+
 th,
 table.normal td.heading {
 	background: #93cc31;

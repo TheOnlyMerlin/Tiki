@@ -2,11 +2,11 @@
 	using visual elements of the Underground theme by Erwin Aligam
 	(http://www.styleshout.com), which was released under the Creative
 	Commons Attribution 2.5 license. Consequently, the visual aspects
-	retain the Creative Commons Attribution 2.5 license, while the 
+	retain the Creative Commons Attribution 2.5 license, while the
 	structural aspects based on the default TikiWiki components are
 	licensed GNU/LGPL. Please retain the link to styleshout.com in the
 	page footer to be in compliance with the CCA 2.4 license.
- 
+
 	underground.css is comprised of these sections:
 	XHTML elements, Siteheader & Identity; Menus, Links;
 	Misc. Center Col.; Misc. Global; Boxes; Tables, Tabs;
@@ -15,26 +15,26 @@
 	Quizzes;	Shoutbox; Directory; Messages; TikiSheets;
 	Calendar; Admin; and Ajax, jquery, etc.
 */
- 
+
 /* Import layout foundation CSS file. */
 /* If *litecss-based theme . . .  */
 @import "lite/lite.css";
 
 /* Then import the default layout properties file: */
  @import "layout/layout.css";
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	font: 70%/1.5 Verdana, Tahoma, Arial, Helvetica, sans-serif;
-	color: #333; 
+	color: #333;
 	background: #FFF url(underground/bg.gif) repeat-x}
 
 html>body {font-size: 0.7em !important}
 *:first-child+html body {font-size: 75% !important}
 
 body.wikitext {
-	color: #333; 
+	color: #333;
 	background: #FFF}
 
  /***** Layout (overrides layout.css;
@@ -58,7 +58,7 @@ body.wikitext {
 #tiki-center {
 	width: auto !important;
 	margin: 0 80px 0 20px}
-	
+
 div#showhide_columns {margin: 0 80px 0 100px}
 
 #c1c2 #col2 {width: 320px}
@@ -80,14 +80,14 @@ div#showhide_columns {margin: 0 80px 0 100px}
 #footer {
 	border-top: 1px solid #f2f2f2;
 	background: #FFF url(underground/footerbg.gif) repeat-x;
-	text-align: center;  
+	text-align: center;
 	line-height: 1.5em;
 	padding-top: 2px}
 
 #footer a,
 #footer a:link,
 #footer a:visited {
-	text-decoration: none; 
+	text-decoration: none;
 	font-weight: bold;
 	color: #000}
 
@@ -99,7 +99,7 @@ a:visited {
 	text-decoration: none}
 
 a:hover {
-	color: #CC0001; 
+	color: #CC0001;
 	background: inherit}
 
 h1, h2, h3, h4, h5 {
@@ -112,7 +112,7 @@ h1 {
 	letter-spacing: .5px}
 
 h2 {
-	font-size: 115%;	
+	font-size: 115%;
 	text-transform: uppercase}
 
 h3 {
@@ -120,7 +120,7 @@ h3 {
 	color: #003366}
 
 h2, h3, h4, h5, p {
-	padding: 0;		
+	padding: 0;
 	margin: 10px}
 
 fieldset {
@@ -129,7 +129,7 @@ fieldset {
 
 form {
 	padding: 0 5px;
-	border: 1px solid #f2f2f2; 
+	border: 1px solid #f2f2f2;
 	background: #FAFAFA}
 
 * html .wikitopline select {font-size: .9em}
@@ -156,17 +156,17 @@ span.button input,
 .submitbutton,
 .calbuttonoff,
 .calbuttonon {
-	margin: 0; 
-	font: bolder 11px Arial, Sans-serif; 
-	border: 1px solid #CCC; 
+	margin: 0;
+	font: bolder 11px Arial, Sans-serif;
+	border: 1px solid #CCC;
 	background: #FFF;
 	color: #CC0000}
 
 * html input[type=reset],
 * html input[type=submit] {
-	margin: 0; 
-	font: bolder 11px Arial, Sans-serif; 
-	border: 1px solid #CCC; 
+	margin: 0;
+	font: bolder 11px Arial, Sans-serif;
+	border: 1px solid #CCC;
 	background: #FFF;
 	color: #CC0000}
 
@@ -185,7 +185,7 @@ input[type=submit]:hover,
 .button input:hover {
 	cursor: pointer;
 	color: #CC0001}
-	
+
 span.highlight {background: #cc0000}
 
 * html .findtable input {font-size: 1em}
@@ -219,9 +219,9 @@ h1#logo,
 #header-logo {
 	position: relative;
 	clear: both;
-	height: 50px; 
+	height: 50px;
 	margin: 0;
-	padding: 0;	
+	padding: 0;
 	top: 75px}
 
 #header-bottom {position: relative}
@@ -231,13 +231,13 @@ h1#logo,
 	margin: 0; padding: 0;
 	letter-spacing: -1px;
 	color: #000}
-	
+
 span#sitetitle_highlight {color: #cc0000}
 
 #sitesubtitle {
 	position: absolute;
 	top: -22px;
-	font: bold 1.2em Verdana, Arial, Tahoma,  Sans-serif;	
+	font: bold 1.2em Verdana, Arial, Tahoma,  Sans-serif;
 	color: #FFF}
 
 #tiki-top {
@@ -245,12 +245,12 @@ span#sitetitle_highlight {color: #cc0000}
 	height: 59px;
 	padding: 0;
 	position: relative}
-	
+
 #tiki-top .findtable {
 	margin-bottom: 0;
 }
-	
-/* original search form 
+
+/* original search form
 form.search {
 	position: absolute;
 	top: 5px; right: 5px;
@@ -259,20 +259,20 @@ form.search {
 	background: transparent}
 
 form.search input.textbox {
-	margin: 0; 
+	margin: 0;
 	width: 120px;
-	border: 1px solid #CCC; 
+	border: 1px solid #CCC;
 	background: #FFF;
 	color: #333}
 
 form.search input.searchbutton {
-	margin: 0; 
-	font-size: 100%; 
-	font-family: Arial, Sans-serif; 
-	border: 1px solid #CCC; 
-	background: #fff url(underground/headerbg.gif) repeat-x bottom left; 
-	padding: 1px; 
-	font-weight: bold; 
+	margin: 0;
+	font-size: 100%;
+	font-family: Arial, Sans-serif;
+	border: 1px solid #CCC;
+	background: #fff url(underground/headerbg.gif) repeat-x bottom left;
+	padding: 1px;
+	font-weight: bold;
 	height: 23px;
 	color: #333;
 	width: 60px}*/
@@ -292,20 +292,20 @@ form.search input.searchbutton {
 
 input#text
 input.wikiaction {
-	margin: 0; 
+	margin: 0;
 	width: 120px;
-	border: 1px solid #CCC; 
+	border: 1px solid #CCC;
 	background: #FFF;
 	color: #333}
 
 #sitesearchbar form button {
-	margin: 0; 
-	font-size: 100%; 
-	font-family: Arial, Sans-serif; 
-	border: 1px solid #CCC; 
-	background: #fff url(underground/headerbg.gif) repeat-x bottom left; 
-	padding: 1px; 
-	font-weight: bold; 
+	margin: 0;
+	font-size: 100%;
+	font-family: Arial, Sans-serif;
+	border: 1px solid #CCC;
+	background: #fff url(underground/headerbg.gif) repeat-x bottom left;
+	padding: 1px;
+	font-weight: bold;
 	height: 23px;
 	color: #333;
 	width: 60px}
@@ -317,12 +317,12 @@ input.wikiaction {
 .cssmenu_vert li ul,
 .cssmenu_horiz li ul {
 	border: 1px solid #d0d0d0}
-	
+
 .cssmenu_vert li ul {/* second-level lists */
 	margin-left: 11.05em;
 	margin-top: -1.35em;
 }
-	
+
 .cssmenu ul li,
 .cssmenu_vert li ul li,
 .cssmenu_horiz li ul li {
@@ -333,10 +333,10 @@ input.wikiaction {
 .cssmenu_vert li ul li a:hover {
 	color: #cc0000;
 	background: 0}
-	
+
 .cssmenu_vert li ul li {padding: 2px 5px}
 
-.cssmenu a,	
+.cssmenu a,
 .cssmenu_horiz a,
 .cssmenu_vert a {
 	text-decoration: none;
@@ -346,7 +346,7 @@ input.wikiaction {
 	padding: 3px 0 3px 6px;
 	border: none;
 	color: #303030}
-	
+
 .cssmenu_vert li ul li a {background: 0}
 
 #tiki-top .cssmenu_horiz {
@@ -371,14 +371,14 @@ input.wikiaction {
 #tiki-top .cssmenu_horiz li.menuLevel0:hover,
 #tiki-top .cssmenu_horiz li.menuLevel0 a:hover {
 	background-position: 0% -42px
-} 
-  
+}
+
 #tiki-top .cssmenu_horiz ul {
 	background: #F4F4F4;
 	border: 1px solid #d0d0d0}
-	
+
 #tiki-top .cssmenu_horiz ul li {background: 0}
-#tiki-top .cssmenu_horiz ul li a {font-size: 11px}	
+#tiki-top .cssmenu_horiz ul li a {font-size: 11px}
 
 .cssmenu_vert .sf-sub-indicator {
 	background: url(underground/arrows-000.png) no-repeat -10px -100px;
@@ -429,7 +429,7 @@ input.wikiaction {
 
 div.mdkverbar {
 	padding-left: 10px;
-	line-height: normal} 
+	line-height: normal}
 
 .mdkverbar .mdkitem {
 	background: transparent url(underground/bullet.gif) no-repeat 3px 2px;
@@ -517,16 +517,16 @@ a.flip:hover,
 /** Modules **/
 div.box {
 	border: 1px solid #EBEBEB;
-	margin: 0 0 5px 0;	
+	margin: 0 0 5px 0;
 	background: #FFF}
 
 h3.box-title {
-	margin: 0; 
-	padding: 4px 0 4px 8px; 
+	margin: 0;
+	padding: 4px 0 4px 8px;
 	font: bold 105% Arial, Sans-Serif;
 	color: #FFF;
-	text-transform: uppercase; 
-	background: #333; 
+	text-transform: uppercase;
+	background: #333;
 	letter-spacing: 1px}
 
 .box-title a,
@@ -556,27 +556,27 @@ h3.box-title {
 /** Other boxes **/
 div.cbox {
 	margin: 10px;
-  	background: #FAFAFA; 
-	border: 1px solid #f2f2f2; 
+  	background: #FAFAFA;
+	border: 1px solid #f2f2f2;
 	border-left: 4px solid #CC0000}
-	
+
 .cbox-title {
 	border-bottom: 1px solid #CC0000;
 	padding: 3px 3px 0 3px}
-	
+
 .cbox-data {padding: 0 3px 3px 3px}
-	
+
 .rbox-title,
 .rbox-data {
 	background: #fafafa;
 	border: 1px solid #cc0000}
-	
+
 .rbox-title {
 	background: #cc0000;
 	color: #fff}
 
 div.simplebox {
-	margin: 20px 10px 5px 10px; 
+	margin: 20px 10px 5px 10px;
 	padding: 3px;
 	color: #333;
 	background: inherit;
@@ -610,7 +610,7 @@ tr.odd td.odd {
 	border-right: 1px solid #909090}
 
 tr.even,
-tr.even td,	
+tr.even td,
 td.even,
  tr.even td.even {
 	background: #ECECEC;
@@ -624,7 +624,7 @@ table.normal td.heading {
 	background: #CC0000;
 	color: #fff;
 	min-height: 32px}
-	
+
 /* links in table headings */
 th a:link,
 th a:visited,
@@ -646,7 +646,7 @@ td.heading a:hover {
 .tabmark {
 	background: #e0dfe3;
 	border: 1px solid #CCC}
-	
+
 .tabmark:hover {border: 1px solid #CC0001}
 
 .tabmark a {
@@ -673,10 +673,10 @@ h1.pagetitle:visited {
 	margin: -9px 0 3px;
 	padding: 2px 0 2px 8px;
 	color: #fff;
-	text-transform: uppercase; 
-	background: #CC0000;	
+	text-transform: uppercase;
+	background: #CC0000;
 	letter-spacing: .5px}
-	
+
 h1 a.pagetitle:hover {color: #fff}
 
 div.description,
@@ -704,7 +704,7 @@ table.wikitable {border: 1px solid #a9a9a9}
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #999}
-	
+
 * html #page-bar {width: 100%}
 
 #wikihelp-tab table,
@@ -725,7 +725,7 @@ td.wikicell {
 	width: 500px;
 	font: 500 1em/1.5em 'Lucida Console', 'courier new', monospace;
 	background: #FAFAFA;
-	border: 1px solid #f2f2f2;  
+	border: 1px solid #f2f2f2;
 	border-left: 4px solid #CC0000}
 
 .codecaption {
@@ -741,16 +741,16 @@ div.quoteheader {
 
 div.quotebody {
 	margin: 10px;
- 	padding: 0 0 0 44px;  	
-  	background: #fafafa url(underground/quote.gif) no-repeat 5px 10px !important; 
+ 	padding: 0 0 0 44px;
+  	background: #fafafa url(underground/quote.gif) no-repeat 5px 10px !important;
 	background-position: 8px 10px;
-	border: 1px solid #f2f2f2; 
-	border-left: 4px solid #cc0000; 
+	border: 1px solid #f2f2f2;
+	border-left: 4px solid #cc0000;
 	font-weight: bold}
-	
+
 .versioncontent {
 	border: 1px solid #cc0000;
-	border-left-width: 4px; 
+	border-left-width: 4px;
 	background: #fff}
 
 /** Wiki tocs **/
@@ -773,18 +773,18 @@ div.articletopline {
 
 div.articletitle {
 	margin: 10px 0;
-	padding: 4px 0 4px 8px; 
+	padding: 4px 0 4px 8px;
 	display: block}
- 
+
 div.articletitle h2 {
 	display: block;
-	padding: 4px 0 4px 8px; 
+	padding: 4px 0 4px 8px;
 	font-size: 105%;
 	color: #FFF;
-	text-transform: uppercase; 
-	background: #CC0000;	
+	text-transform: uppercase;
+	background: #CC0000;
 	letter-spacing: .5px}
-	
+
 div.articletitle h2 a,
 div.articletitle h2 a:visited,
 div.articletitle h2 a:hover {
@@ -793,10 +793,10 @@ div.articletitle h2 a:hover {
 
 span.titleb {
 	font-size: 1.0em}
- 
+
 div.articlesubtitle {
 	font-size: 0.9em}
- 
+
 img.topicimage,
 img.articleimagenofloat,
 img.articleimage {
@@ -811,9 +811,9 @@ img.articleimage {
 	border: 1px solid #b0b0b0;
 	border-top:1px solid #CCC;
 	border-bottom:1px solid #CCC}
- 
+
 div.articlebody {margin-top: 1em}
- 
+
  /***** Blogs *****/
 div.blogtitle {
 	font-size: 1.3em;
@@ -833,7 +833,7 @@ div.blogtools {
 	padding: 3px;
 	text-align: right}
 
-/* 
+/*
 .blog_l {
 	border-top:3px double #999;
 	float:left;
@@ -885,17 +885,17 @@ a.blogt:hover {
 span.posthead {
 	font-weight: bold;
 	letter-spacing: .4pt}
- 
+
 div.posthead h3 {
 	display: block;
-	padding: 4px 0 4px 8px; 
+	padding: 4px 0 4px 8px;
 	font-size: 105%;
 	color: #FFF;
-	text-transform: uppercase; 
-	background: #CC0000;	
+	text-transform: uppercase;
+	background: #CC0000;
 	letter-spacing: .5px;
 	margin-bottom: 0}
- 
+
 div.postbody {margin-bottom: 1em}
 .postbody hr {display: none}
 
@@ -916,7 +916,7 @@ div.date {
 
 .post .postbody-title {
 	display: block;
-	background: #cc0000; 
+	background: #cc0000;
 	border-bottom: 0;
 	margin-bottom: 4px;
 	padding: 2px}
@@ -933,7 +933,7 @@ div.date {
 	color: #000;
 	padding: 0 3px 3px}
 
-.post .author {	
+.post .author {
 	float: left;
 	text-align: left;
 	width: 30%;
@@ -1005,7 +1005,7 @@ td.oddthumb {
 	background: #F9F9F9;
 	border: 3px solid white;
 	border-collapse: collapse}
- 
+
 td.eventhumb {
 	background: #F9F9F9;
 	border: 3px solid white;
@@ -1025,12 +1025,12 @@ div#browse_image {background: #222}
 .catlists {
 	background: #f6f6f6;
 	padding: 3px}
-	
+
 .catitems {padding-left: 20px}
 .catfeatures > li {text-transform: capitalize}
 
 /***** Tags (freetags) *****/
-	
+
 /*****  Polls  *****/
 
 /***** FAQs *****/
@@ -1076,10 +1076,10 @@ div.dirfooter {margin-top: 10px}
 .calodd {background: #eee}
 .caleven {background: #f9f9f9}
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {font-size: 90%}
-	
+
 .Calart,
 .Calblog,
 .Calchart,

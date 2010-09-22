@@ -44,7 +44,7 @@ button {
 	background-image: url(lightgreen/button_bg.png)}
 
 input[id="fuser"] {
-	background-image: url(lightgreen/button_bg.png)}	
+	background-image: url(lightgreen/button_bg.png)}
 
 ul li,
 .wikicell li {
@@ -102,7 +102,7 @@ div.option a.linkmenu:hover {
 .titlebar {
 	background: #93cc31;
 }
-	
+
 th,
 table.normal td.heading {
 	background: #93cc31;

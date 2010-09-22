@@ -423,7 +423,7 @@ div.imagerank {
 	margin-top:   10px;
 }
 
-/* A simple box is just a div with a border around and some margin 
+/* A simple box is just a div with a border around and some margin
  * used for example in the admin screen */
 div.simplebox {
 	margin-left:    1px;
@@ -481,11 +481,11 @@ TD {
 	text-align:   left;
 }
 /* Cells in forms using a background color */
-.formcolor td, 
-.galform td, 
-.editblogform td, 
-.editfgalform td, 
-.comform td, 
+.formcolor td,
+.galform td,
+.editblogform td,
+.editfgalform td,
+.comform td,
 .forumform td {
 	color:    Black;
 	font-family:   Verdana, Geneva, Arial, Helvetica, sans-serif;
@@ -2369,7 +2369,7 @@ border-bottom: 0;
 font-size: 11px;
 }
 td.middle {
-	vertical-align: middle; 
+	vertical-align: middle;
 }
 .daterow {
 	margin-left: 10px;
@@ -2383,10 +2383,10 @@ td.middle {
 background-color: #ffffff;
 width: auto;
 border: 1px solid #666666;
-padding: 1px; 
+padding: 1px;
 }
 .opaque .box-title,
-.opaque, .box-data 
+.opaque, .box-data
 {
 width: auto;
 }
@@ -2439,7 +2439,7 @@ div#attzoneopen {
 }
 
 /*
- * Caption in tables. 
+ * Caption in tables.
  * Currently in Attachments and comments only.
  */
 caption {
@@ -2551,29 +2551,29 @@ div#loadstats {
 .mdksubmenu {
   z-index: 999;
   position: absolute;
-  left: 0;  
+  left: 0;
   top: 0;
   background-color: #FFFFFF;
   visibility: hidden;
 }
 .mdksubmenu table {
   width: auto;
-} 
-  
+}
+
 .mdksubframe  {
-  z-index: 1000; 
+  z-index: 1000;
   position: relative;
   display: block;
   border: 1px solid #000000;
-} 
+}
 
 .mdkitem  {
   border-top: 1px solid #dedede;
   position: relative;
   text-align: left;
   white-space: nowrap;
-} 
-  
+}
+
 .mdkitem a  {
   padding: 2px 5px 2px 5px;
   position: relative;
@@ -2589,8 +2589,8 @@ div#loadstats {
 
 .mdkitem a:active {
   color: #993300;
-} 
-  
+}
+
 .mdkitem .mdkfwdarr {
   position: absolute;
   top: 5px;
@@ -2605,19 +2605,19 @@ div#loadstats {
 .tocnav {
   background-color: #ededed;
   margin-bottom: 16px;
-} 
+}
 .tocnav table {
   width: 100%;
   background-color: #ffffff;
 }
 .tocnav a {
   font-size: 90%;
-  color: #424242; 
+  color: #424242;
 }
 /* for jscalendar */
 .calendar {
   z-index: 200;
-} 
+}
 
 
 /* TikiIntegrator: By default copy rules dialog not shown */
@@ -2630,7 +2630,7 @@ div#rules-copy-panel {
 #clear {
 	clear:both;
 	}
-	
+
 
 /* tiki tabs */
 
@@ -2642,11 +2642,11 @@ div#rules-copy-panel {
 	margin: 0px;
 	margin-right: 5px;
 	padding: 1px 0px 1px 0px;
-	-moz-border-radius : 5px 5px 0 0;  
+	-moz-border-radius : 5px 5px 0 0;
 }
-.tabmark a { 
-	-moz-border-radius : 5px 5px 0 0; 
-	border-bottom : 0; 
+.tabmark a {
+	-moz-border-radius : 5px 5px 0 0;
+	border-bottom : 0;
 	color: #666666;
 	font-weight: 700 !important;
 	padding: 1px 5px 1px 5px;
@@ -2688,7 +2688,7 @@ div#rules-copy-panel {
 }
 
 /**** coloration for c o d e plugin *****/
-.codelisting 
+.codelisting
 { font-family : monospace;
 padding : 2ex;
 background-color : #ffe4e1;

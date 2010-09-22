@@ -1,4 +1,4 @@
-/* "Type F" version of Mollio layout - 
+/* "Type F" version of Mollio layout -
 3 columns - Main + Right hand nav + Left Sidebar
 */
 #c1c2	#wrapper .marginleft {
@@ -40,7 +40,7 @@
 	display: block;
 	border-bottom: 1px solid #c00;
 	color:#c00}
-	
+
 #col3 .box {
 	width: 165px;
 	background: none;
@@ -52,5 +52,5 @@
 }
 
 #col3 .box-data {
-	
+
 }

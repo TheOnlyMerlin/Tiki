@@ -4,7 +4,7 @@
 */
 
 body {
-	background-image: url(bluemetal/page_back.png); 
+	background-image: url(bluemetal/page_back.png);
 	margin-top: 0px;
 	margin-left: 0px;
 	margin-bottom: 0px;
@@ -23,14 +23,14 @@ span.tabbut {
 }
 
 .tablink {
-color: #225566; 
-font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  font-size: 10px;   
+color: #225566;
+font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  font-size: 10px;
 text-decoration: none;
 }
 
 /* GENERAL LAYOUT EXPLANATION
  *
- * The tiki application is enclosed as a whole in tiki-main tiki-main contains three divs: tiki-top, 
+ * The tiki application is enclosed as a whole in tiki-main tiki-main contains three divs: tiki-top,
  * tiki-mid and tiki-botthat will be used for the header, application and footer.
  *
  * tiki-mid contains a 3-column table, the columns are called (ids) leftcolumn, centercolumn and rightcolumn
@@ -58,7 +58,7 @@ DIV#tiki-bot { background-image: url(bluemetal/page_back.png); padding: 2px 2px 
 TD#leftcolumn { padding-left: 5px; padding-right: 5px; vertical-align: top; }
 
 TD#rightcolumn { background-color: #BBBFC5; border-left : 1px dashed #CCCCBB; padding-left: 0px; vertical-align: top; padding-right: 0px; }
-	
+
 TD#centercolumn { vertical-align: top;}
 
 /* And this is what lies inside the centercolumn */
@@ -112,20 +112,20 @@ div#debugconsole {
   padding: 5px;
   border: 6px ridge #335577;
   font-size: 12px;
-} 
+}
 span.on-option { color: #00C000; }
 span.off-option { color: #005000; }
 
 /********************************************* GENERAL STYLE PROPERTIES **********************************************/
 
 /* BOXES boxes are used to present a box with a title bar and content, they are used for modules and they
-   are also used in the rankings, admin screen etc. 
+   are also used in the rankings, admin screen etc.
    The box class is used for modules while the cbox class is used for other boxes
 */
 
 /* Modules (modules are those boxes in the left/right columns) */
 
-div.box {  
+div.box {
   margin-left: 4px;  margin-right: 4px;  margin-top: 4px;  margin-bottom: 4px;
   padding-bottom: 10px;  overflow: hidden;
   width: 160px;
@@ -133,7 +133,7 @@ div.box {
 
 /* Boxes are divided in title and data, this is the title */
 div.box-title {
-  background-color: #A8BFD5; 
+  background-color: #A8BFD5;
   border-bottom: 1px solid black;
   color: white;
   font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  font-size: 13px;  color: #000066;  font-weight: bold;
@@ -159,7 +159,7 @@ TD.module {
 	font-size: 10px;
 	color: black;
 	text-align: left;
-  margin-left: 5px;  margin-right: 5px;	
+  margin-left: 5px;  margin-right: 5px;
 	}
 
 /* Links in modules */
@@ -169,19 +169,19 @@ TD.module {
 
 
 /* Now the boxes for the rest of Tiki (non-modules */
-div.cbox {  
-  margin-left: 7px;  
-  margin-right: 7px;  
-  margin-top: 7px;  
+div.cbox {
+  margin-left: 7px;
+  margin-right: 7px;
+  margin-top: 7px;
   margin-bottom: 0px;
-  border: 1px solid black;  
-  padding-bottom: 10px;  
-  overflow: hidden; 
+  border: 1px solid black;
+  padding-bottom: 10px;
+  overflow: hidden;
 }
 
 /* Boxes are divided in title and data, this is the title */
 div.cbox-title {
-  background-color:#A8BFD5; 
+  background-color:#A8BFD5;
   color: white;
   border-bottom: 1px solid black;
   font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  font-size: 13px;  font-weight: bold;
@@ -215,12 +215,12 @@ div.cbox-data {
 /* Separators are used to separate menu areas in the application menu and user created menus*/
 div.separator {
 	background: #D1DEE9;
-	color: #000033; 
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  
+	color: #000033;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	padding-bottom: 2px;
 	padding-left: 2px;
-	margin-left: 2px;  
+	margin-left: 2px;
 	margin-right: 2px;
 	margin-top: 6px;
 	margin-bottom: 2px;
@@ -234,14 +234,14 @@ div.separator {
 	color: #000066;
 	text-decoration: none;
 	}
-	
+
 .linkmenu:active, .rsslink:active {
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-	font-size: 11px; 
-	color: #000066; 
+	font-size: 11px;
+	color: #000066;
 	text-decoration: none;
 	}
-	
+
 .linkmenu:hover, .rsslink:hover {
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 11px;
@@ -290,13 +290,13 @@ div.separator {
 /* Some boxes uses thumbnails this is the image style */
 div.imagerank {  margin-left: 5px;  margin-right: 5px;  margin-bottom: 10px;  margin-top: 10px; }
 
-/* A simple box is just a div with a border around and some margin 
+/* A simple box is just a div with a border around and some margin
  * used for example in the admin screen */
-div.simplebox {  
+div.simplebox {
   margin-left: 5px;  margin-right: 5px;  margin-top: 5px;  margin-bottom: 5px;
   padding-left: 5px;  padding-top: 5px;  padding-bottom: 5px;  padding-right: 5px;
   color: black;
-  border: 1px solid black; 
+  border: 1px solid black;
   font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;
   width: 100%;
 }
@@ -305,41 +305,41 @@ div.simplebox {
 FORM {  margin : 0px 0px 0px 0px;  padding-bottom : 0px;  padding-left : 0px;  padding-right : 0px;  padding-top : 0px;}
 
 /* General form elements */
-input {color : #000000; 
-  background: #E4E7EA; 
+input {color : #000000;
+  background: #E4E7EA;
   font: normal 10px Verdana, Arial, Helvetica, sans-serif;
   border: 1px solid #999999;
 }
 input[type=submit] { color : #000000; background: #E4E7EA;
   -moz-border-radius: 0.8em;}
-input[type=submit]:hover { color: #000000; 
+input[type=submit]:hover { color: #000000;
   background: #E4E7EA;
   background-image: url(mods/tab-active.jpg);
 }
-select {color : #000000; 
-  background: #E4E7EA; 
+select {color : #000000;
+  background: #E4E7EA;
   font: normal 10px Verdana, Arial, Helvetica, sans-serif;
   border: 1px solid #999999;
 }
-textarea {color : #000000; 
-  background: #E4E7EA; 
+textarea {color : #000000;
+  background: #E4E7EA;
   font: normal 10px Verdana, Arial, Helvetica, sans-serif;
   border: 1px solid #999999;
 }
-checkbox {color : #000000; 
+checkbox {color : #000000;
   background: #E4E7EA;
 }
-radio {color : #000000; 
+radio {color : #000000;
   background: #E4E7EA;
-  border: 1px solid #E4E7EA; 
+  border: 1px solid #E4E7EA;
 }
-file {color : #000000; 
-  background: #E4E7EA; 
+file {color : #000000;
+  background: #E4E7EA;
   font: normal 10px Verdana, Arial, Helvetica, sans-serif;
   border: 1px solid #999999;
 }
-textarea {color : #000000; 
-  background: #E4E7EA; 
+textarea {color : #000000;
+  background: #E4E7EA;
   font: normal 10px Verdana, Arial, Helvetica, sans-serif;
   border: 1px solid #999999;
 }
@@ -356,10 +356,10 @@ TD {color: Black; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; fo
 { color: Black; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 11px; vertical-align: top; text-align: left;}
 
 /* Cells in forms using a background color */
-.formcolor td, 
-.galform td, 
-.editblogform td, 
-.editfgalform td, 
+.formcolor td,
+.galform td,
+.editblogform td,
+.editfgalform td,
 .comform td,
 .forumform td
 { color: Black; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  background: #A8BFD5; font-size: 11px; vertical-align: top; text-align: left;}
@@ -375,23 +375,23 @@ table.viewthread
 TABLE.normalnoborder {  width: 100%;}
 
 /* Table headings */
-TD.heading, td.gallistheading, td.listgalheading, td.bloglistheading, td.listfgalheading, td.jukeboxlistheading 
+TD.heading, td.gallistheading, td.listgalheading, td.bloglistheading, td.listfgalheading, td.jukeboxlistheading
 td.listfilesheading, td.listartheading, td.forumheading, td.thead
 {
   font-family: Verdana, Arial, Helvetica, sans-serif;
   color: #E4E7EA; font-size: 11px; font-weight : bold;
-  background-color: #000066; 
+  background-color: #000066;
   padding-left: 2px;
   padding-right: 5px;
 }
 
 /* adding th so it doesn't mess up formatting as we transition to an accessible tiki */
-th, th.gallistheading, th.listgalheading, th.bloglistheading, th.listfgalheading, th.jukeboxlistheading 
+th, th.gallistheading, th.listgalheading, th.bloglistheading, th.listfgalheading, th.jukeboxlistheading
 th.listfilesheading, th.listartheading, th.forumheading, th.thead
 {
   font-family: Verdana, Arial, Helvetica, sans-serif;
   color: #E4E7EA; font-size: 11px; font-weight : bold;
-  background-color: #000066; 
+  background-color: #000066;
   padding-left: 2px;
   padding-right: 5px;
 }
@@ -400,10 +400,10 @@ TD.button
 {
   font-family: Verdana, Arial, Helvetica, sans-serif;
   color: #E4E7EA; font-size: 11px; font-weight : bold;
-  background-color: #000066; 
+  background-color: #000066;
   padding-left: 2px;
   padding-right: 5px;
-  text-align: center; 
+  text-align: center;
   vertical-align: middle;
 }
 
@@ -412,7 +412,7 @@ a.tablename, a.galname, a.imagename, a.blogname, a.fgalname, a.artname, a.forumn
 { font-weight: bold; font-size: 12px ; letter-spacing: 1px; color : black; text-decoration: none;}
 a.tablename:active,a.galname:active, .a.imagename:active, a.blogname:active, a.fgalname:active,a.artname:active,a.forumname:active, a.jukeboxname:active
 { text-decoration: none; color : black; text-decoration: none;}
-a.tablename:hover, a.galname:hover, a.imagename:hover, a.blogname:hover, a.fgalname:hover, a.artname:hover, a.forumname:hover, a.jukeboxname:hover 
+a.tablename:hover, a.galname:hover, a.imagename:hover, a.blogname:hover, a.fgalname:hover, a.artname:hover, a.forumname:hover, a.jukeboxname:hover
 { text-decoration: underline; }
 
 a.forumnameread
@@ -459,8 +459,8 @@ td.listfgalactionsodd, td.listfilesnameodd,td.listfilesdescriptionodd,td.listfil
 td.listfilesfilesizeodd,td.listfilescreatedodd,td.listfilesdlsodd,td.listfilesnameodd,td.listfilesuserodd,td.listfilesactionsodd,
 td.listarttitleodd,td.listarttopicodd,td.listartpublishDateodd,td.listartauthorodd,td.listartreadsodd,td.listarthasimageodd,
 td.listartuseimageodd,td.listartactionsodd,td.listartsizeodd,td.forumstableodd,td.forumstableinfoodd,td.topictitleodd,
-td.topicrepliesodd,td.topicreadsodd,td.topicscoreodd,td.topiclastpostodd,td.topicauthorodd, td.jukeboxlistnameodd, 
-td.jukeboxdescriptionodd, td.jukeboxcreatedodd, td.jukeboxlastmodifodd, td.jukeboxlistuserodd, td.jukeboxlisttracksodd, 
+td.topicrepliesodd,td.topicreadsodd,td.topicscoreodd,td.topiclastpostodd,td.topicauthorodd, td.jukeboxlistnameodd,
+td.jukeboxdescriptionodd, td.jukeboxcreatedodd, td.jukeboxlastmodifodd, td.jukeboxlistuserodd, td.jukeboxlisttracksodd,
 td.jukeboxlistvisitsodd
 {font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 12px; color : Black; background-color: #EFEFEF; vertical-align: top; text-align: left;}
 
@@ -476,7 +476,7 @@ td.listfilesfilesizeeven,td.listfilescreatedeven,td.listfilesdlseven,td.listfile
 td.listarttitleeven,td.listarttopiceven,td.listartpublishDateeven,td.listartauthoreven,td.listartreadseven,td.listarthasimageeven,
 td.listartuseimageeven,td.listartactionseven,td.listartsizeeven,td.forumstableeven,td.forumstableinfoeven,td.topictitleeven,
 td.topicreplieseven,td.topicreadseven,td.topicscoreeven,td.topiclastposteven,td.topicauthoreven,
-td.jukeboxlistnameeven, td.jukeboxdescriptioneven, td.jukeboxcreatedeven, td.jukeboxlastmodifeven, td.jukeboxlistusereven, 
+td.jukeboxlistnameeven, td.jukeboxdescriptioneven, td.jukeboxcreatedeven, td.jukeboxlastmodifeven, td.jukeboxlistusereven,
 td.jukeboxlisttrackseven, td.jukeboxlistvisitseven
 {font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 12px; background-color: #E4E7EA; color : #000066; vertical-align: top; text-align: left;}
 
@@ -528,8 +528,8 @@ div.titlebar {
   background: #3C5E7D;
   color: #E4E7EA;
   border: 1px solid white;
-  padding-left: 1px; 
-  padding-right: 1px; 
+  padding-left: 1px;
+  padding-right: 1px;
   padding-top: 1px;
   padding-bottom: 1px;
   margin: 1px 1px;
@@ -666,7 +666,7 @@ div.linksinfo {  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  fo
 
 /* The header of a weblog post */
 div.posthead {
-  background-color: #A8BFD5; 
+  background-color: #A8BFD5;
   font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  font-size: 13px;  color: white;  font-weight: bold;
   overflow: hidden;
   border: 1px solid black;
@@ -691,7 +691,7 @@ div.postbody {
   background: #E4E7EA;
   border: 1px solid black;
   font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  font-size: 11px;  color: black;
-  padding-left: 5px;padding-top: 5px; padding-bottom: 5px; 
+  padding-left: 5px;padding-top: 5px; padding-bottom: 5px;
   margin-bottom: 10px;
 }
 
@@ -700,7 +700,7 @@ div.blogtitle {
   font-family: Verdana, Arial, Helvetica, sans-serif;
   color: white; font-size: 11px; font-weight : bold;
   font-size: 18px;
-  background-color: #5a4a39; 
+  background-color: #5a4a39;
   padding-left: 2px;
   padding-right: 5px;
   margin-top: 10px;
@@ -712,8 +712,8 @@ div.blogtitle {
 div.bloginfo {
   background: #E4E7EA;
   border: 1px solid black;
-  padding-left: 0.8em; 
-  padding-right: 0.8em; 
+  padding-left: 0.8em;
+  padding-right: 0.8em;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   margin-bottom: 10px;
@@ -726,8 +726,8 @@ div.bloginfo {
 div.blogdesc {
   background: #E4E7EA;
   border: 1px solid black;
-  padding-left: 0.8em; 
-  padding-right: 0.8em; 
+  padding-left: 0.8em;
+  padding-right: 0.8em;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   margin-bottom: 10px;
@@ -740,8 +740,8 @@ div.blogdesc {
 div.blogtools {
   background: #E4E7EA;
   border: 1px solid black;
-  padding-left: 0.8em; 
-  padding-right: 0.8em; 
+  padding-left: 0.8em;
+  padding-right: 0.8em;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   margin-bottom: 10px;
@@ -769,11 +769,11 @@ div.fgaldesc {
 div.articletitle {
   font-family: Verdana, Arial, Helvetica, sans-serif;
   color: white; font-size: 11px; font-weight : bold;
-  background-color: #A8BFD5; 
+  background-color: #A8BFD5;
   border: 1px solid black;
   border-bottom: 0px;
-  padding-left: 0.8em; 
-  padding-right: 0.8em; 
+  padding-left: 0.8em;
+  padding-right: 0.8em;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   margin-top: 5px;
@@ -784,8 +784,8 @@ div.articletitle {
 div.articleheading {
   background: #E4E7EA;
   border: 1px solid black;
-  padding-left: 2.8em; 
-  padding-right: 2.8em; 
+  padding-left: 2.8em;
+  padding-right: 2.8em;
   padding-top: 2.5em;
   padding-bottom: 2.5em;
   border-bottom: 0px;
@@ -813,8 +813,8 @@ span.articleheading {  font-family: Verdana, Geneva, Arial, Helvetica, sans-seri
 div.articlebody {
   background: #E4E7EA;
   border: 1px solid black;
-  padding-left: 2.8em; 
-  padding-right: 2.8em; 
+  padding-left: 2.8em;
+  padding-right: 2.8em;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   margin: 10px 0px;
@@ -852,7 +852,7 @@ span.trailer {  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  fon
 .nav:hover {  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  font-size: 9px;  color : black;  text-decoration: none;   font-weight : bold; background: #CCCCCC;}
 
 .changedate {  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;  font-size: 8px;  background: #E4E7EA;  color : black;  font-weight : bold;}
-.date {  
+.date {
   font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
   font-size: 9px;
   background: #E4E7EA;
@@ -967,8 +967,8 @@ td.threadsoddl { font-family: Verdana, Arial, Helvetica, sans-serif;  font-size:
 td.threadsoddr { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 13px; background-color: #DDDDDD; vertical-align: top;}
 td.threadseparator { background-color: #EEEEEE; height: 5px;}
 
-#forumpost { display: none;}   
-#forumpostopen { display: block;}   
+#forumpost { display: none;}
+#forumpostopen { display: block;}
 
 
 div.forumtoolbar {  background: #A8BFD5;   width: 98%;  margin-bottom: 20px;  border: 0px;}
@@ -989,7 +989,7 @@ td.forumtoolbar { font-family: Verdana, Arial, Helvetica, sans-serif; color: bla
 table.tcategpath { margin-bottom: 40px; border-color: #000000;  border-style: solid;  border-width: 1px;  width: 95%;}
 
 /* Table containing the category path */
-td.tdcategpath { 
+td.tdcategpath {
   font-family: Verdana, Arial, Helvetica, sans-serif;
   color: white; font-size: 13px; font-weight : bold;
   background-color: #A8BFD5;
@@ -1248,8 +1248,8 @@ div.messureadbody {
 
 
 /* calendar styles */
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2
 {
 border-top:1px dashed #cccccc;
@@ -1757,12 +1757,12 @@ div.tree
 /* Root of tree (outer div) */
 div.tree#top
 {
-  margin-left: 4px;  
-  margin-right: 4px;  
-  margin-top: 4px;  
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-top: 4px;
   margin-bottom: 0px;
-  border: 1px solid black;  
-  padding-bottom: 5px;  
+  border: 1px solid black;
+  padding-bottom: 5px;
   overflow: hidden;
 }
 
@@ -1795,36 +1795,36 @@ text-decoration: inherit;
 }
 .catblock {
   border: 1px solid #aaaaaa;
-} 
+}
 .catlists {
   border-top: 1px solid #ffffff;
   padding: 1px 6px 1px 6px;
   background-color: none;
   color: #666666;
-} 
+}
 .catlists:last-child {
   border-bottom: 1px solid #ffffff;
-} 
+}
 .catlists:hover {
   background-color: #dedede;
-} 
+}
 .cattitle {
   color: #000000;
   font-weight: bold;
-} 
+}
 .catlists a.link {
   color: #666666;
   padding: 0px 4px 0px 4px;
   border: 1px solid #aaaaaa;
   -moz-border-radius: 6px;
-} 
+}
 .catlists a.link:hover {
   color: #000000;
-} 
+}
 /* TikiIntegrator: By default copy rules dialog not shown */
 div#rules-copy-panel {
     display: none;
-}   
+}
 
 /*
 ** JsCalendar wrapper
@@ -1832,10 +1832,10 @@ div#rules-copy-panel {
 #datrigger {
   border: 2px outset #666666;
   padding: 1px 3px 1px 5px;
-  margin: 2px; 
+  margin: 2px;
   cursor: pointer;
   font-weight:bold;
-} 
+}
 
 TABLE.admin { width: 95%; }
 table.commentinfo { width: 100%; background-color: #FFF7E6; }
@@ -1844,15 +1844,15 @@ div#loadstats {
   font-size: 70%;
   color: #666666;
   padding: 5px;
-} 
+}
 
 /* phplayers style */
 .box-data table {
   width: 100%;
-} 
+}
 .mdkverbar  {
   margin: 0px;
-} 
+}
 
 .mdksubmenu {
   z-index: 999;
@@ -1933,7 +1933,7 @@ background-color: #ededed;
 #clear {
 	clear:both;
 	}
-	
+
 .treemenudiv	{
 	display: block;
 	white-space: nowrap;
@@ -1962,11 +1962,11 @@ TABLE.admin {
 	margin: 0px;
 	margin-right: 5px;
 	padding: 1px 0px 1px 0px;
-	-moz-border-radius : 5px 5px 0 0;  
+	-moz-border-radius : 5px 5px 0 0;
 }
-.tabmark a { 
-	-moz-border-radius : 5px 5px 0 0; 
-	border-bottom : 0; 
+.tabmark a {
+	-moz-border-radius : 5px 5px 0 0;
+	border-bottom : 0;
 	color: #666666;
 	font-weight: 700 !important;
 	padding: 1px 5px 1px 5px;
@@ -2007,7 +2007,7 @@ TABLE.admin {
   vertcal-align: middle;
 }
 /**** coloration for c o d e plugin *****/
-.codelisting 
+.codelisting
 { font-family : monospace; padding : 2ex; background-color : #edeeef; margin : 1ex; border : 1px dashed #adacaf; }
 
 /* Version Plugin Style */

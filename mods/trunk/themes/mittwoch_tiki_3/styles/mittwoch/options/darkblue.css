@@ -8,7 +8,7 @@ div.adminanchors,
 #tiki-top {
 	background: url(darkblue/bg_pagenav.gif) repeat-x;
 }
-	
+
 a, a:visited,
 .option a:link,
 .option a:visited,
@@ -43,7 +43,7 @@ button {
 	background-image: url(darkblue/button_bg.png)}
 
 input[id="fuser"] {
-	background-image: url(darkblue/button_bg.png)}	
+	background-image: url(darkblue/button_bg.png)}
 
 ul li,
 .wikicell li {
@@ -55,13 +55,13 @@ ul li:hover {
 }
 
 .horbaritem a:link,
-.horbaritem a:visited, 
+.horbaritem a:visited,
 #tiki-top .cssmenu_horiz li a,
 #tiki-top .cssmenu_horiz li a:visited {
 	background: url(darkblue/top_button.gif) no-repeat;
 }
 
-.horbaritem a:hover, 
+.horbaritem a:hover,
 #tiki-top .cssmenu_horiz li a:hover {
 	background: url(darkblue/top_button_hover.gif) no-repeat;
 }
@@ -105,7 +105,7 @@ ul li:hover {
 .titlebar {
 	background: #162db7;
 }
-	
+
 a.tableheading,
 td.bloglistheading a:link {
 	color: #fff}
@@ -114,7 +114,7 @@ th,
 td.heading {
 	background: #162db7;
 	color: #fff}
-	
+
 th a,
 th a:visited,
 td.heading a,
@@ -139,7 +139,7 @@ div.articletitle {
 div.postbody-title h2 {
 	background: url(darkblue/content_head.gif) no-repeat;
 }
- 
+
 #footer {
 	background: #162DB7 url(darkblue/footer.jpg) repeat-x top;
 	color: #f0f0f0}

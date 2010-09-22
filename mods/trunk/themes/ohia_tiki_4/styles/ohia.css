@@ -4,7 +4,7 @@
  * This theme uses the *litecss source-ordered layout solution by luci (http://sourceforge.net/projects/litecss).
  * For more information, please visit http://themes.tikiwiki.org or http://zukakakina.com.
 */
- 
+
 /* Import layout foundation CSS file. */
 /* If *litecss-based theme . . .  */
 @import "lite/lite.css";
@@ -14,9 +14,9 @@
 
 /* And design defaults: */
 @import "layout/design.css";
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	text-align: center;
 	font: 67%/1.4em Verdana, Geneva, Arial, Helvetica, sans-serif;
@@ -35,14 +35,14 @@ body.wikitext {
 	text-align: left;
 	background: transparent;
 	color: #f4f4f4}
-	
+
 #header {
 	text-align: left;
 	background: transparent;
 	min-height: 122px;
 	position: relative;
 }
-	
+
 #middle {background: #222}
 
 .fullscreen #col1 {
@@ -80,12 +80,12 @@ body.wikitext {
 	min-height: 90px;
 	color: #f4f4f4;
 	position: relative}
-	
+
 #footer a:link,
 #footer a:visited {
 	color: #f4f4f4;
 	text-decoration: none}
-	
+
 #footer a:hover {
 	color: #f4f4f4;
 	text-decoration: underline}
@@ -99,7 +99,7 @@ a:visited {
 a:hover {
 	text-decoration: underline;
 	color: #f4f4f4}
-	
+
 .wikitext a:link.wiki,
 .wikitext a.link:visited {
 	color: #fd0006 !important;
@@ -164,7 +164,7 @@ span.button input,
 	border: 1px solid #5f5f5f;
 	border-right: 1px solid #474747;
 	border-bottom: 1px solid #474747}
-	
+
 
 .button a:hover,
 button:hover,
@@ -177,10 +177,10 @@ input[type=submit]:hover,
 	color: #f4f4f4;
 	background: #2f2f2f;
 	text-decoration: none}
-	
+
 button:active,
 input[type=submit]:active,
-.button input:active {background: #5e0000} 
+.button input:active {background: #5e0000}
 
 form.admin input[name="features"] {margin-bottom: 3px !important}
 select[name="theme"] {width: 145px}
@@ -225,7 +225,7 @@ div#sitead {margin: auto}
 	color: #f4f4f4;
 	font-weight: bold;
 	padding-left: 50px}
-	
+
 #sitetitle a,
 #sitetitle a:visited {color: #f4f4f4}
 
@@ -234,12 +234,12 @@ div#sitead {margin: auto}
 	font-size: 28px;
 	margin-top: 20px;
 	margin-bottom: 2px}
-	
+
 #sitesubtitle {
 	display: block;
 	margin-top: 3px;
 	padding-top: 6px}
-	
+
 #tiki-top {text-align: left}
 
 #tiki-top ul.cssmenu_horiz {
@@ -257,7 +257,7 @@ div#sitead {margin: auto}
 	background: #030511;
 	border-left: 1px solid #333;
 	border-bottom: 1px solid #696969}
-	
+
 #sitesearchbar form {margin-right: 40px}
 
 /****** Menus, Links ******/
@@ -274,7 +274,7 @@ div#sitead {margin: auto}
 	background: #000;
 	margin-bottom: -1px;
 }
-	
+
 .cssmenu_vert li ul li:first-child {
 	border-top: 1px solid #313131;
 }
@@ -321,7 +321,7 @@ a .sf-sub-indicator {
 }
 
 /** PHP Layers Menus **/
-.horbar {width: 100%} 
+.horbar {width: 100%}
 
 .horbar table {
 	background: #030511;
@@ -333,35 +333,35 @@ a .sf-sub-indicator {
 	padding: 6px 3px;
 	text-decoration: none;
 	font: 1.1em Verdana, Helvetica, Arial, Sans-Serif;
-	color: #fd0006} 
+	color: #fd0006}
 
 .horbaritem a:hover {
 	background: #313131;
 	color: #eee !important;
-	text-decoration: none} 
+	text-decoration: none}
 
 .mdksubmenu {
 	background: #313131;
 	border: 1px solid #696969;
 	margin-top: 0}
-	
+
 .mdkitem a {
 	padding: 3px 6px;
 	font-weight: normal;
-	font-size: 1em} 
+	font-size: 1em}
 
 .mdkitem a:link {
 	font-weight: normal;
 	text-decoration: none;
 	background: #030511;
-	border: 0} 
+	border: 0}
 
-.mdkitem a:visited {text-decoration: none} 
+.mdkitem a:visited {text-decoration: none}
 
 .mdkitem a:hover {
 	color: #f4f4f4;
 	text-decoration: none;
-	background: #030511} 
+	background: #030511}
 
 .treemenudiv img {background: #990000}
 
@@ -434,7 +434,7 @@ h3.box-title {
 .box-title a:link {
 	color: #f4f4f4;
 	text-decoration: none}
-	
+
 .box-title a:hover {text-decoration: underline}
 
 .box:hover img.flipmodimage {
@@ -460,7 +460,7 @@ img.flipmodimage:hover {border: 1px solid #990000 !important}
 	color: #f4f4f4;
 	background: #030511;
 	border-color: #333}
-	
+
 .cbox-title {
 	border-color: #333;
 	text-align: center;
@@ -471,7 +471,7 @@ img.flipmodimage:hover {border: 1px solid #990000 !important}
 	background: #5e0000;
 	border-color: #990000;
 	color: #fff}
-	
+
 div.simplebox {
 	background: #030511;
 	border: 1px dotted #a9a9a9;
@@ -479,7 +479,7 @@ div.simplebox {
 
 /***** Tables, Tabs *****/
 /** Tables **/
-	
+
 table.admin {background:#030511}
 
 table.normal,
@@ -488,7 +488,7 @@ table.sortable {
 	border-bottom: solid 1px #696969;
 	border-left: solid 1px #696969;
 	border-collapse: collapse}
-	
+
 table.normal tr,
 table.sortable tr {border-right: solid 1px #696969}
 
@@ -519,7 +519,7 @@ li.even {
 	background: #313131;
 	color: #f4f4f4;
 }
-	
+
 tr.odd td,
 td.odd,
 tr.even td,
@@ -550,7 +550,7 @@ td.heading,
 	min-height: 32px;
 	text-align: center}
 
- 
+
 a.tablename,
 a.galname,
 a.imagename,
@@ -612,7 +612,7 @@ a.forumnameread {color: #fd0006}
 	background: #030511}
 
 .tabcontent table {
-	margin: 1% auto 2% auto; 
+	margin: 1% auto 2% auto;
 	text-align: left;
 	width: 95%;
 	background: transparent}
@@ -656,7 +656,7 @@ h1 a.pagetitle:hover {
 table.wikitable {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #777777;
@@ -692,7 +692,7 @@ div.code {
 	background: #000;
 	margin: 4px;
 	border: 1px dashed #696969;
-	overflow: auto; 
+	overflow: auto;
    width: 600px} /*Using % here makes Firefox 3 act like IE7. */
 
 .codecaption {
@@ -719,7 +719,7 @@ div.tocnav {
 	padding: 3px;
 	margin-bottom: 4px;
 	clear: both}
- 
+
 #tocnavicons {float: left}
 #tocnavaddpage {float: right}
 #tocnavlinks {clear: both}
@@ -747,9 +747,9 @@ ul.toc * {border: 0}
 
 div.articletitle {
 	margin-top: 6px;
-	margin-bottom:	15px;
-	text-align:	left}
-	
+	margin-bottom: 15px;
+	text-align: left}
+
 div.articletitle h2 {
 	display: block;
 	font-size: 1.8em;
@@ -757,7 +757,7 @@ div.articletitle h2 {
 	height: auto;
 	margin-bottom: 3px}
 
-span.titleb {font-size: 95%} 
+span.titleb {font-size: 95%}
 div.articlesubtitle {font-size: 0.9em}
 div.articleheading {margin-top: 6px}
 
@@ -841,13 +841,13 @@ div.posthead {
 	padding: 3px}
 
 span.posthead {display: block}
-	
+
 span.posthead small {font-size: 95%}
 
 div.posthead h3 {
 	font-size: 1.5em;
 	font-weight: normal}
- 
+
 div.postbody {
 	margin-right: 8px;
 	line-height: 1.2em;
@@ -868,7 +868,7 @@ body.tiki_forums table.normal {margin: auto}
 	padding: 0;
 	background: #313131;
 	font-size: 1.1em}
-	
+
 * html .post .postbody {font-size: 11px}
 
 .post .postbody .content {
@@ -880,7 +880,7 @@ body.tiki_forums table.normal {margin: auto}
 	border: 1px solid #4c4c4c;
 	border-top: 0;
 	background: #313131 !important}
-	
+
 .post .postbody-title {
 	display: block;
 	padding-bottom: .8em;
@@ -895,10 +895,10 @@ body.tiki_forums table.normal {margin: auto}
 	font-size: 1em;
 	margin-left: 5px;
 	margin-top: 3px}
-	
+
 .post .postbody-title .title h2 {
 	padding: 0}
-	
+
 .post .postbody-title .title a.link {color: #f4f4f4}
 
 .post .author {
@@ -1054,7 +1054,7 @@ div.imgaldescr {margin: 10px}
 .fgallisting table td {
 	padding-left: 2px;
 	padding-right: 2px}
-	
+
 .thumbnailcontener {
 	border: 1px solid #696969;
 }
@@ -1073,7 +1073,7 @@ div.imgaldescr {margin: 10px}
 /***** Categories, Tags *****/
 
 /***** Tags (freetags) *****/
-	
+
 /*****  Polls  *****/
 
 /***** FAQs *****/
@@ -1153,7 +1153,7 @@ div.messureadbody {
 table.default thead td,
 table.default tfoot td {
 	font-weight: bold;
-	text-align:	center;
+	text-align: center;
 	background: #4c4c4c;
 	color: #f4f4f4}
 
@@ -1163,8 +1163,8 @@ table.default td {
 
 /***** Calendar *****/
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {font-size: 90%}
 
 .Calart,
@@ -1233,7 +1233,7 @@ table.default td {
 .Caltrack,
 .Caltrack a,
 .Caltrack a:visited {color: #00BD02}
-	
+
 .Calweb {font-size: 90%}
 
 .Calwiki,

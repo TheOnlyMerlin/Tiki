@@ -10,7 +10,7 @@ div.adminanchors,
 #tiki-top {
 	background: url(orange/bg_pagenav.gif) repeat-x;
 }
-	
+
 a, a:visited,
 .option a:link,
 .option a:visited,
@@ -37,7 +37,7 @@ select:hover,
 input.wikiaction:hover,
 button:hover {
 	color: #916BFF}
-	
+
 .wikitext a:link.wiki,
 .wikitext a.link:visited {
 	color: #FD4708 !important;
@@ -55,7 +55,7 @@ button {
 	background-image: url(orange/button_bg.png)}
 
 input[id="fuser"] {
-	background-image: url(orange/button_bg.png)}	
+	background-image: url(orange/button_bg.png)}
 
 ul li,
 .wikicell li {
@@ -67,7 +67,7 @@ ul li:hover {
 }
 
 .horbaritem a:link,
-.horbaritem a:visited, 
+.horbaritem a:visited,
 #tiki-top .cssmenu_horiz li a,
 #tiki-top .cssmenu_horiz li a:visited {
 	background: url(orange/top_button.gif) no-repeat;
@@ -101,7 +101,7 @@ div.option a.linkmenu:hover {
 .titlebar {
 	background: #cf6c35;
 }
-	
+
 th,
 table.normal td.heading {
 	background: #cf6c35;

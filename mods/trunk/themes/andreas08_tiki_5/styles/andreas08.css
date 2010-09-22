@@ -2,13 +2,13 @@
 	Andreas08 stylesheet template (andreas08.css) for Tiki Wiki CMS Groupware.
 	This stylesheet and related files are for use with Tiki 5.x.
 */
- 
+
 /* Import the default properties files: */
 @import url("layout/layout.css");
 @import url("layout/design.css");
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	display: table;
 	background: #fff;
@@ -37,13 +37,13 @@ td#leftcolumn {
 	padding: 1em;
 	background: #fff;
 	border-left: 2px solid #a0a0a0}
- 
+
 td#centercolumn {
 	background: #fff;
 	padding: 0 10px 10px 10px;
 	border-left: 2px solid #a0a0a0;
 	border-right: 2px solid #a0a0a0}
-	
+
 td#rightcolumn {
 	background: #fff;
 	width: 180px;
@@ -96,7 +96,7 @@ h5 {font-size: 1.1em}
 fieldset {
 	border: solid 1px #303030;
 	padding: 10px}
-	
+
 hr {
 	color: #467aa7;
 	background: #467aa7}
@@ -120,7 +120,7 @@ span.button input,
 	font-weight: normal;
 	font-size: .9em;
 	padding: 1px 4px}
-	
+
 input[type="reset"],
 input[type="submit"],
 input[name="search"] {
@@ -132,10 +132,10 @@ input[name="search"] {
 	font-weight: normal;
 	font-size: .9em;
 	padding: 1px 4px}
-	
+
 span.button:hover {background: 0}
 
-.button:hover,	
+.button:hover,
 .button a:hover,
 button:hover,
 .button input:hover,
@@ -143,18 +143,18 @@ button:hover,
 .calbuttonBox a:hover {
 	background: #578bb8;
 }
-	
+
 input[type="reset"]:hover,
 input[type="submit"]:hover,
 input[name="search"]:hover {
 	background: #578bb8;
 }
-	
+
 select[name="where"] {
 	font-size: .9em;
 	background: #578BB8;
 	color: #fff}
-	
+
 * html input#sl-login-user,
 * html input#sl-login-pass,
 * html input#fuser,
@@ -162,8 +162,8 @@ select[name="where"] {
 * html input#login-pass {
 	padding: 0 4px;
 	margin-right: 4px}
-	
-	
+
+
 .highlight { }
 
 textarea {font-size: 1em}
@@ -203,7 +203,7 @@ input[id="sl-login-pass"] {
 #siteloginbar_popup {
 	bottom: 1px;
 }
-	
+
 #sitetitle {
 	padding-left: 20px;
 	line-height: 1em;
@@ -231,7 +231,7 @@ input[id="sl-login-pass"] {
 	color: #fff;
 	border-top: 1px solid #fff;
 	text-transform: uppercase}
-	
+
 #tiki-top .findtable {
 	margin-bottom: 0;
 }
@@ -241,9 +241,9 @@ input[id="sl-login-pass"] {
 	padding-top: 3px;
 	font-size: 90%;
 	border-left: 1px solid #fff}
-	
+
 #sitesearchbar br {display: none}
-input#fuser {line-height: 90%} 
+input#fuser {line-height: 90%}
 
 
 /****** Menus, Links ******/
@@ -372,7 +372,7 @@ td#leftcolumn .cssmenu_vert li li.sfHover ul {
 .mdkverbar {margin: 0}
 .mdksubframe {background: #467AA7}
 .mdkitem {background: #467AA7}
-	
+
 .mdkitem a,
 .mdkitem a:visited {
 	padding: 3px 10px;
@@ -386,7 +386,7 @@ td#leftcolumn .cssmenu_vert li li.sfHover ul {
 	color: #fff;
 	text-decoration: none;
 	background: #80b0da}
-	
+
 .mdkitem a:active {color: #993300}
 
 .phplmnormal,
@@ -397,7 +397,7 @@ a.phplm:hover,
 a.phplm:active {
 	color: #467aa7;
 	text-decoration: none;
-	font-size: 10px;	
+	font-size: 10px;
 	font-weight: normal}
 
 a.phplm:hover {
@@ -493,7 +493,7 @@ img.flipmodimage:hover {border: 1px solid #58A7D2 !important}
 	border-color: #467aa7;
 	margin: 0;
 	padding: 6px 2px 2px 2px}
-	
+
 div.simplebox {
 	margin: 0 0 20px 0;
 	padding: 10px;
@@ -645,7 +645,7 @@ div.description {
 table.wikitable {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #999;
@@ -668,7 +668,7 @@ div.code {
 	padding: 10px;
 	margin: 4px;
 	border: 1px dashed #ADACAF;
-	overflow: auto; 
+	overflow: auto;
 	width: 400px}
 
 .codecaption {
@@ -705,20 +705,20 @@ div.articletitle {
 	margin-top: 6px;
 	margin-bottom: 15px;
 	text-align: left}
- 
+
 div.articletitle h2 {
 	font-size: 1.5em;
 	font-weight: normal}
 
-span.titleb {font-size: 1.0em} 
+span.titleb {font-size: 1.0em}
 div.articlesubtitle {font-size: 0.9em}
- 
+
 div.articleheading {
 	margin-top: 6px;
 	line-height: 1.15em}
 
 div.articlebody {line-height: 1.5em}
- 
+
 /***** Blogs *****/
 div.blogtitle {
 	font-size: 1.3em;
@@ -750,9 +750,9 @@ span.posthead {
 	display: block;
 	font-weight: bold;
 	letter-spacing: .4pt}
- 
+
 div.posthead h3 {font-size: 1.2em}
- 
+
 div.postbody {
 	margin-right: 8px;
 	line-height: 1.2em;
@@ -775,11 +775,11 @@ div.postfooter {
 
 .post .postbody-title {
 	display: block;
-	background: #67ade7; 
+	background: #67ade7;
 	border-bottom: 0;
 	margin-bottom: 4px;
 	padding-top: 2px}
-	
+
 .post .postbody-title .checkbox {float: left}
 
 .post .postbody-title .title {
@@ -797,7 +797,7 @@ div.postfooter {
 	text-align: left;
 	width: 100%}
 
-.post .author {	
+.post .author {
 	float: left;
 	text-align: left;
 	vertical-align: top;
@@ -828,7 +828,7 @@ div.postfooter {
 .post .postbody-title .actions {
 	float: right;
 	font-size: .9em}
-	
+
 .post .postbody .content {
 	text-align: left;
 	color: #000}
@@ -913,7 +913,7 @@ div.postfooter {
 	display: block;
 	margin: 5px 0;
 	padding: 0}
- 
+
 span.commentstitle {
 	font-weight: bold;
 	font-size: 1.2em}
@@ -973,7 +973,7 @@ td.tdsubcat {width: 25%}
 .cattitle {
 	font-weight: bold;
 	background: #abcdef}
-	
+
 .catlists {
 	height: 100px;
 	overflow: auto;
@@ -1016,7 +1016,7 @@ div.questionblock {
 	border: 1px solid #8cacbb;
 	background: white;
 	padding: 4px}
- 
+
 div.quizdescription,
 div.quizanswer {
 	border: 1px solid #8cacbb;
@@ -1065,10 +1065,10 @@ table.default td {
 
 /***** Calendar *****/
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {font-size: 90%}
-	
+
 .Calart,
 .Calblog,
 .Calchart,
@@ -1111,7 +1111,7 @@ table.default td {
 
 .Calforum,
 .Calforum a,
-.Calforum a:visited {color: #808000} 
+.Calforum a:visited {color: #808000}
 
 .Calgal,
 .Calgal a,
@@ -1132,7 +1132,7 @@ table.default td {
 Caltrack,
 Caltrack a,
 Caltrack a:visited {color: #00BD02}
-	
+
 .Calweb {font-size: 90%}
 
 .Calwiki,
@@ -1194,7 +1194,7 @@ Caltrack a:visited {color: #00BD02}
 .caleven {
 	background: #DCDCDC;
 	color: #000}
-	
+
 * html .caleven {padding: 0}
 .caldark {background: #467aa7}
 * html .caldark {padding: 0}
@@ -1210,7 +1210,7 @@ Caltrack a:visited {color: #00BD02}
 /***** Admin *****/
 a.admbox {
 	border: 1px solid #aaa;
-	background: #578bb8 center center no-repeat; 
+	background: #578bb8 center center no-repeat;
 	color: #c4d6e5}
 
 a.admbox:hover, a.admbox:focus, a.admbox:active  {
@@ -1250,7 +1250,7 @@ a.admbox.off:active {border: 1px solid #9f9f9f}
 	padding-right: 1.5em}
 
 .tab-menu li img {vertical-align: middle}
-.tab-menu li a:hover {} 
+.tab-menu li a:hover {}
 .tab-menu li.tab-selected a {}
 
 table.admin div#content1 div.tabcontent div.cbox {background: transparent}

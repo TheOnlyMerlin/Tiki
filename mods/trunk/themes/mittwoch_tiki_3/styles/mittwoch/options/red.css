@@ -8,7 +8,7 @@ div.adminanchors,
 #tiki-top {
 	background: url(red/bg_pagenav.gif) repeat-x;
 }
-	
+
 a, a:visited,
 .option a:link,
 .option a:visited,
@@ -46,13 +46,13 @@ ul li:hover {
 }
 
 .horbaritem a:link,
-.horbaritem a:visited, 
+.horbaritem a:visited,
 #tiki-top .cssmenu_horiz li a,
 #tiki-top .cssmenu_horiz li a:visited {
 	background: url(red/top_button.gif) no-repeat;
 }
 
-.horbaritem a:hover, 
+.horbaritem a:hover,
 #tiki-top .cssmenu_horiz li a:hover {
 	background: url(red/top_button_hover.gif) no-repeat;
 }

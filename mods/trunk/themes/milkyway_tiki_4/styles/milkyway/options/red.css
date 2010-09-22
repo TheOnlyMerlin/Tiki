@@ -21,7 +21,7 @@ div#header {background: url(red/header.jpg) no-repeat 100% 0}
 #topbar_custom_code {background: white url(red/borderr.png) 100% 0 repeat-y}
 #topbar_cc_liner {background: white url(red/borderl.png) repeat-y 0 0}
 #tiki-top .cssmenu_horiz li.menuLevel0 a:hover,
-.horbaritem a:hover {background: /*#2b2b2b*/ url(red/mw_menu_active_bg.png) 0 0 repeat-x;color: #fff} 
+.horbaritem a:hover {background: /*#2b2b2b*/ url(red/mw_menu_active_bg.png) 0 0 repeat-x;color: #fff}
 .bt {background: url(red/modbox.jpg) no-repeat 100% 0}
 .bt div {background: url(red/modbox.jpg) no-repeat 0 0}
 .bb {background: url(red/modbox.jpg) no-repeat 100% 100%}
@@ -29,7 +29,7 @@ div#header {background: url(red/header.jpg) no-repeat 100% 0}
 .i1 {background: url(red/modboxl.jpg) repeat-y 0 0}
 .i2 {background: url(red/modboxr.jpg) repeat-y 100% 0}
 .box-titlebottom {background: url(red/modboxtitlebottom.jpg) no-repeat 100% 0}
-.box-titlebottom div {background: url(red/modboxtitlebottom.jpg) no-repeat 0 0}	
+.box-titlebottom div {background: url(red/modboxtitlebottom.jpg) no-repeat 0 0}
 
 h3.box-title,
 span.highlight {

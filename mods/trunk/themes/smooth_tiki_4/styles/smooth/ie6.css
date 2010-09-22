@@ -13,7 +13,7 @@
 #sitetitles {
 	height: 5em;
 }
-	
+
 #sitesubtitle {
 	margin-top: 18px;
 }
@@ -24,7 +24,7 @@ input[type=submit] {
 	color: #fff;
 	border: 0;
 	font-weight: bold}
-	
+
 .findtable input {font-size: 1em}
 
 .horbaritem a {font-size: .8em}
@@ -37,7 +37,7 @@ input[type=submit] {
 
 }
 
-.bloginfo table,	
+.bloginfo table,
 .post .postbody,
 .postbody table {font-size: 11px}
 

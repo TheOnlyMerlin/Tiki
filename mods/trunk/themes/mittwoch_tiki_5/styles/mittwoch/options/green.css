@@ -36,7 +36,7 @@ select:hover,
 input.wikiaction:hover,
 button:hover {
 	color: #FF8D6B}
-	
+
 .wikitext a:link.wiki,
 .wikitext a.link:visited {
 	color: #02D238 !important;
@@ -54,7 +54,7 @@ button {
 	background: url(green/button_bg.png)}
 
 input[id="fuser"] {
-	background: url(green/button_bg.png)}	
+	background: url(green/button_bg.png)}
 
 ul li,
 .wikicell li {
@@ -66,12 +66,12 @@ ul li:hover {
 }
 
 .horbaritem a:link,
-.horbaritem a:visited, 
+.horbaritem a:visited,
 #tiki-top .cssmenu_horiz li a,
 #tiki-top .cssmenu_horiz li a:visited {
 	background: url(green/top_button.gif) no-repeat}
 
-.horbaritem a:hover, 
+.horbaritem a:hover,
 #tiki-top .cssmenu_horiz li a:hover {
 	background: url(green/top_button_hover.gif) no-repeat}
 
@@ -112,13 +112,13 @@ ul li:hover {
 .titlebar {
 	background: #31cc67;
 }
-	
+
 th,
 table.normal td.heading {
 	background: #31cc67;
 	color: #fff;
 }
-	
+
 th a,
 th a:visited,
 td.heading a,

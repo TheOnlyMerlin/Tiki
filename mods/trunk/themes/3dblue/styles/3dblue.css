@@ -1,5 +1,5 @@
-/* 
- 
+/*
+
   This is the 3D Blue theme, the idea was taken from a Xoops theme
   by Damian aka Damosoft  damian@tikiwiki.org
 
@@ -25,7 +25,7 @@ a:hover {
 
 /* GENERAL LAYOUT EXPLANATION
  *
- * The tiki application is enclosed as a whole in tiki-main tiki-main contains three divs: tiki-top, 
+ * The tiki application is enclosed as a whole in tiki-main tiki-main contains three divs: tiki-top,
  * tiki-mid and tiki-botthat will be used for the header, application and footer.
  *
  * tiki-mid contains a 3-column table, the columns are called (ids) leftcolumn, centercolumn and rightcolumn
@@ -430,7 +430,7 @@ div.imagerank {
 	margin-top:   10px;
 }
 
-/* A simple box is just a div with a border around and some margin 
+/* A simple box is just a div with a border around and some margin
  * used for example in the admin screen */
 div.simplebox {
 	margin-left:    1px;
@@ -489,11 +489,11 @@ TD {
 }
 
 /* Cells in forms using a background color */
-.formcolor td, 
-.galform td, 
-.editblogform td, 
-.editfgalform td, 
-.comform td, 
+.formcolor td,
+.galform td,
+.editblogform td,
+.editfgalform td,
+.comform td,
 .forumform td {
 	color:    Black;
 	font-family:   Verdana, Geneva, Arial, Helvetica, sans-serif;
@@ -2356,7 +2356,7 @@ border-bottom: 0;
 font-size: 11px;
 }
 td.middle {
-	vertical-align: middle; 
+	vertical-align: middle;
 }
 .daterow {
 	margin-left: 10px;
@@ -2370,10 +2370,10 @@ td.middle {
 background-color: #ffffff;
 width: auto;
 border: 1px solid #666666;
-padding: 1px; 
+padding: 1px;
 }
 .opaque .box-title,
-.opaque, .box-data 
+.opaque, .box-data
 {
 width: auto;
 }
@@ -2426,7 +2426,7 @@ div#attzoneopen {
 }
 
 /*
- * Caption in tables. 
+ * Caption in tables.
  * Currently in Attachments and comments only.
  */
 caption {
@@ -2481,36 +2481,36 @@ div#rules-copy-panel {
 }
 .catblock {
   border: 1px solid #aaaaaa;
-} 
+}
 .catlists {
   border-top: 1px solid #ffffff;
   padding: 1px 6px 1px 6px;
   background-color: none;
   color: #666666;
-} 
+}
 .catlists:last-child {
   border-bottom: 1px solid #ffffff;
-} 
+}
 .catlists:hover {
   background-color: #dedede;
-} 
+}
 .cattitle {
   color: #000000;
   font-weight: bold;
-} 
+}
 .catlists a.link {
   color: #666666;
   padding: 0px 4px 0px 4px;
   border: 1px solid #aaaaaa;
   -moz-border-radius: 6px;
-} 
+}
 .catlists a.link:hover {
   color: #000000;
-} 
+}
 /* TikiIntegrator: By default copy rules dialog not shown */
 div#rules-copy-panel {
     display: none;
-}   
+}
 
 /*
 ** JsCalendar wrapper
@@ -2518,10 +2518,10 @@ div#rules-copy-panel {
 #datrigger {
   border: 2px outset #666666;
   padding: 1px 3px 1px 5px;
-  margin: 2px; 
+  margin: 2px;
   cursor: pointer;
   font-weight:bold;
-} 
+}
 
 TABLE.admin { width: 100%; }
 table.commentinfo { width: 100%; background-color: #FFF7E6; }
@@ -2530,15 +2530,15 @@ div#loadstats {
   font-size: 70%;
   color: #666666;
   padding: 5px;
-} 
+}
 
 /* phplayers style */
 .box-data table {
   width: 100%;
-} 
+}
 .mdkverbar  {
   margin: 0px;
-} 
+}
 .mdksubmenu {
   z-index: 999;
   position: absolute;
@@ -2628,11 +2628,11 @@ div#loadstats {
 	margin: 0px;
 	margin-right: 5px;
 	padding: 1px 0px 1px 0px;
-	-moz-border-radius : 5px 5px 0 0;  
+	-moz-border-radius : 5px 5px 0 0;
 }
-.tabmark a { 
-	-moz-border-radius : 5px 5px 0 0; 
-	border-bottom : 0; 
+.tabmark a {
+	-moz-border-radius : 5px 5px 0 0;
+	border-bottom : 0;
 	color: #666666;
 	font-weight: 700 !important;
 	padding: 1px 5px 1px 5px;

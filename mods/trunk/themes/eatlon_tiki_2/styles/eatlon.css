@@ -1,4 +1,4 @@
-/* 
+/*
  * This theme adapted by Gary Cunningham-Lee (chibaguy) for TikiWiki CMS/Groupware is an adaptation of the Eatlon theme by Olle Axelsson (http://eatlon.com). Please retain the link to eatlon.com in the page footer to be in compliance with the terms of use.
  * For more information, please visit http://themes.tikiwiki.org or http://zukakakina.com.
  */
@@ -24,7 +24,7 @@ a:visited {
 	text-decoration: none;
 	color: #6d819d;
 	border-bottom: 1px solid transparent}
-	
+
 * html a,
 * html a:link,
 * html a:visited {border-bottom: 1px solid #fff}
@@ -179,7 +179,7 @@ ul.jumplinks a:active {
 	position: absolute;
 	top: 9010px;
 	left: 9010px;
-	background: #339999; 
+	background: #339999;
 	color: #fff;
 	padding: 5px;
 	font-weight: bold;
@@ -330,7 +330,7 @@ input[id="sl-login-pass"] {background: #e1e1e2}
 	font-size: 320%;
 	font-weight: 100;
 	margin-top: 40px}
-	
+
 #sitetitle a,
 #sitetitle a:visited {color: #8f8f8f}
 
@@ -426,13 +426,13 @@ a.flip img {display: none}
 /* end layout divs, etc. */
 
 /** Border boxes (if any) **/
-	
+
 /****** Menus ******/
 /** PHP Layers Menus **/
 
 .horbar {
 	margin-top: 10px;
-	width: 100%} 
+	width: 100%}
 
 .horbar table {
 	width: auto;
@@ -446,7 +446,7 @@ a.flip img {display: none}
 	font: 1em Verdana, Helvetica, Arial, Sans-Serif;
 	color: white;
 	font-weight: bold;
-	margin: 0} 
+	margin: 0}
 
 * html .horbaritem a,
 * html .horbaritem a:visited {font-size: .9em }
@@ -454,10 +454,10 @@ a.flip img {display: none}
 
 .horbaritem a:hover {
 	color: #d7e5f3 !important;
-	text-decoration: none} 
+	text-decoration: none}
 
-.horbaritem a:visited {} 
-.mdkverbar {} 
+.horbaritem a:visited {}
+.mdkverbar {}
 
 .mdksubmenu {
 	z-index: 999;
@@ -466,12 +466,12 @@ a.flip img {display: none}
 	visibility: hidden;
 	margin-top: 12px;}
 
-.mdksubmenu table {width: auto} 
+.mdksubmenu table {width: auto}
 
 .mdksubframe {
 	z-index: 1000;
 	position: relative;
-	display: block} 
+	display: block}
 
 .mdkitem {
 	position: relative;
@@ -481,7 +481,7 @@ a.flip img {display: none}
 .mdkitem .mdkfwdarr {
 	position: absolute;
 	top: 7px;
-	right: 7px} 
+	right: 7px}
 
 .mdkitem a,
 .mdkitem a:link,
@@ -490,13 +490,13 @@ a.flip img {display: none}
 	position: relative;
 	display: block;
 	font-weight: normal;
-	color: #fff} 
+	color: #fff}
 
 .mdkitem a:hover {
 	color: #d7e5f3;
-	text-decoration: none} 
+	text-decoration: none}
 
-.mdkitem a:active {} 
+.mdkitem a:active {}
 
 .box-data .mdkitem a,
 .box-data .mdkitem a:link,
@@ -510,7 +510,7 @@ a.flip img {display: none}
 	text-decoration: none;
 	color: #a42929;
 	border-bottom: 1px solid #6d819d}
- 
+
 .treemenudiv {
 	display: block;
 	white-space: nowrap}
@@ -668,10 +668,10 @@ div.box {
 	overflow: hidden;
 	margin-bottom: 16px;
 	display: block}
-	
+
 #leftcolumn .box,
 #rightcolumn .box {width: 160px}
-	
+
 .wikitext div.box { width: 96% }
 
 h3.box-title {
@@ -754,15 +754,15 @@ div.simplebox {
 /** Tables **/
 table {font-size: inherit}
 
-table.normal, 
+table.normal,
 table.admin,
 table.sortable {
 	padding: 0;
 	margin: 0;
 	border-collapse: collapse;
 	width: 100%}
-	
-* html table.normal, 
+
+* html table.normal,
 * html table.admin,
 * html table.sortable { width: 95% }
 
@@ -840,7 +840,7 @@ form.admin .tabs {
 	background: url(eatlon/menu_bg.png) 1000px -15px;
 	color: #fff}
 
-.tabmark a { 
+.tabmark a {
 	/*border-bottom :0;*/
 	color: #fff;
 	/*padding: 1px 5px 1px 5px;*/
@@ -877,25 +877,25 @@ form.admin .tabs {
 	width: 200px;
 	padding-right: 1.5em}
 
-.tab-menu li a 	{ 
-	padding: 1px 5px; 
-	background: #f5f5f5; 
-	color: #222; 
-	font-weight: bold; 
-	text-decoration: none} 
+.tab-menu li a 	{
+	padding: 1px 5px;
+	background: #f5f5f5;
+	color: #222;
+	font-weight: bold;
+	text-decoration: none}
 
-.tab-menu li a:hover, 
-.tab-menu li a:focus { 
-	background: #FAEC8F; 
-	border-bottom-color: #999} 
+.tab-menu li a:hover,
+.tab-menu li a:focus {
+	background: #FAEC8F;
+	border-bottom-color: #999}
 
 .tab-menu li a:hover {
-	background: #FAEC8F; 
-	border-bottom-color: #999} 
+	background: #FAEC8F;
+	border-bottom-color: #999}
 
-.tab-menu li.tab-selected a { 
+.tab-menu li.tab-selected a {
 	background: #BCEC8F}
-	
+
 .tabcontent {
 	z-index: 200;
 	position: relative;
@@ -948,9 +948,9 @@ div#description {
 .wikitext {line-height: 1.5em}
 a.wiki {}
 
-.wikitext h1, 
-.wikitext h2, 
-.wikitext h3, 
+.wikitext h1,
+.wikitext h2,
+.wikitext h3,
 .wikitext h4 {
 	margin: 0 0 15px;
 	padding: 0}
@@ -959,7 +959,7 @@ a.wiki {}
 	/*font-size: 1.2em;*/
 	margin-bottom: 10px}
 
-.wikitext ul li {} 
+.wikitext ul li {}
 .wikitext ul li ul li {}
 .wikitext ol {}
 
@@ -979,7 +979,7 @@ html>body .wikitopline table {width: 100%}
 table.wikitable {
 	border: 1px solid #A9A9A9;
 	border-collapse: collapse}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #999999;
@@ -1011,7 +1011,7 @@ span.button2,
 div.button2,
 .button3 {
 	margin-right: 5px}
- 
+
 .linkbut {}
 .linkbut:hover {}
 div.cache {}
@@ -1052,9 +1052,9 @@ div.code {
 	background: #F5F5F5;
 	margin: 4px;
 	border: 1px dashed #ADACAF;
-	overflow: auto; 
+	overflow: auto;
    width: 500px}
-	
+
 * html .codelisting {padding-bottom: 20px}
 
 .codecaption {
@@ -1107,7 +1107,7 @@ ul.toc * {border: none}
 .diffheader {
 	background: #A9B8C2;
 	font-weight: bold}
-	
+
 .diffadded {background: #CCFFCC}
 .diffdeleted {background: #FFCCCC}
 
@@ -1129,18 +1129,18 @@ div.articletopline {
 
 div.articletitle {
 	margin-top: 6px;
-	margin-bottom:	15px;
-	text-align:	left}
- 
+	margin-bottom: 15px;
+	text-align: left}
+
 span.titlea {
 	font-size: 1.5em;
 	font-weight: normal}
 
-span.titleb {font-size: 1.0em} 
+span.titleb {font-size: 1.0em}
 div.articlesubtitle {font-size: 0.9em}
- 
+
 div.articleheading {margin: 6px 0}
- 
+
 div.articleheadingtext {}
 
 img.topicimage,
@@ -1163,14 +1163,14 @@ img.articleimage {
 	margin-bottom: 10px}
 
 div.articletrailer {}
-div.articletrailer .wikitopline {float: right; clear:both} 
+div.articletrailer .wikitopline {float: right; clear:both}
 div.articlebody {margin-top: 1em}
- 
+
 div.articlesource {
 	margin-top: 5px;
 	font-style: italic;
 	font-size: 90%}
- 
+
 /***** Blogs *****/
 
 div.blogheading {
@@ -1206,7 +1206,7 @@ div.blogtools {
 	/*margin-bottom: -2em;*/}
 
 .blogpost {}
- 
+
 .postinfo a {
 	color: #9CF;
 	text-decoration: none;
@@ -1238,9 +1238,9 @@ span.posthead {
 	display: block;
 	font-weight: bold;
 	letter-spacing: .4pt}
- 
+
 div.posthead h3 {font-size:1.2em}
- 
+
 div.postbody {
 	margin-right: 8px;
 	line-height: inherit;
@@ -1266,7 +1266,7 @@ body.tiki_forums table.normal {margin: auto}
 	margin-top: 5px;
 	background: white;
 	font-size: 1em}
-	
+
 * html .post .postbody {font-size: 11px}
 
 .post .postbody-title {
@@ -1282,10 +1282,10 @@ body.tiki_forums table.normal {margin: auto}
 	font-weight: bold;
 	margin-left: 5px;
 	margin-top: 3px}
-	
+
 .title h2 {}
 .postbody-title br.clear {display: none}
-	
+
 .title a.link {
 	color: #29677B;
 	text-decoration: none}
@@ -1298,7 +1298,7 @@ body.tiki_forums table.normal {margin: auto}
 	color: #8f8f8f;
 	margin: 0}
 
-.post .author {	
+.post .author {
 	float: left;
 	text-align: left;
 	vertical-align: top;
@@ -1306,11 +1306,11 @@ body.tiki_forums table.normal {margin: auto}
 	margin-left: -3px;
 	margin-right: 4px;
 	background: url(eatlon/head_bg.gif) repeat-x;}
-	
+
 .post .author_post_info {
 	/*display: block;*/
 	padding: 2px}
-	
+
 .post .author_post_info:first-letter {text-transform: uppercase}
 
 .post .author_info .icons {display: block}
@@ -1410,15 +1410,15 @@ body.tiki_forums table.normal {margin: auto}
 #comzone {
 	margin: 5px 0;
 	padding: 0}
- 
+
 #comzoneopen {
 	margin: 5px 0;
 	padding: 0}
- 
+
 span.commentstitle {
 	font-weight: bold;
 	font-size: 1.1em}
-	
+
 textarea#editpost2 {
 	width: 95%;
 	/*font-size: 1em*/}
@@ -1586,10 +1586,10 @@ div.imgaldescr {margin: 10px}
 /***** Calendar *****/
 /* Overrides calendar.css, etc. */
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {font-size: 90%}
-	
+
 .Calart,
 .Calblog,
 .Calchart,
@@ -1755,7 +1755,7 @@ Caltrack a:visited {color: #00BD02}
 .days {
 	background: #9faec2;
 	color: white}
-	
+
 #caltable .weeks {
 	font-weight: bold;
 	padding: 2px;

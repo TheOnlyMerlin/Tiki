@@ -5,7 +5,7 @@
 	does not support display:table, minimal HTML tables are needed for
 	graphic treatment and column integrity. For more information, please visit
 	http://themes.tikiwiki.org	or http://zukakakina.com.
- 
+
 	eatlon.css is comprised of these sections:
 	XHTML elements, Siteheader & Identity; Menus, Links;
 	Misc. Center Col.; Misc. Global; Boxes; Tables, Tabs;
@@ -14,12 +14,12 @@
 	Quizzes;	Shoutbox; Directory; Messages; TikiSheets;
 	Calendar; Admin; and Ajax, jquery, etc.
 */
- 
+
 /* Import the default layout properties file: */
  @import "layout/layout.css";
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	background: #9faec2 url(eatlon/body_bg.gif) repeat-x;
 	font-family: arial, sans-serif;
@@ -79,7 +79,7 @@ a:visited {
 	text-decoration: none;
 	color: #6d819d;
 	border-bottom: 1px solid transparent}
-	
+
 * html a,
 * html a:link,
 * html a:visited {border-bottom: 1px solid #fff}
@@ -168,7 +168,7 @@ span.button input,
 	font-size: 11px;
 	font-weight: normal;
 	padding: 2px 4px}
-	
+
 * html input[type=reset],
 * html input[type=submit] {
 	border-top: 1px solid #f3f3f4;
@@ -203,7 +203,7 @@ tt {font-size: 1.2em}
 
 /***** Site Header & Identity *****/
 div#header {position: static}
-	
+
 div#header-top {
 	height: 140px;
 	background: url(eatlon/banner.gif) no-repeat right}
@@ -228,7 +228,7 @@ input[id="sl-login-pass"] {background: #e1e1e2}
 	font-size: 320%;
 	font-weight: 100;
 	margin-top: 40px}
-	
+
 #sitetitle a,
 #sitetitle a:visited {color: #8f8f8f}
 
@@ -242,7 +242,7 @@ input[id="sl-login-pass"] {background: #e1e1e2}
 
 #tiki-top {
 	background: url(eatlon/menu_bg.png) no-repeat right;
-	height: 78px;	
+	height: 78px;
 	min-height: 78px !important}
 
 #tiki-top .wrapper {
@@ -271,18 +271,18 @@ input#fuser,
 /****** Menus, Links ******/
 /** CSS (suckerfish) menus **/
 #tiki-top ul.cssmenu_horiz {margin-left: 30px}
-	
+
 #tiki-top ul.cssmenu_horiz li.menuSection0 a,
 #tiki-top ul.cssmenu_horiz li.menuLevel0 a {
 	padding-top: 12px;
 	padding-bottom: 12px;
 	font-weight: bold;
 	color: #fff}
-	
+
 * html #tiki-top ul.cssmenu_horiz li.menuSection0 a,
 * html #tiki-top ul.cssmenu_horiz li.menuLevel0 a {
 	border-bottom: none}
-	
+
 #tiki-top ul.cssmenu_horiz li.menuSection0 a:hover,
 ul.cssmenu_vert ul li a:link,
 ul.cssmenu_vert ul li a:visited {
@@ -293,7 +293,7 @@ ul.cssmenu_vert ul li a:visited {
 	font-weight: normal;
 	padding-top: 3px;
 	padding-bottom: 3px}
-	
+
 ul.cssmenu_vert ul li a:hover {color: #d7e5f3}
 .cssmenu_vert ul {margin-left: 10.9em !important}
 
@@ -311,7 +311,7 @@ ul.cssmenu_vert ul li a:hover {color: #d7e5f3}
 	margin-top: 0;
 	padding-top: 5px;
 	width: 100%}
-	
+
 .horbar table {margin-left: 30px}
 
 .horbaritem a,
@@ -323,7 +323,7 @@ ul.cssmenu_vert ul li a:hover {color: #d7e5f3}
 	color: white;
 	font-weight: bold;
 	border-bottom: none;
-	margin: 0} 
+	margin: 0}
 
 * html .horbaritem a,
 * html .horbaritem a:visited {font-size: 12px}
@@ -331,7 +331,7 @@ ul.cssmenu_vert ul li a:hover {color: #d7e5f3}
 .horbaritem a:hover {
 	color: #d7e5f3 !important;
 	text-decoration: none;
-	border-bottom: none} 
+	border-bottom: none}
 
 .mdksubmenu {
 	background: #9faec2 url(eatlon/body_bg.gif) 0 -300px repeat-x;
@@ -342,11 +342,11 @@ ul.cssmenu_vert ul li a:hover {color: #d7e5f3}
 .mdkitem a:visited {
 	padding: 4px 9px;
 	font-weight: normal;
-	color: #fff} 
+	color: #fff}
 
 .mdkitem a:hover {
 	color: #d7e5f3;
-	text-decoration: none} 
+	text-decoration: none}
 
 .box-data .mdkitem a,
 .box-data .mdkitem a:link,
@@ -408,10 +408,10 @@ a.flip:hover,
 div.box {
 	margin-bottom: 16px;
 	display: block}
-	
+
 #leftcolumn .box,
 #rightcolumn .box {width: 160px}
-	
+
 .wikitext div.box {width: 96%}
 
 h3.box-title {
@@ -512,7 +512,7 @@ td.form,
 	background: url(eatlon/menu_bg.png) 1000px 0;
 	color: #ececec}
 
-.tabactive a {color: #d7e5f3; font-weight: bold}	
+.tabactive a {color: #d7e5f3; font-weight: bold}
 .tabcontent {
 	border-left: 1px solid #a9a9a9;
 	border-right: 1px solid #696969;
@@ -541,9 +541,9 @@ div#description {
 
 .wikitext {line-height: 1.5em}
 
-.wikitext h1, 
-.wikitext h2, 
-.wikitext h3, 
+.wikitext h1,
+.wikitext h2,
+.wikitext h3,
 .wikitext h4 {
 	margin: 0 0 15px;
 	padding: 0}
@@ -559,7 +559,7 @@ div#description {
 table.wikitable {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #999;
@@ -587,9 +587,9 @@ div.code {
 	background: #F5F5F5;
 	margin: 4px;
 	border: 1px dashed #ADACAF;
-	overflow: auto; 
+	overflow: auto;
    width: 500px}
-	
+
 * html .codelisting {padding-bottom: 20px}
 
 .codecaption {
@@ -632,14 +632,14 @@ div.articletopline {
 
 div.articletitle {
 	margin-top: 6px;
-	margin-bottom:	15px;
-	text-align:	left}
- 
+	margin-bottom: 15px;
+	text-align: left}
+
 div.articletitle h2 {
 	font-size: 1.5em;
 	font-weight: normal}
 
-span.titleb {font-size: 1.0em} 
+span.titleb {font-size: 1.0em}
 div.articlesubtitle {font-size: 0.9em}
 div.articleheading {margin: 6px 0}
 div.articlebody {margin-top: 1em}
@@ -658,7 +658,7 @@ div.bloginfo {
 	padding: 3px;
 	line-height: 150%;
 	text-transform: 0}
- 
+
 .postinfo a {
 	color: #9CF;
 	text-decoration: none;
@@ -673,9 +673,9 @@ a.blogt:hover {
 span.posthead {
 	font-weight: bold;
 	letter-spacing: .4pt}
- 
+
 div.posthead h3 {font-size:1.2em}
- 
+
 div.postbody {
 	margin-right: 8px;
 	line-height: inherit;
@@ -685,7 +685,7 @@ div.postbody {
 .post .postbody {
 	background: white;
 	font-size: 1em}
-	
+
 * html .post .postbody {font-size: 11px}
 
 .post .postbody .content {
@@ -705,19 +705,19 @@ div.postbody {
 	font-weight: bold}
 
 .postbody-title br.clear {display: none}
-	
+
 .title a.link {
 	color: #29677B;
 	text-decoration: none}
 
-.post .author {	
+.post .author {
 	float: left;
 	text-align: left;
 	width: 33%;
 	margin-left: -3px;
 	margin-right: 4px;
 	background: url(eatlon/head_bg.gif) repeat-x}
-	
+
 .post .author_post_info {padding: 2px}
 .post .author_post_info:first-letter {text-transform: uppercase}
 
@@ -822,10 +822,10 @@ table.default tfoot td {
 table.default td {border: solid 1px #a9a9a9}
 
 /***** Calendar *****/
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {font-size: 90%}
-	
+
 .Calart,
 .Calblog,
 .Calchart,
@@ -981,7 +981,7 @@ Caltrack a:visited {color: #00BD02}
 .days {
 	background: #9faec2;
 	color: white}
-	
+
 #caltable .weeks {
 	font-weight: bold;
 	padding: 2px;
@@ -1036,17 +1036,17 @@ a.admbox span {color: #fff}
 .tab-wrapper {border: 1px solid #eee}
 
 .tab-menu li a 	{
-	background: #f5f5f5; 
-	color: #222; 
-	font-weight: bold; 
-	text-decoration: none} 
+	background: #f5f5f5;
+	color: #222;
+	font-weight: bold;
+	text-decoration: none}
 
-.tab-menu li a:hover, 
+.tab-menu li a:hover,
 .tab-menu li a:focus {
-	background: #FAEC8F; 
-	border-bottom-color: #999} 
+	background: #FAEC8F;
+	border-bottom-color: #999}
 
-.tab-menu li a:hover {border-bottom-color: #999} 
+.tab-menu li a:hover {border-bottom-color: #999}
 .tab-menu li.tab-selected a {background: #BCEC8F}
 /***** New (unsorted) *****/
 

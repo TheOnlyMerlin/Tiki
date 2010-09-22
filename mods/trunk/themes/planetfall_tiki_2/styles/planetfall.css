@@ -1,7 +1,7 @@
 /*
 Planetfall theme for TikiWiki CMS/Groupware, compatible with release 2.0.
 This is an adaptation of the original GPL-licensed theme for
-Mambo/Joomla by Rhuk. See http://zukakakina.com or http://themes.tikiwiki.org for further information about  and upgrades for 
+Mambo/Joomla by Rhuk. See http://zukakakina.com or http://themes.tikiwiki.org for further information about  and upgrades for
 this theme.
 */
 
@@ -38,8 +38,8 @@ a:hover {
 
 caption {
   font-size: .9em;
-  font-weight: bold}	
- 
+  font-weight: bold}
+
 h1, h2, h3, h4, h5, h6 {color: #9AB6C2}
 
 h1 {
@@ -61,7 +61,7 @@ h4 {
 h5 {
 	font-size: 1.2em;
 	margin: 1px 0}
-	
+
 h6 {
 	font-size: 1.1em;
 	margin: 1px 0}
@@ -193,7 +193,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	position: absolute;
 	top: 9010px;
 	left: 9010px;
-	background-color: #339999; 
+	background-color: #339999;
 	color: #fff;
 	padding: 5px;
 	font-weight: bold;
@@ -224,7 +224,7 @@ table#main {
 tr#cols {}
 
 td#leftmargin {width: 10%}
-	
+
 td#header {
 	border: 1px solid #9DA6B3;
 	background: url(planetfall/header_bg.jpg) no-repeat  0 10px #04030B;
@@ -246,7 +246,7 @@ td#centercolumn {
 	padding: 1em;
 	border-left: solid 1px #9DA6B3;
 	border-right: solid 1px #9DA6B3}
-	
+
 /* In this theme, the left column is placed between the center and right columns. */
 td#leftcolumn {
 	padding-left: 0;
@@ -265,12 +265,12 @@ td#rightcolumn {
 	background-color: #293C43;
 	border-left: solid 1px #9DA6B3;
 	border-right: solid 1px #9DA6B3}
-	
+
 td#rightborder {
 	width: 1px !important;
 	max-width: 1px !important;
 	background: #9DA6B3}
-	
+
 td#footer .content,
 #tiki-bot {
 	padding-top: 10px;
@@ -282,12 +282,12 @@ td#footer .content,
 	border-left: solid 1px #9DA6B3;
 	border-right: solid 1px #9DA6B3;
 	font-size: 1.1em}
-	
+
 #footer a,
 #footer a:visited {
 	color: #cccccc;
 	border-bottom: 1px solid #ff6600}
-	
+
 #footer a:hover {border-bottom: 1px solid #9AB6C2}
 
 #power {text-align: center}
@@ -404,7 +404,7 @@ div#tiki-top a {}
 	margin-top: 4px;
 	text-align: right;
 	color: #304651}
-	
+
 input#fuser,
 select[name="where"],
 input[name="search"] {}
@@ -449,17 +449,17 @@ div#tiki-center {
 /* end layout divs, etc. */
 
 /** Border boxes (if any) **/
-	
+
 /****** Menus ******/
 /** PHP Layers Menus **/
 
-.horbar {} 
+.horbar {}
 .horbar table {
 	width: auto;
 	text-align: left}
 
 .horbaritem {
-	margin: 0; 
+	margin: 0;
 	padding-left: 10px;
 	padding-right: 10px;
 	font-size: 1em;
@@ -473,7 +473,7 @@ div#tiki-center {
 
 .horbaritem a:hover {color: #ff6600}
 * html .horbaritem a {font-size: .8em}
-.mdkverbar {} 
+.mdkverbar {}
 
 .mdksubmenu {
 	z-index: 999;
@@ -496,7 +496,7 @@ div#tiki-center {
 
 .cssmenu ul li ul,
 li.menuSection ul,
-.cssmenu_vert ul li ul { 
+.cssmenu_vert ul li ul {
 	border: 1px solid #999999;
 	background: #2E4452 url(planetfall/menu2_fade.jpg) repeat-x}
 
@@ -520,18 +520,18 @@ ul.cssmenu li a:visited    {
 	display: block;
 	color: #CCCCCC;
 	background: none}
-	
+
 .cssmenu_vert ul li a { background: none }
 .mdksubmenu .mdkitem a {font-weight: normal}
 
-.mdkitem a:hover, 
+.mdkitem a:hover,
 .cssmenu_vert li a:hover,
 .cssmenu a:hover,
 .cssmenu h2:hover,
 li.menuSection:hover a {
 	color: #9AB6C2;
 	background: none}
-	
+
 .cssmenu_vert li.selected > a {
 	background-color: none;
 }
@@ -551,8 +551,8 @@ li.menuoption {
 	padding: 2px 5px;
 	background: none;
 	border: none}
-	
-/* for using DIV(class="cssmenu_vert") in wikiplugin */ 
+
+/* for using DIV(class="cssmenu_vert") in wikiplugin */
 .cssmenu_vert a.wiki,
 .cssmenu_vert a.wiki:hover { font-weight: bold }
 
@@ -566,7 +566,7 @@ li.menuoption {
 .treemenudiv {
 	display: block;
 	white-space: nowrap}
-	
+
 .imgs {background: #9ab6c2}
 
 .phplmnormal,
@@ -599,7 +599,7 @@ a.phplmselected:hover {color: #808080}
 div.separator, div.separatorline {}
 div.separator + div {padding-left: 20px}
 .separator a:link,
-.separator a:visited { 
+.separator a:visited {
 	background: url(planetfall/menu_bullet.png) no-repeat;
 	font-size: 1em;
 	font-weight: bold;
@@ -615,7 +615,7 @@ div.separator + div {padding-left: 20px}
 div.separator a.separator img {display: none}
 
 /* These maybe conflicting were
-also in 1.9 version 
+also in 1.9 version
 .separator {
 	font-size: 1em;
 	color: #CCCCCC;
@@ -662,7 +662,7 @@ a.linkmodule {
 a.linkmodule:hover {
 	background-position: 0 -20px;
 	color: #9AB6C2}
-	
+
 ol li a.linkmodule {
 	background: none;
 	padding-left: 0 }
@@ -760,7 +760,7 @@ div#edithelpzone {display: none}
 div.searchdate {
 	font-size: .9em;
 	color: #333333}
-	
+
 div#debugconsole {}
 
 /* Pagination for listings */
@@ -816,7 +816,7 @@ a.tikihelp:hover {
 	vertical-align: text-top}
 
 a.tikihelp:hover {color: #224466}
-	
+
 #rss img {vertical-align: middle}
 div.adminanchors {}
 
@@ -833,8 +833,8 @@ div.findsubmit {display: inline}
 /** Modules **/
 .box-shadow {}
 
-div.box {  
-	overflow: hidden; 
+div.box {
+	overflow: hidden;
 	padding-left: 4px;
 	padding-right: 4px;
 	width: 180px}
@@ -875,7 +875,7 @@ div.box-data {
 	font-size: 1em;
 	padding: 0;
 	font-weight: normal}
-	
+
 .box-data table {width: 100%}
 
 /* IE font-size fix. */
@@ -892,7 +892,7 @@ ol.module {list-style:none;}
 .box-footer {}
 
 /** Other boxes **/
-.cbox {  
+.cbox {
   margin: 4px 4px 0 4px;
   border: 1px solid #8CACBB;
   padding-bottom: 10px;
@@ -948,10 +948,10 @@ div.cbox-data {
 .rbox-title[name="warning"] {color: black}
 .rbox-data[name="warning"] {}
 
-div.simplebox  {  
+div.simplebox  {
 	padding: 1ex;
-	border: 1px solid #9DA6B3;  
-	background: #293C43;  
+	border: 1px solid #9DA6B3;
+	background: #293C43;
 	font-size: 1em}
 
 span.user-box-text {color: black}
@@ -962,7 +962,7 @@ span.user-box-text {color: black}
 
 table {font-size: 1em}
 
-table.normal, 
+table.normal,
 table.admin,
 table.bloglist {
 	padding: 0;
@@ -971,7 +971,7 @@ table.bloglist {
 	border: solid 1px #43626D;
 	width: 100%}
 
-* html table.normal, 
+* html table.normal,
 * html table.admin,
 * html table.bloglist {width: 97%}
 
@@ -998,10 +998,10 @@ table.email td.closeButton {}
 td.button {
 	color: black;
 	font-size: .9em;
-	background: #293C43; 
+	background: #293C43;
 	padding-left: 2px;
 	padding-right: 5px;
-	text-align: center; 
+	text-align: center;
 	vertical-align: middle}
 table.findtable {
 	width: 97%;
@@ -1154,7 +1154,7 @@ a.forumnameread {}
 	background: #293C43}
 
 .tabcontent table {
-	margin: 1% auto 2% auto; 
+	margin: 1% auto 2% auto;
 	text-align: left;
 	width: 95%}
 
@@ -1200,7 +1200,7 @@ div.content .tabs {}
 .tab-wrapper {
 	border: 1px solid #EEEEEE;
 	padding: 0}
-	
+
 span#tab1,
 span#tab2,
 span#tab3 {background: #293c43}
@@ -1224,7 +1224,7 @@ table.admin div#content1 div.tabcontent div.cbox {background: transparent}
 h1 a.pagetitle,
 h1 a.pagetitle:visited {
 	background: url(planetfall/title_background.png) no-repeat 0 4px;
-	vertical-align: top; 
+	vertical-align: top;
 	padding-left: 15px;
 	padding-top: 4px;
 	font-size: 1.2em;
@@ -1246,7 +1246,7 @@ div#description {
 	font-size: 1em;
 	font-style: italic;
 	padding-left: 22px}
-	
+
 #pageid {
 	float: left;
 	clear: both}
@@ -1262,10 +1262,10 @@ div.wikitext {
 	border: 1px solid #99bec6;
 	clear: both;
 	padding: 1em 2em}
-	
-.wikitext h1, 
-.wikitext h2, 
-.wikitext h3, 
+
+.wikitext h1,
+.wikitext h2,
+.wikitext h3,
 .wikitext h4 {}
 
 div.titlebar {
@@ -1279,7 +1279,7 @@ div.titlebar {
 	font-weight: bolder;
 	clear: both}
 
-.wikitext ul li {} 
+.wikitext ul li {}
 .wikitext ul li ul li {}
 .wikitext ol {}
 
@@ -1304,7 +1304,7 @@ div#page-bar {
 	float: none;
 	margin-left: 5px;
 	margin-top: 5px}
-	
+
 #page-bar span {float: left}
 
 ul.floatleft {
@@ -1336,7 +1336,7 @@ div.cache {
 
 div.cachedpage {
 	border: 1px solid black;
-	padding: 0.1em; 
+	padding: 0.1em;
 	margin: 0.1ex 0}
 
 .wikicache {
@@ -1358,7 +1358,7 @@ div.cachedpage {
 .wiki:hover {
 	color: #9AB6C2;
 	font-weight: normal}
-	
+
 .wikinew {
 	color: #CC0000;
 	text-decoration: underline;
@@ -1557,13 +1557,13 @@ div.articlesubtitle {
 	color: #404040}
 
 div.articleheading {
-	padding-right: 0.8em; 
+	padding-right: 0.8em;
 	padding-top: 0.5em;
 	padding-bottom: 0.5em;
 	width: 100%}
 
 div.articleheadingtext {
-	font-size: 1em; 
+	font-size: 1em;
 	display: inline;
 	width: 100%}
 
@@ -1593,11 +1593,11 @@ div.articletrailer {
 	font-size: .9em;
 	width: 100%}
 
-div.articletrailer .wikitopline {float: left} 
+div.articletrailer .wikitopline {float: left}
 
 div.articlebody {
-	padding-left: 2em; 
-	padding-right: 2em; 
+	padding-left: 2em;
+	padding-right: 2em;
 	padding-top: 1em;
 	padding-bottom: 1em;
 	margin: 10px 0 10px 0;
@@ -1683,13 +1683,13 @@ div.posthead {
 	font-weight: bold;
 	color: #CCC;
 	text-transform: uppercase}
-	
+
 span.posthead {
 	/*font-size: 1.2em;*/
 	font-weight: bold;
 	color: #cccccc;
 	text-transform: none}
-	
+
 span.posthead small {
 	font-size: 1em;
 	color: #676767;
@@ -1710,10 +1710,10 @@ div.posthead td[align=right] {
 
 div.postbody {
 	overflow: hidden;
-	font-size: 1em;  
+	font-size: 1em;
 	padding-left: 5px;
-	padding-top: 5px; 
-	padding-bottom: 2px; 
+	padding-top: 5px;
+	padding-bottom: 2px;
 	margin-bottom: 10px}
 
 * html .postbody table {font-size: 11px}
@@ -1748,7 +1748,7 @@ body.tiki_forums table.normal {margin: auto}
 
 * html .post .postbody {font-size: 11px}
 *:first-child+html .post .postbody {min-width: 100% !important}
-	
+
 .postbody>.content {
 	color: #D8D8D8;
 	border-color: transparent;
@@ -1761,9 +1761,9 @@ body.tiki_forums table.normal {margin: auto}
 	height: 100%;
 	text-align: left;
 	color: #cccccc}
-	
+
 #c1c2 #wrapper #col1 .content .post .postbody .content p { margin: 5px 10px }
-		
+
 .post .postbody-title {
 	display: block;
 	background: #0d1315;
@@ -1803,7 +1803,7 @@ body.tiki_forums table.normal {margin: auto}
 	display: block;
 	border: none;
 	padding: 0 2px 2px 2px}
-	
+
 .post .author_info {
 	background: #0D1315;
 	border: 0}
@@ -1819,12 +1819,12 @@ body.tiki_forums table.normal {margin: auto}
 .post .postbody-title .actions {
 	float: right;
 	font-size: .9em}
-	
+
 .postbody-content {
 	float: right;
 	width: 70%;
 	padding-left: 5px}
-	
+
 *:first-child+html .postbody-content {min-width: 73%}
 
 .post .postbody .attachments {
@@ -1866,7 +1866,7 @@ body.tiki_forums table.normal {margin: auto}
 .sub_comment_area {
 	clear: both;
 	background: url("../../img/edge.gif") no-repeat top left}
-	
+
 .forum_actions {margin-bottom: 3px}
 
 .forum_actions .actions {
@@ -1906,12 +1906,12 @@ body.tiki_forums table.normal {margin: auto}
 	display: none;
 	margin: 5px 0;
 	padding: 0}
- 
+
 #comzoneopen {
 	display: block;
 	margin: 5px 0;
 	padding: 0}
- 
+
 span.commentstitle {
 	font-weight: bold;
 	font-size: 12px}
@@ -1926,7 +1926,7 @@ div.commentsedithelp {
 	border: 1px solid #ff0000;
 	text-align: center;
 	font-weight: bold}
-	
+
 textarea#editpost2 {
 	width: 100%;
 	font-size: 1em}
@@ -1942,7 +1942,7 @@ table.tcategpath {
 	border-width: 1px;
 	width: 97%}
 
-td.tdcategpath { 
+td.tdcategpath {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	color: #225566;
 	font-size: 1.1em;
@@ -2031,7 +2031,7 @@ td.categobjectsdataodd {
 .catlists:hover {color: #CCC}
 .cattitle {font-weight: bold}
 .catlists a.link {
-	color: #666; 
+	color: #666;
 	padding: 0 4px 0 4px;
 	font-size: .9em}
 
@@ -2106,7 +2106,7 @@ div.browsegallery {
 td.oddthumb {
 	background: #0D1315;
 	border-collapse: collapse}
-	
+
 td.eventhumb {
 	background: #151E22;
 	border-collapse: collapse}
@@ -2114,7 +2114,7 @@ td.eventhumb {
 td.eventhumb img {
 	margin-left: 6px;
 	margin-right: 6px}
-	
+
 /* From 1.9 -- Thumbnails images - trying to get hover to work as in module...*/
 div.thumbnails table.galtable td.eventhumb a img.athumb {
 	border: 1px solid #121A1D;
@@ -2145,7 +2145,7 @@ p.norecords {font-weight: bold}
 
 div.imagetitle {
 	font-weight: bold;
-	font-size: 2.6em; 
+	font-size: 2.6em;
 	font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
 	color: #CCC}
 
@@ -2201,8 +2201,8 @@ div.gallerypath a:hover {}
 
 /***** Calendar *****/
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {
 	border-top: 1px dashed #cccccc;
 	color: #425262;
@@ -2211,7 +2211,7 @@ div.gallerypath a:hover {}
 
 .Cal0:before {
 	content: "? ";
-	background: #ff6347} 
+	background: #ff6347}
 
 .Cal1:before {
 	content: "+ ";
@@ -2289,7 +2289,7 @@ div.gallerypath a:hover {}
 Caltrack,
 Caltrack a,
 Caltrack a:visited {color: #00BD02}
-	
+
 .Calweb {color: #336699}
 .Calweb:hover {color: #996633}
 
@@ -2331,7 +2331,7 @@ Caltrack a:visited {color: #00BD02}
 	font-weight: bold;
 	color: #425262}
 
-/*	
+/*
 .daterow {
 	background-color: black;
 	font-weight: bold;
@@ -2354,7 +2354,7 @@ Caltrack a:visited {color: #00BD02}
 	background-color: #1f363a;
 	width: auto;
 	border: 1px solid #666666;
-	padding: 1px; 
+	padding: 1px;
 	max-width: 300px}
 
 .opaque .box-title,
@@ -2368,7 +2368,7 @@ Caltrack a:visited {color: #00BD02}
 .calfocus a {
 	color: #ff6600;
 	font-size: 1.2em}
-	
+
 .calfocus a:hover {
 	border: 0;
 	color: #9AB6C2;
@@ -2378,7 +2378,7 @@ Caltrack a:visited {color: #00BD02}
 	font-size: 9px;
 	background-color: #638697}
 
-.calfocuson a {	
+.calfocuson a {
 	color: #000000;
 	font-size: 1.2em}
 
@@ -2603,7 +2603,7 @@ Caltrack a:visited {color: #00BD02}
 .calweb {
 	font-weight: bold;
 	font-size: .9em;
-	
+
 	padding-left: 3px;
 	padding-right: 3px;
 	color: #336699}
@@ -2631,7 +2631,7 @@ Caltrack a:visited {color: #00BD02}
 .calprio2 a,
 .calprio3 a,
 .calprio4 a,
-.calprio5 a, 
+.calprio5 a,
 .calprio6 a,
 .calprio7 a,
 .calprio8 a,
@@ -2641,7 +2641,7 @@ Caltrack a:visited {color: #00BD02}
 #caltable {
 	width: 100%;
 	font-size: 1.2em}
-	
+
 #caltable td {padding: 0}
 
 .day {
@@ -2684,7 +2684,7 @@ Caltrack a:visited {color: #00BD02}
 	color: black;
 	font-weight: bold}
 
-.date {  
+.date {
 	font-size: .9em;
 	color: black;
 	font-weight: bold}
@@ -2829,7 +2829,7 @@ textarea.tshoutbox {
 	width: 156px;
 	margin-bottom: 3px}
 
-/* Can't find these in tpls. 
+/* Can't find these in tpls.
 .wiki-table {}
 .wiki-tr-a td {border: 0}
 .wiki-tr-b td {border: 0}*/
@@ -2958,7 +2958,7 @@ div#ajaxLoading {	display: none;
 
 table.default thead td, table.default tfoot td {
 	font-weight: bold;
-	text-align:	center;
+	text-align: center;
 	background-color: black;
 	color: #D8D8D8}
 

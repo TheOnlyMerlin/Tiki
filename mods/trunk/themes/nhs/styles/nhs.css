@@ -9,14 +9,14 @@
 body {
 	background-color:    White;
 	margin-top:   0px;
-	margin-left:   0px; 
+	margin-left:   0px;
 	margin-bottom:   0px;
 	margin-right:   0px;
 }
 
 /* GENERAL LAYOUT EXPLANATION
  *
- * The tiki application is enclosed as a whole in tiki-main tiki-main contains three divs: tiki-top, 
+ * The tiki application is enclosed as a whole in tiki-main tiki-main contains three divs: tiki-top,
  * tiki-mid and tiki-botthat will be used for the header, application and footer.
  *
  * tiki-mid contains a 3-column table, the columns are called (ids) leftcolumn, centercolumn and rightcolumn
@@ -45,16 +45,16 @@ DIV#tiki-top {
 DIV#tiki-top a {
 	color:    White;
 	text-decoration:   none;
-	background:	transparent;
+	background: transparent;
 }
 
 DIV#tiki-top a:hover {
 	color:    #FFFF00;
 	text-decoration:   underline;
-	background:	transparent;
+	background: transparent;
 }
 .tiki-top	{
-	color:	white;
+	color: white;
 	}
 
 /* This is the middle */
@@ -83,7 +83,7 @@ TD#leftcolumn {
 }
 
 TD#rightcolumn {
-	padding-left:	2px;
+	padding-left: 2px;
 	padding-right:    2px;
 	vertical-align:   top;
 	background:   White;
@@ -91,7 +91,7 @@ TD#rightcolumn {
 }
 
 TD#centercolumn {
-	padding-left:	1px;
+	padding-left: 1px;
 	padding-right:    1px;
 	background:   White;
 	vertical-align:   top;
@@ -130,18 +130,18 @@ span.off-option {
 }
 
 a	{
-	color:	black;
-	text-decoration:	underline;
+	color: black;
+	text-decoration: underline;
 }
 
 a:hover	{
-	background:	white;
+	background: white;
 }
 
 /********************************************* GENERAL STYLE PROPERTIES **********************************************/
 
 /* BOXES boxes are used to present a box with a title bar and content, they are used for modules and they
-   are also used in the rankings, admin screen etc. 
+   are also used in the rankings, admin screen etc.
    The box class is used for modules while the cbox class is used for other boxes
 */
 
@@ -224,7 +224,7 @@ div.cbox {
 	border:   1px solid black;
 	padding-bottom:   10px;
 	overflow:   hidden;
-	width:	100%;
+	width: 100%;
 }
 
 /* Boxes are divided in title and data, this is the title */
@@ -249,11 +249,11 @@ div.cbox-title a {
 
 div.cbox-title a:hover {
         color:   black;
-		background:	White;
+		background: White;
 }
 
 div.cbox-head {
-	color:	white;
+	color: white;
 	font-size: 14px;
 	font-weight: bold;
 	text-align:  center;
@@ -324,7 +324,7 @@ div.separator {
 	font-size:   12px;
 	width:   90%;
 	padding:   1px 1px 1px 5px;
-	text-transform:	capitalize;
+	text-transform: capitalize;
 }
 
 /* Links in menus */
@@ -333,7 +333,7 @@ div.separator {
 	font-size:   12px;
 	color:   black;
 	text-decoration:   none;
-	text-transform:	capitalize;
+	text-transform: capitalize;
 }
 
 .linkmenu:hover, .rsslink:hover {
@@ -380,7 +380,7 @@ div.separator {
 	font-size:   14px;
 	color:   white;
 	text-decoration:   none;
-	background:	transparent;
+	background: transparent;
 }
 
 /* Some boxes uses thumbnails this is the image style */
@@ -391,7 +391,7 @@ div.imagerank {
 	margin-top:   10px;
 }
 
-/* A simple box is just a div with a border around and some margin 
+/* A simple box is just a div with a border around and some margin
  * used for example in the admin screen */
 div.simplebox {
 	margin-left:    1px;
@@ -471,14 +471,14 @@ TABLE.normalnoborder {
 	width: 98%;
 }
 table.wikitopline {
-	width:	98%;
+	width: 98%;
 }
 /* Table headings */
 TD.heading, td.heading a, td.gallistheading, td.listgalheading, td.bloglistheading, td.listfgalheading, td.listfilesheading, td.listartheading,
 	td.forumheading, td.thead {
 	font-family:    Verdana, Arial, Helvetica, sans-serif;
 	color:   white;
-	text-decoration:	none;
+	text-decoration: none;
 	font-size:   12px;
 	font-weight:   bold;
 	background-color:   #000099;
@@ -497,7 +497,7 @@ TD.button, .button {
 	padding-right:   2px;
 	text-align:   center;
 	vertical-align:   middle;
-	width:	100%;
+	width: 100%;
 }
 
 /* Links to view an object from a table listing objects can be generalized to this link */
@@ -516,7 +516,7 @@ a.tablename:hover, a.galname:hover, a.imagename:hover, a.blogname:hover, a.fgaln
 
 /* Links in table headings */
 
-.tableheading, .gallistheading, .listgalheading, .bloglistheading, .llisfgalheading, .llistfileslink, .llistart, .lforumheading, .tableheading:active, .gallistheading:active, 
+.tableheading, .gallistheading, .listgalheading, .bloglistheading, .llisfgalheading, .llistfileslink, .llistart, .lforumheading, .tableheading:active, .gallistheading:active,
 .listgalheading:active, .bloglistheading:active, .llisfgalheading:active, .llistfileslink:active, .llistart:active, .lforumheading:active {
 	font-family:    Verdana, Arial, Helvetica, sans-serif;
 	color:   white;
@@ -526,9 +526,9 @@ a.tablename:hover, a.galname:hover, a.imagename:hover, a.blogname:hover, a.fgaln
 }
 
 .tableheading:hover, gallistheading:hover, .listgalheading:hover, .bloglistheading:hover, .llisfgalheading:hover, .llistfileslink:hover, .llistart:hover, .lforumheading:hover {
-	font:	inherit;
+	font: inherit;
 	text-decoration:   underline;
-	background-color:	transparent;
+	background-color: transparent;
 }
 
 /* When a find button is provided for a listing the table form is displayed in a table with the following style */
@@ -544,13 +544,13 @@ td.findtable {
 }
 
 /* Odd rows in several listings */
-TD.odd, td.gallistnameodd, td.gallistdescriptionodd, td.gallistcreatedodd, td.gallistlastModifodd, td.gallistuserodd, td.gallistimagesodd, td.gallisthitsodd, 
-td.gallistactionsodd, td.listgalidodd, td.listgalnameodd, td.listgalcreatedodd, td.listgalhitsodd, td.listgaluserodd, td.listgalfilesizeodd, td.bloglistnameodd, 
-td.bloglistdescriptionodd, td.bloglistcreatedodd, td.bloglistlastModifodd, td.bloglistuserodd, td.bloglistpublicodd, td.bloglistpostsodd, td.bloglistvisitsodd, 
-td.bloglistactivityodd, td.bloglistactionsodd, td.listfgalnameodd, td.listfgaldescriptionodd, td.listfgalcreatedodd, td.listfgallastModifodd, td.listfgaluserodd, 
-td.listfgalfilesodd, td.listfgalvisitsodd, td.listfgalactionsodd, td.listfilesnameodd, td.listfilesdescriptionodd, td.listfilesidodd, td.listfilesfilenameodd, td.listfilesfilesizeodd, 
-td.listfilescreatedodd, td.listfilesdlsodd, td.listfilesnameodd, td.listfilesuserodd, td.listfilesactionsodd, td.listarttitleodd, td.listarttopicodd, td.listartpublishDateodd, 
-td.listartauthorodd, td.listartreadsodd, td.listarthasimageodd, td.listartuseimageodd, td.listartactionsodd, td.listartsizeodd, td.forumstableodd, td.forumstableinfoodd, 
+TD.odd, td.gallistnameodd, td.gallistdescriptionodd, td.gallistcreatedodd, td.gallistlastModifodd, td.gallistuserodd, td.gallistimagesodd, td.gallisthitsodd,
+td.gallistactionsodd, td.listgalidodd, td.listgalnameodd, td.listgalcreatedodd, td.listgalhitsodd, td.listgaluserodd, td.listgalfilesizeodd, td.bloglistnameodd,
+td.bloglistdescriptionodd, td.bloglistcreatedodd, td.bloglistlastModifodd, td.bloglistuserodd, td.bloglistpublicodd, td.bloglistpostsodd, td.bloglistvisitsodd,
+td.bloglistactivityodd, td.bloglistactionsodd, td.listfgalnameodd, td.listfgaldescriptionodd, td.listfgalcreatedodd, td.listfgallastModifodd, td.listfgaluserodd,
+td.listfgalfilesodd, td.listfgalvisitsodd, td.listfgalactionsodd, td.listfilesnameodd, td.listfilesdescriptionodd, td.listfilesidodd, td.listfilesfilenameodd, td.listfilesfilesizeodd,
+td.listfilescreatedodd, td.listfilesdlsodd, td.listfilesnameodd, td.listfilesuserodd, td.listfilesactionsodd, td.listarttitleodd, td.listarttopicodd, td.listartpublishDateodd,
+td.listartauthorodd, td.listartreadsodd, td.listarthasimageodd, td.listartuseimageodd, td.listartactionsodd, td.listartsizeodd, td.forumstableodd, td.forumstableinfoodd,
 td.topictitleodd, td.topicrepliesodd, td.topicreadsodd, td.topicscoreodd, td.topiclastpostodd, td.topicauthorodd {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   12px;
@@ -561,13 +561,13 @@ td.topictitleodd, td.topicrepliesodd, td.topicreadsodd, td.topicscoreodd, td.top
 }
 
 /* Even rows in several listings */
-TD.even, td.gallistnameeven, td.gallistdescriptioneven, td.gallistcreatedeven, td.gallistlastModifeven, td.gallistusereven, td.gallistimageseven, td.gallisthitseven, 
-td.gallistactionseven, td.listgalideven, td.listgalnameeven, td.listgalcreatedeven, td.listgalhitseven, td.listgalusereven, td.listgalfilesizeeven, td.bloglistnameeven, 
-td.bloglistdescriptioneven, td.bloglistcreatedeven, td.bloglistlastModifeven, td.bloglistusereven, td.bloglistpubliceven, td.bloglistpostseven, td.bloglistvisitseven, 
-td.bloglistactivityeven, td.bloglistactionseven, td.listfgalnameeven, td.listfgaldescriptioneven, td.listfgalcreatedeven, td.listfgallastModifeven, td.listfgalusereven, 
-td.listfgalfileseven, td.listfgalvisitseven, td.listfgalactionseven, td.listfilesnameeven, td.listfilesdescriptioneven, td.listfilesideven, td.listfilesfilenameeven, td.listfilesfilesizeeven, 
-td.listfilescreatedeven, td.listfilesdlseven, td.listfilesnameeven, td.listfilesusereven, td.listfilesactionseven, td.listarttitleeven, td.listarttopiceven, td.listartpublishDateeven, 
-td.listartauthoreven, td.listartreadseven, td.listarthasimageeven, td.listartuseimageeven, td.listartactionseven, td.listartsizeeven, td.forumstableeven, td.forumstableinfoeven, 
+TD.even, td.gallistnameeven, td.gallistdescriptioneven, td.gallistcreatedeven, td.gallistlastModifeven, td.gallistusereven, td.gallistimageseven, td.gallisthitseven,
+td.gallistactionseven, td.listgalideven, td.listgalnameeven, td.listgalcreatedeven, td.listgalhitseven, td.listgalusereven, td.listgalfilesizeeven, td.bloglistnameeven,
+td.bloglistdescriptioneven, td.bloglistcreatedeven, td.bloglistlastModifeven, td.bloglistusereven, td.bloglistpubliceven, td.bloglistpostseven, td.bloglistvisitseven,
+td.bloglistactivityeven, td.bloglistactionseven, td.listfgalnameeven, td.listfgaldescriptioneven, td.listfgalcreatedeven, td.listfgallastModifeven, td.listfgalusereven,
+td.listfgalfileseven, td.listfgalvisitseven, td.listfgalactionseven, td.listfilesnameeven, td.listfilesdescriptioneven, td.listfilesideven, td.listfilesfilenameeven, td.listfilesfilesizeeven,
+td.listfilescreatedeven, td.listfilesdlseven, td.listfilesnameeven, td.listfilesusereven, td.listfilesactionseven, td.listarttitleeven, td.listarttopiceven, td.listartpublishDateeven,
+td.listartauthoreven, td.listartreadseven, td.listarthasimageeven, td.listartuseimageeven, td.listartactionseven, td.listartsizeeven, td.forumstableeven, td.forumstableinfoeven,
 td.topictitleeven, td.topicreplieseven, td.topicreadseven, td.topicscoreeven, td.topiclastposteven, td.topicauthoreven {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   12px;
@@ -593,11 +593,11 @@ TD.third {
 	font-size:   26px;
 	font-family:   "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
 	color:   black;
-	text-decoration:	none;
+	text-decoration: none;
 }
 
 a.pagetitle:hover, a.forumspagetitle:hover {
-	font:	inherit;
+	font: inherit;
 	text-decoration:   underline;
 	color:   black;
 }
@@ -632,7 +632,7 @@ H4 {
 }
 
 /* Links where no special link style apply (usually with the general application background) */
-.link, .gallink, .bloglink, .fgallink, .trailer, .opencomlink, .commentslink, .admlink, .forumbutlink, .link:active, .gallink:active, .bloglink:active, 
+.link, .gallink, .bloglink, .fgallink, .trailer, .opencomlink, .commentslink, .admlink, .forumbutlink, .link:active, .gallink:active, .bloglink:active,
 .fgallink:active, .trailer:active, .opencomlink:active, .commentslink:active, .admlink:active, .forumbutlink:active {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   12px;
@@ -640,9 +640,9 @@ H4 {
 	text-decoration:   none;
 }
 
-.link:hover, .gallink:hover, .bloglink:hover, .fgallink:hover, .trailer:hover, .opencomlink:hover, .commentslink:hover, .admlink:hover, 
+.link:hover, .gallink:hover, .bloglink:hover, .fgallink:hover, .trailer:hover, .opencomlink:hover, .commentslink:hover, .admlink:hover,
 .forumbutlink:hover {
-	font:	inherit;
+	font: inherit;
 	color:   black;
 	text-decoration:   underline;
 }
@@ -670,7 +670,7 @@ div.searchdate, div.searchdesc {
 }
 
 .prevnext:hover, .galprevnext:hover, .blogprevnext:hover, .fgalprevnext:hover, .artprevnext:hover, .forumprevnext:hover {
-	font:	inherit;
+	font: inherit;
 	color:   black;
 	background-color:   #DEDEDE;
 }
@@ -696,18 +696,18 @@ div.titlebar {
 }
 
 .titlebar a	{
-	color:	white
+	color: white
 	}
 
 .titlebar a:hover	{
-	color:	black;
-	background:	white;
+	color: black;
+	background: white;
 }
 
 /* The bar where the actions for a page are displayed */
 DIV#page-bar {
 	margin-left: 5px;
-	color:	black;
+	color: black;
 }
 
 /* Wiki action buttons (the buttons displayed at the end of each page to edit/print/remove/etc a page */
@@ -721,7 +721,7 @@ div.button2 {
 	font-size:   10px;
 	color:   Black;
 	font-weight:   bold;
-	text-transform:	capitalize;
+	text-transform: capitalize;
 	background:   white;
 	border:   1px solid black;
 	padding-left:   0.1em;
@@ -732,7 +732,7 @@ div.button2 {
 }
 
 .button2, .button2 a, div.button2 a	{
-	color:	black;
+	color: black;
 }
 
 /* Links in buttons */
@@ -745,7 +745,7 @@ div.button2 {
 }
 
 .linkbut:hover {
-	font:	inherit;
+	font: inherit;
 	color:   black;
 	background:   #DEDEDE;
 	text-decoration:   underline;
@@ -801,7 +801,7 @@ div.wikitext {
 	background:    white;
 	font-family:   Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   14px;
-	color:	black;
+	color: black;
 	padding-left:   1px;
 	padding-right:   1px;
 	padding-top:   1px;
@@ -816,18 +816,18 @@ div.wikitext {
 
 /* Links to wiki pages */
 .wiki {
-	font-weight:	Bold;
-	font-size:	14px;
-	font-family:	"Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+	font-weight: Bold;
+	font-size: 14px;
+	font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
 	color: #330099;
-	text-decoration:	none;
-	padding-left:	2px;
+	text-decoration: none;
+	padding-left: 2px;
 }
 
 .wiki:hover {
 	color:    #330099;
 	background-color:   #DEDEDE;
-	text-decoration:	underline;
+	text-decoration: underline;
 }
 
 /* Date displayed for last modification date of pages */
@@ -843,7 +843,7 @@ div.wiki-edithelp {
 	border:   1px solid black;
 	font-size:   smaller;
 	padding:   6pt;
-	width:	100%;
+	width: 100%;
 }
 
 /***********************************************  WIKI TOCS ***********************************************************/
@@ -861,14 +861,14 @@ div.tocnav	{
 toclevel
 .toc
 {
-font-size:	12px;
-color:	black;
+font-size: 12px;
+color: black;
 text-decoration: none;
 }
 
 .tocnavlink:hover
 {
-text-decoration:	underline;
+text-decoration: underline;
 }
 
 /*************************************************** DIRECTORY ***************************************************/
@@ -932,7 +932,7 @@ div.dirsite {
 }
 
 span.dirsitedesc {
-	font-size:	11px
+	font-size: 11px
 }
 
 span.dirsitetrail {
@@ -1055,7 +1055,7 @@ table.imageinfo {
 td.imageinfo {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   12px;
-	font-weight:	bold;
+	font-weight: bold;
 	color:   Black;
 	background-color:   #DEDEDE;
 	vertical-align:   top;
@@ -1091,7 +1091,7 @@ div.imageinfo {
 }
 
 td.imageinfo {
-	font-size:	12px;
+	font-size: 12px;
 }
 
 table.tableinfo {
@@ -1291,7 +1291,7 @@ div.articletrailer {
 	margin-bottom:   20px;
 	font-family:   Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   11px;
-	width:	100%;
+	width: 100%;
 	clear:   both;
 }
 
@@ -1385,7 +1385,7 @@ span.trailer {
 }
 
 .nav:hover {
-	font:	inherit;
+	font: inherit;
 	color:   black;
 	text-decoration:   none;
 background:   #DEDEDE;
@@ -1608,7 +1608,7 @@ div.forumspagetitle {
 /*Cells for threads table*/
 
 table.threads {
-	border:	2px	solid	#000099;
+	border: 2px	solid	#000099;
 	width: 97%;
 }
 td.thread{
@@ -1706,7 +1706,7 @@ td.forumtoolbar {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   13px;
 	color:   black;
-	background-color:	#DEDEDE;
+	background-color: #DEDEDE;
 }
 
 /************************************************ CATEGORIES **************************************************************/
@@ -1729,7 +1729,7 @@ td.tdcategpath {
 	margin:   0px;
 	border-spacing:   0px;
 	padding-right:   5px;
-	width:	97%;
+	width: 97%;
 }
 
 
@@ -2358,7 +2358,7 @@ div.tabrow {
 	font-size: 11px;
 }
 td.middle {
-	vertical-align: middle; 
+	vertical-align: middle;
 }
 .daterow {
 	margin-left: 10px;
@@ -2372,10 +2372,10 @@ td.middle {
 	background-color: #ffffff;
 	width: auto;
 	border: 1px solid #999999;
-	padding: 1px; 
+	padding: 1px;
 }
 .opaque, .box-title,
-.opaque, .box-data 
+.opaque, .box-data
 {
 	width: auto;
 }
@@ -2440,7 +2440,7 @@ caption {
 div.tree {
 	text-align:    left;
 	padding-left:   1.5em;
-	width:	100%;
+	width: 100%;
 }
 /* Root of tree (outer div) */
 div.tree#top {

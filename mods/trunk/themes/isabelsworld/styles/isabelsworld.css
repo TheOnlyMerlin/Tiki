@@ -19,7 +19,7 @@ body {
 
 /* GENERAL LAYOUT EXPLANATION
  *
- * The tiki application is enclosed as a whole in tiki-main tiki-main contains three divs: tiki-top, 
+ * The tiki application is enclosed as a whole in tiki-main tiki-main contains three divs: tiki-top,
  * tiki-mid and tiki-botthat will be used for the header, application and footer.
  *
  * tiki-mid contains a 3-column table, the columns are called (ids) leftcolumn, centercolumn and rightcolumn
@@ -140,7 +140,7 @@ span.off-option {
 /********************************************* GENERAL STYLE PROPERTIES **********************************************/
 
 /* BOXES boxes are used to present a box with a title bar and content, they are used for modules and they
-   are also used in the rankings, admin screen etc. 
+   are also used in the rankings, admin screen etc.
    The box class is used for modules while the cbox class is used for other boxes
 */
 
@@ -422,7 +422,7 @@ div.imagerank {
 	margin-top:   10px;
 }
 
-/* A simple box is just a div with a border around and some margin 
+/* A simple box is just a div with a border around and some margin
  * used for example in the admin screen */
 div.simplebox {
 	margin-left:    1px;
@@ -2345,7 +2345,7 @@ border-bottom: 0;
 font-size: 11px;
 }
 td.middle {
-	vertical-align: middle; 
+	vertical-align: middle;
 }
 .daterow {
 	margin-left: 10px;
@@ -2359,10 +2359,10 @@ td.middle {
 background-color: #ffffff;
 width: auto;
 border: 1px solid #666666;
-padding: 1px; 
+padding: 1px;
 }
 .opaque .box-title,
-.opaque, .box-data 
+.opaque, .box-data
 {
 width: auto;
 }
@@ -2415,7 +2415,7 @@ div#attzoneopen {
 }
 
 /*
- * Caption in tables. 
+ * Caption in tables.
  * Currently in Attachments and comments only.
  */
 caption {
@@ -2465,13 +2465,13 @@ a.tikihelp:hover {
 }
 .catblock {
   border: 1px solid #aaaaaa;
-} 
+}
 .catlists {
   border-top: 1px solid #ffffff;
   padding: 1px 6px 1px 6px;
   background-color: none;
   color: #666666;
-} 
+}
 .catlists:last-child {
   border-bottom: 1px solid #ffffff;
 }
@@ -2479,18 +2479,18 @@ a.tikihelp:hover {
   background-color: #dedede;
 }
 .cattitle {
-  color: #000000; 
+  color: #000000;
   font-weight: bold;
 }
 .catlists a.link {
-  color: #666666; 
+  color: #666666;
   padding: 0px 4px 0px 4px;
   border: 1px solid #aaaaaa;
   -moz-border-radius: 6px;
 }
 .catlists a.link:hover {
   color: #000000;
-} 
+}
 /* TikiIntegrator: By default copy rules dialog not shown */
 div#rules-copy-panel {
     display: none;
@@ -2504,7 +2504,7 @@ div#rules-copy-panel {
   padding: 1px 3px 1px 5px;
   margin: 2px;
   cursor: pointer;
-  font-weight:bold; 
+  font-weight:bold;
 }
 
 TABLE.admin { width: 100%; }
@@ -2518,11 +2518,11 @@ div#loadstats {
 
 /* phplayers style */
 .box-data table {
-  width: 100%; 
-} 
+  width: 100%;
+}
 .mdkverbar  {
   margin: 0px;
-} 
+}
 
 .mdksubmenu {
   z-index: 999;
@@ -2619,7 +2619,7 @@ div.tabs {
 	background-color: #f3f6f9;
 	-moz-border-radius: 0px 4px 4px 4px;
 	}
-	
+
 .tab {
 	border: 1px solid #347;
 	padding: 2px 5px 1px 5px;
@@ -2638,13 +2638,13 @@ div.tabs {
 	cursor: pointer;
 	}
 
-.tabActive { 
+.tabActive {
 	padding: 3px 5px 2px 5px;
 	color: #060610 ;
 	background-color: #f3f6f9;
 	z-index: 100;
 	}
-      
+
 div.tabsClone .tab, div.tabsClone .tabActive {
 	border-top-width: 0 !important;
 	border-bottom-width: 1px !important;
@@ -2665,5 +2665,5 @@ a.removeTab{
 #clear {
 	clear:both;
 	}
-	
+
 

@@ -11,12 +11,12 @@
 	Quizzes;	Shoutbox; Directory; Messages; TikiSheets;
 	Calendar; Admin; and Ajax, jquery, etc.
 */
- 
+
 /* Import the default layout properties file: */
  @import "layout/layout.css";
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	background: #121A1D url(planetfall/back_fade.jpg) repeat-x;
 	padding: 20px 0;
@@ -40,7 +40,7 @@ table#main {
 	border-collapse: collapse}
 
 td#leftmargin {width: 10%}
-	
+
 td#main-header {
 	border: 1px solid #9DA6B3;
 	background: url(planetfall/header_bg.jpg) no-repeat  0 10px #04030B;
@@ -61,7 +61,7 @@ td#centercolumn {
 	padding: 1em;
 	border-left: solid 1px #9DA6B3;
 	border-right: solid 1px #9DA6B3}
-	
+
 /* In this theme, the left column is placed between the center and right columns. */
 td#leftcolumn {
 	padding-left: 0;
@@ -80,12 +80,12 @@ td#rightcolumn {
 	background: #293C43;
 	border-left: solid 1px #9DA6B3;
 	border-right: solid 1px #9DA6B3}
-	
+
 td#rightborder {
 	width: 1px !important;
 	max-width: 1px !important;
 	background: #9DA6B3}
-	
+
 td#footer .content,
 #tiki-bot {
 	padding-top: 10px;
@@ -95,12 +95,12 @@ td#footer .content,
 	border: 1px solid;
 	border-color: #87ACBB #9DA6B3 #87ACBB #9DA6B3;
 	font-size: 1.1em}
-	
+
 #footer a,
 #footer a:visited {
 	color: #ccc;
 	border-bottom: 1px solid #ff6600}
-	
+
 #footer a:hover {border-bottom: 1px solid #9AB6C2}
 
 /***** XHTML Elements (other than body tag) ******/
@@ -117,8 +117,8 @@ a:hover {
 
 caption {
   font-size: .9em;
-  font-weight: bold}	
- 
+  font-weight: bold}
+
 h1, h2, h3, h4, h5, h6 {color: #9AB6C2}
 
 h1 {
@@ -140,7 +140,7 @@ h4 {
 h5 {
 	font-size: 1.2em;
 	margin: 1px 0}
-	
+
 h6 {
 	font-size: 1.1em;
 	margin: 1px 0}
@@ -229,7 +229,7 @@ input[type=submit]:hover,
 	color: #9AB6C2;
 	text-decoration: none;
 	font-weight: bold}
-	
+
 input[type=checkbox] {border: 0}
 * html .findtable input {font-size: 1em}
 form.admin input[name="features"] {margin-bottom: 3px !important}
@@ -271,7 +271,7 @@ div#header_module {
 	margin: 0;
 	width: 100%;
 	text-align: left}
-	
+
 #sioptions  {padding: 1em}
 
 #sitelogo {margin: auto !important}
@@ -309,7 +309,7 @@ div#sitead {margin: auto}
 #sitesearchbar {
 	margin-top: 4px;
 	color: #304651}
-	
+
 /****** Menus, Links ******/
 /** CSS (suckerfish) menus **/
 
@@ -335,7 +335,7 @@ ul.cssmenu li a:visited {
 li.menuSection ul {
 	border: 1px solid #999;
 	background: #2E4452 url(planetfall/menu2_fade.jpg) repeat-x}
-	
+
 .cssmenu_vert ul li a {background: 0}
 
 .cssmenu_vert li a:hover,
@@ -344,7 +344,7 @@ li.menuSection ul {
 li.menuSection:hover a {
 	color: #9AB6C2;
 	background: 0}
-	
+
 .cssmenu_vert li.selected > a {background: transparent}
 ul.cssmenu_vert {width: 172px}
 
@@ -358,7 +358,7 @@ ul.cssmenu_vert {width: 172px}
 	padding: 2px 5px;
 	background: 0;
 	border: 0}
-	
+
 li.menuSection:hover a {
 	color: #9AB6C2;
 	background: 0}
@@ -367,8 +367,8 @@ li.menuoption {
 	background: #2e4452;
 	border: 0}
 
-	
-/* for using DIV(class="cssmenu_vert") in wikiplugin */ 
+
+/* for using DIV(class="cssmenu_vert") in wikiplugin */
 .cssmenu_vert a.wiki,
 .cssmenu_vert a.wiki:hover {font-weight: bold}
 
@@ -384,12 +384,12 @@ li.menuoption {
 	padding-bottom: 6px;
 	font-size: 12px;
 	border-right: 1px solid #9DA6B3}
-	
-#header .cssmenu_horiz .menuLevel0 a:hover {color: #ff6600} 
+
+#header .cssmenu_horiz .menuLevel0 a:hover {color: #ff6600}
 
 /** PHP Layers Menus **/
 .horbaritem {
-	margin: 0; 
+	margin: 0;
 	padding-left: 10px;
 	padding-right: 10px;
 	font-size: 1em;
@@ -423,13 +423,13 @@ li.menuoption {
 	padding: 2px 5px;
 	color: #ccc;
 	background: 0}
-	
+
 .mdksubmenu .mdkitem a {font-weight: normal}
 
 .mdkitem a:hover {
 	color: #9AB6C2;
 	background: 0}
-	
+
 .imgs {background: #9ab6c2}
 
 .phplmnormal,
@@ -478,7 +478,7 @@ div.separator + div {padding-left: 20px}
 div.separator a.separator img {/*display: 0*/}
 
 /* These maybe conflicting were
-also in 1.9 version 
+also in 1.9 version
 .separator {
 	font-size: 1em;
 	color: #ccc;
@@ -518,7 +518,7 @@ a.linkmodule {
 	text-align: left;
 	padding-left: 15px;
 	margin-bottom: 1px}
-	
+
 .shoutboxmodmsg a.linkmodule {
 	background: 0;
 	padding-left: 0}
@@ -526,7 +526,7 @@ a.linkmodule {
 a.linkmodule:hover {
 	background-position: 0 -20px;
 	color: #9AB6C2}
-	
+
 ol li a.linkmodule {
 	background: 0;
 	padding-left: 0}
@@ -600,14 +600,14 @@ div#tiki-center {
 
 /***** Boxes *****/
 /** Modules **/
-div.box { 
+div.box {
 	padding-left: 4px;
 	padding-right: 4px;
 	width: 180px}
 
 h3.box-title {
 	background: url(planetfall/title_bg.png) no-repeat;
-	background: 	
+	background:
 	vertical-align: middle;
 	font-size: 1em;
 	font-weight: bold;
@@ -629,7 +629,7 @@ div.box-data {
 	font-size: 1em;
 	padding: 0;
 	font-weight: normal}
-	
+
 /* IE font-size fix. */
 * html div.box-data table {
 	font-size: 11px}
@@ -638,7 +638,7 @@ ul.module,
 ol.module {list-style: 0}
 
 /** Other boxes **/
-.cbox { 
+.cbox {
   margin: 4px 4px 0 4px;
   border: 1px solid #8cacbb;
   padding-bottom: 10px;
@@ -684,17 +684,17 @@ div.cbox-data {
 	color: black;
 	font-weight: bold}
 
-div.simplebox  { 
+div.simplebox  {
 	padding: 1ex;
-	border: 1px solid #9DA6B3;  
-	background: #293C43;  
+	border: 1px solid #9DA6B3;
+	background: #293C43;
 	font-size: 1em}
 
 /***** Tables, Tabs *****/
 /** Tables **/
 
 table.normal,
-table.admin, 
+table.admin,
 table.sortable {
 	background: #223138;
 	border: solid 1px #43626D}
@@ -709,10 +709,10 @@ body.tiki_webmail table.normal {color: #436976}
 td.button {
 	color: black;
 	font-size: .9em;
-	background: #293C43; 
+	background: #293C43;
 	padding-left: 2px;
 	padding-right: 5px;
-	text-align: center; 
+	text-align: center;
 	vertical-align: middle}
 
 table.findtable {
@@ -822,7 +822,7 @@ table.normal td.heading {
 	background: #293C43}
 
 .tabcontent table {
-	margin: 1% auto 2% auto; 
+	margin: 1% auto 2% auto;
 	text-align: left;
 	width: 95%}
 
@@ -842,7 +842,7 @@ form.admin .tabs {
 h1.pagetitle a,
 h1.pagetitle a:visited {
 	background: url(planetfall/title_bg.png) no-repeat 0 4px;
-	vertical-align: top; 
+	vertical-align: top;
 	padding-left: 15px;
 	padding-top: 4px;
 	font-size: 1.2em;
@@ -864,7 +864,7 @@ div#description {
 	font-size: 1em;
 	font-style: italic;
 	padding-left: 22px}
-	
+
 #pageid {
 	float: left;
 	clear: both}
@@ -880,10 +880,10 @@ div.wikitext {
 	border: 1px solid #99bec6;
 	clear: both;
 	padding: 1em 2em}
-	
-.wikitext h1, 
-.wikitext h2, 
-.wikitext h3, 
+
+.wikitext h1,
+.wikitext h2,
+.wikitext h3,
 .wikitext h4 {}
 
 div.titlebar {
@@ -897,7 +897,7 @@ div.titlebar {
 	font-weight: bolder;
 	clear: both}
 
-.wikitext ul li {} 
+.wikitext ul li {}
 .wikitext ul li ul li {}
 .wikitext ol {}
 
@@ -922,7 +922,7 @@ div#page-bar {
 	float: 0;
 	margin-left: 5px;
 	margin-top: 5px}
-	
+
 #page-bar span {float: left}
 
 ul.floatleft {
@@ -954,7 +954,7 @@ div.cache {
 
 div.cachedpage {
 	border: 1px solid black;
-	padding: 0.1em; 
+	padding: 0.1em;
 	margin: 0.1ex 0}
 
 .wikicache {
@@ -976,7 +976,7 @@ div.cachedpage {
 .wiki:hover {
 	color: #9AB6C2;
 	font-weight: normal}
-	
+
 .wikinew {
 	color: #CC0000;
 	text-decoration: underline;
@@ -1173,13 +1173,13 @@ div.articlesubtitle {
 	color: #404040}
 
 div.articleheading {
-	padding-right: 0.8em; 
+	padding-right: 0.8em;
 	padding-top: 0.5em;
 	padding-bottom: 0.5em;
 	width: 100%}
 
 div.articleheadingtext {
-	font-size: 1em; 
+	font-size: 1em;
 	display: inline;
 	width: 100%}
 
@@ -1209,11 +1209,11 @@ div.articletrailer {
 	font-size: .9em;
 	width: 100%}
 
-div.articletrailer .wikitopline {float: left} 
+div.articletrailer .wikitopline {float: left}
 
 div.articlebody {
-	padding-left: 2em; 
-	padding-right: 2em; 
+	padding-left: 2em;
+	padding-right: 2em;
 	padding-top: 1em;
 	padding-bottom: 1em;
 	margin: 10px 0 10px 0;
@@ -1299,13 +1299,13 @@ div.posthead {
 	font-weight: bold;
 	color: #CCC;
 	text-transform: uppercase}
-	
+
 span.posthead {
 	/*font-size: 1.2em;*/
 	font-weight: bold;
 	color: #ccc;
 	text-transform: 0}
-	
+
 span.posthead small {
 	font-size: 1em;
 	color: #676767;
@@ -1326,10 +1326,10 @@ div.posthead td[align=right] {
 
 div.postbody {
 	overflow: hidden;
-	font-size: 1em;  
+	font-size: 1em;
 	padding-left: 5px;
-	padding-top: 5px; 
-	padding-bottom: 2px; 
+	padding-top: 5px;
+	padding-bottom: 2px;
 	margin-bottom: 10px}
 
 * html .postbody table {font-size: 11px}
@@ -1364,7 +1364,7 @@ body.tiki_forums table.normal {margin: auto}
 
 * html .post .postbody {font-size: 11px}
 *:first-child+html .post .postbody {min-width: 100% !important}
-	
+
 .postbody>.content {
 	color: #D8D8D8;
 	border-color: transparent;
@@ -1377,9 +1377,9 @@ body.tiki_forums table.normal {margin: auto}
 	height: 100%;
 	text-align: left;
 	color: #ccc}
-	
+
 #c1c2 #wrapper #col1 .content .post .postbody .content p {margin: 5px 10px}
-		
+
 .post .postbody-title {
 	display: block;
 	background: #0d1315;
@@ -1419,7 +1419,7 @@ body.tiki_forums table.normal {margin: auto}
 	display: block;
 	border: 0;
 	padding: 0 2px 2px 2px}
-	
+
 .post .author_info {
 	background: #0D1315;
 	border: 0}
@@ -1435,12 +1435,12 @@ body.tiki_forums table.normal {margin: auto}
 .post .postbody-title .actions {
 	float: right;
 	font-size: .9em}
-	
+
 .postbody-content {
 	float: right;
 	width: 70%;
 	padding-left: 5px}
-	
+
 *:first-child+html .postbody-content {min-width: 73%}
 
 .post .postbody .attachments {
@@ -1482,7 +1482,7 @@ body.tiki_forums table.normal {margin: auto}
 .sub_comment_area {
 	clear: both;
 	background: url("../../img/edge.gif") no-repeat top left}
-	
+
 .forum_actions {margin-bottom: 3px}
 
 .forum_actions .actions {
@@ -1522,12 +1522,12 @@ body.tiki_forums table.normal {margin: auto}
 	display: 0;
 	margin: 5px 0;
 	padding: 0}
- 
+
 #comzoneopen {
 	display: block;
 	margin: 5px 0;
 	padding: 0}
- 
+
 span.commentstitle {
 	font-weight: bold;
 	font-size: 12px}
@@ -1542,7 +1542,7 @@ div.commentsedithelp {
 	border: 1px solid #ff0000;
 	text-align: center;
 	font-weight: bold}
-	
+
 textarea#editpost2 {
 	width: 100%;
 	font-size: 1em}
@@ -1564,7 +1564,7 @@ div.browsegallery {
 td.oddthumb {
 	background: #0D1315;
 	border-collapse: collapse}
-	
+
 td.eventhumb {
 	background: #151E22;
 	border-collapse: collapse}
@@ -1572,7 +1572,7 @@ td.eventhumb {
 td.eventhumb img {
 	margin-left: 6px;
 	margin-right: 6px}
-	
+
 /* From 1.9 -- Thumbnails images - trying to get hover to work as in module...*/
 div.thumbnails table.galtable td.eventhumb a img.athumb {
 	border: 1px solid #121A1D;
@@ -1603,7 +1603,7 @@ p.norecords {font-weight: bold}
 
 div.imagetitle {
 	font-weight: bold;
-	font-size: 2.6em; 
+	font-size: 2.6em;
 	font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
 	color: #CCC}
 
@@ -1720,7 +1720,7 @@ td.categobjectsdataodd {
 .catlists:hover {color: #CCC}
 .cattitle {font-weight: bold}
 .catlists a.link {
-	color: #666; 
+	color: #666;
 	padding: 0 4px 0 4px;
 	font-size: .9em}
 
@@ -1737,7 +1737,7 @@ ul.catitems li a:link {color: #ff6600}
 ul.catitems li a:hover {color: #9AB6C2}
 
 /***** Tags (freetags) *****/
-	
+
 /*****  Polls  *****/
 div.pollresults {
 	background: #1f363a;
@@ -1921,8 +1921,8 @@ div.messureadbody {margin-top: 5px}
 
 
 /***** Calendar *****/
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {
 	border-top: 1px dashed #ccc;
 	color: #425262;
@@ -1931,7 +1931,7 @@ div.messureadbody {margin-top: 5px}
 
 .Cal0:before {
 	content: "? ";
-	background: #ff6347} 
+	background: #ff6347}
 
 .Cal1:before {
 	content: "+ ";
@@ -2009,7 +2009,7 @@ div.messureadbody {margin-top: 5px}
 Caltrack,
 Caltrack a,
 Caltrack a:visited {color: #00BD02}
-	
+
 .Calweb {color: #336699}
 .Calweb:hover {color: #996633}
 
@@ -2051,7 +2051,7 @@ Caltrack a:visited {color: #00BD02}
 	font-weight: bold;
 	color: #425262}
 
-/*	
+/*
 .daterow {
 	background: black;
 	font-weight: bold;
@@ -2074,7 +2074,7 @@ Caltrack a:visited {color: #00BD02}
 	background: #1f363a;
 	width: auto;
 	border: 1px solid #666;
-	padding: 1px; 
+	padding: 1px;
 	max-width: 300px}
 
 .opaque .box-title,
@@ -2088,7 +2088,7 @@ Caltrack a:visited {color: #00BD02}
 .calfocus a {
 	color: #ff6600;
 	font-size: 1.2em}
-	
+
 .calfocus a:hover {
 	border: 0;
 	color: #9AB6C2;
@@ -2098,7 +2098,7 @@ Caltrack a:visited {color: #00BD02}
 	font-size: 9px;
 	background: #638697}
 
-.calfocuson a {	
+.calfocuson a {
 	color: #000;
 	font-size: 1.2em}
 
@@ -2323,7 +2323,7 @@ Caltrack a:visited {color: #00BD02}
 .calweb {
 	font-weight: bold;
 	font-size: .9em;
-	
+
 	padding-left: 3px;
 	padding-right: 3px;
 	color: #336699}
@@ -2351,7 +2351,7 @@ Caltrack a:visited {color: #00BD02}
 .calprio2 a,
 .calprio3 a,
 .calprio4 a,
-.calprio5 a, 
+.calprio5 a,
 .calprio6 a,
 .calprio7 a,
 .calprio8 a,
@@ -2361,7 +2361,7 @@ Caltrack a:visited {color: #00BD02}
 #caltable {
 	width: 100%;
 	font-size: 1.2em}
-	
+
 #caltable td {padding: 0}
 
 .day {
@@ -2404,7 +2404,7 @@ Caltrack a:visited {color: #00BD02}
 	color: black;
 	font-weight: bold}
 
-.date { 
+.date {
 	font-size: .9em;
 	color: black;
 	font-weight: bold}

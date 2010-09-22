@@ -2,7 +2,7 @@
  * using visual elements of the Underground theme by Erwin Aligam
  * (http://www.styleshout.com), which was released under the Creative
  * Commons Attribution 2.5 license. Consequently, the visual aspects
- * retain the Creative Commons Attribution 2.5 license, while the 
+ * retain the Creative Commons Attribution 2.5 license, while the
  * structural aspects based on the default TikiWiki components are
  * licensed GNU/LGPL. Please retain the link to styleshout.com in the
  * page footer to be in compliance with the CCA 2.4 license. -- */
@@ -14,7 +14,7 @@
 body {
 	text-align: left;
 	font: 70%/1.5 Verdana, Tahoma, Arial, Helvetica, sans-serif;
-	color: #333; 
+	color: #333;
 	background: #FFF url(underground/bg.gif) repeat-x}
 
 html>body {font-size: 0.7em !important}
@@ -27,7 +27,7 @@ a:visited {
 	text-decoration: none}
 
 a:hover {
-	color: #CC0001; 
+	color: #CC0001;
 	background-color: inherit}
 
 h1, h2, h3, h4, h5 {
@@ -40,13 +40,13 @@ h1 {
 	letter-spacing: .5px}
 
 h2 {
-	font-size: 115%;	
+	font-size: 115%;
 	text-transform: uppercase}
 h3 {
 	font-size: 115%;
 	color: #003366}
 h2, h3, h4, h5, p {
-	padding: 0;		
+	padding: 0;
 	margin: 10px}
 
 img {
@@ -59,9 +59,9 @@ fieldset {
 form {
 	/*margin: 10px;*/
 	padding: 0 5px;
-	border: 1px solid #f2f2f2; 
+	border: 1px solid #f2f2f2;
 	background: #FAFAFA}
-	
+
 form[name="dyn_vars"] {
 	background: none;
 	border: 0;
@@ -69,7 +69,7 @@ form[name="dyn_vars"] {
 	padding: 0}
 
 button {
-	
+
 }
 
 button:hover {
@@ -82,7 +82,7 @@ option,
 select {}
 
 body.wikitext {
-	color: #333; 
+	color: #333;
 	background: #FFF}
 
 /* IE */
@@ -101,11 +101,11 @@ textarea {
 	display: block;
 	color: #333333}
 
-input.button { 
-	margin: 0; 
-	font: bolder 12px Arial, Sans-serif; 
-	border: 1px solid #CCC; 
-	padding: 1px; 
+input.button {
+	margin: 0;
+	font: bolder 12px Arial, Sans-serif;
+	border: 1px solid #CCC;
+	padding: 1px;
 	background: #FFF;
 	color: #CC0000}
 
@@ -146,20 +146,20 @@ form.search {
 	padding: 0; margin: 0;
 	border: none;
 	background-color: transparent}
-form.search input.textbox { 
-	margin: 0; 
+form.search input.textbox {
+	margin: 0;
 	width: 120px;
-	border: 1px solid #CCC; 
+	border: 1px solid #CCC;
 	background: #FFF;
 	color: #333}
-form.search input.searchbutton { 
-	margin: 0; 
-	font-size: 100%; 
-	font-family: Arial, Sans-serif; 
-	border: 1px solid #CCC; 
-	background: #FFFFFF url(underground/headerbg.gif) repeat-x bottom left; 
-	padding: 1px; 
-	font-weight: bold; 
+form.search input.searchbutton {
+	margin: 0;
+	font-size: 100%;
+	font-family: Arial, Sans-serif;
+	border: 1px solid #CCC;
+	background: #FFFFFF url(underground/headerbg.gif) repeat-x bottom left;
+	padding: 1px;
+	font-weight: bold;
 	height: 23px;
 	color: #333;
 	width: 60px}
@@ -194,7 +194,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	position: absolute;
 	top: 9010px;
 	left: 9010px;
-	background-color: #339999; 
+	background-color: #339999;
 	color: #fff;
 	padding: 5px;
 	font-weight: bold;
@@ -219,7 +219,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	text-align: left;
 	padding: 1em}
 
-/*** Type 1 (*litecss-based) layout 
+/*** Type 1 (*litecss-based) layout
 	(overrides lite.css) ***/
 
 #main {}
@@ -253,7 +253,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 #tiki-center {
 	width: auto !important;
 	margin: 0 80px 0 20px}
-	
+
 div#showhide_columns {
 	margin: 0 80px 0 100px}
 
@@ -285,24 +285,24 @@ div#showhide_columns {
 	margin: 0;
 	margin-right: 20px}
 
-#footer { 
-	/*clear: both; */	
+#footer {
+	/*clear: both; */
 	border-top: 1px solid #f2f2f2;
 	background: #FFF url(underground/footerbg.gif) repeat-x;
 	/*padding: 2px 0 10px 0; */
-	text-align: center;  
+	text-align: center;
 	line-height: 1.5em}
 
 #footer a,
 #footer a:link,
-#footer a:visited { 
-	text-decoration: none; 
+#footer a:visited {
+	text-decoration: none;
 	font-weight: bold;
-	color: #000	
+	color: #000
 }
 
 #footer a:hover {}
-#footer .content { 
+#footer .content {
 	padding: 2px 0 10px}
 
 #power {
@@ -326,8 +326,8 @@ div#showhide_columns {
 #header-logo {
 	/*position: absolute;
 	clear: both;*/
-	height: 50px; 
-	margin: 0; padding: 0;	
+	height: 50px;
+	margin: 0; padding: 0;
 	top: 75px}
 
 #siteheader h1,
@@ -349,7 +349,7 @@ h1#logo,
 #header-logo {
 	position: relative;
 	clear: both;
-	height: 50px; 
+	height: 50px;
 	margin: 0; padding: 0}
 #header-logo #logo {
 	/*position: absolute;
@@ -375,14 +375,14 @@ h1#logo,
 	margin: 0; padding: 0;
 	letter-spacing: -1px;
 	color: #000;}
-	
+
 span#sitetitle_highlight {color: #cc0000}
 
 * html #sitetitle {}
 #sitesubtitle {
 	position: absolute;
 	top: -22px;
-	font: bold 1.2em Verdana, Arial, Tahoma,  Sans-serif;	
+	font: bold 1.2em Verdana, Arial, Tahoma,  Sans-serif;
 	color: #FFF}
 
 #header a,
@@ -414,21 +414,21 @@ span#sitetitle_highlight {color: #cc0000}
 	border: none}
 
 input#text
-input.wikiaction { 
-	margin: 0; 
+input.wikiaction {
+	margin: 0;
 	width: 120px;
-	border: 1px solid #CCC; 
+	border: 1px solid #CCC;
 	background: #FFF;
 	color: #333}
 
-#sitesearchbar form button { 
-	margin: 0; 
-	font-size: 100%; 
-	font-family: Arial, Sans-serif; 
-	border: 1px solid #CCC; 
-	background: #FFFFFF url(underground/headerbg.gif) repeat-x bottom left; 
-	padding: 1px; 
-	font-weight: bold; 
+#sitesearchbar form button {
+	margin: 0;
+	font-size: 100%;
+	font-family: Arial, Sans-serif;
+	border: 1px solid #CCC;
+	background: #FFFFFF url(underground/headerbg.gif) repeat-x bottom left;
+	padding: 1px;
+	font-weight: bold;
 	height: 23px;
 	color: #333;
 	width: 60px}
@@ -513,7 +513,7 @@ background-position:0% -42px}
 	width: 150px;
 	top: 0;
 	left: 0}
-	
+
 .mdksubmenu table {width: 150px}
 
 .mdksubframe  {
@@ -551,7 +551,7 @@ background-position:0% -42px}
 
 div.mdkverbar {
 	padding-left: 10px;
-	line-height: normal} 
+	line-height: normal}
 
 li.menuLevel0,
 .mdkverbar .mdkitem {
@@ -565,7 +565,7 @@ li.menuLevel0,
 .cssmenu_vert li ul {
 	background: #F4F4F4;
 	border: 1px solid #d0d0d0}
-	
+
 .cssmenu_vert li ul li {padding : 2px 5px}
 
 .cssmenu_vert li a  {border: 0 }
@@ -755,16 +755,16 @@ div.findsubmit {display: inline}
 div.box {
 	overflow: hidden;
 	border: 1px solid #EBEBEB;
-	margin: 0 0 5px 0;	
+	margin: 0 0 5px 0;
 	background: #FFF}
 
 h3.box-title {
-	margin: 0; 
-	padding: 4px 0 4px 8px; 
+	margin: 0;
+	padding: 4px 0 4px 8px;
 	font: bold 105% Arial, Sans-Serif;
 	color: #FFF;
-	text-transform: uppercase; 
-	background: #333; 
+	text-transform: uppercase;
+	background: #333;
 	letter-spacing: 1px;
 	position: relative}
 
@@ -805,17 +805,17 @@ a.flipmodtitle:hover img {border: 1px solid #cc0000 !important}
 /** Other boxes **/
 div.cbox {
 	margin: 10px;
- 	padding: 6px;  	
-  	background: #FAFAFA; 
-	border: 1px solid #f2f2f2; 
+ 	padding: 6px;
+  	background: #FAFAFA;
+	border: 1px solid #f2f2f2;
 	border-left: 4px solid #CC0000}
 
 .cbox-title {
-	
+
 }
 
 .cbox-data {
-	
+
 }
 
 .rbox-title {}
@@ -835,9 +835,9 @@ div.cbox {
 .rbox-data[name="warning"] {}
 
 div.simplebox {
-	margin: 20px 10px 5px 10px; 
+	margin: 20px 10px 5px 10px;
 	padding: 3px 0;
-	border-bottom: 1px dashed #EFF0F1; 	
+	border-bottom: 1px dashed #EFF0F1;
 	border-top: 1px dashed #EFF0F1}
 
 
@@ -845,15 +845,15 @@ div.simplebox {
 /** Tables **/
 
 table {font-size: 1em}
-table.normal, 
+table.normal,
 table.admin,
 table.bloglist {
 	padding: 0;
 	margin: 0;
 	border-collapse: collapse;
 	width: 100%}
-	
-* html table.normal, 
+
+* html table.normal,
 * html table.admin,
 * html table.bloglist {width: auto}
 
@@ -862,7 +862,7 @@ table.bloglist,
 table.bloglist td {
 	border: solid 1px #909090;
 	border-collapse: collapse}
-/* or 
+/* or
 .normal,
 .bloglist,
 .bloglist td {
@@ -910,12 +910,12 @@ tr.odd td.odd {
 	border-right: 1px solid #909090}
 
 tr.even,
-tr.even td,	
+tr.even td,
 td.even,
  tr.even td.even,{
 	background: #ECECEC;
 	border-right: 1px solid #909090}
-/* or 
+/* or
 td.odd {
 	background: #eee}
 
@@ -934,7 +934,7 @@ td.bloglistheading {
 	color: #FFFFFF;
 	min-height: 32px;
 	text-align: center}
-	
+
 div.heading {padding: 3px}
 
 form.admin {}
@@ -953,7 +953,7 @@ td.formcontent {}
 /* links to view an object from a table listing objects can be generalized to this link */
 a.fgalname {}
 a.fgalname:hover {}
- 
+
 a.tablename,
 a.galname,
 a.imagename,
@@ -1030,7 +1030,7 @@ form.admin .tabs {
 
 .tab-menu li img {
 	vertical-align: middle}
-	
+
 .tabmark {
 	display: inline;
 	background: #e0dfe3;
@@ -1039,7 +1039,7 @@ form.admin .tabs {
 	margin-top: 2px;
 	margin-right: 5px;
 	padding: 1px 3px}
-	
+
 .tabmark:hover {
 	border: 1px solid #CC0001;
 	border-bottom: 0 }
@@ -1063,7 +1063,7 @@ form.admin .tabs {
 	background: #fafafa}
 
 .tabcontent table {
-	margin: 1% auto 2% auto; 
+	margin: 1% auto 2% auto;
 	text-align: left;
 	width: 95%}
 
@@ -1124,10 +1124,10 @@ h1.pagetitle {
 	margin: -9px 0 3px;
 	padding: 2px 0 2px 8px;
 	color: #fff;
-	text-transform: uppercase; 
-	background-color: #CC0000;	
+	text-transform: uppercase;
+	background-color: #CC0000;
 	letter-spacing: .5px}
-	
+
 h1 a.pagetitle:hover {color: #fff}
 
 .wikitopline {}
@@ -1162,7 +1162,7 @@ div#description {
 	text-transform: uppercase;
 	font: bold 'Trebuchet MS', Arial, Sans-serif}
 
-.wikitext ul li {} 
+.wikitext ul li {}
 .wikitext ul li ul li {}
 .wikitext ol {}
 
@@ -1187,7 +1187,7 @@ td.wikicell {
 div#page-bar {
 	display: block;
 	margin-top: 0}
-	
+
 * html #page-bar { width: 100%}
 
 #page-bar span {float: left}
@@ -1206,8 +1206,8 @@ ul.floatleft li {
 
 .editdate ul.floatleft {
 	margin-top: 8px}
- 
-span.button2, 
+
+span.button2,
 div.button2, .button3 {
 	margin-right: 5px}
 
@@ -1216,7 +1216,7 @@ div.button2, .button3 {
 div.button2 a:hover, .button3 a:hover {}
 
 /* From han.css - Check ?? */
-#page-bar p span.button2 {} 
+#page-bar p span.button2 {}
 #page-bar table a.linkbut {}
 
 .linkbut,
@@ -1273,7 +1273,7 @@ div.code {
 	width: 500px;
 	font: 500 1em/1.5em 'Lucida Console', 'courier new', monospace;
 	background: #FAFAFA;
-	border: 1px solid #f2f2f2;  
+	border: 1px solid #f2f2f2;
 	border-left: 4px solid #CC0000}
 
 .codecaption {
@@ -1289,11 +1289,11 @@ div.quoteheader {
 
 div.quotebody {
 	margin: 10px;
- 	padding: 0 0 0 44px;  	
-  	background: #FAFAFA url(underground/quote.gif) no-repeat 5px 10px !important; 
+ 	padding: 0 0 0 44px;
+  	background: #FAFAFA url(underground/quote.gif) no-repeat 5px 10px !important;
 	background-position: 8px 10px;
-	border: 1px solid #f2f2f2; 
-	border-left: 4px solid #CC0000; 
+	border: 1px solid #f2f2f2;
+	border-left: 4px solid #CC0000;
 	font-weight: bold}
 
 /* Tikipedia-specific - thumb styles from monobook */
@@ -1312,7 +1312,7 @@ div.tocnav {
 	padding: 3px;
 	margin-bottom: 4px;
 	clear: both}
- 
+
 #tocnavicons {
 	float: left}
 
@@ -1356,24 +1356,24 @@ div.articletopline {
 
 div.articletitle {
 	margin: 10px 0;
-	padding: 4px 0 4px 8px; 
+	padding: 4px 0 4px 8px;
 	display: block}
- 
+
 span.titlea {
 	display: block;
-	padding: 4px 0 4px 8px; 
+	padding: 4px 0 4px 8px;
 	font-size: 105%;
 	color: #FFF;
-	text-transform: uppercase; 
-	background-color: #CC0000;	
+	text-transform: uppercase;
+	background-color: #CC0000;
 	letter-spacing: .5px}
 
 span.titleb {
 	font-size: 1.0em}
- 
+
 div.articlesubtitle {
 	font-size: 0.9em}
- 
+
 div.articleheading {
 	/*margin-top: 6px;
 	line-height: 1.15em*/}
@@ -1413,15 +1413,15 @@ img.articleimage {
 
 div.articletrailer {}
 
-div.articletrailer .wikitopline {float: right;clear:both} 
- 
+div.articletrailer .wikitopline {float: right;clear:both}
+
 div.articlebody {margin-top: 1em}
- 
+
 div.articlesource {
 	margin-top: 5px;
 	font-style: italic;
 	font-size: 90%}
- 
+
 /***** Blogs *****/
 
 div.blogheading {
@@ -1460,7 +1460,7 @@ div.blogtools {
 .blogpost {
 
 }
- 
+
 .blog_l {
 	border-top:3px double #999;
 	float:left;
@@ -1526,17 +1526,17 @@ span.posthead {
 	display: block;
 	font-weight: bold;
 	letter-spacing: .4pt}
- 
+
 div.posthead h3 {
 	display: block;
-	padding: 4px 0 4px 8px; 
+	padding: 4px 0 4px 8px;
 	font-size: 105%;
 	color: #FFF;
-	text-transform: uppercase; 
-	background-color: #CC0000;	
+	text-transform: uppercase;
+	background-color: #CC0000;
 	letter-spacing: .5px;
 	margin-bottom: 0}
- 
+
 div.postbody {margin-bottom: 1em}
 .postbody hr {display: none}
 
@@ -1577,11 +1577,11 @@ table.commentinfo {}
 
 .post .postbody-title {
 	display: block;
-	background: #cc0000; 
+	background: #cc0000;
 	border-bottom: none;
 	margin-bottom: 4px;
 	padding: 2px}
-	
+
 .post .postbody-title .checkbox {float: left}
 
 .post .postbody-title .title {
@@ -1590,7 +1590,7 @@ table.commentinfo {}
 	font-size: 1.2em;
 	margin-left: 5px;
 	margin-top: 3px}
-	
+
 .postbody-title .title h2 {color: #fff}
 
 .title a.link {color: #fff}
@@ -1603,7 +1603,7 @@ table.commentinfo {}
 	text-align: left;
 	width: 100%}
 
-.post .author {	
+.post .author {
 	float: left;
 	text-align: left;
 	vertical-align: top;
@@ -1634,7 +1634,7 @@ table.commentinfo {}
 .post .postbody-title .actions {
 	float: right;
 	font-size: .9em}
-	
+
 .post .postbody .content {
 	width: 100%;
 	height: 100%;
@@ -1724,7 +1724,7 @@ table.commentinfo {}
 	display: block;
 	margin: 5px 0;
 	padding: 0}
- 
+
 span.commentstitle {
 	font-weight: bold;
 	font-size: 1.2em}
@@ -1757,7 +1757,7 @@ a.freetag_1 {
 a.freetag_2 {
 	text-decoration: none;
 	font-size: .9em}
-	
+
 a.freetag_3 {
 	text-decoration: none;
 	font-size: 1em}
@@ -1886,7 +1886,7 @@ td.oddthumb {
 	background-color: #F9F9F9;
 	border: 3px solid white;
 	border-collapse: collapse}
- 
+
 td.eventhumb {
 	background-color: #F9F9F9;
 	border: 3px solid white;
@@ -1969,10 +1969,10 @@ div.gallerypath a:hover {}
 .calodd {background: #eeeeee}
 .caleven { background: #f9f9f9 }
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {font-size: 90%}
-	
+
 .Calart,
 .Calblog,
 .Calchart,
@@ -2164,7 +2164,7 @@ div.pollresults {
 	margin-top: 5px;
 	font-size: 1.2em;
 	padding: 0 5px}
-	
+
 table.pollresults {width: 100%}
 td.pollr {color: black}
 #pollopen {display: block}

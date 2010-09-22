@@ -10,17 +10,17 @@
 	Quizzes; Shoutbox; Directory; Messages; TikiSheets;
 	Calendar; Admin; and Ajax, jquery, etc.
 */
- 
+
 /* Import layout foundation CSS file. */
 /* If *litecss-based theme . . .  */
 @import "lite/lite.css";
 
 /* Then import the default layout properties file: */
  @import "layout/layout.css";
- 
+
 /***** XHTML Elements (body tag here,
 			others follow Layout) *****/
-			
+
 body {
   margin: 0;
   padding: 0;
@@ -56,7 +56,7 @@ body {
 }
 
 #col2 .content {
-	margin: 60px 0 5em;	
+	margin: 60px 0 5em;
 }
 
 #col3 {
@@ -195,7 +195,7 @@ input[type=submit]:hover,
 	color: #fff;
 	text-decoration: none}
 
-.button a:active,	
+.button a:active,
 button:active,
 input[type=reset]:active,
 input[type=submit]:active,
@@ -344,7 +344,7 @@ ol li/*, ul li*/ {
 #col2 .cssmenu_vert > li {
 	width: 192px;
 	padding: 0 !important}
-	
+
 #col2 .cssmenu_vert > li:hover {background: #97c0da}
 #col2 .cssmenu_vert li {padding: 0}
 .cssmenu_vert li ul {margin-left: 192px !important}
@@ -416,7 +416,7 @@ a.flip:hover {color: #027ac6;font-size: 90%}
 
 .box-title {
 	font-size: 160%;
-	line-height: 130%;	
+	line-height: 130%;
 }
 
 .box-title a,
@@ -440,7 +440,7 @@ a.flip:hover {color: #027ac6;font-size: 90%}
 	padding: .3em;
 }
 
-.rbox-title, 
+.rbox-title,
 .rbox-data {
 	border-color: #e0e5fb;
 }
@@ -535,7 +535,7 @@ h1.pagetitle {
 	font-size: 160%;
 	line-height: 130%;
 	color: #494949;
-	font-weight: normal; 
+	font-weight: normal;
 }
 
 h1.pagetitle strong {
@@ -607,13 +607,13 @@ span.titleb {
 	border-bottom: 1px solid #e0e5fb;
 	font-size: 1.2em}
 
-	
+
 /***** Trackers *****/
 
 /***** Categories, Tags *****/
 
 /***** Tags (freetags) *****/
-	
+
 /*****  Polls  *****/
 
 /***** FAQs *****/

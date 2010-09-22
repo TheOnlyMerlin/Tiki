@@ -8,7 +8,7 @@
 	for more information. Released under GPL license.
 	Please respect the request of the original author and display
 	the Demus Design credit/link in the page footer.
- 
+
 	faulkner.css is comprised of these sections:
 	XHTML elements, Siteheader & Identity; Menus, Links;
 	Misc. Center Col.; Misc. Global; Boxes; Tables, Tabs;
@@ -17,12 +17,12 @@
 	Quizzes;	Shoutbox; Directory; Messages; TikiSheets;
 	Calendar; Admin; and Ajax, jquery, etc.
 */
- 
+
 /* Import the default layout properties file: */
  @import "layout/layout.css";
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	font: 75% Times, "Times New Roman", serif;
 	background: url(faulkner/parchment.jpg)}
@@ -50,7 +50,7 @@ body.fullscreen a#fullscreenbutton:hover {
 table#main {
 	border-collapse: collapse;
 	width: 100%}
-	
+
 * html table#main td {font-size: 13px}
 
 div#tiki-main {text-align: center}
@@ -160,7 +160,7 @@ h4 {font: 400 1.2em garamond,times,serif;
 	color: #404040;
 	font-style: italic;
 	margin: 0 0 10px 0}
-	
+
 h5 {font: 400 1.2em garamond,times,serif;
 	color: #404040;
 	font-style: italic;
@@ -234,7 +234,7 @@ input[type=submit]:hover,
 	border: 1px solid;
 	border-color: #880000 #eccaa3 #eccaa3 #880000}
 
-.button a:active,	
+.button a:active,
 button:active,
 input[type=reset]:active,
 input[type=submit]:active,
@@ -252,7 +252,7 @@ ol {
 	font-family: garamond,times,serif;
 	font-weight: 600;
 	font-style: italic}
-	
+
 ol li {padding: 4px 0}
 
 /***** Site Header & Identity *****/
@@ -286,7 +286,7 @@ input[id="sl-login-pass"] {font-size: 90%}
 #sitetitles {
 	background: url(faulkner/title_right.gif) 100% 16px no-repeat;
 	padding-right: 60px}
-	
+
 #sitetitle {
 	font: 250% garamond, times, 'times new romans', serif;
 	color: #630;
@@ -335,7 +335,7 @@ input[id="sl-login-pass"] {font-size: 90%}
 	border-top: 1px solid #98615F;
 	background: transparent url(faulkner/h3bg.gif) no-repeat bottom center;
 	padding: 0 0 14px 0}
-	
+
 .cssmenu_vert li ul {
 	margin-left: 11.05em !important;
 	margin-top: -1.35em;
@@ -344,14 +344,14 @@ input[id="sl-login-pass"] {font-size: 90%}
 .cssmenu_horiz li,
 .cssmenu_vert li ul li,
 .cssmenu li {background: url(faulkner/parchment.jpg)}
-	
+
 .cssmenu_horiz li:hover > a,
 .cssmenu_vert li:hover > a,
 .cssmenu li:hover > a {
 	background: #ECCAA3 url(faulkner/menu.gif) no-repeat -360px 50%;
 	color: #880000}
 
-.cssmenu a,	
+.cssmenu a,
 .cssmenu_horiz a,
 .cssmenu_vert a {
 	display: block;
@@ -360,7 +360,7 @@ input[id="sl-login-pass"] {font-size: 90%}
 	font-size: 0.9em;
 	padding: 5px 5px 5px 22px;
 	text-decoration: none}
-	
+
 .cssmenu_vert a:link,
 .cssmenu_vert a:visited {color: #660000}
 
@@ -511,7 +511,7 @@ a.linkmodule {
 a.linkmodule:hover {
 	background: #ECCAA3 url(faulkner/menu.gif) right no-repeat;
 	color: #800}
-	
+
 li a.linkmodule,
 li a.linkmodule:hover,
 .shoutboxmodmsg a.linkmodule,
@@ -538,7 +538,7 @@ div.box {
 	padding-bottom: 5px;
 	margin-bottom: 1em;
 	width: 180px !important}
-	
+
 .wikitext div.box {width: auto}
 
 h3.box-title {
@@ -576,7 +576,7 @@ ul.module li {list-style: 0}
 .rbox-title,
 .rbox-data {
 	border-color: #cc9900;
-	background: url(faulkner/parchmentlight.jpg)} 
+	background: url(faulkner/parchmentlight.jpg)}
 
 .rbox-title {background: #eacca7}
 
@@ -598,7 +598,7 @@ td.even {
 	border-bottom: 1px solid #D6B8A0;
 	margin: 0;
 	vertical-align: top}
-	
+
 th,
 td.heading {
 	border-bottom: 1px solid #660000;
@@ -658,9 +658,9 @@ div.description {
 
 .wikitext {line-height: 1.5em}
 
-.wikitext h1, 
-.wikitext h2, 
-.wikitext h3, 
+.wikitext h1,
+.wikitext h2,
+.wikitext h3,
 .wikitext h4,
 .wikitext h5 {
 	/*margin: 0 0 15px;
@@ -673,8 +673,8 @@ div.description {
 	border-top: 1px solid #601C2A;
 	border-bottom: 5px inset #763941;
 	line-height: 1.3em}
- 
-.wikitext ul {list-style-type: none} 
+
+.wikitext ul {list-style-type: none}
 
 .wikitext ul li {
 	padding-left: 17px;
@@ -682,14 +682,14 @@ div.description {
 	margin-left: 10px}
 
 table.wikitable {border-top: 2px solid #660000}
- 
+
 td.wikicell {
 	padding: 4px 7px !important;
 	text-align: left;
 	border-bottom: 1px solid #D6B8A0;
 	margin: 0;
 	vertical-align: top}
- 
+
 #wikihelp-tab table,
 #wikihelp-tab table td {
 	border: solid 1px #909090;
@@ -712,7 +712,7 @@ div.code {
 	padding: 10px;
 	margin: 4px;
 	border: 1px dashed #ADACAF;
-	overflow: auto; 
+	overflow: auto;
    width: 500px}
 
 .codecaption {
@@ -747,16 +747,16 @@ div.articletopline {
 div.articletitle {
 	padding-top: 16px;
 	margin-top: 6px;
-	margin-bottom:	15px;
-	text-align:	left}
- 
+	margin-bottom: 15px;
+	text-align: left}
+
 div.articletitle h2 {
 	font-size: 1.5em;
 	font-weight: normal}
 
-span.titleb {font-size: 1.0em} 
+span.titleb {font-size: 1.0em}
 div.articlesubtitle {font-size: 0.9em}
- 
+
 div.articleheading {
 	margin-top: 6px;
 	line-height: 1.15em}
@@ -783,7 +783,7 @@ div.bloginfo {
 	padding: 3px;
 	line-height: 150%;
 	text-transform: 0}
-/*	
+/*
 * html .bloginfo table {font-size: 11px}
 */
 
@@ -814,7 +814,7 @@ body.tiki_blogs div.postbody {
 	padding: 0 0 3px 0;
 	background: url(faulkner/parchmentlight.jpg);
 	font-size: 1em}
-	
+
 * html .post .postbody {font-size: 11px}
 .post .postbody .content {color: #000}
 
@@ -943,7 +943,7 @@ div.messureadbody {background: #ffedbd}
 table.default thead td,
 table.default tfoot td {
 	font-weight: bold;
-	text-align:	center;
+	text-align: center;
 	background: #660000;
 	color: #fff3d4}
 
@@ -952,10 +952,10 @@ table.default	td {
 	background: #ffedbd}
 
 /***** Calendar *****/
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {font-size: 90%}
-	
+
 .Calart,
 .Calblog,
 .Calchart,
@@ -972,7 +972,7 @@ table.default	td {
 .Calwiki {
 	font-size: 1.1em;
 	border-top: 0}
-	
+
 .Calart:before,
 .Calblog:before,
 .Calchart:before,
@@ -988,7 +988,7 @@ table.default	td {
 .Caltrack:before,
 .Calwiki:before {
 	background: inherit;
-	font-size: 1.1em} 
+	font-size: 1.1em}
 
 .Calart,
 .Calart a,
@@ -1000,7 +1000,7 @@ table.default	td {
 
 .Calchart,
 .Calchart a,
-.Calchart a:visited {color: #304F30} 
+.Calchart a:visited {color: #304F30}
 
 .Caldir,
 .Caldir a,
@@ -1041,7 +1041,7 @@ table.default	td {
 Caltrack,
 Caltrack a,
 Caltrack a:visited {color: #00BD02}
-	
+
 .Calweb {color: #336699}
 
 .Calwiki,

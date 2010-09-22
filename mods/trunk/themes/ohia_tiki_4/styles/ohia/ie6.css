@@ -1,4 +1,4 @@
-/* $Id$ 
+/* $Id$
 	Ohia theme for TikiWiki CMS/Groupware rules for IE6.
 */
 
@@ -17,13 +17,13 @@ input[type=submit] {
 	border: 1px solid #5f5f5f;
 	border-right: 1px solid #474747;
 	border-bottom: 1px solid #474747}
-	
+
 .findtable input {font-size: 1em}
 
 #sitetitle {
 	font-size: 26px;
 	height: 34px}
-	
+
 #sitetitle {margin-top: 10px}
 #tiki-top {font-size: 11px}
 

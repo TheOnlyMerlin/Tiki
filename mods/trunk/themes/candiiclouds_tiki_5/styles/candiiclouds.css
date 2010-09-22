@@ -6,13 +6,13 @@
 	graphic treatment and column integrity.
 	This stylesheet and related files are for use with Tiki 5.x.
  */
- 
+
 /* Import the default layout properties file: */
 @import url("layout/layout.css");
 @import url("layout/design.css");
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 html {background: #ffe0ee}
 
 body {
@@ -23,7 +23,7 @@ body {
 	font-weight: bold;
 	color: #0076a3;
 	width: 100%}
-	
+
 html>body {font-size: .7em !important}
 
  /***** Layout (overrides layout.css;
@@ -43,7 +43,7 @@ td#rightmargin {
 td#leftcolumn {
 	width: 210px;
 	background: #fff}
- 
+
 td#centercolumn {
 	padding: 35px 10px 10px 10px;
 	background: #fff url(candiiclouds/cloudsbdr.gif) no-repeat top center}
@@ -89,7 +89,7 @@ h1, h2, h3, h4 {letter-spacing: normal}
 h1 {
 	font-size: 1.4em;
 	border-bottom: 1px dashed #00adef}
-	
+
 h2 {font-size: 1.4em}
 h3 {font-size: 1.2em}
 h4 {font-size: 1.1em}
@@ -142,7 +142,7 @@ select {
 	color: #0076a3;
 	font-size: 94%;
 	font-weight: bold}
-	
+
 .button a:hover,
 button:hover,
 input[type="reset"]:hover,
@@ -152,7 +152,7 @@ input[type="submit"]:hover,
 .calbuttonBox a:hover {
 	background: #ffcce2;
 	color: /*#f06ea9*/#00adef}
-	
+
 * html input[type="reset"],
 * html input[type="submit"],
 * html input[type="file"] {
@@ -211,16 +211,16 @@ div#sitead {margin: 5px}
 #siteloginbar {
 	right: 13px;
 	bottom: 8px}
-	
+
 #siteloginbar_popup {
 	bottom: 3px;
 }
 
 #sitetitle {
 	text-indent: 42px;
-	font-size: 3em;	
+	font-size: 3em;
 	padding-top: 20px}
-	
+
 #sitetitle a,
 #sitetitle a:visited {
 	border-bottom: none;
@@ -229,14 +229,14 @@ div#sitead {margin: 5px}
 #sitesubtitle {text-indent: 42px}
 
 #sitesearchbar {border-left: 1px solid #fff}
-	
+
 input#fuser,
 select[name="where"],
 input[name="search"] {
 	background: #a7e6ff;
 	color: #00adef;
 	font-weight: bold}
-	
+
 #tiki-top {background: #fff}
 
 /****** Menus, Links ******/
@@ -261,14 +261,14 @@ input[name="search"] {
 	color: #0076A3;
 	padding-left: 30px;
 	padding-right: 10px}
-	
+
 .cssmenu_vert li a:hover  {
 	background: #ffcce2 url(candiiclouds/star.gif) no-repeat;
 	background-position: 7px center;
 	color: #f06ea9;
 	padding-left: 30px;
 	padding-right: 10px}
-	
+
 /* default link padding */
 .cssmenu_horiz a,
 .cssmenu_vert a {
@@ -280,7 +280,7 @@ input[name="search"] {
 .cssmenu_horiz li.sfHover ul {
 	top: 2em;
 }
-	
+
 /* left column width */
 td#leftcolumn .cssmenu_vert,
 td#leftcolumn .cssmenu_vert li {
@@ -457,13 +457,13 @@ h3.box-title {
 	font-size: small;
 	text-indent: 45px;
 	letter-spacing: -0.5px}
-	
+
 .wikitext h3.box-title {
 	height: 30px;
 	margin-bottom: 4px;
 	padding: 5px 0 0 0;
 }
-	
+
 .flipmodimage:hover {border: 1px solid #FFCCE2 !important}
 
 .box-data {
@@ -482,7 +482,7 @@ h3.box-title {
 .box-data ul,
 ul.module,
 ol.module {margin-left: -1em}
-	
+
 * html .box-data ul {margin-left: 1em }
 *:first-child+html .box-data ul {margin-left: 1em}
 
@@ -518,7 +518,7 @@ div.simplebox {
 	background: #cff1ff;
 	border-color: #a7e6ff;
 	color: #0076a3}
-	
+
 .halffloat div.box,
 .wikitext .halffloat div.box {
 	width: 48%;
@@ -537,12 +537,12 @@ div.simplebox {
 /***** Tables, Tabs *****/
 /** Tables **/
 
-table.normal, 
+table.normal,
 table.admin {
 	border: 2px solid transparent;
 	background: url(candiiclouds/banstars.gif)}
-	
-* html table.normal, 
+
+* html table.normal,
 * html table.admin,
 * html table.bloglist {border: 0}
 
@@ -572,7 +572,7 @@ th, table.normal td.heading {
 	padding: .2em .2em 0;
 	margin:0 0.2em 1px 0;
 	border-bottom: 1px solid #ccc}
-	
+
 .tabs br {
 	display: none;
 }
@@ -629,7 +629,7 @@ h1 a.pagetitle {
 	padding-bottom: 10px}
 
 h1 a.pagetitle {border-bottom: 0}
-	
+
 * html .wikitopline {}
 
 div#description,
@@ -649,9 +649,9 @@ div.description {
 
 .wikitext {padding:10px}
 
-.wikitext h1, 
-.wikitext h2, 
-.wikitext h3, 
+.wikitext h1,
+.wikitext h2,
+.wikitext h3,
 .wikitext h4 {
 	margin: 0 0 15px;
 	padding: 0}
@@ -660,15 +660,15 @@ div.description {
 	border-top: 1px solid #999;
 	border-bottom: 1px solid #999;
 	margin:10px 0 10px 0}
- 
-.wikitext ul li {} 
+
+.wikitext ul li {}
 .wikitext ul li ul li {}
 .wikitext ol {}
 
 table.wikitable {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #999;
@@ -679,7 +679,7 @@ td.wikicell {
 div#page-bar {
 	display: block;
 	padding: 0 10px 5px}
-	
+
 #page-bar span {float: left}
 
 ul.floatleft {
@@ -705,9 +705,9 @@ div.button2,
 div.button2 a:hover, .button3 a:hover {}
 
 /* From han.css - Check ?? */
-#page-bar p span.button2 {} 
+#page-bar p span.button2 {}
 #page-bar table a.linkbut {}
- 
+
 .linkbut {
 	/*font-size:90%;*/
 }
@@ -721,7 +721,7 @@ div.cachedpage {}
 .wiki {}
 .wikinew {}
 .wiki-edithelp {display: none}
- 
+
 
 #wikihelp-tab table,
 #wikihelp-tab table td {
@@ -754,7 +754,7 @@ div.code {
 	padding: 10px;
 	margin: 4px;
 	border: 1px dashed #ADACAF;
-	overflow: auto; 
+	overflow: auto;
    width: 500px}
 
 .codecaption {
@@ -791,7 +791,7 @@ div.tocnav {
 	padding: 3px;
 	margin-bottom: 4px;
 	clear: both}
- 
+
 #tocnavicons {float: left}
 #tocnavaddpage{float: right}
 #tocnavlinks {clear: both}
@@ -828,22 +828,22 @@ div.articletitle {
 	margin-bottom: 15px;
 	background: url(candiiclouds/bluu.gif);
 	border-bottom: 1px solid #ACCCDD}
- 
+
 div.articletitle h2 {
 	color: #0076a3;
 	font-weight: bold;
 	/*font-size: 1.2em;*/
 	margin-top: 3px}
-	
+
 div.articletitle h2 a,
 div.articletitle h2 a:visited {border-bottom: none}
-span.titleb {font-size: 1.0em} 
+span.titleb {font-size: 1.0em}
 div.articlesubtitle {font-size: 0.9em}
- 
+
 div.articleheading {
 	margin-top: 6px;
 	line-height: 1.15em}
- 
+
 div.articleheadingtext {}
 
 img.topicimage,
@@ -866,9 +866,9 @@ img.articleimage {
 	margin-bottom: 10px}
 
 div.articletrailer {text-align: right}
-div.articletrailer .wikitopline {float: left} 
+div.articletrailer .wikitopline {float: left}
 div.articlebody {line-height: 1.5em}
- 
+
 div.articlesource {
 	margin-top: 5px;
 	font-style: italic;
@@ -897,7 +897,7 @@ a.blogt:hover {
 	border-bottom: 1px dotted #FFF}
 
 .postinfo {font-size: 1.2em}
- 
+
 .postinfo a {
 	color: #9CF;
 	text-decoration: none;
@@ -911,13 +911,13 @@ div.posthead {
 	padding-top: 10px;
 	font-size: 1.1em;
 	margin-bottom: 10px}
- 
+
 div.posthead h3 {font-size: 1.2em}
 
 .posthead a,
 .posthead a:visited {
 	color: #0076a3}
- 
+
 div.postbody {
 	margin-right: 6px;
 	margin-left: 6px;
@@ -934,7 +934,7 @@ div.postfooter {
 	padding: 4px;
 	background: url(candiiclouds/s-stars.gif);
 	font-size: 1.1em}
-	
+
 * html .post .postbody {font-size: 11px}
 
 .post .postbody-title {
@@ -1069,7 +1069,7 @@ div.imgaldescr {margin: 10px}
 /***** Categories, Tags *****/
 
 /***** Tags (freetags) *****/
-	
+
 /*****  Polls  *****/
 
 /***** FAQs *****/
@@ -1169,8 +1169,8 @@ table.default td {
 
 /***** Calendar *****/
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {font-size: 90%}
 
 .Calart,
@@ -1239,7 +1239,7 @@ table.default td {
 .Caltrack,
 .Caltrack a,
 .Caltrack a:visited {color: #00BD02}
-	
+
 .Calweb {font-size: 90%}
 
 .Calwiki,

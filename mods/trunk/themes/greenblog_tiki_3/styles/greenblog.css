@@ -1,5 +1,5 @@
 /* Greenblog stylesheet template (greenblog.css) for Tikiwiki CMS/Groupware.
-	Compatible with Tiki version 3. 
+	Compatible with Tiki version 3.
 	Visit http://themes.tikiwiki.org for more information.
 
 	Theme CSS is comprised of these sections:
@@ -10,16 +10,16 @@
 	Quizzes;	Shoutbox; Directory; Messages; TikiSheets;
 	Calendar; Admin; and Ajax, jquery, etc.
 */
- 
+
 /* Import layout foundation CSS file. */
 /* If *litecss-based theme . . .  */
 @import "lite/lite.css";
 
 /* Then import the default layout properties file: */
  @import "layout/layout.css";
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	font: 76%/1.5em Arial, Helvetica, sans-serif;
 	color: #f2e7ce;
@@ -32,13 +32,13 @@ body.fullscreen * {
 	background-image: none;
 	border: none;
 	color: #000}
-	
+
 body.fullscreen a:link,
 body.fullscreen a:visited {
 	color: blue;
 	text-decoration: underline}
 
-	
+
  /***** Layout (overrides layout.css;
 		also styling of page layout divs)  *****/
 
@@ -62,7 +62,7 @@ body.fullscreen a:visited {
 	padding: 0 40px}
 
 * html #tiki-center {font-size: 1em}
-	
+
 #c1c2 #col2 {
 	width: 200px;
 	overflow: visible}
@@ -101,7 +101,7 @@ body.fullscreen a:visited {
 /***** XHTML Elements (other than body tag) ******/
 a:link, a:visited {
 	color: #ffc64a;
-	text-decoration: none} 
+	text-decoration: none}
 
 a:active, a:hover {
 color: #ffff00;
@@ -151,21 +151,21 @@ input[type=password] {
 	height: 15px;
 	line-height: normal;
 	padding: 1px 4px}
-	
+
 textarea,
 fieldset {
 	background: 0;
 	border: 1px solid #b6ba63;
 	color: #fff;
 	font-size: 1em}
-	
+
 textarea.wikiedit {font-size: 1.2em}
-	
+
 select {
 	background: #2f320e;
 	color: #b6ba63;
 	border: 1px solid #b6ba63}
-	
+
 legend {color: #f2e7ce}
 
 span.button a,
@@ -183,7 +183,7 @@ span.button input,
 	border-color: #b6ba63 #7d8135 #7d8135 #b6ba63;
 	padding: 0 4px;
 	margin: 1px}
-	
+
 input[type=reset],
 input[type=submit] {
 	font-size: 94%;
@@ -193,7 +193,7 @@ input[type=submit] {
 	border-color: #b6ba63 #7d8135 #7d8135 #b6ba63;
 	padding: 1px 4px;
 	margin-right: 1px}
-	
+
 .button a:hover,
 button:hover,
 input[type=reset]:hover,
@@ -204,13 +204,13 @@ input[type=submit]:hover,
 	color: #ffff00;
 	border-color: #b6ba63;
 	text-decoration: none}
-	
+
 span.highlight {background: inherit; border: 1px solid yellow}
 
 
 /***** Site Header & Identity *****/
 #tiki-top {
-	height: 59px;	
+	height: 59px;
 	margin: 0 auto;
 	padding: 0 0 0 30px;
 	color: #fff;
@@ -219,7 +219,7 @@ span.highlight {background: inherit; border: 1px solid yellow}
 #sitesearchbar {
 	margin-top: 3px;
 	margin-right: 50px}
-	
+
 #sitetitles {padding: 30px 0 30px 30px}
 
 #sitetitle,
@@ -232,7 +232,7 @@ span.highlight {background: inherit; border: 1px solid yellow}
 	font-size: 1.8em}
 
 #siteloginbar {right: 50px}
-	
+
 /****** Menus, Links ******/
 /** CSS (suckerfish) and PHP Layers menus **/
 #tiki-top .horbar,
@@ -263,18 +263,18 @@ ul.cssmenu li ul,
 ul.cssmenu_horiz li ul,
 ul.cssmenu_vert li ul,
 .mdksubframe {
-	background: #0b0c04 url(greenblog/right_section_bg.jpg) top center no-repeat;	
+	background: #0b0c04 url(greenblog/right_section_bg.jpg) top center no-repeat;
 	border: 1px solid #5f3b11}
-	
+
 #tiki-top .cssmenu_horiz {
 	margin-left: 30px;
 	margin-right: 80px;
 	padding-top: 17px}
-	
-#tiki-top .cssmenu_horiz li ul li ul { 
+
+#tiki-top .cssmenu_horiz li ul li ul {
 	margin-left: 10em;
 	margin-top: -1em}
-	
+
 #tiki-top .cssmenu_horiz li.menuSection a .sf-sub-indicator {top: 1.4em}
 #tiki-top .cssmenu_horiz li ul li.menuSection a .sf-sub-indicator {top: .8em}
 
@@ -293,13 +293,13 @@ a.flip:hover {color: #ffc64a}
 .box {
 	padding: 15px 15px 10px 15px;
 	margin-bottom: 30px;
-	background: #0b0c04 url(greenblog/right_section_bg.jpg) top right no-repeat;	
+	background: #0b0c04 url(greenblog/right_section_bg.jpg) top right no-repeat;
 	border: 1px solid #191a0d}
-	
+
 #col2 .box {
 	width: 178px;
 	padding: 15px 0 10px 0}
-	
+
 #col1 .box {width: 90%}
 #col3 .box {width: 248px}
 a.flipmodtitle:hover img {border: 1px solid #ffc64a !important}
@@ -313,12 +313,12 @@ a.flipmodtitle:hover img {border: 1px solid #ffc64a !important}
 	border-bottom: 1px solid #ffc64a;
 	padding: 3px 3px 0 3px}
 
-.rbox-title, 
+.rbox-title,
 .rbox-data {border-color: #d77707}
 .rbox-title {
 	background: #d77707;
 	color: #000}
-	
+
 div.simplebox {
 	color: #ffc64a;
 	background: #2f320e;
@@ -331,12 +331,12 @@ table.normal/*,
 table.admin*/ {
 	border: 1px solid #B6BA63;
 	border-collapse: collapse}
-	
+
 table.normal td/*,
 table.admin td*/ {
 	  border: 1px dotted #663e17;
 	  padding: 2px 3px}
-	  
+
 th,
 table.normal td.heading,
 tr.diffheader td {
@@ -356,7 +356,7 @@ h1.pagetitle {
 	height: 50px;
 	margin: 0 0 10px;
 	padding: 20px 0 5px 0}
-	
+
 h1.pagetitle a,
 h1.pagetitle a:visited,
 h1.pagetitle a:hover {
@@ -368,7 +368,7 @@ h1.pagetitle a:hover {
 	border: 1px solid #191A0D;
 	margin-bottom: 30px;
 	padding: 0 30px 15px}
-	
+
 div.code {
 	font-size: 90%;
 	padding: 3px;
@@ -398,13 +398,13 @@ div.code {
 	color: #b6ba63;
 	border: 1px solid #b6ba63;
 	margin: 4px;
-	overflow: auto; 
+	overflow: auto;
    width: 500px}
 
 div#textarea-toolbar {
 	background: #fae371;
 	border: 1px solid #b6ba63}
-	
+
 div.help_sections {background: #656201}
 
 /***** Articles ****/
@@ -413,7 +413,7 @@ div.help_sections {background: #656201}
 	border: 1px solid #191A0D;
 	margin-bottom: 30px;
 	padding: 0 0 10px}
-	
+
 div.articletrailer span {
 	display: inline-block;
 	background: transparent url(greenblog/comment_icon.gif) no-repeat scroll left bottom;
@@ -427,7 +427,7 @@ div.articletrailer span {
 	border: 1px solid #191A0D;
 	margin-bottom: 30px;
 	padding: 0 5px 10px}
-	
+
 body.tiki_blogs div.author_actions {
 	display: block;
 	text-align: right}
@@ -437,7 +437,7 @@ body.tiki_blogs div.author_actions {
 	background: none;
 	padding: 2px;
 	margin-right: 0}
-	
+
 .post .postbody-title {
 	display: block;
 	background: none;
@@ -453,7 +453,7 @@ body.tiki_blogs div.author_actions {
 	margin-bottom: 30px;
 	padding: 0 5px 10px}
 
-.post .author {	
+.post .author {
 	float: left;
 	text-align: left;
 	width: 30%;
@@ -461,24 +461,24 @@ body.tiki_blogs div.author_actions {
 	background: url(greenblog/right_section_bg.jpg) 100% 0;
 	padding: 3px;
 	position: relative}
-	
+
 .post .avatar {
 	display: block;
 	float: none;
 	text-align: left;
 	margin: 0;
 	background: inherit}
-	
+
 .post .author_post_info {
 	display: block;
 	padding: 0}
 
-.post .author_post_info:first-child {text-transform: capitalize} 
+.post .author_post_info:first-child {text-transform: capitalize}
 
 .post .postbody-title .title a.link {
 	font-size: 1.1em;
 	font-weight: bold}
-	
+
 span.icons {
 	position: absolute;
 	top: 3px;
@@ -547,7 +547,7 @@ div.freetagitemlist {
 a.admbox {
 	background: #14160a no-repeat center center;
 	border: 1px solid #b6ba63}
-	
+
 a.admbox:hover {
 	background: #585400 no-repeat center center;
 	border: 1px solid #b6ba63;

@@ -1,7 +1,7 @@
 /* $Id$
 	MilkyWay stylesheet (milkyway.css) for TikiWiki CMS/Groupware.
 	This is an implementation of the GPL Joomla theme by Rhuk.
-	
+
 	milkyway.css is comprised of these sections:
 	XHTML elements, Siteheader & Identity; Menus, Links;
 	Misc. Center Col.; Misc. Global; Boxes; Tables, Tabs;
@@ -10,12 +10,12 @@
 	Quizzes;	Shoutbox; Directory; Messages; TikiSheets;
 	Calendar; Admin; and Ajax, jquery, etc.
 */
- 
+
 /* Import the default layout properties file: */
  @import "layout/layout.css";
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	background: #fff;
 	text-align: left;
@@ -51,7 +51,7 @@ td#leftcolumn {
 	background: #fff;
 	text-align: center;
 	overflow: visible}
-	
+
 .colwrapper {
 	margin: 0;
 	padding: 0;
@@ -76,7 +76,7 @@ td#footer {
 	height: 126px;
 	padding: 0;
 	margin: 0}
-	
+
 td#footer .wrapper {
 	background: url(milkyway/options/white/footer.jpg) no-repeat;
 	background-position: right;
@@ -217,7 +217,7 @@ div#header {
 	height: 122px;
 	position: relative;
 	overflow: hidden;}
-	
+
 #header .wrapper {
 	background: url(milkyway/options/white/header.jpg) no-repeat;
 	height: 102px !important;
@@ -267,7 +267,7 @@ input[id="sl-login-pass"] {}
 #sitetitle {
 	font-size: 300%;
 	padding-top: 30px}
-	
+
 * html #sitetitle {}
 #sitesubtitle {padding-top: 10px}
 
@@ -295,7 +295,7 @@ input[id="sl-login-pass"] {}
 	text-align: center;
 	padding-top: 2px;
 	padding-bottom: 0}
-	
+
 /* * html #tiki-top .wrapper {margin-bottom: -2px}*/
 
 #tiki-top a {}
@@ -341,7 +341,7 @@ td.pill_l {
   height: 32px;
   padding: 0;
   margin: 0}
-  
+
 table.pill table {
 	margin: 0;
 	padding: 0}
@@ -366,7 +366,7 @@ td.pill_r {
 	border: 1px solid #dfdfdf;
 }
 
-.cssmenu_horiz li:hover ul li,	
+.cssmenu_horiz li:hover ul li,
 .cssmenu_vert li:hover ul li {
 	background: #f9f9f9 !important;
 }
@@ -377,18 +377,18 @@ td.pill_r {
 	font-size: 12px;
 	font-weight: bold;
 	color: #000;
-	text-decoration: none} 
+	text-decoration: none}
 
 .cssmenu_vert li a:hover {
 	background: black url(milkyway/options/white/mw_menu_active_bg.png) 0 0 repeat-x;
 	color: #fff;
 	text-decoration: none}
-	
+
 #tiki-top .cssmenu_horiz {text-align: left; margin-top: 1px}
 #tiki-top .cssmenu_horiz li a {padding: 6px 1em}
 #tiki-top .cssmenu_horiz ul li a {padding-top: 4px; padding-bottom: 4px}
 #tiki-top .cssmenu_horiz li {background: url(milkyway/mw_menu_separator.png) 100% 0 no-repeat}
-	
+
 #tiki-top .cssmenu_horiz li.menuSection a {padding-right: 2.6em}
 #tiki-top .cssmenu_horiz li.menuLevel0 a:hover {background: url(milkyway/options/white/mw_menu_active_bg.png) repeat-x}
 
@@ -424,20 +424,20 @@ td.pill_r {
 	padding-bottom: 0;
 	color: #000;
 	text-decoration: none;
-	white-space: nowrap} 
+	white-space: nowrap}
 
 .horbaritem a:hover {
 	background: /*#2b2b2b*/ url(milkyway/options/white/mw_menu_active_bg.png) 0 0 repeat-x;
 	color: #fff;
 	text-decoration: none;
-	padding-bottom: 0} 
+	padding-bottom: 0}
 
 * html .horbaritem a {font-size: .8em}
 .mdksubmenu {}
 
 .mdksubframe {
 	border: 1px solid #dfdfdf;
-	background: #f9f9f9} 
+	background: #f9f9f9}
 
 .mdkitem a {
 	font-family: Arial, Helvetica, sans-serif;
@@ -449,20 +449,20 @@ td.pill_r {
 	padding: 0 20px;
 	color: #000;
 	text-decoration: none;
-	white-space: nowrap} 
+	white-space: nowrap}
 
 .mdkitem a:link {
 	font-weight: normal;
-	text-decoration: none} 
+	text-decoration: none}
 
-.mdkitem a:visited {text-decoration: none} 
+.mdkitem a:visited {text-decoration: none}
 
 .mdkitem a:hover {
 	background: black url(milkyway/options/white/mw_menu_active_bg.png) 0 0 repeat-x;
 	color: #fff;
-	text-decoration: none} 
+	text-decoration: none}
 
-.mdkitem a:active {} 
+.mdkitem a:active {}
 
 /* Tree menu (also on Browse Categories */
 .treemenudiv {
@@ -565,15 +565,15 @@ span.highlight {
 .i1 {
 	padding: 0 0 0 14px !important;
 	background: url(milkyway/options/white/modboxl.jpg) repeat-y 0 0}
-	
+
 /* Right border */
 .i2 {
 	padding: 0 14px 0 0 !important;
 	background: url(milkyway/options/white/modboxr.jpg) repeat-y 100% 0}
 
 .i3 {
-	padding: 0}	
-	
+	padding: 0}
+
 * html .i1,
 * html .i3 {height: 1px}
 
@@ -589,7 +589,7 @@ div.box {
 
 * html #leftcolumn .box,
 * html #rightcolumn .box {width: 216px}
-	
+
 h3.box-title {
 	display: block;
 	position: relative;
@@ -627,7 +627,7 @@ a.flipmodtitle:hover img {border: 1px solid #fff !important}
 	background: url(milkyway/options/white/modboxtitlebottom.jpg) no-repeat 100% 0;
 	margin: 0 0 0 14px;
 	height: 6px}
-	
+
 * html .box-titlebottom {margin-bottom: -8px}
 
 .box-titlebottom div {
@@ -635,8 +635,8 @@ a.flipmodtitle:hover img {border: 1px solid #fff !important}
 	height: 6px;
 	width: 14px;
 	position: relative;
-	left: -14px}	
-	
+	left: -14px}
+
 .box-data {background: #fff}
 
 .box-data ol,
@@ -662,14 +662,14 @@ div.cbox {
 .rbox-data {
 	padding: 1px 3px;
 	background: #f6f6f6}
-	
+
 .rbox-title {
 	border: 1px solid #d1d1d1;
 	font-weight: bold}
 
 .rbox-data {
 	border: 1px solid #d1d1d1}
-	
+
 
 div.simplebox {
 	margin-bottom: 8px;
@@ -751,7 +751,7 @@ div.description {
 table.wikitable {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #a9a9a9;
@@ -775,7 +775,7 @@ td.wikicell {
 /***** Categories, Tags *****/
 
 /***** Tags (freetags) *****/
-	
+
 /*****  Polls  *****/
 
 /***** FAQs *****/

@@ -12,16 +12,16 @@
 	For more information, visit http://themes.tikiwiki.org or
 	http://zukakakina.com.
 */
- 
+
 /* Import layout foundation CSS file. */
 /* If *litecss-based theme . . .  */
 @import "lite/lite.css";
 
 /* Then import the default layout properties file: */
 @import "layout/layout.css";
- 
+
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/ 
+			others follow Layout) *****/
 body {
 	margin: 0;
 	padding: 0;
@@ -39,7 +39,7 @@ div#middle {padding-top: 10px}
 #c1c2 {
 	text-align: left;
 	font-size: 1.0em}
-	
+
 #col1 {padding: 0 17px}
 
 #col1 > .content,
@@ -78,14 +78,14 @@ body.fullscreen #col1 {
 #col3 .content {
 	margin: 0;
 	text-align: center}
-	
+
 #footer {
  	text-align: center;
  	font-size: .9em;
 	min-height: 40px;
 	padding: 0;
 	margin: 0}
-	
+
 * html #footer {height: 40px}
 
 .footerbgtrap {
@@ -99,19 +99,19 @@ body.fullscreen #col1 {
 	margin: 0;
 }
 
-		
+
 
 /***** XHTML Elements (other than body tag) ******/
 h1, h2, h3, h4, h5 {
 	margin: 0;
 	padding: 0}
 
-h1 {font-size: 150%}	
-h2 {font-size: 140%}	
-h3 {font-size: 130%}	
+h1 {font-size: 150%}
+h2 {font-size: 140%}
+h3 {font-size: 130%}
 h4 {font-size: 120%}
 h5 {font-size: 110%}
-	
+
 /*p, ul, ol {
 	margin: 0 0 2em 0;
 	text-align: justify;
@@ -140,7 +140,7 @@ legend {color: #285c00}
 input, textarea, select {
 	font-size: 13px;
 	color: #333333}
-	
+
 span.button a,
 span.button a:visited,
 button,
@@ -183,7 +183,7 @@ input[type=submit]:hover,
 .box-data input[type=reset]:hover,
 .box-data input[type=submit]:hover,
 .box-data .button input:hover {}
-	
+
 #header input[type=text],
 #header input[type=password] {
 	background: #29a0c8;
@@ -214,7 +214,7 @@ input[type=submit]:hover,
 #sitetitles {
 	text-transform: uppercase;
 }
-	
+
 #sitetitle,
 #sitesubtitle {
 	float: left;
@@ -228,7 +228,7 @@ input[type=submit]:hover,
 
 #sitetitle a {
 	text-decoration: none;
-	color: #29A0C8; 
+	color: #29A0C8;
 }
 
 #sitetitle a:hover { text-decoration: none; }
@@ -311,7 +311,7 @@ input[type=submit]:hover,
 	color: #FFFFFF;
 }
 
-#menu a:hover { 
+#menu a:hover {
 	color: #FFFFFF;
 }
 
@@ -323,12 +323,12 @@ input[type=submit]:hover,
 .separator,
 .option {
 	margin-bottom: 5px}
-	
+
 .menusection .option {}
 
 .option a,
 .separator a {}
-	
+
 .option {padding-left: 10px}
 .option a {
 	padding: 0 10px;
@@ -344,7 +344,7 @@ input[type=submit]:hover,
 	width: 235px;
 	margin-bottom: 10px;
 	text-align: left}
-	
+
 #tiki-center .box {
 	width: auto;
 }
@@ -368,14 +368,14 @@ h3.box-title {
 	background: #95c72a;
 	color: #06005b;
 	padding: 10px 20px 20px}
-	
+
 .box a,
 .box a:visited {
 	color: #285c00;
 	text-decoration: none}
-	
+
 .box a:hover {text-decoration: underline}
-	
+
 .cbox {
 	border: none;
 	background: #29a0c8;
@@ -402,7 +402,7 @@ h3.box-title {
 .rbox-title,
 .rbox-data {
 	border: 1px solid #29a0c8}
-	
+
 .rbox-title {
 	background: #29a0c8;
 	border-bottom: none;
@@ -413,7 +413,7 @@ h3.box-title {
 
 /***** Tables, Tabs *****/
 /** Tables **/
-table.normal/*, 
+table.normal/*,
 table.admin*/ {
 	border-collapse: collapse;
 	background: #3e3c3d;
@@ -428,7 +428,7 @@ tr.diffheader {
 	border-right: 1px solid #3e3c3d;
 	color: #fff}
 
-table.normal a.link, 
+table.normal a.link,
 table.normal a,
 th a,
 th a:visited,
@@ -494,13 +494,13 @@ div.article h2 {
 	text-decoration: none;
 	font-weight: bold;
 	color: #fff}
-	
+
 h1.pagetitle a.tikihelp {
 	display: inline;
 	margin: auto;
 	border-bottom: none;
 }
-	
+
 body.tiki_cms h1 a.pagetitle,
 body.tiki_cms h1 a.pagetitle:visited,
 body.tiki_cms h1 a.pagetitle:hover {border-bottom: 0}
@@ -535,7 +535,7 @@ body.tiki_blogs .author_info {
 .author_info {
 	font-size: 10px;
 	margin: 0 10px 0 0}
-	
+
 div#page-bar {
 	clear: both
 }
@@ -553,7 +553,7 @@ div#page-bar {
 	text-decoration: none;
 	font-weight: bold;
 	color: #fff}
-	
+
 .post .postbody .content {
 	float: none}
 
@@ -584,7 +584,7 @@ div#page-bar {
 /***** Categories, Tags *****/
 
 /***** Tags (freetags) *****/
-	
+
 /*****  Polls  *****/
 
 /***** FAQs *****/

@@ -1,6 +1,6 @@
 /* SubSilver style for TIKI based on the SubSilver style by phpBB full c#ff860dits to the phpBB authors */
 
-/* GENERAL COMMENTS  
+/* GENERAL COMMENTS
  *
  * This is a FULL Tiki 1.2 stylesheet, if you want to fully-customize the look and feel of Tiki this is the
  * right file to adapt, if you want to build a quick-theme where all the screens look similar (ie: the article
@@ -350,7 +350,7 @@ div.cbox-title {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   11px;
 	color:   #ff860d;
-	
+
 }
 
 /* And this is the data */
@@ -403,7 +403,7 @@ div.separator {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   11px;
 	color:   #ff860d;
-	
+
 	background:   #575151;
 }
 /* style for rss lists in modules or in wiki */
@@ -508,7 +508,7 @@ div.imagerank {
 	margin-top:   10px;
 }
 
-/* A simple box is just a div with a border around and some margin 
+/* A simple box is just a div with a border around and some margin
  * used for example in the admin screen */
 div.simplebox {
 	margin-left:    1px;
@@ -702,7 +702,7 @@ a.pagetitle:hover {
 	font-weight:    bold;
 	font-size:   26px;
 	font-family:   "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-	
+
 	color:   #ff860d;
 }
 
@@ -747,7 +747,7 @@ H3 {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   11px;
 	color:   #ff860d;
-	
+
 }
 
 /* Search results display a date using the following style*/
@@ -854,7 +854,7 @@ DIV#page-bar {
 	font-size:   11px;
 	color:   #ff860d;
 	background:   #575151;
-	
+
 }
 
 /* When a cached version of an external link is displayed */
@@ -1200,7 +1200,7 @@ a.galname:hover {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   11px;
 	color:   #ff860d;
-	
+
 }
 
 /* Prev and next buttons in gallery listings */
@@ -1575,7 +1575,7 @@ a.blogname:hover {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   11px;
 	color:   #ff860d;
-	
+
 }
 
 /* Prev and next buttons in blog listings */
@@ -1886,7 +1886,7 @@ span.posthead {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   11px;
 	color:   #ff860d;
-	
+
 }
 
 /* The post body */
@@ -2204,7 +2204,7 @@ a.fgalname:hover {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   11px;
 	color:   #ff860d;
-	
+
 }
 
 /* Prev and next buttons in gallery listings */
@@ -2565,7 +2565,7 @@ span.trailer {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   11px;
 	color:   #ff860d;
-	
+
 }
 
 /* The list of articles */
@@ -2830,7 +2830,7 @@ a.artname:hover {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   9px;
 	color:   #ff860d;
-	
+
 }
 
 .day:link {
@@ -2870,7 +2870,7 @@ a.artname:hover {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   9px;
 	color:   #ff860d;
-	
+
 	font-weight:   bold;
 }
 
@@ -2897,7 +2897,7 @@ a.artname:hover {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   9px;
 	color:   #ff860d;
-	
+
 	font-weight:   bold;
 }
 
@@ -2938,7 +2938,7 @@ a.artname:hover {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   11px;
 	color:   #ff860d;
-	
+
 }
 
 /* The whole comment area when it is visible and when it is not */
@@ -3054,7 +3054,7 @@ div.commenttext {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   11px;
 	color:   #ff860d;
-	
+
 }
 
 /* Links in the comment header */
@@ -3076,7 +3076,7 @@ div.commenttext {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   11px;
 	color:   #ff860d;
-	
+
 }
 
 .comments .normal {
@@ -3225,7 +3225,7 @@ a.forumspagetitle:hover {
 	font-weight:    bold;
 	font-size:   26px;
 	font-family:   "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-	
+
 	color:   #DD6900;
 }
 
@@ -3661,7 +3661,7 @@ td.tdcategpath {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   12px;
 	color:   #ff860d;
-	
+
 }
 
 /* Table with the subcategories */
@@ -3700,7 +3700,7 @@ td.tdsubcat {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   11px;
 	color:   #ff860d;
-	
+
 }
 
 table.catobjects {
@@ -3743,7 +3743,7 @@ td.categobjectsdataeven, td.categobjectsdataodd {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   11px;
 	color:   #ff860d;
-	
+
 }
 
 /***************************************************** FAQS **************************************************************/
@@ -3888,7 +3888,7 @@ div.dircategs {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   12px;
 	color:   black;
-	
+
 	font-weight:   bold;
 }
 
@@ -3896,7 +3896,7 @@ div.dircategs {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   12px;
 	color:   #636363;
-	
+
 	font-weight:   bold;
 }
 
@@ -3905,14 +3905,14 @@ div.dircategs {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   10px;
 	color:   black;
-	
+
 }
 
 .dirsublink:hover {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   10px;
 	color:   #636363;
-	
+
 }
 
 /* The list of sites in any category */
@@ -3947,14 +3947,14 @@ span.dirsitecats {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   12px;
 	color:   black;
-	
+
 }
 
 .dirsitelink:hover {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   12px;
 	color:   #636363;
-	
+
 }
 
 /* Related categories */
@@ -4037,7 +4037,7 @@ div.messureadbody {
 	font-family:    Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:   10px;
 	color:   black;
-	
+
 }
 
 .readlink:hover {
@@ -4469,7 +4469,7 @@ div.tabrow {
 	font-size: 11px;
 }
 td.middle {
-	vertical-align: middle; 
+	vertical-align: middle;
 }
 .daterow {
 	margin-left: 10px;
@@ -4483,10 +4483,10 @@ td.middle {
 	background-color: #ffffff;
 	width: auto;
 	border: 1px solid #666666;
-	padding: 1px; 
+	padding: 1px;
 }
 .opaque .box-title,
-.opaque, .box-data 
+.opaque, .box-data
 {
 	width: auto;
 }
@@ -4601,11 +4601,11 @@ div#rules-copy-panel {
 	margin: 0px;
 	margin-right: 5px;
 	padding: 1px 0px 1px 0px;
-	-moz-border-radius : 5px 5px 0 0;  
+	-moz-border-radius : 5px 5px 0 0;
 }
-.tabmark a { 
-	-moz-border-radius : 5px 5px 0 0; 
-	border-bottom : 0; 
+.tabmark a {
+	-moz-border-radius : 5px 5px 0 0;
+	border-bottom : 0;
 	color: #666666;
 	font-weight: 700 !important;
 	padding: 1px 5px 1px 5px;

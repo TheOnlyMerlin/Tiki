@@ -55,7 +55,7 @@ fieldset {
 form {
 	margin: 0;
 	padding: 0}
-	
+
 legend {color: #303030}
 button {}
 button:hover {cursor: pointer}
@@ -120,7 +120,7 @@ ul.jumplinks a:focus, ul.jumplinks a:active {
 	position: absolute;
 	top: 9010px;
 	left: 9010px;
-	background: #339999; 
+	background: #339999;
 	color: #fff;
 	padding: 5px;
 	font-weight: bold;
@@ -168,13 +168,13 @@ td#leftcolumn {
 	padding: 1em;
 	background: #fff;
 	border-left: 2px solid #a0a0a0}
- 
+
 td#centercolumn {
 	background: #fff;
 	padding: 0 10px 10px 10px;
 	border-left: 2px solid #a0a0a0;
 	border-right: 2px solid #a0a0a0}
-	
+
 td#rightcolumn {
 	background: #fff;
 	width: 180px;
@@ -203,7 +203,7 @@ div#tiki-bot {
 	color: #ffffff;
 	background:inherit;
 	text-decoration: underline}
-	
+
 #credits {display: inline}
 /*  end layout tables */
 
@@ -329,14 +329,14 @@ input[id="sl-login-pass"] {
 	clear: both;
 	font-size: 90%}
 
-input#fuser {line-height: 90%} 
+input#fuser {line-height: 90%}
 
 input[name="search"] {
 	border: solid 1px #FFFFFF;
 	background: #467AA7;
 	color: #FFFFFF;
 	vertical-align: middle;
-	text-transform: uppercase; 
+	text-transform: uppercase;
 	font-size: .9em}
 
 input[name="search"]:hover {cursor: pointer}
@@ -366,7 +366,7 @@ a.flip img {display: none}
 .tellafriend {
 	font-size: 80%;
 	text-align:right}
-	
+
 .fullscreen .tellafriend {
 	margin-right: 100px;
 	margin-top: 2px}
@@ -431,7 +431,7 @@ div#tiki-center{ }
 	text-align: left;
 	white-space: nowrap;
 	background: #467AA7}
-	
+
 .mdkitem a,
 .mdkitem a:visited,
 .cssmenu_vert li a  {
@@ -448,13 +448,13 @@ div#tiki-center{ }
 .cssmenu_ver li a ul {border: 0}
 .cssmenu_vert li:hover ul, .cssmenu_vert li li:hover ul, .cssmenu_vert li li li:hover ul, .cssmenu_vert li.sfhover ul, .cssmenu_vert li li.sfhover ul, .cssmenu_vert li li li.sfhover ul { /* lists nested under hovered list items */border: 0; padding-right: 0}
 
-.mdkitem a:hover, 
+.mdkitem a:hover,
 .cssmenu_vert li a:hover  {
 	background: none;
 	color: #fff;
 	text-decoration: none;
 	background: #80b0da}
-	
+
 .mdkitem a:active {color: #993300}
 
 .mdkitem .mdkfwdarr {
@@ -475,7 +475,7 @@ a.phplm:hover,
 a.phplm:active {
 	color: #467aa7;
 	text-decoration: none;
-	font-size: 10px;	
+	font-size: 10px;
 	font-weight: normal}
 
 a.phplm:hover {
@@ -558,7 +558,7 @@ div#attzone, div#comzone {
 div#attzoneopen, div#comzoneopen {
 	display: block;
 	margin-top: 10px}
-	
+
 div#edithelpzone {display: none}
 #edithelpzone code {font-size: 1.2em}
 #rules-copy-panel {display: none}
@@ -570,7 +570,7 @@ div#edithelpzone {display: none}
 	height: 0;
 	clear: both;
 	visibility: hidden}
-	
+
 /* IE */ * html .clearfix {height: 1%}
 #overdiv table {width: auto !important}
 .attention {color: red}
@@ -678,7 +678,7 @@ a.flipmodtitle:hover img {border: 1px solid #58A7D2 !important}
 .box-footer {}
 
 /** controls for modules **/
-.modcontrols { 
+.modcontrols {
 	display: block;
 	float: right;
 	width: 64px;
@@ -734,12 +734,12 @@ div.simplebox {
 table {
 	font-size: 1em}
 
-table.normal, 
+table.normal,
 table.admin,
 table.bloglist,
 table.sortable {width: 100%}
 
-* html table.normal, 
+* html table.normal,
 * html table.admin,
 * html table.bloglist,
 * html table.sortable {
@@ -823,7 +823,7 @@ td.formcontent {}
 /* links to view an object from a table listing objects can be generalized to this link */
 a.fgalname {}
 a.fgalname:hover {}
- 
+
 a.tablename,
 a.galname,
 a.imagename,
@@ -861,7 +861,7 @@ a.forumnameread {}
 	margin-right: 5px;
 	padding: 1px 0 1px 0}
 
-.tabmark a { 
+.tabmark a {
 	border-bottom :0;
 	color: #000;
 	padding: 1px 5px 1px 5px;
@@ -910,12 +910,12 @@ form fieldset.tabcontent {}
 
 .tab-menu li img {vertical-align: middle}
 
-.tab-menu li a {} 
+.tab-menu li a {}
 
-.tab-menu li a:hover, 
-.tab-menu li a:focus {} 
+.tab-menu li a:hover,
+.tab-menu li a:focus {}
 
-.tab-menu li a:hover {} 
+.tab-menu li a:hover {}
 .tab-menu li.tab-selected a {}
 
 table.admin div#content1 div.tabcontent div.cbox {background: transparent}
@@ -963,15 +963,15 @@ div#description {
 	background: #467AA7;
 	color: #FFFFFF;
 	padding-left: 1em}
- 
-.wikitext ul li {} 
+
+.wikitext ul li {}
 .wikitext ul li ul li {}
 .wikitext ol {}
 
 table.wikitable {
 	border: 1px solid #A9A9A9;
 	border-collapse: collapse}
- 
+
 td.wikicell {
 	padding: 3px;
 	border: 1px solid #999999;
@@ -1019,7 +1019,7 @@ textarea.wikiedit {font-size: 1.3em}
 p.editdate {}
 div.wiki-edithelp {}
 img.externallink {}
- 
+
 /* Needed esp. for light-on-dark theme */
 div.quicktag {}
 div.quicktag img,
@@ -1040,7 +1040,7 @@ div.code {
 	padding: 10px;
 	margin: 4px;
 	border: 1px dashed #ADACAF;
-	overflow: auto; 
+	overflow: auto;
 	width: 400px}
 
 .codecaption {
@@ -1065,7 +1065,7 @@ div.tocnav {
 	padding: 3px;
 	margin-bottom: 4px;
 	clear: both}
- 
+
 #tocnavicons {float: left}
 #tocnavaddpage{float: right}
 #tocnavlinks {clear: both}
@@ -1100,16 +1100,16 @@ div.articletopline {
 div.articletitle {
 	padding-top: 16px;
 	margin-top: 6px;
-	margin-bottom:	15px;
-	text-align:	left}
- 
+	margin-bottom: 15px;
+	text-align: left}
+
 span.titlea {
 	font-size: 1.5em;
 	font-weight: normal}
 
-span.titleb {font-size: 1.0em} 
+span.titleb {font-size: 1.0em}
 div.articlesubtitle {font-size: 0.9em}
- 
+
 div.articleheading {
 	margin-top: 6px;
 	line-height: 1.15em}
@@ -1140,14 +1140,14 @@ img.articleimage {
 
 div.articletrailer {text-align: right}
 
-div.articletrailer .wikitopline {float: left} 
+div.articletrailer .wikitopline {float: left}
 div.articlebody {line-height: 1.5em}
- 
+
 div.articlesource {
 	margin-top: 5px;
 	font-style: italic;
 	font-size: 90%}
- 
+
 /***** Blogs *****/
 
 div.blogheading {
@@ -1213,9 +1213,9 @@ span.posthead {
 	display: block;
 	font-weight: bold;
 	letter-spacing: .4pt}
- 
+
 div.posthead h3 {font-size: 1.2em}
- 
+
 div.postbody {
 	margin-right: 8px;
 	line-height: 1.2em;
@@ -1245,11 +1245,11 @@ body.tiki_forums table.normal {margin: auto}
 
 .post .postbody-title {
 	display: block;
-	background: #67ade7; 
+	background: #67ade7;
 	border-bottom: none;
 	margin-bottom: 4px;
 	padding-top: 2px}
-	
+
 .post .postbody-title .checkbox {float: left}
 
 .post .postbody-title .title {
@@ -1269,7 +1269,7 @@ body.tiki_forums table.normal {margin: auto}
 	text-align: left;
 	width: 100%}
 
-.post .author {	
+.post .author {
 	float: left;
 	text-align: left;
 	vertical-align: top;
@@ -1300,7 +1300,7 @@ body.tiki_forums table.normal {margin: auto}
 .post .postbody-title .actions {
 	float: right;
 	font-size: .9em}
-	
+
 .post .postbody .content {
 	width: 100%;
 	height: 100%;
@@ -1390,7 +1390,7 @@ body.tiki_forums table.normal {margin: auto}
 	display: block;
 	margin: 5px 0;
 	padding: 0}
- 
+
 span.commentstitle {
 	font-weight: bold;
 	font-size: 1.2em}
@@ -1558,10 +1558,10 @@ div.gallerypath a:hover {}
 
 /***** Calendar *****/
 
-.Cal0, 
-.Cal1, 
+.Cal0,
+.Cal1,
 .Cal2 {font-size: 90%}
-	
+
 .Calart,
 .Calblog,
 .Calchart,
@@ -1604,7 +1604,7 @@ div.gallerypath a:hover {}
 
 .Calforum,
 .Calforum a,
-.Calforum a:visited {color: #808000} 
+.Calforum a:visited {color: #808000}
 
 .Calgal,
 .Calgal a,
@@ -1625,7 +1625,7 @@ div.gallerypath a:hover {}
 Caltrack,
 Caltrack a,
 Caltrack a:visited {color: #00BD02}
-	
+
 .Calweb {font-size: 90%}
 
 .Calwiki,
@@ -1694,7 +1694,7 @@ Caltrack a:visited {color: #00BD02}
 .caleven {
 	background: #DCDCDC;
 	color: #000000}
-	
+
 * html .caleven {padding: 0}
 .caldark {background: #467aa7}
 * html .caldark {padding: 0}
@@ -1760,15 +1760,15 @@ div.questionblock {
 	background: white;
 	padding: 4px;
 	margin-bottom: 10px}
- 
+
 div.quizquestion {margin-bottom: 5px}
 div.quizoptions {}
- 
+
 div.quizdescription {
 	border: 1px solid #8CACBB;
 	background: white;
 	margin-bottom: 10px}
- 
+
 div.quizanswer {
 	border: 1px solid #8CACBB;
 	background: white;
@@ -1855,7 +1855,7 @@ div.messureadbody {
 td.prio1, td.prio2, td.prio3, td.prio4, td.prio5 {
 	border: 1px solid #8CACBB;
 	padding-left: 2px}
-	
+
 td.prio1 {background: #F7F9CA}
 td.prio2 {background: #F7F9EA}
 td.prio3 {background: #F7F9FA}
@@ -1865,11 +1865,11 @@ td.prio5 {background: #F7F9FF}
 div.messureadflag {
 	background: #CCCCCC;
 	padding-left: 5px}
-	
+
 div.messureadhead {
 	background: #DEDEDE;
 	margin-top: 2px}
-	
+
 div.messureadbody {
 	margin-top: 5px;
 	background: #DEDEDE}
@@ -1911,7 +1911,7 @@ div#ajaxLoading {
 
 table.default thead td,	table.default tfoot td {
 	font-weight: bold;
-	text-align:	center;
+	text-align: center;
 	background: black;
 	color: #D8D8D8}
 
@@ -1949,7 +1949,7 @@ table.default td {
 
 a.admbox {
 	border: 1px solid #AAAAAA;
-	background: #578bb8 center no-repeat; 
+	background: #578bb8 center no-repeat;
 	color: #c4d6e5}
 
 a.admbox:hover, a.admbox:focus, a.admbox:active  {

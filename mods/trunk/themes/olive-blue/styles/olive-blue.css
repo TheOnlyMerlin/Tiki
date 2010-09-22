@@ -13,7 +13,7 @@ body {
 
 /* GENERAL LAYOUT EXPLANATION
  *
- * The tiki application is enclosed as a whole in tiki-main tiki-main contains three divs: tiki-top, 
+ * The tiki application is enclosed as a whole in tiki-main tiki-main contains three divs: tiki-top,
  * tiki-mid and tiki-botthat will be used for the header, application and footer.
  *
  * tiki-mid contains a 3-column table, the columns are called (ids) leftcolumn, centercolumn and rightcolumn
@@ -119,7 +119,7 @@ span.off-option {
 /* ********************* GENERAL STYLE PROPERTIES ************************** */
 
 /* BOXES boxes are used to present a box with a title bar and content, they are used for modules and they
-   are also used in the rankings, admin screen etc. 
+   are also used in the rankings, admin screen etc.
    The box class is used for modules while the cbox class is used for other boxes
  */
 
@@ -215,12 +215,12 @@ TD.module {
 }
 
 /* Now the boxes for the rest of Tiki (non-modules) */
-div.cbox { 
-  background-color: white; 
-  border: 1px solid #0084aa; 
-  margin-top: 4px; 
-  margin-left: 4px; 
-  margin-right: 8px; 
+div.cbox {
+  background-color: white;
+  border: 1px solid #0084aa;
+  margin-top: 4px;
+  margin-left: 4px;
+  margin-right: 8px;
   margin-bottom: 0px;
   padding-bottom: 10px;
   overflow : hidden;
@@ -426,7 +426,7 @@ div.imagerank {
 	margin-bottom: 10px;
 }
 
-/* A simple box is just a div with a border around and some margin 
+/* A simple box is just a div with a border around and some margin
    used for example in the admin screen
  */
 div.simplebox {
@@ -484,11 +484,11 @@ input {
 }
 
 /* Cells in forms using a background color */
-.formcolor, 
-.galform, 
-.editblogform, 
-.editfgalform, 
-.comform, 
+.formcolor,
+.galform,
+.editblogform,
+.editfgalform,
+.comform,
 .forumform {
 	background-color: #e5f2f6;
 	color: black;
@@ -2403,7 +2403,7 @@ div.tabrow {
 	font-size: 11px;
 }
 td.middle {
-	vertical-align: middle; 
+	vertical-align: middle;
 }
 .daterow {
   padding : 0 5px;
@@ -2426,10 +2426,10 @@ td.middle {
 	background-color: #ffffff;
 	width: auto;
 	border: 1px solid #666666;
-	padding: 1px; 
+	padding: 1px;
 }
 .opaque .box-title,
-.opaque, .box-data 
+.opaque, .box-data
 {
 	width: auto;
 }
@@ -2533,13 +2533,13 @@ a.tikihelp:hover {
 
 .catblock {
   border: 1px solid #aaaaaa;
-} 
+}
 .catlists {
   border-top: 1px solid #ffffff;
   padding: 1px 6px 1px 6px;
   background-color: none;
   color: #666666;
-} 
+}
 .catlists:last-child {
   border-bottom: 1px solid #ffffff;
 }
@@ -2547,11 +2547,11 @@ a.tikihelp:hover {
   background-color: #dedede;
 }
 .cattitle {
-  color: #000000; 
+  color: #000000;
   font-weight: bold;
 }
 .catlists a.link {
-  color: #666666; 
+  color: #666666;
   padding: 0px 4px 0px 4px;
   border: 1px solid #aaaaaa;
   border-radius: 6px;
@@ -2560,7 +2560,7 @@ a.tikihelp:hover {
 }
 .catlists a.link:hover {
   color: #000000;
-} 
+}
 /* TikiIntegrator: By default copy rules dialog not shown */
 div#rules-copy-panel {
     display: none;
@@ -2574,7 +2574,7 @@ div#rules-copy-panel {
   padding: 1px 3px 1px 5px;
   margin: 2px;
   cursor: pointer;
-  font-weight:bold; 
+  font-weight:bold;
 }
 
 div#loadstats {
@@ -2586,11 +2586,11 @@ div#loadstats {
 
 /* phplayers style */
 .box-data table {
-  width: 100%; 
-} 
+  width: 100%;
+}
 .mdkverbar  {
   margin: 0px;
-} 
+}
 .mdksubmenu {
   z-index: 999;
   position: absolute;
@@ -2680,7 +2680,7 @@ table.commentinfo { width: 100%; background-color: #e5f2f6; }
 #clear {
 	clear:both;
 	}
-	
+
 
 /* tiki tabs */
 
@@ -2693,14 +2693,14 @@ table.commentinfo { width: 100%; background-color: #e5f2f6; }
 	margin-right: 5px;
 	padding: 1px 0px 1px 0px;
 	border-radius : 5px 5px 0 0;
-	-moz-border-radius : 5px 5px 0 0;  
+	-moz-border-radius : 5px 5px 0 0;
 	-khtml-border-radius : 5px 5px 0 0;
 }
-.tabmark a { 
+.tabmark a {
 	border-radius : 5px 5px 0 0;
-	-moz-border-radius : 5px 5px 0 0; 
+	-moz-border-radius : 5px 5px 0 0;
 	-khtml-border-radius : 5px 5px 0 0;
-	border-bottom : 0; 
+	border-bottom : 0;
 	color: #666666;
 	font-weight: 700 !important;
 	padding: 1px 5px 1px 5px;

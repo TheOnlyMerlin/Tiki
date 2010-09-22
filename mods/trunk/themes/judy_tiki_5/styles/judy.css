@@ -3,15 +3,15 @@
 	of the Drupal Garland theme, for TikiWiki CMS/Groupware.
 	This stylesheet and related files are for use with Tiki 5.x.
 */
- 
+
 /* Import foundation CSS files. */
 @import url("lite/lite.css");
 @import url("layout/layout.css");
 @import url("layout/design.css");
- 
+
 /***** XHTML Elements (body tag here,
 			others follow Layout) *****/
-			
+
 body {
   margin: 0;
   padding: 0;
@@ -51,7 +51,7 @@ body {
 }
 
 #col2 .content {
-	margin: 60px 0 5em;	
+	margin: 60px 0 5em;
 }
 
 #col3 {
@@ -171,7 +171,7 @@ a:active, a.active {
 .wikitext a.wiki:link,
 .wikitext a.wiki:visited {
   color: #027AC6 !important;
-  text-decoration: none !important;	
+  text-decoration: none !important;
 }
 
 span.button a,
@@ -200,7 +200,7 @@ input[type="submit"]:hover,
 	color: #fff;
 	text-decoration: none}
 
-.button a:active,	
+.button a:active,
 button:active,
 input[type="reset"]:active,
 input[type="submit"]:active,
@@ -353,7 +353,7 @@ ol li/*, ul li*/ {
 	color: #5895b3;
 }
 
-#col2 .cssmenu_vert li ul li a:hover, 
+#col2 .cssmenu_vert li ul li a:hover,
 #tiki-top .cssmenu_horiz li ul li a:hover {
 	text-decoration: underline;
 }
@@ -425,7 +425,7 @@ a.flip:hover {color: #027ac6;font-size: 90%}
 
 .box-title {
 	font-size: 160%;
-	line-height: 130%;	
+	line-height: 130%;
 }
 
 .box-title a,
@@ -449,7 +449,7 @@ a.flip:hover {color: #027ac6;font-size: 90%}
 	padding: .3em;
 }
 
-.rbox-title, 
+.rbox-title,
 .rbox-data {
 	border-color: #e0e5fb;
 }
@@ -544,7 +544,7 @@ h1.pagetitle {
 	font-size: 160%;
 	line-height: 130%;
 	color: #494949;
-	font-weight: normal; 
+	font-weight: normal;
 }
 
 h1.pagetitle strong {
