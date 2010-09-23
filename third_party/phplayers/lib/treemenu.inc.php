@@ -309,16 +309,21 @@ function newTreeMenu(
 	'</script>' . "\n";
 
 	$toggle =
-	'<script language="JavaScript" type="text/javascript">' . "\n" .
-	'<!--' . "\n" .
 	'if ((DOM && !Opera56 && !Konqueror22) || IE4) {' . "\n" .
 	$toggle .
 	'}' . "\n" .
-	'if (NS4) alert("Only the accessibility is provided to Netscape 4 on the JavaScript Tree Menu.\nWe *strongly* suggest you to upgrade your browser.");' . "\n" .
-	'// -->' . "\n" .
-	'</script>' . "\n";
-
-	$this->_treeMenu[$menu_name] = $toggle_function . "\n" . $this->_treeMenu[$menu_name] . "\n" . $toggle;
+	'if (NS4) alert("Only the accessibility is provided to Netscape 4 on the JavaScript Tree Menu.\nWe *strongly* suggest you to upgrade your browser.");' . "\n";
+	
+	// Fix the problem of variable "phplm_expand & phplm_collapse" undefined.
+	// The problem is the test of variables that are not yet initialized. 
+	// Because the library "headlib" include js files in the bottom of page (after testing).
+	// Now the test is after including the js file.
+	// Warning, this create a dependency of "headlib".
+	require_once('lib/headerlib.php');
+	global $headerlib; include_once('lib/headerlib.php');
+	$headerlib->add_js($toggle, 10);	
+	
+	$this->_treeMenu[$menu_name] = $toggle_function . "\n" . $this->_treeMenu[$menu_name] . "";
 
 	return $this->_treeMenu[$menu_name];
 }
