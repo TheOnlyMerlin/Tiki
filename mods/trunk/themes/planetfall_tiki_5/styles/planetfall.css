@@ -709,8 +709,8 @@ table.sortable {
 
 body.tiki_webmail table.normal {color: #436976}
 
-.normal td,
-td.normal,
+/*.normal td,
+td.normal,*/
 .wikitable td,
 td.odd,
 td.even {
