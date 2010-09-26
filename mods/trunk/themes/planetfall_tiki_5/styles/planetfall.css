@@ -1592,55 +1592,6 @@ div.messureadbody {margin-top: 5px}
 	
 #caltable td {padding: 0}
 
-.day {
-	font-size: .9em;
-	color: black;
-}
-
-.day:hover {
-	font-size: .9em;
-	color: black;
-	text-decoration: none;
-}
-
-.today {
-	font-size: .9em;
-	color: black;
-	font-weight: bold;
-	text-decoration: none;
-}
-
-.today:hover {
-	font-size: .9em;
-	color: black;
-	font-weight: bold;
-}
-
-.nav {
-	font-size: .9em;
-	color: black;
-	font-weight: bold;
-	text-decoration: none;
-}
-
-.nav:hover {
-	font-size: .9em;
-	color: black;
-	font-weight: bold;
-}
-
-.changedate {
-	font-size: .9em;
-	color: black;
-	font-weight: bold;
-}
-
-.date { 
-	font-size: .9em;
-	color: black;
-	font-weight: bold;
-}
-
 .calinput {background: #121A1D}
 .calfocuson + .calcontent {background: #597a8a}
 
