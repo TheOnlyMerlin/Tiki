@@ -7,7 +7,7 @@
 	</head>
 	<body class="file_gallery slideshow">
 {jq}
-			$("a[rel*='shadowbox']").colorbox({
+			$jq("a[rel*='shadowbox']").colorbox({
 				open: true,
 				slideshowStart: "{tr}Start the Slideshow{/tr}",
 				slideshowStop: "{tr}Pause the Slideshow{/tr}",

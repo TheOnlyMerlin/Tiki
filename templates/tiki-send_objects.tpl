@@ -14,7 +14,6 @@
 {/if}
 
 <br />
-<br />
 
 <form method="post" action="tiki-send_objects.php">
 	<div class="cbox">
@@ -26,7 +25,6 @@
 		</div>
 	</div>
 	
-	<br />
 	<br />
 
 	{if $tiki_p_send_pages eq 'y'}
@@ -50,9 +48,6 @@
 				<input type="submit" name="clearpages" value="{tr}Clear{/tr}" />
 			</div>
 		</div>
-
-	<br />
-	<br />
 
 		{if count($structures)}
 			<div class="cbox">
@@ -79,7 +74,6 @@
 	{/if}
 	
 	<br />
-	<br />
 
 	{if $tiki_p_send_articles eq 'y'}
 		<div class="cbox">
@@ -104,9 +98,6 @@
 		</div>
 	{/if}
 
-	<br />
-	<br />
-
 	<div class="cbox">
 		<div class="cbox-title">
 			{tr}Send objects to this site{/tr}
@@ -115,37 +106,37 @@
 			<input type="hidden" name="sendpages" value="{$form_sendpages|escape}" />
 			<input type="hidden" name="sendstructures" value="{$form_sendstructures|escape}" />
 			<input type="hidden" name="sendarticles" value="{$form_sendarticles|escape}" />
-			<table class="formcolor">
+			<table>
 				<tr>
-					<td>{tr}Site:{/tr}</td>
-					<td>
+					<td class="form">{tr}Site:{/tr}</td>
+					<td class="form">
 						<input type="text" name="site" value="{$site|escape}" />
 						<br />
-						<i>{tr}Ex: http://tiki.org or localhost{/tr}</i>
+						<i>{tr}Ex: http://tikiwiki.org or localhost{/tr}</i>
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Path:{/tr}</td>
-					<td>
+					<td class="form">{tr}Path:{/tr}</td>
+					<td class="form">
 						<input type="text" name="path" value="{$path|escape}" />
 						<br />
-						<i>{tr}Use /commxmlrpc.php if your Tiki site is installed at the root, otherwise adapt /tiki to your need{/tr}</i>
+						<i>{tr}Use /commxmlrpc.php if your tikiwiki site is installed at the root, otherwise adapt /tiki to your need{/tr}</i>
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Username:{/tr}</td>
-					<td><input type="text" name="username" value="{$username|escape}" /></td>
+					<td class="form">{tr}Username:{/tr}</td>
+					<td class="form"><input type="text" name="username" value="{$username|escape}" /></td>
 				</tr>
 				<tr>
-					<td>{tr}Password:{/tr}</td>
-					<td><input type="password" name="password" value="{$password|escape}" /></td>
+					<td class="form">{tr}Password:{/tr}</td>
+					<td class="form"><input type="password" name="password" value="{$password|escape}" /></td>
 				</tr>
 				<tr>
-					<td>{tr}Debug:{/tr}</td>
-					<td><input type="checkbox" name="dbg"{if $dbg eq 'on'} checked="checked"{/if} /></td>
+					<td class="form">{tr}Debug:{/tr}</td>
+					<td class="form"><input type="checkbox" name="dbg"{if $dbg eq 'on'} checked="checked"{/if} /></td>
 				</tr>
 				<tr>
-					<td align="center" colspan="2"><input type="submit" name="send" value="{tr}Send{/tr}" /></td>
+					<td align="center" colspan="2" class="form"><input type="submit" name="send" value="{tr}Send{/tr}" /></td>
 				</tr>
 			</table>
 		</div>

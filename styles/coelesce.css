@@ -1,9 +1,9 @@
-/*
+/* 
  * Coelesce theme (coelesce.css) for TikiWiki CMS/Groupware,
- * original design by Patrick Allard. Distributed under the LGPL license.
+ * original design by Patrick Allard. Distributed under the LGPL license. 
  */
-
-/* Import *lite as the base: */
+ 
+/* Import *lite as the base: */ 
 @import url("lite/lite.css");
 
 /* Then import the default layout properties file: */
@@ -11,7 +11,7 @@
 
 /* And design defaults: */
 @import url("layout/design.css");
-
+ 
 /***** XHTML Elements ******/
 body {
 	text-align: left;
@@ -35,6 +35,7 @@ h1 {
 	font-weight: bold;
 	font-size: 1.8em;
 	margin: 0;
+	padding-left: 14px;
 }
 
 h2 {
@@ -149,7 +150,7 @@ input[type=submit]:hover {
 	background: white;
 }
 
-.button a:active,
+.button a:active,	
 button:active,
 .button input:active,
 span.highlight a:link,
@@ -188,7 +189,7 @@ label {
 	color: #82a7c8;
 }
 
-/*** Type 1 (*litecss-based) layout
+/*** Type 1 (*litecss-based) layout 
 	(overrides lite.css) ***/
 #main {
 	text-align: left;
@@ -233,7 +234,6 @@ body.tiki_wiki_page #c1c2 #wrapper #col1 > .content {
 }
 
 body.tiki_cms #c1c2 #wrapper #col1 #tiki-center,
-body.tiki_login #c1c2 #wrapper #col1 #tiki-center,
 body.tiki_wiki_page #c1c2 #wrapper #col1 #tiki-center {
 	background: none;
 }
@@ -332,7 +332,7 @@ div#sitelogo * {
 }
 
 #sitesearchbar {
-	float: right;
+	float: none;
 	margin: 3px 0 0 0;
 	padding: 0 0 0 15px;
 	height: 33px;
@@ -442,20 +442,16 @@ input[name="search"] {
 a.flip,
 a.flip:visited,
 .tellafriend a,
-.share a,
-.tellafriend a:visited,
-.share a:visited, {
+.tellafriend a:visited {
 	color: silver;
 }
 
 a.flip:hover,
-.tellafriend a:hover,
-.share a:hover, {
+.tellafriend a:hover {
 	color: #517ea7;
 }
 
-.tellafriend,
-.share {
+.tellafriend {
 	padding: 0 30px;
 }
 
@@ -492,7 +488,7 @@ a.linkmodule:hover {
 .horbar {
 	width: 100%;
 }
-
+ 
 .horbar table {
 	border-left: 1px solid #2e5276;
 	border-right: 1px solid #acc4e0;
@@ -514,7 +510,7 @@ a.linkmodule:hover {
 	color: #fff !important;
 	text-decoration: none;
 }
-
+ 
 .mdksubmenu {
 	background: white;
 	margin-top: 0;
@@ -530,16 +526,16 @@ a.linkmodule:hover {
 	font-weight: normal;
 	font-size: 1.2em;
 }
-
+ 
 .mdkitem a:link {
 	font-weight: normal;
 	text-decoration: none;
 }
-
+ 
 .mdkitem a:visited {
 	text-decoration: none;
 }
-
+ 
 .mdkitem a:hover {
 	color: #82a7c8;
 	text-decoration: none;
@@ -631,7 +627,7 @@ a.phplmselected:hover {
 
 .cssmenu_horiz li ul li,
 .cssmenu_vert li ul li {
-	background: #ccdceb;
+	background:	#ccdceb;
 	border: 1px solid #5a7ea2;
 	border-top: 0;
 	margin-bottom: -1px
@@ -802,11 +798,6 @@ img.flipmodimage:hover {
 	border-top: 0;
 }
 
-/** Modules in pages **/
-div.box-login_box {
-	width: 210px;
-}
-
 /** Other boxes **/
 div.cbox {
 	color: #2d2d2d;
@@ -865,7 +856,7 @@ div.simplebox {
 .wikitext .halffloat div.box {
 	width: 47%;
 	margin-right: 2%;
-
+ 
 }
 
 
@@ -875,7 +866,7 @@ table {
 	font-size: 1em;
 }
 
-table.normal,
+table.normal, 
 table.admin {
 	border: 0;
 	background: #fff;
@@ -1008,12 +999,7 @@ body.tiki_wiki_page #comments {
 	padding: 1em;
 }
 
-.pagetitle {
-	padding-left: 14px;
-}
-
 h1.pagetitle a,
-div.titlebar,
 h1.pagetitle a:visited,
 h1.pagetitle a:hover,
 a.pagetitle,
@@ -1022,15 +1008,6 @@ a.pagetitle:hover {
 	line-height: 36px;
 	font-size: 20px;
 	color: #2d2d2d;
-	font-weight: bold;
-}
-
-a.titletop,
-a.titletop:hover,
-a.titletop:visited {
-	font-weight: bold;
-	color: #0066FF;
-	font-size: 12px;
 }
 
 h1 a,
@@ -1046,10 +1023,6 @@ h1 a:hover {
 	color: #2d2d2d;
 }
 
-body.tiki_wiki_page .wikitopline {
-	margin-bottom: 10px;
-}
-
 .wikitopline .content br {
 }
 
@@ -1057,10 +1030,6 @@ div#description,
 .description {
 	font-size: .9em;
 	font-style: italic;
-}
-
-body.tiki_surveys div.description {
-	font-style: normal;
 }
 
 .wikiactions .icons,
@@ -1072,46 +1041,41 @@ body.tiki_surveys div.description {
 	display: inline;
 }
 
-div.titlebar {
-	background: url(coelesce/tiki-centerbg.jpg) repeat-x;
-	line-height: 36px;
-	color: #2d2d2d;
-	padding-left: 10px;
+.titlebar {
+	padding: 0.1em;
+	background: #c3d3e5;
+	color: #607993;
+	font-weight: bold;
+	text-align: center;
+	margin: 10px 0;
 }
 
-.postbody-content .showhide_heading .link,
 .wikitext .showhide_heading .link {
 	font-weight: normal;
 	font-size: 80%;
 	vertical-align: top;
 }
 
-.postbody-content h1,
 .wikitext h1 {
 	margin: 20px 0 15px 0;
 }
 
-.postbody-content h2,
 .wikitext h2 {
 	margin: 10px 0 10px 0;
 }
 
-.postbody-content h3,
 .wikitext h3 {
 	margin: 10px 0 5px 0;
 }
 
-.postbody-content h4,
 .wikitext h4 {
 	margin: 10px 0 5px 0;
 }
 
-.postbody-content h5,
 .wikitext h5 {
 	margin: 10px 0 5px 0;
 }
 
-.postbody-content h6,
 .wikitext h6 {
 	margin: 10px 0 5px 0;
 }
@@ -1131,7 +1095,7 @@ h1.pagetitle {
 	background: url(coelesce/tiki-centerbg.jpg) repeat-x;
 	line-height: 36px;
 	color: #2d2d2d;
-	padding-left: 10px;
+	padding-left: 2px;
 }
 
 div.split {
@@ -1333,8 +1297,8 @@ a.blogt:hover {
 	border-bottom: 1px dotted #fff;
 }
 
-div.author_actions_status {
-	background: #E6EDF5;
+.postinfo {
+	font-size: 1.2em;
 }
 
 .postinfo a {
@@ -1352,12 +1316,7 @@ div.author_actions_status {
 .post .postbody {
 	background: #fff;
 	font-size: 1.1em;
-	border-left: solid #EEFDFF;
-	border-right: solid #EEFDFF;
-	border-top: solid 1px #C3D3E5;
 }
-	
-* html .post .postbody {font-size: 11px}
 
 .top_post .post .postbody {
 	background: #e6edf5;
@@ -1371,8 +1330,8 @@ div.author_actions_status {
 }
 
 .postbody-title {
-	background: #EEFDFF;
-	padding: 1px 10px 0;
+	color: #000;
+	background: inherit;
 }
 
 .top_post .post .postbody-title {
@@ -1380,9 +1339,13 @@ div.author_actions_status {
 }
 
 .post .postbody-title .title {
-	color: #295C8E;
+	color: #2d2d2d;
 	float: none;
 	margin: auto;
+}
+
+.postbody-title .title a.link {
+	color: #2d2d2d;
 }
 
 .postbody-title .title br.clear {
@@ -1391,12 +1354,15 @@ div.author_actions_status {
 
 .post .author_actions {
 	position: relative;
+	background: #c3d3e5;
 	color: #000;
+	margin-bottom: 2px;
 	font-size: 11px;
 	font-weight: bold;
-	line-height: 21px;
+	line-height: 1;
+	height: 21px;
 	vertical-align: middle;
-	float: right;
+	min-width: 100%;
 }
 
 .author_actions .author {
@@ -1412,21 +1378,33 @@ div.author_actions_status {
 	vertical-align: middle;
 }
 
+.author_actions > .actions {
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 21px;
+	line-height: 21px;
+	text-align: right;
+	background: #446793;
+	color: #fff;
+	border-left: 2px solid #fff;
+}
+
 .post .author_info {
 	background: inherit;
 	display: inline-block;
-	float: left;
-	color: #999999;
+	color: #000;
 	text-align: left;
-	vertical-align: middle;
-	padding: 0 5px ;
-	margin-top: 0;
 	line-height: 21px;
-	font-size: 11px;
-	font-weight: bold;
+	vertical-align: middle;
+	padding-top: 0;
+	margin-top: 0;
+	height: 21px;
 }
 
 .post .author_info img {
+	height: 21px;
+	width: 21px;
 	vertical-align: middle;
 }
 
@@ -1483,21 +1461,21 @@ div.author_actions_status {
 	text-align: left;
 	clear: both;
 	margin-top: 3px;
-	margin-bottom: 0px;
 	background: #e6edf5;
 	color: #ebf1f7;
 }
 
-.postfooter .status {
-	float: left;
-	clear: none;
-	margin-right: 5px;
-	font-size: 10px;
+.postfooter .actions {
+	width: 200px;
 }
 
-a.linkcomments {
-	background: none repeat scroll 0 0 #FFFF99;
-	padding: 0 3px;
+.postfooter .status {
+	float: right;
+	clear: none;
+	width: 200px;
+	text-align: right;
+	margin-right: 5px;
+	font-size: 10px;
 }
 
 .post .contribution {
@@ -1635,8 +1613,8 @@ div.multiselect {
 
 /***** Calendar *****/
 /* Overrides calendar.css, etc. */
-.cal0,
-.cal1,
+.cal0, 
+.cal1, 
 .cal2 {
 	font-size: 90%;
 }
@@ -2026,7 +2004,7 @@ a.admbox {
 	background-color: #dddfdf;
 }
 
-.admbox a,
+.admbox a, 
 a.admbox:hover,
 .admbox a,
 a.admbox:focus,
@@ -2047,16 +2025,6 @@ a.admbox.off:focus,
 .admbox a,
 a.admbox.off:active {
 	border: 1px solid #a9a9a9;
-}
-
-/* Make Register info more prominent than lost password */
-#siteloginbar .register {
-  padding-left: 20px;
-}
-
-#siteloginbar .pass {
-  float: right;
-  padding-left: 20px;
 }
 
 /* Fixed-width rules */

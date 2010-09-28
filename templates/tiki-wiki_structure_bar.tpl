@@ -15,10 +15,7 @@
 {if $struct_editable eq 'y'}
     <form action="tiki-editpage.php" method="post">
       <input type="hidden" name="current_page_id" value="{$page_info.page_ref_id}" />
-      <input type="text" id="structure_add_page" name="page" />
-      {if $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y'}
-      {jq}$("#structure_add_page").tiki("autocomplete", "pagename");{/jq}
-      {/if}
+      <input type="text" name="page" />
       {* Cannot add peers to head of structure *}
       {if $page_info and !$parent_info }
       <input type="hidden" name="add_child" value="checked" /> 

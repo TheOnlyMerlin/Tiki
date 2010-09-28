@@ -56,7 +56,7 @@ class WikiPluginPluginManager extends PluginsLib
             return $this->error("No plugins directory defined");
         }
         if (empty($helpurl)) {
-        	$helpurl = 'http://doc.tiki.org/';
+        	$helpurl = 'http://doc.tikiwiki.org/';
         }
         
         $params = $this->getParams($params);
@@ -145,10 +145,10 @@ class WikiPluginPluginManager extends PluginsLib
 		    					$paramblock = '~np~' . $infoPlugin['params'][$paramname]['description'] . '~/np~';
 		    				}
 		    				if (isset($param['options']) && is_array($param['options'])) {
-		    					$paramblock .= '<br /><em>Options:</em> ';
+		    					$paramblock .= '<br /><br /><em>Options:</em> ';
 		    					$i = 0;
 								foreach($param['options'] as $oplist => $opitem) {
-									if (isset($opitem['value'])) {
+									if (!empty($opitem['value'])) {
 										$paramblock .= $opitem['value'];
 									} else {
 										$paramblock .=  $opitem['text'];
@@ -190,7 +190,6 @@ class WikiPluginPluginManager extends PluginsLib
         	$headbegin = "\n\t\t" . '<td class="heading">';
         	$cellbegin = "\n\t\t" . '<td>';
         	$header =  "\n\t" . '<tr class="heading">' . $headbegin . 'Parameters</td>';
-        	$rows = '';
         	if (isset($numparams) && $numparams > 0) {
         		$header .= $headbegin . 'Accepted Values</td>';
  		       	$header .= $headbegin . 'Description</td>';
@@ -200,9 +199,9 @@ class WikiPluginPluginManager extends PluginsLib
         			$rows .= "\n\t" . '<tr class="' . $class . '">' . $cellbegin;
         			//Parameters column
         			if (isset($paraminfo['required']) && $paraminfo['required'] == true) {
-        				$rows .= '<b><em>' . $paramname . '</em></b>';
+        				$rows .= '<b>' . $paramname . '</b>';
         			} else {
-        				$rows .= '<em>' . $paramname . '</em>' ;
+        				$rows .= $paramname;
         			}
         			$rows .= '</td>';
         			$rows .= $cellbegin;
@@ -260,11 +259,7 @@ class WikiPluginPluginManager extends PluginsLib
         		$rows .= "\n\t" . '<tr class="odd">' . $cellbegin . '<em>no parameters</em></td>';
         	}
         	$header .= "\n\t" . '</tr>';
-        	if (!empty($infoPlugin['prefs'])) {
-        		$pluginprefs = '<em>Preferences required:</em> ' . implode(', ', $infoPlugin['prefs']);
-        	}
-        	$sOutput = $title . '<em>Required parameters are in</em> <b>bold</b><br />' . 
-        				$pluginprefs . '<br/>' . '<table class="normal">' . $header . $rows . '</table>' . "\n";
+        	$sOutput = $title . '<em>Required parameters are in</em> <b>bold</b><br /><table class="normal">' . $header . $rows . '</table>' . "\n";
         	return $sOutput;
         }
     }
@@ -279,7 +274,7 @@ class WikiPluginPluginManager extends PluginsLib
 function wikiplugin_pluginmanager_info() {
     return array(
     	'name' => tra('Plugin Manager'),
-    	'documentation' => 'PluginPluginManager',
+    	'documentation' => 'PluginManager',
     	'description' => tra("Displays a list of plugins available in this wiki."),
     	'prefs' => array( 'wikiplugin_pluginmanager' ),
     	'introduced' => 3,

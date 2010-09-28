@@ -22,28 +22,12 @@ require_once 'lib/toolbars/toolbarslib.php';
 $access->check_permission('tiki_p_admin');
 $access->check_feature('javascript_enabled');
 
-$sections = array( 'global' => tra('Global'), 'admin' => tra('Admin'));
-$sections2 = array();
+$sections = array( 'global', 'wiki page', 'trackers', 'blogs', 'calendar', 'cms', 'faqs', 'newsletters', 'forums', 'maps', 'admin', 'sheet');
 
-if ($prefs['feature_wiki'] == 'y') { $sections2['wiki page'] = tra('Wiki Pages'); }
-if ($prefs['feature_trackers'] == 'y') { $sections2['trackers'] = tra('Trackers'); }
-if ($prefs['feature_blogs'] == 'y') { $sections2['blogs'] = tra('Blogs'); }
-if ($prefs['feature_calendar'] == 'y') { $sections2['calendar'] = tra('Calendars'); }
-if ($prefs['feature_articles'] == 'y') { $sections2['cms'] = tra('Articles'); }
-if ($prefs['feature_faqs'] == 'y') { $sections2['faqs'] = tra('FAQs'); }
-if ($prefs['feature_newsletters'] == 'y') { $sections2['newsletters'] = tra('Newsletters'); }
-if ($prefs['feature_forums'] == 'y') { $sections2['forums'] = tra('Forums'); }
-if ($prefs['feature_maps'] == 'y') { $sections2['maps'] = tra('Maps'); }
-if ($prefs['feature_sheet'] == 'y') { $sections2['sheet'] = tra('Spreadsheets'); }
-
-asort($sections2);
-$sections = array_merge($sections, $sections2);
-
-
-if( isset($_REQUEST['section']) && in_array($_REQUEST['section'], array_keys($sections)) ) {
+if( isset($_REQUEST['section']) && in_array($_REQUEST['section'], $sections) ) {
 	$section = $_REQUEST['section'];
 } else {
-	$section = reset(array_keys($sections));
+	$section = reset($sections);
 }
 if( isset($_REQUEST['comments']) && $_REQUEST['comments'] == 'on') {
 	$comments = true;
@@ -51,18 +35,7 @@ if( isset($_REQUEST['comments']) && $_REQUEST['comments'] == 'on') {
 	$comments = false;
 }
 
-foreach($sections as $skey => $sval) {
-	if (!empty($prefs['toolbar_' . $skey . ($comments ? '_comments' : '')])) {
-		$sections[$skey] = $sval . ' *';
-	}
-}
-
-$view_mode = isset($_REQUEST['view_mode']) ? $_REQUEST['view_mode'] : '';
-if ($view_mode === 'sheet' && $section !== 'sheet') {
-	$view_mode = '';
-	$_REQUEST['view_mode'] = '';
-}
-$smarty->assign('view_mode', $view_mode);
+$smarty->assign('view_mode', isset($_REQUEST['view_mode']) ? $_REQUEST['view_mode'] : '');
 
 if (!empty($_REQUEST['reset_all_custom_tools'])) {
 	$access->check_authenticity(tra('Are you sure you want to delete all your custom tools?'));

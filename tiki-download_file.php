@@ -106,6 +106,7 @@ if (!$skip) {
 		$smarty->display('error.tpl');
 		die;
 	}
+	//var_dump($filegallib->hasOnlyPrivateBacklinks($info['fileId'])); die;
 	if ( !$zip && $tiki_p_admin_file_galleries != 'y' && !$userlib->user_has_perm_on_object($user, $info['galleryId'], 'file gallery', 'tiki_p_download_files') && !($info['backlinkPerms'] == 'y' && !$filegallib->hasOnlyPrivateBacklinks($info['fileId']))) {
 		$smarty->assign('errortype', 401);
 		$smarty->assign('msg', tra('Permission denied'));

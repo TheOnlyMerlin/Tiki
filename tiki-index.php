@@ -4,7 +4,6 @@
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-error_reporting(E_ALL);
 
 $inputConfiguration = array(
 	array( 'staticKeyFilters' => array(
@@ -38,14 +37,8 @@ if( $prefs['feature_wiki_structure'] == 'y' ) {
 }
 include_once('lib/wiki/wikilib.php');
 include_once('lib/stats/statslib.php');
-if ($prefs['feature_ajax'] === 'y') {
-	if ($prefs['ajax_xajax'] === 'y') {
-		require_once ("lib/ajax/ajaxlib.php");
-		if ($prefs['feature_wiki_save_draft'] === 'y') {
-			require_once ("lib/wiki/wiki-ajax.php");
-		}
-	}
-}
+include_once('lib/ajax/ajaxlib.php');
+require_once ("lib/wiki/wiki-ajax.php");
 require_once ("lib/wiki/renderlib.php");
 
 $auto_query_args = array('page','best_lang','bl','page_id','pagenum','page_ref_id','mode','sort_mode',
@@ -94,6 +87,7 @@ if ((!isset($_REQUEST['page']) || $_REQUEST['page'] == '') and !isset($_REQUEST[
 		$access->display_error( '', tra('No name indicated for wiki page'));
 	}
 }
+
 
 $use_best_language = $multilinguallib->useBestLanguage();
 
@@ -172,9 +166,6 @@ if (!$info) {
 	
 // If the page doesn't exist then display an error
 if(empty($info) && !($user && $prefs['feature_wiki_userpage'] == 'y' && strcasecmp($prefs['feature_wiki_userpage_prefix'].$user, $page) == 0)) {
-	if (!empty($prefs['url_anonymous_page_not_found']) && empty($user)) {
-		$access->redirect($prefs['url_anonymous_page_not_found']);
-	}
 	if ($user && $prefs['feature_wiki_userpage'] == 'y' && strcasecmp($prefs['feature_wiki_userpage_prefix'], $page) == 0) {
 		$url = 'tiki-index.php?page='.$prefs['feature_wiki_userpage_prefix'].$user;
 		if ($prefs['feature_sefurl'] == 'y') {
@@ -192,52 +183,7 @@ if(empty($info) && !($user && $prefs['feature_wiki_userpage'] == 'y' && strcasec
 	$likepages = $wikilib->get_like_pages($page);
 	/* if we have exactly one match, redirect to it */
 	if($prefs['feature_wiki_1like_redirection'] == 'y' && count($likepages) == 1  && !$isUserPage) {
-		if ($prefs['feature_sefurl'] == 'y') {
-			$url = $wikilib->sefurl($likepages[0]);
-		} else {
-			$url = 'tiki-index.php?page='.urlencode($likepages[0]);
-		}
-		// Process prefix alias with itemId append for pretty tracker pages
-		$prefixes = explode( ',', $prefs["wiki_prefixalias_tokens"]);
-		foreach ($prefixes as $p) {
-			$p = trim($p);
-			if (strlen($p) > 0 && strtolower(substr($page, 0, strlen($p))) == strtolower($p)) {
-				$suffix = trim(substr($page, strlen($p)));
-				if (!ctype_digit($suffix) && $suffix) {
-					// allow escaped numerics as text
-					$suffix = stripslashes($suffix);
-					global $semanticlib;
-					if (!is_object($semanticlib)) {
-						require_once 'lib/wiki/semanticlib.php';		
-					}
-					$items = $semanticlib->getItemsFromTracker($likepages[0], $suffix);
-					if (count($items) > 1) {
-						$msg = tra("There are more than one item in the tracker with this title");
-						foreach ($items as $i) {
-							$msg .= '<br /><a href="tiki-index.php?page=' . urlencode($likepages[0]) . '&itemId=' . $i . '">' . $i . '</a>';
-						}
-						$smarty->assign('msg', $msg);
-						$smarty->display('error.tpl');
-						die;
-					} else if (count($items)) {
-						$suffix = $items[0];
-					} else {
-						$msg = tra("There are no items in the tracker with this title");
-						$smarty->assign('msg', $msg);
-						$smarty->display('error.tpl');
-						die;
-					}
-				}
-				if (ctype_digit($suffix)) {
-					if ($prefs['feature_sefurl'] == 'y') {
-						$url = $url . "?itemId=" . $suffix;
-					} else {
-						$url = $url . "&itemId=" . $suffix;
-					}
-				}
-			}
-		}
-		$access->redirect( $url );
+		$access->redirect( 'tiki-index.php?page='.urlencode($likepages[0]) );
 	}
 	$smarty->assign_by_ref('likepages', $likepages);
 	$smarty->assign('create', $isUserPage? 'n': 'y');
@@ -245,7 +191,7 @@ if(empty($info) && !($user && $prefs['feature_wiki_userpage'] == 'y' && strcasec
 }
 
 
-if (empty($info) && $user && $prefs['feature_wiki_userpage'] == 'y' && (strcasecmp($prefs['feature_wiki_userpage_prefix'].$user, $page) == 0 || strcasecmp($prefs['feature_wiki_userpage_prefix'], $page) == 0 )) {	
+if (empty($info) && $user && $prefs['feature_wiki_userpage'] == 'y' && (strcasecmp($prefs['feature_wiki_userpage_prefix'].$user, $page) == 0 || strcasecmp($prefs['feature_wiki_userpage_prefix'], $page) == 0 )) {
 	
 	header('Location: tiki-editpage.php?page='.$prefs['feature_wiki_userpage_prefix'].$user);
     	die;
@@ -470,11 +416,9 @@ if ($prefs['feature_user_watches'] == 'y') {
 
 $sameurl_elements=Array('pageName','page');
 
-if ($prefs['feature_mobile'] == 'y') {
-	if(isset($_REQUEST['mode']) && $_REQUEST['mode']=='mobile') {
-	include_once('lib/hawhaw/hawtikilib.php');
-	HAWTIKI_index($info);
-	}
+if(isset($_REQUEST['mode']) && $_REQUEST['mode']=='mobile') {
+    include_once('lib/hawhaw/hawtikilib.php');
+    HAWTIKI_index($info);
 }
 
 ask_ticket('index');
@@ -521,7 +465,7 @@ function generate_machine_translated_content($pageContent, $pageInfo, $targetLan
 
 
 function translate_text($text, $sourceLang, $targetLang, $html) {
-	require_once('lib/core/Multilingual/MachineTranslation/GoogleTranslateWrapper.php');
+	require_once('lib/core/lib/Multilingual/MachineTranslation/GoogleTranslateWrapper.php');
 	$translator = new Multilingual_MachineTranslation_GoogleTranslateWrapper($sourceLang,$targetLang,$html);
 	$translatedText = $translator->translateText($text);
 	return $translatedText;	

@@ -27,7 +27,7 @@ function prefs_global_list() {
 			'name' => tra('Theme'),
 			'type' => 'list',
 			'help' => 'Themes',
-			'description' => tra('Style of the site, sometimes called a skin or CSS. See http://themes.tiki.org for more Tiki themes.'),
+			'description' => tra('Style of the site, sometimes called a skin or CSS. See http://themes.tikiwiki.org for more Tiki themes.'),
 			'options' => $styles,
 		),
 		'browsertitle' => array(
@@ -88,7 +88,7 @@ function prefs_global_list() {
 		),
 		'helpurl' => array(
 			'name' => tra('Help URL'),
-			'description' => tra('The default help system may not be complete. You can help with the Tiki documentation.'),
+			'description' => tra('The default help system may not be complete. You can help with the TikiWiki documentation.'),
 			'help' => 'Welcome+Authors',
 			'type' => 'text',
 			'size' => '50',
@@ -285,11 +285,11 @@ function prefs_global_list() {
 		),
 		'useUrlIndex' => array(
 			'name' => tra('or'),
-			'description' => tra('Use a Tiki feature homepage or another homepage'),
+			'description' => tra('Use a Tikiwiki feature homepage or another homepage'),
 			'type' => 'flag',
 		),
 		'tikiIndex' => array(
-			'name' => tra('Use Tiki feature as homepage'),
+			'name' => tra('Use TikiWiki feature as homepage'),
 			'type' => 'list',
 			'options' => feature_home_pages(),
 			'description' => tra('Select the Tiki feature to use as the site homepage. Only enabled features are listed.')
@@ -377,8 +377,7 @@ function feature_home_pages()
 	// Blog
 	if ($prefs['feature_blogs'] == 'y') {
 		if ( $prefs['home_blog'] != '0' ) {
-			global $bloglib; require_once('lib/blogs/bloglib.php');
-			$hbloginfo = $bloglib->get_blog($prefs['home_blog']);
+			$hbloginfo = $tikilib->get_blog($prefs['home_blog']);
 			$home_blog_name = substr($hbloginfo['title'], 0, 20);
 		} else {
 			$home_blog_name = tra('Set blogs homepage first');
@@ -406,7 +405,7 @@ function feature_home_pages()
 	
 	// Forum
 	if ( $prefs['feature_forums'] == 'y' ) {
-		require_once ('lib/comments/commentslib.php');
+		require_once ('lib/commentslib.php');
 		if (!isset($commentslib)) {
 			$commentslib = new Comments;
 		}

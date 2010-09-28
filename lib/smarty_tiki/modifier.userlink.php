@@ -31,7 +31,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  */
 
 function smarty_modifier_userlink($other_user,$class='link',$idletime='not_set', $fullname='', $max_length=0, $popup='y') {
-	global $tikilib, $userlib, $cachelib, $user, $prefs, $userprefslib, $smarty;
+	global $tikilib, $userlib, $cachelib, $user, $prefs, $userprefslib;
 
 	$show_mouseover = $popup != 'n' && $prefs['feature_community_mouseover'] == 'y' && $userlib->get_user_preference($user, 'show_mouseover_user_info','y') == 'y';
 	$show_friends = $prefs['feature_friends'] == 'y' && $tikilib->verify_friendship($user, $other_user);
@@ -68,8 +68,10 @@ function smarty_modifier_userlink($other_user,$class='link',$idletime='not_set',
 
 	if ( $fullname != '' ) {
 		$ou = $fullname;
-	} else {
-		$ou = $userlib->clean_user($other_user);
+	} elseif ( $prefs['user_show_realnames'] == 'y' ) {
+		$user_details = $userlib->get_user_details($other_user);
+		$ou = $user_details['info']['realName'];
+		unset($user_details);
 	}
 	if ( empty($ou) || $ou == '' ) {
 		$ou = $other_user;
@@ -161,10 +163,6 @@ function smarty_modifier_userlink($other_user,$class='link',$idletime='not_set',
 
 		if(empty($prefs['urlOnUsername'])) {
 			$url = 'tiki-user_information.php?userId='.urlencode($info['userId']);
-			if ($prefs['feature_sefurl'] == 'y') {
-				include_once('tiki-sefurl.php');
-				$url = filter_out_sefurl($url, $smarty);
-			}
 		} else {
 			$url = preg_replace(array('/%userId%/', '/%user%/'), array($info['userId'], $info['login']),  $prefs['urlOnUsername']);
 		}

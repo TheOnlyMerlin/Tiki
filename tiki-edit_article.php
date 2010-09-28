@@ -83,7 +83,6 @@ $smarty->assign('rating', 7);
 $smarty->assign('edit_data', 'n');
 $smarty->assign('emails', '');
 $smarty->assign('userEmail', $userlib->get_user_email($user));
-$smarty->assign('ispublished', 'y');
 
 // If the articleId is passed then get the article data
 // GGG - You have to check for the actual value of the articleId because it
@@ -122,13 +121,11 @@ if (isset($_REQUEST["articleId"]) and $_REQUEST["articleId"] > 0) {
 	$smarty->assign('image_data', urlencode($article_data["image_data"]));
 	$smarty->assign('image_x', $article_data["image_x"]);
 	$smarty->assign('image_y', $article_data["image_y"]);
-	$smarty->assign('list_image_x', $article_data['list_image_x']);
 	$smarty->assign('reads', $article_data["nbreads"]);
 	$smarty->assign('type', $article_data["type"]);
 	$smarty->assign('author', $article_data["author"]);
 	$smarty->assign('creator_edit', $article_data["creator_edit"]);
 	$smarty->assign('rating', $article_data["rating"]);
-	$smarty->assign('ispublished', $article_data["ispublished"]);
 
 	if (strlen($article_data["image_data"]) > 0) {
 		$smarty->assign('hasImage', 'y');
@@ -239,7 +236,6 @@ if (isset($_REQUEST["preview"]) or !empty($errors)) {
 	$smarty->assign('image_size', $_REQUEST["image_size"]);
 	$smarty->assign('image_x', $_REQUEST["image_x"]);
 	$smarty->assign('image_y', $_REQUEST["image_y"]);
-	$smarty->assign('image_x', $_REQUEST['list_image_x']);
 	$smarty->assign('useImage', $useImage);
 	$smarty->assign('isfloat', $isfloat);
 	$smarty->assign('type', $_REQUEST["type"]);
@@ -249,7 +245,6 @@ if (isset($_REQUEST["preview"]) or !empty($errors)) {
 	$smarty->assign_by_ref('from', $_REQUEST['from']);
 	$imgname = $_REQUEST["image_name"];
 	$data = urldecode($_REQUEST["image_data"]);
-	$smarty->assign('ispublished', $_REQUEST["ispublished"]);
 
 	// Parse the information of an uploaded file and use it for the preview
 	if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_name'])) {
@@ -294,6 +289,16 @@ if (isset($_REQUEST["preview"]) or !empty($errors)) {
 
 	$parsed_body = $tikilib->parse_data($body);
 	$parsed_heading = $tikilib->parse_data($heading);
+
+	if ($prefs['cms_spellcheck'] == 'y') {
+		if (isset($_REQUEST["spellcheck"]) && $_REQUEST["spellcheck"] == 'on') {
+			$parsed_body = $tikilib->spellcheckreplace($body, $parsed_body, $prefs['language'], 'subbody');
+			$parsed_heading = $tikilib->spellcheckreplace($heading, $parsed_heading, $prefs['language'], 'subheading');
+			$smarty->assign('spellcheck', 'y');
+		} else {
+			$smarty->assign('spellcheck', 'n');
+		}
+	}
 
 	$smarty->assign('parsed_body', $parsed_body);
 	$smarty->assign('parsed_heading', $parsed_heading);
@@ -393,11 +398,7 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 			die;
 		}
 	}
-	if($_REQUEST['ispublished'])
-		$ispublished = 'y';
-	else
-		$ispublished = 'n';
-		
+	
 	$artid = $artlib->replace_article(strip_tags($_REQUEST["title"], '<a><pre><p><img><hr><b><i>')
 																	, $_REQUEST["authorName"]
 																		, $_REQUEST["topicId"]
@@ -424,8 +425,6 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 																		, $isfloat
 																		, $emails
 																		, $_REQUEST['from']
-																		, $_REQUEST['list_image_x']
-																		, $ispublished
 																		);
 
 	$cat_type = 'article';
@@ -483,7 +482,6 @@ if ($prefs["article_custom_attributes"] == 'y') {
 	$article_attributes = $artlib->get_article_attributes($_REQUEST["articleId"]);	
 	$smarty->assign('article_attributes', $article_attributes);
 	$all_attributes = array();
-	$js_string = '';
 	foreach($types as &$t) {
 		// javascript needs htmlid to show/hide to be properties of basic array
 		$type_attributes = $artlib->get_article_type_attributes($t["type"]);
@@ -531,6 +529,8 @@ $smarty->assign('expireDateSite', $expireDate);
 $smarty->assign('siteTimeZone', $prefs['display_timezone']);
 
 include_once ('tiki-section_options.php');
+
+include_once("textareasize.php");
 
 global $wikilib; include_once('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'body');

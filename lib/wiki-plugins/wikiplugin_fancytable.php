@@ -134,7 +134,7 @@ function wikiplugin_fancytable($data, $params) {
 		$data = str_replace('|', '~|~', $data);
 		$data = preg_replace($patterns, $replace , $data);
 	}	
-	$lines = explode("\n", $data);
+	$lines = split("\n", $data);
 	$colsw = isset($colwidths) ?  explode('|', $colwidths) : '';
 	$caligns = isset($colaligns) ?  explode('|', $colaligns) : '';
 	$cvaligns = isset($colvaligns)?  explode('|', $colvaligns) : '';
@@ -150,9 +150,9 @@ function wikiplugin_fancytable($data, $params) {
 			$wret .= tra('The feature must be activated:').' feature_jquery_tablesorter';
 		}
 		if (empty($sortList)) {
-			$js = '$("#fancytable_'.$iFancytable.'").tablesorter({widgets: ["zebra"]});';
+			$js = '$jq("#fancytable_'.$iFancytable.'").tablesorter({widgets: ["zebra"]});';
 		} else {
-			$js = '$("#fancytable_'.$iFancytable.'").tablesorter({sortList:['.$sortList.'], widgets: ["zebra"]});';
+			$js = '$jq("#fancytable_'.$iFancytable.'").tablesorter({sortList:['.$sortList.'], widgets: ["zebra"]});';
 		}
 		global $headerlib;
 		$headerlib->add_jq_onready($js);

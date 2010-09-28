@@ -13,19 +13,9 @@
 		and ( $forum_mode neq 'y' || ( $forum_mode eq 'y' and $forumId > 0 and $comments_parentId > 0 ) )
 	}
 	<div class="actions">
-		{if $forum_mode neq 'y' && $tiki_p_admin_comments eq 'y'}
-			{if $prefs.feature_comments_moderation eq 'y' && $comment.approved eq 'n'}
-				{self_link comments_approve='y' comments_threadId=$comment.threadId _icon='comment_approve'}{tr}Approve{/tr}{/self_link}
-				{self_link comments_approve='n' comments_threadId=$comment.threadId _icon='comment_reject'}{tr}Reject{/tr}{/self_link}
-			{/if}
-			{if $prefs.comments_archive eq 'y'}
-				{assign var='anchor' value=$comment.threadId}
-				{if $comment.archived eq 'y'}
-					{self_link comment_archive='n' comments_threadId=$comment.threadId _anchor="threadId$anchor" _icon='ofolder'}{tr}Unarchive{/tr}{/self_link}
-				{else}
-					{self_link comment_archive='y' comments_threadId=$comment.threadId _anchor="threadId$anchor" _icon='folder'}{tr}Archive{/tr}{/self_link}
-				{/if}
-			{/if}
+		{if $forum_mode neq 'y' && $prefs.feature_comments_moderation eq 'y' && $tiki_p_admin_comments eq 'y' && $comment.approved eq 'n'}
+			{self_link comments_approve='y' comments_threadId=$comment.threadId _icon='comment_approve'}{tr}Approve{/tr}{/self_link}
+			{self_link comments_approve='n' comments_threadId=$comment.threadId _icon='comment_reject'}{tr}Reject{/tr}{/self_link}
 		{/if}
 		{if	$forum_mode neq 'y' && (
 				$tiki_p_edit_comments eq 'y'
@@ -100,7 +90,7 @@
 	<div class="title">
 	{if $first eq 'y'}
 		<h2>{$comment.title|escape}</h2>
-	{elseif ( $forum_mode neq 'y' and $prefs.comments_notitle neq 'y' ) or ($forum_mode eq 'y' and $prefs.forum_reply_notitle neq 'y')}
+	{elseif ( $forum_mode neq 'y' and $prefs.wiki_comments_notitle neq 'y' ) or $prefs.forum_reply_notitle neq 'y'}
 		{if $comments_reply_threadId == $comment.threadId}
 		{icon _id='flag_blue'}<span class="highlight">
 		{/if}

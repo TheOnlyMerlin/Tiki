@@ -21,8 +21,8 @@
 	<tr><th>{tr}Description{/tr}</th></tr>
   {cycle values="even,odd" print=false}
   {section name=i loop=$plugins}    {* To modify the template of below: tiki-plugin_help.tpl *}
-    <tr class="{cycle}">
-      <td>
+    <tr>
+      <td class="{cycle advance=false}">
         {if $plugins[i].help eq ''}
           {tr}No description available{/tr}
         {else}
@@ -30,6 +30,7 @@
         {/if}
       </td>
     </tr>
+  {cycle print=false}
   {/section}
 </table>
 </div>

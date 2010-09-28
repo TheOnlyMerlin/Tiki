@@ -76,18 +76,18 @@ if ($prefs['feature_jquery'] == 'y') {
 	$headerlib->add_js(<<<JS
 $js
 
-\$(document).ready( function() {
-	var optionDropDown = \$('select[name=style_option]');
-	var styleDropDown = \$('select[name=style]');
+\$jq(document).ready( function() {
+	var optionDropDown = \$jq('select[name=style_option]');
+	var styleDropDown = \$jq('select[name=style]');
 	// pick up theme drop-down change
 	styleDropDown.change( function() {
 		var ops = style_options[styleDropDown.val()];
 		var none = true;
 		var current = optionDropDown.val();
 		optionDropDown.empty().attr('disabled',false)
-			.append(\$('<option/>').attr('value',$none).text($none));
-		\$.each(ops[1], function(i, val) {
-			optionDropDown.append(\$('<option/>').attr('value',i).text(i));
+			.append(\$jq('<option/>').attr('value',$none).text($none));
+		\$jq.each(ops[1], function(i, val) {
+			optionDropDown.append(\$jq('<option/>').attr('value',i).text(i));
 			none = false;
 		});
 		optionDropDown.val(current);
@@ -107,9 +107,9 @@ $js
 		}
 
 		if (f) {
-			\$('#style_thumb').fadeOut('fast').attr('src', f).fadeIn('fast').animate({'opacity': 1}, 'fast');
+			\$jq('#style_thumb').fadeOut('fast').attr('src', f).fadeIn('fast').animate({'opacity': 1}, 'fast');
 		} else {
-			\$('#style_thumb').animate({'opacity': 0.3}, 'fast');
+			\$jq('#style_thumb').animate({'opacity': 0.3}, 'fast');
 		}
 	});	
 });

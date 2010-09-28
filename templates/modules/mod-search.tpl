@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Id: mod-search_box.tpl 24586 2010-01-21 02:16:26Z chealer $ *}
 {*strip TODO*}
 {if $tiki_p_search eq 'y'}
 {tikimodule error=$module_error title=$tpl_module_title name="search" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
@@ -41,38 +41,39 @@
 				{capture name=advanced_search_help}
 					{include file='advanced_search_help.tpl'}
 				{/capture}
-				{add_help show='y' title="{tr}Search Help{/tr}" id="advanced_search_help"}
+				{add_help show='y' title="{tr}Advanced Search Help{/tr}" id="advanced_search_help"}
 					{$smarty.capture.advanced_search_help}
 				{/add_help}
 			{/if}
 		{/if}
+		{var_dump var="module_params"}
 	    {if $module_params.show_search_button eq 'y'}
 	    	<input type = "submit" class = "wikiaction{if $module_params.default_button eq 'search'} button_default{/if}"
 	    			name = "search" value = "{tr}{$module_params.search_submit}{/tr}"
-	    			onclick = "$('#search-module-form{$search_mod_usage_counter}').attr('action', '{$module_params.search_action}');" />
+	    			onclick = "$jq('#search-module-form{$search_mod_usage_counter}').attr('action', '{$module_params.search_action}');" />
 	    {/if}
 	    {if $module_params.show_go_button eq 'y'}
 	    	<input type = "submit" class = "wikiaction{if $module_params.default_button eq 'go'} button_default{/if}"
 	    			name = "go" value = "{tr}{$module_params.go_submit}{/tr}"
-	    			onclick = "$('#search-module-form{$search_mod_usage_counter}').attr('action', '{$module_params.go_action}');" />
+	    			onclick = "$jq('#search-module-form{$search_mod_usage_counter}').attr('action', '{$module_params.go_action}');" />
 	    {/if}
 	    {if $module_params.show_edit_button eq 'y'}
 	    	<input type = "submit" class = "wikiaction{if $module_params.default_button eq 'edit'} button_default{/if}"
 	    			name = "edit" value = "{tr}{$module_params.edit_submit}{/tr}"
-	    			onclick = "$('#search-module-form{$search_mod_usage_counter} input[name!=find]').attr('name', ''); $('#search-module-form{$search_mod_usage_counter} input[name=find]').attr('name', 'page'); $('#search-module-form{$search_mod_usage_counter}').attr('action', '{$module_params.edit_action}');" />
+	    			onclick = "$jq('#search-module-form{$search_mod_usage_counter} input[name!=find]').attr('name', ''); $jq('#search-module-form{$search_mod_usage_counter} input[name=find]').attr('name', 'page'); $jq('#search-module-form{$search_mod_usage_counter}').attr('action', '{$module_params.edit_action}');" />
 	    {/if}
 	    
     </form>
     	{jq notonready=true}
 function submitSearch{{$search_mod_usage_counter}}() {
-	var $f = $('#search-module-form{{$search_mod_usage_counter}}');
+	var $f = $jq('#search-module-form{{$search_mod_usage_counter}}');
 	if ($f.attr('action') == "#") {
 		$f.attr('action', "{{$module_params.default_action}}");
 	}
 	return true;
 }
     	{/jq}
-	{if $module_params.use_autocomplete eq 'y'}{jq}$(".pagename").tiki("autocomplete", "pagename");{/jq}{/if}
+	{if $module_params.use_autocomplete eq 'y'}{jq}$jq(".pagename").tiki("autocomplete", "pagename");{/jq}{/if}
 {/if}
 {/tikimodule}
 {/if}

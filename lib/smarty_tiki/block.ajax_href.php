@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,7 +14,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 /*
  * smarty_block_ajax_href creates the href for a link in Smarty accoring to AJAX prefs
  * 
- * Params:
+ * Prams:
  * 
  * 	template	-	template to load (e.g. tiki-admin.tpl)
  * 	htmlelement	-	destination div (usually) to load request into
@@ -25,7 +25,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 
 function smarty_block_ajax_href($params, $content, &$smarty, $repeat) {
-    global $prefs, $user, $info;
+    global $prefs, $user;
     if ( $repeat ) return;
 
 	if ( !empty($params['_onclick']) ) {
@@ -38,17 +38,12 @@ function smarty_block_ajax_href($params, $content, &$smarty, $repeat) {
     }
     $url = $content;
     $template = $params['template'];
-	if ( !empty($params['htmlelement']) ) {
-		$htmlelement = $params['htmlelement'];
-	} else {
-		$htmlelement = 'role_main';
-	}
+    $htmlelement = $params['htmlelement'];
 	$def_func = (isset($params['scrollTo']) ? 'window.scrollTo('.$params['scrollTo'].');' : '') . 'loadComponent';
     $func = isset($params['function']) ? $params['function']: $def_func;	// preserve previous behaviour
     $last_user = htmlspecialchars($user);
 
-    																		// temporary switch to not do ajax for ckeditor button - not reliable in tiki 6
-    if ( $prefs['ajax_xajax'] !== 'y' || $prefs['javascript_enabled'] == 'n' || ($template === 'tiki-editpage.tpl' && $info['wysiwyg'] === 'y')) {
+    if ( $prefs['feature_ajax'] != 'y' || $prefs['javascript_enabled'] == 'n' ) {
 		return " href=\"$url\" ";
     } else {
 		$max_tikitabs = 50; // Same value as in header.tpl, <body> tag onload's param

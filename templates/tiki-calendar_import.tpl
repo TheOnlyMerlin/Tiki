@@ -1,3 +1,5 @@
+{popup_init src="lib/overlib.js"}
+
 {title}{tr}Calendar import{/tr}{/title}
 
 <div class="navbar">
@@ -10,10 +12,10 @@
 {/if}
 
 <form method="post" action="tiki-calendar_import.php" enctype="multipart/form-data">
-  <table class="formcolor">
+  <table class="normal">
     <tr>
-      <td>{tr}Calendar{/tr}</td>
-      <td>
+      <td class="formcolor">{tr}Calendar{/tr}</td>
+      <td class="formcolor">
         <select name="calendarId">
           {foreach item=lc from=$calendars}
             <option value="{$lc.calendarId}">{$lc.name|escape}</option>
@@ -22,14 +24,15 @@
       </td>
     </tr>
     <tr>
-      <td>
+      <td class="formcolor">
         {tr}CSV File{/tr}
         <a {popup text='name|subject,description,start date,start time,end date,end time,status,lang,categoryId,locationId,priority,url,categoryId'}>{icon _id='help'}</a>
       </td>
-      <td>
+      <td class="formcolor">
         <input type="file" name="fileCSV" size="50" />
         <input type="submit" name="import" value="{tr}import{/tr}" />
       </td>
     </tr>
   </table>
 </form>
+

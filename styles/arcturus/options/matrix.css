@@ -1,7 +1,7 @@
 /* $Id$
 	Matrix theme option for Arcturus.css;
 	for TikiWiki CMS/Groupware.
-	Visit http://themes.tiki.org for more information.
+	Visit http://themes.tikiwiki.org for more information.
 */	
 
 /* reset arcturus values */
@@ -66,7 +66,6 @@ h3,
 h4 {
 	font-family: "Matrix_vs_miltown", "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
 	text-transform: small-caps;
-	color: #00f000;
 }
 
 h1 {
@@ -570,10 +569,6 @@ td.eventhumb,
 
 .post .postbody {
 	font-size: 11px;
-}
-
-.postbody-title {
-	color: #00e000;
 }
 
 .dirfooter {

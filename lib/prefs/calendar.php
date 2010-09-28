@@ -80,12 +80,5 @@ function prefs_calendar_list() {
 			'name' => tra('Item view tab'),
 			'type' => 'flag',
 		),
-		'calendar_addtogooglecal' => array(
-			'name' => tra('Show Add to Google Calendar icon'),
-			'type' => 'flag',
-			'dependencies' => array(
-				'wikiplugin_addtogooglecal'
-			),
-		),
 	);
 }

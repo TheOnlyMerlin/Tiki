@@ -50,11 +50,11 @@
 		</tr>
 		{cycle values="odd,even" print=false}
 		{section loop=$requests name=ix}
-		<tr class="{cycle}">
-			<td>{$requests[ix].user}</td>
-			<td>{$requests[ix].reason}</td>
-			<td>{$requests[ix].timestamp|tiki_short_time}</td>
-			<td>
+		<tr>
+			<td class="{cycle advance=false}">{$requests[ix].user}</td>
+			<td class="{cycle advance=false}">{$requests[ix].reason}</td>
+			<td class="{cycle advance=false}">{$requests[ix].timestamp|tiki_short_time}</td>
+			<td class="{cycle}">
 		    {if $status eq 'online'}
 				{assign var=thereqId value=$requests[ix].reqId}
 				<a class="link" {jspopup href="tiki-live_support_chat_window.php?reqId=$thereqId&amp;role=operator" width="300" height="450"}>{tr}Accept{/tr}</a>

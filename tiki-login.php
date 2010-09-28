@@ -44,7 +44,7 @@ if( $prefs['session_silent'] == 'y' ) {
 // Note that loginfrom will always be a complete URL (http://...)
 if (!isset($_SESSION['loginfrom'])) {
 	$_SESSION['loginfrom'] = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $prefs['tikiIndex']);
-	if (!preg_match('/^http/', $_SESSION['loginfrom'])) {
+	if (!ereg('^http', $_SESSION['loginfrom'])) {
 		if ($_SESSION['loginfrom'] {
 			0
 		} == '/') $_SESSION['loginfrom'] = $url_scheme . '://' . $url_host . (($url_port != '') ? ":$url_port" : '') . $_SESSION['loginfrom'];
@@ -198,35 +198,13 @@ if (isset($_REQUEST['intertiki']) and in_array($_REQUEST['intertiki'], array_key
 					// Erase cache to update displayed user info
 					//   Do not just invalidate cache for 'user_details_'.$user and 'userslist',
 					//   since userlink smarty modifier is also using cache with multiple possibilities of keys.
-					$cachelib->empty_cache('temp_cache', 'login');
+					$cachelib->erase_dir_content("temp/cache/$tikidomain");
 				}
 			}
 		}
 	}
 }
 if ($isvalid) {
-
-    if ($prefs['feature_invit'] == 'y') {
-        // tiki-invit, this part is just here to add groups to users which just registered after received an
-        // invitation via tiki-invit.php and set the redirect to wiki page if required by the invitation
-        $res = $tikilib->query("SELECT `id`,`id_invit` FROM `tiki_invited` WHERE `used_on_user`=? AND used=?", array($user, "registered"));
-        $invitrow=$res->fetchRow();
-        if (is_array($invitrow)) {
-            $id_invited=$invitrow['id'];
-            $id_invit=$invitrow['id_invit'];
-            // set groups
-            
-            $groups = $tikilib->getOne("SELECT `groups` FROM `tiki_invit` WHERE `id` = ?", array((int)$id_invit));
-            $groups = explode(',', $groups);
-            foreach ($groups as $group)
-                $userlib->assign_user_to_group($user, trim($group));
-            $tikilib->query("UPDATE `tiki_invited` SET `used`=? WHERE id_invit=?", array("logged", (int)$id_invited));
-            
-            // set wiki page required by invitation
-            if (!empty($invitrow['wikipageafter'])) $_REQUEST['page']=$invitrow['wikipageafter'];
-        }
-    }
-
 	if ($isdue) {
 		// Redirect the user to the screen where he must change his password.
 		// Note that the user is not logged in he's just validated to change his password
@@ -275,7 +253,7 @@ if ($isvalid) {
 						//  - http:tiki-something.php => tiki-something.php
 						//  - pageName => tiki-index.php?page=pageName
 						$anonymous_homepage = $userlib->get_group_home('Anonymous');
-						if (!preg_match('#^https?://#', $anonymous_homepage)) {
+						if (!ereg('^https?://', $anonymous_homepage)) {
 							if (substr($anonymous_homepage, 0, 5) == 'http:') {
 								$anonymous_homepage = substr($anonymous_homepage, 5);
 							} else {
@@ -285,7 +263,7 @@ if ($isvalid) {
 						// Determine the complete tikiIndex URL for not logged users
 						// when tikiIndex's page has not been explicitely specified
 						//   (this only handles wiki default page for the moment)
-						if (preg_match('/tiki-index.php$/', $prefs['site_tikiIndex']) || preg_match('/tiki-index.php$/', $anonymous_homepage)) {
+						if (ereg('tiki-index.php$', $prefs['site_tikiIndex']) || ereg('tiki-index.php$', $anonymous_homepage)) {
 							$tikiIndex_full = 'tiki-index.php?page=' . urlencode($prefs['site_wikiHomePage']);
 						} else {
 							$tikiIndex_full = '';
@@ -311,7 +289,7 @@ if ($isvalid) {
 				unset($_SESSION['loginfrom']);
 				// No sense in sending user to registration page or no page at all
 				// This happens if the user has just registered and it's first login
-				if ($url == '' || preg_match('/(tiki-register|tiki-login_validate|tiki-login_scr)\.php/', $url)) $url = $prefs['tikiIndex'];
+				if ($url == '' || ereg('(tiki-register|tiki-login_validate|tiki-login_scr)\.php', $url)) $url = $prefs['tikiIndex'];
 				// Now if the remember me feature is on and the user checked the rememberme checkbox then ...
 				if ($prefs['rememberme'] != 'disabled' && isset($_REQUEST['rme']) && $_REQUEST['rme'] == 'on') {
 						$userInfo = $userlib->get_user_info($user);
@@ -343,15 +321,16 @@ if ($isvalid) {
 			}
 			$userlib->set_unsuccessful_logins($user, $nb_bad_logins + 1);
 		}
+		unset($user);
 		unset($isvalid);
 		switch ($error) {
 			case PASSWORD_INCORRECT:
+				$error = 'Invalid password';
+				break;
+
 			case USER_NOT_FOUND:
-				$smarty->assign('error_login', $error);
-				$smarty->assign('mid', 'tiki-login.tpl');
-				$smarty->assign('error_user', $user);
-				$smarty->display('tiki.tpl');
-				exit;
+				$error = 'Invalid username';
+				break;
 
 			case ACCOUNT_DISABLED:
 				$error = 'Account disabled';
@@ -373,6 +352,7 @@ if ($isvalid) {
 			default:
 				$error = 'Invalid username or password';
 		}
+		if (isset($user) and $prefs['feature_score'] == 'y') $tikilib->score_event($user, 'login');
 		if (isset($extraButton)) $smarty->assign_by_ref('extraButton', $extraButton);
 		$smarty->assign('msg', tra($error));
 		$smarty->display('error.tpl');
@@ -387,8 +367,8 @@ if ($isvalid) {
 		$tikilib->score_event($user, 'login');
 	}
 	// RFC 2616 defines that the 'Location' HTTP headerconsists of an absolute URI
-	if ( !preg_match('/^https?\:/i', $url) ) {
-		$url = (preg_match('/^\//', $url) ? $url_scheme . '://' . $url_host . (($url_port != '') ? ":$url_port" : '') : $base_url) . $url;
+	if ( !eregi('^https?\:', $url) ) {
+		$url = (ereg('^/', $url) ? $url_scheme . '://' . $url_host . (($url_port != '') ? ":$url_port" : '') : $base_url) . $url;
 	}
 	// Force HTTP mode if needed
 	if ($stay_in_ssl_mode != 'y' || !$https_mode) {

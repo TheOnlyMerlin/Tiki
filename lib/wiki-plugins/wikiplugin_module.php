@@ -55,7 +55,7 @@ function wikiplugin_module_info() {
 	return array(
 		'name' => tra('Insert Module'),
 		'documentation' => 'PluginModule',
-		'description' => tra("Displays a module inline in a wiki page. More parameters can be added, not supported by User Interface."),
+		'description' => tra("Displays a module inline in a wiki page. More parameters can be added, not supported by UI."),
 		'prefs' => array( 'wikiplugin_module' ),
 		'validate' => 'all',
 		'icon' => 'pics/icons/module.png',
@@ -64,59 +64,38 @@ function wikiplugin_module_info() {
 			'module' => array(
 				'required' => true,
 				'name' => tra('Module Name'),
-				'description' => tra('Module name as known in Tiki'),
+				'description' => tra('Module name as known in Tikiwiki.'),
 				'options' => $modules_options
 			),
 			'float' => array(
 				'required' => false,
 				'name' => tra('Float'),
 				'description' => 'left|right|none',
-				'advanced' => true,
 			),
 			'decoration' => array(
 				'required' => false,
 				'name' => tra('Decoration'),
-				'description' => 'Show decorations',
-				'advanced' => true,
-				'options' => array(
-					array('text' => tra('No'), 'value' => '0'), 
-					array('text' => tra('Yes'), 'value' => '1'), 
-				),
+				'description' => 'y|n',
 			),
 			'flip' => array(
 				'required' => false,
 				'name' => tra('Flip'),
-				'description' => 'To make a module shadeable',
-				'options' => array(
-					array('text' => tra('No'), 'value' => '0'), 
-					array('text' => tra('Yes'), 'value' => '1'), 
-				),
-				'advanced' => true,
+				'description' => 'y|n',
 			),
 			'max' => array(
 				'required' => false,
 				'name' => tra('Max'),
-				'description' => 'Number of rows. Default: 10',
-				'advanced' => true,
+				'description' => 'y|n',
 			),
 			'np' => array(
 				'required' => false,
-				'name' => tra('Parse'),
-				'description' => 'Parse wiki syntax',
-				'options' => array(
-					array('text' => tra('Yes'), 'value' => '0'), 
-					array('text' => tra('No'), 'value' => '1'), 
-				),
-				'advanced' => true,
+				'name' => tra('np'),
+				'description' => '0|1',
 			),
 			'notitle' =>array(
 				'required' => false,
-				'name' => tra('Title'),
-				'description' => 'Show/hide',
-				'options' => array(
-					array('text' => tra('Show title'), 'value' => 'n'), 
-					array('text' => tra('Hide title'), 'value' => 'y'), 
-				),
+				'name' => tra('notitle'),
+				'description' => 'y|n',
 			),
 		),
 	);
@@ -126,7 +105,6 @@ function wikiplugin_module($data, $params) {
 	global $tikilib, $cache_time, $smarty, $dbTiki, $prefs, $ranklib, $tikidomain, $user, $tiki_p_tasks, $tiki_p_create_bookmarks, $imagegallib, $module_params;
 
 	$out = '';
-	
 	extract ($params,EXTR_SKIP);
 
 	if (!isset($float)) {

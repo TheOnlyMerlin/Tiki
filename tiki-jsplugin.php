@@ -19,10 +19,10 @@
 header('content-type: application/x-javascript');
 
 require_once('lib/init/initlib.php');
-TikiInit::appendIncludePath(dirname(__FILE__) . '/lib/core');
+TikiInit::appendIncludePath(dirname(__FILE__) . '/lib/core/lib');
 
 // Apply filters on the body
-include 'lib/core/TikiFilter.php';
+include 'lib/core/lib/TikiFilter.php';
 $filter = TikiFilter::get('xss');
 $_REQUEST['plugin'] = isset($_GET['plugin']) ? $_GET['plugin'] = $filter->filter($_GET['plugin']) : '';
 $filter = TikiFilter::get('alpha');

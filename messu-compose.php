@@ -32,7 +32,7 @@ if (!isset($_REQUEST['replyto_hash'])) $_REQUEST['replyto_hash'] = '';
 if (!isset($_REQUEST['priority'])) $_REQUEST['priority'] = 3;
 // Strip Re:Re:Re: from subject
 if (!empty($_REQUEST['reply']) || !empty($_REQUEST['replyall'])) {
-	$_REQUEST['subject'] = tra("Re:") . preg_replace('/^(' . tra('Re:') . ')+/', '', $_REQUEST['subject']);
+	$_REQUEST['subject'] = tra("Re:") . ereg_replace("^(" . tra("Re:") . ")+", "", $_REQUEST['subject']);
 	$smarty->assign('reply', 'y');
 }
 foreach(array(
@@ -64,12 +64,6 @@ if (isset($_REQUEST['send'])) {
 	$arr_to = preg_split('/\s*(?<!\\\);\s*/', $_REQUEST['to']);
 	$arr_cc = preg_split('/\s*(?<!\\\);\s*/', $_REQUEST['cc']);
 	$arr_bcc = preg_split('/\s*(?<!\\\);\s*/', $_REQUEST['bcc']);
-	if ($prefs['user_selector_realnames_messu'] == 'y') {
-		$groups = '';
-		$arr_to = $userlib->find_best_user($arr_to, $groups, 'login');
-		$arr_cc = $userlib->find_best_user($arr_cc, $groups);
-		$arr_bcc = $userlib->find_best_user($arr_bcc, $groups);
-	}
 	// Remove invalid users from the to, cc and bcc fields
 	$users = array();
 	foreach($arr_to as $a_user) {
@@ -147,19 +141,14 @@ if (isset($_REQUEST['send'])) {
 	}
 	// Insert the message in the inboxes of each user
 	foreach($users as $a_user) {
-		$result = $messulib->post_message($a_user, $user, $_REQUEST['to'], $_REQUEST['cc'], $_REQUEST['subject'], $_REQUEST['body'], $_REQUEST['priority'], $_REQUEST['replyto_hash'],
-								isset($_REQUEST['replytome']) ? 'y' : '', isset($_REQUEST['bccme']) ? 'y' : '');
-		if ($result) {
-			if ($prefs['feature_score'] == 'y') {
-				$tikilib->score_event($user, 'message_send');
-				$tikilib->score_event($a_user, 'message_receive');
-			}
-			// if this is a reply flag the original messages replied to
-			if ($_REQUEST['replyto_hash'] <> '') {
-				$messulib->mark_replied($a_user, $_REQUEST['replyto_hash']);
-			}
-		} else {
-			$message = tra('An error occurred, please check your mail settings and try again');
+		$messulib->post_message($a_user, $user, $_REQUEST['to'], $_REQUEST['cc'], $_REQUEST['subject'], $_REQUEST['body'], $_REQUEST['priority'], $_REQUEST['replyto_hash']);
+		if ($prefs['feature_score'] == 'y') {
+			$tikilib->score_event($user, 'message_send');
+			$tikilib->score_event($a_user, 'message_receive');
+		}
+		// if this is a reply flag the original messages replied to
+		if ($_REQUEST['replyto_hash'] <> '') {
+			$messulib->mark_replied($a_user, $_REQUEST['replyto_hash']);
 		}
 	}
 	// Insert a copy of the message in the sent box of the sender

@@ -1,4 +1,5 @@
 {* $Id$ *}
+{popup_init src="lib/overlib.js"}
 
 {if !( $searchStyle eq "menu" )}
 	{title admpage="search" help="Search"}{tr}Search{/tr}{/title}
@@ -18,25 +19,16 @@
 		</div>
 	{/if}
 
-	{if $prefs.feature_search_show_search_box eq 'y' or  $searchStyle eq "menu"}
+	{if $prefs.feature_search_show_search_box eq 'y'}
 		<form action="tiki-searchresults.php" method="get" id="search-form" class="findtable">
-		{if ($searchStyle eq "menu") and ($prefs.feature_multilingual eq "y")}	
-			<input type="hidden" name="searchLang" value="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" />
-		{/if}
-		
 			<label class="findtitle">
-				{tr}Find{/tr} <input id="highlight{$iSearch}" name="words" style="width:300px" type="text" accesskey="s" value="{$words|escape}" />
+				{tr}Find{/tr} <input name="highlight" size="14" type="text" accesskey="s" value="{$words|escape}" />
 			</label>
-			{if $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y' and $prefs.search_autocomplete eq 'y'}
-				{jq}
-					$("#highlight{{$iSearch}}").tiki("autocomplete", "pagename");
-				{/jq}
-			{/if}			
-				{if !( $searchStyle eq "menu" )}
+			{if !( $searchStyle eq "menu" )}
 				<label class="searchboolean" for="boolean">
 					{tr}Advanced search:{/tr}<input type="checkbox" name="boolean" id="boolean" {if $boolean eq 'y'} checked="checked"{/if} />
 				</label>
-				{add_help show='y' title="{tr}Search Help{/tr}" id="advanced_search_help"}
+				{add_help show='y' title="{tr}Advanced Search Help{/tr}" id="advanced_search_help"}
 					{$smarty.capture.advanced_search_help}
 				{/add_help}
 				<label class="searchdate" for="date">
@@ -172,12 +164,12 @@
 	{* do not change the comment above, since smarty 'highlight' outputfilter is hardcoded to find exactly this... instead you may experience white pages as results *}
 
 {if $searchStyle ne 'menu' and ! $searchNoResults }
-	<div class="nohighlight simplebox" style="width:300px">
+	<div class="nohighlight simplebox">
 		 {tr}Found{/tr} "{$words|escape}" {tr}in{/tr} 
 			{if $where_forum}
 				{tr}{$where|escape}:{/tr} {$where_forum|escape}
 			{else}
-				{$cant} {tr}{$where_label|escape}{/tr}
+				{$cant} {tr}{$where|escape}{/tr}
 			{/if}
 	</div><!--nohighlight-->
 {/if}

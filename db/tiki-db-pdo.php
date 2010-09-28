@@ -34,7 +34,7 @@ try {
 
 	$dbTiki = new PDO("$db_tiki:$db_hoststring;dbname=$dbs_tiki", $user_tiki, $pass_tiki, $pdoDriverOptions);
 */
-	require_once 'lib/core/TikiDb/Pdo.php';
+	require_once 'lib/core/lib/TikiDb/Pdo.php';
 
 	$conn = false;
 	$pdo_options = array();
@@ -72,7 +72,7 @@ try {
 	unset( $tempDb, $pdo_options, $pdo_post_queries );
 
 } catch( PDOException $e ) {
-	require_once 'lib/init/smarty.php';
+	require_once 'setup_smarty.php';
 
 	$smarty->assign( 'msg', $e->getMessage() );
 	$smarty->assign( 'where', 'connection');

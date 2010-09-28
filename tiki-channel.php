@@ -5,12 +5,6 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-$inputConfiguration = array( array(
-	'staticKeyFiltersForArrays' => array(
-		'channels' => 'rawhtml_unsafe',
-	),
-) );
-
 require_once 'tiki-setup.php';
 require_once 'lib/profilelib/profilelib.php';
 require_once 'lib/profilelib/installlib.php';

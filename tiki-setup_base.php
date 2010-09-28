@@ -133,23 +133,21 @@ if ( $start_session ) {
 	$session_params = session_get_cookie_params();
 	session_set_cookie_params($session_params['lifetime'], $tikiroot);
 	unset($session_params);
-
-	try {
-		require_once "Zend/Session.php";
-		Zend_Session::start();
-	} catch( Zend_Session_Exception $e ) {
-		// Ignore
-	}
+	@session_start();
 }
 
 // Moved here from tiki-setup.php because smarty use a copy of session
 if ($prefs['feature_fullscreen'] == 'y') {
 	require_once ('lib/setup/fullscreen.php');
 }
+// Smarty needs session since 2.6.25
+require_once ('setup_smarty.php');
 // Retrieve all preferences
 require_once ('lib/setup/prefs.php');
-// Smarty needs session since 2.6.25
-require_once ('lib/init/smarty.php');
+// Handle Smarty Security
+if ($prefs['smarty_security'] == 'y') {
+	$smarty->security = true;
+}
 require_once ('lib/userslib.php'); global $userlib;
 $userlib = new UsersLib;
 require_once ('lib/tikiaccesslib.php');
@@ -320,16 +318,6 @@ if (empty($_SERVER['REQUEST_URI'])) {
 if (empty($_SERVER['SERVER_NAME'])) {
 	$_SERVER['SERVER_NAME'] = isset($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']: '';
 }
-
-/*
- * Clean variables past in _GET & _POST & _COOKIE
- */
-$magic_quotes_gpc = get_magic_quotes_gpc();
-if ($magic_quotes_gpc) {
-	remove_gpc($_GET);
-	remove_gpc($_POST);
-	remove_gpc($_COOKIE);
-}
 // in the case of tikis on same domain we have to distinguish the realm
 // changed cookie and session variable name by a name made with browsertitle
 $cookie_site = preg_replace("/[^a-zA-Z0-9]/", "", $prefs['cookie_name']);
@@ -440,6 +428,7 @@ if (isset($_SESSION["$user_cookie_site"])) {
 }
 require_once ('lib/setup/perms.php');
 // --------------------------------------------------------------
+$magic_quotes_gpc = get_magic_quotes_gpc();
 // deal with register_globals
 if (ini_get('register_globals')) {
 	foreach(array($_ENV, $_GET, $_POST, $_COOKIE, $_SERVER) as $superglob) {
@@ -457,6 +446,11 @@ if ( $tiki_p_trust_input != 'y' ) {
 }
 $jitServer = new JitFilter($_SERVER);
 $_SERVER = $serverFilter->filter($_SERVER);
+if ($magic_quotes_gpc) {
+	remove_gpc($_GET);
+	remove_gpc($_POST);
+	remove_gpc($_COOKIE);
+}
 // Rebuild request after gpc fix
 // _REQUEST should only contain GET and POST in the app
 $_REQUEST = array_merge($_GET, $_POST);

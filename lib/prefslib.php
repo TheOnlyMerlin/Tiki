@@ -37,7 +37,7 @@ class PreferencesLib
 			}
 		
 			$value = $source[$name];
-			if( !empty($value) && is_string( $value ) && ($value{0} == ':' || (strlen($value) > 1 && $value{1} == ':')) && false !== $unserialized = unserialize( $value ) ) {
+			if( !empty($value) && is_string( $value ) && $value{0} == ':' && false !== $unserialized = unserialize( $value ) ) {
 				$value = $unserialized;
 			}
 
@@ -48,18 +48,16 @@ class PreferencesLib
 			} else {
 				$info['value'] = $value;
 			}
-
 			$info['raw'] = $source[$name];
 			$info['id'] = 'pref-' . ++$id;
-
 			if( isset( $info['help'] ) && $prefs['feature_help'] == 'y' ) {
-				if( preg_match('/^https?:/i', $info['help']) ) {
+				
+				if ( preg_match('/^https?:/i', $info['help']) ) 
+				// If help is an url, return it without adding $helpurl 
 					$info['helpurl'] = $info['help'];
-				} else {
+				else
 					$info['helpurl'] = $prefs['helpurl'] . $info['help'];
-				}
 			}
-
 			if( $deps && isset( $info['dependencies'] ) ) {
 				$info['dependencies'] = $this->getDependencies( $info['dependencies'] );
 			}
@@ -171,15 +169,6 @@ class PreferencesLib
 		return $out;
 	}
 
-	function getExtraSortColumns() {
-		global $prefs;
-		if( $prefs['rating_advanced'] == 'y' ) {
-			return TikiDb::get()->fetchMap( "SELECT CONCAT('adv_rating_', ratingConfigId), name FROM tiki_rating_configs" );
-		} else {
-			return array();
-		}
-	}
-
 	private function loadData( $name ) {
 		if( false !== $pos = strpos( $name, '_' ) ) {
 			$file = substr( $name, 0, $pos );
@@ -284,7 +273,7 @@ class PreferencesLib
 			$fp = opendir('templates/');
 			
 			while(false !== ($f = readdir($fp))) {
-				preg_match('/^tiki-admin_include_(.*)\.tpl$/', $f, $m);
+				preg_match('/^tiki-admin-include-(.*)\.tpl$/', $f, $m);
 				if (count($m) > 0) {
 					$page = $m[1];
 					$c = file_get_contents('templates/'.$f);
@@ -307,12 +296,8 @@ class PreferencesLib
 		$doc = new Zend_Search_Lucene_Document();
 		$doc->addField( Zend_Search_Lucene_Field::UnIndexed('preference', $pref) );
 		$doc->addField( Zend_Search_Lucene_Field::Text('name', $info['name']) );
-		if (!empty($info['description'])) {
-			$doc->addField( Zend_Search_Lucene_Field::Text('description', $info['description']) );
-		}
-		if (!empty($info['keywords'])) {
-			$doc->addField( Zend_Search_Lucene_Field::Text('keywords', $info['keywords']) );
-		}
+		$doc->addField( Zend_Search_Lucene_Field::Text('description', $info['description']) );
+		$doc->addField( Zend_Search_Lucene_Field::Text('keywords', $info['keywords']) );
 
 		if( isset( $info['options'] ) ) {
 			$doc->addField( Zend_Search_Lucene_Field::Text('options', implode( ' ', $info['options'] ) ) );

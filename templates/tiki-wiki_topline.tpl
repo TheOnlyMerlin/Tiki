@@ -13,8 +13,8 @@
 
 {breadcrumbs type="desc" loc="page" crumbs=$crumbs}
 
-{if $cached_page eq 'y'}<span class="cachedStatus'>({tr}Cached{/tr})</span>{/if}
-{if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categorypath eq 'y' and $tiki_p_view_category eq 'y'}
+{if $cached_page eq 'y'}<small>({tr}Cached{/tr})</small>{/if}
+{if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categorypath eq 'y'}
 	{$display_catpath}
 {/if}
 		</div>
@@ -27,24 +27,23 @@
 	{if $editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') and $beingEdited ne 'y' and $machine_translate_to_lang == '' or $canEditStaging eq 'y' }
 		{if $prefs.wiki_edit_icons_toggle eq 'y' and ($prefs.wiki_edit_plugin eq 'y' or $prefs.wiki_edit_section eq 'y')}
 			{jq}
-			$("#wiki_plugin_edit_view").click( function () {
-				var src = $("#wiki_plugin_edit_view img").attr("src");
+			$jq("#wiki_plugin_edit_view").click( function () {
+				var src = $jq("#wiki_plugin_edit_view img").attr("src");
 				if (src.indexOf("wiki_plugin_edit_view") > -1) {
-					$(".editplugin, .icon_edit_section").show();
-					$("#wiki_plugin_edit_view img").attr("src", src.replace("wiki_plugin_edit_view", "wiki_plugin_edit_hide"));
+					$jq(".editplugin, .icon_edit_section").show();
+					$jq("#wiki_plugin_edit_view img").attr("src", src.replace("wiki_plugin_edit_view", "wiki_plugin_edit_hide"));
 					setCookieBrowser("wiki_plugin_edit_view", true);
 				} else {
-					$(".editplugin, .icon_edit_section").hide();
-					$("#wiki_plugin_edit_view img").attr("src", src.replace("wiki_plugin_edit_hide", "wiki_plugin_edit_view"));
+					$jq(".editplugin, .icon_edit_section").hide();
+					$jq("#wiki_plugin_edit_view img").attr("src", src.replace("wiki_plugin_edit_hide", "wiki_plugin_edit_view"));
 					deleteCookie("wiki_plugin_edit_view");
 				}
-				return false;
 			});
-			if (!getCookie("wiki_plugin_edit_view")) {$(".editplugin, .icon_edit_section").hide(); } else { $("#wiki_plugin_edit_view").click(); }
+			if (!getCookie("wiki_plugin_edit_view")) {$jq(".editplugin, .icon_edit_section").hide(); } else { $jq("#wiki_plugin_edit_view").click(); }
 			{/jq}
 		<a title="{tr}View edit icons{/tr}" href="#" id="wiki_plugin_edit_view">{icon _id='wiki_plugin_edit_view' title="{tr}View edit icons{/tr}"}</a>
 		{/if}
-		<a title="{tr}Edit this page{/tr}" {ajax_href template="tiki-editpage.tpl"}tiki-editpage.php?page={if $needsStaging eq 'y'}{$stagingPageName|escape:"url"}{else}{$page|escape:"url"}{/if}{if !empty($page_ref_id) and $needsStaging neq 'y'}&amp;page_ref_id={$page_ref_id}{/if}{/ajax_href}>{icon _id='page_edit' alt="{tr}Edit this page{/tr}"}</a>
+		<a title="{tr}Edit this page{/tr}" {ajax_href template="tiki-editpage.tpl" htmlelement="tiki-center"}tiki-editpage.php?page={if $needsStaging eq 'y'}{$stagingPageName|escape:"url"}{else}{$page|escape:"url"}{/if}{if !empty($page_ref_id) and $needsStaging neq 'y'}&amp;page_ref_id={$page_ref_id}{/if}{/ajax_href}>{icon _id='page_edit' alt="{tr}Edit this page{/tr}"}</a>
 	{/if}
 	{if $prefs.feature_morcego eq 'y' && $prefs.wiki_feature_3d eq 'y'}
 				<a title="{tr}3d browser{/tr}" href="javascript:wiki3d_open('{$page|escape}',{$prefs.wiki_3d_width}, {$prefs.wiki_3d_height})">{icon _id='wiki3d' alt="{tr}3d browser{/tr}"}</a>
@@ -56,9 +55,6 @@
 				<a title="{tr}Print{/tr}" href="tiki-print.php?{if !empty($page_ref_id)}page_ref_id={$page_ref_id}&amp;{/if}page={$page|escape:"url"}">{icon _id='printer' alt="{tr}Print{/tr}"}</a>
 	{/if}
 
-	{if $prefs.feature_share eq 'y' && $tiki_p_share eq 'y'}
-				<a title="{tr}Share this page{/tr}" href="tiki-share.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{icon _id='share_link' alt="{tr}Share this page{/tr}"}</a>
-	{/if}
 	{if $prefs.feature_tell_a_friend eq 'y' && $tiki_p_tell_a_friend eq 'y'}
 				<a title="{tr}Send a link{/tr}" href="tiki-tell_a_friend.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{icon _id='email_link' alt="{tr}Send a link{/tr}"}</a>
 	{/if}
@@ -73,17 +69,17 @@
 		{/if}
 		{if $structure == 'y' and $tiki_p_watch_structure eq 'y'}
 			{if $user_watching_structure ne 'y'}
-				<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=structure_changed&amp;watch_object={$page_info.page_ref_id}&amp;watch_action=add_desc&amp;structure={$home_info.pageName|escape:'url'}">{icon _id='eye_arrow_down' alt="{tr}Monitor the Sub-Structure{/tr}"}</a>
+				<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=structure_changed&amp;watch_object={$page_info.page_ref_id}&amp;watch_action=add_desc&amp;structure={$home_info.pageName|escape:'url'}">{icon _id='eye_arrow_down' alt='{tr}Monitor the Sub-Structure{/tr}'}</a>
 			{else}
-				<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=structure_changed&amp;watch_object={$page_info.page_ref_id}&amp;watch_action=remove_desc&amp;structure={$home_info.pageName|escape:'url'}">{icon _id='no_eye_arrow_down' alt="{tr}Stop Monitoring the Sub-Structure{/tr}"}</a>
+				<a href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=structure_changed&amp;watch_object={$page_info.page_ref_id}&amp;watch_action=remove_desc&amp;structure={$home_info.pageName|escape:'url'}">{icon _id='no_eye_arrow_down' alt='{tr}Stop Monitoring the Sub-Structure{/tr}'}</a>
 			{/if}
 		{/if}
 	{/if}
 	{if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
-		<a href="tiki-object_watches.php?objectId={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;objectType=wiki+page&amp;objectName={$page|escape:"url"}&amp;objectHref={'tiki-index.php?page='|cat:$page|escape:"url"}" class="icon">{icon _id='eye_group' alt="{tr}Group Monitor{/tr}"}</a>
+		<a href="tiki-object_watches.php?objectId={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;objectType=wiki+page&amp;objectName={$page|escape:"url"}&amp;objectHref={'tiki-index.php?page='|cat:$page|escape:"url"}" class="icon">{icon _id='eye_group' alt='{tr}Group Monitor{/tr}'}</a>
 
 		{if $structure == 'y'}
-			<a href="tiki-object_watches.php?objectId={$page_info.page_ref_id|escape:"url"}&amp;watch_event=structure_changed&amp;objectType=structure&amp;objectName={$page|escape:"url"}&amp;objectHref={'tiki-index.php?page_ref_id='|cat:$page_ref_id|escape:"url"}" class="icon">{icon _id=eye_group_arrow_down alt="{tr}Group Monitor on Structure{/tr}"}</a>
+			<a href="tiki-object_watches.php?objectId={$page_info.page_ref_id|escape:"url"}&amp;watch_event=structure_changed&amp;objectType=structure&amp;objectName={$page|escape:"url"}&amp;objectHref={'tiki-index.php?page_ref_id='|cat:$page_ref_id|escape:"url"}" class="icon">{icon _id=eye_group_arrow_down alt='{tr}Group Monitor on Structure{/tr}'}</a>
 		{/if}
 	{/if}
 			</div><!-- END of icons -->

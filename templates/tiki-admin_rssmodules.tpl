@@ -30,12 +30,6 @@
 			<input id="article_active" type="checkbox" name="enable" value="1"{if $articleConfig.active} checked="checked"{/if}/>
 			<label for="article_active">{tr}Enable{/tr}</label>
 		</p>
-		{if $prefs.feature_submissions eq 'y'}
-		<p>
-			<input id="article_submission" type="checkbox" name="submission" value="1"{if $articleConfig.submission} checked="checked"{/if}/>
-			<label for="article_submission">{tr}Use Article Submission System{/tr}</label>
-		</p>
-		{/if}
 		<p>
 			<label for="article_expiry">{tr}Expiration{/tr}</label>
 			<input type="text" name="expiry" id="article_expiry" value="{$articleConfig.expiry|escape}" size="3"/> {tr}days{/tr}
@@ -87,22 +81,22 @@
 
 <form action="tiki-admin_rssmodules.php" method="post">
 	<input type="hidden" name="rssId" value="{$rssId|escape}" />
-	<table class="formcolor">
+	<table class="normal">
 		<tr>
-			<td>{tr}Name:{/tr}</td>
-			<td><input type="text" name="name" value="{$name|escape}" /></td>
+			<td class="formcolor">{tr}Name:{/tr}</td>
+			<td class="formcolor"><input type="text" name="name" value="{$name|escape}" /></td>
 		</tr>
 		<tr>
-			<td>{tr}Description:{/tr}</td>
-			<td><textarea name="description" rows="4" cols="40" style="width:95%">{$description|escape}</textarea></td>
+			<td class="formcolor">{tr}Description:{/tr}</td>
+			<td class="formcolor"><textarea name="description" rows="4" cols="40" style="width:95%">{$description|escape}</textarea></td>
 		</tr>
 		<tr>
-			<td>{tr}URL:{/tr}</td>
-			<td><input size="47" type="text" name="url" value="{$url|escape}" /></td>
+			<td class="formcolor">{tr}URL:{/tr}</td>
+			<td class="formcolor"><input size="47" type="text" name="url" value="{$url|escape}" /></td>
 		</tr>
 		<tr>
-			<td>{tr}Refresh rate:{/tr}</td>
-			<td>
+			<td class="formcolor">{tr}Refresh rate:{/tr}</td>
+			<td class="formcolor">
 				<select name="refresh">
 					<option value="1" {if $refresh eq 60}selected="selected"{/if}>{60|duration}</option>
 					<option value="5" {if $refresh eq 300}selected="selected"{/if}>{300|duration}</option>
@@ -121,16 +115,16 @@
 			</td>
 		</tr>
 		<tr>
-			<td>{tr}show feed title:{/tr}</td>
-			<td><input type="checkbox" name="showTitle" {if $showTitle eq 'y'}checked="checked"{/if} /></td>
+			<td class="formcolor">{tr}show feed title:{/tr}</td>
+			<td class="formcolor"><input type="checkbox" name="showTitle" {if $showTitle eq 'y'}checked="checked"{/if} /></td>
 		</tr>
 		<tr>
-			<td>{tr}show publish date:{/tr}</td>
-			<td><input type="checkbox" name="showPubDate" {if $showPubDate eq 'y'}checked="checked"{/if} /></td>
+			<td class="formcolor">{tr}show publish date:{/tr}</td>
+			<td class="formcolor"><input type="checkbox" name="showPubDate" {if $showPubDate eq 'y'}checked="checked"{/if} /></td>
 		</tr>
 		<tr>
-			<td>&nbsp;</td>
-			<td><input type="submit" name="save" value="{tr}Save{/tr}" /></td>
+			<td class="formcolor">&nbsp;</td>
+			<td class="formcolor"><input type="submit" name="save" value="{tr}Save{/tr}" /></td>
 		</tr>
 	</table>
 </form>
@@ -151,21 +145,21 @@
 		</tr>
 		{cycle values="even,odd" print=false}
 		{section name=chan loop=$channels}
-			<tr class="{cycle}">
-				<td>{$channels[chan].rssId|escape}</td>
-				<td>
+			<tr>
+				<td class="{cycle advance=false}">{$channels[chan].rssId|escape}</td>
+				<td class="{cycle advance=false}">
 					<strong>{$channels[chan].name|escape}</strong><br />
 					{if $channels[chan].description}{$channels[chan].description|escape|nl2br}<br />{/if}
 					Site: <a href="{$channels[chan].siteurl|escape}">{$channels[chan].sitetitle|escape}</a><br />
 					Feed: <a class="link" href="{$channels[chan].url|escape}">{$channels[chan].url|truncate:50:"...":true}</a><br />
 				</td>
-				<td>
+				<td class="{cycle advance=false}">
 					{if $channels[chan].lastUpdated eq '1000000'}{tr}Never{/tr}{else}{$channels[chan].lastUpdated|tiki_short_datetime}{/if}<br />
 					Refresh rate: {$channels[chan].refresh|duration}
 				</td>
-				<td style="text-align:center">{$channels[chan].showTitle|escape}</td>
-				<td style="text-align:center">{$channels[chan].showPubDate|escape}</td>
-				<td>
+				<td class="{cycle advance=false}" style="text-align:center">{$channels[chan].showTitle|escape}</td>
+				<td class="{cycle advance=false}" style="text-align:center">{$channels[chan].showPubDate|escape}</td>
+				<td class="{cycle}">
 					<a class="link" href="tiki-admin_rssmodules.php?offset={$offset|escape}&amp;sort_mode={$sort_mode|escape}&amp;remove={$channels[chan].rssId|escape}" title="{tr}Delete{/tr}">{icon _id=cross alt="{tr}Delete{/tr}"}</a>
 					<a class="link" href="tiki-admin_rssmodules.php?offset={$offset|escape}&amp;sort_mode={$sort_mode|escape}&amp;rssId={$channels[chan].rssId|escape}" title="{tr}Edit{/tr}">{icon _id=page_edit}</a>
 					<a class="link" href="tiki-admin_rssmodules.php?offset={$offset|escape}&amp;sort_mode={$sort_mode|escape}&amp;view={$channels[chan].rssId|escape}" title="{tr}View{/tr}">{icon _id=feed alt="{tr}View feed{/tr}"}</a>

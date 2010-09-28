@@ -61,7 +61,7 @@ if ($where == 'forums') {
 	if (!empty($_REQUEST['forumId'])) {
 		$filter['forumId'] = $_REQUEST['forumId'];
 		global $commentslib;
-		include ('lib/comments/commentslib.php');
+		include ('lib/commentslib.php');
 		if (!isset($commentslib)) $commentslib = new Comments($dbTiki);
 		$forum_info = $commentslib->get_forum($_REQUEST['forumId']);
 		$where = 'forum';

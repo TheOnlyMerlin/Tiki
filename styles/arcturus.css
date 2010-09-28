@@ -1,6 +1,6 @@
 /* $Id$
 	Arcturus theme (arcturus.css) for Tikiwiki CMS/Groupware.
-	Visit http://themes.tiki.org for more information.
+	Visit http://themes.tikiwiki.org for more information.
 */
  
 /* Import foundation CSS files. */
@@ -631,7 +631,7 @@ div.articletrailer span {
 .forum_actions {
 	background: #333;
 	color: #fff;
-/*	padding: 3px;*/
+	padding: 3px;
 }
 .forum_actions span.title {
 	font-weight: bold;

@@ -1,6 +1,6 @@
 /* Strasa theme for TikiWiki CMS/Groupware, design by Patrick Allard,
    mono option by jonnyb
-   released under LPGL license. For more information, visit http://themes.tiki.org. */
+   released under LPGL license. For more information, visit http://themes.tikiwiki.org. */
 
 /***** XHTML Elements ******/
 html {
@@ -214,20 +214,16 @@ a.flip:visited {color: #b5dde9}
 a.flip:hover {color: #006699}
 
 .tellafriend a,
-.share a,
-.tellafriend a:visited,
-.share a:visited {
+.tellafriend a:visited {
 	background: transparent url(cool/fold-topright.jpg) 0 0 no-repeat;
 	color: #fff;
 }
 
-.tellafriend a:hover,
-.share a:hover {
+.tellafriend a:hover {
 	color: #fff;
 }
 
-.tellafriend,
-.share {
+.tellafriend {
 	border-bottom: solid 1px #cce5ff;
 }
 

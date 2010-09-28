@@ -6,18 +6,18 @@
 		<label for="{$p.id|escape}">{$p.name|escape}</label>
 		{include file=prefs/shared-flags.tpl}
 		{if $p.hint}
-			<br/><em>{$p.hint|simplewiki}</em>
+			<br/><em>{$p.hint|escape}</em>
 		{/if}
 	</div>
 	{include file=prefs/shared-dependencies.tpl}
 	{jq}
-if( ! $('#{{$p.id|escape}}').attr('checked') || $('#{{$p.id|escape}}').attr('disabled') ) {
-	$('#{{$p.preference|escape}}_childcontainer').hide();
+if( ! $jq('#{{$p.id|escape}}').attr('checked') || $jq('#{{$p.id|escape}}').attr('disabled') ) {
+	$jq('#{{$p.preference|escape}}_childcontainer').hide();
 }
-if ($('#{{$p.preference|escape}}_childcontainer').length) {
-	$('#{{$p.id|escape}}').change( function() {
+if ($jq('#{{$p.preference|escape}}_childcontainer').length) {
+	$jq('#{{$p.id|escape}}').change( function() {
 		var id = '{{$p.preference|escape}}_childcontainer';
-		if( $('#{{$p.id|escape}}').attr('checked') || $('#{{$p.id|escape}}').attr('disabled') ) {
+		if( $jq('#{{$p.id|escape}}').attr('checked') || $jq('#{{$p.id|escape}}').attr('disabled') ) {
 			{{if $mode eq 'invert'}}hide(id);{{else}}show(id);{{/if}}
 		} else {
 			{{if $mode eq 'invert'}}show(id);{{else}}hide(id);{{/if}}

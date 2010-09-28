@@ -5,6 +5,8 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+//this script may only be included - so its better to die if called directly.
+
 class timer
 {
     function parseMicro($micro)
@@ -16,9 +18,9 @@ class timer
 
     function start($timer = 'default', $restart = FALSE)
 		{
-        //if (isset($this->timer[$timer]) && !$restart) {
+        if (isset($this->timer[$timer]) && !$restart) {
             // report error - timer already exists
-        //}
+        }
         $this->timer[$timer] = $this->parseMicro(microtime());
     }
 

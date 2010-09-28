@@ -8,21 +8,21 @@
 class PaymentLib extends TikiDb_Bridge
 {
 	function request_payment( $description, $amount, $paymentWithin, $detail = null ) {
-		global $prefs, $userlib, $user;
+		global $prefs;
 
 		$description = substr( $description, 0, 100 );
 
-		$query = 'INSERT INTO `tiki_payment_requests` ( `amount`, `amount_paid`, `currency`, `request_date`, `due_date`, `description`, `detail`, `userId` ) VALUES( ?, 0, ?, NOW(), DATE_ADD(NOW(), INTERVAL ? DAY), ?, ?, ? )';
-		$bindvars = array( $amount, $prefs['payment_currency'], (int) $paymentWithin, $description, $detail, $userlib->get_user_id($user) );
+		$query = 'INSERT INTO `tiki_payment_requests` ( `amount`, `amount_paid`, `currency`, `request_date`, `due_date`, `description`, `detail` ) VALUES( ?, 0, ?, NOW(), DATE_ADD(NOW(), INTERVAL ? DAY), ?, ? )';
+		$bindvars = array( $amount, $prefs['payment_currency'], (int) $paymentWithin, $description, $detail );
 
 		$this->query( $query, $bindvars );
 
 		return $this->lastInsertId();
 	}
 
-	private function get_payments( $conditions, $offset, $max, $what='' ) {
+	private function get_payments( $conditions, $offset, $max ) {
 		$count = 'SELECT COUNT(*) FROM `tiki_payment_requests` WHERE ' . $conditions;
-		$data = 'SELECT tpr.*, uu.`login` as `user` '.$what.' FROM `tiki_payment_requests` tpr LEFT JOIN `users_users` uu ON (uu.`userId` = tpr.`userId`) WHERE ' . $conditions;
+		$data = 'SELECT * FROM `tiki_payment_requests` WHERE ' . $conditions;
 
 		$all = $this->fetchAll( $data, array(), $max, $offset );
 
@@ -37,16 +37,7 @@ class PaymentLib extends TikiDb_Bridge
 	}
 
 	function get_past( $offset, $max ) {
-		$conditions = 'tpr.`amount` <= tpr.`amount_paid` AND tpr.`cancel_date` IS NULL';
-		$count = 'SELECT COUNT(*) FROM `tiki_payment_requests` tpr WHERE ' . $conditions;
-		$data = 'SELECT tpr.*, uu.`login` as `user`, tp.`type`, tp.`payment_date`, tp.`details` as `payment_detail`, uup.`login` as `payer`FROM `tiki_payment_requests` tpr LEFT JOIN `users_users` uu ON (uu.`userId` = tpr.`userId`) LEFT JOIN `tiki_payment_received` tp ON (tp.`paymentRequestId`=tpr.`paymentRequestId`) LEFT JOIN `users_users` uup ON (uup.`userId` = tp.`userId`) WHERE ' . $conditions;
-
-		$all = $this->fetchAll( $data, array(), $max, $offset );
-
-		return array(
-			'cant' => $this->getOne( $count ),
-			'data' => Perms::filter( array( 'type' => 'payment' ), 'object', $all, array( 'object' => 'paymentRequestId' ), 'payment_view' ),
-		);
+		return $this->get_payments( '`amount` <= `amount_paid` AND `cancel_date` IS NULL', $offset, $max );
 	}
 
 	function get_overdue( $offset, $max ) {
@@ -86,6 +77,7 @@ class PaymentLib extends TikiDb_Bridge
 
 			$info['payments'] = array();
 			$payments = $this->fetchAll( 'SELECT * FROM `tiki_payment_received` WHERE `paymentRequestId` = ? ORDER BY `payment_date` DESC', array( $id ) );
+
 			foreach( $payments as $payment ) {
 				$payment['details'] = json_decode( $payment['details'], true );
 				$payment['amount_paid'] = number_format( $payment['amount'], 2, '.', ',' );
@@ -126,17 +118,15 @@ class PaymentLib extends TikiDb_Bridge
 	}
 
 	function enter_payment( $invoice, $amount, $type, array $data ) {
-		global $user, $userlib;
 		if( $info = $this->get_payment( $invoice ) ) {
 			if( $info['state'] != 'past' && $info['state'] != 'canceled' && $info['amount_remaining_raw'] - $amount <= 0 ) {
-				$results = $this->run_behaviors( $info, 'complete' );
+				$this->run_behaviors( $info, 'complete' );
 			}
-			if (!empty($results)) {
-				$data = array_merge($results, $data);
-			}
+
 			$data = json_encode( $data );
-			$this->query( 'INSERT INTO `tiki_payment_received` ( `paymentRequestId`, `payment_date`, `amount`, `type`, `details`, `userId` ) VALUES( ?, NOW(), ?, ?, ?, ? )',
-															array($invoice, 						 $amount,  $type,  $data, empty($user)? $info['userId']: $userlib->get_user_id($user)));
+			$this->query( 'INSERT INTO `tiki_payment_received` ( `paymentRequestId`, `payment_date`, `amount`, `type`, `details` ) VALUES( ?, NOW(), ?, ?, ? )', array(
+				$invoice, $amount, $type, $data
+			) );
 			$this->query( 'UPDATE `tiki_payment_requests` SET `amount_paid` = `amount_paid` + ? WHERE `paymentRequestId` = ?', array( $amount, $invoice ) );
 		}
 	}
@@ -162,14 +152,12 @@ class PaymentLib extends TikiDb_Bridge
 
 	private function run_behaviors( $info, $event ) {
 		$behaviors = $info['actions'][$event];
-		$results = array();
 
 		foreach( $behaviors as $b ) {
 			if( $callback = $this->get_behavior( $b['behavior'] ) ) {
-				$results[str_replace('payment_behavior_', '', $callback)] = call_user_func_array( $callback, $b['arguments'] );
+				call_user_func_array( $callback, $b['arguments'] );
 			}
 		}
-		return $results;
 	}
 
 	private function get_behavior( $name ) {

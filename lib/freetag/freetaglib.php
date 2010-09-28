@@ -71,7 +71,7 @@ class FreetagLib extends ObjectLib
 	 * @access private
 	 * @param int The maximum length of a tag.
 	 */
-	var $_MAX_TAG_LENGTH = 128;
+	var $_MAX_TAG_LENGTH = 30;
 	/**
 	 * @access public
 	 * @param int The number of size degrees for tags in cloud. There should be correspondent classes in css.
@@ -703,10 +703,11 @@ class FreetagLib extends ObjectLib
 	 * @param int The unique ID of the person who tagged the object with this tag.
 	 * @param int The ID of the object in question.
 	 * @param string The raw string or the string form of the tag to delete.
+	 * @param bool The tag is the raw or the normalized form
 	 *
 	 * @return string Returns the tag in normalized form.
 	 */
-	function delete_object_tag($itemId, $type, $tag, $user = false)
+	function delete_object_tag($itemId, $type, $tag, $user = false, $raw = false)
 	{
 		if (!isset($itemId) || !isset($type) || !isset($tag) ||
 				empty($itemId) || empty($type) || empty($tag)) {
@@ -1512,32 +1513,6 @@ class FreetagLib extends ObjectLib
 		foreach( $result as $row ) {
 			$tags[] = $row['tag'];
 		}
-
-		return $tags;
-	}
-
-	/**
-	 * Used to parse the tag string when previewing an object. Simulates
-	 * the final result without saving anything in the database.
-	 *
-	 * @param string $tagString
-	 * @access public
-	 * @return array tags
-	 */
-	function dumb_parse_tags($tagString) {
-		if (!is_string($tagString) || empty($tagString)) {
-			return array();
-		}
-
-		$tagArray = $this->_parse_tag($tagString);
-
-		$tags = array();
-
-		foreach ($tagArray as $tag) {
-			$tags['data'][]['tag'] = $this->normalize_tag($tag);
-		}
-
-		$tags['cant'] = count($tags['data']);
 
 		return $tags;
 	}

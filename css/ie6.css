@@ -7,7 +7,7 @@ span.button a:link,
 span.button a:visited {
 	text-decoration: none;
 	border: 0;
-	padding: 0 4px;
+	padding: 0 4px
 }
 
 #header-top {
@@ -70,6 +70,9 @@ img.flipmodimage {
 
 .box-data ul {
 	margin-left: 1em;
+}
+
+.box-data ul {
 	padding-left: .5em;
 }
 
@@ -133,4 +136,7 @@ table.galtable {
 	width: 97%;
 }
 
+.fckeditzone {
+	width: 510px;
+}
 /* End of file */

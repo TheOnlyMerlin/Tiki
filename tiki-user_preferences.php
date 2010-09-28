@@ -7,7 +7,7 @@
 
 $section = 'mytiki';
 require_once ('tiki-setup.php');
-if ($prefs['ajax_xajax'] == "y") {
+if ($prefs['feature_ajax'] == "y") {
 	require_once ('lib/ajax/ajaxlib.php');
 }
 include_once ('lib/modules/modlib.php');
@@ -20,8 +20,6 @@ if ($prefs['feature_userPreferences'] != 'y' && $prefs['change_password'] != 'y'
 	die;
 }
 $access->check_user($user);
-
-$auto_query_args = array();
 
 // Make sure user preferences uses https if set
 if (!$https_mode && isset($https_login) && $https_login == 'required') {
@@ -304,14 +302,8 @@ if (isset($_REQUEST['deleteaccount']) && $tiki_p_delete_account == 'y') {
       $smarty->display("error.tpl");
       die;
    }
-   $userlib->remove_user($userwatch);
-   if ($user == $userwatch) {
-	   header('Location: tiki-logout.php');
-   } elseif ($tiki_p_admin_users == 'y') {
-	   header('Location: tiki-adminusers.php');
-   } else {
-	   header("Location: $base_url");
-   }
+   $userlib->remove_user($user);
+   header('Location: tiki-logout.php');
    die();
 } 
 $tikilib->get_user_preference($userwatch, 'mytiki_pages', 'y');
@@ -354,8 +346,7 @@ $languages = $tikilib->list_languages();
 $smarty->assign_by_ref('languages', $languages);
 $user_pages = $tikilib->get_user_pages($userwatch, -1);
 $smarty->assign_by_ref('user_pages', $user_pages);
-require_once('lib/blogs/bloglib.php');
-$user_blogs = $bloglib->list_user_blogs($userwatch, false);
+$user_blogs = $tikilib->list_user_blogs($userwatch, false);
 $smarty->assign_by_ref('user_blogs', $user_blogs);
 $user_galleries = $tikilib->get_user_galleries($userwatch, -1);
 $smarty->assign_by_ref('user_galleries', $user_galleries);
@@ -404,7 +395,7 @@ if ($prefs['feature_wiki'] == 'y' and $prefs['feature_wiki_userpage'] == 'y') {
 $smarty->assign_by_ref('tikifeedback', $tikifeedback);
 include_once ('tiki-section_options.php');
 ask_ticket('user-prefs');
-if ($prefs['ajax_xajax'] == "y") {
+if ($prefs['feature_ajax'] == "y") {
 	function user_preferences_ajax() {
 		global $ajaxlib, $xajax;
 		$ajaxlib->registerTemplate("tiki-user_preferences.tpl");

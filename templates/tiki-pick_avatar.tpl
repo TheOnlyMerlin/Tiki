@@ -20,11 +20,11 @@
 <h2>{if $user eq $userwatch}{tr}Your current avatar{/tr}{else}{tr}Avatar{/tr}{/if}</h2>
 {if $avatar}{$avatar}
 {if $user_picture_id}
-{wikiplugin _name="img" thumb="y" fileId="$user_picture_id"}{/wikiplugin}
+{wikiplugin _name="img" fileId="$user_picture_id"}{/wikiplugin}
 {/if}
 {else}{tr}no avatar{/tr}{/if}
 {if sizeof($avatars) eq 0 and $avatar}
-<a class="link" href="tiki-pick_avatar.php?reset=y&amp;view_user{$userwatch|escape}" title="{tr}reset{/tr}">{icon _id='cross' alt="{tr}reset{/tr}"}</a>
+<a class="link" href="tiki-pick_avatar.php?reset=y&amp;view_user{$userwatch|escape}" title="{tr}reset{/tr}">{icon _id='cross' alt='{tr}reset{/tr}'}</a>
 {/if}
 
 {if sizeof($avatars) > 0}
@@ -70,18 +70,18 @@ function subavt() {
 <form action="tiki-pick_avatar.php" method="post">
 <input id="avatar" type="hidden" name="avatar" value="{$yours|escape}" />
 {if $user ne $userwatch}<input type="hidden" name="view_user" value="{$userwatch|escape}" />{/if}
-<table class="formcolor">
+<table class="normal">
 <tr>
- <td>
+ <td class="formcolor">
  <div align="center">
 <a class="link" href="javascript:subavt();">{tr}Prev{/tr}</a>
-<img id='avtimg' src="{$yours}" alt="{tr}Avatar Image{/tr}"/>
+<img id='avtimg' src="{$yours}" alt='{tr}Avatar Image{/tr}'/>
 <a class="link" href="javascript:addavt();">{tr}Next{/tr}</a>
 </div>
  </td>
 </tr>
 <tr>
- <td>
+ <td class="formcolor">
    <div align="center">
 	 <input type="submit" name="rand" value="{tr}random{/tr}" />
 	 <input type="submit" name="uselib" value="{tr}Use{/tr}" /> 

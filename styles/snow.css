@@ -1,6 +1,6 @@
 /* $Id$ The Snow theme for TikiWiki CMS/Groupware is an original
 	theme released under the LGPL license by author and maintainer
-	Gary Cunningham-Lee (http://zukakakina.com). Visit zukakakina.com or themes.tiki.org for
+	Gary Cunningham-Lee (http://zukakakina.com). Visit zukakakina.com or themes.tikiwiki.org for
 	updates and other information about this theme.
 */
  
@@ -166,7 +166,7 @@ input[type="text"],
 input[type="password"] {
 	font-size: 0.9em;
 	border: solid 1px #aaa;
-	background-color: #ECEEF2;
+	background: #ECEEF2;
 	color: #000;
 	width: 120px;
 	cursor: text}
@@ -464,16 +464,13 @@ a.phplmselected:hover {color: #aaa}
 a.flip,
 a.flip:visited,
 .tellafriend a,
-.share a,
-.tellafriend a:visited,
-.share a:visited {
+.tellafriend a:visited {
 	font-size: 87%;
 	color: #999;
 	text-decoration: none}
 
 a.flip:hover,
-.tellafriend a:hover,
-.share a:hover {
+.tellafriend a:hover {
 	color: #393e51;
 	text-decoration: none}
 

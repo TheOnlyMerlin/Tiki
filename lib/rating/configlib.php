@@ -33,19 +33,19 @@ class RatingConfigLib extends TikiDb_Bridge
 	function get_expired_object_list( $max ) {
 		global $prefs;
 
-		if( $prefs['feature_wiki'] == 'y' ) {
+		if( $prefs['wiki_simple_ratings'] == 'y' ) {
 			$this->query( 'INSERT IGNORE INTO `tiki_rating_obtained` ( `ratingConfigId`, `type`, `object`, `value`, `expire` )
 				SELECT `ratingConfigId`, "wiki page", `page_id`, 0, 0
 				FROM `tiki_pages`, `tiki_rating_configs`' );
 		}
 
-		if( $prefs['feature_wiki_comments'] == 'y' || $prefs['feature_forums'] == 'y' ) {
+		if( $prefs['feature_wiki_comments'] == 'y' ) {
 			$this->query( 'INSERT IGNORE INTO `tiki_rating_obtained` ( `ratingConfigId`, `type`, `object`, `value`, `expire` )
 				SELECT `ratingConfigId`, "comment", `threadId`, 0, 0
 				FROM `tiki_comments`, `tiki_rating_configs`' );
 		}
 
-		if( $prefs['feature_articles'] == 'y' ) {
+		if( $prefs['article_user_rating'] == 'y' ) {
 			$this->query( 'INSERT IGNORE INTO `tiki_rating_obtained` ( `ratingConfigId`, `type`, `object`, `value`, `expire` )
 				SELECT `ratingConfigId`, "article", `articleId`, 0, 0
 				FROM `tiki_articles`, `tiki_rating_configs`' );

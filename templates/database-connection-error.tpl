@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -70,7 +70,7 @@
 					<p>Things to check:</p>
 					<ol class="fancylist">
 						<li><p>Is your database up and running?</p></li>
-						<li><p>Is your database corrupt? Please see <a target="_blank" href="http://doc.tiki.org/Repair+Database">how to repair your database</a></p></li>					
+						<li><p>Is your database corrupt? Please see <a target="_blank" href="http://doc.tikiwiki.org/Repair+Database">how to repair your database</a></p></li>					
 						<li><p>Are your database credentials accurate? (username, database name, etc in db/local.php)</p></li>
 						{if $where neq 'connection'}
 							<li><p>Did you complete the <a href="tiki-install.php">Tiki Installer?</a></p></li>
@@ -92,17 +92,17 @@
 					<p>Things to check:</p>
 					<ol class="fancylist">
 						<li><p>Did you complete the <a href="tiki-install.php">Tiki Installer?</a></p></li>
-						<li><p>Is your database corrupt? Please see <a target="_blank" href="http://doc.tiki.org/Repair+Database">how to repair your database</a></p></li>					
+						<li><p>Is your database corrupt? Please see <a target="_blank" href="http://doc.tikiwiki.org/Repair+Database">how to repair your database</a></p></li>					
 						<li><p>Are your database credentials accurate? (username, database name, etc in db/local.php)</p></li>
 					</ol>
 				</div>
 			{/if}
 
-			<p>Please see <a target="_blank" href="http://doc.tiki.org/">the documentation</a> for more information.</p>
+			<p>Please see <a target="_blank" href="http://doc.tikiwiki.org/">the documentation</a> for more information.</p>
 
 			<hr/>
 
-{* Can be restored when we'll have a new http://branding.tiki.org/Badge
+{* Can be restored when we'll have a new http://branding.tikiwiki.org/Badge
 			<p align="center">
 				<a target="_blank" href="http://www.tiki.org" title="Tiki Wiki CMS Groupware">
 				<img src="img/tiki/tikibutton2.png" alt="Tiki Wiki CMS Groupware" border="0" height="31" width="80"/>

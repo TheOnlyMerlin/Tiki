@@ -9,7 +9,7 @@ global $headerlib, $ajaxlib, $access;
 require_once ('tiki-setup.php');
 require_once('lib/ajax/ajaxlib.php');
 
-$access->check_feature( array('feature_webmail', 'ajax_xajax' ) );
+$access->check_feature( array('feature_webmail', 'feature_ajax' ) );
 $access->check_permission_either( array('tiki_p_use_webmail', 'tiki_p_use_group_webmail') );
 
 if (!isset($_REQUEST['xjxfun'])) {	// "normal" (non-AJAX) page load
@@ -31,7 +31,7 @@ function doTakeWebmail(messageID) {
 	xajax.config.waitCursor = false;
 	xajax_takeGroupMail('$divId', messageID);
 	showWebmailMessage('".tra('Taking')."...');
-	\$('#$divId .webmail_refresh_message').show();
+	\$jq('#$divId .webmail_refresh_message').show();
 }
 
 function doPutBackWebmail(messageID) {
@@ -41,14 +41,14 @@ function doPutBackWebmail(messageID) {
 	xajax.config.waitCursor = false;
 	xajax_putBackGroupMail('$divId', messageID);
 	showWebmailMessage('".tra('Putting back')."...');
-	\$('#$divId .webmail_refresh_message').show();
+	\$jq('#$divId .webmail_refresh_message').show();
 }
 
 var refreshWebmailRequest;
 
 function doRefreshWebmail(start, reload) {
-	if (\$('.box-webmail_inbox .box-data').css('display') != 'none') {
-		if (\$('#$divId .webmail_refresh_busy').css('display') == 'none') {
+	if (\$jq('.box-webmail_inbox .box-data').css('display') != 'none') {
+		if (\$jq('#$divId .webmail_refresh_busy').css('display') == 'none') {
 			xajax.config.requestURI = 'tiki-webmail_ajax.php';	// tell it where to send the request
 			xajax.config.statusMessages = true;
 			xajax.config.waitCursor = false;
@@ -81,34 +81,34 @@ function cancelRefreshWebmail() {
 
 function initWebmail() {
 	clearWebmailMessage();
-	\$('#$divId .mod_webmail_list').show('slow');
+	\$jq('#$divId .mod_webmail_list').show('slow');
 	if (jqueryTiki.tooltips) {
-		//\$('a.tips').cluetip({splitTitle: '|', showTitle: false, width: '150px', cluezIndex: 400});
-		\$('a.tips300').cluetip({splitTitle: '|', showTitle: false, width: '300px', cluezIndex: 400});
-		//\$('a.titletips').cluetip({splitTitle: '|', cluezIndex: 400});
+		//\$jq('a.tips').cluetip({splitTitle: '|', showTitle: false, width: '150px', cluezIndex: 400});
+		\$jq('a.tips300').cluetip({splitTitle: '|', showTitle: false, width: '300px', cluezIndex: 400});
+		//\$jq('a.titletips').cluetip({splitTitle: '|', cluezIndex: 400});
 	}
 }
 
 function clearWebmailMessage() {
-	\$('#$divId .webmail_refresh_busy').hide();
-	\$('#$divId .webmail_refresh_icon').show();
-	\$('#$divId .webmail_refresh_message').hide();
-	\$('#$divId .webmail_refresh_message').text('');
+	\$jq('#$divId .webmail_refresh_busy').hide();
+	\$jq('#$divId .webmail_refresh_icon').show();
+	\$jq('#$divId .webmail_refresh_message').hide();
+	\$jq('#$divId .webmail_refresh_message').text('');
 }
 
 function showWebmailMessage(inMsg) {
-	\$('#$divId .webmail_refresh_icon').hide();
-	\$('#$divId .webmail_refresh_busy').show();
-	\$('#$divId .webmail_refresh_message').text(inMsg);
-	\$('#$divId .webmail_refresh_message').show();
+	\$jq('#$divId .webmail_refresh_icon').hide();
+	\$jq('#$divId .webmail_refresh_busy').show();
+	\$jq('#$divId .webmail_refresh_message').text(inMsg);
+	\$jq('#$divId .webmail_refresh_message').show();
 }
 
-\$('document').ready( function() {
+\$jq('document').ready( function() {
 	clearWebmailMessage();
-	\$('#$divId .mod_webmail_list').hide();
+	\$jq('#$divId .mod_webmail_list').hide();
 });
 
-\$(window).unload( function() {
+\$jq(window).unload( function() {
 	// doesn't seem to help - gets processed after doRefreshWebmail anyway
 	cancelRefreshWebmail();
 });

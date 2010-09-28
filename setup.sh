@@ -147,7 +147,7 @@ what to answer, just press enter to each question (to use default value)"
 	done
 
 	echo -n "Fix global perms ..."
-	chown -fR $AUSER:$AGROUP .
+	chown -R $AUSER:$AGROUP .
 	echo -n " chowned ..."
 
 #	find . ! -regex '.*^\(devtools\).*' -type f -exec chmod 644 {} \;	
@@ -155,7 +155,7 @@ what to answer, just press enter to each question (to use default value)"
 #	find . -type d -exec chmod 755 {} \;
 #	echo " dirs perms fixed ... done"
 
-	chmod -fR u=rwX,go=rX .
+	chmod -R u=rwX,go=rX .
 
 	echo " done."
 
@@ -163,7 +163,7 @@ what to answer, just press enter to each question (to use default value)"
 	if [ "$USER" = 'root' ]; then
 		chmod -R g+w $DIRS
 	else
-		chmod -fR go+w $DIRS
+		chmod -R go+w $DIRS
 	fi
 
 #	chmod 664 robots.txt tiki-install.php

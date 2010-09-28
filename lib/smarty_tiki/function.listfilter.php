@@ -66,28 +66,28 @@ function smarty_function_listfilter($params, &$smarty) {
 		if (!isset($selectors)) $selectors = ".$id table tr";
 			
 		$content = "
-\$('#$id').keypress( function() {
+\$jq('#$id').keypress( function() {
 	var criterias = this.value.toLowerCase().split( /\s+/ );
 	
-	\$('$selectors').each( function() {
-		var text = \$(this).text().toLowerCase();
+	\$jq('$selectors').each( function() {
+		var text = \$jq(this).text().toLowerCase();
 		for( i = 0; criterias.length > i; ++i ) {
 			word = criterias[i];
 			if( word.length > 0 && text.indexOf( word ) == -1 ) {
-				\$(this).not('$exclude').hide();	// don't search within excluded elements
+				\$jq(this).not('$exclude').hide();	// don't search within excluded elements
 				return;
 			}
 		}
-		\$(this).show();
+		\$jq(this).show();
 	} );
 ";
 		if (!empty($parentSelector)) {
 			$content .= "
-	\$('$parentSelector').show().each( function() {
-		var cl = '.$childPrefix' + \$(this).attr('id');
-		if (\$(cl + ':visible:not(\"$exclude\")').length == 0) {	// excluded things don't count
-			\$(this).hide();
-			\$(cl + '$exclude').hide();							// but need hiding if the parent is 'empty'
+	\$jq('$parentSelector').show().each( function() {
+		var cl = '.$childPrefix' + \$jq(this).attr('id');
+		if (\$jq(cl + ':visible:not(\"$exclude\")').length == 0) {	// excluded things don't count
+			\$jq(this).hide();
+			\$jq(cl + '$exclude').hide();							// but need hiding if the parent is 'empty'
 		}
 	});
 ";

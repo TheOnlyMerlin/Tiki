@@ -1,4 +1,5 @@
-# $Id$ [This line is used to check that this htaccess file is up to date. Do not edit this line and leave it as the first line.]
+# TikiWiki Version: 5.0 [This line is used to check that this htaccess file is up to date. Do not edit this line.]
+#
 # These are suggested Rewrite Rules for use with Tiki.
 # They enhance security and permit short URLs.
 # In your Tiki instance, visit tiki-admin.php?page=sefurl
@@ -9,7 +10,7 @@
 # 2- add the content of this file to your httpd.conf
 #
 # Please find more info here
-# http://doc.tiki.org/Rewrite+Rules
+# http://doc.tikiwiki.org/Rewrite+Rules
 #
 # This prevents reading of files with certain extensions.
 <FilesMatch "\.(bak|inc|lib|sh|tpl|sql)$">
@@ -52,9 +53,7 @@ RewriteRule (.*) - [L]
 
 # Rewrite rule to make this Tiki a profiles repository (uncomment to enable)
 # Set the parentId (here set as 1) to the Id of the category containing your profile pages
-# See http://doc.tiki.org/Profiles for more
-# Note: you need to allow tiki_p_view_category and tiki_p_export_wiki for anonymous to be a repository
-#       and enable feature_wiki_export (as well as feature_wiki and feature_categories)
+# See http://doc.tikiwiki.org/Profiles for more
 #RewriteRule ^profiles$             tiki-browse_categories.php?find=&deep=on&type=wiki+page&parentId=1&sort_mode=name_asc&plain&maxRecords=1000000 [L]
 
 # Tiki 3.0 requires PHP5. If your host doesn't offer PHP5 by default, it's possible that it can be activated by using (uncommenting) the lines below. Check with your host.
@@ -86,7 +85,6 @@ RewriteRule ^forums$               tiki-forums.php                          [L]
 RewriteRule ^images$               tiki-galleries.php                       [L]
 RewriteRule ^galleries$            tiki-galleries.php                       [L]
 RewriteRule ^login$                tiki-login_scr.php                       [L]
-RewriteRule ^logout$               tiki-logout.php                          [L]
 RewriteRule ^register$             tiki-register.php                        [L]
 RewriteRule ^my$                   tiki-my_tiki.php                         [L]
 RewriteRule ^newsletters$          tiki-newsletters.php                     [L]
@@ -131,13 +129,11 @@ RewriteRule ^poll([0-9]+)(.*)      tiki-poll_form.php?pollId=$1$2           [QSA
 RewriteRule ^wiki-([A-Za-z0-9]+)   tiki-index.php?page=$1                   [QSA,L]
 RewriteRule ^page-([A-Za-z0-9]+)   tiki-index.php?page=$1                   [QSA,L]
 RewriteRule ^show:(~?)(.+)$        tiki-slideshow.php?page=$1$2             [QSA,L]
-RewriteRule ^user([0-9]+)(.*)      tiki-user_information.php?userId=$1$2    [QSA,L]
 RewriteRule ^(lib/wiki3d/.+\.jar)$ $1                                       [L]
 
 RewriteRule \.(css|gif|jpg|png|php|html|js|htm|shtml|cgi|sql|phtml|txt|ihtml)   -       [L]
 RewriteRule ^(.+)$                 tiki-index.php?page=$1                   [QSA,L]
 </IfModule>
-# End of rewrite rules
 
 # Error pages, handled by Apache (not by Tiki)
 # Tiki can catch some errors and deal with them by redirecting to a similar page, sending you to the search, etc. However, some errors bypass Tiki and must be handled by Apache (ex.: impossiblepagename.php) 
@@ -147,11 +143,4 @@ RewriteRule ^(.+)$                 tiki-index.php?page=$1                   [QSA
 # to activate the error display, uncomment the following line
 #php_flag display_errors on
 
-# increase memory
-#php_value memory_limit 128M
-
-# if you want to use the Web Server Auth
-#AuthType Basic
-#AuthName "Restricted Access"
-#AuthUserFile /etc/httpd/passwords
-#Require valid-user 
+# End of rewrite rules

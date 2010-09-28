@@ -64,7 +64,6 @@ function prefs_feature_list() {
 			'description' => tra('Database & form generator'),
 			'help' => 'Trackers',
 			'type' => 'flag',
-			'keywords' => 'CRUD',
 		),
 		'feature_forums' => array(
 			'name' => tra('Forums'),
@@ -218,12 +217,6 @@ function prefs_feature_list() {
 			'help' => 'Tell+a+Friend',
 			'type' => 'flag',
 		),
-		'feature_share' => array(
-			'name' => tra('Share'),
-			'description' => tra('Add a "Share" link in all pages to send it via e-mail, Twitter, Facebook, message or forums'),
-			'help' => 'Share',
-			'type' => 'flag',
-		),
 		'feature_html_pages' => array(
 			'name' => tra('HTML pages'),
 			'description' => tra('Static and dynamic HTML content'),
@@ -244,7 +237,7 @@ function prefs_feature_list() {
 			'type' => 'flag',
 		),
 		'feature_comments_moderation' => array(
-			'name' => tra('Comments Moderation'),
+			'name' => tra('Comments Moderation '),
 			'description' => tra('An admin must validate a comment before it is visible'),
 			'help' => 'Comments',
 			'type' => 'flag',
@@ -290,7 +283,7 @@ function prefs_feature_list() {
 		'feature_phplayers' => array(
 			'name' => tra('PHPLayers'),
 			'description' => tra('PhpLayers Dynamic menus.'),
-			'help' => 'http://themes.tiki.org/PhpLayersMenu',
+			'help' => 'http://themes.tikiwiki.org/PhpLayersMenu',
 			'type' => 'flag',
 			'warning' => tra('Will eventually be removed from Tiki. Use CSS menus instead.'),
 		),
@@ -343,7 +336,7 @@ function prefs_feature_list() {
 		'feature_mobile' => array(
 			'name' => tra('Mobile'),
 			'description' => tra('Mobile'),
-			'help' => 'http://mobile.tiki.org',
+			'help' => 'http://mobile.tikiwiki.org',
 			'type' => 'flag',
 		),
 		'feature_morcego' => array(
@@ -383,18 +376,33 @@ function prefs_feature_list() {
 			'help' => 'Print+Indexed',
 			'type' => 'flag',
 		),
+		'feature_sefurl' => array(
+			'name' => tra('Search engine friendly url'),
+			'description' => tra('If you are using Apache, you can rename _htaccess to .htaccess to get Short URLs'),
+			'help' => 'Rewrite+Rules',
+			'perspective' => false,
+			'type' => 'flag',
+		),
 		'feature_sheet' => array(
 			'name' => tra('SpreadSheet'),
 			'description' => tra('Datasheets with calculations and charts'),
 			'help' => 'SpreadSheet',
 			'type' => 'flag',
-			'keywords' => 'sheet calculation calculations stats stat graph graphs',
 		),
 		'feature_wysiwyg' => array(
 			'name' => tra('Wysiwyg editor'),
 			'description' => tra('WYSIWYG is an acronym for What You See Is What You Get. Uses CKEditor.'),
 			'help' => 'Wysiwyg',
 			'type' => 'flag',
+		),
+		'feature_ajax_autosave' => array(
+			'name' => tra('Ajax auto-save'),
+			'description' => tra('Ajax auto-save'),
+			'help' => 'Lost+Edit+Protection',
+			'dependencies' => array(
+				'feature_ajax',
+			),
+		'type' => 'flag',
 		),
 		'feature_wiki_save_draft' => array(
 			'name' => tra('Save draft'),
@@ -403,10 +411,6 @@ function prefs_feature_list() {
 				'feature_ajax',
 			),
 			'type' => 'flag',
-			'dependencies' => array(
-				'feature_ajax',
-				'ajax_xajax',
-      ),
 		),	
 		'feature_kaltura' => array(
 			'name' => tra('Kaltura'),
@@ -592,7 +596,7 @@ function prefs_feature_list() {
 		),
 		'feature_version_checks' => array(
 			'name' => tra('Check for updates automatically'),
-			'description' => tra('Tiki will check for updates when you access the main Administration page'),
+			'description' => tra('TikiWiki will check for updates when you access the main Administration page'),
 			'type' => 'flag',
 			'perspective' => false,
 		),
@@ -720,8 +724,7 @@ function prefs_feature_list() {
 		'feature_wiki_ext_rel_nofollow' => array(
 			'name' => tra('Add "rel=nofollow" on external links'),
 			'description' => tra("nofollow is used to instruct some search engines that links should not influence search engines. It can reduce search engine spam and prevent 'spamdexing'"),
-			'type' => 'flag',
-			'keywords' => 'no follow spam',
+		'type' => 'flag',
 		),
 		'feature_semantic' => array(
 			'name' => tra('Semantic links'),
@@ -772,24 +775,19 @@ function prefs_feature_list() {
 			'type' => 'flag',
 		),	
 		'feature_poll_comments' => array(
-			'name' => tra('Comments for polls'),
+			'name' => tra('Comments'),
 			'type' => 'flag',
 		),	
 		'feature_faq_comments' => array(
-			'name' => tra('Comments for FAQs'),
+			'name' => tra('Comments'),
 			'type' => 'flag',
 		),	
 		'feature_sefurl' => array(
 			'name' => tra('Search engine friendly url'),
-			'description' => tra('If you are using Apache, you can rename _htaccess to .htaccess to get Short URLs'),
-			'help' => 'Clean+URLs',
-			'perspective' => false,
+			'help' => 'Rewrite+Rules',
 			'type' => 'flag',
-			'keywords' => 'sefurl sefurls seo rewrite rules short urls',
-			'dependencies' => array(
-				'wiki_badchar_prevent',
-			),
-		),
+			'perspective' => false,
+		),	
 		'feature_sefurl_filter' => array(
 			'name' => tra('Search engine friendly url Postfilter'),
 			'help' => 'Rewrite+Rules',
@@ -805,14 +803,6 @@ function prefs_feature_list() {
 			'name' => tra('Display blog title in the sefurl'),
 			'type' => 'flag',
 			'perspective' => false,
-		),
-		'feature_sefurl_tracker_prefixalias' => array(
-			'name' => tra('Redirect tiki-view_tracker.php?itemId=yyy to Prefixyyy page'),
-			'description' => tra('This redirection uses the wiki prefix alias feature'),
-			'help' => 'Page+Alias',
-			'perspective' => false,
-			'type' => 'flag',
-			'require' => array('feature_sefurl', 'wiki_prefixalias_tokens'),
 		),	
 		'feature_modulecontrols' => array(
 			'name' => tra('Show module controls'),
@@ -842,7 +832,7 @@ function prefs_feature_list() {
 			'type' => 'flag',
 		),
 		'feature_article_comments' => array(
-			'name' => tra('Comments for articles'),
+			'name' => tra('Comments'),
 			'type' => 'flag',
 		),
 		'feature_cms_templates' => array(
@@ -861,12 +851,10 @@ function prefs_feature_list() {
 		),
 		'feature_categorypath' => array(
 			'name' => tra('Category Path'),
-			'description' => tra('Show category tree, above wiki pages'),
 			'type' => 'flag',
 		),
 		'feature_categoryobjects' => array(
 			'name' => tra('Show category objects'),
-			'description' => tra('Show objects sharing the same category, below wiki pages'),
 			'type' => 'flag',
 		),
 		'feature_category_use_phplayers' => array(
@@ -950,8 +938,20 @@ function prefs_feature_list() {
 			'name' => tra('Custom blog headings'),
 			'type' => 'flag',
 		),
+		'feature_blog_comments' => array(
+			'name' => tra('Blog-level'),
+			'type' => 'flag',
+		),
 		'feature_blogposts_comments' => array(
-			'name' => tra('Comments on blog posts'),
+			'name' => tra('Post-level'),
+			'type' => 'flag',
+		),
+		'feature_trackbackpings' => array(
+			'name' => tra('Blog-level'),
+			'type' => 'flag',
+		),
+		'feature_blogposts_pings' => array(
+			'name' => tra('Post-level'),
 			'type' => 'flag',
 		),
 		'feature_blog_sharethis' => array(
@@ -965,7 +965,7 @@ function prefs_feature_list() {
 			'help' => 'File+Gallery+Config',
 		),
 		'feature_file_galleries_comments' =>array(
-			'name' => tra('File Gallery Comments'),
+			'name' => tra('Comments'),
 			'type' => 'flag',
 			'help' => 'File+Gallery+Config',
 		),
@@ -1104,6 +1104,10 @@ function prefs_feature_list() {
 			'name' => tra('Login Bar'),
 			'type' => 'flag',
 		),
+		'feature_topbar_debug' => array(
+			'name' => tra('Debugger Console'),
+			'type' => 'flag',
+		),
 		'feature_topbar_custom_code' => array(
 			'name' => tra('Custom code'),
 			'type' => 'textarea',
@@ -1113,9 +1117,6 @@ function prefs_feature_list() {
 		'feature_topbar_version' => array(
 			'name' => tra('Display current Tiki version'),
 			'type' => 'flag',
-			'dependencies' => array(
-				'feature_bot_bar_power_by_tw',
-			),
 		),
 		'feature_sitemenu' => array(
 			'name' => tra('Site menu bar'),
@@ -1325,11 +1326,14 @@ function prefs_feature_list() {
 				'vader' => 'vader',
 			), 
 		),
-		'feature_jquery_validation' => array(
-			'name' => tra('Validation'),
+		'feature_jquery_sheet' => array(
+			'name' => tra('JQuery Sheet'),
 			'type' => 'flag',
-			'description' => tra('Provides various validation possibilities like in Trackers.'),
-			'help' => 'JQuery#Validation',
+			'help' => 'JQuery#Sheet',
+			'description' => tra('Experimental implementation of jQuery.sheet spreadsheet - data remains compatible with previous Tiki Sheets'),
+			'dependencies' => array(
+				'feature_sheet',
+			),
 		),
 		'feature_jquery_jqs5' => array(
 			'name' => tra('JQuery JQS5'),
@@ -1347,13 +1351,7 @@ function prefs_feature_list() {
 			'name' => tra('JQuery Sortable Tables'),
 			'type' => 'flag',
 			'help' => 'JQuery#TableSorter',
-			'description' => tra('Sort in fancytable plugin'),
-		),
-		'feature_jquery_media' => array(
-			'name' => tra('JQuery Media'),
-			'type' => 'flag',
-			'help' => 'JQuery#Media',
-			'description' => tra('Media player'),
+			'description' => tra('As it turns out, an unused experiment...'),
 		),
 		'feature_tabs' => array(
 			'name' => tra('Use Tabs'),
@@ -1403,7 +1401,7 @@ function prefs_feature_list() {
 			'description' => tra('A special wiki page for testing. Users can edit, but not save the Sandbox.'),
 		),
 		'feature_wiki_comments' => array(
-			'name' => tra('Comments below wiki pages'),
+			'name' => tra('Comments'),
 			'type' => 'flag',
 			'help' => 'Comments',
 			'description' => tra('Allow users (with permission) to post threaded comments to a page.'),
@@ -1443,14 +1441,6 @@ function prefs_feature_list() {
 		'feature_wiki_history_full' => array(
 			'name' => tra('History all instead of only page data, description, and change comment'),
 			'type' => 'flag',
-		),
-		'feature_page_contribution' => array(
-			'name' => tra('View page contributions by author'),
-			'type' => 'flag',
-			'dependencies' => array (
-				'feature_history'
-			),
-			'description' => tra('Visualize the contributions of different authors made to a wiki page'),
 		),
 		'feature_wiki_discuss' => array(
 			'name' => tra('Discuss pages on forums'),
@@ -1641,10 +1631,6 @@ function prefs_feature_list() {
 				'wikiplugin_quote',
 			),
 		),
-		'feature_use_three_colon_centertag' => array(
-			'name' => tra('Use three colons instead of two to center text. Avoids conflict with C++ resolution scope operator.'),
-			'type' => 'flag',
-		),
 		'feature_community_gender' => array(
 			'name' => tra('Users can choose to show their gender'),
 			'type' => 'flag',
@@ -1735,13 +1721,9 @@ function prefs_feature_list() {
 		),
 		'feature_webdav' => array(
 			'name' => tra('WebDAV access to Tiki'),
-			'description' => tra('Allow to access File Galleries with WebDAV'),
-			'hint' => tra('use tiki-webdav.php as the URI of the WebDAV repository'),
-			'help' => 'WebDAV',
+			'help' => tra('Allow to acces File Galleries with WebDAV'),
+			'description' => tra('use tiki-webdav.php as the URI of the WebDAV repository'),
 			'type' => 'flag',
-			'dependencies' => array(
-				'feature_file_galleries',
-			),
 		),
 		'feature_fixed_width' => array(
 			'name' => tra('Fixed width'),
@@ -1749,46 +1731,15 @@ function prefs_feature_list() {
 			'description' => tra('Constrains the site display to 990px wide.'),
 			'warning' => tra('You can modify at styles/layout/fixed_width.css'),
 		),
-		'feature_socialnetworks' => array(
-			'name' => tra('Social networks'),
-			'description' => tra('Integration with different social networks like Twitter or Facebook'),
-			'help' => 'Social+Networks',
-			'type' => 'flag',
-			'keywords' => 'social networks',
-		),
 		'feature_group_transition' => array(
 			'name' => tra('Group Transition'),
 			'description' => tra('Enables transitions for users between different groups. Transitions will create a user approval workflow.'),
 			'type' => 'flag',
-			'help' => 'Group+Transitions',
 		),
 		'feature_category_transition' => array(
 			'name' => tra('Category Transition'),
 			'description' => tra('Enables transitions on objects between different categories. Transitions will create a document workflow.'),
 			'type' => 'flag',
-			'help' => 'Category+Transitions',
 		),
-		'feature_watershed' => array(
-			'name' => tra('Ustream Watershed'),
-			'description' => tra('Integration to Ustream Watershed live video streaming.'),
-			'type' => 'flag',
-			'help' => 'Ustream+Watershed',
-		),
-		'feature_credits' => array(
-			'name' => tra('Tiki User Credits'),
-			'description' => tra('Tiki User Credits'),
-			'type' => 'flag',
-			'help' => 'Tiki+User+Credits',
-		),
-		'feature_invit' => array(
-			'name' => tra('Invite users'),
-			'description' => tra('Allow users to invite new users by mail to register on this tiki'),
-			'type' => 'flag',
-		),
-        'feature_loadbalancer' => array(
-            'name' => tra('Load Balancer'),
-            'description' => tra('Enable this only if the server is behind a load balancer (or reverse proxy), this allow tiki to log the IP of the user, instead of the IP of the proxy server'),
-            'type' => 'flag',
-        ),
 	);
 }

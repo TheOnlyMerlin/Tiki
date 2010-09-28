@@ -1,5 +1,5 @@
 /* Strasa theme for Tiki 5.x, original design by Patrick Allard, released under LGPL license.
-   For more information, visit http://themes.tiki.org
+   For more information, visit http://themes.tikiwiki.org
    $Id$ */
 
 /* Import *lite as the base: */
@@ -15,12 +15,12 @@
 html {
 	display: block;
 	height: 100%;
-	background-color: #214d68;
+	background: /*#2e3035*/#214d68;
 }
 
 body {
 	font: 12px/1.4em Verdana, Geneva, Arial, Helvetica, sans-serif;
-	background-color: #fff;
+	background: #fff;
 }
 
 a,
@@ -89,16 +89,11 @@ body.wikitext {
 	color: #000;
 }
 
-textarea.wikiedit {
-	font-family: monospace;
-	font-size: 1.2em;
-}
-
 body.wikitext {
-	height: 100%;	/* for CKEditor */
+	height: 100%;	/* for FCKEditor */
 }
 
-html[dir=ltr] {	/* for ck editor */
+html[dir=ltr] {	/* for fck editor */
 	background-color: #F3FCFE;
 }
 
@@ -544,9 +539,7 @@ a.flip:hover {
 }
 
 .tellafriend a,
-.share a,
-.tellafriend a:visited,
-.share a:visited {
+.tellafriend a:visited {
 	background: transparent url(strasa/fold-topright.jpg) 0 0 no-repeat;
 	display: block;
 	float: right;
@@ -557,13 +550,11 @@ a.flip:hover {
 	width: 16em;
 }
 
-.tellafriend a:hover,
-.share a:hover {
+.tellafriend a:hover {
 	color: #fff;
 }
 
-.tellafriend,
-.share {
+.tellafriend {
 	border-bottom: solid 1px #cce5ff;
 	margin: 4px 0;
 	min-height: 24px;
@@ -573,7 +564,6 @@ a.flip:hover {
 /* Also is .content */
 #tiki-center {
 	clear: both;
-	background-color: #fff;
 }
 
 .error,
@@ -1495,7 +1485,6 @@ body.tiki_blogs .author_info img {
 
 body.tiki_blogs .postbody-title {
 	border: 0;
-	color: #fff;
 }
 	
 body.tiki_blogs .postbody .postfooter {
@@ -1505,14 +1494,6 @@ body.tiki_blogs .postbody .postfooter {
 
 body.tiki_blogs .post .postfooter .actions {
 	float: left;
-}
-
-.postbody-title a.freetag {
-	color: #5ae0ff;
-}
-
-.postbody-title a.freetag:hover {
-	color: #fff;
 }
 
 /***** Forums *****/
@@ -1582,11 +1563,9 @@ body.tiki_blogs .post .postfooter .actions {
 	float: right;
 	font-size: 90%;
 	font-style: italic;
-	text-align: right;
 	min-height: 24px;
 	padding-left: 60px;
-	padding-top: 4px;
-	padding-right: 4px;
+	padding-top: 1px;
 	color: #fff;
 	background: url(strasa/login.jpg) 0 0 no-repeat;
 }

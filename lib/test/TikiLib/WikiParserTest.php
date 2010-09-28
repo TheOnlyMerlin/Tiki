@@ -13,9 +13,6 @@ class TikiLib_WikiParserTest extends PHPUnit_Framework_TestCase
      */
 	public function testWikiParser($input, $output)
 	{
-		global $prefs;
-		$prefs['feature_page_title'] = 'y';
-		$prefs['feature_wiki_paragraph_formatting'] = 'n';
         $o = new TikiLib;
         $this->assertEquals($output, $o->parse_data($input));
 	}
@@ -56,8 +53,6 @@ class TikiLib_WikiParserTest extends PHPUnit_Framework_TestCase
           array('[foo|bar]', '<a class="wiki"  href="foo" rel="">bar</a><br />' . "\n"), // link
           
 			array('[[foo', '[foo<br />' . "\n"), // Square brackets
-		  array('[[foo]]', '[[foo]]<br />' . "\n"), // Square brackets
-		  array('[[foo]', '[foo]<br />' . "\n"), // Square brackets
 					
 			array('-+foo+- ', '<code>foo</code><br />'. "\n"), // Monospace font
 			array('-+ foo +- ', '<code> foo </code><br />'. "\n"), // Monospace font
