@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once('tiki-setup.php');
 
@@ -14,7 +9,7 @@ $xajax = new xajax("x_maps.php");
 $xajax->setFlag('debug',true);
 $xajax->configure('statusMessages',true);
 
-if($prefs['feature_maps'] != 'y' || $prefs['ajax_xajax'] != 'y') {
+if($prefs['feature_maps'] != 'y' || $prefs['feature_ajax'] != 'y') {
   $objResponse = new xajaxResponse();
   $objResponse->alert(tra("Feature disabled"));
   return $objResponse;
@@ -145,3 +140,4 @@ if($tiki_p_map_view != 'y') {
   
   $xajax->register(XAJAX_FUNCTION,"map_redraw");
   $xajax->processRequest();
+?>

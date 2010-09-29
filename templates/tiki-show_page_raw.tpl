@@ -33,6 +33,4 @@
 </p>
 {/if}
 
-{if (!$prefs.page_bar_position or $prefs.page_bar_position eq 'bottom' or $prefs.page_bar_position eq 'both') and $machine_translate_to_lang == ''}
-	{include file='tiki-page_bar.tpl'}
-{/if}
+{include file=tiki-page_bar.tpl}

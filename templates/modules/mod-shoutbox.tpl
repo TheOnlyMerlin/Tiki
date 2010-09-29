@@ -1,8 +1,10 @@
 {* $Id$ *}
-{if $tiki_p_view_shoutbox eq 'y'}
+{if $prefs.feature_shoutbox eq 'y' and $tiki_p_view_shoutbox eq 'y'}
+{popup_init src="lib/overlib.js"}
+{if !isset($tpl_module_title)}{assign var=tpl_module_title value="{tr}Shoutbox{/tr}"}{/if}
   {tikimodule title=$tpl_module_title name="shoutbox" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
     {if $tiki_p_post_shoutbox eq 'y'}
-      {if $prefs.ajax_xajax eq 'y'}{literal}
+      {if $prefs.feature_ajax == 'y'}{literal}
 <script type="text/javascript">
 <!--//--><![CDATA[//><!--
 	function submitShout() {
@@ -34,24 +36,16 @@
 </script>
       {/literal}{/if}
       {js_maxlength textarea=shout_msg maxlength=255}
-      {if $prefs.ajax_xajax neq 'y'}<form action="{$shout_ownurl}" method="post" onsubmit="return verifyForm(this);" id="shout_form">{else}
+      {if $prefs.feature_ajax != 'y'}<form action="{$shout_ownurl}" method="post" onsubmit="return verifyForm(this);" id="shout_form">{else}
       <form action="javascript:void(null);" onsubmit="return submitShout();" id="shout_form" name="shout_form">
       <input type="hidden" id="shout_remove" name="shout_remove" value="0" />
       <input type="hidden" id="shout_edit" name="shout_edit" value="0" />{/if}
-	  {if !empty($shout_error)}<div class="highlight">{$shout_error}</div>{/if}
+	  {if $shout_error}<div class="highlight">{$shout_error}</div>{/if}
       <div align="center">
-        <textarea rows="3" cols="16" class="tshoutbox" id="shout_msg" name="shout_msg"></textarea>
+        <textarea rows="3" cols="16" class="tshoutbox" id="shout_msg" name="shout_msg">{$shout_msg|escape:'htmlall'}</textarea>
 		{if $prefs.feature_antibot eq 'y' && $user eq ''}
 			<table>{include file="antibot.tpl"}</table>
 		{/if}
-		{if $prefs.feature_socialnetworks eq 'y' && $user neq ''}
-			{if $prefs.socialnetworks_twitter_consumer_key neq '' && $tweet }
-			<div><input type="hidden" name="tweet" value="-1" /><input type="checkbox" name="shout_tweet" value='1' /> {tr}Tweet with twitter{/tr}</div>
-            {/if}
-			{if $prefs.socialnetworks_facebook_application_id neq '' && $facebook }
-			<div><input type="hidden" name="facebook" value="-1" /><input type="checkbox" name="shout_facebook" value='1' /> {tr}Post on my facebook wall{/tr}</div>
-            {/if}
-        {/if}
 	    <input type="submit" id="shout_send" name="shout_send" value="{$buttontext}" />
       </div>
       </form>
@@ -64,14 +58,14 @@
         {/strip}{/capture}
 	    {* Show user message in style according to 'tooltip' module parameter *}
 	    {assign var=cdate value=$smarty.capture.date}
-	    {if $tooltip == 1}{* TODO: Improve $userlink modifier one day to handle other attibutes better? *}
-          <b>{strip}{$userlink|replace:"\" href=":"&lt;br /&gt;&lt;em&gt;{tr}Shout date:{/tr} `$cdate`&lt;/em&gt;\" href="}{/strip}</b>:
+	    {if 0 and $tooltip == 1}{* TODO: Improve $userlink modifier one day to handle other attibutes better? *}
+          <b>{strip}{$userlink|replace:" class=":" onmouseover='return overlib(\"$cdate\");' onmouseout='nd();' class="}{/strip}</b>:
         {else}
           <b>{strip}{$userlink}{/strip}</b>, {$cdate}:
         {/if}
         {$shout_msgs[ix].message}
         {if $tiki_p_admin_shoutbox eq 'y' || $user == $shout_msgs[ix].user }
-          {if $prefs.ajax_xajax eq 'y'}
+          {if $prefs.feature_ajax == 'y'}
             [<a onclick="removeShout({$shout_msgs[ix].msgId});return false" href="#" class="linkmodule tips" title="|{tr}Delete this shout{/tr}">x</a>|<a href="tiki-shoutbox.php?msgId={$shout_msgs[ix].msgId}" class="linkmodule tips" title="|{tr}Edit this shout{/tr}">e</a>]
           {else}
             [<a href="{$shout_ownurl}shout_remove={$shout_msgs[ix].msgId}" class="linkmodule">x</a>|<a href="tiki-shoutbox.php?msgId={$shout_msgs[ix].msgId}" class="linkmodule">e</a>]
@@ -80,7 +74,7 @@
       </div>
     {/section}
     <div style="text-align: center">
-      <a href="tiki-shoutbox.php" class="linkmodule more">{tr}Read More{/tr}&hellip;</a>
+      <a href="tiki-shoutbox.php" class="linkmodule">{tr}Read More{/tr}&hellip;</a>
     </div>
   {/tikimodule}
 {/if}

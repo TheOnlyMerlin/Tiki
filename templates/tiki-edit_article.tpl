@@ -1,11 +1,14 @@
 {* $Id$ *}
 {* Note: if you edit this file, make sure to make corresponding edits on tiki-edit_submission.tpl*}
 
-{include file='tiki-articles-js.tpl'}
+{popup_init src="lib/overlib.js"}
+{include file="tiki-articles-js.tpl"}
+
+{assign var=area_name value="body"}
 
 {title help="Articles"}
 	{if $articleId}
-		{tr}Edit:{/tr} {$title|escape}
+		{tr}Edit:{/tr} {$title}
 	{else}
 		{tr}Edit article{/tr}
 	{/if}
@@ -21,7 +24,7 @@
 {/remarksbox}
 
 {if $preview}
-	{include file='tiki-preview_article.tpl'}
+	{include file="tiki-preview_article.tpl"}
 {/if}
 
 {if !empty($errors)}
@@ -44,33 +47,31 @@
 	<input type="hidden" name="image_type" value="{$image_type|escape}" />
 	<input type="hidden" name="image_name" value="{$image_name|escape}" />
 	<input type="hidden" name="image_size" value="{$image_size|escape}" />
-	<table class="formcolor">
-		<tr id='show_topline' {if $types.$type.show_topline eq 'y'}style="display:;"{else}style="display:none;"{/if}>
+	<table class="normal">
+		<tr class="formcolor" id='show_topline' {if $types.$type.show_topline eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Topline{/tr} *</td>
-			<td>
-				<input type="text" name="topline" value="{$topline|escape}" size="60" />
-			</td>
+			<td><input type="text" name="topline" value="{$topline|escape}" size="60" /></td>
 		</tr>
-		<tr>
+		<tr class="formcolor">
 			<td>{tr}Title{/tr}</td>
 			<td>
 				<input type="text" name="title" value="{$title|escape}" maxlength="255" size="80" />
 			</td>
 		</tr>
-		<tr id='show_subtitle' {if $types.$type.show_subtitle eq 'y'}style="display:;"{else}style="display:none;"{/if}>
+		<tr class="formcolor" id='show_subtitle' {if $types.$type.show_subtitle eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Subtitle{/tr} *</td>
 			<td>
 				<input type="text" name="subtitle" value="{$subtitle|escape}" size="60" />
 			</td>
 		</tr>
-		<tr id='show_linkto' {if $types.$type.show_linkto eq 'y'}style="display:;"{else}style="display:none;"{/if}>
+		<tr class="formcolor" id='show_linkto' {if $types.$type.show_linkto eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Source{/tr} ({tr}URL{/tr}) *</td>
 			<td>
-				<input type="text" name="linkto" value="{$linkto|escape}" size="60" />{if $linkto neq ''}<a href="{$linkto|escape}" target="_blank">{tr}View{/tr}</a>{/if}
+				<input type="text" name="linkto" value="{$linkto|escape}" size="60" />
 			</td>
 		</tr>
 		{if $prefs.feature_multilingual eq 'y'}
-			<tr id='show_lang' {if $types.$type.show_lang eq 'y'}style="display:;"{else}style="display:none;"{/if}>
+			<tr class="formcolor" id='show_lang' {if $types.$type.show_lang eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 				<td>{tr}Language{/tr}</td>
 				<td>
 					<select name="lang">
@@ -82,18 +83,18 @@
 				</td>
 			</tr>
 		{/if}
-		<tr id='show_author' {if $types.$type.show_author eq 'y'}style="display:;"{else}style="display:none;"{/if}>
+		<tr class="formcolor" id='show_author' {if $types.$type.show_author eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Author Name{/tr}</td>
 			<td>
 				<input type="text" name="authorName" value="{$authorName|escape}" />
 			</td>
 		</tr>
-		<tr>
+		<tr class="formcolor">
 			<td>{tr}Topic{/tr}</td>
 			<td>
 				<select name="topicId">
 					{section name=t loop=$topics}
-						<option value="{$topics[t].topicId|escape}" {if $topicId eq $topics[t].topicId}selected="selected"{/if}>{$topics[t].name|escape}</option>
+						<option value="{$topics[t].topicId|escape}" {if $topicId eq $topics[t].topicId}selected="selected"{/if}>{$topics[t].name}</option>
 					{/section}
 					<option value="" {if $topicId eq 0}selected="selected"{/if}>{tr}None{/tr}</option>
 				</select>
@@ -102,12 +103,12 @@
 				{/if}
 			</td>
 		</tr>
-		<tr>
+		<tr class="formcolor">
 			<td>{tr}Type{/tr}</td>
 			<td>
 				<select id='articletype' name='type' onchange='javascript:chgArtType();'>
 					{foreach from=$types key=typei item=prop}
-						<option value="{$typei|escape}" {if $type eq $typei}selected="selected"{/if}>{tr}{$typei|escape}{/tr}</option>
+						<option value="{$typei|escape}" {if $type eq $typei}selected="selected"{/if}>{tr}{$typei}{/tr}</option>
 					{/foreach}
 				</select>
 				{if $tiki_p_admin_cms eq 'y'}
@@ -115,7 +116,7 @@
 				{/if}
 			</td>
 		</tr>
-		<tr id='use_ratings' {if $types.$type.use_ratings eq 'y'}style="display:;"{else}style="display:none;"{/if}>
+		<tr id='use_ratings' {if $types.$type.use_ratings eq 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor">
 			<td>{tr}Rating{/tr}</td>
 			<td>
 				<select name='rating'>
@@ -142,20 +143,19 @@
 				</select>
 			</td>
 		</tr>
-		<tr id='show_image_1' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if}>
+		<tr id='show_image_1' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor">
 			<td>{tr}Own Image{/tr}</td>
 			<td>
 				<input type="hidden" name="MAX_FILE_SIZE" value="1000000" />
 				<input name="userfile1" type="file" onchange="document.getElementById('useImage').checked = true;"/>
-				{icon _id='help' alt="{tr}If not the topic image{/tr}"}
 			</td>
 		</tr>
 		{if $hasImage eq 'y'}
-			<tr>
+			<tr class="formcolor">
 				<td>{tr}Own Image{/tr}</td>
 				<td>{$image_name} [{$image_type}] ({$image_size} {tr}bytes{/tr})</td>
 			</tr>
-			<tr>
+			<tr class="formcolor">
 				<td>{tr}Own Image{/tr}</td>
 				{if $imageIsChanged eq 'y'}
 					<td>
@@ -168,43 +168,41 @@
 				{/if}
 			</tr>
 		{/if}
-		<tr id='show_image_2' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if}>
+		<tr id='show_image_2' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor">
 			<td>{tr}Use own image{/tr}</td>
 			<td>
 				<input type="checkbox" name="useImage" id="useImage" {if $useImage eq 'y'}checked='checked'{/if}/>
 			</td>
 		</tr>
-		<tr id='show_image_3' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if}>
+		<tr id='show_image_3' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor">
 			<td>{tr}Float text around image{/tr}</td>
 			<td>
 				<input type="checkbox" name="isfloat" {if $isfloat eq 'y'}checked='checked'{/if}/>
 			</td>
 		</tr>
-		<tr id='show_image_4' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if}>
-			<td>{tr}View mode{/tr}</td>
+		<tr id='show_image_4' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor">
+			<td>{tr}Own image size x{/tr}</td>
 			<td>
-				<label>{tr}Image width{/tr}</label> <input type="text" name="image_x"{if $image_x > 0} value="{$image_x|escape}"{/if} /> {tr}pixels{/tr}
-				{icon _id='help' alt="{tr}If different than the uploaded image{/tr}"}<br />
-				<label>{tr}Image height{/tr} <input type="text" name="image_y"{if $image_y > 0} value="{$image_y|escape}"{/if} /></label> {tr}pixels{/tr}
+				<input type="text" name="image_x" value="{$image_x|escape}" />
+				{tr}pixels{/tr}
 			</td>
 		</tr>
-		<tr id='show_image_5' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if}>
-			<td>{tr}List mode{/tr}</td>
+		<tr id='show_image_5' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor">
+			<td>{tr}Own image size y{/tr}</td>
 			<td>
-				<label>{tr}Image width{/tr}</label> <input type="text" name="list_image_x" value="{$list_image_x|escape}" /> {tr}pixels{/tr}
-				{icon _id='help' alt="{tr}If different than in view mode{/tr}"}
+				<input type="text" name="image_y" value="{$image_y|escape}" />
+				{tr}pixels{/tr}
 			</td>
 		</tr>
-		<tr id='show_image_caption' {if $types.$type.show_image_caption eq 'y'}style="display:;"{else}style="display:none;"{/if}>
+		<tr id='show_image_caption' {if $types.$type.show_image_caption eq 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor">
 			<td>{tr}Image caption{/tr} *</td>
 			<td>
 				<input type="text" name="image_caption" value="{$image_caption|escape}" size="80" />
-				{icon _id='help' alt="{tr}If not the topic name{/tr}"}
 			</td>
 		</tr>
 
 		{if $prefs.feature_cms_templates eq 'y' and $tiki_p_use_content_templates eq 'y'}
-			<tr>
+			<tr class="formcolor">
 				<td>{tr}Apply template{/tr}</td>
 				<td>
 					<select name="templateId" onchange="javascript:document.getElementById('editpageform').submit();">
@@ -217,49 +215,70 @@
 			</tr>
 		{/if}
 
-		{include file='categorize.tpl'}
-
-		<tr>
-			<td colspan="2">
-				{tr}Heading:{/tr}
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2">
-				{textarea _simple="y" name="heading" rows="5" cols="80" Height="200px" id="subheading" comments="y"}{$heading}{/textarea}
-			</td>
-		</tr>
+		{include file=categorize.tpl}
 
 
-		<tr id='heading_only' {if $types.$type.heading_only ne 'y'}style="display:;"{else}style="display:none;"{/if}>
-			<td colspan="2">
-				{tr}Body:{/tr}
+		<tr class="formcolor">
+			<td>
+				{tr}Heading{/tr}
+				<br />
+				{if $prefs.quicktags_over_textarea neq 'y'}
+					{include file=tiki-edit_help_tool.tpl area_name='heading'}
+				{/if}
 			</td>
-		</tr>
-		<tr id='heading_only2' {if $types.$type.heading_only ne 'y'}style="display:;"{else}style="display:none;"{/if}>
-			<td colspan="2">
-				{textarea name="body" rows=$rows cols=$cols id="body"}{$body}{/textarea}
+			<td>
+				{if $prefs.quicktags_over_textarea eq 'y'}
+					{include file=tiki-edit_help_tool.tpl area_name='heading'}
+				{/if}
+				<textarea class="wikiedit" name="heading" rows="5" cols="80" id='subheading' wrap="virtual">{$heading|escape}</textarea>
 			</td>
 		</tr>
 
-		<tr id='show_pubdate' {if $types.$type.show_pubdate eq 'y' || $types.$type.show_pre_publ ne 'y'}style="display:;"{else}style="display:none;"{/if}>
+
+		<tr id='heading_only' {if $types.$type.heading_only ne 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor">
+			<td>
+				{tr}Body{/tr}
+				<br />
+				{include file="textareasize.tpl" area_name='body' formId='editpageform'}
+				{if $prefs.quicktags_over_textarea neq 'y'}
+					<br />
+					{include file=tiki-edit_help_tool.tpl area_name='body' qtnum='2'}
+				{/if}
+			</td>
+			<td>
+				{if $prefs.quicktags_over_textarea eq 'y'}
+					{include file=tiki-edit_help_tool.tpl area_name='body'}
+				{/if}
+				<textarea class="wikiedit" id="body" name="body" rows="{$rows}" cols="{$cols}" wrap="virtual">{$body|escape}</textarea>
+				<input type="hidden" name="rows" value="{$rows}"/>
+				<input type="hidden" name="cols" value="{$cols}"/>
+			</td>
+		</tr>
+
+		{if $prefs.cms_spellcheck eq 'y'}
+			<tr class="formcolor">
+				<td>
+					{tr}Spellcheck{/tr}: </td>
+				<td>
+					<input type="checkbox" name="spellcheck" {if $spellcheck eq 'y'}checked="checked"{/if}/>
+				</td>
+			</tr>
+		{/if}
+
+		<tr id='show_pubdate' {if $types.$type.show_pubdate eq 'y' || $types.$type.show_pre_publ ne 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor">
 			<td>{tr}Publish Date{/tr}</td>
 			<td>
-				{html_select_date prefix="publish_" time=$publishDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order}
-				{tr}at{/tr}
-				<span dir="ltr">
-					{html_select_time prefix="publish_" time=$publishDateSite display_seconds=false}
-					&nbsp;
-					{$siteTimeZone}
+				{html_select_date prefix="publish_" time=$publishDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order} {tr}at{/tr} 
+				<span dir="ltr">{html_select_time prefix="publish_" time=$publishDateSite display_seconds=false}
+					&nbsp;{$siteTimeZone}
 				</span>
 			</td>
 		</tr>
 
-		<tr id='show_expdate' {if $types.$type.show_expdate eq 'y' || $types.$type.show_post_expire ne 'y'}style="display:;"{else}style="display:none;"{/if}>
+		<tr id='show_expdate' {if $types.$type.show_expdate eq 'y' || $types.$type.show_post_expire ne 'y'}style="display:;"{else}style="display:none;"{/if} class="formcolor">
 			<td>{tr}Expiration Date{/tr}</td>
 			<td>
-				{html_select_date prefix="expire_" time=$expireDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order}
-				{tr}at{/tr} 
+				{html_select_date prefix="expire_" time=$expireDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order} {tr}at{/tr} 
 				<span dir="ltr">
 					{html_select_time prefix="expire_" time=$expireDateSite display_seconds=false}
 					&nbsp;
@@ -269,7 +288,7 @@
 		</tr>
 
 		{if $tiki_p_use_HTML eq 'y'}
-			<tr>
+			<tr class="formcolor">
 				<td>{tr}Allow HTML{/tr}</td>
 				<td>
 					<input type="checkbox" name="allowhtml" {if $allowhtml eq 'y'}checked="checked"{/if}/>
@@ -278,7 +297,7 @@
 		{/if}
 		
 		{if $prefs.feature_cms_emails eq 'y' and $articleId eq 0}
-			<tr>
+			<tr class="formcolor">
 				<td>
 					{tr}Emails to be notified (separated with commas){/tr}
 				</td>
@@ -294,30 +313,19 @@
 				</td>
 			</tr>
 		{/if}
-		{include file='freetag.tpl'}
-		{if isset($all_attributes)}
-			{foreach from=$all_attributes item=att key=attname}
-			{assign var='attid' value=$att.itemId|replace:'.':'_'}
-			{assign var='attfullname' value=$att.itemId}
-			<tr id={$attid} {if $types.$type.$attid eq 'y'}style="display:;"{else}style="display:none;"{/if}>
-				<td>{$attname|escape}</td>
-				<td><input type="text" name="{$attfullname}" value="{$article_attributes.$attfullname|escape}" size="80" /></td>
-			</tr>
-			{/foreach}
-		{/if}
-		<tr>
-				<td>{tr}Published{/tr}</td>
-				<td>
-					<input type="checkbox" name="ispublished" {if $ispublished eq 'y'}checked="checked"{/if}/>
-				</td>
+
+		{include file=freetag.tpl}
+
+		<tr class="formcolor">
+			<td></td>
+			<td>
+				<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" />
+				<input type="submit" class="wikiaction" name="save" value="{tr}Save{/tr}" />
+			</td>
 		</tr>
 	</table>
-	
-	<div align="center">
-		<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;"/>
-		<input type="submit" class="wikiaction" name="save" value="{tr}Save{/tr}"  onclick="needToConfirm=false;" />
-		{if $articleId}<input type="submit" class="wikiaction tips" title="{tr}Cancel{/tr}|{tr}Cancel the edit, you will lose your changes.{/tr}" name="cancel_edit" value="{tr}Cancel Edit{/tr}" />{/if}
-	</div>
 </form>
 
 <br />
+
+{include file=tiki-edit_help.tpl}

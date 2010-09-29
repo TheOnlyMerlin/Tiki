@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -13,17 +8,25 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 function smarty_function_banner($params, &$smarty)
 {
+    global $tikilib;
+    global $dbTiki;
     global $bannerlib;include_once('lib/banners/bannerlib.php');
-	$default = array('zone'=>'', 'target'=>'', 'id'=>'');
-	$params = array_merge($default, $params);
 
     extract($params);
+    // Param = zone
 
-    if (empty($zone) && empty($id)) {
+    if (empty($zone)) {
         $smarty->trigger_error("assign: missing 'zone' parameter");
         return;
     }
-	$banner = $bannerlib->select_banner($zone, $target, $id);
-
+	if (empty($target)) {
+		$banner = $bannerlib->select_banner($zone);
+	} else {
+		$banner = $bannerlib->select_banner($zone, $target);
+	}
     print($banner);
 }
+
+
+
+?>

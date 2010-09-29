@@ -11,7 +11,7 @@
    <br />{tr}From{/tr}:  
    <input type="hidden" name="tstart" id="tstart" value="{$tstart|escape}" />
    <span id="tstartl" class="daterow" style="padding:0; margin:0">Click</span>
-{jq}
+   <script type="text/javascript" >
    {literal}
 	Calendar.setup({
 		inputField     :    "tstart",     // id of the input field
@@ -22,11 +22,11 @@
 		singleClick    :    true
 	});
     {/literal}
-{/jq}
+    </script>
     <br /> {tr}To{/tr} :
     <input type="hidden" name="tstop" id="tstop" value="{$tstop|escape}" />
     <span id="tstopl" class="daterow" style="padding:0; margin:0">Click</span>
-{jq}
+    <script type="text/javascript" >
     {literal}
 	Calendar.setup({
 		inputField     :    "tstop",     // id of the input field
@@ -37,7 +37,7 @@
 		singleClick    :    true
 	});
     {/literal}
-{/jq}
+    </script>
     <br />
    <input  class="wikiaction"  value="export" type="submit" />
 </form>
@@ -50,16 +50,16 @@
 {tr}Calendar has been updated{/tr}
 {/if}
 <form method="post" action="tiki-ical.php" enctype="multipart/form-data">
-<table class="formcolor">
-<tr><td>{tr}Calendar{/tr}</td><td>
+<table class="normal">
+<tr><td class="formcolor">{tr}Calendar{/tr}</td><td class="formcolor">
 <select name="calendarId">
 {foreach item=lc from=$calendars}
 <option value="{$lc.calendarId}">{$lc.name|escape}</option>
 {/foreach}
 </select>
 </td></tr>
-<tr><td>{tr}ICal File{/tr}
-</td><td>
+<tr><td class="formcolor">{tr}ICal File{/tr}
+</td><td class="formcolor">
 <input type="file" name="fileICS" size="50" />
 <input type="submit" name="import" value="{tr}import{/tr}" />
 </td></tr></table>

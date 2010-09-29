@@ -23,50 +23,25 @@
 <form action="tiki-edit_programmed_content.php" method="post">
 	<input type="hidden" name="contentId" value="{$contentId|escape}" />
 	<input type="hidden" name="pId" value="{$pId|escape}" />
-	<table class="formcolor">
+	<table class="normal">
 		<tr>
-			<td>{tr}Content Type{/tr}:</td>
-			<td>
-				<select name="content_type" class="type-selector">
-					<option value="static"{if $info.content_type eq 'static'} selected="selected"{/if}>{tr}Text area{/tr}</option>
-					<option value="page"{if $info.content_type eq 'page'} selected="selected"{/if}>{tr}Wiki Page{/tr}</option>
-				</select>
+			<td class="formcolor">Description:</td>
+			<td class="formcolor">
+				<textarea rows="5" cols="40" name="data">{$data|escape}</textarea>
 			</td>
 		</tr>
-		
-		<tr class="type-cond for-page">
-			<td>{tr}Page Name{/tr}:</td>
-			<td>
-				<input type="text" name="page_name" value="{$info.page_name|escape}"/>
-			</td>
-		</tr>
-
-		<tr class="type-cond for-static">
-			<td>{tr}Content{/tr}:</td>
-			<td>
-				<textarea rows="5" cols="40" name="data">{$info.data|escape}</textarea>
-			</td>
-		</tr>
-
 		<tr>
-			<td>{tr}Publishing date{/tr}:</td>
-			<td>
+			<td class="formcolor">{tr}Publishing date{/tr}</td>
+			<td class="formcolor">
 				{html_select_date time=$publishDate end_year="+1" field_order=$prefs.display_field_order} {tr}at{/tr} {html_select_time time=$publishDate display_seconds=false}</td>
 		</tr>
 		<tr>
-			<td>&nbsp;</td>
-			<td>
+			<td class="formcolor">&nbsp;</td>
+			<td class="formcolor">
 				<input type="submit" name="save" value="{tr}Save{/tr}" />
 			</td>
 		</tr>
 	</table>
-	{jq}
-		$('.type-selector').change( function( e ) {
-			$('.type-cond').hide();
-			var val = $('.type-selector').val();
-			$('.for-' + val).show();
-		} ).trigger('change');
-	{/jq}
 </form>
 
 <h2>{tr}Versions{/tr}</h2>

@@ -1,13 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
-/**
+/** \file
+ * $Id: /cvsroot/tikiwiki/tiki/lib/debug/debugger.php,v 1.6 2004-01-15 21:55:40 mose Exp $
+ *
  * \brief Tiki internal debugger 
+ *
  * \author zaufi <zaufi@sendmail.ru>
+ *
  */
 
 require_once('lib/debug/debugger-common.php');
@@ -193,7 +191,10 @@ class Debugger extends ResultType
     $this->dmsgs[] = array("timestamp" => time(), "msg" => $this->str_var_dump($v));
   }
 }
+
 global $debugger;
 $debugger = new Debugger();
 // First message (will not appear if no user messages wil be added)
 $debugger->msg("Debugger startup OK. ".count($debugger->commands)." plugable commands found");
+
+?>

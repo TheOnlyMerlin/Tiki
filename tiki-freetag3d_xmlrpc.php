@@ -1,9 +1,6 @@
 <?php 
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+
+// $HEADER$
 
 include_once("lib/init/initlib.php");
 require_once('db/tiki-db.php');
@@ -29,10 +26,10 @@ function getSubGraph($params) {
     $queue = array($nodeName);
     $i = 0;
 
-    $tikilib = new TikiLib;
+    $tikilib = new TikiLib($dbTiki);
     $color = $prefs['freetags_3d_existing_page_color'];
 
-    while ($i <= $depth && count($queue) > 0) {
+    while ($i <= $depth && sizeof($queue) > 0) {
 	$nextQueue = array();
 	foreach ($queue as $nodeName) {
 
@@ -42,7 +39,7 @@ function getSubGraph($params) {
 		$neighbours[] = $tag['tag'];
 	    }
 	    
-	    $temp_max = count($neighbours);
+	    $temp_max = sizeof($neighbours);
 	    for ($j = 0; $j < $temp_max; $j++) {
 		if (!isset($passed[$neighbours[$j]])) {
 		    $nextQueue[] = $neighbours[$j];
@@ -73,3 +70,5 @@ function getSubGraph($params) {
     
     return new XML_RPC_Response(new XML_RPC_Value($response, "struct"));
 }
+
+?>

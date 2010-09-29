@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id$
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to err & die if called directly.
 //smarty is not there - we need setup
@@ -13,7 +14,6 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 require_once('tiki-setup.php');  
 global $prefs, $userlib;
-$catobjperms = Perms::get( array( 'type' => $cat_type, 'object' => $cat_objid ) );
 
 $smarty->assign('mandatory_category', '-1');
 if ($prefs['feature_categories'] == 'y' && isset($cat_type) && isset($cat_objid)) {
@@ -24,21 +24,13 @@ if ($prefs['feature_categories'] == 'y' && isset($cat_type) && isset($cat_objid)
 		$smarty->assign('cat_categorize', 'y');
 	}
 
-	if( ! isset( $cat_object_exists ) ) {
-		$cat_object_exists = (bool) $cat_objid;
-	}
-
-	if( $cat_object_exists ) {
-		$cats = $categlib->get_object_categories($cat_type, $cat_objid);
-	} else {
-		$cats = $categlib->get_default_categories();
-	}
+	$cats = $categlib->get_object_categories($cat_type, $cat_objid);
 	
-	if ($prefs['wikiapproval_sync_categories'] == 'y' && !$cats
-	 && $cat_type == 'wiki page' && ( $approved = $tikilib->get_approved_page($cat_objid) )
+	if ($prefs['feature_wikiapproval'] == 'y' && $prefs['wikiapproval_sync_categories'] == 'y' && !$cats
+	 && $cat_type == 'wiki page' && substr($cat_objid, 0, strlen($prefs['wikiapproval_prefix'])) == $prefs['wikiapproval_prefix']
 	 && !$tikilib->page_exists($cat_objid) ) {
 	 	// to pre-populate categories of original page if this is the first creation of a staging page
-		$approvedPageName = $approved;
+		$approvedPageName = substr($cat_objid, strlen($prefs['wikiapproval_prefix']));
 		$cats = $categlib->get_object_categories($cat_type, $approvedPageName);
 		$cats = array_diff($cats,Array($prefs['wikiapproval_approved_category']));		
 	}
@@ -52,28 +44,29 @@ if ($prefs['feature_categories'] == 'y' && isset($cat_type) && isset($cat_objid)
 			$all_categories = $categlib->list_categs();
 		}
 		$smarty->assign('mandatory_category', $prefs[$pref]);
-	} else {
+	} else
 		$all_categories = $categlib->list_categs();
+	$categories = array();
+	for ($i = 0; $i < count($all_categories); $i++) {
+		if ( $tikilib->user_has_perm_on_object($user,$all_categories[$i]['categId'],'category','tiki_p_view_categories')
+			|| $tikilib->user_has_perm_on_object($user,$all_categories[$i]['categId'],'category','tiki_p_admin_categories')
+		) {
+			$categories[] = $all_categories[$i];
+		}
 	}
 
-	if( ! empty( $all_categories ) ) {
-		$categories = Perms::filter( array( 'type' => 'category' ), 'object', $all_categories, array( 'object' => 'categId' ), 'view_category' );
-	} else {
-		$categories = array();
-	}
-
+if (isset ($categories)) {
 	$num_categories = count($categories);
- 	$can = $catobjperms->modify_object_categories;
+}
+else {
+	$num_categories = 0;
+};
 
 	for ($i = 0; $i < $num_categories; $i++) {
-		$catperms = Perms::get( array( 'type' => 'category', 'object' => $categories[$i]['categId'] ) );
-
 		if (!empty($cats) && in_array($categories[$i]["categId"], $cats)) {
 			$categories[$i]["incat"] = 'y';
-			$categories[$i]['canchange'] = ! $cat_object_exists || ( $can && $catperms->remove_object );
 		} else {
 			$categories[$i]["incat"] = 'n';
-			$categories[$i]['canchange'] = $can && $catperms->add_object;
 		}
 		if (isset($_REQUEST["cat_categories"]) && isset($_REQUEST["cat_categorize"]) && $_REQUEST["cat_categorize"] == 'on') {
 			if (in_array($categories[$i]["categId"], $_REQUEST["cat_categories"])) {
@@ -87,7 +80,23 @@ if ($prefs['feature_categories'] == 'y' && isset($cat_type) && isset($cat_objid)
 		}
 	}
 
-	$smarty->assign('cat_tree', $categlib->generate_cat_tree($categories));
+	include_once ('lib/tree/categ_picker_tree.php');
+	$tree_nodes = array();
+	foreach ($categories as $c) {
+		if (isset($c['name']) || $c['parentId'] != 0) {
+			$tree_nodes[] = array(
+				'id' => $c['categId'],
+				'parent' => $c['parentId'],
+				'data' => '<span class="tips" title="'.$c['description'].'"><input type="checkbox" name="cat_categories[]" value="' . $c['categId'] . ($c['incat'] == 'y' ? '" checked="checked"' : '" ') . '/> ' . $c['name'] . '</span>'
+			);
+			if ($c['parentId'] == 0) {
+				$tree_nodes[count($tree_nodes) - 1]['data'] = '<strong>'.$tree_nodes[count($tree_nodes) - 1]['data'].'</strong>';
+			}
+		}
+	}
+	$tm = new CatPickerTreeMaker("categorize");
+	$res = $tm->make_tree(0, $tree_nodes);
+	$smarty->assign('cat_tree', $res);
 	
 	if (!empty($cats))
 		$smarty->assign('catsdump', implode(',',$cats));
@@ -101,3 +110,5 @@ if ($prefs['feature_categories'] == 'y' && isset($cat_type) && isset($cat_objid)
 	}
 	$smarty->assign('cat_categorize', $cat_categorize);
 }
+
+?>

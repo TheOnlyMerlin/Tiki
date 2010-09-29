@@ -1,19 +1,17 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-index_p.php,v 1.27.2.2 2008-03-05 19:12:46 tombombadilom Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 $section = 'wiki page';
 require_once('tiki-setup.php');
-if ($prefs['feature_ajax'] === 'y') {
-	if ($prefs['ajax_xajax'] === 'y') {
-		require_once ("lib/ajax/ajaxlib.php");
-		if ($prefs['feature_wiki_save_draft'] === 'y') {
-			require_once ("lib/wiki/wiki-ajax.php");
-		}
-	}
+if ($prefs['feature_ajax'] == "y") {
+include_once('lib/ajax/ajaxlib.php');
+require_once ("lib/wiki/wiki-ajax.php");
 }
 
 include_once('lib/structures/structlib.php');
@@ -27,7 +25,14 @@ if ($prefs['feature_categories'] == 'y') {
 	}
 }
 
-$access->check_feature('feature_wiki');
+if ($prefs['feature_wiki'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_wiki");
+
+	$smarty->display("error.tpl");
+	die;
+}
+
+//print($GLOBALS["HTTP_REFERER"]);
 
 // Create the HomePage if it doesn't exist
 if (!$tikilib->page_exists($prefs['wikiHomePage'])) {
@@ -56,9 +61,41 @@ if (!($info = $tikilib->get_page_info($page))) {
 	$smarty->display('error.tpl');
 	die;
 }
-
 $tikilib->get_perm_object( $page, 'wiki page', $info);
-$access->check_permission('tiki_p_view');
+
+// Check to see if page is categorized
+$objId = urldecode($page);
+if ($tiki_p_admin != 'y' && $prefs['feature_categories'] == 'y' && !$object_has_perms) {
+    // Check to see if page is categorized
+    $perms_array = $categlib->get_object_categories_perms($user, 'wiki page', $objId);
+    if ($perms_array) {
+	$is_categorized = TRUE;
+    	foreach ($perms_array as $perm => $value) {
+	    $$perm = $value;
+    	}
+    } else {
+	$is_categorized = FALSE;
+    }
+	if ($is_categorized && isset($tiki_p_view_categorized) && $tiki_p_view_categorized != 'y') {
+		$smarty->assign('errortype', 401);
+		$smarty->assign('msg',tra("Permission denied you cannot view this page"));
+		$smarty->display("error.tpl");
+		die;
+	}
+} elseif ($prefs['feature_categories'] == 'y') {
+    $is_categorized = $categlib->is_categorized('wiki page',$objId);
+} else {
+    $is_categorized = FALSE;
+}
+
+// Now check permissions to access this page
+if ($tiki_p_view != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied you cannot view this page"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 // BreadCrumbNavigation here
 // Remember to reverse the array when posting the array
@@ -80,6 +117,8 @@ if (!in_array($page, $_SESSION["breadCrumb"])) {
 	unset($_SESSION["breadCrumb"][$pos]);
 	array_push($_SESSION["breadCrumb"], $page);
 }
+
+//print_r($_SESSION["breadCrumb"]);
 
 // Now increment page hits since we are visiting this page
 if ($prefs['count_admin_pvs'] == 'y' || $user != 'admin') {
@@ -214,7 +253,7 @@ if ($prefs['feature_theme_control'] == 'y') {
 	include('tiki-tc.php');
 }
 ask_ticket('index-p');
-if ($prefs['ajax_xajax'] == "y") {
+if ($prefs['feature_ajax'] == "y") {
 
 function wiki_ajax() {
     global $ajaxlib, $xajax;
@@ -228,3 +267,5 @@ wiki_ajax();
 // Display the Index Template
 $smarty->assign('dblclickedit', 'y');
 $smarty->display("tiki-index_p.tpl");
+
+?>

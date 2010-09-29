@@ -1,9 +1,9 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+// $Id: /cvsroot/tikiwiki/tiki/remote.php,v 1.8.2.8 2008-03-22 05:12:47 mose Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 $version = "0.2";
 
@@ -39,9 +39,7 @@ $map = array(
 	"intertiki.logout" => array("function"=>"logout"),
 	"intertiki.cookiecheck" => array("function"=>"cookie_check"),
 	"intertiki.version" => array("function"=>"get_version"),
-	'intertiki.getUserInfo' => array('function' => 'get_user_info'),
-	'intertiki.getRegistrationPrefs' => array('function' => 'get_registration_prefs'),
-	'intertiki.registerUser' => array('function' => 'register_user')
+	'intertiki.getUserInfo' => array('function' => 'get_user_info')
 );
 $s = new XML_RPC_Server($map);
 
@@ -77,8 +75,7 @@ function validate($params) {
 		}
 	} 
 	if ($prefs['intertiki_logfile']) logit($prefs['intertiki_logfile'],"logged",$login,INTERTIKI_OK,$prefs['known_hosts'][$key]['name']);
-	$userInfo = $userlib->get_user_info($login);
-	$userlib->create_user_cookie($userInfo['userId'], $hashkey);
+	$userlib->create_user_cookie($login,$hashkey);
 
 	if ($slave) {
 	    $logslib->add_log('intertiki','auth granted from '.$prefs['known_hosts'][$key]['name'],$login);
@@ -96,7 +93,7 @@ function validate($params) {
 }
 
 function set_user_info($params) {
-	global $tikilib, $userlib, $prefs;
+	global $userlib, $prefs;
 	if ($prefs['feature_userPreferences'] != 'y') {
 		return new XML_RPC_Response(new XML_RPC_Value(1, 'boolean'));
 	}
@@ -113,7 +110,7 @@ function set_user_info($params) {
 }
 
 function logout($params) {
-	global $tikilib, $userlib,$logslib,$prefs;
+	global $userlib,$logslib,$prefs;
 	$key = $params->getParam(0); $key = $key->scalarval();
 	$login = $params->getParam(1); $login = $login->scalarval();
 	if (!isset($prefs['known_hosts'][$key]) or $prefs['known_hosts'][$key]['ip'] != $tikilib->get_ip_address()) {
@@ -122,16 +119,15 @@ function logout($params) {
 		$logslib->add_log('intertiki',$msg.' from '.$prefs['known_hosts'][$key]['name'],$login);
 		return new XML_RPC_Response(0, 101, $msg);
 	}
-	$userlib->user_logout($login, true);
-	$userInfo = $this->get_user_info($login);
-	$userlib->delete_user_cookie($userInfo['userId']);
+	$userlib->user_logout($login);
+	$userlib->delete_user_cookie($login);
 	if ($prefs['intertiki_logfile']) logit($prefs['intertiki_logfile'],"logout",$login,INTERTIKI_OK,$prefs['known_hosts'][$key]['name']);
 	$logslib->add_log('intertiki','auth revoked from '.$prefs['known_hosts'][$key]['name'],$login);
 	return new XML_RPC_Response(new XML_RPC_Value(1, "boolean"));
 }
 
 function cookie_check($params) {
-	global $tikilib, $userlib,$prefs;
+	global $userlib,$prefs;
 	$key = $params->getParam(0); $key = $key->scalarval();
 	$hash = $params->getParam(1); $hash = $hash->scalarval();
 	if (!isset($prefs['known_hosts'][$key]) or $prefs['known_hosts'][$key]['ip'] != $tikilib->get_ip_address()) {
@@ -140,7 +136,7 @@ function cookie_check($params) {
 		$logslib->add_log('intertiki',$msg.' from '.$prefs['known_hosts'][$key]['name'],$login);
 		return new XML_RPC_Response(0, 101, $msg);
 	}
-	$result = $userlib->get_user_by_cookie($hash);
+	$result = $userlib->get_user_by_cookie($hash,true);
 	// $fp=fopen('temp/interlogtest','a+');fputs($fp,"main      -- ".$hash."\n");fclose($fp);
 	if ($result) {
 		return new XML_RPC_Response(new XML_RPC_Value($result, "string"));
@@ -155,7 +151,7 @@ function get_version($params) {
 }
 
 function get_user_info($params) {
-	global $tikilib, $prefs, $userlib;
+	global $prefs, $userlib;
 	$key = $params->getParam(0); $key = $key->scalarval(); 
 	if (!isset($prefs['known_hosts'][$key]) or $prefs['known_hosts'][$key]['ip'] != $tikilib->get_ip_address()) {
 		$msg = tra('Invalid server key');
@@ -180,43 +176,4 @@ function get_user_info($params) {
 	return new XML_RPC_Response(new XML_RPC_Value($ret, "struct"));
 }
 
-function get_registration_prefs($params) {
-	global $tikilib, $prefs, $registrationlib, $logslib;
-
-	$key = $params->getParam(0); $key = $key->scalarval();
-	if (!isset($prefs['known_hosts'][$key]) or $prefs['known_hosts'][$key]['ip'] != $tikilib->get_ip_address()) {
-		$msg = tra('Invalid server key');
-		if ($prefs['intertiki_errfile']) logit($prefs['intertiki_errfile'],$msg,$key,INTERTIKI_BADKEY,$prefs['known_hosts'][$key]['name']);
-		$logslib->add_log('intertiki',$msg.' from '.$prefs['known_hosts'][$key]['name'],$login);
-		return new XML_RPC_Response(0, 101, $msg);
-	}
-
-	if (!isset($prefs['known_hosts'][$key]['allowusersregister']) || ($prefs['known_hosts'][$key]['allowusersregister'] != 'y'))
-		return new XML_RPC_Response(0, 101, "Users are not allowed to register via intertiki on this master.");
-
-	require_once 'lib/registration/registrationlib.php';
-
-	return new XML_RPC_Response(XML_RPC_encode($registrationlib->merged_prefs));
-}
-
-function register_user($params) {
-	global $tikilib, $prefs, $registrationlib, $logslib;
-
-	$key = $params->getParam(0); $key = $key->scalarval(); 
-	if (!isset($prefs['known_hosts'][$key]) or $prefs['known_hosts'][$key]['ip'] != $tikilib->get_ip_address()) {
-		$msg = tra('Invalid server key');
-		if ($prefs['intertiki_errfile']) logit($prefs['intertiki_errfile'],$msg,$key,INTERTIKI_BADKEY,$prefs['known_hosts'][$key]['name']);
-		$logslib->add_log('intertiki',$msg.' from '.$prefs['known_hosts'][$key]['name'],$login);
-		return new XML_RPC_Response(0, 101, $msg);
-	}
-
-	if (!isset($prefs['known_hosts'][$key]['allowusersregister']) || ($prefs['known_hosts'][$key]['allowusersregister'] != 'y'))
-		return new XML_RPC_Response(0, 101, "Users are not allowed to register via intertiki on this master.");
-
-	require_once 'lib/registration/registrationlib.php';
-
-	$result=$registrationlib->register_new_user_from_intertiki(XML_RPC_decode($params->getParam(1)));
-
-	return new XML_RPC_Response(XML_RPC_encode($result));
-}
-
+?>

@@ -1,1 +1,1 @@
-{tr}Tracker was modified at{/tr} {$server_name} {tr}by{/tr} {$user|username}
+{tr}Tracker was modified at{/tr} {$server_name} {tr}by{/tr} {$user}

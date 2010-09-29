@@ -15,7 +15,7 @@
 	{if $edit}
 		{button href="tiki-calendar_edit_item.php?viewcalitemId=$id" _text="{tr}View event{/tr}"}
 	{elseif $tiki_p_change_events eq 'y'}
-		{button href="tiki-calendar_edit_item.php?calitemId=$id" _text="{tr}Edit/Delete event{/tr}"}
+		{button href="tiki-calendar_edit_item.php?calitemId=$id" _text="{tr}Edit event{/tr}"}
 	{/if}
 {/if}
 {if $tiki_p_admin_calendar eq 'y'}
@@ -38,11 +38,9 @@
 			<input type="hidden" name="save[calitemId]" value="{$id}" />
 		{/if}
 {/if}
-{if $prefs.calendar_addtogooglecal == 'y'}
-	{wikiplugin _name="addtogooglecal" calitemid=$id}{/wikiplugin}
-{/if}
-<table class="formcolor{if !$edit} vevent{/if}">
-<tr>
+
+<table class="normal{if !$edit} vevent{/if}">
+<tr class="formcolor">
 	<td>{tr}Calendar{/tr}</td>
 	<td style="background-color:#{$calendar.custombgcolor};color:#{$calendar.customfgcolor};">
 {if $edit}
@@ -52,7 +50,6 @@
 	{/if}
 		<select name="save[calendarId]" id="calid" onchange="javascript:document.getElementById('editcalitem').submit();">
 			{foreach item=it key=itid from=$listcals}
-				{if $it.tiki_p_add_events eq 'y'}
 				<option value="{$it.calendarId}" style="background-color:#{$it.custombgcolor};color:#{$it.customfgcolor};"
 				{if $calitem.calendarId}
 					{if $calitem.calendarId eq $itid} selected="selected"{/if}
@@ -65,7 +62,6 @@
 						{/if}
 					{/if}
 				{/if}>{$it.name|escape}</option>
-				{/if}
 			{/foreach}
 		</select>
 {else}
@@ -74,7 +70,7 @@
 	</td>
 </tr>
 
-<tr>
+<tr class="formcolor">
 <td>{tr}Title{/tr}</td>
 <td>
 {if $edit}
@@ -84,7 +80,7 @@
 {/if}
 </td>
 </tr>
-<tr>
+<tr class="formcolor">
 	<td>{tr}Recurrence{/tr}</td>
 	<td>
 {if $edit}
@@ -92,14 +88,14 @@
 	<input type="hidden" name="recurrent" value="1"/>
 		{tr}This event depends on a recurrence rule{/tr}
 	{else}
-<input type="checkbox" id="id_recurrent" name="recurrent" value="1" onclick="toggle('recurrenceRules');toggle('startdate');toggle('enddate');"{if $calitem.recurrenceId gt 0 or $recurrent eq 1}checked="checked"{/if}/><label for="id_recurrent">{tr}This event depends on a recurrence rule{/tr}</label>
+<input type="checkbox" id="id_recurrent" name="recurrent" value="1" onClick="toggle('recurrenceRules');toggle('startdate');toggle('enddate');"{if $calitem.recurrenceId gt 0 or $recurrent eq 1}checked="checked"{/if}/><label for="id_recurrent">{tr}This event depends on a recurrence rule{/tr}</label>
 	{/if}
 {else}
 	<span class="summary">{if $calitem.recurrenceId gt 0}{tr}This event depends on a recurrence rule{/tr}{else}{tr}This event is not recurrent{/tr}{/if}</span>
 {/if}
 	</td>
 </tr>
-<tr>
+<tr class="formcolor">
 	<td>&nbsp;</td>
 	<td style="padding:5px 10px">
 {if $edit}
@@ -155,13 +151,13 @@
 {/if}
 {if $recurrence.id eq 0 or $recurrence.yearly}
 			  {tr}Each{/tr}&nbsp;
-			  <select name="dateOfYear_day" onChange="checkDateOfYear(this.options[this.selectedIndex].value,document.forms['f'].elements['dateOfYear_month'].options[document.forms['f'].elements['dateOfYear_month'].selectedIndex].value);">
+			  <select name="dateOfYear_day" onChange="javascript: checkDateOfYear(this.options[this.selectedIndex].value,document.forms['f'].elements['dateOfYear_month'].options[document.forms['f'].elements['dateOfYear_month'].selectedIndex].value);">
 				{section name=k start=1 loop=32}
 				<option value="{$smarty.section.k.index}" {if $recurrence.dateOfYear_day eq $smarty.section.k.index}selected="selected"{/if}>{if $smarty.section.k.index lt 10}0{/if}{$smarty.section.k.index}</option>
 				{/section}
 			  </select>
 			  &nbsp;{tr}of{/tr}&nbsp;
-			  <select name="dateOfYear_month" onChange="checkDateOfYear(document.forms['f'].elements['dateOfYear_day'].options[document.forms['f'].elements['dateOfYear_day'].selectedIndex].value,this.options[this.selectedIndex].value);">
+			  <select name="dateOfYear_month" onChange="javascript: checkDateOfYear(document.forms['f'].elements['dateOfYear_day'].options[document.forms['f'].elements['dateOfYear_day'].selectedIndex].value,this.options[this.selectedIndex].value);">
 				<option value="1"  {if $recurrence.dateOfYear_month eq '1'}selected="selected"{/if}>{tr}January{/tr}</option>
 				<option value="2"  {if $recurrence.dateOfYear_month eq '2'}selected="selected"{/if}>{tr}February{/tr}</option>
 				<option value="3"  {if $recurrence.dateOfYear_month eq '3'}selected="selected"{/if}>{tr}March{/tr}</option>
@@ -175,7 +171,27 @@
 				<option value="11" {if $recurrence.dateOfYear_month eq '11'}selected="selected"{/if}>{tr}November{/tr}</option>
 				<option value="12" {if $recurrence.dateOfYear_month eq '12'}selected="selected"{/if}>{tr}December{/tr}</option>
 			  </select>
-&nbsp;&nbsp;
+			  <script type="text/javascript">
+{literal}
+			    function checkDateOfYear(day,month) {
+{/literal}
+					var mName = new Array("-","{tr}January{/tr}","{tr}February{/tr}","{tr}March{/tr}","{tr}April{/tr}","{tr}May{/tr}","{tr}June{/tr}","{tr}July{/tr}","{tr}August{/tr}","{tr}September{/tr}","{tr}October{/tr}","{tr}November{/tr}","{tr}December{/tr}");
+{literal}
+					var error = false;
+					if (month == 4 || month == 6 || month == 9 || month == 11)
+						if (day == 31)
+							error = true;
+					if (month == 2)
+						if (day > 29)
+							error = true;
+					if (error) {
+{/literal}
+						document.getElementById('errorDateOfYear').innerHTML = "<em>{tr}There's no such date as{/tr} " + day + " {tr}of{/tr} " + mName[month] + "</em>";
+{literal}
+					}
+				}
+{/literal}
+			  </script>&nbsp;&nbsp;
 			  <span id="errorDateOfYear" style="color:#900;"></span>
 		<br /><br /><hr />
 {/if}
@@ -221,7 +237,7 @@
 {/if}
 	</td>
 </tr>
-<tr>
+<tr class="formcolor">
 <td>{tr}Start{/tr}</td>
 <td>
 {if $edit}
@@ -267,7 +283,7 @@
 					   			toggleSpan('duratione');
 					   			toggleSpan('durminplus');
 					   			toggleSpan('durminminus');"
-					   value="true" {if $calitem.allday} checked="checked" {/if} /> {tr}All day{/tr}</label>
+					   value="true" {if $calitem.allday} checked="checked" {/if} /> {tr}All-Day{/tr}</label>
 			</td>
 		</tr>
 		<tr>
@@ -293,7 +309,7 @@
 {/if}
 </td>
 </tr>
-<tr>
+<tr class="formcolor">
 	<td>{tr}End{/tr}</td><td>
 	{if $edit}
 		<input type="hidden" name="save[end_or_duration]" value="end" id="end_or_duration" />
@@ -380,21 +396,31 @@
 {/if}
 </td>
 </tr>
-<tr>
+<tr class="formcolor">
 <td>{tr}Description{/tr}
+{if $edit}
+  <br /><br />
+  {include file="textareasize.tpl" area_name="editwiki" formId="editcalitem"}<br /><br />
+  {if $prefs.quicktags_over_textarea neq 'y'}
+    {include file="tiki-edit_help_tool.tpl" area_name="save[description]"}
+  {/if}
+{/if}
+
 </td><td>
 {if $edit}
-  {toolbars area_id="save[description]"}
-  <textarea id='editwiki' class="wikiedit" cols="{$cols}" rows="{$rows}" name="save[description]" style="width:98%">{$calitem.description|escape}</textarea>
+  {if $prefs.quicktags_over_textarea eq 'y'}
+    {include file="tiki-edit_help_tool.tpl" area_name="save[description]"}
+  {/if}
+  <textarea id='editwiki' class="wikiedit" cols="{$cols}" rows="{$rows}" name="save[description]" style="width:98%">{$calitem.description}</textarea>
   <input type="hidden" name="rows" value="{$rows}"/>
   <input type="hidden" name="cols" value="{$cols}"/>
 {else}
-  <span class="description">{$calitem.parsed|default:"<i>{tr}No description{/tr}</i>"}</span>
+  <span class="description">{$calitem.parsed|default:"<i>No description</i>"}</span>
 {/if}
 </td></tr>
 
 {if $calendar.customstatus ne 'n'}
-<tr><td>{tr}Status{/tr}</td><td>
+<tr class="formcolor"><td>{tr}Status{/tr}</td><td>
 
 <div class="statusbox{if $calitem.status eq 0} status0{/if}">
 {if $edit}
@@ -424,10 +450,10 @@
 {/if}
 
 {if $calendar.custompriorities eq 'y'}
-<tr><td>
+<tr class="formcolor"><td>
 {tr}Priority{/tr}</td><td>
 {if $edit}
-<select name="save[priority]" style="background-color:#{$listprioritycolors[$calitem.priority]};font-size:150%;"
+<select name="save[priority]" style="background-color:#{$listprioritycolors[$calitem.priority]};font-size:150%;width:40%;"
 onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 {foreach item=it from=$listpriorities}
 <option value="{$it}" style="background-color:#{$listprioritycolors[$it]};"{if $calitem.priority eq $it} selected="selected"{/if}>{$it}</option>
@@ -439,15 +465,15 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 
 </td></tr>
 {/if}
-<tr style="display:{if $calendar.customcategories eq 'y'}tablerow{else}none{/if};" id="calcat">
-<td>{tr}Classification{/tr}</td>
+<tr class="formcolor" style="display:{if $calendar.customcategories eq 'y'}tablerow{else}none{/if};" id="calcat">
+<td>{tr}Category{/tr}</td>
 <td>
 {if $edit}
 {if count($listcats)}
 <select name="save[categoryId]">
 <option value=""></option>
 {foreach item=it from=$listcats}
-<option value="{$it.categoryId}"{if $calitem.categoryId eq $it.categoryId} selected="selected"{/if}>{$it.name|escape}</option>
+<option value="{$it.categoryId}"{if $calitem.categoryId eq $it.categoryId} selected="selected"{/if}>{$it.name}</option>
 {/foreach}
 </select>
 {tr}or new{/tr} {/if}
@@ -457,7 +483,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 {/if}
 </td>
 </tr>
-<tr style="display:{if $calendar.customlocations eq 'y'}tablerow{else}none{/if};" id="calloc">
+<tr class="formcolor" style="display:{if $calendar.customlocations eq 'y'}tablerow{else}none{/if};" id="calloc">
 <td>{tr}Location{/tr}</td>
 <td>
 {if $edit}
@@ -465,7 +491,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 <select name="save[locationId]">
 <option value=""></option>
 {foreach item=it from=$listlocs}
-<option value="{$it.locationId}"{if $calitem.locationId eq $it.locationId} selected="selected"{/if}>{$it.name|escape}</option>
+<option value="{$it.locationId}"{if $calitem.locationId eq $it.locationId} selected="selected"{/if}>{$it.name}</option>
 {/foreach}
 </select>
 {tr}or new{/tr} {/if}
@@ -475,7 +501,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 {/if}
 </td>
 </tr>
-<tr>
+<tr class="formcolor">
 <td>{tr}URL{/tr}</td>
 <td>
 {if $edit}
@@ -485,7 +511,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 {/if}
 </td>
 </tr>
-<tr style="display:{if $calendar.customlanguages eq 'y'}tablerow{else}none{/if};" id="callang">
+<tr class="formcolor" style="display:{if $calendar.customlanguages eq 'y'}tablerow{else}none{/if};" id="callang">
 <td>{tr}Language{/tr}</td>
 <td>
 {if $edit}
@@ -503,7 +529,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 
 {if $groupforalert ne ''}
 {if $showeachuser eq 'y' }
-<tr>
+<tr class="formcolor">
 <td>{tr}Choose users to alert{/tr}</td>
 <td>
 {/if}
@@ -520,27 +546,27 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 
 
 {if $calendar.customparticipants eq 'y'}
-	<tr><td colspan="2">&nbsp;</td></tr>
+	<tr class="formcolor"><td colspan="2">&nbsp;</td></tr>
 {/if}
 
-<tr style="display:{if $calendar.customparticipants eq 'y'}tablerow{else}none{/if};" id="calorg">
+<tr class="formcolor" style="display:{if $calendar.customparticipants eq 'y'}tablerow{else}none{/if};" id="calorg">
 <td>{tr}Organized by{/tr}</td>
 <td>
 {if $edit}
 	{if $preview or $changeCal}
-		<input type="text" name="save[organizers]" value="{$calitem.organizers|escape}" style="width:90%;" />
+		<input type="text" name="save[organizers]" value="{$calitem.organizers}" style="width:90%;" />
 	{else}
-		<input type="text" name="save[organizers]" value="{foreach item=org from=$calitem.organizers name=organizers}{if $org neq ''}{$org|escape}{if !$smarty.foreach.organizers.last},{/if}{/if}{/foreach}" style="width:90%;" />
+		<input type="text" name="save[organizers]" value="{foreach item=org from=$calitem.organizers name=organizers}{if $org neq ''}{$org}{if !$smarty.foreach.organizers.last},{/if}{/if}{/foreach}" style="width:90%;" />
 	{/if}
 {else}
 {foreach item=org from=$calitem.organizers}
-{$org|userlink}<br />
+{$org|escape|userlink}<br />
 {/foreach}
 {/if}
 </td>
 </tr>
 
-<tr style="display:{if $calendar.customparticipants eq 'y'}tablerow{else}none{/if};" id="calpart">
+<tr class="formcolor" style="display:{if $calendar.customparticipants eq 'y'}tablerow{else}none{/if};" id="calpart">
 <td>{tr}Participants{/tr}
 {if $edit}
 <a href="#" onclick="flip('calparthelp');">{icon _id='help'}</a>
@@ -555,23 +581,8 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 	{/if}
 {else}
 {foreach item=ppl from=$calitem.participants}
-{$ppl.name|userlink} {if $listroles[$ppl.role]}({$listroles[$ppl.role]}){/if}<br />
-{if $ppl.name eq $user}{assign var='in_particip' value='y'}{/if}
+{$ppl.name|escape|userlink} {if $listroles[$ppl.role]}({$listroles[$ppl.role]}){/if}<br />
 {/foreach}
-{if $tiki_p_calendar_add_my_particip eq 'y'}
-	{if $in_particip eq 'y'}
-		{button _text="{tr}Withdraw me from the list of participants{/tr}" href="?del_me=y&viewcalitemId=$id"}
-	{else}
-		{button _text="{tr}Add me to the list of participants{/tr}" href="?add_me=y&viewcalitemId=$id"}
-	{/if}
-{/if}
-{if $tiki_p_calendar_add_guest_particip eq 'y'}
-	<form action="tiki-calendar_edit_item.php" method="post">
-	<input type ="hidden" name="viewcalitemId" value="{$id}" />
-	<input type="text" name="guests" />{help desc="{tr}Format{/tr}: {tr}Participant names separated by comma{/tr}" url='calendar'}
-	<input type="submit" name="add_guest" value="Add guests" />
-	</form>
-{/if}
 {/if}
 </td>
 </tr>
@@ -611,7 +622,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 </td></tr>
 {/if}
 {if !$user and $prefs.feature_antibot eq 'y'}
-	{include file='antibot.tpl'}
+	{include file='antibot.tpl' tr_style="formcolor"}
 {/if}
 <tr><td><input type="submit" name="act" value="{tr}Save{/tr}" />
 {if $id}&nbsp;<input type="submit" onclick='document.location="tiki-calendar_edit_item.php?calitemId={$id}&amp;delete=y";return false;' value="{tr}Delete event{/tr}"/>{/if}
@@ -623,3 +634,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 </form>
 </div>
 {/strip}
+
+{if $edit}
+{include file=tiki-edit_help.tpl}
+{/if}

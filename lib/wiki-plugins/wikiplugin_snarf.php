@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /* Tiki-Wiki plugin SNARF
  * 
  * This plugin replaces itself with the body (HTML) text at the URL given in the url argument.
@@ -68,19 +62,6 @@ function wikiplugin_snarf_info() {
 				'required' => false,
 				'name' => tra('Content is HTML'),
 				'description' => tra('0|1, display the content as is instead of escaping HTML special chars'),
-				'default' => 0,
-			),
-			'cache' => array(
-				'required' => false,
-				'name' => tra('Cache the url'),
-				'description' => tra('Cache time in minutes (0 for no cache, -1 for site preference'),
-				'default' => -1,
-			),
-			'ajax' => array(
-				'required' => false,
-				'name' => tra('Text to click on to fetch the url via ajax'),
-				'description' => tra('Label'),
-				'default' => -1,
 			),
 		),
 	);
@@ -88,49 +69,32 @@ function wikiplugin_snarf_info() {
 
 function wikiplugin_snarf($data, $params)
 {
-    global $tikilib, $prefs, $smarty;
-	static $url=''; static $snarf; static $isFresh = true;
-	static $iSnarf = 0;
-	++$iSnarf;
-	if (empty($params['url'])) {
-		return '';
-	}
-	
-	if (!empty($params['ajax'])) {
-		$params['iSnarf'] = $iSnarf;
-		$params['href'] = '';
-		$params['link'] = '-';
-		foreach ($params as $key=>$value) {
-			if ($key == 'ajax' || $key == 'href') {
-				continue;
-			}
-			if (!empty($params['href'])) {
-				$params['href'] .= '&';
-			}
-			$params['href'] .= $key.'='.$value;
-		}
-		$smarty->assign('snarfParams', $params);
-		return $smarty->fetch('wiki-plugins/wikiplugin_snarf.tpl');
-	}
-	if ($url != $params['url']) { // already fetch in the page
-		if (isset($_REQUEST['snarf_refresh']) && $_REQUEST['snarf_refresh'] == $params['url']) {
-			$cachetime = 0;
-			unset($_REQUEST['snarf_refresh']);
-		} elseif (isset($params['cache']) && $params['cache'] >= 0) {
-			$cachetime = $params['cache'] * 60;
-		} else {
-			$cachetime = $prefs['wikiplugin_snarf_cache'];
-		}
-		$info = $tikilib->get_cached_url($params['url'], $isFresh, $cachetime);
-		$snarf = $info['data'];
-		$url = $params['url'];
-	}
+    global $tikilib;
+
+    if( ! isset( $params['url'] ) )
+    {
+	return ("<b>". tra( "Missing url parameter for SNARF plugin." ) . "</b><br />");
+    }
+
+    if( function_exists("curl_init") )
+    {
+	$curl = curl_init(); 
+	curl_setopt($curl, CURLOPT_URL, $params['url']);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 2);
+	curl_setopt($curl, CURLOPT_TIMEOUT, 2);
+	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($curl, CURLOPT_HEADER, false);
+	curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true );
+	curl_setopt($curl, CURLOPT_USERAGENT, "TikiWiki Snarf" );
+	$snarf = curl_exec($curl);
+	curl_close($curl); 
 
 	// If content is HTML, keep only the content of the body
 	if ( isset($params['ishtml']) && $params['ishtml'] == 1 ) {
 		// Not using preg_replace due to its limitations to 100.000 characters
-		$snarf = preg_replace('/^.*<\s*body[^>]*>/i', '', $snarf);
-		$snarf = preg_replace('/<\s*\/body[^>]*>.*$/i', '', $snarf);
+		$snarf = eregi_replace('^.*<\s*body[^>]*>', '', $snarf);
+		$snarf = eregi_replace('<\s*\/body[^>]*>.*$', '', $snarf);
 	}
 
 	// If the user specified a more specialized regex
@@ -147,15 +111,12 @@ function wikiplugin_snarf($data, $params)
 	}
 
 	include_once('lib/wiki-plugins/wikiplugin_code.php');
-	$code_defaults = array();
 	$ret = wikiplugin_code($snarf, $code_defaults);
 
-	if (!$isFresh && empty($params['link'])) {
-		global $smarty;
-		include_once('lib/smarty_tiki/block.self_link.php');
-		$icon = '<div style="text-align:right">'.smarty_block_self_link(array('_icon' => 'arrow_refresh', 'snarf_refresh'=>$params['url']), '', $smarty).'</div>';
-		$ret = $icon.$ret;
-	}
-
+    } else {
+	$ret = "<p>You need php-curl for the SNARF plugin!</p>\n";
+    }
     return $ret;
 }
+
+?>

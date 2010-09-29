@@ -1,24 +1,18 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 $section = 'mytiki';
 require_once ('tiki-setup.php');
 
-$access->check_feature('feature_contacts');
+if ($prefs['feature_contacts'] != 'y') {
+  $smarty->assign('msg', tra("This feature is disabled").": feature_contacts");
+  $smarty->display("error.tpl");
+  die;
+}
 include_once ('lib/webmail/contactlib.php');
-
-$auto_query_args = array(
-    'contactId',
-	'view',
-	'find',
-	'sort_mode',
-	'offset',
-	'initial'
-);
 
 if (!isset($_REQUEST["contactId"])) {
 	$_REQUEST["contactId"] = 0;
@@ -29,11 +23,10 @@ $exts=$contactlib->get_ext_list($user);
 $traducted_exts=array();
 foreach($exts as $ext) {
 	$traducted_exts[$ext['fieldId']] = array(
-    	'tra' => tra($ext['fieldname']),
+    		'tra' => tra($ext['fieldname']),
 		'art' => $ext['fieldname'],
 		'id' => $ext['fieldId'],
-		'show' => $ext['show'],
-		'public' => $ext['flagsPublic']
+		'show' => $ext['show']
 	);
 }
 
@@ -41,12 +34,12 @@ if ($_REQUEST["contactId"]) {
 	$info = $contactlib->get_contact($_REQUEST["contactId"], $user);
 	foreach($info['ext'] as $k => $v) {
 	    if (!in_array($k, array_keys($exts))) {
-			// okay, we need to grab the name from exts[], where fieldId = $k
- 			$ext = $contactlib->get_ext($k);
-			$traducted_exts[$k]['tra'] = $ext['fieldname'];
-			$traducted_exts[$k]['art'] = $ext['fieldname'];
-			$traducted_exts[$k]['id'] = $k;
-			$traducted_exts[$k]['public'] = $ext['flagsPublic'];
+
+// okay, we need to grab the name from exts[], where fieldId = $k
+ 		$ext = $contactlib->get_ext($k);
+		$traducted_exts[$k]['tra'] = $ext['fieldname'];
+		$traducted_exts[$k]['art'] = $ext['fieldname'];
+		$traducted_exts[$k]['id'] = $k;
 	    }
 	}
 } else {
@@ -61,13 +54,26 @@ $smarty->assign('info', $info);
 $smarty->assign('exts', $traducted_exts);
 
 if (isset($_REQUEST["remove"])) {
-	$access->check_user($user);
-	$access->check_authenticity();
-	$contactlib->remove_contact($_REQUEST["remove"], $user);
+	if (!$user) {
+		$smarty->assign('msg', tra("You are not logged in"));
+		$smarty->display("error.tpl");
+		die;
+	}
+	$area = "delwebmailcontact";
+	if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+		key_check($area);
+		$contactlib->remove_contact($_REQUEST["remove"], $user);
+	} else {
+		key_get($area);
+	}
 }
 
 if (isset($_REQUEST["save"])) {
-	$access->check_user($user);
+	if (!$user) {
+		$smarty->assign('msg', tra("You are not logged in"));
+		$smarty->display("error.tpl");
+		die;
+	}
 	check_ticket('webmail-contact');
 	$ext_result=array();
 	foreach($exts as $ext)
@@ -170,7 +176,11 @@ if ($offset > 0) {
 include_once ('tiki-section_options.php');
 
 ask_ticket('contacts');
+if ($prefs['feature_ajax'] == "y") {
+	$smarty->assign("mootab",'y');
+}
 $smarty->assign('myurl', 'tiki-contacts.php');
 
 $smarty->assign('mid','tiki-contacts.tpl');
 $smarty->display('tiki.tpl');
+?>

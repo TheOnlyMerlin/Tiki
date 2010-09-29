@@ -1,33 +1,61 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-edit_quiz.php,v 1.25.2.2 2007-11-26 14:44:21 sylvieg Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 require_once ('tiki-setup.php');
+
 include_once ('lib/quizzes/quizlib.php');
 
-$access->check_feature('feature_quizzes');
+if ($prefs['feature_quizzes'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_quizzes");
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (!isset($_REQUEST["quizId"])) {
 	$_REQUEST["quizId"] = 0;
 }
 
+
 $smarty->assign('quizId', $_REQUEST["quizId"]);
 
 $smarty->assign('individual', 'n');
 
-$tikilib->get_perm_object($_REQUEST["quizId"], 'quiz');
+if ($userlib->object_has_one_permission($_REQUEST["quizId"], 'quiz')) {
+	$smarty->assign('individual', 'y');
 
-$access->check_permission('tiki_p_admin_quizzes');
+	if ($tiki_p_admin != 'y') {
+		$perms = $userlib->get_permissions(0, -1, 'permName_desc', '', 'quizzes');
 
-$auto_query_args = array(
-			'quizId',
-			'offset',
-			'sort_mode',
-			'find',
-);
+		foreach ($perms["data"] as $perm) {
+			$permName = $perm["permName"];
+
+			if ($userlib->object_has_permission($user, $_REQUEST["quizId"], 'quiz', $permName)) {
+				$$permName = 'y';
+
+				$smarty->assign("$permName", 'y');
+			} else {
+				$$permName = 'n';
+
+				$smarty->assign("$permName", 'n');
+			}
+		}
+	}
+}
+
+if ($tiki_p_admin_quizzes != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 $_REQUEST["questionsPerPage"] = 999;
 
@@ -51,9 +79,20 @@ $info["timeLimit"] = 60 * 60;
 if (isset($_REQUEST["save"])) {
 	check_ticket('edit-quiz');
 
+// 	print $_REQUEST["publish_Hour"]."<br>";
+// 	print $_REQUEST["publish_Minute"]."<br>";
+// 	print $_REQUEST["publish_Month"]."<br>";
+// 	print $_REQUEST["publish_Day"]."<br>";
+// 	print $_REQUEST["publish_Year"]."<br>";
+
+
  	# convert from the displayed 'site' time to 'server' time
  	$publishDate = $tikilib->make_time($_REQUEST["publish_Hour"], $_REQUEST["publish_Minute"], 0, $_REQUEST["publish_Month"], $_REQUEST["publish_Day"], $_REQUEST["publish_Year"]);
  	$expireDate = $tikilib->make_time($_REQUEST["expire_Hour"], $_REQUEST["expire_Minute"], 0, $_REQUEST["expire_Month"], $_REQUEST["expire_Day"], $_REQUEST["expire_Year"]);
+
+//  	print $publishDate."<br>";
+//  	print $expireDate."<br>";
+//  	die;
 
 	if (isset($_REQUEST["canRepeat"]) && $_REQUEST["canRepeat"] == 'on') {
 		$_REQUEST["canRepeat"] = 'y';
@@ -97,6 +136,7 @@ if (isset($_REQUEST["save"])) {
 		$_REQUEST["timeLimited"] = 'n';
 	}
 
+	// GGG Have to change $quizlib->replace_quiz to take publish and expire dates.
 	$qid = $quizlib->replace_quiz($_REQUEST["quizId"], $_REQUEST["name"],
 																$_REQUEST["description"],	$_REQUEST["canRepeat"],
 																$_REQUEST["storeResults"], $_REQUEST["immediateFeedback"],
@@ -115,6 +155,7 @@ if (isset($_REQUEST["save"])) {
 	$quizId = 0;
 
 } elseif ($_REQUEST["quizId"]) {
+	// GGG Have to change $quizlib->get_quiz to handle publish and expire dates.  Maybe it does automagically!
 	$info = $quizlib->get_quiz($_REQUEST["quizId"]);
 
 	if (!isset($info["publishDate"])){
@@ -140,8 +181,13 @@ $smarty->assign('timeLimit', $info["timeLimit"]);
 $smarty->assign('passingperct', $info["passingperct"]);
 
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$quizlib->remove_quiz($_REQUEST["remove"]);
+  $area = 'delquiz';
+  if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+    key_check($area);
+		$quizlib->remove_quiz($_REQUEST["remove"]);
+  } else {
+    key_get($area);
+  }
 }
 
 if (!isset($_REQUEST["sort_mode"])) {
@@ -210,7 +256,12 @@ $smarty->assign_by_ref('cant_pages', $channels["cant"]);
 $smarty->assign_by_ref('channels', $channels["data"]);
 
 // Fill array with possible number of questions per page
-$qpp = array( 1, 2, 3, 4 );
+$qpp = array(
+	1,
+	2,
+	3,
+	4
+);
 
 for ($i = 5; $i < 50; $i += 5)
 	$qpp[] = $i;
@@ -245,3 +296,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the template
 $smarty->assign('mid', 'tiki-edit_quiz.tpl');
 $smarty->display("tiki.tpl");
+
+?>

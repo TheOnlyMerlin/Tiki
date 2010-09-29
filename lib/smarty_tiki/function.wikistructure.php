@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 //copy this file to lib/smarty_tiki
 //create a new module and put the following
 //{wikistructure id=1 detail=1}
@@ -19,6 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
+
 function smarty_function_wikistructure($params, &$smarty) {
 	include_once('lib/wiki-plugins/wikiplugin_toc.php');
 
@@ -29,3 +24,9 @@ function smarty_function_wikistructure($params, &$smarty) {
 	$html = str_replace(array('~np~', '~/np~'), '', $html);
 	return $html;
 }
+
+
+
+
+
+?>

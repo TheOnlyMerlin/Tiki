@@ -1,4 +1,4 @@
-{title}{tr}Admin FAQ{/tr}: {$faq_info.title|escape}{/title}
+{title}{tr}Admin FAQ{/tr}: {$faq_info.title}{/title}
 
 <div class="navbar">
 	{button href="tiki-list_faqs.php" _text="{tr}List FAQs{/tr}"}
@@ -14,26 +14,34 @@
 <input type="hidden" name="faqId" value="{$faqId|escape}" />
 
 {* begin table *}
-<table class="formcolor">
-  <tr>
-    <td>{tr}Question{/tr}:</td>
-    <td >
+<table class="normal">
+  <tr class="formcolor">
+    <td class="formcolor">{tr}Question{/tr}:</td>
+    <td class="formcolor" >
       <textarea type="text" rows="2" cols="80" name="question">{$question|escape}</textarea>
     </td>
   </tr>
 
-  <tr>
-    <td>{tr}Answer{/tr}:
+  <tr class="formcolor">
+    <td class="formcolor">{tr}Answer{/tr}:
+      <br /> 
+      {include file="textareasize.tpl" area_name='faqans' formId='editpageform'}
+      {if $prefs.quicktags_over_textarea neq 'y'}
+        <br />
+        {include file=tiki-edit_help_tool.tpl area_name="faqans"}
+      {/if}
     </td>
-    <td >
-      {toolbars area_id="faqans"}
+    <td class="formcolor" >
+      {if $prefs.quicktags_over_textarea eq 'y'}
+        {include file=tiki-edit_help_tool.tpl area_name="faqans"}
+      {/if}
       <textarea id='faqans' type="text" rows="8" cols="80" name="answer">{$answer|escape}</textarea>
     </td>
   </tr>
 
-  <tr>
-    <td >&nbsp;</td>
-    <td >
+  <tr class="formcolor">
+    <td  class="formcolor">&nbsp;</td>
+    <td class="formcolor" >
       <input type="submit" name="save" value="{tr}Save{/tr}" />
       {* set your changes and save 'em *}
     </td>
@@ -48,17 +56,17 @@
 <form action="tiki-faq_questions.php" method="post">
 <input type="hidden" name="questionId" value="{$questionId|escape}" />
 <input type="hidden" name="faqId" value="{$faqId|escape}" />
-<table class="formcolor">
+<table class="normal">
 <tr>
-<td>{tr}Filter{/tr}</td>
-<td>
+<td class="formcolor">{tr}Filter{/tr}</td>
+<td class="formcolor">
 <input type="text" name="filter" value="{$filter|escape}" />
 <input type="submit" name="filteruseq" value="{tr}Filter{/tr}" />
 </td>
 </tr>
 <tr>
-<td>{tr}Question{/tr}:</td>
-<td >
+<td class="formcolor">{tr}Question{/tr}:</td>
+<td class="formcolor" >
 <select name="usequestionId">
 {section name=ix loop=$allq}
 {* Ok, here's where you change the truncation field for this field *}
@@ -68,8 +76,8 @@
 </td>
 </tr>
 <tr>
-<td>&nbsp;</td>
-<td>
+<td class="formcolor">&nbsp;</td>
+<td class="formcolor">
 <input type="submit" name="useq" value="{tr}Use{/tr}" />
 </td>
 </tr>
@@ -96,12 +104,12 @@
 </tr>
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}
-<tr class="{cycle}">
-<td>{$channels[user].questionId}</td>
-<td>{$channels[user].question|escape}</td>
-<td width="80px">
+<tr>
+<td class="{cycle advance=false}">{$channels[user].questionId}</td>
+<td class="{cycle advance=false}">{$channels[user].question}</td>
+<td class="{cycle}" width="80px">
    <a class="link" href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;questionId={$channels[user].questionId}">{icon _id='page_edit'}</a>
-   <a class="link" href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].questionId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
+   <a class="link" href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].questionId}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a>
 </td>
 </tr>
 {sectionelse}
@@ -122,10 +130,10 @@
 </tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$suggested}
-<tr class="{cycle}">
-  <td>{$suggested[ix].question|escape} </td>
-  <td>{$suggested[ix].answer|escape}</td>
-  <td width='80px'>
+<tr>
+  <td class="{cycle advance=false}">{$suggested[ix].question} </td>
+  <td class="{cycle advance=false}">{$suggested[ix].answer}</td>
+  <td class="{cycle}" width='80px'>
   <a class="link" href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;approve_suggested={$suggested[ix].sfqId}" alt="{tr}Approve{/tr}">{icon _id=accept alt="{tr}Approve{/tr}"}</a>
   <a class="link" href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove_suggested={$suggested[ix].sfqId}">{icon _id=cross alt="{tr}Remove{/tr}"}</a> 
   </td>
@@ -135,3 +143,5 @@
 {else}
 <h2>{tr}No suggested questions{/tr}</h2>
 {/if}
+
+{include file=tiki-edit_help.tpl}

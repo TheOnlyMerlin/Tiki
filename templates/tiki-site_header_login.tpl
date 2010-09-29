@@ -1,32 +1,19 @@
-{* $Id$ *}
-{* site header login form *}
+{* $Id: tiki-site_header.tpl 12554 2008-04-15 23:03:57Z luciash $ *}
 {strip}
-{if $filegals_manager eq '' and $print_page ne 'y'}
-	{if $prefs.feature_site_login eq 'y'}
-		{if !empty($user)}
+{if $user}
 <div id="siteloginbar" class="logged-in">
-	{$user|userlink} | <a href="tiki-logout.php" title="{tr}Log out{/tr}">{tr}Log out{/tr}</a>
+	{$user|userlink} | <a href="tiki-logout.php" title="{tr}Logout{/tr}">{tr}Logout{/tr}</a>
 {else}
 <div id="siteloginbar">
-	{if !empty($user)}
-		{$user|userlink} | <a href="tiki-logout.php" title="{tr}Log out{/tr}">{tr}Log out{/tr}</a>
-	{elseif $smarty.request.user neq 'admin' && $prefs.auth_method eq 'cas' && $showloginboxes neq 'y'}
-		<b><a href="tiki-login.php?cas=y">{tr}Log in through CAS{/tr}</a></b>
-		{if $prefs.cas_skip_admin eq 'y' && $prefs.cas_show_alternate_login eq 'y'}
-			&nbsp;|&nbsp;{self_link _template='tiki-site_header_login.tpl' _title="{tr}Log in as admin{/tr}" _icon='user_red' _htmlelement='siteloginbar' user='admin'}{tr}Log in as admin{/tr}{/self_link}
-		{/if}
-	{elseif $smarty.request.user neq 'admin' && $prefs.auth_method eq 'shib' && $showloginboxes neq 'y'}
-		<b><a href="tiki-login.php">{tr}Log in through Shibboleth{/tr}</a></b>
-		{if $prefs.shib_skip_admin eq 'y'}
-			&nbsp;|&nbsp;{self_link _template='tiki-site_header_login.tpl' _title="{tr}Log in as admin{/tr}" _icon='user_red' _htmlelement='siteloginbar' user='admin'}{tr}Log in as admin{/tr}{/self_link}
-		{/if}
+	{if $user}
+		{$user|userlink} | <a href="tiki-logout.php" title="{tr}Logout{/tr}">{tr}Logout{/tr}</a>
 	{else}
-		<form class="forms" name="loginbox" action="{if $prefs.https_login eq 'encouraged' || $prefs.https_login eq 'required' || $prefs.https_login eq 'force_nocheck'}{$base_url_https}{/if}{$prefs.login_url}" method="post" {if $prefs.feature_challenge eq 'y'}onsubmit="doChallengeResponse()"{/if}{if $prefs.desactive_login_autocomplete eq 'y'} autocomplete="off"{/if}>
-			<div class="sl-login"><label for="sl-login-user">{if $prefs.login_is_email eq 'y'}{tr}Email{/tr}{else}{tr}Username{/tr}{/if}:</label>
-			<input type="text" name="user" id="sl-login-user" /></div>
-			<div class="sl-login"><label for="sl-login-pass">{tr}Password{/tr}:</label>
-			<input type="password" name="pass" id="sl-login-pass" size="10" /></div>
-			<input class="wikiaction" type="submit" name="login" value="{tr}Log in{/tr}" />
+		<form class="forms" name="loginbox" action="tiki-login.php" method="post">
+			<label for="sl-login-user">{if $prefs.login_is_email eq 'y'}{tr}Email{/tr}{else}{tr}User{/tr}{/if}:</label>
+			<input type="text" name="user" id="sl-login-user" />
+			<label for="sl-login-pass">{tr}Password{/tr}:</label>
+			<input type="password" name="pass" id="sl-login-pass" size="10" />
+			<input class="wikiaction" type="submit" name="login" value="{tr}Login{/tr}" />
 			<div>
 			{if $prefs.rememberme eq 'always'}<input type="hidden" name="rme" value="on" />
 			{elseif $prefs.rememberme eq 'all'}
@@ -49,6 +36,4 @@
 	{/if}
 {/if}
 </div>
-	{/if}
-{/if}
 {/strip}

@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,10 +6,13 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class CopyrightsLib extends TikiLib
-{
+class CopyrightsLib extends TikiLib {
+	function CopyrightsLib($db) {
+		$this->TikiLib($db);
+	}
+
 	function list_copyrights($page) {
-		$query = "select * from `tiki_copyrights` WHERE `page`=? order by ".$this->convertSortMode("copyright_order_asc");
+		$query = "select * from `tiki_copyrights` WHERE `page`=? order by ".$this->convert_sortmode("copyright_order_asc");
 		$query_cant = "select count(*) from `tiki_copyrights` WHERE `page`=?";
 		$result = $this->query($query, array($page));
 		$cant = $this->getOne($query_cant, array($page));
@@ -80,3 +78,5 @@ class CopyrightsLib extends TikiLib
 		return true;
 	}
 }
+
+?>

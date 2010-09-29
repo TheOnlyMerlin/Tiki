@@ -1,14 +1,8 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /*
- * Tiki ANAME plugin.
+ * Tiki-Wiki ANAME plugin. Go to http://www.TikiMODS.com for more Tikiwiki Plugins.
  *
- * DESCRIPTION: Creates an anchor in a wiki page. Use in conjunction with the ALINK plugin, which specifies a link to the anchor.
+ * DESCRIPTION: Puts an anchor into a wiki page. Use in conjunction with the ALINK plugin, which makes links to the anchor.
  * 
  * INSTALLATION: Just put this file into your Tikiwiki site's lib/wiki-plugins folder.
  * 
@@ -24,7 +18,7 @@
 
 
 function wikiplugin_aname_help() {
-        return tra("Creates an anchor in a wiki page. Use in conjunction with the ALINK plugin, which specifies a link to the anchor").":<br />~np~{ANAME()}anchorname{ANAME}~/np~";
+        return tra("Puts an anchor into a wiki page. Use in conjunction with the ALINK plugin, which makes links to the anchor").":<br />~np~{ANAME()}anchorname{ANAME}~/np~";
 }
 
 function wikiplugin_aname_info() {
@@ -35,7 +29,6 @@ function wikiplugin_aname_info() {
 		'prefs' => array('wikiplugin_aname'),
 		'body' => tra('The name of the anchor.'),
 		'params' => array(),
-		'icon' => 'pics/icons/anchor.png',
 	);
 }
 
@@ -46,7 +39,9 @@ function wikiplugin_aname($data, $params)
         
     // the following replace is necessary to maintain compliance with XHTML 1.0 Transitional
 	// and the same behavior as tikilib.php and ALINK. This will change when the world arrives at XHTML 1.0 Strict.
-	$data = preg_replace('/[^a-zA-Z0-9]+/', '_', $data);
+	$data = ereg_replace('[^a-zA-Z0-9]+', '_', $data);
 
 	return "<a id=\"$data\"></a>";
 }
+
+?>

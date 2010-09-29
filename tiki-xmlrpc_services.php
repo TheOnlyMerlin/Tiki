@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-xmlrpc_services.php,v 1.17.2.1 2008-03-01 16:07:36 lphuberdeau Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 include_once('tiki-setup.php');
 require_once("XML/Server.php");
@@ -108,8 +109,7 @@ function newPost($params) {
 			return new XML_RPC_Response(0, 101, "User is not allowed to post");
 		}
 
-		require_once('lib/blogs/bloglib.php');
-		$blog_info = $bloglib->get_blog($blogid);
+		$blog_info = $tikilib->get_blog($blogid);
 
 		if ($blog_info["public"] != 'y') {
 			if ($username != $blog_info["user"]) {
@@ -297,7 +297,7 @@ function getRecentPosts($params) {
 	}
 
 	// Now get the post information
-	$posts = $bloglib->list_blog_posts($blogid, false, 0, $number, 'created_desc', '', '');
+	$posts = $bloglib->list_blog_posts($blogid, 0, $number, 'created_desc', '', '');
 
 	if (count($posts) == 0) {
 		return new XML_RPC_Response(0, 101, "No posts");
@@ -338,8 +338,7 @@ function getUserBlogs($params) {
 
 	$arrayVal = array();
 
-	global $bloglib; require_once('lib/blogs/bloglib.php');
-	$blogs = $bloglib->list_user_blogs($username, true);
+	$blogs = $tikilib->list_user_blogs($username, true);
 	$foo = parse_url($_SERVER["REQUEST_URI"]);
 	$foo1 = $tikilib->httpPrefix(). str_replace("xmlrpc", "tiki-view_blog", $foo["path"]);
 
@@ -356,3 +355,5 @@ function getUserBlogs($params) {
 	$myVal = new XML_RPC_Value($arrayVal, "array");
 	return new XML_RPC_Response($myVal);
 }
+
+?>

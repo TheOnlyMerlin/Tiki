@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 class OIntegrate
 {
@@ -44,7 +39,10 @@ class OIntegrate
 		global $cachelib;
 		require_once 'lib/cache/cachelib.php';
 
-		if ( $cache = $cachelib->getSerialized( $url.$postBody )) {
+		if( $cachelib->isCached( $url.$postBody ) ) {
+			$cache = $cachelib->getCached( $url.$postBody );
+			$cache = unserialize( $cache );
+
 			if( time() < $cache['expires'] )
 				return $cache['data'];
 
@@ -274,7 +272,7 @@ class OIntegrate_Response
 				$files = (array) $files;
 
 				foreach( $files as $file ) {
-					$content = TikiLib::httprequest( $file );
+					$content = tiki_get_remote_file( $file );
 
 					$templates[] = array(
 						'engine' => $engine,
@@ -372,3 +370,5 @@ class OIntegrate_Converter_TikiToHtml implements OIntegrate_Converter // {{{
 		return $tikilib->parse_data( htmlentities( $content, ENT_QUOTES, 'UTF-8' ) );
 	}
 } // }}}
+
+?>

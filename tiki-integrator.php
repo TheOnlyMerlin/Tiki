@@ -1,15 +1,27 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+/**
+ * $Id: /cvsroot/tikiwiki/tiki/tiki-integrator.php,v 1.19 2007-10-12 07:55:28 nyloth Exp $
+ *
+ * Integrated files viewer (wrapper)
+ *
+ */
 
 require_once('tiki-setup.php');
 require_once('lib/integrator/integrator.php');
 
-$access->check_feature('feature_integrator');
-$access->check_permission(array('tiki_p_view_integrator'));
+// If Integrator is ON, check permissions...
+if ($prefs['feature_integrator'] != 'y')
+{
+    $smarty->assign('msg', tra("This feature is disabled").": feature_integrator");
+    $smarty->display("error.tpl");
+    die;
+}
+if (($tiki_p_view_integrator != 'y') && ($tiki_p_admin_integrator != 'y') && ($tiki_p_admin != 'y')) {
+	$smarty->assign('errortype', 401);
+    $smarty->assign('msg',tra("You do not have permission to use this feature"));
+    $smarty->display("error.tpl");
+    die;
+}
 
 $repID = (isset($_REQUEST["repID"]) && strlen($_REQUEST["repID"]) > 0) ? $_REQUEST["repID"] : 0;
 
@@ -51,3 +63,5 @@ if (isset($_REQUEST["file"])) $smarty->assign('file', $_REQUEST["file"]);
 // Display the template
 $smarty->assign('mid','tiki-integrator.tpl');
 $smarty->display("tiki.tpl");
+
+?>

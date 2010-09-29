@@ -1,10 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 if (!defined("_ECHOSERVER_HTML_PARSER")) {
 define("_ECHOSERVER_HTML_PARSER",1);
 
@@ -335,7 +329,7 @@ anyword -1  2  3  3  5  3 -1  8 -1
         case 2:// got any word as tagname, waiting '/' or '>' or any word as parameter name
           $this->tagname=$w;
           $xmlclose=0;
-          if (!preg_match("/^[a-zA-Z0-9!_-]+$/",$this->tagname) || strlen($this->skipto)) {
+          if (!ereg("^[a-zA-Z0-9!_-]+$",$this->tagname) || strlen($this->skipto)) {
             $parcount=$state=$this->processpar=$this->processparvalue=$this->processtag=0;
             $this->quottype="";
             $this->quotstate=-1;
@@ -345,7 +339,7 @@ anyword -1  2  3  3  5  3 -1  8 -1
           break;
         case 3:// got any word as parameter name, waiting '/' or '>' or '=' or any word as parameter name
           $this->parname=$w;
-          if (!preg_match("/^[a-zA-Z0-9!_-]+$/",$this->parname) || strlen($this->skipto)) {
+          if (!ereg("^[a-zA-Z0-9!_-]+$",$this->parname) || strlen($this->skipto)) {
             $parcount=$state=$this->processpar=$this->processparvalue=$this->processtag=0;
             $this->quottype="";
             $this->quotstate=-1;

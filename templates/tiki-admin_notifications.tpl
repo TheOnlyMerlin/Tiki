@@ -17,27 +17,31 @@
      <input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
      {if $offset}<input type="hidden" name="offset" value="{$offset|escape}" />{/if}
 	 {if $numrows ne $prefs.maxRecords and $numrows}<input type="hidden" name="numrows" value="{$numrows|escape}" />{/if}
-	<table class="formcolor">
+	<table class="normal">
 		<tr>
-			<td><label for="event">{tr}Event:{/tr}</label></td>
-			<td>
-				<select id="event" name="event">
-					{foreach from=$watches key=key item=watch}
-						<option value="{$key}">{$watch.label|escape}</option>
-					{/foreach}
+			<td class="formcolor">{tr}Event{/tr}:</td>
+			<td class="formcolor">
+				<select name="event">
+					<option value="user_registers">{tr}A user registers{/tr}</option>
+					<option value="article_submitted">{tr}A user submits an article{/tr}</option>
+					<option value="article_edited">{tr}A user edits an article{/tr}</option>
+					<option value="article_deleted">{tr}A user deletes an article{/tr}</option>
+					<option value="wiki_page_changes">{tr}Any wiki page is changed{/tr}</option>
+					<option value="wiki_page_changes_incl_minor">{tr}Any wiki page is changed, even minor changes{/tr}</option>
+					<option value="wiki_comment_changes">{tr}A comment in a wiki page is posted or edited{/tr}</option> 
+					<option value="php_error">{tr}PHP error{/tr}</option>
 				</select>
 			</td>
 		</tr> 
 		<tr>
-			<td><label for="flogin">{tr}User:{/tr}</label></td>
-			<td>
+			<td class="formcolor">{tr}User:{/tr}</td>
+			<td class="formcolor">
 				<input type="text" id="flogin" name="login" />
-				{jq}$("#flogin").tiki("autocomplete", "username"){/jq}
 			</td>
 		</tr>
 		<tr>
-			<td><label for="femail">{tr}Email:{/tr}</label></td>        
-			<td>
+			<td class="formcolor">{tr}Email:{/tr}</td>        
+			<td class="formcolor">
 				<input type="text" id='femail' name="email" />
 				{if $admin_mail neq ''}
 					<a href="#" onclick="javascript:document.getElementById('femail').value='{$admin_mail}';document.getElementById('flogin').value='admin'" class="link">{tr}Preload Admin Account{/tr}</a>
@@ -45,8 +49,8 @@
 			</td>
 		</tr> 
 		<tr>
-			<td>&nbsp;</td>
-			<td><input type="submit" name="add" value="{tr}Add{/tr}" /></td>
+			<td class="formcolor">&nbsp;</td>
+			<td class="formcolor"><input type="submit" name="add" value="{tr}Add{/tr}" /></td>
 		</tr>
 	</table>
 </form>
@@ -96,9 +100,9 @@
 					{else}
 						{icon _id='user'}
 					{/if}
-					{$channels[user].user|escape}
+					{$channels[user].user}
 				</td>
-				<td><a class="link" href="{$smarty.server.PHP_SELF}?{query removeevent=$channels[user].watchId removetype=$channels[user].watchtype}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a></td>
+				<td><a class="link" href="{$smarty.server.PHP_SELF}?{query removeevent=$channels[user].watchId removetype=$channels[user].watchtype}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a></td>
 			</tr>
 		{sectionelse}
 			<tr class="odd"><td colspan="6"><b>{tr}No records found.{/tr}</b></td></tr>
@@ -107,7 +111,7 @@
 	{if $channels}
 		<br />
 		{tr}Perform action with checked:{/tr}
-		<input type="image" name="delsel" src='pics/icons/cross.png' alt="{tr}Delete{/tr}" title="{tr}Delete{/tr}" />
+		<input type="image" name="delsel" src='pics/icons/cross.png' alt='{tr}Delete{/tr}' title='{tr}Delete{/tr}' />
 	{/if}
 </form>
 
