@@ -217,11 +217,11 @@ span.button input,
 	border-color: #eccaa3 #880000 #880000 #eccaa3;
 	padding: 0 4px}
 
-.button a:hover,
+span.button a:hover,
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover,
+span.button input:hover,
 .submitbutton:hover {
 	background: #edd4ae;
 	color: #660000;

@@ -142,11 +142,11 @@ select {
 	font-size: 94%;
 	font-weight: bold}
 
-.button a:hover,
+span.button a:hover,
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover,
+span.button input:hover,
 .submitbutton:hover,
 .calbuttonBox a:hover {
 	background: #ffcce2;

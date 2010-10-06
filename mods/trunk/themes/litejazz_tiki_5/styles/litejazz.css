@@ -171,7 +171,7 @@ span.button a:hover,
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover,
+span.button input:hover,
 .submitbutton:hover,
 .calbuttonon:hover {
 	background: url(litejazz/bg.png) repeat-x top;

@@ -189,11 +189,11 @@ span.button input,
 	border-color: #58b3ec #223845 #223845 #58b3ec;
 }
 
-.button a:hover,
+span.button a:hover,
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover,
+span.button input:hover,
 .calbuttonBox a:hover {
 	background-color: #1d5f89;
 	color: #fff;

@@ -230,8 +230,8 @@ input.wikiaction {
 	border: 1px solid #9DA6B3;
 }
 
-.button a,
-.button a:visited,
+span.button a,
+span.button a:visited,
 button,
 input[type="reset"],
 input[type="submit"],
@@ -246,12 +246,12 @@ span.button input,
 	font-weight: bold;
 }
 
-.button a:hover,
+span.button a:hover,
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
 input[type="button"]:hover,
-.button input:hover,
+span.button input:hover,
 .calbuttonbox:hover  {
 	color: #9AB6C2;
 	background: #2b3941;

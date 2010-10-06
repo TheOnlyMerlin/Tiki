@@ -175,11 +175,11 @@ span.button input,
 	color: #cc0000;
 }
 
-.button a:hover,
+span.button a:hover,
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover,
+span.button input:hover,
 .submitbutton:hover {
 	background: #ccc;
 	color: #cc0001;

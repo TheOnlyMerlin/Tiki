@@ -214,11 +214,11 @@ span.button input,
 	border: solid 1px #8c9eaa;
 	background: #E9E7DB}
 
-.button a:hover,
+span.button a:hover,
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover,
+span.button input:hover,
 .submitbutton:hover {
 	color: #808080;
 	background: #f5f3eb}

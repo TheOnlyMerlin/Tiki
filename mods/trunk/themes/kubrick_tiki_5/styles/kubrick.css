@@ -186,10 +186,10 @@ input[name="search"] {
 	border-color: #c1d3db #8cacbb #8cacbb #c1d3db
 }
 
-.button:hover,
-.button a:hover,
+span.button:hover,
+span.button a:hover,
 button:hover,
-.button input:hover,
+span.button input:hover,
 .submitbutton:hover {
 	background: #fff;
 	border-color: #8cacbb #c1d3db #c1d3db #8cacbb;

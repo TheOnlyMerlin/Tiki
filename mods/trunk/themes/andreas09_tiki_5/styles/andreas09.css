@@ -168,11 +168,11 @@ span.button input,
 	vertical-align: middle;
 	text-transform: uppercase}
 
-.button a:hover,
+span.button a:hover,
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover,
+span.button input:hover,
 .submitbutton:hover,
 .calbuttonBox a:hover {
 	background: #f0f0f0 url(andreas09/options/black/menuhover.jpg) 0 0 repeat-x;

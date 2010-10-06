@@ -134,10 +134,10 @@ input[name="search"] {
 
 span.button:hover {background: 0}
 
-.button:hover,
-.button a:hover,
+span.button:hover,
+span.button a:hover,
 button:hover,
-.button input:hover,
+span.button input:hover,
 .submitbutton:hover,
 .calbuttonBox a:hover {
 	background: #578bb8;
