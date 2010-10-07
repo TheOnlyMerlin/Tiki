@@ -76,12 +76,6 @@ if ($prefs['feature_freetags'] == 'y') {
 	}
 }
 
-if ($prefs['feature_categories'] == 'y') {
-	$cat_type = 'blog post';
-	$cat_objid = $postId;
-	require_once('categorize_list.php');	
-}
-
 $smarty->assign('ownsblog', $ownsblog);
 $post_info['data'] = TikiLib::htmldecode($post_info['data']);
 $smarty->assign('postId', $postId);

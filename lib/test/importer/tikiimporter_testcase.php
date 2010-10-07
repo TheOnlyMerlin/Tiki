@@ -3,7 +3,7 @@
 require_once('PHPUnit/Extensions/OutputTestCase.php'); 
  
 /** 
- * @group importer
+ * @group integration
  */
 abstract class TikiImporter_TestCase extends PHPUnit_Extensions_OutputTestCase
 {

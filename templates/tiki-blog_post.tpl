@@ -129,9 +129,6 @@
 			{if $prefs.feature_contribution eq 'y'}
 				{include file='contribution.tpl'}
 			{/if}
-
-			{include file='categorize.tpl'}
-
 		</table>
 	</fieldset>
 	<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false" />
