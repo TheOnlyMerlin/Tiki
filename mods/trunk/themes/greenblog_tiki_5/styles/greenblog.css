@@ -415,6 +415,20 @@ tr.diffheader td {
 	 background: url(greenblog/menu_panel_bg.jpg) center bottom no-repeat;
 	 color: #fff}
 
+tr.odd td,
+td.odd,
+li.odd {
+	background: #15170a;
+	color: #f2e7ce;	
+}
+
+tr.even td,
+td.even,
+li.even {
+	background: #222411;
+	color: #f2e7ce;
+}
+	 
 /** Tabs **/
 .tabcontent {
 	background: #0b0c04 url(greenblog/post_bg.jpg) no-repeat right top;
