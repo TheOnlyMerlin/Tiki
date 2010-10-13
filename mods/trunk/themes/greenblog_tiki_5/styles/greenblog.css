@@ -417,14 +417,14 @@ tr.diffheader td {
 
 tr.odd td,
 td.odd,
-li.odd {
+.odd {
 	background: #15170a;
 	color: #f2e7ce;	
 }
 
 tr.even td,
 td.even,
-li.even {
+.even {
 	background: #222411;
 	color: #f2e7ce;
 }
