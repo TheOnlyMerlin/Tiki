@@ -15,12 +15,13 @@
 * styles/judy/bg-navigation-item.png
 * styles/judy/bg-navigation-item-hover.png
 * styles/judy/bg-topbar.jpg
-* styles/judy/body.png
 * styles/judy/duplicon-watermark.png
 * styles/judy/gradient-inner.png
+* styles/judy/header.png
 * styles/judy/ie7.css
 * styles/judy/index.php
 * styles/judy/judy.png
+* styles/judy/middle.png
 * styles/judy/pics/icons/folder.png
 * styles/judy/pics/icons/index.php
 * styles/judy/pics/icons/ofolder.png
