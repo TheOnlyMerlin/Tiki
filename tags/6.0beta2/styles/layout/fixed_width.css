@@ -1,0 +1,15 @@
+/* $Id$
+	Fixed width option for any theme, TikiWiki CMS/Groupware.
+*/
+
+#main[id] {
+	margin-top: 18px;
+	margin-bottom: 5px;
+}
+
+#fixedwidth {
+	width: 990px;
+}
+#fixedwidth[id] {
+	height: auto;
+}
