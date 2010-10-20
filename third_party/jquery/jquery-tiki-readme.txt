@@ -8,6 +8,7 @@ Update:
 	colorbox - 1.3.6 to 1.3.12
 	jquery.infinitecarousel2.js 2.0.0 to 2.0.2
 	jquery.js 1.4.2 to 1.4.3
+	jquery-ui 1.8 to 1.8.5 (N.B. all old files from previous releases removed, some from 1.7.x)
 
 jonnybradley 7 august 2010
 
