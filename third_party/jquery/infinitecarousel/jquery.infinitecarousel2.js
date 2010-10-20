@@ -1,11 +1,11 @@
 /*
  * jQuery Infinite Carousel
  * @author admin@catchmyfame.com - http://www.catchmyfame.com
- * @version 2.0.0
- * @date December 30, 2009
+ * @version 2.0.2
+ * @date June 12, 2010
  * @category jQuery plugin
  * @copyright (c) 2009 admin@catchmyfame.com (www.catchmyfame.com)
- * @license Dual licensed MIT and CC Attribution-Share Alike 3.0 - http://creativecommons.org/licenses/by-sa/3.0/
+ * @license CC Attribution-Share Alike 3.0 - http://creativecommons.org/licenses/by-sa/3.0/
  */
 
 (function($){
@@ -73,7 +73,7 @@
 			function startProgressBar(barTime)
 			{
 				barTime = (barTime==null)? o.displayTime:barTime;
-				$('#progress'+randID).width('100%').height(5).hide().fadeIn();
+				$('#progress'+randID).width('100%').height(5);
 				$('#progress'+randID).animate({'width':0},barTime);
 			}
 
@@ -140,7 +140,7 @@
 				}
 			}
 
-			function hideCaption() {$('.textholder',obj).stop().animate({marginBottom:(-imgHeight*o.textholderHeight-containerBorder-1)+'px'},500)}
+			function hideCaption() {$('.textholder',obj).stop().animate({marginBottom:(-imgHeight*o.textholderHeight-containerBorder-1)+'px'},o.transitionSpeed)}
 
 			if(o.displayThumbnails)
 			{
@@ -155,6 +155,7 @@
 						$('#thumbs'+randID+' div').css({'cursor':'default'}).unbind('click'); // Unbind the thumbnail click event until the transition has ended
 						autopilot = 0;
 						setTimeout(function(){$('#play_pause_btn'+randID).css('background-position','0 -16px')},o.transitionSpeed);
+						$('#play_pause_btn'+randID).unbind('click').bind('click',function(){forceStart();});
 					}
 					if(target_num[1] > viewable[0])
 					{
@@ -350,7 +351,7 @@
 				if(o.autoHideCaptions && isHover) autoShowCap();
 				if(o.displayThumbnails) for(i=0;i<viewable.length;i++) $('#thumb'+randID+'_'+viewable[i]).css({'border-color':'#ff0000'}).animate({'opacity': 1},500);
 				if(!o.autoHideCaptions) for(i=1;i<=o.inView;i++) showtext($('li:eq('+i+') p', obj).html(),i);
-				if(o.displayThumbnails) $('#thumbs'+randID+' div').bind('click', thumbclick).css({'cursor':'pointer'});
+				if(o.displayThumbnails) $('#thumbs'+randID+' div').unbind('click').bind('click', thumbclick).css({'cursor':'pointer'});
 				ary=[];
 				for(x=1;x<=o.inView;x++){ary.push($('img:eq('+x+')',obj).attr('src'))}
 				o.onSlideEnd.call(this,ary);

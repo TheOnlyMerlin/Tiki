@@ -6,7 +6,7 @@ jonnybradley 20 october 2010 (for Tiki 6.0)
 
 Update:
 	colorbox - 1.3.6 to 1.3.12
-
+	jquery.infinitecarousel2.js 2.0.0 to 2.0.2
 
 jonnybradley 7 august 2010
 
