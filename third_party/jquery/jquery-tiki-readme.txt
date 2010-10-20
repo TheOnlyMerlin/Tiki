@@ -2,6 +2,12 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 20 october 2010 (for Tiki 6.0)
+
+Update:
+	colorbox - 1.3.6 to 1.3.12
+
+
 jonnybradley 7 august 2010
 
 New:
