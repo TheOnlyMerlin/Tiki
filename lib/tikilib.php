@@ -3517,7 +3517,7 @@ class TikiLib extends TikiDb_Bridge
 		global $categlib; require_once( 'lib/categories/categlib.php' );
 		$category_jails = $categlib->get_jail();
 
-		if( ! isset( $filter['andCategId'] ) && ! isset( $filter['categId'] ) && ! empty( $category_jails ) ) {
+		if( ! isset( $filter['categId'] ) && ! empty( $category_jails ) ) {
 			$filter['categId'] = $category_jails;
 		}
 		
@@ -3530,15 +3530,7 @@ class TikiLib extends TikiDb_Bridge
 		if (!empty($filter)) {
 			$tmp_mid = array();
 			foreach ($filter as $type=>$val) {
-				if ($type == 'andCategId') {
-					$categories = $categlib->get_jailed( (array) $val );
-					$join_tables .= " inner join `tiki_objects` as tob on (tob.`itemId`= tp.`pageName` and tob.`type`= ?) ";
-					$join_bindvars[] = 'wiki page';
-					foreach ($categories as $i=>$categId) {
-						$join_tables .= " inner join `tiki_category_objects` as tc$i on (tc$i.`catObjectId`=tob.`objectId` and tc$i.`categId` =?) ";
-						$join_bindvars[] = $categId;
-					}
-				} elseif ($type == 'categId') {
+				if ($type == 'categId') {
 					$categories = $categlib->get_jailed( (array) $val );
 					$categories[] = -1;
 
@@ -3554,11 +3546,6 @@ class TikiLib extends TikiDb_Bridge
 					$join_tables .= ' left join `tiki_objects` as tob on (tob.`itemId`= tp.`pageName` and tob.`type`= ?) left join `tiki_categorized_objects` as tcdo on (tcdo.`catObjectId`=tob.`objectId`) left join `tiki_category_objects` as tco on (tcdo.`catObjectId`=tco.`catObjectId`)';
 					$join_bindvars[] = 'wiki page';
 					$tmp_mid[] = '(tco.`categId` is null)';
-				} elseif ($type == 'notCategId') {
-					foreach ($val as $v) {
-						$tmp_mid[] = '(tp.`pageName` NOT IN(SELECT itemId FROM tiki_objects INNER JOIN tiki_category_objects ON catObjectId = objectId WHERE type = "wiki page" AND categId = ?))';
-						$bindvars[] = $v;
-					}
 				} elseif ($type == 'lang') {
 					$tmp_mid[] = 'tp.`lang`=?';
 					$bindvars[] = $val;

@@ -21,7 +21,6 @@
 					{preference name=feature_comments_locking}
 					{preference name=feature_comments_post_as_anonymous}				
 					{preference name=comments_vote}				
-					{preference name=comments_archive}				
 				</div>
 			</fieldset>
 
@@ -42,6 +41,20 @@
 			</fieldset>
 
 			<fieldset>
+				<legend>{tr}Using comments below wiki pages{/tr}</legend>
+
+				{preference name=feature_wiki_comments}
+				<div class="adminoptionboxchild" id="feature_wiki_comments_childcontainer">
+					{preference name=wiki_comments_displayed_default}
+					{preference name=wiki_comments_per_page}
+					{preference name=wiki_comments_default_ordering}
+					{preference name=wiki_comments_allow_per_page}
+					{preference name=wiki_comments_per_page}
+					{preference name=wiki_watch_comments}
+				</div>
+			</fieldset>
+
+			<fieldset>
 				<legend>{tr}Inline comments{/tr}</legend>
 					<a class="link" href="{$prefs.helpurl}Inline+comments">{tr}Inline comments{/tr}</a>
 
@@ -54,15 +67,6 @@
 
 				<div class="admin">
 					{preference name=feature_article_comments}
-					{preference name=feature_wiki_comments}
-					<div class="adminoptionboxchild" id="feature_wiki_comments_childcontainer">
-						{preference name=wiki_comments_displayed_default}
-						{preference name=wiki_comments_per_page}
-						{preference name=wiki_comments_default_ordering}
-						{preference name=wiki_comments_allow_per_page}
-						{preference name=wiki_comments_per_page}
-						{preference name=wiki_watch_comments}
-					</div>
 					{preference name=feature_blogposts_comments}
 					{preference name=feature_file_galleries_comments}
 					<div class="adminoptionboxchild" id="feature_file_galleries_comments_childcontainer">

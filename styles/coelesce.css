@@ -107,16 +107,16 @@ pre {
 }
 
 /* "button" links wrappers */
-.button {
+span.button {
 	padding-left: 0;
 	padding-right: 0;
 }
 
 /* Links in buttons */
-.button a,
-.button a:visited,
+span.button a,
+span.button a:visited,
 button,
-.button input,
+span.button input,
 .calbuttonbox a {
 	color: #449cd0;
 	background: #ededed;
@@ -137,9 +137,9 @@ input[type=submit] {
 	padding: 1px 4px;
 }
 
-.button a:hover,
+span.button a:hover,
 button:hover,
-.button input:hover,
+span.button input:hover,
 .calbuttonbox a:hover {
 	background: white;
 }
@@ -152,8 +152,8 @@ input[type=submit]:hover {
 .button a:active,
 button:active,
 .button input:active,
-.highlight a:link,
-.highlight a:visited {
+span.highlight a:link,
+span.highlight a:visited {
 	color: #449cd0;
 	background: #dbdbdb;
 	border: 1px solid #527ca6;
@@ -285,7 +285,7 @@ body.tiki_wiki_page.manage #c1c2 #wrapper #col1 #tiki-center {
 	min-height: 80px;
 }
 
-#sioptions {
+div#sioptions {
 	padding: 0;
 }
 
@@ -293,22 +293,22 @@ body.tiki_wiki_page.manage #c1c2 #wrapper #col1 #tiki-center {
 	margin: 1em;
 }
 
-.floatright {
+div.floatright {
 	margin-right: 8px;
 }
 
-.floatleft {
+div.floatleft {
 	margin-left: 8px;
 }
 
-#sitelogo {
+div#sitelogo {
 	padding: 8px 0 0 0;
 	white-space: nowrap;
 	overflow: hidden;
 }
 
-#sitelogo,
-#sitelogo * {
+div#sitelogo,
+div#sitelogo * {
 	float: left;
 }
 
@@ -488,7 +488,7 @@ a.flip:hover,
 	font-weight: bold;
 }
 
-.optionline,
+div.optionline,
 .option a {
 	color: #295c83;
 	font-weight: bold;
@@ -793,7 +793,7 @@ a.phplmselected:hover {
 
 /***** Boxes *****/
 /** Modules **/
-.box {
+div.box {
 	background: #ccdceb;
 	border: 1px solid #527ca6;
 	margin-top: -1px;
@@ -826,12 +826,12 @@ img.flipmodimage:hover {
 }
 
 /** Modules in pages **/
-.box-login_box {
+div.box-login_box {
 	width: 210px;
 }
 
 /** Other boxes **/
-.cbox {
+div.cbox {
 	color: #2d2d2d;
 	background: #fff;
 	border: 0;
@@ -878,14 +878,14 @@ img.flipmodimage:hover {
 	border: 1px solid #4a6a90;
 }
 
-.simplebox {
+div.simplebox {
 	border: 1px solid #527ca6;
 	background: #fff;
 	padding: 1em;
 }
 
-.halffloat .box,
-.wikitext .halffloat .box {
+.halffloat div.box,
+.wikitext .halffloat div.box {
 	width: 47%;
 	margin-right: 2%;
 
@@ -898,8 +898,8 @@ table {
 	font-size: 1em;
 }
 
-.normal,
-.admin {
+table.normal,
+table.admin {
 	border: 0;
 	background: #fff;
 	color: #2d2d2d;
@@ -923,7 +923,7 @@ table {
 
 /* headings */
 th,
-.normal td.heading,
+table.normal td.heading,
 tr.diffheader {
 	font-size: 1em;
 	font-weight: bold;
@@ -1036,7 +1036,7 @@ body.tiki_wiki_page #comments {
 }
 
 h1.pagetitle a,
-.titlebar,
+div.titlebar,
 h1.pagetitle a:visited,
 h1.pagetitle a:hover,
 a.pagetitle,
@@ -1076,13 +1076,13 @@ body.tiki_wiki_page .wikitopline {
 .wikitopline .content br {
 }
 
-#description,
+div#description,
 .description {
 	font-size: .9em;
 	font-style: italic;
 }
 
-body.tiki_surveys .description {
+body.tiki_surveys div.description {
 	font-style: normal;
 }
 
@@ -1095,7 +1095,7 @@ body.tiki_surveys .description {
 	display: inline;
 }
 
-.titlebar {
+div.titlebar {
 	background: url(coelesce/tiki-centerbg.jpg) repeat-x;
 	line-height: 36px;
 	color: #2d2d2d;
@@ -1139,7 +1139,7 @@ body.tiki_surveys .description {
 	margin: 10px 0 5px 0;
 }
 
-.wikitable {
+table.wikitable {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse;
 }
@@ -1157,11 +1157,11 @@ h1.pagetitle {
 	padding-left: 10px;
 }
 
-.split {
+div.split {
 	border: 1px dashed #696969;
 }
 
-#page-bar {
+div#page-bar {
 	width: 100%;
 	float: none;
 	height: 20px;
@@ -1194,7 +1194,7 @@ textarea.wikiedit {
 
 /* Wiki plugins */
 /* Code plugin  */
-.code {
+div.code {
 	padding: 3px;
 	border: 1px dashed #a9a9a9;
 	background: #f5f5f5;
@@ -1225,11 +1225,11 @@ textarea.wikiedit {
 }
 
 /* Quote plugin */
-.quoteheader {
+div.quoteheader {
 	margin-left: 20px;
 }
 
-.quotebody {
+div.quotebody {
 	font-style: italic;
 }
 
@@ -1250,7 +1250,7 @@ textarea.wikiedit {
 }
 
 /** Wiki tocs **/
-.tocnav {
+div.tocnav {
 	background: #ebebeb;
 	padding: 3px;
 }
@@ -1262,24 +1262,24 @@ textarea.wikiedit {
 }
 
 /***** Articles ****/
-.article {
+div.article {
 	position: relative;
 }
 
-.articletopline {
+div.articletopline {
 	position: absolute;
 	top: -20px;
 	font-size: 90%;
 	font-style: italic;
 }
 
-.articletitle {
+div.articletitle {
 	margin-top: 6px;
 	margin-bottom: 15px;
 	text-align: left;
 }
 
-.articletitle h2 {
+div.articletitle h2 {
 	min-height: 26px;
 	background: url(coelesce/tiki-centerbg.jpg) repeat-x;
 	font-size: 1.8em;
@@ -1288,20 +1288,20 @@ textarea.wikiedit {
 	padding-top: 8px;
 }
 
-.wikitext .articletitle h2 {
+.wikitext div.articletitle h2 {
 	font-size: 1.55em;
 	padding-top: 10px;
 }
 
 	
-.articletitle h2 a:link,
-.articletitle h2 a:visited {
+div.articletitle h2 a:link,
+div.articletitle h2 a:visited {
 	color: #000;
 	text-decoration: none;
 }
 
 	
-.articletitle h2 a:hover {
+div.articletitle h2 a:hover {
 	text-decoration: none;
 }
 
@@ -1309,28 +1309,28 @@ textarea.wikiedit {
 	display: none;
 }
 
-.titleb {
+span.titleb {
 	font-size: 1em;
 	padding-left: 14px;
 }
 
-.articlesubtitle {
+div.articlesubtitle {
 	font-size: 1.1em;
 	font-weight: bold;
 	padding-left: 14px;
 	margin-top: 5px;
 }
 
-.articleheading {
+div.articleheading {
 	margin-top: 6px;
 }
 
-.articleheadingtext {
+div.articleheadingtext {
 	margin-bottom: 1em;
 }
 
 /***** Blogs *****/
-.blogtitle {
+div.blogtitle {
 	font-size: 1.3em;
 	font-weight: bold;
 	padding: 3px;
@@ -1339,12 +1339,12 @@ textarea.wikiedit {
 	line-height: 80%;
 }
 
-body.tiki_blogs .description {
+body.tiki_blogs div.description {
 	margin-top: 8px;
 	margin-left: 14px;
 }
 
-.bloginfo {
+div.bloginfo {
 	text-align: center;
 	padding: 3px;
 	line-height: 150%;
@@ -1356,7 +1356,7 @@ a.blogt:hover {
 	border-bottom: 1px dotted #fff;
 }
 
-.author_actions_status {
+div.author_actions_status {
 	background: #E6EDF5;
 }
 
@@ -1563,7 +1563,7 @@ textarea#editpost2 {
 	font-size: 1em;
 }
 
-.commentsedithelp {
+div.commentsedithelp {
 	background: #ffcfcf;
 	color: #2d2d2d;
 	border: 1px solid #ff0000;
@@ -1625,17 +1625,17 @@ textarea#editpost2 {
 
 
 /***** Image Galleries *****/
-.galtable {
+table.galtable {
 	border-collapse: collapse;
 	border: 1px solid #696969;
 }
 
-.browsegallery {
+div.browsegallery {
 	text-align: center;
 	width: 100%;
 }
 
-.thumbnailcontenerchecked .thumbnail {
+div.thumbnailcontenerchecked div.thumbnail {
 	border-color: #a9a9a9;
 	background: #f8f8ff;
 }
@@ -1651,7 +1651,7 @@ textarea#editpost2 {
 
 /***** Trackers *****/
 	
-.multiselect {
+div.multiselect {
 	width: 100%;
 	border: 1px solid #696969;
 }
@@ -1901,7 +1901,7 @@ textarea#editpost2 {
 	background: #8df378;
 }
 
-#calscreen td.calfocuson {
+div#calscreen td.calfocuson {
 	background: #8df378;
 }
 
@@ -1952,7 +1952,7 @@ a.viewthisday:hover {
 }
 
 /*****  Polls  *****/
-.pollresults {
+div.pollresults {
 	margin-top: 5px;
 	font-size: 1.2em;
 	padding: 0 5px;
@@ -1965,18 +1965,18 @@ td.pollr {
 /***** FAQs *****/
 
 /***** Quizzes *****/
-.questionblock {
+div.questionblock {
 	padding: 4px;
 }
 
-.quizquestion {
+div.quizquestion {
 	background: #c3d3e5 none repeat scroll 0 0;
 	font-size: 1em;
 	font-weight: bold;
 	padding: 5px;
 }
 
-.quizoptions input[type=text] {
+div.quizoptions input[type=text] {
 	width: 500px;
 }
 
@@ -1986,22 +1986,22 @@ textarea.tshoutbox{
 }
 
 /***** Directory *****/
-.dircategs {
+div.dircategs {
 	border: 1px solid #696969;
 	padding: 5px;
 }
 
-.dirlistsites {
+div.dirlistsites {
 	padding: 5px 0 10px 5px;
 	margin-top: 10px;
 }
 
-.dirsite {
+div.dirsite {
 	margin-bottom: 10px;
 	padding: 4px;
 }
 
-.dirrelated {
+div.dirrelated {
 	margin-top: 10px;
 	padding: 5px;
 }
@@ -2010,7 +2010,7 @@ td.dirfooter {
 	font-size: .95em;
 }
 
-.dirfooter {
+div.dirfooter {
 	margin-top: 10px;
 }
 
@@ -2022,15 +2022,15 @@ td.dirfooter {
 /***** Ajax *****/
 
 /***** TikiSheet Default Style *****/
-.default thead td,
-.default tfoot td {
+table.default thead td,
+table.default tfoot td {
 	font-weight: bold;
 	text-align: center;
 	background: #4a6a90;
 	color: white;
 }
 
-.default td {
+table.default td {
 	border: solid 1px #a9a9a9;
 	background: white;
 }

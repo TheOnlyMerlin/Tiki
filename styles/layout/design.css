@@ -32,10 +32,10 @@ body.wikitext {
 }
 
 /* Ajax Loading Overlay */
-#ajaxLoadingBG {
+div#ajaxLoadingBG {
 	background: transparent url(../../img/overlay-light.png);
 }
-#ajaxLoading {
+div#ajaxLoading {
 	font-size: 2em;
 	font-weight: bold;
 	color: #333;
@@ -69,23 +69,23 @@ fieldset {
 
 /* margin and padding for span surrounding the "button" links, same definition for button form element */
 button,
-.button,
-.button.highlight {
+span.button,
+span.button.highlight {
 	margin: 1px 2px;
 	padding: 2px;
 }
 
-.button a,
-.button a:visited,
-.button a:hover,
-.button input,
+span.button a,
+span.button a:visited,
+span.button a:hover,
+span.button input,
 .calbuttonBox a {
 	padding: 1px 4px;
 }
 
-#genPass .button a,
-#genPass .button a:visited,
-#genPass .button a:hover {
+span#genPass span.button a,
+span#genPass span.button a:visited,
+span#genPass span.button a:hover {
 	padding: 1px 4px !important;
 }
 
@@ -100,13 +100,13 @@ input[type=submit]:hover {
 /* highlight on interface text to draw attention; also
 highlight on "button" links, e.g. if there are some comments it highlights the "button" link in #page-bar under the content of the wiki pages */
 .highlight,
-.button.highlight a {
+span.button.highlight a {
 	background: #FC0;
 	color: #000;
 }
 
 /* Since button background is actually applied to the link within the button, apply button highlight to same bg area as normal button state . */
-.button.highlight {
+span.button.highlight {
 	background: inherit;
 }
 
@@ -116,7 +116,7 @@ ul.jumplinks a:active {
 }
 
 /* Highlight effect is just visual distinction, so no need for block element. */
-.highlight {
+div.highlight {
 	padding: 0 .3em;
 }
 
@@ -172,13 +172,13 @@ input[type=radio] {
 	font-size: 90%;
 }
 
-.pass a,
-.pass a:visited,
-.pass a:hover,
-.register a,
-.register a:visited,
-.register a:hover,
-.logged-in a,
+span.pass a,
+span.pass a:visited,
+span.pass a:hover,
+span.register a,
+span.register a:visited,
+span.register a:hover,
+div.logged-in a,
 li.login_link ul li a {
 	background: none !important;
 }
@@ -227,7 +227,7 @@ a.flip:hover,
 	text-decoration: none;
 }
 
-#debugconsole {
+div#debugconsole {
 	background: #333;
 	color: #fff;
 	padding: 5px;
@@ -354,19 +354,19 @@ ul.categories li {
 	margin-right: 20px;
 }
 
-.help_section_select {
+div.help_section_select {
 	font-weight: bold;
 	font-size: 120%;
 	background: #e7e9ea;
 	color: #000;
 }
 
-.help_sections {
+div.help_sections {
 	padding:  2px;
 	background: #aac9e9;
 }
 
-.help_section {
+div.help_section {
 	background: #eee;
 	color: #000;
 }
@@ -417,7 +417,7 @@ ul.categories li {
 	border: .1em solid #f00;
 }
 
-.box-switch_lang .box-data .highlight {
+.box-switch_lang .box-data span.highlight {
 	border: .1em solid #f00;
 }
 
@@ -445,17 +445,17 @@ img.icon {
 	background: transparent;
 }
 
-.admin #content1 .tabcontent .cbox {
+table.admin div#content1 div.tabcontent div.cbox {
 	background: transparent;
 }
 
 /* To display content without module-style background and border. */
-.halffloat > .box,
-.wikitext .halffloat > .box,
-.thirdfloat > .box,
-.wikitext .thirdfloat > .box,
-.quarterfloat > .box,
-.wikitext .quarterfloat > .box {
+.halffloat > div.box,
+.wikitext .halffloat > div.box,
+.thirdfloat > div.box,
+.wikitext .thirdfloat > div.box,
+.quarterfloat > div.box,
+.wikitext .quarterfloat > div.box {
 	background: none;
 	border: none;
 }
@@ -530,7 +530,6 @@ img.icon {
 }
 
 .simplebox {
-	border: 1px solid #999;
 	padding: 3px;
 }
 
@@ -548,8 +547,8 @@ img.icon {
 /***** Tables, Tabs ****/
 /** Tables **/
 
-.normal, 
-.admin {
+table.normal, 
+table.admin {
 	border-collapse: collapse;
 }
 
@@ -661,12 +660,12 @@ p.editdate {
 }
 
 /* img plugin */
-.imgbox {
+div.imgbox {
 	    border: 1px solid #a9a9a9;
         background-color: #f9f9f9;
 }
 
-.thumbcaption {
+div.thumbcaption {
 		font-size: 90%;
 }
 
@@ -733,7 +732,7 @@ ul.toc * {
 
 /***** Articles ****/
 
-.articlesource {
+div.articlesource {
 	margin-top: 5px;
 	font-style: italic;
 	font-size: 90%;
@@ -741,18 +740,18 @@ ul.toc * {
 
 /***** Blogs *****/
 
-.breadcrumbs {
+div.breadcrumbs {
 	font-size: 90%;
 	font-style: italic;
 }
 
-.blogdesc {
+div.blogdesc {
 	padding: 8px;
 	margin-top: 8px;
 	margin-left: 6px;
 }
 
-.blogtools {
+div.blogtools {
 	padding: 3px;
 	text-align: right
 }
@@ -831,7 +830,7 @@ p.norecords {
 	font-weight: bold;
 }
 
-.imagetitle {
+div.imagetitle {
 	font-weight: bold;
 	font-size: 200%;
 }
@@ -855,46 +854,46 @@ p.norecords {
 
 /***** Trackers (etc.) *****/
 
-.multiselect li.odd,
-.multiselect .odd {
+div.multiselect li.odd,
+div.multiselect div.odd {
 	color: #000;
 	background: #f4f6f7;
 }
 
-.multiselect li.odd:hover,
-.multiselect .odd:hover {
+div.multiselect li.odd:hover,
+div.multiselect div.odd:hover {
 	background: #fff7e6;
 }
 
-.multiselect li.even,
-.multiselect .even {
+div.multiselect li.even,
+div.multiselect div.even {
 	color: #000;
 	background: #e7e9ea;
 }
 
-.multiselect .even:hover,
-.multiselect .even:hover {
+div.multiselect div.even:hover,
+div.multiselect div.even:hover {
 	background: #f0f2f3;
 }
 
-.multiselect .odd,
-.multiselect .even {
+div.multiselect div.odd,
+div.multiselect div.even {
 	border: 1px solid #80b1e2;
 }
 
-.multiselect .selection {
+div.multiselect div.selection {
 	border: 1px solid #80b1e2;
 	background: #fff;
 }
 
 /* transparent border added to keep content from shifting on hover */
-.multiselect,
-.multiselect .selection {
+div.multiselect,
+div.multiselect div.selection {
 	border: 1px solid transparent;
 }
 
-.multiselect:hover,
-.multiselect .selection:hover {
+div.multiselect:hover,
+div.multiselect div.selection:hover {
 	border: 1px solid #80b1e2;
 }
 
@@ -925,7 +924,7 @@ p.norecords {
 	text-decoration: none;
 }
 
-.freetagitemlist .type {
+.freetagitemlist div.type {
 	font-weight: bold;
 	font-size: 0.8em;
 }
@@ -978,20 +977,20 @@ a.freetag_7 {
 
 /***** FAQs *****/
 
-.faqlistquestions {
+div.faqlistquestions {
 	margin-bottom: 20px;
 }
 
-.faqqa {
+div.faqqa {
 	margin-bottom: 20px;
 }
 
-.faqquestion {
+div.faqquestion {
 	font-weight: bold;
 	padding: 2px 12px 0 12px;
 }
 
-.faqanswer {
+div.faqanswer {
 	padding: 0 12px 4px 12px;
 }
 
@@ -1002,31 +1001,31 @@ a.freetag_7 {
 
 /***** Quizzes *****/
 
-.questionblock {
+div.questionblock {
 	margin-bottom: 10px;
 }
 
-.quizquestion {
+div.quizquestion {
 	margin-bottom: 5px;
 }
 
-.quizdescription {
+div.quizdescription {
 	margin-bottom: 10px;
 }
 
-.quizanswer {
+div.quizanswer {
 	margin-bottom: 10px;
 }
 
 /***** Shoutbox *****/
 
-.shoutboxmsg {
+div.shoutboxmsg {
 	margin-bottom: 0;
 	padding: 4px;
 	padding-bottom: 1px;
 }
 
-.shoutboxmodmsg {
+div.shoutboxmodmsg {
 	font-size: .95em;
 	margin: 0 5px 4px 5px;
 	padding-top: 5px;
@@ -1040,7 +1039,7 @@ textarea.tshoutbox{
 
 /***** Directory *****/
 
-.dircategs {
+div.dircategs {
 	font-size: 95%;
 }
 
@@ -1048,16 +1047,16 @@ textarea.tshoutbox{
 	font-size: .95em;
 }
 
-.dirsite {
+div.dirsite {
 	margin-bottom: 10px;
 	padding: 4px;
 }
 
-.dirsitetrail {
+span.dirsitetrail {
 	font-size: 95%;
 }
 
-.dirsitecats {
+span.dirsitecats {
 	font-size: 95%;
 }
 
@@ -1092,17 +1091,17 @@ td.prio5 {
 	background: #f7f9ff;
 }
 
-.messureadflag {
+div.messureadflag {
 	background: #a9a9a9;
 	padding-left: 5px;
 }
 
-.messureadhead {
+div.messureadhead {
 	background: #dcdcdc;
 	margin-top: 2px;
 }
 
-.messureadbody {
+div.messureadbody {
 	margin-top: 5px;
 	background: #dcdcdc;
 }
@@ -1183,7 +1182,7 @@ td.mods_update {
 	padding: .9em;
 }
 
-#cluetip-close { 
+div#cluetip-close { 
 	background: #fff;
 	color: #900;
 }
@@ -1237,13 +1236,13 @@ td.mods_update {
 	font-family: "Courier New", Courier, monospace;
 }
 
-.webmail_message_headers {
+table.webmail_message_headers {
 	background: #fff;
 	width: 100%;
 	padding: 0 5em .5em 0;
 }
 
-.webmail_message_headers th {
+table.webmail_message_headers th {
 	font-style: italic;
 	text-align: right;
 	border: none;
@@ -1252,15 +1251,15 @@ td.mods_update {
 
 /* treeTable definitions - used in object-perms so far */
 
-.treeTable .checkBoxHeader {
+table.treeTable .checkBoxHeader {
 	font-size: .8em;
 }
 
-.treeTable .subHeader td {
+table.treeTable .subHeader td {
 	font-weight: bold;
 }
 
-.treeTable .parent td {
+table.treeTable .parent td {
 	font-style: italic;
 }
 
@@ -1377,10 +1376,6 @@ td.mods_update {
 
 #captchaImg {
 	border: 1px solid black;
-}
-
-.ui-tabs .ui-tabs-nav li a {
-	padding: 0 0 0 0;
 }
 /* interactive translations */
 

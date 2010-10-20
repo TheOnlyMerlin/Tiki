@@ -126,7 +126,7 @@ input[type=password] {
 input.button,
 button,
 .button input,
-.button,
+span.button,
 input.wikiaction,
 .calbuttonbox {
 	background: #4e4e4e url(darkroom/button.png) top left repeat-x;
@@ -167,7 +167,7 @@ input.button:hover,
 button:hover,
 input[type=submit]:hover,
 .button input:hover,
-.button:hover,
+span.button:hover,
 .calbuttonbox a:hover {
 	border: 1px solid #b2b2b2;
 }
@@ -177,7 +177,7 @@ input[type=submit]:hover,
 	padding: 0 4px;
 }
 
-.button {
+span.button {
 	font-size: 0.8em;
 /*	padding: 0;*/
 }
@@ -499,7 +499,7 @@ a.flip:hover,
 	padding: 4px 2px 2px 8px;
 }
 
-.box .mdksubframe .mdkitem {
+.box .mdksubframe div.mdkitem {
 	margin-left: 0;
 	padding-left: 0;
 }
@@ -696,15 +696,15 @@ a.phplmselected:hover {
 
 /** Links in other menus **/
  
-.separator,
-.separatorline {
+div.separator,
+div.separatorline {
 	color: #f5f5f5;
 	display: block;
 	padding: 5px 4px 4px 10px;
 }
 
-.separator:hover,
-.option a.linkmenu:hover {
+div.separator:hover,
+div.option a.linkmenu:hover {
 	text-decoration: none;
 	color: #303030;
 	background: #b2b2b2;
@@ -716,8 +716,8 @@ a.separator:hover {
 	background: #b2b2b2;
 }
 
-.menuSection .menuSection,
-.menuSection .separator {
+div.menuSection div.menuSection,
+div.menuSection div.separator {
 	padding-left: 5px;
 }
 
@@ -725,15 +725,15 @@ a.linkmodule {
 	font-weight: bold;
 }
  
-.option,
-.optionline {
+div.option,
+div.optionline {
 	color: #5F5F5F;
 	margin: 0;
 	padding: 4px 2px 2px 8px;
 }
 
-.option:hover,
-.option:active {
+div.option:hover,
+div.option:active {
 	color: #303030;
 	background: #b2b2b2;
 }
@@ -846,7 +846,7 @@ a.tikihelp:hover {
 /**** Boxes *****/
 /** Modules **/
 
-.box {
+div.box {
 	background: #292929;
 	margin-bottom: 8px;
 	padding-bottom: 2px;
@@ -958,7 +958,7 @@ img.flipmodimage:hover {
 	color: #fffff0;
 }
 
-.simplebox {
+div.simplebox {
 	background: #696969;
 	padding: 4px;
 }
@@ -979,8 +979,8 @@ table {
 	border-collapse: collapse;
 }
 
-.normal, 
-.admin {
+table.normal, 
+table.admin {
 	border: solid 1px #696969;
 	margin-top: 1em;
 	margin-bottom: 1em;
@@ -1043,12 +1043,12 @@ td.form {
 	color: #f5f5f5;
 }
 
-.toolbar img,
+div.toolbar img,
 #wikihelp-tab td img {
 	background: #e4e4e4;
 }
 
-.xdebug-error tr td {
+table.xdebug-error tr td {
 	color: #292929;
 }
 
@@ -1159,7 +1159,7 @@ a.wiki {
 	margin-top: 1em;
 }
 
-.wikitext .box {
+.wikitext div.box {
 	width: auto;
 }
 
@@ -1167,7 +1167,7 @@ a.wiki {
 	width: 100%;
 }
 
-.wikitable {
+table.wikitable {
 	border-top: 1px solid #a9a9a9;
 	border-left: 1px solid #a9a9a9;
 	border-right: 1px solid #696969;
@@ -1216,7 +1216,7 @@ textarea.wikiedit {
 
 /* Wiki plugins */
 /* Code plugin  */
-.code {
+div.code {
 	padding: 3px;
 	border: 1px dashed #ccc;
 	background: #000;
@@ -1250,12 +1250,12 @@ textarea.wikiedit {
 }
 
 /* Quote plugin */
-.quoteheader {
+div.quoteheader {
 	margin-left: 20px;
 	margin-right: 10px;
 }
 
-.quotebody {
+div.quotebody {
 	font-style: italic;
 	margin: 0 10px 10px 5px;
 	padding: 5px;
@@ -1269,7 +1269,7 @@ textarea.wikiedit {
 }
 
 /* Img plugin */
-.imgbox {
+div.imgbox {
 	border: 1px solid #818181;
     background-color: transparent;
 }
@@ -1280,7 +1280,7 @@ form.wikiplugin_edit div {
 }
 
 /** Wiki tocs **/
-.tocnav {
+div.tocnav {
 	background: #474747;
 	padding: 3px;
 }
@@ -1322,38 +1322,38 @@ ul.toc {
 	font-size: 1em;
 }
 
-.articletopline {
+div.articletopline {
 	font-size: 90%;
 	font-style: italic;
 }
 
-.articletitle {
+div.articletitle {
 	color: #d8d8d8;
 	margin: 0 0 15px;
 	padding: 0;
 }
 
- .articletitle h2 {
+ div.articletitle h2 {
 	font-size: 1.6em;
 	font-weight: bold;
 	margin: 0;
 }
 
-.titleb {
+span.titleb {
 	font-size: 1.0em;
 }
  
-.articlesubtitle {
+div.articlesubtitle {
 	font-size: 90%;
 	font-style: italic;
 }
 
-.articleheading {
+div.articleheading {
 	margin-top: 6px;
 	line-height: 1.5em;
 }
 
-.articleheadingtext {
+div.articleheadingtext {
 	color: #d8d8d8;
 }
 
@@ -1376,13 +1376,13 @@ img.articleimage {
 	border: 1px solid #989898;
 }
 
-.articletrailer .wikitopline {
+div.articletrailer .wikitopline {
 	background: #4e4e4e url(darkroom/button.png) top left repeat-x;
 	width: 100%;
 }
 
 /***** Blogs *****/
-.blogtitle {
+div.blogtitle {
 	font-size: 1.8em;
 	font-weight: bold;
 	padding: 3px;
@@ -1391,14 +1391,14 @@ img.articleimage {
 	line-height: 80%;
 }
 
-.bloginfo {
+div.bloginfo {
 	text-align: right;
 	padding: 3px;
 	font-size: 95%;
 	background: none;
 }
 
-.blogtools {
+div.blogtools {
 	margin-right: 4px;
 }
 
@@ -1412,7 +1412,7 @@ img.articleimage {
 	padding: 2px;
 }
 
-.posthead {
+div.posthead {
 	display: block;
 	font-weight: bold;
 	letter-spacing: .4pt;
@@ -1442,7 +1442,7 @@ body.tiki_blogs .post .postbody {
 	padding: 6px 0;
 }
 
-body.tiki_blogs .author_actions {
+body.tiki_blogs div.author_actions {
 	float: none;
 	background: none;
 	border: 0;
@@ -1614,7 +1614,7 @@ body.tiki_blogs .postfooter .actions {
 	float: left;
 }
 
-.commentsedithelp {
+div.commentsedithelp {
 	background: #ffcfcf;
 	color: #d8d8d8;
 	border: 1px solid #ff0000;
@@ -1634,7 +1634,7 @@ ul.catitems li {
 /***** Tags (freetags) *****/
 
 /***** Image Galleries *****/
-.galtable {
+table.galtable {
 	border-collapse: collapse;
 	border: 1px solid #999;
 }
@@ -1654,7 +1654,7 @@ td.eventhumb {
 }
 
 /***** File Galleries *****/
-.thumbnailcontener {
+div.thumbnailcontener {
 	border: 1px solid #292929;
 	overflow: hidden;
 	margin: 2px;
@@ -1666,21 +1666,21 @@ div#thumbnails {
 	padding: 1px;
 }
 
-.thumbname,
-.thumbimage {
+div.thumbname,
+div.thumbimage {
 	padding: 4px;
 }
 
-.thumbinfosothers {
+div.thumbinfosothers {
 	font-size: 80%;
 }
 
-.thumbname {
+div.thumbname {
 	border-top: 1px dotted #292929;
 	border-bottom: 1px dotted #292929;
 }
 
-.thumbactions {
+div.thumbactions {
 	text-align: right;
 }
 
@@ -2069,7 +2069,7 @@ a.viewmodeon img.icon {
 }
 
 /*****  Polls  *****/
-.pollresults {
+div.pollresults {
 	margin-top: 5px;
 	font-size: 1.2em;
 	padding: 0 5px;
@@ -2082,29 +2082,29 @@ td.pollr {
 /***** FAQs *****/
 
 /***** Quizzes *****/
-.questionblock {
+div.questionblock {
 	padding: 4px;
 }
 
 /***** Shoutbox *****/
 
 /***** Directory *****/
-.dircategs {
+div.dircategs {
 	border: 1px solid #d8d8d8;
 	padding: 5px;
 }
 
-.dirlistsites {
+div.dirlistsites {
 	padding: 5px 0 10px 5px;
 	margin-top: 10px;
 }
 
-.dirsite {
+div.dirsite {
 	background: #696969;
 	border: 1px solid #aaa;
 }
 
-.dirrelated {
+div.dirrelated {
 	margin-top: 10px;
 	padding: 5px;
 }
@@ -2113,7 +2113,7 @@ td.dirfooter {
 	font-size: .95em;
 }
 
-.dirfooter {
+div.dirfooter {
 	margin-top: 10px;
 }
 
@@ -2146,15 +2146,15 @@ td.prio5 {
 	background: #000;
 }
 
-.messureadflag {
+div.messureadflag {
 	background: inherit;
 }
 
-.messureadhead {
+div.messureadhead {
 	background: #3f3f3f;
 }
 
-.messureadbody {
+div.messureadbody {
 	background: #3f3f3f;
 }
 
@@ -2174,15 +2174,15 @@ div#ajaxLoading {
 }
 
 /***** TikiSheet *****/
-.default thead td,
-.default tfoot td {
+table.default thead td,
+table.default tfoot td {
 	font-weight: bold;
 	text-align: center;
 	color: #d8d8d8;
 	background: #000;
 }
 
-.default td {
+table.default td {
 	border: solid 1px #a9a9a9;
 	background: #000;
 }
@@ -2218,16 +2218,16 @@ a.admbox.off:active {
 	border: 1px solid #9f9f9f;
 }
 
-.multiselect {
+div.multiselect {
 	border: 1px solid #606060;
 }
 
-.multiselect li.odd {
+div.multiselect li.odd {
 	background: #3f3f3f;
 	color: #fff;
 }
 
-.multiselect li.even {
+div.multiselect li.even {
 	background: #3f3f3f;
 	color: #fff;
 }

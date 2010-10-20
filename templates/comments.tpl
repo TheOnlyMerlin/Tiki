@@ -94,35 +94,13 @@
 					{if $forum_mode neq 'y'}
 						<div class="headers">
 						{if $tiki_p_admin_comments eq 'y' or $tiki_p_lock_comments eq 'y'}
-							{if ($tiki_p_admin_comments eq 'y' and ($prefs.feature_comments_moderation eq 'y' || $prefs.comments_archive eq 'y')) or $prefs.feature_comments_locking eq 'y'}
+							{if ($tiki_p_admin_comments eq 'y' and $prefs.feature_comments_moderation eq 'y') or $prefs.feature_comments_locking eq 'y'}
 								<span class="title">{tr}Moderator actions{/tr}</span>
 							{/if}
 							<span class="infos">
-							{if $tiki_p_admin_comments eq 'y'}
-								{if $prefs.feature_comments_moderation eq 'y'}
-									<a class="link" href="tiki-list_comments.php?types_section={$section}&amp;findfilter_approved=n{if isset($blogId)}&amp;blogId={$blogId}{/if}">{tr}queued:{/tr} {$queued}</a>
-									&nbsp;&nbsp;
-								{/if}
-								{if $prefs.comments_archive eq 'y' && $count_archived_comments > 0}
-									<span class="button" id="comments_showArchived">
-										<a>
-											{if $count_archived_comments == 1}
-												{tr 0=$count_archived_comments}Show %0 archived comment{/tr}
-											{else}
-												{tr 0=$count_archived_comments}Show %0 archived comments{/tr}
-											{/if}
-										</a>
-									</span>
-									<span class="button" id="comments_hideArchived" style="display: none;">
-										<a>
-											{if $count_archived_comments == 1}
-												{tr 0=$count_archived_comments}Hide %0 archived comment{/tr}
-											{else}
-												{tr 0=$count_archived_comments}Hide %0 archived comments{/tr}
-											{/if}
-										</a>
-									</span>
-								{/if}
+							{if $tiki_p_admin_comments eq 'y' and $prefs.feature_comments_moderation eq 'y'}
+								<a class="link" href="tiki-list_comments.php?types_section={$section}&amp;findfilter_approved=n{if isset($blogId)}&amp;blogId={$blogId}{/if}">{tr}queued:{/tr} {$queued}</a>
+								&nbsp;&nbsp;
 							{/if}
 							{if $prefs.feature_comments_locking eq 'y'}
 								{if $thread_is_locked eq 'y'}

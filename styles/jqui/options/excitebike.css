@@ -23,12 +23,12 @@ a:hover {
 	text-decoration: underline;
 }
 
-.button a:link,
-.button a:visited,
+span.button a:link,
+span.button a:visited,
 button,
 input[type="reset"],
 input[type="submit"],
-.button input,
+span.button input,
 .calbuttonBox a {
 	border: 1px solid #2293f7;
 	font-weight: bold;
@@ -39,7 +39,7 @@ input[type="submit"],
 	-webkit-border-radius: 4px;
 }
 
-.button a:hover,
+span.button a:hover,
 .button a:hover,
 button:hover,
 input[type="reset"]:hover,
@@ -198,8 +198,8 @@ h3.box-title {
 .box-data a:visited,
 .wikitext a,
 .wikitext a:visited,
-.normal a.link,
-.normal a {
+table.normal a.link,
+table.normal a {
 	color: #e69700;
 }
 
@@ -239,7 +239,7 @@ h3.box-title {
 	text-decoration: underline;
 }
 
-.normal {
+table.normal {
 	border: 1px solid #aaaaaa;
 }
 
