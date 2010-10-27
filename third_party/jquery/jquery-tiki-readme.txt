@@ -5,6 +5,9 @@ JQuery/Tiki readme
 jonnybradley 27 oct 2010 (still for 6.0)
 	colorbox - 1.3.12 to 1.3.13
 
+Modification:
+	Added trailing semicolon to jquery.async.js (not updated since 2008 and seems stable)
+
 jonnybradley 20 october 2010 (for Tiki 6.0)
 
 Update:

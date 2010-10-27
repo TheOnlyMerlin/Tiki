@@ -74,4 +74,4 @@ $.fn.eachAsync = function(opts)
 	return this;
 }
 
-})(jQuery)
+})(jQuery);
