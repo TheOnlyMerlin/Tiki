@@ -946,14 +946,6 @@ a.register_link {
 legend.heading {
 	background: transparent;
 }
-/*	
-.admin a.link,
-.admin a,
-.admin label,
-fieldset.admin label,
-.cbox fieldset.admin a {
-	color: #fff;
-}*/
 
 fieldset.admin .adminoptionbox label,
 fieldset.admin .adminoptionlabel {
@@ -1100,26 +1092,6 @@ a.dirsublink {
 }
 
 /***** Admin *****/
-
-a.admbox.off:hover,
-a.admbox.off:focus,
-a.admbox.off:active {
-	border-right: ;
-	border-top: ;
-	border-left: ;
-	border-bottom: ;
-}
-
-.toolbars-admin .full li,
-.toolbars-admin .rows .row,
-.textarea-toolbar,
-.toolbar-list,
-.toolbar-list,
-a.toolbar,
-a.qt-inline {
-	background: ;
-	color: ;
-}*/
 
 /***** Ajax, jquery. etc. *****/
 /***** Ajax *****/

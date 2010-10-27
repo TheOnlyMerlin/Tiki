@@ -384,17 +384,11 @@ class CategLib extends ObjectLib
 	        
 		$query = "insert into `tiki_category_objects`(`catObjectId`,`categId`) values(?,?)";
 		$result = $this->query($query,array((int) $catObjectId,(int) $categId));
-
-		global $cachelib;
-		$cachelib->invalidate("allcategs");
 	}
 
 	function uncategorize($catObjectId, $categId) {
 		$query = "delete from `tiki_category_objects` where `catObjectId`=? and `categId`=?";
 		$result = $this->query($query,array((int) $catObjectId,(int) $categId),-1,-1,false);
-
-		global $cachelib;
-		$cachelib->invalidate("allcategs");
 	}
 
 	function get_category_descendants($categId) {
@@ -506,6 +500,10 @@ class CategLib extends ObjectLib
 			$bindWhere[] = $type;
 		}
 
+		global $user;
+		$permMap = $this->map_object_type_to_permission();
+		$groupList = $this->get_user_groups($user);
+
 		$bindVars = $bindWhere;
 
 		$orderBy = '';
@@ -520,19 +518,7 @@ class CategLib extends ObjectLib
 		$query = $query_cant . $orderBy;
 		$result = $this->fetchAll($query,$bindVars);
 		$cant = count($result);
-
-		if ($sort_mode == 'shuffle') {
-			shuffle($ret);
-		}
-
-		return $this->filter_object_list($result, $cant, $offset, $maxRecords);
-	}
 		
-	private function filter_object_list($result, $cant, $offset, $maxRecords) {
-		global $user, $prefs;
-		$permMap = $this->map_object_type_to_permission();
-		$groupList = $this->get_user_groups($user);
-
 		// Filter based on permissions
 		$contextMap = array( 'type' => 'type', 'object' => 'itemId' );
 		$contextMapMap = array_fill_keys( array_keys( $permMap ), $contextMap );
@@ -551,7 +537,6 @@ class CategLib extends ObjectLib
 		foreach( $result as $res ) {
 			if (!in_array($res['catObjectId'].'-'.$res['categId'], $objs)) { // same object and same category
 				if (preg_match('/trackeritem/',$res['type'])&&$res['description']=='') {
-					global $trklib; include_once('lib/trackers/trackerlib.php');
 					$trackerId=preg_replace('/^.*trackerId=([0-9]+).*$/','$1',$res['href']);
 					$res['name']=$trklib->get_isMain_value($trackerId,$res['itemId']);
 					$filed=$trklib->get_field_id($trackerId,"description");
@@ -569,31 +554,14 @@ class CategLib extends ObjectLib
 			}
 		}
 
-		return array(
-			"data" => $ret,
-			"cant" => $cant,
-		);
-	}
+		$retval = array();
+		if ($sort_mode == 'shuffle') {
+			shuffle($ret);
+		}
 
-	function list_orphan_objects($offset, $maxRecords, $sort_mode) {
-		$orderClause = $this->convertSortMode($sort_mode);
-
-		$common = "
-			FROM
-				tiki_objects
-				LEFT JOIN tiki_category_objects ON objectId = catObjectId
-			WHERE
-				catObjectId IS NULL
-			ORDER BY $orderClause
-			";
-
-		$query = "SELECT objectId catObjectId, 0 categId, type, itemId, name, href $common";
-		$queryCount = "SELECT COUNT(*) $common";
-		
-		$result = $this->fetchAll($query, array(), $maxRecords, $offset);
-		$count = $this->getOne($queryCount);
-
-		return $this->filter_object_list($result, $count, $offset, $maxRecords);
+		$retval["data"] = $ret;
+		$retval["cant"] = $cant;
+		return $retval;
 	}
 
 	// get the parent categories of an object
@@ -1423,7 +1391,7 @@ class CategLib extends ObjectLib
 		}		
 	}
 	
-	function group_watch_category_and_descendants($group, $categId, $categName, $top = true) {
+function group_watch_category_and_descendants($group, $categId, $categName, $top = true) {
 		global $tikilib, $descendants; 
 		
 		if ($categId != 0 && $top == true) {

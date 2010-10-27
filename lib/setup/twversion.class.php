@@ -23,10 +23,10 @@ class TWVersion
 		//   stable   : Represents stable releases.
 		//   unstable : Represents candidate and test/development releases.
 		//   trunk     : Represents next generation development version.
-		$this->branch 	= 'trunk';
+		$this->branch 	= 'unstable';
 
 		// Set everything else, including defaults.
-		$this->version 	= '7.0 SVN trunk';
+		$this->version 	= '6.0beta3';
 		$this->star	= '';
 		$this->releases	= array();
 
@@ -41,8 +41,6 @@ class TWVersion
 		return $this->latestMinorRelease;
 	}
 
-	// Returns the version number string.
-	// On a development version, this returns the number of the next release on this branch.
 	function getBaseVersion()
 	{
 		return preg_replace( "/^(\d+\.\d+).*$/", '$1', $this->version );
@@ -133,6 +131,7 @@ class TWVersion
 				'5.3',
 				'6.0beta1',
 				'6.0beta2',
+				'6.0beta3',
 				);
 	}
 
@@ -144,8 +143,7 @@ class TWVersion
 		return $star;
 	}
 
-	// Returns the full version string.
-	// For example, 5.2 would return "5.2". A development version could return "7.0 SVN trunk".
+	// Determines the currently-running version of Tikiwiki.
 	function getVersion() {
 		return $this->version;
 	}

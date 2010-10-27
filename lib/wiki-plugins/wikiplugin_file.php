@@ -10,8 +10,8 @@ function wikiplugin_file_info()
 	return array(
 		'name' => tra( 'File' ),
 		'documentation' => 'PluginFile',
-		'description' => tra("Displays a link to an attachment to a wiki page and can display an image attachment. "),
-		'prefs' => array( 'feature_wiki_attachments', 'wikiplugin_file' ),
+		'description' => tra("Displays a link to a file (either from the file gallery or an attachment to a wiki page) and can display an image attachment."),
+		'prefs' => array( 'wikiplugin_file' ),
 		'inline' => true,
 		'params' => array(
     		'name' => array(
@@ -22,35 +22,35 @@ function wikiplugin_file_info()
  			'desc' => array(
 				'required' => false,
 				'name' => tra('Description'),
-				'description' => tra('Used as link label instead of the file name or file description'),
+				'description' => tra('Wiki attachment:') . ' ' . tra('Comment'),
 			),
     		'page' => array(
 				'required' => false,
 				'name' => tra('Page'),
-				'description' => tra("Gives the name of another page the attached file is on. The file on that page is linked to instead. Only works with wiki pages"),
+				'description' => tra('Wiki attachment:') . ' ' . tra("Name of the wiki page the file is attached to. If left empty when the plugin is used on a wiki page, this defaults to that wiki page."),
 			),
     		'showdesc' => array(
 				'required' => false,
-				'name' => tra('Show attachment description'),
-				'description' => tra("If non-empty, show the attachment description as the link label instead of the attachment name." . " " . tra('Example value:') . ' 1.'),
+				'name' => tra('Show description'),
+				'description' => tra("Shows the description as the link text instead of the file name"),
 			),
     		'image' =>array(
 				'required' => false,
 				'name' => tra('Image'),
-				'description' => tra("Says that this file is an image, and should be displayed inline using the img tag"),
+				'description' => tra('Wiki attachment:') . ' ' . tra("Says that this file is an image, and should be displayed inline using the img tag"),
 			),
 			'fileId' => array(
 				'required' => false,
-				'name' => tra('File ID'),
-				'description' => tra('Numeric ID of a file in the file galleries'),
+				'name' => tra('File identifier'),
+				'description' => tra('File from gallery:') . ' ' . tra('Identifier of a file in the file galleries.') . ' ' . tra('Example value:') . ' 42',
 				'filter' => 'digits',
 			),
 			'date' => array(
 				'required' => false,
 				'name' => tra('Date'),
-				'description' => tra('Pick the archive if exists created just before the date'),
+				'description' => tra('File from gallery:') . ' ' . tra('Pick the archive if exists created just before the date of the fileId'),
 			),
-		),
+		)
 	);
 }
 
@@ -58,6 +58,7 @@ function wikiplugin_file( $data, $params )
 {
 	global $tikilib, $prefs;
 	if (isset($params['fileId'])) {
+		global $filegallib; include_once ('lib/filegals/filegallib.php');
 		if ($prefs['feature_file_galleries'] != 'y') {
 			return;
 		}
@@ -75,18 +76,26 @@ function wikiplugin_file( $data, $params )
 				}
 				$wikipluginFileDate = $date;
 			}
-			global $filegallib; include_once ('lib/filegals/filegallib.php');
 			$fileId = $filegallib->getArchiveJustBefore($fileId, $date);
 			if (empty($fileId)) {
 				return tra('No such file');
 			}
+		} else {
+			$info = $filegallib->get_file_info($fileId);
+			if (empty($info)) {
+				return tra('Incorrect param').' fileId';
+			}
 		}
+			
 		if (empty($data)) { // to avaoid problem with parsing
-			$data = ' ';
+			$data = empty($info['name'])?$info['filename']: $info['name'];
 		}
 		return "[tiki-download_file.php?fileId=$fileId|$data]";
 	}
 
+	if ($prefs['feature_wiki_attachments'] != 'y') {
+		return "<span class='warn'>" . tra("Wiki attachments are disabled."). "</span>";
+	}	
 	$filedata = array();
 	$filedata["name"] = '';
 	$filedata["desc"] = '';

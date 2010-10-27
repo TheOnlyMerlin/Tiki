@@ -143,9 +143,9 @@ class FileGalLib extends TikiLib
 	}
 
 	function set_file_gallery($file, $gallery) {
-		$query = "update `tiki_files` set `galleryId`=? where `fileId`=?";
+		$query = "update `tiki_files` set `galleryId`=? where `fileId`=? or `archiveId`=?";
 
-		$this->query($query,array($gallery,$file));
+		$this->query($query,array($gallery,$file, $file));
 		return true;
 	}
 
@@ -1273,14 +1273,14 @@ class FileGalLib extends TikiLib
 		}
 		if (preg_match_all('/\[(.+)\]/Umi', $data, $matches)) {
 			foreach ($matches as $match) {
-				if (isset($match[1]) && $fileId = $this->getLinkFileId($match[1])) {
+				if ($fileId = $this->getLinkFileId($match[1])) {
 					$fileIds[] = $fileId;
 				}
 			}
 		}
 		if (preg_match_all('/<a[^>]*href=(\'|\")?([^>*])/Umi', $data, $matches)) {
 			foreach ($matches as $match) {
-				if (isset($match[2]) && $fileId = $this->getLinkFileId($match[2])) {
+				if ($fileId = $this->getLinkFileId($match[2])) {
 					$fileIds[] = $fileId;
 				}
 			}

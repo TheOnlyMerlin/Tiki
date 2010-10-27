@@ -5,7 +5,7 @@ require_once(dirname(__FILE__) . '/../../importer/tikiimporter_wiki_mediawiki.ph
 require_once(dirname(__FILE__) . '/../../tikilib.php');
 
 /** 
- * @group importer
+ * @group integration
  */
 class TikiImporter_Wiki_Mediawiki_Test extends TikiImporter_TestCase
 {
@@ -62,8 +62,6 @@ class TikiImporter_Wiki_Mediawiki_Test extends TikiImporter_TestCase
         $_POST['importAttachments'] = 'on';
 
         $obj->import(dirname(__FILE__) . '/fixtures/mediawiki_sample.xml');
-        
-        unset($_POST['importAttachments']);
     }
 
     public function testImportShouldRaiseExceptionForInvalidMimeType()

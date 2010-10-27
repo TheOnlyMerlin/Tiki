@@ -3517,7 +3517,7 @@ class TikiLib extends TikiDb_Bridge
 		global $categlib; require_once( 'lib/categories/categlib.php' );
 		$category_jails = $categlib->get_jail();
 
-		if( ! isset( $filter['andCategId'] ) && ! isset( $filter['categId'] ) && ! empty( $category_jails ) ) {
+		if( ! isset( $filter['categId'] ) && ! empty( $category_jails ) ) {
 			$filter['categId'] = $category_jails;
 		}
 		
@@ -3530,15 +3530,7 @@ class TikiLib extends TikiDb_Bridge
 		if (!empty($filter)) {
 			$tmp_mid = array();
 			foreach ($filter as $type=>$val) {
-				if ($type == 'andCategId') {
-					$categories = $categlib->get_jailed( (array) $val );
-					$join_tables .= " inner join `tiki_objects` as tob on (tob.`itemId`= tp.`pageName` and tob.`type`= ?) ";
-					$join_bindvars[] = 'wiki page';
-					foreach ($categories as $i=>$categId) {
-						$join_tables .= " inner join `tiki_category_objects` as tc$i on (tc$i.`catObjectId`=tob.`objectId` and tc$i.`categId` =?) ";
-						$join_bindvars[] = $categId;
-					}
-				} elseif ($type == 'categId') {
+				if ($type == 'categId') {
 					$categories = $categlib->get_jailed( (array) $val );
 					$categories[] = -1;
 
@@ -3554,11 +3546,6 @@ class TikiLib extends TikiDb_Bridge
 					$join_tables .= ' left join `tiki_objects` as tob on (tob.`itemId`= tp.`pageName` and tob.`type`= ?) left join `tiki_categorized_objects` as tcdo on (tcdo.`catObjectId`=tob.`objectId`) left join `tiki_category_objects` as tco on (tcdo.`catObjectId`=tco.`catObjectId`)';
 					$join_bindvars[] = 'wiki page';
 					$tmp_mid[] = '(tco.`categId` is null)';
-				} elseif ($type == 'notCategId') {
-					foreach ($val as $v) {
-						$tmp_mid[] = '(tp.`pageName` NOT IN(SELECT itemId FROM tiki_objects INNER JOIN tiki_category_objects ON catObjectId = objectId WHERE type = "wiki page" AND categId = ?))';
-						$bindvars[] = $v;
-					}
 				} elseif ($type == 'lang') {
 					$tmp_mid[] = 'tp.`lang`=?';
 					$bindvars[] = $val;
@@ -4687,132 +4674,284 @@ class TikiLib extends TikiDb_Bridge
 		if( ! is_array( $pluginskiplist ) )
 			$pluginskiplist = array();
 
-		require_once 'WikiParser/PluginMatcher.php';
-		require_once 'WikiParser/PluginArgumentParser.php';
-		$matches = WikiParser_PluginMatcher::match($this->htmldecode($data));
-		$argumentParser = new WikiParser_PluginArgumentParser;
-
+		if( strlen( $data ) <= 1 ) {
+			return;
+		}
+		
 		if (!isset($options['parseimgonly'])) {
 			$options['parseimgonly'] = false;
 		}
 
-		foreach ($matches as $match) {
-			if ($options['parseimgonly'] && $this->getName() != 'img') {
-				continue;
+		// Find the plugins
+		$this->plugin_match( $data, $plugins );
+
+		$data1 = $data;
+		$data2 = "";
+
+		// Cook until done.
+		while( count($plugins) > 0 && ( $data1 != $data2 ) ) {
+			$data1 = $data;
+			$plugin_start = $plugins[0];
+
+			if( count($plugins) > 1 ) {
+				$plugin = $plugins[1];
 			}
 
-			$plugin_name = $match->getName();
-			$plugin_data = $match->getBody();
-			$arguments = $argumentParser->parse($match->getArguments());
-			$start = $match->getStart();
+			// print "<pre>plugin: :".htmlspecialchars( $plugin ) .":</pre>";
 
-			$pluginOutput = null;
-			if( $this->plugin_enabled( $plugin_name, $pluginOutput ) ) {
-
-				static $plugin_indexes = array();
-
-				if( ! array_key_exists( $plugin_name, $plugin_indexes ) )
-					$plugin_indexes[$plugin_name] = 0;
-
-				$current_index = ++$plugin_indexes[$plugin_name];
-
-				if( true === $status = $this->plugin_can_execute( $plugin_name, $plugin_data, $arguments ) ) {
-					if (isset($options['stripplugins']) && $options['stripplugins']) {
-						$ret = '';	
-					} else {
-						$ret = $this->plugin_execute( $plugin_name, $plugin_data, $arguments, $start, false, $options);
-					}
+			if ($plugin == 'img' || !$options['parseimgonly']) {	// parse images only for fckeditor switch to html (probably TOKIL)
+				$pos = strpos( $data, $plugins[0] ); // where the plugin starts
+	
+				// where the part after the plugin arguments starts
+				$pos_middle = $pos + strlen( $plugins[0] );
+	
+				// print "<pre>pos's: :$pos, $pos_middle:</pre>";
+	
+				// process "short" plugins here: {plugin par1=>val1} - melmut
+				if( isset($plugins['type']) && $plugins['type'] == 'short' && preg_match("/ *\}$/",$plugin_start) ) {
+					$plugin_end='';
+					$pos_end = $pos + strlen($plugin_start);
+				// process "short" plugins here: {PLUGIN(par1=>val1)/} - melmut
+				} elseif( preg_match("/\/ *\}$/",$plugin_start) ) {
+					$plugin_end='';
+					$pos_end = $pos + strlen($plugin_start);
+				} elseif( ! ( strpos( $plugin_start, '~pp~' ) === false ) ) {
+					$plugin_end = '~/pp~';
+					$pos_end = strpos($data, $plugin_end, $pos); // where plugin data ends
+				} elseif( ! ( strpos( $plugin_start, '~np~' ) === false ) ) {
+					$plugin_end = '~/np~';
+					$pos_end = strpos($data, $plugin_end, $pos); // where plugin data ends
+				} elseif( preg_match( "/^ *&lt;[pP][rR][eE]&gt;/", $plugin_start ) ) {
+					preg_match("/&lt;\/[pP][rR][eE]&gt;/", $data, $plugin_ends, 0, $pos); // where plugin data ends
+					$plugin_end = $plugin_ends[0];
+					$pos_end = strpos($data, $plugin_end, $pos); // where plugin data ends
 				} else {
-					global $tiki_p_plugin_viewdetail, $tiki_p_plugin_preview, $tiki_p_plugin_approve;
-					$details = $tiki_p_plugin_viewdetail == 'y' && $status != 'rejected';
-					$preview = $tiki_p_plugin_preview == 'y' && $details && ! $options['preview_mode'];
-					$approve = $tiki_p_plugin_approve == 'y' && $details && ! $options['preview_mode'];
-
-					if( $status != 'rejected' ) {
-						$smarty->assign( 'plugin_fingerprint', $status );
-						$status = 'pending';
+					$plugin_end = '{' . $plugin;
+					$count=1;
+					while($count) { // this takes care of possible nested plugins with same name
+						$pos_end = strpos($data, $plugin_end, $pos_middle);
+						if ($pos_end === false) {
+							$pos_end = strlen($data);
+							break;
+						}
+						$pos_middle = $pos_end+strlen($plugin_end);
+						$char = substr($data, $pos_middle, 1);
+						if ($char == '}') $count--;
+						else if ($char == '(') $count++;
 					}
-
-					if ($options['ck_editor']) {
-						$ret = $this->convert_plugin_for_ckeditor( $plugin_name, $arguments, tra('Plugin execution pending approval'), $plugin_data, array('icon' => 'pics/icons/error.png') );
-					} else {
-						$smarty->assign( 'plugin_name', $plugin_name );
-						$smarty->assign( 'plugin_index', $current_index );
-
-						$smarty->assign( 'plugin_status', $status );
-						$smarty->assign( 'plugin_details', $details );
-						$smarty->assign( 'plugin_preview', $preview );
-						$smarty->assign( 'plugin_approve', $approve );
-
-						$smarty->assign( 'plugin_body', $plugin_data );
-						$smarty->assign( 'plugin_args', $arguments );
-
-						$ret = '~np~' . $smarty->fetch('tiki-plugin_blocked.tpl') . '~/np~';
-					}
+					$plugin_end .= '}'; // where plugin data ends
 				}
-			} else {
-				$ret = $pluginOutput->toWiki();
-			}
 
-			global $headerlib;
-			$headerlib->add_jsfile( 'tiki-jsplugin.php?language='.$prefs['language'], 'dynamic' );
-			if( $this->plugin_is_editable( $plugin_name ) && (empty($options['preview_mode']) || !$options['preview_mode']) && (empty($options['print']) || !$options['print']) && !$options['suppress_icons'] ) {
-				include_once('lib/smarty_tiki/function.icon.php');
-				global $page;
-				$id = 'plugin-edit-' . $plugin_name . $current_index;
-		
-				$headerlib->add_js( "
+				/*
+					 print "<pre>pos's2: :$pos, $pos_middle, $pos_end:</pre>";
+					 print "<pre>plugin_end: :".htmlspecialchars( $plugin_end ) .":</pre>";
+				 */
+	
+				// Extract the plugin data
+				if ($pos_end === false) {
+					$pos_end = strlen($data);
+				}
+				$plugin_data_len = $pos_end - $pos - strlen($plugins[0]);
+				$plugin_data = substr($data, $pos + strlen($plugin_start), $plugin_data_len);
+
+				/*
+					 print "<pre>data: :".htmlspecialchars( $plugin_data ) .":</pre>";
+					 print "<pre>end: :".htmlspecialchars( $plugin_end ) .":</pre>";
+				 */
+	
+				if( preg_match( "/^ *&lt;[pP][rR][eE]&gt;|^ *~pp~|^ *~np~/", $plugin_start ) ) {
+					// ~pp~ type "plugins"
+					$key = "§".md5($this->genPass())."§";
+					$noparsed["key"][] = preg_quote($key);
+					// comment out the following line: create problem with TRACKERLIST and popup because the <\/td> are changed
+					//$plugin_data = str_replace('\\','\\\\',$plugin_data);
+					//if( strstr( $plugin_data, '$' ) ) {
+						//$plugin_data = str_replace('$', '\$', $plugin_data);
+					//}
+					if( $plugin_start == "~pp~" ) {
+						$noparsed["data"][] = "<pre>" . $plugin_data . "</pre>";
+					} elseif( preg_match( "/^ *&lt;[pP][rR][eE]&gt;/", $plugin_start ) ) {
+						preg_match( "/^ *&lt;([pP][rR][eE])&gt;/", $plugin_start, $plugins );
+						$plugin_start2 = $plugins[1];
+						preg_match( "/^ *&lt;\/([pP][rR][eE])&gt;/", $plugin_end, $plugins );
+						$plugin_end2 = $plugins[1];
+						$noparsed["data"][] = "<" . $plugin_start2 . ">" . $plugin_data . "</" . $plugin_end2 . ">";
+					} else {
+						$noparsed["data"][] = $plugin_data;
+					}
+	
+					// Replace plugin section with its output in data
+					$data = substr_replace($data, $key, $pos, $pos_end - $pos + strlen($plugin_end));
+				} else {
+					// print "<pre>args1: :".htmlspecialchars( $plugins[2] ) .":</pre>";
+					// Handle nested plugins in the arguments.
+					$this->parse_first($plugins[2], $preparsed, $noparsed, $options);
+					// print "<pre>args2: :".htmlspecialchars( $plugins[2] ) .":</pre>";
+	
+					// Normal plugins
+					$plugin_name = strtolower($plugins[1]);
+	
+					// Construct argument list array
+					$arguments = $plugins['arguments'];
+
+					if (count($arguments) == 0) {
+                        //TODO HACK: See bug 2499 http://dev.tiki.org/tiki-view_tracker_item.php?itemId=2499
+						$arguments = array('' => '');
+					}
+
+					$pluginOutput = null;
+					if( $this->plugin_enabled( $plugin_name, $pluginOutput ) ) {
+
+						static $plugin_indexes = array();
+
+						if( ! array_key_exists( $plugin_name, $plugin_indexes ) )
+							$plugin_indexes[$plugin_name] = 0;
+
+						$current_index = ++$plugin_indexes[$plugin_name];
+
+						// save plugin_data for plugin edit JS later (needs to not be plugin-parsed)
+						$plugin_data_saved = $plugin_data;
+
+						// We store CODE stuff out of the way too, but then process it as a plugin as well.
+						if( preg_match( '/^ *\{CODE\(/', $plugin_start ) ) {
+							$ret = wikiplugin_code(
+								$options['is_html'] ? $plugin_data : TikiLib::htmldecode($plugin_data),
+								$arguments
+							);
+
+							// Pull the np out.
+							preg_match( "/~np~(.*)~\/np~/s", $ret, $stuff );
+
+							if( count( $stuff ) > 0 ) {
+								$key = "§".md5($this->genPass())."§";
+								$noparsed["key"][] =  preg_quote($key);
+								$noparsed["data"][] = $stuff[1];
+
+								$ret = preg_replace( "/~np~.*~\/np~/s", $key, $ret );
+							}
+							
+							if ($options['ck_editor']) {
+								$ret = $this->convert_plugin_for_ckeditor( $plugin_name, $arguments, $ret, $plugin_data, array('icon' => 'pics/icons/page_white_code.png') );
+							}
+
+						} else {
+							
+							// Handle nested plugins.
+							// Comment : in a case like {TRACKERITEMFIELD(test)}{INCLUDE() /}{TRACKERITEMFIELD}. INCLUDE Must not be interpreted if TRACKERITEMFIELD return false
+							//$this->parse_first($plugin_data, $preparsed, $noparsed, $options, $real_start_diff + $pos+strlen($plugin_start));
+
+							if( true === $status = $this->plugin_can_execute( $plugin_name, $plugin_data, $arguments ) ) {
+								if (isset($options['stripplugins']) && $options['stripplugins']) {
+									$ret = '';	
+								} else {
+									$ret = $this->plugin_execute( $plugin_name, $plugin_data, $arguments, $real_start_diff + $pos+strlen($plugin_start), false, $options);
+								}
+							} else {
+								global $tiki_p_plugin_viewdetail, $tiki_p_plugin_preview, $tiki_p_plugin_approve;
+								$details = $tiki_p_plugin_viewdetail == 'y' && $status != 'rejected';
+								$preview = $tiki_p_plugin_preview == 'y' && $details && ! $options['preview_mode'];
+								$approve = $tiki_p_plugin_approve == 'y' && $details && ! $options['preview_mode'];
+
+								if( $status != 'rejected' ) {
+									$smarty->assign( 'plugin_fingerprint', $status );
+									$status = 'pending';
+								}
+
+								if ($options['ck_editor']) {
+									$ret = $this->convert_plugin_for_ckeditor( $plugin_name, $arguments, tra('Plugin execution pending approval'), $plugin_data, array('icon' => 'pics/icons/error.png') );
+								} else {
+									$smarty->assign( 'plugin_name', $plugin_name );
+									$smarty->assign( 'plugin_index', $current_index );
+	
+									$smarty->assign( 'plugin_status', $status );
+									$smarty->assign( 'plugin_details', $details );
+									$smarty->assign( 'plugin_preview', $preview );
+									$smarty->assign( 'plugin_approve', $approve );
+	
+									$smarty->assign( 'plugin_body', $plugin_data );
+									$smarty->assign( 'plugin_args', $arguments );
+	
+									$ret = '~np~' . $smarty->fetch('tiki-plugin_blocked.tpl') . '~/np~';
+								}
+							}
+						}
+						//echo '<pre>'; debug_print_backtrace(); echo '</pre>';
+						global $headerlib;
+						$headerlib->add_jsfile( 'tiki-jsplugin.php?language='.$prefs['language'], 'dynamic' );
+						if( $this->plugin_is_editable( $plugin_name ) && (empty($options['preview_mode']) || !$options['preview_mode']) && (empty($options['print']) || !$options['print']) && !$options['suppress_icons'] ) {
+							include_once('lib/smarty_tiki/function.icon.php');
+							global $page;
+							$id = 'plugin-edit-' . $plugin_name . $current_index;
+					
+							if ($prefs['feature_jquery'] == 'y') {
+								$headerlib->add_js( "
 \$(document).ready( function() {
-if( \$('#$id') ) {
-\$('#$id').click( function(event) {
-	popup_plugin_form("
-		. json_encode('editwiki')
-		. ', '
-		. json_encode($plugin_name) 
-		. ', ' 
-		. json_encode($current_index) 
-		. ', ' 
-		. json_encode($page) 
-		. ', ' 
-		. json_encode($arguments) 
-		. ', ' 
-		. json_encode(TikiLib::htmldecode($plugin_data)) 
-		. ", event.target);
-} );
-}
+	if( \$('#$id') ) {
+		\$('#$id').click( function(event) {
+			popup_plugin_form("
+				. json_encode('editwiki')
+				. ', '
+				. json_encode($plugin_name) 
+				. ', ' 
+				. json_encode($current_index) 
+				. ', ' 
+				. json_encode($page) 
+				. ', ' 
+				. json_encode($arguments) 
+				. ', ' 
+				. json_encode(TikiLib::htmldecode($plugin_data_saved)) 
+				. ", event.target);
+		} );
+	}
 } );
 " );
+							}
+							if ($prefs['wiki_edit_icons_toggle'] == 'y' && ($prefs['wiki_edit_plugin'] == 'y' || $prefs['wiki_edit_section'] == 'y')) {
+								if (!isset($_COOKIE['wiki_plugin_edit_view'])) {
+									$iconDisplayStyle = ' style="display:none;"';
+								}
+							} else {
+								$iconDisplayStyle = '';
+							}
+							$ret = $ret.'~np~<a id="' .$id. '" href="javascript:void(1)" class="editplugin"'.$iconDisplayStyle.'>'.smarty_function_icon(array('_id'=>'wiki_plugin_edit', 'alt'=>tra('Edit Plugin').':'.$plugin_name), $smarty)."</a>~/np~";
+						}
 
-				$iconDisplayStyle = '';
-				if ($prefs['wiki_edit_icons_toggle'] == 'y' && ($prefs['wiki_edit_plugin'] == 'y' || $prefs['wiki_edit_section'] == 'y')) {
-					if (!isset($_COOKIE['wiki_plugin_edit_view'])) {
-						$iconDisplayStyle = ' style="display:none;"';
+					} else {
+						// Handle nested plugins.
+						$this->parse_first($plugin_data, $preparsed, $noparsed, $options);
+
+						$ret = $pluginOutput->toWiki() . $plugin_data;
+					}
+
+					$skip = false;
+	
+					if( ! $skip ) {
+						// Handle pre- & no-parse sections and plugins inserted by this plugin
+						$this->parse_first($ret, $preparsed, $noparsed, $options);
+						//$ret = $this->parse_data($ret);
+	
+						// Replace plugin section with its output in data
+						$data = substr_replace($data, $ret, $pos, $pos_end - $pos + strlen($plugin_end));
+						$real_start_diff -= strlen($ret) - $pos_end - $pos + strlen($plugin_end);
 					}
 				}
-
-				$ret = $ret.'~np~<a id="' .$id. '" href="javascript:void(1)" class="editplugin"'.$iconDisplayStyle.'>'.smarty_function_icon(array('_id'=>'wiki_plugin_edit', 'alt'=>tra('Edit Plugin').':'.$plugin_name), $smarty)."</a>~/np~";
 			}
+			
+			// Find the plugins
+			// note: [1] is plugin name, [2] is plugin arguments
+			$this->plugin_match( $data, $plugins );
 
-			// End plugin handling
+			$data2 = $data;
 
-			$match->replaceWith($ret);
+		} // while
+		// print "<pre>real done data: :".htmlspecialchars( $data ) .":</pre>";
+		
+		// if plugins are to be stripped, clear all data
+		if (isset($options['stripplugins']) && $options['stripplugins']) {
+			foreach ($preparsed["data"] as &$n) {
+				$n = '';
+			}
 		}
-
-		$data = $matches->getText();
-
-		while (false !== $start = strpos($data, '~np~')) {
-			$end = strpos($data, '~/np~', $start);
-			$content = substr($data, $start + 4, $end - $start - 4);
-
-			// ~pp~ type "plugins"
-			$key = "§".md5($this->genPass())."§";
-			$noparsed["key"][] = preg_quote($key);
-			$noparsed["data"][] = $content;
-
-			$data = substr($data, 0, $start) . $key . substr($data, $end + 5);
-		}
-
-		// TODO : Handle ~pp~
 	}
 
 	function plugin_get_list( $includeReal = true, $includeAlias = true ) {
@@ -5166,8 +5305,6 @@ if( \$('#$id') ) {
 	}
 
 	function plugin_execute( $name, $data = '', $args = array(), $offset = 0, $validationPerformed = false, $parseOptions = array() ) {
-		require_once 'lib/core/WikiParser/PluginOutput.php';
-
 		global $prefs;
 		$outputFormat = 'wiki';
 		if( isset($parseOptions['context_format']) ) {
@@ -5187,6 +5324,8 @@ if( \$('#$id') ) {
 			$trklib->replace_pretty_tracker_refs($args);
 		}
 		
+		require_once 'lib/core/WikiParser/PluginOutput.php';
+
 		$func_name = 'wikiplugin_' . $name;
 		
 		if( ! $validationPerformed ) {
