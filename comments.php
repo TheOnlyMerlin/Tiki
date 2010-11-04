@@ -47,9 +47,9 @@ if ( isset($forum_mode) && $forum_mode == 'y' ) {
 	foreach ( $handled_requests as $request_name ) {
 		if ( empty($$request_name) && empty($_REQUEST[$request_name]) ) {
 			$$request_name = $prefs['forum_'.$request_name];
-		} elseif ( empty($$request_name) && !empty($_REQUEST[$request_name]) ) {
-			$$request_name = $_REQUEST[$request_name];
-		}
+        } elseif ( empty($$request_name) && !empty($_REQUEST[$request_name]) ) {
+        	$$request_name = $_REQUEST[$request_name];
+        }
 	}
 
 	if ( $forum_info['is_flat'] == 'y' ) {
@@ -275,29 +275,14 @@ if ( isset($_REQUEST['comments_objectId']) && $_REQUEST['comments_objectId'] == 
 	}
 }
 
+// Comments Moderation
 global $tiki_p_admin_comments;
-if ((!isset($forum_mode) || $forum_mode == 'n') && $tiki_p_admin_comments == 'y' && isset($_REQUEST["comments_threadId"])) {
-	// Comments Moderation
-    if (!empty($_REQUEST['comments_approve'])) {
-		if ( $_REQUEST['comments_approve'] == 'y' ) {
-			$commentslib->approve_comment($_REQUEST["comments_threadId"]);
-		} elseif ( $_REQUEST['comments_approve'] == 'n' ) {
-			$commentslib->reject_comment($_REQUEST["comments_threadId"]);
-		}
-	}
+if ( (!isset($forum_mode) || $forum_mode == 'n') && $tiki_p_admin_comments == 'y' && isset($_REQUEST["comments_threadId"]) && !empty($_REQUEST['comments_approve']) ) {
 
-	// Comments archive
-	if ($prefs['comments_archive'] == 'y') {
-		if (!empty($_REQUEST['comment_archive'])) {
-			if ($_REQUEST['comment_archive'] == 'y') {
-				$commentslib->archive_thread($_REQUEST['comments_threadId']);
-			} else if ($_REQUEST['comment_archive'] == 'n') {
-				$commentslib->unarchive_thread($_REQUEST['comments_threadId']);
-			}
-		}
-		
-		$object = explode(':', $comments_objectId);
-		$smarty->assign('count_archived_comments', $commentslib->count_object_archived_comments($object[1], $object[0]));
+	if ( $_REQUEST['comments_approve'] == 'y' ) {
+		$commentslib->approve_comment($_REQUEST["comments_threadId"]);
+	} elseif ( $_REQUEST['comments_approve'] == 'n' ) {
+		$commentslib->reject_comment($_REQUEST["comments_threadId"]);
 	}
 }
 
@@ -436,6 +421,9 @@ if( isset( $_REQUEST["comments_grandParentId"] ) )
 	$smarty->assign('comments_grandParentId', $_REQUEST["comments_grandParentId"]);
 }
 
+if(!empty($forum_mode) && $forum_mode == 'y') {
+	$_REQUEST["comments_parentId"] > 0;
+}
 if (isset($_REQUEST["post_reply"]) && isset($_REQUEST["comments_reply_threadId"]))
 $threadId_if_reply = $_REQUEST["comments_reply_threadId"];
 else

@@ -1273,14 +1273,14 @@ class FileGalLib extends TikiLib
 		}
 		if (preg_match_all('/\[(.+)\]/Umi', $data, $matches)) {
 			foreach ($matches as $match) {
-				if (isset($match[1]) && $fileId = $this->getLinkFileId($match[1])) {
+				if ($fileId = $this->getLinkFileId($match[1])) {
 					$fileIds[] = $fileId;
 				}
 			}
 		}
 		if (preg_match_all('/<a[^>]*href=(\'|\")?([^>*])/Umi', $data, $matches)) {
 			foreach ($matches as $match) {
-				if (isset($match[2]) && $fileId = $this->getLinkFileId($match[2])) {
+				if ($fileId = $this->getLinkFileId($match[2])) {
 					$fileIds[] = $fileId;
 				}
 			}
@@ -1362,10 +1362,10 @@ class FileGalLib extends TikiLib
 	function moveFiles($to='to_fs', &$feedbacks) {
 		if ($to == 'to_db') {
 			$query = 'select * from `tiki_files` where `path` != ?';
-			$msg = tra('Number of files transferred to the database:');
+			$msg = tra('Number of files transfered to the database:');
 		} else {
 			$query = 'select * from `tiki_files` where `path` = ?';
-			$msg = tra('Number of files transferred to the file system:');
+			$msg = tra('Number of files transfered to the file system:');
 		}
 		$result = $this->query($query, array(''));
 		$nb = 0;

@@ -147,8 +147,8 @@ if ($prefs['feature_phplayers'] == 'y' && $prefs['feature_category_use_phplayers
 		$tree_nodes[] = array(
 			'id' => $c['categId'],
 			'parent' => $c['parentId'],
-			'data' => '<span class="object-count">'.$c['objects'].'</span>' . $c['eyes'].' <a class="catname" href="tiki-browse_categories.php?parentId=' . $c["categId"] . '&amp;deep=' . $deep . '&amp;type=' 
-						. urlencode($type) . '">' . htmlspecialchars($c['name']) .'</a> ', 
+			'data' => $c['eyes'].' <a class="catname" href="tiki-browse_categories.php?parentId=' . $c["categId"] . '&amp;deep=' . $deep . '&amp;type=' 
+						. urlencode($type) . '">' . htmlspecialchars($c['name']) .'</a> ('.$c['objects'].')', 
 		);
 	}
 	$tm = new CatBrowseTreeMaker('categ');
@@ -249,7 +249,7 @@ function add_watch_icons($descendants, $usercatwatches, $requestid, $categid, $d
 			$objName = $categlib->get_category_path_string_with_root($categid);
 		}
 		$eyesgroup = '&nbsp;<a href="tiki-object_watches.php?objectId=' . $categid . '&amp;watch_event=category_changed&amp;objectType=Category&amp;objectName=' 
-				. urlencode($objName) . '&amp;objectHref=tiki-browse_categories.php?parentId=' . $categid . '&amp;deep=' . $deep . '" >
+				. $objName . '&amp;objectHref=tiki-browse_categories.php?parentId=' . $categid . '&amp;deep=' . $deep . '" >
 				<img src="pics/icons/eye_group.png" alt="' . tra($tip_group) . '" width="14" style="margin-bottom:2px" height="14" border="0" 
 				title="' . tra($tip_group) . '" class="catname" /></a>';
 	}

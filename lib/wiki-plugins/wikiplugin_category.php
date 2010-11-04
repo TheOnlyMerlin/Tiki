@@ -110,13 +110,6 @@ function wikiplugin_category_info() {
 				'default' => 'y',
 				'filter' => 'alpha',
 			),		
-			'maxRecords' => array(
-				'required' => false,
-				'name' => tra('Max Records'),
-				'description' => 'Maximum number of objects to list. Default 50.',
-				'default' => '50',
-				'filter' => 'digits',
-			),		
 		),
 	);
 }
@@ -132,7 +125,7 @@ function wikiplugin_category($data, $params) {
 		return "<span class='warn'>" . tra("Categories are disabled"). "</span>";
 	}
 
-	$default = array('one' => 'n', 'showlinks' => 'y', 'categoryshowlink'=>'y', 'maxRecords' => 50);
+	$default = array('one' => 'n', 'showlinks' => 'y', 'categoryshowlink'=>'y');
 	$params = array_merge($default, $params);
 	extract ($params,EXTR_SKIP);
 
@@ -175,5 +168,5 @@ function wikiplugin_category($data, $params) {
 	}
 	$smarty->assign('params', $params);
 
-	return "~np~". $categlib->get_categoryobjects($id,$types,$sort,$split,$sub,$and, $maxRecords)."~/np~";
+	return "~np~". $categlib->get_categoryobjects($id,$types,$sort,$split,$sub,$and)."~/np~";
 }

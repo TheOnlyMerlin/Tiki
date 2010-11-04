@@ -50,21 +50,6 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
      */
     var $parser = '';
 
-	/**
-     * Check for DOMDocument.
-     * 
-     * @see lib/importer/TikiImporter#checkRequirements()
-     *
-     * @return void 
-     * @throws Exception if DOMDocument not available
-     */
-	function checkRequirements()
-	{
-		if (!class_exists('DOMDocument')) {
-			throw new Exception(tra('Class DOMDocument not available, check your PHP installation. For more information see http://php.net/manual/en/book.dom.php'));
-		}
-	}
-
     /**
      * Start the importing process by loading the XML file.
      * 
@@ -125,12 +110,7 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
 
     /**
      * At present this method only validates the Mediawiki XML
-     * against its DTD (Document Type Definition). Mediawiki XML
-     * versions 0.3 and 0.4 are supported.
-     * 
-     * Note: we use schemaValidate() instead of validate() because
-     * for some unknown reason the former method is unable to automatically
-     * retrieve Mediawiki XML DTD and dies with "no DTD found" error.
+     * against its DTD (Document Type Definition)
      * 
      * @see lib/importer/TikiImporter#validateInput()
      *
@@ -138,19 +118,7 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
      */
     function validateInput()
     {
-    	$xmlVersion = $this->dom->getElementsByTagName('mediawiki')->item(0)->getAttribute('version');
-
-    	switch ($xmlVersion) {
-    		case '0.3':
-    		case '0.4':
-    			$xmlDtdFile = dirname(__FILE__) . "/mediawiki_dump_v$xmlVersion.xsd";
-    			break;
-    		default:
-    			throw new DOMException(tra("Mediawiki XML file version $xmlVersion is not supported."));
-    			break;
-    	}
-    	
-        if (!@$this->dom->schemaValidate($xmlDtdFile)) {
+        if (!@$this->dom->schemaValidate(dirname(__FILE__) . '/mediawiki_dump.xsd')) {
             throw new DOMException(tra('XML file does not validate against the Mediawiki XML schema'));
         }
     }
@@ -426,3 +394,6 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
     }
 }
 
+class ImporterParserException extends Exception
+{
+}

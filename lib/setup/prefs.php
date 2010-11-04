@@ -264,7 +264,6 @@ function get_default_prefs() {
 		'wikiplugin_jq' => 'n',
 		'wikiplugin_lang' => 'y',
 		'wikiplugin_lastmod' => 'n',
-		'wikiplugin_list' => 'n',
 		'wikiplugin_listpages' => 'n',
 		'wikiplugin_lsdir' => 'n',
 		'wikiplugin_mail' => 'n',
@@ -332,7 +331,6 @@ function get_default_prefs() {
 		'wikiplugin_transclude' => 'y',
 		'wikiplugin_translated' => 'y',
 		'wikiplugin_tr' => 'n',
-		'wikiplugin_twitter' => 'y',
 		'wikiplugin_usercount' => 'n',
 		'wikiplugin_userlink' => 'y',
 		'wikiplugin_userlist' => 'n',
@@ -413,7 +411,6 @@ function get_default_prefs() {
 		'wikiplugininline_jq' => 'n',
 		'wikiplugininline_lang' => 'n',
 		'wikiplugininline_lastmod' => 'n',
-		'wikiplugininline_list' => 'n',
 		'wikiplugininline_listpages' => 'n',
 		'wikiplugininline_lsdir' => 'n',
 		'wikiplugininline_mail' => 'y',
@@ -481,7 +478,6 @@ function get_default_prefs() {
 		'wikiplugininline_transclude' => 'y',
 		'wikiplugininline_translated' => 'n',
 		'wikiplugininline_tr' => 'n',
-		'wikiplugininline_twitter' => 'n',
 		'wikiplugininline_usercount' => 'n',
 		'wikiplugininline_userlink' => 'n',
 		'wikiplugininline_userlist' => 'n',
@@ -1275,13 +1271,7 @@ function get_default_prefs() {
 <div id="quickadmin" style="text-align: left; padding-left: 12px;"><small>{tr}Quick Admin{/tr}</small>:
 {icon _id=database_refresh title="{tr}Clear all Tiki caches{/tr}" href="tiki-admin_system.php?do=all"}
 {icon _id=wrench title="{tr}Modify the look &amp; feel (logo, theme, etc.){/tr}" href="tiki-admin.php?page=look&amp;cookietab=2"} 
-{if $prefs.lang_use_db eq "y"}
-{if isset($smarty.session.interactive_translation) && $smarty.session.interactive_translation_mode eq "on"}
-{icon _id=world_edit title="{tr}Toggle interactive translation off{/tr}" href="tiki-interactive_trans.php?interactive_translation_mode=off"}
-{else}
-{icon _id=world_edit title="{tr}Toggle interactive translation on{/tr}" href="tiki-interactive_trans.php?interactive_translation_mode=on"}
-{/if}
-{/if}
+{if $prefs.lang_use_db eq "y"}{icon _id=world_edit title="{tr}Show interactive translation settings{/tr}" href="tiki-edit_languages.php?interactive_translation_mode=on"}{/if}
 </div>  
 {/if}',
 		'sitemycode_publish' => 'n',
@@ -1587,14 +1577,6 @@ function get_default_prefs() {
 		'socialnetworks_facebook_api_key' =>'',
 		'socialnetworks_facebook_application_secr' => '',
 		'socialnetworks_facebook_application_id' => '',
-		'socialnetworks_facebook_login' => 'n',
-		'socialnetworks_facebook_autocreateuser' => 'n',
-		'socialnetworks_facebook_firstloginpopup' => 'n',
-		'socialnetworks_facebook_offline_access' => 'y',
-		'socialnetworks_facebook_publish_stream' => 'y',
-		'socialnetworks_facebook_manage_events' => 'y',
-		'socialnetworks_facebook_manage_pages' => 'y',
-		'socialnetworks_facebook_sms' => 'y',
 		'socialnetworks_bitly_login' => '',
 		'socialnetworks_bitly_key' => '',
 		'socialnetworks_bitly_sitewide' => 'n',
@@ -1810,11 +1792,6 @@ function get_default_prefs() {
 		'comments_field_email' => 'n',
 		'comments_field_website' => 'n',
 		'comments_vote' => 'n',
-		'comments_archive' => 'n',
-
-		// Unified search
-		'unified_engine' => 'lucene',
-		'unified_lucene_location' => 'temp/unified-index',
 	);
 
 	// Special default values

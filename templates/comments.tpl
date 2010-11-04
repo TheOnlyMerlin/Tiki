@@ -94,35 +94,13 @@
 					{if $forum_mode neq 'y'}
 						<div class="headers">
 						{if $tiki_p_admin_comments eq 'y' or $tiki_p_lock_comments eq 'y'}
-							{if ($tiki_p_admin_comments eq 'y' and ($prefs.feature_comments_moderation eq 'y' || $prefs.comments_archive eq 'y')) or $prefs.feature_comments_locking eq 'y'}
+							{if ($tiki_p_admin_comments eq 'y' and $prefs.feature_comments_moderation eq 'y') or $prefs.feature_comments_locking eq 'y'}
 								<span class="title">{tr}Moderator actions{/tr}</span>
 							{/if}
 							<span class="infos">
-							{if $tiki_p_admin_comments eq 'y'}
-								{if $prefs.feature_comments_moderation eq 'y'}
-									<a class="link" href="tiki-list_comments.php?types_section={$section}&amp;findfilter_approved=n{if isset($blogId)}&amp;blogId={$blogId}{/if}">{tr}queued:{/tr} {$queued}</a>
-									&nbsp;&nbsp;
-								{/if}
-								{if $prefs.comments_archive eq 'y' && $count_archived_comments > 0}
-									<span class="button" id="comments_showArchived">
-										<a>
-											{if $count_archived_comments == 1}
-												{tr 0=$count_archived_comments}Show %0 archived comment{/tr}
-											{else}
-												{tr 0=$count_archived_comments}Show %0 archived comments{/tr}
-											{/if}
-										</a>
-									</span>
-									<span class="button" id="comments_hideArchived" style="display: none;">
-										<a>
-											{if $count_archived_comments == 1}
-												{tr 0=$count_archived_comments}Hide %0 archived comment{/tr}
-											{else}
-												{tr 0=$count_archived_comments}Hide %0 archived comments{/tr}
-											{/if}
-										</a>
-									</span>
-								{/if}
+							{if $tiki_p_admin_comments eq 'y' and $prefs.feature_comments_moderation eq 'y'}
+								<a class="link" href="tiki-list_comments.php?types_section={$section}&amp;findfilter_approved=n{if isset($blogId)}&amp;blogId={$blogId}{/if}">{tr}queued:{/tr} {$queued}</a>
+								&nbsp;&nbsp;
 							{/if}
 							{if $prefs.feature_comments_locking eq 'y'}
 								{if $thread_is_locked eq 'y'}
@@ -439,9 +417,9 @@
 						</td>
 
 						<td>
-							<input type="submit" id="comments_postComment" name="comments_postComment" value="{tr}Post{/tr}" />
+							<input type="submit" id="comments_postComment" name="comments_postComment" value="{tr}Post{/tr}" onclick="needToConfirm=false;" />
 							{if !empty($user) && $prefs.feature_comments_post_as_anonymous eq 'y'}
-								<input type="submit" name="comments_postComment_anonymous" value="{tr}Post as Anonymous{/tr}" />
+								<input type="submit" name="comments_postComment_anonymous" value="{tr}Post as Anonymous{/tr}" onclick="needToConfirm=false;" />
 							{/if}
 							<input type="submit" name="comments_previewComment" id="comments_previewComment" value="{tr}Preview{/tr}"
 							{if ( isset($can_attach_file) && $can_attach_file eq 'y' ) or empty($user)}{strip}
@@ -451,9 +429,9 @@
 									if ($('#userfile1').val()) alert('{$file_preview_warning|escape:"javascript"}');
 								{/if}
 								"
-							{/strip}{/if} />
+							{/strip}{else} onclick="needToConfirm=false;"{/if} />
 							{if $forum_mode eq 'y'}
-								<input type="button" name="comments_cancelComment" value="{tr}Cancel{/tr}" onclick="hide('{$postclass}');" />
+								<input type="submit" name="comments_cancelComment" value="{tr}Cancel{/tr}" onclick="hide('{$postclass}'); return false" />
 							{elseif $prefs.feature_comments_moderation eq 'y' and $tiki_p_admin_comments neq 'y'}
 								{remarksbox type="note" title="{tr}Note{/tr}"}
 									{tr}Your comment will have to be approved by the moderator before it is displayed.{/tr}

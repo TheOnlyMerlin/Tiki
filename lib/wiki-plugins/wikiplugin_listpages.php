@@ -5,6 +5,14 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+function wikiplugin_listpages_help() {
+	$help = tra("List wiki pages.");
+	$help .= "<br />";
+	$help .= "~np~{LISTPAGES(initial=txt, showNameOnly=y|n, categId=id, structHead=y|n, showPageAlias=y|n, offset=num, max=num, find=txt, exact_match=y|n, only_orphan_pages=y|n, for_list_pages=y|n)}{LISTPAGES}~/np~";
+
+	return $help;
+}
+
 function wikiplugin_listpages_info() {
 	return array(
 		'name' => tra('List Pages'),
@@ -17,7 +25,6 @@ function wikiplugin_listpages_info() {
 				'required' => false,
 				'name' => tra('Result Offset'),
 				'description' => tra('Result number at which the listing should start.'),
-				'filter' => 'int',
 			),
 			'max' => array(
 				'required' => false,
@@ -33,25 +40,21 @@ function wikiplugin_listpages_info() {
 				'required' => false,
 				'name' => tra('Show Name Only'),
 				'description' => 'y|n',
-				'filter' => 'alpha',
 			),
 			'categId' => array(
 				'required' => false,
 				'name' => tra('Category'),
-				'description' => tra('Category ID').' '.tra('For an OR between categories use : (ex:1:2). For and AND use + ex(1+2). For substractions, use - ex(1-2-3).'),
-				'filter' => 'striptags',
+				'description' => tra('Category ID'),
 			),
 			'structHead' => array(
 				'required' => false,
 				'name' => tra('Structure Head'),
 				'description' => 'y|n',
-				'filter' => 'alpha',
 			),
 			'showPageAlias' => array(
 				'required' => false,
 				'name' => tra('Show Page Alias'),
 				'description' => 'y|n',
-				'filter' => 'alpha',
 			),
 			'find' => array(
 				'required' => false,
@@ -77,19 +80,16 @@ function wikiplugin_listpages_info() {
 				'required' => false,
 				'name' => tra('Exact Match'),
 				'description' => 'y|n'.' '.tra('Related to Find.'),
-				'filter' => 'alpha',
 			),
 			'only_orphan_pages' => array(
 				'required' => false,
 				'name' => tra('Only Orphan Pages'),
 				'description' => 'y|n',
-				'filter' => 'alpha',
 			),
 			'for_list_pages' => array(
 				'required' => false,
 				'name' => tra('For List Pages'),
 				'description' => 'y|n',
-				'filter' => 'alpha',
 			),
 			'sort' => array(
 				'required' => false,
@@ -110,7 +110,6 @@ function wikiplugin_listpages_info() {
 				'required' => false,
 				'name' => tra('Length'),
 				'description' => tra('Number of characters to display'),
-				'filter' => 'int',
 			),
 		),
 	);
@@ -144,17 +143,7 @@ function wikiplugin_listpages($data, $params) {
 		}
 	}
 	if (!empty($categId)) {
-		if (strstr($categId, ':')) {
-			$filter['categId'] = explode(':', $categId);
-		} elseif (strstr($categId, '+')) {
-			$filter['andCategId'] = explode('+', $categId);
-		} elseif (strstr($categId, '-')) {
-			$categories = explode('-', $categId);
-			$filter['categId'] = array_shift($categories);
-			$filter['notCategId'] = $categories;
-		} else {
-			$filter['categId'] = $categId;
-		}
+		$filter['categId'] = $categId;
 	}
 	if (!empty($structHead) && $structHead == 'y') {
 		$filter['structHead'] = $structHead;

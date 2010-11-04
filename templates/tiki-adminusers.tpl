@@ -206,7 +206,7 @@
 							{if $prefs.feature_userPreferences eq 'y' || $user eq 'admin'}
 								<a class="link" href="tiki-user_preferences.php?userId={$users[user].userId}" title="{tr}Change user preferences:{/tr} {$username}">{icon _id='wrench' alt="{tr}Change user preferences:{/tr} `$username`"}</a>
 							{/if}
-							{if $users[user].user eq $user or $users[user].user_information neq 'private' or $tiki_p_admin eq 'y'}
+							{if $users[user].user eq $user or $users[user].user_information neq 'private'}
 								<a class="link" href="tiki-user_information.php?userId={$users[user].userId}" title="{tr}User Information:{/tr} {$username}">{icon _id='help' alt="{tr}User Information:{/tr} `$username`"}</a>
 							{/if}
 		
@@ -518,6 +518,8 @@
 					<input type="file" id="csvlist" name="csvlist"/>
 					<br />
 					<label><input type="radio" name="overwrite" value="y" checked="checked" />&nbsp;{tr}Overwrite{/tr}</label>
+					<br />
+					<label><input type="radio" name="overwrite" value="c"/>&nbsp;{tr}Overwrite but keep the previous login if the login exists in another case{/tr}</label>
 					<br />
 					<label><input type="radio" name="overwrite" value="n" />&nbsp;{tr}Don't overwrite{/tr}</label>
 					<br />
