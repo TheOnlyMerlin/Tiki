@@ -76,12 +76,6 @@ if ($prefs['feature_freetags'] == 'y') {
 	}
 }
 
-if ($prefs['feature_categories'] == 'y') {
-	$cat_type = 'blog post';
-	$cat_objid = $postId;
-	require_once('categorize_list.php');	
-}
-
 $smarty->assign('ownsblog', $ownsblog);
 $post_info['data'] = TikiLib::htmldecode($post_info['data']);
 $smarty->assign('postId', $postId);
@@ -128,7 +122,7 @@ if ($prefs['feature_blogposts_comments'] == 'y') {
 		'sort_mode',
 		'blogId'
 	);
-	$comments_prefix_var = 'blog post:';
+	$comments_prefix_var = 'post:';
 	$comments_object_var = 'postId';
 	include_once ("comments.php");
 }

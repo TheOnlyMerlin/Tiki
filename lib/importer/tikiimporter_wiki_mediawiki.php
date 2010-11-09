@@ -32,6 +32,13 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
     public $validTypes = array('application/xml', 'text/xml');
 
     /**
+     * @see lib/importer/TikiImporter#importOptions
+     */
+    static public $importOptions = array(
+        array('name' => 'importAttachments', 'type' => 'checkbox', 'label' => 'Import images and attachments (see documentation for more information)'),
+    );    
+
+    /**
      * The directory used to save the attachments.
      * It is defined on $this->import()
      */
@@ -42,33 +49,6 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
      * syntax parsing
      */
     var $parser = '';
-
-    /**
-     * @see lib/importer/TikiImporter#importOptions()
-     */
-    static public function importOptions()
-    {
-    	$options = array(
-        	array('name' => 'importAttachments', 'type' => 'checkbox', 'label' => tra('Import images and attachments (see documentation for more information)')),
-        );
-        
-        return $options;
-    }
-    
-	/**
-     * Check for DOMDocument.
-     * 
-     * @see lib/importer/TikiImporter#checkRequirements()
-     *
-     * @return void 
-     * @throws Exception if DOMDocument not available
-     */
-	function checkRequirements()
-	{
-		if (!class_exists('DOMDocument')) {
-			throw new Exception(tra('Class DOMDocument not available, check your PHP installation. For more information see http://php.net/manual/en/book.dom.php'));
-		}
-	}
 
     /**
      * Start the importing process by loading the XML file.
@@ -130,12 +110,7 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
 
     /**
      * At present this method only validates the Mediawiki XML
-     * against its DTD (Document Type Definition). Mediawiki XML
-     * versions 0.3 and 0.4 are supported.
-     * 
-     * Note: we use schemaValidate() instead of validate() because
-     * for some unknown reason the former method is unable to automatically
-     * retrieve Mediawiki XML DTD and dies with "no DTD found" error.
+     * against its DTD (Document Type Definition)
      * 
      * @see lib/importer/TikiImporter#validateInput()
      *
@@ -143,19 +118,7 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
      */
     function validateInput()
     {
-    	$xmlVersion = $this->dom->getElementsByTagName('mediawiki')->item(0)->getAttribute('version');
-
-    	switch ($xmlVersion) {
-    		case '0.3':
-    		case '0.4':
-    			$xmlDtdFile = dirname(__FILE__) . "/mediawiki_dump_v$xmlVersion.xsd";
-    			break;
-    		default:
-    			throw new DOMException(tra("Mediawiki XML file version $xmlVersion is not supported."));
-    			break;
-    	}
-    	
-        if (!@$this->dom->schemaValidate($xmlDtdFile)) {
+        if (!@$this->dom->schemaValidate(dirname(__FILE__) . '/mediawiki_dump.xsd')) {
             throw new DOMException(tra('XML file does not validate against the Mediawiki XML schema'));
         }
     }
@@ -176,15 +139,15 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
             $this->attachmentsDestDir .= $tikidomain;
 
         if (ini_get('allow_url_fopen') === false) {
-            $this->saveAndDisplayLog(tra("ABORTING: you need to enable the PHP setting 'allow_url_fopen' to be able to import attachments. Fix the problem or try to import without the attachments.") . "\n");
+            $this->saveAndDisplayLog("ABORTING: you need to enable the PHP setting 'allow_url_fopen' to be able to import attachments. Fix the problem or try to import without the attachments.\n");
             die;
         }
 
         if (!file_exists($this->attachmentsDestDir)) {
-            $this->saveAndDisplayLog(tra("ABORTING: destination directory for attachments ($this->attachmentsDestDir) does no exist. Fix the problem or try to import without the attachments.") . "\n");
+            $this->saveAndDisplayLog("ABORTING: destination directory for attachments ($this->attachmentsDestDir) does no exist. Fix the problem or try to import without the attachments.\n");
             die;
         } elseif (!is_writable($this->attachmentsDestDir)) {
-            $this->saveAndDisplayLog(tra("ABORTING: destination directory for attachments ($this->attachmentsDestDir) is not writable. Fix the problem or try to import without attachments.") . "\n");
+            $this->saveAndDisplayLog("ABORTING: destination directory for attachments ($this->attachmentsDestDir) is not writable. Fix the problem or try to import without attachments.\n");
             die;
         }
     }
@@ -204,7 +167,7 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
         $parsedData = array();
         $pages = $this->dom->getElementsByTagName('page');
 
-        $this->saveAndDisplayLog("\n" . tra("Parsing pages:") . "\n");
+        $this->saveAndDisplayLog("\nStarting to parse pages:\n");
 
         foreach ($pages as $page) {
             $isAttachment = $page->getElementsByTagName('upload');
@@ -237,11 +200,11 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
         $pages = $this->dom->getElementsByTagName('page');
 
         if ($this->dom->getElementsByTagName('upload')->length == 0) {
-            $this->saveAndDisplayLog("\n\n" . tra("No attachments found to import! Make sure you have created your XML file with the dumpDump.php script and with the option --uploads. This is the only way to import attachment.") . "\n", true);
+            $this->saveAndDisplayLog("\n\nNo attachments found to import! Make sure you have created your XML file with the dumpDump.php script and with the option --uploads. This is the only way to import attachment.\n", true);
             return;
         }
 
-        $this->saveAndDisplayLog("\n\n" . tra("Importing attachments:") . "\n");
+        $this->saveAndDisplayLog("\n\nStarting to import attachments:\n");
 
         foreach ($pages as $page) {
             $attachments = $page->getElementsByTagName('upload');
@@ -254,7 +217,7 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
                 $fileUrl = $lastVersion->getElementsByTagName('src')->item(0)->nodeValue;
 
                 if (file_exists($this->attachmentsDestDir . $fileName)) {
-                    $this->saveAndDisplayLog(tra("NOT importing file $fileName as there is already a file with the same name in the destination directory ($this->attachmentsDestDir)") . "\n", true);
+                    $this->saveAndDisplayLog("NOT importing file $fileName as there is already a file with the same name in the destination directory ($this->attachmentsDestDir)\n", true);
                     continue;
                 }
 
@@ -262,9 +225,9 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
                     $attachmentContent = @file_get_contents($fileUrl);
                     $newFile = fopen($this->attachmentsDestDir . $fileName, 'w');
                     fwrite($newFile, $attachmentContent);
-                    $this->saveAndDisplayLog(tra("File $fileName successfully imported!") . "\n");
+                    $this->saveAndDisplayLog("File $fileName successfully imported!\n");
                 } else {
-                    $this->saveAndDisplayLog(tra("Unable to download file $fileName. File not found.") . "\n", true);
+                    $this->saveAndDisplayLog("Unable to download file $fileName. File not found.\n", true);
                 }
             }
         }
@@ -310,7 +273,7 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
                         try {
                             $data['revisions'][] = $this->extractRevision($node);
                         } catch (ImporterParserException $e) {
-                            $this->saveAndDisplayLog(tra("Error while parsing revision $i of the page \"${data['name']}\". Or there is a problem on the page syntax or on the Text_Wiki parser (the parser used by the importer).") . "\n", true);
+                            $this->saveAndDisplayLog('Error while parsing revision ' . $i . ' of the page "' . $data['name'] . '". Or there is a problem on the page syntax or on the Text_Wiki parser (the parser used by the importer).' . "\n", true);
                         }
                     }
                     break;
@@ -320,13 +283,12 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
             }
         }
 
-        $countRevisions = count($data['revisions']); 
-        if ($countRevisions > 0) {
-            $msg = tra("Page \"${data['name']}\" successfully parsed with $countRevisions revisions (from a total of $totalRevisions revisions).") . "\n";
+        if (count($data['revisions']) > 0) {
+            $msg = 'Page "' . $data['name'] . '" successfully parsed with ' . count($data['revisions']) . " revisions (from a total of $totalRevisions revisions).\n";
             $this->saveAndDisplayLog($msg);
             return $data;
         } else {
-            throw new ImporterParserException(tra("Page \"${data['name']}\" is NOT going to be imported. It was not possible to parse any of the page revisions.") . "\n", true);
+            throw new ImporterParserException('Page "' . $data['name'] . '" is NOT going to be imported. It was not possible to parse any of the page revisions.' . "\n", true);
         }
     }
 
@@ -432,3 +394,6 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
     }
 }
 
+class ImporterParserException extends Exception
+{
+}

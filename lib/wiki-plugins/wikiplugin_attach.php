@@ -71,12 +71,8 @@ function wikiplugin_attach_info() {
 			),
 			'showdesc' => array(
 				'required' => false,
-				'name' => tra('Show attachment description'),
-				'description' => tra("Show the attachment description as the link label instead of the attachment name."),
-				'options' => array(
-					array('text' => tra('No'), 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'),  
-				),
+				'name' => tra('Show description'),
+				'description' => tra("Shows the description as the link text instead of the file name"),
 			),
 			'bullets' => array(
 				'required' => false,

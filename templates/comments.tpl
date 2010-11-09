@@ -94,35 +94,13 @@
 					{if $forum_mode neq 'y'}
 						<div class="headers">
 						{if $tiki_p_admin_comments eq 'y' or $tiki_p_lock_comments eq 'y'}
-							{if ($tiki_p_admin_comments eq 'y' and ($prefs.feature_comments_moderation eq 'y' || $prefs.comments_archive eq 'y')) or $prefs.feature_comments_locking eq 'y'}
+							{if ($tiki_p_admin_comments eq 'y' and $prefs.feature_comments_moderation eq 'y') or $prefs.feature_comments_locking eq 'y'}
 								<span class="title">{tr}Moderator actions{/tr}</span>
 							{/if}
 							<span class="infos">
-							{if $tiki_p_admin_comments eq 'y'}
-								{if $prefs.feature_comments_moderation eq 'y'}
-									<a class="link" href="tiki-list_comments.php?types_section={$section}&amp;findfilter_approved=n{if isset($blogId)}&amp;blogId={$blogId}{/if}">{tr}queued:{/tr} {$queued}</a>
-									&nbsp;&nbsp;
-								{/if}
-								{if $prefs.comments_archive eq 'y' && $count_archived_comments > 0}
-									<span class="button" id="comments_showArchived">
-										<a>
-											{if $count_archived_comments == 1}
-												{tr 0=$count_archived_comments}Show %0 archived comment{/tr}
-											{else}
-												{tr 0=$count_archived_comments}Show %0 archived comments{/tr}
-											{/if}
-										</a>
-									</span>
-									<span class="button" id="comments_hideArchived" style="display: none;">
-										<a>
-											{if $count_archived_comments == 1}
-												{tr 0=$count_archived_comments}Hide %0 archived comment{/tr}
-											{else}
-												{tr 0=$count_archived_comments}Hide %0 archived comments{/tr}
-											{/if}
-										</a>
-									</span>
-								{/if}
+							{if $tiki_p_admin_comments eq 'y' and $prefs.feature_comments_moderation eq 'y'}
+								<a class="link" href="tiki-list_comments.php?types_section={$section}&amp;findfilter_approved=n{if isset($blogId)}&amp;blogId={$blogId}{/if}">{tr}queued:{/tr} {$queued}</a>
+								&nbsp;&nbsp;
 							{/if}
 							{if $prefs.feature_comments_locking eq 'y'}
 								{if $thread_is_locked eq 'y'}
@@ -378,12 +356,21 @@
 						</tr>
 					{/if}
 
+					{if $prefs.section_comments_parse eq 'y' && $forum_mode neq 'y' || $prefs.feature_forum_parse eq 'y' && $forum_mode eq 'y'}
+						{assign var=toolbars_html value=true}{* can't find where this gets set in ui-revamp project *}
+						<tr>
+							<td></td>
+							<td>
+								{toolbars area_id='editpost2' comments='y'}
+							</td>
+						</tr>
+					{/if}
 					<tr>
 						<td>
 							<label for="editpost2">{if $forum_mode eq 'y'}{tr}Reply{/tr}{else}{tr}Comment{/tr} <span class="attention">*</span>{/if}</label>
 						</td>
 						<td>
-							{textarea id="editpost2" name="comments_data" rows=$rows cols=$cols}{if ($forum_mode eq 'y' && $prefs.feature_forum_replyempty ne 'y') || $edit_reply > 0 || ($forum_mode neq 'y' && $post_reply > 0) || $comment_preview eq 'y' || !empty($errors)}{$comment_data}{/if}{/textarea} 
+							<textarea id="editpost2" name="comments_data" rows="{$rows}" cols="{$cols}">{if ($forum_mode eq 'y' && $prefs.feature_forum_replyempty ne 'y') || $edit_reply > 0 || ($forum_mode neq 'y' && $post_reply > 0) || $comment_preview eq 'y' || !empty($errors)}{$comment_data|escape}{/if}</textarea> 
 							<input type="hidden" name="rows" value="{$rows}" />
 							<input type="hidden" name="cols" value="{$cols}" />
 							{if $prefs.feature_wiki_paragraph_formatting eq 'y'}

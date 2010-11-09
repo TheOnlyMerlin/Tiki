@@ -22,7 +22,7 @@ function wikiplugin_file_info()
  			'desc' => array(
 				'required' => false,
 				'name' => tra('Description'),
-				'description' => tra('Wiki attachment:') . ' ' . tra('Used as link label'),
+				'description' => tra('Wiki attachment:') . ' ' . tra('Comment'),
 			),
     		'page' => array(
 				'required' => false,
@@ -31,12 +31,8 @@ function wikiplugin_file_info()
 			),
     		'showdesc' => array(
 				'required' => false,
-				'name' => tra('Show attachment description'),
-				'description' => tra('Wiki attachment:') . ' ' . tra("Show the attachment description as the link label instead of the attachment name."),
-				'options' => array(
-					array('text' => tra('No'), 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'),  
-				),
+				'name' => tra('Show description'),
+				'description' => tra('Wiki attachment:') . ' ' . tra("Shows the description as the link text instead of the file name"),
 			),
     		'image' =>array(
 				'required' => false,
