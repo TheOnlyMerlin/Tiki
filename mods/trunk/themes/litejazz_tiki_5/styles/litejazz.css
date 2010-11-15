@@ -212,6 +212,18 @@ div#sitead {margin: auto}
 #sitead.floatleft {padding-left: 100px}
 #siteloginbar {color: #fff}
 
+#siteloginbar_popup a > .sf-sub-indicator {
+	bottom: 0;
+}
+
+#siteloginbar_popup .cssmenu_horiz li ul {
+	margin-top: -12px;
+}
+
+#siteloginbar_popup .cssmenu_horiz #logout_link ul {
+	margin-left: -10em;
+}
+
 #sitetitle,
 #sitesubtitle {
 	color: #fff;
