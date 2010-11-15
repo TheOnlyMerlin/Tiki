@@ -318,6 +318,14 @@ div#sioptions {
 * html #tiki-top {padding-top: 4px}
 #sitesearchbar {font-size: 77%}
 
+#siteloginbar_popup {
+	bottom: 6px;
+}
+
+#siteloginbar_popup .cssmenu_horiz #logout_link ul {
+	margin-left: -10em;
+}
+
 
 /****** Menus, Links ******/
 /** CSS (suckerfish) menus **/
@@ -375,6 +383,14 @@ ul.cssmenu_horiz li ul li {
 
 .sf-sub-indicator {
 	background: url(fluidindex/arrows-6d809f.png) no-repeat -10px -100px;
+}
+
+.cssmenu_horiz li ul {
+	margin-top: -10px;
+}
+
+.cssmenu_horiz li ul ul {
+	margin-top: 0;
 }
 
 /** PHP Layers Menus **/
