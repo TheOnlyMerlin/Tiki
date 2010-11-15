@@ -386,6 +386,14 @@ td.pill_r {
 	background: url(milkyway/mw_menu_active_bg.png) repeat-x;
 }
 
+#siteloginbar_popup .cssmenu_horiz #logout_link ul {
+	margin-left: -10em;
+}
+
+#siteloginbar_popup .cssmenu_horiz li {
+	padding: 0;
+}
+
 #siteloginbar_popup .cssmenu_horiz li ul li {
 	padding: 0;
 }
@@ -873,6 +881,11 @@ tabmark a:hover,
 	border: 1px solid #aaa;
 	color: #212121;
 	outline: none;
+}
+
+#siteloginbar_popup .cssmenu_horiz li.tabmark:hover {
+	background: url(milkyway/mw_menu_normal_bg.png) repeat-x;
+	color: #212121;
 }
 
 .tabcontent {
