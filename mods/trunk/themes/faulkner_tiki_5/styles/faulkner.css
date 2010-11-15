@@ -377,6 +377,14 @@ input[id="sl-login-pass"] {font-size: 90%}
 	color: #C90;
 	text-decoration: none;
 	background: url(faulkner/menuhover.jpg) repeat-x bottom left}
+	
+#tiki-top .cssmenu_horiz li ul {
+	margin-top: -9px;
+}
+
+#tiki-top .cssmenu_horiz li ul ul {
+	margin-top: -1px;
+}
 
 /* left column width */
 td#leftcolumn .cssmenu_vert,
@@ -640,11 +648,13 @@ td.heading {
 	vertical-align: top}
 
 td.form {padding: 0.2em}
-table.normal tr:hover {background: #EDD4AE}
+
 
 tr.odd,
+td.odd,
 li.odd,
 tr.even,
+td.even,
 li.even {
 	background: url(faulkner/parchment.jpg);
 }
@@ -653,8 +663,9 @@ tr.odd:hover,
 td.odd:hover,
 li.odd:hover,
 tr.even:hover,
+td.even:hover,
 li.even:hover {
-	background: url(faulkner/parchmentlight.jpg) !important;
+	background: url(faulkner/parchmentlight.jpg);
 }
 
 /** Tabs **/
