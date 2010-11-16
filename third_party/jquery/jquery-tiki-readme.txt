@@ -2,6 +2,9 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 16 nov 2010 (for 6.1)
+	jquery.js - 1.4.3 to 1.4.4
+
 jonnybradley 27 oct 2010 (still for 6.0)
 	colorbox - 1.3.12 to 1.3.13
 
