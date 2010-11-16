@@ -24,8 +24,9 @@ require_once('lib/wiki-plugins/wikiplugin_rr.php');
 
 /**
  * This plugin is just an alias to wikiplugin_rr.php. The only difference
- * is that while wikiplugin_rr.php accepts unsecure R commands this one
- * only accepts secure R commands. For a list of accepted commands see 
+ * is that while wikiplugin_rr.php accepts unsecure R commands (once validated
+ * the plugin call by a tiki admin), this one only accepts secure R commands,
+ * without the need of any validation. For a list of accepted commands see 
  * checkCommands() on wikiplugin_rr.php
  * 
  * Probably the same functionality could be achieved using Plugin Alias feature
@@ -35,6 +36,7 @@ function wikiplugin_r_info() {
 	$info = array(
 		'name' => tra('R syntax'),
 		'documentation' => 'PluginR',
+		'prefs' => array( 'wikiplugin_r' ),
 		'description' => tra('Parses R syntax and shows the output either from the code introduced between the plugin tags or from the file attached to a tracker item sent through PluginTracker. It can also be combined with Pretty Trackers to edit params from the script through web forms.'),
 	);
 
