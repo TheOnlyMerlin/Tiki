@@ -1,0 +1,60 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/litejazz_tiki_4/Readme.txt styles/litejazz/Readme.txt
+themes/litejazz_tiki_4/styles/litejazz.css styles/litejazz.css
+themes/litejazz_tiki_4/styles/litejazz/arrows-467aa7.png styles/litejazz/arrows-467aa7.png
+themes/litejazz_tiki_4/styles/litejazz/bg.png styles/litejazz/bg.png
+themes/litejazz_tiki_4/styles/litejazz/body-bg.png styles/litejazz/body-bg.png
+themes/litejazz_tiki_4/styles/litejazz/botbar_custcode.png styles/litejazz/botbar_custcode.png
+themes/litejazz_tiki_4/styles/litejazz/footer.jpg styles/litejazz/footer.jpg
+themes/litejazz_tiki_4/styles/litejazz/header.jpg styles/litejazz/header.jpg
+themes/litejazz_tiki_4/styles/litejazz/index.php styles/litejazz/index.php
+themes/litejazz_tiki_4/styles/litejazz/litejazz.png styles/litejazz/litejazz.png
+themes/litejazz_tiki_4/styles/litejazz/menu-bg.png styles/litejazz/menu-bg.png
+themes/litejazz_tiki_4/styles/litejazz/menu-div.png styles/litejazz/menu-div.png
+themes/litejazz_tiki_4/styles/litejazz/menubg-over.png styles/litejazz/menubg-over.png
+themes/litejazz_tiki_4/styles/litejazz/options/green.css styles/litejazz/options/green.css
+themes/litejazz_tiki_4/styles/litejazz/options/red.css styles/litejazz/options/red.css
+themes/litejazz_tiki_4/styles/litejazz/options/blue/index.php styles/litejazz/options/blue/index.php
+themes/litejazz_tiki_4/styles/litejazz/options/blue/topbar_custcode.png styles/litejazz/options/blue/topbar_custcode.png
+themes/litejazz_tiki_4/styles/litejazz/options/green/green.png styles/litejazz/options/green/green.png
+themes/litejazz_tiki_4/styles/litejazz/options/green/index.php styles/litejazz/options/green/index.php
+themes/litejazz_tiki_4/styles/litejazz/options/green/topbar_custcode.png styles/litejazz/options/green/topbar_custcode.png
+themes/litejazz_tiki_4/styles/litejazz/options/red/index.php styles/litejazz/options/red/index.php
+themes/litejazz_tiki_4/styles/litejazz/options/red/red.png styles/litejazz/options/red/red.png
+themes/litejazz_tiki_4/styles/litejazz/options/red/topbar_custcode.png styles/litejazz/options/red/topbar_custcode.png
+themes/litejazz_tiki_4/templates/styles/litejazz/credits.tpl templates/styles/litejazz/credits.tpl
+themes/litejazz_tiki_4/templates/styles/litejazz/index.php templates/styles/litejazz/index.php
+
+
+Description:
+Adaptation for TikiWiki CMS/Groupware of the LiteJazz theme for Drupal by Roopletheme (http://roopletheme.com).
+Styling is provided for the topbar and bottombar custom code page sections, and there are three color variations, with the red and green versions available as theme options.
+ 
+Docurl:
+http://themes.tikiwiki.org/LitejJazz
+http://zukakakina.com/LiteJazz
+ 
+Licence:
+This theme adapted for TikiWiki CMS/Groupware is licensed GNU/GPL, consistent with the licensing of the original theme for Drupal by Roopletheme.
+ 
+Author:
+Adapted by Gary Cunningham-Lee (chibaguy).
+ 
+Version:
+4
+ 
+Changelog:
+3 updated for Tiki 4 (now uses *lite.css layout method)
+2 modified to import layout/layout.css
+1 initial package

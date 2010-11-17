@@ -1,0 +1,79 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/andreas09_tiki_5/Readme.txt styles/andreas09/Readme.txt
+themes/andreas09_tiki_5/styles/andreas09.css styles/andreas09.css
+themes/andreas09_tiki_5/styles/andreas09/andreas09.png styles/andreas09/andreas09.png
+themes/andreas09_tiki_5/styles/andreas09/arrows-000.png styles/andreas09/arrows-000.png
+themes/andreas09_tiki_5/styles/andreas09/footerbg.jpg styles/andreas09/footerbg.jpg
+themes/andreas09_tiki_5/styles/andreas09/index.php styles/andreas09/index.php
+themes/andreas09_tiki_5/styles/andreas09/options/black.txt styles/andreas09/options/black.txt
+themes/andreas09_tiki_5/styles/andreas09/options/blue.css styles/andreas09/options/blue.css
+themes/andreas09_tiki_5/styles/andreas09/options/copper.css styles/andreas09/options/copper.css
+themes/andreas09_tiki_5/styles/andreas09/options/green.css styles/andreas09/options/green.css
+themes/andreas09_tiki_5/styles/andreas09/options/index.php styles/andreas09/options/index.php
+themes/andreas09_tiki_5/styles/andreas09/options/purple.css styles/andreas09/options/purple.css
+themes/andreas09_tiki_5/styles/andreas09/options/red.css styles/andreas09/options/red.css
+themes/andreas09_tiki_5/styles/andreas09/options/black/black.png styles/andreas09/options/black/black.png
+themes/andreas09_tiki_5/styles/andreas09/options/black/header.jpg styles/andreas09/options/black/header.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/black/index.php styles/andreas09/options/black/index.php
+themes/andreas09_tiki_5/styles/andreas09/options/black/menuhover.jpg styles/andreas09/options/black/menuhover.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/black/mid.jpg styles/andreas09/options/black/mid.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/blue/blue.png styles/andreas09/options/blue/blue.png
+themes/andreas09_tiki_5/styles/andreas09/options/blue/header.jpg styles/andreas09/options/blue/header.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/blue/index.php styles/andreas09/options/blue/index.php
+themes/andreas09_tiki_5/styles/andreas09/options/blue/menuhover.jpg styles/andreas09/options/blue/menuhover.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/blue/mid.jpg styles/andreas09/options/blue/mid.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/copper/copper.png styles/andreas09/options/copper/copper.png
+themes/andreas09_tiki_5/styles/andreas09/options/copper/header.jpg styles/andreas09/options/copper/header.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/copper/index.php styles/andreas09/options/copper/index.php
+themes/andreas09_tiki_5/styles/andreas09/options/copper/menuhover.jpg styles/andreas09/options/copper/menuhover.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/copper/mid.jpg styles/andreas09/options/copper/mid.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/green/green.png styles/andreas09/options/green/green.png
+themes/andreas09_tiki_5/styles/andreas09/options/green/header.jpg styles/andreas09/options/green/header.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/green/index.php styles/andreas09/options/green/index.php
+themes/andreas09_tiki_5/styles/andreas09/options/green/menuhover.jpg styles/andreas09/options/green/menuhover.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/green/mid.jpg styles/andreas09/options/green/mid.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/purple/header.jpg styles/andreas09/options/purple/header.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/purple/index.php styles/andreas09/options/purple/index.php
+themes/andreas09_tiki_5/styles/andreas09/options/purple/menuhover.jpg styles/andreas09/options/purple/menuhover.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/purple/mid.jpg styles/andreas09/options/purple/mid.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/purple/purple.png styles/andreas09/options/purple/purple.png
+themes/andreas09_tiki_5/styles/andreas09/options/red/header.jpg styles/andreas09/options/red/header.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/red/index.php styles/andreas09/options/red/index.php
+themes/andreas09_tiki_5/styles/andreas09/options/red/menuhover.jpg styles/andreas09/options/red/menuhover.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/red/mid.jpg styles/andreas09/options/red/mid.jpg
+themes/andreas09_tiki_5/styles/andreas09/options/red/red.png styles/andreas09/options/red/red.png
+themes/andreas09_tiki_5/templates/styles/andreas09/credits.tpl templates/styles/andreas09/credits.tpl
+themes/andreas09_tiki_5/templates/styles/andreas09/index.php templates/styles/andreas09/index.php
+
+Description:
+Andreas09 is based on the original design by Andreas Viklund (http://andreasviklund.com/templates/). If upgrading from a previous Tiki version, remove all Andreas template files (in templates/styles/andreas09) before installing this update.
+ 
+Docurl:
+http://themes.tikiwiki.org/Andreas09
+http://zukakakina.com/Andreas09
+ 
+Licence:
+GNU/GPL
+
+Author:
+Gary Cunningham-Lee (chibaguy)
+ 
+Version:
+5
+ 
+Changelog:
+4 updated for Tiki 5
+3 orange option renamed copper, modified to import layout/layout.css, suckerfish menu arrow image added
+2 update for Tiki 3
+1 initial package

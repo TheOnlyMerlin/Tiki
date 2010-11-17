@@ -1,0 +1,59 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/smooth_tiki_5/Readme.txt styles/smooth/Readme.txt
+themes/smooth_tiki_5/styles/smooth.css styles/smooth.css
+themes/smooth_tiki_5/styles/smooth/arrows-6700c8.png styles/smooth/arrows-6700c8.png
+themes/smooth_tiki_5/styles/smooth/header.png styles/smooth/header.png
+themes/smooth_tiki_5/styles/smooth/ie6.css styles/smooth/ie6.css
+themes/smooth_tiki_5/styles/smooth/img01.gif styles/smooth/img01.gif
+themes/smooth_tiki_5/styles/smooth/img02.gif styles/smooth/img02.gif
+themes/smooth_tiki_5/styles/smooth/img03.gif styles/smooth/img03.gif
+themes/smooth_tiki_5/styles/smooth/img04.gif styles/smooth/img04.gif
+themes/smooth_tiki_5/styles/smooth/img05.gif styles/smooth/img05.gif
+themes/smooth_tiki_5/styles/smooth/img06.gif styles/smooth/img06.gif
+themes/smooth_tiki_5/styles/smooth/img07.gif styles/smooth/img07.gif
+themes/smooth_tiki_5/styles/smooth/img08.gif styles/smooth/img08.gif
+themes/smooth_tiki_5/styles/smooth/img08.jpg styles/smooth/img08.jpg
+themes/smooth_tiki_5/styles/smooth/index.php styles/smooth/index.php
+themes/smooth_tiki_5/styles/smooth/middle.png styles/smooth/middle.png
+themes/smooth_tiki_5/styles/smooth/smooth.png styles/smooth/smooth.png
+themes/smooth_tiki_5/templates/styles/smooth/credits.tpl templates/styles/smooth/credits.tpl
+themes/smooth_tiki_5/templates/styles/smooth/index.php templates/styles/smooth/index.php
+themes/smooth_tiki_5/templates/styles/smooth/tiki-site_header.tpl templates/styles/smooth/tiki-site_header.tpl
+themes/smooth_tiki_5/templates/styles/smooth/tiki-site_header_top.tpl templates/styles/smooth/tiki-site_header_top.tpl
+themes/smooth_tiki_5/templates/styles/smooth/tiki-site_header_top_end.tpl templates/styles/smooth/tiki-site_header_top_end.tpl
+themes/smooth_tiki_5/templates/styles/smooth/tiki-top_bar.tpl templates/styles/smooth/tiki-top_bar.tpl
+
+Description:
+Smooth has a clean pastel pink and green look and uses the *litecss source-ordered layout method ([http://sourceforge.net/projects/litecss]). If updating from a previous Tiki version, don't use the older Smooth template files; they aren't compatible with Tiki 3. For more information, please see the documentation pages for this theme. Please do not remove the link to freecsstemplates.com from the page footer.
+ 
+Docurl:
+http://themes.tikiwiki.org/Smooth
+http://zukakakina.com/Smooth
+ 
+Licence:
+This theme adapted for TikiWiki CMS/Groupware is a derived work using visual elements of the Smooth theme by Free CSS Templates (http://www.freecsstemplates.com), which was released under the Creative Commons Attribution 2.5 license. Consequently, the visual aspects retain the Creative Commons Attribution 2.5 license, while the structural aspects based on the default TikiWiki components are licensed GNU/LGPL.
+
+Author:
+Gary Cunningham-Lee (chibaguy)
+ 
+Version:
+3.0
+ 
+Changelog:
+6 update for Tiki 5
+5 update for Tiki 4
+4 separate CSS file for ie6; misc. fixes (todo: page header still basically broken in ie6)
+3 modified to import layout/layout.css
+2 updated for Tiki 3
+1 initial package

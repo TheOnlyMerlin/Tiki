@@ -1,0 +1,50 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/clubcard_tiki_5/Readme.txt styles/clubcard/Readme.txt
+themes/clubcard_tiki_5/styles/clubcard.css styles/clubcard.css
+themes/clubcard_tiki_5/styles/clubcard/clubcard.png styles/clubcard/clubcard.png
+themes/clubcard_tiki_5/styles/clubcard/ie6.css styles/clubcard/ie6.css
+themes/clubcard_tiki_5/styles/clubcard/img01.jpg styles/clubcard/img01.jpg
+themes/clubcard_tiki_5/styles/clubcard/img02.jpg styles/clubcard/img02.jpg
+themes/clubcard_tiki_5/styles/clubcard/img03.jpg styles/clubcard/img03.jpg
+themes/clubcard_tiki_5/styles/clubcard/img04.jpg styles/clubcard/img04.jpg
+themes/clubcard_tiki_5/styles/clubcard/img05.jpg styles/clubcard/img05.jpg
+themes/clubcard_tiki_5/styles/clubcard/img06.jpg styles/clubcard/img06.jpg
+themes/clubcard_tiki_5/styles/clubcard/index.php styles/clubcard/index.php
+themes/clubcard_tiki_5/styles/clubcard/options/index.php styles/clubcard/options/index.php
+themes/clubcard_tiki_5/styles/clubcard/options/wide.css styles/clubcard/options/wide.css
+themes/clubcard_tiki_5/styles/clubcard/options/wide/wide.png styles/clubcard/options/wide/wide.png
+themes/clubcard_tiki_5/templates/styles/clubcard/credits.tpl templates/styles/clubcard/credits.tpl
+themes/clubcard_tiki_5/templates/styles/clubcard/index.php templates/styles/clubcard/index.php
+
+Description:
+Club Card (clubcard.css) is meant to use the left and center columns only; the right column should be turned off. To use all three columns, use the theme's option "wide" (select it on the Look and Feel admin page). For more information, please see the documentation pages for this theme. To comply with the license, retain the link to Free CSS Templates in the page footer.
+
+ 
+Docurl:
+http://themes.tikiwiki.org/Club_Card
+http://zukakakina.com/Club_Card
+ 
+Licence:
+This theme adapted for TikiWiki CMS/Groupware is a derived work using visual elements of the original theme, which was released under the Creative Commons Attribution 2.5 license. Consequently, the visual aspects retain the Creative Commons Attribution 2.5 license, while the structural aspects based on the default TikiWiki components are licensed GNU/LGPL.
+
+Author:
+Gary Cunningham-Lee (chibaguy)
+
+Version:
+5
+ 
+Changelog:
+3 updated for Tiki 5
+2 updated for Tiki 4
+1 initial package

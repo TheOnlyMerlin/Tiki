@@ -1,0 +1,50 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/fluidindex_tiki_4/Readme.txt styles/fluidindex/Readme.txt
+themes/fluidindex_tiki_4/styles/fluidindex.css styles/fluidindex.css
+themes/fluidindex_tiki_4/styles/fluidindex/arrows-6d809f.png styles/fluidindex/arrows-6d809f.png
+themes/fluidindex_tiki_4/styles/fluidindex/bg.gif styles/fluidindex/bg.gif
+themes/fluidindex_tiki_4/styles/fluidindex/bgfooter.jpg styles/fluidindex/bgfooter.jpg
+themes/fluidindex_tiki_4/styles/fluidindex/bquote.gif styles/fluidindex/bquote.gif
+themes/fluidindex_tiki_4/styles/fluidindex/child.gif styles/fluidindex/child.gif
+themes/fluidindex_tiki_4/styles/fluidindex/contentbg.gif styles/fluidindex/contentbg.gif
+themes/fluidindex_tiki_4/styles/fluidindex/date.gif styles/fluidindex/date.gif
+themes/fluidindex_tiki_4/styles/fluidindex/fluidindex.png styles/fluidindex/fluidindex.png
+themes/fluidindex_tiki_4/styles/fluidindex/ie6.css styles/fluidindex/ie6.css
+themes/fluidindex_tiki_4/styles/fluidindex/index.php styles/fluidindex/index.php
+themes/fluidindex_tiki_4/styles/fluidindex/page.gif styles/fluidindex/page.gif
+themes/fluidindex_tiki_4/styles/fluidindex/star.gif styles/fluidindex/star.gif
+themes/fluidindex_tiki_4/templates/styles/fluidindex/credits.tpl templates/styles/fluidindex/credits.tpl
+themes/fluidindex_tiki_4/templates/styles/fluidindex/index.php templates/styles/fluidindex/index.php
+
+Description:
+Fluid Index is a derived work, for TikiWiki CMS/Groupware, of the WordPress theme licensed Creative Commons Attribution 2.5 by Your Index (http://www.2yi.net/pwp_themes.html). This adaptation uses the *litecss source-ordered layout method ([http://sourceforge.net/projects/litecss]). If updating this theme from older version, be sure no template (.tpl) files remain from before; they aren't compatible with Tiki 3 and newer.
+ 
+Docurl:
+http://themes.tikiwiki.org/Fluid+Index
+http://zukakakina.com/Fluid+Index
+ 
+Licence:
+Creative Commons Attribution 2.5
+
+Author:
+Gary Cunningham-Lee (chibaguy)
+ 
+Version:
+4
+
+Changelog:
+4 updated for Tiki 4
+3 modified to import layout/layout.css; suckerfish menu arrows image added
+2 updated for Tiki 3
+1 initial package

@@ -1,0 +1,54 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/candiiclouds_tiki_4/Readme.txt styles/candiiclouds/Readme.txt
+themes/candiiclouds_tiki_4/styles/candiiclouds.css styles/candiiclouds.css
+themes/candiiclouds_tiki_4/styles/candiiclouds/arrows-00adef.png styles/candiiclouds/arrows-00adef.png
+themes/candiiclouds_tiki_4/styles/candiiclouds/banstars.gif styles/candiiclouds/banstars.gif
+themes/candiiclouds_tiki_4/styles/candiiclouds/bcloud.gif styles/candiiclouds/bcloud.gif
+themes/candiiclouds_tiki_4/styles/candiiclouds/bluu.gif styles/candiiclouds/bluu.gif
+themes/candiiclouds_tiki_4/styles/candiiclouds/candiiclouds.png styles/candiiclouds/candiiclouds.png
+themes/candiiclouds_tiki_4/styles/candiiclouds/cclog.gif candiiclouds/cclog.gif
+themes/candiiclouds_tiki_4/styles/candiiclouds/cloudsbdr.gif candiiclouds/cloudsbdr.gif
+themes/candiiclouds_tiki_4/styles/candiiclouds/index.php candiiclouds/index.php
+themes/candiiclouds_tiki_4/styles/candiiclouds/leftmarginbg.jpg styles/candiiclouds/leftmarginbg.jpg
+themes/candiiclouds_tiki_4/styles/candiiclouds/logo.png styles/candiiclouds/logo.png
+themes/candiiclouds_tiki_4/styles/candiiclouds/piink.gif styles/candiiclouds/piink.gif
+themes/candiiclouds_tiki_4/styles/candiiclouds/rightmarginbg.jpg styles/candiiclouds/rightmarginbg.jpg
+themes/candiiclouds_tiki_4/styles/candiiclouds/s-stars.gif styles/candiiclouds/s-stars.gif
+themes/candiiclouds_tiki_4/styles/candiiclouds/sbihead.gif styles/candiiclouds/sbihead.gif
+themes/candiiclouds_tiki_4/styles/candiiclouds/star.gif styles/candiiclouds/star.gif
+themes/candiiclouds_tiki_4/templates/styles/candiiclouds/credits.tpl templates/styles/candiiclouds/credits.tpl
+themes/candiiclouds_tiki_4/templates/styles/candiiclouds/index.php templates/styles/candiiclouds/index.php
+themes/candiiclouds_tiki_4/templates/styles/candiiclouds/tiki.tpl templates/styles/candiiclouds/tiki.tpl
+
+Description:
+Candii Clouds theme by Mark Schulz (elpirtxis), licensed Creative Commons Attribution 2.5 and
+adapted for TikiWiki CMS/Groupware by Gary Cunningham-Lee (chibaguy). Type 2-- Until IE7 supports display:table, an HTML table is needed in tiki.tpl for graphic treatment and column integrity.
+ 
+Docurl:
+http://themes.tikiwiki.org/Candiiclouds
+http://zukakakina.com/Candiiclouds
+ 
+Licence:
+GNU/GPL
+
+Author:
+Gary Cunningham-Lee (chibaguy)
+ 
+Version:
+4
+ 
+Changelog:
+3 updated for Tiki 4
+2 modified to import layout/layout.css; suckerfish menu arrows image added
+1 initial package

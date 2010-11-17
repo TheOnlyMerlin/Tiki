@@ -20,10 +20,10 @@ themes/candiiclouds_tiki_5/styles/candiiclouds/candiiclouds.png styles/candiiclo
 themes/candiiclouds_tiki_5/styles/candiiclouds/cclog.gif candiiclouds/cclog.gif
 themes/candiiclouds_tiki_5/styles/candiiclouds/cloudsbdr.gif candiiclouds/cloudsbdr.gif
 themes/candiiclouds_tiki_5/styles/candiiclouds/index.php candiiclouds/index.php
-themes/candiiclouds_tiki_5/styles/candiiclouds/leftmarginbg.png styles/candiiclouds/leftmarginbg.png
+themes/candiiclouds_tiki_5/styles/candiiclouds/leftmarginbg.jpg styles/candiiclouds/leftmarginbg.jpg
 themes/candiiclouds_tiki_5/styles/candiiclouds/logo.png styles/candiiclouds/logo.png
 themes/candiiclouds_tiki_5/styles/candiiclouds/piink.gif styles/candiiclouds/piink.gif
-themes/candiiclouds_tiki_5/styles/candiiclouds/rightmarginbg.png styles/candiiclouds/rightmarginbg.png
+themes/candiiclouds_tiki_5/styles/candiiclouds/rightmarginbg.jpg styles/candiiclouds/rightmarginbg.jpg
 themes/candiiclouds_tiki_5/styles/candiiclouds/s-stars.gif styles/candiiclouds/s-stars.gif
 themes/candiiclouds_tiki_5/styles/candiiclouds/sbihead.gif styles/candiiclouds/sbihead.gif
 themes/candiiclouds_tiki_5/styles/candiiclouds/star.gif styles/candiiclouds/star.gif

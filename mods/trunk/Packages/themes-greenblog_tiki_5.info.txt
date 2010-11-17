@@ -18,10 +18,10 @@ themes/greenblog_tiki_5/styles/greenblog/comment_bottom.jpg styles/greenblog/com
 themes/greenblog_tiki_5/styles/greenblog/footer_bg.jpg styles/greenblog/footer_bg.jpg
 themes/greenblog_tiki_5/styles/greenblog/greenblog.png styles/greenblog/greenblog.png
 themes/greenblog_tiki_5/styles/greenblog/greenblog3cols.png styles/greenblog/greenblog3cols.png
+themes/greenblog_tiki_5/styles/greenblog/index.php styles/greenblog/index.php
 themes/greenblog_tiki_5/styles/greenblog/menu_panel_bg.jpg styles/greenblog/menu_panel_bg.jpg
 themes/greenblog_tiki_5/styles/greenblog/post_bg.jpg styles/greenblog/post_bg.jpg
 themes/greenblog_tiki_5/styles/greenblog/right_section_bg.jpg styles/greenblog/right_section_bg.jpg
-themes/greenblog_tiki_5/styles/greenblog/index.php styles/greenblog/index.php
 themes/greenblog_tiki_5/templates/styles/greenblog/credits.tpl templates/styles/greenblog/credits.tpl
 themes/greenblog_tiki_5/templates/styles/greenblog/index.php templates/styles/greenblog/index.php
 themes/greenblog_tiki_5/templates/styles/greenblog/tiki-site_header.tpl templates/styles/greenblog/tiki-site_header.tpl

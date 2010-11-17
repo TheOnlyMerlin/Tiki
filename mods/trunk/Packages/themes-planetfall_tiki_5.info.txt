@@ -1,0 +1,46 @@
+$Id$
+
+contributor:
+$Author$
+
+revision:
+$Revision$
+
+lastmodif:
+$Date$
+
+files: 
+themes/planetfall_tiki_3/Readme.txt styles/planetfall/Readme.txt
+themes/planetfall_tiki_3/styles/planetfall.css styles/planetfall.css
+themes/planetfall_tiki_3/styles/planetfall/9DA6B3-1x1.png styles/planetfall/9DA6B3-1x1.png
+themes/planetfall_tiki_3/styles/planetfall/back_fade.jpg styles/planetfall/back_fade.jpg
+themes/planetfall_tiki_3/styles/planetfall/header_bg.jpg styles/planetfall/header_bg.jpg
+themes/planetfall_tiki_3/styles/planetfall/menu2_fade.jpg styles/planetfall/menu2_fade.jpg
+themes/planetfall_tiki_3/styles/planetfall/menu_bullet.png styles/planetfall/menu_bullet.png
+themes/planetfall_tiki_3/styles/planetfall/module_title_bg.png styles/planetfall/module_title_bg.png
+themes/planetfall_tiki_3/styles/planetfall/planetfall.png styles/planetfall/planetfall.png
+themes/planetfall_tiki_3/styles/planetfall/silver_bg.jpg styles/planetfall/silver_bg.jpg
+themes/planetfall_tiki_3/styles/planetfall/title_background.png styles/planetfall/title_background.png
+themes/planetfall_tiki_3/styles/planetfall/top_bar.jpg styles/planetfall/top_bar.jpg
+themes/planetfall_tiki_3/templates/styles/planetfall/credits.tpl templates/styles/planetfall/credits.tpl
+themes/planetfall_tiki_3/templates/styles/planetfall/tiki.tpl templates/styles/planetfall/tiki.tpl
+
+author:
+Gary Cunningham-Lee (chibaguy)
+
+licence:
+GNU/GPL
+
+Description: 
+This is a Tiki adaptation of the Planetfall theme (http://mambo.rhuk.net/) originally done by rhuk for the Mambo CMS (now Joomla). This version is compatible with Tiki 5. If updating from an earlier version, be sure all old template (.tpl) files are removed from templates/styles/planetfall and then the above files installed. Maintained by Gary Cunningham-Lee (chibaguy). For the latest information on and updates of the Planetfall theme for TikiWiki CMS/Groupware, visit http://zukakakina.com or http://themes.tikiwiki.org.
+
+Version:
+5
+
+Changelog:
+6 updated for Tiki 5
+5 updated for Tiki 4
+4 modified to import layout/layout.css
+3 updated for Tiki 3
+2 updated for Tiki 2
+1 initial package

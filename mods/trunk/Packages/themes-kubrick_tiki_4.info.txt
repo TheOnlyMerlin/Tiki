@@ -1,0 +1,45 @@
+$Id$
+
+contributor:
+$Author: mose $
+
+revision:
+$Revision: 1.1 $
+
+lastmodif:
+$Date: 2006-02-19 06:05:18 $
+
+files:
+themes/kubrick_tiki_4/Readme.txt templates/styles/kubrick/Readme.txt
+themes/kubrick_tiki_4/styles/kubrick.css styles/kubrick.css
+themes/kubrick_tiki_4/styles/kubrick/arrows-2277DD.png styles/kubrick/arrows-2277DD.png
+themes/kubrick_tiki_4/styles/kubrick/footerbg.jpg styles/kubrick/footerbg.jpg
+themes/kubrick_tiki_4/styles/kubrick/headerbg.jpg styles/kubrick/headerbg.jpg
+themes/kubrick_tiki_4/styles/kubrick/ie6.css styles/kubrick/ie6.css
+themes/kubrick_tiki_4/styles/kubrick/index.php styles/kubrick/index.php
+themes/kubrick_tiki_4/styles/kubrick/kubrick.png styles/kubrick/kubrick.png
+themes/kubrick_tiki_4/styles/kubrick/kubrickbg_left.jpg styles/kubrick/kubrickbg_left.jpg
+themes/kubrick_tiki_4/styles/kubrick/kubrickbg_right.jpg styles/kubrick/kubrickbg_right.jpg
+themes/kubrick_tiki_4/templates/styles/kubrick/credits.tpl templates/styles/kubrick/credits.tpl
+themes/kubrick_tiki_4/templates/styles/kubrick/tiki.tpl templates/styles/kubrick/tiki.tpl
+themes/kubrick_tiki_4/templates/styles/kubrick/tiki-bot_bar.tpl templates/styles/kubrick/tiki-bot_bar.tpl
+themes/kubrick_tiki_4/templates/styles/kubrick/tiki-site_header.tpl templates/styles/kubrick/tiki-site_header.tpl
+
+author:
+Gary Cunningham-Lee (chibaguy)
+
+licence:
+GNU/GPL
+
+Description: 
+This is a Tiki adaptation of the Kubrick theme (http://mambo.rhuk.net/) originally done by Michael Heilemann for the WordPress blog software. Maintained by Gary Cunningham-Lee (chibaguy). This version is for Tiki 4. If updating from a previous Tiki release, be sure all template (.tpl) files are removed from templates/styles/kubrick and then the files included here are installed. Older files may be incompatible with this version. For the latest information on and updates of the Kubrick theme for Tiki Wiki CMS Groupware, visit http://zukakakina.com or http://themes.tikiwiki.org.
+
+Version:
+4
+
+Changelog:
+5 updated for Tiki 4
+4 modified to import layout/layout.css; suckerfish menu arrows image added
+3 update for Tiki 3
+2 update for TikiWiki 1.10
+1 initial package

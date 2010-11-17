@@ -42,7 +42,7 @@ themes/milkyway/styles/milkyway/options/black/index.php styles/milkyway/options/
 themes/milkyway/styles/milkyway/options/black/modbox.jpg styles/milkyway/options/black/modbox.jpg
 themes/milkyway/styles/milkyway/options/black/modboxl.jpg styles/milkyway/options/black/modboxl.jpg
 themes/milkyway/styles/milkyway/options/black/modboxr.jpg styles/milkyway/options/black/modboxr.jpg
-themes/milkyway/styles/milkyway/options/black/modboxtitlebottom.png styles/milkyway/options/black/modboxtitlebottom.png
+themes/milkyway/styles/milkyway/options/black/modboxtitlebottom.jpg styles/milkyway/options/black/modboxtitlebottom.jpg
 themes/milkyway/styles/milkyway/options/black/mw_menu_active_bg.png styles/milkyway/options/black/mw_menu_active_bg.png
 themes/milkyway/styles/milkyway/options/black/topbar.jpg styles/milkyway/options/black/topbar.jpg
 themes/milkyway/styles/milkyway/options/blue/arrows-0b3665.png styles/milkyway/options/blue/arrows-0b3665.png
@@ -55,7 +55,7 @@ themes/milkyway/styles/milkyway/options/blue/index.php styles/milkyway/options/b
 themes/milkyway/styles/milkyway/options/blue/modbox.jpg styles/milkyway/options/blue/modbox.jpg
 themes/milkyway/styles/milkyway/options/blue/modboxl.jpg styles/milkyway/options/blue/modboxl.jpg
 themes/milkyway/styles/milkyway/options/blue/modboxr.jpg styles/milkyway/options/blue/modboxr.jpg
-themes/milkyway/styles/milkyway/options/blue/modboxtitlebottom.png styles/milkyway/options/blue/modboxtitlebottom.png
+themes/milkyway/styles/milkyway/options/blue/modboxtitlebottom.jpg styles/milkyway/options/blue/modboxtitlebottom.jpg
 themes/milkyway/styles/milkyway/options/blue/mw_menu_active_bg.png styles/milkyway/options/blue/mw_menu_active_bg.png
 themes/milkyway/styles/milkyway/options/blue/topbar.jpg styles/milkyway/options/blue/topbar.jpg
 themes/milkyway/styles/milkyway/options/green/arrows-2e6314.png styles/milkyway/options/green/arrows-2e6314.png
@@ -68,7 +68,7 @@ themes/milkyway/styles/milkyway/options/green/index.php styles/milkyway/options/
 themes/milkyway/styles/milkyway/options/green/modbox.jpg styles/milkyway/options/green/modbox.jpg
 themes/milkyway/styles/milkyway/options/green/modboxl.jpg styles/milkyway/options/green/modboxl.jpg
 themes/milkyway/styles/milkyway/options/green/modboxr.jpg styles/milkyway/options/green/modboxr.jpg
-themes/milkyway/styles/milkyway/options/green/modboxtitlebottom.png styles/milkyway/options/green/modboxtitlebottom.png
+themes/milkyway/styles/milkyway/options/green/modboxtitlebottom.jpg styles/milkyway/options/green/modboxtitlebottom.jpg
 themes/milkyway/styles/milkyway/options/green/mw_menu_active_bg.png styles/milkyway/options/green/mw_menu_active_bg.png
 themes/milkyway/styles/milkyway/options/green/topbar.jpg styles/milkyway/options/green/topbar.jpg
 themes/milkyway/styles/milkyway/options/orange/arrows-a04e17.png styles/milkyway/options/orange/arrows-a04e17.png
@@ -80,7 +80,7 @@ themes/milkyway/styles/milkyway/options/orange/index.php styles/milkyway/options
 themes/milkyway/styles/milkyway/options/orange/modbox.jpg styles/milkyway/options/orange/modbox.jpg
 themes/milkyway/styles/milkyway/options/orange/modboxl.jpg styles/milkyway/options/orange/modboxl.jpg
 themes/milkyway/styles/milkyway/options/orange/modboxr.jpg styles/milkyway/options/orange/modboxr.jpg
-themes/milkyway/styles/milkyway/options/orange/modboxtitlebottom.png styles/milkyway/options/orange/modboxtitlebottom.png
+themes/milkyway/styles/milkyway/options/orange/modboxtitlebottom.jpg styles/milkyway/options/orange/modboxtitlebottom.jpg
 themes/milkyway/styles/milkyway/options/orange/mw_menu_active_bg.png styles/milkyway/options/orange/mw_menu_active_bg.png
 themes/milkyway/styles/milkyway/options/orange/orange.png styles/milkyway/options/orange/orange.png
 themes/milkyway/styles/milkyway/options/orange/topbar.jpg styles/milkyway/options/orange/topbar.jpg
@@ -93,7 +93,7 @@ themes/milkyway/styles/milkyway/options/red/index.php styles/milkyway/options/re
 themes/milkyway/styles/milkyway/options/red/modbox.jpg styles/milkyway/options/red/modbox.jpg
 themes/milkyway/styles/milkyway/options/red/modboxl.jpg styles/milkyway/options/red/modboxl.jpg
 themes/milkyway/styles/milkyway/options/red/modboxr.jpg styles/milkyway/options/red/modboxr.jpg
-themes/milkyway/styles/milkyway/options/red/modboxtitlebottom.png styles/milkyway/options/red/modboxtitlebottom.png
+themes/milkyway/styles/milkyway/options/red/modboxtitlebottom.jpg styles/milkyway/options/red/modboxtitlebottom.jpg
 themes/milkyway/styles/milkyway/options/red/mw_menu_active_bg.png styles/milkyway/options/red/mw_menu_active_bg.png
 themes/milkyway/styles/milkyway/options/red/red.png styles/milkyway/options/red/red.png
 themes/milkyway/styles/milkyway/options/red/topbar.jpg styles/milkyway/options/red/topbar.jpg
@@ -105,7 +105,7 @@ themes/milkyway/styles/milkyway/options/white/index.php styles/milkyway/options/
 themes/milkyway/styles/milkyway/options/white/modbox.jpg styles/milkyway/options/white/modbox.jpg
 themes/milkyway/styles/milkyway/options/white/modboxl.jpg styles/milkyway/options/white/modboxl.jpg
 themes/milkyway/styles/milkyway/options/white/modboxr.jpg styles/milkyway/options/white/modboxr.jpg
-themes/milkyway/styles/milkyway/options/white/modboxtitlebottom.png styles/milkyway/options/white/modboxtitlebottom.png
+themes/milkyway/styles/milkyway/options/white/modboxtitlebottom.jpg styles/milkyway/options/white/modboxtitlebottom.jpg
 themes/milkyway/styles/milkyway/options/white/topbar.jpg styles/milkyway/options/white/topbar.jpg
 themes/milkyway/templates/styles/milkyway/credits.tpl templates/styles/milkyway/credits.tpl
 themes/milkyway/templates/styles/milkyway/index.php templates/styles/milkyway/index.php

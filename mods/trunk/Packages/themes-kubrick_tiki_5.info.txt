@@ -38,7 +38,8 @@ Version:
 5 
 
 Changelog:
-5 updated for Tiki 5
+6 updated for Tiki 5
+5 updated for Tiki 4
 4 modified to import layout/layout.css; suckerfish menu arrows image added
 3 update for Tiki 3
 2 update for TikiWiki 1.10

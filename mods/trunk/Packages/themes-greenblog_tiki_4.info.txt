@@ -1,0 +1,57 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/greenblog_tiki_4/Readme.txt styles/greenblog/Readme.txt
+themes/greenblog_tiki_4/styles/greenblog.css styles/greenblog.css
+themes/greenblog_tiki_4/styles/greenblog/comment_icon.gif styles/greenblog/comment_icon.gif
+themes/greenblog_tiki_4/styles/greenblog/comment_bg.jpg styles/greenblog/comment_bg.jpg
+themes/greenblog_tiki_4/styles/greenblog/comment_bottom.jpg styles/greenblog/comment_bottom.jpg
+themes/greenblog_tiki_4/styles/greenblog/footer_bg.jpg styles/greenblog/footer_bg.jpg
+themes/greenblog_tiki_4/styles/greenblog/greenblog.png styles/greenblog/greenblog.png
+themes/greenblog_tiki_4/styles/greenblog/greenblog3cols.png styles/greenblog/greenblog3cols.png
+themes/greenblog_tiki_4/styles/greenblog/index.php styles/greenblog/index.php
+themes/greenblog_tiki_4/styles/greenblog/image_01.jpg styles/greenblog/image_01.jpg
+themes/greenblog_tiki_4/styles/greenblog/image_02.jpg styles/greenblog/image_02jpg
+themes/greenblog_tiki_4/styles/greenblog/menu_panel_bg.jpg styles/greenblog/menu_panel_bg.jpg
+themes/greenblog_tiki_4/styles/greenblog/post_bg.jpg styles/greenblog/post_bg.jpg
+themes/greenblog_tiki_4/styles/greenblog/right_section_bg.jpg styles/greenblog/right_section_bg.jpg
+themes/greenblog_tiki_4/styles/greenblog/thumb_01.jpg styles/greenblog/thumb_01.jpg
+themes/greenblog_tiki_4/styles/greenblog/thumb_02.jpg styles/greenblog/thumb_02.jpg
+themes/greenblog_tiki_4/styles/greenblog/thumb_03.jpg styles/greenblog/thumb_03.jpg
+themes/greenblog_tiki_4/styles/greenblog/thumb_04.jpg styles/greenblog/thumb_04.jpg
+themes/greenblog_tiki_4/styles/greenblog/thumb_05.jpg styles/greenblog/thumb_05.jpg
+themes/greenblog_tiki_4/styles/greenblog/thumb_06.jpg styles/greenblog/thumb_06.jpg
+themes/greenblog_tiki_4/styles/greenblog/options/fixed_width.css styles/greenblog/options/fixed_width.css
+themes/greenblog_tiki_4/styles/greenblog/options/index.php styles/greenblog/options/index.php
+themes/greenblog_tiki_4/templates/styles/greenblog/credits.tpl templates/styles/greenblog/credits.tpl
+themes/greenblog_tiki_4/templates/styles/greenblog/index.php templates/styles/greenblog/index.php
+themes/greenblog_tiki_4/templates/styles/greenblog/tiki-site_header.tpl templates/styles/greenblog/tiki-site_header.tpl
+
+Description:
+The Green Blog theme has a dark jungle-like quality, uses the *litecss source-ordered layout method ([http://sourceforge.net/projects/litecss]), and imports layout/layout.css for non-design properties. For more information, please see the general documentation pages for Tiki themes and for this theme. If possible, please keep the link to TemplateMo.com in the page footer.
+ 
+Docurl:
+http://themes.tikiwiki.org
+http://zukakakina.com
+ 
+Licence:
+This theme is a derived work using visual elements of the Green Blog theme by TemplateMo.com (http://TemplateMo.com), which was released without conditions for use. This theme for Tiki CMS/Groupware is licensed GNU/LGPL.
+
+Author:
+Gary Cunningham-Lee (chibaguy)
+ 
+Version:
+4
+
+Changelog:
+2 updated for Tiki 4
+1 initial package
