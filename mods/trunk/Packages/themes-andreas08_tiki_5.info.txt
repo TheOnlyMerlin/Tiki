@@ -21,7 +21,7 @@ themes/andreas08_tiki_5/templates/styles/andreas08/tiki.tpl templates/styles/and
 themes/andreas08_tiki_5/templates/styles/andreas08/tiki-site_header_top.tpl templates/styles/andreas08/tiki-site_header_top.tpl
 
 Description:
-Andreas08 is based on the original design by Andreas Viklund (http://andreasviklund.com/templates/). This version is updated for Tiki 5. If updating this theme from a previous Tiki release, remove all old .tpl files in templates/styles/andreas08/ and install the above files.
+<img src="http://tikiwiki.svn.sourceforge.net/viewvc/tikiwiki/mods/trunk/themes/andreas08_tiki_5/styles/andreas08/andreas08.png" alt="andreas08.png" /> Andreas08 is based on the original design by Andreas Viklund (http://andreasviklund.com/templates/). This version is updated for Tiki 5. If updating this theme from a previous Tiki release, remove all old .tpl files in templates/styles/andreas08/ and install the above files.
  
 Docurl:
 http://themes.tikiwiki.org/Andreas08
