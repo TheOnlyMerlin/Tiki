@@ -39,7 +39,7 @@ class Text_Wiki_Parse_Comment extends Text_Wiki_Parse {
     * @var string
     * @see parse()
     */
-    var $regex = '/<\!--(.*?)-->/Us';
+    var $regex = '/<\!--(.*?)-->/s';
 
 
     /**
