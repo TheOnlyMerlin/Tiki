@@ -1,12 +1,20 @@
 <?php
-/* $Header: /cvsroot/tikiwiki/_mods/wiki-plugins/mindmap/wiki-plugins/wikiplugin_mindmap.php,v 1.7 2006-12-08 01:04:22 uid138927 Exp $
- *
- * The freemind plugin source is available at http://freemind.sourceforge.net
- * Both the freemind java applet and the much lighter flash plugin are supported.
- *
- * The function returns some text that will replace the content in the
- * wiki page.
- */
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+// $Header: /cvsroot-fuse/tikiwiki/_mods/wiki-plugins/mindmap/wiki-plugins/wikiplugin_mindmap.php,v 1.7 2006/12/08 01:04:22 uid138927 Exp $
+// Updated for testing by jcyrisse, v 1.8 2010/11/20 13:35 pm. Think I have the issues resolved for TikiWiki 6.0. 
+// The freemind plugin source is available at http://freemind.sourceforge.net
+// Both the freemind java applet and the much lighter flash plugin are supported.
+// Includes a mindmap
+// Usage:
+// {MINDMAP(src=>50,plugin=>flash,mode=>window,width=>800,height=>600)}{MINDMAP}
+// This is the new plugin info area
+// I could not get this to work properly in this format, so went back and put original help area back in, and that did the trick. The issue was with the wikiplugin_mindmap_info area. 
+// function wikiplugin_mindmap_help() {
+//        return tra("Browse a mindmap using freemind flash plugin or java applet").":<br />  ~np~{MINDMAP(src=>  |./lib/mindmap/wikiplugin-mindmap.mm,plugin=>flash|java,mode=>inline|window|fullscreen,width=>,height=>)".tra("text")."{MINDMAP}~/np~  ";
+// }
 function wikiplugin_mindmap_help() {
 	$help = tra("Browse a mindmap using freemind flash plugin or java applet");
 	$help.=":<br />~np~{MINDMAP(";
@@ -25,6 +33,48 @@ function wikiplugin_mindmap_help() {
 	$help.="height | 400  | numeric or percentage height\n";
 	$help.= "||^";
 	return $help;
+}
+function wikiplugin_mindmap_info() {
+	return array(
+		'name' => tra('Mindmap'),
+		// link to plugin documentation page on doc.tiki.org (in this case http://doc.tiki.org/PluginMindmap)
+		'documentation' => 'PluginMindmap',
+		'description' => tra('Browse a mindmap using freemind flash plugin or java applet.'),
+		// list of preferences that need to be enabled to use the plugin
+		'prefs' => array('feature_wiki_mindmap', 'wikiplugin_mindmap'),
+		'params' => array(
+			'src' => array(
+				'required' => false,
+				'name' => tra('src'),
+				'description' => tra('The location of the mindmap. This can be either an absolute URL, a relative URL, or the numeric ID of a wiki attachment. Wiki attachments currently work with the flash plugin only. A relative URL must begin with ./\n'),
+				'default' => tra(' ./lib/mindmap/wikiplugin-mindmap.mm'),
+			),
+			'plugin' => array(
+				'required' => false,
+				'name' => tra('plugin'),
+				'description' => tra('flash|java'),
+				'default' => tra('flash'),
+			),
+			'mode' => array(
+				'required' => false,
+				'name' => tra('mode'),
+				'description' => tra('inline|window|fullscreen'),
+				'default' => tra('inline'),
+			),
+			'width' => array(
+				'required' => false,
+				'name' => tra('width'),
+				'description' => tra('numeric or percentage width'),
+				'default' => 100,
+			),
+			'height' => array(
+				'required' => false,
+				'name' => tra('height'),
+				'description' => tra('numeric or percentage height'),
+				'default' => 400,
+			),
+		),
+	);
 }
 function fetch_mindmap($id,$src,$plugin,$mode,$title,$width,$height) {
 	global $smarty;
