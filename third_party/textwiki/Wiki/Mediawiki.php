@@ -54,6 +54,7 @@ class Text_Wiki_Mediawiki extends Text_Wiki {
         'Break',
 //        'Blockquote',
 //        'Box',
+        'Url',	// must run before Wikilink and Emphasis (as link labels sometimes have Emphasis)
         'Wikilink',
 //        'Image', // done by Wikilink but still possible to disable/configure
 //        'Interwiki', // done by Wikilink but still possible to disable/configure
@@ -66,7 +67,6 @@ class Text_Wiki_Mediawiki extends Text_Wiki {
         'Emphasis', // must run before Newline (see Text_Wiki_Parse_Emphasis::parse())
         'Newline',
         'Paragraph',
-        'Url',
 //        'Freelink',
 //        'Colortext',
 //        'Bold',
