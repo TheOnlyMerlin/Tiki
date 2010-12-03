@@ -2479,8 +2479,8 @@ class UsersLib extends TikiLib
 	}
 
 	function change_user_waiting($user, $who) {
-		$query = 'update `users_users` set `waiting`=? where `login`=?';
-		$this->query($query, array($who, $user));
+		$query = 'update `users_users` set `waiting`=?, `currentLogin`=? where `login`=?';
+		$this->query($query, array($who, NULL, $user));
 	}
 
 	function add_user($user, $pass, $email, $provpass = '', $pass_first_login = false, $valid = NULL, $openid_url = NULL, $waiting=NULL) {
@@ -2738,53 +2738,20 @@ class UsersLib extends TikiLib
 	*/
 	function check_password_policy($pass) {
 		global $prefs, $user;
-		$errors = array();
 
 		// Validate password here
 		if ( ( $prefs['auth_method'] != 'cas' || $user == 'admin' ) && strlen($pass) < $prefs['min_pass_length'] ) {
-			$errors[] = tra("Password should be at least").' '.$prefs['min_pass_length'].' '.tra("characters long");
+			return tra("Password should be at least").' '.$prefs['min_pass_length'].' '.tra("characters long");
 		}
 
 		// Check this code
 		if ($prefs['pass_chr_num'] == 'y') {
 			if (!preg_match_all("/[0-9]+/", $pass, $foo) || !preg_match_all("/[A-Za-z]+/", $pass, $foo)) {
-				$errors[] = tra("Password must contain both letters and numbers");
-			}
-		}
-		if ($prefs['pass_chr_case'] == 'y') {
-			if (!preg_match_all("/[a-z]+/", $pass, $foo) || !preg_match_all("/[A-Z]+/", $pass, $foo)) {
-				$errors[] = tra('Password must contain at least one alphabetical character in lower case like a and one in upper case like A.');
-			}
-		}
-		if ($prefs['pass_chr_special'] == 'y') {
-			$chars = str_split($pass);
-			$ok = false;
-			foreach ($chars as $char) {
-				if (!preg_match("/[0-9A-Za-z]+/", $char, $foo)) {
-					$ok = true;
-					break;
-				}
-			}
-			if (!$ok) $errors[] = tra('Password must contain at least one special character in lower case like " / $ % ? & * ( ) _ + ...');
-		}
-		if ($prefs['pass_repetition'] == 'y') {
-			$chars = str_split($pass);
-			$previous = '';
-			foreach ($chars as $char) {
-				if ($char == $previous) {
-					$errors[] = tra('Password must contain no consecutive repetition of the same character as 111 or aab');
-					break;
-				}
-				$previous = $char;
-			}
-		}
-		if ($prefs['pass_diff_username'] == 'y') {
-			if (strtolower($user) == strtolower($pass)) {
-				$errors[] = tra('Password must be different from the user login.');
+				return tra("Password must contain both letters and numbers");
 			}
 		}
 
-		return empty($errors)?'': implode(' ', $errors);
+		return "";
 	}
 
 	function change_user_password($user, $pass, $pass_first_login=false) {
@@ -3538,19 +3505,6 @@ class UsersLib extends TikiLib
 			$cat = array_diff($cat, array($categId));
 			$trklib->categorized_item($tracker["usersTrackerId"], $itemid, '', $cat);
 		}
-	}
-
-	/**
-	 * Remove the link between a Tiki user account
-	 * and an OpenID account
-	 * 
-	 * @param int $userId
-	 * @return void
-	 */
-	function remove_openid_link($userId) {
-		$query = "UPDATE `users_users` SET `openid_url` = NULL WHERE `userId` = ?";
-		$bindvars = array($userId);
-		$this->query($query, $bindvars);
 	}
 
 }

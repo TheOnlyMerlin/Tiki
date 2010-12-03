@@ -58,29 +58,33 @@
 {/if}
 
 {if !empty($types) and ( !isset($types_tag) or $types_tag eq 'select' ) }
-	<select name="type" class="findtypes">
-		<option value='' {if $find_type eq ''}selected="selected"{/if}>{tr}any type{/tr}</option>
-		{section name=t loop=$types}
-			<option value="{$types[t].type|escape}" {if $find_type eq $types[t].type}selected="selected"{/if}>
-				{capture}{tr}{$types[t].type}{/tr}{/capture}{$smarty.capture.default|escape}
-			</option>
-		{/section}
-	</select>
+	<label class="findtypes"> 
+		<select name="type">
+			<option value='' {if $find_type eq ''}selected="selected"{/if}>{tr}any type{/tr}</option>
+			{section name=t loop=$types}
+				<option value="{$types[t].type|escape}" {if $find_type eq $types[t].type}selected="selected"{/if}>
+					{capture}{tr}{$types[t].type}{/tr}{/capture}{$smarty.capture.default|escape}
+				</option>
+			{/section}
+		</select>
+	</label>
 {/if}
 
 {if !empty($topics)}
-	<select name="topic" class="findtopics">
-		<option value='' {if $find_topic eq ''}selected="selected"{/if}>{tr}all topic{/tr}</option>
-		{section name=ix loop=$topics}
-			<option value="{$topics[ix].topicId|escape}" {if $find_topic eq $topics[ix].topicId}selected="selected"{/if}>
-				{capture}{tr}{$topics[ix].name}{/tr}{/capture}{$smarty.capture.default|escape}
-			</option>
-		{/section}
-	</select>
+	<label class="findtopics"> 
+		<select name="topic">
+			<option value='' {if $find_topic eq ''}selected="selected"{/if}>{tr}all topic{/tr}</option>
+			{section name=ix loop=$topics}
+				<option value="{$topics[ix].topicId|escape}" {if $find_topic eq $topics[ix].topicId}selected="selected"{/if}>
+					{capture}{tr}{$topics[ix].name}{/tr}{/capture}{$smarty.capture.default|escape}
+				</option>
+			{/section}
+		</select>
+	</label>
 {/if}
 
 {if $find_show_languages eq 'y' and $prefs.feature_multilingual eq 'y'}
-	<span class="findlang">
+	<label class="findlang">
 		<select name="lang" class="in">
 			<option value='' {if $find_lang eq ''}selected="selected"{/if}>{tr}any language{/tr}</option>
 		{section name=ix loop=$languages}
@@ -105,7 +109,7 @@
 			</select>
 		</label>
 		{/if}
-	</span>
+	</label>
 {/if}
 
 {if $find_show_date_range eq 'y'}
@@ -124,14 +128,16 @@
 {if ($find_show_categories eq 'y' or $find_show_categories_multi eq 'y') and $prefs.feature_categories eq 'y' and !empty($categories)}
 	<div class="category_find">
 	<div id="category_singleselect_find" style="display: {if $find_show_categories_multi eq 'y' && $find_cat_categories|@count > 1}none{else}block{/if};">
-		<select name="categId" class="findcateg">
-			<option value='' {if $find_categId eq ''}selected="selected"{/if}>{tr}any category{/tr}</option>
-			{section name=ix loop=$categories}
-				<option value="{$categories[ix].categId|escape}" {if $find_categId eq $categories[ix].categId}selected="selected"{/if}>
-					{capture}{tr}{$categories[ix].categpath}{/tr}{/capture}{$smarty.capture.default|escape}
-				</option>
-			{/section}
-		</select>
+		<label class="findcateg"> 
+			<select name="categId">
+				<option value='' {if $find_categId eq ''}selected="selected"{/if}>{tr}any category{/tr}</option>
+				{section name=ix loop=$categories}
+					<option value="{$categories[ix].categId|escape}" {if $find_categId eq $categories[ix].categId}selected="selected"{/if}>
+						{capture}{tr}{$categories[ix].categpath}{/tr}{/capture}{$smarty.capture.default|escape}
+					</option>
+				{/section}
+			</select>
+		</label>
 		{if $prefs.javascript_enabled eq 'y' && $find_show_categories_multi eq 'y'}<a href="#" onclick="show('category_multiselect_find');hide('category_singleselect_find');">{tr}Multiple select{/tr}</a>{/if}
 	</div>
 	<div id="category_multiselect_find" style="display: {if $find_show_categories_multi eq 'y' && $find_cat_categories|@count > 1}block{else}none{/if};">

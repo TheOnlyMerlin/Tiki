@@ -166,8 +166,7 @@ function collect_files ($dir)
 				'jscalendar' === $file || 'pclzip' === $file || 'jquery' === $file ||
 				'phplayers' === $file || 'pear' === $file || 'ckeditor' === $file ||
 				'lang' === $file || 'templates_c' === $file || 'dump'  === $file || 
-				'temp' === $file || 'img' === $file || 'cache' === $file ||
-				'test' === $file) {
+				'temp' === $file || 'img' === $file || 'cache' === $file) {
 			continue;
 		}
 

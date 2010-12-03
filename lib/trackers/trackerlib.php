@@ -1924,9 +1924,10 @@ class TrackerLib extends TikiLib
 			$categlib->categorize($catObjectId, $currentCategId);
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('tracker_items', $itemId);
-
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('tracker_items', $itemId);
+		}
 		$parsed = '';
 		foreach($ins_fields["data"] as $i=>$array) {
 			if ($ins_fields['data'][$i]['type'] == 'a') {
@@ -1985,8 +1986,7 @@ class TrackerLib extends TikiLib
 			}
 		}
 		if (!empty($parsed)) {
-			global $tikilib;
-			$tikilib->object_post_save( array('type'=>'trackeritem', 'object'=>$itemId, 'name' => "Tracker Item $itemId", 'href'=>"tiki-view_tracker_item.php?itemId=$itemId"), array( 'content' => $parsed ));
+			$this->object_post_save( array('type'=>'trackeritem', 'object'=>$itemId, 'name' => "Tracker Item $itemId", 'href'=>"tiki-view_tracker_item.php?itemId=$itemId"), array( 'content' => $parsed ));
 		}
 
 		return $itemId;
@@ -2204,10 +2204,11 @@ class TrackerLib extends TikiLib
 			$total++;
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		foreach ( $need_reindex as $id ) refresh_index('tracker_items', $id);
-		unset($need_reindex);
-
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' && is_array($need_reindex) ) {
+			require_once('lib/search/refresh-functions.php');
+			foreach ( $need_reindex as $id ) refresh_index('tracker_items', $id);
+			unset($need_reindex);
+		}
 		$cant_items = $this->getOne("select count(*) from `tiki_tracker_items` where `trackerId`=?",array((int) $trackerId));
 		$query = "update `tiki_trackers` set `items`=?,`lastModif`=?  where `trackerId`=?";
 		$result = $this->query($query,array((int)$cant_items,(int) $this->now,(int) $trackerId));
@@ -2703,12 +2704,12 @@ class TrackerLib extends TikiLib
 		$this->clear_tracker_cache($trackerId);
 
 		global $prefs;
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('trackers', $trackerId);
-
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('trackers', $trackerId);
+		}
 		if ($descriptionIsParsed == 'y') {
-			global $tikilib;
-			$tikilib->object_post_save(array('type'=>'tracker', 'object'=>$trackerId, 'href'=>"tiki-view_tracker.php?trackerId=$trackerId", 'description'=>$description), array( 'content' => $description ));
+			$this->object_post_save(array('type'=>'tracker', 'object'=>$trackerId, 'href'=>"tiki-view_tracker.php?trackerId=$trackerId", 'description'=>$description), array( 'content' => $description ));
 		}
 
 		return $trackerId;
@@ -3359,14 +3360,13 @@ class TrackerLib extends TikiLib
 			'opt'=>true,
 			'help'=>tra('<dl>
 				<dt>Function: Allows one or more categories under a main category to be assigned to the tracker item.
-				<dt>Usage: <strong>parentId,inputtype,selectall,descendants,help</strong>
+				<dt>Usage: <strong>parentId,inputtype,selectall,descendants</strong>
 				<dt>Example: 12,radio,1
 				<dt>Description:
 				<dd><strong>[parentId]</strong> is the ID of the main category, categories in the list will be children of this;
 				<dd><strong>[inputtype]</strong> is one of [d|m|radio|checkbox], where d is a drop-down list, m is a multiple-selection drop-down list, radio and checkbox are self-explanatory;
 				<dd><strong>[selectall]</strong> will provide a checkbox to automatically select all categories in the list if set to 1, default is 0;
 				<dd><strong>[descendants]</strong> All descendant categories (not just first level children) will be included if set to 1, default is 0;
-				<dd><strong>[help]</strong> will display the description in a popup in the input if set to 1, default is 0; only for checkbox or radio
 				<dd>multiple options must appear in the order specified, separated by commas.
 				</dl>'));
 		$type['r'] = array(

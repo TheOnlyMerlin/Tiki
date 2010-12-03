@@ -9,7 +9,6 @@ function wikiplugin_img_info() {
 	return array(
 		'name' => tra('Image'),
 		'description' => tra('Display images'),
-		'documentation' => 'PluginImg',
 		'prefs' => array( 'wikiplugin_img'),
 		'icon' => 'pics/icons/picture.png',
 		'params' => array(

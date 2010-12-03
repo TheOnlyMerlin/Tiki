@@ -823,12 +823,6 @@ function prefs_feature_list() {
 			'type' => 'flag',
 			'require' => array('feature_sefurl', 'wiki_prefixalias_tokens'),
 		),	
-		'feature_canonical_url' => array(
-			'name' => tra('Canonical URL tag'),
-			'description' => tra('Indicates to search engines which URL to use which prevents duplicate listings'),
-			'type' => 'flag',
-			'perspective' => false,
-		),
 		'feature_modulecontrols' => array(
 			'name' => tra('Show module controls'),
 			'help' => 'Module+Control',
@@ -1849,11 +1843,5 @@ function prefs_feature_list() {
             'description' => tra('Enable this only if the server is behind a load balancer (or reverse proxy), this allow tiki to log the IP of the user, instead of the IP of the proxy server'),
             'type' => 'flag',
         ),
-        'feature_accounting' => array(
-			'name' => tra('Accounting'),
-			'description' => tra('Enable accounting system (alpha)'),
-			'help' => 'Accounting',
-			'type' => 'flag',
-		),
 	);
 }

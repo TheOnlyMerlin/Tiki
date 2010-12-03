@@ -13,24 +13,20 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 	exit;
 }
 
-function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_langs='', $with_title='y' ) {
+function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_langs='' ) {
 	global $prefs, $tikilib, $wikilib, $smarty;
-	require_once('lib/wiki/wikilib.php');
-
-	$sefurl = $prefs['feature_sefurl'] == 'y';
+	include_once('lib/wiki/wikilib.php');
 
 	switch($type){
 	case 'wiki page':
-	case 'wikipage':
 		$type = 'wiki';
 	case 'wiki':
 		return $wikilib->sefurl($source, $with_next, $all_langs);
 	case 'blog':
-		$href = $sefurl ? "blog$source" : "tiki-view_blog.php?blogId=$source";
+		$href = 'tiki-view_blog.php?blogId='.$source;
 		break;
-	case 'blog post':
 	case 'blogpost':
-		$href = $sefurl ? "blogpost$source" : "tiki-view_blog_post.php?postId=$source";
+		$href = 'tiki-view_blog_post.php?postId='.$source;
 		break;
 	case 'gallery':
 		$href = 'tiki-browse_gallery.php?galleryId='. $source;
@@ -39,19 +35,19 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 		$href = 'tiki-browse_video_gallery.php?galleryId='. $source;
 		break;
 	case 'article':
-		$href = $sefurl ? "article$source" : "tiki-read_article.php?articleId=$source";
+		$href = 'tiki-read_article.php?articleId='. $source;
 		break;
 	case 'file':
-		$href = $sefurl ? "dl$source" : "tiki-download_file.php?fileId=$source";
+		$href = 'tiki-download_file.php?fileId='. $source;
 		break;
 	case 'thumbnail':
-		$href = $sefurl ? "thumbnail$source" : "tiki-download_file.php?fileId=$source&amp;thumbnail";
+		$href = 'tiki-download_file.php?fileId='. $source.'&amp;thumbnail';
 		break;
 	case 'display':
-		$href = $sefurl ? "display$source" : "tiki-download_file.php?fileId=$source&amp;display";
+		$href = 'tiki-download_file.php?fileId='. $source.'&amp;display';
 		break;
 	case 'preview':
-		$href = $sefurl ? "preview$source" : "tiki-download_file.php?fileId=$source&amp;preview";
+		$href = 'tiki-download_file.php?fileId='. $source.'&amp;preview';
 		break;
 	case 'tracker item':
 		$type = 'trackeritem';
@@ -73,9 +69,6 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 	case 'file gallery':
 		$href = 'tiki-list_file_gallery.php?galleryId='.$source;
 		break;
-	case 'forum post':
-		$href = 'tiki-view_forum_thread.php?comments_parentId='.$source;
-		break;
 	default:
 		$href = $source;
 		break;
@@ -83,9 +76,9 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 	if ($with_next) {
 		$href .= '&amp;';
 	}
-	if ($prefs['feature_sefurl'] == 'y' && $smarty) {
+	if ($prefs['feature_sefurl'] == 'y') {
 		include_once('tiki-sefurl.php');
-		return filter_out_sefurl($href, $smarty, $type, '', $with_next, $with_title);
+		return filter_out_sefurl($href, $smarty, $type, '', $with_next);
 	} else {
 		return $href;
 	}

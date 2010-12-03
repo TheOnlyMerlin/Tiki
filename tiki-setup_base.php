@@ -129,7 +129,6 @@ if( $prefs['tiki_cdn'] ) {
 		exit;
 	}
 }
-$cookie_path = '';
 if (isset($_SERVER["REQUEST_URI"])) {
 	$cookie_path = str_replace("\\", "/", dirname($_SERVER["REQUEST_URI"]));
 	if ($cookie_path != '/') {

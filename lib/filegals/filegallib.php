@@ -126,8 +126,10 @@ class FileGalLib extends TikiLib
 			$logslib->add_action('Uploaded', $galleryId, 'file gallery', "fileId=$fileId&amp;add=$size");
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('files', $fileId);
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' && ( $prefs['fgal_asynchronous_indexing'] != 'y' || ! isset($_REQUEST['fast']) ) ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('files', $fileId);
+		}
 
 		//Watches
 		$smarty->assign('galleryId', $galleryId);
@@ -341,9 +343,10 @@ class FileGalLib extends TikiLib
 			}
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('file_galleries', $galleryId);
-
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('file_galleries', $galleryId);
+		}
 		global $cachelib; include_once('lib/cache/cachelib.php');
 		$cachelib->empty_type_cache($this->get_all_galleries_cache_type());
 
@@ -536,9 +539,10 @@ class FileGalLib extends TikiLib
 		}
 
 		global $prefs;
-
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('files', $id);
+		if ( $reindex && $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('files', $id);
+		}
 
 		return $result;
 	}
@@ -593,8 +597,10 @@ class FileGalLib extends TikiLib
 				unlink($savedir . $oldPath);
 			}
 
-			require_once('lib/search/refresh-functions.php');
-			refresh_index('files', $id);
+			if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' && ( $prefs['fgal_asynchronous_indexing'] != 'y' || ! isset($_REQUEST['fast']) ) ) {
+				require_once('lib/search/refresh-functions.php');
+				refresh_index('files', $id);
+			}
 
 		} else { //archive the old file : change archive_id, take away from indexation and categorization
 			if ($prefs['fgal_keep_fileId'] == 'y') {

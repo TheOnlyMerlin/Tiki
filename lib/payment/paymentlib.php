@@ -21,9 +21,8 @@ class PaymentLib extends TikiDb_Bridge
 	}
 
 	private function get_payments( $conditions, $offset, $max, $what='' ) {
-		$mid = '`tiki_payment_requests` tpr LEFT JOIN `users_users` uu ON (uu.`userId` = tpr.`userId`)';
-		$count = 'SELECT COUNT(*) FROM ' . $mid . ' WHERE ' . $conditions;
-		$data = 'SELECT tpr.*, uu.`login` as `user` '.$what.' FROM ' . $mid . ' WHERE ' . $conditions;
+		$count = 'SELECT COUNT(*) FROM `tiki_payment_requests` WHERE ' . $conditions;
+		$data = 'SELECT tpr.*, uu.`login` as `user` '.$what.' FROM `tiki_payment_requests` tpr LEFT JOIN `users_users` uu ON (uu.`userId` = tpr.`userId`) WHERE ' . $conditions;
 
 		$all = $this->fetchAll( $data, array(), $max, $offset );
 
@@ -33,21 +32,14 @@ class PaymentLib extends TikiDb_Bridge
 		);
 	}
 
-	function get_outstanding( $offset, $max, $ofUser = '' ) {
-		$conditions = '`amount_paid` < `amount` AND NOW() <= `due_date` AND `cancel_date` IS NULL';
-		if ($ofUser) {
-			$conditions .= " AND uu.`login` = '$ofUser'";
-		}
-		return $this->get_payments( $conditions, $offset, $max );
+	function get_outstanding( $offset, $max ) {
+		return $this->get_payments( '`amount_paid` < `amount` AND NOW() <= `due_date` AND `cancel_date` IS NULL', $offset, $max );
 	}
 
-	function get_past( $offset, $max, $ofUser = '' ) {
+	function get_past( $offset, $max ) {
 		$conditions = 'tpr.`amount` <= tpr.`amount_paid` AND tpr.`cancel_date` IS NULL';
-		if ($ofUser) {
-			$conditions .= " AND uu.`login` = '$ofUser'";
-		}
-		$count = 'SELECT COUNT(*) FROM `tiki_payment_requests` tpr LEFT JOIN `users_users` uu ON (uu.`userId` = tpr.`userId`) WHERE ' . $conditions;
-		$data = 'SELECT tpr.*, uu.`login` as `user`, tp.`type`, tp.`payment_date`, tp.`details` as `payment_detail`, uup.`login` as `payer` FROM `tiki_payment_requests` tpr LEFT JOIN `users_users` uu ON (uu.`userId` = tpr.`userId`) LEFT JOIN `tiki_payment_received` tp ON (tp.`paymentRequestId`=tpr.`paymentRequestId`) LEFT JOIN `users_users` uup ON (uup.`userId` = tp.`userId`) WHERE ' . $conditions;
+		$count = 'SELECT COUNT(*) FROM `tiki_payment_requests` tpr WHERE ' . $conditions;
+		$data = 'SELECT tpr.*, uu.`login` as `user`, tp.`type`, tp.`payment_date`, tp.`details` as `payment_detail`, uup.`login` as `payer`FROM `tiki_payment_requests` tpr LEFT JOIN `users_users` uu ON (uu.`userId` = tpr.`userId`) LEFT JOIN `tiki_payment_received` tp ON (tp.`paymentRequestId`=tpr.`paymentRequestId`) LEFT JOIN `users_users` uup ON (uup.`userId` = tp.`userId`) WHERE ' . $conditions;
 
 		$all = $this->fetchAll( $data, array(), $max, $offset );
 
@@ -57,20 +49,12 @@ class PaymentLib extends TikiDb_Bridge
 		);
 	}
 
-	function get_overdue( $offset, $max, $ofUser = '' ) {
-		$conditions = '`amount_paid` < `amount` AND NOW() > `due_date` AND `cancel_date` IS NULL';
-		if ($ofUser) {
-			$conditions .= " AND uu.`login` = '$ofUser'";
-		}
-		return $this->get_payments( $conditions, $offset, $max );
+	function get_overdue( $offset, $max ) {
+		return $this->get_payments( '`amount_paid` < `amount` AND NOW() > `due_date` AND `cancel_date` IS NULL', $offset, $max );
 	}
 
-	function get_canceled( $offset, $max, $ofUser = '' ) {
-		$conditions = '`cancel_date` IS NOT NULL';
-		if ($ofUser) {
-			$conditions .= " AND uu.`login` = '$ofUser'";
-		}
-		return $this->get_payments( $conditions, $offset, $max );
+	function get_canceled( $offset, $max ) {
+		return $this->get_payments( '`cancel_date` IS NOT NULL', $offset, $max );
 	}
 
 	function cancel_payment( $id ) {

@@ -78,9 +78,7 @@ input[type=submit] {
 #col2 select,
 #col3 select,
 #col3 input[type="text"],
-#col2 input[type="text"],
-#col3 input[type="password"],
-#col2 input[type="password"] {
+#col2 input[type="text"] {
 	width: 95%;
 }
 
@@ -2132,7 +2130,6 @@ ul.freetag {
 	top: 0;
 	height: 40px;
 	padding: 1em;
-	z-index: 1000;
 }
 
 #intertrans-form {
@@ -2158,19 +2155,6 @@ ul.freetag {
 	width: 50%;
 }
 
-/* tiki-edit_languages.php */
-#edit_translations td {
-	vertical-align: middle;
-}
-
-#edit_translations input {
-	margin: 2px 0 2px 0;
-}
-
-#edit_translations tr.last {
-	border-bottom: #74C0E2 solid 2px;
-}
-
 /***** Kaltura *****/
 
 /* Kaltura browse entries */
@@ -2187,29 +2171,5 @@ ul.freetag {
     margin: 20px 15px; 
 }
 
-/***** Accounting *****/
-div.aclabel, span.aclabel, label.aclabel {
-	float: left;
-	min-width: 150px;
-}
-
-/* Fancy filter */
-.filter .fancyfilter {
-	min-height: 1.5em;
-	border: thin solid black;
-	padding: 0.1em;
-	cursor: text;
-}
-
-.filter .fancyfilter .token {
-	display: inline-block;
-	background: #ccc;
-	cursor: default;
-}
-
-.filter .fancyfilter .token .ui-icon-close {
-	float: right;
-	cursor: pointer;
-}
 
 /* End of File */

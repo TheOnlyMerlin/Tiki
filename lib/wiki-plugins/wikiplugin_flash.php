@@ -94,7 +94,7 @@ function wikiplugin_flash($data, $params) {
 		}
 		$params['movie'] = $prefs['fgal_podcast_dir'].$file_info['path'];
 	}
-	
+
 	// Handle Youtube video
 	if (isset($params['youtube']) && preg_match('|http(s)?://(\w+\.)?youtube\.com/watch\?v=([\w-]+)|', $params['youtube'], $matches)) {
 		$params['movie'] = "http://www.youtube.com/v/" . $matches[3];
@@ -109,12 +109,12 @@ function wikiplugin_flash($data, $params) {
 	// We need the embed URL because there is tno relation between the video URL and the embed URL
 	if (isset($params['bliptv']) && preg_match('|http://blip.tv/play/\w+|', $params['bliptv'], $matches)) {
 		$params['movie'] = $params['bliptv'];
-	}
+	}	
 
 	if ((isset($params['youtube']) || isset($params['vimeo']) || isset($params['bliptv'])) && !isset($params['movie'])) {		
 		return tra('Invalid URL');
 	}
-	
+		
 	$code = $tikilib->embed_flash($params);
 
 	if ( $code === false ) {

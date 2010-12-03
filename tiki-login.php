@@ -335,34 +335,8 @@ if ($isvalid) {
 		if (isset($_REQUEST['url'])) {
 			$smarty->assign('url', $_REQUEST['url']);
 		}
-		if ($error == PASSWORD_INCORRECT && ($prefs['unsuccessful_logins'] >= 0 || $prefs['unsuccessful_logins_invalid'] >= 0)) {
-			$nb_bad_logins = $userlib->unsuccessful_logins($user);
-			if ($prefs['unsuccessful_logins_invalid'] > 0 && ($nb_bad_logins >= $prefs['unsuccessful_logins_invalid'] - 1)) {
-				$info = $userlib->get_user_info($user);
-				$userlib->change_user_waiting($user, 'a');
-				$msg = sprintf(tra('More than %d unsuccessful login attempts have been made.'), $prefs['unsuccessful_logins_invalid']);
-				$msg .= ' '.tra('Your account has been suspended.').' '.tra('A site administrator will reactivate it');
-				include_once ('lib/webmail/tikimaillib.php');
-				$mail = new TikiMail();
-				$smarty->assign('msg', $msg);
-				$smarty->assign('mail_user', $user);
-				$foo = parse_url($_SERVER['REQUEST_URI']);
-				$mail_machine = $tikilib->httpPrefix( true ).str_replace('tiki-login.php', '', $foo['path']);
-				$smarty->assign('mail_machine', $mail_machine);
-				$mail->setText($smarty->fetch('mail/unsuccessful_logins_suspend.tpl'));
-				$mail->setSubject($smarty->fetch('mail/unsuccessful_logins_suspend_subject.tpl'));
-				$emails = !empty($prefs['validator_emails'])?preg_split('/,/', $prefs['validator_emails']): (!empty($prefs['sender_email'])? array($prefs['sender_email']): '');
-				if (!$mail->send(array($info['email'])) || !$mail->send($emails)) {
-					$smarty->assign('msg', tra("The mail can't be sent. Contact the administrator"));
-					$smarty->display("error.tpl");
-					die;
-				}
-				$smarty->assign('user', '');
-				unset($user);
-				$smarty->assign('mid', 'tiki-information.tpl');
-				$smarty->display('tiki.tpl');
-				die;
-			} elseif ($prefs['unsuccessful_logins'] > 0 && ($nb_bad_logins >= $prefs['unsuccessful_logins'] - 1)) {
+		if ($error == PASSWORD_INCORRECT && $prefs['unsuccessful_logins'] >= 0) {
+			if (($nb_bad_logins = $userlib->unsuccessful_logins($user)) >= $prefs['unsuccessful_logins']) {
 				$msg = sprintf(tra('More than %d unsuccessful login attempts have been made.'), $prefs['unsuccessful_logins']);
 				$smarty->assign('msg', $msg);
 				if ($userlib->send_confirm_email($user, 'unsuccessful_logins')) {
