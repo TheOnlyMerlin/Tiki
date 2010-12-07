@@ -9,9 +9,9 @@ function wikiplugin_youtube_info() {
 	return array(
 		'name' => tra('Youtube'),
 		'documentation' => 'PluginYouTube',
-		'description' => tra('Display a YouTube video'),
+		'description' => tra('Display youtube video'),
 		'prefs' => array( 'wikiplugin_youtube' ),
-		'icon' => 'pics/icons/youtube.png',
+		'icon' => 'pics/icons/youtube.png',	
 		'params' => array(
 			'movie' => array(
 				'required' => true,
@@ -51,7 +51,7 @@ function wikiplugin_youtube_info() {
 			'allowFullScreen' => array(
 				'required' => false,
 				'name' => tra('Allow Fullscreen'),
-				'description' => tra('Enlarge video to full screen size'),
+				'description' => 'Enlarge video to full screen size',
 				'default' => '',
 				'filter' => 'alpha',
      			'options' => array(

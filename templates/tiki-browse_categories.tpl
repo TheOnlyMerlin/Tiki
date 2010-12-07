@@ -5,12 +5,11 @@
 {if $parentId and $p_info.description}
 	<div class="description">{$p_info.description}</div>
 {/if}
-<div class="categbar">
-	{button href="tiki-edit_categories.php" _text="{tr}Organize Objects{/tr}" _title="{tr}Organize Objects{/tr}"}
-	{if $tiki_p_admin_categories eq 'y'}
+{if $tiki_p_admin_categories eq 'y'}
+	<div class="categbar">
 		{button href="tiki-admin_categories.php?parentId=$parentId" _text="{tr}Admin Category{/tr}" _title="{tr}Admin the Category System{/tr}"}
-	{/if}
-</div>
+	</div>
+{/if}
 
 <div class="navbar">
 	{tr}Browse in{/tr}:

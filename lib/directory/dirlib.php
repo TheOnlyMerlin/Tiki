@@ -393,9 +393,10 @@ class DirLib extends TikiLib
 			}
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('directory_sites', $siteId);
-
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('directory_sites', $siteId);
+		}
 		return $siteId;
 	}
 
@@ -411,9 +412,11 @@ class DirLib extends TikiLib
 			$categId = $this->getOne("select max(`categId`) from `tiki_directory_categories` where `name`=?",array($name));
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('directory_categories', $categId);
-
+		global $prefs;
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('directory_categories', $categId);
+		}
 		return $categId;
 	}
 
