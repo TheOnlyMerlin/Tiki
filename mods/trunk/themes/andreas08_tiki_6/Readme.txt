@@ -25,9 +25,10 @@ http://themes.tikiwiki.org/Andreas08
 http://zukakakina.com/Andreas08
  
 -=Version=-
-* Tiki 5.
+* Tiki 6.
  
 -=Changelog=-
+5 update for Tiki 6
 4 update for Tiki 5
 3 update for Tiki 4
 2 update for Tiki 3
