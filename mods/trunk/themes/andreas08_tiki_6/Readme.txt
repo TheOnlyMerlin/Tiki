@@ -23,6 +23,7 @@
 -=Documentation=-
 http://themes.tikiwiki.org/Andreas08
 http://zukakakina.com/Andreas08
+See http://themes.tiki.org/Upgrading for overview of changes in this Tiki version related to themes.
  
 -=Version=-
 * Tiki 6.
