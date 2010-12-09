@@ -10,7 +10,6 @@ function wikiplugin_img_info() {
 		'name' => tra('Image'),
 		'documentation' => tra('PluginImg'),
 		'description' => tra('Display images'),
-		'documentation' => 'PluginImg',
 		'prefs' => array( 'wikiplugin_img'),
 		'icon' => 'pics/icons/picture.png',
 		'params' => array(
@@ -802,7 +801,7 @@ function wikiplugin_img_info() {
 					$imgalthumb == true;
 				}
 				$height = $imgdata['height'];
-				if (empty($imgdata['width']) && $fheight > 0) {
+				if (empty($imgdata['width'])) {
 					$width = floor($height * $fwidth / $fheight);
 				} else {
 					$width = $imgdata['width'];
@@ -810,7 +809,7 @@ function wikiplugin_img_info() {
 			} elseif (!empty($imgdata['width']))  {
 				//use image gal thumbs when possible
 				if ((!empty($imgdata['id']) && $imgalthumb == false) 
-					&& ($imgdata['width'] < $fwidtht)
+					&& ($imgdata['width'] < $widtht)
 				) {
 					$src .= '&thumb=1';
 					$imgalthumb == true;

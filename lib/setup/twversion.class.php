@@ -26,8 +26,8 @@ class TWVersion
 		$this->branch 	= 'unstable';
 
 		// Set everything else, including defaults.
-		$this->version 	= '7.0 SVN trunk';
-		$this->star	= '';
+		$this->version 	= '6.1beta2';
+		$this->star	= 'Rigel';
 		$this->releases	= array();
 
 		// Check for Subversion or not
@@ -136,6 +136,7 @@ class TWVersion
 				'6.0',
 				'6.1alpha1',
 				'6.1beta1',
+				'6.1beta2',
 			);
 	}
 

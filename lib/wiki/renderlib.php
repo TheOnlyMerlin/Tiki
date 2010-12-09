@@ -227,7 +227,6 @@ class WikiRenderer
 		if( !empty($this->info['lang'])) { 
 			$this->trads = $multilinguallib->getTranslations('wiki page', $this->info['page_id'], $this->page, $this->info['lang']);
 			$this->smartyassign('trads', $this->trads);
-			$this->smartyassign('translationsCount', count($this->trads));
 			$pageLang = $this->info['lang'];
 			$this->smartyassign('pageLang', $pageLang);
 		}
@@ -305,9 +304,7 @@ class WikiRenderer
 			return;
 		}
 
-		//Let us check if slides exist in the wiki page
-		$slides = preg_split('/-=[^=]+=-|![^=]+|!![^=]+!!![^=]+/',$this->info['data']);
-		
+		$slides = preg_split('/-=[^=]+=-/',$this->info['data']);
 		if(count($slides)>1) {
 			$this->smartyassign('show_slideshow','y');
 		} else {
@@ -373,10 +370,6 @@ class WikiRenderer
 		$this->smartyassign('pagenum',$this->pageNumber);
 
 		$this->smartyassign('lastVersion',$this->info["version"]);
-		if (isset($this->info['last_version'])) {
-			$this->smartyassign('versioned', true);
-		}
-
 		$this->smartyassign('lastModif',$this->info["lastModif"]);
 		if(empty($this->info['user'])) {
 			$this->info['user']=tra('Anonymous');  

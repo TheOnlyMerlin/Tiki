@@ -246,12 +246,8 @@ function wikiplugin_category($data, $params) {
 		$smarty->assign('one', $one);
 
 	if ($id == 'current') {
-		if (isset($_REQUEST['page'])) {
-			$objId = urldecode($_REQUEST['page']);
-			$id = $categlib->get_object_categories('wiki page', $objId);
-		} else {
-			$id = array();
-		}
+		$objId = urldecode($_REQUEST['page']);
+		$id = $categlib->get_object_categories('wiki page', $objId);
 	}
 	$smarty->assign('params', $params);
 

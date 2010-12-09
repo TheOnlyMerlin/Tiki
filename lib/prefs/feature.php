@@ -79,13 +79,6 @@ function prefs_feature_list() {
 			'help' => 'File+Gallery',
 			'type' => 'flag',
 		),
-		'feature_file_galleries_save_draft' => array(
-			'name' => tra('Save files as drafts'),
-			'dependencies' => array(
-				'feature_file_galleries',
-			),
-			'type' => 'flag',
-		),
 		'feature_articles' => array(
 			'name' => tra('Articles'),
 			'description' => tra('Articles can be used for date-specific news and announcements. You can configure articles to automatically publish and expire at specific times or to require that submissions be approved before becoming "live."'),
@@ -830,12 +823,6 @@ function prefs_feature_list() {
 			'type' => 'flag',
 			'require' => array('feature_sefurl', 'wiki_prefixalias_tokens'),
 		),	
-		'feature_canonical_url' => array(
-			'name' => tra('Canonical URL tag'),
-			'description' => tra('Indicates to search engines which URL to use which prevents duplicate listings'),
-			'type' => 'flag',
-			'perspective' => false,
-		),
 		'feature_modulecontrols' => array(
 			'name' => tra('Show module controls'),
 			'help' => 'Module+Control',
@@ -1113,6 +1100,23 @@ function prefs_feature_list() {
 			'type' => 'flag',
 			'help' => 'Edit+Templates',
 			'perspective' => false,
+		),
+		'feature_custom_doctype' => array(
+			'name' => tra('Custom Doctype'),
+			'description' => tra('Use custom !DOCTYPE'),
+			'type' => 'flag',
+			'help' => 'Custom+Doctype',
+			'perspective' => true,
+		),
+		'feature_custom_doctype_content' => array(
+			'name' => tra('Custom Doctype Content'),
+			'hint' => tra('Example:') . "<!DOCTYPE html 
+	PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"
+	\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">",
+			'description' => tra('Use to generate the Tiki layout with custom &lt;!DOCTYPE&gt; specified.'),
+			'type' => 'textarea',
+			'size' => '3',
+			'filter' => 'rawhtml_unsafe',
 		),
 		'feature_custom_html_head_content' => array(
 			'name' => tra('Custom HTML <head> Content'),
@@ -1559,14 +1563,6 @@ function prefs_feature_list() {
 			'name' => tra('Import HTML'),
 			'type' => 'flag',
 		),
-		'feature_wiki_use_date' => array(
-			'name' => tra('Use date parameter'),
-			'type' => 'flag',
-		),
-		'feature_wiki_use_date_links' => array(
-			'name' => tra('Report it in wiki links'),
-			'type' => 'flag',
-		),
 		'feature_wiki_import_page' => array(
 			'name' => tra('Import pages'),
 			'type' => 'flag',
@@ -1847,11 +1843,5 @@ function prefs_feature_list() {
             'description' => tra('Enable this only if the server is behind a load balancer (or reverse proxy), this allow tiki to log the IP of the user, instead of the IP of the proxy server'),
             'type' => 'flag',
         ),
-        'feature_accounting' => array(
-			'name' => tra('Accounting'),
-			'description' => tra('Enable accounting system (alpha)'),
-			'help' => 'Accounting',
-			'type' => 'flag',
-		),
 	);
 }

@@ -1,4 +1,6 @@
-{* $Id$ *}<!DOCTYPE html>
+{* $Id$ *}{if $prefs.feature_custom_doctype eq 'y' and !empty($prefs.feature_custom_doctype_content)}{$prefs.feature_custom_doctype_content}{else}<!DOCTYPE html 
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">{/if}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}"{if !empty($page_id)} id="page_{$page_id}"{/if}>
 	<head>
 {include file='header.tpl'}
@@ -149,10 +151,6 @@
 	</div> {* -- END of fixedwidth -- *}
 
 {include file='footer.tpl'}
-
-{if $prefs.socialnetworks_user_firstlogin == 'y'}
-	{include file='tiki-socialnetworks_firstlogin_launcher.tpl'}
-{/if}
 
 {if $prefs.feature_endbody_code}{*this code must be added just before </body>: needed by google analytics *}
 	{eval var=$prefs.feature_endbody_code}

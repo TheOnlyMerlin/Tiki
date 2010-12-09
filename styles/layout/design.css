@@ -547,7 +547,6 @@ img.icon {
 }
 
 .simplebox {
-	border: 1px solid #999;
 	padding: 3px;
 }
 
@@ -1389,10 +1388,6 @@ textarea.tshoutbox{
 #captchaImg {
 	border: 1px solid black;
 }
-
-.ui-tabs .ui-tabs-nav li a {
-	padding: 0 0 0 0;
-}
 /* interactive translations */
 
 #intertrans-indicator {
@@ -1404,12 +1399,4 @@ textarea.tshoutbox{
 	background-color: #eff;
 	border: #799 solid 2px;
 	color: #000;
-}
-
-.tree.root .object-count {
-	float: right;
-	font-weight: bold;
-	margin-left: 10px;
-	margin-right: 10px;
-	color: #999;
 }

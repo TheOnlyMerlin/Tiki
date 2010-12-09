@@ -212,7 +212,7 @@
 		
 							{if $users[user].user ne 'admin'}
 								<a class="link" href="{$smarty.server.PHP_SELF}?{query action=delete user=$users[user].user}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
-								{if $users[user].waiting eq 'a'}
+								{if $users[user].valid && $users[user].waiting eq 'a'}
 									<a class="link" href="tiki-login_validate.php?user={$users[user].user|escape:url}&amp;pass={$users[user].valid|escape:url}" title="{tr}Validate user:{/tr} {$users[user].user|username}">{icon _id='accept' alt="{tr}Validate user:{/tr} `$username`"}</a>
 								{/if}
 								{if $users[user].waiting eq 'u'}
@@ -221,9 +221,6 @@
 								{if $prefs.email_due > 0 and $users[user].waiting ne 'u' and $users[user].waiting ne 'a'}
 									<a class="link" href="tiki-adminusers.php?user={$users[user].user|escape:url}&amp;action=email_due" title="{tr}Invalid email{/tr}">{icon _id='email_cross' alt="{tr}Invalid email{/tr}"}</a>
 								{/if}
-							{/if}
-							{if !empty($users[user].openid_url)}
-								{self_link userId=$users[user].userId action='remove_openid' _title="{tr}Remove link with OpenID account{/tr}" _icon="img/icons/openid_remove"}{/self_link}
 							{/if}
 						</td>
 					</tr>
@@ -388,7 +385,12 @@
 								<div id="mypassword_bar" style="font-size: 5px; height: 2px; width: 0px;"></div> 
 							</div>
 							<br />
-							{include file='password_help.tpl'}
+							{if $prefs.min_pass_length > 1}
+								<em>{tr}Minimum {$prefs.min_pass_length} characters long{/tr}</em>. 
+							{/if}
+							{if $prefs.pass_chr_num eq 'y'}
+								<em>{tr}Password must contain both letters and numbers{/tr}</em>.
+							{/if}
 						</td>
 					</tr>
 					<tr>
@@ -517,6 +519,8 @@
 					<input type="file" id="csvlist" name="csvlist"/>
 					<br />
 					<label><input type="radio" name="overwrite" value="y" checked="checked" />&nbsp;{tr}Overwrite{/tr}</label>
+					<br />
+					<label><input type="radio" name="overwrite" value="c"/>&nbsp;{tr}Overwrite but keep the previous login if the login exists in another case{/tr}</label>
 					<br />
 					<label><input type="radio" name="overwrite" value="n" />&nbsp;{tr}Don't overwrite{/tr}</label>
 					<br />

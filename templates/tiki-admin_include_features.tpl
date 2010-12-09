@@ -170,7 +170,6 @@
 						{preference name=feature_webservices}
 						{preference name=feature_wiki_mindmap}
 						{preference name=feature_wysiwyg}
-						{preference name=feature_accounting}
 				</fieldset>
 			</div>
 
@@ -192,7 +191,6 @@
 					{preference name=feature_loadbalancer}
 					{preference name=feature_socialnetworks}
 					{preference name=feature_watershed}
-					{preference name=feature_file_galleries_save_draft}
 				</fieldset>
 
 				<fieldset>
