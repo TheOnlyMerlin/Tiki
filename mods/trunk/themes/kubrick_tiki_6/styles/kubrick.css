@@ -120,7 +120,9 @@ a:hover {
 caption {font-weight: bold}
 
 h1, h2, h3, h4, h5, h6 {
-	font-family: 'Century Gothic', 'Lucida Grande', 'Trebuchet MS', Verdana, Sans-Serif}
+	font-family: 'Century Gothic', 'Lucida Grande', 'Trebuchet MS', Verdana, Sans-Serif;
+	line-height: 1.1;
+}
 
 h1 {
 	font-weight: bold;
