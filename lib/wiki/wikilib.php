@@ -319,8 +319,10 @@ class WikiLib extends TikiLib
 			}
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('pages', $newName);
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('pages', $newName);
+		}
 
 		if ($prefs['wikiHomePage'] == $oldName) {
 			$tikilib->set_preference('wikiHomePage', $newName);
@@ -420,10 +422,6 @@ class WikiLib extends TikiLib
 
 		$query = "delete from `tiki_wiki_attachments` where `attId`='$attId'";
 		$result = $this->query($query);
-		if ($prefs['feature_actionlog'] == 'y') {
-			global $logslib; include_once('lib/logs/logslib.php');
-			$logslib->add_action('Removed', $attId, 'wiki page attachment');
-		}
 	}
 
 	function wiki_attach_file($page, $name, $type, $size, $data, $comment, $user, $fhash, $date='') {
@@ -442,14 +440,6 @@ class WikiLib extends TikiLib
 			$query = 'select `attId` from `tiki_wiki_attachments` where `page`=? and `filename`=? and `created`=? and `user`=?';
 			$attId = $this->getOne($query, array($page, $name, $now, $user));
 			sendWikiEmailNotification('wiki_file_attached', $page, $user, $comment, '', $name, '','', false, '', 0,$attId);
-		}
-		if ($prefs['feature_actionlog'] == 'y') {
-			global $logslib; include_once('lib/logs/logslib.php');
-			if (empty($attId)) {
-				$query = 'select `attId` from `tiki_wiki_attachments` where `page`=? and `filename`=? and `created`=? and `user`=?';
-				$attId = $this->getOne($query, array($page, $name, $now, $user));
-			}
-			$logslib->add_action('Created', $attId, 'wiki page attachment');
 		}
 	}
 	function get_wiki_attach_file($page, $name, $type, $size) {
@@ -934,7 +924,7 @@ class WikiLib extends TikiLib
 		return $this->query($query, $bindvals) ? true : false;
 	}
 	function sefurl($page, $with_next='', $all_langs='') {
-		global $prefs, $smarty, $info;
+		global $prefs, $smarty;
 		if( basename( $_SERVER['PHP_SELF'] ) == 'tiki-all_languages.php' ) {
 			return 'tiki-all_languages.php?page='.urlencode($page);
 		}
@@ -945,15 +935,6 @@ class WikiLib extends TikiLib
 		}
 
 		$href = "$script_name?page=".urlencode($page);
-
-		if (isset($prefs['feature_wiki_use_date_links']) && $prefs['feature_wiki_use_date_links'] == 'y') {
-			if (isset($_REQUEST['date'])) {
-				$href .= '&date='. urlencode($_REQUEST['date']);
-			} else if (isset($_REQUEST['version'])) {
-				$href .= '&date='. urlencode($info['lastModif']);
-			}
-		}
-
 		if ($with_next) {
 			$href .= '&amp;';
 		}

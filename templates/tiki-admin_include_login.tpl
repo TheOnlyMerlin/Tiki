@@ -74,10 +74,7 @@
 				{preference name=groupTracker}
 				{preference name=email_due}
 				{preference name=unsuccessful_logins}
-				{preference name=unsuccessful_logins_invalid}
 				{preference name=eponymousGroups}
-				{preference name=syncGroupsWithDirectory}
-				{preference name=syncUsersWithDirectory}
 				{preference name=desactive_login_autocomplete}
 				{preference name=feature_challenge}
 
@@ -130,10 +127,6 @@
 				{preference name=feature_crypt_passwords}
 				{preference name=change_password}
 				{preference name=pass_chr_num}
-				{preference name=pass_chr_case}
-				{preference name=pass_chr_special}
-				{preference name=pass_repetition}
-				{preference name=pass_diff_username}
 				{preference name=min_pass_length}
 				{preference name=pass_due}
 			</fieldset>
@@ -180,40 +173,6 @@
 			</fieldset>
 
 			<fieldset>
-				<legend>{tr}LDAP Admin{/tr}</legend>
-				{preference name=auth_ldap_adminuser}
-				{preference name=auth_ldap_adminpass}
-			</fieldset>
-		{/tab}
-
-		{tab name="{tr}External groups{/tr}"}
-			<fieldset>
-				<legend>External groups</legend>
-
-				{preference name=auth_ldap_group_external}
-			</fieldset>
-
-			<fieldset>
-				<legend>{tr}LDAP Bind settings{/tr}{help url="LDAP+Authentication"}</legend>
-				{preference name=auth_ldap_group_host}
-				{preference name=auth_ldap_group_port}
-				{preference name=auth_ldap_group_debug}
-				{preference name=auth_ldap_group_ssl}
-				{preference name=auth_ldap_group_starttls}
-				{preference name=auth_ldap_group_scope}
-				{preference name=auth_ldap_group_version}
-				{preference name=auth_ldap_group_basedn}
-			</fieldset>
-
-			<fieldset>
-				<legend>{tr}LDAP User{/tr}</legend>
-				{preference name=auth_ldap_group_userdn}
-				{preference name=auth_ldap_group_userattr}
-				{preference name=auth_ldap_group_corr_userattr}
-				{preference name=auth_ldap_group_useroc}
-			</fieldset>
-
-			<fieldset>
 				<legend>{tr}LDAP Group{/tr}</legend>
 				{preference name=auth_ldap_groupdn}
 				{preference name=auth_ldap_groupattr}
@@ -235,8 +194,8 @@
 
 			<fieldset>
 				<legend>{tr}LDAP Admin{/tr}</legend>
-				{preference name=auth_ldap_group_adminuser}
-				{preference name=auth_ldap_group_adminpass}
+				{preference name=auth_ldap_adminuser}
+				{preference name=auth_ldap_adminpass}
 			</fieldset>
 		{/tab}
 
@@ -293,6 +252,7 @@
 				{/if}
 
 				{preference name='cas_create_user_tiki'}
+				{preference name='cas_create_user_tiki_ldap'}
 				{preference name='cas_skip_admin'}
 				{preference name='cas_show_alternate_login'}
 				{preference name='cas_force_logout'}

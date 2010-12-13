@@ -8,12 +8,5 @@
 interface Perms_Resolver
 {
 	function check( $permission, array $groups );
-
-	function from();
-
-	/**
-	 * Provide the list of groups affecting the outcome.
-	 */
-	function applicableGroups();
 }
 

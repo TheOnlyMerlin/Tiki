@@ -8,7 +8,7 @@
 // @param numeric $id: id of the payment
 // @params url $returnurl: optional return url
 function smarty_function_payment( $params, $smarty ) {
-	global $tikilib, $prefs, $userlib, $user, $globalperms;
+	global $tikilib, $prefs, $userlib, $user;
 	global $paymentlib; require_once 'lib/payment/paymentlib.php';
 	$invoice = (int) $params['id'];
 
@@ -19,7 +19,7 @@ function smarty_function_payment( $params, $smarty ) {
 	
 	// Unpaid payments can be seen by anyone as long as they know the number
 	// Just like your bank account, anyone can drop money in it.
-	if( $info && ($info['state'] == 'outstanding' || $info['state'] == 'overdue') && $prefs['payment_user_only_his_own'] != 'y' || $objectperms->payment_view && $prefs['payment_user_only_his_own_past'] != 'y' || $theguy || $info && $globalperms->payment_admin) {
+	if( $info && $info['state'] == 'outstanding' || $info['state'] == 'overdue' || $objectperms->payment_view || $theguy ) {
 		if ($prefs['payment_system'] == 'cclite' && isset($_POST['cclite_payment_amount']) && $_POST['cclite_payment_amount'] == $info['amount_remaining']) {
 			global $access, $cclitelib, $cartlib;
 			require_once 'lib/payment/cclitelib.php';
@@ -27,8 +27,18 @@ function smarty_function_payment( $params, $smarty ) {
 			
 			//$access->check_authenticity( tr('Transfer currency? %0 %1?', $info['amount'], $info['currency'] ));
 			
+			// check currency matches
+			if (empty($params['registry'])) { $params['registry'] = $cclitelib->get_registry(); }
+			if (empty($info['currency'])) {
+				$info['currency'] = $cclitelib->get_currency($params['registry']);
+			} else {
+				if ($info['currency'] != substr($cclitelib->get_currency($params['registry']), 0, 3)) {
+					return tr('Currency in payment (%0) does not match the currency for that registry (%1).', $info['currency'], $cclitelib->get_currency($params['registry']) );
+				}
+			}
+			
 			// no notification callback in cclite yet, so have to assume true for now (pending checking in perform_trade)
-			$result = $cclitelib->pay_invoice($invoice, $info['amount'], $info['currency']);
+			$result = $cclitelib->pay_invoice($invoice, $info['amount'], $info['currency'], $params['registry']);
 			if ($result) {
 				// ccresults are set in smarty by the perform_trade behaviour
 				$smarty->assign('ccresult', $result);

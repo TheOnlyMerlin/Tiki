@@ -109,14 +109,6 @@ class TikiImporter_Wiki_Mediawiki_Test extends TikiImporter_TestCase
         $this->obj->validateInput();
     }
     
-	public function testValidateInputShouldRaiseExceptionForWordpressFile()
-    {
-        $this->obj->dom = new DOMDocument;
-        $this->obj->dom->load(dirname(__FILE__) . '/fixtures/wordpress_sample.xml');
-        $this->setExpectedException('DOMException');
-        $this->obj->validateInput();
-    }
-
     public function testParseData()
     {
         $obj = $this->getMock('TikiImporter_Wiki_Mediawiki', array('extractInfo', 'downloadAttachment'));

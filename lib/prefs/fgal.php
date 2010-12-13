@@ -84,13 +84,7 @@ function prefs_fgal_list() {
 		),
 		'fgal_quota_show' => array (
 			'name' => tra('Show quota bar in the list page'),
-			'type' => 'list',
-			'options' => array(
-							  'n' 				=> tra('Never'),
-							  'bar_and_text' 	=> tra('Yes, display only and detail text'),
-							  'y' 				=> tra('Yes, display only bar'),
-							  'text_only'		=> tra('Yes, display bar and detail text')
-		),
+			'type' => 'flag',
 		),
 		'fgal_use_db' => array(
 			'name' => tra('Storage'),

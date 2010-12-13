@@ -113,7 +113,7 @@ if ( $re === false ) {
 	} else {
 		// we are in the installer don't redirect...
 		return ;
-	}
+  }
 }
 
 if ( $dbversion_tiki == '1.10' ) $dbversion_tiki = '2.0';
@@ -200,7 +200,7 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 }
 
 $dbInitializer = 'db/tiki-db-adodb.php';
-if ($api_tiki == 'pdo' && extension_loaded("pdo") && in_array('mysql', PDO::getAvailableDrivers())) {
+if (extension_loaded("pdo") and $api_tiki == 'pdo' ) {
 	$dbInitializer = 'db/tiki-db-pdo.php';
 }
 

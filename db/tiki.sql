@@ -803,21 +803,6 @@ CREATE TABLE `tiki_files` (
   FULLTEXT KEY `ft` (name,description,search_data,filename)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
-DROP TABLE IF EXISTS `tiki_file_drafts`;
-CREATE TABLE `tiki_file_drafts` (
-  `fileId` int(14) NOT NULL,
-  `filename` varchar(80) default NULL,
-  `filesize` int(14) default NULL,
-  `filetype` varchar(250) default NULL,
-  `data` longblob,
-  `user` varchar(200) default '',
-  `path` varchar(255) default NULL,
-  `hash` varchar(32) default NULL,
-  `lastModif` integer(14) DEFAULT NULL,
-  `lockedby` varchar(200) default '',
-  PRIMARY KEY (`fileId`, `user`)
-) ENGINE=MyISAM;
-
 DROP TABLE IF EXISTS `tiki_forum_attachments`;
 CREATE TABLE `tiki_forum_attachments` (
   `attId` int(14) NOT NULL auto_increment,
@@ -1100,8 +1085,6 @@ CREATE TABLE `tiki_language` (
   `lang` char(16) NOT NULL default '',
   `tran` text,
   `changed` bool,
-  `userId` int(8),
-  `lastModif` int(14) NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM;
 
@@ -1345,9 +1328,9 @@ INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `s
 INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'s','Blogs','tiki-list_blogs.php',450,'feature_blogs','tiki_p_read_blog','',0);
 INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'o','List Blogs','tiki-list_blogs.php',455,'feature_blogs','tiki_p_read_blog','',0);
 INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'o','Rankings','tiki-blog_rankings.php',460,'feature_blogs,feature_blog_rankings','tiki_p_read_blog','',0);
-INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'o','Create Blog','tiki-edit_blog.php',465,'feature_blogs','tiki_p_read_blog,tiki_p_create_blogs','',0);
-INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'o','New Blog Post','tiki-blog_post.php',470,'feature_blogs','tiki_p_read_blog,tiki_p_blog_post','',0);
-INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'o','List Blog Posts','tiki-list_posts.php',475,'feature_blogs','tiki_p_read_blog,tiki_p_blog_admin','',0);
+INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'o','Create/Edit Blog','tiki-edit_blog.php',465,'feature_blogs','tiki_p_read_blog,tiki_p_create_blogs','',0);
+INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'o','Post','tiki-blog_post.php',470,'feature_blogs','tiki_p_read_blog,tiki_p_blog_post','',0);
+INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'o','Admin Posts','tiki-list_posts.php',475,'feature_blogs','tiki_p_read_blog,tiki_p_blog_admin','',0);
 INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'s','Forums','tiki-forums.php',500,'feature_forums','tiki_p_forum_read','',0);
 INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'o','List Forums','tiki-forums.php',505,'feature_forums','tiki_p_forum_read','',0);
 INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'o','Rankings','tiki-forum_rankings.php',510,'feature_forums,feature_forum_rankings','tiki_p_forum_read','',0);
@@ -2934,8 +2917,8 @@ INSERT INTO `users_permissions` (`permName`, `permDesc`, `level`, `type`, `admin
 INSERT INTO `users_permissions` (`permName`, `permDesc`, `level`, `type`, `admin`, `feature_check`) VALUES('tiki_p_admin_categories', 'Can admin categories', 'editors', 'category', 'y', 'feature_categories');
 INSERT INTO `users_permissions` (`permName`, `permDesc`, `level`, `type`, `admin`, `feature_check`) VALUES('tiki_p_view_category', 'Can see the category in a listing', 'basic', 'category', NULL, 'feature_categories');
 INSERT INTO `users_permissions` (`permName`, `permDesc`, `level`, `type`, `admin`, `feature_check`) VALUES('tiki_p_modify_object_categories', 'Can change the categories of the object', 'editors', 'tiki', NULL, NULL);
-INSERT INTO `users_permissions` (`permName`, `permDesc`, `level`, `type`, `admin`, `feature_check`) VALUES('tiki_p_add_object', 'Can add objects to the category (needs tiki_p_modify_object_categories)', 'editors', 'category', NULL, 'feature_categories');
-INSERT INTO `users_permissions` (`permName`, `permDesc`, `level`, `type`, `admin`, `feature_check`) VALUES('tiki_p_remove_object', 'Can remove objects from the category (needs tiki_p_modify_object_categories)', 'editors', 'category', NULL, 'feature_categories');
+INSERT INTO `users_permissions` (`permName`, `permDesc`, `level`, `type`, `admin`, `feature_check`) VALUES('tiki_p_add_object', 'Can add objects to the category', 'editors', 'category', NULL, 'feature_categories');
+INSERT INTO `users_permissions` (`permName`, `permDesc`, `level`, `type`, `admin`, `feature_check`) VALUES('tiki_p_remove_object', 'Can remove objects from the category', 'editors', 'category', NULL, 'feature_categories');
 INSERT INTO `users_permissions` (`permName`, `permDesc`, `level`, `type`, `admin`, `feature_check`) VALUES('tiki_p_create_category', 'Can create new categories', 'admin', 'category', NULL, 'feature_categories');
 INSERT INTO `users_permissions` (`permName`, `permDesc`, `level`, `type`, `admin`, `feature_check`) VALUES('tiki_p_perspective_view', 'Can view the perspective', 'basic', 'perspective', NULL, 'feature_perspective');
 INSERT INTO `users_permissions` (`permName`, `permDesc`, `level`, `type`, `admin`, `feature_check`) VALUES('tiki_p_perspective_edit', 'Can edit the perspective', 'basic', 'perspective', NULL, 'feature_perspective');
@@ -2974,14 +2957,6 @@ INSERT INTO `users_permissions` (`permName`, `permDesc`, `level`, `type`, `admin
 
 
 INSERT INTO `users_permissions` (`permName`, `permDesc`, `level`, `type`, `admin`, `feature_check`) VALUES('tiki_p_page_contribution_view', 'Can view contributions to a page', 'basic', 'wiki', NULL, 'feature_wiki');
-
-INSERT INTO `users_permissions` (`permName` , `permDesc` , `level` , `type` , `admin` , `feature_check` ) VALUES ( 'tiki_p_acct_create_book', 'Can create/close a book', 'admin', 'accounting', 'y', 'feature_accounting');
-INSERT INTO `users_permissions` (`permName` , `permDesc` , `level` , `type` , `admin` , `feature_check` ) VALUES ( 'tiki_p_acct_manage_accounts', 'Can create/edit/lock accounts', 'admin', 'accounting', 'y', 'feature_accounting' );
-INSERT INTO `users_permissions` (`permName` , `permDesc` , `level` , `type` , `admin` , `feature_check` ) VALUES ( 'tiki_p_acct_book', 'Create a new transaction', 'editor', 'accounting', 'n', 'feature_accounting');
-INSERT INTO `users_permissions` (`permName` , `permDesc` , `level` , `type` , `admin` , `feature_check` ) VALUES ( 'tiki_p_acct_view', 'Permission to view the journal', 'registered', 'accounting', 'n', 'feature_accounting' );
-INSERT INTO `users_permissions` (`permName` , `permDesc` , `level` , `type` , `admin` , `feature_check` ) VALUES ( 'tiki_p_acct_book_stack', 'Can book into the stack, where statements can be changed', 'editor', 'accounting', 'n', 'feature_accounting');
-INSERT INTO `users_permissions` (`permName` , `permDesc` , `level` , `type` , `admin` , `feature_check` ) VALUES ( 'tiki_p_acct_book_import', 'Can import statements from external accounts', 'editor', 'accounting', 'n', 'feature_accounting' );
-INSERT INTO `users_permissions` (`permName` , `permDesc` , `level` , `type` , `admin` , `feature_check` ) VALUES ( 'tiki_p_acct_manage_template', 'Can manage templates for recurring transactions', 'editor', 'accounting', 'n', 'feature_accounting');
 
 DROP TABLE IF EXISTS `users_usergroups`;
 CREATE TABLE `users_usergroups` (
@@ -3025,7 +3000,7 @@ CREATE TABLE `users_users` (
   `waiting` char(1) default NULL,
   PRIMARY KEY (`userId`),
   KEY `score` (score),
-  UNIQUE KEY `login` (login),
+  KEY `login` (login),
   KEY `registrationDate` (`registrationDate`),
   KEY `openid_url` (openid_url)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
@@ -3227,10 +3202,6 @@ INSERT IGNORE INTO tiki_actionlog_conf(action, `objectType`, status) VALUES ('Up
 INSERT IGNORE INTO tiki_actionlog_conf(action, `objectType`, status) VALUES ('Created', 'trackeritem', 'n');
 INSERT IGNORE INTO tiki_actionlog_conf(action, `objectType`, status) VALUES ('Viewed', 'trackeritem', 'n');
 INSERT IGNORE INTO tiki_actionlog_conf(action, `objectType`, status) VALUES ('Viewed', 'trackeritem', 'n');
-INSERT IGNORE INTO tiki_actionlog_conf(action, `objectType`, status) VALUES ('Created', 'wiki page attachment', 'n');
-INSERT IGNORE INTO tiki_actionlog_conf(action, `objectType`, status) VALUES ('Removed', 'wiki page attachment', 'n');
-INSERT IGNORE INTO tiki_actionlog_conf(action, `objectType`, status) VALUES ('Categorized', 'wiki page', 'n');
-INSERT IGNORE INTO tiki_actionlog_conf(action, `objectType`, status) VALUES ('Uncategorized', 'wiki page', 'n');
 
 DROP TABLE IF EXISTS `tiki_freetags`;
 CREATE TABLE `tiki_freetags` (
@@ -3379,8 +3350,6 @@ DROP TABLE IF EXISTS `tiki_webservice`;
 CREATE TABLE `tiki_webservice` (
   `service` VARCHAR(25) NOT NULL PRIMARY KEY,
   `url` VARCHAR(250),
-  `wstype` CHAR(4),
-  `operation` VARCHAR(250),
   `body` TEXT,
   `schema_version` VARCHAR(5),
   `schema_documentation` VARCHAR(250)
@@ -3831,159 +3800,4 @@ CREATE TABLE `tiki_credits_types` (
     `is_static_level` CHAR( 1 ) DEFAULT 'n',
     `scaling_divisor` FLOAT NOT NULL DEFAULT 1,
     PRIMARY KEY ( `credit_type` ) 
-);
-
-
--- --------------------------------------------------------
--- Calendar reminder table
--- --------------------------------------------------------
-CREATE TABLE custom_calendar_reminder
-(
-    reminder_id INT NOT NULL AUTO_INCREMENT,
-    calendar_item_id INT NOT NULL,
-    reminder_type TINYINT NOT NULL DEFAULT 0,
-    fixed_date INT NOT NULL DEFAULT 0,
-    time_offset INT NOT NULL DEFAULT 0,
-    related_to CHAR(1) NOT NULL DEFAULT 'S',
-    when_run CHAR(1) NOT NULL DEFAULT 'B',
-    last_sent INT NOT NULL DEFAULT 0,
-    times_sent INT NOT NULL DEFAULT 0,
-    PRIMARY KEY (reminder_id),
-    INDEX (calendar_item_id)
-);
-
-DROP TABLE IF EXISTS `tiki_acct_account`;
-CREATE TABLE `tiki_acct_account` (
-  `accountBookId` int(10) unsigned NOT NULL,
-  `accountId` int(10) unsigned NOT NULL DEFAULT '0',
-  `accountName` varchar(255) NOT NULL,
-  `accountNotes` text NOT NULL,
-  `accountBudget` double NOT NULL DEFAULT '0',
-  `accountLocked` int(1) NOT NULL DEFAULT '0',
-  `accountTax` int(11) NOT NULL DEFAULT '0',
-  `accountUserId` int(8) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`accountBookId`,`accountId`),
-  KEY `accountTax` (`accountTax`)
-);
-
-DROP TABLE IF EXISTS `tiki_acct_bankaccount`; 
-CREATE TABLE `tiki_acct_bankaccount` (
-  `bankBookId` int(10) unsigned NOT NULL,
-  `bankAccountId` int(10) unsigned NOT NULL,
-  `externalNumber` int(10) NOT NULL,
-  `bankCountry` varchar(2) NOT NULL,
-  `bankCode` varchar(11) NOT NULL,
-  `bankIBAN` varchar(63) NOT NULL,
-  `bankBIC` varchar(63) NOT NULL,
-  `bankDelimeter` varchar(15) NOT NULL DEFAULT ';',
-  `bankDecPoint` varchar(1) NOT NULL DEFAULT ',',
-  `bankThousand` varchar(1) NOT NULL DEFAULT '.',
-  `bankHasHeader` tinyint(1) NOT NULL DEFAULT '1',
-  `fieldNameAccount` varchar(63) NOT NULL,
-  `fieldNameBookingDate` varchar(63) NOT NULL,
-  `formatBookingDate` varchar(31) NOT NULL,
-  `fieldNameValueDate` varchar(63) NOT NULL,
-  `formatValueDate` varchar(31) NOT NULL,
-  `fieldNameBookingText` varchar(63) NOT NULL,
-  `fieldNameReason` varchar(63) NOT NULL,
-  `fieldNameCounterpartName` varchar(63) NOT NULL,
-  `fieldNameCounterpartAccount` varchar(63) NOT NULL,
-  `fieldNameCounterpartBankCode` varchar(63) NOT NULL,
-  `fieldNameAmount` varchar(63) NOT NULL,
-  `amountType` int(10) unsigned NOT NULL,
-  `fieldNameAmountSign` varchar(63) NOT NULL,
-  `SignPositive` varchar(7) NOT NULL,
-  `SignNegative` varchar(7) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`bankBookId`,`bankAccountId`)
-);
-
-DROP TABLE IF EXISTS `tiki_acct_book`;
-CREATE TABLE `tiki_acct_book` (
-  `bookId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `bookName` varchar(255) NOT NULL,
-  `bookClosed` enum('y','n') NOT NULL DEFAULT 'n',
-  `bookStartDate` date NOT NULL,
-  `bookEndDate` date NOT NULL,
-  `bookCurrency` varchar(3) NOT NULL DEFAULT 'EUR',
-  `bookCurrencyPos` int(11) NOT NULL,
-  `bookDecimals` int(11) NOT NULL DEFAULT '2',
-  `bookDecPoint` varchar(1) NOT NULL DEFAULT ',',
-  `bookThousand` varchar(1) NOT NULL DEFAULT '.',
-  `exportSeparator` varchar(4) NOT NULL DEFAULT ';',
-  `exportEOL` varchar(4) NOT NULL DEFAULT 'LF',
-  `exportQuote` varchar(4) NOT NULL DEFAULT '"',
-  `bookAutoTax` enum('y','n') NOT NULL DEFAULT 'y',
-  PRIMARY KEY (`bookId`)
-);
-
-DROP TABLE IF EXISTS `tiki_acct_item`; 
-CREATE TABLE `tiki_acct_item` (
-  `itemBookId` int(10) unsigned NOT NULL,
-  `itemJournalId` int(10) unsigned NOT NULL DEFAULT '0',
-  `itemAccountId` int(10) unsigned NOT NULL DEFAULT '0',
-  `itemType` int(1) NOT NULL DEFAULT '-1',
-  `itemAmount` double NOT NULL DEFAULT '0',
-  `itemText` varchar(255) NOT NULL DEFAULT '',
-  `itemTs` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`itemBookId`,`itemJournalId`,`itemAccountId`,`itemType`)
-);
-
-DROP TABLE IF EXISTS `tiki_acct_journal`; 
-CREATE TABLE `tiki_acct_journal` (
-  `journalBookId` int(10) unsigned NOT NULL,
-  `journalId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `journalDate` date NOT NULL DEFAULT '0000-00-00',
-  `journalDescription` varchar(255) NOT NULL,
-  `journalCancelled` int(1) NOT NULL DEFAULT '0',
-  `journalTs` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`journalBookId`,`journalId`)
-);
-
-DROP TABLE IF EXISTS `tiki_acct_stack`; 
-CREATE TABLE `tiki_acct_stack` (
-  `stackBookId` int(10) unsigned NOT NULL,
-  `stackId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `stackDate` date NOT NULL DEFAULT '0000-00-00',
-  `stackDescription` varchar(255) NOT NULL,
-  `stackTs` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`stackBookId`,`stackId`)
-);
-
-DROP TABLE IF EXISTS `tiki_acct_stackitem`; 
-CREATE TABLE `tiki_acct_stackitem` (
-  `stackBookId` int(10) unsigned NOT NULL,
-  `stackItemStackId` int(10) unsigned NOT NULL DEFAULT '0',
-  `stackItemAccountId` int(10) unsigned NOT NULL DEFAULT '0',
-  `stackItemType` int(1) NOT NULL DEFAULT '-1',
-  `stackItemAmount` double NOT NULL DEFAULT '0',
-  `stackItemText` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`stackBookId`,`stackItemStackId`,`stackItemAccountId`,`stackItemType`)
-);
-
-DROP TABLE IF EXISTS `tiki_acct_statement`;
-CREATE TABLE `tiki_acct_statement` (
-  `statementBookId` int(10) unsigned NOT NULL,
-  `statementAccountId` int(10) unsigned NOT NULL DEFAULT '0',
-  `statementId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `statementBookingDate` date NOT NULL,
-  `statementValueDate` date NOT NULL,
-  `statementBookingText` varchar(255) NOT NULL,
-  `statementReason` varchar(255) NOT NULL,
-  `statementCounterpart` varchar(63) NOT NULL,
-  `statementCounterpartAccount` varchar(63) NOT NULL,
-  `statementCounterpartBankCode` varchar(63) NOT NULL,
-  `statementAmount` double NOT NULL,
-  `statementJournalId` int(10) unsigned NOT NULL DEFAULT '0',
-  `statementStackId` int(11) NOT NULL,
-  PRIMARY KEY (`statementBookId`,`statementAccountId`,`statementId`)
-);
-
-DROP TABLE IF EXISTS `tiki_acct_tax`; 
-CREATE TABLE `tiki_acct_tax` (
-  `taxBookId` int(10) unsigned NOT NULL,
-  `taxId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `taxText` varchar(63) NOT NULL,
-  `taxAmount` double NOT NULL DEFAULT '0',
-  `taxIsFix` enum('y','n') NOT NULL DEFAULT 'n',
-  PRIMARY KEY (`taxBookId`,`taxId`)
 );

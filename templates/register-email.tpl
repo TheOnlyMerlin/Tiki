@@ -1,4 +1,4 @@
-{if $prefs.user_register_prettytracker eq 'y' and $prefs.user_register_prettytracker_tpl and $prefs.socialnetworks_user_firstlogin != 'y'}
+{if $prefs.user_register_prettytracker eq 'y' and $prefs.user_register_prettytracker_tpl}
 	<input type="text" id="email" name="email" /><strong class='mandatory_star'>*</strong>
 {else}
 	{if $prefs.login_is_email ne 'y'}
@@ -13,9 +13,9 @@
 					<span id="ajax_msg_mail" style="vertical-align: middle;"></span>
 				{/if}
 				{if $prefs.validateUsers eq 'y' and $prefs.validateEmail ne 'y'}
-					<p class="highlight">
+					<div class="highlight">
 						<em class='mandatory_note'>{tr}A valid email is mandatory to register{/tr}</em>
-					</p>
+					</div>
 				{/if}
 			</td>
 		</tr>
