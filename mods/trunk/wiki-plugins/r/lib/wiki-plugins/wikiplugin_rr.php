@@ -393,7 +393,8 @@ function checkCommands ($input) {
         	'readdataSK',
         	'png', 'jpeg',
         	'get', 'rgl.init', # Suggested by Carlos J. Gil Bellosta , and Miguel Angel Rodriguez Muinos from list r-help-es
-        	'call', 'eval' );     # added by suggestion of M. Cassin 
+        	'call', 'eval',     # added by suggestion of M. Cassin 
+        	'ggsave' );     # from ggplot: http://rgm2.lab.nig.ac.jp/RGM2/R_man-2.9.0/library/ggplot2/man/ggsave-ao.html
 	# 'pdf',
 	$found = array();
 
