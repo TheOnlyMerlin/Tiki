@@ -36,12 +36,8 @@ function wikiplugin_lastmod($data, $params) {
 
 	if (!isset($page)) {
 		# See if we're being called from a wiki page; stolen from wikiplugin_attach
-		if (isset($_REQUEST['SCRIPT_NAME']) && isset($_REQUEST['page'])) {
-			if( strstr( $_REQUEST["SCRIPT_NAME"], "tiki-index.php" ) || strstr( $_REQUEST["SCRIPT_NAME"], "tiki-editpage.php" ) || strstr( $_REQUEST["SCRIPT_NAME"], 'tiki-pagehistory.php') ) {
-				$page = $_REQUEST["page"];
-			}
-		} else {
-			return;
+		if( strstr( $_REQUEST["SCRIPT_NAME"], "tiki-index.php" ) || strstr( $_REQUEST["SCRIPT_NAME"], "tiki-editpage.php" ) || strstr( $_REQUEST["SCRIPT_NAME"], 'tiki-pagehistory.php') ) {
+			$page = $_REQUEST["page"];
 		}
 
 	}

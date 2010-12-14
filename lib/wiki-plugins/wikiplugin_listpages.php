@@ -5,6 +5,14 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+function wikiplugin_listpages_help() {
+	$help = tra("List wiki pages.");
+	$help .= "<br />";
+	$help .= "~np~{LISTPAGES(initial=txt, showNameOnly=y|n, categId=id, structHead=y|n, showPageAlias=y|n, offset=num, max=num, find=txt, exact_match=y|n, only_orphan_pages=y|n, for_list_pages=y|n)}{LISTPAGES}~/np~";
+
+	return $help;
+}
+
 function wikiplugin_listpages_info() {
 	return array(
 		'name' => tra('List Pages'),
@@ -98,11 +106,6 @@ function wikiplugin_listpages_info() {
 				'name' => tra('Load Translations'),
 				'description' => tra('User or pipe separated list of two letter language codes for additional languages to display. If the language parameter is not defined, the first element of this list will be used as the primary filter.'),
 			),
-			'translationOrphan' => array(
-				'required' => false,
-				'name' => tra('No translation'),
-				'description' => tra('User or pipe separated list of two letter language codes for additional languages to display. List pages with no language or with a missing translation in one of the language'),
-			),
 			'exact_match' => array(
 				'required' => false,
 				'name' => tra('Exact Match'),
@@ -184,7 +187,7 @@ function wikiplugin_listpages($data, $params) {
 		// the feature is disabled or the user can't read wiki pages
 		return '';
 	}
-	$default = array('offset'=>0, 'max'=>-1, 'sort'=>'pageName_asc', 'find'=>'', 'start'=>'', 'end'=>'', 'length'=>-1, 'translations'=>null, 'translationOrphan'=>null);
+	$default = array('offset'=>0, 'max'=>-1, 'sort'=>'pageName_asc', 'find'=>'', 'start'=>'', 'end'=>'', 'length'=>-1, 'translations'=>null);
 	$params = array_merge($default, $params);
 	extract($params,EXTR_SKIP);
 	$filter = array();
@@ -196,17 +199,7 @@ function wikiplugin_listpages($data, $params) {
 		}
 	}
 	if (!empty($categId)) {
-		if (strstr($categId, ':')) {
-			$filter['categId'] = explode(':', $categId);
-		} elseif (strstr($categId, '+')) {
-			$filter['andCategId'] = explode('+', $categId);
-		} elseif (strstr($categId, '-')) {
-			$categories = explode('-', $categId);
-			$filter['categId'] = array_shift($categories);
-			$filter['notCategId'] = $categories;
-		} else {
-			$filter['categId'] = $categId;
-		}
+		$filter['categId'] = $categId;
 	}
 	if (!empty($structHead) && $structHead == 'y') {
 		$filter['structHead'] = $structHead;
@@ -219,9 +212,6 @@ function wikiplugin_listpages($data, $params) {
 		} else {
 			$translations = explode( '|', $translations );
 		}
-	}
-	if (!empty($translationOrphan)) {
-		$filter['translationOrphan'] = explode('|', $translationOrphan);
 	}
 	if (!empty($langOrphan)) {
 		$filter['langOrphan'] = $langOrphan;

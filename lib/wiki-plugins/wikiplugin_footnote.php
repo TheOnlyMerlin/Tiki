@@ -53,10 +53,6 @@ function wikiplugin_footnote_info()
 
 function wikiplugin_footnote($data, $params)
 {
-	if (! isset($GLOBALS['footnoteCount'])) {
-		$GLOBALS['footnoteCount'] = 0;
-	}
-
 	if (empty($params)) {
 		$GLOBALS['footnoteCount']++;
 		$footnoteCount = $GLOBALS['footnoteCount'];

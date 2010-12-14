@@ -1199,68 +1199,6 @@ class TrackerLib extends TikiLib
 			}
 			$fields[] = $fopt;
 		}
-
-		// Field that need other field value
-		foreach ($fields as $index => $field) {
-			switch ($field['type']) {
-				case 'P':
-					if (count($field['options_array']) == 3) {
-						include_once ('lib/admin/adminlib.php');
-						include_once ('lib/ldap/ldaplib.php');
-
-						// Retrieve DSN
-						$info_ldap = $adminlib->get_dsn_from_name($field['options_array'][2]);
-
-						if ($info_ldap) {
-							$ldap_filter = $field['options_array'][0];
-
-							// Replace %field_name% by real value
-							preg_match('/%([^%]+)%/', $ldap_filter, $ldap_filter_field_names);
-
-							if (isset($ldap_filter_field_names[1])) {
-								foreach ($fields as $sub_field) {
-									if (strcmp($ldap_filter_field_names[1], $sub_field['name']) == 0) {
-										$ldap_filter = preg_replace('/%'. $ldap_filter_field_names[1] .'%/', $sub_field['value'], $ldap_filter);
-										break;
-									}
-								}
-							}
-
-							// Get LDAP field value
-							$fields[$index]['value'] = $ldaplib->get_field($info_ldap['dsn'], $ldap_filter, $field['options_array'][1]);
-						}
-					}
-					break;
-				case 'W':
-					if (count($fopt['options_array']) >= 2) {
-						require_once 'lib/webservicelib.php';
-
-						if (!($webservice = Tiki_Webservice::getService($fopt['options_array'][0]))  ||
-							!($template = $webservice->getTemplate($fopt['options_array'][1]))) {
-							break;
-						}
-
-						$ws_params = array();
-						if ( isset( $fopt['options_array'][2] )) {
-							parse_str($fopt['options_array'][2], $ws_params);
-							foreach ($ws_params as $ws_param_name => $ws_param_value) {
-								foreach ($fields as $sub_field) {
-									if (strcmp($ws_param_value, '%' . $sub_field['name'] . '%') == 0) {
-										$ws_params[$ws_param_name] = $sub_field['value'];
-									}
-								}
-							}
-						}
-
-						$response = $webservice->performRequest( $ws_params );
-						$fields[$index]['value'] = $template->render( $response, 'tikiwiki' );
-					}
-					break;
-				default:
-					break;
-			}
-		}
-
 		return($fields);
 	}
 	function in_group_value($field, $itemUser) {
@@ -1986,9 +1924,10 @@ class TrackerLib extends TikiLib
 			$categlib->categorize($catObjectId, $currentCategId);
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('tracker_items', $itemId);
-
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('tracker_items', $itemId);
+		}
 		$parsed = '';
 		foreach($ins_fields["data"] as $i=>$array) {
 			if ($ins_fields['data'][$i]['type'] == 'a') {
@@ -2047,8 +1986,7 @@ class TrackerLib extends TikiLib
 			}
 		}
 		if (!empty($parsed)) {
-			global $tikilib;
-			$tikilib->object_post_save( array('type'=>'trackeritem', 'object'=>$itemId, 'name' => "Tracker Item $itemId", 'href'=>"tiki-view_tracker_item.php?itemId=$itemId"), array( 'content' => $parsed ));
+			$this->object_post_save( array('type'=>'trackeritem', 'object'=>$itemId, 'name' => "Tracker Item $itemId", 'href'=>"tiki-view_tracker_item.php?itemId=$itemId"), array( 'content' => $parsed ));
 		}
 
 		return $itemId;
@@ -2266,10 +2204,11 @@ class TrackerLib extends TikiLib
 			$total++;
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		foreach ( $need_reindex as $id ) refresh_index('tracker_items', $id);
-		unset($need_reindex);
-
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' && is_array($need_reindex) ) {
+			require_once('lib/search/refresh-functions.php');
+			foreach ( $need_reindex as $id ) refresh_index('tracker_items', $id);
+			unset($need_reindex);
+		}
 		$cant_items = $this->getOne("select count(*) from `tiki_tracker_items` where `trackerId`=?",array((int) $trackerId));
 		$query = "update `tiki_trackers` set `items`=?,`lastModif`=?  where `trackerId`=?";
 		$result = $this->query($query,array((int)$cant_items,(int) $this->now,(int) $trackerId));
@@ -2765,12 +2704,12 @@ class TrackerLib extends TikiLib
 		$this->clear_tracker_cache($trackerId);
 
 		global $prefs;
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('trackers', $trackerId);
-
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('trackers', $trackerId);
+		}
 		if ($descriptionIsParsed == 'y') {
-			global $tikilib;
-			$tikilib->object_post_save(array('type'=>'tracker', 'object'=>$trackerId, 'href'=>"tiki-view_tracker.php?trackerId=$trackerId", 'description'=>$description), array( 'content' => $description ));
+			$this->object_post_save(array('type'=>'tracker', 'object'=>$trackerId, 'href'=>"tiki-view_tracker.php?trackerId=$trackerId", 'description'=>$description), array( 'content' => $description ));
 		}
 
 		return $trackerId;
@@ -3421,14 +3360,13 @@ class TrackerLib extends TikiLib
 			'opt'=>true,
 			'help'=>tra('<dl>
 				<dt>Function: Allows one or more categories under a main category to be assigned to the tracker item.
-				<dt>Usage: <strong>parentId,inputtype,selectall,descendants,help</strong>
+				<dt>Usage: <strong>parentId,inputtype,selectall,descendants</strong>
 				<dt>Example: 12,radio,1
 				<dt>Description:
 				<dd><strong>[parentId]</strong> is the ID of the main category, categories in the list will be children of this;
 				<dd><strong>[inputtype]</strong> is one of [d|m|radio|checkbox], where d is a drop-down list, m is a multiple-selection drop-down list, radio and checkbox are self-explanatory;
 				<dd><strong>[selectall]</strong> will provide a checkbox to automatically select all categories in the list if set to 1, default is 0;
 				<dd><strong>[descendants]</strong> All descendant categories (not just first level children) will be included if set to 1, default is 0;
-				<dd><strong>[help]</strong> will display the description in a popup in the input if set to 1, default is 0; only for checkbox or radio
 				<dd>multiple options must appear in the order specified, separated by commas.
 				</dl>'));
 		$type['r'] = array(
@@ -3617,40 +3555,6 @@ class TrackerLib extends TikiLib
 				<dd>Like the rating
 				<dd>
 				</dl>'));
-		$type['P'] = array(
-			'label'=>tra('ldap'),
-			'opt'=>true,
-			'options'=>array(
-				'filter'=>array('type'=>'str','label'=>tra('LDAP Filter')),
-				'field'=>array('type'=>'str','label'=>tra('Returned field')),
-				'dsn'=>array('type'=>'str','label'=>tra('DSN name')),
-			),
-			'help'=>tra('<dl>
-				<dt>Function: Display a field value from a specific user in LDAP
-				<dt>Usage: <strong>filter,field,dsn</strong>
-				<dt>Example: (&(mail=%field_name%)(objectclass=posixaccount)),displayName, authldap
-				<dt>Description:
-				<dd><strong>[filter]</strong> LDAP Filter, without commas. %field_name% can be used, and will be replaced by the tracker field %field_name% current value.;
-				<dd><strong>[field]</strong> LDAP returned field;
-				<dd><strong>[dsn]</strong> DSN name in Tiki;
-				</dl>'));
-		$type['W'] = array(
-			'label'=>tra('webservice'),
-			'opt'=>true,
-			'options'=>array(
-				'service'=>array('type'=>'str','label'=>tra('Registred service name')),
-                                'template'=>array('type'=>'str','label'=>tra('Registred template name')),
-                                'params'=>array('type'=>'str','label'=>tra('Parameters')),
-			),
-			'help'=>tra('<dl>
-				<dt>Function: Displays the result of a webservice call
-				<dt>Usage: <strong>service,template,parameter</strong>
-				<dt>Example: list_books,book_template,order=name_desc&limit=10
-				<dt>Description:
-				<dd><strong>[service]</strong> The service name, from the Tiki webservice admin;
-				<dd><strong>[template]</strong> The template name;
-                                <dd><strong>[params]</strong> List of parameters, formated like a query. %field_name% can be used, and will be replaced by the tracker field %field_name% current value.
-				</dl>'));
 
 		return $type;
 	}
@@ -3774,7 +3678,7 @@ class TrackerLib extends TikiLib
 	}
 	/* look if a tracker has only one item per user and if an item has already being created for the user  or the IP*/
 	function get_user_item(&$trackerId, $trackerOptions, $userparam=null, $user= null, $status='') {
-		global $IP, $prefs;
+		global $prefs, $tikilib;
 		if (empty($user)) {
 			$user = $GLOBALS['user'];
 		}
@@ -3796,6 +3700,7 @@ class TrackerLib extends TikiLib
 			}
 		}
 		if ($fieldId = $this->get_field_id_from_type($trackerId, 'I', '1')) { // IP creator field
+			$IP = $tikilib->get_ip_address();
 			$items = $this->get_items_list($trackerId, $fieldId, $IP, $status);
 			if (!empty($items))
 				return $items[0];
@@ -4078,7 +3983,7 @@ class TrackerLib extends TikiLib
 	}
 	/* get the fields from the pretty tracker template
 	* return a list of fieldIds */
-	function get_pretty_fieldIds($resource, $type='wiki', &$outputPretty) {
+	function get_pretty_fieldIds($resource, $type='wiki') {
 		global $tikilib, $smarty;
 		if ($type == 'wiki') {
 			$wiki_info = $tikilib->get_page_info($resource);
@@ -4090,11 +3995,7 @@ class TrackerLib extends TikiLib
 			$f = $smarty->_read_file($resource_name);
 		}
 		if (!empty($f)) {
-			preg_match_all('/\$f_([0-9]+)(\|output)?/', $f, $matches);
-			foreach ($matches[2] as $i=>$val) {
-				if (!empty($val))
-					$outputPretty[] = $matches[1][$i];
-			}
+			preg_match_all('/\$f_([0-9]+)/', $f, $matches);
 			return $matches[1];
 		}
 		return array();

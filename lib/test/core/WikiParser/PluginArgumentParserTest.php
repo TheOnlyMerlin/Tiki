@@ -67,11 +67,4 @@ class WikiParser_PluginArgumentParserTest extends TikiTestCase
 		$this->assertEquals( $parser->parse( '' ), array() );
 		$this->assertEquals( $parser->parse( 'foo' ), array() );
 	}
-
-	function testInvalidEnd()
-	{
-		$out = array('a' => 'b');
-		$parser = new WikiParser_PluginArgumentParser;
-		$this->assertEquals( $parser->parse( 'a=b foo=' ), $out );
-	}
 }

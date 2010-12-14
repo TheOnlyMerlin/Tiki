@@ -52,11 +52,11 @@ function wikiplugin_agentinfo($data, $params) {
 		$asetup = $tikilib->get_ip_address();
 	}
 
-	if ($info == 'SVRSW' && isset($_SERVER['SERVER_SOFTWARE'])) {
+	if ($info == 'SVRSW') {
 		$asetup = $_SERVER["SERVER_SOFTWARE"];
 	}
 	
-	if ($info == 'BROWSER' && isset($_SERVER['HTTP_USER_AGENT'])) {
+	if ($info == 'BROWSER') {
 		$asetup = $_SERVER["HTTP_USER_AGENT"];
 	}
 

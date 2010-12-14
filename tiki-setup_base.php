@@ -131,7 +131,6 @@ if( $cdn_pref ) {
 		exit;
 	}
 }
-$cookie_path = '';
 if (isset($_SERVER["REQUEST_URI"])) {
 	$cookie_path = str_replace("\\", "/", dirname($_SERVER["REQUEST_URI"]));
 	if ($cookie_path != '/') {
@@ -491,11 +490,6 @@ $jitServer = new JitFilter($_SERVER);
 $_SERVER = $serverFilter->filter($_SERVER);
 // Rebuild request after gpc fix
 // _REQUEST should only contain GET and POST in the app
-
-$prepareInput = new TikiFilter_PrepareInput('~');
-$_GET = $prepareInput->prepare($_GET);
-$_POST = $prepareInput->prepare($_POST);
-
 $_REQUEST = array_merge($_GET, $_POST);
 // Preserve unfiltered values accessible through JIT filtering
 $jitPost = new JitFilter($_POST);

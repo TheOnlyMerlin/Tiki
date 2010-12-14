@@ -40,9 +40,9 @@ function wikiplugin_content( $data, $params, $offset, $parseOptions) {
 		$lang = $parseOptions['language'];
 	}
 
-	if( isset($params['id']) &&  $params['id'] ) {
+	if( $params['id'] ) {
 		return $dcslib->get_actual_content((int) $params['id'], $lang);
-	} elseif( isset($params['label']) && $params['label'] ) {
+	} elseif( $params['label'] ) {
 		return $dcslib->get_actual_content_by_label( $params['label'], $lang);
 	}
 }

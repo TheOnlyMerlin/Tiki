@@ -664,9 +664,9 @@ function wikiplugin_trackerlist($data, $params) {
 			}
 		} elseif (!empty($wiki) || !empty($tpl)) {
 				if (!empty($wiki)) {
-					$listfields = $trklib->get_pretty_fieldIds($wiki, 'wiki', $outputPretty);
+					$listfields = $trklib->get_pretty_fieldIds($wiki, 'wiki');
 				} else {
-					$listfields = $trklib->get_pretty_fieldIds($tpl, 'tpl', $outputPretty);
+					$listfields = $trklib->get_pretty_fieldIds($tpl, 'tpl');
 				}
 		} else {
 			$listfields = '';

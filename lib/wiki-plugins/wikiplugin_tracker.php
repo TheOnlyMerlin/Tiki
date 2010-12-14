@@ -472,9 +472,9 @@ function wikiplugin_tracker($data, $params)
 				if (!empty($fields)) {
 					$outf = preg_split('/ *: */', $fields);$fields;
 				} elseif (!empty($wiki)) {
-					$outf = $trklib->get_pretty_fieldIds($wiki, 'wiki', $outputPretty);
+					$outf = $trklib->get_pretty_fieldIds($wiki, 'wiki');
 				} else {
-					$outf = $trklib->get_pretty_fieldIds($tpl, 'tpl', $outputPretty);
+					$outf = $trklib->get_pretty_fieldIds($tpl, 'tpl');
 				}
 				if (!empty($_REQUEST['autosavefields'])) {
 					$autosavefields = explode(':', $_REQUEST['autosavefields']);
@@ -587,7 +587,7 @@ function wikiplugin_tracker($data, $params)
 						} else {
 							$_REQUEST['track'][$fl['fieldId']] = $tikilib->now;
 						}
-					} elseif ($flds['data'][$cpt]['type'] == 'N' && !empty($itemId)) {
+					} elseif ($f['type'] == 'N' && !empty($itemId)) {
 						if (empty($itemUser)) {
 							$itemUser = $this->get_item_creator($trackerId, $itemId);
 						}
@@ -737,7 +737,7 @@ function wikiplugin_tracker($data, $params)
 						// note that values will be raw - that is the limit of the capability of this feature for now
 						$newpageinfo = $tikilib->get_page_info($outputwiki);
 						$wikioutput = $newpageinfo["data"];
-						$newpagefields = $trklib->get_pretty_fieldIds($outputwiki, 'wiki', $outputPretty);
+						$newpagefields = $trklib->get_pretty_fieldIds($outputwiki, 'wiki');
 						foreach($newpagefields as $lf) {
 							$wikioutput = str_replace('{$f_' . $lf . '}', $trklib->get_item_value($trackerId, $rid, $lf), $wikioutput);
 						}
@@ -1222,11 +1222,7 @@ function wikiplugin_tracker($data, $params)
 						if (!empty($item)) {
 							$smarty->assign_by_ref('item', $item);
 						}
-						if (!empty($outputPretty) && in_array($f['fieldId'], $outputPretty)) {
-							$smarty->assign('f_'.$f['fieldId'], '<span id="track_'.$f['fieldId'].'" name="track_'.$f['fieldId'].'">'. $smarty->fetch('tracker_item_field_value.tpl'). '</span>');
-						} else {
-							$smarty->assign('f_'.$f['fieldId'], $smarty->fetch('tracker_item_field_input.tpl'));
-						}
+						$smarty->assign('f_'.$f['fieldId'], $smarty->fetch('tracker_item_field_input.tpl'));
 					} else {
 						if (in_array($f['fieldId'], $optional)) {
 							$f['name'] = "<i>".$f['name']."</i>";

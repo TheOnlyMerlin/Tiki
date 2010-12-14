@@ -1,7 +1,6 @@
 /* $Id$
 	FiveAlive theme (fivealive.css) for TikiWiki CMS/Groupware.
 	Visit http://themes.tiki.org for more information.
-	*
 */
  
 /* Import foundation CSS files. */
@@ -370,7 +369,6 @@ select[multiple="multiple"] {
 }
 
 input[type="text"],
-input[type="password"],
 select {
 	margin: 2px;
 }
@@ -545,10 +543,6 @@ select {
 
 #sl-login-user, #sl-login-pass {
 	background: #fff;
-}
-
-#sl-openid {
-	background-color: #fff;
 }
 
 /*** CSS menus shadows for all but IE6 ***/
@@ -958,14 +952,6 @@ a.register_link {
 legend.heading {
 	background: transparent;
 }
-/*	
-.admin a.link,
-.admin a,
-.admin label,
-fieldset.admin label,
-.cbox fieldset.admin a {
-	color: #fff;
-}*/
 
 fieldset.admin .adminoptionbox label,
 fieldset.admin .adminoptionlabel {
@@ -1112,26 +1098,6 @@ a.dirsublink {
 }
 
 /***** Admin *****/
-
-a.admbox.off:hover,
-a.admbox.off:focus,
-a.admbox.off:active {
-	border-right: ;
-	border-top: ;
-	border-left: ;
-	border-bottom: ;
-}
-
-.toolbars-admin .full li,
-.toolbars-admin .rows .row,
-.textarea-toolbar,
-.toolbar-list,
-.toolbar-list,
-a.toolbar,
-a.qt-inline {
-	background: ;
-	color: ;
-}*/
 
 /***** Ajax, jquery. etc. *****/
 /***** Ajax *****/
