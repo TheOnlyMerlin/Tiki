@@ -12,10 +12,7 @@ if( ! function_exists( 'svn_diff' ) ) {
 	echo <<<HELP
 Subversion extension required. To install on Ubuntu:
 	sudo apt-get update
-	sudo apt-get install php-pear php5-dev		# If not already installed
-
-	sudo apt-get install libsvn-dev
-	sudo pecl install svn
+	sudo apt-get install php5-svn
 
 HELP;
 	exit;
