@@ -48,7 +48,7 @@ a.admbox.off:active {
 
 a.admbox.off img {
 	border: none;
-	margin-top: 0px;
+	margin-top : 0px;
 	width: 100px;
 	height: 100px;
 	position: absolute;
@@ -72,13 +72,13 @@ a.admbox.off img {
 .adminoptionbox {
 /*overall box */
 	padding: 0.5em;
-	text-align: left;
-}
+	text-align:left;
+	}
 	
 .adminoptionbox label, .adminoptionlabel {
 /* text label and text field */
 	text-align: left;
-}
+	}
 
 .adminoptionbox label.above {
 	display: block;
@@ -87,9 +87,9 @@ a.admbox.off img {
 .adminoptionbox .checkbox, .adminoption {
 /*check box */
 	display: block;
-	float: left;
-	margin-right: 1em;
-}
+	float:left;
+	margin-right:1em;
+	}
 
 .adminoptionboxchild {
 /*sub options */
@@ -144,7 +144,7 @@ a.admbox.off img {
 	clear: none;
 }
 
-.adminanchors a {float: left;}
+div.adminanchors a {float: left}
 
 /* from ui-revamp branch, via coe branch - jb july 2009 */
 
@@ -180,7 +180,7 @@ a.admbox.off img {
 
 .toolbars-admin .li {
 	display: block;
-	white-space: nowrap;
+	white-space:nowrap;
 }
 .toolbars-admin .full li {
 	white-space: nowrap;
@@ -233,7 +233,7 @@ a.admbox.off img {
 	float: left;
 }
 
-.toolbars-admin .row li.toolbar > span {
+.toolbars-admin .row li.toolbar span {
 	display: none;
 }
 
@@ -283,8 +283,8 @@ a.admbox.off img {
 	padding: 0 .5em .5em;
 */
 }
-#toolbar_edit_div label, #toolbar_edit_div input, #toolbar_edit_div select { display:block; }
-#toolbar_edit_div input, #toolbar_edit_div select { clear: right; }
+#toolbar_edit_div label, #toolbar_edit_div input, #toolbar_edit_div select { display:block }
+#toolbar_edit_div input, #toolbar_edit_div select { clear: right }
 #toolbar_edit_div input.text { margin-bottom:12px; width:95%; padding: .4em; }
 #toolbar_edit_div fieldset { padding:0; border:0; margin-top:25px; }
 

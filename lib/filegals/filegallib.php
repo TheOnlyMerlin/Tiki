@@ -46,7 +46,6 @@ class FileGalLib extends TikiLib
 
 		$query = 'delete from `tiki_files` where `fileId`=? or `archiveId`=?';
 		$result = $this->query($query,array($fileInfo['fileId'], $fileInfo['fileId']));
-		$this->remove_draft($fileInfo['fileId']);
 		$this->remove_object('file', $fileInfo['fileId']);
 
 		//Watches
@@ -59,7 +58,7 @@ class FileGalLib extends TikiLib
 		return true;
 	}
 
-	function insert_file($galleryId, $name, $description, $filename, $data, $size, $type, $creator, $path, $comment='', $author, $created='', $lockedby=NULL, $deleteAfter=NULL, $id=0) {
+	function insert_file($galleryId, $name, $description, $filename, $data, $size, $type, $creator, $path, $comment='', $author, $created='', $lockedby=NULL, $deleteAfter=NULL) {
 	  global $prefs, $tikilib, $smarty, $user;
 
 		$name = strip_tags($name);
@@ -99,23 +98,18 @@ class FileGalLib extends TikiLib
 		if ($prefs['fgal_enable_auto_indexing'] != 'n') {
 			$search_data = $this->get_search_text_for_data($data,$path,$type, $galleryId);
 			if ($search_data === false) {
+				//@file_put_contents('/tmp/tiki4log', "insert_file search_data\n", FILE_APPEND );
 				return false;
 			}
 		}
 		if ( empty($created) ) $created = $this->now;
-		if (empty($id)) {
-			$query = "insert into `tiki_files`(`galleryId`,`name`,`description`,`filename`,`filesize`,`filetype`,`data`,`user`,`created`,`hits`,`path`,`hash`,`search_data`,`lastModif`,`lastModifUser`, `comment`, `author`, `lockedby`, `deleteAfter`)
+		$query = "insert into `tiki_files`(`galleryId`,`name`,`description`,`filename`,`filesize`,`filetype`,`data`,`user`,`created`,`hits`,`path`,`hash`,`search_data`,`lastModif`,`lastModifUser`, `comment`, `author`, `lockedby`, `deleteAfter`)
                           values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-			$result = $this->query($query,array($galleryId,trim($name),$description,$filename,$size,$type,$data,$creator,$created,0,$path,$checksum,$search_data,(int)$this->now,$user,$comment, $author, $lockedby,$deleteAfter));
-			$query = "select max(`fileId`) from `tiki_files` where `created`=?";
-			$fileId = $this->getOne($query,array((int) $created));
-		} else {
-		  	$query = "update `tiki_files` set `galleryId`=?, `name`=?, `description`=?,`filename`=?,`filesize`=?,`filetype`=?,`data`=?,`user`=?,`created`=?,`hits`=?,`path`=?,`hash`=?,`search_data`=?,`lastModif`=?,`lastModifUser`=?, `comment`=?, `author`=?, `lockedby`=?, `deleteAfter`=? where `fileId`=?";
-			$result = $this->query($query, array($galleryId,trim($name),$description,$filename,$size,$type,$data,$creator,$created,0,$path,$checksum,$search_data,(int)$this->now,$user,$comment, $author, $lockedby,$deleteAfter, $id));
-			$fileId = $id;
-		}
+		$result = $this->query($query,array($galleryId,trim($name),$description,$filename,$size,$type,$data,$creator,$created,0,$path,$checksum,$search_data,(int)$this->now,$user,$comment, $author, $lockedby,$deleteAfter));
 		$query = "update `tiki_file_galleries` set `lastModif`=? where `galleryId`=?";
 		$result = $this->query($query,array((int) $this->now,$galleryId));
+		$query = "select max(`fileId`) from `tiki_files` where `created`=?";
+		$fileId = $this->getOne($query,array((int) $created));
 
 		if ($prefs['feature_score'] == 'y') {
 		    $this->score_event($user, 'fgallery_new_file');
@@ -126,8 +120,10 @@ class FileGalLib extends TikiLib
 			$logslib->add_action('Uploaded', $galleryId, 'file gallery', "fileId=$fileId&amp;add=$size");
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('files', $fileId);
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' && ( $prefs['fgal_asynchronous_indexing'] != 'y' || ! isset($_REQUEST['fast']) ) ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('files', $fileId);
+		}
 
 		//Watches
 		$smarty->assign('galleryId', $galleryId);
@@ -140,162 +136,10 @@ class FileGalLib extends TikiLib
 		return $fileId;
 	}
 
-	/**
-	 * Create or update a file draft
-	 *
-	 * @global array $prefs
-	 * @param int $fileId
-	 * @param string $filename
-	 * @param int $size
-	 * @param string $type
-	 * @param string $data
-	 * @param string $creator
-	 * @param string $path
-	 * @param string $checksum
-	 * @param string $lockedby
-	 */
-	function insert_draft($fileId,$filename,$size,$type,$data,$creator,$path,$checksum,$lockedby) {
-		global $prefs;
-
-		if ($prefs['feature_file_galleries_save_draft'] == 'y') {
-			$query = "select  tf.`data` from `tiki_files` tf where tf.`fileId` = ?";
-			$result = $this->query($query, array((int) $fileId));
-			$old_file = $result->fetchRow();
-
-			if (empty($old_file['data'])) {
-				// File has been uploaded from webdav
-				$query = "update `tiki_files` set `name`=?,`filename`=?,`filesize`=?,`filetype`=?,`data`=?,`user`=?,`path`=?,`hash`=?,`lastModif`=?,`lockedby`=? where `fileId`=?";
-				return $this->query($query, array($filename,$filename,$size,$type,$data,$creator,$path,$checksum,(int)$this->now,$lockedby,$fileId));
-
-			} else {
-				$query = "delete from `tiki_file_drafts` where `fileId`=? and `user`=?";
-				$this->query($query, array((int) $fileId, $creator));
-
-				$query = "insert into `tiki_file_drafts`(`fileId`,`filename`,`filesize`,`filetype`,`data`,`user`,`path`,`hash`,`lastModif`,`lockedby`)
-				values(?,?,?,?,?,?,?,?,?,?)";
-
-				return $this->query($query,array($fileId,$filename,$size,$type,$data,$creator,$path,$checksum,(int)$this->now,$lockedby));
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Remove all drafts of a file
-	 *
-	 * @param int $fileId
-	 * @param string $user
-	 */
-	function remove_draft($fileId,$user=null) {
-		if (isset($user)) {
-			$query = "delete from `tiki_file_drafts` where `fileId`=? and `user`=?";
-			return $this->query($query, array((int) $fileId, $user));
-		} else {
-			$query = "delete from `tiki_file_drafts` where `fileId`=?";
-			return $this->query($query, array((int) $fileId));
-		}
-	}
-
-	/**
-	 * Validate draft and replace real file
-	 *
-	 * @global string $user
-	 * @param int $fileId
-	 */
-	function validate_draft($fileId) {
-		global $prefs, $user;
-
-		if ($prefs['feature_file_galleries_save_draft'] == 'y') {
-			$query = "select * from `tiki_file_drafts` where `fileId`=? and `user`=?";
-			$result = $this->query($query, array((int) $fileId, $user));
-
-			if (!$result) {
-				return false;
-			}
-
-			$draft = $result->fetchRow();
-
-			$query = "select  tf.*, tfg.`archives` from `tiki_files` tf left join `tiki_file_galleries` tfg on tf.`galleryId` = tfg.`galleryId` where tf.`fileId` = ?";
-			$result = $this->query($query,array((int) $fileId));
-			$old_file = $result->fetchRow();
-			$newPath = $draft['path'];
-
-			if ($prefs['fgal_use_db'] == 'n') {
-				$savedir = $prefs['fgal_use_dir'];
-				$newPath = md5(uniqid(md5($this->getOne("select `name` from `tiki_files` where `fileId` = ?", array($fileId)))));
-
-				if (file_exists($savedir . $old_file['path'])) {
-					// Deletes old production file
-					@unlink($savedir . $old_file['path']);
-				}
-
-				if (file_exists($savedir . $draft['path'])) {
-					// Renames draft into new production file
-					@rename($savedir . $draft['path'], $savedir . $newPath);
-				}
-			}
-
-			if ($old_file['archives'] == -1) {
-				$query = "update `tiki_files` set `path`=?,`filename`=?,`filesize`=?,`filetype`=?,`data`=?,`user`=?,`path`=?,`hash`=?,`lastModif`=?,`lastModifUser`=?, `lockedby`=? where `fileId`=?";
-				$result = $this->query($query, array($newPath,$draft['filename'],$draft['filesize'],$draft['filetype'],$draft['data'],$draft['user'],$draft['path'],$draft['hash'],$draft['lastModif'],$draft['user'],$draft['lockedby'],$fileId));
-
-				if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' && ( $prefs['fgal_asynchronous_indexing'] != 'y' || ! isset($_REQUEST['fast']) ) ) {
-					require_once('lib/search/refresh-functions.php');
-					refresh_index('files', $fileId);
-				}
-			} else {
-				$this->save_archive($fileId, $old_file['galleryId'], $old_file['archives'], $old_file['name'], $old_file['description'], $draft['filename'], $draft['data'], $draft['filesize'], $data['filetype'], $old_file['creator'], $draft['path'], $old_file['comment'], $old_file['created'], $draft['lockedby']);
-			}
-
-			$this->remove_draft($fileId, $user);
-		}
-	}
-
-	function save_archive($id, $galleryId, $count_archives, $name, $description, $filename, $data, $size, $type, $creator, $path, $comment, $author, $created, $lockedby) {
-		global $prefs;
-
-		if ($prefs['fgal_keep_fileId'] == 'y') {
-			$query = "select * from `tiki_files` where `fileId`=?";
-			$res = $this->fetchAll($query, array($id));
-			$query = "insert into `tiki_files`(`galleryId`,`name`,`description`,`filename`,`filesize`,`filetype`,`data`,`user`,`created`,`hits`,`path`,`hash`,`search_data`,`lastModif`,`lastModifUser`, `comment`, `author`, `lockedby`, `deleteAfter`, `archiveId`) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-			$this->query($query, array($res[0]['galleryId'],$res[0]['name'],$res[0]['description'],$res[0]['filename'],$res[0]['filesize'],$res[0]['filetype'],$res[0]['data'],$res[0]['user'],$res[0]['created'],$res[0]['hits'],$res[0]['path'],$res[0]['hash'],'',$res[0]['lastModif'],$res[0]['lastModifUser'],$res[0]['comment'],$creator,NULL,$res[0]['deleteAfter'], $id));
-		}
-		// Insert and index (for search) the new file
-		$idNew = $this->insert_file($galleryId, $name, $description, $filename, $data, $size, $type, $creator, $path, $comment, $author, $created, $lockedby, NULL, $prefs['fgal_keep_fileId']=='y'?$id:0);
-
-		if ($count_archives > 0) {
-			$archives = $this->get_archives($id, 0, -1, 'created_asc');
-			if ($archives['cant'] >= $count_archives) {
-				$bindvars = array();
-				$nb = $archives['cant'] - $count_archives + 1;
-				$query = "delete from `tiki_files` where `fileId` in (".implode(',', array_fill(0, $nb, '?')).")";
-				for ($i = 0; $i < $nb; ++$i) {
-					$bindvars[] = $archives['data'][$i]['fileId'];
-					if ( $archives['data'][$i]['path'] ) {
-						unlink($savedir . $archives['data'][$i]['path']);
-					}
-				}
-				$this->query($query, $bindvars);
-			}
-		}
-		if ($prefs['fgal_keep_fileId'] != 'y') {
-			$query = "update `tiki_files` set `archiveId`=?, `search_data`=?,`user`=?, `lockedby`=? where `archiveId`=? or `fileId`=?";
-			$this->query($query,array($idNew, '',$creator,NULL, $id, $id));
-		}
-
-		if ($prefs['feature_categories'] == 'y') {
-			global $categlib; require_once('lib/categories/categlib.php');
-			$categlib->uncategorize_object('file', $id);
-		}
-
-		return $idNew;
-	}
-
 	function set_file_gallery($file, $gallery) {
-		$query = "update `tiki_files` set `galleryId`=? where `fileId`=? or `archiveId`=?";
+		$query = "update `tiki_files` set `galleryId`=? where `fileId`=?";
 
-		$this->query($query,array($gallery,$file, $file));
+		$this->query($query,array($gallery,$file));
 		return true;
 	}
 
@@ -365,7 +209,7 @@ class FileGalLib extends TikiLib
 			'type' => 'default',
 			'parentId' => -1,
 			'lockable' => 'n',
-			'archives' => 0,
+			'archives' => -1,
 			'quota' => $prefs['fgal_quota_default'],
 			'image_max_size_x' => 0,
 			'image_max_size_y' => 0,
@@ -379,7 +223,7 @@ class FileGalLib extends TikiLib
 			'subgal_conf' => '',
 			'show_id' => $prefs['fgal_list_id'],
 			'show_icon' => $prefs['fgal_list_type'],
-			'show_name' => $prefs['fgal_list_name'],
+			'show_name' => 'f',
 			'show_description' => $prefs['fgal_list_description'],
 			'show_size' => $prefs['fgal_list_size'],
 			'show_created' => $prefs['fgal_list_created'],
@@ -395,10 +239,8 @@ class FileGalLib extends TikiLib
 			'show_userlink' => 'y',
 			'show_explorer' => $prefs['fgal_show_explorer'],
 			'show_path' => $prefs['fgal_show_path'],
-			'show_slideshow' => $prefs['fgal_show_slideshow'],
-			'wiki_syntax' => '',
-			'default_view' => $prefs['fgal_default_view'],
-			'template' => null,
+			'show_slideshow' => $prefs['fgal_show_slideshow']
+
 		);
 	}
 	function replace_file_gallery($fgal_info) {
@@ -425,7 +267,7 @@ class FileGalLib extends TikiLib
 			`show_last_user`=?, `show_comment`=?, `show_files`=?, `show_explorer`=?,
 			`show_path`=?, `show_slideshow`=?, `default_view`=?, `quota`=?,
 			`image_max_size_x`=?, `image_max_size_y`=?,
-			`backlinkPerms`=?, `show_backlinks`=?, `wiki_syntax`=?, `template`=? where `galleryId`=?";
+			`backlinkPerms`=?, `show_backlinks`=? where `galleryId`=?";
 
 			$bindvars=array(trim($fgal_info['name']), (int) $fgal_info['maxRows'],
 			$fgal_info['description'], (int) $this->now, $fgal_info['public'],
@@ -443,8 +285,7 @@ class FileGalLib extends TikiLib
 			$fgal_info['show_path'], $fgal_info['show_slideshow'],
 			$fgal_info['default_view'], $fgal_info['quota'],
 			(int)$fgal_info['image_max_size_x'], (int)$fgal_info['image_max_size_y'],
-			$fgal_info['backlinkPerms'], $fgal_info['show_backlinks'], $fgal_info['wiki_syntax'],
-			$fgal_info['template'], (int)$fgal_info['galleryId']);
+			$fgal_info['backlinkPerms'], $fgal_info['show_backlinks'], (int)$fgal_info['galleryId']);
 
 			$result = $this->query($query,$bindvars);
 
@@ -463,8 +304,8 @@ class FileGalLib extends TikiLib
 			`archives`, `sort_mode`, `show_modified`, `show_creator`, `show_author`,
 			`subgal_conf`, `show_last_user`, `show_comment`, `show_files`,
 			`show_explorer`, `show_path`, `show_slideshow`, `default_view`, `quota`,
-			`image_max_size_x`, `image_max_size_y`, `backlinkPerms`, `show_backlinks`, `wiki_syntax`, `template`)
-			values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			`image_max_size_x`, `image_max_size_y`, `backlinkPerms`, `show_backlinks`)
+			values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 			$bindvars=array($fgal_info['name'], $fgal_info['description'], (int)
 			$this->now, $fgal_info['user'], (int) $this->now, (int)
@@ -482,8 +323,7 @@ class FileGalLib extends TikiLib
 			$fgal_info['show_slideshow'], $fgal_info['default_view'],
 			$fgal_info['quota'],
 			(int)$fgal_info['image_max_size_x'], (int)$fgal_info['image_max_size_y'],
-			$fgal_info['backlinkPerms'], $fgal_info['show_backlinks'], $fgal_info['wiki_syntax'],
-			$fgal_info['template']);
+			$fgal_info['backlinkPerms'], $fgal_info['show_backlinks']);
 
 			$result = $this->query($query,$bindvars);
 			$galleryId = $this->getOne("select max(`galleryId`) from
@@ -496,9 +336,10 @@ class FileGalLib extends TikiLib
 			}
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('file_galleries', $galleryId);
-
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('file_galleries', $galleryId);
+		}
 		global $cachelib; include_once('lib/cache/cachelib.php');
 		$cachelib->empty_type_cache($this->get_all_galleries_cache_type());
 
@@ -621,39 +462,10 @@ class FileGalLib extends TikiLib
 		return true;
 	}
 
-	function get_file_info($fileId, $include_search_data = true, $include_data = true, $use_draft = false) {
-		global $prefs, $user;
-
+	function get_file_info($fileId, $include_search_data = true, $include_data = true) {
 		$return = $this->get_files_info(null, (int)$fileId, $include_search_data, $include_data);
-
-		if (!$return) {
-			return false;
-		}
-
-		$file = $return[0];
-
-		if ($use_draft && $prefs['feature_file_galleries_save_draft'] == 'y') {
-			$query = "select * from `tiki_file_drafts` where `fileId`=? and `user`=?";
-			$result = $this->query($query, array((int) $fileId, $user));
-
-			if (!($draft = $result->fetchRow())) {
-				return $file;
-			}
-
-			$file['filename'] = $draft['filename'];
-			$file['filesize'] = $draft['filesize'];
-			$file['filetype'] = $draft['filetype'];
-			$file['data'] = $draft['data'];
-			$file['user'] = $draft['user'];
-			$file['path'] = $draft['path'];
-			$file['hash'] = $draft['hash'];
-			$file['lastModif'] = $draft['lastModif'];
-			$file['lockedby'] = $draft['lockedby'];
-		}
-
-		return $file;
+		return $return ? $return[0] : false;
 	}
-
 	function get_files_info_from_gallery_id($galleryId, $include_search_data = false, $include_data = false) {
 		return $this->get_files_info((int)$galleryId, null, $include_search_data, $include_data);
 	}
@@ -720,9 +532,10 @@ class FileGalLib extends TikiLib
 		}
 
 		global $prefs;
-
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('files', $id);
+		if ( $reindex && $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('files', $id);
+		}
 
 		return $result;
 	}
@@ -764,48 +577,52 @@ class FileGalLib extends TikiLib
 			if ($search_data === false)
 				return false;
 		}
-
-		$oldPath = '';
-		if ($prefs['feature_file_galleries_save_draft'] == 'y') {
-			$oldPath = $this->getOne("select `path` from `tiki_file_drafts` where `fileId`=? and `user`=?",array($id,$user));
-		} else {
-			$oldPath = $this->getOne("select `path` from `tiki_files` where `fileId`=?",array($id));
-		}
+		$oldPath = $this->getOne("select `path` from `tiki_files` where `fileId`=?",array($id));
 
 		if ( $gal_info['archives'] == -1 || ! $didFileReplace ) { // no archive
-			if ($prefs['feature_file_galleries_save_draft'] == 'y') {
-				$query = "update `tiki_files` set `name`=?, `description`=?, `lastModifUser`=?, `lastModif`=?, `author`=?, `user`=? where `fileId`=?";
 
-				if ( ! ( $result = $this->query($query, array(trim($name),$description,$user,(int)$this->now,$author,$creator,$id)) ) ) {
-					return false;
-				}
-
-				if ($didFileReplace) {
-					if (!$this->insert_draft($id,$filename,$size,$type,$data,$user,$path,$checksum,$lockedby)) {
-						return false;
-					}
-				}
-
-			} else {
-				$query = "update `tiki_files` set `name`=?, `description`=?, `filename`=?, `filesize`=?, `filetype`=?, `data`=?, `lastModifUser`=?, `lastModif`=?, `path`=?, `hash`=?, `search_data`=?, `author`=?, `user`=?, `lockedby`=?, `deleteAfter`=?  where `fileId`=?";
-				if ( ! ( $result = $this->query($query,array(trim($name),$description,$filename,$size,$type,$data,$user,(int)$this->now,$path,$checksum,$search_data,$author,$creator,$lockedby, $deleteAfter, $id)) ) ) {
-					return false;
-				}
+			$query = "update `tiki_files` set `name`=?, `description`=?, `filename`=?, `filesize`=?, `filetype`=?, `data`=?, `lastModifUser`=?, `lastModif`=?, `path`=?, `hash`=?, `search_data`=?, `author`=?, `user`=?, `lockedby`=?, `deleteAfter`=?  where `fileId`=?";
+			if ( ! ( $result = $this->query($query,array(trim($name),$description,$filename,$size,$type,$data,$user,(int)$this->now,$path,$checksum,$search_data,$author,$creator,$lockedby, $deleteAfter, $id)) ) ) {
+				return false;
 			}
 
 			if ( $didFileReplace && !empty($oldPath) ) {
 				unlink($savedir . $oldPath);
 			}
 
-			require_once('lib/search/refresh-functions.php');
-			refresh_index('files', $id);
+			if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' && ( $prefs['fgal_asynchronous_indexing'] != 'y' || ! isset($_REQUEST['fast']) ) ) {
+				require_once('lib/search/refresh-functions.php');
+				refresh_index('files', $id);
+			}
 
 		} else { //archive the old file : change archive_id, take away from indexation and categorization
-			if ($prefs['feature_file_galleries_save_draft'] == 'y') {
-				$this->insert_draft($id,$filename,$size,$type,$data,$user,$path,$checksum,$lockedby);
-			} else {
-				$id = $this->save_archive($id, $gal_info['galleryId'], $gal_info['archives'], $name, $description, $filename, $data, $size, $type, $creator, $path, $comment, $author, $created, $lockedby);
+
+			// Insert and index (for search) the new file
+			$idNew = $this->insert_file($gal_info['galleryId'], $name, $description, $filename, $data, $size, $type, $creator, $path, $comment, $author, $created, $lockedby);
+
+			if ($gal_info['archives'] > 0) {
+				$archives = $this->get_archives($id, 0, -1, 'created_asc');
+				if ($archives['cant'] >= $gal_info['archives']) {
+					$nb = $archives['cant'] - $gal_info['archives'] + 1;
+					$query = "delete from `tiki_files` where `fileId` in (".implode(',', array_fill(0, $nb, '?')).")";
+					for ($i = 0; $i < $nb; ++$i) {
+						$bindvars[] = $archives['data'][$i]['fileId'];
+						if ( $archives['data'][$i]['path'] ) {
+							unlink ($savedir . $archives['data'][$i]['path']);
+						}
+					}
+					$this->query($query, $bindvars);
+				}
 			}
+			$query = "update `tiki_files` set `archiveId`=?, `search_data`=?,`user`=?, `lockedby`=? where `archiveId`=? or `fileId`=?";
+			$this->query($query,array($idNew, '',$creator,NULL, $id, $id));
+
+			if ($prefs['feature_categories'] == 'y') {
+				global $categlib; require_once('lib/categories/categlib.php');
+				$categlib->uncategorize_object('file', $id);
+			}
+
+			$id = $idNew;
 		}
 
 		if ($gal_info['galleryId']) {
@@ -818,7 +635,6 @@ class FileGalLib extends TikiLib
 	}
 
 	function change_file_handler($mime_type,$cmd) {
-		$mime_type = trim($mime_type);
 		$found = $this->getOne("select `mime_type` from `tiki_file_handlers` where `mime_type`=?",array($mime_type));
 
 		if ($found) {
@@ -1135,7 +951,7 @@ class FileGalLib extends TikiLib
 		return $return;
 	}
 
-	// Get default phplayers tree for filegals - not actually using phplayers for tiki7+
+	// Get default phplayers tree for filegals
 	function getFilegalsTreePhplayers( $currentGalleryId = null ) {
 		return $this->getTreePhplayers( $this->getFilegalsIdsTree(), $currentGalleryId );
 	}
@@ -1151,7 +967,7 @@ class FileGalLib extends TikiLib
 		if ( $currentGalleryId === null ) $currentGalleryId = $rootGalleryId;
 
 		$script = 'tiki-list_file_gallery.php';
-		$tree = array('name' => tra('File Galleries'), 'data' => array(), 'link' => $script, 'id' => $rootGalleryId );
+		$tree = array('name' => tra('File Galleries'), 'data' => array(), 'link' => $script);
 
 		if ( $rootGalleryId != $prefs['fgal_root_id'] ) {
 			foreach ( $allGalleries['data'] as $k => $v ) {
@@ -1442,14 +1258,14 @@ class FileGalLib extends TikiLib
 		}
 		if (preg_match_all('/\[(.+)\]/Umi', $data, $matches)) {
 			foreach ($matches as $match) {
-				if (isset($match[1]) && $fileId = $this->getLinkFileId($match[1])) {
+				if ($fileId = $this->getLinkFileId($match[1])) {
 					$fileIds[] = $fileId;
 				}
 			}
 		}
 		if (preg_match_all('/<a[^>]*href=(\'|\")?([^>*])/Umi', $data, $matches)) {
 			foreach ($matches as $match) {
-				if (isset($match[2]) && $fileId = $this->getLinkFileId($match[2])) {
+				if ($fileId = $this->getLinkFileId($match[2])) {
 					$fileIds[] = $fileId;
 				}
 			}
@@ -1466,10 +1282,6 @@ class FileGalLib extends TikiLib
 		if (preg_match('/^(dl|preview|thumbnail|thumb||display)([0-9]+)/', $url, $matches)) {
 			return $matches[2];
 		}
-	}
-	private function syncParsedText( $data, $context ) {
-		// Compatbility function
-		$this->object_post_save( $context, array( 'content' => $data ) );
 	}
 	function refreshBacklinks() {
 		$query = 'select `data`, `description`, `pageName` from `tiki_pages`';
@@ -1503,7 +1315,7 @@ class FileGalLib extends TikiLib
 
 		$query = 'select `objectType`, `object`, `threadId`,`title`, `data` from `tiki_comments`';
 		$result = $this->query($query, array());
-		include_once ('lib/comments/commentslib.php');global $dbTiki; $commentslib = new Comments($dbTiki);
+		include_once ('lib/commentslib.php');global $dbTiki; $commentslib = new Comments($dbTiki);
 		while ($res = $result->fetchRow()) {
 			if ($res['objectType'] == 'forum') {
 				$type = 'forum post';
@@ -1530,16 +1342,16 @@ class FileGalLib extends TikiLib
 	 * return '' if ok otherwise error message */
 	function moveFiles($to='to_fs', &$feedbacks) {
 		if ($to == 'to_db') {
-			$query = 'select `fileId` from `tiki_files` where `path` != ?';
-			$msg = tra('Number of files transferred to the database:');
+			$query = 'select * from `tiki_files` where `path` != ?';
+			$msg = tra('Number of files transfered to the database:');
 		} else {
-			$query = 'select `fileId` from `tiki_files` where `path` = ?';
-			$msg = tra('Number of files transferred to the file system:');
+			$query = 'select * from `tiki_files` where `path` = ?';
+			$msg = tra('Number of files transfered to the file system:');
 		}
 		$result = $this->query($query, array(''));
 		$nb = 0;
 		while ($res = $result->fetchRow()) {
-			if (($errors = $this->moveFile($to, $res['fileId'])) != '') {
+			if (($errors = $this->moveFile($to, $res)) != '') {
 				$feedbacks[] = "$msg $nb";
 				return $errors;
 			}
@@ -1548,9 +1360,8 @@ class FileGalLib extends TikiLib
 		$feedbacks[] = "$msg $nb";
 		return '';
 	}
-	function moveFile($to='to_fs', $file_id) {
+	function moveFile($to='to_fs', $file_info) {
 		global $prefs;
-		$file_info=$this->query( "select * from `tiki_files` where `fileId` = ?", array($file_id) )->fetchRow();
 		if ($to == 'to_db') {
 			if (!($fw = fopen($prefs['fgal_use_dir'] .$file_info['path'], 'rb'))) {
 				return tra('Cannot open this file:') . $prefs['fgal_use_dir'] . $file_info['path'];
@@ -1697,16 +1508,16 @@ class FileGalLib extends TikiLib
 	}
 	function setDefault($fgalIds) {
 		global $prefs;
-		$query = "update `tiki_file_galleries` set `sort_mode`=?, `default_view`=?,
+		$query = "update `tiki_file_galleries` set `sort_mode`=?, `maxRows`=?,
 			`show_id`=?, `show_icon`=?, `show_name`=?, `show_description`=?, `show_size`=?,
 			`show_created`=?, `show_modified`=?, `show_creator`=?, `show_author`=?, `show_last_user`=?,
 			`show_comment`=?, `show_files`=?, `show_hits`=?, `show_lastDownload`=?,
-			`show_lockedby`=?, `show_backlinks`=?, `show_explorer`=?, `show_path`=?, `show_slideshow`=? 
+			`show_lockedby`=?, `show_backlinks`=? 
 			where `galleryId` in (".implode(',',array_fill(0, count($fgalIds),'?')).")";
 		$this->query($query, array_merge(array($prefs['fgal_sort_mode'], $prefs['fgal_default_view'], $prefs['fgal_list_id'], $prefs['fgal_list_type'], $prefs['fgal_list_name'],
 			$prefs['fgal_list_description'], $prefs['fgal_list_size'], $prefs['fgal_list_created'], $prefs['fgal_list_lastModif'], $prefs['fgal_list_creator'], 
 			$prefs['fgal_list_author'], $prefs['fgal_list_last_user'], $prefs['fgal_list_comment'], $prefs['fgal_list_files'], $prefs['fgal_list_hits'], 
-			$prefs['fgal_list_lastDownload'], $prefs['fgal_list_lockedby'], $prefs['fgal_list_backlinks'], $prefs['fgal_show_explorer'], $prefs['fgal_show_path'], $prefs['fgal_show_slideshow']), 
+			$prefs['fgal_list_lastDownload'], $prefs['fgal_list_lockedby'], $prefs['fgal_list_backlinks']), 
 			$fgalIds));
 	}
 	function getGalleryId($name, $parentId) {
@@ -1741,35 +1552,6 @@ class FileGalLib extends TikiLib
 			}
 			$this->remove_file($fileInfo, $galInfo, false);
 		}
-	}
-	// get the wiki_syntax - use parent's if none
-	function getWikiSyntax($galleryId=0) {
-		global $prefs;
-		
-		if (isset($_REQUEST['filegals_manager'])) {		// for use in plugin edit popup
-			if ($_REQUEST['filegals_manager'] === 'fgal_picker_id') {
-				return '%fileId%';		// for use in plugin edit popup
-			} else if ($_REQUEST['filegals_manager'] === 'fgal_picker') {
-				$href = 'tiki-download_file.php?fileId=123&amp;display';	// dummy id as sefurl expects a (/d+) pattern
-				global $smarty; include_once('tiki-sefurl.php');
-				$href = filter_out_sefurl($href, $smarty);
-				return str_replace('123', '%fileId%', $href);
-			}
-		}
-		
-		$syntax = $this->getOne('SELECT `wiki_syntax` FROM `tiki_file_galleries` WHERE `galleryId`=?', array($galleryId));
-		if (!empty($syntax)) {
-			return $syntax;
-		}
-		$list = $this->getGalleryParentsColumns($galleryId, array('wiki_syntax'));
-		foreach($list as $fgal) {
-			if (!empty($fgal['wiki_syntax'])) {
-				return $fgal['wiki_syntax'];
-			}
-		}
-		// and no syntax set, return default
-		$syntax = '{img fileId="%fileId%" thumb="y" rel="box[g]"}';	// should be a pref
-		return $syntax;
 	}
 }
 $filegallib = new FileGalLib;

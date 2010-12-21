@@ -16,7 +16,6 @@ class RankLib extends TikiLib
 	function wiki_ranking_top_pages($limit, $categ=array(), $lang=null)
 	{
 		global $user, $prefs;
-		$pagesAdded = array();
 		
 		$bindvals = array();
 		$mid = '';
@@ -51,8 +50,9 @@ class RankLib extends TikiLib
 				$disableBestLang = false;
 				if ($res['lang'] > '' && $prefs['feature_best_language'] == 'y') {
 					// find best language equivalent
-					global $multilinguallib; include_once('lib/multilingual/multilinguallib.php');
-					if ($multilinguallib->useBestLanguage()) {
+					if (isset($_REQUEST['bl']) || isset($_REQUEST['best_lang']) && $_REQUEST['best_lang'] == 'y') {
+						global $multilinguallib;
+						include_once('lib/multilingual/multilinguallib.php');
 						$bestLangPageId = $multilinguallib->selectLangObj('wiki page', $res['page_id'], null, 'tiki_p_view');
 						if ($res['page_id'] != $bestLangPageId) {							
 							$res['pageName'] = $this->get_page_name_from_id($bestLangPageId);
@@ -183,7 +183,7 @@ class RankLib extends TikiLib
 	
 	function forums_ranking_last_posts($limit, $toponly=false, $forumId='')
 	{
-		global $user, $commentslib; require_once 'lib/comments/commentslib.php';
+		global $user, $commentslib; require_once 'lib/commentslib.php';
 		if (! $commentslib) {
 			$commentslib = new Comments;
 		}
@@ -191,7 +191,7 @@ class RankLib extends TikiLib
 		$count = 0;
 		$ret = array();
 		$result = $commentslib->get_all_comments('forum', 0, $limit, 'commentDate_desc', '', '', '', $toponly, $forumId);
-		$result['data'] = Perms::filter(array('type' => 'forum'), 'object', $result['data'], array('object' => 'object'), 'forum_read');
+		$result['data'] = Perms::filter(array('type' => 'forum'), 'object', $result['data'], array('object' => 'forumId'), 'forum_read');
 		foreach ($result['data'] as $res) {
 			$aux['name'] = $res['title'];
 			$aux['title'] = $res['parentTitle'];
@@ -216,7 +216,7 @@ class RankLib extends TikiLib
 	{
 		global $commentslib;
 		if (! $commentslib) {
-			require_once 'lib/comments/commentslib.php';
+			require_once 'lib/commentslib.php';
 			$commentslib = new Comments;
 		}
 
@@ -259,7 +259,7 @@ class RankLib extends TikiLib
 	{
 		global $commentslib;
 		if (! $commentslib) {
-			require_once 'lib/comments/commentslib.php';
+			require_once 'lib/commentslib.php';
 			$commentslib = new Comments;
 		}
 
@@ -285,7 +285,7 @@ class RankLib extends TikiLib
 	{
 		global $commentslib;
 		if (! $commentslib) {
-			require_once 'lib/comments/commentslib.php';
+			require_once 'lib/commentslib.php';
 			$commentslib = new Comments;
 		}
 
@@ -310,7 +310,7 @@ class RankLib extends TikiLib
 	{
 		global $commentslib;
 		if (! $commentslib) {
-			require_once 'lib/comments/commentslib.php';
+			require_once 'lib/commentslib.php';
 			$commentslib = new Comments;
 		}
 

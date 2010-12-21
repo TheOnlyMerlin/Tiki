@@ -16,8 +16,8 @@ if ( isset($section) and isset($sections[$section])) {
 		if ( ! isset($user) ) $userid = 0;
 		else $userid = $userlib->get_user_id($user);
 
-		if (empty($user) && $prefs['feature_antibot'] == 'y' && !$captchalib->validate()) {
-			$smarty->assign('freetag_error', $captchalib->getErrors());
+		if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $_REQUEST['antibotcode'])) {
+			$smarty->assign('freetag_error', tra('You have mistyped the anti-bot verification code; please try again.'));
 			$smarty->assign_by_ref('freetag_msg', $_POST['addtags']);
 		} elseif ( $object = current_object() ) {
 			$freetaglib->tag_object($userid, $object['object'], $object['type'], $_POST['addtags']);
@@ -27,7 +27,7 @@ if ( isset($section) and isset($sections[$section])) {
 		if ( $object = current_object() ) {
 			$freetaglib->delete_object_tag($object['object'], $object['type'], $_REQUEST['delTag']);
 		}
-		$url = $tikilib->httpPrefix().preg_replace('/[?&]delTag='.preg_quote(urlencode($_REQUEST['delTag']), '/') . '/', '', $_SERVER['REQUEST_URI']);
+		$url = $tikilib->httpPrefix().str_replace('&delTag='.urlencode($_REQUEST['delTag']), '', $_SERVER['REQUEST_URI']);
 		header("Location: $url");
 		die;
 	}

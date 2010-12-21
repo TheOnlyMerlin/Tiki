@@ -20,49 +20,35 @@ function wikiplugin_lsdir_help() {
 function wikiplugin_lsdir_info() {
 	return array(
 		'name' => tra('List Directory'),
-		'documentation' => 'PluginLsDir',
+		'documentation' => 'PluginLsDir',	
 		'description' => tra('Lists files in a directory'),
 		'prefs' => array( 'wikiplugin_lsdir' ),
 		'validate' => 'all',
-		'icon' => 'pics/icons/folder_find.png',
 		'params' => array(
 			'dir' => array(
 				'required' => true,
 				'name' => tra('Directory'),
-				'description' => tra('Full path to the server-local directory. Default is the document root.'),
-				'default' => '',
+				'description' => tra('Full path to the server-local directory.'),
 			),
 			'urlprefix' => array(
 				'required' => false,
 				'name' => tra('URL Prefix'),
-				'description' => tra('Make the file name a link to the file by adding the url path preceding the file name. Example: http://yoursite.com/tiki/'),
-				'default' => NULL
+				'description' => tra('?'),
 			),
 			'sort' => array(
 				'required' => false,
 				'name' => tra('Sort Order'),
-				'description' => tra('Set the sort order of the file list'),
-				'default' => 'name',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('File Name'), 'value' => 'name'), 
-					array('text' => tra('File Size'), 'value' => 'size'), 
-					array('text' => tra('Last Access'), 'value' => 'atime'), 
-					array('text' => tra('Last Metadata Change'), 'value' => 'ctime'), 
-					array('text' => tra('Last Modified'), 'value' => 'mtime'), 
-				)
+				'description' => tra('name'),
 			),
 			'filter' => array(
 				'required' => false,
 				'name' => tra('Filter'),
-				'description' => tra('Only list files with filenames that contain this filter. Example: ".jpg"'),
-				'default' => NULL
+				'description' => tra('.ext'),
 			),
 			'limit' => array(
 				'required' => false,
 				'name' => tra('Limit'),
-				'description' => tra('Maximum amount of files to display. Default is no limit.'),
-				'default' => 0,
+				'description' => tra('Maximum amount of files to display'),
 			),
 		),
 	);
@@ -70,19 +56,16 @@ function wikiplugin_lsdir_info() {
 
 function wikiplugin_lsdir($data, $params) {
 	global $tikilib;
-//	$dir = '';
-	$dir = $params['dir'];
-//	$urlprefix = NULL;
-	$urlprefix = $params['urlprefix'];
-//	$sort = 'name';
-	$sort = 'size';
+	$dir = '';
+	$urlprefix = NULL;
+	$sort = 'name';
 	$sortmode = 'asc';
 	$filter = NULL;
 	$limit = 0;
 	$tmp_array = array();
 	$ret = '';
 
-	extract($params, EXTR_SKIP);
+	extract ($params, EXTR_SKIP);
 	
 	// make sure document_root has no trailing slash
 	if (!empty($_SERVER['DOCUMENT_ROOT'])) {

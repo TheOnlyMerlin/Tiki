@@ -33,16 +33,14 @@ function wikiplugin_miniquiz_info() {
 	return array(
 		'name' => tra('Mini Quiz'),
 		'documentation' => 'PluginMiniQuiz',
-		'description' => tra('Create a quiz using a tracker'),
+		'description' => tra('Displays a miniquiz'),
 		'prefs' => array( 'feature_trackers', 'wikiplugin_miniquiz' ),
 		'body' => tra('Instructions::Feedback'),
-		'icon' => 'pics/icons/green_question.png',
 		'params' => array(
 			'trackerId' => array(
 				'required' => true,
-				'name' => tra('Tracker ID'),
-				'description' => tra('Numeric value representing the miniquiz tracker ID'),
-				'default' => '',
+				'name' => tra('Tracker'),
+				'description' => tra('Tracker ID'),
 			),
 		),
 	);

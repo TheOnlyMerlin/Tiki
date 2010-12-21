@@ -20,7 +20,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  * params are the same as smarty 'query' function + some special params starting with an underscore:
  *   _sort_field : name of the field used for sorting,
  *   _sort_arg : name of the URL argument that contains the field to use for sorting. Defaults to 'sort',
- *   _ajax : if set to 'n', will force disabling AJAX even if the ajax xajax feature is enabled,	AJAX_TODO
+ *   _ajax : if set to 'n', will force disabling AJAX even if the ajax feature is enabled,
  *   _tag : if set to 'n', will only return an URL, not the full A tag + text (AJAX and sorting features are not available in this case),
  *   _class : CSS class to use for the A tag
  *   _template : (see smarty query function 'template' param)
@@ -76,7 +76,7 @@ function smarty_block_self_link($params, $content, &$smarty, $repeat = false) {
 			}
 			// Complete _script path if needed (not empty, not an anchor, ...)
 			if ( !empty($params['_script']) && $params['_script'][0] != '#' && $params['_script'] != 'javascript:void(0)' ) {
-				if ( $_SERVER['PHP_SELF'][0] == '/' && strpos($params['_script'], '/') === false ) {
+				if ( $params['_script'] != '' && $_SERVER['PHP_SELF'][0] == '/' && strpos($params['_script'], '/') === false ) {
 					$self_dir = str_replace('\\','/',dirname($_SERVER['PHP_SELF']));
 					$params['_script'] = ( $self_dir == '/' ? '' : $self_dir ).'/'.$params['_script'];
 				}
@@ -86,15 +86,16 @@ function smarty_block_self_link($params, $content, &$smarty, $repeat = false) {
 			}
 
 			$params['_type'] = $default_type;
+			if ( $params['_ajax'] == 'y') unset ($params['_anchor']);
 			$ret = smarty_function_query($params, $smarty);
 		}
 
 		if ( $params['_tag'] == 'y' ) {
 
 			if ( empty($params['_disabled']) ) {
-				if ( $params['_ajax'] === 'y' && $params['_script'] === '' ) {
+				if ( $params['_ajax'] == 'y' && $params['_script'] == '' ) {
 					require_once $smarty->_get_plugin_filepath('block', 'ajax_href');
-					if ( ! isset($params['_htmlelement']) ) $params['_htmlelement'] = 'role_main';
+					if ( ! isset($params['_htmlelement']) ) $params['_htmlelement'] = 'tiki-center';
 					if ( ! isset($params['_onclick']) ) $params['_onclick'] = '';
 					if ( ! isset($params['_template']) ) {
 						$params['_template'] = basename($_SERVER['PHP_SELF'], '.php').'.tpl';
@@ -109,7 +110,10 @@ function smarty_block_self_link($params, $content, &$smarty, $repeat = false) {
 							$ret,
 							$smarty,
 							false
-						);
+							);
+					if ($prefs['feature_ajax'] == 'y') {
+						unset($params['_onclick']);
+					}
 				} else {
 					$ret = 'href="'.$ret.'"';
 				}

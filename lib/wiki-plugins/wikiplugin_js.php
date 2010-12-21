@@ -18,19 +18,17 @@ function wikiplugin_js_info() {
 		return array(
 			'name' => tra('Javascript'),
 			'documentation' => 'PluginJS',
-			'description' => tra('Add JavaScript code'),
+			'description' => tra('Insert a javascript file or/and some javascript code.'),
 			'prefs' => array( 'wikiplugin_js' ),
 			'body' => tra('javascript code'),
 			'validate' => 'all',
 			'filter' => 'rawhtml_unsafe',
-			'icon' => 'pics/icons/script_code_red.png',
 			'params' => array(
 				'file' => array(
 					'required' => false,
 					'name' => tra('File'),
-					'description' => tra('JavaScript filename'),
+					'description' => tra('Javascript filename.'),
 					'filter' => 'url',
-					'default' => '',
 				),
 			),
 		);

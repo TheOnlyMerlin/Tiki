@@ -10,24 +10,12 @@ include_once ('lib/articles/artlib.php');
 $smarty->assign('headtitle', tra('List Articles'));
 $access->check_feature('feature_articles');
 $access->check_permission('tiki_p_read_article');
-$auto_query_args = array('sort_mode', 'category', 'offset', 'maxRecords', 'find', 'find_from_Month', 'find_from_Day', 'find_from_Year', 'find_to_Month', 'find_to_Day', 'find_to_Year', 'type', 'topic', 'cat_categories', 'categId', 'lang', 'mode', 'mapview', 'searchmap', 'searchlist');
-if ($prefs["gmap_article_list"] == 'y') {
-	$smarty->assign('gmapbuttons', true);
-} else {
-	$smarty->assign('gmapbuttons', false);
-}
-if (isset($_REQUEST["mapview"]) && $_REQUEST["mapview"] == 'y' && !isset($_REQUEST["searchmap"]) && !isset($_REQUEST["searchlist"]) || isset($_REQUEST["searchmap"]) && !isset($_REQUEST["searchlist"])) {
-	$smarty->assign('mapview', true);
-}
-if (isset($_REQUEST["mapview"]) && $_REQUEST["mapview"] == 'n' && !isset($_REQUEST["searchmap"]) && !isset($_REQUEST["searchlist"]) || isset($_REQUEST["searchlist"]) && !isset($_REQUEST["searchmap"]) ) {
-	$smarty->assign('mapview', false);
-}
 if (isset($_REQUEST["remove"])) {
 	$artperms = Perms::get( array( 'type' => 'article', 'object' => $_REQUEST['remove'] ) );
 
 	if ($artperms->remove_article != 'y') {
 		$smarty->assign('errortype', 401);
-		$smarty->assign('msg', tra("You do not have permission to remove articles"));
+		$smarty->assign('msg', tra("Permission denied you cannot remove articles"));
 		$smarty->display("error.tpl");
 		die;
 	}
@@ -75,7 +63,7 @@ if (($tiki_p_admin == 'y') || ($tiki_p_admin_cms == 'y')) {
 } else {
 	$date_max = $tikilib->now;
 }
-if (!empty($_REQUEST["find_from_Month"]) && !empty($_REQUEST["find_from_Day"]) && !empty($_REQUEST["find_from_Year"])) {
+if (isset($_REQUEST["find_from_Month"]) && isset($_REQUEST["find_from_Day"]) && isset($_REQUEST["find_from_Year"])) {
 	$date_min = $tikilib->make_time(0, 0, 0, $_REQUEST["find_from_Month"], $_REQUEST["find_from_Day"], $_REQUEST["find_from_Year"]);
 	$smarty->assign('find_date_from', $date_min);
 } else {
@@ -132,19 +120,6 @@ $listpages = $artlib->list_articles($offset, $maxRecords, $sort_mode, $find, $da
 $smarty->assign_by_ref('cant', $listpages['cant']);
 $smarty->assign_by_ref('listpages', $listpages["data"]);
 
-if ($prefs["gmap_article_list"] == 'y') {
-	// Generate Google map plugin data
-	global $gmapobjectarray;
-	$gmapobjectarray = array();
-	foreach ($listpages["data"] as $art) {
-		$gmapobjectarray[] = array('type' => 'article',
-			'id' => $art["articleId"],
-			'title' => $art["title"],
-			'href' => 'tiki-read_article.php?articleId=' . $art["articleId"],
-		);
-	}
-}
-
 $topics = $artlib->list_topics();
 $smarty->assign_by_ref('topics', $topics);
 $types = $artlib->list_types();
@@ -170,6 +145,10 @@ if ($tiki_p_edit_article != 'y' && $tiki_p_remove_article != 'y') { //check one 
 	}
 }
 include_once ('tiki-section_options.php');
+if ($prefs['feature_mobile'] == 'y' && isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'mobile') {
+	include_once ("lib/hawhaw/hawtikilib.php");
+	HAWTIKI_list_articles($listpages, $tiki_p_read_article, $offset, $maxRecords, $listpages["cant"]);
+}
 ask_ticket('list-articles');
 // Display the template
 $smarty->assign('mid', 'tiki-list_articles.tpl');

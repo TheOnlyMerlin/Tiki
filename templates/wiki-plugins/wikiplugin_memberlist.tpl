@@ -5,7 +5,6 @@
 			<div class="group">
 				<h2>{$groupName|escape}</h2>
 				{if $groupData.members}
-				{if $groupData.can_remove}{tr}Check to remove{/tr}:{/if}
 					<ul>
 						{foreach from=$groupData.members item=memberName}
 							<li>
@@ -29,18 +28,18 @@
 					</ul>
 				{/if}
 				{if $groupData.can_add}
-					<p>{tr}Add{/tr}: <input type="text" name="add[{$groupName|escape}]" class="username-input"/> (comma separated)</p>
+					<p>Add: <input type="text" name="add[{$groupName|escape}]" class="username-input"/> (comma separated)</p>
 				{/if}
 				{if $groupData.can_join}
 					<p>
 						<input type="checkbox" name="join[]" value="{$groupName|escape}" id="join-{$groupName|escape}"/>
-						<label for="join-{$groupName|escape}">{tr}Join myself{/tr}</label>
+						<label for="join-{$groupName|escape}">{tr}Join{/tr}</label>
 					</p>
 				{/if}
 				{if $groupData.can_leave}
 					<p>
 						<input type="checkbox" name="leave[]" value="{$groupName|escape}" id="leave-{$groupName|escape}"/>
-						<label for="leave-{$groupName|escape}">{tr}Leave myself{/tr}</label>
+						<label for="leave-{$groupName|escape}">{tr}Leave{/tr}</label>
 					</p>
 				{/if}
 			</div>
@@ -51,5 +50,5 @@
 	{/if}
 </form>
 {jq}
-$('.username-input').tiki('autocomplete','username');
+$jq('.username-input').tiki('autocomplete','username');
 {/jq}

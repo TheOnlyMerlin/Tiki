@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -20,18 +20,6 @@ require_once( 'tiki-filter-base.php' );
 require_once ( 'lib/smarty/libs/Smarty.class.php');
 require_once ('installer/installlib.php');
 
-class InstallerDatabaseErrorHandler implements TikiDb_ErrorHandler
-{
-	function handle(TikiDb $db, $query, $values, $result) {
-	}
-}
-
-include_once 'lib/adodb/adodb.inc.php';
-$dbTiki = ADONewConnection($db_tiki);
-$db = new TikiDb_Adodb($dbTiki);
-$db->setServerType($db_tiki);
-$db->setErrorHandler(new InstallerDatabaseErrorHandler);
-TikiDb::set($db);
 $dbTiki = false;
 $commands = array();
 @ini_set('magic_quotes_runtime',0);
@@ -40,7 +28,7 @@ $commands = array();
 $prefs = array(
 	// tra() should not use $tikilib because this lib is not available in every steps of the installer
 	//  and because we want to be sure that translations of the installer are the original ones, even for an upgrade
-	'lang_use_db' => 'n'
+	'lang_use_db' => 'n' 
 );
 
 // Which step of the installer
@@ -49,10 +37,10 @@ if (empty($_REQUEST['install_step'])) {
 	
 	if (isset($_REQUEST['setdbversion'])) {
 		// Sets dbversion_tiki when installing the WebDeploy package
-		$db = fopen('db/'.$tikidomainslash.'local.php', 'a');
+		$db = fopen('db/local.php', 'a');
 		require_once 'lib/setup/twversion.class.php';
 		$TWV = new TWVersion();
-		fwrite($db, "\n\$dbversion_tiki='" . $TWV->getBaseVersion() . "';\n");
+		fwrite($db, "\n\$dbversion_tiki='" . $TWV->getVersion() . "';\n");
 		fclose($db);
 	}
 } else {
@@ -79,7 +67,7 @@ function has_tiki_db_20()
 	return $installer->tableExists('tiki_pages_translation_bits');
 }
 
-function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $client_charset = '', $api_tiki = '', $dbversion_tiki = 'current') {
+function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $client_charset = '', $api_tiki = '', $dbversion_tiki = '5.0') {
 	global $local;
 	global $db_tiki;
 	if ($dbs_tiki && $user_tiki) {
@@ -91,11 +79,6 @@ function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tik
 		$fw = fopen($local, 'w');
 		$filetowrite = "<?php\n";
 		$filetowrite .= "\$db_tiki='" . $db_tiki . "';\n";
-		if ($dbversion_tiki == 'current') {
-			require_once 'lib/setup/twversion.class.php';
-			$twversion = new TWVersion();
-			$dbversion_tiki = $twversion->getBaseVersion();
-		}
 		$filetowrite .= "\$dbversion_tiki='" . $dbversion_tiki . "';\n";
 		$filetowrite .= "\$host_tiki='" . $host_tiki . "';\n";
 		$filetowrite .= "\$user_tiki='" . $user_tiki . "';\n";
@@ -110,9 +93,7 @@ function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tik
 		$filetowrite .= "// If you experience text encoding issues after updating (e.g. apostrophes etc showing up as strange characters) \n";
 		$filetowrite .= "// \$client_charset='latin1';\n";
 		$filetowrite .= "// \$client_charset='utf8';\n";
-		$filetowrite .= "// See http://tiki.org/ReleaseNotes5.0#Known_Issues and http://doc.tiki.org/Understanding+Encoding for more info\n\n";
-		$filetowrite .= "// If your php installation does not not have pdo extension\n";
-		$filetowrite .= "// \$api_tiki = 'adodb';\n";
+		$filetowrite .= "// See http://tikiwiki.org/ReleaseNotes5.0#Known_Issues and http://doc.tikiwiki.org/UTF-8 for more info\n\n";
 		fwrite($fw, $filetowrite);
 		fclose($fw);
 	}
@@ -135,7 +116,7 @@ function create_dirs($domain=''){
 		'whelp');
 
 	$ret = "";
-	foreach ($dirs as $dir) {
+  foreach ($dirs as $dir) {
 		$dir = $dir.'/'.$domain;
 		// Create directories as needed
 		if (!is_dir($dir)) {
@@ -170,9 +151,7 @@ class Smarty_Tikiwiki_Installer extends Smarty
 
 	function Smarty_Tikiwiki_Installer($tikidomain) {
 		parent::Smarty();
-		if ($tikidomain) {
-			$tikidomain .= '/'; 
-		}
+		if ($tikidomain) { $tikidomain.= '/'; }
 		$this->template_dir = realpath('templates/');
 		$this->compile_dir = realpath("templates_c/$tikidomain");
 		$this->config_dir = realpath('configs/');
@@ -206,6 +185,53 @@ class Smarty_Tikiwiki_Installer extends Smarty
 		$_smarty_compile_id = $language . $_smarty_compile_id;
 		return parent::fetch($_smarty_tpl_file, $_smarty_cache_id, $_smarty_compile_id, $_smarty_display);
 	}
+}
+
+function kill_script() {
+	$remove = 'no';
+	if (isset($_REQUEST['remove'])) {
+		$remove = 'yes';
+	}
+	$removed = false;
+	
+	if (is_writable("installer/tiki-installer.php")) {
+		/* first try to delete the file if requested */
+		if ( ($remove == 'yes') && @unlink("installer/tiki-installer.php")) {
+			$removed = true;
+		}
+		/* if it fails, then try to rename it */
+		elseif (@rename("installer/tiki-installer.php", "installer/tiki-installer.done")) {
+			$removed = true;
+		}
+		/* otherwise here's an attempt to change the content of the file to prevent execution */
+		else {
+			$fh = fopen('installer/tiki-installer.php', 'rb');
+			$data = fread($fh, filesize('installer/tiki-installer.php'));
+			fclose($fh);
+			$data = preg_replace('/\/\/stopinstall:/', '', $data);
+			$fh = fopen('installer/tiki-installer.php', 'wb');
+			if (fwrite($fh, $data) > 0) {
+				$removed = true;
+			}
+			fclose($fh);
+		}
+	}
+
+	if ($removed == true) {
+		header ('location: tiki-index.php');
+	} else {
+		// TODO: display this via translantable error msg template
+		print "<html><head><title>Ooops !</title></head><body>
+<h1 style='color: red'>Ooops !</h1>
+<p>Tikiwiki installer failed to rename the <b>installer/tiki-installer.php</b> file.</p>
+<p style='border: solid 1px red; margin: 0 10% 0 10%; text-align: center; width: 80%'>Leaving this file on a publicly accessible site is a <strong>security risk</strong>.</p>
+<p>Please remove or rename the <b>installer/tiki-installer.php</b> from your Tiki installation folder 'manually' (e.g. using SSH or FTP).
+<strong>Somebody else could be potentially able to wipe out your Tikiwiki database if you do not remove or rename this file !</strong></p>
+<p><a href='index.php'>Proceed to your site</a> after you have removed or renamed <b>installer/tiki-installer.php</b>.</p>
+<p style='text-align: right'>Thank you</p>
+</body></html>";
+	}
+	exit();
 }
 
 function check_session_save_path() {
@@ -312,7 +338,7 @@ $PHP_CONFIG_FILE_PATH/php.ini or $httpd_conf.
 
 <hr>
 
-<a href='http://doc.tiki.org/Installation' target='_blank'>Consult the tiki.org installation guide</a> if you need more help or <a href='http://tiki.org/tiki-forums.php' target='_blank'>visit the forums</a>
+<a href='http://doc.tikiwiki.org/Installation' target='_blank'>Consult the tikiwiki.org installation guide</a> if you need more help or <a href='http://tikiwiki.org/tiki-forums.php' target='_blank'>visit the forums</a>
 
 ";
         }
@@ -463,6 +489,13 @@ function fix_double_encoding( $dbname, $previous ) {
 // -----------------------------------------------------------------------------
 // end of functions .. now starts the processing
 
+// TODO: check that this is no longer in use (using lock-file now) and remove this and function
+// After install, this should remove this script.
+if (isset($_REQUEST['kill'])) {
+	kill_script();
+	exit();
+}
+
 // If using multiple Tikis
 if (is_file('db/virtuals.inc')) {
 	$virtuals = array_map('trim', file('db/virtuals.inc'));
@@ -507,7 +540,7 @@ $tikidomainslash = (!empty($tikidomain) ? $tikidomain . '/' : '');
 $title = tra('Tiki Installer');
 
 include 'lib/cache/cachelib.php';
-$cachelib->empty_cache();
+$cachelib->empty_full_cache();
 
 $_SESSION["install-logged-$multi"] = 'y';
 
@@ -569,18 +602,9 @@ if ($errors) {
 
 //adodb settings
 
-if (!defined('ADODB_FORCE_NULLS')) {
-	define('ADODB_FORCE_NULLS', 1);
-}
-
-if (!defined('ADODB_ASSOC_CASE')) {
-	define('ADODB_ASSOC_CASE', 2);
-}
-
-if (!defined('ADODB_CASE_ASSOC')) { // typo in adodb's driver for sybase? // so do we even need this without sybase? What's this?
-	define('ADODB_CASE_ASSOC', 2);
-}
-
+if (!defined('ADODB_FORCE_NULLS')) { define('ADODB_FORCE_NULLS', 1); }
+if (!defined('ADODB_ASSOC_CASE')) { define('ADODB_ASSOC_CASE', 2); }
+if (!defined('ADODB_CASE_ASSOC')) { define('ADODB_CASE_ASSOC', 2); } // typo in adodb's driver for sybase? // so do we even need this without sybase? What's this?
 include_once ('lib/adodb/adodb.inc.php');
 
 include('lib/tikilib.php');
@@ -712,7 +736,6 @@ if ($dbcon) {
 	if ($install_step == '6' && $has_tiki_db) {
 		update_preferences($dbTiki, $prefs);
 		$smarty->assign('admin_email', get_admin_email($dbTiki));
-		$smarty->assign('upgradefix', (empty($dbversion_tiki) || $dbversion_tiki[0] < 4) ? 'y' : 'n');
 	}
 	$smarty->assign('tikidb_is20',  has_tiki_db_20());
 }
@@ -767,7 +790,7 @@ if (
 	//   - there is already an existing .htaccess (that is not necessarily the one that comes from TikiWiki),
 	//   - the rename does not work (e.g. due to filesystem permissions)
 	//
-	if ( strpos($_SERVER['SERVER_SOFTWARE'],'Apache') !== false && !file_exists('.htaccess') && ! @rename('_htaccess', '.htaccess') ) {
+	if ( !file_exists('.htaccess') && ! @rename('_htaccess', '.htaccess') ) {
 		$smarty->assign('htaccess_error', 'y');
 	}
 }
@@ -782,7 +805,7 @@ if (!isset($install_type)) {
 
 if ( isset( $_GET['lockenter'] ) || isset( $_GET['nolockenter'] ) ) {
 	if (isset( $_GET['lockenter'])) {
-		touch( 'db/'.$tikidomainslash.'lock' );
+		touch( 'db/lock' );
 	}
 	
 	global $userlib, $cachelib;
@@ -790,7 +813,7 @@ if ( isset( $_GET['lockenter'] ) || isset( $_GET['nolockenter'] ) ) {
 		session_destroy();
 	}
 	include_once 'tiki-setup.php';
-	$cachelib->empty_cache();
+	$cachelib->empty_full_cache();
 	if ($install_type == 'scratch') {
 		$u = 'tiki-change_password.php?user=admin&oldpass=admin';
 	} else {
@@ -804,10 +827,10 @@ $smarty->assign_by_ref('tikifeedback', $tikifeedback);
 
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
-$email_test_tw = 'mailtest@tiki.org';
+$email_test_tw = 'mailtest@tikiwiki.org';
 $smarty->assign('email_test_tw', $email_test_tw);
 
-//  Sytem requirements test.
+//  Sytem requirements test. 
 if ($install_step == '2') {
 
 	if (isset($_REQUEST['perform_mail_test']) && $_REQUEST['perform_mail_test'] == 'y') {
@@ -824,7 +847,7 @@ if ($install_step == '2') {
 			}
 
 			// check email address format
-			include_once('lib/core/Zend/Validate/EmailAddress.php');
+			include_once('lib/core/lib/Zend/Validate/EmailAddress.php');
 			$validator = new Zend_Validate_EmailAddress();
 			if (!$validator->isValid($email_test_to)) {
 				$smarty->assign('email_test_err', tra('Email address not valid, test mail not sent'));
@@ -884,13 +907,12 @@ if ($install_step == '2') {
 		if ($im) {
 				$smarty->assign('sample_image', 'y');
 				imagedestroy($im);
-		} else {
+		} else{
 				$smarty->assign('sample_image', 'n');
 		}
 
-	} else {
-		$gd_test = 'n';
-	}
+		} else {
+		$gd_test = 'n'; }
 	$smarty->assign('gd_test', $gd_test);
 } elseif ($install_step == 6 && !empty($_REQUEST['validPatches'])) {
 	foreach ($_REQUEST['validPatches'] as $patch) {

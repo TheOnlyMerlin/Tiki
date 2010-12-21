@@ -9,38 +9,44 @@
 
 {if $templateId > 0}
 	<h2>{tr}Edit this template:{/tr} {$info.name|escape}</h2>
-	{button href="tiki-admin_content_templates.php" _text="{tr}Create new template{/tr}"}
+	<a href="tiki-admin_content_templates.php">{tr}Create new template{/tr}</a>
 {else}
 	<h2>{tr}Create new template{/tr}</h2>
 {/if}
-<form action="tiki-admin_content_templates.php" method="post">
-	<input type="hidden" name="templateId" value="{$templateId|escape}" />
-	<table class="formcolor">
+{if $wysiwyg eq 'n' or ($wysiwyg ne 'y' and $prefs.wysiwyg_default ne 'y')}
+<form action="tiki-admin_content_templates.php?&wysiwyg=n" method="post">
+{else} 
+<form action="tiki-admin_content_templates.php?&wysiwyg=y" method="post">
+{/if}
+{if $prefs.feature_wysiwyg eq 'y' and $prefs.wysiwyg_optional eq 'y'}
+	<div class="navbar">
+		{if $wysiwyg eq 'n' or ($wysiwyg ne 'y' and $prefs.wysiwyg_default ne 'y')}
+			{button href="?templateId=$templateId&amp;wysiwyg=y" _text="{tr}Use wysiwyg editor{/tr}"}
+		{else}
+			{button href="?templateId=$templateId&amp;wysiwyg=n" _text="{tr}Use normal editor{/tr}"}
+		{/if}
+	</div>
+{/if}
+
+<input type="hidden" name="templateId" value="{$templateId|escape}" />
+	<table class="normal">
 		<tr>
-			<td><label for="name">{tr}Name:{/tr} (*)</label></td>
-			<td>
-				<input type="text" maxlength="255" size="40" id="name" name="name" value="{$info.name|escape}" /> 
-				{if $emptyname}
-					<span class="attention">{tr}Name field is mandatory{/tr}</span>
-				{/if}
+			<td class="formcolor"><label for="name">{tr}Name{/tr}:</label></td>
+			<td class="formcolor">
+				<input type="text" maxlength="255" size="40" id="name" name="name" value="{$info.name|escape}" />
 			</td>
 		</tr>
 		<tr>
-			<td>{tr}Use in{/tr}:</td>
-			<td>
+			<td class="formcolor">{tr}Use in{/tr}:</td>
+			<td class="formcolor">
 				{if $prefs.feature_cms_templates eq 'y'}
 					<input type="checkbox" name="section_cms" {if $info.section_cms eq 'y'}checked="checked"{/if} /> 
-					{tr}CMS{/tr} ({tr}Articles{/tr})
+					{tr}CMS{/tr} ({tr}Articles{/tr}
 					<br />
 				{/if}
 				{if $prefs.feature_wiki_templates eq 'y'}
 					<label><input type="checkbox" name="section_wiki" {if $info.section_wiki eq 'y'}checked="checked"{/if} />
 					{tr}Wiki{/tr}</label>
-					<br />
-				{/if}
-				{if $prefs.feature_file_galleries_templates eq 'y'}
-					<label><input type="checkbox" name="section_file_galleries" {if $info.section_file_galleries eq 'y'}checked="checked"{/if} />
-					{tr}File Galleries{/tr}</label>
 					<br />
 				{/if}
 				{if $prefs.feature_newsletters eq 'y'}
@@ -58,15 +64,15 @@
 					{tr}HTML Pages{/tr}</label>
 					<br />
 				{/if}
-				{if ($prefs.feature_cms_templates ne 'y') and ($prefs.feature_wiki_templates ne 'y') and ($prefs.feature_file_galleries_templates ne 'y') and ($prefs.feature_newsletters ne 'y') and ($prefs.feature_events ne 'y') and ($prefs.feature_html_pages ne 'y')}
+				{if ($prefs.feature_cms_templates ne 'y') and ($prefs.feature_wiki_templates ne 'y') and ($prefs.feature_newsletters ne 'y') and ($prefs.feature_events ne 'y') and ($prefs.feature_html_pages ne 'y')}
 					{tr}No features are configured to use templates.{/tr}
 				{/if}
 			</td>
 		</tr>
 
 		<tr>
-			<td>{tr}Template Type{/tr}:</td>
-			<td>
+			<td class="formcolor">{tr}Template Type{/tr}:</td>
+			<td class="formcolor">
 				<select name="template_type" class="type-selector">
 					<option value="static"{if $info.template_type eq 'static'} selected="selected"{/if}>{tr}Text area{/tr}</option>
 					<option value="page"{if $info.template_type eq 'page'} selected="selected"{/if}>{tr}Wiki Page{/tr}</option>
@@ -75,38 +81,53 @@
 		</tr>
 		
 		<tr class="type-cond for-page">
-			<td>{tr}Page Name{/tr}:</td>
-			<td>
+			<td class="formcolor">{tr}Page Name{/tr}:</td>
+			<td class="formcolor">
 				<input type="text" name="page_name" value="{$info.page_name}"/>
 			</td>
 		</tr>
 
+		{if $wysiwyg eq 'n' or ($wysiwyg ne 'y' and $prefs.wysiwyg_default ne 'y')}
+			<tr class="type-cond for-static">
+				<td class="formcolor"><label>{tr}Toolbars{/tr}</label></td>
+				<td class="formcolor">
+					{toolbars area_name='editwiki'}
+				</td>
+			</tr>
+		{/if}
+
 		<tr class="type-cond for-static">
-			<td colspan="2">
-				<label for="editwiki">{tr}Template{/tr}:</label>
-			</td>
-		</tr>
-		<tr class="type-cond for-static">
-			<td colspan="2">
-				{textarea id="editwiki" name="content" switcheditor="y"}{$info.content}{/textarea}
-			</td>
+			{assign var=area_name value="editwiki"}
+			{if $wysiwyg eq 'n' or ($wysiwyg ne 'y' and $prefs.wysiwyg_default ne 'y')}
+				<td class="formcolor">
+					<label for="editwiki">{tr}Template{/tr}:</label>
+				</td>
+				<td class="formcolor">
+					<textarea id='editwiki' class="wikiedit" name="content" rows="{$rows}" cols="{$cols}" style="WIDTH: 100%;">{$info.content|escape}</textarea>
+					<input type="hidden" name="rows" value="{$rows}"/>
+					<input type="hidden" name="cols" value="{$cols}"/>
+				</td>
+			{else}
+				<td colspan="2">
+					{editform Meat=$info.content InstanceName='content' ToolbarSet="Tiki"}
+				</td>
+			{/if}
 		</tr>
 
 		<tr>
-			<td/>
-			<td>
-				<input type="submit" name="save" value="{tr}Save{/tr}" onclick="needToConfirm=false;" />
-				<input type="submit" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;" />
+			<td class="formcolor">&nbsp;</td>
+			<td class="formcolor">
+				<input type="submit" name="save" value="{tr}Save{/tr}" />
+				<input type="submit" name="preview" value="{tr}Preview{/tr}" />
 			</td>
 		</tr>
 	</table>
 	{jq}
-		$('.type-selector').change( function( e ) {
-			$('.type-cond').hide();
-			var val = $('.type-selector').val();
-			$('.for-' + val).show();
+		$jq('.type-selector').change( function( e ) {
+			$jq('.type-cond').hide();
+			var val = $jq('.type-selector').val();
+			$jq('.for-' + val).show();
 		} ).trigger('change');
-		window.editorDirty = false;
 	{/jq}
 </form>
 
@@ -130,22 +151,25 @@
 	</tr>
 	{cycle values="odd,even" print=false advance=false}
 	{section name=user loop=$channels}
-		<tr class="{cycle}">
-			<td>{$channels[user].name|escape}</td>
-			<td>{$channels[user].created|tiki_short_datetime}</td>
-			<td>
+		<tr>
+			<td class="{cycle advance=false}">{$channels[user].name|escape}</td>
+			<td class="{cycle advance=false}">{$channels[user].created|tiki_short_datetime}</td>
+			<td class="{cycle advance=false}">
 				{if count($channels[user].sections) == 0}{tr}Visible in no sections{/tr}{/if}
 				{section name=ix loop=$channels[user].sections}
 					{$channels[user].sections[ix]} 
 					<a title="{tr}Delete{/tr}" class="link" href="tiki-admin_content_templates.php?removesection={$channels[user].sections[ix]}&amp;rtemplateId={$channels[user].templateId}" >
 						{icon _id='cross' alt="{tr}Remove section{/tr}"}
 					</a>
+					&nbsp;&nbsp;
 				{/section}
 			</td>
-			<td>
+			<td class="{cycle advance=true}">
+				&nbsp;&nbsp;
 				<a title="{tr}Edit{/tr}" class="link" href="tiki-admin_content_templates.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;templateId={$channels[user].templateId}">
 					{icon _id='page_edit'}
 				</a> 
+				&nbsp;
 				<a title="{tr}Delete{/tr}" class="link" href="tiki-admin_content_templates.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].templateId}" >
 					{icon _id='cross' alt="{tr}Delete{/tr}"}
 				</a>

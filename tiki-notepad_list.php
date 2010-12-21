@@ -7,6 +7,9 @@
 
 $section = 'mytiki';
 require_once ('tiki-setup.php');
+if ($prefs['feature_ajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
 include_once ('lib/notepad/notepadlib.php');
 include_once ('lib/userfiles/userfileslib.php');
 $access->check_feature('feature_notepad');
@@ -98,5 +101,14 @@ $smarty->assign_by_ref('channels', $channels["data"]);
 include_once ('tiki-section_options.php');
 include_once ('tiki-mytiki_shared.php');
 ask_ticket('notepad-list');
+if ($prefs['feature_ajax'] == "y") {
+	function user_notepad_ajax() {
+		global $ajaxlib, $xajax;
+		$ajaxlib->registerTemplate("tiki-notepad_list.tpl");
+		$ajaxlib->registerFunction("loadComponent");
+		$ajaxlib->processRequests();
+	}
+	user_notepad_ajax();
+}
 $smarty->assign('mid', 'tiki-notepad_list.tpl');
 $smarty->display("tiki.tpl");

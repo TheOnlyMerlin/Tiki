@@ -11,9 +11,7 @@
 		<p>{tr}Plugins can be individually previewed, approved, or rejected from the particular location that contains the plugin{/tr}. {tr}For security, you should review each plugin to ensure it is safe to approve{/tr}.</p>
 	<form method="post" action="">
 {cycle values="even,odd" print=false}
-		
-		{listfilter selectors='#plugins_list tr.odd,#plugins_list tr.even'} 
-		<table class="normal" id="plugins_list">
+		<table class="normal">
 			<tr>
 				<th>{select_all checkbox_names='clear[]'}</th>
 				<th>{tr}Plugin{/tr} </th>
@@ -34,8 +32,8 @@
 				<td>{if $plugin.added_by}{$plugin.added_by|userlink}{else}{tr}Unknown{/tr}{/if}
 				</td>
 				<td>
-					<a href="tiki-plugins.php?approveone={$plugin.fingerprint}">{icon _id='accept' alt="{tr}Approve{/tr}"}</a>
-					<a href="tiki-plugins.php?clearone={$plugin.fingerprint}">{icon _id='delete' alt="{tr}Clear{/tr}"}</a>
+					<a href="tiki-plugins.php?approveone={$plugin.fingerprint}">{icon _id='accept' alt='{tr}Approve{/tr}'}</a>
+					<a href="tiki-plugins.php?clearone={$plugin.fingerprint}">{icon _id='delete' alt='{tr}Clear{/tr}'}</a>
 {if $plugin.last_objectType eq 'wiki page'}
 {tr 0=$plugin.last_objectId|sefurl:'wiki page' 1=$plugin.last_objectId|escape }<a href="%0#{$plugin.fingerprint}" title="{tr}View this page{/tr}.">{icon _id='page'}</a>{/tr}	
 {/if}	

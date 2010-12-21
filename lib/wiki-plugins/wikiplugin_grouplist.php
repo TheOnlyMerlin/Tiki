@@ -8,39 +8,27 @@
 function wikiplugin_grouplist_info() {
 	return array(
 		'name' => tra('Group List'),
-		'documentation' => 'PluginGroupList',
-		'description' => tra('List all groups or just groups that include a certain group'),
-		'icon' => 'pics/icons/group.png',
+		'description' => tra('List of groups including a group'),
 		'params' => array(
 			'group' => array(
 				'required' => false,
 				'name' => tra('Group Name'),
-				'description' => tra('If empty, all groups will be listed. Entering a group name will cause only groups that include this group to be listed.'),
+				'description' => tra('Group Name'),
 				'filter' => 'groupname',
 			),
 			'linkhome' => array(
 				'required' => false,
-				'name' => tra('Group Home Page'),
-				'description' => tra('Link the group name to the group home page, if there is one (not linked by default)'),
+				'name' => tra('Link to the group home page'),
+				'description' => 'y | n',
 				'default' => 'n',
 				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'recur' => array(
 				'required' => false,
-				'name' => tra('Recursively List Groups'),
-				'description' => tra('Recurse on the included groups (default is not to recurse)'),
+				'name' => tra('Recurse on the included groups'),
+				'description' => 'y | n',
 				'default' => 'n',
 				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 		),
 	);

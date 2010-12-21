@@ -13,37 +13,29 @@ function wikiplugin_ftp_help() {
 
 function wikiplugin_ftp_info() {
 	return array(
-		'name' => tra('FTP'),
+		'name' => tra('ftp'),
 		'documentation' => 'PluginFTP',
-		'description' => tra('Create a button for downloading a file from an FTP server'),
+		'description' => tra('Download box for a file on ftp server.'),
 		'prefs' => array( 'wikiplugin_ftp' ),
 		'validate' => 'all',
 		'body' => tra('file name'),
-		'icon' => 'pics/icons/application_put.png',
 		'params' => array(
 			'server' => array(
 				'required' => true,
-				'name' => tra('Server Name'),
-				'description' => tra('Name of the server where the FTP account is housed. Example: ') . 'ftp.myserver.com',
-				'default' => ''
+				'name' => tra('Ftp Server Name'),
+				'description' => 'ftp.myserver.com'
 			),
 			'user' => array(
 				'required' => true,
-				'name' => tra('User Name'),
-				'description' => tra('User name needed to access the FTP account'),
-				'default' => ''
+				'name' => tra('Ftp User name')
 			),
 			'password' =>array(
 				'required' => true,
-				'name' => tra('Password'),
-				'description' => tra('Password needed to access the FTP account'),
-				'default' => ''
+				'name' => tra('Ftp password')
 			),
 			'title' =>array(
 				'required' => false,
-				'name' => tra('Download Button Label'),
-				'description' => tra('Label for the FTP download button'),
-				'default' => ''
+				'name' => tra('Download button label')
 			)
 		),
 	);

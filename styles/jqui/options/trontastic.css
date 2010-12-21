@@ -1,7 +1,7 @@
 /* $Id$
 	Jqui theme (jqui.css), Trontastic theme option (trontastic.css)
 	for Tikiwiki CMS/Groupware.
-	Visit http://themes.tiki.org for more information.
+	Visit http://themes.tikiwiki.org for more information.
 */
 
 html {
@@ -24,19 +24,19 @@ a:hover {
 	text-decoration: none;
 }
 
-.button a,
-.button a:visited,
+span.button a,
+span.button a:visited,
 button,
 input[type="reset"],
 input[type="submit"],
-.button input,
+span.button input,
 .calbuttonBox a {
 	border: 1px solid #1b1613;
 	color: #b8ec79;
 	background: #0a0a0a url(../../../lib/jquery/jquery-ui/themes/trontastic/images/ui-bg_glass_40_0a0a0a_1x400.png) 50% 50% repeat-x;
 }
 
-.button a:hover,
+span.button a:hover,
 .button a:hover,
 button:hover,
 input[type="reset"]:hover,
@@ -52,7 +52,7 @@ input[type="text"],
 input[type="password"],
 select,
 textarea,
-body.cke_show_borders {
+body.wikitext {
 	background: #c6e99c;
 	color: #000;
 }
@@ -78,7 +78,7 @@ body.cke_show_borders {
 
 #footer a:link,
 #footer a:visited  {
-	color: #B8EC79;
+	color: #B8EC79;	
 }
 
 .cssmenu_horiz a,
@@ -91,7 +91,7 @@ body.cke_show_borders {
 .cssmenu_vert li ul li,
 #secondary_site_menu .cssmenu_horiz li:hover ul li,
 #secondary_site_menu .cssmenu_horiz li.sfHover ul li {
-	background: #4a4a4a;
+	background:	#4a4a4a;
 	border: none;
 }
 
@@ -149,7 +149,7 @@ body.cke_show_borders {
 }
 
 .box legend {
-	color: #f3fce8;
+	color: #f3fce8;	
 }
 
 .cbox a,
@@ -158,20 +158,11 @@ body.cke_show_borders {
 }
 
 .cbox-title,
-h3.box-title,
-th,
-td.heading,
-tr.diffheader {
+h3.box-title {
 	border: 1px solid #000;
 	background: #9fda58 url(../../../lib/jquery/jquery-ui/themes/trontastic/images/ui-bg_gloss-wave_85_9fda58_500x100.png) 50% 50% repeat-x; color: #222222;
 	font-weight: bold;
 	color: #222;
-}
-
-th,
-td.heading,
-tr.diffheader {
-	border: none;
 }
 
 .box-data a:link,
@@ -181,7 +172,7 @@ tr.diffheader {
 .postbody a:link,
 .postbody a:visited,
 .headers a.link  {
-	color: #B8EC79;
+	color: #B8EC79;	
 }
 
 .post .postbody-title .title a.link {
@@ -190,7 +181,7 @@ tr.diffheader {
 
 .box-data a:hover,
 .wikitext a:hover  {
-	color: #9fda58;
+	color: #9fda58;	
 }
 
 .rbox-title, 
@@ -204,7 +195,7 @@ tr.diffheader {
 	border-bottom: none !important;
 }
 	
-.highlight, .highlight a,
+.highlight, span.highlight a,
 .warning .rbox-title,
 .warning .rbox-data {
 	background: #F1FBE5 url(../../../lib/jquery/jquery-ui/themes/trontastic/images/ui-bg_gloss-wave_95_f6ecd5_500x100.png) 50% 50% repeat-x;
@@ -212,7 +203,7 @@ tr.diffheader {
 	color:#74736D;
 }
 
-.normal {
+table.normal {
 	border: 1px solid #95da58;
 }
 
@@ -269,7 +260,7 @@ li.even {
 }
 
 .postbody-title {
-/* border: 1px solid #aaaaaa; */
+/*	border: 1px solid #aaaaaa; */
 	background:#9fda58 url(../../../lib/jquery/jquery-ui/themes/trontastic/images/ui-bg_gloss-wave_85_9fda58_500x100.png) 50% 50% repeat-x;
 	color: #222;
 }
@@ -285,7 +276,7 @@ li.even {
 .caleven a:visited,
 .calodd a:link,
 .calodd a:visited  {
-	color: #B8EC79;
+	color: #B8EC79;	
 }
 
 body.tiki_admin .simplebox,

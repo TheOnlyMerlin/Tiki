@@ -52,7 +52,7 @@ if (!isset($_REQUEST["fieldId"])) {
 }
 $smarty->assign('fieldId', $_REQUEST["fieldId"]);
 if (!isset($_REQUEST['position'])) {
-	$_REQUEST['position'] = $trklib->get_last_position($_REQUEST["trackerId"]) + 10;
+	$_REQUEST['position'] = $trklib->get_last_position($_REQUEST["trackerId"]) + 1;
 }
 if (!isset($_REQUEST['options'])) {
 	$_REQUEST['options'] = '';
@@ -63,7 +63,7 @@ if ($_REQUEST["fieldId"]) {
 	$info = array();
 	$info["name"] = '';
 	$info["options"] = '';
-	$info["position"] = $trklib->get_last_position($_REQUEST["trackerId"]) + 10;
+	$info["position"] = $trklib->get_last_position($_REQUEST["trackerId"]) + 1;
 	$info["type"] = 't';
 	$info["isMain"] = 'n';
 	$info["isMultilingual"] = 'n';
@@ -78,7 +78,6 @@ if ($_REQUEST["fieldId"]) {
 	$info['itemChoices'] = array();
 	$info['visibleBy'] = array();
 	$info['editableBy'] = array();
-	$info['validation'] = $info['validationParam'] = $info['validationMessage'] = '';
 }
 if (isset($_REQUEST['up']) && $_REQUEST['fieldId']) {
 	if (empty($_REQUEST['delta'])) $_REQUEST['delta'] = 1;
@@ -102,9 +101,6 @@ $smarty->assign('errorMsg', $info['errorMsg']);
 $smarty->assign_by_ref('itemChoices', $info['itemChoices']);
 $smarty->assign_by_ref('visibleBy', $info['visibleBy']);
 $smarty->assign_by_ref('editableBy', $info['editableBy']);
-$smarty->assign('validation', $info['validation']);
-$smarty->assign('validationParam', $info['validationParam']);
-$smarty->assign('validationMessage', $info['validationMessage']);
 if (isset($_REQUEST["remove"]) and ($tracker_info['useRatings'] != 'y' or $info['name'] != 'Rating')) {
 	$access->check_authenticity();
 	$trklib->remove_tracker_field($_REQUEST["remove"], $_REQUEST["trackerId"]);
@@ -185,7 +181,7 @@ function replace_tracker_from_request($tracker_info) {
 		$_REQUEST['itemChoices'] = '';
 	}
 	//$_REQUEST["name"] = str_replace(' ', '_', $_REQUEST["name"]);
-	$trklib->replace_tracker_field($_REQUEST["trackerId"], $_REQUEST["fieldId"], $_REQUEST["name"], $_REQUEST["type"], $isMain, $isSearchable, $isTblVisible, $isPublic, $isHidden, $isMandatory, $_REQUEST["position"], $_REQUEST["options"], $_REQUEST['description'], $isMultilingual, $_REQUEST["itemChoices"], $_REQUEST['errorMsg'], $_REQUEST['visibleBy'], $_REQUEST['editableBy'], $_REQUEST['descriptionIsParsed'], $_REQUEST['validation'], $_REQUEST['validationParam'], $_REQUEST['validationMessage']);
+	$trklib->replace_tracker_field($_REQUEST["trackerId"], $_REQUEST["fieldId"], $_REQUEST["name"], $_REQUEST["type"], $isMain, $isSearchable, $isTblVisible, $isPublic, $isHidden, $isMandatory, $_REQUEST["position"], $_REQUEST["options"], $_REQUEST['description'], $isMultilingual, $_REQUEST["itemChoices"], $_REQUEST['errorMsg'], $_REQUEST['visibleBy'], $_REQUEST['editableBy'], $_REQUEST['descriptionIsParsed']);
 	$logslib->add_log('admintrackerfields', 'changed or created tracker field ' . $_REQUEST["name"] . ' in tracker ' . $tracker_info['name']);
 	$smarty->assign('fieldId', 0);
 	$smarty->assign('name', '');
@@ -204,10 +200,7 @@ function replace_tracker_from_request($tracker_info) {
 	$smarty->assign('itemChoices', '');
 	$smarty->assign('visibleBy', array());
 	$smarty->assign('editableBy', array());
-	$smarty->assign('position', $trklib->get_last_position($_REQUEST["trackerId"]) + 10);
-	$smarty->assign('validation', '');
-	$smarty->assign('validationParam', '');
-	$smarty->assign('validationMessage', '');
+	$smarty->assign('position', $trklib->get_last_position($_REQUEST["trackerId"]) + 1);
 }
 if (isset($_REQUEST['refresh']) && isset($_REQUEST['exportAll'])) {
 	$smarty->assign('export_all', 'y');
@@ -230,7 +223,6 @@ if (isset($_REQUEST["save"])) {
 	} else {
 		replace_tracker_from_request($tracker_info);
 	}
-	$cookietab = 1;
 }
 if (!isset($_REQUEST["sort_mode"])) {
 	$sort_mode = 'position_asc';
@@ -252,13 +244,7 @@ $smarty->assign('find', $find);
 if (isset($_REQUEST["max"])) {
 	$max = $_REQUEST["max"];
 } else {
-	$channels = $trklib->list_tracker_fields($_REQUEST["trackerId"], 0, 0);
-	if ($channels['cant'] > $maxRecords && $channels['cant'] < $maxRecords * 2) {
-		// if there's a page and a half of fields show them all
-		$max = $channels['cant'];
-	} else {
-		$max = $maxRecords;
-	}
+	$max = $maxRecords;
 }
 $smarty->assign('max', $max);
 $smarty->assign_by_ref('sort_mode', $sort_mode);
@@ -281,11 +267,6 @@ $smarty->assign_by_ref('cant', $channels['cant']);
 $allGroups = $userlib->list_all_groups();
 $smarty->assign_by_ref('allGroups', $allGroups);
 $smarty->assign_by_ref('channels', $channels["data"]);
-
-global $validatorslib;
-require_once('lib/validatorslib.php');
-$smarty->assign('validators', $validatorslib->available); 
-
 ask_ticket('admin-tracker-fields');
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');

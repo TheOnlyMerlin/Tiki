@@ -12,17 +12,14 @@ require_once("lib/tikilib.php");
 require_once("lib/categories/categlib.php");
 require_once("lib/structures/structlib.php");
 
-function tra($s)
-{ 
-	return $s; 
-}
+function tra($s) { return $s; }
 
 $tikilib = new TikiLib;
 
 $categId = '113';
 $structId = '160';
 
-$pages = explode("\n",`grep -r '{\$helpurl}' templates | sed -e "s/^.*helpurl}\([^\"']*\)[\"'].*$/\\1/" | sort | uniq`);
+$pages = split("\n",`grep -r '{\$helpurl}' templates | sed -e "s/^.*helpurl}\([^\"']*\)[\"'].*$/\\1/" | sort | uniq`);
 $afterid = NULL;
 foreach ($pages as $p) {
 	if ($p) {

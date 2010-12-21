@@ -31,7 +31,7 @@
 
 
 	{if $files[changes].perms.tiki_p_create_file_galleries eq 'y'}
-		{self_link _icon='cross' _menu_text=$menu_text _menu_icon=$menu_icon removegal=$files[changes].id}{tr}Delete{/tr}{/self_link}
+		{self_link _icon='cross' _menu_text=$menu_text _menu_icon=$menu_icon _ajax='n' removegal=$files[changes].id}{tr}Delete{/tr}{/self_link}
 	{/if}
 {else}
 	{if $prefs.javascript_enabled eq 'y'}
@@ -39,7 +39,7 @@
 			{* This form tag is needed when placed in a popup box through the popup function.
 			If placed in a column, there is already a form tag around the whole table *}
 
-			<form class="upform" name="form{$files[changes].fileId}" method="post" action="tiki-list_file_gallery.php?galleryId={$gal_info.galleryId}{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}{if $prefs.fgal_asynchronous_indexing eq 'y'}&amp;fast{/if}" enctype="multipart/form-data">
+			<form class="upform" name="form{$files[changes].fileId}" method="post" action="{$smarty.server.PHP_SELF}?galleryId={$gal_info.galleryId}{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}{if $prefs.fgal_asynchronous_indexing eq 'y'}&amp;fast{/if}" enctype="multipart/form-data">
 
 		{/if}
 		{if $menu_text neq 'y'}
@@ -62,13 +62,7 @@
 		{else}
 			<a href="{$files[changes].id|sefurl:file}">
 		{/if}
-		{if $prefs.feature_file_galleries_save_draft eq 'y' and $files[changes].nbDraft gt 0}
-			{assign var=download_action_title value="{tr}Download current version{/tr}"}
-		{else}
-			{assign var=download_action_title value="{tr}Download{/tr}"}
-		{/if}
-
-		{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='disk' alt="$download_action_title"}</a>
+		{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='disk' alt="{tr}Download{/tr}"}</a> 
 	{/if}
 
 	{if $gal_info.archives gt -1}
@@ -83,22 +77,11 @@
 		{assign var=replace_action_title value="{tr}Replace{/tr}"}
 	{/if}
 
-	{if $prefs.feature_file_galleries_save_draft eq 'y'}
-		{if $files[changes].nbDraft gt 0}
-			{assign var=replace_action_title value="{tr}Replace your draft{/tr}"}
-		{else}
-			{assign var=replace_action_title value="{tr}Upload your draft{/tr}"}
-		{/if}
-	{/if}
 	{* can edit if I am admin or the owner of the file or the locker of the file or if I have the perm to edit file on this gallery *}
 	{if $files[changes].perms.tiki_p_admin_file_galleries eq 'y'
 		or ($files[changes].lockedby and $files[changes].lockedby eq $user)
 		or (!$files[changes].lockedby and (($user and $user eq $files[changes].user) or $files[changes].perms.tiki_p_edit_gallery_file eq 'y')) }
 		{if $files[changes].archiveId == 0}
-			{if $prefs.feature_file_galleries_save_draft eq 'y' and $files[changes].nbDraft gt 0}
-				{self_link _icon='accept' _menu_text=$menu_text _menu_icon=$menu_icon validate=$files[changes].fileId galleryId=$files[changes].galleryId}{tr}Validate your draft{/tr}{/self_link}
-				{self_link _icon='cross' _menu_text=$menu_text _menu_icon=$menu_icon draft=remove remove=$files[changes].fileId galleryId=$files[changes].galleryId}{tr}Delete your draft{/tr}{/self_link}
-			{/if}
 
 			{if $files[changes].perms.tiki_p_admin_file_galleries eq 'y' or !$files[changes].locked or ($files[changes].locked and $files[changes].lockedby eq $user) or $gal_info.lockable ne 'y'}
 			{if $prefs.javascript_enabled eq 'y'}
@@ -148,24 +131,16 @@
 
 	{if $prefs.feature_webdav eq 'y'}
 		{assign var=virtual_path value=$files[changes].fileId|virtual_path}
-
-		{if $prefs.feature_file_galleries_save_draft eq 'y'}
-			{self_link _icon="tree_folder_open" _menu_text=$menu_text _menu_icon=$menu_icon _script="javascript:open_webdav('$virtual_path')" _noauto="y" _ajax="n"}{tr}Open your draft in WebDAV{/tr}{/self_link}
-		{else}
-			{self_link _icon="tree_folder_open" _menu_text=$menu_text _menu_icon=$menu_icon _script="javascript:open_webdav('$virtual_path')" _noauto="y" _ajax="n"}{tr}Open in WebDAV{/tr}{/self_link}
-		{/if}
+		{self_link _icon="tree_folder_open" _menu_text=$menu_text _menu_icon=$menu_icon _script="javascript:open_webdav('$virtual_path')" _noauto="y" _ajax="n"}{tr}Open in WebDAV{/tr}{/self_link}
 	{/if}
 
-	{if $prefs.feature_share eq 'y' and $tiki_p_share eq 'y'}
-		<a href="tiki-share.php?url={$tikiroot}{$files[changes].id|sefurl:file|escape:'url'}">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='share_link' alt="{tr}Share a link to this file{/tr}"}</a>
-	{/if}
 	{if $prefs.feature_tell_a_friend eq 'y' and $tiki_p_tell_a_friend eq 'y'}
 		<a href="tiki-tell_a_friend.php?url={$tikiroot}{$files[changes].id|sefurl:file|escape:'url'}">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='email_go' alt="{tr}Email a link to this file{/tr}"}</a>
 	{/if}
 
 	{if $files[changes].perms.tiki_p_admin_file_galleries eq 'y'
-		or (!$files[changes].lockedby and (($user and $user eq $files[changes].user) or ($files[changes].perms.tiki_p_edit_gallery_file eq 'y' and $files[changes].perms.tiki_p_remove_file eq 'y'))) }
-			{self_link _icon='cross' _menu_text=$menu_text _menu_icon=$menu_icon remove=$files[changes].fileId galleryId=$files[changes].galleryId}{tr}Delete{/tr}{/self_link}
+		or (!$files[changes].lockedby and (($user and $user eq $files[changes].user) or $files[changes].perms.tiki_p_edit_gallery_file eq 'y')) }
+			{self_link _icon='cross' _menu_text=$menu_text _menu_icon=$menu_icon _ajax='n' remove=$files[changes].fileId galleryId=$files[changes].galleryId}{tr}Delete{/tr}{/self_link}
 	{/if}
 
 	{if $prefs.javascript_enabled eq 'y'}

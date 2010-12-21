@@ -27,7 +27,7 @@ function capLock(e){
 		  {/if}
           <input type="text" name="username" id="login-switchuser" size="{if empty($module_params.input_size)}15{else}{$module_params.input_size}{/if}" />
           <div style="text-align: center"><button type="submit" name="actsu">{tr}Switch{/tr}</button></div>
-		  {jq}$("#login-switchuser").tiki("autocomplete", "username"){/jq}
+		  {jq}$jq("#login-switchuser").tiki("autocomplete", "username"){/jq}
          </fieldset>
         </form>
       {/if}
@@ -89,16 +89,9 @@ function capLock(e){
 	 {if !empty($urllogin)}<input type="hidden" name="url" value="{$urllogin|escape}" />{/if}
         <fieldset>
           <legend>{tr}Log in as{/tr}&hellip;</legend>
-		  {if !empty($error_login)}
-			{remarksbox type='errors' title="{tr}Error{/tr}"}
-				{if $error_login == -5 {*USER_NOT_FOUND (define does not work on old php)*}}{tr}Invalid username{/tr}
-				{elseif $error_login == -3 {*PASSWORD_INCORRECT*}}{tr}Invalid password{/tr}
-				{else}{$error_login|escape}{/if}
-			{/remarksbox}
-		  {/if}
             <div><label for="login-user">{if $prefs.login_is_email eq 'y'}{tr}Email{/tr}{else}{tr}Username{/tr}{/if}:</label><br />
 		{if $loginuser eq ''}
-              <input type="text" name="user" id="login-user" size="{if empty($module_params.input_size)}15{else}{$module_params.input_size}{/if}" {if !empty($error_login)} value="{$error_user|escape}"{/if} />
+              <input type="text" name="user" id="login-user" size="{if empty($module_params.input_size)}15{else}{$module_params.input_size}{/if}" />
 	  <script type="text/javascript">document.getElementById('login-user').focus();</script>
 		{else}
 		      <input type="hidden" name="user" id="login-user" value="{$loginuser}" /><b>{$loginuser}</b>
@@ -162,17 +155,19 @@ function capLock(e){
 			{/if}
       </form>
     {/if}
-	{if $prefs.auth_method eq 'openid' and !$user and (!isset($registration) || $registration neq 'y')}
+	{if $prefs.auth_method eq 'openid' and !$user and $registration eq 'n'}
 		<form method="get" action="tiki-login_openid.php">
 			<fieldset>
 				<legend>{tr}OpenID Log in{/tr}</legend>
 				<input class="openid_url" type="text" name="openid_url"/>
 				<input type="submit" value="{tr}Go{/tr}"/>
-				<a class="linkmodule tikihelp" target="_blank" href="http://doc.tiki.org/OpenID">{tr}What is OpenID?{/tr}</a>
+				<a class="linkmodule tikihelp" target="_blank" href="http://doc.tikiwiki.org/OpenID">{tr}What is OpenID?{/tr}</a>
+
+				{*<div>
+					<input type="checkbox" name="action" value="force" id="openid_force"/>
+					<label for="openid_force">{tr}Force assign of new OpenID user link{/tr}</label>
+				</div>*}
 			</fieldset>
 		</form>
-	{/if}
-	{if $prefs.socialnetworks_facebook_login eq 'y'}
-		<div style="text-align: center"><a href="tiki-socialnetworks.php?request_facebook=true"><img src="http://developers.facebook.com/images/devsite/login-button.png" /></a></div>
 	{/if}
 {/tikimodule}

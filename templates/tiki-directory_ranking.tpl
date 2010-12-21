@@ -16,17 +16,17 @@
   </tr>
   {cycle values="odd,even" print=false}
   {section name=user loop=$items}
-  <tr class="{cycle advance=false}">
-    <td><a class="link" href="tiki-directory_redirect.php?siteId={$items[user].siteId}" {if $prefs.directory_open_links eq 'n'}target='_blank'{/if}>{$items[user].name}</a></td>
-    <td>{$items[user].url}</td>
+  <tr>
+    <td class="{cycle advance=false}"><a class="link" href="tiki-directory_redirect.php?siteId={$items[user].siteId}" {if $prefs.directory_open_links eq 'n'}target='_blank'{/if}>{$items[user].name}</a></td>
+    <td class="{cycle advance=false}">{$items[user].url}</td>
     {if $prefs.directory_country_flag eq 'y'}
-    <td><img src='img/flags/{$items[user].country}.gif' alt='{$items[user].country}'/></td>
+    <td class="{cycle advance=false}"><img src='img/flags/{$items[user].country}.gif' alt='{$items[user].country}'/></td>
     {/if}
-    <td>{$items[user].hits}</td>
+    <td class="{cycle advance=false}">{$items[user].hits}</td>
   </tr>
-  <tr class="{cycle}">
-    <td>&nbsp;</td>
-    <td colspan="5"><i>{tr}Directory Categories{/tr}:{assign var=fsfs value=1}
+  <tr>
+    <td class="{cycle advance=false}">&nbsp;</td>
+    <td class="{cycle}" colspan="5"><i>{tr}Directory Categories{/tr}:{assign var=fsfs value=1}
       {section name=ii loop=$items[user].cats}
       {if $fsfs}{assign var=fsfs value=0}{else}, {/if}
       {$items[user].cats[ii].path}

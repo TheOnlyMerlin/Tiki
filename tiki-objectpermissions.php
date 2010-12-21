@@ -6,6 +6,7 @@
 // $Id$
 
 include_once ("tiki-setup.php");
+error_reporting(E_ALL);
 if (!empty($_REQUEST['objectType']) && $_REQUEST['objectType'] != 'global') {
 	if (!isset($_REQUEST['objectName']) || empty($_REQUEST['objectId'])) {
 		$smarty->assign('msg', tra("Not enough information to display this page"));
@@ -19,7 +20,6 @@ if (empty($_REQUEST['objectType'])) {
 	 $_REQUEST['objectId'] = '';
 }
 
-$smarty->assign('headtitle',tra('Object Permissions'));
 
 $auto_query_args = array(
 	'referer',
@@ -53,7 +53,7 @@ if ($_REQUEST['objectType'] == 'wiki page') {
 }
 if (!($tiki_p_admin_objects == 'y' || (isset($$perm) && $$perm == 'y') || (isset($special_perm) && $special_perm == 'y'))) {
 	$smarty->assign('errortype', 401);
-	$smarty->assign('msg', tra("You do not have permission to assign permissions for this object"));
+	$smarty->assign('msg', tra("Permission denied you cannot assign permissions for this object"));
 	$smarty->display("error.tpl");
 	die;
 }
@@ -82,8 +82,8 @@ if( $_REQUEST['objectType'] == 'wiki' ) {
 	$_REQUEST['objectType'] = 'wiki page';
 }
 
-require_once 'lib/core/Perms/Applier.php';
-require_once 'lib/core/Perms/Reflection/Factory.php';
+require_once 'lib/core/lib/Perms/Applier.php';
+require_once 'lib/core/lib/Perms/Reflection/Factory.php';
 
 $objectFactory = Perms_Reflection_Factory::getDefaultFactory();
 $currentObject = $objectFactory->get( $_REQUEST['objectType'], $_REQUEST['objectId'] );
@@ -187,15 +187,13 @@ if (isset($_REQUEST['group'])) {
 // Process the form to assign a new permission to this object
 if (isset($_REQUEST['assign']) && !isset($_REQUEST['quick_perms'])) {
 	check_ticket('object-perms');
-	if (isset($_REQUEST['perm']) && !empty($_REQUEST['perm'])) {
-		foreach($_REQUEST['perm'] as $group => $gperms) {
-			foreach($gperms as $perm) {
-				if ($tiki_p_admin_objects != 'y' && !$userlib->user_has_permission($user, $perm)) {
-					$smarty->assign('errortype', 401);
-					$smarty->assign('msg', tra('Permission denied'));
-					$smarty->display('error.tpl');
-					die;
-				}
+	foreach($_REQUEST['perm'] as $group => $gperms) {
+		foreach($gperms as $perm) {
+			if ($tiki_p_admin_objects != 'y' && !$userlib->user_has_permission($user, $perm)) {
+				$smarty->assign('errortype', 401);
+				$smarty->assign('msg', tra('Permission denied'));
+				$smarty->display('error.tpl');
+				die;
 			}
 		}
 	}
@@ -208,7 +206,8 @@ if (isset($_REQUEST['assign']) && !isset($_REQUEST['quick_perms'])) {
 }
 
 if (isset($_REQUEST['remove'])) {
-	$access->check_authenticity(tra('Are you sure you want to remove the direct permissions from this object?'));
+	check_ticket('object-perms');
+	
 	$newPermissions = new Perms_Reflection_PermissionSet;
 	$permissionApplier->apply( $newPermissions );
 
@@ -248,26 +247,11 @@ if (!empty($_SESSION['perms_clipboard'])) {
 
 $displayedPermissions = get_displayed_permissions();
 
-if (isset($_REQUEST['used_groups'])) {
-	$group_filter = array();
-	foreach ( $displayedPermissions->getPermissionArray() as $group => $perms ) {
-		$group_filter[] = $group;
-		$group_filter = array_merge($group_filter, $userlib->get_including_groups($group, 'y'));
-	}
-	if (empty($group_filter)) {
-		$group_filter = array('Anonymous', 'Registered', 'Admins');
-	}
-	foreach ( $group_filter as $i=>$group) {
-		$ginfo = $userlib->get_group_info($group);
-		$group_filter[$i] = $ginfo['id'];
-	}
-	$cookietab = 1;
-}
 
 //Quickperms {{{
 //Test to map permissions of ile galleries into read write admin admin levels.
 if( $prefs['feature_quick_object_perms'] == 'y' ) {
-	require_once 'lib/core/Perms/Reflection/Quick.php';
+	require_once 'lib/core/lib/Perms/Reflection/Quick.php';
 
 	$qperms = quickperms_get_data();
 	$smarty->assign('quickperms', $qperms);
@@ -385,26 +369,20 @@ foreach ($candidates['data'] as $perm) {
 		$perm[$groupName . '_hasPerm'] = $p;
 		$perm[$groupIndices[$index]] = $p;
 	}
-	
-	// work out if specific feature is on
-	$pref_feature = false;
-	if (isset($perm['feature_check'])) {
-		foreach(explode(',', $perm['feature_check']) as $fchk) {
-			if ($prefs[$fchk] == 'y') {
-				$pref_feature = true;
-				break;
-			}
-		}
-	} else {	// if no feature check you can't turn them off (?)
-		$pref_feature = true;
-	}
 
-	if (($feature_filter === false || in_array( $perm['type'], $feature_filter)) && ($restrictions === false || in_array( $perm['permName'], $restrictions )) && $pref_feature) {
+	if (($feature_filter === false || in_array( $perm['type'], $feature_filter)) && ($restrictions === false || in_array( $perm['permName'], $restrictions ))) {
 		$masterPerms[] = $perm;
 	}
 	if ($show_disabled_features != 'y' && !in_array($perm['type'], $features_enabled)) {
 		// perms can be dependant on multiple features
-		if ($pref_feature) {
+		if (isset($perm['feature_check'])) {
+			foreach(explode(',', $perm['feature_check']) as $fchk) {
+				if ($prefs[$fchk] == 'y') {
+					$features_enabled[] = $perm['type'];
+					break;
+				}
+			}
+		} else {	// if no feature check you can't turn them off (?)
 			$features_enabled[] = $perm['type'];
 		}
 	}
@@ -423,7 +401,7 @@ $smarty->assign_by_ref('perms', $masterPerms);
 $smarty->assign_by_ref('features', $features);
 
 // Create JS to set up checkboxs (showing group inheritance)
-$js = '$("#perms_busy").show();
+$js = '$jq("#perms_busy").show();
 ';
 $i = 0;
 foreach( $groupNames as $groupName ) {
@@ -437,7 +415,7 @@ foreach( $groupNames as $groupName ) {
 	}
 
 	$js .= <<< JS
-\$('input[name="perm[$groupName][]"]').eachAsync({
+\$jq('input[name="perm[$groupName][]"]').eachAsync({
 			delay: 10,
 			bulk: 0,
 JS;
@@ -445,7 +423,7 @@ JS;
 		$js .= <<< JS
 
 			end: function () {
-				\$('#perms_busy').hide();
+				\$jq('#perms_busy').hide();
 			},
 JS;
 	}
@@ -453,22 +431,22 @@ JS;
 
 			loop: function() { 		// each one of this group
 
-	if (\$(this).attr('checked')) {
-		\$('input[value="'+\$(this).val()+'"]').					// other checkboxes of same value (perm)
+	if (\$jq(this).attr('checked')) {
+		\$jq('input[value="'+\$jq(this).val()+'"]').					// other checkboxes of same value (perm)
 			filter('$beneficiaries').									// which inherit from this
-			attr('checked',\$(this).attr('checked')).					// check and disable
-			attr('disabled',\$(this).attr('checked') ? 'disabled' : '');
+			attr('checked',\$jq(this).attr('checked')).					// check and disable
+			attr('disabled',\$jq(this).attr('checked') ? 'disabled' : '');
 	}
 		
-	\$(this).change( function() {									// bind click event
+	\$jq(this).change( function() {									// bind click event
 	
-		if (\$(this).attr('checked')) {
-			\$('input[value="'+\$(this).val()+'"]').			// same...
+		if (\$jq(this).attr('checked')) {
+			\$jq('input[value="'+\$jq(this).val()+'"]').			// same...
 				filter('$beneficiaries').
 				attr('checked','checked').							// check?
 				attr('disabled','disabled');						// disable
 		} else {
-			\$('input[value="'+\$(this).val()+'"]').			// same...
+			\$jq('input[value="'+\$jq(this).val()+'"]').			// same...
 				filter('$beneficiaries').
 				attr('checked','').									// check?
 				attr('disabled','');								// disable
@@ -483,8 +461,8 @@ JS;
 
 if (!empty($_REQUEST['textFilter'])) {
 	$js .= '
-$("#treetable_1_filter").val("'.$_REQUEST['textFilter'].'");
-setTimeout(function(){$("#treetable_1_filter").keypress();}, 500);';
+$jq("#treetable_1_filter").val("'.$_REQUEST['textFilter'].'");
+setTimeout(function(){$jq("#treetable_1_filter").keyup();}, 500);';
 }
 
 $headerlib->add_jq_onready($js);
@@ -511,12 +489,9 @@ function get_assign_permissions() {
 	// get existing perms
 	$currentObject = $objectFactory->get( $_REQUEST['objectType'], $_REQUEST['objectId'] );
 	$currentPermissions = $currentObject->getDirectPermissions();
-	if (count($currentPermissions->getPermissionArray()) === 0) {
-		$currentPermissions = $currentObject->getParentPermissions();	// get "default" perms so disabled feature perms don't get removed
-	}
 
 	// set any checked ones
-	if( isset( $_REQUEST['perm'] ) && !empty($_REQUEST['perm'])) {
+	if( isset( $_REQUEST['perm'] ) ) {
 		foreach( $_REQUEST['perm'] as $group => $gperms ) {
 			foreach( $gperms as $perm ) {
 				$currentPermissions->add( $group, $perm );
@@ -528,7 +503,7 @@ function get_assign_permissions() {
 	if( isset( $_REQUEST['old_perm'] ) ) {
 		foreach( $_REQUEST['old_perm'] as $group => $gperms ) {
 			foreach( $gperms as $perm ) {
-				if (!isset($_REQUEST['perm'][$group]) || !in_array($perm, $_REQUEST['perm'][$group])) {
+				if (!in_array($perm, $_REQUEST['perm'][$group])) {
 					$currentPermissions->remove( $group, $perm );
 				}
 			}
@@ -560,7 +535,6 @@ function quickperms_get_filegal() {
 				'tiki_p_edit_gallery_file' => 'tiki_p_edit_gallery_file',
 				'tiki_p_list_file_galleries' => 'tiki_p_list_file_galleries',
 				'tiki_p_upload_files' => 'tiki_p_upload_files',
-				'tiki_p_remove_files' => 'tiki_p_remove_files',
 				'tiki_p_view_fgal_explorer' => 'tiki_p_view_fgal_explorer',
 				'tiki_p_view_fgal_path' => 'tiki_p_view_fgal_path',
 				'tiki_p_view_file_gallery' => 'tiki_p_view_file_gallery',
@@ -576,7 +550,6 @@ function quickperms_get_filegal() {
 				'tiki_p_edit_gallery_file' => 'tiki_p_edit_gallery_file',
 				'tiki_p_list_file_galleries' => 'tiki_p_list_file_galleries',
 				'tiki_p_upload_files' => 'tiki_p_upload_files',
-				'tiki_p_remove_files' => 'tiki_p_remove_files',
 				'tiki_p_view_fgal_explorer' => 'tiki_p_view_fgal_explorer',
 				'tiki_p_view_fgal_path' => 'tiki_p_view_fgal_path',
 				'tiki_p_view_file_gallery' => 'tiki_p_view_file_gallery',
@@ -668,12 +641,12 @@ function get_displayed_permissions() {
 
 	$currentObject = $objectFactory->get( $_REQUEST['objectType'], $_REQUEST['objectId'] );
 	$displayedPermissions = $currentObject->getDirectPermissions();
-	$globPerms = $objectFactory->get( 'global', null )->getDirectPermissions();	// global perms
-	
+
 	$comparator = new Perms_Reflection_PermissionComparator( $displayedPermissions, new Perms_Reflection_PermissionSet );
 
 	$smarty->assign('permissions_displayed', 'direct');
 	if( $comparator->equal() ) {
+		$globPerms = $objectFactory->get( 'global', null )->getDirectPermissions();	// global perms
 		$parent = $currentObject->getParentPermissions();							// inherited perms (could be category ones)
 		$comparator = new Perms_Reflection_PermissionComparator( $globPerms, $parent );
 		if( $comparator->equal() ) {												// parent == globals
@@ -682,32 +655,6 @@ function get_displayed_permissions() {
 			$smarty->assign('permissions_displayed', 'category');
 		}
 		$displayedPermissions = $parent;
-	} else {																		// direct object perms
-		$comparator = new Perms_Reflection_PermissionComparator( $globPerms, $displayedPermissions );
-		$permissions_added = array(); $permissions_removed = array();
-		foreach($comparator->getAdditions() as $p) {
-			if (!isset($permissions_added[$p[0]])) {
-				$permissions_added[$p[0]] = array();
-			}
-			$permissions_added[$p[0]][] = str_replace('tiki_p_', '', $p[1]);
-		}
-		foreach($comparator->getRemovals() as $p) {
-			if (!isset($permissions_removed[$p[0]])) {
-				$permissions_removed[$p[0]] = array();
-			}
-			$permissions_removed[$p[0]][] = str_replace('tiki_p_', '', $p[1]);
-		}
-		$added = ''; $removed = '';
-		foreach($permissions_added as $gp => $pm) {
-			$added .= '<br />';
-			$added .= '<strong>' . $gp . ':</strong> ' . implode(', ', $pm);
-		}
-		foreach($permissions_removed as $gp => $pm) {
-			$removed .= '<br />';
-			$removed .= '<strong>' . $gp . ':</strong> ' . implode(', ', $pm);
-		}
-		$smarty->assign('permissions_added',   $added);
-		$smarty->assign('permissions_removed', $removed);
 	}
 
 	return $displayedPermissions;

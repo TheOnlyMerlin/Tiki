@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -33,7 +33,6 @@ $selectedId = 0;
 if( isset( $_REQUEST['id'] ) ) {
 	$selectedId = $_REQUEST['id'];
 	$objectperms = Perms::get( array( 'type' => 'perspective', 'object' => $_REQUEST['id'] ) );
-	$cookietab = 3;
 }
 
 if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'remove' && $selectedId && $objectperms->perspective_admin ) {
@@ -41,7 +40,6 @@ if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'remove' && $selected
 
 	$perspectivelib->remove_perspective( $selectedId );
 	$selectedId = 0;
-	$cookietab = '1';
 }
 
 // Edit perspective
@@ -53,7 +51,6 @@ if( isset( $_REQUEST['name'] ) && $selectedId && $objectperms->perspective_edit 
 	$input = $prefslib->getInput( $jitRequest, $preferences, 'perspective' );
 
 	$perspectivelib->replace_preferences( $selectedId, $input );
-	$cookietab = '1';
 }
 
 // Create perspective
@@ -62,7 +59,6 @@ if( isset( $_REQUEST['create'], $_REQUEST['name'] ) && $globalperms->create_pers
 
 	if( ! empty( $name ) ) {
 		$selectedId = $perspectivelib->replace_perspective( null, $name );
-		$cookietab = 3;
 	}
 }
 
@@ -97,16 +93,6 @@ if( $selectedId ) {
 }
 
 $headerlib->add_cssfile('css/admin.css');		// to display the prefs properly
-
-$headtitle = tra('Perspectives');
-$description = tra('Edit Perspectives');
-$crumbs[] = new Breadcrumb($headtitle, $description, '', '', '');
-$headtitle = breadcrumb_buildHeadTitle($crumbs);
-$smarty->assign('headtitle', $headtitle);
-$smarty->assign('trail', $crumbs);
-
-if (!isset($cookietab)) { $cookietab = '1'; }
-setcookie('tab', $cookietab);
 
 $smarty->assign( 'perspectives', $perspectives );
 $smarty->assign( 'mid', 'tiki-edit_perspective.tpl' );

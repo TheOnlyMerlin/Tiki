@@ -1,9 +1,9 @@
-/*
+/* 
  * Coelesce theme (coelesce.css) for TikiWiki CMS/Groupware,
- * original design by Patrick Allard. Distributed under the LGPL license.
+ * original design by Patrick Allard. Distributed under the LGPL license. 
  */
-
-/* Import *lite as the base: */
+ 
+/* Import *lite as the base: */ 
 @import url("lite/lite.css");
 
 /* Then import the default layout properties file: */
@@ -11,7 +11,7 @@
 
 /* And design defaults: */
 @import url("layout/design.css");
-
+ 
 /***** XHTML Elements ******/
 body {
 	text-align: left;
@@ -35,7 +35,7 @@ h1 {
 	font-weight: bold;
 	font-size: 1.8em;
 	margin: 0;
-	line-height: 1;
+	padding-left: 14px;
 }
 
 h2 {
@@ -76,7 +76,7 @@ input,
 textarea,
 option,
 select,
-body.cke_show_borders {
+body.wikitext {
 	background: #ecf5ff;
 	color: #4a6a90;
 	margin: 1px;
@@ -108,16 +108,16 @@ pre {
 }
 
 /* "button" links wrappers */
-.button {
+span.button {
 	padding-left: 0;
 	padding-right: 0;
 }
 
 /* Links in buttons */
-.button a,
-.button a:visited,
+span.button a,
+span.button a:visited,
 button,
-.button input,
+span.button input,
 .calbuttonbox a {
 	color: #449cd0;
 	background: #ededed;
@@ -150,11 +150,11 @@ input[type=submit]:hover {
 	background: white;
 }
 
-.button a:active,
+.button a:active,	
 button:active,
 .button input:active,
-.highlight a:link,
-.highlight a:visited {
+span.highlight a:link,
+span.highlight a:visited {
 	color: #449cd0;
 	background: #dbdbdb;
 	border: 1px solid #527ca6;
@@ -189,7 +189,7 @@ label {
 	color: #82a7c8;
 }
 
-/*** Type 1 (*litecss-based) layout
+/*** Type 1 (*litecss-based) layout 
 	(overrides lite.css) ***/
 #main {
 	text-align: left;
@@ -207,6 +207,11 @@ label {
 	background: white;
 	margin-top: 28px;
 	margin-bottom: 20px;
+}
+
+.fullscreen #col1 {
+	margin-left: 30px !important;
+	margin-right: 30px !important;
 }
 
 #c1c2 #wrapper .marginleft {
@@ -229,7 +234,6 @@ body.tiki_wiki_page #c1c2 #wrapper #col1 > .content {
 }
 
 body.tiki_cms #c1c2 #wrapper #col1 #tiki-center,
-body.tiki_login #c1c2 #wrapper #col1 #tiki-center,
 body.tiki_wiki_page #c1c2 #wrapper #col1 #tiki-center {
 	background: none;
 }
@@ -256,7 +260,6 @@ body.tiki_wiki_page.manage #c1c2 #wrapper #col1 #tiki-center {
 #col3 .content {
 	margin-left: 0;
 	padding-top: 1px;
-	padding-right: 18px;
 }
 
 #footer {
@@ -282,7 +285,8 @@ body.tiki_wiki_page.manage #c1c2 #wrapper #col1 #tiki-center {
 	min-height: 80px;
 }
 
-#sioptions {
+div#sioptions {
+	width: 100%;
 	padding: 0;
 }
 
@@ -290,22 +294,22 @@ body.tiki_wiki_page.manage #c1c2 #wrapper #col1 #tiki-center {
 	margin: 1em;
 }
 
-.floatright {
+div.floatright {
 	margin-right: 8px;
 }
 
-.floatleft {
+div.floatleft {
 	margin-left: 8px;
 }
 
-#sitelogo {
+div#sitelogo {
 	padding: 8px 0 0 0;
 	white-space: nowrap;
 	overflow: hidden;
 }
 
-#sitelogo,
-#sitelogo * {
+div#sitelogo,
+div#sitelogo * {
 	float: left;
 }
 
@@ -328,11 +332,10 @@ body.tiki_wiki_page.manage #c1c2 #wrapper #col1 #tiki-center {
 }
 
 #sitesearchbar {
-	float: right;
-	margin-top: 3px;
-	margin-right: 0;
-	margin-left: auto;
+	float: none;
+	margin: 3px 0 0 0;
 	padding: 0 0 0 15px;
+	height: 33px;
 	min-width: 180px;
 	text-align: left;
 	background: url(coelesce/search_wide.jpg) no-repeat;
@@ -340,9 +343,9 @@ body.tiki_wiki_page.manage #c1c2 #wrapper #col1 #tiki-center {
 }
 
 #sitesearchbar .wrapper {
+	height: 33px;
 	background: url(coelesce/search_wide.jpg) 100% 0 no-repeat;
-	margin-right: 0;
-	margin-left: auto;
+	margin: 0;
 	padding: 0 35px 0 0;
 }
 
@@ -373,20 +376,6 @@ input[name="search"] {
 #siteloginbar {
 	position: relative;
 	font-size: inherit;
-	color: #FFFFFF;
-	margin-top: 20px;
-}
-
-#siteloginbar .register {
-  padding-left: 20px;
-}
-
-#siteloginbar .pass {
-  padding-left: 20px;
-}
-
-#siteloginbar a {
-	color: #FFFFFF;
 }
 
 #sitelocbar {
@@ -453,25 +442,17 @@ input[name="search"] {
 a.flip,
 a.flip:visited,
 .tellafriend a,
-.share a,
-.tellafriend a:visited,
-.share a:visited {
+.tellafriend a:visited {
 	color: silver;
 }
 
 a.flip:hover,
-.tellafriend a:hover,
-.share a:hover {
+.tellafriend a:hover {
 	color: #517ea7;
 }
 
-.tellafriend,
-.share {
+.tellafriend {
 	padding: 0 30px;
-}
-
-.actions .share {
-	padding: 0;
 }
 
 .error,
@@ -489,7 +470,7 @@ a.flip:hover,
 	font-weight: bold;
 }
 
-.optionline,
+div.optionline,
 .option a {
 	color: #295c83;
 	font-weight: bold;
@@ -503,15 +484,103 @@ a.linkmodule:hover {
 	color: #82a7c8;
 }
 
-small.date {
-	font-size: 0.9em;
-	font-style: italic;
+/** PHP Layers Menus **/
+.horbar {
+	width: 100%;
+}
+ 
+.horbar table {
+	border-left: 1px solid #2e5276;
+	border-right: 1px solid #acc4e0;
 }
 
-.commentTitle {
+.horbaritem a,
+.horbaritem a:visited {
+	padding: 6px 10px;
+	font-weight: bold;
+	text-decoration: none;
+	background: inherit;
+	color: #cfe3fb;
+	font-size: 12px;
+	border-left: 1px solid #9eb8d5;
+	border-right: 1px solid #264062;
+}
+
+.horbaritem a:hover {
+	color: #fff !important;
+	text-decoration: none;
+}
+ 
+.mdksubmenu {
+	background: white;
+	margin-top: 0;
+}
+
+.mdksubframe {
+	border: 1px solid #5a7ea2;
+	background: #ccdceb;
+}
+
+.mdkitem a {
+	padding: 3px 6px;
+	font-weight: normal;
+	font-size: 1.2em;
+}
+ 
+.mdkitem a:link {
+	font-weight: normal;
+	text-decoration: none;
+}
+ 
+.mdkitem a:visited {
+	text-decoration: none;
+}
+ 
+.mdkitem a:hover {
+	color: #82a7c8;
+	text-decoration: none;
+	background: #eff8ff;
+}
+
+.phplmnormal,
+a.phplmnormal:hover,
+a.phplm:link,
+a.phplm:visited,
+a.phplm:hover,
+a.phplm:active {
+	font-family: Verdana, Tahoma, Arial, sans-serif;
+	color: #295c8e;
+	text-decoration: none;
+	font-weight: normal;
+}
+
+a.phplm:visited {
+	color: #295c8e;
+}
+
+a.phplm:hover {
+	color: #82a7c8;
+	text-decoration: underline;
+	background: none;
+}
+
+a.phplm:active {
+	color: #82a7c8;
+}
+
+a.phplmselected:link,
+a.phplmselected:visited,
+a.phplmselected:hover,
+a.phplmselected:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: #2d2d2d;
+	text-decoration: underline;
 	font-weight: bold;
 }
 
+a.phplmselected:hover {
+	color: #808080;
+}
 
 /** CSS (suckerfish) menus **/
 
@@ -520,16 +589,6 @@ small.date {
 	padding: 6px 1em;
 	font-weight: bold;
 	font-size: 12px;
-}
-
-.box-data .cssmenu_vert {
-	position: relative;
-	z-index: 700;
-}
-
-.cssmenu_vert li.menuLevel1,
-.cssmenu_horiz li.menuLevel1 {
-        z-index: 991;
 }
 
 .box-data .cssmenu_vert li {
@@ -568,7 +627,7 @@ small.date {
 
 .cssmenu_horiz li ul li,
 .cssmenu_vert li ul li {
-	background: #ccdceb;
+	background:	#ccdceb;
 	border: 1px solid #5a7ea2;
 	border-top: 0;
 	margin-bottom: -1px
@@ -707,7 +766,7 @@ small.date {
 
 /***** Boxes *****/
 /** Modules **/
-.box {
+div.box {
 	background: #ccdceb;
 	border: 1px solid #527ca6;
 	margin-top: -1px;
@@ -739,13 +798,8 @@ img.flipmodimage:hover {
 	border-top: 0;
 }
 
-/** Modules in pages **/
-.box-login_box {
-	width: 210px;
-}
-
 /** Other boxes **/
-.cbox {
+div.cbox {
 	color: #2d2d2d;
 	background: #fff;
 	border: 0;
@@ -792,17 +846,17 @@ img.flipmodimage:hover {
 	border: 1px solid #4a6a90;
 }
 
-.simplebox {
+div.simplebox {
 	border: 1px solid #527ca6;
 	background: #fff;
 	padding: 1em;
 }
 
-.halffloat .box,
-.wikitext .halffloat .box {
+.halffloat div.box,
+.wikitext .halffloat div.box {
 	width: 47%;
 	margin-right: 2%;
-
+ 
 }
 
 
@@ -812,8 +866,8 @@ table {
 	font-size: 1em;
 }
 
-.normal,
-.admin {
+table.normal, 
+table.admin {
 	border: 0;
 	background: #fff;
 	color: #2d2d2d;
@@ -837,7 +891,7 @@ table {
 
 /* headings */
 th,
-.normal td.heading,
+table.normal td.heading,
 tr.diffheader {
 	font-size: 1em;
 	font-weight: bold;
@@ -846,7 +900,7 @@ tr.diffheader {
 	min-height: 32px;
 }
 
-
+td.normal,
 .normal td,
 .wikitable td,
 td.odd,
@@ -945,12 +999,7 @@ body.tiki_wiki_page #comments {
 	padding: 1em;
 }
 
-.pagetitle {
-	padding-left: 14px;
-}
-
 h1.pagetitle a,
-.titlebar,
 h1.pagetitle a:visited,
 h1.pagetitle a:hover,
 a.pagetitle,
@@ -959,15 +1008,6 @@ a.pagetitle:hover {
 	line-height: 36px;
 	font-size: 20px;
 	color: #2d2d2d;
-	font-weight: bold;
-}
-
-a.titletop,
-a.titletop:hover,
-a.titletop:visited {
-	font-weight: bold;
-	color: #0066FF;
-	font-size: 12px;
 }
 
 h1 a,
@@ -983,21 +1023,13 @@ h1 a:hover {
 	color: #2d2d2d;
 }
 
-body.tiki_wiki_page .wikitopline {
-	margin-bottom: 10px;
-}
-
 .wikitopline .content br {
 }
 
-#description,
+div#description,
 .description {
 	font-size: .9em;
 	font-style: italic;
-}
-
-body.tiki_surveys .description {
-	font-style: normal;
 }
 
 .wikiactions .icons,
@@ -1010,55 +1042,50 @@ body.tiki_surveys .description {
 }
 
 .titlebar {
-	background: url(coelesce/tiki-centerbg.jpg) repeat-x;
-	line-height: 36px;
-	color: #2d2d2d;
-	padding-left: 10px;
+	padding: 0.1em;
+	background: #c3d3e5;
+	color: #607993;
+	font-weight: bold;
+	text-align: center;
+	margin: 10px 0;
 }
 
-.postbody-content .showhide_heading .link,
 .wikitext .showhide_heading .link {
 	font-weight: normal;
 	font-size: 80%;
 	vertical-align: top;
 }
 
-.postbody-content h1,
 .wikitext h1 {
 	margin: 20px 0 15px 0;
 }
 
-.postbody-content h2,
 .wikitext h2 {
 	margin: 10px 0 10px 0;
 }
 
-.postbody-content h3,
 .wikitext h3 {
 	margin: 10px 0 5px 0;
 }
 
-.postbody-content h4,
 .wikitext h4 {
 	margin: 10px 0 5px 0;
 }
 
-.postbody-content h5,
 .wikitext h5 {
 	margin: 10px 0 5px 0;
 }
 
-.postbody-content h6,
 .wikitext h6 {
 	margin: 10px 0 5px 0;
 }
 
-.wikitable {
+table.wikitable {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse;
 }
 
-.wikicell {
+td.wikicell {
 	padding: 3px;
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse;
@@ -1068,14 +1095,14 @@ h1.pagetitle {
 	background: url(coelesce/tiki-centerbg.jpg) repeat-x;
 	line-height: 36px;
 	color: #2d2d2d;
-	padding-left: 10px;
+	padding-left: 2px;
 }
 
-.split {
+div.split {
 	border: 1px dashed #696969;
 }
 
-#page-bar {
+div#page-bar {
 	width: 100%;
 	float: none;
 	height: 20px;
@@ -1108,7 +1135,7 @@ textarea.wikiedit {
 
 /* Wiki plugins */
 /* Code plugin  */
-.code {
+div.code {
 	padding: 3px;
 	border: 1px dashed #a9a9a9;
 	background: #f5f5f5;
@@ -1139,11 +1166,11 @@ textarea.wikiedit {
 }
 
 /* Quote plugin */
-.quoteheader {
+div.quoteheader {
 	margin-left: 20px;
 }
 
-.quotebody {
+div.quotebody {
 	font-style: italic;
 }
 
@@ -1164,7 +1191,7 @@ textarea.wikiedit {
 }
 
 /** Wiki tocs **/
-.tocnav {
+div.tocnav {
 	background: #ebebeb;
 	padding: 3px;
 }
@@ -1176,24 +1203,24 @@ textarea.wikiedit {
 }
 
 /***** Articles ****/
-.article {
+div.article {
 	position: relative;
 }
 
-.articletopline {
+div.articletopline {
 	position: absolute;
 	top: -20px;
 	font-size: 90%;
 	font-style: italic;
 }
 
-.articletitle {
+div.articletitle {
 	margin-top: 6px;
 	margin-bottom: 15px;
 	text-align: left;
 }
 
-.articletitle h2 {
+div.articletitle h2 {
 	min-height: 26px;
 	background: url(coelesce/tiki-centerbg.jpg) repeat-x;
 	font-size: 1.8em;
@@ -1202,20 +1229,20 @@ textarea.wikiedit {
 	padding-top: 8px;
 }
 
-.wikitext .articletitle h2 {
+.wikitext div.articletitle h2 {
 	font-size: 1.55em;
 	padding-top: 10px;
 }
 
 	
-.articletitle h2 a:link,
-.articletitle h2 a:visited {
+div.articletitle h2 a:link,
+div.articletitle h2 a:visited {
 	color: #000;
 	text-decoration: none;
 }
 
 	
-.articletitle h2 a:hover {
+div.articletitle h2 a:hover {
 	text-decoration: none;
 }
 
@@ -1223,28 +1250,28 @@ textarea.wikiedit {
 	display: none;
 }
 
-.titleb {
+span.titleb {
 	font-size: 1em;
 	padding-left: 14px;
 }
 
-.articlesubtitle {
+div.articlesubtitle {
 	font-size: 1.1em;
 	font-weight: bold;
 	padding-left: 14px;
 	margin-top: 5px;
 }
 
-.articleheading {
+div.articleheading {
 	margin-top: 6px;
 }
 
-.articleheadingtext {
+div.articleheadingtext {
 	margin-bottom: 1em;
 }
 
 /***** Blogs *****/
-.blogtitle {
+div.blogtitle {
 	font-size: 1.3em;
 	font-weight: bold;
 	padding: 3px;
@@ -1253,12 +1280,12 @@ textarea.wikiedit {
 	line-height: 80%;
 }
 
-body.tiki_blogs .description {
+body.tiki_blogs div.description {
 	margin-top: 8px;
 	margin-left: 14px;
 }
 
-.bloginfo {
+div.bloginfo {
 	text-align: center;
 	padding: 3px;
 	line-height: 150%;
@@ -1270,19 +1297,14 @@ a.blogt:hover {
 	border-bottom: 1px dotted #fff;
 }
 
-.author_actions_status {
-	background: #E6EDF5;
+.postinfo {
+	font-size: 1.2em;
 }
 
 .postinfo a {
 	color: #517ea7;
 	text-decoration: none;
 	border-bottom: none;
-}
-
-.date {
-	font-size: 0.9em;
-	font-style: italic;
 }
 
 /***** Forums *****/
@@ -1294,12 +1316,7 @@ a.blogt:hover {
 .post .postbody {
 	background: #fff;
 	font-size: 1.1em;
-	border-left: solid #EEFDFF;
-	border-right: solid #EEFDFF;
-	border-top: solid 1px #C3D3E5;
 }
-	
-* html .post .postbody {font-size: 11px}
 
 .top_post .post .postbody {
 	background: #e6edf5;
@@ -1313,8 +1330,8 @@ a.blogt:hover {
 }
 
 .postbody-title {
-	background: #EEFDFF;
-	padding: 1px 10px 0;
+	color: #000;
+	background: inherit;
 }
 
 .top_post .post .postbody-title {
@@ -1322,9 +1339,13 @@ a.blogt:hover {
 }
 
 .post .postbody-title .title {
-	color: #295C8E;
+	color: #2d2d2d;
 	float: none;
 	margin: auto;
+}
+
+.postbody-title .title a.link {
+	color: #2d2d2d;
 }
 
 .postbody-title .title br.clear {
@@ -1333,12 +1354,15 @@ a.blogt:hover {
 
 .post .author_actions {
 	position: relative;
+	background: #c3d3e5;
 	color: #000;
+	margin-bottom: 2px;
 	font-size: 11px;
 	font-weight: bold;
-	line-height: 21px;
+	line-height: 1;
+	height: 21px;
 	vertical-align: middle;
-	float: right;
+	min-width: 100%;
 }
 
 .author_actions .author {
@@ -1354,21 +1378,33 @@ a.blogt:hover {
 	vertical-align: middle;
 }
 
+.author_actions > .actions {
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 21px;
+	line-height: 21px;
+	text-align: right;
+	background: #446793;
+	color: #fff;
+	border-left: 2px solid #fff;
+}
+
 .post .author_info {
 	background: inherit;
 	display: inline-block;
-	float: left;
-	color: #999999;
+	color: #000;
 	text-align: left;
-	vertical-align: middle;
-	padding: 0 5px ;
-	margin-top: 0;
 	line-height: 21px;
-	font-size: 11px;
-	font-weight: bold;
+	vertical-align: middle;
+	padding-top: 0;
+	margin-top: 0;
+	height: 21px;
 }
 
 .post .author_info img {
+	height: 21px;
+	width: 21px;
 	vertical-align: middle;
 }
 
@@ -1425,31 +1461,21 @@ a.blogt:hover {
 	text-align: left;
 	clear: both;
 	margin-top: 3px;
-	margin-bottom: 0px;
 	background: #e6edf5;
 	color: #ebf1f7;
 }
 
-.post .postfooter .actions {
-	float: right;
-	margin-right: 5px;
-}
-
-.post .postfooter .status {
-	float: left;
-	margin-left: 5px;
+.postfooter .actions {
+	width: 200px;
 }
 
 .postfooter .status {
-	float: left;
+	float: right;
 	clear: none;
+	width: 200px;
+	text-align: right;
 	margin-right: 5px;
 	font-size: 10px;
-}
-
-a.linkcomments {
-	background: none repeat scroll 0 0 #FFFF99;
-	padding: 0 3px;
 }
 
 .post .contribution {
@@ -1492,7 +1518,7 @@ textarea#editpost2 {
 	font-size: 1em;
 }
 
-.commentsedithelp {
+div.commentsedithelp {
 	background: #ffcfcf;
 	color: #2d2d2d;
 	border: 1px solid #ff0000;
@@ -1552,39 +1578,19 @@ textarea#editpost2 {
 	margin-top: 5px;
 }
 
-a.freetag {
-	margin : 1px;
-}
-
-a.freetag:hover {
-	background-color : #ffffff;
-	margin : 0;
-	border : 1px solid #999;
-	text-decoration: none;
-}
-
-a.freetag_1:hover,
-a.freetag_2:hover,
-a.freetag_3:hover,
-a.freetag_4:hover,
-a.freetag_5:hover,
-a.freetag_6:hover,
-a.freetag_7:hover {
-	text-decoration: none;
-}
 
 /***** Image Galleries *****/
-.galtable {
+table.galtable {
 	border-collapse: collapse;
 	border: 1px solid #696969;
 }
 
-.browsegallery {
+div.browsegallery {
 	text-align: center;
 	width: 100%;
 }
 
-.thumbnailcontenerchecked .thumbnail {
+div.thumbnailcontenerchecked div.thumbnail {
 	border-color: #a9a9a9;
 	background: #f8f8ff;
 }
@@ -1600,15 +1606,15 @@ a.freetag_7:hover {
 
 /***** Trackers *****/
 	
-.multiselect {
+div.multiselect {
 	width: 100%;
 	border: 1px solid #696969;
 }
 
 /***** Calendar *****/
 /* Overrides calendar.css, etc. */
-.cal0,
-.cal1,
+.cal0, 
+.cal1, 
 .cal2 {
 	font-size: 90%;
 }
@@ -1808,14 +1814,13 @@ a.freetag_7:hover {
 .searchresults .searchdate {
 	color: gray;
 	font-size: 90%;
-  font-style: italic;
 }
 
 .calnavigation a:hover {
 	background: red;
 }
 
-.box-data .fc a.today,
+.box-data td.fc a.today,
 .box-data td a.today {
 	background: #8df378;
 	border: solid 1px #696969;
@@ -1850,7 +1855,7 @@ a.freetag_7:hover {
 	background: #8df378;
 }
 
-#calscreen .calfocuson {
+div#calscreen td.calfocuson {
 	background: #8df378;
 }
 
@@ -1901,31 +1906,31 @@ a.viewthisday:hover {
 }
 
 /*****  Polls  *****/
-.pollresults {
+div.pollresults {
 	margin-top: 5px;
 	font-size: 1.2em;
 	padding: 0 5px;
 }
 
-.pollr {
+td.pollr {
 	color: #2d2d2d;
 }
 
 /***** FAQs *****/
 
 /***** Quizzes *****/
-.questionblock {
+div.questionblock {
 	padding: 4px;
 }
 
-.quizquestion {
+div.quizquestion {
 	background: #c3d3e5 none repeat scroll 0 0;
 	font-size: 1em;
 	font-weight: bold;
 	padding: 5px;
 }
 
-.quizoptions input[type=text] {
+div.quizoptions input[type=text] {
 	width: 500px;
 }
 
@@ -1935,22 +1940,22 @@ textarea.tshoutbox{
 }
 
 /***** Directory *****/
-.dircategs {
+div.dircategs {
 	border: 1px solid #696969;
 	padding: 5px;
 }
 
-.dirlistsites {
+div.dirlistsites {
 	padding: 5px 0 10px 5px;
 	margin-top: 10px;
 }
 
-.dirsite {
+div.dirsite {
 	margin-bottom: 10px;
 	padding: 4px;
 }
 
-.dirrelated {
+div.dirrelated {
 	margin-top: 10px;
 	padding: 5px;
 }
@@ -1959,7 +1964,7 @@ td.dirfooter {
 	font-size: .95em;
 }
 
-.dirfooter {
+div.dirfooter {
 	margin-top: 10px;
 }
 
@@ -1971,15 +1976,15 @@ td.dirfooter {
 /***** Ajax *****/
 
 /***** TikiSheet Default Style *****/
-.default thead td,
-.default tfoot td {
+table.default thead td,
+table.default tfoot td {
 	font-weight: bold;
 	text-align: center;
 	background: #4a6a90;
 	color: white;
 }
 
-.default td {
+table.default td {
 	border: solid 1px #a9a9a9;
 	background: white;
 }
@@ -1999,7 +2004,7 @@ a.admbox {
 	background-color: #dddfdf;
 }
 
-.admbox a,
+.admbox a, 
 a.admbox:hover,
 .admbox a,
 a.admbox:focus,

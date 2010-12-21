@@ -38,30 +38,31 @@
 	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
 		{if ($tiki_p_admin eq 'y') or ($channels[user].individual eq 'n' and $tiki_p_take_quiz eq 'y') or ($channels[user].individual_tiki_p_take_quiz eq 'y')}
-			<tr class="{cycle}">
-				<td>
+			<tr>
+				<td class="{cycle advance=false}">
 					<a class="tablename" href="tiki-take_quiz.php?quizId={$channels[user].quizId}">{$channels[user].name|escape}</a>
 					<div class="subcomment">
 						{$channels[user].description|escape|nl2br}
 					</div>
-				</td>
-				<td>
+
+        </td>
+        <td class="{cycle advance=false}">
 					{$channels[user].timeLimited} {if $channels[user].timeLimited eq 'y'}({$channels[user].timeLimit} mins){/if}
 				</td>
-				<td>
+        <td class="{cycle advance=false}">
 					{$channels[user].questions}
 				</td>
 				{if ($tiki_p_admin eq 'y' or $tiki_p_admin_quizzes eq 'y' or $tiki_p_view_quiz_stats eq 'y')}
-					<td>
+					<td class="{cycle}">
 						{if ($tiki_p_admin eq 'y') or ($channels[user].individual eq 'n' and $tiki_p_admin_quizzes eq 'y') or ($channels[user].individual_tiki_p_admin_quizzes eq 'y')}
-							<a class="link" href="tiki-edit_quiz.php?quizId={$channels[user].quizId}">{icon _id='page_edit' alt="{tr}Edit{/tr}"}</a>
+							<a class="link" href="tiki-edit_quiz.php?quizId={$channels[user].quizId}">{icon _id='page_edit' alt='{tr}Edit{/tr}'}</a>
 						{/if}
 						{if ($tiki_p_admin eq 'y') or ($channels[user].individual eq 'n' and $tiki_p_view_quiz_stats eq 'y') or ($channels[user].individual_tiki_p_view_quiz_stats eq 'y')}
-							<a class="link" href="tiki-quiz_stats_quiz.php?quizId={$channels[user].quizId}">{icon _id='chart_curve' alt="{tr}Stats{/tr}"}</a>
+							<a class="link" href="tiki-quiz_stats_quiz.php?quizId={$channels[user].quizId}">{icon _id='chart_curve' alt='{tr}Stats{/tr}'}</a>
 						{/if}
 					</td>
 				{/if}
-      	</tr>
+      </tr>
 		{/if}
 	{sectionelse}
 		<tr><td class="odd" colspan="{$numbercol}"><strong>{tr}No records found.{/tr}</strong></td></tr>

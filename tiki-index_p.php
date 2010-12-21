@@ -7,6 +7,11 @@
 
 $section = 'wiki page';
 require_once('tiki-setup.php');
+if ($prefs['feature_ajax'] == "y") {
+include_once('lib/ajax/ajaxlib.php');
+require_once ("lib/wiki/wiki-ajax.php");
+}
+
 include_once('lib/structures/structlib.php');
 
 include_once('lib/wiki/wikilib.php');
@@ -71,6 +76,8 @@ if (!in_array($page, $_SESSION["breadCrumb"])) {
 	unset($_SESSION["breadCrumb"][$pos]);
 	array_push($_SESSION["breadCrumb"], $page);
 }
+
+//print_r($_SESSION["breadCrumb"]);
 
 // Now increment page hits since we are visiting this page
 if ($prefs['count_admin_pvs'] == 'y' || $user != 'admin') {
@@ -205,7 +212,17 @@ if ($prefs['feature_theme_control'] == 'y') {
 	include('tiki-tc.php');
 }
 ask_ticket('index-p');
+if ($prefs['feature_ajax'] == "y") {
 
+function wiki_ajax() {
+    global $ajaxlib, $xajax;
+    $ajaxlib->registerTemplate("tiki-show_page.tpl");
+    $ajaxlib->registerTemplate("tiki-editpage.tpl");
+    $ajaxlib->registerFunction("loadComponent");
+    $ajaxlib->processRequests();
+}
+wiki_ajax();
+}
 // Display the Index Template
 $smarty->assign('dblclickedit', 'y');
 $smarty->display("tiki-index_p.tpl");

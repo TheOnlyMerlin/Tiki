@@ -31,12 +31,12 @@ if (isset($_REQUEST["remind"])) {
 			$smarty->assign('msg', tra('Invalid or unknown username') . ': ' . $_REQUEST['name']);
 		} else {
 			$info = $userlib->get_user_info($_REQUEST["name"]);
-			if (empty($info['email'])) { //only renew if i can mail the pass
-				$showmsg = 'e';
-				$smarty->assign('msg', tra('Unable to send mail. User has not configured email'));
-			} elseif (!empty($info['valid']) && ($prefs['validateRegistration'] == 'y' || $prefs['validateUsers'] == 'y')) {
+			if (!empty($info['valid']) && ($prefs['validateRegistration'] == 'y' || $prefs['validateUsers'] == 'y')) {
 				$showmsg = 'e';
 				$userlib->send_validation_email($_REQUEST["name"], $info['valid'], $info['email'], 'y');
+			} elseif (empty($info['email'])) { //only renew if i can mail the pass
+				$showmsg = 'e';
+				$smarty->assign('msg', tra('Unable to send mail. User has not configured email'));
 			} else {
 				$_REQUEST['email'] = $info['email'];
 			}
@@ -76,8 +76,8 @@ if (isset($_REQUEST["remind"])) {
 		$smarty->assign('mail_ip', $tikilib->get_ip_address());
 		$mail_data = sprintf($smarty->fetchLang($languageEmail, 'mail/password_reminder_subject.tpl'), $_SERVER["SERVER_NAME"]);
 		$mail = new TikiMail($name);
-		$mail->setSubject($mail_data);
-		$mail->setText(stripslashes($smarty->fetchLang($languageEmail, 'mail/password_reminder.tpl')));
+		$mail->setSubject(sprintf($mail_data, $_SERVER["SERVER_NAME"]));
+		$mail->setText($smarty->fetchLang($languageEmail, 'mail/password_reminder.tpl'));
 
 		// grab remote IP through forwarded-for header when served by cache
 		$mail->setHeader( 'X-Password-Reset-From', $tikilib->get_ip_address() );

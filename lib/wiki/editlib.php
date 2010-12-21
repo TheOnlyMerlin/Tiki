@@ -192,61 +192,27 @@ class EditLib
 		
 	}
 
-	function parseToWiki( $inData ) {
-		
+	function parseToWiki(&$inData) {
+		// Parsing page data as first time seeing html page in normal editor
+		$parsed = '';
 		$parsed = $this->parse_html($inData);
-		$parsed = preg_replace('/\{img\(? src=.*?img\/smiles\/icon_([\w\-]*?)\..*\}/im','(:$1:)', $parsed);	// "unfix" smilies
+		$parsed = preg_replace('/\{img src=.*?img\/smiles\/.*? alt=([\w\-]*?)\}/im','(:$1:)', $parsed);	// "unfix" smilies
 		$parsed = preg_replace('/%%%/m',"\n", $parsed);													// newlines
-		$parsed = preg_replace('/&nbsp;/m',' ', $parsed);												// spaces
-		// Put back htmlentities as normal char
-		$parsed = htmlspecialchars_decode($parsed,ENT_QUOTES);
 		return $parsed;
 	}
 	
-	function parseToWysiwyg( $inData, $fromWiki = false ) {
-		global $tikilib, $tikiroot, $prefs;
-		// Parsing page data for wysiwyg editor
-		$inData = $this->partialParseWysiwygToWiki($inData);	// remove any wysiwyg plugins so they don't get double parsed
+	function parseToWysiwyg(&$inData) {
+		global $tikilib, $tikiroot;
+		// Parsing page data as first time seeing wiki page in wysiwyg editor
 		$parsed = preg_replace('/(!!*)[\+\-]/m','$1', $inData);		// remove show/hide headings
-		
-		$parsed = $tikilib->parse_data( $parsed, array( 'absolute_links'=>true, 'noheaderinc'=>true, 'suppress_icons' => true,
-														'ck_editor' => true, 'is_html' => ($prefs['wysiwyg_htmltowiki'] === 'n' && !$fromWiki),
-														'process_wiki_paragraphs' => ($prefs['wysiwyg_htmltowiki'] === 'y' || $fromWiki)));
-		
-		if ($prefs['wysiwyg_htmltowiki'] === 'n' && $fromWiki) {
-			$parsed = preg_replace('/^\s*<p>&nbsp;[\s]*<\/p>\s*/iu','', $parsed);						// remove added empty <p>
-		}
+		$parsed = $tikilib->parse_data($parsed,array('absolute_links'=>true, 'parseimgonly'=>true,'noheaderinc'=>true, 'suppress_icons' => true));
 		$parsed = preg_replace('/<span class=\"img\">(.*?)<\/span>/im','$1', $parsed);					// remove spans round img's
-		// Workaround Wysiwyg Image Plugin Editor in IE7 erases image on insert http://dev.tiki.org/item3615 
-		$parsed = preg_replace('/(<span class=\"tiki_plugin\".*?plugin=\"img\".*?><\/span>)<\/p>/is','$1<span>&nbsp;</span></p>', $parsed);
-		// Fix IE7 wysiwyg editor always adding absolute path
-		$search = '/(<a[^>]+href=\")https?\:\/\/' . preg_quote($_SERVER['HTTP_HOST'].$tikiroot, '/') . '([^>]+_cke_saved_href)/i'; 
-		$parsed = preg_replace($search, '$1$2', $parsed);
-
+		$parsed = preg_replace("/src=\"img\/smiles\//im","src=\"".$tikiroot."img/smiles/", $parsed);	// fix smiley src's
+		$parsed = str_replace( 
+			array( '{SUP()}', '{SUP}', '{SUB()}', '{SUB}', '<table' ),
+			array( '<sup>', '</sup>', '<sub>', '</sub>', '<table border="1"' ),
+			$parsed );
 		return $parsed;
-	}
-	
-	/**
-	 * Converts wysiwyg plugins into wiki.
-	 * Also processes headings by removing surrounding <p> (possibly for wysiwyg_wiki_semi_parsed but not tested)  
-	 * 
-	 * @param string $inData (page data - mostly html but can have a bit of wiki in it)
-	 */
-	function partialParseWysiwygToWiki( $inData ) {
-
-		// de-protect ck_protected comments
-		$ret = preg_replace('/<!--{cke_protected}{C}%3C!%2D%2D%20end%20tiki_plugin%20%2D%2D%3E-->/i', '<!-- end tiki_plugin -->', $inData);
-		// remove the wysiwyg plugin elements leaving the syntax only remaining
-		$ret = preg_replace('/<(?:div|span)[^>]*syntax="(.*)".*end tiki_plugin --><\/(?:div|span)>/Umis', "$1", $ret);
-		// preg_replace blows up here with a PREG_BACKTRACK_LIMIT_ERROR on pages with "corrupted" plugins
-		if (!$ret) { $ret = $inData; }
-		
-		// take away the <p> that f/ck introduces around wiki heading ! to have maketoc/edit section working
-		$ret = preg_replace('/<p>!(.*)<\/p>/iu', "!$1\n", $ret);
-		
-		// strip totally empty <p> tags generated in ckeditor 3.4
-		$ret = preg_replace('/\s*<p>[\s]*<\/p>\s*/iu', "!$1\n", $ret);
-		return $ret;
 	}
 	
 	// parse HTML functions
@@ -273,10 +239,8 @@ class EditLib
 			// If content type 'text' output it to destination...
 			if ($c[$i]["type"] == "text") {
 				if( ! ctype_space( $c[$i]["data"] ) ) {
-					$add = $c[$i]["data"];
-					$add = str_replace( array("\r","\n"), '', $add );
-					$add = str_replace( '&nbsp;', ' ', $add );
-					$add = ltrim( $add );
+					$add = ltrim( $c[$i]["data"] );
+					$add = str_replace( array("\r","\n"), ' ', $add );
 					$src .= $add;
 				}
 			} elseif ($c[$i]["type"] == "comment") {
@@ -284,143 +248,85 @@ class EditLib
 			} elseif ($c[$i]["type"] == "tag") {
 				if ($c[$i]["data"]["type"] == "open") {
 					// Open tag type
-					
-					// deal with plugins - could be either span of div so process before the switch statement
-					if (isset($c[$i]['pars']['plugin']) && isset($c[$i]['pars']['syntax'])) {	// handling for tiki plugins
-						$src .= html_entity_decode($c[$i]['pars']['syntax']['value']);
-						$more_spans = 1;
-						$elem_type = $c[$i]["data"]["name"];
-						$other_elements = 0;
-						$j = $i + 1;
-						while ($j < $c['contentpos']) {	// loop through contents of this span and discard everything
-							if ($c[$j]['data']['name'] == $elem_type && $c[$j]['data']['type'] == 'close') {
-								$more_spans--;
-								if ($more_spans === 0) {
-									break;
-								}
-							} else if ($c[$j]['data']['name'] == 'br' && $more_spans === 1 && $other_elements === 0) {
-							} else if ($c[$j]['data']['name'] == $elem_type && $c[$j]['data']['type'] == 'open') {
-								$more_spans++;
-							} else if ($c[$j]['data']['type'] == 'open' && $c[$j]['data']['name'] != 'br' && $c[$j]['data']['name'] != 'img' && $c[$j]['data']['name'] != 'input') {
-								$other_elements++;
-							} else if ($c[$j]['data']['type'] == 'close') {
-								$other_elements--;
-							}
-							$j++;
-						}
-						$i = $j;	// skip everything that was inside this span
-						
-					}
-					
 					switch ($c[$i]["data"]["name"]) {
 						// Tags we don't want at all.
 						case "meta": $c[$i]["content"] = ''; break;
 						
-						// others we do want
-						case "br": $src .= "\n"; break;
-						case "hr": $src .= $this->startNewLine($src) . '---'; break;
+						case "br": $src .= '%%%'; break;
+						case "hr": $src .= '---'; break;
 						case "title": $src .= "\n!"; $p['stack'][] = array('tag' => 'title', 'string' => "\n"); break;
 						case "p":
 						case "div": // Wiki parsing creates divs for center
-							if(isset($c[$i]['pars']['style']['value'])) {
-								if ( strpos($c[$i]['pars']['style']['value'],'text-align: center;') !== false ) {
-									if ($prefs['feature_use_three_colon_centertag'] == 'y') {
-										$src .= $this->startNewLine($src) .":::";
-										$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => ":::\n\n");
-									} else {
-										$src .= $this->startNewLine($src) . "::";
-										$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => "::\n\n");
-									}
-								} else if ( strpos($c[$i]['pars']['style']['value'],'text-align: right;') !== false ){
-										$src .= $this->startNewLine($src) .'{DIV(type="p",align="right")}';
-										$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => "{DIV}\n\n");
-								}
-							} else {	// normal para or div
-								$src .= $this->startNewLine($src);
-								$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => "\n\n"); 
+							if( isset($c[$i]['pars']) 
+								&& isset($c[$i]['pars']['style']) 
+								&& $c[$i]['pars']['style']['value'] == 'text-align: center;' ) {
+								$src .= "\n::";
+								$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => "::\n"); 
+							} else {
+								$src .= "\n";
+								$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => "\n"); 
 							}
 							break;
 						case "span":
-							if( isset($c[$i]['pars'])) {
-								if (isset($c[$i]['pars']['style'])) {	// colours
-									$contrast = '000000';
-									if (preg_match( "/background(\-color)?: rgb\((\d+), (\d+), (\d+)\)/", $c[$i]['pars']['style']['value'], $parts ) ) {
-										$bgcol = str_pad( dechex( $parts[2] ), 2, '0', STR_PAD_LEFT )
-											   . str_pad( dechex( $parts[3] ), 2, '0', STR_PAD_LEFT )
-											   . str_pad( dechex( $parts[4] ), 2, '0', STR_PAD_LEFT );
-										
-									} else if (preg_match( "/background(\-color)?:\s*#(\w{3,6})/", $c[$i]['pars']['style']['value'], $parts ) ) {
-										$bgcol = $parts[2];
-									}
-									if (preg_match( "/\bcolor: rgb\((\d+), (\d+), (\d+)\)/", $c[$i]['pars']['style']['value'], $parts ) ) {
-										$fgcol = str_pad( dechex( $parts[1] ), 2, '0', STR_PAD_LEFT )
-											   . str_pad( dechex( $parts[2] ), 2, '0', STR_PAD_LEFT )
-											   . str_pad( dechex( $parts[3] ), 2, '0', STR_PAD_LEFT );
-									} else if (preg_match( "/^color:\s*#(\w{3,6})/", $c[$i]['pars']['style']['value'], $parts ) ) {
-										$fgcol = $parts[1];
-									}
-									if (!empty($bgcol) || !empty($fgcol)) {
-										$src .= "~~#" . (!empty($fgcol) ? $fgcol : $contrast);
-										$src .= (empty($bgcol) ? '' : ',#' . $bgcol);
-										$src .= ':';
-										$p['stack'][] = array('tag' => 'span', 'string' => "~~"); 
-									}
-								}
+							if( isset($c[$i]['pars']) 
+								&& isset($c[$i]['pars']['style']) 
+								&& preg_match( "/background(\-color)?: rgb\((\d+), (\d+), (\d+)\)/", $c[$i]['pars']['style']['value'], $parts ) ) {
+								$src .= "~~#"
+									. str_pad( dechex( 255-$parts[2] ), 2, '0', STR_PAD_LEFT )
+									. str_pad( dechex( 255-$parts[3] ), 2, '0', STR_PAD_LEFT )
+									. str_pad( dechex( 255-$parts[4] ), 2, '0', STR_PAD_LEFT )
+									. ',#'
+									. str_pad( dechex( $parts[2] ), 2, '0', STR_PAD_LEFT )
+									. str_pad( dechex( $parts[3] ), 2, '0', STR_PAD_LEFT )
+									. str_pad( dechex( $parts[4] ), 2, '0', STR_PAD_LEFT )
+									. ':';
+								$p['stack'][] = array('tag' => 'span', 'string' => "~~"); 
+							} elseif( isset($c[$i]['pars']) 
+								&& isset($c[$i]['pars']['style']) 
+								&& preg_match( "/color: rgb\((\d+), (\d+), (\d+)\)/", $c[$i]['pars']['style']['value'], $parts ) ) {
+								$src .= "~~#"
+									. str_pad( dechex( $parts[1] ), 2, '0', STR_PAD_LEFT )
+									. str_pad( dechex( $parts[2] ), 2, '0', STR_PAD_LEFT )
+									. str_pad( dechex( $parts[3] ), 2, '0', STR_PAD_LEFT )
+									. ':';
+								$p['stack'][] = array('tag' => 'span', 'string' => "~~"); 
 							}
 							break;
 						case "b": $src .= '__'; $p['stack'][] = array('tag' => 'b', 'string' => '__'); break;
 						case "i": $src .= "''"; $p['stack'][] = array('tag' => 'i', 'string' => "''"); break;
 						case "em": $src .= "''"; $p['stack'][] = array('tag' => 'em', 'string' => "''"); break;
 						case "strong": $src .= '__'; $p['stack'][] = array('tag' => 'strong', 'string' => '__'); break;
-						case "u": $src .= "==="; $p['stack'][] = array('tag' => 'u', 'string' => "==="); break;
+						case "u": $src .= "=="; $p['stack'][] = array('tag' => 'u', 'string' => "=="); break;
 						case "strike": $src .= "--"; $p['stack'][] = array('tag' => 'strike', 'string' => "--"); break;
 						case "del": $src .= "--"; $p['stack'][] = array('tag' => 'del', 'string' => "--"); break;
-						case "center":
-							if ($prefs['feature_use_three_colon_centertag'] == 'y') {
-								$src .= ':::';
-								$p['stack'][] = array('tag' => 'center', 'string' => ':::');
-							} else {
-								$src .= '::';
-								$p['stack'][] = array('tag' => 'center', 'string' => '::');
-							}
-							break;
+						case "center": $src .= '::'; $p['stack'][] = array('tag' => 'center', 'string' => '::'); break;
 						case "code": $src .= '-+'; $p['stack'][] = array('tag' => 'code', 'string' => '+-'); break;
 						case "dd": $src .= ':'; $p['stack'][] = array('tag' => 'dd', 'string' => "\n"); break;
 						case "dt": $src .= ';'; $p['stack'][] = array('tag' => 'dt', 'string' => ''); break;
-						
-						case "h1":
-						case "h2":
-						case "h3":
-						case "h4":
-						case "h5":
-						case "h6":
-							$hlevel = (int) $c[$i]["data"]["name"]{1};
-							if (isset($c[$i]['pars']['style']['value']) && strpos($c[$i]['pars']['style']['value'],'text-align: center;') !== false ) {
-								if ($prefs['feature_use_three_colon_centertag'] == 'y') {
-									$src .= $this->startNewLine($src) . str_repeat('!', $hlevel) . ':::';
-									$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => ":::\n");
-								} else {
-									$src .= $this->startNewLine($src) . str_repeat('!', $hlevel) . '::';
-									$p['stack'][] = array('tag' => $c[$i]['data']['name'], 'string' => "::\n");
-								}
-							} else {	// normal para or div
-								$src .= $this->startNewLine($src) . str_repeat('!', $hlevel);
-								$p['stack'][] = array('tag' => $c[$i]["data"]["name"], 'string' => "\n");
-							}
-							break;
+						// headers detection looks like real suxx code...
+						// but possible it run faster :) I don't know where is profiler in PHP...
+						case "h1": $src .= "\n!"; $p['stack'][] = array('tag' => 'h1', 'string' => "\n"); break;
+						case "h2": $src .= "\n!!"; $p['stack'][] = array('tag' => 'h2', 'string' => "\n"); break;
+						case "h3": $src .= "\n!!!"; $p['stack'][] = array('tag' => 'h3', 'string' => "\n"); break;
+						case "h4": $src .= "\n!!!!"; $p['stack'][] = array('tag' => 'h4', 'string' => "\n"); break;
+						case "h5": $src .= "\n!!!!!"; $p['stack'][] = array('tag' => 'h5', 'string' => "\n"); break;
+						case "h6": $src .= "\n!!!!!!"; $p['stack'][] = array('tag' => 'h6', 'string' => "\n"); break;
 						case "pre": $src .= "~pre~\n"; $p['stack'][] = array('tag' => 'pre', 'string' => "~/pre~\n"); break;
 						case "sub": $src .= "{SUB()}"; $p['stack'][] = array('tag' => 'sub', 'string' => "{SUB}"); break;
 						case "sup": $src .= "{SUP()}"; $p['stack'][] = array('tag' => 'sup', 'string' => "{SUP}"); break;
 						// Table parser
-						case "table": $src .= $this->startNewLine($src) . '||'; $p['stack'][] = array('tag' => 'table', 'string' => '||'); $p['first_tr'] = true; break;
-						case "tr": $src .= $p['first_tr'] ? '' : $this->startNewLine($src); $p['first_tr'] = false; $p['first_td'] = true; break;
+						case "table": $src .= '||'; $p['stack'][] = array('tag' => 'table', 'string' => '||'); $p['first_tr'] = true; break;
+						case "tr": $src .= $p['first_tr'] ? '' : "\n"; $p['first_tr'] = false; $p['first_td'] = true; break;
 						case "td": $src .= $p['first_td'] ? '' : '|'; $p['first_td'] = false; break;
 						// Lists parser
 						case "ul": $p['listack'][] = '*'; break;
 						case "ol": $p['listack'][] = '#'; break;
 						case "li":
 							// Generate wiki list item according to current list depth.
-							$src .=  $this->startNewLine($src) . str_repeat( end($p['listack']), count($p['listack']));
+							// (ensure '*/#' starts from begining of line)
+							$temp_max = count($p['listack']);
+							for ($l = ''; strlen($l) < $temp_max; $l .= end($p['listack']));	// needs strlen function in 2nd for loop argument
+							$src .= "\n$l ";
 							break;
 						case "font":
 							// If color attribute present in <font> tag
@@ -434,9 +340,9 @@ class EditLib
 							if (isset($c[$i]["pars"]["src"]["value"]))
 								// Note what it produce (img) not {img}! Will fix this below...
 								if( strstr( $c[$i]["pars"]["src"]["value"], "http:" ) ) {
-									$src .= '{img src="'.$c[$i]["pars"]["src"]["value"].'"}';
+									$src .= '(img src='.$c[$i]["pars"]["src"]["value"].')';
 								} else {
-									$src .= '{img src="'.$head_url.$c[$i]["pars"]["src"]["value"].'"}';
+									$src .= '(img src='.$head_url.$c[$i]["pars"]["src"]["value"].')';
 								}
 							break;
 						case "a":
@@ -484,16 +390,7 @@ class EditLib
 				$this->walk_and_parse($c[$i]["content"], $src, $p, $head_url );
 			}
 		}
-		if (substr($src, -2) == "\n\n") {	// seem to always get too many line ends
-			$src = substr($src, 0, -2);
-		}
 	}	// end walk_and_parse
-	
-	function startNewLine(&$str) {
-		if (strlen($str) && substr($str, -1) != "\n") {
-			$str .=  "\n"; 
-		}
-	}
 	/**
 	 * wrapper around zaufi's HTML sucker code just to use the html to wiki bit
 	 *
@@ -517,10 +414,6 @@ class EditLib
 		}
 		$grammar = unserialize(fread($fp, filesize($grammarfile)));
 		fclose($fp);
-		
-		// process a few ckeditor artifacts
-		$inHtml = str_replace('<p></p>', '', $inHtml);	// empty p tags are invisible
-		
 		// create parser object, insert html code and parse it
 		$htmlparser = new HtmlParser($inHtml, $grammar, '', 0);
 		$htmlparser->Parse();

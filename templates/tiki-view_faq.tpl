@@ -2,7 +2,7 @@
 <div class="description">{$faq_info.description|escape}</div>
 
 <div class="navbar">
-	{self_link print='y'}{icon _id='printer' align='right' hspace='1' alt="{tr}Print{/tr}"}{/self_link}
+	{self_link print='y'}{icon _id='printer' align='right' hspace='1' alt='{tr}Print{/tr}'}{/self_link}
 	{button href="tiki-list_faqs.php" _text="{tr}List FAQs{/tr}"}
 	
 	{if $tiki_p_admin_faqs eq 'y'}
@@ -77,27 +77,27 @@
 		<br />
 		<form action="tiki-view_faq.php" method="post">
 			<input type="hidden" name="faqId" value="{$faqId|escape}" />
-			<table class="formcolor">
+			<table class="normal">
 				<tr>
-					<td>{tr}Question{/tr}:</td>
-					<td>
+					<td class="formcolor">{tr}Question{/tr}:</td>
+					<td class="formcolor">
 						<textarea rows="2" cols="80" name="suggested_question" style="width:95%;">{if $pendingquestion}{$pendingquestion}{/if}</textarea>
 					</td>
 				</tr>
 				<tr>
-					<td>
+					<td class="formcolor">
 						{tr}Answer{/tr}:
 					</td>
-					<td>
+					<td class="formcolor">
 						<textarea rows="2" cols="80" name="suggested_answer" style="width:95%;">{if $pendinganswer}{$pendinganswer}{/if}</textarea>
 					</td>
 				</tr>
 				{if $prefs.feature_antibot eq 'y' && $user eq ''}
-					{include file='antibot.tpl'}
+					{include file='antibot.tpl' td_style="formcolor"}
 				{/if}
 				<tr>
-					<td>&nbsp;</td>
-					<td>
+					<td class="formcolor">&nbsp;</td>
+					<td class="formcolor">
 						<input type="submit" name="sugg" value="{tr}Add{/tr}" />
 					</td>
 				</tr>
@@ -111,8 +111,8 @@
 				</tr>
 				{cycle values="odd,even" print=false}
 				{section name=ix loop=$suggested}
-					<tr class="{cycle}">
-						<td>{$suggested[ix].question}</td>
+					<tr>
+						<td class="{cycle}">{$suggested[ix].question}</td>
 					</tr>
 				{/section}
 			</table>

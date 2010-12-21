@@ -36,23 +36,16 @@ function wikiplugin_skype_info() {
 	return array(
 		'name' => tra('Skype'),
 		'documentation' => 'PluginSkype',
-		'description' => tra('Call or chat with a Skype user'),
+		'description' => tra('Clickable Skype link'),
 		'prefs' => array( 'wikiplugin_skype' ),
 		'body' => tra('Name or number to call or chat with.'),
-		'icon' => 'pics/icons/skype.png',
 		'params' => array(
 			'action' => array(
 				'required' => false,
 				'name' => tra('Action'),
-				'description' => tra('Set whether to call or chat. Default is chat'),
-				'default' => 'chat',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Call'), 'value' => 'call'), 
-					array('text' => tra('Chat'), 'value' => 'chat')
-				)
-			)
-		)
+				'description' => 'call|chat',
+			),
+		),
 	);
 }
 

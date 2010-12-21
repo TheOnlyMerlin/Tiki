@@ -48,8 +48,8 @@ $smarty->assign_by_ref('channels', $channels["data"]);
 if (isset($_REQUEST["sugg"])) {
 	check_ticket('view-faq');
 	if ($tiki_p_suggest_faq == 'y') {
-		if (empty($user) && $prefs['feature_antibot'] == 'y' && !$captchalib->validate()) {
-			$error = $captchalib->getErrors();
+		if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $_REQUEST['antibotcode'])) {
+			$error = tra('You have mistyped the anti-bot verification code; please try again.');
 			$smarty->assign('error', $error);
 			// Save the pending question and answer if antibot code is wrong
 			$smarty->assign('pendingquestion', $_REQUEST["suggested_question"]);

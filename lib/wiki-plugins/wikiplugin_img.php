@@ -8,8 +8,7 @@
 function wikiplugin_img_info() {
 	return array(
 		'name' => tra('Image'),
-		'documentation' => 'PluginImg',
-		'description' => tra('Display custom formatted images'),
+		'description' => tra('Display images'),
 		'prefs' => array( 'wikiplugin_img'),
 		'icon' => 'pics/icons/picture.png',
 		'params' => array(
@@ -20,14 +19,12 @@ function wikiplugin_img_info() {
 				'area' => 'fgal_picker',
 				'description' => tra('Full URL to the image to display. "src", id", "fileId", "attId" or "randomGalleryId" required.'),
 				'filter' => 'url',
-				'default' => '',
 			),
 			'id' => array(
 				'required' => false,
 				'name' => tra('Image ID'),
 				'description' => tra('Numeric ID of an image in an Image Gallery (or list separated by commas or |).'),
 				'filter' => 'striptags',
-				'default' => '',
 			),
 			'fileId' => array(
 				'required' => false,
@@ -36,29 +33,24 @@ function wikiplugin_img_info() {
 				'area' => 'fgal_picker_id',
 				'description' => tra('Numeric ID of an image in a File Gallery (or list separated by commas or |).'),
 				'filter' => 'striptags',
-				'default' => '',
 			),
 			'randomGalleryId' => array(
 				'required' => false,
 				'name' => tra('Gallery ID'),
 				'description' => tra('Numeric ID of a File Gallery. Displays a random image from that gallery.'),
 				'filter' => 'int',
-				'advanced' => true,
-				'default' => '',
 			),
 			'attId' => array(
 				'required' => false,
 				'name' => tra('Attachment ID'),
 				'description' => tra('Numeric ID of an image attached to a wiki page (or list separated by commas or |).'),
 				'filter' => 'striptags',
-				'default' => '',
 			),
 			'thumb' => array(
 				'required' => false,
 				'name' => tra('Thumbnail'),
 				'description' => tra('Makes the image a thumbnail that enlarges to full size when clicked or moused over (unless "link" is set to another target). "browse" and "browsepopup" only work with image gallery and "download" only works with file gallery or attachments.'),
 				'filter' => 'alpha',
-				'default' => '',
 				'options' => array(
 					array('text' => tra('None'), 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y', 'description' => tra('Full size image appears when thumbnail is clicked.')),
@@ -75,7 +67,6 @@ function wikiplugin_img_info() {
 				'name' => tra('Enlarge button'),
 				'description' => tra('Button for enlarging image.'),
 				'filter' => 'alpha',
-				'default' => '',
 				'options' => array(
 					array('text' => tra('None'), 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
@@ -90,52 +81,42 @@ function wikiplugin_img_info() {
 				'name' => tra('Link'),
 				'description' => tra('Enter a url to the address the image should link to. Not needed if thumb parameter is set; overrides thumb setting.'),
 				'filter' => 'url',
-				'default' => '',
 			),
 			'rel' => array(
 				'required' => false,
 				'name' => tra('Link relation'),
 				'filter' => 'striptags',
 				'description' => tra('Enter "box" for colorbox effect (like shadowbox and lightbox) or appropriate syntax for link relation.'),
-				'advanced' => true,
-				'default' => '',
 			),
 			'usemap' => array(
 				'required' => false,
 				'name' => tra('Image map'),
 				'filter' => 'striptags',
 				'description' => tra('Name of the image map to use for the image.'),
-				'advanced' => true,
-				'default' => '',
 			),
 			'height' => array(
 				'required' => false,
 				'name' => tra('Image height'),
 				'description' => tra('Height in pixels or percent. Syntax: "100" or "100px" means 100 pixels; "50%" means 50 percent.'),
 				'filter' => 'striptags',
-				'default' => '',
 			),
 			'width' => array(
 				'required' => false,
 				'name' => tra('Image width'),
 				'description' => tra('Width in pixels or percent. Syntax: "100" or "100px" means 100 pixels; "50%" means 50 percent.'),
 				'filter' => 'striptags',
-				'default' => '',
 			),
 			'max' => array(
 				'required' => false,
 				'name' => tra('Maximum image size'),
 				'description' => tra('Maximum height or width in pixels (largest dimension is scaled). Overrides height and width settings.'),
 				'filter' => 'int',
-				'default' => '',
 			),
 			'imalign' => array(
 				'required' => false,
 				'name' => tra('Align image'),
 				'description' => tra('Aligns the image itself. If the image is inside a box (because of other settings), use the align parameter to align the box.'),
 				'filter' => 'alpha',
-				'advanced' => true,
-				'default' => '',
 				'options' => array(
 					array('text' => tra('None'), 'value' => ''), 
 					array('text' => tra('Right'), 'value' => 'right'), 
@@ -148,16 +129,12 @@ function wikiplugin_img_info() {
 				'name' => tra('Image style'),
 				'description' => tra('Enter "border" to place a dark gray border around the image. Otherwise enter CSS styling syntax for other style effects.'),
 				'filter' => 'striptags',
-				'advanced' => true,
-				'default' => '',
 			),
 			'align' => array(
 				'required' => false,
 				'name' => tra('Align image block'),
 				'description' => tra('Aligns the box containing the image.'),
 				'filter' => 'alpha',
-				'advanced' => true,
-				'default' => '',
 				'options' => array(
 					array('text' => tra('None'), 'value' => ''), 
 					array('text' => tra('Right'), 'value' => 'right'), 
@@ -170,24 +147,18 @@ function wikiplugin_img_info() {
 				'name' => tra('Image block style'),
 				'filter' => 'striptags',
 				'description' => tra('Enter "border" to place a dark gray border frame around the image. Otherwise enter CSS styling syntax for other style effects.'),
-				'advanced' => true,
-				'default' => '',
 			),
 			'styledesc' => array(
 				'required' => false,
 				'name' => tra('Description style'),
 				'filter' => 'striptags',
 				'description' => tra('Enter "right" or "left" to align text accordingly. Otherwise enter CSS styling syntax for other style effects.'),
-				'advanced' => true,
-				'default' => '',
 			),
 			'block' => array(
 				'required' => false,
 				'name' => tra('Wrapping control'),
 				'description' => tra('Control how other items wrap around the image.'),
 				'filter' => 'alpha',
-				'advanced' => true,
-				'default' => '',
 				'options' => array(
 					array('text' => tra('None'), 'value' => ''), 
 					array('text' => tra('Top'), 'value' => 'top'), 
@@ -200,44 +171,34 @@ function wikiplugin_img_info() {
 				'name' => tra('CSS Class'),
 				'filter' => 'striptags',
 				'description' => tra('CSS class to apply to the image.'),
-				'advanced' => true,
-				'default' => '',
 			),
 			'desc' => array(
 				'required' => false,
 				'name' => tra('Caption'),
 				'filter' => 'text',
-				'description' => tra('Image caption. "desc" or "name" or "namedesc" for tiki images, "idesc" or "ititle" for iptc data, otherwise enter your own description.'),
-				'default' => '',
+				'description' => tra('Image caption. "desc" or "name" for tiki images, "idesc" or "ititle" for iptc data, otherwise enter your own description.'),
 			),
 			'title' => array(
 				'required' => false,
 				'name' => tra('Link title'),
 				'filter' => 'text',
-				'description' => tra('Title text. "desc" or "name" or "namedesc", otherwise enter your own title.'),
-				'advanced' => true,
-				'default' => '',
+				'description' => tra('Title text.'),
 			),
 			'alt' => array(
 				'required' => false,
 				'name' => tra('Alternate text'),
 				'filter' => 'text',
 				'description' => tra('Alternate text that displays when image does not load. Set to "Image" by default.'),
-				'default' => 'Image',
 			),
 			'default' => array(
 				'required' => false,
 				'name' => tra('Default config settings'),
 				'description' => tra('Default configuration settings (usually set by admin in the source code or through Plugin Alias).'),
-				'advanced' => true,
-				'default' => '',
 			),
 			'mandatory' => array(
 				'required' => false,
 				'name' => tra('Mandatory admin setting'),
 				'description' => tra('Mandatory configuration settings (usually set by admin in the source code or through Plugin Alias).'),
-				'advanced' => true,
-				'default' => '',
 			),
 		),
 	);
@@ -245,12 +206,6 @@ function wikiplugin_img_info() {
 
  function wikiplugin_img( $data, $params, $offset, $parseOptions='' ) {
 	 global $tikidomain, $prefs, $section, $smarty, $tikiroot;
-
-	 $getimagesize = 'getimagesize';
-
-	 if (isset($parseOptions['indexing']) && $parseOptions['indexing']) {
-	 	$getimagesize = 'wp_img_fakeimagesize';
-	 }
 
 	$imgdata = array();
 	
@@ -547,16 +502,14 @@ function wikiplugin_img_info() {
 		return $repl; // return the multiple images
 	}
 	
-	$repl = '';
-	$absolute_links = (!empty($parseOptions['absolute_links'])) ? $parseOptions['absolute_links'] : false;
-
 	//////////////////////Set src for html///////////////////////////////
 	//Set variables for the base path for images in file galleries, image galleries and attachments
-	global $base_url;
-	$imagegalpath = ($absolute_links ? $base_url : '') . 'show_image.php?id=';
-	$filegalpath = ($absolute_links ? $base_url : '') . 'tiki-download_file.php?fileId=';
-	$attachpath = ($absolute_links ? $base_url : '') . 'tiki-download_wiki_attachment.php?attId=';
+	$imagegalpath = 'show_image.php?id=';
+	$filegalpath = 'tiki-download_file.php?fileId=';
+	$attachpath = 'tiki-download_wiki_attachment.php?attId=';
 	
+	$repl = '';
+	$absolute_links = (!empty($parseOptions['absolute_links'])) ? $parseOptions['absolute_links'] : false;
 	//get random image and treat as file gallery image afterwards
 	if (!empty($imgdata['randomGalleryId'])) {
 		include_once('lib/tikilib.php');
@@ -632,7 +585,7 @@ function wikiplugin_img_info() {
 			if (!empty($imgdata['id']) || !empty($imgdata['fileId']) || !empty($imgdata['attId']) || !empty($imgdata['randomGalleryId'])) {
 				if( ! $dbinfo ) {
 					return '^' . tra('File not found.') . '^';
-				} elseif( substr($dbinfo['filetype'], 0, 5) != 'image' AND !preg_match('/thumbnail/i', $imgdata['fileId'])) {
+				} elseif( substr($dbinfo['filetype'], 0, 5) != 'image' ) {
 					return '^' . tra('File is not an image.') . '^';
 				} else {
 				require_once('lib/images/images.php');
@@ -656,12 +609,12 @@ function wikiplugin_img_info() {
 			$idesc = '';
 			$otherinfo = array();
 			if (!empty($dbinfo['data'])) {
-				getimagesize_raw($dbinfo['data'], false, $getimagesize);  //images in databases, calls function in this program
+				getimagesize_raw($dbinfo['data'], false);  //images in databases, calls function in this program
 			} else {
 				if (!empty($dbinfo['path'])) {
-					$imagesize = $getimagesize(($basepath . $dbinfo['path']), $otherinfo);  //images in tiki directories
+					$imagesize = getimagesize(($basepath . $dbinfo['path']), $otherinfo);  //images in tiki directories
 				} else {
-					$imagesize = $getimagesize($src, $otherinfo);  //wiki_up and external images
+					$imagesize = getimagesize($src, $otherinfo);  //wiki_up and external images
 				}
 				if (isset($otherinfo['APP13'])) { 
 					$iptc = iptcparse($otherinfo['APP13']); 
@@ -673,9 +626,6 @@ function wikiplugin_img_info() {
 				$imageObj = new Image($dbinfo['data'], false);
 			} elseif (!empty($dbinfo['path'])) {
 				$imageObj = new Image($basepath . $dbinfo['path'], true);	
-			} elseif (strpos($src,'http://') !== false) {
-				//Image class doesn't seem to work well for external images - no height or width
-				$imagesize = $getimagesize($src);
 			} else {
 				$imageObj = new Image($src, true);
 			}
@@ -683,10 +633,10 @@ function wikiplugin_img_info() {
 		//Set the variables for height, width and iptc data
 		$fwidth = '';
 		$fheight = '';
+		//set to null because Image class will place exif_thumbnail dimensions here if thumbnail exists
+		$imageObj->height = NULL;
+		$imageObj->width = NULL;
 		if (is_object($imageObj)) {
-			//set to null first because Image class will place exif_thumbnail dimensions here if thumbnail exists
-			$imageObj->height = NULL;
-			$imageObj->width = NULL;
 			$fwidth = $imageObj->get_width();
 			$fheight = $imageObj->get_height();
 		} else {  
@@ -807,7 +757,7 @@ function wikiplugin_img_info() {
 					$imgalthumb == true;
 				}
 				$height = $imgdata['height'];
-				if (empty($imgdata['width']) && $fheight > 0) {
+				if (empty($imgdata['width'])) {
 					$width = floor($height * $fwidth / $fheight);
 				} else {
 					$width = $imgdata['width'];
@@ -815,7 +765,7 @@ function wikiplugin_img_info() {
 			} elseif (!empty($imgdata['width']))  {
 				//use image gal thumbs when possible
 				if ((!empty($imgdata['id']) && $imgalthumb == false) 
-					&& ($imgdata['width'] < $fwidtht)
+					&& ($imgdata['width'] < $widtht)
 				) {
 					$src .= '&thumb=1';
 					$imgalthumb == true;
@@ -829,7 +779,7 @@ function wikiplugin_img_info() {
 			// If not otherwise set, use default setting for thumbnail height if thumb is set
 			} elseif ((!empty($imgdata['thumb']) || !empty($urlthumb))  && empty($scale)) {
 				if (!empty($imgdata['fileId'])) {
-					$thumbdef = $prefs['fgal_thumb_max_size'];
+					$thumbdef = 120;	// filegals thumbnails size is hard-coded in lib/images/abstract.php
 				} else {
 					$thumbdef = 84;  
 				}
@@ -989,9 +939,6 @@ function wikiplugin_img_info() {
 				case 'ititle':
 					$desconly = $ititle;
 					break;
-				case 'namedesc':
-					$desconly = $imgname.((!empty($imgname) && !empty($desc))?' - ':'').$desc;
-					break;
 				default:
 					$desconly = $imgdata['desc'];
 			}
@@ -1002,19 +949,7 @@ function wikiplugin_img_info() {
 		if ( !empty($imgdata['title']) || !empty($desconly)) {
 			$imgtitle = ' title="';
 			if ( !empty($imgdata['title']) ) {
-				switch ($imgdata['title']) {
-				case 'desc':
-					$titleonly = $desc;
-					break;
-				case 'name':
-					$titleonly = $imgname;
-					break;
-				case 'namedesc':
-					$titleonly = $imgname.((!empty($imgname) && !empty($desc))?' - ':'').$desc;
-					break;
-				default:
-					$titleonly = $imgdata['title'];
-				}
+				$titleonly = $imgdata['title'];
 			//use desc setting for title if title is empty
 			} else {										
 				$titleonly = $desconly;
@@ -1144,7 +1079,7 @@ function wikiplugin_img_info() {
 			if (!empty($titleonly)) {
 				$repl .= ' title="' . $titleonly . '"';
 			}
-			$repl .= ">\r\t\t\t\t" . '<img class="magnify" src="./pics/icons/magnifier.png" alt="'.tra('Enlarge').'" /></a>' . "\r\t\t\t</div>";
+			$repl .= ">\r\t\t\t\t" . '<img class="magnify" src="./pics/icons/magnifier.png" alt="Enlarge" /></a>' . "\r\t\t\t</div>";
 		}	
 		//Add description based on user setting (use $desconly from above) and close divs
 		isset($desconly) ? $repl .= $desconly : '';
@@ -1167,7 +1102,7 @@ function wikiplugin_img_info() {
 			if ($imgdata['align'] == 'center') {
 				$alignbox = $center;
 			} else {
-				$alignbox = 'float:' . $imgdata['align'] . '; margin-' . ($imgdata['align'] == 'left'? 'right': 'left') .':5px;';
+				$alignbox = 'float:' . $imgdata['align'] . ';';
 			}
 		}
 		//first set stylebox string if style box is set
@@ -1226,13 +1161,13 @@ function wikiplugin_img_info() {
 	if(isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'mobile') {
 		$repl = '{img src=' . $src . "\"}\n<p>" . $imgdata['desc'] . '</p>'; 
 	}
-	return '~np~' . $repl. '~/np~';
+	return '~np~'.$repl.'~/np~';
 }
 
 /////////////////////////////////////////Function for getting image data from raw file (no filename)////////////////////////////////
  ///Creates a temporary file name and path for a raw image stored in a tiki database since getimagesize needs one to work
 if (!function_exists('getimagesize_raw')) {
-	function getimagesize_raw($data, $thumb, $getimagesize)
+	function getimagesize_raw($data, $thumb)
 	{
         $cwd = getcwd(); #get current working directory
         $tempfile = tempnam("$cwd/tmp", "temp_image_");#create tempfile and return the path/name (make sure you have created tmp directory under $cwd
@@ -1241,21 +1176,16 @@ if (!function_exists('getimagesize_raw')) {
         fclose($temphandle);
 		global $imagesize, $otherinfo, $iptc, $imagesizet;
 		if ($thumb == false) {
-	        $imagesize = $getimagesize($tempfile, $otherinfo); #get image params from the tempfile
+	        $imagesize = getimagesize($tempfile, $otherinfo); #get image params from the tempfile
 			if (!empty($otherinfo['APP13'])) {
 				$iptc = iptcparse($otherinfo['APP13']);
 			} else {
 				$iptc = '';
 			}
 		} else {
-			$imagesizet = $getimagesize($tempfile);
+			$imagesizet = getimagesize($tempfile);
 		}
         unlink($tempfile); // this removes the tempfile
-	}
-
-	function wp_img_fakeimagesize()
-	{
-		return array(1, 1);
 	}
 }
  

@@ -5,139 +5,84 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+function wikiplugin_youtube_help() {
+        return tra("Display youtube video in a wiki page").":<br />~np~{YOUTUBE(movie=>\"url_to_youtube_video\")}{YOUTUBE}~/np~";
+}
+
 function wikiplugin_youtube_info() {
 	return array(
-		'name' => tra('YouTube'),
+		'name' => tra('Youtube'),
 		'documentation' => 'PluginYouTube',
-		'description' => tra('Display a YouTube video'),
+		'description' => tra('Display youtube video in a wiki page'),
 		'prefs' => array( 'wikiplugin_youtube' ),
-		'icon' => 'pics/icons/youtube.png',
 		'params' => array(
 			'movie' => array(
 				'required' => true,
-				'name' => tra('Movie'),
-				'description' => tra('Entire URL to the YouTube video or last part (after www.youtube.com/v/ and before the first question mark)'),
-				'filter' => 'url',
-				'default' => '',
+				'name' => 'Movie',
+				'description' => tra('URL to the Youtube video'),
 			),
 			'width' => array(
 				'required' => false,
-				'name' => tra('Width'),
+				'name' => tra('width'),
 				'description' => tra('Width in pixels'),
-				'filter' => 'digits',
 				'default' => 425,
 			),
 			'height' => array(
 				'required' => false,
-				'name' => tra('Height'),
+				'name' => tra('height'),
 				'description' => tra('Height in pixels'),
-				'filter' => 'digits',
 				'default' => 350,
 			),
 			'quality' => array(
 				'required' => false,
-				'name' => tra('Quality'),
-				'description' => tra('Quality of the video. Default is high.'),
+				'name' => tra('quality'),
+				'description' => tra('quality'),
 				'default' => 'high',
-				'filter' => 'alpha',
-    			'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('High'), 'value' => 'high'), 
-					array('text' => tra('Medium'), 'value' => 'medium'), 
-					array('text' => tra('Low'), 'value' => 'low'), 
-				),  
-				'advanced' => true				
 			),
 			'allowFullScreen' => array(
 				'required' => false,
 				'name' => tra('Allow Fullscreen'),
-				'description' => tra('Enlarge video to full screen size'),
-				'default' => '',
-				'filter' => 'alpha',
-     			'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n'), 
- 				),
- 				'advanced' => true			
-			),
-			'related' => array(
-				'required' => false,
-				'name' => tra('Related'),
-				'description' => tra('Show related videos (shown by default)'),
-				'since' => 6.1,
-				'default' => '',
-				'filter' => 'alpha',
-    			'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n'), 
-				),
-				'advanced' => true				
-			),
-			'background' => array(
-				'required' => false,
-				'name' => tra('Background'),
-				'description' => tra('Toolbar background color. Use an HTML color code. Example: ffffff'),
-				'accepted' => tra('HTML color code, e.g. ffffff'),
-				'since' => 6.1,
-				'filter' => 'striptags',
-				'default' => '',
-				'advanced' => true				
-			),
-			'border' => array(
-				'required' => false,
-				'name' => tra('Borders'),
-				'description' => tra('Toolbar border colors. Use an HTML color code. Example: ffffff'),
-				'accepted' => tra('HTML color code, e.g. ffffff'),
-				'since' => 6.1,
-				'filter' => 'striptags',
-				'default' => '',
-				'advanced' => true				
+				'description' => 'y|n',
+				'default' => 'n',
 			),
 		),
 	);
 }
 
 function wikiplugin_youtube($data, $params) {
-	global $tikilib;
 	
- 	$plugininfo = wikiplugin_youtube_info();
- 	foreach ($plugininfo['params'] as $key => $param) {
- 		$default["$key"] = $param['default'];
- 	}
-	$params = array_merge($default, $params);
+	extract ($params,EXTR_SKIP);
 
-	if (empty($params['movie'])) {
-		return '^' . tra('Plugin YouTube error: the movie parameter is empty.');
+	if (empty($movie)) {
+		return tra('Missing parameter movie to the youtube plugin');
 	}
+	
+	if (!isset($width)) {
+	    $width = "425";
+	}	
 
-	$params['movie'] = 'http://www.youtube.com/v/' . preg_replace('/http(s)?:\/\/(\w+\.)?youtube\.com\/watch\?v=/', '', $params['movie']);
+	if (!isset($height)) {
+	    $height = "350";
+	}	
 
-	// backward compatibility
-	if ($params['allowFullScreen'] == 'y') {
-		$params['allowFullScreen'] = 'true';
-	} else if ($params['allowFullScreen'] == 'n') {
-		$params['allowFullScreen'] = 'false';
-	}
-
-	if (!empty($params['allowFullScreen']) && $params['allowFullScreen'] == 'true') {
-		$params['movie'] .= '?fs=1';
-	}
-	if (isset($related) && $related == 'n') {
-		$params['movie'] .= '&rel=0';
-	}
-	if (!empty($params['border'])) {
-		$params['movie'] .= '&color1=0x' . $params['border'];
-	}
-	if (!empty($params['background'])) {
-		$params['movie'] .= '&color2=0x' . $params['background'];
+	if (!isset($quality)) {
+	    $quality = "high";
 	}
 
-	$code = $tikilib->embed_flash($params);
-
-	if ( $code === false ) {
-		return tra('Missing parameter movie to the Youtube plugin');
+	$movie = "http://www.youtube.com/v/" . preg_replace('/http:\/\/(\w+\.)?youtube\.com\/watch\?v=/', '', $movie);
+	if (!empty($allowFullScreen) && $allowFullScreen = 'y') {
+		$movie .= '&fs=1';
+		$fs = ' allowFullScreen="true" ';
 	}
-	return '~np~' . $code . '~/np~';
+
+	$asetup = "<OBJECT CLASSID=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0\" WIDTH=\"$width\" HEIGHT=\"$height\">";
+	$asetup .= "<PARAM NAME=\"movie\" VALUE=\"$movie\">";
+	$asetup .= "<PARAM NAME=\"quality\" VALUE=\"$quality\">";
+	$asetup .= "<PARAM NAME=\"wmode\" VALUE=\"transparent\">";
+	if (!empty($allowFullScreen) && $allowFullScreen = 'y') {
+		$asetup .= '<PARAM NAME="allowFullScreen" VALUE="true"></PARAM>';
+	}
+	$asetup .= "<embed src=\"$movie\" quality=\"$quality\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" width=\"$width\" height=\"$height\" $fs wmode=\"transparent\"></embed></object>";
+
+	return $asetup;
 }

@@ -28,7 +28,8 @@
 		        <img id="map" src="{$image_url}"
 						{if $xsize != ""}width="{$xsize}"{/if} 
 						{if $ysize != ""}height="{$ysize}"{/if}
-					alt="{tr}click on the map to zoom or pan, do not drag{/tr}" 
+						border="0"
+		  			alt="{tr}click on the map to zoom or pan, do not drag{/tr}" 
 					  title="{tr}click on the map to zoom or pan, do not drag{/tr}"
 					  style="z-index:20;position:relative" /> 
 			</div>		  

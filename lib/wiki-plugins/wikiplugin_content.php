@@ -8,25 +8,22 @@
 function wikiplugin_content_info() {
 	return array(
 		'name' => tra( 'Dynamic Content' ),
-		'documentation' => 'PluginContent',
-		'description' => tra( 'Display content from dynamic content repository' ),
+		'documentation' => 'PluginContent',		
+		'description' => tra( 'Includes content from the dynamic content system.' ),
 		'prefs' => array( 'feature_dynamic_content', 'wikiplugin_content' ),
 		'filter' => 'text',
-		'icon' => 'pics/icons/database_table.png',
 		'params' => array(
 			'id' => array(
 				'required' => false,
 				'name' => tra('Content ID'),
 				'description' => tra('Dynamic content ID. The value can be obtained in the listing.'),
 				'filter' => 'digits',
-				'default' => '',
 			),
 			'label' => array(
 				'required' => false,
 				'name' => tra('Content Label'),
 				'description' => tra('Label of the dynamic content to display.'),
 				'filter' => 'description',
-				'default' => '',
 			),
 		),
 	);
@@ -41,9 +38,9 @@ function wikiplugin_content( $data, $params, $offset, $parseOptions) {
 		$lang = $parseOptions['language'];
 	}
 
-	if( isset($params['id']) &&  $params['id'] ) {
+	if( $params['id'] ) {
 		return $dcslib->get_actual_content((int) $params['id'], $lang);
-	} elseif( isset($params['label']) && $params['label'] ) {
+	} elseif( $params['label'] ) {
 		return $dcslib->get_actual_content_by_label( $params['label'], $lang);
 	}
 }

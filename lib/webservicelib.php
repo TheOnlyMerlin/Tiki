@@ -5,17 +5,11 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-require_once 'lib/ointegratelib.php';
-require_once 'soap/soaplib.php';
-require_once 'soap/wsdllib.php';
-
 class Tiki_Webservice
 {
 	private $name;
 	public $url;
 	public $body;
-	public $operation;
-	public $wstype;
 	public $schemaVersion;
 	public $schemaDocumentation;
 
@@ -39,7 +33,7 @@ class Tiki_Webservice
 		$name = strtolower( $name );
 
 		global $tikilib;
-		$result = $tikilib->query( "SELECT url, operation, wstype, body, schema_version, schema_documentation FROM tiki_webservice WHERE service = ?", array( $name ) );
+		$result = $tikilib->query( "SELECT url, body, schema_version, schema_documentation FROM tiki_webservice WHERE service = ?", array( $name ) );
 
 		while( $row = $result->fetchRow() ) {
 			$service = new self;
@@ -47,18 +41,11 @@ class Tiki_Webservice
 			$service->name = $name;
 			$service->url = $row['url'];
 			$service->body = $row['body'];
-			$service->operation = $row['operation'];
-			$service->wstype = $row['wstype'];
 			$service->schemaVersion = $row['schema_version'];
 			$service->schemaDocumentation = $row['schema_documentation'];
 
 			return $service;
 		}
-	} // }}}
-
-	public static function getTypes() // {{{
-	{
-		return array('REST', 'SOAP');
 	} // }}}
 
 	public static function getList() // {{{
@@ -79,12 +66,10 @@ class Tiki_Webservice
 		global $tikilib;
 		$tikilib->query( "DELETE FROM tiki_webservice WHERE service = ?", array( $this->name ) );
 
-		$tikilib->query( "INSERT INTO tiki_webservice (service, url, operation, wstype, body, schema_version, schema_documentation) VALUES(?,?,?,?,?,?,?)",
+		$tikilib->query( "INSERT INTO tiki_webservice (service, url, body, schema_version, schema_documentation) VALUES(?,?,?,?,?)", 
 			array(
 				$this->name,
 				$this->url,
-				$this->operation,
-				$this->wstype,
 				$this->body,
 				$this->schemaVersion,
 				$this->schemaDocumentation,
@@ -100,21 +85,10 @@ class Tiki_Webservice
 
 	function getParameters() // {{{
 	{
-		global $wsdllib;
-
-		switch ($this->wstype)
-		{
-			case 'SOAP':
-				return $wsdllib->getParametersNames( $this->url, $this->operation );
-
-			case 'REST':
-			default:
-				if( preg_match_all( "/%(\w+)%/", $this->url . ' ' . $this->body, $matches, PREG_PATTERN_ORDER ) ) {
-					return array_diff( $matches[1], array( 'service', 'template' ) );
-				} else {
-					return array();
-				}
-		}
+		if( preg_match_all( "/%(\w+)%/", $this->url . ' ' . $this->body, $matches, PREG_PATTERN_ORDER ) )
+			return array_diff( $matches[1], array( 'service', 'template' ) );
+		else
+			return array();
 	} // }}}
 
 	function getParameterMap( $params ) // {{{
@@ -134,52 +108,28 @@ class Tiki_Webservice
 
 	function performRequest( $params ) // {{{
 	{
-		global $soaplib, $prefs;
-
 		$built = $this->url;
 		$builtBody = $this->body;
 
 		$map = $this->getParameterMap( $params );
-			
+		foreach( $map as $name => $value ) {
+			$built = str_replace( "%$name%", urlencode( $value ), $built );
+			$builtBody = str_replace( "%$name%", urlencode( $value ), $builtBody );
+		}
+
 		if( $built ) {
-			switch( $this->wstype ) {
-				case 'SOAP':
-					if ( !empty($this->operation) ) {
-						$options = array( 'encoding' => 'UTF-8' );
+			$ointegrate = new OIntegrate;
+			$ointegrate->addAcceptTemplate( 'smarty', 'tikiwiki' );
+			$ointegrate->addAcceptTemplate( 'smarty', 'html' );
+			$ointegrate->addAcceptTemplate( 'javascript', 'html' );
 
-						if ( $prefs['use_proxy'] == 'y' && !strpos($built, 'localhost') ) {
-							$options['proxy_host'] = $prefs['proxy_host'];
-							$options['proxy_port'] = $prefs['proxy_port'];
-						}
-
-						$response = new OIntegrate_Response();
-						$response->data = $soaplib->performRequest( $built, $this->operation, $map, $options );
-
-						return $response;
-					}
-
-					return false;
-
-				case 'REST':
-				default:
-					foreach( $map as $name => $value ) {
-						$built = str_replace( "%$name%", urlencode( $value ), $built );
-						$builtBody = str_replace( "%$name%", urlencode( $value ), $builtBody );
-					}
-
-					$ointegrate = new OIntegrate;
-					$ointegrate->addAcceptTemplate( 'smarty', 'tikiwiki' );
-					$ointegrate->addAcceptTemplate( 'smarty', 'html' );
-					$ointegrate->addAcceptTemplate( 'javascript', 'html' );
-
-					if( $this->schemaVersion ) {
-						$ointegrate->addSchemaVersion( $this->schemaVersion );
-					}
-
-					$response = $ointegrate->performRequest( $built, $builtBody );
-
-					return $response;
+			if( $this->schemaVersion ) {
+				$ointegrate->addSchemaVersion( $this->schemaVersion );
 			}
+
+			$response = $ointegrate->performRequest( $built, $builtBody );
+			
+			return $response;
 		}
 	} // }}}
 

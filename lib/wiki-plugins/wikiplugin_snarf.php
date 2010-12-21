@@ -20,133 +20,72 @@ function wikiplugin_snarf_info() {
 	return array(
 		'name' => tra('Snarf'),
 		'documentation' => 'PluginSnarf',
-		'description' => tra('Display the contents of another web page'),
+		'description' => tra('Include the content of a remote HTTP page. Regular expression selecting the content portion to include must be specified.'),
 		'prefs' => array( 'wikiplugin_snarf' ),
 		'validate' => 'all',
-		'icon' => 'pics/icons/page_copy.png',
 		'params' => array(
 			'url' => array(
 				'required' => true,
 				'name' => tra('URL'),
 				'description' => tra('Full URL to the page to include.'),
-				'filter' => 'url',
-				'default' => '',
 			),
 			'regex' => array(
 				'required' => false,
-				'name' => tra('Regular Expression Pattern'),
-				'description' => tra('PCRE-compliant regular expression pattern to find the parts you want changed'),
-				'default' => '',
+				'name' => tra('Regular Expression'),
+				'description' => tra('PCRE compliant regular expression'),
 			),
 			'regexres' => array(
 				'required' => false,
-				'name' => tra('Regular Expression Replacement'),
-				'description' => tra('PCRE-compliant regular expression replacement syntax showing what the content should be changed to'),
-				'default' => '',
+				'name' => tra('Regular Expression Part'),
+				'description' => tra('ex: $1'),
 			),
 			'wrap' => array(
 				'required' => false,
 				'name' => tra('Word Wrap'),
-				'description' => tra('Enable/disable word wrapping of snippets of code (enabled by default)'),
-				'default' => 1,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				)
+				'description' => tra('0|1, Enable word wrapping on the code to avoid breaking the layout.'),
 			),
 			'colors' => array(
 				'required' => false,
 				'name' => tra('Colors'),
-				'description' => tra('Syntax highlighting to use for code snippets. Available: php, html, sql, javascript, css, java, c, doxygen, delphi, ...'),
-				'default' => NULL
+				'description' => tra('Syntax highlighting to use. May not be used with line numbers. Available: php, html, sql, javascript, css, java, c, doxygen, delphi, ...'),
 			),
 			'ln' => array(
 				'required' => false,
-				'name' => tra('Line Numbers'),
-				'description' => tra('Set to 1 (Yes) to add line numbers to code snippets (not shown by default)'),
-				'default' => NULL,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				)
+				'name' => tra('Line numbers'),
+				'description' => tra('0|1, may not be used with colors.'),
 			),
 			'wiki' => array(
 				'required' => false,
-				'name' => tra('Wiki Syntax'),
-				'description' => tra('Parse wiki syntax within the code snippet (not parsed by default).'),
-				'default' => 0,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				)
+				'name' => tra('Wiki syntax'),
+				'description' => tra('0|1, parse wiki syntax within the code snippet.'),
 			),
 			'rtl' => array(
 				'required' => false,
-				'name' => tra('Right to Left'),
-				'description' => tra('Switch the text display from left to right to right to left'),
-				'default' => NULL,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				)
+				'name' => tra('Right to left'),
+				'description' => tra('0|1, switch the text display from left to right to right to left'),
 			),
 			'ishtml' => array(
 				'required' => false,
-				'name' => tra('HTML Content'),
-				'description' => tra('Set to 1 (Yes) to display the content as is instead of escaping HTML special chars (not set by default).'),
-				'default' => NULL,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				)
+				'name' => tra('Content is HTML'),
+				'description' => tra('0|1, display the content as is instead of escaping HTML special chars'),
+				'default' => 0,
 			),
 			'cache' => array(
 				'required' => false,
-				'name' => tra('Cache Url'),
-				'description' => tra('Cache time in minutes. Default is to use site preference, Set to 0 for no cache.'),
-				'default' => '',
+				'name' => tra('Cache the url'),
+				'description' => tra('Cache time in minutes (0 for no cache, -1 for site preference'),
+				'default' => -1,
 			),
-			'ajax' => array(
-				'required' => false,
-				'name' => tra('Label'),
-				'description' => tra('Text to click on to fetch the url via ajax'),
-				'default' => '',
-			),
+
 		),
 	);
 }
 
 function wikiplugin_snarf($data, $params)
 {
-    global $tikilib, $prefs, $smarty;
+    global $tikilib, $prefs;
 	static $url=''; static $snarf; static $isFresh = true;
-	static $iSnarf = 0;
-	++$iSnarf;
-	if (empty($params['url'])) {
-		return '';
-	}
 	
-	if (!empty($params['ajax'])) {
-		$params['iSnarf'] = $iSnarf;
-		$params['href'] = '';
-		$params['link'] = '-';
-		foreach ($params as $key=>$value) {
-			if ($key == 'ajax' || $key == 'href') {
-				continue;
-			}
-			if (!empty($params['href'])) {
-				$params['href'] .= '&';
-			}
-			$params['href'] .= $key.'='.$value;
-		}
-		$smarty->assign('snarfParams', $params);
-		return $smarty->fetch('wiki-plugins/wikiplugin_snarf.tpl');
-	}
 	if ($url != $params['url']) { // already fetch in the page
 		if (isset($_REQUEST['snarf_refresh']) && $_REQUEST['snarf_refresh'] == $params['url']) {
 			$cachetime = 0;
@@ -164,8 +103,8 @@ function wikiplugin_snarf($data, $params)
 	// If content is HTML, keep only the content of the body
 	if ( isset($params['ishtml']) && $params['ishtml'] == 1 ) {
 		// Not using preg_replace due to its limitations to 100.000 characters
-		$snarf = preg_replace('/^.*<\s*body[^>]*>/i', '', $snarf);
-		$snarf = preg_replace('/<\s*\/body[^>]*>.*$/i', '', $snarf);
+		$snarf = eregi_replace('^.*<\s*body[^>]*>', '', $snarf);
+		$snarf = eregi_replace('<\s*\/body[^>]*>.*$', '', $snarf);
 	}
 
 	// If the user specified a more specialized regex
@@ -184,7 +123,7 @@ function wikiplugin_snarf($data, $params)
 	include_once('lib/wiki-plugins/wikiplugin_code.php');
 	$ret = wikiplugin_code($snarf, $code_defaults);
 
-	if (!$isFresh && empty($params['link'])) {
+	if (!$isFresh) {
 		global $smarty;
 		include_once('lib/smarty_tiki/block.self_link.php');
 		$icon = '<div style="text-align:right">'.smarty_block_self_link(array('_icon' => 'arrow_refresh', 'snarf_refresh'=>$params['url']), '', $smarty).'</div>';

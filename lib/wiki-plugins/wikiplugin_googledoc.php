@@ -17,140 +17,86 @@ function wikiplugin_googledoc_help() {
 
 function wikiplugin_googledoc_info() {
 	return array(
-		'name' => tra('Google Doc'),
+		'name' => tra('googledoc'),
 		'documentation' => 'PluginGoogleDoc',
-		'description' => tra('Display a Google document'),
+		'description' => tra("Displays a Google document"),
 		'prefs' => array( 'wikiplugin_googledoc' ),
 		'body' => tra('Leave this empty.'),
 //		'validate' => 'all',
-		'icon' => 'pics/icons/google.png',
 		'params' => array(
 			'type' => array(
 				'safe' => true,
 				'required' => true,
-				'name' => tra('Type'),
+				'name' => tra('type'),
 				'description' => tra('Type of Google document'),
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Document'), 'value' => 'document'), 
-					array('text' => tra('Presentation'), 'value' => 'presentation'), 
-					array('text' => tra('Spreadsheet'), 'value' => 'speadsheet')
-				)
 			),
 			'key' => array(
 					'safe' => true,
 					'required' => true,
 					'name' => tra('key'),
 					'description' => tra('Google doc key - for example: pXsHENf1bGGY92X1iEeJJI'),
-					'default' => ''
 				),
 			'name' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Name'),
-				'description' => tra('Name of iframe. Default is "Frame" + the key')
+				'description' => tra('Name of iframe'),
 			),
 			'size' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Size'),
-				'description' => tra('Size of frame. Use instead of width and height. The sizes will fit the Google presentations sizes exactly.'),
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Small'), 'value' => 'small'), 
-					array('text' => tra('Medium'), 'value' => 'medium'), 
-					array('text' => tra('Large'), 'value' => 'large')
-				)
+				'description' => tra('Size of frame, use instead of width and height, they will fit the Google presentations sizes exactly. It can be small|medium|large.'),
 			),
 			'width' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Width'),
-				'description' => tra('Width in pixels or %'),
-				'filter' => 'digits',
-				'default' => 800
+				'description' => tra('Pixels or %'),
 			),
 			'height' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Height'),
-				'description' => tra('Height in pixels or %'),
-				'filter' => 'digits',
-				'default' => 400
+				'description' => tra('Pixels or %'),
 			),
 			'align' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Alignment'),
 				'description' => 'top|middle|bottom|left|right',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Top'), 'value' => 'top'), 
-					array('text' => tra('Middle'), 'value' => 'middle'), 
-					array('text' => tra('Bottom'), 'value' => 'bottom'), 
-					array('text' => tra('Left'), 'value' => 'left'), 
-					array('text' => tra('Right'), 'value' => 'right') 
-				)
 			),
 			'frameborder' => array(
 				'safe' => true,
 				'required' => false,
-				'name' => 'Frame Border',
-				'description' => tra('Choose whether to show a border around the iframe'),
-				'default' => 0,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				)
+				'name' => 'frameborder',
+				'description' => '1|0',
 			),
 			'marginheight' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Margin Height'),
-				'description' => tra('Margin height in pixels'),
-				'default' => ''
+				'description' => tra('Pixels'),
 			),
 			'marginwidth' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Margin Width'),
-				'description' => tra('Margin width in pixels'),
-				'default' => ''
+				'description' => tra('Pixels'),
 			),
 			'scrolling' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Scrolling'),
-				'description' => tra('Choose whether to add a scroll bar'),
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'yes'), 
-					array('text' => tra('No'), 'value' => 'no'),
-					array('text' => tra('Auto'), 'value' => 'auto')
-				)
+				'description' => 'yes|no|auto',
 			),
 			'editLink' => array(
 				'safe' => true,
 				'required' => false,
-				'name' => tra('Edit Link'),
-				'description' => tra('Choose whether to show an edit link and set its location'),
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Top'), 'value' => 'top'), 
-					array('text' => tra('Bottom'), 'value' => 'bottom'),
-					array('text' => tra('Both'), 'value' => 'both')
-				)
-			)
-		)
+				'name' => tra('editLink'),
+				'description' => 'top|bottom|both',
+			),
+		),
 	);
 }
 

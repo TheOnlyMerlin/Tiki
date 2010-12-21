@@ -6,14 +6,18 @@
 // $Id$
 
 // Displays a snippet of code
+function wikiplugin_code_help() {
+	$help = tra("Displays a snippet of code").":<br />~np~{CODE(ln=>1,colors=>php|html|sql|javascript|css|java|c|doxygen|delphi|...,caption=>caption text,wrap=>1,wiki=>1,rtl=>1)}".tra("code")."{CODE}~/np~ - ''".tra("note: colors and ln are exclusive")."''";
+	return tra($help);
+}
 
 function wikiplugin_code_info() {
 	return array(
 		'name' => tra('Code'),
 		'documentation' => 'PluginCode',
-		'description' => tra('Display code syntax with line numbers and color highlights'),
+		'description' => tra('Displays a snippet of code'),
 		'prefs' => array('wikiplugin_code'),
-		'body' => tra('Code'),
+		'body' => tra('code'),
 		'icon' => 'pics/icons/page_white_code.png',
 		'params' => array(
 			'caption' => array(
@@ -24,90 +28,45 @@ function wikiplugin_code_info() {
 			'wrap' => array(
 				'required' => false,
 				'name' => tra('Word Wrap'),
-				'description' => tra('Enable word wrapping on the code to avoid breaking the layout. May not be used with line numbers if Geshi version 1.0.8.9+'),
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => '1'),
-					array('text' => tra('No'), 'value' => '0'),
-				),
+				'description' => tra('0|1, Enable word wrapping on the code to avoid breaking the layout.'),
 			),
 			'colors' => array(
 				'required' => false,
 				'name' => tra('Colors'),
-				'description' => tra('Syntax highlighting to use. GeSHi - Generic Syntax Highlighter must be installed for languages other than php. Without GeSHi, the php tag must be included at the 
-									beginning of the displayed code for the highlighting to work. May not be used with line numbers if Geshi version < 1.0.8.9. Available: php, html, sql, javascript, css, java, c, doxygen, delphi, rsplus...'),
-				'advanced' => true,
+				'description' => tra('Syntax highlighting to use. May not be used with line numbers. Available: php, html, sql, javascript, css, java, c, doxygen, delphi, ...'),
 			),
 			'ln' => array(
 				'required' => false,
-				'name' => tra('Line Numbers'),
-				'description' => tra('Show line numbers for each line of code. May not be used with colors unless GeSHI is installed.'),
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => '1'),
-					array('text' => tra('No'), 'value' => '0'),
-				),
-				'advanced' => true,
+				'name' => tra('Line numbers'),
+				'description' => tra('0|1, may not be used with colors.'),
 			),
 			'wiki' => array(
 				'required' => false,
-				'name' => tra('Wiki Syntax'),
-				'description' => tra('Parse wiki syntax within the code snippet (not parsed by default)'),
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('No'), 'value' => '0'),
-					array('text' => tra('Yes'), 'value' => '1'),
-				),
-				'advanced' => true,
+				'name' => tra('Wiki syntax'),
+				'description' => tra('0|1, parse wiki syntax within the code snippet.'),
 			),
 			'rtl' => array(
 				'required' => false,
-				'name' => tra('Right to Left'),
-				'description' => tra('Switch the text display from left to right to right to left  (left to right by default)'),
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => '1'),
-					array('text' => tra('No'), 'value' => '0'),
-				),
-				'advanced' => true,
+				'name' => tra('Right to left'),
+				'description' => tra('0|1, switch the text display from left to right to right to left'),
 			),
 			'ishtml' => array(
 				'required' => false,
 				'name' => tra('Content is HTML'),
-				'description' => tra('When set to 1 (Yes), HTML will still be processed (presented as is by default)'),
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Show HTML'), 'value' => '0'),
-					array('text' => tra('Interpret HTML'), 'value' => '1'),
-				),
-			),
-			'cpy' => array(
-				'required' => false,
-				'name' => tra('Copy To Clipboard'),
-				'description' => tra('Copy the contents of the code box to the clipboard  (not copied to clipboard by default)'),
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => '1'),
-					array('text' => tra('No'), 'value' => '0'),
-				),
-				'advanced' => true,
+				'description' => tra('0|1, display the content as is instead of escaping HTML special chars'),
 			),
 		),
 	);
 }
 
 function wikiplugin_code($data, $params) {
-	static $code_count;
-	$default = array('cpy' => 0);
-	$params = array_merge($default, $params);
-	extract($params, EXTR_SKIP);
-
+	if ( is_array($params) ) {
+		extract($params, EXTR_SKIP);
+	}
 	$code = trim($data);
 
 	$parse_wiki = ( isset($wiki) && $wiki == 1 );
 	$escape_html = ( ! isset($ishtml) || $ishtml != 1 );
-	$id = 'codebox'.$code_count;
-	$boxid = " id=\"$id\" ";
 
 	// Detect if GeSHI (Generic Syntax Highlighter) is available
 	$geshi_paths = array(
@@ -142,7 +101,7 @@ function wikiplugin_code($data, $params) {
 
 		// Remove first <pre> tag
 		if ( $out != '' ) {
-			$out = preg_replace('/^<pre[^>]*>(.*)<\/pre>$/', '\\1', $out);
+			$out = ereg_replace('^<pre[^>]*>(.*)</pre>$', '\\1', $out);
 			$out = trim($out);
 		}
 
@@ -154,13 +113,13 @@ function wikiplugin_code($data, $params) {
 
 		// Convert &nbsp; into spaces and <br /> tags into real line breaks, since it will be displayed in a <pre> tag
 		$out = str_replace('&nbsp;', ' ', $out);
-		$out = preg_replace('/<br[^>]+>/i', "\n", $out);
+		$out = eregi_replace('<br[^>]+>', "\n", $out);
 
 		// Remove first <code> tag
-		$out = preg_replace("#^\s*<code[^>]*>(.*)</code>$#i", '\\1', $out);
+		$out = eregi_replace('^\s*<code[^>]*>(.*)</code>$', '\\1', $out);
 
 		// Remove spaces after the first tag and before the start of the code
-		$out = preg_replace("/^\s*(<[^>]+>)\n/", '\\1', $out);
+		$out = ereg_replace("^\s*(<[^>]+>)\n", '\\1', $out);
 		$out = trim($out);
 
 		if ( ! $escape_html ) $out = TikiLib::htmldecode($out);
@@ -195,45 +154,15 @@ function wikiplugin_code($data, $params) {
 		$pre_style = 'overflow:auto;';
 	}
 
-	$out = '<pre class="codelisting" dir="'.( (isset($rtl) && $rtl == 1) ? 'rtl' : 'ltr').'" style="'.$pre_style.'"'.$boxid.'>'
+	$out = '<pre class="codelisting" dir="'.( (isset($rtl) && $rtl == 1) ? 'rtl' : 'ltr').'" style="'.$pre_style.'">'
 		.(( $parse_wiki ) ? '' : '~np~')
 		.$out
 		.(( $parse_wiki ) ? '' : '~/np~')
-		.'</pre>'
-		.(($cpy && ($code_count < 1)) ? '<script type="text/javascript" src="lib/ZeroClipboard.js"></script>' : '')
-		.(( $cpy ) ? '<script language="JavaScript">var clip = new ZeroClipboard.Client();var elem = document.getElementById ("'.$id.'");clip.setText( elem.innerText || elem.textContent );clip.glue( \'d_clip_button'.$id.'\' );clip.addEventListener( \'complete\', function(client, text) {alert("The code has been copied to the clipboard.");} );</script>' : '');
+		.'</pre>';
 
-		$out = '<div class="plugincode">'.((isset($caption)) ? '<div class="codecaption">'.$caption.'</div>' : '').(( $cpy ) ? '<div class="codecaption" id="d_clip_button'.$id.'">Copy To Clipboard</div>' : '').$out.'</div>';
-	$code_count++;
+	if ( isset($caption) ) {
+		$out = '<div class="plugincode"><div class="codecaption">'.$caption.'</div>'.$out.'</div>';
+	}
+
 	return $out;
-}
-
-require_once 'tiki-setup.php';
-global $headerlib, $prefs;
-if ( $prefs['feature_syntax_highlighter'] == 'y' ) {
-	$headerlib->add_cssfile( 'lib/codemirror_tiki/docs.css' );
-	$headerlib->add_jsfile( 'lib/codemirror_tiki/js/codemirror.js' );
-	
-	$headerlib->add_js("
-		$(document)
-			.bind('plugin_code_ready', function(args) {
-				var code = args.container.find('textarea:first')
-					.attr('id', 'code');
-				
-				//ensure that codemirror is running, if so run
-				if (CodeMirror) {
-					var editor = CodeMirror.fromTextArea('code', {
-						height: '350px',
-						parserfile: ['parsexml.js', 'parsecss.js', 'tokenizejavascript.js', 'parsejavascript.js', 'parsehtmlmixed.js'],
-						stylesheet: ['lib/codemirror_tiki/css/xmlcolors.css', 'lib/codemirror_tiki/css/jscolors.css', 'lib/codemirror_tiki/css/csscolors.css'],
-						path: 'lib/codemirror_tiki/js/',
-						onChange: function() {
-							//Setup codemirror to send the text back to the textarea
-							code.val(editor.getCode());
-						},
-						lineNumbers: true
-					});
-				}
-			});
-	");
 }

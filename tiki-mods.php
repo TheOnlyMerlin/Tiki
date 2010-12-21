@@ -146,7 +146,9 @@ $remote = $modslib->read_list($prefs['mods_dir'] . "/Packages/00_list." . urlenc
 $smarty->assign('remote', $remote);
 $installed = $modslib->read_list($prefs['mods_dir'] . "/Installed/00_list.txt", 'installed', $type, $find, false);
 $smarty->assign('installed', $installed);
-
+//var_dump($local);
+// var_dump($remote);
+// var_dump($installed);
 if ($prefs['feature_mods_provider'] == 'y') {
 	$public = $modslib->read_list($prefs['mods_dir'] . "/Packages/00_list.public.txt", 'public', $type, $find, false);
 	$smarty->assign('public', $public);
@@ -200,18 +202,6 @@ if (!empty($version)) { // filter out other versions
 				}
 				if (strpos($m->version[0], ' 3 ') !== false || strpos($m->version[0], ' 3+') !== false) {
 					$mv = 3.0; // e.g. version= "Compatible with TikiWiki 3 releases." or "3+"
-					
-				}
-				if (strpos($m->version[0], ' 4 ') !== false || strpos($m->version[0], ' 4+') !== false) {
-					$mv = 4.0; // e.g. version= "Compatible with TikiWiki 4 releases." or "4+"
-					
-				}
-				if (strpos($m->version[0], ' 5 ') !== false || strpos($m->version[0], ' 5+') !== false) {
-					$mv = 5.0; // e.g. version= "Compatible with TikiWiki 5 releases." or "5+"
-					
-				}
-				if (strpos($m->version[0], ' 6 ') !== false || strpos($m->version[0], ' 6+') !== false) {
-					$mv = 6.0; // e.g. version= "Compatible with Tiki 6 releases." or "6+"
 					
 				}
 				if ($mv >= $v) {

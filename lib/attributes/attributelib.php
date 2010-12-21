@@ -17,7 +17,7 @@ class AttributeLib extends TikiDb_Bridge
 
 	/**
 	 * NAMESPACE management and attribute naming.
-	 * Please see http://dev.tiki.org/Object+Attributes+and+Relations for guidelines on 
+	 * Please see http://dev.tikiwiki.org/Object+Attributes+and+Relations for guidelines on 
 	 * attribute naming, and document new tiki.*.* names that you add 
 	 * (also grep "set_attribute" just in case there are undocumented names already used)
 	 */
@@ -26,13 +26,8 @@ class AttributeLib extends TikiDb_Bridge
 			return false;
 		}
 
-		if( $value == '' ) {
-			$this->query( 'DELETE FROM `tiki_object_attributes` WHERE `type` = ? AND `itemId` = ? AND `attribute` = ?',
-				array( $type, $objectId, $name ) );
-		} else {
-			$this->query( 'INSERT INTO `tiki_object_attributes` (`type`, `itemId`, `attribute`, `value`) VALUES( ?, ?, ?, ? ) ON DUPLICATE KEY UPDATE `value` = ?',
-				array( $type, $objectId, $name, $value, $value ) );
-		}
+		$this->query( 'INSERT INTO `tiki_object_attributes` (`type`, `itemId`, `attribute`, `value`) VALUES( ?, ?, ?, ? ) ON DUPLICATE KEY UPDATE `value` = ?',
+			array( $type, $objectId, $name, $value, $value ) );
 
 
 		return true;

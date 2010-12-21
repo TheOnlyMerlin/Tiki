@@ -7,6 +7,9 @@
 
 $section = 'user_messages';
 require_once ('tiki-setup.php');
+if ($prefs['feature_ajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
 include_once ('lib/messu/messulib.php');
 $access->check_user($user);
 $access->check_feature('feature_messages');
@@ -128,5 +131,14 @@ $smarty->assign('percentage', $percentage);
 include_once ('tiki-section_options.php');
 include_once ('tiki-mytiki_shared.php');
 ask_ticket('messu-mailbox');
+if ($prefs['feature_ajax'] == "y") {
+	function user_messages_ajax() {
+		global $ajaxlib, $xajax;
+		$ajaxlib->registerTemplate("messu-mailbox.tpl");
+		$ajaxlib->registerFunction("loadComponent");
+		$ajaxlib->processRequests();
+	}
+	user_messages_ajax();
+}
 $smarty->assign('mid', 'messu-mailbox.tpl');
 $smarty->display("tiki.tpl");

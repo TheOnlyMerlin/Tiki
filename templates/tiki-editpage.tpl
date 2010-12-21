@@ -1,23 +1,13 @@
 {* $Id$ *}
-{if $page|lower neq 'sandbox' and $prefs.feature_contribution eq 'y' and $prefs.feature_contribution_mandatory eq 'y'}
-	{remarksbox type='tip' title="{tr}Tip{/tr}"}
+{if $page|lower neq 'sandbox'}
+	{remarksbox type='tip' title='{tr}Tip{/tr}'}
+	{tr}This edit session will expire in{/tr} <span id="edittimeout">{math equation='x / y' x=$edittimeout y=60}</span> {tr}minutes{/tr}. {tr}<strong>Preview</strong> or <strong>Save</strong> your work to restart the edit session timer.{/tr}
+	{if $prefs.feature_contribution eq 'y' and $prefs.feature_contribution_mandatory eq 'y'}
 		<strong class='mandatory_note'>{tr}Fields marked with a * are mandatory.{/tr}</strong>
+	{/if}
 	{/remarksbox}
-{/if}
-{if $customTip}
-	{remarksbox type='tip' title=$customTipTitle}
-	{tr}{$customTip|escape}{/tr}
-	{/remarksbox}
-{/if}
-{if $wikiHeaderTpl}
-	{include file="wiki:$wikiHeaderTpl"}
 {/if}
 	
-{if $prefs.ajax_autosave eq "y"}
-<div class="floatright">
-	{self_link _icon="magnifier" _class="previewBtn" _ajax="n"}{tr}Preview your changes.{/tr}{/self_link}
-</div>
-{/if}
 {if $translation_mode eq 'n'}
 	{if $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}{assign var=pp value=$approvedPageName}{else}{assign var=pp value=$page}{/if}
 	{title}{if isset($hdr) && $prefs.wiki_edit_section eq 'y'}{tr}Edit Section{/tr}{else}{tr}Edit{/tr}{/if}: {$pp|escape}{if $pageAlias ne ''}&nbsp;({$pageAlias|escape}){/if}{/title}
@@ -57,22 +47,22 @@
 	{/if}
 {/if}
 {if $page|lower eq 'sandbox'}
-	{remarksbox type='tip' title="{tr}Tip{/tr}"}
+	{remarksbox type='tip' title='{tr}Tip{/tr}'}
 		{tr}The SandBox is a page where you can practice your editing skills, use the preview feature to preview the appearance of the page, no versions are stored for this page.{/tr}
 	{/remarksbox}
 {/if}
 {if $category_needed eq 'y'}
-	{remarksbox type='Warning' title="{tr}Warning{/tr}"}
+	{remarksbox type='Warning' title='{tr}Warning{/tr}'}
 	<div class="highlight"><em class='mandatory_note'>{tr}A category is mandatory{/tr}</em></div>
 	{/remarksbox}
 {/if}
 {if $contribution_needed eq 'y'}
-	{remarksbox type='Warning' title="{tr}Warning{/tr}"}
+	{remarksbox type='Warning' title='{tr}Warning{/tr}'}
 	<div class="highlight"><em class='mandatory_note'>{tr}A contribution is mandatory{/tr}</em></div>
 	{/remarksbox}
 {/if}
 {if $summary_needed eq 'y'}
-	{remarksbox type='Warning' title="{tr}Warning{/tr}"}
+	{remarksbox type='Warning' title='{tr}Warning{/tr}'}
 	<div class="highlight"><em class='mandatory_note'>{tr}An edit summary is mandatory{/tr}</em></div>
 	{/remarksbox}
 {/if}
@@ -98,7 +88,7 @@
 	</div>
 {/if}
 
-{if $preview or $prefs.ajax_autosave eq "y"}
+{if $preview}
 	{include file='tiki-preview.tpl'}
 {/if}
 {if $diff_style}
@@ -117,11 +107,11 @@
 						<li>
 							{tr}Version:{/tr} {$diff.version|escape} - {$diff.comment|escape|default:"<em>{tr}No comment{/tr}</em>"}
 							{if count($diff_summaries) gt 1}
-								{icon _id="arrow_right"  onclick="\$('input[name=oldver]').val(`$diff.version`);\$('#editpageform').submit();return false;"  _text="{tr}View{/tr}" style="cursor: pointer"}
+								{icon _id="arrow_right"  onclick="\$jq('input[name=oldver]').val(`$diff.version`);\$jq('#editpageform').submit();return false;"  _text="{tr}View{/tr}" style="cursor: pointer"}
 							{/if}
 						</li>
 					{/foreach}
-					{button  _onclick="\$('input[name=oldver]').val(1);\$('#editpageform').submit();return false;"  _text="{tr}All Versions{/tr}" _ajax="n"}
+					{button  _onclick="\$jq('input[name=oldver]').val(1);\$jq('#editpageform').submit();return false;"  _text="{tr}All Versions{/tr}" _ajax="n"}
 				</ul>
 			</div>
 		{/if}
@@ -135,7 +125,6 @@
 <form  enctype="multipart/form-data" method="post" action="tiki-editpage.php?page={$page|escape:'url'}" id='editpageform' name='editpageform'>
 
 	<input type="hidden" name="no_bl" value="y" />
-	{if !empty($smarty.request.returnto)}<input type="hidden" name="returnto" value="{$smarty.request.returnto}" />{/if}
 	{if $diff_style}
 		<select name="diff_style" class="wikiaction"title="{tr}Edit wiki page{/tr}|{tr}Select the style used to display differences to be translated.{/tr}">
 			<option value="htmldiff"{if $diff_style eq "htmldiff"} selected="selected"{/if}>{tr}html{/tr}</option>
@@ -158,19 +147,19 @@
 		</div>
 	{/if}
 
-	<table class="formcolor" width="100%">
-		<tr>
+	<table class="normal">
+		
+		
+		<tr class="formcolor">
 			<td colspan="2">
-				{if isset($page_badchars_display)}
-					{if $prefs.wiki_badchar_prevent eq 'y'}
-						{remarksbox type=errors title="{tr}Invalid page name{/tr}"}
+				{if $page_badchars_display}
+					{remarksbox type=tip title="{tr}Tip{/tr}"}
+						{if $prefs.wiki_badchar_prevent eq 'y'}
 							{tr 0=$page_badchars_display|escape}The page name specified contains unallowed characters. It will not be possible to save the page until those are removed: <strong>%0</strong>{/tr}
-						{/remarksbox}
-					{else}
-						{remarksbox type=tip title="{tr}Tip{/tr}"}
+						{else}
 							{tr 0=$page_badchars_display|escape}The page name specified contains characters that may render the page hard to access. You may want to consider removing those: <strong>%0</strong>{/tr}
-						{/remarksbox}
-					{/if}
+						{/if}
+					{/remarksbox}
 					<p>{tr}Page name:{/tr} <input type="text" name="page" value="{$page|escape}" /></p>
 				{else}
 					<input type="hidden" name="page" value="{$page|escape}" /> 
@@ -187,7 +176,7 @@
 						{textarea}{$pagedata}{/textarea}
 						{if $page|lower neq 'sandbox'}
 							<fieldset>
-								<label for="comment">{tr}Describe the change you made:{/tr} {help url='Editing+Wiki+Pages' desc="{tr}Edit comment: Enter some text to describe the changes you are currently making{/tr}"}</label>
+								<label for="comment">{tr}Describe the change you made:{/tr} {help url='Editing+Wiki+Pages' desc='{tr}Edit comment: Enter some text to describe the changes you are currently making{/tr}'}</label>
 								<input style="width:98%;" class="wikiedit" type="text" id="comment" name="comment" value="{$commentdata|escape}" />
 								{if $show_watch eq 'y'}
 									<label for="watch">{tr}Monitor this page:{/tr}</label>
@@ -219,9 +208,6 @@
 					{if $prefs.feature_categories eq 'y' and $tiki_p_modify_object_categories eq 'y' and count($categories) gt 0}
 						{tab name="{tr}Categories{/tr}"}
 							{if $categIds}
-								{remarksbox type="note" title="{tr}Note:{/tr}"}
-								<strong>{tr}Categorization has been preset for this edit{/tr}</strong>
-								{/remarksbox}
 								{section name=o loop=$categIds}
 									<input type="hidden" name="cat_categories[]" value="{$categIds[o]}" />
 								{/section}
@@ -238,8 +224,8 @@
 							{/if}
 						{/tab}
 					{/if}
-					{if !empty($showPropertiesTab)}
-						{tab name="{tr}Properties{/tr}"}
+					{if !empty($showToolsTab)}
+						{tab name="{tr}Tools{/tr}"}
 							{if $prefs.feature_wiki_templates eq 'y' and $tiki_p_use_content_templates eq 'y'}
 								<fieldset>
 									<legend>{tr}Apply template:{/tr}</legend>
@@ -267,6 +253,37 @@
 								</fieldset>
 							{/if}
 				
+							{if $prefs.feature_wiki_replace eq 'y' and $wysiwyg neq 'y'}
+{jq}
+	function searchrep() {
+		c = document.getElementById('caseinsens')
+		s = document.getElementById('search')
+		r = document.getElementById('replace')
+		t = document.getElementById('editwiki')
+		var opt = 'g';
+		if (c.checked == true) {
+			opt += 'i'
+		}
+		var str = t.value
+		var re = new RegExp(s.value,opt)
+		t.value = str.replace(re,r.value)
+	}
+{/jq}
+								<fieldset>
+									<legend>{tr}Regex search:{/tr}</legend>
+									<input style="width:100;" class="wikiedit" type="text" id="search" />
+									<label>{tr}Replace with:{/tr}
+									<input style="width:100;" class="wikiedit" type="text" id="replace" /></label>
+									<label><input type="checkbox" id="caseinsens" />{tr}Case Insensitivity{/tr}</label>
+									<input type="button" value="{tr}Replace{/tr}" onclick="javascript:searchrep();" />
+								</fieldset>
+							{/if}
+							{if $prefs.wiki_spellcheck eq 'y'}
+								<fieldset>
+									<legend>{tr}Spellcheck:{/tr}</legend>
+									<input type="checkbox" id="spellcheck"name="spellcheck" {if $spellcheck eq 'y'}checked="checked"{/if}/>
+								</fieldset>
+							{/if}
 							{if $prefs.feature_wiki_allowhtml eq 'y' and $tiki_p_use_HTML eq 'y' and $wysiwyg neq 'y'}
 								<fieldset>
 									<legend>{tr}Allow HTML:{/tr}</legend>
@@ -308,24 +325,27 @@
 								{/if}
 	
 							{/if}
-							{* merged tool and property tabs for tiki 6 *}
+						{/tab}
+					{/if}
+					{if !empty($showPropertiesTab)}
+						{tab name="{tr}Properties{/tr}"}
 							{if $page|lower neq 'sandbox'}
 								{if $prefs.wiki_feature_copyrights  eq 'y'}
 									<fieldset>
 										<legend>{tr}Copyright:{/tr}</legend>
-										<table class="formcolor" border="0">
-											<tr>
+										<table border="0">
+											<tr class="formcolor">
 												<td><label for="copyrightTitle">{tr}Title:{/tr}</label></td>
 												<td><input size="40" class="wikiedit" type="text" id="copyrightTitle" name="copyrightTitle" value="{$copyrightTitle|escape}" /></td>
 												{if !empty($copyrights)}
 													<td rowspan="3"><a href="copyrights.php?page={$page|escape}">{tr}To edit the copyright notices{/tr}</a></td>
 												{/if}
 											</tr>
-											<tr>
+											<tr class="formcolor">
 												<td><label for="copyrightYear">{tr}Year:{/tr}</label></td>
 												<td><input size="4" class="wikiedit" type="text" id="copyrightYear" name="copyrightYear" value="{$copyrightYear|escape}" /></td>
 											</tr>
-											<tr>
+											<tr class="formcolor">
 												<td><label for="copyrightAuthors">{tr}Authors:{/tr}</label></td>
 												<td><input size="40" class="wikiedit" id="copyrightAuthors" name="copyrightAuthors" type="text" value="{$copyrightAuthors|escape}" /></td>
 											</tr>
@@ -474,9 +494,6 @@
 									</fieldset>
 								{/if}
 							{/if}
-							{if $tiki_p_admin_wiki eq "y"}
-								<a href="tiki-admin.php?page=wiki">{tr}Admin wiki preferences{/tr} {icon _id='wrench'}</a>
-							{/if}
 						{/tab}
 					{/if}
 				{/tabset}
@@ -491,7 +508,7 @@
 		{/if}{* sandbox *}
 		
 		{if $prefs.wiki_actions_bar neq 'top'}
-			<tr>
+			<tr class="formcolor">
 				<td colspan="2" style="text-align:center;">
 					{include file='wiki_edit_actions.tpl'}
 				</td>

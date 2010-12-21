@@ -22,7 +22,6 @@ if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
 	list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':', $ha);
 }
 
-$webdav_access = true;
 require_once 'tiki-setup.php';
 
 $debug = false;

@@ -9,42 +9,25 @@ function wikiplugin_subscribenewsletter_info() {
 	return array(
 		'name' => tra('Subscribe newsletter'),
 		'documentation' => 'PluginSubscribeNewsletter',
-		'description' => tra('Allow users to subscribe to a newsletter'),
+		'description' => tra('A button to subscribe to a newsletter available for a user if not already in'),
 		'prefs' => array('feature_newsletters', 'wikiplugin_subscribenewsletter'),
 		'body' => tra('Invitation message'),
-		'icon' => 'pics/icons/newspaper_add.png',
 		'params' => array(
 			'nlId' => array(
 				'required' => true,
-				'name' => tra('Newsletter ID'),
-				'description' => tra('Identification number (nlId) of the Newsletter that you want to allow the users to subscribe to'),
+				'name' => '',
+				'description' => '',
 				'filter' => 'digits',
-				'default' => '',
 			),
 			'thanks' => array(
 				'required' => false,
-				'name' => tra('Confirmation Message'),
-				'description' => tra('Confirmation message after posting form. The plugin body is then the button label.'),
+				'name' => tra('Confirmation message after posting form. The plugin body is then the button label.'),
 				'filter' => 'wikicontent',
 			),
 			'button' => array(
 				'required' => false,
-				'name' => tra('Button'),
-				'description' => tra('Button label. The plugin body is then the confirmation message'),
+				'name' => tra('Button label. The plugin body is then the confirmation message'),
 				'filter' => 'wikicontent',
-			),
-			'wikisyntax' => array(
-				'required' => false,
-				'safe' => true,
-				'name' => tra('Wiki Syntax'),
-				'description' => tra('Choose whether the output should be parsed as wiki syntax (Optional). Options: 0 (no parsing, default), 1 (parsing)'),
-				'filter' => 'int',
-				'default' => 0,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				)
 			),
 
 		),
@@ -64,45 +47,27 @@ function wikiplugin_subscribenewsletter($data, $params) {
 	if (empty($info) || $info['allowUserSub'] != 'y') {
 		return tra('Incorrect param');
 	}
-
+	if (empty($user)) {
+		return;
+	}
 	if (!$userlib->user_has_perm_on_object($user, $nlId, 'newsletter', 'tiki_p_subscribe_newsletters')) {
 		return;
 	}
-
-	if ($user) {
-		$alls = $nllib->get_all_subscribers($nlId, false);
-		foreach ($alls as $all) {
-			if ($all['db_email'] == $user)
-				return;
-		}
+	$alls = $nllib->get_all_subscribers($nlId, false);
+	foreach ($alls as $all) {
+		if ($all['db_email'] == $user)
+			return;
 	}
-
 	$wpSubscribe = '';
-	$wpError = '';
-	$subscribeEmail = '';
 	if (isset($_REQUEST['wpSubscribe']) && $_REQUEST['wpNlId'] == $nlId) {
-		if (!$user && empty($_REQUEST['wpEmail'])) {
-			$wpError = tra('Invalid Email');
-		} elseif (!$user && !validate_email($_REQUEST['wpEmail'], $prefs['validateEmail'])) {
-			$wpError = tra('Invalid Email');
-			$subscribeEmail = $_REQUEST['wpEmail'];
-		} elseif (($user && $nllib->newsletter_subscribe($nlId, $user, 'y', 'n'))
-			|| (!$user && $nllib->newsletter_subscribe($nlId, $_REQUEST['wpEmail'], 'n', $info['validateAddr']))) {
+		if ($nllib->newsletter_subscribe($nlId, $user, 'y', 'n')) {
 			$wpSubscribe = 'y';
 			$smarty->assign('subscribeThanks', empty($thanks)?$data: $thanks);
-		} else {
-			$wpError = tra('Already subscribed');
 		}
 	}
 	$smarty->assign_by_ref('wpSubscribe', $wpSubscribe);
-	$smarty->assign_by_ref('wpError', $wpError);
-	$smarty->assign('subscribeEmail', $subscribeEmail);
 	$smarty->assign('subcribeMessage', empty($button)?$data: $button);
 	$smarty->assign_by_ref('subscribeInfo', $info);
 	$res = $smarty->fetch('wiki-plugins/wikiplugin_subscribenewsletter.tpl');
-	if (isset($params["wikisyntax"]) && $params["wikisyntax"]==1) {
-		return $res;
-	}else{ 		// if wikisyntax != 1 : no parsing of any wiki syntax
-		return '~np~'.$res.'~/np~';
-	}
+	return '~np~'.$res.'~/np~';
 }

@@ -23,26 +23,6 @@
 {/if}
 </div>
 
-{literal}
-<script language="javascript">
-function togglereminderforrecurrence() {
-   if (document.getElementById('id_recurrent').checked) {
-      if (document.getElementById('reminder_type_date').checked)
-      {
-         document.getElementById('reminder_type_none').checked = true;
-         document.getElementById('reminder_type_date').checked = false;
-         document.getElementById('reminder_fixed_date_row').style.display = 'none';
-      }
-
-      document.getElementById('reminder_fixed_date_option_row').style.display = 'none';
-   }
-   else {
-      document.getElementById('reminder_fixed_date_option_row').style.display = '';
-   }
-}
-</script>
-{/literal}
-
 <div class="wikitext">
 
 {if $edit}
@@ -58,11 +38,9 @@ function togglereminderforrecurrence() {
 			<input type="hidden" name="save[calitemId]" value="{$id}" />
 		{/if}
 {/if}
-{if $prefs.calendar_addtogooglecal == 'y'}
-	{wikiplugin _name="addtogooglecal" calitemid=$id}{/wikiplugin}
-{/if}
-<table class="formcolor{if !$edit} vevent{/if}">
-<tr>
+
+<table class="normal{if !$edit} vevent{/if}">
+<tr class="formcolor">
 	<td>{tr}Calendar{/tr}</td>
 	<td style="background-color:#{$calendar.custombgcolor};color:#{$calendar.customfgcolor};">
 {if $edit}
@@ -94,7 +72,7 @@ function togglereminderforrecurrence() {
 	</td>
 </tr>
 
-<tr>
+<tr class="formcolor">
 <td>{tr}Title{/tr}</td>
 <td>
 {if $edit}
@@ -104,7 +82,7 @@ function togglereminderforrecurrence() {
 {/if}
 </td>
 </tr>
-<tr>
+<tr class="formcolor">
 	<td>{tr}Recurrence{/tr}</td>
 	<td>
 {if $edit}
@@ -112,18 +90,18 @@ function togglereminderforrecurrence() {
 	<input type="hidden" name="recurrent" value="1"/>
 		{tr}This event depends on a recurrence rule{/tr}
 	{else}
-<input type="checkbox" id="id_recurrent" name="recurrent" value="1" onclick="toggle('recurrenceRules');toggle('startdate');toggle('enddate');togglereminderforrecurrence();"{if $calitem.recurrenceId gt 0 or $recurrent eq 1}checked="checked"{/if}/><label for="id_recurrent">{tr}This event depends on a recurrence rule{/tr}</label>
+<input type="checkbox" id="id_recurrent" name="recurrent" value="1" onclick="toggle('recurrenceRules');toggle('startdate');toggle('enddate');"{if $calitem.recurrenceId gt 0 or $recurrent eq 1}checked="checked"{/if}/><label for="id_recurrent">{tr}This event depends on a recurrence rule{/tr}</label>
 	{/if}
 {else}
 	<span class="summary">{if $calitem.recurrenceId gt 0}{tr}This event depends on a recurrence rule{/tr}{else}{tr}This event is not recurrent{/tr}{/if}</span>
 {/if}
 	</td>
 </tr>
-<tr>
+<tr class="formcolor">
 	<td>&nbsp;</td>
 	<td style="padding:5px 10px">
 {if $edit}
-	  <div id="recurrenceRules" style="width:100%;{if ( !($calitem.recurrenceId gt 0) and $recurrent neq 1 ) && $prefs.javascript_enabled eq 'y'}display:none;{/if}">
+	  <div id="recurrenceRules" style="position:relative;top:0px;left:0px;width:100%;display:{if ( !($calitem.recurrenceId gt 0) and $recurrent neq 1 ) && $prefs.javascript_enabled eq 'y'}none{else}block{/if};">
 	  {if $calitem.recurrenceId gt 0}<input type="hidden" name="recurrenceId" value="{$recurrence.id}" />{/if}
 {if $recurrence.id gt 0}
 	{if $recurrence.weekly}
@@ -241,7 +219,7 @@ function togglereminderforrecurrence() {
 {/if}
 	</td>
 </tr>
-<tr>
+<tr class="formcolor">
 <td>{tr}Start{/tr}</td>
 <td>
 {if $edit}
@@ -249,7 +227,7 @@ function togglereminderforrecurrence() {
 		<tr>
 			<td style="border:0;padding-top:2px;vertical-align:middle">
 			{if $prefs.feature_jscalendar neq 'y' or $prefs.javascript_enabled neq 'y'}
-				<a href="#" onclick="document.f.Time_Hour.selectedIndex=(document.f.Time_Hour.selectedIndex+1);return false;">{icon _id='plus_small' align='left' width='11' height='8'}</a>
+				<a href="#" onclick="document.f.Time_Hour.selectedIndex=(document.f.Time_Hour.selectedIndex+1);">{icon _id='plus_small' align='left' width='11' height='8'}</a>
 			{/if}
 			</td>
 			<td rowspan="2" style="border:0;padding-top:2px;vertical-align:middle"><div style="display:block" id="startdate">
@@ -260,13 +238,13 @@ function togglereminderforrecurrence() {
 			{/if}
 			</div></td>
 			<td style="border:0;padding-top:2px;vertical-align:middle">
-				<span id="starttimehourplus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.start_Hour.selectedIndex=(document.f.start_Hour.selectedIndex+1);return false;">{icon _id='plus_small' align='left' width='11' height='8'}</a></span>
+				<span id="starttimehourplus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.start_Hour.selectedIndex=(document.f.start_Hour.selectedIndex+1);">{icon _id='plus_small' align='left' width='11' height='8'}</a></span>
 			</td>
 			<td rowspan="2" style="border:0;vertical-align:middle" class="html_select_time">
 				<span id="starttime" style="display: {if $calitem.allday} none {else} inline {/if}">{html_select_time prefix="start_" display_seconds=false time=$calitem.start minute_interval=$prefs.calendar_timespan hour_minmax=$hour_minmax}</span>
 			</td>
 			<td style="border:0;padding-top:2px;vertical-align:middle">
-				<span id="starttimeminplus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.start_Minute.selectedIndex=(document.f.start_Minute.selectedIndex+1);return false;">{icon _id='plus_small' align='left' width='11' height='8'}</a></span>
+				<span id="starttimeminplus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.start_Minute.selectedIndex=(document.f.start_Minute.selectedIndex+1);">{icon _id='plus_small' align='left' width='11' height='8'}</a></span>
 			</td>
 			<td style="border:0;padding-top:2px;vertical-align:middle;" rowspan="2">
 				<label for="alldayid">
@@ -293,14 +271,14 @@ function togglereminderforrecurrence() {
 		<tr>
 			<td style="border:0;vertical-align:middle">
 			{if $prefs.feature_jscalendar neq 'y' or $prefs.javascript_enabled neq 'y'}
-				<a href="#" onclick="document.f.Time_Hour.selectedIndex=(document.f.Time_Hour.selectedIndex-1);return false;">{icon _id='minus_small' align='left' width='11' height='8'}</a>
+				<a href="#" onclick="document.f.Time_Hour.selectedIndex=(document.f.Time_Hour.selectedIndex-1);">{icon _id='minus_small' align='left' width='11' height='8'}</a>
 			{/if}
 			</td>
 			<td style="border:0;vertical-align:middle">
-				<span id="starttimehourminus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.start_Hour.selectedIndex=(document.f.start_Hour.selectedIndex-1);return false;">{icon _id='minus_small' align='left' width='11' height='8'}</a>
+				<span id="starttimehourminus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.start_Hour.selectedIndex=(document.f.start_Hour.selectedIndex-1);">{icon _id='minus_small' align='left' width='11' height='8'}</a>
 			</td>
 			<td style="border:0;vertical-align:middle">
-				<span id="starttimeminminus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.start_Minute.selectedIndex=(document.f.start_Minute.selectedIndex-1);return false;">{icon _id='minus_small' align='left' width='11' height='8'}</a>
+				<span id="starttimeminminus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.start_Minute.selectedIndex=(document.f.start_Minute.selectedIndex-1);">{icon _id='minus_small' align='left' width='11' height='8'}</a>
 			</td>
 		</tr>
 	</table>
@@ -313,7 +291,7 @@ function togglereminderforrecurrence() {
 {/if}
 </td>
 </tr>
-<tr>
+<tr class="formcolor">
 	<td>{tr}End{/tr}</td><td>
 	{if $edit}
 		<input type="hidden" name="save[end_or_duration]" value="end" id="end_or_duration" />
@@ -322,7 +300,7 @@ function togglereminderforrecurrence() {
 		<tr>
 			<td style="border:0;padding-top:2px;vertical-align:middle">
 			{if $prefs.feature_jscalendar neq 'y' or $prefs.javascript_enabled neq 'y'}
-				<span id="endtimehourplus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.Time_Hour.selectedIndex=(document.f.Time_Hour.selectedIndex+1);return false;">{icon _id='plus_small' align='left' width='11' height='8'}</a></span>
+				<span id="endtimehourplus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.Time_Hour.selectedIndex=(document.f.Time_Hour.selectedIndex+1);">{icon _id='plus_small' align='left' width='11' height='8'}</a></span>
 			{/if}
 			</td>
 			<td rowspan="2" style="border:0;vertical-align:middle"><div style="display:block" id="enddate">
@@ -333,29 +311,29 @@ function togglereminderforrecurrence() {
 			{/if}
 			</div></td>
 			<td style="border:0;padding-top:2px;vertical-align:middle">
-				<span id="endtimehourplus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.end_Hour.selectedIndex=(document.f.end_Hour.selectedIndex+1);return false;">{icon _id='plus_small' align='left' width='11' height='8'}</a></span>
+				<span id="endtimehourplus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.end_Hour.selectedIndex=(document.f.end_Hour.selectedIndex+1);">{icon _id='plus_small' align='left' width='11' height='8'}</a></span>
 			</td>
 			<td rowspan="2" style="border:0;vertical-align:middle" class="html_select_time">
 				<span id="endtime" style="display: {if $calitem.allday} none {else} inline {/if}">{html_select_time prefix="end_" display_seconds=false time=$calitem.end minute_interval=$prefs.calendar_timespan hour_minmax=$hour_minmax}</span>
 			</td>
 			<td style="border:0;padding-top:2px;vertical-align:middle">
-				<span id="endtimeminplus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.end_Minute.selectedIndex=(document.f.end_Minute.selectedIndex+1);return false;">{icon _id='plus_small' align='left' width='11' height='8'}</a></span>
+				<span id="endtimeminplus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.end_Minute.selectedIndex=(document.f.end_Minute.selectedIndex+1);">{icon _id='plus_small' align='left' width='11' height='8'}</a></span>
 			</td>
 			<td rowspan="2" style="border:0;padding-top:2px;vertical-align:middle">
-				<span id="duration" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.getElementById('end_or_duration').value='duration';flip('end_duration');flip('end_date');return false;return false;">{tr}Duration{/tr}</a></span>
+				<span id="duration" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.getElementById('end_or_duration').value='duration';flip('end_duration');flip('end_date');return false;">{tr}Duration{/tr}</a></span>
 			</td>
 		</tr>
 		<tr>
 		<td style="border:0;vertical-align:middle">
 		{if $prefs.feature_jscalendar neq 'y' or $prefs.javascript_enabled neq 'y'}
-			<a href="#" onclick="document.f.Time_Hour.selectedIndex=(document.f.Time_Hour.selectedIndex-1);return false;">{icon _id='minus_small' align='left' width='11' height='8'}</a>
+			<a href="#" onclick="document.f.Time_Hour.selectedIndex=(document.f.Time_Hour.selectedIndex-1);">{icon _id='minus_small' align='left' width='11' height='8'}</a>
 		{/if}
 		</td>
 		<td style="border:0;vertical-align:middle">
-			<span id="endtimehourminus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.end_Hour.selectedIndex=(document.f.end_Hour.selectedIndex-1);return false;">{icon _id='minus_small' align='left' width='11' height='8'}</a></span>
+			<span id="endtimehourminus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.end_Hour.selectedIndex=(document.f.end_Hour.selectedIndex-1);">{icon _id='minus_small' align='left' width='11' height='8'}</a></span>
 		</td>
 		<td style="border:0;vertical-align:middle">
-			<span id="endtimeminminus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.end_Minute.selectedIndex=(document.f.end_Minute.selectedIndex-1);return false;">{icon _id='minus_small' align='left' width='11' height='8'}</a></span>
+			<span id="endtimeminminus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.end_Minute.selectedIndex=(document.f.end_Minute.selectedIndex-1);">{icon _id='minus_small' align='left' width='11' height='8'}</a></span>
 		</td>
 	</tr>
 </table>
@@ -365,13 +343,13 @@ function togglereminderforrecurrence() {
 <table cellpadding="0" cellspacing="0" border="0">
 	<tr>
 		<td style="border:0;padding-top:2px;vertical-align:middle">
-			<span id="durhourplus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.duration_Hour.selectedIndex=(document.f.duration_Hour.selectedIndex+1);return false;">{icon _id='plus_small' align='left' width='11' height='8'}</a></span>
+			<span id="durhourplus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.duration_Hour.selectedIndex=(document.f.duration_Hour.selectedIndex+1);">{icon _id='plus_small' align='left' width='11' height='8'}</a></span>
 		</td>
 		<td style="border:0;vertical-align:middle" rowspan="2" class="html_select_time">
 			<span id="duratione" style="display: {if $calitem.allday} none {else} inline {/if}">{html_select_time prefix="duration_" display_seconds=false time=$calitem.duration|default:'01:00' minute_interval=$prefs.calendar_timespan}</span>
 		</td>
 		<td style="border:0;padding-top:2px;vertical-align:middle">
-			<span id="durminplus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.duration_Minute.selectedIndex=(document.f.duration_Minute.selectedIndex+1);return false;">{icon _id='plus_small' align='left' width='11' height='8'}</a></span>
+			<span id="durminplus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.duration_Minute.selectedIndex=(document.f.duration_Minute.selectedIndex+1);">{icon _id='plus_small' align='left' width='11' height='8'}</a></span>
 		</td>
 		<td rowspan="2" style="border:0;padding-top:2px;vertical-align:middle">
 			<a href="#" onclick="document.getElementById('end_or_duration').value='end';flip('end_date');flip('end_duration');return false;">{tr}Date and time of end{/tr}</a>
@@ -379,10 +357,10 @@ function togglereminderforrecurrence() {
 	</tr>
 	<tr>
 		<td style="border:0;vertical-align:middle">
-			<span id="durhourminus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.duration_Hour.selectedIndex=(document.f.duration_Hour.selectedIndex-1);return false;">{icon _id='minus_small' align='left' width='11' height='8'}</a></span>
+			<span id="durhourminus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.duration_Hour.selectedIndex=(document.f.duration_Hour.selectedIndex-1);">{icon _id='minus_small' align='left' width='11' height='8'}</a></span>
 		</td>
 		<td style="border:0;vertical-align:middle">
-			<span id="durminminus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.duration_Minute.selectedIndex=(document.f.duration_Minute.selectedIndex-1);return false;">{icon _id='minus_small' align='left' width='11' height='8'}</a></span>
+			<span id="durminminus" style="display: {if $calitem.allday} none {else} inline {/if}"><a href="#" onclick="document.f.duration_Minute.selectedIndex=(document.f.duration_Minute.selectedIndex-1);">{icon _id='minus_small' align='left' width='11' height='8'}</a></span>
 		</td>
 	</tr>
 </table>
@@ -400,18 +378,26 @@ function togglereminderforrecurrence() {
 {/if}
 </td>
 </tr>
-<tr>
+<tr class="formcolor">
 <td>{tr}Description{/tr}
+{if $edit}
+  <br /><br />
+  {include file='textareasize.tpl' area_name="editwiki" formId="editcalitem"}<br /><br />
+{/if}
+
 </td><td>
 {if $edit}
-  {textarea name="save[description]" id="editwiki"}{$calitem.description}{/textarea}
+  {toolbars area_name="save[description]"}
+  <textarea id='editwiki' class="wikiedit" cols="{$cols}" rows="{$rows}" name="save[description]" style="width:98%">{$calitem.description|escape}</textarea>
+  <input type="hidden" name="rows" value="{$rows}"/>
+  <input type="hidden" name="cols" value="{$cols}"/>
 {else}
   <span class="description">{$calitem.parsed|default:"<i>{tr}No description{/tr}</i>"}</span>
 {/if}
 </td></tr>
 
 {if $calendar.customstatus ne 'n'}
-<tr><td>{tr}Status{/tr}</td><td>
+<tr class="formcolor"><td>{tr}Status{/tr}</td><td>
 
 <div class="statusbox{if $calitem.status eq 0} status0{/if}">
 {if $edit}
@@ -441,7 +427,7 @@ function togglereminderforrecurrence() {
 {/if}
 
 {if $calendar.custompriorities eq 'y'}
-<tr><td>
+<tr class="formcolor"><td>
 {tr}Priority{/tr}</td><td>
 {if $edit}
 <select name="save[priority]" style="background-color:#{$listprioritycolors[$calitem.priority]};font-size:150%;"
@@ -456,8 +442,8 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 
 </td></tr>
 {/if}
-<tr style="display:{if $calendar.customcategories eq 'y'}tablerow{else}none{/if};" id="calcat">
-<td>{tr}Classification{/tr}</td>
+<tr class="formcolor" style="display:{if $calendar.customcategories eq 'y'}tablerow{else}none{/if};" id="calcat">
+<td>{tr}Category{/tr}</td>
 <td>
 {if $edit}
 {if count($listcats)}
@@ -474,7 +460,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 {/if}
 </td>
 </tr>
-<tr style="display:{if $calendar.customlocations eq 'y'}tablerow{else}none{/if};" id="calloc">
+<tr class="formcolor" style="display:{if $calendar.customlocations eq 'y'}tablerow{else}none{/if};" id="calloc">
 <td>{tr}Location{/tr}</td>
 <td>
 {if $edit}
@@ -492,7 +478,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 {/if}
 </td>
 </tr>
-<tr>
+<tr class="formcolor">
 <td>{tr}URL{/tr}</td>
 <td>
 {if $edit}
@@ -502,7 +488,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 {/if}
 </td>
 </tr>
-<tr style="display:{if $calendar.customlanguages eq 'y'}tablerow{else}none{/if};" id="callang">
+<tr class="formcolor" style="display:{if $calendar.customlanguages eq 'y'}tablerow{else}none{/if};" id="callang">
 <td>{tr}Language{/tr}</td>
 <td>
 {if $edit}
@@ -518,111 +504,9 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 </td>
 </tr>
 
-<tr id="reminder">
-   <td>{tr}Reminder{/tr}</td>
-   <td>
-      {if $edit}
-      <table border="0" cellspacing="0" cellpadding="3">
-         <tbody>
-            <tr>
-               <td>
-                  <input id="reminder_type_none" type="radio" name="save[reminder_type]" value="0" onclick="document.getElementById('reminder_fixed_date_row').style.display = 'none'; document.getElementById('reminder_time_offset_row').style.display = 'none';" {if $calitem.reminder_type eq 0}checked="checked"{/if} />
-                  <label for="reminder_type_none">{tr}None{/tr}</label>
-               </td>
-            </tr>
-            <tr id="reminder_fixed_date_option_row">
-               <td>
-                  <input id="reminder_type_date" type="radio" name="save[reminder_type]" value="1" onclick="document.getElementById('reminder_fixed_date_row').style.display = ''; document.getElementById('reminder_time_offset_row').style.display = 'none';" {if $calitem.reminder_type eq 1}checked="checked"{/if} />
-                  <label for="reminder_type_date">{tr}Use Date/Time{/tr}</label>
-               </td>
-            </tr>
-            <tr id="reminder_fixed_date_row" style="display: {if $calitem.reminder_type eq 1}block{else}none{/if};">
-               <td>
-                  <table>
-                     <tr>
-			               <td style="border:0; padding-top:2px; vertical-align: middle;">
-				               {html_select_date prefix="reminder_fixed_date_" time=$calitem.reminder_fixed_date field_order=$prefs.display_field_order start_year=$prefs.calendar_start_year end_year=$prefs.calendar_end_year}
-			               </td>
-			               <td class="html_select_time" style="border:0; vertical-align: middle;">
-				               {html_select_time prefix="reminder_fixed_date_" display_seconds=false time=$calitem.reminder_fixed_date minute_interval=$prefs.calendar_timespan hour_minmax=$hour_minmax}
-			               </td>
-                     </tr>
-                  </table>
-               </td>
-            </tr>
-            <tr id="reminder_time_offset_option_row">
-               <td>
-                  <input id="reminder_type_offset" type="radio" name="save[reminder_type]" value="2" onclick="document.getElementById('reminder_fixed_date_row').style.display = 'none'; document.getElementById('reminder_time_offset_row').style.display = '';" {if $calitem.reminder_type eq 2} checked="checked"{/if} />
-                  <label for="reminder_type_offset">{tr}Use Offset{/tr}</label>
-               </td>
-            </tr>
-            <tr id="reminder_time_offset_row" style="display: {if $calitem.reminder_type eq 2}block{else}none{/if};">
-               <td>
-                  <table>
-                     <tr>
-                        <td>
-                           <input id="reminder_time_offset_days" type="text" size="2" name="reminder_time_offset_days" value="{$reminder_time_offset_days}" style="text-align: right;"/>
-                           <label for="reminder_time_offset_days" style="padding-left: 5px; padding-right: 10px;">days</label>
-                           <input id="reminder_time_offset_hours" type="text" size="2" name="reminder_time_offset_hours" value="{$reminder_time_offset_hours}" style="text-align: right;" />
-                           <label for="reminder_time_offset_hours" style="padding-left: 5px; padding-right: 10px;">hours</label>
-                           <input id="reminder_time_offset_minutes" type="text" size="2" name="reminder_time_offset_minutes" value="{$reminder_time_offset_minutes}" style="text-align: right;" />
-                           <label for="reminder_time_offset_minutes" style="padding-left: 5px; padding-right: 10px;">minutes</label>
-                        </td>
-                     </tr>
-                     <tr>
-                        <td>
-                           <input id="reminder_when_run_B" type="radio" name="save[reminder_when_run]" value="B" {if $calitem.reminder_when_run neq 'A'}checked="checked"{/if}  />
-                           <label for="reminder_when_run_B">Before</label>
-                           <input id="reminder_when_run_A" type="radio" name="save[reminder_when_run]" value="A" {if $calitem.reminder_when_run eq 'A'}checked="checked"{/if} />
-                           <label for="reminder_when_run_A">After</label>
-                        </td>
-                     </tr>
-                     <tr>
-                        <td>
-                           <input id="reminder_related_to_s" type="radio" name="save[reminder_related_to]" value="S" {if $calitem.reminder_related_to neq 'E'}checked="checked"{/if} />
-                           <label for="reminder_related_to_s">Start</label>
-                           <input id="reminder_related_to_e" type="radio" name="save[reminder_related_to]" value="E" {if $calitem.reminder_related_to eq 'E'}checked="checked"{/if} />
-                           <label for="reminder_related_to_e">End</label>
-                        </td>
-                     </tr>
-                  </table>
-               </td>
-            </tr>
-         </tbody>
-      </table>
-      {else}
-      <table border="0" cellspacing="0" cellpadding="3">
-         <tbody>
-            {if $calitem.reminder_type eq 0}
-            <tr>
-               <td>{tr}None{/tr}</td>
-            </tr>
-            {/if}
-            {if $calitem.reminder_type eq 1}
-            <tr>
-               <td>{tr}Date/Time{/tr}</td>
-            </tr>
-            <tr>
-               <td><abbr class="dtstart" title="{$calitem.reminder_fixed_date|isodate}">{$calitem.reminder_fixed_date|tiki_long_datetime}</abbr></td>
-            </tr>
-            {/if}
-            {if $calitem.reminder_type eq 2}
-            <tr>
-               <td>{tr}Offset{/tr}</td>
-            </tr>
-            <tr>
-               <td>{$reminder_time_offset_days} days {$reminder_time_offset_hours} hours {$reminder_time_offset_minutes} minutes {if $calitem.reminder_when_run neq 'A'}before{else}after{/if} {if $calitem.reminder_related_to neq 'E'}start{else}end{/if}</td>
-            </tr>
-            {/if}
-         </tbody>
-      </table>
-      {/if}
-   </td>
-</tr>
-
 {if $groupforalert ne ''}
 {if $showeachuser eq 'y' }
-<tr>
+<tr class="formcolor">
 <td>{tr}Choose users to alert{/tr}</td>
 <td>
 {/if}
@@ -639,10 +523,10 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 
 
 {if $calendar.customparticipants eq 'y'}
-	<tr><td colspan="2">&nbsp;</td></tr>
+	<tr class="formcolor"><td colspan="2">&nbsp;</td></tr>
 {/if}
 
-<tr style="display:{if $calendar.customparticipants eq 'y'}tablerow{else}none{/if};" id="calorg">
+<tr class="formcolor" style="display:{if $calendar.customparticipants eq 'y'}tablerow{else}none{/if};" id="calorg">
 <td>{tr}Organized by{/tr}</td>
 <td>
 {if $edit}
@@ -659,10 +543,10 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 </td>
 </tr>
 
-<tr style="display:{if $calendar.customparticipants eq 'y'}tablerow{else}none{/if};" id="calpart">
+<tr class="formcolor" style="display:{if $calendar.customparticipants eq 'y'}tablerow{else}none{/if};" id="calpart">
 <td>{tr}Participants{/tr}
 {if $edit}
-<a href="#" onclick="flip('calparthelp');return false;">{icon _id='help'}</a>
+<a href="#" onclick="flip('calparthelp');">{icon _id='help'}</a>
 {/if}
 </td>
 <td>
@@ -675,22 +559,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 {else}
 {foreach item=ppl from=$calitem.participants}
 {$ppl.name|userlink} {if $listroles[$ppl.role]}({$listroles[$ppl.role]}){/if}<br />
-{if $ppl.name eq $user}{assign var='in_particip' value='y'}{/if}
 {/foreach}
-{if $tiki_p_calendar_add_my_particip eq 'y'}
-	{if $in_particip eq 'y'}
-		{button _text="{tr}Withdraw me from the list of participants{/tr}" href="?del_me=y&viewcalitemId=$id"}
-	{else}
-		{button _text="{tr}Add me to the list of participants{/tr}" href="?add_me=y&viewcalitemId=$id"}
-	{/if}
-{/if}
-{if $tiki_p_calendar_add_guest_particip eq 'y'}
-	<form action="tiki-calendar_edit_item.php" method="post">
-	<input type ="hidden" name="viewcalitemId" value="{$id}" />
-	<input type="text" name="guests" />{help desc="{tr}Format{/tr}: {tr}Participant names separated by comma{/tr}" url='calendar'}
-	<input type="submit" name="add_guest" value="Add guests" />
-	</form>
-{/if}
 {/if}
 </td>
 </tr>
@@ -721,6 +590,7 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 
 {if $edit}
 <table class="normal">
+<tr><td><input type="submit" name="preview" value="{tr}Preview{/tr}" /></td></tr>
 {if $recurrence.id gt 0}
 <tr><td>
 	<input type="radio" id="id_affectEvt" name="affect" value="event" checked="checked"/><label for="id_affectEvt">{tr}Update this event only{/tr}</label><br />
@@ -729,14 +599,12 @@ onchange="this.style.bacgroundColor='#'+this.selectedIndex.value;">
 </td></tr>
 {/if}
 {if !$user and $prefs.feature_antibot eq 'y'}
-	{include file='antibot.tpl'}
+	{include file='antibot.tpl' tr_style="formcolor"}
 {/if}
-<tr><td>
-	<input type="submit" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;" />
-	&nbsp;<input type="submit" name="act" value="{tr}Save{/tr}" onclick="needToConfirm=false;" />
-	{if $id}&nbsp;<input type="submit" onclick="needToConfirm=false;{$autosave_js}document.location='tiki-calendar_edit_item.php?calitemId={$id}&amp;delete=y';return false;" value="{tr}Delete event{/tr}" />{/if}
-	{if $recurrence.id}&nbsp;<input type="submit" onclick="needToConfirm=false;{$autosave_js}document.location='tiki-calendar_edit_item.php?recurrenceId={$recurrence.id}&amp;delete=y';return false;" value="{tr}Delete Recurrent events{/tr}"/>{/if}
-	&nbsp;<input type="submit" onclick="needToConfirm=false;{$autosave_js}document.location='{$referer|escape:'html'}';return false;" value="{tr}Cancel{/tr}" />
+<tr><td><input type="submit" name="act" value="{tr}Save{/tr}" />
+{if $id}&nbsp;<input type="submit" onclick='document.location="tiki-calendar_edit_item.php?calitemId={$id}&amp;delete=y";return false;' value="{tr}Delete event{/tr}"/>{/if}
+{if $recurrence.id}&nbsp;<input type="submit" onclick='document.location="tiki-calendar_edit_item.php?recurrenceId={$recurrence.id}&amp;delete=y";return false;' value="{tr}Delete Recurrent events{/tr}"/>{/if}
+&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" onclick='document.location="{$referer|escape:'html'}";return false;' value="{tr}Cancel{/tr}"/>
 </td></tr>
 </table>
 {/if}

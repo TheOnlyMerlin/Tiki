@@ -6,7 +6,7 @@
 // $Id$
 
 /*
- * Plugin mouseover
+ * PLugin mouseover - See documentation http://www.bosrup.com/web/overlib/?Documentation
  */
 function wikiplugin_mouseover_help() {
 	return tra("Create a mouseover feature on some text").":<br />~np~{MOUSEOVER(url=url,text=text,parse=y,width=300,height=300)}".tra('text')."{MOUSEOVER}~/np~";
@@ -25,7 +25,7 @@ function wikiplugin_mouseover_info() {
 	return array(
 		'name' => tra('Mouseover'),
 		'documentation' => 'PluginMouseover',
-		'description' => tra('Display hidden content by mousing over a link'),
+		'description' => tra('Create a mouseover feature on some text'),
 		'prefs' => array( 'wikiplugin_mouseover' ),
 		'body' => tra('Mouseover text if param label exists. Page text if text param exists'),
 		'icon' => 'pics/icons/comment_add.png',
@@ -35,154 +35,109 @@ function wikiplugin_mouseover_info() {
 				'name' => tra('Label'),
 				'description' => tra('Text displayed on the page. The body is the mouseover content'),
 				'filter' => 'striptags',
-				'default' => '',
 			),
 			'url' => array(
 				'required' => false,
 				'name' => tra('URL'),
 				'description' => tra('Destination link when mouseover text is clicked. Use http:// for external links'),
 				'filter' => 'url',
-				'default' => 'javascript:void(0)',
 			),
 			'text' => array(
 				'required' => false,
 				'name' => tra('Text'),
 				'description' => tra('DEPRECATED').' '.tra('Text displayed on the mouseover. The body contains the text of the page.'),
 				'filter' => 'striptags',
-				'default' => '',
-				'advanced' => true,
 			),
 			'width' => array(
 				'required' => false,
 				'name' => tra('Width'),
 				'description' => tra('Mouseover box width. Default: 400px'),
 				'filter' => 'digits',
-				'default' => 400,
-				'advanced' => true,
 			),
 			'height' => array(
 				'required' => false,
 				'name' => tra('Height'),
 				'description' => tra('Mouseover box height. Default: 200px'),
 				'filter' => 'digits',
-				'default' => 200,
-				'advanced' => true,
 			),
 			'offsetx' => array(
 				'required' => false,
 				'name' => tra('Offset X'),
-				'description' => tra('Shifts the overlay to the right by the specified number of pixels relative to the cursor. Default: 5'),
+				'description' => tra('Shifts the overlay to the right by the specified number of pixels relative to the cursor. Default: 5px'),
 				'filter' => 'digits',
-				'default' => 5,
-				'advanced' => true,
 			),
 			'offsety' => array(
 				'required' => false,
 				'name' => tra('Offset Y'),
-				'description' => tra('Shifts the overlay lower by the specified number of pixels relative to the cursor. Default: 0'),
+				'description' => tra('Shifts the overlay lower by the specified number of pixels relative to the cursor. Default: 0px'),
 				'filter' => 'digits',
-				'default' => 0,
-				'advanced' => true,
 			),
 			'parse' => array(
 				'required' => false,
 				'name' => tra('Parse Body'),
-				'description' => tra('Parse the body of the plugin as wiki content (parsed by default)'),
+				'description' => tra('y|n, parse the body of the plugin as wiki content. (Default to y)'),
 				'filter' => 'alpha',
-				'advanced' => true,
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'parselabel' => array(
 				'required' => false,
 				'name' => tra('Parse Label'),
-				'description' => tra('Parse the label as wiki content (parsed by default)'),
+				'description' => 'y|n '.tra('parse label'),
 				'filter' => 'alpha',
 				'default' => 'y',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'class' => array(
 				'required' => false,
 				'name' => tra('CSS Class'),
-				'description' => tra('CSS class to apply'),
+				'description' => 'Default: plugin-mouseover',
 				'filter' => 'alpha',
-				'default' => 'plugin-mouseover',
-				'advanced' => true,
 			),
 			'bgcolor' => array(
 				'required' => false,
-				'name' => tra('Background Color'),
-				'description' => tra('Background color to apply to the popup'),
+				'name' => tra('Background color of the popup'),
+				'description' => tra(''),
 				'filter' => 'striptags',
-				'default' => '',
-				'advanced' => true,
 			),
 			'textcolor' => array(
 				'required' => false,
-				'name' => tra('Text Color'),
-				'description' => tra('Color to apply to the text in the popup'),
+				'name' => tra('Text color in the popup'),
+				'description' => tra(''),
 				'filter' => 'striptags',
-				'default' => '',
-				'advanced' => true,
 			),
 			'sticky' => array(
 				'required' => false,
 				'name' => tra('Sticky'),
-				'description' => tra('When enabled, popup stays visible until it is clicked.'),
+				'description' => 'y|n, when enabled, popup stays visible until it is clicked.',
 				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				),
-				'advanced' => true,
 			),				
 			'padding' => array(
 				'required' => false,
 				'name' => tra('Padding'),
-				'description' => tra('Padding size in pixels'),
+				'description' => 'Default: 5px',
 				'filter' => 'digits',
-				'default' => '',
-				'advanced' => true,
 			),
 			'effect' => array(
 				'required' => false,
 				'name' => tra('Effect'),
 				'options' => $jqfx,
-				'description' => tra('Set the type of show/hide animation that will be used'),
+				'description' => 'Show/hide animation',
 				'filter' => 'striptags',
-				'advanced' => true,
 			),
 			'speed' => array(
 				'required' => false,
-				'name' => tra('Effect Speed'),
+				'name' => tra('Effect speed'),
 				'options' => array(
 					array('text' => tra('Normal'), 'value' => ''), 
 					array('text' => tra('Fast'), 'value' => 'fast'), 
 					array('text' => tra('Slow'), 'value' => 'slow'), 
 				),
-				'description' => tra('Set the speed of the animation.'),
+				'description' => '',
 				'filter' => 'alpha',
-				'default' => '',
-				'advanced' => true,
 			),
 			'closeDelay' => array(
 				'required' => false,
-				'name' => tra('Close Delay'),
-				'description' => tra('Number of seconds before popup closes'),
+				'name' => tra('Close delay'),
+				'description' => 'Number of seconds before popup closes',
 				'filter' => 'digits',
-				'default' => 0,
-				'advanced' => true,
 			),
 		),
 	);
@@ -203,7 +158,7 @@ function wikiplugin_mouseover( $data, $params ) {
 	$height = isset( $params['height'] ) ? (int) $params['height'] : 200;
 	$offsetx = isset( $params['offsetx'] ) ? (int) $params['offsetx'] : 5;
 	$offsety = isset( $params['offsety'] ) ? (int) $params['offsety'] : 0;
-	$parse = ! isset($params['parse']) || (strcasecmp($params['parse'], 'n') != 0);
+	$parse = ! isset($params['parse']) || $params['parse'] != 'n';
 	$sticky = isset($params['sticky']) && $params['sticky'] == 'y';
 	$padding = isset( $params['padding'] ) ? 'padding: '.$params['padding'].'px;' : '';
 	$effect = !isset( $params['effect'] ) || $params['effect'] == 'Default' ? '' : strtolower($params['effect']);
@@ -247,12 +202,12 @@ function wikiplugin_mouseover( $data, $params ) {
 		$closeDelayStr = '';
 	}
 
-	$js = "\$('#$id-link').mouseover(function(event) {
-	\$('#$id').css('left', event.pageX + $offsetx).css('top', event.pageY + $offsety); showJQ('#$id', '$effect', '$speed'); $closeDelayStr });";
+	$js = "\$jq('#$id-link').mouseover(function(event) {
+	\$jq('#$id').css('left', event.pageX + $offsetx).css('top', event.pageY + $offsety); showJQ('#$id', '$effect', '$speed'); $closeDelayStr });";
 	if ($sticky) {
-		$js .= "\$('#$id').click(function(event) { hideJQ('#$id', '$effect', '$speed'); }).css('cursor','pointer');\n";
+		$js .= "\$jq('#$id').click(function(event) { hideJQ('#$id', '$effect', '$speed'); }).css('cursor','pointer');\n";
 	} else {
-		$js .= "\$('#$id-link').mouseout(function(event) { setTimeout(function() {hideJQ('#$id', '$effect', '$speed')}, ".($closeDelay * 1000)."); });";
+		$js .= "\$jq('#$id-link').mouseout(function(event) { setTimeout(function() {hideJQ('#$id', '$effect', '$speed')}, ".($closeDelay * 1000)."); });";
 	}
 	$headerlib->add_jq_onready($js);
 	

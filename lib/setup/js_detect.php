@@ -29,10 +29,10 @@ if ( $prefs['javascript_enabled'] != 'y' && $prefs['disableJavascript'] != 'y' )
 	// the first and second time, we should not trust the absence of javascript_enabled cookie yet, as it could be a redirection and the js will not get a chance to run yet, so we wait until the third run, assuming that js is on before then
 	if ( !isset($_COOKIE['runs_before_js_detect']) ) {
 		$prefs['javascript_enabled'] = 'y';
-		setcookie( 'runs_before_js_detect', '2', $tikilib->now + 365 * 24 * 3600 );
+		setcookie( 'runs_before_js_detect', '2', ( 1000 * ( $tikilib->now + 365 * 24 * 3600 ) ) );
 	} elseif ( $_COOKIE['runs_before_js_detect'] > 0 ) {
 		$prefs['javascript_enabled'] = 'y';
-		setcookie( 'runs_before_js_detect', $_COOKIE['runs_before_js_detect'] - 1, $tikilib->now + 365 * 24 * 3600 );
+		setcookie( 'runs_before_js_detect', $_COOKIE['runs_before_js_detect'] - 1, ( 1000 * ( $tikilib->now + 365 * 24 * 3600 ) ) );
 	}
 }
 if ($prefs['javascript_enabled'] == 'n') {
@@ -49,7 +49,7 @@ if ($prefs['javascript_enabled'] == 'y') {	// we have JavaScript
 	$prefs['feature_jquery'] = 'y';	// just in case
 	
 	// load translations lang object from /lang/xx/language.js if there
-	if (file_exists('lang/' . $prefs['language'] . '/language.js')) {
+	if ($prefs['feature_multilingual'] == 'y' && file_exists('lang/' . $prefs['language'] . '/language.js')) {
 		// after the usual lib includes (up to 10) but before custom.js (50)
 		$headerlib->add_jsfile('lang/' . $prefs['language'] . '/language.js', 25);
 	}
@@ -77,10 +77,9 @@ jqueryTiki.replection = '.($prefs['feature_jquery_reflection'] == 'y' ? 'true' :
 jqueryTiki.tablesorter = '.($prefs['feature_jquery_tablesorter'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.colorbox = '.($prefs['feature_shadowbox'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.cboxCurrent = "{current} / {total}";
-jqueryTiki.sheet = '.($prefs['feature_sheet'] == 'y' ? 'true' : 'false') . ';
+jqueryTiki.sheet = '.($prefs['feature_sheet'] == 'y' && $prefs['feature_jquery_sheet'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.carousel = '.($prefs['feature_jquery_carousel'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.jqs5 = '.($prefs['feature_jquery_jqs5'] == 'y' ? 'true' : 'false') . ';
-jqueryTiki.validate = '.($prefs['feature_jquery_validation'] == 'y' ? 'true' : 'false') . ';
 
 jqueryTiki.effect = "'.$prefs['jquery_effect'].'";				// Default effect
 jqueryTiki.effect_direction = "'.$prefs['jquery_effect_direction'].'";	// "horizontal" | "vertical" etc
@@ -88,9 +87,6 @@ jqueryTiki.effect_speed = '.($prefs['jquery_effect_speed'] == 'normal' ? '400' :
 jqueryTiki.effect_tabs = "'.$prefs['jquery_effect_tabs'].'";		// Different effect for tabs
 jqueryTiki.effect_tabs_direction = "'.$prefs['jquery_effect_tabs_direction'].'";
 jqueryTiki.effect_tabs_speed = '.($prefs['jquery_effect_tabs_speed'] == 'normal' ? '400' : '"'.$prefs['jquery_effect_tabs_speed'].'"').';
-
-jqueryTiki.autosave = '.($prefs['ajax_autosave'] == 'y' ? 'true' : 'false') . ';
-jqueryTiki.sefurl = '.($prefs['feature_sefurl'] == 'y' ? 'true' : 'false') . ';
 
 ';	// NB replace "normal" speeds with int to workaround issue with jQuery 1.4.2
 	$headerlib->add_js($js, 100);	
@@ -125,5 +121,5 @@ JS
 }
 
 if ($prefs['feature_ajax'] != 'y') {
-	$prefs['ajax_autosave'] = 'n';
+	$prefs['feature_ajax_autosave'] = 'n';
 }

@@ -53,11 +53,9 @@
  * 
  * _columnsContainHtml = 'n':	Column data gets html encoded (by default)
  * 
- * _emptyDataMessage = tra('No rows found')	: message if there are no rows
+ * _emptyDataMessage = {treetable}: '.tra('No rows found')	: message if there are no rows
  * 
  * _openall					: show folder button to open all areas (y/n default=n)
- * 
- * _showSelected			: checkbox to show only selected (y/n default=n)
  */
 
 //this script may only be included - so its better to die if called directly.
@@ -71,7 +69,7 @@ function smarty_function_treetable($params, &$smarty) {
 	
 	extract($params);
 	
-	$_emptyDataMessage = empty($_emptyDataMessage) ? tra('No rows found') : $_emptyDataMessage;
+	$_emptyDataMessage = empty($_emptyDataMessage) ? '{treetable}: ' . tra('No rows found') : $_emptyDataMessage;
 	if (empty($_data)) {
 		return $_emptyDataMessage;
 	}
@@ -79,7 +77,6 @@ function smarty_function_treetable($params, &$smarty) {
 	$_checkbox = empty($_checkbox) ? '' : $_checkbox;
 	$_checkboxTitles = empty($_checkboxTitles) ? '' : $_checkboxTitles;
 	$_openall = isset($_openall) ? $_openall : 'n';
-	$_showSelected = isset($_showSelected) ? $_showSelected : 'n';
 	
 	if (is_string($_checkbox) && strpos($_checkbox, ',') !== false) {
 		$_checkbox = preg_split('/,/', trim($_checkbox));
@@ -89,7 +86,7 @@ function smarty_function_treetable($params, &$smarty) {
 			$_checkboxColumnIndex = preg_split('/,/', trim($_checkboxColumnIndex));
 		}
 		if (count($_checkbox) != count($_checkboxColumnIndex)) {
-			return tra('Number of items in _checkboxColumnIndex doesn not match items in _checkbox');
+			return tra('{treetable}: Number of items in _checkboxColumnIndex doesn not match items in _checkbox');
 		}
 	}
 	if (!empty($_checkboxTitles)) {
@@ -101,7 +98,7 @@ function smarty_function_treetable($params, &$smarty) {
 			}
 		}
 		if (count($_checkbox) != count($_checkboxTitles)) {
-			return tra('Number of items in _checkboxTitles doesn not match items in _checkbox');
+			return tra('{treetable}: Number of items in _checkboxTitles doesn not match items in _checkbox');
 		}
 	}
 	$_checkboxColumnIndex = empty($_checkboxColumnIndex) ? 0 : $_checkboxColumnIndex;
@@ -189,47 +186,29 @@ function smarty_function_treetable($params, &$smarty) {
 		$html .= '&nbsp;' . smarty_function_icon(
 			array('_id' => 'folder',
 				'id' => $id.'_openall',
-				'title' => tra('Toggle sections')),	$smarty) .
-			' ' . tra('Toggle sections');
+				'title' => tra('Toggle sections')),	$smarty);
 		
 		$headerlib->add_jq_onready('
-$("#'.$id.'_openall").click( function () {
+$jq("#'.$id.'_openall").click( function () {
 	if (this.src.indexOf("ofolder.png") > -1) {
 		
-		$(".expanded .expander").eachAsync({
+		$jq(".expanded .expander").eachAsync({
 			delay: 20,
 			bulk: 0,
 			loop: function () {
-				$(this).click();
+				$jq(this).click();
 			}
 		});
 		this.src = this.src.replace("ofolder", "folder");
 	} else {
-		$(".collapsed .expander").eachAsync({
+		$jq(".collapsed .expander").eachAsync({
 			delay: 20,
 			bulk: 0,
 			loop: function () {
-				$(this).click();
+				$jq(this).click();
 			}
 		});
 		this.src = this.src.replace("folder", "ofolder");
-	}
-	return false;
-});');
-	}
-	
-	if ($_showSelected == 'y') {
-		require_once($smarty->_get_plugin_filepath('function', 'icon'));
-		$html .= ' <input type="checkbox" id="'.$id.'_showSelected" title="'.tra('Show only selected').'" />';
-		$html .= ' ' . tra('Show only selected');
-				
-		$headerlib->add_jq_onready('
-$("#'.$id.'_showSelected").click( function () {
-	if (!$(this).attr("checked")) {
-		$("#treetable_1 tr td.checkBoxCell input:checkbox").parent().parent().show()
-	} else {
-		$("#treetable_1 tr td.checkBoxCell input:checkbox").parent().parent().hide()
-		$("#treetable_1 tr td.checkBoxCell input:checked").parent().parent().show()
 	}
 });');
 	}
@@ -366,16 +345,16 @@ $("#'.$id.'_showSelected").click( function () {
 	// add jq code to initial treeetable
 	$expanable = empty($_sortColumnDelimiter) ? 'true' : 'false';	// when nested, clickableNodeNames is really annoying
 	if (count($treeSectionsAdded) < $_collapseMaxSections) {
-		$headerlib->add_jq_onready('$("#'.$id.'").treeTable({clickableNodeNames:'.$expanable.',initialState: "expanded"});');
+		$headerlib->add_jq_onready('$jq("#'.$id.'").treeTable({clickableNodeNames:'.$expanable.',initialState: "expanded"});');
 	} else {
-		$headerlib->add_jq_onready('$("#'.$id.'").treeTable({clickableNodeNames:'.$expanable.',initialState: "collapsed"});');
+		$headerlib->add_jq_onready('$jq("#'.$id.'").treeTable({clickableNodeNames:'.$expanable.',initialState: "collapsed"});');
 	}
 	// TODO refilter when .parent is opened - seems to prevent the click propagating
-//		$headerlib->add_jq_onready('$("tr.parent").click(function(event) {
-//if ($("#'.$id.'_filter").val()) {
-//	$("#'.$id.'_filter").trigger("keyup");
+//		$headerlib->add_jq_onready('$jq("tr.parent").click(function(event) {
+//if ($jq("#'.$id.'_filter").val()) {
+//	$jq("#'.$id.'_filter").trigger("keyup");
 //	if (event.isPropagationStopped() || event.isImmediatePropagationStopped()) {
-//		$(this).trigger("click");
+//		$jq(this).trigger("click");
 //	}
 //}
 //		});');

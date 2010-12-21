@@ -2,7 +2,8 @@
  * This file is simplified version of header.tpl intended to be used for pages such as popup windows, print page, etc.
  * $Id$
  *
- *}<!DOCTYPE html>
+ *}<!DOCTYPE html PUBLIC
+"-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if isset($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if isset($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
 	<head>
 {if $base_url and $dir_level gt 0}		<base href="{$base_url}" />{/if}
@@ -13,25 +14,12 @@
 {/if}
 {if $prefs.metatag_description ne ''}<meta name="description" content="{$prefs.metatag_description|escape}" />
 {/if}
-{if $prefs.metatag_robots ne '' && $metatag_robots eq '' }
-        <meta name="robots" content="{$prefs.metatag_robots|escape}" />
-{/if}
-{if $prefs.metatag_robots eq '' && $metatag_robots ne '' }
-        <meta name="robots" content="{$metatag_robots|escape}" />
-{/if}
-{if $prefs.metatag_robots eq '' && $metatag_robots eq '' }
-        <meta name="robots" content="{$prefs.metatag_robots|escape}, {$metatag_robots|escape}" />
+{if $prefs.metatag_robots ne ''}<meta name="robots" content="{$prefs.metatag_robots|escape}" />
 {/if}
 {if $prefs.metatag_revisitafter ne ''}<meta name="revisit-after" content="{$prefs.metatag_revisitafter|escape}" />
 {/if}
 
-{* --- Canonical URL --- *}
-{if $prefs.feature_canonical_url eq 'y'}
-	{if $page neq ''} <link rel="canonical" href="{$page|sefurl}" /> {/if}
-{/if}	
-
-
-{* --- Tiki block --- *}
+{* --- tikiwiki block --- *}
 {include file='bidi.tpl'}
 <title>
 {if isset($trail)}{breadcrumbs type="fulltrail" loc="head" crumbs=$trail}
@@ -58,4 +46,7 @@
 {if $headerlib}{$headerlib->output_headers()}{/if}
 
 </head>
+
 <body{html_body_attributes}>
+
+{if $prefs.feature_community_mouseover eq 'y'}{popup_init src="lib/overlib.js"}{/if}

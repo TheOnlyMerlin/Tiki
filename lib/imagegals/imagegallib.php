@@ -43,7 +43,7 @@ class ImageGalsLib extends TikiLib
 					$this->gdversion = "1.0";
 				}
 
-				$this->gdinfo["JPG Support"] = preg_match('/JPE?G Support.*enabled/', ob_get_contents());
+				$this->gdinfo["JPG Support"] = preg_match('/JPG Support.*enabled/', ob_get_contents());
 				$this->gdinfo["PNG Support"] = preg_match('/PNG Support.*enabled/', ob_get_contents());
 				$this->gdinfo["GIF Create Support"] = preg_match('/GIF Create Support.*enabled/', ob_get_contents());
 				$this->gdinfo["WBMP Support"] = preg_match('/WBMP Support.*enabled/', ob_get_contents());
@@ -363,7 +363,7 @@ class ImageGalsLib extends TikiLib
 				case 'image/jpeg':
 				case 'image/pjpeg':
 				case 'image/jpg':
-					return ($this->gdinfo["JPG Support"] || $this->gdinfo["JPEG Support"]);
+					return ($this->gdinfo["JPG Support"]);
 					break;
 				case 'png':
 				case 'image/png':
@@ -792,8 +792,10 @@ class ImageGalsLib extends TikiLib
 			$result = $this->query($query, array((int)$id, 'o'));
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('images', $id);
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('images', $id);
+		}
 
 		return true;
 	}
@@ -862,8 +864,10 @@ class ImageGalsLib extends TikiLib
 			$logslib->add_action('Uploaded', $galleryId, 'image gallery', 'imageId='.$imageId);
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('images', $imageId);
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('images', $imageId);
+		}
 		
 		$this->notify($imageId, $galleryId, $name, $filename, $description, isset($gal_info['name'])?$gal_info['name']: '', 'upload image', $user);
 
@@ -1753,7 +1757,7 @@ $galleryimage='first',$parentgallery=-1,$showname='y',$showimageid='n',$showdesc
 			$query = "update `tiki_galleries` set `name`=?,`visible`=?, `geographic`=?,`maxRows`=? , `rowImages`=?, 
                 `thumbSizeX`=?, `thumbSizeY`=?, `description`=?, `theme`=?,
                 `lastModif`=?, `public`=?, `sortorder`=?, `sortdirection`=?, `galleryimage`=?,
-		`parentgallery`=?,`showname`=?,`showimageid`=?,`showdescription`=?,`showcategories`=?,
+		`parentgallery`=?,`showname`=?,`showimageid`=?,`showcategories`=?,`showdescription`=?,
 		`showcreated`=?,`showuser`=?,`showhits`=?,`showxysize`=?,`showfilesize`=?,
 		`showfilename`=?,`defaultscale`=?, `user`=?
 	       	where `galleryId`=?";
@@ -1775,8 +1779,10 @@ $thumbSizeY,$public,0,$visible,$sortorder,$sortdirection,$galleryimage,(int)$par
 			}
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('galleries', $galleryId);
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('galleries', $galleryId);
+		}
 
 		return $galleryId;
 	}

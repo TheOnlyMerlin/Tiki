@@ -9,35 +9,25 @@ function wikiplugin_trackercomments_info() {
 	return array(
 		'name' => tra('Tracker Comments'),
 		'documentation' => 'PluginTrackerComments',
-		'description' => tra('Display the number of tracker comments'),
-		'icon' => 'pics/icons/comments.png',
+		'description' => tra('Displays the number of tracker comments'),
 		'params' => array(
 			'trackerId' => array(
 				'required' => true,
 				'name' => tra('Tracker ID'),
-				'description' => tra('Numeric value representing the tracker ID'),
-				'filter' => 'digits',
-				'default' => '',
+				'description' => tra('Tracker ID'),
+				'filter' => 'digits'
 			),
 			'shownbitems' => array(
 				'required' => false,
-				'name' => tra('Item Count'),
-				'description' => tra('Determines whether the number of items will be shown (not shown by default)'),
-				'filter' => 'alpha',
-				'default' => '',
-			'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
+				'name' => tra('shownbitems'),
+				'description' => 'y|n',
+				'filter' => 'alpha'
 			),
 			'view' => array(
 				'required' => false,
 				'name' => tra('View'),
-				'description' => tra('Enter a user name to select the items of the current user'),
-				'accepted' => tra('a user name'),
-				'filter' => 'alpha',
-				'default' => ''
+				'description' => 'user '.tra('Select automatically the item of the current user'),
+				'filter' => 'alpha'
 			),
 		)
 	);

@@ -18,28 +18,31 @@ if( isset( $_SERVER['REQUEST_METHOD'] ) ) die;
 // Add the imported libraries located in lib/
 $thirdpartyLibs = array(
 	'\./lib/pear.*',
+	'\./lib/phplayers.*',
 	'\./lib/smarty.*',
 	'\./lib/adodb.*',
 	'\./lib/debug.*',
 	'\./lib/diff.*',
 	'\./lib/pdflib.*',
-	'\./lib/ckeditor/.*',
+	'\./lib/fckeditor/.*',
 	'\./lib/graph-engine/.*',
-	'\./lib/core/Zend.*',
+	'\./lib/core/lib/Zend.*',
 	'\./lib/htmlparser/,*',
 	'\./lib/htmlpurifier/,*',
+	'\./lib/hawhaw.*',
 	'\./lib/ical.*',
 	'\./lib/images.*',
 	'\./lib/feedcreator.*',
 	'\./lib/sheet.*',
 	'\./lib/Horde/Yaml.*',
-	'\./lib/core/DeclFilter.*',
-	'\./lib/core/JitFilter.*',
-	'\./lib/core/Multilingual.*',
-        '\./lib/core/TikiFilter.*',
-	'\./lib/core/WikiParser.*',
+	'\./lib/ajax/xajax/.*',
+	'\./lib/core/lib/DeclFilter.*',
+	'\./lib/core/lib/JitFilter.*',
+	'\./lib/core/lib/Multilingual.*',
+        '\./lib/core/lib/TikiFilter.*',
+	'\./lib/core/lib/WikiParser.*',
 	'\./lib/core/test/.*',
-	'\./lib/core/WikiParser.*',
+	'\./lib/core/lib/WikiParser.*',
 	'\./lib.*', /* as per NKO 4:18 19-MAY-09 */
 );
 
@@ -85,6 +88,7 @@ $safePaths = array(
 	'\./lib/wiki-plugins.*',
 	'\./lib/wiki-plugins-dist.*',
 	'\./lib/tree.*',
+	'\./lib/phplayers_tiki.*',
 );
 
 if( !file_exists( 'tiki-setup.php' ) )
@@ -532,7 +536,7 @@ foreach( $files as $key=>$dummy )
 		if( $file['unsafeextract'] ) 
 			$unsafe[] = $file;
 
-					break;
+		break;
 	case 'public':
 	case 'include':
 	case 'script':
@@ -548,7 +552,7 @@ foreach( $files as $key=>$dummy )
 		if( ! $file['noweb'] && ! $file['includeonly'] && ! count( $file['features'] ) && ! count( $file['permissions'] ) ) 
 			$unsafe[] = $file;
 
-					break;
+		break;
 	}
 }
 
@@ -619,14 +623,13 @@ $fileType = $fileRecord['type'];
 	</tbody>
 </table>
 
-	<?php 
-		foreach($features as $featureKey => $featureValue) {
-			print "$featureKey :\n";
-			foreach ($featureValue as $file) {
-				print "<li>$file</li>";
-			}
-			print "<br/><br/>\n";
-		} ?>
+	<?php foreach($features as $featureKey => $featureValue) {
+	  print "$featureKey :\n";
+	  foreach ($featureValue as $file) {
+	    print "<li>$file</li>";
+	  }
+	  print "<br/><br/>\n";
+	} ?>
 
 </body>
 </html>

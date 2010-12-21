@@ -24,14 +24,14 @@
 
 
 function wikiplugin_aname_help() {
-        return tra("Creates an anchor. Use in conjunction with the ALINK plugin, which specifies a link to the anchor").":<br />~np~{ANAME()}anchorname{ANAME}~/np~";
+        return tra("Creates an anchor in a wiki page. Use in conjunction with the ALINK plugin, which specifies a link to the anchor").":<br />~np~{ANAME()}anchorname{ANAME}~/np~";
 }
 
 function wikiplugin_aname_info() {
 	return array(
 		'name' => tra('Anchor Name'),
 		'documentation' => 'PluginAname',
-		'description' => tra('Create an anchor that can be linked to'),
+		'description' => tra('Inserts an anchor in the wiki page. Anchors can be linked to using the ALINK plugin.'),
 		'prefs' => array('wikiplugin_aname'),
 		'body' => tra('The name of the anchor.'),
 		'params' => array(),
@@ -46,7 +46,7 @@ function wikiplugin_aname($data, $params)
         
     // the following replace is necessary to maintain compliance with XHTML 1.0 Transitional
 	// and the same behavior as tikilib.php and ALINK. This will change when the world arrives at XHTML 1.0 Strict.
-	$data = preg_replace('/[^a-zA-Z0-9]+/', '_', $data);
+	$data = ereg_replace('[^a-zA-Z0-9]+', '_', $data);
 
 	return "<a id=\"$data\"></a>";
 }

@@ -1,4 +1,5 @@
 {* $Id$ *}
+{popup_init src="lib/overlib.js"}
 
 {title help="Groups+Management" admpage="login"}{tr}Admin groups{/tr}{/title}
 
@@ -80,7 +81,7 @@
 {if $groupname}
 	{capture assign=tabaddeditgroup_admgrp}{tr}Edit group{/tr} <i>{$groupname|escape}</i>{/capture}
 {else}
-	{assign var=tabaddeditgroup_admgrp value="{tr}Add a New Group{/tr}"}
+	{assign var=tabaddeditgroup_admgrp value='{tr}Add a New Group{/tr}'}
 {/if}
 
 {tab name=$tabaddeditgroup_admgrp}
@@ -89,8 +90,8 @@
 	<h2>{$tabaddeditgroup_admgrp}</h2>
 
 	<form action="tiki-admingroups.php" method="post">
-		<table class="formcolor">
-			<tr>
+		<table class="normal">
+			<tr class="formcolor">
 				<td><label for="groups_group">{tr}Group:{/tr}</label></td>
 				<td>
 					{if $groupname neq 'Anonymous' and $groupname neq 'Registered' and $groupname neq 'Admins'}
@@ -100,13 +101,13 @@
 					{/if}
 				</td>
 			</tr>
-			<tr>
+			<tr class="formcolor">
 				<td><label for="groups_desc">{tr}Description:{/tr}</label></td>
 				<td>
 					<textarea rows="5" name="desc" id="groups_desc" style="width:95%">{$groupdesc|escape}</textarea>
 				</td>
 			</tr>
-			<tr>
+			<tr class="formcolor">
 				<td>
 					<label for="groups_inc">{tr}Inherit permissions directly from following groups.{/tr}</label>
 				</td>
@@ -128,7 +129,7 @@
 				</td>
 			</tr>
 
-			<tr>
+			<tr class="formcolor">
 				<td>
 					<label for="indirectly_inherited_groups">{tr}Also inheriting permissions from the following groups (indirect inheritance through the groups selected above).{/tr}</label>
 				</td>
@@ -145,7 +146,7 @@
 			</tr>
 
 			{if $prefs.useGroupHome eq 'y'}
-				<tr>
+				<tr class="formcolor">
 					<td>
 						<label for="groups_home">{tr}Group Homepage or Url:{/tr}</label>
 					</td>
@@ -154,16 +155,11 @@
 						{remarksbox type="tip" title="{tr}Tip{/tr}"}
 							{tr}Use wiki page name or full URL{/tr}. {tr}For other Tiki features, use relative links (such as <em>http:tiki-forums.php</em>).{/tr}
 						{/remarksbox}
-						{if $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y'}
-							{jq}
-								$("#groups_home").tiki("autocomplete", "pagename");
-							{/jq}
-						{/if}
 					</td>
 				</tr>
 			{/if}
 			{if $prefs.feature_categories eq 'y'}
-				<tr>
+				<tr class="formcolor">
 					<td>
 						<label for="groups_defcat">{tr}Default category assigned to uncategorized objects edited by a user with this default group:{/tr}</label>
 					</td>
@@ -178,7 +174,7 @@
 				</tr>
 			{/if}
 			{if $prefs.useGroupTheme eq 'y'}
-				<tr>
+				<tr class="formcolor">
 					<td><label for="groups_theme">{tr}Group Theme:{/tr}</label></td>
 					<td>
 						<select name="theme" id="groups_theme" multiple="multiple" size="4">
@@ -192,7 +188,7 @@
 			{/if}
 			
 			{if $prefs.groupTracker eq 'y'}
-				<tr>
+				<tr class="formcolor">
 					<td><label for="groupTracker">{tr}Group Information Tracker{/tr}</label></td>
 					<td>
 						<select name="groupstracker">
@@ -221,7 +217,7 @@
 			{/if}
 
 			{if $prefs.userTracker eq 'y'}
-				<tr>
+				<tr class="formcolor">
 					<td><label for="userstracker">{tr}Users Information Tracker{/tr}</label></td>
 					<td>
 						<select name="userstracker">
@@ -247,28 +243,24 @@
 						{/if}
 					</td>
 				</tr>
-				<tr>
+				<tr class="formcolor">
 					<td>{tr}Users Information Tracker Fields Asked at Registration Time<br />(fieldIds separated with :){/tr}</td>
 					<td><input type="text" style="width:95%" name="registrationUsersFieldIds" value="{$registrationUsersFieldIds|escape}" /></td>
 				</tr>
 			{/if}
 
-			<tr>
+			<tr class="formcolor">
 				<td>{tr}User can assign to the group himself{/tr}</td>
 				<td><input type="checkbox" name="userChoice"{if $userChoice eq 'y'} checked="checked"{/if}/></td>
 			</tr>
 
-			<tr>
+			<tr class="formcolor">
 				<td>{tr}Users are automatically unassigned from the group after{/tr}</td>
-				<td><input type="text" name="expireAfter" value="{$group_info.expireAfter|escape}" />{tr}Days{/tr}<br /><i>{tr}0 or empty for never{/tr}</i></td>
-			</tr>
-			<tr>
-				<td>{tr}Users are automatically assigned at registration in the group if their emails match the pattern{/tr}</td>
-				<td><input type="text" size="40" name="emailPattern" value="{$group_info.emailPattern|escape}" /><br />{tr}Example: {/tr}/@tw\.org$/ <br />{tr}Example:{/tr} /@(tw.org$)|(tw\.com$)/</td>
+				<td><input type="text" name="expireAfter" value="{$expireAfter|escape}" />{tr}Days{/tr}<br /><i>{tr}0 or empty for never{/tr}</i></td>
 			</tr>
 
 			{if $group ne ''}
-				<tr>
+				<tr class="formcolor">
 					<td>
 						{tr}Assign group <em>management</em> permissions:{/tr}
 					</td>
@@ -276,7 +268,7 @@
 						{icon href="tiki-objectpermissions.php?objectType=group&objectId=$groupname&objectName=$groupname&permType=group" _text="{tr}Assign Permissions{/tr}" _id="key"}
 					</td>
 				</tr>
-				<tr>
+				<tr class="formcolor">
 					<td>
 						&nbsp;
 						<input type="hidden" name="olgroup" value="{$group|escape}" />
@@ -284,7 +276,7 @@
 					<td><input type="submit" name="save" value="{tr}Save{/tr}" /></td>
 				</tr>
 			{else}
-				<tr>
+				<tr class="formcolor">
 					<td >&nbsp;</td>
 					<td><input type="submit" name="newgroup" value="{tr}Add{/tr}" /></td>
 				</tr>
@@ -316,40 +308,32 @@
 		<h2>{tr}Members List:{/tr} {$groupname|escape}</h2>
 		<table class="normal">
 			<tr>
-				<th>{self_link _sort_arg='sort_mode_member' _sort_field='login'}{tr}User{/tr}{/self_link}</th>
-				<th>{self_link _sort_arg='sort_mode_member' _sort_field='created'}{tr}Assign{/tr}{/self_link}</th>
-				<th>{self_link _sort_arg='sort_mode_member' _sort_field='expire'}{tr}Expire{/tr}{/self_link}</th>
-				<th>{tr}Action{/tr}</th>
-			</tr>
-			{cycle values="even,odd" print=false}
-			<tr>
-				{foreach from=$memberslist item=member}
-					<tr class="{cycle}">
-					<td>{$member.login|userlink}</td>
-					<td>{$member.created|tiki_short_datetime}</td>
-					<td>{if !empty($member.expire)}{$member.expire|tiki_short_datetime}{/if}</td>
-					<td>
-						<a href="tiki-adminusers.php?user={$member.login|escape:"url"}&amp;action=removegroup&amp;group={$groupname|escape:url}" class="link" title="{tr}Remove from Group{/tr}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
-						<a href="tiki-adminusers.php?user={$member.userId|escape:"url"}&amp;cookietab=2{if $prefs.feature_tabs ne 'y'}#tab2{/if}" class="link" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
+				{cycle name=table values=',,,,</tr><tr>' print=false advance=false}
+				{section name=ix loop=$memberslist}
+					<td class="formcolor auto">
+						<a href="tiki-adminusers.php?user={$memberslist[ix]|escape:"url"}&amp;action=removegroup&amp;group={$groupname|escape:url}" class="link" title="{tr}Remove from Group{/tr}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a>
+						<a href="tiki-adminusers.php?user={$memberslist[ix]|escape:"url"}&amp;cookietab=2{if $prefs.feature_tabs ne 'y'}#tab2{/if}" class="link" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
+						{$memberslist[ix]|userlink}
 					</td>
-					</tr>
-				{/foreach}
+					{cycle name=table}
+				{/section}
+			</tr>
 		</table>
 		{pagination_links cant=$membersCount step=$prefs.maxRecords offset=$membersOffset offset_arg='membersOffset'}{/pagination_links}
 		<div class="box">{$membersCount} {tr}users in group{/tr} {$groupname|escape}</div>
-		{if ! empty($userslist)}
-			<form method="post" action="tiki-admingroups.php">
-				<p>
-					<input type="hidden" name="group" value="{$groupname|escape}"/>
-					<select name="user">
-						{foreach from=$userslist item=iuser}
+		<form method="post" action="tiki-admingroups.php">
+			<p>
+				<input type="hidden" name="group" value="{$groupname|escape}"/>
+				<select name="user">
+					{foreach from=$userslist item=iuser}
+						{if ! in_array( $iuser, $memberslist ) }
 							<option>{$iuser|escape}</option>
-						{/foreach}
-					</select>
-					<input type="submit" name="adduser" value="{tr}Add to group{/tr}"/>
-				</p>
-			</form>
-		{/if}
+						{/if}
+					{/foreach}
+				</select>
+				<input type="submit" name="adduser" value="{tr}Add to group{/tr}"/>
+			</p>
+		</form>
 	{/tab}
 {/if}
 
@@ -367,10 +351,10 @@
 			{/if}
 
 			<h2>{tr}Download CSV export{/tr}</h2>
-			<table class="formcolor">
+			<table class="normal">
 				<tr>
-					<td class="auto">{tr}Charset encoding:{/tr}</td>
-					<td class="auto">
+					<td class="formcolor auto">{tr}Charset encoding:{/tr}</td>
+					<td class="formcolor auto">
 						<select name="encoding">
 							<option value="UTF-8" selected="selected">{tr}UTF-8{/tr}</option>
 							<option value="ISO-8859-1">{tr}ISO-8859-1{/tr}</option>
@@ -378,8 +362,8 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="auto">{tr}Fields:{/tr}</td>
-					<td class="auto">
+					<td class="formcolor auto">{tr}Fields:{/tr}</td>
+					<td class="formcolor auto">
 						<input type="checkbox" name="username" checked="checked" />
 						{tr}Username{/tr}
 						<br />
@@ -389,8 +373,8 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="auto"></td>
-					<td class="auto"><input type="submit" name="export" value="{tr}Export{/tr}" /></td>
+					<td class="formcolor auto"></td>
+					<td class="formcolor auto"><input type="submit" name="export" value="{tr}Export{/tr}" /></td>
 				</tr>
 			</table>
 
@@ -399,16 +383,16 @@
 			{remarksbox type="tip" title="{tr}Tip{/tr}"}
 				{tr}Each user in the file must already exist.{/tr}<br />{tr}To create users or/and assign them to groups, got to <a href="tiki-adminusers.php">admin->users</a>{/tr}
 			{/remarksbox}
-			<table class="formcolor">
+			<table class="normal">
 				<tr>
-					<td class="auto">
+					<td class="formcolor auto">
 						{tr}CSV File{/tr}<a {popup text='user<br />user1<br />user2'}>{icon _id='help'}</a>
 					</td>
-					<td class="auto"><input name="csvlist" type="file" /></td>
+					<td class="formcolor auto"><input name="csvlist" type="file" /></td>
 				</tr>
 				<tr>
-					<td class="auto"></td>
-					<td class="auto"><input type="submit" name="import" value="{tr}Import{/tr}" /></td>
+					<td class="formcolor auto"></td>
+					<td class="formcolor auto"><input type="submit" name="import" value="{tr}Import{/tr}" /></td>
 				</tr>
 			</table>
 		</form>

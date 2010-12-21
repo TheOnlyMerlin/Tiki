@@ -13,10 +13,9 @@ function wikiplugin_dl_info() {
 	return array(
 		'name' => tra('Definition List'),
 		'documentation' => 'PluginDL',
-		'description' => tra('Create a definition list'),
+		'description' => tra("Creates a definition list"),
 		'prefs' => array('wikiplugin_dl'),
 		'body' => tra('One entry per line. Each line is in "Term: Definition" format.'),
-		'icon' => 'pics/icons/text_list_bullets.png',
 		'params' => array(
 		),
 	);
@@ -29,7 +28,7 @@ function wikiplugin_dl($data, $params) {
 	if (isset($param))
 		extract ($params,EXTR_SKIP);
 	$result = '<dl>';
-	$lines = explode("\n", $data);
+	$lines = split("\n", $data);
 
 	foreach ($lines as $line) {
 		$parts = explode(":", $line);

@@ -30,7 +30,7 @@
 		</span>
 		{if $chdata.url and $link_on_section eq 'y'}
 			<span class="separatoricon-url" style="display:none">
-				<a href="{if $prefs.feature_sefurl eq 'y' and !empty($chdata.sefurl)}{$chdata.sefurl|escape}{else}{if $prefs.menus_item_names_raw eq 'n'}{$chdata.url|escape}{else}{$chdata.url}{/if}{/if}">
+				<a href="{if $prefs.feature_sefurl eq 'y' and !empty($chdata.sefurl)}{$chdata.sefurl}{else}{$chdata.url}{/if}">
 					{icon _id=$chdata.icon alt="{tr}Toggle{/tr}" _defaultdir=$prefs.menus_items_icons_path}
 				</a>
 			</span>
@@ -42,7 +42,7 @@
 			{if empty($menu_info.icon)}
 				{icon _id="ofolder" alt='Toggle' name="$icon_name"}
 			{else}
-				<img src="{$menu_info.oicon|escape}" alt="{tr}Toggle{/tr}" name="{$icon_name}" />
+				<img src="{$menu_info.oicon}" alt='{tr}Toggle{/tr}' name="{$icon_name}" />
 			{/if}
 		{else}
 			{if empty($menu_info.icon)}
@@ -53,9 +53,9 @@
 				{/if}
 			{else}
 				{if isset($chdata.open) and $chdata.open}
-					<img src="{$menu_info.oicon|escape}" alt="{tr}Toggle{/tr}" name="{$icon_name}" />
+					<img src="{$menu_info.oicon}" alt='{tr}Toggle{/tr}' name="{$icon_name}" />
 				{else}
-					<img src="{$menu_info.icon|escape}" alt="{tr}Toggle{/tr}" name="{$icon_name}" />
+					<img src="{$menu_info.icon}" alt='{tr}Toggle{/tr}' name="{$icon_name}" />
 				{/if}
 			{/if}
 		{/if}
@@ -65,17 +65,11 @@
 	{/if}
 {/if} 
 {if $chdata.url and $link_on_section eq 'y'}
-<a href="{if $prefs.feature_sefurl eq 'y' and !empty($chdata.sefurl)}{$chdata.sefurl|escape}{else}{if $prefs.menus_item_names_raw eq 'n'}{$chdata.url|escape}{else}{$chdata.url}{/if}{/if}" class="separator">
+<a href="{if $prefs.feature_sefurl eq 'y' and !empty($chdata.sefurl)}{$chdata.sefurl}{else}{$chdata.url}{/if}" class="separator">
 {else}
 <a href="javascript:icntoggle('menu{$cname}');" class="separator">
 {/if}
-	<span class="menuText">
-		{if $translate eq 'n'}
-			{if $prefs.menus_item_names_raw eq 'n'}{$chdata.name|escape}{else}{$chdata.name}{/if}
-		{else}
-			{tr}{if $prefs.menus_item_names_raw eq 'n'}{$chdata.name|escape}{else}{$chdata.name}{/if}{/tr}
-		{/if}
-	</span>
+<span class="menuText">{if $translate eq 'n'}{$chdata.name|escape}{else}{tr}{$chdata.name}{/tr}{/if}</span>
 </a>
 {if ($menu_info.type eq 'e' or $menu_info.type eq 'd') and $prefs.feature_menusfolderstyle ne 'y'}<a class='separator' href="javascript:toggle('menu{$cname}');">[+]</a>{/if} 
 </div> {* separator *}
@@ -88,20 +82,7 @@
 {/if}
 {* ----------------------------- option *}
 {elseif $chdata.type eq 'o'}
-<div class="option{$sep}{if isset($chdata.selected) and $chdata.selected} selected{/if}">
-	<a href="{if $prefs.feature_sefurl eq 'y' and !empty($chdata.sefurl)}{$chdata.sefurl|escape}{else}{if $prefs.menus_item_names_raw eq 'n'}{$chdata.url|escape}{else}{$chdata.url}{/if}{/if}" class="linkmenu">
-		{if $prefs.menus_items_icons eq 'y' and $menu_info.use_items_icons eq 'y' and ($opensec eq 0 or $chdata.icon neq '')}
-			{icon _id=$chdata.icon alt='' _defaultdir=$prefs.menus_items_icons_path}
-		{/if}
-		<span class="menuText">
-			{if $translate eq 'n'}
-				{if $prefs.menus_item_names_raw eq 'n'}{$chdata.name|escape}{else}{$chdata.name}{/if}
-			{else}
-				{tr}{if $prefs.menus_item_names_raw eq 'n'}{$chdata.name|escape}{else}{$chdata.name}{/if}{/tr}
-			{/if}
-		</span>
-	</a>
-</div>
+<div class="option{$sep}{if isset($chdata.selected) and $chdata.selected} selected{/if}"><a href="{if $prefs.feature_sefurl eq 'y' and !empty($chdata.sefurl)}{$chdata.sefurl}{else}{$chdata.url}{/if}" class="linkmenu">{if $prefs.menus_items_icons eq 'y' and $menu_info.use_items_icons eq 'y' and ($opensec eq 0 or $chdata.icon neq '')}{icon _id=$chdata.icon alt='' _defaultdir=$prefs.menus_items_icons_path} {/if}<span class="menuText">{if $translate eq 'n'}{$chdata.name|escape}{else}{capture}{tr}{$chdata.name}{/tr}{/capture}{$smarty.capture.default|escape}{/if}</span></a></div>
 {if $sep eq 'line'}{assign var=sep value=''}{/if}
 
 {* ----------------------------- separator *}

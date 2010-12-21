@@ -6,7 +6,7 @@
 // $Id$
 
 function prefs_global_list() {
-	global $tikilib, $prefs, $url_host;
+	global $tikilib, $prefs;
 
 	$all_styles = $tikilib->list_styles();
 	$styles = array();
@@ -27,7 +27,7 @@ function prefs_global_list() {
 			'name' => tra('Theme'),
 			'type' => 'list',
 			'help' => 'Themes',
-			'description' => tra('Style of the site, sometimes called a skin or CSS. See http://themes.tiki.org for more Tiki themes.'),
+			'description' => tra('Style of the site, sometimes called a skin or CSS. See http://themes.tikiwiki.org for more Tiki themes.'),
 			'options' => $styles,
 		),
 		'browsertitle' => array(
@@ -54,7 +54,6 @@ function prefs_global_list() {
 			'description' => tra('Users can be sent to different pages upon login, depending on their default group.'),
 			'type' => 'flag',
 			'help' => 'Group',
-			'keywords' => 'group home page pages',
 		),
 		'limitedGoGroupHome' => array(
 			'name' => tra('Go to group homepage only if login from default homepage'),
@@ -62,7 +61,6 @@ function prefs_global_list() {
 			'dependencies' => array(
 				'useGroupHome',
 			),
-			'keywords' => 'group home page pages',
 		),
 		'language' => array(
 			'name' => tra('Default language'),
@@ -90,7 +88,7 @@ function prefs_global_list() {
 		),
 		'helpurl' => array(
 			'name' => tra('Help URL'),
-			'description' => tra('The default help system may not be complete. You can help with the Tiki documentation.'),
+			'description' => tra('The default help system may not be complete. You can help with the TikiWiki documentation.'),
 			'help' => 'Welcome+Authors',
 			'type' => 'text',
 			'size' => '50',
@@ -154,15 +152,15 @@ function prefs_global_list() {
 			'filter' => 'digits',
 		),
 		'sitead' => array(
-			'name' => tra('Site Ads and Banners Content'),
+			'name' => tra('Content'),
 			'hint' => tra('Example:') . ' ' . "{banner zone='" . tra('Test') . "'}", 
 			'type' => 'textarea',
 			'size' => '5',
 		),
 		'urlOnUsername' => array(
-			'name' => tra('URL to go to when clicking on a username'),
+			'name' => tra('Url to go to when clicking on a username'),
 			'type' => 'text',
-			'description' => tra('URL to go to when clicking on a username.').' '.tra('Default').': tiki-user_information.php?userId=%userId% <em>('.tra('Use %user% for login name and %userId% for userId)').')</em>',
+			'description' => tra('Url to go to when clicking on a username.').' '.tra('Default').': tiki-user_information.php?userId=%userId% <em>('.tra('Use %user% for login name and %userId% for userId)').')</em>',
 		),
 		'forgotPass' => array(
 			'name' => tra('Remind/forgot password'),
@@ -174,7 +172,7 @@ function prefs_global_list() {
 			'type' => 'flag',
 		),
 		'sitemycode' => array(
-			'name' => tra('Custom Site Header Content'),
+			'name' => tra('Content'),
 			'hint' => tra ('Example:') . ' ' .  "{if \$user neq ''}<div align=\"right\" style=\"float: right; font-size: 10px\">{tr}logged as{/tr}: {\$user}</div>{/if}",
 			'type' => 'textarea',
 			'size' => '6',
@@ -253,16 +251,6 @@ function prefs_global_list() {
 			'hint' => tra("The group will be named identical to the user's username"),
 			'help' => 'Groups',
 		),
-		'syncGroupsWithDirectory' => array(
-			'name' => tra('Synchronize Tiki groups with a directory'),
-			'type' => 'flag',
-			'hint' => tra('Define the directory within the "LDAP" tab'),
-		),
-		'syncUsersWithDirectory' => array(
-			'name' => tra('Synchronize Tiki users with a directory'),
-			'type' => 'flag',
-			'hint' => tra('Define the directory within the "LDAP" tab'),
-		),
 		'rememberme' => array(
 			'name' => tra('Remember me'),
 			'type' => 'list',
@@ -296,25 +284,25 @@ function prefs_global_list() {
 			'size' => 50,
 		),
 		'useUrlIndex' => array(
-			'name' => tra('Use URL Index'),
-			'description' => tra('Use a Tiki feature homepage or another homepage'),
+			'name' => tra('or'),
+			'description' => tra('Use a Tikiwiki feature homepage or another homepage'),
 			'type' => 'flag',
 		),
 		'tikiIndex' => array(
-			'name' => tra('Use Tiki feature as homepage'),
+			'name' => tra('Use TikiWiki feature as homepage'),
 			'type' => 'list',
 			'options' => feature_home_pages(),
 			'description' => tra('Select the Tiki feature to use as the site homepage. Only enabled features are listed.')
 		),
 		'disableJavascript' => array(
-			'name' => tra('Disable JavaScript'),
+			'name' => tra('Disable javascript'),
 			'type' => 'flag',
-			'description' => tra('Disable JavaScript for testing purpose even if the browser allows it'),
+			'description' => tra('Disable javascript for testing purpose even if the browser allows it'),
 		),
 
 		// Kaltura
 		'partnerId' => array(
-			'name' => tra('Partner ID'),
+			'name' => tra('Partner Id'),
 			'description' => tra('Kaltura Partner ID'),
 			'type' => 'text',
 			'filter' => 'digits',
@@ -322,7 +310,7 @@ function prefs_global_list() {
 		),
 		'secret' => array(
 			'name' => tra('User secret'),
-			'description' => tra('Kaltura partner setting user secret.'),
+			'description' => tra('Kaltura parner setting user secret.'),
 			'type' => 'text',
 			'size' => 45,
 			'filter' => 'alnum',
@@ -335,46 +323,33 @@ function prefs_global_list() {
 			'filter' => 'alnum',
 		),
 		'kdpUIConf' => array(
-			'name' => tra('KDP UI Configuration ID'),
-			'description' => tra('Kaltura Dynamic Player (KDP) user interface configuration ID'),
+			'name' => tra('KDP UI Configuration Id'),
+			'description' => tra('Kaltura Dynamic Player (KDP) user interface configuration Id'),
 			'type' => 'text',
 			'size' => 20,
 		),
 		'kdpWidget' => array(
-			'name' => tra('KDP Widget ID'),
-			'description' => tra('Kaltura Dynamic Player (KDP) Widget ID. This configuration is specific to your account.'),
-			'hint' => tra("If you don't know better, use '_yourPartnerID'"),
+			'name' => tra('KDP Widget Id'),
+			'description' => tra('Kaltura Dynamic Player (KDP) Widget Id. This configuration is specific to your account.'),
+			'hint' => tra("If you don't know better, use '_yourPartnerId'"),
 			'type' => 'text',
 			'size' => 20,
 		),
 		'kcwUIConf' => array(
 			'name' => tra('KCW UI Configuration ID'),
-			'description' => tra('Kaltura Configuration Wizard (KCW) user interface configuration ID'),
+			'description' => tra('Kaltura Configuration Wizard (KCW) user interface configuration Id'),
 			'type' => 'text',
 			'size' => 20,
 		),
 		'kseUIConf' => array(
-			'name' => tra('Kaltura Simple Editor UI Configuration ID'),
+			'name' => tra('Kaltura Simple Editor UI Configuration Id'),
 			'type' => 'text',
 			'size' => 20,
 		),
 		'kaeUIConf' => array(
-			'name' => tra('Kaltura Advanced Editor UI Configuration ID'),
+			'name' => tra('Kaltura Advanced Editor UI Configuration Id'),
 			'type' => 'text',
 			'size' => 20,
-		),
-		'kuser' => array(
-			'name' => tra('Kaltura "User"'),
-			'description' => tra('Owner of content shared by all Tiki users on this site. If empty then each Tiki user can only see their own media entries.'),
-			'hint' => tra("You could use your server name for this. e.g. $url_host"),
-			'type' => 'text',
-			'size' => 20,
-		),
-		'kServiceUrl' => array(
-			'name' => tra('Kaltura Service URL'),
-			'description' => tra('e.g. http://www.kaltura.com/'),
-			'type' => 'text',
-			'size' => 40,
 		),
 		// End Kaltura
 	);
@@ -402,8 +377,7 @@ function feature_home_pages()
 	// Blog
 	if ($prefs['feature_blogs'] == 'y') {
 		if ( $prefs['home_blog'] != '0' ) {
-			global $bloglib; require_once('lib/blogs/bloglib.php');
-			$hbloginfo = $bloglib->get_blog($prefs['home_blog']);
+			$hbloginfo = $tikilib->get_blog($prefs['home_blog']);
 			$home_blog_name = substr($hbloginfo['title'], 0, 20);
 		} else {
 			$home_blog_name = tra('Set blogs homepage first');
@@ -426,12 +400,12 @@ function feature_home_pages()
 	if ( $prefs['feature_file_galleries'] == 'y' ) {
 			$hgalinfo = $tikilib->get_file_gallery($prefs['home_file_gallery']);
 			$home_gal_name = substr($hgalinfo["name"], 0, 20);
-			$tikiIndex['tiki-list_file_gallery.php?galleryId=' . $prefs['home_file_gallery']] = tra('File Gallery:') . $home_gal_name;
+			$tikiIndex['tiki-list_file_gallery.php?galleryId=' . $prefs['home_gallery']] = tra('File Gallery:') . $home_gal_name;
 	}
 	
 	// Forum
 	if ( $prefs['feature_forums'] == 'y' ) {
-		require_once ('lib/comments/commentslib.php');
+		require_once ('lib/commentslib.php');
 		if (!isset($commentslib)) {
 			$commentslib = new Comments;
 		}

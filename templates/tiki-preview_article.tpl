@@ -3,7 +3,7 @@
 <div class="article">
 	<div class="articletitle">
 		<h2>{$title|escape}</h2>
-		<span class="titleb">{tr}By:{/tr} {$authorName|escape} {$publishDate|tiki_short_datetime:'On:'} ({$reads} {tr}Reads{/tr})</span>
+		<span class="titleb">{tr}By:{/tr} {$authorName|escape} {tr}on:{/tr} {$publishDate|tiki_short_datetime} ({$reads} {tr}Reads{/tr})</span>
 	</div>
 
 	{if $type eq 'Review'}
@@ -34,13 +34,15 @@
 									<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=article&amp;id={$articleId}" />
 								{/if}
 							{/if}
-						{elseif $topicId ne ''}
+						{else}
 							<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topicId}" />
 						{/if}
-					{elseif $topicId ne ''}
+					{else}
 						<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topicId}" />
 					{/if}
-					<div class="articleheadingtext">{$parsed_heading}</div>
+				</td>
+				<td valign="top">
+					<span class="articleheading">{$parsed_heading}</span>
 				</td>
 			</tr>
 		</table>

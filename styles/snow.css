@@ -1,6 +1,6 @@
 /* $Id$ The Snow theme for TikiWiki CMS/Groupware is an original
 	theme released under the LGPL license by author and maintainer
-	Gary Cunningham-Lee (http://zukakakina.com). Visit zukakakina.com or themes.tiki.org for
+	Gary Cunningham-Lee (http://zukakakina.com). Visit zukakakina.com or themes.tikiwiki.org for
 	updates and other information about this theme.
 */
  
@@ -21,13 +21,17 @@ body {
  /***** Layout (overrides layout.css;
 		also styling of page layout divs)  *****/
 #header {text-align: left}
-#middle {text-align: left}
+div#middle {text-align: left}
 
 #c1c2 {
 	text-align: left;
 }
 	
 #col1 {background: url(snow/flakesptn3.jpg)}
+
+body.fullscreen #col1 {
+	margin-left: 30px !important;
+	margin-right: 30px !important}
 
 #c1c2 #wrapper #col1.marginleft {margin-left: 230px}
 #c1c2 #wrapper #col1.marginright {margin-right: 230px}
@@ -72,9 +76,7 @@ dt {font-weight: bold}
 
 h1, h2, h3, h4, h5 {
 	font-weight: bold;
-	color: #6c7b8c;
-	line-height: 1.1;
-}
+	color: #6c7b8c}
 	
 h1 {font-size: 1.7em}
 
@@ -108,10 +110,10 @@ form {color: black}
 legend {color: #000}
 
 
-.button a,
-.button a:visited,
+span.button a,
+span.button a:visited,
 button,
-.button input,
+span.button input,
 .submitbutton,
 .calbuttonBox a {
 	background: url(snow/pagetitle-bg.jpg) repeat-x;
@@ -132,9 +134,9 @@ input[type="submit"] {
 	padding: 2px 4px;
 /*	border: 1px solid #788596;*/}
 
-.button a:hover,
+span.button a:hover,
 button a:hover,
-.button input:hover,
+span.button input:hover,
 .submitbutton:hover,
 .calbuttonBox a:hover
 .button input:hover,
@@ -164,7 +166,7 @@ input[type="text"],
 input[type="password"] {
 	font-size: 0.9em;
 	border: solid 1px #aaa;
-	background-color: #ECEEF2;
+	background: #ECEEF2;
 	color: #000;
 	width: 120px;
 	cursor: text}
@@ -207,7 +209,7 @@ ul {
 #sitead.floatright {padding-right: 100px}
 #sitead.floatleft {padding-left: 100px}
 
-#siteloginbar {
+div#siteloginbar {
 	bottom: 2px;
 	right: 6px;
 	font-size: 95%}
@@ -357,6 +359,101 @@ ul {
 	top: .3em;
 }
 
+/** PHP Layers Menus **/
+.horbar {
+	margin-left: 0;
+	text-align: left} 
+
+.horbaritem {
+	font-size: 1.2em;
+	white-space: nowrap}
+
+.horbaritem a,
+.horbaritem a:link,
+.horbaritem a:visited {
+	text-decoration: none;
+	font-size: 1em;
+	font-weight: bold;
+	color: #393e51;
+	padding: 9px 3px 9px 1em;
+	border-right: 1px solid #6A6A6A} 
+
+.horbaritem a:hover {
+	color: #506A5C;
+	font-weight: bold;
+	text-decoration: none} 
+
+* html .horbaritem a {font-size: .8em}
+
+.mdksubmenu {
+	left: 20px;
+	width: 125px;
+	border: 1px solid #6A6A6A;	
+	background-image: url(snow/flakesptn2.jpg)}
+
+.mdksubmenu table {width: auto} 
+.mdksubframe {display: block} 
+
+.mdkitem {
+	width: 125px;
+	font-size: 1em}
+
+.mdkitem a {
+	color: #393e51;
+	font-size: 1em;
+	padding: 5px 2px 5px 8px} 
+
+.mdkitem a:link {
+	font-weight: normal;
+	text-decoration: none} 
+
+.mdkitem a:visited {text-decoration: none} 
+
+.mdkitem a:hover {
+	background-image: url(snow/flakesptn.jpg);
+	text-decoration: none} 
+
+.mdksubframe .mdkitem {font-size: 1em}
+
+.mdksubframe .mdkitem a:hover {
+	text-decoration: none;
+	color: #303030}
+
+.mdkverbar .mdkitem a, 
+.box .mdkitem a {/*vertical menu subitems */
+	padding: 4px 2px 2px 8px}
+
+.box .mdksubframe div.mdkitem {
+	margin-left: 0;
+	padding-left: 0}
+
+.phplmnormal,
+a.phplmnormal:hover,
+a.phplm:link,
+a.phplm:visited,
+a.phplm:hover,
+a.phplm:active {
+	font-family: arial, helvetica, verdana, sans-serif;
+	color: #393e51;
+	font-weight: bold;
+	text-decoration: none}
+
+a.phplm:hover {
+	color: #6c7b8c;
+	text-decoration: underline;
+	background: none}
+
+a.phplmselected:link,
+a.phplmselected:visited,
+a.phplmselected:hover,
+a.phplmselected:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: #aaa;
+	text-decoration: underline;
+	font-weight: normal}
+
+a.phplmselected:hover {color: #aaa}
+
 /** Links in other menus **/
 
 /***** Misc. Center Col. *****/
@@ -367,16 +464,13 @@ ul {
 a.flip,
 a.flip:visited,
 .tellafriend a,
-.share a,
-.tellafriend a:visited,
-.share a:visited {
+.tellafriend a:visited {
 	font-size: 87%;
 	color: #999;
 	text-decoration: none}
 
 a.flip:hover,
-.tellafriend a:hover,
-.share a:hover {
+.tellafriend a:hover {
 	color: #393e51;
 	text-decoration: none}
 
@@ -404,8 +498,7 @@ h3.box-title {
 	color: #393e51;
 	font-size: 120%;
 	overflow: hidden;
-	border-bottom: 1px solid #6c7b8c;
-	line-height: normal;	
+	border-bottom: 1px solid #6c7b8c;	
 }	
 	
 #col2 h3.box-title,
@@ -460,18 +553,18 @@ h3.box-title {
 	background: url(snow/boxbtm.jpg) no-repeat;
 	height: 54px}
 
-.halffloat .box,
-.wikitext .halffloat .box {
+.halffloat div.box,
+.wikitext .halffloat div.box {
 	width: 48%;
  }
 
-.thirdfloat .box,
-.wikitext .thirdfloat .box {
+.thirdfloat div.box,
+.wikitext .thirdfloat div.box {
 	width: 33%;
 }
 
-.quarterfloat .box,
-.wikitext .quarterfloat .box {
+.quarterfloat div.box,
+.wikitext .quarterfloat div.box {
 	width: 24%;
 }
 
@@ -489,28 +582,28 @@ h3.box-title {
 .rbox-title,
 .rbox-data {background: #e7f2f4}
 
-.simplebox {
+div.simplebox {
 	overflow: hidden;
 	border: 2px solid #a1adc7;
 	padding: 2px}
 	
-.quarterfloat .box,
-.wikitext .quarterfloat .box {
+.quarterfloat div.box,
+.wikitext .quarterfloat div.box {
 	width: 21.5%;	
 }
 
-.thirdfloat .box,
-.wikitext .thirdfloat .box {
+.thirdfloat div.box,
+.wikitext .thirdfloat div.box {
 	width: 30%;
 }
 
 /***** Tables, Tabs *****/
 /** Tables **/
 
-.normal, 
-.admin {border: solid 1px #909090}
+table.normal, 
+table.admin {border: solid 1px #909090}
 
-#tiki-center > .normal {
+#tiki-center > table.normal {
 	width: 98%;
 	margin-left: 6px}
 
@@ -531,6 +624,7 @@ tr.even {
 	border-collapse: collapse;
 	color: #393e51}
 	
+td.normal,
 .wikitable td,
 td.odd,
 td.even {
@@ -541,7 +635,7 @@ td.even {
 
 th,
 td.heading,
-.normal td.heading,
+table.normal td.heading,
 tr.diffheader,
 .caltable .days {
 	font-size: 1em;
@@ -553,9 +647,9 @@ tr.diffheader,
 	vertical-align: top}
 
 td.heading,
-.bloglistheading {text-align: center}
+td.bloglistheading {text-align: center}
 
-.form {
+td.form {
 	padding: 0.2em;
 	background: inherit;
 	color: #000}
@@ -612,7 +706,7 @@ td.heading,
 	border-bottom: 1px solid #ddd !important;
 }*/
 
-.admin #content1 .tabcontent .cbox {background: transparent}
+table.admin div#content1 div.tabcontent div.cbox {background: transparent}
 
 
 
@@ -646,7 +740,7 @@ a.pagetitle:hover {
 * html h1 a.pagetitle,
 * html h1 a {margin-top: 6px}
 
-.wikitopline {
+div.wikitopline {
 	display: block;
 	position: relative;
 	/*top: -56px;
@@ -696,17 +790,17 @@ a.pagetitle:hover {
 	letter-spacing: 1px;
 	background: url(snow/flakesptn.jpg) repeat-x}
 
-.wikitable {
+table.wikitable {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
  
-.wikicell {
+td.wikicell {
 	padding: 3px;
 	border: 1px solid #999;
 	border-collapse: collapse}
 
 .editdate {padding-bottom: 5px}
-#page-bar {margin-top: 0}
+div#page-bar {margin-top: 0}
 
 ul.floatleft {
 	display: block;
@@ -722,8 +816,8 @@ ul.floatleft li {
 
 .editdate ul.floatleft {margin-top: 8px}
  
-.button2,
-.button2,
+span.button2,
+div.button2,
 .button3 {
 	display: inline-block;
 	margin-right: 5px}
@@ -733,8 +827,8 @@ ul.floatleft li {
 	font-weight: normal}
 
 .linkbut:hover {}
-.cache {}
-.cachedpage {}
+div.cache {}
+div.cachedpage {}
 .wikicache, .wikicache:visited {}
 .wikicache:hover {}
 .wiki {}
@@ -744,19 +838,19 @@ ul.floatleft li {
 #wikihelp-tab table td {padding: 2px}
 textarea.wikiedit {}
 p.editdate {}
-.wiki-edithelp {}
+div.wiki-edithelp {}
 img.externallink {}
 
 /* Needed esp. for light-on-dark theme */
-.quicktag {}
-.quicktag img,
+div.quicktag {}
+div.quicktag img,
 #wikihelp-tab td img {}
-#helptool {}
+div#helptool {}
 
 /* Wiki plugins */
 
 /* Code plugin  */
-.code {
+div.code {
 	font-size: 90%;
 	padding: 3px;
 	border: 1px dashed #ccc;
@@ -786,17 +880,17 @@ img.externallink {}
 	font-weight: bold}
 
 /* Quote plugin */
-.quoteheader {
+div.quoteheader {
 	margin-left: 20px}
 
-.quotebody {
+div.quotebody {
 	font-style: italic}
 
-.wikiplugin-split {
+table.wikiplugin-split {
 	border: 0}
 
 /** Wiki tocs **/
-.tocnav {
+div.tocnav {
 	background: #EBEBEB;
 	padding: 3px;
 	margin-bottom: 4px;
@@ -808,13 +902,13 @@ img.externallink {}
 .fancytoclevel {}
 li.toclevel {}
 
-.toc {
+ul.toc {
 	padding-left: 2em;
 	border-top: 1px dotted #999;
 	border-bottom: 1px dotted #999;
 	margin-bottom: 4px}
 
-.toc * {border: 0}
+ul.toc * {border: 0}
 
 
 /***** Articles ****/
@@ -824,15 +918,15 @@ body.tiki_cms #tiki-center > h1 {
 	font-size: 1.4em;
 	color: black}
 
-.article {
+div.article {
 	background: url(snow/pagetitle-bg.jpg) repeat-x;
 	margin-bottom: 40px;	}
 
-.articletopline {
+div.articletopline {
 	font-size: 90%;
 	font-style: italic}
 
-.articletitle {
+div.articletitle {
 	background: url(snow/pagetitle-bg.jpg) repeat-x;
 	color: #393e51;
 	margin-left: -3px;
@@ -840,7 +934,7 @@ body.tiki_cms #tiki-center > h1 {
 	text-indent: 18px;
 	min-height: 48px}
  
-.articletitle h2 {
+div.articletitle h2 {
 	display: block;
 	background: url(snow/pagetitle-bullet.gif) no-repeat;
 	background-position: 4px 0;
@@ -852,24 +946,24 @@ body.tiki_cms #tiki-center > h1 {
 	
 /*
 
-html > body .articletitle {
+html > body div.articletitle {
 	text-indent: 38px}*/
 
-.titleb {
+span.titleb {
 	float: right;
 	font-size: 1.0em;
 	font-style: italic}
 
-.articlesubtitle {
+div.articlesubtitle {
 	font-size: 0.9em}
 
-.articleheading {
+div.articleheading {
 	margin-top: 6px;
 	padding: 20px 5px 6px}
 /* From han.css - Check ?? */.articleheading table {
 	width: auto}
 
-.articleheadingtext {}
+div.articleheadingtext {}
 
 img.topicimage,
 img.articleimagenofloat,
@@ -890,23 +984,23 @@ img.articleimage {
 	padding: 2px 0;
 	margin-bottom: 10px}
 
-.articletrailer {}
+div.articletrailer {}
 
-.articletrailer .wikitopline {float: right} 
+div.articletrailer .wikitopline {float: right} 
  
-.articlebody {
+div.articlebody {
 	margin-top: 6px;
 	padding: 20px 5px 6px
 }
  
-.articlesource {
+div.articlesource {
 	margin-top: 5px;
 	font-style: italic;
 	font-size: 90%}
 
 
 /***** Blogs *****/
-.blogtitle {
+div.blogtitle {
 	font-size: 1.3em;
 	font-weight: bold;
 	padding: 3px;
@@ -914,7 +1008,7 @@ img.articleimage {
 	font-weight: bold;
 	line-height: 80%}
 
-.bloginfo {
+div.bloginfo {
 	text-align: center;
 	padding: 3px;
 	line-height: 150%;
@@ -924,7 +1018,7 @@ a.blogt:hover {
 	color: #FFF;
 	border-bottom: 1px dotted #FFF}
 
-.posthead {background: url(snow/pagetitle-bg.jpg) repeat-x;
+div.posthead {background: url(snow/pagetitle-bg.jpg) repeat-x;
 	min-height: 35px;
 	margin-top: 0;
 	margin-bottom: 0;
@@ -944,7 +1038,7 @@ a.blogt:hover {
 	font-weight: bolder;
 	padding-left: 6px}
 
-.posthead h3 {
+div.posthead h3 {
 	background: url(snow/pagetitle-bullet-sm.gif) no-repeat;
 	background-position: 4px 8px;
 	color: #393e51;
@@ -953,13 +1047,13 @@ a.blogt:hover {
 	padding-top: 8px;
 	text-indent: 29px}
 
-.postbody {
+div.postbody {
 	margin-right: 8px;
 	margin-bottom: 1em}
 
 /***** Forums *****/
 
-.commentinfo {background: #fff}
+table.commentinfo {background: #fff}
 
 .post .postbody {border: solid 1px #6a6a6a}
 
@@ -1049,7 +1143,7 @@ a.blogt:hover {
 input#comments-title {font-size: 1.1em; width: 300px}
 .subcomment {margin-left: 10px}
 
-.commentsedithelp {
+div.commentsedithelp {
 	background: #ffcfcf;
 	color: black;
 	border: 1px solid #ff0000;
@@ -1066,12 +1160,12 @@ input#comments-title {font-size: 1.1em; width: 300px}
 /***** Quizzes *****/
 
 /***** Shoutbox *****/
-.shoutboxmsg {
+div.shoutboxmsg {
 	margin-bottom: 0;
 	padding: 4px;
 	padding-bottom: 1px}
 
-.shoutboxmodmsg {
+div.shoutboxmodmsg {
 	font-size: .95em;
 	margin: 0 5px 4px 5px;
 	padding-top: 5px;
@@ -1198,7 +1292,7 @@ Caltrack a:visited {color: #00BD02}
 #caltable td {padding: 0}
 
 #caltable .calfocuson,
-.box-data .fc a.today,
+.box-data td.fc a.today,
 .box-data td a.today {
 	background: #cde4f3;
 	border: 1px solid #d3e6f4;
@@ -1234,7 +1328,7 @@ Caltrack a:visited {color: #00BD02}
 	line-height: 1.3;
 }
 
-#calscreen .calfocuson {
+div#calscreen td.calfocuson {
 	background: #cde4f3;
 }
 

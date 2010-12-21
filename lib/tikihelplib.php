@@ -44,7 +44,7 @@ function help_doclink($params) {
         $ret = '<a title="'.htmlentities($desc,ENT_COMPAT,"UTF-8").'" href="'
         .$prefs['helpurl'].$url.'" target="tikihelp" class="tikihelp">'
         .'<img src="pics/icons/help.png"'
-        .' height="16" width="16" alt="'.tra('Help','',true).'" /></a>';
+        .' border="0" height="16" width="16" alt="'.tra('Help','',true).'" /></a>';
     }
     return $ret;
 }

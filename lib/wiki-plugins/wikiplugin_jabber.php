@@ -28,33 +28,28 @@ function wikiplugin_jabber_info() {
 	return array(
 		'name' => tra('Jabber'),
 		'documentation' => 'PluginJabber',
-		'description' => tra('Chat using Jabber'),
+		'description' => tra('Runs a Java applet to access a local Jabber service'),
 		'prefs' => array( 'wikiplugin_jabber' ),
-		'icon' => 'pics/icons/comments.png',
 		'params' => array(
 			'height' => array(
 				'required' => false,
 				'name' => tra('Height'),
 				'description' => tra('Applet height in pixels'),
-				'default' => 200,
 			),
 			'width' => array(
 				'required' => false,
-				'name' => tra('Width'),
+				'name' => tra(''),
 				'description' => tra('Applet width in pixels'),
-				'default' => 200,
 			),
 			'xmlhostname' => array(
 				'required' => false,
-				'name' => tra('XML Host Name'),
-				'description' => tra('Web site where XML is hosted. Default is jabber.org'),
-				'default' => 'jabber.org',
+				'name' => tra(''),
+				'description' => tra('jabber.org'),
 			),
 			'defaultColor' => array(
 				'required' => false,
 				'name' => tra('Default Color'),
-				'description' => tra('Set default color. Default is 255,255,255'),
-				'default' => '255,255,255',
+				'description' => tra('255,255,255'),
 			),
 		),
 	);

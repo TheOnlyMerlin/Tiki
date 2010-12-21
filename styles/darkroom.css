@@ -1,7 +1,7 @@
 /*
  * The Darkroom theme for TikiWiki CMS/Groupware.
  * Released under the LGPL license. 
- * For more information on Darkroom, please visit http://themes.tiki.org.
+ * For more information on Darkroom, please visit http://themes.tikiwiki.org.
  */
  
  /* import *lite as the base: */
@@ -25,7 +25,7 @@ body {
 	font: 74% "Trebuchet MS", "Bitstream Vera Sans", sans-serif;
 }
 
-body.cke_show_borders {
+body.wikitext {
 	color: #d8d8d8;
 	background: #474747;
 }
@@ -117,7 +117,7 @@ textarea {
 input[type=text],
 input[type=password] {
 	border: solid 1px #aaa;
-	background-color: #292929; /* use background-color here; background only shorthand property overrides the background image of .openid_url login field specified in styles/layout/design.css */
+	background: #292929;
 	color: #f5f5f5;
 	font-size: 0.9em;
 	cursor: text;
@@ -139,7 +139,7 @@ input.wikiaction,
 	white-space: nowrap;
 }
 
-.calbuttonbox {
+.calbuttonbox{
 	margin: 0 2px 0 2px;
 }
 
@@ -177,8 +177,9 @@ input[type=submit]:hover,
 	padding: 0 4px;
 }
 
-.button {
+span.button {
 	font-size: 0.8em;
+/*	padding: 0;*/
 }
 
 input[type=file] {
@@ -251,6 +252,11 @@ ol {
 	font-size: 1em;
 }
 					
+.fullscreen #col1 {
+	margin-left: 30px !important;
+	margin-right: 30px !important;
+}
+
 #c1c2 #wrapper .marginleft {
 	margin-left: 200px;
 }
@@ -309,7 +315,7 @@ ol {
 	padding-top: 2px;
 }
 
-#sioptions {
+div#sioptions {
 	padding-left: 0;
 	margin: 0;
 }
@@ -318,12 +324,12 @@ ol {
 	margin: 1em;
 }
 
-#sitelogo {
+div#sitelogo {
 	margin: auto !important;
 	padding: 1em;
 }
 
-#sitead {
+div#sitead {
 	clear: none;
 	color: #999;
 	max-width: 460px;
@@ -407,27 +413,19 @@ input[id="sl-login-pass"] {
 a.flip,
 a.flip:visited,
 .tellafriend a,
-.share a,
-.tellafriend a:visited,
-.share a:visited {
+.tellafriend a:visited {
 	font-size: .7em;
 	color: #6c6c6c;
 }
 
 a.flip:hover,
-.tellafriend a:hover,
-.share a:hover {
+.tellafriend a:hover {
 	font-size: .7em;
 	color: #b2b2b2;
 }
 
-.tellafriend,
-.share {
+.tellafriend {
 	padding: 0 10px;
-}
-
-.actions .share {
-	padding: 0;
 }
 
 #tiki-center {
@@ -440,6 +438,116 @@ a.flip:hover,
 /** Border boxes (if any) **/
 	
 /****** Menus ******/
+/** PHP Layers Menus **/
+.horbar {
+	margin-left: 0;
+	margin-bottom: 0;
+	float: left;
+	clear: none;
+}
+
+.horbaritem a {
+	border: 1px solid transparent;
+	border-right: 1px solid #6a6a6a;
+}
+
+.horbaritem a:hover {
+	border: 1px solid #909090;
+	color: #909090;
+	text-decoration: none;
+}
+
+.mdksubmenu {
+	left: 20px;
+	border: 1px solid #6a6a6a;
+	background: #535353;
+}
+
+.mdksubframe .mdkitem {
+	font-size: 1em;
+}
+
+.mdkitem {
+	font-size: 1em;
+}
+
+.horbaritem a,
+.mdkverbar a,
+.mdkitem a,
+.horbaritem a:visited,
+.mdkverbar a:visited,
+.mdkitem a:visited {
+	color: #a6a68d;
+	font-size: 1em;
+	padding: 4px 8px;
+	position: relative;
+	display: block;
+}
+
+.mdkitem a:hover {
+	text-decoration: none;
+	color: #303030;
+	background: #b2b2b2;
+}
+
+.mdkverbar .mdkitem a, 
+.box .mdkitem a {
+	padding: 4px 2px 2px 8px;
+}
+
+.box .mdksubframe div.mdkitem {
+	margin-left: 0;
+	padding-left: 0;
+}
+
+.phplmnormal,
+a.phplmnormal:hover,
+a.phplm:link,
+a.phplm:visited,
+a.phplm:hover,
+a.phplm:active {
+	font: 90% Verdana, Tahoma, Arial, sans-serif;
+	color: #f5f5f5;
+	text-decoration: none;
+	font-weight: normal;
+	background: #474747;
+}
+
+td.phplmnormal {
+	background: #474747;
+}
+
+a.phplm:visited {
+	color: #f5f5f5;
+}
+
+a.phplm:hover {
+	color: #f5f5f5;
+	text-decoration: underline;
+}
+
+a.phplm:active {
+	color: #f5f5f5;
+}
+
+a.phplmselected:link,
+a.phplmselected:visited,
+a.phplmselected:hover,
+a.phplmselected:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: #aaa;
+	text-decoration: underline;
+	font-weight: normal;
+}
+
+a.phplmselected:hover {
+	color: #aaa;
+}
+
+.imgs {
+	background: #999;
+}
+
 /** CSS (suckerfish) menus **/
 
 /* typography, colors */
@@ -465,6 +573,7 @@ a.flip:hover,
 	text-decoration: none;
 	font-weight: bold;
 	color: #d8d8d8;
+	text-decoration: none;
 }
 
 .cssmenu_vert a:hover,	
@@ -582,14 +691,16 @@ a.flip:hover,
 }
 
 /** Links in other menus **/
-.separator,
-.separatorline {
+ 
+div.separator,
+div.separatorline {
 	color: #f5f5f5;
-	padding: 5px 0px 4px 5px;
+	display: block;
+	padding: 5px 4px 4px 10px;
 }
 
-.separator:hover,
-.option a.linkmenu:hover {
+div.separator:hover,
+div.option a.linkmenu:hover {
 	text-decoration: none;
 	color: #303030;
 	background: #b2b2b2;
@@ -601,8 +712,8 @@ a.separator:hover {
 	background: #b2b2b2;
 }
 
-.menuSection .menuSection,
-.menuSection .separator {
+div.menuSection div.menuSection,
+div.menuSection div.separator {
 	padding-left: 5px;
 }
 
@@ -610,15 +721,15 @@ a.linkmodule {
 	font-weight: bold;
 }
  
-.option,
-.optionline {
+div.option,
+div.optionline {
 	color: #5F5F5F;
 	margin: 0;
 	padding: 4px 2px 2px 8px;
 }
 
-.option:hover,
-.option:active {
+div.option:hover,
+div.option:active {
 	color: #303030;
 	background: #b2b2b2;
 }
@@ -703,39 +814,10 @@ a.tikihelp:hover {
 	color: orange;
 }
 
-/**** Jquery ****/
-/**autocomplete **/
-.ac_even, .ac_odd {
-	color: #292929;
-}
-
-.ac_over {
-	color: white;
-}
-
-/**infinite carousel**/
-#carousel {
-        color: #black;
-}
-
-#carousel a {
-        color: #292929;
-}
-
-/**help**/
-a.tikihelp, 
-a.tikihelp:hover {
-	color: #292929;
-}
-
-/**tree**/
-.ui-icon {
-background-image: url('../lib/jquery/jquery-ui/themes/ui-darkness/images/ui-icons_cccccc_256x240.png');
-}
-
 /**** Boxes *****/
 /** Modules **/
-.box {
+
+div.box {
 	background: #292929;
 	margin-bottom: 8px;
 	padding-bottom: 2px;
@@ -826,7 +908,7 @@ img.flipmodimage:hover {
 	background: #000;
 	border: 1px solid #606060;
 	border-bottom: none;
-	margin-bottom: 0;
+	margin-bottom: -1px;
 }
 
 .rbox-data {
@@ -834,24 +916,6 @@ img.flipmodimage:hover {
 	color: #fffff0;
 	background: #000;
 	border: 1px solid #606060;
-}
-
-.error .rbox-data a:link,
-.error .rbox-data a:hover,
-.error .rbox-data a:visited {
-	color: #000;
-}
-
-.errors .rbox-data a:link,
-.errors .rbox-data a:hover,
-.errors .rbox-data a:visited {
-	color: #000;
-}
-
-.warning .rbox-data a:link,
-.warning .rbox-data a:hover,
-.warning .rbox-data a:visited {
-	color: #000;
 }
 
 .warning .rbox-title {
@@ -865,7 +929,7 @@ img.flipmodimage:hover {
 	color: #fffff0;
 }
 
-.simplebox {
+div.simplebox {
 	background: #696969;
 	padding: 4px;
 }
@@ -874,7 +938,6 @@ img.flipmodimage:hover {
 	color: #fff;
 	background: #292929;
 }
-
 .even {
 	color: #fff;
 	background: #232323;
@@ -887,18 +950,19 @@ table {
 	border-collapse: collapse;
 }
 
-.normal, 
-.admin {
+table.normal, 
+table.admin {
 	border: solid 1px #696969;
 	margin-top: 1em;
 	margin-bottom: 1em;
 }
 
+td.normal,
 .normal td,
 .wikitable td,
 td.odd,
 td.even,
-.form,
+td.form,
 .formcolor td,
 .editblogform td {
 	padding: 0.2em;
@@ -950,19 +1014,15 @@ td.form {
 	color: #f5f5f5;
 }
 
-.toolbar img,
+div.toolbar img,
 #wikihelp-tab td img {
 	background: #e4e4e4;
-}
-
-.xdebug-error tr td {
-	color: #292929;
 }
 
 /** Tabs **/
 .tabs {
 	border-bottom: 0;
-	margin: 10px 5px 0;
+	margin: 10px 5px 0 5px;
 	padding: .2em .2em 0;
 }
 
@@ -979,6 +1039,7 @@ td.form {
 }
 
 .tabmark {
+	white-space: nowrap;
 	font-size: 10px;
 	background: #4e4e4e url(darkroom/button.png);
 	border: 1px solid #666;
@@ -1009,7 +1070,7 @@ td.form {
 .tabcontent {
 	padding: 2px;
 	margin: 5px;
-	margin-top: 1px;
+	margin-top: 0;
 	border: 1px solid #666;
 	background: #232323;
 }
@@ -1024,7 +1085,7 @@ h1 a.pagetitle {
 	font-size: 1.2em;
 }
 
-#description,
+div#description,
 .description {
 	font-size: .95em;
 	font-style: italic;
@@ -1038,16 +1099,15 @@ a.wiki {
 	text-decoration: underline;
 }
 
-h1, 
-h2, 
-h3, 
-h4 {
+.wikitext h1, 
+.wikitext h2, 
+.wikitext h3, 
+.wikitext h4 {
 	color: #b2b2b2;
 	font-weight: bold;
 	letter-spacing: -1px;
 	margin: 0 0 15px;
 	padding: 0;
-	line-height: 1.1;
 }
 
 .wikitext h2 {
@@ -1066,7 +1126,7 @@ h4 {
 	margin-top: 1em;
 }
 
-.wikitext .box {
+.wikitext div.box {
 	width: auto;
 }
 
@@ -1074,7 +1134,7 @@ h4 {
 	width: 100%;
 }
 
-.wikitable {
+table.wikitable {
 	border-top: 1px solid #a9a9a9;
 	border-left: 1px solid #a9a9a9;
 	border-right: 1px solid #696969;
@@ -1082,7 +1142,7 @@ h4 {
 	vertical-align: top;
 }
 
-.wikicell {
+td.wikicell {
 	padding: 3px;
 	border-right: 1px solid #a9a9a9;
 	border-bottom: 1px solid #a9a9a9;
@@ -1096,7 +1156,7 @@ h4 {
 	background: #e4e4e4;
 }
 
-#page-bar {
+div#page-bar {
 	text-align: center;
 	line-height: 150%;
 }
@@ -1123,7 +1183,7 @@ textarea.wikiedit {
 
 /* Wiki plugins */
 /* Code plugin  */
-.code {
+div.code {
 	padding: 3px;
 	border: 1px dashed #ccc;
 	background: #000;
@@ -1144,6 +1204,7 @@ textarea.wikiedit {
 .codecaption {
 	font-size: 90%;
 	padding: 0 10px;
+	background: #fff;
 	position: relative;
 	bottom: -5px;
 	display: inline;
@@ -1156,12 +1217,12 @@ textarea.wikiedit {
 }
 
 /* Quote plugin */
-.quoteheader {
+div.quoteheader {
 	margin-left: 20px;
 	margin-right: 10px;
 }
 
-.quotebody {
+div.quotebody {
 	font-style: italic;
 	margin: 0 10px 10px 5px;
 	padding: 5px;
@@ -1175,29 +1236,19 @@ textarea.wikiedit {
 }
 
 /* Img plugin */
-.imgbox {
+div.imgbox {
 	border: 1px solid #818181;
     background-color: transparent;
 }
 
-/* wikiplugin edit */
-form.wikiplugin_edit div {
-	color: #292929;
-}
-
-form.wikiplugin_edit table#plugin_params.normal div,
-form.wikiplugin_edit table#plugin_params_advanced.normal div {
-	color: #fff;
-}
-
 /** Wiki tocs **/
-.tocnav {
+div.tocnav {
 	background: #474747;
 	padding: 3px;
 }
 
 /* TOC */
-.toc {
+ul.toc {
 	list-style-type: none;
 	margin-left: 0;
 	padding-left: 0;
@@ -1233,38 +1284,38 @@ form.wikiplugin_edit table#plugin_params_advanced.normal div {
 	font-size: 1em;
 }
 
-.articletopline {
+div.articletopline {
 	font-size: 90%;
 	font-style: italic;
 }
 
-.articletitle {
+div.articletitle {
 	color: #d8d8d8;
 	margin: 0 0 15px;
 	padding: 0;
 }
 
- .articletitle h2 {
+ div.articletitle h2 {
 	font-size: 1.6em;
 	font-weight: bold;
 	margin: 0;
 }
 
-.titleb {
+span.titleb {
 	font-size: 1.0em;
 }
  
-.articlesubtitle {
+div.articlesubtitle {
 	font-size: 90%;
 	font-style: italic;
 }
 
-.articleheading {
+div.articleheading {
 	margin-top: 6px;
 	line-height: 1.5em;
 }
 
-.articleheadingtext {
+div.articleheadingtext {
 	color: #d8d8d8;
 }
 
@@ -1287,28 +1338,29 @@ img.articleimage {
 	border: 1px solid #989898;
 }
 
-.articletrailer .wikitopline {
+div.articletrailer .wikitopline {
 	background: #4e4e4e url(darkroom/button.png) top left repeat-x;
 	width: 100%;
 }
 
 /***** Blogs *****/
-.blogtitle {
+div.blogtitle {
 	font-size: 1.8em;
 	font-weight: bold;
 	padding: 3px;
+	font-weight: bold;
 	letter-spacing: .4pt;
 	line-height: 80%;
 }
 
-.bloginfo {
+div.bloginfo {
 	text-align: right;
 	padding: 3px;
 	font-size: 95%;
 	background: none;
 }
 
-.blogtools {
+div.blogtools {
 	margin-right: 4px;
 }
 
@@ -1322,7 +1374,7 @@ img.articleimage {
 	padding: 2px;
 }
 
-.posthead {
+div.posthead {
 	display: block;
 	font-weight: bold;
 	letter-spacing: .4pt;
@@ -1333,10 +1385,9 @@ body.tiki_blogs .post {
 	margin-bottom: 20px;
 }
 
-/*
 body.tiki_blogs .post .title {
 	width: 100%;
-}*/
+}
 
 body.tiki_blogs .post .title h2 {
 	background: #343434 url(darkroom/button.png) repeat-x;
@@ -1353,32 +1404,33 @@ body.tiki_blogs .post .postbody {
 	padding: 6px 0;
 }
 
+body.tiki_blogs div.author_actions {
+	float: none;
+	background: none;
+	border: 0;
+	width: 100%;
+}
+
 body.tiki_blogs .actions {
 	background: none;
 	text-align: right;
-}
-
-body.tiki_blogs .actions .share {
-	padding: 0;
-}
-
-.author_actions {
-	text-align: left;
 }
 
 body.tiki_blogs .author_info {
 	background: none;
 }
 
-/* .postbpdy-title in Forums below also applies to blogs */
-/*
+.postbody-title {
+	background: none;
+	border: 0;
+}
+
 body.tiki_blogs .postbody-title {
 	float: none;
 	width: 100%;
 	background: none;
 	border: 0;
-}*/
-
+}
 
 body.tiki_blogs .postfooter {
 	width: 100%;
@@ -1406,18 +1458,17 @@ body.tiki_blogs .postfooter .actions {
 /*	width: 100%;
 	min-width: 100% !important;
 	height: 100%;*/
+	color: #d8d8d8;
 }
 	
 .post .postbody .content p {
 	margin: 5px 10px;
 }
 
-/* also applies to blogs */
-.postbody-title {
+.post .postbody-title {
 	background: #343434 url(darkroom/button.png) repeat-x;
 	border-bottom: 0;
 	color: #d8d8d8;
-	line-height: 1.4;
 }
 
 .post .postbody-title .title {
@@ -1426,7 +1477,7 @@ body.tiki_blogs .postfooter .actions {
 	font-weight: bold;
 	font-size: 1.1em;
 	margin-left: 5px;
-	height: 26px;
+	margin-top: 3px
 }
 
 .post .postbody-title .title h2 {
@@ -1435,21 +1486,17 @@ body.tiki_blogs .postfooter .actions {
 
 .post .postbody-title .title a.link {
 	font-size: 90%;
-	padding-top: 8px;
+	line-height: 90%;
 }
 
 .post .author {
-	float: left;
 	background: #575757;
 	color: #d8d8d8;
 	margin-left: 4px;
-	margin-bottom: 6px;
-	margin-top: 6px;
-	width: 99%;
-	min-height: 22px;
-	_height: 22px; /*for IE6*/
-	text-align: left;
-	font-size: 90%;
+}
+
+.post .author_post_info {
+	border: none;
 }
 
 .post .author_info {
@@ -1459,7 +1506,6 @@ body.tiki_blogs .postfooter .actions {
 
 .post .author_post_info {
 	background: #575757;
-	border: none;
 }
 
 .post .author_post_info_on {
@@ -1468,6 +1514,10 @@ body.tiki_blogs .postfooter .actions {
 
 .post .postbody-title .actions {
 	font-size: .9em;
+}
+
+.postbody-content {
+	/*min-width: 100%;*/
 }
 
 .post .postbody .attachments {
@@ -1517,7 +1567,7 @@ body.tiki_blogs .postfooter .actions {
 	float: left;
 }
 
-.commentsedithelp {
+div.commentsedithelp {
 	background: #ffcfcf;
 	color: #d8d8d8;
 	border: 1px solid #ff0000;
@@ -1537,17 +1587,17 @@ ul.catitems li {
 /***** Tags (freetags) *****/
 
 /***** Image Galleries *****/
-.galtable {
+table.galtable {
 	border-collapse: collapse;
 	border: 1px solid #999;
 }
 
-.oddthumb {
+td.oddthumb {
 	background: #696969;
 	border: 1px solid #474747;
 }
 
-.eventhumb {
+td.eventhumb {
 	background: #3f3f3f;
 	border: 1px solid #6a6a6a;
 }
@@ -1557,7 +1607,7 @@ ul.catitems li {
 }
 
 /***** File Galleries *****/
-.thumbnailcontener {
+div.thumbnailcontener {
 	border: 1px solid #292929;
 	overflow: hidden;
 	margin: 2px;
@@ -1565,25 +1615,25 @@ ul.catitems li {
 	height: 100% !important;
 }
 
-#thumbnails {
+div#thumbnails {
 	padding: 1px;
 }
 
-.thumbname,
-.thumbimage {
+div.thumbname,
+div.thumbimage {
 	padding: 4px;
 }
 
-.thumbinfosothers {
+div.thumbinfosothers {
 	font-size: 80%;
 }
 
-.thumbname {
+div.thumbname {
 	border-top: 1px dotted #292929;
 	border-bottom: 1px dotted #292929;
 }
 
-.thumbactions {
+div.thumbactions {
 	text-align: right;
 }
 
@@ -1776,6 +1826,7 @@ caltrack a:visited {
 
 .calcontent {
 	min-height: 60px;
+	height: auto !important;
 	height: 60px;
 }
 
@@ -1788,7 +1839,6 @@ caltrack a:visited {
 .calfocus {
 	font-size: 1em;
 	background: inherit;
-	border-bottom: none;
 }
 
 #calscreen .calfocus a {
@@ -1800,6 +1850,10 @@ caltrack a:visited {
 .calfocuson {
 	font-size: 90%;
 	background: #292929;
+}
+
+td.calodd, td.caleven {
+	border: 1px solid #999;
 }
 
 .calprio1 a,
@@ -1854,7 +1908,7 @@ caltrack a:visited {
 
 .searchresults li .objecttype,
 	.searchresults li .parentname ,
-	.searchresults li .objectname {
+	.searchresults li .objectname  {
 	font-size: 120%;
 	font-weight: bold;
 }
@@ -1867,7 +1921,7 @@ caltrack a:visited {
 }
 
 .caltable .calfocuson,
-.box-data .fc a.today,
+.box-data td.fc a.today,
 .box-data td a.today {
 	background: #292929;
 	border: solid 1px #696969;
@@ -1884,6 +1938,11 @@ caltrack a:visited {
 
 .calinput {
 	background: #3f3f3f;
+}
+
+
+.calfocus {
+	border-bottom: none;
 }
 
 .calfocuson + .calcontent {
@@ -1929,9 +1988,11 @@ caltrack a:visited {
 	background: #696969;
 }
 
+
 .calfocuson, .calHeadingOn {
 	background: #292929;
 }
+
 
 .daterow {
 	margin: 2px;
@@ -1961,42 +2022,42 @@ a.viewmodeon img.icon {
 }
 
 /*****  Polls  *****/
-.pollresults {
+div.pollresults {
 	margin-top: 5px;
 	font-size: 1.2em;
 	padding: 0 5px;
 }
 
-.pollr {
+td.pollr {
 	color: #d8d8d8;
 }
 
 /***** FAQs *****/
 
 /***** Quizzes *****/
-.questionblock {
+div.questionblock {
 	padding: 4px;
 }
 
 /***** Shoutbox *****/
 
 /***** Directory *****/
-.dircategs {
+div.dircategs {
 	border: 1px solid #d8d8d8;
 	padding: 5px;
 }
 
-.dirlistsites {
+div.dirlistsites {
 	padding: 5px 0 10px 5px;
 	margin-top: 10px;
 }
 
-.dirsite {
+div.dirsite {
 	background: #696969;
 	border: 1px solid #aaa;
 }
 
-.dirrelated {
+div.dirrelated {
 	margin-top: 10px;
 	padding: 5px;
 }
@@ -2010,43 +2071,43 @@ div.dirfooter {
 }
 
 /***** Messages *****/
-.prio1,
-.prio2,
-.prio3,
-.prio4,
-.prio5 {
+td.prio1,
+td.prio2,
+td.prio3,
+td.prio4,
+td.prio5 {
 	border: 1px solid #999;
 }
 
-.prio1 {
+td.prio1 {
 	background: #696969;
 }
 
-.prio2 {
+td.prio2 {
 	background: #3f3f3f;
 }
 
-.prio3 {
+td.prio3 {
 	background: #474747;
 }
 
-.prio4 {
+td.prio4 {
 	background: #292929;
 }
 
-.prio5 {
+td.prio5 {
 	background: #000;
 }
 
-.messureadflag {
+div.messureadflag {
 	background: inherit;
 }
 
-.messureadhead {
+div.messureadhead {
 	background: #3f3f3f;
 }
 
-.messureadbody {
+div.messureadbody {
 	background: #3f3f3f;
 }
 
@@ -2055,26 +2116,17 @@ div.dirfooter {
 }
 
 /***** Ajax *****/
-/* Ajax Loading Overlay */
-#ajaxLoadingBG {
-	background: transparent url(../img/overlay-85.png);
-}
-
-#ajaxLoading {
-	background: transparent url(../img/loading.gif) no-repeat 50% 50%;
-	color: #ccc;
-}
 
 /***** TikiSheet *****/
-.default thead td,
-.default tfoot td {
+table.default thead td,
+table.default tfoot td {
 	font-weight: bold;
 	text-align: center;
 	color: #d8d8d8;
 	background: #000;
 }
 
-.default td {
+table.default td {
 	border: solid 1px #a9a9a9;
 	background: #000;
 }
@@ -2110,16 +2162,16 @@ a.admbox.off:active {
 	border: 1px solid #9f9f9f;
 }
 
-.multiselect {
+div.multiselect {
 	border: 1px solid #606060;
 }
 
-.multiselect li.odd {
+div.multiselect li.odd {
 	background: #3f3f3f;
 	color: #fff;
 }
 
-.multiselect li.even {
+div.multiselect li.even {
 	background: #3f3f3f;
 	color: #fff;
 }

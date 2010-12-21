@@ -32,43 +32,28 @@ function wikiplugin_titlesearch_help() {
     	return array(
     		'name' => tra('Title Search'),
     		'documentation' => 'PluginTitleSearch',
-    		'description' => tra('Search page titles'),
+    		'description' => tra('Search wiki page titles.'),
     		'prefs' => array( 'feature_wiki', 'wikiplugin_titlesearch' ),
-			'icon' => 'pics/icons/page_find.png',
     		'params' => array(
     			'search' => array(
     				'required' => true,
     				'name' => tra('Search Criteria'),
     				'description' => tra('Portion of a page name.'),
-    				'default' => '',
     			),
     			'info' => array(
     				'required' => false,
     				'name' => tra('Information'),
-    				'description' => tra('Also show page hits or user'),
-					'default' => '',
-					'options' => array(
-						array('text' => '', 'value' => ''), 
-						array('text' => tra('Hits'), 'value' => 'hits'), 
-						array('text' => tra('User'), 'value' => 'user')
-					)
+    				'description' => tra('hits|user'),
     			),
     			'exclude' => array(
     				'required' => false,
     				'name' => tra('Exclude'),
     				'description' => tra('Pipe-separated list of page names to exclude from results.'),
-					'default' => '',
     			),
     			'noheader' => array(
     				'required' => false,
     				'name' => tra('No Header'),
-    				'description' => tra('Set to 1 (Yes) to have no header for the search results.'),
-					'default' => 0,
-					'options' => array(
-						array('text' => '', 'value' => ''), 
-						array('text' => tra('Yes'), 'value' => 1), 
-						array('text' => tra('No'), 'value' => 0)
-					)
+    				'description' => tra('0|1'),
     			),
     		),
     	);
@@ -105,7 +90,7 @@ class WikiPluginTitleSearch extends PluginsLib
         }
 
         // no additional infos in list output
-        if (isset($style) && $style == 'list') $info = false;
+        if ($style == 'list') $info = false;
 
         //
         /////////////////////////////////
@@ -142,7 +127,7 @@ class WikiPluginTitleSearch extends PluginsLib
         // Start of Output
         /////////////////////////////////
         //
-        if (isset($noheader) && !$noheader) {
+        if (!$noheader) {
             // Create header
             $count = $aPages["cant"];
             if (!$count) {
@@ -154,7 +139,7 @@ class WikiPluginTitleSearch extends PluginsLib
             }
             $sOutput  .= "\n";
         }
-        if (isset($style) && $style == 'list') {
+        if ($style == 'list') {
             $sOutput.=PluginsLibUtil::createList($aPages["data"]);
         }
         else {

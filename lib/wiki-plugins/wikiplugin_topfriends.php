@@ -15,25 +15,16 @@ function wikiplugin_topfriends_info() {
 		'documentation' => 'PluginTopFriends',
 		'description' => tra('List top-scoring users.'),
 		'prefs' => array( 'feature_friends', 'wikiplugin_topfriends' ),
-		'icon' => 'pics/icons/star.png',
 		'params' => array(
 			'limit' => array(
 				'required' => false,
 				'name' => tra('Limit'),
 				'description' => tra('Maximum result count.'),
-				'filter' => 'digits',
-				'default' => 5,
 			),
 			'public' => array(
 				'required' => false,
 				'name' => tra('Public'),
-				'description' => tra('Set whether public or not.'),
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
+				'description' => 'y|n',
 			),
 		),
 	);

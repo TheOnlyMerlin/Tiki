@@ -112,28 +112,27 @@ function module_search_info() {
 	);
 }
 
-function module_search( $mod_reference, $smod_params ) {	// modifies $smod_params so uses & reference
+function module_search( $mod_reference, & $module_params ) {	// modifies $module_params so uses & reference
 	global $smarty, $prefs;
 	static $search_mod_usage_counter = 0;
 	$smarty->assign('search_mod_usage_counter', ++$search_mod_usage_counter);
 
 	$smarty->assign('module_error', '');
-	$smarty->assign_by_ref('smod_params', $smod_params);
 	
 	// Deal with the two search types (sigh). If the requested search type is disabled but the other one is enabled, use it as a fallback.
-	$smod_params['tiki_search'] = isset($smod_params['tiki_search']) && $smod_params['tiki_search'] == 'y';
+	$module_params['tiki_search'] = isset($module_params['tiki_search']) && $module_params['tiki_search'] == 'y';
 	
 	if ($prefs['feature_search'] == 'n' && $prefs['feature_search_fulltext'] == 'n') {
-		$smod_params['tiki_search'] = 'none';
+		$module_params['tiki_search'] = 'none';
 		$smarty->assign('module_error', tra('Search is disabled.'));
 		return;
-	} else if ($prefs['feature_search'] == 'n' && $smod_params['tiki_search'] == 'y') {
-		$smod_params['tiki_search'] = 'n';
-	} else if ($prefs['feature_search_fulltext'] == 'n' && $smod_params['tiki_search'] != 'y') {
-		$smod_params['tiki_search'] = 'y';
+	} else if ($prefs['feature_search'] == 'n' && $module_params['tiki_search'] == 'y') {
+		$module_params['tiki_search'] = 'n';
+	} else if ($prefs['feature_search_fulltext'] == 'n' && $module_params['tiki_search'] != 'y') {
+		$module_params['tiki_search'] = 'y';
 	}
 	
-	if (isset($smod_params['go_action']) && $smod_params['go_action'] == 'ti') { unset($smod_params['go_action']); }	// temporary fix for 5.0 in case params were truncated in the db
+	if (isset($module_params['go_action']) && $module_params['go_action'] == 'ti') { unset($module_params['go_action']); }	// temporary fix for 5.0 in case params were truncated in the db
 	
 	// set up other param defaults
 	$defaults = array(
@@ -147,12 +146,12 @@ function module_search( $mod_reference, $smod_params ) {	// modifies $smod_param
 		'show_go_button' => 'y',
 		'show_edit_button' => 'y',
 		'default_button' => 'search',
-		'input_size' => 0,
+		'input_size' => 14,
 		'select_size' => 10,
-		'search_action' => $smod_params['tiki_search'] ? 'tiki-searchindex.php' : 'tiki-searchresults.php',
+		'search_action' => $module_params['tiki_search'] ? 'tiki-searchindex.php' : 'tiki-searchresults.php',
 		'search_submit' => tra("Search"),
 		'go_action' => 'tiki-listpages.php',
-		'go_submit' => tra("Titles"),
+		'go_submit' => tra("Go"),
 		'edit_action' => 'tiki-editpage.php',
 		'edit_submit' => tra("Edit"),
 		'default_button' => 'search',
@@ -161,45 +160,45 @@ function module_search( $mod_reference, $smod_params ) {	// modifies $smod_param
 		'categId' => '',
 	);
 	
-	$smod_params = array_merge($defaults, $smod_params);
+	$module_params = array_merge($defaults, $module_params);
 	
-	if ($smod_params['tiki_search'] == 'y') {
-		$smod_params['advanced_search'] = 'n';
-		$smod_params['advanced_search_option'] = 'n';
-		$smod_params['advanced_search_help']   = 'n';
+	if ($module_params['tiki_search'] == 'y') {
+		$module_params['advanced_search'] = 'n';
+		$module_params['advanced_search_option'] = 'n';
+		$module_params['advanced_search_help']   = 'n';
 	}
 	
-	switch ($smod_params['legacy_mode']) {
+	switch ($module_params['legacy_mode']) {
 		case 'quick':		// params from old quick_edit module
-			$smod_params['show_search_button']   = 'n';
-			$smod_params['show_go_button']   = 'n';
-			$smod_params['show_edit_button']   = 'y';
-			$smod_params['edit_submit'] = isset($smod_params['submit']) ? $smod_params['submit'] : tra("Create/Edit");
-			$smod_params['default_button'] = 'edit';
-			$smod_params['edit_action'] = isset($smod_params['action']) ? $smod_params['action'] : 'tiki-editpage.php';
-			$smod_params['input_size'] = isset($smod_params['size']) ? $smod_params['size'] : 15;
-			$smod_params['search_heading'] = isset($smod_params['mod_quickedit_heading']) ? $smod_params['mod_quickedit_heading'] : $smod_params['search_heading'];
-			$smod_params['title']   = tra('Quick Edit a Wiki Page');
+			$module_params['show_search_button']   = 'n';
+			$module_params['show_go_button']   = 'n';
+			$module_params['show_edit_button']   = 'y';
+			$module_params['edit_submit'] = isset($module_params['submit']) ? $module_params['submit'] : tra("Create/Edit");
+			$module_params['default_button'] = 'edit';
+			$module_params['edit_action'] = isset($module_params['action']) ? $module_params['action'] : 'tiki-editpage.php';
+			$module_params['input_size'] = isset($module_params['size']) ? $module_params['size'] : 15;
+			$module_params['search_heading'] = isset($module_params['mod_quickedit_heading']) ? $module_params['mod_quickedit_heading'] : $module_params['search_heading'];
+			$module_params['title']   = tra('Quick Edit a Wiki Page');
 			break;
 		case 'search':		// params from old search_box module
-			$smod_params['tiki_search'] = isset($smod_params['tiki']) ? $smod_params['tiki'] : 'n';
-			$smod_params['show_search_button']   = 'y';
-			$smod_params['show_go_button']   = 'n';
-			$smod_params['show_edit_button']   = 'n';
-			$smod_params['advanced_search']   = 'y';
-			$smod_params['advanced_search_option']   = 'y';
-			$smod_params['advanced_search_help']   = 'y';
-			$smod_params['search_submit'] = tra("Go");
-			$smod_params['default_button'] = 'search';
-			$smod_params['show_object_filter'] = $prefs['feature_search_show_object_filter'];
+			$module_params['tiki_search'] = isset($module_params['tiki']) ? $module_params['tiki'] : 'n';
+			$module_params['show_search_button']   = 'y';
+			$module_params['show_go_button']   = 'n';
+			$module_params['show_edit_button']   = 'n';
+			$module_params['advanced_search']   = 'y';
+			$module_params['advanced_search_option']   = 'y';
+			$module_params['advanced_search_help']   = 'y';
+			$module_params['search_submit'] = tra("Go");
+			$module_params['default_button'] = 'search';
+			$module_params['show_object_filter'] = $prefs['feature_search_show_object_filter'];
 			break;
 		case 'page':		// params from old search_wiki_page module
-			$smod_params['show_search_button']   = 'n';
-			$smod_params['show_go_button']   = 'y';
-			$smod_params['show_edit_button']   = 'n';
-			$smod_params['go_submit'] = tra("Go");
-			$smod_params['default_button'] = 'go';
-			$smod_params['title']   = tra('Search Wiki Page');
+			$module_params['show_search_button']   = 'n';
+			$module_params['show_go_button']   = 'y';
+			$module_params['show_edit_button']   = 'n';
+			$module_params['go_submit'] = tra("Go");
+			$module_params['default_button'] = 'go';
+			$module_params['title']   = tra('Search Wiki Page');
 			break;
 			
 		case '':
@@ -207,43 +206,43 @@ function module_search( $mod_reference, $smod_params ) {	// modifies $smod_param
 			break;
 	}
 	
-	switch ($smod_params['default_button']) {
+	switch ($module_params['default_button']) {
 		case 'edit':
-			$smod_params['default_action'] = $smod_params['edit_action'];
+			$module_params['default_action'] = $module_params['edit_action'];
 			break;
 		case 'go':
-			$smod_params['default_action'] = $smod_params['go_action'];
+			$module_params['default_action'] = $module_params['go_action'];
 			break;
 		case 'search':
 		default:
-			$smod_params['default_action'] = $smod_params['search_action'];
+			$module_params['default_action'] = $module_params['search_action'];
 			break;
 	}
 
-	if (($smod_params['show_search_button'] == 'y' || $smod_params['default_action'] == $smod_params['search_action'])
-			&& $smod_params['show_edit_button'] == 'n' && $smod_params['show_go_button'] == 'n') {
-		$smod_params['use_autocomplete'] = 'n';
+	if (($module_params['show_search_button'] == 'y' || $module_params['default_action'] == $module_params['search_action'])
+			&& $module_params['show_edit_button'] == 'n' && $module_params['show_go_button'] == 'n') {
+		$module_params['use_autocomplete'] = 'n';
 	}
 	
 	if (!empty($_REQUEST['highlight'])) {
-		$smod_params['input_value'] = $_REQUEST['highlight'];
+		$module_params['input_value'] = $_REQUEST['highlight'];
 	} else if (!empty($_REQUEST['words'])) {
-		$smod_params['input_value'] = $_REQUEST['words'];
+		$module_params['input_value'] = $_REQUEST['words'];
 	} else if (!empty($_REQUEST['find'])) {
-		$smod_params['input_value'] = $_REQUEST['find'];
+		$module_params['input_value'] = $_REQUEST['find'];
 	} else {
-		$smod_params['input_value'] = '';
+		$module_params['input_value'] = '';
 	}
 	if (!empty($_REQUEST['where'])) {
-		$smod_params['where'] = $_REQUEST['where'];
+		$module_params['where'] = $_REQUEST['where'];
 	} else {
-		$smod_params['where'] = '';
+		$module_params['where'] = '';
 	}
 	if (!empty($_REQUEST['boolean_last'])) {
 		if (!empty($_REQUEST['boolean'])) {
-			$smod_params['advanced_search'] = 'y';
+			$module_params['advanced_search'] = 'y';
 		} else {
-			$smod_params['advanced_search'] = 'n';
+			$module_params['advanced_search'] = 'n';
 		}
 	}
 }

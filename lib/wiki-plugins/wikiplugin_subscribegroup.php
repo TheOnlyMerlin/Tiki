@@ -18,41 +18,35 @@ function wikiplugin_subscribegroup_help() {
 function wikiplugin_subscribegroup_info() {
 	return array(
 		'name' => tra('Subscribe Group'),
-		'documentation' => 'PluginSubscribeGroup',
-		'description' => tra('Allow users to subscribe to a group'),
+		'documentation' => 'PluginSubscribeGroup',		
+		'description' => tra('Subscribe or unsubscribe to a group'),
 		'prefs' => array( 'wikiplugin_subscribegroup' ),
 		'body' => tra('text displyed before the button'),
-		'icon' => 'pics/icons/group_add.png',
 		'params' => array(
 			'group' => array(
 				'required' => true,
 				'name' => tra('Group Name'),
-				'description' => tra('Group name to subscribe to or unsubscribe from'),
-				'default' => ''
+				'description' => tra('As known in Tikiwiki'),
 			),
 			'subscribe' => array(
 				'required' => false,
 				'name' => tra('Subscribe Text'),
 				'description' => tra('Subscribe text, containing %s as the placeholder for the group name.'),
-				'default' => tra('Subscribe') . '%s',
 			),
 			'unsubscribe' => array(
 				'required' => false,
 				'name' => tra('Unsubscribe Text'),
 				'description' => tra('Unsubscribe text, containing %s as the placeholder for the group name.'),
-				'default' => tra('Unsubscribe') . '%s'
 			),
 			'subscribe_action' => array(
 				'required' => false,
 				'name' => tra('Subscribe Action'),
 				'description' => tra('Subscribe button label, containing %s as the placeholder for the group name.'),
-				'default' => tra('OK')
 			),
 			'unsubscribe_action' => array(
 				'required' => false,
 				'name' => tra('Unsubscribe Action'),
 				'description' => tra('Unsubscribe button label, containing %s as the placeholder for the group name.'),
-				'default' => tra('OK')
 			),
 		),
 	);
@@ -103,15 +97,15 @@ function wikiplugin_subscribegroup($data, $params) {
 		if ($groups[$group] == 'included') {
 			return tra('Incorrect param');
 		}
-		$text = isset($unsubscribe)? $unsubscribe: tra('Unsubscribe') . '%s';
+		$text = isset($unsubscribe)? $unsubscribe: 'Unsubscribe %s';
 		if (!isset($unsubscribe_action)) {
-			$unsubscribe_action = tra('OK');
+			$unsubscribe_action = 'OK';
 		}
 		$smarty->assign('action', $unsubscribe_action);
 	} else {
-		$text = isset($subscribe)? $subscribe: tra('Subscribe') . '%s';
+		$text = isset($subscribe)? $subscribe: 'Subscribe %s';
 		if (!isset($subscribe_action)) {
-			$subscribe_action = tra('OK');
+			$subscribe_action = 'OK';
 		}
 		$smarty->assign('action', $subscribe_action);
 	}

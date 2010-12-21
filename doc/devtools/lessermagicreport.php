@@ -4,7 +4,6 @@
 // php doc/devtools/lessermagicreport.php > lessermagicreport.htm
 
 require_once 'tiki-setup.php';
-require_once 'lib/prefslib.php';
 
 $defaultValues = get_default_prefs();
 

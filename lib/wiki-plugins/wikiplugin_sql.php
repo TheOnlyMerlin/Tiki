@@ -13,17 +13,15 @@ function wikiplugin_sql_info() {
 	return array(
 		'name' => tra('SQL'),
 		'documentation' => 'PluginSQL',
-		'description' => tra('Query a MySQL database and display the results'),
+		'description' => tra('Run a sql query'),
 		'prefs' => array( 'wikiplugin_sql' ),
-		'body' => tra('The SQL query goes in the body. Example: SELECT column1, column2 FROM table'),
+		'body' => tra('sql query'),
 		'validate' => 'all',
-		'icon' => 'pics/icons/database_table.png',
 		'params' => array(
 			'db' => array(
 				'required' => true,
-				'name' => tra('DSN Name'),
-				'description' => tra('DSN name of the database being queried. The DSN name needs to first be defined at tiki-admin_dsn.php'),
-				'default' => '',
+				'name' => tra('DNS Name'),
+				'description' => tra('ADODB DNS'),
 			),
 		),
 	);
@@ -47,7 +45,7 @@ function wikiplugin_sql($data, $params) {
 	$data = html_entity_decode($data);
 	if ($nb = preg_match_all("/\?/", $data, $out)) {
 		foreach($params as $key => $value) {
-			if (preg_match('/^[0-9]*$/', $key)) {
+			if (ereg("^[0-9]*$", $key)) {
 				if (strpos($value, "$") === 0) {
 					$value = substr($value, 1);
 					global $$value;

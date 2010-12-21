@@ -1,4 +1,3 @@
-{if $parentId gt 0}<div style="float:left;width:100%">{self_link galleryId=$parentId}{icon _id="arrow_left"} {tr}Parent Gallery{/tr}{/self_link}</div>{/if}
 <div id="thumbnails" style="float:left">
 
   {section name=changes loop=$files}
@@ -15,8 +14,8 @@
     {assign var=is_checked value='n'}
   {/if}
 
-  {* show files and subgals in browsing view *}
-  {if 1}
+  {* do not show subgals in browsing view *}
+  {if $files[changes].isgal neq 1}
 
     {if ( $prefs.use_context_menu_icon eq 'y' or $prefs.use_context_menu_text eq 'y' ) and $gal_info.show_action neq 'n'}
       {capture name=over_actions}{strip}
@@ -74,12 +73,16 @@
         href="tiki-list_file_gallery.php?galleryId={$files[changes].id}{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}&amp;view=browse"
       {else}
         {if $filegals_manager neq ''}
-          href="#" onclick="window.opener.insertAt('{$filegals_manager}','{$files[changes].wiki_syntax|escape}');checkClose();return false;" title="{tr}Click Here to Insert in Wiki Syntax{/tr}"
+          {assign var=seturl value=$files[changes].id|sefurl:display}
+
+          {* Note: When using this code inside FCKeditor, SetMyUrl function is not defined and we use FCKeditor SetUrl native function *}
+          href="javascript:if (typeof window.opener.SetMyUrl != 'undefined') window.opener.SetMyUrl('{$filegals_manager|escape}','{$seturl}'); else window.opener.SetUrl('{$tikiroot}{$seturl}'); checkClose();" title="{tr}Click Here to Insert in Wiki Syntax{/tr}"
+
         {elseif $tiki_p_download_files eq 'y'}
           {if $gal_info.type eq 'podcast' or $gal_info.type eq 'vidcast'}
             href="{$prefs.fgal_podcast_dir}{$files[changes].path}"
           {else}
-            href="{if $prefs.javascript_enabled eq 'y' && $files[changes].type|truncate:5:'':true eq 'image'}{$files[changes].id|sefurl:preview}{elseif $files[changes].type|truncate:5:'':true neq 'image'}{$files[changes].id|sefurl:file}{else}{$files[changes].id|sefurl:display}{/if}"
+            href="{if $prefs.javascript_enabled eq 'y'}{$files[changes].id|sefurl:preview}{else}{$files[changes].id|sefurl:display}{/if}"
           {/if}
         {/if}
       {/if}
@@ -87,20 +90,15 @@
 
     {math equation="x + 6" x=$thumbnail_size assign=thumbnailcontener_size}
 
-    <div id="{$checkname}_{$files[changes].id}" class="clearfix thumbnailcontener{if $is_checked eq 'y'} thumbnailcontenerchecked{/if}" style="width:{$thumbnailcontener_size}px">
+    <div id="{$checkname}_{$files[changes].id}" class="clearfix thumbnailcontener{if $is_checked eq 'y'} thumbnailcontenerchecked{/if}" style="float:left; width:{$thumbnailcontener_size}px">
+
       <div class="thumbnail" style="float:left; width:{$thumbnailcontener_size}px">
         <div class="thumbimagecontener" style="width:{$thumbnail_size}px;height:{$thumbnailcontener_size}px{if $show_infos neq 'y'};margin-bottom:4px{/if}">
           <div class="thumbimage">
             <div class="thumbimagesub" style="width:{$thumbnail_size}px;">{assign var=key_type value=$files[changes].type|truncate:9:'':true}
-              {if $files[changes].isgal eq 1}
-                <a {$link}>
-                  {icon _id="pics/large/fileopen48x48.png" width="48" height="48"}
-                </a>
-              {else}
-                <a {$link}{if $prefs.feature_shadowbox eq 'y' && $filegals_manager eq ''} rel="shadowbox[gallery];type={if $key_type eq 'image/png' or $key_type eq 'image/jpe' or $key_type eq 'image/gif'}img{else}iframe{/if}"{/if}{if $over_infos neq ''} {popup fullhtml="1" text=$over_infos|escape:"javascript"|escape:"html"}{else} title="{if $files[changes].name neq ''}{$files[changes].name|escape}{/if}{if $files[changes].description neq ''} ({$files[changes].description|escape}){/if}"{/if}>
-				  <img src="{$files[changes].id|sefurl:thumbnail}" alt="" />
-                </a>
-              {/if}
+              <a {$link}{if $prefs.feature_shadowbox eq 'y' && $filegals_manager eq ''} rel="shadowbox[gallery];type={if $key_type eq 'image/png' or $key_type eq 'image/jpe' or $key_type eq 'image/gif'}img{else}iframe{/if}"{/if}{if $over_infos neq ''} {popup fullhtml="1" text=$over_infos|escape:"javascript"|escape:"html"}{else} title="{if $files[changes].name neq ''}{$files[changes].name|escape}{/if}{if $files[changes].description neq ''} ({$files[changes].description|escape}){/if}"{/if}>
+				<img src="{$files[changes].id|sefurl:thumbnail}" alt="" />
+              </a>
             </div>
           </div>
         </div>
@@ -126,7 +124,7 @@
               {else}
                 {assign var=propval value="<a class='fgalname' $link>$propval</a>"}
               {/if}
-            {elseif $propname eq 'created' or $propname eq 'lastModif'}
+            {elseif $propname eq 'created' or $propname eq 'lastmodif'}
               {assign var=propval value=$propval|tiki_short_date}
             {elseif $propname eq 'last_user' or $propname eq 'author' or $propname eq 'creator'}
               {assign var=propval value=$propval|userlink}
@@ -169,27 +167,21 @@
   
       </div> {* thumbnail *}
 
-      {if $prefs.fgal_show_thumbactions eq 'y' or $show_details eq 'y'}
-        <div class="thumbactions" style="float:right; width:{$thumbnail_size}px">
+      <div class="thumbactions" style="float:right; width:{$thumbnail_size}px">
 
-        {if $files[changes].isgal neq 1}
-          {if $gal_info.show_checked neq 'n' and $tiki_p_admin_file_galleries eq 'y'}
-            <label style="float:left"><input type="checkbox" onclick="flip_thumbnail_status('{$checkname}_{$files[changes].id}')" name="{$checkname}[]" value="{$files[changes].id|escape}" {if $is_checked eq 'y'}checked="checked"{/if} />{if isset($checkbox_label)}{$checkbox_label}{/if}</label>
-          {/if}
-
-          {if $gal_info.show_action neq 'n'}
-            {if ( $prefs.use_context_menu_icon eq 'y' or $prefs.use_context_menu_text eq 'y' ) and $prefs.javascript_enabled eq 'y'}
-              <a class="fgalname" title="{tr}Actions{/tr}" href="#" {popup trigger="onclick" sticky=1 mouseoff=1 fullhtml="1" text=$smarty.capture.over_actions|escape:"javascript"|escape:"html"}>{icon _id='wrench' alt="{tr}Actions{/tr}"}</a>
-            {else}
-              {include file='fgal_context_menu.tpl'}
-            {/if}
-          {/if}
-        {else}
-          &nbsp;
-        {/if}
-
-        </div> {* thumbactions *}
+      {if $gal_info.show_checked neq 'n' and $tiki_p_admin_file_galleries eq 'y'}
+        <label style="float:left"><input type="checkbox" onclick="flip_thumbnail_status('{$checkname}_{$files[changes].id}')" name="{$checkname}[]" value="{$files[changes].id|escape}" {if $is_checked eq 'y'}checked="checked"{/if} />{if isset($checkbox_label)}{$checkbox_label}{/if}</label>
       {/if}
+
+      {if $gal_info.show_action neq 'n'}
+        {if ( $prefs.use_context_menu_icon eq 'y' or $prefs.use_context_menu_text eq 'y' ) and $prefs.javascript_enabled eq 'y'}
+          <a class="fgalname" title="{tr}Actions{/tr}" href="#" {popup trigger="onclick" sticky=1 mouseoff=1 fullhtml="1" text=$smarty.capture.over_actions|escape:"javascript"|escape:"html"}>{icon _id='wrench' alt="{tr}Actions{/tr}"}</a>
+        {else}
+          {include file='fgal_context_menu.tpl'}
+        {/if}
+      {/if}
+
+      </div> {* thumbactions *}
     </div> {* thumbnailcontener *}
   {/if}
 

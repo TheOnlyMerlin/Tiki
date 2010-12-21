@@ -33,37 +33,25 @@ function wikiplugin_showpages_info() {
 	return array(
 		'name' => tra('Show Pages'),
 		'documentation' => 'PluginShowPages',
-		'description' => tra('Find pages by searching within page names'),
+		'description' => tra('List wiki pages'),
 		'prefs' => array( 'wikiplugin_showpages' ),
-		'icon' => 'pics/icons/page_find.png',
 		'params' => array(
 			'find' => array(
 				'required' => true,
 				'name' => tra('Find'),
 				'description' => tra('Search criteria'),
-				'default' => '',
 			),
 			'max' => array(
 				'required' => false,
 				'name' => tra('Result Count'),
 				'description' => tra('Maximum amount of results displayed.'),
-				'filter' => 'digits',
-				'default' => '',
 			),
 			'display' => array(
 				'required' => false,
 				'name' => tra('Display'),
-				'description' => tra('Display page name and/or description. Both displayed by default.'),
-				'filter' => 'striptags',
-				'default' => 'name|desc',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Name'), 'value' => 'name'), 
-					array('text' => tra('Description'), 'value' => 'desc'),
-					array('text' => tra('Name & Description'), 'value' => 'name|desc')
-				)
-			)
-		)
+				'description' => tra('name|desc'),
+			),
+		),
 	);
 }
 

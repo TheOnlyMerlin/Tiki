@@ -25,13 +25,7 @@
 	{if count($uploads) > 0}
 		{button href="#upload" _text="{tr}Upload File{/tr}"}
 	{/if}
-	{if isset($filegals_manager)}
-		{if $simpleMode eq 'y'}{button simpleMode='n' galleryId=$galleryId href="" _text="{tr}Advanced mode{/tr}" _ajax="n"}{else}{button galleryId=$galleryId href="" _text="{tr}Simple mode{/tr}" _ajax="n"}{/if}
-		<span{if $simpleMode eq 'y'} style="display:none;"{/if}>
-			<label for="keepOpenCbx">{tr}Keep gallery window open{/tr}</label>
-			<input type="checkbox" id="keepOpenCbx" checked="checked">
-		</span>
-	{/if}
+	{if $simpleMode eq 'y'}{button simpleMode='n' galleryId=$galleryId href="" _text="{tr}Advanced mode{/tr}" _ajax="n"}{/if}
 </div>
 {/if}
 
@@ -66,13 +60,16 @@
 
 	<table border="0" cellspacing="4" cellpadding="4">
 	{section name=ix loop=$uploads}
-		<tr class="{cycle values="odd,even"}">
-			<td style="text-align: center">
+		<tr>
+			<td class="{cycle values="odd,even"}" style="text-align: center">
 				<img src="{$uploads[ix].fileId|sefurl:thumbnail}" />
 			</td>
 			<td>
 				{if $filegals_manager neq ''}
-					<a href="#" onclick="window.opener.insertAt('{$filegals_manager}','{$files[changes].wiki_syntax|escape}');checkClose();return false;" title="{tr}Click Here to Insert in Wiki Syntax{/tr}">{$uploads[ix].name} ({$uploads[ix].size|kbsize})</a>
+					{assign var=seturl value=$uploads[ix].fileId|sefurl:display}
+					
+					{* Note: When using this code inside FCKeditor, SetMyUrl function is not defined and we use FCKeditor SetUrl native function *}
+					<a href="javascript:if (typeof window.opener.SetMyUrl != 'undefined') window.opener.SetMyUrl('{$filegals_manager|escape}','{$seturl}'); else window.opener.SetUrl('{$tikiroot}{$seturl}'); checkClose();" title="{tr}Click Here to Insert in Wiki Syntax{/tr}">{$uploads[ix].name} ({$uploads[ix].size|kbsize})</a>
 				{else}
 					<b>{$uploads[ix].name} ({$uploads[ix].size|kbsize})</b>
 				{/if}
@@ -194,15 +191,21 @@
 				<input type="hidden" name="galleryId" value="{$galleryId}"/>
 			{/if}
 		{/if}
-		<tr><td>
-			<label for="user">{tr}Uploaded by:{/tr}</label>
-		</td><td width="80%">
-			{user_selector id='user' name='user[]' select=$fileInfo.user editable=$tiki_p_admin_file_galleries}
-		</td></tr>
+		{if $tiki_p_admin_file_galleries eq 'y'}
+			<tr><td>
+				<label for="user">{tr}Creator:{/tr}</label>
+			</td><td width="80%">
+				<select id="user" name="user[]">
+				{section name=ix loop=$users}
+					<option value="{$users[ix].login|escape}"{if (isset($fileInfo) and $fileInfo.user eq $users[ix].login) or (!isset($fileInfo) and $user == $users[ix].login)}  selected="selected"{/if}>{$users[ix].login|username}</option>
+				{/section}
+				</select>
+			</td></tr>
+		{/if}
 
 		{if $prefs.feature_file_galleries_author eq 'y'}
 			<tr><td>
-				<label for="author">{tr}Creator of file, if different from the 'Uploaded by' user:{/tr}</label>
+				<label for="author">{tr}Author, if different from the Creator:{/tr}</label>
 			</td><td width="80%">
 				<input type="text" id="author"name="author[]" value="{$fileInfo.author|escape}" />
 			</td></tr>
@@ -245,7 +248,7 @@
 		<br/>
 	{/if}
 </div>
-</div><br/>
+</div>
 {if $prefs.javascript_enabled eq 'y' and !$editFileId}
 	{include file='categorize.tpl' notable='y'}<br/>
 {/if}
@@ -303,46 +306,46 @@
 {if $prefs.javascript_enabled neq 'y' || ! $editFileId}
 	{jq notonready=true}
 		var nb_upload = 1;
-		function add_upload_file() {
+		function add_upload_file() {literal}{{/literal}
 			tmp = "<form onsubmit='return false' id='file_"+nb_upload+"' name='file_"+nb_upload+"' action='tiki-upload_file.php' target='upload_progress_"+nb_upload+"' enctype='multipart/form-data' method='post' style='margin:0px; padding:0px'>";
-			{{if $filegals_manager neq ''}}
+			{if $filegals_manager neq ''}
 			tmp += '<input type="hidden" name="filegals_manager" value="{$filegals_manager}"/>';
-			{{/if}}
+			{/if}
 			tmp += '<input type="hidden" name="formId" value="'+nb_upload+'"/>';
-			tmp += '{{$upload_str|strip|escape:'javascript'}}';
+			tmp += '{$upload_str|strip|escape:'javascript'}';
 			tmp += '</form><div id="multi_'+(nb_upload+1)+'"></div>';
 			//tmp += '<div id="multi_'+(nb_upload+1)+'"></div>';
 			document.getElementById('multi_'+nb_upload).innerHTML = tmp;
 			document.getElementById('progress').innerHTML += "<div id='progress_"+nb_upload+"'></div>";
 			document.getElementById('upload_progress').innerHTML += "<iframe id='upload_progress_"+nb_upload+"' name='upload_progress_"+nb_upload+"' height='1' width='1' style='border:0px none'></iframe>";
 			nb_upload += 1;
-		}
+		{literal}}{/literal}
 
-		function progress(id,msg) {
+		function progress(id,msg) {literal}{{/literal}
 //			alert ('progress_'+id);
 			document.getElementById('progress_'+id).innerHTML = msg;
-		}
+		{literal}}{/literal}
 
-		function do_submit(n) {
+		function do_submit(n) {literal}{{/literal}
 //				alert(document.getElementById('file_'+n).name);
-			if (document.forms['file_'+n].elements['userfile[]'].value != '') {
+			if (document.forms['file_'+n].elements['userfile[]'].value != '') {literal}{{/literal}
 				progress(n,"<img src='img/spinner.gif'>{tr}Uploading file...{/tr}");
 				document.getElementById('file_'+n).submit();
 				document.getElementById('file_'+n).reset();
-			} else {
-				progress(n,"{tr}No File to Upload...{/tr} <span class='button'><a href='#' onclick='location.replace(location.href);return false;'>{tr}Retry{/tr}</a></span>");
-			}
-		}
+			{literal}}{/literal} else {literal}{{/literal}
+				progress(n,"{tr}No File to Upload...{/tr}");
+			{literal}}{/literal}
+		{literal}}{/literal}
 
-		function upload_files(form, loader){
+		function upload_files(form, loader){literal}{{/literal}
 			//only do this if the form exists
 			n=0;
-			while (document.forms['file_'+n]){
+			while (document.forms['file_'+n]){literal}{{/literal}
 				do_submit(n);
 				n++;
-			}
+			{literal}}{/literal}
 			hide('form');
-		}
+		{literal}}{/literal}
 	{/jq}
 {/if}
 

@@ -7,48 +7,35 @@
 
 function wikiplugin_addtocart_info() {
 	return array(
-		'name' => tra('Add to Cart'),
-		'documentation' => 'PluginAddToCart',
-		'description' => tra(' Display a button for adding items to the shopping cart'),
+		'name' => tra('Add to cart'),
+		'description' => tra('Adds a product to the virtual cart. The cart can be manipulated using the cart module.'),
 		'prefs' => array( 'wikiplugin_addtocart', 'payment_feature' ),
 		'filter' => 'wikicontent',
 		'format' => 'html',
-		'icon' => 'pics/icons/cart_add.png',
 		'params' => array(
 			'code' => array(
 				'required' => true,
 				'name' => tra('Product code'),
 				'description' => tra('Unique identifier for the product. Two products with the same code will be the same and the information used will be the one of the first in.'),
 				'filter' => 'text',
-				'default' => ''
 			),
 			'description' => array(
 				'required' => true,
 				'name' => tra('Description'),
 				'description' => tra('Label for the product in the cart.'),
-				'filter' => 'text',
-				'default' => ''
+				'filter' => 'text'
 			),
 			'price' => array(
 				'required' => true,
 				'name' => tra('Price'),
 				'description' => tra('The price to charge for the item.'),
 				'filter' => 'text',
-				'default' => ''
 			),
 			'href' => array(
 				'required' => false,
 				'name' => tra('Location'),
 				'description' => tra('URL of the product\'s information. The URL may be relative or absolute (begin with http://).'),
 				'filter' => 'url',
-				'default' => ''
-			),
-			'label' => array(
-				'required' => false,
-				'name' => tra('Button label'),
-				'description' => tra('Text for the submit button. default: "Add to cart"'),
-				'filter' => 'text',
-				'default' => 'Add to cart'
 			),
 		),
 	);
@@ -66,24 +53,14 @@ function wikiplugin_addtocart( $data, $params ) {
 	if( ! isset( $params['href'] ) ) {
 		$params['href'] = null;
 	}
-	if (! isset($params['label'])) {
-		$params['label'] = tra('Add to cart');
-	}
-
-	foreach($params as &$p) {
-		$p = trim($p);			// remove some line ends picked up in pretty tracker
-	}
 
 	require_once 'lib/smarty_tiki/modifier.escape.php';
-	require_once 'lib/smarty_tiki/function.query.php';
-	
+
 	$code = smarty_modifier_escape( $params['code'] );
-	$price = preg_replace( '/[^\d^\.^,]/', '', $params['price']);
-	$add_label = smarty_modifier_escape( $params['label'] );
-	$return_uri = smarty_function_query( array('_type' => 'relative', '_keepall' => 'y'), $smarty);
+	$add_label = smarty_modifier_escape( tra('Add to cart') );
 	
 	$form = <<<FORM
-<form method="post" action="$return_uri" style="display: inline;">
+<form method="post" action="" style="display: inline;">
 	<input type="hidden" name="code" value="$code"/>
 	<input type="text" name="quantity" value="1" size="2"/>
 	<input type="submit" value="$add_label"/>
@@ -100,7 +77,7 @@ FORM;
 
 			$cartlib->add_product( $params['code'], $quantity, array(
 				'description' => $params['description'],
-				'price' => $price,
+				'price' => $params['price'],
 				'href' => $params['href'],
 			) );
 

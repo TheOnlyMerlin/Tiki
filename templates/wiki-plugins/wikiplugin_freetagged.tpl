@@ -1,14 +1,14 @@
-{* $Id$ *}
+{* $Id: wikiplugin_freetagged.tpl 26601 2010-04-13 11:25:49Z jonnybradley $ *}
 
 {if isset($objects) && count($objects) gt 0}
 <ul class="freetagged clearfix">
 	{foreach item=row from=$objects}
 		<li class="{$row.type|stringfix:' ':'_'}">
-			{if $h_level gt 0}<h{$h_level}>{/if}<a href="{$row.href|escape}">{$row.name|escape}</a>{if $h_level gt 0}</h{$h_level}>{/if}
-			{if !empty($row.description) or !empty($row.img)}<p>
+			<h{$h_level}><a href="{$row.href|escape}">{$row.name|escape}</a></h{$h_level}>
+			<p>
 				<em>{$row.description}</em>
 				{$row.img}
-			</p>{/if}
+			</p>
 			{if !empty($row.date)}<p class="editdate">
 				{$row.date|tiki_short_datetime}
 			</p>{/if}

@@ -23,7 +23,7 @@ function wikiplugin_quote_info() {
 	return array(
 		'name' => tra('Quote'),
 		'documentation' => 'PluginQuote',
-		'description' => tra('Format text as a quote'),
+		'description' => tra("Quote text by surrounding the text with a box, like the [QUOTE] BBCode"),
 		'prefs' => array( 'wikiplugin_quote' ),
 		'body' => tra('Quoted text'),
 		'icon' => 'pics/icons/quotes.png',
@@ -31,10 +31,9 @@ function wikiplugin_quote_info() {
 		'params' => array(
 			'replyto' => array(
 				'required' => false,
-				'name' => tra('Reply To'),
+				'name' => tra('Reply to'),
 				'description' => tra('Name of the quoted person.'),
 				'filter' => 'text',
-				'default' => '',
 			),
 		),
 	);

@@ -50,16 +50,16 @@
 {tr}Calendar has been updated{/tr}
 {/if}
 <form method="post" action="tiki-ical.php" enctype="multipart/form-data">
-<table class="formcolor">
-<tr><td>{tr}Calendar{/tr}</td><td>
+<table class="normal">
+<tr><td class="formcolor">{tr}Calendar{/tr}</td><td class="formcolor">
 <select name="calendarId">
 {foreach item=lc from=$calendars}
 <option value="{$lc.calendarId}">{$lc.name|escape}</option>
 {/foreach}
 </select>
 </td></tr>
-<tr><td>{tr}ICal File{/tr}
-</td><td>
+<tr><td class="formcolor">{tr}ICal File{/tr}
+</td><td class="formcolor">
 <input type="file" name="fileICS" size="50" />
 <input type="submit" name="import" value="{tr}import{/tr}" />
 </td></tr></table>

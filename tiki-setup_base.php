@@ -46,7 +46,6 @@ $needed_prefs = array(
 	'session_silent' => 'n',
 	'session_cookie_name' => session_name(),
 	'tiki_cdn' => '',
-	'tiki_cdn_ssl' => '',
 	'language' => 'en',
 	'lang_use_db' => 'n',
 	'feature_pear_date' => 'y',
@@ -121,46 +120,34 @@ if (isset($_GET[session_name()]) && $tikilib->get_ip_address() == '127.0.0.1') {
 
 $start_session = $prefs['session_silent'] != 'y' or isset( $_COOKIE[session_name()] );
 
-// If called from the CDN, refuse to execute anything
-$cdn_pref = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? $prefs['tiki_cdn_ssl'] : $prefs['tiki_cdn'];
-if( $cdn_pref ) {
-	$host = parse_url( $cdn_pref, PHP_URL_HOST );
+// If called from the CDN, do not start the session
+if( $prefs['tiki_cdn'] ) {
+	$host = parse_url( $prefs['tiki_cdn'], PHP_URL_HOST );
 	if( $host == $_SERVER['HTTP_HOST'] ) {
-		header("HTTP/1.0 404 Not Found");
-		echo "File not found.";
-		exit;
+		$start_session = false;
 	}
 }
-$cookie_path = '';
-if (isset($_SERVER["REQUEST_URI"])) {
-	$cookie_path = str_replace("\\", "/", dirname($_SERVER["REQUEST_URI"]));
-	if ($cookie_path != '/') {
-		$cookie_path .= '/';
-	}
-	ini_set('session.cookie_path', str_replace("\\", "/", $cookie_path));
-	if ( $start_session ) {
-		// enabing silent sessions mean a session is only started when a cookie is presented
-		$session_params = session_get_cookie_params();
-		session_set_cookie_params($session_params['lifetime'], $cookie_path);
-		unset($session_params);
-	
-		try {
-			require_once "Zend/Session.php";
-			Zend_Session::start();
-		} catch( Zend_Session_Exception $e ) {
-			// Ignore
-		}
-	}
+
+if ( $start_session ) {
+	// enabing silent sessions mean a session is only started when a cookie is presented
+	$session_params = session_get_cookie_params();
+	session_set_cookie_params($session_params['lifetime'], $tikiroot);
+	unset($session_params);
+	@session_start();
 }
 
 // Moved here from tiki-setup.php because smarty use a copy of session
 if ($prefs['feature_fullscreen'] == 'y') {
 	require_once ('lib/setup/fullscreen.php');
 }
+// Smarty needs session since 2.6.25
+require_once ('setup_smarty.php');
 // Retrieve all preferences
 require_once ('lib/setup/prefs.php');
-// Smarty needs session since 2.6.25
-require_once ('lib/init/smarty.php');
+// Handle Smarty Security
+if ($prefs['smarty_security'] == 'y') {
+	$smarty->security = true;
+}
 require_once ('lib/userslib.php'); global $userlib;
 $userlib = new UsersLib;
 require_once ('lib/tikiaccesslib.php');
@@ -319,6 +306,9 @@ if (!empty($_REQUEST['highlight'])) {
 	$_REQUEST['highlight'] = str_replace('&lt;x&gt;', '<x>', $_REQUEST['highlight']);
 }
 // ---------------------------------------------------------------------
+if (isset($_SERVER["REQUEST_URI"])) {
+	ini_set('session.cookie_path', str_replace("\\", "/", dirname($_SERVER["REQUEST_URI"])));
+}
 if (!isset($_SERVER['QUERY_STRING'])) {
 	$_SERVER['QUERY_STRING'] = '';
 }
@@ -328,19 +318,6 @@ if (empty($_SERVER['REQUEST_URI'])) {
 if (empty($_SERVER['SERVER_NAME'])) {
 	$_SERVER['SERVER_NAME'] = isset($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']: '';
 }
-
-/*
- * Clean variables past in _GET & _POST & _COOKIE
- */
-$magic_quotes_gpc = get_magic_quotes_gpc();
-if ($magic_quotes_gpc) {
-	remove_gpc($_GET);
-	remove_gpc($_POST);
-	remove_gpc($_COOKIE);
-}
-
-require_once ('lib/setup/absolute_urls.php');
-
 // in the case of tikis on same domain we have to distinguish the realm
 // changed cookie and session variable name by a name made with browsertitle
 $cookie_site = preg_replace("/[^a-zA-Z0-9]/", "", $prefs['cookie_name']);
@@ -398,8 +375,15 @@ if ($prefs['auth_method'] == 'shib' and isset($_SERVER['REMOTE_USER'])) {
 	}
 }
 
-$userlib->check_cas_authentication($user_cookie_site);
-
+// Check for CAS revalidation
+if ( !empty($_SESSION[$user_cookie_site]) and $_SESSION[$user_cookie_site] != 'admin' and $prefs['auth_method'] == 'cas' and basename($_SERVER["SCRIPT_NAME"]) != 'tiki-login.php' and basename($_SERVER["SCRIPT_NAME"]) != 'tiki-logout.php') {
+		if ( $prefs['cas_authentication_timeout'] and time()-$_SESSION['cas_validation_time'] > $prefs['cas_authentication_timeout'] ) {
+			$_SESSION['cas_redirect'] = $_SERVER['REQUEST_URI'];
+			header('Location: tiki-login.php?cas=y');
+			unset($_SESSION['phpCAS']['user']);
+		 	die();	
+		}
+}
 // if the username is already saved in the session, pull it from there
 if (isset($_SESSION["$user_cookie_site"])) {
 	$user = $_SESSION["$user_cookie_site"];
@@ -417,11 +401,6 @@ if (isset($_SESSION["$user_cookie_site"])) {
 		}
 	}
 	unset($user_details);
-	
-	// Generate anti-CSRF ticket
-	if ($prefs['feature_ticketlib2'] == 'y' && !isset($_SESSION['ticket'])) {
-		$_SESSION['ticket'] = md5(uniqid(rand()));
-	}
 } else {
 	$user = NULL;
 	// if everything failed, check for user+pass params in the URL
@@ -447,9 +426,9 @@ if (isset($_SESSION["$user_cookie_site"])) {
 	// }
 	
 }
-$smarty->assign( 'CSRFTicket', isset( $_SESSION['ticket'] ) ? $_SESSION['ticket'] : null);
 require_once ('lib/setup/perms.php');
 // --------------------------------------------------------------
+$magic_quotes_gpc = get_magic_quotes_gpc();
 // deal with register_globals
 if (ini_get('register_globals')) {
 	foreach(array($_ENV, $_GET, $_POST, $_COOKIE, $_SERVER) as $superglob) {
@@ -467,13 +446,13 @@ if ( $tiki_p_trust_input != 'y' ) {
 }
 $jitServer = new JitFilter($_SERVER);
 $_SERVER = $serverFilter->filter($_SERVER);
+if ($magic_quotes_gpc) {
+	remove_gpc($_GET);
+	remove_gpc($_POST);
+	remove_gpc($_COOKIE);
+}
 // Rebuild request after gpc fix
 // _REQUEST should only contain GET and POST in the app
-
-$prepareInput = new TikiFilter_PrepareInput('~');
-$_GET = $prepareInput->prepare($_GET);
-$_POST = $prepareInput->prepare($_POST);
-
 $_REQUEST = array_merge($_GET, $_POST);
 // Preserve unfiltered values accessible through JIT filtering
 $jitPost = new JitFilter($_POST);

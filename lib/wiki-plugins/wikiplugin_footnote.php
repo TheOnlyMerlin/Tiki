@@ -25,28 +25,19 @@ function wikiplugin_footnote_info()
 	return array(
 		'name' => tra('Footnote'),
 		'documentation' => 'PluginFootnote',
-		'description' => tra('Create automatically numbered footnotes (together with PluginFootnoteArea)'),
+		'description' => tra('Inserts a superscripted footnote number next to text and takes in footnote as parameter.'),
 		'prefs' => array('wikiplugin_footnote'),
 		'body' => tra('The footnote'),
-		'icon' => 'pics/icons/text_horizontalrule.png',
 		'params' => array(
 			'sameas' => array(
 				'required' => false,
 				'name' => tra('Sameas'),
-				'description' => tra('Tag to existing footnote'),
-				'default' => ''
+				'description' => tra('Tag to existing footnote' )
 			),
 			'checkDuplicate' => array(
 				'required' => false,
 				'name' => tra('CheckDuplicate'),
-				'description' => tra('Check for duplicate footnotes'),
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
+				'description' => tra('Check for duplicate footnotes')
 			)
 		)
 	);
@@ -54,10 +45,6 @@ function wikiplugin_footnote_info()
 
 function wikiplugin_footnote($data, $params)
 {
-	if (! isset($GLOBALS['footnoteCount'])) {
-		$GLOBALS['footnoteCount'] = 0;
-	}
-
 	if (empty($params)) {
 		$GLOBALS['footnoteCount']++;
 		$footnoteCount = $GLOBALS['footnoteCount'];

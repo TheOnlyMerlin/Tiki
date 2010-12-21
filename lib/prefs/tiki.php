@@ -21,8 +21,8 @@ function prefs_tiki_list() {
 			),
 		),
 		'tiki_minify_javascript' => array(
-			'name' => tra('Minify JavaScript'),
-			'description' => tra('Compress JavaScript files used in the page into a single file to be distributed statically. Changes to JavaScript files will require cache to be cleared. Uses http://code.google.com/p/minify/'),
+			'name' => tra('Minify javascript'),
+			'description' => tra('Compress javascript files used in the page into a single file to be distributed statically. Changes to javascript files will require cache to be cleared. Uses http://code.google.com/p/minify/'),
 			'type' => 'flag',
 			'perspective' => false,
 		),
@@ -62,16 +62,6 @@ function prefs_tiki_list() {
 			'name' => tra('Content Delivery Network'),
 			'description' => tra('Use an alternate domain name to serve static files from tikiwiki to avoid sending cookies, improve local caching and generally improve user experience performance.'),
 			'hint' => tra('Prefix to include before the static files, for example: http://cdn.example.com'),
-			'help' => 'Content+Delivery+Network',
-			'type' => 'text',
-			'size' => 40,
-			'filter' => 'url',
-		),
-		'tiki_cdn_ssl' => array(
-			'name' => tra('Content Delivery Network (in SSL)'),
-			'description' => tra('Use an alternate domain name to serve static files from tikiwiki to avoid sending cookies, improve local caching and generally improve user experience performance. Leave empty to disable CDN in SSL mode.'),
-			'hint' => tra('Prefix to include before the static files, for example: https://cdn.example.com'),
-			'help' => 'Content+Delivery+Network',
 			'type' => 'text',
 			'size' => 40,
 			'filter' => 'url',
@@ -85,13 +75,6 @@ function prefs_tiki_list() {
 				'strip' => tra('Remove the www'),
 				'force' => tra('Add the www'),
 			),
-		),
-		'tiki_domain_redirects' => array(
-			'name' => tra('Domain redirects'),
-			'description' => tra('When the site is accessed through specific domain names, redirect to an alternate domain preserving the URL. Useful for domain name transitions, like tikiwiki.org to tiki.org.'),
-			'type' => 'textarea',
-			'hint' => tra('One entry per line. Comma separated list: old, new'),
-			'size' => 8,
 		),
 	);
 }

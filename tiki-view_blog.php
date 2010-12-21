@@ -23,7 +23,7 @@ if ($prefs['feature_categories'] == 'y') {
 $access->check_feature('feature_blogs');
 
 if (isset($_REQUEST["blogTitle"])) {
-	$blog_data = $bloglib->get_blog_by_title(trim(trim($_REQUEST["blogTitle"]) , "\x22\x27"));
+	$blog_data = $tikilib->get_blog_by_title(trim(trim($_REQUEST["blogTitle"]) , "\x22\x27"));
 	if ((!empty($blog_data)) && (!empty($blog_data["blogId"]))) {
 		$_REQUEST["blogId"] = $blog_data["blogId"];
 	}
@@ -38,7 +38,7 @@ $tikilib->get_perm_object( $_REQUEST["blogId"], 'blog' );
 
 $access->check_permission('tiki_p_read_blog');
 
-$blog_data = $bloglib->get_blog($_REQUEST["blogId"]);
+$blog_data = $tikilib->get_blog($_REQUEST["blogId"]);
 $ownsblog = 'n';
 if ($user && $user == $blog_data["user"]) {
 	$ownsblog = 'y';
@@ -51,11 +51,9 @@ if (!$blog_data) {
 }
 $bloglib->add_blog_hit($_REQUEST["blogId"]);
 $smarty->assign('blogId', $_REQUEST["blogId"]);
-$blog_data["blogId"] = $_REQUEST["blogId"];
 $smarty->assign('title', $blog_data["title"]);
-$smarty->assign('headtitle', $blog_data['title'] . ' : ' . $blog_data['description']);
-$blog_data["headtitle"] = $blog_data['title'] . ' : ' . $blog_data['description'];
 $smarty->assign('heading', $blog_data["heading"]);
+$smarty->assign('use_title', $blog_data["use_title"]);
 $smarty->assign('use_author', $blog_data["use_author"]);
 $smarty->assign('add_date', $blog_data["add_date"]);
 $smarty->assign('use_find', $blog_data["use_find"]);
@@ -69,8 +67,6 @@ $smarty->assign('public', $blog_data["public"]);
 $smarty->assign('hits', $blog_data["hits"]);
 $smarty->assign('creator', $blog_data["user"]);
 $smarty->assign('activity', $blog_data["activity"]);
-$smarty->assign('use_excerpt', $blog_data["use_excerpt"]);
-$smarty->assign('blog_data', $blog_data);
 if (isset($_REQUEST["remove"])) {
 	$data = $bloglib->get_post($_REQUEST["remove"]);
 	if ($user && $blog_data['public'] == 'y' && $tikilib->user_has_perm_on_object($user, $_REQUEST['blogId'], 'blog', 'tiki_p_blog_post')) {
@@ -115,7 +111,7 @@ $date_max = isset($_REQUEST['date_max']) ? $_REQUEST['date_max'] : $tikilib->now
 $listpages = $bloglib->list_blog_posts($_REQUEST["blogId"], true, $offset, $blog_data["maxPosts"], $sort_mode, $find, $date_min, $date_max);
 $temp_max = count($listpages["data"]);
 for ($i = 0; $i < $temp_max; $i++) {
-	$listpages["data"][$i]["parsed_data"] = $tikilib->parse_data($bloglib->get_page($listpages["data"][$i]["data"], 1), array('is_html' => ($listpages["data"][$i]["wysiwyg"]=='y'?TRUE:FALSE)));
+	$listpages["data"][$i]["parsed_data"] = $tikilib->parse_data($bloglib->get_page($listpages["data"][$i]["data"], 1));
 	if ($prefs['feature_freetags'] == 'y') { // And get the Tags for the posts
 		$listpages["data"][$i]["freetags"] = $freetaglib->get_tags_on_object($listpages["data"][$i]["postId"], "blog post");
 	}
@@ -128,6 +124,16 @@ $smarty->assign('maxRecords', $maxRecords);
 // If there're more records then assign next_offset
 $smarty->assign_by_ref('listpages', $listpages["data"]);
 $smarty->assign_by_ref('cant', $listpages["cant"]);
+if ($prefs['feature_blog_comments'] == 'y') {
+	$comments_per_page = $prefs['blog_comments_per_page'];
+	$thread_sort_mode = $prefs['blog_comments_default_ordering'];
+	$comments_vars = array(
+		'blogId'
+	);
+	$comments_prefix_var = 'blog:';
+	$comments_object_var = 'blogId';
+	include_once ("comments.php");
+}
 include_once ('tiki-section_options.php');
 if ($prefs['feature_theme_control'] == 'y') {
 	$cat_type = 'blog';
@@ -169,7 +175,10 @@ if ($prefs['feature_user_watches'] == 'y') {
 		}
 	}
 }
-
+if ($prefs['feature_mobile'] == 'y' && isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'mobile') {
+	include_once ("lib/hawhaw/hawtikilib.php");
+	HAWTIKI_view_blog($listpages, $blog_data);
+}
 if ($prefs['feature_actionlog'] == 'y') {
 	$logslib->add_action('Viewed', $_REQUEST['blogId'], 'blog', '');
 }

@@ -23,23 +23,20 @@ function wikiplugin_tabs_help() {
 function wikiplugin_tabs_info() {
 	return array(
 		'name' => tra('Tabs'),
-		'documentation' => 'PluginTabs',
-		'description' => tra('Arrange content in tabs'),
+		'documentation' => 'PluginTabs',			
+		'description' => tra('Provides tabs built using the smarty tabset block.'),
 		'prefs' => array( 'wikiplugin_tabs' ),
 		'body' => tra('Tabs content separated by /////'),
-		'icon' => 'pics/icons/tab_edit.png',
 		'params' => array(
 			'name' => array(
 				'required' => false,
-				'name' => tra('Tabset Name'),
+				'name' => tra('Tabset name'),
 				'description' => tra('Unique tabset name (if you want it to remember its last state). Ex: user_profile_tabs'),
-				'default' => '',
 			),
 			'tabs' => array(
 				'required' => true,
-				'name' => tra('Tab Titles'),
+				'name' => tra('Tab titles'),
 				'description' => tra('Pipe separated list of tab titles. Ex: tab 1|tab 2|tab 3'),
-				'default' => '',
 			),
 		),
 	);
@@ -49,8 +46,6 @@ function wikiplugin_tabs($data, $params) {
 	global $tikilib, $smarty;
 	if (!empty($params['name'])) {
 		$tabsetname = $params['name'];
-	} else {
-		$tabsetname = '';
 	}
 	
 	$tabs = array();
@@ -61,12 +56,6 @@ function wikiplugin_tabs($data, $params) {
 	}
 	if (!empty($data)) {
 		$tabData = explode('/////', $data);
-		foreach ($tabData as &$d) {
-			if (strpos( $d, '</p>') === 0) {
-				$d = substr( 4, $d);
-			}
-			$d = '~np~' . $tikilib->parse_data($d) . '~/np~';
-		}
 	}
 	
 	$smarty->assign( 'tabsetname', $tabsetname );

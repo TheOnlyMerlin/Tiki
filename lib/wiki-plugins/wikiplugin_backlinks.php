@@ -65,11 +65,6 @@ class WikiPluginBackLinks extends PluginsLib
         $params = $this->getParams($params, true);
         $aInfoPreset = array_keys($this->aInfoPresetNames);
         extract ($params,EXTR_SKIP);
-
-		if (! isset($page)) {
-			$page = null;
-		}
-
         /////////////////////////////////
         // Create a valid list for $info
         /////////////////////////////////
@@ -102,11 +97,11 @@ class WikiPluginBackLinks extends PluginsLib
                 $aBackRequest[] = $backlink["fromPage"];
             }
         }
-        if (isset($include_self) && $include_self) {
+        if ($include_self) {
             $aBackRequest[] = $page;
         }
         if (!$aBackRequest) {
-            return tra("No pages link to")." (($page))";
+            return tra("No pages links to")." (($page))";
         } else {
             $aPages = $this->list_pages(0, -1, 'pageName_asc', $aBackRequest);
         }
@@ -115,7 +110,7 @@ class WikiPluginBackLinks extends PluginsLib
         // Start of Output
         /////////////////////////////////
         //
-        if (!isset($noheader) || !$noheader) {
+        if (!$noheader) {
             // Create header
             $count = $aPages["cant"];
             if ($count == 1) {
@@ -135,52 +130,33 @@ function wikiplugin_backlinks_info()
 	return array(
 		'name' => tra('Backlinks'),
 		'documentation' => 'PluginBacklinks',
-		'description' => tra('Lists all pages that link to a particular page'),
+		'description' => tra('List all pages linking to the specified page.'),
 		'prefs' => array( 'feature_wiki', 'wikiplugin_backlinks' ),
-		'icon' => 'pics/icons/link.png',
 		'params' => array(
 			'page' => array(
 				'required' => false,
 				'name' => tra('Page'),
 				'description' => tra('The page links will point to. Default value is the current page.'),
-				'advanced' => true,
-				'default' => '[pagename]'
 			),
 			'info' => array(
 				'required' => false,
-				'name' => tra('Displayed Information'),
+				'name' => tra('Displayed information'),
 				'description' => tra('Pipe separated list of fields to display. ex: hits|user'),
-				'advanced' => true,
-				'default' => false
 			),
 			'exclude' => array(
 				'required' => false,
 				'name' => tra('Excluded pages'),
 				'description' => tra('Pipe separated list of pages to be excluded from the listing. ex: HomePage|Sandbox'),
-				'advanced' => true,
-				'default' => ''
 			),
 			'include_self' => array(
 				'required' => false,
 				'name' => tra('Include Self'),
-				'description' => tra('With or without self-link (default is without)'),
-				'advanced' => true,
-				'default' => 0,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => '1'), 
-					array('text' => tra('No'), 'value' => '0'), 
-				),
+				'description' => tra('1|0'),
 			),
 			'noheader' => array(
 				'required' => false,
-				'name' => tra('Header'),
-				'description' => tra('With or without header (default is with header)'),
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('With header'), 'value' => '0'), 
-					array('text' => tra('Without header'), 'value' => '1'), 
-				),
+				'name' => tra('No Header'),
+				'description' => tra('1|0'),
 			),
 		),
 	);

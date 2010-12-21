@@ -1,4 +1,7 @@
-{* $Id$ *}<!DOCTYPE html>
+{* $Id$ *}
+<!DOCTYPE html 
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
 	<head>
 {include file='header.tpl'}
@@ -37,7 +40,7 @@
 {/if}
 
 {if $user and $prefs.feature_wiki_notepad eq 'y' and $prefs.feature_notepad eq 'y' and $tiki_p_notepad eq 'y'}
-<a title="{tr}Save to notepad{/tr}" href="tiki-index_p.php?page={$page|escape:"url"}&amp;savenotepad=1">{icon _id='disk' alt="{tr}Save{/tr}"}</a>
+<a title="{tr}Save to notepad{/tr}" href="tiki-index_p.php?page={$page|escape:"url"}&amp;savenotepad=1">{icon _id='disk' alt='{tr}Save{/tr}'}</a>
 {/if}
 
 </td>
@@ -86,18 +89,18 @@
 {/if}{$parsed}
 {if $pages > 1}
 	<div align="center">
-		<a href="tiki-index.php?page={$page|escape:"url"}&amp;pagenum={$first_page}">{icon _id='resultset_first' alt="{tr}First page{/tr}"}</a>
-		<a href="tiki-index.php?page={$page|escape:"url"}&amp;pagenum={$prev_page}">{icon _id='resultset_previous' alt="{tr}Previous page{/tr}"}</a>
+		<a href="tiki-index.php?page={$page|escape:"url"}&amp;pagenum={$first_page}">{icon _id='resultset_first' alt='{tr}First page{/tr}'}</a>
+		<a href="tiki-index.php?page={$page|escape:"url"}&amp;pagenum={$prev_page}">{icon _id='resultset_previous' alt='{tr}Previous page{/tr}'}</a>
 		<small>{tr}page{/tr}:{$pagenum}/{$pages}</small>
-		<a href="tiki-index.php?page={$page|escape:"url"}&amp;pagenum={$next_page}">{icon _id='resultset_next' alt="{tr}Next page{/tr}"}</a>
-		<a href="tiki-index.php?page={$page|escape:"url"}&amp;pagenum={$last_page}">{icon _id='resultset_last' alt="{tr}Last page{/tr}"}</a>
+		<a href="tiki-index.php?page={$page|escape:"url"}&amp;pagenum={$next_page}">{icon _id='resultset_next' alt='{tr}Next page{/tr}'}</a>
+		<a href="tiki-index.php?page={$page|escape:"url"}&amp;pagenum={$last_page}">{icon _id='resultset_last' alt='{tr}Last page{/tr}'}</a>
 	</div>
 {/if}
 </div>
 
-{if $smarty.capture.editdate_section neq ''}
-  <p class="editdate">{tr}Last modification date{/tr}: {$lastModif|tiki_long_datetime} {tr}by{/tr} <a class="link" href="tiki-user_information.php?view_user={$lastUser}">{$lastUser}</a></p>
-{/if}
+
+<p class="editdate">{tr}Last modification date{/tr}: {$lastModif|tiki_long_datetime} {tr}by{/tr} <a class="link" href="tiki-user_information.php?view_user={$lastUser}">{$lastUser}</a></p>
+
       
       </div>
       </td>
@@ -108,7 +111,6 @@
 </div>
 {include file='footer.tpl'}
 {if $headerlib}
-	{$headerlib->output_js_config()}
 	{$headerlib->output_js_files()}
 	{$headerlib->output_js()}
 {/if}

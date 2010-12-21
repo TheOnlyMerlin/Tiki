@@ -19,11 +19,10 @@ function wikiplugin_footnotearea_help() {
 
 function wikiplugin_footnotearea_info() {
 	return array(
-		'name' => tra( 'Footnote Area' ),
+		'name' => tra( 'Footnotearea' ),
 		'documentation' => 'PluginFootnoteArea',
-		'description' => tra('Create automatically numbered footnotes (together with PluginFootnote)'),
+		'description' => tra( 'Inserts a section for collected footnotes in the wiki page.' ),
 		'prefs' => array('wikiplugin_footnotearea'),
-		'icon' => 'pics/icons/text_horizontalrule.png',
 		'params' => array(),
 	);
 }

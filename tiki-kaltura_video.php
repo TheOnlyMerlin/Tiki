@@ -5,11 +5,33 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-require_once 'tiki-setup.php';
-require_once 'lib/videogals/videogallib.php';
+require_once ('tiki-setup.php');
+
+$access->check_feature('feature_kaltura');
+
+include_once ("lib/videogals/KalturaClient_v3.php");
+$secret = $prefs['secret'];
+$admin_secret = $prefs['adminSecret'];
+$partner_id = $prefs['partnerId'];
+$SESSION_ADMIN = 2;
+$SESSION_USER = 0;
+$kuser = $url_host;
 
 try {
-$smarty->assign('headtitle', tra('Kaltura Video'));
+
+$kconf = new KalturaConfiguration($partner_id);
+$kclient = new KalturaClient($kconf);
+$ksession = $kclient->session->start($secret,$kuser,$SESSION_USER,$partner_id,null,"edit:*");
+
+} catch (Exception $e) {
+	$smarty->assign('msg', tra('Could not establish Kaltura session. Try again') . '<br /><em>' . $e->getMessage() . '</em>');
+	$smarty->display('error.tpl');
+	die;
+}
+
+try {
+$smarty->assign('headtitle', tra('Kalture Video'));
+$kclient->setKs($ksession);
 
 $kentryType = "";
 $videoId = array();
@@ -43,17 +65,11 @@ if(!empty($videoId) && isset($_REQUEST['action'])){
 		$access->check_permission(array('tiki_p_remix_videos'));
 		$seflashVars = 'uid=' .$kuser.
 			'&ks=' .$ksession. 
-			'&partner_id=' . $prefs['partnerId'] .
-			'&subp_id=' . $prefs['partnerId'] .'00'.
+			'&partner_id=' . $partner_id .
+			'&subp_id=' . $partner_id .'00'.
 			'&backF=CloseClick'.
-			'&saveF=SaveClick'.
-			'&jsDelegate=kaeCallbacksObj';
-		if (isset($_REQUEST['editor'])) {
-			$editor = $_REQUEST['editor'];
-		} else {
-			$editor = $prefs['default_kaltura_editor'];
-		}
-		
+			'&saveF=SaveClick';
+		$editor = $_REQUEST['editor'];	
 		if($kentryType == "mix"){
 			$seflashVars = $seflashVars.
 				'&kshow_id=entry-' . $videoId[0].
@@ -68,9 +84,6 @@ if(!empty($videoId) && isset($_REQUEST['action'])){
 			$kclient->mixing->appendMediaEntry($knewmixEntry->id,$videoId[0]);
 
 			header("Location: tiki-kaltura_video.php?action=remix&mixId=".$knewmixEntry->id);
-		} else if (!isset($_REQUEST['editor'])) {
-			$kentry = $kclient->mixing->get($videoId[0]);
-			$editor = $kentry->editorType === 1 ? 'kse' : 'kae';	// not working - editor doesn't save editorType when you publish 
 		}
 		$smarty->assign_by_ref('seflashVars',$seflashVars);
 		$smarty->assign_by_ref('editor',$editor);
@@ -130,33 +143,64 @@ if(!empty($videoId) && isset($_REQUEST['action'])){
 		break;
 	case 'edit':
 		$access->check_permission(array('tiki_p_edit_videos'));
-		if ($_REQUEST['update']){
-			$ksession = $kclient->session->start( $prefs['adminSecret'], $kuser, $SESSION_ADMIN, $prefs['partnerId'], 86400, 'edit:*' );
-			$kclient->setKs($ksession);
-		}
 		if($kentryType == "mix"){
 			$kentry = $kclient->mixing->get($videoId[0]);
 			
 			if($_REQUEST['update']){
-				$kentry = new KalturaPlayableEntry();
+				$kentry = $kclient->mixing->get($videoId[0]);
 				$kentry->name = $_REQUEST['name'];
 				$kentry->description = $_REQUEST['description'];
 				$kentry->tags = $_REQUEST['tags'];
-				$kentry->editorType = $_REQUEST['editor'] === 'kse' ? 1 : 2;
 				$kentry->adminTags = $_REQUEST['adminTags'];
+				$kentry->id = null;
+				$kentry->partnerId = null;
+				$kentry->status = null;
+				$kentry->createdAt = null;
+				$kentry->rank = null;
+				$kentry->totalRank = null;
+				$kentry->votes = null;
+				$kentry->downloadUrl = null;
+				$kentry->version = null;
+				$kentry->thumbnailUrl = null;
+				$kentry->plays = null;
+				$kentry->views = null;
+				$kentry->duration = null;
+				$kentry->hasRealThumbnail = null;
+				$kentry->accessControlId = null;
+				$kentry->moderationStatus = null;
+				$kentry->moderationCount = null;
+				$kentry->searchText = null;
+				$kentry->msDuration = null;
 				$knewentry = $kclient->mixing->update($videoId[0],$kentry);
 			}
 		}
 		if($kentryType == "media"){
 			$kentry = $kclient->media->get($videoId[0]);
-			
 			if($_REQUEST['update']){
-				$kentry = new KalturaPlayableEntry();
 				$kentry->name = $_REQUEST['name'];
 				$kentry->description = $_REQUEST['description'];
 				$kentry->tags = $_REQUEST['tags'];
 				$kentry->adminTags = $_REQUEST['adminTags'];
-
+				$kentry->id = null;
+				$kentry->partnerId = null;
+				$kentry->status = null;
+				$kentry->createdAt = null;
+				$kentry->rank = null;
+				$kentry->totalRank = null;
+				$kentry->votes = null;
+				$kentry->downloadUrl = null;
+				$kentry->version = null;
+				$kentry->thumbnailUrl = null;
+				$kentry->plays = null;
+				$kentry->views = null;
+				$kentry->duration = null;
+				$kentry->hasRealThumbnail = null;
+				$kentry->searchText = null;
+				$kentry->mediaType = null;
+				$kentry->sourceType = null;
+				$kentry->searchProviderType = null;
+				$kentry->searchProviderId = null;
+				$kentry->dataUrl = null;
 				$knewentry = $kclient->media->update($videoId[0],$kentry);
 			}
 		}
@@ -196,5 +240,5 @@ $smarty->assign('mid','tiki-kaltura_video.tpl');
 $smarty->display("tiki.tpl");
 
 } catch( Exception $e ) {
-	$access->display_error( '', tr('Communication error'), 500, true, tr('Invalid response provided by the Kaltura server. Please retry.') . '<br /><em>' . $e->getMessage() . '</em>' );
+	$access->display_error( '', tr('Communication error'), 500, true, tr('Invalid response provided by the kaltura server. Please retry.') . '<br /><em>' . $e->getMessage() . '</em>' );
 }

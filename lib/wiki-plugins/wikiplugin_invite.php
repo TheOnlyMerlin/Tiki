@@ -8,34 +8,32 @@
 function wikiplugin_invite_info() {
 	return array(
 		'name' => tra( 'Invite' ),
-		'documentation' => 'PluginInvite',
-		'description' => tra('Invite a user to join your groups'),
+		'description' => tra( 'Invite an email in groups.' ),
 		'prefs' => array( 'wikiplugin_invite' ),
 		'body' => tra('Confirmation message after posting form'),
-		'icon' => 'pics/icons/group.png',
 		'params' => array(
 			'including' => array(
 				'required' => false,
-				'name' => tra('Including Group'),
-				'description' => tra('Will list only the groups that include this group'),
+				'name' => tra('Including group'),
+				'description' => tra('Group'),
 			),
 			'defaultgroup' => array(
 				'required' => false,
-				'name' => tra('Default Group'),
-				'description' => tra('Dropdown list will show this group by default'),
+				'name' => tra('Default group'),
+				'description' => tra('Group'),
 			),
 			'itemId' => array(
 				'required' => false,
-				'name' => tra('Item ID'),
-				'description' => tra('Dropdown list will show the group related to this item ID (in group selector or creator field) by default'),
+				'name' => tra('Default group'),
+				'description' => tra('Group from the item group selector / creator field'),
 			),
 		)
 	);
 }
 function wikiplugin_invite( $data, $params) {
-	global $prefs, $tikilib, $userlib, $user, $smarty, $tiki_p_invite_to_my_groups;
+	global $prefs, $tikilib, $userlib, $user, $smarty, $tiki_p_invite;
 
-	if ($tiki_p_invite_to_my_groups != 'y') {
+	if ($tiki_p_invite != 'y') {
 		return;
 	}
 	$userGroups = $userlib->get_user_groups_inclusion($user);

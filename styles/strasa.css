@@ -1,5 +1,5 @@
 /* Strasa theme for Tiki 5.x, original design by Patrick Allard, released under LGPL license.
-   For more information, visit http://themes.tiki.org
+   For more information, visit http://themes.tikiwiki.org
    $Id$ */
 
 /* Import *lite as the base: */
@@ -15,12 +15,12 @@
 html {
 	display: block;
 	height: 100%;
-	background-color: #214d68;
+	background: /*#2e3035*/#214d68;
 }
 
 body {
 	font: 12px/1.4em Verdana, Geneva, Arial, Helvetica, sans-serif;
-	background-color: #fff;
+	background: #fff;
 }
 
 a,
@@ -71,12 +71,6 @@ h6 {
 .wikitext h5 {color: #6F6F6F; font-style: italic}
 .wikitext h6 {color: #909090}
 
-.wikitext.nopagetitle h1 {font-size: 1.8em; color: #309FC0; line-height: .9em; border-bottom: solid 1px #3090C0; text-transform: uppercase}
-.wikitext.nopagetitle h2 {font-size: 1.6em; color: #303030; line-height: .8em; font-style: italic; border-bottom: none; text-transform: none}
-.wikitext.nopagetitle h3 {font-size: 1.4em; border-bottom: dashed 1px #CCF0FF; color: #3F3F3F; font-style: normal}
-.wikitext.nopagetitle h4 {font-size: 1.2em; color: #6F6F6F; font-style: italic; border-bottom: none;}
-.wikitext.nopagetitle h5 {font-size: 1.05em; color: #909090}
-
 hr {
 	background: #aaa;
 	color: #000;
@@ -90,21 +84,16 @@ fieldset {
 textarea,
 option,
 select,
-body.cke_show_borders {
+body.wikitext {
 	background: #F3FCFE;
 	color: #000;
 }
 
-textarea.wikiedit {
-	font-family: monospace;
-	font-size: 1.2em;
-}
-
 body.wikitext {
-	height: 100%;	/* for CKEditor */
+	height: 100%;	/* for FCKEditor */
 }
 
-html[dir=ltr] {	/* for ck editor */
+html[dir=ltr] {	/* for fck editor */
 	background-color: #F3FCFE;
 }
 
@@ -144,12 +133,12 @@ input#comments-title {
 }
 
 /* Links in buttons */
-.button a,
-.button a:visited,
+span.button a,
+span.button a:visited,
 button,
 input[type=reset],
 input[type=submit],
-.button input,
+span.button input,
 .calbuttonbox {
 	color: #fff;
 	background: #1d9ccf;
@@ -179,8 +168,8 @@ button:active,
 input[type=reset]:active,
 input[type=submit]:active,
 .button input:active,
-.highlight a:link,
-.highlight a:visited {
+span.highlight a:link,
+span.highlight a:visited {
 	border-color: #223845 #41cbe7 #41cbe7 #223845;
 	background: #5cbdef !important;
 	color: #000 !important;
@@ -230,9 +219,9 @@ label {
 	background: #fff;
 }
 
-/*.fullscreen #col1 {
+.fullscreen #col1 {
 	margin: 0 30px !important;
-}*/
+}
 
 #c1c2 #wrapper .marginleft {
 	margin-left: 240px;
@@ -347,7 +336,7 @@ label {
 }
 
 /*** Print page ***/
-#tiki-main {
+div#tiki-main {
 	background: #fff;
 }
 
@@ -370,7 +359,7 @@ label {
 	margin: 0 58px;
 }
 
-#sioptions {
+div#sioptions {
 	padding: 0 58px;
 	position: relative;
 }
@@ -379,7 +368,7 @@ label {
 	text-align: center;
 }
 
-#sitelogo {
+div#sitelogo {
 	padding: 8px 0 0 0;
 	overflow: hidden;
 }
@@ -454,7 +443,7 @@ label {
 	font-weight: normal;
 }
 
-.logged-in {
+div.logged-in {
 	padding-right: 20px;
 }
 
@@ -550,9 +539,7 @@ a.flip:hover {
 }
 
 .tellafriend a,
-.share a,
-.tellafriend a:visited,
-.share a:visited {
+.tellafriend a:visited {
 	background: transparent url(strasa/fold-topright.jpg) 0 0 no-repeat;
 	display: block;
 	float: right;
@@ -563,42 +550,20 @@ a.flip:hover {
 	width: 16em;
 }
 
-.tellafriend a:hover,
-.share a:hover {
+.tellafriend a:hover {
 	color: #fff;
 }
 
-.tellafriend,
-.share {
+.tellafriend {
 	border-bottom: solid 1px #cce5ff;
 	margin: 4px 0;
 	min-height: 24px;
 	text-align: right;
 }
 
-.actions .share,
-.actions .share a,
-.actions .share a:visited {
-	background: none;
-	width: auto;
-	min-height: 16px;
-	line-height: 1;
-	border-bottom: none;
-	margin-top: 2px;
-}
-
-.actions span.share img {
-	margin-top: 8px;
-}
-
-.actions span.share a {
-	padding-right: 0;
-}
-
 /* Also is .content */
 #tiki-center {
 	clear: both;
-	background-color: #fff;
 }
 
 .error,
@@ -608,6 +573,114 @@ a.flip:hover {
 }
 
 /****** Menus ******/
+/** PHP Layers Menus **/
+.horbar {
+	position: absolute;
+	z-index: 0;
+	top: 10px;
+	left: 100%;
+	margin: 0 0 0 -50%;
+	white-space: nowrap;
+}
+
+.horbaritem a,
+.horbaritem a:visited {
+	padding: 3px 3px 6px 3px;
+	text-decoration: none;
+	font: normal 1em Verdana, Helvetica, Arial, Sans-Serif;
+	margin: 0;
+	border-color: transparent;
+	border-style: solid;
+	border-width: 0 1px;
+	color: #5ae0ff;
+	text-align: center;
+}
+
+.horbaritem a:hover {
+	text-decoration: none;
+	background: url(strasa/headermenuitem-hover.png) bottom center repeat-x;
+	border-color: #336699;
+	border-style: solid;
+	border-width: 0 1px;
+	color: #fff;
+}
+
+.mdksubmenu {
+	margin-top: 3px;
+}
+	
+.mdksubframe {
+	border: 1px solid #08698f;
+	background: #1b3a50;
+}
+
+.mdkitem a,
+.mdkitem a:link,
+.mdkitem a:visited {
+	color: #5ae0ff;
+	padding: 2px 3px;
+	font-weight: normal;
+	text-decoration: none;
+}
+ 
+.mdkitem a:hover {
+	background: transparent url(strasa/headerbg.jpg) repeat-x;
+	color: #fff;
+	text-decoration: none;
+}
+ 
+#col2 .mdkitem a {
+	color: #006699;
+}
+
+#col2 .mdkitem a:hover {
+	color: #000;
+}
+
+#col2 .treemenudiv {
+	background: #cce5ff;
+}
+
+.phplmnormal,
+a.phplmnormal:hover,
+a.phplm:link,
+a.phplm:visited,
+a.phplm:hover,
+a.phplm:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: #006699;
+	text-decoration: none;
+	font-weight: normal;
+}
+
+a.phplm:visited {
+	color: #006699;
+}
+
+a.phplm:hover {
+	color: #000;
+	background: none;
+	text-decoration: underline;
+}
+
+a.phplm:active {
+	color: #006699;
+}
+
+a.phplmselected:link,
+a.phplmselected:visited,
+a.phplmselected:hover,
+a.phplmselected:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: black;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+a.phplmselected:hover {
+	color: #808080;
+}
+
 /** CSS (suckerfish) menus **/
 
 /* default link padding */
@@ -782,7 +855,7 @@ a.flip:hover {
 
 
 /** Links in other menus **/
-.separator {
+div.separator {
 	border-top: 1px solid #bed8f1;
 	padding-bottom: 3px;
 }
@@ -807,31 +880,22 @@ a.linkmodule:hover {
 	color: #000000;
 }
 
-.menuSection {
+div.menuSection {
 	padding: 0 0 16px 0;
 	}
-	
-li.menuSection {
-	padding: 0;
-}	
 
 
-.menuSection .menuSection,
-.menuSection .separator {
+div.menuSection div.menuSection,
+div.menuSection div.separator {
 	margin-left: 16px;
 }
-
-li.menuSection .menuSection {
-	margin-left: 0;
-}
-
 /****** Misc. Global Classes (layout and style) ****/
 .highlight,
 #highlight {
 	background: #5cbdef;
 }
 
-.highlight {
+span.highlight {
 	background: inherit;
 }
 
@@ -840,7 +904,7 @@ li.menuSection .menuSection {
 }
 
 
-.adminanchors {
+div.adminanchors {
 	background: #077aa7 !important;
 }
 
@@ -880,7 +944,7 @@ img.flipmodimage:hover {
 }
 	
 /** Other boxes **/
-.cbox {
+div.cbox {
 	border: 1px solid #1b3a50;
 }
 
@@ -939,7 +1003,7 @@ img.flipmodimage:hover {
 	background: #fff;
 }
 
-.simplebox {
+div.simplebox {
 	border: 1px solid #aaa;
 	background: #fff;
 	padding: 1em;
@@ -951,8 +1015,8 @@ table {
 	font-size: 1em;
 }
 
-.normal, 
-.admin {
+table.normal, 
+table.admin {
 	border-collapse: separate;}
 
 .formcolor td,
@@ -975,6 +1039,7 @@ table {
 }
 
 .normal td,
+td.normal,
 .wikitable td,
 td.odd,
 td.even {
@@ -984,7 +1049,7 @@ td.even {
 
  /* headings */
 th,
-.normal td.heading {
+table.normal td.heading {
 	font-size: 1em;
 	font-weight: normal;
 	color: #5ae0ff;
@@ -1110,7 +1175,7 @@ a.forumnameread {
 	border-top: 0;
 }
 
-.admin #content1 .tabcontent .cbox {
+table.admin div#content1 div.tabcontent div.cbox {
 	background: transparent;
 }
 
@@ -1130,7 +1195,7 @@ a.pagetitle:hover {
 	text-decoration: none;
 }
 
-#description,
+div#description,
 .description {
 	font-size: .9em;
 	font-style: italic;
@@ -1143,18 +1208,18 @@ a.pagetitle:hover {
 	margin: 10px 0;
 }
 
-.wikitable {
+table.wikitable {
 	border: 1px solid #A9A9A9;
 	border-collapse: collapse;
 }
 
-.wikicell {
+td.wikicell {
 	padding: 3px;
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse;
 }
 
-#page-bar {
+div#page-bar {
 	margin-top: 8px;
 }
 
@@ -1170,7 +1235,7 @@ a.pagetitle:hover {
 }
 
 /* Wiki plugins */
-.code {
+div.code {
 	padding: 3px;
 	border: 1px dashed #a9a9a9;
 	background: #F5F5F5;
@@ -1203,11 +1268,11 @@ a.pagetitle:hover {
 }
 
 /* Quote plugin */
-.quoteheader {
+div.quoteheader {
 	margin-left: 30px;
 }
 
-.quotebody {
+div.quotebody {
 	margin: 0 15px 10px 30px;
 	font-style: italic;
 	border-left: 5px solid #D3D3D3;
@@ -1215,11 +1280,11 @@ a.pagetitle:hover {
 }
 
 /* Split */
-.wikiplugin-split {
+table.wikiplugin-split {
 	width: 100%;
 }
 
-.split {
+div.split {
 	border: 1px dashed #696969;
 	clear: both;
 }
@@ -1238,7 +1303,7 @@ a.pagetitle:hover {
 	margin-left: -3px;
 }
 
-.wikiplugin-split .codelisting {
+table.wikiplugin-split .codelisting {
 	width: 95%;
 }
 
@@ -1249,13 +1314,13 @@ a.pagetitle:hover {
 }
 
 /** Wiki tocs **/
-.tocnav {
+div.tocnav {
 	background: #EBEBEB;
 	padding: 3px;
 }
 
 /* TOC */
-.toc {
+ul.toc {
 	border-top: 1px dotted #a9a9a9;
 	border-bottom: 1px dotted #a9a9a9;
 }
@@ -1267,7 +1332,7 @@ a.pagetitle:hover {
 }
 
 /***** Articles ****/
-.article {
+div.article {
 	border: solid 1px #a9a9a9;
 	border-top: solid 1px gray;
 	margin-top: 5px;
@@ -1276,7 +1341,7 @@ a.pagetitle:hover {
 	font-size: 1.1em;
 }
 
-.articletopline {
+div.articletopline {
 	background: #223543;
 	color: #fff;
 	font-size: 90%;
@@ -1284,22 +1349,22 @@ a.pagetitle:hover {
 	padding-left: 6px;
 }
  
-.articletitle h2 {
+div.articletitle h2 {
 	background: #1b3c54 url(strasa/headerbg.jpg) repeat-x 0 100%;
 	color: #fff;
 	padding: 10px 5px;
 }
 
-.articletitle h2 a {
+div.articletitle h2 a {
 	color: #fff;
 	font-weight: bold;
 }
 
-.articletitle h2 a:hover {
+div.articletitle h2 a:hover {
 	text-decoration: none;
 }
 
-.titleb {
+span.titleb {
 	display: block;
 	float: right;
 	clear: both;
@@ -1312,7 +1377,7 @@ a.pagetitle:hover {
 	background: #2598c5 url(strasa/login.jpg) left bottom no-repeat;
 }
 
-.articlesubtitle {
+div.articlesubtitle {
 	margin-top: -1px;
 	padding-left: 6px;
 	font-size: 0.9em;
@@ -1320,26 +1385,26 @@ a.pagetitle:hover {
 	color: #fff;
 }
 
-.articletitle br {
+div.articletitle br {
 	clear: both;
 }
 
-.articleheading {
+div.articleheading {
 	margin-top: 6px;
 	padding: 4px;
 }
 
-.article .actions {
+div.article .actions {
 	padding: 2px 1px;
 }
 
-.articlebody {
+div.articlebody {
 	padding: 6px;
 }
 
 /***** Blogs *****/
 
-.blogtitle {
+div.blogtitle {
 	font-size: 1.3em;
 	font-weight: bold;
 	padding: 3px;
@@ -1348,7 +1413,7 @@ a.pagetitle:hover {
 	line-height: 80%;
 }
 
-.bloginfo {
+div.bloginfo {
 	text-align: center;
 	padding: 3px;
 	line-height: 150%;
@@ -1392,52 +1457,43 @@ body.tiki_blogs .post .postbody {
 	line-height: 1.2em;
 	margin-bottom: 1em;
 }
-/*
-body.tiki_blogs.actions {
-	background: url(strasa/login.jpg) no-repeat;
+
+body.tiki_blogs div.author_actions {
+	float: none;
+	border: 0;
+	width: 100%;
+}
+
+body.tiki_blogs .author_actions .actions {
 	float: right;
-	min-height: 24px;
+	background: url(strasa/login.jpg) no-repeat 100% 0;
 	text-align: right;
-}*/
+	min-height: 24px;
+}
 
 body.tiki_blogs .actions img.icon {
 	padding: 4px 0;
 }
-/*
+
 body.tiki_blogs .author_info {
 	min-height: 24px;
-	background: url(strasa/login.jpg) no-repeat;
-	color: #fff;
-	float: right;
-	font-size: 90%;
-	font-style: italic;
-	min-height: 24px;
-	padding-top: 1px;}
-*/
+}
+
 body.tiki_blogs .author_info img {
 	vertical-align: top;
 }
 
 body.tiki_blogs .postbody-title {
 	border: 0;
-	color: #fff;
 }
 	
 body.tiki_blogs .postbody .postfooter {
 	width: 100%;
+	margin-bottom: 2em;
 }
 
-body.tiki_blogs .post .author_actions {
-	text-align: left;
-	display: inline;
-}
-
-.postbody-title a.freetag {
-	color: #5ae0ff;
-}
-
-.postbody-title a.freetag:hover {
-	color: #fff;
+body.tiki_blogs .post .postfooter .actions {
+	float: left;
 }
 
 /***** Forums *****/
@@ -1507,11 +1563,9 @@ body.tiki_blogs .post .author_actions {
 	float: right;
 	font-size: 90%;
 	font-style: italic;
-	text-align: right;
 	min-height: 24px;
-	padding-left: 100px;
-	padding-top: 4px;
-	padding-right: 4px;
+	padding-left: 60px;
+	padding-top: 1px;
 	color: #fff;
 	background: url(strasa/login.jpg) 0 0 no-repeat;
 }
@@ -1576,7 +1630,7 @@ body.tiki_blogs .post .author_actions {
 }
 
 /* Help box*/
-.commentsedithelp {
+div.commentsedithelp {
 	background: #ffcfcf;
 	color: black;
 	border: 1px solid #ff0000;
@@ -1592,17 +1646,17 @@ body.tiki_blogs .post .author_actions {
 }
 
 /***** Tags (freetags) *****/
-.freetagobjectname a {
+div.freetagobjectname a {
 	text-decoration: none;
 }
 
 /***** Image Galleries *****/
-.galtable {
+table.galtable {
 	border-collapse: collapse;
 	border: 1px solid #696969;
 }
 
-.thumbnailcontenerchecked .thumbnail {
+div.thumbnailcontenerchecked div.thumbnail {
 	border-color: #a9a9a9;
 	background: #f8f8ff;
 }
@@ -1623,7 +1677,7 @@ body.tiki_blogs .post .author_actions {
 /***** Trackers *****/
 
 /* also for categorize.tpl */
-.multiselect {
+div.multiselect {
 	border: 1px solid #696969;
 }
 
@@ -1896,7 +1950,7 @@ body.tiki_blogs .post .author_actions {
 	font-weight: bold;
 }
 
-.box-data .fc a.today,
+.box-data td.fc a.today,
 .box-data td a.today {
 	background: #D4D0C8;
 	border: solid 1px #696969;
@@ -1923,7 +1977,7 @@ body.tiki_blogs .post .author_actions {
 	background: #F5F5F5;
 }
 
-#calscreen .calfocuson {
+div#calscreen td.calfocuson {
 	background: #D4D0C8;
 }
 
@@ -1974,20 +2028,20 @@ body.tiki_blogs .post .author_actions {
 }
 
 /*****  Polls  *****/
-.pollresults {
+div.pollresults {
 	margin-top: 5px;
 	font-size: 1.2em;
 	padding: 0 5px;
 }
 
-.pollr {
+td.pollr {
 	color: black;
 }
 
 /***** FAQs *****/
 
 /***** Quizzes *****/
-.questionblock {
+div.questionblock {
 	padding: 4px;
 }
 
@@ -2000,18 +2054,18 @@ textarea.tshoutbox{
 }
 
 /***** Directory *****/
-.dircategs {
+div.dircategs {
 	border: 1px solid #696969;
 	padding: 5px;
 	width: 100%;
 }
 
-.dirlistsites {
+div.dirlistsites {
 	padding: 5px 0 10px 5px;
 	margin-top: 10px;
 }
 
-.dirrelated {
+div.dirrelated {
 	margin-top: 10px;
 	padding: 5px;
 }
@@ -2031,15 +2085,15 @@ div.dirfooter {
 /***** Ajax *****/
 
 /***** TikiSheet Default Style *****/
-.default thead td,
-.default tfoot td {
+table.default thead td,
+table.default tfoot td {
 	font-weight: bold;
 	text-align: center;
 	background: #223845;
 	color: #cce5ff;
 }
 
-.default td {
+table.default td {
 	border: solid 1px #A9A9A9;
 	background: white;
 }

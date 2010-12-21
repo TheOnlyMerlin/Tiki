@@ -22,72 +22,43 @@ function wikiplugin_realnamelist_help() {
 
 function wikiplugin_realnamelist_info() {
 	return array(
-		'name' => tra('User List with Real Names)'),
+		'name' => tra('User List (showing Real Name)'),
 		'documentation' => 'PluginRealNameList',
-		'description' => tra('Show user real names for members of a group').tra(' (experimental, should be merged with UserList)'),
+		'description' => tra("Displays a list of registered users showing their Real Names").tra(' (experimental, should be merged with UserList in Tiki5)'),		
 		'prefs' => array( 'wikiplugin_realnamelist' ),
-		'body' => tra('Group name - only users belonging to a group or groups with group names containing this text will be included in the list. If empty all site users will be included.'),
-		'icon' => 'pics/icons/group.png',
+		'body' => tra('Login Filter'),
 		'params' => array(
 			'sep' => array(
 				'required' => false,
 				'name' => tra('Separator'),
-				'description' => tra('String to use between elements of the list if table layout is not used'),
-				'default' => ', ',
+				'description' => tra('String to use between elements of the list.'),
 			),
 			'max' => array(
 				'required' => false,
 				'name' => tra('Maximum'),
-				'description' => tra('Result limit'),
-				'default' => -1,
+				'description' => tra('Result limit.'),
 			),
 			'sort' => array(
 				'required' => false,
 				'name' => tra('Sort Order'),
-				'description' => tra('Set to sort in ascending or descending order (unsorted by default'),
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Ascending'), 'value' => 'asc'), 
-					array('text' => tra('Descending'), 'value' => 'desc')
-				)
+				'description' => 'asc|desc',
 			),
 			'layout' => array(
 				'required' => false,
 				'name' => tra('Layout'),
-				'description' => tra('Set to table to show results in a table (not shown in a table by default)'),
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Table'), 'value' => 'table')
-				)
+				'description' => 'table',
 			),
 			'link' => array(
 				'required' => false,
 				'name' => tra('Link'),
-				'description' => tra('Make the listed names links to various types of user information'),
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('User Information'), 'value' => 'userinfo'),
-					array('text' => tra('User Page'), 'value' => 'userpage'),
-					array('text' => tra('User Preferences'), 'value' => 'userpref')
-				)
+				'description' => 'userpage|userinfo|userpref',
 			),
 			'exclude' => array(
 				'required' => false,
 				'name' => tra('Exclude'),
-				'description' => tra('Exclude certain test or admin names from the list'),
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('admin'), 'value' => 'admin'),
-					array('text' => tra('admin-test'), 'value' => 'admin-test'),
-					array('text' => tra('test'), 'value' => 'test'),
-					array('text' => tra('test-admin'), 'value' => 'test-admin')
-				)
-			)
-		)
+				'description' => 'test|admin|test-admin|admin-test',
+			),
+		),
 	);
 }
 
@@ -118,10 +89,9 @@ function wikiplugin_realnamelist($data, $params) {
 			$mid .= ' ORDER BY `value`, `login` '.$sort;
 		}
 	}
-
-	$exclude_clause='';
 	if (isset($exclude)) {
 		$exclude=strtolower($exclude);
+		$exclude_clause='';
 		if (($exclude=='test') || ($exclude=='admin')) {
 			$exclude_clause= ' u.`login` NOT LIKE \'%'.$exclude.'%\' AND ' ;
 			//$exclude_clause= ' `users_users`.`login` NOT LIKE \'%'.$exclude.'%\' AND ' ;
@@ -165,7 +135,7 @@ function wikiplugin_realnamelist($data, $params) {
 					$res = '<a href="tiki-user_information.php?userId='.$row['userId'].'" title="'.tra('User Information').'">';
 				} else {
 					$user_information = $tikilib->get_user_preference($row['login'], 'user_information', 'public');
-					if (isset($user) && $user_information == 'private' && $row['login'] != $user) {
+					if ($user_information == 'private' && $row['login'] != $user) {
 						$res = '<a href="tiki-user_information.php?userId='.$row['userId'].'" title="'.tra('User Information').'">';
 					}
 				}

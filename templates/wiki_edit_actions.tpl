@@ -1,18 +1,9 @@
 {* $Id$ *}
 <input type="hidden" name="no_bl" value="y" />
-{if $prefs.ajax_autosave eq "y"}
-	{button _title="{tr}Preview your changes.{/tr}" _class="wikiaction tips previewBtn" _text="{tr}Preview{/tr}" _ajax="n"}
-	{jq} $(".previewBtn").click(function(){
-auto_save_data['editwiki'] = "";
-auto_save('editwiki', autoSaveId);
-if (!ajaxPreviewWindow) {
-	$('#autosave_preview').slideDown('slow', function(){ ajax_preview( 'editwiki', autoSaveId, true );});
-}
-return false;
-});{/jq}
-{else}
-	<input type="submit" class="wikiaction tips" title="{tr}Edit wiki page{/tr}|{tr}Preview your changes.{/tr}" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;" />
+{if $prefs.feature_ajax_autosave eq "y"}
+	{button _title="{tr}Preview your changes in a separate window.{/tr}" _class="wikiaction tips" _text="{tr}Live Preview{/tr}" _ajax="n" _onclick="ajax_preview(); return false;"}&nbsp;&nbsp;
 {/if}
+<input type="submit" class="wikiaction tips" title="{tr}Edit wiki page{/tr}|{tr}Preview your changes.{/tr}" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;" />
 {if $page|lower neq 'sandbox' or $tiki_p_admin eq 'y'}
 	{if ! $page_badchars_display or $prefs.wiki_badchar_prevent neq 'y'}
 		{if $translation_mode eq 'y'}
@@ -25,6 +16,10 @@ return false;
 			<input type="submit" class="wikiaction tips" name="minor" title="{tr}Edit wiki page{/tr}|{if $prefs.wiki_watch_minor}{tr}Save the page, but do not count it as new content to be translated.{/tr}{else}{tr}Save the page, but do not send notifications and do not count it as new content to be translated.{/tr}{/if}" value="{tr}Save Minor Edit{/tr}" onclick="needToConfirm=false;" />
 			{/if}
 			<input type="submit" class="wikiaction tips" title="{tr}Edit wiki page{/tr}|{tr}Save the page.{/tr}" name="save" value="{tr}Save{/tr}" onclick="needToConfirm=false;" />
+
+			{if $prefs.feature_ajax eq 'y' && $prefs.feature_wiki_save_draft eq 'y'}
+			<input type="submit" class="wikiaction tips" title="{tr}Edit wiki page{/tr}|{tr}Save the page as a draft.{/tr}" value="{tr}Save Draft{/tr}" onclick="needToConfirm=false;save_draft();return false;" />
+			{/if}
 		{/if}
 	{/if}
 	{if $page|lower ne 'sandbox'}

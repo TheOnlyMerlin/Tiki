@@ -19,7 +19,6 @@
 	* find_show_num_rows    : If value = 'y' adds maxRecords field. Value: maxRecords
 	* find_show_date_range  : If value = 'y' adds date range to filter within
 	* find_show_orphans		: If value = 'y' adds a checkbox orphan
-	* find_show_sub	: If value = 'y' add a checkbox in all the tree
 	* filters               : array( filter_field1 => array( option1_value => option1_text, ... ), filter_field2 => ... )
 	*		filter_names          : array( filter_field1 => filter_field1_name, ... )
 	*		filter_values         : array( filter_fieldX => filter_fieldX_selected_value, ... )
@@ -32,7 +31,7 @@
 		<form method="post" action="{$smarty.server.PHP_SELF}" class="findtable">
 		{if $filegals_manager neq ''}<input type="hidden" name="filegals_manager" value="{$filegals_manager|escape}" />{/if}
 
-		{query _type='form_input' maxRecords='NULL' type='NULL' types='NULL' find='NULL' topic='NULL' lang='NULL' exact_match='NULL' categId='NULL' cat_categories='NULL' filegals_manager='NULL' save='NULL' offset='NULL' searchlist='NULL' searchmap='NULL'}
+		{query _type='form_input' maxRecords='NULL' type='NULL' types='NULL' find='NULL' topic='NULL' lang='NULL' exact_match='NULL' categId='NULL' cat_categories='NULL' filegals_manager='NULL' save='NULL' offset='NULL'}
 
 	<label class="findtitle">
 		{if empty($whatlabel)}
@@ -50,37 +49,34 @@
 	</label>
 {/if}
 
-{if !empty($find_show_sub) and $find_show_sub eq 'y'}
-	<label class="findsub">
-		{tr}and all the sub-objects{/tr}
-		<input type="checkbox" name="find_sub" id="find_sub" {if $find_sub eq 'y'}checked="checked"{/if}/>
+{if !empty($types) and ( !isset($types_tag) or $types_tag eq 'select' ) }
+	<label class="findtypes"> 
+		<select name="type">
+			<option value='' {if $find_type eq ''}selected="selected"{/if}>{tr}any type{/tr}</option>
+			{section name=t loop=$types}
+				<option value="{$types[t].type|escape}" {if $find_type eq $types[t].type}selected="selected"{/if}>
+					{capture}{tr}{$types[t].type}{/tr}{/capture}{$smarty.capture.default|escape}
+				</option>
+			{/section}
+		</select>
 	</label>
 {/if}
 
-{if !empty($types) and ( !isset($types_tag) or $types_tag eq 'select' ) }
-	<select name="type" class="findtypes">
-		<option value='' {if $find_type eq ''}selected="selected"{/if}>{tr}any type{/tr}</option>
-		{section name=t loop=$types}
-			<option value="{$types[t].type|escape}" {if $find_type eq $types[t].type}selected="selected"{/if}>
-				{capture}{tr}{$types[t].type}{/tr}{/capture}{$smarty.capture.default|escape}
-			</option>
-		{/section}
-	</select>
-{/if}
-
 {if !empty($topics)}
-	<select name="topic" class="findtopics">
-		<option value='' {if $find_topic eq ''}selected="selected"{/if}>{tr}all topic{/tr}</option>
-		{section name=ix loop=$topics}
-			<option value="{$topics[ix].topicId|escape}" {if $find_topic eq $topics[ix].topicId}selected="selected"{/if}>
-				{capture}{tr}{$topics[ix].name}{/tr}{/capture}{$smarty.capture.default|escape}
-			</option>
-		{/section}
-	</select>
+	<label class="findtopics"> 
+		<select name="topic">
+			<option value='' {if $find_topic eq ''}selected="selected"{/if}>{tr}all topic{/tr}</option>
+			{section name=ix loop=$topics}
+				<option value="{$topics[ix].topicId|escape}" {if $find_topic eq $topics[ix].topicId}selected="selected"{/if}>
+					{capture}{tr}{$topics[ix].name}{/tr}{/capture}{$smarty.capture.default|escape}
+				</option>
+			{/section}
+		</select>
+	</label>
 {/if}
 
 {if $find_show_languages eq 'y' and $prefs.feature_multilingual eq 'y'}
-	<span class="findlang">
+	<label class="findlang">
 		<select name="lang" class="in">
 			<option value='' {if $find_lang eq ''}selected="selected"{/if}>{tr}any language{/tr}</option>
 		{section name=ix loop=$languages}
@@ -91,7 +87,6 @@
 			{/if}
 		{/section}
 		</select>
-		{if isset($find_show_languages_excluded) and $find_show_languages_excluded eq 'y'}
 		<label>{tr}not in{/tr}
 			<select name="langOrphan" class="notin">
 				<option value='' {if $find_langOrphan eq ''}selected="selected"{/if}></option>
@@ -104,19 +99,18 @@
 		{/section}
 			</select>
 		</label>
-		{/if}
-	</span>
+	</label>
 {/if}
 
 {if $find_show_date_range eq 'y'}
 	<div id="date_range_find">
 		<span class="findDateFrom">
 			{tr}From{/tr}
-			{html_select_date time=$find_date_from prefix="find_from_" start_year="-2" end_year="+2" month_format="%m" field_order=$prefs.display_field_order}
+			{html_select_date time="2009-01-01" prefix="find_from_" start_year="-2" end_year="+2" month_format="%m" field_order=$prefs.display_field_order}
 		</span>
 		<span class="findDateTo">
 			{tr}to{/tr}
-			{html_select_date time=$find_date_to prefix="find_to_" start_year="-2" end_year="+2" month_format="%m" field_order=$prefs.display_field_order}
+			{html_select_date prefix="find_to_" start_year="-2" end_year="+2" month_format="%m" field_order=$prefs.display_field_order}
 		</span>
 	</div>
 {/if}
@@ -124,14 +118,16 @@
 {if ($find_show_categories eq 'y' or $find_show_categories_multi eq 'y') and $prefs.feature_categories eq 'y' and !empty($categories)}
 	<div class="category_find">
 	<div id="category_singleselect_find" style="display: {if $find_show_categories_multi eq 'y' && $find_cat_categories|@count > 1}none{else}block{/if};">
-		<select name="categId" class="findcateg">
-			<option value='' {if $find_categId eq ''}selected="selected"{/if}>{tr}any category{/tr}</option>
-			{section name=ix loop=$categories}
-				<option value="{$categories[ix].categId|escape}" {if $find_categId eq $categories[ix].categId}selected="selected"{/if}>
-					{capture}{tr}{$categories[ix].categpath}{/tr}{/capture}{$smarty.capture.default|escape}
-				</option>
-			{/section}
-		</select>
+		<label class="findcateg"> 
+			<select name="categId">
+				<option value='' {if $find_categId eq ''}selected="selected"{/if}>{tr}any category{/tr}</option>
+				{section name=ix loop=$categories}
+					<option value="{$categories[ix].categId|escape}" {if $find_categId eq $categories[ix].categId}selected="selected"{/if}>
+						{capture}{tr}{$categories[ix].categpath}{/tr}{/capture}{$smarty.capture.default|escape}
+					</option>
+				{/section}
+			</select>
+		</label>
 		{if $prefs.javascript_enabled eq 'y' && $find_show_categories_multi eq 'y'}<a href="#" onclick="show('category_multiselect_find');hide('category_singleselect_find');">{tr}Multiple select{/tr}</a>{/if}
 	</div>
 	<div id="category_multiselect_find" style="display: {if $find_show_categories_multi eq 'y' && $find_cat_categories|@count > 1}block{else}none{/if};">
@@ -214,15 +210,8 @@
 	<input type="submit" name="search" value="{tr}Go{/tr}" />
 	{if $find ne ''}
 		<span class="button">
-			<a href="{$smarty.server.PHP_SELF}?{query find='' type='' types='' topic='' lang='' langOrphan='' exact_match='' categId='' maxRecords='' find_from_Month='' find_from_Day='' find_from_Year='' find_to_Month='' find_to_Day='' find_to_Year=''}" title="{tr}Clear Filter{/tr}">{tr}Clear Filter{/tr}</a>
+			<a href="{$smarty.server.PHP_SELF}?{query find='' types='' topic='' lang='' langOrphan='' exact_match='' categId='' maxRecords=''}" title="{tr}Clear Filter{/tr}">{tr}Clear Filter{/tr}</a>
 		</span>
-	{/if}
-	{if $gmapbuttons and $mapview}
-		<input type="submit" name="searchlist" value="{tr}List View{/tr}" />
-		<input type="hidden" name="mapview" value="y" />
-	{elseif $gmapbuttons}
-		<input type="submit" name="searchmap" value="{tr}Map View{/tr}" />
-		<input type="hidden" name="mapview" value="n" />
 	{/if}
 </label>
 

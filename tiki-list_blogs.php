@@ -16,11 +16,11 @@ $access->check_feature('feature_blogs');
 $access->check_permission('tiki_p_read_blog');
 if (isset($_REQUEST["remove"])) {
 	// Check if it is the owner
-	$data = $bloglib->get_blog($_REQUEST["remove"]);
+	$data = $tikilib->get_blog($_REQUEST["remove"]);
 	if ($data["user"] != $user) {
 		if ($tiki_p_blog_admin != 'y') {
 			$smarty->assign('errortype', 401);
-			$smarty->assign('msg', tra("You do not have permission to remove this blog"));
+			$smarty->assign('msg', tra("Permission denied you cannot remove this blog"));
 			$smarty->display("error.tpl");
 			die;
 		}
@@ -54,7 +54,7 @@ if (isset($_REQUEST["find"])) {
 }
 $smarty->assign('find', $find);
 // Get a list of last changes to the Wiki database
-$listpages = $bloglib->list_blogs($offset, $maxRecords, $sort_mode, $find);
+$listpages = $tikilib->list_blogs($offset, $maxRecords, $sort_mode, $find);
 Perms::bulk( array( 'type' => 'blog' ), 'object', $listpages['data'], 'blogId' );
 $temp_max = count($listpages["data"]);
 for ($i = 0; $i < $temp_max; $i++) {
@@ -66,6 +66,10 @@ for ($i = 0; $i < $temp_max; $i++) {
 $smarty->assign_by_ref('listpages', $listpages["data"]);
 $smarty->assign_by_ref('cant', $listpages["cant"]);
 include_once ('tiki-section_options.php');
+if ($prefs['feature_mobile'] == 'y' && isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'mobile') {
+	include_once ("lib/hawhaw/hawtikilib.php");
+	HAWTIKI_list_blogs($listpages, $tiki_p_read_blog);
+}
 ask_ticket('list-blogs');
 // Display the template
 $smarty->assign('mid', 'tiki-list_blogs.tpl');

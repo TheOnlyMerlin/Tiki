@@ -7,6 +7,9 @@
 
 $section = 'webmail';
 require_once ('tiki-setup.php');
+if ($prefs['feature_ajax'] == 'y') {
+	require_once ('lib/ajax/ajaxlib.php');
+}
 include_once ('lib/webmail/webmaillib.php');
 include_once ('lib/webmail/contactlib.php');
 
@@ -18,23 +21,23 @@ require_once ('lib/mail/mimelib.php');
 include_once ('lib/webmail/class.rc4crypt.php');
 include_once ('lib/webmail/tikimaillib.php');
 
-function handleWebmailRedirect($inUrl) {		// AJAX_TODO
+function handleWebmailRedirect($inUrl) {		// TODO refactor into tikilib?
 	global $prefs;
 	
-//	if ($prefs['ajax_xajax'] != 'y' || empty($_REQUEST['xjxfun'])) {
-//		header ('location: tiki-webmail.php?'.$inUrl);
-//		die();
-//	} else {
-//	    global $ajaxlib, $headerlib;
-////			$objResponse = new xajaxResponse('UTF-8');					// should be possible server-side, no?
-////			$objResponse->Redirect('tiki-webmail.php?'.$urlq);
-//	    $headerlib->add_js('window.location.replace("tiki-webmail.php?'.$inUrl.'")');
-//	    $ajaxlib->registerTemplate('tiki-webmail.tpl');
-////   	    $ajaxlib->registerTemplate('error.tpl');
-////	    $ajaxlib->registerFunction('loadComponent');
-//		$ajaxlib->processRequests();
-//		die();
-//	}
+	if ($prefs['feature_ajax'] != 'y' || empty($_REQUEST['xjxfun'])) {
+		header ('location: tiki-webmail.php?'.$inUrl);
+		die();
+	} else {
+	    global $ajaxlib, $headerlib;
+//			$objResponse = new xajaxResponse('UTF-8');					// should be possible server-side, no?
+//			$objResponse->Redirect('tiki-webmail.php?'.$urlq);
+	    $headerlib->add_js('window.location.replace("tiki-webmail.php?'.$inUrl.'")');
+	    $ajaxlib->registerTemplate('tiki-webmail.tpl');
+//   	    $ajaxlib->registerTemplate('error.tpl');
+//	    $ajaxlib->registerFunction('loadComponent');
+		$ajaxlib->processRequests();
+		die();
+	}
 	
 }
 
@@ -104,7 +107,7 @@ if ($_REQUEST['locSection'] == 'read') {
 	if (isset($_REQUEST['msgid'])) {
 		$message = $mail->getMessage($_REQUEST['msgid']);
 		$aux = $message->getHeaders();
-		$realmsgid = preg_replace('/[<>]/','',$aux['message-id']);
+		$realmsgid = ereg_replace('[<>]','',$aux['message-id']);
 		$smarty->assign('msgid', $_REQUEST['msgid']);
 		$smarty->assign('realmsgid', $realmsgid);
 		$webmaillib->set_mail_flag($current['accountId'], $user, $realmsgid, 'isRead', 'y');
@@ -188,7 +191,7 @@ if ($_REQUEST['locSection'] == 'read') {
 			}
 		}
 	
-		if (isset($aux['cc']) || preg_match('/,/', $aux['to'])) {
+		if (isset($aux['cc']) || ereg(',', $aux['to'])) {
 			$cc_addresses = '';
 	
 			if (isset($aux['cc']))
@@ -513,43 +516,43 @@ if ($_REQUEST['locSection'] == 'settings') {
 		$js = <<< END
 
 // validate edit/add form
-\$('[name=settings]').submit(function() {
-	if (!\$('[name=account]').val()) {
-		\$('[name=account]').css('background-color', '#fcc').focus();
+\$jq('[name=settings]').submit(function() {
+	if (!\$jq('[name=account]').val()) {
+		\$jq('[name=account]').css('background-color', '#fcc').focus();
 		return false;
 	}
-	if (!\$('[name=imap]').val() && !\$('[name=pop]').val() && !\$('[name=mbox]').val() && !\$('[name=maildir]').val()) {
-		\$('[name=imap]').css('background-color', '#fcc').focus();
-		\$('[name=pop]').css('background-color', '#fcc');
-		\$('[name=mbox]').css('background-color', '#fcc');
-		\$('[name=maildir]').css('background-color', '#fcc');
+	if (!\$jq('[name=imap]').val() && !\$jq('[name=pop]').val() && !\$jq('[name=mbox]').val() && !\$jq('[name=maildir]').val()) {
+		\$jq('[name=imap]').css('background-color', '#fcc').focus();
+		\$jq('[name=pop]').css('background-color', '#fcc');
+		\$jq('[name=mbox]').css('background-color', '#fcc');
+		\$jq('[name=maildir]').css('background-color', '#fcc');
 		return false;
 	}
 });
 // set port for imap
-\$('[name=imap]').change(function() {
-	if (\$('[name=imap]').val()) {
-		\$('[name=port]').val(\$('[name=useSSL]').attr('checked')? '993' : '143');
+\$jq('[name=imap]').change(function() {
+	if (\$jq('[name=imap]').val()) {
+		\$jq('[name=port]').val(\$jq('[name=useSSL]').attr('checked')? '993' : '143');
 	}
 });
 // set port for pop
-\$('[name=pop]').change(function() {
-	if (\$('[name=pop]').val() && !\$('[name=imap]').val()) {
-		\$('[name=port]').val(\$('[name=useSSL]').attr('checked')? '995' : '110');
+\$jq('[name=pop]').change(function() {
+	if (\$jq('[name=pop]').val() && !\$jq('[name=imap]').val()) {
+		\$jq('[name=port]').val(\$jq('[name=useSSL]').attr('checked')? '995' : '110');
 	}
 });
 // set ports for ssl
-\$('[name=useSSL]').change(function(v,a) {
-	if (\$('[name=useSSL]').attr('checked')) {
-		\$('[name=port]').val(\$('[name=imap]').val() ? '993' : '995');
-		\$('[name=smtpPort]').val('465');
+\$jq('[name=useSSL]').change(function(v,a) {
+	if (\$jq('[name=useSSL]').attr('checked')) {
+		\$jq('[name=port]').val(\$jq('[name=imap]').val() ? '993' : '995');
+		\$jq('[name=smtpPort]').val('465');
 	} else {
-		\$('[name=port]').val(\$('[name=imap]').val() ? '143' : '110');
-		\$('[name=smtpPort]').val('25');
+		\$jq('[name=port]').val(\$jq('[name=imap]').val() ? '143' : '110');
+		\$jq('[name=smtpPort]').val('25');
 	}
 });
 // confirm deletes
-\$('a[title=$deleteTitle]').click(function() {
+\$jq('a[title=$deleteTitle]').click(function() {
 	return confirm('$deleteConfirm');
 });
 
@@ -597,7 +600,7 @@ END;
 	}
 	
 //	if (empty($_REQUEST['accountId']) || isset($_REQUEST['new_acc']) && $webmaillib->count_webmail_accounts($user) > 0) {
-//		$headerlib->add_jq_onready('$("#settingsFormDiv").hide();');
+//		$headerlib->add_jq_onready('$jq("#settingsFormDiv").hide();');
 //	}
 	// The red cross was pressed
 	if (isset($_REQUEST['remove'])) {
@@ -711,7 +714,7 @@ if ($_REQUEST['locSection'] == 'compose') {
 			$mail->setText($_REQUEST['body']);
 		}
 
-		$to_array_1 = preg_split('/[, ;]/', $_REQUEST['to']);
+		$to_array_1 = split('[, ;]', $_REQUEST['to']);
 		$to_array = array();
 
 		foreach ($to_array_1 as $to_1) {
@@ -873,14 +876,10 @@ if ($_REQUEST['locSection'] == 'compose') {
 	if (!isset($_REQUEST['subject']))
 		$_REQUEST['subject'] = '';
 
-	if (!isset($_REQUEST['useHTML']))
-		$_REQUEST['useHTML'] = 'n';
-
 	$smarty->assign('cc', $_REQUEST['cc']);
 	$smarty->assign('to', $_REQUEST['to']);
 	$smarty->assign('bcc', $_REQUEST['bcc']);
 	$smarty->assign('body', $_REQUEST['body']);
-	$smarty->assign('useHTML', $_REQUEST['useHTML']);
 	$smarty->assign('subject', $_REQUEST['subject']);
 	$smarty->assign('attach1', $_REQUEST['attach1']);
 	$smarty->assign('attach2', $_REQUEST['attach2']);
@@ -898,5 +897,11 @@ include_once ('tiki-mytiki_shared.php');
 include_once ('tiki-section_options.php');
 
 ask_ticket('webmail');
+if ($prefs['feature_ajax'] == 'y') {
+    global $ajaxlib;
+    $ajaxlib->registerTemplate('tiki-webmail.tpl');
+    $ajaxlib->registerFunction('loadComponent');
+    $ajaxlib->processRequests();
+}
 $smarty->assign('mid', 'tiki-webmail.tpl');
 $smarty->display('tiki.tpl');

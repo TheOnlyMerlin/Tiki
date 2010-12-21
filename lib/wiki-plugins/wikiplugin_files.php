@@ -18,314 +18,164 @@ function wikiplugin_files_info() {
 	return array(
 		'name' => tra('Files'),
 		'documentation' => 'PluginFiles',
-		'description' => tra('List files in a gallery or category'),
+		'description' => tra("Displays a list of files from the File Gallery"),
 		'prefs' => array( 'feature_file_galleries', 'wikiplugin_files' ),
 		'body' => tra('Title'),
-		'icon' => 'pics/large/file-manager.png',
 		'params' => array(
 			'galleryId' => array(
 				'required' => false,
-				'name' => tra('File Gallery ID'),
-				'description' => tra('To list only files contained in this file gallery'),
-				'default' => '',
+				'name' => tra('Gallery ID'),
+				'description' => tra('Gallery ID'),
 			),
 			'categId' => array(
 				'required' => false,
 				'name' => tra('Category ID'),
-				'description' => tra('To restrict files listed to those belonging to one or more categories. Enter a single category or ID or list of them separated by colon'),
-				'default' => '',
-				'advanced' => true,
+				'description' => tra('Category ID').':'.tra('Category ID'),
 			),
 			'fileId' => array(
 				'required' => false,
 				'name' => tra('File ID'),
-				'description' => tra('To list only specified files, enter their file IDs separated by colon'),
-				'type' => 'fileId',
-				'area' => 'fgal_picker_id',
-				'default' => '',
+				'description' => tra('List of file Ids separated by comma'),
 				'separator' => ':',
 			),
 			'sort' => array(
 				'required' => false,
-				'name' => tra('Sort Order'),
-				'description' => tra('Order ascending or descending based on any field in the file gallery table. Default is name_asc'),
-				'default' => 'name_asc',
+				'name' => tra('sort'),
+				'description' => tra('name_asc'),
 			),
 			'showaction' => array(
 				'required' => false,
-				'name' => tra('Show Action'),
-				'description' => tra('Show a column with icons for the various actions the user can take with each file (not shown by default)'),
+				'name' => tra('sort'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'default' => 'n',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'showfind' => array(
 				'required' => false,
-				'name' => tra('Show Find'),
-				'description' => tra('Show a search box above the list (not shown by default)'),
+				'name' => tra('find'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'default' => 'n',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
+				'default' => 'y'
 			),
 			'showtitle' => array(
 				'required' => false,
-				'name' => tra('Show Title'),
-				'description' => tra('Show the title of the file gallery (shown by default)'),
+				'name' => tra('Show title'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
+				'default' => 'y'
 			),
 			'showid' => array(
 				'required' => false,
-				'name' => tra('Show ID'),
-				'description' => tra('Show the ID number of each file (shown by default)'),
-				'default' => 'y',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
+				'name' => tra('Shows ID'),
+				'description' => 'y|n',
 			),
 			'showicon' => array(
 				'required' => false,
-				'name' => tra('Show Icon'),
-				'description' => tra('Show an icon for each file depicting the file type'),
+				'name' => tra('Shows Icon'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'default' => 'n',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'showname' => array(
 				'required' => false,
-				'name' => tra('Show Name'),
-				'description' => tra('Show the name given to the file upon upload into the file gallery (shown by default)'),
-				'default' => 'y',
+				'name' => tra('Shows Name'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'showfilename' => array(
 				'required' => false,
-				'name' => tra('Show Filename'),
-				'description' => tra('Show each file\'s filename (shown by default)'),
+				'name' => tra('Shows Filename'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'default' => 'y',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'showsize' => array(
 				'required' => false,
-				'name' => tra('Show Size'),
-				'description' => tra('Show the size of each file in kilobytes (shown by default)'),
-				'default' => 'y',
+				'name' => tra('Shows Size'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'showdescription' => array(
 				'required' => false,
-				'name' => tra('Show Description'),
-				'description' => tra('Show the description of the file given upon upload into the file gallery (shown by default)'),
+				'name' => tra('Shows Description'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'showcreated' => array(
 				'required' => false,
-				'name' => tra('Show Creation Date'),
-				'description' => tra('Show the date each file was created (not shown by default)'),
+				'name' => tra('Shows Creation Date'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'default' => 'n',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'showmodified' => array(
 				'required' => false,
-				'name' => tra('Show Last Modification Date'),
-				'description' => tra('Show the date each file was last modified (shown by default)'),
-				'default' => 'y',
+				'name' => tra('Shows Last Modification Date'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'showhits' => array(
 				'required' => false,
-				'name' => tra('Show Hits'),
-				'description' => tra('Show the number of hits each file has received (not shown by default)'),
+				'name' => tra('Shows Hits'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'default' => 'n',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'showlockedby' => array(
 				'required' => false,
-				'name' => tra('Show Locked By'),
-				'description' => tra('For locked files, show the user name of the user who locked it (not shown by default)'),
+				'name' => tra('Shows Locked by'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'default' => 'n',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
+			),
+			'showlmodified' => array(
+				'required' => false,
+				'name' => tra('Shows Modification Date'),
+				'description' => 'y|n',
+				'filter' => 'alpha',
 			),
 			'showauthor' => array(
 				'required' => false,
-				'name' => tra('Show Author'),
-				'description' => tra('Show the user name of the user who is the author of the file (not shown by default)'),
+				'name' => tra('Shows Author'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'default' => 'n',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'showcreator' => array(
 				'required' => false,
-				'name' => tra('Show Creator'),
-				'description' => tra('Show the user name of the user who is the creator of the file (not shown by default)'),
-				'default' => 'n',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
+				'name' => tra('Shows Creator'),
+				'description' => 'y|n',
 			),
 			'showgallery' => array(
 				'required' => false,
-				'name' => tra('Show Parent Gallery Name'),
-				'description' => tra('Show the name of the parent gallery'),
+				'name' => tra('Shows Parent Gallery Name'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'showfiles' => array(
 				'required' => false,
-				'name' => tra('Show File Count'),
-				'description' => tra('For galleries included in the list (where the file gallery includes other galleries), show the number of files in each of those galleries (not shown by default)'),
+				'name' => tra('Shows Number of Files'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'default' => 'n',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'slideshow' => array(
 				'required' => false,
-				'name' => tra('Show Slideshow'),
-				'description' => tra('Show a link that produces a pop-up slide show when clicked (not set by default)'),
+				'name' => tra('Shows the slideshow of a gallery'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'default' => 'n',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'showcomment' => array(
 				'required' => false,
-				'name' => tra('Show Comment'),
-				'description' => tra('Show comments for each file (not shown by default)'),
+				'name' => tra('Shows comment'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'default' => 'n',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				),
-				'advanced' => true,
 			),
 			'showlasteditor' => array(
 				'required' => false,
-				'name' => tra('Show Last Editor'),
-				'description' => tra('Show the user name of the user who last modified the file (shown by default)'),
-				'default' => 'y',
+				'name' => tra('Shows last editor'),
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
+
 			'creator' => array(
 				'required' => false,
-				'name' => tra('Creator'),
-				'description' => tra('Show only files created by this user'),
-				'default' => 'n',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
+				'name' => tra('Show only created by this user'),
+				'description' => tra('User Login'),
 			),
-			'showupload' => array(
-				'required' => false,
-				'name' => tra('Show Upload'),
-				'description' => tra('Show a simple upload form to the gallery (not shown by default)'),
-				'filter' => 'alpha',
-				'default' => 'n',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
-	 	)
+	  )
 	 );
 }
 function wikiplugin_files($data, $params) {
@@ -334,7 +184,7 @@ function wikiplugin_files($data, $params) {
 		return('');
 	}
 	global $filegallib; include_once('lib/filegals/filegallib.php');
-	$default = array('showfind'=>'n', 'showtitle'=>'y', 'showupload' => 'n');
+	$default = array('showfind'=>'n', 'showtitle'=>'y');
 	$params = array_merge($default, $params);
 
 	$filter = '';
@@ -366,9 +216,6 @@ function wikiplugin_files($data, $params) {
 			if ($p_view_file_gallery != 'y')
 				return;
 			$p_download_files = $tikilib->user_has_perm_on_object($user, $galleryId, 'file gallery', 'tiki_p_download_files');
-			if ($showupload == 'y' && $tikilib->user_has_perm_on_object($user, $galleryId, 'file gallery', 'tiki_p_upload_files')) {
-				$params['showupload'] = 'y';
-			}
 			$p_admin_file_galleries = $tikilib->user_has_perm_on_object($user, $galleryId, 'file gallery', 'tiki_p_admin_file_galleries');
 			$p_edit_gallery_file = $tikilib->user_has_perm_on_object($user, $galleryId, 'file gallery', 'tiki_p_edit_gallery_file');
 		} else {
@@ -376,9 +223,6 @@ function wikiplugin_files($data, $params) {
 			$p_view_file_gallery = 'y';
 			$p_admin_file_galleries = 'y';
 			$p_edit_gallery_file = 'y';
-			if ($showupload == 'y') {
-				$params['showupload'] = 'y';
-			}
 		}
 		if (!empty($slideshow) && $slideshow == 'y') {
 			if ($prefs['javascript_enabled'] != 'y') return;

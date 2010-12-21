@@ -18,6 +18,8 @@ if ($prefs['feature_wiki'] != 'y') {
 	die;
 }
 
+//print($GLOBALS["HTTP_REFERER"]);
+
 // Create the HomePage if it doesn't exist
 if (!$tikilib->page_exists($prefs['wikiHomePage'])) {
 	$tikilib->create_page($prefs['wikiHomePage'], 0, '', date("U"), 'Tiki initialization');
@@ -47,7 +49,7 @@ if (!($info = $tikilib->get_page_info($page))) {
 $tikilib->get_perm_object( $page, 'wiki page', $info);
 if ($tiki_p_view != 'y') {
 	$smarty->assign('errortype', 401);
-	$smarty->assign('msg', tra("You do not have permission to view this page."));
+	$smarty->assign('msg', tra("Permission denied. You cannot view this page."));
 
 	$smarty->display("error_raw.tpl");
 	die;
@@ -73,6 +75,8 @@ if (!in_array($page, $_SESSION["breadCrumb"])) {
 	unset ($_SESSION["breadCrumb"][$pos]);
 	array_push($_SESSION["breadCrumb"], $page);
 }
+
+//print_r($_SESSION["breadCrumb"]);
 
 // Now increment page hits since we are visiting this page
 if ($prefs['count_admin_pvs'] == 'y' || $user != 'admin') {
@@ -161,28 +165,11 @@ ask_ticket('index-raw');
 // Display the Index Template
 $smarty->assign('dblclickedit', 'y');
 
-// If the url has the param "download", ask the browser to download it (instead of displaying it)
-if ( isset($_REQUEST['download']) && $_REQUEST['download'] !== 'n' ) {
-	if (isset($_REQUEST["filename"])) {
-		$filename = $_REQUEST['filename'];
-	} else {
-		$filename = $page;
-	}
-	$filename = str_replace(array('?',"'",'"',':','/','\\'), '_', $filename);	// clean some bad chars
-	header("Content-type: text/plain; charset=utf-8");
-	header("Content-Disposition: attachment; filename=\"$filename\"");
-}
-
 // add &full to URL to output the whole html head and body
 if (isset($_REQUEST['full']) && $_REQUEST['full'] != 'n') {
 	$smarty->assign('mid','tiki-show_page_raw.tpl');
 	// use tiki_full to include include CSS and JavaScript
 	$smarty->display("tiki_full.tpl");
-} else if (isset($_REQUEST['textonly']) && $_REQUEST['textonly'] != 'n') {
-	$output = $smarty->fetch("tiki-show_page_raw.tpl");
-	$output = strip_tags($output);
-	$output = $tikilib->htmldecode($output);
-	echo $output;
 } else {
 	// otherwise just the contents of the page without body etc
 	$smarty->display("tiki-show_page_raw.tpl");

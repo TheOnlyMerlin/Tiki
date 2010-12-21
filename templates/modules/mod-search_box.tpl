@@ -5,11 +5,7 @@
 {if $type neq 'none'}
     <form class="forms" id="search-module-form" method="get" action="tiki-search{if $type eq 'tiki'}index{else}results{/if}.php">
     <input id="fuser" name="highlight" size="14" type="text" accesskey="s" /> 
-	{if $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y' and $prefs.search_autocomplete eq 'y'}
-		{jq}
-			$("#fuser").tiki("autocomplete", "pagename");
-		{/jq}
-	{/if}	
+	
  	{if $prefs.feature_search_show_object_filter eq 'y'}
 
 	{tr}in:{/tr}<br />
@@ -50,12 +46,12 @@
 		<input type="hidden" name="where" value="{$prefs.search_default_where|escape}" />
     {/if}
 	{if $type eq 'fulltext'}
-		<br/><label for="boolean">{tr}Advanced search:{/tr}<input type="checkbox" id="boolean" name="boolean"{if !isset($boolean) or $boolean ne 'n'} checked="checked"{/if} /></label>
+		<br/><label for="boolean">{tr}Advanced search:{/tr}<input type="checkbox" name="boolean"{if !isset($boolean) or $boolean ne 'n'} checked="checked"{/if} /></label>
 
 		{capture name=advanced_search_help}
 			{include file='advanced_search_help.tpl'}
 		{/capture}
-		{add_help show='y' title="{tr}Search Help{/tr}" id="advanced_search_help"}
+		{add_help show='y' title="{tr}Advanced Search Help{/tr}" id="advanced_search_help"}
 			{$smarty.capture.advanced_search_help}
 		{/add_help}<br/>
 	{/if}

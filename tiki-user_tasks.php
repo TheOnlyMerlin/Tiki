@@ -7,6 +7,9 @@
 
 $section = 'mytiki';
 require_once ('tiki-setup.php');
+if ($prefs['feature_ajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
 include_once ('lib/tasks/tasklib.php');
 include_once ('lib/messu/messulib.php');
 
@@ -31,6 +34,7 @@ $smarty->assign('comp_array_p', $comp_array_p);
 if (!isset($_REQUEST['taskId'])) {
 	$_REQUEST['taskId'] = 0;
 }
+$smarty->assign('toolbarscant', $toolbars["cant"]);
 //default values for show options
 if (!isset($_SESSION['show_trash'])) $_SESSION['show_trash'] = false;
 if (!isset($_SESSION['show_completed'])) $_SESSION['show_completed'] = true;
@@ -644,5 +648,14 @@ $smarty->assign('img_me_waiting_width', $img_me_waiting_width);
 $smarty->assign('img_not_accepted', $img_not_accepted);
 $smarty->assign('img_not_accepted_height', $img_not_accepted_height);
 $smarty->assign('img_not_accepted_width', $img_not_accepted_width);
+if ($prefs['feature_ajax'] == "y") {
+	function user_tasks_ajax() {
+		global $ajaxlib, $xajax;
+		$ajaxlib->registerTemplate("tiki-user_tasks.tpl");
+		$ajaxlib->registerFunction("loadComponent");
+		$ajaxlib->processRequests();
+	}
+	user_tasks_ajax();
+}
 $smarty->assign('mid', 'tiki-user_tasks.tpl');
 $smarty->display("tiki.tpl");

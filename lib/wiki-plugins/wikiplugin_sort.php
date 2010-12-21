@@ -19,27 +19,18 @@ function wikiplugin_sort_info() {
 	return array(
 		'name' => tra('Sort'),
 		'documentation' => 'PluginSort',
-		'description' => tra('Sort lines of text'),
+		'description' => tra('Sorts the plugin content in the wiki page'),
 		'prefs' => array( 'wikiplugin_sort' ),
 		'body' => tra('Data to sort, one entry per line.'),
 		'filter' => 'text',
-		'icon' => 'pics/icons/table_sort.png',
 		'params' => array(
 			'sort' => array(
 				'required' => false,
 				'name' => tra('Order'),
-				'description' => tra('Set the sort order of lines of content (default is ascending)'),
+				'description' => tra('asc|desc|shuffle'),
 				'filter' => 'alpha',
-				'default' => 'asc',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Ascending'), 'value' => 'asc'), 
-					array('text' => tra('Descending'), 'value' => 'desc'),
-					array('text' => tra('Reverse'), 'value' => 'reverse'),
-					array('text' => tra('Shuffle'), 'value' => 'shuffle')
-				)
-			)
-		)
+			),
+		),
 	);
 }
 

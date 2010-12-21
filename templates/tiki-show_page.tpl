@@ -23,7 +23,34 @@
 					<input type="hidden" name="page" value="{$page|escape}" />
 					<div class="notif-pad-2">
 						<div class="notif-row">
-							{tr}Approve changes{/tr}
+							<input type="radio" name="action" value="approve" id="staging_approve" />
+							&nbsp;
+							<label for="staging_approve">{tr}Approve changes{/tr}</label>
+							<div class="notif-pad-3" id="staging_approve_details">
+								{if empty($pageLang) || ($pageLang == 'en') || ($pageLang =='en-US')}
+								<input type="checkbox" name="outofdate" value="1" id="staging_outofdate">
+								&nbsp;
+								<label for="staging_outofdate">{tr}Mark other translations as out of date{/tr}</label>
+								{if !empty($outofdate_desc)}
+									<div class="notif-highlight" id="staging_outofdate_details">{$outofdate_desc|escape}</div>
+								{/if}
+							{/if}
+							    <div class="notif-pad-2">
+								<label for="approve_summary">{tr}Feedback to the author (optional):{/tr}</label>
+								<br/>
+								<textarea id="approve_summary" name="approve_comment" rows="3" cols="50"></textarea>
+								</div>
+							</div>
+							<div class="notif-row">
+								<input type="radio" name="action" value="reject" id="staging_reject" />
+								&nbsp;
+								<label for="staging_reject">{tr}Reject changes{/tr}</label>
+								<div class="notif-pad-3" id="staging_reject_details">
+									<label for="reject_summary">{tr}Reason for rejecting (will be e-mailed to editor):{/tr}</label>
+									<br/>
+									<textarea id="reject_summary" name="reject_comment" rows="3" cols="50"></textarea>
+								</div>
+							</div>
 							<input type="submit" name="staging_action" value="{tr}Submit{/tr}"/>
 						</div>
 					</div>
@@ -80,7 +107,7 @@
 				<ul>
 					{section name=j loop=$translation_alert[i]}
 						<li>
-							<a href="{if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage|sefurl:wiki:with_next}{else}{$translation_alert[i][j].page|sefurl:wiki:with_next}{/if}no_bl=y">
+							<a href="{if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage|sefurl:wiki:with_next}{else}{$translation_alert[i][j].page|sefurl:wiki:with_next}{/if}bl=n">
 								{if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}
 									{$translation_alert[i][j].approvedPage}
 								{else}
@@ -101,19 +128,19 @@
 	{/section}
 {/if}
 
-<article id="top" class="wikitext clearfix{if $prefs.feature_page_title neq 'y'} nopagetitle{/if}">
+<div id="top" class="wikitext clearfix">
 	{if !$hide_page_header}
 		{if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y' and isset($freetags.data[0]) and $prefs.freetags_show_middle eq 'y'}
 			{include file='freetag_list.tpl'}
 		{/if}
 
 		{if $pages > 1 and $prefs.wiki_page_navigation_bar neq 'bottom'}
-			<div class="center navigation_bar pagination position_top">
+			<div align="center">
 				<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$first_page}">{icon _id='resultset_first' alt="{tr}First page{/tr}"}</a>
 
 				<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$prev_page}">{icon _id='resultset_previous' alt="{tr}Previous page{/tr}"}</a>
 
-				<small>{tr 0=$pagenum 1=$pages}page: %0/%1{/tr}</small>
+				<small>{tr}page{/tr}:{$pagenum}/{$pages}</small>
 
 				<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$next_page}">{icon _id='resultset_next' alt="{tr}Next page{/tr}"}</a>
 
@@ -163,7 +190,7 @@
 
 	{if $pages > 1 and $prefs.wiki_page_navigation_bar neq 'top'}
 		<br />
-		<div class="center navigation_bar pagination position_bottom">
+		<div align="center">
 			<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$first_page}">{icon _id='resultset_first' alt="{tr}First page{/tr}"}</a>
 
 			<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$prev_page}">{icon _id='resultset_previous' alt="{tr}Previous page{/tr}"}</a>
@@ -175,7 +202,7 @@
 			<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$last_page}">{icon _id='resultset_last' alt="{tr}Last page{/tr}"}</a>
 		</div>
 	{/if}
-</article> {* End of main wiki page *}
+</div> {* End of main wiki page *}
 
 {if $has_footnote eq 'y'}
 	<div class="wikitext" id="wikifootnote">{$footnote}</div>
@@ -190,8 +217,7 @@
 
 	{if $print_page eq 'y'}
 		<br />
-		{capture name=url}{$base_url}{$page|sefurl}{if !empty($smarty.request.itemId)}&amp;itemId={$smarty.request.itemId}{/if}{/capture}
-		{tr}The original document is available at{/tr} <a href="{$smarty.capture.url}">{$smarty.capture.url}</a>
+		{tr}The original document is available at{/tr} <a href="{$base_url}{$page|sefurl}">{$base_url}{$page|sefurl}</a>
 	{/if}
 {/strip}{/capture}
 

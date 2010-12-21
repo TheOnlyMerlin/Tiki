@@ -30,16 +30,6 @@ class RatingLib extends TikiDb_Bridge
 		}
 	}
 
-	function obtain_ratings($type, $itemId) {
-		if ($type == 'wiki page') {
-			$query = "SELECT ratingConfigId, value FROM tiki_rating_obtained INNER JOIN tiki_pages ON tiki_rating_obtained.object = tiki_pages.page_id WHERE tiki_rating_obtained.type = ? AND tiki_pages.pageName = ?";
-		} else {
-			$query = "SELECT ratingConfigId, value FROM tiki_rating_obtained WHERE type = ? AND object = ?";
-		}
-
-		return $this->fetchMap($query, array($type, $itemId));
-	}
-
 	/**
 	 * Collect the aggregate score of an item based on various arguments.
 	 *
@@ -289,7 +279,7 @@ class RatingLib extends TikiDb_Bridge
 	private function get_runner() {
 		require_once 'Math/Formula/Runner.php';
 		return new Math_Formula_Runner( array(
-			'Math_Formula_Function_' => 'lib/core/Math/Formula/Function',
+			'Math_Formula_Function_' => 'lib/core/lib/Math/Formula/Function',
 			'Tiki_Formula_Function_' => dirname(__FILE__) . '/formula',
 		) );
 	}

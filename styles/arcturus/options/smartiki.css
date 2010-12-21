@@ -1,8 +1,8 @@
 /* $Id$
 	Smartiki theme option for Arcturus.css;
 	for TikiWiki CMS/Groupware.
-	Visit http://themes.tiki.org for more information.
-*/
+	Visit http://themes.tikiwiki.org for more information.
+*/	
 
 /* reset arcturus values */
 body,
@@ -72,12 +72,12 @@ legend {
 	color: #333;
 }
 
-.button a,
-.button a:visited,
+span.button a,
+span.button a:visited,
 button,
 input[type="reset"],
 input[type="submit"],
-.button input,
+span.button input,
 .calbuttonBox a {
 	background-color: #f0c040;
 	border: 1px solid #676767;
@@ -86,12 +86,12 @@ input[type="submit"],
 	font-size: 12px;
 }
 
-.button a:hover,
+span.button a:hover,
 .button a:hover,
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover,
+span.button input:hover,
 .calbuttonBox:hover {
 	background-color: #f0ead8;
 	margin: 0;
@@ -166,7 +166,7 @@ h1, .pagetitle {
 
 .cssmenu_horiz li ul li,
 .cssmenu_vert li ul li {
-	background: #e2e2e2;
+	background:	#e2e2e2;
 	border: 1px solid #003388;
 	border-top: 0;
 	margin-bottom: -1px
@@ -182,7 +182,7 @@ h1, .pagetitle {
 	border-right: 1px solid #994242;
 }
 
-.separator {
+div.separator {
 	margin-top: 4px;
 	margin-bottom: 2px;
 	padding-bottom: 2px;
@@ -213,7 +213,7 @@ h1, .pagetitle {
 	color: #000;
 }
 
-.box {
+div.box {
 	padding-top: 3px;
 	margin-top: 13px;
 }
@@ -240,12 +240,12 @@ h3.box-title {
   overflow: hidden;
 }
 
-.simplebox {
+div.simplebox {
 	margin: 5px 1px;
 	padding: 2px;
 	color: black;
-	border: 1px solid #676767;
-	background-color: #f0f0f0;
+	border: 1px solid #676767;  
+	background-color: #f0f0f0;  
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 
@@ -255,7 +255,7 @@ td.heading,
 tr.diffheader {
   color: #000;
   font-size: 12px;
-  background: #f0ead8;
+  background: #f0ead8; 
   border: 1px solid #676767;
   padding-left: 2px;
   padding-right: 5px;
@@ -278,7 +278,7 @@ tr.even td,
 td.even,
 li.even,
 .forum_actions {
-	border: 1px solid #676767;
+	border: 1px solid #676767;  
 	font-size: 12px;
 	background-color: #e0e0e0;
 	color: #000;
@@ -327,8 +327,8 @@ li.even:hover {
 }
 
 
-.titleb,
-.articletrailer {
+span.titleb,
+div.articletrailer {
 	color:#676767;
 	font-size: 90%;
 }
@@ -345,7 +345,7 @@ li.even:hover {
 	margin: 10px 0;
 }
 
-.articlebody {
+div.articlebody {
 	border: 1px solid #aeaeae;
 	padding: 1em 2em;
 	margin: 10px 0;
@@ -356,12 +356,17 @@ li.even:hover {
 	background: #f0c040;
 }
 
-.oddthumb {
+.author_actions {
+	float: right;
+	width: 25%;
+}
+
+td.oddthumb {
 	background: transparent;
 	border: 1px solid #8cacbb;
 	border-collapse: collapse;}
 
-.eventhumb,
+td.eventhumb,
 .thumbnailcontener {
 	background: #f7f9fa;
 	border: 1px solid #8cacbb;

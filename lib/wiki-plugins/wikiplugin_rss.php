@@ -14,7 +14,7 @@ function wikiplugin_rss_info() {
 	return array(
 		'name' => tra('RSS Feed'),
 		'documentation' => 'PluginRSS',
-		'description' => tra('Display items from an RSS feed'),
+		'description' => tra('Inserts an RSS feed output.'),
 		'prefs' => array( 'wikiplugin_rss' ),
 		'icon' => 'pics/icons/rss.png',
 		'format' => 'html',
@@ -26,69 +26,36 @@ function wikiplugin_rss_info() {
 				'separator' => ':',
 				'filter' => 'int',
 				'description' => tra('List of feed IDs separated by colons. ex: feedId:feedId2'),
-				'default' => '',
 			),
 			'max' => array(
 				'required' => false,
 				'name' => tra('Result Count'),
 				'filter' => 'int',
 				'description' => tra('Number of results displayed.'),
-				'default' => 10,
 			),
 			'date' => array(
 				'required' => false,
 				'name' => tra('Date'),
 				'filter' => 'int',
-				'description' => tra('Show date of each item (not shown by default)'),
-				'default' => 0,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				)
+				'description' => '0|1',
 			),
 			'desc' => array(
 				'required' => false,
 				'name' => tra('Description'),
 				'filter' => 'int',
-				'description' => tra('Show feed descriptions (not shown by default)'),
-				'default' => 0,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				)
+				'description' => '0|1|max length',
 			),
 			'author' => array(
 				'required' => false,
 				'name' => tra('Author'),
 				'filter' => 'int',
-				'description' => tra('Show authors (not shown by default)'),
-				'default' => 0,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				)
+				'description' => '0|1',
 			),
 			'icon' => array(
 				'required' => false,
 				'name' => tra('Icon'),
 				'filter' => 'url',
-				'description' => tra('Url to a favicon to put before each entry'),
-				'default' => '',
-			),
-			'showtitle' => array(
-				'required' => false,
-				'name' => tra('Show Title'),
-				'filter' => 'int',
-				'description' => tra('Show the title of the feed (shown by default)'),
-				'default' => 1,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				)
+				'description' => 'url to a favicon to put before each entry',
 			),
 		),
 	);
@@ -104,7 +71,6 @@ function wikiplugin_rss($data,$params) {
 		'desc' => 0,
 		'author' => 0,
 		'icon' => '',
-                'showtitle' => 1,
 	), $params );
 
 	if ( ! isset( $params['id'] ) ) {
@@ -131,10 +97,9 @@ function wikiplugin_rss($data,$params) {
 	$smarty->assign( 'title', $title );
 	$smarty->assign( 'items', $items );
 	$smarty->assign( 'showdate', $params['date'] > 0 );
-	$smarty->assign( 'showtitle', $params['showtitle'] > 0 );
 	$smarty->assign( 'showdesc', $params['desc'] > 0 );
 	$smarty->assign( 'showauthor', $params['author'] > 0 );
-	$smarty->assign( 'icon', $params['icon'] );
+	$smarty->assign( 'showicon', $params['icon'] != "" );
 	return $smarty->fetch( 'wiki-plugins/wikiplugin_rss.tpl' );
 }
 

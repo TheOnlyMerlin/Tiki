@@ -71,7 +71,7 @@ class FreetagLib extends ObjectLib
 	 * @access private
 	 * @param int The maximum length of a tag.
 	 */
-	var $_MAX_TAG_LENGTH = 128;
+	var $_MAX_TAG_LENGTH = 30;
 	/**
 	 * @access public
 	 * @param int The number of size degrees for tags in cloud. There should be correspondent classes in css.
@@ -337,10 +337,6 @@ class FreetagLib extends ObjectLib
 				$ok = true;
 			}
 			if ($ok) {
-				global $tikilib;
-				if ( ! empty( $row['description'] ) ) {
-					$row['description'] = $tikilib->parse_data( $row['description'], array( 'absolute_links' => true ) );
-				}
 				if ($prefs['feature_sefurl'] == 'y') {
 					include_once('tiki-sefurl.php');
 					if ($row['type'] == 'blog post' && !empty($post_info)) {
@@ -707,10 +703,11 @@ class FreetagLib extends ObjectLib
 	 * @param int The unique ID of the person who tagged the object with this tag.
 	 * @param int The ID of the object in question.
 	 * @param string The raw string or the string form of the tag to delete.
+	 * @param bool The tag is the raw or the normalized form
 	 *
 	 * @return string Returns the tag in normalized form.
 	 */
-	function delete_object_tag($itemId, $type, $tag, $user = false)
+	function delete_object_tag($itemId, $type, $tag, $user = false, $raw = false)
 	{
 		if (!isset($itemId) || !isset($type) || !isset($tag) ||
 				empty($itemId) || empty($type) || empty($tag)) {
@@ -1518,45 +1515,6 @@ class FreetagLib extends ObjectLib
 		}
 
 		return $tags;
-	}
-
-	/**
-	 * Used to parse the tag string when previewing an object. Simulates
-	 * the final result without saving anything in the database.
-	 *
-	 * @param string $tagString
-	 * @access public
-	 * @return array tags
-	 */
-	function dumb_parse_tags($tagString) {
-		if (!is_string($tagString) || empty($tagString)) {
-			return array();
-		}
-
-		$tagArray = $this->_parse_tag($tagString);
-
-		$tags = array();
-
-		foreach ($tagArray as $tag) {
-			$tags['data'][]['tag'] = $this->normalize_tag($tag);
-		}
-
-		$tags['cant'] = count($tags['data']);
-
-		return $tags;
-	}
-
-	function get_cloud() {
-		$query = "SELECT tag title, COUNT(*) weight, f.tagId FROM tiki_freetags f INNER JOIN tiki_freetagged_objects fo ON f.tagId = fo.tagId GROUP BY f.tagId";
-		$result = $this->fetchAll($query);
-
-		foreach ($result as &$row) {
-			$row['params'] = array('url' => $row['tagId']);
-		}
-
-		return new Zend_Tag_Cloud(array(
-			'tags' => $result,
-		));
 	}
 }
 

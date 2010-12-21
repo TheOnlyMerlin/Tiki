@@ -7,6 +7,9 @@
 
 $section = 'mytiki';
 require_once ('tiki-setup.php');
+if ($prefs['feature_ajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
 include_once ('lib/modules/modlib.php');
 include_once ('lib/userprefs/scrambleEmail.php');
 include_once ('lib/userprefs/userprefslib.php');
@@ -17,8 +20,6 @@ if ($prefs['feature_userPreferences'] != 'y' && $prefs['change_password'] != 'y'
 	die;
 }
 $access->check_user($user);
-
-$auto_query_args = array('userId', 'view_user');
 
 // Make sure user preferences uses https if set
 if (!$https_mode && isset($https_login) && $https_login == 'required') {
@@ -69,7 +70,7 @@ $smarty->assign('show_mouseover_user_info', isset($prefs['show_mouseover_user_in
 if ($prefs['feature_userPreferences'] == 'y' && isset($_REQUEST["new_prefs"])) {
 	check_ticket('user-prefs');
 	// setting preferences
-	if ($prefs['change_theme'] == 'y' && empty($group_style)) {
+	if ($prefs['change_theme'] == 'y' && $group_style == '') {
 		if (isset($_REQUEST["mystyle"])) {
 			if ($user == $userwatch) {
 				$t = $tikidomain ? $tikidomain . '/' : '';
@@ -173,15 +174,6 @@ if ($prefs['feature_userPreferences'] == 'y' && isset($_REQUEST["new_prefs"])) {
 		}
 		$smarty->assign('lon', $lon);
 		$tikilib->set_user_preference($userwatch, 'lon', $lon);
-	}
-	if (isset($_REQUEST["zoom"])) {
-		if (is_numeric($_REQUEST["zoom"])) {
-			$zoom = intval($_REQUEST["zoom"]);
-		} else {
-			$zoom = NULL;
-		}
-		$smarty->assign('zoom', $zoom);
-		$tikilib->set_user_preference($userwatch, 'zoom', $zoom);
 	}
 	// Custom fields
 	foreach($customfields as $custpref => $prefvalue) {
@@ -310,14 +302,8 @@ if (isset($_REQUEST['deleteaccount']) && $tiki_p_delete_account == 'y') {
       $smarty->display("error.tpl");
       die;
    }
-   $userlib->remove_user($userwatch);
-   if ($user == $userwatch) {
-	   header('Location: tiki-logout.php');
-   } elseif ($tiki_p_admin_users == 'y') {
-	   header('Location: tiki-adminusers.php');
-   } else {
-	   header("Location: $base_url");
-   }
+   $userlib->remove_user($user);
+   header('Location: tiki-logout.php');
    die();
 } 
 $tikilib->get_user_preference($userwatch, 'mytiki_pages', 'y');
@@ -342,7 +328,6 @@ if ($prefs['feature_community_gender'] == 'y') {
 $tikilib->get_user_preference($userwatch, 'country', 'Other');
 $tikilib->get_user_preference($userwatch, 'lat', '');
 $tikilib->get_user_preference($userwatch, 'lon', '');
-$tikilib->get_user_preference($userwatch, 'zoom', '');
 $tikilib->get_user_preference($userwatch, 'userbreadCrumb', $prefs['site_userbreadCrumb']);
 $tikilib->get_user_preference($userwatch, 'homePage', '');
 $tikilib->get_user_preference($userwatch, 'email is public', 'n');
@@ -361,8 +346,7 @@ $languages = $tikilib->list_languages();
 $smarty->assign_by_ref('languages', $languages);
 $user_pages = $tikilib->get_user_pages($userwatch, -1);
 $smarty->assign_by_ref('user_pages', $user_pages);
-require_once('lib/blogs/bloglib.php');
-$user_blogs = $bloglib->list_user_blogs($userwatch, false);
+$user_blogs = $tikilib->list_user_blogs($userwatch, false);
 $smarty->assign_by_ref('user_blogs', $user_blogs);
 $user_galleries = $tikilib->get_user_galleries($userwatch, -1);
 $smarty->assign_by_ref('user_galleries', $user_galleries);
@@ -370,9 +354,9 @@ $user_items = $tikilib->get_user_items($userwatch);
 $smarty->assign_by_ref('user_items', $user_items);
 $flags = $tikilib->get_flags();
 $smarty->assign_by_ref('flags', $flags);
-$scramblingMethods = array("n", "strtr", "unicode", "x", 'y'); // email_isPublic utilizes 'n'
+$scramblingMethods = array("n", "strtr", "unicode", "x"); // email_isPublic utilizes 'n'
 $smarty->assign_by_ref('scramblingMethods', $scramblingMethods);
-$scramblingEmails = array(tra("no"), scrambleEmail($userinfo['email'], 'strtr'), scrambleEmail($userinfo['email'], 'unicode') . "-" . tra("unicode"), scrambleEmail($userinfo['email'], 'x'), $userinfo['email']);
+$scramblingEmails = array(tra("no"), scrambleEmail($userinfo['email'], 'strtr'), scrambleEmail($userinfo['email'], 'unicode') . "-" . tra("unicode"), scrambleEmail($userinfo['email'], 'x'));
 $smarty->assign_by_ref('scramblingEmails', $scramblingEmails);
 $avatar = $tikilib->get_user_avatar($userwatch);
 $smarty->assign_by_ref('avatar', $avatar);
@@ -411,5 +395,14 @@ if ($prefs['feature_wiki'] == 'y' and $prefs['feature_wiki_userpage'] == 'y') {
 $smarty->assign_by_ref('tikifeedback', $tikifeedback);
 include_once ('tiki-section_options.php');
 ask_ticket('user-prefs');
+if ($prefs['feature_ajax'] == "y") {
+	function user_preferences_ajax() {
+		global $ajaxlib, $xajax;
+		$ajaxlib->registerTemplate("tiki-user_preferences.tpl");
+		$ajaxlib->registerFunction("loadComponent");
+		$ajaxlib->processRequests();
+	}
+	user_preferences_ajax();
+}
 $smarty->assign('mid', 'tiki-user_preferences.tpl');
 $smarty->display("tiki.tpl");

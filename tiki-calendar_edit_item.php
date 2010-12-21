@@ -16,7 +16,9 @@ include_once ('lib/calendar/calrecurrence.php');
 if ($prefs['feature_groupalert'] == 'y') {
 	include_once ('lib/groupalert/groupalertlib.php');
 }
-$auto_query_args = array('calitemId');
+if ($prefs['feature_ajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
 
 $daysnames = array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Satursday");
 $daysnames_abr = array("Su","Mo","Tu","We","Th","Fr","Sa");
@@ -175,25 +177,6 @@ if (isset($_REQUEST['act']) || isset($_REQUEST['preview']) || isset($_REQUEST['c
 			);
 			$save['duration'] = max(0, $save['end'] - $save['start']);
 		}
-		
-		#region reminder
-
-    $save['reminder_fixed_date'] = TikiLib::make_time(
-        $_REQUEST['reminder_fixed_date_Hour'],
-        $_REQUEST['reminder_fixed_date_Minute'],
-        0,
-        $_REQUEST['reminder_fixed_date_Month'],
-        $_REQUEST['reminder_fixed_date_Day'],
-        $_REQUEST['reminder_fixed_date_Year']
-    );
-
-    $rem_offset_days = $_REQUEST['reminder_time_offset_days'];
-    $rem_offset_hours = $_REQUEST['reminder_time_offset_hours'];
-    $rem_offset_minutes = $_REQUEST['reminder_time_offset_minutes'];
-    $save['reminder_time_offset'] = $rem_offset_days * 86400 + $rem_offset_hours * 3600 + $rem_offset_minutes * 60;
-
-    #endregion reminder
-
 	}
 }
 
@@ -205,8 +188,8 @@ if (isset($save['start']) && isset($save['end'])) {
 
 if (isset($_POST['act'])) {
 	// Check antibot code if anonymous and allowed
-	if (empty($user) && $prefs['feature_antibot'] == 'y' && (!$captchalib->validate())) {
-		$smarty->assign('msg', $captchalib->getErrors());
+	if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $_REQUEST['antibotcode'])) {
+		$smarty->assign('msg', tra("You have mistyped the anti-bot verification code; please try again."));
 		$smarty->assign('errortype', 'no_redirect_login');
 		$smarty->display("error.tpl");
 		die;
@@ -275,13 +258,6 @@ if (isset($_POST['act'])) {
 					$calRecurrence->setNbRecurrences($_POST['nbRecurrences']);
 				}
 				$calRecurrence->setUser($save['user']);
-				#region reminder
-        $calRecurrence->setReminderType($save['reminder_type']);
-        $calRecurrence->setReminderFixedDate($save['reminder_fixed_date']);
-        $calRecurrence->setReminderTimeOffset($save['reminder_time_offset']);
-        $calRecurrence->setReminderRelatedTo($save['reminder_related_to']);
-        $calRecurrence->setReminderWhenRun($save['reminder_when_run']);
-        #endregion reminder
 				$calRecurrence->save($_POST['affect'] == 'all');
 					// Save the ip at the log for the addition of new calendar items when done by anonymous users
 					if (empty($user) && empty($save['calitemId']) && $caladd["$newcalid"]['tiki_p_add_events']) { 
@@ -315,22 +291,6 @@ if (isset($_POST['act'])) {
 			}
 		}
 	}
-}
-
-if (!empty($_REQUEST['viewcalitemId']) && isset($_REQUEST['del_me']) && $tiki_p_calendar_add_my_particip == 'y') {
-	$calendarlib->update_participants($_REQUEST['viewcalitemId'], null, array($user));
-}
-
-if (!empty($_REQUEST['viewcalitemId']) && isset($_REQUEST['add_me']) && $tiki_p_calendar_add_my_particip == 'y') {
-	$calendarlib->update_participants($_REQUEST['viewcalitemId'], array(array('name'=>$user)), null);
-}
-
-if (!empty($_REQUEST['viewcalitemId']) && !empty($_REQUEST['guests']) && isset($_REQUEST['add_guest']) && $tiki_p_calendar_add_guest_particip == 'y') {
-	$guests = preg_split('/ *, */', $_REQUEST['guests']);
-	foreach ($guests as $i=>$guest) {
-		$guests[$i] = array('name'=>$guest);
-	}
-	$calendarlib->update_participants($_REQUEST['viewcalitemId'], $guests);
 }
 
 if (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["calitemId"]) and $tiki_p_change_events == 'y') {
@@ -371,8 +331,8 @@ if (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["ca
 	die;
 }  elseif (isset($_REQUEST['duplicate']) and $tiki_p_add_events == 'y') {
 	// Check antibot code if anonymous and allowed
-	if (empty($user) && $prefs['feature_antibot'] == 'y' && (!$captchalib->validate())) {
-		$smarty->assign('msg', $captchalib->getErrors());
+	if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $_REQUEST['antibotcode'])) {
+		$smarty->assign('msg', tra("You have mistyped the anti-bot verification code; please try again."));
 		$smarty->assign('errortype', 'no_redirect_login');
 		$smarty->display("error.tpl");
 		die;
@@ -461,7 +421,7 @@ if (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["ca
 	$hour_minmax = ceil(($calendar['startday']-1)/(60*60)).'-'. ceil(($calendar['endday'])/(60*60));
 } else {
   $smarty->assign('errortype', 401);
-  $smarty->assign('msg', tra("You do not have permission to view this page"));
+  $smarty->assign('msg', tra("Permission denied you can not view this page"));
   $smarty->display("error.tpl");
   die;
 }
@@ -511,7 +471,9 @@ if ($prefs['feature_theme_control'] == 'y') {
 
 $headerlib->add_cssfile('css/calendar.css',20);
 
-$smarty->assign('referer', empty($_SERVER['HTTP_REFERER']) || strpos($_SERVER['HTTP_REFERER'], 'tiki-calendar_edit_item.php') !== false ? 'tiki-calendar.php' : $_SERVER['HTTP_REFERER']);
+include_once("textareasize.php");
+
+$smarty->assign('referer', empty($_SERVER['HTTP_REFERER']) ? 'tiki-calendar.php' : $_SERVER['HTTP_REFERER']);
 $smarty->assign('myurl', 'tiki-calendar_edit_item.php');
 $smarty->assign('id', $id);
 $smarty->assign('hour_minmax', $hour_minmax);
@@ -541,25 +503,15 @@ $smarty->assign('calendar', $calendar);
 $smarty->assign('calendarId', $calID);
 if (array_key_exists('CalendarViewGroups',$_SESSION) && count($_SESSION['CalendarViewGroups']) == 1)
 	$smarty->assign('calendarView',$_SESSION['CalendarViewGroups'][0]);
-
-#region reminder
-
-$reminder_time_offset_days = 0;
-$reminder_time_offset_hours = 1;
-$reminder_time_offset_minutes = 0;
-
-if ($calitem['reminder_type'] == 2)
-{
-    $reminder_time_offset_days = floor($calitem['reminder_time_offset'] / 86400);
-    $reminder_time_offset_hours = floor(($calitem['reminder_time_offset'] % 86400) / 3600);
-    $reminder_time_offset_minutes = floor(($calitem['reminder_time_offset'] % 3600) / 60);
+if ($prefs['feature_ajax'] == "y") {
+function edit_calendar_ajax() {
+    global $ajaxlib, $xajax;
+    $ajaxlib->registerTemplate("tiki-calendar_edit_item.tpl");
+    $ajaxlib->registerFunction("loadComponent");
+    $ajaxlib->processRequests();
 }
-
-$smarty->assign('reminder_time_offset_days', $reminder_time_offset_days);
-$smarty->assign('reminder_time_offset_hours', $reminder_time_offset_hours);
-$smarty->assign('reminder_time_offset_minutes', $reminder_time_offset_minutes);
-
-#endregion reminder
+edit_calendar_ajax();
+}
 
 global $wikilib; include_once('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'editwiki');

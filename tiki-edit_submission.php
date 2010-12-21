@@ -66,6 +66,7 @@ $smarty->assign('body', '');
 $smarty->assign('type', 'Article');
 $smarty->assign('rating', 7);
 $smarty->assign('edit_data', 'n');
+$smarty->assign('spellcheck', 'n');
 
 if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0) {
 	global $templateslib; require_once 'lib/templates/templateslib.php';
@@ -128,7 +129,7 @@ if (isset($_REQUEST["subId"])) {
 	if ($_REQUEST["subId"] > 0) {
 		if (($tiki_p_edit_submission != 'y' and $article_data["author"] != $user) or $user == "") {
 			$smarty->assign('errortype', 401);
-			$smarty->assign('msg', tra("You do not have permission to edit submissions"));
+			$smarty->assign('msg', tra("Permission denied you cannot edit submissions"));
 			$smarty->display("error.tpl");
 			die;
 		}
@@ -251,6 +252,17 @@ if (isset($_REQUEST["preview"])) {
 
 	$parsed_body = $tikilib->parse_data($body);
 	$parsed_heading = $tikilib->parse_data($heading);
+
+	if ($prefs['cms_spellcheck'] == 'y') {
+		if (isset($_REQUEST["spellcheck"]) && $_REQUEST["spellcheck"] == 'on') {
+			$parsed_body = $tikilib->spellcheckreplace($body, $parsed_body, $prefs['language'], 'subbody');
+
+			$parsed_heading = $tikilib->spellcheckreplace($heading, $parsed_heading, $prefs['language'], 'subheading');
+			$smarty->assign('spellcheck', 'y');
+		} else {
+			$smarty->assign('spellcheck', 'n');
+		}
+	}
 
 	$smarty->assign('parsed_body', $parsed_body);
 	$smarty->assign('parsed_heading', $parsed_heading);
@@ -443,6 +455,8 @@ if ($prefs['feature_freetags'] == 'y') {
 $smarty->assign('publishDateSite', $publishDate);
 $smarty->assign('expireDateSite', $expireDate);
 $smarty->assign('siteTimeZone', $prefs['display_timezone']);
+
+include_once("textareasize.php");
 
 global $wikilib; include_once('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'body');

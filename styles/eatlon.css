@@ -5,16 +5,16 @@
 	page footer to be in compliance with the terms of use. Because IE7
 	does not support display:table, minimal HTML tables are needed for
 	graphic treatment and column integrity. For more information, please visit
-	http://themes.tiki.org or http://zukakakina.com.
+	http://themes.tikiwiki.org	or http://zukakakina.com.
 */
-
+ 
 /* Import the default layout properties files: */
 @import url("lite/lite.css");
 @import url("layout/layout.css");
 @import url("layout/design.css");
-
+ 
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/
+			others follow Layout) *****/ 
 body {
 	background: #9faec2 url(eatlon/body_bg.gif) repeat-x;
 	font-family: arial, sans-serif;
@@ -25,27 +25,25 @@ html>body {font-size: 76% !important}
 body.fullscreen {padding: 3em}
 
 /* next two: fixed-width: 960px */
-body.fixed_width #fixedwidth {
+div#fixedwidth {
+	display: table; 
+	margin: auto; 
 	margin-bottom: 20px;
-	width: 900px !important;
+	width: 900px;
 	background: #fff;
-}
+} 
 
-body.fixed_width *:first-child+html #c1c2 {
+*:first-child+html #c1c2 {
 	margin-left: 0;
-	padding-left: 0}
+	padding-left: 0} 
 	
-body.fixed_width #main[id] {
+#main[id] {
 	margin-bottom:0;
 	margin-top: 0;
 }
 
  /***** Layout (overrides layout.css;
 		also styling of page layout divs)  *****/
-#main {
-		background: #fff;
-}
-
 #middle {
 	text-align: left;
 	min-height: 450px/*;
@@ -58,11 +56,11 @@ body.fixed_width #main[id] {
 
 tr#midrow {background: #fff}
 
-#c1c2 #wrapper #col1.marginleft  {
+#c1c2	#wrapper	#col1.marginleft  {
 	margin-left: 180px;
 }
 
-#c1c2 #wrapper #col1.marginright {
+#c1c2	#wrapper	#col1.marginright {
 	margin-right: 180px;
 }
 #c1c2 #col2 {
@@ -89,8 +87,8 @@ tr#midrow {background: #fff}
 #footer .content {
 	background: url(eatlon/bottom_bg.png) no-repeat 0 100%;
 	min-height: 163px;
-	text-align: center;
-	font-size: .9em;
+ 	text-align: center;
+ 	font-size: .9em;
 	margin-right: 50px;
 	padding-bottom: 30px;
 }
@@ -155,7 +153,7 @@ fieldset {
 legend {color: #a9a9a9}
 
 textarea,
-body.cke_show_borders {
+body.wikitext {
 	background: #d2d9e3;
 	color: #000}
 
@@ -173,12 +171,12 @@ input[type="reset"],
 select {background: #d2d9e3; color: #000}
 
 
-.button a,
-.button a:visited,
+span.button a,
+span.button a:visited,
 button,
 input[type="reset"],
 input[type="submit"],
-.button input,
+span.button input,
 .submitbutton,
 .calbuttonBox a {
 	border-top: 1px solid #f3f3f4;
@@ -225,9 +223,9 @@ ul, ol {text-align: left}
 tt {font-size: 1.2em}
 
 /***** Site Header & Identity *****/
-#header {position: static}
+div#header {position: static}
 	
-#header-top {
+div#header-top {
 	min-height: 140px;
 	background: url(eatlon/banner.gif) no-repeat 100% 100%}
 
@@ -278,7 +276,7 @@ input[id="sl-login-pass"] {background: #e1e1e2}
 
 #tiki-top {
 	background: url(eatlon/menu_bg.png) no-repeat right;
-	height: 78px;
+	height: 78px;	
 	min-height: 78px !important}
 
 #tiki-top .wrapper {
@@ -295,17 +293,20 @@ input[id="sl-login-pass"] {background: #e1e1e2}
 }
 
 #sitesearchbar {
-	color: #fff;
-	margin-top: 8px;
-}
+	color: white}
 
 input#fuser,
-#sitesearchbar select {
+#sitesearchbar select,
+#sitesearchbar input[type="submit"] {
 	border: 1px solid;
 	border-color: #878689 #f3f3f4 #f3f3f4 #878689;
 	background: #afafaf;
 	color: #fff}
 
+#sitesearchbar input[type="submit"] {
+	background: url(eatlon/menu_bg.png) 1000px -15px;
+	color: #fff}
+	
 /****** Menus, Links ******/
 /** CSS (suckerfish) menus **/
 
@@ -417,35 +418,113 @@ input#fuser,
 	top: 0;
 }
 
+/** PHP Layers Menus **/
+.horbar {
+	margin-top: 0;
+	padding-top: 5px;
+	width: 100%}
+	
+.horbar table {margin-left: 30px}
+
+.horbaritem a,
+.horbaritem a:link,
+.horbaritem a:visited {
+	padding: 6px;
+	text-decoration: none;
+	font: 1em Verdana, Helvetica, Arial, Sans-Serif;
+	color: white;
+	font-weight: bold;
+	border-bottom: none;
+	margin: 0} 
+
+* html .horbaritem a,
+* html .horbaritem a:visited {font-size: 12px}
+
+.horbaritem a:hover {
+	color: #d7e5f3 !important;
+	text-decoration: none;
+	border-bottom: none} 
+
+.mdksubmenu {
+	background: #9faec2 url(eatlon/body_bg.gif) 0 -300px repeat-x;
+	margin-top: 6px}
+
+.mdkitem a,
+.mdkitem a:link,
+.mdkitem a:visited {
+	padding: 4px 9px;
+	font-weight: normal;
+	color: #fff} 
+
+.mdkitem a:hover {
+	color: #d7e5f3;
+	text-decoration: none} 
+
+.box-data .mdkitem a,
+.box-data .mdkitem a:link,
+.box-data .mdkitem a:visited  {
+	padding: 2px 9px;
+	text-decoration: none;
+	color: #6d819d;
+	border-bottom: 1px solid transparent}
+
+.box-data .mdkitem a:hover {
+	text-decoration: none;
+	color: #a42929;
+	border-bottom: 1px solid #6d819d}
+
+.phplmnormal,
+a.phplmnormal:hover,
+a.phplm:link,
+a.phplm:visited,
+a.phplm:hover,
+a.phplm:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: #6d819d;
+	text-decoration: none;
+	font-weight: normal;
+	background: transparent}
+
+a.phplm:visited {color: #726461}
+a.phplm:hover {color: #808080}
+a.phplm:active {color: #ff0000}
+
+a.phplmselected:link,
+a.phplmselected:visited,
+a.phplmselected:hover,
+a.phplmselected:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: #6d819d;
+	font-weight: normal}
+
+a.phplmselected:hover {color: #d7e5f3}
+
+/** Links in other menus **/
+
 /***** Misc. Center Col. *****/
 a.flip,
 a.flip:visited,
 .tellafriend a,
-.share a,
-.tellafriend a:visited,
-.share a:visited {color: #ADBAC3}
+.tellafriend a:visited {color: #ADBAC3}
 
 a.flip:hover,
-.tellafriend a:hover,
-.share a:hover {color: #505050}
+.tellafriend a:hover {color: #505050}
 
-.tellafriend,
-.share {padding-right: 6px}
-.actions .share {padding-right: 0;}
+.tellafriend {padding-right: 6px}
 #tiki-center {font-size: 1.1em}
 
 /****** Misc. Global ****/
 
 /***** Boxes *****/
 /** Modules **/
-.box {
+div.box {
 	margin-bottom: 16px;
 	display: block}
 	
 #leftcolumn .box,
 #rightcolumn .box {width: 160px}
 	
-.wikitext .box {width: 96%}
+.wikitext div.box {width: 96%}
 
 h3.box-title {
 	color:#8F8F8F;
@@ -479,7 +558,7 @@ h3.box-title {
 	background: #cecece;
 	color: #000}
 
-.simplebox {
+div.simplebox {
 	border: 1px solid #e0e0e0;
 	padding: 4px;
 	background: white;
@@ -488,11 +567,12 @@ h3.box-title {
 /***** Tables, Tabs *****/
 /** Tables **/
 /*
-.admin tr td #page-bar {
+table.admin tr td div#page-bar {
 	margin-left: 5px;
 	margin-bottom: 0;
 	background: transparent}*/
 
+td.normal,
 .wikitable td {
 	margin: 0;
 	padding: 0.2em;
@@ -501,17 +581,18 @@ h3.box-title {
 td.odd:hover,
 td.even:hover {border-right: 1px solid #e0e0e0}
 
-.normal td.heading {font-size: 1em}
+table.normal td.heading {font-size: 1em}
 
-.normal td.odd:hover,
-.normal td.even:hover,
-.normal tr:hover {background: #f3f3f4}
+table.normal td.odd:hover,
+table.normal td.even:hover,
+table.normal tr:hover {background: #f3f3f4}
 
+td.normal,
 .normal td,
 .wikitable td,
 td.odd,
 td.even,
-.form,
+td.form,
 .formcolor td,
 .editblogform td {
 	border: 1px solid #8cacbb;
@@ -567,7 +648,7 @@ td.even,
 	background: url(eatlon/menu_bg.png) 1000px 0;
 	color: #ececec}
 
-.tabactive a {color: #d7e5f3; font-weight: bold}
+.tabactive a {color: #d7e5f3; font-weight: bold}	
 
 .tabcontent {
 	border-left: 1px solid #a9a9a9;
@@ -582,7 +663,7 @@ form fieldset.tabcontent {
 	border: 1px solid #225566;
 	border-top: 0 !important}
 
-.admin .tabcontent .cbox {background: transparent}
+table.admin .tabcontent div.cbox {background: transparent}
 
 /***** Wiki *****/
 a.pagetitle,
@@ -592,15 +673,15 @@ a.pagetitle:hover {
 	text-decoration: none;
 	border-bottom: 0}
 
-#description {
+div#description {
 	font-size: .9em;
 	font-style: italic}
 
 .wikitext {line-height: 1.5em}
 
-.wikitext h1,
-.wikitext h2,
-.wikitext h3,
+.wikitext h1, 
+.wikitext h2, 
+.wikitext h3, 
 .wikitext h4 {
 	margin: 0 0 15px;
 	padding: 0}
@@ -613,11 +694,11 @@ a.pagetitle:hover {
 	border-bottom: 1px solid #999;
 	margin: 10px 0 10px 0}
 
-.wikitable {
+table.wikitable {
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse}
-
-.wikicell {
+ 
+td.wikicell {
 	padding: 3px;
 	border: 1px solid #999;
 	border-collapse: collapse}
@@ -631,7 +712,7 @@ textarea.wikiedit {font-size: 1.1em}
 
 /** Wiki plugins **/
 /* Code plugin  */
-.code {
+div.code {
 	font-size: 90%;
 	padding: 3px;
 	border: 1px dashed #ccc;
@@ -644,7 +725,7 @@ textarea.wikiedit {font-size: 1.1em}
 	background: #F5F5F5;
 	margin: 4px;
 	border: 1px dashed #ADACAF;
-	overflow: auto;
+	overflow: auto; 
    width: 500px}
 	
 * html .codelisting {padding-bottom: 20px}
@@ -663,16 +744,16 @@ textarea.wikiedit {font-size: 1.1em}
 	font-weight: bold}
 
 /* Quote plugin */
-.quoteheader {margin-left: 20px}
-.quotebody {font-style: italic}
+div.quoteheader {margin-left: 20px}
+div.quotebody {font-style: italic}
 
 /** Wiki tocs **/
-.tocnav {
+div.tocnav {
 	background: #EBEBEB;
 	padding: 3px}
 
 /* TOC */
-.toc {
+ul.toc {
 	border-top: 1px dotted #999;
 	border-bottom: 1px dotted #999}
 
@@ -683,26 +764,26 @@ textarea.wikiedit {font-size: 1.1em}
 /***** Articles ****/
 .wikitext .article {font-size: 1em}
 
-.articletopline {
+div.articletopline {
 	font-size: 90%;
 	font-style: italic}
 
-.articletitle {
+div.articletitle {
 	margin-top: 6px;
-	margin-bottom: 15px;
-	text-align: left}
-
-.articletitle h2 {
+	margin-bottom:	15px;
+	text-align:	left}
+ 
+div.articletitle h2 {
 	font-size: 1.5em;
 	font-weight: normal}
 
-.titleb {font-size: 1.0em}
-.articlesubtitle {font-size: 0.9em}
-.articleheading {margin: 6px 0}
-.articlebody {margin-top: 1em}
+span.titleb {font-size: 1.0em} 
+div.articlesubtitle {font-size: 0.9em}
+div.articleheading {margin: 6px 0}
+div.articlebody {margin-top: 1em}
 
 /***** Blogs *****/
-.blogtitle {
+div.blogtitle {
 	font-size: 1.3em;
 	font-weight: bold;
 	padding: 3px;
@@ -710,12 +791,12 @@ textarea.wikiedit {font-size: 1.1em}
 	font-weight: bold;
 	line-height: 80%}
 
-.bloginfo {
+div.bloginfo {
 	text-align: center;
 	padding: 3px;
 	line-height: 150%;
 	text-transform: 0}
-
+ 
 .postinfo a {
 	color: #9CF;
 	text-decoration: none;
@@ -727,13 +808,13 @@ a.blogt:hover {
 
 .postinfo {font-size: 1.2em}
 
-.posthead {
+span.posthead {
 	font-weight: bold;
 	letter-spacing: .4pt}
-
-.posthead h3 {font-size:1.2em}
-
-.postbody {
+ 
+div.posthead h3 {font-size:1.2em}
+ 
+div.postbody {
 	margin-right: 8px;
 	line-height: inherit;
 	margin-bottom: 1em}
@@ -767,7 +848,7 @@ a.blogt:hover {
 	color: #29677B;
 	text-decoration: none}
 
-.post .author {
+.post .author {	
 	float: left;
 	text-align: left;
 	width: 33%;
@@ -811,7 +892,7 @@ a.blogt:hover {
 
 .forum_actions .headers .infos {font-size: smaller}
 
-.commentsedithelp {
+div.commentsedithelp {
 	background: #ffcfcf;
 	color: black;
 	border: 1px solid #ff0000;
@@ -819,7 +900,7 @@ a.blogt:hover {
 	font-weight: bold}
 
 /**** Image Galleries ****/
-.galtable {
+table.galtable {
 	border-collapse: collapse;
 	border: 1px solid #8cacbb}
 
@@ -840,19 +921,19 @@ textarea.tshoutbox{
 	width: 132px}
 
 /***** Directory *****/
-.dircategs {
+div.dircategs {
 	border: 1px solid #8cacbb;
 	padding: 5px}
 
-.dirlistsites {
+div.dirlistsites {
 	padding: 5px 0 10px 5px;
 	margin-top: 10px}
 
-.dirsite {
+div.dirsite {
 	margin: 5px;
 	margin-bottom: 10px}
 
-.dirrelated {
+div.dirrelated {
 	margin-top: 10px;
 	padding: 5px}
 
@@ -860,27 +941,27 @@ td.dirfooter {font-size: .95em}
 div.dirfooter {margin-top: 10px}
 
 /***** Messages *****/
-.prio1,
-.prio2,
-.prio3,
-.prio4,
-.prio5 {border: 1px solid #8cacbb}
+td.prio1,
+td.prio2,
+td.prio3,
+td.prio4,
+td.prio5 {border: 1px solid #8cacbb}
 
-.messureadflag {background: #ccc}
-.messureadhead {background: #DEDEDE}
-.messureadbody {background: #DEDEDE}
+div.messureadflag {background: #ccc}
+div.messureadhead {background: #DEDEDE}
+div.messureadbody {background: #DEDEDE}
 
 /***** TikiSheets *****/
-.default thead td,
-.default tfoot td {
+table.default thead td,
+table.default tfoot td {
 	font-weight: bold;
 	text-align: center}
 
-.default td {border: solid 1px #a9a9a9}
+table.default td {border: solid 1px #a9a9a9}
 
 /***** Calendar *****/
-.Cal0,
-.Cal1,
+.Cal0, 
+.Cal1, 
 .Cal2 {font-size: 90%}
 	
 .Calart,
@@ -994,8 +1075,8 @@ Caltrack a:visited {color: #00BD02}
 .caltoggle {font-size: 90%}
 
 .opaque {
-	border-left: 1px solid #a9a9a9;
-	border-top: 1px solid #a9a9a9;
+   border-left: 1px solid #a9a9a9;
+  	border-top: 1px solid #a9a9a9;
 	border-right: 1px solid #696969;
 	border-bottom: 1px solid #696969}
 
@@ -1004,7 +1085,7 @@ Caltrack a:visited {color: #00BD02}
 .calnavigation a:hover {background: red}
 
 #caltable .calfocuson,
-.box-data .fc a.today,
+.box-data td.fc a.today,
 .box-data td a.today {
 	background: #d2d9e3;
 	border: 0}
@@ -1033,7 +1114,7 @@ Caltrack a:visited {color: #00BD02}
 	padding: 2px;
 	font-size: 1em}
 
-.event {background: whitesmoke}
+td.event {background: whitesmoke}
 .addevent {padding: 0 5px; float: right}
 * html .addevent {padding: 0}
 .calodd, .caleven {border: 1px solid darkgray}
@@ -1046,7 +1127,7 @@ Caltrack a:visited {color: #00BD02}
 * html .caldark {padding: 0}
 .caldark .calfocus {background: #c4cdda}
 
-div#calscreen .calfocuson {
+div#calscreen td.calfocuson {
 	background: #d2d9e3;
 }
 

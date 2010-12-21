@@ -12,7 +12,7 @@ class TWVersion
 	var $branch;		// Development cycle
 	var $version;		// This version
 	private $latestMinorRelease;		// Latest release in the same major version release series
-	var $latestRelease;		// Latest release
+	private $latestRelease;		// Latest release
 	private $isLatestMajorVersion; // Whether or not the current major version is the latest
 	var $releases;		// Array of all releases from website
 	var $star;			// Star being used for this version tree
@@ -23,11 +23,11 @@ class TWVersion
 		//   stable   : Represents stable releases.
 		//   unstable : Represents candidate and test/development releases.
 		//   trunk     : Represents next generation development version.
-		$this->branch 	= 'unstable';
+		$this->branch 	= 'stable';
 
 		// Set everything else, including defaults.
-		$this->version 	= '7.0 SVN trunk';
-		$this->star	= '';
+		$this->version 	= '5.4';
+		$this->star	= 'Vulpeculae';
 		$this->releases	= array();
 
 		// Check for Subversion or not
@@ -64,8 +64,7 @@ class TWVersion
 				13=>'Arcturus',
 				14=>'Betelgeuse',
 				15=>'Aldebaran',
-				16=>'Vulpeculae',
-				17=>'Rigel'
+				16=>'Vulpeculae'
 				);
 	}
 
@@ -129,17 +128,8 @@ class TWVersion
 				'5.1',
 				'5.2',
 				'5.3',
-				'6.0beta1',
-				'6.0beta2',
-				'6.0beta3',
-				'6.0RC1',
-				'6.0',
-				'6.1alpha1',
-				'6.1beta1',
-				'6.1beta2',
-				'6.1RC1',
-				'6.1',
-			);
+				'5.4',
+				);
 	}
 
 	// Gets the latest star used by Tiki.
@@ -165,8 +155,8 @@ class TWVersion
 		global $tikilib;
 		$upgrade = 0;
 		$major = 0;
-		$velements = explode('.', $this->getBaseVersion());
-		$body = $tikilib->httprequest("tiki.org/" . $this->branch . '.version'); // .version contains an ordered list of release numbers, one per line. All minor releases from a same major release are grouped.
+		$velements = explode('.', $this->version);
+		$body = $tikilib->httprequest("tikiwiki.org/" . $this->branch . '.version'); // .version contains an ordered list of release numbers, one per line. All minor releases from a same major release are grouped.
 		$lines = explode("\n", $body);
 		$this->isLatestMajorVersion = true;
 		foreach ($lines as $line) {

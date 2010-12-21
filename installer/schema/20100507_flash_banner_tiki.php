@@ -3,7 +3,7 @@
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: 20090416_plugin_security_tiki.php 25165 2010-02-12 21:05:13Z changi67 $
 
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
@@ -19,6 +19,7 @@ function upgrade_20100507_flash_banner_tiki( $installer ) {
 			$movie['width'] = $matches[4];
 			$movie['height'] = $matches[5];
 			$movie['version'] = $matches[6];
+			echo 'eeee';
 			$installer->query( $query, array(serialize($movie), $res['bannerId']));
 		}
 	}

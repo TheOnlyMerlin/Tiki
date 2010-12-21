@@ -26,7 +26,7 @@
 .mdkitem a {
 	font-size: 1em;
 }
-.box-css_menu ul {
+div.box-css_menu ul {
 	margin-left: 0;
 }
 #col2 .cssmenu_vert,
@@ -44,11 +44,11 @@
 	height: 1%;
 }
 
-#tikihelp {
+div#tikihelp {
 	position: absolute;
 }
-#col2 .box,
-#col3 .box {
+#col2 div.box,
+#col3 div.box {
 	width: 181px;
 }
 h3.box-title {
@@ -107,6 +107,6 @@ td {
 	font-size: 11px;
 }
 
-.galtable {
+table.galtable {
 	width: 97%;
 }

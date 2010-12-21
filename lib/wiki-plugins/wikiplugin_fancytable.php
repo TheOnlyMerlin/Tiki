@@ -27,69 +27,58 @@ function wikiplugin_fancytable_info() {
 	return array(
 		'name' => tra('Fancy Table'),
 		'documentation' => 'PluginFancyTable',
-		'description' => tra('Create a formatted table'),
+		'description' => tra("Displays the data using the Tikiwiki odd/even table style"),
 		'prefs' => array('wikiplugin_fancytable'),
 		'body' => tra('Rows separated by >> in the header; for the table body, one row per line. Cells separated by | in both cases.'),
-		'icon' => 'pics/icons/table.png',
 		'params' => array(
 			'head' => array(
 				'required' => false,
-				'name' => tra('Heading Row'),
+				'name' => tra('Heading row'),
 				'description' => tra('Header rows of the table. Use >> to separate multiple rows.'),
-				'default' => '',
 			),
 			'headclass' => array(
 				'required' => false,
-				'name' => tra('Heading CSS Class'),
+				'name' => tra('Heading CSS class'),
 				'description' => tra('CSS class to apply to the heading row.'),
-				'default' => '',
 			),
 			'headaligns' => array(
 				'required' => false,
-				'name' => tra('Header Horizontal Align'),
+				'name' => tra('Header horizontal align'),
 				'description' => tra('Horizonatal alignments for header cells separated by |. Choices: left, right, center, justify.'),
-				'default' => '',
 			),
 			'headvaligns' => array(
 				'required' => false,
-				'name' => tra('Header Vertical Align'),
+				'name' => tra('Header vertical align'),
 				'description' => tra('Vertical alignments for header cells separated by |. Choices: top, middle, bottom, baseline.'),
-				'default' => '',
 			),
 			'sortable' => array(
 				'required' => false,
-				'name' => tra('Column Sort'),
-				'description' => tra('Indicate whether columns are sortable or not (not sortable by default)'),
-				'default' => 'n',
+				'name' => tra('Column sort'),
+				'description' => 'Indicate whether columns are sortable or not.',
 				'options' => array(
-					array('text' => '', 'value' => ''), 
+					array('text' => tra('No'), 'value' => 'n'), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
 				),
 			),
 			'sortList' => array(
 				'required' => false,
-				'name' => tra('Pre-sorted Columns'),
+				'name' => tra('Pre-sorted columns'),
 				'description' => tra('Bracketed numbers for column number and sort direction (0 = ascending, 1 = descending), for example: [0,0],[1,0]'),
-				'default' => '',
 			),
 			'colwidths' => array(
 				'required' => false,
-				'name' => tra('Column Widths'),
+				'name' => tra('Column widths'),
 				'description' => tra('Column widths followed by px for pixels or % for percentages. Each column separated by |.'),
-				'default' => '',
 			),
 			'colaligns' => array(
 				'required' => false,
-				'name' => tra('Cell Horizontal Align'),
+				'name' => tra('Cell horizontal align'),
 				'description' => tra('Table body column horizonatal alignments separated by |. Choices: left, right, center, justify.'),
-				'default' => '',
 			),
 			'colvaligns' => array(
 				'required' => false,
-				'name' => tra('Cell Vertical Align'),
+				'name' => tra('Cell vertical align'),
 				'description' => tra('Table body column vertical alignments separated by |. Choices: top, middle, bottom, baseline.'),
-				'default' => '',
 			),
 		),
 	);
@@ -145,7 +134,7 @@ function wikiplugin_fancytable($data, $params) {
 		$data = str_replace('|', '~|~', $data);
 		$data = preg_replace($patterns, $replace , $data);
 	}	
-	$lines = explode("\n", $data);
+	$lines = split("\n", $data);
 	$colsw = isset($colwidths) ?  explode('|', $colwidths) : '';
 	$caligns = isset($colaligns) ?  explode('|', $colaligns) : '';
 	$cvaligns = isset($colvaligns)?  explode('|', $colvaligns) : '';
@@ -161,9 +150,9 @@ function wikiplugin_fancytable($data, $params) {
 			$wret .= tra('The feature must be activated:').' feature_jquery_tablesorter';
 		}
 		if (empty($sortList)) {
-			$js = '$("#fancytable_'.$iFancytable.'").tablesorter({widgets: ["zebra"]});';
+			$js = '$jq("#fancytable_'.$iFancytable.'").tablesorter({widgets: ["zebra"]});';
 		} else {
-			$js = '$("#fancytable_'.$iFancytable.'").tablesorter({sortList:['.$sortList.'], widgets: ["zebra"]});';
+			$js = '$jq("#fancytable_'.$iFancytable.'").tablesorter({sortList:['.$sortList.'], widgets: ["zebra"]});';
 		}
 		global $headerlib;
 		$headerlib->add_jq_onready($js);

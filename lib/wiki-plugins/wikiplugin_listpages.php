@@ -5,166 +5,113 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+function wikiplugin_listpages_help() {
+	$help = tra("List wiki pages.");
+	$help .= "<br />";
+	$help .= "~np~{LISTPAGES(initial=txt, showNameOnly=y|n, categId=id, structHead=y|n, showPageAlias=y|n, offset=num, max=num, find=txt, exact_match=y|n, only_orphan_pages=y|n, for_list_pages=y|n)}{LISTPAGES}~/np~";
+
+	return $help;
+}
+
 function wikiplugin_listpages_info() {
 	return array(
 		'name' => tra('List Pages'),
 		'documentation' => 'PluginListpages',
-		'description' => tra('List pages based on various criteria'),
+		'description' => tra('List wiki pages.'),
 		'prefs' => array('wikiplugin_listpages'),
-		'icon' => 'pics/icons/page_find.png',
+		'icon' => 'pics/icons/page_white_stack.png',
 		'params' => array(
 			'offset' => array(
 				'required' => false,
 				'name' => tra('Result Offset'),
 				'description' => tra('Result number at which the listing should start.'),
-				'filter' => 'digits',
-				'default' => 0,
 			),
 			'max' => array(
 				'required' => false,
-				'name' => tra('Max'),
-				'description' => tra('Limit number of items displayed in the list. Default is to display all.'),
-				'filter' => 'digits',
-				'default' => -1,
+				'name' => tra('Result Count'),
+				'description' => tra('Number of results displayed in the list.'),
 			),
 			'initial' => array(
 				'required' => false,
 				'name' => tra('Initial'),
 				'description' => tra('txt'),
-				'default' => '',
 			),
 			'showNameOnly' => array(
 				'required' => false,
 				'name' => tra('Show Name Only'),
-				'description' => tra('Show only the page names'),
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
+				'description' => 'y|n',
 			),
 			'categId' => array(
 				'required' => false,
-				'name' => tra('Category filter'),
-				'description' => tra('If set to a category identifier, restrict the pages displayed to those in the specified category.').' ' . tra('Example value:') . ' 42. ' . tra('If set to a list of category identifiers separated by colons (:), restrict the pages to those in any of the specified categories.') . ' ' . tra('Example value:') . ' 1:2. ' . tra('If set to a list of category identifiers separated by plus signs (+), only display a page if it is in all of the specified categories.') . ' ' . tra('Example value:') . ' 1+2. ' .  tra('If set to a list of category identifiers separated by minus signs (-), only display a page if it is in the first specified category and not in any of the following categories.') . ' ' . tra('Example value:') . ' 1-2-3.', 
-				'filter' => 'striptags', 
-				'default' => '',
+				'name' => tra('Category'),
+				'description' => tra('Category ID'),
 			),
 			'structHead' => array(
 				'required' => false,
 				'name' => tra('Structure Head'),
-				'description' => tra('Filter by structure head'),
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
+				'description' => 'y|n',
 			),
 			'showPageAlias' => array(
 				'required' => false,
 				'name' => tra('Show Page Alias'),
-				'description' => tra('Show page alias in the list'),
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
+				'description' => 'y|n',
 			),
 			'find' => array(
 				'required' => false,
 				'name' => tra('Find'),
-				'description' => tra('Only pages with names similar the text entered for this parameter will be listed'),
+				'description' => tra('txt'),
 			),
 			'lang' => array(
 				'required' => false,
 				'name' => tra('Language'),
 				'description' => tra('Two letter language code to filter pages listed.'),
-				'filter' => 'alpha',
 			),
 			'langOrphan' => array(
 				'required' => false,
 				'name' => tra('Orphan Language'),
 				'description' => tra('Two letter language code to filter pages listed. Only pages not available in the provided language will be listed.'),
-				'filter' => 'alpha',
 			),
 			'translations' => array(
 				'required' => false,
 				'name' => tra('Load Translations'),
-				'description' => tra('User or pipe separated list of two letter language codes for additional languages to display. If the language parameter is not defined, the first element of this list will be used as the primary filter.'),
-			),
-			'translationOrphan' => array(
-				'required' => false,
-				'name' => tra('No translation'),
-				'description' => tra('User or pipe separated list of two letter language codes for additional languages to display. List pages with no language or with a missing translation in one of the language'),
+				'description' => tra('user or pipe separated list of two letter language codes for additional languages to display. If the language parameter is not defined, the first element of this list will be used as the primary filter.'),
 			),
 			'exact_match' => array(
 				'required' => false,
 				'name' => tra('Exact Match'),
-				'description' => tra('Page name and text entered for the filter parameter must match exactly to be listed'),
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
+				'description' => 'y|n'.' '.tra('Related to Find.'),
 			),
 			'only_orphan_pages' => array(
 				'required' => false,
 				'name' => tra('Only Orphan Pages'),
-				'description' => tra('Only list orphan pages'),
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
+				'description' => 'y|n',
 			),
 			'for_list_pages' => array(
 				'required' => false,
 				'name' => tra('For List Pages'),
 				'description' => 'y|n',
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'sort' => array(
 				'required' => false,
 				'name' => tra('Sort'),
-				'description' => tra('Sort ascending or descending on any field in the tiki_pages table. Syntax is field name followed by _asc or _desc. Example: ')
-									. 'lastModif_desc' . tra('or') . 'pageName_asc',
-				'default' => 'pageName_asc',
+				'description' => 'lastModif_desc'.tra('or').'pageName_asc',
 			),
 			'start' => array(
 				'required' => false,
 				'name' => tra('Start'),
 				'description' => tra('When only a portion of the page should be included, specify the marker from which inclusion should start.'),
-				'default' => '',
 			),
 			'end' => array(
 				'required' => false,
 				'name' => tra('Stop'),
 				'description' => tra('When only a portion of the page should be included, specify the marker at which inclusion should end.'),
-				'default' => '',
 			),
 			'length' => array(
 				'required' => false,
 				'name' => tra('Length'),
 				'description' => tra('Number of characters to display'),
-				'default' => '',
-			)
-		)
+			),
+		),
 	);
 }
 
@@ -184,7 +131,7 @@ function wikiplugin_listpages($data, $params) {
 		// the feature is disabled or the user can't read wiki pages
 		return '';
 	}
-	$default = array('offset'=>0, 'max'=>-1, 'sort'=>'pageName_asc', 'find'=>'', 'start'=>'', 'end'=>'', 'length'=>-1, 'translations'=>null, 'translationOrphan'=>null);
+	$default = array('offset'=>0, 'max'=>-1, 'sort'=>'pageName_asc', 'find'=>'', 'start'=>'', 'end'=>'', 'length'=>-1, 'translations'=>null);
 	$params = array_merge($default, $params);
 	extract($params,EXTR_SKIP);
 	$filter = array();
@@ -196,17 +143,7 @@ function wikiplugin_listpages($data, $params) {
 		}
 	}
 	if (!empty($categId)) {
-		if (strstr($categId, ':')) {
-			$filter['categId'] = explode(':', $categId);
-		} elseif (strstr($categId, '+')) {
-			$filter['andCategId'] = explode('+', $categId);
-		} elseif (strstr($categId, '-')) {
-			$categories = explode('-', $categId);
-			$filter['categId'] = array_shift($categories);
-			$filter['notCategId'] = $categories;
-		} else {
-			$filter['categId'] = $categId;
-		}
+		$filter['categId'] = $categId;
 	}
 	if (!empty($structHead) && $structHead == 'y') {
 		$filter['structHead'] = $structHead;
@@ -219,9 +156,6 @@ function wikiplugin_listpages($data, $params) {
 		} else {
 			$translations = explode( '|', $translations );
 		}
-	}
-	if (!empty($translationOrphan)) {
-		$filter['translationOrphan'] = explode('|', $translationOrphan);
 	}
 	if (!empty($langOrphan)) {
 		$filter['langOrphan'] = $langOrphan;

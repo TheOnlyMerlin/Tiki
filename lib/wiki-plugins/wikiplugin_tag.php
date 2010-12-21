@@ -17,23 +17,20 @@ function wikiplugin_tag_info() {
 	return array(
 		'name' => tra('Tag'),
 		'documentation' => 'PluginTag',
-		'description' => tra('Apply an HTML tag to content'),
+		'description' => tra('Displays the text between an html tag'),
 		'prefs' => array( 'wikiplugin_tag' ),
 		'validate' => 'all',
 		'body' => tra('text'),
-		'icon' => 'pics/icons/script_code_red.png',
 		'params' => array(
 			'tag' => array(
 				'required' => false,
 				'name' => tra('Tag Name'),
 				'description' => tra('Any valid HTML tag, span by default.'),
-				'default' => 'span',
 			),
 			'style' => array(
 				'required' => false,
 				'name' => tra('CSS Style'),
 				'description' => tra('Equivalent to the style attribute of an HTML tag.'),
-				'default' => '',
 			),
 		),
 	);

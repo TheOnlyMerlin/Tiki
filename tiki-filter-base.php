@@ -20,18 +20,21 @@ $tiki_script_filename = str_replace('\\','/',getcwd());
 if ($tiki_script_filename !== false) {
 	$tiki_script_filename .= '/index.php';
 } else {
+	// Note: need to susbsitute \ for / for windows.
+	$tiki_script_filename = $_SERVER['SCRIPT_FILENAME'];
+
 	// On some systems, SCRIPT_FILENAME contains the full path to the cgi script
 	// that calls the script we are looking for. In this case, we have to
 	// fallback to PATH_TRANSLATED. This one may be wrong on some systems, this
 	// is why SCRIPT_FILENAME is tried first.
-	if ( substr($_SERVER['SCRIPT_FILENAME'], 0, strlen($tiki_setup_dir)) != $tiki_setup_dir ) {
-		// PATH_TRANSLATED is not always set on PHP5, so try to get first value of get_included_files() in this case	
+	//
+	// Note that PATH_TRANSLATED is not always set on PHP5, so try to get first value of get_included_files() in this case
+	//
+	if ( substr($tiki_script_filename, 0, strlen($tiki_setup_dir)) != $tiki_setup_dir ) {
+		// Note: need to susbsitute \ for / for windows.
 		$tiki_script_filename = empty($_SERVER['PATH_TRANSLATED']) ? current(get_included_files()) : $_SERVER['PATH_TRANSLATED'];
-	} else {
-		$tiki_script_filename = $_SERVER['SCRIPT_FILENAME'];
 	}
-	
-	// Note: need to substitute \ for / for Windows.
+
 	$tiki_script_filename = str_replace('\\', '/', realpath($tiki_script_filename));
 }
 $tmp = dirname(str_replace($tiki_setup_dir,'',$tiki_script_filename));
@@ -55,7 +58,7 @@ $unallowed_uri_chars = array_merge($unallowed_uri_chars, array('#', '[', ']'));
 $unallowed_uri_chars_encoded = array_merge($unallowed_uri_chars_encoded, array_map('urlencode', array('#', '[', ']')));
 $_SERVER['SCRIPT_NAME'] = str_replace($unallowed_uri_chars, $unallowed_uri_chars_encoded, $_SERVER['SCRIPT_NAME']);
 
-// Note: need to substitute \ for / for Windows.
+// Note: need to susbsitute \ for / for windows.
 $tikiroot = str_replace('\\','/',dirname($_SERVER['SCRIPT_NAME']));
 $tikipath = dirname($tiki_script_filename);
 $tikiroot_relative = '';
@@ -70,7 +73,7 @@ if ($dir_level > 0) {
 if ( substr($tikiroot,-1,1) != '/' ) $tikiroot .= '/';
 if ( substr($tikipath,-1,1) != '/' ) $tikipath .= '/';
 
-// Add global filter for xajax and cookie	// AJAX_TODO?
+// Add global filter for xajax and cookie
 global $inputConfiguration;
 if ( empty($inputConfiguration) ) {
 	$inputConfiguration = array();
@@ -88,17 +91,7 @@ array_unshift($inputConfiguration,array(
 
 require_once('lib/init/initlib.php');
 TikiInit::prependIncludePath($tikipath.'lib/pear');
-TikiInit::appendIncludePath($tikipath.'lib/core');
+TikiInit::appendIncludePath($tikipath.'lib/core/lib');
 TikiInit::appendIncludePath($tikipath);
-require_once 'Zend/Loader/Autoloader.php';
-Zend_Loader_Autoloader::getInstance()
-	->registerNamespace('TikiFilter')
-	->registerNamespace('DeclFilter')
-	->registerNamespace('JitFilter')
-	->registerNamespace('Search')
-	->registerNamespace('Perms')
-	->registerNamespace('Math')
-	->registerNamespace('Category')
-	->registerNamespace('WikiParser')
-	->registerNamespace('StandardAnalyzer');
-
+require_once('lib/core/lib/DeclFilter.php');
+require_once('lib/core/lib/JitFilter.php');

@@ -14,18 +14,16 @@ function wikiplugin_myspace_help() {
 function wikiplugin_myspace_info() {
 	return array(
 		'name' => tra('MySpace'),
-		'documentation' => 'PluginMySpace',
-		'description' => tra('Display a MySpace Flash mp3 playlist'),
+		'documentation' => 'PluginMySpace',			
+		'description' => tra("Displays a MySpace Flash mp3 playlist in the wiki page"),
 		'prefs' => array( 'wikiplugin_myspace' ),
-		'icon' => 'pics/icons/myspace.png',
 		'params' => array(
 			'page' => array(
 				'required' => true,
 				'name' => tra('MySpace Page'),
-				'description' => tra('MySpace page name.'),
-				'default' => '',
-			)
-		)
+				'description' => 'MySpace page name.',
+			),
+		),
 	);
 }
 

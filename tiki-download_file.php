@@ -88,11 +88,7 @@ $error = '';
 
 if (!$skip) {
 	if ( isset($_REQUEST['fileId']) && !is_array($_REQUEST['fileId'])) {
-		if (isset($_GET['draft'])) {
-			$info = $tikilib->get_file_draft($_REQUEST['fileId']);
-		} else {
-			$info = $tikilib->get_file($_REQUEST['fileId']);
-		}
+		$info = $tikilib->get_file($_REQUEST['fileId']);
 	} elseif ( isset($_REQUEST['galleryId']) && isset($_REQUEST['name']) ) {
 		$info = $tikilib->get_file_by_name($_REQUEST['galleryId'], $_REQUEST['name']);
 	} elseif ( isset($_REQUEST['fileId']) && is_array($_REQUEST['fileId'])) {
@@ -110,20 +106,12 @@ if (!$skip) {
 		$smarty->display('error.tpl');
 		die;
 	}
+	//var_dump($filegallib->hasOnlyPrivateBacklinks($info['fileId'])); die;
 	if ( !$zip && $tiki_p_admin_file_galleries != 'y' && !$userlib->user_has_perm_on_object($user, $info['galleryId'], 'file gallery', 'tiki_p_download_files') && !($info['backlinkPerms'] == 'y' && !$filegallib->hasOnlyPrivateBacklinks($info['fileId']))) {
 		$smarty->assign('errortype', 401);
 		$smarty->assign('msg', tra('Permission denied'));
 		$smarty->display('error.tpl');
 		die;
-	}
-	if ( isset($_GET['thumbnail']) && is_numeric($_GET['thumbnail'])) { //check also perms on thumb 
-		$info_thumb = $tikilib->get_file($_GET['thumbnail']);
-		if ( !$zip && $tiki_p_admin_file_galleries != 'y' && !$userlib->user_has_perm_on_object($user, $info_thumb['galleryId'], 'file gallery', 'tiki_p_download_files') && !($info['backlinkPerms'] == 'y' && !$filegallib->hasOnlyPrivateBacklinks($info_thumb['fileId']))) {
-			$smarty->assign('errortype', 401);
-			$smarty->assign('msg', tra('Permission denied'));
-			$smarty->display('error.tpl');
-			die;
-		}
 	}
 }
 
@@ -176,9 +164,6 @@ if ( ! empty($info['path']) )  {
 			: $info['hash'];
 	} else {
 		// File missing or not readable
-		header("HTTP/1.0 404 Not Found");
-		header('Content-Type: text/plain');		
-		echo "Unable to access file: " . ($tiki_p_admin == 'y' ? $filepath : $info['path']);
 		die;
 	}
 } elseif ( ! empty($content) ) {
@@ -256,7 +241,7 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 	if ($build_content) {
 
 		// Modify the original image if needed
-		if ( ! isset($_GET['display']) || isset($_GET['x']) || isset($_GET['y']) || isset($_GET['scale']) || isset($_GET['max']) || isset($_GET['format']) || isset($_GET['thumbnail']) ) {
+		if ( ! isset($_GET['display']) || isset($_GET['x']) || isset($_GET['y']) || isset($_GET['scale']) || isset($_GET['max']) || isset($_GET['format']) ) {
 	
 			require_once('lib/images/images.php');
 			if (!class_exists('Image')) die();
@@ -315,18 +300,6 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 				}
 				// We resize to a thumbnail size if needed
 				elseif ( isset($_GET['thumbnail']) ) {
-					if (is_numeric($_GET['thumbnail'])) {
-						if (empty($info_thumb)) {
-							$info_thumb = $tikilib->get_file($_GET['thumbnail']);
-						}
-						if ( ! empty($info_thumb['path']) ) {
-							$image = new Image($prefs['fgal_use_dir'].$info_thumb['path'], true);
-						} else {
-							$image = new Image($info_thumb['data']);
-							$content = null; // Explicitely free memory before getting cache
-						}
-						if ( $image->is_empty() ) die;
-					}
 					$image->resizethumb();
 				}
 				// We resize to a preview size if needed

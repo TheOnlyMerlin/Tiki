@@ -5,14 +5,10 @@
 */
 
 /***** XHTML Elements *****/
-/* print mode only - to make sure print templates will use and print on seamless white bg color */
+/* print mode only */
 html#print {
 	background: #fff;
 	color: #000;
-}
-
-body.db_error {
-	background: none;
 }
 
 body.fullscreen {
@@ -20,46 +16,9 @@ body.fullscreen {
 	background: #fff;
 }
 
-#tiki-clean {
-	background: #fff;
-	color: #000;
-}
-
-/* CKeditor contrast */
 body.wikitext {
 	background: #fff;
 	color: #000;
-}
-
-/* Ajax Loading Overlay */
-#ajaxLoadingBG {
-	background: transparent url(../../img/overlay-light.png);
-}
-#ajaxLoading {
-	font-size: 2em;
-	font-weight: bold;
-	color: #333;
-	background: transparent url(../../img/loading-light.gif) no-repeat 50% 50%;
-}
-
-/* ColorBox */
-#cboxTitle {
-	background-color: #fff;
-}
-
-/* Autosave Preview handle */
-#autosave_preview_grippy {
-	background-color: #ccc;
-	background-image: url("../../pics/icons/shading.png");
-}
-
-/* allow disabled elements to show up - FIXME
- * should be moved into supporting themes and made not important one day */
-select:disabled,
-option:disabled,
-input:disabled,
-textarea:disabled {
-	color: #888 !important;
 }
 
 fieldset {
@@ -67,25 +26,24 @@ fieldset {
 	padding: 0.3em;
 }
 
-/* margin and padding for span surrounding the "button" links, same definition for button form element */
 button,
-.button,
-.button.highlight {
+span.button,
+span.button.highlight {
 	margin: 1px 2px;
 	padding: 2px;
 }
 
-.button a,
-.button a:visited,
-.button a:hover,
-.button input,
+span.button a,
+span.button a:visited,
+span.button a:hover,
+span.button input,
 .calbuttonBox a {
 	padding: 1px 4px;
 }
 
-#genPass .button a,
-#genPass .button a:visited,
-#genPass .button a:hover {
+span#genPass span.button a,
+span#genPass span.button a:visited,
+span#genPass span.button a:hover {
 	padding: 1px 4px !important;
 }
 
@@ -97,26 +55,17 @@ input[type=submit]:hover {
 	margin-right: 1px;
 }
 
-/* highlight on interface text to draw attention; also
-highlight on "button" links, e.g. if there are some comments it highlights the "button" link in #page-bar under the content of the wiki pages */
 .highlight,
-.button.highlight a {
+span.button.highlight a {
 	background: #FC0;
 	color: #000;
 }
 
-/* Since button background is actually applied to the link within the button, apply button highlight to same bg area as normal button state . */
-.button.highlight {
+span.button.highlight {
 	background: inherit;
 }
 
-ul.jumplinks a:active {
-	background: #ffe4e1;
-	color: #0000cd;
-}
-
-/* Highlight effect is just visual distinction, so no need for block element. */
-.highlight {
+div.highlight {
 	padding: 0 .3em;
 }
 
@@ -151,8 +100,8 @@ input[type=radio] {
 	padding-left: 10px;
 }
 
-#sitelogo img {
-	margin-top: 10px;
+div#sitelogo img {
+	margin: 1em;
 }
 
 #bannertopright {
@@ -172,42 +121,18 @@ input[type=radio] {
 	font-size: 90%;
 }
 
-.pass a,
-.pass a:visited,
-.pass a:hover,
-.register a,
-.register a:visited,
-.register a:hover,
-.logged-in a,
-li.login_link ul li a {
-	background: none !important;
-}
-
-/* Input fields autofill */
-
-/* Webkit based browser specific (Google Chrome, Chromium, etc.) */
-input:-webkit-autofill {
-	background-color: #FAFFBD !important; /* needs important because Chrome has it already important */
-	background-image: none !important;
-	color: #000 !important; /* the Google guys they forgot the number one rule... when they specify background they should specify forgeround color too ;) */
-}
-
 /* Center column */
 
-.tellafriend,
-.share {
+.tellafriend {
 	text-align: right;
 }
 
 a.flip,
 a.flip:visited,
 .tellafriend a,
-.share a,
 .tellafriend a:visited,
-.share a:visited,
 a.flip:hover,
-.tellafriend a:hover,
-.share a:hover {
+.tellafriend a:hover {
 	font-size: 80%;
 	text-decoration: none;
 }
@@ -227,7 +152,8 @@ a.flip:hover,
 }
 
 .openid_url {
-	background: #fff url(../../img/icons/login-OpenID-bg.gif) 1px 1px no-repeat;
+	background: #fff url(../../img/icons/login-OpenID-bg.gif) no-repeat;
+	padding-left: 18px;
 }
 
 .bannertext {
@@ -235,7 +161,7 @@ a.flip:hover,
 	text-decoration: none;
 }
 
-#debugconsole {
+div#debugconsole {
 	background: #333;
 	color: #fff;
 	padding: 5px;
@@ -251,7 +177,6 @@ a.flip:hover,
 	color: #ddd;
 }
 
-.cachedStatus,
 .mini {
 	font-size: .9em;
 }
@@ -265,7 +190,6 @@ a.flip:hover,
 	font-size: 1em;
 }
 
-/* For correct styling when RSS feed is put in botbar custom code */
 #footer .rsslist {
 	width: 190px;
 	text-align: left;
@@ -313,21 +237,20 @@ a.flip:hover,
 	margin-top: 5px;
 }
 
-.categories {
+ul.categories {
 	margin: 0;
 	padding: 0;
 }
 
-.categories li {
+ul.categories li {
 	list-style: none;
 	margin: 0;
 	padding: 0;
 }
 
-/* Todo: additional font family and bg color. */
 .inline_syntax {
 	font-family: "Lucida Console";
-	color: #a52a2a;
+	color: brown;
 }
 
 /* New Toolbars */
@@ -340,7 +263,6 @@ a.flip:hover,
 .toolbars-picker {
 	background: #fff;
 	border: thin solid #000;
-	color: #000;
 }
 
 .toolbars-picker a {
@@ -362,19 +284,19 @@ a.flip:hover,
 	margin-right: 20px;
 }
 
-.help_section_select {
+div.help_section_select {
 	font-weight: bold;
 	font-size: 120%;
 	background: #e7e9ea;
 	color: #000;
 }
 
-.help_sections {
+div.help_sections {
 	padding:  2px;
 	background: #aac9e9;
 }
 
-.help_section {
+div.help_section {
 	background: #eee;
 	color: #000;
 }
@@ -390,7 +312,6 @@ a.flip:hover,
 	font-size: smaller;
 }
 
-/* default look for editplugin icon links */
 .editplugin {
 	/*background: #fff; color: #000;*/
 }
@@ -425,7 +346,7 @@ a.flip:hover,
 	border: .1em solid #f00;
 }
 
-.box-switch_lang .box-data .highlight {
+.box-switch_lang .box-data span.highlight {
 	border: .1em solid #f00;
 }
 
@@ -441,38 +362,12 @@ a.flip:hover,
 	padding: 0 1em;
 }
 
-.box-search input[type=submit],
-.box-search input[type=submit]:hover {
-	font-size: smaller;
-	padding: 0.1em 0.3em;
-	margin: 0.2em;
-}
-
-
-
-/* Icons */
-a.icon,
-img.icon {
-	border: 0;
-	background: transparent;
-}
-
-/* Tabs */
-.tabcontent table {
-	background: transparent;
-}
-
-.admin #content1 .tabcontent .cbox {
-	background: transparent;
-}
-
-/* To display content without module-style background and border. */
-.halffloat > .box,
-.wikitext .halffloat > .box,
-.thirdfloat > .box,
-.wikitext .thirdfloat > .box,
-.quarterfloat > .box,
-.wikitext .quarterfloat > .box {
+.halffloat > div.box,
+.wikitext .halffloat > div.box,
+.thirdfloat > div.box,
+.wikitext .thirdfloat > div.box,
+.quarterfloat > div.box,
+.wikitext .quarterfloat > div.box {
 	background: none;
 	border: none;
 }
@@ -488,7 +383,7 @@ img.icon {
 /* remarks boxes */
 
 .rbox {
-	margin: 1em .3em .3em .3em;
+	margin: 1em .3em 2em .3em;
 }
 	
 .rbox-title,
@@ -501,7 +396,8 @@ img.icon {
 
 .rbox-title {
 	border-bottom-color: #eee;
-	padding: 0.35em 0.9em 0.1em;
+	padding-top: .1em;
+	padding-bottom: .1em;
 	font-weight: bold;
 }
 	
@@ -547,11 +443,9 @@ img.icon {
 }
 
 .simplebox {
-	border: 1px solid #999;
 	padding: 3px;
 }
 
-/* odd and even classes for tr, td, and li */
 .odd {
 	background: #f0f0f0;
 	color: #000;
@@ -565,16 +459,17 @@ img.icon {
 /***** Tables, Tabs ****/
 /** Tables **/
 
-.normal, 
-.admin {
+table.normal, 
+table.admin {
 	border-collapse: collapse;
 }
 
+td.normal,
 .normal td,
 .wikitable td,
 .odd,
 .even,
-.form,
+td.form,
 .formcolor td,
 .editblogform td {
 	margin: 0;
@@ -582,6 +477,7 @@ img.icon {
 }
 
 .normal td,
+td.normal,
 .wikitable td,
 td.odd,
 td.even {
@@ -594,10 +490,6 @@ td.form {
 
 caption {
 	font-weight: bold;
-}
-
-.numeric, td.numeric {
-	text-align: right;
 }
 /** Tabs **/
 
@@ -613,6 +505,10 @@ caption {
 
 body.tiki_wiki #comments {
 	padding: 1em;
+}
+
+#wikihelp-tab table td {
+	padding: 2px;
 }
 
 p.editdate {
@@ -676,24 +572,24 @@ p.editdate {
 }
 
 /* img plugin */
-.imgbox {
+div.imgbox {
 	    border: 1px solid #a9a9a9;
         background-color: #f9f9f9;
 }
 
-.thumbcaption {
+div.thumbcaption {
 		font-size: 90%;
 }
 
 /* TOC */
-.toc {
+ul.toc {
 	padding-left: 2em;
 	border-top: 1px dotted #a9a9a9;
 	border-bottom: 1px dotted #a9a9a9;
 	margin-bottom: 4px;
 }
 
-.toc * {
+ul.toc * {
 	border: none;
 }
 
@@ -713,16 +609,12 @@ p.editdate {
 .diffadded {
 	background: #ccffcc;
 	color: #000;
-	/*word-wrap:break-word;*/
-	max-width: 400px;
 }
 
 .diffdeleted {
 	background: #ffcccc;
 	color: #000;
 	text-decoration: line-through;
-	/*word-wrap:break-word;*/
-	max-width: 400px;
 }
 
 .diffinldel {
@@ -748,7 +640,7 @@ p.editdate {
 
 /***** Articles ****/
 
-.articlesource {
+div.articlesource {
 	margin-top: 5px;
 	font-style: italic;
 	font-size: 90%;
@@ -756,18 +648,18 @@ p.editdate {
 
 /***** Blogs *****/
 
-.breadcrumbs {
+div.breadcrumbs {
 	font-size: 90%;
 	font-style: italic;
 }
 
-.blogdesc {
+div.blogdesc {
 	padding: 8px;
 	margin-top: 8px;
 	margin-left: 6px;
 }
 
-.blogtools {
+div.blogtools {
 	padding: 3px;
 	text-align: right
 }
@@ -782,62 +674,12 @@ small.description {
 	display: block;
 }
 
-/*body.tiki_blogs*/ .post .title {
+body.tiki_blogs .post .title {
 	margin-top: 0;
 }
 
-/*body.tiki_blogs .post*/ .postfooter {
+body.tiki_blogs .post .postfooter {
 	margin-bottom: 2em;
-}
-
-/*body.tiki_blogs div*/.author_info {
-	padding: 5px 0px 15px 0px;
-}
-
-/* Comment Annotations */
-
-dl.note-list {
-	background: #fff;
-	color: #000;
-	border: solid thin black;
-}
-
-#note-editor-comment {
-	background: #fff;
-	color: #000;
-	border: #999 1px solid;
-}
-
-.note-editor-text {
-	background: #eee;
-	color: #000;
-}
-
-.note-list .postbody-title {
-	background: #ccc;
-	color: #000;
-}
-
-.note-list .title a {
-	color: #000;
-}
-
-/* Comments moderation */
-.post-approved-n {
-	border-left: 3px dotted blue;
-}
-
-.post-approved-r {
-	border-left: 3px double red;
-}
-
-.post-approved-r .content * {
-	background: url(../../img/icons2/dots.gif);
-}
-
-
-#wikihelp-tab table td {
-	padding: 2px;
 }
 
 /**** Image Galleries ****/
@@ -846,7 +688,7 @@ p.norecords {
 	font-weight: bold;
 }
 
-.imagetitle {
+div.imagetitle {
 	font-weight: bold;
 	font-size: 200%;
 }
@@ -870,42 +712,45 @@ p.norecords {
 
 /***** Trackers (etc.) *****/
 
-.multiselect .odd {
+div.multiselect li.odd,
+div.multiselect div.odd {
 	color: #000;
 	background: #f4f6f7;
 }
 
-.multiselect odd:hover {
+div.multiselect li.odd:hover,
+div.multiselect div.odd:hover {
 	background: #fff7e6;
 }
 
-.multiselect .even {
+div.multiselect li.even,
+div.multiselect div.even {
 	color: #000;
 	background: #e7e9ea;
 }
 
-.multiselect .even:hover {
+div.multiselect div.even:hover,
+div.multiselect div.even:hover {
 	background: #f0f2f3;
 }
 
-.multiselect div.odd,
-.multiselect div.even {
+div.multiselect div.odd,
+div.multiselect div.even {
 	border: 1px solid #80b1e2;
 }
 
-.multiselect .selection {
+div.multiselect div.selection {
 	border: 1px solid #80b1e2;
 	background: #fff;
 }
 
-/* transparent border added to keep content from shifting on hover */
-.multiselect,
-.multiselect .selection {
+div.multiselect,
+div.multiselect div.selection {
 	border: 1px solid transparent;
 }
 
-.multiselect:hover,
-.multiselect .selection:hover {
+div.multiselect:hover,
+div.multiselect div.selection:hover {
 	border: 1px solid #80b1e2;
 }
 
@@ -936,7 +781,7 @@ p.norecords {
 	text-decoration: none;
 }
 
-.freetagitemlist .type {
+.freetagitemlist div.type {
 	font-weight: bold;
 	font-size: 0.8em;
 }
@@ -989,55 +834,50 @@ a.freetag_7 {
 
 /***** FAQs *****/
 
-.faqlistquestions {
+div.faqlistquestions {
 	margin-bottom: 20px;
 }
 
-.faqqa {
+div.faqqa {
 	margin-bottom: 20px;
 }
 
-.faqquestion {
+div.faqquestion {
 	font-weight: bold;
 	padding: 2px 12px 0 12px;
 }
 
-.faqanswer {
+div.faqanswer {
 	padding: 0 12px 4px 12px;
-}
-
-/***** Forums *****/
-.sub_comment_area {
-	background: url("../../img/edge.gif") no-repeat top left;
 }
 
 /***** Quizzes *****/
 
-.questionblock {
+div.questionblock {
 	margin-bottom: 10px;
 }
 
-.quizquestion {
+div.quizquestion {
 	margin-bottom: 5px;
 }
 
-.quizdescription {
+div.quizdescription {
 	margin-bottom: 10px;
 }
 
-.quizanswer {
+div.quizanswer {
 	margin-bottom: 10px;
 }
 
 /***** Shoutbox *****/
 
-.shoutboxmsg {
+div.shoutboxmsg {
 	margin-bottom: 0;
 	padding: 4px;
 	padding-bottom: 1px;
 }
 
-.shoutboxmodmsg {
+div.shoutboxmodmsg {
 	font-size: .95em;
 	margin: 0 5px 4px 5px;
 	padding-top: 5px;
@@ -1051,7 +891,7 @@ textarea.tshoutbox{
 
 /***** Directory *****/
 
-.dircategs {
+div.dircategs {
 	font-size: 95%;
 }
 
@@ -1059,61 +899,61 @@ textarea.tshoutbox{
 	font-size: .95em;
 }
 
-.dirsite {
+div.dirsite {
 	margin-bottom: 10px;
 	padding: 4px;
 }
 
-.dirsitetrail {
+span.dirsitetrail {
 	font-size: 95%;
 }
 
-.dirsitecats {
+span.dirsitecats {
 	font-size: 95%;
 }
 
 /***** Messages *****/
 
-.prio1,
-.prio2,
-.prio3,
-.prio4,
-.prio5 {
+td.prio1,
+td.prio2,
+td.prio3,
+td.prio4,
+td.prio5 {
 	border: 1px solid #a9a9a9;
 	padding-left: 2px;
 }
 
-.prio1 {
+td.prio1 {
 	background: #f7f9ca
 }
 
-.prio2 {
+td.prio2 {
 	background: #f7f9ea;
 }
 
-.prio3 {
+td.prio3 {
 	background: #f7f9fa;
 }
 
-.prio4 {
+td.prio4 {
 	background: #f7f9fd;
 }
 
-.prio5 {
+td.prio5 {
 	background: #f7f9ff;
 }
 
-.messureadflag {
+div.messureadflag {
 	background: #a9a9a9;
 	padding-left: 5px;
 }
 
-.messureadhead {
+div.messureadhead {
 	background: #dcdcdc;
 	margin-top: 2px;
 }
 
-.messureadbody {
+div.messureadbody {
 	margin-top: 5px;
 	background: #dcdcdc;
 }
@@ -1150,7 +990,6 @@ textarea.tshoutbox{
 	background: #666;
 }
 
-/* Bullet on list items look inappropriate here. */
 .tiki_admin .note .rbox-data li.even,
 .tiki_admin .note .rbox-data li.odd {
 	list-style: none;
@@ -1158,18 +997,15 @@ textarea.tshoutbox{
 
 /* admin boxes etc (.admbox) now defined in css/admin.css */
 
-.mods_revision {
+td.mods_revision {
 	background: #b5cfb5;
 	color: #000;
 }
 
-.mods_update {
+td.mods_update {
 	background:#dcdeac;
 	color: #000;
 }
-
-/* Cluetip - JQuery tooltips
-   =cluetipClass: 'default' */
 
 .cluetip-default {
 	background: #bed8f1;
@@ -1194,7 +1030,7 @@ textarea.tshoutbox{
 	padding: .9em;
 }
 
-#cluetip-close { 
+div#cluetip-close { 
 	background: #fff;
 	color: #900;
 }
@@ -1204,7 +1040,6 @@ textarea.tshoutbox{
 	padding: 0;
 }
 
-/* webmail & groupmail */
 .webmail_item {
 	font-size: .9em;
 	border: #999 solid 1px;
@@ -1248,34 +1083,31 @@ textarea.tshoutbox{
 	font-family: "Courier New", Courier, monospace;
 }
 
-.webmail_message_headers {
+table.webmail_message_headers {
 	background: #fff;
 	width: 100%;
 	padding: 0 5em .5em 0;
 }
 
-.webmail_message_headers th {
+table.webmail_message_headers th {
 	font-style: italic;
 	text-align: right;
 	border: none;
 	background: transparent;
 }
 
-/* treeTable definitions - used in object-perms so far */
-
-.treeTable .checkBoxHeader {
+table.treeTable .checkBoxHeader {
 	font-size: .8em;
 }
 
-.treeTable .subHeader td {
+table.treeTable .subHeader td {
 	font-weight: bold;
 }
 
-.treeTable .parent td {
+table.treeTable .parent td {
 	font-style: italic;
 }
 
-/* jq tablesorter */
 .fancysort th.headerSortUp {
 	background-repeat: no-repeat; background-position: right; background-image: url(../../pics/icons/resultset_up.png) !important;
 }
@@ -1286,98 +1118,38 @@ textarea.tshoutbox{
 	background-repeat: no-repeat; background-position: right; background-image: url(../../pics/icons/resultset.png);
 }
 
-/* Perspectives (edit) */
-.dropzone {
-	color: #000;
-	background-color: #fff;
-	border: #999 solid 2px;
-	border-bottom-color: #ccc;
-	border-right-color: #ccc;
-}
-
-.dropzone > div:hover {
-	background-color: #eee;
-} 
-
-/* page contribution by author / wikiplugin_author */
-
-.author0 {
-	color: black;
-}
-
-.author1 {
-	color: blue;
-}
-
-.author2 {
-	color: red;
-}
-
-.author3 {
-	color: green;
-}
-
-.author4 {
-	color: maroon;
-}
-
-.author5 {
-	color: yellow;
-	background: gray;
-}
-
-.author6 {
-	color: aqua;
-	background: gray;
-}
-
-.author7 {
-	color: fuchsia;
-	background: gray;
-}
-
-.author8 {
-	color: teal;
-}
-
-.author9 {
-	color: purple;
-}
-
-.author10 {
-	color: white;
-	background: navy;
-}
-
-.author11 {
-	color: olive;
-}
-
-.author12 {
-	color: gray;
-}
-
-.author13 {
-	color: navy;
-}
-
-.author14 {
-	color: silver;
-	background: blue;
-}
-
-.author15 {
-	color: lime;
-	background: gray;
-}
-
- /* wikiplugin_tracker */
 .mandatory_note {
 	font-style: italic;
 	color: red;
 	margin-top: 10px;
 }
 
+#intertrans-indicator {
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	height: 40px;
+	background-color: #add8e6;
+}
+
+#intertrans-form {
+	position: fixed;
+	top: 10%;
+	bottom: 10%;
+	left: 10%;
+	right: 10%;
+	overflow: auto;
+	background-color: #90ee90;
+	display: none;
+	z-index: 2000;
+}
+#intertrans-form table {
+	width: 98%;
+}
+#intertrans-form input {
+	width: 100%;
+}
 .popup-backlinks {
 	display: none;
 	width: 100px;
@@ -1385,41 +1157,3 @@ textarea.tshoutbox{
  /* wikiplugin_tracker */
 .trackerCategoryName {white-space:nowrap;}
 /* End of file */
-
-#captchaImg {
-	border: 1px solid black;
-}
-
-.ui-tabs .ui-tabs-nav li a {
-	padding: 0 0 0 0;
-}
-/* interactive translations */
-
-#intertrans-indicator {
-	background-color: #ade;
-	color: #000;
-}
-
-#intertrans-form {
-	background-color: #eff;
-	border: #799 solid 2px;
-	color: #000;
-}
-
-.tree.root .object-count {
-	float: right;
-	font-weight: bold;
-	margin-left: 10px;
-	margin-right: 10px;
-	color: #999;
-}
-
-/* jquery validation */
-
-label.error {
-	background : url('../../pics/icons/error.png') no-repeat;
-	color:red;
-	padding-left:20px;
-	margin-left: 0.5em;
-}
-

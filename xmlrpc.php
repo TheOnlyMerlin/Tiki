@@ -70,9 +70,9 @@ function newPost($params) {
   $passp=$params->getParam(5); $publish=$passp->scalarval();
   
   // Fix for w.bloggar
-  preg_match('/<title>(.*)</title>/',$content, $title);
+  ereg("<title>(.*)</title>",$content, $title);
   $title = $title[1];
-  $content = preg_replace('#<title>(.*)</title>#','',$content);
+  $content = ereg_replace("<title>(.*)</title>","",$content);
   // Now check if the user is valid and if the user can post a submission
   list($ok, $username, $e) = $userlib->validate_user($username,$password,'','');
   if(!$ok) {
@@ -89,8 +89,7 @@ function newPost($params) {
     if(!$userlib->user_has_permission($username,'tiki_p_blog_post')) {
       return new XML_RPC_Response(0, 101, "User is not allowed to post");
     }
-    global $bloglib; require_once('lib/blogs/bloglib.php');
-    $blog_info = $bloglib->get_blog($blogid);
+    $blog_info = $tikilib->get_blog($blogid);
     if($blog_info["public"]!='y') {
       if($username != $blog_info["user"]) {
         return new XML_RPC_Response(0, 101, "User is not allowed to post");
@@ -114,9 +113,9 @@ function editPost($params) {
   $passp=$params->getParam(5); $publish=$passp->scalarval();
   
   // Fix for w.bloggar
-  preg_match('/<title>(.*)</title>/',$content, $title);
+  ereg("<title>(.*)</title>",$content, $title);
   $title = $title[1];
-  $content = preg_replace('#<title>(.*)</title>#','',$content);
+  $content = ereg_replace("<title>(.*)</title>","",$content);
   // Now check if the user is valid and if the user can post a submission
   list($ok, $username, $e) = $userlib->validate_user($username,$password,'','');
   if(!$ok) {
@@ -275,8 +274,7 @@ function getUserBlogs($params) {
  
  $arrayVal=Array();
  
- require_once('lib/blogs/bloglib.php');
- $blogs = $bloglib->list_user_blogs($username,true);
+ $blogs = $tikilib->list_user_blogs($username,true);
  $foo = parse_url($_SERVER["REQUEST_URI"]);
  $foo1=$tikilib->httpPrefix().str_replace("xmlrpc","tiki-view_blog",$foo["path"]);
  foreach($blogs as $blog) {

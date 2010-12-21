@@ -199,22 +199,17 @@ class StructLib extends TikiLib
 		if (!empty($parent_id) || $created || ! $this->page_is_in_structure($name)) { // if were not trying to add a duplicate structure head
 			$query = 'select `page_id` from `tiki_pages` where `pageName`=?';
 			$page_id = $this->getOne($query,array($name));
-			if (!empty($after_ref_id)) {
+			if (isset($after_ref_id)) {
 				$max = $this->getOne('select `pos` from `tiki_structures` where `page_ref_id`=?',array((int)$after_ref_id));
 			} else {
 				$max = 0;
 			}
-			if ($after_ref_id != 0) {
-				if ($max > 0) {
+			if ($max > 0) {
 				//If max is 5 then we are inserting after position 5 so we'll insert 5 and move all
 				// the others
-					$query = 'update `tiki_structures` set `pos`=`pos`+1 where `pos`>? and `parent_id`=?';
-					$result = $this->query($query,array((int)$max, (int)$parent_id));
-				}
-			} else if (!$created) {
-				$max = $this->getOne('select max(`pos`) from `tiki_structures` where `parent_id`=?',array((int)$parent_id));
+				$query = 'update `tiki_structures` set `pos`=`pos`+1 where `pos`>? and `parent_id`=?';
+				$result = $this->query($query,array((int)$max, (int)$parent_id));
 			}
-			// 	
             //Create a new structure entry
 			$max++;
 			$query = 'insert into `tiki_structures`(`parent_id`,`page_id`,`page_alias`,`pos`, `structure_id`) values(?,?,?,?,?)';
@@ -394,7 +389,7 @@ class StructLib extends TikiLib
 		return ($this->s_get_page_info($parent_id));
 	}
 
-	function use_user_language_preferences( $langContext = null )
+	function use_user_language_preferences()
 	{
 		global $prefs, $multilinguallib;
 		if( $prefs['feature_multilingual'] != 'y' )
@@ -405,7 +400,7 @@ class StructLib extends TikiLib
 		if( !$multilinguallib )
 			include_once('lib/multilingual/multilinguallib.php');
 
-		$this->displayLanguageOrder = $multilinguallib->preferredLangs( $langContext );
+		$this->displayLanguageOrder = $multilinguallib->preferredLangs();
 	}
 
 	function build_language_order_clause( &$args, $pageTable = 'tp', $structTable = 'ts' )
@@ -919,7 +914,7 @@ function list_structures($offset, $maxRecords, $sort_mode, $find='', $exact_matc
   		fwrite($fw,$data);
   		fclose($fw);
   		unset($dat);
-  		$page_words = preg_split("/[^A-Za-z0-9\-_]/",$res['data']);
+  		$page_words = split("[^A-Za-z0-9\-_]",$res['data']);
   		foreach($page_words as $word) {
     		$word=strtolower($word);
     		if(strlen($word)>3 && preg_match("/^[A-Za-z][A-Za-z0-9\_\-]*[A-Za-z0-9]$/",$word)) {

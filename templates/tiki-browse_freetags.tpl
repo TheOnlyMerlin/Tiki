@@ -63,7 +63,7 @@
 		<div class="freetaglist"> 
 			{foreach from=$most_popular_tags item=popular_tag}
 				{capture name=tagurl}{if (strstr($popular_tag.tag, ' '))}"{$popular_tag.tag}"{else}{$popular_tag.tag}{/if}{/capture}
-				<a class="freetag_{$popular_tag.size}{if $tag eq $popular_tag.tag|escape} selectedtag{/if}" href="tiki-browse_freetags.php?tag={$smarty.capture.tagurl|escape:'url'}" onclick="javascript:addTag('{$popular_tag.tag|escape:'javascript'}');return false;" ondblclick="location.href=this.href;"{if $popular_tag.color} style="color:{$popular_tag.color}"{/if}>{$popular_tag.tag|escape}</a> 
+				<a class="freetag_{$popular_tag.size}" href="tiki-browse_freetags.php?tag={$smarty.capture.tagurl|escape:'url'}" onclick="javascript:addTag('{$popular_tag.tag|escape:'javascript'}');return false;" ondblclick="location.href=this.href;"{if $popular_tag.color} style="color:{$popular_tag.color}"{/if}>{$popular_tag.tag|escape}</a> 
 			{/foreach}
 		</div>
 
@@ -158,34 +158,25 @@
 	{/capture}
 </form>
 
-{if $cpt > 1}
-	<div class="freetagsbrowse">{$smarty.capture.browse}</div>{/if}
+{if $cpt > 1}{$smarty.capture.browse}{/if}
 
 <div class="freetagresult">
-	{if $tagString}
-		{if $cantobjects == 0}
-			<h2>{tr}No result found{/tr}</h2>
-		{elseif $cantobjects == 1}
-			<h2>{$cantobjects} {tr}result found{/tr}</h2>
-		{elseif $cantobjects > 0}
-			<h2>{$cantobjects} {tr}results found{/tr}</h2>
-		{/if}
-	{/if}
+	{if $tagString}<h2>{$cantobjects} {tr}results found{/tr}</h2>{/if}
 	{if $cantobjects > 0}
 		{cycle values="odd,even" print=false}
 		{section name=ix loop=$objects}
 			<div class="{cycle} freetagitemlist" >
 				<h3>
-					<a href="{$objects[ix].href}">{$objects[ix].name|strip_tags|escape}</a>
+					<a href="{$objects[ix].href}">{$objects[ix].name|escape}</a>
 					{if $tiki_p_unassign_freetags eq 'y' or $tiki_p_admin eq 'y'}
-						<a href="tiki-browse_freetags.php?del=1&amp;tag={$tag}{if $type}&amp;type={$type|escape:'url'}{/if}&amp;typeit={$objects[ix].type|escape:'url'}&amp;itemit={$objects[ix].name|escape:'url'}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
+						<a href="tiki-browse_freetags.php?del=1&amp;tag={$tag}{if $type}&amp;type={$type|escape:'url'}{/if}&amp;typeit={$objects[ix].type|escape:'url'}&amp;itemit={$objects[ix].name|escape:'url'}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 					{/if}
 				</h3>
 				<div class="type">
 					{tr}{$objects[ix].type|replace:"wiki page":"Wiki"|replace:"article":"Article"|regex_replace:"/tracker [0-9]*/":"tracker item"}{/tr}
 				</div>
 				<div class="description">
-					{$objects[ix].description|strip_tags|escape}&nbsp;
+					{$objects[ix].description|escape}&nbsp;
 				</div>
 			</div>
 		{/section}

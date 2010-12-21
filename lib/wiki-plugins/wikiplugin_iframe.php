@@ -26,99 +26,69 @@ function wikiplugin_iframe_info() {
 	return array(
 		'name' => tra('Iframe'),
 		'documentation' => 'PluginIframe',
-		'description' => tra('Include another web page within a frame'),
+		'description' => tra("Displays an iframe"),
 		'prefs' => array( 'wikiplugin_iframe' ),
 		'body' => tra('URL'),
 		'validate' => 'all',
-		'icon' => 'pics/icons/page_copy.png',
 		'params' => array(
 			'name' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Name'),
-				'description' => tra('Name'),
-				'default' => '',
+				'description' => tra('name'),
 			),
 			'title' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Title'),
 				'description' => tra('Frame title'),
-				'default' => '',
 			),
 			'width' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Width'),
-				'description' => tra('Width in pixels or %'),
-				'default' => '',
+				'description' => tra('Pixels or %'),
 			),
 			'height' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Height'),
 				'description' => tra('Pixels or %'),
-				'default' => '',
 			),
 			'align' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Alignment'),
-				'description' => tra('Align the ifram on the page'),
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Top'), 'value' => 'top'), 
-					array('text' => tra('Middle'), 'value' => 'middle'), 
-					array('text' => tra('Bottom'), 'value' => 'bottom'), 
-					array('text' => tra('Left'), 'value' => 'left'), 
-					array('text' => tra('Right'), 'value' => 'right') 
-				)
+				'description' => 'top|middle|bottom|left|right',
 			),
 			'frameborder' => array(
 				'safe' => true,
 				'required' => false,
-				'name' => tra('Frame Border'),
-				'description' => tra('Choose whether to show a border around the iframe'),
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				)
+				'name' => 'frameborder',
+				'description' => '1|0',
 			),
 			'marginheight' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Margin Height'),
-				'description' => tra('Margin height in pixels'),
-				'default' => '',
+				'description' => tra('Pixels'),
 			),
 			'marginwidth' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Margin Width'),
-				'description' => tra('Margin width in pixels'),
-				'default' => '',
+				'description' => tra('Pixels'),
 			),
 			'scrolling' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Scrolling'),
-				'description' => tra('Choose whether to add a scroll bar'),
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'yes'), 
-					array('text' => tra('No'), 'value' => 'no'),
-					array('text' => tra('Auto'), 'value' => 'auto'),
-				)
+				'description' => 'yes|no|auto',
 			),
 			'src' => array(
 				'required' => false,
 				'name' => tra('URL'),
 				'description' => tra('URL'),
-				'default' => '',
 			),
 		), 
 	);

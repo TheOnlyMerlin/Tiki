@@ -11,7 +11,7 @@ require_once ('lib/rss/rsslib.php');
 
 $access->check_feature('feature_file_galleries');
 
-if ($prefs['feed_file_galleries'] != 'y') {
+if ($prefs['rss_file_galleries'] != 'y') {
         $errmsg=tra("rss feed disabled");
         require_once ('tiki-rss_error.php');
 }
@@ -21,8 +21,8 @@ $uniqueid = $feed;
 $output = $rsslib->get_from_cache($uniqueid);
 
 if ($output["data"]=="EMPTY") {
-	$title = $prefs['feed_file_galleries_title'];
-	$desc = $prefs['feed_file_galleries_desc'];
+	$title = (!empty($title_rss_file_galleries)) ? $title_rss_file_galleries : tra("Tiki RSS feed for file galleries");
+	$desc = (!empty($desc_rss_file_galleries)) ? $desc_rss_file_galleries : tra("Last files uploaded to the file galleries.");
 	$id = "fileId";
 	$descId = "description";
 	$dateId = "lastModif";
@@ -30,7 +30,12 @@ if ($output["data"]=="EMPTY") {
 	$titleId = "filename";
 	$readrepl = "tiki-download_file.php?$id=%s";
 
-	$changes = $tikilib->list_files(0, $prefs['feed_file_galleries_max'], $dateId.'_desc', '');
+        $tmp = $prefs['title_rss_'.$feed];
+        if ($tmp<>'') $title = $tmp;
+        $tmp = $prefs['desc_rss_'.$feed];
+        if ($desc<>'') $desc = $tmp;
+
+	$changes = $tikilib->list_files(0, $prefs['max_rss_file_galleries'], $dateId.'_desc', '');
 	$output = $rsslib->generate_feed($feed, $uniqueid, '', $changes, $readrepl, '', $id, $title, $titleId, $desc, $descId, $dateId, $authorId);
 }
 header("Content-type: ".$output["content-type"]);

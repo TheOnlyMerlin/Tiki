@@ -14,7 +14,7 @@ $access->check_feature('feature_galleries');
 
 if ($tiki_p_upload_images != 'y' and !$tikilib->user_has_perm_on_object($user, $_REQUEST["galleryId"], "image gallery", "tiki_p_upload_images")) {
 	$smarty->assign('errortype', 401);
-	$smarty->assign('msg', tra("You do not have permission to upload images"));
+	$smarty->assign('msg', tra("Permission denied you cannot upload images"));
 	$smarty->display("error.tpl");
 	die;
 }
@@ -44,13 +44,13 @@ if (isset($_REQUEST["upload"])) {
 	// Check the user to be admin or owner or the gallery is public
 	if ($tiki_p_admin_galleries != 'y' && (!$user || $user != $gal_info["user"]) && $gal_info["public"] != 'y') {
 		$smarty->assign('errortype', 401);
-		$smarty->assign('msg', tra("You have permission to upload images but not to this gallery"));
+		$smarty->assign('msg', tra("Permission denied you can upload images but not to this gallery"));
 		$smarty->display("error.tpl");
 		die;
 	}
 	$error_msg = '';
-	if (empty($user) && $prefs['feature_antibot'] == 'y' && !$captchalib->validate()) {
-		$error_msg = $captchalib->getErrors();
+	if (empty($user) && $prefs['feature_antibot'] == 'y' && (!isset($_SESSION['random_number']) || $_SESSION['random_number'] != $_REQUEST['antibotcode'])) {
+		$error_msg = tra('You have mistyped the anti-bot verification code; please try again.');
 		$smarty->assign('errortype', 'no_redirect_login');
 	}
 	if (!empty($_REQUEST["url"])) {

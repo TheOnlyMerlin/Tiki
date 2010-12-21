@@ -23,8 +23,9 @@ $sections = array(
 		'feature' => 'feature_blogs',
 		'key' => 'blogId',
 		'itemkey' => 'postId',
-		'objectType' =>'blog',
+		'objectType' =>'blog post',
 		'itemObjectType' => 'blog post',
+		'commentsFeature' => 'feature_blog_comments',
 		'itemCommentsFeature' => 'feature_blogposts_comments'
 	),
 	// tra('File Gallery')

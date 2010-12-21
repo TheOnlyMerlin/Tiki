@@ -17,22 +17,19 @@ function wikiplugin_lang_info() {
 	return array(
 		'name' => tra('Language'),
 		'documentation' => 'PluginLang',
-		'description' => tra('Vary text based on the page language'),
+		'description' => tra("Displays the text only if the language matchs"),
 		'prefs' => array( 'feature_multilingual', 'wikiplugin_lang' ),
 		'body' => tra('text'),
-		'icon' => 'pics/icons/flag_blue.png',
 		'params' => array(
 			'lang' => array(
 				'required' => false,
 				'name' => tra('Language'),
 				'description' => tra('List of languages for which the block is displayed. Languages use the two letter language codes (ex: en, fr, es, ...). Multiple languages can be specified by separating codes by + signs.'),
-				'default' => '',
 			),
 			'notlang' => array(
 				'required' => false,
 				'name' => tra('Not Language'),
 				'description' => tra('List of languages for which the block is not displayed. Languages use the two letter language codes (ex: en, fr, es, ...). Multiple languages can be specified by separating codes by + signs.'),
-				'default' => '',
 			),
 		),
 	);

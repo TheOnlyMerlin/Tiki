@@ -9,57 +9,31 @@ function wikiplugin_calendar_info() {
 	return array(
 		'name' => tra('Calendar'),
 		'documentation' => 'PluginCalendar',
-		'description' => tra('Display a calendar and its events'),
+		'description' => tra('Includes a calendar and/or a list of calendar events.'),
 		'prefs' => array( 'feature_calendar', 'wikiplugin_calendar' ),
-		'icon' => 'pics/icons/calendar.png',
 		'params' => array(
 			'calIds' => array(
-				'name' => tra('Calendar IDs'),
+				'name' => tra('Calendars filter'),
 				'description' => tra('If set to a list of calendar identifiers, restricts the events to those in the identified calendars. Identifiers are separated by commas (",").') . " " . tra('Example values:') . '"13", "4,7", "31,49". ' . tra('Not set by default.'),
 				'filter' => 'digits',
 				'separator' => ',',
-				'default' => '',
 			),
 			'viewlist' => array(
 				'required' => false,
-				'name' => tra('View Type'),
-				'description' => tra('Determines how to show events.') . ' ' . tra('Possible values:') . ' ' . 'table, list, both. ' . tra('"table" shows events in a calendar.') . ' ' . tra('Default value:') . ' table.',
+				'name' => tra('View type'),
+				'description' => tra('Determines how to show events.') . ' ' . tra('Possible values:') . ' ' . 'table, list, both. ' . tra('"table" shows events in a calendar.') . ' ' . tra('Default value:') . ' calendar.',
 				'filter' => 'word',
-				'default' => 'table',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('List'), 'value' => 'list'), 
-					array('text' => tra('Table'), 'value' => 'table'),
-					array('text' => tra('Both'), 'value' => 'both'),
-				),
 			),
 			'viewmode' => array(
-				'name' => tra('View Time Span'),
-				'description' => tra('If in calendar (or "table") view type, determines the time span displayed by the calendar.') . ' ' . tra('Possible values:') . ' year, semester, quarter, month, week, day. '
-										. tra('Default is month'),
-				'filter' => 'word',
-				'default' => 'month',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Day'), 'value' => 'day'), 
-					array('text' => tra('Week'), 'value' => 'week'),
-					array('text' => tra('Month'), 'value' => 'month'),
-					array('text' => tra('Quarter'), 'value' => 'quarter'), 
-					array('text' => tra('Semester'), 'value' => 'semester'),
-					array('text' => tra('Year'), 'value' => 'year'),
-				),
+				'name' => tra('Calendar view type time span'),
+				'description' => tra('If in calendar (or "table") view type, determines the time span displayed by the calendar.') . ' ' . tra('Possible values:') . ' year, semester, quarter, month, week, day.',
+				'filter' => 'word'
 			),
 			'viewnavbar' => array(
 				'required' => false,
-				'name' => tra('Navigation Bar'),
-				'description' => tra('Decide or not to show the navigation bar (not shown by default)'),
+				'name' => tra('View the navigation bar'),
+				'description' => tra('Decide or not to show the navigation bar.'),
 				'filter' => 'alpha',
-				'default' => 'n',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				),
 			),
 		),
 	);
@@ -87,11 +61,9 @@ function wikiplugin_calendar($data, $params) {
 	$module_reference = array(
 		'moduleId' => null,
 		'name' => 'calendar_new',
-		'params' => array( 'calIds' => $params['calIds'],
-							'viewnavbar'=> $params['viewnavbar'],
-							'viewlist'=> $params['viewlist'],
-							'viewmode' => $params['viewmode'],
-							'nobox' => 'y' ),
+		'params' => array( 'calIds' => $params['calIds'], 'viewnavbar'=> $params['viewnavbar'],
+													'viewlist'=> $params['viewlist'],
+													'viewmode' => $params['viewmode'] ),
 		'position' => null,
 		'ord' => null,
 	);

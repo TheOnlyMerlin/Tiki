@@ -30,6 +30,10 @@ for ($i = 0; $i < $temp_max; $i++) {
 
 	<body onload = "window.setInterval('location.reload()','<?php
 echo $refresh ?>');">
+		<?php
+//print_r($cmds);
+
+?>
 
 	</body>
 </html>

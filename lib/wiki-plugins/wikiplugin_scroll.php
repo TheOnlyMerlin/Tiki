@@ -27,33 +27,27 @@ function wikiplugin_scroll_info() {
 	return array(
 		'name' => tra('Scroll'),
 		'documentation' => 'PluginScroll',
-		'description' => tra('Show animated text that scrolls up or down'),
+		'description' => tra(''),
 		'prefs' => array('wikiplugin_scroll'),
 		'body' => tra('text'),
-		'icon' => 'pics/icons/script.png',
 		'params' => array(
 			'width' => array(
 				'required' => true,
 				'name' => tra('Width'),
-				'description' => tra('Width in pixels. Example: 600px.'),
-				'accepted' => tra('Number of pixels followed by "px". Example: 600px.'),
+				'description' => tra('Width'),
 				'filter' => 'striptags',
-				'default' => '',
 			),
 			'height' => array(
 				'required' => true,
 				'name' => tra('Height'),
-				'description' => tra('Height in pixels. Example: 450px'),
-				'accepted' => tra('Number of pixels followed by "px". Example: 450px.'),
+				'description' => tra('Height'),
 				'filter' => 'striptags',
-				'default' => '',
 			),
 			'speed' => array(
 				'required' => false,
 				'name' => tra('Speed'),
-				'description' => tra('Scroll speed in number of seconds (default is 8 seconds)'),
+				'description' => tra('Speed'),
 				'filter' => 'int',
-				'default' => 8,
 			),
 		)
 	);
@@ -63,11 +57,11 @@ function wikiplugin_scroll($data, $params) {
 	extract ($params, EXTR_SKIP);
 //minimum parameters
 	if (!isset($width)) {
-		return ('<b>missing width parameter for plugin</b><br/>');
+		return ("<b>missing width parameter for plugin</b><br/>");
 	}
 
 	if (!isset($height)) {
-		return ('<b>missing height parameter for plugin</b><br/>');
+		return ("<b>missing height parameter for plugin</b><br/>");
 	}
 	
 //optional parameters

@@ -47,7 +47,7 @@ function prefs_default_list() {
 			'filter' => 'digits',
 		),
 		'default_rows_textarea_comment' => array(
-			'name' => tra('Default number of rows for comment box'),
+			'name' => tra('Comments '),
 			'type' => 'text',
 			'size' => '3',
 			'shorthint' => tra('rows'),
@@ -66,14 +66,6 @@ function prefs_default_list() {
 			'size' => '3',
 			'shorthint' => tra('rows'),
 			'filter' => 'digits',
-		),
-		'default_kaltura_editor' => array(
-			'name' => tra('Default Editor'),
-			'type' => 'list',
-			'options' => array(
-				'kse' => tra('Simple'),
-				'kae' => tra('Advanced'),
-			),
 		),
 	);
 }

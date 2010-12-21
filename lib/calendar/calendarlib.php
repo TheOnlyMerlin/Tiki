@@ -11,7 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-if (!defined('ROLE_ORGANIZER')) define('ROLE_ORGANIZER', '6');
 if (!defined('weekInSeconds')) define('weekInSeconds', 604800);
 
 class CalendarLib extends TikiLib
@@ -339,27 +338,13 @@ class CalendarLib extends TikiLib
 		$query.= "i.`status` as `status`, i.`url` as `url`, i.`lang` as `lang`, i.`name` as `name`, i.`description` as `description`, i.`created` as `created`, i.`lastmodif` as `lastModif`, i.`allday` as `allday`, i.`recurrenceId` as `recurrenceId`, ";
 		$query.= "t.`customlocations` as `customlocations`, t.`customcategories` as `customcategories`, t.`customlanguages` as `customlanguages`, t.`custompriorities` as `custompriorities`, ";
 		$query.= "t.`customsubscription` as `customsubscription`, ";
-		$query.= "t.`customparticipants` as `customparticipants`, ";
-		
-		#region reminder
-		$query.= "r.reminder_type as reminder_type, ";
-    $query.= "r.fixed_date as reminder_fixed_date, ";
-    $query.= "r.time_offset as reminder_time_offset, ";
-    $query.= "r.related_to as reminder_related_to, ";
-    $query.= "r.when_run as reminder_when_run ";
-    #endregion reminder
-
+		$query.= "t.`customparticipants` as `customparticipants` ";
 
 		foreach($customs as $k=>$v)
 		    $query.=", i.`$k` as `$v`";
 
 		$query.= "from `tiki_calendar_items` as i left join `tiki_calendar_locations` as l on i.`locationId`=l.`callocId` ";
-		$query.= "left join `tiki_calendar_categories` as c on i.`categoryId`=c.`calcatId` left join `tiki_calendars` as t on i.`calendarId`=t.`calendarId` ";		
-		#region reminder
-    $query.= "left join custom_calendar_reminder as r on i.calitemId = r.calendar_item_id ";
-    #endregion reminder
-    $query.= "where `calitemId`=?";
-
+		$query.= "left join `tiki_calendar_categories` as c on i.`categoryId`=c.`calcatId` left join `tiki_calendars` as t on i.`calendarId`=t.`calendarId` where `calitemId`=?";
 		$result = $this->query($query,array((int)$calitemId));
 		$res = $result->fetchRow();
 		$query = "select `username`, `role` from `tiki_calendar_roles` where `calitemId`=? order by `role`";
@@ -368,7 +353,7 @@ class CalendarLib extends TikiLib
 		$org = array();
 
 		while ($rez = $rezult->fetchRow()) {
-			if ($rez["role"] == ROLE_ORGANIZER) {
+			if ($rez["role"] == '6') {
 				$org[] = $rez["username"];
 			} elseif ($rez["username"]) {
 				$ppl[] = array('name'=>$rez["username"],'role'=>$rez["role"]);
@@ -429,19 +414,19 @@ class CalendarLib extends TikiLib
 		if ($caldata['customparticipants'] == 'y') {
 			$roles = array();
 			if ($data["organizers"]) {
-				$orgs = explode(',', $data["organizers"]);
+				$orgs = split(',', $data["organizers"]);
 				foreach ($orgs as $o) {
 					if (trim($o)) {
-						$roles[ROLE_ORGANIZER][] = trim($o);
+						$roles['6'][] = trim($o);
 					}
 				}
 			}
 			if ($data["participants"]) {
-				$parts = explode(',', $data["participants"]);
+				$parts = split(',', $data["participants"]);
 				foreach ($parts as $pa) {
 					if (trim($pa)) {
 						if (strstr($pa,':')) {
-							$p = explode(':', trim($pa));
+							$p = split('\:', trim($pa));
 							$roles["$p[0]"][] = trim($p[1]);
 						} else {
 							$roles[0][] = trim($pa);
@@ -501,10 +486,6 @@ class CalendarLib extends TikiLib
 			$r[]=(int)$calitemId;
 
 			$result = $this->query($query,$r);
-			#region reminder
-      $this->persistReminder($calitemId, $data);
-      #endregion reminder
-
 		} else {
 			$new = true;
 			$data['lastmodif']=$this->now;
@@ -524,10 +505,6 @@ class CalendarLib extends TikiLib
 			$query = 'INSERT INTO `tiki_calendar_items` ('.implode(',', $l).') VALUES ('.implode(',', $z).')';
 			$result = $this->query($query, $r);
 			$calitemId = $this->GetOne("select `calitemId` from `tiki_calendar_items` where `calendarId`=? and `created`=?",array($data["calendarId"],$this->now));
-			#region reminder
-      $this->persistReminder($calitemId, $data);
-      #endregion reminder
-
 		}
 
 		if ($calitemId) {
@@ -578,10 +555,6 @@ class CalendarLib extends TikiLib
 		if ($calitemId) {
 			$query = "delete from `tiki_calendar_items` where `calitemId`=?";
 			$this->query($query,array($calitemId));
-			#region reminder
-			$query = "delete from `custom_calendar_reminder` where `calendar_item_id`=?";
-			$this->query($query,array($calitemId));
-      #endregion reminder
 		}
 	}
 
@@ -696,7 +669,7 @@ class CalendarLib extends TikiLib
 			$cond .= " and `start` <= (unix_timestamp(now())) +".$maxSeconds;
 		}
 		$ljoin = "left join `tiki_calendar_locations` as l on i.`locationId`=l.`callocId` left join `tiki_calendar_categories` as c on i.`categoryId`=c.`calcatId`";
-		$query = "select i.`start`, i.`end`, i.`name`, i.`description`, i.`status`, i.`calitemId`, i.`calendarId`, i.`user`, i.`lastModif`, i.`url`, l.`name` as location, i.`allday`, c.`name` as category from `tiki_calendar_items` i $ljoin where 1=1 ".$cond." order by ".$this->convertSortMode($order);
+		$query = "select i.`start`, i.`end`, i.`name`, i.`description`, i.`calitemId`, i.`calendarId`, i.`user`, i.`lastModif`, i.`url`, l.`name` as location, i.`allday`, c.`name` as category from `tiki_calendar_items` i $ljoin where 1=1 ".$cond." order by ".$this->convertSortMode($order);
 		$ret = $this->fetchAll($query,$bindvars,$maxrows,0);
 			
 		foreach ( $ret as &$res ) {
@@ -715,169 +688,6 @@ class CalendarLib extends TikiLib
 		}
 		$query = "delete from `tiki_calendar_items` where ".implode(' and ', $mid);
 		$tikilib->query($query, $bindvars);
-	}
-	function firstDayofWeek($user) {
-		global $prefs;
-		if ($prefs['calendar_firstDayofWeek'] == 'user') {
-			$firstDayofWeek = (int)tra('First day of week: Sunday (its ID is 0) - translators you need to localize this string!');
-			if ( $firstDayofWeek < 1 || $firstDayofWeek > 6 ) {
-				$firstDayofWeek = 0;
-			}
-		} else {
-			$firstDayofWeek = $prefs['calendar_firstDayofWeek'];
-		} 
-	}
-	// return detail on a date
-	function infoDate($focusDate) {
-		$focus = array (
-			'day' => intval(TikiLib::date_format('%d', $focusDate)),
-			'month' => intval(TikiLib::date_format('%m', $focusDate)),
-			'year' => TikiLib::date_format('%Y', $focusDate),
-			'date' => $focusDate,
-			'weekDay' => TikiLib::date_format('%w', $focusDate) // in (0, 6)
-		);
-		$focus['daysInMonth'] = Date_Calc::daysInMonth($focus['month'], $focus['year']);
-		return $focus;
-	}
-	// Compute the start date (the 1 first of the month of the focus date or the day) and the next start date from the period around a focus date
-	function focusStartEnd($focus, $view='month', $beginMonth='y', &$start, &$startNext) {
-		$nbMonths = array('month' => 1, 'bimester' => 2, 'trimester' => 3, 'quarter' => 4, 'semester' => 6, 'year' => 12);
-		// start of the period
-		$start = $focus;
-		if ($beginMonth == 'y') {
-			$start['day'] = 1;
-		}
-		$start['date'] =  TikiLib::make_time(0, 0, 0, $start['month'], $start['day'], $start['year']);
-		$start['weekDay'] = TikiLib::date_format('%w', $start['date']); // in (0, 6)
-		// start of the next period - just shift some months
-		$startNext['date'] = TikiLib::make_time(0, 0, 0, $start['month'] + $nbMonths[$view], $start['day'], $start['year']);
-		$startNext['day'] = TikiLib::date_format('%d', $startNext['date']);
-		$startNext['month'] = TikiLib::date_format('%m', $startNext['date']);
-		$startNext['year'] = TikiLib::date_format('%Y', $startNext['date']);
-		$startNext['weekDay'] = TikiLib::date_format('%w', $startNext['date']);
-	}
-	// Compute the date just $view from the focus
-	function focusPrevious($focus, $view='month') {
-		$nbMonths = array('day' => 0, 'week' => 0, 'month' => 1, 'bimester' => 2, 'trimester' => 3, 'quarter' => 4, 'semester' => 6, 'year' => 12);
-		$nbDays = array('day' => 1, 'week' => 7, 'month' => 0, 'bimester' => 0, 'trimester' => 0, 'quarter' => 0, 'semester' => 0, 'year' => 0);
-		$previous = $focus;
-		$previous['day'] -= $nbDays[$view];
-		// $tikilib->make_time() used with timezones doesn't support month = 0
-		if ($previous['month'] - $nbMonths[$view] <= 0) { // need to change year
-			$previous['month'] = ($previous['month'] +11 - $nbMonths[$view]) % 12 + 1;
-			$previous['year'] -= 1;
-		} else {
-			$previous['month'] -= $nbMonths[$view];
-		}
-		$previous['daysInMonth'] = Date_Calc::daysInMonth($previous['month'], $previous['year']);
-		if ($previous['day'] > $previous['daysInMonth']) {
-			$previous['day'] = $previous['daysInMonth'];
-		}
-		$previous['date'] =  Tikilib::make_time(0, 0, 0, $previous['month'], $previous['day'], $previous['year']);
-		$previous = $this->infoDate($previous['date']); // get back real day, month, year
-		return $previous;
-	}
-	// Compute the date just $view after the focus
-	function focusNext($focus, $view='month') {
-		$nbMonths = array('day' => 0, 'week' => 0, 'month' => 1, 'bimester' => 2, 'trimester' => 3, 'quarter' => 4, 'semester' => 6, 'year' => 12);
-		$nbDays = array('day' => 1, 'week' => 7, 'month' => 0, 'bimester' => 0, 'trimester' => 0, 'quarter' => 0, 'semester' => 0, 'year' => 0);
-		$next = $focus;
-		$next['day'] += $nbDays[$view];
-		if ($next['month'] + $nbMonths[$view] > 12) {
-			$next['month'] = ($next['month'] -1 + $nbMonths[$view]) % 12 + 1;
-			$next['year'] += 1;
-		} else {
-			$next['month'] += $nbMonths[$view];
-		}
-		$next['daysInMonth'] = Date_Calc::daysInMonth($next['month'], $next['year']);
-		if ($next['day'] > $next['daysInMonth']) {
-			$next['day'] = $next['daysInMonth'];
-		}
-		$next['date'] = Tikilib::make_time(0, 0, 0, $next['month'], $next['day'], $next['year']);
-		$next = $this->infoDate($next['date']); // get back real day, month, year
-		return $next;
-	}
-	// Compute a table view of dates (one line per week)
-	// $firstWeekDay = 0 (Sunday), 1 (Monday)
-	function getTableViewCells($start, $startNext, $view='month', $firstWeekDay = 0) {
-		// start of the view
-		$viewStart = $start;
-		$nbBackDays = $start['weekDay'] < $firstWeekDay? 6: $start['weekDay'] - $firstWeekDay;
-		if ($nbBackDays == 0) {
-			$viewStart['daysInMonth'] = Date_Calc::daysInMonth($viewStart['month'], $viewStart['year']);
-		} elseif ($start['day'] - $nbBackDays < 0) {
-			$viewStart['month'] = $start['month'] == 1? 12: $start['month'] - 1;
-			$viewStart['year'] = $start['month'] == 1? $start['year'] -1 : $start['year'];
-			$viewStart['daysInMonth'] = Date_Calc::daysInMonth($viewStart['month'], $viewStart['year']);
-			$viewStart['day'] = $viewStart['daysInMonth'] - $nbBackDays + 1;
-			$viewStart['date'] = TikiLib::make_time(0, 0, 0, $viewStart['month'], $viewStart['day'], $viewStart['year']);
-		} else {
-			$viewStart['daysInMonth'] = Date_Calc::daysInMonth($viewStart['month'], $viewStart['year']);
-			$viewStart['day'] = $viewStart['day'] - $nbBackDays;
-			$viewStart['date'] = TikiLib::make_time(0, 0, 0, $viewStart['month'], $viewStart['day'], $viewStart['year']);
-		}
-		// echo '<br/>VIEWSTART'; print_r($viewStart);
-		// end of the period
-		$cell = array();
-
-		for ($ilign = 0, $icol = 0, $loop = $viewStart, $weekDay = $viewStart['weekDay']; ; ) {
-			if ($loop['date'] >= $startNext['date'] && $icol == 0) {
-				break;
-			}
-			$cell[$ilign][$icol] = $loop;
-			$cell[$ilign][$icol]['focus'] = $loop['date'] < $start['date'] || $loop['date'] >= $startNext['date']? false: true;
-			$cell[$ilign][$icol]['weekDay'] = $weekDay;
-			$weekDay = ($weekDay + 1) % 7;
-			if ($icol >= 6) {
-				++$ilign;
-				$icol = 0;
-			} else {
-				++$icol;
-			}
-			if ($loop['day'] >= $loop['daysInMonth']) {
-				$loop['day'] = 1;
-				if ($loop['month'] == 12) {
-					$loop['month'] = 1;
-					$loop['year'] += 1;
-				} else {
-					$loop['month'] += 1;
-				}
-				$loop['daysInMonth'] = Date_Calc::daysInMonth($loop['month'], $loop['year']);
-			} else {
-				$loop['day'] = $loop['day'] + 1;
-			}
-			$loop['date'] = TikiLib::make_time(0, 0, 0, $loop['month'], $loop['day'], $loop['year']);
-		}
-		//echo '<pre>CELL'; print_r($cell); echo '</pre>';
-		return $cell;
-	}
-	function getDayNames($firstDayofWeek = 0, &$daysnames, &$daysnames_abr) {
-		$daysnames = array();
-		$daysnames_abr = array();
-		if ($firstDayofWeek == 0) {
-			$daysnames[] = tra('Sunday');
-			$daysnames_abr[] = tra('Su');
-		}
-		array_push($daysnames, 
-			tra('Monday'),
-			tra('Tuesday'),
-			tra('Wednesday'),
-			tra('Thursday'),
-			tra('Friday'),
-			tra('Saturday')
-		);
-		array_push($daysnames_abr, 
-			tra('Mo'),
-			tra('Tu'),
-			tra('We'),
-			tra('Th'),
-			tra('Fr'),
-			tra('Sa')
-		);
-		if ($firstDayofWeek != 0) {
-			$daysnames[] = tra('Sunday');
-			$daysnames_abr[] = tra('Su');
-		}
 	}
 	function getCalendar($calIds, &$viewstart, &$viewend, $group_by = '', $item_name = 'events') {
 		global $user, $prefs, $smarty;
@@ -1036,111 +846,5 @@ $request_year, $dayend, $myurl;
 			'trunc' => $trunc
 		);
 	}
-	function update_participants($calitemId, $adds=null, $dels=null) {
-		if (!empty($dels)) {
-			foreach ($dels as $del) {
-				$this->query('delete from `tiki_calendar_roles` where `calitemId`=? and `username`=? and `role`!=?', array($calitemId, $del, ROLE_ORGANIZER));
-			}
-		}
-		if (!empty($adds)) {
-			$all = $this->fetchAll('select * from `tiki_calendar_roles` where `calitemId`=?', array($calitemId));
-			foreach ($adds as $add) {
-				if (!isset($add['role']) || $add['role'] == ROLE_ORGANIZER) {
-					$add['role'] = 0;
-				}
-				$found = false;
-				foreach ($all as $u) {
-					if ($u['username'] == $add['name'] && $u['role'] != ROLE_ORGANIZER) {
-						if ($u['role'] != $add['role'])
-							$this->query('update `tiki_calendar_roles` set `role`=? where `calitemId`=? and `username`=?', array($add['role'], $calitemId, $add['name']));
-						$found = true;
-						break;
-					}
-				}
-				if (!$found) {
-					$this->query('insert into `tiki_calendar_roles`(`calitemId`, `username`, `role`) values(?, ? ,?)', array($calitemId, $add['name'], $add['role']));
-				}
-			}
-		}
-	}
-	
-	#region reminder
-
-    function persistReminder($calendarItemId, $reminderProperties)
-    {
-        # read reminder attributes
-
-        $reminderType = $reminderProperties['reminder_type'];
-        $reminderFixedDate = $reminderProperties['reminder_fixed_date'];
-        $reminderTimeOffset = $reminderProperties['reminder_time_offset'];
-        $reminderRelatedTo = $reminderProperties['reminder_related_to'];
-        $reminderWhenRun = $reminderProperties['reminder_when_run'];
-
-        # use default values
-
-        $reminderType = $reminderType == null ? 0 : $reminderType;
-        $reminderFixedDate = $reminderFixedDate == null ? 0 : $reminderFixedDate;
-        $reminderTimeOffset = $reminderTimeOffset == null ? 0 : $reminderTimeOffset;
-        $reminderRelatedTo = $reminderRelatedTo == null ? 'S' : $reminderRelatedTo;
-        $reminderWhenRun = $reminderWhenRun == null ? 'B' : $reminderWhenRun;
-
-        // get reminder id
-
-        $reminderId = $this->GetOne("SELECT reminder_id FROM custom_calendar_reminder WHERE calendar_item_id = ?", array($calendarItemId));
-
-        // insert or update reminder
-
-        if ($reminderId == 0)
-        {
-            $query = 'INSERT INTO custom_calendar_reminder (calendar_item_id, reminder_type, fixed_date, time_offset, related_to, when_run) VALUES (?, ?, ?, ?, ?, ?)';
-
-            $r = array($calendarItemId, $reminderType, 0, 0, 'S', 'B');
-
-            switch ($reminderType)
-            {
-                case 1:
-                {
-                    $r[2] = $reminderFixedDate;
-                    break;
-                }
-                case 2:
-                {
-                    $r[3] = $reminderTimeOffset;
-                    $r[4] = $reminderRelatedTo;
-                    $r[5] = $reminderWhenRun;
-                    break;
-                }
-            }
-
-            $this->query($query, $r);
-        }
-        else
-        {
-            $query = 'UPDATE custom_calendar_reminder SET reminder_type = ?, fixed_date = ?, time_offset = ?, related_to = ?, when_run = ?, last_sent = 0 WHERE reminder_id = ?';
-
-            $r = array($reminderType, 0, 0, 'S', 'B', $reminderId);
-
-            switch ($reminderType)
-            {
-                case 1:
-                {
-                    $r[1] = $reminderFixedDate;
-                    break;
-                }
-                case 2:
-                {
-                    $r[2] = $reminderTimeOffset;
-                    $r[3] = $reminderRelatedTo;
-                    $r[4] = $reminderWhenRun;
-                    break;
-                }
-            }
-
-            $this->query($query, $r);
-        }
-    }
-
-    #endregion reminder
-
 }
 $calendarlib = new CalendarLib;

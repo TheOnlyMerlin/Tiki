@@ -9,13 +9,6 @@ class PreferencesLib
 {
 	private $data = array();
 	private $usageArray;
-	private $file = '';
-	
-	function PreferencesLib() {
-		global $prefs;
-		
-		$this->file = 'temp/cache/preference-index-' . $prefs['language'];
-	}
 
 	function getPreference( $name, $deps = true, $source = null, $get_pages = false ) {
 		global $prefs;
@@ -44,7 +37,7 @@ class PreferencesLib
 			}
 		
 			$value = $source[$name];
-			if( !empty($value) && is_string( $value ) && ($value{0} == ':' || (strlen($value) > 1 && $value{1} == ':')) && false !== $unserialized = unserialize( $value ) ) {
+			if( !empty($value) && is_string( $value ) && $value{0} == ':' && false !== $unserialized = unserialize( $value ) ) {
 				$value = $unserialized;
 			}
 
@@ -55,18 +48,16 @@ class PreferencesLib
 			} else {
 				$info['value'] = $value;
 			}
-
 			$info['raw'] = $source[$name];
 			$info['id'] = 'pref-' . ++$id;
-
 			if( isset( $info['help'] ) && $prefs['feature_help'] == 'y' ) {
-				if( preg_match('/^https?:/i', $info['help']) ) {
+				
+				if ( preg_match('/^https?:/i', $info['help']) ) 
+				// If help is an url, return it without adding $helpurl 
 					$info['helpurl'] = $info['help'];
-				} else {
+				else
 					$info['helpurl'] = $prefs['helpurl'] . $info['help'];
-				}
 			}
-
 			if( $deps && isset( $info['dependencies'] ) ) {
 				$info['dependencies'] = $this->getDependencies( $info['dependencies'] );
 			}
@@ -135,9 +126,9 @@ class PreferencesLib
 			}
 			$realPref = in_array($pref, $user_overrider_prefs)? "site_$pref": $pref;
 
-			if( ($old = $tikilib->get_preference( $realPref ) ) != $value ) {
+			if( $tikilib->get_preference( $realPref ) != $value ) {
 				$tikilib->set_preference( $pref, $value );
-				$changes[$pref] = array('new'=> $value, 'old' => $old);
+				$changes[$pref] = $value;
 			}
 		}
 
@@ -176,15 +167,6 @@ class PreferencesLib
 		}
 
 		return $out;
-	}
-
-	function getExtraSortColumns() {
-		global $prefs;
-		if( $prefs['rating_advanced'] == 'y' ) {
-			return TikiDb::get()->fetchMap( "SELECT CONCAT('adv_rating_', ratingConfigId), name FROM tiki_rating_configs" );
-		} else {
-			return array();
-		}
 	}
 
 	private function loadData( $name ) {
@@ -239,9 +221,11 @@ class PreferencesLib
 				new StandardAnalyzer_Analyzer_Standard_English() );
 		}
 
+		$file = 'temp/cache/preference-index-' . $prefs['language'];
+
 		require_once 'Zend/Search/Lucene.php';
-		if( $this->indexNeedsRebuilding() ) {
-			$index = Zend_Search_Lucene::create( $this->file );
+		if( ! file_exists( $file ) ) {
+			$index = Zend_Search_Lucene::create( $file );
 
 			foreach( glob( 'lib/prefs/*.php' ) as $file ) {
 				$file = substr( basename( $file ), 0, -4 );
@@ -257,11 +241,7 @@ class PreferencesLib
 			return $index;
 		}
 
-		return Zend_Search_Lucene::open( $this->file );
-	}
-	
-	public function indexNeedsRebuilding() {
-		return !file_exists( $this->file );
+		return Zend_Search_Lucene::open( $file );
 	}
 
 	public function getPreferenceLocations( $name ) {
@@ -272,14 +252,14 @@ class PreferencesLib
 		$pages = array();
 		foreach($this->usageArray as $pg => $pfs) {
 			foreach ($pfs as $pf) {
-				if ($pf[0] == $name) {
-					$pages[] = array($pg, $pf[1]);
+				if ($pf == $name) {
+					$pages[] = $pg;
 				}
 			}
 		}
 
 		if (count($pages) == 0 && strpos($name, 'plugin') !== false) {
-			$pages[] = array('textarea', 0);	// plugins are included in textarea admin dynamically
+			$pages[] = 'textarea';	// plugins are included in textarea admin dynamically
 		}
 
 		return $pages;
@@ -293,22 +273,12 @@ class PreferencesLib
 			$fp = opendir('templates/');
 			
 			while(false !== ($f = readdir($fp))) {
-				preg_match('/^tiki-admin_include_(.*)\.tpl$/', $f, $m);
+				preg_match('/^tiki-admin-include-(.*)\.tpl$/', $f, $m);
 				if (count($m) > 0) {
 					$page = $m[1];
 					$c = file_get_contents('templates/'.$f);
-					preg_match_all('/{preference.*name=[\'"]?(\w*)[\'"]?.*}/i', $c, $m2, PREG_OFFSET_CAPTURE);
-					if (count($m2[1]) > 0) {
-						// count number of tabs in front of each found pref
-						foreach( $m2[1] as & $found) {
-							$tabs = preg_match_all('/{\/tab}/i', substr($c, 0, $found[1]), $m3);
-							if ($tabs === false) {
-								$tabs = 0;
-							} else {
-								$tabs++;
-							}
-							$found[1] = $tabs;	// replace char offset with tab number
-						}
+					preg_match_all('/{preference.*name=[\'"]?(\w*)[\'"]?.*}/i', $c, $m2);
+					if (count($m2) > 0) {
 						$prefs_usage_array[$page] = $m2[1];
 					}
 				}
@@ -326,12 +296,8 @@ class PreferencesLib
 		$doc = new Zend_Search_Lucene_Document();
 		$doc->addField( Zend_Search_Lucene_Field::UnIndexed('preference', $pref) );
 		$doc->addField( Zend_Search_Lucene_Field::Text('name', $info['name']) );
-		if (!empty($info['description'])) {
-			$doc->addField( Zend_Search_Lucene_Field::Text('description', $info['description']) );
-		}
-		if (!empty($info['keywords'])) {
-			$doc->addField( Zend_Search_Lucene_Field::Text('keywords', $info['keywords']) );
-		}
+		$doc->addField( Zend_Search_Lucene_Field::Text('description', $info['description']) );
+		$doc->addField( Zend_Search_Lucene_Field::Text('keywords', $info['keywords']) );
 
 		if( isset( $info['options'] ) ) {
 			$doc->addField( Zend_Search_Lucene_Field::Text('options', implode( ' ', $info['options'] ) ) );
@@ -436,4 +402,4 @@ class PreferencesLib
 }
 
 global $prefslib;
-$prefslib = new PreferencesLib();
+$prefslib = new PreferencesLib;

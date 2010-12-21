@@ -3,11 +3,11 @@
 	font-size: 1em;
 }
 
-.button a:link,
-.button a:visited {
+span.button a:link,
+span.button a:visited {
 	text-decoration: none;
 	border: 0;
-	padding: 0 4px;
+	padding: 0 4px
 }
 
 #header-top {
@@ -24,7 +24,7 @@
 	font-size: 11px;
 }
 
-.upspantext {
+div.upspantext {
 	position: absolute !important;
 }
 
@@ -70,6 +70,9 @@ img.flipmodimage {
 
 .box-data ul {
 	margin-left: 1em;
+}
+
+.box-data ul {
 	padding-left: .5em;
 }
 
@@ -87,14 +90,14 @@ img.flipmodimage {
 	padding-left: 1em;
 }
 
-.normal, 
-.admin {
+table.normal, 
+table.admin {
 	width: 97%;
 	font-size: 11px;
 }
 
-.normal td,
-.admin td {
+table.normal td,
+table.admin td {
 	font-size: 11px;
 }
 
@@ -120,7 +123,7 @@ img.flipmodimage {
 	width: 90%;
 }
 
-#tikihelp {
+div#tikihelp {
 	position: absolute;
 }
 
@@ -129,8 +132,11 @@ img.flipmodimage {
 .post .postbody {}
 .postbody table {}
 
-.galtable {
+table.galtable {
 	width: 97%;
 }
 
+.fckeditzone {
+	width: 510px;
+}
 /* End of file */

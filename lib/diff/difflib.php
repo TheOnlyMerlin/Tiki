@@ -158,3 +158,16 @@ function diffChar($orig, $final, $words=0, $function='character') {
 	$renderer = new $new(count($line1));
 	return $renderer->render($z);
 }
+
+// Tiki's current PHP requirement is 4.1, but is_a() requires PHP 4.2+,
+// so we define it here if function doesn't exist
+if (!function_exists('is_a')) {
+	function is_a($object, $class_name) {
+		$class = get_class($object);
+		if ($class == $class_name) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+}

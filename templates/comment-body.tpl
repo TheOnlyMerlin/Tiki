@@ -12,13 +12,11 @@
 		<span class="author_info">
 
 			<span class="author_post_info">
-				{if $comment.anonymous_name}
-					{tr}Posted by{/tr} <span class="author_post_info_by">{if $comment.website}<a href="{$comment.website}" target="_blank">{/if}{$comment.anonymous_name}{if $comment.website}</a>{/if}</span>
-				{elseif $comment.userName}
-					{tr}Posted by{/tr} <span class="author_post_info_by">{$comment.userName|userlink}</span>
-				{/if}
 				{if $comment.commentDate > 0}
-					<span class="author_post_info_on">{$comment.commentDate|tiki_short_datetime:on}</span>
+					{tr}on{/tr} <span class="author_post_info_on">{$comment.commentDate|tiki_short_datetime}</span>{if $comment.userName},{/if}
+				{/if}
+				{if $comment.userName}
+					{tr}by{/tr} <span class="author_post_info_by">{$comment.userName|userlink}</span>
 				{/if}
 			</span>
 		{if $thread_style != 'commentStyle_headers'}
@@ -29,7 +27,7 @@
 			{/if}
 			{if $forum_info.ui_level eq 'y' and $comment.user_level}
 			<span class="author_stars">
-				<img src="img/icons/{$comment.user_level}stars.gif" alt="{$comment.user_level} {tr}stars{/tr}" title="{tr}User Level{/tr}" />
+				<img src="img/icons/{$comment.user_level}stars.gif" alt='{$comment.user_level} {tr}stars{/tr}' title="{tr}User Level{/tr}" />
 			</span>
 			{/if}
 
@@ -62,7 +60,7 @@
 	</div>
 
 {if $thread_style != 'commentStyle_headers'}
-<div class="postbody-content">
+<div class="clearfix postbody-content">
 	{$comment.parsed}
 	{* <span class="signature"><!-- SIGNATURE --></span> *}
 </div>

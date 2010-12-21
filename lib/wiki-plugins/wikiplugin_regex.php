@@ -23,17 +23,15 @@ function wikiplugin_regex_info() {
 	return array(
 		'name' => tra('Regular Expression'),
 		'documentation' => 'PluginRegex',
-		'validate' => 'all',
-		'description' => tra('Perform a regular expression search and replace'),
+		'validate' => 'all',		
+		'description' => tra('Takes regex expressions and parses the content between REGEX tags and replaces the text.'),
 		'prefs' => array( 'wikiplugin_regex' ),
-		'body' => tra('Each line of content is evaluated separately'),
-		'icon' => 'pics/icons/text_replace.png',
+		'body' => tra('one data per line'),
 		'params' => array(
 			'pageName' => array(
 				'required' => true,
 				'name' => tra('Page name'),
-				'description' => tra('Name of page containing search and replace expressions separated by two colons. Example of syntax on that page: /search pattern/::replacement text'),
-				'default' => 'pageName',
+				'description' => tra('Page name containing the regular expression search and replace patterns.'),
 			),
 		),
 	);

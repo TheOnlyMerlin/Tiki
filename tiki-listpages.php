@@ -8,19 +8,9 @@
 $section = 'wiki page';
 $section_class = "tiki_wiki_page manage";	// This will be body class instead of $section
 require_once ('tiki-setup.php');
+require_once ('lib/ajax/ajaxlib.php');
 $auto_query_args = array('initial', 'maxRecords', 'sort_mode', 'find', 'lang', 'langOrphan', 'findfilter_orphan', 'categId', 'category', 'page_orphans', 'structure_orphans', 'exact_match', 'hits_link_to_all_languages', 'create_new_pages_using_template_name');
 
-if ($prefs["gmap_page_list"] == 'y') {
-	$smarty->assign('gmapbuttons', true);
-} else {
-	$smarty->assign('gmapbuttons', false);
-}
-if (isset($_REQUEST["mapview"]) && $_REQUEST["mapview"] == 'y' && !isset($_REQUEST["searchmap"]) && !isset($_REQUEST["searchlist"]) || isset($_REQUEST["searchmap"]) && !isset($_REQUEST["searchlist"])) {
-	$smarty->assign('mapview', true);
-}
-if (isset($_REQUEST["mapview"]) && $_REQUEST["mapview"] == 'n' && !isset($_REQUEST["searchmap"]) && !isset($_REQUEST["searchlist"]) || isset($_REQUEST["searchlist"]) && !isset($_REQUEST["searchmap"]) ) {
-	$smarty->assign('mapview', false);
-}
 
 if ($prefs['feature_multilingual'] == 'y' && isset($_REQUEST['lang']) && isset($_REQUEST['term_srch'])) {
 	global $multilinguallib;
@@ -58,7 +48,6 @@ if (!empty($_REQUEST['submit_mult']) && isset($_REQUEST["checked"])) {
 		case 'remove_pages':
 			// Now check permissions to remove the selected pages
 			$access->check_permission('tiki_p_remove');
-			$access->check_authenticity(tr('Are you sure you want to remove the %0 selected pages?', count($_REQUEST['checked'])));
 			foreach($_REQUEST["checked"] as $check) $tikilib->remove_all_versions($check);
 			break;
 
@@ -69,9 +58,8 @@ if (!empty($_REQUEST['submit_mult']) && isset($_REQUEST["checked"])) {
 				// Now check permissions to access this page
 				$perms = Perms::get( array( 'type' => 'wiki page', 'object' => $check ) );
 				if (! $perms->view ) {
-					$access->display_error($check, tra("You do not have permission to view this page."), '403');
+					$access->display_error($check, tra("Permission denied. You cannot view this page."), '403');
 				}
-				$access->check_authenticity(tr('Are you sure you want to print the %0 selected pages?', count($_REQUEST['checked'])));
 				$page_info = $tikilib->get_page_info($check);
 				$page_info['parsed'] = $tikilib->parse_data($page_info['data']);
 				$page_info['h'] = 1;
@@ -79,25 +67,8 @@ if (!empty($_REQUEST['submit_mult']) && isset($_REQUEST["checked"])) {
 			}
 			break;
 
-		case 'export_pdf':
-			$access->check_feature('feature_wiki_multiprint');
-			foreach($_REQUEST["checked"] as $check) {
-				$access->check_page_exists($check);
-				// Now check permissions to access this page
-				$perms = Perms::get( array( 'type' => 'wiki page', 'object' => $check ) );
-				if (! $perms->view ) {
-					$access->display_error($check, tra("You do not have permission to view this page."), '403');
-				}
-
-				$multiprint_pages[] = $check;
-			}
-
-			header("Location: tiki-print_multi_pages.php?display=pdf&printpages=" . urlencode(serialize($multiprint_pages)));
-			die;
-
 		case 'unlock_pages':
 			$access->check_feature('feature_wiki_usrlock');
-			$access->check_authenticity(tr('Are you sure you want to unlock the %0 selected pages?', count($_REQUEST['checked'])));
 			global $wikilib;
 			include_once ('lib/wiki/wikilib.php');
 			foreach($_REQUEST["checked"] as $check) {
@@ -110,7 +81,6 @@ if (!empty($_REQUEST['submit_mult']) && isset($_REQUEST["checked"])) {
 
 		case 'lock_pages':
 			$access->check_feature('feature_wiki_usrlock');
-			$access->check_authenticity(tr('Are you sure you want to lock the %0 selected pages?', count($_REQUEST['checked'])));
 			global $wikilib;
 			include_once ('lib/wiki/wikilib.php');
 			foreach($_REQUEST["checked"] as $check) {
@@ -124,7 +94,6 @@ if (!empty($_REQUEST['submit_mult']) && isset($_REQUEST["checked"])) {
 
 		case 'zip':
 			if ($globalperms->admin == 'y') {
-				$access->check_authenticity(tr('Are you sure you want to download a zip of the %0 selected pages?', count($_REQUEST['checked'])));
 				include_once ('lib/wiki/xmllib.php');
 				$xmllib = new XmlLib;
 				$zipFile = 'dump/xml.zip';
@@ -303,19 +272,6 @@ if (!empty($multiprint_pages)) {
 		$languages = $tikilib->list_languages(false, 'y');
 		$smarty->assign_by_ref('languages', $languages);
 	}
-	
-	if ($prefs["gmap_page_list"] == 'y') {
-		// Generate Google map plugin data
-		global $gmapobjectarray;
-		$gmapobjectarray = array();
-		foreach ($listpages["data"] as $p) {
-			$gmapobjectarray[] = array('type' => 'wiki page',
-				'id' => $p["pageName"],
-				'title' => $p["pageName"],
-				'href' => "tiki-index.php?page=" . urlencode($p["pageName"]),
-			);
-		}
-	}
 	$smarty->assign_by_ref('listpages', $listpages["data"]);
 	$smarty->assign_by_ref('cant', $listpages['cant']);
 	ask_ticket('list-pages');
@@ -347,7 +303,7 @@ if (!empty($multiprint_pages)) {
 			require_once 'lib/ointegratelib.php';
 			$response = OIntegrate_Response::create(array('list' => $pages), '1.0');
 			$response->addTemplate('smarty', 'tikiwiki', 'files/templates/listpages/smarty-tikiwiki-1.0-shortlist.txt');
-			$response->schemaDocumentation = 'http://dev.tiki.org/WebserviceListpages';
+			$response->schemaDocumentation = 'http://dev.tikiwiki.org/WebserviceListpages';
 			$response->send();
 		}
 	} else {

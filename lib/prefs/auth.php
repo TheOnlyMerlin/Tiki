@@ -49,23 +49,13 @@ function prefs_auth_list() {
 			'filter' => 'digits',
 		),
 		'auth_token_tellafriend' => array(
-			'name' => tra('Share access rights with friends when using Tell a friend'),
+			'name' => tra('Share access rights with friends'),
 			'description' => tra('Allow users to share their access rights on the current page with a friend when sending the link by email. Lifespan of the links is defined by the site.'),
 			'type' => 'flag',
 			'perspective' => false,
 			'dependencies' => array(
 				'auth_token_access',
 				'feature_tell_a_friend',
-			),
-		),
-		'auth_token_share' => array(
-			'name' => tra('Share access rights with friends when using Share'),
-			'description' => tra('Allow users to share their access rights on the current page with a friend when sending the link by email/twitter/facebook. Lifespan of the links is defined by the site.'),
-			'type' => 'flag',
-			'perspective' => false,
-			'dependencies' => array(
-				'auth_token_access',
-				'feature_share',
 			),
 		),
 		'auth_phpbb_create_tiki' => array(
@@ -79,7 +69,7 @@ function prefs_auth_list() {
 			'perspective' => false,
 		),
 		'auth_phpbb_disable_tikionly' => array(
-			'name' => tra("Disable Tiki users who don't have a phpBB login. (They could have been deleted)."),
+			'name' => tra("Disable Tiki users who doesn't have a phpBB login. (They could have been deleted)."),
 			'type' => 'flag',
 			'perspective' => false,
 		),
@@ -122,7 +112,7 @@ function prefs_auth_list() {
 			'perspective' => false,
 		),
 		'auth_ldap_permit_tiki_users' => array(
-			'name' => tra('Use Tiki authentication for users created in Tiki'),
+			'name' => tra('Use Tiki authentication for users created in tiki'),
 			'type' => 'flag',
 			'perspective' => false,
 		),
@@ -231,7 +221,7 @@ function prefs_auth_list() {
 			'perspective' => false,
 		),
 		'auth_ldap_groupattr' => array(
-			'name' => tra('Group name attribute'),
+			'name' => tra('Group attribute'),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
@@ -279,109 +269,6 @@ function prefs_auth_list() {
 			'perspective' => false,
 		),
 		'auth_ldap_adminpass' => array(
-			'name' => tra('Admin password'),
-			'type' => 'password',
-			'size' => 15,
-			'perspective' => false,
-		),
-		'auth_ldap_group_external' => array(
-			'name' => tra('Use an external LDAP server for groups'),
-			'type' => 'flag',
-			'perspective' => false,
-		),
-		'auth_ldap_group_host' => array(
-			'name' => tra('Host'),
-			'type' => 'text',
-			'size' => 20,
-			'perspective' => false,
-		),
-		'auth_ldap_group_port' => array(
-			'name' => tra('Port'),
-			'type' => 'text',
-			'size' => 5,
-			'filter' => 'digits',
-			'perspective' => false,
-		),
-		'auth_ldap_group_debug' => array(
-			'name' => tra('Write LDAP debug Information in Tiki Logs'),
-			'type' => 'flag',
-			'perspective' => false,
-		),
-		'auth_ldap_group_ssl' => array(
-			'name' => tra('Use SSL (ldaps)'),
-			'type' => 'flag',
-			'perspective' => false,
-		),
-		'auth_ldap_group_starttls' => array(
-			'name' => tra('Use TLS'),
-			'type' => 'flag',
-			'perspective' => false,
-		),
-		'auth_ldap_group_type' => array(
-			'name' => tra('LDAP Bind Type'),
-			'type' => 'list',
-			'perspective' => false,
-			'options' => array(
-				'default' => tra('Default: Anonymous Bind'),
-				'full' => tra('Full: userattr=username,UserDN,BaseDN'),
-				'ol' => tra('OpenLDAP: cn=username,BaseDN'),
-				'ad' => tra('Active Directory (username@domain)'),
-				'plain' => tra('Plain Username'),
-			),
-		),
-		'auth_ldap_group_scope' => array(
-			'name' => tra('Search scope'),
-			'type' => 'list',
-			'perspective' => false,
-			'options' => array(
-				'sub' => tra('Subtree'),
-				'one' => tra('One level'),
-				'base' => tra('Base object'),
-			),
-		),
-		'auth_ldap_group_version' => array(
-			'name' => tra('LDAP version'),
-			'type' => 'text',
-			'size' => 5,
-			'perspective' => false,
-		),
-		'auth_ldap_group_basedn' => array(
-			'name' => tra('Base DN'),
-			'type' => 'text',
-			'size' => 15,
-			'perspective' => false,
-		),
-		'auth_ldap_group_userdn' => array(
-			'name' => tra('User DN'),
-			'type' => 'text',
-			'size' => 20,
-			'perspective' => false,
-		),
-		'auth_ldap_group_userattr' => array(
-			'name' => tra('User attribute'),
-			'type' => 'text',
-			'size' => 20,
-			'perspective' => false,
-		),
-		'auth_ldap_group_corr_userattr' => array(
-			'name' => tra('Corresponding user attribute in 1st directory'),
-			'type' => 'text',
-			'size' => 20,
-			'perspective' => false,
-		),
-		'auth_ldap_group_useroc' => array(
-			'name' => tra('User OC'),
-			'type' => 'text',
-			'size' => 20,
-			'perspective' => false,
-		),
-		'auth_ldap_group_adminuser' => array(
-			'name' => tra('Admin user'),
-			'type' => 'text',
-			'size' => 15,
-			'perspective' => false,
-		),
-		'auth_ldap_group_adminpass' => array(
 			'name' => tra('Admin password'),
 			'type' => 'password',
 			'size' => 15,

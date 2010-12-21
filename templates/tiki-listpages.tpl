@@ -6,7 +6,7 @@
 {tabset name='tabs_wikipages'}
 	{tab name="{tr}List Wiki Pages{/tr}"}
 
-		{include file='find.tpl' find_show_languages='y' find_show_languages_excluded='y' find_show_categories_multi='y' find_show_num_rows='y'}
+		{include file='find.tpl' find_show_languages='y' find_show_categories_multi='y' find_show_num_rows='y'}
 
 <form name="checkform" method="get" action="{$smarty.server.PHP_SELF}">
 	<input type="hidden" name="offset" value="{$offset|escape}" />
@@ -19,10 +19,6 @@
 			{$error}
 </div>
 		{/if}
-
-{if $mapview}
-{wikiplugin _name="googlemap" type="objectlist" width="400" height="400"}{/wikiplugin}
-{/if}
 
 <div id="tiki-listpages-content">
 		{if $aliases}

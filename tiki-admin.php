@@ -76,7 +76,7 @@ function simple_set_value($feature, $pref = '', $isMultiple = false) {
 	}
 	if (isset($_REQUEST[$feature]) && $old != $_REQUEST[$feature]) {
 		add_feedback( $feature, ($_REQUEST[$feature]) ? tr('%0 set', $feature) : tr('%0 unset', $feature), 2 );
-		$logslib->add_action('feature', $feature, 'system', $old .'=>'.isset($_REQUEST['feature'])?$_REQUEST['feature']:'');
+		$logslib->add_action('feature', $feature, 'system', isset($_REQUEST['feature'])?$_REQUEST['feature']:'');
 	}
 	global $cachelib;
 	require_once ("lib/cache/cachelib.php");
@@ -89,7 +89,7 @@ function simple_set_int($feature) {
 		if ($old != $_REQUEST[$feature]) {
 			$tikilib->set_preference($feature, $_REQUEST[$feature]);
 			add_feedback( $feature, tr('%0 set', $feature), 2 );
-			$logslib->add_action('feature', $feature, 'system',  $old .'=>'.$_REQUEST['feature']);
+			$logslib->add_action('feature', $feature, 'system', $_REQUEST['feature']);
 		}
 	}
 }
@@ -105,12 +105,11 @@ $helpDescription = $description = '';
 $url = 'tiki-admin.php';
 $adminPage = '';
 
-global $prefslib; require_once 'lib/prefslib.php';
 if( isset( $_REQUEST['lm_preference'] ) ) {
+	global $prefslib; require_once 'lib/prefslib.php';
 	
 	$changes = $prefslib->applyChanges( (array) $_REQUEST['lm_preference'], $_REQUEST );
-	foreach( $changes as $pref => $val ) {
-		$value = $val['new'];
+	foreach( $changes as $pref => $value ) {
 		if( $value == 'y' ) {
 			add_feedback( $pref, tr('%0 enabled', $pref), 1, 1 );
 			$logslib->add_action('feature', $pref, 'system', 'enabled');
@@ -119,7 +118,7 @@ if( isset( $_REQUEST['lm_preference'] ) ) {
 			$logslib->add_action('feature', $pref, 'system', 'disabled');
 		} else {
 			add_feedback( $pref, tr('%0 set', $pref), 1, 1 );
-			$logslib->add_action('feature', $pref, 'system', (is_array($val['old'])?implode($val['old'], ','):$val['old']).'=>'.(is_array($value)?implode($value, ','):$value));
+			$logslib->add_action('feature', $pref, 'system', is_array($value)?implode($value, ','):$value);
 		}
 	}
 }
@@ -144,8 +143,6 @@ if( isset( $_REQUEST['lm_criteria'] ) ) {
 	$smarty->assign( 'lm_searchresults', '' );
 	$smarty->assign( 'lm_error', '' );
 }
-
-$smarty->assign('indexNeedsRebuilding', $prefslib->indexNeedsRebuilding());
 
 if (isset($_REQUEST["page"])) {
 	$adminPage = $_REQUEST["page"];
@@ -219,14 +216,9 @@ if (isset($_REQUEST["page"])) {
 		$helpUrl = "Webmail";
 		$description = "Webmail";
 		include_once ('tiki-admin_include_webmail.php');
-	} else if ($adminPage == "comments") {
-		$admintitle = "Comments"; //get_strings tra("Comments")
-		$helpUrl = "Comments";
-		$description = "Comments settings"; //get_strings tra("Comments settings")
-		include_once ('tiki-admin_include_comments.php');
 	} else if ($adminPage == "rss") {
 		$admintitle = "Feeds"; //get_strings tra("Feeds")
-		$helpUrl = "Feeds User";
+		$helpUrl = "Feeds";
 		$description = "Feeds settings"; //get_strings tra("Feeds settings")
 		include_once ('tiki-admin_include_rss.php');
 	} else if ($adminPage == "directory") {
@@ -352,7 +344,7 @@ if (isset($_REQUEST["page"])) {
 	} else if ($adminPage == "semantic") {
 		$admintitle = "Semantic Wiki Links";
 		$description = "Manage semantic tokens used throughout the wiki.";
-		$helpUrl = "Semantic+Admin";
+		$helpUrl = "Semantic";
 		include_once ('tiki-admin_include_semantic.php');
 	} else if ($adminPage == "webservices") {
 		$admintitle = "Webservice Registration";
@@ -364,11 +356,11 @@ if (isset($_REQUEST["page"])) {
 		$description = 'Search engine friendly url';
 		$helpUrl = "Rewrite+Rules";
 		include_once ('tiki-admin_include_sefurl.php');
-	} else if ($adminPage == "video") {
-		$admintitle = "Video";//get_strings tra("Video")
-		$helpUrl = "Kaltura+Config";
-		$description = "Settings for video streaming integration";//get_strings tra("Settings for video streaming integration")
-		include_once ('tiki-admin_include_video.php');
+	} else if ($adminPage == "kaltura") {
+		$admintitle = "Kaltura";//get_strings tra("Kaltura")
+		$helpUrl = "Kaltura";
+		$description = "Kaltura settings";//get_strings tra("Kaltura settings")
+		include_once ('tiki-admin_include_kaltura.php');
 	} else if ($adminPage == "connect") {
 		$admintitle = "Connect";
 		$helpUrl = "Connect";
@@ -384,11 +376,6 @@ if (isset($_REQUEST["page"])) {
 		$helpUrl = 'Payment';
 		$description = 'Payment';
 		include_once ('tiki-admin_include_payment.php');
-	} else if ($adminPage == "socialnetworks") {
-		$admintitle = "Social Networks";
-		$helpUrl = "Social+Networks";
-		$description = "Settings for social networks integration";
-		include_once ('tiki-admin_include_socialnetworks.php');
 	} else {
 		$helpUrl = '';
 	}
@@ -427,7 +414,7 @@ if (!empty($_GET['forcecheck'])) {
 	$smarty->assign('tiki_needs_upgrade', $prefs['tiki_needs_upgrade']);
 	// See if a major release is available.
 	if (!$TWV->isLatestMajorVersion()) {
-		add_feedback( null, tr('A new %0 major release branch is available.', $TWV->branch.'('.$TWV->latestRelease.')'), 3 );
+		add_feedback( null, tr('A new major release branch is available.'), 3 );
 	}
 	$tikilib->set_preference('tiki_needs_upgrade', $prefs['tiki_needs_upgrade']);
 	$tikilib->set_preference('tiki_release', $TWV->getLatestMinorRelease());
@@ -447,7 +434,7 @@ if ($prefs['feature_version_checks'] == 'y') {
 			$tikilib->set_preference('tiki_release', $TWV->getLatestMinorRelease());
 			$smarty->assign('tiki_release', $TWV->getLatestMinorRelease());
 			if (!$TWV->isLatestMajorVersion()) {
-				add_feedback( null, tr('A new %0 major release branch is available.', $TWV->branch.'('.$TWV->latestRelease.')'), 3, 1);
+				add_feedback( null, tr('A new %0 major release branch is available.', $TWV->branch), 3, 1);
 			}
 		} else {
 			$prefs['tiki_needs_upgrade'] = 'n';
@@ -464,7 +451,7 @@ if ($prefs['feature_version_checks'] == 'y') {
 		// Normalize database if necessary.  Usually when an upgrade has
 		// actually been done, but for whatever reason the database has
 		// not had its version tracking info updated.
-		if ($tiki_needs_upgrade == 'y' && version_compare($TWV->version, $tiki_release, '>=')) {
+		if ($tiki_needs_upgrade == 'y' && $tiki_release == $TWV->version) {
 			$tiki_needs_upgrade = 'n';
 			$tikilib->set_preference('tiki_needs_upgrade', $tiki_needs_upgrade);
 			$smarty->assign('tiki_needs_upgrade', $tiki_needs_upgrade);

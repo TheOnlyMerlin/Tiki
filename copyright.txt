@@ -2,19 +2,19 @@ Tiki Copyright
 ----------------
 
 The following list attempts to gather the copyright holders for Tiki
-as of version 6.0.
+as of version 5.0.
 
 Accounts listed below with commits have contributed source code to CVS or SVN. 
 Please note that even more people contributed on various other aspects (documentation, 
 bug reporting, testing, etc.)
 
 This is how we implement the Tiki Social Contract.
-http://tiki.org/Social+Contract
+http://tikiwiki.org/Social+Contract
 
 List of members of the Community
-As of 2010-12-14, the community has:
+As of 2010-12-21, the community has:
   * 494 members on SourceForge.net,
-  * 242 of those people who made at least one code commit
+  * 243 of those people who made at least one code commit
 
 This list is automatically generated and alphabetically sorted
 from subversion repository by the following script:
@@ -375,14 +375,14 @@ Nickname: changi67
 Name: Jean-FranÃ§ois  B.
 First Commit: 2009-04-23
 Last Commit: 2010-12-14
-Number of Commits: 453
+Number of Commits: 460
 SF Role: Packager (.rpm, .deb etc)
 
 Nickname: chealer
 Name: Philippe Cloutier
 First Commit: 2003-09-27
-Last Commit: 2010-12-14
-Number of Commits: 903
+Last Commit: 2010-12-21
+Number of Commits: 915
 SF Role: Developer
 
 Nickname: chessy
@@ -392,8 +392,8 @@ SF Role: Developer
 Nickname: chibaguy
 Name: Gary Cunningham-Lee
 First Commit: 2006-02-04
-Last Commit: 2010-12-09
-Number of Commits: 1441
+Last Commit: 2010-12-19
+Number of Commits: 1443
 SF Role: Web Designer
 
 Nickname: chris_holman
@@ -1119,8 +1119,8 @@ SF Role: Developer
 Nickname: jonnybradley
 Name: jonny Bradley
 First Commit: 2007-08-15
-Last Commit: 2010-12-13
-Number of Commits: 2794
+Last Commit: 2010-12-21
+Number of Commits: 2825
 SF Role: Developer
 
 Nickname: jorgercosta
@@ -1212,8 +1212,8 @@ Name: Kimberly Fink
 Nickname: killianebel
 Name: Killian EBEL
 First Commit: 2010-12-07
-Last Commit: 2010-12-10
-Number of Commits: 22
+Last Commit: 2010-12-21
+Number of Commits: 39
 
 Nickname: kissaki
 Name: Kissaki
@@ -1308,8 +1308,8 @@ SF Role: Developer
 
 Nickname: lindonb
 First Commit: 2009-05-10
-Last Commit: 2010-12-11
-Number of Commits: 299
+Last Commit: 2010-12-19
+Number of Commits: 307
 
 Nickname: llunax
 Name: Lluna
@@ -1338,8 +1338,8 @@ Name: Louis-Martin Richard
 Nickname: lphuberdeau
 Name: Louis-Philippe Huberdeau
 First Commit: 2004-04-10
-Last Commit: 2010-12-14
-Number of Commits: 1840
+Last Commit: 2010-12-20
+Number of Commits: 1842
 SF Role: Developer
 
 Nickname: lrargerich
@@ -1419,8 +1419,8 @@ SF Role: Developer
 Nickname: marclaporte
 Name: Marc Laporte
 First Commit: 2003-11-28
-Last Commit: 2010-12-12
-Number of Commits: 1048
+Last Commit: 2010-12-18
+Number of Commits: 1052
 SF Role: Project Manager
 
 Nickname: marcmont
@@ -1708,8 +1708,8 @@ Number of Commits: 3
 Nickname: nkoth
 Name: Nelson
 First Commit: 2007-05-17
-Last Commit: 2010-11-18
-Number of Commits: 806
+Last Commit: 2010-12-21
+Number of Commits: 830
 SF Role: Developer
 
 Nickname: normandaoust
@@ -1732,8 +1732,8 @@ SF Role: Developer
 Nickname: nyloth
 Name: Patrice W.
 First Commit: 2006-11-09
-Last Commit: 2010-12-10
-Number of Commits: 1761
+Last Commit: 2010-12-21
+Number of Commits: 1765
 SF Role: Developer
 
 Nickname: obnoxxx
@@ -1876,8 +1876,8 @@ Number of Commits: 1
 
 Nickname: pkdille
 First Commit: 2007-03-14
-Last Commit: 2010-12-14
-Number of Commits: 1383
+Last Commit: 2010-12-21
+Number of Commits: 1412
 SF Role: Developer
 
 Nickname: plillevold
@@ -2060,8 +2060,8 @@ SF Role: Developer
 Nickname: robertplummer
 Name: Robert Plummer
 First Commit: 2010-06-30
-Last Commit: 2010-11-18
-Number of Commits: 53
+Last Commit: 2010-12-20
+Number of Commits: 58
 
 Nickname: robferguson
 Name: Rob Ferguson
@@ -2277,8 +2277,8 @@ SF Role: Developer
 Nickname: sylvieg
 Name: Sylvie Greverend
 First Commit: 2003-05-28
-Last Commit: 2010-12-14
-Number of Commits: 6256
+Last Commit: 2010-12-20
+Number of Commits: 6266
 SF Role: Developer
 
 Nickname: syracine
@@ -2369,6 +2369,9 @@ SF Role: Developer
 
 Nickname: trebly
 Name: Trebly
+First Commit: 2010-12-20
+Last Commit: 2010-12-21
+Number of Commits: 3
 
 Nickname: troworld
 First Commit: 2004-05-08
@@ -2470,8 +2473,8 @@ SF Role: Developer
 Nickname: xavidp
 Name: Xavier de Pedro
 First Commit: 2005-07-08
-Last Commit: 2010-12-14
-Number of Commits: 370
+Last Commit: 2010-12-20
+Number of Commits: 381
 SF Role: All-Hands Person
 
 Nickname: xbtheria

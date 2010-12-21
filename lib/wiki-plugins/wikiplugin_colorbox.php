@@ -7,119 +7,63 @@
 
 function wikiplugin_colorbox_info() {
 	return array(
-		'name' => tra('Colorbox'),
-		'documentation' => 'PluginColorBox',
-		'description' => tra('Display a gallery of images in a popup slideshow'),
+		'name' => tra('colorbox'),
+		'documentation' => 'PluginClorBox',
+		'description' => tra("Display all the images of a file gallery in a colorbox popup"),
 		'prefs' => array( 'feature_file_galleries', 'feature_shadowbox', 'wikiplugin_colorbox' ),
-		'introduced' => 5,
-		'icon' => 'pics/icons/pictures.png',
 		'params' => array(
 			'fgalId' => array(
 				'required' => false,
-				'name' => tra('File Gallery ID'),
-				'description' => tra('ID number of the file gallery that contains the images to be displayed'),
-				'filter' => 'digits',
-				'accepted' => 'ID',
-				'default' => '',
-				'since' => '5.0'
-				),
+				'name' => tra('File gallery ID'),
+				'description' => tra('File gallery ID'),
+				'filter' => 'digits'
+			),
 			'galId' => array(
 				'required' => false,
-				'name' => tra('Image Gallery ID'),
-				'description' => tra('ID number of the image gallery that contains the images to be displayed'),
-				'filter' => 'digits',
-				'accepted' => 'ID',
-				'default' => '',
-				'since' => '5.0'
-				),
-			'fileId' => array(
-				'required' => false,
-				'name' => tra('File ID Filter'),
-				'description' => tra('Filter on fileIds in a file gallery to only show those images. Separate each fileId with \':\''),
-				'filter' => 'digits',
-				'separator' => ':',
-				'accepted' => 'ID separated with :',
-				'default' => '',
-				'since' => '6.0'
-				),
+				'name' => tra('Image gallery ID'),
+				'description' => tra('Image gallery ID'),
+				'filter' => 'digits'
+			),
 			'thumb' => array(
 				'required' => false,
 				'name' => tra('Thumb'),
-				'description' => tra('Display as a thumbnail (y) or full size (n)'),
-				'filter' => 'alpha',
-				'accepted' => 'y or n',
+				'description' => tra('The image in the page is displayed or not in mode thumb:'). 'y|n',
 				'default' => 'y',
-				'since' => '5.0',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n'),
-					),
-				),
+				'filter' => 'alpha'
+			),
 			'sort_mode' => array(
 				'required' => false,
 				'name' => tra('Sort Mode'),
-				'description' => tra('Sort by database table field name, ascending or descending. Examples: fileId_asc or name_desc.'),
-				'filter' => 'word',
-				'accepted' => 'fieldname_asc or fieldname_desc with actual table field name in place of \'fieldname\'.',
-				'default' => 'created_desc',
-				'since' => '5.0'
-				),
+				'description' => tra('Sort Mode'),
+				'filter' => 'word'
+			),
 			'showtitle' => array(
 				'required' => false,
-				'name' => tra('Show File Title'),
-				'description' => tra('Show file title'),
+				'name' => tra('Show file title'),
+				'description' => 'y|n '. tra('Show file title'),
 				'filter' => 'alpha',
-				'accepted' => 'y or n',
 				'default' => 'n',
-				'since' => '5.0',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n'),
-				),
 			),
 			'showfilename' => array(
 				'required' => false,
-				'name' => tra('Show File Name'),
-				'description' => tra('Show file name'),
+				'name' => tra('Show file name'),
+				'description' => 'y|n '. tra('Show file name'),
 				'filter' => 'alpha',
-				'accepted' => 'y or n',
 				'default' => 'n',
-				'since' => '5.0',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n'),
-				),
 			),
 			'showallthumbs' => array(
 				'required' => false,
-				'name' => tra('Show All Thumbs'),
-				'description' => tra('Show thumbnails of all the images in the gallery'),
+				'name' => tra('Show all thumbs'),
+				'description' => 'y|n '. tra('Show all thumbs'),
 				'filter' => 'alpha',
-				'accepted' => 'y or n',
 				'default' => 'n',
-				'since' => '5.0',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n'),
-				),
 			),
 			'parsedescriptions' => array(
 				'required' => false,
-				'name' => tra('Parse Descriptions'),
-				'description' => tra('Wiki parse the file descriptions'),
+				'name' => tra('Parse descriptions'),
+				'description' => 'y|n '. tra('Wiki parse the file descriptions'),
 				'filter' => 'alpha',
-				'accepted' => 'y or n',
 				'default' => 'n',
-				'since' => '5.0',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n'),
-				),
 			),
 		),
 	);
@@ -138,8 +82,7 @@ function wikiplugin_colorbox($data, $params) {
 			return tra('Permission denied');
 		}
 		if (empty($params['sort_mode'])) $params['sort_mode'] = 'created_desc';
-		$filter = empty($params['fileId'])? '': array('fileId'=> $params['fileId']);
-		$files = $tikilib->get_files(0, -1, $params['sort_mode'], '', $params['fgalId'], false, false, false, true, false, false, false, false, '', true, false, false, $filter);
+		$files = $tikilib->get_files(0, -1, $params['sort_mode'], '', $params['fgalId'], false, false, false, true, false, false, false);
 		$smarty->assign('colorboxUrl', 'tiki-download_file.php?fileId=');
 		$smarty->assign('colorboxColumn', 'id');
 		if ($params['thumb'] != 'n') {

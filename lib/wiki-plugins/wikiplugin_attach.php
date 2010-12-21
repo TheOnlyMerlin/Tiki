@@ -49,118 +49,70 @@ function wikiplugin_attach_help() {
 function wikiplugin_attach_info() {
 	return array(
 		'name' => tra( 'Attachment' ),
-		'documentation' => 'PluginAttach',
-		'description' => tra('Displays an attachment or a list of them'),
+		'documentation' => 'PluginAttach',		
+		'description' => tra("Displays an attachment or a list of them"),
 		'prefs' => array( 'feature_wiki_attachments', 'wikiplugin_attach' ),
 		'body' => tra("Comment"),
-		'icon' => 'pics/icons/attach.png',
 		'params' => array(
 			'name' => array(
 				'required' => false,
 				'name' => tra('Name'),
-				'description' => tra('File name of the attached file to link to. Either name, file, id or num can be used to identify a single attachment'),
-				'default' => ''
+				'description' => tra("Gives the name of the attached file to link to"),
 			),
 			'file' =>array(
 				'required' => false,
 				'name' => tra('File'),
-				'description' => tra('Same as name'),
-				'default' => ''
+				'description' => tra("Same as name"),
 			),
 			'page' => array(
 				'required' => false,
 				'name' => tra('Page'),
-				'description' => tra('Name of the wiki page the file is attached to. If left empty when the plugin is used on a wiki page, this defaults to that wiki page.'),
-				'default' => ''
+				'description' => tra("Gives the name of another page the attached file is on. The file on that page is linked to instead. Only works with wiki pages"),
 			),
 			'showdesc' => array(
 				'required' => false,
-				'name' => tra('Show Description'),
-				'description' => tra('Shows the description as the link text instead of the file name (not used by default)'),
-				'default' => 0,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				),
+				'name' => tra('Show description'),
+				'description' => tra("Shows the description as the link text instead of the file name"),
 			),
 			'bullets' => array(
 				'required' => false,
 				'name' => tra('Bullets'),
-				'description' => tra('Makes the list of attachments a bulleted list (not set by default)'),
-				'default' => 0,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				),
+				'description' => tra("Makes the list of attachments a bulleted list"),
 			),
 			'image' =>array(
 				'required' => false,
 				'name' => tra('Image'),
-				'description' => tra('Indicates that this file is an image, and should be displayed inline using the img tag (not set by default)'),
-				'default' => 0,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				),
+				'description' => tra("Says that this file is an image, and should be displayed inline using the img tag"),
 			),
 			'inline' =>array(
 				'required' => false,
-				'name' => tra('Custom Label'),
-				'description' => tra('Makes the text between the {ATTACH} tags the link text instead of the file name or description. Only the first attachment will be listed.'),
-				'default' => 0,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				),
+				'name' => tra('Inline'),
+				'description' => tra("Makes the text between the {ATTACH} tags the link text instead of the file name or description"),
 			),
 			'all' => array(
 				'required' => false,
 				'name' => tra('All'),
-				'description' => tra('Lists links to all attachments for the entire tiki site together with pages they are attached to when set to 1 (Yes)'),
-				'default' => 0,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				),
+				'description' => tra("Shows all attachments from the whole wiki"),
 			),
 			'num' => array(
 				'required' => false,
-				'name' => tra('Order Number'),
-				'description' => tra('Identifies the attachment to link to by the order of the attachment in the list of attachments to a page instead of by file name or ID. 
-										Either name, file, id or num can be used to identify a single attachment.'),
-				'default' => ''
+				'name' => tra('Number'),
+				'description' => tra("Gives the number, in the list of attachments, of the attachment to link to"),
 			),
 			'id' => array(
 				'required' => false,
 				'name' => tra('ID'),
-				'description' => tra('Identifies the attachment to link to by id number instead of by file name or order number. Either name, file, id or num can be used to identify a single attachment.'),
+				'description' => tra("Gives the actual id of the attachment to link in. You probably should never use this"),
 			),
 			'dls' => array(
 				'required' => false,
 				'name' => tra('Downloads'),
-				'description' => tra('The alt text that pops up on mouseover will include the number of downloads of the attachment at the end when set to 1 (Yes)'),
-				'default' => 0,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				),
+				'description' => tra("Puts the number of downloads in the alt comment"),
 			),
 			'icon' =>array(
 				'required' => false,
-				'name' => tra('File Type Icon'),
-				'description' => tra('A file type icon is displayed in front of the attachment link when this is set to 1'),
-				'default' => 0,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				),
+				'name' => tra('Show icon'),
+				'description' => tra("Shows a file icon"),
 			),
 
 		),
@@ -196,7 +148,7 @@ function wikiplugin_attach($data, $params) {
 				$attextra = 'y';
 			}
 
-			$attfields = explode(',',strtok($tracker_info["orderAttachments"],'|'));
+			$attfields = split(',',strtok($tracker_info["orderAttachments"],'|'));
 
 			$atts = $trklib->list_item_attachments($atts_item_name, 0, -1, 'comment_asc', '');
 		}
@@ -212,12 +164,16 @@ function wikiplugin_attach($data, $params) {
 	$old_atts = $atts;
 	$url = '';
 
+	if( !empty( $page ) ) {
+		if($tikilib->user_has_perm_on_object($user,$page,'wiki page','tiki_p_wiki_view_attachments') || $tikilib->user_has_perm_on_object($user, $_REQUEST['page'], 'wiki page', 'tiki_p_wiki_admin_attachments')) {
+			$atts = $wikilib->list_wiki_attachments($page,0,-1,'created_desc','');
+			$url = "&amp;page=$page";
+		}
+	}
+
 	if (isset($all)) {
 		$atts = $wikilib->list_all_attachements(0,-1,'page_asc','');
 	} elseif (!empty($page)) {
-		if (!$tikilib->page_exists($page)) {
-			return "''".tr('Page "%0" does not exist', $page)."''";
-		}
 		if($tikilib->user_has_perm_on_object($user,$page,'wiki page','tiki_p_wiki_view_attachments') || $tikilib->user_has_perm_on_object($user, $_REQUEST['page'], 'wiki page', 'tiki_p_wiki_admin_attachments')) {
 			$atts = $wikilib->list_wiki_attachments($page,0,-1,'created_desc','');
 			$url = "&amp;page=$page";

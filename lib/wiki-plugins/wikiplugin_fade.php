@@ -9,19 +9,17 @@ function wikiplugin_fade_info()
 {
 	return array(
 		'name' => tra('Fade'),
-		'documentation' => 'PluginFade',
-		'description' => tra('Create a fade-in/fade-out effect with text'),
+		'documentation' => 'PluginFade',		
+		'description' => tra('Displays a label. On click, the block of content will fade in and fade out.'),
 		'prefs' => array('wikiplugin_fade'),
 		'body' => tra('Wiki syntax containing the text to display.'),
 		'filter' => 'wikicontent',
-		'icon' => 'pics/icons/wand.png',
 		'params' => array(
 			'label' => array(
 				'required' => true,
 				'name' => tra('Label'),
 				'filter' => 'striptags',
 				'description' => tra('Label to display on first display'),
-				'default' => tra('Unspecified label')
 			),
 		),
 	);
@@ -35,7 +33,7 @@ function wikiplugin_fade( $body, $params )
 	if( isset( $params['label'] ) ) {
 		$label = $params['label'];
 	} else {
-		$label = tra('Unspecified label');
+		$label = tra("Unspecified label");
 	}
 
 	$unique = 'wpfade-' . ++$id;

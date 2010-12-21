@@ -15,10 +15,9 @@ function wikiplugin_lastmod_help() {
 function wikiplugin_lastmod_info() {
 	return array(
 		'name' => tra('Last Modification'),
-		'documentation' => 'PluginLastMod',
-		'description' => tra('Show the last modification date for a page'),
+		'documentation' => 'PluginLastMod',			
+		'description' => tra("The last_mod plugin replaces itself with last modification time of the named wiki page, or the current page if no name given"),
 		'prefs' => array('feature_wiki', 'wikiplugin_lastmod'),
-		'icon' => 'pics/icons/date_edit.png',
 		'params' => array(
 			'page' => array(
 				'required' => false,
@@ -37,12 +36,8 @@ function wikiplugin_lastmod($data, $params) {
 
 	if (!isset($page)) {
 		# See if we're being called from a wiki page; stolen from wikiplugin_attach
-		if (isset($_REQUEST['SCRIPT_NAME']) && isset($_REQUEST['page'])) {
-			if( strstr( $_REQUEST["SCRIPT_NAME"], "tiki-index.php" ) || strstr( $_REQUEST["SCRIPT_NAME"], "tiki-editpage.php" ) || strstr( $_REQUEST["SCRIPT_NAME"], 'tiki-pagehistory.php') ) {
-				$page = $_REQUEST["page"];
-			}
-		} else {
-			return;
+		if( strstr( $_REQUEST["SCRIPT_NAME"], "tiki-index.php" ) || strstr( $_REQUEST["SCRIPT_NAME"], "tiki-editpage.php" ) || strstr( $_REQUEST["SCRIPT_NAME"], 'tiki-pagehistory.php') ) {
+			$page = $_REQUEST["page"];
 		}
 
 	}

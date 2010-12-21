@@ -6,6 +6,9 @@
 // $Id$
 
 require_once ('tiki-setup.php');
+if ($prefs['feature_ajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
 include_once ('lib/messu/messulib.php');
 include_once ('lib/userprefs/scrambleEmail.php');
 include_once ('lib/registration/registrationlib.php');
@@ -41,12 +44,14 @@ if ($prefs['feature_friends'] == 'y') {
 	$smarty->assign('friend_pending', $tikilib->verify_friendship_request($userwatch, $user));
 	$smarty->assign('friend_waiting', $tikilib->verify_friendship_request($user, $userwatch));
 }
-$smarty->assign('infoPublic', 'y');
 if ($tiki_p_admin != 'y') {
 	$user_information = $tikilib->get_user_preference($userwatch, 'user_information', 'public');
 	// If the user is trying to pull info on themselves, allow it.
 	if ($user_information == 'private' && $userwatch != $user) {
-		$smarty->assign('infoPublic', 'n');
+		$smarty->assign('errortype', 'no_redirect_login');
+		$smarty->assign('msg', tra("The user has chosen to make his information private"));
+		$smarty->display("error.tpl");
+		die;
 	}
 }
 if ($user) {
@@ -60,13 +65,8 @@ if ($user) {
 			$smarty->display("tiki.tpl");
 			die;
 		}
-		$sent = $messulib->post_message($userwatch, $user, $_REQUEST['to'], '', $_REQUEST['subject'], $_REQUEST['body'], $_REQUEST['priority'], '',
-								isset($_REQUEST['replytome']) ? 'y' : '', isset($_REQUEST['bccme']) ? 'y' : '');
-		if ($sent) {
-			$message = tra('Message sent to') . ':' . $userlib->clean_user($userwatch) . '<br />';
-		} else {
-			$message = tra('An error occurred, please check your mail settings and try again');
-		}
+		$message = tra('Message sent to') . ':' . $userwatch . '<br />';
+		$messulib->post_message($userwatch, $user, $_REQUEST['to'], '', $_REQUEST['subject'], $_REQUEST['body'], $_REQUEST['priority']);
 		$smarty->assign('message', $message);
 	}
 }
@@ -119,8 +119,7 @@ if ($prefs['feature_display_my_to_others'] == 'y') {
 		$smarty->assign_by_ref('user_pages', $user_pages);
 	}
 	if ($prefs['feature_blogs'] == 'y') {
-		require_once('lib/blogs/bloglib.php');
-		$user_blogs = $bloglib->list_user_blogs($userwatch, false);
+		$user_blogs = $tikilib->list_user_blogs($userwatch, false);
 		$smarty->assign_by_ref('user_blogs', $user_blogs);
 	}
 	if ($prefs['feature_galleries'] == 'y') {
@@ -137,7 +136,7 @@ if ($prefs['feature_display_my_to_others'] == 'y') {
 		$smarty->assign_by_ref('user_articles', $user_articles);
 	}
 	if ($prefs['feature_forums'] == 'y') {
-		include_once ("lib/comments/commentslib.php");
+		include_once ("lib/commentslib.php");
 		$commentslib = new Comments($dbTiki);
 		$user_forum_comments = $commentslib->get_user_forum_comments($userwatch, -1);
 		$smarty->assign_by_ref('user_forum_comments', $user_forum_comments);
@@ -192,6 +191,16 @@ if ($prefs['user_tracker_infos']) {
 	$smarty->assign_by_ref('userItem', $items['data'][0]);
 }
 ask_ticket('user-information');
+if ($prefs['feature_ajax'] == "y") {
+	function user_information_ajax() {
+		global $ajaxlib, $xajax;
+		$ajaxlib->registerTemplate("tiki-user_information.tpl");
+		$ajaxlib->registerTemplate("tiki-my_tiki.tpl");
+		$ajaxlib->registerFunction("loadComponent");
+		$ajaxlib->processRequests();
+	}
+	user_information_ajax();
+}
 // Get full user picture if it is set
 if ($prefs["user_store_file_gallery_picture"] == 'y') {
 	require_once ('lib/userprefs/userprefslib.php');

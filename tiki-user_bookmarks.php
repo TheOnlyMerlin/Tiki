@@ -7,6 +7,9 @@
 
 $section = 'mytiki';
 require_once ('tiki-setup.php');
+if ($prefs['feature_ajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
 include_once ('lib/bookmarks/bookmarklib.php');
 
 $access->check_feature('feature_user_bookmarks', '', 'community');
@@ -90,6 +93,16 @@ $smarty->assign('folders', $folders);
 include_once ('tiki-mytiki_shared.php');
 ask_ticket('user-bookmarks');
 include_once ('tiki-section_options.php');
+if ($prefs['feature_ajax'] == "y") {
+	function user_bookmarks_ajax() {
+		global $ajaxlib, $xajax;
+		$ajaxlib->registerTemplate("tiki-user_bookmarks.tpl");
+		$ajaxlib->registerTemplate("tiki-my_tiki.tpl");
+		$ajaxlib->registerFunction("loadComponent");
+		$ajaxlib->processRequests();
+	}
+	user_bookmarks_ajax();
+}
 // Display the template
 $smarty->assign('mid', 'tiki-user_bookmarks.tpl');
 $smarty->display("tiki.tpl");

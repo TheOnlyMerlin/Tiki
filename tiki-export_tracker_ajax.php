@@ -43,7 +43,7 @@ $access->check_permission('tiki_p_export_tracker');
 $filters = array();
 if (!empty($_REQUEST['listfields'])) {
 	if (is_string($_REQUEST['listfields'])) {
-		$filters['fieldId'] = preg_split('/[,:]/', $_REQUEST['listfields']);
+		$filters['fieldId'] = split('[,:]', $_REQUEST['listfields']);
 	} elseif (is_array($_REQUEST['listfields'])) {
 		$filters['fieldId'] = $_REQUEST['listfields'];
 	}
@@ -84,9 +84,9 @@ foreach ($_REQUEST as $key =>$val) {
 		$filterFields[] = $fieldId;
 		if (isset($_REQUEST["x_$fieldId"]) && $_REQUEST["x_$fieldId"] == 't' ) {
 			$exactValues[] = '';
-			$values[] = urldecode($val);
+			$values[] = $val;
 		} else {
-			$exactValues[] = urldecode($val);
+			$exactValues[] = $val;
 			$values[] = '';
 		}
 	}
@@ -147,11 +147,10 @@ $fp = null;
 $temp_filename = $prefs['tmpDir'].'/tracker_'.$_REQUEST['trackerId'].'.csv';
 if ($_REQUEST['debug']) {
 	$fp = fopen($temp_filename, 'w');
-	echo 'output:'.$temp_filename;
 }
 
-include_once 'lib/core/Zend/Log.php';
-include_once 'lib/core/Zend/Log/Writer/Stream.php';
+include_once 'lib/core/lib/Zend/Log.php';
+include_once 'lib/core/lib/Zend/Log/Writer/Stream.php';
 
 $writer = new Zend_Log_Writer_Stream($prefs['tmpDir'].'/tracker_export.log');
 $logger = new Zend_Log($writer);
@@ -297,7 +296,7 @@ while (($items = $trklib->list_items($_REQUEST['trackerId'], $offset, $chunkSize
 		if (count($item['field_values']) > 0) {
 			foreach ($item['field_values'] as $field_value) {
 				$data = '';
-				if ($field_value['isHidden'] == 'n' || $field_value['isHidden'] == 'p' || ($field_value['isHidden'] == 'c' && ($item['itemUser'] == $user || $tiki_p_admin_trackers == 'y')) || ($field_value['isHidden'] == 'y' &&  $tiki_p_admin_trackers == 'y')) {
+				if ($field_value['isHidden'] != 'c' || ($field_value['isHidden'] != 'c' && ($item['itemUser'] == $user || $tiki_p_admin_trackers == 'y'))) {
 					
 					// this way seems to be over 5 times slower... not sure why
 //					$data = $trklib->get_item_value($item['trackerId'], $item['itemId'],$field_value['fieldId']);
@@ -378,7 +377,7 @@ while (($items = $trklib->list_items($_REQUEST['trackerId'], $offset, $chunkSize
 
 if (!empty($fp)) {
 	fclose($fp);
-	$trklib->write_export_header();
+	write_export_header();
 	header('Content-Length: ' . filesize($temp_filename));
 	readfile($temp_filename);
 }

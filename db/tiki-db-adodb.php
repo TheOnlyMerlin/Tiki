@@ -26,7 +26,7 @@ $dsn = "$db_tiki://$user_tiki:$pass_tiki@$host_tiki/$dbs_tiki";
 $dbTiki = ADONewConnection($db_tiki);
 
 if (!@$dbTiki->Connect($host_tiki, $user_tiki, $pass_tiki, $dbs_tiki)) {
-	require_once 'lib/init/smarty.php';
+	require_once 'setup_smarty.php';
 
 	$smarty->assign( 'msg', $dbTiki->ErrorMsg() );
 	$smarty->assign( 'where', 'connection');
@@ -64,5 +64,5 @@ if( ! function_exists( 'close_connection' ) ) {
 	}
 }
 
-require_once 'lib/core/TikiDb/Adodb.php';
+require_once 'lib/core/lib/TikiDb/Adodb.php';
 TikiDb::set( new TikiDb_Adodb( $dbTiki ) );

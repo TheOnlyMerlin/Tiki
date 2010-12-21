@@ -6,11 +6,14 @@
 // $Id$
 
 require_once ('tiki-setup.php');
+if ($prefs['feature_ajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
 if (empty($prefs['feature_jpgraph'])) {
 	$prefs['feature_jpgraph'] = 'n'; //optional package does not go througp prefs
 
 }
-include_once ('lib/comments/commentslib.php');
+include_once ('lib/commentslib.php');
 include_once ('lib/categories/categlib.php');
 include_once ('lib/contribution/contributionlib.php');
 $commentslib = new Comments($dbTiki);

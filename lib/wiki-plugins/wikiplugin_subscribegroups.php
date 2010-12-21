@@ -14,79 +14,53 @@ function wikiplugin_subscribegroups_help() {
 function wikiplugin_subscribegroups_info() {
 	return array(
 		'name' => tra('Subscribe Groups'),
-		'documentation' => 'PluginSubscribeGroups',
-		'description' => tra('Allow users to subscribe to a list of groups'),
+		'documentation' => 'PluginSubscribeGroups',		
+		'description' => tra('Subscribe or unsubscribe to a group'),
 		'prefs' => array( 'wikiplugin_subscribegroups' ),
-		'icon' => 'pics/icons/group_add.png',
 		'params' => array(
 			'subscribe' => array(
 				'required' => false,
 				'name' => tra('Subscribe'),
-				'description' => tra('Text shown in the dropdown box. Default: "Subscribe to a group"'),
-				'default' => '',
+				'description' => tra('text'),
 			),
 			'showsubscribe' => array(
 				'required' => false, 
-				'name' => tra('Show Subscribe Box'),
-				'description' => tra('Show the subscribe drop down box (shown by default). Will not show if there are no other groups the user may register for.'),
-				'filter' => 'alpha',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
+				'name' => tra('Show subscribe box'),
+				'description' => 'y|n',
 			),
 			'showdefault' => array(
 				'required' => false, 
-				'name' => tra('Show Default'),
-				'description' => tra('Shows which group is the user\'s default group (if any) and allows the user to change his default group.'),
-				'filter' => 'alpha',
-				'default' => 'n',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
+				'name' => tra('Show default setting and buttons'),
+				'description' => 'y|n',
 			),
 			'showgroupdescription' => array(
 				'required' => false, 
-				'name' => tra('Group Description'),
-				'description' => tra('Show the description of the group (not shown by default)'),
-				'filter' => 'alpha',
-				'default' => 'n',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
+				'name' => tra('Show group description'),
+				'description' => 'y|n',
 			),
 			'groups' => array(
 				'required' => false,
 				'name' => tra('Groups'),
-				'description' => tra('Colon separated list of groups. By default the list of groups available to the user.'),
-				'default' => '',
+				'description' => tra('Colon separated list of groups.'),
 			),
 			'including' => array(
 				'required' => false,
-				'name' => tra('Including Group'),
-				'description' => tra('All groups including this group will be listed'),
-				'default' => '',
+				'name' => tra('Including group'),
+				'description' => tra('Group'),
 			),
 			'defaulturl' => array(
 				'required' => false,
-				'name' => tra('Default URL'),
-				'description' => tra('Page user will be directed to after clicking on icon to change default group'),
-				'default' => '',
-			)
-		)
+				'name' => tra('Url'),
+				'description' => tra('After changing default'),
+			),
+		),
 	);
 }
 
 function wikiplugin_subscribegroups($data, $params) {
 	global $tiki_p_subscribe_groups, $userlib, $user, $smarty;
 	if ($tiki_p_subscribe_groups != 'y' || empty($user)) {
-		return tra('You do not have permission to subscribe to groups.');
+		return tra('Permission denied');
 	}
 	extract ($params, EXTR_SKIP);
 
@@ -106,13 +80,13 @@ function wikiplugin_subscribegroups($data, $params) {
 	}
 	if ($group) {
 		if ($group == 'Anonymous' || $group == 'Registered') {
-			return tra('Incorrect parameter');
+			return tra('Incorrect param');
 		}
 		if (!($info = $userlib->get_group_info($group))) {
-			return tra('Incorrect parameter');
+			return tra('Incorrect param');
 		}
 		if ($info['userChoice'] != 'y') { // limit to userchoice
-			return tra('You do not have permission to subscribe to groups');
+			return tra('Permission denied');
 		}
 		if (!empty($groups) && !in_array($group, $groups)) {// limit the group to the groups params
 			$group = '';

@@ -1,1 +1,1 @@
-"{$mail_trackerName}" {tr}item{/tr} "{$mail_item_desc}" {tr}was modified at{/tr} {$server_name} {tr}by{/tr} "{$user|username}"
+{tr}Tracker was modified at{/tr} {$server_name} {tr}by{/tr} {$user}

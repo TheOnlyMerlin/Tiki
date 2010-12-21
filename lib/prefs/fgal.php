@@ -84,13 +84,7 @@ function prefs_fgal_list() {
 		),
 		'fgal_quota_show' => array (
 			'name' => tra('Show quota bar in the list page'),
-			'type' => 'list',
-			'options' => array(
-							  'n' 				=> tra('Never'),
-							  'bar_and_text' 	=> tra('Yes, display only and detail text'),
-							  'y' 				=> tra('Yes, display only bar'),
-							  'text_only'		=> tra('Yes, display bar and detail text')
-		),
+			'type' => 'flag',
 		),
 		'fgal_use_db' => array(
 			'name' => tra('Storage'),
@@ -111,10 +105,6 @@ function prefs_fgal_list() {
 			'name' => tra('Include the search box on the current gallery files just after the find div'),
 			'type' => 'flag',
 		),
-		'fgal_search' => array(
-			'name' => tra('Include a search box on file galleries'),
-			'type' => 'flag',
-		),
 		'fgal_delete_after' => array(
 			'name' => tra('Automatic deletion of old files'),
 			'description' => tra('The user will have an option when uploading a file to specify the time after which the file is deleted'),
@@ -125,23 +115,6 @@ function prefs_fgal_list() {
 			'name' => tra('Deletion emails notification'),
 			'description' => tra('These emails will receive a copy of each deleted file. Emails are separated with comma'),
 			'type' => 'text',
-		),
-		'fgal_keep_fileId' => array(
-			'name' => tra('Keep fileId for archives'),
-			'description' => tra('Keep always the same fileId when replacing a file with archive'),
-			'type' => 'flag',
-		),
-		'fgal_show_thumbactions' => array(
-			'name' => tra('Show thumbnail actions'),
-			'description' => tra('Show the checkbox and wrench icon for file actions menu when not displaying details'),
-			'type' => 'flag',
-		),
-		'fgal_thumb_max_size' => array (
-			'name' => tra('Max thumbnail size'),
-			'description' => tra('Maximum width or height for image thumbnails'),
-			'shorthint' => tra('In pixels'),
-			'type' => 'text',
-			'size' => 5,
 		),
 	);
 }

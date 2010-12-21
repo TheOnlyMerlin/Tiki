@@ -8,7 +8,7 @@
 $section = 'cms';
 require_once ('tiki-setup.php');
 include_once ('lib/articles/artlib.php');
-include_once ("lib/comments/commentslib.php");
+include_once ("lib/commentslib.php");
 if ($prefs['feature_freetags'] == 'y') {
 	include_once ('lib/freetag/freetaglib.php');
 }
@@ -30,7 +30,7 @@ if (isset($_REQUEST["remove"])) {
 // days to get in the log 1,3,4,etc
 // it will default to 1 recovering information for today
 if (empty($_REQUEST["sort_mode"])) {
-	$sort_mode = $prefs['art_sort_mode'];
+	$sort_mode = 'publishDate_desc';
 } else {
 	$sort_mode = $_REQUEST["sort_mode"];
 }
@@ -95,7 +95,7 @@ if (!isset($_REQUEST['lang'])) {
 	$_REQUEST['lang'] = '';
 }
 // Get a list of last changes to the Wiki database
-$listpages = $artlib->list_articles($offset, $prefs['maxArticles'], $sort_mode, $find, $date_min, $date_max, $user, $type, $topic, 'y', $topicName, $categId, '', '', $_REQUEST['lang'], $min_rating, $max_rating, false, 'y');
+$listpages = $artlib->list_articles($offset, $prefs['maxArticles'], $sort_mode, $find, $date_min, $date_max, $user, $type, $topic, 'y', $topicName, $categId, '', '', $_REQUEST['lang'], $min_rating, $max_rating);
 if ($prefs['feature_multilingual'] == 'y') {
 	include_once ("lib/multilingual/multilinguallib.php");
 	$listpages['data'] = $multilinguallib->selectLangList('article', $listpages['data']);

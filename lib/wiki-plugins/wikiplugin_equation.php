@@ -29,17 +29,14 @@ function wikiplugin_equation_info() {
 	return array(
 		'name' => tra('Equation'),
 		'documentation' => 'PluginEquation',
-		'description' => tra('Render an equation written in LaTeX syntax as an image.'),
+		'description' => tra('Renders an equation written in LaTeX syntax as an image.'),
 		'prefs' => array('wikiplugin_equation'),
 		'body' => tra('equation'),
-		'icon' => 'pics/icons/sum.png',
 		'params' => array(
 			'size' => array(
 				'required' => false,
 				'name' => tra('Size'),
-				'description' => tra('Size expressed as a percentage of the normal size. 100 produces the default size. 200 produces an image twice as large.'),
-				'default' => 100,
-				'filter' => 'digits',
+				'description' => tra('Percentage of increase from normal size. 100 produces the default size. 200 produces an image twice as large.'),
 			),
 		),
 	);
@@ -64,7 +61,7 @@ function wikiplugin_equation($data, $params) {
     $alt = "~np~" . $data . "~/np~";
 
     if ($url != false) {
-        $html = "<img src=\"$url\" alt=\"$alt\" style=\"vertical-align:middle\">";
+        $html = "<img src=\"$url\" alt=\"$alt\" align=\"absmiddle\">";
     } else {
         $html = "__~~#FF0000:Unparseable or potentially dangerous latex formula. Error {$latex->_errorcode} {$latex->_errorextra}~~__";
     }

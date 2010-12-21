@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 {* Index we display a wiki page here *}
 
 <html>
@@ -40,20 +42,20 @@
 			</tr>
 			{cycle values="odd,even" print=false}
 			{section name=user loop=$channels}
-				<tr class="{cycle}">
-					<td>{$channels[user].firstName}</td>
-					<td>{$channels[user].lastName}</td>
-					<td>
+				<tr>
+					<td class="{cycle advance=false}">{$channels[user].firstName}</td>
+					<td class="{cycle advance=false}">{$channels[user].lastName}</td>
+					<td class="{cycle advance=false}">
 						<a class="link" href="#" onclick="javascript:window.opener.document.getElementById('{$element}').value=window.opener.document.getElementById('{$element}').value + '{$channels[user].email}' + ' ';">
 							{$channels[user].email}
 						</a>
 						[&nbsp;&nbsp;
 						<a class="link" href="tiki-webmail_contacts.php?element={$element}&amp;section=contacts&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;remove={$channels[user].contactId}" title="{tr}Delete{/tr}">
-							{icon _id='cross' alt="{tr}Delete{/tr}"}
+							{icon _id='cross' alt='{tr}Delete{/tr}'}
 						</a>
 						&nbsp;&nbsp;]
 					</td>
-					<td>{$channels[user].nickname}</td>
+					<td class="{cycle advance=false}">{$channels[user].nickname}</td>
 				</tr>
 			{/section}
 		</table>

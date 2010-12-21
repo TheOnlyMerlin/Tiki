@@ -10,12 +10,11 @@ function wikiplugin_mediaplayer_help() {
 }
 function wikiplugin_mediaplayer_info() {
 	return array(
-		'name' => tra('Media Player'),
+		'name' => tra('Mediaplayer'),
 		'documentation' => 'PluginMediaplayer',
-		'description' => tra('Add a media player to a page'),
+		'description' => 'Simple mp3 or flv Player',
 		'extraparams' =>true,
 		'prefs' => array( 'wikiplugin_mediaplayer' ),
-		'icon' => 'pics/icons/mime/avi.png',
 		'params' => array(
 			'fullscreen' => array(
 				'required' => false,
@@ -24,12 +23,8 @@ function wikiplugin_mediaplayer_info() {
 				'filter' => 'alpha',
 				'options' => array(
 					array(
-						'text' => '',
-						'value' => '',
-					),
-					array(
 						'text' => tra('Yes'),
-						'value' => 'true',
+						'value' => 'true'
 					),
 					array(
 						'text' => tra('No'),
@@ -41,20 +36,13 @@ function wikiplugin_mediaplayer_info() {
 				'required' => false,
 				'name'=> tra('MP3 URL'),
 				'description' => tra('Complete URL to the mp3 to include.'),
-				'filter' => 'url',
+				'filter' => 'url'
 			),
 			'flv' => array(
 				'required' => false,
 				'name'=> tra('FLV URL'),
 				'description' => tra('Complete URL to the flv to include.'),
 				'filter' => 'url'
-			),
-			'src' => array(
-				'required' => false,
-				'name'=> tra('URL'),
-				'description' => tra('Complete URL to the media to include.'). ' asx, asf, avi, flv, mov, mpg, mpeg, mp4, qt, ra, smil, swf, wmv, 3g2, 3gp,aif, aac, au, gsm, mid, midi, mov, mp3, m4a, snd, ra, ram, rm, wav, wma, bmp, html, pdf, psd, qif, qtif, qti, tif, tiff, xaml',
-				'filter' => 'url',
-				'default' => '',
 			),
 			'style' => array(
 				'required' => false,
@@ -63,44 +51,36 @@ function wikiplugin_mediaplayer_info() {
 				'filter' => 'alpha',
 				'options' => array(
 					array(
-						'text' => '', 'value' => ''
+						'text' => 'mini', 'value' => 'mini'
 					),
 					array(
-						'text' => 'Mini', 'value' => 'mini'
+						'text' => 'normal', 'value' => 'normal'
 					),
 					array(
-						'text' => 'Normal', 'value' => 'normal'
+						'text' => 'maxi', 'value' => 'maxi'
 					),
 					array(
-						'text' => 'Maxi', 'value' => 'maxi'
-					),
-					array(
-						'text' => 'Multi', 'value' => 'multi'
+						'text' => 'multi', 'value' => 'multi'
 					)
 				)
 			),
 			'wmode' => array(
 				'required' => false,
 				'name' => tra('Flash Window Mode'),
-				'description' => tra('Sets the Window Mode property of the Flash movie. Transparent lets what\'s behind the movie show through and allows the movie to be covered 
-										 Opaque hides what\'s behind the movie and Window plays the movie in its own window. Default value: ').'transparent',
+				'description' => tra('Sets the Window Mode property of the Flash movie for transparency, layering, and positioning in the browser. Default value: ').'transparent',
 				'filter' => 'alpha',
 				'options' => array(
 					array(
-						'text' => '',
-						'value' => '',
+						'text' => 'transparent'.tra(' - show background through and allow to be covered'),
+						'value' => 'transparent'
 					),
 					array(
-						'text' => tra('Transparent'),
-						'value' => 'transparent',
+						'text' => 'opaque'.tra(' - hide everything behind'),
+						'value' => 'opaque'
 					),
 					array(
-						'text' => tra('Opaque'),
-						'value' => 'opaque',
-					),
-					array(
-						'text' => tra('Window'),
-						'value' => 'window',
+						'text' => 'window'.tra(' - play movie in its own rectangular window on a web page'),
+						'value' => 'window'
 					)
 				)
 			),
@@ -108,15 +88,8 @@ function wikiplugin_mediaplayer_info() {
 	);
 }
 function wikiplugin_mediaplayer($data, $params) {
-	global $prefs, $access;
-	static $iMEDIAPLAYER = 0;
-	$id = 'mediaplayer'.++$iMEDIAPLAYER;
-
-	if (empty($params['mp3']) && empty($params['flv']) && empty($params['src'])) {
+	if (empty($params['mp3']) && empty($params['flv'])) {
 		return;
-	}
-	if (!empty($params['src'])) {
-		$access->check_feature('feature_jquery_media');
 	}
 	$defaults_mp3 = array(
 		'width' => 200,
@@ -130,36 +103,10 @@ function wikiplugin_mediaplayer($data, $params) {
 		'player' => 'player_flv.swf',
 		'where' => 'http://flv-player.net/medias/',
 	);
-	$defaults = array(
-		'width' => 320,
-		'height' => 240,
-	);
 	if (!empty($params['flv'])) {
 		$params = array_merge($defaults_flv, $params );
-	} elseif (!empty($params['mp3'])) {
-		$params = array_merge($defaults_mp3, $params );
 	} else {
-		$params = array_merge($defaults, $params );
-	}
-	if (!empty($params['src'])) {
-		global $headerlib; include_once('lib/headerlib.php');
-		$js = "\n var media_$id = $('#$id').media( {";
-		foreach ($params as $param => $value) {
-			if ($param == 'src') {
-				continue;
-			}
-			
-			if (is_numeric($value) == false &&
-				strtolower($value) != 'true' && 
-				strtolower($value) != 'false') {
-				$value = "\"" . $value . "\"";
-			}
-			
-			$js .= "$param: $value,";
-		}
-		$js .= "} );";
-		$headerlib->add_jq_onready($js);
-		return "<a href=\"".$params['src']."\" id=\"$id\"></a>";
+		$params = array_merge($defaults_mp3, $params );
 	}
 	$styles = array('normal', 'mini', 'maxi', 'multi');
 	if (empty($params['style']) || $params['style'] == 'normal' || !in_array($params['style'], $styles)) {

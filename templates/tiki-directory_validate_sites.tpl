@@ -7,7 +7,7 @@
 {* Display the list of categories (items) using pagination *}
 {* Links to edit, remove, browse the categories *}
 <form action="tiki-directory_validate_sites.php" method="post" name="form_validate_sites">
-{jq notonready=true}
+{jq}
 var CHECKBOX_LIST = [{{section name=user loop=$items}'sites[{$items[user].siteId}]'{if not $smarty.section.user.last},{/if}{/section}}];
 {/jq}
   <br />
@@ -26,19 +26,19 @@ var CHECKBOX_LIST = [{{section name=user loop=$items}'sites[{$items[user].siteId
     </tr>
     {cycle values="odd,even" print=false}
     {section name=user loop=$items}
-    <tr class="{cycle advance=false}">
-      <td style="text-align:left;"><input type="checkbox" name="sites[{$items[user].siteId}]" /></td>
-      <td>{$items[user].name}</td>
-      <td><a href="{$items[user].url}" target="_blank">{$items[user].url}</a></td>
+    <tr>
+      <td  style="text-align:left;" class="{cycle advance=false}"><input type="checkbox" name="sites[{$items[user].siteId}]" /></td>
+      <td class="{cycle advance=false}">{$items[user].name}</td>
+      <td class="{cycle advance=false}"><a href="{$items[user].url}" target="_blank">{$items[user].url}</a></td>
       {if $prefs.directory_country_flag eq 'y'}
-      <td><img src='img/flags/{$items[user].country}.gif' alt='{$items[user].country}'/></td>
+      <td class="{cycle advance=false}"><img src='img/flags/{$items[user].country}.gif' alt='{$items[user].country}'/></td>
       {/if}
-      <td>{$items[user].hits}</td>
-      <td><a class="link" href="tiki-directory_admin_sites.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;siteId={$items[user].siteId}">{icon _id='page_edit'}</a> <a class="link" href="tiki-directory_validate_sites.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$items[user].siteId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a> </td>
+      <td class="{cycle advance=false}">{$items[user].hits}</td>
+      <td  class="{cycle advance=false}"><a class="link" href="tiki-directory_admin_sites.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;siteId={$items[user].siteId}">{icon _id='page_edit'}</a> <a class="link" href="tiki-directory_validate_sites.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$items[user].siteId}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a> </td>
     </tr>
-    <tr class="{cycle}">
-      <td>&nbsp;</td>
-      <td colspan="5"><i>{tr}Directory Categories{/tr}:{assign var=fsfs value=1}
+    <tr>
+      <td class="{cycle advance=false}">&nbsp;</td>
+      <td class="{cycle}" colspan="5"><i>{tr}Directory Categories{/tr}:{assign var=fsfs value=1}
         {section name=ii loop=$items[user].cats}
         {if $fsfs}{assign var=fsfs value=0}{else}, {/if}
         {$items[user].cats[ii].path}

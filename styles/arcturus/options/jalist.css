@@ -1,7 +1,7 @@
 /* $Id$
 	Jalist theme option for Legacy.css;
 	for TikiWiki CMS/Groupware.
-	Visit http://themes.tiki.org for more information.
+	Visit http://themes.tikiwiki.org for more information.
 */	
 
 /* reset arcturus values */
@@ -101,12 +101,12 @@ legend {
 }
 
 
-.button a,
-.button a:visited,
+span.button a,
+span.button a:visited,
 button,
 input[type="reset"],
 input[type="submit"],
-.button input,
+span.button input,
 .calbuttonBox a {
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 11px;
@@ -114,12 +114,12 @@ input[type="submit"],
 	border: 1px solid #000;
 }
 
-.button a:hover,
+span.button a:hover,
 .button a:hover,
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover,
+span.button input:hover,
 .calbuttonBox:hover {
 	color: #636363;
 }
@@ -205,12 +205,12 @@ h3.box-title {
 	overflow: hidden;
 }
 
-.simplebox {
+div.simplebox {
 	margin-left: 5px;
 	margin-right: 5px;
 }
 
-.cbox {
+div.cbox {
 	background: #e0e0e0;
 	margin-top: 4px;
 	margin-bottom: 0;
@@ -221,7 +221,7 @@ h3.box-title {
 	font-size: 11px;
 }
 
-.cbox-title {
+div.cbox-title {
 	background: url(jalist/maincap.png);
 	border-bottom: 1px solid black;
 	font-size: 11px;
@@ -337,16 +337,18 @@ h1, .pagetitle {
 }
 
 
-body.cke_show_borders,
-.wikitext {
+body.wikitext, div.wikitext {
 	background:    white;
 	font-size:   11px;
 	border:   1px solid black;
 	padding: 1px;
 	margin: 5px 1px;
 }
+body.wikitext {
+	border : 0;
+}
 
-.titlebar {
+div.titlebar {
 	background: #EFEFEF;
 	color: #000;
 	border: 1px solid #fff;
@@ -365,7 +367,7 @@ body.cke_show_borders,
 	color: #636363;
 }
 
-.titleb {
+span.titleb {
 
 }
 
@@ -373,19 +375,19 @@ body.cke_show_borders,
 
 }
 
-.articletrailer {
+div.articletrailer {
 
 }
 
-.articlebody {
+div.articlebody {
 
 }
 
-.oddthumb {
+td.oddthumb {
 
 }
 
-.eventhumb,
+td.eventhumb,
 .thumbnailcontener {
 
 }

@@ -26,30 +26,28 @@
 
 
 function wikiplugin_alink_help() {
-        return tra("Creates a link to an anchor. Use in conjunction with the ANAME plugin, which specifies the location and name of the anchor").":<br />~np~{ALINK(aname=>anchorname,pagename=>Wiki Page Name)}".tra("linktext")."{ALINK}~/np~<br />pagename is optional; if it is not present, links into the current file.";
+        return tra("Creates a link to an anchor in a wiki page. Use in conjunction with the ANAME plugin, which specifies the location and name of the anchor").":<br />~np~{ALINK(aname=>anchorname,pagename=>Wiki Page Name)}".tra("linktext")."{ALINK}~/np~<br />pagename is optional; if it is not present, links into the current file.";
 }
 
 function wikiplugin_alink_info() {
 	return array(
 		'name' => tra('Anchor Link'),
 		'documentation' => 'PluginAlink',
-		'description' => tra('Create a link to an anchor'),
+		'description' => tra('Creates a link to an anchor within a page. Anchors can be created using the ANAME plugin.'),
 		'prefs' => array('wikiplugin_alink'),
 		'body' => tra('Anchor link label.'),
 		'icon' => 'pics/icons/world_link.png',
 		'params' => array(
 			'aname' => array(
 				'required' => true,
-				'name' => tra('Anchor Name'),
+				'name' => 'Anchor name',
 				'description' => tra('The anchor name as defined in the ANAME plugin.'),
-				'default' => ''
 			),
 			'pagename' => array(
 				'required' => false,
-				'name' => tra('Page Name'),
-				'description' => tra('The name of the wiki page containing the anchor. If empty, the anchor name will be searched for on the wiki page where the plugin is used.'),
+				'name' => tra('Page name'),
+				'description' => tra('The name of the wiki page containing the anchor.'),
 				'filter' => 'pagename',
-				'default' => ''
 			),
 		),
 	);
@@ -70,7 +68,7 @@ function wikiplugin_alink($data, $params)
 
 	// the following replace is necessary to maintain compliance with XHTML 1.0 Transitional
 	// and the same behavior as tikilib.php. This will change when the world arrives at XHTML 1.0 Strict.
-	$aname = preg_replace('/[^a-zA-Z0-9]+/', '_', $aname);
+	$aname = ereg_replace('[^a-zA-Z0-9]+', '_', $aname);
 		
 	if( isset($pagename) && $pagename ) {
 	    // Stolen, with some modifications, from tikilib.php line 4717-4723
@@ -87,9 +85,7 @@ function wikiplugin_alink($data, $params)
 			'" title="' . tra("Create page:") . ' ' . urlencode($pagename) . 
 			'"  class="wiki wikinew">?</a>';
 	    }
-	} elseif (isset($_REQUEST['page'])) {
-	    return "<a href=\"".$_REQUEST["page"]."#$aname\">$data</a>";
 	} else {
-	    return "<a href=\"#$aname\">$data</a>";
+	    return "<a href=\"".$_REQUEST["page"]."#$aname\">$data</a>";
 	}
 }

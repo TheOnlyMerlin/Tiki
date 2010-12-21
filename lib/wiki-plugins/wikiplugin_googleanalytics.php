@@ -8,16 +8,14 @@
 function wikiplugin_googleanalytics_info() {
 	return array(
 		'name' => tra('Google Analytics'),
-		'documentation' => 'PluginGoogleAnalytics',
-		'description' => tra('Add the tracking code for Google Analytics'),
+		'documentation' => 'PluginGoogleAnalytics',	
+		'description' => tra('Add the tracking code for Google Analytics.'),
 		'prefs' => array( 'wikiplugin_googleanalytics' ),
-		'icon' => 'pics/icons/chart_line.png',
 		'params' => array(
 			'account' => array(
 				'required' => true,
-				'name' => tra('Account Number'),
+				'name' => tra('Account number'),
 				'description' => tra('The account number for the site. Your account number from google looks like UA-XXXXXXX-YY. All you need to enter is XXXXXXX-YY'),
-				'default' => ''
 			),
 		),
 	);

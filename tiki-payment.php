@@ -25,17 +25,6 @@ $inputConfiguration = array( array(
 		'cancel' => 'digits',
 		'note' => 'striptags',
 		'detail' => 'wikicontent',
-		'cclite_payment_amount' => 'text',	// params for cart module
-		'tiki_credit_amount' => 'text',
-		'tiki_credit_pay' => 'text',
-		'tiki_credit_type' => 'text',
-		'checkout' => 'text',
-		'update' => 'word',
-		'daconfirm' => 'word',				// ticketlib
-		'ticket' => 'word',
-	),
-	'staticKeyFiltersForArrays' => array(
-		'cart' => 'digits',	// params for cart module
 	),
 	'catchAllUnset' => null,
 ) );
@@ -51,31 +40,17 @@ $auto_query_args = array(
 	'offset_canceled',
 );
 
-if ( isset($_POST['tiki_credit_pay']) && isset($_POST['tiki_credit_amount']) && isset($_POST['tiki_credit_type']) && isset($_POST['invoice'])) {
-	require_once 'lib/payment/creditspaylib.php';
-	$userpaycredits = new UserPayCredits;
-	$userpaycredits->payAmount($_POST['tiki_credit_type'], $_POST['tiki_credit_amount'], $_POST['invoice']);
-	
-}
-			
 if( isset( $ipn_data ) ) {
 	$access->check_feature( 'payment_paypal_ipn' );
 	require_once 'lib/payment/paypallib.php';
 
 	$invoice = $paypallib->get_invoice( $ipn_data );
-	if (!is_numeric($invoice) || $invoice < 1) {
-		echo 'Payment response was not correctly formatted';	// goes back to PayPal server - for debugging mainly
-		exit;
-	}
 	$info = $paymentlib->get_payment( $invoice );
 
 	// Important to check with paypal first
 	if( $paypallib->is_valid( $ipn_data, $info ) && $info ) {
 		$amount = $paypallib->get_amount( $ipn_data );
 		$paymentlib->enter_payment( $invoice, $amount, 'paypal', $ipn_data );
-	} else {
-		echo 'Payment '.$invoice.' was not verified';	// goes back to PayPal server
-		exit;
 	}
 
 	exit;
@@ -92,7 +67,7 @@ if( isset( $_POST['manual_amount'], $_POST['invoice'] ) && preg_match( '/^\d+(\.
 
 		$access->redirect( 'tiki-payment.php?invoice=' . $_POST['invoice'], tra('Manual payment entered.') );
 	} else {
-		$access->redirect( 'tiki-payment.php?invoice=' . $_POST['invoice'], tra('You do not have permission to enter payment.') );
+		$access->redirect( 'tiki-payment.php?invoice=' . $_POST['invoice'], tra('Permission denied to enter payment.') );
 	}
 }
 
@@ -118,10 +93,9 @@ if( isset( $_POST['request'] ) && $globalperms->request_payment ) {
 
 if( isset( $_REQUEST['cancel'] ) ) {
 	$objectperms = Perms::get( 'payment', $_REQUEST['cancel'] );
-	$info = $paymentlib->get_payment( $_REQUEST['cancel'] );
 
-	if( $objectperms->payment_admin || $info['user'] == $user ) {
-		$access->check_authenticity( tr('Cancel payment %0?', $_REQUEST['cancel'] ));
+	if( $objectperms->payment_admin ) {
+		ask_ticket( 'cancel_payment' );
 		$paymentlib->cancel_payment( $_REQUEST['cancel'] );
 		$access->redirect( 'tiki-payment.php?invoice=' . $_REQUEST['cancel'], tra('Payment canceled.') );
 	}
@@ -129,18 +103,14 @@ if( isset( $_REQUEST['cancel'] ) ) {
 
 // Obtain information
 function fetch_payment_list( $type ) {
-	global $paymentlib, $globalperms, $user, $prefs, $smarty;
+	global $paymentlib, $prefs, $smarty;
 	$offsetKey = 'offset_' . $type;
 	$method = 'get_' . $type;
 
 	$offset = isset($_REQUEST[$offsetKey]) ? intval($_REQUEST[$offsetKey]) : 0;
 	$max = intval( $prefs['maxRecords'] );
 
-	$forUser = '';
-	if (!$globalperms->payment_admin && ( ($type == 'outstanding' || $type == 'overdue') && $prefs["payment_user_only_his_own"] == 'y' || $type != 'outstanding' && $type != 'overdue' && $prefs["payment_user_only_his_own_past"] == 'y' ) ) {
-		$forUser = $user;
-	} 
-	$data = $paymentlib->$method( $offset, $max, $forUser );
+	$data = $paymentlib->$method( $offset, $max );
 	$data['offset'] = $offset;
 	$data['offset_arg'] = "offset_$type";
 	$data['max'] = $max;

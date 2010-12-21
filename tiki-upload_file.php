@@ -83,13 +83,13 @@ if (!empty($_REQUEST['fileId'])) {
 	}
 	if (!((!empty($user) && ($user == $fileInfo['user'] || $user == $fileInfo['lockedby'])) || $tiki_p_edit_gallery_file == 'y')) { // must be the owner or the locker or have the perms
 		$smarty->assign('errortype', 401);
-		$smarty->assign('msg', tra("You do not have permission to edit this file"));
+		$smarty->assign('msg', tra("Permission denied you can edit this file"));
 		$smarty->display('error.tpl');
 		die;
 	}
 	if ($gal_info['backlinkPerms'] == 'y' && $filegallib->hasOnlyPrivateBacklinks($_REQUEST['fileId'])) {
 		$smarty->assign('errortype', 401);
-		$smarty->assign('msg', tra("You do not have permission to edit this file"));
+		$smarty->assign('msg', tra("Permission denied you can edit this file"));
 		$smarty->display('error.tpl');
 		die;
 	}		
@@ -148,9 +148,7 @@ if (!empty($_REQUEST['galleryId'][0])) {
 	$smarty->assign_by_ref('gal_info', $gal_info);
 	$podCastGallery = $filegallib->isPodCastGallery((int)$_REQUEST["galleryId"][0], $gal_info);
 }
-if (empty($_REQUEST['returnUrl'])) {
-	include ('lib/filegals/max_upload_size.php');
-}
+include ('lib/filegals/max_upload_size.php');
 
 // Process an upload here
 if (isset($_REQUEST["upload"])) {
@@ -162,9 +160,7 @@ if (isset($_REQUEST["upload"])) {
 	$batch_job = false;
 	$didFileReplace = false;
 	foreach($_FILES["userfile"]["error"] as $key => $error) {
-		if (empty($_REQUEST['returnUrl'])) {
-			print_progress('<?xml version="1.0" encoding="UTF-8"?>');
-		}
+		print_progress('<?xml version="1.0" encoding="UTF-8"?>');
 		$formId = $_REQUEST['formId'];
 		$smarty->assign("FormId", $_REQUEST['formId']);
 		if (empty($_REQUEST['galleryId'][$key])) {
@@ -431,7 +427,7 @@ if (isset($_REQUEST["upload"])) {
 					}
 					include_once ('categorize.php');
 					// Print progress
-					if (empty($_REQUEST['returnUrl']) && $prefs['javascript_enabled'] == 'y') {
+					if ($prefs['javascript_enabled'] == 'y') {
 						if (!empty($_REQUEST['filegals_manager'])) {
 							$smarty->assign('filegals_manager', $_REQUEST['filegals_manager']);
 						}
@@ -441,16 +437,13 @@ if (isset($_REQUEST["upload"])) {
 						$smarty->assign("dllink", $aux['dllink']);
 						$smarty->assign("nextFormId", $_REQUEST['formId'] + 1);
 						$smarty->assign("feedback_message",$feedback_message);
-						$syntax = $filegallib->getWikiSyntax($_REQUEST["galleryId"][$key]);
-						$syntax = $tikilib->process_fgal_syntax($syntax, $aux);
-						$smarty->assign('syntax', $syntax);
 						print_progress($smarty->fetch("tiki-upload_file_progress.tpl"));
 					}
 				}
 			}
 		}
 	}
-	if (empty($_REQUEST['returnUrl']) && count($errors)) {
+	if (count($errors)) {
 		foreach($errors as $error) {
 			print_msg($error, $formId);
 		}
@@ -485,15 +478,6 @@ if (isset($_REQUEST["upload"])) {
 		header("location: tiki-list_file_gallery.php?galleryId=" . $_REQUEST["galleryId"][0]);
 		die;
 	}
-	if (!empty($_REQUEST['returnUrl'])) {
-		if (!empty($errors)) {
-			$smarty->assign('msg', implode($errors, '<br />'));
-			$smarty->display('error.tpl');
-			die;
-		}
-		header('location: '.$_REQUEST['returnUrl']);
-		die;
-	}
 } else {
 	$smarty->assign('errors', array());
 	$smarty->assign('uploads', array());
@@ -515,8 +499,12 @@ if (empty($_REQUEST['fileId'])) {
 		$galleries = $filegallib->list_file_galleries(0, -1, 'name_asc', $user, '', $prefs['fgal_root_id'], false, true, false, false, false, true, false);
 		$cachelib->cacheItem($cacheName, serialize($galleries), $cacheType);
 	}
-	$galleries['data'] = Perms::filter(array('type' => 'file gallery'), 'object', $galleries['data'], array('object'=>'id'), 'upload_files');
+	$galleries['data'] = Perms::filter(array('file gallery'), 'object', $galleries['data'], array('object'=>'id'), 'upload_files');
 	$smarty->assign_by_ref('galleries', $galleries["data"]);
+}
+if ($tiki_p_admin_file_galleries == 'y' || $tiki_p_admin == 'y') {
+	$users = $tikilib->list_users(0, -1, 'login_asc', '', false);
+	$smarty->assign_by_ref('users', $users['data']);
 }
 if ($prefs['fgal_limit_hits_per_file'] == 'y') {
 	$smarty->assign('hit_limit', $filegallib->get_download_limit($_REQUEST['fileId']));

@@ -22,16 +22,14 @@ function wikiplugin_box_info() {
 	return array(
 		'name' => tra('Box'),
 		'documentation' => 'PluginBox',
-		'description' => tra('Creates a formatted box with a title bar'),
+		'description' => tra('Insert theme-styled box on wiki page'),
 		'prefs' => array('wikiplugin_box'),
 		'body' => tra('text'),
-		'icon' => 'pics/icons/layout_header.png',
 		'params' => array(
 			'title' => array(
 				'required' => false,
 				'name' => tra('Box title'),
 				'description' => tra('Displayed above the content'),
-				'default' => '',
 			),
 			'bg' => array(
 				'required' => false,
@@ -46,39 +44,12 @@ function wikiplugin_box_info() {
 			'align' => array(
 				'required' => false,
 				'name' => tra('Text Alignment'),
-				'description' => tra('Aligns the text within the box (left aligned by default)'),
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Right'), 'value' => 'right'), 
-					array('text' => tra('Center'), 'value' => 'center'), 
-				),
+				'description' => 'left|right|center',
 			),
 			'float' => array(
 				'required' => false,
 				'name' => tra('Float Position'),
-				'description' => tra('Set the alignment for the entire box. For elements with a width of less than 100%, other elements will wrap around it 
-										unless the clear parameter is appropriately set.)'),
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Left'), 'value' => 'left'), 
-					array('text' => tra('Right'), 'value' => 'right'), 
-				),
-			),
-			'clear' => array(
-				'required' => false,
-				'name' => tra('Clear'),
-				'description' => tra('Items are not allowed to wrap around the box if this parameter is set to.1 (Yes)'),
-				'filter' => 'text',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				),
+				'description' => 'left|right' . ', ' . tra('for box with width less than 100%, make text wrap around the box.'),
 			),
 			'class' => array(
 				'required' => false,

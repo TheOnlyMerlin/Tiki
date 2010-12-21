@@ -6,25 +6,6 @@
 // $Id$
 
 function prefs_user_list() {
-	
-	global $prefs;
-	
-	$catree = array();
-
-	if ($prefs['feature_categories'] == 'y') {
-		global $categlib;
-
-		include_once ('lib/categories/categlib.php');
-		$all_categs = $categlib->get_all_categories();
-
-		$catree['-1'] = tra('None');
-		$catree['0'] = tra('All');
-
-		foreach ($all_categs as $categ) {
-			$catree[$categ['categId']] = $categ['categpath'];
-		}
-	}
-	
 	return array(
 		'user_show_realnames' => array(
 			'name' => tra('Show user\'s real name instead of login (when possible)'),
@@ -36,7 +17,7 @@ function prefs_user_list() {
 			'name' => tra('Display UserTracker information on the user information page'),
 			'description' => tra('Display UserTracker information on the user information page'),
 			'help' => 'User+Tracker',
-			'hint' => tra('Input the user tracker ID then field IDs to be shown, all separated by commas. Example: 1,1,2,3,4 (user tracker ID 1 followed by field IDs 1-4)'),
+			'hint' => tra('Use the format: trackerId, fieldId1, fieldId2, ...'),
 			'type' => 'text',
 			'size' => '50',
 			'dependencies' => array(
@@ -106,95 +87,7 @@ function prefs_user_list() {
 			'type' => 'text',
 			'size' => '5',
 			'dependencies' => array('feature_jquery_autocomplete'),
-		),
-		'user_register_prettytracker' => array(
-			'name' => tra('Use pretty trackers for registration form'),
-			'help' => 'Pretty+Trackers',
-			'description' => tra('Use pretty trackers for registration form'),
-			'type' => 'flag',
-			'dependencies' => array(
-				'userTracker',
-			),
-		),
-		'user_register_prettytracker_tpl' => array(
-			'name' => tra('Registration pretty tracker template'),
-			'description' => tra('Use wiki page name or template file with .tpl extension'),
-			'type' => 'text',
-			'size' => '20',
-			'dependencies' => array(
-				'user_register_pretty_tracker',
-			),
-		),
-		'user_trackersync_trackers' => array(
-			'name' => tra('User tracker IDs to sync prefs from'),
-			'description' => tra('Enter the IDs separated by commas of trackers to sync user prefs from'),
-			'type' => 'text',
-			'size' => '10',
-			'dependencies' => array(
-				'userTracker',
-			),
-		),
-		'user_trackersync_realname' => array(
-			'name' => tra('Tracker field IDs to sync Real Name pref from'),
-			'description' => tra('Enter the IDs separated by commas in priority of being chosen, each item can concatenate multiple fields using +, e.g. 2+3,4'),
-			'type' => 'text',
-			'size' => '10',
-			'dependencies' => array(
-				'userTracker',
-				'user_trackersync_trackers',
-			),
-		),
-		'user_trackersync_geo' => array(
-			'name' => tra('Synchronize long/lat/zoom to google maps field'),
-			'description' => tra('Synchronize user geolocation prefs to main google maps field'),
-			'type' => 'flag',
-			'dependencies' => array(
-				'userTracker',
-				'user_trackersync_trackers',
-				'feature_ajax',
-				'feature_gmap',
-			),
-		),
-		'user_trackersync_groups' => array(
-			'name' => tra('Synchronize categories of user tracker item to user groups'),
-			'description' => tra('Will add the user tracker item to the category of the same name as the user groups and vice versa'),
-			'type' => 'flag',
-			'dependencies' => array(
-				'userTracker',
-				'user_trackersync_trackers',
-				'feature_categories',
-			),
-		),
-		'user_trackersync_parentgroup' => array(
-			'name' => tra('Put user in group only if categorized within'),
-			'type' => 'list',
-			'options' => $catree,
-			'dependencies' => array(
-				'userTracker',
-				'user_trackersync_trackers',
-				'user_trackersync_groups',
-				'feature_categories',
-			),
-		),
-		'user_selector_threshold' => array(
-			'name' => tra('Maximum number of users to show in drop down lists'),
-			'description' => tra('Prevents out of memory and performance issues when user list is very large by using a jQuery autocomplete text input box.'),
-			'type' => 'text',
-			'size' => '5',
-			'dependencies' => array('feature_jquery_autocomplete'),
-		),
-		'user_selector_realnames_tracker' => array(
-			'name' => tra('Show user\'s real name instead of login in autocomplete selector in trackers feature'),
-			'description' => tra('Use user\'s real name instead of login in autocomplete selector in trackers feature'),
-			'type' => 'flag',
-			'dependencies' => array('feature_jquery_autocomplete', 'user_show_realnames', 'feature_trackers'),
-		),
-		'user_selector_realnames_messu' => array(
-			'name' => tra('Show user\'s real name instead of login in autocomplete selector in messaging feature'),
-			'description' => tra('Use user\'s real name instead of login in autocomplete selector in messaging feature'),
-			'type' => 'flag',
-			'dependencies' => array('feature_jquery_autocomplete', 'user_show_realnames', 'feature_messages'),
-		),
+		)
 	);
 }
 

@@ -18,35 +18,35 @@ function wikiplugin_map_help() {
 function wikiplugin_map_info() {
 	return array(
 		'name' => tra('Map'),
-		'documentation' => 'PluginMap',
-		'description' => tra('Display a map created using the Maps feature'),
+		'documentation' => 'PluginMap',	
+		'description' => tra('Displays a map'),
 		'prefs' => array( 'feature_maps', 'wikiplugin_map' ),
 		'icon' => 'pics/icons/map.png',
 		'params' => array(
 			'mapfile' => array(
 				'required' => true,
 				'name' => tra('Map File'),
-				'description' => tra('Map file identifier'),
+				'description' => tra('?'),
 			),
 			'extents' => array(
 				'required' => false,
 				'name' => tra('Extents'),
-				'description' => tra('Extents'),
+				'description' => tra('?'),
 			),
 			'size' => array(
 				'required' => false,
 				'name' => tra('Size'),
-				'description' => tra('Size of the map'),
+				'description' => tra('?'),
 			),
 			'width' => array(
 				'required' => false,
 				'name' => tra('Width'),
-				'description' => tra('Width of the map'),
+				'description' => tra('?'),
 			),
 			'height' => array(
 				'required' => false,
 				'name' => tra('Height'),
-				'description' => tra('Height of the map'),
+				'description' => tra('?'),
 			),
 		),
 	);

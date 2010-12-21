@@ -5,5 +5,7 @@
 		{eval var=$prefs.feature_sitemenu_custom_code}
 	{elseif $prefs.feature_cssmenus eq 'y'}
 		{menu id=$prefs.feature_topbar_id_menu type=horiz css=y}
+	{elseif $prefs.feature_phplayers eq 'y'}
+		{phplayers id=$prefs.feature_topbar_id_menu type=horiz}
 	{/if}
 {/if}

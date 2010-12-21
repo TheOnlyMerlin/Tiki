@@ -1,12 +1,12 @@
 {if $prefs.feature_gmap eq 'y'}
 
-{if 0 and $prefs.feature_ajax eq 'y'}{* AJAX_TODO *}
+{if $prefs.feature_ajax eq 'y'}
 {* Ajax version using new plugin *}
 {title help="gmap"}{tr}Google Map Locator{/tr} - {$userwatch}{/title}
-<p>{button _script="tiki-user_preferences.php"  view_user=$smarty.request.view_user|escape _text="{tr}Back to preferences{/tr}"}</p>
 {wikiplugin _name="googlemap" type="locator" setdefaultxyz="y" locateitemtype="user" locateitemid="$userwatch"}{/wikiplugin}
+
 {else}
-{* Old non-ajax version which can be removed once Ajax becomes always on (and this has been converted to not use xajax - jb dec 2010 *}
+{* Old non-ajax version which can be removed once Ajax becomes always on *}
 {title help="gmap"}{tr}Google Map Locator{/tr}{/title}
 {if $watch}({$watch}){/if}
 
@@ -25,7 +25,6 @@
 {if $watch}<input type="hidden" name="view_user" value="{$watch|escape}" />{/if}
 {if $itemId}<input type="hidden" name="itemId" value="{$itemId}" />{/if}
 {if $fieldId}<input type="hidden" name="fieldId" value="{$fieldId}" />{/if}
-{if $fromPage}<input type="hidden" name="fromPage" value="{$fromPage}" />{/if}
 <input type="submit" name="act" value="{tr}Save clicked point{/tr}" /><br /><br />
 <input type="submit" name="reset_default" value="{tr}Reset view to default{/tr}" />
 <input type="submit" name="set_default" value="{tr}Save current view as default{/tr}" />
@@ -45,7 +44,7 @@
 {/if}
 
 <div id="map" style="width: 500px; height: 400px;border: 1px solid #000;"></div>
-{jq notonready=true}
+{jq}
 var map = null;
 var geocoder = null;
 function load() {literal}{{/literal}
@@ -104,7 +103,7 @@ function showAddress(address) {literal}{{/literal}
   {literal}}{/literal}
 {literal}}{/literal}
 
-{literal}$("input[name=address]").focus(function () { if ($(this).val() == "{/literal}{tr}enter address{/tr}{literal}") {$(this).val("");}}){/literal}
+{literal}$jq("input[name=address]").focus(function () { if ($jq(this).val() == "{/literal}{tr}enter address{/tr}{literal}") {$jq(this).val("");}}){/literal}
 
 window.onload=load;
 {/jq}

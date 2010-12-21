@@ -10,25 +10,25 @@
 // mose@tikiwiki.org
 
 require_once('tiki-setup.php');
-if ($tiki_p_admin != 'y') {
-	if ($prefs['feature_redirect_on_error'] == 'y') {
-		header('location: ' . $prefs['tikiIndex']);
+if($tiki_p_admin != 'y') {
+		if ($prefs['feature_redirect_on_error'] == 'y') {
+		header('location: '.$prefs['tikiIndex']);
 		die;
 	} else {
-		die('You need to be admin to run this script');
-	}
+	  die("You need to be admin to run this script");
+		}
 }
 $logfile = 'temp/tiki_parsed.txt';
 $logfilehtml = 'temp/tiki_parsed.html';
 
 function collect($dir) {
   global $dirs;
-	if (is_dir($dir) and is_dir("$dir/CVS")) {
+  if (is_dir($dir) and is_dir("$dir/CVS")) {
 		$list = file("$dir/CVS/Entries");
 		foreach ($list as $l) {
 			// if (count($dirs) > 20) return true;
 			if (strstr($l,'/')) {
-				$s = explode('/',rtrim($l));
+				$s = split('/',rtrim($l));
 				$filepath = $dir.'/'.$s[1];
 				if ($s[0] == 'D') {
 					collect($filepath);

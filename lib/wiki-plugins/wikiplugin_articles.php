@@ -23,170 +23,98 @@ function wikiplugin_articles_info()
 	return array(
 		'name' => tra('Article List'),
 		'documentation' => 'PluginArticles',
-		'description' => tra('Display multiple articles'),
+		'description' => tra('Inserts a list of articles in the page.'),
 		'prefs' => array( 'feature_articles', 'wikiplugin_articles' ),
-		'icon' => 'pics/icons/table_multiple.png',
 		'params' => array(
-			'usePagination' => array(
-				'required' => false,
-				'name' => tra('Use Pagination'),
-				'description' => tra('Activate pagination when articles listing are long. Default is n'),
-				'filter' => 'alpha',
-				'default' => 'n',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				),
-			),
 			'max' => array(
 				'required' => false,
-				'name' => tra('Maximum Displayed'),
-				'description' => tra('The number of articles to display in the list (no max set by default)') . tra('If Pagination is set to y (Yes), this will determine the amount of artilces per page'),
+				'name' => tra('Articles displayed'),
+				'description' => tra('The number of articles to display in the list.'),
 				'filter' => 'int',
-				'default' => -1
 			),
 			'topic' => array(
 				'required' => false,
-				'name' => tra('Topic Name Filter'),
-				'description' => tra('Filter the list of aricles by their topic. Example: ') . '[!]topic+topic+topic',
+				'name' => tra('Topics expression'),
+				'description' => '[!]topic+topic+topic',
 				'filter' => 'striptags',
-				'default' => ''
 			),
 			'topicId' => array(
 				'required' => false,
-				'name' => tra('Topic ID Filter'),
-				'description' => tra('Filter the list of aricles by their topic ID. Example: ') . '[!]topicId+topicId+topicId',
+				'name' => tra('Topic ID expression'),
+				'description' => '[!]topicId+topicId+topicId',
 				'filter' => 'striptags',
-				'default' => ''
 			),
 			'type' => array(
 				'required' => false,
-				'name' => tra('Type Filter'),
-				'description' => tra('Filter the list of aricles by their types. Example: ') . '[!]type+type+type',
+				'name' => tra('Type expression'),
+				'description' => '[!]type+type+type',
 				'filter' => 'striptags',
-				'default' => ''
 			),
 			'categId' => array(
 				'required' => false,
 				'name' => tra('Category ID'),
-				'description' => tra('The ID of the category that articles need to be in to be listed'),
+				'description' => tra('The ID of the category to list from.'),
 				'filter' => 'digits',
-				'default' => ''
 			),
 			'lang' => array(
 				'required' => false,
 				'name' => tra('Language'),
-				'description' => tra('List only articles in this language'),
+				'description' => tra('The article language to list.'),
 				'filter' => 'lang',
-				'default' => ''
 			),
 			'sort' => array(
 				'required' => false,
 				'name' => tra('Sort order'),
-				'description' => tra('The column and order of the sort in columnName_asc or columnName_desc format. Defaults to "publishDate_desc" (other column examples are "title", "lang", "authorName" & "topicName")').' '.tra('Use random to have random items.'),
+				'description' => tra('The column and order of the sort in columnName_asc or columnName_desc format. Defaults to "publishDate_desc" (other column examples are "title", "lang", "authorName" & "topicName")'),
 				'filter' => 'word',
-				'default' => 'publishDate_desc'
 			),
 			'quiet' => array(
 				'required' => false,
 				'name' => tra('Quiet'),
-				'description' => tra('Whether to not report when there are no articles (no reporting by default)'),
+				'description' => tra('Whether to not report when there are no articles.'),
 				'filter' => 'alpha',
-				'default' => 'n',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				),
 			),
 			'titleonly' => array(
 				'required' => false,
-				'name' => tra('Title Only'),
-				'description' => tra('Whether to only show the title of the articles (not set to title only by default)'),
+				'name' => tra('Title only'),
+				'description' => tra('Whether to only show the title of the articles.') . ' (n|y)',
 				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				),
 			),
 			'fullbody' => array(
 				'required' => false,
-				'name' => tra('Body Only'),
-				'description' => tra('Whether to only show the body of the articles or just the heading and title. (not set to body only by default)'),
+				'name' => tra('Show body'),
+				'description' => tra('Whether to only show the body of the articles or just the heading.') . ' (n|y)',
 				'filter' => 'alpha',
-				'default' => 'n',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				),
 			),
 			'start' => array(
 				'required' => false,
-				'name' => tra('Starting Article'),
-				'description' => tra('The article number that the list should start with (starts with first article by default)') . tra('This will not work if Pagination is used.'),
+				'name' => tra('Starting article'),
+				'description' => tra('The article number that the list should start with.'),
 				'filter' => 'int',
-				'default' => 0
 			),
 			'dateStart' => array(
 				'required' => false,
-				'name' => tra('Start Date'),
+				'name' => tra('Start date'),
 				'description' => tra('Earliest date to select articles from.') . ' (YYYY-MM-DD)',
 				'filter' => 'date',
-				'default' => ''
 			),
 			'dateEnd' => array(
 				'required' => false,
 				'name' => tra('End date'),
 				'description' => tra('Latest date to select articles from.') . ' (YYYY-MM-DD)',
 				'filter' => 'date',
-				'default' => ''
 			),
 			'overrideDates' => array(
 				'required' => false,
 				'name' => tra('Override Dates'),
-				'description' => tra('Whether to obey article type\'s "show before publish" and "show after expiry" settings (not obeyed by default)'),
+				'description' => tra('Whether obey article type\'s "show before publish" and "show after expiry" settings.') . ' (n|y)',
 				'filter' => 'alpha',
-				'default' => 'n',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				),
 			),
 			'containerClass' => array(
 				'required' => false,
 				'name' => tra('Container class'),
 				'description' => tra('CSS Class to add to the container DIV.article. (Default="wikiplugin_articles")'),
 				'filter' => 'striptags',
-				'default' => 'wikiplugin_articles'
-			),
-			'largefirstimage' => array(
-				'required' => false,
-				'name' => tra('Large First Image'),
-				'description' => tra('If set to y (Yes), the first image will be displayed with the dimension used to view of the article'),
-				'filter' => 'alpha',
-				'default' => 'n',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				),
-			),
-			'urlparam' => array(
-				'required' => false,
-				'name' => tra('Additional URL Param'),
-				'filter' => 'striptags',
-				'default' => ''
-			),
-			'actions' => array(
-				'required' => false,
-				'name' => tra('Show actions (buttons and links)'),
-				'description' => tra('Whether to show the buttons and links to do actions on each article (for the actions you have permission to do') . ' (y|n)',
-				'filter' => 'alpha',
 			),
 		),
 	);
@@ -196,32 +124,29 @@ function wikiplugin_articles($data, $params)
 {
 	global $smarty, $tikilib, $prefs, $tiki_p_read_article, $tiki_p_articles_read_heading, $dbTiki, $pageLang;
 	global $artlib; require_once 'lib/articles/artlib.php';
-	$default = array('max' => -1, 'start' => 0, 'usePagination' => 'n', 'topicId' => '', 'topic' => '', 'sort' => 'publishDate_desc', 'type' => '', 'lang' => '', 'quiet' => 'n', 'categId' => '', 'largefirstimage' => 'n', 'urlparam' => '');
-	$params = array_merge($default, $params);
 
 	extract($params, EXTR_SKIP);
 	if (($prefs['feature_articles'] !=  'y') || (($tiki_p_read_article != 'y') && ($tiki_p_articles_read_heading != 'y'))) {
 		//	the feature is disabled or the user can't read articles, not even article headings
 		return("");
 	}
+	if(!isset($max))		$max = -1;
+	if(!isset($start))		$start = 0;
 
-	if($usePagination == 'y')
-	{
-		//Set offset when pagniation is used
-		if (!isset($_REQUEST["offset"])) {
-			$start = 0;
-		} else {
-			$start = $_REQUEST["offset"];
-		}
-		
-		//Default to 10 when pagination is used
-		if(($max == -1)){
-			$countPagination = 10;
-		}
-	}
+	if(!isset($topicId))	$topicId='';
+	if(!isset($topic))		$topic='';
 
+	if (!isset($sort))		$sort = 'publishDate_desc';
+
+	// Adds filtering by type if type is passed
+	if(!isset($type))		$type='';
+
+	if (!isset($categId))	$categId = '';
+
+	if (!isset($lang))		$lang = '';
+
+	if (!isset($quiet))		$quiet = 'n';
 	$smarty->assign_by_ref('quiet', $quiet);
-	$smarty->assign_by_ref('urlparam', $urlparam);
 	
 	if(!isset($containerClass)) {$containerClass = 'wikiplugin_articles';}
 	$smarty->assign('container_class', $containerClass);
@@ -237,13 +162,13 @@ function wikiplugin_articles($data, $params)
 		$smarty->assign('fullbody', 'n');
 		$fullbody = 'n';
 	}
-	$smarty->assign('largefirstimage', $largefirstimage);
+	
 	if (!isset($overrideDates))	$overrideDates = 'n';
 	
-	include_once("lib/comments/commentslib.php");
+	include_once("lib/commentslib.php");
 	$commentslib = new Comments($dbTiki);
 	
-	$listpages = $artlib->list_articles($start, $max, $sort, '', $dateStartTS, $dateEndTS, 'admin', $type, $topicId, 'y', $topic, $categId, '', '', $lang, '', '', ($overrideDates == 'y'), 'y');
+	$listpages = $artlib->list_articles($start, $max, $sort, '', $dateStartTS, $dateEndTS, 'admin', $type, $topicId, 'y', $topic, $categId, '', '', $lang, '', '', ($overrideDates == 'y'));
  	if ($prefs['feature_multilingual'] == 'y') {
 		global $multilinguallib;
 		include_once("lib/multilingual/multilinguallib.php");
@@ -280,15 +205,8 @@ function wikiplugin_articles($data, $params)
 	if (!empty($type) && !strstr($type, '!') && !strstr($type, '+')) {
 		$smarty->assign_by_ref('type', $type);
 	}
-	
-	if($usePagination == 'y'){
-		$smarty->assign('maxArticles', $max);
-		$smarty->assign_by_ref('offset', $start);
-		$smarty->assign_by_ref('cant', $listpages['cant']);
-	}
-	$smarty->assign('usePagination', $usePagination);
+
 	$smarty->assign_by_ref('listpages', $listpages["data"]);
-	$smarty->assign_by_ref('actions', $actions);
 
 	if (isset($titleonly) && $titleonly == 'y') {
 		return "~np~ ".$smarty->fetch('tiki-view_articles-titleonly.tpl')." ~/np~";

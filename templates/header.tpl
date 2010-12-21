@@ -1,17 +1,9 @@
 {* $Id$ *}
-{if $base_uri and ($dir_level gt 0 or $prefs.feature_html_head_base_tag eq 'y')}
-	<base href="{$base_uri|escape}" />
+{if $base_url and $dir_level gt 0}
+	<base href="{$base_url|escape}" />
 {/if}
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="Content-Script-Type" content="text/javascript" />
-<meta http-equiv="Content-Style-Type" content="text/css" />
-<meta name="generator" content="Tiki Wiki CMS Groupware - http://tiki.org" />
-
-{* --- Canonical URL --- *}
-{if $prefs.feature_canonical_url eq 'y'}
-	{if $page neq ''} <link rel="canonical" href="{$page|sefurl}" /> {/if}
-{/if}	
-
+<meta name="generator" content="Tiki Wiki CMS Groupware - http://TikiWiki.org" />
 {if !empty($forum_info.name) & $prefs.metatag_threadtitle eq 'y'}
 	<meta name="keywords" content="{tr}Forum{/tr} {$forum_info.name|escape} {$thread_info.title|escape} {if $prefs.feature_freetags eq 'y'}{foreach from=$freetags.data item=taginfo}{$taginfo.tag|escape} {/foreach}{/if}" />
 {elseif isset($galleryId) && $galleryId ne '' & $prefs.metatag_imagetitle ne 'n'}
@@ -36,27 +28,23 @@
 {if $prefs.metatag_geoplacename ne ''}
 	<meta name="geo.placename" content="{$prefs.metatag_geoplacename|escape}" />
 {/if}
-{if $prefs.metatag_robots ne '' && $metatag_robots eq '' }
-        <meta name="robots" content="{$prefs.metatag_robots|escape}" />
-{/if}
-{if $prefs.metatag_robots eq '' && $metatag_robots ne '' }
-        <meta name="robots" content="{$metatag_robots|escape}" />
-{/if}
-{if $prefs.metatag_robots ne '' && $metatag_robots ne '' }
-        <meta name="robots" content="{$prefs.metatag_robots|escape}, {$metatag_robots|escape}" />
+{if $prefs.metatag_robots ne ''}
+	<meta name="robots" content="{$prefs.metatag_robots|escape}" />
 {/if}
 {if $prefs.metatag_revisitafter ne ''}
 	<meta name="revisit-after" content="{$prefs.metatag_revisitafter|escape}" />
 {/if}
 
-{* --- tiki block --- *}
-<title>{strip}
-	{if $prefs.site_title_location eq 'before'}{$prefs.browsertitle|tr_if|escape} {$prefs.site_nav_seper} {/if}
-	{if ($prefs.feature_breadcrumbs eq 'y' or $prefs.site_title_breadcrumb eq "desc") && isset($trail)}
+{* --- tikiwiki block --- *}
+<title>
+	{if $prefs.site_title_location eq 'before'}
+		{$prefs.browsertitle|escape} : 
+	{/if}
+	{if isset($trail)}
 		{breadcrumbs type=$prefs.site_title_breadcrumb loc="head" crumbs=$trail}
 	{else}
-		{if !empty($tracker_item_main_value)}
-			{$tracker_item_main_value|escape}
+		{if !empty($headtitle)}
+			{$headtitle|escape}
 		{elseif !empty($page)}
 			{if $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}
 				{$approvedPageName|escape}
@@ -67,29 +55,36 @@
 		{* add $description|escape if you want to put the description + update breadcrumb_build replace return $crumbs->title; with return empty($crumbs->description)? $crumbs->title: $crumbs->description; *}
 		{elseif !empty($arttitle)}
 			{$arttitle|escape}
-		{elseif !empty($title) and !is_array($title)}
+		{elseif !empty($title)}
 			{$title|escape}
 		{elseif !empty($thread_info.title)}
 			{$thread_info.title|escape}
+		{elseif !empty($post_info.title)}
+			{$post_info.title|escape}
 		{elseif !empty($forum_info.name)}
 			{$forum_info.name|escape}
 		{elseif !empty($categ_info.name)}
 			{$categ_info.name|escape}
 		{elseif !empty($userinfo.login)}
-			{$userinfo.login|username}
+			{$userinfo.login|escape}
+		{elseif !empty($tracker_item_main_value)}
+			{$tracker_item_main_value|escape}
 		{elseif !empty($tracker_info.name)}
 			{$tracker_info.name|escape}
-		{elseif !empty($gal_info.name)}
-			{$gal_info.name|escape}
-		{elseif !empty($headtitle)}
-			{$headtitle|tr_if|escape}{* use $headtitle last if feature specific title not found *}
 		{/if}
 	{/if}
-	{if $prefs.site_title_location eq 'after'} {$prefs.site_nav_seper} {$prefs.browsertitle|tr_if|escape}{/if}
-{/strip}</title>
+	{if $prefs.site_title_location eq 'after'}
+		: {$prefs.browsertitle|escape} 
+	{/if}
+</title>
 
 {if $prefs.site_favicon}
 	<link rel="icon" href="{$prefs.site_favicon|escape}" />
+{/if}
+
+{* --- phplayers block --- *}
+{if $prefs.feature_phplayers eq 'y' and isset($phplayers_headers)}
+	{$phplayers_headers}
 {/if}
 
 {* --- universaleditbutton.org --- *}
@@ -98,43 +93,39 @@
 {/if}
 
 {* --- Firefox RSS icons --- *}
-{if $prefs.feature_wiki eq 'y' and $prefs.feed_wiki eq 'y' and $tiki_p_view eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_wiki_title|escape|default:"{tr}RSS Wiki{/tr}"}' href="tiki-wiki_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
+{if $prefs.feature_wiki eq 'y' and $prefs.rss_wiki eq 'y' and $tiki_p_view eq 'y'}
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.title_rss_wiki|escape|default:"{tr}RSS Wiki{/tr}"}' href="tiki-wiki_rss.php?ver={$prefs.rssfeed_default_version|escape:'url'}" />
 {/if}
-{if $prefs.feature_blogs eq 'y' and $prefs.feed_blogs eq 'y' and $tiki_p_read_blog eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_blogs_title|escape|default:"{tr}RSS Blogs{/tr}"}' href="tiki-blogs_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
+{if $prefs.feature_blogs eq 'y' and $prefs.rss_blogs eq 'y' and $tiki_p_read_blog eq 'y'}
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.title_rss_blogs|escape|default:"{tr}RSS Blogs{/tr}"}' href="tiki-blogs_rss.php?ver={$prefs.rssfeed_default_version|escape:'url'}" />
 {/if}
-{if $prefs.feature_articles eq 'y' and $prefs.feed_articles eq 'y' and $tiki_p_read_article eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_articles_title|escape|default:"{tr}RSS Articles{/tr}"}' href="tiki-articles_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
+{if $prefs.feature_articles eq 'y' and $prefs.rss_articles eq 'y' and $tiki_p_read_article eq 'y'}
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.title_rss_articles|escape|default:"{tr}RSS Articles{/tr}"}' href="tiki-articles_rss.php?ver={$prefs.rssfeed_default_version|escape:'url'}" />
 {/if}
-{if $prefs.feature_galleries eq 'y' and $prefs.feed_image_galleries eq 'y' and $tiki_p_view_image_gallery eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_image_galleries_title|escape|default:"{tr}RSS Image Galleries{/tr}"}' href="tiki-image_galleries_rss.php?ver={$prefs.feed_default_version}" />
+{if $prefs.feature_galleries eq 'y' and $prefs.rss_image_galleries eq 'y' and $tiki_p_view_image_gallery eq 'y'}
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.title_rss_image_galleries|escape|default:"{tr}RSS Image Galleries{/tr}"}' href="tiki-image_galleries_rss.php?ver={$prefs.rssfeed_default_version}" />
 {/if}
-{if $prefs.feature_file_galleries eq 'y' and $prefs.feed_file_galleries eq 'y' and $tiki_p_view_file_gallery eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_file_galleries_title|escape|default:"{tr}RSS File Galleries{/tr}"}' href="tiki-file_galleries_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
+{if $prefs.feature_file_galleries eq 'y' and $prefs.rss_file_galleries eq 'y' and $tiki_p_view_file_gallery eq 'y'}
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.title_rss_file_galleries|escape|default:"{tr}RSS File Galleries{/tr}"}' href="tiki-file_galleries_rss.php?ver={$prefs.rssfeed_default_version|escape:'url'}" />
 {/if}
-{if $prefs.feature_forums eq 'y' and $prefs.feed_forums eq 'y' and $tiki_p_forum_read eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_forums_title|escape|default:"{tr}RSS Forums{/tr}"}' href="tiki-forums_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
+{if $prefs.feature_forums eq 'y' and $prefs.rss_forums eq 'y' and $tiki_p_forum_read eq 'y'}
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.title_rss_forums|escape|default:"{tr}RSS Forums{/tr}"}' href="tiki-forums_rss.php?ver={$prefs.rssfeed_default_version|escape:'url'}" />
 {/if}
 {if $prefs.feature_maps eq 'y' and $prefs.rss_mapfiles eq 'y' and $tiki_p_map_view eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.title_rss_mapfiles|escape|default:"{tr}RSS Maps{/tr}"}' href="tiki-map_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.title_rss_mapfiles|escape|default:"{tr}RSS Maps{/tr}"}' href="tiki-map_rss.php?ver={$prefs.rssfeed_default_version|escape:'url'}" />
 {/if}
-{if $prefs.feature_directory eq 'y' and $prefs.feed_directories eq 'y' and $tiki_p_view_directory eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_directories_title|escape|default:"{tr}RSS Directories{/tr}"}' href="tiki-directories_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
-{/if}
-
-{if $prefs.feature_calendar eq 'y' and $prefs.feed_calendar eq 'y' and $tiki_p_view_calendar eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_calendar_title|escape|default:"{tr}RSS Calendars{/tr}"}' href="tiki-calendars_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
+{if $prefs.feature_directory eq 'y' and $prefs.rss_directories eq 'y' and $tiki_p_view_directory eq 'y'}
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.title_rss_directories|escape|default:"{tr}RSS Directories{/tr}"}' href="tiki-directories_rss.php?ver={$prefs.rssfeed_default_version|escape:'url'}" />
 {/if}
 
-{if ($prefs.feature_blogs eq 'y' and $prefs.feature_blog_sharethis eq "y") or ($prefs.feature_cms eq 'y' and $prefs.feature_cms_sharethis eq "y")}
-	{if $prefs.blog_sharethis_publisher neq "" and $prefs.article_sharethis_publisher neq ""}
+{if $prefs.feature_calendar eq 'y' and $prefs.rss_calendar eq 'y' and $tiki_p_view_calendar eq 'y'}
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.title_rss_calendar|escape|default:"{tr}RSS Calendars{/tr}"}' href="tiki-calendars_rss.php?ver={$prefs.rssfeed_default_version|escape:'url'}" />
+{/if}
+
+{if $prefs.feature_blogs eq 'y' and $prefs.feature_blog_sharethis eq "y"}
+	{if $prefs.blog_sharethis_publisher neq ""}
 		<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher={$prefs.blog_sharethis_publisher}&amp;type=website&amp;buttonText=&amp;onmouseover=false&amp;send_services=aim"></script>
-	{elseif $prefs.blog_sharethis_publisher neq "" and $prefs.article_sharethis_publisher eq ""}
-		<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher={$prefs.blog_sharethis_publisher}&amp;type=website&amp;buttonText=&amp;onmouseover=false&amp;send_services=aim"></script>
-	{elseif $prefs.blog_sharethis_publisher eq "" and $prefs.article_sharethis_publisher neq ""}
-		<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher={$prefs.article_sharethis_publisher}&amp;type=website&amp;buttonText=&amp;onmouseover=false&amp;send_services=aim"></script>
-	{elseif $prefs.blog_sharethis_publisher eq "" and $prefs.article_sharethis_publisher eq ""}
+	{else}
 		<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#type=website&amp;buttonText=&amp;onmouseover=false&amp;send_services=aim"></script>
 	{/if}
 {/if}

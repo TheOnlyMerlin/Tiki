@@ -86,7 +86,7 @@ foreach ($rawcals["data"] as $cal_data) {
 
 if ($viewOneCal != 'y') {
 	$smarty->assign('errortype', 401);
-	$smarty->assign('msg', tra("You do not have permission to view the calendar"));
+	$smarty->assign('msg', tra("Permission denied you cannot view the calendar"));
 	$smarty->display("error.tpl");
 	die;
 }
@@ -168,13 +168,12 @@ include_once("tiki-calendar_setup.php");
 
 // Calculate all the displayed days for the selected calendars
 $viewdays = array();
+if (empty($_SESSION['CalendarViewGroups'])) {
+	$viewdays = array(0,1,2,3,4,5,6);
+}
 foreach($_SESSION['CalendarViewGroups'] as $calendar) {
 	$info = $calendarlib->get_calendar($calendar);
-	if (is_array($info['viewdays']))
-		$viewdays = array_merge($info['viewdays'],$viewdays);
-}
-if (empty($viewdays)) {
-		$viewdays = array(0,1,2,3,4,5,6);
+	$viewdays = array_merge($info['viewdays'],$viewdays);
 }
 sort($viewdays, SORT_NUMERIC);
 $viewdays = array_map("correct_start_day", array_unique($viewdays));
@@ -420,10 +419,10 @@ if ($calendarViewMode == 'day') {
 		foreach ($cell[0]["{$weekdays[0]}"]['items'] as $dayitems) {
 			$dayitems['time'] = ($dayitems['startTimeStamp'] > $cell[0]["{$weekdays[0]}"]['day'])
 				? $dayitems['time']
-				: str_pad($minHourOfDay,2,'0',STR_PAD_LEFT) . "00";
+				: str_pad($minHourOfDay,2,'0',STR_LEFT_PAD) . "00";
 			$dayitems['end'] = ($dayitems['endTimeStamp'] < ($cell[0]["{$weekdays[0]}"]['day'] + 86399))
 				? $dayitems['end']
-				: str_pad($maxHourOfDay,2,'0',STR_PAD_LEFT) . "59";
+				: str_pad($maxHourOfDay,2,'0',STR_LEFT_PAD) . "59";
 			$rawhour =intval(substr($dayitems['time'],0,2));
 			$dayitems['mins'] = substr($dayitems['time'],2);
 			$dayitems['top'] = (($rawhour - $minHourOfDay) + $dayitems['mins']/60)*24 + 35;
@@ -543,10 +542,10 @@ if ($calendarViewMode == 'day') {
 			foreach ($cell[0][$wd]['items'] as $dayitems) {
 				$dayitems['time'] = ($dayitems['startTimeStamp'] >= $cell[0][$wd]['day'])
 					? $dayitems['time']
-					: str_pad($minHourOfDay,2,'0',STR_PAD_LEFT) . "01";
+					: str_pad($minHourOfDay,2,'0',STR_LEFT_PAD) . "01";
 				$dayitems['end'] = ($dayitems['endTimeStamp'] < ($cell[0][$wd]['day'] + 86400))
 					? $dayitems['end']
-					: str_pad($maxHourOfDay,2,'0',STR_PAD_LEFT) . "59";
+					: str_pad($maxHourOfDay,2,'0',STR_LEFT_PAD) . "59";
 				$rawhour =intval(substr($dayitems['time'],0,2));
 				if ($rawhour < $minHourOfDay)
 					$rawhour = $minHourOfDay;
@@ -580,7 +579,7 @@ if ($calendarViewMode == 'day') {
 		foreach($tmpRes as $val) {
 			$maxConcurrency = max($maxConcurrency,count($val));
 		}
-		$slots = array_fill(0,max(1,min($maxSimultaneousWeekViewEvents,$maxConcurrency)), -1);
+		$slots = array_fill(0,min($maxSimultaneousWeekViewEvents,$maxConcurrency), -1);
 		foreach($tmpRes as $val) {
 			foreach($val as $index=>$evtId) {
 				$concurrencies[$wd][$evtId]['value'] = $maxConcurrency;
@@ -605,6 +604,7 @@ if ($calendarViewMode == 'day') {
 			}
 		}
 	}
+	//print("<pre>");print_r($concurrencies);exit;
 	foreach(array_keys($concurrencies) as $wd) {
 		foreach(array_keys($concurrencies[$wd]) as $key)
 			$concurrencies[$wd][$key]['offset'] = $zoom * 13 * ($concurrencies[$wd][$key]['offset'] / $concurrencies[$wd][$key]['value']);
@@ -750,6 +750,8 @@ include_once ('tiki-section_options.php');
 
 setcookie('tab',$cookietab);
 $smarty->assign('cookietab',$cookietab);
+
+include_once("textareasize.php");
 
 ask_ticket('calendar');
 
