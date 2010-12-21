@@ -16,11 +16,13 @@ You should have received a copy of the GNU General Public License along with thi
 
 function wikiplugin_rr_info() {
 	return array(
-		'name' => tra('R syntax'),
+		'name' => tra('RR (R syntax also)'),
 		'documentation' => 'PluginR',
 		'description' => tra('Same as PluginR, but allowing the execution of potentially dangerous commands once the admin has validated the plugin call.'),
 		'prefs' => array( 'wikiplugin_rr' ),
 		'validate' => 'all',
+		'body' => tra('R Code'),
+		'icon' => 'pics/icons/r.png',	
 		'params' => array(
 			'attId' => array(
 				'required' => false,
@@ -126,7 +128,8 @@ function wikiplugin_rr_info() {
 
 function wikiplugin_rr($data, $params) {
 	global $smarty, $trklib, $tikilib, $prefs;
-
+//	static $rr_count;
+	
 	if (isset($params["security"]) && $params["security"]==0) {
 		/* do nothing: i.e. don't check for security in the command sent to R*/
 	}else{ 		/* default: check for security in the commands sent to R*/
@@ -140,6 +143,9 @@ function wikiplugin_rr($data, $params) {
 	$output = 'text';
 	$style = '';
 	$ws = '';
+//	$id = 'rrbox'.$rr_count;
+//	$boxid = " id=\"$id\" ";
+	
 
 	if (isset($_REQUEST['itemId'])) {
 		global $trklib; require_once('lib/trackers/trackerlib.php');
@@ -441,3 +447,33 @@ function getCmd ($pre, $cmd, $post) {
   }
   error ($cmd, 'command not found', '');
 }
+
+//require_once 'tiki-setup.php';
+//global $headerlib, $prefs;
+//if ( $prefs['feature_syntax_highlighter'] == 'y' ) {
+//	$headerlib->add_cssfile( 'lib/codemirror_tiki/docs.css' );
+//	$headerlib->add_jsfile( 'lib/codemirror_tiki/js/codemirror.js' );
+//	
+//	$headerlib->add_js("
+//		$(document)
+//			.bind('plugin_rr_ready', function(args) {
+//				var rr = args.container.find('textarea:first')
+//					.attr('id', 'rr');
+//				
+//				//ensure that codemirror is running, if so run
+//				if (CodeMirror) {
+//					var editor = CodeMirror.fromTextArea('rr', {
+//						height: '350px',
+//						parserfile: ['parsexml.js', 'parsecss.js', 'tokenizejavascript.js', 'parsejavascript.js', 'parsehtmlmixed.js'],
+//						stylesheet: ['lib/codemirror_tiki/css/xmlcolors.css', 'lib/codemirror_tiki/css/jscolors.css', 'lib/codemirror_tiki/css/csscolors.css'],
+//						path: 'lib/codemirror_tiki/js/',
+//						onChange: function() {
+//							//Setup codemirror to send the text back to the textarea
+//							rr.val(editor.getCode());
+//						},
+//						lineNumbers: true
+//					});
+//				}
+//			});
+//	");
+//}

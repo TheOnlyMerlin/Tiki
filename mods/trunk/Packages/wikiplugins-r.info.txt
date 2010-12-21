@@ -2,14 +2,15 @@ contributor:
 $Author: xavi $
 
 revision: 
-$Revision: 0.51 $
+$Revision: 0.52 $
 
 lastmodif:
-$Date: 2010-11-16 14:56:00 $
+$Date: 2010-12-21 20:43:00 $
 
 files: 
 wiki-plugins/r/lib/wiki-plugins/wikiplugin_r.php lib/wiki-plugins/wikiplugin_r.php
 wiki-plugins/r/lib/wiki-plugins/wikiplugin_rr.php lib/wiki-plugins/wikiplugin_rr.php
+wiki-plugins/r/pics/icons/r.png pics/icons/r.png
 wiki-plugins/r/temp/.htaccess temp/.htaccess
 
 Author:
@@ -35,4 +36,4 @@ Changelog:
 0.2 Graphs also allowed inside wiki pages, as png images. Removed the need for StatWiki.r file. 
 0.3 Png can be loaded in pages (allowed by local .htaccess file in ./temp folder)
 0.4 Security checking enabled by default and many new optional params: security, wikisyntax and other graph params. Thanks LPH for your help. Params Filtered.
-0.5 parsing xml files fixed. Wrap param added (and enabled by default). Since 0.5.1, calls to the r plugin don't require admin validation, and in addition, can't execute dangerous commands. A new sister plugin is added (rr) which allows executing potentially dangerous commands.
+0.5 parsing xml files fixed. Wrap param added (and enabled by default). Since 0.5.1, calls to the r plugin don't require admin validation, and in addition, can't execute dangerous commands. A new sister plugin is added (rr) which allows executing potentially dangerous commands. Since 0.52, icon is added, and textarea box to allow inserting R code from the plugin helper is added.
