@@ -51,3 +51,33 @@ function wikiplugin_r($data, $params) {
 	$params['security'] = 1;
 	return wikiplugin_rr($data, $params);
 }
+
+require_once 'tiki-setup.php';
+global $headerlib, $prefs;
+if ( $prefs['feature_syntax_highlighter'] == 'y' ) {
+	$headerlib->add_cssfile( 'lib/codemirror_tiki/docs.css' );
+	$headerlib->add_jsfile( 'lib/codemirror_tiki/js/codemirror.js' );
+	
+	$headerlib->add_js("
+		$(document)
+			.bind('plugin_r_ready', function(args) {
+				var r = args.container.find('textarea:first')
+					.attr('id', 'r');
+				
+				//ensure that codemirror is running, if so run
+				if (CodeMirror) {
+					var editor = CodeMirror.fromTextArea('r', {
+						height: '350px',
+						parserfile: ['parsersplus.js'],
+						stylesheet: ['lib/codemirror_tiki/css/rspluscolors.css'],
+						path: 'lib/codemirror_tiki/js/',
+						onChange: function() {
+							//Setup codemirror to send the text back to the textarea
+							r.val(editor.getCode());
+						},
+						lineNumbers: true
+					});
+				}
+			});
+	");
+}
