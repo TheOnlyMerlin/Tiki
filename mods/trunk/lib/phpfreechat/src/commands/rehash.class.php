@@ -31,3 +31,5 @@ class pfcCommand_rehash extends pfcCommand
       $xml_reponse->script("pfc.handleResponse('".$this->name."', 'ko', '');");
   }
 }
+
+?>

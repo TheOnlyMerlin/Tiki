@@ -62,3 +62,5 @@ class pfcCommand_who2 extends pfcCommand_who
     }
   }
 }
+
+?>

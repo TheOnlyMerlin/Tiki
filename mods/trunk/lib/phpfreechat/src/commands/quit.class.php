@@ -52,3 +52,5 @@ class pfcCommand_quit extends pfcCommand
     $xml_reponse->script("pfc.handleResponse('quit', 'ok', '');");
   }
 }
+
+?>

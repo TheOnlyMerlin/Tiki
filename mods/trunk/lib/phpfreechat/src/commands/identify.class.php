@@ -71,3 +71,5 @@ class pfcCommand_identify extends pfcCommand
     }
   }
 }
+
+?>

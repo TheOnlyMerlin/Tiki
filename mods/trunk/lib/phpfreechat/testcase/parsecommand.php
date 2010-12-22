@@ -58,3 +58,5 @@ for($i = 0; $i<count($results); $i++)
   }
 }
 echo '</pre>';
+
+?>

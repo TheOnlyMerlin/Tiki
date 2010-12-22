@@ -108,3 +108,5 @@ class pfcInfo
     return $destroyed;
   }
 }
+
+?>

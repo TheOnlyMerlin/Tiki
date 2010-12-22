@@ -122,3 +122,5 @@ class pfcProxyCommand_checknickchange extends pfcProxyCommand
       }
   }
 }
+
+?>

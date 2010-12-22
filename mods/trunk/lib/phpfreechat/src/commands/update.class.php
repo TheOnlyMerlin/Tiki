@@ -79,3 +79,5 @@ class pfcCommand_update extends pfcCommand
 
   }
 }
+
+?>

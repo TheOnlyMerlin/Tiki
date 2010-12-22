@@ -69,8 +69,7 @@ if (!function_exists('is_a')) {
  * @link       http://pear.php.net/package/PHPUnit
  * @since      Class available since Release 1.0.0
  */
-class PHPUnit_TestDecorator
-{
+class PHPUnit_TestDecorator {
     /**
      * The Test to be decorated.
      *
@@ -154,3 +153,4 @@ class PHPUnit_TestDecorator
  * c-hanging-comment-ender-p: nil
  * End:
  */
+?>

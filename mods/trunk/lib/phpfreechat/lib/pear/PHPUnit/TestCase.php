@@ -103,8 +103,7 @@ require_once 'PHPUnit/TestResult.php';
  * @link       http://pear.php.net/package/PHPUnit
  * @since      Class available since Release 1.0.0
  */
-class PHPUnit_TestCase extends PHPUnit_Assert
-{
+class PHPUnit_TestCase extends PHPUnit_Assert {
     /**
      * @var    boolean
      * @access private
@@ -291,3 +290,4 @@ class PHPUnit_TestCase extends PHPUnit_Assert
  * c-hanging-comment-ender-p: nil
  * End:
  */
+?>

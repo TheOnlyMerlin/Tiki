@@ -19,3 +19,5 @@ class pfcCommand_updatemynick extends pfcCommand
     $ct->updateNick($u->nickid);
   }
 }
+
+?>

@@ -21,3 +21,5 @@ class pfcCommand_init extends pfcCommand
     $u->destroy();
   }
 }
+
+?>

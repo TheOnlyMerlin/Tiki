@@ -91,3 +91,5 @@ function pfc_shorten_url($url)
   
   return htmlentities($short_url, ENT_QUOTES);
 }
+
+?>

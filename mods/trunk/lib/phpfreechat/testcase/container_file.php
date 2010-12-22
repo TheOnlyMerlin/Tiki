@@ -184,3 +184,5 @@ $result =& PHPUnit::run($suite);
 echo "<pre>";
 print_r($result->toString());
 echo "</pre>";
+
+?>

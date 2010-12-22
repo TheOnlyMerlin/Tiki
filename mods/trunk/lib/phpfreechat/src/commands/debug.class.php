@@ -34,3 +34,5 @@ class pfcCommand_debug extends pfcCommand
     
   }
 }
+
+?>

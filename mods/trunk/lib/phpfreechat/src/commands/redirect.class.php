@@ -30,3 +30,5 @@ class pfcCommand_redirect extends pfcCommand
     $xml_reponse->redirect($param);
   }
 }
+
+?>

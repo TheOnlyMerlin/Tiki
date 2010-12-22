@@ -89,8 +89,7 @@ if (!function_exists('is_a')) {
  * @since      Class available since Release 1.2.0
  * @todo       Allow file drop. (Gtk_FileDrop)
  */
-class PHPUnit_GUI_Gtk
-{
+class PHPUnit_GUI_Gtk {
 
     /**
      * The main gtk window
@@ -738,3 +737,4 @@ class PHPUnit_GUI_Gtk
  * c-hanging-comment-ender-p: nil
  * End:
  */
+?>

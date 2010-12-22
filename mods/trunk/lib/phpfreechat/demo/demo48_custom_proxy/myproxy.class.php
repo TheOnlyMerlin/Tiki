@@ -56,3 +56,5 @@ class pfcProxyCommand_myproxy extends pfcProxyCommand
     $this->next->run($xml_reponse, $p);
   }
 }
+
+?>

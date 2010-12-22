@@ -82,8 +82,7 @@ require_once 'PHPUnit/TestCase.php';
  * @link       http://pear.php.net/package/PHPUnit
  * @since      Class available since Release 1.0.0
  */
-class PHPUnit_TestSuite
-{
+class PHPUnit_TestSuite {
     /**
      * The name of the test suite.
      *
@@ -181,7 +180,7 @@ class PHPUnit_TestSuite
      * @access public
      */
     function run(&$result) {
-        for ($i = 0; $i < count($this->_tests) && !$result->shouldStop(); $i++) {
+        for ($i = 0; $i < sizeof($this->_tests) && !$result->shouldStop(); $i++) {
             $this->_tests[$i]->run($result);
         }
     }
@@ -229,7 +228,7 @@ class PHPUnit_TestSuite
      * @access public
      */
     function testCount() {
-        return count($this->_tests);
+        return sizeof($this->_tests);
     }
 
     /**
@@ -260,3 +259,4 @@ class PHPUnit_TestSuite
  * c-hanging-comment-ender-p: nil
  * End:
  */
+?>

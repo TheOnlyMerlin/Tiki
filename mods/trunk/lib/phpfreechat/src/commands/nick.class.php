@@ -88,3 +88,5 @@ class pfcCommand_nick extends pfcCommand
     return false;
   }
 }
+
+?>

@@ -64,3 +64,5 @@ class pfcTemplate
     $this->vars[$name] =& $obj; // assigne also the whole object
   }
 }
+
+?>

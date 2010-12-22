@@ -86,3 +86,5 @@ class pfcCommand_send extends pfcCommand
     $xml_reponse->script("pfc.handleResponse('".$this->name."', 'ok', '');");
   }
 }
+
+?>

@@ -161,7 +161,7 @@ class PHPUnit_GUI_SetupDecorator
                     $match = FALSE;
                 }
 
-                if (count($exclude)) {
+                if (sizeof($exclude)) {
                     foreach ($exclude as $aExclude) {
                         if (strpos($file, $aExclude) !== FALSE) {
                             $match = FALSE;
@@ -206,3 +206,4 @@ class PHPUnit_GUI_SetupDecorator
  * c-hanging-comment-ender-p: nil
  * End:
  */
+?>

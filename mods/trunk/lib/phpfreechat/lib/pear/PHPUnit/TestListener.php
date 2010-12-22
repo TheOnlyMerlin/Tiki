@@ -112,8 +112,7 @@
  * @link       http://pear.php.net/package/PHPUnit
  * @since      Class available since Release 1.0.0
  */
-class PHPUnit_TestListener
-{
+class PHPUnit_TestListener {
     /**
      * An error occurred.
      *
@@ -160,3 +159,4 @@ class PHPUnit_TestListener
  * c-hanging-comment-ender-p: nil
  * End:
  */
+?>

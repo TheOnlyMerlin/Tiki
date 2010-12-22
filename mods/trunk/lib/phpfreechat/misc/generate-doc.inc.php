@@ -78,3 +78,5 @@ function pfc_generate_doc($f = NULL)
   }
   return $plist;
 }
+
+?>

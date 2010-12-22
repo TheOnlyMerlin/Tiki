@@ -21,12 +21,11 @@ class pfcUserConfig
     $c =& pfcGlobalConfig::Instance();
 
     // start the session : session is used for locking purpose and cache purpose
-    session_name( "phpfreechat" );
     if(session_id() == "") session_start();
-    
-    //    echo "pfcUserConfig()<br>";
 
-    $this->nickid = session_id();
+    // the nickid is a public identifier shared between all the chatters
+    // this is why the session_id must not be assigned directly to the nickid
+    $this->nickid = sha1(session_id());
 
     // user parameters are cached in sessions
     $this->_getParam("nick");
@@ -38,7 +37,7 @@ class pfcUserConfig
     $this->_getParam("privmsg");
     if (!isset($this->privmsg)) $this->_setParam("privmsg",array());
     $this->_getParam("serverid");
-    if (!isset($this->privmsg)) $this->_setParam("serverid",$c->serverid);
+    if (!isset($this->serverid)) $this->_setParam("serverid",$c->serverid);
   }
 
   function &Instance()
@@ -57,7 +56,7 @@ class pfcUserConfig
     if (!isset($this->$p))
     {
       $c =& pfcGlobalConfig::Instance();
-      $nickid       = "pfcuserconfig_".$c->getId();
+      $nickid       = 'pfcuserconfig_'.$c->getId().'_'.$this->nickid;
       $nickid_param = $nickid."_".$p;
       if (isset($_SESSION[$nickid_param]))
         $this->$p = $_SESSION[$nickid_param];
@@ -68,7 +67,7 @@ class pfcUserConfig
   function _setParam($p, $v)
   {
     $c =& pfcGlobalConfig::Instance();
-    $nickid_param = "pfcuserconfig_".$c->getId()."_".$p;
+    $nickid_param = 'pfcuserconfig_'.$c->getId().'_'.$this->nickid.'_'.$p;
     $_SESSION[$nickid_param] = $v;
     $this->$p = $v;
   }
@@ -76,7 +75,7 @@ class pfcUserConfig
   function _rmParam($p)
   {
     $c =& pfcGlobalConfig::Instance();
-    $nickid_param = "pfcuserconfig_".$c->getId()."_".$p;    
+    $nickid_param = 'pfcuserconfig_'.$c->getId().'_'.$this->nickid.'_'.$p;    
     unset($_SESSION[$nickid_param]);
     unset($this->$p);
     if ($p == 'active') $this->active = false;
@@ -137,3 +136,5 @@ class pfcUserConfig
     return $list;
   }  
 }
+
+?>

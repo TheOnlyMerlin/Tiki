@@ -2,7 +2,7 @@
 /**
  * file.class.php
  *
- * Copyright © 2006 Stephane Gully <stephane.gully@gmail.com>
+ * Copyright ï¿½ 2006 Stephane Gully <stephane.gully@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -70,16 +70,27 @@ class pfcContainer_File extends pfcContainerInterface
     $timetowait = 2;
     if (is_writable(dirname($filename)))
     {
-      file_put_contents($filename,'some-data1-'.time(), LOCK_EX);
+      file_put_contents($filename,'some-data1-'.time());
       clearstatcache();
       $time1 = filemtime($filename);
       sleep($timetowait);
-      file_put_contents($filename,'some-data2-'.time(), LOCK_EX);
+      file_put_contents($filename,'some-data2-'.time());
       clearstatcache();
       $time2 = filemtime($filename);
       unlink($filename);
       if ($time2-$time1 != $timetowait)
-        $errors[] = "filemtime php fuction is not usable on your filesystem. Please do not use the 'file' container (try the 'mysql' container) or swith to another filesystem.";
+        $errors[] = "filemtime php fuction is not usable on your filesystem. Please do not use the 'file' container (try the 'mysql' container) or swith to another filesystem type.";
+    }
+
+    // test the LOCK_EX feature because it doesn't work on special filsystem like NFS
+    $filename = $c->data_private_path.'/filemtime.test';
+    if (is_writable(dirname($filename)))
+    {
+      $data1 = time();
+      file_put_contents($filename, $data1, LOCK_EX);
+      $data2 = file_get_contents($filename);
+      if ($data1 != $data2)
+        $errors[] = "LOCK_EX feature is not usable on your filesystem. Please do not use the 'file' container (try the 'mysql' container) or swith to another filesystem type.";
     }
 
     return $errors;
@@ -99,7 +110,8 @@ class pfcContainer_File extends pfcContainerInterface
     $leafexists = file_exists($leaffilename);
     if ($leafvalue == NULL)
     {
-    	file_put_contents($leaffilename, '', LOCK_EX);
+      @unlink($leaffilename);
+      touch($leaffilename);
     }
     else
     {
@@ -286,3 +298,4 @@ class pfcContainer_File extends pfcContainerInterface
     return urldecode($str);
   }
 }
+?>

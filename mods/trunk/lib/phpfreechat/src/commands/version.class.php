@@ -20,3 +20,5 @@ class pfcCommand_version extends pfcCommand
     $xml_reponse->script("pfc.handleResponse('".$this->name."', 'ok', '".$c->version."');");
   }
 }
+
+?>

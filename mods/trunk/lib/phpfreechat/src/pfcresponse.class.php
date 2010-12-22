@@ -66,3 +66,4 @@ class pfcResponse
     return implode("\n",$this->_commands);
   }
 }
+?>

@@ -112,7 +112,7 @@ class pfcGlobalConfig
    * <p>This parameter contains a list of key/value that identify admin access.
    * The keys are the nicknames and the values are the corresponding passwords.
    * Note: The "isadmin" parameter does not depend on this variable.
-   * (Default value: No admin/password accounts are available. Don't forget to change it.)</p>
+   * (Default value: nick 'admin' with no password is available. Don't forget to change it.)</p>
    */
   var $admins = array("admin" => "");
 
@@ -183,9 +183,9 @@ class pfcGlobalConfig
    * <p>This is the time of inactivity to wait before considering a user is disconnected (in milliseconds).
    * A user is inactive only if s/he closed his/her chat window. A user with an open chat window
    * is not inactive because s/he sends each <code>refresh_delay</code> an HTTP request.
-   * (Default value: 20000 it means 20000 ms or 20 seconds)</p>
+   * (Default value: 35000 it means 35000 ms or 35 seconds)</p>
    */
-  var $timeout = 20000;
+  var $timeout = 35000;
   
   /**
    * When this parameter is true, all the chatters will be redirected
@@ -330,10 +330,11 @@ class pfcGlobalConfig
    * <p><ul><li>Setting this to 0 will show nothing.</li>
    * <li>Setting it to 1 will show nicknames changes.</li>
    * <li>Setting it to 2 will show connect/disconnect notifications.</li>
-   * <li>Setting it to 3 (1+2) will show nicknames and connect/disconnect notifications.</li></ul>
-   * (Default value: 3)</p>
+   * <li>Setting it to 4 will show kick/ban notifications.</li>
+   * <li>Setting it to 7 (1+2+4) will show all the notifications.</li></ul>
+   * (Default value: 7)</p>
    */
-  var $shownotice = 3;
+  var $shownotice = 7;
 
   /**
    * <p>Setting it to false will disable nickname colorization.
@@ -921,7 +922,7 @@ class pfcGlobalConfig
                                  $this->theme_path.'/'.$this->theme,
                                  $this->data_public_path.'/themes/'.$this->theme);
       }      
-      $this->theme_url = $this->theme_default_url;
+      $this->theme_url = $this->data_public_url.'/themes';
     }
 
     // if the user do not have an existing prototype.js library, we use the embeded one
@@ -933,7 +934,7 @@ class pfcGlobalConfig
     $ct_errors = $ct->init($this);
     $this->errors = array_merge($this->errors, $ct_errors);
     
-    // check the language is known
+    // check if the wanted language is known
     $lg_list = pfcI18N::GetAcceptedLanguage();
     if ( $this->language != "" && !in_array($this->language, $lg_list) )
       $this->errors[] = _pfc("'%s' parameter is not valid. Available values are : '%s'", "language", implode(", ", $lg_list));
@@ -958,6 +959,21 @@ class pfcGlobalConfig
         $this->proxies[] = $px;
         
     }
+
+    if (in_array('log',$this->proxies)) {
+      // test the LOCK_EX feature because the log proxy needs to write in a file
+      $filename = $this->data_private_path.'/filemtime2.test';
+      if (is_writable(dirname($filename)))
+      {
+        $data1 = time();
+        file_put_contents($filename, $data1, LOCK_EX);
+        $data2 = file_get_contents($filename);
+        if ($data1 != $data2) {
+              unset($this->proxies[array_search('log',$this->proxies)]);
+        }
+      }
+    }
+
     // save the proxies path
     $this->proxies_path_default = dirname(__FILE__).'/proxies';
     // check the customized proxies path
@@ -1147,3 +1163,5 @@ class pfcGlobalConfig
     return $nickname;
   }
 }
+
+?>

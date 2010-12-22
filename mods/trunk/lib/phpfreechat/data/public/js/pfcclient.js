@@ -3,6 +3,7 @@ var is_ie     = !!(window.attachEvent && !window.opera);
 var is_khtml  = !!(navigator.appName.match("Konqueror") || navigator.appVersion.match("KHTML"));
 var is_gecko  = navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') == -1;
 var is_ie7    = navigator.userAgent.indexOf('MSIE 7') > 0;
+var is_ie6    = navigator.userAgent.indexOf('MSIE 6') > 0;
 var is_opera  = !!window.opera;
 var is_webkit = navigator.userAgent.indexOf('AppleWebKit/') > -1;
 
@@ -438,7 +439,6 @@ pfcClient.prototype = {
       {
         this.setUserMeta(nickid, param);
         this.updateNickBox(nickid);
-        this.updateNickWhoisBox(nickid);
       }
       if (cmd == "whois")
       {
@@ -966,8 +966,10 @@ pfcClient.prototype = {
         line += '&#x203A;';
         line += '</span> ';
       }
-      if (cmd == 'notice' || cmd == 'me')
-        line += '<span class="pfc_words">* '+ this.parseMessage(param) +'</span> ';
+      if (cmd == 'notice')
+        line += '<span class="pfc_words">* ' + this.parseMessage(param) +'</span> ';
+      else if (cmd == 'me')
+        line += '<span class="pfc_words">* '+ sender.escapeHTML() + ' ' + this.parseMessage(param) +'</span> ';
       else
         line += '<span class="pfc_words">'+ this.parseMessage(param) +'</span> ';
       line += '</div>';
@@ -1255,7 +1257,7 @@ pfcClient.prototype = {
    */
   updateNickListBox: function(chanid)
   {
-    var className = (! is_ie) ? 'class' : 'className';
+    var className = (!is_ie7 && !is_ie6) ? 'class' : 'className';
 
     var nickidlst = this.getChanMeta(chanid,'users').get('nickid');
     var nickdiv = this.gui.getOnlineContentFromTabId(chanid);
@@ -1282,10 +1284,31 @@ pfcClient.prototype = {
       this.updateNickWhoisBox(nickid);
     return this.nickwhoisbox.get(nickid);
   },
-
+  
+  updateNickWhoisBox_ignored_field: function(k)
+  {
+      return ( k == 'nickid' ||
+               k == 'nick' || // useless because it is displayed in the box title
+               k == 'isadmin' || // useless because of the gold shield icon
+               k == 'floodtime' ||
+               k == 'flood_nbmsg' ||
+               k == 'flood_nbchar'
+               );
+  },
+  
+  updateNickWhoisBox_append_html: function(nickid, div)
+  {
+      // this methode can be overloaded to append customized data to the whoisbox
+  },
+  
+  updateNickWhoisBox_prepend_html: function(nickid, div)
+  {
+      // this methode can be overloaded to prepend customized data to the whoisbox
+  },
+  
   updateNickWhoisBox: function(nickid)
   {
-    var className = (! is_ie) ? 'class' : 'className';
+    var className = (!is_ie7 && !is_ie6) ? 'class' : 'className';
 
     var usermeta = this.getAllUserMeta(nickid);
     var div  = document.createElement('div');
@@ -1307,6 +1330,8 @@ pfcClient.prototype = {
     img.alt = this.res.getLabel('Close');
     p.appendChild(img);
     p.appendChild(document.createTextNode(usermeta.get('nick'))); // append the nickname text in the title
+    
+    this.updateNickWhoisBox_prepend_html(nickid,div);
 
     // add the whois information table
     var table = document.createElement('table');
@@ -1318,13 +1343,7 @@ pfcClient.prototype = {
     {
       var k = um_keys[i];
       var v = usermeta.get(k);
-      if (v && k != 'nickid'
-            && k != 'nick' // useless because it is displayed in the box title
-            && k != 'isadmin' // useless because of the gold shield icon
-            && k != 'floodtime'
-            && k != 'flood_nbmsg'
-            && k != 'flood_nbchar'
-         )
+      if (v && !this.updateNickWhoisBox_ignored_field(k))
       {
         var tr = document.createElement('tr');
         if (pfc_nickmeta_key_to_hide.indexOf(k) != -1)
@@ -1350,7 +1369,9 @@ pfcClient.prototype = {
       }
     }
     div.appendChild(table);
-
+    
+    this.updateNickWhoisBox_append_html(nickid,div);
+    
     // add the privmsg link (do not add it if the nick is yours)
     if (pfc.getUserMeta(nickid,'nick') != this.nickname)
     {
@@ -1378,9 +1399,29 @@ pfcClient.prototype = {
     this.nickwhoisbox.set(nickid, div);
   },
 
+  buildNickItem_create_image: function(nickid)
+  {
+      var className = (!is_ie7 && !is_ie6) ? 'class' : 'className';
+      var isadmin = this.getUserMeta(nickid, 'isadmin');
+      var img = document.createElement('img');
+      if (isadmin)
+        img.setAttribute('src', this.res.getFileUrl('images/user-admin.gif'));
+      else
+        img.setAttribute('src', this.res.getFileUrl('images/user.gif'));
+      img.style.marginRight = '5px';
+      img.setAttribute(className, 'pfc_nickbutton');
+      return img;
+  },
+  
+  buildNickItem_modify_nick_style: function(nickid, span)
+  {
+      // this method can be overloaded to change the nick style (color, font ...)
+      // example: span.style.color = 'red';
+  },
+
   buildNickItem: function(nickid)
   {
-    var className = (! is_ie) ? 'class' : 'className';
+    var className = (!is_ie7 && !is_ie6) ? 'class' : 'className';
 
     var nick = this.getUserMeta(nickid, 'nick');
     var isadmin = this.getUserMeta(nickid, 'isadmin');
@@ -1404,14 +1445,8 @@ pfcClient.prototype = {
     }
     li.appendChild(a);
 
-    var img = document.createElement('img');
-    if (isadmin)
-      img.setAttribute('src', this.res.getFileUrl('images/user-admin.gif'));
-    else
-      img.setAttribute('src', this.res.getFileUrl('images/user.gif'));
-    img.style.marginRight = '5px';
-    img.setAttribute(className, 'pfc_nickbutton');
-    a.appendChild(img);
+    var img = this.buildNickItem_create_image(nickid);
+    if (img) a.appendChild(img);
 
     // nobr is not xhtml valid but it's a workeround 
     // for IE which doesn't support 'white-space: pre' css rule
@@ -1419,6 +1454,7 @@ pfcClient.prototype = {
     var span = document.createElement('span');
     span.setAttribute(className, 'pfc_nickmarker pfc_nick_'+nickid);
     span.innerHTML = nick.escapeHTML();
+    this.buildNickItem_modify_nick_style(nickid, span);
     nobr.appendChild(span);
     a.appendChild(nobr);
 
@@ -1522,11 +1558,11 @@ pfcClient.prototype = {
     rx = new RegExp('\\[email=([A-z0-9][\\w.-]*@[A-z0-9][\\w\\-\\.]+\\.[A-z0-9]{2,6})\\](.+?)\\[\/email\\]','ig');
     msg = msg.replace(rx, '<a href="mailto: $1">$2</a>');
 */
-    rx = new RegExp('\\[color=([a-zA-Z]+|\\#?[0-9a-fA-F]{6}|\\#?[0-9a-fA-F]{3})](.+?)\\[\/color\\]','ig');
+    rx = new RegExp('\\[color=([a-zA-Z]+|\\#?[0-9a-fA-F]{6}|\\#?[0-9a-fA-F]{3})\\](.+?)\\[\/color\\]','ig');
     msg = msg.replace(rx, '<span style="color: $1">$2</span>');
     // parse bbcode colors twice because the current_text_color is a bbcolor
     // so it's possible to have a bbcode color imbrication
-    rx = new RegExp('\\[color=([a-zA-Z]+|\\#?[0-9a-fA-F]{6}|\\#?[0-9a-fA-F]{3})](.+?)\\[\/color\\]','ig');
+    rx = new RegExp('\\[color=([a-zA-Z]+|\\#?[0-9a-fA-F]{6}|\\#?[0-9a-fA-F]{3})\\](.+?)\\[\/color\\]','ig');
     msg = msg.replace(rx, '<span style="color: $1">$2</span>');   
 
     // try to parse smileys

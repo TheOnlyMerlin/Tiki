@@ -67,3 +67,5 @@ class pfcCommand_unban extends pfcCommand
       $xml_reponse->script("pfc.handleResponse('".$this->name."', 'ko', '".$msg."');");
   }
 }
+
+?>

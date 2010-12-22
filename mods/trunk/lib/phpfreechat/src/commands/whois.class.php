@@ -77,3 +77,5 @@ class pfcCommand_whois extends pfcCommand
       $xml_reponse->script("pfc.handleResponse('".$this->name."', 'ko','".$param."');");
   }
 }
+
+?>

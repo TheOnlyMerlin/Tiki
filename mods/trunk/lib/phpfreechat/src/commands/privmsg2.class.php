@@ -31,3 +31,5 @@ class pfcCommand_privmsg2 extends pfcCommand_privmsg
 {
   var $usage = "/privmsg2 {nicknameid}";
 }
+
+?>

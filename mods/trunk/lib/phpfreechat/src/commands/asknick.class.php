@@ -38,3 +38,5 @@ class pfcCommand_asknick extends pfcCommand
     }
   }
 }
+
+?>

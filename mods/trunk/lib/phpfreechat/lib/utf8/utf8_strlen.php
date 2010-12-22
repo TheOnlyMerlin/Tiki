@@ -22,3 +22,5 @@ if (!function_exists('utf8_strlen')) {
     return $n;
   }
 }
+
+?>

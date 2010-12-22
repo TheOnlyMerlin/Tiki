@@ -375,7 +375,7 @@ class Services_JSON
                 */
 
                 // treat as a JSON object
-                if (is_array($var) && count($var) && (array_keys($var) !== range(0, count($var) - 1))) {
+                if (is_array($var) && count($var) && (array_keys($var) !== range(0, sizeof($var) - 1))) {
                     $properties = array_map(array($this, 'name_value'),
                                             array_keys($var),
                                             array_values($var));
@@ -779,7 +779,7 @@ class Services_JSON
 if (class_exists('PEAR_Error')) {
 
     class Services_JSON_Error extends PEAR_Error
-		{
+    {
         function Services_JSON_Error($message = 'unknown error', $code = null,
                                      $mode = null, $options = null, $userinfo = null)
         {
@@ -793,7 +793,7 @@ if (class_exists('PEAR_Error')) {
      * @todo Ultimately, this class shall be descended from PEAR_Error
      */
     class Services_JSON_Error
-		{
+    {
         function Services_JSON_Error($message = 'unknown error', $code = null,
                                      $mode = null, $options = null, $userinfo = null)
         {
@@ -802,3 +802,5 @@ if (class_exists('PEAR_Error')) {
     }
 
 }
+    
+?>
