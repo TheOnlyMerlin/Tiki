@@ -14,47 +14,47 @@ pre.code, .editbox {
 	margin: 0;
 }
 
-span.mw-text {
+span.tw-text {
 	color: #000000;
 }
 
-span.mw-syntaxerror {
+span.tw-syntaxerror {
 	color: #FFFFFF;
 	background-color: #990000;
 }
 
-span.mw-comment {
+span.tw-comment {
 	color: #999999;
 }
 
-span.mw-bolditalic {
+span.tw-bolditalic {
 	color: #000000;
 	font-weight: bold; 
 	font-style: italic;
 }
 
-span.mw-bold {
+span.tw-bold {
 	color: #000000;
 	font-weight: bold; 
 }
 
-span.mw-italic {
+span.tw-italic {
 	color: #000000;
 	font-style: italic;
 }
 
-span.mw-file {
+span.tw-file {
 	color: #FF6600;
 }
 
-span.mw-link {
+span.tw-link {
 	color: #006600;
 }
 
-span.mw-weblink {
+span.tw-weblink {
 	color: #000099;
 }
 
-span.mw-table {
+span.tw-table {
 	color: #339999;
 }

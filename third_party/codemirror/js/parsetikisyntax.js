@@ -1,94 +1,67 @@
-//
-// Syntax highlighting MediaWiki parser for the CodeMirror framework (http://marijn.haverbeke.nl/codemirror/)
-//
-// Version 0.1, October 6th, 2009
-//
-// Writen by Wikimedia Commons user JovanCormac (http://commons.wikimedia.org/wiki/User:JovanCormac)
-//
-//
-// This program is free software; you can redistribute it and/or modify it under the terms of the 
-// GNU General Public License as published by the Free Software Foundation.
-// 
-// Read the full license at http://www.opensource.org/licenses/gpl-3.0.html
-//
-
-var MWParser = Editor.Parser = (function() {
-	var tokenizeMW = (function() {
+var TWParser = Editor.Parser = (function() {
+	var tokenizeTW = (function() {
 		function normal(source, setState) {
 			var ch = source.next();
-			
-			if (ch == "<" && source.lookAhead("!--", true)) {
-				// Comment
-				setState(inComment);
-				return null;
-			}
-			else if (ch == "_") {
-				if (source.lookAhead("''''", true)) {
-					// Bold & italic text
-					setState(inBoldItalic);
-					return null;
-				}
-				else if (source.lookAhead("_", true)) {
-					// Bold text
-					setState(inBold);
-					return null;
-				}
-				else if (source.lookAhead("'", true)) {
-					// Italic text
-					setState(inItalic);
-					return null;
-				}
-				else {
+			switch (ch) {
+				case "<": //comment
+					if (source.lookAhead("!--", true)) {
+						// Comment
+						setState(inComment);
+						return null;
+					}
+					break;
+				case "_": //bold
+					if (source.lookAhead("_", true)) {
+						// Bold text
+						setState(inBold);
+						return null;
+					} else {
+						// Normal wikitext
+						source.nextWhileMatches(/[^\n\[{<']/);
+						return "tw-text";
+					}
+					break;
+				case "'": //italics
+					if (source.lookAhead("'", true)) {
+						// Italic text
+						setState(inItalic);
+						return null;
+					}
+					else {
+						// Normal wikitext
+						source.nextWhileMatches(/[^\n\[{<']/);
+						return "tw-text";
+					}
+					break;
+				case "[":
+					if (source.lookAhead("[", true)) {
+						// Interwiki link
+						setState(inLink);
+						return null;
+					}
+					else {
+						// Weblink
+						setState(inWeblink);
+						return null;
+					}
+					break;
+				case "{":
+					if (source.lookAhead("|", true)) {
+						// Table
+						setState(inTable);
+						return null;
+					}
+					else {
+						// Normal wikitext
+						source.nextWhileMatches(/[^\n\[{<']/);
+						return "tw-text";
+					}
+					break;
+				default:
 					// Normal wikitext
 					source.nextWhileMatches(/[^\n\[{<']/);
-					return "mw-text";
-				}
-			}
-			else if (ch == "'") {
-				if (source.lookAhead("'", true)) {
-					// Italic text
-					setState(inItalic);
-					return null;
-				}
-				else {
-					// Normal wikitext
-					source.nextWhileMatches(/[^\n\[{<']/);
-					return "mw-text";
-				}
-			}
-			else if (ch == "[") {
-				if (source.lookAhead("[File:", true, false, true)) {
-					// File
-					setState(inFile);
-					return null;
-				}
-				else if (source.lookAhead("[", true)) {
-					// Interwiki link
-					setState(inLink);
-					return null;
-				}
-				else {
-					// Weblink
-					setState(inWeblink);
-					return null;
-				}
-			}
-			else if (ch == "{") {
-				if (source.lookAhead("|", true)) {
-					// Table
-					setState(inTable);
-					return null;
-				}
-				else {
-					// Normal wikitext
-					source.nextWhileMatches(/[^\n\[{<']/);
-					return "mw-text";
-				}
-			}
-			else {
-				// Normal wikitext
-				source.nextWhileMatches(/[^\n\[{<']/);
-				return "mw-text";
+					return "tw-text";
+					break;
 			}
 		}
 		
@@ -100,18 +73,7 @@ var MWParser = Editor.Parser = (function() {
 					break;
 				}
 			}
-			return "mw-comment";
-		}
-		
-		function inBoldItalic(source, setState) {
-			while (!source.endOfLine()) {
-				var ch = source.next();
-				if (ch == "'" && source.lookAhead("''''", true)) {
-					setState(normal);
-					break;
-				}
-			}
-			return "mw-bolditalic";
+			return "tw-comment";
 		}
 		
 		function inBold(source, setState) {
@@ -122,7 +84,7 @@ var MWParser = Editor.Parser = (function() {
 					break;
 				}
 			}
-			return "mw-bold";
+			return "tw-bold";
 		}
 		
 		function inItalic(source, setState) {
@@ -133,22 +95,7 @@ var MWParser = Editor.Parser = (function() {
 					break;
 				}
 			}
-			return "mw-italic";
-		}
-		
-		function inFile(source, setState) {
-			var closed = false;
-			
-			while (!source.endOfLine()) {
-				var ch = source.next();
-				if (ch == "]" && source.lookAhead("]", true)) {
-					closed = true;
-					break;
-				}
-			}
-			
-			setState(normal);
-			if (closed) return "mw-file"; else return "mw-syntaxerror";
+			return "tw-italic";
 		}
 		
 		function inLink(source, setState) {
@@ -163,7 +110,7 @@ var MWParser = Editor.Parser = (function() {
 			}
 			
 			setState(normal);
-			if (closed) return "mw-link"; else return "mw-syntaxerror";
+			if (closed) return "tw-link"; else return "tw-syntaxerror";
 		}
 		
 		function inWeblink(source, setState) {
@@ -178,7 +125,7 @@ var MWParser = Editor.Parser = (function() {
 			}
 			
 			setState(normal);
-			if (closed) return "mw-weblink"; else return "mw-syntaxerror";
+			if (closed) return "tw-weblink"; else return "tw-syntaxerror";
 		}
 		
 		function inTable(source, setState) {
@@ -189,7 +136,7 @@ var MWParser = Editor.Parser = (function() {
 					break;
 				}
 			}
-			return "mw-table";
+			return "tw-table";
 		}
 		
 		return function(source, startState) {
@@ -197,10 +144,10 @@ var MWParser = Editor.Parser = (function() {
 		};
 	})();
 	
-	function parseMW(source, space) {
+	function parseTW(source, space) {
 		function indentTo(n) {return function() {return n;}}
 		
-		var tokens = tokenizeMW(source);		
+		var tokens = tokenizeTW(source);		
 		var space = space || 0;
 		
 		var iter = {
@@ -214,12 +161,12 @@ var MWParser = Editor.Parser = (function() {
 			copy: function() {
 				var _tokenState = tokens.state;
 				return function(source) {
-					tokens = tokenizeMW(source, _tokenState);
+					tokens = tokenizeTW(source, _tokenState);
 					return iter;
 				};
 			}
 		};
 		return iter;
 	}
-	return {make: parseMW};
+	return {make: parseTW};
 })();
