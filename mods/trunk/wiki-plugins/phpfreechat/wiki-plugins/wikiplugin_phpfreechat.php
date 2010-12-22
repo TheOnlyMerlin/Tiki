@@ -1,7 +1,32 @@
 <?php
 
-function wikiplugin_phpfreechat_help() {
-        return tra("Displays a chat (using phpfreechat) in a wiki page").":<br />~np~{PHPFREECHAT(title=title,channel=name)}{PHPFREECHAT}~/np~";
+function wikiplugin_phpfreechat_info() {
+	return array(
+		'name' => tra('PhpFreeChat'),
+		'documentation' => 'Mod+phpfreechat',
+		'description' => tra("Displays a chat (using phpfreechat) in a wiki page"),
+		'prefs' => array( 'wikiplugin_phpfreechat' ),
+		'validate' => 'all',
+		'icon' => 'pics/icons/phpfreechat.png',	
+		'params' => array(
+			'title' => array(
+				'required' => true,
+				'safe' => true,
+				'name' => tra('title'),
+				'description' => tra('Title for the chat window'),
+				'filter' => 'striptags',
+				'advanced' => false,
+			),
+			'channel' => array(
+				'required' => true,
+				'safe' => true,
+				'name' => tra('channel'),
+				'description' => tra('Chat channel name'),
+				'filter' => 'striptags',
+				'advanced' => false,
+			),
+		),
+	);
 }
 
 function wikiplugin_phpfreechat($data, $params) {
