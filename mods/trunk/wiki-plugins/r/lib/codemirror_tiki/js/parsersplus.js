@@ -34,47 +34,47 @@ var PythonParser = Editor.Parser = (function() {
                        'float', 'frozenset', 'int', 'list', 'object',
                        'property', 'reversed', 'set', 'slice', 'staticmethod',
                        'str', 'super', 'tuple', 'type'];
-    var py2 = {'types': ['basestring', 'buffer', 'file', 'long', 'unicode',
+    var rsplus2 = {'types': ['basestring', 'buffer', 'file', 'long', 'unicode',
                          'xrange'],
                'keywords': ['exec', 'print'],
                'version': 2 };
-    var py3 = {'types': ['bytearray', 'bytes', 'filter', 'map', 'memoryview',
+    var rsplus3 = {'types': ['bytearray', 'bytes', 'filter', 'map', 'memoryview',
                          'open', 'range', 'zip'],
                'keywords': ['nonlocal'],
                'version': 3};
 
-    var py, keywords, types, stringStarters, stringTypes, config;
+    var rsplus, keywords, types, stringStarters, stringTypes, config;
 
     function configure(conf) {
-        if (!conf.hasOwnProperty('pythonVersion')) {
-            conf.pythonVersion = 2;
+        if (!conf.hasOwnProperty('rsplusVersion')) {
+            conf.rsplusVersion = 2;
         }
         if (!conf.hasOwnProperty('strictErrors')) {
             conf.strictErrors = true;
         }
-        if (conf.pythonVersion != 2 && conf.pythonVersion != 3) {
+        if (conf.rsplusVersion != 2 && conf.rsplusVersion != 3) {
             alert('CodeMirror: Unknown Python Version "' +
-                  conf.pythonVersion +
+                  conf.rsplusVersion +
                   '", defaulting to Python 2.x.');
-            conf.pythonVersion = 2;
+            conf.rsplusVersion = 2;
         }
-        if (conf.pythonVersion == 3) {
-            py = py3;
+        if (conf.rsplusVersion == 3) {
+            rsplus = rsplus3;
             stringStarters = /[\'\"rbRB]/;
             stringTypes = /[rb]/;
             doubleDelimiters.push('\\-\\>');
         } else {
-            py = py2;
+            rsplus = rsplus2;
             stringStarters = /[\'\"RUru]/;
             stringTypes = /[ru]/;
         }
         config = conf;
-        keywords = wordRegexp(commonkeywords.concat(py.keywords));
-        types = wordRegexp(commontypes.concat(py.types));
+        keywords = wordRegexp(commonkeywords.concat(rsplus.keywords));
+        types = wordRegexp(commontypes.concat(rsplus.types));
         doubleDelimiters = wordRegexp(doubleDelimiters);
     }
 
-    var tokenizePython = (function() {
+    var tokenizeRSplus = (function() {
         function normal(source, setState) {
             var stringDelim, threeStr, temp, type, word, possible = {};
             var ch = source.next();
@@ -319,13 +319,13 @@ var PythonParser = Editor.Parser = (function() {
         };
     })();
 
-    function parsePython(source, basecolumn) {
+    function parseRSplus(source, basecolumn) {
         if (!keywords) {
             configure({});
         }
         basecolumn = basecolumn || 0;
 
-        var tokens = tokenizePython(source);
+        var tokens = tokenizeRSplus(source);
         var lastToken = null;
         var column = basecolumn;
         var context = {prev: null,
@@ -360,7 +360,7 @@ var PythonParser = Editor.Parser = (function() {
             }
         }
 
-        function indentPython(context) {
+        function indentRSplus(context) {
             var temp;
             return function(nextChars, currentLevel, direction) {
                 if (direction === null || direction === undefined) {
@@ -510,7 +510,7 @@ var PythonParser = Editor.Parser = (function() {
                             pushContext(temp, NORMALCONTEXT);
                         }
                         // Newlines require an indentation function wrapped in a closure for proper context.
-                        token.indentation = indentPython(context);
+                        token.indentation = indentRSplus(context);
                         break;
                 }
 
@@ -526,7 +526,7 @@ var PythonParser = Editor.Parser = (function() {
             copy: function() {
                 var _context = context, _tokenState = tokens.state;
                 return function(source) {
-                    tokens = tokenizePython(source, _tokenState);
+                    tokens = tokenizeRSplus(source, _tokenState);
                     context = _context;
                     return iter;
                 };
@@ -535,7 +535,7 @@ var PythonParser = Editor.Parser = (function() {
         return iter;
     }
 
-    return {make: parsePython,
+    return {make: parseRSplus,
             electricChars: "",
             configure: configure};
 })();
