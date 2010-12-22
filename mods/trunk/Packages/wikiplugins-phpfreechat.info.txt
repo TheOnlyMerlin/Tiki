@@ -2,10 +2,10 @@ contributor:
 $Author: niclone $
 
 revision: 
-$Revision: 1.1 $
+$Revision: 1.2 $
 
 lastmodif:
-$Date: 2008-06-05 16:20:00 $
+$Date: 2010-12-22 16:38:00 $
 
 requires:
 lib-phpfreechat
@@ -18,13 +18,13 @@ author:
 niclone
 
 Version:
-5.0
+6.0
 
 licence:
 GNU/LGPL
 
 Description: 
-In wiki syntax type {PHPFREECHAT()}{PHPFREECHAT}. PhpFreeChat a simple, fast, and customizable chat server.
+In wiki syntax type {PHPFREECHAT()}{PHPFREECHAT}. PhpFreeChat a simple, fast, and customizable chat server.  Ensure that lib/setup/js_detect.php includes the lines described in http://doc.tiki.org/Mod+phpfreechat
 
 Docurl:
 http://doc.tiki.org/Mod+phpfreechat
@@ -34,4 +34,4 @@ http://www.phpfreechat.net/
 
 Changelog:
 1.1. Based on PhpFreeChat 1.1.
-1.2. Updated details in the wikiplugins-phpfreechat.info.txt, which includes version param to allow it to be listed through the mods admin panel in every Tiki site since Tiki 5.0. New plugin icon added. Added the requirement that an admin validates the plugin call, for extra security. Please note: this version still is not ready for Tiki6, since the jquery edit helper doesn't open once you place the "if (Prototype) jQuery.noConflict();" at Look & Feel > Miscellaneous > Custom javascript, as reported at the documentation page: http://doc.tiki.org/Mod+phpfreechat. And if that line is removed from the custom javascript field, then jquery edit helper opens, but phpfreechat doesn't work when the page is saved.
+1.2. Updated details in the wikiplugins-phpfreechat.info.txt, which includes version param to allow it to be listed through the mods admin panel in every Tiki site since Tiki 5.0. New plugin icon added. Added the requirement that an admin validates the plugin call, for extra security. You need to ensure that lib/setup/js_detect.php includes the lines described in http://doc.tiki.org/Mod+phpfreechat
