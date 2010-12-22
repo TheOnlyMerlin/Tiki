@@ -29,7 +29,7 @@ span.rsplus-operator {
 
 span.rsplus-error {
   background-color: #660000;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 span.rsplus-keyword {
@@ -38,7 +38,7 @@ span.rsplus-keyword {
 }
 
 span.rsplus-literal {
-  color: #228811;
+  color: #ff0000;
 }
 
 span.rsplus-identifier, span.rsplus-func  {
@@ -46,13 +46,13 @@ span.rsplus-identifier, span.rsplus-func  {
 }
 
 span.rsplus-type, span.rsplus-decorator {
-  color: #0000FF;
+  color: #0000ff;
 }
 
 span.rsplus-comment {
-  color: #AA7700;
+  color: #228B22;
 }
 
 span.rsplus-string, span.rsplus-bytes, span.rsplus-raw, span.rsplus-unicode {
-  color: #AA2222;
+  color: #ff0000;
 }
