@@ -8,9 +8,10 @@ function tiki_syntax_highlighter_base() {
 	
 	$headerlib->add_js("
 		var editwiki = $('#editwiki');
+			
 		//ensure that codemirror is running, if so run
 		if (CodeMirror) {
-			var editor = CodeMirror.fromTextArea('editwiki', {
+			var editor = CodeMirror.fromTextArea(editwiki[0], {
 				height: '350px',
 				parserfile: ['parsetikisyntax.js'],
 				stylesheet: ['lib/codemirror_tiki/css/tikiwikisyntaxcolors.css'],
@@ -20,6 +21,11 @@ function tiki_syntax_highlighter_base() {
 					editwiki.val(editor.getCode());
 				}
 			});
+			
+			editwiki
+				.change(function() {
+					editor.setCode(editwiki.val());
+				});
 		}
 	");
 }

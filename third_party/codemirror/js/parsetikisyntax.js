@@ -58,7 +58,18 @@ var TWParser = Editor.Parser = (function() {
 						return "tw-text";
 					}
 					break;
-				case "!":
+				case "-": //titleBar
+					if (source.lookAhead("=", true)) {
+						setState(inTitleBar);
+						return null;
+					}
+					else {
+						// Normal wikitext
+						source.nextWhileMatches(/[^\n\[{<']/);
+						return "tw-text";
+					}
+					break;
+				case "!": //header
 					setState(inHeader);
 					return null;
 					break;
@@ -150,6 +161,17 @@ var TWParser = Editor.Parser = (function() {
 				}
 			}
 			return "tw-table";
+		}
+		
+		function inTitleBar(source, setState) {
+			while (!source.endOfLine()) {
+				var ch = source.next();
+				if (ch == "=" && source.lookAhead("-", true)) {
+					setState(normal);
+					break;
+				}
+			}
+			return "tw-titlebar";
 		}
 		
 		function inHeader(source, setState) {

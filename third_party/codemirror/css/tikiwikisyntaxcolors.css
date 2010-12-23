@@ -59,8 +59,12 @@ span.tw-table {
 	color: #339999;
 }
 
+span.tw-titlebar {
+	color: navy;
+	font-weight: bold;
+}
 span.tw-header {
-	font-size: 1.2em;
+	font-size: 1.1em;
 	font-weight: bold;
 }
 
