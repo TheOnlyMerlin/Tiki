@@ -63,6 +63,10 @@ span.tw-titlebar {
 	color: navy;
 	font-weight: bold;
 }
+span.tw-deleted {
+	text-decoration: line-through;
+	color: #303030;
+}
 span.tw-header {
 	font-size: 1.1em;
 	font-weight: bold;
