@@ -58,3 +58,17 @@ span.tw-weblink {
 span.tw-table {
 	color: #339999;
 }
+
+span.tw-header {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+span.tw-listitem {
+	padding-left: 10px;
+	color: green;
+}
+
+span.tw-plugin-container {
+	color: blue;
+}

@@ -1,6 +1,8 @@
 var TWParser = Editor.Parser = (function() {
 	var tokenizeTW = (function() {
-		function normal(source, setState) {
+		function normal(source, setState, otherClass) {
+			otherClass = (otherClass ? otherClass : "");
+			
 			var ch = source.next();
 			switch (ch) {
 				case "<": //comment
@@ -45,9 +47,8 @@ var TWParser = Editor.Parser = (function() {
 						return null;
 					}
 					break;
-				case "{":
+				case "|": //table
 					if (source.lookAhead("|", true)) {
-						// Table
 						setState(inTable);
 						return null;
 					}
@@ -56,6 +57,18 @@ var TWParser = Editor.Parser = (function() {
 						source.nextWhileMatches(/[^\n\[{<']/);
 						return "tw-text";
 					}
+					break;
+				case "!":
+					setState(inHeader);
+					return null;
+					break;
+				case "*": //line item, or <li />
+					setState(inListItem);
+					return null;
+					break;
+				case "{": //plugin
+					setState(inPluginContainer);
+					return null;
 					break;
 				default:
 					// Normal wikitext
@@ -131,12 +144,45 @@ var TWParser = Editor.Parser = (function() {
 		function inTable(source, setState) {
 			while (!source.endOfLine()) {
 				var ch = source.next();
-				if (ch == "|" && source.lookAhead("}", true)) {
+				if (ch == "|" && source.lookAhead("|", true)) {
 					setState(normal);
 					break;
 				}
 			}
 			return "tw-table";
+		}
+		
+		function inHeader(source, setState) {
+			while (!source.endOfLine()) {
+				var ch = source.next();
+				if (ch == "" || source.endOfLine()) {
+					setState(normal);
+					break;
+				}
+			}
+			return "tw-header";
+		}
+		
+		function inListItem(source, setState) {
+			while (!source.endOfLine()) {
+				var ch = source.next();
+				if (ch == "" || source.endOfLine()) {
+					setState(normal);
+					break;
+				}
+			}
+			return "tw-listitem";
+		}
+		
+		function inPluginContainer(source, setState) {
+			while (!source.endOfLine()) {
+				var ch = source.next();
+				if (ch == "}" || source.endOfLine()) {
+					setState(normal);
+					break;
+				}
+			}
+			return "tw-plugin-container";
 		}
 		
 		return function(source, startState) {
