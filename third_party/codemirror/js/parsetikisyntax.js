@@ -1,8 +1,6 @@
 var TWParser = Editor.Parser = (function() {
 	var tokenizeTW = (function() {
 		function normal(source, setState, otherClass) {
-			otherClass = (otherClass ? otherClass : "");
-			
 			var ch = source.next();
 			switch (ch) {
 				case "<": //comment
@@ -77,12 +75,27 @@ var TWParser = Editor.Parser = (function() {
 					setState(inListItem);
 					return null;
 					break;
+				case ":":
+					if (source.lookAhead(":", true)) {
+						setState(inCenter);
+						return null;
+					}
+					else {
+						// Normal wikitext
+						source.nextWhileMatches(/[^\n\[{<']/);
+						return "tw-text";
+					}
 				case "{": //plugin
 					setState(inPluginContainer);
 					return null;
 					break;
+				case "^": //box
+					setState(inBox);
+					return null;
+					break;
 				default:
 					// Normal wikitext
+					source.inPlugin = null;
 					source.nextWhileMatches(/[^\n\[{<']/);
 					return "tw-text";
 					break;
@@ -196,15 +209,83 @@ var TWParser = Editor.Parser = (function() {
 			return "tw-listitem";
 		}
 		
-		function inPluginContainer(source, setState) {
+		function inCenter(source, setState) {
 			while (!source.endOfLine()) {
 				var ch = source.next();
-				if (ch == "}" || source.endOfLine()) {
+				if (ch == ":" && source.lookAhead(":", true)) {
 					setState(normal);
 					break;
 				}
 			}
+			return "tw-center";
+		}
+		
+		function inPluginContainer(source, setState) {
+			var killStatus = false;
+			while (!source.endOfLine() && !killStatus) {
+				var ch = source.next();
+				if (ch == "}") {
+					setState(normal);
+					break;
+				} else if (source.lookAhead("(", true)) {
+					if (!source.lookAhead(")")) {
+						killStatus = true;
+						setState(inPluginAttributes);
+					}
+				}
+			}
 			return "tw-plugin-container";
+		}
+		
+		function inPluginAttributes(source, setState) {
+			var killStatus = false;
+			while (!source.endOfLine() && !killStatus) {
+				var ch = source.next();
+				if (source.lookAhead(")")) {
+					setState(inPluginContainer);
+					break;
+				} else if (source.lookAhead("=")) {
+					killStatus = true;
+					setState(inPluginAttributeEquals);
+				}
+			}
+			return "tw-plugin-attributes";
+		}
+		
+		function inPluginAttributeEquals(source, setState) {
+			if (!source.endOfLine()) {
+				var ch = source.next();
+				setState(inPluginAttributeValue);
+			}
+			return "tw-plugin-attribute-equals";
+		}
+		
+		function inPluginAttributeValue(source, setState) {
+			var killStatus = false;
+			while (!source.endOfLine() && !killStatus) {
+				var ch = source.next();
+				if (source.lookAhead(",")) {
+					killStatus = true;
+					setState(inPluginAttributes);
+					break;
+				} else if (source.lookAhead(")")) {
+						killStatus = true;
+					setState(inPluginContainer);
+					break;
+				}
+			}
+			return "tw-plugin-attribute-value";
+		}
+		
+		function inBox(source, setState) {
+			while (!source.endOfLine()) {
+				var ch = source.next();
+				if (ch == "^") {
+					setState(normal);
+					break;
+				}
+			}
+			return "tw-box";
 		}
 		
 		return function(source, startState) {
