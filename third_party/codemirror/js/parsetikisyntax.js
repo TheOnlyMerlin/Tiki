@@ -1,4 +1,5 @@
 var TWParser = Editor.Parser = (function() {
+	var normalMatches = /[^\n\[{<']/;
 	var tokenizeTW = (function() {
 		function normal(source, setState, otherClass) {
 			var ch = source.next();
@@ -14,12 +15,8 @@ var TWParser = Editor.Parser = (function() {
 					if (source.lookAhead("_", true)) {
 						// Bold text
 						setState(inBold);
-						return null;
-					} else {
-						// Normal wikitext
-						source.nextWhileMatches(/[^\n\[{<']/);
-						return "tw-text";
 					}
+					return null;
 					break;
 				case "'": //italics
 					if (source.lookAhead("'", true)) {
@@ -29,47 +26,37 @@ var TWParser = Editor.Parser = (function() {
 					}
 					else {
 						// Normal wikitext
-						source.nextWhileMatches(/[^\n\[{<']/);
+						source.nextWhileMatches(normalMatches);
 						return "tw-text";
 					}
 					break;
 				case "[":
 					if (source.lookAhead("[", true)) {
 						// Interwiki link
-						setState(inLink);
-						return null;
-					}
-					else {
-						// Weblink
-						setState(inWeblink);
-						return null;
-					}
+							setState(inLink);
+							return null;
+						}
+						else {
+							// Weblink
+							setState(inWeblink);
+							return null;
+						} 
 					break;
 				case "|": //table
 					if (source.lookAhead("|", true)) {
 						setState(inTable);
-						return null;
+						//return null;
 					}
-					else {
-						// Normal wikitext
-						source.nextWhileMatches(/[^\n\[{<']/);
-						return "tw-text";
-					}
+					return null;
 					break;
 				case "-": 
-					if (source.lookAhead("=", true)) {//titleBar
+					if (source.lookAhead("=")) {//titleBar
 						setState(inTitleBar);
-						return null;
 					}
-					else if (source.lookAhead("-", true)) {//deleted
+					else if (source.lookAhead("-")) {//deleted
 						setState(inDeleted);
-						return null;
 					}
-					else {
-						// Normal wikitext
-						source.nextWhileMatches(/[^\n\[{<']/);
-						return "tw-text";
-					}
+					return null;
 					break;
 				case "!": //header
 					setState(inHeader);
@@ -84,11 +71,6 @@ var TWParser = Editor.Parser = (function() {
 						setState(inCenter);
 						return null;
 					}
-					else {
-						// Normal wikitext
-						source.nextWhileMatches(/[^\n\[{<']/);
-						return "tw-text";
-					}
 				case "{": //plugin
 					setState(inPluginContainer);
 					return null;
@@ -99,7 +81,7 @@ var TWParser = Editor.Parser = (function() {
 					break;
 				default:
 					// Normal wikitext
-					source.nextWhileMatches(/[^\n\[{<']/);
+					source.nextWhileMatches(normalMatches);
 					return "tw-text";
 					break;
 			}
@@ -162,7 +144,7 @@ var TWParser = Editor.Parser = (function() {
 			
 			while (!source.endOfLine()) {
 				var ch = source.next();
-				if (ch == "]") {
+				if (source.lookAhead("]")) {
 					closed = true;
 					break;
 				}
@@ -175,7 +157,7 @@ var TWParser = Editor.Parser = (function() {
 		function inTable(source, setState) {
 			while (!source.endOfLine()) {
 				var ch = source.next();
-				if (ch == "|" && source.lookAhead("|", true)) {
+				if (source.lookAhead("||", true)) {
 					setState(normal);
 					break;
 				}
@@ -186,7 +168,7 @@ var TWParser = Editor.Parser = (function() {
 		function inTitleBar(source, setState) {
 			while (!source.endOfLine()) {
 				var ch = source.next();
-				if (ch == "=" && source.lookAhead("-", true)) {
+				if (source.lookAhead("=-", true)) {
 					setState(normal);
 					break;
 				}
@@ -199,7 +181,7 @@ var TWParser = Editor.Parser = (function() {
 		function inDeleted(source, setState) {
 			while (!source.endOfLine()) {
 				var ch = source.next();
-				if (ch == "-" && source.lookAhead("-", true)) {
+				if (source.lookAhead("--", true)) {
 					if (source.endOfLine()) {
 						setState(normal);
 						break;
@@ -234,13 +216,15 @@ var TWParser = Editor.Parser = (function() {
 					break;
 				}
 			}
+			
+			setState(normal);
 			return "tw-listitem";
 		}
 		
 		function inCenter(source, setState) {
 			while (!source.endOfLine()) {
 				var ch = source.next();
-				if (ch == ":" && source.lookAhead(":", true)) {
+				if (source.lookAhead("::", true)) {
 					setState(normal);
 					break;
 				}
@@ -253,30 +237,33 @@ var TWParser = Editor.Parser = (function() {
 		function inPluginContainer(source, setState) {
 			while (!source.endOfLine()) {
 				var ch = source.next();
-				if (ch == "}") {
+				if (source.lookAhead('\n')) {
 					setState(normal);
 					break;
-				} else if (source.lookAhead("(", true)) {
-					if (!source.lookAhead(")")) {
-						setState(inPluginAttributes);
-						break;
-					}
+				} else if (ch == "}") {
+					setState(normal);
+					break;
+				} else if (ch == "(" && !source.lookAhead(')')) {
+					setState(inPluginAttributes);
+					break;
 				}
 			}
+		
 			return "tw-plugin-container";
 		}
 		
 		function inPluginAttributes(source, setState) {
 			while (!source.endOfLine()) {
 				var ch = source.next();
-				if (source.lookAhead(")")) {
-					setState(inPluginContainer);
+				if (source.lookAhead('\n')) {
+					setState(normal);
 					break;
 				} else if (source.lookAhead("=")) {
 					setState(inPluginAttributeEquals);
 					break;
 				}
 			}
+			
 			return "tw-plugin-attributes";
 		}
 		
@@ -302,6 +289,7 @@ var TWParser = Editor.Parser = (function() {
 					break;
 				}
 			}
+			
 			return "tw-plugin-attribute-value";
 		}
 		
@@ -313,6 +301,8 @@ var TWParser = Editor.Parser = (function() {
 					break;
 				}
 			}
+			
+			setState(normal);
 			return "tw-box";
 		}
 		
