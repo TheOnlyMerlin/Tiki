@@ -59,7 +59,16 @@ var TWParser = Editor.Parser = (function() {
 					return null;
 					break;
 				case "!": //header
-					setState(inHeader);
+					if (source.lookAhead('!!')) {
+						setState(inHeader3);
+					}
+					else if (source.lookAhead('!')) {
+						setState(inHeader2);
+					}
+					else {
+						setState(inHeader1);
+					}
+					
 					return null;
 					break;
 				case "*": //line item, or <li />
@@ -195,7 +204,7 @@ var TWParser = Editor.Parser = (function() {
 			return "tw-deleted";
 		}
 		
-		function inHeader(source, setState) {
+		function inHeader1(source, setState) {
 			while (!source.endOfLine()) {
 				var ch = source.next();
 				if (ch == "" || source.endOfLine()) {
@@ -205,7 +214,33 @@ var TWParser = Editor.Parser = (function() {
 			}
 			
 			setState(normal);
-			return "tw-header";
+			return "tw-header1";
+		}
+		
+		function inHeader2(source, setState) {
+			while (!source.endOfLine()) {
+				var ch = source.next();
+				if (ch == "" || source.endOfLine()) {
+					setState(normal);
+					break;
+				}
+			}
+			
+			setState(normal);
+			return "tw-header2";
+		}
+		
+		function inHeader3(source, setState) {
+			while (!source.endOfLine()) {
+				var ch = source.next();
+				if (ch == "" || source.endOfLine()) {
+					setState(normal);
+					break;
+				}
+			}
+			
+			setState(normal);
+			return "tw-header3";
 		}
 		
 		function inListItem(source, setState) {

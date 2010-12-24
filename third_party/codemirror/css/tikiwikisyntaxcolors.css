@@ -67,11 +67,18 @@ span.tw-deleted {
 	text-decoration: line-through;
 	color: #303030;
 }
-span.tw-header {
+span.tw-header1 {
+	font-size: 1.3em;
+	font-weight: bold;
+}
+span.tw-header2 {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+span.tw-header3 {
 	font-size: 1.1em;
 	font-weight: bold;
 }
-
 span.tw-listitem {
 	padding-left: 10px;
 	color: green;
