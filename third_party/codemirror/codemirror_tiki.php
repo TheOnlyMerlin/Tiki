@@ -11,7 +11,7 @@ function tiki_syntax_highlighter_base() {
 			var editwiki = $('#editwiki');
 				
 			//ensure that codemirror is running, if so run
-			if (CodeMirror) {
+			if (CodeMirror && editwiki[0]) {
 				var editor = CodeMirror.fromTextArea(editwiki[0], {
 					height: '350px',
 					parserfile: ['parsetikisyntax.js'],
@@ -41,12 +41,11 @@ function tiki_syntax_highlighter_code() {
 		$headerlib->add_js("
 			$(document)
 				.bind('plugin_code_ready', function(args) {
-					var code = args.container.find('textarea:first')
-						.attr('id', 'code');
+					var code = args.container.find('textarea:first');
 					
 					//ensure that codemirror is running, if so run
-					if (CodeMirror) {
-						var editor = CodeMirror.fromTextArea('code', {
+					if (CodeMirror && code[0]) {
+						var editor = CodeMirror.fromTextArea(code[0], {
 							height: '350px',
 							parserfile: ['parsexml.js', 'parsecss.js', 'tokenizejavascript.js', 'parsejavascript.js', 'parsehtmlmixed.js'],
 							stylesheet: ['lib/codemirror_tiki/css/xmlcolors.css', 'lib/codemirror_tiki/css/jscolors.css', 'lib/codemirror_tiki/css/csscolors.css'],
