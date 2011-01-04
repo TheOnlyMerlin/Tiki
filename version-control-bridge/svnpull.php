@@ -29,17 +29,17 @@ Format:
 	repository.base = http://example.com/path/to/repository
 	repository.path = /trunk
 	repository.start = 1234
-	instance.url = http://example.com/tikiwiki
-	instance.username = svnuser
-	instance.password = svnpassword
+	instance.url = http://example.com/tiki
+	instance.username = tikiuser
+	instance.password = tikipassword
 
 	[repoName2]
 	repository.base = http://example.com/path/to/repository
-	repository.path = /branches/2.x
+	repository.path = /branches/6.x
 	repository.start = 1234
-	instance.url = http://example.com/tikiwiki
-	instance.username = svnuser
-	instance.password = svnpassword
+	instance.url = http://example.com/tiki6
+	instance.username = tikiuser
+	instance.password = tikipassword
 
 HELP;
 	exit;
