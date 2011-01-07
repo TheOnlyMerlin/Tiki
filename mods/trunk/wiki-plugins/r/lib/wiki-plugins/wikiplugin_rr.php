@@ -448,32 +448,5 @@ function getCmd ($pre, $cmd, $post) {
   error ($cmd, 'command not found', '');
 }
 
-require_once 'tiki-setup.php';
-global $headerlib, $prefs;
-if ( $prefs['feature_syntax_highlighter'] == 'y' ) {
-	$headerlib->add_cssfile( 'lib/codemirror_tiki/docs.css' );
-	$headerlib->add_jsfile( 'lib/codemirror_tiki/js/codemirror.js' );
-	
-	$headerlib->add_js("
-		$(document)
-			.bind('plugin_rr_ready', function(args) {
-				var rr = args.container.find('textarea:first')
-					.attr('id', 'rr');
-				
-				//ensure that codemirror is running, if so run
-				if (CodeMirror) {
-					var editor = CodeMirror.fromTextArea('rr', {
-						height: '350px',
-						parserfile: ['parsersplus.js'],
-						stylesheet: ['lib/codemirror_tiki/css/rspluscolors.css'],
-						path: 'lib/codemirror_tiki/js/',
-						onChange: function() {
-							//Setup codemirror to send the text back to the textarea
-							rr.val(editor.getCode());
-						},
-						lineNumbers: true
-					});
-				}
-			});
-	");
-}
+require_once('lib/codemirror_tiki/codemirror_tiki.php');
+tiki_syntax_highlighter_rr();
