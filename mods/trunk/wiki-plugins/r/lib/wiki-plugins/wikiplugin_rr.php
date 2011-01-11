@@ -448,5 +448,7 @@ function getCmd ($pre, $cmd, $post) {
   error ($cmd, 'command not found', '');
 }
 
-require_once('lib/codemirror_tiki/codemirror_tiki.php');
-tiki_syntax_highlighter_rr();
+if (file_exists('lib/codemirror_tiki/codemirror_tiki.php')) {
+	require_once('lib/codemirror_tiki/codemirror_tiki.php');
+	tiki_syntax_highlighter_rr();
+}
