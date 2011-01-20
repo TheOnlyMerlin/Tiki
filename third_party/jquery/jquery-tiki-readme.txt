@@ -2,6 +2,11 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 20 jan 2011
+
+New:
+	colorpicker - (not versioned sadly but MIT licensed)
+
 jonnybradley 16 nov 2010 (for 6.1)
 	jquery.js - 1.4.3 to 1.4.4
 
