@@ -126,9 +126,13 @@ function wikiplugin_rr_info() {
 	);
 }
 
+
 function wikiplugin_rr($data, $params) {
 	global $smarty, $trklib, $tikilib, $prefs;
 //	static $rr_count;
+
+	# Clean the <br/> tags added by the Tiki or smarty parser.
+	nl2br_revert( $data );
 	
 	if (isset($params["security"]) && $params["security"]==0) {
 		/* do nothing: i.e. don't check for security in the command sent to R*/
@@ -224,6 +228,24 @@ function wikiplugin_rr($data, $params) {
 		return '~np~'.$ret.'~/np~';
 	}
 }
+
+// From: http://php.net/manual/en/function.nl2br.php - gx 03-May-2010 04:02
+// *Strictly* reverts PHP's nl2br() effects (whether it was used in XHTML mode or not): 
+function nl2br_revert($string) { 
+    return preg_replace('`<br(?: /)?>([\\n\\r])`', '$1', $string); 
+} 
+
+//// If you don't want to use regular expressions, here are "plain" alternatives: 
+//function nl2br_revert_noregex($string) { 
+//    // watch for order in arrays 
+//    // (the first 2 elements are for the case nl2br() was used in old HTML mode) 
+//    return str_replace( 
+//        array("<br>\n",   "<br>\r",   "<br />\n", "<br />\r"), 
+//        array("<br />\n", "<br />\r",       "\n",       "\r"), 
+//        $string 
+//    ); 
+//} 
+
 
 function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 	// Generate a graphics
