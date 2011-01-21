@@ -811,6 +811,8 @@ a.tableheading:hover {
 	margin: 0 2px;
 }
 
+.tabs .container { border-collapse: collapse;}
+
 /* reset what's in layout.css */
 .tabactive,
 .tabinactive,
@@ -837,6 +839,14 @@ a.tableheading:hover {
 .tabinactive {
 	border: solid .1em #bbb !important;
 	border-bottom: 1px solid #ddd !important;
+	background: #AEACAC;
+}
+
+.tabinactive a { color:#ffffff;}
+
+.tabinactive a:hover {
+	color: #FD32C6;
+	text-decoration: none;
 }
 
 .tabcontent {
@@ -1122,7 +1132,7 @@ body.tiki_blogs .author_actions {
 }
 
 .post .author_info {
-	float: none;
+	float: right;
 	background: none;
 	padding: 2px;
 	margin-right: 0;
@@ -1148,7 +1158,7 @@ body.tiki_blogs .author_actions {
 }
 
 .post .author {
-	float: left;
+	float: right;
 	text-align: left;
 	width: 30%;
 	margin: -3px 3px 3px -3px;
