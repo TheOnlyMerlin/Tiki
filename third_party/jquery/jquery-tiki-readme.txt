@@ -2,6 +2,11 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 22 jan 2011
+
+New:
+	jquery.color.js - (v0.6)
+
 jonnybradley 20 jan 2011
 
 New:
