@@ -114,6 +114,16 @@ function wikiplugin_rr_info() {
 				),
 				'advanced' => false,
 			),
+			'save' => array(
+				'required' => false,
+				'name' => tra('Save R session'),
+				'description' => tra('Save R session (.RData) so that R object will be used while you work within the same folder (itemId based).'),
+				'options' => array(
+					array('text' => tra('No'), 'value' => '0'),
+					array('text' => tra('Yes'), 'value' => '1'),
+				),
+				'advanced' => true,
+			),
 			'security' => array(
 				'required' => false,
 				'safe' => false,
@@ -193,7 +203,6 @@ function wikiplugin_rr($data, $params) {
 		$type = $params["type"];
 	}
 
-	defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache' );
 	defined('r_ext') || define('r_ext', getcwd() . DIRECTORY_SEPARATOR . 'lib/r' );
 	defined('security')  || define('security',  1);
 	defined('sudouser')  || define('sudouser', 'rd');
@@ -201,9 +210,21 @@ function wikiplugin_rr($data, $params) {
 	defined('convert')   || define('convert',   getCmd('', 'convert', ''));
 	defined('sudo')      || define('sudo',      getCmd('', 'sudo', ' -u ' . sudouser . ' '));
 	defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664 '));
-	defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --vanilla --quiet'));
+	if (isset($params["save"]) && $params["save"]==1) {
+		// --save : data sets are saved at the end of the R session
+		// --quiet : Do not print out the initial copyright and welcome messages from R
+		defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --save --quiet'));
+		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' . $_REQUEST['itemId']);
+		mkdir(r_dir, 0700);
+		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/' . $_REQUEST['itemId']);
+	}else{
+		// --vanilla : Combine --no-save, --no-environ, --no-site-file, --no-init-file and --no-restore. Under Windows, this also includes --no-Rconsole.
+		// --slave : Make R run as quietly as possible. It implies --quiet and --no-save
+		defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --vanilla --slave'));
+		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache' );
+		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache' );
+	}
 
-	defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache' );
 	defined('graph_file_name')  || define('graph_file_name', $sha1 . '.png');
 
 	if ( isset($params["attId"]) && ($type == "text/csv" || $type == "text/comma-separated-values")) {
@@ -317,7 +338,7 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 		$fd = fopen ($fn, 'w') or error('R', 'Can not open file: ' . $fn, $input . $err);
 		fwrite ($fd, $content);
 		fclose ($fd);
-		$cmd = renderFilename(r_cmd . ' --slave 2>&1 < ' . $fn . ' > ' . $rst);
+		$cmd = renderFilename(r_cmd . ' 2>&1 < ' . $fn . ' > ' . $rst);
 		$r_exitcode = 0;
 		$err = $err . runRinShell ($cmd, $rst, $r_exitcode);
 	}
