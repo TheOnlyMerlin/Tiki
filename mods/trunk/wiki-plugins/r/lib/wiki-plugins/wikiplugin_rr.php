@@ -5,7 +5,7 @@
 // Usage:
 // {R()}R code{R}. See documentation: http://doc.tiki.org/PluginR 
 //	
-// $Id: wikiplugin_r.php 29338 2010-09-17 11:35:11Z xavidp $
+// $Id$
 /* 
 From the R Plugin for Mediawiki
 (C) 2006- Sigbert Klinke (sigbert@wiwi.hu-berlin.de), Markus Cozowicz, Michael Cassin
@@ -36,8 +36,11 @@ function wikiplugin_rr_info() {
 				'required' => false,
 				'safe' => true,
 				'name' => tra('type'),
-				'description' => tra('Choose the source file type in the appropriate mimetype syntax (Optional). Options: text/csv|text/xml. ex: text/csv. (default). For text/xml, you need to have installed library ("R4X") in R at the server. See documentation for more details'),
-				'filter' => 'striptags',
+				'description' => tra('Choose the source file type in the appropriate mimetype syntax (Optional). Options: csv|xml. ex: csv. (default). For xml, see documentation for more details on the additional R packages required'),
+				'options' => array(
+					array('text' => tra('csv'), 'value' => 'text/csv'),
+					array('text' => tra('xml'), 'value' => 'text/xml'),
+				),
 				'advanced' => true,
 			),
 			'wikisyntax' => array(
@@ -45,7 +48,10 @@ function wikiplugin_rr_info() {
 				'safe' => true,
 				'name' => tra('wikisyntax'),
 				'description' => tra('Choose whether the output should be parsed as wiki syntax (Optional). Options: 0 (no parsing, default), 1 (parsing)'),
-				'filter' => 'int',
+				'options' => array(
+					array('text' => tra('0'), 'value' => '0'),
+					array('text' => tra('1'), 'value' => '1'),
+				),
 				'advanced' => true,
 			),
 			'width' => array(
@@ -104,20 +110,10 @@ function wikiplugin_rr_info() {
 				'filter' => 'int',
 				'advanced' => true,
 			),
-			'wrap' => array(
+			'loadandsave' => array(
 				'required' => false,
-				'name' => tra('Word Wrap'),
-				'description' => tra('Enable word wrapping on the code to avoid breaking the layout.'),
-				'options' => array(
-					array('text' => tra('No'), 'value' => '0'),
-					array('text' => tra('Yes'), 'value' => '1'),
-				),
-				'advanced' => false,
-			),
-			'save' => array(
-				'required' => false,
-				'name' => tra('Save R session'),
-				'description' => tra('Save R session (.RData) so that R object will be used while you work within the same folder (itemId based).'),
+				'name' => tra('LoadAndSave'),
+				'description' => tra('Load a previous R session (.RData, if any) for the same wiki page so that R object will be used while you work within the same page. For pretty trackers are used (wiki pages with itemId), the R session data (.RData) will be shared for the same itemId across wiki pages'),
 				'options' => array(
 					array('text' => tra('No'), 'value' => '0'),
 					array('text' => tra('Yes'), 'value' => '1'),
@@ -128,8 +124,11 @@ function wikiplugin_rr_info() {
 				'required' => false,
 				'safe' => false,
 				'name' => tra('security'),
-				'description' => tra('Set the security level for the R commands allowed by the plugin. ex: 1. (default), 0 for no security checking.'),
-				'filter' => 'int',
+				'description' => tra('Set the security level for the R commands allowed by the plugin. ex: 1. (default in R), 0 for no security checking (default in RR).'),
+				'options' => array(
+					array('text' => tra('No'), 'value' => '0'),
+					array('text' => tra('Yes'), 'value' => '1'),
+				),
 				'advanced' => true,
 			),
 		),
@@ -144,12 +143,12 @@ function wikiplugin_rr($data, $params) {
 	# Clean the <br /> , <p> and </p> tags added by the Tiki or smarty parsers.
 	$data = str_replace(array("<br />", "<p>", "</p>"), "", $data);
 	
-	if (isset($params["security"]) && $params["security"]==0) {
+	if ($params["security"]==0) {
 		/* do nothing: i.e. don't check for security in the command sent to R*/
 	}else{ 		/* default: check for security in the commands sent to R*/
 		$rejected = checkCommands( $data );
 		if( count($rejected) > 0 ) {
-			$str = tra('Blocked commands found: ') . implode(', ', $rejected);
+			$str = tra("Blocked commands found: ") . implode(', ', $rejected) . ".<br ><br />" . tra("Use Plugin RR instead and validate your plugin call, or contact a site admin to have the plugin call validated for you");
 			return "^$str^";
 		}
 	}
@@ -204,19 +203,30 @@ function wikiplugin_rr($data, $params) {
 	}
 
 	defined('r_ext') || define('r_ext', getcwd() . DIRECTORY_SEPARATOR . 'lib/r' );
-	defined('security')  || define('security',  1);
+	defined('security')  || define('security',  0);
 	defined('sudouser')  || define('sudouser', 'rd');
 
 	defined('convert')   || define('convert',   getCmd('', 'convert', ''));
 	defined('sudo')      || define('sudo',      getCmd('', 'sudo', ' -u ' . sudouser . ' '));
 	defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664 '));
-	if (isset($params["save"]) && $params["save"]==1) {
+	if (isset($params["loadandsave"]) && $params["loadandsave"]==1 && isset($_REQUEST['itemId'])  && $_REQUEST['itemId'] > 0) {
 		// --save : data sets are saved at the end of the R session
 		// --quiet : Do not print out the initial copyright and welcome messages from R
 		defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --save --quiet'));
 		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' . $_REQUEST['itemId']);
 		mkdir(r_dir, 0700);
 		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/' . $_REQUEST['itemId']);
+	}elseif (isset($params["loadandsave"]) && $params["loadandsave"]==1) {
+		// --save : data sets are saved at the end of the R session
+		// --quiet : Do not print out the initial copyright and welcome messages from R
+		defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --save --quiet'));
+
+		//Convert spaces into some character to avoid R complaining becuase it can't create such folder in the server
+		$wikipage = str_replace(array(" ", "+"), "_", $_REQUEST['page']);
+
+		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' . $wikipage);
+		mkdir(r_dir, 0700);
+		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/' . $wikipage);
 	}else{
 		// --vanilla : Combine --no-save, --no-environ, --no-site-file, --no-init-file and --no-restore. Under Windows, this also includes --no-Rconsole.
 		// --slave : Make R run as quietly as possible. It implies --quiet and --no-save
@@ -321,7 +331,7 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 		// if file r_cap doesn't exist, check capabilities and save on disk
 		// if capabilities()[[2]] == FALSE //use dev2bitmap
 		// else //use png()
-		//
+
 		// Alternatively, request the user to use extra param x11=0 if no X11 on server.
 		if ( (isset($params["X11"]) || isset($params["x11"])) && ($params["X11"]==0 || $params["x11"]==0) ) {
 			$content .= $input . "\n";
@@ -330,7 +340,13 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 			$content .= 'dev.off()' . "\n";
 		}else{	// png can be used because R was compiled with support for X11
 			//	$content = 'png(filename = "' . $rgo . '", width = 600, height = 600, bg = "transparent", res = 72)' . "\n";
-			$content = 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
+			if (isset($params["loadandsave"]) && $params["loadandsave"]==1) {
+				// Set R echo to false and Change the working directory to the current subfolder in the temp/cache folder
+//				$content = 'options(echo=FALSE)'."\n". 'setwd("'. r_dir .'/")'."\n". 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
+				$content = 'options(echo=FALSE)'."\n". 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
+			}else{
+				$content = 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
+			}
 			$content .= $input . "\n";
 		}
 		$content .= 'q()';
@@ -423,7 +439,7 @@ function checkCommands ($input) {
         	'write.table', 'writeBin', 'writeLines', 'x11', 
         	'xedit', 'xemacs', 'xfig', 'zip.file.extract',
         	'readdataSK',
-        	'png', 'jpeg',
+        	'png', 'jpeg', 'pdf',
         	'get', 'rgl.init', # Suggested by Carlos J. Gil Bellosta , and Miguel Angel Rodriguez Muinos from list r-help-es
         	'call', 'eval',     # added by suggestion of M. Cassin 
         	'ggsave' );     # from ggplot: http://rgm2.lab.nig.ac.jp/RGM2/R_man-2.9.0/library/ggplot2/man/ggsave-ao.html
