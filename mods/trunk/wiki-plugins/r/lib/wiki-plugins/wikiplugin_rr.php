@@ -336,16 +336,16 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 		if ( (isset($params["X11"]) || isset($params["x11"])) && ($params["X11"]==0 || $params["x11"]==0) ) {
 			$content .= $input . "\n";
 //			$content = 'dev2bitmap("' . $rgo . '", type = "png16", res = 72, height = 7, width = 7)' . "\n";
-			$content = 'dev2bitmap("' . $rgo . '" , width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', res = ' . $res . ')' . "\n";
+			$content = 'cat(" -->")'."\n". 'dev2bitmap("' . $rgo . '" , width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', res = ' . $res . ')' . "\n";
 			$content .= 'dev.off()' . "\n";
 		}else{	// png can be used because R was compiled with support for X11
 			//	$content = 'png(filename = "' . $rgo . '", width = 600, height = 600, bg = "transparent", res = 72)' . "\n";
 			if (isset($params["loadandsave"]) && $params["loadandsave"]==1) {
 				// Set R echo to false and Change the working directory to the current subfolder in the temp/cache folder
 //				$content = 'options(echo=FALSE)'."\n". 'setwd("'. r_dir .'/")'."\n". 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
-				$content = 'options(echo=FALSE)'."\n". 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
+				$content = 'options(echo=FALSE)'."\n".'cat(" -->")'."\n". 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
 			}else{
-				$content = 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
+				$content = 'cat(" -->")'."\n". 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
 			}
 			$content .= $input . "\n";
 		}
@@ -363,12 +363,13 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 	if (strpos ($cont, '<html>') === false) {
 		$fd = fopen ($rst, 'w') or error ('R', 'can not open file: ' . $rst, $input . $err);
 		if ($r_exitcode == 0) {
-			fwrite ($fd, $prg . '<pre style="'.$pre_style.'">' . $cont . '</pre>');
+			// Write the start tag of an html comment to comment out the tag to remove echo from R console. The closing html comment tag is added inside $cont after the "option(echo=FALSE)"
+			fwrite ($fd, $prg . '<pre style="'.$pre_style.'"><!-- ' . $cont . '</pre>');
 			if (file_exists($rgo)) {
 				fwrite ($fd, $prg . '<img src="' . $rgo_rel . '" alt="' . $rgo_rel . '">');
 		 	}
 	 	} else {
-			fwrite ($fd, $prg . '<pre>' . $cont . '<span style="color:red">' . $err . '</span>' . '</pre>');
+			fwrite ($fd, $prg . '<pre><!-- ' . $cont . '<span style="color:red">' . $err . '</span>' . '</pre>');
 	 	}
 		fclose ($fd);
 	}
