@@ -227,6 +227,7 @@ function wikiplugin_rr($data, $params) {
 		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' . $wikipage);
 		mkdir(r_dir, 0700);
 		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/' . $wikipage);
+		defined('wikipage')  || define('wikipage', $wikipage );
 	}else{
 		// --vanilla : Combine --no-save, --no-environ, --no-site-file, --no-init-file and --no-restore. Under Windows, this also includes --no-Rconsole.
 		// --slave : Make R run as quietly as possible. It implies --quiet and --no-save
@@ -245,8 +246,10 @@ function wikiplugin_rr($data, $params) {
 		$path = $_SERVER["SCRIPT_NAME"];
 		// record filetype, data_file (path and file name), and data (contents) to be displayed, if desired, from R
 		$data = "library(XML)\nfile_type <- \"$type\"\ndata_file <- xml(\"$filepath\")\ndata <- xmlTreeParse(data_file,  getDTD = F )\n$data";
+	} elseif (isset($params["attId"]) && $type != "text/csv" && $type != "text/comma-separated-values" && $type != "text/xml") {
+		$data = "data <- \"This file type is not recognized: $type.<br />Read the <a href=http://doc.tiki.org/PluginR>documentation</a> about the allowed filetypes\"\nfile_type <- \"$type\"\ndata_file <- \"$filepath\"\n$data";	
 	} else {
-		$data = "data <- \"This file type is not recognized: $type.<br />Read the <a href=http://doc.tiki.org/PluginR>documentation</a> about the allowed filetypes\"\nfile_type <- \"$type\"\ndata_file <- \"$filepath\"\n$data";
+		// do nothing
 	}
 	// execute R program
 	$fn   = runR ($output, convert, $sha1, $data, '', $ws, $params);
@@ -334,20 +337,33 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 
 		// Alternatively, request the user to use extra param x11=0 if no X11 on server.
 		if ( (isset($params["X11"]) || isset($params["x11"])) && ($params["X11"]==0 || $params["x11"]==0) ) {
-			$content .= $input . "\n";
 //			$content = 'dev2bitmap("' . $rgo . '", type = "png16", res = 72, height = 7, width = 7)' . "\n";
 			$content = 'cat(" -->")'."\n". 'dev2bitmap("' . $rgo . '" , width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', res = ' . $res . ')' . "\n";
 			$content .= 'dev.off()' . "\n";
+			// Add the user input code at the end
+			$content .= $input . "\n";
 		}else{	// png can be used because R was compiled with support for X11
 			//	$content = 'png(filename = "' . $rgo . '", width = 600, height = 600, bg = "transparent", res = 72)' . "\n";
 			if (isset($params["loadandsave"]) && $params["loadandsave"]==1) {
 				// Set R echo to false and Change the working directory to the current subfolder in the temp/cache folder
 //				$content = 'options(echo=FALSE)'."\n". 'setwd("'. r_dir .'/")'."\n". 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
-				$content = 'options(echo=FALSE)'."\n".'cat(" -->")'."\n". 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
+				$content = 'options(echo=FALSE)'."\n". 'cat(" -->")'."\n". 'setwd("'. r_dir .'/")'."\n";
+				if (file_exists(r_dir . '/.RData')) {
+					$content .= 'load(".RData")' . "\n";
+				}
+				$content .= 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
+				// Add the user input code at the end
+				$content .= $input . "\n";
+				// Save the image after the user input
+				$content .= 'save.image(".RData")' . "\n";
+//				$content = 'options(echo=FALSE)'."\n". 'setwd("'. r_dir .'/")'."\n". 'cat(" -->")'."\n". 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
+//				$content = 'options(echo=FALSE)'."\n".'cat(" -->")'."\n". 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
 			}else{
-				$content = 'cat(" -->")'."\n". 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
+				$content = 'options(echo=FALSE)'."\n";
+				$content .= 'cat(" -->")'."\n". 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
+				// Add the user input code at the end
+				$content .= $input . "\n";
 			}
-			$content .= $input . "\n";
 		}
 		$content .= 'q()';
 		$fn = r_dir . '/' . $sha1 . '.R';
