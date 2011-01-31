@@ -2,6 +2,11 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 31 jan 2011
+
+Modification:
+	Added trailing semicolon to colorpicker/js/colorpicker.js (last update 2009 but author informed)
+
 jonnybradley 22 jan 2011
 
 New:
