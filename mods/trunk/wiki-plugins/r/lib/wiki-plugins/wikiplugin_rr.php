@@ -213,9 +213,11 @@ function wikiplugin_rr($data, $params) {
 		// --save : data sets are saved at the end of the R session
 		// --quiet : Do not print out the initial copyright and welcome messages from R
 		defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --save --quiet'));
-		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' . $_REQUEST['itemId']);
+//		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' . $_REQUEST['itemId']);
+		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/_itemid_' . sprintf ("%06u", $_REQUEST['itemId']));
 		mkdir(r_dir, 0700);
-		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/' . $_REQUEST['itemId']);
+//		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/' . $_REQUEST['itemId']);
+		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/_itemid_' . sprintf ("%06u", $_REQUEST['itemId']));
 	}elseif (isset($params["loadandsave"]) && $params["loadandsave"]==1) {
 		// --save : data sets are saved at the end of the R session
 		// --quiet : Do not print out the initial copyright and welcome messages from R
