@@ -382,7 +382,7 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 		$fd = fopen ($rst, 'w') or error ('R', 'can not open file: ' . $rst, $input . $err);
 		if ($r_exitcode == 0) {
 			// Write the start tag of an html comment to comment out the tag to remove echo from R console. The closing html comment tag is added inside $cont after the "option(echo=FALSE)"
-			fwrite ($fd, $prg . '<pre style="'.$pre_style.'"><!-- ' . $cont . '</pre>');
+			fwrite ($fd, $prg . '<pre id="routput" name="routput" style="'.$pre_style.'"><!-- ' . $cont . '</pre>');
 			if (file_exists($rgo)) {
 				fwrite ($fd, $prg . '<img src="' . $rgo_rel . '" alt="' . $rgo_rel . '">');
 		 	}
