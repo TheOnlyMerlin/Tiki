@@ -2,6 +2,11 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybrabley 6 feb 2011
+
+New:
+	pxem.jQuery.js (converts pixels to em and back)
+
 jonnybradley 31 jan 2011
 
 Modification:
