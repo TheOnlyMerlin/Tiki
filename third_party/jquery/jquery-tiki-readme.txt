@@ -4,6 +4,9 @@ JQuery/Tiki readme
 
 jonnybradley 10 Feb 2011
 
+New:
+	jquery.mobile.js 1.0a3 (version "-1.0a3" removed from filenames)
+
 Update:
 	jquery.js 1.4.3 to 1.5.0
 	jquery-ui 1.8.5 to 1.8.9 (trivial change to base.css not replicated in all themes)
