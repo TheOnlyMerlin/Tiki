@@ -2,6 +2,13 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 10 Feb 2011
+
+Update:
+	jquery.js 1.4.3 to 1.5.0
+	jquery-ui 1.8.5 to 1.8.9 (trivial change to base.css not replicated in all themes)
+		including external/bgiframe-2.1.1.js to bgiframe-2.1.2.js)
+
 jonnybrabley 6 feb 2011
 
 New:

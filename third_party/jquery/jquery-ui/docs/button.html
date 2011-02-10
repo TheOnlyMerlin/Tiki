@@ -61,7 +61,7 @@ A simple jQuery UI Button.<br />
 <div id="demo" class="tabs-container" rel="300">
 A simple jQuery UI Button.<br />
 </p>
-<pre>$(&quot;#radio1&quot;).buttonset();
+<pre>$(&quot;#radio&quot;).buttonset();
 </pre>
 <p></div><div id="source" class="tabs-container">
 </p>
@@ -74,13 +74,13 @@ A simple jQuery UI Button.<br />
   
   &lt;script&gt;
   $(document).ready(function() {
-    $(&quot;#radio1&quot;).buttonset();
+    $(&quot;#radio&quot;).buttonset();
   });
   &lt;/script&gt;
 &lt;/head&gt;
 &lt;body style="font-size:62.5%;"&gt;
   
-&lt;div id=&quot;radio1&quot;&gt;
+&lt;div id=&quot;radio&quot;&gt;
 	&lt;input type=&quot;radio&quot; id=&quot;radio1&quot; name=&quot;radio&quot; /&gt;&lt;label for=&quot;radio1&quot;&gt;Choice 1&lt;/label&gt;
 	&lt;input type=&quot;radio&quot; id=&quot;radio2&quot; name=&quot;radio&quot; checked=&quot;checked&quot; /&gt;&lt;label for=&quot;radio2&quot;&gt;Choice 2&lt;/label&gt;
 	&lt;input type=&quot;radio&quot; id=&quot;radio3&quot; name=&quot;radio&quot; /&gt;&lt;label for=&quot;radio3&quot;&gt;Choice 3&lt;/label&gt;
@@ -257,7 +257,6 @@ $( ".selector" ).button( "option", "icons", {primary:'ui-icon-gear',secondary:'u
 <pre><code>//getter
 var label = $( ".selector" ).button( "option", "label" );
 //setter
-</p>
 $( ".selector" ).button( "option", "label", "custom label" );</code></pre>
 </dd>
 
@@ -270,7 +269,47 @@ $( ".selector" ).button( "option", "label", "custom label" );</code></pre>
   <div id="events">
     <h2 class="top-header">Events</h2>
     <ul class="events-list">
-      <p>There are no events for this plugin.</p>
+      
+<li class="event" id="event-create">
+  <div class="event-header">
+    <h3 class="event-name"><a href="#event-create">create</a></h3>
+    <dl>
+      <dt class="event-type-label">Type:</dt>
+        <dd class="event-type">buttoncreate</dd>
+    </dl>
+  </div>
+  <div class="event-description">
+    <p>This event is triggered when button is created.</p>
+  </div>
+  <div class="event-examples">
+    <h4>Code examples</h4>
+    <dl class="event-examples-list">
+    
+<dt>
+  Supply a callback function to handle the <code>create</code> event as an init option.
+</dt>
+<dd>
+<pre><code>$( &quot;.selector&quot; ).button({
+   create: function(event, ui) { ... }
+});</code></pre>
+</dd>
+
+    
+<dt>
+  Bind to the <code>create</code> event by type: <code>buttoncreate</code>.
+</dt>
+<dd>
+<pre><code>$( &quot;.selector&quot; ).bind( &quot;buttoncreate&quot;, function(event, ui) {
+  ...
+});</code></pre>
+</dd>
+
+    </dl>
+  </div>
+</li>
+
+</p>
+<p>There are no events for this plugin.</p>
     </ul>
   </div>
   <div id="methods">
@@ -452,10 +491,10 @@ $( ".selector" ).button( "option", "label", "custom label" );</code></pre>
 </div>
 
 </p><!-- 
-Pre-expand include size: 23021 bytes
-Post-expand include size: 29105 bytes
-Template argument size: 13482 bytes
+Pre-expand include size: 24542 bytes
+Post-expand include size: 31799 bytes
+Template argument size: 14018 bytes
 Maximum: 2097152 bytes
 -->
 
-<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:3767-1!1!0!!en!2 and timestamp 20100909204132 -->
+<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:3767-1!1!0!!en!2 and timestamp 20110119065208 -->
