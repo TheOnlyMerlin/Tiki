@@ -158,7 +158,7 @@ function wikiplugin_rr($data, $params) {
 
 	if (isset($_REQUEST['itemId'])) {
 		global $trklib; require_once('lib/trackers/trackerlib.php');
-		$atts = $trklib->list_item_attachments($_REQUEST['itemId'], 0, -1, 'comment_asc', '');
+		$atts = $trklib->list_item_attachments($_REQUEST['itemId'], 0, -1, 'created_desc', '');
 		if (!empty($atts['data'][0]['attId'])) {
 			$params['attId'] = $atts['data'][0]['attId'];
 		}
