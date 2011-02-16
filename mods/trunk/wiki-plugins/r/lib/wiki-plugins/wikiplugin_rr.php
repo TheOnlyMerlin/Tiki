@@ -138,7 +138,6 @@ function wikiplugin_rr_info() {
 
 function wikiplugin_rr($data, $params) {
 	global $smarty, $trklib, $tikilib, $prefs;
-//	static $rr_count;
 
 	# Clean the <br /> , <p> and </p> tags added by the Tiki or smarty parsers.
 	$data = str_replace(array("<br />", "<p>", "</p>"), "", $data);
@@ -156,9 +155,6 @@ function wikiplugin_rr($data, $params) {
 	$output = 'text';
 	$style = '';
 	$ws = '';
-//	$id = 'rrbox'.$rr_count;
-//	$boxid = " id=\"$id\" ";
-	
 
 	if (isset($_REQUEST['itemId'])) {
 		global $trklib; require_once('lib/trackers/trackerlib.php');
@@ -267,6 +263,8 @@ function wikiplugin_rr($data, $params) {
 
 
 function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
+	static $r_count = 0;
+	
 	// Generate a graphics
 	$prg = '';
 	$err = "\n";
@@ -382,7 +380,7 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 		$fd = fopen ($rst, 'w') or error ('R', 'can not open file: ' . $rst, $input . $err);
 		if ($r_exitcode == 0) {
 			// Write the start tag of an html comment to comment out the tag to remove echo from R console. The closing html comment tag is added inside $cont after the "option(echo=FALSE)"
-			fwrite ($fd, $prg . '<pre id="routput" name="routput" style="'.$pre_style.'"><!-- ' . $cont . '</pre>');
+			fwrite ($fd, $prg . '<pre id="routput' . $r_count . '" name="routput' . $r_count . '" style="'.$pre_style.'"><!-- ' . $cont . '</pre>');
 			if (file_exists($rgo)) {
 				fwrite ($fd, $prg . '<img src="' . $rgo_rel . '" alt="' . $rgo_rel . '">');
 		 	}
@@ -391,6 +389,9 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 	 	}
 		fclose ($fd);
 	}
+	
+	$r_count++;
+	
 	return $rst;
 }
 
