@@ -1,7 +1,7 @@
 {* $Id$ *}
 {* Module layout with controls *}
 {if $module_nobox neq 'y'}
-{if $prefs.feature_layoutshadows}<div class="box-shadow">{$prefs.box_shadow_start}{/if}
+{if $prefs.feature_layoutshadows eq 'y'}<div class="box-shadow">{$prefs.box_shadow_start}{/if}
 	<div class="box box-{$module_name|escape}{if $module_type eq 'cssmenu'} cssmenubox{/if}"{if $module_params.overflow == 'y'} style="overflow:visible !important"{/if}>
 		<div class="bt">{*box top and right corner*}
 			<div></div>{*left corner*}
@@ -19,7 +19,7 @@
 			<a title="{tr}Move module to opposite side{/tr}" href="{$current_location|escape}{$mpchar|escape}mc_move={$module_name|escape}">
 				{icon _id="arrow_right-left" alt="[{tr}opp side{/tr}]"}
 			</a>
-			<a title="{tr}Unassign this module{/tr}" href="{$current_location|escape}{$mpchar|escape}mc_unassign={$module_name|escape}" onclick="return confirmTheLink(this,'{tr}Are you sure you want to unassign this module?{/tr}')">
+			<a title="{tr}Unassign this module{/tr}" href="{$current_location|escape}{$mpchar|escape}mc_unassign={$module_name|escape}" onclick='return confirmTheLink(this,"{tr}Are you sure you want to unassign this module?{/tr}")'>
 				{icon _id="cross" alt="[{tr}Remove{/tr}]"}
 			 </a>
 			</span>
@@ -31,7 +31,7 @@
 			<span class="moduleflip" id="moduleflip-{$module_name|cat:$module_position|cat:$module_ord|escape}">
 				<a title="{tr}Toggle module contents{/tr}" class="flipmodtitle" href="javascript:icntoggle('mod-{$module_name|cat:$module_position|cat:$module_ord|escape}','module.png');">
 					{capture name=name}icnmod-{$module_name|cat:$module_position|cat:$module_ord|escape}{/capture}
-					{icon name=$smarty.capture.name class="flipmodimage" _id="module" alt="[{tr}toggle{/tr}]"}
+					{icon id=$smarty.capture.name class="flipmodimage" _id="module" alt="[{tr}toggle{/tr}]"}
 				</a>
 			</span>
 			{if $prefs.menus_items_icons eq 'y'}
@@ -78,11 +78,9 @@
 {$module_error}
 {if $module_nobox neq 'y'}
 {if $module_flip eq 'y'}
-			<script type="text/javascript">
-<!--//--><![CDATA[//><!--
-				setsectionstate('mod-{$module_name|cat:$module_position|cat:$module_ord|escape}','{$module_dstate}', 'module.png');
-//--><!]]>
-			</script>
+{*jq}
+				setsectionstate('mod-{{$module_name|cat:$module_position|cat:$module_ord|escape}}','{{$module_dstate}}', 'module.png');
+{/jq*}
 {/if}
 					</div>{*box data actual*} 
 				</div>{*box right border*}
