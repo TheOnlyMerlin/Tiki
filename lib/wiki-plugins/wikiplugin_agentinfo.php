@@ -15,10 +15,9 @@ function wikiplugin_agentinfo_help() {
 function wikiplugin_agentinfo_info() {
 	return array(
 		'name' => tra( 'User Agent Info' ),
-		'documentation' => 'PluginAgentinfo',
-		'description' => tra( 'Show user\'s browser and server information' ),
+		'documentation' => tra('PluginAgentinfo'),
+		'description' => tra( 'Displays various information about the client.' ),
 		'prefs' => array('wikiplugin_agentinfo'),
-		'icon' => 'pics/icons/computer.png',
 		'params' => array(
 			'info' => array(
 				'required' => false,
@@ -26,12 +25,12 @@ function wikiplugin_agentinfo_info() {
 				'description' => tra('Display\'s the visitor\'s IP address (IP or default), browser information (BROWSER), or server software (SVRSW).'),
 				'default' => 'IP',
 				'filter' => 'alpha',
-				'options' => array(
+    			'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('IP address'), 'value' => 'IP'), 
 					array('text' => tra('Server software'), 'value' => 'SVRSW'), 
 					array('text' => tra('Browser'), 'value' => 'BROWSER'), 
-				),
+				),  		
 				
 			),
 		),
@@ -53,11 +52,11 @@ function wikiplugin_agentinfo($data, $params) {
 		$asetup = $tikilib->get_ip_address();
 	}
 
-	if ($info == 'SVRSW' && isset($_SERVER['SERVER_SOFTWARE'])) {
+	if ($info == 'SVRSW') {
 		$asetup = $_SERVER["SERVER_SOFTWARE"];
 	}
 	
-	if ($info == 'BROWSER' && isset($_SERVER['HTTP_USER_AGENT'])) {
+	if ($info == 'BROWSER') {
 		$asetup = $_SERVER["HTTP_USER_AGENT"];
 	}
 

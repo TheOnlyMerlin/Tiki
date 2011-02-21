@@ -1,5 +1,5 @@
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
-	{tr}&quot;Modules&quot; are the items of content at the top &amp; bottom and in the right &amp; left columns of the site.{/tr} {tr}Select{/tr}
+	{tr}&quot;Modules&quot; are the boxes of content in the right &amp; left columns{/tr}. {tr}Select{/tr}
 	<a class="rbox-link" href="tiki-admin_modules.php">{tr}Admin &gt; Modules{/tr}</a> {tr}from the menu to create and edit modules{/tr}.
 {/remarksbox}
 
@@ -15,8 +15,8 @@
 		{preference name=user_assigned_modules}
 		{preference name=user_flip_modules}
 		{preference name=modallgroups}
-		{remarksbox type="tip" title="{tr}Hint{/tr}"}
-			{tr}If you lose your login module, use tiki-login_scr.php to be able to login!{/tr}
+		{remarksbox type="warning" title="{tr}Warning{/tr}"}
+			{tr}Hint: If you lose your login module, use tiki-login_scr.php to be able to login!{/tr}
 		{/remarksbox}
 		{preference name=modseparateanon}
 		{preference name=modhideanonadmin}

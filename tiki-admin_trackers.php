@@ -39,18 +39,6 @@ if (!empty($_REQUEST['duplicate']) && !empty($_REQUEST['name']) && !empty($_REQU
 	unset($_REQUEST); // Used to show the list of trackers instead of the new tracker after duplication
 	
 }
-if (!empty($_REQUEST['exportTrackerProfile']) && !empty($_REQUEST['trackerId'])) {
-	include_once('lib/profilelib/installlib.php');
-	$prof = new Tiki_Profile_InstallHandler_Tracker();
-	$res = $prof->_export($_REQUEST['trackerId']);
-	header("Content-type: text/yaml");
-	header('Content-Disposition: attachment; filename=tracker_'.$_REQUEST['trackerId'].'.yaml');
-	header('Expires: 0');
-	header('Pragma: public');
-	echo $res;
-	die;
-}
-
 if (!empty($_REQUEST['show']) && $_REQUEST['show'] == 'mod') {
 	$cookietab = '2';
 }
@@ -327,11 +315,6 @@ if (isset($_REQUEST["save"])) {
 	} else {
 		$tracker_options['viewItemPretty'] = '';
 	}
-	if (isset($_REQUEST['editItemPretty'])) {
-		$tracker_options['editItemPretty'] = $_REQUEST['editItemPretty'];
-	} else {
-		$tracker_options['editItemPretty'] = '';
-	}
 	if (isset($_REQUEST['descriptionIsParsed']) && ($_REQUEST['descriptionIsParsed'] == 'on' || $_REQUEST['descriptionIsParsed'] == 'y')) {
 		$tracker_options['descriptionIsParsed'] = 'y';
 	} else {
@@ -374,7 +357,6 @@ $info["useExplicitNames"] = '';
 $info['doNotShowEmptyField'] = '';
 $info['showPopup'] = '';
 $info['viewItemPretty'] = '';
-$info['editItemPretty'] = '';
 $info["showStatus"] = '';
 $info["showStatusAdminOnly"] = '';
 $info["simpleEmail"] = '';
@@ -413,7 +395,7 @@ $info['autoCreateGroup'] = '';
 $info['autoCreateGroupInc'] = 0;
 $info['autoAssignGroupItem'] = '';
 if ($_REQUEST["trackerId"]) {
-	$info = array_merge($info, $trklib->get_tracker($_REQUEST["trackerId"]));
+	$info = array_merge($info, $tikilib->get_tracker($_REQUEST["trackerId"]));
 	$info = array_merge($info, $trklib->get_tracker_options($_REQUEST["trackerId"]));
 	require_once 'lib/todolib.php';
 	$info['todos'] = $todolib->listTodoObject('tracker', $_REQUEST['trackerId']);

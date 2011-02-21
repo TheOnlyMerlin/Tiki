@@ -23,11 +23,10 @@ function wikiplugin_copyright_help() {
 function wikiplugin_copyright_info() {
 	return array(
 		'name' => tra('Copyright'),
-		'documentation' => 'PluginCopyright',
+		'documentation' => tra('PluginCopyright'),
 		'description' => tra('Insert copyright notices'),
 		'prefs' => array( 'wiki_feature_copyrights', 'wikiplugin_copyright' ),
 		'body' => tra('Pattern to display the copyright in. May contain ~title~, ~year~ and ~authors~.'),
-		'icon' => 'pics/icons/shield.png',
 		'params' => array(
 		),
 	);

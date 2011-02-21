@@ -36,8 +36,6 @@ if (isset($_REQUEST['wysiwyg']) && $_REQUEST['wysiwyg'] == 'y') {
 $access->check_permission(array('tiki_p_admin_modules'));
 $auto_query_args = array();
 
-$access->check_feature( array('feature_jquery_ui') );
-
 // Values for the user_module edit/create form
 $smarty->assign('um_name', '');
 $smarty->assign('um_title', '');
@@ -96,9 +94,6 @@ if (!empty($_REQUEST['edit_assign'])) {
 	}
 	$smarty->assign('assign_info', $modinfo);
 }
-if (isset($_REQUEST['edit_assign']) || isset($_REQUEST['preview'])) {	// will be 0 for a new assignment
-	$cookietab = 2;
-}
 if (!empty($_REQUEST['unassign'])) {
     check_ticket('admin-modules');
     $info = $modlib->get_assigned_module($_REQUEST['unassign']);
@@ -121,12 +116,6 @@ if (!empty($_REQUEST['modright'])) {
     check_ticket('admin-modules');
     $modlib->module_right($_REQUEST['modright']);
 }
-if (!empty($_REQUEST['module-order'])) {
-    check_ticket('admin-modules');
-    $module_order = json_decode($_REQUEST['module-order']);
-    $modlib->reorder_modules($module_order);
-}
-
 /* Edit or delete a user module */
 if (isset($_REQUEST["um_update"])) {
     if (empty($_REQUEST["um_name"])) {
@@ -154,11 +143,9 @@ if (!isset($_REQUEST["groups"])) {
 if (isset($_REQUEST["assign"]) || isset($_REQUEST["preview"])) { // Verify that required parameters are present
 	$missing_params = array();
 	$modinfo = $modlib->get_module_info( $_REQUEST['assign_name'] );
-	if ($_REQUEST['moduleId'] > 0) {
-		foreach($modinfo["params"] as $pname => $param) {
-			if ($param["required"] && empty($_REQUEST["assign_params"][$pname]))
-				$missing_params[] = $param["name"];
-		}
+	foreach($modinfo["params"] as $pname => $param) {
+		if ($param["required"] && empty($_REQUEST["assign_params"][$pname]))
+			$missing_params[] = $param["name"];
 	}
 	$smarty->assign('missing_params', $missing_params);
 }
@@ -185,8 +172,8 @@ if (isset($_REQUEST["preview"])) {
 	else
 		$module_rows = 10;
 
-    if ($modlib->is_user_module($_REQUEST["assign_name"])) {
-        $info = $modlib->get_user_module($_REQUEST["assign_name"]);
+    if ($tikilib->is_user_module($_REQUEST["assign_name"])) {
+        $info = $tikilib->get_user_module($_REQUEST["assign_name"]);
         $smarty->assign_by_ref('user_title', $info["title"]);
         if ($info["parse"] == "y") {
             $parse_data = $tikilib->parse_data($info["data"]);
@@ -265,7 +252,6 @@ if (isset($_REQUEST["assign"])) {
 	if (empty($missing_params)) {
 		$modlib->assign_module(isset($_REQUEST['moduleId']) ? $_REQUEST['moduleId'] : 0, $_REQUEST["assign_name"], '', $_REQUEST["assign_position"], $_REQUEST["assign_order"], $_REQUEST["assign_cache"], $module_rows, serialize($module_groups) , $_REQUEST["assign_params"], $_REQUEST["assign_type"]);
 		$logslib->add_log('adminmodules', 'assigned module ' . $_REQUEST["assign_name"]);
-		$modlib->reorder_modules();
 		header("location: tiki-admin_modules.php");
 	} else {
 		$modlib->dispatchValues( $_REQUEST['assign_params'], $modinfo['params'] );
@@ -274,16 +260,15 @@ if (isset($_REQUEST["assign"])) {
 }
 
 if (isset($_REQUEST["um_remove"])) {
+    check_ticket('admin-modules');
     $_REQUEST["um_remove"] = urldecode($_REQUEST["um_remove"]);
-	$access->check_authenticity(tra('Are you sure you want to delete this User Module?') . '&nbsp;&nbsp;(&quot;' . $_REQUEST["um_remove"] . '&quot;)');
     $modlib->remove_user_module($_REQUEST["um_remove"]);
     $logslib->add_log('adminmodules', 'removed user module ' . $_REQUEST["um_remove"]);
-	$cookietab = 1;
 }
 if (isset($_REQUEST["um_edit"])) {
     check_ticket('admin-modules');
     $_REQUEST["um_edit"] = urldecode($_REQUEST["um_edit"]);
-    $um_info = $modlib->get_user_module($_REQUEST["um_edit"]);
+    $um_info = $tikilib->get_user_module($_REQUEST["um_edit"]);
     $smarty->assign_by_ref('um_name', $um_info["name"]);
     $smarty->assign_by_ref('um_title', $um_info["title"]);
     $smarty->assign_by_ref('um_data', $um_info["data"]);
@@ -291,28 +276,15 @@ if (isset($_REQUEST["um_edit"])) {
 }
 $user_modules = $modlib->list_user_modules();
 $smarty->assign_by_ref('user_modules', $user_modules["data"]);
-
 $all_modules = $modlib->get_all_modules();
 sort($all_modules);
 $smarty->assign_by_ref('all_modules', $all_modules);
 $all_modules_info = array_combine( 
 	$all_modules, 
 	array_map( array( $modlib, 'get_module_info' ), $all_modules ) 
-);
-foreach ($all_modules_info as &$mod) {
-	$mod['enabled'] = true;
-	foreach ($mod['prefs'] as $pf) {
-		if ($prefs[$pf] !== 'y') {
-			$mod['enabled'] = false;
-		}
-	}
-}
+) ;
 asort($all_modules_info);
-$smarty->assign_by_ref( 'all_modules_info', $all_modules_info);
-if (!empty($_REQUEST['module_list_show_all'])) {
-	$smarty->assign('module_list_show_all', true);
-}
-
+$smarty->assign( 'all_modules_info', $all_modules_info);
 $orders = array();
 for ($i = 1;$i < 50;$i++) {
     $orders[] = $i;
@@ -373,33 +345,10 @@ $smarty->assign( 'maxRecords', $maxRecords );
 $smarty->assign( 'offset', $offset );
 $smarty->assign( 'maximum', $maximum );
 
-$assigned_modules = $modlib->get_assigned_modules();
-$module_zones = array();
-foreach( $modlib->module_zones as $initial => $zone) {
-	$module_zones[$initial] = array(
-		'id' => $zone,
-		'name' => substr($zone, 0, strpos($zone, '_'))
-	);
-}
-$smarty->assign_by_ref( 'assigned_modules', $assigned_modules );
-$smarty->assign_by_ref( 'module_zones', $module_zones );
-
-$prefs['module_zones_top'] = 'y';
-$prefs['module_zones_topbar'] = 'y';
-$prefs['module_zones_pagetop'] = 'y';
-$prefs['feature_left_column'] = 'y';
-$prefs['feature_right_column'] = 'y';
-$prefs['module_zones_pagebottom'] = 'y';
-$prefs['module_zones_bottom'] = 'y';
-
-$headerlib->add_css('.module:hover {
-	cursor: move;
-	background-color: #ffa;
-}');
-$headerlib->add_cssfile('css/admin.css');
-$headerlib->add_jsfile('lib/modules/tiki-admin_modules.js');
-$headerlib->add_jsfile('lib/jquery/jquery.json-2.2.js');
-
+$left = $tikilib->get_assigned_modules('l');
+$right = $tikilib->get_assigned_modules('r');
+$smarty->assign_by_ref('left', $left);
+$smarty->assign_by_ref('right', $right);
 $sameurl_elements = array(
     'offset',
     'sort_mode',
@@ -409,10 +358,5 @@ $sameurl_elements = array(
 ask_ticket('admin-modules');
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
-
-if (!empty($_REQUEST['edit_module'])) {	// pick up ajax calls
-	$smarty->display("admin_modules_form.tpl");
-} else {
-	$smarty->assign('mid', 'tiki-admin_modules.tpl');
-	$smarty->display("tiki.tpl");
-}
+$smarty->assign('mid', 'tiki-admin_modules.tpl');
+$smarty->display("tiki.tpl");

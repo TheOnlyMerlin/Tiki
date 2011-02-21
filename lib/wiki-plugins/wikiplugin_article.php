@@ -23,10 +23,9 @@ function wikiplugin_article_help() {
 function wikiplugin_article_info() {
 	return array(
 		'name' => tra('Article'),
-		'documentation' => 'PluginArticle',
-		'description' => tra('Display a field of an article'),
+		'documentation' => tra('PluginArticle'),
+		'description' => tra('Includes an article\'s content within the page.'),
 		'prefs' => array( 'feature_articles', 'wikiplugin_article' ),
-		'icon' => 'pics/icons/layout_content.png',
 		'params' => array(
 			'Field' => array(
 				'required' => false,
@@ -69,7 +68,5 @@ function wikiplugin_article($data, $params) {
 
 	global $artlib; require_once 'lib/articles/artlib.php';
 	$article_data = $artlib->get_article($Id);
-	if (isset($article_data[$Field])) {
-		return $article_data[$Field].$add;
-	}
+	return $article_data[$Field].$add;
 }

@@ -6,12 +6,16 @@
 // $Id$
 
 // Displays a snippet of code
+function wikiplugin_code_help() {
+	$help = tra("Displays a snippet of code").":<br />~np~{CODE(ln=>1,colors=>php|html|sql|javascript|css|java|c|doxygen|delphi|...,caption=>caption text,wrap=>1,wiki=>1,rtl=>1,cpy=>0)}".tra("code")."{CODE}~/np~ - ''".tra("note: colors and ln are exclusive")."''";
+	return tra($help);
+}
 
 function wikiplugin_code_info() {
 	return array(
 		'name' => tra('Code'),
-		'documentation' => 'PluginCode',
-		'description' => tra('Display code syntax with line numbers and color highlights'),
+		'documentation' => tra('PluginCode'),
+		'description' => tra('Displays a snippet of code'),
 		'prefs' => array('wikiplugin_code'),
 		'body' => tra('Code'),
 		'icon' => 'pics/icons/page_white_code.png',
@@ -207,6 +211,3 @@ function wikiplugin_code($data, $params) {
 	$code_count++;
 	return $out;
 }
-
-require_once('lib/codemirror_tiki/codemirror_tiki.php');
-tiki_syntax_highlighter_code();

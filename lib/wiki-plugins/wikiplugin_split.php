@@ -27,11 +27,10 @@ function wikiplugin_split_info()
 {
 	return array(
 		'name' => tra('Split'),
-		'documentation' => 'PluginSplit',
-		'description' => tra('Easily arrange content on a page into rows and columns'),
+		'documentation' => tra('PluginSplit'),
+		'description' => tra('Split a page into rows and columns'),
 		'prefs' => array( 'wikiplugin_split' ),
 		'filter' => 'wikicontent',
-		'icon' => 'pics/icons/table.png',
 		'params' => array(
 			'joincols' => array(
 				'required' => false,

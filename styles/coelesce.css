@@ -197,18 +197,16 @@ label {
 	color: #2d2d2d;
 	font-size: 1.05em;
 }
-/*
+
 #header {
 	text-align: left;
 	background: #96bce3;
-}*/
+}
 
 #middle {
 	background: white;
-}
-
-#topbar_modules {
-	margin-bottom: 20px;	
+	margin-top: 28px;
+	margin-bottom: 20px;
 }
 
 #c1c2 #wrapper .marginleft {
@@ -265,25 +263,39 @@ body.tiki_wiki_page.manage #c1c2 #wrapper #col1 #tiki-center {
 	text-align: right;
 	font-size: .9em;
 	border-top: 1px solid #517ba5;
-/*	border-top: 1px solid #ebf5ff;*/
+}
+
+.footerbgtrap {
+	border-top: 1px solid #ebf5ff;
 	background: #ccdceb;
 }
 
 /* Site Header & Identity */
-#header_container {
-	background: url(coelesce/pagebg.jpg) repeat-x 0 100%;
+#header-top {
+	background: url(coelesce/pagebg.jpg) repeat-x bottom;
+	height: 80px;
+	position: relative;
 }
 
-/* Enable header and footer content to widen when middle has wide content. */ 
-body.fixed_width .fixedwidth .fixedwidth {
-	width: 100%;
+#header-top[id] {
+	height: auto;
+	min-height: 80px;
+}
+
+#sioptions {
 	padding: 0;
 }
 
-#top_modules {
-	position: relative;
-	min-height: 80px;
-	
+#sioptionscentered {
+	margin: 1em;
+}
+
+.floatright {
+	margin-right: 8px;
+}
+
+.floatleft {
+	margin-left: 8px;
 }
 
 #sitelogo {
@@ -297,76 +309,41 @@ body.fixed_width .fixedwidth .fixedwidth {
 	float: left;
 }
 
-#top_modules .box-login_box {
-	position: absolute;
-	bottom: 50px;
-	right: 36px;
-	text-align: right;
-	color: #fff;
-}
-
-#top_modules .box-login_box a,
-#top_modules .box-login_box a:visited {
-	color: #fff;
-}
-/*
-#topbar_modules .box-search {
+#login_search {
+	display: block;
 	position: absolute;
 	right: 30px;
-	top: 0;
-	text-align: right;
-	color: #fff;
-	padding: 0;
-	padding-right: 0;
-	text-align: left;
-	background: url(coelesce/search_wide4.png) 0 100% no-repeat;
-	color: #517ea7;
-	height: 32px;
-}
-
-#topbar_modules .box-search form {
-	background: url(coelesce/search_wide4.png) 100% 0 no-repeat;
-	padding-right: 40px;
-	padding-top: 6px;
-	margin-left: 15px;
-	margin-right: -15px;
-	height: 32px;
-}
-*/
-#top_modules .box-search,
-#topbar_modules .box-search {
-	position: absolute;
-	right: 30px;
-	top: 0;
-	text-align: right;
-	color: #fff;
-	padding: 0;
-	padding-right: 0;
-	text-align: left;
-	background: url(coelesce/search_wide.png) 0 0 no-repeat;
-	color: #517ea7;
-	height: 32px;
-}
-
-#top_modules .box-search {
 	bottom: 12px;
-	top: auto	
+	text-align: right;
+	color: #fff;
+}
+	
+#login_search a,
+#login_search a:visited {
+	color: #fff;
 }
 
-#top_modules .box-search form,
-#topbar_modules .box-search form {
-	background: url(coelesce/search_wide.png) 100% 0 no-repeat;
-	padding-right: 40px;
-	margin-left: 15px;
-	margin-right: -15px;
-	height: 32px;
-	padding-top: 8px;
+#login_language {
+	display: none; /*inline*/
 }
 
+.searchbar_wrapper {
+	float: right;
+	margin-top: 3px;
+	margin-right: 0;
+	margin-left: auto;
+	padding: 0 0 0 15px;
+	min-width: 180px;
+	text-align: left;
+	background: url(coelesce/search_wide.jpg) no-repeat;
+	color: #517ea7;
+}
 
-.box-search form .ac_input {
-	border: none;
-	background: none;
+#sitesearchbar {
+	background: url(coelesce/search_wide.jpg) 100% 0 no-repeat;
+	margin-right: 0;
+	margin-left: auto;
+	padding: 0 35px 0 0;
 }
 
 #sitesearchbar form {
@@ -440,7 +417,6 @@ input[name="search"] {
 	color: #9eb8d5;
 	font-size: 34px;
 	display: inline;
-	margin-bottom: 10px;
 }
 
 #sitetitle a,
@@ -454,7 +430,6 @@ input[name="search"] {
 #sitesubtitle {
 	display: inline;
 	margin-left: 14px;
-	margin-bottom: 0;
 	color: white;
 	font-size: 14px;
 	font-weight: normal;
@@ -537,6 +512,103 @@ small.date {
 	font-weight: bold;
 }
 
+/** PHP Layers Menus **/
+.horbar {
+	width: 100%;
+}
+
+.horbar table {
+	border-left: 1px solid #2e5276;
+	border-right: 1px solid #acc4e0;
+}
+
+.horbaritem a,
+.horbaritem a:visited {
+	padding: 6px 10px;
+	font-weight: bold;
+	text-decoration: none;
+	background: inherit;
+	color: #cfe3fb;
+	font-size: 12px;
+	border-left: 1px solid #9eb8d5;
+	border-right: 1px solid #264062;
+}
+
+.horbaritem a:hover {
+	color: #fff !important;
+	text-decoration: none;
+}
+
+.mdksubmenu {
+	background: white;
+	margin-top: 0;
+}
+
+.mdksubframe {
+	border: 1px solid #5a7ea2;
+	background: #ccdceb;
+}
+
+.mdkitem a {
+	padding: 3px 6px;
+	font-weight: normal;
+	font-size: 1.2em;
+}
+
+.mdkitem a:link {
+	font-weight: normal;
+	text-decoration: none;
+}
+
+.mdkitem a:visited {
+	text-decoration: none;
+}
+
+.mdkitem a:hover {
+	color: #82a7c8;
+	text-decoration: none;
+	background: #eff8ff;
+}
+
+.phplmnormal,
+a.phplmnormal:hover,
+a.phplm:link,
+a.phplm:visited,
+a.phplm:hover,
+a.phplm:active {
+	font-family: Verdana, Tahoma, Arial, sans-serif;
+	color: #295c8e;
+	text-decoration: none;
+	font-weight: normal;
+}
+
+a.phplm:visited {
+	color: #295c8e;
+}
+
+a.phplm:hover {
+	color: #82a7c8;
+	text-decoration: underline;
+	background: none;
+}
+
+a.phplm:active {
+	color: #82a7c8;
+}
+
+a.phplmselected:link,
+a.phplmselected:visited,
+a.phplmselected:hover,
+a.phplmselected:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: #2d2d2d;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+a.phplmselected:hover {
+	color: #808080;
+}
 
 /** CSS (suckerfish) menus **/
 
@@ -902,17 +974,12 @@ a.forumnameread {
 }
 
 /** Tabs **/
-* reset what's in layout.css */
-.tabactive,
-.tabinactive,
-[class].tabactive,
-[class].tabinactive {top: 0 !important}
-
 .tabs {
-	padding: .2em .2em 0;
-	margin:0 0.2em 1px 0;
+margin: 10px 2px -18px 2px; /* override layout */
 	background: #5a7ea2;
 	border-bottom: solid 1px #4a6a90 !important;
+	padding: 0 5px !important;
+	z-index: 201;
 }
 
 .tabmark {

@@ -22,12 +22,11 @@ function wikiplugin_realnamelist_help() {
 
 function wikiplugin_realnamelist_info() {
 	return array(
-		'name' => tra('User List with Real Names)'),
-		'documentation' => 'PluginRealNameList',
-		'description' => tra('Show user real names for members of a group').tra(' (experimental, should be merged with UserList)'),
+		'name' => tra('User List (showing Real Name)'),
+		'documentation' => tra('PluginRealNameList'),
+		'description' => tra("Displays a list of registered users showing their Real Names").tra(' (experimental, should be merged with UserList in Tiki5)'),		
 		'prefs' => array( 'wikiplugin_realnamelist' ),
 		'body' => tra('Group name - only users belonging to a group or groups with group names containing this text will be included in the list. If empty all site users will be included.'),
-		'icon' => 'pics/icons/group.png',
 		'params' => array(
 			'sep' => array(
 				'required' => false,
@@ -118,10 +117,9 @@ function wikiplugin_realnamelist($data, $params) {
 			$mid .= ' ORDER BY `value`, `login` '.$sort;
 		}
 	}
-
-	$exclude_clause='';
 	if (isset($exclude)) {
 		$exclude=strtolower($exclude);
+		$exclude_clause='';
 		if (($exclude=='test') || ($exclude=='admin')) {
 			$exclude_clause= ' u.`login` NOT LIKE \'%'.$exclude.'%\' AND ' ;
 			//$exclude_clause= ' `users_users`.`login` NOT LIKE \'%'.$exclude.'%\' AND ' ;
@@ -165,7 +163,7 @@ function wikiplugin_realnamelist($data, $params) {
 					$res = '<a href="tiki-user_information.php?userId='.$row['userId'].'" title="'.tra('User Information').'">';
 				} else {
 					$user_information = $tikilib->get_user_preference($row['login'], 'user_information', 'public');
-					if (isset($user) && $user_information == 'private' && $row['login'] != $user) {
+					if ($user_information == 'private' && $row['login'] != $user) {
 						$res = '<a href="tiki-user_information.php?userId='.$row['userId'].'" title="'.tra('User Information').'">';
 					}
 				}

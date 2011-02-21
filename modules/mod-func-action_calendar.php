@@ -13,7 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 function module_action_calendar_info() {
 	return array(
-		'name' => tra('Action Calendar'),
+		'name' => tra('Action calendar'),
 		'description' => tra('Displays a calendar of system events, such as wiki page modifications, forum posts and article publications. Days with events show links to the action calendar page.'),
 		'prefs' => array( 'feature_action_calendar' ),
 		'params' => array(
@@ -34,7 +34,7 @@ function module_action_calendar( $mod_reference, &$module_params ) {
 		global $headerlib; $headerlib->add_cssfile('css/calendar.css',20);
 		global $calendarViewMode;
 	
-		$calendarViewMode['casedefault'] = 'month';
+		$calendarViewMode = 'month';
 		$group_by = 'day';
 	
 		include('tiki-calendar_setup.php');
@@ -52,7 +52,7 @@ function module_action_calendar( $mod_reference, &$module_params ) {
 				$smarty->assign($tc_key, $tc_val);
 		}
 	
-		$smarty->assign('name', 'action_calendar');
+		$smarty->assign('name', 'tiki_calendar');
 	
 		$smarty->assign('daformat2', $tikilib->get_long_date_format());
 		$smarty->assign('var', '');

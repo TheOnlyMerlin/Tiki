@@ -4,7 +4,7 @@
 
 {if $field_value.type ne 'x'}
 {* ******************** link to the item ******************** *}
-{if $showlinks ne 'y' or (isset($field_value.showlinks) and $field_value.showlinks eq 'n') or $field_value.type eq 'G'}
+{if $showlinks ne 'y' or (isset($field_value.showlinks) and $field_value.showlinks eq 'n')}
 	{assign var='is_link' value='n'}
 {elseif $field_value.isMain eq 'y'
  and ($tiki_p_view_trackers eq 'y' 
@@ -29,7 +29,7 @@
 	{assign var='is_link' value='n'}
 {/if}
 {if $is_link eq 'y'}
-	<a class="tablename{if $item.geolocation} geolocated{/if}" {if $item.geolocation}data-geo-lat="{$item.geolocation.lat|escape}" data-geo-lon="{$item.geolocation.lon|escape}"{/if} href="{$urll}{if $offset}&amp;offset={$offset}{/if}{if isset($reloff)}&amp;reloff={$reloff}{/if}{if $item_count}&amp;cant={$item_count}{/if}{foreach key=urlkey item=urlval from=$urlquery}{if $urlval}&amp;{$urlkey}={$urlval|escape:"url"}{/if}{/foreach}"{if $showpopup eq 'y'} {popup text=$smarty.capture.popup|escape:"javascript"|escape:"html" fullhtml="1" hauto=true vauto=true sticky=$stickypopup}{/if}>
+	<a class="tablename" href="{$urll}{if $offset}&amp;offset={$offset}{/if}{if isset($reloff)}&amp;reloff={$reloff}{/if}{if $item_count}&amp;cant={$item_count}{/if}{foreach key=urlkey item=urlval from=$urlquery}{if $urlval}&amp;{$urlkey}={$urlval|escape:"url"}{/if}{/foreach}"{if $showpopup eq 'y'} {popup text=$smarty.capture.popup|escape:"javascript"|escape:"html" fullhtml="1" hauto=true vauto=true sticky=$stickypopup}{/if}>
 {/if}
 {* ******************** field with prepend ******************** *}
 {if ($field_value.type eq 't' or $field_value.type eq 'n' or $field_value.type eq 'c' or $field_value.type eq 'b') and !empty($field_value.options_array[2]) and $field_value.value != ''}
@@ -351,11 +351,11 @@
 	{else}
 		{capture name=stat}
 			{if empty($field_value.numvotes)}
-				{tr}Number of votes:{/tr} 0
+				{tr}Number of votes{/tr}: 0
 			{else}
-				{tr}Number of votes:{/tr} {$field_value.numvotes|default:"0"}, {tr}Average:{/tr} {$field_value.voteavg|default:"0"}
+				{tr}Number of votes{/tr}: {$field_value.numvotes|default:"0"}, {tr}Average{/tr}: {$field_value.voteavg|default:"0"}
 				{if $tiki_p_tracker_vote_ratings eq 'y'}
-					, {if isset($field_value.my_rate) && $field_value.my_rate !== false}{tr}Your rating:{/tr} {$field_value.my_rate}{else}{tr}You did not vote yet{/tr}{/if}
+					, {if isset($field_value.my_rate) && $field_value.my_rate !== false}{tr}Your rating{/tr}: {$field_value.my_rate}{else}{tr}You did not vote yet{/tr}{/if}
 				{/if}
 			{/if}
 		{/capture}
@@ -406,10 +406,11 @@
 
 {* -------------------- header ------------------------- *}
 {elseif $field_value.type eq 'h'}
-	{capture name="level"}{if empty($field_value.options_array[0])}2{else}{$field_value.options_array[0]}{/if}{/capture}
-	{capture name="toggle"}{if empty($field_value.options_array[1])}{else}{$field_value.options_array[1]}{/if}{/capture}
-	{capture name="inTable"}{if !empty($inTable)}{$inTable}{else}{/if}{/capture}
-	{trackerheader level=$smarty.capture.level title=$field_value.name toggle=$smarty.capture.toggle inTable=$smarty.capture.inTable}
+	{if !empty($field_value.options_array[0]) && $field_value.options_array[0] > 0}
+		<h{$field_value.options_array[0]}>{$field_value.name|escape}</h{$field_value.options_array[0]}>
+	{else}
+		<h2>{$field_value.name|escape}</h2>
+	{/if}
 
 {* -------------------- subscription -------------------- *}
 {elseif $field_value.type eq 'U'}
@@ -439,7 +440,7 @@
 
 {* -------------------- google map -------------------- *}
 {elseif $field_value.type eq 'G'}
-	{if $prefs.feature_gmap eq 'y' and $prefs.gmap_key}
+	{if $prefs.feature_gmap eq 'y'}
 		{if $list_mode eq 'csv'}
 			{$field_value.value}
 		{elseif !empty($field_value.x) && !empty($field_value.y)}
@@ -452,11 +453,7 @@
 			{/if}
 		{/if}
 	{else}
-	  <form method="get" action="">
-		{$headerlib->add_map()}
-		<div class="map-container" style="width: 250px; height: 250px;" data-target-field="location"></div>
-	  	<input type="hidden" name="location" value="{$field_value.value}" disabled="disabled"/>
-	  </form>
+	  {tr}Google Maps is not enabled.{/tr}
 	{/if}
 
 

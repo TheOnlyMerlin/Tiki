@@ -15,11 +15,10 @@ function wikiplugin_redirect_help() {
 function wikiplugin_redirect_info() {
 	return array(
 		'name' => tra('Redirect'),
-		'documentation' => 'PluginRedirect',
-		'description' => tra('Redirect to another page'),
+		'documentation' => tra('PluginRedirect'),			
+		'description' => tra('Redirect the user to a wiki page or generic URL.'),
 		'prefs' => array( 'wikiplugin_redirect' ),
 		'validate' => 'arguments',
-		'icon' => 'pics/icons/arrow_right.png',
 		'params' => array(
 			'page' => array(
 				'required' => false,

@@ -21,11 +21,10 @@ function wikiplugin_box_help() {
 function wikiplugin_box_info() {
 	return array(
 		'name' => tra('Box'),
-		'documentation' => 'PluginBox',
-		'description' => tra('Creates a formatted box with a title bar'),
+		'documentation' => tra('PluginBox'),
+		'description' => tra('Insert theme-styled box on wiki page'),
 		'prefs' => array('wikiplugin_box'),
 		'body' => tra('text'),
-		'icon' => 'pics/icons/layout_header.png',
 		'params' => array(
 			'title' => array(
 				'required' => false,

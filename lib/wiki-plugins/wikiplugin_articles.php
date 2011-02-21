@@ -22,10 +22,9 @@ function wikiplugin_articles_info()
 {
 	return array(
 		'name' => tra('Article List'),
-		'documentation' => 'PluginArticles',
-		'description' => tra('Display multiple articles'),
+		'documentation' => tra('PluginArticles'),
+		'description' => tra('Inserts a list of articles in the page.'),
 		'prefs' => array( 'feature_articles', 'wikiplugin_articles' ),
-		'icon' => 'pics/icons/table_multiple.png',
 		'params' => array(
 			'usePagination' => array(
 				'required' => false,
@@ -42,7 +41,7 @@ function wikiplugin_articles_info()
 			'max' => array(
 				'required' => false,
 				'name' => tra('Maximum Displayed'),
-				'description' => tra('The number of articles to display in the list (no max set by default)') . tra('If Pagination is set to y (Yes), this will determine the amount of articles per page'),
+				'description' => tra('The number of articles to display in the list (no max set by default)') . tra('If Pagination is set to y (Yes), this will determine the amount of artilces per page'),
 				'filter' => 'int',
 				'default' => -1
 			),
@@ -178,7 +177,7 @@ function wikiplugin_articles_info()
 			),
 			'urlparam' => array(
 				'required' => false,
-				'name' => tra('Additional URL Param to the link to read article'),
+				'name' => tra('Additional URL Param'),
 				'filter' => 'striptags',
 				'default' => ''
 			),
@@ -188,14 +187,6 @@ function wikiplugin_articles_info()
 				'description' => tra('Whether to show the buttons and links to do actions on each article (for the actions you have permission to do') . ' (y|n)',
 				'filter' => 'alpha',
 			),
-			'translationOrphan' => array(
-				'required' => false,
-				'name' => tra('No translation'),
-				'description' => tra('User or pipe separated list of two letter language codes for additional languages to display. List pages with no language or with a missing translation in one of the language'),
-				'filter' => 'alpha',
-				'separator' => '|',
-				'default' => ''
-			),
 		),
 	);
 }
@@ -204,18 +195,15 @@ function wikiplugin_articles($data, $params)
 {
 	global $smarty, $tikilib, $prefs, $tiki_p_read_article, $tiki_p_articles_read_heading, $dbTiki, $pageLang;
 	global $artlib; require_once 'lib/articles/artlib.php';
-	$default = array('max' => -1, 'start' => 0, 'usePagination' => 'n', 'topicId' => '', 'topic' => '', 'sort' => 'publishDate_desc', 'type' => '', 'lang' => '', 'quiet' => 'n', 'categId' => '', 'largefirstimage' => 'n', 'urlparam' => '', 'translationOrphan' => '', 'showtable' => 'n');
-	$auto_args = array('lang', 'topicId', 'topic', 'sort', 'type', 'lang', 'categId');
+	$default = array('max' => -1, 'start' => 0, 'usePagination' => 'n', 'topicId' => '', 'topic' => '', 'sort' => 'publishDate_desc', 'type' => '', 'lang' => '', 'quiet' => 'n', 'categId' => '', 'largefirstimage' => 'n', 'urlparam' => '');
 	$params = array_merge($default, $params);
 
 	extract($params, EXTR_SKIP);
-	$filter = '';
 	if (($prefs['feature_articles'] !=  'y') || (($tiki_p_read_article != 'y') && ($tiki_p_articles_read_heading != 'y'))) {
 		//	the feature is disabled or the user can't read articles, not even article headings
 		return("");
 	}
 
-	$urlnext = '';
 	if($usePagination == 'y')
 	{
 		//Set offset when pagniation is used
@@ -229,18 +217,10 @@ function wikiplugin_articles($data, $params)
 		if(($max == -1)){
 			$countPagination = 10;
 		}
-		foreach ($auto_args as $arg) {
-			if (!empty($$arg))
-				$paramsnext[$arg] = $$arg;
-		}
-		$paramsnext['_type'] = 'absolute_path';
-		require_once $smarty->_get_plugin_filepath('function', 'query');
-		$urlnext = smarty_function_query($paramsnext, $smarty);
 	}
 
 	$smarty->assign_by_ref('quiet', $quiet);
 	$smarty->assign_by_ref('urlparam', $urlparam);
-	$smarty->assign_by_ref('urlnext', $urlnext);
 	
 	if(!isset($containerClass)) {$containerClass = 'wikiplugin_articles';}
 	$smarty->assign('container_class', $containerClass);
@@ -258,16 +238,12 @@ function wikiplugin_articles($data, $params)
 	}
 	$smarty->assign('largefirstimage', $largefirstimage);
 	if (!isset($overrideDates))	$overrideDates = 'n';
-
-	if (!empty($translationOrphan)) {
-		$filter['translationOrphan'] = $translationOrphan;
-	}
 	
 	include_once("lib/comments/commentslib.php");
 	$commentslib = new Comments($dbTiki);
 	
-	$listpages = $artlib->list_articles($start, $max, $sort, '', $dateStartTS, $dateEndTS, 'admin', $type, $topicId, 'y', $topic, $categId, '', '', $lang, '', '', ($overrideDates == 'y'), 'y', $filter);
- 	if ($prefs['feature_multilingual'] == 'y' && empty($translationOrphan)) {
+	$listpages = $artlib->list_articles($start, $max, $sort, '', $dateStartTS, $dateEndTS, 'admin', $type, $topicId, 'y', $topic, $categId, '', '', $lang, '', '', ($overrideDates == 'y'), 'y');
+ 	if ($prefs['feature_multilingual'] == 'y') {
 		global $multilinguallib;
 		include_once("lib/multilingual/multilinguallib.php");
 		$listpages['data'] = $multilinguallib->selectLangList('article', $listpages['data'], $pageLang);

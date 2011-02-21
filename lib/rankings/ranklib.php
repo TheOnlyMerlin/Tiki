@@ -16,7 +16,6 @@ class RankLib extends TikiLib
 	function wiki_ranking_top_pages($limit, $categ=array(), $lang=null)
 	{
 		global $user, $prefs;
-		$pagesAdded = array();
 		
 		$bindvals = array();
 		$mid = '';

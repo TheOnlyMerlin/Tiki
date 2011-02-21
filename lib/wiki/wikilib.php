@@ -65,7 +65,7 @@ class WikiLib extends TikiLib
 	 *  Get the contributors for page
 	 *  the returned array does not contain the user $last (usually the current or last user)
 	 */
-	function get_contributors($page, $last='') {
+	function get_contributors($page, $last='', $versions=true) {
 		static $cache_page_contributors;
 		if ($cache_page_contributors['page'] == $page) {
 			if (empty($last)) {
@@ -79,10 +79,14 @@ class WikiLib extends TikiLib
 			}
 			return $ret;
 		}
-
-		$query = "select `user`, MAX(`version`) as `vsn` from `tiki_history` where `pageName`=? group by `user` order by `vsn` desc";
-		// jb fixed 110115 - please check intended behaviour remains
-		// was: $query =  "select `user` from `tiki_history` where `pageName`=? group by `user` order by MAX(`version`) desc";
+		if ($versions) {
+			$ustring = ',`version`';
+			$vstring = '`version`,`user`';
+		} else {
+			$ustring = '';
+			$vstring = '`user`';
+		}
+		$query = "select DISTINCT `user`$ustring from `tiki_history` where `pageName`=? order by $vstring desc";
 		$result = $this->query($query,array($page));
 		$cache_page_contributors = array();
 		$cache_page_contributors['contributors'] = array();
@@ -135,29 +139,6 @@ class WikiLib extends TikiLib
 	// See http://dev.tiki.org/Bad+characters
 	function contains_badchars($name) {
 		return preg_match("/[\/?#\[\]@$&+;=<>]/", $name);		
-	}
-
-	/**
-	 * Duplicate an existing page
-	 *
-	 * @param string $name
-	 * @param string $copyName
-	 * @return bool
-	 */
-	function wiki_duplicate_page($name, $copyName = null) {
-		global $tikilib;
-
-		$info = $tikilib->get_page_info($name);
-
-		if (!$info) {
-			return false;
-		}
-
-		if (!$copyName) {
-			$copyName = $name . ' (' . $tikilib->now . ')';
-		}
-
-		return $tikilib->create_page($copyName, 0, $info['data'], $tikilib->now, $info['comment'], $info['user'], $info['ip'], $info['description'], $info['lang'], $info['is_html']);
 	}
 
 	// This method renames a wiki page
@@ -324,13 +305,24 @@ class WikiLib extends TikiLib
 				$smarty->assign('mail_site', $_SERVER["SERVER_NAME"]);
 				$smarty->assign('mail_oldname', $oldName);
 				$smarty->assign('mail_newname', $newName);
+				$smarty->assign('mail_date', $this->now);
 				$smarty->assign('mail_user', $user);
+				$smarty->assign('watchId', $nots['watchId']);
+				$foo = parse_url($_SERVER["REQUEST_URI"]);
+				$machine = $tikilib->httpPrefix( true ). $foo["path"];
+				$smarty->assign('mail_machine', $machine);
+				$parts = explode('/', $foo['path']);
+				if (count($parts) > 1)
+					unset ($parts[count($parts) - 1]);
+				$smarty->assign('mail_machine_raw', $tikilib->httpPrefix( true ). implode('/', $parts));
 				sendEmailNotification($nots, "watch", "user_watch_wiki_page_renamed_subject.tpl", $_SERVER["SERVER_NAME"], "user_watch_wiki_page_renamed.tpl");
 			}
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('pages', $newName);
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('pages', $newName);
+		}
 
 		if ($prefs['wikiHomePage'] == $oldName) {
 			$tikilib->set_preference('wikiHomePage', $newName);
@@ -367,18 +359,18 @@ class WikiLib extends TikiLib
 		$canBeRefreshed = false;
 		
 		$info = $this->get_page_info($page);
-		if (empty($info)) {
-			return '';
+		if (!empty($info)) {
+			$parse_options = array(
+				'is_html' => $info['is_html'],
+				'language' => $info['lang'],
+			);
+			if ($suppress_icons || (!empty($info['lockedby']) && $info['lockedby'] != $user)) {
+				$parse_options['suppress_icons'] = true;
+			}
+		} else {
+			return $content;
 		}
-		$parse_options = array(
-			'is_html' => $info['is_html'],
-			'language' => $info['lang'],
-		);
-		if ($suppress_icons || (!empty($info['lockedby']) && $info['lockedby'] != $user)) {
-			$parse_options['suppress_icons'] = true;
-		}
-
-		$wiki_cache = !empty($info['wiki_cache']) ? $info['wiki_cache'] : $prefs['wiki_cache']; 
+		$wiki_cache = !empty($info['wiki_cache']) ? $info['wiki_cache'] : $prefs['wiki_cache'];
 		if ($wiki_cache > 0 && empty($user) ) {
 			$cache_info = $this->get_cache_info($page);
 			if (!empty($cache_info['cache_timestamp']) && $cache_info['cache_timestamp'] + $prefs['wiki_cache'] > $this->now) {
@@ -426,10 +418,6 @@ class WikiLib extends TikiLib
 
 		$query = "delete from `tiki_wiki_attachments` where `attId`='$attId'";
 		$result = $this->query($query);
-		if ($prefs['feature_actionlog'] == 'y') {
-			global $logslib; include_once('lib/logs/logslib.php');
-			$logslib->add_action('Removed', $attId, 'wiki page attachment');
-		}
 	}
 
 	function wiki_attach_file($page, $name, $type, $size, $data, $comment, $user, $fhash, $date='') {
@@ -448,14 +436,6 @@ class WikiLib extends TikiLib
 			$query = 'select `attId` from `tiki_wiki_attachments` where `page`=? and `filename`=? and `created`=? and `user`=?';
 			$attId = $this->getOne($query, array($page, $name, $now, $user));
 			sendWikiEmailNotification('wiki_file_attached', $page, $user, $comment, '', $name, '','', false, '', 0,$attId);
-		}
-		if ($prefs['feature_actionlog'] == 'y') {
-			global $logslib; include_once('lib/logs/logslib.php');
-			if (empty($attId)) {
-				$query = 'select `attId` from `tiki_wiki_attachments` where `page`=? and `filename`=? and `created`=? and `user`=?';
-				$attId = $this->getOne($query, array($page, $name, $now, $user));
-			}
-			$logslib->add_action('Created', $attId, 'wiki page attachment');
 		}
 	}
 	function get_wiki_attach_file($page, $name, $type, $size) {
@@ -926,8 +906,21 @@ class WikiLib extends TikiLib
 		return $prefs['wikiHomePage'];
 	}
 
+	function save_draft($pageName, $pageDesc, $pageData, $pageComment) {
+		global $user;
+
+		if (!$user) return false;
+
+		$query = "delete from `tiki_page_drafts` where `user`=? and `pageName`=?";
+		$this->query($query, array($user, $pageName));
+
+		$query = "insert into `tiki_page_drafts` (`user`,`pageName`,`data`,`description`,`comment`,`lastModif`) values (?,?,?,?,?,?)";
+		$bindvals = array($user, $pageName, $pageData, $pageDesc, $pageComment, time());
+
+		return $this->query($query, $bindvals) ? true : false;
+	}
 	function sefurl($page, $with_next='', $all_langs='') {
-		global $prefs, $smarty, $info;
+		global $prefs, $smarty;
 		if( basename( $_SERVER['PHP_SELF'] ) == 'tiki-all_languages.php' ) {
 			return 'tiki-all_languages.php?page='.urlencode($page);
 		}
@@ -938,15 +931,6 @@ class WikiLib extends TikiLib
 		}
 
 		$href = "$script_name?page=".urlencode($page);
-
-		if (isset($prefs['feature_wiki_use_date_links']) && $prefs['feature_wiki_use_date_links'] == 'y') {
-			if (isset($_REQUEST['date'])) {
-				$href .= '&date='. urlencode($_REQUEST['date']);
-			} else if (isset($_REQUEST['version'])) {
-				$href .= '&date='. urlencode($info['lastModif']);
-			}
-		}
-
 		if ($with_next) {
 			$href .= '&amp;';
 		}

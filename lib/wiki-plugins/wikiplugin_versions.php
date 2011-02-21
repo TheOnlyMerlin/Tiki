@@ -32,10 +32,9 @@ function wikiplugin_versions_info()
 	return array(
 		'name' => tra('Versions'),
 		'documentation' => 'PluginVersions',
-		'description' => tra('Create tabs for showing alternate versions of content'),
+		'description' => tra('Split the text in parts visible only under some conditions'),
 		'prefs' => array( 'wikiplugin_versions' ),
 		'body' => tra('Block of text separated by ---(version x)--- markers. Text before the first marker is used by default.'),
-		'icon' => 'pics/icons/tab_edit.png',
 		'params' => array(
 			'nav' => array(
 				'required' => false,
@@ -43,7 +42,7 @@ function wikiplugin_versions_info()
 				'description' => tra('Displays a navigation box that allows users to select a specific version to display.'),
 				'default' => 'n',
 				'filter' => 'alpha',
-				'options' => array(
+     			'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n'), 
@@ -56,7 +55,7 @@ function wikiplugin_versions_info()
 				'default' => 'y',
 				'filter' => 'alpha',
 				'parent' => array('name' => 'nav', 'value' => 'n'),
-				'options' => array(
+     			'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n'), 

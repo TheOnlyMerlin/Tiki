@@ -164,10 +164,9 @@ function collect_files ($dir)
 				'htmlpurifier' === $file || 'adodb' === $file || 'smarty' === $file ||
 				'ezcomponents' === $file || 'phpcas' === $file || 
 				'jscalendar' === $file || 'pclzip' === $file || 'jquery' === $file ||
-				'pear' === $file || 'ckeditor' === $file ||
+				'phplayers' === $file || 'pear' === $file || 'ckeditor' === $file ||
 				'lang' === $file || 'templates_c' === $file || 'dump'  === $file || 
-				'temp' === $file || 'img' === $file || 'cache' === $file ||
-				'test' === $file || 'codemirror' === $file) {
+				'temp' === $file || 'img' === $file || 'cache' === $file) {
 			continue;
 		}
 
@@ -613,15 +612,11 @@ foreach ($languages as $ksel => $sel) {
 				// For example, if word == 'Login:', we don't keep it if we also have a string 'Login'
 				//   (except if we already have an explicit translation for 'Login:')
 				//
-				$word_length = strlen($word);
-				$word_last_char = $word[$word_length - 1];
+				$word_lenght = strlen($word);
+				$word_last_char = $word[$word_lenght - 1];
 				if ( in_array($word_last_char, $punctuations) ) {
-					$word = substr($word, 0, $word_length - 1);
-					if ( isset($lang[$word]) ) {
-	               $translated[$word] = $lang[$word];
-	               unset ($unused[$word]);
-	               continue;
-					}
+					$word = substr($word, 0, $word_lenght - 1);
+					if ( isset($lang[$word]) ) continue;
 				}
 
 				if (!isset ($to_translate[$word])) {

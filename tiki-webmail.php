@@ -7,6 +7,9 @@
 
 $section = 'webmail';
 require_once ('tiki-setup.php');
+if ($prefs['ajax_xajax'] == 'y') {
+	require_once ('lib/ajax/ajaxlib.php');
+}
 include_once ('lib/webmail/webmaillib.php');
 include_once ('lib/webmail/contactlib.php');
 
@@ -18,8 +21,24 @@ require_once ('lib/mail/mimelib.php');
 include_once ('lib/webmail/class.rc4crypt.php');
 include_once ('lib/webmail/tikimaillib.php');
 
-function handleWebmailRedirect($inUrl) {		// AJAX_TODO
+function handleWebmailRedirect($inUrl) {		// TODO refactor into tikilib?
 	global $prefs;
+	
+	if ($prefs['ajax_xajax'] != 'y' || empty($_REQUEST['xjxfun'])) {
+		header ('location: tiki-webmail.php?'.$inUrl);
+		die();
+	} else {
+	    global $ajaxlib, $headerlib;
+//			$objResponse = new xajaxResponse('UTF-8');					// should be possible server-side, no?
+//			$objResponse->Redirect('tiki-webmail.php?'.$urlq);
+	    $headerlib->add_js('window.location.replace("tiki-webmail.php?'.$inUrl.'")');
+	    $ajaxlib->registerTemplate('tiki-webmail.tpl');
+//   	    $ajaxlib->registerTemplate('error.tpl');
+//	    $ajaxlib->registerFunction('loadComponent');
+		$ajaxlib->processRequests();
+		die();
+	}
+	
 }
 
 $access->check_user($user);
@@ -70,7 +89,7 @@ if ($_REQUEST['locSection'] == 'read') {
 		$mail = $webmaillib->get_mail_storage($current);
 	} catch (Exception $e) {
 		// do something better with the error
-		$smarty->assign('conmsg', tra('There was a problem connecting to that account.').'<br />'.$e->getMessage());
+		$smarty->assign('conmsg', tra('There is a problem connecting to that account.').'<br />'.$e->getMessage());
 	}
 
 	if (isset($_REQUEST['delete_one'])) {
@@ -81,7 +100,7 @@ if ($_REQUEST['locSection'] == 'read') {
 			$webmaillib->remove_webmail_message($current['accountId'], $user, $aux['realmsgid']);
 			unset($_REQUEST['msgid']);
 		} catch (Exception $e) {
-			$smarty->assign('conmsg', tra('There was a problem deleting that mail.').'<br />'.$e->getMessage());
+			$smarty->assign('conmsg', tra('There are a problem deleting that mail.').'<br />'.$e->getMessage());
 		}
 	}
 
@@ -213,9 +232,9 @@ if ($_REQUEST['locSection'] == 'read') {
 			$aux['delivery-date'] = $aux['date'];
 		}
 		$aux['timestamp'] = strtotime($aux['delivery-date']);
-	
-		// the subject needs to be decoded	
-		$aux['subject'] = isset($aux['subject']) ? mb_decode_mimeheader($aux['subject']) : '';
+		
+		//$aux['subject'] = isset($aux['subject']) ? utf8_encode($aux['subject']) : '';
+		$aux['subject'] = isset($aux['subject']) ? mb_decode_mimeheader($aux['subject']) : ''; // the commented out line above doesn't work
 		$aux['from']    = isset($aux['from'])    ? utf8_encode($aux['from']) : '';
 		$aux['to']      = isset($aux['to'])      ? utf8_encode($aux['to']) : '';
 		$aux['cc']      = isset($aux['cc'])      ? utf8_encode($aux['cc']) : '';
@@ -289,7 +308,7 @@ END;
 		$mail = $webmaillib->get_mail_storage($current);
 	} catch (Exception $e) {
 		// do something better with the error
-		$smarty->assign('conmsg', tra('There was a problem connecting to that account.').'<br />'.$e->getMessage());
+		$smarty->assign('conmsg', tra('There are a problem connecting to that account.').'<br />'.$e->getMessage());
 	}
 
 	// The user just clicked on one of the flags, so set up for flag change
@@ -325,7 +344,7 @@ END;
 				}
 			}
 			if (!empty($err)) {
-				$smarty->assign('conmsg', tra('There was a problem while trying to delete these mails.').'<br />'.$err);
+				$smarty->assign('conmsg', tra('There are a problem deleting mails.').'<br />'.$err);
 			}
 		}
 	}
@@ -337,7 +356,7 @@ END;
 		try {
 			$mail->removeMessage($_REQUEST['msgdel']);
 		} catch (Exception $e) {
-			$smarty->assign('conmsg', tra('There was a problem while trying to delete that mail.').'<br />'.$e->getMessage());
+			$smarty->assign('conmsg', tra('There are a problem deleting that mail.').'<br />'.$e->getMessage());
 		}
 	}
 	
@@ -407,7 +426,6 @@ END;
 
 		for ($i = 0; $i < $mailsum; $i++) {
 			$aux = $webmail_list[$i];
-			$aux['subject'] = mb_decode_mimeheader($aux['subject']); // Lets decode the Subject before going to list it... otherwise it returns garbage for non-ascii subjects
 			$webmaillib->replace_webmail_message($current['accountId'], $user, $aux['realmsgid']);
 			list($aux['isRead'], $aux['isFlagged'], $aux['isReplied'])
 				= $webmaillib->get_mail_flags($current['accountId'], $user, $aux['realmsgid']);
@@ -583,6 +601,9 @@ END;
 		unset($_REQUEST['accountId']);
 	}
 	
+//	if (empty($_REQUEST['accountId']) || isset($_REQUEST['new_acc']) && $webmaillib->count_webmail_accounts($user) > 0) {
+//		$headerlib->add_jq_onready('$("#settingsFormDiv").hide();');
+//	}
 	// The red cross was pressed
 	if (isset($_REQUEST['remove'])) {
 		check_ticket('webmail');
@@ -882,5 +903,11 @@ include_once ('tiki-mytiki_shared.php');
 include_once ('tiki-section_options.php');
 
 ask_ticket('webmail');
+if ($prefs['ajax_xajax'] == 'y') {
+    global $ajaxlib;
+    $ajaxlib->registerTemplate('tiki-webmail.tpl');
+    $ajaxlib->registerFunction('loadComponent');
+    $ajaxlib->processRequests();
+}
 $smarty->assign('mid', 'tiki-webmail.tpl');
 $smarty->display('tiki.tpl');

@@ -13,7 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 function module_freetags_most_popular_info() {
 	return array(
-		'name' => tra('Most Popular Tags'),
+		'name' => tra('Most popular tags'),
 		'description' => tra('Shows the most popular freetags. More popularity is indicated by a larger font.'),
 		'prefs' => array( 'feature_freetags' ),
 		'params' => array(

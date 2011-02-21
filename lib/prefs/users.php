@@ -41,8 +41,8 @@ function prefs_users_list() {
 			'name' => tra('Displayed time zone'),
 			'type' => 'radio',
 			'options' => array(
-				'Site' => tra('Always the site default time zone.'),
-				'Local' => tra('Use time zone set from user preferences, or the automatically detected time zone for anonymous (if browser allows). Site default is used as fallback.'),
+				'Site' => tra('Use site default to show times'),
+				'Local' => tra('Detect user timezone (if browser allows). Otherwise use site default.'),
 			),
 		),
 		'users_prefs_userbreadCrumb' => array(
@@ -71,12 +71,6 @@ function prefs_users_list() {
 			'dependencies' => array(
 				'feature_wiki',
 			),
-		),
-		'users_prefs_display_12hr_clock' => array(
-			'name' => tra('Use 12-hour clock for time selectors'),
-			'type' => 'flag',
-			'description' => tra('Use the 12-hour clock (with AM and PM) for time selectors used in some edit windows 
-									to set the time for publishing new or edited blog posts, articles, etc.')
 		),
 		'users_prefs_diff_versions' => array(
 			'name' => tra('Use new diff any version interface'),

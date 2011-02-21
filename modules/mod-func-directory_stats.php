@@ -13,10 +13,9 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 function module_directory_stats_info() {
 	return array(
-		'name' => tra('Directory Statistics'),
+		'name' => tra('Directory statistics'),
 		'description' => tra('Displays statistics about the directory, including the number of sites validated and to validate, the number of categories, of searches and of visited links.'),
 		'prefs' => array( 'feature_directory' ),
-		'documentation' => 'Module directory_stats',
 		'params' => array()
 	);
 }

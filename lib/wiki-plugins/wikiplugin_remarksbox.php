@@ -32,11 +32,10 @@ function wikiplugin_remarksbox_help() {
 function wikiplugin_remarksbox_info() {
 	return array(
 		'name' => tra('Remarks Box'),
-		'documentation' => 'PluginRemarksBox',
+		'documentation' => tra('PluginRemarksBox'),		
 		'description' => tra('Displays a comment, tip, note or warning box'),
 		'prefs' => array( 'wikiplugin_remarksbox' ),
 		'body' => tra('remarks text'),
-		'icon' => 'pics/icons/comment_add.png',
 		'params' => array(
 			'type' => array(
 				'required' => true,

@@ -83,12 +83,6 @@ if ($prefs['feature_freetags'] == 'y') {
 	}
 }
 
-if ($prefs['feature_categories'] == 'y') {
-	$cat_type = 'blog post';
-	$cat_objid = $postId;
-	require_once('categorize_list.php');	
-}
-
 $smarty->assign('ownsblog', $ownsblog);
 $post_info['data'] = TikiLib::htmldecode($post_info['data']);
 $smarty->assign('postId', $postId);
@@ -135,7 +129,7 @@ if ($prefs['feature_blogposts_comments'] == 'y') {
 		'sort_mode',
 		'blogId'
 	);
-	$comments_prefix_var = 'blog post:';
+	$comments_prefix_var = 'post:';
 	$comments_object_var = 'postId';
 	include_once ("comments.php");
 }
@@ -146,6 +140,10 @@ include_once ('tiki-section_options.php');
 if ($user && $prefs['feature_notepad'] == 'y' && $tiki_p_notepad == 'y' && isset($_REQUEST['savenotepad'])) {
 	check_ticket('view-blog-post');
 	$tikilib->replace_note($user, 0, $post_info['title'] ? $post_info['title'] : $tikilib->date_format("%d/%m/%Y [%H:%M]", $post_info['created']) , $post_info['data']);
+}
+if ($prefs['feature_mobile'] == 'y' && isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'mobile') {
+	include_once ("lib/hawhaw/hawtikilib.php");
+	HAWTIKI_view_blog_post($post_info);
 }
 
 ask_ticket('view-blog-post');

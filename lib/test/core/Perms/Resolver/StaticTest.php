@@ -12,7 +12,6 @@ class Perms_Resolver_StaticTest extends TikiTestCase
 		) );
 
 		$this->assertFalse( $static->check( 'view', array() ) );
-		$this->assertEquals(array(), $static->applicableGroups());
 	}
 
 	function testNotRightGroup() {
@@ -21,7 +20,6 @@ class Perms_Resolver_StaticTest extends TikiTestCase
 		) );
 
 		$this->assertFalse( $static->check( 'view', array( 'Anonymous' ) ) );
-		$this->assertEquals(array('Registered'), $static->applicableGroups());
 	}
 
 	function testRightGroup() {
@@ -31,7 +29,6 @@ class Perms_Resolver_StaticTest extends TikiTestCase
 		) );
 
 		$this->assertTrue( $static->check( 'edit', array( 'Anonymous', 'Registered' ) ) );
-		$this->assertEquals(array('Anonymous', 'Registered'), $static->applicableGroups());
 	}
 }
 

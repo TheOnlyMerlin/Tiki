@@ -62,8 +62,6 @@ if (isset($_REQUEST["rename"]) || isset($_REQUEST["confirm"])) {
 			case 2:
 				$smarty->assign('msg', tra("Page already exists"));
 				break;
-			default:
-				throw $e;
 			}
 		}
 	}

@@ -9,8 +9,7 @@ function wikiplugin_trackercomments_info() {
 	return array(
 		'name' => tra('Tracker Comments'),
 		'documentation' => 'PluginTrackerComments',
-		'description' => tra('Display the number of tracker comments'),
-		'icon' => 'pics/icons/comments.png',
+		'description' => tra('Displays the number of tracker comments'),
 		'params' => array(
 			'trackerId' => array(
 				'required' => true,

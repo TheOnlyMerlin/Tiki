@@ -19,12 +19,10 @@ function wikiplugin_footnotearea_help() {
 
 function wikiplugin_footnotearea_info() {
 	return array(
-		'name' => tra( 'Footnote Area' ),
-		'documentation' => 'PluginFootnoteArea',
-		'description' => tra('Create automatically numbered footnotes (together with PluginFootnote)'),
+		'name' => tra( 'Footnotearea' ),
+		'documentation' => tra('PluginFootnoteArea'),
+		'description' => tra('Inserts a section for collected footnotes in the wiki page.'),
 		'prefs' => array('wikiplugin_footnotearea'),
-		'icon' => 'pics/icons/text_horizontalrule.png',
-		'format' => 'html',
 		'params' => array(),
 	);
 }
@@ -34,10 +32,11 @@ function wikiplugin_footnotearea($data, $params) {
 	$html = '<div class="footnotearea">';
 	$html .= '<hr />';
 
-	foreach($GLOBALS["footnotesData"] as $data => $number){
-		$html .= '<div class="onefootnote" id="footnote' . $number . '">';
-		$html .= '<a href="#ref_footnote' . $number . '">'. $number . '.</a> ';
-		$html .= '~/np~' . $data . '~np~';
+	foreach($GLOBALS["footnotesData"] as $key => $value){
+		$noteId = $key + 1;
+		$html .= '<div class="onefootnote" id="footnote' . $noteId . '">';
+		$html .= '<a href="#ref_footnote' . $noteId . '">'. $noteId . '.</a> ';
+		$html .= $value;
 		$html .= '</div>';
 	}
 	$html .= '</div>';

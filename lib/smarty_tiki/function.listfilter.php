@@ -66,7 +66,7 @@ function smarty_function_listfilter($params, &$smarty) {
 		if (!isset($selectors)) $selectors = ".$id table tr";
 			
 		$content = "
-\$('#$id').keyup( function() {
+\$('#$id').keypress( function() {
 	var criterias = this.value.toLowerCase().split( /\s+/ );
 	
 	\$('$selectors').each( function() {

@@ -13,7 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 function module_last_category_objects_info() {
 	return array(
-		'name' => tra('Newest Category Items'),
+		'name' => tra('Last category objects'),
 		'description' => tra('Lists the specified number of objects of the given type in the given category, starting from the most recently created.'),
 		'prefs' => array( 'feature_categories' ),
 		'params' => array(

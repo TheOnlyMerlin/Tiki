@@ -42,9 +42,8 @@ function smarty_block_jq($params, $content, &$smarty) {
 	if (empty($content)) { return ''; }
 	
 	extract($params);
-	if ($prefs['feature_jquery'] != 'y') {
-		return isset($nojquery) ? $nojquery : tr('<!-- jq smarty plugin inactive: feature_jquery off -->');
-	}
+	$nojquery = isset($nojquery) ? $nojquery : tr('<!-- jq smarty plugin inactive: feature_jquery off -->');
+	if ($prefs['feature_jquery'] != 'y') { return $nojquery; }
 	$notonready = isset($notonready) ? $notonready : false;
 	
 	if (!$notonready) {		

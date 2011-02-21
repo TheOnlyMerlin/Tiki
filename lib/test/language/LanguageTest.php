@@ -60,7 +60,6 @@ class LanguageTest extends TikiTestCase
 		rmdir($this->langDir);
 
 		TikiDb::get()->query('DELETE FROM `tiki_language` WHERE `lang` = ?', array($this->lang));
-		TikiDb::get()->query('DELETE FROM `tiki_untranslated` WHERE `lang` = ?', array($this->lang));
 	}
 
 	// TODO: We need a way to create a Tiki database just for the tests
@@ -123,19 +122,6 @@ class LanguageTest extends TikiTestCase
 		TikiDb::get()->query('DELETE FROM `tiki_language` WHERE `lang` = ? AND `source` = ?', array($this->lang, 'New string'));
 	}
 
-	public function testUpdateTransShouldDeleteEntryFromUntranslatedTable() {
-		TikiDb::get()->query('INSERT INTO `tiki_untranslated` (`source`, `lang`) VALUES (?, ?)', array('New string', $this->lang));
-		$this->obj->updateTrans('New string', 'New translation');
-		$result = TikiDb::get()->getOne('SELECT `source` FROM `tiki_untranslated` WHERE `lang` = ? AND `source` = ?', array($this->lang, 'New string'));
-		$this->assertFalse($result);
-	}
-	
-	public function testUpdateTransShouldIgnoreWhenSourceAndTranslationAreEqual() {
-		$this->obj->updateTrans('Source and translation are the same', 'Source and translation are the same');
-		$result = TikiDb::get()->getOne('SELECT `source` FROM `tiki_language` WHERE `lang` = ? AND `source` = ?', array($this->lang, 'Source and translation are the same'));
-		$this->assertFalse($result);
-	}
-
 	public function testWriteLanguageFile() {
 		copy(dirname(__FILE__) . '/fixtures/language_orig.php', $this->langDir . '/language.php');
 		$this->obj->writeLanguageFile();
@@ -157,7 +143,7 @@ class LanguageTest extends TikiTestCase
 	}
 
 	public function testWriteLanguageShouldIgnoreEmptyStrings() {
-		TikiDb::get()->query('INSERT INTO `tiki_language` (`source`, `lang`, `tran`, `changed`) VALUES (?, ?, ?, ?)', array('', $this->lang, '', 1));
+		TikiDb::get()->query('INSERT INTO `tiki_language` (`source`, `lang`, `tran`) VALUES (?, ?, ?)', array('', $this->lang, ''));
 		copy(dirname(__FILE__) . '/fixtures/language_orig.php', $this->langDir . '/language.php');
 		$this->obj->writeLanguageFile();
 		$this->assertEquals(file_get_contents(dirname(__FILE__) . '/fixtures/language_modif.php'), file_get_contents($this->langDir . '/language.php'));
@@ -173,4 +159,5 @@ class LanguageTest extends TikiTestCase
 		$this->obj->deleteTranslations();
 		$this->assertFalse(TikiDb::get()->getOne('SELECT * FROM `tiki_language` WHERE `lang` = ?', array($this->obj->lang)));
 	}
+
 }

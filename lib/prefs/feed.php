@@ -113,7 +113,7 @@ function prefs_feed_list() {
 			),
 		),
 		'feed_file_galleries' => array(
-			'name' => tra('File Galleries'),
+			'name' => tra('File galleries'),
 			'description' => tra('RSS feed for file galleries'),
 			'type' => 'flag',
 			'dependencies' => array(

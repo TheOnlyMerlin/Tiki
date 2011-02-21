@@ -30,11 +30,10 @@ function wikiplugin_gauge_help() {
 function wikiplugin_gauge_info() {
 	return array(
 		'name' => tra('Gauge'),
-		'documentation' => 'PluginGauge',
-		'description' => tra('Display a horizontal bar gauge'),
+		'documentation' => tra('PluginGauge'),
+		'description' => tra('Displays a graphical gauge'),
 		'prefs' => array('wikiplugin_gauge'),
 		'body' => tra('description'),
-		'icon' => 'pics/icons/chart_bar.png',
 		'params' => array(
 			'value' => array(
 				'required' => true,
@@ -136,14 +135,18 @@ function wikiplugin_gauge($data, $params) {
 		$color = '#FF0000';
 	}
 
+	if (!isset($showvalue)) {
+		$showvalue = true;
+	}
+	
 	if (!isset($perc)) {
 		$perc = false;
 	}
 
-	if (isset($showvalue) && $showvalue == 'false') {
-		$showvalue = false;
-	} else {
+	if (!isset($showvalue)) {
 		$showvalue = true;
+	} else {
+		$showvalue = (bool) $showvalue;
 	}
 	
 	if (!isset($max) or !$max) {

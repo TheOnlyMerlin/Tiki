@@ -81,7 +81,7 @@ if ($registrationlib->merged_prefs['userTracker'] == 'y') {
 		} else {
 			$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y'));
 		}
-		$tr = TikiLib::lib('trk')->get_tracker($re['usersTrackerId']);
+		$tr = $tikilib->get_tracker($re['usersTrackerId']);
 		if (!empty($tr['description'])) {
 			$smarty->assign('userTrackerHasDescription', true);
 		}
@@ -108,11 +108,48 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // xajax
 
 
-//if ($prefs['feature_ajax'] == 'y') {	//AJAX_TODO
-//	$ajaxlib->registerFunction('chkRegName');
-//	$ajaxlib->registerFunction('chkRegEmail');
-//	$ajaxlib->registerTemplate('tiki-register.tpl');
-//}
+if ($prefs['ajax_xajax'] == 'y') {
+	global $ajaxlib;
+	include_once ('lib/ajax/ajaxlib.php');
+//	include_once ('tiki-regsiter_ajax.php');
+	$ajaxlib->registerFunction('chkRegName');
+	$ajaxlib->registerFunction('chkRegEmail');
+	$ajaxlib->registerTemplate('tiki-register.tpl');
+	$ajaxlib->processRequests();
+}
+
+
+function chkRegName($name) {
+	global $smarty, $ajaxlib, $userlib;
+	$pre_no = " <img src='pics/icons/exclamation.png' style='vertical-align: middle;' alt='Error' /> ";
+	$pre_yes = " <img src='pics/icons/accept.png' style='vertical-align:middle' alt='Correct' /> ";
+	$ajaxlib->registerTemplate('tiki-register.tpl');
+	$objResponse = new xajaxResponse();
+	if ( empty($name) ) {
+		$objResponse->assign('ajax_msg_name', "innerHTML", $pre_no.tra("Missing User Name"));
+	} elseif ( $userlib->user_exists($name) ) {
+		$objResponse->assign('ajax_msg_name', "innerHTML", $pre_no.tra("User Already Exists"));
+	} else {
+		$objResponse->assign('ajax_msg_name', "innerHTML", $pre_yes.tra("Valid User Name"));
+	}
+	return $objResponse;
+}
+
+function chkRegEmail($mail) {
+	global $smarty, $ajaxlib;
+	$pre_no = " <img src='pics/icons/exclamation.png' style='vertical-align: middle;' alt='Error' /> ";
+	$pre_yes = " <img src='pics/icons/accept.png' style='vertical-align:middle' alt='Correct' /> ";
+	$ajaxlib->registerTemplate('tiki-register.tpl');
+	$objResponse = new xajaxResponse();
+	if (empty($mail)) {
+		$objResponse->assign("ajax_msg_mail", "innerHTML", $pre_no.tra("Missing Email"));
+	} elseif (!preg_match('/^[_a-z0-9\.\-]+@[_a-z0-9\.\-]+\.[a-z]{2,4}$/i', $mail)) {
+		$objResponse->assign("ajax_msg_mail", "innerHTML", $pre_no.tra('This is not a valid mail adress'));
+	} else {
+		$objResponse->assign("ajax_msg_mail", "innerHTML", $pre_yes.tra("Valid Email"));
+	}
+	return $objResponse;
+}
 
 function register_error($msg) {
 	global $smarty;

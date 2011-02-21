@@ -21,7 +21,7 @@
 	{if ($channels) or ($find)}
 		{include file='find.tpl' filters=''}
 		{if ($find) and ($channels)}
-			<p>{tr}Found{/tr} {$channels|@count} {tr}trackers:{/tr}</p>
+			<p>{tr}Found{/tr} {$channels|@count} {tr}trackers{/tr}:</p>
 		{/if}
 	{/if}
 
@@ -38,21 +38,21 @@
 		{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
 			<tr class="{cycle}">
-				<td class="id">
+				<td>
 					<a class="tablename" href="tiki-admin_trackers.php?trackerId={$channels[user].trackerId}&amp;show=mod" title="{tr}Edit{/tr}">{$channels[user].trackerId}</a>
 				</td>
-				<td class="text">
+				<td>
 					<a class="tablename" href="tiki-admin_trackers.php?trackerId={$channels[user].trackerId}&amp;show=mod" title="{tr}Edit{/tr}">{$channels[user].name|escape}</a>
 				</td>
 				{if $channels[user].descriptionIsParsed eq 'y' }
-					<td class="text">{wiki}{$channels[user].description}{/wiki}</td>
+					<td>{wiki}{$channels[user].description}{/wiki}</td>
 				{else}
-					<td class="text">{$channels[user].description|escape|nl2br}</td>
+					<td>{$channels[user].description|escape|nl2br}</td>
 				{/if}
-				<td class="date">{$channels[user].created|tiki_short_date}</td>
-				<td class="date">{$channels[user].lastModif|tiki_short_date}</td>
-				<td class="integer">{$channels[user].items}</td>
-				<td class="action">
+				<td>{$channels[user].created|tiki_short_date}</td>
+				<td>{$channels[user].lastModif|tiki_short_date}</td>
+				<td style="text-align:right;" >{$channels[user].items}</td>
+				<td class="auto">
 					<a title="{tr}Edit{/tr}" href="tiki-admin_trackers.php?trackerId={$channels[user].trackerId}&amp;show=mod">{icon _id='page_edit'}</a>
 					<a title="{tr}View{/tr}" href="tiki-view_tracker.php?trackerId={$channels[user].trackerId}">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>
 					<a title="{tr}Fields{/tr}" class="link" href="tiki-admin_tracker_fields.php?trackerId={$channels[user].trackerId}">{icon _id='table' alt="{tr}Fields{/tr}"}</a>
@@ -61,15 +61,14 @@
 					{else}
 						<a title="{tr}Permissions{/tr}" class="link" href="tiki-objectpermissions.php?objectName={$channels[user].name|escape:"url"}&amp;objectType=tracker&amp;permType=trackers&amp;objectId={$channels[user].trackerId}">{icon _id='key' alt="{tr}Permissions{/tr}"}</a>
 					{/if}
+					&nbsp;
 					<a title="{tr}Delete{/tr}" class="link" href="tiki-admin_trackers.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].trackerId}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
 				</td>
 			</tr>
 		{sectionelse}
-			{if $find}
-				{norecords _colspan=7 _text="No records found with: $find"}
-			{else}
-				{norecords _colspan=7}
-			{/if}
+			<tr class="odd">
+				<td colspan="7"><strong>{tr}No records found{/tr}{if $find} {tr}with{/tr}: {$find}{/if}.</strong></td>
+			</tr>
 		{/section}
 	</table>
 	{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
@@ -92,14 +91,14 @@
 		<input type="hidden" name="trackerId" value="{$trackerId|escape}" />
 		<table class="formcolor">
 			<tr>
-				<td>{tr}Name:{/tr}</td>
+				<td>{tr}Name{/tr}:</td>
 				<td>
 					<input type="text" name="name" value="{$name|escape}" />
 				</td>
 			</tr>
 
 			<tr>
-				<td>{tr}Description:{/tr}</td>
+				<td>{tr}Description{/tr}:</td>
 				<td>
 					{tr}Description text is wiki-parsed:{/tr} 
 					<input type="checkbox" name="descriptionIsParsed" {if $descriptionIsParsed eq 'y'}checked="checked"{/if} onclick="toggleBlock('trackerDesc');" />
@@ -477,12 +476,6 @@
 				<br /><em>{tr}wiki:pageName for a wiki page or tpl:tplName for a template{/tr}</em></td>
 			</tr>
 
-			<tr>
-				<td>{tr}Wiki page to edit an item{/tr}</td>
-				<td><input type="text" name="editItemPretty" value="{$info.editItemPretty|escape}" />
-				<br /><em>{tr}wiki:pageName for a wiki page or tpl:tplName for a template{/tr}</em></td>
-			</tr>
-
 			{if !empty($info.todos)}
 				<tr>
 					<td>{tr}Status changes list{/tr}</td>
@@ -601,9 +594,6 @@ categories = {$catsdump}
 	</div>
 	
 	{if $trackerId}
-		<h2>Export for profile</h2>
-		{button href="tiki-admin_trackers.php?trackerId=$trackerId&exportTrackerProfile=y" _text="{tr}Export tracker{/tr}"}
-
 		{include file='tiki-export_tracker.tpl'}
 
 		<h2>{tr}Import CSV data{/tr}</h2>

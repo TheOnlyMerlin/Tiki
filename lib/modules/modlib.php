@@ -18,18 +18,6 @@ class ModLib extends TikiLib
 
 	public $pref_errors = array();
 	
-	// additional module zones added to this array will be exposed to tiki.tpl
-	// TODO change modules user interface to enable additional zones
-	public $module_zones = array(
-		't' => 'top_modules',
-		'o' => 'topbar_modules',
-		'p' => 'pagetop_modules',
-		'l' => 'left_modules',
-		'r' => 'right_modules',
-		'q' => 'pagebottom_modules',
-		'b' => 'bottom_modules',
-	);
-
 	function replace_user_module($name, $title, $data, $parse=NULL) {
 		if ((!empty($name)) && (!empty($data))) {
 			$query = "delete from `tiki_user_modules` where `name`=?";
@@ -135,42 +123,6 @@ class ModLib extends TikiLib
 		$result = $this->query($query,array($moduleId));
 		return true;
 	}
-	
-	/**
-	 * Reset all module ord's according to supplied array or by displayed order 
-	 * @param array $module_order[zone][moduleId] (optional)
-	 */
-	function reorder_modules($module_order = array()) {
-		global $user;
-		$all_modules = $this->get_modules_for_user($user, $this->module_zones);
-		if (empty($module_order)) {	// rewrite module order as displayed
-			foreach ($all_modules as $zone => $contents) {
-				$module_order[$zone] = array();
-	    		foreach ($contents as $index => $module) {
-	    			$module_order[$zone][$index] = (int) $module['moduleId'];
-	    		}
-	    	}
-		}
-		$section_map = array_flip($this->module_zones);
-		$bindvars = array();
-		$query = '';
-		foreach ($module_order as $zone => $contents) {
-    		$section_initial = $section_map[$zone];
-    		foreach ($contents as $index => $moduleId) {
-    			if ($moduleId) {
-	    			if ($all_modules[$zone][$index]['moduleId'] != $moduleId || ($all_modules[$zone][$index]['ord'] != $index + 1 || $all_modules[$zone][$index]['position'] != $section_initial)) {
-	    				$query .= 'UPDATE `tiki_modules` SET `ord`=?, `position`=? WHERE `moduleId`=?;';
-						$bindvars[] = $index + 1;
-						$bindvars[] = $section_initial;
-						$bindvars[] = $moduleId;
-	    			}
-    			}
-    		}
-    	}
-		if ($query) {
-			$result = $this->query($query, $bindvars);
-		}
-	}
 
 	function get_all_modules() {
 		$user_modules = $this->list_user_modules();
@@ -183,6 +135,7 @@ class ModLib extends TikiLib
 
 		// Now add all the system modules
 		$h = opendir("templates/modules");
+
 		while (($file = readdir($h)) !== false) {
 			if (substr($file, 0, 4) == 'mod-' && preg_match ("/\.tpl$/", $file)) {
 				if (!strstr($file, "nocache")) {
@@ -192,15 +145,14 @@ class ModLib extends TikiLib
 				}
 			}
 		}
+
 		closedir ($h);
 		return $all_modules;
 	}
 
 	function remove_user_module($name) {
 
-		$query = "delete from `tiki_modules` where `name`=?";
-		$result = $this->query($query,array($name));
-		
+		$this->unassign_module($name);
 		$query = " delete from `tiki_user_modules` where `name`=?";
 		$result = $this->query($query,array($name));
 
@@ -251,8 +203,7 @@ class ModLib extends TikiLib
 			$user_groups = array( 'Anonymous' );
 		}
 		$pass = 'y';
-		if ($tiki_p_admin == 'y' && $prefs['modhideanonadmin'] == 'y' && $module_info['groups'] == serialize(array('Anonymous')) &&
-				strpos($_SERVER["SCRIPT_NAME"], 'tiki-admin_modules.php') === false) {
+		if ($tiki_p_admin == 'y' && $prefs['modhideanonadmin'] == 'y' && $module_info['groups'] == serialize(array('Anonymous'))) {
 			$pass = 'n';
 		} elseif ($tiki_p_admin != 'y' && $prefs['modallgroups'] != 'y') {
 			if ($module_info['groups']) {
@@ -260,29 +211,27 @@ class ModLib extends TikiLib
 			} else {
 				$module_groups = array();
 			}
-			if (!empty($module_groups)) {	// if no groups are set show to all users (modules revamp [MOD] in Tiki 7)
-				$pass = 'n';
-				if ($prefs['modseparateanon'] !== 'y') {
+			$pass = 'n';
+			if ($prefs['modseparateanon'] !== 'y') {
+				foreach ($module_groups as $mod_group) {
+					if (in_array($mod_group, $user_groups)) {
+						$pass = 'y';
+						break; 
+					}
+				}
+			} else {
+				if(!$user) { 
+					if (in_array('Anonymous', $module_groups)) {
+						$pass = 'y';
+					}
+				} else { 
 					foreach ($module_groups as $mod_group) {
+						if ($mod_group === 'Anonymous') { 
+							continue; 
+						}
 						if (in_array($mod_group, $user_groups)) {
 							$pass = 'y';
-							break; 
-						}
-					}
-				} else {
-					if(!$user) { 
-						if (in_array('Anonymous', $module_groups)) {
-							$pass = 'y';
-						}
-					} else { 
-						foreach ($module_groups as $mod_group) {
-							if ($mod_group === 'Anonymous') { 
-								continue; 
-							}
-							if (in_array($mod_group, $user_groups)) {
-								$pass = 'y';
-								break;
-							}
+							break;
 						}
 					}
 				}
@@ -291,10 +240,7 @@ class ModLib extends TikiLib
 		return $pass;
 	}
 
-	function get_modules_for_user( $user, array $module_zones = array()) {
-		if (empty($module_zones)) {
-			$module_zones = $this->module_zones;
-		}
+	function get_modules_for_user( $user, array $module_zones ) {
 		$list = $this->get_raw_module_list_for_user( $user, $module_zones );
 
 		foreach( $list as & $partial ) {
@@ -326,10 +272,6 @@ class ModLib extends TikiLib
 
 		$module_params['module_position'] = $module['position'];
 		$module_params['module_ord'] = $module['ord'];
-
-		if ( $prefs['user_flip_modules'] === 'n' ) {
-			$module_params['flip'] = 'n';
-		}
 
 		if( isset( $module_params['section'] ) && $module_params['section'] == 'wiki' ) {
 			$module_params['section'] = 'wiki page';
@@ -385,21 +327,19 @@ class ModLib extends TikiLib
 
 		if( isset( $params['theme'] ) ) {
 			global $tc_theme;
-			
-			foreach ((array) $params['theme'] as $t) {
-				if( $t{0} != '!' ) { // usual behavior
-					if( !empty($tc_theme) && $t !== $tc_theme ) {
-						return false;
-					} elseif( $t !== $prefs['style'] && empty($tc_theme)) {
-						return false;
-					}
-				} else { // negation behavior
-					$excluded_theme = substr($t,1);
-					if( !empty($tc_theme) && $excluded_theme === $tc_theme ) {
-						return false;
-					} elseif( $excluded_theme === $prefs['style'] && empty( $tc_theme )) {
-						return false;
-					}
+
+			if( $params['theme']{0} != '!' ) { // usual behavior
+				if( isset($tc_theme) && $tc_theme > '' && $params['theme'] != $tc_theme ) {
+					return false;
+				} elseif( $params['theme'] != $prefs['style'] && ( !isset($tc_theme) || $tc_theme == '' ) ) {
+					return false;
+				}
+			} else { // negation behavior
+				$excluded_theme = substr($params['theme'],1);
+				if( isset($tc_theme) && $tc_theme > '' && $excluded_theme == $tc_theme ) {
+					return false;
+				} elseif( $excluded_theme == $prefs['style'] && ( ! isset( $tc_theme ) || $tc_theme == '' ) ) {
+					return false;
 				}
 			}
 		}
@@ -435,7 +375,7 @@ class ModLib extends TikiLib
 			}
 		}
 		
-		if ($module['name'] == 'login_box' && (basename($_SERVER['SCRIPT_NAME']) == 'tiki-login_scr.php' || basename($_SERVER['SCRIPT_NAME']) == 'tiki-login_openid.php')) {
+		if ($module['name'] == 'login_box' && basename($_SERVER['SCRIPT_NAME']) == 'tiki-login_scr.php') {
 			return false;
 		}
 
@@ -482,7 +422,7 @@ class ModLib extends TikiLib
 		sort($files);
 		return $files;
 	}
-
+	
 	function get_module_info( $module ) {
 		if( is_array( $module ) ) {
 			$moduleName = $module['name'];
@@ -499,11 +439,6 @@ class ModLib extends TikiLib
 
 			if( function_exists( $info_func ) ) {
 				$info = $info_func();
-				if (!empty($info['params'])) {
-					foreach ($info['params'] as &$p) {
-						$p['section'] = 'module';
-					}
-				}
 			}
 
 			$info['type'] = 'function';
@@ -526,93 +461,70 @@ class ModLib extends TikiLib
 				'name' => tra('Module Title'),
 				'description' => tra('Title to display at the top of the box.'),
 				'filter' => 'striptags',
-				'section' => 'appearance',
 			),
 			'nobox' => array(
 				'name' => tra('No box'),
 				'description' => 'y|n '.tra('Show only the content'),
-				'section' => 'appearance',
 			),
 			'decorations' => array(
 				'name' => tra('Decorations'),
 				'description' => 'y|n '. tra('Show module decorations'),
-				'section' => 'appearance',
 			),
 			'notitle' => array(
 				'name' => tra('No title'),
 				'description' => 'y|n '.tra('Show module title'),
 				'filter' => 'alpha',
-				'section' => 'appearance',
 			),
 			'perspective' => array(
 				'name' => tra('Perspective'),
 				'description' => tra('Only display the module if in one of the listed perspective IDs. Semi-colon separated.'),
 				'separator' => ';',
 				'filter' => 'digits',
-				'section' => 'visibility',
 			),
 			'lang' => array(
 				'name' => tra('Language'),
 				'description' => tra('Module only applicable for the specified languages. Languages are defined as two character language codes. Multiple values can be separated by semi-colons.'),
 				'separator' => ';',
 				'filter' => 'lang',
-				'section' => 'visibility',
 			),
 			'section' => array(
 				'name' => tra('Section'),
 				'description' => tra('Module only applicable for the specified sections. Multiple values can be separated by semi-colons.'),
 				'separator' => ';',
 				'filter' => 'striptags',
-				'section' => 'visibility',
 			),
 			'page' => array(
 				'name' => tra('Page filter'),
 				'description' => tra('Module only applicable on the specified page names. Multiple values can be separated by semi-colons.'),
 				'separator' => ';',
 				'filter' => 'pagename',
-				'section' => 'visibility',
 			),
 			'nopage' => array(
 				'name' => tra('No Page'),
 				'description' => tra('Module not applicable on the specified page names. Multiple values can be separated by semi-colons.'),
 				'separator' => ';',
 				'filter' => 'pagename',
-				'section' => 'visibility',
 			),
 			'theme' => array(
 				'name' => tra('Theme'),
-				'description' => tra('Module enabled or disabled depending on the theme file name (e.g. "thenews.css"). Specified themes can be either included or excluded. Theme names prefixed by "!" are in the exclusion list. Multiple values can be separated by semi-colons.'),
+				'description' => tra('Module enabled or disabled depending on the theme file name (e.g. "thenews.css"). Specified themes can be either included or excluded. Theme names prefixed by \"!\" are in the exclusion list. Multiple values can be separated by semi-colons.'),
 				'separator' => ';',
 				'filter' => 'themename',
-				'section' => 'visibility',
 			),
 			'creator' => array(
 				'name' => tra('Creator'),
 				'description' => tra('Module only available based on the relationship of the user with the wiki page. Either only creators (y) or only non-creators (n) will see the module.'),
 				'filter' => 'alpha',
-				'section' => 'visibility',
 			),
 			'contributor' => array(
 				'name' => tra('Contributor'),
 				'description' => tra('Module only available based on the relationship of the user with the wiki page. Either only contributors (y) or only non-contributors (n) will see the module.'),
 				'filter' => 'alpha',
-				'section' => 'visibility',
 			),
 			'flip' => array(
 				'name' => tra('Flip'),
 				'description' => tra('Users can shade module.'),
 				'filter' => 'alpha',
-				'section' => 'appearance',
-			),
-			'style' => array(
-				'name' => tra('Style'),
-				'description' => tra('CSS styling for positioning the module.'),
-				'section' => 'appearance',
-			),
-			'class' => array(
-				'name' => tra('Class'),
-				'description' => tra('Custom CSS class.'),
-				'section' => 'appearance',
 			),
 		) );
 
@@ -621,12 +533,10 @@ class ModLib extends TikiLib
 			'nonums' => array(
 				'name' => tra('No numbers'),
 				'description' => tra('If set to "y", the module will not number list items.'),
-				'section' => 'appearance',
 			),
 			'rows' => array(
 				'name' => tra('Rows'),
 				'description' => tra('Number of rows, or items, to display.') . ' ' . tra('Default: 10.'),
-				'section' => 'appearance',
 			)
 		);
 
@@ -659,21 +569,13 @@ class ModLib extends TikiLib
 		$cachefile = $this->get_cache_file( $mod_reference, $info );
 
 		global $smarty, $tikilib, $user;
-		
-		$module_admin_mode = strpos($_SERVER["SCRIPT_NAME"], 'tiki-admin_modules.php') !== false;
 
-		if( ! $cachefile || $this->require_cache_build( $mod_reference, $cachefile ) || $module_admin_mode ) {
-			
-			if ($module_admin_mode) {
-				require_once ('lib/setup/timer.class.php');
-				$timer = new timer('module');
-				$timer->start('module');
-			}
+		if( ! $cachefile || $this->require_cache_build( $mod_reference, $cachefile ) ) {
 			if ( $info['type'] == "function") // Use the module name as default module title. This can be overriden later. A module can opt-out of this in favor of a dynamic default title set in the TPL using clear_assign in the main module function. It can also be overwritten in the main module function.
 				$smarty->assign('tpl_module_title', tra( $info['name'] ) );
 
 			$smarty->assign('nonums', isset( $module_params['nonums'] ) ? $module_params['nonums'] : "n" );
-			
+
 			if( $info['type'] == 'include' ) {
 				$phpfile = 'modules/mod-' . $mod_reference['name'] . '.php';
 
@@ -697,21 +599,9 @@ class ModLib extends TikiLib
 			$smarty->assign('module_ord', $mod_reference['ord']);
 			$smarty->assign('module_position', $mod_reference['position']);
 			$smarty->assign('moduleId', $mod_reference['moduleId']);
-			if( isset( $module_params['title'] ) ) {
+			if( isset( $module_params['title'] ) )
 				$smarty->assign('tpl_module_title', tra( $module_params['title'] ) );
-			}
-			$smarty->assign('tpl_module_name', $mod_reference['name'] );
-			
-			global $tiki_p_admin, $prefs;
-			$tpl_module_style = '';
-			if ($tiki_p_admin == 'y' && $prefs['modhideanonadmin'] == 'y' && (empty($mod_reference['groups']) || $mod_reference['groups'] == serialize(array('Anonymous'))) && $module_admin_mode) {
-				$tpl_module_style .= 'opacity: 0.5;';
-			}
-			if (isset($module_params['overflow']) && $module_params['overflow'] === 'y') {
-				$tpl_module_style .= 'overflow:visible !important;';
-			}
-			$smarty->assign('tpl_module_style', $tpl_module_style );
-			
+
 			$template = 'modules/mod-' . $mod_reference['name'] . '.tpl';
 
 			if (file_exists('templates/'.$template)) {
@@ -721,15 +611,8 @@ class ModLib extends TikiLib
 			}
 			$smarty->clear_assign('module_params'); // ensure params not available outside current module
 			$smarty->clear_assign('tpl_module_title');
-			$smarty->clear_assign('tpl_module_name');
-			$smarty->clear_assign('tpl_module_style');
-			
-			if ($module_admin_mode && $timer) {
-				$elapsed = round( $timer->stop('module'), 3);
-				$data = preg_replace('/<div /', '<div title="Module Execution Time ' . $elapsed . 's" ' , $data, 1);
-			}
-						
-			if (!empty($cachefile) && !$module_admin_mode) {
+
+			if (!empty($cachefile)) {
 				file_put_contents( $cachefile, $data );
 			}
 		} else {
@@ -743,10 +626,10 @@ class ModLib extends TikiLib
 		global $tikilib, $smarty;
 
 		$smarty->assign('module_type','module');
-		$info = $this->get_user_module( $name );
+		$info = $tikilib->get_user_module( $name );
 		if (!empty($info)) {
 			// test if we have a menu
-			if (strpos($info['data'],'{menu ') === 0 and strpos($info['data'],"css=n") === false) {
+			if (strpos($info['data'],'{menu ') === 0 and strpos($info['data'],"css=y")) {
 				$smarty->assign('module_type','cssmenu');
 			}
 
@@ -809,15 +692,6 @@ class ModLib extends TikiLib
 				$inner['value'] = null;
 			}
 		}
-		// resort params into sections
-		$reorderedparams = array();
-		foreach ($params as $k => $p) {
-			if (!isset($reorderedparams[$p['section']])) {
-				$reorderedparams[$p['section']] = array();
-			}
-			$reorderedparams[$p['section']][$k] = $p;
-		}
-		$params = $reorderedparams;
 	}
 
 	function serializeParameters( $name, $params ) {
@@ -861,79 +735,5 @@ class ModLib extends TikiLib
 	function add_pref_error($module_name, $preference_name) {
 		$this->pref_errors[] = array('mod_name' => $module_name, 'pref_name' => $preference_name);
 	}
-
-	
-	/* Returns all module assignations for a certain position, or all positions (by default). A module assignation
-	is represented by an array similar to a tiki_modules record. The groups field is unserialized in the module_groups key, a spaces-separated list of groups.
-	If asking for a specific position, returns an array of module assignations. If not, returns an array of arrays of modules assignations indexed by positions. For example: array("l" -> array("module assignation"))
-	TODO: Document $displayed's effect */
-	function get_assigned_modules($position = null, $displayed="n") {
-		
-		$filter = '';
-		$bindvars = array();
-
-		if ( $position !== null ) {
-			$filter .= 'where `position`=?';
-			$bindvars[] = $position;
-		}
-
-		if ( $displayed != 'n' ) {
-			$filter .= ( $filter == '' ? 'where' : 'and' ) . " (`type` is null or `type` != ?)";
-			$bindvars[] = 'y';
-		}
-
-		$query = "select * from `tiki_modules` $filter order by ".$this->convertSortMode("ord_asc");
-
-		$result = $this->fetchAll($query, $bindvars);
-
-		$ret = array();
-		foreach ( $result as $res ) {
-			if ($res["groups"] && strlen($res["groups"]) > 1) {
-				$grps = @unserialize($res["groups"]);
-
-				$res["module_groups"] = '';
-				if (is_array($grps)) {
-					foreach ($grps as $grp) {
-						$res["module_groups"] .= " $grp ";
-					}
-				}
-			} else {
-				$res["module_groups"] = '&nbsp;';
-			}
-			if ( $position === null ) {
-				if ( ! isset($ret[$res['position']]) ) {
-					$ret[$res['position']] = array();
-				}
-				$ret[$res['position']][] = $res;
-			} else {
-				$ret[] = $res;
-			}
-		}
-		return $ret;
-	}
-
-	function is_user_module($name) {
-		return $this->table('tiki_user_modules')->fetchCount(array('name' => $name));
-	}
-
-	function get_user_module($name) {
-		$cachelib = TikiLib::lib('cache');
-		$cacheKey = "user_modules_$name";
-
-		if ( $cachelib->isCached($cacheKey) ) {
-			$return = unserialize($cachelib->getCached($cacheKey));
-		} else {
-			$return = $this->table('tiki_user_modules')->fetchFullRow(array('name' => $name));
-
-			if($return) {
-				$cachelib->cacheItem($cacheKey, serialize($return));
-			}
-		}
-
-		return $return;
-	}
-
-
-	
 }
 $modlib = new ModLib;

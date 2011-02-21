@@ -25,12 +25,13 @@
 					<div class="highlight" style="margin-left:30px;">
 						{tr}Output compression is active.{/tr}
 						<br />
-						{tr}Compression is handled by:{/tr} {$gzip_handler}.
+						{tr}Compression is handled by{/tr}: {$gzip_handler}.
 					</div>
 				{/if}
 			</div>
 			{preference name=tiki_cachecontrol_session}
 			{preference name=smarty_compilation}
+			{preference name=feature_bot_bar_debug}
 		{/tab}
 		
 		{tab name="{tr}Bytecode Cache{/tr}"}
@@ -108,11 +109,8 @@
 		{tab name="{tr}Major slow down{/tr}"}
 			{remarksbox type="note" title="{tr}Major slow down{/tr}"}{tr}These are reported to slow down Tiki. If you have a high-volume site, you may want to deactivate them{/tr}
 			{/remarksbox}
+			{preference name=feature_phplayers}
 			{preference name=wikiplugin_sharethis}
-			{preference name=log_sql}
-			{preference name=log_mail}
-			{preference name=log_tpl}
-			{preference name=error_reporting_level}
 			{remarksbox type="tip" title="{tr}Tip{/tr}"}
 				{tr}Many search options impact performance. Please see <a href="tiki-admin.php?page=search">Search admin panel</a>.{/tr}
 			{/remarksbox}

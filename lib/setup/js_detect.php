@@ -64,7 +64,7 @@ if ($prefs['javascript_enabled'] == 'y') {	// we have JavaScript
 			$headerlib->add_jsfile($custom_js, 50);
 		}
 	}
-
+	
 	$js = '
 // JS Object to hold prefs for jq
 var jqueryTiki = new Object();
@@ -91,25 +91,10 @@ jqueryTiki.effect_tabs_speed = '.($prefs['jquery_effect_tabs_speed'] == 'normal'
 
 jqueryTiki.autosave = '.($prefs['ajax_autosave'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.sefurl = '.($prefs['feature_sefurl'] == 'y' ? 'true' : 'false') . ';
-jqueryTiki.ajax = '.($prefs['feature_ajax'] == 'y' ? 'true' : 'false') . ';
-';	// NB replace "normal" speeds with int to workaround issue with jQuery 1.4.2
 
-	if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
-		$js .= '
-// overrides for prefs for jq in mobile mode
-jqueryTiki.ui = false;
-jqueryTiki.ui_theme = "";
-jqueryTiki.tooltips = false;
-jqueryTiki.autocomplete = false;
-jqueryTiki.superfish = false;
-jqueryTiki.colorbox = false;
-jqueryTiki.tablesorter = false;
-';
-		if ($prefs['feature_ajax'] !== 'y') {
-			$headerlib->add_js_config('var mobile_ajaxEnabled = false;');
-		}
-	}
+';	// NB replace "normal" speeds with int to workaround issue with jQuery 1.4.2
 	$headerlib->add_js($js, 100);	
+	
 	
 	if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6') !== false) {
 		
@@ -141,4 +126,5 @@ JS
 
 if ($prefs['feature_ajax'] != 'y') {
 	$prefs['ajax_autosave'] = 'n';
+	$prefs['ajax_xajax'] = 'n';
 }

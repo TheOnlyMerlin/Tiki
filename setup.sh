@@ -167,7 +167,6 @@ what to answer, just press enter to each question (to use default value)"
 	fi
 
 #	chmod 664 robots.txt tiki-install.php
-
 	echo " done."
 
 elif [ "$COMMAND" = 'open' ]; then
@@ -187,7 +186,6 @@ elif [ "$COMMAND" = 'open' ]; then
 	fi
 
 	chmod -R a=rwX .
-
 	echo " done"
 else
 	echo "Type 'fix' or 'open' as command argument."

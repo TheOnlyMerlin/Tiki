@@ -9,7 +9,6 @@
 	{/if}
 
 {include file=tiki-wiki_staging.tpl}
-{include file=tiki-flaggedrev_approval_header.tpl}
 
 {/if} {*hide_page_header*}
 
@@ -29,9 +28,9 @@
 
 {if $user and $prefs.feature_user_watches eq 'y' and $category_watched eq 'y'}
 	<div class="categbar" style="clear: both; text-align: right">
-		{tr}Watched by categories:{/tr}
+		{tr}Watched by categories{/tr}:
 		{section name=i loop=$watching_categories}
-			<a href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}">{$watching_categories[i].name|escape}</a>&nbsp;
+			<a href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}">{$watching_categories[i].name}</a>&nbsp;
 		{/section}
 	</div>
 {/if}
@@ -70,7 +69,7 @@
 	{/section}
 {/if}
 
-<article id="top" class="wikitext clearfix{if $prefs.feature_page_title neq 'y'} nopagetitle{/if}">
+<div id="top" class="wikitext clearfix{if $prefs.feature_page_title neq 'y'} nopagetitle{/if}">
 	{if !$hide_page_header}
 		{if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y' and isset($freetags.data[0]) and $prefs.freetags_show_middle eq 'y'}
 			{include file='freetag_list.tpl'}
@@ -144,7 +143,7 @@
 			<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$last_page}">{icon _id='resultset_last' alt="{tr}Last page{/tr}"}</a>
 		</div>
 	{/if}
-</article> {* End of main wiki page *}
+</div> {* End of main wiki page *}
 
 {if $has_footnote eq 'y'}
 	<div class="wikitext" id="wikifootnote">{$footnote}</div>
@@ -173,9 +172,6 @@
 
 {if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categoryobjects eq 'y'}
 	{$display_catobjects}
-{/if}
-{if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.category_morelikethis_algorithm ne ''}
-	{include file='category_related_objects.tpl'}
 {/if}
 
 {if $prefs.wiki_topline_position eq 'bottom' or $prefs.wiki_topline_position eq 'both'}

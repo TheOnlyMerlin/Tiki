@@ -27,15 +27,17 @@
 	{cycle values="odd,even" print=false}
 	{section name=user loop=$words}
 		<tr class="{cycle}">
-			<td class="text">{$words[user].word|escape}</td>
-			<td class="action">
+			<td>{$words[user].word|escape}</td>
+			<td>
 				&nbsp;&nbsp;
 				<a class="link" href="tiki-admin_shoutbox_words.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$words[user].word|escape:"url"}" onclick="return confirmTheLink(this,"{tr}Are you sure you want to delete this word?{/tr}")" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
 				&nbsp;&nbsp;
 			</td>
 		</tr>
 	{sectionelse}
-		{norecords _colspan=2}
+		<tr>
+			<td colspan="2" class="odd">{tr}No records found{/tr}</td>
+		</tr>
 	{/section}
 </table>
 

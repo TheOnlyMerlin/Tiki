@@ -46,7 +46,6 @@ class Perms_Accessor implements ArrayAccess
 	function getResolver() {
 		return $this->resolver;
 	}
-
 	function from() {
 		return $this->resolver->from();
 	}

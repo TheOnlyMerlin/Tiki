@@ -13,7 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 function module_groups_emulation_info() {
 	return array(
-		'name' => tra('Groups Emulation'),
+		'name' => tra('Groups emulation'),
 		'description' => tra('Enables temporarily changing one\'s group memberships to see how users in fewer groups experience the site.'),
 		'prefs' => array(),
 		'params' => array(),

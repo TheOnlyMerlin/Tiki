@@ -13,12 +13,11 @@ function wikiplugin_tracker_info()
 {
 	return array(
 		'name' => tra('Tracker'),
-		'documentation' => 'PluginTracker',
-		'description' => tra('Create a form in a wiki page to populate a tracker'),
+		'documentation' => tra('PluginTracker'),
+		'description' => tra("Displays an input form for tracker submit"),
 		'prefs' => array( 'feature_trackers', 'wikiplugin_tracker' ),
 		'body' => tra('Confirmation message after posting form'),
 		'icon' => 'pics/icons/database.png',
-		'icon' => 'pics/icons/application_form.png',
 		'params' => array(
 			'trackerId' => array(
 				'required' => true,
@@ -299,18 +298,6 @@ function wikiplugin_tracker_info()
 				'filter' => 'pagename',
 				'default' => '',
 			),
-			'formtag' => array(
-				'required' => false,
-				'name' => tra('Embed the tracker in a form tag'),
-				'description' => tra('If set to Yes, the tracker is contained in a <form> tag and has action buttons'),
-				'filter' => 'alpha',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
 		),
 	);
 }
@@ -401,19 +388,7 @@ function wikiplugin_tracker($data, $params)
 		unset($_REQUEST['tr_reset']);
 	}
 	$smarty->assign('showmandatory',  empty($wiki) && empty($tpl)? 'n': $showmandatory); 
-	if (!empty($wiki)) {
-		if (preg_match('/^wiki:(.+)$/', $wiki, $wiki_matches)) {
-			$wiki = $wiki_matches[1];
-		}
-
-		$wiki = trim($wiki);
-	}
-
-	if (!isset($params['formtag'])) {
-		$params['formtag'] = 'y';
-	}
-
-	$fields_prefix = ($params['formtag'] == 'n') ? 'ins_' : 'track_';
+	if (!empty($wiki)) $wiki = trim($wiki);
 
 	if (isset($values)) {
 		if (!is_array($values)) {
@@ -494,12 +469,12 @@ function wikiplugin_tracker($data, $params)
 					$smarty->assign('register_passcode', $smarty->fetch('register-passcode.tpl'));
 					$smarty->assign('register_groupchoice', $smarty->fetch('register-groupchoice.tpl'));
 				}
-				if (!empty($wiki)) {
-					$outf = $trklib->get_pretty_fieldIds($wiki, 'wiki', $outputPretty);
-				} elseif (!empty($tpl)) {
-					$outf = $trklib->get_pretty_fieldIds($tpl, 'tpl', $outputPretty);
-				} elseif (!empty($fields)) {
-					$outf = preg_split('/ *: */', $fields);
+				if (!empty($fields)) {
+					$outf = preg_split('/ *: */', $fields);$fields;
+				} elseif (!empty($wiki)) {
+					$outf = $trklib->get_pretty_fieldIds($wiki, 'wiki');
+				} else {
+					$outf = $trklib->get_pretty_fieldIds($tpl, 'tpl');
 				}
 				if (!empty($_REQUEST['autosavefields'])) {
 					$autosavefields = explode(':', $_REQUEST['autosavefields']);
@@ -526,7 +501,7 @@ function wikiplugin_tracker($data, $params)
 				/* ------------------------------------- Recup all values from REQUEST -------------- */
 				foreach ($flds['data'] as $fl) {
 					// First convert track_xx to array (need to be up here before setting autosave fields)
-					$incomingTrackName = $fields_prefix . $fl["fieldId"];
+					$incomingTrackName = 'track_' . $fl["fieldId"];
 					if (isset($_REQUEST[$incomingTrackName])) {
 						$_REQUEST['track'][$fl["fieldId"]] = $_REQUEST[$incomingTrackName];
 					} else if (isset($_FILES[$incomingTrackName])) {	// also for uploaded files
@@ -606,13 +581,13 @@ function wikiplugin_tracker($data, $params)
 					} elseif (($flds['data'][$cpt]['type'] == 'C' || $flds['data'][$cpt]['type'] == 'e') && empty($_REQUEST['track'][$fl['fieldId']])) {
 						$_REQUEST['track'][$fl['fieldId']] = '';
 					} elseif ($flds['data'][$cpt]['type'] == 'f') {
-						$ins_id = $fields_prefix . $fl['fieldId'];
+						$ins_id = 'track_'.$fl['fieldId'];
 						if (isset($_REQUEST[$ins_id.'Day']) || isset($_REQUEST[$ins_id.'Hour'])) {
 							$_REQUEST['track'][$fl['fieldId']] = $trklib->build_date($_REQUEST, $flds['data'][$cpt], $ins_id);
 						} else {
 							$_REQUEST['track'][$fl['fieldId']] = $tikilib->now;
 						}
-					} elseif ($flds['data'][$cpt]['type'] == 'N' && !empty($itemId)) {
+					} elseif ($f['type'] == 'N' && !empty($itemId)) {
 						if (empty($itemUser)) {
 							$itemUser = $this->get_item_creator($trackerId, $itemId);
 						}
@@ -762,7 +737,7 @@ function wikiplugin_tracker($data, $params)
 						// note that values will be raw - that is the limit of the capability of this feature for now
 						$newpageinfo = $tikilib->get_page_info($outputwiki);
 						$wikioutput = $newpageinfo["data"];
-						$newpagefields = $trklib->get_pretty_fieldIds($outputwiki, 'wiki', $outputPretty);
+						$newpagefields = $trklib->get_pretty_fieldIds($outputwiki, 'wiki');
 						foreach($newpagefields as $lf) {
 							$wikioutput = str_replace('{$f_' . $lf . '}', $trklib->get_item_value($trackerId, $rid, $lf), $wikioutput);
 						}
@@ -866,10 +841,8 @@ function wikiplugin_tracker($data, $params)
 						}
 						$itemIdPos = strpos($url[$key], 'itemId');
 						if ($itemIdPos !== false) {
-							if (strstr($url[$key], '#itemId')) {
-								$url[$key] = str_replace('#itemId', $rid, $url[$key]);
-							} else if (($itemIdPos+strlen('itemId') >= strlen($url[$key])-1) || (substr($url[$key],$itemIdPos+strlen('itemId'),1) == "&")) {
-								// replace by the itemId if in the end (or -1: for backward compatibility so that "&itemId=" also works) or if it is followed by an '&'
+							// replace by the itemId if in the end (or -1: for backward compatibility so that "&itemId=" also works) or if it is followed by an '&'
+							if (($itemIdPos+strlen('itemId') >= strlen($url[$key])-1) || (substr($url[$key],$itemIdPos+strlen('itemId'),1) == "&")) {
 								$url[$key] = str_replace('itemId', 'itemId='.$rid, $url[$key]);
 							}
 						}
@@ -1050,34 +1023,15 @@ function wikiplugin_tracker($data, $params)
 					$customvalidation .= 'return $("#name").val(); ';
 					$customvalidation .= '} } } ';
 					$customvalidation .= '}, ';
-					if ($prefs['feature_antibot'] == 'y' && empty($user) && $prefs['recaptcha_enabled'] != 'y') {
-						// antibot validation   
-						$customvalidation .= '"captcha[input]": { ';
-						$customvalidation .= 'required: true, ';
-						$customvalidation .= 'remote: { ';
-						$customvalidation .= 'url: "validate-ajax.php", ';
-						$customvalidation .= 'type: "post", ';
-						$customvalidation .= 'data: { ';
-						$customvalidation .= 'validator: "captcha", ';
-						$customvalidation .= 'parameter: function() { ';
-						$customvalidation .= 'return $jq("#captchaId").val(); ';
-						$customvalidation .= '}, ';
-						$customvalidation .= 'input: function() { ';
-						$customvalidation .= 'return $jq("#antibotcode").val(); ';
-						$customvalidation .= '} } } ';
-						$customvalidation .= '}, ';
-					}
 				}
-				$validationjs = $validatorslib->generateTrackerValidateJS( $flds['data'], $fields_prefix, $customvalidation, $customvalidation_m );
+				$validationjs = $validatorslib->generateTrackerValidateJS( $flds['data'], "track_", $customvalidation, $customvalidation_m );
 
 				$smarty->assign('validationjs', $validationjs);
 				$back .= $smarty->fetch('tracker_validator.tpl');
 			}
-			if ($params['formtag'] == 'y') {
-				$back .= '<form name="editItemForm' . $iTRACKER . '" id="editItemForm' . $iTRACKER . '" enctype="multipart/form-data" method="post"'.(isset($target)?' target="'.$target.'"':'').' action="'. $_SERVER['REQUEST_URI'] .'"><input type="hidden" name="trackit" value="'.$trackerId.'" />';
-				$back .= '<input type="hidden" name="iTRACKER" value="'.$iTRACKER.'" />';
-				$back .= '<input type="hidden" name="refresh" value="1" />';
-			}
+			$back .= '<form name="editItemForm' . $iTRACKER . '" id="editItemForm' . $iTRACKER . '" enctype="multipart/form-data" method="post"'.(isset($target)?' target="'.$target.'"':'').' action="'. $_SERVER['REQUEST_URI'] .'"><input type="hidden" name="trackit" value="'.$trackerId.'" />';
+			$back .= '<input type="hidden" name="iTRACKER" value="'.$iTRACKER.'" />';
+			$back .= '<input type="hidden" name="refresh" value="1" />';
 			if (isset($_REQUEST['page']))
 				$back.= '<input type="hidden" name="page" value="'.$_REQUEST["page"].'" />';
 			 // for registration
@@ -1125,7 +1079,7 @@ function wikiplugin_tracker($data, $params)
 			}
 			foreach ($flds['data'] as $i=>$f) { // collect additional infos
 				if (in_array($f['fieldId'], $outf)) {
-					$flds['data'][$i]['ins_id'] = ($f['type'] == 'e')?'ins_cat_'.$f['fieldId']: $fields_prefix.$f['fieldId'];
+					$flds['data'][$i]['ins_id'] = ($f['type'] == 'e')?'ins_cat_'.$f['fieldId']: 'track_'.$f['fieldId'];
 					if (($f['isHidden'] == 'c' || $f['isHidden'] == 'p') && !empty($itemId) && !isset($item['creator'])) {
 						$item['creator'] = $trklib->get_item_creator($trackerId, $itemId);
 					}
@@ -1268,11 +1222,7 @@ function wikiplugin_tracker($data, $params)
 						if (!empty($item)) {
 							$smarty->assign_by_ref('item', $item);
 						}
-						if (!empty($outputPretty) && in_array($f['fieldId'], $outputPretty)) {
-							$smarty->assign('f_'.$f['fieldId'], '<span class="outputPretty" id="track_'.$f['fieldId'].'" name="track_'.$f['fieldId'].'">'. $smarty->fetch('tracker_item_field_value.tpl'). '</span>');
-						} else {
-							$smarty->assign('f_'.$f['fieldId'], $smarty->fetch('tracker_item_field_input.tpl'));
-						}
+						$smarty->assign('f_'.$f['fieldId'], $smarty->fetch('tracker_item_field_input.tpl'));
 					} else {
 						if (in_array($f['fieldId'], $optional)) {
 							$f['name'] = "<i>".$f['name']."</i>";
@@ -1289,7 +1239,7 @@ function wikiplugin_tracker($data, $params)
 							}
 							$back.= '</td><td>';
 						} else {
-							$smarty->assign('inTable', (empty($tpl) && empty($wiki))?'wikiplugin_tracker':'');
+							$back .= '<tr><th colspan="2">';
 						}
 						$smarty->assign_by_ref('field_value', $f);
 						if (!empty($item)) {
@@ -1310,6 +1260,8 @@ function wikiplugin_tracker($data, $params)
 					if (empty($tpl) && empty($wiki)) {
 					if ($f['type'] != 'h'){
 						$back.= "</td></tr>";
+						} else {
+						$back.= "</th></tr>";						
 						}
 					}
 					if (!empty($f['http_request']) && !empty($itemId)) {
@@ -1333,9 +1285,6 @@ function wikiplugin_tracker($data, $params)
 				$smarty->security = true;
 				$back .= $smarty->fetch('wiki:'.$wiki);
 			}
-			include_once('lib/smarty_tiki/function.trackerheader.php');
-			$back .= smarty_function_trackerheader(array('level'=>-1, 'title'=>'', 'inTable' =>(empty($tpl) && empty($wiki))?'wikiplugin_tracker':'' ), $smarty);
-
 			if ($prefs['feature_antibot'] == 'y' && empty($user)) {
 				// in_tracker session var checking is for tiki-register.php
 				$smarty->assign('showmandatory', $showmandatory);
@@ -1347,33 +1296,28 @@ function wikiplugin_tracker($data, $params)
 			} else {
 				$back .= '</div>';
 			}
-
-			if ($params['formtag'] == 'y') {
-				$back .= '<div class="input_submit_container">';
-
-				if (!empty($reset)) {
-					$back .= '<input class="button submit preview" type="reset" name="tr_reset" value="'.tra($reset).'" />';
-				}
-				if (!empty($preview)) {
-					$back .= '<input class="button submit preview" type="submit" name="tr_preview" value="'.tra($preview).'" />';
-				}
-				foreach ($action as $key=>$act) {
-					$back .= '<input class="button submit" type="submit" name="action'.$key.'" value="'.tra($act).'" onclick="needToConfirm=false" />';
-				}
-				$back .= '</div>';
+			$back .= '<div class="input_submit_container">';
+			
+			if (!empty($reset)) {
+				$back .= '<input class="button submit preview" type="reset" name="tr_reset" value="'.tra($reset).'" />';
 			}
+			if (!empty($preview)) {
+				$back .= '<input class="button submit preview" type="submit" name="tr_preview" value="'.tra($preview).'" />';
+			}
+			foreach ($action as $key=>$act) {
+				$back .= '<input class="button submit" type="submit" name="action'.$key.'" value="'.tra($act).'" onclick="needToConfirm=false" />';
+			}
+			$back .= '</div>';
 			if ($showmandatory == 'y' and $onemandatory) {
 				$back.= "<em class='mandatory_note'>".tra("Fields marked with a * are mandatory.")."</em>";
 			}
-			if ($params['formtag'] == 'y') {
-				$back.= '</form>';
-			}
+			$back.= '</form>';
 			if (!empty($js)) {
 				$back .= '<script type="text/javascript">'.$js.'</script>';
 			}
 			if (!empty($page))
 				$back .= '~/np~';
-			$smarty->assign_by_ref('tiki_p_admin_trackers', $perms['tiki_p_admin_trackers']);
+			$smarty->assign_by_ref('tiki_p_admin_trackers', $tiki_p_admin_trackers);
 		return $back;
 	}
 	else {

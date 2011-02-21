@@ -125,9 +125,51 @@ input[type=radio] {
 	border: 0;
 }
 
+/***** Site Header & Identity *****/
+
+#header-top {
+	position: relative;
+}
+
+#siteheader {
+	background: transparent;
+}
+
+#customcodewith_ad {
+	width: 400px;
+}
+
+#sitead.floatright {
+	padding-right: 40px;
+}
+
+#sitead.floatleft {
+	padding-left: 40px;
+}
+
+#sioptionscentered #sitead.floatleft {
+	padding-left: 10px;
+}
 
 #sitelogo img {
 	margin-top: 10px;
+}
+
+#bannertopright {
+	padding-right: 4px;
+}
+
+#sitelocbar {
+	float: left;
+	padding: 2px 2px 3px 10px;
+}
+
+#siteloginbar {
+	text-align: right;
+	position: absolute;
+	bottom: 3px;
+	right: 10px;
+	font-size: 90%;
 }
 
 .pass a,
@@ -505,7 +547,6 @@ img.icon {
 }
 
 .simplebox {
-	border: 1px solid #999;
 	padding: 3px;
 }
 
@@ -548,27 +589,6 @@ td.even {
 }
 td.form {
 	padding: 0.2em;
-}
-
-td.integer {
-	text-align: right;
-}
-td.date {
-	text-align: center;
-}
-td.checkbox {
-	text-align: center;
-	width: 20px;	
-}
-td.action {
-	white-space: nowrap;
-}
-td.norecords {
-	text-align: left;
-	font-weight: bold;
-}
-td.id, td.icon {
-	text-align: center;
 }
 
 caption {
@@ -760,12 +780,6 @@ a.blog:visited {
 small.description {
 	display: block;
 }
-
-.description {
-	font-size: .95em;
-	font-style: italic;
-}
-
 
 /*body.tiki_blogs*/ .post .title {
 	margin-top: 0;
@@ -1270,13 +1284,6 @@ textarea.tshoutbox{
 .fancysort th.header {
 	background-repeat: no-repeat; background-position: right; background-image: url(../../pics/icons/resultset.png);
 }
-/* jq tracker header */
-.trackerHeaderOpen {
-	background-repeat: no-repeat; background-position: right; background-image: url(../../pics/icons/resultset_down.png);
-}
-.trackerHeaderClose {
-	background-repeat: no-repeat; background-position: right; background-image: url(../../pics/icons/resultset_next.png);
-}
 
 /* Perspectives (edit) */
 .dropzone {
@@ -1381,10 +1388,6 @@ textarea.tshoutbox{
 #captchaImg {
 	border: 1px solid black;
 }
-
-.ui-tabs .ui-tabs-nav li a {
-	padding: 0.3em 0.8em 0.1em;
-}
 /* interactive translations */
 
 #intertrans-indicator {
@@ -1398,13 +1401,6 @@ textarea.tshoutbox{
 	color: #000;
 }
 
-.tree.root .object-count {
-	float: right;
-	font-weight: bold;
-	margin-left: 10px;
-	margin-right: 10px;
-	color: #999;
-}
 
 /* jquery validation */
 
@@ -1412,6 +1408,4 @@ label.error {
 	background : url('../../pics/icons/error.png') no-repeat;
 	color:red;
 	padding-left:20px;
-	margin-left: 0.5em;
 }
-

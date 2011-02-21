@@ -3,11 +3,9 @@
 	<base href="{$base_uri|escape}" />
 {/if}
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
 <meta name="generator" content="Tiki Wiki CMS Groupware - http://tiki.org" />
-
-{* --- Canonical URL --- *}
-{include file='canonical.tpl'}	
-
 {if !empty($forum_info.name) & $prefs.metatag_threadtitle eq 'y'}
 	<meta name="keywords" content="{tr}Forum{/tr} {$forum_info.name|escape} {$thread_info.title|escape} {if $prefs.feature_freetags eq 'y'}{foreach from=$freetags.data item=taginfo}{$taginfo.tag|escape} {/foreach}{/if}" />
 {elseif isset($galleryId) && $galleryId ne '' & $prefs.metatag_imagetitle ne 'n'}
@@ -48,11 +46,11 @@
 {* --- tiki block --- *}
 <title>{strip}
 	{if $prefs.site_title_location eq 'before'}{$prefs.browsertitle|tr_if|escape} {$prefs.site_nav_seper} {/if}
-	{if ($prefs.feature_breadcrumbs eq 'y' or $prefs.site_title_breadcrumb eq "desc") && isset($trail)}
+	{if ($prefs.feature_breadcrumbs eq 'y' && isset($trail)) or $prefs.site_title_breadcrumb eq "desc"}
 		{breadcrumbs type=$prefs.site_title_breadcrumb loc="head" crumbs=$trail}
 	{else}
 		{if !empty($tracker_item_main_value)}
-			{$tracker_item_main_value|truncate:255|escape}
+			{$tracker_item_main_value|escape}
 		{elseif !empty($page)}
 			{if $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}
 				{$approvedPageName|escape}
@@ -75,6 +73,8 @@
 			{$userinfo.login|username}
 		{elseif !empty($tracker_info.name)}
 			{$tracker_info.name|escape}
+		{elseif !empty($gal_info.name)}
+			{$gal_info.name|escape}
 		{elseif !empty($headtitle)}
 			{$headtitle|tr_if|escape}{* use $headtitle last if feature specific title not found *}
 		{/if}
@@ -84,6 +84,11 @@
 
 {if $prefs.site_favicon}
 	<link rel="icon" href="{$prefs.site_favicon|escape}" />
+{/if}
+
+{* --- phplayers block --- *}
+{if $prefs.feature_phplayers eq 'y' and isset($phplayers_headers)}
+	{$phplayers_headers}
 {/if}
 
 {* --- universaleditbutton.org --- *}
@@ -132,10 +137,6 @@
 		<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#type=website&amp;buttonText=&amp;onmouseover=false&amp;send_services=aim"></script>
 	{/if}
 {/if}
-
-<!--[if lt IE 9]>{* according to http://remysharp.com/2009/01/07/html5-enabling-script/ *}
-	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-<![endif]-->
 
 {if $headerlib}		{$headerlib->output_headers()}{/if}
 

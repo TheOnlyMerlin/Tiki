@@ -31,10 +31,9 @@ function wikiplugin_titlesearch_help() {
     function wikiplugin_titlesearch_info() {
     	return array(
     		'name' => tra('Title Search'),
-    		'documentation' => 'PluginTitleSearch',
-    		'description' => tra('Search page titles'),
+    		'documentation' => tra('PluginTitleSearch'),
+    		'description' => tra('Search wiki page titles.'),
     		'prefs' => array( 'feature_wiki', 'wikiplugin_titlesearch' ),
-			'icon' => 'pics/icons/page_find.png',
     		'params' => array(
     			'search' => array(
     				'required' => true,
@@ -105,7 +104,7 @@ class WikiPluginTitleSearch extends PluginsLib
         }
 
         // no additional infos in list output
-        if (isset($style) && $style == 'list') $info = false;
+        if ($style == 'list') $info = false;
 
         //
         /////////////////////////////////
@@ -142,7 +141,7 @@ class WikiPluginTitleSearch extends PluginsLib
         // Start of Output
         /////////////////////////////////
         //
-        if (isset($noheader) && !$noheader) {
+        if (!$noheader) {
             // Create header
             $count = $aPages["cant"];
             if (!$count) {
@@ -154,7 +153,7 @@ class WikiPluginTitleSearch extends PluginsLib
             }
             $sOutput  .= "\n";
         }
-        if (isset($style) && $style == 'list') {
+        if ($style == 'list') {
             $sOutput.=PluginsLibUtil::createList($aPages["data"]);
         }
         else {

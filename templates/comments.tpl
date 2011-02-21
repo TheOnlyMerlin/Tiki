@@ -94,35 +94,13 @@
 					{if $forum_mode neq 'y'}
 						<div class="headers">
 						{if $tiki_p_admin_comments eq 'y' or $tiki_p_lock_comments eq 'y'}
-							{if ($tiki_p_admin_comments eq 'y' and ($prefs.feature_comments_moderation eq 'y' || $prefs.comments_archive eq 'y')) or $prefs.feature_comments_locking eq 'y'}
+							{if ($tiki_p_admin_comments eq 'y' and $prefs.feature_comments_moderation eq 'y') or $prefs.feature_comments_locking eq 'y'}
 								<span class="title">{tr}Moderator actions{/tr}</span>
 							{/if}
 							<span class="infos">
-							{if $tiki_p_admin_comments eq 'y'}
-								{if $prefs.feature_comments_moderation eq 'y'}
-									<a class="link" href="tiki-list_comments.php?types_section={$section}&amp;findfilter_approved=n{if isset($blogId)}&amp;blogId={$blogId}{/if}">{tr}queued:{/tr} {$queued}</a>
-									&nbsp;&nbsp;
-								{/if}
-								{if $prefs.comments_archive eq 'y' && $count_archived_comments > 0}
-									<span class="button" id="comments_showArchived">
-										<a>
-											{if $count_archived_comments == 1}
-												{tr 0=$count_archived_comments}Show %0 archived comment{/tr}
-											{else}
-												{tr 0=$count_archived_comments}Show %0 archived comments{/tr}
-											{/if}
-										</a>
-									</span>
-									<span class="button" id="comments_hideArchived" style="display: none;">
-										<a>
-											{if $count_archived_comments == 1}
-												{tr 0=$count_archived_comments}Hide %0 archived comment{/tr}
-											{else}
-												{tr 0=$count_archived_comments}Hide %0 archived comments{/tr}
-											{/if}
-										</a>
-									</span>
-								{/if}
+							{if $tiki_p_admin_comments eq 'y' and $prefs.feature_comments_moderation eq 'y'}
+								<a class="link" href="tiki-list_comments.php?types_section={$section}&amp;findfilter_approved=n{if isset($blogId)}&amp;blogId={$blogId}{/if}">{tr}queued:{/tr} {$queued}</a>
+								&nbsp;&nbsp;
 							{/if}
 							{if $prefs.feature_comments_locking eq 'y'}
 								{if $thread_is_locked eq 'y'}
@@ -142,7 +120,7 @@
 					{if $comments_cant > $prefs.forum_thread_user_settings_threshold}
 						<div class="actions">
 							<span class="action">
-								<label for="comments-maxcomm">{tr}Messages:{/tr}</label>
+								<label for="comments-maxcomm">{tr}Messages{/tr}:</label>
 								<select name="comments_per_page" id="comments-maxcomm">
 									<option value="10" {if $comments_per_page eq 10 }selected="selected"{/if}>10</option>
 									<option value="20" {if $comments_per_page eq 20 }selected="selected"{/if}>20</option>
@@ -151,7 +129,7 @@
 								</select>
 								
 								{if $forum_mode neq 'y' or $forum_info.is_flat neq 'y' }
-									<label for="comments-style">{tr}Style:{/tr}</label>
+									<label for="comments-style">{tr}Style{/tr}:</label>
 									<select name="thread_style" id="comments-style">
 										<option value="commentStyle_plain" {if $thread_style eq 'commentStyle_plain'}selected="selected"{/if}>{tr}Plain{/tr}</option>
 										<option value="commentStyle_threaded" {if $thread_style eq 'commentStyle_threaded'}selected="selected"{/if}>{tr}Threaded{/tr}</option>
@@ -159,7 +137,7 @@
 									</select>
 								{/if}
 
-								<label for="comments-sort">{tr}Sort:{/tr}</label>
+								<label for="comments-sort">{tr}Sort{/tr}:</label>
 								<select name="thread_sort_mode" id="comments-sort">
 									<option value="commentDate_desc" {if $thread_sort_mode eq 'commentDate_desc'}selected="selected"{/if}>{tr}Newest first{/tr}</option>
 									<option value="commentDate_asc" {if $thread_sort_mode eq 'commentDate_asc'}selected="selected"{/if}>{tr}Oldest first{/tr}</option>
@@ -171,7 +149,7 @@
 								</select>
 
 								{if ($forum_mode eq 'y' and $forum_info.vote_threads eq 'y') or $forum_mode neq 'y'}
-									<label for="comments-thresh">{tr}Threshold:{/tr}</label>
+									<label for="comments-thresh">{tr}Threshold{/tr}:</label>
 									<select name="comments_threshold" id="comments-thresh">
 										<option value="0" {if $comments_threshold eq 0}selected="selected"{/if}>{tr}All{/tr}</option>
 										<option value="0.01" {if $comments_threshold eq '0.01'}selected="selected"{/if}>0</option>
@@ -182,7 +160,7 @@
 									</select>
 								{/if}
 
-								<label for="comments-search">{tr}Search:{/tr}</label>
+								<label for="comments-search">{tr}Search{/tr}:</label>
 								<input type="text" size="7" name="comments_commentFind" id="comments-search" value="{$comments_commentFind|escape}" />
 
 								<input type="submit" name="comments_setOptions" value="{tr}Set{/tr}" />
@@ -218,7 +196,7 @@
 						[<a class="prevnext" href="{$comments_complete_father}comments_threshold={$comments_threshold}&amp;comments_parentId={$comments_parentId}&amp;comments_offset={$comments_prev_offset}{$thread_sort_mode_param}&amp;comments_per_page={$comments_per_page}&amp;thread_style={$thread_style}">{tr}Prev{/tr}</a>]&nbsp;
 					{/if}
 
-					{tr}Page:{/tr} {$comments_actual_page}/{$comments_cant_pages}
+					{tr}Page{/tr}: {$comments_actual_page}/{$comments_cant_pages}
 
 					{if $comments_next_offset >= 0 && $display eq ''}
 						&nbsp;[<a class="prevnext" href="{$comments_complete_father}comments_threshold={$comments_threshold}&amp;comments_parentId={$comments_parentId}&amp;comments_offset={$comments_next_offset}{$thread_sort_mode_param}&amp;comments_per_page={$comments_per_page}&amp;thread_style={$thread_style}">{tr}Next{/tr}</a>]
@@ -378,12 +356,21 @@
 						</tr>
 					{/if}
 
+					{if $prefs.section_comments_parse eq 'y' && $forum_mode neq 'y' || $prefs.feature_forum_parse eq 'y' && $forum_mode eq 'y'}
+						{assign var=toolbars_html value=true}{* can't find where this gets set in ui-revamp project *}
+						<tr>
+							<td></td>
+							<td>
+								{toolbars area_id='editpost2' comments='y'}
+							</td>
+						</tr>
+					{/if}
 					<tr>
 						<td>
 							<label for="editpost2">{if $forum_mode eq 'y'}{tr}Reply{/tr}{else}{tr}Comment{/tr} <span class="attention">*</span>{/if}</label>
 						</td>
 						<td>
-							{textarea id="editpost2" name="comments_data" rows=$rows cols=$cols}{if ($forum_mode eq 'y' && $prefs.feature_forum_replyempty ne 'y') || $edit_reply > 0 || ($forum_mode neq 'y' && $post_reply > 0) || $comment_preview eq 'y' || !empty($errors)}{$comment_data}{/if}{/textarea} 
+							<textarea id="editpost2" name="comments_data" rows="{$rows}" cols="{$cols}">{if ($forum_mode eq 'y' && $prefs.feature_forum_replyempty ne 'y') || $edit_reply > 0 || ($forum_mode neq 'y' && $post_reply > 0) || $comment_preview eq 'y' || !empty($errors)}{$comment_data|escape}{/if}</textarea> 
 							<input type="hidden" name="rows" value="{$rows}" />
 							<input type="hidden" name="cols" value="{$cols}" />
 							{if $prefs.feature_wiki_paragraph_formatting eq 'y'}

@@ -19,11 +19,11 @@
 			<input type="hidden" name="pollId" value="{$pollId|escape}" />
 			<table class="formcolor">
 				<tr>
-					<td>{tr}Title:{/tr}</td>
+					<td>{tr}Title{/tr}:</td>
 					<td><input type="text" name="title" value="{$info.title|escape}" /></td>
 				</tr>
 				<tr>
-					<td>{tr}Active:{/tr}</td>
+					<td>{tr}Active{/tr}:</td>
 					<td>
 						<select name="active">
 							<option value='a' {if $info.active eq 'a'}selected="selected"{/if}>{tr}active{/tr}</option>
@@ -59,7 +59,7 @@
 				</tr>
 				{include file='categorize.tpl'}
 				<tr>
-					<td>{tr}PublishDate:{/tr}</td>
+					<td>{tr}PublishDate{/tr}:</td>
 					<td>
 						{html_select_date time=$info.publishDate end_year="+1" field_order=$prefs.display_field_order} {tr}at{/tr} {html_select_time time=$info.publishDate display_seconds=false}
 					</td>
@@ -103,12 +103,12 @@
 			{cycle values="odd,even" print=false}
 			{section name=user loop=$channels}
 				<tr class="{cycle}">
-					<td class="id">{$channels[user].pollId}</td>
-					<td class="text">
+					<td>{$channels[user].pollId}</td>
+					<td>
 						<a class="tablename" href="tiki-poll_results.php?pollId={$channels[user].pollId}">{$channels[user].title|escape}</a>
 					</td>
 					{if $prefs.poll_list_categories eq 'y'}
-						<td class="text">
+						<td>
 							{section name=cat loop=$channels[user].categories}
 								{$channels[user].categories[cat].name}
 								{if !$smarty.section.cat.last}
@@ -118,7 +118,7 @@
 						</td>
 					{/if}
 					{if $prefs.poll_list_objects eq 'y'}
-						<td class="text">
+						<td>
 							{section name=obj loop=$channels[user].objects}
 								<a href="{$channels[user].objects[obj].href}">{$channels[user].objects[obj].name}</a>
 								{if !$smarty.section.obj.last}
@@ -127,12 +127,12 @@
 							{/section}
 						</td>
 					{/if}
-					<td class="text">{$channels[user].active}</td>
-					<td class="integer">{$channels[user].votes}</td>
-					<td class="date">{$channels[user].publishDate|tiki_short_datetime}</td>
-					<td class="integer">{$channels[user].voteConsiderationSpan|escape}</td>
-					<td class="integer">{$channels[user].options}</td>
-					<td class="action">
+					<td>{$channels[user].active}</td>
+					<td>{$channels[user].votes}</td>
+					<td>{$channels[user].publishDate|tiki_short_datetime}</td>
+					<td>{$channels[user].voteConsiderationSpan|escape}</td>
+					<td>{$channels[user].options}</td>
+					<td>
 						{self_link pollId=$channels[user].pollId}{icon _id=page_edit}{/self_link}
 						<a class="link" href="tiki-admin_poll_options.php?pollId={$channels[user].pollId}" title="{tr}Options{/tr}">{icon _id=table alt="{tr}Options{/tr}"}</a>
 						<a class="link" href="tiki-poll_results.php?pollId={$channels[user].pollId}">{icon _id="chart_curve" alt="{tr}Results{/tr}"}</a>
@@ -140,7 +140,9 @@
 					</td>
 				</tr>
 			{sectionelse}
-	         {norecords _colspan=$numbercol}
+				<tr>
+					<td colspan="{$numbercol}" class="odd">{tr}No records found{/tr}</td>
+				</tr>
 			{/section}
 		</table>
 		{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset }{/pagination_links}

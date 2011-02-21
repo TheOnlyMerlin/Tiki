@@ -16,7 +16,6 @@ function module_calendar_new_info() {
 		'name' => tra('Calendar'),
 		'description' => tra('Includes a calendar or a list of calendar events.'),
 		'prefs' => array( 'feature_calendar' ),
-		'documentation' => 'Module calendar_new',
 		'params' => array(
 			'calIds' => array(
 				'name' => tra('Calendars filter'),
@@ -78,12 +77,12 @@ function module_calendar_new( $mod_reference, $module_params ) {
 
 	if (isset($_REQUEST['viewmode'])) $save_viewmode = $_REQUEST['viewmode'];
 	if (!empty($module_params['viewmode']))
-		$calendarViewMode['casedefault'] = $module_params['viewmode'];
+		$calendarViewMode = $module_params['viewmode'];
 
 	if (isset($_REQUEST['todate'])) $save_todate = $_REQUEST['todate'];
 
 	if (isset($module_params['month_delta'])) {
-		$calendarViewMode['casedefault'] = 'month';
+		$calendarViewMode = 'month';
 		list($focus_day, $focus_month, $focus_year) = array(
 			TikiLib::date_format("%d", $focusdate),
 			TikiLib::date_format("%m", $focusdate),
@@ -136,7 +135,7 @@ function module_calendar_new( $mod_reference, $module_params ) {
 			$smarty->assign($tc_key, $tc_val);
 		}
 
-		$smarty->assign('name', 'calendar_new');
+		$smarty->assign('name', 'calendar');
 
 		$smarty->assign('daformat2', $tikilib->get_long_date_format());
 		$smarty->assign('var', '');
@@ -144,7 +143,7 @@ function module_calendar_new( $mod_reference, $module_params ) {
 		$smarty->assign('show_calendar_module', 'y');
 		$smarty->assign_by_ref('viewmodelink', $module_params['viewmodelink']);
 		$smarty->assign_by_ref('linkall', $module_params['linkall']);
-		$smarty->assign('calendarViewMode', $calendarViewMode['casedefault']);
+		$smarty->assign('calendarViewMode', $calendarViewMode);
 
 		if ( isset($save_todate) ) {
 			$_REQUEST['todate'] = $save_todate;

@@ -616,7 +616,7 @@ if ($tiki_p_view_trackers != 'y' && !$special) {
 if (!isset($mainfield)) {
 	$mainfield = 0;
 }
-if ($tiki_p_admin_trackers == 'y' || ($tiki_p_remove_tracker_items == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c') || ($tiki_p_remove_tracker_items_pending == 'y' && $item_info['status'] == 'p') || ($tiki_p_remove_tracker_items_closed == 'y' && $item_info['status'] == 'c')) {
+if ($tiki_p_admin_trackers == 'y' || ($tiki_p_modify_tracker_items == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c') || ($tiki_p_modify_tracker_items_pending == 'y' && $item_info['status'] == 'p') || ($tiki_p_modify_tracker_items_closed == 'y' && $item_info['status'] == 'c')) {
 	if (isset($_REQUEST["remove"])) {
 		check_ticket('view-trackers-items');
 		$trklib->remove_tracker_item($_REQUEST["remove"]);
@@ -1176,7 +1176,7 @@ if ($tracker_info["useAttachments"] == 'y') {
 	$smarty->assign('attextra', $attextra);
 }
 if (isset($_REQUEST['moveto']) && empty($_REQUEST['moveto'])) {
-	$trackers = $trklib->list_trackers();
+	$trackers = $tikilib->list_trackers();
 	$smarty->assign_by_ref('trackers', $trackers['data']);
 	$_REQUEST['show'] = 'mod';
 }
@@ -1206,6 +1206,10 @@ if (isset($_REQUEST['status'])) $smarty->assign_by_ref('status', $_REQUEST['stat
 include_once ('tiki-section_options.php');
 $smarty->assign('uses_tabs', 'y');
 ask_ticket('view-trackers-items');
+if ($prefs['ajax_xajax'] == 'y') {
+	require_once ("lib/ajax/ajaxlib.php");
+	$ajaxlib->registerTemplate('tiki-view_tracker_item.tpl');
+}
 global $logslib; include_once('lib/logs/logslib.php');
 $logslib->add_action('Viewed', $_REQUEST['itemId'], 'trackeritem');
 

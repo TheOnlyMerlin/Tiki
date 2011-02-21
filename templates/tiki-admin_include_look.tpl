@@ -27,6 +27,8 @@
 				{/if}	
 			</div>
 
+			{preference name=feature_fixed_width}
+							
 			{if isset($thumbfile)}
 				<div class="adminoptionboxchild">
 					<div id="style_thumb_div">
@@ -34,11 +36,6 @@
 					</div>
 				</div>
 			{/if}							
-
-			{preference name=feature_fixed_width}
-			<div class="adminoptionboxchild" id="feature_fixed_width_childcontainer">
-				{preference name=layout_fixed_width}
-			</div>
 
 			{preference name=change_theme}
 			<div class="adminoptionboxchild" id="change_theme_childcontainer">
@@ -83,9 +80,21 @@
 			{preference name=categories_used_in_tpl}
 		{/tab}
 		
-		{tab name="{tr}General Layout{/tr}"}
+		{tab name="{tr}General Layout options{/tr}"}
+			{preference name=feature_custom_doctype}
+			<div class="adminoptionboxchild" id="feature_custom_doctype_childcontainer">
+				{preference name=feature_custom_doctype_content}
+			</div>
 			{preference name=feature_html_head_base_tag}
 			{preference name=feature_custom_html_head_content}
+			{preference name=feature_secondary_sitemenu_custom_code}
+			{preference name=feature_sitemycode}
+			<div class="adminoptionboxchild" id="feature_sitemycode_childcontainer">
+				{icon _id=information}
+				<em>{tr}The Custom Site Header will display for the Admin only. Select <strong>Publish</strong> to display the content for <em>all</em> users.{/tr}</em>
+				{preference name=sitemycode}
+				{preference name=sitemycode_publish}
+			</div>
 
 			{preference name=feature_sitelogo}
 			<div class="adminoptionboxchild" id="feature_sitelogo_childcontainer">
@@ -105,16 +114,21 @@
 					{preference name=sitesubtitle}
 				</fieldset>
 			</div>
+			{preference name=feature_site_login}
 			{preference name=feature_top_bar}
+			<div class="adminoptionboxchild" id="feature_top_bar_childcontainer">
+				{preference name=feature_sitemenu}
+				<div class="adminoptionboxchild" id="feature_sitemenu_childcontainer">
+					{preference name=feature_sitemenu_custom_code}
+					{preference name=feature_topbar_id_menu}
+				</div>
+				{preference name=feature_sitesearch}
+				{preference name=feature_topbar_custom_code}
+			</div>
 		
-		
-			{preference name=module_zones_top}
-			{preference name=module_zones_topbar}
-			{preference name=module_zones_pagetop}
+			{preference name=feature_custom_center_column_header}
 			{preference name=feature_left_column}
 			{preference name=feature_right_column}
-			{preference name=module_zones_pagebottom}
-			{preference name=module_zones_bottom}
 		
 			{preference name=feature_breadcrumbs}
 			<div class="adminoptionboxchild" id="feature_breadcrumbs_childcontainer">
@@ -124,10 +138,22 @@
 				{preference name=feature_sitedesc}
 			</div>
 		
+			{preference name=feature_bot_logo}
+			<div class="adminoptionboxchild" id="feature_bot_logo_childcontainer">
+				{preference name=bot_logo_code}
+			</div>
+
 			{preference name=feature_endbody_code}
 		
 			{preference name=feature_bot_bar}
 			<div class="adminoptionboxchild" id="feature_bot_bar_childcontainer">
+				{preference name=feature_bot_bar_icons}
+				{preference name=feature_bot_bar_debug}
+				{preference name=feature_bot_bar_rss}
+				{preference name=feature_bot_bar_power_by_tw}
+				<div class="adminoptionboxchild" id="feature_bot_bar_power_by_tw_childcontainer">
+					{preference name=feature_topbar_version}
+				</div>
 			</div>
 
 			<div class="adminoptionbox">
@@ -163,7 +189,7 @@
 			</div>
 		{/tab}
 
-		{tab name="{tr}Pagination{/tr}"}
+		{tab name="{tr}Pagination links{/tr}"}
 			{preference name=user_selector_threshold}
 			{preference name=maxRecords}
 			{preference name=nextprev_pagination}
@@ -209,48 +235,6 @@
 
 		{tab name="{tr}Custom CSS{/tr}"}
 			<fieldset>
-				<legend>{tr}Theme Generator{/tr}</legend>
-				{preference name="feature_themegenerator"}
-				<div class="adminoptionboxchild" id="feature_themegenerator_childcontainer">
-					<div class="adminoptionbox">			
-						{preference name="themegenerator_theme" default=$prefs.site_themegenerator_theme}
-						<div  class="adminoptionboxchild" id="feature_themegenerator_childcontainer">
-							
-							<input type="text" name="tg_edit_theme_name" value="{$tg_edit_theme_name|escape}"{if !empty($prefs.themegenerator_theme)} style="display:none;"{/if} />
-							<input type="submit" name="tg_new_theme" value="{tr}New{/tr}"{if !empty($prefs.themegenerator_theme)} style="display:none;"{/if} />
-							<input type="submit" name="tg_delete_theme" value="{tr}Delete{/tr}"{if empty($prefs.themegenerator_theme)} style="display:none;"{/if} />
-							{jq}$("select[name=themegenerator_theme]").change(function(){
-	if ($(this)[0].selectedIndex === 0) {
-		$("input[name=tg_edit_theme_name]").keyup(function(e){
-			if (e.keyCode === 13 && $(this).val()) {
-				$("input[name=tg_new_theme]").click();
-			}
-		}).show();
-		$("input[name=tg_new_theme]").show();
-		$("input[name=tg_delete_theme]").hide();
-	}
-							}).change();{/jq}
-							{if $prefs.feature_jquery_ui eq "y" and $prefs.feature_ajax eq "y" and not empty($prefs.themegenerator_theme)}
-								{* TODO make non-live themes editable & previewable *}
-								{button _text="{tr}Open editor{/tr}" _class="tgFloatDialog" href="#"}
-							{/if}
-						</div>
-					</div>
-					<div class="adminoptionbox">
-						{if $prefs.feature_jquery_ui neq "y" or $prefs.feature_ajax neq "y"}
-							<div id="themegenerator_container">
-								{include file="themegen.tpl"}
-								<div class="input_submit_container clear" style="text-align: center">
-									<input type="submit" name="tg_preview" value="{tr}Preview Theme{/tr}">
-								</div>
-							</div>
-							{jq}initThemeGenDialog();{/jq}
-						{/if}
-					</div>
-				</div>
-			</fieldset>
-				
-			<fieldset>
 				<legend>{tr}Custom CSS{/tr}</legend>
 				<div class="adminoptionboxchild">
 					{self_link _onclick="toggle_brosho();return false;" _ajax="n"}{icon _id="bricks"}{tr}Experimental: CSS assistant (work in progress - click the x to remove){/tr}{/self_link}
@@ -263,9 +247,6 @@
 
 		{tab name="{tr}Miscellaneous{/tr}"}
 			{preference name=feature_tabs}
-			<div class="adminoptionboxchild" id="feature_tabs_childcontainer">
-				{preference name=layout_tabs_optional}
-			</div>
 			{preference name=layout_section}
 			{if $prefs.layout_section eq 'y'}
 				{button _text="{tr}Admin layout per section{/tr}" href="tiki-admin_layout.php"}
@@ -297,12 +278,12 @@
 				<legend>{tr}Separators{/tr}</legend>
 				{preference name=site_crumb_seper}
 				<div class="adminoptionboxchild">
-					<em>{tr}Examples:{/tr} &nbsp; &raquo; &nbsp; / &nbsp; &gt; &nbsp; : &nbsp; -> &nbsp; &#8594;</em>
+					<em>{tr}Examples{/tr}: &nbsp; &raquo; &nbsp; / &nbsp; &gt; &nbsp; : &nbsp; -> &nbsp; &#8594;</em>
 				</div>
 
 				{preference name=site_nav_seper}
 				<div class="adminoptionboxchild">
-					<em>{tr}Examples:{/tr} &nbsp; | &nbsp; / &nbsp; &brvbar; &nbsp; :</em>
+					<em>{tr}Examples{/tr}: &nbsp; | &nbsp; / &nbsp; &brvbar; &nbsp; :</em>
 				</div>
 			</fieldset>
 

@@ -61,23 +61,23 @@ a:active {
 }
 
 h1 {
-	font-size: 24px;
+	24px;
 }
 
 h2 {
-	font-size: 22px;
+	22px;
 }
 
 h3 {
-	font-size: 19px
+	19px
 }
 
 h4 {
-	font-size: 16px;
+	16px;
 }
 
 h5 {
-	font-size: 15px;
+	15px;
 }
 
 legend {
@@ -261,18 +261,13 @@ input[type=submit]:hover {
 }
 
 /**infinite carousel**/
+
 #carousel {
         color: #122232;
 }
 
 #carousel a {
         color: #122232;
-}
-
-
-/** tree **/
-.ui-icon {
-background-image:url('../../../lib/jquery/jquery-ui/themes/smoothness/images/ui-icons_888888_256x240.png');
 }
 
 /**** Boxes *****/
@@ -290,7 +285,7 @@ h3.box-title {
 	color: #4477cc;
 	padding-left: 6px;
 	padding-right: 6px;
-	margin-bottom: 1px;
+	margin-bottom: 1px
 	margin-top: 0;
 	text-align: left;
 }
@@ -414,7 +409,8 @@ tr.even:hover {
 
 .tabcontent {
 	background: #121212;
-}
+	border: /*tabcontent_border*/ !important;
+	border-top: none !important;}
 
 .article h2,
 h1.pagetitle {

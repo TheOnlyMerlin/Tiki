@@ -13,7 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 function module_blog_last_comments_info() {
 	return array(
-		'name' => tra('Newest Blog Post Comments'),
+		'name' => tra('Last blog post comments'),
 		'description' => tra('Displays the specified number of the blog post comments most recently added.'),
 		'prefs' => array( 'feature_blogs' ),
 		'params' => array(

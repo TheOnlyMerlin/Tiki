@@ -24,11 +24,11 @@ function wikiplugin_trackerstat_info()
 {
 	return array(
 		'name' => tra('Tracker Stats'),
-		'documentation' => 'PluginTrackerStat',
-		'description' => tra('Display statistics about a tracker.'),
+		'documentation' => tra('PluginTrackerStat'),
+		'description' => tra('Displays some stat of a tracker content, fields are indicated with numeric ids.'),
 		'prefs' => array( 'feature_trackers', 'wikiplugin_trackerstat' ),
 		'body' => tra('Title'),
-		'icon' => 'pics/icons/calculator.png',
+		'icon' => 'pics/icons/database_lightning.png',
 		'params' => array(
 			'trackerId' => array(
 				'required' => true,

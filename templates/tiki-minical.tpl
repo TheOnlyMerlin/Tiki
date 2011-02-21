@@ -33,7 +33,8 @@
 						</td>
 					</tr>
 				{sectionelse}
-					{norecords}
+					<tr>
+						<td class="odd">{tr}No records found.{/tr}</td></tr>
 				{/section}	
 			</table>
 		</td>

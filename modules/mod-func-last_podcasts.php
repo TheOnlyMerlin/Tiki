@@ -60,18 +60,16 @@ function module_last_podcasts_info() {
 }
 
 function module_last_podcasts( $mod_reference, $module_params ) {
-	global $smarty;
-
-	$filegallib = TikiLib::lib('filegal');
+	global $tikilib, $smarty;
 
 	if (isset($module_params['galleryId'])) {
 		if (strstr($module_params['galleryId'], ':')) {
-			$mediafiles = $filegallib->get_files(0, $mod_reference["rows"], 'created_desc', '', explode(':',$module_params['galleryId']));
+			$mediafiles = $tikilib->get_files(0, $mod_reference["rows"], 'created_desc', '', explode(':',$module_params['galleryId']));
 		} else {
-			$mediafiles = $filegallib->get_files(0, $mod_reference["rows"], 'created_desc', '', $module_params['galleryId']);
+			$mediafiles = $tikilib->get_files(0, $mod_reference["rows"], 'created_desc', '', $module_params['galleryId']);
 		}
 	} else {
-		$mediafiles = $filegallib->list_files(0, $mod_reference["rows"], 'created_desc', '');
+		$mediafiles = $tikilib->list_files(0, $mod_reference["rows"], 'created_desc', '');
 	}
 	
 	$mediaplayer=(isset($module_params['mediaplayer']) && is_readable($module_params['mediaplayer']))?$module_params['mediaplayer']:'';

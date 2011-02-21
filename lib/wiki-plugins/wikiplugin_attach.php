@@ -49,11 +49,10 @@ function wikiplugin_attach_help() {
 function wikiplugin_attach_info() {
 	return array(
 		'name' => tra( 'Attachment' ),
-		'documentation' => 'PluginAttach',
+		'documentation' => tra('PluginAttach'),		
 		'description' => tra('Displays an attachment or a list of them'),
 		'prefs' => array( 'feature_wiki_attachments', 'wikiplugin_attach' ),
 		'body' => tra("Comment"),
-		'icon' => 'pics/icons/attach.png',
 		'params' => array(
 			'name' => array(
 				'required' => false,

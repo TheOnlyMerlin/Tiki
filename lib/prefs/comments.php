@@ -27,10 +27,5 @@ function prefs_comments_list() {
 			'description' => tra('Allows users with permission tiki_p_vote_comments to vote comments.'),
 			'type' => 'flag',
 		),
-		'comments_archive' => array(
-			'name' => tra('Archive comments'),
-			'description' => tra('If a comment is archived, only admins can see it'),
-			'type' => 'flag',
-		),
 	);
 }

@@ -10,7 +10,7 @@ require_once('lib/wiki-plugins/wikiplugin_flash.php');
 function wikiplugin_bliptv_info() {
 	return array(
 		'name' => tra('Bliptv'),
-		'documentation' => 'PluginBliptv',
+		'documentation' => tra('PluginBliptv'),
 		'description' => tra('Display a Blip.tv video'),
 		'prefs' => array( 'wikiplugin_bliptv' ),
 		'icon' => 'pics/icons/bliptv.png',
@@ -18,7 +18,7 @@ function wikiplugin_bliptv_info() {
 			'url' => array(
 				'required' => true,
 				'name' => tra('URL'),
-				'description' => tra('Blip.tv embed URL. Example: http://blip.tv/play/AYGd_GAC'),
+				'description' => tra('Blip.tv embed URL. Please note that this url needs to be the src param in the EMBED code, and not the video URL as in other equivalent video plugins. Example: http://blip.tv/play/AYGd_GAC (instead of http://blip.tv/file/2568201/) '),
 				'filter' => 'url',
 				'default' => '',
 			),

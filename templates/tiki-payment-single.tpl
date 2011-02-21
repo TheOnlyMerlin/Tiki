@@ -4,7 +4,7 @@
 	{else} 
 		<h2>{$payment_info.description|escape}</h2>
 	{/if}
-	<p>{tr}Status:{/tr} <strong>{$payment_info.state|escape}</strong></p>
+	<p>{tr}Status{/tr}: <strong>{$payment_info.state|escape}</strong></p>
 	{if $payment_info.fullview and !empty($payment_detail)}
 		<div class="clearfix wikitext">
 			{$payment_detail}
@@ -12,10 +12,10 @@
 	{/if}
 	<p>
 		{if $payment_info.state eq 'past'}
-			{tr}Paid amount:{/tr} {$payment_info.amount_original|escape} {$payment_info.currency|escape}<br />
+			{tr}Paid amount{/tr}: {$payment_info.amount_original|escape} {$payment_info.currency|escape}<br />
 		{else}
-			{tr}Initial amount:{/tr} {$payment_info.amount_original|escape} {$payment_info.currency|escape}<br />
-			{tr}Amount remaining:{/tr} <strong>{$payment_info.amount_remaining|escape} {$payment_info.currency|escape}</strong><br />
+			{tr}Initial amount{/tr}: {$payment_info.amount_original|escape} {$payment_info.currency|escape}<br />
+			{tr}Amount remaining{/tr}: <strong>{$payment_info.amount_remaining|escape} {$payment_info.currency|escape}</strong><br />
 			{tr 0=$payment_info.request_date|tiki_short_date 1=$payment_info.due_date|tiki_short_date}Payment request was sent on %0 and is due by %1.{/tr}<br />
 		{/if}
 		{if ( $payment_info.state eq 'outstanding' || $payment_info.state eq 'overdue' )}
@@ -32,9 +32,8 @@
 					{if $prefs.payment_paypal_ipn eq 'y'}
 						<input type="hidden" name="notify_url" value="{$payment_info.paypal_ipn|escape}" />
 					{/if}
-					{tr}Pay with Credit Card through Paypal:{/tr} <input type="image" name="submit" border="0" src="https://www.paypal.com/en_US/i/btn/btn_paynow_LG.gif" alt="PayPal" title="{tr}Pay with Paypal{/tr}"/> 
-					<br /><input type="image" name="submit" border="0" src="https://www.paypal.com/en_US/i/bnr/horizontal_solution_PPeCheck.gif" border="0" alt="PayPal" />
-				</form> 
+					{tr}Pay with Paypal:{/tr} <input type="image" name="submit" border="0" src="https://www.paypal.com/en_US/i/btn/btn_paynow_LG.gif" alt="PayPal" title="{tr}Pay with Paypal{/tr}"/> 
+				</form>
 			{elseif $prefs.payment_system eq 'cclite' && $prefs.payment_cclite_gateway neq ''}
 				{if (!empty($ccresult) or !empty($ccresult2)) and $ccresult_ok}
 					<form action="{query _type='relative'}" method="post">
@@ -71,10 +70,10 @@
 						</tr>
 						{foreach key=id item=data from=$userpaycredits}
 						<tr>
-							<td class="text">{$data.display_text|escape}</td>
-							<td class="text">{$data.remain|escape}</td>
-							<td class="integer">{$data.price|escape}</td>
-							<td class="text"><input type="radio" name="tiki_credit_type" value="{$id|escape}" {if !$data.enough}disabled="disabled"{/if} /></td>
+							<td>{$data.display_text|escape}</td>
+							<td>{$data.remain|escape}</td>
+							<td>{$data.price|escape}</td>
+							<td><input type="radio" name="tiki_credit_type" value="{$id|escape}" {if !$data.enough}disabled="disabled"{/if} /></td>
 						</tr>
 						{/foreach}
 						<tr>

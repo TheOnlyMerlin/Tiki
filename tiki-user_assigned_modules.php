@@ -7,6 +7,9 @@
 
 $section = 'mytiki';
 require_once ('tiki-setup.php');
+if ($prefs['ajax_xajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
 include_once ('lib/usermodules/usermoduleslib.php');
 
 $access->check_feature( array('feature_modulecontrols', 'user_assigned_modules') );
@@ -63,5 +66,14 @@ $smarty->assign_by_ref('assignables', $assignables);
 $smarty->assign_by_ref('modules', $modules);
 include_once ('tiki-mytiki_shared.php');
 ask_ticket('user-modules');
+if ($prefs['ajax_xajax'] == "y") {
+	function user_modules_ajax() {
+		global $ajaxlib, $xajax;
+		$ajaxlib->registerTemplate("tiki-user_assigned_modules.tpl");
+		$ajaxlib->registerFunction("loadComponent");
+		$ajaxlib->processRequests();
+	}
+	user_modules_ajax();
+}
 $smarty->assign('mid', 'tiki-user_assigned_modules.tpl');
 $smarty->display("tiki.tpl");

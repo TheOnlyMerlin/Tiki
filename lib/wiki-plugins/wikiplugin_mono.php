@@ -28,11 +28,10 @@ function wikiplugin_mono_help() {
 function wikiplugin_mono_info() {
 	return array(
 		'name' => tra('Monospace'),
-		'documentation' => 'PluginMono',
-		'description' => tra('Display text in a monospace font'),
+		'documentation' => tra('PluginMono'),			
+		'description' => tra('Displays the data using a monospace font'),
 		'prefs' => array( 'wikiplugin_mono' ),
 		'body' => tra('text'),
-		'icon' => 'pics/icons/font.png',
 		'params' => array(
 			'font' => array(
 				'required' => false,

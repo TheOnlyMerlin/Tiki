@@ -10,7 +10,7 @@
 
 {tabset name="admin_features"}
 {*
- * The following section is typically for features that act like Tiki
+ * The following section is typically for features that act like Tikiwiki
  * sections and add a configuration icon to the sections list
  *}
 {* ---------- Main features ------------ *}
@@ -40,7 +40,7 @@
 		<fieldset>
 			<legend>{tr}Additional{/tr}</legend>
 
-			<div class="admin clearfix featurelist">
+			<div class="admin featurelist">
 				{preference name=feature_surveys}
 				{preference name=feature_directory}
 				{preference name=feature_quizzes}
@@ -60,7 +60,7 @@
 		<fieldset>
 			<legend>{tr}Watches{/tr}</legend>
 
-			<div class="admin clearfix featurelist">
+			<div class="admin featurelist">
 				{preference name=feature_user_watches}
 				{preference name=feature_group_watches}
 				{preference name=feature_daily_report_watches}
@@ -73,14 +73,16 @@
 {/tab}
 			
 {tab name="{tr}Interface{/tr}"}
-			<fieldset class="admin clearfix featurelist">
-				<legend> {tr}Ajax{/tr} </legend>	
+			<fieldset class="admin featurelist">
+				<legend> {tr}AJAX{/tr} </legend>	
 				{preference name=feature_ajax}
 				<div class="adminoptionboxchild half_width" id="feature_ajax_childcontainer">
 					{preference name=ajax_autosave}
+					{preference name=feature_wiki_save_draft}
+					{preference name=ajax_xajax}
 				</div>
 			</fieldset>
-			<fieldset class="admin clearfix featurelist">
+			<fieldset class="admin featurelist">
 				<legend> {tr}jQuery plugins and add-ons{/tr} </legend>
 				{preference name=feature_jquery_autocomplete}
 				{preference name=feature_jquery_media}
@@ -90,10 +92,10 @@
 				{preference name=feature_jquery_ui_theme}
 				{preference name=feature_jquery_ui}
 				{preference name=feature_jquery_validation}
-				<hr class="floatleft" />
+				<hr />
 				<div class="floatleft">
 					<div class="adminoptionbox">
-						<em>{tr}Experimental:{/tr}</em> {icon _id=bug_error}
+						<em>{tr}Experimental{/tr}:</em> {icon _id=bug_error}
 					</div>
 					<div class="adminoptionboxchild">	
 						{preference name=feature_jquery_carousel}
@@ -105,7 +107,7 @@
 {/tab}
 
 {tab name="{tr}Programmer{/tr}"}
-			<div class="admin clearfix featurelist">
+			<div class="admin featurelist">
 				{preference name=feature_integrator}
 				{preference name=feature_xmlrpc}
 				{preference name=feature_debug_console}
@@ -130,6 +132,7 @@
 					<div class="adminoptionboxchild" id="log_sql_childcontainer">
 						{preference name=log_sql_perf_min}
 					</div>
+					{preference name=feature_bot_bar_debug}
 					{preference name=log_tpl}
 				</fieldset>
 			</div>
@@ -146,7 +149,7 @@
 
 {* ---------- New features ------------ *}
 {tab name="{tr}New{/tr}"}
-			<div class="admin clearfix featurelist">
+			<div class="admin featurelist">
 				<fieldset>
 					<legend class="heading">{icon _id="star"} <span>{tr}New{/tr}</span></legend>
 					<p class="description">{tr}These features are relatively new, or recently underwent major renovations. You should expect growing pains and possibly a lack of up to date documentation, as you would of a version 1.0 application{/tr}</p>
@@ -167,18 +170,6 @@
 						{preference name=feature_webservices}
 						{preference name=feature_wiki_mindmap}
 						{preference name=feature_wysiwyg}
-						{preference name=feature_accounting}
-						{preference name=payment_feature}
-						{preference name=zotero_enabled}
-						<div class="adminoptionboxchild" id="zotero_enabled_childcontainer">
-							{if $prefs.zotero_client_key and $prefs.zotero_client_secret and $prefs.zotero_group_id}
-								{remarksbox type=info title="{tr}Configuration completed{/tr}"}<a href="tiki-ajax_services.php?oauth_request=zotero">{tr}Authenticate with Zotero{/tr}</a>{/remarksbox}
-							{/if}
-
-							{preference name=zotero_client_key}
-							{preference name=zotero_client_secret}
-							{preference name=zotero_group_id}
-						</div>
 				</fieldset>
 			</div>
 
@@ -187,7 +178,7 @@
 
 {* ---------- Experimental features ------------ *}
 {tab name="{tr}Experimental{/tr}"}
-			<div class="admin clearfix featurelist">
+			<div class="admin featurelist">
 
 				<!--<fieldset>
 					<legend class="heading">{icon _id="bricks"} <span>{tr}Getting there...{/tr}</span></legend>
@@ -200,23 +191,6 @@
 					{preference name=feature_loadbalancer}
 					{preference name=feature_socialnetworks}
 					{preference name=feature_watershed}
-					{preference name=feature_file_galleries_save_draft}
-					{preference name=feature_file_galleries_templates}
-					{preference name=feature_syntax_highlighter}
-					{preference name=feature_draw}
-					{preference name=mobile_feature}
-					<div class="adminoptionboxchild" id="mobile_feature_childcontainer">
-						{preference name=mobile_perspectives}
-						<fieldset>
-							<legend>{tr}Mobile Themes{/tr}</legend>
-						{preference name=mobile_theme_header}
-						{preference name=mobile_theme_content}
-						{preference name=mobile_theme_footer}
-						{preference name=mobile_theme_modules}
-						{preference name=mobile_theme_menus}
-						{preference name=mobile_use_latest_lib}
-						</fieldset>
-					</div>
 				</fieldset>
 
 				<fieldset>
@@ -230,6 +204,7 @@
 					{preference name=feature_friends}
 					{preference name=feature_intertiki}
 					{preference name=feature_mailin}
+					{preference name=feature_mobile}
 					{preference name=feature_morcego}
 				</fieldset>
 

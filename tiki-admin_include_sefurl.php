@@ -14,19 +14,16 @@ if (isset($_REQUEST['save'])) {
 }
 
 // Check if .htaccess is present and current
-$htaccess = "missing";
+$needtowarn = 1;
 $fp = fopen('.htaccess', "r");
 if ($fp) {
-	$htCurrent = fopen('_htaccess', "r");
-	$installedFirstLine = fgets($fp); 
-	if ($installedFirstLine == fgets($htCurrent)) { // Do not warn if the first line of each file is identical. First lines contain _htaccess revision
-		$htaccess = 'current';
-	} elseif(strstr($installedFirstLine, 'This line is used to check that this htaccess file is up to date.')) {
-		$htaccess = 'outdated';
+	$htCurrent = fopen('_htaccess', "r"); 
+	if (fgets($fp) == fgets($htCurrent)) { // Do not warn if the first line of each file is identical. First lines contain _htaccess revision
+		$needtowarn = 0;
 	}
 	fclose($htCurrent);
 	fclose($fp);
 }
-$smarty->assign('htaccess', $htaccess);
+$smarty->assign('needtowarn', $needtowarn);
 
 ask_ticket('admin-inc-sefurl');

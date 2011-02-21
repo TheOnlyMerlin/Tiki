@@ -13,7 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 function module_file_galleries_info() {
 	return array(
-		'name' => tra('File Galleries'),
+		'name' => tra('File galleries'),
 		'description' => tra('Displays links to file galleries.'),
 		'prefs' => array( 'feature_file_galleries' ),
 		'params' => array(),
@@ -24,7 +24,7 @@ function module_file_galleries( $mod_reference, $module_params ) {
 	global $filegallib; include_once ('lib/filegals/filegallib.php');
 	global $smarty;
 	
-	$all_galleries = $filegallib->getSubGalleries();
+	$all_galleries = $filegallib->getFileGalleriesData();
 	
 	if ( isset($all_galleries) && is_array($all_galleries) && count($all_galleries) > 0 ) {
 		$phplayersTreeData = $filegallib->getFilegalsTreePhplayers();

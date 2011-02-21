@@ -31,11 +31,6 @@ class Perms_ResolverFactory_ObjectFactory implements Perms_ResolverFactory
 		$objects = array();
 		$hashes = array();
 
-		// Limit the amount of hashes preserved to reduce memory consumption
-		if (count($this->known) > 128) {
-			$this->known = array();
-		}
-
 		foreach( $values as $v ) {
 			$hash = $this->getHash( array_merge( $baseContext, array( 'object' => $v ) ) );
 			if( ! isset( $this->known[$hash] ) ) {

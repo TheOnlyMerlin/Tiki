@@ -70,7 +70,7 @@ if ($dir_level > 0) {
 if ( substr($tikiroot,-1,1) != '/' ) $tikiroot .= '/';
 if ( substr($tikipath,-1,1) != '/' ) $tikipath .= '/';
 
-// Add global filter for xajax and cookie	// AJAX_TODO?
+// Add global filter for xajax and cookie
 global $inputConfiguration;
 if ( empty($inputConfiguration) ) {
 	$inputConfiguration = array();
@@ -90,16 +90,5 @@ require_once('lib/init/initlib.php');
 TikiInit::prependIncludePath($tikipath.'lib/pear');
 TikiInit::appendIncludePath($tikipath.'lib/core');
 TikiInit::appendIncludePath($tikipath);
-require_once 'Zend/Loader/Autoloader.php';
-Zend_Loader_Autoloader::getInstance()
-	->registerNamespace('TikiFilter')
-	->registerNamespace('DeclFilter')
-	->registerNamespace('JitFilter')
-	->registerNamespace('Search')
-	->registerNamespace('Perms')
-	->registerNamespace('Math')
-	->registerNamespace('Category')
-	->registerNamespace('WikiParser')
-	->registerNamespace('StandardAnalyzer')
-	->registerNamespace('TikiDb');
-
+require_once('lib/core/DeclFilter.php');
+require_once('lib/core/JitFilter.php');

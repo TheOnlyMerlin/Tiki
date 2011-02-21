@@ -19,28 +19,29 @@ require_once ('lib/tree/tree.php');
  */
 class CatBrowseTreeMaker extends TreeMaker
 {
+	/// Collect javascript cookie set code (internaly used after make_tree() method)
+	var $jsscriptblock;
+
 	/// Generated ID (private usage only)
 	var $itemID;
 
 	/// Constructor
 	function CatBrowseTreeMaker($prefix) {
 		$this->TreeMaker($prefix);
+
+		$this->jsscriptblock = '';
 	}
 
 	/// Generate HTML code for tree. Need to redefine to add javascript cookies block
 	function make_tree($rootid, $ar) {
-		global $headerlib, $prefs;
-
-		if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
-			$r = '<ul class="tree root" data-role="listview" data-inset="true">'."\n";
-		} else {
-			$r = '<ul class="tree root">'."\n";
-		}
+		global $headerlib;
+		
+		$r = '<ul class="tree root">'."\n";
 
 		$r .= $this->make_tree_r($rootid, $ar) . "</ul>\n";
 
 		// java script block that opens the nodes as remembered in cookies
-		$headerlib->add_jq_onready('$(".tree.root:not(.init)").categ_browse_tree().addClass("init")');
+		$headerlib->add_jq_onready($this->jsscriptblock);
 		
 		// return tree
 		return $r;
@@ -68,20 +69,19 @@ class CatBrowseTreeMaker extends TreeMaker
 	}
 	
 	function node_start_code_flip($nodeinfo) {
-		static $count = 0;
-		++$count;
-		return "\t" . '<li class="treenode withflip ' . (($count % 2) ? 'odd' : 'even') . '">';
+		return "\t" . '<li class="treenode withflip">';
 	}
 
 	function node_start_code($nodeinfo) {
-		static $count = 0;
-		++$count;
-		return "\t" . '<li class="treenode ' . (($count % 2) ? 'odd' : 'even') . '">';
+		return "\t" . '<li class="treenode">';
 	}
 
 	//
 	function node_flipper_code($nodeinfo) {
-		return '';
+		$this->itemID = $this->prefix . 'id' . $nodeinfo["id"];
+
+		$this->jsscriptblock .= "setFlipWithSign('" . $this->itemID . "'); ";
+		return '<a class="link categflipper" id="flipper' . $this->itemID . '" href="#" onclick="javascript:flipWithSign(\'' . $this->itemID . '\');return false;">[+]</a>&nbsp;';
 	}
 
 	//
@@ -96,7 +96,7 @@ class CatBrowseTreeMaker extends TreeMaker
 
 	//
 	function node_child_start_code($nodeinfo) {
-		return '<ul class="tree" id="' . $this->itemID . '">';
+		return '<ul class="tree" id="' . $this->itemID . '" style="display: none;">';
 	}
 
 	//

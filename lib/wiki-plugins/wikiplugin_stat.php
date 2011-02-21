@@ -8,10 +8,9 @@
 function wikiplugin_stat_info() {
 	return array(
 		'name' => tra('Stat'),
-		'documentation' => 'PluginStat',
-		'description' => tra('Show various statistics for an object'),
+		'documentation' => tra('PluginStat'),
+		'description' => tra('Displays statistics for articles, wiki pages and tracker items'),
 		'prefs' => array('wikiplugin_stat'),
-		'icon' => 'pics/icons/calculator.png',
 		'params' => array(
 			'type' => array(
 				'required' => true,

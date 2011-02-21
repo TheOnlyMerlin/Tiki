@@ -27,7 +27,6 @@ function prefs_feature_list() {
 	return array(
 		'feature_blog_mandatory_category' => array(
 			'name' => tra('Force and limit categorization to within subtree of'),
-			'description' => tra('If you get an error message indicating a mandatory category is required when editing a blog post, this is the option to blame. Set it to None.'),
 			'type' => 'list',
 			'options' => $catree,
 			'dependencies' => array(
@@ -78,20 +77,6 @@ function prefs_feature_list() {
 			'description' => tra('Computer files, videos or software for downloading. With check-in & check-out (lock)'),
 			'help' => 'File+Gallery',
 			'type' => 'flag',
-		),
-		'feature_file_galleries_save_draft' => array(
-			'name' => tra('Save files as drafts'),
-			'dependencies' => array(
-				'feature_file_galleries',
-			),
-			'type' => 'flag',
-		),
-		'feature_file_galleries_templates' => array(
-			'name' => tra('Configuration templates'),
-			'type' => 'flag',
-			'dependencies' => array(
-				'feature_file_galleries',
-                         ),
 		),
 		'feature_articles' => array(
 			'name' => tra('Articles'),
@@ -192,7 +177,7 @@ function prefs_feature_list() {
 			'type' => 'flag',
 		),
 		'feature_featuredLinks' => array(
-			'name' => tra('Featured Links'),
+			'name' => tra('Featured links'),
 			'description' => tra('Simple menu system which can optionally add an external web page in an iframe'),
 			'help' => 'Featured+links',
 			'type' => 'flag',
@@ -304,6 +289,13 @@ function prefs_feature_list() {
 			'help' => 'JS+Calendar',
 			'type' => 'flag',
 		),
+		'feature_phplayers' => array(
+			'name' => tra('PHPLayers'),
+			'description' => tra('PhpLayers Dynamic menus.'),
+			'help' => 'http://themes.tiki.org/PhpLayersMenu',
+			'type' => 'flag',
+			'warning' => tra('Will eventually be removed from Tiki. Use CSS menus instead.'),
+		),
 		'feature_htmlpurifier_output' => array(
 			'name' => tra('Output should be HTML Purified'),
 			'description' => tra('This enables HTML Purifier on outputs to filter potential remaining security problems like XSS.'),
@@ -348,6 +340,12 @@ function prefs_feature_list() {
 			'name' => tra('Ajax'),
 			'description' => tra('Ajax'),
 			'help' => 'Ajax',
+			'type' => 'flag',
+		),
+		'feature_mobile' => array(
+			'name' => tra('Mobile'),
+			'description' => tra('Outputs a WAP and VoiceXML version.'),
+			'help' => 'http://mobile.tiki.org',
 			'type' => 'flag',
 		),
 		'feature_morcego' => array(
@@ -400,6 +398,18 @@ function prefs_feature_list() {
 			'help' => 'Wysiwyg',
 			'type' => 'flag',
 		),
+		'feature_wiki_save_draft' => array(
+			'name' => tra('Save draft'),
+			'warning' => tra('Experimental (Requires AJAX)'),
+			'dependencies' => array(
+				'feature_ajax',
+			),
+			'type' => 'flag',
+			'dependencies' => array(
+				'feature_ajax',
+				'ajax_xajax',
+      ),
+		),	
 		'feature_kaltura' => array(
 			'name' => tra('Kaltura'),
 			'description' => tra('Collaborative video editing'),
@@ -427,8 +437,8 @@ function prefs_feature_list() {
 			'type' => 'flag',
 		),
 		'feature_action_calendar' => array(
-			'name' => tra('Action Calendar'),
-			'description' => tra('Action Calendar'),
+			'name' => tra('Action calendar'),
+			'description' => tra('Action calendar'),
 			'help' => 'Action+Calendar',
 			'type' => 'flag',
 		),
@@ -678,27 +688,19 @@ function prefs_feature_list() {
 			'type' => 'flag',
 		),
 		'feature_babelfish' => array(
-			'name' => tra('Yahoo! Babel Fish Translation URLs'),
+			'name' => tra('Translation URLs'),
 			'description' => tra('Show clickable URLs to translate the page to another language using Babel Fish website.'),
 			'type' => 'flag',
-			'hint' => tra('You need to assign somewhere on the page via a module'),
 		),
 		'feature_babelfish_logo' => array(
-			'name' => tra('Yahoo! Babel Fish Translation icons'),
-			'description' => tra('Show clickable icons to translate the page to another language using Babel Fish website.'),
-			'hint' => tra('You need to assign somewhere on the page via a module'),
+			'name' => tra('Translation icons'),
+			'description' => tra('Show clickable icons to translate the page to another language using Babelfish website.'),
 			'type' => 'flag',
 		),
 		'feature_smileys' => array(
 			'name' => tra('Smileys'),
 			'description' => tra('Also known as emoticons'),
 			'help' => 'Smileys',
-			'type' => 'flag',
-		),
-		'feature_draw' => array(
-			'name' => tra('Draw - (svg-edit)'),
-			'description' => tra('Draw gives you the ability to edit svg images all around Tiki'),
-			'help' => 'Draw',
 			'type' => 'flag',
 		),
 		'feature_dynamic_content' => array(
@@ -821,12 +823,6 @@ function prefs_feature_list() {
 			'type' => 'flag',
 			'require' => array('feature_sefurl', 'wiki_prefixalias_tokens'),
 		),	
-		'feature_canonical_url' => array(
-			'name' => tra('Canonical URL tag'),
-			'description' => tra('Indicates to search engines which URL to use which prevents duplicate listings'),
-			'type' => 'flag',
-			'perspective' => false,
-		),
 		'feature_modulecontrols' => array(
 			'name' => tra('Show module controls'),
 			'help' => 'Module+Control',
@@ -889,6 +885,13 @@ function prefs_feature_list() {
 			'name' => tra('Show category objects'),
 			'description' => tra('Show objects sharing the same category, below wiki pages'),
 			'type' => 'flag',
+		),
+		'feature_category_use_phplayers' => array(
+			'name' => tra('Use PHPLayers for category browser'),
+			'type' => 'flag',
+			'dependencies' => array(
+				'feature_phplayers',
+			),
 		),
 		'feature_search_show_forbidden_cat' => array(
 			'name' => tra('Ignore category viewing restrictions'),
@@ -990,22 +993,6 @@ function prefs_feature_list() {
 			'type' => 'flag',
 			'help' => 'File+Gallery+Config',
 		),
-		'feature_use_fgal_for_user_files' =>array(
-			'name' => tra('Use file galleries for user files'),
-			'type' => 'flag',
-			'help' => 'File+Gallery+Config',
-			'dependencies' => array(
-				'feature_file_galleries','feature_userfiles'
-			),
-		),
-		'feature_use_fgal_for_wiki_attachments' =>array(
-			'name' => tra('Use file galleries for wiki attachments'),
-			'type' => 'flag',
-			'help' => 'File+Gallery+Config',
-			'dependencies' => array(
-				'feature_file_galleries','feature_wiki_attachments'
-			),
-		),
 		'feature_file_galleries_author' => array(
 			'name' => tra("Require file author's name for anonymous uploads"),
 			'type' => 'flag',
@@ -1084,6 +1071,13 @@ function prefs_feature_list() {
 			),
 			'perspective' => false,
 		),
+		'feature_bot_bar_power_by_tw' => array(
+			'name' => tra("Add a Powered by Tiki link on your site's footer"),
+			'type' => 'flag',
+			'dependencies' => array(
+				'feature_bot_bar',
+			),			
+		),
 		'feature_editcss' => array(
 			'name' => tra('Edit CSS'),
 			'type' => 'flag',
@@ -1107,6 +1101,23 @@ function prefs_feature_list() {
 			'help' => 'Edit+Templates',
 			'perspective' => false,
 		),
+		'feature_custom_doctype' => array(
+			'name' => tra('Custom Doctype'),
+			'description' => tra('Use custom !DOCTYPE'),
+			'type' => 'flag',
+			'help' => 'Custom+Doctype',
+			'perspective' => true,
+		),
+		'feature_custom_doctype_content' => array(
+			'name' => tra('Custom Doctype Content'),
+			'hint' => tra('Example:') . "<!DOCTYPE html 
+	PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"
+	\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">",
+			'description' => tra('Use to generate the Tiki layout with custom &lt;!DOCTYPE&gt; specified.'),
+			'type' => 'textarea',
+			'size' => '3',
+			'filter' => 'rawhtml_unsafe',
+		),
 		'feature_custom_html_head_content' => array(
 			'name' => tra('Custom HTML <head> Content'),
 			'hint' => tra('Example:') . " {if \$page eq 'Slideshow'}{literal}<style type=\"text/css\">.slideshow { height: 232px; width: 232px; }</style>{/literal}{/if}",
@@ -1120,15 +1131,73 @@ function prefs_feature_list() {
 			'type' => 'flag',
 			'description' => tra('The &lt;base&gt; tag specifies a default address for all links on a page.'),
 		),
+		'feature_sitemycode' => array(
+			'name' => tra('Custom Site Header'),
+			'type' => 'flag',
+		),
 		'feature_sitelogo' => array(
 			'name' => tra('Site Logo and Title'),
 			'type' => 'flag',
-			'warning' => tra('Obsolete in tiki7'),
+		),
+		'feature_sitesearch' => array(
+			'name' => tra('Search Bar'),
+			'type' => 'flag',
+			'dependencies' => array(
+				'feature_search_fulltext',
+			),
+		),
+		'feature_site_login' => array(
+			'name' => tra('Login Bar'),
+			'type' => 'flag',
+		),
+		'feature_topbar_custom_code' => array(
+			'name' => tra('Top Bar Custom Code'),
+			'type' => 'textarea',
+			'size' => '6',
+			'filter' => 'rawhtml_unsafe',
+		),
+		'feature_topbar_version' => array(
+			'name' => tra('Display current Tiki version'),
+			'type' => 'flag',
+			'dependencies' => array(
+				'feature_bot_bar_power_by_tw',
+			),
+		),
+		'feature_sitemenu' => array(
+			'name' => tra('Site menu bar'),
+			'type' => 'flag',
+		),
+		'feature_sitemenu_custom_code' => array (
+			'name' => tra('Site menu custom code'),
+			'type' => 'textarea',
+			'size' => '4',
+			'hint' => tra('Example:') . " {if isset(\$objectCategoryIds) and in_array(2, \$objectCategoryIds)}
+     {menu id=43 css=y type=horiz}{else}{menu id=44 css=y type=horiz}{/if}",
+		),
+		'feature_secondary_sitemenu_custom_code' => array (
+			'name' => tra('Secondary site menu custom code'),
+			'type' => 'textarea',
+			'size' => '2',
+		),
+		'feature_topbar_id_menu' => array(
+			'name' => tra('Menu ID'),
+			'hint' => tra('Needs either CSS Menus or PHPLayers'),
+			'type' => 'text',
+			'size' => '5',
+			'dependencies' => array(
+				'feature_cssmenus',
+				'feature_phplayers',
+			),
 		),
 		'feature_top_bar' => array(
 			'name' => tra('Top Bar'),
 			'type' => 'flag',
-			'warning' => tra('Obsolete in tiki7'),
+		),
+		'feature_custom_center_column_header' => array(
+			'name' => tra('Custom Center Column Header'),
+			'hint' => tra('Example:') . " {if \$page eq 'Travel'}{banner zone=5}{/if}",
+			'type' => 'textarea',
+			'size' => '6',
 		),
 		'feature_left_column' => array(
 			'name' => tra('Left column'),
@@ -1190,6 +1259,10 @@ function prefs_feature_list() {
 				'feature_wiki_description',
 			),
 		),
+		'feature_bot_logo' => array(
+			'name' => tra('Custom Site Footer'),
+			'type' => 'flag',
+		),
 		'feature_endbody_code' => array(
 			'name' => tra('Custom End of <body> Code'),
 			'hint' => tra('Example:') . ' ' . "{wiki}{literal}{GOOGLEANALYTICS(account=xxxx) /}{/literal}{/wiki}",
@@ -1200,7 +1273,19 @@ function prefs_feature_list() {
 		'feature_bot_bar' => array(
 			'name' => tra('Bottom bar'),
 			'type' => 'flag',
-			'warning' => tra('Obsolete in tiki7'),
+		),
+		'feature_bot_bar_icons' => array(
+			'name' => tra('Bottom bar icons'),
+			'type' => 'flag',
+		),
+		'feature_bot_bar_debug' => array(
+			'name' => tra('Bottom bar debug'),
+			'type' => 'flag',
+			'description' => tra('Indicate various debug-related information in the footer of the site (Execution time, Memory usage, etc.)'),
+		),
+		'feature_bot_bar_rss' => array(
+			'name' => tra('Bottom bar (RSS)'),
+			'type' => 'flag',
 		),
 		'feature_site_report' => array(
 			'name' => tra('Webmaster Report'),
@@ -1239,9 +1324,6 @@ function prefs_feature_list() {
 			'type' => 'flag',
 			'description' => tra('Provides various drop-down menus on many text input boxes for page names, user names, groups, tags etc.'),
 			'help' => 'JQuery#Autocomplete',
-			'dependencies' => array(
-				'feature_jquery_ui',
-			),
 		),
 		'feature_jquery_superfish' => array(
 			'name' => tra('Superfish'),
@@ -1481,14 +1563,6 @@ function prefs_feature_list() {
 			'name' => tra('Import HTML'),
 			'type' => 'flag',
 		),
-		'feature_wiki_use_date' => array(
-			'name' => tra('Use date parameter'),
-			'type' => 'flag',
-		),
-		'feature_wiki_use_date_links' => array(
-			'name' => tra('Report it in wiki links'),
-			'type' => 'flag',
-		),
 		'feature_wiki_import_page' => array(
 			'name' => tra('Import pages'),
 			'type' => 'flag',
@@ -1522,9 +1596,6 @@ function prefs_feature_list() {
 			'type' => 'flag',
 			'help' => 'Wiki+Page+Staging+and+Approval',
 			'perspective' => false,
-                        'dependencies' => array (
-                                'feature_categories'
-                        ),
 			'warning' => tra('This feature is experimental'),
 			'description' => tra('Allows wiki pages to be staged (drafted) before they are approved (published)'),
 		),
@@ -1544,7 +1615,6 @@ function prefs_feature_list() {
 		),
 		'feature_wiki_mandatory_category' => array(
 			'name' => tra('Force and limit categorization to within subtree of'),
-			'description' => tra('If you get an error message indicating a mandatory category is required when editing a wiki page, this is the option to blame. Set it to None.'),
 			'type' => 'list',
 			'options' => $catree,
 			'dependencies' => array(
@@ -1726,14 +1796,13 @@ function prefs_feature_list() {
 			'type' => 'flag',
 			'dependencies' => array(
 				'feature_file_galleries',
-				'php_libxml',
-				'php_datetime',
 			),
 		),
 		'feature_fixed_width' => array(
 			'name' => tra('Fixed width'),
 			'type' => 'flag',
-			'description' => tra('Constrains the width of the site.'),
+			'description' => tra('Constrains the site display to 990px wide.'),
+			'warning' => tra('You can modify at styles/layout/layout.css - selector #fixedwidth'),
 		),
 		'feature_socialnetworks' => array(
 			'name' => tra('Social networks'),
@@ -1776,22 +1845,5 @@ function prefs_feature_list() {
             'description' => tra('Enable this only if the server is behind a load balancer (or reverse proxy), this allow tiki to log the IP of the user, instead of the IP of the proxy server'),
             'type' => 'flag',
         ),
-        'feature_accounting' => array(
-			'name' => tra('Accounting'),
-			'description' => tra('Enable accounting system (alpha)'),
-			'help' => 'Accounting',
-			'type' => 'flag',
-		),
-		'feature_syntax_highlighter' => array(
-			'name' => tra('Syntax Highlighter (codemirror)'),
-			'type' => 'flag',
-			'description' => tra('Enables syntax highlighting with the use of codemirror'),
-		),
-		'feature_themegenerator' => array(
-			'name' => tra('Theme Generator'),
-			'type' => 'flag',
-			'warning' => tra('Experimental. This feature is still under development.'),
-			'description' => tra(''),
-		),
 	);
 }

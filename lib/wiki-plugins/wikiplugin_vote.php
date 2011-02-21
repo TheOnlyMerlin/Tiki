@@ -18,11 +18,10 @@ function wikiplugin_vote_help() {
 function wikiplugin_vote_info() {
 	return array(
 		'name' => tra('Vote'),
-		'documentation' => 'PluginVote',
-		'description' => tra('Create a tracker for voting'),
+		'documentation' => tra('PluginVote'),
+		'description' => tra('Displays some stat of a tracker content, fields are indicated with numeric ids.'),
 		'prefs' => array( 'feature_trackers', 'wikiplugin_vote' ),
 		'body' => tra('Title'),
-		'icon' => 'pics/icons/thumb_up.png',
 		'params' => array(
 			'trackerId' => array(
 				'required' => true,

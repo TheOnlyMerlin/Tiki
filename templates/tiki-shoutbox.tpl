@@ -5,7 +5,7 @@
 {if $tiki_p_admin_shoutbox eq 'y'}
 	<h2>{tr}Change shoutbox general settings{/tr}</h2>
 	<form action="tiki-shoutbox.php" method="post">
-		<table class="formcolor">
+		<table class="normal">
 			<tr>
 				<td class="odd">{tr}auto-link urls{/tr}</td>
 				<td class="odd">
@@ -32,7 +32,7 @@
 		<input type="hidden" name="msgId" value="{$msgId|escape}" />
 		<table class="formcolor">
 			<tr>
-				<td>{tr}Message:{/tr}</td>
+				<td>{tr}Message{/tr}:</td>
 				<td>
 					<textarea rows="4" cols="60" name="message">{$message|escape}</textarea>
 					{if $prefs.feature_socialnetworks eq 'y' && $user neq ''}

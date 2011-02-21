@@ -14,14 +14,12 @@
 			others follow Layout) *****/
 body {
 	background: #0F1644 url(twist/background.gif);
-	font: 76%/1.4em Verdana, Geneva, Arial, Helvetica, sans-serif;
-	color: black;
-}
+	font: 76%/1.4em black Verdana, Geneva, Arial, Helvetica, sans-serif}
 
 /* next two: fixed-width: 800px */
 body.fixed_width #fixedwidth {
 	margin-bottom: 20px;
-	width: 800px;
+	width: 800px !important;
 	background: #fff;
 }
 
@@ -196,32 +194,44 @@ form.admin input[name="features"] {margin-bottom: 3px !important}
 select[name="theme"] {width: 125px}
 
 /***** Site Header & Identity *****/
-#header_fixedwidth {
-	background: url(twist/header.jpg) no-repeat 100% 100%;
-	color: #fff;
-}
-	
 #header {
-	background: url(twist/header.jpg) no-repeat 0 100%;
-	margin-right: 22px;
-	padding-left: 30px;
-	width: inherit;
-}
-
+	background: url(twist/header.jpg) no-repeat 100% 0;
+	color: #fff;
+	margin: 0;
+	padding: 0}
+	
 #header a,
 #header a:visited {color: #fff}
 
-#top_modules {
-	min-height: 82px;
-	padding: 30px 0 0 0;
+#header-top {
+	height: 82px;
 	margin: 0;
+	padding: 0;
+}
+	
+#siteheader  {
+	background: url(twist/header.jpg) no-repeat 0 0;
+	margin: 0;
+	padding-left: 30px;
+	margin-right: 22px;
 }
 
-.siteloginbar_popup {
+#sioptionscentered {margin: 1em}
+#sitelogo {padding: 0}
+
+#sitead {
+	margin: 5px;
+	clear: 0;
+	padding: 1em}
+
+#sitead.floatright {padding-right: 100px}
+#sitead.floatleft {padding-left: 100px}
+
+#siteloginbar {
 	color: #fff;
-	bottom: 0;
-	position: absolute;
-	margin: 10px;
+	bottom: auto;
+	position: static;
+	margin-right: 10px;
 }
 
 #siteloginbar a,
@@ -259,12 +269,12 @@ select[name="theme"] {width: 125px}
 #sitesearchbar select option {
 	color: #fff;
 }
-/*
+
 #sitetitles {
 	position: absolute;
 	left: 0;
 	bottom: 0}
-*/
+
 #sitetitle {
 	font-size: 2.4em;
 	color: #fff;
@@ -277,9 +287,9 @@ select[name="theme"] {width: 125px}
 	color: #fff}
 
 #tiki-top {
-	position: absolute;
-	bottom: 13px;
-	right: 18px;
+	padding-right: 0;
+	padding-left: 0;
+	padding-top: 0;
 	font-weight: bold;
 	font-size: 11px;
 	color: #fff;
@@ -339,8 +349,8 @@ select[name="theme"] {width: 125px}
 #tiki-top .cssmenu_horiz {
 	text-align: left;
 	color: black;
-	margin-top: 0;
-/*	margin-left: 305px;*/
+	margin-top: 10px;
+	margin-left: 305px;
 	background: #efefef;
 	white-space: nowrap}
 	
@@ -380,6 +390,78 @@ select[name="theme"] {width: 125px}
 #col2 a .sf-sub-indicator {
 	top: .3em;
 }
+
+/** PHP Layers Menus **/
+.horbar table {
+	color: black;
+	margin-top: 10px;
+	margin-left: 305px;
+	background: #efefef}
+
+.horbaritem a {
+	border-right: #ccc 1px solid;
+	padding-right: 2px;
+	padding-left: 2px;
+	font-weight: normal;
+	font-size: .9em;
+	color: #fff;
+	background: #efefef;
+	text-decoration: none}
+
+.horbaritem a:visited {color: #fff}
+
+.horbaritem a:hover {
+	color: #fff;
+	background: #ddd}
+
+.mdkverbar {margin: 0}
+
+.mdksubframe {
+	border: #fdfefd 2px outset;
+	background: #efefef}
+
+.mdkitem {
+	font-size: .9em;
+	color: #800000}
+
+.mdkitem a {
+	text-decoration: none;
+	font-weight: bold}
+
+.mdkitem a:link,
+.mdkitem a:visited {color: #000}
+
+.mdkitem a:hover {
+	color: #000;
+	background: #fefefe}
+
+.mdkitem a:active {color: #990000}
+
+.phplmnormal,
+a.phplmnormal:hover,
+a.phplm:link,
+a.phplm:visited,
+a.phplm:hover,
+a.phplm:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: #303030;
+	text-decoration: none;
+	font-weight: bold}
+
+a.phplm:visited {color: #726461}
+a.phplm:hover {color: #808080}
+a.phplm:active {color: #ff0000}
+
+a.phplmselected:link,
+a.phplmselected:visited,
+a.phplmselected:hover,
+a.phplmselected:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: black;
+	text-decoration: underline;
+	font-weight: bold}
+
+a.phplmselected:hover {color: #808080}
 
 /** Links in other menus **/
 .separator {
@@ -913,8 +995,7 @@ a.forumspagetitle:hover {
 	text-align: center;
 	padding: 3px;
 	line-height: 150%;
-	text-transform: none;
-}
+	text-transform: 0}
 
 .postinfo a {
 	color: #9CF;
@@ -1249,7 +1330,8 @@ Caltrack a:visited {color: #00BD02}
 
 .calodd,
 .caleven {border: 1px solid #999}
-.calodd {background: #efefef}
+.
+calodd {background: #efefef}
 .caleven {background: white}
 .caldark {background: #002C5E}
 .caldark .calfocus {background: #002C5E}

@@ -16,7 +16,7 @@
     {/remarksbox}
        
     <br />
-    <label for="importerClassName">{tr}Select the software to import from:{/tr}</label>
+    <label for="importerClassName">{tr}Select the software to import from{/tr}:</label>
     <form method="post" name="chooseSoftware" action="tiki-importer.php">
         <select name="importerClassName" id="importerClassName">
             <option value=""></option>
@@ -34,7 +34,7 @@
             {if $option.type eq 'checkbox'}
                 <input type="checkbox" name="{$option.name}" id="{$option.name}"/><label for="{$option.name}">{tr}{$option.label}{/tr}</label><br />
             {elseif $option.type eq 'text'}
-                <label>{tr}{$option.label}:{/tr} <input type="text" name="{$option.name}" {if isset($option.value)}value="{$option.value}"{/if}/></label><br />
+                <label>{tr}{$option.label}{/tr}: <input type="text" name="{$option.name}" {if isset($option.value)}value="{$option.value}"{/if}/></label><br />
             {elseif $option.type eq 'select'}
 		        <label for="{$option.name}">{tr}{$option.label}{/tr}</label><br />
 		        <select id="{$option.name}" name="{$option.name}">
@@ -49,33 +49,12 @@
         <input type="submit" value="{tr}Import{/tr}"/>
     </form>
 {elseif !empty($importFeedback)}
-    <h4>{tr}Congratulations! You have successful imported your data to Tiki.{/tr}</h4>
-    
-    {if isset($importFeedback.importedPages)}
-    	<p>
-	    	{if isset($importFeedback.totalPages)}
-		    	{tr 0=$importFeedback.importedPages 1=$importFeedback.totalPages}%0 pages imported from a total of %1{/tr}
-		    {else}
-		    	{tr 0=$importFeedback.importedPages}%0 pages imported{/tr}
-		    {/if}
-		    &nbsp;{tr}(you can see the list of wiki pages in your site <a href="tiki-listpages.php">here</a>).{/tr}
-		</p>
-	{/if}
-
-	{if isset($importFeedback.importedPosts)}
-       	<p>{tr 0=$importFeedback.importedPosts}%0 posts imported.{/tr}</p>
-	{/if}
-	
-	{if isset($importFeedback.importedTags)}
-       	<p>{tr 0=$importFeedback.importedTags}%0 tags imported.{/tr}</p>
-	{/if}
-	
-	{if isset($importFeedback.importedCategories)}
-       	<p>{tr 0=$importFeedback.importedCategories}%0 categories imported.{/tr}</p>
-	{/if}
+    <h4>{tr}Congratulations! You have successful imported your data to Tikiwiki.{/tr}</h4>
+    <p>{$importFeedback.importedPages} {tr}pages imported from a total of{/tr} {$importFeedback.totalPages}</p>
+    <p>{tr}You can see the list of wiki pages in your site{/tr} <a href="tiki-listpages.php">{tr}here{/tr}</a></p>
 
     {if !empty($importErrors)}
-        <br />
+        <br /><br />
         <p><b>{tr}Errors:{/tr}</b></p>
         <textarea rows="15" cols="100">{$importErrors}</textarea> 
     {/if}

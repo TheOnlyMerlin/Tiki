@@ -90,7 +90,7 @@
 	{section name=changes loop=$listpages}
 		<tr class="{cycle}">
 			{if $prefs.art_list_title eq 'y'}
-				<td class="text">
+				<td>
 					{if $tiki_p_read_article eq 'y'}
 						<a class="artname" href="{$listpages[changes].articleId|sefurl:article}" title="{$listpages[changes].title|escape}">
 					{/if}
@@ -102,43 +102,43 @@
 				</td>
 			{/if}
 			{if $prefs.art_list_id eq 'y'}
-				<td class="integer">{$listpages[changes].articleId}</td>
+				<td>{$listpages[changes].articleId}</td>
 			{/if}
 			{if $prefs.art_list_type eq 'y'}	
-				<td class="text">{tr}{$listpages[changes].type|escape}{/tr}</td>
+				<td>{tr}{$listpages[changes].type|escape}{/tr}</td>
 			{/if}
 			{if $prefs.art_list_topic eq 'y'}	
-				<td class="text">{$listpages[changes].topicName|escape}</td>
+				<td>{$listpages[changes].topicName|escape}</td>
 			{/if}
 			{if $prefs.art_list_date eq 'y'}
-				<td class="date">{$listpages[changes].publishDate|tiki_short_datetime}</td>
+				<td>{$listpages[changes].publishDate|tiki_short_datetime}</td>
 			{/if}
 			{if $prefs.art_list_expire eq 'y'}
-				<td class="date">{$listpages[changes].expireDate|tiki_short_datetime}</td>
+				<td>{$listpages[changes].expireDate|tiki_short_datetime}</td>
 			{/if}
 			{if $prefs.art_list_visible eq 'y'}
-				<td class="text">{tr}{$listpages[changes].disp_article}{/tr}</td>
+				<td>{tr}{$listpages[changes].disp_article}{/tr}</td>
 			{/if}
 			{if $prefs.art_list_lang eq 'y'}
-				<td class="text">{tr}{$listpages[changes].lang}{/tr}</td>
+				<td>{tr}{$listpages[changes].lang}{/tr}</td>
 			{/if}
 			{if $prefs.art_list_author eq 'y'}	
-				<td class="text">{$listpages[changes].authorName|escape}</td>
+				<td>{$listpages[changes].authorName|escape}</td>
 			{/if}
 			{if $prefs.art_list_rating eq 'y'}
-				<td class="integer">{$listpages[changes].rating}</td>
+				<td style="text-align:right;">{$listpages[changes].rating}</td>
 			{/if}
 			{if $prefs.art_list_reads eq 'y'}
-				<td class="integer">{$listpages[changes].nbreads}</td>
+				<td style="text-align:right;">{$listpages[changes].nbreads}</td>
 			{/if}
 			{if $prefs.art_list_size eq 'y'}
-				<td class="integer">{$listpages[changes].size|kbsize}</td>
+				<td style="text-align:right;">{$listpages[changes].size|kbsize}</td>
 			{/if}
 			{if $prefs.art_list_img eq 'y'}
-				<td class="text">{tr}{$listpages[changes].hasImage}{/tr}/{tr}{$listpages[changes].useImage}{/tr}</td>
+				<td>{tr}{$listpages[changes].hasImage}{/tr}/{tr}{$listpages[changes].useImage}{/tr}</td>
 			{/if}
 			<td style="text-align:center;">{$listpages[changes].ispublished}</td>
-			<td class="action">
+			<td>
 				{if $tiki_p_read_article eq 'y'}
 					<a href="{$listpages[changes].articleId|sefurl:article}" title="{$listpages[changes].title|escape}">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>
 				{/if}
@@ -155,7 +155,7 @@
 			</td>
 		</tr>
 	{sectionelse}
-		{norecords _colspan=$numbercol}
+		<tr><td class="odd" colspan="{$numbercol}"><strong>{tr}No records found.{/tr}</strong></td></tr>
 	{/section}
 </table>
 

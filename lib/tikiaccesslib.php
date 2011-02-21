@@ -103,7 +103,7 @@ class TikiAccessLib extends TikiLib
 				
 			$msg = tr('Required features: <b>%0</b>. If you do not have the privileges to activate these features, ask the site administrator.', implode( ', ', $features ) );
 
-			$this->display_error('', $msg, 'no_redirect_login' );
+			$this->display_error('', $msg, '503' );
 		}		
 	}
 
@@ -454,6 +454,11 @@ class TikiAccessLib extends TikiLib
 		return $types;
 	}
 
+	function is_xajax_request() {
+		global $prefs;
+		return ( $prefs['ajax_xajax'] === 'y' && isset($_POST['xajaxargs']) );
+	}
+
 	function is_machine_request() {
 		foreach( $this->get_accept_types() as $name => $full ) {
 			switch( $name ) {
@@ -485,11 +490,7 @@ class TikiAccessLib extends TikiLib
 			switch( $name ) {
 			case 'json':
 				header( "Content-Type: $full" );
-				$data = json_encode( $data );
-				if (isset($_REQUEST['callback'])) {
-					$data = $_REQUEST['callback'] . '(' . $data . ')';
-				}
-				echo $data;
+				echo json_encode( $data );
 				return;
 			case 'yaml':
 				require_once( 'Horde/Yaml.php' );
@@ -499,10 +500,6 @@ class TikiAccessLib extends TikiLib
 
 				header( "Content-Type: $full" );
 				echo Horde_Yaml::dump($data);
-				return;
-			case 'html':
-				header( "Content-Type: $full" );
-				echo $data;
 				return;
 			}
 		}

@@ -7,28 +7,28 @@
 /* 
  * Params
  *     notonready = bool (default: false) - set to true if you want it _not_ to execute on document ready
+ *     nojquery = string (default: "<!-- jq smarty plugin inactive: feature_jquery off -->") - Optional markup for when feature_jquery is off
+ * 
+ * data is the JQuery javascript code
  */
 function wikiplugin_jq_help() {
 	return tra("Insert JQuery javascript code.")."<br />~np~{JQ(nojquery='<p>You need JQuery for this!</p>')}".tra("jquery code e.g. \$(\"img\").click(function() {\n  \$(this).hide(\"slow\").show(\"fast\");\n});")."{JQ}~/np~";
 }
 
-//By default this is only executed after jQuery determines that the DOM is fully loaded.
-
 function wikiplugin_jq_info() {
 	return array(
 		'name' => tra('jQuery'),
-		'documentation' => 'PluginJQ',
-		'description' => tra('Add JavaScript code'),
+		'documentation' => tra('PluginJQ'),
+		'description' => tra('Inserts JavaScript code. By default this is only executed after jQuery determines that the DOM is fully loaded.'),
 		'prefs' => array( 'wikiplugin_jq' ),
 		'body' => tra('JavaScript code'),
 		'validate' => 'all',
 		'filter' => 'none',
-		'icon' => 'pics/icons/script_code_red.png',
 		'params' => array(
 			'notonready' => array(
 				'required' => false,
 				'name' => tra('Not On Ready'),
-				'description' => tra('Do not execute on document ready (execute inline)'),
+				'description' => tra("Do not execute on document ready (execute inline)"),
 			),
 			'nojquery' => array(
 				'required' => false,
@@ -43,7 +43,7 @@ function wikiplugin_jq($data, $params) {
 	global $headerlib, $prefs;
 	extract($params, EXTR_SKIP);
 	
-	$nojquery = isset($nojquery) ? $nojquery : tr('<!-- jq plugin inactive: JavaScript off -->');
+	$nojquery = isset($nojquery) ? $nojquery : tr('<!-- jq smarty plugin inactive: feature_jquery off -->');
 	if ($prefs['javascript_enabled'] != 'y') { return $nojquery; }
 	$notonready = isset($notonready) ? $notonready : false;
 	

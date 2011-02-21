@@ -201,11 +201,6 @@ if (isset($is_categorized) && $is_categorized) {
 			$smarty->assign('display_catobjects', $display_catobjects);
 		}
 	}
-	if ($prefs['feature_categories'] == 'y' && $prefs['category_morelikethis_algorithm'] != '') {
-		global $freetaglib; include_once('lib/freetag/freetaglib.php');
-		$category_related_objects = $freetaglib->get_similar('article', $_REQUEST['articleId'], $prefs['maxRecords'], null, 'category');
-		$smarty->assign_by_ref('category_related_objects', $category_related_objects);
-	}
 } else {
 	$smarty->assign('is_categorized', 'n');
 }
@@ -215,7 +210,10 @@ if ($prefs['feature_theme_control'] == 'y') {
 	$cat_objid = $_REQUEST["articleId"];
 	include ('tiki-tc.php');
 }
-
+if ($prefs['feature_mobile'] == 'y' && isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'mobile') {
+	include_once ("lib/hawhaw/hawtikilib.php");
+	HAWTIKI_read_article($article_data, $pages);
+}
 if ($prefs['feature_multilingual'] == 'y' && $article_data['lang']) {
 	include_once ("lib/multilingual/multilinguallib.php");
 	$trads = $multilinguallib->getTranslations('article', $article_data['articleId'], $article_data["title"], $article_data['lang']);

@@ -363,7 +363,7 @@ class ImageGalsLib extends TikiLib
 				case 'image/jpeg':
 				case 'image/pjpeg':
 				case 'image/jpg':
-					return ((isset($this->gdinfo['JPG Support']) && $this->gdinfo['JPG Support']) || (isset($this->gdinfo['JPEG Support']) && $this->gdinfo['JPEG Support']) );
+					return ($this->gdinfo["JPG Support"] || $this->gdinfo["JPEG Support"]);
 					break;
 				case 'png':
 				case 'image/png':
@@ -792,8 +792,10 @@ class ImageGalsLib extends TikiLib
 			$result = $this->query($query, array((int)$id, 'o'));
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('images', $id);
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('images', $id);
+		}
 
 		return true;
 	}
@@ -862,8 +864,10 @@ class ImageGalsLib extends TikiLib
 			$logslib->add_action('Uploaded', $galleryId, 'image gallery', 'imageId='.$imageId);
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('images', $imageId);
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('images', $imageId);
+		}
 		
 		$this->notify($imageId, $galleryId, $name, $filename, $description, isset($gal_info['name'])?$gal_info['name']: '', 'upload image', $user);
 
@@ -884,7 +888,11 @@ class ImageGalsLib extends TikiLib
 			include_once('lib/notifications/notificationemaillib.php');
 			$smarty->assign_by_ref('galleryId', $galleryId);
 			$smarty->assign_by_ref('galleryName', $galleryName);
+			$smarty->assign_by_ref('mail_date', date('U'));
 			$smarty->assign_by_ref('author', $user);
+			$foo = parse_url($_SERVER["REQUEST_URI"]);
+			$machine = $tikilib->httpPrefix( true ). dirname( $foo["path"] );
+			$smarty->assign_by_ref('mail_machine', $machine);
 			$smarty->assign_by_ref('fname', $name);
 			$smarty->assign_by_ref('filename', $filename);
 			$smarty->assign_by_ref('description', $description);
@@ -1771,8 +1779,10 @@ $thumbSizeY,$public,0,$visible,$sortorder,$sortdirection,$galleryimage,(int)$par
 			}
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('galleries', $galleryId);
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('galleries', $galleryId);
+		}
 
 		return $galleryId;
 	}

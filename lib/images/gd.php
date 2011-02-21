@@ -203,7 +203,7 @@ class Image extends ImageAbstract
 			}
 		}
 		if (!$this->loaded || !$this->data) {
-			$this->_load_data();
+		$this->_load_data();
 		}
 		if ($this->data) {
 			return imagesy($this->data);
@@ -222,7 +222,7 @@ class Image extends ImageAbstract
 			}
 		}
 		if (!$this->loaded || !$this->data) {
-			$this->_load_data();
+		$this->_load_data();
 		}
 		if ($this->data) {
 			return imagesx($this->data);

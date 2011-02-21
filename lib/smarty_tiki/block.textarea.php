@@ -30,9 +30,6 @@ function smarty_block_textarea($params, $content, &$smarty, $repeat) {
 
 	// some defaults
 	$params['_toolbars'] = isset($params['_toolbars']) ? $params['_toolbars'] : 'y';
-	if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
-		$params['_toolbars'] = 'n';
-	}
 	if ( $prefs['javascript_enabled'] != 'y') $params['_toolbars'] = 'n';
 
 	if (!isset($params['_wysiwyg'])) {	// should not be set usually(?)
@@ -54,6 +51,10 @@ function smarty_block_textarea($params, $content, &$smarty, $repeat) {
 	
 	$params['_simple'] = isset($params['_simple']) ? $params['_simple'] : 'n';
 	
+	if ( isset($params['_zoom']) && $params['_zoom'] == 'n' ) {
+		$feature_template_zoom_orig = $prefs['feature_template_zoom'];
+		$prefs['feature_template_zoom'] = 'n';
+	}
 	if ( ! isset($params['section']) ) {
 		global $section;
 		$params['section'] = $section ? $section: 'wiki page';
@@ -243,6 +244,10 @@ function CKeditor_OnComplete() {
 		if ( $textarea_attributes != '' ) {
 			$smarty->assign('textarea_attributes', $textarea_attributes);
 		}
+		if ( isset($params['_zoom']) && $params['_zoom'] == 'n' ) {
+			$prefs['feature_template_zoom'] = $feature_template_zoom_orig;
+		}
+		
 		$smarty->assign_by_ref('pagedata', htmlspecialchars($content));
 		$smarty->assign('comments', isset($params['comments']) ? $params['comments'] : $params['_simple'] === 'y' ? 'y' : 'n');
 		$smarty->assign('switcheditor', isset($params['switcheditor']) ? $params['switcheditor'] : 'n');
@@ -360,19 +365,10 @@ function switchEditor(mode, form) {
 		
 		if ( $prefs['feature_jquery_ui'] == 'y' && $params['_wysiwyg'] != 'y') {	// show hidden parent before applying resizable
 			$js_editconfirm .= "
-	var hiddenParents = \$('#$as_id').parents('fieldset:hidden:last');
-	
-	if (hiddenParents.length) { hiddenParents.show(); }
-	
-	if (typeof CodeMirror === 'undefined') { //so as not to conflict with CodeMirror resize
-		\$('#$as_id')
-			.resizable( {
-				minWidth: \$('#$as_id').width(),
-				minHeight: 50
-		});
-	}
-	
-	if (hiddenParents.length) { hiddenParents.hide(); }
+var hiddenParents = \$('#$as_id').parents('fieldset:hidden:last');
+if (hiddenParents.length) { hiddenParents.show(); }
+\$('#$as_id').resizable( { minWidth: \$('#$as_id').width(), minHeight: 50 });
+if (hiddenParents.length) { hiddenParents.hide(); }
 ";
 		}
 			

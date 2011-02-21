@@ -1,4 +1,6 @@
-{* $Id$ *}<!DOCTYPE html>
+{* $Id$ *}<!DOCTYPE html 
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
 	<head>
@@ -56,7 +58,7 @@
   </div>
   {if $prefs.feature_bot_bar eq 'y'}
   <div id="tiki-bot">
-    {* modules revamp: TODO include file='tiki-bot_bar.tpl' *}
+    {include file='tiki-bot_bar.tpl'}
   </div>
   {/if}
 </div>

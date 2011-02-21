@@ -13,10 +13,9 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 function module_featured_links_info() {
 	return array(
-		'name' => tra('Featured Links'),
+		'name' => tra('Featured links'),
 		'description' => tra('Displays the site\'s first featured links.'),
 		'prefs' => array( 'feature_featuredLinks' ),
-		'documentation' => 'Module featured_links',
 		'params' => array(),
 		'common_params' => array('nonums', 'rows')
 	);

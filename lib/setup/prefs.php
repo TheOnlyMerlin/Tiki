@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,8 +14,7 @@ if ( basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__) ) {
   exit;
 }
 
-$user_overrider_prefs = array('language', 'style', 'style_option', 'userbreadCrumb', 'tikiIndex', 'wikiHomePage',
-								'default_calendars', 'metatag_robots', 'themegenerator_theme');
+$user_overrider_prefs = array('language', 'style', 'style_option', 'userbreadCrumb', 'tikiIndex', 'wikiHomePage','default_calendars', 'metatag_robots');
 initialize_prefs();
 
 function get_default_prefs() {
@@ -76,8 +75,6 @@ function get_default_prefs() {
 		'feature_wiki_footnotes' => 'n',
 		'feature_wiki_icache' => 'n',
 		'feature_wiki_import_html' => 'n',
-		'feature_wiki_use_date' => 'n',
-		'feature_wiki_use_date_links' => 'n',
 		'feature_wiki_mindmap' => 'n',
 		'feature_wiki_monosp' => 'n',
 		'feature_wiki_multiprint' => 'n',
@@ -104,6 +101,7 @@ function get_default_prefs() {
 		'feature_wiki_userpage_prefix' => 'User:',
 		'feature_wiki_usrlock' => 'n',
 		'feature_wiki_feedback_polls' => array(),
+		'feature_wiki_save_draft' => 'n',
 		'feature_wikiwords' => 'n',
 		'feature_wikiwords_usedash' => 'y',
 		'feature_wiki_pagealias' => 'y',
@@ -198,9 +196,6 @@ function get_default_prefs() {
 		'wiki_likepages_samelang_only' => 'n',
 		'wiki_mandatory_edit_summary' => 'n',
 
-		'flaggedrev_approval' => 'n',
-		'flaggedrev_approval_categories' => array(''), //empty string needed to keep preference from setting unexpectedly
-
 		'wikiplugin_addtocart' => 'n',
 		'wikiplugin_addtogooglecal' => 'n',
 		'wikiplugin_agentinfo' => 'n',
@@ -253,12 +248,10 @@ function get_default_prefs() {
 		'wikiplugin_freetagged' => 'n',
 		'wikiplugin_ftp' => 'n',
 		'wikiplugin_gauge' => 'n',
-		'wikiplugin_getaccesstoken' => 'n',
 		'wikiplugin_googleanalytics' => 'n',
 		'wikiplugin_googledoc' => 'n',
 		'wikiplugin_googlemap' => 'y',
 		'wikiplugin_group' => 'y',
-		'wikiplugin_groupexpiry' => 'n',
 		'wikiplugin_grouplist' => 'n',
 		'wikiplugin_groupmailcore' => 'n',
 		'wikiplugin_groupstat' => 'n',
@@ -274,7 +267,6 @@ function get_default_prefs() {
 		'wikiplugin_jq' => 'n',
 		'wikiplugin_lang' => 'y',
 		'wikiplugin_lastmod' => 'n',
-		'wikiplugin_list' => 'n',
 		'wikiplugin_listpages' => 'n',
 		'wikiplugin_lsdir' => 'n',
 		'wikiplugin_mail' => 'n',
@@ -290,7 +282,6 @@ function get_default_prefs() {
 		'wikiplugin_mwtable' => 'n',
 		'wikiplugin_myspace' => 'n',
 		'wikiplugin_objecthits' => 'n',
-		'wikiplugin_param' => 'n',
 		'wikiplugin_payment' => 'y',
 		'wikiplugin_perm' => 'n',
 		'wikiplugin_picture' => 'n',  // Old syntax for images
@@ -343,7 +334,6 @@ function get_default_prefs() {
 		'wikiplugin_transclude' => 'y',
 		'wikiplugin_translated' => 'y',
 		'wikiplugin_tr' => 'n',
-		'wikiplugin_twitter' => 'y',
 		'wikiplugin_usercount' => 'n',
 		'wikiplugin_userlink' => 'y',
 		'wikiplugin_userlist' => 'n',
@@ -355,7 +345,6 @@ function get_default_prefs() {
 		'wikiplugin_wantedpages' => 'n',
 		'wikiplugin_webservice' => 'n',
 		'wikiplugin_youtube' => 'y',
-		'wikiplugin_zotero' => 'y',
 
 		// Inline wiki plugins have their edit plugin icon disabled
 		'wikiplugininline_addtocart' => 'n',
@@ -409,12 +398,10 @@ function get_default_prefs() {
 		'wikiplugininline_freetagged' => 'n',
 		'wikiplugininline_ftp' => 'n',
 		'wikiplugininline_gauge' => 'n',
-		'wikiplugininline_getaccesstoken' => 'y',
 		'wikiplugininline_googleanalytics' => 'y',
 		'wikiplugininline_googledoc' => 'n',
 		'wikiplugininline_googlemap' => 'n',
 		'wikiplugininline_group' => 'y',
-		'wikiplugininline_groupexpiry' => 'n',
 		'wikiplugininline_grouplist' => 'y',
 		'wikiplugininline_groupmailcore' => 'n',
 		'wikiplugininline_groupstat' => 'n',
@@ -429,7 +416,6 @@ function get_default_prefs() {
 		'wikiplugininline_jq' => 'n',
 		'wikiplugininline_lang' => 'n',
 		'wikiplugininline_lastmod' => 'n',
-		'wikiplugininline_list' => 'n',
 		'wikiplugininline_listpages' => 'n',
 		'wikiplugininline_lsdir' => 'n',
 		'wikiplugininline_mail' => 'y',
@@ -445,7 +431,6 @@ function get_default_prefs() {
 		'wikiplugininline_mwtable' => 'n',
 		'wikiplugininline_myspace' => 'n',
 		'wikiplugininline_objecthits' => 'n',
-		'wikiplugininline_param' => 'n',
 		'wikiplugininline_payment' => 'n',
 		'wikiplugininline_perm' => 'y',
 		'wikiplugininline_picture' => 'n',  // Old syntax for images
@@ -498,7 +483,6 @@ function get_default_prefs() {
 		'wikiplugininline_transclude' => 'y',
 		'wikiplugininline_translated' => 'n',
 		'wikiplugininline_tr' => 'n',
-		'wikiplugininline_twitter' => 'n',
 		'wikiplugininline_usercount' => 'n',
 		'wikiplugininline_userlink' => 'n',
 		'wikiplugininline_userlist' => 'n',
@@ -511,11 +495,7 @@ function get_default_prefs() {
 		'wikiplugininline_webservice' => 'n',
 		'wikiplugininline_youtube' => 'n',
 		'wikiplugininline_author' => 'n',
-		'wikiplugininline_zotero' => 'y',
 
-		// wikiplugin preferences
-		'wikipluginprefs_pending_notification' => 'n',
-	
 		// webservices
 		'webservice_consume_defaultcache' => 300, // 5 min
 		'feature_webservices' => 'n',
@@ -568,15 +548,9 @@ function get_default_prefs() {
 
 		// filegals
 		'feature_file_galleries' => 'y',
-		'feature_file_galleries_templates' => 'n',
 		'home_file_gallery' => 1,
 		'fgal_root_id' => 1,
-		'fgal_root_user_id' => 2,
-		'fgal_root_wiki_attachments_id' => 3,
 		'fgal_use_db' => 'y',
-		'feature_file_galleries_save_draft' => 'n',
-		'feature_use_fgal_for_user_files' => 'n',
-		'feature_use_fgal_for_wiki_attachments' => 'n',
 		'fgal_batch_dir' => '',
 		'fgal_match_regex' => '',
 		'fgal_nmatch_regex' => '',
@@ -607,8 +581,6 @@ function get_default_prefs() {
 		'fgal_list_hits' => 'o',
 		'fgal_list_lastDownload' => 'n',
 		'fgal_list_lockedby' => 'a',
-		'fgal_list_deleteAfter' => 'n',
-		'fgal_list_share' => 'n',
 		'fgal_show_path' => 'y',
 		'fgal_show_explorer' => 'y',
 		'fgal_show_slideshow' => 'n',
@@ -643,11 +615,6 @@ function get_default_prefs() {
 		'fgal_keep_fileId' => 'n',
 		'fgal_show_thumbactions' => 'y',
 		'fgal_thumb_max_size' => 120,
-		'fgal_list_ratio_hits' => 'n',
-		'fgal_display_properties' => 'y',
-		'fgal_display_replace' => 'y',
-		'fgal_display_zip_option' => 'y',
-		'fgal_checked' => 'y',
 
 		// imagegals
 		'feature_galleries' => 'n',
@@ -675,9 +642,6 @@ function get_default_prefs() {
 		'feature_image_gallery_mandatory_category' => '-1',
 		'preset_galleries_info' =>'n',
 		'gal_image_mouseover' => 'n',
-
-		// Geolocation
-		'geo_locate_wiki' => 'n',
 
 		// forums
 		'feature_forums' => 'n',
@@ -863,7 +827,6 @@ function get_default_prefs() {
 		'users_prefs_show_mouseover_user_info' => 'n',
 		'users_prefs_tasks_maxRecords' => '10',
 		'users_prefs_user_dbl' => 'n',
-		'users_prefs_display_12hr_clock' => 'n',
 		'users_prefs_user_information' => 'private',
 		'users_prefs_userbreadCrumb' => '4',
 		'users_prefs_mailCharset' => 'utf-8',
@@ -1137,10 +1100,8 @@ function get_default_prefs() {
 		// auth
 		'allowRegister' => 'n',
 		'eponymousGroups' => 'n',
-		'syncGroupsWithDirectory' => 'n',
-		'syncUsersWithDirectory' => 'n',
 		'useRegisterPasscode' => 'n',
-		'registerPasscode' => isset($tikilib) ? md5($tikilib->genPass()) : md5(mt_rand()), 	// Default value needs to call a function that needs prefs itself
+		'registerPasscode' => isset($tikilib) ? md5($tikilib->genPass()) : md5(mt_rand()),
 		'rememberme' => 'disabled',
 		'remembertime' => 7200,
 		'feature_clear_passwords' => 'n',
@@ -1149,14 +1110,9 @@ function get_default_prefs() {
 		'min_user_length' => 1,
 		'min_pass_length' => 5,
 		'pass_chr_num' => 'n',
-		'pass_chr_case' => 'n',
-		'pass_chr_special' => 'n',
-		'pass_repetition' => 'n',
-		'pass_diff_username' => 'y',
 		'pass_due' => -1,
 		'email_due' => -1,
 		'unsuccessful_logins' => 20,
-		'unsuccessful_logins_invalid' => -1,
 		'generate_password' => 'n',
 		'auth_method' => 'tiki',
 		'auth_pear' => 'tiki',
@@ -1195,26 +1151,6 @@ function get_default_prefs() {
 		'auth_ldap_type' => 'default',
 		'auth_ldap_syncuserattr' => 'uid',
 		'auth_ldap_syncgroupattr' => 'cn',
-		'auth_ldap_host' => '',
-		'auth_ldap_port' => '',
-		'auth_ldap_groupdescattr' => '',
-
-		'auth_ldap_group_external' => 'n',
-		'auth_ldap_group_host' => 'localhost',
-		'auth_ldap_group_port' => '389',
-		'auth_ldap_group_debug' => 'n',
-		'auth_ldap_group_ssl' => 'n',
-		'auth_ldap_group_starttls' => 'n',
-		'auth_ldap_group_type' => 'default',
-		'auth_ldap_group_scope' => 'sub',
-		'auth_ldap_group_version' => '3',
-		'auth_ldap_group_basedn' => '',
-		'auth_ldap_group_userdn' => '',
-		'auth_ldap_group_userattr' => 'uid',
-		'auth_ldap_group_corr_userattr' => 'uid',
-		'auth_ldap_group_useroc' => 'inetOrgPerson',
-		'auth_ldap_group_adminuser' => '',
-		'auth_ldap_group_adminpass' => '',
 		
 		'auth_phpbb_version' => 3,
 		'auth_phpbb_skip_admin' => 'y',
@@ -1276,6 +1212,7 @@ function get_default_prefs() {
 		'feature_categories' => 'n',
 		'feature_categoryobjects' => 'n',
 		'feature_categorypath' => 'n',
+		'feature_category_use_phplayers' => 'n',
 		'categorypath_excluded' => '',
 		'categories_used_in_tpl' => 'n',
 		'category_jail' => array(''), //empty string needed to keep preference from setting unexpectedly
@@ -1289,8 +1226,6 @@ function get_default_prefs() {
 		'expanded_category_jail' => '',
 		'expanded_category_jail_key' => '',
 		'ws_container' => 0,
-		'category_morelikethis_algorithm' => '',
-		'category_morelikethis_mincommon' => 2, 
 
 		// html pages
 		'feature_html_pages' => 'n',
@@ -1344,6 +1279,15 @@ function get_default_prefs() {
 
 		'site_crumb_seper' => '»',
 		'site_nav_seper' => '|',
+		'feature_sitemycode' => 'y',
+		'sitemycode' => '{if $tiki_p_admin == "y"}
+<div id="quickadmin" style="text-align: left; padding-left: 12px;"><small>{tr}Quick Admin{/tr}</small>:
+{icon _id=database_refresh title="{tr}Clear all Tiki caches{/tr}" href="tiki-admin_system.php?do=all"}
+{icon _id=wrench title="{tr}Modify the look &amp; feel (logo, theme, etc.){/tr}" href="tiki-admin.php?page=look&amp;cookietab=2"} 
+{if $prefs.lang_use_db eq "y"}{icon _id=world_edit title="{tr}Show interactive translation settings{/tr}" href="tiki-edit_languages.php?interactive_translation_mode=on"}{/if}
+</div>  
+{/if}',
+		'sitemycode_publish' => 'n',
 		'feature_sitelogo' => 'y',
 		'sitelogo_bgcolor' => 'transparent',
 		'sitelogo_bgstyle' => '',
@@ -1359,25 +1303,35 @@ function get_default_prefs() {
 		'sitead_publish' => 'n',
 		'feature_breadcrumbs' => 'n',
 		'feature_siteloclabel' => 'y',
+		'feature_sitesearch' => 'y',
+		'feature_site_login' => 'y',
+		'feature_sitemenu' => 'n',
+		'feature_sitemenu_custom_code' => '',
+		'feature_secondary_sitemenu_custom_code' => '',
+		'feature_topbar_version' => 'n',
+		'feature_topbar_id_menu' => '42',
+		'feature_topbar_custom_code' => '',
 		'feature_sitetitle' => 'y',
 		'feature_sitedesc' => 'n',
+		'feature_bot_logo' => 'n',
 		'feature_endbody_code' => '',
-		'feature_custom_html_head_content' => '',
+		'feature_custom_doctype' => 'n',
+		'feature_custom_doctype_content' => '<!DOCTYPE html 
+	PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
+		'feature_custom_html_head_content' => '{if $prefs.feature_secondary_sitemenu_custom_code ne ""}<style type="text/css">#sitelogo img {literal}{margin-top: 0; position: relative; top: -12px;}{/literal}</style>{/if}',
 		'feature_fixed_width' => 'y',
 		'feature_html_head_base_tag' => 'n',
-		'feature_themegenerator' => 'n',
 
-		// Modules
-		'module_zones_top' => 'y',
-		'module_zones_pagetop' => 'y',
-		'module_zones_pagebottom' => 'y',
-		'module_zones_bottom' => 'y',
-		
 		// layout
 		'feature_left_column' => 'y',
 		'feature_right_column' => 'y',
 		'feature_top_bar' => 'y',
 		'feature_bot_bar' => 'y',
+		'feature_bot_bar_icons' => 'n',
+		'feature_bot_bar_debug' => 'n',
+		'feature_bot_bar_rss' => 'y',
+		'feature_bot_bar_power_by_tw' => 'y',
 		'maxRecords' => 25,
 		'maxArticles' => 10,
 		'maxVersions' => 0,
@@ -1404,10 +1358,9 @@ function get_default_prefs() {
 		'footer_shadow_end' => '',
 		'box_shadow_start' => '',
 		'box_shadow_end' => '',
+		'feature_custom_center_column_header' => '',
 		'header_custom_css' => '',
 		'header_custom_js' => '',
-		'feature_theme_generator' => 'n',
-		'themegenerator_theme' => '',
 
 		// mods
 		'feature_mods_provider' => 'n',
@@ -1430,13 +1383,7 @@ function get_default_prefs() {
 		// tell a friend
 		'feature_tell_a_friend' => 'n',
 		'feature_share' => 'n',
-		'share_display_links' => 'y',
-		'share_token_notification' => 'y',
-		'share_contact_add_non_existant_contact' => 'n',
-		'share_display_name_and_email' => 'y',
-		'share_max_access_time' => '-1',
-		'share_can_choose_how_much_time_access' => 'n',
-	
+
 		// copyright
 		'feature_copyright' => 'n',
 
@@ -1537,6 +1484,7 @@ function get_default_prefs() {
 		'feature_htmlpurifier_output' => 'n',
 		'feature_ajax' => 'y',
 		'ajax_autosave' => 'y',
+		'ajax_xajax' => 'n',
 		'feature_antibot' => 'y',
 		'feature_banners' => 'n',
 		'feature_banning' => 'n',
@@ -1551,7 +1499,6 @@ function get_default_prefs() {
 		'feature_debug_console' => 'n',
 		'feature_debugger_console' => 'n',
 		'feature_display_my_to_others' => 'n',
-		'feature_draw' => 'n',
 		'feature_dynamic_content' => 'n',
 		'feature_edit_templates' => 'n',
 		'feature_editcss' => 'n',
@@ -1565,6 +1512,7 @@ function get_default_prefs() {
 		'feature_live_support' => 'n',
 		'feature_mailin' => 'n',
 		'feature_menusfolderstyle' => 'y',
+		'feature_mobile' => 'n',
 		'feature_modulecontrols' => 'n',
 		'feature_morcego' => 'n',
 		'feature_multilingual' => 'n',
@@ -1574,8 +1522,8 @@ function get_default_prefs() {
 		'feature_newsletters' => 'n',
 		'feature_obzip' => 'n',
 		'feature_perspective' => 'n', // If enabling by default, update further in this file
+		'feature_phplayers' => 'n',
 		'feature_cssmenus' => 'y',
-		'menus_item_names_raw_teaser' => 'n',
 		'menus_item_names_raw' => 'n',
 		'feature_projects' => 'n',
 		'feature_ranking' => 'n',
@@ -1589,7 +1537,6 @@ function get_default_prefs() {
 		'feature_source' => 'y',
 		'feature_stats' => 'n',
 		'feature_tabs' => 'y',
-		'layout_tabs_optional' => 'y',
 		'feature_theme_control' => 'n',
 		'feature_ticketlib' => 'n',
 		'feature_ticketlib2' => 'y',
@@ -1646,14 +1593,6 @@ function get_default_prefs() {
 		'socialnetworks_facebook_api_key' =>'',
 		'socialnetworks_facebook_application_secr' => '',
 		'socialnetworks_facebook_application_id' => '',
-		'socialnetworks_facebook_login' => 'n',
-		'socialnetworks_facebook_autocreateuser' => 'n',
-		'socialnetworks_facebook_firstloginpopup' => 'n',
-		'socialnetworks_facebook_offline_access' => 'y',
-		'socialnetworks_facebook_publish_stream' => 'y',
-		'socialnetworks_facebook_manage_events' => 'y',
-		'socialnetworks_facebook_manage_pages' => 'y',
-		'socialnetworks_facebook_sms' => 'y',
 		'socialnetworks_bitly_login' => '',
 		'socialnetworks_bitly_key' => '',
 		'socialnetworks_bitly_sitewide' => 'n',
@@ -1665,6 +1604,7 @@ function get_default_prefs() {
 		'load_threshold' => 3,
 		'site_busy_msg' => 'Server is currently too busy; please come back later.',
 
+		'bot_logo_code' => '',
 		'feature_create_webhelp' => 'n',
 		'page_n_times_in_a_structure' => 'n',
 		'feature_forums_search' => 'n',
@@ -1706,22 +1646,13 @@ function get_default_prefs() {
 		'wiki_3d_autoload' => '',
 		'javascript_enabled' => 'n',
 		'javascript_cdn' => 'none',
+		'feature_template_zoom' => 'y',
 		'menus_items_icons' => 'n',
 		'menus_items_icons_path' => 'pics/large',
 		'feature_iepngfix' => 'n',
 		'iepngfix_selectors' => '#sitelogo a img',
 		'iepngfix_elements' => '',
 		'feature_invite' => 'n',
-
-		// Experimental new mobile feature for Tiki 7
-		'mobile_feature' => 'n',
-		'mobile_perspectives' => array(),
-		'mobile_theme_header' => '',
-		'mobile_theme_content' => '',
-		'mobile_theme_footer' => '',
-		'mobile_theme_modules' => '',
-		'mobile_theme_menus' => '',
-		'mobile_use_latest_lib' => 'n',
 		
 		// JQuery
 		'feature_jquery' => 'y',			// Default JS lib for - now "hard-wired" on if javascript_enabled
@@ -1752,7 +1683,6 @@ function get_default_prefs() {
 		'feature_sefurl_title_article' =>'n',
 		'feature_sefurl_title_blog' =>'n',
 		'feature_sefurl_tracker_prefixalias' =>'n',
-		'feature_canonical_url' =>'n',
 
 		// TikiTests
 		'feature_tikitests' => 'n',
@@ -1760,7 +1690,6 @@ function get_default_prefs() {
 		// Tiki Profiles
 		'profile_sources' => 'http://profiles.tiki.org/profiles',
 		'profile_channels' => '',
-		'profile_unapproved' => 'n',
 
 		// Minichat
 		'feature_minichat' => 'n',
@@ -1804,10 +1733,6 @@ function get_default_prefs() {
 		'multidomain_active' => 'n',
 		'multidomain_config' => '',
 
-		// Site Terminal
-		'site_terminal_active' => 'n',
-		'site_terminal_config' => '',
-
 		'tiki_minify_javascript' => 'n',
 		'tiki_minify_css' => 'n',
 		'tiki_minify_css_single_file' => 'n',
@@ -1843,8 +1768,6 @@ function get_default_prefs() {
 		'payment_system' => 'paypal',
 		'payment_currency' => 'USD',
 		'payment_default_delay' => 30,
-		'payment_user_only_his_own' => 'n',
-		'payment_user_only_his_own_past' => 'n',
 		'payment_paypal_business' => '',
 		'payment_paypal_environment' => 'https://www.paypal.com/cgi-bin/webscr',
 		'payment_paypal_ipn' => 'y',
@@ -1867,6 +1790,7 @@ function get_default_prefs() {
 
 		// CAS
 		'cas_create_user_tiki' => 'n',
+		'cas_create_user_tiki_ldap' => 'n',
 		'cas_autologin' => 'n',
 		'cas_skip_admin' => 'n',
 		'cas_show_alternate_login' => 'y',
@@ -1886,23 +1810,6 @@ function get_default_prefs() {
 		'comments_field_email' => 'n',
 		'comments_field_website' => 'n',
 		'comments_vote' => 'n',
-		'comments_archive' => 'n',
-
-		// Unified search
-		'unified_engine' => 'lucene',
-		'unified_incremental_update' => 'n',
-		'unified_lucene_location' => 'temp/unified-index',
-	
-		// Syntax Highlighter
-		'feature_syntax_highlighter' => 'y',
-
-		'feature_accounting' => 'n',
-
-		// Zotero
-		'zotero_enabled' => 'n',
-		'zotero_client_key' => '',
-		'zotero_client_secret' => '',
-		'zotero_group_id' => '',
 	);
 
 	// Special default values
@@ -1995,8 +1902,7 @@ function initialize_prefs() {
 	}
 
 	// Disabled by default so it has to be modified
-	global $in_installer, $section;	// but not if called during installer
-	if( isset($modified['feature_perspective']) && $modified['feature_perspective'] == 'y' && empty($in_installer) ) {
+	if( isset($modified['feature_perspective']) && $modified['feature_perspective'] == 'y' ) {
 		if( ! isset( $section ) || $section != 'admin' ) {
 			require_once 'lib/perspectivelib.php';
 			if( $persp = $perspectivelib->get_current_perspective( $modified ) ) {
@@ -2007,13 +1913,4 @@ function initialize_prefs() {
 	}
 
 	$prefs = empty($modified) ? $defaults : array_merge( $defaults, $modified );
-
 }
-
-// PHP fonctionnalities
-$prefs['php_libxml'] = class_exists('DOMDocument') ? 'y' :'n';
-$prefs['php_datetime'] = class_exists('DateTime') ? 'y' :'n';
-
-$prefs['error_reporting_adminonly'] = 'n';
-$prefs['error_reporting_level'] = 2039;
-$prefs['smarty_notice_reporting'] = 'y';

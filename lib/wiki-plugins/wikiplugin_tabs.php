@@ -23,11 +23,10 @@ function wikiplugin_tabs_help() {
 function wikiplugin_tabs_info() {
 	return array(
 		'name' => tra('Tabs'),
-		'documentation' => 'PluginTabs',
-		'description' => tra('Arrange content in tabs'),
+		'documentation' => tra('PluginTabs'),			
+		'description' => tra('Display page content in a set of tabs'),
 		'prefs' => array( 'wikiplugin_tabs' ),
 		'body' => tra('Tabs content separated by /////'),
-		'icon' => 'pics/icons/tab_edit.png',
 		'params' => array(
 			'name' => array(
 				'required' => false,
@@ -59,7 +58,6 @@ function wikiplugin_tabs($data, $params) {
 	} else {
 		return "''".tra("No tab title specified. At least one has to be set to make the tabs appear.")."''";
 	}
-	$data = $tikilib->parse_data($data);
 	if (!empty($data)) {
 		$tabData = explode('/////', $data);
 		foreach ($tabData as &$d) {

@@ -2,20 +2,22 @@
 
 {title help="File+Galleries" admpage="fgal"}
 	{strip}
-		{if $edit_mode eq 'y' and $galleryId eq 0}
-			{tr}Create a File Gallery{/tr}
-		{else}
-			{if $edit_mode eq 'y'}
-				{tr}Edit Gallery:{/tr}&nbsp;
-			{/if}
-			{if $gal_info.type eq 'user'}
-				{if $gal_info.user eq $user}
-					{tr}My Files{/tr}
-				{else}
-					{tr}Files of $user{/tr}
-				{/if}
+		{if $edit_mode eq 'y'}
+			{if $galleryId eq 0}
+				{tr}Create a File Gallery{/tr}
 			{else}
-				{$name|escape}
+				{tr}Edit Gallery:{/tr}
+				{if $galleryId eq $prefs.fgal_root_id}
+					{tr}File Galleries{/tr}
+				{else}
+					{$name}
+				{/if}
+			{/if}
+		{else}
+			{if $galleryId eq $prefs.fgal_root_id}
+				{tr}File Galleries{/tr}
+			{else}
+				{tr}Gallery:{/tr} {$name|escape}
 			{/if}
 		{/if}
 	{/strip}
@@ -60,7 +62,7 @@
 			{/if}
 		{/if}
 
-		{if $treeRootId eq $prefs.fgal_root_id && ( $tiki_p_list_file_galleries eq 'y' or (!isset($tiki_p_list_file_galleries) and $tiki_p_view_file_gallery eq 'y') )}
+		{if $tiki_p_list_file_galleries eq 'y' or (!isset($tiki_p_list_file_galleries) and $tiki_p_view_file_gallery eq 'y')}
 			{button _text="{tr}List Galleries{/tr}" href="?"}
 		{/if}
 
@@ -108,7 +110,7 @@
 
 	{else}
 
-		{if $treeRootId eq $prefs.fgal_root_id && ( $edit_mode eq 'y' or $dup_mode eq 'y') }
+		{if $edit_mode eq 'y' or $dup_mode eq 'y'}
 			{button _text="{tr}List Galleries{/tr}" href='?'}
 		{/if}
 
@@ -148,9 +150,9 @@
 {if $user and $prefs.feature_user_watches eq 'y'}
 	<div class="categbar" align="right">
 		{if $category_watched eq 'y'}
-			{tr}Watched by categories:{/tr}
+			{tr}Watched by categories{/tr}:
 			{section name=i loop=$watching_categories}
-				{button _text=$watching_categories[i].name|escape href="tiki-browse_categories.php?parentId=`$watching_categories[i].categId`"}
+				{button _text=$watching_categories[i].name href="tiki-browse_categories.php?parentId=`$watching_categories[i].categId`"}
 			{/section}
 		{/if}			
 	</div>
@@ -185,18 +187,10 @@
 		</div>
 	{/if}
 
-	{if $prefs.fgal_quota_show neq 'n' and $gal_info.quota}
+	{if $prefs.fgal_quota_show eq 'y' && $gal_info.quota}
 		<div style="float:right">
-			{capture name='use'}{math equation="round((100*x)/(1024*1024*y),2)" x=$gal_info.usedSize y=$gal_info.quota}{/capture}
-			
-			{if $prefs.fgal_quota_show neq 'y'}
-				<b>{$smarty.capture.use} %</b> {tr}space use on{/tr} <b>{$gal_info.quota} Mo</b>
-				<br />
-			{/if}
-			
-			{if $prefs.fgal_quota_show neq 'text_only'}
-				{quotabar length='100' value=`$smarty.capture.use`}
-			{/if}			
+			{capture name='use'}{math equation="round((100*x)/(1024*1024*y))" x=$gal_info.usedSize y=$gal_info.quota}{/capture}
+			{quotabar length='100' value='$smarty.capture.use'}
 		</div>
 	{/if}
 
@@ -220,7 +214,7 @@
 {if $galleryId>0}
 	{if $edited eq 'y'}
 	<div class="wikitext">
-		{tr}You can access the file gallery using the following URL:{/tr} <a class="fgallink" href="{$url}?galleryId={$galleryId}">{$url}?galleryId={$galleryId}</a>
+		{tr}You can access the file gallery using the following URL{/tr}: <a class="fgallink" href="{$url}?galleryId={$galleryId}">{$url}?galleryId={$galleryId}</a>
 	</div>
 	{/if}
 {/if}

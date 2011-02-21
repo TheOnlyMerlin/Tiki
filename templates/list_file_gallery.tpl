@@ -75,40 +75,33 @@
 					{include file='list_file_gallery_content.tpl'}
 				{/if}
 
-				{if $files and $gal_info.show_checked neq 'n' and $prefs.fgal_checked eq 'y' and ($tiki_p_admin_file_galleries eq 'y' or $tiki_p_upload_files eq 'y' or $tiki_p_assign_perm_file_gallery eq 'y')}
+				{if $files and $gal_info.show_checked neq 'n' and ($tiki_p_admin_file_galleries eq 'y' or $tiki_p_upload_files eq 'y' or $tiki_p_assign_perm_file_gallery eq 'y')}
 					<div id="sel">
 						<div>
-							{if $tiki_p_admin_file_galleries eq 'y' or $tiki_p_remove_files eq 'y' or !isset($file_info) or $tiki_p_admin_file_galleries eq 'y' or $prefs.fgal_display_zip_option eq 'y' or $tiki_p_assign_perm_file_gallery eq 'y'}
-								{tr}Perform action with checked:{/tr}
-							{/if}
+							{tr}Perform action with checked:{/tr}
 							{if !isset($file_info)}
 								{if $offset}<input type="hidden" name="offset" value="{$offset}" />{/if}
 								{if $tiki_p_admin_file_galleries eq 'y'}
 									{icon _id='arrow_right' _tag='input_image' name='movesel' alt="{tr}Move{/tr}" title="{tr}Move Selected Files{/tr}" style='vertical-align: middle;'}
 								{/if}
 							{/if}
-
-							{if $tiki_p_admin_file_galleries eq 'y' or $tiki_p_remove_files eq 'y'}
-								{icon _id='cross' _tag='input_image' _confirm="{tr}Are you sure you want to delete the selected files?{/tr}" name='delsel' alt="{tr}Delete{/tr}" style='vertical-align: middle;'}
-							{/if}
-
+							
 							{if $tiki_p_admin_file_galleries eq 'y'}
+								{icon _id='cross' _tag='input_image' _confirm="{tr}Are you sure you want to delete the selected files?{/tr}" name='delsel' alt="{tr}Delete{/tr}" style='vertical-align: middle;'}
 								{icon _id='arrow_refresh' _tag='input_image' _confirm="{tr}Are you sure you want to reset the default gallery list table settings?{/tr}" name='defaultsel' alt="{tr}Reset to default gallery list table settings{/tr}" style='vertical-align: middle;'}
 							{/if}
 							
-							{if $prefs.fgal_display_zip_option eq 'y'}
-								{icon _id='pics/icons/mime/zip.png' _tag='input_image' name='zipsel' alt="{tr}Download the zip{/tr}" style='vertical-align: middle;'}
-							{/if}
+							{icon _id='pics/icons/mime/zip.png' _tag='input_image' name='zipsel' alt="{tr}Download the zip{/tr}" style='vertical-align: middle;'}
 							
 							{if $tiki_p_assign_perm_file_gallery eq 'y'}
-								{icon _id='key' _tag='input_image' name='permsel' alt="{tr}Assign permissions to file galleries{/tr}" title="{tr}Assign permissions to file galleries{/tr}" style='vertical-align: middle;'}
+								{icon _id='key' _tag='input_image' name='permsel' alt="{tr}Assign Permissions{/tr}" title="{tr}Assign Permissions{/tr}" style='vertical-align: middle;'}
 							{/if}
 						
 						</div>
 						
 						{if $smarty.request.movesel_x and !isset($file_info)}
 							<div>
-								{tr}Move to:{/tr}
+								{tr}Move to{/tr}:
 								<select name="moveto">
 									{section name=ix loop=$all_galleries}
 										<option value="{$all_galleries[ix].id}">{$all_galleries[ix].label|escape}</option>
@@ -120,9 +113,8 @@
 					</div>
 					{if $perms}
 						<div>
-							{tr}Assign permissions to file galleries{/tr}
+							{tr}Assign Permissions{/tr}
 							<select name="perms[]" multiple="multiple" size="5">
-								<option value="" />
 								{foreach from=$perms item=perm}
 									<option value="{$perm.permName|escape}">{$perm.permName|escape}</option>
 								{/foreach}

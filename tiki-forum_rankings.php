@@ -25,7 +25,7 @@ $allrankings = array(
 	'value' => 'forums_ranking_last_replied_topics'
 ),
 	array(
-	'name' => tra('Most-Read Forum Topics'),
+	'name' => tra('Most read topics'),
 	'value' => 'forums_ranking_most_read_topics'
 ),
 	array(
@@ -37,7 +37,7 @@ $allrankings = array(
 	'value' => 'forums_ranking_most_commented_forum'
 ),
 	array(
-	'name' => tra('Most-Visited Forums'),
+	'name' => tra('Most visited forums'),
 	'value' => 'forums_ranking_most_visited_forums'
 )
 );

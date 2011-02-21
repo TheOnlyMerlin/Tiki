@@ -14,12 +14,11 @@ function wikiplugin_groupmailcore_help() {
 
 function wikiplugin_groupmailcore_info() {
 	return array(
-		'name' => tra('GroupMail Core'),
-		'documentation' => 'PluginGroupMailCore',
+		'name' => tra('GroupMailCore'),
+		'documentation' => tra('PluginGroupMailCore'),
 		'description' => tra('Displays GroupMail functions on a wiki page. Usually set up using a plugin alias created by the GroupMail profile.'),
 		'prefs' => array('wikiplugin_groupmailcore', 'feature_trackers'),
 		//'extraparams' => true,
-		'icon' => 'pics/icons/email.png',
 		'params' => array(
 			'fromEmail' => array(
 				'required' => true,

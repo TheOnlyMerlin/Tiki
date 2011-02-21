@@ -211,17 +211,58 @@ if ( isset($_REQUEST['comments_objectId']) && $_REQUEST['comments_objectId'] == 
 			die;
 		}
 	} else {
-		$threadId = $commentslib->post_in_object($comments_objectId, $_REQUEST, $feedbacks, $errors);
-		if (!empty($threadId) && empty($errors) && $prefs['feature_user_watches'] == 'y') {
-			if ($prefs['wiki_watch_comments'] == 'y' && isset($_REQUEST["page"])) {
-				global $notificationemaillib; require_once('lib/notifications/notificationemaillib.php');
-				sendCommentNotification('wiki', $_REQUEST['page'], $_REQUEST['comments_title'], $_REQUEST['comments_data']);
-			} else if (isset($_REQUEST["articleId"])) {
-				global $notificationemaillib; require_once('lib/notifications/notificationemaillib.php');
-				sendCommentNotification('article', $_REQUEST['articleId'], $_REQUEST['comments_title'], $_REQUEST['comments_data']);
-			} elseif (isset($_REQUEST['itemId'])) {
-				global $notificationemaillib; require_once('lib/notifications/notificationemaillib.php');
-				sendCommentNotification('trackeritem', $_REQUEST['itemId'], $_REQUEST['comments_title'], $_REQUEST['comments_data']);
+		$threadId =  $commentslib->post_in_object($comments_objectId, $_REQUEST, $feedbacks, $errors);
+		if ((!empty($threadId) && empty($errors) && $prefs['feature_user_watches'] == 'y') && ($prefs['wiki_watch_comments'] == 'y') && (isset($_REQUEST["page"]))) {
+			include_once ('lib/webmail/tikimaillib.php');
+			$nots = $commentslib->get_event_watches('wiki_page_changed', $_REQUEST["page"]);
+			$isBuilt = false;
+			global $notificationlib; include_once("lib/notifications/notificationlib.php");
+			$emails = $notificationlib->get_mail_events('wiki_comment_changes', $_REQUEST["page"]);
+			foreach ($emails as $email) {
+				$already = false;
+				foreach ($nots as $not) {
+					if ($not['email'] == $email) {
+						$already = true;
+						break;
+					}
+				}
+				if (!$already)
+					$nots[] = array("user"=>"", "hash"=>"", "email"=>$email);
+			}
+			foreach ($nots as $not) {
+				if ($prefs['wiki_watch_editor'] != 'y' && $not['user'] == $user) {
+					continue;
+				}
+				if (!$isBuilt) {
+					$isBuilt = true;
+					$smarty->assign('mail_page', $_REQUEST["page"]);
+					$smarty->assign('mail_date', date("U"));
+					$smarty->assign('mail_user', $user);
+					$smarty->assign('mail_title', $_REQUEST["comments_title"]);
+					$smarty->assign('mail_comment', $_REQUEST["comments_data"]);
+					$smarty->assign('watchId', $not['watchId']);
+					$foo = parse_url($_SERVER["REQUEST_URI"]);
+					$machine = $tikilib->httpPrefix( true ). dirname( $foo["path"] );
+					$smarty->assign('mail_machine', $machine);
+					$parts = explode('/', $foo['path']);
+
+					if (count($parts) > 1)
+						unset ($parts[count($parts) - 1]);
+
+					$smarty->assign('mail_machine_raw', $tikilib->httpPrefix( true ). implode('/', $parts));
+					// TODO: mail_machine_site may be required for some sef url with rewrite to sub-directory. To refine. (nkoth)  
+					$smarty->assign('mail_machine_site', $tikilib->httpPrefix( true ));
+					$mail = new TikiMail();
+				}
+				global $prefs;// TODO: optimise by grouping user by language
+				$languageEmail = $tikilib->get_user_preference($not['user'], "language", $prefs['site_language']);
+				$mail->setUser($not['user']);
+				$mail_data = $smarty->fetchLang($languageEmail, 'mail/user_watch_wiki_page_comment_subject.tpl');
+				$mail->setSubject(sprintf($mail_data, $_REQUEST["page"]));
+				$mail_data = $smarty->fetchLang($languageEmail, 'mail/user_watch_wiki_page_comment.tpl');
+				$mail->setText($mail_data);
+				$mail->buildMessage();
+				$mail->send(array($not['email']));
 			}
 		}
 	}
@@ -233,29 +274,14 @@ if ( isset($_REQUEST['comments_objectId']) && $_REQUEST['comments_objectId'] == 
 	}
 }
 
+// Comments Moderation
 global $tiki_p_admin_comments;
-if ((!isset($forum_mode) || $forum_mode == 'n') && $tiki_p_admin_comments == 'y' && isset($_REQUEST["comments_threadId"])) {
-	// Comments Moderation
-    if (!empty($_REQUEST['comments_approve'])) {
-		if ( $_REQUEST['comments_approve'] == 'y' ) {
-			$commentslib->approve_comment($_REQUEST["comments_threadId"]);
-		} elseif ( $_REQUEST['comments_approve'] == 'n' ) {
-			$commentslib->reject_comment($_REQUEST["comments_threadId"]);
-		}
-	}
+if ( (!isset($forum_mode) || $forum_mode == 'n') && $tiki_p_admin_comments == 'y' && isset($_REQUEST["comments_threadId"]) && !empty($_REQUEST['comments_approve']) ) {
 
-	// Comments archive
-	if ($prefs['comments_archive'] == 'y') {
-		if (!empty($_REQUEST['comment_archive'])) {
-			if ($_REQUEST['comment_archive'] == 'y') {
-				$commentslib->archive_thread($_REQUEST['comments_threadId']);
-			} else if ($_REQUEST['comment_archive'] == 'n') {
-				$commentslib->unarchive_thread($_REQUEST['comments_threadId']);
-			}
-		}
-		
-		$object = explode(':', $comments_objectId);
-		$smarty->assign('count_archived_comments', $commentslib->count_object_archived_comments($object[1], $object[0]));
+	if ( $_REQUEST['comments_approve'] == 'y' ) {
+		$commentslib->approve_comment($_REQUEST["comments_threadId"]);
+	} elseif ( $_REQUEST['comments_approve'] == 'n' ) {
+		$commentslib->reject_comment($_REQUEST["comments_threadId"]);
 	}
 }
 
@@ -336,7 +362,6 @@ if (isset($_REQUEST["comments_previewComment"]) || isset($_REQUEST["comments_pos
 	$comment_preview = array();
 
 	$comment_preview['title'] = $_REQUEST["comments_title"];
-
 	$comment_preview['parsed'] = $commentslib->parse_comment_data(strip_tags($_REQUEST["comments_data"]));
 	$comment_preview['rating'] = $_REQUEST["comment_rating"];
 	$comment_preview['commentDate'] = $tikilib->now;
@@ -393,6 +418,9 @@ if( isset( $_REQUEST["comments_grandParentId"] ) ) {
 	$smarty->assign('comments_grandParentId', $_REQUEST["comments_grandParentId"]);
 }
 
+if(!empty($forum_mode) && $forum_mode == 'y') {
+	$_REQUEST["comments_parentId"] > 0;
+}
 if (isset($_REQUEST["post_reply"]) && isset($_REQUEST["comments_reply_threadId"]))
 	$threadId_if_reply = $_REQUEST["comments_reply_threadId"];
 else

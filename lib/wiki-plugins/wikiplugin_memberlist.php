@@ -8,11 +8,10 @@
 function wikiplugin_memberlist_info() {
 	return array(
 		'name' => tra('Member List'),
-		'documentation' => 'PluginMemberList',
-		'description' => tra('List and allow editing of group members'),
+		'documentation' => tra('PluginMemberList'),
+		'description' => tra('Lists the members of selected groups and allows to add or remove members if permissions are granted.'),
 		'prefs' => array( 'wikiplugin_memberlist' ),
 		'filter' => 'wikicontent',
-		'icon' => 'pics/icons/group_gear.png',
 		'params' => array(
 			'groups' => array(
 				'required' => true,

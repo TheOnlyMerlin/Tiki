@@ -1,5 +1,5 @@
 {* $Id$ *}
-{compact}
+{strip}
 {if $tiki_p_search eq 'y'}
 {tikimodule error=$module_error title=$tpl_module_title name="search" flip=$smod_params.flip decorations=$smod_params.decorations nobox=$smod_params.nobox notitle=$smod_params.notitle}
 {if $smod_params.tiki_search neq 'none'}
@@ -79,13 +79,11 @@ function submitSearch{{$search_mod_usage_counter}}() {
 	return true;
 }
     {/jq}
-	{if $smod_params.use_autocomplete eq 'y'}
-		{capture name="selectFn}select: function(event, item) {ldelim}
-	$('#search-module-form{$search_mod_usage_counter}').attr('page_selected', item.item.value);
-{rdelim}{/capture}
-		{autocomplete element="#search_mod_input_"|cat:$search_mod_usage_counter type="pagename" options=$smarty.capture.selectFn}
-	{/if}
+	{if $smod_params.use_autocomplete eq 'y'}{jq}
+$("#search_mod_input_{{$search_mod_usage_counter}}").tiki("autocomplete", "pagename").result(function(event, item) {
+	$('#search-module-form{{$search_mod_usage_counter}}').attr('page_selected', item);
+});{/jq}{/if}
 {/if}
 {/tikimodule}
 {/if}
-{/compact}
+{/strip}

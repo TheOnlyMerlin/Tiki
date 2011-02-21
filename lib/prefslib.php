@@ -135,9 +135,9 @@ class PreferencesLib
 			}
 			$realPref = in_array($pref, $user_overrider_prefs)? "site_$pref": $pref;
 
-			if( ($old = $tikilib->get_preference( $realPref ) ) != $value ) {
+			if( $tikilib->get_preference( $realPref ) != $value ) {
 				$tikilib->set_preference( $pref, $value );
-				$changes[$pref] = array('new'=> $value, 'old' => $old);
+				$changes[$pref] = $value;
 			}
 		}
 
@@ -154,7 +154,7 @@ class PreferencesLib
 		}
 	}
 	
-	function getInput( JitFilter $filter, $preferences = array(), $environment = '' ) {
+	function getInput( JitFilter $filter, $preferences = array(), $environment ) {
 		$out = array();
 
 		foreach( $preferences as $name ) {
@@ -349,7 +349,7 @@ class PreferencesLib
 	private function _getTextValue( $info, $data ) {
 		$name = $info['preference'];
 
-		if( isset($info['separator']) && is_string( $data[$name] )) {
+		if( isset($info['separator']) && is_string( $data[$name] ) ) {
 			$value = explode( $info['separator'], $data[$name] );
 		} else {
 			$value = $data[$name];
@@ -433,49 +433,6 @@ class PreferencesLib
 	private function _getMulticheckboxValue( $info, $data ) {
 		return $this->_getMultilistValue( $info, $data );
 	}
-
-	// for export as yaml for tiki 7
-
-	/**
-	 * @global TikiLib $tikilib
-	 * @param bool $added shows current prefs not in defaults
-	 * @return array (prefname => array( 'cur' => current value, 'def' => default value ))
-	 */
-	function getModifiedPreferences( $added = false ) {
-		global $tikilib;
-
-		$prefsTable = $tikilib->table('tiki_preferences');	// get prefs direct from db
-		$res = $prefsTable->fetchAll( $prefsTable->all(), array() );
-		$prefs = array();
-
-		foreach ($res as $row) {
-			$prefs[$row['name']] = $row['value'];
-		}
-
-		$defaults = get_default_prefs();
-		$modified = array();
-
-		foreach($prefs as $pref => $val) {
-			if (( $added && !isset($defaults[$pref])) || (isset($defaults[$pref]) && $val !== $defaults[$pref] )) {
-				if (!in_array($pref, array( 'tiki_release', 'tiki_version_last_check', 'lastUpdatePrefs',
-											'case_patched' ))) {	// prefs modified by the system etc
-					
-					if (!in_array($pref, array( 'fgal_use_dir', 'sender_email' ))) {	// prefs with system info etc
-						$modified[$pref] = array(
-							'cur' => $prefs[$pref],
-						);
-						if (isset($defaults[$pref])) {
-							$modified[$pref]['def'] = $defaults[$pref];
-						}
-					}
-				}
-			}
-		}
-		ksort($modified);
-		
-		return $modified;
-	}
-
 }
 
 global $prefslib;

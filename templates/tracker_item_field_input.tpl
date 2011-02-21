@@ -120,11 +120,7 @@
 		<tr>
 		{foreach key=ku item=iu from=$field_value.list name=eforeach}
 		{assign var=fcat value=$iu.categId}
-		<td width="50%"  class="trackerCategoryName">
-			<input type={if $field_value.options_array[1] eq "radio"}"radio"{else}"checkbox"{/if} name="{$field_value.ins_id}[]" value="{$iu.categId}" id="cat{$iu.categId}" {if $field_value.cat.$fcat eq 'y'} checked="checked"{/if}/>
-			{if $field_value.options_array[4] eq 1 && !empty($iu.description)}<a href="{$iu.description|escape}" target="tikihelp" class="tikihelp" title="{$iu.name|escape}:{$iu.description|escape}">{icon _id=help alt=''}</a>{/if}
-			<label for="cat{$iu.categId}">{$iu.name|escape}</label>
-		</td>{if !$smarty.foreach.eforeach.last and $smarty.foreach.eforeach.index % 2}</tr><tr>{elseif $smarty.foreach.eforeach.last and !($smarty.foreach.eforeach.index % 2)}<td width="50%"  class="trackerCategoryName">&nbsp;</td>{/if}
+		<td width="50%"  class="trackerCategoryName"><input type={if $field_value.options_array[1] eq "radio"}"radio"{else}"checkbox"{/if} name="{$field_value.ins_id}[]" value="{$iu.categId}" id="cat{$iu.categId}" {if $field_value.cat.$fcat eq 'y'} checked="checked"{/if}/><label for="cat{$iu.categId}">{$iu.name|escape}</label></td>{if !$smarty.foreach.eforeach.last and $smarty.foreach.eforeach.index % 2}</tr><tr>{elseif $smarty.foreach.eforeach.last and !($smarty.foreach.eforeach.index % 2)}<td width="50%"  class="trackerCategoryName">&nbsp;</td>{/if}
 		{/foreach}
 		</tr>
 	</table>
@@ -190,8 +186,15 @@
 		<input type="text" id="{$field_value.ins_id|replace:'[':'_'|replace:']':''}" name="{$field_value.ins_id}" {if $field_value.options_array[1]}size="{$field_value.options_array[1]}"{/if} {if $field_value.options_array[4]}maxlength="{$field_value.options_array[4]}"{/if} value="{if $field_value.value}{$field_value.value|escape}{else}{$field_value.defaultvalue|escape}{/if}" />
 		{*append*}{if $field_value.options_array[3]}<span class="formunit">&nbsp;{$field_value.options_array[3]}</span>{/if}
 		{if $field_value.options_array[5] eq 'y' && $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y'}
-			{autocomplete element="#"|cat:$field_value.ins_id|replace:"[":"_"|replace:"]":"" type="trackervalue"
-					options="trackerId:"|cat:$item.trackerId|cat:",fieldId:"|cat:$field_value.fieldId}
+			{jq}
+			$("#{{$field_value.ins_id|replace:'[':'_'|replace:']':''}}")
+				.autocomplete('list-tracker_field_values_ajax.php?trackerId={{$item.trackerId}}&fieldId={{$field_value.fieldId}}',
+					{extraParams: {'httpaccept': 'text/javascript'},
+					 dataType: "json",
+					 parse: parseAutoJSON,
+					 formatItem: function(row) { return row; }
+				 	});
+			{/jq}
 		{/if}
 	{else}
     	{foreach from=$field_value.lingualvalue item=ling name=multi}
@@ -201,8 +204,15 @@
         	<input type="text" id="{$field_value.ins_id|replace:'[':'_'|replace:']':''}_{$ling.lang}" name="{$field_value.ins_id}[{$ling.lang}]" value="{$ling.value|escape}" {if $field_value.options_array[1]}size="{$field_value.options_array[1]}"{/if} {if $field_value.options_array[4]}maxlength="{$field_value.options_array[4]}"{/if} /> {*@@ missing value*}
         	{*append*}{if $field_value.options_array[3]}<span class="formunit">&nbsp;{$field_value.options_array[3]}</span>{/if}
 			{if $field_value.options_array[5] eq 'y' && $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y'}
-				{autocomplete element="#"|cat:$field_value.ins_id|replace:"[":"_"|replace:"]":""|cat:"_"|cat:$ling.lang type="trackervalue"
-						options="trackerId:"|cat:$item.trackerId|cat:",fieldId:"|cat:$field_value.fieldId}
+				{jq}
+				$("#{{$field_value.ins_id|replace:'[':'_'|replace:']':''}_{$ling.lang}}")
+					.autocomplete('list-tracker_field_values_ajax.php?trackerId={{$item.trackerId}}&fieldId={{$field_value.fieldId}}&lang={{$ling.lang}}',
+					{extraParams: {'httpaccept': 'text/javascript'},
+					 dataType: "json",
+					 parse: parseAutoJSON,
+					 formatItem: function(row) { return row; }
+					 });
+				{/jq}
 			{/if}
 			{if !$smarty.foreach.multi.last}<br />{/if}
 		{/foreach}
@@ -212,8 +222,10 @@
 {elseif $field_value.type eq 'k'}
 	{if $field_value.options[0] != 1 || $tiki_p_admin_trackers == 'y'}
 		<input type="text" id="page_selector_{$field_value.fieldId}" name="{$field_value.ins_id}" {if $field_value.options_array[1] gt 0}size="{$field_value.options_array[1]}"{/if} value="{if $field_value.value}{$field_value.value|escape}{else}{$field_value.defaultvalue|escape}{/if}" />
-		{if $field_value.isMandatory ne 'y'} {* since autocomplete allows blank entry it can't be used for mandatory selection. *}     
-			{autocomplete element="#page_selector_`$field_value.fieldId`" type='pagename'}
+		{if $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y' and $field_value.isMandatory ne 'y'} {* since autocomplete allows blank entry it can't be used for mandatory selection. *}     
+			{jq}
+			$("#page_selector_{{$field_value.fieldId}}").tiki("autocomplete", "pagename" );
+			{/jq}
 		{/if}
 	{else}
 		{$field_value.value|escape}
@@ -261,7 +273,7 @@
 		{else}
 			{capture name=textarea_id}area_{$field_value.fieldId}{/capture}
 			{capture name=textarea_toolbars}{if $field_value.options_array[0] eq 1}y{else}n{/if}{/capture}
-			{capture name=textarea_simple}n{/capture}
+			{capture name=textarea_simple}{if $field_value.options_array[0] eq 1}n{else}y{/if}{/capture}
 			{capture name=textarea_cols}{if $field_value.options_array[1] >= 1}{$field_value.options_array[1]}{else}50{/if}{/capture}
 			{capture name=textarea_rows}{if $field_value.options_array[2] >= 1}{$field_value.options_array[2]}{else}4{/if}{/capture}
 			{capture name=textarea_onkeyup}{if $field_value.options_array[5]}wordCount({$field_value.options_array[5]}, this, 'cpt_{$field_value.fieldId}', '{tr}Word Limit Exceeded{/tr}'){elseif $field_value.options_array[3]}charCount({$field_value.options_array[3]}, this, 'cpt_{$field_value.fieldId}', '{tr}Character Limit Exceeded{/tr}'){/if}{/capture}
@@ -436,10 +448,18 @@
 
 {* -------------------- Google Map -------------------- *}
 {elseif $field_value.type eq 'G'}
-	{$headerlib->add_map()}
-	<div class="map-container" data-target-field="{$field_value.ins_id}" style="height: 250px; width: 250px;"></div>
 	<input type="text" name="{$field_value.ins_id}" id="{$field_value.ins_id}" value="{$field_value.value}" size="60" />
 	<br />{tr}Format: x,y,zoom where x is the longitude, and y is the latitude. Zoom is between 0(view Earth) and 19.{/tr}
+
+	{if $prefs.feature_ajax eq 'y'}
+		{if isset($item.trackerId)}
+			{wikiplugin _name=googlemap type=locator trackerinputid=`$field_value.ins_id` trackerfieldid=`$field_value.fieldId` locateitemtype=trackeritem locateitemid=`$item.itemId` name=locator_`$item.itemId`_`$field_value.fieldId` in_form=1}{/wikiplugin}
+		{else}
+			{wikiplugin _name=googlemap type=locator trackerinputid=`$field_value.ins_id` trackerfieldid=`$field_value.fieldId` locateitemtype=trackeritem locateitemid=0 name=locator_0_`$field_value.fieldId` in_form=1}{/wikiplugin}
+		{/if}	
+	{elseif isset($item.trackerId)}
+		{tr}You can use{/tr} <a href="tiki-gmap_locator.php?for=item&amp;itemId={$item.itemId}&amp;trackerId={$item.trackerId}&amp;fieldId={$field_value.fieldId}{if !empty($page)}&amp;fromPage={$page}{/if}">{tr}Google Map Locator{/tr}</a>.
+	{/if}
 
 {* -------------------- country selector -------------------- *}
 {elseif $field_value.type eq 'y'}
@@ -482,19 +502,7 @@
 		<a href="javascript:addTag{$field_value.ins_id|replace:"[":"_"|replace:"]":""}('{$smarty.capture.tagurl|escape:'javascript'|escape}');" onclick="javascript:needToConfirm=false">{$t|escape}</a>&nbsp; &nbsp; 
 	{/foreach}
 	{/if}
-
-{* -------------------- LDAP -------------------- *}
-{elseif $field_value.type eq 'P'}
-	{if $field_value.value ne ''}
-		{$field_value.value}
-	{/if}
-
-{* -------------------- Webservice -------------------- *}
-{elseif $field_value.type eq 'W'}
-	{if $field_value.value ne ''}
-                {$field_value.value}
-        {/if}
-
+		
 {* -------------------- in group -------------------- *}
 {elseif $field_value.type eq 'N'}
 	{include file='tracker_item_field_value.tpl'}

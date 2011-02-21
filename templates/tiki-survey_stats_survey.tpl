@@ -13,7 +13,7 @@
 <br />
 
 {section name=ix loop=$channels}
-  <table class="formcolor">
+  <table class="normal">
   <tr>
     <th colspan="4">{$channels[ix].question|escape|nl2br}</th>
   </tr>

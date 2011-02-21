@@ -14,7 +14,7 @@
 </div>
 
 {if $mode eq 'listing'}
-<h2>{tr}Available templates:{/tr}</h2>
+<h2>{tr}Available templates{/tr}:</h2>
 <table border="1" cellpadding="0" cellspacing="0" >
 <tr>
 <th>{tr}Template{/tr}</th>
@@ -25,7 +25,7 @@
     <td><a class="link" href="tiki-edit_templates.php?template={$files[user]}">{$files[user]}</a></td>
   </tr>
 {sectionelse}
-	{norecords _colspan=1}
+  <tr class="{cycle}"><td colspan="2">{tr}No records found{/tr}</td></tr>
 {/section}
 </table>
 {/if}

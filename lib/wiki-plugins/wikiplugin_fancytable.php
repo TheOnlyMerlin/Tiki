@@ -26,11 +26,10 @@ function wikiplugin_fancytable_help() {
 function wikiplugin_fancytable_info() {
 	return array(
 		'name' => tra('Fancy Table'),
-		'documentation' => 'PluginFancyTable',
-		'description' => tra('Create a formatted table'),
+		'documentation' => tra('PluginFancyTable'),
+		'description' => tra('Displays the data using the Tikiwiki odd/even table style'),
 		'prefs' => array('wikiplugin_fancytable'),
 		'body' => tra('Rows separated by >> in the header; for the table body, one row per line. Cells separated by | in both cases.'),
-		'icon' => 'pics/icons/table.png',
 		'params' => array(
 			'head' => array(
 				'required' => false,
@@ -47,7 +46,7 @@ function wikiplugin_fancytable_info() {
 			'headaligns' => array(
 				'required' => false,
 				'name' => tra('Header Horizontal Align'),
-				'description' => tra('Horizontal alignments for header cells separated by |. Choices: left, right, center, justify.'),
+				'description' => tra('Horizonatal alignments for header cells separated by |. Choices: left, right, center, justify.'),
 				'default' => '',
 			),
 			'headvaligns' => array(

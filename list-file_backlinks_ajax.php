@@ -15,7 +15,7 @@ if (empty($_REQUEST['fileId'])) {
 	/* echo '{}'; */
 	exit;
 }
-$info = $filegallib->get_file($_REQUEST['fileId']);
+$info = $tikilib->get_file($_REQUEST['fileId']);
 if (empty($info)) {
 	/* echo '{}'; */
 	exit;

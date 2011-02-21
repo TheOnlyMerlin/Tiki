@@ -8,9 +8,8 @@
 function wikiplugin_grouplist_info() {
 	return array(
 		'name' => tra('Group List'),
-		'documentation' => 'PluginGroupList',
+		'documentation' => tra('PluginGroupList'),
 		'description' => tra('List all groups or just groups that include a certain group'),
-		'icon' => 'pics/icons/group.png',
 		'params' => array(
 			'group' => array(
 				'required' => false,

@@ -16,10 +16,9 @@ function wikiplugin_bloglist_help() {
 function wikiplugin_bloglist_info() {
 	return array(
 		'name' => tra('Blog List'),
-		'documentation' => 'PluginBlogList',		
-		'description' => tra('Display posts from a site blog'),
+		'documentation' => tra('PluginBlogList'),		
+		'description' => tra('Use BLOGLIST to include posts from a blog.'),
 		'prefs' => array( 'feature_blogs', 'wikiplugin_bloglist' ),
-		'icon' => 'pics/icons/text_list_bullets.png',
 		'params' => array(
 			'Id' => array(
 				'required' => true,

@@ -32,11 +32,10 @@ function wikiplugin_miniquiz_help() {
 function wikiplugin_miniquiz_info() {
 	return array(
 		'name' => tra('Mini Quiz'),
-		'documentation' => 'PluginMiniQuiz',
-		'description' => tra('Create a quiz using a tracker'),
+		'documentation' => tra('PluginMiniQuiz'),
+		'description' => tra('Displays a miniquiz'),
 		'prefs' => array( 'feature_trackers', 'wikiplugin_miniquiz' ),
 		'body' => tra('Instructions::Feedback'),
-		'icon' => 'pics/icons/green_question.png',
 		'params' => array(
 			'trackerId' => array(
 				'required' => true,
@@ -60,7 +59,7 @@ function wikiplugin_miniquiz($data, $params) {
 		return $smarty->fetch("wiki-plugins/error_tracker.tpl");
 	}
 
-	$items = $trklib->list_tracker_items($trackerId,0,-1,'lastModif_desc','','o');
+	$items = $tikilib->list_tracker_items($trackerId,0,-1,'lastModif_desc','','o');
 	foreach ($items['data'] as $it) {
 		$id = $it['itemId'];
 		foreach ($it['field_values'] as $val) {

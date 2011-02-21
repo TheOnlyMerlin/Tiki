@@ -349,9 +349,9 @@ foreach($groups['data'] as &$row) {
 
 }
 
-$smarty->assign('permGroups', $permGroups);
+$smarty->assign('permGroups', implode(',', $permGroups));
 $smarty->assign('permGroupCols', $groupIndices);
-$smarty->assign('groupNames', $groupNames);
+$smarty->assign('groupNames', implode(',', $groupNames));
 //$smarty->assign('groupInheritance', $groupInheritance);
 
 
@@ -560,7 +560,6 @@ function quickperms_get_filegal() {
 				'tiki_p_edit_gallery_file' => 'tiki_p_edit_gallery_file',
 				'tiki_p_list_file_galleries' => 'tiki_p_list_file_galleries',
 				'tiki_p_upload_files' => 'tiki_p_upload_files',
-				'tiki_p_remove_files' => 'tiki_p_remove_files',
 				'tiki_p_view_fgal_explorer' => 'tiki_p_view_fgal_explorer',
 				'tiki_p_view_fgal_path' => 'tiki_p_view_fgal_path',
 				'tiki_p_view_file_gallery' => 'tiki_p_view_file_gallery',
@@ -576,7 +575,6 @@ function quickperms_get_filegal() {
 				'tiki_p_edit_gallery_file' => 'tiki_p_edit_gallery_file',
 				'tiki_p_list_file_galleries' => 'tiki_p_list_file_galleries',
 				'tiki_p_upload_files' => 'tiki_p_upload_files',
-				'tiki_p_remove_files' => 'tiki_p_remove_files',
 				'tiki_p_view_fgal_explorer' => 'tiki_p_view_fgal_explorer',
 				'tiki_p_view_fgal_path' => 'tiki_p_view_fgal_path',
 				'tiki_p_view_file_gallery' => 'tiki_p_view_file_gallery',

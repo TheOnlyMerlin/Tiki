@@ -16,6 +16,10 @@ include_once ('lib/calendar/calrecurrence.php');
 if ($prefs['feature_groupalert'] == 'y') {
 	include_once ('lib/groupalert/groupalertlib.php');
 }
+if ($prefs['ajax_xajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
+
 $auto_query_args = array('calitemId');
 
 $daysnames = array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Satursday");
@@ -112,7 +116,7 @@ if (isset($_REQUEST['act']) || isset($_REQUEST['preview']) || isset($_REQUEST['c
 	}
 
     $save['allday'] = (isset($_REQUEST['allday']) && $_REQUEST['allday'] == 'true') ? 1 : 0;
-	if (isset($_REQUEST['allday']) && $_REQUEST['allday'] == 'true') {
+	if ($_REQUEST['allday'] == 'true') {
 		$save['start'] = TikiLib::make_time(
 			0,
 			0,
@@ -137,9 +141,8 @@ if (isset($_REQUEST['act']) || isset($_REQUEST['preview']) || isset($_REQUEST['c
 			$save['duration'] = max(0, $save['end'] - $save['start']);
 		}
 	} else {
-		//Convert 12-hour clock hours to 24-hour scale to compute time
-		if (!empty($_REQUEST['start_Meridian'])) {
-			$_REQUEST['start_Hour'] = Date_Calc::twelveHrsTo24($_REQUEST['start_Meridian'], $_REQUEST['start_Hour']);
+		if (!empty($_REQUEST['start_Meridian']) && $_REQUEST['start_Meridian'] == 'pm') {
+			$_REQUEST['start_Hour'] += 12;
 		}
 		$save['start'] = TikiLib::make_time(
 			$_REQUEST['start_Hour'],
@@ -154,9 +157,8 @@ if (isset($_REQUEST['act']) || isset($_REQUEST['preview']) || isset($_REQUEST['c
 			$save['duration'] = max(0, $_REQUEST['duration_Hour']*60*60 + $_REQUEST['duration_Minute']*60);
 			$save['end'] = $save['start'] + $save['duration'];
 		} else {
-			//Convert 12-hour clock hours to 24-hour scale to compute time
-			if (!empty($_REQUEST['end_Meridian'])) {
-				$_REQUEST['end_Hour'] = Date_Calc::twelveHrsTo24($_REQUEST['end_Meridian'], $_REQUEST['end_Hour']);
+			if (!empty($_REQUEST['end_Meridian']) && $_REQUEST['end_Meridian'] == 'pm') {
+				$_REQUEST['end_Hour'] += 12;
 			}
 			$save['end'] = TikiLib::make_time(
 				$_REQUEST['end_Hour'],
@@ -168,29 +170,6 @@ if (isset($_REQUEST['act']) || isset($_REQUEST['preview']) || isset($_REQUEST['c
 			);
 			$save['duration'] = max(0, $save['end'] - $save['start']);
 		}
-		
-		#region reminder
-
-			//Convert 12-hour clock hours to 24-hour scale to compute time
-			if (!empty($_REQUEST['reminder_fixed_date_Meridian'])) {
-				$_REQUEST['reminder_fixed_date_Hour'] = Date_Calc::twelveHrsTo24($_REQUEST['reminder_fixed_date_Meridian'], $_REQUEST['reminder_fixed_date_Hour']);
-			}
-		$save['reminder_fixed_date'] = TikiLib::make_time(
-        $_REQUEST['reminder_fixed_date_Hour'],
-        $_REQUEST['reminder_fixed_date_Minute'],
-        0,
-        $_REQUEST['reminder_fixed_date_Month'],
-        $_REQUEST['reminder_fixed_date_Day'],
-        $_REQUEST['reminder_fixed_date_Year']
-    );
-
-    $rem_offset_days = $_REQUEST['reminder_time_offset_days'];
-    $rem_offset_hours = $_REQUEST['reminder_time_offset_hours'];
-    $rem_offset_minutes = $_REQUEST['reminder_time_offset_minutes'];
-    $save['reminder_time_offset'] = $rem_offset_days * 86400 + $rem_offset_hours * 3600 + $rem_offset_minutes * 60;
-
-    #endregion reminder
-
 	}
 }
 
@@ -272,13 +251,6 @@ if (isset($_POST['act'])) {
 					$calRecurrence->setNbRecurrences($_POST['nbRecurrences']);
 				}
 				$calRecurrence->setUser($save['user']);
-				#region reminder
-        $calRecurrence->setReminderType($save['reminder_type']);
-        $calRecurrence->setReminderFixedDate($save['reminder_fixed_date']);
-        $calRecurrence->setReminderTimeOffset($save['reminder_time_offset']);
-        $calRecurrence->setReminderRelatedTo($save['reminder_related_to']);
-        $calRecurrence->setReminderWhenRun($save['reminder_when_run']);
-        #endregion reminder
 				$calRecurrence->save($_POST['affect'] == 'all');
 					// Save the ip at the log for the addition of new calendar items when done by anonymous users
 					if (empty($user) && empty($save['calitemId']) && $caladd["$newcalid"]['tiki_p_add_events']) { 
@@ -480,9 +452,6 @@ if ($calendar['customlocations'] == 'y') {
 }
 $smarty->assign('listlocs', $listlocs);
 
-include_once ('lib/userprefs/userprefslib.php');
-$smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
-
 if ($calendar['customcategories'] == 'y') {
 	$listcats = $calendarlib->list_categories($calID);
 } else {
@@ -547,25 +516,15 @@ $smarty->assign('calendar', $calendar);
 $smarty->assign('calendarId', $calID);
 if (array_key_exists('CalendarViewGroups',$_SESSION) && count($_SESSION['CalendarViewGroups']) == 1)
 	$smarty->assign('calendarView',$_SESSION['CalendarViewGroups'][0]);
-
-#region reminder
-
-$reminder_time_offset_days = 0;
-$reminder_time_offset_hours = 1;
-$reminder_time_offset_minutes = 0;
-
-if ($calitem['reminder_type'] == 2)
-{
-    $reminder_time_offset_days = floor($calitem['reminder_time_offset'] / 86400);
-    $reminder_time_offset_hours = floor(($calitem['reminder_time_offset'] % 86400) / 3600);
-    $reminder_time_offset_minutes = floor(($calitem['reminder_time_offset'] % 3600) / 60);
+if ($prefs['ajax_xajax'] == "y") {
+function edit_calendar_ajax() {
+    global $ajaxlib, $xajax;
+    $ajaxlib->registerTemplate("tiki-calendar_edit_item.tpl");
+    $ajaxlib->registerFunction("loadComponent");
+    $ajaxlib->processRequests();
 }
-
-$smarty->assign('reminder_time_offset_days', $reminder_time_offset_days);
-$smarty->assign('reminder_time_offset_hours', $reminder_time_offset_hours);
-$smarty->assign('reminder_time_offset_minutes', $reminder_time_offset_minutes);
-
-#endregion reminder
+edit_calendar_ajax();
+}
 
 global $wikilib; include_once('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'editwiki');

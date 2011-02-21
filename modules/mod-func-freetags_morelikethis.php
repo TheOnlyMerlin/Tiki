@@ -13,7 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 function module_freetags_morelikethis_info() {
 	return array(
-		'name' => tra('Similar-Tag Items'),
+		'name' => tra('Freetags similar content'),
 		'description' => tra('Shows content with multiple freetags in common.'),
 		'prefs' => array( 'feature_freetags' ),
 		'params' => array(
