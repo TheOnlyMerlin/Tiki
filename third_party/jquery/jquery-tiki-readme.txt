@@ -2,6 +2,13 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 23 March 2011
+
+Updates:
+	jquery.js 1.5.0 to 1.5.1
+	jquery-ui 1.8.9 to 1.8.11
+	tablesorter 2.0.3 to 2.0.5b
+
 jonnybradley 10 Feb 2011
 
 New:
