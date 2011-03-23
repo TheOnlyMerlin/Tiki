@@ -249,6 +249,48 @@ $( ".selector" ).autocomplete( "option", "minLength", 0 );</code></pre>
 </li>
 
 
+<li class="option" id="option-position">
+  <div class="option-header">
+    <h3 class="option-name"><a href="#option-position">position</a></h3>
+    <dl>
+      <dt class="option-type-label">Type:</dt>
+        <dd class="option-type">Object</dd>
+      
+      <dt class="option-default-label">Default:</dt>
+        <dd class="option-default">{ my: &quot;left top&quot;, at: &quot;left bottom&quot;, collision: &quot;none&quot; }</dd>
+      
+    </dl>
+  </div>
+  <div class="option-description">
+    <p>Identifies the position of the Autocomplete widget in relation to the associated input element. The "of" option defaults to the input element, but you can specify another element to position against. You can refer to the <a href="http://docs.jquery.com/UI/Position" class="external text" title="http://docs.jquery.com/UI/Position">jQuery UI Position</a> utility for more details about the various options.</p>
+  </div>
+  <div class="option-examples">
+    <h4>Code examples</h4>
+    <dl class="option-examples-list">
+    
+<dt>
+  Initialize a autocomplete with the <code>position</code> option specified.
+</dt>
+<dd>
+<pre><code>$( ".selector" ).autocomplete({ position: { my : &quot;right top&quot;, at: &quot;right bottom&quot; } });</code></pre>
+</dd>
+
+    
+<dt>
+  Get or set the <code>position</code> option, after init.
+</dt>
+<dd>
+<pre><code>//getter
+var position = $( ".selector" ).autocomplete( "option", "position" );
+//setter
+$( ".selector" ).autocomplete( "option", "position", { my : &quot;right top&quot;, at: &quot;right bottom&quot; } );</code></pre>
+</dd>
+
+    </dl>
+  </div>
+</li>
+
+
 <li class="option" id="option-source">
   <div class="option-header">
     <h3 class="option-name"><a href="#option-source">source</a></h3>
@@ -782,10 +824,10 @@ $( ".selector" ).autocomplete( "option", "source", [&quot;c++&quot;, &quot;java&
 </div>
 
 </p><!-- 
-Pre-expand include size: 32903 bytes
-Post-expand include size: 54578 bytes
-Template argument size: 29474 bytes
+Pre-expand include size: 34461 bytes
+Post-expand include size: 58313 bytes
+Template argument size: 31985 bytes
 Maximum: 2097152 bytes
 -->
 
-<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:3766-1!1!0!!en!2 and timestamp 20110119065152 -->
+<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:3766-1!1!0!!en!2 and timestamp 20110315194630 -->
