@@ -1,19 +1,22 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+function wikiplugin_sql_help() {
+	return tra("Run a sql query").":<br />~np~{SQL(db=>dsnname)}".tra("sql query")."{SQL}~/np~";
+}
+
 function wikiplugin_sql_info() {
 	return array(
 		'name' => tra('SQL'),
-		'documentation' => 'PluginSQL',
-		'description' => tra('Query a MySQL database and display the results'),
+		'documentation' => tra('PluginSQL'),
+		'description' => tra('Run an SQL query on a database'),
 		'prefs' => array( 'wikiplugin_sql' ),
 		'body' => tra('The SQL query goes in the body. Example: SELECT column1, column2 FROM table'),
 		'validate' => 'all',
-		'icon' => 'pics/icons/database_table.png',
 		'params' => array(
 			'db' => array(
 				'required' => true,

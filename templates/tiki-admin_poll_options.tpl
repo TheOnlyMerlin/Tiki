@@ -52,16 +52,18 @@
 		{cycle values="even,odd" print=false}
 		{section name=user loop=$channels}
 			<tr class="{cycle}">
-				<td class="id">{$channels[user].position}</td>
-				<td class="text">{$channels[user].title|escape}</td>
-				<td class="integer">{$channels[user].votes}</td>
-				<td class="action">
-					<a class="link" href="tiki-admin_poll_options.php?pollId={$pollId}&amp;optionId={$channels[user].optionId}" title="{tr}Edit{/tr}">{icon _id=page_edit}</a>
+				<td>{$channels[user].position}</td>
+				<td>{$channels[user].title|escape}</td>
+				<td>{$channels[user].votes}</td>
+				<td>
 					<a class="link" href="tiki-admin_poll_options.php?pollId={$pollId}&amp;remove={$channels[user].optionId}" title="{tr}Delete{/tr}">{icon _id=cross alt="{tr}Delete{/tr}"}</a>
+					<a class="link" href="tiki-admin_poll_options.php?pollId={$pollId}&amp;optionId={$channels[user].optionId}" title="{tr}Edit{/tr}">{icon _id=page_edit}</a>
 				</td>
 			</tr>
 		{sectionelse}
-	         {norecords _colspan=4}
+			<tr>
+				<td class="odd" colspan="4">{tr}No records found.{/tr}</td>
+			</tr>
 		{/section}
 	</table>
 </div>

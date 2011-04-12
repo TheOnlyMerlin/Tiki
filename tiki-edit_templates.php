@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,7 +7,7 @@
 
 require_once ('tiki-setup.php');
 
-$access->check_feature('feature_view_tpl');
+$access->check_feature(array('feature_edit_templates','feature_view_tpl'));
 
 // you have to have the perm view and edit to continue:
       // if view perm is set: continue
@@ -48,7 +48,6 @@ if (isset($_REQUEST["template"])) {
 // do editing stuff only if you have the permission to:
 if ($tiki_p_edit_templates == 'y') {
 	if ((isset($_REQUEST["save"]) || isset($_REQUEST['saveTheme'])) && !empty($_REQUEST['template'])) {
-		$access->check_feature('feature_edit_templates');
 		check_ticket('edit-templates');
 		if (isset($_REQUEST['saveTheme'])) {
 			if (!empty($tikidomain)) {

@@ -16,50 +16,35 @@
 	margin-left: 0;
 }
 
+.wikiactions .icons,
+.wikiactions form {/*display: inline*/}
+
 .codelisting {
 	padding-bottom: 1.8em;
 }
 
-body.fixed_width #editpageform {
+#editpageform {
 	width: 520px;
 }
 
 #header-top {
-	z-index: 5;
+	z-index: 4;
 }
 
 #tiki-top {
 	position: relative;
-	z-index: 4;
+	z-index: 3;
 }
 
 #middle {
-	z-index: 3;
-	position: relative;
-}
-
-#col2,
-#col3 {
-	z-index: 2;
-	position: relative;
-}
-
-#col1 {
 	z-index: 1;
 	position: relative;
 }
 
 h3.box-title {
-	z-index: 2;
+	z-index: 0;
 }
 
 .cssmenu_vert ul li {
 	width: inherit;
 }
-
-#wrapper {
-	z-index: auto; /* fixes IE7 'z-index bug' for suckerfish menus etc */
-	position: relative;
-}
-
-

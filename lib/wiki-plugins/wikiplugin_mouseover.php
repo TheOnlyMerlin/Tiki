@@ -1,9 +1,16 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+
+/*
+ * Plugin mouseover
+ */
+function wikiplugin_mouseover_help() {
+	return tra("Create a mouseover feature on some text").":<br />~np~{MOUSEOVER(url=url,text=text,parse=y,width=300,height=300)}".tra('text')."{MOUSEOVER}~/np~";
+}
 
 function wikiplugin_mouseover_info() {
 	global $prefs;
@@ -17,16 +24,16 @@ function wikiplugin_mouseover_info() {
 	
 	return array(
 		'name' => tra('Mouseover'),
-		'documentation' => 'PluginMouseover',
-		'description' => tra('Display hidden content by mousing over a text'),
+		'documentation' => tra('PluginMouseover'),
+		'description' => tra('Create a mouseover feature on some text'),
 		'prefs' => array( 'wikiplugin_mouseover' ),
-		'body' => tra('Hidden content, unless the label parameter is undefined, in which case this is the label.'),
+		'body' => tra('Mouseover text if param label exists. Page text if text param exists'),
 		'icon' => 'pics/icons/comment_add.png',
 		'params' => array(
 			'label' => array(
 				'required' => true,
 				'name' => tra('Label'),
-				'description' => tra('Text displayed on the page. The body is the hidden content.'),
+				'description' => tra('Text displayed on the page. The body is the mouseover content'),
 				'filter' => 'striptags',
 				'default' => '',
 			),
@@ -40,7 +47,7 @@ function wikiplugin_mouseover_info() {
 			'text' => array(
 				'required' => false,
 				'name' => tra('Text'),
-				'description' => tra('DEPRECATED').' '.tra('Hidden content. The body contains the label.'),
+				'description' => tra('DEPRECATED').' '.tra('Text displayed on the mouseover. The body contains the text of the page.'),
 				'filter' => 'striptags',
 				'default' => '',
 				'advanced' => true,

@@ -1,18 +1,12 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 function wikiplugin_bigbluebutton_info() {
 	return array(
 		'name' => tra('BigBlueButton'),
-		'documentation' => 'PluginBigBlueButton',
-		'description' => tra('Starts a video/audio/chat/presentation session using BigBlueButton'),
+		'documentation' => tra('PluginBigBlueButton'),
+		'description' => tra('Allows to join a BigBlueButton meeting.'),
 		'format' => 'html',
 		'prefs' => array( 'wikiplugin_bigbluebutton', 'bigbluebutton_feature' ),
-		'icon' => 'pics/icons/webcam.png',
 		'params' => array(
 			'name' => array(
 				'required' => true,
@@ -51,7 +45,7 @@ function wikiplugin_bigbluebutton_info() {
 			),
 			'logout' => array(
 				'required' => false,
-				'name' => tra('Log-out URL'),
+				'name' => tra('Logout URL'),
 				'description' => tra('URL to which the user will be redirected when logging out from BigBlueButton.'),
 				'filter' => 'url',
 				'default' => ''

@@ -15,7 +15,7 @@
 		{/if}
 		<ul>
 			{section name=ix loop=$items}
-				<li><a href="{$items[ix].url|escape}" class="link">{$items[ix].title|escape}</a>{if $items[ix].pubDate ne ""}<br /><span class="rssdate">({$items[ix].pubDate|escape})</span>{/if}</li>
+				<li><a href="{$items[ix].link|escape}" class="link">{$items[ix].title|escape}</a>{if $items[ix].pubDate ne ""}<br /><span class="rssdate">({$items[ix].pubDate|escape})</span>{/if}</li>
 			{/section}
 		</ul>
 	</div>
@@ -70,7 +70,7 @@
 			</select>
 		</p>
 		<p>
-			{include file='categorize.tpl'}
+			{include file=categorize.tpl}
 		</p>
 		<p>
 			<input type="submit" value="{tr}Configure{/tr}"/>
@@ -152,32 +152,33 @@
 		{cycle values="even,odd" print=false}
 		{section name=chan loop=$channels}
 			<tr class="{cycle}">
-				<td class="id">{$channels[chan].rssId|escape}</td>
-				<td class="text">
+				<td>{$channels[chan].rssId|escape}</td>
+				<td>
 					<strong>{$channels[chan].name|escape}</strong><br />
 					{if $channels[chan].description}{$channels[chan].description|escape|nl2br}<br />{/if}
 					Site: <a href="{$channels[chan].siteurl|escape}">{$channels[chan].sitetitle|escape}</a><br />
 					Feed: <a class="link" href="{$channels[chan].url|escape}">{$channels[chan].url|truncate:50:"...":true}</a><br />
 				</td>
-				<td class="text">
+				<td>
 					{if $channels[chan].lastUpdated eq '1000000'}{tr}Never{/tr}{else}{$channels[chan].lastUpdated|tiki_short_datetime}{/if}<br />
 					Refresh rate: {$channels[chan].refresh|duration}
 				</td>
-				<td class="text">{$channels[chan].showTitle|escape}</td>
-				<td class="text">{$channels[chan].showPubDate|escape}</td>
-				<td class="action">
+				<td style="text-align:center">{$channels[chan].showTitle|escape}</td>
+				<td style="text-align:center">{$channels[chan].showPubDate|escape}</td>
+				<td>
+					<a class="link" href="tiki-admin_rssmodules.php?offset={$offset|escape}&amp;sort_mode={$sort_mode|escape}&amp;remove={$channels[chan].rssId|escape}" title="{tr}Delete{/tr}">{icon _id=cross alt="{tr}Delete{/tr}"}</a>
 					<a class="link" href="tiki-admin_rssmodules.php?offset={$offset|escape}&amp;sort_mode={$sort_mode|escape}&amp;rssId={$channels[chan].rssId|escape}" title="{tr}Edit{/tr}">{icon _id=page_edit}</a>
 					<a class="link" href="tiki-admin_rssmodules.php?offset={$offset|escape}&amp;sort_mode={$sort_mode|escape}&amp;view={$channels[chan].rssId|escape}" title="{tr}View{/tr}">{icon _id=feed alt="{tr}View feed{/tr}"}</a>
-					<a class="link" href="tiki-admin_rssmodules.php?offset={$offset|escape}&amp;sort_mode={$sort_mode|escape}&amp;clear={$channels[chan].rssId|escape}" title="{tr}Clear{/tr}">{icon _id=basket alt="{tr}Clear{/tr}"}</a>
 					<a class="link" href="tiki-admin_rssmodules.php?offset={$offset|escape}&amp;sort_mode={$sort_mode|escape}&amp;refresh={$channels[chan].rssId|escape}" title="{tr}Refresh{/tr}">{icon _id=arrow_refresh alt="{tr}Refresh{/tr}"}</a>
 					{if $prefs.feature_articles eq 'y'}
 						<a class="link" href="tiki-admin_rssmodules.php?offset={$offset|escape}&amp;sort_mode={$sort_mode|escape}&amp;article={$channels[chan].rssId|escape}" title="{tr}Article Generator{/tr}">{icon _id=newspaper_go alt="{tr}Article Generator{/tr}"}</a>
 					{/if}
-					<a class="link" href="tiki-admin_rssmodules.php?offset={$offset|escape}&amp;sort_mode={$sort_mode|escape}&amp;remove={$channels[chan].rssId|escape}" title="{tr}Delete{/tr}">{icon _id=cross alt="{tr}Delete{/tr}"}</a>
 				</td>
 			</tr>
 		{sectionelse}
-         {norecords _colspan=6}
+			<tr>
+				<td colspan="6" class="odd">{tr}No records found{/tr}</td>
+			</tr>
 		{/section}
 	</table>
 

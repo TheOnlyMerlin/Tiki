@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -72,9 +72,6 @@ if (isset($_REQUEST["filegallistprefs"])) {
 	simple_set_value('fgal_list_files');
 	simple_set_value('fgal_list_hits');
 	simple_set_value('fgal_list_lastDownload');
-	simple_set_value('fgal_list_deleteAfter');
-	simple_set_value('fgal_list_checked');
-	simple_set_value('fgal_list_share');
 	simple_set_value('fgal_list_lockedby');
 	$_REQUEST['fgal_sort_mode'] = (empty($_REQUEST['fgal_sortorder']) ? 'created' : $_REQUEST['fgal_sortorder']) . '_' . (empty($_REQUEST['fgal_sortdirection']) ? 'desc' : $_REQUEST['fgal_sortdirection']);
 	$prefs['fgal_sort_mode'] = $_REQUEST['fgal_sort_mode'];
@@ -82,7 +79,6 @@ if (isset($_REQUEST["filegallistprefs"])) {
 	simple_set_toggle('fgal_show_explorer');
 	simple_set_toggle('fgal_show_path');
 	simple_set_toggle('fgal_show_slideshow');
-	simple_set_toggle('fgal_list_ratio_hits');
 	simple_set_value('fgal_default_view');
 	simple_set_value('fgal_list_backlinks');
 	simple_set_value('fgal_list_id_admin');

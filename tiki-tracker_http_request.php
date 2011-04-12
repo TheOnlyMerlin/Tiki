@@ -1,11 +1,9 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-
-// TODO - refactor to ajax-services then KILME
 
 require_once ('tiki-setup.php');
 include_once ('lib/trackers/trackerlib.php');
@@ -54,7 +52,6 @@ for ($index = 0, $count_arrayTrackerId = count($arrayTrackerId); $index < $count
 			}
 		}
 		$listfields = array();
-		$listfields[$fid]['fieldId'] = $fid;
 		$listfields[$fid]['type'] = $xfields["data"][$dfid]["type"];
 		$listfields[$fid]['name'] = $xfields["data"][$dfid]["name"];
 		$listfields[$fid]['options'] = $xfields["data"][$dfid]["options"];
@@ -64,27 +61,18 @@ for ($index = 0, $count_arrayTrackerId = count($arrayTrackerId); $index < $count
 		$listfields[$fid]['isHidden'] = $xfields["data"][$dfid]["isHidden"];
 		$listfields[$fid]['isSearchable'] = $xfields["data"][$dfid]["isSearchable"];
 		$items = $trklib->list_items($arrayTrackerId[$index], 0, -1, $sort_mode, $listfields, $arrayFilterfield[$index], $filtervalue, $arrayStatus[$index]);
-		
-		$json_return = array();
-		foreach ($items['data'] as $field) {
-			$json_return[] = $field['field_values'][0]['value'];
+		$isSelected = false;
+		for ($i = 0; $i < $items["cant"]; $i++) {
+			if ($selected == $items["data"][$i]['field_values'][0]['value']) {
+				$selbool = "true,true";
+				$isSelected = true;
+			} else {
+				$selbool = "false,false";
+			}
+			echo "tracker_dynamic_options[$index][$i+1]= new Option('" . str_replace("'", "\\'", $items["data"][$i]['field_values'][0]['value']) . "','" . str_replace("'", "\\'", $items["data"][$i]['field_values'][0]['value']) . "'," . $selbool . ");\n";
 		}
-		global $access; include_once 'lib/tikiaccesslib.php';
-		$access->output_serialized($json_return);
-		
-// unused from here down in tiki 7?
-//		$isSelected = false;
-//		for ($i = 0; $i < $items["cant"]; $i++) {
-//			if ($selected == $items["data"][$i]['field_values'][0]['value']) {
-//				$selbool = "true,true";
-//				$isSelected = true;
-//			} else {
-//				$selbool = "false,false";
-//			}
-//			echo "tracker_dynamic_options[$index][$i+1]= new Option('" . str_replace("'", "\\'", $items["data"][$i]['field_values'][0]['value']) . "','" . str_replace("'", "\\'", $items["data"][$i]['field_values'][0]['value']) . "'," . $selbool . ");\n";
-//		}
-//		if ($isSelected == false && $selected != '') {
-//			echo "tracker_dynamic_options[$index][$i+1]= new Option('" . $selected . "','" . $selected . "',true,true);\n";
-//		}
+		if ($isSelected == false && $selected != '') {
+			echo "tracker_dynamic_options[$index][$i+1]= new Option('" . $selected . "','" . $selected . "',true,true);\n";
+		}
 	}
 }

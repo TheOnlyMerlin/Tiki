@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -199,7 +199,7 @@ function module_search( $mod_reference, $smod_params ) {	// modifies $smod_param
 			$smod_params['show_edit_button']   = 'n';
 			$smod_params['go_submit'] = tra("Go");
 			$smod_params['default_button'] = 'go';
-			$smod_params['title']   = tra('Search for Wiki Page');
+			$smod_params['title']   = tra('Search Wiki Page');
 			break;
 			
 		case '':

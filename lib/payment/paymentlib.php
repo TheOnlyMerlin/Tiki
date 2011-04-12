@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,9 +26,8 @@ class PaymentLib extends TikiDb_Bridge
 	}
 
 	private function get_payments( $conditions, $offset, $max, $what='' ) {
-		$mid = '`tiki_payment_requests` tpr LEFT JOIN `users_users` uu ON (uu.`userId` = tpr.`userId`)';
-		$count = 'SELECT COUNT(*) FROM ' . $mid . ' WHERE ' . $conditions;
-		$data = 'SELECT tpr.*, uu.`login` as `user` '.$what.' FROM ' . $mid . ' WHERE ' . $conditions;
+		$count = 'SELECT COUNT(*) FROM `tiki_payment_requests` WHERE ' . $conditions;
+		$data = 'SELECT tpr.*, uu.`login` as `user` '.$what.' FROM `tiki_payment_requests` tpr LEFT JOIN `users_users` uu ON (uu.`userId` = tpr.`userId`) WHERE ' . $conditions;
 
 		$all = $this->fetchAll( $data, array(), $max, $offset );
 
@@ -38,21 +37,14 @@ class PaymentLib extends TikiDb_Bridge
 		);
 	}
 
-	function get_outstanding( $offset, $max, $ofUser = '' ) {
-		$conditions = '`amount_paid` < `amount` AND NOW() <= `due_date` AND `cancel_date` IS NULL';
-		if ($ofUser) {
-			$conditions .= " AND uu.`login` = '$ofUser'";
-		}
-		return $this->get_payments( $conditions, $offset, $max );
+	function get_outstanding( $offset, $max ) {
+		return $this->get_payments( '`amount_paid` < `amount` AND NOW() <= `due_date` AND `cancel_date` IS NULL', $offset, $max );
 	}
 
-	function get_past( $offset, $max, $ofUser = '' ) {
+	function get_past( $offset, $max ) {
 		$conditions = 'tpr.`amount` <= tpr.`amount_paid` AND tpr.`cancel_date` IS NULL';
-		if ($ofUser) {
-			$conditions .= " AND uu.`login` = '$ofUser'";
-		}
-		$count = 'SELECT COUNT(*) FROM `tiki_payment_requests` tpr LEFT JOIN `users_users` uu ON (uu.`userId` = tpr.`userId`) WHERE ' . $conditions;
-		$data = 'SELECT tpr.*, uu.`login` as `user`, tp.`type`, tp.`payment_date`, tp.`details` as `payment_detail`, uup.`login` as `payer` FROM `tiki_payment_requests` tpr LEFT JOIN `users_users` uu ON (uu.`userId` = tpr.`userId`) LEFT JOIN `tiki_payment_received` tp ON (tp.`paymentRequestId`=tpr.`paymentRequestId`) LEFT JOIN `users_users` uup ON (uup.`userId` = tp.`userId`) WHERE ' . $conditions;
+		$count = 'SELECT COUNT(*) FROM `tiki_payment_requests` tpr WHERE ' . $conditions;
+		$data = 'SELECT tpr.*, uu.`login` as `user`, tp.`type`, tp.`payment_date`, tp.`details` as `payment_detail`, uup.`login` as `payer`FROM `tiki_payment_requests` tpr LEFT JOIN `users_users` uu ON (uu.`userId` = tpr.`userId`) LEFT JOIN `tiki_payment_received` tp ON (tp.`paymentRequestId`=tpr.`paymentRequestId`) LEFT JOIN `users_users` uup ON (uup.`userId` = tp.`userId`) WHERE ' . $conditions;
 
 		$all = $this->fetchAll( $data, array(), $max, $offset );
 
@@ -62,20 +54,12 @@ class PaymentLib extends TikiDb_Bridge
 		);
 	}
 
-	function get_overdue( $offset, $max, $ofUser = '' ) {
-		$conditions = '`amount_paid` < `amount` AND NOW() > `due_date` AND `cancel_date` IS NULL';
-		if ($ofUser) {
-			$conditions .= " AND uu.`login` = '$ofUser'";
-		}
-		return $this->get_payments( $conditions, $offset, $max );
+	function get_overdue( $offset, $max ) {
+		return $this->get_payments( '`amount_paid` < `amount` AND NOW() > `due_date` AND `cancel_date` IS NULL', $offset, $max );
 	}
 
-	function get_canceled( $offset, $max, $ofUser = '' ) {
-		$conditions = '`cancel_date` IS NOT NULL';
-		if ($ofUser) {
-			$conditions .= " AND uu.`login` = '$ofUser'";
-		}
-		return $this->get_payments( $conditions, $offset, $max );
+	function get_canceled( $offset, $max ) {
+		return $this->get_payments( '`cancel_date` IS NOT NULL', $offset, $max );
 	}
 
 	function cancel_payment( $id ) {
@@ -100,15 +84,6 @@ class PaymentLib extends TikiDb_Bridge
 			$info['url'] = $tikilib->tikiUrl( 'tiki-payment.php', array(
 				'invoice' => $info['paymentRequestId'],
 			) );
-			$info['returnurl'] = $info['url'];
-			// Add token if feature is activated (need prefs
-			if ($prefs['auth_token_access'] == 'y' && (!$user || isset($_SESSION['forceanon']) && $_SESSION['forceanon'] = 'y' && !Perms::get('payment', $info['paymentRequestId'])->manual_payment)) {
-				require_once('lib/wiki-plugins/wikiplugin_getaccesstoken.php');
-				$info['returnurl'] = $tikilib->tikiUrl( 'tiki-payment.php', array(
-					'invoice' => $info['paymentRequestId'],
-					'TOKEN' => wikiplugin_getaccesstoken( '', array('entry' => 'tiki-payment.php', 'keys' => array('invoice'), 'values' => array($info['paymentRequestId'])) ),
-				) );
-			} 
 			$info['paypal_ipn'] = $tikilib->tikiUrl( 'tiki-payment.php', array(
 				'ipn' => 1,
 				'invoice' => $info['paymentRequestId'],

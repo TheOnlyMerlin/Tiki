@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -164,10 +164,9 @@ function collect_files ($dir)
 				'htmlpurifier' === $file || 'adodb' === $file || 'smarty' === $file ||
 				'ezcomponents' === $file || 'phpcas' === $file || 
 				'jscalendar' === $file || 'pclzip' === $file || 'jquery' === $file ||
-				'pear' === $file || 'ckeditor' === $file ||
+				'phplayers' === $file || 'pear' === $file || 'ckeditor' === $file ||
 				'lang' === $file || 'templates_c' === $file || 'dump'  === $file || 
-				'temp' === $file || 'img' === $file || 'cache' === $file ||
-				'test' === $file || 'codemirror' === $file) {
+				'temp' === $file || 'img' === $file || 'cache' === $file) {
 			continue;
 		}
 
@@ -249,6 +248,11 @@ function formatted_print($string) {
 
 if ( $script_mode ) {
 	
+	// Needs a fake tra() when called from command line
+	function tra($msg) {
+		return $msg;
+	}
+
 	$_REQUEST = array();
 	for ( $k = 1 ; $k < $_SERVER['argc'] ; $k++ ) {
 		@list($key, $value) = explode('=', $_SERVER['argv'][$k], 2);
@@ -442,7 +446,7 @@ foreach ($languages as $ksel => $sel) {
 	if (!$nohelp && !$completion) {
 		// Good to have instructions for translators in the release file.
 		// The comments get filtered away by Smarty anyway
-		writeFile_and_User ($fw, "// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project\n");
+		writeFile_and_User ($fw, "// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project\n");
 		writeFile_and_User ($fw, "// \n");
 		writeFile_and_User ($fw, "// All Rights Reserved. See copyright.txt for details and a complete list of authors.\n");
 		writeFile_and_User ($fw, "// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.\n");
@@ -509,7 +513,7 @@ foreach ($languages as $ksel => $sel) {
 		writeFile_and_User ($fw, "// ###\n");
 		writeFile_and_User ($fw, "// ### Technical justification:\n");
 		writeFile_and_User ($fw, "// ### If a string ending with colon needs translating (like \"{tr}Login:{/tr}\")\n");
-		writeFile_and_User ($fw, "// ### then Tiki tries to translate 'Log In' and ':' separately.\n");
+		writeFile_and_User ($fw, "// ### then Tiki tries to translate 'Login' and ':' separately.\n");
 		writeFile_and_User ($fw, "// ### This allows to have only one translation for \"{tr}Login{/tr}\" and \"{tr}Login:{/tr}\"\n");
 		writeFile_and_User ($fw, "// ### and it still allows to translate \":\" as \"&nbsp;:\" for languages that\n");
 		writeFile_and_User ($fw, "// ### need it (like french)\n");
@@ -605,18 +609,14 @@ foreach ($languages as $ksel => $sel) {
 			} else {
 
 				// Handle punctuations at the end of the string (cf. comments in lib/init/tra.php)
-				// For example, if word == 'Login:', we don't keep it if we also have a string 'Log In'
-				//   (except if we already have an explicit translation for 'Log In:')
+				// For example, if word == 'Login:', we don't keep it if we also have a string 'Login'
+				//   (except if we already have an explicit translation for 'Login:')
 				//
-				$word_length = strlen($word);
-				$word_last_char = $word[$word_length - 1];
+				$word_lenght = strlen($word);
+				$word_last_char = $word[$word_lenght - 1];
 				if ( in_array($word_last_char, $punctuations) ) {
-					$word = substr($word, 0, $word_length - 1);
-					if ( isset($lang[$word]) ) {
-	               $translated[$word] = $lang[$word];
-	               unset ($unused[$word]);
-	               continue;
-					}
+					$word = substr($word, 0, $word_lenght - 1);
+					if ( isset($lang[$word]) ) continue;
 				}
 
 				if (!isset ($to_translate[$word])) {

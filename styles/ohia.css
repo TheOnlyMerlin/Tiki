@@ -31,6 +31,13 @@ body.cke_show_borders {
 	background: transparent;
 	color: #f4f4f4}
 	
+#header {
+	text-align: left;
+	background: transparent;
+	min-height: 122px;
+	position: relative;
+}
+	
 #middle {background: #222}
 
 #c1c2 #wrapper #col1 > .content {
@@ -176,23 +183,41 @@ small {font-size: .9em}
 label {margin: 0 2px}
 
 /***** Site Header & Identity *****/
+#header-top {
+	position: static;
+}
 
-#top_modules {
+#siteheader {
 	text-align: left;
 	background: transparent;
-	min-height: 122px;
-	position: relative;
+	vertical-align: middle;
+	padding: 0;
+	margin: 0;
 	background: #d40000 url(ohia/header.png) repeat-x 0 100%;
 }
 
-#top_modules .siteloginbar_popup {
+div#sioptions {
+	width: 100%;
+	margin: 0}
+
+div#sitelogo {
+	margin: auto}
+
+div#sitead {margin: auto}
+#sitead.floatright {padding-right: 100px}
+#sitead.floatleft {padding-left: 100px}
+
+#siteloginbar {padding: 6px 3px}
+
+#siteloginbar a,
+#siteloginbar a:visited {color: #f4f4f4}
+
+#siteloginbar_popup {
 	bottom: 9px;
 }
 
-.siteloginbar {padding: 6px 3px}
-
-.siteloginbar a,
-.siteloginbar a:visited {color: #f4f4f4}
+#sitelocbar {float: left}
+#customcodewith_ad {width: 400px}
 
 #sitetitle,
 #sitesubtitle {
@@ -223,7 +248,7 @@ label {margin: 0 2px}
 
 #tiki-top table {width: auto}
 
-#top_modules .box-search {
+#sitesearchbar {
 	padding: 2px;
 	text-decoration: none;
 	font: 1.1em Verdana, Helvetica, Arial, Sans-Serif;
@@ -232,7 +257,7 @@ label {margin: 0 2px}
 	border-left: 1px solid #333;
 	border-bottom: 1px solid #696969}
 	
-#top_modules .box-search sitesearchbar form {margin-right: 40px}
+#sitesearchbar form {margin-right: 40px}
 
 /****** Menus, Links ******/
 /** CSS (suckerfish) menus **/
@@ -305,6 +330,81 @@ a .sf-sub-indicator {
 	top: .2em;
 }
 
+/** PHP Layers Menus **/
+.horbar {width: 100%}
+
+.horbar table {
+	background: #030511;
+	border-right: 1px solid #696969;
+	border-bottom: 1px solid #696969}
+
+.horbaritem a,
+.horbaritem a:visited {
+	padding: 6px 3px;
+	text-decoration: none;
+	font: 1.1em Verdana, Helvetica, Arial, Sans-Serif;
+	color: #fd0006}
+
+.horbaritem a:hover {
+	background: #313131;
+	color: #eee !important;
+	text-decoration: none}
+
+.mdksubmenu {
+	background: #313131;
+	border: 1px solid #696969;
+	margin-top: 0}
+	
+.mdkitem a {
+	padding: 3px 6px;
+	font-weight: normal;
+	font-size: 1em}
+
+.mdkitem a:link {
+	font-weight: normal;
+	text-decoration: none;
+	background: #030511;
+	border: 0}
+
+.mdkitem a:visited {text-decoration: none}
+
+.mdkitem a:hover {
+	color: #f4f4f4;
+	text-decoration: none;
+	background: #030511}
+
+.treemenudiv img {background: #990000}
+
+.phplmnormal,
+a.phplmnormal:hover,
+a.phplm:link,
+a.phplm:visited,
+a.phplm:hover,
+a.phplm:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: #fd0006;
+	text-decoration: none;
+	font-weight: normal}
+
+a.phplm:visited {color: #fd0006}
+a.phplm:hover {
+	color: #f4f4f4;
+	background: 0;
+	text-decoration: underline}
+
+a.phplm:active {color: #fd0006}
+
+a.phplmselected:link,
+a.phplmselected:visited,
+a.phplmselected:hover,
+a.phplmselected:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: black;
+	text-decoration: underline;
+	font-weight: bold}
+
+a.phplmselected:hover {color: #808080}
+
 /** Links in other menus **/
 .separator a:link,
 .separator a:visited,
@@ -334,18 +434,16 @@ a.tikihelp:hover {
 	color: #fd0006;
 }
 
-/** tree **/
-.ui-icon {
-background-image:url('../lib/jquery/jquery-ui/themes/smoothness/images/ui-icons_888888_256x240.png');
-}
-
 
 /***** Boxes *****/
 /** Modules **/
 .box {
+	width: 200px;
 	text-align: left;
+	margin-left: auto;
+	margin-right: auto;
 	padding-bottom: 4px}
-	
+
 h3.box-title {
 	padding-top: 0;
 	background: #5e0000;
@@ -523,19 +621,12 @@ a.forumnameread {color: #fd0006}
 	border: solid 1px #666 !important;
 	border-bottom: 0 !important;
 	border-top-width: 2px !important;
-	position: relative;
-	top: -2px;
-}
+	position: relative; top: -2px}
 
 [class].tabactive {top: -1px}
-.tabactive a {
-	background: #5e0000;
-	color: #f4f4f4;
-}
+.tabactive a {background: #5e0000; color: #f4f4f4}
 
-.tabinactive {
-	border: solid 1px #666 !important;
-}
+.tabinactive {border: solid 1px #666 !important}
 
 .tabcontent {
 	border-color: #990000;
@@ -551,11 +642,6 @@ a.forumnameread {color: #fd0006}
 
 .tabcontent table td {padding: 5px}
 
-.statuson {
-	background: #5e0000;
-	border: 1px inset #990000;	
-}
-
 /***** Wiki *****/
 body.tiki_wiki #comments {padding: 1em}
 
@@ -566,6 +652,8 @@ h1 a.pagetitle:visited {
 
 h1 a.pagetitle:hover {
 	text-decoration: none}
+
+.wikitopline {}
 
 #description,
 .description {
@@ -600,8 +688,7 @@ h1 a.pagetitle:hover {
 #page-bar {
 	display: block;
 	margin-top: 0;
-	float: none;
-}
+	float: 0}
 
 
 #wikihelp-tab table,
@@ -739,7 +826,7 @@ li.toclevel a:hover {
 	display: block;
 	padding: 3px;
 	line-height: 150%;
-	text-transform: none;
+	text-transform: 0;
 	font-size: 90%}
 
 * html .bloginfo table {font-size: 11px}
@@ -773,11 +860,11 @@ a.blogt:hover {
 .postinfo div {margin-top: 30%}
 
 .posthead {
-	display: block;
 	text-align: left;
-	padding: 3px;
-}
+	padding: 3px}
 
+.posthead {display: block}
+	
 .posthead small {font-size: 95%}
 
 .posthead h3 {

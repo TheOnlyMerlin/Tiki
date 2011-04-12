@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -113,7 +113,7 @@ if ( $re === false ) {
 	} else {
 		// we are in the installer don't redirect...
 		return ;
-	}
+  }
 }
 
 if ( $dbversion_tiki == '1.10' ) $dbversion_tiki = '2.0';
@@ -123,7 +123,7 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 {
 	function handle( TikiDb $db, $query, $values, $result ) // {{{
 	{
-		global $smarty, $prefs;
+		global $smarty, $prefs, $ajaxlib;
 
 		$msg = $db->getErrorMessage();
 		$q=$query;
@@ -170,6 +170,22 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 
 			header("Cache-Control: no-cache, pre-check=0, post-check=0");
 
+			if ($prefs['ajax_xajax'] === 'y') {
+				global $ajaxlib;
+				include_once('lib/ajax/xajax/xajax_core/xajaxAIO.inc.php');
+				if ($ajaxlib && $ajaxlib->canProcessRequest()) {
+					// this was a xajax request -> return a xajax answer
+					$page = $smarty->fetch( 'database-connection-error.tpl' );
+					$objResponse = new xajaxResponse();
+					$page=addslashes(str_replace(array("\n", "\r"), array(' ', ' '), $page));
+					$objResponse->script("bugwin=window.open('', 'tikierror', 'width=760,height=500,scrollbars=1,resizable=1');".
+							"bugwin.document.write('$page');");
+					echo $objResponse->getOutput();
+					$this->log($msg.' - '.$q);
+					die();
+				}
+			}
+
 			$smarty->display('database-connection-error.tpl');
 			unset($_SESSION['fatal_error']);
 			$this->log($msg.' - '.$q);
@@ -184,7 +200,7 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 }
 
 $dbInitializer = 'db/tiki-db-adodb.php';
-if ($api_tiki == 'pdo' && extension_loaded("pdo") && in_array('mysql', PDO::getAvailableDrivers())) {
+if (extension_loaded("pdo") and $api_tiki == 'pdo' ) {
 	$dbInitializer = 'db/tiki-db-pdo.php';
 }
 

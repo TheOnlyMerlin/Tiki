@@ -1,3 +1,4 @@
+{* $Id$ *}
 {assign var=nlId_urlencoded value=$nlId|urlencode}
 {title url="tiki-admin_newsletter_subscriptions.php?nlId=$nlId_urlencoded"}{tr}Admin newsletter subscriptions{/tr}{/title}
 
@@ -38,8 +39,8 @@
 		{cycle values="odd,even" print=false}
 		{section name=ix loop=$groups_g}
 			<tr class="{cycle}">
-				<td class="text">{$groups_g[ix].groupName|escape}</td>
-				<td class="action">
+				<td>{$groups_g[ix].groupName|escape}</td>
+				<td>
 					<a class="link" href="tiki-admin_newsletter_subscriptions.php?nlId={$nlId|urlencode}&amp;offset={$offset|urlencode}&amp;sort_mode={$sort_mode|urlencode}&amp;remove={$groups_g[ix].nlId|urlencode}&amp;group={$groups_g[ix].groupName|urlencode}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 				</td>
 			</tr>
@@ -60,10 +61,10 @@
 		{cycle values="odd,even" print=false}
 		{foreach key=incId item=incName from=$included_n}
 			<tr class="{cycle}">
-				<td class="text">
+				<td>
 					<a href="tiki-admin_newsletter_subscriptions.php?nlId={$incId|urlencode}">{$incName|escape}</a>
 				</td>
-				<td class="action">
+				<td>
 					<a class="link" href="tiki-admin_newsletter_subscriptions.php?nlId={$nlId|urlencode}&amp;offset={$offset|urlencode}&amp;sort_mode={$sort_mode|urlencode}&amp;remove={$nlId|urlencode}&amp;included={$incId|urlencode}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 				</td>
 			</tr>
@@ -84,10 +85,10 @@
 		{cycle values="odd,even" print=false}
 		{section name=ix loop=$pages}
 			<tr class="{cycle}">
-				<td class="text"><a href="{$pages[ix].wikiPageName|sefurl}">{$pages[ix].wikiPageName|escape}</a></td>
-				<td class="text">{$pages[ix].validateAddrs|escape}</td>
-				<td class="text">{$pages[ix].addToList|escape}</td>
-				<td class="action">
+				<td><a href="{$pages[ix].wikiPageName|sefurl}">{$pages[ix].wikiPageName|escape}</a></td>
+				<td>{$pages[ix].validateAddrs|escape}</td>
+				<td>{$pages[ix].addToList|escape}</td>
+				<td>
 					<a class="link" href="tiki-admin_newsletter_subscriptions.php?nlId={$nlId|urlencode}&amp;remove={$pages[ix].nlId|urlencode}&amp;page={$pages[ix].wikiPageName|urlencode}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 				</td>
 			</tr>
@@ -119,32 +120,28 @@
 	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
 		<tr class="{cycle}">
-			<td class="checkbox">
-				<input type="checkbox" name="checked[]" value="{$channels[user].code}" {if $smarty.request.checked and in_array($channels[user].code, $smarty.request.checked)}checked="checked"{/if} />
+			<td style="text-align:center">
+				<input type="checkbox" name="checked[]" value="{$channels[user].code}" {if $smarty.request.checked and in_array($channels[user].code, $smarty.request.checked) }checked="checked"{/if} />
 			</td>
-			<td class="username">
+			<td>
 				{if $channels[user].isUser == "y"}
 					{$channels[user].email|userlink}
 				{else}
 					{$channels[user].email|escape}
 				{/if}
 			</td>
-			<td class="text">
+			<td>
 				{if $channels[user].valid == "n"}
 					<a class="link" href="tiki-admin_newsletter_subscriptions.php?nlId={$nlId|urlencode}&amp;offset={$offset|urlencode}&amp;sort_mode={$sort_mode|urlencode}&amp;valid={$channels[user].nlId|urlencode}&amp;{if $channels[user].isUser eq "y"}user{else}email{/if}={$channels[user].email|escape:"url"}" title="{tr}Valid{/tr}">{tr}No{/tr}</a>
-				{elseif $channels[user].valid == "x"}
-					{tr}Unsubscribed{/tr}
 				{else}
 					{tr}Yes{/tr}
 				{/if}
 			</td>
-			<td class="date">{$channels[user].subscribed|tiki_short_datetime}</td>
-			<td class="action">
+			<td>{$channels[user].subscribed|tiki_short_datetime}</td>
+			<td>
 				<a class="link" href="tiki-admin_newsletter_subscriptions.php?nlId={$nlId|urlencode}&amp;offset={$offset|urlencode}&amp;sort_mode={$sort_mode|urlencode}&amp;remove={$channels[user].nlId|urlencode}&amp;{if $channels[user].isUser eq "y"}subuser{else}email{/if}={$channels[user].email|escape:"url"}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 			</td>
 		</tr>
-	{sectionelse}
-         {norecords _colspan=5}
 	{/section}
 </table>
 
@@ -321,7 +318,7 @@
 					{/section}
 				</select>
 				<br />
-				<i>{tr}Including group, group users and emails will be refreshed at each newsletter sending{/tr}</i>
+				<i>{tr}Included group, group users and emails will be refreshed at each newsletter sending{/tr}</i>
 			</td>
 		</tr>
 		<tr>
@@ -368,7 +365,7 @@
 				<input type="text" name="wikiPageName" value="" size="60" />
 				<br />
 				<i>{tr}Emails on a wiki page which will be added at each newsletter sending, one e-mail per line{/tr}</i>
-				{autocomplete element='input[name=wikiPageName]' type='pagename'}
+				{jq}$("input[name=wikiPageName]").tiki("autocomplete", "pagename");{/jq}
 			</td>
 		</tr>
 		<tr>

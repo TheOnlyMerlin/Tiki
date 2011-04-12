@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,7 +30,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  * @param html|htmlall|url|quotes|hex|hexentity|javascript
  * @return string
  */
-function smarty_modifier_escape($string, $esc_type = 'html', $char_set = 'UTF-8')
+function smarty_modifier_escape($string, $esc_type = 'html', $char_set = 'ISO-8859-1')
 {
     switch ($esc_type) {
         case 'html':
@@ -101,9 +101,6 @@ function smarty_modifier_escape($string, $esc_type = 'html', $char_set = 'UTF-8'
                }
            }
            return $_res;
-
-        case 'unescape':
-            return rawurldecode($string);
 
         default:
             return $string;

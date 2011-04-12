@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,13 +38,16 @@ class UserPrefsLib extends TikiLib
 
 	function set_file_gallery_image($u, $filename, $size, $type, $data) {
 		global $prefs, $tikilib;
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib;
+		if (!is_object($filegallib)) {
+				require_once( 'lib/filegals/filegallib.php' );
+		}
 		if (!$prefs["user_picture_gallery_id"]) {
 			return false;
 		}
 		if ($user_image_id = $tikilib->get_user_preference($u, 'user_fg_image_id')) {
 			$didFileReplace = false;
-			$gal_info = $filegallib->get_file_gallery($prefs["user_picture_gallery_id"]);
+			$gal_info = $tikilib->get_file_gallery($prefs["user_picture_gallery_id"]);
 			$filegallib->replace_file($user_image_id, $u, $u, $filename, $data, $size, $type, $u, '', '', $gal_info, $didFileReplace);	
 		} else {
 			$user_image_id = $filegallib->insert_file($prefs["user_picture_gallery_id"], $u, $u, $filename, $data, $size, $type, $u, '', '', '');
@@ -55,7 +58,10 @@ class UserPrefsLib extends TikiLib
 	
 	function remove_file_gallery_image($u) {
 		global $prefs, $tikilib;
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib;
+		if (!is_object($filegallib)) {
+				require_once( 'lib/filegals/filegallib.php' );
+		}
 		if ($user_image_id = $tikilib->get_user_preference($u, 'user_fg_image_id')) {
 			$file_info = $filegallib->get_file_info($user_image_id, false, false);
 			$filegallib->remove_file($file_info, '', true); 
@@ -103,16 +109,6 @@ class UserPrefsLib extends TikiLib
 		} else {
 			return(NULL);
 		}
-	}
-	
-	function get_user_clock_pref($user) {
-		global $prefs; global $tikilib;
-		$userclock = $tikilib->get_user_preference($user, 'display_12hr_clock');
-		$use_24hr_clock = true;
-		if ((isset($userclock) && $userclock == 'y') || (!isset($userclock) && $prefs['users_prefs_display_12hr_clock'] == 'y')) {
-			$use_24hr_clock = false;
-		}
-		return $use_24hr_clock;
 	}
 }
 $userprefslib = new UserPrefsLib;

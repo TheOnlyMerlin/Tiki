@@ -1,3 +1,4 @@
+{* $Id$ *}
 {* Note: if you edit this file, make sure to make corresponding edits on tiki-edit_submission.tpl*}
 
 {include file='tiki-articles-js.tpl'}
@@ -137,16 +138,6 @@
 				</select>
 			</td>
 		</tr>
-		{if $prefs.geo_locate_article eq 'y'}
-			<tr>
-				<td>{tr}Location{/tr}</td>
-				<td>
-					{$headerlib->add_map()}
-					<div class="map-container" data-target-field="geolocation" style="height: 250px; width: 250px;"></div>
-					<input type="hidden" name="geolocation" value="{$geolocation_string}" />
-				</td>
-			</tr>
-		{/if}
 		<tr id='show_image_1' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Own Image{/tr}</td>
 			<td>
@@ -253,7 +244,7 @@
 				{html_select_date prefix="publish_" time=$publishDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order}
 				{tr}at{/tr}
 				<span dir="ltr">
-					{html_select_time prefix="publish_" time=$publishDateSite display_seconds=false use_24_hours=$use_24hr_clock}
+					{html_select_time prefix="publish_" time=$publishDateSite display_seconds=false}
 					&nbsp;
 					{$siteTimeZone}
 				</span>
@@ -266,7 +257,7 @@
 				{html_select_date prefix="expire_" time=$expireDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order}
 				{tr}at{/tr} 
 				<span dir="ltr">
-					{html_select_time prefix="expire_" time=$expireDateSite display_seconds=false use_24_hours=$use_24hr_clock}
+					{html_select_time prefix="expire_" time=$expireDateSite display_seconds=false}
 					&nbsp;
 					{$siteTimeZone}
 				</span>
@@ -306,7 +297,7 @@
 			{assign var='attfullname' value=$att.itemId}
 			<tr id={$attid} {if $types.$type.$attid eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 				<td>{$attname|escape}</td>
-				<td><input type="text" name="{$attfullname}" value="{$article_attributes.$attfullname|escape}" size="60" maxlength="255" /></td>
+				<td><input type="text" name="{$attfullname}" value="{$article_attributes.$attfullname|escape}" size="60" /></td>
 			</tr>
 			{/foreach}
 		{/if}

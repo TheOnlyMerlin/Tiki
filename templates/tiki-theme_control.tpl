@@ -1,7 +1,7 @@
 {title help="Theme+Control"}{tr}Theme Control Center: Categories{/tr}{/title}
 
 {remarksbox type="notice" title="{tr}Notice{/tr}"}
-<b>{tr}Theme is selected as follows:{/tr}</b><br />
+<b>{tr}Theme is selected as follows{/tr}:</b><br />
 1. {tr}If a theme is assigned to the individual object that theme is used.{/tr}<br />
 2. {tr}If not then if a theme is assigned to the object's category that theme is used{/tr}<br />
 3. {tr}If not then a theme for the section is used{/tr}<br />
@@ -28,7 +28,7 @@
 				<select name="categId">
 					{section name=ix loop=$categories}
 						<option value="{$categories[ix].categId|escape}" {if $categId eq $categories[ix].categId}selected="selected"{/if}>
-							{$categories[ix].name|escape} ({$categories[ix].categId})
+							{$categories[ix].name} ({$categories[ix].categId})
 						</option>
 					{/section}
 				</select>
@@ -77,11 +77,11 @@
 	{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
 			<tr class="{cycle}">
-				<td class="checkbox">
+				<td>
 					<input type="checkbox" name="categ[{$channels[user].categId}]" />
 				</td>
-				<td class="text">{$channels[user].name|escape} ({$channels[user].categId})</td>
-				<td class="text">{$channels[user].theme}</td>
+				<td>{$channels[user].name} ({$channels[user].categId})</td>
+				<td>{$channels[user].theme}</td>
 			</tr>
 		{/section}
 	</table>

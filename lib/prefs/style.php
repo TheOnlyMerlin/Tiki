@@ -1,22 +1,20 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_style_list($partial = false) {
+function prefs_style_list() {
 	global $tikilib, $prefs;
 
 	$style_options = array(
 		'' => tra('None'),
 	);
-	if (! $partial) {
-		$list = $tikilib->list_style_options($prefs['site_style']);
-		if (!empty($list)) {
-			foreach ($list as $opt) {
-				$style_options[$opt] = $opt;
-			}
+	$list = $tikilib->list_style_options($prefs['site_style']);
+	if (!empty($list)) {
+		foreach ($list as $opt) {
+			$style_options[$opt] = $opt;
 		}
 	}
 
@@ -36,7 +34,6 @@ function prefs_style_list($partial = false) {
 			'help' => 'Theme options',
 			'description' => tra('Style options'),
 			'options' => $style_options,
-			'default' => '',
 		),
 	);	
 }

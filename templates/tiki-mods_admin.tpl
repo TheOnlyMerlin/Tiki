@@ -1,4 +1,5 @@
-{title help="mods"}{tr}Tiki Mods Configuration{/tr}{/title}
+{* $Id$ *}
+{title help="mods"}{tr}Tikiwiki Mods Configuration{/tr}{/title}
 
 <div class="navbar">
 	{button href="tiki-mods.php" _text="{tr}Mods Install/uninstall{/tr}"}

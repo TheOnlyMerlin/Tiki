@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -92,49 +92,29 @@ $error = '';
 
 if (!$skip) {
 	if ( isset($_REQUEST['fileId']) && !is_array($_REQUEST['fileId'])) {
-		if (isset($_GET['draft'])) {
-			$info = $filegallib->get_file_draft($_REQUEST['fileId']);
-		} else {
-			$info = $filegallib->get_file($_REQUEST['fileId']);
-		}
+		$info = $tikilib->get_file($_REQUEST['fileId']);
 	} elseif ( isset($_REQUEST['galleryId']) && isset($_REQUEST['name']) ) {
-		$info = $filegallib->get_file_by_name($_REQUEST['galleryId'], $_REQUEST['name']);
+		$info = $tikilib->get_file_by_name($_REQUEST['galleryId'], $_REQUEST['name']);
 	} elseif ( isset($_REQUEST['fileId']) && is_array($_REQUEST['fileId'])) {
 		$info = $filegallib->zip($_REQUEST['fileId'], $error);
 		$zip = true;
 	} elseif ( !empty($_REQUEST['randomGalleryId'])) {
-		$info =  $filegallib->get_file(0, $_REQUEST['randomGalleryId']);
+		$info =  $tikilib->get_file(0, $_REQUEST['randomGalleryId']);
 	} else {
 		$smarty->assign('msg', tra('Incorrect param'));
 		$smarty->display('error.tpl');
 		die;
 	}
 	if ( ! is_array($info) ) {
-		$smarty->assign('errortype', 404);
 		$smarty->assign('msg', tra('Incorrect param').' '.tra($error));
-		$smarty->assign('file_error', tra('Error: this file has been deleted'));
 		$smarty->display('error.tpl');
 		die;
 	}
-
-	if ( $prefs['auth_tokens'] == 'n' || !$is_token_access ) {
-		// Check permissions except if the user comes with a valid Token
-
-		if ( !$zip && $tiki_p_admin_file_galleries != 'y' && !$userlib->user_has_perm_on_object($user, $info['galleryId'], 'file gallery', 'tiki_p_download_files') && !($info['backlinkPerms'] == 'y' && !$filegallib->hasOnlyPrivateBacklinks($info['fileId']))) {
-			$smarty->assign('errortype', 401);
-			$smarty->assign('msg', tra('Permission denied'));
-			$smarty->display('error.tpl');
-			die;
-		}
-		if ( isset($_GET['thumbnail']) && is_numeric($_GET['thumbnail'])) { //check also perms on thumb 
-			$info_thumb = $filegallib->get_file($_GET['thumbnail']);
-			if ( !$zip && $tiki_p_admin_file_galleries != 'y' && !$userlib->user_has_perm_on_object($user, $info_thumb['galleryId'], 'file gallery', 'tiki_p_download_files') && !($info['backlinkPerms'] == 'y' && !$filegallib->hasOnlyPrivateBacklinks($info_thumb['fileId']))) {
-				$smarty->assign('errortype', 401);
-				$smarty->assign('msg', tra('Permission denied'));
-				$smarty->display('error.tpl');
-				die;
-			}
-		}
+	if ( !$zip && $tiki_p_admin_file_galleries != 'y' && !$userlib->user_has_perm_on_object($user, $info['galleryId'], 'file gallery', 'tiki_p_download_files') && !($info['backlinkPerms'] == 'y' && !$filegallib->hasOnlyPrivateBacklinks($info['fileId']))) {
+		$smarty->assign('errortype', 401);
+		$smarty->assign('msg', tra('Permission denied'));
+		$smarty->display('error.tpl');
+		die;
 	}
 }
 
@@ -142,8 +122,7 @@ if (!$skip) {
 if ( ! isset($_GET['thumbnail']) && ! isset($_GET['icon']) ) {
 
 	require_once('lib/stats/statslib.php');
-	$filegallib = TikiLib::lib('filegal');
-	if( ! $filegallib->add_file_hit($info['fileId']) )	{
+	if( ! $tikilib->add_file_hit($info['fileId']) )	{
 		$smarty->assign('msg', tra('You cannot download this file right now. Your score is low or file limit was reached.'));
 		$smarty->display('error.tpl');
 		die;
@@ -189,9 +168,6 @@ if ( ! empty($info['path']) )  {
 			: $info['hash'];
 	} else {
 		// File missing or not readable
-		header("HTTP/1.0 404 Not Found");
-		header('Content-Type: text/plain');		
-		echo "Unable to access file: " . ($tiki_p_admin == 'y' ? $filepath : $info['path']);
 		die;
 	}
 } elseif ( ! empty($content) ) {
@@ -274,14 +250,14 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 	if ($build_content) {
 
 		// Modify the original image if needed
-		if ( ! isset($_GET['display']) || isset($_GET['x']) || isset($_GET['y']) || isset($_GET['scale']) || isset($_GET['max']) || isset($_GET['format']) || isset($_GET['thumbnail']) ) {
+		if ( ! isset($_GET['display']) || isset($_GET['x']) || isset($_GET['y']) || isset($_GET['scale']) || isset($_GET['max']) || isset($_GET['format']) ) {
 	
 			require_once('lib/images/images.php');
 			if (!class_exists('Image')) die();
 	
 			$content_changed = true;
 			$format = substr($info['filename'], strrpos($info['filename'], '.') + 1);
-	
+
 			// Fallback to an icon if the format is not supported
 			if ( ! Image::is_supported($format) ) {
 				$_GET['icon'] = 'y';
@@ -310,10 +286,10 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 				}
 		
 				if ( ! isset($_GET['icon']) || ( isset($_GET['format']) && $_GET['format'] != $format ) ) {
-					if ( ! empty($info['path']) ) {
+	  				if ( ! empty($info['path']) ) {
 						$image = new Image($prefs['fgal_use_dir'].$info['path'], true);
 					} else {
-						$image = new Image($content, false, $format);
+						$image = new Image($content);
 						$content = null; // Explicitely free memory before getting cache
 					}
 					if ( $image->is_empty() ) die;
@@ -336,18 +312,6 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 					}
 					// We resize to a thumbnail size if needed
 					elseif ( isset($_GET['thumbnail']) ) {
-						if (is_numeric($_GET['thumbnail'])) {
-							if (empty($info_thumb)) {
-								$info_thumb = $filegallib->get_file($_GET['thumbnail']);
-							}
-							if ( ! empty($info_thumb['path']) ) {
-								$image = new Image($prefs['fgal_use_dir'].$info_thumb['path'], true);
-							} else {
-								$image = new Image($info_thumb['data']);
-								$content = null; // Explicitely free memory before getting cache
-							}
-							if ( $image->is_empty() ) die;
-						}
 						$image->resizethumb();
 					}
 					// We resize to a preview size if needed

@@ -1,7 +1,6 @@
-/*	Strasa theme for Tiki, original design by Patrick Allard, released under LGPL license.
-	For more information, visit http://themes.tiki.org
-	Adapted for Tiki 7.x
-	$Id$ */
+/* Strasa theme for Tiki 5.x, original design by Patrick Allard, released under LGPL license.
+   For more information, visit http://themes.tiki.org
+   $Id$ */
 
 /* Import *lite as the base: */
 @import url("lite/lite.css");
@@ -65,73 +64,18 @@ h6 {
 	font-size: 1.05em;
 }
 
-.wikitext h1 {
-	color: #000;
-	line-height: .9em;
-}
+.wikitext h1 {color: #000; line-height: .9em;}
+.wikitext h2 {color: #309FC0; line-height: .9em; border-bottom: solid 1px #3090C0; text-transform: uppercase}
+.wikitext h3 {color: #303030; line-height: .8em; font-style: italic}
+.wikitext h4 {border-bottom: dashed 1px #CCF0FF; color: #3F3F3F}
+.wikitext h5 {color: #6F6F6F; font-style: italic}
+.wikitext h6 {color: #909090}
 
-.wikitext h2 {
-	color: #309FC0;
-	line-height: .9em;
-	border-bottom: solid 1px #3090C0;
-	text-transform: uppercase;
-}
-
-.wikitext h3 {
-	color: #303030;
-	line-height: .8em; 
-	font-style: italic;
-}
-
-.wikitext h4 {
-	border-bottom: dashed 1px #CCF0FF;
-	color: #3F3F3F;
-}
-
-.wikitext h5 {
-	color: #6F6F6F;
-	font-style: italic;
-}
-
-.wikitext h6 {
-	color: #909090;
-}
-
-.wikitext.nopagetitle h1 {
-	font-size: 1.8em;
-	color: #309FC0;
-	line-height: .9em;
-	border-bottom: solid 1px #3090C0;
-	text-transform: uppercase;
-}
-
-.wikitext.nopagetitle h2 {
-	font-size: 1.6em;
-	color: #303030; 
-	line-height: .8em;
-	font-style: italic;
-	border-bottom: none;
-	text-transform: none;
-}
-
-.wikitext.nopagetitle h3 {
-	font-size: 1.4em;
-	border-bottom: dashed 1px #CCF0FF;
-	color: #3F3F3F;
-	font-style: normal;
-}
-
-.wikitext.nopagetitle h4 {
-	font-size: 1.2em;
-	color: #6F6F6F;
-	font-style: italic;
-	border-bottom: none;
-}
-
-.wikitext.nopagetitle h5 {
-	font-size: 1.05em;
-	color: #909090;
-}
+.wikitext.nopagetitle h1 {font-size: 1.8em; color: #309FC0; line-height: .9em; border-bottom: solid 1px #3090C0; text-transform: uppercase}
+.wikitext.nopagetitle h2 {font-size: 1.6em; color: #303030; line-height: .8em; font-style: italic; border-bottom: none; text-transform: none}
+.wikitext.nopagetitle h3 {font-size: 1.4em; border-bottom: dashed 1px #CCF0FF; color: #3F3F3F; font-style: normal}
+.wikitext.nopagetitle h4 {font-size: 1.2em; color: #6F6F6F; font-style: italic; border-bottom: none;}
+.wikitext.nopagetitle h5 {font-size: 1.05em; color: #909090}
 
 hr {
 	background: #aaa;
@@ -185,18 +129,14 @@ input[type=password] {
 	width: 110px;
 }
 
-#header .box-search {
-	position: absolute;
-	top: 45px;
-	right: 20px;
-}
-#header .box-search input.ac_input {
+	
+input#search {
 	background: #E7F8FD;
 	border: 1px solid #3CF;
 	color: #517298;
-/*	height: 16px;
+	height: 16px;
 	margin-right: 10px;
-	width: 160px;*/
+	width: 160px;
 }
 
 input#comments-title {
@@ -270,7 +210,8 @@ label {
 	color: #000;
 }
 
-/*** override lite.css ***/
+/*** Type 1 (*litecss-based) layout 
+	(overrides lite.css) ***/
 #main {
 	text-align: left;
 }
@@ -332,23 +273,24 @@ label {
 
 #footer {
 	text-align: center;
-}
-
-.footerbgtrap {
-	height: 20%;
 	font-size: .9em;
 	color: #999;
 	background: #2e3035;
 }
 
+.footerbgtrap {
+	height: 20%;
+}
+
 /* Theme-specific custom footer code */
-#bottom_modules {
+#custom_site_footer {
+	width: 100%;
 	margin-right: auto;
 	margin-left: auto;
 	text-align: center;
 	color: #999;
 }
-/*
+
 .fcol1,
 .fcol2,
 .fcol3 {
@@ -360,15 +302,17 @@ label {
 	padding-top: 30px;
 	padding-bottom: 30px;
 }
-*/
-#bottom_modules li {
+
+.fcol1 ul li,
+.fcol2 ul li,
+.fcol3 ul li {
 	border-bottom: 1px solid #666;
 	padding: 4px 0;
 	list-style: none;
 	margin: 0;
 }
 
-#bottom_modules .box-title {
+.titlefooter{
 	color: #fff;
 	float: left;
 	margin-top: 15px;
@@ -376,6 +320,14 @@ label {
 	letter-spacing: 0.5px;
 	text-transform: uppercase;
 	font: normal 1.2em Arial, Helvetica, sans-serif;
+}
+
+.fcol1 img,
+.fcol2 img,
+.fcol3 img{
+	margin-left: 34px;
+	margin-bottom: 6px;
+	float: left;
 }
 
 #footer a,
@@ -400,20 +352,31 @@ label {
 }
 
 /* Site Header & Identity */
-
-/* Enable header and footer content to widen when middle has wide content. */ 
-body.fixed_width .fixedwidth .fixedwidth {
-	width: 100%;
-	padding: 0;
-}
-
-#header_container {
+#header-top {
 	color: #fff;
 	background: #214d68 url(strasa/headerbg.jpg) repeat-x 0 100%;
 }
 
-#top_modules {
-	min-height: 121px;
+#siteheader {
+	background: #fff;
+}
+
+#customcode,
+#customcodewith_ad {
+	width: auto;
+}
+
+#topbar_custom_code {
+	margin: 0 58px;
+}
+
+#sioptions {
+	padding: 0 58px;
+	position: relative;
+}
+
+#sioptionscentered {
+	text-align: center;
 }
 
 #sitelogo {
@@ -421,53 +384,57 @@ body.fixed_width .fixedwidth .fixedwidth {
 	overflow: hidden;
 }
 
-.siteloginbar {
-	position: absolute;
-	bottom: -24px;
-	right: 0;
+#sitead.floatright {
+	padding-right: 100px;
+}
+
+#sitead.floatleft {
+	padding-left: 100px;
+}
+
+#customcode.floatright {
+	margin-top: 30px;
+	margin-right: 120px;
+}
+
+#siteloginbar {
+	position: static;
+	float: right;
 	height: 24px;
-	/*width: 600px;*/
 	line-height: 24px;
 	padding-left: 60px;
-	padding-right: 10px;
 	color: #fff;
 	background: #fff url(strasa/login.jpg) 0 0 no-repeat;
 }
 
-.logged-in {
-	width: 120px;
-	padding-right: 20px;
-}
-
-.siteloginbar label,
-.siteloginbar a,
-.siteloginbar a:visited,
-.siteloginbar a:hover {
+#siteloginbar a,
+#siteloginbar a:visited,
+#siteloginbar a:hover {
 	color: #fff;
 	text-decoration: none;
 }
 
-.siteloginbar input[type="text"],
-.siteloginbar input[type="password"] {
+#sl-login-user,
+#sl-login-pass {
 	background: transparent; /*#1b98c6*/
 	color: #fff;
 	border: solid 1px #fff;
 	width: 8em !important;
 }
 
-.siteloginbar #pass {
+#siteloginbar #pass {
 	float: right;
 	padding-left: 5px;
 }
 
-.siteloginbar .rme,
-.siteloginbar .pass {
+#siteloginbar .rme,
+#siteloginbar .pass {
 	display: inline;
 	margin-left: 1em;
 	padding-right: 10px;
 }
 
-.siteloginbar .register {
+#siteloginbar .register {
 	float: right;
 	height: 24px !important;
 	line-height: 22px;
@@ -478,13 +445,17 @@ body.fixed_width .fixedwidth .fixedwidth {
 	background: url(strasa/register.jpg) no-repeat;
 }
 
-.siteloginbar input.wikiaction {
+#siteloginbar input.wikiaction {
 	border: 0;
 	margin-left: .7em;
 	color: #5ae0ff;
 	font-size: 90%;
 	background: #204c65;
 	font-weight: normal;
+}
+
+.logged-in {
+	padding-right: 20px;
 }
 
 #sitelocbar {
@@ -561,6 +532,10 @@ body.fixed_width .fixedwidth .fixedwidth {
 	z-index: 10;
 }
 
+#topbar_custom_code {
+	background: inherit;
+}
+
 /* centercolumn */
 
 a.flip,
@@ -633,6 +608,114 @@ a.flip:hover {
 }
 
 /****** Menus ******/
+/** PHP Layers Menus **/
+.horbar {
+	position: absolute;
+	z-index: 0;
+	top: 10px;
+	left: 100%;
+	margin: 0 0 0 -50%;
+	white-space: nowrap;
+}
+
+.horbaritem a,
+.horbaritem a:visited {
+	padding: 3px 3px 6px 3px;
+	text-decoration: none;
+	font: normal 1em Verdana, Helvetica, Arial, Sans-Serif;
+	margin: 0;
+	border-color: transparent;
+	border-style: solid;
+	border-width: 0 1px;
+	color: #5ae0ff;
+	text-align: center;
+}
+
+.horbaritem a:hover {
+	text-decoration: none;
+	background: url(strasa/headermenuitem-hover.png) bottom center repeat-x;
+	border-color: #336699;
+	border-style: solid;
+	border-width: 0 1px;
+	color: #fff;
+}
+
+.mdksubmenu {
+	margin-top: 3px;
+}
+	
+.mdksubframe {
+	border: 1px solid #08698f;
+	background: #1b3a50;
+}
+
+.mdkitem a,
+.mdkitem a:link,
+.mdkitem a:visited {
+	color: #5ae0ff;
+	padding: 2px 3px;
+	font-weight: normal;
+	text-decoration: none;
+}
+ 
+.mdkitem a:hover {
+	background: transparent url(strasa/headerbg.jpg) repeat-x;
+	color: #fff;
+	text-decoration: none;
+}
+ 
+#col2 .mdkitem a {
+	color: #006699;
+}
+
+#col2 .mdkitem a:hover {
+	color: #000;
+}
+
+#col2 .treemenudiv {
+	background: #cce5ff;
+}
+
+.phplmnormal,
+a.phplmnormal:hover,
+a.phplm:link,
+a.phplm:visited,
+a.phplm:hover,
+a.phplm:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: #006699;
+	text-decoration: none;
+	font-weight: normal;
+}
+
+a.phplm:visited {
+	color: #006699;
+}
+
+a.phplm:hover {
+	color: #000;
+	background: none;
+	text-decoration: underline;
+}
+
+a.phplm:active {
+	color: #006699;
+}
+
+a.phplmselected:link,
+a.phplmselected:visited,
+a.phplmselected:hover,
+a.phplmselected:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: black;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+a.phplmselected:hover {
+	color: #808080;
+}
+
 /** CSS (suckerfish) menus **/
 
 /* default link padding */
@@ -1015,7 +1098,7 @@ th,
 	color: #5ae0ff;
 	background: #1b3a50;
 	min-height: 32px;
-	text-align: center;
+	#text-align: center;
 }
 
 th a:link,
@@ -1137,12 +1220,6 @@ a.forumnameread {
 
 .admin #content1 .tabcontent .cbox {
 	background: transparent;
-}
-
-.statuson {
-	background: #1d9ccf;
-	border: 1px inset #223845;
-
 }
 
 /*** Feature-specific selectors ***/
@@ -1408,7 +1485,6 @@ body.tiki_blogs .postbody-title {
 	min-width: 100%; /* IE7 */
 	min-height: 46px;
 	border: 0;
-	color: #fff;
 }
 
 body.tiki_blogs .postbody-title img {
@@ -1450,6 +1526,11 @@ body.tiki_blogs .author_info img {
 	vertical-align: top;
 }
 
+body.tiki_blogs .postbody-title {
+	border: 0;
+	color: #fff;
+}
+	
 body.tiki_blogs .postbody .postfooter {
 	width: 100%;
 }
@@ -1806,6 +1887,10 @@ body.tiki_blogs .post .author_actions {
 	background: #cce5ff;
 }
 
+.calfocuson {
+	font-size: 100%;
+}
+
 .calprio1 a,
 .calprio2 a,
 .calprio3 a,
@@ -2143,16 +2228,8 @@ body.fixed_width #col3 .content {
 	margin-right: 0;
 }
 
-body.fixed_width #outer_wrapper {
-	border: 1px solid #2E3035;
-	/*margin-top: 18px;
-	margin-bottom: 5px;*/
-}
+body.fixed_width #main[id] {border:1px solid #2E3035; margin-top: 18px; margin-bottom: 5px;}
 
-/* can't seem to get the border working - jb
-body.fixed_width #main {
-	border: 1px solid #2E3035;
-	margin-top: 0;
-}*/
+
 
 /* end of file */

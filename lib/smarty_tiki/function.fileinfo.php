@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,10 +21,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  */
 function smarty_function_fileinfo($params, &$smarty) {
 	if ( ! is_array($params) || ! isset($params['_id']) || ! isset($params['_field']) ) return;
-	$filegallib = TikiLib::lib('filegal');
+	global $tikilib;
 	$params['_id'] = (int)$params['_id'];
 
-	$infos = $filegallib->get_file($params['_id']);
+	$infos = $tikilib->get_file($params['_id']);
 
 	if ( isset($infos[$params['_field']]) && $infos[$params['_field']] != '' ) {
 		$return = $infos[$params['_field']];

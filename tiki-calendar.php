@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -224,7 +224,7 @@ for ($i = 0; $i <= $numberofweeks; $i++) {
 	$registeredIndexes = array();
 	foreach ($weekdays as $w) {
 		$leday = array();
-		if ($calendarViewMode['casedefault'] == 'day') {
+		if ($calendarViewMode == 'day') {
 			$dday = $daystart;
 		} else {
 			$dday = $curtikidate->getTime();
@@ -238,7 +238,7 @@ for ($i = 0; $i <= $numberofweeks; $i++) {
 
 		$cell[$i][$w]['day'] = $dday;
 
-		if ($calendarViewMode['casedefault'] == 'day' or ($dday>=$daystart && $dday<=$dayend)) {
+		if ($calendarViewMode == 'day' or ($dday>=$daystart && $dday<=$dayend)) {
 			if (!$firstDay) {
 				$firstDay = true;
 				$smarty->assign('currMonth',$dday);
@@ -255,10 +255,10 @@ for ($i = 0; $i <= $numberofweeks; $i++) {
 
 			foreach ($listevents["$dday"] as $le) {
 				$nbDaysLeftThisWeek = min(ceil(($le['endTimeStamp'] - $dday)/86400),(7-$w));
-				if ($calendarViewMode['casedefault'] == 'month') {
+				if ($calendarViewMode == 'month') {
 					$endOfCurrentMonth = $tikilib->make_time(23,59,59,TikiLib::date_format('m',$dday) + 1,0,TikiLib::date_format2('Y',$dday));
 					$nbDaysLeftThisWeek = min(ceil(($endOfCurrentMonth - $dday)/86400),$nbDaysLeftThisWeek);
-				} elseif ($calendarViewMode['casedefault'] == 'year') {
+				} elseif ($calendarViewMode == 'year') {
 					$endOfCurrentYear = $tikilib->make_time(23,59,59,12,31,TikiLib::date_format2('Y',$dday));
 					$nbDaysLeftThisWeek = min(ceil(($endOfCurrentYear - $dday)/86400),$nbDaysLeftThisWeek);
 				}
@@ -365,7 +365,7 @@ for ($i = 0; $i <= $numberofweeks; $i++) {
 	}
 }
 
-$smarty->assign('calendarViewMode',$calendarViewMode['casedefault']);
+$smarty->assign('calendarViewMode',$calendarViewMode);
 
 $verticalOffset = array();
 foreach($cell as $w=>$weeks) {
@@ -408,28 +408,13 @@ foreach($cell as $w=>$weeks) {
 		}
 	}
 }
-//Use 12- or 24-hour clock for times listed in day or week view based on admin and user preferences
-include_once ('lib/userprefs/userprefslib.php');
-$user_24hr_clock = $userprefslib->get_user_clock_pref($user);
 
 $hrows = array();
 $hours = array();
 $concurrencies = array();
 $arows = array();
-if ($calendarViewMode['casedefault'] == 'day') {
+if ($calendarViewMode == 'day') {
 	$hours = range($minHourOfDay,$maxHourOfDay);
-	$hr_display = $hours;
-	if ($user_24hr_clock) {
-		for ($i = 0, $for_max = count($hr_display); $i < $for_max; $i++) {
-			$hr_display[$i] = array(0 => $hr_display[$i]);
-			$hr_display[$i][] = sprintf('%02d', $hr_display[$i][0]) . ':00';
-		}
-	} else {
-		for ($i = 0, $for_max = count($hr_display); $i < $for_max; $i++) {
-			$hr_display[$i] = array(0 => $hr_display[$i]);
-			$hr_display[$i][] = date("g:i a", strtotime($hr_display[$i][0] . ':00'));
-		}
-	}
 	$eventHoraires = array();
 	if (!empty($cell[0]["{$weekdays[0]}"]['items'])) {
 		foreach ($cell[0]["{$weekdays[0]}"]['items'] as $dayitems) {
@@ -539,23 +524,11 @@ if ($calendarViewMode['casedefault'] == 'day') {
 		}
 	}
 
-} else if($calendarViewMode['casedefault'] == 'week') {
+} else if($calendarViewMode == 'week') {
 	$viewWeekDays = array();
 	for ($i=0 ; $i < 7 ; $i++)
 		$viewWeekDays[$i] = $viewstart + 86400*$i;
 	$hours = range($minHourOfDay,$maxHourOfDay);
-	$hr_display = $hours;
-	if ($user_24hr_clock) {
-		for ($i = 0, $for_max = count($hr_display); $i < $for_max; $i++) {
-			$hr_display[$i] = array(0 => $hr_display[$i]);
-			$hr_display[$i][] = sprintf('%02d', $hr_display[$i][0]) . ':00';
-		}
-	} else {
-		for ($i = 0, $for_max = count($hr_display); $i < $for_max; $i++) {
-			$hr_display[$i] = array(0 => $hr_display[$i]);
-			$hr_display[$i][] = date("g:i a", strtotime($hr_display[$i][0] . ':00'));
-		}
-	}
 	$eventHoraires = array();
 	$concurrencies = array();
 	$tmpRes = array();
@@ -710,7 +683,6 @@ if ($calendarViewMode['casedefault'] == 'day') {
 $smarty->assign('hrows', $hrows);
 $smarty->assign('manyEvents', $manyEvents);
 $smarty->assign('hours', $hours);
-$smarty->assign('hr_display', $hr_display);
 $smarty->assign('arows', $arows);
 $smarty->assign('mrows', array(0=>"00", 5=>"05", 10=>"10", 15=>"15", 20=>"20", 25=>"25", 30=>"30", 35=>"35", 40=>"40", 45=>"45", 50=>"50", 55=>"55"));
 

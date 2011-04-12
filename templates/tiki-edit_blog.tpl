@@ -27,7 +27,7 @@
   <input type="hidden" name="blogId" value="{$blogId|escape}" />
   {tabset name='tabs_editblog'}
     {tab name="{tr}General Settings{/tr}"}
-      <table class="formcolor">
+      <table class="normal">
         <tr class="editblogform">
           <td><label for="blog-title">{tr}Title{/tr}</label></td>
           <td><input type="text" name="title" id="blog-title" value="{$title|escape}" /></td>
@@ -59,7 +59,7 @@
           <td><input type="checkbox" name="public" id="blogs-allow_others" {if $public eq 'y'}checked='checked'{/if}/></td>
         </tr>	
         <tr class="editblogform">
-          <td><label for="blogs-always_owner">{tr}If others post to blog, author should always be owner{/tr}</label></td>
+          <td><label for="blogs-always_owner">{tr}If others post to blog, Author should always be Owner{/tr}</label></td>
           <td><input type="checkbox" name="alwaysOwner" id="blogs-always_owner" {if $alwaysOwner eq 'y'}checked='checked'{/if}/></td>
         </tr>
         <tr class="editblogform">
@@ -79,7 +79,7 @@
       </table>
     {/tab}
     {tab name="{tr}Display Options{/tr}"}
-      <table class="formcolor">
+      <table class="normal">
         <tr class="editblogform">
           <td><label for="blogs-number">{tr}Number of posts to show per page{/tr}</label></td>
           <td><input type="text" name="maxPosts" id="blogs-number" value="{$maxPosts|escape}" /></td>

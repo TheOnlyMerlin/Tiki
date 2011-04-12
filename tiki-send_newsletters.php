@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -171,7 +171,7 @@ if (!empty($_FILES) && !empty($_FILES['newsletterfile'])) {
 		}
 	}
 }
-$_REQUEST['files'] = $info['files'] = $newsletterfiles;
+$info['files'] = $newsletterfiles;
 foreach($info['files'] as $k => $newsletterfile) {
 	if ($newsletterfile['savestate'] == 'phptmp') {
 		// move it to temp
@@ -254,7 +254,7 @@ if (isset($_REQUEST["save"])) {
 		$smarty->assign('subject', $_REQUEST["subject"]);
 		$parsed = $smarty->fetch("newsletters/" . $_REQUEST["usedTpl"]);
 	} else {
-		$parsed = ($wikiparse == 'y') ? $tikilib->parse_data($_REQUEST["data"], array('is_html' => (isset($_REQUEST['wysiwyg']) && $_REQUEST['wysiwyg']=='y')? 1: 0, 'absolute_links' => true, 'suppress_icons' => true)) : $_REQUEST['data'];
+		$parsed = ($wikiparse == 'y') ? $tikilib->parse_data($_REQUEST["data"], array('absolute_links' => true, 'suppress_icons' => true)) : $_REQUEST['data'];
 	}
 	if (empty($parsed) && !empty($_REQUEST['datatxt'])) {
 		$parsed = $_REQUEST['datatxt'];
@@ -329,8 +329,9 @@ if ( isset($_REQUEST["send"]) && ! empty($_REQUEST["sendingUniqId"]) || $resend 
 		} else {
 			$_SESSION["sendingUniqIds"][ $_REQUEST["sendingUniqId"] ] = 1;
 		}
+	} else {
+		
 	}
-	
 	$nllib->send($nl_info, $_REQUEST, true, $sent, $errors, $logFileName);
 
 	$nb_sent = count($sent);
@@ -358,7 +359,7 @@ if ( isset($_REQUEST["send"]) && ! empty($_REQUEST["sendingUniqId"]) || $resend 
 
 // Article Clipping
 $articleClip = '';
-if (isset($nl_info) && $nl_info["allowArticleClip"] == 'y' && empty($articleClip)) {
+if ($nl_info["allowArticleClip"] == 'y' && empty($articleClip)) {
 	if ($nl_info["autoArticleClip"] == 'y' || isset($_REQUEST["clipArticles"])) {
 		$articleClip = $nllib->clip_articles($_REQUEST["nlId"]);
 		// prevent clearing of keyed in info if any

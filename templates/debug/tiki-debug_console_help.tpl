@@ -1,3 +1,4 @@
+{* $Id$ *}
 {* Show help for debugger commands *}
 
 {if $command_result.action eq 'one'}
@@ -11,12 +12,12 @@
    <tr><td><br /></td></tr>
    <tr>
     <td></td>
-    <td> {tr}Syntax:{/tr} <pre>{$command_result.syntax}</pre> </td>
+    <td> {tr}Syntax{/tr}: <pre>{$command_result.syntax}</pre> </td>
    </tr>
    <tr><td><br /></td></tr>
    <tr>
     <td></td>
-    <td> {tr}Example:{/tr} <pre>{$command_result.example}</pre>  </td>
+    <td> {tr}Example{/tr}: <pre>{$command_result.example}</pre>  </td>
    </tr>
   </table>
 

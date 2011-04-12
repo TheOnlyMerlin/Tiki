@@ -1,22 +1,19 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-
-define('WIKIPLUGIN_FILE_PAGE_LAST_MOD', 'PAGE_LAST_MOD');
-define('WIKIPLUGIN_FILE_PAGE_VIEW_DATE', 'PAGE_VIEW_DATE');
 
 function wikiplugin_file_info()
 {
 	global $prefs;
 	$info = array(
 		'name' => tra( 'File' ),
-		'documentation' => 'PluginFile',
-		'description' => tra('Link to a file that\'s attached or in a file gallery or archive. See PluginFiles for more functionality.'),
+		'documentation' => tra('PluginFile'),
+		'description' => tra('Displays a link to a file (either from the file gallery or an attachment to a wiki page) and can display an image attachment. For more than one file from file galleries, or more optional information shown from the files, use the plugin FILES instead'),
 		'prefs' => array( 'wikiplugin_file' ),
-		'body' => tra('Label for the link to the file (ignored if the file is a wiki attachment)'),
+		'body' => tra('Label for the link to the file'),
 		'icon' => 'pics/icons/file-manager.png',
 		'inline' => true,
 		'params' => array(
@@ -93,7 +90,7 @@ function wikiplugin_file_info()
 			'date' => array(
 				'required' => false,
 				'name' => tra('Date'),
-				'description' => tra('For an archive file, the archive created just before this date will be linked to. Special values : PAGE_LAST_MOD and PAGE_VIEW_DATE.'),
+				'description' => tra('For an archive file, the archive created just before this date will be linked to.'),
 				'parent' => array('name' => 'type', 'value' => 'gallery'),
 				'default' => '',
 				'advanced' => true,
@@ -125,7 +122,7 @@ function wikiplugin_file_info()
 
 function wikiplugin_file( $data, $params )
 {
-	global $tikilib, $prefs, $info, $page_view_date;
+	global $tikilib, $prefs;
 	if (isset($params['fileId'])) {
 		global $filegallib; include_once ('lib/filegals/filegallib.php');
 		if ($prefs['feature_file_galleries'] != 'y') {
@@ -140,15 +137,7 @@ function wikiplugin_file( $data, $params )
 				}
 				$date = $wikipluginFileDate;
 			} else {
-				if (strcmp($params['date'], WIKIPLUGIN_FILE_PAGE_LAST_MOD) == 0) {
-					// Page last modification date
-					$date = $info['lastModif'];
-
-				} else if (strcmp($params['date'], WIKIPLUGIN_FILE_PAGE_VIEW_DATE) == 0) {
-					// Current date parameter
-					$date = (isset($page_view_date)) ? $page_view_date : time();
-
-				} else if (($date = strtotime($params['date'])) === false) {
+				if (($date = strtotime($params['date'])) === false) {
 					return tra('Incorrect date format');
 				}
 				$wikipluginFileDate = $date;

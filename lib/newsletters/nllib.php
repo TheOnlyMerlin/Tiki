@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -288,7 +288,7 @@ class NlLib extends TikiLib
 			if ( $r['valid'] == 'y' ) $return[] = $r;
 		}
 		
-		$return = array_merge($return, $page_included_emails);
+		$return = array_merge($all_users, $page_included_emails);
 
 		return $return;
 	}
@@ -693,10 +693,10 @@ class NlLib extends TikiLib
 		$bindvars = array((int)$nlId);
 		if ($find) {
 			$findesc = '%' . $find . '%';
-			$mid = " where `nlId`=? and (`valid` != 'y' or (`isUser` != 'g' and `included` != 'y')) and `email` like ?";
+			$mid = " where `nlId`=? and `isUser`!='g' and `email` like ?";
 			$bindvars[] = $findesc;
-		} else { // show all except valid by group or include newsletters
-			$mid = " where `nlId`=?  and (`valid` != 'y' or (`isUser` != 'g' and `included` != 'y')) ";
+		} else {
+			$mid = " where `nlId`=? and `isUser`!='g' ";
 		}
 
 		$query = "select * from `tiki_newsletter_subscriptions` $mid order by ".$this->convertSortMode("$sort_mode").", email asc";

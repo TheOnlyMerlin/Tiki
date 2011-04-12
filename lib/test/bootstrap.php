@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 define( 'CUSTOM_ERROR_LEVEL', defined( 'E_DEPRECATED' ) ? E_ALL ^ E_DEPRECATED : E_ALL );
 
@@ -30,12 +25,7 @@ function __autoload( $name ) {
 
 $tikidomain = '';
 $api_tiki = null;
-
-if (!is_file(dirname(__FILE__) . '/local.php')) {
-	die("\nYou need setup a new database, install Tiki on it and create a local.php file for the test suite inside " . dirname(__FILE__) . "\n\n");
-}
-
-require_once(dirname(__FILE__) . '/local.php');
+require 'db/local.php';
 
 if (extension_loaded("pdo") and $api_tiki == 'pdo' ) {
 	require_once('db/tiki-db-pdo.php');
@@ -51,7 +41,6 @@ chdir( dirname(__FILE__) . '/../..' );
 require_once 'lib/init/smarty.php';
 require_once 'lib/cache/cachelib.php';
 require_once 'lib/tikilib.php';
-require_once 'lib/wiki/wikilib.php';
 require_once 'lib/userslib.php';
 require_once 'lib/headerlib.php';
 require_once 'lib/init/tra.php';
@@ -71,11 +60,3 @@ require_once 'lib/setup/prefs.php';
 
 ini_set( 'display_errors', 'on' );
 error_reporting( CUSTOM_ERROR_LEVEL );
-
-// update db if needed
-include_once ('installer/installlib.php');
-$installer = new Installer;
-
-if ($installer->requiresUpdate()) {
-	$installer->update();
-}

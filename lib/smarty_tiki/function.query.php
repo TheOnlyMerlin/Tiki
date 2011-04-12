@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,16 +14,6 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 function smarty_function_query($params, &$smarty) {
 	global $auto_query_args;
 	static $request = NULL;
-
-	// Modify explicit params to be prefixed if they need to (used in a plugin, module, ...)
-	if ( $smarty->url_overriding_prefix !== null ) {
-		foreach ( $smarty->url_overriding_prefix[1] as $v ) {
-			if ( isset( $params[ $v ] ) ) {
-				$params[ $smarty->url_overriding_prefix[0] . $v ] = $params[ $v ];
-				unset( $params[ $v ] );
-			}
-		}
-	}
 
 	if ( isset($params['_noauto']) && $params['_noauto'] == 'y' ) {
 		$query = array();
@@ -114,12 +104,9 @@ function smarty_function_query($params, &$smarty) {
     global $base_host;
 
 		// Check for anchor used as script
-	if ( !empty($params['_script']) && $params['_script'][0] == '#' ) {
+	if ( !empty($params['_script'][0]) && $params['_script'][0] == '#' ) {
 			if ( empty($params['_anchor']) ) {
 				$params['_anchor'] = substr($params['_script'],1);
-			}
-			if ( empty($params['_anchor']) ) {
-				$params['_type'] = 'anchor';
 			}
 			unset($params['_script']);
 		}

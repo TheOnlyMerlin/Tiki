@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -60,16 +60,16 @@ if (!isset($_REQUEST['options'])) {
 if ($_REQUEST["fieldId"]) {
 	$info = $trklib->get_tracker_field($_REQUEST["fieldId"]);
 } else {
-	$info = array();	// default values
+	$info = array();
 	$info["name"] = '';
 	$info["options"] = '';
 	$info["position"] = $trklib->get_last_position($_REQUEST["trackerId"]) + 10;
 	$info["type"] = 't';
-	$info["isMain"] = 'y';
+	$info["isMain"] = 'n';
 	$info["isMultilingual"] = 'n';
-	$info["isSearchable"] = 'y';
-	$info["isTblVisible"] = 'y';
-	$info["isPublic"] = 'y';
+	$info["isSearchable"] = 'n';
+	$info["isTblVisible"] = 'n';
+	$info["isPublic"] = 'n';
 	$info["isHidden"] = 'n';
 	$info["isMandatory"] = 'n';
 	$info['description'] = '';
@@ -265,7 +265,7 @@ $smarty->assign_by_ref('sort_mode', $sort_mode);
 $channels = $trklib->list_tracker_fields($_REQUEST["trackerId"], $offset, $max, $sort_mode, $find, false);
 $plug = array();
 foreach($channels['data'] as $c) {
-	if ($c['type'] == 'A' && $tracker_info['useAttachments'] != 'y') { // attachment
+	if ($c['type'] == 'A' && $tracker_info['useAttachments'] != 'y') { // attachement
 		$smarty->assign('error', 'This tracker does not allow attachments'); //get_strings tra('Tracker does not allow attachments')
 		
 	}

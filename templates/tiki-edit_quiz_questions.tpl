@@ -1,3 +1,9 @@
+{* $Id$ *}
+
+{* Copyright (c) 2002-2008 *}
+{* All Rights Reserved. See copyright.txt for details and a complete list of authors. *}
+{* Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details. *}
+
 {title help="Quiz" url="tiki-edit_quiz_questions.php?quizId=$quizId"}{tr}Edit quiz questions{/tr}{/title}
 
 <div class="navbar">
@@ -8,7 +14,7 @@
 	{button href="tiki-edit_quiz.php" _text="{tr}Admin Quizzes{/tr}"}
 </div>
 
-<h2>{tr}Create/edit questions for quiz:{/tr} <a href="tiki-edit_quiz.php?quizId={$quiz_info.quizId}" >{$quiz_info.name|escape}</a></h2>
+<h2>{tr}Create/edit questions for quiz{/tr}: <a href="tiki-edit_quiz.php?quizId={$quiz_info.quizId}" >{$quiz_info.name|escape}</a></h2>
 
 <form action="tiki-edit_quiz_questions.php" method="post">
 	<input type="hidden" name="quizId" value="{$quizId|escape}" />
@@ -16,20 +22,20 @@
 
 	<table class="formcolor">
 		<tr>
-			<td>{tr}Question:{/tr}</td>
+			<td>{tr}Question{/tr}:</td>
 			<td>
 				<textarea name="question" rows="5" cols="80">{$question|escape}</textarea>
 			</td>
 		</tr>
 		<tr>
-			<td>{tr}Position:{/tr}</td>
+			<td>{tr}Position{/tr}:</td>
 			<td>
 				<select name="position">{html_options values=$positions output=$positions selected=$position}</select>
 			</td>
 		</tr>
 
 		<tr>
-			<td>{tr}Question Type:{/tr}</td>
+			<td>{tr}Question Type{/tr}:</td>
 			<td>
 				<select name="questionType">{html_options options=$questionTypes selected=$type}</select>
 			</td>
@@ -94,19 +100,17 @@
 	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
 		<tr class="{cycle}">
-			<td class="id">{$channels[user].questionId}</td>
-			<td class="id">{$channels[user].position}</td>
-			<td class="text">{$channels[user].question|escape}</td>
-			<td class="integer">{$channels[user].options}</td>
-			<td class="integer">{$channels[user].maxPoints}</td>
-			<td class="action">
+			<td>{$channels[user].questionId}</td>
+			<td>{$channels[user].position}</td>
+			<td>{$channels[user].question|escape}</td>
+			<td>{$channels[user].options}</td>
+			<td>{$channels[user].maxPoints}</td>
+			<td>
 				<a class="link" href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;questionId={$channels[user].questionId}">{icon _id='page_edit' alt="{tr}Edit{/tr}"}</a>
 				<a class="link" href="tiki-edit_question_options.php?quizId={$quizId}&amp;questionId={$channels[user].questionId}">{icon _id='bricks' alt="{tr}Options{/tr}"}</a>
 				<a class="link" href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].questionId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 			</td>
 		</tr>
-	{sectionelse}
-		{norecords _colpan=6}
 	{/section}
 </table>
 

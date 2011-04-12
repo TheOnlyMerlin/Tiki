@@ -1,3 +1,4 @@
+{* $Id$ *}
 {if !isset($show_heading) or $show_heading neq "n"}
 	{if strlen($heading) > 0 and $prefs.feature_blog_heading eq 'y'}
 		{eval var=$heading}
@@ -38,7 +39,7 @@
 			{if $category_watched eq 'y'}
 				{tr}Watched by categories:{/tr}
 				{section name=i loop=$watching_categories}
-					<a href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}" class="icon">{$watching_categories[i].name|escape}</a>&nbsp;
+					<a href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}" class="icon">{$watching_categories[i].name}</a>&nbsp;
 				{/section}
 			{/if}
 		{/if}
@@ -47,7 +48,13 @@
 	
 	{if $use_find eq 'y'}
 		<div class="blogtools">
-			{include file='find.tpl'}
+			<form action="tiki-view_blog.php" method="get">
+				<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
+				<input type="hidden" name="blogId" value="{$blogId|escape}" />
+				{tr}Find:{/tr} 
+				<input type="text" name="find" value="{$find|escape}" /> 
+				<input type="submit" name="search" value="{tr}Find{/tr}" />
+			</form>
 		</div>
 	{/if}
 {/if}

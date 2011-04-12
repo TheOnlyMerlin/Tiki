@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,6 +7,9 @@
 
 $section = 'mytiki';
 require_once ('tiki-setup.php');
+if ($prefs['ajax_xajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
 include_once ('lib/wiki/wikilib.php');
 include_once ('lib/tasks/tasklib.php');
 $access->check_user($user);
@@ -59,10 +62,10 @@ if ($prefs['feature_galleries'] == 'y') {
 if ($prefs['feature_trackers'] == 'y') {
 	$mytiki_user_items = $tikilib->get_user_preference($user, 'mytiki_items', 'y');
 	if ($mytiki_user_items == 'y') {
-		$trklib = TikiLib::lib('trk');
-		$user_items = $trklib->get_user_items($userwatch);
+		$user_items = $tikilib->get_user_items($userwatch);
 		$smarty->assign_by_ref('user_items', $user_items);
 		$smarty->assign('mytiki_user_items', 'y');
+		global $trklib; include_once('lib/trackers/trackerlib.php');
 		$nb_item_comments = $trklib->nbComments($user);
 		$smarty->assign_by_ref('nb_item_comments', $nb_item_comments);
 	}
@@ -114,5 +117,15 @@ if ($prefs['feature_articles'] == 'y') {
 	}
 }
 include_once ('tiki-section_options.php');
+if ($prefs['ajax_xajax'] == "y") {
+	function mytiki_ajax() {
+		global $ajaxlib, $xajax;
+		$ajaxlib->registerTemplate("tiki-my_tiki.tpl");
+		$ajaxlib->registerTemplate("user_profile_s.tpl");
+		$ajaxlib->registerFunction("loadComponent");
+		$ajaxlib->processRequests();
+	}
+	mytiki_ajax();
+}
 $smarty->assign('mid', 'tiki-my_tiki.tpl');
 $smarty->display("tiki.tpl");

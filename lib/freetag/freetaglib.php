@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -1178,23 +1178,9 @@ class FreetagLib extends ObjectLib
 	 * Once you have enough tags, the results are quite good. It is very organic
 	 * as tagging is human-technology.
 	 */
-	function get_similar( $type, $objectId, $maxResults = 10, $targetType = null, $with = 'freetag', $minCommon=null )
+	function get_similar( $type, $objectId, $maxResults = 10, $targetType = null )
 	{
-		global $prefs;
-		if ($with == 'category') {
-			$algorithm = $this->get_preference('category_morelikethis_algorithm', 'basic');
-			if (empty($minCommon))
-				$minCommon = (int) $this->get_preference( 'category_morelikethis_mincommon', 2 );
-			$table = 'tiki_category_objects';
-			$column = 'categId';
-			$objectColumn = 'catObjectId';
-		} else {
-			$algorithm = $this->get_preference('morelikethis_algorithm', 'basic');
-			$minCommon = (int) $this->get_preference( 'morelikethis_basic_mincommon', 2 );
-			$table = 'tiki_freetagged_objects';
-			$column = 'tagId';
-			$objectColumn = 'objectId';
-		}
+		$algorithm = $this->get_preference('morelikethis_algorithm', 'basic');
 
 		if ( is_null( $targetType ) ) {
 			$targetType = $type;
@@ -1213,12 +1199,12 @@ class FreetagLib extends ObjectLib
 			$bindvals[] = $prefs['wikiapproval_prefix'] . '%';
 		}
 
-		if ($prefs['feature_multilingual'] == 'y' && $type == 'wiki page' && $targetType == 'wiki page') {
+		if ($this->multilingual && $type == 'wiki page' && $targetType == 'wiki page') {
 			// make sure only same lang pages are selected
-			$mid .= ' AND (pb.`lang` = pa.`lang` OR pa.`lang` IS NULL OR pb.`lang` IS NULL) ';
-			$join_tiki_pages = 'INNER JOIN `tiki_pages` pa ON pa.`pageName` = oa.itemId'
-							. ' INNER JOIN `tiki_pages` pb ON pb.`pageName` = ob.`itemId`'
-							;
+			$mid .= ' AND pb.`lang` = pa.`lang`';
+			$join_tiki_pages = 'INNER JOIN tiki_pages pa ON pa.pageName = oa.itemId'
+												. ' INNER JOIN tiki_pages pb ON pb.pageName = ob.itemId'
+												;
 		} else {
 			$join_tiki_pages = '';
 		}
@@ -1226,14 +1212,15 @@ class FreetagLib extends ObjectLib
 		switch( $algorithm )
 		{
 		case 'basic': // {{{
-			$query = "SELECT ob.`name`, ob.`href`, COUNT(DISTINCT fb.`$column`) cnt"
-							. ' FROM `tiki_objects` oa'
-							. " INNER JOIN `$table` fa ON oa.`objectId` = fa.`$objectColumn`"
-							. " INNER JOIN $table fb USING(`$column`)"
-							. " INNER JOIN `tiki_objects` ob ON ob.`objectId` = fb.`$objectColumn` "
-							. $join_tiki_pages
+			$minCommon = (int) $this->get_preference( 'morelikethis_basic_mincommon', 2 );
+
+			$query = 'SELECT ob.name, ob.href, COUNT(DISTINCT fb.tagId) cnt'
+							. ' FROM tiki_objects oa'
+							. ' INNER JOIN tiki_freetagged_objects fa ON oa.objectId = fa.objectId'
+							. ' INNER JOIN tiki_freetagged_objects fb USING(tagId)'
+							. ' INNER JOIN tiki_objects ob ON ob.objectId = fb.objectId ' . $join_tiki_pages
 							. ' WHERE ' . $mid
-							. ' GROUP BY ob.`itemId`'
+							. ' GROUP BY ob.itemId'
 							. ' HAVING cnt >= ?'
 							. ' ORDER BY cnt DESC, RAND()'
 							;
@@ -1241,20 +1228,22 @@ class FreetagLib extends ObjectLib
 		// }}}
 
 		case 'weighted': // {{{
-			$query = "SELECT ob.`name`, ob.`href`, COUNT(DISTINCT fc.`$objectColumn`) sort_cnt, COUNT(DISTINCT fb.`$column`) having_cnt"
-							. ' FROM `tiki_objects` oa'
-							. " INNER JOIN $table fa ON oa.`objectId` = fa.`$objectColumn`"
-							. " INNER JOIN $table fb USING(`$column`)"
-							. " INNER JOIN `tiki_objects` ob ON ob.`objectId` = fb.`$objectColumn`"
-							. " INNER JOIN $table fc ON fb.`$column` = fc.`$column` "
+			$minCommon = (int) $this->get_preference( 'morelikethis_basic_mincommon', 2 );
+
+			$query = 'SELECT'
+							. ' ob.name, ob.href, COUNT(DISTINCT fc.objectId) sort_cnt, COUNT(DISTINCT fb.tagId) having_cnt'
+							. ' FROM tiki_objects oa'
+								. ' INNER JOIN tiki_freetagged_objects fa ON oa.objectId = fa.objectId'
+								. ' INNER JOIN tiki_freetagged_objects fb USING(tagId)'
+								. ' INNER JOIN tiki_objects ob ON ob.objectId = fb.objectId'
+								. ' INNER JOIN tiki_freetagged_objects fc ON fb.tagId = fc.tagId '
 							. $join_tiki_pages
 							. ' WHERE ' . $mid
-							. ' GROUP BY ob.`itemId`'
+							. ' GROUP BY ob.itemId'
 							. ' HAVING having_cnt >= ?'
 							. ' ORDER BY sort_cnt DESC, RAND()'
 							;
 			// Sort based on the global popularity of all tags in common
-			break;
 		// }}}
 		}
 
@@ -1265,11 +1254,7 @@ class FreetagLib extends ObjectLib
 		while( $row = $result->fetchRow() )
 			$tags[] = $row;
 
-		if (empty($tags) && $prefs['category_morelikethis_mincommon_orless'] == 'y' && $with == 'category' && $minCommon > 1) {
-			return $this-> get_similar( $type, $objectId, $maxResults, $targetType, $with, $minCommon-1 );
-		} else {
-			return $tags;
-		}
+		return $tags;
 	}
 
 	/**
@@ -1559,19 +1544,6 @@ class FreetagLib extends ObjectLib
 		$tags['cant'] = count($tags['data']);
 
 		return $tags;
-	}
-
-	function get_cloud() {
-		$query = "SELECT tag title, COUNT(*) weight, f.tagId FROM tiki_freetags f INNER JOIN tiki_freetagged_objects fo ON f.tagId = fo.tagId GROUP BY f.tagId";
-		$result = $this->fetchAll($query);
-
-		foreach ($result as &$row) {
-			$row['params'] = array('url' => $row['tagId']);
-		}
-
-		return new Zend_Tag_Cloud(array(
-			'tags' => $result,
-		));
 	}
 }
 

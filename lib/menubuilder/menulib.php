@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -71,42 +71,6 @@ class MenuLib extends TikiLib
 
 		$result = $this->query($query,$bindvars);
 		return true;
-	}
-
-	function clone_menu($menuId) {
-		$menus = $this->table('tiki_menus');
-		$row = $menus->fetchFullRow( array( 'menuId' => $menuId ));
-		$row['menuId'] = null;
-		$row['name'] = $row['name'] . ' ' . tra('(copy)');
-		$newId = $menus->insert( $row );
-
-		$menuoptions = $this->table('tiki_menu_options');
-		$oldoptions = $menuoptions->fetchAll( $menuoptions->all(), array( 'menuId' => $menuId ));
-		$row = null;
-
-		foreach( $oldoptions as $row ) {
-			$row['optionId'] = null;
-			$row['menuId'] = $newId;
-			$menuoptions->insert( $row );
-		}
-	}
-
-	/*
-	 * Replace the current menu options for id 42 with what's in tiki.sql
-	 */
-	function reset_app_menu() {
-		$tiki_sql = file_get_contents('db/tiki.sql');
-		preg_match_all('/^INSERT (?:INTO )?`tiki_menu_options` .*$/mi', $tiki_sql, $matches);
-
-		if ($matches && count($matches[0])) {
-			$menuoptions = $this->table('tiki_menu_options');
-			$menuoptions->deleteMultiple( array( 'menuId' => 42 ));
-			
-			$query = implode( '', $matches[0] );
-			$this->query($query);
-
-			$this->empty_menu_cache($menuId);
-		}
 	}
 
 	function get_max_option($menuId)

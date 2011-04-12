@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once(dirname(__FILE__) . '/tikiimporter_testcase.php');
 require_once(dirname(__FILE__) . '/../../importer/tikiimporter_wiki_mediawiki.php');
@@ -114,14 +109,6 @@ class TikiImporter_Wiki_Mediawiki_Test extends TikiImporter_TestCase
         $this->obj->validateInput();
     }
     
-	public function testValidateInputShouldRaiseExceptionForWordpressFile()
-    {
-        $this->obj->dom = new DOMDocument;
-        $this->obj->dom->load(dirname(__FILE__) . '/fixtures/wordpress_sample.xml');
-        $this->setExpectedException('DOMException');
-        $this->obj->validateInput();
-    }
-
     public function testParseData()
     {
         $obj = $this->getMock('TikiImporter_Wiki_Mediawiki', array('extractInfo', 'downloadAttachment'));

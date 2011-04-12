@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,11 +10,10 @@ if (!isset($title)) $title = 'Tiki Installer';
 if (!isset($content)) $content = 'No content specified. Something went wrong.<br/>Please tell your administrator.<br/>If you are the administrator, you may want to check for / file a bug report.';
 if (!isset($dberror)) $dberror = false;
 
-// Check that PHP version is sufficient
-
-if (version_compare(PHP_VERSION, '5.2.0', '<')) {
-	$title = 'PHP 5.2 is required';
-	$content = '<p>Please contact your system administrator ( if you are not the one ;) ). Your version: '.PHP_VERSION.'.</p>';
+// Check that PHP version is at least 5
+if (version_compare(PHP_VERSION, '5.1.0', '<')) {
+	$title = 'PHP 5.1 is required';
+	$content = '<p>Please contact your system administrator ( if you are not the one ;) ).</p>';
 	createPage($title, $content);
 }
 
@@ -98,42 +97,24 @@ function createPage($title, $content){
 		<link type="text/css" rel="stylesheet" href="styles/fivealive.css" />
 		<title>$title</title>
 	</head>
-	<body class="tiki_wiki fixed_width">
-	<div id="fixedwidth">
-	<div id="outer_wrapper">
-		<div id="header_outer">
-			<div id="header_container">
-				<header id="header">
-					<div id="header_fixedwidth" class="clearfix fixedwidth">
-						<div class="content clearfix modules" id="top_modules">
-							<div id="sitelogo">
-								<img alt="Site Logo" src="img/tiki/Tiki_WCG.png"  />
-							</div>
-							<div id="tiki-top" class="clearfix" style="position: absolute; top: 166px;">
-								<h1 style="color: #fff; text-shadow: 3px 2px 0 #781437; margin: 0; padding: 0; line-height: 1.6;">$title</h1>
-							</div>
-						</div>
+	<body class="tiki_wiki">
+		<div id="header">
+			<div id="siteheader">
+			 	<div id="header-top" class="clearfix">
+					<div id="sitelogo">
+						<img alt="Site Logo" src="img/tiki/Tiki_WCG.png" />
 					</div>
-				</header>
+				</div>
+				<div id="tiki-top" class="clearfix">
+				</div>	
 			</div>
-		</div>	
-			<div class="middle_outer">
-			<div id="middle" >
-				<div id="tiki-top"></div>
-					<div id="tiki-center" style="display: table; width: 990px; text-align: center;">
-						$content
-					</div>
-				</div>
-				</div>
-			</div><!--
-		<footer id="footer" style="margin-top: 50px;">
-	<div class="footer_liner">
-		<div class="footerbgtrap fixedwidth" style="padding: 10px 0;">
-			<a href="http://tiki.org" target="_blank" title="Powered by Tiki Wiki CMS Groupware"><img src="img/tiki/tikibutton.png" alt="Powered by Tiki Wiki CMS Groupware" /></a>
 		</div>
-	</div>
-</footer>-->
-</div>
+		<div id="middle" style="display: table; margin: 0 auto; width: 990px;">
+			<div id="tiki-center" style="text-align:center; ">
+				<h1 style="position: absolute; top: 160px; color: #fff; text-shadow: 3px 2px 0 #781437;">$title</h1>
+				$content
+			</div>
+		</div>
 	</body>
 </html>
 END;

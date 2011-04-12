@@ -1,3 +1,4 @@
+{* $Id$ *}
 {*
  * If you want to change this page, check http://tiki.org/AdministrationDev
  * there you"ll find attached a gimp image containing this page with icons in separated layers
@@ -97,7 +98,5 @@
 	{self_link page="payment" _class="admbox" _style="background-image: url('pics/large/payment48x48.png')" _selected="'`$prefs.payment_feature`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Payment{/tr}" title="{tr}Payment{/tr}{if $prefs.payment_feature ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Payment{/tr}</span>{/self_link}
 
 	{self_link page="socialnetworks" _class="admbox" _style="background-image: url('pics/large/socialnetworks48x48.png')" _selected="'`$prefs.feature_socialnetworks`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Social Networks{/tr}" title="{tr}Social networks{/tr}{if $prefs.feature_socialnetworks ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Social networks{/tr}</span>{/self_link}
-
-	{self_link page="share" _class="admbox" _style="background-image: url('img/mytiki/stock_contact.png')" _selected="'`$prefs.feature_share`' != 'y'" _selected_class="admbox off"}<img src="pics/trans.png" alt="{tr}Share{/tr}" title="{tr}Share{/tr}{if $prefs.feature_share ne 'y'} ({tr}Disabled{/tr}){/if}" /><span>{tr}Share{/tr}</span>{/self_link}
 
 </div>

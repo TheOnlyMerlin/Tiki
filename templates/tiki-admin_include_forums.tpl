@@ -1,3 +1,4 @@
+{* $Id$ *}
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
 	{tr}To add/remove forums, look for "Admin forums" under "Forums" on the application menu, or{/tr} <a class="rbox-link" href="tiki-admin_forums.php">{tr}Click Here{/tr}</a>.
 {/remarksbox}
@@ -56,7 +57,7 @@
 		{tab name="{tr}Forums Listing{/tr}"}
 			<input type="hidden" name="forumlistprefs" />
 			{preference name=forums_ordering}
-			{tr}Select which items to display when listing forums:{/tr}
+			{tr}Select which items to display when listing forums{/tr}:
 			{preference name=forum_list_topics}
 			{preference name=forum_list_posts}
 			{preference name=forum_list_ppd}

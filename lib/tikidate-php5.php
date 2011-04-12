@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -186,6 +186,11 @@ class TikiDate
 		}
 		$this->date->setTimezone($dtz);
 	}
+
+	// TODO delete in Tiki 6 (if really unused)
+	function convertTZbyID($tz_id) {
+		$this->setTZbyID($tz_id);
+	}
 	
 	function convertMissingTimezone($tz_id) {
 		switch ($tz_id) {		// Convert timezones not in PHP 5
@@ -273,18 +278,11 @@ class TikiDate
 		return $this->date->format("e");
 	}
 
-	// Checks that the string is either a timezone identifier or an abbreviation. display_timezone can be manually set to an identifier in preferences but will be an [uppercase] abbreviation if auto-detected by JavaScript.
 	static function TimezoneIsValidId($id) {
-		static $abbrevs = null, $ids = null;
-
-		if (! $abbrevs) {
-			$abbrevs = DateTimeZone::listAbbreviations();
-			$ids = DateTimeZone::listIdentifiers();
-		}
-
-		return array_key_exists( strtolower($id), $abbrevs ) ||
-			in_array($id, $ids);
+		return array_key_exists( strtolower($id), timezone_abbreviations_list() ) ||
+			in_array($id, timezone_identifiers_list());
 	}
+	
 }
 
 class Date_Calc
@@ -293,5 +291,4 @@ class Date_Calc
 	function daysInMonth($month,$year) {
 		return cal_days_in_month(CAL_GREGORIAN, $month, $year);
 	}
-	
 }

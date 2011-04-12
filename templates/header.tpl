@@ -1,64 +1,56 @@
+{* $Id$ *}
 {if $base_uri and ($dir_level gt 0 or $prefs.feature_html_head_base_tag eq 'y')}
 	<base href="{$base_uri|escape}" />
 {/if}
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
 <meta name="generator" content="Tiki Wiki CMS Groupware - http://tiki.org" />
-
-{* --- Canonical URL --- *}
-{include file="canonical.tpl"}	
-
 {if !empty($forum_info.name) & $prefs.metatag_threadtitle eq 'y'}
 	<meta name="keywords" content="{tr}Forum{/tr} {$forum_info.name|escape} {$thread_info.title|escape} {if $prefs.feature_freetags eq 'y'}{foreach from=$freetags.data item=taginfo}{$taginfo.tag|escape} {/foreach}{/if}" />
-{elseif isset($galleryId) && $galleryId neq '' && $prefs.metatag_imagetitle neq 'n'}
+{elseif isset($galleryId) && $galleryId ne '' & $prefs.metatag_imagetitle ne 'n'}
 	<meta name="keywords" content="{tr}Images Galleries{/tr} {$title|escape} {if $prefs.feature_freetags eq 'y'}{foreach from=$freetags.data item=taginfo}{$taginfo.tag|escape} {/foreach}{/if}" />
-{elseif $prefs.metatag_keywords neq '' or !empty($metatag_local_keywords)}
-	<meta name="keywords" content="{$prefs.metatag_keywords|escape} {if $prefs.feature_freetags eq 'y'}{foreach from=$freetags.data item="taginfo"}{$taginfo.tag|escape} {/foreach}{/if} {$metatag_local_keywords|escape}" />
+{elseif $prefs.metatag_keywords ne '' or !empty($metatag_local_keywords)}
+	<meta name="keywords" content="{$prefs.metatag_keywords|escape} {if $prefs.feature_freetags eq 'y'}{foreach from=$freetags.data item=taginfo}{$taginfo.tag|escape} {/foreach}{/if} {$metatag_local_keywords|escape}" />
 {/if}
-{if $prefs.metatag_author neq ''}
+{if $prefs.metatag_author ne ''}
 	<meta name="author" content="{$prefs.metatag_author|escape}" />
 {/if}
-{if $prefs.metatag_pagedesc eq 'y' and $description neq ''}
+{if $prefs.metatag_pagedesc eq 'y' and $description ne ''}
 	<meta name="description" content="{$description|escape}" />
-{elseif $prefs.metatag_description neq '' or (isset($description) and $description eq '')}
+{elseif $prefs.metatag_description ne '' or (isset($description) and $description eq '')}
 	<meta name="description" content="{$prefs.metatag_description|escape}" />
 {/if}
-{if $prefs.metatag_geoposition neq ''}
+{if $prefs.metatag_geoposition ne ''}
 	<meta name="geo.position" content="{$prefs.metatag_geoposition|escape}" />
 {/if}
-{if $prefs.metatag_georegion neq ''}
+{if $prefs.metatag_georegion ne ''}
 	<meta name="geo.region" content="{$prefs.metatag_georegion|escape}" />
 {/if}
-{if $prefs.metatag_geoplacename neq ''}
+{if $prefs.metatag_geoplacename ne ''}
 	<meta name="geo.placename" content="{$prefs.metatag_geoplacename|escape}" />
 {/if}
-{if $prefs.metatag_robots neq '' and $metatag_robots eq ''}
+{if $prefs.metatag_robots ne '' && $metatag_robots eq '' }
         <meta name="robots" content="{$prefs.metatag_robots|escape}" />
 {/if}
-{if $prefs.metatag_robots eq '' and $metatag_robots neq ''}
+{if $prefs.metatag_robots eq '' && $metatag_robots ne '' }
         <meta name="robots" content="{$metatag_robots|escape}" />
 {/if}
-{if $prefs.metatag_robots neq '' and $metatag_robots neq ''}
+{if $prefs.metatag_robots ne '' && $metatag_robots ne '' }
         <meta name="robots" content="{$prefs.metatag_robots|escape}, {$metatag_robots|escape}" />
 {/if}
-{if $prefs.metatag_revisitafter neq ''}
+{if $prefs.metatag_revisitafter ne ''}
 	<meta name="revisit-after" content="{$prefs.metatag_revisitafter|escape}" />
 {/if}
 
 {* --- tiki block --- *}
 <title>{strip}
 	{if $prefs.site_title_location eq 'before'}{$prefs.browsertitle|tr_if|escape} {$prefs.site_nav_seper} {/if}
-	{capture assign="page_description_title"}{strip}
-		{if ($prefs.feature_breadcrumbs eq 'y' or $prefs.site_title_breadcrumb eq "desc") && isset($trail)}
-			{breadcrumbs type=$prefs.site_title_breadcrumb loc="head" crumbs=$trail}
-		{/if}
-	{/strip}{/capture}
-	{if !empty($page_description_title)}
-		{$page_description_title}
+	{if ($prefs.feature_breadcrumbs eq 'y' && isset($trail)) or $prefs.site_title_breadcrumb eq "desc"}
+		{breadcrumbs type=$prefs.site_title_breadcrumb loc="head" crumbs=$trail}
 	{else}
 		{if !empty($tracker_item_main_value)}
-			{$tracker_item_main_value|truncate:255|escape}
-		{elseif !empty($title) and !is_array($title)}
-			{$title|escape}
+			{$tracker_item_main_value|escape}
 		{elseif !empty($page)}
 			{if $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}
 				{$approvedPageName|escape}
@@ -69,6 +61,8 @@
 		{* add $description|escape if you want to put the description + update breadcrumb_build replace return $crumbs->title; with return empty($crumbs->description)? $crumbs->title: $crumbs->description; *}
 		{elseif !empty($arttitle)}
 			{$arttitle|escape}
+		{elseif !empty($title) and !is_array($title)}
+			{$title|escape}
 		{elseif !empty($thread_info.title)}
 			{$thread_info.title|escape}
 		{elseif !empty($forum_info.name)}
@@ -79,8 +73,10 @@
 			{$userinfo.login|username}
 		{elseif !empty($tracker_info.name)}
 			{$tracker_info.name|escape}
+		{elseif !empty($gal_info.name)}
+			{$gal_info.name|escape}
 		{elseif !empty($headtitle)}
-			{$headtitle|escape}{* use $headtitle last if feature specific title not found *}
+			{$headtitle|tr_if|escape}{* use $headtitle last if feature specific title not found *}
 		{/if}
 	{/if}
 	{if $prefs.site_title_location eq 'after'} {$prefs.site_nav_seper} {$prefs.browsertitle|tr_if|escape}{/if}
@@ -88,6 +84,11 @@
 
 {if $prefs.site_favicon}
 	<link rel="icon" href="{$prefs.site_favicon|escape}" />
+{/if}
+
+{* --- phplayers block --- *}
+{if $prefs.feature_phplayers eq 'y' and isset($phplayers_headers)}
+	{$phplayers_headers}
 {/if}
 
 {* --- universaleditbutton.org --- *}
@@ -136,10 +137,6 @@
 		<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#type=website&amp;buttonText=&amp;onmouseover=false&amp;send_services=aim"></script>
 	{/if}
 {/if}
-
-<!--[if lt IE 9]>{* according to http://remysharp.com/2009/01/07/html5-enabling-script/ *}
-	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-<![endif]-->
 
 {if $headerlib}		{$headerlib->output_headers()}{/if}
 

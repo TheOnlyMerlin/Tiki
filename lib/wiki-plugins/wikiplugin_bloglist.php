@@ -1,17 +1,24 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+// Includes an article field
+// Usage:
+// {BLOGLIST(Id=>blogId)}{BLOGLIST}
+// FieldName can be any field in the tiki_articles table, but title,heading, or body are probably the most useful.
+function wikiplugin_bloglist_help() {
+	return tra("Use BLOGLIST to include posts from a blog. Syntax is").":<br />~np~{BLOGLIST(Id=n, Items=n)}{BLOGLIST}~/np~<br /> " . tra("where Id is the blog Id and Items is the max number of posts to display"). "<br />" . tra("Ex: ~np~{BLOGLIST(Id=2, Items=15)}{BLOGLIST}~/np~");
+}
+
 function wikiplugin_bloglist_info() {
 	return array(
 		'name' => tra('Blog List'),
-		'documentation' => 'PluginBlogList',		
-		'description' => tra('Display posts from a site blog'),
+		'documentation' => tra('PluginBlogList'),		
+		'description' => tra('Use BLOGLIST to include posts from a blog.'),
 		'prefs' => array( 'feature_blogs', 'wikiplugin_bloglist' ),
-		'icon' => 'pics/icons/text_list_bullets.png',
 		'params' => array(
 			'Id' => array(
 				'required' => true,

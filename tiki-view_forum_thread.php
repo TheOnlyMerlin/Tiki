@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,12 +30,6 @@ if (empty($_REQUEST['forumId'])) {
 	}
 	$_REQUEST['forumId'] = $thread_info['object'];
 }
-$forum_info = $commentslib->get_forum($_REQUEST["forumId"]);
-if (empty($forum_info)) {
-		$smarty->assign('msg', tra('Incorrect thread'));
-		$smarty->display('error.tpl');
-		die;
-}
 
 require_once 'lib/cache/pagecache.php';
 $pageCache = Tiki_PageCache::create()
@@ -55,10 +49,10 @@ if ($prefs['feature_categories'] == 'y') {
 	global $categlib; include_once ('lib/categories/categlib.php');
 }
 if (!isset($_REQUEST['topics_offset'])) {
-	$_REQUEST['topics_offset'] = 0;
+	$_REQUEST['topics_offset'] = 1;
 }
 if (!isset($_REQUEST['topics_sort_mode']) || empty($_REQUEST['topics_sort_mode'])) {
-	$_REQUEST['topics_sort_mode'] = $forum_info['topicOrdering'];
+	$_REQUEST['topics_sort_mode'] = 'commentDate_desc';
 } else {
 	$smarty->assign('topics_sort_mode_param', '&amp;topics_sort_mode=' . $_REQUEST['topics_sort_mode']);
 }
@@ -101,6 +95,7 @@ if (isset($_REQUEST['lock'])) {
 }
 $commentslib->comment_add_hit($_REQUEST["comments_parentId"]);
 $commentslib->mark_comment($user, $_REQUEST['forumId'], $_REQUEST["comments_parentId"]);
+$forum_info = $commentslib->get_forum($_REQUEST["forumId"]);
 
 $tikilib->get_perm_object( $_REQUEST["forumId"], 'forum' );
 
@@ -130,16 +125,13 @@ $smarty->assign('topics_next_offset', $_REQUEST['topics_offset'] + 1);
 $smarty->assign('topics_prev_offset', $_REQUEST['topics_offset'] - 1);
 
 $threads = $commentslib->get_forum_topics($_REQUEST['forumId'], $_REQUEST['topics_offset'] - 1, 3, $_REQUEST["topics_sort_mode"]);
-if ($threads[0]['threadId'] == $_REQUEST['comments_parentId'] && count($threads) >= 1) {
-	$next_thread = $threads[1];
-	$smarty->assign('next_topic', $next_thread['threadId']);
-} elseif (count($threads) >= 2 && $threads[1]['threadId'] == $_REQUEST['comments_parentId']) {
+if (count($threads) == 3) {
 	$next_thread = $threads[2];
 	$smarty->assign('next_topic', $next_thread['threadId']);
 } else {
 	$smarty->assign('next_topic', false);
 }
-if ($threads[0]['threadId'] != $_REQUEST['comments_parentId']) {
+if (count($threads)) {
 	$prev_thread = $threads[0];
 	$smarty->assign('prev_topic', $prev_thread['threadId']);
 } else {
@@ -305,7 +297,10 @@ if (isset($_SESSION['feedbacks'])) {
 }
 $defaultRows = $prefs['default_rows_textarea_forumthread'];
 $smarty->assign('forum_mode', 'y');
-
+if ($prefs['feature_mobile'] == 'y' && isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'mobile') {
+	include_once ("lib/hawhaw/hawtikilib.php");
+	HAWTIKI_view_forum_thread($forum_info['name'], $thread_info, $tiki_p_forum_read);
+}
 if ($prefs['feature_actionlog'] == 'y') {
 	$logslib->add_action('Viewed', $_REQUEST['forumId'], 'forum', 'comments_parentId=' . $comments_parentId);
 }

@@ -1,3 +1,5 @@
+{* $Id$ *}
+
 {tikimodule error=$module_params.error title=$tpl_module_title name="last_visitors" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
 	{if ($nonums eq 'y') or ($showavatars eq 'y')}<ul style="padding-left:0; list-style:none;">{else}<ol>{/if}
 		{if !$user}
@@ -22,14 +24,13 @@
 			</li>
 		{/if}
 		{cycle values="even,odd" print=false}
-		{capture assign='noAvatar'}<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}" />{/capture}
 		{foreach from=$modLastVisitors key=key item=item}
 			<li>
 				{if $showavatars eq 'y'}
 					<table class="admin">
 						<tr class="{cycle advance=true}">
 							<td width="50">
-								{$item.user|avatarize|default:$noAvatar}
+								{$item.user|avatarize|default:'<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}" />'}
 							</td>
 						<td>
 				{/if}

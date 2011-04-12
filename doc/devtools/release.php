@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -525,14 +525,14 @@ function important_step($msg, $increment_step = true, $commit_msg = false) {
 		switch ( strtolower($c) ) {
 			case 'y': case '':
 				$do_step = true;
-							break;
+				break;
 			case 'n':
 				info(">> Skipping step $step.");
 				$do_step = false;
-							break;
+				break;
 			case 'q':
 				die;
-							break;
+				break;
 			default:
 				if ( $c != '?' ) info(color(">> Unknown answer '$c'.", 'red'));
 				info(">> You have to type 'y' (Yes), 'n' (No) or 'q' (Quit) and press Enter.");

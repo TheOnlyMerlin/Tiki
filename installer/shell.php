@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,7 @@ if( ! isset( $_SERVER['argc'] ) )
 if( ! file_exists( 'db/local.php' ) )
 	die( "Tiki is not installed yet.\n" );
 
-if( isset( $_SERVER['argv'][1] ) && $_SERVER['argv'][1] != 'install' && $_SERVER['argv'][1] != 'skiperrors' ) {
+if( isset( $_SERVER['argv'][1] ) && $_SERVER['argv'][1] != 'install' ) {
 	$multi = basename( $_SERVER['argv'][1] );
 }
 
@@ -55,14 +55,9 @@ else {
 	if( count( $installer->failures ) ) {
 		echo "\tErrors:\n";
 		foreach( $installer->failures as $key => $error ) {
-			list( $query, $message, $patch ) = $error;
+			list( $query, $message ) = $error;
 
-			if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] == 'skiperrors') {
-				echo "\tSkipping $patch\n";
-				$installer->recordPatch($patch);
-			} else {
-				echo "\t===== Error $key in $patch =====\n\t$query\n\t$message\n";
-			}
+			echo "\t===== Error $key =====\n\t$query\n\t$message\n";
 		}
 	}
 }

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -60,6 +60,26 @@ class CalendarLib extends TikiLib
 		return $retval;
 	}
 
+	// give out an array with Ids viewable by $user
+	function list_user_calIds() {
+		global $user;
+		if ($user) {
+			global $userlib;
+			//$groups = $userlib->get_user_groups($user);
+			// need to add something
+			$query = "select `calendarId` from `tiki_calendars` where `user`=? or `personal`='n'";
+			$bindvars=array($user);
+		} else {
+			$query = "select `calendarId` from `tiki_calendars`";
+			$bindvars=array();
+		}
+		$result = $this->query($query,$bindvars);
+		$res = array();
+		while ($r = $result->fetchRow()) {
+			$res[] = $r['calendarId'];
+		}
+		return $res;
+	}
 	function get_calendarId_from_name($name) {
 		$query = 'select `calendarId` from `tiki_calendars` where `name`=?';
 		return $this->getOne($query, array($name));
@@ -864,7 +884,7 @@ $request_year, $dayend, $myurl;
 				if ( $group_by == 'day' ) {
 					$key = 0;
 				}
-				if ( $calendarViewMode['casedefault'] == 'day' ) {
+				if ( $calendarViewMode == 'day' ) {
 					$dday = $daystart;
 				} else {
 					$dday = $curtikidate->getTime();
@@ -872,7 +892,7 @@ $request_year, $dayend, $myurl;
 				}
 				$cell[$i][$w]['day'] = $dday;
 	
-				if ( $calendarViewMode['casedefault'] == 'day' or ( $dday >= $daystart && $dday <= $dayend ) ) {
+				if ( $calendarViewMode == 'day' or ( $dday >= $daystart && $dday <= $dayend ) ) {
 					$cell[$i][$w]['focus'] = true;
 				} else {
 					$cell[$i][$w]['focus'] = false;

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2009 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,6 @@ include_once ('lib/articles/artlib.php');
 $smarty->assign('headtitle', tra('List Articles'));
 $access->check_feature('feature_articles');
 $access->check_permission('tiki_p_read_article');
-$auto_query_args = array('sort_mode', 'category', 'offset', 'maxRecords', 'find', 'find_from_Month', 'find_from_Day', 'find_from_Year', 'find_to_Month', 'find_to_Day', 'find_to_Year', 'type', 'topic', 'cat_categories', 'categId', 'lang', 'mode', 'mapview', 'searchmap', 'searchlist');
 if ($prefs["gmap_article_list"] == 'y') {
 	$smarty->assign('gmapbuttons', true);
 } else {
@@ -170,6 +169,10 @@ if ($tiki_p_edit_article != 'y' && $tiki_p_remove_article != 'y') { //check one 
 	}
 }
 include_once ('tiki-section_options.php');
+if ($prefs['feature_mobile'] == 'y' && isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'mobile') {
+	include_once ("lib/hawhaw/hawtikilib.php");
+	HAWTIKI_list_articles($listpages, $tiki_p_read_article, $offset, $maxRecords, $listpages["cant"]);
+}
 ask_ticket('list-articles');
 // Display the template
 $smarty->assign('mid', 'tiki-list_articles.tpl');

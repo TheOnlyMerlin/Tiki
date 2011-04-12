@@ -125,9 +125,51 @@ input[type=radio] {
 	border: 0;
 }
 
+/***** Site Header & Identity *****/
+
+#header-top {
+	position: relative;
+}
+
+#siteheader {
+	background: transparent;
+}
+
+#customcodewith_ad {
+	width: 400px;
+}
+
+#sitead.floatright {
+	padding-right: 40px;
+}
+
+#sitead.floatleft {
+	padding-left: 40px;
+}
+
+#sioptionscentered #sitead.floatleft {
+	padding-left: 10px;
+}
 
 #sitelogo img {
 	margin-top: 10px;
+}
+
+#bannertopright {
+	padding-right: 4px;
+}
+
+#sitelocbar {
+	float: left;
+	padding: 2px 2px 3px 10px;
+}
+
+#siteloginbar {
+	text-align: right;
+	position: absolute;
+	bottom: 3px;
+	right: 10px;
+	font-size: 90%;
 }
 
 .pass a,
@@ -349,6 +391,9 @@ a.flip:hover,
 }
 
 /* default look for editplugin icon links */
+.editplugin {
+	/*background: #fff; color: #000;*/
+}
 .plugin-desc {
 	padding: 5px;
 }
@@ -460,6 +505,15 @@ img.icon {
 	font-weight: bold;
 }
 	
+.comment .rbox-title,
+.comment .rbox-data {}
+
+.note .rbox-title,
+.note .rbox-data {}
+
+.tip .rbox-title,
+.tip .rbox-data {}
+
 .error .rbox-title,
 .errors .rbox-title,
 .warning .rbox-title {
@@ -493,7 +547,6 @@ img.icon {
 }
 
 .simplebox {
-	border: 1px solid #999;
 	padding: 3px;
 }
 
@@ -538,27 +591,6 @@ td.form {
 	padding: 0.2em;
 }
 
-td.integer {
-	text-align: right;
-}
-td.date {
-	text-align: center;
-}
-td.checkbox {
-	text-align: center;
-	width: 20px;	
-}
-td.action {
-	white-space: nowrap;
-}
-td.norecords {
-	text-align: left;
-	font-weight: bold;
-}
-td.id, td.icon {
-	text-align: center;
-}
-
 caption {
 	font-weight: bold;
 }
@@ -587,37 +619,6 @@ p.editdate {
 	padding-top: 10px;
 	font-size: 0.9em;
 	font-style: italic;
-}
-
-/* wikiplugin_fade */
-.wpfade-hidden {
-	background-repeat: no-repeat; background-image: url(../../img/toggle-expand-dark.png);
-	margin-left: -19px; 
-	padding-left: 19px;
-}
-
-.wpfade-shown {
-	background-repeat: no-repeat; background-image: url(../../img/toggle-collapse-dark.png);
-	margin-left: -19px; 
-	padding-left: 19px;
-}
-
-.wpfade-span-plain {
-	cursor:pointer;
-}
-
-.wpfade-span-icon {
-	cursor:pointer;
-	margin-left:19px;	
-}
-
-.wpfade-div-plain {
-	display: none;
-}
-
-.wpfade-div-icon {
-	display: none;
-	margin-left:19px;
 }
 
 /* wikiplugin_fancylist */
@@ -659,13 +660,11 @@ p.editdate {
 }
 
 .trackerplugindesc {
-	color: #BEBCBC;
-	font-style: italic;
+	color: #BEBCBC; font-style: italic
 }
 
 .charCount {
-	color: #BEBCBC;
-	font-style: italic;
+	color: #BEBCBC; font-style: italic
 }
 
 /* mouseover plugin */
@@ -677,12 +676,12 @@ p.editdate {
 
 /* img plugin */
 .imgbox {
-	border: 1px solid #a9a9a9;
-  background-color: #f9f9f9;
+	    border: 1px solid #a9a9a9;
+        background-color: #f9f9f9;
 }
 
 .thumbcaption {
-	font-size: 90%;
+		font-size: 90%;
 }
 
 /* TOC */
@@ -704,6 +703,10 @@ p.editdate {
 
 .diff div {
 	border-top: 1px solid #696969;
+}
+
+.diffbody {
+	color: #000;
 }
 
 .diffadded {
@@ -736,6 +739,10 @@ p.editdate {
 
 .diffadded .diffchar {
 	color: blue;
+}
+
+.plugin-desc {
+	padding: 5px;
 }
 
 /***** Articles ****/
@@ -773,12 +780,6 @@ a.blog:visited {
 small.description {
 	display: block;
 }
-
-.description {
-	font-size: .95em;
-	font-style: italic;
-}
-
 
 /*body.tiki_blogs*/ .post .title {
 	margin-top: 0;
@@ -1070,12 +1071,6 @@ textarea.tshoutbox{
 	font-size: 95%;
 }
 
-/***** User Tasks *****/
-.taskcount {
-	font-style: italic;
-}
-
-
 /***** Messages *****/
 
 .prio1,
@@ -1281,34 +1276,13 @@ textarea.tshoutbox{
 
 /* jq tablesorter */
 .fancysort th.headerSortUp {
-	background-repeat: no-repeat;
-	background-position: right;
-	background-image: url(../../pics/icons/resultset_up.png) !important;
+	background-repeat: no-repeat; background-position: right; background-image: url(../../pics/icons/resultset_up.png) !important;
 }
-
 .fancysort th.headerSortDown {
-	background-repeat: no-repeat;
-	background-position: right;
-	background-image: url(../../pics/icons/resultset_down.png) !important;
+	background-repeat: no-repeat; background-position: right; background-image: url(../../pics/icons/resultset_down.png) !important;
 }
-
 .fancysort th.header {
-	background-repeat: no-repeat;
-	background-position: right;
-	background-image: url(../../pics/icons/resultset.png);
-}
-
-/* jq tracker header */
-.trackerHeaderOpen {
-	background-repeat: no-repeat;
-	background-position: right;
-	background-image: url(../../pics/icons/resultset_down.png);
-}
-
-.trackerHeaderClose {
-	background-repeat: no-repeat;
-	background-position: right;
-	background-image: url(../../pics/icons/resultset_next.png);
+	background-repeat: no-repeat; background-position: right; background-image: url(../../pics/icons/resultset.png);
 }
 
 /* Perspectives (edit) */
@@ -1409,13 +1383,10 @@ textarea.tshoutbox{
 }
  /* wikiplugin_tracker */
 .trackerCategoryName {white-space:nowrap;}
+/* End of file */
 
 #captchaImg {
 	border: 1px solid black;
-}
-
-.ui-tabs .ui-tabs-nav li a {
-	padding: 0.3em 0.8em 0.1em;
 }
 /* interactive translations */
 
@@ -1430,13 +1401,6 @@ textarea.tshoutbox{
 	color: #000;
 }
 
-.tree.root .object-count {
-	float: right;
-	font-weight: bold;
-	margin-left: 10px;
-	margin-right: 10px;
-	color: #999;
-}
 
 /* jquery validation */
 
@@ -1444,60 +1408,4 @@ label.error {
 	background : url('../../pics/icons/error.png') no-repeat;
 	color:red;
 	padding-left:20px;
-	margin-left: 0.5em;
 }
-
-/* FileGals Upload Progress Bar */
-
-.progressName {
-	text-align: left;
-	white-space: nowrap;
-	overflow: hidden;
-	font-weight: bold;
-}
-
-.progressBarInProgress,
-.progressBarComplete,
-.progressBarError {
-	width: 0%;
-	height: 20px;
-	background-color: blue;
-	margin-top: 2px;
-	color: white;
-	text-align: center;
-	font-weight: bold;
-}
-
-.progressBarComplete {
-	width: 100%;
-	background-color: green;
-	visibility: hidden;
-}
-
-.progressBarError {
-	width: 100%;
-	background-color: red;
-	visibility: hidden;
-}
-
-.progressBarStatus {
-	margin-top: 2px;
-	width: 337px;
-	text-align: left;
-	white-space: nowrap;
-}
-
-.progressWrapper {
-	width: 357px;
-	overflow: hidden;
-}
-
-.progressContainer {
-	margin: 5px;
-	padding: 4px;
-	border: solid 1px #E8E8E8;
-	background-color: #F7F7F7;
-	overflow: hidden;
-}
-
-/* End of file */

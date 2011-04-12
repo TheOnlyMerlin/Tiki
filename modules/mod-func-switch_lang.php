@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,7 +16,7 @@ function module_switch_lang_info()
 	return array(
 		'name' => tra('Switch Language'),
 		'description' => tra('Displays a language picker to change the language of the site.'),
-		'prefs' => array( 'feature_multilingual', 'change_language' ),
+		'prefs' => array( 'change_language' ),
 		'params' => array(
 			'mode' => array(
 				'name' => tra('Display mode'),

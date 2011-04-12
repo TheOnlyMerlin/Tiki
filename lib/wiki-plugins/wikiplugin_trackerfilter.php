@@ -1,9 +1,15 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+
+function wikiplugin_trackerfilter_help() {
+  $help = tra("Filters the items of a tracker, fields are indicated with numeric ids.").":\n";
+  $help .= "~np~{TRACKERFILTER(filters=>2/d:4/r:5,action=>Name of submit button,displayList=y|n,line=y|n,TRACKERLIST_params )}Notice{TRACKERFILTER}~/np~";
+  return $help;
+}
 
 function wikiplugin_trackerfilter_info() {
 	require_once 'lib/wiki-plugins/wikiplugin_trackerlist.php';
@@ -12,7 +18,10 @@ function wikiplugin_trackerfilter_info() {
 		'filters' => array(
 			'required' => true,
 			'name' => tra('Filters'),
-			'description' => tra('The list of fields that can be used as filters along with their formats. The field number and format are separated by a / and multile fields are separated by ":". Format choices are: d - dropdown; r - radio buttons; m - multiple choice dropdown; c - checkbox; t - text with wild characters; T - exact text match; i - initials; sqlsearch - advanced search; >, <, >=, <= - greater than, less than, greater than or equal, less than or equal. Example:') . '2/d:4/r:5:(6:7)/sqlsearch',
+			'description' => tra('The list of fields that can be used as filters along with their formats. The field number and format are separated by a / 
+								 and multile fields are separated by ":". Format choices are: d - dropdown; r - radio buttons; m - multiple choice dropdown;
+								 c - checkbox; t - text with wild characters; T - exact text match; i - initials; sqlsearch - advanced search; >, <, >=, <= -
+								 greater than, less than, greater than or equal, less than or equal. Example:') . '2/d:4/r:5:(6:7)/sqlsearch',
 			'default' => ''
 		),
 		'action' => array(
@@ -78,16 +87,15 @@ function wikiplugin_trackerfilter_info() {
 		)
 	), $list['params'] );
 
-	return array(
+return array(
 		'name' => tra('Tracker Filter'),
-		'documentation' => 'PluginTrackerFilter',
-		'description' => tra('Create a form to filter tracker fields'),
+		'documentation' => tra('PluginTrackerFilter'),
+		'description' => tra('Filters the items of a tracker, fields are indicated with numeric ids.'),
 		'prefs' => array( 'feature_trackers', 'wikiplugin_trackerfilter' ),
 		'body' => tra('notice'),
-		'icon' => 'pics/icons/application_form_magnify.png',
 		'params' => $params,
 		'extraparams' => true,
-	);
+);
 }
 
 function wikiplugin_trackerfilter($data, $params) {
@@ -235,8 +243,7 @@ $(".trackerfilter form").submit( function () {
 				$params['filtervalue'] = array_merge($params['filtervalue'], $values);
 			}
 		}
-		if (empty($params['max']))
-			$params['max'] = $prefs['maxRecords'];
+		$params['max'] = $prefs['maxRecords'];
 		wikiplugin_trackerFilter_save_session_filters($params);
 		$smarty->assign('urlquery', wikiplugin_trackerFilter_build_urlquery($params));
 		include_once('lib/wiki-plugins/wikiplugin_trackerlist.php');
@@ -295,9 +302,9 @@ $(".trackerfilter form").submit( function () {
 	if( $first ) {
 		$first = false;
 		global $headerlib;
-		$headerlib->add_jq_onready('$("a.prevnext", "#trackerFilter' . $iTrackerFilter . ' + .trackerfilter-result").click( function( e ) {
+		$headerlib->add_js('$(".trackerfilter-result .prevnext").click( function( e ) {
 			e.preventDefault();
-			$("#trackerFilter' . $iTrackerFilter . ' form")
+			$(".trackerfilter-result form")
 				.attr("action", $(this).attr("href"))
 				.submit();
 		} );' );
@@ -500,7 +507,7 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 			case '*': // stars
 				$cumul = '';
 				foreach ($field['options_array'] as $val) {
-					$sval = strip_tags($tikilib->parse_data($val, array('parsetoc' => false)));
+					$sval = strip_tags($tikilib->parse_data($val));
 					$opt['id'] = $val;
 					if ($field['type'] == '*') {
 						$cumul = $opt['name'] = "$cumul*";

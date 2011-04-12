@@ -34,21 +34,32 @@ body {
 	font-size: 1em;
 }
 
+.horbar {
+	top: 10px;
+	left: auto;
+	right: 40px;
+}
+
+.horbaritem a {
+	font-size: 1em;
+	border-color: #224a5f;
+}
+
+.mdksubmenu {
+	margin-top: 0;
+}
+
 .clearfix {
 	height: 1%;
 }
 
-#tikihelp {
+div#tikihelp {
 	position: absolute;
 }
 
 #col2 .box,
 #col3 .box {
 	width: 181px !important;
-}
-
-body.fixed_width #col3 .box {
-	width: 178px !important;
 }
 
 #col2 ul.cssmenu_vert,
@@ -63,18 +74,21 @@ h3.box-title {
 }
 
 .moduleflip {
-	display: block;
 	position: static;
 	float: right;
+}
+
+.moduleflip {
+	display: block;
 }
 
 img.flipmodimage {
 	border: none;
 }
 
-.normal, 
-.admin,
-.bloglist {
+table.normal, 
+table.admin,
+table.bloglist {
 	width: 97%;
 }
 
@@ -98,7 +112,7 @@ body.tiki_blogs .author_info {
 	font-size: 11px;
 }
 
-body .galtable {
+body table.galtable {
 	width: 97%;
 }
 

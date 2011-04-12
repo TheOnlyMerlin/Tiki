@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 function module_since_last_visit_new_info() {
 	return array(
-		'name' => tra('Since Last Visit'),
+		'name' => tra('Since last visit'),
 		'description' => tra('Displays to logged in users new or updated objects since a point in time, by default their last login date and time.'),
 		'params' => array(
 			'showuser' => array(
@@ -34,11 +34,11 @@ function module_since_last_visit_new_info() {
 			),
 			'fold_sections' => array(
 				'name' => tra('Fold sections by default'),
-				'description' => tra('If set to "y", fold automatically sections and show only the title (user has to click on each section in order to see the details of modifications).') . ' ' . tra('Default:') . ' "n"'
+				'description' => tra('If set to "y", fold automatically sections and show only the title (user has to click on each section in order to see the details of modifications)') . ' ' . tra('Default:') . ' "n"'
 			),
 			'use_jquery_ui' => array(
-				'name' => tra('Use jQuery presentation'),
-				'description' => tra('If set to "y", use jQuery to show the result.') . ' ' . tra('Default:') . ' "n"'
+				'name' => tra('Use Jquery presentation'),
+				'description' => tra('If set to "y", it will use jquery to show the result') . ' ' . tra('Default:') . ' "n"'
 			),
 		),
 		'common_params' => array( 'nonums', 'rows' ),
@@ -52,12 +52,6 @@ function module_since_last_visit_new($mod_reference, $params = null)
 	include_once('tiki-sefurl.php');
 	
 	if (!$user) return false;
-
-	if (!isset($params['use_jquery_ui']) || $params['use_jquery_ui'] != 'y') {
-		$smarty->assign('use_jquery_ui', 'n');
-	} else {
-		$smarty->assign('use_jquery_ui', 'y');
-	}
 
 	if (!isset($params['date_as_link']) || $params['date_as_link'] != 'n') {
 		$smarty->assign('date_as_link', 'y');
@@ -413,7 +407,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		$count = 0;
 		$slvn_tmp_href = $userlib->user_has_permission($user, "tiki_p_admin") ? "tiki-assignuser.php?assign_user=" : "tiki-user_information.php?view_user=";
 		while ($res = $result->fetchRow()) {
-			$ret["items"]["users"]["list"][$count]["href"]  = $slvn_tmp_href . rawurlencode($res["login"]);
+			$ret["items"]["users"]["list"][$count]["href"]  = $slvn_tmp_href . $res["login"];
 			$ret["items"]["users"]["list"][$count]["title"] = $tikilib->get_short_datetime($res["registrationDate"]);
 			$ret["items"]["users"]["list"][$count]["label"] = $res["login"]; 
 			$count++;
@@ -450,7 +444,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 
 				$ret["items"]["trackers"]["tid"][$res['trackerId']]["label"] = tra('in') . ' ' . tra($tracker_name[$res["trackerId"]]);
 				$ret["items"]["trackers"]["tid"][$res['trackerId']]["cname"] = "slvn_tracker" . $res["trackerId"] . "_menu";
-				$ret['items']['trackers']['tid'][$res['trackerId']]['list'][$counta[$res['trackerId']]]['href']  = filter_out_sefurl('tiki-view_tracker_item.php?itemId=' . $res['itemId'], $smarty, 'trackeritem');
+				$ret["items"]["trackers"]["tid"][$res['trackerId']]["list"][$counta[$res['trackerId']]]["href"]  = "tiki-view_tracker_item.php?itemId=" . $res["itemId"];
 				$ret["items"]["trackers"]["tid"][$res['trackerId']]["list"][$counta[$res['trackerId']]]["title"] = $tikilib->get_short_datetime($res["created"]);
 	   
 				// routine to verify field in tracker that's used as label

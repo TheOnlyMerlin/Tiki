@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -29,12 +29,12 @@ switch ($data["which"]) {
 case 'useHTML':
 	$raw = $data["HTMLData"];
 
-				break;
+	break;
 
 case 'useImage':
 	$raw = "<img border=\"0\" src=\"banner_image.php?id=" . $id . "\" />";
 
-				break;
+	break;
 
 case 'useFixedURL':
 	$fp = fopen($data["fixedURLData"], "r");
@@ -48,11 +48,11 @@ case 'useFixedURL':
 	}
 
 	fclose ($fp);
-				break;
+	break;
 
 case 'useText':
 	$raw = $data["textData"];
 
-				break;
+	break;
 }
 print ($raw);

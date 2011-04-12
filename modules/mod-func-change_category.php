@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,7 +16,6 @@ function module_change_category_info() {
 		'name' => tra('Change Category'),
 		'description' => tra('Enables to categorize an object.') . ' This module currently only supports Wiki pages. Some combinations of Multiple categories, Detailed, Unassign and Assign may challenge intuition or be simply broken.',
 		'prefs' => array( 'feature_categories', 'feature_wiki' ),
-		'documentation' => 'Module change_category',
 		'params' => array(
 			'id' => array(
 				'name' => tra('Category identifier'),

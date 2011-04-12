@@ -1,7 +1,15 @@
+{* $Id$ *}
+
 {title help="Adding+fields+to+a+tracker" url="tiki-admin_tracker_fields.php?trackerId=$trackerId"}{tr}Admin Tracker:{/tr} {$tracker_info.name|escape}{/title}
-{assign var='title' value="{tr}Admin Tracker:{/tr} "|cat:$tracker_info.name|escape}
+
 <div class="navbar">
-	{include file="tracker_actions.tpl"}
+	{button href="tiki-list_trackers.php" _text="{tr}List Trackers{/tr}"}
+	
+	{if $tiki_p_admin_trackers eq 'y'}
+		{button href="tiki-admin_trackers.php" _text="{tr}Admin Trackers{/tr}"}
+		{button href="tiki-admin_trackers.php?trackerId=$trackerId&show=mod" _text="{tr}Edit This Tracker{/tr}"}
+	{/if}
+	{button href="tiki-view_tracker.php?trackerId=$trackerId" _text="{tr}View This Tracker's Items{/tr}"}
 </div>
 
 {tabset}
@@ -37,7 +45,7 @@
 					<th>{self_link _sort_arg='sort_mode' _sort_field='isMandatory' _title="{tr}Is mandatory/required?{/tr}"}{tr}Req.{/tr}{/self_link}</th>
 					<th>{self_link _sort_arg='sort_mode' _sort_field='isTblVisible' _title="{tr}Is column visible when listing tracker items?{/tr}"}{tr}List{/tr}{/self_link}</th>
 					<th>{self_link _sort_arg='sort_mode' _sort_field='isMain' _title="{tr}Column links to edit/view item?{/tr}"}{tr}Main{/tr}{/self_link}</th>
-					<th>{self_link _sort_arg='sort_mode' _sort_field='isMultilingual'}{tr}Multilingual{/tr}{/self_link}</th>
+					<th>{self_link _sort_arg='sort_mode' _sort_field='isMultilingual'}{tr}Multi-lingual{/tr}{/self_link}</th>
 					<th>{self_link _sort_arg='sort_mode' _sort_field='isSearchable' _title="{tr}Is column searchable?{/tr}"}{tr}Search{/tr}{/self_link}</th>
 					<th>{self_link _sort_arg='sort_mode' _sort_field='isPublic' _title="{tr}Field is public? (viewed in trackerlist plugin){/tr}"}{tr}Public{/tr}{/self_link}</th>
 					<th>{self_link _sort_arg='sort_mode' _sort_field='isHidden'}{tr}Hidden{/tr}{/self_link}</th>
@@ -75,8 +83,8 @@
 						<td>{if $channels[user].isSearchable eq 'y'}{icon _id='magnifier' title="{tr}Searchable{/tr}"}{else}-{/if}</td>
 						<td>{$channels[user].isPublic}</td>
 						<td>{$channels[user].isHidden}
-							{if !empty($channels[user].visibleBy)}<br />{icon _id='magnifier' width=10 height=10}{foreach from=$channels[user].visibleBy item=g}{$g|escape} {/foreach}{/if}
-							{if !empty($channels[user].editableBy)}<br />{icon _id='page_edit' width=10 height=10}{foreach from=$channels[user].editableBy item=g}{$g|escape} {/foreach}{/if}
+							{if !empty($channels[user].visibleBy)}<br />{icon _id=magnifier width=10 height=10}{foreach from=$channels[user].visibleBy item=g}{$g|escape} {/foreach}{/if}
+							{if !empty($channels[user].editableBy)}<br />{icon _id=page_edit width=10 height=10}{foreach from=$channels[user].editableBy item=g}{$g|escape} {/foreach}{/if}
 						</td>
 						<td>{$channels[user].description|truncate:14|escape}</td>
 						<td>{$channels[user].validation|escape}</td>
@@ -94,7 +102,7 @@
 				{/section}
 			</table>
 			<div style="text-align:right">
-				{tr}Perform action with checked:{/tr}
+				{tr}Perform action with checked{/tr}:
 				<select name="batchaction">
 					<option value="">{tr}...{/tr}</option>
 					<option value="delete">{tr}Delete{/tr}</option>
@@ -108,11 +116,11 @@
 	{/tab}
 	
 	{if $fieldId eq "0"}
-		{assign var='tabtitle' value="{tr}New tracker field{/tr}"}
+		{assign var='title' value="{tr}New tracker field{/tr}"}
 	{else}
-		{assign var='tabtitle' value="{tr}Edit tracker field{/tr}"}
+		{assign var='title' value="{tr}Edit tracker field{/tr}"}
 	{/if}
-	{tab name=$tabtitle}
+	{tab name=$title}
 		{if $error}
 			{remarksbox type="warning" title="{tr}Errors{/tr}"}{tr}{$error}{/tr}{/remarksbox}
 		{/if}
@@ -124,9 +132,9 @@
 			<input type="hidden" name="fieldId" value="{$fieldId|escape}" />
 			<input type="hidden" name="trackerId" value="{$trackerId|escape}" />
 			<table class="formcolor">
-				<tr><td>{tr}Name:{/tr}</td><td><input type="text" name="name" value="{$name|escape}" /></td></tr>
+				<tr><td>{tr}Name{/tr}:</td><td><input type="text" name="name" value="{$name|escape}" /></td></tr>
 				<tr>
-					<td>{tr}Type:{/tr}
+					<td>{tr}Type{/tr}:
 						{assign var=fld value="z"}
 						{foreach key=fk item=fi from=$field_types name=foreachname}
 							{if $fi.help}
@@ -175,7 +183,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Validation:{/tr}</td>
+					<td>{tr}Validation{/tr}:</td>
 					<td>
 						<select name="validation">
 							<option value="" {if $validation eq ''} selected="selected"{/if}>{tr}None{/tr}</option>
@@ -185,28 +193,23 @@
 						</select>
 					</td>
 				</tr>
-				<tr><td>{tr}Validation parameter:{/tr}</td><td><input type="text" size="30" name="validationParam" value="{$validationParam}" /></td></tr>
-				<tr><td>{tr}Validation error message:{/tr}</td><td><input type="text" size="40" name="validationMessage" value="{$validationMessage}" /></td></tr>
-				<tr><td>{tr}Order:{/tr}</td><td><input type="text" size="5" name="position" value="{$position}" /></td></tr>
+				<tr><td>{tr}Validation parameter{/tr}:</td><td><input type="text" size="30" name="validationParam" value="{$validationParam}" /></td></tr>
+				<tr><td>{tr}Validation error message{/tr}:</td><td><input type="text" size="40" name="validationMessage" value="{$validationMessage}" /></td></tr>
+				<tr><td>{tr}Order{/tr}:</td><td><input type="text" size="5" name="position" value="{$position}" /></td></tr>
 				<tr><td>{tr}Field is mandatory?{/tr}</td><td><input type="checkbox" name="isMandatory" {if $isMandatory eq 'y'}checked="checked"{/if} /></td></tr>
 				<tr>
 					<td>{tr}Is column visible when listing tracker items?{/tr}</td>
-					<td><input type="checkbox" name="isTblVisible" {if $isTblVisible eq 'y'}checked="checked"{/if} /></td>
+					<td><input type="checkbox" name="isTblVisible" {if empty($fieldId) || $isTblVisible eq 'y'}checked="checked"{/if} /></td>
+				</tr>
+				<tr>
+					<td colspan="2">{remarksbox type="info" title="{tr}Important note{/tr}"}{tr}The first field in the tracker to have column links to edit/view item (i.e. isMain) will be what is shown as the name of the item in category and search listings{/tr}{/remarksbox}</td>
 				</tr>
 				<tr>
 					<td>{tr}Column links to edit/view item?{/tr}</td>
-					<td><input type="checkbox" name="isMain" {if $isMain eq 'y'}checked="checked"{/if} /></td>
+					<td><input type="checkbox" name="isMain" {if empty($fieldId) ||$isMain eq 'y'}checked="checked"{/if} /></td>
 				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>
-						{remarksbox type="info"}
-							{tr}The first field in the tracker to have column links to edit/view item (i.e. isMain) will be what is shown as the name of the item in category and search listings{/tr}
-						{/remarksbox}
-					</td>
-				</tr>
-				<tr id='multilabelRow'{if $type neq 'a' and $type neq 't' and $type neq 'o' and $type neq '' and $type neq 'C'} style="display:none;"{/if}>
-					<td>{tr}Multilingual content:{/tr}</td><td><input type="checkbox" name="isMultilingual" {if $isMultilingual eq 'y'}checked="checked"{/if} /></td>
+				<tr id='multilabelRow'{if $type neq 'a' && $type neq 't' && $type neq 'o' && $type neq '' && $type neq 'C'} style="display:none;"{/if}>
+					<td>{tr}Multilingual content{/tr}:</td><td><input type="checkbox" name="isMultilingual" {if $isMultilingual eq 'y'}checked="checked"{/if} /></td>
 				</tr>
 				<tr>
 					<td>{tr}Column is searchable?{/tr}</td>
@@ -214,7 +217,7 @@
 				</tr>
 				<tr>
 					<td>{tr}Field is public? (viewed in trackerlist plugin){/tr}</td>
-					<td><input type="checkbox" name="isPublic" {if $isPublic eq 'y'}checked="checked"{/if} /></td>
+					<td><input type="checkbox" name="isPublic" {if empty($fieldId) || $isPublic eq 'y'}checked="checked"{/if} /></td>
 				</tr>
 				<tr>
 					<td>{tr}Field is hidden?{/tr}</td>
@@ -242,7 +245,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Description:{/tr}</td>
+					<td>{tr}Description{/tr}:</td>
 					<td>
 						<div id='zDescription' {if $type eq 'S'}style="display:none;"{else}style="display:block;"{/if}style="display:block;" >
 						{if $type ne 'S'}

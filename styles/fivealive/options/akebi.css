@@ -3,6 +3,10 @@
 	TikiWiki CMS/Groupware.
 */
 
+#header-top {
+	background: url(akebi/siteheader.png) no-repeat -250px 0
+}
+
 a,
 a:visited,
 tr.even a,
@@ -27,23 +31,22 @@ fieldset {
 
 hr {
 	color: #18a3bb;
-	background: #18a3bb;
-}
-
-#header_outer {
-	background: url(akebi/siteheadertile.jpg) 0 0 no-repeat;
+	background: #18a3bb;s
 }
 
 #header {
-	background: url(akebi/siteheader.png) -250px 0 no-repeat;
+	background: url(akebi/siteheadertile.jpg) 900px 0 no-repeat;
 }
 
 #sitetitle,
 #sitesubtitle {
 	text-shadow: #005064 3px 2px 0;
 }
-
-#footer_liner {
+/*
+#footer {
+	background: #004758;
+}*/
+#footer .container {
 	border-top: 1px solid #19a5be;
 	border-bottom: 1px solid #19a5be;
 }
@@ -103,28 +106,17 @@ input[type="submit"]:hover,
 .cssmenu_vert li ul a,
 .cssmenu_horiz li ul a,
 #header .cssmenu_horiz li ul a,
-#header .cssmenu_horiz li:hover ul a,
-#topbar_modules .cssmenu_horiz li ul a,
-#topbar_modules .cssmenu_horiz li:hover ul a {
+#header .cssmenu_horiz li:hover ul a {
 	background: #005064;
 }
 
 .cssmenu_vert li ul a:hover,
 .cssmenu_horiz li ul a:hover,
-#header .cssmenu_horiz li ul a:hover,
-#topbar_modules .cssmenu_horiz li ul a:hover {
+#header .cssmenu_horiz li ul a:hover {
 	background: #14a1bb;
 }
 
-#header .cssmenu_horiz li.selected a,
-#topbar_modules .cssmenu_horiz li.selected a,
-.cssmenu_horiz li.selected a,
-.cssmenu_vert li.selected a {
-	color: #b4f3fb;
-}
-
 #header .cssmenu_horiz li.selected li a,
-#topbar_modules .cssmenu_horiz li.selected li a,
 .cssmenu_horiz li.selected li a,
 .cssmenu_vert li.selected li a {
 	font-style: normal;

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -117,49 +117,16 @@ JS
 	);
 }
 
-/* Theme generator for Tiki 7+ */
-$reload = false;
-if ($prefs['themegenerator_feature'] === 'y') {
-	include_once 'lib/themegenlib.php';
-	
-	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-		$reload = true;
-		if (!empty($_REQUEST['tg_new_theme']) && !empty($_REQUEST['tg_edit_theme_name'])) {
-			$tg_edit_theme_name = $_REQUEST['tg_edit_theme_name'];
-			$themegenlib->saveNewTheme($tg_edit_theme_name);
-		} else if (!empty($_REQUEST['tg_delete_theme'])) {
-			$themegenlib->deleteCurrentTheme();
-		} else if (!empty($_REQUEST['tg_swaps']) && !empty($_REQUEST['tg_preview'])) {
-			$themegenlib->previewCurrentTheme($_REQUEST['tg_css_file'], $_REQUEST['tg_swaps']);
-		} else if (!empty($_REQUEST['tg_swaps']) && !empty($_REQUEST['tg_change_file'])) {
-			//$themegenlib->previewCurrentTheme($_REQUEST['tg_css_file'], $_REQUEST['tg_swaps']);
-			$reload = false;
-		} else if (!empty($_REQUEST['tg_swaps']) && !empty($_REQUEST['tg_css_file'])) {
-			$themegenlib->updateCurrentTheme($_REQUEST['tg_css_file'], $_REQUEST['tg_swaps']);
-		} else {
-			$reload = false;
-		}
-	}
-	
-	$themegenlib->setupEditor();
-	
-}
-
 if (isset($_REQUEST["looksetup"])) {
 	for ($i = 0, $count_feedback = count($tikifeedback); $i < $count_feedback; $i++) {
-		if (substr($tikifeedback[$i]['name'], 0, 5) == 'style' ||			// if style or style_option
-				$tikifeedback[$i]['name'] === 'themegenerator_theme') {		//	or themegen theme changed
+		if (substr($tikifeedback[$i]['name'], 0, 5) == 'style') { // if style or style_option
 			// If the theme has changed, reload the page to use the new theme
-			$reload = true;
+			$location = 'location: tiki-admin.php?page=look';
+			if ($prefs['feature_tabs'] == 'y') {
+				$location.= "&cookietab=" . $_COOKIE['tab'];
+			}
+			header($location);
+			exit;
 		}
 	}
-}
-
-if ($reload) {
-		$location = 'location: tiki-admin.php?page=look';
-		if ($prefs['feature_tabs'] === 'y' && isset($_COOKIE['tab']) && $_COOKIE['tab'] > 1) {
-			$location.= "&cookietab=" . $_COOKIE['tab'];
-		}
-		header($location);
-		exit;
 }

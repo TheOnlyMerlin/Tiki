@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -349,9 +349,9 @@ foreach($groups['data'] as &$row) {
 
 }
 
-$smarty->assign('permGroups', $permGroups);
+$smarty->assign('permGroups', implode(',', $permGroups));
 $smarty->assign('permGroupCols', $groupIndices);
-$smarty->assign('groupNames', $groupNames);
+$smarty->assign('groupNames', implode(',', $groupNames));
 //$smarty->assign('groupInheritance', $groupInheritance);
 
 
@@ -490,6 +490,8 @@ setTimeout(function(){$("#treetable_1_filter").keypress();}, 500);';
 $headerlib->add_jq_onready($js);
 
 ask_ticket('object-perms');
+setcookie('tab', $cookietab);
+$smarty->assign('cookietab', $cookietab);
 
 // setup smarty remarks flags
 
@@ -558,7 +560,6 @@ function quickperms_get_filegal() {
 				'tiki_p_edit_gallery_file' => 'tiki_p_edit_gallery_file',
 				'tiki_p_list_file_galleries' => 'tiki_p_list_file_galleries',
 				'tiki_p_upload_files' => 'tiki_p_upload_files',
-				'tiki_p_remove_files' => 'tiki_p_remove_files',
 				'tiki_p_view_fgal_explorer' => 'tiki_p_view_fgal_explorer',
 				'tiki_p_view_fgal_path' => 'tiki_p_view_fgal_path',
 				'tiki_p_view_file_gallery' => 'tiki_p_view_file_gallery',
@@ -574,7 +575,6 @@ function quickperms_get_filegal() {
 				'tiki_p_edit_gallery_file' => 'tiki_p_edit_gallery_file',
 				'tiki_p_list_file_galleries' => 'tiki_p_list_file_galleries',
 				'tiki_p_upload_files' => 'tiki_p_upload_files',
-				'tiki_p_remove_files' => 'tiki_p_remove_files',
 				'tiki_p_view_fgal_explorer' => 'tiki_p_view_fgal_explorer',
 				'tiki_p_view_fgal_path' => 'tiki_p_view_fgal_path',
 				'tiki_p_view_file_gallery' => 'tiki_p_view_file_gallery',

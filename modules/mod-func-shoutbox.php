@@ -1,13 +1,14 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 /*
- * AJAXified Shoutbox module (jonnybradley for mpvolt Aug/Sept 2008 - de-AJAXified for Tiki 7 Dec 2010 jb)
+ * AJAXified Shoutbox module (jonnybradley for mpvolt Aug/Sept 2008)
  * 
+ * Prefers Ajax enabled (Admin/Features/Experimental - ajax_xajax) but will work the old way without it
  * Anonymous may need tiki_p_view_shoutbox and tiki_p_post_shoutbox setting (in Group admin)
  * Enable Admin/Wiki/Wiki Features/feature_antibot to prevent spam ("Anonymous editors must input anti-bot code")
  * 
@@ -32,7 +33,6 @@ function module_shoutbox_info() {
 		'name' => tra('Shoutbox'),
 		'description' => tra('The shoutbox is a quick messaging tool. Messages reload each time the page changes. Anyone with the right permission can see all messages. Another permission allows to send messages.'),
 		'prefs' => array( 'feature_shoutbox' ),
-		'documentation' => 'Module shoutbox',
 		'params' => array(
 			'tooltip' => array(
 				'name' => tra('Tooltip'),
@@ -87,7 +87,7 @@ function module_shoutbox( $mod_reference, $module_params ) {
 	include_once ('lib/shoutbox/shoutboxlib.php');
 
 	if ($tiki_p_view_shoutbox == 'y') {
-		if (true || $prefs['feature_ajax'] !== 'y') {
+		if ($prefs['ajax_xajax'] !== 'y') {
 			$setup_parsed_uri = parse_url($_SERVER['REQUEST_URI']);
 	
 			if (isset($setup_parsed_uri['query'])) {
@@ -107,8 +107,10 @@ function module_shoutbox( $mod_reference, $module_params ) {
 			} else {
 				$shout_father.= '?';
 			}
-		} else {	// $prefs['feature_ajax'] == 'y'			// AJAX_TODO
+		} else {	// $prefs['ajax_xajax'] == 'y'
 			$shout_father = 'tiki-shoutbox.php?';
+			global $ajaxlib;
+			require_once('lib/ajax/ajaxlib.php');
 		}
 	
 		$smarty->assign('shout_ownurl', $shout_father);
@@ -121,8 +123,14 @@ function module_shoutbox( $mod_reference, $module_params ) {
 		}
 	
 		if ($tiki_p_post_shoutbox == 'y') {
-			if (isset($_REQUEST['shout_send'])) {
-				doProcessShout($_REQUEST);
+			if ($prefs['ajax_xajax'] == 'y') {
+				if (!isset($_REQUEST['xajax'])) {	// xajaxRequestUri needs to be set to tiki-shoutbox.php in JS before calling the func
+					$ajaxlib->registerFunction('processShout');
+				}
+			} else {
+				if (isset($_REQUEST['shout_send'])) {
+					doProcessShout($_REQUEST);
+				}
 			}
 		}
 	
@@ -136,5 +144,10 @@ function module_shoutbox( $mod_reference, $module_params ) {
 		$smarty->assign('waittext', isset($module_params['waittext']) ? $module_params['waittext'] : tra('Please wait...'));
 		$smarty->assign('tweet', isset($module_params['tweet']) &&($tikilib->get_user_preference($user,'twitter_token')!='') ? $module_params['tweet'] : "0");
 		$smarty->assign('facebook', isset($module_params['facebook']) &&($tikilib->get_user_preference($user,'facebook_token')!='') ? $module_params['facebook'] : "0");
+		if ($prefs['ajax_xajax'] == 'y') {
+			if (!isset($_REQUEST['xajax'])) {
+				$ajaxlib->registerTemplate('mod-shoutbox.tpl');
+			}
+		}
 	}
 }

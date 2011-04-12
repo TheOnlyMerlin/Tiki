@@ -1,8 +1,8 @@
-{title help="Categories" admpage="category"}{tr}Admin Categories{/tr}{/title}
+{* $Id$ *}
+{title help="Categories+Admin" admpage="category"}{tr}Admin Categories{/tr}{/title}
 
 <div class="navbar">
 	{button href="tiki-browse_categories.php?parentId=$parentId" _text="{tr}Browse Category{/tr}" _title="{tr}Browse the category system{/tr}"}
-	{button href="tiki-edit_categories.php" _text="{tr}Organize Objects{/tr}" _title="{tr}Organize Objects{/tr}"}
 </div>
 
 {if !empty($errors)}
@@ -10,7 +10,7 @@
 {/if}
 
 <div class="tree" id="top">
-	<div class="treetitle">{tr}Current category:{/tr} 
+	<div class="treetitle">{tr}Current category{/tr}: 
 		<a href="tiki-admin_categories.php?parentId=0" class="categpath">{tr}Top{/tr}</a>
 		{section name=x loop=$path}
 			&nbsp;::&nbsp;
@@ -75,7 +75,7 @@
 			<input type="hidden" name="categId" value="{$categId|escape}" />
 			<table class="formcolor">
 				<tr>
-					<td>{tr}Parent:{/tr}</td>
+					<td>{tr}Parent{/tr}:</td>
 					<td>
 						<select name="parentId">
 							<option value="0">{tr}Top{/tr}</option>
@@ -86,11 +86,11 @@
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Name:{/tr}</td>
+					<td>{tr}Name{/tr}:</td>
 					<td><input type="text" size="40" name="name" value="{$name|escape}" /></td>
 				</tr>
 				<tr>
-					<td>{tr}Description:{/tr}</td>
+					<td>{tr}Description{/tr}:</td>
 					<td><textarea rows="2" cols="40" name="description">{$description|escape}</textarea></td>
 				</tr>
 				<tr>
@@ -137,23 +137,24 @@
 					<a href="tiki-admin_categories.php?parentId={$parentId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'type_desc'}type_asc{else}type_desc{/if}#objects">{tr}Type{/tr}</a>
 				</th>
 			</tr>
-			{cycle values="even,odd" print=false}
 			{section name=ix loop=$objects}
-				<tr class="{cycle}">
-					<td class="icon">
+				<tr>
+					<td class="even">
 						<a href="tiki-admin_categories.php?parentId={$parentId}&amp;removeObject={$objects[ix].catObjectId}&amp;fromCateg={$parentId}" title="{tr}Remove from this Category{/tr}">{icon _id='link_delete' alt="{tr}Remove from this Category{/tr}"}</a>
 					</td>
-					<td class="text">
+					<td class="even">
 						<a href="{$objects[ix].href}" title="{$objects[ix].name}">{$objects[ix].name|truncate:80:"(...)":true|escape}</a>
 					</td>
-					<td class="text">{tr}{$objects[ix].type}{/tr}</td>
+					<td class="even">{tr}{$objects[ix].type}{/tr}</td>
 				</tr>
 			{sectionelse}
-				{norecords _colspan=3}
+				<tr>
+					<td class="even" colspan="3"><strong>{tr}No records found.{/tr}</strong></td>
+				</tr>
 			{/section}
 		</table>
 
-		{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
+		{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset }{/pagination_links}
 	{/tab}
 	
 	{if $parentId !=0}

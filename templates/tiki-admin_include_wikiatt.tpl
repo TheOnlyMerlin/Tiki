@@ -51,8 +51,6 @@
 							<a href="tiki-admin.php?page=wikiatt&amp;attId={$attachements[x].attId}&amp;action={if $attachements[x].path}move2db{else}move2file{/if}">{tr}Change{/tr}</a>
 						</td>
 					</tr>
-				{sectionelse}
-					{norecords _colspan=9}
 				{/section}
 			</table>
 

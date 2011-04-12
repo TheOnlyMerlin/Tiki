@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -36,9 +36,7 @@ class CategLib extends ObjectLib
 			foreach ($back as $cat) {
 				if ($cat['categId'] == $categId)
 					$path = $cat['categpath'].'::';
-			}
-			foreach ($back as $cat) {
-				if (($all == true || $cat['parentId'] == $categId) && ($path == '' || strpos($cat['categpath'], $path) === 0)) {
+				else if (($all == true || $cat['parentId'] == $categId) && ($path != '' && strpos($cat['categpath'], $path) === 0)) {
 					$cat['categpath'] = substr($cat['categpath'], strlen($path));
 					$back2[] = $cat;
 				}
@@ -378,7 +376,6 @@ class CategLib extends ObjectLib
 	}
 
 	function categorize($catObjectId, $categId) {
-		global $prefs;
 		if (empty($categId)) {
 			return;
 		}
@@ -387,30 +384,12 @@ class CategLib extends ObjectLib
 	        
 		$query = "insert into `tiki_category_objects`(`catObjectId`,`categId`) values(?,?)";
 		$result = $this->query($query,array((int) $catObjectId,(int) $categId));
-
-		global $cachelib;
-		$cachelib->invalidate("allcategs");
-		if ($prefs['feature_actionlog'] == 'y') {
-			global $logslib; include_once('lib/logs/logslib.php');
-			global $objectlib; include_once('lib/objectlib.php');
-			$info = $objectlib->get_object_via_objectid($catObjectId);
-			$logslib->add_action('Categorized', $info['itemId'], $info['type'], "categId=$categId");
-		}
 	}
 
 	function uncategorize($catObjectId, $categId) {
-		global $prefs;
 		$query = "delete from `tiki_category_objects` where `catObjectId`=? and `categId`=?";
 		$result = $this->query($query,array((int) $catObjectId,(int) $categId),-1,-1,false);
-
-		global $cachelib;
-		$cachelib->invalidate("allcategs");
-		if ($prefs['feature_actionlog'] == 'y') {
-			global $logslib; include_once('lib/logs/logslib.php');
-			global $objectlib; include_once('lib/objectlib/php');
-			$info = $objectlib->get_object_via_objectid($catObjectId);
-			$logslib->add_action('Uncategorized', $info['itemId'], $info['type'], "categId=$categId");
-		}	}
+	}
 
 	function get_category_descendants($categId) {
 		global $user,$userlib;
@@ -431,47 +410,45 @@ class CategLib extends ObjectLib
 
 	// Returns a hash indicating which permission is needed for viewing an object of desired type.
 	function map_object_type_to_permission() {
-		return array(
-			'wiki page' => 'tiki_p_view',
-			'wiki' => 'tiki_p_view',
-			'wiki' => 'tiki_p_view',
-			'forum' => 'tiki_p_forum_read',
-			'forum post' => 'tiki_p_forum_read',
-			'image gallery' => 'tiki_p_view_image_gallery',
-			'file gallery' => 'tiki_p_view_file_gallery',
-			'tracker' => 'tiki_p_view_trackers',
-			'blog' => 'tiki_p_read_blog',
-			'blog post' => 'tiki_p_read_blog',
-			'quiz' => 'tiki_p_take_quiz',
+	    return array('wiki page' => 'tiki_p_view',
+			 'wiki' => 'tiki_p_view',
+			 'forum' => 'tiki_p_forum_read',
+	    	 'forum post' => 'tiki_p_forum_read',
+			 'image gallery' => 'tiki_p_view_image_gallery',
+			 'file gallery' => 'tiki_p_view_file_gallery',
+			 'tracker' => 'tiki_p_view_trackers',
+			 'blog' => 'tiki_p_read_blog',
+			 'blog post' => 'tiki_p_read_blog',
+			 'quiz' => 'tiki_p_take_quiz',
 
-			// overhead - we are checking individual permission on types below, but they
-			// can't have individual permissions, although they can be categorized.
-			// should they have permissions too?
-			'poll' => 'tiki_p_vote_poll',
-			'survey' => 'tiki_p_take_survey',
-			'directory' => 'tiki_p_view_directory',
-			'faq' => 'tiki_p_view_faqs',
-			'sheet' => 'tiki_p_view_sheet',
+			 // overhead - we are checking individual permission on types below, but they
+			 // can't have individual permissions, although they can be categorized.
+			 // should they have permissions too?
+			 'poll' => 'tiki_p_vote_poll',
+			 'survey' => 'tiki_p_take_survey',
+			 'directory' => 'tiki_p_view_directory',
+			 'faq' => 'tiki_p_view_faqs',
+			 'sheet' => 'tiki_p_view_sheet',
 
-			// these ones are tricky, because permission type is for container, not object itself.
-			// I think we need to refactor permission schemes for them to be wysiwyca - lfagundes
-			//
-			// by now they're not showing, list_category_objects needs support for ignoring permissions
-			// for a type.
-			'article' => 'tiki_p_read_article',
-			'submission' => 'tiki_p_approve_submission',
-			'image' => 'tiki_p_view_image_gallery',
-			'calendar' => 'tiki_p_view_calendar',
-			'file' => 'tiki_p_download_files',
-			'trackeritem' => 'tiki_p_view_trackers',
-
-			// newsletters can't be categorized, although there's some code in tiki-admin_newsletters.php
-			// 'newsletter' => ?,
-			// 'events' => ?,
-		);
+			 // these ones are tricky, because permission type is for container, not object itself.
+			 // I think we need to refactor permission schemes for them to be wysiwyca - lfagundes
+			 //
+			 // by now they're not showing, list_category_objects needs support for ignoring permissions
+			 // for a type.
+			 'article' => 'tiki_p_read_article',
+			 'submission' => 'tiki_p_approve_submission',
+			 'image' => 'tiki_p_view_image_gallery',
+			 'calendar' => 'tiki_p_view_calendar',
+			 'file' => 'tiki_p_download_files',
+			 'trackeritem' => 'tiki_p_view_trackers',
+			 
+			 // newsletters can't be categorized, although there's some code in tiki-admin_newsletters.php
+			 // 'newsletter' => ?,
+			 // 'events' => ?,
+			 );
 	}
 
-	function list_category_objects($categId, $offset, $maxRecords, $sort_mode='pageName_asc', $type='', $find='', $deep=false, $and=false, $filter=null) {
+	function list_category_objects($categId, $offset, $maxRecords, $sort_mode='pageName_asc', $type='', $find='', $deep=false, $and=false) {
 		global $userlib, $prefs;
 		if ($prefs['feature_sefurl'] == 'y') {include_once('tiki-sefurl.php');}
 		if ($prefs['feature_trackers'] == 'y') {global $trklib;require_once('lib/trackers/trackerlib.php');}
@@ -520,24 +497,13 @@ class CategLib extends ObjectLib
 			$where .= " AND (`name` LIKE ? OR `description` LIKE ?)";
 		} 
 		if (!empty($type)) {
-			if (is_array($type)) {
-				$where .= ' AND `type` in ('.implode(',',array_fill(0,count($type),'?')).')';
-				$bindWhere = array_merge($bindWhere, $type);
-			} else {
-				$where .= ' AND `type` =? ';
-				$bindWhere[] = $type;
-			}
+			$where .= ' AND `type` =? ';
+			$bindWhere[] = $type;
 		}
-		if (!empty($filter['language']) && !empty($type) && ($type == 'wiki' || $type == 'wiki page')) {
-			$join .= 'LEFT JOIN `tiki_pages` tp ON (o.`itemId` = tp.`pageName`)';
-			if (!empty($filter['language_unspecified'])) {
-				$where .= ' AND (tp.`lang` IS NULL OR tp.`lang` = ? OR tp.`lang`=?)';
-				$bindWhere[] = '';
-			} else {
-				$where .= ' AND  tp.`lang`=?';
-			}
-			$bindWhere[] = $filter['language'];
-		}
+
+		global $user;
+		$permMap = $this->map_object_type_to_permission();
+		$groupList = $this->get_user_groups($user);
 
 		$bindVars = $bindWhere;
 
@@ -549,23 +515,11 @@ class CategLib extends ObjectLib
 		}
 
 		// Fetch all results as was done before, but only do it once
-		$query_cant = "SELECT DISTINCT c.*, o.* FROM `tiki_category_objects` c, `tiki_categorized_objects` co, `tiki_objects` o $join WHERE c.`catObjectId`=o.`objectId` AND o.`objectId`=co.`catObjectId` $where";
+		$query_cant = "SELECT DISTINCT c.*, o.* FROM `tiki_category_objects` c, `tiki_categorized_objects` co, `tiki_objects` o WHERE c.`catObjectId`=o.`objectId` AND o.`objectId`=co.`catObjectId` $where";
 		$query = $query_cant . $orderBy;
 		$result = $this->fetchAll($query,$bindVars);
 		$cant = count($result);
-
-		if ($sort_mode == 'shuffle') {
-			shuffle($ret);
-		}
-
-		return $this->filter_object_list($result, $cant, $offset, $maxRecords);
-	}
 		
-	private function filter_object_list($result, $cant, $offset, $maxRecords) {
-		global $user, $prefs;
-		$permMap = $this->map_object_type_to_permission();
-		$groupList = $this->get_user_groups($user);
-
 		// Filter based on permissions
 		$contextMap = array( 'type' => 'type', 'object' => 'itemId' );
 		$contextMapMap = array_fill_keys( array_keys( $permMap ), $contextMap );
@@ -584,7 +538,6 @@ class CategLib extends ObjectLib
 		foreach( $result as $res ) {
 			if (!in_array($res['catObjectId'].'-'.$res['categId'], $objs)) { // same object and same category
 				if (preg_match('/trackeritem/',$res['type'])&&$res['description']=='') {
-					global $trklib; include_once('lib/trackers/trackerlib.php');
 					$trackerId=preg_replace('/^.*trackerId=([0-9]+).*$/','$1',$res['href']);
 					$res['name']=$trklib->get_isMain_value($trackerId,$res['itemId']);
 					$filed=$trklib->get_field_id($trackerId,"description");
@@ -605,31 +558,14 @@ class CategLib extends ObjectLib
 			}
 		}
 
-		return array(
-			"data" => $ret,
-			"cant" => $cant,
-		);
-	}
+		$retval = array();
+		if ($sort_mode == 'shuffle') {
+			shuffle($ret);
+		}
 
-	function list_orphan_objects($offset, $maxRecords, $sort_mode) {
-		$orderClause = $this->convertSortMode($sort_mode);
-
-		$common = "
-			FROM
-				tiki_objects
-				LEFT JOIN tiki_category_objects ON objectId = catObjectId
-			WHERE
-				catObjectId IS NULL
-			ORDER BY $orderClause
-			";
-
-		$query = "SELECT objectId catObjectId, 0 categId, type, itemId, name, href $common";
-		$queryCount = "SELECT COUNT(*) $common";
-		
-		$result = $this->fetchAll($query, array(), $maxRecords, $offset);
-		$count = $this->getOne($queryCount);
-
-		return $this->filter_object_list($result, $count, $offset, $maxRecords);
+		$retval["data"] = $ret;
+		$retval["cant"] = $cant;
+		return $retval;
 	}
 
 	// get the parent categories of an object
@@ -899,10 +835,8 @@ class CategLib extends ObjectLib
 		$catObjectId = $this->is_categorized('file gallery', $galleryId);
 
 		if (!$catObjectId) {
-			$filegallib = TikiLib::lib('filegal');
-
 			// The page is not cateorized
-			$info = $filegallib->get_file_gallery($galleryId);
+			$info = $this->get_file_gallery($galleryId);
 
 			$href = 'tiki-list_file_gallery.php?galleryId=' . $galleryId;
 			$catObjectId = $this->add_categorized_object('file gallery', $galleryId, $info["description"], $info["name"], $href);
@@ -1027,7 +961,6 @@ class CategLib extends ObjectLib
 		"children" is the number of categories the category has as children.
 		"objects" is the number of objects directly in the category. */
 	function build_cache($showWS = false) {
-		global $tikilib;
 		global $cachelib; include_once('lib/cache/cachelib.php');
 		$ret = array();
 		
@@ -1048,7 +981,7 @@ class CategLib extends ObjectLib
 				$tepath[] = $cat['name'];
 			}
 			$categpath = implode("::",$tepath);
-			$categpathforsort = $tikilib->take_away_accent(implode("!!",$tepath)); // needed to prevent cat::subcat to be sorted after cat2::subcat
+			$categpathforsort = implode("!!",$tepath); // needed to prevent cat::subcat to be sorted after cat2::subcat
 			$res["categpath"] = $categpath;
 			$res["tepath"] = $tepath;
 			$query = "select count(*) from `tiki_categories` where `parentId`=?";
@@ -1213,10 +1146,8 @@ class CategLib extends ObjectLib
     }
     
     //Moved from tikilib.php
-    // ###trebly:B01229:Test change $sort to name_asc : pb which other case than listcats
-   // function get_categoryobjects($catids,$types="*",$sort='created_desc',$split=true,$sub=false,$and=false, $maxRecords = 500) {
-  function get_categoryobjects($catids,$types="*",$sort='name_asc',$split=true,$sub=false,$and=false, $maxRecords = 500) {
-		global $smarty, $prefs;
+    function get_categoryobjects($catids,$types="*",$sort='created_desc',$split=true,$sub=false,$and=false, $maxRecords = 500) {
+			global $smarty, $prefs;
 
 		$typetokens = array(
 			"article" => "article",
@@ -1281,12 +1212,11 @@ class CategLib extends ObjectLib
 		} elseif (isset($typetitles["$types"])) {
 			$typesallowed = array($types);
 		}
-		// ###trebly:B01229:Test of a title of the lists
-		$out=$smarty->fetch("categobjects_title.tpl");
+		
 		foreach ($catids as $id) {
 			$titles["$id"] = $this->get_category_name($id);
 			$objectcat = array();
-			$objectcat = $this->list_category_objects($id, $offset, $and? -1: $maxRecords, $sort, $types == '*'? '': $typesallowed, $find, $sub);
+			$objectcat = $this->list_category_objects($id, $offset, $maxRecords, $sort, '', $find, $sub);
 
 			$acats = $andcat = array();
 			foreach ($objectcat["data"] as $obj) {
@@ -1314,8 +1244,6 @@ class CategLib extends ObjectLib
 				$smarty->assign("titles", $titles);
 				$smarty->assign("listcat", $listcat);
 				$smarty->assign("one", count($listcat));
-				// ###trebly:B01229 test sur display des objets de m�me cat�gorie
-				//$out .= echo('<br />Titre de la liste des objets de cat�gories <br />').$smarty->fetch("categobjects.tpl");
 				$out .= $smarty->fetch("categobjects.tpl");
 				$listcat = array();
 				$titles = array();
@@ -1466,7 +1394,7 @@ class CategLib extends ObjectLib
 		}		
 	}
 	
-	function group_watch_category_and_descendants($group, $categId, $categName = NULL, $top = true) {
+function group_watch_category_and_descendants($group, $categId, $categName, $top = true) {
 		global $tikilib, $descendants; 
 		
 		if ($categId != 0 && $top == true) {
@@ -1596,7 +1524,7 @@ class CategLib extends ObjectLib
 		global $userlib;
 		return ($userlib->user_has_permission($user,'tiki_p_admin')
 				|| ($userlib->user_has_permission($user,'tiki_p_edit') && !$userlib->object_has_one_permission($categoryId,"category"))				 
-				|| $userlib->object_has_permission($user, $categoryId, "category", "tiki_p_edit") 
+				|| $userlib->object_has_permission($user, $categoryId, "category", "tiki_p_edit")
 				);
 	}
 	
@@ -1889,7 +1817,7 @@ class CategLib extends ObjectLib
 	// generate category tree for use in various places (like categorize_list.php)
 	function generate_cat_tree($categories, $canchangeall = false, $forceincat = array()) {
 		global $smarty;
-		include_once ('lib/tree/categ_browse_tree.php');
+		include_once ('lib/tree/categ_picker_tree.php');
 		$tree_nodes = array();
 		$roots = $this->findRoots( $categories );
 		foreach ($categories as $c) {
@@ -1909,11 +1837,11 @@ class CategLib extends ObjectLib
 					'data' => $smarty->fetch( 'category_tree_entry.tpl' ),
 				);
 				if (in_array( $c['parentId'], $roots )) {
-					$tree_nodes[count($tree_nodes) - 1]['data'] = $tree_nodes[count($tree_nodes) - 1]['data'];
+					$tree_nodes[count($tree_nodes) - 1]['data'] = '<strong>'.$tree_nodes[count($tree_nodes) - 1]['data'].'</strong>';
 				}
 			}
 		}
-		$tm = new CatBrowseTreeMaker("categorize");
+		$tm = new CatPickerTreeMaker("categorize");
 		$res = '';
 		foreach( $roots as $root ) {
 			$res .= $tm->make_tree($root, $tree_nodes);

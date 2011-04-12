@@ -35,13 +35,13 @@
 				{/if}
 
         <div class="quizoptions">
-          <table class="formcolor">
+          <table class="normal">
             <tr>
               <td valign="top">
               	&nbsp;
               </td>
               <td valign="top">
-                {toolbars area_id="question_$area" qtnum='2'}
+                {toolbars area_id=question_$area qtnum='2'}
                 <textarea id="question_{$questions[ix].questionId}" name="question_{$questions[ix].questionId}" rows="{$textrows}" cols="{$textcols}"></textarea>
               </td>
             </tr>

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,13 +7,12 @@
 
 function wikiplugin_profile_info() {
 	return array(
-		'name' => tra('Profile Application'),
-		'description' => tra('Add a button for applying a profile.'),
-		'documentation' => 'PluginProfile',
+		'name' => tra('Profile application'),
+		'description' => tra('Adds controls required to apply a profile.'),
+		'documentation' => tra('PluginProfile'),
 		'prefs' => array( 'wikiplugin_profile' ),
 		'validate' => 'all',
 		'inline' => true,
-		'icon' => 'pics/icons/database_lightning.png',
 		'params' => array(
 			'domain' => array(
 				'required' => false,

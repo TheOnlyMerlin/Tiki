@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,7 +14,7 @@ class PreferencesLib
 	function PreferencesLib() {
 		global $prefs;
 		
-		$this->file = 'temp/preference-index-' . $prefs['language'];
+		$this->file = 'temp/cache/preference-index-' . $prefs['language'];
 	}
 
 	function getPreference( $name, $deps = true, $source = null, $get_pages = false ) {
@@ -23,21 +23,19 @@ class PreferencesLib
 		$data = $this->loadData( $name );
 
 		if( isset( $data[$name] ) ) {
-			$defaults = array(
-				'type' => '',
-				'helpurl' => '',
-				'help' => '',
-				'dependencies' => array(),
-				'extensions' => array(),
-				'options' => array(),
-				'description' => '',
-				'size' => 40,
-				'detail' => '',
-				'warning' => '',
-				'hint' => '',
-				'shorthint' => '',
-				'perspective' => true,
-				'parameters' => array(),
+			$defaults = array('type' => '',
+								'helpurl' => '',
+								'help' => '',
+								'dependencies' => array(),
+								'extensions' => array(),
+								'options' => array(),
+								'description' => '',
+								'size' => 40,
+								'detail' => '',
+								'warning' => '',
+								'hint' => '',
+								'shorthint' => '',
+								'perspective' => true,
 			);
 			$info = $data[$name];
 
@@ -71,13 +69,6 @@ class PreferencesLib
 
 			if( $deps && isset( $info['dependencies'] ) ) {
 				$info['dependencies'] = $this->getDependencies( $info['dependencies'] );
-			}
-
-			$info['params'] = '';
-			if (!empty($info['parameters'])) {
-				foreach ($info['parameters'] as $param => $value) {
-					$info['params'] .= ' ' . $param . '="' . $value . '"';
-				}
 			}
 
 			$info['available'] = true;
@@ -144,9 +135,9 @@ class PreferencesLib
 			}
 			$realPref = in_array($pref, $user_overrider_prefs)? "site_$pref": $pref;
 
-			if( ($old = $tikilib->get_preference( $realPref ) ) != $value ) {
+			if( $tikilib->get_preference( $realPref ) != $value ) {
 				$tikilib->set_preference( $pref, $value );
-				$changes[$pref] = array('new'=> $value, 'old' => $old);
+				$changes[$pref] = $value;
 			}
 		}
 
@@ -163,7 +154,7 @@ class PreferencesLib
 		}
 	}
 	
-	function getInput( JitFilter $filter, $preferences = array(), $environment = '' ) {
+	function getInput( JitFilter $filter, $preferences = array(), $environment ) {
 		$out = array();
 
 		foreach( $preferences as $name ) {
@@ -189,7 +180,7 @@ class PreferencesLib
 
 	function getExtraSortColumns() {
 		global $prefs;
-		if( isset($prefs['rating_advanced']) && $prefs['rating_advanced'] == 'y' ) {
+		if( $prefs['rating_advanced'] == 'y' ) {
 			return TikiDb::get()->fetchMap( "SELECT CONCAT('adv_rating_', ratingConfigId), name FROM tiki_rating_configs" );
 		} else {
 			return array();
@@ -206,32 +197,25 @@ class PreferencesLib
 		return $this->getFileData( $file );
 	}
 
-	private function getFileData( $file, $partial = false ) {
+	private function getFileData( $file ) {
 		if( ! isset( $this->files[$file] ) ) {
 			require_once 'lib/prefs/' . $file . '.php';
 			$function = "prefs_{$file}_list";
 			if( function_exists( $function ) ) {
-				$this->files[$file] = $function($partial);
+				$this->files[$file] = $function();
 			} else {
 				$this->files[$file] = array();
 			}
 		}
 
-		$ret = $this->files[$file];
-
-		if ($partial) {
-			unset($this->files[$file]);
-		}
-
-		return $ret;
+		return $this->files[$file];
 	}
 
 	private function getDependencies( $dependencies ) {
 		$out = array();
 
-		foreach( (array) $dependencies as $dep ) {
-			$info = $this->getPreference( $dep, false );
-			if( $info ) {
+		foreach( $dependencies as $dep ) {
+			if( $info = $this->getPreference( $dep, false ) ) {
 				$out[] = array(
 					'name' => $dep,
 					'label' => $info['name'],
@@ -250,14 +234,17 @@ class PreferencesLib
 	private function getIndex() {
 		global $prefs;
 		if( $prefs['language'] == 'en' ) {
+			require_once 'StandardAnalyzer/Analyzer/Standard/English.php';
 			Zend_Search_Lucene_Analysis_Analyzer::setDefault(
 				new StandardAnalyzer_Analyzer_Standard_English() );
 		}
 
+		require_once 'Zend/Search/Lucene.php';
 		if( $this->indexNeedsRebuilding() ) {
 			$index = Zend_Search_Lucene::create( $this->file );
 
-			foreach ($this->getAvailableFiles() as $file) {
+			foreach( glob( 'lib/prefs/*.php' ) as $file ) {
+				$file = substr( basename( $file ), 0, -4 );
 				$data = $this->getFileData( $file );
 
 				foreach( $data as $pref => $info ) {
@@ -362,7 +349,7 @@ class PreferencesLib
 	private function _getTextValue( $info, $data ) {
 		$name = $info['preference'];
 
-		if( isset($info['separator']) && is_string( $data[$name] )) {
+		if( isset($info['separator']) && is_string( $data[$name] ) ) {
 			$value = explode( $info['separator'], $data[$name] );
 		} else {
 			$value = $data[$name];
@@ -445,77 +432,6 @@ class PreferencesLib
 
 	private function _getMulticheckboxValue( $info, $data ) {
 		return $this->_getMultilistValue( $info, $data );
-	}
-
-	// for export as yaml for tiki 7
-
-	/**
-	 * @global TikiLib $tikilib
-	 * @param bool $added shows current prefs not in defaults
-	 * @return array (prefname => array( 'cur' => current value, 'def' => default value ))
-	 */
-	function getModifiedPreferences( $added = false ) {
-		global $tikilib;
-
-		$prefsTable = $tikilib->table('tiki_preferences');	// get prefs direct from db
-		$res = $prefsTable->fetchAll( $prefsTable->all(), array() );
-		$prefs = array();
-
-		foreach ($res as $row) {
-			$prefs[$row['name']] = $row['value'];
-		}
-
-		$defaults = get_default_prefs();
-		$modified = array();
-
-		foreach($prefs as $pref => $val) {
-			if (( $added && !isset($defaults[$pref])) || (isset($defaults[$pref]) && $val !== $defaults[$pref] )) {
-				if (!in_array($pref, array( 'tiki_release', 'tiki_version_last_check', 'lastUpdatePrefs',
-											'case_patched' ))) {	// prefs modified by the system etc
-					
-					if (!in_array($pref, array( 'fgal_use_dir', 'sender_email' ))) {	// prefs with system info etc
-						$modified[$pref] = array(
-							'cur' => $prefs[$pref],
-						);
-						if (isset($defaults[$pref])) {
-							$modified[$pref]['def'] = $defaults[$pref];
-						}
-					}
-				}
-			}
-		}
-		ksort($modified);
-		
-		return $modified;
-	}
-
-	function getDefaults()
-	{
-		$defaults = array();
-
-		foreach ($this->getAvailableFiles() as $file) {
-			$data = $this->getFileData($file, true);
-
-			foreach ($data as $name => $info) {
-				if (isset($info['default'])) {
-					$defaults[$name] = $info['default'];
-				} else {
-					$defaults[$name] = '';
-				}
-			}
-		}
-
-		return $defaults;
-	}
-
-	private function getAvailableFiles()
-	{
-		$files = array();
-		foreach( glob( 'lib/prefs/*.php' ) as $file ) {
-			$files[] = substr( basename( $file ), 0, -4 );
-		}
-
-		return $files;
 	}
 }
 

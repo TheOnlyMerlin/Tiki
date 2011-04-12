@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,7 +16,6 @@ function module_articles_info() {
 		'name' => tra('Articles'),
 		'description' => tra('Lists the specified number of published articles in the specified order.'),
 		'prefs' => array( 'feature_articles' ),
-		'documentation' => 'Module articles',
 		'params' => array(
 			'showpubl' => array(
 				'name' => tra('Show publication time'),

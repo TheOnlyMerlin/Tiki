@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -29,8 +29,8 @@ function smarty_function_preference( $params, $smarty ) {
 			if (count($info['pages']) > 0) {
 			$pages_string = tra(' (found in ');
 			foreach($info['pages'] as $pg) {
-				$ct_string = $pg[1] > 1 ? '&amp;cookietab=' . $pg[1] : '';
-				$pages_string .= '<a class="lm_result" href="tiki-admin.php?page='.$pg[0].$ct_string.'&amp;highlight='.$info['preference'].'">' . $pg[0] . '</a>, ';
+				$ct_string = $pg[1] > 1 ? '&cookietab=' . $pg[1] : '';
+				$pages_string .= '<a class="lm_result" href="tiki-admin.php?page='.$pg[0].$ct_string.'&highlight='.$info['preference'].'">' . $pg[0] . '</a>, ';
 			}
 			$pages_string = substr($pages_string, 0, strlen($pages_string) - 2);
 			$pages_string .= ')';

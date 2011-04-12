@@ -1,22 +1,30 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+/**
+ * Freetagged plugin (derived from Title Search Plugin)
+ * Find all similar tagged objects
+ */
+
+function wikiplugin_freetagged_help() {
+	return tra("Search the titles of all pages in this wiki").":<br />~np~{FREETAGGED(search=>Admin,info=>hits|user,exclude=>HomePage|SandBox,noheader=>0)}{FREETAGGED}~/np~";
+}
+
 function wikiplugin_freetagged_info() {
 	return array(
-		'name' => tra('Freetagged'),
-		'documentation' => 'PluginFreetagged',
-		'description' => tra('List similarly tagged objects'),
-		'prefs' => array( 'wikiplugin_freetagged' ),
-		'icon' => 'pics/icons/tag_blue.png',
-		'params' => array(
-			'tags' => array(
-				'required' => false,
-				'name' => tra('Tags to find similar to'),
-				'description' => tra('Leave blank to use the object\'s own tags.'),
+    	'name' => tra('Freetagged'),
+    	'documentation' => tra('PluginFreetagged'),
+    	'description' => tra('Find similarly tagged objects'),
+    	'prefs' => array( 'wikiplugin_freetagged' ),
+    	'params' => array(
+    		'tags' => array(
+    			'required' => false,
+    			'name' => tra('Tags to find similar to'),
+    			'description' => tra('Leave blank to use the object\'s own tags.'),
 				'filter' => 'text',
 				'default' => ''
 			),

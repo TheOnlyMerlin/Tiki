@@ -1,3 +1,5 @@
+{*$Id$*}
+
 {self_link page="general" _class="icon tips" _title="{tr}General{/tr}|{tr}Global site configuration, date formats, admin password etc.{/tr}"}{icon _id="pics/large/icon-configuration.png" alt="{tr}General{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
 
 {self_link page="features" _class="icon tips" _title="{tr}Features{/tr}|{tr}Switches for major features{/tr}"}{icon _id="pics/large/boot.png" alt="{tr}Features{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
@@ -119,7 +121,7 @@
 {/if}
 
 {if $prefs.feature_banners eq 'y'}
-{self_link page="ads" _class="icon tips" _title="{tr}Site Ads and Banners{/tr}|{tr}Banners are a common way to display advertisements and notices on a Web page.{/tr}"}{icon _id="pics/large/ads.png" alt="{tr}Site Ads and Banners{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
+{self_link page="ads" _class="icon tips" _title="{tr}Site Ads and Banners{/tr}|{tr}??{/tr}"}{icon _id="pics/large/ads.png" alt="{tr}Site Ads and Banners{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
 {/if}
 
 {if $prefs.feature_intertiki eq 'y'}
@@ -138,7 +140,7 @@
 {self_link page="sefurl" _class="icon tips" _title="{tr}Sef URL{/tr}|{tr}Search Engine Friendly URLs{/tr}"}{icon _id="pics/large/goto.png" alt="{tr}Sef URL{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
 {/if}
 
-{if $prefs.feature_kaltura eq 'y' || $prefs.feature_watershed eq 'y'}
+{if $prefs.feature_kaltura eq 'y' || $prefs.feature_watershed eq 'y' }
 {self_link page="video" _class="icon tips" _title="{tr}Video{/tr}|{tr}Video integration configuration{/tr}"}{icon _id="pics/large/gnome-camera-video-32.png " alt="{tr}Video{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
 {/if}
 
@@ -150,8 +152,6 @@
 {self_link page="socialnetworks" _class="icon tips" _title="{tr}Social networks{/tr}|{tr}Configure social networks integration{/tr}"}{icon _id="pics/large/socialnetworks.png" alt="{tr}Social networks{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
 {/if}
 
-{if $prefs.feature_share eq 'y'}
-{self_link page="share" _class="icon tips" _title="{tr}Share{/tr}|{tr}Configure share feature{/tr}"}{icon _id="img/mytiki/stock_contact.png" alt="{tr}Share{/tr}" class="reflect" style="vertical-align: middle" width="32" height="32"}{/self_link}
-{/if}
-
+{if $prefs.ajax_xajax eq 'y' and $prefs.feature_jquery_reflection eq 'y'}{jq}$('img.reflect').reflect({});{/jq}{/if}{* for ajax *}
+{if $prefs.ajax_xajax eq 'y' and $prefs.feature_jquery_tooltips eq 'y'}{jq}setUpClueTips();{/jq}{/if}
 <br class="clear" />

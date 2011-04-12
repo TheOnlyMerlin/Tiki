@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -53,25 +53,18 @@ class UsersLib extends TikiLib
 	function assign_object_permission($groupName, $objectId, $objectType, $permName) {
 		$objectId = md5($objectType . strtolower($objectId));
 
-		$query = "delete from `users_objectpermissions`	where `objectId` = ? and `objectType`=?";
-		$bindvars = array($objectId, $objectType);
-		if (!empty($groupName)) {
-			$query .= ' and `groupName` = ?';
-			$bindvars[] = $groupName;
-		}
-		if (!empty($permName)) {
-			$query .= ' and `permName` = ?';
-			$bindvars[] = $permName;
-		}
-		$result = $this->query($query, $bindvars);
+		$query = "delete from `users_objectpermissions`
+			where `groupName` = ? and
+			`permName` = ? and
+			`objectId` = ?";
+		$result = $this->query($query, array($groupName, $permName,
+			$objectId), -1, -1, false);
 
-		if (!empty($permName) && !empty($groupName)) {
-			$query = "insert into `users_objectpermissions`(`groupName`,
+		$query = "insert into `users_objectpermissions`(`groupName`,
 			`objectId`, `objectType`, `permName`)
 			values(?, ?, ?, ?)";
-			$result = $this->query($query, array($groupName, $objectId,
+		$result = $this->query($query, array($groupName, $objectId,
 			$objectType, $permName));
-		}
 		if ($objectType == 'file gallery') {
 			global $cachelib; require_once('lib/cache/cachelib.php');
 			$cachelib->empty_type_cache('fgals_perms_'.$objectId."_");
@@ -206,10 +199,6 @@ class UsersLib extends TikiLib
 			$rv[$user] = $result;
 		}
 		return $rv[$user];
-	}
-	function get_user_real_case($user) {
-		$query = "select `login` from `users_users` where upper(`login`) = ?";
-		return $this->getOne($query, array(strtoupper($user)) );
 	}
 
 	function group_exists($group) {
@@ -351,6 +340,7 @@ class UsersLib extends TikiLib
 		// read basic cas options
 		$auth_cas = ($prefs['auth_method'] == 'cas');
 		$cas_create_tiki = ($prefs['cas_create_user_tiki'] == 'y');
+		$cas_create_tiki_ldap = ($prefs['cas_create_user_tiki_ldap'] == 'y');
 		$cas_skip_admin = ($prefs['cas_skip_admin'] == 'y');
 
 		// read basic phpbb options
@@ -363,6 +353,10 @@ class UsersLib extends TikiLib
 		$auth_shib = ($prefs['auth_method'] == 'shib');
 		$shib_create_tiki = ($prefs['shib_create_user_tiki'] == 'y');
 		$shib_skip_admin = ($prefs['shib_skip_admin'] == 'y');
+
+		if ( strlen($pass) < $prefs['min_pass_length'] and ($user === 'admin' or (!$auth_cas and !$auth_shib )) ) {
+			return array(false, $user, $this->user_exists($user)?PASSWORD_INCORRECT:USER_NOT_FOUND);
+		}
 
 		// first attempt a login via the standard Tiki system
 		//
@@ -389,7 +383,7 @@ class UsersLib extends TikiLib
 		if ((!$auth_ldap && !$auth_pam && !$auth_cas && !$auth_shib && !$auth_phpbb) || ((($auth_ldap && $skip_admin) || ($auth_shib && $shib_skip_admin) || ($auth_pam && $pam_skip_admin) || ($auth_cas && $cas_skip_admin) || ($auth_phpbb && $phpbb_skip_admin)) && $user == "admin") || ($auth_ldap && ($prefs['auth_ldap_permit_tiki_users']=='y' && $userTiki))) { // todo: bad hack. better search for a more general solution here
 			// if the user verified ok, log them in
 			if ($userTiki) //user validated in tiki, update lastlogin and be done
-				return array($this->sync_and_update_lastlogin($user, $pass), $user, $result);
+				return array($this->update_lastlogin($user), $user, $result);
 			// if the user password was incorrect but the account was there, give an error
 			elseif ($userTikiPresent) //user ixists in tiki but bad password
 				return array(false, $user, $result);
@@ -420,7 +414,7 @@ class UsersLib extends TikiLib
 			// start off easy
 			// if the user verified in Tiki and PAM, log in
 			if ($userPAM && $userTiki) {
-				return array($this->sync_and_update_lastlogin($user, $pass), $user, $result);
+				return array($this->update_lastlogin($user), $user, $result);
 			}
 			// if the user wasn't found in either system, just fail
 			elseif (!$userTikiPresent && !$userPAM) {
@@ -436,7 +430,7 @@ class UsersLib extends TikiLib
 					// if it worked ok, just log in
 					if ($result == USER_VALID)
 						// before we log in, update the login counter
-						return array($this->sync_and_update_lastlogin($user, $pass), $user, $result);
+						return array($this->update_lastlogin($user), $user, $result);
 					// if the server didn't work, do something!
 					elseif ($result == SERVER_ERROR) {
 						// check the notification status for this type of error
@@ -453,7 +447,7 @@ class UsersLib extends TikiLib
 			}
 			// if the user was logged into PAM and found in Tiki (no password in Tiki user table necessary)
 			elseif ($userPAM && $userTikiPresent)
-				return array($this->sync_and_update_lastlogin($user, $pass), $user, $result);
+				return array($this->update_lastlogin($user), $user, $result);
 		}
 
 		// next see if we need to check CAS
@@ -479,7 +473,10 @@ class UsersLib extends TikiLib
 			// start off easy
 			// if the user verified in Tiki and by CAS, log in
 			if ($userCAS && $userTikiPresent) {
-				return array($this->sync_and_update_lastlogin($user, $pass), $user, $result);
+				if ( $cas_create_tiki_ldap ) {
+					$this->ldap_sync_user_and_groups($user,$pass);
+				}
+				return array($this->update_lastlogin($user), $user, $result);
 			}
 			// if the user wasn't authenticated through CAS, just fail
 			elseif (!$userCAS) {
@@ -494,11 +491,16 @@ class UsersLib extends TikiLib
 					// in case CAS auth is turned off accidentally;
 					// we don't want ppl to be able to login as any user with blank passwords
 					$result = $this->add_user($user, $randompass, '');
+					if ( $cas_create_tiki_ldap) {
+						// We use LDAP information to fill in the Users info
+						//$result = $this->create_user_ldap($user, $pass);
+						$this->ldap_sync_user_and_groups($user,$pass);
+					}
 
 					// if it worked ok, just log in
 					if ($result == USER_VALID)
 						// before we log in, update the login counter
-						return array($this->sync_and_update_lastlogin($user, $pass), $user, $result);
+						return array($this->update_lastlogin($user), $user, $result);
 					// if the server didn't work, do something!
 					elseif ($result == SERVER_ERROR) {
 						// check the notification status for this type of error
@@ -515,7 +517,7 @@ class UsersLib extends TikiLib
 			}
 			// if the user was authenticated by CAS and found in Tiki (no password in Tiki user table necessary)
 			elseif ($userCAS && $userTikiPresent)
-				return array($this->sync_and_update_lastlogin($user, $pass), $user, $result);
+				return array($this->update_lastlogin($user), $user, $result);
 		}
 
 		// next see if we need to check Shibboleth
@@ -548,8 +550,8 @@ class UsersLib extends TikiLib
 
 			// start off easy
 			// if the user verified in Tiki and by Shibboleth, log in
-			if ($userTikiPresent && $validafil) {
-				return array($this->sync_and_update_lastlogin($user, $pass), $user, USER_VALID);
+			if ($userTikiPresent AND $validafil) {
+				return array($this->update_lastlogin($user), $user, USER_VALID);
 			}
 			else {
 				global $smarty;
@@ -600,7 +602,7 @@ class UsersLib extends TikiLib
 								}
 
 								// before we log in, update the login counter
-								return array($this->sync_and_update_lastlogin($user, $randompass), $user, $result);
+								return array($this->update_lastlogin($user), $user, $result);
 							}
 							// if the server didn't work, do something!
 							elseif ($result == SERVER_ERROR) {
@@ -656,7 +658,11 @@ class UsersLib extends TikiLib
 			// start off easy
 			// if the user is in Tiki and password is verified in LDAP, log in
 			if ($userLdap && $userTikiPresent) {
-				return array($this->sync_and_update_lastlogin($user, $pass), $user, $result);
+				if( $res2=$this->ldap_sync_user_and_groups($user,$pass)) {
+					return array($this->update_lastlogin($user), $user, $result);
+				} else {
+					return array(false,$user,USER_UNKNOWN);
+				}
 			}
 			// if the user wasn't found in either system, just fail
 			elseif (!$userTikiPresent && !$userLdapPresent) {
@@ -672,7 +678,7 @@ class UsersLib extends TikiLib
 					// if it worked ok, just log in
 					if ($result == USER_VALID)
 						// before we log in, update the login counter
-						return array($this->sync_and_update_lastlogin($user, $pass), $user, $result);
+						return array($this->update_lastlogin($user), $user, $result);
 					// if the server didn't work, do something!
 					elseif ($result == SERVER_ERROR) {
 						// check the notification status for this type of error
@@ -701,7 +707,11 @@ class UsersLib extends TikiLib
 					// if it worked ok, just log in
 					if ($result == USER_VALID) {
 						// before we log in, update the login counter
-						return array($this->sync_and_update_lastlogin($user, $pass), $user, $result);
+						if( $res2=$this->ldap_sync_user_and_groups($user,$pass)) {
+							return array($this->update_lastlogin($user), $user, $result);
+						} else {
+							return array(false,$user,USER_UNKNOWN);
+						}
 					}
 					// if the server didn't work, do something!
 					elseif ($result == SERVER_ERROR) {
@@ -719,7 +729,7 @@ class UsersLib extends TikiLib
 			}
 			// if the user was logged into Auth and found in Tiki (no password in Tiki user table necessary)
 			elseif ($userLdap && $userTikiPresent)
-				return array($this->sync_and_update_lastlogin($user, $pass), $user, $result);
+				return array($this->update_lastlogin($user), $user, $result);
 		}
 
 		elseif ($auth_phpbb) {
@@ -736,7 +746,7 @@ class UsersLib extends TikiLib
 			// start off easy
 			// if the user verified in Tiki and phpBB, log in
 			if ($userPhpbb && $userTiki) {
-				return array($this->sync_and_update_lastlogin($user, $pass), $user, $result);
+				return array($this->update_lastlogin($user), $user, $result);
 			}
 			// if the user wasn't found in either system, just fail
 			elseif (!$userTikiPresent && !$userPhpbb) {
@@ -753,7 +763,7 @@ class UsersLib extends TikiLib
 					// if it worked ok, just log in
 					if ($result == USER_VALID)
 						// before we log in, update the login counter
-						return array($this->sync_and_update_lastlogin($user, $pass), $user, $result);
+						return array($this->update_lastlogin($user), $user, $result);
 					// if the server didn't work, do something!
 					elseif ($result == SERVER_ERROR) {
 						// check the notification status for this type of error
@@ -781,7 +791,7 @@ class UsersLib extends TikiLib
 			}
 			// if the user was logged into phpBB and found in Tiki (no password in Tiki user table necessary)
 			elseif ($userPhpbb && $userTikiPresent)
-				return array($this->sync_and_update_lastlogin($user, $pass), $user, $result);
+				return array($this->update_lastlogin($user), $user, $result);
 		}
 
 		// we will never get here
@@ -960,7 +970,7 @@ class UsersLib extends TikiLib
 
 	// validate the user via ldap and get a ldap connection
 	function validate_user_ldap($user, $pass) {
-		if (!$pass) { // An LDAP password cannot be empty. Treat specially so that Tiki does *NOT* unintentionally request an unauthenticated bind.
+		if (!$pass) {
 			return PASSWORD_INCORRECT;
 		}
 		
@@ -1037,234 +1047,40 @@ class UsersLib extends TikiLib
 		$result = $this->query($query, array('','',$user));
 	}
 
-	// synchronize all users with ldap directory
-	function ldap_sync_all_users() {
-		global $prefs;
-		global $logslib;
-
-		if ($prefs['syncUsersWithDirectory'] != 'y') {
-			return false;
-		}
-
-		require_once('auth/ldap.php');
-		if($prefs['auth_ldap_debug']=='y') $logslib->add_log('ldap','Syncing all users with ldap');
-		$bind_type = 'default';
-
-		switch ($prefs['auth_ldap_type']) {
-			// Must be anonymous or admin
-			case 'default':
-				break;
-			default:
-				if (!empty($prefs['auth_ldap_adminuser'])) {
-					$bind_type = 'explicit';
-					break;
-				}
-
-				return false;
-		}
-
-		$ldap_options = array(	'host' => $prefs['auth_ldap_host'],
-					'port' => $prefs['auth_ldap_port'],
-					'version' => $prefs['auth_ldap_version'],
-					'starttls' => $prefs['auth_ldap_starttls'],
-					'ssl' => $prefs['auth_ldap_ssl'],
-					'basedn' => $prefs['auth_ldap_basedn'],
-					'scope' => $prefs['auth_ldap_scope'],
-					'bind_type' => $bind_type,
-					'binddn' => $prefs['auth_ldap_adminuser'],
-					'bindpw' => $prefs['auth_ldap_adminpass'],
-					'userdn' => $prefs['auth_ldap_userdn'],
-					'useroc' => $prefs['auth_ldap_useroc'],
-					'userattr' => $prefs['auth_ldap_userattr'],
-					'fullnameattr' => $prefs['auth_ldap_nameattr'],
-					'emailattr' => $prefs['auth_ldap_emailattr'],
-					'countryattr' => $prefs['auth_ldap_countryattr'],
-					'groupdn' => $prefs['auth_ldap_groupdn'],
-					'groupattr' => $prefs['auth_ldap_groupattr'],
-					'groupoc' => $prefs['auth_ldap_groupoc'],
-					'groupnameattr' => $prefs['auth_ldap_groupnameatr'],
-					'groupdescattr' => $prefs['auth_ldap_groupdescatr'],
-					'groupmemberattr' => $prefs['auth_ldap_memberattr'],
-					'groupmemberisdn' => $prefs['auth_ldap_memberisdn'],
-					'usergroupattr' => $prefs['auth_ldap_usergroupattr'],
-					'groupgroupattr' => $prefs['auth_ldap_groupgroupattr'],
-					'debug' => $prefs['auth_ldap_debug']
-		);
-
-		$user_ldap = new TikiLdapLib($ldap_options);
-
-		if (!($users_attributes = $user_ldap->get_all_users_attributes())) {
-			return false;
-		}
-
-		foreach ($users_attributes as $user_attributes) {
-			$user = $user_attributes[$prefs['auth_ldap_userattr']];
-			$this->add_user($user, '', $user);
-
-			if ($prefs['auth_method'] == 'ldap') {
-				$this->disable_tiki_auth($user);
-			}
-
-			$this->ldap_sync_user_data($user, $user_attributes);
-		}
-	}
-
-	// synchronize all groups with ldap directory
-	function ldap_sync_all_groups() {
-		global $prefs;
-		global $logslib;
-
-		if ($prefs['syncGroupsWithDirectory'] != 'y') {
-			return false;
-		}
-
-		$users = $this->list_all_users();
-
-		foreach ($users as $user) {
-			$this->ldap_sync_groups($user, null);
-		}
-	}
-
-	// Sync Tiki user with ldap directory
-	function ldap_sync_user($user, $pass) {
-		if ( $user == 'admin' ) return true;
-
+	// called after create user or login from ldap
+	function ldap_sync_user_and_groups($user,$pass) {
 		global $prefs;
 		global $logslib;
 		$ret=true;
 		$this->init_ldap($user, $pass);
 
-		if($prefs['auth_ldap_debug']=='y') $logslib->add_log('ldap','Syncing user with ldap');
+		if($prefs['auth_ldap_debug']=='y') $logslib->add_log('ldap','Syncing user and group with ldap');
+		$userattributes=$this->ldap->get_user_attributes();
+		//$user=$userattributes[$prefs['auth_ldap_userattr']];
 
 		// sync user information
-		if ($prefs['auth_method'] == 'ldap') {
-			$this->disable_tiki_auth($user);
+		$this->disable_tiki_auth($user);
+
+
+		$u=array('login'=>$user);
+		if(isset($userattributes[$prefs['auth_ldap_nameattr']])) {
+			$u['realName']=$userattributes[$prefs['auth_ldap_nameattr']];
 		}
 
-		if ($prefs['syncUsersWithDirectory'] == 'y') {
-			$this->ldap_sync_user_data($user, $this->ldap->get_user_attributes());
+		if(isset($userattributes[$prefs['auth_ldap_emailattr']])) {
+			$u['email']=$userattributes[$prefs['auth_ldap_emailattr']];
 		}
 
-		return $ret;
-	}
-
-	// Sync ldap data (name, email, country)
-	function ldap_sync_user_data($user, $attributes) {
-		global $prefs;
-
-		$u = array('login' => $user);
-
-		if (isset($attributes[$prefs['auth_ldap_nameattr']])) {
-			$u['realName'] = $attributes[$prefs['auth_ldap_nameattr']];
+		if(isset($userattributes[$prefs['auth_ldap_countryattr']])) {
+			$u['country']=$userattributes[$prefs['auth_ldap_countryattr']];
 		}
 
-		if (isset($attributes[$prefs['auth_ldap_emailattr']])) {
-			$u['email'] = $attributes[$prefs['auth_ldap_emailattr']];
-		}
-
-		if (isset($attributes[$prefs['auth_ldap_countryattr']])) {
-			$u['country'] = $attributes[$prefs['auth_ldap_countryattr']];
-		}
-
-		if (count($u) > 1) {
+		if(count($u)>1) {
 			$this->set_user_fields($u);
 		}
-	}
 
-	// Sync Tiki groups with ldap directory
-	function ldap_sync_groups($user, $pass) {
-		if ( $user == 'admin' ) return true;
-
-		global $prefs;
-		global $logslib;
-		static $ldap_group_options = array();
-		static $ext_dir = null;
-		$ret = true;
-
-		$this->init_ldap($user, $pass);
-		$this->ldap->setOption('username', $user);
-		$this->ldap->setOption('password', $pass);
-
-		if($prefs['auth_ldap_debug']=='y') $logslib->add_log('ldap','Syncing group with ldap');
-		$userattributes=$this->ldap->get_user_attributes(true);
-
-		if ($prefs['syncGroupsWithDirectory'] == 'y' && $userattributes[$prefs['auth_ldap_group_corr_userattr']] != null) {
-			// sync external group information of user
-			$ldapgroups = array();
-
-			if ($prefs['auth_ldap_group_external'] == 'y') {
-				// External directory for groups
-				if (!isset($ext_dir)) {
-					$ldap_group_options=array('host' => $prefs['auth_ldap_group_host'],
-							'port' => $prefs['auth_ldap_group_port'],
-							'version' => $prefs['auth_ldap_group_version'],
-							'starttls' => $prefs['auth_ldap_group_starttls'],
-							'ssl' => $prefs['auth_ldap_group_ssl'],
-							'basedn' => $prefs['auth_ldap_group_basedn'],
-							'scope' => $prefs['auth_ldap_group_scope'],
-							'userdn' => $prefs['auth_ldap_group_userdn'],
-							'useroc' => $prefs['auth_ldap_group_useroc'],
-							'userattr' => $prefs['auth_ldap_group_userattr'],
-							'username' => $userattributes[$prefs['auth_ldap_group_corr_userattr']],
-							'groupdn' => $prefs['auth_ldap_groupdn'],
-							'groupattr' => $prefs['auth_ldap_groupattr'],
-							'groupoc' => $prefs['auth_ldap_groupoc'],
-							'groupnameattr' => $prefs['auth_ldap_groupnameatr'],
-							'groupdescattr' => $prefs['auth_ldap_groupdescatr'],
-							'groupmemberattr' => $prefs['auth_ldap_memberattr'],
-							'groupmemberisdn' => $prefs['auth_ldap_memberisdn'],
-							'usergroupattr' => $prefs['auth_ldap_usergroupattr'],
-							'groupgroupattr' => $prefs['auth_ldap_groupgroupattr'],
-							'debug' => $prefs['auth_ldap_group_debug']
-					);
-
-					if (empty($prefs['auth_ldap_group_adminuser'])) {
-						// Anonymous
-						$ldap_group_options['bind_type'] = 'default';
-					} else {
-						// Explicit
-						$ldap_group_options['bind_type'] = 'explicit';
-						$ldap_group_options['binddn'] = $prefs['auth_ldap_group_adminuser'];
-						$ldap_group_options['bindpw'] =  $prefs['auth_ldap_group_adminpass'];
-					}
-
-					$ext_dir = new TikiLdapLib($ldap_group_options);
-				}
-
-				$ext_dir->setOption('username', $userattributes[$prefs['auth_ldap_group_corr_userattr']]);
-				$ldapgroups = $ext_dir->get_groups(true);
-
-			} else {
-				if (!empty($prefs['auth_ldap_adminuser'])) {
-					$this->ldap->setOption('bind_type', 'explicit');
-					$this->ldap->setOption('binddn', $prefs['auth_ldap_adminuser']);
-					$this->ldap->setOption('bindpw', $prefs['auth_ldap_adminpass']);
-					$this->ldap->bind(true);
-				}
-
-				$ldapgroups = $this->ldap->get_groups(true);
-
-				if (!empty($prefs['auth_ldap_adminuser'])) {
-					$this->ldap->setOption('bind_type', $prefs['auth_ldap_type']);
-					$this->ldap->bind(true);
-				}
-			}
-
-			$this->ldap_sync_group_data($user, $ldapgroups);
-		}
-
-		return $ret;
-	}
-
-	// Sync Tiki groups with LDAP groups data
-	function ldap_sync_group_data($user, $ldapgroups) {
-		global $prefs;
-		global $logslib;
-
-		if (!count($ldapgroups)) {
-			return;
-		}
-
+		// sync external group information of user
+		$ldapgroups=$this->ldap->get_groups();
 		$ldapgroups_simple=array();
 		$tikigroups=$this->get_user_groups($user);
 		foreach($ldapgroups as $group) {
@@ -1304,13 +1120,6 @@ class UsersLib extends TikiLib
 				$this->remove_user_from_group($user, $eg);
 			}
 		}
-	}
-
-	// called after create user or login from ldap
-	function ldap_sync_user_and_groups($user,$pass) {
-		$ret = true;
-		$ret &= $this->ldap_sync_user($user, $pass);
-		$ret &= $this->ldap_sync_groups($user, $pass);
 
 		// Invalidate cache
 		global $cachelib;
@@ -1415,31 +1224,10 @@ class UsersLib extends TikiLib
 		return array(PASSWORD_INCORRECT, $user);
 	}
 
-	// ldap sync
-	function sync_and_update_lastlogin($user, $pass) {
-		global $prefs, $tikilib;
-		$current = $this->getOne("select `currentLogin` from `users_users` where `login`= ?", array($user));
-		$ret = $this->update_lastlogin($user, $current);
-
-		if (is_null($current)) {
-			// First time
-			$current = 0;
-		}
-
-		// A LDAP synchronisation is not done in the 1st minute after login
-		if ( $tikilib->now - $current >= 60 && ( $prefs['syncGroupsWithDirectory'] == 'y' || $prefs['syncUsersWithDirectory'] == 'y' ) ) {
-			$ret &= $this->ldap_sync_user_and_groups($user, $pass);
-		}
-
-		return $ret;
-	}
-
 	// update the lastlogin status on this user
-	function update_lastlogin($user, $current = null) {
+	function update_lastlogin($user) {
 		// Check
-		if (is_null($current)) {
-			$current = $this->getOne("select `currentLogin` from `users_users` where `login`= ?", array($user));
-		}
+		$current = $this->getOne("select `currentLogin` from `users_users` where `login`= ?", array($user));
 
 		if (is_null($current)) {
 			// First time
@@ -1502,10 +1290,7 @@ class UsersLib extends TikiLib
 	
 	function get_users_light($offset = 0, $maxRecords = -1, $sort_mode = 'login_asc', $find = '', $group = '') {
 		// This is a lighter version of get_users_names designed for ajax checking of userrealnames
-		global $prefs, $tiki_p_list_users;
-
-		if ( $tiki_p_list_users	!== 'y') return array();
-
+		global $prefs;
 		$mid = '';
 		$bindvars = array();
 		if(!empty($group)) {
@@ -1515,7 +1300,7 @@ class UsersLib extends TikiLib
 			$mid = ', `users_usergroups` uug where uu.`userId`=uug.`userId` and uug.`groupName` in ('.implode(',',array_fill(0, count($group),'?')).')';
 			$bindvars = $group;
 		}
-		if ( !empty($find) ) {
+		if ($find) {
 			$findesc = '%' . $find . '%';
 			if (empty($mid)) {
 				$mid .= " where uu.`login` like ?";
@@ -1547,11 +1332,8 @@ class UsersLib extends TikiLib
 	
 	function get_users_names($offset = 0, $maxRecords = -1, $sort_mode = 'login_asc', $find = '') {
 
-		global $tiki_p_list_users;
-		if ( $tiki_p_list_users	!== 'y') return array();
-
 		// This function gets an array of user login names.
-		if ( !empty($find) ) {
+		if ($find) {
 			$findesc = '%' . $find . '%';
 			$mid = " where `login` like ?";
 			$bindvars=array($findesc);
@@ -1573,9 +1355,6 @@ class UsersLib extends TikiLib
 
 	function get_users($offset = 0, $maxRecords = -1, $sort_mode = 'login_asc', $find = '', $initial = '', $inclusion=false, $group='', $email='') {
 
-		global $tiki_p_list_users;
-		if ( $tiki_p_list_users	!== 'y') return array();
-
 		$mid = '';
 		$bindvars = array();
 		$mmid = '';
@@ -1592,7 +1371,7 @@ class UsersLib extends TikiLib
 			$bindvars = $group;
 			$mbindvars = $bindvars;
 		}
-		if( !empty($email) ) {
+		if($email) {
 			$mid.= $mid == '' ? ' where' : ' and';
 			$mid.= ' uu.`email` like ?';
 			$mmid = $mid;
@@ -1600,7 +1379,7 @@ class UsersLib extends TikiLib
 			$mbindvars[] = '%'.$email.'%';
 		}
 
-		if (! empty($find) ) {
+		if ($find) {
 			$mid.= $mid == '' ? ' where' : ' and';
 			$mid.= " uu.`login` like ?";
 			$mmid = $mid;
@@ -1608,7 +1387,7 @@ class UsersLib extends TikiLib
 			$mbindvars[] = '%'.$find.'%';
 		}
 
-		if ( !empty($initial) ) {
+		if ($initial) {
 			$mid = " where `login` like ?";
 			$mmid = $mid;
 			$bindvars = array($initial.'%');
@@ -1803,10 +1582,7 @@ class UsersLib extends TikiLib
 	}
 
 	function list_all_users() {
-		global $cachelib, $tiki_p_list_users;
-
-		if ( $tiki_p_list_users	!== 'y') return array();
-
+		global $cachelib;
 		if (! $users = $cachelib->getSerialized("userslist")) {
 			$users = array();
 			$result = $this->query("select `login`,`userId` from `users_users` order by `login`", array());
@@ -1868,22 +1644,22 @@ class UsersLib extends TikiLib
 
 		$groupTracker = $this->get_tracker_usergroup( $user );
 		if( $groupTracker && $groupTracker['usersTrackerId'] ) {
-			$trklib = TikiLib::lib('trk');
+			global $trklib;
+			if( ! $trklib ) require_once 'lib/trackers/trackerlib.php';
 
 			$itemId = $trklib->get_item_id( $groupTracker['usersTrackerId'], $groupTracker['usersFieldId'], $user );
-			if( $itemId ) {
+			if( $itemId )
 				$trklib->remove_tracker_item( $itemId );
-			}
 		}
 
 		$tracker = $this->get_usertracker( $userId );
 		if( $tracker && $tracker['usersTrackerId'] ) {
-			$trklib = TikiLib::lib('trk');
+			global $trklib;
+			if( ! $trklib ) require_once 'lib/trackers/trackerlib.php';
 
 			$itemId = $trklib->get_item_id( $tracker['usersTrackerId'], $tracker['usersFieldId'], $user );
-			if( $itemId ) {
+			if( $itemId )
 				$trklib->remove_tracker_item( $itemId );
-			}
 		}
 
 		$query = "delete from `users_users` where binary `login` = ?";
@@ -1965,7 +1741,6 @@ class UsersLib extends TikiLib
 			$this->query("update `tiki_files` set `lastModifUser`=? where `lastModifUser`=?", array($to,$from));
 			$this->query("update `tiki_files` set `lockedby`=? where `lockedby`=?", array($to,$from));
 			$this->query("update `tiki_file_galleries` set `user`=? where `user`=?", array($to,$from));
-			$this->query("update `tiki_file_drafts` set `user`=? where `user`=?", array($to,$from));
 			$this->query("update `tiki_copyrights` set `userName`=? where `userName`=?", array($to,$from));
 			$this->query("update `tiki_comments` set `userName`=? where `userName`=?", array($to,$from));
 			$this->query("update `tiki_chat_users` set `nickname`=? where `nickname`=?", array($to,$from));
@@ -2176,17 +1951,6 @@ class UsersLib extends TikiLib
 		return $ret;
 	}
 
-	/**
-	 * Return information about users that belong to a 
-	 * specific group
-	 * 
-	 * @param string $group group name
-	 * @param int $offset
-	 * @param int $max
-	 * @param string $what which user fields to retrieve
-	 * @param string $sort_mode
-	 * @return array list of users
-	 */
 	function get_group_users($group, $offset = 0, $max=-1, $what='login', $sort_mode='login_asc') {
 		global $prefs;
 		$w = $what=='*'? 'uu.*, ug.`created`, ug.`expire` ': "uu.`$what`"; 
@@ -2447,2259 +2211,6 @@ class UsersLib extends TikiLib
 			}
 			return $utr;
 		}
-	}
-
-	private function get_raw_permissions()
-	{
-		return array(
-			array(
-				'name' => 'tiki_p_admin_calendar', 
-				'description' => array('Can create/admin calendars'),
-				'level' => 'admin',
-				'type' => 'calendar',
-				'admin' => true,
-				'prefs' => array('feature_calendar'),
-			),
-			array(
-				'name' => 'tiki_p_add_events',
-				'description' => tra('Can add events in the calendar'),
-				'level' => 'registered',
-				'type' => 'calendar',
-				'admin' => false,
-				'prefs' => array('feature_calendar'),
-			),
-			array(
-				'name' => 'tiki_p_change_events',
-				'description' => tra('Can change events in the calendar'),
-				'level' => 'registered',
-				'type' => 'calendar',
-				'admin' => false,
-				'prefs' => array('feature_calendar'),
-			),
-			array(
-				'name' => 'tiki_p_view_calendar',
-				'description' => tra('Can browse the calendar'),
-				'level' => 'basic',
-				'type' => 'calendar',
-				'admin' => false,
-				'prefs' => array('feature_calendar'),
-			),
-			array(
-				'name' => 'tiki_p_view_events',
-				'description' => tra('Can view events details'),
-				'level' => 'registered',
-				'type' => 'calendar',
-				'admin' => false,
-				'prefs' => array('feature_calendar'),
-			),
-			array(
-				'name' => 'tiki_p_calendar_add_my_particip',
-				'description' => tra('Can add own user to the participants'),
-				'level' => 'registered',
-				'type' => 'calendar',
-				'admin' => false,
-				'prefs' => array('feature_calendar'),
-			),
-			array(
-				'name' => 'tiki_p_calendar_add_guest_particip',
-				'description' => tra('Can add guest to the participants'),
-				'level' => 'registered',
-				'type' => 'calendar',
-				'admin' => false,
-				'prefs' => array('feature_calendar'),
-			),
-			array(
-				'name' => 'tiki_p_view_tiki_calendar',
-				'description' => tra('Can view Tiki tools calendar'),
-				'level' => 'basic',
-				'type' => 'calendar',
-				'admin' => false,
-				'prefs' => array('feature_calendar'),
-			),
-			array(
-				'name' => 'tiki_p_admin_chat',
-				'description' => tra('Administrator can create channels, remove channels, etc'),
-				'level' => 'editors',
-				'type' => 'chat',
-				'admin' => true,
-				'prefs' => array('feature_minichat', 'feature_live_support'),
-			),
-			array(
-				'name' => 'tiki_p_chat',
-				'description' => tra('Can use the chat system'),
-				'level' => 'registered',
-				'type' => 'chat',
-				'admin' => false,
-				'prefs' => array('feature_minichat', 'feature_live_support'),
-			),
-			array(
-				'name' => 'tiki_p_admin_cms',
-				'description' => tra('Can admin the articles'),
-				'level' => 'editors',
-				'type' => 'cms',
-				'admin' => true,
-				'prefs' => array('feature_articles'),
-			),
-			array(
-				'name' => 'tiki_p_approve_submission',
-				'description' => tra('Can approve submissions'),
-				'level' => 'editors',
-				'type' => 'cms',
-				'admin' => false,
-				'prefs' => array('feature_articles'),
-			),
-			array(
-				'name' => 'tiki_p_articles_admin_topics',
-				'description' => tra('Can admin article topics'),
-				'level' => 'editors',
-				'type' => 'cms',
-				'admin' => false,
-				'prefs' => array('feature_articles'),
-			),
-			array(
-				'name' => 'tiki_p_articles_admin_types',
-				'description' => tra('Can admin article types'),
-				'level' => 'editors',
-				'type' => 'cms',
-				'admin' => false,
-				'prefs' => array('feature_articles'),
-			),
-			array(
-				'name' => 'tiki_p_articles_read_heading',
-				'description' => tra('Can read article headings'),
-				'level' => 'basic',
-				'type' => 'cms',
-				'admin' => false,
-				'prefs' => array('feature_articles'),
-			),
-			array(
-				'name' => 'tiki_p_autoapprove_submission',
-				'description' => tra('Submitted articles automatically approved'),
-				'level' => 'editors',
-				'type' => 'cms',
-				'admin' => false,
-				'prefs' => array('feature_articles'),
-			),
-			array(
-				'name' => 'tiki_p_edit_article',
-				'description' => tra('Can edit articles'),
-				'level' => 'editors',
-				'type' => 'cms',
-				'admin' => false,
-				'prefs' => array('feature_articles'),
-			),
-			array(
-				'name' => 'tiki_p_edit_submission',
-				'description' => tra('Can edit submissions'),
-				'level' => 'editors',
-				'type' => 'cms',
-				'admin' => false,
-				'prefs' => array('feature_articles'),
-			),
-			array(
-				'name' => 'tiki_p_read_article',
-				'description' => tra('Can read articles'),
-				'level' => 'basic',
-				'type' => 'cms',
-				'admin' => false,
-				'prefs' => array('feature_articles'),
-			),
-			array(
-				'name' => 'tiki_p_remove_article',
-				'description' => tra('Can remove articles'),
-				'level' => 'editors',
-				'type' => 'cms',
-				'admin' => false,
-				'prefs' => array('feature_articles'),
-			),
-			array(
-				'name' => 'tiki_p_remove_submission',
-				'description' => tra('Can remove submissions'),
-				'level' => 'editors',
-				'type' => 'cms',
-				'admin' => false,
-				'prefs' => array('feature_articles'),
-			),
-			array(
-				'name' => 'tiki_p_submit_article',
-				'description' => tra('Can submit articles'),
-				'level' => 'basic',
-				'type' => 'cms',
-				'admin' => false,
-				'prefs' => array('feature_articles'),
-			),
-			array(
-				'name' => 'tiki_p_rate_article',
-				'description' => tra('Can rate articles'),
-				'level' => 'basic',
-				'type' => 'cms',
-				'admin' => false,
-				'prefs' => array('feature_articles'),
-			),
-			array(
-				'name' => 'tiki_p_topic_read',
-				'description' => tra('Can read a topic (Applies only to individual topic perms)'),
-				'level' => 'basic',
-				'type' => 'cms',
-				'admin' => false,
-				'prefs' => array('feature_articles'),
-			),
-			array(
-				'name' => 'tiki_p_admin_contribution',
-				'description' => tra('Can admin contributions'),
-				'level' => 'admin',
-				'type' => 'contribution',
-				'admin' => true,
-				'prefs' => array('feature_contribution'),
-			),
-			array(
-				'name' => 'tiki_p_admin_directory',
-				'description' => tra('Can admin the directory'),
-				'level' => 'editors',
-				'type' => 'directory',
-				'admin' => true,
-				'prefs' => array('feature_directory'),
-			),
-			array(
-				'name' => 'tiki_p_admin_directory_cats',
-				'description' => tra('Can admin directory categories'),
-				'level' => 'editors',
-				'type' => 'directory',
-				'admin' => false,
-				'prefs' => array('feature_directory'),
-			),
-			array(
-				'name' => 'tiki_p_admin_directory_sites',
-				'description' => tra('Can admin directory sites'),
-				'level' => 'editors',
-				'type' => 'directory',
-				'admin' => false,
-				'prefs' => array('feature_directory'),
-			),
-			array(
-				'name' => 'tiki_p_autosubmit_link',
-				'description' => tra('Submitted links are valid'),
-				'level' => 'editors',
-				'type' => 'directory',
-				'admin' => false,
-				'prefs' => array('feature_directory'),
-			),
-			array(
-				'name' => 'tiki_p_submit_link',
-				'description' => tra('Can submit sites to the directory'),
-				'level' => 'basic',
-				'type' => 'directory',
-				'admin' => false,
-				'prefs' => array('feature_directory'),
-			),
-			array(
-				'name' => 'tiki_p_validate_links',
-				'description' => tra('Can validate submitted links'),
-				'level' => 'editors',
-				'type' => 'directory',
-				'admin' => false,
-				'prefs' => array('feature_directory'),
-			),
-			array(
-				'name' => 'tiki_p_view_directory',
-				'description' => tra('Can use the directory'),
-				'level' => 'basic',
-				'type' => 'directory',
-				'admin' => false,
-				'prefs' => array('feature_directory'),
-			),
-			array(
-				'name' => 'tiki_p_admin_faqs',
-				'description' => tra('Can admin faqs'),
-				'level' => 'editors',
-				'type' => 'faqs',
-				'admin' => true,
-				'prefs' => array('feature_faqs'),
-			),
-			array(
-				'name' => 'tiki_p_suggest_faq',
-				'description' => tra('Can suggest faq questions'),
-				'level' => 'basic',
-				'type' => 'faqs',
-				'admin' => false,
-				'prefs' => array('feature_faqs'),
-			),
-			array(
-				'name' => 'tiki_p_view_faqs',
-				'description' => tra('Can view faqs'),
-				'level' => 'basic',
-				'type' => 'faqs',
-				'admin' => false,
-				'prefs' => array('feature_faqs'),
-			),
-			array(
-				'name' => 'tiki_p_admin',
-				'description' => tra('Administrator can manage users, groups and permissions and all features'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => true,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_admin_users',
-				'description' => tra('Can admin users'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_access_closed_site',
-				'description' => tra('Can access site when closed'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_admin_banners',
-				'description' => tra('Administrator can admin banners'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_admin_banning',
-				'description' => tra('Can ban users or ips'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_admin_dynamic',
-				'description' => tra('Can admin the dynamic content system'),
-				'level' => 'editors',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_admin_integrator',
-				'description' => tra('Can admin integrator repositories and rules'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_admin_mailin',
-				'description' => tra('Can admin mail-in accounts'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_admin_objects',
-				'description' => tra('Can edit object permissions'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_admin_rssmodules',
-				'description' => tra('Can admin external feeds'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_clean_cache',
-				'description' => tra('Can clean cache'),
-				'level' => 'editors',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_create_css',
-				'description' => tra('Can create new css suffixed with -user'),
-				'level' => 'registered',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_detach_translation',
-				'description' => tra('Can remove association between two pages in a translation set'),
-				'level' => 'registered',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_edit_cookies',
-				'description' => tra('Can admin cookies'),
-				'level' => 'editors',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_edit_languages',
-				'description' => tra('Can edit translations and create new languages'),
-				'level' => 'editors',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_edit_menu',
-				'description' => tra('Can edit menu'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_edit_menu_option',
-				'description' => tra('Can edit menu option'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_edit_templates',
-				'description' => tra('Can edit site templates'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_search',
-				'description' => tra('Can search'),
-				'level' => 'basic',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_site_report',
-				'description' => tra('Can report a link to the webmaster'),
-				'level' => 'basic',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_subscribe_groups',
-				'description' => tra('Can subscribe to groups'),
-				'level' => 'registered',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_tell_a_friend',
-				'description' => tra('Can send a link to a friend'),
-				'level' => 'Basic',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_share',
-				'description' => tra('Can share a page (email, twitter, facebook, message, forums)'),
-				'level' => 'basic',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_use_HTML',
-				'description' => tra('Can use HTML in pages'),
-				'level' => 'editors',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_view_actionlog',
-				'description' => tra('Can view action log'),
-				'level' => 'registered',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_view_actionlog_owngroups',
-				'description' => tra('Can view action log for users of his own groups'),
-				'level' => 'registered',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_view_integrator',
-				'description' => tra('Can view integrated repositories'),
-				'level' => 'basic',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_view_referer_stats',
-				'description' => tra('Can view referrer stats'),
-				'level' => 'editors',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_view_stats',
-				'description' => tra('Can view site stats'),
-				'level' => 'basic',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_view_templates',
-				'description' => tra('Can view site templates'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_blog_admin',
-				'description' => tra('Can admin blogs'),
-				'level' => 'editors',
-				'type' => 'blogs',
-				'admin' => true,
-				'prefs' => array('feature_blogs'),
-			),
-			array(
-				'name' => 'tiki_p_assign_perm_blog',
-				'description' => tra('Can assign perms to blog'),
-				'level' => 'admin',
-				'type' => 'blogs',
-				'admin' => false,
-				'prefs' => array('feature_blogs'),
-			),
-			array(
-				'name' => 'tiki_p_blog_post',
-				'description' => tra('Can post to a blog'),
-				'level' => 'registered',
-				'type' => 'blogs',
-				'admin' => false,
-				'prefs' => array('feature_blogs'),
-			),
-			array(
-				'name' => 'tiki_p_create_blogs',
-				'description' => tra('Can create a blog'),
-				'level' => 'editors',
-				'type' => 'blogs',
-				'admin' => false,
-				'prefs' => array('feature_blogs'),
-			),
-			array(
-				'name' => 'tiki_p_read_blog',
-				'description' => tra('Can read blogs'),
-				'level' => 'basic',
-				'type' => 'blogs',
-				'admin' => false,
-				'prefs' => array('feature_blogs'),
-			),
-			array(
-				'name' => 'tiki_p_blog_post_view_ref',
-				'description' => tra('Can view in module and feed the blog posts'),
-				'level' => 'basic',
-				'type' => 'blogs',
-				'admin' => false,
-				'prefs' => array('feature_blogs'),
-			),
-			array(
-				'name' => 'tiki_p_blog_view_ref',
-				'description' => tra('Can view in module and feed the blog'),
-				'level' => 'basic',
-				'type' => 'blogs',
-				'admin' => false,
-				'prefs' => array('feature_blogs'),
-			),
-			array(
-				'name' => 'tiki_p_admin_file_galleries',
-				'description' => tra('Can admin file galleries'),
-				'level' => 'editors',
-				'type' => 'file galleries',
-				'admin' => true,
-				'prefs' => array('feature_file_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_assign_perm_file_gallery',
-				'description' => tra('Can assign perms to file gallery'),
-				'level' => 'admin',
-				'type' => 'file galleries',
-				'admin' => false,
-				'prefs' => array('feature_file_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_batch_upload_file_dir',
-				'description' => tra('Can use Directory Batch Load'),
-				'level' => 'editors',
-				'type' => 'file galleries',
-				'admin' => false,
-				'prefs' => array('feature_file_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_batch_upload_files',
-				'description' => tra('Can upload zip files with files'),
-				'level' => 'editors',
-				'type' => 'file galleries',
-				'admin' => false,
-				'prefs' => array('feature_file_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_create_file_galleries',
-				'description' => tra('Can create file galleries'),
-				'level' => 'editors',
-				'type' => 'file galleries',
-				'admin' => false,
-				'prefs' => array('feature_file_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_download_files',
-				'description' => tra('Can download files'),
-				'level' => 'basic',
-				'type' => 'file galleries',
-				'admin' => false,
-				'prefs' => array('feature_file_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_edit_gallery_file',
-				'description' => tra('Can edit a gallery file'),
-				'level' => 'editors',
-				'type' => 'file galleries',
-				'admin' => false,
-				'prefs' => array('feature_file_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_list_file_galleries',
-				'description' => tra('Can list file galleries'),
-				'level' => 'basic',
-				'type' => 'file galleries',
-				'admin' => false,
-				'prefs' => array('feature_file_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_upload_files',
-				'description' => tra('Can upload files'),
-				'level' => 'registered',
-				'type' => 'file galleries',
-				'admin' => false,
-				'prefs' => array('feature_file_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_remove_files',
-				'description' => tra('Can remove files'),
-				'level' => 'registered',
-				'type' => 'file galleries',
-				'admin' => false,
-				'prefs' => array('feature_file_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_view_fgal_explorer',
-				'description' => tra('Can view file galleries explorer'),
-				'level' => 'basic',
-				'type' => 'file galleries',
-				'admin' => false,
-				'prefs' => array('feature_file_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_view_fgal_path',
-				'description' => tra('Can view file galleries path'),
-				'level' => 'basic',
-				'type' => 'file galleries',
-				'admin' => false,
-				'prefs' => array('feature_file_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_view_file_gallery',
-				'description' => tra('Can view file galleries'),
-				'level' => 'basic',
-				'type' => 'file galleries',
-				'admin' => false,
-				'prefs' => array('feature_file_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_admin_forum',
-				'description' => tra('Can admin forums'),
-				'level' => 'editors',
-				'type' => 'forums',
-				'admin' => true,
-				'prefs' => array('feature_forums'),
-			),
-			array(
-				'name' => 'tiki_p_forum_attach',
-				'description' => tra('Can attach to forum posts'),
-				'level' => 'registered',
-				'type' => 'forums',
-				'admin' => false,
-				'prefs' => array('feature_forums'),
-			),
-			array(
-				'name' => 'tiki_p_forum_autoapp',
-				'description' => tra('Auto approve forum posts'),
-				'level' => 'editors',
-				'type' => 'forums',
-				'admin' => false,
-				'prefs' => array('feature_forums'),
-			),
-			array(
-				'name' => 'tiki_p_forum_edit_own_posts',
-				'description' => tra('Can edit own forum posts'),
-				'level' => 'registered',
-				'type' => 'forums',
-				'admin' => false,
-				'prefs' => array('feature_forums'),
-			),
-			array(
-				'name' => 'tiki_p_forum_post',
-				'description' => tra('Can post in forums'),
-				'level' => 'registered',
-				'type' => 'forums',
-				'admin' => false,
-				'prefs' => array('feature_forums'),
-			),
-			array(
-				'name' => 'tiki_p_forum_post_topic',
-				'description' => tra('Can start threads in forums'),
-				'level' => 'registered',
-				'type' => 'forums',
-				'admin' => false,
-				'prefs' => array('feature_forums'),
-			),
-			array(
-				'name' => 'tiki_p_forum_read',
-				'description' => tra('Can read forums'),
-				'level' => 'basic',
-				'type' => 'forums',
-				'admin' => false,
-				'prefs' => array('feature_forums'),
-			),
-			array(
-				'name' => 'tiki_p_forums_report',
-				'description' => tra('Can report posts to moderator'),
-				'level' => 'registered',
-				'type' => 'forums',
-				'admin' => false,
-				'prefs' => array('feature_forums'),
-			),
-			array(
-				'name' => 'tiki_p_forum_vote',
-				'description' => tra('Can vote comments in forums'),
-				'level' => 'registered',
-				'type' => 'forums',
-				'admin' => false,
-				'prefs' => array('feature_forums'),
-			),
-			array(
-				'name' => 'tiki_p_admin_freetags',
-				'description' => tra('Can admin freetags'),
-				'level' => 'admin',
-				'type' => 'freetags',
-				'admin' => true,
-				'prefs' => array('feature_freetags'),
-			),
-			array(
-				'name' => 'tiki_p_admin_galleries',
-				'description' => tra('Can admin Image Galleries'),
-				'level' => 'editors',
-				'type' => 'image galleries',
-				'admin' => true,
-				'prefs' => array('feature_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_assign_perm_image_gallery',
-				'description' => tra('Can assign perms to image gallery'),
-				'level' => 'admin',
-				'type' => 'image galleries',
-				'admin' => false,
-				'prefs' => array('feature_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_batch_upload_image_dir',
-				'description' => tra('Can use Directory Batch Load'),
-				'level' => 'editors',
-				'type' => 'image galleries',
-				'admin' => false,
-				'prefs' => array('feature_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_batch_upload_images',
-				'description' => tra('Can upload zip files with images'),
-				'level' => 'editors',
-				'type' => 'image galleries',
-				'admin' => false,
-				'prefs' => array('feature_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_create_galleries',
-				'description' => tra('Can create image galleries'),
-				'level' => 'editors',
-				'type' => 'image galleries',
-				'admin' => false,
-				'prefs' => array('feature_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_freetags_tag',
-				'description' => tra('Can tag objects'),
-				'level' => 'registered',
-				'type' => 'freetags',
-				'admin' => false,
-				'prefs' => array('feature_freetags'),
-			),
-			array(
-				'name' => 'tiki_p_list_image_galleries',
-				'description' => tra('Can list image galleries'),
-				'level' => 'basic',
-				'type' => 'image galleries',
-				'admin' => false,
-				'prefs' => array('feature_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_unassign_freetags',
-				'description' => tra('Can unassign tags from an object'),
-				'level' => 'basic',
-				'type' => 'freetags',
-				'admin' => false,
-				'prefs' => array('feature_freetags'),
-			),
-			array(
-				'name' => 'tiki_p_upload_images',
-				'description' => tra('Can upload images'),
-				'level' => 'registered',
-				'type' => 'image galleries',
-				'admin' => false,
-				'prefs' => array('feature_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_view_freetags',
-				'description' => tra('Can browse freetags'),
-				'level' => 'basic',
-				'type' => 'freetags',
-				'admin' => false,
-				'prefs' => array('feature_freetags'),
-			),
-			array(
-				'name' => 'tiki_p_view_image_gallery',
-				'description' => tra('Can view image galleries'),
-				'level' => 'basic',
-				'type' => 'image galleries',
-				'admin' => false,
-				'prefs' => array('feature_galleries'),
-			),
-			array(
-				'name' => 'tiki_p_admin_newsletters',
-				'description' => tra('Can admin newsletters'),
-				'level' => 'admin',
-				'type' => 'newsletters',
-				'admin' => true,
-				'prefs' => array('feature_newsletters'),
-			),
-			array(
-				'name' => 'tiki_p_batch_subscribe_email',
-				'description' => tra('Can subscribe many e-mails at once (requires tiki_p_subscribe email)'),
-				'level' => 'editors',
-				'type' => 'newsletters',
-				'admin' => false,
-				'prefs' => array('feature_newsletters'),
-			),
-			array(
-				'name' => 'tiki_p_send_newsletters',
-				'description' => tra('Can send newsletters'),
-				'level' => 'editors',
-				'type' => 'newsletters',
-				'admin' => false,
-				'prefs' => array('feature_newsletters'),
-			),
-			array(
-				'name' => 'tiki_p_subscribe_email',
-				'description' => tra('Can subscribe any email to newsletters'),
-				'level' => 'editors',
-				'type' => 'newsletters',
-				'admin' => false,
-				'prefs' => array('feature_newsletters'),
-			),
-			array(
-				'name' => 'tiki_p_subscribe_newsletters',
-				'description' => tra('Can subscribe to newsletters'),
-				'level' => 'basic',
-				'type' => 'newsletters',
-				'admin' => false,
-				'prefs' => array('feature_newsletters'),
-			),
-			array(
-				'name' => 'tiki_p_view_newsletter',
-				'description' => tra('Can view the archive of a newsletters'),
-				'level' => 'basic',
-				'type' => 'newsletters',
-				'admin' => false,
-				'prefs' => array('feature_newsletters'),
-			),
-			array(
-				'name' => 'tiki_p_list_newsletters',
-				'description' => tra('Can list newsletters'),
-				'level' => 'basic',
-				'type' => 'newsletters',
-				'admin' => false,
-				'prefs' => array('feature_newsletters'),
-			),
-			array(
-				'name' => 'tiki_p_admin_polls',
-				'description' => tra('Can admin polls'),
-				'level' => 'admin',
-				'type' => 'polls',
-				'admin' => true,
-				'prefs' => array('feature_polls'),
-			),
-			array(
-				'name' => 'tiki_p_view_poll_results',
-				'description' => tra('Can view poll results'),
-				'level' => 'basic',
-				'type' => 'polls',
-				'admin' => false,
-				'prefs' => array('feature_polls'),
-			),
-			array(
-				'name' => 'tiki_p_vote_poll',
-				'description' => tra('Can vote polls'),
-				'level' => 'basic',
-				'type' => 'polls',
-				'admin' => false,
-				'prefs' => array('feature_polls'),
-			),
-			array(
-				'name' => 'tiki_p_view_poll_voters',
-				'description' => tra('Can view poll voters'),
-				'level' => 'basic',
-				'type' => 'polls',
-				'admin' => false,
-				'prefs' => array('feature_polls'),
-			),
-			array(
-				'name' => 'tiki_p_admin_toolbars',
-				'description' => tra('Can admin toolbars'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_admin_quizzes',
-				'description' => tra('Can admin quizzes'),
-				'level' => 'editors',
-				'type' => 'quizzes',
-				'admin' => true,
-				'prefs' => array('feature_quizzes'),
-			),
-			array(
-				'name' => 'tiki_p_take_quiz',
-				'description' => tra('Can take quizzes'),
-				'level' => 'basic',
-				'type' => 'quizzes',
-				'admin' => false,
-				'prefs' => array('feature_quizzes'),
-			),
-			array(
-				'name' => 'tiki_p_view_quiz_stats',
-				'description' => tra('Can view quiz stats'),
-				'level' => 'basic',
-				'type' => 'quizzes',
-				'admin' => false,
-				'prefs' => array('feature_quizzes'),
-			),
-			array(
-				'name' => 'tiki_p_view_user_results',
-				'description' => tra('Can view user quiz results'),
-				'level' => 'editors',
-				'type' => 'quizzes',
-				'admin' => false,
-				'prefs' => array('feature_quizzes'),
-			),
-			array(
-				'name' => 'tiki_p_admin_sheet',
-				'description' => tra('Can admin sheet'),
-				'level' => 'admin',
-				'type' => 'sheet',
-				'admin' => true,
-				'prefs' => array('feature_sheet'),
-			),
-			array(
-				'name' => 'tiki_p_edit_sheet',
-				'description' => tra('Can create and edit sheets'),
-				'level' => 'editors',
-				'type' => 'sheet',
-				'admin' => false,
-				'prefs' => array('feature_sheet'),
-			),
-			array(
-				'name' => 'tiki_p_view_sheet',
-				'description' => tra('Can view sheet'),
-				'level' => 'basic',
-				'type' => 'sheet',
-				'admin' => false,
-				'prefs' => array('feature_sheet'),
-			),
-			array(
-				'name' => 'tiki_p_view_sheet_history',
-				'description' => tra('Can view sheet history'),
-				'level' => 'admin',
-				'type' => 'sheet',
-				'admin' => false,
-				'prefs' => array('feature_sheet'),
-			),
-			array(
-				'name' => 'tiki_p_admin_shoutbox',
-				'description' => tra('Can admin shoutbox (Edit/remove messages)'),
-				'level' => 'editors',
-				'type' => 'shoutbox',
-				'admin' => true,
-				'prefs' => array('feature_shoutbox'),
-			),
-			array(
-				'name' => 'tiki_p_post_shoutbox',
-				'description' => tra('Can post messages in shoutbox'),
-				'level' => 'basic',
-				'type' => 'shoutbox',
-				'admin' => false,
-				'prefs' => array('feature_shoutbox'),
-			),
-			array(
-				'name' => 'tiki_p_view_shoutbox',
-				'description' => tra('Can view shoutbox'),
-				'level' => 'basic',
-				'type' => 'shoutbox',
-				'admin' => false,
-				'prefs' => array('feature_shoutbox'),
-			),
-			array(
-				'name' => 'tiki_p_admin_surveys',
-				'description' => tra('Can admin surveys'),
-				'level' => 'editors',
-				'type' => 'surveys',
-				'admin' => true,
-				'prefs' => array('feature_surveys'),
-			),
-			array(
-				'name' => 'tiki_p_take_survey',
-				'description' => tra('Can take surveys'),
-				'level' => 'basic',
-				'type' => 'surveys',
-				'admin' => false,
-				'prefs' => array('feature_surveys'),
-			),
-			array(
-				'name' => 'tiki_p_view_survey_stats',
-				'description' => tra('Can view survey stats'),
-				'level' => 'basic',
-				'type' => 'surveys',
-				'admin' => false,
-				'prefs' => array('feature_surveys'),
-			),
-			array(
-				'name' => 'tiki_p_admin_trackers',
-				'description' => tra('Can admin trackers'),
-				'level' => 'editors',
-				'type' => 'trackers',
-				'admin' => true,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_attach_trackers',
-				'description' => tra('Can attach files to tracker items'),
-				'level' => 'registered',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_tracker_view_attachments',
-				'description' => tra('Can view tracker items attachments and download'),
-				'level' => 'registered',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_comment_tracker_items',
-				'description' => tra('Can insert comments for tracker items'),
-				'level' => 'basic',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_tracker_view_comments',
-				'description' => tra('Can view tracker items comments'),
-				'level' => 'basic',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_create_tracker_items',
-				'description' => tra('Can create new items for trackers'),
-				'level' => 'registered',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_list_trackers',
-				'description' => tra('Can list trackers'),
-				'level' => 'basic',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_modify_tracker_items',
-				'description' => tra('Can change tracker items'),
-				'level' => 'registered',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_modify_tracker_items_pending',
-				'description' => tra('Can change pending tracker items'),
-				'level' => 'registered',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_modify_tracker_items_closed',
-				'description' => tra('Can change closed tracker items'),
-				'level' => 'registered',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_remove_tracker_items',
-				'description' => tra('Can remove tracker items'),
-				'level' => 'registered',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_remove_tracker_items_pending',
-				'description' => tra('Can remove pending tracker items'),
-				'level' => 'registered',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_remove_tracker_items_closed',
-				'description' => tra('Can remove closed tracker items'),
-				'level' => 'registered',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_tracker_view_ratings',
-				'description' => tra('Can view rating result for tracker items'),
-				'level' => 'basic',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_tracker_vote_ratings',
-				'description' => tra('Can vote a rating for tracker items'),
-				'level' => 'registered',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_tracker_revote_ratings',
-				'description' => tra('Can re-vote a rating for tracker items'),
-				'level' => 'registered',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_view_trackers',
-				'description' => tra('Can view trackers'),
-				'level' => 'basic',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_view_trackers_closed',
-				'description' => tra('Can view closed trackers items'),
-				'level' => 'registered',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_view_trackers_pending',
-				'description' => tra('Can view pending trackers items'),
-				'level' => 'editors',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_watch_trackers',
-				'description' => tra('Can watch tracker'),
-				'level' => 'registered',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_export_tracker',
-				'description' => tra('Can export tracker items'),
-				'level' => 'registered',
-				'type' => 'trackers',
-				'admin' => false,
-				'prefs' => array('feature_trackers'),
-			),
-			array(
-				'name' => 'tiki_p_admin_wiki',
-				'description' => tra('Can admin the wiki'),
-				'level' => 'editors',
-				'type' => 'wiki',
-				'admin' => true,
-				'prefs' => array('feature_wiki'),
-			),
-			array(
-				'name' => 'tiki_p_assign_perm_wiki_page',
-				'description' => tra('Can assign perms to wiki pages'),
-				'level' => 'admin',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
-			),
-			array(
-				'name' => 'tiki_p_edit',
-				'description' => tra('Can edit pages'),
-				'level' => 'registered',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
-			),
-			array(
-				'name' => 'tiki_p_edit_copyrights',
-				'description' => tra('Can edit copyright notices'),
-				'level' => 'editors',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('wiki_feature_copyrights'),
-			),
-			array(
-				'name' => 'tiki_p_edit_dynvar',
-				'description' => tra('Can edit dynamic variables'),
-				'level' => 'editors',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
-			),
-			array(
-				'name' => 'tiki_p_edit_structures',
-				'description' => tra('Can create and edit structures'),
-				'level' => 'editors',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki_structure'),
-			),
-			array(
-				'name' => 'tiki_p_export_wiki',
-				'description' => tra('Can export wiki pages using the export feature'),
-				'level' => 'admin',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki_export'),
-			),
-			array(
-				'name' => 'tiki_p_lock',
-				'description' => tra('Can lock pages'),
-				'level' => 'editors',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
-			),
-			array(
-				'name' => 'tiki_p_minor',
-				'description' => tra('Can save as minor edit'),
-				'level' => 'registered',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
-			),
-			array(
-				'name' => 'tiki_p_remove',
-				'description' => tra('Can remove'),
-				'level' => 'editors',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
-			),
-			array(
-				'name' => 'tiki_p_rename',
-				'description' => tra('Can rename pages'),
-				'level' => 'editors',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
-			),
-			array(
-				'name' => 'tiki_p_rollback',
-				'description' => tra('Can rollback pages'),
-				'level' => 'editors',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
-			),
-			array(
-				'name' => 'tiki_p_upload_picture',
-				'description' => tra('Can upload pictures to wiki pages'),
-				'level' => 'registered',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki_pictures'),
-			),
-			array(
-				'name' => 'tiki_p_use_as_template',
-				'description' => tra('Can use the page as a tracker template'),
-				'level' => 'basic',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
-			),
-			array(
-				'name' => 'tiki_p_view',
-				'description' => tra('Can view page/pages'),
-				'level' => 'basic',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
-			),
-			array(
-				'name' => 'tiki_p_wiki_view_ref',
-				'description' => tra('Can view in module and feed the wiki pages reference'),
-				'level' => 'basic',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
-			),
-			array(
-				'name' => 'tiki_p_watch_structure',
-				'description' => tra('Can watch structure'),
-				'level' => 'registered',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki_structure'),
-			),
-			array(
-				'name' => 'tiki_p_wiki_admin_attachments',
-				'description' => tra('Can admin attachments on wiki pages'),
-				'level' => 'editors',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki_attachments'),
-			),
-			array(
-				'name' => 'tiki_p_wiki_admin_ratings',
-				'description' => tra('Can add and change ratings on wiki pages'),
-				'level' => 'admin',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki_ratings'),
-			),
-			array(
-				'name' => 'tiki_p_wiki_attach_files',
-				'description' => tra('Can attach files to wiki pages'),
-				'level' => 'registered',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki_attachments'),
-			),
-			array(
-				'name' => 'tiki_p_wiki_view_attachments',
-				'description' => tra('Can view wiki attachments and download'),
-				'level' => 'registered',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki_attachments'),
-			),
-			array(
-				'name' => 'tiki_p_wiki_view_comments',
-				'description' => tra('Can view wiki comments'),
-				'level' => 'basic',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki_comments'),
-			),
-			array(
-				'name' => 'tiki_p_wiki_view_history',
-				'description' => tra('Can view wiki history'),
-				'level' => 'basic',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_history'),
-			),
-			array(
-				'name' => 'tiki_p_wiki_view_ratings',
-				'description' => tra('Can view rating of wiki pages'),
-				'level' => 'basic',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki_ratings'),
-			),
-			array(
-				'name' => 'tiki_p_wiki_view_source',
-				'description' => tra('Can view source of wiki pages'),
-				'level' => 'basic',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_source'),
-			),
-			array(
-				'name' => 'tiki_p_wiki_vote_ratings',
-				'description' => tra('Can participate to rating of wiki pages'),
-				'level' => 'registered',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki_ratings'),
-			),
-			array(
-				'name' => 'tiki_p_wiki_view_similar',
-				'description' => tra('Can view similar wiki pages'),
-				'level' => 'registered',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
-			),
-			array(
-				'name' => 'tiki_p_admin_received_articles',
-				'description' => tra('Can admin received articles'),
-				'level' => 'editors',
-				'type' => 'comm',
-				'admin' => false,
-				'prefs' => array('feature_comm'),
-			),
-			array(
-				'name' => 'tiki_p_admin_received_pages',
-				'description' => tra('Can admin received pages'),
-				'level' => 'editors',
-				'type' => 'comm',
-				'admin' => false,
-				'prefs' => array('feature_comm'),
-			),
-			array(
-				'name' => 'tiki_p_send_articles',
-				'description' => tra('Can send articles to other sites'),
-				'level' => 'editors',
-				'type' => 'comm',
-				'admin' => false,
-				'prefs' => array('feature_comm'),
-			),
-			array(
-				'name' => 'tiki_p_sendme_articles',
-				'description' => tra('Can send articles to this site'),
-				'level' => 'registered',
-				'type' => 'comm',
-				'admin' => false,
-				'prefs' => array('feature_comm'),
-			),
-			array(
-				'name' => 'tiki_p_sendme_pages',
-				'description' => tra('Can send pages to this site'),
-				'level' => 'registered',
-				'type' => 'comm',
-				'admin' => false,
-				'prefs' => array('feature_comm'),
-			),
-			array(
-				'name' => 'tiki_p_send_pages',
-				'description' => tra('Can send pages to other sites'),
-				'level' => 'registered',
-				'type' => 'comm',
-				'admin' => false,
-				'prefs' => array('feature_comm'),
-			),
-			array(
-				'name' => 'tiki_p_admin_tikitests',
-				'description' => tra('Can admin the TikiTests'),
-				'level' => 'admin',
-				'type' => 'tikitests',
-				'admin' => false,
-				'prefs' => array('feature_tikitests'),
-			),
-			array(
-				'name' => 'tiki_p_edit_tikitests',
-				'description' => tra('Can edit TikiTests'),
-				'level' => 'editors',
-				'type' => 'tikitests',
-				'admin' => false,
-				'prefs' => array('feature_tikitests'),
-			),
-			array(
-				'name' => 'tiki_p_play_tikitests',
-				'description' => tra('Can replay the TikiTests'),
-				'level' => 'registered',
-				'type' => 'tikitests',
-				'admin' => false,
-				'prefs' => array('feature_tikitests'),
-			),
-			array(
-				'name' => 'tiki_p_cache_bookmarks',
-				'description' => tra('Can cache user bookmarks'),
-				'level' => 'admin',
-				'type' => 'user',
-				'admin' => false,
-				'prefs' => array('feature_user_bookmarks'),
-			),
-			array(
-				'name' => 'tiki_p_configure_modules',
-				'description' => tra('Can configure modules'),
-				'level' => 'registered',
-				'type' => 'user',
-				'admin' => false,
-				'prefs' => array('feature_modulecontrols'),
-			),
-			array(
-				'name' => 'tiki_p_create_bookmarks',
-				'description' => tra('Can create user bookmarks'),
-				'level' => 'registered',
-				'type' => 'user',
-				'admin' => false,
-				'prefs' => array('feature_user_bookmarks'),
-			),
-			array(
-				'name' => 'tiki_p_minical',
-				'description' => tra('Can use the mini event calendar'),
-				'level' => 'registered',
-				'type' => 'user',
-				'admin' => false,
-				'prefs' => array('feature_minical'),
-			),
-			array(
-				'name' => 'tiki_p_notepad',
-				'description' => tra('Can use the notepad'),
-				'level' => 'registered',
-				'type' => 'user',
-				'admin' => false,
-				'prefs' => array('feature_notepad'),
-			),
-			array(
-				'name' => 'tiki_p_tasks_admin',
-				'description' => tra('Can admin public tasks'),
-				'level' => 'admin',
-				'type' => 'user',
-				'admin' => false,
-				'prefs' => array('feature_tasks'),
-			),
-			array(
-				'name' => 'tiki_p_tasks',
-				'description' => tra('Can use tasks'),
-				'level' => 'registered',
-				'type' => 'user',
-				'admin' => false,
-				'prefs' => array('feature_tasks'),
-			),
-			array(
-				'name' => 'tiki_p_tasks_receive',
-				'description' => tra('Can receive tasks from other users'),
-				'level' => 'registered',
-				'type' => 'user',
-				'admin' => false,
-				'prefs' => array('feature_tasks'),
-			),
-			array(
-				'name' => 'tiki_p_tasks_send',
-				'description' => tra('Can send tasks to other users'),
-				'level' => 'registered',
-				'type' => 'user',
-				'admin' => false,
-				'prefs' => array('feature_tasks'),
-			),
-			array(
-				'name' => 'tiki_p_userfiles',
-				'description' => tra('Can upload personal files'),
-				'level' => 'registered',
-				'type' => 'user',
-				'admin' => false,
-				'prefs' => array('feature_userfiles'),
-			),
-			array(
-				'name' => 'tiki_p_usermenu',
-				'description' => tra('Can create items in personal menu'),
-				'level' => 'registered',
-				'type' => 'user',
-				'admin' => false,
-				'prefs' => array('feature_usermenu'),
-			),
-			array(
-				'name' => 'tiki_p_broadcast_all',
-				'description' => tra('Can broadcast messages to all user'),
-				'level' => 'admin',
-				'type' => 'messu',
-				'admin' => false,
-				'prefs' => array('feature_messages'),
-			),
-			array(
-				'name' => 'tiki_p_broadcast',
-				'description' => tra('Can broadcast messages to groups'),
-				'level' => 'admin',
-				'type' => 'messu',
-				'admin' => false,
-				'prefs' => array('feature_messages'),
-			),
-			array(
-				'name' => 'tiki_p_messages',
-				'description' => tra('Can use the messaging system'),
-				'level' => 'registered',
-				'type' => 'messu',
-				'admin' => false,
-				'prefs' => array('feature_messages'),
-			),
-			array(
-				'name' => 'tiki_p_admin_comments',
-				'description' => tra('Can admin comments'),
-				'level' => 'admin',
-				'type' => 'comments',
-				'admin' => true,
-				'prefs' => array('feature_wiki_comments', 'feature_blogposts_comments', 'feature_file_galleries_comments', 'feature_image_galleries_comments', 'feature_article_comments', 'feature_faq_comments', 'feature_poll_comments', 'map_comments'),
-			),
-			array(
-				'name' => 'tiki_p_edit_comments',
-				'description' => tra('Can edit all comments'),
-				'level' => 'editors',
-				'type' => 'comments',
-				'admin' => false,
-				'prefs' => array('feature_wiki_comments', 'feature_blogposts_comments', 'feature_file_galleries_comments', 'feature_image_galleries_comments', 'feature_article_comments', 'feature_faq_comments', 'feature_poll_comments', 'map_comments'),
-			),
-			array(
-				'name' => 'tiki_p_post_comments',
-				'description' => tra('Can post new comments'),
-				'level' => 'registered',
-				'type' => 'comments',
-				'admin' => false,
-				'prefs' => array('feature_wiki_comments', 'feature_blogposts_comments', 'feature_file_galleries_comments', 'feature_image_galleries_comments', 'feature_article_comments', 'feature_faq_comments', 'feature_poll_comments', 'map_comments'),
-			),
-			array(
-				'name' => 'tiki_p_read_comments',
-				'description' => tra('Can read comments'),
-				'level' => 'basic',
-				'type' => 'comments',
-				'admin' => false,
-				'prefs' => array('feature_wiki_comments', 'feature_blogposts_comments', 'feature_file_galleries_comments', 'feature_image_galleries_comments', 'feature_article_comments', 'feature_faq_comments', 'feature_poll_comments', 'map_comments'),
-			),
-			array(
-				'name' => 'tiki_p_remove_comments',
-				'description' => tra('Can delete comments'),
-				'level' => 'editors',
-				'type' => 'comments',
-				'admin' => false,
-				'prefs' => array('feature_wiki_comments', 'feature_blogposts_comments', 'feature_file_galleries_comments', 'feature_image_galleries_comments', 'feature_article_comments', 'feature_faq_comments', 'feature_poll_comments', 'map_comments'),
-			),
-			array(
-				'name' => 'tiki_p_vote_comments',
-				'description' => tra('Can vote comments'),
-				'level' => 'registered',
-				'type' => 'comments',
-				'admin' => false,
-				'prefs' => array('feature_wiki_comments', 'feature_blogposts_comments', 'feature_file_galleries_comments', 'feature_image_galleries_comments', 'feature_article_comments', 'feature_faq_comments', 'feature_poll_comments', 'map_comments'),
-			),
-			array(
-				'name' => 'tiki_p_admin_content_templates',
-				'description' => tra('Can admin content templates'),
-				'level' => 'admin',
-				'type' => 'content templates',
-				'admin' => true,
-				'prefs' => array('feature_wiki_templates', 'feature_cms_templates'),
-			),
-			array(
-				'name' => 'tiki_p_edit_content_templates',
-				'description' => tra('Can edit content templates'),
-				'level' => 'editors',
-				'type' => 'content templates',
-				'admin' => false,
-				'prefs' => array('feature_wiki_templates', 'feature_cms_templates'),
-			),
-			array(
-				'name' => 'tiki_p_use_content_templates',
-				'description' => tra('Can use content templates'),
-				'level' => 'registered',
-				'type' => 'content templates',
-				'admin' => false,
-				'prefs' => array('feature_wiki_templates', 'feature_cms_templates'),
-			),
-			array(
-				'name' => 'tiki_p_edit_html_pages',
-				'description' => tra('Can edit HTML pages'),
-				'level' => 'editors',
-				'type' => 'html pages',
-				'admin' => false,
-				'prefs' => array('feature_html_pages'),
-			),
-			array(
-				'name' => 'tiki_p_view_html_pages',
-				'description' => tra('Can view HTML pages'),
-				'level' => 'basic',
-				'type' => 'html pages',
-				'admin' => false,
-				'prefs' => array('feature_html_pages'),
-			),
-			array(
-				'name' => 'tiki_p_list_users',
-				'description' => tra('Can list registered users'),
-				'level' => 'registered',
-				'type' => 'user',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_live_support_admin',
-				'description' => tra('Admin live support system'),
-				'level' => 'admin',
-				'type' => 'support',
-				'admin' => true,
-				'prefs' => array('feature_live_support'),
-			),
-			array(
-				'name' => 'tiki_p_live_support',
-				'description' => tra('Can use live support system'),
-				'level' => 'basic',
-				'type' => 'support',
-				'admin' => false,
-				'prefs' => array('feature_live_support'),
-			),
-			array(
-				'name' => 'tiki_p_map_create',
-				'description' => tra('Can create new mapfile'),
-				'level' => 'admin',
-				'type' => 'maps',
-				'admin' => false,
-				'prefs' => array('feature_maps'),
-			),
-			array(
-				'name' => 'tiki_p_map_delete',
-				'description' => tra('Can delete mapfiles'),
-				'level' => 'admin',
-				'type' => 'maps',
-				'admin' => false,
-				'prefs' => array('feature_maps'),
-			),
-			array(
-				'name' => 'tiki_p_map_edit',
-				'description' => tra('Can edit mapfiles'),
-				'level' => 'editors',
-				'type' => 'maps',
-				'admin' => false,
-				'prefs' => array('feature_maps'),
-			),
-			array(
-				'name' => 'tiki_p_map_view',
-				'description' => tra('Can view mapfiles'),
-				'level' => 'basic',
-				'type' => 'maps',
-				'admin' => false,
-				'prefs' => array('feature_maps'),
-			),
-			array(
-				'name' => 'tiki_p_map_view_mapfiles',
-				'description' => tra('Can view contents of mapfiles'),
-				'level' => 'registered',
-				'type' => 'maps',
-				'admin' => false,
-				'prefs' => array('feature_maps'),
-			),
-			array(
-				'name' => 'tiki_p_use_webmail',
-				'description' => tra('Can use webmail'),
-				'level' => 'registered',
-				'type' => 'webmail',
-				'admin' => false,
-				'prefs' => array('feature_webmail', 'feature_contacts'),
-			),
-			array(
-				'name' => 'tiki_p_use_group_webmail',
-				'description' => tra('Can use group webmail'),
-				'level' => 'registered',
-				'type' => 'webmail',
-				'admin' => false,
-				'prefs' => array('feature_webmail', 'feature_contacts'),
-			),
-			array(
-				'name' => 'tiki_p_admin_group_webmail',
-				'description' => tra('Can admin group webmail accounts'),
-				'level' => 'registered',
-				'type' => 'webmail',
-				'admin' => false,
-				'prefs' => array('feature_webmail', 'feature_contacts'),
-			),
-			array(
-				'name' => 'tiki_p_use_personal_webmail',
-				'description' => tra('Can use personal webmail accounts'),
-				'level' => 'registered',
-				'type' => 'webmail',
-				'admin' => false,
-				'prefs' => array('feature_webmail', 'feature_contacts'),
-			),
-			array(
-				'name' => 'tiki_p_admin_personal_webmail',
-				'description' => tra('Can admin personal webmail accounts'),
-				'level' => 'registered',
-				'type' => 'webmail',
-				'admin' => false,
-				'prefs' => array('feature_webmail', 'feature_contacts'),
-			),
-			array(
-				'name' => 'tiki_p_plugin_viewdetail',
-				'description' => tra('Can view unapproved plugin details'),
-				'level' => 'registered',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
-			),
-			array(
-				'name' => 'tiki_p_plugin_preview', 'Can execute unapproved plugin',
-				'description' => tra('registered'),
-				'level' => 'wiki',
-				'type' => NULL,
-				'admin' => 'feature_wiki',
-			'prefs' => array()),
-			array(
-				'name' => 'tiki_p_plugin_approve',
-				'description' => tra('Can approve plugin execution'),
-				'level' => 'editors',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
-			),
-			array(
-				'name' => 'tiki_p_trust_input',
-				'description' => tra('Trust all user inputs including plugins (no security checks)'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_view_backlink',
-				'description' => tra('View page backlinks'),
-				'level' => 'basic',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
-			),
-			array(
-				'name' => 'tiki_p_admin_notifications',
-				'description' => tra('Can admin mail notifications'),
-				'level' => 'editors',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_invite_to_my_groups',
-				'description' => tra('Can invite user to my groups'),
-				'level' => 'editors',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_invite',
-				'description' => tra('Can invite users by email, and include them in groups'),
-				'level' => 'registered',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array('feature_invite'),
-			),
-			array(
-				'name' => 'tiki_p_delete_account',
-				'description' => tra('Can delete his/her own account'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_admin_importer',
-				'description' => tra('Can use the importer'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_admin_categories',
-				'description' => tra('Can admin categories'),
-				'level' => 'editors',
-				'type' => 'category',
-				'admin' => true,
-				'prefs' => array('feature_categories'),
-			),
-			array(
-				'name' => 'tiki_p_view_category',
-				'description' => tra('Can see the category in a listing'),
-				'level' => 'basic',
-				'type' => 'category',
-				'admin' => false,
-				'prefs' => array('feature_categories'),
-			),
-			array(
-				'name' => 'tiki_p_modify_object_categories',
-				'description' => tra('Can change the categories of the object'),
-				'level' => 'editors',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_add_object',
-				'description' => tra('Can add objects to the category (needs tiki_p_modify_object_categories)'),
-				'level' => 'editors',
-				'type' => 'category',
-				'admin' => false,
-				'prefs' => array('feature_categories'),
-			),
-			array(
-				'name' => 'tiki_p_remove_object',
-				'description' => tra('Can remove objects from the category (needs tiki_p_modify_object_categories)'),
-				'level' => 'editors',
-				'type' => 'category',
-				'admin' => false,
-				'prefs' => array('feature_categories'),
-			),
-			array(
-				'name' => 'tiki_p_create_category',
-				'description' => tra('Can create new categories'),
-				'level' => 'admin',
-				'type' => 'category',
-				'admin' => false,
-				'prefs' => array('feature_categories'),
-			),
-			array(
-				'name' => 'tiki_p_perspective_view',
-				'description' => tra('Can view the perspective'),
-				'level' => 'basic',
-				'type' => 'perspective',
-				'admin' => false,
-				'prefs' => array('feature_perspective'),
-			),
-			array(
-				'name' => 'tiki_p_perspective_edit',
-				'description' => tra('Can edit the perspective'),
-				'level' => 'basic',
-				'type' => 'perspective',
-				'admin' => false,
-				'prefs' => array('feature_perspective'),
-			),
-			array(
-				'name' => 'tiki_p_perspective_create',
-				'description' => tra('Can create a perspective'),
-				'level' => 'basic',
-				'type' => 'perspective',
-				'admin' => false,
-				'prefs' => array('feature_perspective'),
-			),
-			array(
-				'name' => 'tiki_p_perspective_admin',
-				'description' => tra('Can admin perspectives'),
-				'level' => 'admin',
-				'type' => 'perspective',
-				'admin' => true,
-				'prefs' => array('feature_perspective'),
-			),
-			array(
-				'name' => 'tiki_p_group_view',
-				'description' => tra('Can view the group'),
-				'level' => 'basic',
-				'type' => 'group',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_group_view_members',
-				'description' => tra('Can view the group members'),
-				'level' => 'basic',
-				'type' => 'group',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_group_add_member',
-				'description' => tra('Can add group members'),
-				'level' => 'admin',
-				'type' => 'group',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_group_remove_member',
-				'description' => tra('Can remove group members'),
-				'level' => 'admin',
-				'type' => 'group',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_group_join',
-				'description' => tra('Can join or leave the group'),
-				'level' => 'admin',
-				'type' => 'group',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_trigger_transition',
-				'description' => tra('Can trigger the transition between two states'),
-				'level' => 'admin',
-				'type' => 'transition',
-				'admin' => false,
-				'prefs' => array('feature_group_transition', 'feature_category_transition'),
-			),
-			array(
-				'name' => 'tiki_p_admin_kaltura',
-				'description' => tra('Can admin kaltura feature'),
-				'level' => 'admin',
-				'type' => 'kaltura',
-				'admin' => true,
-				'prefs' => array('feature_kaltura'),
-			),
-			array(
-				'name' => 'tiki_p_upload_videos',
-				'description' => tra('Can upload video on kaltura server'),
-				'level' => 'editors',
-				'type' => 'kaltura',
-				'admin' => false,
-				'prefs' => array('feature_kaltura'),
-			),
-			array(
-				'name' => 'tiki_p_edit_videos',
-				'description' => tra('Can edit information of kaltura entry'),
-				'level' => 'editors',
-				'type' => 'kaltura',
-				'admin' => false,
-				'prefs' => array('feature_kaltura'),
-			),
-			array(
-				'name' => 'tiki_p_remix_videos',
-				'description' => tra('Can create kaltura remix video'),
-				'level' => 'editors',
-				'type' => 'kaltura',
-				'admin' => false,
-				'prefs' => array('feature_kaltura'),
-			),
-			array(
-				'name' => 'tiki_p_delete_videos',
-				'description' => tra('Can delete kaltura entry'),
-				'level' => 'editors',
-				'type' => 'kaltura',
-				'admin' => false,
-				'prefs' => array('feature_kaltura'),
-			),
-			array(
-				'name' => 'tiki_p_download_videos',
-				'description' => tra('Can download kaltura entry'),
-				'level' => 'registered',
-				'type' => 'kaltura',
-				'admin' => false,
-				'prefs' => array('feature_kaltura'),
-			),
-			array(
-				'name' => 'tiki_p_list_videos',
-				'description' => tra('Can list kaltura entries'),
-				'level' => 'basic',
-				'type' => 'kaltura',
-				'admin' => false,
-				'prefs' => array('feature_kaltura'),
-			),
-			array(
-				'name' => 'tiki_p_view_videos',
-				'description' => tra('Can view kaltura entry'),
-				'level' => 'basic',
-				'type' => 'kaltura',
-				'admin' => false,
-				'prefs' => array('feature_kaltura'),
-			),
-			array(
-				'name' => 'tiki_p_dsn_query',
-				'description' => tra('Can execute arbitrary queries on a given DSN'),
-				'level' => 'admin',
-				'type' => 'dsn',
-				'admin' => false,
-				'prefs' => array(),
-			),
-			array(
-				'name' => 'tiki_p_payment_admin',
-				'description' => tra('Can administer payments'),
-				'level' => 'admin',
-				'type' => 'payment',
-				'admin' => true,
-				'prefs' => array('payment_feature'),
-			),
-			array(
-				'name' => 'tiki_p_payment_view',
-				'description' => tra('Can view payment requests and details'),
-				'level' => 'admin',
-				'type' => 'payment',
-				'admin' => false,
-				'prefs' => array('payment_feature'),
-			),
-			array(
-				'name' => 'tiki_p_payment_manual',
-				'description' => tra('Can enter manual payments'),
-				'level' => 'admin',
-				'type' => 'payment',
-				'admin' => false,
-				'prefs' => array('payment_feature'),
-			),
-			array(
-				'name' => 'tiki_p_payment_request',
-				'description' => tra('Can request a payment'),
-				'level' => 'admin',
-				'type' => 'payment',
-				'admin' => false,
-				'prefs' => array('payment_feature'),
-			),
-			array(
-				'name' => 'tiki_p_bigbluebutton_join',
-				'description' => tra('Can join a meeting'),
-				'level' => 'basic',
-				'type' => 'bigbluebutton',
-				'admin' => false,
-				'prefs' => array('bigbluebutton_feature'),
-			),
-			array(
-				'name' => 'tiki_p_bigbluebutton_moderate',
-				'description' => tra('Can moderate a meeting'),
-				'level' => 'admin',
-				'type' => 'bigbluebutton',
-				'admin' => false,
-				'prefs' => array('bigbluebutton_feature'),
-			),
-			array(
-				'name' => 'tiki_p_bigbluebutton_create',
-				'description' => tra('Can create a meeting'),
-				'level' => 'admin',
-				'type' => 'bigbluebutton',
-				'admin' => false,
-				'prefs' => array('bigbluebutton_feature'),
-			),
-			array(
-				'name' => 'tiki_p_socialnetworks',
-				'description' => tra('user can use social network integration'),
-				'level' => 'registered',
-				'type' => 'socialnetworks',
-				'admin' => false,
-				'prefs' => array('feature_socialnetworks'),
-			),
-			array(
-				'name' => 'tiki_p_admin_socialnetworks',
-				'description' => tra('user can register this site with social networks'),
-				'level' => 'admin',
-				'type' => 'socialnetworks',
-				'admin' => true,
-				'prefs' => array('feature_socialnetworks'),
-			),
-			array(
-				'name' => 'tiki_p_page_contribution_view',
-				'description' => tra('Can view contributions to a page'),
-				'level' => 'basic',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
-			),
-			array(
-				'name' => 'tiki_p_acct_create_book',
-				'description' => tra('Can create/close a book'),
-				'level' => 'admin',
-				'type' => 'accounting',
-				'admin' => true,
-				'prefs' => array('feature_accounting'),
-			),
-			array(
-				'name' => 'tiki_p_acct_manage_accounts',
-				'description' => tra('Can create/edit/lock accounts'),
-				'level' => 'admin',
-				'type' => 'accounting',
-				'admin' => true,
-				'prefs' => array('feature_accounting' ),
-			),
-			array(
-				'name' => 'tiki_p_acct_book',
-				'description' => tra('Create a new transaction'),
-				'level' => 'editor',
-				'type' => 'accounting',
-				'admin' => false,
-				'prefs' => array('feature_accounting'),
-			),
-			array(
-				'name' => 'tiki_p_acct_view',
-				'description' => tra('Permission to view the journal'),
-				'level' => 'registered',
-				'type' => 'accounting',
-				'admin' => false,
-				'prefs' => array('feature_accounting' ),
-			),
-			array(
-				'name' => 'tiki_p_acct_book_stack',
-				'description' => tra('Can book into the stack where statements can be changed'),
-				'level' => 'editor',
-				'type' => 'accounting',
-				'admin' => false,
-				'prefs' => array('feature_accounting'),
-			),
-			array(
-				'name' => 'tiki_p_acct_book_import',
-				'description' => tra('Can import statements from external accounts'),
-				'level' => 'editor',
-				'type' => 'accounting',
-				'admin' => false,
-				'prefs' => array('feature_accounting' ),
-			),
-			array(
-				'name' => 'tiki_p_acct_manage_template',
-				'description' => tra('Can manage templates for recurring transactions'),
-				'level' => 'editor',
-				'type' => 'accounting',
-				'admin' => false,
-				'prefs' => array('feature_accounting'),
-			),
-			array(
-				'name' => 'tiki_p_wiki_view_latest',
-				'description' => tra('Can view unapproved revisions of pages'),
-				'level' => 'registered',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('flaggedrev_approval'),
-			),
-			array(
-				'name' => 'tiki_p_wiki_approve',
-				'description' => tra('Can approve revisions of pages'),
-				'level' => 'editor',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('flaggedrev_approval'),
-			),
-		);
 	}
 
 	function get_permissions($offset = 0, $maxRecords = -1, $sort_mode = 'permName_asc', $find = '', $type = '', $group = '', $enabledOnly = false) {
@@ -5023,8 +2534,8 @@ class UsersLib extends TikiLib
 	}
 
 	function change_user_waiting($user, $who) {
-		$query = 'update `users_users` set `waiting`=? where `login`=?';
-		$this->query($query, array($who, $user));
+		$query = 'update `users_users` set `waiting`=?, `currentLogin`=? where `login`=?';
+		$this->query($query, array($who, NULL, $user));
 	}
 
 	function add_user($user, $pass, $email, $provpass = '', $pass_first_login = false, $valid = NULL, $openid_url = NULL, $waiting=NULL) {
@@ -5282,53 +2793,20 @@ class UsersLib extends TikiLib
 	*/
 	function check_password_policy($pass) {
 		global $prefs, $user;
-		$errors = array();
 
 		// Validate password here
 		if ( ( $prefs['auth_method'] != 'cas' || $user == 'admin' ) && strlen($pass) < $prefs['min_pass_length'] ) {
-			$errors[] = tra("Password should be at least").' '.$prefs['min_pass_length'].' '.tra("characters long");
+			return tra("Password should be at least").' '.$prefs['min_pass_length'].' '.tra("characters long");
 		}
 
 		// Check this code
 		if ($prefs['pass_chr_num'] == 'y') {
 			if (!preg_match_all("/[0-9]+/", $pass, $foo) || !preg_match_all("/[A-Za-z]+/", $pass, $foo)) {
-				$errors[] = tra("Password must contain both letters and numbers");
-			}
-		}
-		if ($prefs['pass_chr_case'] == 'y') {
-			if (!preg_match_all("/[a-z]+/", $pass, $foo) || !preg_match_all("/[A-Z]+/", $pass, $foo)) {
-				$errors[] = tra('Password must contain at least one alphabetical character in lower case like a and one in upper case like A.');
-			}
-		}
-		if ($prefs['pass_chr_special'] == 'y') {
-			$chars = str_split($pass);
-			$ok = false;
-			foreach ($chars as $char) {
-				if (!preg_match("/[0-9A-Za-z]+/", $char, $foo)) {
-					$ok = true;
-					break;
-				}
-			}
-			if (!$ok) $errors[] = tra('Password must contain at least one special character in lower case like " / $ % ? & * ( ) _ + ...');
-		}
-		if ($prefs['pass_repetition'] == 'y') {
-			$chars = str_split($pass);
-			$previous = '';
-			foreach ($chars as $char) {
-				if ($char == $previous) {
-					$errors[] = tra('Password must contain no consecutive repetition of the same character as 111 or aab');
-					break;
-				}
-				$previous = $char;
-			}
-		}
-		if ($prefs['pass_diff_username'] == 'y') {
-			if (strtolower($user) == strtolower($pass)) {
-				$errors[] = tra('Password must be different from the user login.');
+				return tra("Password must contain both letters and numbers");
 			}
 		}
 
-		return empty($errors)?'': implode(' ', $errors);
+		return "";
 	}
 
 	function change_user_password($user, $pass, $pass_first_login=false) {
@@ -6055,8 +3533,11 @@ class UsersLib extends TikiLib
 		$userid = $this->get_user_id($user);
 		$tracker = $this->get_usertracker($userid);
 		if( $tracker && $tracker['usersTrackerId'] ) {
-			$trklib = TikiLib::lib('trk');
-			$categlib = TikiLib::lib('categ');
+			global $trklib;
+			if( ! $trklib ) {
+				require_once 'lib/trackers/trackerlib.php';	
+			}
+			global $categlib; include_once('lib/categories/categlib.php');
 			$itemid = $trklib->get_item_id( $tracker['usersTrackerId'], $tracker['usersFieldId'], $user );
 			$cat = $categlib->get_object_categories('trackeritem', $itemid);
 			$categId = $this->getOne("select `categId` from `tiki_categories` where `name` = ?", array($group));
@@ -6071,27 +3552,17 @@ class UsersLib extends TikiLib
 		$userid = $this->get_user_id($user);
 		$tracker = $this->get_usertracker($userid);
 		if( $tracker && $tracker['usersTrackerId'] ) {
-			$trklib = TikiLib::lib('trk');
-			$categlib = TikiLib::lib('categ');
+			global $trklib;
+			if( ! $trklib ) {
+				require_once 'lib/trackers/trackerlib.php';
+			}
+			global $categlib; include_once('lib/categories/categlib.php');
 			$itemid = $trklib->get_item_id( $tracker['usersTrackerId'], $tracker['usersFieldId'], $user );
 			$cat = $categlib->get_object_categories('trackeritem', $itemid);
 			$categId = $this->getOne("select `categId` from `tiki_categories` where `name` = ?", array($group));
 			$cat = array_diff($cat, array($categId));
 			$trklib->categorized_item($tracker["usersTrackerId"], $itemid, '', $cat);
 		}
-	}
-
-	/**
-	 * Remove the link between a Tiki user account
-	 * and an OpenID account
-	 * 
-	 * @param int $userId
-	 * @return void
-	 */
-	function remove_openid_link($userId) {
-		$query = "UPDATE `users_users` SET `openid_url` = NULL WHERE `userId` = ?";
-		$bindvars = array($userId);
-		$this->query($query, $bindvars);
 	}
 
 }

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,10 +8,9 @@
 function wikiplugin_rcontent_info() {
 	return array(
 		'name' => tra( 'Random Dynamic Content' ),
-		'documentation' => 'PluginRcontent',
-		'description' => tra( 'Display pre-programmed changing content' ),
+		'documentation' => tra('PluginRcontent'),			
+		'description' => tra( 'Includes random content from the dynamic content system.' ),
 		'prefs' => array( 'feature_dynamic_content', 'wikiplugin_rcontent' ),
-		'icon' => 'pics/icons/database_table.png',
 		'params' => array(
 			'id' => array(
 				'required' => true,

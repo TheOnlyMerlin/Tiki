@@ -1,18 +1,24 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+// \brief Wiki plugin to redirect to another page.
+// @author damian aka damosoft 30 March 2004
+
+function wikiplugin_redirect_help() {
+        return tra("Redirects you to another wiki page").":<br />~np~{REDIRECT(page=pagename [,url=http://foobar])/}~/np~";
+}
+
 function wikiplugin_redirect_info() {
 	return array(
 		'name' => tra('Redirect'),
-		'documentation' => 'PluginRedirect',
-		'description' => tra('Redirect to another page'),
+		'documentation' => tra('PluginRedirect'),			
+		'description' => tra('Redirect the user to a wiki page or generic URL.'),
 		'prefs' => array( 'wikiplugin_redirect' ),
 		'validate' => 'arguments',
-		'icon' => 'pics/icons/arrow_right.png',
 		'params' => array(
 			'page' => array(
 				'required' => false,

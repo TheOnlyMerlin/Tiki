@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,7 +38,7 @@ if (isset($_REQUEST['sort_mode'])) {
 }
 $output = $rsslib->get_from_cache($uniqueid);
 if ($output["data"] == "EMPTY") {
-	$tmp = $trklib->get_tracker($_REQUEST["$id"]);
+	$tmp = $tikilib->get_tracker($_REQUEST["$id"]);
 	if (empty($tmp)) {
 		$errmsg = tra("Incorrect param");
 		require_once ('tiki-rss_error.php');
@@ -100,13 +100,15 @@ if ($output["data"] == "EMPTY") {
 	}
 	$tmp = $trklib->list_items($_REQUEST[$id], 0, $prefs['feed_tracker_max'], $sort_mode, $fields, $filterfield, $filtervalue, $status, null, $exactvalue);
 	foreach($tmp["data"] as $data) {
-		$data[$titleId] = (isset($_REQUEST['showitemId']) && $_REQUEST['showitemId'] == 'n')? '': tra('Tracker item:') . ' #' . $data[$urlparam];
+		$data[$titleId] = tra('Tracker item:') . ' #' . $data[$urlparam];
 		$data[$descId] = '';
 		$first_text_field = null;
 		$aux_subject = null;
 		foreach($data["field_values"] as $data2) {
 			if (isset($data2["name"])) {
-				$data2['value'] = $trklib->get_field_handler($field, $item)->renderOutput();
+				$smarty->assign_by_ref('field_value', $data2);
+				$smarty->assign_by_ref('item', $data);
+				$data2['value'] = $smarty->fetch('tracker_item_field_value.tpl');
 				if ($data2['value'] == '') {
 					$data2['value'] = '(' . tra('empty') . ')';
 				} else {
@@ -129,9 +131,9 @@ if ($output["data"] == "EMPTY") {
 		if (isset($_REQUEST['noId']) && $_REQUEST['noId'] == 'y') {
 			$data[$titleId] = empty($aux_subject) ? $first_text_field : $aux_subject;
 		} elseif (!isset($aux_subject) && isset($first_text_field)) {
-			$data[$titleId] .= (empty($data[$titleId])?'': ' - ') . $first_text_field;
+			$data[$titleId] .= ' - ' . $first_text_field;
 		} elseif (isset($aux_subject)) {
-			$data[$titleId] .= (empty($data[$titleId])?'': ' - ') . $aux_subject;
+			$data[$titleId] .= ' - ' . $aux_subject;
 		}
 		$data["id"] = $_REQUEST["$id"];
 		$data["field_values"] = null;

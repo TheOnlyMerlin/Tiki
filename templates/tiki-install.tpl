@@ -1,20 +1,17 @@
-<div id="outer_wrapper">
-		<div id="header_outer">
-			<div id="header_container">
-				<header id="header">
-					<div id="header_fixedwidth" class="clearfix fixedwidth">
-						<div class="content clearfix modules" id="top_modules">
-							<div id="sitelogo" style="padding-left:0; padding-top: 0px"><h1 style="margin: 0"><img style="border:none;vertical-align:middle" alt="{tr}Tiki Wiki CMS Groupware{/tr}" src="{if isset($ie6)}img/tiki/tikisitelogo.gif{else}img/tiki/Tiki_WCG.png{/if}" />
-								<span style="vertical-align:middle; margin-left: 120px; color: #fff; padding-top: 30px;">{tr}Tiki installer{/tr} {$tiki_version_name} <a title="{tr}Help{/tr}" href="http://doc.tiki.org/Installation" target="help"><img style="border:0" src='pics/icons/help.png' alt="{tr}Help{/tr}" /></a></span></h1>
-							</div>
-						<div id="tiki-top" style="position: absolute; top: 168px;"></div> {* added for background image consistency *}
-						</div>
-					</div>
-				</header>
+<div id="fixedwidth"> {* enables fixed-width layouts *}
+	<div id="main">
+<div id="header">
+	<div id="siteheader" class="clearfix">
+		<div id="header-top">
+			<div id="sitelogo" style="padding-left:0; padding-top: 0px"><h1 style="margin: 0"><img style="border:medium none; vertical-align:middle" alt="{tr}Tiki Wiki CMS Groupware{/tr}" src="{if isset($ie6)}img/tiki/tikisitelogo.gif{else}img/tiki/Tiki_WCG.png{/if}" />
+				<span style="vertical-align:middle; margin-left:120px; color: #fff;">{tr}Tiki installer{/tr} {$tiki_version_name} <a title="{tr}Help{/tr}" href="http://doc.tiki.org/Installation" target="help"><img style="border:0" src='pics/icons/help.png' alt="{tr}Help{/tr}" /></a></span></h1>
 			</div>
 		</div>
-<div class="middle_outer">
-<div id="middle" class="clearfix" style="padding-top: 55px">
+	</div>
+	<div id="tiki-top"></div> {* added for background image consistency *}
+</div>
+
+<div id="middle" class="clearfix">
 	<div id="c1c2" class="clearfix">
 		<div id="wrapper" class="clearfix">
 			<div id="col1" class="marginleft">
@@ -414,7 +411,7 @@
  <p>{tr}During an upgrade, it is normal to have SQL failures resulting with <strong>Table already exists</strong> messages.{/tr}</p>
 {assign var='patch' value=''} 
 {foreach from=$installer->failures item=item}
-{if $patch ne $item[2]}{if $patch ne ''}</textarea>{/if}<p><input type="checkbox" name="validPatches[]" value="{$item[2]|escape}" id="ignore_{$item[2]|escape}" /><label for="ignore_{$item[2]|escape}">{$item[2]|escape}</label></p>
+{if $patch ne $item[2]}{if $patch ne ''}</textarea>{/if}<p><input type="checkbox" name="validPatches[]" value={$item[2]|escape} />{$item[2]|escape}</p>
 <textarea rows="6" cols="80">{assign var='patch' value=$item[2]}{/if}
 {$item[0]}
 {$item[1]}
@@ -471,12 +468,12 @@
 		<select name="https_login" id="https_login" onchange="hidedisabled('httpsoptions',this.value);">
 			<option value="disabled"{if $prefs.https_login eq 'disabled'} selected="selected"{/if}>{tr}Disabled{/tr}</option>
 			<option value="allowed"{if $prefs.https_login eq 'allowed'} selected="selected"{/if}>{tr}Allow secure (https) login{/tr}</option>
-			<option value="encouraged"{if $prefs.https_login eq 'encouraged' or ($prefs.https_login eq '' and $detected_https eq 'on' )} selected="selected"{/if}>{tr}Encourage secure (https) login{/tr}</option>
+			<option value="encouraged"{if $prefs.https_login eq 'encouraged' or ($prefs.https_login eq '' and $detected_https eq 'on' ) } selected="selected"{/if}>{tr}Encourage secure (https) login{/tr}</option>
 			<option value="force_nocheck"{if $prefs.https_login eq 'force_nocheck'} selected="selected"{/if}>{tr}Consider we are always in HTTPS, but do not check{/tr}</option>
 			<option value="required"{if $prefs.https_login eq 'required'} selected="selected"{/if}>{tr}Require secure (https) login{/tr}</option>
 		</select>
 	</div>
-	<div id="httpsoptions" style="display:{if $prefs.https_login eq 'disabled' or ( $prefs.https_login eq '' and $detected_https eq '')}none{else}block{/if};">
+	<div id="httpsoptions" style="display:{if $prefs.https_login eq 'disabled' or ( $prefs.https_login eq '' and $detected_https eq '') }none{else}block{/if};">
 		<div style="padding:5px">
 			<label for="https_port">{tr}HTTPS port:{/tr}</label> <input type="text" name="https_port" id="https_port" size="5" value="{$prefs.https_port|escape}" />
 		</div>
@@ -601,7 +598,7 @@
 				<p>{tr}We can try to fix it, but <strong>make sure you have backups, and can restore them</strong>.{/tr}</p>
 				{if $client_charset_in_file eq 'utf8'}
 					<p>
-						{tr}Previous table encoding:{/tr}
+						{tr}Previous table encoding{/tr}:
 						<select name="previous_encoding" id="previous_encoding">
 							<option value="">{tr}Please select{/tr}</option>
 							<option value="armscii8" title="Armenian, Binary">armscii8</option>
@@ -735,16 +732,12 @@
 		</div>
 	</div>
 </div>			
-</div>			
+			
 	  	</div>
 </div>
-<footer id="footer">
-	<div class="footer_liner">
-		<div class="footerbgtrap fixedwidth" style="padding: 10px 0;">
-			<a href="http://tiki.org" target="_blank" title="{tr}Powered by{/tr} {tr}Tiki Wiki CMS Groupware{/tr} &#169; 2002&#8211;{$smarty.now|date_format:"%Y"} "><img src="img/tiki/tikibutton.png" alt="{tr}Powered by Tiki Wiki CMS Groupware{/tr}" style="width:88px; height:31px; border:0" /></a>
-		</div>
-	</div>
-</footer>
+<hr />
+
+<p align="center"><a href="http://tiki.org" target="_blank" title="{tr}Powered by{/tr} {tr}Tiki Wiki CMS Groupware{/tr} &#169; 2002&#8211;{$smarty.now|date_format:"%Y"} "><img src="img/tiki/tikibutton.png" alt="{tr}Powered by Tiki Wiki CMS Groupware{/tr}" style="width:88px; height:31px; border:0" /></a></p>
 
 		</div>{* -- END of main -- *}
-	</div> {* -- END of puterwrapper -- *}
+	</div> {* -- END of fixedwidth -- *}

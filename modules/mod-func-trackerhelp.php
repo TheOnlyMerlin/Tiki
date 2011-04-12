@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 function module_trackerhelp_info() {
 	return array(
-		'name' => tra('Tracker Help'),
+		'name' => tra('Trackerhelp'),
 		'description' => tra('Display the fieldId of a tracker'),
 		'prefs' => array("feature_trackers"),
 		'params' => array(
@@ -57,16 +57,13 @@ function module_trackerhelp( $mod_reference, &$module_params ) {
 			$_SESSION['trackerhelp_name'] = '';
 			$_SESSION['trackerhelp_id'] = 0;
 			$_SESSION['trackerhelp_text'] = array();
-			$_SESSION['trackerhelp_pretty'] = array();
 		} else {
 			$_SESSION['trackerhelp_id'] = $trackerId;
 			$_SESSION['trackerhelp_name'] = $_REQUEST['trackerhelp_name'];
 			$fields = $trklib->list_tracker_fields($trackerId, 0, -1);
 			$_SESSION['trackerhelp_text'] = array();
-			$_SESSION['trackerhelp_pretty'] = array();
 			foreach($fields['data'] as $field) {
 				$_SESSION['trackerhelp_text'][] = $field['fieldId'].':'.$field['name'];
-				$_SESSION['trackerhelp_pretty'][] = $field['name'].' {$f_'.$field['fieldId'].'}';
 			}
 		}
 	}	

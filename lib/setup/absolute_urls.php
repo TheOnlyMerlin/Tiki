@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -31,7 +31,7 @@ if ( $prefs['http_port'] == 80 ) $prefs['http_port'] = '';
 //
 $https_mode = false;
 if ( ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' )
-	 || ( $prefs['https_port'] == '' && isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443 )
+	|| ( $prefs['https_port'] == '' && $_SERVER['SERVER_PORT'] == 443 )
 	|| ( $prefs['https_port'] > 0 && $_SERVER['SERVER_PORT'] == $prefs['https_port'] )
 	|| $prefs['https_login'] == 'force_nocheck'
 ) $https_mode = true;
@@ -54,7 +54,7 @@ $smarty->assign('base_uri', $base_uri);
 
 if ( isset($_REQUEST['stay_in_ssl_mode_present']) || isset($_REQUEST['stay_in_ssl_mode']) ) {
 	// We stay in HTTPS / SSL mode if 'stay_in_ssl_mode' has an 'y' or 'on' value
-	$stay_in_ssl_mode = ( (isset($_REQUEST['stay_in_ssl_mode']) && $_REQUEST['stay_in_ssl_mode'] == 'y') || (isset($_REQUEST['stay_in_ssl_mode']) && $_REQUEST['stay_in_ssl_mode'] == 'on' ) ) ? 'y' : 'n';
+	$stay_in_ssl_mode = ( $_REQUEST['stay_in_ssl_mode'] == 'y' || $_REQUEST['stay_in_ssl_mode'] == 'on' ) ? 'y' : 'n';
 } else {
 	// Set default value of 'stay_in_ssl_mode' to the current mode state
 	$stay_in_ssl_mode = $https_mode ? 'y' : 'n';

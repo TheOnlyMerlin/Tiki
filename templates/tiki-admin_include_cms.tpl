@@ -1,3 +1,5 @@
+{* $Id$ *}
+
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
 	{tr}Look under "Articles" on the application menu for links to{/tr} "<a class="rbox-link" href="tiki-admin_topics.php">{tr}Admin topics{/tr}</a>" {tr}and{/tr} "<a class="rbox-link" href="tiki-article_types.php">{tr}Admin types{/tr}</a>".
 {/remarksbox}
@@ -47,8 +49,6 @@
 				{preference name=article_paginate}
 				{preference name=article_custom_attributes}
 
-				{preference name=geo_locate_article}
-
 				<input type="hidden" name="cmsfeatures" />
 			</fieldset>
 			
@@ -78,7 +78,7 @@
 				<legend>{tr}Import CSV file{/tr}</legend>
 				<div class="adminoptionbox">
 					<div class="adminoptionlabel">
-						<label for="csvlist">{tr}Batch upload (CSV file):{/tr}</label>
+						<label for="csvlist">{tr}Batch upload (CSV file){/tr}:</label>
 						<input type="file" name="csvlist" id="csvlist" /> 
 						<br />
 						<em>{tr}File format: title,authorName,heading,body,lang,user{/tr}....</em>
@@ -94,7 +94,7 @@
 			<fieldset>
 				<legend>{tr}List Articles{/tr}</legend>
 				<div class="adminoptionbox">
-					{tr}Select which items to display when listing articles:{/tr} 	  
+					{tr}Select which items to display when listing articles{/tr}: 	  
 					<a class="rbox-link" href="tiki-list_articles.php">tiki-list_articles.php</a>
 				</div>
 				<input type="hidden" name="artlist" />

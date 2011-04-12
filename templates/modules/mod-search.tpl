@@ -1,4 +1,5 @@
-{compact}
+{* $Id$ *}
+{strip}
 {if $tiki_p_search eq 'y'}
 {tikimodule error=$module_error title=$tpl_module_title name="search" flip=$smod_params.flip decorations=$smod_params.decorations nobox=$smod_params.nobox notitle=$smod_params.notitle}
 {if $smod_params.tiki_search neq 'none'}
@@ -48,22 +49,22 @@
 			{/if}
 		    {if $smod_params.show_search_button eq 'y'}
 		    	<input type = "submit" class = "wikiaction tips{if $smod_params.default_button eq 'search'} button_default{/if}"
-		    			name = "search" value = "{$smod_params.search_submit}"
+		    			name = "search" value = "{tr}{$smod_params.search_submit}{/tr}"
 		    			title="{tr}Search{/tr}|{tr}Search for text throughout the site.{/tr}"
-		    			onclick = "$('#search-module-form{$search_mod_usage_counter}').attr('action', '{$smod_params.search_action}').attr('page_selected','');" />
+		    			onclick = "$('#search-module-form{$search_mod_usage_counter}').attr('action', '{$smod_params.search_action}');" />
 		    {/if}
 		    {if $smod_params.show_go_button eq 'y'}
 		    	<input type="hidden" name="exact_match" />
 		    	<input type = "submit" class = "wikiaction tips{if $smod_params.default_button eq 'go'} button_default{/if}"
-		    			name = "go" value = "{$smod_params.go_submit}"
+		    			name = "go" value = "{tr}{$smod_params.go_submit}{/tr}"
 		    			title="{tr}Search{/tr}|{tr}Go directly to a page, or search in page titles if exact match is not found.{/tr}"
-		    			onclick = "$('#search-module-form{$search_mod_usage_counter}').attr('action', '{$smod_params.go_action}').attr('page_selected','');" />
+		    			onclick = "$('#search-module-form{$search_mod_usage_counter}').attr('action', '{$smod_params.go_action}');" />
 		    {/if}
 		    {if $smod_params.show_edit_button eq 'y' and $tiki_p_edit eq 'y'}
 		    	<input type = "submit" class = "wikiaction tips{if $smod_params.default_button eq 'edit'} button_default{/if}"
-		    			name = "edit" value = "{$smod_params.edit_submit}"
+		    			name = "edit" value = "{tr}{$smod_params.edit_submit}{/tr}"
 		    			title="{tr}Search{/tr}|{tr}Edit existing page or create a new one.{/tr}"
-		    			onclick = "$('#search-module-form{$search_mod_usage_counter} input[name!=find]').attr('name', ''); $('#search-module-form{$search_mod_usage_counter} input[name=find]').attr('name', 'page'); $('#search-module-form{$search_mod_usage_counter}').attr('action', '{$smod_params.edit_action}').attr('page_selected','');" />
+		    			onclick = "$('#search-module-form{$search_mod_usage_counter} input[name!=find]').attr('name', ''); $('#search-module-form{$search_mod_usage_counter} input[name=find]').attr('name', 'page'); $('#search-module-form{$search_mod_usage_counter}').attr('action', '{$smod_params.edit_action}');" />
 		    {/if}
 	    </div>
     </form>
@@ -78,13 +79,11 @@ function submitSearch{{$search_mod_usage_counter}}() {
 	return true;
 }
     {/jq}
-	{if $smod_params.use_autocomplete eq 'y'}
-		{capture name="selectFn"}select: function(event, item) {ldelim}
-	$('#search-module-form{$search_mod_usage_counter}').attr('page_selected', item.item.value);
-{rdelim}{/capture}
-		{autocomplete element="#search_mod_input_"|cat:$search_mod_usage_counter type="pagename" options=$smarty.capture.selectFn}
-	{/if}
+	{if $smod_params.use_autocomplete eq 'y'}{jq}
+$("#search_mod_input_{{$search_mod_usage_counter}}").tiki("autocomplete", "pagename").result(function(event, item) {
+	$('#search-module-form{{$search_mod_usage_counter}}').attr('page_selected', item);
+});{/jq}{/if}
 {/if}
 {/tikimodule}
 {/if}
-{/compact}
+{/strip}

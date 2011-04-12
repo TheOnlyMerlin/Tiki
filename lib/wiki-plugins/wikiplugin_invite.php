@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,11 +8,10 @@
 function wikiplugin_invite_info() {
 	return array(
 		'name' => tra( 'Invite' ),
-		'documentation' => 'PluginInvite',
-		'description' => tra('Invite a user to join your groups'),
+		'documentation' => tra('PluginInvite'),
+		'description' => tra( 'Invite an email in groups.' ),
 		'prefs' => array( 'wikiplugin_invite' ),
 		'body' => tra('Confirmation message after posting form'),
-		'icon' => 'pics/icons/group.png',
 		'params' => array(
 			'including' => array(
 				'required' => false,

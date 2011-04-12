@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 function wikiplugin_watershed_info() {
 	return array(
@@ -12,7 +7,6 @@ function wikiplugin_watershed_info() {
 		'description' => tra('Viewer for UStream Watershed Embed.'),
 		'format' => 'html',
 		'prefs' => array( 'wikiplugin_watershed', 'feature_watershed' ),
-		'icon' => 'pics/icons/transmit_blue.png',
 		'params' => array(
 			'type' => array(
 				'required' => false,
@@ -20,14 +14,13 @@ function wikiplugin_watershed_info() {
 				'description' => tra('Specify archive, broadcaster, chat or viewer'),
 				'filter' => 'text',
 				'default' => 'viewer',
-				'options' => array(
+    			'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Archive'), 'value' => 'archive'), 
 					array('text' => tra('Broadcaster'), 'value' => 'broadcaster'), 
 					array('text' => tra('Chat'), 'value' => 'chat'), 
 					array('text' => tra('Viewer'), 'value' => 'viewer'), 
-				)
-					
+					),  				
 			),
 			'channelCode' => array(
 				'required' => true,

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -109,26 +109,6 @@ class HistLib extends TikiLib
 		return true;
 	}
 
-        // Used to see a specific version of the page
-	function get_view_date($date_str) {
-		global $tikilib;
-
-		if (!$date_str) {
-			// Date is undefined
-			throw new Exception();
-		}
-
-		$view_date = $date_str;
-		$tsp = explode('-', $date_str);
-
-		if (count($tsp) == 3) {
-			// Date in YYYY-MM-DD format
-			$view_date = $tikilib->make_time(23, 59, 59, $tsp[1] + 1, $tsp[2], $tsp[0] + 1900);
-		}
-
-		return $view_date;
-	}
-
 	function get_user_versions($user) {
 		$query
 			= "select `pageName`,`version`, `lastModif`, `user`, `ip`, `comment` from `tiki_history` where `user`=? order by `lastModif` desc";
@@ -157,47 +137,6 @@ class HistLib extends TikiLib
 		$result = $this->query($query,array($page,$version));
 		$res = $result->fetchRow();
 		return $res;
-	}
-
-	// Get page info for a specified version
-	function get_page_info($pageName, $version) {
-		$info = parent::get_page_info($pageName);
-
-		if (!isset($version)) {
-			// No version = last version
-			return $info;
-		}
-
-		if (!$info) {
-			// Page does not exist
-			return false;
-		}
-
-		$old_info = $this->get_version($pageName, $version);
-
-		if ($old_info == null) {
-			// History does not exist
-			if ($version == $this->get_page_latest_version($pageName) + 1) {
-				// Last version
-				return $info;
-			}
-
-			throw new Exception();
-		}
-
-		// Override parameters with versioned data
-		$info['data'] = $old_info['data'];
-		$info['version'] = $old_info['version'];
-		$info['last_version'] = $info['version'];
-		$info["user"] = $old_info["user"];
-		$info["ip"] = $old_info["ip"];
-		$info["description"] = $old_info["description"];
-		$info["comment"] = $old_info["comment"];
-		$info["is_html"] = $old_info["is_html"];
-		$info['lastModif'] = $old_info["lastModif"];
-		$info['page_size'] = strlen($old_info['data']);
-
-		return $info;
 	}
 
 	// Returns all the versions for this page

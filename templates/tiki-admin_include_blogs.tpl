@@ -1,3 +1,5 @@
+{* $Id$ *}
+
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
 	{tr}To add/remove blogs, go to "Create/Edit Blog" under "Blogs" on the application menu, or{/tr} <a class="rbox-link" href="tiki-edit_blog.php">{tr}Click Here{/tr}</a>.
 {/remarksbox}
@@ -22,8 +24,6 @@
 				{if $prefs.feature_categories eq 'y'}
 					{preference name=feature_blog_mandatory_category}
 				{/if}
-
-				{preference name=geo_locate_blogpost}
 			</fieldset>
 
 			<fieldset>
@@ -51,7 +51,7 @@
 			{preference name=blog_list_order}
 
 			<fieldset>
-				<legend>{tr}Select which items to display when listing blogs:{/tr}</legend>
+				<legend>{tr}Select which items to display when listing blogs{/tr}:</legend>
 				{preference name=blog_list_title}
 				<div class="adminoptionboxchild" id="blog_list_title_childcontainer">
 					{preference name=blog_list_title_len}

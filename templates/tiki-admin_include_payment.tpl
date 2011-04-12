@@ -1,3 +1,4 @@
+{* $Id$ *}
 <div class="navbar">
 	 {button href="tiki-payment.php" _text="{tr}Payments{/tr}"}
 </div>
@@ -19,8 +20,6 @@
 				{preference name=payment_currency}
 				{preference name=payment_default_delay}
 				{preference name=payment_manual}
-				{preference name=payment_user_only_his_own}
-				{preference name=payment_user_only_his_own_past} 
 			</fieldset>
 			<div id="payment_systems">
 				<h2>{tr}PayPal{/tr}</h2>

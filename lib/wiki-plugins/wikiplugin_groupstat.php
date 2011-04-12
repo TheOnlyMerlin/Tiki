@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,10 +8,9 @@
 function wikiplugin_groupstat_info() {
 	return array(
 		'name' => tra('Group Stats'),
-		'documentation' => 'PluginGroupStat',
-		'description' => tra('Show the distribution of users among groups'),
+		'documentation' => tra('PluginGroupStat'),
+		'description' => tra('Displays the percentage of total users that are members of groups'),
 		'body' => tra('Title'),
-		'icon' => 'pics/icons/calculator.png',
 		'params' => array(
 			'groups' => array(
 				'required' => false,

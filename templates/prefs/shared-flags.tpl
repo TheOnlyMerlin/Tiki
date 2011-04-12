@@ -8,7 +8,7 @@
 	</span>
 {/if}
 {if $p.warning}
-	<a href="" target="tikihelp" class="tikihelp" title="{tr}Warning:{/tr} {$p.warning|escape}">
+	<a href="" target="tikihelp" class="tikihelp" title="{tr}Warning{/tr}: {$p.warning|escape}">
 		{icon _id=error alt=''}
 	</a>
 {/if}
@@ -36,7 +36,7 @@ $('.pref-reset')
 	} )
 	.wrap('<span/>')
 	.closest('span')
-		.append('{{icon _id=arrow_undo alt="{tr}Reset to default{/tr}" href="#"}}')
+		.append('{{icon _id=arrow_undo alt="{tr}Reset to default{/tr}" href=#}}')
 		.find('a')
 			.click( function() {
 				var box = $(this).closest('span').find(':checkbox');

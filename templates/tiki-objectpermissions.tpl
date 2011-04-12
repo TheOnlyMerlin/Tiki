@@ -1,4 +1,6 @@
-{title help="Permission"}{if $objectType eq 'global'}{tr}Assign global permissions{/tr}{else}{tr}Assign permissions to {/tr}{tr}{$objectType|escape}:{/tr} {$objectName|escape}{/if}{/title}
+{* $Id$ *}
+
+{title help="Permission"}{if $objectType eq 'global'}{tr}Assign global permissions{/tr}{else}{tr}Assign permissions to {/tr}{tr}{$objectType|escape}{/tr}: {$objectName|escape}{/if}{/title}
 
 <div class="navbar">
 {if !empty($referer)}{button href="$referer" _text="{tr}Back{/tr}"}{/if}
@@ -48,7 +50,6 @@
 	<hr />
 		<h2>{if $objectType eq 'global'}{tr}Assign global permissions{/tr}{elseif $objectType eq 'category'}{tr}Assign permissions to this category{/tr}{else}{tr}Assign permissions to this object{/tr}{/if} {icon _id="img/loading-light.gif" id="perms_busy" style="vertical-align:top; display:none;"}</h2>
 
-		<div>
 		<input type="hidden" name="referer" value="{$referer|escape}" />
 		<input type="hidden" name="objectName" value="{$objectName|escape}" />
 		<input type="hidden" name="objectType" value="{$objectType|escape}" />
@@ -85,12 +86,9 @@ if ($("#assignstructure").attr("checked")) {
 } }); {/jq}
 		{/if}
 		
-		</div>
 		<h3>{tr}Permissions{/tr}</h3>
 
-		<div>
 		{treetable _data=$perms _checkbox=$permGroups _checkboxTitles=$groupNames _checkboxColumnIndex=$permGroupCols _valueColumnIndex="permName" _columns="\"label\"=\"{tr}Permission{/tr}\"" _sortColumn='type' _openall='y' _showSelected='y' _columnsContainHtml='y'}
-		</div>
 
 		{if ($perms|@count) eq '0'}{remarksbox type="warning" title="{tr}Warning{/tr}"}{tr}You must select at least one feature{/tr}.{/remarksbox}{/if}
 
@@ -123,7 +121,6 @@ if ($("#assignstructure").attr("checked")) {
 
 	{tab name="{tr}Select groups{/tr}"}
 		<form method="post" action="{$smarty.server.PHP_SELF}?{query}">
-		<div>
 			<input type="hidden" name="referer" value="{$referer|escape}" />
 			{if isset($groupsFiltered)}
 				{remarksbox type="warning" title="{tr}Note{/tr}"}
@@ -136,27 +133,23 @@ if ($("#assignstructure").attr("checked")) {
 				{/remarksbox}
 			{/if}
 			{if $objectId}
-			<div class="navbar">
+			<div class=navbar">
 				 <input type="submit" name="used_groups" value="{tr}Select only groups that have a perm with the object{/tr}" />
 			</div>
 			{/if}
 
 			<h2>{tr}Groups{/tr}</h2>
 			
-			<div>
 			{treetable _data=$groups _checkbox="group_filter" _checkboxTitles="{tr}Select all{/tr}" _checkboxColumnIndex="in_group_filter" _valueColumnIndex="id" _columns='"groupName"="{tr}Group name{/tr}","groupDesc"="{tr}Description{/tr}"' _sortColumn='parents' _collapseMaxSections=20 _sortColumnDelimiter=','}
-			</div>
 			
 			<div class="input_submit_container" style="text-align: center">
 				<input type="submit" name="group_select" value="{tr}Select{/tr}" />
 			</div>
-		</div>
 		</form>
 	{/tab}
 	
 	{tab name="{tr}Select features{/tr}"}
 		<form method="post" action="{$smarty.server.PHP_SELF}?{query}">
-		<div>
 			<input type="hidden" name="referer" value="{$referer|escape}" />
 			{if isset($featuresFiltered)}
 				{remarksbox type="warning" title="{tr}Warning{/tr}"}
@@ -169,25 +162,21 @@ if ($("#assignstructure").attr("checked")) {
 
 			<h2>{tr}Features{/tr}</h2>
 			
-			<div>
 			{treetable _data=$features _checkbox="feature_filter" _checkboxTitles="{tr}Select all{/tr}" _checkboxColumnIndex="in_feature_filter" _valueColumnIndex="featureName" _columns='"featureName"="{tr}Feature name{/tr}"' _sortColumn="featureName" _sortColumnDelimiter='*' _collapseMaxSections=20 _listFilter='n'}
-			</div>
 			
 			<div class="input_submit_container" style="text-align: center">
 				<input type="submit" name="feature_select" value="{tr}Select{/tr}" />
 			</div>
-		</div>
 		</form>
 	{/tab}
 	
 	{* Quickperms *}
 
 	{if $prefs.feature_quick_object_perms eq 'y'}
-		{tab name="{tr}Quick Permissions{/tr}"}
-		<form name="allperms" method="post" action="{$smarty.server.PHP_SELF}?{query}">
-		<div>
+	<form name="allperms" method="post" action="{$smarty.server.PHP_SELF}?{query}">
 		<input type="hidden" name="quick_perms" value="true"/>
 
+		{tab name="{tr}Quick Permissions{/tr}"}
 
 		{if $prefs.feature_tabs neq 'y'}
 			<h2>{tr}Quick Permissions{/tr}</h2>
@@ -200,7 +189,7 @@ if ($("#assignstructure").attr("checked")) {
 
 		<table width="100%">
 			<tr>
-				<th>{tr}Groups{/tr}</th>
+				<th>Groups</th>
 			{foreach item=permgroup from=$quickperms}
 				<th>{$permgroup.name}</th>
 			{/foreach}
@@ -241,8 +230,8 @@ if ($("#assignstructure").attr("checked")) {
 				{tr}There is also no undo - <strong>Use with care!</strong>{/tr}
 			{/remarksbox}
 		{/if}
-	</form>
 	{/tab}
+</form>
 	{/if}
 
 	{* Quickperms END *}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -150,12 +150,20 @@ class ArtLib extends TikiLib
 				$smarty->assign('mail_site', $_SERVER['SERVER_NAME']);
 				$smarty->assign('mail_title', 'articleId=' . $articleId);
 				$smarty->assign('mail_postid', $articleId);
+				$smarty->assign('mail_date', $this->now);
 				$smarty->assign('mail_user', $user);
 				$smarty->assign('mail_data', $article_data['heading'] . "\n----------------------\n");
 				$smarty->assign('mail_heading', $heading);
 				$smarty->assign('mail_body', $body);
-				sendEmailNotification($nots, 'watch', 'user_watch_article_post_subject.tpl', $_SERVER['SERVER_NAME'], 'user_watch_article_post.tpl');
-			}
+				$foo = parse_url($_SERVER['REQUEST_URI']);
+				$machine = $tikilib->httpPrefix( true ). $foo['path'];
+				$smarty->assign('mail_machine', $machine);
+				$parts = explode('/', $foo['path']);
+				if (count($parts) > 1)
+					unset ($parts[count($parts) - 1]);
+					$smarty->assign('mail_machine_raw', $tikilib->httpPrefix( true ) . implode('/', $parts));
+					sendEmailNotification($nots, 'watch', 'user_watch_article_post_subject.tpl', $_SERVER['SERVER_NAME'], 'user_watch_article_post.tpl');
+				}
 
 			return true;
 		}
@@ -323,6 +331,8 @@ class ArtLib extends TikiLib
 		}
 
 		if ($tiki_p_autoapprove_submission != 'y') {
+			#workaround to "pass" $topicId to get_event_watches
+			$GLOBALS['topicId'] = $topicId;
 			$emails = $tikilib->get_event_watches('article_submitted', '*');
 			$emails2 = $tikilib->get_event_watches('topic_article_created', $topicId);
 			$emails3 = array();
@@ -338,17 +348,20 @@ class ArtLib extends TikiLib
 			}
 			if (count($emails)) {
 				include_once('lib/notifications/notificationemaillib.php');
+				$foo = parse_url($_SERVER['REQUEST_URI']);
+				$machine = $tikilib->httpPrefix( true ). $foo['path'];
 				$smarty->assign('mail_site', $_SERVER['SERVER_NAME']);
 				$smarty->assign('mail_user', $user);
 				$smarty->assign('mail_title', $title);
 				$smarty->assign('mail_heading', $heading);
 				$smarty->assign('mail_body', $body);
+				$smarty->assign('mail_date', $this->now);
+				$smarty->assign('mail_machine', $machine);
 				$smarty->assign('mail_subId', $id);
 				sendEmailNotification($emails, 'watch', 'submission_notification_subject.tpl', $_SERVER['SERVER_NAME'], 'submission_notification.tpl');
 			}
 		}
-		global $tikilib;
-		$tikilib->object_post_save( array(
+		$this->object_post_save( array(
 			'type' => 'submission',
 			'object' => $id,
 			'description' => substr($heading, 0, 200), 
@@ -501,6 +514,8 @@ class ArtLib extends TikiLib
 			if ($prefs['feature_score'] == 'y') {
 				$this->score_event($user, 'article_new');
 			}
+			// workaround to "pass" $topicId to get_event_watches
+			$GLOBALS["topicId"] = $topicId;
 			$event = 'article_submitted';
 			$nots = $tikilib->get_event_watches('article_submitted', '*');
 			$nots2 = $tikilib->get_event_watches('topic_article_created', $topicId);
@@ -518,7 +533,7 @@ class ArtLib extends TikiLib
 		if (is_array($emails) && (empty ($from) || $from == $prefs['sender_email'])) {
 			foreach ($emails as $n) {
 				if (!in_array($n, $nots3))
-					$nots[] = array('email' => $n, 'language' => $prefs['site_language']);
+					$nots[] = array('email' => $n);
 			}
 		}
 		if (!isset($_SERVER['SERVER_NAME'])) {
@@ -542,26 +557,34 @@ class ArtLib extends TikiLib
 			$smarty->assign('mail_site', $_SERVER['SERVER_NAME']);
 			$smarty->assign('mail_title', $title);
 			$smarty->assign('mail_postid', $articleId);
+			$smarty->assign('mail_date', $this->now);
 			$smarty->assign('mail_user', $user);
 			$smarty->assign('mail_data', $heading."\n----------------------\n" . $body);
 			$smarty->assign('mail_heading', $heading);
 			$smarty->assign('mail_body', $body);
-			sendEmailNotification($nots, 'watch', 'user_watch_article_post_subject.tpl', $_SERVER['SERVER_NAME'], 'user_watch_article_post.tpl');
-			if (is_array($emails) && !empty($from) && $from != $prefs['sender_email']) {
-				$nots = array();
-				foreach ($emails as $n) {
-					$nots[] = array('email' => $n, 'language' => $prefs['site_language']);
-				}	
-				sendEmailNotification($nots, 'watch', 'user_watch_article_post_subject.tpl', $_SERVER['SERVER_NAME'], 'user_watch_article_post.tpl', $from);
+			$foo = parse_url($_SERVER['REQUEST_URI']);
+			$machine = $tikilib->httpPrefix( true ). $foo['path'];
+			$smarty->assign('mail_machine', $machine);
+			$parts = explode('/', $foo['path']);
+			if (count($parts) > 1)
+				unset ($parts[count($parts) - 1]);
+				$smarty->assign('mail_machine_raw', $tikilib->httpPrefix( true ). implode('/', $parts));
+				sendEmailNotification($nots, 'watch', 'user_watch_article_post_subject.tpl', $_SERVER['SERVER_NAME'], 'user_watch_article_post.tpl');
+				if (is_array($emails) && !empty($from) && $from != $prefs['sender_email']) {
+					$nots = array();
+					foreach ($emails as $n) {
+						$nots[] = array('email' => $n);
+					}	
+					sendEmailNotification($nots, 'watch', 'user_watch_article_post_subject.tpl', $_SERVER['SERVER_NAME'], 'user_watch_article_post.tpl', $from);
+				}
 			}
+
+
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('articles', $articleId);
 		}
-
-
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('articles', $articleId);
-
-		global $tikilib;
-		$tikilib->object_post_save( array(
+		$this->object_post_save( array(
 			'type' => 'article',
 			'object' => $articleId,
 			'description' => substr($heading, 0, 200),
@@ -715,119 +738,25 @@ class ArtLib extends TikiLib
 										, $creator_edit
 										)
 	{
-		if ($use_ratings == 'on') {
-			$use_ratings = 'y';
-		} else {
-			$use_ratings = 'n';
-		}
-		
-		if ($show_pre_publ == 'on') {
-			$show_pre_publ = 'y';
-		} else {
-			$show_pre_publ = 'n';
-		}
-		
-		if ($show_post_expire == 'on') {
-			$show_post_expire = 'y';
-		} else {
-			$show_post_expire = 'n';
-		}
-		
-		if ($heading_only == 'on') {
-			$heading_only = 'y';
-		} else {
-			$heading_only = 'n';
-		}
-		
-		if ($allow_comments == 'on') {
-			$allow_comments = 'y';
-		} else {
-			$allow_comments = 'n';
-		}
-		
-		if ($comment_can_rate_article == 'on') {
-			$comment_can_rate_article = 'y';
-		} else {
-			$comment_can_rate_article = 'n';
-		}
-		
-		if ($show_image == 'on') {
-			$show_image = 'y';
-		} else {
-			$show_image = 'n';
-		}
-		
-		if ($show_avatar == 'on') {
-			$show_avatar = 'y';
-		} else {
-			$show_avatar = 'n';
-		}
-		
-		if ($show_author == 'on') {
-			$show_author = 'y';
-		} else {
-			$show_author = 'n';
-		}
-		
-		if ($show_pubdate == 'on') {
-			$show_pubdate = 'y';
-		} else {
-			$show_pubdate = 'n';
-		}
-		
-		if ($show_expdate == 'on') {
-			$show_expdate = 'y';
-		} else {
-			$show_expdate = 'n';
-		}
-		
-		if ($show_reads == 'on') {
-			$show_reads = 'y';
-		} else {
-			$show_reads = 'n';
-		}
-		
-		if ($show_size == 'on') {
-			$show_size = 'y';
-		} else {
-			$show_size = 'n';
-		}
-		
-		if ($show_topline == 'on') {
-			$show_topline = 'y';
-		} else {
-			$show_topline = 'n';
-		}
-		if ($show_subtitle == 'on')
-		{
-			$show_subtitle = 'y';
-		} else {
-			$show_subtitle = 'n';
-		}
-		
-		if ($show_linkto == 'on') {
-			$show_linkto = 'y';
-		} else {
-			$show_linkto = 'n';
-		}
-		
-		if ($show_image_caption == 'on') {
-			$show_image_caption = 'y';
-		} else {
-			$show_image_caption = 'n';
-		}
-		
-		if ($show_lang == 'on') {
-			$show_lang = 'y';
-		} else {
-			$show_lang = 'n';
-		}
-		
-		if ($creator_edit == 'on') {
-			$creator_edit = 'y';
-		} else {
-			$creator_edit = 'n';
-		}
+		if ($use_ratings == 'on') {$use_ratings = 'y';} else {$use_ratings = 'n';}
+		if ($show_pre_publ == 'on') {$show_pre_publ = 'y';} else {$show_pre_publ = 'n';}
+		if ($show_post_expire == 'on') {$show_post_expire = 'y';} else {$show_post_expire = 'n';}
+		if ($heading_only == 'on') {$heading_only = 'y';} else {$heading_only = 'n';}
+		if ($allow_comments == 'on') {$allow_comments = 'y';} else {$allow_comments = 'n';}
+		if ($comment_can_rate_article == 'on') {$comment_can_rate_article = 'y';} else {$comment_can_rate_article = 'n';}		
+		if ($show_image == 'on') {$show_image = 'y';} else {$show_image = 'n';}
+		if ($show_avatar == 'on') {$show_avatar = 'y';} else {$show_avatar = 'n';}
+		if ($show_author == 'on') {$show_author = 'y';} else {$show_author = 'n';}
+		if ($show_pubdate == 'on') {$show_pubdate = 'y';} else {$show_pubdate = 'n';}
+		if ($show_expdate == 'on') {$show_expdate = 'y';} else {$show_expdate = 'n';}
+		if ($show_reads == 'on') {$show_reads = 'y';} else {$show_reads = 'n';}
+		if ($show_size == 'on') {$show_size = 'y';} else {$show_size = 'n';}
+		if ($show_topline == 'on') {$show_topline = 'y';} else {$show_topline = 'n';}
+		if ($show_subtitle == 'on') {$show_subtitle = 'y';} else {$show_subtitle = 'n';}
+		if ($show_linkto == 'on') {$show_linkto = 'y';} else {$show_linkto = 'n';}
+		if ($show_image_caption == 'on') {$show_image_caption = 'y';} else {$show_image_caption = 'n';}
+		if ($show_lang == 'on') {$show_lang = 'y';} else {$show_lang = 'n';}
+		if ($creator_edit == 'on') {$creator_edit = 'y';} else {$creator_edit = 'n';}
 		$query = "update `tiki_article_types` set
 			`use_ratings` = ?,
 			`show_pre_publ` = ?,
@@ -1041,24 +970,22 @@ class ArtLib extends TikiLib
 		switch ($image_type) {
 			case 'article':
 				$image_cache_prefix = 'article';
-							break;
+				break;
 			case 'submission':
 				$image_cache_prefix = 'article_submission';
-							break;
+				break;
 			case 'preview':
 				$image_cache_prefix = 'article_preview';
-							break;
+				break;
 			default:
 				return false;
 		}
 		$article_image_cache = $prefs['tmpDir'];
-		if ($tikidomain) { 
-			$article_image_cache .= "/$tikidomain"; 
-		}
+		if ($tikidomain) { $article_image_cache.= "/$tikidomain"; }
 		$article_image_cache .= "/$image_cache_prefix.".$imageId;
 		if ( @unlink($article_image_cache) ) {
 			return true;
-		} else {
+		}else{
 			return false;
 		}
 	}
@@ -1110,30 +1037,18 @@ class ArtLib extends TikiLib
 												, $max_rating = ''
 												, $override_dates = false
 												, $ispublished = ''
-												, $filter = ''
 												)
 		{
 
 		global $userlib, $user, $prefs;
 
-		$mid = $join = '';
+		$mid = '';
 		$bindvars = array();
 		$fromSql = '';
 
-		if (!empty($filter)) {
-			foreach ($filter as $typeF=>$val) {
-				if ($typeF == 'translationOrphan') {
-					global $multilinguallib; include_once('lib/multilingual/multilinguallib.php');
-					$multilinguallib->sqlTranslationOrphan('article', '`tiki_articles`', 'articleId', $val, $join, $mid, $bindvars);
-					$mid = ' where '.$mid;
-				}
-			}
-		}
-
 		if ($find) {
 			$findesc = '%' . $find . '%';
-			if (empty($mid)) $mid = ' where ';
-			$mid .= ' (`title` like ? or `heading` like ? or `body` like ?) ';
+			$mid = ' where (`title` like ? or `heading` like ? or `body` like ?) ';
 			$bindvars = array($findesc, $findesc, $findesc);
 		}
 
@@ -1305,11 +1220,10 @@ class ArtLib extends TikiLib
 			`tiki_article_types`.`creator_edit`
 				from `tiki_articles`
 				$fromSql
-				$join
 				$mid $mid2 order by " . $this->convertSortMode($sort_mode);
 
 		$result = $this->query($query, $bindvars, $maxRecords, $offset);
-		$query_cant = "select distinct count(*) from `tiki_articles` $fromSql $join $mid $mid2";
+		$query_cant = "select distinct count(*) from `tiki_articles` $fromSql $mid $mid2";
 		$cant = $this->getOne($query_cant, $bindvars);
 		$ret = array();
 		while ($res = $result->fetchRow()) {
@@ -1354,9 +1268,9 @@ class ArtLib extends TikiLib
 	function list_submissions($offset = 0, $maxRecords = -1, $sort_mode = 'publishDate_desc', $find = '', $date = '')
 	{
 		if ($find) {
-			$findPattern = '%' . $find . '%';
+			$findesc = $this->qstr('%' . $find . '%');
 			$mid = " where (`title` like ? or `heading` like ? or `body` like ?) ";
-			$bindvars = array($findPattern, $findPattern, $findPattern);
+			$bindvars = array($findesc, $findesc, $findesc);
 		} else {
 			$mid = '';
 			$bindvars = array();

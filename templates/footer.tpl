@@ -1,3 +1,4 @@
+{* $Id$ *}
 {* ==> put in this file what is not displayed in the layout (javascript, debug..)*}
 {if (! isset($display) or $display eq '')}
 	{if count($phpErrors)}
@@ -15,4 +16,8 @@
 		{debugger}
 	{/if}
 
+	{if $prefs.feature_phplayers eq 'y' and isset($phplayers_LayersMenu)}
+		{$phplayers_LayersMenu->printHeader()}
+		{$phplayers_LayersMenu->printFooter()}
+	{/if}
 {/if}

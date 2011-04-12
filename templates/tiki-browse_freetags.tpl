@@ -1,8 +1,10 @@
+{* $Id$ *}
+
 {title admpage=freetags}{tr}Browse related tags{/tr}{/title}
 
 {if $prefs.feature_morcego eq 'y' and $prefs.freetags_feature_3d eq 'y'}
 	<div class="morcego_embedded">
-		<h2>{tr}Network of Tags related to:{/tr} <span id="currentTag1">{$tag}</span></h2>
+		<h2>{tr}Network of Tags related to{/tr}: <span id="currentTag1">{$tag}</span></h2>
 		<applet codebase="./lib/wiki3d" archive="morcego-0.6.0.jar" code="br.arca.morcego.Morcego" width="{$prefs.freetags_3d_width}" height="{$prefs.freetags_3d_height}">
 			<param name="serverUrl" value="{$base_url}tiki-freetag3d_xmlrpc.php">
 			<param name="startNode" value="{$tag}">
@@ -85,7 +87,7 @@
 
 	{assign var=cpt value=0} 
 	{capture name="browse"}
-		{tr}Browse in:{/tr}
+		{tr}Browse in{/tr}:
 
 		{if $type eq $objectType}
 			{assign var=thisclass value='highlight'}
@@ -119,7 +121,7 @@
 				
 					{assign var=thistype value=$objectType|escape:'url'}
 					{capture name="fl"}{tr}{$feature_label}{/tr}{/capture}
-					{button _text=$smarty.capture.fl _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
+					{button _text="`$smarty.capture.fl`" _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
 					{assign var=cpt value=$cpt+1}
 				{/if}
 
@@ -145,7 +147,7 @@
 
 					{assign var=thistype value=$objectType|escape:'url'}
 					{capture name="fl"}{tr}{$feature_label}{/tr}{/capture}
-					{button _text=$smarty.capture.fl _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
+					{button _text="`$smarty.capture.fl`" _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
 					{assign var=cpt value=$cpt+1}
 				{/if}
 			{/foreach}

@@ -1,18 +1,35 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+// Displays the data using the Tikiwiki odd/even table style
+//
+// Usage:
+//	- The data is given one row per line, with columns
+//   separated by |. (~|~ was used as a separator before 4.0 and is also accepted)
+//	- Head rows separated by >> 
+//  - In any cell, indicate number of columns to span with forward slashes at the beginning, number of rows to span with backslashes.	
+//
+// Example:
+// {FANCYTABLE( head=" head r1c1 | head r1c2 | head r1c3>>head r2c1 | head r2c2 | head r2c3", headclass=xx, 
+// 				headaligns= , headvaligns= , colwidths= , colaligns= , colvaligns= , sortable= , sortList= )}
+// row 1 column 1 | row 1 column 2 | row 1 column 3
+// row 2 column 1 | row 2 column 2 | row 2 column 3
+// {FANCYTABLE}
+function wikiplugin_fancytable_help() {
+	return tra("Displays the data using the Tikiwiki odd/even table style").":<br />~np~{FANCYTABLE(head=>,headclass=>)}".tra("cells")."{FANCYTABLE}~/np~ - ''".tra("heads and cells separated by |")."''";
+}
+
 function wikiplugin_fancytable_info() {
 	return array(
 		'name' => tra('Fancy Table'),
-		'documentation' => 'PluginFancyTable',
-		'description' => tra('Create a formatted table'),
+		'documentation' => tra('PluginFancyTable'),
+		'description' => tra('Displays the data using the Tikiwiki odd/even table style'),
 		'prefs' => array('wikiplugin_fancytable'),
 		'body' => tra('Rows separated by >> in the header; for the table body, one row per line. Cells separated by | in both cases.'),
-		'icon' => 'pics/icons/table.png',
 		'params' => array(
 			'head' => array(
 				'required' => false,
@@ -29,7 +46,7 @@ function wikiplugin_fancytable_info() {
 			'headaligns' => array(
 				'required' => false,
 				'name' => tra('Header Horizontal Align'),
-				'description' => tra('Horizontal alignments for header cells separated by |. Choices: left, right, center, justify.'),
+				'description' => tra('Horizonatal alignments for header cells separated by |. Choices: left, right, center, justify.'),
 				'default' => '',
 			),
 			'headvaligns' => array(

@@ -1,3 +1,4 @@
+{* $Id$ *}
 {if $page|lower neq 'sandbox' and $prefs.feature_contribution eq 'y' and $prefs.feature_contribution_mandatory eq 'y'}
 	{remarksbox type='tip' title="{tr}Tip{/tr}"}
 		<strong class='mandatory_note'>{tr}Fields marked with a * are mandatory.{/tr}</strong>
@@ -16,18 +17,6 @@
 <div class="floatright">
 	{self_link _icon="magnifier" _class="previewBtn" _ajax="n"}{tr}Preview your changes.{/tr}{/self_link}
 </div>
-{jq} $(".previewBtn").click(function(){
-	if ($('#autosave_preview:visible').length === 0) {
-		auto_save_data['editwiki'] = "";
-		auto_save('editwiki', autoSaveId);
-		if (!ajaxPreviewWindow) {
-			$('#autosave_preview').slideDown('slow', function(){ ajax_preview( 'editwiki', autoSaveId, true );});
-		}
-	} else {
-		$('#autosave_preview').slideUp('slow');
-	}
-	return false;
-});{/jq}
 {/if}
 {if $translation_mode eq 'n'}
 	{if $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}{assign var=pp value=$approvedPageName}{else}{assign var=pp value=$page}{/if}
@@ -283,11 +272,6 @@
 									<legend>{tr}Allow HTML:{/tr}</legend>
 									<input type="checkbox" id="allowhtml" name="allowhtml" {if $allowhtml eq 'y'}checked="checked"{/if}/>
 								</fieldset>
-								{if $prefs.ajax_autosave eq "y"}{jq}
-$("#allowhtml").change(function() {
-	auto_save( "editwiki", autoSaveId );
-});
-								{/jq}{/if}
 							{/if}
 							{if $prefs.feature_wiki_import_html eq 'y'}
 								<fieldset>
@@ -377,7 +361,7 @@ $("#allowhtml").change(function() {
 											<div id="showstructs">
 												{if $showstructs|@count gt 0}
 													<ul>
-														{foreach from=$showstructs item=page_info}
+														{foreach from=$showstructs item=page_info }
 															<li>{$page_info.pageName}{if !empty($page_info.page_alias)}({$page_info.page_alias}){/if}</li>
 														{/foreach}  
 													</ul>
@@ -470,7 +454,7 @@ $("#allowhtml").change(function() {
 									<select name="lang" id="lang">
 										<option value="">{tr}Unknown{/tr}</option>
 										{section name=ix loop=$languages}
-											<option value="{$languages[ix].value|escape}"{if $lang eq $languages[ix].value or (!($data.page_id) and $lang eq '' and $languages[ix].value eq $prefs.language)} selected="selected"{/if}>{$languages[ix].name}</option>
+											<option value="{$languages[ix].value|escape}"{if $lang eq $languages[ix].value or (not($data.page_id) and $lang eq '' and $languages[ix].value eq $prefs.language)} selected="selected"{/if}>{$languages[ix].name}</option>
 										{/section}
 									</select>
 									{if $translationOf}
@@ -489,11 +473,6 @@ $("#allowhtml").change(function() {
 										{/if}
 									</fieldset>
 								{/if}
-							{/if}
-							{if $prefs.geo_locate_wiki eq 'y'}
-								{$headerlib->add_map()}
-								<div class="map-container" data-target-field="geolocation" style="height: 250px; width: 250px;"></div>
-								<input type="hidden" name="geolocation" value="{$geolocation_string}" />
 							{/if}
 							{if $tiki_p_admin_wiki eq "y"}
 								<a href="tiki-admin.php?page=wiki">{tr}Admin wiki preferences{/tr} {icon _id='wrench'}</a>

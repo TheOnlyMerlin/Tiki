@@ -13,12 +13,12 @@
   {cycle values="even,odd" print=false}
   {section name=ix loop=$accounts}
     <tr class="{cycle}">
-      <td class="action">
-        <a href="tiki-admin_mailin.php?accountId={$accounts[ix].accountId}#add">{icon _id='page_edit'}</a>
+      <td align="middle">
+        <a href="tiki-admin_mailin.php?accountId={$accounts[ix].accountId}#add">{icon _id='page_edit'}</a> &nbsp;
         <a href="tiki-admin_mailin.php?remove={$accounts[ix].accountId}" >{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
       </td>
-      <td class="text">{$accounts[ix].account}</td>
-      <td class="text">{tr}{$accounts[ix].type}{/tr}</td>
+      <td>{$accounts[ix].account}</td>
+      <td>{tr}{$accounts[ix].type}{/tr}</td>
     </tr>
   {/section}
 </table>
@@ -28,7 +28,7 @@
 {/if}
 <br />
 
-<a name="add" ></a><h2>{if $accountId eq 0}{tr}Add new Mail-in account{/tr}{else}{tr}Edit Mail-in account:{/tr} <i>{$info.account}</i>{/if}</h2>
+<a name="add" ></a><h2>{if $accountId eq 0}{tr}Add new Mail-in account{/tr}{else}{tr}Edit Mail-in account{/tr}: <i>{$info.account}</i>{/if}</h2>
 <form action="tiki-admin_mailin.php" method="post">
   <input type="hidden" name="accountId" value="{$accountId|escape}" />
   <table class="formcolor">

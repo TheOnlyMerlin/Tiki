@@ -1,3 +1,4 @@
+{* $Id$ *}
 {* Show permissions table *}
 
 {if count($command_result) > 0} {* Can it be == 0 ?? *}
@@ -10,7 +11,7 @@
   {/if}
 
   <td>
-    <span class="o{if $command_result[i].value == 'y'}n{else}ff{/if}-option" title="{$command_result[i].description}">
+    <span class="o{if $command_result[i].value == 'y' }n{else}ff{/if}-option" title="{$command_result[i].description}">
       {$command_result[i].name}
     </span>
   </td>

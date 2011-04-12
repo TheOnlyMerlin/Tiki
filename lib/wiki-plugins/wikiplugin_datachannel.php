@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,14 +10,13 @@ function wikiplugin_datachannel_info()
 	global $prefs;
 	return array(
 		'name' => tra('Data Channel'),
-		'documentation' => 'PluginDataChannel',
-		'description' => tra('Display a form to access data channels.'),
+		'documentation' => tra('PluginDataChannel'),
+		'description' => tra('Displays a form to trigger data channels.'),
 		'prefs' => array('wikiplugin_datachannel'),
 		'body' => tra('List of fields to display. One field per line. Comma delimited: fieldname,label') . '<br /><br />' .
 					tra('To use values from other forms on the same page as parameters for the data-channel use "fieldname, external=fieldid".') . ' ' .
 					tra('Where "fieldid" is the id (important) of the external input to use, and "fieldname" is the name of the parameter in the data-channel'),
 		'extraparams' => true,
-		'icon' => 'pics/icons/transmit_blue.png',
 		'params' => array(
 			'channel' => array(
 				'required' => true,

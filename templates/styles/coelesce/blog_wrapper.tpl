@@ -1,3 +1,4 @@
+{* $Id$ *}
 {include file='blog_post_navigation.tpl'}
 <div class="postbody clearfix">
 	<a name="postId{$post_info.postId}"></a>
@@ -6,7 +7,7 @@
 		{include file='blog_post_author_info.tpl'}
 		{include file='blog_post_author_actions.tpl'}
 	</div>
-	{if $blog_post_context eq 'preview'}
+	{if $blog_post_context eq 'preview' }
 		{include file='freetag_list.tpl' freetags=$post_info.freetags links_inactive='y'}
 	{else}
 		{include file='freetag_list.tpl' freetags=$post_info.freetags}

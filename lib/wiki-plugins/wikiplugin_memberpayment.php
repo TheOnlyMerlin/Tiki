@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,11 +10,10 @@ function wikiplugin_memberpayment_info() {
 
 	return array(
 		'name' => tra('Member Payment'),
-		'documentation' => 'PluginMemberPayment',
-		'description' => tra('Receive payments from a member to extend membership to a group.'),
+		'documentation' => tra('PluginMemberPayment'),
+		'description' => tra('Receive payments from a member and extend the length of the membership to a group.'),
 		'validate' => 'all',
 		'prefs' => array( 'wikiplugin_memberpayment', 'payment_feature' ),
-		'icon' => 'pics/icons/money.png',
 		'params' => array(
 			'group' => array(
 				'required' => true,

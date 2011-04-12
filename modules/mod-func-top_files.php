@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,9 +22,8 @@ function module_top_files_info() {
 }
 
 function module_top_files( $mod_reference, $module_params ) {
-	global $smarty;
-	$filegallib = TikiLib::lib('filegal');
-	$ranking = $filegallib->list_files(0, $mod_reference["rows"], 'hits_desc', '');
+	global $tikilib, $smarty;
+	$ranking = $tikilib->list_files(0, $mod_reference["rows"], 'hits_desc', '');
 	
 	$smarty->assign('modTopFiles', $ranking["data"]);
 }

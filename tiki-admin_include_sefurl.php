@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,19 +14,16 @@ if (isset($_REQUEST['save'])) {
 }
 
 // Check if .htaccess is present and current
-$htaccess = "missing";
+$needtowarn = 1;
 $fp = fopen('.htaccess', "r");
 if ($fp) {
-	$htCurrent = fopen('_htaccess', "r");
-	$installedFirstLine = fgets($fp); 
-	if ($installedFirstLine == fgets($htCurrent)) { // Do not warn if the first line of each file is identical. First lines contain _htaccess revision
-		$htaccess = 'current';
-	} elseif(strstr($installedFirstLine, 'This line is used to check that this htaccess file is up to date.')) {
-		$htaccess = 'outdated';
+	$htCurrent = fopen('_htaccess', "r"); 
+	if (fgets($fp) == fgets($htCurrent)) { // Do not warn if the first line of each file is identical. First lines contain _htaccess revision
+		$needtowarn = 0;
 	}
 	fclose($htCurrent);
 	fclose($fp);
 }
-$smarty->assign('htaccess', $htaccess);
+$smarty->assign('needtowarn', $needtowarn);
 
 ask_ticket('admin-inc-sefurl');

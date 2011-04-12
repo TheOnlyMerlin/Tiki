@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -157,6 +157,10 @@ class ObjectLib extends TikiLib
 				global $user;
 				$tikilib->update_page($object, $data, tra('section edit'), $user, $tikilib->get_ip_address());
 				break;
+			case 'article':
+				global $artlib; include_once('lib/articles/artlib.php');
+				$artlib->replace_article();
+				break;
 		}
 	}
 	function delete_object($type, $itemId) {
@@ -166,7 +170,7 @@ class ObjectLib extends TikiLib
 	
 	function get_object($type, $itemId) {
 		$query = 'select * from `tiki_objects` where `itemId`=?  and `type`=?';
-		$result = $this->query($query,array($itemId, $type));
+		$result = $this->query($query,array((int) $itemId, $type));
 		return $result->fetchRow();
 	}
 
