@@ -2,6 +2,11 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 14 April 2011
+
+Update
+	jquery.mobile.js 1.0a3 to 1.0a4.1 (version "-1.0a4.1" removed from filenames again)
+
 jonnybradley 23 March 2011
 
 Updates:
