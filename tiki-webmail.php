@@ -15,6 +15,7 @@ $access->check_permission_either( array('tiki_p_use_webmail', 'tiki_p_use_group_
 
 require_once ('lib/webmail/net_pop3.php');
 require_once ('lib/mail/mimelib.php');
+include_once ('lib/webmail/class.rc4crypt.php');
 include_once ('lib/webmail/tikimaillib.php');
 
 function handleWebmailRedirect($inUrl) {		// AJAX_TODO
@@ -109,9 +110,9 @@ if ($_REQUEST['locSection'] == 'read') {
 	
 		$attachments = array();
 		
-//		if ($message->isMultipart()) {
-//			TODO	deal with attachments here??	
-//		}
+		if ($message->isMultipart()) {
+			// TODO	deal with attachments here??	
+		}
 		
 		$bodies = $webmaillib->get_mail_content($user, $current['accountId'], $_REQUEST['msgid'], true);
 
@@ -138,9 +139,9 @@ if ($_REQUEST['locSection'] == 'read') {
 				// reply text
 				$smarty->assign('plainbody', format_email_reply($bodies[$i]['body'], $aux['from'], $aux['date']));
 				$bodies[$i]['body'] = nl2br( $bodies[$i]['body'] );
-			}// else {
+			} else {
 				// attachments?
-			//}
+			}
 		}
 		
 		array_multisort($bodies);	// this doesn't do what we need properly but seems to fluke it mostly - TODO a manual re-sort

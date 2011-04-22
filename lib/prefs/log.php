@@ -12,7 +12,6 @@ function prefs_log_list() {
 			'description' => tra('Log mail in Tiki logs'),
 			'type' => 'flag',
 			'help' => 'System+Log',
-			'default' => 'n',
 		),
 		'log_tpl' => array(
 			'name' => tra('Smarty Template usage indicator'),
@@ -20,13 +19,11 @@ function prefs_log_list() {
 			'hint' => tra('Use only for development, not in production because these warnings are added to emails as well, and visible to the users'),
 			'warning' => tra('You need to clear your Tiki template cache for this change to take effect'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'log_sql' => array(
 			'name' => tra('Log SQL'),
 			'description' => tra('Log SQL queries'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'log_sql_perf_min' => array(
 			'name' => tra('Log queries using more than (seconds)'),
@@ -36,7 +33,6 @@ function prefs_log_list() {
 			'dependencies' => array(
 				'log_sql',
 			),
-			'default' => '0.05',
 		),
 	);
 }

@@ -1795,7 +1795,9 @@ class TrackerLib extends TikiLib
 
 					$is_visible = !isset($array["isHidden"]) || $array["isHidden"] == 'n';
 
-					if ($itemId || $array['type'] != 'q') {
+					if ($itemId && $array['type'] == 'q') {
+						// do not change autoincrement of an item
+					} else {
 						$conditions = array(
 							'itemId' => (int) $currentItemId,
 							'fieldId' => (int) $fieldId,
@@ -3307,8 +3309,8 @@ class TrackerLib extends TikiLib
 			'opt'=>true,
 			'help'=>tra('<dl>
 				<dt>Function: Allows alphanumeric text input in a multi-line field of arbitrary size.
-				<dt>Usage: <strong>toolbars,width,height,max,listmax,wordmax,distinct,wysiwyg</strong>
-				<dt>Example: 0,80,5,200,30,n
+				<dt>Usage: <strong>toolbars,width,height,max,listmax,wordmax,distinct</strong>
+				<dt>Example: 0,80,5,200,30
 				<dt>Description:
 				<dd><strong>[toolbars]</strong> enables toolbars if a 1 is specified;
 				<dd><strong>[width]</strong> is the width of the box, in chars;
@@ -3317,7 +3319,6 @@ class TrackerLib extends TikiLib
 				<dd><strong>[listmax]</strong> is the maximum number of characters that are displayed in list mode;
 				<dd><strong>[wordmax]</strong> will alert if word count exceeded with a positive number (1+) or display a word count with a negative number (-1);
 				<dd><strong>[distinct]</strong> is y or n. y = all values of the field must be different
-				<dd><strong>[wysiwyg]</strong>is y use a wysiwyg editor - default n
 				<dd>multiple options must appear in the order specified, separated by commas.
 				</dl>'));
 		$type['c'] = array(
@@ -4539,20 +4540,12 @@ class TrackerLib extends TikiLib
 
 	/* copy the fields of one item ($from) to another one ($to) of the same tracker - except/only for some fields */
 	/* note: can not use the generic function as they return not all the multilingual fields */
-	function copy_item($from, $to, $except=null, $only=null, $status=null) {
+	function copy_item($from, $to, $except=null, $only=null) {
 		global $user, $prefs;
 
 		if ($prefs['feature_categories'] == 'y') {
 			$categlib = TikiLib::lib('categ');
 			$cats = $categlib->get_object_categories('trackeritem', $from);
-		}
-		if (empty($to)) {
-			$is_new = 'y';
-			$info_to['trackerId'] = $this->items()->fetchOne('trackerId', array('itemId' => $from));
-			$info_to['status'] = empty($status)? $this->items()->fetchOne('status', array('itemId' => $from)): $status;
-			$info_to['created'] = $info_to['lastModif'] = $this->now;
-			$info_to['createdBy'] = $info_to['lastModifBy'] = $user;
-			$to = $this->items()->insert($info_to);
 		}
 
 		$query = 'select ttif.*, ttf.`type`, ttf.`options` from `tiki_tracker_item_fields` ttif left join `tiki_tracker_fields` ttf on (ttif.`fieldId` = ttf.`fieldId`) where `itemId`=?';
@@ -4574,12 +4567,10 @@ class TrackerLib extends TikiLib
 			
 			if ((!empty($except) && in_array($res['fieldId'], $except))
 				|| (!empty($only) && !in_array($res['fieldId'], $only))
+				|| (in_array($res['type'], array('u', 'g', 'I')) && $res['options_array'][0] == 1)
 				|| ($res['type'] == 'q')
 				) {
 				continue;
-			}
-			if (!empty($is_new) && in_array($res['type'], array('u', 'g', 'I')) && ($res['options_array'][0] == 1 || $res['options_array'][0] == 2)) {
-				$res['value'] = ($res['type'] == 'u')?$user: (($res['type'] =='g')? $_SESSION['u_info']['group']: TikiLib::get_ip_address());
 			}
 			if (in_array($res['type'], array('A', 'N'))) {// attachment - image
 				continue; //not done yet
@@ -4610,7 +4601,6 @@ class TrackerLib extends TikiLib
 			$trackerId = $this->items()->fetchOne('trackerId', array('itemId' => $from));
 			$this->categorized_item($trackerId, $to, "item $to", $cats);
 		}
-		return $to;
 	}
 	function export_attachment($itemId, $archive) {
 		global $prefs;

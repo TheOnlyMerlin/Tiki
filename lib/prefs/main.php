@@ -11,13 +11,11 @@ function prefs_main_list() {
 			'name' => tra('Main shadow start'),
 			'type' => 'textarea',
 			'size' => '2',
-			'default' => '',
 		),
 		'main_shadow_end' => array(
 			'name' => tra('Main shadow end'),
 			'type' => 'textarea',
 			'size' => '2',
-			'default' => '',
 		),
 	);	
 }

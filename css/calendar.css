@@ -1,4 +1,6 @@
 /* hack for IE http://www.wellstyled.com/css-underscore-hack.html */
+#calendar {
+}
 
 .tabrowLeft {
 	position: absolute;
@@ -49,6 +51,17 @@
 	height: 36px;
 	text-align: center;
 	vertical-align: middle;
+}
+
+.calHeading a,
+.calHeading a:visited {
+}
+
+.calHeadingOn a {
+}
+
+.calHeading a:hover,
+.calHeadingOn a:hover {
 }
 
 .calHours {
@@ -623,6 +636,8 @@ select[name=end_Minute] {
 	background: transparent;
 }
 
+a.addevent:hover {}
+
 .calfocus,
 .calfocuson {
 	padding-bottom: 4px;
@@ -666,6 +681,12 @@ select[name=end_Minute] {
 .viewmode div {
 	display: inline;
 }
+
+.calbuttonBox {  }
+
+.calbuttonLeft {  }
+
+.calbuttonRight {  }
 
 .calbuttonoff,
 .calbuttonon,

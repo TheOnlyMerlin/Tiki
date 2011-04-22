@@ -6,24 +6,42 @@
 // $Id$// (c) Copyright 2002-2009 by authors of the Tiki Wiki CMS Groupware Project
 
 //this script may only be included - so its better to die if called directly.
+if (! $allperms = $cachelib->getSerialized("allperms")) {
+	$allperms = $userlib->get_permissions(0, -1, 'permName_desc', '', '');
+	$cachelib->cacheItem("allperms", serialize($allperms));
+}
 $permissionList = array();
 $adminPermissions = array();
 
-$allperms = $userlib->get_enabled_permissions();
-$permissionList = array_keys($allperms);
+foreach( $allperms['data'] as $row ) {
+	$valid = false;
 
-foreach( $allperms as $permName => $row ) {
-	if( $row['admin'] ) {
-		$adminPermissions[ $row['type'] ] = substr($permName, strlen( 'tiki_p_' ));
+	if( ! $row['feature_check'] ) {
+		$valid = true;
+	} else {
+		foreach( explode( ',', $row['feature_check'] ) as $feature ) {
+			if( isset($prefs[$feature]) && $prefs[$feature] == 'y' ) {
+				$valid = true;
+				break;
+			}
+		}
+	}
+
+	if( $valid ) {
+		$permissionList[] = $row['permName'];
+
+		if( $row['admin'] == 'y' ) {
+			$adminPermissions[ $row['type'] ] = substr( $row['permName'], strlen( 'tiki_p_' ) );
+		}
 	}
 }
 
 // Create a map from the permission to the admin permission
 $map = array();
-foreach( $allperms as $permName => $row ) {
+foreach( $allperms['data'] as $row ) {
 	$type = $row['type'];
-	if( isset( $adminPermissions[$type] ) && ! $row['admin'] ) {
-		$permName = substr( $permName, strlen( 'tiki_p_' ) );
+	if( isset( $adminPermissions[$type] ) && $row['admin'] != 'y' ) {
+		$permName = substr( $row['permName'], strlen( 'tiki_p_' ) );
 		$map[ $permName ] = $adminPermissions[$type];
 	}
 }

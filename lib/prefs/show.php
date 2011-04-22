@@ -11,7 +11,6 @@ function prefs_show_list() {
 			'name' => tra('Display available translations'),
 			'description' => tra('?'),
 			'type' => 'flag',
-			'default' =>'y',
 		),
 	);
 }

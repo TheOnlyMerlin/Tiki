@@ -1,4 +1,3 @@
-{* $Id$ *}
 {title help="Draw"}{$title}{/title}
 
 <div style="text-align: center;">

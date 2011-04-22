@@ -851,7 +851,9 @@ if ( !isset($_REQUEST['preview']) && !isset($_REQUEST['save']) ) {
 		$smarty->assign('allowhtml','y');
 	} elseif ($_SESSION['wysiwyg'] === 'y') {
 		if ($prefs['wysiwyg_htmltowiki'] === 'y') {
-			if ($edit_data == 'ajax error') {
+			if ($edit_data != 'ajax error') {
+				//$parsed = $editlib->parseToWysiwyg($edit_data);
+			} else {
 				unset($_REQUEST['save']);	// don't save an ajax error
 			}
 		} else {

@@ -15,7 +15,6 @@ function prefs_proxy_list() {
 			'dependencies' => array(
 				'use_proxy',
 			),
-			'default' => '',
 		),
 		'proxy_port' => array(
 			'name' => tra('Port'),
@@ -26,7 +25,6 @@ function prefs_proxy_list() {
 			'dependencies' => array(
 				'use_proxy',
 			),
-			'default' => '',
 		),
 	);
 }

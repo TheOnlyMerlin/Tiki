@@ -18,7 +18,6 @@ function prefs_min_list() {
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
-			'default' => 5,
 		),
 	);
 }

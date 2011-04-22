@@ -349,6 +349,9 @@ a.flip:hover,
 }
 
 /* default look for editplugin icon links */
+.editplugin {
+	/*background: #fff; color: #000;*/
+}
 .plugin-desc {
 	padding: 5px;
 }
@@ -460,6 +463,15 @@ img.icon {
 	font-weight: bold;
 }
 	
+.comment .rbox-title,
+.comment .rbox-data {}
+
+.note .rbox-title,
+.note .rbox-data {}
+
+.tip .rbox-title,
+.tip .rbox-data {}
+
 .error .rbox-title,
 .errors .rbox-title,
 .warning .rbox-title {
@@ -1411,6 +1423,7 @@ textarea.tshoutbox{
 }
  /* wikiplugin_tracker */
 .trackerCategoryName {white-space:nowrap;}
+/* End of file */
 
 #captchaImg {
 	border: 1px solid black;
@@ -1501,5 +1514,3 @@ label.error {
 	background-color: #F7F7F7;
 	overflow: hidden;
 }
-
-/* End of file */
