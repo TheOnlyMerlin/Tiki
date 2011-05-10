@@ -961,6 +961,26 @@ div#textarea-toolbar {
 
 }
 
+.diffadded, td.diffadded {
+    background: none repeat scroll 0 0 #CCFFCC;
+    color: #000000;
+}
+.diffdeleted, td.diffdeleted {
+    background: none repeat scroll 0 0 #FFCCCC;
+    color: #000000;
+}
+
+/* Quote plugin */
+.quoteheader {
+	background : url('images/quoteleft.gif') no-repeat;
+	padding-left:50px;
+	height:35px;
+}
+
+.quotebody {
+	padding-left:46px;
+}
+
 /***** Articles ****/
 body.tiki_cms h1 a.pagetitle,
 body.tiki_cms h1 a.pagetitle:visited,
