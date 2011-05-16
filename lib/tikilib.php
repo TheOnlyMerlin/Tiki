@@ -200,21 +200,7 @@ class TikiLib extends TikiDb_Bridge
 		case 'errorreport':
 			require_once 'lib/errorreportlib.php';
 			return $libraries[$name] = new ErrorReportLib;
-		case 'prefs':
-			global $prefslib; include_once('lib/prefslib.php');
-			return $libraries[$name] = $prefslib;
 		}
-	}
-
-	public static function events()
-	{
-		static $eventManager = null;
-
-		if (! $eventManager) {
-			$eventManager = new Event_Manager;
-		}
-
-		return $eventManager;
 	}
 
 	// DB param left for interface compatibility, although not considered
@@ -3251,10 +3237,12 @@ class TikiLib extends TikiDb_Bridge
 		$userlib = TikiLib::lib('user');
 
 		$perms = Perms::get( array( 'type' => $objectType, 'object' => $objectId ) );
-		$permNames = $userlib->get_permission_names_for($this->get_permGroup_from_objectType($objectType));
+		$permDescs = $userlib->get_permissions(0, -1, 'permName_desc', '', $this->get_permGroup_from_objectType($objectType));
 
 		$ret = array();
-		foreach( $permNames as $perm ) {
+		foreach( $permDescs['data'] as $perm ) {
+			$perm = $perm['permName'];
+
 			$ret[$perm] = $perms->$perm ? 'y' : 'n';
 
 			if( $global ) {
@@ -3351,12 +3339,14 @@ class TikiLib extends TikiDb_Bridge
 		switch ($objectType) {
 			case 'wiki page': case 'wiki':
 				if ( $prefs['wiki_creator_admin'] == 'y' && !empty($user) && isset($info) && $info['creator'] == $user ) { //can admin his page
-					$perms = $userlib->get_permission_names_for($this->get_permGroup_from_objectType($objectType));
-					foreach ($perms as $perm) {
+					$perms = $userlib->get_permissions(0, -1, 'permName_desc', '', $this->get_permGroup_from_objectType($objectType));
+					foreach ($perms['data'] as $perm) {
+						$perm = $perm['permName'];
 						$ret[$perm] = 'y';
 						if ($global) {
-							$GLOBALS[$perm] = 'y';
-							$smarty->assign($perm, 'y');
+							global $$perm;
+							$$perm = 'y';
+							$smarty->assign("$perm", 'y');
 						}
 					}
 					return $ret;
@@ -3365,12 +3355,13 @@ class TikiLib extends TikiDb_Bridge
 				if ($prefs['feature_wiki_userpage'] == 'y' && !empty($prefs['feature_wiki_userpage_prefix']) && !empty($user) && strcasecmp($prefs['feature_wiki_userpage_prefix'], substr($objectId, 0, strlen($prefs['feature_wiki_userpage_prefix']))) == 0) {
 					if (strcasecmp($objectId, $prefs['feature_wiki_userpage_prefix'].$user) == 0) { //can edit his page
 						if (!$global) {
-							$perms = $userlib->get_permission_names_for($this->get_permGroup_from_objectType($objectType));
-							foreach ($perms as $perm) {
-								if ($perm == 'tiki_p_view' || $perm == 'tiki_p_edit') {
-									$ret[$perm] = 'y';
+							$perms = $userlib->get_permissions(0, -1, 'permName_desc', '', $this->get_permGroup_from_objectType($objectType));
+							foreach ($perms['data'] as $perm) {
+								global $$perm['permName'];
+								if ($perm['permName'] == 'tiki_p_view' || $perm['permName'] == 'tiki_p_edit') {
+									$ret[$perm['permName']] = 'y';
 								} else {
-									$ret[$perm] = $GLOBALS[$perm];
+									$ret[$perm['permName']] = $$perm['permName'];
 								}
 							}
 						} else {
@@ -3846,6 +3837,10 @@ class TikiLib extends TikiDb_Bridge
 
 		$this->replicate_page_to_history($name);
 
+		if( $prefs['quantify_changes'] == 'y' && $prefs['feature_multilingual'] == 'y' ) {
+			TikiLib::lib('quantify')->recordChangeSize( $page_id, 1, '', $data );
+		}
+
 		$this->clear_links($name);
 
 		// Pages are collected before adding slashes
@@ -3881,14 +3876,12 @@ class TikiLib extends TikiDb_Bridge
 			$this->score_event($user, 'wiki_new');
 		}
 
-		TikiLib::events()->trigger('tiki.wiki.create', array(
-			'type' => 'wiki page',
-			'object' => $name,
-			'page_id' => $page_id,
-			'version' => 1,
-			'data' => $data,
-			'old_data' => '',
-		));
+		require_once('lib/search/refresh-functions.php');
+		refresh_index('pages', $name);
+
+		$this->object_post_save( array( 'type'=> 'wiki page', 'object'=> $name, 'description'=> $description, 'name'=>$name, 'href'=>"tiki-index.php?page=$name" ), array(
+			'content' => $data,
+		) );
 
 		// Update HTML wanted links when wysiwyg is in use - this is not an elegant fix
 		// but will do for now until the "use wiki syntax in WYSIWYG" feature is ready 
@@ -6270,9 +6263,13 @@ if( \$('#$id') ) {
 								 	if ($in_paragraph && ((empty($tline) && $in_empty_paragraph === 0) || $contains_block)) {
 										// If still in paragraph, on meeting first blank line or end of div or start of div created by plugins; close a paragraph
 										$this->close_blocks($data, $in_paragraph, $listbeg, $divdepth, 1, 0, 0);
-									} elseif (!$in_paragraph && !$contains_block && !$contains_br && !empty($tline)) {
+									} elseif (!$in_paragraph && !$contains_block && !$contains_br) {
 										// If not in paragraph, first non-blank line; start a paragraph; if not start of div created by plugins
 										$data .= "<p>";
+										if (empty($tline)) {
+											$line = '&nbsp;';
+											$in_empty_paragraph = 1;
+										}
 										$in_paragraph = 1;
 									} elseif ($in_paragraph && $prefs['feature_wiki_paragraph_formatting_add_br'] == 'y' && !$contains_block) {
 										// A normal in-paragraph line if not close of div created by plugins
@@ -6795,6 +6792,10 @@ if( \$('#$id') ) {
 		$willDoHistory = ($prefs['feature_wiki_history_full'] == 'y' || $data != $edit_data || $description != $edit_description || $comment != $edit_comment );
 		$version = $old_version + ($willDoHistory?1:0);
 
+		if( $prefs['quantify_changes'] == 'y' && $prefs['feature_multilingual'] == 'y' ) {
+			TikiLib::lib('quantify')->recordChangeSize( $info['page_id'], $version, $info['data'], $edit_data );
+		}
+
 		if ($is_html === null) {
 			$html = $info['is_html'];
 		} else {
@@ -6948,14 +6949,12 @@ if( \$('#$id') ) {
 
 		}
 
-		TikiLib::events()->trigger('tiki.wiki.update', array(
-			'type' => 'wiki page',
-			'object' => $pageName,
-			'page_id' => $info['page_id'],
-			'version' => $version,
-			'data' => $edit_data,
-			'old_data' => $info['data'],
-		));
+		require_once('lib/search/refresh-functions.php');
+		refresh_index('pages', $pageName);
+
+		$this->object_post_save( array( 'type' => 'wiki page', 'object' => $pageName ), array(
+			'content' => $edit_data,
+		) );
 	}
 
 	function object_post_save( $context, $data ) {
@@ -6983,19 +6982,8 @@ if( \$('#$id') ) {
 	 * @param array $data
 	 * @return void
 	 */
-	function plugin_post_save_actions( $context, $data = null ) {
+	private function plugin_post_save_actions( $context, $data ) {
 		global $prefs;
-
-		if (is_null($data)) {
-			$content = array();
-			if (isset($context['values'])) {
-				$content = $context['values'];
-			}
-			if (isset($context['data'])) {
-				$content[] = $context['data'];
-			}
-			$data = implode(' ', $content);
-		}
 
 		$argumentParser = new WikiParser_PluginArgumentParser;
 

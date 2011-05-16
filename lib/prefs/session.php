@@ -17,7 +17,6 @@ function prefs_session_list() {
 				'db' => tra('Database'),
 				'memcache' => tra('Memcache'),
 			),
-			'default' => 'default',
 		),
 		'session_lifetime' => array(
 			'name' => tra('Session lifetime'),
@@ -27,14 +26,12 @@ function prefs_session_list() {
 			'filter' => 'digits',
 			'perspective' => false,
 			'size' => '4',
-			'default' => 0,
 		),
 		'session_silent' => array(
 			'name' => tra('Silent session'),
 			'description' => tra('Do not automatically start sessions.'),
 			'perspective' => false,
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'session_cookie_name' => array(
 			'name' => tra('Session cookie name'),
@@ -42,14 +39,12 @@ function prefs_session_list() {
 			'type' => 'text',
 			'perspective' => false,
 			'size' => 10,
-			'default' => session_name(),
 		),
 		'session_protected' => array(
 			'name' => tra('Protect all sessions'),
 			'description' => tra('Always redirect to HTTPS to prevent session hijack through network sniffing.'),
 			'type' => 'flag',
 			'perspective' => false,
-			'default' => 'n',
 		),
 	);
 }

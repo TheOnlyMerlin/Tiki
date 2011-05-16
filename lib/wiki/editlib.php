@@ -252,7 +252,7 @@ class EditLib
 		$ret = preg_replace('/<p>!(.*)<\/p>/iu', "!$1\n", $ret);
 		
 		// strip totally empty <p> tags generated in ckeditor 3.4
-		$ret = preg_replace('/\s*<p>[\s]*<\/p>\s*/iu', "!$1\n", $ret);
+		$ret = preg_replace('/\s*<p>[\s]*<\/p>\s*/iu', "$1\n", $ret);
 		return $ret;
 	}
 	
@@ -306,7 +306,7 @@ class EditLib
 								if ($more_spans === 0) {
 									break;
 								}
-//							} else if ($c[$j]['data']['name'] == 'br' && $more_spans === 1 && $other_elements === 0) {
+							} else if ($c[$j]['data']['name'] == 'br' && $more_spans === 1 && $other_elements === 0) {
 							} else if ($c[$j]['data']['name'] == $elem_type && $c[$j]['data']['type'] == 'open') {
 								$more_spans++;
 							} else if ($c[$j]['data']['type'] == 'open' && $c[$j]['data']['name'] != 'br' && $c[$j]['data']['name'] != 'img' && $c[$j]['data']['name'] != 'input') {

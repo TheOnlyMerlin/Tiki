@@ -189,7 +189,7 @@ class PreferencesLib
 
 	function getExtraSortColumns() {
 		global $prefs;
-		if( isset($prefs['rating_advanced']) && $prefs['rating_advanced'] == 'y' ) {
+		if( $prefs['rating_advanced'] == 'y' ) {
 			return TikiDb::get()->fetchMap( "SELECT CONCAT('adv_rating_', ratingConfigId), name FROM tiki_rating_configs" );
 		} else {
 			return array();
@@ -206,24 +206,18 @@ class PreferencesLib
 		return $this->getFileData( $file );
 	}
 
-	private function getFileData( $file, $partial = false ) {
+	private function getFileData( $file ) {
 		if( ! isset( $this->files[$file] ) ) {
 			require_once 'lib/prefs/' . $file . '.php';
 			$function = "prefs_{$file}_list";
 			if( function_exists( $function ) ) {
-				$this->files[$file] = $function($partial);
+				$this->files[$file] = $function();
 			} else {
 				$this->files[$file] = array();
 			}
 		}
 
-		$ret = $this->files[$file];
-
-		if ($partial) {
-			unset($this->files[$file]);
-		}
-
-		return $ret;
+		return $this->files[$file];
 	}
 
 	private function getDependencies( $dependencies ) {
@@ -257,7 +251,8 @@ class PreferencesLib
 		if( $this->indexNeedsRebuilding() ) {
 			$index = Zend_Search_Lucene::create( $this->file );
 
-			foreach ($this->getAvailableFiles() as $file) {
+			foreach( glob( 'lib/prefs/*.php' ) as $file ) {
+				$file = substr( basename( $file ), 0, -4 );
 				$data = $this->getFileData( $file );
 
 				foreach( $data as $pref => $info ) {
@@ -489,34 +484,6 @@ class PreferencesLib
 		return $modified;
 	}
 
-	function getDefaults()
-	{
-		$defaults = array();
-
-		foreach ($this->getAvailableFiles() as $file) {
-			$data = $this->getFileData($file, true);
-
-			foreach ($data as $name => $info) {
-				if (isset($info['default'])) {
-					$defaults[$name] = $info['default'];
-				} else {
-					$defaults[$name] = '';
-				}
-			}
-		}
-
-		return $defaults;
-	}
-
-	private function getAvailableFiles()
-	{
-		$files = array();
-		foreach( glob( 'lib/prefs/*.php' ) as $file ) {
-			$files[] = substr( basename( $file ), 0, -4 );
-		}
-
-		return $files;
-	}
 }
 
 global $prefslib;

@@ -17,27 +17,21 @@ class Tracker_Field_Checkbox extends Tracker_Field_Abstract
 	{
 		$ins_id = $this->getInsertId();
 
+		if (isset($requestData[$ins_id]) && $requestData[$ins_id] == 'on') {
+			$val = 'y';
+		} elseif (!empty($requestData)) {
+			$val = 'n';
+		} else {
+			$val = $this->getValue();
+		}
 		return array(
-			'value' => (isset($requestData[$ins_id]) && $requestData[$ins_id] == 'on')
-				? 'y'
-				: $this->getValue('n'),
+			'value' => $val,
 		);
 	}
 
 	function renderInput($context = array())
 	{
 		return $this->renderTemplate('trackerinput/checkbox.tpl', $context);
-	}
-
-	function handleSave($value, $oldValue)
-	{
-		if ($value == 'on') {
-			$value = 'y';
-		}
-
-		return array(
-			'value' => $value,
-		);
 	}
 }
 

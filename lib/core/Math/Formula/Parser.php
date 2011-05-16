@@ -8,12 +8,14 @@
 class Math_Formula_Parser
 {
 	function parse( $string ) {
+		require_once 'Math/Formula/Tokenizer.php';
 		$tokenizer = new Math_Formula_Tokenizer;
 		$tokens = $tokenizer->getTokens( $string );
 
 		$element = $this->getElement( $tokens );
 
 		if( ! empty( $tokens ) ) {
+			require_once 'Math/Formula/Parser/Exception.php';
 			throw new Math_Formula_Parser_Exception( 'Unexpected trailing characters.', $tokens );
 		}
 
@@ -26,6 +28,7 @@ class Math_Formula_Parser
 
 		if( $first != '(' ) {
 			array_unshift( $tokens, $first );
+			require_once 'Math/Formula/Parser/Exception.php';
 			throw new Math_Formula_Parser_Exception( tra('Expecting "("'), $tokens );
 		}
 
@@ -33,9 +36,11 @@ class Math_Formula_Parser
 
 		if( $type == '(' || $type == ')' ) {
 			array_unshift( $tokens, $type );
+			require_once 'Math/Formula/Parser/Exception.php';
 			throw new Math_Formula_Parser_Exception( tr('Unexpected "%0"', $type), $tokens );
 		}
 
+		require_once 'Math/Formula/Element.php';
 		$element = new Math_Formula_Element( $type );
 
 		while( strlen( $token = array_shift( $tokens ) ) != 0 && $token != ')' ) {
@@ -53,6 +58,7 @@ class Math_Formula_Parser
 
 		if( $token != ')' ) {
 			array_unshift( $tokens, $token );
+			require_once 'Math/Formula/Parser/Exception.php';
 			throw new Math_Formula_Parser_Exception( tra('Expecting ")"'), $tokens );
 		}
 

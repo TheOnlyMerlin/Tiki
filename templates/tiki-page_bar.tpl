@@ -1,4 +1,3 @@
-{* $Id$ *}
 {if !isset($versioned) or not $versioned}
 	{strip}
 

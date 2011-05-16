@@ -1,4 +1,3 @@
-{* $Id$ *}
 {tab name="{tr}Export Tracker Items{/tr}"}
 <h3>{tr}Tracker Items Export{/tr}</h3>
 <form action="tiki-view_tracker.php?trackerId={$trackerId}&amp;cookietab=3" method="post">

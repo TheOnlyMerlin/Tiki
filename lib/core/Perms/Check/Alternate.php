@@ -5,6 +5,8 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+require_once 'lib/core/Perms/Check.php';
+
 class Perms_Check_Alternate implements Perms_Check
 {
 	private $permission;
@@ -33,15 +35,12 @@ class Perms_Check_Alternate implements Perms_Check
 			return $this->applicableCache;
 		}
 
+		$groups = $this->resolver->applicableGroups();
 		$this->applicableCache = array();
 
-		if ($this->resolver) {
-			$groups = $this->resolver->applicableGroups();
-
-			foreach( $groups as $group ) {
-				if( $this->resolver->check( $this->permission, array($group) ) ) {
-					$this->applicableCache[] = $group;
-				}
+		foreach( $groups as $group ) {
+			if( $this->resolver->check( $this->permission, array($group) ) ) {
+				$this->applicableCache[] = $group;
 			}
 		}
 

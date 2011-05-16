@@ -54,7 +54,7 @@ if( $prefs['tiki_domain_prefix'] == 'strip' && substr( $host, 0, 4 ) == 'www.' )
 	$domain_map[$host] = 'www.' . $host;
 }
 
-if (strpos($prefs['tiki_domain_redirects'], ',') !== false) {
+if( !empty($prefs['tiki_domain_redirects']) ) {
 	foreach( explode("\n", $prefs['tiki_domain_redirects']) as $row ) {
 		list($old, $new) = array_map('trim', explode(',', $row, 2));
 		$domain_map[$old] = $new;
@@ -186,8 +186,6 @@ if( isset( $_GET['msg'] ) ) {
 	$smarty->assign( 'display_msg', '' );
 }
 
-require_once 'lib/setup/events.php';
-
 if( $prefs['rating_advanced'] == 'y' && $prefs['rating_recalculation'] == 'randomload' ) {
 	global $ratinglib; require_once 'lib/rating/ratinglib.php';
 	$ratinglib->attempt_refresh();
@@ -226,12 +224,14 @@ if ($prefs['javascript_enabled'] != 'n') {
 
 		$headerlib->add_jsfile( 'lib/jquery_tiki/tiki-jquery.mobile.js' );
 
+		$jsmin = $prefs['tiki_minify_javascript'] === 'y' ? '.min' : '';
+		$cssmin = $prefs['tiki_minify_css'] === 'y' ? '.min' : '';
 		if ($prefs['mobile_use_latest_lib'] === 'y') {
-			$headerlib->add_jsfile( 'http://jquerymobile.com/test/js/' );
-			$headerlib->add_cssfile( 'http://jquerymobile.com/test/themes/default/' );
+			$headerlib->add_jsfile( "http://code.jquery.com/mobile/latest/jquery.mobile$jsmin.js" );
+			$headerlib->add_cssfile( "http://code.jquery.com/mobile/latest/jquery.mobile$cssmin.css" );
 		} else {
-			$headerlib->add_jsfile( 'lib/jquery/jquery.mobile/jquery.mobile.js' );
-			$headerlib->add_cssfile( 'lib/jquery/jquery.mobile/jquery.mobile.css' );
+			$headerlib->add_jsfile( "lib/jquery/jquery.mobile/jquery.mobile$jsmin.js" );
+			$headerlib->add_cssfile( "lib/jquery/jquery.mobile/jquery.mobile$cssmin.css" );
 		}
 		
 		$headerlib->drop_cssfile('css/cssmenus.css');

@@ -13,7 +13,6 @@ function prefs_blogues_list() {
 			'dependencies' => array(
 				'feature_blogs',
 			),
-			'default' => 'n',
 		),
 	);
 }

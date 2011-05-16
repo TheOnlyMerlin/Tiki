@@ -27,7 +27,6 @@ function prefs_mobile_list() {
 			'dependencies' => array(
 				'feature_perspective',
 			),
-			'default' => 'n',
 		),
 		'mobile_perspectives' => array(
 			'name' => tra('Mobile Perspectives'),
@@ -39,7 +38,6 @@ function prefs_mobile_list() {
 			'dependencies' => array(
 				'mobile_feature',
 			),
-			'default' => array(''),
 		),
 		'mobile_theme_header' => array(
 			'name' => tra('Header Theme'),
@@ -50,7 +48,6 @@ function prefs_mobile_list() {
 			'dependencies' => array(
 				'mobile_feature',
 			),
-			'default' => '',
 		),
 		'mobile_theme_content' => array(
 			'name' => tra('Content Theme'),
@@ -61,7 +58,6 @@ function prefs_mobile_list() {
 			'dependencies' => array(
 				'mobile_feature',
 			),
-			'default' => '',
 		),
 		'mobile_theme_footer' => array(
 			'name' => tra('Footer Theme'),
@@ -72,7 +68,6 @@ function prefs_mobile_list() {
 			'dependencies' => array(
 				'mobile_feature',
 			),
-			'default' => '',
 		),
 		'mobile_theme_modules' => array(
 			'name' => tra('Modules Theme'),
@@ -83,7 +78,6 @@ function prefs_mobile_list() {
 			'dependencies' => array(
 				'mobile_feature',
 			),
-			'default' => '',
 		),
 		'mobile_theme_menus' => array(
 			'name' => tra('Menus Theme'),
@@ -94,18 +88,16 @@ function prefs_mobile_list() {
 			'dependencies' => array(
 				'mobile_feature',
 			),
-			'default' => '',
 		),
 		'mobile_use_latest_lib' => array(
 			'name' => tra('Use Latest Library'),
-			'description' => tra('Use latest test version of the jquery.mobile'),
+			'description' => tra('Use latest version of the jquery.mobile'),
 			'help' => 'Mobile',
-			'warning' => tra('Caution: Uses jqm development server, please use sparingly.'),
+			'warning' => tra('Uses latest build from jquery.com CDN.'),
 			'type' => 'flag',
 			'dependencies' => array(
 				'mobile_feature',
 			),
-			'default' => 'n',
 		),
 	);
 }

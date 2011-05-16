@@ -10,7 +10,6 @@ function prefs_desactive_list() {
 		'desactive_login_autocomplete' => array(
 			'name' => tra("Disable browser's autocomplete feature for username and password fields"),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 	);	
 }

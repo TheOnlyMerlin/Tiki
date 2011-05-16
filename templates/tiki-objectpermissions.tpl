@@ -1,6 +1,4 @@
-{* $Id$ *}
-
-{title help="Permission"}{if $objectType eq 'global'}{tr}Assign global permissions{/tr}{else}{tr}Assign permissions to {/tr}{tr}{$objectType}:{/tr} {$objectName}{/if}{/title}
+{title help="Permission"}{if $objectType eq 'global'}{tr}Assign global permissions{/tr}{else}{tr}Assign permissions to {/tr}{tr}{$objectType|escape}:{/tr} {$objectName|escape}{/if}{/title}
 
 <div class="navbar">
 {if !empty($referer)}{button href="$referer" _text="{tr}Back{/tr}"}{/if}
@@ -103,6 +101,10 @@ if ($("#assignstructure").attr("checked")) {
 			{/if}
 		</div>
 	</form>
+	
+	{remarksbox type="note" title="{tr}Note{/tr}"}
+		{tr}Previous version of assign permissions page can still be found{/tr} <a href="tiki-assignpermission.php?group={if isset($smarty.request.group)}{$smarty.request.group}{else}Anonymous{/if}">{tr}here{/tr}</a>
+	{/remarksbox}
 	
 	{/tab}
 	

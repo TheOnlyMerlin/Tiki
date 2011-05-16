@@ -13,7 +13,6 @@ function prefs_socialnetworks_list() {
 			'type' => 'text',
 			'keywords' => 'social networks',
 			'size' => 40,
-			'default' =>'',
 		),
 		'socialnetworks_twitter_consumer_secret' => array(
 			'name' => tra('Consumer secret'),
@@ -21,7 +20,6 @@ function prefs_socialnetworks_list() {
 			'keywords' => 'social networks',
 			'type' => 'text',
 			'size' => 60,
-			'default' => '',
 		),
 		'socialnetworks_facebook_api_key' => array(
 			'name' => tra('API key'),
@@ -29,7 +27,6 @@ function prefs_socialnetworks_list() {
 			'type' => 'text',
 			'keywords' => 'social networks',
 			'size' => 40,
-			'default' =>'',
 		),
 		'socialnetworks_facebook_application_secr' => array(
 			'name' => tra('Application secret'),
@@ -37,7 +34,6 @@ function prefs_socialnetworks_list() {
 			'keywords' => 'social networks',
 			'type' => 'text',
 			'size' => 60,
-			'default' => '',
 		),
 		'socialnetworks_facebook_application_id' => array(
 			'name' => tra('Application ID'),
@@ -45,7 +41,6 @@ function prefs_socialnetworks_list() {
 			'keywords' => 'social networks',
 			'type' => 'text',
 			'size' => 60,
-			'default' => '',
 		),
 		'socialnetworks_facebook_login' => array(
 			'name' => tra('Login using Facebook'),
@@ -61,7 +56,6 @@ function prefs_socialnetworks_list() {
 			'dependencies' => array(
 				'socialnetworks_facebook_login',
 			),
-			'default' => 'n',
 		),
 		'socialnetworks_facebook_firstloginpopup' => array(
 			'name' => tra('Require Facebook users to enter local account info'),
@@ -72,42 +66,36 @@ function prefs_socialnetworks_list() {
 				'socialnetworks_facebook_login',
 				'socialnetworks_facebook_autocreateuser',
 			),
-			'default' => 'n',
 		),
 		'socialnetworks_facebook_offline_access' => array(
 			'name' => tra('Tiki can access Facebook at any time'),
 			'description' => tra('Even when user is not logged onto Facebook, Tiki can access it.'),
 			'keywords' => 'social networks',
 			'type' => 'flag',
-			'default' => 'y',
 		),
 		'socialnetworks_facebook_publish_stream' => array(
 			'name' => tra('Tiki can post to Wall'),
 			'description' => tra('Tiki may post status messages, notes, photos, and videos to Facebook Wall'),
 			'keywords' => 'social networks',
 			'type' => 'flag',
-			'default' => 'y',
 		),
 		'socialnetworks_facebook_manage_events' => array(
 			'name' => tra('Tiki can manage events'),
 			'description' => tra('Tiki may create and RSVP to Facebook events'),
 			'keywords' => 'social networks',
 			'type' => 'flag',
-			'default' => 'y',
 		),
 		'socialnetworks_facebook_manage_pages' => array(
 			'name' => tra('Tiki can manage pages'),
 			'description' => tra('Tiki may manage user pages'),
 			'keywords' => 'social networks',
 			'type' => 'flag',
-			'default' => 'y',
 		),
 		'socialnetworks_facebook_sms' => array(
 			'name' => tra('Tiki can SMS'),
 			'description' => tra('Tiki may SMS via Facebook'),
 			'keywords' => 'social networks',
 			'type' => 'flag',
-			'default' => 'y',
 		),
 		'socialnetworks_bitly_login' => array(
 			'name' => tra('bit.ly Login'),
@@ -115,7 +103,6 @@ function prefs_socialnetworks_list() {
 			'keywords' => 'social networks',
 			'type' => 'text',
 			'size' => 60,
-			'default' => '',
 		),
 		'socialnetworks_bitly_key' => array(
 			'name' => tra('bit.ly Key'),
@@ -123,14 +110,12 @@ function prefs_socialnetworks_list() {
 			'keywords' => 'social networks',
 			'type' => 'text',
 			'size' => 60,
-			'default' => '',
 		),
 		'socialnetworks_bitly_sitewide' => array(
 			'name' => tra('Use site-wide account'),
 			'description' => tra('When setting this option to yes, only the site wide account will be used for all users'),
 			'keywords' => 'social networks',
 			'type' => 'flag',
-			'default' => 'n',
 		),
 	);
 }

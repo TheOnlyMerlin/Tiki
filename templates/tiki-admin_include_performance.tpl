@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Please see the <a class='rbox-link' target='tikihelp' href='http://dev.tiki.org/Performance'>Performance page</a> on Tiki's developer site.{/tr}{/remarksbox}
 
 <form class="admin" id="performance" name="performance" action="tiki-admin.php?page=performance" method="post">
@@ -121,14 +119,6 @@
 		{tab name="{tr}Sessions{/tr}"}
 				{preference name=session_silent}
 				{preference name=tiki_cachecontrol_nosession}
-		{/tab}
-
-		{tab name="{tr}Newsletter{/tr}"}
-			{preference name=newsletter_throttle}
-			<div class="adminoptionboxchild" id="newsletter_throttle_childcontainer">
-				{preference name=newsletter_pause_length}
-				{preference name=newsletter_batch_size}
-			</div>
 		{/tab}
 {/tabset}
 		

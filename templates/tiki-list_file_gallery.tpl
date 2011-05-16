@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {title help="File+Galleries" admpage="fgal"}
 	{strip}
 		{if $edit_mode eq 'y' and $galleryId eq 0}
@@ -15,7 +13,7 @@
 					{tr}Files of $user{/tr}
 				{/if}
 			{else}
-				{$name}
+				{$name|escape}
 			{/if}
 		{/if}
 	{/strip}
@@ -100,11 +98,7 @@
 			{if $tiki_p_upload_files eq 'y'}
 				{button _text="{tr}Upload File{/tr}" href="tiki-upload_file.php?galleryId=$galleryId"}
 			{/if}
-			
-			{if $tiki_p_upload_files eq 'y' and $prefs.feature_file_galleries_batch eq "y"}
-				{button _text="{tr}Create a drawing{/tr}" href="tiki-edit_draw.php?galleryId=$galleryId"}
-			{/if}
-			
+
 			{if $prefs.feature_file_galleries_batch eq "y" and $tiki_p_batch_upload_file_dir eq 'y'}
 				{button _text="{tr}Directory Batch{/tr}" href="tiki-batch_upload_files.php?galleryId=$galleryId"}
 			{/if}
