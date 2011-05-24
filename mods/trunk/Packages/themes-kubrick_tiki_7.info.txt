@@ -1,0 +1,44 @@
+contributor:
+$Author$
+
+revision:
+$Revision$
+
+lastmodif:
+$Date$
+
+files:
+themes/kubrick_tiki_7/Readme.txt templates/styles/kubrick/Readme.txt
+themes/kubrick_tiki_7/styles/kubrick.css styles/kubrick.css
+themes/kubrick_tiki_7/styles/kubrick/arrows-2277DD.png styles/kubrick/arrows-2277DD.png
+themes/kubrick_tiki_7/styles/kubrick/footerbg.jpg styles/kubrick/footerbg.jpg
+themes/kubrick_tiki_7/styles/kubrick/headerbg.jpg styles/kubrick/headerbg.jpg
+themes/kubrick_tiki_7/styles/kubrick/ie6.css styles/kubrick/ie6.css
+themes/kubrick_tiki_7/styles/kubrick/index.php styles/kubrick/index.php
+themes/kubrick_tiki_7/styles/kubrick/kubrick.png styles/kubrick/kubrick.png
+themes/kubrick_tiki_7/styles/kubrick/kubrickbg_left.jpg styles/kubrick/kubrickbg_left.jpg
+themes/kubrick_tiki_7/styles/kubrick/kubrickbg_right.jpg styles/kubrick/kubrickbg_right.jpg
+themes/kubrick_tiki_7/templates/styles/kubrick/credits.tpl templates/styles/kubrick/credits.tpl
+themes/kubrick_tiki_7/templates/styles/kubrick/index.php templates/styles/kubrick/index.php
+
+author:
+Gary Cunningham-Lee (chibaguy)
+
+licence:
+GNU/GPL
+
+Description: 
+This is a Tiki adaptation of the Kubrick theme (http://mambo.rhuk.net/) originally done by Michael Heilemann for the WordPress blog software. Maintained by Gary Cunningham-Lee (chibaguy). If updating from a previous Tiki release, it's best that all template (.tpl) files are removed from templates/styles/kubrick and then the files included here are installed. Older files could be incompatible with this version. For the latest information on and updates of the Kubrick theme for Tiki Wiki CMS Groupware, visit http://zukakakina.com or http://themes.tikiwiki.org.  Recommended module assignments (in this order) -> Top: logo (nobox=y), login_box (nobox=y, mode=popup), menu [main "tiki-top" horizontal menu] (nobox=y, id=tiki-top, type=horiz, css=y), menu (nobox=y, type=horiz, id=secondary_site_menu, class=secondary_site_menu),  search (nobox=y, mode=header); Topbar: - . 
+
+Version:
+7
+
+Changelog:
+8 Updated for Tiki 7 (support for modules in Look and Feel areas, etc.; switched to *lite.css method - no more table for layout) 
+7 Updated for Tiki 6
+6 Updated for Tiki 5
+5 Updated for Tiki 4
+4 Modified to import layout/layout.css; suckerfish menu arrows image added
+3 Updated for Tiki 3
+2 Updated for TikiWiki 1.10
+1 Initial package

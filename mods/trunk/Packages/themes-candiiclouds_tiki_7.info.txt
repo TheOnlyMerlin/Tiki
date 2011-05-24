@@ -1,0 +1,57 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/candiiclouds_tiki_7/Readme.txt styles/candiiclouds/Readme.txt
+themes/candiiclouds_tiki_7/styles/candiiclouds.css styles/candiiclouds.css
+themes/candiiclouds_tiki_7/styles/candiiclouds/arrows-00adef.png styles/candiiclouds/arrows-00adef.png
+themes/candiiclouds_tiki_7/styles/candiiclouds/banstars.gif styles/candiiclouds/banstars.gif
+themes/candiiclouds_tiki_7/styles/candiiclouds/bcloud.gif styles/candiiclouds/bcloud.gif
+themes/candiiclouds_tiki_7/styles/candiiclouds/bluu.gif styles/candiiclouds/bluu.gif
+themes/candiiclouds_tiki_7/styles/candiiclouds/candiiclouds.png styles/candiiclouds/candiiclouds.png
+themes/candiiclouds_tiki_7/styles/candiiclouds/cclog.gif candiiclouds/cclog.gif
+themes/candiiclouds_tiki_7/styles/candiiclouds/cloudsbdr.gif candiiclouds/cloudsbdr.gif
+themes/candiiclouds_tiki_7/styles/candiiclouds/index.php candiiclouds/index.php
+themes/candiiclouds_tiki_7/styles/candiiclouds/leftmarginbg.jpg styles/candiiclouds/leftmarginbg.jpg
+themes/candiiclouds_tiki_7/styles/candiiclouds/logo.png styles/candiiclouds/logo.png
+themes/candiiclouds_tiki_7/styles/candiiclouds/piink.gif styles/candiiclouds/piink.gif
+themes/candiiclouds_tiki_7/styles/candiiclouds/rightmarginbg.jpg styles/candiiclouds/rightmarginbg.jpg
+themes/candiiclouds_tiki_7/styles/candiiclouds/s-stars.gif styles/candiiclouds/s-stars.gif
+themes/candiiclouds_tiki_7/styles/candiiclouds/sbihead.gif styles/candiiclouds/sbihead.gif
+themes/candiiclouds_tiki_7/styles/candiiclouds/star.gif styles/candiiclouds/star.gif
+themes/candiiclouds_tiki_7/templates/styles/candiiclouds/credits.tpl templates/styles/candiiclouds/credits.tpl
+themes/candiiclouds_tiki_7/templates/styles/candiiclouds/index.php templates/styles/candiiclouds/index.php
+
+Description:
+Candii Clouds theme by Mark Schulz (elpirtxis), licensed Creative Commons Attribution 2.5 and
+adapted for Tiki Wiki CMS Groupware by Gary Cunningham-Lee (chibaguy). Recommended module assignments (in this order) -> Top: logo (nobox=y), login_box (nobox=y, mode=popup), menu (nobox=y, type=horiz, id=secondary_site_menu, class=secondary_site_menu); Topbar: search (nobox=y), menu [main "tiki-top" horizontal menu] (nobox=y, id=tiki-top, type=horiz, css=y). 
+ 
+Docurl:
+http://themes.tiki.org/Candiiclouds
+http://zukakakina.com/Candiiclouds
+ 
+Licence:
+The visual aspects of this theme are a CCA2.5 derived work.
+
+Author:
+Gary Cunningham-Lee (chibaguy)
+ 
+Version:
+7
+ 
+Changelog:
+7 Modules used for site header items, etc.
+6 Switched to *lite.css layout - no more table for layout
+5 Incremental improvements, etc.
+4 Incremental improvements, etc.
+3 Updated for Tiki 5 features
+2 Modified to import layout/layout.css; suckerfish menu arrows image added
+1 Initial package
