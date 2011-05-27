@@ -19,7 +19,6 @@ function prefs_module_list() {
 //				'user' => tra('User Decides'),
 				'n' => tra('Never'),
 			),
-			'default' => 'y',
 		),
 		'module_zones_topbar' => array(
 			'name' => tra('Topbar module zone'),
@@ -33,7 +32,6 @@ function prefs_module_list() {
 //				'user' => tra('User Decides'),
 				'n' => tra('Never'),
 			),
-			'default' => 'y',
 		),
 		'module_zones_pagetop' => array(
 			'name' => tra('Page top module zone'),
@@ -47,7 +45,6 @@ function prefs_module_list() {
 //				'user' => tra('User Decides'),
 				'n' => tra('Never'),
 			),
-			'default' => 'y',
 		),
 		'module_zones_bottom' => array(
 			'name' => tra('Bottom module zone'),
@@ -61,7 +58,6 @@ function prefs_module_list() {
 //				'user' => tra('User Decides'),
 				'n' => tra('Never'),
 			),
-			'default' => 'y',
 		),
 		'module_zones_pagebottom' => array(
 			'name' => tra('Page bottom module zone'),
@@ -75,7 +71,6 @@ function prefs_module_list() {
 //				'user' => tra('User Decides'),
 				'n' => tra('Never'),
 			),
-			'default' => 'y',
 		),
 	);
 }

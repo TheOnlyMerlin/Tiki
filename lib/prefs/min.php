@@ -12,14 +12,12 @@ function prefs_min_list() {
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
-			'default' => 1,
 		),
 		'min_pass_length' => array(
 			'name' => tra('Minimum length'),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
-			'default' => 5,
 		),
 	);
 }

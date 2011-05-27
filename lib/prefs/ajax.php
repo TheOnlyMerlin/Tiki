@@ -17,7 +17,6 @@ function prefs_ajax_list() {
 			'dependencies' => array(
 				'feature_ajax',
 			),
-			'default' => 'y',
 		),
 		
 	);

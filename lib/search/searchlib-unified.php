@@ -137,13 +137,8 @@ class UnifiedSearchLib
 
 	private function buildIndexer($index)
 	{
-		global $prefs;
 		$indexer = new Search_Indexer($index);
 		$this->addSources($indexer);
-		
-		if ($prefs['unified_tokenize_version_numbers'] == 'y') {
-			$indexer->addContentFilter(new Search_ContentFilter_VersionNumber);
-		}
 
 		return $indexer;
 	}
@@ -224,7 +219,7 @@ class UnifiedSearchLib
 		global $prefs;
 
 		if ($prefs['unified_engine'] == 'lucene') {
-			$index = new Search_Index_Lucene($prefs['unified_lucene_location'], $prefs['language'], $prefs['unified_lucene_highlight'] == 'y');
+			$index = new Search_Index_Lucene($prefs['unified_lucene_location']);
 
 			return $index;
 		}

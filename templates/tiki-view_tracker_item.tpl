@@ -1,5 +1,5 @@
-{* $Id$ *}
-{title help="trackers"}{$tracker_info.name}{/title}
+
+{title help="trackers"}{$tracker_info.name|escape}{/title}
 
 {if $print_page ne 'y'}
 

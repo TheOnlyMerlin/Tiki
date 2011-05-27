@@ -14,7 +14,6 @@ function prefs_email_list() {
 			'filter' => 'int',
 			'shorthint' => tra('days'),
 			'hint' => tra('Use "-1" for never'),
-			'default' => -1,
 		),
 	);
 }

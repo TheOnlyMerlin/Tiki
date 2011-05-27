@@ -14,7 +14,6 @@ function prefs_allowmsg_list() {
 			'dependencies' => array(
 				'feature_messages',
 			),
-			'default' => 'y',
 		),
 		'allowmsg_is_optional' => array(
 			'name' => tra('Users can opt-out of internal messages'),
@@ -23,7 +22,6 @@ function prefs_allowmsg_list() {
 			'dependencies' => array(
 				'feature_messages',
 			),
-			'default' => 'y',
 		),
 	);
 }

@@ -11,13 +11,11 @@ function prefs_center_list() {
 			'name' => tra('Center shadow start'),
 			'type' => 'textarea',
 			'size' => '2',
-			'default' => '',
 		),
 		'center_shadow_end' => array(
 			'name' => tra('Center shadow end'),
 			'type' => 'textarea',
 			'size' => '2',
-			'default' => '',
 		),
 	);	
 }

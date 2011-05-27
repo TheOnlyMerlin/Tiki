@@ -1,6 +1,4 @@
-{* $Id$ *}
-{capture assign="viewuser"}{$userwatch|escape:"url"}{/capture}
-{title url="tiki-user_information.php?view_user=$viewuser"}{tr}User Information{/tr}{/title}
+{title url="tiki-user_information.php?view_user=$userwatch"}{tr}User Information{/tr}{/title}
 
 {include file='tiki-mytiki_bar.tpl'}
 

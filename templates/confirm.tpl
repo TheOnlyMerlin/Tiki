@@ -1,7 +1,6 @@
-{* $Id$ *}
 <div class="cbox">
 	{if !empty($confirmation_text)}
-		<div class="cbox-title">{icon _id=information style="vertical-align:middle"} {$confirmation_text|escape}</div>
+		<div class="cbox-title">{icon _id=information style="vertical-align:middle"} {$confirmation_text}</div>
 	{/if}
 	{if !empty($confirm_detail)}
 		{$confirm_detail}

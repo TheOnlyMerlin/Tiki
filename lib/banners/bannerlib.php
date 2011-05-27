@@ -37,21 +37,14 @@ class BannerLib extends TikiLib
 			}
 			$mid .= implode('or', $mids).')';
 		}
-
+		
 		$query = "select `bannerId` from `tiki_banners` where `$dw` = ? and  `hourFrom`<=? and `hourTo`>=? and
 		( ((`useDates` = ?) and (`fromDate`<=? and `toDate`>=?)) or (`useDates` = ?) ) and
-		(`impressions`<`maxImpressions`  or `maxImpressions`=?) and (`clicks`<`maxClicks` or `maxClicks`=? or `maxClicks` is NULL) and `zone`=? $mid and (`exceptInURIs` not like ? or `exceptInURIs` IS NULL)";
-		$bindvars[] = '%#'.$_SERVER['REQUEST_URI'].'#%';
-		$query1 = "$query and `onlyInURIs` like ? order by ".$this->convertSortMode('random');
+		(`impressions`<`maxImpressions`  or `maxImpressions`=?) and (`clicks`<`maxClicks` or `maxClicks`=? or `maxClicks` is NULL) and `zone`=? $mid order by ".$this->convertSortMode('random');
 
-		$result = $this->query($query1, array_merge($bindvars, array('%#'.$_SERVER['REQUEST_URI'].'#%')), 1, 0);
+		$result = $this->query($query,$bindvars,1,0);
 		if (!($res = $result->fetchRow())) {
-			$query1 = "$query and (`onlyInURIs` is NULL or `onlyInURIs` =?) order by ".$this->convertSortMode('random');
-			$bindvars[] = '';
-			$result = $this->query($query1, $bindvars, 1, 0);
-			if (!($res = $result->fetchRow())) {
-				return false;
-			}
+			return false;
 		}
 		$id = $res["bannerId"];
 		
@@ -230,7 +223,7 @@ class BannerLib extends TikiLib
 
 	function replace_banner($bannerId, $client, $url, $title = '', $alt = '', $use, $imageData, $imageType, $imageName, $HTMLData,
 					$fixedURLData, $textData, $fromDate, $toDate, $useDates, $mon, $tue, $wed, $thu, $fri, $sat, $sun, $hourFrom, $hourTo,
-							$maxImpressions, $maxClicks,$zone,$maxUserImpressions=-1, $onlyInURIs=null, $exceptInURIs=null
+					$maxImpressions, $maxClicks,$zone,$maxUserImpressions=-1
 	)	{
 		$imageData = urldecode($imageData);
 		//$imageData = '';
@@ -256,11 +249,11 @@ class BannerLib extends TikiLib
                 `hourFrom` = ?,
                 `hourTo` = ?,
                 `mon` = ? ,`tue` = ?, `wed` = ?, `thu` = ?, `fri` = ?, `sat` = ?, `sun` = ?,
-                `maxImpressions` = ?, `maxUserImpressions`=?, `maxClicks` = ?, `onlyInURIs`=?, `exceptInURIs`=? where `bannerId`=?";
+                `maxImpressions` = ?, `maxUserImpressions`=?, `maxClicks` = ? where `bannerId`=?";
 
                 $bindvars=array($client,$url,$title,$alt,$use,$imageData,$imageType,$imageName,$HTMLData,
                                 $fixedURLData, $textData, $fromDate, $toDate, $useDates,$this->now,$zone,$hourFrom,$hourTo,
-                                $mon,$tue,$wed,$thu,$fri,$sat,$sun,$maxImpressions,$maxUserImpressions,$maxClicks,$onlyInURIs, $exceptInURIs, $bannerId);
+                                $mon,$tue,$wed,$thu,$fri,$sat,$sun,$maxImpressions,$maxUserImpressions,$maxClicks,$bannerId);
 
 				$result = $this->query($query,$bindvars);
 
@@ -275,14 +268,14 @@ class BannerLib extends TikiLib
 		} else {
 			$query = "insert into `tiki_banners`(`client`, `url`, `title`, `alt`, `which`, `imageData`, `imageType`, `HTMLData`,
                 `fixedURLData`, `textData`, `fromDate`, `toDate`, `useDates`, `mon`, `tue`, `wed`, `thu`, `fri`, `sat`, `sun`,
-                `hourFrom`, `hourTo`, `maxImpressions`,`maxUserImpressions`,`maxClicks`,`created`,`zone`,`imageName`,`impressions`,`clicks`, `onlyInURIs`, `exceptInURIs`)
+                `hourFrom`, `hourTo`, `maxImpressions`,`maxUserImpressions`,`maxClicks`,`created`,`zone`,`imageName`,`impressions`,`clicks`)
                 values(?,?,?,?,?,?,?,?,?,
                 ?,?,?,?,?,?,?,?,?,
-                ?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                ?,?,?,?,?,?,?,?,?,?,?,?)";
 
                 $bindvars=array($client,$url,$title,$alt,$use,$imageData,$imageType,$HTMLData,
                                 $fixedURLData, $textData, $fromDate, $toDate, $useDates, $mon,$tue,$wed,$thu,
-                                $fri,$sat,$sun,$hourFrom,$hourTo,$maxImpressions,$maxUserImpressions,$maxClicks,$this->now,$zone,$imageName,0,0, $onlyInURIs, $exceptInURIs);
+                                $fri,$sat,$sun,$hourFrom,$hourTo,$maxImpressions,$maxUserImpressions,$maxClicks,$this->now,$zone,$imageName,0,0);
 
 
 			$result = $this->query($query,$bindvars);

@@ -1,15 +1,14 @@
-{* $Id$ *}
 {if $page|lower neq 'sandbox' and $prefs.feature_contribution eq 'y' and $prefs.feature_contribution_mandatory eq 'y'}
 	{remarksbox type='tip' title="{tr}Tip{/tr}"}
 		<strong class='mandatory_note'>{tr}Fields marked with a * are mandatory.{/tr}</strong>
 	{/remarksbox}
 {/if}
-{if isset($customTip)}
+{if $customTip}
 	{remarksbox type='tip' title=$customTipTitle}
 	{tr}{$customTip|escape}{/tr}
 	{/remarksbox}
 {/if}
-{if isset($wikiHeaderTpl)}
+{if $wikiHeaderTpl}
 	{include file="wiki:$wikiHeaderTpl"}
 {/if}
 	
@@ -32,9 +31,9 @@
 {/if}
 {if $translation_mode eq 'n'}
 	{if $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}{assign var=pp value=$approvedPageName}{else}{assign var=pp value=$page}{/if}
-	{title}{if isset($hdr) && $prefs.wiki_edit_section eq 'y'}{tr}Edit Section{/tr}{else}{tr}Edit{/tr}{/if}: {$pp}{if $pageAlias ne ''}&nbsp;({$pageAlias}){/if}{/title}
+	{title}{if isset($hdr) && $prefs.wiki_edit_section eq 'y'}{tr}Edit Section{/tr}{else}{tr}Edit{/tr}{/if}: {$pp|escape}{if $pageAlias ne ''}&nbsp;({$pageAlias|escape}){/if}{/title}
 {else}
-   {title}{tr}Update '{$page}'{/tr}{/title}
+   {title}{tr}Update '{$page|escape}'{/tr}{/title}
 {/if}
    
 {if $beingStaged eq 'y'}
@@ -237,6 +236,7 @@
 								{section name=o loop=$categIds}
 									<input type="hidden" name="cat_categories[]" value="{$categIds[o]}" />
 								{/section}
+								<input type="hidden" name="categId" value="{$categIdstr}" />
 								<input type="hidden" name="cat_categorize" value="on" />
 								
 								{if $prefs.feature_wiki_categorize_structure eq 'y'}
@@ -369,7 +369,6 @@ $("#allowhtml").change(function() {
 										    <option value="3600" {if $prefs.wiki_cache eq 3600}selected="selected"{/if}>1 {tr}hour{/tr}</option>
 										    <option value="7200" {if $prefs.wiki_cache eq 7200}selected="selected"{/if}>2 {tr}hours{/tr}</option>
 									    </select> 
-										{if $prefs.wiki_cache == 0}{remarksbox type="warning" title="{tr}Warning{/tr}"}{tr}Only cache a page if it should look the same to all groups authorized to see it.{/tr}{/remarksbox}{/if}
 									</fieldset>
 								{/if}
 								{if $prefs.feature_wiki_structure eq 'y'}

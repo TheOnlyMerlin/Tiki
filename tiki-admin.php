@@ -49,18 +49,16 @@ function simple_set_toggle($feature)
 	if (isset($_REQUEST[$feature]) && $_REQUEST[$feature] == 'on') {
 		if ((!isset($prefs[$feature]) || $prefs[$feature] != 'y')) {
 			// not yet set at all or not set to y
-			if ($tikilib->set_preference($feature, 'y')) {
-				add_feedback( $feature, tr('%0 enabled', $feature), 1, 1 );
-				$logslib->add_action('feature', $feature, 'system', 'enabled');
-			}
+			$tikilib->set_preference($feature, 'y');
+			add_feedback( $feature, tr('%0 enabled', $feature), 1, 1 );
+			$logslib->add_action('feature', $feature, 'system', 'enabled');
 		}
 	} else {
 		if ((!isset($prefs[$feature]) || $prefs[$feature] != 'n')) {
 			// not yet set at all or not set to n
-			if ($tikilib->set_preference($feature, 'n')) {
-				add_feedback($feature, tr('%0 disabled', $feature), 0, 1);
-				$logslib->add_action('feature', $feature, 'system', 'disabled');
-			}
+			$tikilib->set_preference($feature, 'n');
+			add_feedback($feature, tr('%0 disabled', $feature), 0, 1);
+			$logslib->add_action('feature', $feature, 'system', 'disabled');
 		}
 	}
 	global $cachelib;
@@ -83,9 +81,8 @@ function simple_set_value($feature, $pref = '', $isMultiple = false)
 	$old = $prefs[$feature];
 	if (isset($_REQUEST[$feature])) {
 		if ($pref != '') {
-			if ($tikilib->set_preference($pref, $_REQUEST[$feature])) {
-				$prefs[$feature] = $_REQUEST[$feature];
-			}
+			$tikilib->set_preference($pref, $_REQUEST[$feature]);
+			$prefs[$feature] = $_REQUEST[$feature];
 		} else {
 			$tikilib->set_preference($feature, $_REQUEST[$feature]);
 		}
@@ -93,9 +90,8 @@ function simple_set_value($feature, $pref = '', $isMultiple = false)
 		// Multiple selection controls do not exist if no item is selected.
 		// We still want the value to be updated.
 		if ($pref != '') {
-			if ($tikilib->set_preference($pref, array())) {
-				$prefs[$feature] = $_REQUEST[$feature];
-			}
+			$tikilib->set_preference($pref, array());
+			$prefs[$feature] = $_REQUEST[$feature];
 		} else {
 			$tikilib->set_preference($feature, array());
 		}
@@ -152,14 +148,6 @@ $url = 'tiki-admin.php';
 $adminPage = '';
 
 global $prefslib; require_once 'lib/prefslib.php';
-
-if( isset ($_REQUEST['pref_filters']) ) {
-	$prefslib->setFilters( $_REQUEST['pref_filters'] );
-}
-
-$temp_filters = isset($_REQUEST['filters']) ? explode(' ', $_REQUEST['filters']) : null;
-$smarty->assign('pref_filters', $prefslib->getFilters($temp_filters));
-
 if( isset( $_REQUEST['lm_preference'] ) ) {
 	
 	$changes = $prefslib->applyChanges( (array) $_REQUEST['lm_preference'], $_REQUEST );
@@ -179,10 +167,12 @@ if( isset( $_REQUEST['lm_preference'] ) ) {
 }
 
 if( isset( $_REQUEST['lm_criteria'] ) ) {
+	global $prefslib; require_once 'lib/prefslib.php';
+
 	set_time_limit(0);
 	try {
 		$smarty->assign( 'lm_criteria', $_REQUEST['lm_criteria'] );
-		$results = $prefslib->getMatchingPreferences( $_REQUEST['lm_criteria'], $temp_filters );
+		$results = $prefslib->getMatchingPreferences( $_REQUEST['lm_criteria'] );
 		$results = array_slice( $results, 0, 10 );
 		$smarty->assign( 'lm_searchresults', $results );
 		$smarty->assign( 'lm_error', '' );

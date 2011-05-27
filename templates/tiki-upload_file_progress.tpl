@@ -16,9 +16,9 @@
 		</td>
 		<td>
 			{if !empty($filegals_manager)}
-				<a {$alink}>{$name|escape} ({$size|kbsize})</a>
+				<a {$alink}>{$name} ({$size|kbsize})</a>
 			{else}
-				<b>{$name|escape} ({$size|kbsize})</b>
+				<b>{$name} ({$size|kbsize})</b>
 			{/if}
 			{if $feedback_message != ''}
 				<div class="upload_note">
@@ -44,7 +44,7 @@
 							<td width="6px">
 							</td>
 							<td class="inline_syntax">
-								[{$fileId|sefurl:file}|{$name|escape}]
+								[{$fileId|sefurl:file}|{$name}]
 							</td>
 						</tr>
 					</table>

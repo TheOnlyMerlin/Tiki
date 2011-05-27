@@ -10,30 +10,22 @@ function prefs_sitelogo_list() {
 		'sitelogo_src' => array(
 			'name' => tra('Logo source (image path)'),
 			'type' => 'text',
-			'default' => 'img/tiki/Tiki_WCG.png',
-			'tags' => array('basic'),
 		),
 		'sitelogo_bgcolor' => array(
 			'name' => tra('Logo background color'),
 			'hint' => tra('Examples:') . ' ' .  '1) silver - 2) #fff',
 			'type' => 'text',
 			'size' => '15',
-			'default' => 'transparent',
-			'tags' => array('basic'),
 		),
 		'sitelogo_title' => array(
 			'name' => tra('Logo title (on mouse over)'),
 			'type' => 'text',
 			'size' => '50',
-			'default' => 'Tiki powered site',
-			'tags' => array('basic'),
 		),
 		'sitelogo_alt' => array(
 			'name' => tra('Alt. description (e.g. for text browsers)'),
 			'type' => 'text',
 			'size' => '50',
-			'default' => 'Site Logo',
-			'tags' => array('basic'),
 		),
 	);	
 }

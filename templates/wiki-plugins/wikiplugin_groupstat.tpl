@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $id$ *}
 <table class="normal">
 <tr><th colspan="3">{tr}Groups{/tr}</th></tr>
 {cycle values="even,odd" print=false}

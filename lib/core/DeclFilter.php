@@ -5,6 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+require_once 'Zend/Filter/Interface.php';
 
 /**
  * Declarative filters are to be defined prior to filtering. Various rules can

@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {title help="Action log"}{tr}Action Log{/tr}{/title}
 
 {tabset name="admin_actionlog"}
@@ -46,7 +44,7 @@
 							<select multiple="multiple" size="{if $groups|@count > 5}5{else}{math equation=x+y x=$groups|@count y=1}{/if}" name="selectedGroups[]">
 								<option value="">{tr}All{/tr}</option>
 								{foreach from=$groups key=ix item=group}
-									<option value="{$group|escape}" {if $selectedGroups[$group] eq 'y'}selected="selected"{/if}>{$group|escape}</option>
+									<option value="{$group|escape}" {if $selectedGroups[$group] eq 'y'}selected="selected"{/if}>{$group}</option>
 								{/foreach}
 							</select>
 						</td>

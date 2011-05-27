@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {if $prefs.feature_search_stats eq 'y'}
 	{remarksbox type="tip" title="{tr}Tip{/tr}"}
 		{tr}Search stats{/tr} {tr}can be seen on page{/tr} <a class='rbox-link' target='tikihelp' href='tiki-search_stats.php'>{tr}Search stats{/tr}</a> {tr}in Admin menu{/tr}
@@ -26,10 +24,7 @@
 					{preference name="unified_engine"}
 					<div class="adminoptionboxchild unified_engine_childcontainer lucene">
 						{preference name="unified_lucene_location"}
-						{preference name="unified_lucene_highlight"}
 					</div>
-					
-					{preference name=unified_tokenize_version_numbers}
 
 					{preference name=unified_field_weight}
 					{preference name=unified_default_content}

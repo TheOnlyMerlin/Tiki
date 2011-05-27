@@ -42,14 +42,6 @@
 
  */
 
-require_once('lib/init/initlib.php');
-$tikipath = dirname(__FILE__) . '/';
-TikiInit::prependIncludePath($tikipath.'lib/pear');
-TikiInit::appendIncludePath($tikipath.'lib/core');
-TikiInit::appendIncludePath($tikipath);
-require_once 'Zend/Loader/Autoloader.php';
-Zend_Loader_Autoloader::getInstance()->registerNamespace('TikiDb');
-
 require_once('lib/language/Language.php');
 
 ////////////////////////////////////////////////////////////////////////////
@@ -62,6 +54,94 @@ require_once('lib/language/Language.php');
 $script_mode = ! isset( $_SERVER['REQUEST_METHOD'] ) && isset($_SERVER['argc']);
 
 $punctuations = array(':', '!', ';', '.', ',', '?'); // Modify lib/init/tra.php accordingly
+
+/**
+ * Reads all the permission descriptions in tiki database and writes
+ *   it to the file $file. All the strings will be surrounded by smarty translate tags
+ *     ex: {tr}perm description{/tr}
+ *
+ * @param $file string: target file for the perms
+ * @returns: nothing but creates the file with the perms (take care about the acl's in the target directory !)
+ */
+function collect_perms_desc($file)
+{
+	global $tikilib;
+	if ( isset($tikilib) ) {
+
+		$result = $tikilib->query("SELECT DISTINCT(permDesc) FROM users_permissions ORDER BY permDesc");
+
+		$perm_strings = array();
+		while( $row = $result->fetchRow() )
+			$perm_strings[] = $row['permDesc'];
+
+	} elseif ( is_readable('db/tiki.sql') ) {
+
+		// Used when called in $script_mode if no DB has been found
+		$matches = array();
+		preg_match_all(
+				'/insert\s+into\s+\`?users_permissions\`?\s*\([^\)]+\)\s*values\s*\(\'(tiki_p_[^\'"]+)\',\s*\'(.*)\',/Uim',
+				file_get_contents('db/tiki.sql'),
+				$matches
+				);
+
+		foreach ( $matches[2] as $permDesc ) {
+			$perm_strings[] = str_replace("\'", "'", $permDesc);
+		}
+		unset($matches);
+
+	} else {
+		die('File db/tiki.sql is missing');
+	}
+
+	$pstr = fopen($file,'w');
+	if (!$pstr) {
+		echo "The file $file can not be written";
+	} else {
+		foreach ($perm_strings as $strg)
+		{
+			fwrite ($pstr,  "{tr}" . $strg . "{/tr}" . "\n");
+		}
+		fclose($pstr);
+	}
+}
+
+/**
+ * Get all preferences names from get_default_prefs() function or reads them all from tiki database
+ * and writes it to the file $file. All the strings will be surrounded by smarty translate tags
+ *     ex: {tr}preference name{/tr}
+ *
+ * @param $file string: target file for the pref names
+ * @returns: nothing but creates the file with the pref names (take care about the acl's in the target directory !)
+ */
+function collect_prefs_names($file) {
+
+	global $tikilib;
+	if ( isset($tikilib) ) {
+
+		$prefs_strings = array();
+		$result = $tikilib->query("select `name` from `tiki_preferences`");
+		while ( $row = $result->fetchRow() ) $prefs_strings[] = $row['name'];
+
+	} elseif ( function_exists('get_default_prefs') ) {
+
+		// Used when called in $script_mode if no DB has been found
+		$prefs_strings = array_keys(get_default_prefs());
+
+	} else {
+		die("No 'get_default_prefs' function is available");
+	}
+
+	$pstr = fopen($file,'w');
+	if (!$pstr) {
+		echo "The file $file can not be written";
+	} else {
+		foreach ($prefs_strings as $strg)
+		{
+			fwrite ($pstr,  "{tr}" . str_replace('_',' ',$strg) . "{/tr}" . "\n");
+		}
+		fclose($pstr);
+	}
+}
 
 function hardwire_file ($file) {
 	global $files, $completion, $script_mode, $quiet;
@@ -264,10 +344,17 @@ collect_files ('.');
 hardwire_file ('./lang/langmapping.php');
 hardwire_file ('./img/flags/flagnames.php');
 
-## Adding a file in ./temp which contains all the preferences names
-## This file is called prefnames.tpl. The extension has to be .tpl in order to be
+## Adding a file in ./temp which contains all the perms descriptions
+## This file is called permstrings.tpl. The extension has to be .tpl in order to be
 ##   taken in charge by the script (tpl or php)
 ## This file is, of course, temporary and will be deleted during the next cache clear !
+
+$permsfile = "./temp/permstrings.tpl";
+$permsstrgs = collect_perms_desc($permsfile);
+$prefsfile = "./temp/prefnames.tpl";
+collect_prefs_names($prefsfile);
+hardwire_file ($permsfile);
+hardwire_file ($prefsfile);
 
 // Sort files to make generated strings appear in language.php in the same 
 // order across different systems

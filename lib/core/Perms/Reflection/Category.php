@@ -5,6 +5,8 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+require_once 'lib/core/Perms/Reflection/Object.php';
+
 class Perms_Reflection_Category extends Perms_Reflection_Object
 {
 	function getParentPermissions() {

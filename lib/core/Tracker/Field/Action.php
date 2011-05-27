@@ -21,9 +21,4 @@ class Tracker_Field_Action implements Tracker_Field_Interface
 	{
 		return null;
 	}
-
-	function watchCompare($new, $old)
-	{
-		return null;
-	}
 }

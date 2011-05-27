@@ -17,7 +17,6 @@ function prefs_language_list() {
 			'dependencies' => array(
 				'available_languages',
 			),
-			'default' => 3,
 		),
 	);
 }
