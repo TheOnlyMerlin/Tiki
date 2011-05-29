@@ -30,6 +30,12 @@ body {
 	background: #467aa7;
 	color: #fff}
 	
+/* Enable header and footer content to widen when middle has wide content. */ 
+body.fixed_width .fixedwidth .fixedwidth {
+	width: 100%;
+	padding: 0;
+}
+	
 #c1c2 #wrapper #col1.marginleft  {
 	margin-left: 180px;
 }
