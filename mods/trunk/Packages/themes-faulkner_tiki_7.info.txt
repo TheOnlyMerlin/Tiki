@@ -1,0 +1,61 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/faulkner_tiki_7/Readme.txt styles/faulkner/Readme.txt
+themes/faulkner_tiki_7/styles/faulkner.css styles/faulkner.css
+themes/faulkner_tiki_7/styles/faulkner/arrows-600.png styles/faulkner/arrows-600.png
+themes/faulkner_tiki_7/styles/faulkner/bullet.gif styles/faulkner/bullet.gif
+themes/faulkner_tiki_7/styles/faulkner/entrybg.gif styles/faulkner/entrybg.gif
+themes/faulkner_tiki_7/styles/faulkner/faulkner.png styles/faulkner/faulkner.png
+themes/faulkner_tiki_7/styles/faulkner/foot.jpg styles/faulkner/foot.jpg
+themes/faulkner_tiki_7/styles/faulkner/h3bg.jpg styles/faulkner/h3bg.jpg
+themes/faulkner_tiki_7/styles/faulkner/index.php styles/faulkner/index.php
+themes/faulkner_tiki_7/styles/faulkner/leftmargin.jpg styles/faulkner/leftmargin.jpg
+themes/faulkner_tiki_7/styles/faulkner/menu.gif styles/faulkner/menu.gif
+themes/faulkner_tiki_7/styles/faulkner/menuhover.jpg styles/faulkner/menuhover.jpg
+themes/faulkner_tiki_7/styles/faulkner/ornament.gif styles/faulkner/ornament.gif
+themes/faulkner_tiki_7/styles/faulkner/parchment.jpg styles/faulkner/parchment.jpg
+themes/faulkner_tiki_7/styles/faulkner/parchmentleft.jpg styles/faulkner/parchmentleft.jpg
+themes/faulkner_tiki_7/styles/faulkner/parchmentlight.jpg styles/faulkner/parchmentlight.jpg
+themes/faulkner_tiki_7/styles/faulkner/parchmentright.jpg styles/faulkner/parchmentright.jpg
+themes/faulkner_tiki_7/styles/faulkner/rightmargin.jpg styles/faulkner/rightmargin.jpg
+themes/faulkner_tiki_7/styles/faulkner/title_left.gif styles/faulkner/title_left.gif
+themes/faulkner_tiki_7/styles/faulkner/title_right.gif styles/faulkner/title_right.gif
+themes/faulkner_tiki_7/templates/styles/faulkner/credits.tpl templates/styles/faulkner/credits.tpl
+themes/faulkner_tiki_7/templates/styles/faulkner/index.php templates/styles/faulkner/index.php
+
+Description:
+The Faulkner theme for Tiki Wiki CMS Groupware is adapted from the original WordPress template by Demus Designs.  As of Tiki 7, modules are used to display the site title and text ornaments. If updating this theme from a previous version, be sure to remove all old template (.tpl) files in templates/styles/faulkner; some aren't compatible with the current version of Tiki. Recommended module assignments (in this order) -> Top: logo (nobox=y), login_box (nobox=y, mode=popup), menu (nobox=y, type=horiz, id=secondary_site_menu, class=secondary_site_menu), search (nobox=y); Topbar: faulkner_topbar_menu [custom module (see below) for main "tiki-top" horizontal menu] (theme=faulkner.css&nobox=y).
+
+Faulkner topbar menu custom module data (change the menu id as needed for your site): <table><tr><td>{menu id=43 type=horiz css=y}</td></tr></table>
+ 
+Docurl:
+http://themes.tiki.org/Faulkner
+http://zukakakina.com/Faulkner
+ 
+Licence:
+This theme is released under GPL license, but please respect the request of the author and display the Demus Designs credit/link in the page footer.
+
+Author:
+Adapted by Gary Cunningham-Lee (chibaguy).
+ 
+Version:
+7
+
+Changelog:
+7 Updated to support modules for Look and Feel items, etc.
+6 Switched to *lite.css layout - no more table for layout
+5 Incremental improvements, etc.
+4 Increamental improvements, etc.
+3 Modified to import layout/layout.css; suckerfish menu arrows image added
+2 Updated for Tiki 3.
+1 Initial package
