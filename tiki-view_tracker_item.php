@@ -366,6 +366,14 @@ foreach($xfields["data"] as $i => $current_field) {
 	}
 }
 
+// Collect information from the provided fields
+$ins_categs = array();
+foreach ($ins_fields['data'] as $current_field) {
+	if ($current_field['type'] == 'e' && isset($current_field['selected_categories'])) {
+		$ins_categs = array_merge($ins_categs, $current_field['selected_categories']);
+	}
+}
+
 $authorfield = $definition->getAuthorField();
 if ($authorfield) {
 	$tracker_info['authorindiv'] = $trklib->get_item_value($_REQUEST["trackerId"], $_REQUEST["itemId"], $authorfield);
@@ -426,7 +434,7 @@ if (($tiki_p_modify_tracker_items == 'y' && $item_info['status'] != 'p' && $item
 			if (!isset($_REQUEST["edstatus"]) or ($tracker_info["showStatus"] != 'y' and $tiki_p_admin_trackers != 'y')) {
 				$_REQUEST["edstatus"] = $tracker_info["modItemStatus"];
 			}
-			$trklib->replace_item($_REQUEST["trackerId"], $_REQUEST["itemId"], $ins_fields, $_REQUEST["edstatus"]);
+			$trklib->replace_item($_REQUEST["trackerId"], $_REQUEST["itemId"], $ins_fields, $_REQUEST["edstatus"], $ins_categs);
 			if (isset($rateFieldId) && isset($_REQUEST["ins_$rateFieldId"])) {
 				$trklib->replace_rating($_REQUEST["trackerId"], $_REQUEST["itemId"], $rateFieldId, $user, $_REQUEST["ins_$rateFieldId"]);
 			}
@@ -441,6 +449,7 @@ if (($tiki_p_modify_tracker_items == 'y' && $item_info['status'] != 'p' && $item
 			}
 			$item_info = $trklib->get_tracker_item($_REQUEST["itemId"]);
 			$smarty->assign('item_info', $item_info);
+			$trklib->categorized_item($_REQUEST["trackerId"], $_REQUEST["itemId"], $mainvalue, $ins_categs);
 		} else {
 			$error = $ins_fields;
 			$cookietab = "2";
@@ -600,6 +609,44 @@ if ($prefs['feature_user_watches'] == 'y' and $tiki_p_watch_trackers == 'y') {
 			$smarty->assign('watching_categories', $watching_categories);
 		}
 	}
+}
+if ($tracker_info["useComments"] == 'y') {
+	if ($tiki_p_admin_trackers == 'y' and isset($_REQUEST["remove_comment"])) {
+		$access->check_authenticity();
+		$trklib->remove_item_comment($_REQUEST["remove_comment"]);
+	}
+	if (isset($_REQUEST["commentId"])) {
+		$comment_info = $trklib->get_item_comment($_REQUEST["commentId"]);
+		$smarty->assign('comment_title', $comment_info["title"]);
+		$smarty->assign('comment_data', $comment_info["data"]);
+		$cookietab = 2;
+	} else {
+		$_REQUEST["commentId"] = 0;
+		$smarty->assign('comment_title', '');
+		$smarty->assign('comment_data', '');
+	}
+	$smarty->assign('commentId', $_REQUEST["commentId"]);
+	if ($_REQUEST["commentId"] && $tiki_p_admin_trackers != 'y') {
+		$_REQUEST["commentId"] = 0;
+	}
+	if ($tiki_p_comment_tracker_items == 'y') {
+		if (isset($_REQUEST["save_comment"])) {
+			check_ticket('view-trackers-items');
+			if (empty($user) && $prefs['feature_antibot'] == 'y' && !$captchalib->validate()) {
+				$smarty->assign('msg', $captchalib->getErrors());
+				$smarty->assign('errortype', 'no_redirect_login');
+				$smarty->display("error.tpl");
+				die;
+			}
+			$trklib->replace_item_comment($_REQUEST["commentId"], $_REQUEST["itemId"], $_REQUEST["comment_title"], $_REQUEST["comment_data"], $user, $tracker_info);
+			$smarty->assign('comment_title', '');
+			$smarty->assign('comment_data', '');
+			$smarty->assign('commentId', 0);
+		}
+	}
+	$comments = $trklib->list_item_comments($_REQUEST["itemId"], 0, -1, 'posted_desc', '');
+	$smarty->assign_by_ref('comments', $comments["data"]);
+	$smarty->assign_by_ref('commentCount', $comments["cant"]);
 }
 if (isset($_REQUEST["removeattach"])) {
 	check_ticket('view-trackers-items');

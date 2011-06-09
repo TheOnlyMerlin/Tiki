@@ -1,12 +1,10 @@
-{* $Id$ *}
-
 {if !empty($filegals_manager) and !isset($smarty.request.simpleMode)}
 	{assign var=simpleMode value='y'}
 {else}
 	{assign var=simpleMode value='n'}
 {/if}
 
-{title help="File+Galleries" admpage="fgal"}{if $editFileId}{tr}Edit File:{/tr} {$fileInfo.filename}{else}{tr}Upload File{/tr}{/if}{/title}
+{title help="File+Galleries" admpage="fgal"}{if $editFileId}{tr}Edit File:{/tr} {$fileInfo.filename|escape}{else}{tr}Upload File{/tr}{/if}{/title}
 
 {if !empty($galleryId) or (count($galleries) > 0 and $tiki_p_list_file_galleries eq 'y') or (isset($uploads) and count($uploads) > 0)}
 <div class="navbar">

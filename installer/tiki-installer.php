@@ -18,7 +18,6 @@ require_once( 'tiki-filter-base.php' );
 
 // Define and load Smarty components
 require_once ( 'lib/smarty/libs/Smarty.class.php');
-require_once 'lib/init/initlib.php';
 require_once ('installer/installlib.php');
 
 class InstallerDatabaseErrorHandler implements TikiDb_ErrorHandler
@@ -113,10 +112,7 @@ function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tik
 		$filetowrite .= "// \$client_charset='utf8';\n";
 		$filetowrite .= "// See http://tiki.org/ReleaseNotes5.0#Known_Issues and http://doc.tiki.org/Understanding+Encoding for more info\n\n";
 		$filetowrite .= "// If your php installation does not not have pdo extension\n";
-		$filetowrite .= "// \$api_tiki = 'adodb';\n\n";
-		$filetowrite .= "// Want configurations managed at the system level or restrict some preferences? http://doc.tiki.org/System+Configuration\n";
-		$filetowrite .= "// \$system_configuration_file = '/etc/tiki.ini';\n";
-		$filetowrite .= "// \$system_configuration_identifier = 'example.com';\n\n";
+		$filetowrite .= "// \$api_tiki = 'adodb';\n";
 		fwrite($fw, $filetowrite);
 		fclose($fw);
 	}

@@ -234,7 +234,7 @@ if (!empty($_REQUEST['validate']) && $prefs['feature_file_galleries_save_draft']
 		}
 	}
 
-	$access->check_authenticity(tra('Validate draft: ') . (!empty($info['name']) ? $info['name'] . ' - ' : '') . $info['filename']);
+	$access->check_authenticity(tra('Validate draft: ') . (!empty($info['name']) ? htmlspecialchars($info['name']) . ' - ' : '') . $info['filename']);
 	$filegallib->validate_draft($info['fileId']);
 }
 
@@ -569,7 +569,7 @@ if (!empty($_REQUEST['removegal'])) {
 		$smarty->display('error.tpl');
 		die;
 	}
-	$access->check_authenticity(tra('Remove file gallery: ') . $gal_info['name']);
+	$access->check_authenticity(tra('Remove file gallery: ') . ' ' . htmlspecialchars($gal_info['name']));
 	$filegallib->remove_file_gallery($_REQUEST['removegal'], $_REQUEST['removegal']);
 }
 
@@ -803,6 +803,15 @@ if (isset($_GET['slideshow'])) {
 // Browse view
 $smarty->assign('thumbnail_size', $prefs['fgal_thumb_max_size']);
 $smarty->assign('show_details', isset($_REQUEST['show_details']) ? $_REQUEST['show_details'] : 'n');
+// Set comments config
+if ($prefs['feature_file_galleries_comments'] == 'y') {
+	$comments_per_page = $prefs['file_galleries_comments_per_page'];
+	$thread_sort_mode = $prefs['file_galleries_comments_default_ordering'];
+	$comments_vars = array('galleryId', 'offset', 'sort_mode', 'find');
+	$comments_prefix_var = 'file gallery:';
+	$comments_object_var = 'galleryId';
+	include_once ('comments.php');
+}
 
 $options_sortorder = array( tra('Creation Date') => 'created'
 													, tra('Name') => 'name'

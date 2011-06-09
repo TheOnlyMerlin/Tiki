@@ -15,13 +15,11 @@ function prefs_default_list() {
 				'utf-8' => tra('utf-8'),
 				'iso-8859-1' => tra('iso-8859-1'),
 			),
-			'default' =>'utf-8',
 		),
 		'default_map' => array(
 			'name' => tra('default mapfile'),
 			'type' => 'text',
 			'size' => '50',
-			'default' => '',
 		),
 		'default_wiki_diff_style' => array(
 			'name' => tra('Default diff style'),
@@ -40,7 +38,6 @@ function prefs_default_list() {
 				'unidiff' => tra('Unified diff'),
 				'sideview' => tra('Side-by-side view'),
 			),
-			'default' => 'sidediff',
 		),
 		'default_rows_textarea_wiki' => array(
 			'name' => tra('Wiki'),
@@ -48,7 +45,6 @@ function prefs_default_list() {
 			'size' => '3',
 			'shorthint' => tra('rows'),
 			'filter' => 'digits',
-			'default' => '20',
 		),
 		'default_rows_textarea_comment' => array(
 			'name' => tra('Default number of rows for comment box'),
@@ -56,7 +52,6 @@ function prefs_default_list() {
 			'size' => '3',
 			'shorthint' => tra('rows'),
 			'filter' => 'digits',
-			'default' => '6',
 		),
 		'default_rows_textarea_forum' => array(
 			'name' => tra('Forum'),
@@ -64,7 +59,6 @@ function prefs_default_list() {
 			'size' => '3',
 			'shorthint' => tra('rows'),
 			'filter' => 'digits',
-			'default' => '20',
 		),
 		'default_rows_textarea_forumthread' => array(
 			'name' => tra('Forum reply'),
@@ -72,7 +66,6 @@ function prefs_default_list() {
 			'size' => '3',
 			'shorthint' => tra('rows'),
 			'filter' => 'digits',
-			'default' => '10',
 		),
 		'default_kaltura_editor' => array(
 			'name' => tra('Default Editor'),
@@ -81,7 +74,6 @@ function prefs_default_list() {
 				'kse' => tra('Simple'),
 				'kae' => tra('Advanced'),
 			),
-			'default' => 'kse',
 		),
 	);
 }

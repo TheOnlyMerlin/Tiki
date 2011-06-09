@@ -833,19 +833,7 @@ class CalendarLib extends TikiLib
 			$daysnames_abr[] = tra('Su');
 		}
 	}
-
-	/**
-	 * Get calendar and its events
-	 * 
-	 * @param $calIds
-	 * @param $viewstart
-	 * @param $viewend
-	 * @param $group_by
-	 * @param $item_name
-	 * @param bool $listmode if set to true populate listevents key of the returned array
-	 * @return array
-	 */
-	function getCalendar($calIds, &$viewstart, &$viewend, $group_by = '', $item_name = 'events', $listmode = false) {
+	function getCalendar($calIds, &$viewstart, &$viewend, $group_by = '', $item_name = 'events') {
 		global $user, $prefs, $smarty;
 
 		// Global vars used by tiki-calendar_setup.php (this has to be changed)
@@ -980,7 +968,7 @@ $request_year, $dayend, $myurl;
 			}
 		}
 
-		if ((isset($_SESSION['CalendarViewList']) && $_SESSION['CalendarViewList'] == 'list') || $listmode) {
+		if ( isset($_SESSION['CalendarViewList']) && $_SESSION['CalendarViewList'] == 'list' ) {
 			if ( is_array($listtikievents) ) {
 				foreach ( $listtikievents as $le ) {
 					if ( is_array($le) ) {

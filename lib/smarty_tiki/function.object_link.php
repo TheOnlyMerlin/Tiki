@@ -59,13 +59,6 @@ function smarty_function_object_link_default( $smarty, $object, $title = null, $
 		require_once 'lib/smarty_tiki/modifier.escape.php';
 	}
 
-	if (empty($title)) {
-		$info = TikiLib::lib('object')->get_info($type, $object);
-		if (!empty($info['title'])) {
-			$title = $info['title'];
-		}
-	}
-
 	$escapedPage = smarty_modifier_escape( $title ? $title : tra('No title specified') );
 
 	if ($url) {
@@ -89,25 +82,7 @@ function smarty_function_object_link_default( $smarty, $object, $title = null, $
 	if ( $type == "blog post" )
 		$class = ' class="link"';
 
-	$html = '<a href="' . $escapedHref . '"' . $class . $metadata . '>' . $escapedPage . '</a>';
-
-	$attributelib = TikiLib::lib('attribute');
-	$attributes = $attributelib->get_attributes($type, $object);
-	global $prefs;
-	if (isset($attributes['tiki.content.source']) && $prefs['fgal_source_show_refresh'] == 'y') {
-		require_once 'lib/smarty_tiki/function.icon.php';
-		$html .= '<a class="file-refresh" href="tiki-ajax_services.php?controller=file&amp;action=refresh&amp;fileId=' . intval($object) . '">' . smarty_function_icon(array(
-			'_id' => 'arrow_refresh',
-		), $smarty) . '</a>';
-
-		TikiLib::lib('header')->add_js('$(".file-refresh").removeClass("file-refresh").click(function () {
-			$.getJSON($(this).attr("href"));
-			$(this).remove();
-			return false;
-		});');
-	}
-
-	return $html;
+	return '<a href="' . $escapedHref . '"' . $class . $metadata . '>' . $escapedPage . '</a>';
 }
 
 function smarty_function_object_link_user( $smarty, $user, $title = null ) {

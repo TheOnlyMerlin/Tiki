@@ -121,7 +121,7 @@ class CategLib extends ObjectLib
 			$catpath = $this->get_category_path($res["categId"]);
 			$tepath = array();	
 			foreach ($catpath as $cat) {
-				$tepath[] = tra($cat['name']);
+				$tepath[] = $cat['name'];
 			}
 			$categpath = implode("::",$tepath);
 			$categpathforsort = implode("!!",$tepath); // needed to prevent cat::subcat to be sorted after cat2::subcat 
@@ -471,7 +471,7 @@ class CategLib extends ObjectLib
 		);
 	}
 
-	function list_category_objects($categId, $offset, $maxRecords, $sort_mode='pageName_asc', $type='', $find='', $deep=false, $and=false, $filter=null) {
+	function list_category_objects($categId, $offset, $maxRecords, $sort_mode='pageName_asc', $type='', $find='', $deep=false, $and=false) {
 		global $userlib, $prefs;
 		if ($prefs['feature_sefurl'] == 'y') {include_once('tiki-sefurl.php');}
 		if ($prefs['feature_trackers'] == 'y') {global $trklib;require_once('lib/trackers/trackerlib.php');}
@@ -528,16 +528,6 @@ class CategLib extends ObjectLib
 				$where .= ' AND `type` =? ';
 				$bindWhere[] = $type;
 			}
-		}
-		if (!empty($filter['language']) && !empty($type) && ($type == 'wiki' || $type == 'wiki page' || in_array('wiki', (array)$type) || in_array('wiki page', (array)$type))) {
-			$join .= 'LEFT JOIN `tiki_pages` tp ON (o.`itemId` = tp.`pageName`)';
-			if (!empty($filter['language_unspecified'])) {
-				$where .= ' AND (tp.`lang` IS NULL OR tp.`lang` = ? OR tp.`lang`=?)';
-				$bindWhere[] = '';
-			} else {
-				$where .= ' AND  tp.`lang`=?';
-			}
-			$bindWhere[] = $filter['language'];
 		}
 
 		$bindVars = $bindWhere;
@@ -1098,15 +1088,7 @@ class CategLib extends ObjectLib
 				}
 			}
 		}
-		global $prefs, $tikilib;
-		if ($prefs['feature_multilingual'] == 'y' && $prefs['language'] != 'en') {
-			foreach ($ret as $res) {
-				$res['name'] = tra($res['name']);
-				$rett[strtolower($tikilib->take_away_accent($res['name']))] = $res;
-			}
-			ksort($rett);
-			$ret = array_values($rett);
-		}
+
 		return $ret;
 	}
 
@@ -1292,7 +1274,7 @@ class CategLib extends ObjectLib
 		foreach ($catids as $id) {
 			$titles["$id"] = $this->get_category_name($id);
 			$objectcat = array();
-			$objectcat = $this->list_category_objects($id, $offset, $and? -1: $maxRecords, $sort, $types == '*'? '': $typesallowed, $find, $sub);
+			$objectcat = $this->list_category_objects($id, $offset, $maxRecords, $sort, $types == '*'? '': $typesallowed, $find, $sub, $and);
 
 			$acats = $andcat = array();
 			foreach ($objectcat["data"] as $obj) {

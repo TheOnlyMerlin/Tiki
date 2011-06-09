@@ -8,9 +8,8 @@
 class Search_Index_Lucene implements Search_Index_Interface
 {
 	private $lucene;
-	private $highlight = true;
 
-	function __construct($directory, $lang = 'en', $highlight = true)
+	function __construct($directory, $lang = 'en')
 	{
 		switch($lang) {
 		case 'en':
@@ -26,8 +25,6 @@ class Search_Index_Lucene implements Search_Index_Interface
 		$this->lucene->setMaxBufferedDocs(100);
 		$this->lucene->setMaxMergeDocs(200);
 		$this->lucene->setMergeFactor(50);
-
-		$this->highlight = (bool) $highlight;
 	}
 
 	function addDocument(array $data)
@@ -78,11 +75,7 @@ class Search_Index_Lucene implements Search_Index_Interface
 
 		$resultSet = new Search_ResultSet($result, count($hits), $resultStart, $resultCount);
 
-		if ($this->highlight) {
-			$resultSet->setHighlightHelper(new Search_Index_Lucene_HighlightHelper($query));
-		} else {
-			$resultSet->setHighlightHelper(new Search_ResultSet_SnippetHelper);
-		}
+		$resultSet->setHighlightHelper(new Search_Index_Lucene_HighlightHelper($query));
 
 		return $resultSet;
 	}
@@ -216,8 +209,8 @@ class Search_Index_Lucene implements Search_Index_Interface
 		case 'Search_Type_PlainText':
 		case 'Search_Type_MultivalueText':
 			$whole = $value->getValue();
-			$whole = str_replace(array('*', '?', '~', '+'), '', $whole);
-			$whole = str_replace(array('[', ']', '{', '}', '(', ')', ':', '-'), ' ', $whole);
+			$whole = str_replace(array('*', '?', '~', '+', '-'), '', $whole);
+			$whole = str_replace(array('[', ']', '{', '}', '(', ')', ':'), '', $whole);
 
 			$parts = explode(' ', $whole);
 			if (count($parts) === 1) {
@@ -246,9 +239,8 @@ class Search_Index_Lucene_HighlightHelper implements Zend_Filter_Interface
 
 	function filter($content)
 	{
-		$snippetHelper = new Search_ResultSet_SnippetHelper;
-		$content = $snippetHelper->filter($content);
-		return trim(strip_tags($this->query->highlightMatches($content), '<b>'));
+		$content = substr(strip_tags(str_replace(array('~np~', '~/np~'), '', $content)), 0, 240);
+		return trim($this->query->highlightMatches($content));
 	}
 }
 

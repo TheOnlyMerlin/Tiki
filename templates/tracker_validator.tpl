@@ -1,8 +1,6 @@
-{* $Id$ *}
 {jq}
 $("#editItemForm{{$trackerEditFormId}}").validate({
 	{{$validationjs}},
-	ignore: '.ignore',
 	submitHandler: function(){process_submit(this.currentForm);}
 });
 process_submit = function(me) {

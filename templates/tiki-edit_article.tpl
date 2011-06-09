@@ -1,11 +1,10 @@
-{* $Id$ *}
 {* Note: if you edit this file, make sure to make corresponding edits on tiki-edit_submission.tpl*}
 
 {include file='tiki-articles-js.tpl'}
 
 {title help="Articles"}
 	{if $articleId}
-		{tr}Edit:{/tr} {$title}
+		{tr}Edit:{/tr} {$title|escape}
 	{else}
 		{tr}Edit article{/tr}
 	{/if}

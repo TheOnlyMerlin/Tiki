@@ -50,6 +50,7 @@ $needed_prefs = array(
 	'tiki_cdn_ssl' => '',
 	'language' => 'en',
 	'lang_use_db' => 'n',
+	'feature_pear_date' => 'y',
 	'lastUpdatePrefs' => - 1,
 	'feature_fullscreen' => 'n',
 	'error_reporting_level' => 0,
@@ -457,7 +458,10 @@ if (isset($_SESSION["$user_cookie_site"])) {
 	// }
 	
 }
-$smarty->assign( 'CSRFTicket', isset( $_SESSION['ticket'] ) ? $_SESSION['ticket'] : null);
+
+if (is_object($smarty)) {
+	$smarty->assign( 'CSRFTicket', isset( $_SESSION['ticket'] ) ? $_SESSION['ticket'] : null);
+}
 require_once ('lib/setup/perms.php');
 // --------------------------------------------------------------
 // deal with register_globals
@@ -536,26 +540,6 @@ if ($tiki_p_trust_input != 'y') {
 	}
 	unset($tmp);
 }
-
-if ($prefs['tiki_check_file_content'] == 'y' && count($_FILES)) {
-	if ($finfo = new finfo(FILEINFO_MIME)) {
-
-		foreach ($_FILES as $key => & $upload_file_info) {
-			if (is_array($upload_file_info['tmp_name'])) {
-				foreach ($upload_file_info['tmp_name'] as $k => $tmp_name) {
-					if ($tmp_name) {
-						$upload_file_info['type'][$k] = $finfo->file($tmp_name);
-					}
-				}
-			} elseif ($upload_file_info['tmp_name']) {
-				$upload_file_info['type'] = $finfo->file($upload_file_info['tmp_name']);
-			}
-		}
-	}
-
-	unset($finfo);
-}
-
 // deal with old request globals (e.g. used by Smarty)
 $GLOBALS['HTTP_GET_VARS'] = & $_GET;
 $GLOBALS['HTTP_POST_VARS'] = & $_POST;
@@ -577,4 +561,6 @@ if (!isset($_SERVER['QUERY_STRING'])) $_SERVER['QUERY_STRING'] = '';
 if (!isset($_SERVER['REQUEST_URI']) || empty($_SERVER['REQUEST_URI'])) {
 	$_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'];
 }
-$smarty->assign("tikidomain", $tikidomain);
+if (is_object($smarty)) {
+	$smarty->assign("tikidomain", $tikidomain);
+}

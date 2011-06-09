@@ -659,6 +659,15 @@ if ((isset($_REQUEST["template_name"]) || isset($_REQUEST["templateId"])) && !is
 	$smarty->assign("templateId", $templateId);
 }
 
+if (isset($_REQUEST["categId"]) && $_REQUEST["categId"] > 0) {
+	$categs = explode('+',$_REQUEST["categId"]);
+	$smarty->assign('categIds',$categs);
+	$smarty->assign('categIdstr',$_REQUEST["categId"]);
+} else {
+	$smarty->assign('categIds',array());
+	$smarty->assign('categIdstr',0);
+}
+
 if (isset($_REQUEST["ratingId"]) && $_REQUEST["ratingId"] > 0) {
 	$smarty->assign("poll_template",$_REQUEST["ratingId"]);
 } else {
@@ -837,7 +846,9 @@ if ( !isset($_REQUEST['preview']) && !isset($_REQUEST['save']) ) {
 		$smarty->assign('allowhtml','y');
 	} elseif ($_SESSION['wysiwyg'] === 'y') {
 		if ($prefs['wysiwyg_htmltowiki'] === 'y') {
-			if ($edit_data == 'ajax error') {
+			if ($edit_data != 'ajax error') {
+				//$parsed = $editlib->parseToWysiwyg($edit_data);
+			} else {
 				unset($_REQUEST['save']);	// don't save an ajax error
 			}
 		} else {
@@ -1246,8 +1257,6 @@ if ($prefs['feature_categories'] === 'y') {
 	if (isset($_REQUEST["current_page_id"]) && $prefs['feature_wiki_categorize_structure'] === 'y' && $categlib->is_categorized('wiki page', $structure_info["pageName"])) {
 		$categIds = $categlib->get_object_categories('wiki page', $structure_info["pageName"]);
 		$smarty->assign('categIds',$categIds);
-	} else {
-		$smarty->assign('categIds',array());
 	}
 	if (isset($_SERVER['HTTP_REFERER']) && strstr($_SERVER['HTTP_REFERER'], 'tiki-index.php') && !$tikilib->page_exists($_REQUEST["page"])) { // default the categs the page you come from for a new page
 		if (preg_match('/page=([^\&]+)/', $_SERVER['HTTP_REFERER'], $ms))
@@ -1286,6 +1295,13 @@ if ($structlib->page_is_in_structure($_REQUEST["page"])) {
 // so no need to show comments & attachments, but need
 // to show 'wiki quick help'
 $smarty->assign('edit_page', 'y');
+$smarty->assign('categ_checked', 'n');
+// Set variables so the preview page will keep the newly inputted category information
+if (isset($_REQUEST['cat_categorize'])) {
+	if ($_REQUEST['cat_categorize'] === 'on') {
+		$smarty->assign('categ_checked', 'y');
+	}
+}
 if ($prefs['wiki_feature_copyrights'] === 'y' && $tiki_p_edit_copyrights === 'y') {
 	include_once ('lib/copyrights/copyrightslib.php');
 	$copyrightslib = new CopyrightsLib;

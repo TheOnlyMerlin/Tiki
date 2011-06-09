@@ -25,11 +25,10 @@ class Tracker_Field_Category extends Tracker_Field_Abstract
 		}
 
 		$categories = $this->getApplicableCategories();
-		$selected = array_intersect($selected, $this->getIds($categories));
 
 		$data = array(
-			'value' => implode(',', $selected),
-			'selected_categories' => $selected,
+			'value' => '',
+			'selected_categories' => array_intersect($selected, $this->getIds($categories)),
 			$parentId => $categories,	// TODO kil?
 			'list' => $categories,
 			'cat' => array(),
@@ -68,50 +67,6 @@ class Tracker_Field_Category extends Tracker_Field_Abstract
 			}
 		}
 		return $ret;
-	}
-
-	function handleSave($value, $oldValue)
-	{
-		return array(
-			'value' => $value,
-		);
-	}
-
-	function watchCompare($old, $new)
-	{
-		$old = array_filter(explode(',', $old));
-		$new = array_filter(explode(',', $new));
-
-		$output = $this->getConfiguration('name') . ":\n";
-
-		$new_categs = array_diff($new, $old);
-		$del_categs = array_diff($old, $new);
-		$remain_categs = array_diff($new, $new_categs);
-
-		if (count($new_categs) > 0) {
-			$output .= "  -[Added]-:\n";
-			$output .= $this->describeCategoryList($new_categs);
-		}
-		if (count($del_categs) > 0) {
-			$output .= "  -[Removed]-:\n";
-			$output .= $this->describeCategoryList($del_categs);
-		}
-		if (count($remain_categs) > 0) {
-			$output .= "  -[Remaining]-:\n";
-			$output .= $this->describeCategoryList($remain_categs);
-		}
-
-		return $output;
-	}
-	
-	private function describeCategoryList($categs) {
-	    $categlib = TikiLib::lib('categ');
-	    $res = '';
-	    foreach ($categs as $cid) {
-			$info = $categlib->get_category($cid);
-			$res .= '    ' . $info['name'] . "\n";
-	    }
-	    return $res;
 	}
 
 	private function getIds($categories)

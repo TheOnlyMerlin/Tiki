@@ -20,7 +20,6 @@ function prefs_forums_list() {
 				'name_desc' => tra('Name (desc)'),
 				'name_asc' => tra('Name (asc)'),
 			),
-			'default' => 'created_desc',
 		),
 	);
 }

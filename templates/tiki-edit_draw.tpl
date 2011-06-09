@@ -1,4 +1,3 @@
-{* $Id$ *}
 {title help="Draw"}{$title}{/title}
 
 <div style="text-align: center;">
@@ -7,12 +6,10 @@
 	</div>
 	
 	<div id="svg-editHeaderRight" style="position: absolute; right: 15px;top: 5px;">
-		{if $isFromPage eq 'true'}
-			<button id="tiki-draw_back" onclick="document.location = 'tiki-index.php?page={$page}'">{tr}Back{/tr}</button>
-		{else}
-			<button id="tiki-draw_back" onclick="document.location = 'tiki-list_file_gallery.php?galleryId={$galleryId}'">{tr}Back{/tr}</button>
-		{/if}
+		<button id="tiki-draw_back" onclick="document.location = 'tiki-list_file_gallery.php?galleryId={$galleryId}'">{tr}Back{/tr}</button>
 	</div>
 	
 	<iframe src="lib/svg-edit/svg-editor.html" id="svgedit"></iframe>
+	
+	
 </div>    

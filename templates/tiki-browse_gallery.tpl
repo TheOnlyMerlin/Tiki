@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {title}{tr}Browsing Gallery:{/tr} {$name}{/title}
 
 <div class="navbar">
@@ -184,12 +182,9 @@
   ||  $tiki_p_post_comments  == 'y'
   ||  $tiki_p_edit_comments  == 'y')}
   <div id="page-bar" class="clearfix">
-		<span class="button"><a id="comment-toggle" href="tiki-ajax_services.php?controller=comment&amp;action=list&amp;type=image+gallery&amp;objectId={$galleryId|escape:'url'}#comment-container">{tr}Comments{/tr}</a></span>
-		{jq}
-			$('#comment-toggle').comment_toggle();
-		{/jq}
+  	   {include file='comments_button.tpl'}
   </div>
-  <div id="comment-container"></div>
+  {include file='comments.tpl'}
 {/if}
 
 <table class="normal noslideshow">

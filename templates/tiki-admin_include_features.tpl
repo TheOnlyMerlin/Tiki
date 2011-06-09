@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Please see the <a class='rbox-link' target='tikihelp' href='http://doc.tiki.org/Features'>evaluation of each feature</a> on Tiki's developer site.{/tr}{/remarksbox}
 
 	<form class="admin" id="features" name="features" action="tiki-admin.php?page=features" method="post">
@@ -153,23 +151,6 @@
 				</fieldset>
 			</div>
 			
-			<fieldset>
-				<legend>{tr}Event Hooks{/tr}</legend>
-				{remarksbox type=note title="{tr}New Feature{/tr}"}
-					{tr}Please note that this is a relatively new feature that still needs to be deployed all around. Expect more events to be added over time.{/tr}
-				{/remarksbox}
-				<p>{tr}If you need to add behaviors to Tiki, there are several event hooks you can attach to. Here are the events and the inheritence.{/tr}</p>
-				{$headerlib->add_dracula()}
-				<div id="graph-canvas" class="graph-canvas" data-graph-nodes="{$event_graph.nodes|@json_encode|escape}" data-graph-edges="{$event_graph.edges|@json_encode|escape}"></div>
-				<a href="#" id="graph-draw" class="button">{tr}Draw Event Diagram{/tr}</a>
-				{jq}
-				$('#graph-draw').click( function( e ) {
-					$(this).hide();
-					$('#graph-canvas').drawGraph();
-					return false;
-				} );
-				{/jq}
-			</fieldset>
 {/tab}
 
 {* ---------- New features ------------ *}

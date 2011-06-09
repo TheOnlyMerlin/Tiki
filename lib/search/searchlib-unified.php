@@ -137,13 +137,8 @@ class UnifiedSearchLib
 
 	private function buildIndexer($index)
 	{
-		global $prefs;
 		$indexer = new Search_Indexer($index);
 		$this->addSources($indexer);
-		
-		if ($prefs['unified_tokenize_version_numbers'] == 'y') {
-			$indexer->addContentFilter(new Search_ContentFilter_VersionNumber);
-		}
 
 		return $indexer;
 	}
@@ -173,7 +168,6 @@ class UnifiedSearchLib
 
 		if (isset ($types['file'])) {
 			$aggregator->addContentSource('file', new Search_ContentSource_FileSource);
-			$aggregator->addGlobalSource(new Search_GlobalSource_FileAttachment);
 		}
 
 		if (isset ($types['trackeritem'])) {
@@ -225,7 +219,7 @@ class UnifiedSearchLib
 		global $prefs;
 
 		if ($prefs['unified_engine'] == 'lucene') {
-			$index = new Search_Index_Lucene($prefs['unified_lucene_location'], $prefs['language'], $prefs['unified_lucene_highlight'] == 'y');
+			$index = new Search_Index_Lucene($prefs['unified_lucene_location']);
 
 			return $index;
 		}
@@ -294,19 +288,6 @@ class UnifiedSearchLib
 			}
 
 			$query->filterLanguage($q);
-		}
-
-		unset($filter['type']);
-		unset($filter['categories']);
-		unset($filter['deep']);
-		unset($filter['tags']);
-		unset($filter['content']);
-		unset($filter['language']);
-
-		foreach ($filter as $key => $value) {
-			if ($value) {
-				$query->filterContent($value, $key);
-			}
 		}
 
 		return $query;

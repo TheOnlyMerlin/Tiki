@@ -175,13 +175,6 @@ function wikiplugin_category_info() {
 					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				),
-			),
-			'lang' => array(
-				'required' => false,
-				'name' => tra('Language'),
-				'description' => tra('List only objects in this language.').' '.tra('Only apply if type=wiki.'),
-				'filter' => 'lang',
-				'default' => '',
 			),		
 		),
 	);
@@ -212,13 +205,6 @@ function wikiplugin_category($data, $params) {
 		$sub = false;
 	} else {
 		$sub = true;
-	}
-	if (!empty($lang)) {
-		$filter['language'] = $lang;
-	} elseif (isset($params['lang'])) {
-		$filter['language'] = $prefs['language'];
-	} else {
-		$filter = null;
 	}
 	if (isset($and) and substr(strtolower($and),0,1) == 'y') {
 		$and = true;
@@ -252,5 +238,5 @@ function wikiplugin_category($data, $params) {
 	}
 	$smarty->assign('params', $params);
 
-	return "~np~". $categlib->get_categoryobjects($id,$types,$sort,$split,$sub,$and, $maxRecords, $filter)."~/np~";
+	return "~np~". $categlib->get_categoryobjects($id,$types,$sort,$split,$sub,$and, $maxRecords)."~/np~";
 }

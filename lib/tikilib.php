@@ -74,7 +74,11 @@ class TikiLib extends TikiDb_Bridge
 			global $filegallib; require_once 'lib/filegals/filegallib.php';
 			return $libraries[$name] = $filegallib;
 		case 'tikidate':
-			require_once('lib/tikidate.php');
+			if (version_compare(PHP_VERSION, '5.1.0', '>=') && function_exists("date_create"))  {
+				require_once('lib/tikidate-php5.php');
+			} else {
+				require_once('lib/tikidate-pear-date.php');
+			}
 			return $libraries[$name] = new TikiDate;
 		case 'css':
 			global $csslib; include_once("lib/csslib.php");
@@ -196,27 +200,7 @@ class TikiLib extends TikiDb_Bridge
 		case 'errorreport':
 			require_once 'lib/errorreportlib.php';
 			return $libraries[$name] = new ErrorReportLib;
-		case 'prefs':
-			global $prefslib; include_once('lib/prefslib.php');
-			return $libraries[$name] = $prefslib;
-		case 'stats':
-			global $statslib; require_once('lib/stats/statslib.php');
-			return $libraries[$name] = $statslib;
-		case 'access':
-			global $access; require_once 'lib/tikiaccesslib.php';
-			return $libraries[$name] = $access;
 		}
-	}
-
-	public static function events()
-	{
-		static $eventManager = null;
-
-		if (! $eventManager) {
-			$eventManager = new Event_Manager;
-		}
-
-		return $eventManager;
 	}
 
 	// DB param left for interface compatibility, although not considered
@@ -224,30 +208,6 @@ class TikiLib extends TikiDb_Bridge
 		$this->now = time();
 	}
 
-	function get_http_client()
-	{
-		global $prefs;
-		
-		$config = array(
-			'timeout' => 5,
-		);
-
-
-		if ($prefs['use_proxy'] == 'y') {
-			$config['adapter'] = 'Zend_Http_Client_Adapter_Proxy';
-			$config["proxy_host"] = $prefs['proxy_host'];
-			$config["proxy_port"] = $prefs['proxy_port'];
-
-			if ($prefs['proxy_user'] || $prefs['proxy_pass']) {
-				$config["proxy_user"] = $prefs['proxy_user'];
-				$config["proxy_pass"] = $prefs['proxy_pass'];
-			}
-		}
-
-		$client = new Zend_Http_Client(null, $config);
-
-		return $client;
-	}
 
 	function httprequest($url, $reqmethod = "GET") {
 		global $prefs;
@@ -258,21 +218,58 @@ class TikiLib extends TikiDb_Bridge
 			 ) {
 			$url = "http://" . $url;
 		}
+		// (cdx) params for HTTP_Request.
+		// The timeout may be defined by a DEFINE("HTTP_TIMEOUT",5) in some file...
+		$aSettingsRequest=array("method"=>$reqmethod,"timeout"=>5);
 
-		try {
-			$client = $this->get_http_client();
-			$client->setUri($url);
-
-			$response = $client->request($reqmethod);
-
-			if ($response->isError()) {
-				return false;
-			}
-
-			return $response->getBody();
-		} catch (Zend_Http_Exception $e) {
-			return false;
+		if (substr_count($url, "/") < 3) {
+			$url .= "/";
 		}
+
+		//handle url embedded user:pass
+		$spliturl=parse_url($url);
+		if(!empty($spliturl['user']) && !empty($spliturl['pass'])) {
+			$aSettingsRequest["pass"]=$spliturl['pass'];
+			$aSettingsRequest["user"]=$spliturl['user'];
+			$url=str_replace($spliturl['user'].":".$spliturl['pass']."@", null, $url);
+		}
+
+		if (!preg_match("/^[-_a-zA-Z0-9:\/\.\?&;=\+~%,]*$/",$url)) return false;
+
+		// Proxy settings
+		if ($prefs['use_proxy'] == 'y') {
+			$aSettingsRequest["proxy_host"]=$prefs['proxy_host'];
+			$aSettingsRequest["proxy_port"]=$prefs['proxy_port'];
+		}
+		include_once ('lib/pear/HTTP/Request.php');
+		$aSettingsRequest['allowRedirects'] = true;
+		$req = new HTTP_Request($url, $aSettingsRequest);
+		$data="";
+		// (cdx) return false when can't connect
+		// I prefer throw a PEAR_Error. You decide ;)
+		if (PEAR::isError($oError=$req->sendRequest())) {
+			return(false);
+			/* Please people, don't use fopen. It's potentially unsafe
+			 * because if any form does not check the url, you can upload
+			 * /etc/passwd and other file from the local host.
+			 * it's also more safe to use httprequest, because the admin can set
+			 * a proxy so that noone can upload files in tiki from behind a
+			 * firewall (safes the net where tiki runs in).
+			 $fp = fopen($url, "r");
+
+			 if ($fp) {
+			 $data = '';
+			 while(!feof($fp)) {
+			 $data .= fread($fp,4096);
+			 }
+			 fclose ($fp);
+			 }
+			 if ($data =="") return false;
+			 */
+		} else {
+			$data = $req->getResponseBody();
+		}
+		return $data;
 	}
 
 	/*shared*/
@@ -1361,6 +1358,52 @@ class TikiLib extends TikiDb_Bridge
 			return preg_replace('/^(.+?)(\s*--.+)?$/','<em>"$1"</em>$2',$cookie);
 		} else {
 			return "";
+		}
+	}
+
+	function get_pv_chart_data($days) {
+		$now = $this->make_time(0, 0, 0, $this->date_format("%m"), $this->date_format("%d"), $this->date_format("%Y"));
+		$dfrom = 0;
+		if ($days != 0) $dfrom = $now - ($days * 24 * 60 * 60);
+
+		$query = "select `day`, `pageviews` from `tiki_pageviews` where `day`<=? and `day`>=?";
+		$result = $this->fetchAll($query,array((int)$now,(int)$dfrom));
+		$ret = array();
+		$n = ceil(count($result) / 10);
+		$i = 0;
+		$xdata=array();
+		$ydata=array();
+		foreach ( $result as $res ) {
+			if ($i % $n == 0) {
+				$xdata[] = $this->date_format("%e %b", $res["day"]);
+			} else {
+				$xdata = '';
+			}
+			$ydata[] = $res["pageviews"];
+		}
+		$ret['xdata']=$xdata;
+		$ret['ydata']=$ydata;
+		return $ret;
+	}
+
+	function add_pageview() {
+		$dayzero = $this->make_time(0, 0, 0, $this->date_format("%m",$this->now), $this->date_format("%d",$this->now), $this->date_format("%Y",$this->now));
+		$conditions = array(
+			'day' => (int) $dayzero,
+		);
+
+		$pageviews = $this->table('tiki_pageviews');
+		$cant = $pageviews->fetchCount($conditions);
+
+		if ($cant) {
+			$pageviews->update(array(
+				'pageviews' => $pageviews->increment(1),
+			), $conditions);
+		} else {
+			$pageviews->insert(array(
+				'day' => (int) $dayzero,
+				'pageviews' => 1,
+			));
 		}
 	}
 
@@ -3201,10 +3244,12 @@ class TikiLib extends TikiDb_Bridge
 		$userlib = TikiLib::lib('user');
 
 		$perms = Perms::get( array( 'type' => $objectType, 'object' => $objectId ) );
-		$permNames = $userlib->get_permission_names_for($this->get_permGroup_from_objectType($objectType));
+		$permDescs = $userlib->get_permissions(0, -1, 'permName_desc', '', $this->get_permGroup_from_objectType($objectType));
 
 		$ret = array();
-		foreach( $permNames as $perm ) {
+		foreach( $permDescs['data'] as $perm ) {
+			$perm = $perm['permName'];
+
 			$ret[$perm] = $perms->$perm ? 'y' : 'n';
 
 			if( $global ) {
@@ -3301,12 +3346,14 @@ class TikiLib extends TikiDb_Bridge
 		switch ($objectType) {
 			case 'wiki page': case 'wiki':
 				if ( $prefs['wiki_creator_admin'] == 'y' && !empty($user) && isset($info) && $info['creator'] == $user ) { //can admin his page
-					$perms = $userlib->get_permission_names_for($this->get_permGroup_from_objectType($objectType));
-					foreach ($perms as $perm) {
+					$perms = $userlib->get_permissions(0, -1, 'permName_desc', '', $this->get_permGroup_from_objectType($objectType));
+					foreach ($perms['data'] as $perm) {
+						$perm = $perm['permName'];
 						$ret[$perm] = 'y';
 						if ($global) {
-							$GLOBALS[$perm] = 'y';
-							$smarty->assign($perm, 'y');
+							global $$perm;
+							$$perm = 'y';
+							$smarty->assign("$perm", 'y');
 						}
 					}
 					return $ret;
@@ -3315,12 +3362,13 @@ class TikiLib extends TikiDb_Bridge
 				if ($prefs['feature_wiki_userpage'] == 'y' && !empty($prefs['feature_wiki_userpage_prefix']) && !empty($user) && strcasecmp($prefs['feature_wiki_userpage_prefix'], substr($objectId, 0, strlen($prefs['feature_wiki_userpage_prefix']))) == 0) {
 					if (strcasecmp($objectId, $prefs['feature_wiki_userpage_prefix'].$user) == 0) { //can edit his page
 						if (!$global) {
-							$perms = $userlib->get_permission_names_for($this->get_permGroup_from_objectType($objectType));
-							foreach ($perms as $perm) {
-								if ($perm == 'tiki_p_view' || $perm == 'tiki_p_edit') {
-									$ret[$perm] = 'y';
+							$perms = $userlib->get_permissions(0, -1, 'permName_desc', '', $this->get_permGroup_from_objectType($objectType));
+							foreach ($perms['data'] as $perm) {
+								global $$perm['permName'];
+								if ($perm['permName'] == 'tiki_p_view' || $perm['permName'] == 'tiki_p_edit') {
+									$ret[$perm['permName']] = 'y';
 								} else {
-									$ret[$perm] = $GLOBALS[$perm];
+									$ret[$perm['permName']] = $$perm['permName'];
 								}
 							}
 						} else {
@@ -3451,14 +3499,6 @@ class TikiLib extends TikiDb_Bridge
 	function set_preference($name, $value) {
 		global $user_overrider_prefs, $user_preferences, $user, $prefs;
 
-		$prefslib = TikiLib::lib('prefs');
-
-		$definition = $prefslib->getPreference($name);
-
-		if ($definition && ! $definition['available']) {
-			return false;
-		}
-
 		$cachelib = TikiLib::lib('cache');
 		$cachelib->invalidate('tiki_preferences_cache');
 
@@ -3468,10 +3508,12 @@ class TikiLib extends TikiDb_Bridge
 		$this->set_lastUpdatePrefs();
 
 		$preferences = $this->table('tiki_preferences');
-		$preferences->insertOrUpdate(array(
-			'value' => is_array($value) ? serialize($value) : $value,
-		), array(
+		$preferences->delete(array(
 			'name' => $name,
+		));
+		$preferences->insert(array(
+			'name' => $name,
+			'value' => is_array($value) ? serialize($value) : $value,
 		));
 
 		if ( isset($prefs) ) {
@@ -3802,6 +3844,10 @@ class TikiLib extends TikiDb_Bridge
 
 		$this->replicate_page_to_history($name);
 
+		if( $prefs['quantify_changes'] == 'y' && $prefs['feature_multilingual'] == 'y' ) {
+			TikiLib::lib('quantify')->recordChangeSize( $page_id, 1, '', $data );
+		}
+
 		$this->clear_links($name);
 
 		// Pages are collected before adding slashes
@@ -3837,14 +3883,12 @@ class TikiLib extends TikiDb_Bridge
 			$this->score_event($user, 'wiki_new');
 		}
 
-		TikiLib::events()->trigger('tiki.wiki.create', array(
-			'type' => 'wiki page',
-			'object' => $name,
-			'page_id' => $page_id,
-			'version' => 1,
-			'data' => $data,
-			'old_data' => '',
-		));
+		require_once('lib/search/refresh-functions.php');
+		refresh_index('pages', $name);
+
+		$this->object_post_save( array( 'type'=> 'wiki page', 'object'=> $name, 'description'=> $description, 'name'=>$name, 'href'=>"tiki-index.php?page=$name" ), array(
+			'content' => $data,
+		) );
 
 		// Update HTML wanted links when wysiwyg is in use - this is not an elegant fix
 		// but will do for now until the "use wiki syntax in WYSIWYG" feature is ready 
@@ -6229,9 +6273,13 @@ if( \$('#$id') ) {
 								 	if ($in_paragraph && ((empty($tline) && $in_empty_paragraph === 0) || $contains_block)) {
 										// If still in paragraph, on meeting first blank line or end of div or start of div created by plugins; close a paragraph
 										$this->close_blocks($data, $in_paragraph, $listbeg, $divdepth, 1, 0, 0);
-									} elseif (!$in_paragraph && !$contains_block && !$contains_br && !empty($tline)) {
+									} elseif (!$in_paragraph && !$contains_block && !$contains_br) {
 										// If not in paragraph, first non-blank line; start a paragraph; if not start of div created by plugins
 										$data .= "<p>";
+										if (empty($tline)) {
+											$line = '&nbsp;';
+											$in_empty_paragraph = 1;
+										}
 										$in_paragraph = 1;
 									} elseif ($in_paragraph && $prefs['feature_wiki_paragraph_formatting_add_br'] == 'y' && !$contains_block) {
 										// A normal in-paragraph line if not close of div created by plugins
@@ -6754,6 +6802,10 @@ if( \$('#$id') ) {
 		$willDoHistory = ($prefs['feature_wiki_history_full'] == 'y' || $data != $edit_data || $description != $edit_description || $comment != $edit_comment );
 		$version = $old_version + ($willDoHistory?1:0);
 
+		if( $prefs['quantify_changes'] == 'y' && $prefs['feature_multilingual'] == 'y' ) {
+			TikiLib::lib('quantify')->recordChangeSize( $info['page_id'], $version, $info['data'], $edit_data );
+		}
+
 		if ($is_html === null) {
 			$html = $info['is_html'];
 		} else {
@@ -6907,14 +6959,12 @@ if( \$('#$id') ) {
 
 		}
 
-		TikiLib::events()->trigger('tiki.wiki.update', array(
-			'type' => 'wiki page',
-			'object' => $pageName,
-			'page_id' => $info['page_id'],
-			'version' => $version,
-			'data' => $edit_data,
-			'old_data' => $info['data'],
-		));
+		require_once('lib/search/refresh-functions.php');
+		refresh_index('pages', $pageName);
+
+		$this->object_post_save( array( 'type' => 'wiki page', 'object' => $pageName ), array(
+			'content' => $edit_data,
+		) );
 	}
 
 	function object_post_save( $context, $data ) {
@@ -6942,19 +6992,8 @@ if( \$('#$id') ) {
 	 * @param array $data
 	 * @return void
 	 */
-	function plugin_post_save_actions( $context, $data = null ) {
+	private function plugin_post_save_actions( $context, $data ) {
 		global $prefs;
-
-		if (is_null($data)) {
-			$content = array();
-			if (isset($context['values'])) {
-				$content = $context['values'];
-			}
-			if (isset($context['data'])) {
-				$content[] = $context['data'];
-			}
-			$data = implode(' ', $content);
-		}
 
 		$argumentParser = new WikiParser_PluginArgumentParser;
 

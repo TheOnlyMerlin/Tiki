@@ -54,7 +54,7 @@ if( $prefs['tiki_domain_prefix'] == 'strip' && substr( $host, 0, 4 ) == 'www.' )
 	$domain_map[$host] = 'www.' . $host;
 }
 
-if (strpos($prefs['tiki_domain_redirects'], ',') !== false) {
+if( !empty($prefs['tiki_domain_redirects']) ) {
 	foreach( explode("\n", $prefs['tiki_domain_redirects']) as $row ) {
 		list($old, $new) = array_map('trim', explode(',', $row, 2));
 		$domain_map[$old] = $new;
@@ -186,8 +186,6 @@ if( isset( $_GET['msg'] ) ) {
 } else {
 	$smarty->assign( 'display_msg', '' );
 }
-
-require_once 'lib/setup/events.php';
 
 if( $prefs['rating_advanced'] == 'y' && $prefs['rating_recalculation'] == 'randomload' ) {
 	global $ratinglib; require_once 'lib/rating/ratinglib.php';
@@ -321,10 +319,6 @@ if ($prefs['javascript_enabled'] != 'n') {
 			$headerlib->add_cssfile("css/metrics.css");
 			$headerlib->add_jsfile("lib/jquery/jquery.sparkline.min.js");
 			$headerlib->add_jsfile("lib/metrics.js");
-		}
-
-		if (empty($user) && $prefs['feature_antibot'] == 'y') {
-			$headerlib->add_jsfile('lib/captcha/captchalib.js');
 		}
 
 		// include and setup themegen editor if already open
