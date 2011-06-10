@@ -1,0 +1,59 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/litejazz_tiki_7/Readme.txt styles/litejazz/Readme.txt
+themes/litejazz_tiki_7/styles/litejazz.css styles/litejazz.css
+themes/litejazz_tiki_7/styles/litejazz/arrows-467aa7.png styles/litejazz/arrows-467aa7.png
+themes/litejazz_tiki_7/styles/litejazz/bg.png styles/litejazz/bg.png
+themes/litejazz_tiki_7/styles/litejazz/body-bg.png styles/litejazz/body-bg.png
+themes/litejazz_tiki_7/styles/litejazz/botbar_custcode.png styles/litejazz/botbar_custcode.png
+themes/litejazz_tiki_7/styles/litejazz/footer.jpg styles/litejazz/footer.jpg
+themes/litejazz_tiki_7/styles/litejazz/header.jpg styles/litejazz/header.jpg
+themes/litejazz_tiki_7/styles/litejazz/index.php styles/litejazz/index.php
+themes/litejazz_tiki_7/styles/litejazz/litejazz.png styles/litejazz/litejazz.png
+themes/litejazz_tiki_7/styles/litejazz/menu-bg.png styles/litejazz/menu-bg.png
+themes/litejazz_tiki_7/styles/litejazz/menu-div.png styles/litejazz/menu-div.png
+themes/litejazz_tiki_7/styles/litejazz/menubg-over.png styles/litejazz/menubg-over.png
+themes/litejazz_tiki_7/styles/litejazz/options/green.css styles/litejazz/options/green.css
+themes/litejazz_tiki_7/styles/litejazz/options/index.php styles/litejazz/options/index.php
+themes/litejazz_tiki_7/styles/litejazz/options/red.css styles/litejazz/options/red.css
+themes/litejazz_tiki_7/styles/litejazz/options/blue/topbar_custcode.png styles/litejazz/options/blue/topbar_custcode.png
+themes/litejazz_tiki_7/styles/litejazz/options/green/topbar_custcode.png styles/litejazz/options/green/topbar_custcode.png
+themes/litejazz_tiki_7/styles/litejazz/options/red/topbar_custcode.png styles/litejazz/options/red/topbar_custcode.png
+themes/litejazz_tiki_7/templates/styles/litejazz/credits.tpl templates/styles/litejazz/credits.tpl
+themes/litejazz_tiki_7/templates/styles/litejazz/index.php templates/styles/litejazz/index.php
+
+Description:
+Adaptation for Tiki Wiki CMS Groupware of the LiteJazz theme for Drupal by Roopletheme (http://roopletheme.com).
+Styling is provided for the topbar and bottombar custom code page sections, and there are three color variations, with the red and green versions available as theme options. Recommended module assignments (in this order) -> Top: logo (nobox=y), login_box (nobox=y, mode=popup), menu (nobox=y, type=horiz, id=secondary_site_menu, class=secondary_site_menu); Topbar: search (nobox=y), menu [main "tiki-top" horizontal menu] (nobox=y, id=tiki-top, type=horiz, css=y).
+ 
+Docurl:
+http://themes.tiki.org/LiteJazz
+http://zukakakina.com/LiteJazz
+ 
+Licence:
+This theme adapted for Tiki Wiki CMS Groupware is licensed GNU/GPL, consistent with the licensing of the original theme for Drupal by Roopletheme.
+ 
+Author:
+Adapted by Gary Cunningham-Lee (chibaguy).
+ 
+Version:
+7
+ 
+Changelog:
+7 Updated for Tiki 7 to support modules for Look and Feel content, etc.
+6
+5
+4 Switched to *lite.css layout - no more table for layout.
+3
+2 modified to import layout/layout.css
+1 initial package
