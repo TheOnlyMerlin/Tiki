@@ -1,0 +1,51 @@
+$Id$
+
+Contributor:
+$Author
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/underground_tiki_7/Readme.txt styles/underground/Readme.txt
+themes/underground_tiki_7/styles/underground.css styles/underground.css
+themes/underground_tiki_7/styles/underground/arrows-000.png styles/underground/arrows-000.png
+themes/underground_tiki_7/styles/underground/bg.gif styles/underground/bg.gif
+themes/underground_tiki_7/styles/underground/bullet.gif styles/underground/bullet.gif
+themes/underground_tiki_7/styles/underground/footerbg.gif styles/underground/footerbg.gif
+themes/underground_tiki_7/styles/underground/headerbottombg.png styles/underground/headerbottombg.png
+themes/underground_tiki_7/styles/underground/headertopbg.png styles/underground/headertopbg.png
+themes/underground_tiki_7/styles/underground/index.php styles/underground/index.php
+themes/underground_tiki_7/styles/underground/quote.gif styles/underground/quote.gif
+themes/underground_tiki_7/styles/underground/tableft.gif styles/underground/tableft.gif
+themes/underground_tiki_7/styles/underground/tabright.gif styles/underground/tabright.gif
+themes/underground_tiki_7/styles/underground/underground.png styles/underground/underground.png
+themes/underground_tiki_7/templates/styles/underground/credits.tpl templates/styles/underground/credits.tpl
+themes/underground_tiki_7/templates/styles/underground/index.php templates/styles/underground/index.php
+
+
+Description:
+Underground uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss). Due to the limited page-top space, not all Look & Feel options may be available. Although this theme can be used with all three columns, the present column margins were specified for a two-column layout (left and center) to emulate the look of the original design. If updating from a previous Tiki version, don't use the older Underground template files; they aren't compatible with the current Tiki version. For more information, please see the documentation pages for this theme. Please do not remove the link to Styleshout.com from the page footer. Recommended module assignments (in this order) -> Top: logo (nobox=y), login_box (nobox=y, mode=popup), menu (nobox=y, type=horiz, id=secondary_site_menu, class=secondary_site_menu)menu [[main "tiki-top" horizontal menu] (nobox=y, id=tiki-top, type=horiz, css=y); Topbar: logo (nobox=y), search (nobox=y). (The logo module is assigned twice, to provide the site subtitle in the Top module zone and the logo (if any) and site title in the Topbar module zone.)
+ 
+Docurl:
+http://themes.tikiwiki.org/Underground
+http://zukakakina.com/Underground
+ 
+Licence:
+This theme adapted for Tiki Wiki CMS Groupware is a derived work using visual elements of the Underground theme by Erwin Aligam (http://www.styleshout.com), which was released under the Creative Commons Attribution 2.5 license. Consequently, the visual aspects retain the Creative Commons Attribution 2.5 license, while the  structural aspects based on the default TikiWiki components are licensed GNU/LGPL. Please retain the link to styleshout.com in the page footer to be in compliance with the CCA 2.4 license.
+ 
+Author:
+Adapted by Gary Cunningham-Lee (chibaguy).
+ 
+Version:
+Tiki 7
+ 
+Changelog:
+5 update for Tiki 7 (support for use of modules for site header items and custom code, etc.)
+4 update for Tiki 6
+3 update for Tiki 5
+2 update for Tiki 3
+1 initial package

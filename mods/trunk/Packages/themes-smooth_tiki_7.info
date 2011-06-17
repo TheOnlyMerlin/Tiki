@@ -1,0 +1,53 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/smooth_tiki_7/Readme.txt styles/smooth/Readme.txt
+themes/smooth_tiki_7/styles/smooth.css styles/smooth.css
+themes/smooth_tiki_7/styles/smooth/arrows-6700c8.png styles/smooth/arrows-6700c8.png
+themes/smooth_tiki_7/styles/smooth/header.png styles/smooth/header.png
+themes/smooth_tiki_7/styles/smooth/img01.gif styles/smooth/img01.gif
+themes/smooth_tiki_7/styles/smooth/img02.gif styles/smooth/img02.gif
+themes/smooth_tiki_7/styles/smooth/img03.gif styles/smooth/img03.gif
+themes/smooth_tiki_7/styles/smooth/img04.gif styles/smooth/img04.gif
+themes/smooth_tiki_7/styles/smooth/img05.gif styles/smooth/img05.gif
+themes/smooth_tiki_7/styles/smooth/img06.gif styles/smooth/img06.gif
+themes/smooth_tiki_7/styles/smooth/img07.gif styles/smooth/img07.gif
+themes/smooth_tiki_7/styles/smooth/img08.jpg styles/smooth/img08.jpg
+themes/smooth_tiki_7/styles/smooth/index.php styles/smooth/index.php
+themes/smooth_tiki_7/styles/smooth/middle.png styles/smooth/middle.png
+themes/smooth_tiki_7/styles/smooth/smooth.png styles/smooth/smooth.png
+themes/smooth_tiki_7/templates/styles/smooth/credits.tpl templates/styles/smooth/credits.tpl
+themes/smooth_tiki_7/templates/styles/smooth/index.php templates/styles/smooth/index.php
+
+Description:
+Smooth has a clean pastel pink and green look and uses the *litecss source-ordered layout method ([http://sourceforge.net/projects/litecss]). If updating from a previous Tiki version, don't use the older Smooth template files; they aren't compatible with the current Tiki version. For more information, please see the documentation pages for this theme. Please do not remove the link to freecsstemplates.com from the page footer. Recommended module assignments (in this order) -> Top: logo (nobox=y), login_box (nobox=y, mode=popup), menu [[main "tiki-top" horizontal menu] (nobox=y, id=tiki-top, type=horiz, css=y), menu (nobox=y, type=horiz, id=secondary_site_menu, class=secondary_site_menu); Topbar: search (nobox=y).
+ 
+Docurl:
+http://themes.tiki.org/Smooth
+http://zukakakina.com/Smooth
+ 
+Licence:
+This theme adapted for Tiki Wiki CMS Groupware is a derived work using visual elements of the Smooth theme by Free CSS Templates (http://www.freecsstemplates.com), which was released under the Creative Commons Attribution 2.5 license. Consequently, the visual aspects retain the Creative Commons Attribution 2.5 license, while the structural aspects based on the default Tiki Wiki components are licensed GNU/LGPL.
+
+Author:
+Gary Cunningham-Lee (chibaguy)
+ 
+Version:
+Tiki 7
+ 
+Changelog:
+6 update for Tiki 7 (modules used for site header and custom code)
+5 update for Tiki 6
+4 separate CSS file for ie6; misc. fixes (todo: page header still basically broken in ie6)
+3 modified to import layout/layout.css
+2 updated for Tiki 3
+1 initial package
