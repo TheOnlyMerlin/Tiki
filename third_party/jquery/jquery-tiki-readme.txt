@@ -7,12 +7,12 @@ jonnybradley 24 June 2011
 
 Updates: (for Tiki 7.1+)
 	jquery.js 1.5.1 to 1.6.1
-
+	jquery.mobile 1.0a4.1 to 1.0b1 (version "-1.0b1" removed from filenames)
 
 jonnybradley 14 April 2011
 
 Update
-	jquery.mobile.js 1.0a3 to 1.0a4.1 (version "-1.0a4.1" removed from filenames again)
+	jquery.mobile.js 1.0a3 to 1.0a4.1 (version "-1.0a4.1" removed c again)
 
 jonnybradley 23 March 2011
 
