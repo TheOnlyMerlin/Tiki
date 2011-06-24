@@ -2,6 +2,13 @@
 JQuery/Tiki readme
 -------------------------
 
+
+jonnybradley 24 June 2011
+
+Updates: (for Tiki 7.1+)
+	jquery.js 1.5.1 to 1.6.1
+
+
 jonnybradley 14 April 2011
 
 Update
