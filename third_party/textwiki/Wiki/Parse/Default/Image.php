@@ -12,7 +12,7 @@
 *
 * @license LGPL
 *
-* @version $Id: Image.php,v 1.5 2005/09/12 11:34:44 toggg Exp $
+* @version $Id: Image.php 195859 2005-09-12 11:34:44Z toggg $
 *
 */
 

@@ -9,7 +9,7 @@
  * @package    Text_Wiki
  * @author     Paul M. Jones <pmjones@php.net>
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    CVS: $Id: Render.php,v 1.10 2006/03/11 07:12:13 justinpatrin Exp $
+ * @version    CVS: $Id: Render.php 209118 2006-03-11 07:12:13Z justinpatrin $
  * @link       http://pear.php.net/package/Text_Wiki
  */
 

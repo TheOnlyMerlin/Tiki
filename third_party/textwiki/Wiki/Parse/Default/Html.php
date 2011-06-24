@@ -12,7 +12,7 @@
 * 
 * @license LGPL
 * 
-* @version $Id: Html.php,v 1.3 2005/02/23 17:38:29 pmjones Exp $
+* @version $Id: Html.php 180591 2005-02-23 17:38:29Z pmjones $
 * 
 */
 

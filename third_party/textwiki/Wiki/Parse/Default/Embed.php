@@ -12,7 +12,7 @@
 * 
 * @license LGPL
 * 
-* @version $Id: Embed.php,v 1.3 2005/02/23 17:38:29 pmjones Exp $
+* @version $Id: Embed.php 180591 2005-02-23 17:38:29Z pmjones $
 * 
 */
 

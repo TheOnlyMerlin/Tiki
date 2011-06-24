@@ -9,7 +9,7 @@
  * @package    Text_Wiki
  * @author     Paul M. Jones <pmjones@php.net>
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    CVS: $Id: Wiki.php,v 1.51 2007/06/09 23:17:46 justinpatrin Exp $
+ * @version    CVS: $Id: Wiki.php 248433 2007-12-17 16:03:48Z justinpatrin $
  * @link       http://pear.php.net/package/Text_Wiki
  */
 
@@ -33,7 +33,7 @@ require_once 'Text/Wiki/Render.php';
  * @package    Text_Wiki
  * @author     Paul M. Jones <pmjones@php.net>
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    Release: 1.2.0
+ * @version    Release: 1.2.1
  * @link       http://pear.php.net/package/Text_Wiki
  */
 class Text_Wiki {
@@ -205,7 +205,7 @@ class Text_Wiki {
     *
     */
 
-    var $delim = "\xFF";
+    var $delim = "\31";
 
 
     /**
@@ -347,7 +347,7 @@ class Text_Wiki {
      *
      * @var string
      */
-    var $renderingType = 'preg';
+    var $renderingType = 'normal';
 
     /**
      * Stack of rendering callbacks
@@ -1049,7 +1049,6 @@ class Text_Wiki {
                             $this->output .= $this->_block;
                             $this->_block = '';
                         }
-
                         if (isset($opts['type'])) {
                             if ($opts['type'] == 'start') {
                                 array_push($tokenStack, $rule);
