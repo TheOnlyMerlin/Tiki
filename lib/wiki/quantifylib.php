@@ -1,14 +1,11 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 require_once 'lib/diff.php';
 
-class QuantifyLib extends TikiLib
-{
+class QuantifyLib extends TikiLib {
+
+	function QuantifyLib($db) {
+		$this->TikiLib($db);
+	}
 
 	function recordChangeSize( $pageId, $version, $oldData, $newData )
 	{
@@ -87,12 +84,8 @@ class QuantifyLib extends TikiLib
 
 		return floor( $value * 100 ); 
 	}
-
-	function wiki_update($arguments)
-	{
-		$tikilib = TikiLib::lib('tiki');
-		$this->recordChangeSize($arguments['page_id'], $arguments['version'], $arguments['old_data'], $arguments['data']);
-	}
 }
-$quantifylib = new QuantifyLib;
 
+$quantifylib = new QuantifyLib($dbTiki);
+
+?>

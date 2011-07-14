@@ -1,45 +1,54 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+
+/**
+ * $Id: /cvsroot/tikiwiki/tiki/lib/wiki-plugins/wikiplugin_showpages.php,v 1.7 2007-10-12 07:55:48 nyloth Exp $
+ *
+ * SHOWPAGES plugin
+ * Displays wiki pages that match a supplied pagename criteria.
+ *
+ * Usage:
+ * {SHOWPAGES(find=>namepattern [, max=>qty])/}
+ *
+ * Params:
+ * @param	namepattern	Search criteria for the page
+ * @param	qty		Max qty of results to return
+ *
+ * Notes:
+ * Make sure that the wiki page this is used on is not cached if you want more "live" results.
+ * under normal loads and sites, this should be cached.
+ *
+ * @package Tikiwiki
+ * @subpackage TikiPlugins
+ * @version $Revision: 1.7 $
+ */
+
+function wikiplugin_showpages_help() {
+	return tra("List wiki pages").":<br />~np~{SHOWPAGES(find=>criteria [, max=>qty] [, display=>name|desc])/}~/np~";
+}
 
 function wikiplugin_showpages_info() {
 	return array(
 		'name' => tra('Show Pages'),
 		'documentation' => 'PluginShowPages',
-		'description' => tra('Find pages by searching within page names'),
+		'description' => tra('List wiki pages'),
 		'prefs' => array( 'wikiplugin_showpages' ),
-		'icon' => 'pics/icons/page_find.png',
 		'params' => array(
 			'find' => array(
 				'required' => true,
 				'name' => tra('Find'),
 				'description' => tra('Search criteria'),
-				'default' => '',
 			),
 			'max' => array(
 				'required' => false,
 				'name' => tra('Result Count'),
 				'description' => tra('Maximum amount of results displayed.'),
-				'filter' => 'digits',
-				'default' => '',
 			),
 			'display' => array(
 				'required' => false,
 				'name' => tra('Display'),
-				'description' => tra('Display page name and/or description. Both displayed by default.'),
-				'filter' => 'striptags',
-				'default' => 'name|desc',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Name'), 'value' => 'name'), 
-					array('text' => tra('Description'), 'value' => 'desc'),
-					array('text' => tra('Name & Description'), 'value' => 'name|desc')
-				)
-			)
-		)
+				'description' => tra('name|desc'),
+			),
+		),
 	);
 }
 
@@ -78,3 +87,5 @@ function wikiplugin_showpages($data, $params) {
 
 	return $text;
 }
+
+?>

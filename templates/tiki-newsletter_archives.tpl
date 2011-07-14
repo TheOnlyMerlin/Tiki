@@ -1,9 +1,7 @@
 {title help="Newsletters"}{tr}Sent editions{/tr}{if $nl_info}: {$nl_info.name}{/if}{/title}
 
 <div class="navbar">
-	{if $tiki_p_list_newsletters eq "y"}
-		{button href="tiki-newsletters.php" _text="{tr}List Newsletters{/tr}"}
-	{/if}
+	{button href="tiki-newsletters.php" _text="{tr}List Newsletters{/tr}"}
 	{if $tiki_p_subscribe_newsletters eq "y"}
 		{button href="tiki-newsletters.php?nlId=$nlId&amp;info=1" _text="{tr}Subscribe{/tr}"}
 	{/if}
@@ -20,12 +18,12 @@
   <h2>{tr}Sent Edition{/tr}</h2>
 </div>
 <h3>{tr}Subject{/tr}</h3>
-<div class="simplebox wikitext">{$edition.subject|escape}</div>
+<div class="simplebox wikitext">{$edition.subject}</div>
 
 <h3>{tr}HTML version{/tr}</h3>
 <div class="simplebox wikitext">{$edition.dataparsed}</div>
 
-{if $allowTxt eq 'y'}
+{if $allowTxt eq 'y' }
 	<h3>{tr}Text version{/tr}</h3>
 	{if $edition.datatxt}<div class="simplebox wikitext" >{$info.datatxt|escape|nl2br}</div>{/if}
 	{if $txt}<div class="simplebox wikitext">{$txt|escape|nl2br}</div>{/if}
@@ -45,11 +43,11 @@
 {assign var=offset_bak value=0}
 {assign var=find value=$ed_find}
 {assign var=find_bak value=''}
-{include file='sent_newsletters.tpl'}
+{include file=sent_newsletters.tpl }
 
 {if $edition_errors}
   <h2>{tr}Errors:{/tr} {$edition_info.subject} / {$edition_info.sent|tiki_short_datetime}</h2>
-  <a href="tiki-newsletter_archives.php?deleteError={$edition_info.editionId}" title="{tr}Delete errors{/tr}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
+  <a href="tiki-newsletter_archives.php?deleteError={$edition_info.editionId}" title="{tr}Delete errors{/tr}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a>
   <table class="normal">
     <tr>
       <th>{tr}Email{/tr}</th>
@@ -58,10 +56,10 @@
     </tr>
     {cycle values="odd,even" print=false}
     {section name=ix loop=$edition_errors}
-      <tr class="{cycle}">
-        <td class="email">{$edition_errors[ix].email}</td>
-        <td class="username">{$edition_errors[ix].login}</td>
-        <td class="text">{if $edition_errors[ix].error eq 'y'}{tr}Error{/tr}{else}{tr}Not sent{/tr}{/if}</td>
+      <tr>
+        <td class="{cycle advance=false}">{$edition_errors[ix].email}</td>
+        <td class="{cycle advance=false}">{$edition_errors[ix].login}</td>
+        <td class="{cycle}">{if {$edition_errors[ix].error eq 'y'}{tr}Error{/tr}{else}{tr}Not sent{/tr}{/if}</td>
       </tr>
     {/section}
   </table>

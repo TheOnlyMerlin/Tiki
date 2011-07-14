@@ -1,31 +1,20 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
-class ImageAbstract
-{
+class ImageAbstract {
 	var $data = NULL;
 	var $format = 'jpeg';
 	var $height = NULL;
 	var $width = NULL;
 	var $classname = 'ImageAbstract';
+	var $thumb_max_size = 120;
 	var $filename = null;
 	var $thumb = null;
 	var $loaded = false;
-	var $header = null;
-	var $otherinfo = null;
-	var $iptc = null;
-	var $exif = null;
-	var $xmp = null;
-	var $xmp_array;
 
 	function __construct($image, $isfile = false) {
 		if ( ! empty($image) || $this->filename !== null ) {
-			if ( is_readable( $this->filename ) && function_exists('exif_thumbnail') && in_array(image_type_to_mime_type(exif_imagetype($this->filename)), array('image/jpeg', 'image/tiff'))) {
-				$this->thumb = @exif_thumbnail($this->filename, $this->width, $this->height);
+			if ( $this->filename !== null && function_exists('exif_thumbnail') ) {
+				$this->thumb = exif_thumbnail($this->filename, $this->width, $this->height);
 				if (trim($this->thumb) == "") $this->thumb = NULL;
 			}
 			$this->classname = get_class($this);
@@ -97,8 +86,7 @@ class ImageAbstract
 	}
 
 	function resizethumb() {
-		global $prefs;
-		$this->resizemax($prefs['fgal_thumb_max_size']);
+		$this->resizemax($this->thumb_max_size);
 	}
 
 	function scale($r) {
@@ -214,33 +202,5 @@ class ImageAbstract
 		}
 		return $this->width;
 	}
-
-	function set_img_info($image, $isfile = true, $xmp = false) {
-		$tempfile = '';
-		$cwd = '';
-		//getimagesize requires a filename so create a temporary one
-		//if the image is in the database
-		if (!$isfile) {
-			$cwd = getcwd(); 								//get current working directory
-			$tempfile = tempnam("$cwd/tmp", 'temp_image_');	//create tempfile and return the path/name
-			$temphandle = fopen($tempfile, 'w');			//open for writing
-			fwrite($temphandle, $image); 					//write image to tempfile
-			fclose($temphandle);
-			$image = $tempfile;
-		}
-		$this->header = getimagesize($image, $otherinfo);
-		$this->width = $this->header[0];
-		$this->height = $this->header[1];
-		$this->otherinfo = $otherinfo;
-		$this->exif = $this->header['mime'] == 'image/jpeg' ? exif_read_data($image, 0, true) : false;
-		if ($xmp) {
-			$content = file_get_contents($image);
-			//$otherinfo doesn't have xmp data in it so extract in a separate function
-			include_once ('lib/metadata.php');
-			$this->xmp = get_xmp($content, $this->header['mime']);
-		}
-		if (!empty($tempfile)) {
-			unlink($tempfile);
-		}
-	}
 }
+?>

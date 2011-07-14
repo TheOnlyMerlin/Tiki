@@ -27,17 +27,19 @@
 			<th>{$rankings[ix].y}</th>
 		</tr>
 		{section name=xi loop=$rankings[ix].data}
-			<tr class="{cycle}">
-				<td class="id">{$smarty.section.xi.index_next}</td>
-				<td class="text">
-					<a class="link" href="{$rankings[ix].data[xi].href}">{if $rankings[ix].data[xi].name eq ""}-{else}{$rankings[ix].data[xi].name|escape}{/if}</a>
+			<tr>
+				<td class="{cycle advance=false}">{$smarty.section.xi.index_next}</td>
+				<td class="{cycle advance=false}">
+					<a class="link" href="{$rankings[ix].data[xi].href}">{if $rankings[ix].data[xi].name eq ""}-{else}{$rankings[ix].data[xi].name}{/if}</a>
 				</td>
-				<td class="date">
+				<td class="{cycle advance=true}">
 					{if $rankings[ix].type eq 'nb'}{$rankings[ix].data[xi].hits}{else}{$rankings[ix].data[xi].hits|tiki_long_datetime}{/if}
 				</td>
 			</tr>
 		{sectionelse}
-			{norecords _colspan=3}
+			<tr>
+				<td colspan="3">{tr}No records{/tr}</td>
+			</tr>
 		{/section}
 	</table>
 {/section}

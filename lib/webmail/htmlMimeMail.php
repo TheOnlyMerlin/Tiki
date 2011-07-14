@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -16,8 +15,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 */
 
 //require_once(dirname(__FILE__) . '/mimePart.php');
-class htmlMimeMail
-{
+class htmlMimeMail {
 	/**
 	* The html part of the message
 	* @var string
@@ -193,7 +191,7 @@ class htmlMimeMail
 	/**
 	* Accessor to set the SMTP parameters
 	*/
-	function setSMTPParams($host = null, $port = null, $helo = null, $auth = null, $user = null, $pass = null, $security = '') {
+	function setSMTPParams($host = null, $port = null, $helo = null, $auth = null, $user = null, $pass = null) {
 		if (!is_null($host))
 			$this->smtp_params['host'] = $host;
 
@@ -210,9 +208,6 @@ class htmlMimeMail
 
 		if (!is_null($pass))
 			$this->smtp_params['pass'] = $pass;
-			
-		if (!is_null($security))
-			$this->smtp_params['security'] = $security;
 	}
 
 	/**
@@ -903,8 +898,7 @@ class htmlMimeMail
 * @version $Revision: 1.19 $
 * @package Mail
 */
-class Mail_mimePart
-{
+class Mail_mimePart {
 
 	/**
  * The encoding type of this part
@@ -1194,8 +1188,7 @@ class Mail_mimePart
 * @version $Revision: 1.19 $
 * @package Mail
 */
-class Mail_RFC822
-{
+class Mail_RFC822 {
 	/**
  * The address being parsed by the RFC822 object.
  * @var string $address
@@ -2090,8 +2083,7 @@ class Mail_RFC822
 define('SMTP_STATUS_NOT_CONNECTED', 1, TRUE);
 define('SMTP_STATUS_CONNECTED', 2, TRUE);
 
-class smtp
-{
+class smtp {
 	var $authenticated;
 
 	var $connection;
@@ -2172,10 +2164,6 @@ class smtp
 
 			if (is_resource($this->connection)) {
 				$m = $this->auth ? $this->ehlo() : $this->helo();
-				if ($this->security == 'tls') {
-					$this->starttls();
-					$m = $this->auth ? $this->ehlo() : $this->helo();
-				}
 				return $m;
 			} else {
 				$this->errors[] = 'Failed to connect to server: ' . $errstr;
@@ -2263,21 +2251,6 @@ class smtp
 			return TRUE;
 		} else {
 			$this->errors[] = 'EHLO command failed, output: ' . trim(substr(trim($error), 3));
-
-			return FALSE;
-		}
-	}
-
-	/**
-* Function to implement STARTTLS cmd
-*/
-	function starttls() {
-		if (is_resource($this->connection)AND $this->send_data('STARTTLS')AND strpos($this->get_data(), 'Ready to start TLS') !== false) {
-			stream_socket_enable_crypto( $this->connection, true, STREAM_CRYPTO_METHOD_TLS_CLIENT );
-			
-			return TRUE;
-		} else {
-			$this->errors[] = 'STARTTLS command failed, output: ' . trim(substr(trim($error), 3));
 
 			return FALSE;
 		}
@@ -2414,3 +2387,5 @@ class smtp
 		return TRUE;
 	}
 } // class smtp
+
+?>

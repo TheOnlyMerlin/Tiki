@@ -1,15 +1,15 @@
 {* $Id$ *}
 
-{if isset($modUserBlogs)}
+{if $user}
+    {if $prefs.feature_blogs eq 'y'}
+{if !isset($tpl_module_title)}{assign var=tpl_module_title value="{tr}My blogs{/tr}"}{/if}
 {tikimodule error=$module_params.error title=$tpl_module_title name="user_blogs" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
-{modules_list list=$modUserBlogs nonums=$nonums}
+	{if $nonums != 'y'}<ol>{else}<ul>{/if}
 	{section name=ix loop=$modUserBlogs}
-		<li>
-			<a class="linkmodule" href="tiki-view_blog.php?blogId={$modUserBlogs[ix].blogId}">
-				{$modUserBlogs[ix].title|escape}
-			</a>
-		</li>
+	    <li>
+		<a class="linkmodule" href="tiki-view_blog.php?blogId={$modUserBlogs[ix].blogId}">{$modUserBlogs[ix].title}</a></li>
 	{/section}
-{/modules_list}
-{/tikimodule}
+	{if $nonums != 'y'}</ol>{else}</ul>{/if}
+	{/tikimodule}
+    {/if}
 {/if}

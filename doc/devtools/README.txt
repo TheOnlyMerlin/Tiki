@@ -9,9 +9,6 @@ of developers whose task is to release new versions of tikiwiki.
 Main tools
 ==========
 
-* release.sh
-  create tarballs for release/testing
-
 * tikiwiki.spec
   made by dheltzel
   script to build a rpm package from tarball release.

@@ -1,260 +1,170 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-view_sheets.php,v 1.16 2007-10-12 07:55:33 nyloth Exp $
+
+// Based on tiki-galleries.php
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 $section = 'sheet';
-$tiki_sheet_div_style = '';
 require_once ('tiki-setup.php');
 require_once ('lib/sheet/grid.php');
-$auto_query_args = array(
-	'sheetId',
-	'readdate',
-	'parse',
-	'simple',
-	'height',
-	'file',
-	'fileId'
-);
-$access->check_feature('feature_sheet');
-$access->check_feature('feature_jquery_ui');
 
-$info = $sheetlib->get_sheet_info($_REQUEST['sheetId']);
+if ($prefs['feature_sheet'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_sheet");
 
-if (empty($info) && !isset( $_REQUEST['file']) && !isset($_REQUEST['fileId'])) {
-	$smarty->assign('Incorrect parameter');
-	$smarty->display('error.tpl');
-	die;
-}
-
-$objectperms = Perms::get( 'sheet', $_REQUEST['sheetId']);
-if ($user && $user == $info['author']) {
-	$objectperms->view_sheet = 1;
-	$objectperms->edit_sheet = 1;
-	$objectperms->tiki_p_view_sheet = 1;
-	$objectperms->tiki_p_edit_sheet = 1;
-}
-
-if (!$sheetlib->user_can_view( $_REQUEST['sheetId'] )) {
-	$smarty->assign('msg', tra('Permission denied'));
 	$smarty->display("error.tpl");
 	die;
 }
 
-$smarty->assign('objectperms', $objectperms);
+if ( !isset($_REQUEST['sheetId']) ) {
+	$smarty->assign('msg', tra("A SheetId is required."));
 
-if (isset($_REQUEST['height'])) {
-	 $tiki_sheet_div_style .= 'height:'.$_REQUEST['height'].';';
+	$smarty->display("error.tpl");
+	die;
 }
 
-if ( $tiki_sheet_div_style) {
-	$smarty->assign('tiki_sheet_div_style',  $tiki_sheet_div_style);
-}
+if ($tiki_p_admin != 'y' && $tiki_p_admin_sheet != 'y' && !$tikilib->user_has_perm_on_object($user, $_REQUEST['sheetId'], 'sheet', 'tiki_p_view_sheet')) {
+	$smarty->assign('msg', tra("Access Denied").": feature_sheet");
 
-//here we make sure parse is set so we don't have to keep checking using isset
-if (!isset($_REQUEST['parse'])) {
-	$_REQUEST['parse'] = 'y';
+	$smarty->display("error.tpl");
+	die;
 }
-
-$smarty->assign( 'parse', $_REQUEST['parse'] );
 
 $smarty->assign('sheetId', $_REQUEST["sheetId"]);
 $smarty->assign('chart_enabled', (function_exists('imagepng') || function_exists('pdf_new')) ? 'y' : 'n');
+
+// Individual permissions are checked because we may be trying to edit the gallery
+
+// Init smarty variables to blank values
+//$smarty->assign('theme','');
+
+$info = $sheetlib->get_sheet_info( $_REQUEST["sheetId"] );
+
+if ($tiki_p_admin == 'y' || $tiki_p_admin_sheet == 'y' || ($user && $user == $info['author']) || $tikilib->user_has_perm_on_object($user, $_REQUEST['sheetId'], 'sheet', 'tiki_p_edit_sheet', 'tiki_p_edit_categorized'))
+	$tiki_p_edit_sheet = 'y';
+else
+	$tiki_p_edit_sheet = 'n';
+$smarty->assign('tiki_p_edit_sheet', $tiki_p_edit_sheet);
+
+
 $smarty->assign('title', $info['title']);
 $smarty->assign('description', $info['description']);
 
-// Start permissions
-if ( $_REQUEST['parse'] == 'edit' && !$sheetlib->user_can_edit( $_REQUEST['sheetId'] ) ) {
-	$smarty->assign('msg', tra("Permission denied") . ": feature_sheet");
+$smarty->assign('page_mode', 'view' );
+
+// Process the insertion or modification of a gallery here
+
+$grid = &new TikiSheet;
+
+if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'edit' && $tiki_p_edit_sheet != 'y' && $tiki_p_admin != 'y' && $tiki_p_admin_sheet != 'y') {
+	$smarty->assign('msg', tra("Access Denied").": feature_sheet");
 	$smarty->display("error.tpl");
 	die;
 }
 
-//check to see if we are to do something other than view a file, which is not allowed
-if ( $_REQUEST['parse'] != 'y' && ( isset($_REQUEST['file']) || isset($_REQUEST['fileId']) ) ) {
-	$smarty->assign('msg', tra("Files are read only at this time"));
-	$smarty->display("error.tpl");
-	die;
-}
+if( $_SERVER['REQUEST_METHOD'] == 'POST' )
+{
+	if ($tiki_p_edit_sheet != 'y' && $tiki_p_admin != 'y' && $tiki_p_admin_sheet != 'y') {
+		$smarty->assign('msg', tra("Access Denied").": feature_sheet");
 
-if ($prefs['feature_contribution'] == 'y') {
-	$contributionItemId = $_REQUEST['sheetId'];
-	include_once ('contribution.php');
-}
-//End permissions
-
-//Save
-if (isset($_REQUEST['s']) && !empty($_REQUEST['s']) ) { //save
-	if ( $_REQUEST['sheetId'] ) {
-		$result = $sheetlib->save_sheet( $_REQUEST['s'], $_REQUEST["sheetId"] );
-		
-	}
-	die($result);
-//Clone
-} elseif ( $_REQUEST['parse'] == "clone" ) {
-	if ( !$sheetlib->user_can_edit( $_REQUEST['sheetId'] ) ) {
-		$smarty->assign('msg', tra("Permission denied"));
+		$smarty->display("error.tpl");
 		die;
 	}
-	$access->check_authenticity(tra("Are you sure you want to clone this spreadsheet?"));
-	$id = $sheetlib->clone_sheet( $_REQUEST["sheetId"], $_REQUEST['readdate'] );
-	if ($id) {
-		header("Location: tiki-view_sheets.php?sheetId=".$id);
-	} else {
-		$smarty->assign('msg', tra("Clone Error"));
-	}
 
-//Rollback
-} elseif ($_REQUEST['parse'] == 'rollback' && !empty($_REQUEST['readdate'])) {
-	if ( !$sheetlib->user_can_edit( $_REQUEST['sheetId'] ) ) {
-		$smarty->assign('msg', tra("Permission denied"));
-		die;
-	}
-	$access->check_authenticity(tra("Are you sure you want to rollback this spreadsheet?"));
-	$id = $sheetlib->rollback_sheet( $_REQUEST["sheetId"], $_REQUEST['readdate'] );
-	if ($id) {
-		header("Location: tiki-view_sheets.php?sheetId=".$id);
-	} else {
-		$smarty->assign('msg', tra("Rollback Error"));
-	}
-}
+	// Load data from the form
+	$handler = &new TikiSheetFormHandler;
+	if( !$grid->import( $handler ) )
+		$grid = &new TikiSheet;
 
-//Edit & View
-if ( isset($_REQUEST['file']) ) {
-	//File sheets
-	$handler = new TikiSheetCSVHandler( $_REQUEST['file'] );
-	$grid = new TikiSheet();
+	// Save the changes
+	$handler = &new TikiSheetDatabaseHandler( $_REQUEST["sheetId"] );
+	$grid->export( $handler );
+
+	// Load the layout settings from the database
+	$grid = &new TikiSheet;
 	$grid->import( $handler );
-	$tableHtml[0] = $grid->getTableHtml( true , null, false );
-	$smarty->assign('notEditable', 'true');
+
+	$handler = &new TikiSheetOutputHandler;
+
+	ob_start();
+	$grid->export( $handler );
+	$smarty->assign( 'grid_content', ob_get_contents() );
+	ob_end_clean();
+}
+else
+{
+	$handler = &new TikiSheetDatabaseHandler( $_REQUEST["sheetId"] );
+
+	$date = time();
+	if( !empty( $_REQUEST[ 'readdate' ] ) )
+	{
+		$date = $_REQUEST[ 'readdate' ];
+
+		if( !is_numeric( $date ) )
+			$date = strtotime( $date );
+
+		if( $date == -1 )
+			$date = time();
+	}
+
+	$smarty->assign( 'read_date', $date );
+	$handler->setReadDate( $date );
 	
-	if ($handler->truncated) $smarty->assign('msg', tra('Spreadsheet truncated'));
-} elseif ( isset($_REQUEST['fileId']) ) {
-	include_once('lib/filegals/filegallib.php');
-	$access->check_feature('feature_file_galleries');
-	$handler = new TikiSheetFileGalleryCSVHandler($_REQUEST['fileId']);
-	
-	$grid = new TikiSheet();
 	$grid->import( $handler );
-	$tableHtml[0] = $grid->getTableHtml( true , null, false );
-	$smarty->assign('notEditable', 'true');
-	
-	if ($handler->truncated) $smarty->assign('msg', tra('Spreadsheet truncated'));
-} elseif ( isset($_REQUEST['relate']) && isset($_REQUEST['trackerId']) ) {
-	if ( $_REQUEST['relate'] == 'add' ) {
-		$sheetlib->add_related_tracker( $_REQUEST["sheetId"], $_REQUEST['trackerId'] );
-		$smarty->assign('msg', tra("Tracker Added To Spreadsheet"));
-	} elseif( $_REQUEST['relate'] == 'remove' ) {
-		$sheetlib->remove_related_tracker( $_REQUEST["sheetId"], $_REQUEST['trackerId'] );
-		$smarty->assign('msg', tra("Tracker Removed From Spreadsheet"));
+
+	if( isset( $_REQUEST['mode'] ) && $_REQUEST['mode'] == 'edit' )
+	{
+		$handler = &new TikiSheetFormHandler;
+
+		ob_start();
+		$grid->export( $handler );
+		$smarty->assign( 'init_grid', ob_get_contents() );
+		ob_end_clean();
+
+		$smarty->assign('page_mode', 'edit' );
+		if ($prefs['feature_contribution'] == 'y') {
+			$contributionItemId = $_REQUEST['sheetId'];
+			include_once('contribution.php');
+		}
 	}
-} else {
-	//Database sheet
-	$handler = new TikiSheetDatabaseHandler( $_REQUEST["sheetId"] );
-	//We make sheet able to look at other date save
-	if (isset($_REQUEST['readdate']) && !empty($_REQUEST['readdate'])) {
-		$smarty->assign('read_date', $_REQUEST['readdate']);
-		$handler->setReadDate($_REQUEST['readdate']);
-	}
-	
-	$grid = new TikiSheet( $_REQUEST["sheetId"] );
-	$grid->import( $handler );
-		
-	//ensure that sheet isn't being edited, then parse values if needed
-	if ( $grid->parseValues && $_REQUEST['parse'] != 'edit' ) {
-		$grid->parseValues = true;
-	} else {
-		$grid->parseValues = false;
-	}
-	
-	$smarty->assign('parseValues', $grid->parseValues);
-			
-	$tableHtml[0] = $grid->getTableHtml( true, $_REQUEST['readdate'] );
-	
-	$relatedTrackersAsHtml = $sheetlib->get_related_trackers_as_html( $_REQUEST["sheetId"] );
-	if (strlen($relatedTrackersAsHtml) > 0) {
-		$tableHtml[0] = $tableHtml[0] . $relatedTrackersAsHtml;
+	else
+	{
+		$handler = &new TikiSheetOutputHandler;
+
+		ob_start();
+		$grid->export( $handler );
+		$smarty->assign( 'grid_content', ob_get_contents() );
+		ob_end_clean();
 	}
 }
-	
-if (isset($_REQUEST['sheetonly']) && $_REQUEST['sheetonly'] == 'y') {
-	foreach( $tableHtml as $table ) {
-		echo $table;
-	}
-	die;
-}
-
-$smarty->assign('grid_content', $tableHtml);
-
-if (empty($tableHtml) == false) {
-	$smarty->assign('menu', $smarty->fetch('tiki-view_sheets_menu.tpl'));
-}
-
-$sheetlib->setup_jquery_sheet();
-$headerlib->add_jq_onready('
-	$.sheet.tikiOptions = $.extend($.sheet.tikiOptions, {
-		editable: ("'. $_REQUEST['parse'] .'" == "edit" ? true : false),
-		menu: $("#sheetMenu").html()
-	});
-	
-	$.sheet.tikiSheet = $("div.tiki_sheet").sheet($.sheet.tikiOptions);
-	
-	$.sheet.tikiSheet.id = "'.$_REQUEST['sheetId'].'";
-	$.sheet.tikiSheet.file = "'.$_REQUEST['file'].'";
-	
-	$.sheet.link.setupUI($.sheet.tikiSheet);
-	$.sheet.manageState($.sheet.tikiSheet);
-	
-	$("#edit_button a")
-		.click(function() {
-			$.sheet.manageState($.sheet.tikiSheet, true, "edit");
-			return false;
-		});
-						
-	$("#save_button a")
-		.click( function () {
-			$("#saveState").hide();
-			
-			$.sheet.saveSheet($.sheet.tikiSheet, function() {
-				$.sheet.manageState($.sheet.tikiSheet, true, "");
-			});
-			
-			return false;
-		});
-	
-	$("#cancel_button")
-		.click(function() {
-			$("#saveState").hide();
-		});
-');
-
-$smarty->assign('semUser', '');
 if ($prefs['feature_warn_on_edit'] == 'y') {
 	if ($tikilib->semaphore_is_set($_REQUEST['sheetId'], $prefs['warn_on_edit_time'] * 60, 'sheet') && ($semUser = $tikilib->get_semaphore_user($_REQUEST['sheetId'], 'sheet')) != $user) {
 		$editconflict = 'y';
+		$smarty->assign('editconflict', 'y');
 		$smarty->assign('semUser', $semUser);
 	} else {
 		$editconflict = 'n';
 	}
-	if ($_REQUEST['parse'] == 'edit') {
-		$_SESSION['edit_lock_sheet' . $_REQUEST['sheetId']] = $tikilib->semaphore_set($_REQUEST['sheetId'], 'sheet');
-	} elseif (isset($_SESSION['edit_lock_sheet' . $_REQUEST['sheetId']])) {
-		$tikilib->semaphore_unset($_REQUEST['sheetId'], $_SESSION['edit_lock_sheet' . $_REQUEST['sheetId']]);
-		unset($_SESSION['edit_lock_sheet' . $_REQUEST['sheetId']]);
+	if (isset( $_REQUEST['mode'] ) && $_REQUEST['mode'] == 'edit') {
+		$_SESSION['edit_lock_sheet'.$_REQUEST['sheetId']] = $tikilib->semaphore_set($_REQUEST['sheetId'], 'sheet');
+	} elseif (isset($_SESSION['edit_lock_sheet'.$_REQUEST['sheetId']])) {
+		$tikilib->semaphore_unset($_REQUEST['sheetId'], $_SESSION['edit_lock_sheet'.$_REQUEST['sheetId']]);
+		unset($_SESSION['edit_lock_sheet'.$_REQUEST['sheetId']]);
 	}
-} else {
-		$editconflict = 'n';
 }
-$smarty->assign('editconflict', $editconflict);
 
 $cat_type = 'sheet';
 $cat_objid = $_REQUEST["sheetId"];
 include_once ("categorize_list.php");
+
 include_once ('tiki-section_options.php');
 ask_ticket('sheet');
 
 // Display the template
-$smarty->assign('mid', 'tiki-view_sheets.tpl');
+$smarty->assign('mid', 'tiki-view-sheets.tpl');
 $smarty->display("tiki.tpl");
+
+?>

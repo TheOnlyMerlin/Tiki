@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,8 +6,11 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class BanLib extends TikiLib
-{
+class BanLib extends TikiLib {
+	function BanLib($db) {
+		$this->TikiLib($db);
+	}
+
 	function get_rule($banId) {
 		$query = "select * from `tiki_banning` where `banId`=?";
 
@@ -60,7 +58,7 @@ class BanLib extends TikiLib
 			}
 		}
 
-		$query = "select * from `tiki_banning` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_banning` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_banning` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -83,7 +81,7 @@ class BanLib extends TikiLib
 		$retval = array();
 		$retval["data"] = $ret;
 		$retval["cant"] = $cant;
-		$query = "select `banId` from `tiki_banning` where `use_dates`=? and `date_to` < FROM_UNIXTIME(?)";
+		$query = "select `banId` from `tiki_banning` where `use_dates`=? and `date_to` < ?";
 		$result = $this->query($query,array('y',$this->now));
 
 		while ($res = $result->fetchRow()) {
@@ -119,8 +117,8 @@ class BanLib extends TikiLib
   			`ip3`=?,
   			`ip4`=?,
   			`user`=?,
-  			`date_from` = FROM_UNIXTIME(?),
-  			`date_to` = FROM_UNIXTIME(?),
+  			`date_from` = ?,
+  			`date_to` = ?,
   			`use_dates` = ?,
   			`message` = ?
   			where `banId`=?
@@ -129,7 +127,7 @@ class BanLib extends TikiLib
 			$this->query($query,array($title,$ip1,$ip2,$ip3,$ip4,$user,$date_from,$date_to,$use_dates,$message,$banId));
 		} else {
 			$query = "insert into `tiki_banning`(`mode`,`title`,`ip1`,`ip2`,`ip3`,`ip4`,`user`,`date_from`,`date_to`,`use_dates`,`message`,`created`)
-		values(?,?,?,?,?,?,?,FROM_UNIXTIME(?),FROM_UNIXTIME(?),?,?,?)";
+		values(?,?,?,?,?,?,?,?,?,?,?,?)";
 			$this->query($query,array($mode,$title,$ip1,$ip2,$ip3,$ip4,$user,$date_from,$date_to,$use_dates,$message,$this->now));
 			$banId = $this->getOne("select max(`banId`) from `tiki_banning` where `created`=?",array($this->now));
 		}
@@ -144,4 +142,7 @@ class BanLib extends TikiLib
 		}
 	}
 }
-$banlib = new BanLib;
+global $dbTiki;
+$banlib = new BanLib($dbTiki);
+
+?>

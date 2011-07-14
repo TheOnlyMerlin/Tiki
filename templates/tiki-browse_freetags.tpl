@@ -1,10 +1,10 @@
 {* $Id$ *}
 
-{title admpage=freetags}{tr}Browse related tags{/tr}{/title}
+{title}{tr}Browse related tags{/tr}{/title}
 
 {if $prefs.feature_morcego eq 'y' and $prefs.freetags_feature_3d eq 'y'}
 	<div class="morcego_embedded">
-		<h2>{tr}Network of Tags related to:{/tr} <span id="currentTag1">{$tag}</span></h2>
+		<h2>{tr}Network of Tags related to{/tr}: <span id="currentTag1">{$tag}</span></h2>
 		<applet codebase="./lib/wiki3d" archive="morcego-0.6.0.jar" code="br.arca.morcego.Morcego" width="{$prefs.freetags_3d_width}" height="{$prefs.freetags_3d_height}">
 			<param name="serverUrl" value="{$base_url}tiki-freetag3d_xmlrpc.php">
 			<param name="startNode" value="{$tag}">
@@ -28,7 +28,7 @@
 			<param name="eletrostaticConstant" value="{$prefs.freetags_3d_eletrostatic_constant|default:"1000f"}">
 			<param name="springSize" value="{$prefs.freetags_3d_spring_size|default:"100"}">
 			<param name="nodeMass" value="{$prefs.freetags_3d_node_mass|default:"5"}">
-			<param name="nodeCharge" value="{$prefs.freetags_3d_node_charge|default:"1"}">
+			<param name="nodeCharge" value="{$freetags_3d_node_charde|default:"1"}">
 		</applet>
 	</div>
 {/if}
@@ -37,7 +37,7 @@
 	<div class="freetagskeywords">
 		<b>{tr}Tags{/tr}</b> 
 		<input type="text" id="tagBox" name="tag" size="25" value="{$tagString|escape}" />
-		{button _onclick="clearTags(); return false;" _text="{tr}Clear{/tr}"}
+		{button _onclick="clearTags();" _text="{tr}Clear{/tr}"}
 		<input type="submit" value="{tr}Go{/tr}" />
 		<br />
 		<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
@@ -50,7 +50,9 @@
 	</div>
 
 	{if $prefs.freetags_browse_show_cloud eq 'y'}
-		{jq notonready=true}
+		<script type="text/javascript">
+			<!--//--><![CDATA[//><!--
+			{literal}
 				function addTag(tag) {
 					if (tag.search(/ /) >= 0) tag = '"'+tag+'"';
 					document.getElementById('tagBox').value = document.getElementById('tagBox').value + ' ' + tag;	
@@ -58,12 +60,14 @@
 				function clearTags() {
 					document.getElementById('tagBox').value = '';
 				}
-		{/jq}
+			{/literal}
+			//--><!]]>
+		</script>
 
 		<div class="freetaglist"> 
 			{foreach from=$most_popular_tags item=popular_tag}
 				{capture name=tagurl}{if (strstr($popular_tag.tag, ' '))}"{$popular_tag.tag}"{else}{$popular_tag.tag}{/if}{/capture}
-				<a class="freetag_{$popular_tag.size}{if $tag eq $popular_tag.tag|escape} selectedtag{/if}" href="tiki-browse_freetags.php?tag={$smarty.capture.tagurl|escape:'url'}" onclick="javascript:addTag('{$popular_tag.tag|escape:'javascript'}');return false;" ondblclick="location.href=this.href;"{if $popular_tag.color} style="color:{$popular_tag.color}"{/if}>{$popular_tag.tag|escape}</a> 
+				<a class="freetag_{$popular_tag.size}" href="tiki-browse_freetags.php?tag={$smarty.capture.tagurl|escape:'url'}" onclick="javascript:addTag('{$popular_tag.tag|escape:'javascript'}');return false;" ondblclick="location.href=this.href;"{if $popular_tag.color} style="color:{$popular_tag.color}"{/if}>{$popular_tag.tag}</a> 
 			{/foreach}
 		</div>
 
@@ -72,7 +76,7 @@
 				{if empty($maxPopular)}
 					{assign var=maxPopular value=50+$prefs.freetags_browse_amount_tags_in_cloud}
 				{/if}
-				<a class='more' href="{$smarty.server.PHP_SELF}?{query maxPopular=$maxPopular tagString=$tagString}">{tr}More Popular Tags{/tr}</a>
+				<a href="{$smarty.server.PHP_SELF}?{query maxPopular=$maxPopular tagString=$tagString}">{tr}More Popular Tags{/tr}</a>
 			</div>
 
 			<div class="mini">
@@ -87,7 +91,7 @@
 
 	{assign var=cpt value=0} 
 	{capture name="browse"}
-		{tr}Browse in:{/tr}
+		{tr}Browse in{/tr}:
 
 		{if $type eq $objectType}
 			{assign var=thisclass value='highlight'}
@@ -120,8 +124,7 @@
 					{/if}
 				
 					{assign var=thistype value=$objectType|escape:'url'}
-					{capture name="fl"}{tr}{$feature_label}{/tr}{/capture}
-					{button _text=$smarty.capture.fl _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
+					{button _text="{tr}$feature_label{/tr}" _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
 					{assign var=cpt value=$cpt+1}
 				{/if}
 
@@ -146,8 +149,7 @@
 					{/if}
 
 					{assign var=thistype value=$objectType|escape:'url'}
-					{capture name="fl"}{tr}{$feature_label}{/tr}{/capture}
-					{button _text=$smarty.capture.fl _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
+					{button _text="{tr}$feature_label{/tr}" _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
 					{assign var=cpt value=$cpt+1}
 				{/if}
 			{/foreach}
@@ -158,34 +160,25 @@
 	{/capture}
 </form>
 
-{if $cpt > 1}
-	<div class="freetagsbrowse">{$smarty.capture.browse}</div>{/if}
+{if $cpt > 1}{$smarty.capture.browse}{/if}
 
 <div class="freetagresult">
-	{if $tagString}
-		{if $cantobjects == 0}
-			<h2>{tr}No result found{/tr}</h2>
-		{elseif $cantobjects == 1}
-			<h2>{$cantobjects} {tr}result found{/tr}</h2>
-		{elseif $cantobjects > 0}
-			<h2>{$cantobjects} {tr}results found{/tr}</h2>
-		{/if}
-	{/if}
+	{if $tagString}<h2>{$cantobjects} {tr}results found{/tr}</h2>{/if}
 	{if $cantobjects > 0}
 		{cycle values="odd,even" print=false}
 		{section name=ix loop=$objects}
 			<div class="{cycle} freetagitemlist" >
 				<h3>
-					<a href="{$objects[ix].href}">{$objects[ix].name|strip_tags|escape}</a>
+					<a href="{$objects[ix].href}">{$objects[ix].name}</a>
 					{if $tiki_p_unassign_freetags eq 'y' or $tiki_p_admin eq 'y'}
-						<a href="tiki-browse_freetags.php?del=1&amp;tag={$tag}{if $type}&amp;type={$type|escape:'url'}{/if}&amp;typeit={$objects[ix].type|escape:'url'}&amp;itemit={$objects[ix].name|escape:'url'}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
+						<a href="tiki-browse_freetags.php?del=1&amp;tag={$tag}{if $type}&amp;type={$type|escape:'url'}{/if}&amp;typeit={$objects[ix].type|escape:'url'}&amp;itemit={$objects[ix].name|escape:'url'}">{icon _id='cross' alt='{tr}Delete{/tr}'}</a>
 					{/if}
 				</h3>
 				<div class="type">
 					{tr}{$objects[ix].type|replace:"wiki page":"Wiki"|replace:"article":"Article"|regex_replace:"/tracker [0-9]*/":"tracker item"}{/tr}
 				</div>
 				<div class="description">
-					{$objects[ix].description|strip_tags|escape}&nbsp;
+					{$objects[ix].description}&nbsp;
 				</div>
 			</div>
 		{/section}

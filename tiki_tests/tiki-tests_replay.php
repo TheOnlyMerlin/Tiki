@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once('../tiki-setup.php');
 require_once('lib/diff/difflib.php');
@@ -143,8 +138,10 @@ function verif_url($url, $use_tidy = TRUE) {
 		}
 	} else {
 		if (!$loaded) {
-			require_once('lib/htmlpurifier_tiki/HTMLPurifier.tiki.php');
-			$config = getHTMLPurifierTikiConfig();
+			require_once("lib/htmlpurifier/HTMLPurifier.auto.php");
+			$config =& HTMLPurifier_Config::createDefault();
+			$config->set('HTML', 'Doctype', 'XHTML 1.0 Transitional');
+			$config->set('HTML', 'TidyLevel', 'light');
 			$purifier = new HTMLPurifier($config);
 			$loaded = true;
 		}
@@ -253,7 +250,7 @@ if (isset($_REQUEST['action'])) {
 					$test_failure++;
 				}
 			}
-		}
+		}	
 		$smarty->assign_by_ref('result',$result);
 	}
 
@@ -272,3 +269,5 @@ if (isset($_REQUEST['action'])) {
 } else {
 	header("Location: tiki-tests_list.php");
 }
+
+?>

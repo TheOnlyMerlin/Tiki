@@ -23,31 +23,31 @@
 		</tr>
 		{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
-			<tr class="{cycle}">
-				<td class="text">{$channels[user].name|escape}</td>
-				<td class="text">{$channels[user].subject|escape}</td>
+			<tr>
+				<td class="{cycle advance=false}">{$channels[user].name|escape}</td>
+				<td class="{cycle advance=false}">{$channels[user].subject|escape}</td>
 				{if $view_editions eq 'y'}
-					<td>{$channels[user].users}</td>
-					<td>{$channels[user].sent|tiki_short_datetime}</td>
+					<td class="{cycle advance=false}">{$channels[user].users}</td>
+					<td class="{cycle advance=false}">{$channels[user].sent|tiki_short_datetime}</td>
 				{/if}
-				<td class="integer">
+				<td class="{cycle advance=false}">
 					{if $channels[user].nbErrors > 0}
 						<a href="tiki-newsletter_archives.php?nlId={$channels[user].nlId}&amp;error={$channels[user].editionId}">{$channels[user].nbErrors}</a>
 					{else}
 						0
 					{/if}
 				</td>
-				<td class="action">
+				<td class="{cycle}">
 					{if $url == "tiki-newsletter_archives.php"}
 						<a class="link" href="{$url}?{if $nl_info}nlId={$channels[user].nlId}&amp;{/if}offset={$offset}&amp;sort_mode={$sort_mode}&amp;editionId={$channels[user].editionId}">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>
 					{/if}
-					{if ($channels[user].tiki_p_send_newsletters eq 'y') or ($channels[user].tiki_p_admin_newsletters eq 'y')}
+					{if ($channels[user].tiki_p_send_newsletters eq 'y') or ($channels[user].tiki_p_admin_newsletters eq 'y') }
 						<a class="link" href="tiki-send_newsletters.php?nlId={$channels[user].nlId}&amp;editionId={$channels[user].editionId}">{icon _id='email' alt="{tr}Send Newsletter{/tr}"}</a>
 					{else}
 						&nbsp;
 					{/if}
 					{if $channels[user].tiki_p_admin_newsletters eq 'y'}
-						<a class="link" href="{$url}?nlId={$channels[user].nlId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].editionId}" title="{tr}Remove{/tr}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
+						<a class="link" href="{$url}?nlId={$channels[user].nlId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].editionId}" title="{tr}Remove{/tr}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a>
 					{else}
 						&nbsp;
 					{/if}
@@ -60,7 +60,7 @@
 		{if $prev_offset >= 0}
 			[<a class="prevnext" href="{$url}?nlId={$nlId}&amp;{$cur}_offset={$prev_offset}&amp;{$bak}_offset={$offset_bak}&amp;{$cur}_sort_mode={$sort_mode}&amp;{$bak}_sort_mode={$sort_mode_bak}&amp;cookietab={$tab}">{tr}Prev{/tr}</a>]&nbsp;
 			{/if}
-		{tr}Page:{/tr} {$actual_page}/{$cant_pages}
+		{tr}Page{/tr}: {$actual_page}/{$cant_pages}
 		{if $next_offset >= 0}
 			&nbsp;[<a class="prevnext" href="{$url}?nlId={$nlId}&amp;{$cur}_offset={$next_offset}&amp;{$bak}_offset={$offset_bak}&amp;{$cur}_sort_mode={$sort_mode}&amp;{$bak}_sort_mode={$sort_mode_bak}&amp;cookietab={$tab}">{tr}Next{/tr}</a>]
 	{/if}

@@ -1,14 +1,14 @@
-<h2>{tr}Preview:{/tr}{$page|escape}</h2>
+<h2>{tr}Preview{/tr}: {$page}</h2>
 
 <div class="article">
 	<div class="articletitle">
-		<h2>{$title|escape}</h2>
-		<span class="titleb">{tr}By:{/tr} {$authorName|escape} {$publishDate|tiki_short_datetime:'On:'} ({$reads} {tr}Reads{/tr})</span>
+		<h2>{$title}</h2>
+		<span class="titleb">{tr}By:{/tr} {$authorName} {tr}on:{/tr} {$publishDate|tiki_short_datetime} ({$reads} {tr}Reads{/tr})</span>
 	</div>
 
 	{if $type eq 'Review'}
 		<div class="articleheading">
-			{tr}Rating:{/tr} 
+			{tr}Rating{/tr}: 
 			{repeat count=$rating}
 				<img src="img/icons/blue.gif" alt=''/>
 			{/repeat}
@@ -26,7 +26,7 @@
 					{if $useImage eq 'y'}
 						{if $hasImage eq 'y'}
 							{if $imageIsChanged eq 'y'}
-								<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=preview&amp;id={$previewId}" {if $image_x > 0}width="{$image_x}"{/if}{if $image_y > 0}height="{$image_y}"{/if} />
+								<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=preview&amp;id={$previewId}" {if $image_x > 0}width="{$image_x}"{/if}{if $image_y > 0 }height="{$image_y}"{/if} />
 							{else}
 								{if $subId}
 									<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=submission&amp;id={$subId}" />
@@ -34,13 +34,15 @@
 									<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=article&amp;id={$articleId}" />
 								{/if}
 							{/if}
-						{elseif $topicId ne ''}
+						{else}
 							<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topicId}" />
 						{/if}
-					{elseif $topicId ne ''}
+					{else}
 						<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topicId}" />
 					{/if}
-					<div class="articleheadingtext">{$parsed_heading}</div>
+				</td>
+				<td valign="top">
+					<span class="articleheading">{$parsed_heading}</span>
 				</td>
 			</tr>
 		</table>

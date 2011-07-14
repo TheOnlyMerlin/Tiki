@@ -1,19 +1,13 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 require_once('lib/images/abstract.php');
 
-class Image extends ImageAbstract
-{
+class Image extends ImageAbstract {
 	var $gdinfo;
 	var $gdversion;
 	var $havegd = false;
 
-	function __construct($image, $isfile = false, $format = 'jpeg') {
+	function __construct($image, $isfile = false) {
 
 		// Which GD Version do we have?
 		$exts = get_loaded_extensions();
@@ -26,7 +20,6 @@ class Image extends ImageAbstract
 				$this->loaded = false;
 			} else {
 				parent::__construct($image, false);
-				$this->format = $format;
 				$this->loaded = false;
 			}
 		} else {
@@ -37,8 +30,8 @@ class Image extends ImageAbstract
 
 	function _load_data() {
 		if (!$this->loaded && $this->havegd) {
-			if (!empty($this->filename) && is_file($this->filename)) {
-				$this->format = strtolower(substr($this->filename, strrpos($this->filename, '.') + 1));
+			if (!empty($this->filename)) {
+				$this->format = strtolower(substr($image, strrpos($image, '.') + 1));
 				list($this->width, $this->height, $type) = getimagesize($this->filename);
 				if (function_exists("image_type_to_extension")) {
 					$this->format = image_type_to_extension($type,false);
@@ -56,6 +49,10 @@ class Image extends ImageAbstract
 				$this->loaded = true;
 			}
 		}
+	}
+
+	function Image($image, $isfile = false) {
+		Image::__construct($image, $isfile);
 	}
 
 	function _resize($x, $y) {
@@ -81,7 +78,7 @@ class Image extends ImageAbstract
 
 		$this->_load_data();
 		if ($this->data) {
-			@ob_end_flush();	// ignore E_NOTICE if no buffer
+			ob_end_flush();
 			ob_start();
 			switch ( strtolower($this->format) ) {
 				case 'jpeg':
@@ -193,41 +190,19 @@ class Image extends ImageAbstract
 	}
 
 	function _get_height() {
-		if ($this->loaded && $this->data) {
-			return imagesy($this->data);
-		} else if ($this->height) {
-			return $this->height;
-		} else if ($this->filename) {
-			list($this->width, $this->height, $type) = getimagesize($this->filename);
-			if ($this->height) {
-				return $this->height;
-			}
-		}
-		if (!$this->loaded || !$this->data) {
-			$this->_load_data();
-		}
+		$this->_load_data();
 		if ($this->data) {
 			return imagesy($this->data);
 		}
 	}
 
 	function _get_width() {
-		if ($this->loaded && $this->data) {
-			return imagesx($this->data);
-		} else if ($this->width) {
-			return $this->width;
-		} else if ($this->filename) {
-			list($this->width, $this->height, $type) = getimagesize($this->filename);
-			if ($this->width) {
-				return $this->width;
-			}
-		}
-		if (!$this->loaded || !$this->data) {
-			$this->_load_data();
-		}
+		$this->_load_data();
 		if ($this->data) {
 			return imagesx($this->data);
 		}
 	}
 
 }
+
+?>

@@ -1,12 +1,19 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-index_p.php,v 1.27.2.2 2008-03-05 19:12:46 tombombadilom Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 $section = 'wiki page';
 require_once('tiki-setup.php');
+if ($prefs['feature_ajax'] == "y") {
+include_once('lib/ajax/ajaxlib.php');
+require_once ("lib/wiki/wiki-ajax.php");
+}
+
 include_once('lib/structures/structlib.php');
 
 include_once('lib/wiki/wikilib.php');
@@ -18,7 +25,14 @@ if ($prefs['feature_categories'] == 'y') {
 	}
 }
 
-$access->check_feature('feature_wiki');
+if ($prefs['feature_wiki'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_wiki");
+
+	$smarty->display("error.tpl");
+	die;
+}
+
+//print($GLOBALS["HTTP_REFERER"]);
 
 // Create the HomePage if it doesn't exist
 if (!$tikilib->page_exists($prefs['wikiHomePage'])) {
@@ -47,16 +61,41 @@ if (!($info = $tikilib->get_page_info($page))) {
 	$smarty->display('error.tpl');
 	die;
 }
+$tikilib->get_perm_object( $page, 'wiki page', $info);
 
-require_once 'lib/wiki/renderlib.php';
-$pageRenderer = new WikiRenderer( $info, $user );
-$objectperms = $pageRenderer->applyPermissions();
-
-if ($prefs['flaggedrev_approval'] == 'y' && isset($_REQUEST['latest']) && $objectperms->wiki_view_latest) {
-	$pageRenderer->forceLatest();
+// Check to see if page is categorized
+$objId = urldecode($page);
+if ($tiki_p_admin != 'y' && $prefs['feature_categories'] == 'y' && !$object_has_perms) {
+    // Check to see if page is categorized
+    $perms_array = $categlib->get_object_categories_perms($user, 'wiki page', $objId);
+    if ($perms_array) {
+	$is_categorized = TRUE;
+    	foreach ($perms_array as $perm => $value) {
+	    $$perm = $value;
+    	}
+    } else {
+	$is_categorized = FALSE;
+    }
+	if ($is_categorized && isset($tiki_p_view_categorized) && $tiki_p_view_categorized != 'y') {
+		$smarty->assign('errortype', 401);
+		$smarty->assign('msg',tra("Permission denied you cannot view this page"));
+		$smarty->display("error.tpl");
+		die;
+	}
+} elseif ($prefs['feature_categories'] == 'y') {
+    $is_categorized = $categlib->is_categorized('wiki page',$objId);
+} else {
+    $is_categorized = FALSE;
 }
 
-$access->check_permission('tiki_p_view');
+// Now check permissions to access this page
+if ($tiki_p_view != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("Permission denied you cannot view this page"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 // BreadCrumbNavigation here
 // Remember to reverse the array when posting the array
@@ -79,10 +118,15 @@ if (!in_array($page, $_SESSION["breadCrumb"])) {
 	array_push($_SESSION["breadCrumb"], $page);
 }
 
+//print_r($_SESSION["breadCrumb"]);
+
 // Now increment page hits since we are visiting this page
 if ($prefs['count_admin_pvs'] == 'y' || $user != 'admin') {
 	$tikilib->add_hit($page);
 }
+
+// Get page data
+$info = $tikilib->get_page_info($page);
 
 $smarty->assign('page_user', $info['user']);
 
@@ -149,16 +193,79 @@ $pdata = str_replace('tiki-index.php', 'tiki-index_p.php', $pdata);
 if (!isset($_REQUEST['pagenum']))
 	$_REQUEST['pagenum'] = 1;
 
-if( isset( $_REQUEST['pagenum'] ) && $_REQUEST['pagenum'] > 0 ) {
-	$pageRenderer->setPageNumber( (int) $_REQUEST['pagenum'] );
+$pages = $wikilib->get_number_of_pages($pdata);
+$pdata = $wikilib->get_page($pdata, $_REQUEST['pagenum']);
+$smarty->assign('pages', $pages);
+
+if ($pages > $_REQUEST['pagenum']) {
+	$smarty->assign('next_page', $_REQUEST['pagenum'] + 1);
+} else {
+	$smarty->assign('next_page', $_REQUEST['pagenum']);
 }
 
+if ($_REQUEST['pagenum'] > 1) {
+	$smarty->assign('prev_page', $_REQUEST['pagenum'] - 1);
+} else {
+	$smarty->assign('prev_page', 1);
+}
+
+$smarty->assign('first_page', 1);
+$smarty->assign('last_page', $pages);
+$smarty->assign('pagenum', $_REQUEST['pagenum']);
+
+// Put ~pp~, ~np~ and <pre> back. --rlpowell, 24 May 2004
+$tikilib->replace_preparse( $info["data"], $preparsed, $noparsed );
+$tikilib->replace_preparse( $pdata, $preparsed, $noparsed );
+
+$smarty->assign_by_ref('parsed', $pdata);
+
+$smarty->assign_by_ref('lastModif', $info["lastModif"]);
+
+if (empty($info["user"])) {
+	$info["user"] = 'anonymous';
+}
+
+$smarty->assign_by_ref('lastUser', $info["user"]);
+$smarty->assign_by_ref('description', $info["description"]);
 
 include_once('tiki-section_options.php');
 
-$pageRenderer->runSetups();
+$smarty->assign('wiki_extras', 'y');
+$smarty->assign('structure', 'n');
 
+/* broken since nov 18 2003
+if ($structlib->page_is_in_structure($page)) {
+	$smarty->assign('structure', 'y');
+	if (isset($_REQUEST["structID"]))	{
+		$prev_next_pages = $structlib->get_prev_next_pages($page, $_REQUEST["structID"]);
+	}
+	else {
+		$prev_next_pages = $structlib->get_prev_next_pages($page);
+	} 	
+	$smarty->assign('struct_prev_next', $prev_next_pages);
+}
+*/
+
+if ($prefs['feature_theme_control'] == 'y') {
+	$cat_type = 'wiki page';
+
+	$cat_objid = $_REQUEST["page"];
+	include('tiki-tc.php');
+}
 ask_ticket('index-p');
+if ($prefs['feature_ajax'] == "y") {
 
+function wiki_ajax() {
+    global $ajaxlib, $xajax;
+    $ajaxlib->registerTemplate("tiki-show_page.tpl");
+    $ajaxlib->registerTemplate("tiki-editpage.tpl");
+    $ajaxlib->registerFunction("loadComponent");
+    $ajaxlib->processRequests();
+}
+wiki_ajax();
+}
 // Display the Index Template
+$smarty->assign('dblclickedit', 'y');
 $smarty->display("tiki-index_p.tpl");
+
+?>

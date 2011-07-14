@@ -1,31 +1,25 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+
+// $Id: /cvsroot/tikiwiki/tiki/lib/wiki-plugins/wikiplugin_agentinfo.php,v 1.5.2.1 2007-12-07 12:55:20 pkdille Exp $
+
+// Wiki plugin to display a browser client information
+// damian aka damosoft May 2004
+
+function wikiplugin_agentinfo_help() {
+        return tra("Displays browser client info").":<br />~np~{AGENTINFO(info=>IP or SVRSW or BROWSER)/}~/np~";
+}
 
 function wikiplugin_agentinfo_info() {
 	return array(
-		'name' => tra( 'User Agent Info' ),
+		'name' => tra( 'User-Agent Info' ),
 		'documentation' => 'PluginAgentinfo',
-		'description' => tra( 'Show user\'s browser and server information' ),
+		'description' => tra( 'Displays various information about the client.' ),
 		'prefs' => array('wikiplugin_agentinfo'),
-		'icon' => 'pics/icons/computer.png',
 		'params' => array(
 			'info' => array(
 				'required' => false,
 				'name' => tra('Info'),
-				'description' => tra('Display\'s the visitor\'s IP address (IP or default), browser information (BROWSER), or server software (SVRSW).'),
-				'default' => 'IP',
-				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('IP address'), 'value' => 'IP'), 
-					array('text' => tra('Server software'), 'value' => 'SVRSW'), 
-					array('text' => tra('Browser'), 'value' => 'BROWSER'), 
-				),
-				
+				'description' => tra('Info required - IP|SVRSW|BROWSER'),
 			),
 		),
 	);
@@ -46,13 +40,15 @@ function wikiplugin_agentinfo($data, $params) {
 		$asetup = $tikilib->get_ip_address();
 	}
 
-	if ($info == 'SVRSW' && isset($_SERVER['SERVER_SOFTWARE'])) {
+	if ($info == 'SVRSW') {
 		$asetup = $_SERVER["SERVER_SOFTWARE"];
 	}
 	
-	if ($info == 'BROWSER' && isset($_SERVER['HTTP_USER_AGENT'])) {
+	if ($info == 'BROWSER') {
 		$asetup = $_SERVER["HTTP_USER_AGENT"];
 	}
 
 	return $asetup;
 }
+
+?>

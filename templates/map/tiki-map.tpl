@@ -28,9 +28,10 @@
 		        <img id="map" src="{$image_url}"
 						{if $xsize != ""}width="{$xsize}"{/if} 
 						{if $ysize != ""}height="{$ysize}"{/if}
-					alt="{tr}click on the map to zoom or pan, do not drag{/tr}" 
+						border="0"
+		  			alt="{tr}click on the map to zoom or pan, do not drag{/tr}" 
 					  title="{tr}click on the map to zoom or pan, do not drag{/tr}"
-					  style="z-index:20;position:relative" /> 
+					  style="z-index:20;position:relative"/> 
 			</div>		  
 		  <script type="text/javascript">	
 		    var minx={$minx};
@@ -149,7 +150,7 @@
 			<small>{tr}select zoom/pan/query and image size{/tr}</small>
 		</td></tr>
 			<tr><td align="center"> 
-			{if $map_view eq ""}
+			{if $map_view eq "" }
                   		{*if view is empty do not display empty list*} 
 			{else}
 			<select name="view" size="1"> 
@@ -177,7 +178,7 @@
 		</td></tr>
 	<tr><td><div id="resultBox">{$map_querymsg}</div></td></tr>	
 		</table>
-		<p class="editdate">{tr}Last modification date:{/tr} {$lastModif|tiki_long_datetime} {tr}by{/tr} <a class="link" href="tiki-user_information.php?view_user={$lastUser}">{$lastUser}</a> ({$ip})-{tr}Hits:{/tr}{$mapstats}({$mapstats7days})</p>
+		<p class="editdate">{tr}Last modification date{/tr}: {$lastModif|tiki_long_datetime} {tr}by{/tr} <a class="link" href="tiki-user_information.php?view_user={$lastUser}">{$lastUser}</a> ({$ip})-{tr}Hits{/tr}:{$mapstats}({$mapstats7days})</p>
 	     
 	     </td>
 		<td valign="top">
@@ -208,7 +209,7 @@
 		  		<th><img src="pics/icons/disk.png" width="16" height="16" alt="{tr}Download{/tr}" title="{tr}Download{/tr}" /></th>
 			</tr>
 			{section name=j loop=$my_layers}
-			{if $my_layers[j]->group neq ""}
+			{if $my_layers[j]->group neq "" }
 			{if $my_layers[j]->group eq $unique_layer_group[j]}
 			<tr>
 				{if $smarty.section.j.index % 2}
@@ -228,7 +229,7 @@
 				<div id='submenu{$unique_layer_group[j]}' style="{$mnu_submenu}"> 
 					<table class="normal">
 					{section name=i loop=$my_layers}
-					{if $my_layers[i]->group neq ""}
+					{if $my_layers[i]->group neq "" }
 					{if $my_layers[i]->group == $my_layers[j]->group}
 					<tr>
 					

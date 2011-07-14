@@ -1,25 +1,25 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+
+
+// Wiki plugin to display a SWF myspace playlist in a wiki page  
+
+function wikiplugin_myspace_help() {
+        return tra("Displays a SWF myspace mp3 playlist on the wiki page").":<br />~np~{MYSPACE(page=>myspace_page)}{MYSPACE}~/np~";
+}
 
 function wikiplugin_myspace_info() {
 	return array(
 		'name' => tra('MySpace'),
-		'documentation' => 'PluginMySpace',
-		'description' => tra('Display a MySpace Flash mp3 playlist'),
+		'documentation' => 'PluginMySpace',			
+		'description' => tra("Displays a SWF myspace mp3 playlist on the wiki page"),
 		'prefs' => array( 'wikiplugin_myspace' ),
-		'icon' => 'pics/icons/myspace.png',
 		'params' => array(
 			'page' => array(
 				'required' => true,
 				'name' => tra('MySpace Page'),
-				'description' => tra('MySpace page name.'),
-				'default' => '',
-			)
-		)
+				'description' => 'MySpace page name.',
+			),
+		),
 	);
 }
 
@@ -49,3 +49,5 @@ function wikiplugin_myspace($data, $params) {
 	return $data;
 
 }
+
+?>

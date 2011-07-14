@@ -1,10 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
+// $Id: notificationemaillib.php,v 1.36.2.2 2008-01-29 19:01:17 sylvieg Exp $
 /** \brief send the email notifications dealing with the forum changes to
   * \brief outbound address + admin notification addresses / forum admin email + watching users addresses
   * \param $event = 'forum_post_topic' or 'forum_post_thread'
@@ -14,15 +9,12 @@
   * \param $topicName name of the parent topic
   */
 
-include_once('lib/reportslib.php');
-  
-function sendForumEmailNotification($event, $object, $forum_info, $title, $data, $author, $topicName, $messageId='', $inReplyTo='', $threadId, $parentId, $contributions='', $postId='') {
+function sendForumEmailNotification($event, $object, $forum_info, $title, $data, $author, $topicName, $messageId='', $inReplyTo='', $threadId, $parentId, $contributions='' ) {
 	global $tikilib, $prefs, $smarty, $userlib;
 
 	// Per-forum From address overrides global default.
 	if( $forum_info['outbound_from'] )
 	{
-		$author = $userlib->clean_user($author);
 	    $my_sender = '"' . "$author" . '" <' . $forum_info['outbound_from'] . '>';
 	} else {
 	    $my_sender = $prefs['sender_email'];
@@ -35,7 +27,7 @@ function sendForumEmailNotification($event, $object, $forum_info, $title, $data,
 		$mail->setSubject($title);
 		if (!empty($forum_info['outbound_mails_reply_link']) && $forum_info['outbound_mails_reply_link'] == 'y') {
 			$foo = parse_url($_SERVER["REQUEST_URI"]);
-			$machine = $tikilib->httpPrefix( true ) . dirname( $foo["path"] );
+			$machine = $tikilib->httpPrefix() . dirname( $foo["path"] );
 			if ($event == 'forum_post_topic') {
 				$reply_link="$machine/tiki-view_forum_thread.php?forumId=" .
 				$forum_info['forumId'] .
@@ -93,13 +85,9 @@ function sendForumEmailNotification($event, $object, $forum_info, $title, $data,
 
 	// Users watching this forum or this post
 	if ($prefs['feature_user_watches'] == 'y' || $prefs['feature_group_watches'] == 'y') {
-		$nots_raw = $tikilib->get_event_watches($event, $event == 'forum_post_topic'? $forum_info['forumId']: $threadId, $forum_info);
-		$nots = array();
-		foreach( $nots_raw as $n ) {
-			if( $n['user'] != $author ) {
-				$n['language'] = $tikilib->get_user_preference($n['user'], "language", $defaultLanguage);
-				$nots[] = $n;
-			}
+		$nots = $tikilib->get_event_watches($event, $event == 'forum_post_topic'? $forum_info['forumId']: $threadId, $forum_info);
+		for ($i = count($nots) - 1; $i >=0; --$i) {
+			$nots[$i]['language'] = $tikilib->get_user_preference($nots[$i]['user'], "language", $defaultLanguage);
 		}
 	}
 
@@ -112,12 +100,6 @@ function sendForumEmailNotification($event, $object, $forum_info, $title, $data,
 		else
 			$not['language'] = $defaultLanguage;
 		$nots[] = $not;
-	}
-
-	global $reportslib;
-
-	if ($prefs['feature_user_watches'] == 'y' && $prefs['feature_daily_report_watches'] == 'y') {
-		$reportslib->makeReportCache($nots, array("event"=>$event, "forumId"=>$forum_info['forumId'], "forumName"=>$forum_info['name'], "topicId"=>$threadId, "threadId"=>$postId, "threadName"=>$topicName, "user"=>$author));
 	}
 
 	if (count($nots)) {
@@ -133,7 +115,7 @@ function sendForumEmailNotification($event, $object, $forum_info, $title, $data,
 			$smarty->assign('mail_contributions', $contributionlib->print_contributions($contributions));
 		}
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
-		$machine = $tikilib->httpPrefix( true ) . dirname( $foo["path"] );
+		$machine = $tikilib->httpPrefix() . dirname( $foo["path"] );
 		$machine = preg_replace("!/$!", "", $machine); // just incase
  		$smarty->assign('mail_machine', $machine);
 		$smarty->assign('forumId', $forum_info["forumId"]);
@@ -168,30 +150,24 @@ function testEmailInList($nots, $email) {
 
 /** \brief send the email notifications dealing with wiki page  changes to
   * admin notification addresses + watching users addresses (except editor is configured)
-  * \$event: 'wiki_page_created'|'wiki_page_changed'|wiki_page_deleted |wiki_file_attached
+  * \$event: 'wiki_page_created'|'wiki_page_changed'
   */
-function sendWikiEmailNotification($wikiEvent, $pageName, $edit_user, $edit_comment, $oldver, $edit_data, $machine='', $diff='', $minor=false, $contributions='', $structure_parent_id=0, $attId=0, $lang='') {
+function sendWikiEmailNotification($event, $pageName, $edit_user, $edit_comment, $oldver, $edit_data, $machine, $diff='', $minor=false, $contributions='', $structure_parent_id=0) {
 	global $tikilib, $prefs, $smarty, $userlib;
 	global $notificationlib; include_once('lib/notifications/notificationlib.php');
 	$nots = array();
 	$defaultLanguage = $prefs['site_language'];
-	if ($wikiEvent == 'wiki_file_attached') {
-		$event = 'wiki_page_changed';
-	} else {
-		$event = $wikiEvent;
-	}
 
 	if ($prefs['feature_user_watches'] == 'y') {
 		$nots = $tikilib->get_event_watches($event, $pageName);
 	}
-	
 	if ($prefs['feature_user_watches'] == 'y' && $event == 'wiki_page_changed') {
 		global $structlib; include_once('lib/structures/structlib.php');
 		$nots2 = $structlib->get_watches($pageName);
 		if (!empty($nots2)) {
 			$nots = array_merge($nots, $nots2);
 		}
-
+		
 		if ($prefs['wiki_watch_editor'] != "y") {
 			for ($i = count($nots) - 1; $i >=0; --$i)
 				if ($nots[$i]['user'] == $edit_user) {
@@ -199,12 +175,10 @@ function sendWikiEmailNotification($wikiEvent, $pageName, $edit_user, $edit_comm
 					break;
 				}
 		}
-		
 		foreach (array_keys($nots) as $i) {
 			$nots[$i]['language'] = $tikilib->get_user_preference($nots[$i]['user'], "language", $defaultLanguage);
 		}
 	}
-
 	if ($prefs['feature_user_watches'] == 'y' && $event == 'wiki_page_created' && $structure_parent_id) {
 		global $structlib; include_once('lib/structures/structlib.php');
 		$nots = array_merge( $nots, $structlib->get_watches('', $structure_parent_id) );
@@ -213,12 +187,13 @@ function sendWikiEmailNotification($wikiEvent, $pageName, $edit_user, $edit_comm
 	// admin notifications
     // If it's a minor change, get only the minor change watches.
 	if( $minor ){
-		$emails = $notificationlib->get_mail_events('wiki_page_changes_incl_minor', $pageName); // look for pageName and any page
+		$emails = $notificationlib->get_mail_events('wiki_page_changes_incl_minor', 'wikipage' . $pageName); // look for pageName and any page
 	} else { // else if it's not minor change, get both watch types.
-		$emails1 = $notificationlib->get_mail_events('wiki_page_changes', $pageName); // look for pageName and any page
-		$emails2 = $notificationlib->get_mail_events('wiki_page_changes_incl_minor', $pageName); // look for pageName and any page
+		$emails1 = $notificationlib->get_mail_events('wiki_page_changes', 'wikipage' . $pageName); // look for pageName and any page
+		$emails2 = $notificationlib->get_mail_events('wiki_page_changes_incl_minor', 'wikipage' . $pageName); // look for pageName and any page
 		$emails = array_merge( $emails1, $emails2 );
 	}
+
 	foreach ($emails as $email) {
 		if ($prefs['wiki_watch_editor'] != "y" && $email == $edit_user)
 		    continue;
@@ -234,19 +209,10 @@ function sendWikiEmailNotification($wikiEvent, $pageName, $edit_user, $edit_comm
 
 	if ($edit_user=='') $edit_user = tra('Anonymous');
 
-	global $reportslib;
-	
-	if ($prefs['feature_user_watches'] == 'y' && $prefs['feature_daily_report_watches'] == 'y') {
-		if ($wikiEvent == 'wiki_file_attached') {
-			$reportslib->makeReportCache($nots, array("event"=>$wikiEvent, "pageName"=>$pageName, 'attId'=>$attId, "editUser"=>$edit_user, "editComment"=>$edit_comment, 'filename'=>$edit_data));
-		} else {
-			$reportslib->makeReportCache($nots, array("event"=>$wikiEvent, "pageName"=>$pageName, "object"=>$pageName, "editUser"=>$edit_user, "editComment"=>$edit_comment, "oldVer"=>$oldver));
-		}
-	}
-
 	if (count($nots)) {
 	    $edit_data = TikiLib::htmldecode($edit_data);
-	    include_once('lib/mail/maillib.php');
+	    include_once('lib/webmail/tikimaillib.php');
+	    $mail = new TikiMail();
 	    $smarty->assign('mail_site', $_SERVER["SERVER_NAME"]);
 	    $smarty->assign('mail_page', $pageName);
 	    $smarty->assign('mail_date', $tikilib->now);
@@ -256,9 +222,8 @@ function sendWikiEmailNotification($wikiEvent, $pageName, $edit_user, $edit_comm
 	    $smarty->assign('mail_oldver', $oldver);
 	    $smarty->assign('mail_newver', $newver);
 	    $smarty->assign('mail_data', $edit_data);
-		$smarty->assign('mail_attId', $attId);
 	    $foo = parse_url($_SERVER["REQUEST_URI"]);
-	    $machine = $tikilib->httpPrefix( true ). dirname( $foo["path"] );
+	    $machine = $tikilib->httpPrefix(). dirname( $foo["path"] );
 	    $smarty->assign('mail_machine', $machine);
 		if ($prefs['feature_contribution'] == 'y' && !empty($contributions)) {
 			global $contributionlib; include_once('lib/contribution/contributionlib.php');
@@ -267,40 +232,33 @@ function sendWikiEmailNotification($wikiEvent, $pageName, $edit_user, $edit_comm
 	    $parts = explode('/', $foo['path']);
 	    if (count($parts) > 1)
 		unset ($parts[count($parts) - 1]);
-	    $smarty->assign('mail_machine_raw', $tikilib->httpPrefix( true ). implode('/', $parts));
+	    $smarty->assign('mail_machine_raw', $tikilib->httpPrefix(). implode('/', $parts));
 	    $smarty->assign_by_ref('mail_pagedata', $edit_data);
 	    $smarty->assign_by_ref('mail_diffdata', $diff);
 	    if ($event == 'wiki_page_created') {
 			$smarty->assign('mail_action', 'new');
-	    } elseif ($event == 'wiki_page_deleted') {
+	    } else if ($event == 'wiki_page_deleted') {
 	    	$smarty->assign('mail_action', 'delete');
-		} elseif ($wikiEvent == 'wiki_file_attached') {
-			$smarty->assign('mail_action', 'attach');
 	    } else {
 	    	$smarty->assign('mail_action', 'edit');
 	    }
 
-		include_once('lib/webmail/tikimaillib.php');
 	    foreach ($nots as $not) {
-			if (empty($not['email'])) continue;
 		    $smarty->assign('watchId', $not['watchId']);
-
-			$mail_subject = $smarty->fetchLang($not['language'], "mail/user_watch_wiki_page_changed_subject.tpl");
-			$mail_data = $smarty->fetchLang($not['language'], "mail/user_watch_wiki_page_changed.tpl");
-
-			$mail = new TikiMail($not['user']);
-			$mail->setSubject(sprintf($mail_subject, $pageName));
-			$mail->setText($mail_data);
-			$mail->setHeader("From", $prefs['sender_email']);
-			$mail->send(array($not['email']));
-
-		}
+		$mail->setUser($not['user']);
+		$mail_data = $smarty->fetchLang($not['language'], "mail/user_watch_wiki_page_changed_subject.tpl");
+		$mail->setSubject(sprintf($mail_data, $pageName));
+		$mail_data = $smarty->fetchLang($not['language'], "mail/user_watch_wiki_page_changed.tpl");
+		$mail->setText($mail_data);
+		$mail->buildMessage();
+		$mail->send(array($not['email']));
+	    }
 	}
 }
 
 /** \brief Send email notification to a list of emails or a list of (email, user) in a charset+language associated with each email
- * \param $watches : bidimensional array of watches. Each watch has user, language, email and watchId keys.
- * \param $dummy: unused
+ * \param $list : emails list or (users, email) list
+ * \param $type: type of the list element =  'email'|'watch'
  * \param $subjectTpl: subject template file or null (ex: "submission_notifcation.tpl")
  * \param $subjectParam: le param to be inserted in the subject or null
  * \param $txtTpl : texte template file (ex: "submission_notifcation.tpl")
@@ -308,46 +266,44 @@ function sendWikiEmailNotification($wikiEvent, $pageName, $edit_user, $edit_comm
  * \ $smarty is supposed to be already built to fit $txtTpl
  * \return the nb of sent emails
  */
-function sendEmailNotification($watches, $dummy, $subjectTpl, $subjectParam, $txtTpl, $from='') {
-    global $smarty, $tikilib;
+function sendEmailNotification($list, $type, $subjectTpl, $subjectParam, $txtTpl, $from='') {
+    global $smarty, $tikilib, $userlib, $prefs;
 	include_once('lib/webmail/tikimaillib.php');
-	$sent = 0;
 	$mail = new TikiMail(null, $from);
-	$smarty->assign('mail_date', $tikilib->now);
-	
-	$foo = parse_url($_SERVER["REQUEST_URI"]);
-	$smarty->assign('mail_machine', $tikilib->httpPrefix( true ). $foo["path"] );
-	$parts = explode('/', $foo['path']);
-
-	if (count($parts) > 1)
-		unset ($parts[count($parts) - 1]);
-
-	$smarty->assign('mail_machine_raw', $tikilib->httpPrefix( true ). implode('/', $parts));
-	// TODO: mail_machine_site may be required for some sef url with rewrite to sub-directory. To refine. (nkoth)  
-	$smarty->assign('mail_machine_site', $tikilib->httpPrefix( true ));
-
-	foreach ($watches as $watch) {
-		$smarty->assign('watchId', $watch['watchId']);
-		if ($watch['user']) {
-			$mail->setUser($watch['user']);
+	$sent = 0;
+	$defaultLanguage = $prefs['site_language'];
+	$languageEmail = $defaultLanguage;
+	foreach ($list as $elt) {
+		if ($type == "watch") {
+			$email = $elt['email'];
+			$userEmail = $elt['user'];
+			$smarty->assign('watchId', $elt['watchId']);
 		}
+		else {
+			$email = $elt;
+			$userEmail = $userlib->get_user_by_email($email);
+		}
+		if ($userEmail) {
+			$mail->setUser($userEmail);
+			$languageEmail = $tikilib->get_user_preference($userEmail, "language", $defaultLanguage);
+		}
+		else
+			$languageEmail = $defaultLanguage;
 		if ($subjectTpl) {
-			$mail_data = $smarty->fetchLang($watch['language'], "mail/".$subjectTpl);
-			if ($subjectParam) {
+			$mail_data = $smarty->fetchLang($languageEmail, "mail/".$subjectTpl);
+			if ($subjectParam)
 				$mail_data = sprintf($mail_data, $subjectParam);
-			}
-			$mail_data = preg_replace('/%[sd]/', '', $mail_data);// partial cleaning if param not supply and %s in text
+			$mail_data = ereg_replace("\%[sd]", "", $mail_data);// partial cleaning if param not supply and %s in text
 			$mail->setSubject($mail_data);
-		} else {
+		}
+		else
 			$mail->setSubject($subjectParam);
-		}
-		$mail->setText($smarty->fetchLang($watch['language'], "mail/".$txtTpl));
+		$mail->setText($smarty->fetchLang($languageEmail, "mail/".$txtTpl));
 		$mail->buildMessage();
-		if ($mail->send(array($watch['email']))) {
+		if ($mail->send(array($email)))
 			$sent++;
-		}
 	}
-	return $sent;
+return $sent;
 }
 function activeErrorEmailNotivation() {
 	set_error_handler("sendErrorEmailNotification");
@@ -370,8 +326,8 @@ function sendErrorEmailNotification($errno, $errstr, $errfile='?', $errline= '?'
         "$errfile, Line $errline\n$err($errno)\n$errstr");
 }
 
-function sendFileGalleryEmailNotification($event, $galleryId, $galleryName, $name, $filename, $description, $action, $user, $fileId) {
-        global $tikilib, $prefs, $smarty, $userlib, $reportslib;
+function sendFileGalleryEmailNotification($event, $galleryId, $galleryName, $name, $filename, $description, $action, $user) {
+        global $tikilib, $prefs, $smarty, $userlib;
 
         $nots = array();
         $defaultLanguage = $prefs['site_language'];
@@ -382,24 +338,16 @@ function sendFileGalleryEmailNotification($event, $galleryId, $galleryName, $nam
                 for ($i = count($nots) - 1; $i >=0; --$i) {
                         $nots[$i]['language'] = $tikilib->get_user_preference($nots[$i]['user'], "language", $defaultLanguage);
                 }
-
-				if ($prefs['feature_daily_report_watches'] == 'y') {
-					$reportslib->makeReportCache($nots, array("event"=>$event, "name"=>$name, "fileId"=>$fileId, "fileName"=>$filename, "galleryId"=>$galleryId, "galleryName"=>$galleryName, "action"=>$action, "user"=>$user));
-				}
         }
-        
+
         if (count($nots)) {
                 include_once('lib/webmail/tikimaillib.php');
                 $mail = new TikiMail();
                 $smarty->assign('galleryName', $galleryName);
-				$smarty->assign('galleryId', $galleryId);
-				$smarty->assign('fname', $name);
-				$smarty->assign('filename', $filename);
-				$smarty->assign('fdescription', $description);
                 $smarty->assign('mail_date', $tikilib->now);
                 $smarty->assign('author', $user);
                 $foo = parse_url($_SERVER["REQUEST_URI"]);
-                $machine = $tikilib->httpPrefix( true ). dirname( $foo["path"] );
+                $machine = $tikilib->httpPrefix(). dirname( $foo["path"] );
                 $smarty->assign('mail_machine', $machine);
 
                 foreach ($nots as $not) {
@@ -425,7 +373,7 @@ function sendFileGalleryEmailNotification($event, $galleryId, $galleryName, $nam
  * oldCategoryName, oldCategoryPath, oldDescription, oldParendId, oldParentName,
  * objectName, objectType, objectUrl
  */
-function sendCategoryEmailNotification($values) {
+function sendCategoryEmailNotification($values) {        
         $event=$values['event'];
         $action=$values['action'];
         $categoryId=$values['categoryId'];
@@ -450,7 +398,7 @@ function sendCategoryEmailNotification($values) {
         
         //$event, $categoryId, $categoryName, $categoryPath, 
 		//$description, $parentId, $parentName, $action
-        global $tikilib, $prefs, $smarty, $userlib, $user, $reportslib;
+        global $tikilib, $prefs, $smarty, $userlib, $user;
 
         $nots = array();
         $defaultLanguage = $prefs['site_language'];
@@ -469,13 +417,6 @@ function sendCategoryEmailNotification($values) {
 			for ($i = count($nots) - 1; $i >=0; --$i) {
 				$nots[$i]['language'] = $tikilib->get_user_preference($nots[$i]['user'], "language", $defaultLanguage);
 			}
-			
-			if ($prefs['feature_daily_report_watches'] == 'y') {
-				$cache_data = $values;
-				$cache_data['user'] = $user;
-				$cache_data['event'] = $event;
-				$reportslib->makeReportCache($nots, $cache_data);
-			}
 		}
 
         if (count($nots)) {        		
@@ -492,15 +433,13 @@ function sendCategoryEmailNotification($values) {
                 $smarty->assign('author', $user);                
                 
                 $foo = parse_url($_SERVER["REQUEST_URI"]);
-                $machine = $tikilib->httpPrefix( true ). dirname( $foo["path"] );
+                $machine = $tikilib->httpPrefix(). dirname( $foo["path"] );
 				$machine = preg_replace("!/$!", "", $machine); // just incase
                 $smarty->assign('mail_machine', $machine);
 
 				$nots_send = array(); 
                 foreach ($nots as $not) {
-					if (!empty($nots_send[$not['user']])) {
-						break;               			
-					}
+               			if ($nots_send[$not['user']]) break;               			
                			$nots_send[$not['user']] = true;
                         $mail->setUser($not['user']);
                         if ($action == 'category created') {                                                        
@@ -550,7 +489,7 @@ function sendStructureEmailNotification($params) {
 	if (!empty($nots)) {
 		$defaultLanguage = $prefs['site_language'];
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
-		$machine = $tikilib->httpPrefix( true ). dirname( $foo["path"] );
+		$machine = $tikilib->httpPrefix(). dirname( $foo["path"] );
 		$smarty->assign_by_ref('mail_machine', $machine);
 	    include_once('lib/webmail/tikimaillib.php');
         $mail = new TikiMail();
@@ -572,44 +511,4 @@ function sendStructureEmailNotification($params) {
 	}
 }
 
-/**
- * @param $type Type of the object commented on, 'wiki' or 'article'
- * @param $id Identifier of the object commented on. For articles, their id and for wiki pages, their name
- * @param $title Comment title
- * @param $content Comment content
- */
-function sendCommentNotification($type, $id, $title, $content, $commentId=null) {
-	global $user, $tikilib, $smarty, $prefs;
-	if ($type == 'wiki') {
-		$event = 'wiki_comment_changes';
-	} elseif ($type == 'article') {
-		$event = 'article_commented';
-	} else {
-		throw new Exception('Unknown type');
-	}
-	$watches = $tikilib->get_event_watches($event, $id);
-	$watches2 = $tikilib->get_event_watches('comment_post', $commentId);
-	if (!empty($watches2)) {
-		$watches = array_merge($watches, $watches2);
-	}
-	if (count($watches)) {
-		if ($type == 'wiki') {
-			$smarty->assign('mail_objectname', $id);
-		} elseif ($type == 'article') {
-			global $artlib;	include_once ('lib/articles/artlib.php');
-			$smarty->assign('mail_objectname', $artlib->get_title($id));
-			$smarty->assign('mail_objectid', $id);
-		}
-		$smarty->assign('objecttype', $type);		
-		$smarty->assign('mail_user', $user);
-		$smarty->assign('mail_title', $title);
-		$smarty->assign('mail_comment', $content);
-
-		foreach ($watches as $key => $watch) {
-			if ($watch['user'] == $user && ($type != 'wiki' || $prefs['wiki_watch_editor'] != 'y')) {
-				unset($watches[$key]);
-			}
-		}
-		sendEmailNotification($watches, null, 'user_watch_comment_subject.tpl', null, 'user_watch_comment.tpl');
-	}
-}
+?>

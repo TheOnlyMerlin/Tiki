@@ -1,15 +1,20 @@
 {* $Id$ *}
 
-{if isset($modUserPages)}
+{if $user}
+  {if $prefs.feature_wiki eq 'y'}
+       
+{if !isset($tpl_module_title)}{assign var=tpl_module_title value="{tr}My Pages{/tr}"}{/if}
 {tikimodule error=$module_params.error title=$tpl_module_title name="user_pages" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
-{modules_list list=$modUserPages nonums=$nonums}
-	{section name=ix loop=$modUserPages}
-		<li>
-			<a class="linkmodule" href="tiki-index.php?page={$modUserPages[ix].pageName|escape:"url"}">
-				{$modUserPages[ix].pageName|escape}
-			</a>
-		</li>
-	{/section}
-{/modules_list}
-{/tikimodule}
-{/if}
+       {if $nonums != 'y'}<ol>{else}<ul>{/if}
+       {section name=ix loop=$modUserPages}
+       <li>
+         <a class="linkmodule" href="tiki-index.php?page={$modUserPages[ix].pageName|escape:"url"}">
+          {$modUserPages[ix].pageName}
+         </a>
+        </li>
+       {/section}
+	   {if $nonums != 'y'}</ol>{else}</ul>{/if}
+       {/tikimodule}
+       
+  {/if} {* $prefs.feature_wiki eq 'y' *}
+{/if}   {* $user *}

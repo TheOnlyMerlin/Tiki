@@ -1,26 +1,32 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+/*
+ * $Id: /cvsroot/tikiwiki/tiki/lib/wiki-plugins/wikiplugin_quote.php,v 1.8.2.2 2008-03-20 19:32:20 sylvieg Exp $
+ *
+ * Tikiwiki QUOTE plugin.
+ * 
+ * Syntax:
+ * 
+ *  {QUOTE([replyto=>name])}
+ *   Content inside box
+ *  {QUOTE}
+ * 
+ */
+function wikiplugin_quote_help() {
+	return tra("Quote text by surrounding the text with a box, like the [QUOTE] BBCode").":<br />~np~{QUOTE(replyto=>name)}".tra("text")."{QUOTE}~/np~";
+}
 
 function wikiplugin_quote_info() {
 	return array(
 		'name' => tra('Quote'),
 		'documentation' => 'PluginQuote',
-		'description' => tra('Format text as a quote'),
+		'description' => tra("Quote text by surrounding the text with a box, like the [QUOTE] BBCode"),
 		'prefs' => array( 'wikiplugin_quote' ),
 		'body' => tra('Quoted text'),
-		'icon' => 'pics/icons/quotes.png',
-		'filter' => 'text',
 		'params' => array(
 			'replyto' => array(
 				'required' => false,
-				'name' => tra('Reply To'),
+				'name' => tra('Reply to'),
 				'description' => tra('Name of the quoted person.'),
-				'filter' => 'text',
-				'default' => '',
 			),
 		),
 	);
@@ -50,3 +56,5 @@ function wikiplugin_quote($data, $params) {
 //    if (substr($data, 0, 1) != "\n") $data = "\n".$data;
 	return $begin . $data . $end;
 }
+
+?>

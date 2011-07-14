@@ -1,11 +1,7 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /** \file
+ * $Id: /cvsroot/tikiwiki/tiki/lib/tree/tree.php,v 1.10 2006-10-26 11:23:27 luciash Exp $
+ *
  * \brief Base tree maker
  *
  * \author zaufi@sendmail.ru
@@ -32,8 +28,7 @@ require_once ('lib/debug/debugger.php');
  *  data   => user provided data to be placed as node text
  *
  */
-class TreeMaker
-{
+class TreeMaker {
 	/// Unique prefix for cookies generated for this tree
 	var $prefix;
 
@@ -67,9 +62,7 @@ class TreeMaker
 
 			$ind = "";
 			//
-			$count = -1;
 			foreach ($cli as $i) {
-				$count++;
 				$child_result = $this->make_tree_r($i["id"], $tmp);
 
 				$have_childs = (strlen($child_result) > 0);
@@ -80,13 +73,12 @@ class TreeMaker
 				$nl = "\n";
 				$ind .= "\t";
 				
-				if ($have_childs) {
+				$nsc = $this->node_start_code($i);
+
+				$flipper = '';
+
+				if ($have_childs)
 					$flipper = $this->node_flipper_code($i);
-					$nsc = $this->node_start_code_flip($i, $count);
-				} else {
-					$nsc = $this->node_start_code($i, $count);
-					$flipper = '';
-				}	
 
 				$ndsc = $this->node_data_start_code($i);
 				$ndec = $this->node_data_end_code($i);
@@ -140,14 +132,10 @@ class TreeMaker
 		return '';
 	}
 	
-	function node_start_code($nodeinfo, $count=0) {
+	function node_start_code($nodeinfo) {
 		return '';
 	}
 
-	function node_start_code_flip($nodeinfo, $count=0) {
-		return '';
-	}
-	
 	//
 	function node_flipper_code($nodeinfo) {
 		return '';
@@ -178,3 +166,5 @@ class TreeMaker
 		return '';
 	}
 }
+
+?>

@@ -1,9 +1,11 @@
+~np~
 <div class="poll">
 <div class="poll-title">
-    <strong>{$poll_title|escape}</strong>
+    <strong>{$poll_title}</strong>
 </div>
 <div class="poll-data">
-{$menu_info.name|escape}
-{include file='tiki-poll.tpl'}
+{$menu_info.name}
+{include file=tiki-poll.tpl}
 </div>
 </div>
+~/np~

@@ -1,14 +1,20 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 include 'tiki-setup.php';
 include 'lib/calendar/tikicalendarlib.php';
-$access->check_feature('feature_action_calendar');
-$access->check_permission('tiki_p_view_tiki_calendar');
+
+if ($prefs['feature_action_calendar'] != 'y') {
+  $smarty->assign('msg', tra("This feature is disabled").": feature_action_calendar");
+  $smarty->display("error.tpl");
+  die;
+}
+
+if ($tiki_p_view_tiki_calendar != 'y') {
+  $smarty->assign('errortype', 401);
+  $smarty->assign('msg', tra("Permission denied you cannot view the Tiki calendar"));
+	$smarty->display("error.tpl");
+	die;
+}
 
 $headerlib->add_cssfile('css/calendar.css',20);
 
@@ -39,7 +45,7 @@ foreach ( $tc_infos as $tc_key => $tc_val ) {
 
 $hrows = array();
 $hours = array();
-if ($calendarViewMode['casedefault'] == 'day') {
+if ($calendarViewMode == 'day') {
 	$hours = array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23);
 	foreach ($tc_infos['cell'][0]["{$tc_infos['weekdays'][0]}"]['items'] as $dayitems) {
 		$rawhour = intval(substr($dayitems['time'],0,2));
@@ -57,7 +63,7 @@ $smarty->assign('var', '');
 $smarty->assign('daformat2', $tikilib->get_long_date_format());
 $smarty->assign('myurl', $myurl);
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
-$smarty->assign('calendarViewMode',$calendarViewMode['casedefault']);
+$smarty->assign('calendarViewMode',$calendarViewMode);
 $smarty->assign('calendar_type', 'tiki_actions');
 
 $smarty->assign('mid', 'tiki-action_calendar.tpl');

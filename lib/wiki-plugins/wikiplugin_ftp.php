@@ -1,43 +1,37 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: /cvsroot/tikiwiki/tiki/lib/wiki-plugins/wikiplugin_trackerlist.php,v 1.40.2.12 2008-03-22 12:13:54 sylvieg Exp $
+
+function wikiplugin_ftp_help() {
+	$help = tra('Download box for a file on ftp server.');
+	$help .= "~np~{FTP(server=, user=, password=, title=)}file{FTP}~/np~";
+	return $help;
+}
 
 function wikiplugin_ftp_info() {
 	return array(
-		'name' => tra('FTP'),
+		'name' => tra('ftp'),
 		'documentation' => 'PluginFTP',
-		'description' => tra('Create a button for downloading a file from an FTP server'),
+		'description' => tra('Download box for a file on ftp server.'),
 		'prefs' => array( 'wikiplugin_ftp' ),
 		'validate' => 'all',
 		'body' => tra('file name'),
-		'icon' => 'pics/icons/application_put.png',
 		'params' => array(
 			'server' => array(
 				'required' => true,
-				'name' => tra('Server Name'),
-				'description' => tra('Name of the server where the FTP account is housed. Example: ') . 'ftp.myserver.com',
-				'default' => ''
+				'name' => tra('Ftp Server Name'),
+				'description' => 'ftp.myserver.com'
 			),
 			'user' => array(
 				'required' => true,
-				'name' => tra('User Name'),
-				'description' => tra('User name needed to access the FTP account'),
-				'default' => ''
+				'name' => tra('Ftp User name')
 			),
 			'password' =>array(
 				'required' => true,
-				'name' => tra('Password'),
-				'description' => tra('Password needed to access the FTP account'),
-				'default' => ''
+				'name' => tra('Ftp password')
 			),
 			'title' =>array(
 				'required' => false,
-				'name' => tra('Download Button Label'),
-				'description' => tra('Label for the FTP download button'),
-				'default' => ''
+				'name' => tra('Download button label')
 			)
 		),
 	);

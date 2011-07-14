@@ -1,14 +1,14 @@
 <div style="position:relative">
-  <table border="0" cellpadding="0" cellspacing="0" style="width:100%">
+  <table border="0" cellpading="0" cellspacing="0" style="width:100%">
 	<tr valign="middle" style="height:36px">
-	  <td id="month_title" {if $day eq $today}class="calfocuson"{/if} style="text-align:center; border:none; padding-top:4px"><strong>{$focusdate|tiki_long_date}</strong></td>
+	  <td id="month_title" style="text-align:center"><strong>{$focusdate|tiki_long_date}</strong></td>
 	</tr>
   </table>
   <table border="0" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;border:1px solid #ccc">
-{foreach key=k item=h from=$hr_display}
+{foreach key=k item=h from=$hours}
   <tr valign="middle" style="height:24px">
-    <td id="rowLeft_{$h[0]}" class="calHours" style="width:10%">{$h[1]}</td>
-    <td id="row_{$h[0]}" class="calWeek" style="background:none">&nbsp;</td>
+    <td id="rowLeft_{$h}" class="calHours" style="width:10%">{if ($h < 10)}0{/if}{$h}:00</td>
+    <td id="row_{$h}" class="calWeek" style="background:none">&nbsp;</td>
   </tr>
 {/foreach}
 </table>

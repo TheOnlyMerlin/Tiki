@@ -23,51 +23,25 @@
 <form action="tiki-edit_programmed_content.php" method="post">
 	<input type="hidden" name="contentId" value="{$contentId|escape}" />
 	<input type="hidden" name="pId" value="{$pId|escape}" />
-	<table class="formcolor">
+	<table class="normal">
 		<tr>
-			<td>{tr}Content Type:{/tr}</td>
-			<td>
-				<select name="content_type" class="type-selector">
-					<option value="static"{if $info.content_type eq 'static'} selected="selected"{/if}>{tr}Text area{/tr}</option>
-					<option value="page"{if $info.content_type eq 'page'} selected="selected"{/if}>{tr}Wiki Page{/tr}</option>
-				</select>
+			<td class="formcolor">Description:</td>
+			<td class="formcolor">
+				<textarea rows="5" cols="40" name="data">{$data|escape}</textarea>
 			</td>
 		</tr>
-		
-		<tr class="type-cond for-page">
-			<td>{tr}Page Name:{/tr}</td>
-			<td>
-				<input type="text" name="page_name" value="{$info.page_name|escape}"/>
-			</td>
-		</tr>
-
-		<tr class="type-cond for-static">
-			<td>{tr}Content:{/tr}</td>
-			<td>
-				<textarea rows="5" cols="40" name="data">{$info.data|escape}</textarea>
-			</td>
-		</tr>
-
 		<tr>
-			<td>{tr}Publishing date:{/tr}</td>
-			<td>
-				{html_select_date time=$publishDate end_year="+1" field_order=$prefs.display_field_order} 
-				{tr}at{/tr} {html_select_time time=$publishDate display_seconds=false use_24_hours=$use_24hr_clock}</td>
+			<td class="formcolor">{tr}Publishing date{/tr}</td>
+			<td class="formcolor">
+				{html_select_date time=$publishDate end_year="+1" field_order=$prefs.display_field_order} {tr}at{/tr} {html_select_time time=$publishDate display_seconds=false}</td>
 		</tr>
 		<tr>
-			<td>&nbsp;</td>
-			<td>
+			<td class="formcolor">&nbsp;</td>
+			<td class="formcolor">
 				<input type="submit" name="save" value="{tr}Save{/tr}" />
 			</td>
 		</tr>
 	</table>
-	{jq}
-		$('.type-selector').change( function( e ) {
-			$('.type-cond').hide();
-			var val = $('.type-selector').val();
-			$('.for-' + val).show();
-		} ).trigger('change');
-	{/jq}
 </form>
 
 <h2>{tr}Versions{/tr}</h2>
@@ -84,26 +58,30 @@
     <th>{tr}Action{/tr}</th>
   </tr>
 	{section name=changes loop=$listpages}
-		{if $actual eq $listpages[changes].publishDate}
-			{assign var=class value=third}
-		{else}
-			{if $actual > $listpages[changes].publishDate}
-				{assign var=class value=odd}
+		<tr>
+			{if $actual eq $listpages[changes].publishDate}
+				{assign var=class value=third}
 			{else}
-				{assign var=class value=even}
+				{if $actual > $listpages[changes].publishDate}
+					{assign var=class value=odd}
+				{else}
+					{assign var=class value=even}
+				{/if}
 			{/if}
-		{/if}
-		<tr class="{$class}">
-			<td class="id">&nbsp;{$listpages[changes].pId}&nbsp;</td>
-			<td class="date">&nbsp;{$listpages[changes].publishDate|tiki_short_datetime}&nbsp;</td>
-			<td class="text">&nbsp;{$listpages[changes].data|escape:'html'|nl2br}&nbsp;</td>
-			<td class="action">
+			<td class="{$class}">&nbsp;{$listpages[changes].pId}&nbsp;</td>
+			<td class="{$class}">&nbsp;{$listpages[changes].publishDate|tiki_short_datetime}&nbsp;</td>
+			<td class="{$class}">&nbsp;{$listpages[changes].data|escape:'html'|nl2br}&nbsp;</td>
+			<td class="{$class}">
 				<a class="link" href="tiki-edit_programmed_content.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;contentId={$contentId}&amp;edit={$listpages[changes].pId}" title="{tr}Edit{/tr}">{icon _id=page_edit}</a>
 				<a class="link" href="tiki-edit_programmed_content.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;contentId={$contentId}&amp;remove={$listpages[changes].pId}" title="{tr}Remove{/tr}">{icon _id=cross alt="{tr}Remove{/tr}"}</a>
 			</td>
 		</tr>
 	{sectionelse}
-		{norecords _colspan=4}
+		<tr>
+			<td colspan="4" class="odd">
+				<b>{tr}No records found{/tr}</b>
+			</td>
+		</tr>
 	{/section}
 </table>
 

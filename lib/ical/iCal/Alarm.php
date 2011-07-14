@@ -41,8 +41,7 @@ require_once('BaseComponent.php');
  * @category File
  * @package iCal
  */
-class File_iCal_Alarm extends File_iCal_BaseComponent
-{
+class File_iCal_Alarm extends File_iCal_BaseComponent {
     //make public from BaseComponent
     public function addAttachment($a) {
         File_iCal_BaseComponent::addAttachment($a);
@@ -137,3 +136,5 @@ class File_iCal_Alarm extends File_iCal_BaseComponent
     }
 
 }
+
+?>

@@ -1,19 +1,34 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/tiki-edit_programmed_content.php,v 1.24 2007-10-12 07:55:26 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
+// Initialization
 require_once ('tiki-setup.php');
 include_once ('lib/dcs/dcslib.php');
 $auto_query_args = array('contentId','sort_mode','offset','find');
 
 if (!isset($dcslib)) {
-	$dcslib = new DCSLib;
+	$dcslib = new DCSLib($dbTiki);
 }
-$access->check_feature('feature_dynamic_content');
-$access->check_permission('tiki_p_admin_dynamic');
+
+if ($prefs['feature_dynamic_content'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_dynamic_content");
+
+	$smarty->display("error.tpl");
+	die;
+}
+
+if ($tiki_p_admin_dynamic != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to use this feature"));
+
+	$smarty->display("error.tpl");
+	die;
+}
 
 if (!isset($_REQUEST["contentId"])) {
 	$smarty->assign('msg', tra("No content id indicated"));
@@ -28,46 +43,34 @@ $info = $dcslib->get_content($_REQUEST["contentId"]);
 $smarty->assign('description', $info["description"]);
 
 if (isset($_REQUEST["remove"])) {
-	$access->check_authenticity();
-	$dcslib->remove_programmed_content($_REQUEST["remove"]);
+  $area = 'deldyncontent';
+  if ($prefs['feature_ticketlib2'] != 'y' or (isset($_POST['daconfirm']) and isset($_SESSION["ticket_$area"]))) {
+    key_check($area);
+		$dcslib->remove_programmed_content($_REQUEST["remove"]);
+  } else {
+    key_get($area);
+  }
 }
 
 $smarty->assign('data', '');
 $smarty->assign('publishDate', $tikilib->now);
-//Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-include_once ('lib/userprefs/userprefslib.php');
-$smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
-
 $smarty->assign('actual', '');
 
 if (isset($_REQUEST["save"])) {
 	check_ticket('edit-programmed-content');
-
-	if( $_REQUEST['content_type'] == 'page' ) {
-		$content = 'page:' . $_REQUEST['page_name'];
-	} else {
-		$content = $_REQUEST['data'];
-	}
-
-	if (!empty($_REQUEST['Time_Meridian'])) {
-		$_REQUEST['Time_Hour'] = date('H', strtotime($_REQUEST['Time_Hour'] . ':00 ' . $_REQUEST['Time_Meridian']));
-	}
 	$publishDate = TikiLib::make_time($_REQUEST["Time_Hour"], $_REQUEST["Time_Minute"],
 																   0, $_REQUEST["Date_Month"], $_REQUEST["Date_Day"], $_REQUEST["Date_Year"]);
 
-	$id = $dcslib->replace_programmed_content($_REQUEST["pId"], $_REQUEST["contentId"], $publishDate, $content, $_REQUEST['content_type']);
+	$id = $dcslib->replace_programmed_content($_REQUEST["pId"], $_REQUEST["contentId"], $publishDate, $_REQUEST["data"]);
 	$smarty->assign('data', $_REQUEST["data"]);
 	$smarty->assign('publishDate', $publishDate);
 	$smarty->assign('pId', $id);
-
-	$_REQUEST['edit'] = $id;
 }
 
 if (isset($_REQUEST["edit"])) {
 	$info = $dcslib->get_programmed_content($_REQUEST["edit"]);
 
 	$actual = $dcslib->get_actual_content_date($_REQUEST["contentId"]);
-	$smarty->assign('info', $info);
 	$smarty->assign('actual', $actual);
 	$smarty->assign('data', $info["data"]);
 	$smarty->assign('publishDate', $info["publishDate"]);
@@ -118,3 +121,5 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the template
 $smarty->assign('mid', 'tiki-edit_programmed_content.tpl');
 $smarty->display("tiki.tpl");
+
+?>

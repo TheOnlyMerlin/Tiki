@@ -27,15 +27,15 @@
 		</tr>
 		{cycle values="odd,even" print=false}
 		{section name=ix loop=$batchRes}
-			<tr class="{cycle}">
-				<td>{$batchRes[ix].filename}</td>
+			<tr>
+				<td class="{cycle advance=false}">{$batchRes[ix].filename}</td>
 				{if $batchRes[ix].msg}
-					<td colspan="3">
+					<td class="{cycle advance=true}" colspan="3">
 						{icon _id=exclamation alt="{tr}Errors detected{/tr}" style="vertical-align:middle"} {$batchRes[ix].msg}
 					</td>
 				{else}
-					<td>
-						{icon _id=accept alt="{tr}Upload successful!{/tr}" style="vertical-align:middle"}{tr}Upload successful!{/tr}</td><td>{$batchRes[ix].imageId}</td><td><img src="{$url_show}?id={$batchRes[ix].imageId}&amp;thumb=1" alt="{$batchRes[ix].filename}" />
+					<td class="{cycle advance=false}">
+						{icon _id=accept alt="{tr}Upload successful!{/tr}" style="vertical-align:middle"}{tr}Upload successful!{/tr}</td><td class="{cycle advance=false}">{$batchRes[ix].imageId}</td><td class="{cycle}"><img src="{$url_show}?id={$batchRes[ix].imageId}&amp;thumb=1" alt="{$batchRes[ix].filename}" />
 					</td>
 				{/if}
 			</tr>
@@ -45,22 +45,22 @@
 
 {if $show eq 'y'}
 	<h2>{tr}Upload successful!{/tr}</h2>
-	<h3>{tr}The following image was successfully uploaded:{/tr}</h3>
+	<h3>{tr}The following image was successfully uploaded{/tr}:</h3>
 	<div align="center">
 		<img src="show_image.php?id={$imageId}" alt="{tr}Image ID{/tr}" />
 		<br />
-		<b>{tr}Thumbnail:{/tr}</b>
+		<b>{tr}Thumbnail{/tr}:</b>
 		<br />
 		<img src="show_image.php?id={$imageId}&amp;thumb=1" alt="{tr}Image ID thumb{/tr}" />
 		<br /><br />
 		<div class="wikitext">
-			{tr}You can view this image in your browser using:{/tr}&nbsp;
+			{tr}You can view this image in your browser using{/tr}:&nbsp;
 			<a class="link" href="{$url_browse}?imageId={$imageId}">{$url_browse}?imageId={$imageId}</a>
 			<br /><br />
-			{tr}You can include the image in an Wiki page using:{/tr}&nbsp;
+			{tr}You can include the image in an Wiki page using{/tr}:&nbsp;
 			<form>
 				<textarea rows="3" cols="60" style="width: 90%">
-					{literal}{{/literal}img id={$imageId}{literal}}{/literal}
+					{literal}{{/literal}img src=show_image.php?id={$imageId}{literal}}{/literal}
 				</textarea>
 			</form>
 		</div>
@@ -73,41 +73,41 @@
 			<h2>Upload File</h2>
 		{/if}
 		<form enctype="multipart/form-data" action="tiki-upload_image.php" method="post">
-			<table class="formcolor">
+			<table class="normal">
 				<tr>
-					<td>{tr}Image Name:{/tr}</td>
-					<td>
+					<td class="formcolor">{tr}Image Name{/tr}:</td>
+					<td class="formcolor">
 						<input type="text" size ="50" name="name" />
 						<br />
-						{tr}or use filename:{/tr} <input type="checkbox" name="use_filename" />
+						{tr}or use filename{/tr}: <input type="checkbox" name="use_filename" />
 					</td>
 				</tr>
 				{if $prefs.feature_maps eq 'y' && $geogallery eq 'y'}
 					<tr>
-						<td>{tr}Latitude (WGS84/decimal degrees):{/tr}</td>
-						<td>
+						<td class="formcolor">{tr}Latitude (WGS84/decimal degrees){/tr}:</td>
+						<td class="formcolor">
 							<input type="text" name="lat" value="{$lat|escape}" />
 						</td>
 					</tr>
 					<tr>
-						<td>
-							{tr}Longitude (WGS84/decimal degrees):{/tr}
+						<td class="formcolor">
+							{tr}Longitude (WGS84/decimal degrees){/tr}:
 						</td>
-						<td>
+						<td class="formcolor">
 							<input type="text" name="lon" value="{$lon|escape}" />
 						</td>
 					</tr>
 				{/if}
 				<tr>
-					<td>{tr}Image Description:{/tr}</td>
-					<td>
+					<td class="formcolor">{tr}Image Description{/tr}:</td>
+					<td class="formcolor">
 						<textarea rows="5" cols="50" name="description"></textarea>
 					</td>
 				</tr>
 				{if $tiki_p_list_image_galleries eq 'y'}
 					<tr>
-						<td>{tr}Gallery:{/tr}</td>
-						<td>
+						<td class="formcolor">{tr}Gallery{/tr}:</td>
+						<td class="formcolor">
 							<select name="galleryId">
 								{section name=idx loop=$galleries}
 									{if ($galleries[idx].individual eq 'n') or ($galleries[idx].individual_tiki_p_upload_images eq 'y')}
@@ -120,34 +120,34 @@
 				{else}
 					<input type="hidden" name="galleryId" value="{$galleryId}" />
 				{/if}
-				{include file='categorize.tpl'}
-				<tr>
-					<td colspan="2">
+				{include file=categorize.tpl}
+				<tr class="formcolor">
+					<td class="formcolor" colspan="2">
 						<b>{tr}Now enter the image URL{/tr} {tr}or upload a local image from your disk{/tr}</b>
 					</td>
 				</tr>
 				<tr>
-					<td>URL:</td>
-					<td>
+					<td class="formcolor">URL:</td>
+					<td class="formcolor">
 						<input size="50" type="text" name="url" />
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Upload From Disk{/tr} / {tr}Batch Upload:{/tr}</td>
-					<td>
+					<td class="formcolor">{tr}Upload From Disk{/tr} / {tr}Batch Upload{/tr}:</td>
+					<td class="formcolor">
 						<input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
 						<input size="50" name="userfile1" type="file" />
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Thumbnail (optional, overrides automatic thumbnail generation):{/tr}</td>
-					<td>
+					<td class="formcolor">{tr}Thumbnail (optional, overrides automatic thumbnail generation){/tr}:</td>
+					<td class="formcolor">
 						<input name="userfile2" size ="50" type="file" />
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Upload From Disk:{/tr}</td>
-					<td>
+					<td class="formcolor">{tr}Upload From Disk{/tr}:</td>
+					<td class="formcolor">
 						<input name="userfile3" type="file" />
 						<input name="userfile4" type="file" />
 						<br />
@@ -159,16 +159,16 @@
 					</td>
 				</tr>
 				{if $prefs.feature_antibot eq 'y' && $user eq ''}
-					{include file='antibot.tpl' td_style="formcolor"}
+					{include file="antibot.tpl" td_style="formcolor"}
 				{/if}
 				<tr>
-					<td>&nbsp;</td>
-					<td>
+					<td class="formcolor">&nbsp;</td>
+					<td class="formcolor">
 						<input type="submit" name="upload" value="{tr}Upload{/tr}" />
+						<span class="rbox-data">{tr}Note: Maximum image size is limited to{/tr} {$max_upload_size|kbsize}</span>
 					</td>
 				</tr>
 			</table>
-			{remarksbox type="note"}{tr}Maximum file size is around:{/tr} {if $tiki_p_admin eq 'y'}<a title="{$max_upload_size_comment}">{/if}{$max_upload_size|kbsize:true:0}{if $tiki_p_admin eq 'y'}</a>{/if}{/remarksbox}
 		</form>
 	</div>
 {else}

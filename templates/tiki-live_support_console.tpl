@@ -1,10 +1,12 @@
-<!DOCTYPE html>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
     <link rel="StyleSheet"  href="styles/{$prefs.style}" type="text/css" />
-    {include file='bidi.tpl'}
+    {include file="bidi.tpl"}
     <title>{tr}Live support:Console{/tr}</title>
     {literal}
 	<script type="text/javascript" src="lib/live_support/live-support.js">
@@ -20,8 +22,8 @@
   	<input type="hidden" id="status" value="online" />
 	<table class="normal" >
 		<tr>
-			<th>{tr}Operator:{/tr} {$user}</th>
-			<th>{tr}Status:{/tr} <b>{tr}{$status}{/tr}</b></th>
+			<th>{tr}Operator{/tr}: {$user}</th>
+			<th>{tr}Status{/tr}: <b>{tr}{$status}{/tr}</b></th>
 			<th style="text-align:right;">    
 				{if $status eq 'offline'}
     				<a href="tiki-live_support_console.php?status=online">{tr}be online{/tr}</a>
@@ -48,11 +50,11 @@
 		</tr>
 		{cycle values="odd,even" print=false}
 		{section loop=$requests name=ix}
-		<tr class="{cycle}">
-			<td>{$requests[ix].user}</td>
-			<td>{$requests[ix].reason}</td>
-			<td>{$requests[ix].timestamp|tiki_short_time}</td>
-			<td>
+		<tr>
+			<td class="{cycle advance=false}">{$requests[ix].user}</td>
+			<td class="{cycle advance=false}">{$requests[ix].reason}</td>
+			<td class="{cycle advance=false}">{$requests[ix].timestamp|tiki_short_time}</td>
+			<td class="{cycle}">
 		    {if $status eq 'online'}
 				{assign var=thereqId value=$requests[ix].reqId}
 				<a class="link" {jspopup href="tiki-live_support_chat_window.php?reqId=$thereqId&amp;role=operator" width="300" height="450"}>{tr}Accept{/tr}</a>

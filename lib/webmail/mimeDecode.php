@@ -57,8 +57,8 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 * @version $Revision: 1.11 $
 * @package Mail
 */
-class Mail_mimeDecode extends PEAR
-{
+class Mail_mimeDecode extends PEAR {
+
 	/**
 	 * The raw email to decode
 	 * @var    string
@@ -724,3 +724,5 @@ class Mail_mimeDecode extends PEAR
 		return $return;
 	}
 } // End of class
+
+?>

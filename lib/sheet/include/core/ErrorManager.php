@@ -233,3 +233,4 @@ class ErrorManager extends Object {
         else return true;
         }
     }
+?>

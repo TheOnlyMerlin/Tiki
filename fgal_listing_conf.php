@@ -1,9 +1,10 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
+
+// $Id: /cvsroot/tikiwiki/tiki/fgal_listing_conf.php,v 1.1.2.2 2008-03-16 00:06:53 nyloth Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to err & die if called directly.
 //smarty is not there - we need setup
@@ -20,30 +21,19 @@ $fgal_listing_conf = array(
 	'description' => array('name' => tra('Description')),
 	'size' => array('name' => tra('Size')),
 	'created' => array('name' => tra('Created').' / '.tra('Uploaded')),
-	'lastModif' => array('name' => tra('Last Modified'), 'key' => 'show_modified'),
-	'creator' => array('name' => tra('Uploaded by')), //this used to be Creator but updated Nov2010
-	'author' => array('name' => tra('Creator')),  //this used to be Author but updated Nov2010
-	'last_user' => array('name' => tra('Last Modified by')), //this used to be 'Last editor' but updated Nov2010
+	'lastmodif' => array('name' => tra('Last Modified'), 'key' => 'show_modified'),
+	'creator' => array('name' => tra('Creator')),
+	'author' => array('name' => tra('Author')),
+	'last_user' => array('name' => tra('Last editor')),
 	'comment' => array('name' => tra('Comment')),
 	'files' => array('name' => tra('Files')),
 	'hits' => array('name' => tra('Hits')),
-	'lastDownload' => array('name' => tra('Last download')),
-	'lockedby' => array('name' => tra('Locked by'), 'icon' => 'lock_gray'),
-	'backlinks' => array('name' => tra('Backlinks')),
-	'deleteAfter' => array('name'=>tra('Delete After')),
-	'share' => array('name'=>tra('Share with')),
-	'source' => array('name' => tra('Source')),
+	'lockedby' => array('name' => tra('Locked by'), 'icon' => 'lock_gray')
 );
-
-if (isset($section) && $section == 'admin') {
-	foreach ($fgal_listing_conf as $k=>$v) {
-		$fgal_listing_conf_admin[$k.'_admin'] = $v;
-	}
-}
 foreach ( $fgal_listing_conf as $k => $v ) {
 
 	if ( $k == 'type' ) $show_k = 'icon';
-	elseif ( $k == 'lastModif' ) $show_k = 'modified';
+	elseif ( $k == 'lastmodif' ) $show_k = 'modified';
 	else $show_k = $k;
 
 	if ( isset($_REQUEST['fgal_list_'.$k]) ) {
@@ -53,20 +43,14 @@ foreach ( $fgal_listing_conf as $k => $v ) {
 	} else {
 		$fgal_listing_conf[$k]['value'] = $prefs['fgal_list_'.$k];
 	}
-}
-// Do not show "Locked by" info if the gallery is not lockable
-if ( isset($gal_info) && isset($gal_info['galleryId']) && isset($gal_info['lockable']) && $gal_info['lockable'] != 'y' ) {
-	$fgal_listing_conf['lockedby']['value'] = 'n';
-}
 
-$smarty->assign_by_ref('fgal_listing_conf', $fgal_listing_conf);
-
-if (isset($section) && $section == 'admin') {
-	foreach ($fgal_listing_conf_admin as $k=>$v) {
-		$fgal_listing_conf_admin[$k]['value'] = $prefs['fgal_list_'.$k];
+	// Do not show "Locked by" info if the gallery is not lockable
+	if ( isset($gal_info) && isset($gal_info['lockable']) && $gal_info['lockable'] != 'y' ) {
+		$fgal_listing_conf['lockedby']['value'] = 'n';
 	}
-	$smarty->assign_by_ref('fgal_listing_conf_admin', $fgal_listing_conf_admin);
+
 }
+$smarty->assign_by_ref('fgal_listing_conf', $fgal_listing_conf);
 
 $fgal_options = array(
 	'show_explorer' => array('name' => tra('Explorer')),
@@ -75,24 +59,14 @@ $fgal_options = array(
 	'default_view' => array('name' => tra('Default View'))
 );
 
-if (isset($_REQUEST['view']) && $_REQUEST['view'] == 'admin') {
-	$fgal_options['show_explorer'] = 'n';
-	$fgal_options['show_path'] = 'n';
-	$fgal_options['show_slideshow'] = 'n';
-	$fgal_options['default_view'] = 'list';
-} else {
-	foreach ( $fgal_options as $k_gal => $v ) {
-		$k_prefs = 'fgal_'.$k_gal;
+foreach ( $fgal_options as $k_gal => $v ) {
+	$k_prefs = 'fgal_'.$k_gal;
 
-		if ( $k_gal == 'default_view' ) {
-			$fgal_options[$k_gal]['value'] = ( isset($gal_info) && isset($gal_info[$k_gal]) ) ? $gal_info[$k_gal] : $prefs[$k_prefs];
-		} elseif ( !isset($_REQUEST['edit_mode']) ) {
-			// We are in the file gallery admin panel
-			$fgal_options[$k_gal]['value'] = $prefs[$k_prefs];
-		} else {
-			// We are in the edit file gallery page
-			$fgal_options[$k_gal]['value'] = $gal_info[$k_gal];
-		}
+	if ( $k_gal == 'default_view' ) {
+		$fgal_options[$k_gal]['value'] = ( isset($gal_info) && isset($gal_info[$k_gal]) ) ? $gal_info[$k_gal] : $prefs[$k_prefs];
+	} else {
+		// Only check the current gallery value if the feature (in global prefs) is enabled
+		$fgal_options[$k_gal]['value'] = ( $prefs[$k_prefs] == 'y' && isset($gal_info) && isset($gal_info[$k_gal]) ) ? $gal_info[$k_gal] : $prefs[$k_prefs];
 	}
 }
 

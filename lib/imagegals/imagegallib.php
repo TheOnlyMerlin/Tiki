@@ -1,9 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: /cvsroot/tikiwiki/tiki/lib/imagegals/imagegallib.php,v 1.97.2.4 2008-03-06 19:45:42 sampaioprimo Exp $
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,15 +7,11 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-include_once('lib/reportslib.php');
-
-class ImageGalsLib extends TikiLib
-{
-	function __construct()
-	{
-		parent::__construct();
+class ImageGalsLib extends TikiLib {
+	function ImageGalsLib($db) {
 		global $prefs;
 
+		$this->TikiLib($db);
 		$exts=get_loaded_extensions();
 
 		// Which GD Version do we have?
@@ -44,7 +36,7 @@ class ImageGalsLib extends TikiLib
 					$this->gdversion = "1.0";
 				}
 
-				$this->gdinfo["JPG Support"] = preg_match('/JPE?G Support.*enabled/', ob_get_contents());
+				$this->gdinfo["JPG Support"] = preg_match('/JPG Support.*enabled/', ob_get_contents());
 				$this->gdinfo["PNG Support"] = preg_match('/PNG Support.*enabled/', ob_get_contents());
 				$this->gdinfo["GIF Create Support"] = preg_match('/GIF Create Support.*enabled/', ob_get_contents());
 				$this->gdinfo["WBMP Support"] = preg_match('/WBMP Support.*enabled/', ob_get_contents());
@@ -81,6 +73,7 @@ class ImageGalsLib extends TikiLib
 			$this->canrotate = false;
 		}
 
+
 		// get variables to determine if we can upload and how many data
 		// we can upload
 		$this->file_uploads=ini_get('file_uploads');
@@ -88,32 +81,51 @@ class ImageGalsLib extends TikiLib
 		$this->post_max_size=ini_get('post_max_size');
 		if($this->file_uploads==0) {
 		   $this->max_img_upload_size=0;
-		}
+		} else {
+
+		   }
+
 	}
 
-	function max_img_upload_size()
-	{
-		global $tikilib;
-	   $this->upload_max_filesize=$tikilib->return_bytes($this->upload_max_filesize);
-	   $this->post_max_size=$tikilib->return_bytes($this->post_max_size);
+	function max_img_upload_size() {
+	   $this->upload_max_filesize=$this->return_bytes($this->upload_max_filesize);
+	   $this->post_max_size=$this->return_bytes($this->post_max_size);
 	   if($this->file_uploads==0) {
-		  return(0);
+	      return(0);
 	   } else {
-		  return(($this->post_max_size > $this->upload_max_filesize) ? $this->post_max_size : $this->upload_max_filesize);
+	      return(($this->post_max_size > $this->upload_max_filesize) ? $this->post_max_size : $this->upload_max_filesize);
 	   }
 	}
 
+
+
+	// from php manual. one of the rare circumstances where
+	// a break in the switch-case is not needed
+        function return_bytes($val) {
+          $val = trim($val);
+          $last = strtolower($val{strlen($val)-1});
+          switch($last) {
+
+          // The 'G' modifier is available since PHP 5.1.0
+            case 'g':
+              $val *= 1024;
+            case 'm':
+              $val *= 1024;
+            case 'k':
+              $val *= 1024;
+          }
+
+          return $val;
+        }
+
 	// Features
-	function canrotate()
-	{
+	function canrotate() {
 		return $this->canrotate;
 	}
-
 	//
 	// Wrappers
 	//
-	function validhandle()
-	{
+	function validhandle() {
 		if (isset($this->imagehandle)) {
 			if ($this->uselib == "imagick") {
 				// seems not to work in imagick 0.95 aahrgh
@@ -132,8 +144,7 @@ class ImageGalsLib extends TikiLib
 		return false;
 	}
 
-	function readimagefromstring()
-	{
+	function readimagefromstring() {
 		if (!isset($this->image)) {
 			return false;
 		}
@@ -152,8 +163,7 @@ class ImageGalsLib extends TikiLib
 		}
 	}
 
-	function writeimagetostring()
-	{
+	function writeimagetostring() {
 		if ($this->uselib == "imagick") {
 			$this->image = imagick_image2blob($this->imagehandle);
 		} else if ($this->uselib == "gd") {
@@ -165,8 +175,7 @@ class ImageGalsLib extends TikiLib
 		}
 	}
 
-	function readimagefromfile($fname)
-	{
+	function readimagefromfile($fname) {
 		@$fp = fopen($fname, "rb");
 
 		if ($fp) {
@@ -185,8 +194,7 @@ class ImageGalsLib extends TikiLib
 	}
 
 	// for piping out a image
-	function pipeimage($fname)
-	{
+	function pipeimage($fname) {
 		$fp = fopen($fname, "rb");
 
 		$size = filesize($fname);
@@ -198,8 +206,7 @@ class ImageGalsLib extends TikiLib
 	}
 
 	//Get sizes. Image must be loaded before
-	function getimageinfo()
-	{
+	function getimageinfo() {
 		if ($this->uselib == "imagick") {
 			$this->filetype = imagick_getmimetype($this->imagehandle);
 
@@ -214,8 +221,7 @@ class ImageGalsLib extends TikiLib
 
 	//Repair Image info. Is called if someone inserts unsupported images (like gif)
 	//and switches to imagick
-	function repairimageinfo()
-	{
+	function repairimageinfo() {
 		if (!isset($this->imageId))
 			die();
 
@@ -229,8 +235,7 @@ class ImageGalsLib extends TikiLib
 	}
 
 	// GD can only get the mimetype from the file
-	function getfileinfo($fname)
-	{
+	function getfileinfo($fname) {
 		$this->filesize = filesize($fname);
 
 		if ($this->uselib == "imagick") {
@@ -267,8 +272,7 @@ class ImageGalsLib extends TikiLib
 	}
 
 	// resize Image
-	function resizeImage($newx, $newy)
-	{
+	function resizeImage($newx, $newy) {
 		if (!isset($this->imagehandle)) {
 			$this->readimagefromstring();
 		}
@@ -314,8 +318,7 @@ class ImageGalsLib extends TikiLib
 
 	// rescale Image, almost the same as resize, but keeps apect ratio
 	// bbx and bby give the boundary box
-	function rescaleImage($bbx, $bby)
-	{
+	function rescaleImage($bbx, $bby) {
 		if (!$bbx || !$bby)
 			return true;
 		if (!isset($this->imagehandle)) {
@@ -341,8 +344,7 @@ class ImageGalsLib extends TikiLib
 		return $this->resizeImage($newx, $newy);
 	}
 
-	function rotateimage($angle)
-	{
+	function rotateimage($angle) {
 		if ($this->uselib == "imagick") {
 			//Imagick and GD have different opinion what is 90 degree. right or left?
 			imagick_rotate($this->imagehandle, -$angle);
@@ -362,54 +364,64 @@ class ImageGalsLib extends TikiLib
 
 	// function to determine supported image types
 	// imagick has no function to get the supported image types
-	function issupported($imagetype)
-	{
+	function issupported($imagetype) {
 		if ($this->uselib == "imagick") {
 			//imagick can read everything ... we assume
 			return true;
 		} else if ( $this->uselib == "gd" &&
-								$this->havegd == true ) {
+		    $this->havegd == true )
+		{
 			switch (strtolower($imagetype)) {
-				case 'jpeg':
-				case 'pjpeg':
-				case 'jpg':
-				case 'image/jpeg':
-				case 'image/pjpeg':
-				case 'image/jpg':
-					return ((isset($this->gdinfo['JPG Support']) && $this->gdinfo['JPG Support']) || (isset($this->gdinfo['JPEG Support']) && $this->gdinfo['JPEG Support']) );
-					break;
-				case 'png':
-				case 'image/png':
-					return ($this->gdinfo["PNG Support"]);
-					break;
-				case 'gif':
-				case 'image/gif':
-					return ($this->gdinfo["GIF Create Support"]);
-					break;
-				case 'bmp':
-				case 'image/bmp':
-					return ($this->gdinfo["WBMP Support"]);
-					break;
-				case 'xbm':
-				case 'image/xbm':
-					return ($this->gdinfo["XBM Support"]);
-					break;
-				default:
-					return false;
-					break;
+			case 'jpeg':
+			case 'pjpeg':
+			case 'jpg':
+			case 'image/jpeg':
+			case 'image/pjpeg':
+			case 'image/jpg':
+				return ($this->gdinfo["JPG Support"]);
+
+				break;
+
+			case 'png':
+			case 'image/png':
+				return ($this->gdinfo["PNG Support"]);
+
+				break;
+
+			case 'gif':
+			case 'image/gif':
+				return ($this->gdinfo["GIF Create Support"]);
+
+				break;
+
+			case 'bmp':
+			case 'image/bmp':
+				return ($this->gdinfo["WBMP Support"]);
+
+				break;
+
+			case 'xbm':
+			case 'image/xbm':
+				return ($this->gdinfo["XBM Support"]);
+
+				break;
+
+			default:
+				return false;
+
+				break;
 			}
 		} else {
-			return false;
+		    return false;
 		}
 	}
 
 	// Batch image uploads todo
-	function process_batch_image_upload($galleryId, $file, $user)
-	{
+	function process_batch_image_upload($galleryId, $file, $user) {
 		global $prefs;
 
 		$numimages = 0;
-		include_once ('lib/pclzip/pclzip.lib.php');
+		include_once ('lib/pclzip.lib.php');
 		$archive = new PclZip($file);
 		// Read Archive contents
 		$ziplist = $archive->listContent();
@@ -417,10 +429,10 @@ class ImageGalsLib extends TikiLib
 		if (!$ziplist)
 			return (false); // Archive invalid
 
-		foreach($ziplist as $zipfile) {
-			$file = $zipfile["filename"];
+		for ($i = 0; $i < sizeof($ziplist); $i++) {
+			$file = $ziplist["$i"]["filename"];
 
-			if (!$zipfile["folder"]) {
+			if (!$ziplist["$i"]["folder"]) {
 				//copied
 				$gal_info = $this->get_gallery($galleryId);
 
@@ -436,7 +448,7 @@ class ImageGalsLib extends TikiLib
 						$upl = 0;
 				}
 				//extract file
-				$archive->extractByIndex($zipfile["index"],
+				$archive->extractByIndex($ziplist["$i"]["index"],
 					$prefs['tmpDir'], dirname($file)); //extract and remove (dangerous) pathname
 				$file = basename($file);
 
@@ -480,8 +492,7 @@ class ImageGalsLib extends TikiLib
 		return $numimages;
 	}
 
-	function add_image_hit($id)
-	{
+	function add_image_hit($id) {
 		global $prefs, $user;
 
 		if ($prefs['count_admin_pvs'] == 'y' || $user != 'admin') {
@@ -490,17 +501,16 @@ class ImageGalsLib extends TikiLib
 		}
 
 		if ($prefs['feature_score'] == 'y') {
-			$this->score_event($user, 'igallery_see_img', $id);
-			$query = "select `user` from `tiki_images` where `imageId`=?";
-			$owner = $this->getOne($query, array((int)$id));
-			$this->score_event($owner, 'igallery_img_seen', "$user:$id");
+		    $this->score_event($user, 'igallery_see_img', $id);
+		    $query = "select `user` from `tiki_images` where `imageId`=?";
+		    $owner = $this->getOne($query, array((int)$id));
+		    $this->score_event($owner, 'igallery_img_seen', "$user:$id");
 		}
 
 		return true;
 	}
 
-	function add_gallery_hit($id)
-	{
+	function add_gallery_hit($id) {
 		global $prefs, $user;
 
 		if ($prefs['count_admin_pvs'] == 'y' || $user != 'admin') {
@@ -510,17 +520,18 @@ class ImageGalsLib extends TikiLib
 		}
 
 		if ($prefs['feature_score'] == 'y') {
-			$this->score_event($user, 'igallery_see', $id);
-			$query = "select `user` from `tiki_galleries` where `galleryId`=?";
-			$owner = $this->getOne($query, array((int)$id));
-			$this->score_event($owner, 'igallery_seen', "$user:$id");
+		    $this->score_event($user, 'igallery_see', $id);
+		    $query = "select `user` from `tiki_galleries` where `galleryId`=?";
+		    $owner = $this->getOne($query, array((int)$id));
+		    $this->score_event($owner, 'igallery_seen', "$user:$id");
 		}
 
 		return true;
 	}
 
 	function ImageCopyResampleBicubic(&$dst_img, &$src_img, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h)
-	{
+	// port to PHP by John Jensen July 10 2001 (updated 4/21/02) -- original code (in C, for the PHP GD Module) by jernberg@fairytale.se////
+		{
 		$palsize = ImageColorsTotal($src_img);
 
 		for ($i = 0; $i < $palsize; $i++) { // get palette.
@@ -555,8 +566,7 @@ class ImageGalsLib extends TikiLib
 		}
 	}
 
-	function store_image_data($overwrite = false)
-	{
+	function store_image_data($overwrite = false) {
 		global $prefs;
 
 		$size = strlen($this->image);
@@ -613,17 +623,17 @@ class ImageGalsLib extends TikiLib
 			}
 
 			$query = "update `tiki_images_data` set `filetype`=?,
-					`filename`=?,`data`=?,
-					`filesize`=? ,`xsize`=?, 
-					`ysize`=?
-				where
-					`imageId`=? and `type`=? and
-					`xsize`=? and `ysize`=?";
-			$bindvars=array($this->filetype,$this->filename,($prefs['gal_use_db'] == 'y')?$this->image:'',(int)$size,(int)$this->xsize,(int)$this->ysize,(int)$this->imageId,$this->type,(int)$this->oldxsize,(int)$this->oldysize);
+				`filename`=?,`data`=?,
+				`filesize`=? ,`xsize`=?, 
+				`ysize`=?
+			where
+			`imageId`=? and `type`=? and
+			`xsize`=? and `ysize`=?";
+			 $bindvars=array($this->filetype,$this->filename,($prefs['gal_use_db'] == 'y')?$this->image:'',(int)$size,(int)$this->xsize,(int)$this->ysize,(int)$this->imageId,$this->type,(int)$this->oldxsize,(int)$this->oldysize);
 		} else {
 			$query = "insert into `tiki_images_data`(`imageId`,`xsize`,`ysize`,
-							`type`,`filesize`,`filetype`,`filename`,`data`)
-							values (?,?,?,?,?,?,?,?)";
+                                `type`,`filesize`,`filetype`,`filename`,`data`)
+                        values (?,?,?,?,?,?,?,?)";
 			$bindvars=array((int)$this->imageId,(int)$this->xsize,(int)$this->ysize,$this->type,(int)$size,$this->filetype,$this->filename,($prefs['gal_use_db'] == 'y')?$this->image:'');
 		}
 
@@ -631,11 +641,10 @@ class ImageGalsLib extends TikiLib
 		return true;
 	}
 
-	function rebuild_image($imageid, $itype, $xsize, $ysize=0)
-	{
-		global $prefs;
+	function rebuild_image($imageid, $itype, $xsize, $ysize=0) {
+	        global $prefs;
 	        
-		$galid = $this->get_gallery_from_image($imageid);
+	        $galid = $this->get_gallery_from_image($imageid);
 		if($ysize==0) {
 			$ysize=$xsize;
 		}
@@ -649,27 +658,28 @@ class ImageGalsLib extends TikiLib
 			$hasscale = false;
 
 			if ($prefs["preset_galleries_info"] == 'y' && $prefs["scaleSizeGalleries"] > 0) {
-				$scaleinfo = $prefs["scaleSizeGalleries"];
-				if ((($scaleinfo == $xsize) && ($scaleinfo >= $ysize)) || (($scaleinfo == $ysize) && ($scaleinfo >= $xsize))) {
-					$hasscale = true;
-					$newx = $scaleinfo;
-					$newy = $scaleinfo;
-				}
+			    $scaleinfo = $prefs["scaleSizeGalleries"];
+			    if ((($scaleinfo == $xsize) && ($scaleinfo >= $ysize)) || (($scaleinfo == $ysize) && ($scaleinfo >= $xsize))) {
+				$hasscale = true;
+				$newx = $scaleinfo;
+				$newy = $scaleinfo;
+			    }
 			} else {
-				$scaleinfo = $this->get_gallery_scale_info($galid);
-				while (list($num, $sci) = each($scaleinfo)) {
-					if ((($sci['scale'] == $xsize) && ($sci['scale'] >= $ysize)) || 
-							(($sci['scale'] == $ysize) && ($sci['scale'] >= $xsize))) {
-						$hasscale = true;
-						$newx = $sci['scale'];
-						$newy = $sci['scale'];
-					}
+			    $scaleinfo = $this->get_gallery_scale_info($galid);
+			    while (list($num, $sci) = each($scaleinfo)) {
+				if ((($sci['scale'] == $xsize) && ($sci['scale'] >= $ysize)) || 
+				    (($sci['scale'] == $ysize) && ($sci['scale'] >= $xsize))) {
+				    $hasscale = true;
+				    
+				    $newx = $sci['scale'];
+				    $newy = $sci['scale'];
 				}
+			    }
+			    
 			}
 
-			if (!$hasscale) {
+			if (!$hasscale)
 				return false;
-			}
 		}
 
 		// now we can start rebuilding the image
@@ -681,6 +691,7 @@ class ImageGalsLib extends TikiLib
 		// determine new size
 		if ($itype == 't') {
 			$newx = $galinfo["thumbSizeX"];
+
 			$newy = $galinfo["thumbSizeY"];
 		}
 
@@ -693,6 +704,7 @@ class ImageGalsLib extends TikiLib
 			// filetype is not supported, but we store the data
 			// assiming newx,newy as new size
 			$this->xsize = $newx;
+
 			$this->ysize = $newy;
 		}
 
@@ -712,8 +724,7 @@ class ImageGalsLib extends TikiLib
 		return $newsize;
 	}
 
-	function rebuild_thumbnails($galleryId)
-	{
+	function rebuild_thumbnails($galleryId) {
 		global $prefs;
 
 		// rewritten by flo
@@ -737,41 +748,40 @@ class ImageGalsLib extends TikiLib
 		return true;
 	}
 
-	function rebuild_scales($galleryId, $imageId = -1)
-	{
+	function rebuild_scales($galleryId, $imageId = -1) {
 		// doesn't really rebuild, it deletes the scales and thumbs for 
 		// automatic rebuild
 		// give either a galleryId for rebuild complete gallery or
 		// a imageId for a image rebuild
-		global $prefs;
+    global $prefs;
 		if ($imageId == -1) {
 			//gallery mode
 			//mysql does'nt have subqueries. Bad.
-			$bindvars=array();
+      $bindvars=array();
 			$query1 = "select `imageId`,`path` from `tiki_images`";
-			if($galleryId>-1) { // if galleryid == -1 then all galleries
-				$query1 .= ' where `galleryId`=?';
-				$bindvars=array((int)$galleryId);
-			}
+      if($galleryId>-1) { // if galleryid == -1 then all galleries
+        $query1 .= ' where `galleryId`=?';
+        $bindvars=array((int)$galleryId);
+      }
 
 			$result1 = $this->query($query1,$bindvars);
 
 			while ($res = $result1->fetchRow()) {
-				$query2 = 'select `xsize`,`ysize`,`type` from `tiki_images_data` where `imageId`=? and not (`type`=?)';
+			  $query2 = 'select `xsize`,`ysize`,`type` from `tiki_images_data` where `imageId`=? and not (`type`=?)';
 				$query3 = "delete from `tiki_images_data` where `imageId`=? and not (`type`=?)";
-				$bindvars2=array((int)$res["imageId"],'o');
+        $bindvars2=array((int)$res["imageId"],'o');
 
 				$result2 = $this->query($query2,$bindvars2);
-				while($res2=$result2->fetchRow()) {
-					if(!empty($res['path'])) {
-						if($res2['type']=='s') { $ext = ".scaled_" . $res2['xsize'] . "x" . $res2['ysize'];}
-						if($res2['type']=='t') { $ext = ".thumb";}
-						if($res2['type']=='s' || $res2['type']=='t') { // in case we add other types later
-							@unlink($prefs['gal_use_dir'].$res['path'].$ext );
-						}
-					}
+        while($res2=$result2->fetchRow()) {
+				  if(!empty($res['path'])) {
+				    if($res2['type']=='s') { $ext = ".scaled_" . $res2['xsize'] . "x" . $res2['ysize'];}
+				    if($res2['type']=='t') { $ext = ".thumb";}
+            if($res2['type']=='s' || $res2['type']=='t') { // in case we add other types later
+              @unlink($prefs['gal_use_dir'].$res['path'].$ext );
+            }
+          }
 				}
-				// delete images_data entries
+        // delete images_data entries
 				$result3 = $this->query($query3,$bindvars2);
 			}
 		} else {
@@ -782,14 +792,13 @@ class ImageGalsLib extends TikiLib
 		}
 	}
 
-	function edit_image($id, $name, $description, $lat=NULL, $lon=NULL, $file=NULL)
-	{
+	function edit_image($id, $name, $description, $lat=NULL, $lon=NULL, $file=NULL) {
 		global $prefs;
 		$name = strip_tags($name);
 
 		$description = strip_tags($description);
 		$query = "update `tiki_images` set `name`=?, `description`=?, `lat`=?, `lon`=? where `imageId` = ?";
-		$result = $this->query($query,array($name,$description,(float)$lat,(float)$lon,(int)$id));
+		$result = $this->query($query,array($name,$description,$lat,$lon,(int)$id));
 		if (!empty($file) && !empty($file['name'])) {
 			if (!is_uploaded_file($file['tmp_name']) || !($fp = fopen($file['tmp_name'], "rb")))
 				return false;
@@ -812,14 +821,15 @@ class ImageGalsLib extends TikiLib
 			$result = $this->query($query, array((int)$id, 'o'));
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('images', $id);
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('images', $id);
+		}
 
 		return true;
 	}
 
-	function insert_image($galleryId, $name, $description, $filename, $filetype, &$data, $size, $xsize, $ysize, $user, $t_data, $t_type ,$lat=NULL, $lon=NULL, $gal_info=NULL)
-	{
+	function insert_image($galleryId, $name, $description, $filename, $filetype, &$data, $size, $xsize, $ysize, $user, $t_data, $t_type ,$lat=NULL, $lon=NULL, $gal_info=NULL) {
 		global $prefs;
 
 		$name = strip_tags($name);
@@ -853,21 +863,21 @@ class ImageGalsLib extends TikiLib
 		}
 
 		$query = "insert into `tiki_images`(`galleryId`,`name`,`description`,`user`,`created`,`hits`,`path`,`lat`,`lon`)
-		          values(?,?,?,?,?,?,?,?,?)";
+                          values(?,?,?,?,?,?,?,?,?)";
 		$result = $this->query($query,array((int)$galleryId,$name,$description,$user,(int)$this->now,0,$path,$lat,$lon));
 		$query = "select max(`imageId`) from `tiki_images` where `created`=?";
 		$imageId = $this->getOne($query,array((int)$this->now));
 		// insert data
-		//$this->blob_encode($data);
+		$this->blob_encode($data);
 		$query = "insert into `tiki_images_data`(`imageId`,`xsize`,`ysize`, `type`,`filesize`,`filetype`,`filename`,`data`)
-		                 values (?,?,?,?,?,?,?,?)";
+                        values (?,?,?,?,?,?,?,?)";
 		$result = $this->query($query,array((int)$imageId,(int)$xsize,(int)$ysize,'o',(int)$size,$filetype,$filename,$data));
 
 		// insert thumb
 		if ($t_data) {
-			//$this->blob_encode($t_data['data']);
+			$this->blob_encode($t_data['data']);
 			$query = "insert into `tiki_images_data`(`imageId`,`xsize`,`ysize`, `type`,`filesize`,`filetype`,`filename`,`data`)
-			                 values (?,?,?,?,?,?,?,?)";
+                        values (?,?,?,?,?,?,?,?)";
 			$result = $this->query($query,array((int)$imageId,(int)$t_data['xsize'],(int)$t_data['ysize'],'t',(int)$size,$t_type,$filename,$t_data['data']));
 		}
 
@@ -875,7 +885,7 @@ class ImageGalsLib extends TikiLib
 		$result = $this->query($query,array((int)$this->now,(int)$galleryId));
 
 		if ($prefs['feature_score'] == 'y') {
-			$this->score_event($user, 'igallery_new_img');
+		    $this->score_event($user, 'igallery_new_img');
 		}
 
 		if ($prefs['feature_actionlog'] == 'y') {
@@ -883,30 +893,29 @@ class ImageGalsLib extends TikiLib
 			$logslib->add_action('Uploaded', $galleryId, 'image gallery', 'imageId='.$imageId);
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('images', $imageId);
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('images', $imageId);
+		}
 		
-		$this->notify($imageId, $galleryId, $name, $filename, $description, isset($gal_info['name'])?$gal_info['name']: '', 'upload image', $user);
+		$this->notify($imageId, $galleryId, $name, $filename, $description, isset($gal_info['name'])?$gal_info['name']: '', $user);
 
 		return $imageId;
 	}
 
-	function notify($imageId, $galleryId, $name, $filename, $description, $galleryName, $action, $user)
-	{
-		global $prefs, $smarty, $tikilib;
+	function notify($imageId, $galleryId, $name, $filename, $description, $galleryName, $user) {
+		global $prefs;
 		if ($prefs['feature_user_watches'] == 'y') {
-			$event = 'image_gallery_changed';
-			$nots = $this->get_event_watches($event, $galleryId);
-			
-			if ($prefs['feature_daily_report_watches'] == 'y') {
-				global $reportslib; include_once ('lib/reportslib.php');
-				$reportslib->makeReportCache($nots, array("event"=>$event, "imageId"=>$imageId, "imageName"=>$name, "fileName"=>$filename, "galleryId"=>$galleryId, "galleryName"=>$galleryName, "action"=>$action, "user"=>$user));
-			}
-			
 			include_once('lib/notifications/notificationemaillib.php');
+			global $smarty, $tikilib;
+			$nots = $this->get_event_watches('image_gallery_changed', $galleryId);
 			$smarty->assign_by_ref('galleryId', $galleryId);
 			$smarty->assign_by_ref('galleryName', $galleryName);
+			$smarty->assign_by_ref('mail_date', date('U'));
 			$smarty->assign_by_ref('author', $user);
+			$foo = parse_url($_SERVER["REQUEST_URI"]);
+			$machine = $tikilib->httpPrefix(). dirname( $foo["path"] );
+			$smarty->assign_by_ref('mail_machine', $machine);
 			$smarty->assign_by_ref('fname', $name);
 			$smarty->assign_by_ref('filename', $filename);
 			$smarty->assign_by_ref('description', $description);
@@ -915,8 +924,7 @@ class ImageGalsLib extends TikiLib
 		}
 	}
 
-	function rotate_image($id, $angle)
-	{
+	function rotate_image($id, $angle) {
 		//get image
 		global $prefs;
 
@@ -929,34 +937,29 @@ class ImageGalsLib extends TikiLib
 		$result = $this->query($query,array((int)$id,'o'));
 	}
 
-	function rotate_right_image($id)
-	{
+	function rotate_right_image($id) {
 		$this->rotate_image($id, 270);
 	}
 
-	function rotate_left_image($id)
-	{
+	function rotate_left_image($id) {
 		$this->rotate_image($id, 90);
 	}
 
-	function remove_image($id, $user)
-	{
+	function remove_image($id) {
 		global $prefs;
 
 		$path = $this->getOne("select `path` from `tiki_images` where `imageId`=?",array($id));
-		$imageInfo = $this->get_image_info($id);
-		$gal_info = $this->get_gallery($imageInfo['galleryId']);
-		
+
 		if ($path) {
 			@unlink ($prefs['gal_use_dir'] . $path);
 
 			@unlink ($prefs['gal_use_dir'] . $path . '.thumb');
-			// remove scaled images
-			$query = "select i.`path`, d.`xsize`, d.`ysize` from `tiki_images` i, `tiki_images_data` d where i.`imageId`=d.`imageId` and i.`imageId`=? and d.`type`=?";
-			$result=$this->query($query,array($id,'s'));
-			while($res = $result->fetchRow()) {
-				@unlink ($prefs['gal_use_dir'] . $path . '.scaled_'.$res['xsize'].'x'.$res['ysize']);
-			}
+		  // remove scaled images
+		  $query = "select i.`path`, d.`xsize`, d.`ysize` from `tiki_images` i, `tiki_images_data` d where i.`imageId`=d.`imageId` and i.`imageId`=? and d.`type`=?";
+		  $result=$this->query($query,array($id,'s'));
+		  while($res = $result->fetchRow()) {
+                    @unlink ($prefs['gal_use_dir'] . $path . '.scaled_'.$res['xsize'].'x'.$res['ysize']);
+		  }
 		}
 
 		$query = "delete from `tiki_images` where `imageId`=?";
@@ -964,12 +967,10 @@ class ImageGalsLib extends TikiLib
 		$query = "delete from `tiki_images_data` where `imageId`=?";
 		$result = $this->query($query,array((int)$id));
 		$this->remove_object('image', $id);
-		$this->notify($imageInfo['imageId'], $imageInfo['galleryId'], $imageInfo['name'], $imageInfo['filename'], $imageInfo['description'], isset($gal_info['name'])?$gal_info['name']: '', 'remove image', $user);
 		return true;
 	}
 
-	function get_images($offset, $maxRecords, $sort_mode, $find, $galleryId = -1)
-	{
+	function get_images($offset, $maxRecords, $sort_mode, $find, $galleryId = -1) {
 
 		if ($find) {
 			$findesc = '%' . $find . '%';
@@ -992,13 +993,13 @@ class ImageGalsLib extends TikiLib
 		$query_cant = "select count(*) from `tiki_images` i  where 1 $mid";
 		$cant = $this->getOne($query_cant, $bindvars);
 		$query = "select i.`path` ,i.`imageId`,i.`name`,i.`description`,i.`created`,
-		                 d.`filename`,d.`filesize`,d.`xsize`,d.`ysize`,
-		                 i.`user`,i.`hits`
-		          from `tiki_images` i , `tiki_images_data` d
-		          where i.`imageId`=d.`imageId`
-		                 $mid
-		                 and d.`type`=?
-		          order by ".$this->convertSortMode($sort_mode);
+                d.`filename`,d.`filesize`,d.`xsize`,d.`ysize`,
+                i.`user`,i.`hits`
+                from `tiki_images` i , `tiki_images_data` d
+                 where i.`imageId`=d.`imageId`
+                $mid
+                 and d.`type`=?
+                order by ".$this->convert_sortmode($sort_mode);
 		$bindvars[] = 'o';
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$ret = array();
@@ -1013,60 +1014,58 @@ class ImageGalsLib extends TikiLib
 		return $retval;
 	}
 
-	function get_subgalleries($offset, $maxRecords, $sort_mode, $find, $galleryId = -1)
-	{
+        function get_subgalleries($offset, $maxRecords, $sort_mode, $find, $galleryId = -1) {
 		
-		if ($sort_mode == '') {
+		if ($sort_mode == '')
 			$sort_mode = 'name_asc';
-		} else {		//filesize is for listing images. equivalent is images
+		else		//filesize is for listing images. equivalent is images
 			$sort_mode=preg_replace('/(filesize_)/','images_',$sort_mode);
-		}
 
-		if ($find) {
-			$findesc = '%' . $find . '%';
+                if ($find) {
+                        $findesc = '%' . $find . '%';
 
-			$mid = " and (`name` like ? or `description` like ?)";
-			$bindvars=array($galleryId,$findesc,$findesc);
-		} else {
-			$mid = "";
-			$bindvars=array($galleryId);
-		}
+                        $mid = " and (`name` like ? or `description` like ?)";
+                        $bindvars=array($galleryId,$findesc,$findesc);
+                } else {
+                        $mid = "";
+                        $bindvars=array($galleryId);
+                }
 
-		$query = "select g.`galleryId`,g.`name`,g.`description`,
-		            g.`created`,g.`lastModif`,g.`visible`,g.`theme`,g.`user`,
-		            g.`hits`,g.`maxRows`,g.`rowImages`,g.`thumbSizeX`,
-		            g.`thumbSizeY`,g.`public`,g.`sortorder`,g.`sortdirection`,
-		            g.`galleryimage`,g.`parentgallery`,count(i.`imageId`) as images
-		          from `tiki_galleries` g, `tiki_images` i
-		          where i.`galleryId`=g.`galleryId` and
-		            `parentgallery`=? $mid group by 
-		            g.`galleryId`, g.`name`,g.`description`,
-		            g.`created`,g.`lastModif`,g.`visible`,g.`theme`,g.`user`,
-		            g.`hits`,g.`maxRows`,g.`rowImages`,g.`thumbSizeX`,
-		            g.`thumbSizeY`,g.`public`,g.`sortorder`,g.`sortdirection`,
-		            g.`galleryimage`,g.`parentgallery`
-		          order by ".$this->convertSortMode($sort_mode);
-		$result = $this->query($query,$bindvars,$maxRecords,$offset);
-		$ret = array();
+                $query = "select g.`galleryId`,g.`name`,g.`description`,
+	       		g.`created`,g.`lastModif`,g.`visible`,g.`theme`,g.`user`,
+       			g.`hits`,g.`maxRows`,g.`rowImages`,g.`thumbSizeX`,
+	 		g.`thumbSizeY`,g.`public`,g.`sortorder`,g.`sortdirection`,
+			g.`galleryimage`,g.`parentgallery`,count(i.`imageId`) as images
+			from `tiki_galleries` g, `tiki_images` i
+			where i.`galleryId`=g.`galleryId` and
+                 	`parentgallery`=? $mid group by 
+			g.`galleryId`, g.`name`,g.`description`,
+			g.`created`,g.`lastModif`,g.`visible`,g.`theme`,g.`user`,
+			g.`hits`,g.`maxRows`,g.`rowImages`,g.`thumbSizeX`,
+			g.`thumbSizeY`,g.`public`,g.`sortorder`,g.`sortdirection`,
+			g.`galleryimage`,g.`parentgallery`
+                order by ".$this->convert_sortmode($sort_mode);
+                $result = $this->query($query,$bindvars,$maxRecords,$offset);
+                $ret = array();
 
-		while ($res = $result->fetchRow()) {
+                while ($res = $result->fetchRow()) {
 			// get the number of the gallery representation image
 			$res['imageId']=$this->get_gallery_image($res['galleryId'],$res['galleryimage']);
-			$ret[] = $res;
-		}
+                        $ret[] = $res;
+                }
 
-		$retval = array();
-		$retval["data"] = $ret;
-		$query_cant = "select count(*) from `tiki_galleries` where `parentgallery`=? $mid";
-		$cant = $this->getOne($query_cant,$bindvars);
-		$retval["cant"] = $cant;
-		return $retval;
-	}
+                $retval = array();
+                $retval["data"] = $ret;
+                $query_cant = "select count(*) from `tiki_galleries` where `parentgallery`=? $mid";
+                $cant = $this->getOne($query_cant,$bindvars);
+                $retval["cant"] = $cant;
+                return $retval;
+        }
 
-	function get_gallery_image($galleryId,$rule='',$sort_mode = '')
-	{
+
+	function get_gallery_image($galleryId,$rule='',$sort_mode = '') {
 		$query='select i.`imageId` from `tiki_images` i, `tiki_images_data` d
-where i.`imageId`=d.`imageId` and i.`galleryId`=? and d.`type`=? order by ';
+                 where i.`imageId`=d.`imageId` and i.`galleryId`=? and d.`type`=? order by ';
 		/* if sort by filesize while browsing images it needs to be read from tiki_image_data table */
 		if ($sort_mode == 'filesize_asc' || $sort_mode == 'filesize_desc') {
 			$query.='d.';
@@ -1077,51 +1076,51 @@ where i.`imageId`=d.`imageId` and i.`galleryId`=? and d.`type`=? order by ';
 		switch($rule) {
 			case 'firstu':
 				// first uploaded
-				$query.=$this->convertSortMode('created_asc');
+				$query.=$this->convert_sortmode('created_asc');
 				$imageId=$this->getOne($query,$bindvars);
 				break;
 			case 'lastu':
 				// last uploaded
-				$query.=$this->convertSortMode('created_desc');
+				$query.=$this->convert_sortmode('created_desc');
 				$imageId=$this->getOne($query,$bindvars);
 				break;
 			case 'all':
 			case 'first':
-				if (!$sort_mode) {
-					// first image in default gallery sortorder
-					$query2='select `sortorder`,`sortdirection` from `tiki_galleries` where `galleryId`=?';
-					$result=$this->query($query2, array($galleryId));
-					$res = $result->fetchRow();
-					$sort_mode=$res['sortorder'].'_'.$res['sortdirection'];
+			    if (!$sort_mode) {
+    				// first image in default gallery sortorder
+    				$query2='select `sortorder`,`sortdirection` from `tiki_galleries` where `galleryId`=?';
+    				$result=$this->query($query2,$bindvars);
+    				$res = $result->fetchRow();
+    				$sort_mode=$res['sortorder'].'_'.$res['sortdirection'];
 				}
-				$query.=$this->convertSortMode($sort_mode);
+				$query.=$this->convert_sortmode($sort_mode);
 				if ($rule != 'all') {
-					$imageId=$this->getOne($query,$bindvars);
-					break;
+    				$imageId=$this->getOne($query,$bindvars);
+    				break;
 				}
 				$result=$this->query($query,$bindvars);
 				$imageId=array();
-				while ($res = $result->fetchRow()) {
-					$imageId[]=reset($res);
-				}
+    			while ($res = $result->fetchRow()) {
+    				$imageId[]=reset($res);
+    			}
 				break;
 			case 'last':
-				if ($sort_mode) {
-					$invsor = explode('_', $sort_mode);
-					$sort_mode = $invsor[0] . '_' . ($invsor[1] == 'asc' ? 'desc' : 'asc');
-				} else {
-					// last image in default gallery sortorder
-					$query2='select `sortorder`,`sortdirection` from `tiki_galleries` where `galleryId`=?';
-					$result=$this->query($query2,$bindvars);
-					$res = $result->fetchRow();
-					if($res['sortdirection'] == 'asc') {
-						$res['sortdirection']='desc';
-					} else {
-						$res['sortdirection']='asc';
-					}
-					$sort_mode=$res['sortorder'].'_'.$res['sortdirection'];
+			    if ($sort_mode) {
+			        $invsor = explode('_', $sort_mode);
+			        $sort_mode = $invsor[0] . '_' . ($invsor[1] == 'asc' ? 'desc' : 'asc');
+			    } else {
+    				// last image in default gallery sortorder
+    				$query2='select `sortorder`,`sortdirection` from `tiki_galleries` where `galleryId`=?';
+    				$result=$this->query($query2,$bindvars);
+    				$res = $result->fetchRow();
+    				if($res['sortdirection'] == 'asc') {
+    					$res['sortdirection']='desc';
+    				} else {
+    					$res['sortdirection']='asc';
+    				}
+    				$sort_mode=$res['sortorder'].'_'.$res['sortdirection'];
 				}
-				$query.=$this->convertSortMode($sort_mode);
+				$query.=$this->convert_sortmode($sort_mode);
 				$imageId=$this->getOne($query,$bindvars);
 				break;
 			case 'random':
@@ -1148,8 +1147,7 @@ where i.`imageId`=d.`imageId` and i.`galleryId`=? and d.`type`=? order by ';
 			return($imageId);
 	}
 
-	function get_prev_and_next_image($sort_mode, $find, $imageId, $galleryId = -1)
-	{
+	function get_prev_and_next_image($sort_mode, $find, $imageId, $galleryId = -1) {
 
 		if ($find) {
 			$findesc = '%' . $find . '%';
@@ -1172,34 +1170,33 @@ where i.`imageId`=d.`imageId` and i.`galleryId`=? and d.`type`=? order by ';
 		}
 
 		$query = "select i.`imageId`
-		          from `tiki_images` i , `tiki_images_data` d
-		          where i.`imageId`=d.`imageId`
-		          and d.`type`=?
-		          $mid
-		          order by ";
-		/* if sort by filesize while browsing images it needs to be read from tiki_image_data table */
+                from `tiki_images` i , `tiki_images_data` d
+                 where i.`imageId`=d.`imageId`
+                 and d.`type`=?
+                $mid
+                order by ";
+        /* if sort by filesize while browsing images it needs to be read from tiki_image_data table */
 		if ($sort_mode == 'filesize_asc' || $sort_mode == 'filesize_desc') {
 			$query.='d.';
 		} else {
 			$query.='i.';
 		}
-		$query .= $this->convertSortMode($sort_mode);
+        $query .= $this->convert_sortmode($sort_mode);
 		$result = $this->query($query,$bindvars);
 		$prev=-1; $next=0; $tmpid=0;
 		while ($res = $result->fetchRow()) {
-			if ($imageId == $res['imageId']) {
-				$prev=$tmpid;
-			} else if ($prev >= 0) { // $prev is set, so, this one is the next
-				$next=$res['imageId'];
-				break;
-			}
-			$tmpid=$res['imageId'];
+		        if ($imageId == $res['imageId']) {
+		                $prev=$tmpid;
+		        } else if ($prev >= 0) { // $prev is set, so, this one is the next
+		                $next=$res['imageId'];
+		                break;
+		        }
+		        $tmpid=$res['imageId'];
 		}
 		return array('prev' => ($prev > 0 ? $prev : 0), 'next' => $next);
 	}
 
-	function get_first_image($sort_mode, $find, $galleryId = -1)
-	{
+	function get_first_image($sort_mode, $find, $galleryId = -1) {
 
 		if ($find) {
 			$findesc = '%' . $find . '%';
@@ -1222,18 +1219,17 @@ where i.`imageId`=d.`imageId` and i.`galleryId`=? and d.`type`=? order by ';
 		}
 
 		$query = "select i.`imageId`
-		            from `tiki_images` i , `tiki_images_data` d
-		            where i.`imageId`=d.`imageId`
-		             and d.`type`=?
-		             $mid
-		            order by ".$this->convertSortMode($sort_mode);
+                from `tiki_images` i , `tiki_images_data` d
+                 where i.`imageId`=d.`imageId`
+                 and d.`type`=?
+                $mid
+                order by ".$this->convert_sortmode($sort_mode);
 		$result = $this->query($query,$bindvars,1,0);
 		$res = $result->fetchRow();
 		return $res['imageId'];
 	}
 
-	function get_last_image($sort_mode, $find, $galleryId = -1)
-	{
+	function get_last_image($sort_mode, $find, $galleryId = -1) {
 		if (strstr($sort_mode, 'asc')) {
 			$sort_mode = str_replace('asc', 'desc', $sort_mode);
 		} else {
@@ -1254,267 +1250,258 @@ where i.`imageId`=d.`imageId` and i.`galleryId`=? and d.`type`=? order by ';
 		$cantvars=array();
 
 		if ($galleryId != -1 && is_numeric($galleryId)) {
-			$mid .= " and i.`galleryId`=? ";
-			$bindvars[]=(int)$galleryId;
-			$midcant = "where `galleryId`=? ";
-			$cantvars[]=(int)$galleryId;
+                        $mid .= " and i.`galleryId`=? ";
+                        $bindvars[]=(int)$galleryId;
+                        $midcant = "where `galleryId`=? ";
+                        $cantvars[]=(int)$galleryId;
 		}
 
 		$query = "select i.`imageId`
-			        from `tiki_images` i , `tiki_images_data` d
-			        where i.`imageId`=d.`imageId`
-			          and d.`type`=?
-			          $mid
-			        order by ".$this->convertSortMode($sort_mode);
+                from `tiki_images` i , `tiki_images_data` d
+                 where i.`imageId`=d.`imageId`
+                 and d.`type`=?
+                $mid
+                order by ".$this->convert_sortmode($sort_mode);
 		$result = $this->query($query,$bindvars,1,0);
 		$res = $result->fetchRow();
 		return $res['imageId'];
 	}
 
-	function list_images($offset, $maxRecords, $sort_mode, $find, $galleryId = -1)
-	{
+	function list_images($offset, $maxRecords, $sort_mode, $find, $galleryId = -1) {
 		return $this->get_images($offset, $maxRecords, $sort_mode, $find, $galleryId);
 	}
 
-	function get_random_image($galleryId = -1)
-	{
-		$whgal = "";
-		$bindvars = array();
-		if (((int)$galleryId) != -1) {
-			$whgal = " where `galleryId`=? ";
-			$bindvars[] = (int) $galleryId;
-		}
-
-		$query = "select count(*) from `tiki_images` $whgal";
-		$cant = $this->getOne($query,$bindvars);
-		$ret = array();
-
-		if ($cant) {
-			$pick = rand(0, $cant - 1);
-
-			$query = "select `imageId` ,`description`, `galleryId`,`name` from `tiki_images` $whgal";
-			$result = $this->query($query,$bindvars,1,$pick);
-			$res = $result->fetchRow();
-			$ret["galleryId"] = $res["galleryId"];
-			$ret["imageId"] = $res["imageId"];
-			$ret["name"] = $res["name"];
-			$ret["description"] = $res["description"];
-			$query = "select `name`  from `tiki_galleries` where `galleryId` = ?";
-			$ret["gallery"] = $this->getOne($query,array((int)$res["galleryId"]));
-		} else {
-			$ret["galleryId"] = 0;
-
-			$ret["imageId"] = 0;
-			$ret["name"] = tra("No image yet, sorry.");
-		}
-
-		return ($ret);
+    function get_random_image($galleryId = -1) {
+	$whgal = "";
+	$bindvars = array();
+	if (((int)$galleryId) != -1) {
+	    $whgal = " where `galleryId`=? ";
+	    $bindvars[] = (int) $galleryId;
 	}
 
-	function list_galleries($offset = 0, $maxRecords = -1, $sort_mode = 'name_desc', $user, $find=false)
-	{
-		// If $user is admin then get ALL galleries, if not only user galleries are shown
-		global $tiki_p_admin_galleries, $tiki_p_admin;
+	$query = "select count(*) from `tiki_images` $whgal";
+	$cant = $this->getOne($query,$bindvars);
+	$ret = array();
 
-		$old_sort_mode = '';
+	if ($cant) {
+	    $pick = rand(0, $cant - 1);
 
-		if (in_array($sort_mode, array(
-				'images_desc',
-				'images_asc'
-				))) {
-			$old_offset = $offset;
+	    $query = "select `imageId` ,`description`, `galleryId`,`name` from `tiki_images` $whgal";
+	    $result = $this->query($query,$bindvars,1,$pick);
+	    $res = $result->fetchRow();
+	    $ret["galleryId"] = $res["galleryId"];
+	    $ret["imageId"] = $res["imageId"];
+	    $ret["name"] = $res["name"];
+	    $ret["description"] = $res["description"];
+	    $query = "select `name`  from `tiki_galleries` where `galleryId` = ?";
+	    $ret["gallery"] = $this->getOne($query,array((int)$res["galleryId"]));
+	} else {
+	    $ret["galleryId"] = 0;
 
-			$old_maxRecords = $maxRecords;
-			$old_sort_mode = $sort_mode;
-			$sort_mode = 'name_desc';
-			$offset = 0;
-			$maxRecords = -1;
-		}
+	    $ret["imageId"] = 0;
+	    $ret["name"] = tra("No image yet, sorry.");
+	}
 
-		// If the user is not admin then select `it` 's own galleries or public galleries
-		if (($tiki_p_admin_galleries == 'y') or ($tiki_p_admin == 'y') or ($user == 'admin')) {
-			$whuser = "";
-			$bindvars=array();
+	return ($ret);
+    }
+
+	function list_galleries($offset = 0, $maxRecords = -1, $sort_mode = 'name_desc', $user, $find=false) {
+	    // If $user is admin then get ALL galleries, if not only user galleries are shown
+	    global $tiki_p_admin_galleries;
+
+	    $old_sort_mode = '';
+
+	    if (in_array($sort_mode, array(
+			    'images_desc',
+			    'images_asc'
+			    ))) {
+		$old_offset = $offset;
+
+		$old_maxRecords = $maxRecords;
+		$old_sort_mode = $sort_mode;
+		$sort_mode = 'name_desc';
+		$offset = 0;
+		$maxRecords = -1;
+	    }
+
+	    // If the user is not admin then select `it` 's own galleries or public galleries
+	    if (($tiki_p_admin_galleries == 'y') or ($user == 'admin')) {
+		$whuser = "";
+		$bindvars=array();
+	    } else {
+		$whuser = "where g.`user`=? or g.public=?";
+		$bindvars=array($user,'y');
+	    }
+
+	    if ($find) {
+		$findesc = '%' . $find . '%';
+
+		if (empty($whuser)) {
+		    $whuser = "where g.`name` like ? or g.`description` like ?";
+		    $bindvars=array($findesc,$findesc);
 		} else {
-			$whuser = "where g.`user`=? or g.public=?";
-			$bindvars=array($user,'y');
+		    $whuser .= " and g.`name` like ? or g.`description` like ?";
+		    $bindvars[]=$findesc;
+		    $bindvars[]=$findesc;
 		}
+	    }
 
-		if ($find) {
-			$findesc = '%' . $find . '%';
+	    // If sort mode is versions then offset is 0, maxRecords is -1 (again) and sort_mode is nil
+	    // If sort mode is links then offset is 0, maxRecords is -1 (again) and sort_mode is nil
+	    // If sort mode is backlinks then offset is 0, maxRecords is -1 (again) and sort_mode is nil
+	    $query = "select g.*, a.`name` as parentgalleryName from `tiki_galleries` g left join `tiki_galleries` a on g.`parentgallery` = a.`galleryId` $whuser order by ".$this->convert_sortmode($sort_mode);
+	    $query_cant = "select count(*) from `tiki_galleries` g $whuser";
+	    $result = $this->query($query,$bindvars,$maxRecords,$offset);
+	    $cant = $this->getOne($query_cant,$bindvars);
+	    $ret = array();
 
-			if (empty($whuser)) {
-				$whuser = "where g.`name` like ? or g.`description` like ?";
-				$bindvars=array($findesc,$findesc);
-			} else {
-				$whuser .= " and g.`name` like ? or g.`description` like ?";
-				$bindvars[]=$findesc;
-				$bindvars[]=$findesc;
-			}
-		}
-
-		// If sort mode is versions then offset is 0, maxRecords is -1 (again) and sort_mode is nil
-		// If sort mode is links then offset is 0, maxRecords is -1 (again) and sort_mode is nil
-		// If sort mode is backlinks then offset is 0, maxRecords is -1 (again) and sort_mode is nil
-		$query = "select g.*, a.`name` as parentgalleryName from `tiki_galleries` g left join `tiki_galleries` a on g.`parentgallery` = a.`galleryId` $whuser order by ".$this->convertSortMode($sort_mode);
-		$query_cant = "select count(*) from `tiki_galleries` g $whuser";
-		$result = $this->query($query,$bindvars,$maxRecords,$offset);
-		$cant = $this->getOne($query_cant,$bindvars);
-		$ret = array();
-
-		global $prefs, $userlib, $user, $tiki_p_admin;
-		while ($res = $result->fetchRow()) {
+	    global $prefs, $userlib, $user, $tiki_p_admin;
+	    while ($res = $result->fetchRow()) {
 			$res['perms'] = $this->get_perm_object($res['galleryId'], 'image gallery', $res, false);
 			if ($res['perms']['tiki_p_view_image_gallery'] == 'y') {
 				$res['images'] = $this->getOne("select count(*) from `tiki_images` where `galleryId`=?",array($res['galleryId']));
 				$ret[] = $res;
 			}
-		}
+	    }
 
-		if ($old_sort_mode == 'images_asc') {
-			usort($ret, 'compare_images');
-		}
+	    if ($old_sort_mode == 'images_asc') {
+		usort($ret, 'compare_images');
+	    }
 
-		if ($old_sort_mode == 'images_desc') {
-			usort($ret, 'r_compare_images');
-		}
+	    if ($old_sort_mode == 'images_desc') {
+		usort($ret, 'r_compare_images');
+	    }
 
-		if (in_array($old_sort_mode, array(
+	    if (in_array($old_sort_mode, array(
 			    'images_desc',
 			    'images_asc'
 			    ))) {
-			$ret = array_slice($ret, $old_offset, $old_maxRecords);
-		}
+		$ret = array_slice($ret, $old_offset, $old_maxRecords);
+	    }
 
-		$retval = array();
-		$retval["data"] = $ret;
-		$retval["cant"] = $cant;
-		return $retval;
+	    $retval = array();
+	    $retval["data"] = $ret;
+	    $retval["cant"] = $cant;
+	    return $retval;
 	}
 
-	function list_visible_galleries($offset = 0, $maxRecords = -1, $sort_mode = 'name_desc', $user, $find)
-	{
-		global $tiki_p_admin_galleries, $tikilib;
-		// If $user is admin then get ALL galleries, if not only user galleries are shown
+	function list_visible_galleries($offset = 0, $maxRecords = -1, $sort_mode = 'name_desc', $user, $find) {
+	    global $tiki_p_admin_galleries, $tikilib;
+	    // If $user is admin then get ALL galleries, if not only user galleries are shown
 
-		$old_sort_mode = '';
+	    $old_sort_mode = '';
 
-		if (in_array($sort_mode, array(
+	    if (in_array($sort_mode, array(
 			    'images desc',
 			    'images asc'
 			    ))) {
-			$old_offset = $offset;
+		$old_offset = $offset;
 
-			$old_maxRecords = $maxRecords;
-			$old_sort_mode = $sort_mode;
-			$sort_mode = 'user desc';
-			$offset = 0;
-			$maxRecords = -1;
-		}
+		$old_maxRecords = $maxRecords;
+		$old_sort_mode = $sort_mode;
+		$sort_mode = 'user desc';
+		$offset = 0;
+		$maxRecords = -1;
+	    }
 
 		$whuser = "";
 		$bindvars=array('y');
 
-		if ($find) {
-			$findesc = '%' . $find . '%';
+	    if ($find) {
+		$findesc = '%' . $find . '%';
 
-			if (empty($whuser)) {
-				$whuser = " and (`name` like ? or `description` like ?)";
-				$bindvars=array('y',$findesc,$findesc);
-			} else {
-				$whuser .= " and (`name` like ? or `description` like ?)";
-				$bindvars[]=$findesc;
-				$bindvars[]=$findesc;
-			}
+		if (empty($whuser)) {
+		    $whuser = " and (`name` like ? or `description` like ?)";
+		    $bindvars=array('y',$findesc,$findesc);
+		} else {
+		    $whuser .= " and (`name` like ? or `description` like ?)";
+		    $bindvars[]=$findesc;
+		    $bindvars[]=$findesc;
 		}
+	    }
 
-		// If sort mode is versions then offset is 0, maxRecords is -1 (again) and sort_mode is nil
-		// If sort mode is links then offset is 0, maxRecords is -1 (again) and sort_mode is nil
-		// If sort mode is backlinks then offset is 0, maxRecords is -1 (again) and sort_mode is nil
-		$query = "select * from `tiki_galleries` where `visible`=? $whuser order by ".$this->convertSortMode($sort_mode);
-		$query_cant = "select count(*) from `tiki_galleries` where `visible`=? $whuser";
-		$result = $this->query($query,$bindvars,$maxRecords,$offset);
-		$cant = $this->getOne($query_cant,$bindvars);
-		$ret = array();
+	    // If sort mode is versions then offset is 0, maxRecords is -1 (again) and sort_mode is nil
+	    // If sort mode is links then offset is 0, maxRecords is -1 (again) and sort_mode is nil
+	    // If sort mode is backlinks then offset is 0, maxRecords is -1 (again) and sort_mode is nil
+	    $query = "select * from `tiki_galleries` where `visible`=? $whuser order by ".$this->convert_sortmode($sort_mode);
+	    $query_cant = "select count(*) from `tiki_galleries` where `visible`=? $whuser";
+	    $result = $this->query($query,$bindvars,$maxRecords,$offset);
+	    $cant = $this->getOne($query_cant,$bindvars);
+	    $ret = array();
 
-		while ($res = $result->fetchRow()) {
-			if (!$tikilib->user_has_perm_on_object($user, $res['galleryId'], 'image gallery', 'tiki_p_view_image_gallery')) {
-				continue;
-			}
-			$aux = array();
-
-			$aux["name"] = $res["name"];
-			$gid = $res["galleryId"];
-			$aux["visible"] = $res["visible"];
-			$aux["id"] = $gid;
-			$aux["galleryId"] = $res["galleryId"];
-			$aux["description"] = $res["description"];
-			$aux["created"] = $res["created"];
-			$aux["lastModif"] = $res["lastModif"];
-			$aux["user"] = $res["user"];
-			$aux["hits"] = $res["hits"];
-			$aux["public"] = $res["public"];
-			$aux["theme"] = $res["theme"];
-			$aux["geographic"] = $res["geographic"];
-			$aux["images"] = $this->getOne("select count(*) from `tiki_images` where `galleryId`=?",array($gid));
-			$ret[] = $aux;
+	    while ($res = $result->fetchRow()) {
+		if (!$tikilib->user_has_perm_on_object($user, $res['galleryId'], 'image gallery', 'tiki_p_view_image_gallery')) {
+			continue;
 		}
+		$aux = array();
 
-		if ($old_sort_mode == 'images asc') {
-			usort($ret, 'compare_images');
-		}
+		$aux["name"] = $res["name"];
+		$gid = $res["galleryId"];
+		$aux["visible"] = $res["visible"];
+		$aux["id"] = $gid;
+		$aux["galleryId"] = $res["galleryId"];
+		$aux["description"] = $res["description"];
+		$aux["created"] = $res["created"];
+		$aux["lastModif"] = $res["lastModif"];
+		$aux["user"] = $res["user"];
+		$aux["hits"] = $res["hits"];
+		$aux["public"] = $res["public"];
+		$aux["theme"] = $res["theme"];
+		$aux["geographic"] = $res["geographic"];
+		$aux["images"] = $this->getOne("select count(*) from `tiki_images` where `galleryId`=?",array($gid));
+		$ret[] = $aux;
+	    }
 
-		if ($old_sort_mode == 'images desc') {
-			usort($ret, 'r_compare_images');
-		}
+	    if ($old_sort_mode == 'images asc') {
+		usort($ret, 'compare_images');
+	    }
 
-		if (in_array($old_sort_mode, array(
+	    if ($old_sort_mode == 'images desc') {
+		usort($ret, 'r_compare_images');
+	    }
+
+	    if (in_array($old_sort_mode, array(
 			    'images desc',
 			    'images asc'
 			    ))) {
-			$ret = array_slice($ret, $old_offset, $old_maxRecords);
-		}
+		$ret = array_slice($ret, $old_offset, $old_maxRecords);
+	    }
 
-		$retval = array();
-		$retval["data"] = $ret;
-		$retval["cant"] = $cant;
-		return $retval;
+	    $retval = array();
+	    $retval["data"] = $ret;
+	    $retval["cant"] = $cant;
+	    return $retval;
 	}
 
-	function get_gallery($id)
-	{
-		$query = "select * from `tiki_galleries` where `galleryId`=?";
-		$result = $this->query($query,array((int) $id));
-		$res = $result->fetchRow();
-		return $res;
-	}
+    function get_gallery($id) {
+	$query = "select * from `tiki_galleries` where `galleryId`=?";
+	$result = $this->query($query,array((int) $id));
+	$res = $result->fetchRow();
+	return $res;
+    }
 
-	function get_gallery_owner($galleryId)
-	{
+	function get_gallery_owner($galleryId) {
 		$query = "select `user` from `tiki_galleries` where `galleryId`=?";
 
 		$user = $this->getOne($query,array((int)$galleryId));
 		return $user;
 	}
 
-	function get_gallery_from_image($imageid)
-	{
+	function get_gallery_from_image($imageid) {
 		$query = "select `galleryId` from `tiki_images` where `imageId`=?";
 
 		$galid = $this->getOne($query,array((int)$imageid));
 		return $galid;
 	}
 
-	function move_image($imgId, $galId)
-	{
+	function move_image($imgId, $galId) {
 		$query = "update `tiki_images` set `galleryId`=? where `imageId`=?";
 
 		$result = $this->query($query,array((int)$galId,(int)$imgId));
 		return true;
 	}
 
-	function get_image_info($id, $itype = 'o', $xsize = 0, $ysize = 0)
-	{
+	function get_image_info($id, $itype = 'o', $xsize = 0, $ysize = 0) {
 		// code may be merged with get_image
 		$mid = "";
 
@@ -1552,8 +1539,7 @@ where i.`imageId`=d.`imageId` and i.`galleryId`=? and d.`type`=? order by ';
 	}
 
 	// Add an option to establish Image size (x,y)
-	function get_image($id, $itype = 'o', $xsize = 0, $ysize = 0)
-	{
+	function get_image($id, $itype = 'o', $xsize = 0, $ysize = 0) {
 		global $prefs;
 
 		$mid = "";
@@ -1683,8 +1669,7 @@ where i.`imageId`=d.`imageId` and i.`galleryId`=? and d.`type`=? order by ';
 		return $res;
 	}
 
-   function add_etag()
-	 {
+   function add_etag() {
       // stores md5 based etag in the tables
       // this function assumes that the $this->imageId and other
       // are loaded before (through $this->get_image() or similar)
@@ -1697,8 +1682,7 @@ where i.`imageId`=d.`imageId` and i.`galleryId`=? and d.`type`=? order by ';
 
    }
 
-   function get_etag($id, $itype = 'o', $xsize = 0, $ysize = 0)
-	 {
+   function get_etag($id, $itype = 'o', $xsize = 0, $ysize = 0) {
       // used to get the etag of a image. This function can be called
       // before we load the image into memory to check if the browser
       // has the image cached.
@@ -1751,8 +1735,7 @@ where i.`imageId`=d.`imageId` and i.`galleryId`=? and d.`type`=? order by ';
     }
 
 
-   function get_imageid_byname($name, $galleryId=0)
-	 {
+   function get_imageid_byname($name, $galleryId=0) {
 	
 		$bindvars=array($name);
 
@@ -1770,39 +1753,12 @@ where i.`imageId`=d.`imageId` and i.`galleryId`=? and d.`type`=? order by ';
 			  
    }
 
-	function get_image_thumb($id)
-	{
+	function get_image_thumb($id) {
 		return $this->get_image($id, 't');
 	}
 
-	function replace_gallery($galleryId
-	                       , $name
-												 , $description
-												 , $theme
-												 , $user
-												 , $maxRows
-												 , $rowImages
-												 , $thumbSizeX
-												 , $thumbSizeY
-												 , $public
-												 , $visible = 'y'
-												 , $sortorder='created'
-												 , $sortdirection='desc'
-												 , $galleryimage='first'
-												 , $parentgallery=-1
-												 , $showname='y'
-												 , $showimageid='n'
-												 , $showdescription='n'
-												 , $showcreated='n'
-												 , $showuser='n'
-												 , $showhits='y'
-												 , $showxysize='y'
-												 , $showfilesize='n'
-												 , $showfilename='n'
-												 , $defaultscale='o'
-												 , $geographic= 'n'
-												 , $showcategories='n') 
-						{
+	function replace_gallery($galleryId, $name, $description, $theme, $user, $maxRows, $rowImages, $thumbSizeX, $thumbSizeY, $public, $visible = 'y', $sortorder='created', $sortdirection='desc', 
+$galleryimage='first',$parentgallery=-1,$showname='y',$showimageid='n',$showdescription='n',$showcreated='n',$showuser='n',$showhits='y',$showxysize='y',$showfilesize='n',$showfilename='n',$defaultscale='o',$geographic= 'n',$showcategories='n') {
 		global $prefs;
 
 		// if the user is admin or the user is the same user and the gallery exists then replace if not then
@@ -1827,69 +1783,14 @@ where i.`imageId`=d.`imageId` and i.`galleryId`=? and d.`type`=? order by ';
 	       	where `galleryId`=?";
 
 			$result = 
-$this->query($query,array($name
-                        , $visible
-												, $geographic
-												, (int)$maxRows
-												, (int)$rowImages
-												, (int)$thumbSizeX
-												, (int)$thumbSizeY
-												, $description
-												, $theme
-												, (int)$this->now,$public
-												, $sortorder
-												, $sortdirection
-												, $galleryimage
-												, (int)$parentgallery
-												, $showname
-												, $showimageid
-												, $showdescription
-												, $showcategories
-												, $showcreated
-												, $showuser
-												, $showhits
-												, $showxysize
-												, $showfilesize
-												, $showfilename
-												, $defaultscale
-												, $user
-												, (int)$galleryId)
-						);
+$this->query($query,array($name,$visible,$geographic,(int)$maxRows,(int)$rowImages,(int)$thumbSizeX,(int)$thumbSizeY,$description,$theme,(int)$this->now,$public,$sortorder,$sortdirection,$galleryimage,(int)$parentgallery,$showname,$showimageid,$showdescription,$showcategories,$showcreated,$showuser,$showhits,$showxysize,$showfilesize,$showfilename,$defaultscale,$user,(int)$galleryId));
 		} else {
 			// Create a new record
 			$query = "insert into 
 `tiki_galleries`(`name`,`description`,`theme`,`created`,`user`,`lastModif`,`maxRows`,`rowImages`,`thumbSizeX`,`thumbSizeY`,`public`,`hits`,`visible`,`sortorder`,`sortdirection`,`galleryimage`,`parentgallery`,`showname`,`showimageid`,`showdescription`,`showcategories`,`showcreated`,`showuser`,`showhits`,`showxysize`,`showfilesize`,`showfilename`,`defaultscale`,`geographic`) 
 values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-			$bindvars=array($name
-			              , $description
-										, $theme
-										, (int) $this->now
-										, $user
-										, (int) $this->now
-										, (int) $maxRows
-										, (int) $rowImages
-										, (int) $thumbSizeX
-										, (int) $thumbSizeY
-										, $public
-										, 0
-										, $visible
-										, $sortorder
-										, $sortdirection
-										, $galleryimage
-										, (int) $parentgallery
-										, $showname
-										, $showimageid
-										, $showdescription
-										, $showcategories
-										, $showcreated
-										, $showuser
-										, $showhits
-										, $showxysize
-										, $showfilesize
-										, $showfilename
-										, $defaultscale
-										, $geographic
-								);
+			$bindvars=array($name,$description,$theme,(int) $this->now,$user,(int) $this->now,(int) $maxRows,(int) $rowImages,(int) $thumbSizeX,(int) 
+$thumbSizeY,$public,0,$visible,$sortorder,$sortdirection,$galleryimage,(int)$parentgallery,$showname,$showimageid,$showdescription,$showcategories,$showcreated,$showuser,$showhits,$showxysize,$showfilesize,$showfilename,$defaultscale,$geographic);
 			$result = $this->query($query,$bindvars);
 			$galleryId = $this->getOne("select max(`galleryId`) from `tiki_galleries` where `name`=? and `created`=?",array($name,(int) $this->now));
 
@@ -1898,14 +1799,15 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			}
 		}
 
-		require_once('lib/search/refresh-functions.php');
-		refresh_index('galleries', $galleryId);
+		if ( $prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'normal' ) {
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('galleries', $galleryId);
+		}
 
 		return $galleryId;
 	}
 
-	function add_gallery_scale($galleryId, $scale)
-	{
+	function add_gallery_scale($galleryId, $scale) {
 	        $old_scale = $this->getOne("select scale from tiki_galleries_scales where galleryId = ? AND scale = ?", array((int)$galleryId, (int)$scale));
 		if ($scale != $old_scale) {
 		    $query = "insert into `tiki_galleries_scales`(`galleryId`,`scale`)
@@ -1914,8 +1816,7 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		}
 	}
 
-	function remove_gallery_scale($galleryId, $scale= 0)
-	{
+	function remove_gallery_scale($galleryId, $scale= 0) {
                 $mid = "";
                 $bindvars=array((int) $galleryId);
                 if ($scale != 0) {
@@ -1927,8 +1828,7 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                 $result = $this->query($query,$bindvars);
         }
 
-	function remove_gallery($id)
-	{
+	function remove_gallery($id) {
 		global $prefs;
 
 		$query = "select `imageId`,path from `tiki_images` where `galleryId`=?";
@@ -1982,14 +1882,12 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		return true;
 	}
 
-	function get_gallery_info($id)
-	{
+	function get_gallery_info($id) {
 		// alias for get_gallery
 		return $this->get_gallery($id);
 	}
 
-	function get_gallery_scale_info($id)
-	{
+	function get_gallery_scale_info($id) {
 		$query = "select * from `tiki_galleries_scales` where `galleryId`=?
               order by `scale` asc";
 
@@ -2003,8 +1901,7 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		return $resa;
 	}
 
-	function get_gallery_next_scale($id, $scale= 0)
-	{
+	function get_gallery_next_scale($id, $scale= 0) {
 		$query = "select * from `tiki_galleries_scales` where `galleryId`=?
               and `scale` > ? order by `scale` asc";
 		$result = $this->query($query,array((int) $id,(int) $scale));
@@ -2012,15 +1909,13 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		return $res;
 	}
 
-	function get_gallery_default_scale($id)
-	{
+	function get_gallery_default_scale($id) {
 		$query = "select `defaultscale` from `tiki_galleries` where `galleryId`=?";
 		$ret=$this->getOne($query,array((int) $id));
 		return $ret;
 	}
 
-	function get_gallery_prevnext_scale($id,$currentscale)
-	{
+	function get_gallery_prevnext_scale($id,$currentscale) {
 		$ret=array();
 		$bindvars=array((int) $id, (int) $currentscale);
 		$query = 'select `scale` from `tiki_galleries_scales` where `galleryId`=? ';
@@ -2042,8 +1937,7 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	}
 
 	//Capture Images from wiki, blogs, ....
-	function capture_images($data)
-	{
+	function capture_images($data) {
 		global $prefs, $tikilib;
 		if ($prefs['cacheimages'] != 'y')
 			return $data;
@@ -2139,16 +2033,14 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 						$uri = parse_url($_SERVER["REQUEST_URI"]);
 						$path = str_replace("tiki-editpage", "show_image", $uri["path"]);
 						$path = str_replace("tiki-edit_article", "show_image", $path);
-						$page_data = str_replace($url, $tikilib->httpPrefix( true ). $path . '?id=' . $imageId, $page_data);
+						$page_data = str_replace($url, $tikilib->httpPrefix(). $path . '?id=' . $imageId, $page_data);
 					} // if strlen
 				} // if $fp
 			}
 		} // foreach
 		return $page_data;
 	}
-
-	function get_one_image_from_disk($userfile, $galleryId=0, $name='', $description='', $gal_info='')
-	{
+	function get_one_image_from_disk($userfile, $galleryId=0, $name='', $description='', $gal_info='') {
 		global $prefs, $user;
 		$ret = array();
 		if (is_uploaded_file($_FILES[$userfile]['tmp_name'])) {
@@ -2311,10 +2203,8 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
      unset($this->etag);
      unset($this->image);
   }
-
   /* compute the ratio the image $xsize,$size must have to go in the box */
-  function ratio($xsize, $ysize, $xbox=0, $ybox=0)
-	{
+  function ratio($xsize, $ysize, $xbox=0, $ybox=0) {
 	if (empty($xbox) && empty($ybox))
 		return 1;
 	if ($xsize <= $xbox && $ysize <= $ybox)
@@ -2331,5 +2221,8 @@ values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	}
 	}
 }
+global $dbTiki;
 global $imagegallib;
-$imagegallib = new ImageGalsLib;
+$imagegallib = new ImageGalsLib($dbTiki);
+
+?>

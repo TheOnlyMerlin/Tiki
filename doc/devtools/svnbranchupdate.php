@@ -1,17 +1,11 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 require dirname(__FILE__) . '/svntools.php';
 
 // Perform basic checks
 info( "Verifying..." );
 
 if( ! isset( $_SERVER['argc'] ) || $_SERVER['argc'] != 2 )
-	error( "Missing argument. Expecting branch to merge as argument.\n\nExamples:\n\tbranches/7.x\n\ttrunk" );
+	error( "Missing argument. Expecting branch to merge as argument.\n\nExamples:\n\tbranches/2.0\n\ttrunk" );
 
 $local = get_info( '.' );
 
@@ -58,3 +52,5 @@ if( $conflicts->length > 0 )
 
 	error( $message );
 }
+
+?>

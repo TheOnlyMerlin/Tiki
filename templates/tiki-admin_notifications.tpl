@@ -17,55 +17,40 @@
      <input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
      {if $offset}<input type="hidden" name="offset" value="{$offset|escape}" />{/if}
 	 {if $numrows ne $prefs.maxRecords and $numrows}<input type="hidden" name="numrows" value="{$numrows|escape}" />{/if}
-	<table class="formcolor">
+	<table class="normal">
 		<tr>
-			<td><label for="event">{tr}Event:{/tr}</label></td>
-			<td>
-				<select id="event" name="event">
-					{foreach from=$watches key=key item=watch}
-						<option value="{$key}">{$watch.label|escape}</option>
-					{/foreach}
+			<td class="formcolor">{tr}Event{/tr}:</td>
+			<td class="formcolor">
+				<select name="event">
+					<option value="user_registers">{tr}A user registers{/tr}</option>
+					<option value="article_submitted">{tr}A user submits an article{/tr}</option>
+					<option value="article_edited">{tr}A user edits an article{/tr}</option>
+					<option value="article_deleted">{tr}A user deletes an article{/tr}</option>
+					<option value="wiki_page_changes">{tr}Any wiki page is changed{/tr}</option>
+					<option value="wiki_page_changes_incl_minor">{tr}Any wiki page is changed, even minor changes{/tr}</option>
+					<option value="wiki_comment_changes">{tr}A comment in a wiki page is posted or edited{/tr}</option> 
+					<option value="php_error">{tr}PHP error{/tr}</option>
 				</select>
 			</td>
 		</tr> 
 		<tr>
-			<td><label for="destination">{tr}Destination:{/tr}</label></td>
-			<td>
-				<select id="destination" name="destination">
-					<option value="login" selected="selected">{tr}User{/tr}</option>
-					<option value="email">{tr}Email{/tr}</option>
-				</select>
-				{jq}
-				$("select[name='destination']").change(function () {
-					$("#loginrow").hide();
-					$("#emailrow").hide();
-					$("input[name='login']").attr("disabled","disabled");
-					$("input[name='email']").attr("disabled","disabled");
-					$("#" + $("select[name='destination']").val() + "row").show();
-					$("input[name='" + $("select[name='destination']").val() + "']").focus();
-					$("input[name='" + $("select[name='destination']").val() + "']").removeAttr("disabled");
-				}
-				);
-				{/jq}
-			</td>
-		</tr>
-		<tr id="loginrow">
-			<td><label for="flogin">{tr}User:{/tr}</label></td>
-			<td>
+			<td class="formcolor">{tr}User:{/tr}</td>
+			<td class="formcolor">
 				<input type="text" id="flogin" name="login" />
-				{autocomplete element='#flogin' type='username'}
-				<a href="#" onclick="javascript:document.getElementById('flogin').value='{$user}'" class="link">{tr}Myself{/tr}</a>
 			</td>
 		</tr>
-		<tr id="emailrow" style="display:none">
-			<td><label for="femail">{tr}Email:{/tr}</label></td>        
-			<td>
+		<tr>
+			<td class="formcolor">{tr}Email:{/tr}</td>        
+			<td class="formcolor">
 				<input type="text" id='femail' name="email" />
+				{if $admin_mail neq ''}
+					<a href="#" onclick="javascript:document.getElementById('femail').value='{$admin_mail}';document.getElementById('flogin').value='admin'" class="link">{tr}Preload Admin Account{/tr}</a>
+				{/if}
 			</td>
 		</tr> 
 		<tr>
-			<td>&nbsp;</td>
-			<td><input type="submit" name="add" value="{tr}Add{/tr}" /></td>
+			<td class="formcolor">&nbsp;</td>
+			<td class="formcolor"><input type="submit" name="add" value="{tr}Add{/tr}" /></td>
 		</tr>
 	</table>
 </form>
@@ -91,44 +76,42 @@
 		{cycle print=false values="even,odd"}
 		{section name=user loop=$channels}
 			<tr class="{cycle}">
-				<td class="checkbox">
+				<td>
 					<input type="checkbox" name="checked[]" value="{$channels[user].watchtype}{$channels[user].watchId|escape}" {if $smarty.request.checked and in_array($channels[user].watchId,$smarty.request.checked)}checked="checked"{/if} />
 				</td>
-				<td class="text">{$channels[user].event}</td>
-				<td class="text">
+				<td>{$channels[user].event}</td>
+				<td>
 					{if $channels[user].url}
 						<a href="{$channels[user].url}" title="{$channels[user].title|escape}">{$channels[user].object|escape}</a>
 					{else}
 						{$channels[user].object|escape}
 					{/if}
 					</td>
-				<td class="email">
+				<td>
 					{if $channels[user].watchtype eq 'user'}
 						{$channels[user].email}
 					{else}
 						<em>{tr}Multiple{/tr}</em>
 					{/if}
 				</td>
-				<td class="text">
+				<td>
 					{if $channels[user].watchtype eq 'group'}
 						{icon _id='group'}
 					{else}
 						{icon _id='user'}
 					{/if}
-					{$channels[user].user|escape}
+					{$channels[user].user}
 				</td>
-				<td class="action">
-					<a class="link" href="{$smarty.server.PHP_SELF}?{query removeevent=$channels[user].watchId removetype=$channels[user].watchtype}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
-				</td>
+				<td><a class="link" href="{$smarty.server.PHP_SELF}?{query removeevent=$channels[user].watchId removetype=$channels[user].watchtype}">{icon _id='cross' alt='{tr}Remove{/tr}'}</a></td>
 			</tr>
 		{sectionelse}
-         {norecords _colspan=6}
+			<tr class="odd"><td colspan="6"><b>{tr}No records found.{/tr}</b></td></tr>
 		{/section}
 	</table>
 	{if $channels}
 		<br />
 		{tr}Perform action with checked:{/tr}
-		<input type="image" name="delsel" src='pics/icons/cross.png' alt="{tr}Delete{/tr}" title="{tr}Delete{/tr}" />
+		<input type="image" name="delsel" src='pics/icons/cross.png' alt='{tr}Delete{/tr}' title='{tr}Delete{/tr}' />
 	{/if}
 </form>
 

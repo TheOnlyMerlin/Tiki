@@ -1,8 +1,4 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
@@ -21,19 +17,19 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  * 
  * Usage:
  *    {jq [notonready=false|true], [nojquery='Optional markup for when feature_jquery is off']}
- *        $("#exampleId").hide()
+ *        $jq("#exampleId").hide()
  *    {/jq}
  * 
  * Examples:
  * 
  *  Simple, no escaping - result wrapped in {literal}{/literal}
- *    {jq}$(#exampleId").click(function() { alert("Clicked!"); });{/jq}
+ *    {jq}$jq(#exampleId").click(function() { alert("Clicked!"); });{/jq}
  * 
  *  Smarty markup between {{ and }} - result parsed and wrapped in literals
- *    {jq}$(#exampleId").show({{if $animation_fast eq 'y'}"fast"{else}"slow"{/if}}){/jq}
+ *    {jq}$jq(#exampleId").show({{if $animation_fast eq 'y'}"fast"{else}"slow"{/if}}){/jq}
  * 
  *  Escaped already - not re-parsed, not wrapped in literals
- *    {jq}{literal}$(#exampleId").show({/literal}{if $animation_fast eq 'y'}"fast"{else}"slow"{/if}){/jq}
+ *    {jq}{literal}$jq(#exampleId").show({/literal}{if $animation_fast eq 'y'}"fast"{else}"slow"{/if}){/jq}
  */
 
 function smarty_block_jq($params, $content, &$smarty) {
@@ -42,9 +38,8 @@ function smarty_block_jq($params, $content, &$smarty) {
 	if (empty($content)) { return ''; }
 	
 	extract($params);
-	if ($prefs['feature_jquery'] != 'y') {
-		return isset($nojquery) ? $nojquery : tr('<!-- jq smarty plugin inactive: feature_jquery off -->');
-	}
+	$nojquery = isset($nojquery) ? $nojquery : tr('<!-- jq smarty plugin inactive: feature_jquery off -->');
+	if ($prefs['feature_jquery'] != 'y') { return $nojquery; }
 	$notonready = isset($notonready) ? $notonready : false;
 	
 	if (!$notonready) {		
@@ -54,3 +49,4 @@ function smarty_block_jq($params, $content, &$smarty) {
 	}
 	return '';
 }
+?>

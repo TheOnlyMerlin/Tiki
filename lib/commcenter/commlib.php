@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -11,8 +6,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-class CommLib extends TikiLib
-{
+class CommLib extends TikiLib {
+	function CommLib($db) {
+		$this->TikiLib($db);
+	}
 
 	function accept_page($receivedPageId) {
 		$info = $this->get_received_page($receivedPageId);
@@ -63,10 +60,9 @@ class CommLib extends TikiLib
 	}
 
 	function accept_article($receivedArticleId, $topic) {
-		global $artlib; require_once 'lib/articles/artlib.php';
 		$info = $this->get_received_article($receivedArticleId);
 
-		$artlib->replace_article($info["title"], $info["authorName"],
+		$this->replace_article($info["title"], $info["authorName"],
 			$topic, $info["useImage"], $info["image_name"], $info["image_size"], $info["image_type"], $info["image_data"],
 			$info["heading"], $info["body"], $info["publishDate"], $info["expireDate"], $info["author"],
 			0, $info["image_x"], $info["image_y"], $info["type"], $info["rating"]);
@@ -75,7 +71,7 @@ class CommLib extends TikiLib
 		return true;
 	}
 
-	function list_received_articles($offset, $maxRecords, $sort_mode = 'publishDate_desc', $find = '') {
+	function list_received_articles($offset, $maxRecords, $sort_mode = 'publishDate_desc', $find) {
 		$bindvars = array();
 		if ($find) {
 			$findesc = '%' . $find . '%';
@@ -86,7 +82,7 @@ class CommLib extends TikiLib
 			$mid = "";
 		}
 
-		$query = "select * from `tiki_received_articles` $mid order by ".$this->convertSortMode($sort_mode);
+		$query = "select * from `tiki_received_articles` $mid order by ".$this->convert_sortmode($sort_mode);
 		$query_cant = "select count(*) from `tiki_received_articles` $mid";
 		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$cant = $this->getOne($query_cant,$bindvars);
@@ -163,7 +159,7 @@ class CommLib extends TikiLib
 		$result = $this->query($query,array($title,$site,$user));
 		$query = "insert into `tiki_received_articles`(`receivedDate`,`receivedFromSite`,`receivedFromUser`,`title`,`authorName`,`size`, ";
 		$query.= " `useImage`,`image_name`,`image_type`,`image_size`,`image_x`,`image_y`,`image_data`,`publishDate`,`expireDate`,`created`,`heading`,`body`,`hash`,`author`,`type`,`rating`) ";
-    $query.= " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    $query.= " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		$result = $this->query($query,array((int)$this->now,$site,$user,$title,$authorName,(int)$size,$use_image,$image_name,$image_type,$image_size,
 		                              $image_x,$image_y,$image_data,(int)$publishDate,(int)$expireDate,(int)$created,$heading,$body,$hash,$author,$type,(int)$rating));
 	}
@@ -198,4 +194,7 @@ class CommLib extends TikiLib
 
 // Functions for the communication center end ////
 }
-$commlib = new CommLib;
+global $dbTiki;
+$commlib = new CommLib($dbTiki);
+
+?>

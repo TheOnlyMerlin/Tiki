@@ -1,7 +1,7 @@
 {* $Id$ *}
 {$title}
 
-{tr}Author:{/tr} {$author|username}
+{tr}Author:{/tr} {$author}
 
 {$data}
 {if $reply_link}

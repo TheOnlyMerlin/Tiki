@@ -1,15 +1,10 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /**
  * Smarty plugin
  * @package Smarty
  * @subpackage plugins
  */
+
 
 /**
  * Smarty truncate modifier plugin
@@ -35,8 +30,7 @@ function smarty_modifier_truncate($string, $length = 80, $etc = '...',
     if ($length == 0)
         return '';
 
-    $strlength = (function_exists('mb_strlen') ? 'mb_strlen' : 'strlen');
-    if ($strlength($string) > $length) {
+    if (strlen($string) > $length) {
         $length -= min($length, strlen($etc));
 		if (function_exists('mb_substr'))
 			$func = 'mb_substr';
@@ -54,3 +48,7 @@ function smarty_modifier_truncate($string, $length = 80, $etc = '...',
         return $string;
     }
 }
+
+/* vim: set expandtab: */
+
+?>

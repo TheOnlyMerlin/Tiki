@@ -158,3 +158,4 @@ class OOoDoc extends OOoUtil {
 	function mail(){
 	}
 }
+?>

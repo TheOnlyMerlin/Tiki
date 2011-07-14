@@ -1,13 +1,19 @@
-{jq}
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+{literal}
 var html = new Array();
 function test_xpath(index) {
 	/*
 	alert("Index:"+index);
   alert ('Xpath['+index+']='+document.getElementById('xpath_'+index).value);
 	*/
-	window.open('tiki_tests/tiki-tests_show_xpath.php?filename={{$filename}}&index='+index+'&xpath='+document.getElementById('xpath_'+index).value,'_blank')	;
+{/literal}
+	window.open('tiki_tests/tiki-tests_show_xpath.php?filename={$filename}&index='+index+'&xpath='+document.getElementById('xpath_'+index).value,'_blank')	;
+{literal}
 }
-{/jq}
+{/literal}
+//--><!]]>
+</script>
 
 {title help="tests"}{tr}TikiTests Edit{/tr}{/title}
 
@@ -21,7 +27,7 @@ function test_xpath(index) {
 <input type="checkbox" name="show_page" value="y" {if $show_page eq 'y'} checked="checked"{/if}/>{tr}Show Page Differences{/tr}<br/>
 <input type="checkbox" name="show_tidy" value="y" {if $show_tidy eq 'y'} checked="checked"{/if}/>{tr}Show Tidy Errors and Warnings{/tr}<br/>
 <input type="checkbox" name="show_post" value="y" {if $show_post eq 'y'} checked="checked"{/if}/>{tr}Show POST Data{/tr}<br/>
-<input type="checkbox" name="current_session" value="y" {if $current_session eq 'y'} checked="checked"{/if}/>{tr}Use Current Session/Log out{/tr}<br/>
+<input type="checkbox" name="current_session" value="y" {if $current_session eq 'y'} checked="checked"{/if}/>{tr}Use Current Session/Logout{/tr}<br/>
 <input type="hidden" name="filename" value="{$filename}" />
 <center><input type="submit" name="action" value="{tr}Refresh{/tr}" /></center>
 {if $result}
@@ -37,7 +43,7 @@ function test_xpath(index) {
   <table style="width:100%" >
 		<tr><th colspan="2">{tr}Element to compare (Xpath expression):{/tr}&nbsp;<input type="text" style="width:50%;" id="xpath_{$smarty.foreach.url.index}" name="xpath[{$smarty.foreach.url.index}]" value="{$r.xpath}" />&nbsp;<input type="button" value="{tr}Test Xpath Expression{/tr}" onclick="javascript:test_xpath({$smarty.foreach.url.index}); return false" /></th>
 	</tr>
-	{if isset($r.post) and $show_post and sizeof($r.post) gt 0}
+	{if isset($r.post) and $show_post and sizeof($r.post) gt 0 }
 		<tr>
 			<th colspan="2">{tr}Post Variables{/tr}</th>
 		</tr>

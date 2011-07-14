@@ -1,69 +1,57 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+
+// Includes an article field
+// Usage:
+// {BLOGLIST(Id=>blogId)}{BLOGLIST}
+// FieldName can be any field in the tiki_articles table, but title,heading, or body are probably the most useful.
+function wikiplugin_bloglist_help() {
+	return tra("Use BLOGLIST to include posts from a blog. Syntax is").":<br />~np~{BLOGLIST(Id=n, Items=n)}{BLOGLIST}~/np~<br /> " . tra("where Id is the blog Id and Items is the max number of posts to display"). "<br />" . tra("Ex: ~np~{BLOGLIST(Id=2, Items=15)}{BLOGLIST}~/np~");
+}
 
 function wikiplugin_bloglist_info() {
 	return array(
 		'name' => tra('Blog List'),
 		'documentation' => 'PluginBlogList',		
-		'description' => tra('Display posts from a site blog'),
+		'description' => tra('Use BLOGLIST to include posts from a blog.'),
 		'prefs' => array( 'feature_blogs', 'wikiplugin_bloglist' ),
-		'icon' => 'pics/icons/text_list_bullets.png',
 		'params' => array(
 			'Id' => array(
 				'required' => true,
 				'name' => tra('Blog ID'),
-				'description' => tra('The ID number of the blog on the site you wish to list posts from'),
-				'filter' => 'digits',
-				'default' => ''
+				'description' => tra('Numeric value'),
 			),
 			'Items' => array(
 				'required' => false,
-				'name' => tra('Maximum Items'),
-				'description' => tra('Maximum number of entries to list (no maximum set by default)'),
-				'filter' => 'digits',
-				'default' => ''
+				'name' => tra('Items'),
+				'description' => tra('Maximum number of entries to list.'),
 			),
 			'author' => array(
 				'required' => false,
 				'name' => tra('Author'),
-				'description' => tra('Only display posts created by this user (all posts listed by default)'),
-				'default' => ''
+				'description' => tra('Author'),
 			),
 			'simpleList' => array(
 				'required' => false,
-				'name' => tra('Simple List'),
+				'name' => tra('Simple list'),
 				'description' => tra('Show simple list of date, title and author (default=y) or formatted list of blog posts (n)'),
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				),
 			),
 			'dateStart' => array(
 				'required' => false,
-				'name' => tra('Start Date'),
+				'name' => tra('Start date'),
 				'description' => tra('Earliest date to select posts from.') . ' (YYYY-MM-DD)',
 				'filter' => 'date',
-				'default' => ''
 			),
 			'dateEnd' => array(
 				'required' => false,
-				'name' => tra('End Date'),
+				'name' => tra('End date'),
 				'description' => tra('Latest date to select posts from.') . ' (YYYY-MM-DD)',
 				'filter' => 'date',
-				'default' => ''
 			),
 			'containerClass' => array(
 				'required' => false,
-				'name' => tra('Container Class'),
+				'name' => tra('Container class'),
 				'description' => tra('CSS Class to add to the container DIV.article. (Default="wikiplugin_bloglist")'),
 				'filter' => 'striptags',
-				'default' => 'wikiplugin_bloglist'
 			),
 		),
 	);
@@ -98,14 +86,13 @@ function wikiplugin_bloglist($data, $params) {
 	$smarty->assign('container_class', $params['containerClass']);
 	
 	if ($params['simpleList'] == 'y') {
-		global $bloglib; require_once('lib/blogs/bloglib.php');
-		$blogItems = $bloglib->list_posts($params['offset'], $params['Items'], $params['sort_mode'], $params['find'], $params['Id'], $params['author'], '', $dateStartTS, $dateEndTS);
+		$blogItems = $tikilib->list_posts($params['offset'], $params['Items'], $params['sort_mode'], $params['find'], $params['Id'], $params['author'], '', $dateStartTS, $dateEndTS);
 		$smarty->assign_by_ref('blogItems', $blogItems['data']);
 		$template = 'wiki-plugins/wikiplugin_bloglist.tpl';
 	} else {
 		global $bloglib; include_once('lib/blogs/bloglib.php');
 		
-		$blogItems = $bloglib->list_blog_posts($params['Id'], false, $params['offset'], $params['Items'],  $params['sort_mode'], $params['find'], $dateStartTS, $dateEndTS);
+		$blogItems = $bloglib->list_blog_posts($params['Id'], $params['offset'], $params['Items'],  $params['sort_mode'], $params['find'], $dateStartTS, $dateEndTS);
 		$temp_max = count($blogItems["data"]);
 		for ($i = 0; $i < $temp_max; $i++) {
 			$blogItems["data"][$i]["parsed_data"] = $tikilib->parse_data($bloglib->get_page($blogItems["data"][$i]["data"], 1));
@@ -115,6 +102,7 @@ function wikiplugin_bloglist($data, $params) {
 			}
 		}
 		$smarty->assign('show_heading', 'n');
+		$smarty->assign('use_title', 'y');	// TODO should be refactored from tiki-view_blog.php into bloglib
 		$smarty->assign('use_author', 'y');
 		$smarty->assign('add_date', 'y');
 		$smarty->assign_by_ref('listpages', $blogItems['data']);

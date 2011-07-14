@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 define( 'SVN_MIN_VERSION', 1.3 );
 define( 'TIKISVN', 'https://tikiwiki.svn.sourceforge.net/svnroot/tikiwiki' );
@@ -63,7 +58,7 @@ function is_valid_branch( $branch )
 function is_stable( $branch )
 {
 	return dirname( $branch ) == full( 'branches' )
-		&& preg_match( "/^\d+\.[\dx]+$/", basename( $branch ) );
+		&& preg_match( "/^\d+\.\d+$/", basename( $branch ) );
 }
 
 function is_experimental( $branch )

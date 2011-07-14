@@ -1,46 +1,59 @@
-{* $Id$ *}<!DOCTYPE html>
-<html id="print" xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
+{* $Id$ *}
+<!DOCTYPE html 
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
 	<head>
-{include file='header.tpl'}
+{include file="header.tpl"}
 	</head>
-	<body{html_body_attributes}>
+	<body{if isset($section) and $section eq 'wiki page' and $prefs.user_dbl eq 'y' and $dblclickedit eq 'y' and $tiki_p_edit eq 'y'} ondblclick="location.href='tiki-editpage.php?page={$page|escape:"url"}';"{/if} onload="{if $prefs.feature_tabs eq 'y'}tikitabs({if $cookietab neq ''}{$cookietab}{else}1{/if},50);{/if}{if $msgError} javascript:location.hash='msgError'{/if}"{if $section_class or $smarty.session.fullscreen eq 'y'} class="{if $section_class}tiki_{$section_class}{/if}{if $smarty.session.fullscreen eq 'y'} fullscreen{/if}"{/if}>
+{* Index we display a wiki page here *}
 
-		<div id="tiki-clean">
-			<div class="articletitle">
-				<h2>{$title|escape}</h2>
-				<span class="titleb">{tr}By:{/tr} {$authorName|escape} {$publishDate|tiki_short_datetime:'On:'} ({$reads} {tr}Reads{/tr})</span>
-			</div>
+<div id="tiki-main">
+	<div class="articletitle">
+		<h2>{$title}</h2>
+		<span class="titleb">{tr}By:{/tr}{$authorName} {tr}on:{/tr}{$publishDate|tiki_short_datetime} ({$reads} {tr}Reads{/tr})</span>
+		<br />
+	</div>
 	
-			<div class="articleheading">
-{if $useImage eq 'y'}
-	{if $hasImage eq 'y'}
-				<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=article&amp;id={$articleId}"{if $image_x lt 0} width="{$image_x}"{/if}{if $image_y gt 0} height="{$image_y}"{/if} />
-	{elseif $topicId ne 0}
-				<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topicId}" />
-	{/if}
-{elseif $topicId ne 0}
-				<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topicId}" />
-{/if}
-				<div class="articleheadingtext">{$parsed_heading}</div>
-			</div>
-
-{if $show_size eq 'y'}
-			<div class="articletrailer">
-				({$size} {tr}bytes{/tr})
-			</div>
-{/if}
+	<div class="articleheading">
+		<table cellpadding="0" cellspacing="0">
+			<tr>
+				<td valign="top">
+					{if $useImage eq 'y'}
+						{if $hasImage eq 'y'}
+							<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=article&amp;id={$articleId}" {if $image_x > 0}width="{$image_x}"{/if}{if $image_y > 0 }height="{$image_y}"{/if} />
+						{else}
+							<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topicId}" />
+						{/if}
+					{else}
+						<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topicId}" />
+					{/if}
+				</td>
+				<td valign="top">
+					<span class="articleheading">{$parsed_heading}</span>
+				</td>
+			</tr>
+		</table>
+	</div>
 	
-			<div class="articlebody">
-{if $tiki_p_read_article eq 'y'}
-				{$parsed_body}
-{else}
-				<div class="error simplebox">
-					{tr}You do not have permission to read complete articles.{/tr}
-				</div>
-{/if}
+	<div class="articletrailer">
+		{if $show_size eq 'y'}
+			({$size} {tr}bytes{/tr})
+		{/if}
+	</div>
+	
+	<div class="articlebody">
+		{if $tiki_p_read_article eq 'y'}
+			{$parsed_body}
+		{else}
+			<div class="error simplebox">
+				{tr}Permission denied. You do not have permission to read complete articles.{/tr}
 			</div>
-		</div>
+		{/if}
+	</div>
+</div>
 
-{include file='footer.tpl'}
+{include file="footer.tpl"}
 	</body>
 </html>

@@ -1,24 +1,32 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+/*
+ * $Id: /cvsroot/tikiwiki/tiki/lib/wiki-plugins/wikiplugin_box.php,v 1.18.2.1 2007-11-28 23:29:23 sylvieg Exp $
+ *
+ * Tiki-Wiki BOX plugin.
+ * 
+ * Syntax:
+ * 
+ *  {BOX([title=>Title],[bg=>color|#999fff],[width=>num[%]],[align=>left|right|center])}
+ *   Content inside box
+ *  {BOX}
+ * 
+ */
+function wikiplugin_box_help() {
+	return tra("Insert theme styled box on wiki page").":<br />~np~{BOX(title=>Title, bg=>color, width=>num[%], align=>left|right|center, float=>|left|right),class=class, id=id}".tra("text")."{BOX}~/np~";
+}
 
 function wikiplugin_box_info() {
 	return array(
 		'name' => tra('Box'),
 		'documentation' => 'PluginBox',
-		'description' => tra('Creates a formatted box with a title bar'),
+		'description' => tra('Insert theme styled box on wiki page'),
 		'prefs' => array('wikiplugin_box'),
 		'body' => tra('text'),
-		'icon' => 'pics/icons/layout_header.png',
 		'params' => array(
 			'title' => array(
 				'required' => false,
 				'name' => tra('Box title'),
 				'description' => tra('Displayed above the content'),
-				'default' => '',
 			),
 			'bg' => array(
 				'required' => false,
@@ -33,49 +41,17 @@ function wikiplugin_box_info() {
 			'align' => array(
 				'required' => false,
 				'name' => tra('Text Alignment'),
-				'description' => tra('Aligns the text within the box (left aligned by default)'),
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Right'), 'value' => 'right'), 
-					array('text' => tra('Center'), 'value' => 'center'), 
-				),
+				'description' => 'left|right|center',
 			),
 			'float' => array(
 				'required' => false,
 				'name' => tra('Float Position'),
-				'description' => tra('Set the alignment for the entire box. For elements with a width of less than 100%, other elements will wrap around it 
-										unless the clear parameter is appropriately set.)'),
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Left'), 'value' => 'left'), 
-					array('text' => tra('Right'), 'value' => 'right'), 
-				),
-			),
-			'clear' => array(
-				'required' => false,
-				'name' => tra('Clear'),
-				'description' => tra('Items are not allowed to wrap around the box if this parameter is set to.1 (Yes)'),
-				'filter' => 'text',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0)
-				),
+				'description' => 'left|right' . ', ' . tra('for box with width lesser than 100%, make text wrap around the box.'),
 			),
 			'class' => array(
 				'required' => false,
 				'name' => tra('CSS Class'),
 				'description' => tra('Apply custom CSS class to the box.'),
-			),
-			'id' => array(
-				'required' => false,
-				'name' => tra('ID'),
-				'description' => tra('ID'),
 			),
 		),
 	);
@@ -118,3 +94,5 @@ function wikiplugin_box($data, $params) {
 	//$data = $tikilib->parse_data($data);
 	return $begin . $data . $end;
 }
+
+?>

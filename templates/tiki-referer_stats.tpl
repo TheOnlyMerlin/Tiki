@@ -9,7 +9,7 @@
 <table class="normal">
   <tr>
   <th>
-    <a href="tiki-referer_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'referer_desc'}referer_asc{else}referer_desc{/if}">{tr}Domain{/tr}</a>
+    <a href="tiki-referer_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'referer_desc'}referer_asc{else}referer_desc{/if}">{tr}Word{/tr}</a>
   </th>
   <th>
     <a href="tiki-referer_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'hits_desc'}hits_asc{else}hits_desc{/if}">{tr}Hits{/tr}</a>
@@ -20,14 +20,12 @@
   </tr>
   {cycle values="odd,even" print=false}
   {section name=user loop=$channels}
-    <tr class="{cycle}">
-      <td class="text">{$channels[user].referer}</td>
-      <td class="integer">{$channels[user].hits}</td>
-      <td class="date">{$channels[user].last|tiki_short_datetime}</td>
+    <tr>
+      <td class="{cycle advance=false}">{$channels[user].referer}</td>
+      <td class="{cycle advance=false}">{$channels[user].hits}</td>
+      <td class="{cycle}">{$channels[user].last|tiki_short_datetime}</td>
     </tr>
-  {sectionelse}
-		{norecords _colspan=3}
   {/section}
 </table>
 
-{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
+{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset }{/pagination_links}
