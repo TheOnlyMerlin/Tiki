@@ -1,19 +1,40 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+
+/*
+ * Versions plugin: Split the text in parts visible only under some conditions:
+ * 
+ * Syntax:
+ * {VERSIONS(nav=>y| n, title=>y| n, default=>)}text{VERSIONS}
+ * 
+ * Documentation
+ * http://doc.tiki.org/PluginVersions
+ */
+function wikiplugin_versions_help()
+{
+	return tra("Split the text in parts visible only under some conditions") . ":<br />"
+            . "~np~{VERSIONS(nav=>y|n,title=>y|n,default=>)}"
+            . tra("This is the default text") . "<br />"
+            . "---" . tra("(version 3)") . "-----------------------------" . "<br />" 
+            . tra("This is version 3 info") . "<br />"
+            . "---" . tra("(version 2)") . "-----------------------------" . "<br />"
+            . tra("This is version 2 info") . "<br />"
+            . "---" . tra("(version 1)") . "-----------------------------" . "<br />"
+            . tra("This is version 1 info") ."{VERSIONS}~/np~";
+}
 
 function wikiplugin_versions_info()
 {
 	return array(
 		'name' => tra('Versions'),
 		'documentation' => 'PluginVersions',
-		'description' => tra('Create tabs for showing alternate versions of content'),
+		'description' => tra('Split the text in parts visible only under some conditions'),
 		'prefs' => array( 'wikiplugin_versions' ),
 		'body' => tra('Block of text separated by ---(version x)--- markers. Text before the first marker is used by default.'),
-		'icon' => 'pics/icons/tab_edit.png',
 		'params' => array(
 			'nav' => array(
 				'required' => false,
@@ -21,7 +42,7 @@ function wikiplugin_versions_info()
 				'description' => tra('Displays a navigation box that allows users to select a specific version to display.'),
 				'default' => 'n',
 				'filter' => 'alpha',
-				'options' => array(
+     			'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n'), 
@@ -34,7 +55,7 @@ function wikiplugin_versions_info()
 				'default' => 'y',
 				'filter' => 'alpha',
 				'parent' => array('name' => 'nav', 'value' => 'n'),
-				'options' => array(
+     			'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n'), 
@@ -92,7 +113,7 @@ if (!isset($_REQUEST['preview'])){
 			$data = substr($data, 0, strpos($data, '---('));
 		}
 		if ($nav == 'n' and $title == 'y') { $data = "<b class='versiontitle'>". $default .'</b>'.$data; }
-		$data = "\n" . ltrim(substr($data, strpos("\n", $data)));
+		$data = ltrim(substr($data, strpos("\n", $data)));
 	} elseif (isset($v[1][$p-1]) and strpos($data, '---('.$v[1][$p-1])) {
 		if ($nav == 'n' and $title == 'y') {
 			$data = substr($data, strpos($data, '---('.$v[1][$p-1]));

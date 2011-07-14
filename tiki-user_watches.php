@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,6 +9,10 @@ $section = 'mytiki';
 include_once ('tiki-setup.php');
 include_once('lib/reportslib.php');
 
+if ($prefs['ajax_xajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
+
 $access->check_user($user);
 $access->check_feature('feature_user_watches');
 
@@ -16,26 +20,23 @@ if ($prefs['feature_user_watches_translations']) {
 	$languages = $tikilib->list_languages();
 	$smarty->assign_by_ref('languages', $languages);
 }
-
-require_once('lib/notifications/notificationlib.php');
-
-$notification_types = $notificationlib->get_global_watch_types(true);
+$add_options = array();
+if ($prefs['feature_articles'] == 'y') {
+	$add_options['article_submitted'] = tra('A user submits an article');
+	$add_options['article_edited'] = tra('A user edits an article');
+	$add_options['article_deleted'] = tra('A user deletes an article');
+}
+if ($prefs['feature_wiki'] == 'y') {
+	$add_options['wiki_page_changes'] = tra('Any wiki page is changed');
+}
 if ($prefs['feature_user_watches_translations'] == 'y') {
-	$notification_types['wiki_page_in_lang_created'] = array(
-		'label' => tra('A new page is created in a language') ,
-		'type' => 'wiki page',
-		'url' => '' 
-	);
+	$add_options['wiki_page_in_lang_created'] = tra('A new page is created in a language');
 }
-if ( $prefs['feature_user_watches_languages'] == 'y') {
-	$notification_types['category_changed_in_lang'] = array(
-		'label' => tra('Category change in a language') ,
-		'type' => '',
-		'url' => '' 
-	);
+if ($prefs['feature_user_watches_languages'] == 'y') {
+	$add_options['category_changed_in_lang'] = tra('Category change in a language');
 }
 
-$smarty->assign('add_options', $notification_types);
+$smarty->assign('add_options', $add_options);
 if (isset($_POST['langwatch'])) {
 	foreach($languages as $lang) if ($_POST['langwatch'] == $lang['value']) {
 		$langwatch = $lang;
@@ -77,6 +78,27 @@ if (isset($_REQUEST['id'])) {
 if (isset($_REQUEST["add"])) {
 	if (isset($_REQUEST['event'])) {
 		switch ($_REQUEST['event']) {
+			case 'article_submitted':
+				$watch_object = "*";
+				$watch_type = 'article';
+				$watch_label = '*';
+				$watch_url = "tiki-view_articles.php";
+				break;
+
+			case 'article_edited':
+				$watch_object = "*";
+				$watch_type = 'article';
+				$watch_label = '*';
+				$watch_url = "tiki-list_articles.php";
+				break;
+
+			case 'article_deleted':
+				$watch_object = "*";
+				$watch_type = 'article';
+				$watch_label = '*';
+				$watch_url = "tiki-list_articles.php";
+				break;
+
 			case 'wiki_page_in_lang_created':
 				$watch_object = $langwatch['value'];
 				$watch_type = 'wiki page';
@@ -93,16 +115,12 @@ if (isset($_REQUEST["add"])) {
 				}
 				break;
 
-			default:
-				if (!isset($notification_types[$_REQUEST['event']])) {
-					$smarty->assign('msg', "Unknown watch type");
-					$smarty->display("error.tpl");
-					die;					
-				}
-				$watch_object = '*';
-				$watch_type = $notification_types[$_REQUEST['event']]['type'];
-				$watch_label = $notification_types[$_REQUEST['event']]['label'];
-				$watch_url = $notification_types[$_REQUEST['event']]['url'];
+			case 'wiki_page_changes':
+				$watch_object = "*";
+				$watch_type = 'wiki page';
+				$watch_label = tra('Any wiki page is changed');
+				$watch_url = 'tiki-lastchanges.php';
+				break;
 		}
 		if (isset($watch_object)) {
 			$tikilib->add_user_watch($user, $_REQUEST['event'], $watch_object, $watch_type, $watch_label, $watch_url);
@@ -125,40 +143,13 @@ if (isset($_REQUEST["delete"]) && isset($_REQUEST['watch'])) {
 		$tikilib->remove_user_watch_by_id($item);
 	}
 }
-$notification_types = $notificationlib->get_global_watch_types();
-if ($prefs['feature_user_watches_translations'] == 'y') {
-	$notification_types['wiki_page_in_lang_created'] = array(
-		'label' => tra('A new page is created in a language') ,
-		'type' => 'wiki page',
-		'url' => '' 
-	);
-}
-if ( $prefs['feature_user_watches_languages'] == 'y') {
-	$notification_types['category_changed_in_lang'] = array(
-		'label' => tra('Category change in a language') ,
-		'type' => '',
-		'url' => '' 
-	);
-}
-$rawEvents = $tikilib->get_watches_events();
-$event = array();
-foreach($rawEvents as $event) {
-	if (array_key_exists($event, $notification_types)) {
-		$events[$event] = $notification_types[$event]['label'];
-	} else {
-		$events[$event] = $event; // Fallback to raw event name if no description found
-	}
-}
+// Get watch events and put them in watch_events
+$events = $tikilib->get_watches_events();
 $smarty->assign('events', $events);
 // if not set event type then all
 if (!isset($_REQUEST['event'])) $_REQUEST['event'] = '';
 // get all the information for the event
 $watches = $tikilib->get_user_watches($user, $_REQUEST['event']);
-foreach($watches as $key => $watch) {
-	if (array_key_exists($watch['event'], $notification_types)) {
-		$watches[$key]['label'] = $notification_types[$watch['event']]['label'];
-	}
-}
 $smarty->assign('watches', $watches);
 // this was never needed here, was it ? -- luci
 //include_once ('tiki-mytiki_shared.php');
@@ -186,6 +177,16 @@ if ($prefs['feature_messages'] == 'y' && $tiki_p_messages == 'y') {
 $eok = $userlib->get_user_email($user);
 $smarty->assign('email_ok', empty($eok) ? 'n' : 'y');
 ask_ticket('user-watches');
+if ($prefs['ajax_xajax'] == "y") {
+	function user_watches_ajax() {
+		global $ajaxlib, $xajax;
+		$ajaxlib->registerTemplate("tiki-user_watches.tpl");
+		$ajaxlib->registerTemplate("tiki-my_tiki.tpl");
+		$ajaxlib->registerFunction("loadComponent");
+		$ajaxlib->processRequests();
+	}
+	user_watches_ajax();
+}
 $smarty->assign_by_ref('report_preferences', $reportslib->get_report_preferences_by_user($user));
 $smarty->assign('mid', 'tiki-user_watches.tpl');
 $smarty->display("tiki.tpl");

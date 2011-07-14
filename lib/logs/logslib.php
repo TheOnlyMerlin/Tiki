@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -100,7 +100,7 @@ class LogsLib extends TikiLib
 	}
 	function clean_logs($date)
 	{
-		$query = "delete from `tiki_actionlog` where `objectType`='system' and `lastModif`<=?";
+		$query = "delete from `tiki_actionlog` where `object`='system' and `objectType`='system' and `lastModif`<=?";
 		$this->query($query, array((int)$date));
 	}
 
@@ -173,26 +173,26 @@ class LogsLib extends TikiLib
 				$categs = $categlib->get_object_categories($objectType, $object);
 			}
 		}
-		$actions = array();
-		if ( $logObject ) {
-			$param = substr( $param, 0, '200' );
-			if (!$logCateg) {
+		if ($logObject && !$logCateg) {
 			$query = "insert into `tiki_actionlog` (`action`, `object`, `lastModif`, `user`, `ip`, `comment`, `objectType`, `client`) values(?,?,?,?,?,?,?,?)";
+			$param = substr( $param, 0, '200' ); //fixes bugs  3629, 3661, 3710
 			$this->query($query, array($action, $object, (int)$date, $who, $ip, $param, $objectType, $client));
-			$actions[] = $this->lastInsertId();
-		} else {
+		} elseif ($logObject) {
 			if (count($categs) > 0) {
 				foreach ($categs as $categ) {
 					$query = "insert into `tiki_actionlog` (`action`, `object`, `lastModif`, `user`, `ip`, `comment`, `objectType`, `categId`, `client`) values(?,?,?,?,?,?,?,?,?)";
 					$this->query($query, array($action, $object, (int)$date, $who, $ip, $param, $objectType, $categ, $client));
-					$actions[] = $this->lastInsertId();
 				}
 			} else {
 				$query = "insert into `tiki_actionlog` (`action`, `object`, `lastModif`, `user`, `ip`, `comment`, `objectType`, `client`) values(?,?,?,?,?,?,?,?)";
 				$this->query($query, array($action, $object, (int)$date, $who, $ip, $param, $objectType, $client));
-				$actions[] = $this->lastInsertId();
 			}
 		}
+		$query = "select `actionId` from `tiki_actionlog` where `action`=? and `object`=? and `lastModif`=? and `user`=? and `ip`=?";
+		$result = $this->query($query, array($action, $object, (int)$date, $who, $ip));
+		$actions = array();
+		while ($res = $result->fetchRow()) {
+			$actions[] = $res['actionId'];
 		}
 		if (!empty($contributions)) {
 			foreach ($actions as $a) {

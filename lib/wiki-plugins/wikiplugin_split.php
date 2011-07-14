@@ -1,19 +1,36 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+/**
+ * \brief {SPLIT} wiki plugin implementation
+ * Usage:
+ *
+ *  {SPLIT(joincols=>[y|n|0|1],fixedsize=>[y|n|0|1],colsize=>size1|size2|...,first=>[col|line])}
+ *
+ * If `joincols' eq true (yes) 'colspan' attribute will be generated if column missed.
+ * If `fixedsize' eq true (yes) 'width' attribute will be generated for TDs.
+ * Both paramaters have default value 'y'
+ * first='col': r1c1---r2c1---r3c1@@@r1c2---r2c2 (the editorial way)
+ * first='line' (default): r1c1---r1c2@@@r2c1---r2c2 (the html table way)
+ * if first=col,edit=y, each section of the split is editable
+ *
+ * If you set the style for class .wikiplugin-split you are able to alter
+ * the output of this plugin.
+ *
+ */
+
 function wikiplugin_split_info()
 {
 	return array(
 		'name' => tra('Split'),
-		'documentation' => 'PluginSplit',
-		'description' => tra('Easily arrange content on a page into rows and columns'),
+		'documentation' => tra('PluginSplit'),
+		'description' => tra('Split a page into rows and columns'),
 		'prefs' => array( 'wikiplugin_split' ),
 		'filter' => 'wikicontent',
-		'icon' => 'pics/icons/table.png',
 		'params' => array(
 			'joincols' => array(
 				'required' => false,
@@ -263,7 +280,8 @@ function  wikiplugin_split_cell($data, $pos, $cell)
 		} else {
 			$end = $pos + strpos(substr($data, $pos), $matches[1]);
 			$start_next_tag = $end + strlen($matches[1]);
-			if (substr($matches[1], 0, 3) == '@@@' || $matches[1] == '---') {
+			if (substr($matches[1], 0, 4) == '----') {
+			} else if (substr($matches[1], 0, 3) == '@@@' || $matches[1] == '---') {
 				if (!$cell)
 					break;
 				--$cell;

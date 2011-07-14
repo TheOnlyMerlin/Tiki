@@ -14,6 +14,8 @@
 	height: 1%;
 }
 
+#sitetitle {}
+
 #siteloginbar_popup {
 	width: 300px;
 }
@@ -68,6 +70,9 @@ img.flipmodimage {
 
 .box-data ul {
 	margin-left: 1em;
+}
+
+.box-data ul {
 	padding-left: .5em;
 }
 
@@ -108,6 +113,9 @@ img.flipmodimage {
 	position: static;
 	margin-top: 2.4ex;
 }
+
+.wikiactions .icons,
+.wikiactions form {/*display: inline*/}
 
 /* IE6 doesn't do position fixed, override with absolute */
 .plugin-form-float {

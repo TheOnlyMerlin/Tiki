@@ -14,9 +14,9 @@ var $addr = $("input[name=address]");
 $addr.focus(function(){ if ($addr.val() === "{tr}enter address{/tr}") { $addr.val(""); } }).blur(function(){ if ($addr.val() === "") { $addr.val("{tr}enter address{/tr}"); } });
 {/jq}
 <input type="submit" name="cancel" value="{tr}Find address{/tr}" onclick="showAddress{$gmapname|escape}(this.form.address.value);return false;" /><br />
-{tr}Lon.:{/tr} <input type="text" name="point[x]" value="{$pointx}" id="{$gmapname|escape}pointx" size="6" />
-{tr}Lat.:{/tr} <input type="text" name="point[y]" value="{$pointy}" id="{$gmapname|escape}pointy" size="6" />
-{tr}Zoom:{/tr} <input type="text" name="point[z]" value="{$pointz}" id="{$gmapname|escape}pointz" size="2" />
+{tr}Lon.{/tr}: <input type="text" name="point[x]" value="{$pointx}" id="{$gmapname|escape}pointx" size="6" />
+{tr}Lat.{/tr}: <input type="text" name="point[y]" value="{$pointy}" id="{$gmapname|escape}pointy" size="6" />
+{tr}Zoom{/tr}: <input type="text" name="point[z]" value="{$pointz}" id="{$gmapname|escape}pointz" size="2" />
 {/if}
 {if $gmap_defaultset && $user}
 <input type="submit" name="cancel" onclick="document.getElementById('gmap{$gmapname|escape}_ajax_msg').innerHTML = '{tr}saving...{/tr}';saveGmapDefaultxyz{$gmapname|escape}();return false;" value="{tr}Save current map view as user default{/tr}" />
@@ -61,14 +61,14 @@ function showAddress{$gmapname|escape}(address) {literal}{{/literal}
   {literal}}{/literal}
 {literal}}{/literal}
 
-function saveGmapDefaultxyz{$gmapname|escape}() {literal}{{/literal}	// AJAX_TODO
-//	xajax.config.requestURI = '{$smarty.server.REQUEST_URI}';
-//	xajax_saveGmapDefaultxyz('gmap{$gmapname|escape}_ajax_msg', gmap{$gmapname|escape}map.getCenter().x, gmap{$gmapname|escape}map.getCenter().y, gmap{$gmapname|escape}map.getZoom());
+function saveGmapDefaultxyz{$gmapname|escape}() {literal}{{/literal}
+	xajax.config.requestURI = '{$smarty.server.REQUEST_URI}';
+	xajax_saveGmapDefaultxyz('gmap{$gmapname|escape}_ajax_msg', gmap{$gmapname|escape}map.getCenter().x, gmap{$gmapname|escape}map.getCenter().y, gmap{$gmapname|escape}map.getZoom());
 {literal}}{/literal}
 
 function saveGmapUser{$gmapname|escape}() {literal}{{/literal}
-//	xajax.config.requestURI = '{$smarty.server.REQUEST_URI}';
-//	xajax_saveGmapUser('gmap{$gmapname|escape}_ajax_msg', document.getElementById('{$gmapname|escape}pointx').value, document.getElementById('{$gmapname|escape}pointy').value, document.getElementById('{$gmapname|escape}pointz').value, '{$gmapitem}');
+	xajax.config.requestURI = '{$smarty.server.REQUEST_URI}';
+	xajax_saveGmapUser('gmap{$gmapname|escape}_ajax_msg', document.getElementById('{$gmapname|escape}pointx').value, document.getElementById('{$gmapname|escape}pointy').value, document.getElementById('{$gmapname|escape}pointz').value, '{$gmapitem}');
 {literal}}{/literal}
 
 function updateGmapInput{$gmapname|escape}() {ldelim}
@@ -81,8 +81,8 @@ function updateGmapInput{$gmapname|escape}() {ldelim}
 function saveGmapItem{$gmapname|escape}() {literal}{{/literal}
 	updateGmapInput{$gmapname|escape}();
 	{if $gmapitem}
-//	xajax.config.requestURI = '{$smarty.server.REQUEST_URI}';
-//	xajax_saveGmapItem('gmap{$gmapname|escape}_ajax_msg', document.getElementById('{$gmapname|escape}pointx').value, document.getElementById('{$gmapname|escape}pointy').value, document.getElementById('{$gmapname|escape}pointz').value, '{$gmapitemtype}', '{$gmapitem}', '{$gmaptrackerfieldid}');
+	xajax.config.requestURI = '{$smarty.server.REQUEST_URI}';
+	xajax_saveGmapItem('gmap{$gmapname|escape}_ajax_msg', document.getElementById('{$gmapname|escape}pointx').value, document.getElementById('{$gmapname|escape}pointy').value, document.getElementById('{$gmapname|escape}pointz').value, '{$gmapitemtype}', '{$gmapitem}', '{$gmaptrackerfieldid}');
 	{/if}
 {literal}}{/literal}
 

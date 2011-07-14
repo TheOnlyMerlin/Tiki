@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -31,6 +31,14 @@ require_once ('tiki-setup.php');
 include_once ('lib/wiki/wikilib.php');
 include_once ('lib/structures/structlib.php');
 include_once ('lib/notifications/notificationlib.php');
+if ($prefs['feature_ajax'] === 'y') {
+	if ($prefs['ajax_xajax'] === 'y') {
+		require_once ("lib/ajax/ajaxlib.php");
+		if ($prefs['feature_wiki_save_draft'] === 'y') {
+			require_once ("lib/wiki/wiki-ajax.php");
+		}
+	}
+}
 require_once ("lib/wiki/editlib.php");
 
 
@@ -155,6 +163,11 @@ if ( ( $stagingPage = $tikilib->get_staging_page( $_REQUEST['page'] ) ) && ($pre
 $page = $_REQUEST["page"];
 $smarty->assign('page', $page);
 $info = $tikilib->get_page_info($page);
+
+//if $_REQUEST['copypaste'] is set from QuickEdit module this is the copy/paste field
+if (isset($_REQUEST['copypaste']) and $_REQUEST['copypaste']!='') {
+	$_REQUEST['edit']=$info['data']."\n".$_REQUEST['copypaste'];
+}
 
 // String use to lock the page currently edit.
 $editLockPageId = 'edit_lock_' . (isset($info['page_id']) ? (int) $info['page_id'] : 0);
@@ -500,14 +513,6 @@ if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_na
 			$url .= '&no_bl=y';
 		}
 
-
-		if ($tiki_p_wiki_approve == 'y' && $prefs['flaggedrev_approval'] == 'y') {
-			global $flaggedrevisionlib; require_once 'lib/wiki/flaggedrevisionlib.php';
-
-			if ($flaggedrevisionlib->page_requires_approval($page)) {
-				$url .= '&latest=1';
-			}
-		}
 		if ($dieInsteadOfForwardingWithHeader) die ("-- tiki-editpage: Dying before second call to header(), so we can see traces. Forwarding to: '$url'");
 		header("location: $url");
 		die;
@@ -657,6 +662,15 @@ if ((isset($_REQUEST["template_name"]) || isset($_REQUEST["templateId"])) && !is
 	$template_data = $templateslib->get_template($templateId, $templateLang);
 	$_REQUEST["edit"] = $template_data["content"]."\n".$_REQUEST["edit"];
 	$smarty->assign("templateId", $templateId);
+}
+
+if (isset($_REQUEST["categId"]) && $_REQUEST["categId"] > 0) {
+	$categs = explode('+',$_REQUEST["categId"]);
+	$smarty->assign('categIds',$categs);
+	$smarty->assign('categIdstr',$_REQUEST["categId"]);
+} else {
+	$smarty->assign('categIds',array());
+	$smarty->assign('categIdstr',0);
 }
 
 if (isset($_REQUEST["ratingId"]) && $_REQUEST["ratingId"] > 0) {
@@ -837,7 +851,9 @@ if ( !isset($_REQUEST['preview']) && !isset($_REQUEST['save']) ) {
 		$smarty->assign('allowhtml','y');
 	} elseif ($_SESSION['wysiwyg'] === 'y') {
 		if ($prefs['wysiwyg_htmltowiki'] === 'y') {
-			if ($edit_data == 'ajax error') {
+			if ($edit_data != 'ajax error') {
+				//$parsed = $editlib->parseToWysiwyg($edit_data);
+			} else {
 				unset($_REQUEST['save']);	// don't save an ajax error
 			}
 		} else {
@@ -1130,10 +1146,6 @@ if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) !== 'sandbox' || 
 		}
 	}
 
-	if ($prefs['geo_locate_wiki'] == 'y' && ! empty($_REQUEST['geolocation'])) {
-		TikiLib::lib('geo')->set_coordinates('wiki page', $page, $_REQUEST['geolocation']);
-	}
-
 	if (!empty($_REQUEST['returnto'])) {	// came from wikiplugin_include.php edit button
 		$url = $wikilib->sefurl($_REQUEST['returnto']);
 	} else if ($page_ref_id) {
@@ -1144,15 +1156,6 @@ if (isset($_REQUEST["save"]) && (strtolower($_REQUEST['page']) !== 'sandbox' || 
 	if ($prefs['feature_multilingual'] === 'y' && $prefs['feature_best_language'] === 'y' && isset($info['lang']) && $info['lang'] !== $prefs['language']) {
 		$url .= '&no_bl=y';
 	}
-
-	if ($tiki_p_wiki_approve == 'y' && $prefs['flaggedrev_approval'] == 'y') {
-		global $flaggedrevisionlib; require_once 'lib/wiki/flaggedrevisionlib.php';
-
-		if ($flaggedrevisionlib->page_requires_approval($page)) {
-			$url .= '&latest=1';
-		}
-	}
-
 	$_SESSION['saved_msg'] = $_REQUEST["page"];
 
 	if (!empty($_REQUEST['hdr'])) {
@@ -1246,8 +1249,6 @@ if ($prefs['feature_categories'] === 'y') {
 	if (isset($_REQUEST["current_page_id"]) && $prefs['feature_wiki_categorize_structure'] === 'y' && $categlib->is_categorized('wiki page', $structure_info["pageName"])) {
 		$categIds = $categlib->get_object_categories('wiki page', $structure_info["pageName"]);
 		$smarty->assign('categIds',$categIds);
-	} else {
-		$smarty->assign('categIds',array());
 	}
 	if (isset($_SERVER['HTTP_REFERER']) && strstr($_SERVER['HTTP_REFERER'], 'tiki-index.php') && !$tikilib->page_exists($_REQUEST["page"])) { // default the categs the page you come from for a new page
 		if (preg_match('/page=([^\&]+)/', $_SERVER['HTTP_REFERER'], $ms))
@@ -1286,6 +1287,13 @@ if ($structlib->page_is_in_structure($_REQUEST["page"])) {
 // so no need to show comments & attachments, but need
 // to show 'wiki quick help'
 $smarty->assign('edit_page', 'y');
+$smarty->assign('categ_checked', 'n');
+// Set variables so the preview page will keep the newly inputted category information
+if (isset($_REQUEST['cat_categorize'])) {
+	if ($_REQUEST['cat_categorize'] === 'on') {
+		$smarty->assign('categ_checked', 'y');
+	}
+}
 if ($prefs['wiki_feature_copyrights'] === 'y' && $tiki_p_edit_copyrights === 'y') {
 	include_once ('lib/copyrights/copyrightslib.php');
 	$copyrightslib = new CopyrightsLib;
@@ -1338,10 +1346,6 @@ if ($prefs['feature_wikiapproval'] === 'y') {
 	}
 }
 
-if( $prefs['geo_locate_wiki'] == 'y' ) {
-	$smarty->assign('geolocation_string', TikiLib::lib('geo')->get_coordinates_string('wiki page', $page));
-}
-
 if( $prefs['feature_multilingual'] === 'y' ) {
 	global $multilinguallib; include_once('lib/multilingual/multilinguallib.php');
 	$trads = $multilinguallib->getTranslations('wiki page', $info['page_id'], $page, $info['lang']);
@@ -1368,8 +1372,7 @@ if (($prefs['feature_wiki_templates'] === 'y' && $tiki_p_use_content_templates =
 		($prefs['feature_wiki_description'] === 'y' || $prefs['metatag_pagedesc'] === 'y') ||
 		$prefs['feature_wiki_footnotes'] === 'y' ||
 		($prefs['feature_wiki_ratings'] === 'y' && $tiki_p_wiki_admin_ratings ==='y') ||
-		$prefs['feature_multilingual'] === 'y' ||
-		$prefs['geo_locate_wiki'] === 'y') {
+		$prefs['feature_multilingual'] === 'y') {
 	
 	$smarty->assign('showPropertiesTab', 'y');
 }

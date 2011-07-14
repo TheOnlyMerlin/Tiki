@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,7 +18,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  * 
  * 	template	-	template to load (e.g. tiki-admin.tpl)
  * 	htmlelement	-	destination div (usually) to load request into
- * 	function	-	xajax registered function to call - default: loadComponent	// AJAX_TODO?
+ * 	function	-	xajax registered function to call - default: loadComponent
  * 	scrollTo	-	x,y coords to scroll to on click (e.g. "0,0")
  * 	_onclick	-	extra JS to run first onclick
  */
@@ -47,5 +47,17 @@ function smarty_block_ajax_href($params, $content, &$smarty, $repeat) {
     $func = isset($params['function']) ? $params['function']: $def_func;	// preserve previous behaviour
     $last_user = htmlspecialchars($user);
 
-	return " href=\"$url\" ";
+    																		// temporary switch to not do ajax for ckeditor button - not reliable in tiki 6
+// Actually in tiki 6 even when not ckeditor if you edit while in tiki-index vs editpage the plugin help breaks as well, you get blank help
+    if ( $prefs['ajax_xajax'] !== 'y' || $prefs['javascript_enabled'] == 'n' || $template === 'tiki-editpage.tpl' ) {
+		return " href=\"$url\" ";
+    } else {
+		$max_tikitabs = 50; // Same value as in header.tpl, <body> tag onload's param
+		if (empty($params['_anchor'])) {
+			$anchor = "#main";
+		} else {
+			$anchor = '#'.$params['_anchor'];
+		}
+		return " href=\"$anchor\" onclick=\"$onclick $func('$url','$template','$htmlelement',$max_tikitabs,'$last_user'); return false\" ";
+    }
 }

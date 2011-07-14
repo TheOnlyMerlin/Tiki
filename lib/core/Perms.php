@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -126,18 +126,21 @@ class Perms
 	}
 
 	public function getAccessor( array $context = array() ) {
+		require_once 'lib/core/Perms/Accessor.php';
 		$accessor = new Perms_Accessor;
 		$accessor->setContext( $context );
 
-		$accessor->setPrefix( $this->prefix );
-		$accessor->setGroups( $this->groups );
+		if( self::$instance ) {
+			$accessor->setPrefix( $this->prefix );
+			$accessor->setGroups( $this->groups );
 
-		if( $this->checkSequence ) {
-			$accessor->setCheckSequence( $this->checkSequence );
-		}
+			if( $this->checkSequence ) {
+				$accessor->setCheckSequence( $this->checkSequence );
+			}
 
-		if( $resolver = $this->getResolver( $context ) ) {
-			$accessor->setResolver( $resolver );
+			if( $resolver = $this->getResolver( $context ) ) {
+				$accessor->setResolver( $resolver );
+			}
 		}
 
 		return $accessor;
@@ -310,11 +313,6 @@ class Perms
 
 		if( ! $resolver ) {
 			$resolver = false;
-		}
-
-		// Limit the amount of hashes preserved to reduce memory consumption
-		if (count($this->hashes) > 128) {
-			$this->hashes = array();
 		}
 
 		foreach( $toSet as $hash ) {

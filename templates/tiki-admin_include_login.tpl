@@ -1,17 +1,4 @@
 {* $Id$ *}
-{jq}		
-	$("#genPass span").click(function () {
-		var passcodeId = $("input[name=registerPasscode]").attr('id');
-		genPass(passcodeId);
-		return false
-	});
-
-	$("input[name=useRegisterPasscode]").change(function () {
-		document.LogForm.registerPasscode.value='';
-		return false
-	});
-{/jq}
-
 <div class="navbar">
 	{button href="tiki-admingroups.php" _text="{tr}Admin Groups{/tr}"}
 	{button href="tiki-adminusers.php" _text="{tr}Admin Users{/tr}"}
@@ -22,7 +9,7 @@
 	{/remarksbox}
 {/if}
 
-<form action="tiki-admin.php?page=login" class="admin" method="post" name="LogForm">
+<form action="tiki-admin.php?page=login" class="admin" method="post">
 	<input type="hidden" name="loginprefs" />
 	<div class="heading input_submit_container" style="text-align: right">
 		<input type="submit" value="{tr}Change preferences{/tr}" />
@@ -46,9 +33,6 @@
 					{preference name=useRegisterPasscode}
 					<div class="adminoptionboxchild" id="useRegisterPasscode_childcontainer">
 						{preference name=registerPasscode}
-						<span id="genPass">
-								{button href="#" _onclick="" _text="{tr}Generate a passcode{/tr}"}
-						</span>
 					</div>
 
 					{if $gd_lib_found neq 'y'}
@@ -90,10 +74,7 @@
 				{preference name=groupTracker}
 				{preference name=email_due}
 				{preference name=unsuccessful_logins}
-				{preference name=unsuccessful_logins_invalid}
 				{preference name=eponymousGroups}
-				{preference name=syncGroupsWithDirectory}
-				{preference name=syncUsersWithDirectory}
 				{preference name=desactive_login_autocomplete}
 				{preference name=feature_challenge}
 
@@ -146,10 +127,6 @@
 				{preference name=feature_crypt_passwords}
 				{preference name=change_password}
 				{preference name=pass_chr_num}
-				{preference name=pass_chr_case}
-				{preference name=pass_chr_special}
-				{preference name=pass_repetition}
-				{preference name=pass_diff_username}
 				{preference name=min_pass_length}
 				{preference name=pass_due}
 			</fieldset>
@@ -196,41 +173,6 @@
 			</fieldset>
 
 			<fieldset>
-				<legend>{tr}LDAP Admin{/tr}</legend>
-				{preference name=auth_ldap_adminuser}
-				{preference name=auth_ldap_adminpass}
-			</fieldset>
-		{/tab}
-
-		{tab name="{tr}LDAP external groups{/tr}"}
-			<fieldset>
-				<legend>LDAP external groups</legend>
-
-				{preference name=auth_ldap_group_external}
-			</fieldset>
-
-			<fieldset>
-				<legend>{tr}LDAP Bind settings{/tr}{help url="LDAP+Authentication"}</legend>
-				{preference name=auth_ldap_group_host}
-				{preference name=auth_ldap_group_port}
-				{preference name=auth_ldap_group_debug}
-				{preference name=auth_ldap_group_ssl}
-				{preference name=auth_ldap_group_starttls}
-				{preference name=auth_ldap_group_type}
-				{preference name=auth_ldap_group_scope}
-				{preference name=auth_ldap_group_version}
-				{preference name=auth_ldap_group_basedn}
-			</fieldset>
-
-			<fieldset>
-				<legend>{tr}LDAP User{/tr}</legend>
-				{preference name=auth_ldap_group_userdn}
-				{preference name=auth_ldap_group_userattr}
-				{preference name=auth_ldap_group_corr_userattr}
-				{preference name=auth_ldap_group_useroc}
-			</fieldset>
-
-			<fieldset>
 				<legend>{tr}LDAP Group{/tr}</legend>
 				{preference name=auth_ldap_groupdn}
 				{preference name=auth_ldap_groupattr}
@@ -252,8 +194,8 @@
 
 			<fieldset>
 				<legend>{tr}LDAP Admin{/tr}</legend>
-				{preference name=auth_ldap_group_adminuser}
-				{preference name=auth_ldap_group_adminpass}
+				{preference name=auth_ldap_adminuser}
+				{preference name=auth_ldap_adminpass}
 			</fieldset>
 		{/tab}
 
@@ -310,6 +252,7 @@
 				{/if}
 
 				{preference name='cas_create_user_tiki'}
+				{preference name='cas_create_user_tiki_ldap'}
 				{preference name='cas_autologin'}
 				{preference name='cas_skip_admin'}
 				{preference name='cas_show_alternate_login'}

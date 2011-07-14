@@ -1,24 +1,26 @@
 {* $Id$ *}
 
 {title help="File+Galleries" admpage="fgal"}
-	{if $edit_mode eq 'y' and $galleryId eq 0}
-		{tr}Create a File Gallery{/tr}
-	{else}
+	{strip}
 		{if $edit_mode eq 'y'}
-			{tr}Edit Gallery:{/tr}
-		{/if}
-		{strip} 
-			{if $gal_info.type eq 'user'}
-				{if $gal_info.user eq $user}
-					{tr}My Files{/tr}
-				{else}
-					{tr}Files of {$gal_info.user}{/tr}
-				{/if}
+			{if $galleryId eq 0}
+				{tr}Create a File Gallery{/tr}
 			{else}
-				{$name}
+				{tr}Edit Gallery:{/tr}
+				{if $galleryId eq $prefs.fgal_root_id}
+					{tr}File Galleries{/tr}
+				{else}
+					{$name}
+				{/if}
 			{/if}
-		{/strip}
-	{/if}
+		{else}
+			{if $galleryId eq $prefs.fgal_root_id}
+				{tr}File Galleries{/tr}
+			{else}
+				{tr}Gallery:{/tr} {$name|escape}
+			{/if}
+		{/if}
+	{/strip}
 {/title}
 
 {if $edit_mode neq 'y' and $gal_info.description neq ''}
@@ -60,7 +62,7 @@
 			{/if}
 		{/if}
 
-		{if $treeRootId eq $prefs.fgal_root_id && ( $tiki_p_list_file_galleries eq 'y' or (!isset($tiki_p_list_file_galleries) and $tiki_p_view_file_gallery eq 'y') )}
+		{if $tiki_p_list_file_galleries eq 'y' or (!isset($tiki_p_list_file_galleries) and $tiki_p_view_file_gallery eq 'y')}
 			{button _text="{tr}List Galleries{/tr}" href="?"}
 		{/if}
 
@@ -100,11 +102,7 @@
 			{if $tiki_p_upload_files eq 'y'}
 				{button _text="{tr}Upload File{/tr}" href="tiki-upload_file.php?galleryId=$galleryId"}
 			{/if}
-			
-			{if $tiki_p_upload_files eq 'y' and $prefs.feature_file_galleries_batch eq "y"}
-				{button _text="{tr}Create a drawing{/tr}" href="tiki-edit_draw.php?galleryId=$galleryId"}
-			{/if}
-			
+
 			{if $prefs.feature_file_galleries_batch eq "y" and $tiki_p_batch_upload_file_dir eq 'y'}
 				{button _text="{tr}Directory Batch{/tr}" href="tiki-batch_upload_files.php?galleryId=$galleryId"}
 			{/if}
@@ -112,7 +110,7 @@
 
 	{else}
 
-		{if $treeRootId eq $prefs.fgal_root_id && ( $edit_mode eq 'y' or $dup_mode eq 'y')}
+		{if $edit_mode eq 'y' or $dup_mode eq 'y'}
 			{button _text="{tr}List Galleries{/tr}" href='?'}
 		{/if}
 
@@ -152,9 +150,9 @@
 {if $user and $prefs.feature_user_watches eq 'y'}
 	<div class="categbar" align="right">
 		{if $category_watched eq 'y'}
-			{tr}Watched by categories:{/tr}
+			{tr}Watched by categories{/tr}:
 			{section name=i loop=$watching_categories}
-				{button _text=$watching_categories[i].name|escape href="tiki-browse_categories.php?parentId=`$watching_categories[i].categId`"}
+				{button _text=$watching_categories[i].name href="tiki-browse_categories.php?parentId=`$watching_categories[i].categId`"}
 			{/section}
 		{/if}			
 	</div>
@@ -174,7 +172,7 @@
 	{include file='duplicate_file_gallery.tpl'}
 {else}
 	{if $prefs.fgal_search eq 'y'}
-		{include file='find.tpl' find_show_num_rows = 'y' find_show_categories_multi='y' find_durations=$find_durations find_show_sub='y' find_other="Gallery of this fileId"}
+		{include file='find.tpl' find_show_num_rows = 'y' find_show_categories_multi='y' find_durations=$find_durations find_show_sub='y'}
 	{/if}
 	{if $prefs.fgal_search_in_content eq 'y' and $galleryId > 0}
 		<div class="findtable">
@@ -189,18 +187,10 @@
 		</div>
 	{/if}
 
-	{if $prefs.fgal_quota_show neq 'n' and $gal_info.quota}
+	{if $prefs.fgal_quota_show eq 'y' && $gal_info.quota}
 		<div style="float:right">
-			{capture name='use'}{math equation="round((100*x)/(1024*1024*y),2)" x=$gal_info.usedSize y=$gal_info.quota}{/capture}
-			
-			{if $prefs.fgal_quota_show neq 'y'}
-				<b>{$smarty.capture.use} %</b> {tr}space use on{/tr} <b>{$gal_info.quota} Mo</b>
-				<br />
-			{/if}
-			
-			{if $prefs.fgal_quota_show neq 'text_only'}
-				{quotabar length='100' value=$smarty.capture.use}
-			{/if}			
+			{capture name='use'}{math equation="round((100*x)/(1024*1024*y))" x=$gal_info.usedSize y=$gal_info.quota}{/capture}
+			{quotabar length='100' value='$smarty.capture.use'}
 		</div>
 	{/if}
 
@@ -208,25 +198,23 @@
 
 	{if $galleryId gt 0
 		&& $prefs.feature_file_galleries_comments == 'y'
-		&& ($tiki_p_read_comments == 'y'
+		&& (($tiki_p_read_comments == 'y'
+		&& $comments_cant != 0)
 		|| $tiki_p_post_comments == 'y'
 		|| $tiki_p_edit_comments == 'y')}
 
 		<div id="page-bar" class="clearfix">
-			<span class="button"><a id="comment-toggle" href="tiki-ajax_services.php?controller=comment&amp;action=list&amp;type=file+gallery&amp;objectId={$galleryId|escape:'url'}#comment-container">{tr}Comments{/tr}</a></span>
-			{jq}
-				$('#comment-toggle').comment_toggle();
-			{/jq}
+			{include file='comments_button.tpl'}
 		</div>
 
-		<div id="comment-container"></div>
+		{include file='comments.tpl'}
 	{/if}
 {/if}
 
 {if $galleryId>0}
 	{if $edited eq 'y'}
 	<div class="wikitext">
-		{tr}You can access the file gallery using the following URL:{/tr} <a class="fgallink" href="{$url}?galleryId={$galleryId}">{$url}?galleryId={$galleryId}</a>
+		{tr}You can access the file gallery using the following URL{/tr}: <a class="fgallink" href="{$url}?galleryId={$galleryId}">{$url}?galleryId={$galleryId}</a>
 	</div>
 	{/if}
 {/if}

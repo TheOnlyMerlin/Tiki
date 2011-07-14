@@ -1,5 +1,5 @@
 {* $Id$ *} 
-{if !isset($hide_page_header) or !$hide_page_header}
+{if !$hide_page_header}
 	{if $prefs.feature_siteloc eq 'page' and $prefs.feature_breadcrumbs eq 'y'}
 		{if $prefs.feature_siteloclabel eq 'y'}{tr}Location : {/tr}{/if}
 		{breadcrumbs type="trail" loc="page" crumbs=$crumbs}
@@ -8,18 +8,17 @@
 		{/if}
 	{/if}
 
-{include file='tiki-wiki_staging.tpl'}
-{include file='tiki-flaggedrev_approval_header.tpl'}
+{include file=tiki-wiki_staging.tpl}
 
 {/if} {*hide_page_header*}
 
 {if !$prefs.wiki_topline_position or $prefs.wiki_topline_position eq 'top' or $prefs.wiki_topline_position eq 'both'}
-	{include file='tiki-wiki_topline.tpl'}
+	{include file=tiki-wiki_topline.tpl}
 {/if}
 
 {if $print_page ne 'y'}
 	{if $prefs.page_bar_position eq 'top'}
-		{include file='tiki-page_bar.tpl'}
+		{include file=tiki-page_bar.tpl}
 	{/if}
 {/if}
 
@@ -27,11 +26,11 @@
 	{remarksbox type="note" title="{tr}Note{/tr}"}{$saved_msg}{/remarksbox}
 {/if}
 
-{if isset($user) and $user and $prefs.feature_user_watches eq 'y' and $category_watched eq 'y'}
+{if $user and $prefs.feature_user_watches eq 'y' and $category_watched eq 'y'}
 	<div class="categbar" style="clear: both; text-align: right">
-		{tr}Watched by categories:{/tr}
+		{tr}Watched by categories{/tr}:
 		{section name=i loop=$watching_categories}
-			<a href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}">{$watching_categories[i].name|escape}</a>&nbsp;
+			<a href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}">{$watching_categories[i].name}</a>&nbsp;
 		{/section}
 	</div>
 {/if}
@@ -70,8 +69,8 @@
 	{/section}
 {/if}
 
-<article id="top" class="wikitext clearfix{if $prefs.feature_page_title neq 'y'} nopagetitle{/if}">
-	{if !isset($hide_page_header) or !$hide_page_header}
+<div id="top" class="wikitext clearfix{if $prefs.feature_page_title neq 'y'} nopagetitle{/if}">
+	{if !$hide_page_header}
 		{if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y' and isset($freetags.data[0]) and $prefs.freetags_show_middle eq 'y'}
 			{include file='freetag_list.tpl'}
 		{/if}
@@ -95,7 +94,7 @@
 		{/if}
 
 		{if $structure eq 'y' and ($prefs.wiki_structure_bar_position ne 'bottom')}
-			{include file='tiki-wiki_structure_bar.tpl'}
+			{include file=tiki-wiki_structure_bar.tpl}
 		{/if}
 
 		{if $prefs.feature_wiki_ratings eq 'y'}
@@ -115,7 +114,7 @@
 		{/remarksbox}
 	{/if}
 
-	{if isset($pageLang) and ($pageLang eq 'ar' or $pageLang eq 'he')}
+	{if $pageLang eq 'ar' or $pageLang eq 'he'}
 		<div style="direction:RTL; unicode-bidi:embed; text-align: right; {if $pageLang eq 'ar'}font-size: large;{/if}">
 			{$parsed}
 		</div>
@@ -127,7 +126,7 @@
 	<hr class="hrwikibottom" /> 
 
 	{if $structure eq 'y' and (($prefs.wiki_structure_bar_position eq 'bottom') or ($prefs.wiki_structure_bar_position eq 'both'))}
-		{include file='tiki-wiki_structure_bar.tpl'}
+		{include file=tiki-wiki_structure_bar.tpl}
 	{/if}
 
 	{if $pages > 1 and $prefs.wiki_page_navigation_bar neq 'top'}
@@ -144,7 +143,7 @@
 			<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$last_page}">{icon _id='resultset_last' alt="{tr}Last page{/tr}"}</a>
 		</div>
 	{/if}
-</article> {* End of main wiki page *}
+</div> {* End of main wiki page *}
 
 {if $has_footnote eq 'y'}
 	<div class="wikitext" id="wikifootnote">{$footnote}</div>
@@ -152,10 +151,10 @@
 
 {capture name='editdate_section'}{strip}
 	{if isset($wiki_authors_style) && $wiki_authors_style neq 'none'}
-		{include file='wiki_authors.tpl'}
+		{include file=wiki_authors.tpl}
 	{/if}
 
-	{include file='show_copyright.tpl'}
+	{include file=show_copyright.tpl}
 
 	{if $print_page eq 'y'}
 		<br />
@@ -174,16 +173,13 @@
 {if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categoryobjects eq 'y'}
 	{$display_catobjects}
 {/if}
-{if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.category_morelikethis_algorithm ne ''}
-	{include file='category_related_objects.tpl'}
-{/if}
 
 {if $prefs.wiki_topline_position eq 'bottom' or $prefs.wiki_topline_position eq 'both'}
-	{include file='tiki-wiki_topline.tpl'}
+	{include file=tiki-wiki_topline.tpl}
 {/if}
 
 {if $print_page ne 'y'}
 	{if (!$prefs.page_bar_position or $prefs.page_bar_position eq 'bottom' or $prefs.page_bar_position eq 'both') and $machine_translate_to_lang == ''}
-		{include file='tiki-page_bar.tpl'}
+		{include file=tiki-page_bar.tpl}
 	{/if}
 {/if}

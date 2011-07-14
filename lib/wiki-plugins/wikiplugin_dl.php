@@ -1,18 +1,21 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+function wikiplugin_dl_help() {
+	return tra("Creates a definition list").":<br />~np~{DL()}".tra("term").":".tra("definition")."{DL}~/np~ - ''".tra("one definition per line")."''";
+}
+
 function wikiplugin_dl_info() {
 	return array(
 		'name' => tra('Definition List'),
-		'documentation' => 'PluginDL',
-		'description' => tra('Create a definition list'),
+		'documentation' => tra('PluginDL'),
+		'description' => tra('Creates a definition list'),
 		'prefs' => array('wikiplugin_dl'),
 		'body' => tra('One entry per line. Each line is in "Term: Definition" format.'),
-		'icon' => 'pics/icons/text_list_bullets.png',
 		'params' => array(
 		),
 	);

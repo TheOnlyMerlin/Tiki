@@ -1,10 +1,16 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+// wikiplugin_dbreport v1.0
+//
+// Generates a html report from a database query.
+// Jeremy Lee  2009-02-16
+
+// plugin globals
 $wikiplugin_dbreport_errors;
 $wikiplugin_dbreport_fields;
 $wikiplugin_dbreport_fields_allowed;
@@ -1435,13 +1441,12 @@ function wikiplugin_dbreport_help() {
 
 function wikiplugin_dbreport_info() {
 	return array(
-		'name' => tra('DB Report'),
-		'documentation' => 'PluginDBReport',
-		'description' => tra('Query a database and display results (only works with ADOdb, does not work with PDO)'),
+		'name' => tra('DBReport'),
+		'documentation' => tra('PluginDBReport'),
+		'description' => tra('Run a database report. This plugin only works with adodb. It does not work with PDO.'),
 		'prefs' => array('wikiplugin_dbreport'),
 		'body' => tra('report definition'),
 		'validate' => 'all',
-		'icon' => 'pics/icons/database_table.png',
 		'params' => array(
 			'dsn' => array(
 				'required' => false,

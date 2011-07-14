@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,17 +7,8 @@
 
 class AttributeLib extends TikiDb_Bridge
 {
-	private $attributes;
-
-	function __construct() {
-		$this->attributes = $this->table('tiki_object_attributes');
-	}
-
 	function get_attributes( $type, $objectId ) {
-		return $this->attributes->fetchMap('attribute', 'value', array(
-			'type' => $type,
-			'itemId' => $objectId,
-		));
+		return $this->fetchMap( 'SELECT `attribute`, `value` FROM `tiki_object_attributes` WHERE `type` = ? AND `itemId` = ?', array( $type, $objectId ) );
 	}
 	
 	/**
@@ -36,17 +27,11 @@ class AttributeLib extends TikiDb_Bridge
 		}
 
 		if( $value == '' ) {
-			$this->attributes->delete(array(
-				'type' => $type,
-				'itemId' => $objectId,
-				'attribute' => $name,
-			));
+			$this->query( 'DELETE FROM `tiki_object_attributes` WHERE `type` = ? AND `itemId` = ? AND `attribute` = ?',
+				array( $type, $objectId, $name ) );
 		} else {
-			$this->attributes->insertOrUpdate(array('value' => $value), array(
-				'type' => $type,
-				'itemId' => $objectId,
-				'attribute' => $name,
-			));
+			$this->query( 'INSERT INTO `tiki_object_attributes` (`type`, `itemId`, `attribute`, `value`) VALUES( ?, ?, ?, ? ) ON DUPLICATE KEY UPDATE `value` = ?',
+				array( $type, $objectId, $name, $value, $value ) );
 		}
 
 
@@ -56,16 +41,6 @@ class AttributeLib extends TikiDb_Bridge
 	private function get_valid( $name ) {
 		$filter = TikiFilter::get('attribute_type');
 		return $filter->filter( $name );
-	}
-
-	function find_objects_with($attribute, $value)
-	{
-		$attribute = $this->get_valid($attribute);
-
-		return $this->attributes->fetchAll(array('type', 'itemId'), array(
-			'attribute' => $attribute,
-			'value' => $value,
-		));
 	}
 }
 

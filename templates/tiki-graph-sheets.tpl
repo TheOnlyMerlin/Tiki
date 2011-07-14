@@ -1,7 +1,7 @@
 {title help="Spreadsheet"}{$title}{/title}
 
 <p>
-  {$description|escape}
+  {$description}
 </p>
 
 {if ($mode eq 'graph')}
@@ -112,12 +112,12 @@ function _renValRad( name )
 <input type="hidden" name="height" value="{$im_height}"/>
 <table class="formcolor">
 	<tr>
-		<td>{tr}Title:{/tr}</td>
+		<td>{tr}Title{/tr}:</td>
 		<td><input type="text" name="title" value="{$title}" onchange="renderWikiPlugin()"/></td>
 	</tr>
 {if $showgridparam}
 	<tr>
-		<td>{tr}Independant Scale:{/tr}</td>
+		<td>{tr}Independant Scale{/tr}:</td>
 		<td>
 			<input type="radio" name="independant" value="horizontal" id="ind_ori_hori" checked="checked" onchange="renderWikiPlugin()" />
 			<label for="ind_ori_hori">{tr}Horizontal{/tr}</label>
@@ -126,7 +126,7 @@ function _renValRad( name )
 		</td>
 	</tr>
 	<tr>
-		<td>{tr}Horizontal Scale:{/tr}</td>
+		<td>{tr}Horizontal Scale{/tr}:</td>
 		<td>
 			<input type="radio" name="horizontal" value="bottom" id="hori_pos_bottom" checked="checked" onchange="renderWikiPlugin()" />
 			<label for="hori_pos_bottom">{tr}Bottom{/tr}</label>
@@ -135,7 +135,7 @@ function _renValRad( name )
 		</td>
 	</tr>
 	<tr>
-		<td>{tr}Vertical Scale:{/tr}</td>
+		<td>{tr}Vertical Scale{/tr}:</td>
 		<td>
 			<input type="radio" name="vertical" value="left" id="verti_pos_left" checked="checked" onchange="renderWikiPlugin()" />
 			<label for="verti_pos_left">{tr}Left{/tr}</label>
@@ -145,7 +145,7 @@ function _renValRad( name )
 	</tr>
 {/if}
 	<tr>
-		<td colspan="2">{tr}Series:{/tr}</td>
+		<td colspan="2">{tr}Series{/tr}:</td>
 	</tr>
 {section name=i loop=$series}
 	<tr>
@@ -154,14 +154,10 @@ function _renValRad( name )
 	</tr>
 {/section}
 	<tr>
-		<td colspan="2"><input type="submit" value="{tr}Show{/tr}" class="button" /></td>
+		<td colspan="2"><input type="submit" value="{tr}Show{/tr}" /></td>
 	</tr>
 </table>
-<div class="tiki_sheet">
-	{$dataGrid}
-</div>
-{button _id="edit_button" _text="{tr}Edit Spreadsheet{/tr}" _htmlelement="role_main" _template="tiki-view_sheets.tpl" parse="edit" _auto_args="*"  _class="" _onclick="document.location = 'tiki-view_sheets.php?sheetId=$sheetId&parse=edit'; return false;"}
-{button href="tiki-sheets.php" _text="{tr}List Spreadsheets{/tr}"}
+{$dataGrid}
 </form>
 <h2>{tr}Wiki plug-in{/tr}</h2>
 <div id="plugin-desc"></div>

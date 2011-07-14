@@ -1,18 +1,21 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+function wikiplugin_fancylist_help() {
+	return tra("Creates a fancy-looking list").": ~np~{FANCYLIST()}".tra("num").")".tra("item text")."{FANCYLIST}~/np~ - ''".tra("one item per line")."''";
+}
+
 function wikiplugin_fancylist_info() {
 	return array(
 		'name' => tra('Fancy List'),
-		'documentation' => 'PluginFancyList',
-		'description' => tra('Create a fancy-looking list'),
+		'documentation' => tra('PluginFancyList'),		
+		'description' => tra('Creates a fancy-looking list'),
 		'prefs' => array('wikiplugin_fancylist'),
 		'body' => tra('One item per line starting with anything followed by ")".'),
-		'icon' => 'pics/icons/text_list_bullets.png',
 		'params' => array(
 		 	'div' => array(
 			 	'required' => false,

@@ -1,48 +1,18 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-// To contain data services for ajax calls
-//
-// If controller and action are specified in the request, the controller class matching the
-// controller key in the $contollerMap registry will be instanciated. The method matching the
-// action name will be called. The input to the method is a JitFilter. The output of the method
-// will be serialized and sent to the browser.
-//
-// Otherwise, the procedural script remains
-
-$controllerMap = array(
-	'comment' => 'Services_Comment_Controller',
-	'file' => 'Services_File_Controller',
-	'auth_source' => 'Services_AuthSource_Controller',
-	'tracker' => 'Services_Tracker_Controller',
-	'favorite' => 'Services_Favorite_Controller',
-);
-
-$inputConfiguration = array(array(
-	'staticKeyFilters' => array(
-		'action' => 'word',
-		'controller' => 'word',
-	),
-));
+// To contain data services for ajax calls (autocomplete calls sa far)
 
 require_once ('tiki-setup.php');
+//require_once ('lib/ajax/ajaxlib.php');
 
-if (isset($_REQUEST['controller'], $_REQUEST['action'])) {
-	$controller = $_REQUEST['controller'];
-	$action = $_REQUEST['action'];
-
-	$broker = new Services_Broker($controllerMap);
-	$broker->process($controller, $action, $jitRequest);
-	exit;
-}
+$access->check_feature( array( 'feature_jquery', 'feature_jquery_autocomplete' ) );
 
 if ($access->is_serializable_request() && isset($_REQUEST['listonly'])) {
-	$access->check_feature( array( 'feature_ajax', 'feature_jquery_autocomplete' ) );
-
 	$sep = '|';
 	if( isset( $_REQUEST['separator'] ) ) {
 		$sep = $_REQUEST['separator'];
@@ -78,32 +48,6 @@ if ($access->is_serializable_request() && isset($_REQUEST['listonly'])) {
 			}
 		}
 		$access->output_serialized($usrs);
-	} elseif ($_REQUEST['listonly'] == 'usersandcontacts') {
-		$contactlib = TikiLib::lib('contact');
-		$listcontact = $contactlib->list_contacts($user);
-		$listusers = $userlib->get_users();
-		
-		$contacts = array();		
-		$query = $_REQUEST['q'];
-				
-		foreach($listcontact as $key=>$contact) {
-			if (isset($query) && (stripos($contact['firstName'], $query) !== false or stripos($contact['lastName'], $query) !== false or stripos($contact['email'], $query) !== false)) {
-				if($contact['email']<>''){ $contacts[] = $contact['email']; }
-			}
-		}
-		foreach($listusers['data'] as $key=>$contact) {
-			if (isset($query) && (stripos($contact['firstName'], $query) !== false or stripos($contact['login'], $query) !== false or stripos($contact['lastName'], $query) !== false or stripos($contact['email'], $query) !== false)) {
-				if($prefs['login_is_email'] == 'y'){
-					$contacts[] = $contact['login'];
-				} else {
-					$contacts[] = $contact['email'];
-				}
-			}
-		}
-		$contacts = array_unique($contacts);
-		sort($contacts);
-		$access->output_serialized($contacts);
-		
 	} elseif ($_REQUEST['listonly'] == 'userrealnames') {
 		$groups = '';
 		$listusers = $userlib->get_users_light(0, -1, 'login_asc', '', $groups);
@@ -156,52 +100,7 @@ if ($access->is_serializable_request() && isset($_REQUEST['listonly'])) {
 		global $shippinglib; require_once 'lib/shipping/shippinglib.php';
 
 		$access->output_serialized( $shippinglib->getRates( $_REQUEST['from'], $_REQUEST['to'], $_REQUEST['packages'] ) );
-	} elseif(  $_REQUEST['listonly'] == 'trackername' ) {
-		$trackers = TikiLib::lib('trk')->list_trackers();
-		$ret = array();
-		foreach ($trackers['data'] as $tracker) {
-			$ret[] = $tracker['name'];
-		}
-		$access->output_serialized($ret);
 	}
-}
-
-// Handle Zotero Requests
-if ($access->is_serializable_request() && isset($_REQUEST['zotero_tags'])) {
-	$access->check_feature( array( 'zotero_enabled' ) );
-	$zoterolib = TikiLib::lib('zotero');
-
-	$references = $zoterolib->get_references($_REQUEST['zotero_tags']);
-	
-	if ($references === false) {
-		$access->output_serialized(array(
-			'type' => 'unauthorized',
-			'results' => array(),
-		));
-	} else {
-		$access->output_serialized(array(
-			'type' => 'success',
-			'results' => $references,
-		));
-	}
-}
-
-if (isset($_REQUEST['oauth_request'])) {
-	$oauthlib = TikiLib::lib('oauth');
-
-	$oauthlib->request_token($_REQUEST['oauth_request']);
-	die('Provider not supported.');
-}
-
-if (isset($_REQUEST['oauth_callback'])) {
-	$oauthlib = TikiLib::lib('oauth');
-
-	$oauthlib->request_access($_REQUEST['oauth_callback']);
-	$access->redirect('');
-}
-
-if (isset($_REQUEST['geocode']) && $access->is_serializable_request()) {
-	$access->output_serialized(TikiLib::lib('geo')->geocode($_REQUEST['geocode']));
 }
 
 function read_icon_dir($dir, &$icons, $max) {

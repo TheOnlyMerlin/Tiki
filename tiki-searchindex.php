@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,10 +9,10 @@ $inputConfiguration = array(
   array( 'staticKeyFilters' => array(
     'date' => 'digits',
     'maxRecords' => 'digits',
-    'highlight' => 'text',
+    'highlight' => 'xss',
     'where' => 'word',
     'searchLang' => 'word',
-    'words' =>'text',
+    'words' =>'xss',
     'boolean' =>'word',
     )
   )
@@ -20,79 +20,126 @@ $inputConfiguration = array(
 
 $section = 'search';
 require_once ('tiki-setup.php');
-require_once 'lib/search/searchlib-unified.php';
+require_once ('lib/search/searchlib-tiki.php');
+$auto_query_args = array('highlight', 'where');
+$searchlib = new SearchLib;
 $smarty->assign('headtitle', tra('Search'));
 
 $access->check_feature('feature_search');
 $access->check_permission('tiki_p_search');
 
-//ini_set('display_errors', true);
-//error_reporting(E_ALL);
-
-if (empty($_REQUEST['filter']) && !empty($_REQUEST['find'])) {
-	$_REQUEST['filter']['content'] = $_REQUEST['find'];
-	if (!empty($_REQUEST['where']))
-		$_REQUEST['filter']['type'] = $_REQUEST['where'];
+if (isset($_REQUEST["highlight"]) && !empty($_REQUEST["highlight"])) {
+	$_REQUEST["words"] = $_REQUEST["highlight"];
 }
-$filter = isset($_REQUEST['filter']) ? $_REQUEST['filter'] : array();
-
-if (count($filter)) {
-	if (isset($_REQUEST['save_query'])) {
-		$_SESSION['quick_search'][(int) $_REQUEST['save_query']] = $_REQUEST;
-	}
-
-	$query = $unifiedsearchlib->buildQuery($filter);
-
-	$query->setRange(isset($_REQUEST['offset']) ? $_REQUEST['offset'] : 0, empty($_REQUEST['maxRecords'])?$prefs['maxRecords']: $_REQUEST['maxRecords']);
-
-	$results = $query->search($unifiedsearchlib->getIndex());
-
-	$dataSource = $unifiedsearchlib->getDataSource('formatting');
-
-	if ($access->is_serializable_request(true)) {
-		$results = $dataSource->getInformation($results, array('title', 'modification_date', 'url'));
-
-		require_once 'lib/smarty_tiki/function.object_link.php';
-		foreach ($results as &$res) {
-			$res['link'] = smarty_function_object_link(array(
-				'type' => $res['object_type'],
-				'id' => $res['object_id'],
-				'title' => $res['title'],
-			), $smarty);
-		}
-		$access->output_serialized($results, array(
-			'feedTitle' => tr('%0: Results for "%1"', $prefs['sitetitle'], $request['filter']['content']),
-			'feedDescription' => tr('Search Results'),
-			'entryTitleKey' => 'title',
-			'entryUrlKey' => 'url',
-			'entryModificationKey' => 'modification_date',
-			'entryObjectDescriptors' => array('object_type', 'object_id'),
-		));
-		exit;
-	} else {
-		$plugin = new Search_Formatter_Plugin_SmartyTemplate(realpath('templates/searchresults-plain.tpl'));
-		$plugin->setData(array(
-			'prefs' => $prefs,
-		));
-		$plugin->setFields(array(
-			'title' => null,
-			'url' => null,
-			'modification_date' => null,
-			'highlight' => null,
-		));
-
-		$formatter = new Search_Formatter($plugin);
-		$formatter->setDataSource($dataSource);
-
-		$wiki = $formatter->format($results);
-
-		$smarty->assign('results', $tikilib->parse_data($wiki, array(
-			'is_html' => true,
-		)));
-	}
+if ($prefs['feature_search_stats'] == 'y') {
+	$searchlib->register_search(isset($_REQUEST["words"]) ? $_REQUEST["words"] : '');
+}
+if (!isset($_REQUEST["where"])) {
+	$where = 'pages';
+} else {
+	$where = $_REQUEST["where"];
+}
+$smarty->assign('where', $where);
+$filter = array();
+if ($where == 'wikis') {
+	$access->check_feature('feature_wiki');
 }
 
+if ($where == 'directory') {
+	$access->check_feature('feature_directory');
+	$access->check_permission('tiki_p_view_directory');
+}
+
+if ($where == 'faqs') {
+	$access->check_feature('feature_faqs');
+	$access->check_permission('tiki_p_view_faqs');
+}
+
+if ($where == 'forums') {
+	$access->check_feature('feature_forums');
+	$access->check_permission('tiki_p_forum_read');
+	if (!empty($_REQUEST['forumId'])) {
+		$filter['forumId'] = $_REQUEST['forumId'];
+		global $commentslib;
+		include ('lib/comments/commentslib.php');
+		if (!isset($commentslib)) $commentslib = new Comments($dbTiki);
+		$forum_info = $commentslib->get_forum($_REQUEST['forumId']);
+		$where = 'forum';
+		$smarty->assign_by_ref('where_forum', $forum_info['name']);
+		$smarty->assign_by_ref('forumId', $_REQUEST['forumId']);
+		$cant = '';
+	}
+}
+if ($where == 'files') {
+	$access->check_feature('feature_file_galleries');
+}
+
+if ($where == 'articles') {
+	$access->check_feature('feature_articles');
+}
+
+if (($where == 'galleries' || $where == 'images')) {
+	$access->check_feature('feature_galleries');
+}
+
+if (($where == 'blogs' || $where == 'posts')) {
+	$access->check_feature('feature_blogs');
+}
+
+if (($where == 'trackers')) {
+	$access->check_feature('feature_trackers');
+}
+
+if (!isset($_REQUEST["offset"])) {
+	$offset = 0;
+} else {
+	$offset = $_REQUEST["offset"];
+}
+$smarty->assign_by_ref('offset', $offset);
+$fulltext = $prefs['feature_search_fulltext'] == 'y';
+if ((!isset($_REQUEST["words"])) || (empty($_REQUEST["words"]))) {
+	$results = array('cant' => 0);
+	$smarty->assign('words', '');
+} else {
+	$words = strip_tags($_REQUEST["words"]);
+	$results = $searchlib->find($where, $words, $offset, $maxRecords, $fulltext, $filter);
+	$smarty->assign('words', $words);
+}
+$smarty->assign('cant', $results['cant']);
+$where_list = array('pages' => 'Entire Site');
+if ($prefs['feature_wiki'] == 'y') {
+	$where_list['wikis'] = tra('Wiki Pages');
+}
+if ($prefs['feature_galleries'] == 'y') {
+	$where_list['galleries'] = tra('Galleries');
+	$where_list['images'] = tra('Images');
+}
+if ($prefs['feature_file_galleries'] == 'y') {
+	$where_list['files'] = tra('Files');
+}
+if ($prefs['feature_forums'] == 'y') {
+	$where_list['forums'] = tra('Forums');
+}
+if ($prefs['feature_faqs'] == 'y') {
+	$where_list['faqs'] = tra('Faqs');
+}
+if ($prefs['feature_blogs'] == 'y') {
+	$where_list['blogs'] = tra('Blogs');
+	$where_list['posts'] = tra('Blog Posts');
+}
+if ($prefs['feature_directory'] == 'y') {
+	$where_list['directory'] = tra('Directory');
+}
+if ($prefs['feature_articles'] == 'y') {
+	$where_list['articles'] = tra('Articles');
+}
+if ($prefs['feature_trackers'] == 'y') {
+	$where_list['trackers'] = tra('Trackers');
+}
+$smarty->assign_by_ref('where_list', $where_list);
+$smarty->assign_by_ref('results', $results["data"]);
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
+$smarty->assign('searchNoResults', !isset($_REQUEST['words'])); // false is default
 $smarty->assign('mid', 'tiki-searchindex.tpl');
 $smarty->display("tiki.tpl");

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,10 +8,9 @@
 function wikiplugin_calendar_info() {
 	return array(
 		'name' => tra('Calendar'),
-		'documentation' => 'PluginCalendar',
-		'description' => tra('Display a calendar and its events'),
+		'documentation' => tra('PluginCalendar'),
+		'description' => tra('Includes a calendar and/or a list of calendar events.'),
 		'prefs' => array( 'feature_calendar', 'wikiplugin_calendar' ),
-		'icon' => 'pics/icons/calendar.png',
 		'params' => array(
 			'calIds' => array(
 				'name' => tra('Calendar IDs'),

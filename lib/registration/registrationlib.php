@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -315,7 +315,6 @@ class RegistrationLib extends TikiLib
 		$tikilib->set_user_preference($registration['name'], 'display_timezone', $prefs['users_prefs_display_timezone']);
 		$tikilib->set_user_preference($registration['name'], 'user_information', $prefs['users_prefs_user_information']);
 		$tikilib->set_user_preference($registration['name'], 'user_dbl', $prefs['users_prefs_user_dbl']);
-		$tikilib->set_user_preference($registration['name'], 'display_12hr_clock', $prefs['users_prefs_display_12hr_clock']);
 		$tikilib->set_user_preference($registration['name'], 'diff_versions', $prefs['users_prefs_diff_versions']);
 		$tikilib->set_user_preference($registration['name'], 'show_mouseover_user_info', $prefs['users_prefs_show_mouseover_user_info']);
 		$tikilib->set_user_preference($registration['name'], 'email is public', $prefs['users_prefs_email_is_public']);
@@ -348,12 +347,13 @@ class RegistrationLib extends TikiLib
 											  $registration[$customfields[$custpref]['prefName']]);
 		}
 
-		$watches = $tikilib->get_event_watches('user_registers', '*');
-		if (count($watches)) {
+		$emails = $notificationlib->get_mail_events('user_registers', '*');
+		if (count($emails)) {
 			require_once ("lib/notifications/notificationemaillib.php");
 			$smarty->assign('mail_user', $registration['name']);
+			$smarty->assign('mail_date', $tikilib->now);
 			$smarty->assign('mail_site', $_SERVER["SERVER_NAME"]);
-			sendEmailNotification($watches, null, "new_user_notification_subject.tpl", null, "new_user_notification.tpl");
+			sendEmailNotification($emails, "email", "new_user_notification_subject.tpl", null, "new_user_notification.tpl");
 		}
 
 		return $result;

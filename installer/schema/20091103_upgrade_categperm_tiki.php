@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -112,4 +112,4 @@ $installer->query($query, array('tiki_p_modify_object_categories', 'tiki_p_edit_
 // FINALLY: remove tiki_p_view_categorized and tiki_p_edit_categorized
 // Not done yet - before we are sure with have all the mapping
 
-}
+ }

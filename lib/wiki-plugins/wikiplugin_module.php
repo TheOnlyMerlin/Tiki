@@ -1,9 +1,41 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+
+/*
+Displays a module inline in a wiki page
+
+Parameters
+module name : module=>lambda
+float : float=>(left|none|right)
+max : max=>20
+np : np=>(0|1) # (for non-parsed content)
+flip : flip=>(n|y)
+decorations : decorations=>(y|n)
+module args : arg=>value (depends on module)
+
+Example:
+{MODULE(module=>last_modified_pages,float=>left,max=>3,maxlen=>22)}
+{MODULE}
+
+about module params : all params are passed in $module_params
+so if you need to use params just add them in MODULE()
+
+*/
+
+/**
+ * \warning zaufi: using cached module template is break the idea of
+ *   having different (than system default) parameters for modules...
+ *   so cache checking and maintaining currently commented out
+ *   'till another solution will be implemented :)
+ */
+
+function wikiplugin_module_help() {
+	return tra("Displays a module inline in a wiki page").":<br />~np~{MODULE(module=>,float=>left|right|none,decorations=>y|n,flip=>y|n,max=>,np=>0|1,notitle=y|n,args...)}{MODULE}~/np~";
+}
 
 function wikiplugin_module_info() {
 	global $modlib, $smarty;
@@ -14,7 +46,7 @@ function wikiplugin_module_info() {
 		$all_modules, 
 		array_map( array( $modlib, 'get_module_info' ), $all_modules ) 
 	);
-	uasort($all_modules_info, 'compare_names');
+	asort($all_modules_info);
 	$modules_options = array();
 	foreach($all_modules_info as $module => $module_info) {
 		$modules_options[] = array('text' => $module_info['name'] . ' (' . $module . ')', 'value' => $module);
@@ -22,8 +54,8 @@ function wikiplugin_module_info() {
 
 	return array(
 		'name' => tra('Insert Module'),
-		'documentation' => 'PluginModule',
-		'description' => tra('Display a module'),
+		'documentation' => tra('PluginModule'),
+		'description' => tra('Displays a module inline in a wiki page. More parameters can be added, not supported by User Interface.'),
 		'prefs' => array( 'wikiplugin_module' ),
 		'validate' => 'all',
 		'icon' => 'pics/icons/module.png',

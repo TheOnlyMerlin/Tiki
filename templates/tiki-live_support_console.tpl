@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html>
   <head>
@@ -20,8 +22,8 @@
   	<input type="hidden" id="status" value="online" />
 	<table class="normal" >
 		<tr>
-			<th>{tr}Operator:{/tr} {$user}</th>
-			<th>{tr}Status:{/tr} <b>{tr}{$status}{/tr}</b></th>
+			<th>{tr}Operator{/tr}: {$user}</th>
+			<th>{tr}Status{/tr}: <b>{tr}{$status}{/tr}</b></th>
 			<th style="text-align:right;">    
 				{if $status eq 'offline'}
     				<a href="tiki-live_support_console.php?status=online">{tr}be online{/tr}</a>

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,9 +9,7 @@ function wikiplugin_trackercomments_info() {
 	return array(
 		'name' => tra('Tracker Comments'),
 		'documentation' => 'PluginTrackerComments',
-		'description' => tra('Display the number of tracker comments'),
-		'prefs' => array( 'feature_trackers', 'wikiplugin_trackercomments' ),	
-		'icon' => 'pics/icons/comments.png',
+		'description' => tra('Displays the number of tracker comments'),
 		'params' => array(
 			'trackerId' => array(
 				'required' => true,

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -25,12 +25,6 @@ function smarty_function_menu($params, &$smarty)
 {
 	global $tikilib, $user, $headerlib, $prefs;
 	global $menulib; include_once('lib/menubuilder/menulib.php');
-	$default = array('css' => 'y');
-	if (isset($params['params'])) {
-		$params = array_merge($params, $params['params']);
-		unset($params['params']);
-	}
-	$params = array_merge($default, $params);
 	extract($params, EXTR_SKIP);
 
 	if (empty($link_on_section) || $link_on_section == 'y') {
@@ -46,12 +40,15 @@ function smarty_function_menu($params, &$smarty)
 		$menu_cookie = 'y';
 	}
 	$smarty->assign_by_ref('menu_cookie', $menu_cookie);
-	if ($css !== 'n' && $prefs['feature_cssmenus'] == 'y') {
+	if (isset($css) and $prefs['feature_cssmenus'] == 'y') {
 		static $idCssmenu = 0;
-		if (empty($type)) {
-			$type = 'vert';
+		if (isset($type) && ($type == 'vert' || $type == 'horiz')) {
+			$css = "cssmenu_$type.css";
+		} else {
+			$css = 'cssmenu.css';
+			$type = '';
 		}
-		$css = "cssmenu_$type.css";
+		//$headerlib->add_cssfile("css/$css", 50); too late to do that(must be done in header)
 		$headerlib->add_jsfile('lib/menubuilder/menu.js');
 		$tpl = 'tiki-user_cssmenu.tpl';
 		$smarty->assign('menu_type', $type);
@@ -95,14 +92,7 @@ function smarty_function_menu($params, &$smarty)
 	$data = $smarty->fetch($tpl);
 	$data = preg_replace('/<ul>\s*<\/ul>/', '', $data);
 	$data = preg_replace('/<ol>\s*<\/ol>/', '', $data);
-	if ($prefs['mobile_feature'] !== 'y' || $prefs['mobile_mode'] !== 'y') {
-		return '<nav class="role_navigation">' . $data . '</nav>';
-	} else {
-		$data = preg_replace('/<ul ([^>]*)>/Umi', '<ul $1 data-role="listview" data-theme="'.$prefs['mobile_theme_menus'].'">', $data, 1);
-		// crude but effective hack for loading menu items via ajax - hopefully to be replaced by something more elegant soon
-		$data = preg_replace('/<a ([^>]*)>/Umi', '<a $1 rel="external">', $data);
-		return $data;
-	}
+	return '<div class="role_navigation">' . $data . '</div>';
 }
 
 function compare_menu_options($a, $b) { return strcmp(tra($a['name']), tra($b['name'])); }

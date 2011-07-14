@@ -1,19 +1,32 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+// Performs a regular expression on the $data between the {REGEX()} $data {REGEX} tags 
+// Usage the WikiPageName holds the regex find replace commands 
+// for example /^i/i:: $1 is the first letter
+// where $1 is the value of the first expression
+// example two: /(it's|its)(your|you're):: Check $1 $2 is correct
+// {REGEX(search=>WikiPageName)}
+// line 2
+// line 3{REGEX}
+
+function wikiplugin_regex_help() {
+return tra("Takes regex expressions and parses the content between the REGEX tags and replaces the text.").":
+<br />~np~{REGEX(search=>(WikiPageWithRegexCommands)}".tra("data")."{REGEX}~/np~ - ''".tra("one data per line")."''";
+}
+
 function wikiplugin_regex_info() {
 	return array(
 		'name' => tra('Regular Expression'),
-		'documentation' => 'PluginRegex',
-		'validate' => 'all',
-		'description' => tra('Perform a regular expression search and replace'),
+		'documentation' => tra('PluginRegex'),
+		'validate' => 'all',		
+		'description' => tra('Takes regex expressions and parses the content between REGEX tags and replaces the text.'),
 		'prefs' => array( 'wikiplugin_regex' ),
 		'body' => tra('Each line of content is evaluated separately'),
-		'icon' => 'pics/icons/text_replace.png',
 		'params' => array(
 			'pageName' => array(
 				'required' => true,

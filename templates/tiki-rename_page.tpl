@@ -1,4 +1,4 @@
-{title}{tr}Rename page:{/tr}&nbsp;{$page}{/title}
+{title}{tr}Rename page:{/tr}&nbsp;{$page|escape}{/title}
 
 <div class="navbar">
 	{assign var=thispage value=$page|escape:url}
@@ -34,3 +34,8 @@
     </tr>
   </table>
 </form>
+
+<br />
+
+{include file='tiki-page_bar.tpl'}
+

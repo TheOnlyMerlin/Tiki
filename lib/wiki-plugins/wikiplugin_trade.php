@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,11 +10,10 @@ function wikiplugin_trade_info() {
 
 	return array(
 		'name' => tra('Trade'),
-		'documentation' => 'PluginTrade',
+		'documentation' => tra('PluginTrade'),
 		'description' => tra('Send or receive payments from one member to another. (for cclite only so far, experimental)'),
 		'validate' => 'all',
 		'prefs' => array( 'wikiplugin_trade', 'payment_feature' ),
-		'icon' => 'pics/icons/money.png',
 		'params' => array(
 			'price' => array(
 				'required' => true,

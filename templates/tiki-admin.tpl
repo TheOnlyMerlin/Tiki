@@ -2,51 +2,14 @@
 
 {title help="$helpUrl"}{tr}{$admintitle}{/tr}{/title}
 
-<form method="post" action="">
-	<fieldset>
-		<legend>{tr}Preference Filters{/tr}</legend>
-		{foreach from=$pref_filters key=name item=info}
-			<label>
-				<input type="checkbox" class="preffilter {$info.type|escape}" name="pref_filters[]" value="{$name|escape}" {if $info.selected}checked="checked"{/if}/>
-				{$info.label|escape}
-			</label>
-		{/foreach}
-
-		<input type="submit" value="{tr}Set as my default{/tr}"/>
-	</fieldset>
-</form>
-
-{jq}
-	var updateVisible = function() {
-		var filters = [];
-		$('.adminoptionbox.preference').hide();
-		$('.preffilter').each(function () {
-			var targets = $('.adminoptionbox.preference.' + $(this).val());
-			if ($(this).is(':checked')) {
-				filters.push($(this).val());
-				targets.show();
-			} else if ($(this).is('.negative:not(:checked)')) {
-				targets.hide();
-			}
-		});
-		$('.adminoptionbox.preference.modified').show();
-
-		$('input[name="filters"]').val(filters.join(' '));
-	};
-
-	updateVisible();
-	$('.preffilter').change(updateVisible);
-{/jq}
-
-{if !isset($smarty.get.page) or $smarty.get.page != 'profiles'} {* We don't want on this page because it results in two search boxes *}
+{if $smarty.get.page != 'profiles'} {* We don't want on this page because it results in two search boxes *}
 <form method="post" action="">
 	{*remarksbox type="note" title="{tr}Development Notice{/tr}"}
 		{tr}This search feature and the <a href="tiki-edit_perspective.php">perspectives GUI</a> need <a href="http://dev.tiki.org/Dynamic+Preferences">dev.tiki.org/Dynamic+Preferences</a>. If you search for something and it's not appearing, please help improve keywords/descriptions.{/tr}
 	{/remarksbox*}
 	<p>
-		<label>{tr}Configuration search:{/tr} <input type="text" name="lm_criteria" value="{$lm_criteria|escape}"/></label>
-		<input type="submit" value="{tr}Search{/tr}" {if $indexNeedsRebuilding} class="tips" title="{tr}Configuration search{/tr}|{tr}Note: The search index needs rebuilding, this will take a few minutes.{/tr}"{/if} />
-		<input type="hidden" name="filters"/>
+		<label>{tr}Configuration search{/tr}: <input type="text" name="lm_criteria" value="{$lm_criteria|escape}"/>
+		<input type="submit" value="{tr}Search{/tr}" {if $indexNeedsRebuilding} class="tips" title="{tr}Configuration search{/tr}|{tr}Note: The search index needs rebuilding, this will take a few minutes.{/tr}"{/if} /></label>
 	</p>
 </form>
 {if $lm_error}
@@ -77,7 +40,7 @@
 *}
 {if $db_requires_update}
 	{remarksbox type="errors" title="{tr}Database Version Problem{/tr}"}
-	{tr}Your database requires an update to match the current Tiki version. Please proceed to <a href="tiki-install.php">the installer</a>. Using Tiki with an incorrect database version usually provokes errors.{/tr}
+	{tr}Your database requires an update to match the current Tiki version. Please proceed to <a href="tiki-install.php">the installer</a>. Using Tiki with an incorrect database version usually provoke errors.{/tr}
 	{tr}If you have shell (SSH) access, you can also use the following, on the command line, from the root of your Tiki installation:{/tr} php installer/shell.php
 	{/remarksbox}
 {/if}
@@ -92,7 +55,7 @@ Add a value in first check when you create a new admin page. *}
 "calendar", "intertiki", "video", "freetags", "gmap",
 "i18n", "wysiwyg", "copyright", "category", "module", "look", "textarea",
  "ads", "profiles", "semantic", "plugins", "webservices",
-'sefurl', 'connect', 'metrics', 'payment', 'rating', 'socialnetworks', 'share'))}
+'sefurl', 'connect', 'metrics', 'payment', 'rating', 'socialnetworks'))}
   {assign var="include" value=$smarty.get.page}
 {else}
   {assign var="include" value="list_sections"}
@@ -142,7 +105,7 @@ if $pagetop_msg}
 <br style="clear:both" />
 {remarksbox type="tip" title="{tr}Crosslinks to other features and settings{/tr}"}
 
-	{tr}Other sections:{/tr}<br />
+	{tr}Other sections{/tr}:<br />
 	{if $prefs.feature_sheet eq 'y'} <a href="tiki-sheets.php">{tr}Spreadsheet{/tr}</a> {/if}
 	{if $prefs.feature_newsletters eq 'y'} <a href="tiki-admin_newsletters.php">{tr}Newsletters{/tr}</a> {/if}
 	{if $prefs.feature_surveys eq 'y'} <a href="tiki-admin_surveys.php">{tr}Surveys{/tr}</a> {/if}
@@ -159,7 +122,7 @@ if $pagetop_msg}
 	{if $prefs.feature_contact eq 'y'} <a href="tiki-contact.php">{tr}Contact Us{/tr}</a> {/if}
 	<hr />
 
-	{tr}Administration features:{/tr}<br />
+	{tr}Administration features{/tr}:<br />
 	<a href="tiki-adminusers.php">{tr}Users{/tr}</a> 
 	<a href="tiki-admingroups.php">{tr}Groups{/tr}</a> 
 	<a href="tiki-admin_security.php">{tr}Security{/tr}</a> 
@@ -180,7 +143,7 @@ if $pagetop_msg}
 	{if $prefs.feature_perspective eq 'y'}<a href="tiki-edit_perspective.php">{tr}Perspectives{/tr}</a>{/if}
 	<hr />
 
-	{tr}Navigation features:{/tr}<br />
+	{tr}Navigation features{/tr}:<br />
 	<a href="tiki-admin_menus.php">{tr}Menus{/tr}</a> 
 	<a href="tiki-admin_modules.php">{tr}Modules{/tr}</a>
 	{if $prefs.feature_categories eq 'y'} <a href="tiki-admin_categories.php">{tr}Categories{/tr}</a> {/if}
@@ -191,6 +154,7 @@ if $pagetop_msg}
 	{if $prefs.feature_theme_control eq 'y'} <a href="tiki-theme_control.php">{tr}Theme Control{/tr}</a> {/if}
 	{if $prefs.feature_edit_templates eq 'y'} <a href="tiki-edit_templates.php">{tr}Edit Templates{/tr}</a> {/if}
 	{if $prefs.feature_editcss eq 'y'} <a href="tiki-edit_css.php">{tr}Edit CSS{/tr}</a> {/if}
+	{if $prefs.feature_mobile eq 'y'} <a href="tiki-mobile.php">{tr}Mobile{/tr}</a> {/if}
 	<hr />
 
 	{tr}Text area features{/tr} ({tr}features you can use in all text areas, like wiki pages, blogs, articles, forums, etc{/tr}):<br />
@@ -205,7 +169,7 @@ if $pagetop_msg}
 	{if $prefs.feature_mailin eq 'y'}<a href="tiki-admin_mailin.php">{tr}Mail-in{/tr}</a> {/if}
 	<hr />
 
-	{tr}Stats &amp; banners:{/tr}<br />
+	{tr}Stats &amp; banners{/tr}:<br />
 	{if $prefs.feature_stats eq 'y'} <a href="tiki-stats.php">{tr}Stats{/tr}</a> {/if}
 	{if $prefs.feature_referer_stats eq 'y'} <a href="tiki-referer_stats.php">{tr}Referer Stats{/tr}</a> {/if}
 	{if $prefs.feature_search eq 'y' and $prefs.feature_search_stats eq 'y'} <a href="tiki-search_stats.php">{tr}Search Stats{/tr}</a>  {/if}

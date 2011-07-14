@@ -1,19 +1,24 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+function wikiplugin_ftp_help() {
+	$help = tra('Download box for a file on ftp server.');
+	$help .= "~np~{FTP(server=, user=, password=, title=)}file{FTP}~/np~";
+	return $help;
+}
+
 function wikiplugin_ftp_info() {
 	return array(
 		'name' => tra('FTP'),
-		'documentation' => 'PluginFTP',
-		'description' => tra('Create a button for downloading a file from an FTP server'),
+		'documentation' => tra('PluginFTP'),
+		'description' => tra('Download box for a file on an FTP server.'),
 		'prefs' => array( 'wikiplugin_ftp' ),
 		'validate' => 'all',
 		'body' => tra('file name'),
-		'icon' => 'pics/icons/application_put.png',
 		'params' => array(
 			'server' => array(
 				'required' => true,

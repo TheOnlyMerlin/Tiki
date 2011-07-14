@@ -52,7 +52,6 @@
 				<div class="adminoptionboxchild" id="feature_file_galleries_comments_childcontainer">
 					<a class="link" href="tiki-admin.php?page=comments">{tr}Manage comment settings{/tr}</a>
 				</div>
-				{preference name='fgal_display_zip_option'}
 
 				{preference name='fgal_limit_hits_per_file'}
 				{preference name='fgal_prevent_negative_score'}
@@ -78,16 +77,6 @@
 					{preference name='fgal_delete_after_email'}
 				</div>
 				{preference name='fgal_keep_fileId'}
-				{preference name='feature_use_fgal_for_user_files'}
-				{preference name='feature_use_fgal_for_wiki_attachments'}
-				{preference name='fgal_upload_progressbar'}
-				{preference name='fgal_upload_from_source'}
-				{preference name='fgal_tracker_existing_search'}
-
-				<div class="adminoptionboxchild" id="fgal_upload_from_source_childcontainer">
-					{preference name='fgal_source_refresh_frequency'}
-					{preference name='fgal_source_show_refresh'}
-				</div>
 			</fieldset>
 
 			<fieldset>
@@ -120,7 +109,7 @@
 			<input type="hidden" name="filegallistprefs" />
 			<div class="adminoptionbox">
 				<div class="adminoptionlabel">
-					<label for="fgal_sortorder">{tr}Default sort order:{/tr}</label>
+					<label for="fgal_sortorder">{tr}Default sort order{/tr}:</label>
 					<select name="fgal_sortorder" id="fgal_sortorder">
 						{foreach from=$options_sortorder key=key item=item}
 							<option value="{$item|escape}" {if $fgal_sortorder == $item} selected="selected"{/if}>{$key}</option>
@@ -143,10 +132,6 @@
 			{preference name='fgal_search_in_content'}
 			{preference name='fgal_show_thumbactions'}
 			{preference name='fgal_thumb_max_size'}
-			{preference name='fgal_list_ratio_hits'}
-			{preference name='fgal_display_properties'}
-			{preference name='fgal_display_replace'}
-			{preference name='fgal_checked'}
 
 			<fieldset>
 				<legend>{tr}Select which items to display when listing galleries: {/tr}</legend>
@@ -169,7 +154,14 @@
 
 
 		{tab name="{tr}Search Indexing{/tr}"}
-			{preference name=fgal_enable_auto_indexing}
+			<div class="adminoptionbox">
+				<div class="adminoption">
+					<input type="checkbox" id="fgal_enable_auto_indexing" name="fgal_enable_auto_indexing" {if $prefs.fgal_enable_auto_indexing eq 'y'}checked="checked"{/if} />
+				</div>
+				<div class="adminoptionlabel">
+					<label for="fgal_enable_auto_indexing">{tr}Automatically index files on upload or change{/tr}.</label>
+				</div>
+			</div>
 
 			<input name="filegalhandlers" type="hidden" />
 			<div class="adminoptionbox">
@@ -189,7 +181,6 @@
 					</div>
 
 					{if !empty($missingHandlers)}
-						{tr}Tiki is pre-configured to handle many common types. If any of those are listed here, it is because the command line tool is unavailable.{/tr}
 						{remarksbox type=warning title="{tr}Missing Handlers{/tr}"}
 							{foreach from=$missingHandlers item=mime}
 								{$mime|escape}

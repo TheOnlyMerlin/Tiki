@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,10 +13,6 @@ class RelationLib extends TikiDb_Bridge
 	 * relation ends with a dot, it will be used as a wildcard.
 	 */
 	function get_relations_from( $type, $object, $relation = null ) {
-		if( substr($relation, -7) === '.invert' ) {
-			return $this->get_relations_to( $type, $object, substr($relation, 0, -7));
-		}
-
 		$cond = array( 'source_type = ?', 'source_itemId = ?' );
 		$vars = array( $type, $object );
 
@@ -26,10 +22,6 @@ class RelationLib extends TikiDb_Bridge
 	}
 
 	function get_relations_to( $type, $object, $relation = null ) {
-		if( substr($relation, -7) === '.invert' ) {
-			return $this->get_relations_from( $type, $object, substr($relation, 0, -7));
-		}
-
 		$cond = array( 'target_type = ?', 'target_itemId = ?' );
 		$vars = array( $type, $object );
 
@@ -52,10 +44,6 @@ class RelationLib extends TikiDb_Bridge
 	function add_relation( $relation, $src_type, $src_object, $target_type, $target_object ) {
 		$relation = TikiFilter::get( 'attribute_type' )
 			->filter( $relation );
-
-		if( substr($relation, -7) === '.invert' ) {
-			return $this->add_relation( substr($relation, 0, -7), $target_type, $target_object, $src_type, $src_object );
-		}
 
 		if( $relation ) {
 			$data = array( $relation, $src_type, $src_object, $target_type, $target_object );

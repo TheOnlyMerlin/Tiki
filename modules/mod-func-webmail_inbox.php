@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,7 +15,7 @@ function module_webmail_inbox_info() {
 	return array(
 		'name' => tra('Webmail Inbox'),
 		'description' => tra('Displays Webmail Inbox.'),
-		'prefs' => array('feature_webmail', 'feature_ajax'),
+		'prefs' => array('feature_webmail', 'ajax_xajax'),
 		'params' => array(
 			'accountid' => array(
 				'name' => tra('Account Id'),

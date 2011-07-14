@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,6 +20,7 @@ $inputConfiguration = array(
 
 $section = 'search';
 require_once ('tiki-setup.php');
+require_once ('lib/ajax/ajaxlib.php');
 require_once ('lib/search/searchlib-mysql.php');
 $auto_query_args = array('highlight', 'where', 'initial', 'maxRecords', 'sort_mode', 'find', 'searchLang', 'words', 'boolean', 'categId' );
 $searchlib = new SearchLib;
@@ -129,7 +130,7 @@ if (!isset($_REQUEST["offset"])) {
 }
 if (isset($_REQUEST['searchLang'])) {
 	$searchLang = $_REQUEST['searchLang'];
-} elseif($prefs['search_default_interface_language'] == 'y' && $prefs['feature_multilingual'] == 'y') {
+} elseif($prefs['search_default_interface_language'] == 'y') {
 	$searchLang = $prefs['language'];
 } else {
 	$searchLang = '';

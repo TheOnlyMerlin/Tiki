@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,11 +8,10 @@
 function wikiplugin_content_info() {
 	return array(
 		'name' => tra( 'Dynamic Content' ),
-		'documentation' => 'PluginContent',
-		'description' => tra( 'Display content from dynamic content repository' ),
+		'documentation' => tra('PluginContent'),		
+		'description' => tra( 'Includes content from the dynamic content system.' ),
 		'prefs' => array( 'feature_dynamic_content', 'wikiplugin_content' ),
 		'filter' => 'text',
-		'icon' => 'pics/icons/database_table.png',
 		'params' => array(
 			'id' => array(
 				'required' => false,
@@ -41,9 +40,9 @@ function wikiplugin_content( $data, $params, $offset, $parseOptions) {
 		$lang = $parseOptions['language'];
 	}
 
-	if( isset($params['id']) &&  $params['id'] ) {
+	if( $params['id'] ) {
 		return $dcslib->get_actual_content((int) $params['id'], $lang);
-	} elseif( isset($params['label']) && $params['label'] ) {
+	} elseif( $params['label'] ) {
 		return $dcslib->get_actual_content_by_label( $params['label'], $lang);
 	}
 }

@@ -14,14 +14,13 @@
 					{preference name=freetags_browse_amount_tags_in_cloud}
 				</div>
 
-				{preference name=freetags_3d_autoload}
 				{preference name=freetags_show_middle}
 				{preference name=freetags_preload_random_search}
 				<em>{tr}When arriving on <a href="tiki-browse_freetags.php">freetag search page</a>{/tr}.</em>
 
 				<div class="adminoptionbox">
 					<div class="adminoptionlabel">
-						<label for="freetags_cloud_colors">{tr}Random tag cloud colors:{/tr}</label>
+						<label for="freetags_cloud_colors">{tr}Random tag cloud colors{/tr}:</label>
 						<input type="text" name="freetags_cloud_colors" id="freetags_cloud_colors" value="{foreach from=$prefs.freetags_cloud_colors item=color name=colors}{$color}{if !$smarty.foreach.colors.last},{/if}{/foreach}" />
 						<br />
 						<em>{tr}Separate colors with a comma (,){/tr}.</em>

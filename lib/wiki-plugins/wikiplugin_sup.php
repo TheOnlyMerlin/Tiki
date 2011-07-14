@@ -1,15 +1,22 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+// Wiki plugin to output superscript <sup>...</sup>
+// based on sub plugin
+
+function wikiplugin_sup_help() {
+        return tra("Displays text in superscript.").":<br />~np~{SUP()}text{SUP}~/np~";
+}
+
 function wikiplugin_sup_info() {
 	return array(
 		'name' => tra( 'Superscript' ),
-		'documentation' => 'PluginSup',
-		'description' => tra('Apply superscript font to text'),
+		'documentation' => tra('PluginSup'),		
+		'description' => tra('Displays text in superscript (exponent).'),
 		'prefs' => array( 'wikiplugin_sup' ),
 		'body' => tra('text'),
 		'icon' => 'pics/icons/text_superscript.png',

@@ -1,9 +1,11 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+
+require_once 'lib/core/Perms/ResolverFactory.php';
 
 /**
  * The category ResolverFactory acts in two steps to resolve the permissions
@@ -88,12 +90,6 @@ class Perms_ResolverFactory_CategoryFactory implements Perms_ResolverFactory
 	private function bulkLoadCategories( $baseContext, $bulkKey, $values ) {
 		$objects = array();
 		$keys = array();
-
-		// Reset the internal object cache when it becomes too large
-		// Leave the internal category cache intact as it should eventually stabilize
-		if (count($this->knownObjects) > 128) {
-			$this->knownObjects = array();
-		}
 
 		foreach( $values as $v ) {
 			$key = $this->objectKey( array_merge( $baseContext, array( 'object' => $v ) ) );

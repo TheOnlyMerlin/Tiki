@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -85,6 +85,11 @@ class CCLiteLib extends TikiDb_Bridge
 	public function is_valid( $ipn_data, $payment_info ) {
 		global $prefs;
 
+		// Make sure this is not a fake, must be verified even if discarded, otherwise will be resent
+		if( ! $this->confirmed_by_cclite( $ipn_data ) ) {
+			return false;
+		}
+
 		if( ! is_array( $payment_info ) ) {
 			return false;
 		}
@@ -167,6 +172,24 @@ class CCLiteLib extends TikiDb_Bridge
 		return $res;
 	}
 
+	private function confirmed_by_cclite( $ipn_data ) {
+		global $prefs;
+
+		return true;	// for now TODO
+
+		require_once 'lib/core/Zend/Http/Client.php';
+		$client = new Zend_Http_Client( $prefs['payment_cclite_environment'] );
+
+		$base = array( 'cmd' => '_notify-validate' );
+
+		$client->setParameterPost( array_merge( $base, $ipn_data ) );
+		$response = $client->request( 'POST' );
+
+		$body = $response->getBody();
+
+		return 'VERIFIED' === $body;
+	}
+
 	/**
 	 * Adapted from cclite 0.7 drupal gateway (example)
 	 * 
@@ -212,9 +235,6 @@ class CCLiteLib extends TikiDb_Bridge
 		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-
-		//curl_setopt($ch, CURLOPT_VERBOSE, true);
-
 		// this switch statement needs to map to the Rewrites in the cclite .htaccess file, so if you're
 		// doing something custom-made, you need to think about:
 		// -here-, .htaccess and various bits of login in the cclite motor
@@ -258,7 +278,7 @@ class CCLiteLib extends TikiDb_Bridge
 		curl_setopt($ch, CURLOPT_URL, $REST_url);
 		$result = curl_exec($ch);
 		curl_close($ch);
-		return strip_tags($result);
+		return $result;
 	}
 
 	/**
@@ -292,10 +312,7 @@ class CCLiteLib extends TikiDb_Bridge
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
 			curl_setopt($ch, CURLOPT_URL, $REST_url);
 			
-//			curl_setopt($ch, CURLOPT_VERBOSE, true);
-			
 			$logon = curl_exec($ch);
-			curl_close($ch);
 			
 			$results = array();	// for response & cookies on success
 			$err_msg = '';		// error message on failure
@@ -324,12 +341,17 @@ class CCLiteLib extends TikiDb_Bridge
 				}
 			}
 			if ($logon && $logon != 'failed') {
+				curl_close($ch);
+				$ch = null;
 				preg_match_all('|Set-Cookie: (.*);|U', $logon, $results);
 				$cookies = implode("; ", $results[1]);
 				return array($logon, $cookies);
 			}
 		} else {
 			$err_msg = 'No result from cclite server.';
+		}
+		if ($ch) {
+			curl_close($ch);
 		}
 		// fall through failed
 		return array('failed', $err_msg);

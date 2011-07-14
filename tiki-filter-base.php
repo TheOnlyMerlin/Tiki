@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -70,7 +70,7 @@ if ($dir_level > 0) {
 if ( substr($tikiroot,-1,1) != '/' ) $tikiroot .= '/';
 if ( substr($tikipath,-1,1) != '/' ) $tikipath .= '/';
 
-// Add global filter for xajax and cookie	// AJAX_TODO?
+// Add global filter for xajax and cookie
 global $inputConfiguration;
 if ( empty($inputConfiguration) ) {
 	$inputConfiguration = array();
@@ -79,8 +79,7 @@ array_unshift($inputConfiguration,array(
   'staticKeyFilters' => array(
 		'cookietab'	=>	'int',
 		'xjxfun'	=> 'striptags',
-		'xjxr'		=>	'int',
-		'callback'  => 'word',
+		'xjxr'		=>	'int'
   ),
 	'staticKeyFiltersForArrays' => array(
 		'xjxargs' => 'xss',
@@ -91,20 +90,5 @@ require_once('lib/init/initlib.php');
 TikiInit::prependIncludePath($tikipath.'lib/pear');
 TikiInit::appendIncludePath($tikipath.'lib/core');
 TikiInit::appendIncludePath($tikipath);
-require_once 'Zend/Loader/Autoloader.php';
-Zend_Loader_Autoloader::getInstance()
-	->registerNamespace('Horde_Yaml')
-	->registerNamespace('TikiFilter')
-	->registerNamespace('DeclFilter')
-	->registerNamespace('JitFilter')
-	->registerNamespace('Search')
-	->registerNamespace('Perms')
-	->registerNamespace('Math')
-	->registerNamespace('Category')
-	->registerNamespace('WikiParser')
-	->registerNamespace('StandardAnalyzer')
-	->registerNamespace('Tracker')
-	->registerNamespace('Event_')
-	->registerNamespace('Services_')
-	->registerNamespace('TikiDb');
-
+require_once('lib/core/DeclFilter.php');
+require_once('lib/core/JitFilter.php');

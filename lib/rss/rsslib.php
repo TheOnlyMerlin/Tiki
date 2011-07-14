@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,16 +13,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 class RSSLib extends TikiDb_Bridge
 {
-	private $items;
-	private $feeds;
-	private $modules;
-
-	function __construct()
-	{
-		$this->items = $this->table('tiki_rss_items');
-		$this->feeds = $this->table('tiki_rss_feeds');
-		$this->modules = $this->table('tiki_rss_modules');
-	}
 
 	// ------------------------------------
 	// functions for rss feeds we syndicate
@@ -81,24 +71,23 @@ class RSSLib extends TikiDb_Bridge
 		// caching rss data for anonymous users only
 		if (isset($user) && $user<>"") return $output;
 
-		$res = $this->feeds->fetchFullRow(array('name' => $uniqueid, 'rssVer' => $rss_version));
-		if (!$res) {
-			// nothing found, then insert empty row for this feed+rss_ver
-			$this->feeds->insert(array(
-				'name' => $uniqueid,
-				'rssVer' => $rss_version,
-				'refresh' => (int) $prefs['feed_cache_time'],
-				'lastUpdated' => 1,
-				'cache' => '-',
-			));
+		$query = "select * from `tiki_rss_feeds` where `name`=? and `rssVer`=?";
+		$bindvars=array($uniqueid, $rss_version);
+		$result = $this->query($query, $bindvars);
+		if (!$result->numRows()) {
+		  // nothing found, then insert empty row for this feed+rss_ver
+		  $query = "insert into `tiki_rss_feeds`(`name`,`rssVer`,`refresh`,`lastUpdated`,`cache`) values(?,?,?,?,?)";
+		  $bindvars=array($uniqueid, $rss_version,(int) $prefs['feed_cache_time'] , 1, "-");
+		  $result = $this->query($query, $bindvars);
 		} else {
-			// entry found in db:
-			$output["data"] = $res["cache"];
-			// $refresh = $res["refresh"]; // global cache time currently
-			$refresh = $prefs['feed_cache_time']; // global cache time currently
-			$lastUpdated = $res["lastUpdated"];
-			// up to date? if not, then set trigger to reload data:
-			if ($tikilib->now - $lastUpdated >= $refresh ) { $output["data"]="EMPTY"; }
+		  // entry found in db:
+		  $res = $result->fetchRow();
+		  $output["data"] = $res["cache"];
+		  // $refresh = $res["refresh"]; // global cache time currently
+		  $refresh = $prefs['feed_cache_time']; // global cache time currently
+		  $lastUpdated = $res["lastUpdated"];
+		  // up to date? if not, then set trigger to reload data:
+		  if ($tikilib->now - $lastUpdated >= $refresh ) { $output["data"]="EMPTY"; }
 		}
 		return $output;
 	}
@@ -115,13 +104,9 @@ class RSSLib extends TikiDb_Bridge
 
 		// update cache with new generated data if data not empty
 
-		$this->feeds->update(array(
-			'cache' => $output,
-			'lastUpdated' => $tikilib->now,
-		), array(
-			'name' => $uniqueid,
-			'rssVer' => $rss_version,
-		));
+		$query = "update `tiki_rss_feeds` set `cache`=?, `lastUpdated`=? where `name`=? and `rssVer`=?";
+		$bindvars = array($output, (int) $tikilib->now, $uniqueid, $rss_version);
+		$result = $this->query($query, $bindvars);
 	}
 
 	/**
@@ -149,6 +134,7 @@ class RSSLib extends TikiDb_Bridge
 		, $fromcache=false
 	) {
 		global $tikilib, $tiki_p_admin, $prefs, $userlib, $prefs, $smarty;
+		require_once('lib/core/Zend/Feed/Writer/Feed.php');
 
 		// both title and description fields cannot be null
 		if (empty($title) || empty($desc)) {
@@ -321,21 +307,32 @@ class RSSLib extends TikiDb_Bridge
 	/* get (a part of) the list of existing rss feeds from db */
 	function list_rss_modules($offset, $maxRecords, $sort_mode, $find)
 	{
-		$conditions = array();
+
 		if ($find) {
-			$conditions['search'] = $this->modules->expr('(`name` LIKE ? OR `description` LIKE ?)', array("%$find%", "%$find%"));
+			$findesc="%" . $find . "%";
+			$mid = " where (`name` like ? or `description` like ?)";
+			$bindvars=array($findesc, $findesc);
+		} else {
+			$mid = "";
+			$bindvars=array();
 		}
 
-		$ret = $this->modules->fetchAll($this->modules->all(), $conditions, -1, -1, $this->modules->sortMode($sort_mode));
+		$query = "select * from `tiki_rss_modules` $mid order by ".$this->convertSortMode($sort_mode);
+		$query_cant = "select count(*) from `tiki_rss_modules` $mid";
+		$result = $this->query($query, $bindvars, $maxRecords, $offset);
+		$cant = $this->getOne($query_cant, $bindvars);
+		$ret = array();
 
-		foreach ($ret as & $res) {
+		while ($res = $result->fetchRow()) {
 			$res["minutes"] = $res["refresh"] / 60;
+
+			$ret[] = $res;
 		}
 
-		return array(
-			'data' => $ret,
-			'cant' => count($ret),
-		);
+		$retval = array();
+		$retval["data"] = $ret;
+		$retval["cant"] = $cant;
+		return $retval;
 	}
 
 	/* replace rss feed in db */
@@ -344,22 +341,18 @@ class RSSLib extends TikiDb_Bridge
 		//if($this->rss_module_name_exists($name)) return false; // TODO: Check the name
 		$refresh = 60 * $refresh;
 
-		$data = array(
-			'name' => $name,
-			'description' => $description,
-			'refresh' => $refresh,
-			'url' => $url,
-			'showTitle' => $showTitle,
-			'showPubDate' => $showPubDate,
-		);
-
 		if ($rssId) {
-			$this->modules->update($data, array(
-				'rssId' => (int) $rssId,
-			));
+			$query = "update `tiki_rss_modules` set `name`=?,`description`=?,`refresh`=?,`url`=?,`showTitle`=?,`showPubDate`=? where `rssId`=?";
+			$bindvars=array($name, $description, $refresh, $url, $showTitle, $showPubDate, (int)$rssId);
+			$result = $this->query($query, $bindvars);
 		} else {
-			$data['lastUpdated'] = 1;
-			$rssId = $this->modules->insert($data);
+			// was: replace into, no clue why.
+			$query = "insert into `tiki_rss_modules`(`name`,`description`,`url`,`refresh`,`lastUpdated`,`showTitle`,`showPubDate`)
+                values(?,?,?,?,?,?,?)";
+			$bindvars=array($name, $description, $url, $refresh, 1000000, $showTitle, $showPubDate);
+
+			$result = $this->query($query, $bindvars);
+			$rssId = $this->lastInsertId();
 		}
 
 		if (!$noUpdate) {
@@ -372,49 +365,64 @@ class RSSLib extends TikiDb_Bridge
 	/* remove rss feed from db */
 	function remove_rss_module($rssId)
 	{
-		$this->modules->delete(array(
-			'rssId' => $rssId,
-		));
+		$query = "delete from `tiki_rss_modules` where `rssId`=?";
 
+		$result = $this->query($query, array((int)$rssId));
 		return true;
 	}
 
 	/* read rss feed data from db */
 	function get_rss_module($rssId)
 	{
-		return $this->modules->fetchFullRow(array('rssId' => $rssId));
+		$query = "select * from `tiki_rss_modules` where `rssId`=?";
+
+		$result = $this->query($query, array((int)$rssId));
+
+		if (!$result->numRows())
+			return false;
+
+		$res = $result->fetchRow();
+		return $res;
 	}
 
-	function refresh_rss_module($rssId) {
+	function refresh_rss_module($rssId ) {
 		$this->update_feeds( array( $rssId ), true );
-	}
-
-	function clear_rss_cache($rssId) {
-		$this->items->deleteMultiple(array('rssId' => (int) $rssId));
 	}
 
 	/* check if an rss feed name already exists */
 	function rss_module_name_exists($name)
 	{
-		return $this->modules->fetchCount(array('name' => $name));
+		$query = "select `name` from `tiki_rss_modules` where `name`=?";
+
+		$result = $this->query($query, array($name));
+		return $result->numRows();
 	}
 
 	/* get rss feed id by name */
 	function get_rss_module_id($name)
 	{
-		return $this->modules->fetchOne('rssId', array('name' => $name));
+		$query = "select `rssId` from `tiki_rss_modules` where `name`=?";
+
+		$id = $this->getOne($query, array($name));
+		return $id;
 	}
 
 	/* check if 'showTitle' for an rss feed is enabled */
 	function get_rss_showTitle($rssId)
 	{
-		return $this->modules->fetchOne('showTitle', array('rssId' => $rssId));
+		$query = "select `showTitle` from `tiki_rss_modules` where `rssId`=?";
+
+		$showTitle = $this->getOne($query, array((int)$rssId));
+		return $showTitle;
 	}
 
 	/* check if 'showPubdate' for an rss feed is enabled */
 	function get_rss_showPubDate($rssId)
 	{
-		return $this->modules->fetchOne('showPubDate', array('rssId' => $rssId));
+		$query = "select `showPubDate` from `tiki_rss_modules` where `rssId`=?";
+
+		$showPubDate = $this->getOne($query, array((int)$rssId));
+		return $showPubDate;
 	}
 
 	function get_feed_items( $feeds, $count = 10 ) {
@@ -422,23 +430,22 @@ class RSSLib extends TikiDb_Bridge
 
 		$this->update_feeds( $feeds );
 
-		return $this->items->fetchAll($this->items->all(), array(
-			'rssId' => $this->items->in($feeds),
-		), $count, 0, array('publication_date' => 'DESC'));
+		$bindvars = array();
+		$query = 'SELECT * FROM `tiki_rss_items` WHERE ' . $this->in( 'rssId', $feeds, $bindvars ) . ' ORDER BY publication_date DESC';
+
+		return $this->fetchAll( $query, $bindvars, $count );
 	}
 
 	private function update_feeds( $feeds, $force = false ) {
 		global $tikilib;
 
-		$conditions = array(
-			'rssId' => $this->modules->in($feeds),
-		);
-
-		if( ! $force ) {
-			$conditions['date'] = $this->modules->expr('`lastUpdated` < ? - `refresh`', array($tikilib->now));
+		if( $force ) {
+			$bindvars = array();
+			$result = $this->fetchAll( 'SELECT `rssId`, `url`, `actions` FROM `tiki_rss_modules` WHERE ' . $this->in( 'rssId', $feeds, $bindvars ), $bindvars );
+		} else {
+			$bindvars = array( $tikilib->now );
+			$result = $this->fetchAll( 'SELECT `rssId`, `url`, `actions` FROM `tiki_rss_modules` WHERE (`lastUpdated` < ? - `refresh`) AND ' . $this->in( 'rssId', $feeds, $bindvars ), $bindvars );
 		}
-
-		$result = $this->modules->fetchAll(array('rssId', 'url', 'actions'), $conditions);
 
 		foreach( $result as $row ) {
 			$this->update_feed( $row['rssId'], $row['url'], $row['actions'] );
@@ -447,6 +454,7 @@ class RSSLib extends TikiDb_Bridge
 
 	private function update_feed( $rssId, $url, $actions ) {
 		global $tikilib;
+		require_once 'Zend/Feed/Reader.php';
 
 		$filter = new DeclFilter;
 		$filter->addStaticKeyFilters( array(
@@ -460,38 +468,26 @@ class RSSLib extends TikiDb_Bridge
 		$guidFilter = TikiFilter::get('url');
 
 		try {
-			$content = $tikilib->httprequest($url);
-			$feed = Zend_Feed_Reader::importString( $content );
+			$feed = Zend_Feed_Reader::import( $url );
 		} catch( Zend_Exception $e ) {
-			$this->modules->update(array(
-				'lastUpdated' => $tikilib->now,
-				'sitetitle' => 'N/A',
-				'siteurl' => '#',
-			), array(
-				'rssId' => $rssId,
-			));
+			$this->query( 'UPDATE `tiki_rss_modules` SET `lastUpdated` = ?, `sitetitle` = ?, `siteurl` = ? WHERE `rssId` = ?',
+				array( $tikilib->now, 'N/A', '#', $rssId ) );
 			return;
 		}
 		$siteTitle = TikiFilter::get('striptags')->filter( $feed->getTitle() );
 		$siteUrl = TikiFilter::get('url')->filter( $feed->getLink() );
 
-		$this->modules->update(array(
-			'lastUpdated' => $tikilib->now,
-			'sitetitle' => $siteTitle,
-			'siteurl' => $siteUrl,
-		), array(
-			'rssId' => $rssId,
-		));
+		$this->query( 'UPDATE `tiki_rss_modules` SET `lastUpdated` = ?, `sitetitle` = ?, `siteurl` = ? WHERE `rssId` = ?',
+			array( $tikilib->now, $siteTitle, $siteUrl, $rssId ) );
 
-		foreach( $feed as $entry ) { // TODO: optimize. Atom entries have an 'updated' element which can be used to only update updated entries
+		foreach( $feed as $entry ) {
 			$guid = $guidFilter->filter( $entry->getId() );
 
-			$count = $this->items->fetchCount(array('rssId' => $rssId, 'guid' => $guid));
-			if( 1 == $count ) {
+			if( $this->getOne( 'SELECT COUNT(*) FROM `tiki_rss_items` WHERE `rssId` = ? AND `guid` = ?', array( $rssId, $guid ) ) == 1 ) {
 				$this->query("delete from `tiki_rss_items` where `rssId`=? and `guid`=?", array($rssId, $guid));
 			}
 			$authors = $entry->getAuthors();
-
+	
 			$data = $filter->filter( array(
 				'title' => $entry->getTitle(),
 				'url' => $entry->getLink(),
@@ -499,7 +495,7 @@ class RSSLib extends TikiDb_Bridge
 				'content' => $entry->getContent(),
 				'author' => $authors ? implode( ', ', $authors->getValues() ) : '', 
 			) );
-
+	
 			$data['guid'] = $guid;
 			if( method_exists( $entry, 'getDateCreated' ) && $createdDate = $entry->getDateCreated() ) {
 				$data['publication_date'] = $createdDate->get( Zend_Date::TIMESTAMP );
@@ -507,40 +503,38 @@ class RSSLib extends TikiDb_Bridge
 				global $tikilib;
 				$data['publication_date'] = $tikilib->now;
 			}
-
+	
 			$this->insert_item( $rssId, $data, $actions );
 		}
 	}
 
 	private function insert_item( $rssId, $data, $actions ) {
-		$this->items->insert(array(
-			'rssId' => $rssId,
-			'guid' => $data['guid'],
-			'url' => $data['url'],
-			'publication_date' => $data['publication_date'],
-			'title' => $data['title'],
-			'author' => $data['author'],
-			'description' => $data['description'],
-			'content' => $data['content'],
-		));
+		$query = 'INSERT INTO `tiki_rss_items` ( `rssId`, `guid`, `url`, `publication_date`, `title`, `author`, `description`, `content` ) VALUES( ?, ?, ?, ?, ?, ?, ?, ? )';
+		$this->query( $query, array(
+			$rssId,
+			$data['guid'],
+			$data['url'],
+			$data['publication_date'],
+			$data['title'],
+			$data['author'],
+			$data['description'],
+			$data['content'],
+		) );
 		
 		$actions = json_decode( $actions, true );
 
-		if (!empty($actions)) {
-			foreach( $actions as $action ) {
-				$method = 'process_action_' . $action['type'];
-				unset( $action['type'] );
+		foreach( $actions as $action ) {
+			$method = 'process_action_' . $action['type'];
+			unset( $action['type'] );
 
-				if( $action['active'] ) {
-					$this->$method( $action, $data );
-				}
+			if( $action['active'] ) {
+				$this->$method( $action, $data );
 			}
 		}
 	}
 
 	private function process_action_article( $configuration, $data ) {
-		$tikilib = TikiLib::lib('tiki');
-		$artlib = TikiLib::lib('art');
+		global $tikilib, $artlib; require_once 'lib/articles/artlib.php';
 		$publication = $data['publication_date'];
 
 		if( $configuration['future_publish'] > 0 ) {
@@ -558,7 +552,7 @@ class RSSLib extends TikiDb_Bridge
 			$subid = $artlib->replace_submission( $data['title'], $data['author'], $configuration['topic'], 'n', '', 0, '', '', $data['description'], $data['content'], $publication, $expire, 'admin', 0, 0, 0, $configuration['atype'], '', '', $data['url'], '', '', $configuration['rating'] );
 
 			if( count( $configuration['categories'] ) ) {
-				$categlib = TikiLib::lib('categ');
+				global $categlib; require_once 'lib/categories/categlib.php';
 				$objectId = $categlib->add_categorized_object( 'submission', $subid, $data['title'], $data['title'], 'tiki-edit_submission.php?subId=' . $subid );
 
 				foreach( $configuration['categories'] as $categId ) {
@@ -571,7 +565,7 @@ class RSSLib extends TikiDb_Bridge
 		$id = $artlib->replace_article( $data['title'], $data['author'], $configuration['topic'], 'n', '', 0, '', '', $data['description'], $data['content'], $publication, $expire, 'admin', 0, 0, 0, $configuration['atype'], '', '', $data['url'], '', '', $configuration['rating'] );
 
 			if( count( $configuration['categories'] ) ) {
-				$categlib = TikiLib::lib('categ');
+				global $categlib; require_once 'lib/categories/categlib.php';
 				$objectId = $categlib->add_categorized_object( 'article', $id, $data['title'], $data['title'], 'tiki-read_article.php?articleId=' . $id );
 
 				foreach( $configuration['categories'] as $categId ) {
@@ -601,11 +595,7 @@ class RSSLib extends TikiDb_Bridge
 
 		$out[] = $configuration;
 
-		$this->modules->update(array(
-			'actions' => json_encode($out),
-		), array(
-			'rssId' => $rssId,
-		));
+		$this->query( 'UPDATE `tiki_rss_modules` SET `actions` = ? WHERE `rssId` = ?', array( json_encode( $out ), $rssId ) );
 	}
 
 	function get_article_generator( $rssId ) {
@@ -635,51 +625,6 @@ class RSSLib extends TikiDb_Bridge
 		}
 
 		return $default;
-	}
-
-	function generate_feed_from_data($data, $feed_descriptor)
-	{
-		require_once 'lib/smarty_tiki/modifier.sefurl.php';
-
-		$tikilib = TikiLib::lib('tiki');
-		$writer = new Zend_Feed_Writer_Feed;
-		$writer->setTitle($feed_descriptor['feedTitle']);
-		$writer->setDescription($feed_descriptor['feedDescription']);
-		$writer->setLink($tikilib->tikiUrl(''));
-		$writer->setDateModified(time());
-
-		foreach ($data as $row) {
-			$titleKey = $feed_descriptor['entryTitleKey'];
-			$url = $row[$feed_descriptor['entryUrlKey']];
-			$title = $row[$titleKey];
-
-			if (isset($feed_descriptor['entryObjectDescriptors'])) {
-				list($typeKey, $objectKey) = $feed_descriptor['entryObjectDescriptors'];
-				$object = $row[$objectKey];
-				$type = $row[$typeKey];
-
-				if (empty($url)) {
-					$url = smarty_modifier_sefurl($object, $type);
-				}
-
-				if (empty($title)) {
-					$title = TikiLib::lib('object')->get_title($type, $object);
-				}
-			}
-
-			if (empty($url)) {
-				//continue;
-			}
-
-			$entry = $writer->createEntry();
-			$entry->setTitle($title ? $title : tra('Unspecified'));
-			$entry->setLink($tikilib->tikiUrl($url));
-			$entry->setDateModified($row[$feed_descriptor['entryModificationKey']]);
-
-			$writer->addEntry($entry);
-		}
-		
-		return $writer;
 	}
 }
 global $rsslib;

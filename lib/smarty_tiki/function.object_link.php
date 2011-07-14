@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,29 +13,19 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 function smarty_function_object_link( $params, $smarty ) {
 
-	if( ! isset( $params['type'], $params['id'] ) && ! isset( $params['identifier'] ) ) {
+	if( ! isset( $params['type'], $params['id'] ) ) {
 		return tra('No object information provided.');
 	}
 
-	if( isset( $params['type'], $params['id'] ) ) {
-		$type = $params['type'];
-		$object = $params['id'];
-	} else {
-		list($type, $object) = explode(':', $params['identifier'], 2);
-	}
-
+	$type = $params['type'];
+	$object = $params['id'];
 	$title = isset( $params['title'] ) ? $params['title'] : null;
-	$url = isset( $params['url'] ) ? $params['url'] : null;
 
 	switch( $type ) {
 	case 'wiki page':
 	case 'wikipage':
 	case 'wiki':
-		$type = 'wiki page';
-		$function = 'smarty_function_object_link_default';
-		if (! $title) {
-			$title = $object;
-		}
+		$function = 'smarty_function_object_link_wiki';
 		break;
 	case 'user':
 		$function = 'smarty_function_object_link_user';
@@ -50,81 +40,31 @@ function smarty_function_object_link( $params, $smarty ) {
 		$function = 'smarty_function_object_link_relation_target';
 		break;
 	default:
-		$function = 'smarty_function_object_link_default';
-		break;
+		return tr('No rules to display object %1 of type %0.', $type, $object );
 	}
 
-	return $function( $smarty, $object, $title, $type, $url );
+	return $function( $object, $title );
 }
 
-function smarty_function_object_link_default( $smarty, $object, $title = null, $type = 'wiki', $url = null ) {
+function smarty_function_object_link_wiki( $page, $title = null ) {
 	require_once 'lib/smarty_tiki/modifier.sefurl.php';
+	require_once 'lib/smarty_tiki/modifier.escape.php';
 
-	if (! function_exists('smarty_modifier_escape')) {
-		require_once 'lib/smarty_tiki/modifier.escape.php';
-	}
+	$escapedPage = smarty_modifier_escape( $title ? $title : $page );
+	$escapedHref = smarty_modifier_escape( smarty_modifier_sefurl( $page, 'wiki' ) );
 
-	if (empty($title)) {
-		$title = TikiLib::lib('object')->get_title($type, $object);
-	}
-
-	$escapedPage = smarty_modifier_escape( $title ? $title : tra('No title specified') );
-
-	if ($url) {
-		$escapedHref = smarty_modifier_escape( $url );
-	} else {
-		$escapedHref = smarty_modifier_escape( smarty_modifier_sefurl( $object, $type ) );
-	}
-
-	$class = '';
-	$metadata = '';
-
-	if ($coordinates = TikiLib::lib('geo')->get_coordinates($type, $object)) {
-		$class = ' class="geolocated"';
-		$metadata = " data-geo-lat=\"{$coordinates['lat']}\" data-geo-lon=\"{$coordinates['lon']}\"";
-		
-		if (isset($coordinates['zoom'])) {
-			$metadata .= " data-geo-zoom=\"{$coordinates['zoom']}\"";
-		}
-	}
-	
-	if ( $type == "blog post" )
-		$class = ' class="link"';
-
-	$html = '<a href="' . $escapedHref . '"' . $class . $metadata . '>' . $escapedPage . '</a>';
-
-	$attributelib = TikiLib::lib('attribute');
-	$attributes = $attributelib->get_attributes($type, $object);
-	global $prefs;
-	if (isset($attributes['tiki.content.source']) && $prefs['fgal_source_show_refresh'] == 'y') {
-		require_once 'lib/smarty_tiki/function.icon.php';
-		$html .= '<a class="file-refresh" href="tiki-ajax_services.php?controller=file&amp;action=refresh&amp;fileId=' . intval($object) . '">' . smarty_function_icon(array(
-			'_id' => 'arrow_refresh',
-		), $smarty) . '</a>';
-
-		TikiLib::lib('header')->add_js('$(".file-refresh").removeClass("file-refresh").click(function () {
-			$.getJSON($(this).attr("href"));
-			$(this).remove();
-			return false;
-		});');
-	}
-
-	return $html;
+	return '<a href="' . $escapedHref . '">' . $escapedPage . '</a>';
 }
 
-function smarty_function_object_link_user( $smarty, $user, $title = null ) {
+function smarty_function_object_link_user( $user, $title = null ) {
 	require_once 'lib/smarty_tiki/modifier.userlink.php';
 
 	return smarty_modifier_userlink( $user, 'link', 'not_set', $title ? $title : '' );
 }
 
-function smarty_function_object_link_external( $smarty, $link, $title = null ) {
+function smarty_function_object_link_external( $link, $title = null ) {
 	global $cachelib; require_once 'lib/cache/cachelib.php';
 	global $tikilib;
-
-	if (substr($link, 0, 4) === 'www.') {
-		$link = 'http://' . $link;
-	}
 
 	if( ! $title ) {
 		if( ! $title = $cachelib->getCached( $link, 'object_link_ext_title' ) ) {
@@ -147,15 +87,15 @@ function smarty_function_object_link_external( $smarty, $link, $title = null ) {
 	return $data;
 }
 
-function smarty_function_object_link_relation_source( $smarty, $relationId, $title = null ) {
-	return smarty_function_object_link_relation_end( $smarty, 'source', $relationId, $title );
+function smarty_function_object_link_relation_source( $relationId, $title = null ) {
+	return smarty_function_object_link_relation_end( 'source', $relationId, $title );
 }
 
-function smarty_function_object_link_relation_target( $smarty, $relationId, $title = null ) {
-	return smarty_function_object_link_relation_end( $smarty, 'target', $relationId, $title );
+function smarty_function_object_link_relation_target( $relationId, $title = null ) {
+	return smarty_function_object_link_relation_end( 'target', $relationId, $title );
 }
 
-function smarty_function_object_link_relation_end( $smarty, $end, $relationId, $title = null ) {
+function smarty_function_object_link_relation_end( $end, $relationId, $title = null ) {
 	global $relationlib; require_once 'lib/attributes/relationlib.php';
 	global $attributelib; require_once 'lib/attributes/attributelib.php';
 	global $cachelib; require_once 'lib/cache/cachelib.php';
@@ -178,6 +118,7 @@ function smarty_function_object_link_relation_end( $smarty, $end, $relationId, $
 			$type = $relation[ $end . '_type' ];
 			$object = $relation[ $end . '_itemId' ];
 
+			global $smarty;
 			$out = smarty_function_object_link( array(
 				'type' => $type,
 				'id' => $object,

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -46,8 +46,7 @@ function smarty_block_tikimodule($params, $content, &$smarty) {
 	if (!isset($error))  $error = '';
 	if (!isset($overflow))  $overflow = false;
 	if (!isset($title))     $title = substr(strip_tags($content),0,12). (strlen(strip_tags($content)) > 12 ? "..." : "");
-	if (!isset($name))		$name  = $title; else $name  = $name;
-	$name = urlencode($name);
+	if (!isset($name))      $name  = preg_replace("/[^-_a-zA-Z0-9]/","",$title); else $name  = preg_replace("/[^-_a-zA-Z0-9]/","",$name);
 	if (!isset($flip) || ($flip != 'y' && $flip != 'yc')) $flip = 'n';
 	if (!isset($nobox))      $nobox = 'n';
 	if (!isset($notitle))      $notitle = 'n';

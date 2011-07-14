@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -40,7 +40,6 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  *	- zero_based_offset: Items addressed as zero-based (defaults to 'y'). If 'n' then "one based" offset used (1 to cant + 1)
  *		(jb tiki5: only fully tested without reloffset and step=1) 
  *	- show_numbers: Show/hide direct_pagination links, current and total numbers (Defaults to 'y')
- *  - _ajax : if set to 'n', will force disabling AJAX even if the ajax xajax feature is enabled (defaults to 'y')	AJAX_TODO
  */
 function smarty_block_pagination_links($params, $url, &$smarty, $repeat) {
 	global $prefs;
@@ -65,7 +64,6 @@ function smarty_block_pagination_links($params, $url, &$smarty, $repeat) {
 		$zero_based_min = 0;
 		$zero_based_maxminus = 1;
 	}
-	$params['_ajax'] = isset($params['_ajax']) ? $params['_ajax'] : 'y';
 	if ( isset($params['reloff']) && (
 		$params['reloff'] + $params['offset'] >= $params['cant']
 		|| $params['reloff'] + $params['offset'] < $zero_based_min
@@ -154,10 +152,10 @@ function smarty_block_pagination_links($params, $url, &$smarty, $repeat) {
 	// Handle next/prev images
 	if ( $params['noimg'] == 'n' ) {
 		$tmp = array(
-			'first' => tr("First %0", $params['itemname']),
-			'last' => tr("Last %0", $params['itemname']),
-			'next' => tr("Next %0", $params['itemname']),
-			'previous' => tr("Prev %0", $params['itemname']),
+			'first' => tra("First {$params['itemname']}"),
+			'last' => tra("Last {$params['itemname']}"),
+			'next' => tra("Next {$params['itemname']}"),
+			'previous' => tra("Prev {$params['itemname']}"),
 			'next_fast' => tra('Fast Next'),
 			'previous_fast' => tra('Fast Prev'),
 		);
@@ -166,6 +164,7 @@ function smarty_block_pagination_links($params, $url, &$smarty, $repeat) {
 			$images[$ik] = smarty_function_icon(
 				array(
 					'_id' => 'resultset_'.$ik,
+					'border' => '0',
 					'alt' => $iv,
 					'style' => 'vertical-align:middle;'
 				),
@@ -179,21 +178,12 @@ function smarty_block_pagination_links($params, $url, &$smarty, $repeat) {
 		if ( ! function_exists('make_prevnext_link') ) {
 			function make_prevnext_link($url, $content, $params, $class = 'prevnext') {
 				global $smarty;
-				
-				$link = '<a class="'.$class.'" ';
-				if ($params['_ajax'] == 'y') {
-					$link .= smarty_block_ajax_href(
-						array('template' => $params['template'], 'htmlelement' => $params['htmlelement'], '_ajax' => $params['_ajax'],),
-						$url,
-						$smarty,
-						false
-					);
-				} else {
-					$link .= " href=\"$url\" ";
-				}
-				$link .= '>'.$content.'</a>';
-				
-				return $link;
+				return "\n".'<a class="'.$class.'" '.smarty_block_ajax_href(
+					array('template' => $params['template'], 'htmlelement' => $params['htmlelement']),
+					$url,
+					$smarty,
+					false
+				).'>'.$content.'</a>';
 			}
 		}
 
@@ -245,12 +235,12 @@ function smarty_block_pagination_links($params, $url, &$smarty, $repeat) {
 		}
 
 		if ( $prefs['direct_pagination'] == 'y' && $nb_pages > 1 && $params['show_numbers'] == 'y' ) {
-			$html .= "<br />";
+			$html .= "\n<br />";
 			$last_dots = false;
 			$page_num = floor($real_offset / $params['step']);
 			foreach ( range(0, $nb_pages - 1) as $k ) {
 				if ( $k + $zero_based_min == $page_num ) {
-					$html .= '<span class="prevnext" style="font-weight:bold">'.($k + 1).'</span>';
+					$html .= "\n".'<span class="prevnext" style="font-weight:bold">'.($k + 1).'</span>';
 					$last_dots = false;
 				} elseif ( $params['usedots'] != 'y' ||
 					( $params['usedots'] == 'y' &&
@@ -271,12 +261,12 @@ function smarty_block_pagination_links($params, $url, &$smarty, $repeat) {
 					$html .= make_prevnext_link($url.$url_k, $k+1, $params);
 					$last_dots = false;
 				} elseif ( ! $last_dots )  {
-					$html .= '<span class="prevnext" style="font-weight:bold">&hellip;</span>';
+					$html .= "\n".'<span class="prevnext" style="font-weight:bold">&hellip;</span>';
 					$last_dots = true;
 				}
 			}
 		}
-		$html .= "</div>";
+		$html .= "\n</div>";
 	}
 	return $html;
 }

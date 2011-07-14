@@ -1,9 +1,11 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+
+require_once 'lib/core/TikiDb.php';
 
 class TikiDb_Pdo_Result
 {
@@ -64,23 +66,24 @@ class TikiDb_Pdo extends TikiDb
 		$starttime=$this->startTimer();
 
 		$result = false;
-		if ($values) {
-			if ( @ $pq = $this->db->prepare($query) ) {
-				if (!is_array($values)) {
-					$values = array($values);
-				}
-				$result = $pq->execute( $values );
+		if ( @ $pq = $this->db->prepare($query) ) {
+
+			if ($values and !is_array($values)) {
+				$values = array($values);
 			}
-		} else {
-			$result = $this->db->query($query);
+			if ($values) {
+				$result = $pq->execute( $values );
+			} else {
+				$result = $pq->execute();
+			}
 		}
 
 		$this->stopTimer($starttime);
 
-		if ( $result === false) {
-			if ( !$values || ! $pq) { // Query preparation or query failed 
+		if ( ! $result ) {
+			if ( ! $pq ) {
 				$tmp = $this->db->errorInfo();
-			} else { // Prepared query failed to execute
+			} else {
 				$tmp = $pq->errorInfo();
 				$pq->closeCursor();
 			}
@@ -88,12 +91,10 @@ class TikiDb_Pdo extends TikiDb
 			return false;
 		} else {
 			$this->setErrorMessage( "" );
-			if(($values && !$pq->columnCount()) || (!$values && !$result->columnCount())) {
-				return array(); // Return empty result set for statements of manipulation
-			} elseif( !$values) {
-				return $result->fetchAll(PDO::FETCH_ASSOC);
-			} else {
+			if( $pq->columnCount() ) {
 				return $pq->fetchAll(PDO::FETCH_ASSOC);
+			} else {
+				return array();
 			}
 		}
 	} // }}}

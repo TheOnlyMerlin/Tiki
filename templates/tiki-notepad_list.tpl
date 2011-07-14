@@ -41,17 +41,17 @@
 			{cycle values="odd,even" print=false}
 			{section name=user loop=$channels}
 				<tr class="{cycle}">
-					<td class="id">
+					<td style="text-align:center;">
 						<input type="checkbox" name="note[{$channels[user].noteId}]" />
 					</td>
-					<td class="text">
+					<td>
 						<a class="link" href="tiki-notepad_read.php?noteId={$channels[user].noteId}">{$channels[user].name|escape}</a>
 					</td>
-					<td class="text">{$channels[user].parse_mode}</td>
-					<td class="date">{$channels[user].created|tiki_short_datetime}</td>
-					<td class="date">{$channels[user].lastModif|tiki_short_datetime}</td>
-					<td class="integer">{$channels[user].size|kbsize}</td>
-					<td class="action">
+					<td>{$channels[user].parse_mode}</td>
+					<td>{$channels[user].created|tiki_short_datetime}</td>
+					<td>{$channels[user].lastModif|tiki_short_datetime}</td>
+					<td style="text-align:right;">{$channels[user].size|kbsize}</td>
+					<td style="text-align:center;">
 						<a href="tiki-notepad_get.php?noteId={$channels[user].noteId}" class="link">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>
 						<a href="tiki-notepad_write.php?noteId={$channels[user].noteId}" class="link">{icon _id='page_edit'}</a>
 						<a href="tiki-notepad_get.php?noteId={$channels[user].noteId}&amp;save=1" class="link">{icon _id='disk' alt="{tr}Save{/tr}"}</a>
@@ -79,7 +79,7 @@
 <form enctype="multipart/form-data" action="tiki-notepad_list.php" method="post">
 	<table class="formcolor">
 		<tr>
-			<td>{tr}Upload file:{/tr}</td>
+			<td>{tr}Upload file{/tr}:</td>
 			<td>
 				<input type="hidden" name="MAX_FILE_SIZE" value="10000000000000" />
 				<input size="16" name="userfile1" type="file" />

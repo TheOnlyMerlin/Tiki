@@ -43,9 +43,9 @@
 					<th>{tr}Reason{/tr}</th>
 				</tr>
 				{section name=reject loop=$discardlist}
-					<tr class="odd">
-						<td class="username">{$discardlist[reject].login}</td>
-						<td class="text">{$discardlist[reject].reason}</td>
+					<tr>
+						<td class="odd">{$discardlist[reject].login}</td>
+						<td class="odd">{$discardlist[reject].reason}</td>
 					</tr>
 				{/section}
 			</table>
@@ -82,7 +82,7 @@
 				</td>
 			</tr>
 		</table>
-		{autocomplete element='#find' type='username'}
+		{jq}$("#find").tiki("autocomplete", "username"){/jq}
 
 		<div id="search" {if $filterGroup or $filterEmail}style="display:block;"{else}style="display:none;"{/if}>
 			<table class="findtable">
@@ -123,7 +123,7 @@
 				</th>
 				<th>{self_link _sort_arg='sort_mode' _sort_field='login'}{tr}User{/tr}{/self_link}</th>
 				{if $prefs.login_is_email neq 'y'}
-					<th>{self_link _sort_arg='sort_mode' _sort_field='email'}{tr}Email{/tr}{/self_link}</th>
+					<th>{self_link _sort_arg='sort_mode' _sort_field='email}{tr}Email{/tr}{/self_link}</th>
 				{/if}
 				{if $prefs.auth_method eq 'openid'}
 					<th>{self_link _sort_arg='sort_mode' _sort_field='openID'}{tr}OpenID{/tr}{/self_link}</th>
@@ -137,13 +137,13 @@
 				{if $users[user].editable}
 					{capture assign=username}{$users[user].user|escape}{/capture}
 					<tr class="{cycle}">
-						<td class="checkbox">
+						<td>
 							{if $users[user].user ne 'admin'}
 								<input type="checkbox" name="checked[]" value="{$users[user].user|escape}" {if $users[user].checked eq 'y'}checked="checked" {/if}/>
 							{/if}
 						</td>
 	
-						<td class="username">
+						<td>
 							{capture name=username}{$users[user].user|username}{/capture}
 							<a class="link" href="tiki-adminusers.php?offset={$offset}&amp;numrows={$numrows}&amp;sort_mode={$sort_mode}&amp;user={$users[user].userId}{if $prefs.feature_tabs ne 'y'}#2{/if}" title="{tr}Edit Account Settings:{/tr} {$smarty.capture.username}">
 							   {$users[user].user|escape}
@@ -156,15 +156,14 @@
 						</td>
 	
 						{if $prefs.login_is_email ne 'y'}
-							<td class="email">{$users[user].email}</td>
+							<td>{$users[user].email}</td>
 						{/if}
 						{if $prefs.auth_method eq 'openid'}
-							<td class="text">{$users[user].openid_url|default:"{tr}N{/tr}"}</td>
+							<td>{$users[user].openid_url|default:"{tr}N{/tr}"}</td>
 						{/if}	
-						<td class="text">
+						<td>
 							{if $users[user].currentLogin eq ''}
-								{capture name=when}{$users[user].age|duration_short}{/capture}
-								{tr}Never{/tr} <em>({tr 0=$smarty.capture.when}Registered %0 ago{/tr})</em>
+								{tr}Never{/tr} <em>({tr}Registered{/tr} {$users[user].age|duration_short} {tr}ago{/tr})</em>
 							{else}
 								{$users[user].currentLogin|tiki_long_datetime}
 							{/if}
@@ -175,11 +174,11 @@
 							{/if}
 						</td>
 	
-						<td class="icon">
+						<td>
 							<a class="link" href="tiki-assignuser.php?assign_user={$users[user].user|escape:url}" title="{tr}Assign to group{/tr}">{icon _id='group_key' alt="{tr}Assign{/tr} `$username` {tr}to groups{/tr} "}</a>
 						</td>
 	
-						<td class="text">
+						<td>
 							{foreach from=$users[user].groups key=grs item=what name=gr}
 								<div style="white-space:nowrap">
 									{if $grs != "Anonymous" and ($tiki_p_admin eq 'y' || in_array($grs, $all_groups))}
@@ -205,7 +204,7 @@
 							{/foreach}
 						</td>
 	
-						<td class="action">
+						<td>
 							{self_link _class="link" user=`$users[user].userId` _icon="page_edit" _title="{tr}Edit Account Settings:{/tr} `$username`"}{/self_link}
 							{if $prefs.feature_userPreferences eq 'y' || $user eq 'admin'}
 								<a class="link" href="tiki-user_preferences.php?userId={$users[user].userId}" title="{tr}Change user preferences:{/tr} {$username}">{icon _id='wrench' alt="{tr}Change user preferences:{/tr} `$username`"}</a>
@@ -216,7 +215,7 @@
 		
 							{if $users[user].user ne 'admin'}
 								<a class="link" href="{$smarty.server.PHP_SELF}?{query action=delete user=$users[user].user}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
-								{if $users[user].waiting eq 'a'}
+								{if $users[user].valid && $users[user].waiting eq 'a'}
 									<a class="link" href="tiki-login_validate.php?user={$users[user].user|escape:url}&amp;pass={$users[user].valid|escape:url}" title="{tr}Validate user:{/tr} {$users[user].user|username}">{icon _id='accept' alt="{tr}Validate user:{/tr} `$username`"}</a>
 								{/if}
 								{if $users[user].waiting eq 'u'}
@@ -226,14 +225,13 @@
 									<a class="link" href="tiki-adminusers.php?user={$users[user].user|escape:url}&amp;action=email_due" title="{tr}Invalid email{/tr}">{icon _id='email_cross' alt="{tr}Invalid email{/tr}"}</a>
 								{/if}
 							{/if}
-							{if !empty($users[user].openid_url)}
-								{self_link userId=$users[user].userId action='remove_openid' _title="{tr}Remove link with OpenID account{/tr}" _icon="img/icons/openid_remove"}{/self_link}
-							{/if}
 						</td>
 					</tr>
 				{/if}
 			{sectionelse}
-				{norecords _colspan=8}
+				<tr class="odd">
+					<td colspan="8">{tr}No records found.{/tr}</td>
+				</tr>
 			{/section}
 		
 			<tr>
@@ -354,8 +352,8 @@
 							<br />
 							{if $userinfo.userId}
 								<p>
-									{icon _id='exclamation' alt="{tr}Warning{/tr}" style="vertical-align:middle"} 
-									<em>{tr}Warning: changing the username could require the user to change his password (for user registered with an old Tiki&lt;=1.8){/tr}</em>
+									{icon _id=exclamation alt="{tr}Warning{/tr}" style="vertical-align:middle"} 
+									<em>{tr}Warning: changing the username could require the user to change his password (for user registered with an old tikiwiki&lt;=1.8){/tr}</em>
 								</p>
 								{if $prefs.feature_intertiki_server eq 'y'}
 									<i>{tr}Warning: it will mess with slave intertiki sites that use this one as master{/tr}</i>
@@ -377,7 +375,7 @@
 						<td colspan="2">
 							<b>{tr}No password is required{/tr}</b>
 							<br />
-							<i>{tr}Tiki is configured to delegate the password managment to LDAP.{/tr}</i>
+							<i>{tr}Tikiwiki is configured to delegate the password managment to LDAP.{/tr}</i>
 						</td>
 					</tr>
 				{else}
@@ -390,7 +388,12 @@
 								<div id="mypassword_bar" style="font-size: 5px; height: 2px; width: 0px;"></div> 
 							</div>
 							<br />
-							{include file='password_help.tpl'}
+							{if $prefs.min_pass_length > 1}
+								<em>{tr}Minimum {$prefs.min_pass_length} characters long{/tr}</em>. 
+							{/if}
+							{if $prefs.pass_chr_num eq 'y'}
+								<em>{tr}Password must contain both letters and numbers{/tr}</em>.
+							{/if}
 						</td>
 					</tr>
 					<tr>
@@ -402,7 +405,7 @@
 							</div>
 						</td>
 					</tr>
-					{if ! ( $prefs.auth_method eq 'ldap' and ( $prefs.ldap_create_user_tiki eq 'n' or $prefs.ldap_skip_admin eq 'y' ) and $prefs.ldap_create_user_ldap eq 'n' )}
+					{if ! ( $prefs.auth_method eq 'ldap' and ( $prefs.ldap_create_user_tiki eq 'n' or $prefs.ldap_skip_admin eq 'y' ) and $prefs.ldap_create_user_ldap eq 'n' ) }
 						<tr><td>&nbsp;</td><td>
 							<input id='genepass' name="genepass" type="text" tabindex="0" style="display: none" />
 							{jq}
@@ -512,13 +515,15 @@
 				<td>
 					<label for="csvlist">
 						{tr}CSV File:{/tr}
-						{help url="Users+Management#Adding_new_users_in_bulk" desc="{tr}CSV file layout:{/tr} {tr}login,password,email,groups,default_group,realName<br />user1,pass1,email1,group1,group1<br />user2,pass2,email2,\"group1,group2\",group1{/tr}<br /><br />{tr}Only login, password, email are mandatory.Use an empty password for automatic password generation. Use same login and email if the login use email. Groups are separated by comma. With group name with comma, double the comma.{/tr}"}
+						{help url="Users+Management#Adding_new_users_in_bulk" desc="{tr}CSV file layout{/tr}: {tr}login,password,email,groups,default_group,realName<br />user1,pass1,email1,group1,group1<br />user2,pass2,email2,"group1,group2",group1{/tr}<br /><br />{tr}Only login, password, email are mandatory.Use an empty password for automatic password generation. Use same login and email if the login use email. Groups are separated by comma. With group name with comma, double the comma.{/tr}"}
 					</label>
 				</td>
 				<td>
 					<input type="file" id="csvlist" name="csvlist"/>
 					<br />
 					<label><input type="radio" name="overwrite" value="y" checked="checked" />&nbsp;{tr}Overwrite{/tr}</label>
+					<br />
+					<label><input type="radio" name="overwrite" value="c"/>&nbsp;{tr}Overwrite but keep the previous login if the login exists in another case{/tr}</label>
 					<br />
 					<label><input type="radio" name="overwrite" value="n" />&nbsp;{tr}Don't overwrite{/tr}</label>
 					<br />

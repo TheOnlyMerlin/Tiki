@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,7 +20,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  * params are the same as smarty 'query' function + some special params starting with an underscore:
  *   _sort_field : name of the field used for sorting,
  *   _sort_arg : name of the URL argument that contains the field to use for sorting. Defaults to 'sort',
- *   _ajax : if set to 'n', will force disabling AJAX even if the ajax xajax feature is enabled,	AJAX_TODO
+ *   _ajax : if set to 'n', will force disabling AJAX even if the ajax_xajax feature is enabled,
  *   _tag : if set to 'n', will only return an URL, not the full A tag + text (AJAX and sorting features are not available in this case),
  *   _class : CSS class to use for the A tag
  *   _template : (see smarty query function 'template' param)
@@ -75,7 +75,7 @@ function smarty_block_self_link($params, $content, &$smarty, $repeat = false) {
 				$params[$params['_sort_arg']] = $params['_sort_field'].'_asc,'.$params['_sort_field'].'_desc';
 			}
 			// Complete _script path if needed (not empty, not an anchor, ...)
-			if ( !empty($params['_script']) && $params['_script'][0] != '#' && $params['_script'] != 'javascript:void(0)' && stripos($params['_script'], 'mailto:') !== 0) {
+			if ( !empty($params['_script']) && $params['_script'][0] != '#' && $params['_script'] != 'javascript:void(0)' ) {
 				if ( $_SERVER['PHP_SELF'][0] == '/' && strpos($params['_script'], '/') === false ) {
 					$self_dir = str_replace('\\','/',dirname($_SERVER['PHP_SELF']));
 					$params['_script'] = ( $self_dir == '/' ? '' : $self_dir ).'/'.$params['_script'];
@@ -86,6 +86,7 @@ function smarty_block_self_link($params, $content, &$smarty, $repeat = false) {
 			}
 
 			$params['_type'] = $default_type;
+			if ( $prefs['ajax_xajax'] === 'y' && $params['_ajax'] === 'y') { unset ($params['_anchor']); }
 			$ret = smarty_function_query($params, $smarty);
 		}
 
@@ -109,7 +110,10 @@ function smarty_block_self_link($params, $content, &$smarty, $repeat = false) {
 							$ret,
 							$smarty,
 							false
-						);
+							);
+					if ($prefs['ajax_xajax'] === 'y' || empty($params['_onclick'])) {
+						unset($params['_onclick']);
+					}
 				} else {
 					$ret = 'href="'.$ret.'"';
 				}
@@ -141,10 +145,9 @@ function smarty_block_self_link($params, $content, &$smarty, $repeat = false) {
 				$content = smarty_function_icon($icon_params, $smarty);
 			}
 
-			$link = ( !empty($params['_class']) ? 'class="'.$params['_class'].'" ' : '' )
-				. ( !empty($params['_style']) ? 'style="'.$params['_style'].'" ' : '' )
-				. ( !empty($params['_title']) ? 'title="'.str_replace('"','\"',$params['_title']).'" ' : '' )
-				. ( !empty($params['_rel']) ? 'rel="'.str_replace('"','\"',$params['_rel']).'" ' : '' );
+			$link = ( ( isset($params['_class']) && $params['_class'] != '' ) ? 'class="'.$params['_class'].'" ' : '' )
+				. ( ( isset($params['_style']) && $params['_style'] != '' ) ? 'style="'.$params['_style'].'" ' : '' )
+				. ( ( isset($params['_title']) && $params['_title'] != '' ) ? 'title="'.str_replace('"','\"',$params['_title']).'" ' : '' );
 			foreach ( $params as $k => $v ) {
 				if ( strlen($k) > 3 && substr($k, 0, 3) == '_on' ) {
 					$link .= htmlentities(substr($k, 1)).'="'.$v.'" '; // $v should be already htmlentitized in the template
@@ -152,10 +155,6 @@ function smarty_block_self_link($params, $content, &$smarty, $repeat = false) {
 				}
 			}
 			$link .= $ret;
-
-			if (isset($params['_confirm'])) {
-				$link .= ' data-confirm="' . smarty_modifier_escape($params['_confirm']) . '"';
-			}
 
 			$ret = "<a $link>".$content.'</a>';
 

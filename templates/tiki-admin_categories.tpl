@@ -1,9 +1,8 @@
 {* $Id$ *}
-{title help="Categories" admpage="category"}{tr}Admin Categories{/tr}{/title}
+{title help="Categories+Admin" admpage="category"}{tr}Admin Categories{/tr}{/title}
 
 <div class="navbar">
 	{button href="tiki-browse_categories.php?parentId=$parentId" _text="{tr}Browse Category{/tr}" _title="{tr}Browse the category system{/tr}"}
-	{button href="tiki-edit_categories.php" _text="{tr}Organize Objects{/tr}" _title="{tr}Organize Objects{/tr}"}
 </div>
 
 {if !empty($errors)}
@@ -11,7 +10,7 @@
 {/if}
 
 <div class="tree" id="top">
-	<div class="treetitle">{tr}Current category:{/tr} 
+	<div class="treetitle">{tr}Current category{/tr}: 
 		<a href="tiki-admin_categories.php?parentId=0" class="categpath">{tr}Top{/tr}</a>
 		{section name=x loop=$path}
 			&nbsp;::&nbsp;
@@ -43,9 +42,9 @@
 	<a href="tiki-admin_categories.php?parentId={$catree[dx].parentId}&amp;removeCat={$catree[dx].categId}" title="{tr}Delete{/tr}">{icon _id='cross' hspace="5" vspace="1"}</a>
 		
 	{if $catree[dx].has_perm eq 'y'}
-		<a title="{tr}Edit permissions for this category{/tr}" href="tiki-objectpermissions.php?objectType=category&amp;objectId={$catree[dx].categId}&amp;objectName={$catree[dx].name|escape:'urlencode'}&amp;permType=category">{icon hspace="5" vspace="1" _id='key_active' alt="{tr}Edit permissions for this category{/tr}"}</a>
+		<a title="{tr}Edit permissions for this category{/tr}" href="tiki-objectpermissions.php?objectType=category&amp;objectId={$catree[dx].categId}&amp;objectName={$catree[dx].name|escape:'urlencode'}&amp;permType=all">{icon hspace="5" vspace="1" _id='key_active' alt="{tr}Edit permissions for this category{/tr}"}</a>
 	{else}
-		<a title="{tr}Assign Permissions{/tr}" href="tiki-objectpermissions.php?objectType=category&amp;objectId={$catree[dx].categId}&amp;objectName={$catree[dx].name|escape:'url'}&amp;permType=category">{icon hspace="5" vspace="1" _id='key' alt="{tr}Assign Permissions{/tr}"}</a>
+		<a title="{tr}Assign Permissions{/tr}" href="tiki-objectpermissions.php?objectType=category&amp;objectId={$catree[dx].categId}&amp;objectName={$catree[dx].name|escape:'url'}&amp;permType=all">{icon hspace="5" vspace="1" _id='key' alt="{tr}Assign Permissions{/tr}"}</a>
 	{/if}
 		
 	<div style="display: inline; padding-left:{$catree[dx].deep*30+5}px;">
@@ -76,7 +75,7 @@
 			<input type="hidden" name="categId" value="{$categId|escape}" />
 			<table class="formcolor">
 				<tr>
-					<td>{tr}Parent:{/tr}</td>
+					<td>{tr}Parent{/tr}:</td>
 					<td>
 						<select name="parentId">
 							<option value="0">{tr}Top{/tr}</option>
@@ -87,11 +86,11 @@
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Name:{/tr}</td>
+					<td>{tr}Name{/tr}:</td>
 					<td><input type="text" size="40" name="name" value="{$name|escape}" /></td>
 				</tr>
 				<tr>
-					<td>{tr}Description:{/tr}</td>
+					<td>{tr}Description{/tr}:</td>
 					<td><textarea rows="2" cols="40" name="description">{$description|escape}</textarea></td>
 				</tr>
 				<tr>
@@ -111,7 +110,7 @@
 		{/tab}
 	{/if}
 	{tab name="{tr}Objects in category{/tr}"}
-		<h2>{tr}Objects in category:{/tr} {$categ_name|escape}</h2>
+		<h2>{tr}Objects in category:{/tr} {$categ_name|escape}</b></h2>
 		{if $objects}
 			<table class="findtable">
 				<tr>
@@ -138,23 +137,24 @@
 					<a href="tiki-admin_categories.php?parentId={$parentId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'type_desc'}type_asc{else}type_desc{/if}#objects">{tr}Type{/tr}</a>
 				</th>
 			</tr>
-			{cycle values="even,odd" print=false}
 			{section name=ix loop=$objects}
-				<tr class="{cycle}">
-					<td class="icon">
+				<tr>
+					<td class="even">
 						<a href="tiki-admin_categories.php?parentId={$parentId}&amp;removeObject={$objects[ix].catObjectId}&amp;fromCateg={$parentId}" title="{tr}Remove from this Category{/tr}">{icon _id='link_delete' alt="{tr}Remove from this Category{/tr}"}</a>
 					</td>
-					<td class="text">
+					<td class="even">
 						<a href="{$objects[ix].href}" title="{$objects[ix].name}">{$objects[ix].name|truncate:80:"(...)":true|escape}</a>
 					</td>
-					<td class="text">{tr}{$objects[ix].type}{/tr}</td>
+					<td class="even">{tr}{$objects[ix].type}{/tr}</td>
 				</tr>
 			{sectionelse}
-				{norecords _colspan=3}
+				<tr>
+					<td class="even" colspan="3"><strong>{tr}No records found.{/tr}</strong></td>
+				</tr>
 			{/section}
 		</table>
 
-		{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
+		{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset }{/pagination_links}
 	{/tab}
 	
 	{if $parentId !=0}

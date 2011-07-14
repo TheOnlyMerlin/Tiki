@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -51,7 +51,7 @@ if (isset($_REQUEST['editor_id'])) {
 			$res = $editlib->parseToWysiwyg(urldecode($_REQUEST['data']));
 		} else if ($_REQUEST['command'] == 'auto_save') {
 			include_once 'lib/ajax/autosave.php';
-			$data = $_REQUEST['allowHtml'] ? $_REQUEST['data'] : htmlspecialchars($_REQUEST['data']);
+			$data = $_REQUEST['allowHtml'] || $_SESSION['wysiwyg'] === 'y' ? $_REQUEST['data'] : htmlspecialchars($_REQUEST['data']);
 			$res = auto_save( $_REQUEST['editor_id'], $data, $_REQUEST['referer'] );
 		} else if ($_REQUEST['command'] == 'auto_remove') {
 			include_once 'lib/ajax/autosave.php';
@@ -90,18 +90,7 @@ if (isset($_REQUEST['editor_id'])) {
 							$info['data'] = substr($info['data'], $real_start, $real_len);
 						}
 						require_once('lib/diff/difflib.php');
-						if ($info['is_html'] == 1) {
-							$diffold = $tikilib->htmldecode($info['data']);
-						} else {
-							$diffold = $info['data'];
-						}
-						$_REQUEST['allowHtml'] = isset($_REQUEST['allowHtml']) ? $_REQUEST['allowHtml'] : $info['is_html'];
-						if ($_REQUEST['allowHtml']) {
-							$diffnew = $tikilib->htmldecode($data);
-						} else {
-							$diffnew = $data;
-						}
-						$data = diff2( $diffold, $diffnew, $_REQUEST["diff_style"]);
+						$data = diff2( html_entity_decode($info['data'], ENT_COMPAT, 'UTF-8'), $data, $_REQUEST["diff_style"]);
 						$smarty->assign_by_ref('diffdata', $data);
 						
 						$smarty->assign( 'translation_mode', 'y' );

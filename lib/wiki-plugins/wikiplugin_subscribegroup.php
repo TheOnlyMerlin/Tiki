@@ -1,18 +1,27 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+// Display wiki text if user is in one of listed groups
+// Usage:
+// {GROUP(groups=>Admins|Developers)}wiki text{GROUP}
+
+function wikiplugin_subscribegroup_help() {
+	$help = tra('Subscribe or unsubscribe to a group').":\n";
+	$help.= "~np~<br />{SUBSCRIBEGROUP(group=, subscribe=text, unsubscribe=text, subscribe_action=Name of subscribe submit button, unsubscribe_action=Name of unsubscribe submit button) /}<br />~/np~";
+	return $help;
+}
+
 function wikiplugin_subscribegroup_info() {
 	return array(
 		'name' => tra('Subscribe Group'),
-		'documentation' => 'PluginSubscribeGroup',
-		'description' => tra('Allow users to subscribe to a group'),
+		'documentation' => tra('PluginSubscribeGroup'),		
+		'description' => tra('Subscribe or unsubscribe to a group'),
 		'prefs' => array( 'wikiplugin_subscribegroup' ),
 		'body' => tra('text displyed before the button'),
-		'icon' => 'pics/icons/group_add.png',
 		'params' => array(
 			'group' => array(
 				'required' => true,

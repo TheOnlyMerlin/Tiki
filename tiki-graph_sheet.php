@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -28,7 +28,6 @@ function handle_series( $serie, &$sheet )
 // Various validations {{{1
 
 $access->check_feature('feature_sheet');
-$access->check_feature('feature_jquery_ui');
 
 $info = $sheetlib->get_sheet_info( $_REQUEST['sheetId'] );
 if (empty($info)) {
@@ -79,6 +78,8 @@ $smarty->assign('page_mode', 'form' );
 
 // Process the insertion or modification of a gallery here
 
+$grid = new TikiSheet;
+
 $sheetId = $_REQUEST['sheetId'];
 
 if( isset( $_REQUEST['title'] ) )
@@ -123,7 +124,6 @@ if( isset( $_REQUEST['title'] ) )
 	}
 
 	$handler = new TikiSheetDatabaseHandler( $sheetId );
-	$grid = new TikiSheet( $_REQUEST["sheetId"] );
 	$grid->import( $handler );
 
 	$graph = $_REQUEST['graphic'];
@@ -192,18 +192,14 @@ else
 		$smarty->assign( 'graph', $graph );
 		$smarty->assign( 'renderer', $_GET['renderer'] );
 
+		ob_start();
+
 		$handler = new TikiSheetDatabaseHandler( $sheetId );
-		$grid = new TikiSheet( $_REQUEST["sheetId"] );
 		$grid->import( $handler );
-		
-		$dataGrid = $grid->getTableHtml( true );
-		
-		require_once ('lib/sheet/grid.php');
-		$sheetlib->setup_jquery_sheet();
-		$headerlib->add_jq_onready('
-			$("div.tiki_sheet").sheet($.extend($.sheet.tikiOptions, {editable: false}));
-		');
-		
+
+		$grid->export( new TikiSheetLabeledOutputHandler );
+		$dataGrid = ob_get_contents();
+		ob_end_clean();
 		$smarty->assign( 'dataGrid', $dataGrid );
 
 		if( function_exists( 'pdf_new' ) )

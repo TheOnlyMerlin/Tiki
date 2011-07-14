@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -36,13 +36,13 @@ if ($prefs['feature_freetags'] == 'y' and $tiki_p_view_freetags == 'y') {
 		}
 	}
 
-	if ($prefs['feature_wikiapproval'] == 'y' && $prefs['wikiapproval_combine_freetags'] == 'y'
+    if ($prefs['feature_wikiapproval'] == 'y' && $prefs['wikiapproval_combine_freetags'] == 'y'
 	 && $cat_type == 'wiki page' && $approved = $tikilib->get_approved_page($cat_objid)) {
 	 	// to combine tags from approved page 
 		$approvedPageName = $approved;
 		$approvedTags = $freetaglib->get_tags_on_object($approvedPageName, $cat_type);
 		foreach($approvedTags['data'] as $approvedTag) {
-				if (!in_array($approvedTag['tag'],$tagarray)) {
+	    	if (!in_array($approvedTag['tag'],$tagarray)) {
 					$taglist .= $approvedTag['tag'] . ' ';
 				}
 		}		

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -261,7 +261,7 @@ class OIntegrate_Response
 
 	function getTemplates( $supportedPairs = null ) // {{{
 	{
-		if( !is_array( $this->data ) || ! isset( $this->data['_template'] ) || ! is_array( $this->data['_template'] ) )
+		if( ! isset( $this->data['_template'] ) || ! is_array( $this->data['_template'] ) )
 			return array();
 
 		$templates = array();
@@ -274,7 +274,7 @@ class OIntegrate_Response
 				$files = (array) $files;
 
 				foreach( $files as $file ) {
-					$content = TikiLib::lib('tiki')->httprequest( $file );
+					$content = TikiLib::httprequest( $file );
 
 					$templates[] = array(
 						'engine' => $engine,

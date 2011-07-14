@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,21 +17,13 @@ include_once ('lib/ical/iCal.php');
 // list calendars //
 include_once ('lib/calendar/calendarlib.php');
 
-// ###trebly:B10111:[FIX-ADD-ENH]->  there are several meaning for the same var $calendarViewMode
 if ( ! isset($calendarViewMode) ) {
-// ###trebly:B10111:[FIX-ADD-ENH]-> $calendarViewMode become an array, several bugs comes from confusion of global values and parameters by ref
-// for calendars : (main-)calendar, action_calendar, mod_calendar, mod_action_calendar the changes of values by url request is terrible
-// for the moment 01/11/2011:11:55 just one value is used with index 'default', but initialisation is done. 
-// The init is actually into two places, tiki-calendar_setup.php and tiki-calendar_export.php will be grouped for clean
-// $prefs would be added when need, $_SESSION, $PARAMS too this now generates not any change in the behavior.
-$calendarViewMode=array(casedefault=>'month',calgen=>'month',calaction=>'month',modcalgen=>'month',modcalaction=>'month',trackercal=>'month');
-
   if (!empty($_REQUEST['viewmode'])) {
-    $calendarViewMode['casedefault'] = $_REQUEST['viewmode'];
+    $calendarViewMode = $_REQUEST['viewmode'];
   } elseif (!empty($_SESSION['CalendarViewMode'])) {
-    $calendarViewMode['casedefault'] = $_SESSION['CalendarViewMode'];
+    $calendarViewMode = $_SESSION['CalendarViewMode'];
   } else {
-    $calendarViewMode['casedefault'] = $prefs['calendar_view_mode'];
+    $calendarViewMode = $prefs['calendar_view_mode'];
   }
 }
 
@@ -58,13 +50,13 @@ if (isset($_REQUEST['start_date_Month'])) {
 
 $endDate = new TikiDate();
 $endDate->setDate($startTime);
-if ($calendarViewMode['casedefault'] == 'month') {
+if ($calendarViewMode == 'month') {
      $stopTime = $endDate->addMonths(1);
-   } elseif ($calendarViewMode['casedefault'] == 'quarter') {
+   } elseif ($calendarViewMode == 'quarter') {
      $stopTime = $endDate->addMonths(3);
-   } elseif ($calendarViewMode['casedefault'] == 'semester') {
+   } elseif ($calendarViewMode == 'semester') {
      $stopTime = $endDate->addMonths(6);
-   } elseif ($calendarViewMode['casedefault'] == 'year') {
+   } elseif ($calendarViewMode == 'year') {
      $stopTime = $endDate->addMonths(12);
    } else {
      $stopTime = $endDate->addMonths(1);

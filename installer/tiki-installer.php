@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -18,7 +18,6 @@ require_once( 'tiki-filter-base.php' );
 
 // Define and load Smarty components
 require_once ( 'lib/smarty/libs/Smarty.class.php');
-require_once 'lib/init/initlib.php';
 require_once ('installer/installlib.php');
 
 class InstallerDatabaseErrorHandler implements TikiDb_ErrorHandler
@@ -41,7 +40,7 @@ $commands = array();
 $prefs = array(
 	// tra() should not use $tikilib because this lib is not available in every steps of the installer
 	//  and because we want to be sure that translations of the installer are the original ones, even for an upgrade
-	'lang_use_db' => 'n'
+	'lang_use_db' => 'n' 
 );
 
 // Which step of the installer
@@ -95,7 +94,7 @@ function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tik
 		if ($dbversion_tiki == 'current') {
 			require_once 'lib/setup/twversion.class.php';
 			$twversion = new TWVersion();
-			$dbversion_tiki = $twversion->getBaseVersion();
+			$dbversion_tiki = $twversion->getBaseVersion(); 
 		}
 		$filetowrite .= "\$dbversion_tiki='" . $dbversion_tiki . "';\n";
 		$filetowrite .= "\$host_tiki='" . $host_tiki . "';\n";
@@ -113,10 +112,7 @@ function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tik
 		$filetowrite .= "// \$client_charset='utf8';\n";
 		$filetowrite .= "// See http://tiki.org/ReleaseNotes5.0#Known_Issues and http://doc.tiki.org/Understanding+Encoding for more info\n\n";
 		$filetowrite .= "// If your php installation does not not have pdo extension\n";
-		$filetowrite .= "// \$api_tiki = 'adodb';\n\n";
-		$filetowrite .= "// Want configurations managed at the system level or restrict some preferences? http://doc.tiki.org/System+Configuration\n";
-		$filetowrite .= "// \$system_configuration_file = '/etc/tiki.ini';\n";
-		$filetowrite .= "// \$system_configuration_identifier = 'example.com';\n\n";
+		$filetowrite .= "// \$api_tiki = 'adodb';\n";
 		fwrite($fw, $filetowrite);
 		fclose($fw);
 	}
@@ -139,7 +135,7 @@ function create_dirs($domain=''){
 		'whelp');
 
 	$ret = "";
-	foreach ($dirs as $dir) {
+  foreach ($dirs as $dir) {
 		$dir = $dir.'/'.$domain;
 		// Create directories as needed
 		if (!is_dir($dir)) {
@@ -169,20 +165,18 @@ function isWindows() {
 	return $windows;
 }
 
-class Smarty_Tiki_Installer extends Smarty
+class Smarty_Tikiwiki_Installer extends Smarty
 {
 
-	function Smarty_Tiki_Installer($tikidomain) {
+	function Smarty_Tikiwiki_Installer($tikidomain) {
 		parent::Smarty();
-		if ($tikidomain) {
-			$tikidomain .= '/'; 
-		}
+		if ($tikidomain) { $tikidomain.= '/'; }
 		$this->template_dir = realpath('templates/');
 		$this->compile_dir = realpath("templates_c/$tikidomain");
 		$this->config_dir = realpath('configs/');
 		$this->cache_dir = realpath("templates_c/$tikidomain");
 		$this->caching = 0;
-		$this->assign('app_name', 'Tiki');
+		$this->assign('app_name', 'Tikiwiki');
 		include_once('lib/setup/third_party.php');
 		$this->plugins_dir = array(	// the directory order must be like this to overload a plugin
 			TIKI_SMARTY_DIR,
@@ -415,7 +409,7 @@ function initTikiDB( &$api, &$driver, $host, $user, $pass, $dbname, $client_char
 		$api = 'adodb';
 		$dbTiki = ADONewConnection( $driver );
 		$db = new TikiDb_Adodb( $dbTiki );
-		if (! $dbcon = (bool) @$dbTiki->Connect($host, $user, $pass, $dbname) ) {
+		if ( $dbcon = (bool) @$dbTiki->Connect($host, $user, $pass, $dbname) ) {
 			$tikifeedback[] = array( 'num' => 1, 'mes' => $dbTiki->ErrorMsg() );
 		}
 	} else {
@@ -430,6 +424,7 @@ function initTikiDB( &$api, &$driver, $host, $user, $pass, $dbname, $client_char
 
 		try {
 			$dbTiki = new PDO( "$driver:$db_hoststring;dbname=$dbname", $user, $pass );
+			$dbTiki->setAttribute( PDO::ATTR_EMULATE_PREPARES, true );
 			$db = new TikiDb_Pdo( $dbTiki );
 			$dbcon = true;
 		} catch ( PDOException $e ) {
@@ -532,7 +527,7 @@ $_SESSION["install-logged-$multi"] = 'y';
 
 // Init smarty
 global $tikidomain;
-$smarty = new Smarty_Tiki_Installer($tikidomain);
+$smarty = new Smarty_Tikiwiki_Installer($tikidomain);
 $smarty->load_filter('pre', 'tr');
 $smarty->load_filter('output', 'trimwhitespace');
 $smarty->assign('mid', 'tiki-install.tpl');
@@ -588,18 +583,9 @@ if ($errors) {
 
 //adodb settings
 
-if (!defined('ADODB_FORCE_NULLS')) {
-	define('ADODB_FORCE_NULLS', 1);
-}
-
-if (!defined('ADODB_ASSOC_CASE')) {
-	define('ADODB_ASSOC_CASE', 2);
-}
-
-if (!defined('ADODB_CASE_ASSOC')) { // typo in adodb's driver for sybase? // so do we even need this without sybase? What's this?
-	define('ADODB_CASE_ASSOC', 2);
-}
-
+if (!defined('ADODB_FORCE_NULLS')) { define('ADODB_FORCE_NULLS', 1); }
+if (!defined('ADODB_ASSOC_CASE')) { define('ADODB_ASSOC_CASE', 2); }
+if (!defined('ADODB_CASE_ASSOC')) { define('ADODB_CASE_ASSOC', 2); } // typo in adodb's driver for sybase? // so do we even need this without sybase? What's this?
 include_once ('lib/adodb/adodb.inc.php');
 
 include('lib/tikilib.php');
@@ -826,7 +812,7 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 $email_test_tw = 'mailtest@tiki.org';
 $smarty->assign('email_test_tw', $email_test_tw);
 
-//  Sytem requirements test.
+//  Sytem requirements test. 
 if ($install_step == '2') {
 
 	if (isset($_REQUEST['perform_mail_test']) && $_REQUEST['perform_mail_test'] == 'y') {
@@ -903,13 +889,12 @@ if ($install_step == '2') {
 		if ($im) {
 				$smarty->assign('sample_image', 'y');
 				imagedestroy($im);
-		} else {
+		} else{
 				$smarty->assign('sample_image', 'n');
 		}
 
-	} else {
-		$gd_test = 'n';
-	}
+		} else {
+		$gd_test = 'n'; }
 	$smarty->assign('gd_test', $gd_test);
 } elseif ($install_step == 6 && !empty($_REQUEST['validPatches'])) {
 	foreach ($_REQUEST['validPatches'] as $patch) {
@@ -975,7 +960,9 @@ jqueryTiki.replection = false;
 jqueryTiki.tablesorter = false;
 jqueryTiki.colorbox = false;
 jqueryTiki.cboxCurrent = "{current} / {total}";
+jqueryTiki.sheet = false;
 jqueryTiki.carousel = false;
+jqueryTiki.jqs5 = false;
 
 jqueryTiki.effect = "";
 jqueryTiki.effect_direction = "";
@@ -1017,7 +1004,8 @@ if( isset( $_POST['fix_double_encoding'] ) && ! empty($_POST['previous_encoding'
 
 if( $install_step == '4' ) {
 	$value = '';
-	if ( ($db = TikiDB::get()) && ($result = $db->fetchAll( 'show variables like "character_set_database"') )) {
+	if ($db = TikiDB::get()) {
+		$result = $db->fetchAll( 'show variables like "character_set_database"' );
 		$res = reset( $result );
 		$variable = array_shift( $res );
 		$value = array_shift( $res );

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -94,17 +94,6 @@ if (isset($_REQUEST['checked'])) {
 			$commentslib->approve_comment($id, $_REQUEST['approve']);
 		}
 	}
-	
-	// Archive/unarchive comment(s)
-	if ($prefs['comments_archive'] == 'y' && isset($_REQUEST['archive']) && in_array($_REQUEST['archive'], array('archive', 'unarchive'))) {
-		foreach($checked as $id) {
-			if ($_REQUEST['archive'] == 'archive') {
-				$commentslib->archive_thread($id);
-			} else if ($_REQUEST['archive'] == 'unarchive') {
-				$commentslib->unarchive_thread($id);
-			}
-		}
-	}
 }
 if (isset($_REQUEST["sort_mode"])) {
 	$sort_mode = $_REQUEST["sort_mode"];
@@ -149,7 +138,9 @@ if (isset($blogId)) {
 }
 
 $comments = $commentslib->get_all_comments($selected_types, $offset, $maxRecords, $sort_mode, $find, 'y', $_REQUEST['findfilter_approved'], false, $objectsIds);
-
+foreach($comments['data'] as $k => $v) {
+	if ($v['objectType'] == 'post') $comments['data'][$k]['objectType'] = 'blog post';
+}
 $smarty->assign_by_ref('comments', $comments['data']);
 $smarty->assign_by_ref('filters', $filters);
 $smarty->assign_by_ref('filter_names', $filter_names);

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,6 @@ $access->check_feature('feature_print_indexed');
 $inputConfiguration = array(
 	array( 'staticKeyFilters' => array(
 		'list' => 'alpha',
-		'comments' => 'alpha',
 	) ),
 	array( 'staticKeyFiltersForArrays' => array(
 		'languages' => 'alpha',
@@ -329,7 +328,7 @@ case 'glossary':
 
 		$indexPages[] = array(
 			'key' => $key,
-			'indextitle' => tr('Index (%0)', $code),
+			'indextitle' => tra('Index (' . $code . ')'),
 			'options' => array(
 				'decorator' => 'indexrow',
 				'display' => 'title',
@@ -370,7 +369,6 @@ foreach($indexPages as $page) {
 $objectList->render( $smarty, null, array(
 	'decorator' => 'indexed',
 	'display' => 'object',
-	'comments' => $_REQUEST['comments'] == 'y',
 ) );
  
 $smarty->display('print/print-page_footer.tpl');

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -43,9 +43,8 @@ function smarty_function_fgal_browse($params, &$smarty) {
 	if ( ! isset($params['_find']) ) $params['_find'] = '';
 
 	if ( $params['_id'] > 0 && $tiki_p_view_file_gallery == 'y' ) {
-		$filegallib = TikiLib::lib('filegal');
 
-		if ( $gal_info = $filegallib->get_file_gallery($params['_id']) ) {
+		if ( $gal_info = $tikilib->get_file_gallery($params['_id']) ) {
 			$tikilib->get_perm_object($params['_id'], 'file gallery', $gal_info);
 			if ( $userlib->object_has_one_permission($params['_id'], 'file gallery') ) {
 				$smarty->assign('individual', 'y'); ///TO CHECK
@@ -60,7 +59,7 @@ function smarty_function_fgal_browse($params, &$smarty) {
 		$smarty->assign_by_ref('gal_info', $gal_info);
 
 		// Get list of files in the gallery
-		$files = $filegallib->get_files($params['_offset'], $params['_maxRecords'], $params['_sort_mode'], $params['_find'], $params['_id']);
+		$files = $tikilib->get_files($params['_offset'], $params['_maxRecords'], $params['_sort_mode'], $params['_find'], $params['_id']);
 		$smarty->assign_by_ref('files', $files['data']);
 		$smarty->assign('cant', $files['cant']); ///FIXME
 	}

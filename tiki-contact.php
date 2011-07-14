@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,12 +12,21 @@ include_once ('lib/userprefs/scrambleEmail.php');
 
 // This feature needs both 'feature_contact' and 'feature_messages' to work
 $access->check_feature(array('feature_contact', 'feature_messages'));
+if($user == ''){
+	$access->check_feature('contact_anon');
+}
 
 $auto_query_args = array();
 
-if ($user == '') {
-	$access->check_feature('contact_anon');
-	
+$smarty->assign('mid', 'tiki-contact.tpl');
+
+$email = $userlib->get_user_email($prefs['contact_user']);
+if ($email == '') $email = $userlib->get_admin_email();
+$smarty->assign('email0', $email);
+$email = scrambleEmail($email, $tikilib->get_user_preference('admin', "email is public"));
+$smarty->assign('email', $email);
+
+if ($user == '' and $prefs['contact_anon'] == 'y') {
 	$smarty->assign('sent', 0);
 	if (isset($_REQUEST['send'])) {
 		check_ticket('contact');
@@ -55,8 +64,10 @@ if ($user == '') {
 		$message = tra('Message sent to'). ': ' . $prefs['contact_user'] . '<br />';
 		$smarty->assign('message', $message);
 	}
-} else {
-	$access->check_permission('tiki_p_messages');
+}
+
+
+if ($user and $prefs['feature_messages'] == 'y' and $tiki_p_messages == 'y') {
 	$smarty->assign('sent', 0);
 
 	if (isset($_REQUEST['send'])) {
@@ -82,14 +93,7 @@ if ($user == '') {
 	}
 }
 
-$email = $userlib->get_user_email($prefs['contact_user']);
-if ($email == '') $email = $userlib->get_admin_email();
-$smarty->assign('email0', $email);
-$email = scrambleEmail($email, $tikilib->get_user_preference('admin', "email is public"));
-$smarty->assign('email', $email);
-
 $smarty->assign('priority', 3);
 ask_ticket('contact');
 
-$smarty->assign('mid', 'tiki-contact.tpl');
 $smarty->display("tiki.tpl");

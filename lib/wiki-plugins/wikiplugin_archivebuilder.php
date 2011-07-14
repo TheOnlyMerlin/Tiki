@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,11 +8,10 @@
 function wikiplugin_archivebuilder_info() {
 	return array(
 		'name' => tra('Archive Builder'),
-		'documentation' => 'PluginArchiveBuilder',
-		'description' => tra('Build a zip archive that can be downloaded'),
+		'documentation' => tra('PluginArchiveBuilder'),
+		'description' => tra('Builds a zip archive containing the specified data from tikiwiki.'),
 		'prefs' => array( 'wikiplugin_archivebuilder' ),
 		'body' => tra('Description of the archive content. Multiple handlers are available for content types. One per line. Ex: page-as-pdf:some-folder/foo.pdf:HomePage , tracker-attachments:target-folder/:3435'),
-		'icon' => 'pics/icons/mime/zip.png',
 		'params' => array(
 			'name' => array(
 				'name' => tra('Archive Name'),

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -129,17 +129,6 @@ $smarty->assign('maxArticles', $prefs['maxArticles']);
 // If there're more records then assign next_offset
 $smarty->assign_by_ref('listpages', $listpages["data"]);
 $smarty->assign_by_ref('cant', $listpages["cant"]);
-if ($prefs['feature_user_watches'] == 'y') {
-	if ($user && isset($_REQUEST['watch_action'])) {
-		$access->check_authenticity();
-		if ($_REQUEST['watch_action'] == 'add') {
-			$tikilib->add_user_watch($user, 'article_*', '*');
-		} else {
-			$tikilib->remove_user_watch($user, 'article_*', '*', null);
-		}
-	}
-	$smarty->assign('user_watching_articles', ($user && $tikilib->user_watches($user, 'article_*', '*')) ? 'y' : 'n');
-}
 include_once ('tiki-section_options.php');
 ask_ticket('view_article');
 // Display the template

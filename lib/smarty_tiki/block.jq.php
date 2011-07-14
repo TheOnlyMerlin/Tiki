@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -42,9 +42,8 @@ function smarty_block_jq($params, $content, &$smarty) {
 	if (empty($content)) { return ''; }
 	
 	extract($params);
-	if ($prefs['feature_jquery'] != 'y') {
-		return isset($nojquery) ? $nojquery : tr('<!-- jq smarty plugin inactive: feature_jquery off -->');
-	}
+	$nojquery = isset($nojquery) ? $nojquery : tr('<!-- jq smarty plugin inactive: feature_jquery off -->');
+	if ($prefs['feature_jquery'] != 'y') { return $nojquery; }
 	$notonready = isset($notonready) ? $notonready : false;
 	
 	if (!$notonready) {		

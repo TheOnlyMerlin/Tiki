@@ -9,6 +9,7 @@
 {else}
 {assign var=alink value=''}
 {/if}
+{capture name=msg assign=msg}
 <table border="0" cellspacing="4" cellpadding="4">
 	<tr>
 		<td style="text-align: center">
@@ -16,9 +17,9 @@
 		</td>
 		<td>
 			{if !empty($filegals_manager)}
-				<a {$alink}>{$name|escape} ({$size|kbsize})</a>
+				<a {$alink}>{$name} ({$size|kbsize})</a>
 			{else}
-				<b>{$name|escape} ({$size|kbsize})</b>
+				<b>{$name} ({$size|kbsize})</b>
 			{/if}
 			{if $feedback_message != ''}
 				<div class="upload_note">
@@ -37,14 +38,14 @@
 						{tr} Syntax tips:{/tr}
 					</div>
 					<span style="line-height: 150%">
-					{tr}Link to file from a Wiki page:{/tr}
+					{tr}Link to file from a Wiki page{/tr}:
 					</span><br/>
 					<table>
 						<tr>
 							<td width="6px">
 							</td>
 							<td class="inline_syntax">
-								[{$fileId|sefurl:file}|{$name|escape}]
+								[{$fileId|sefurl:file}|{$name}]
 							</td>
 						</tr>
 					</table>
@@ -52,7 +53,7 @@
 						{tr}In addition, for image files:{/tr}
 					</div>
 					<span style="line-height: 150%">
-						{tr}To display in a Wiki page:{/tr}</span><br/>
+						{tr}To display in a Wiki page{/tr}:</span><br/>
 					<table>
 						<tr>
 							<td width="6px">
@@ -63,7 +64,7 @@
 						</tr>
 					</table>
 					{if $prefs.feature_shadowbox eq 'y'}
-						<span style="line-height: 200%">{tr}Display thumbnail that enlarges:{/tr} 
+						<span style="line-height: 200%">{tr}Display thumbnail that enlarges{/tr}: 
 						</span><br/>
 						<table>
 							<tr>
@@ -80,3 +81,7 @@
 		</td>
 	</tr>
 </table>
+{/capture}
+<script type='text/javascript'><!--//--><![CDATA[//><!--
+	parent.progress('{$FormId}','{$msg|escape:"javascript"}');
+//--><!]]></script>

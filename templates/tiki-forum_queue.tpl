@@ -1,5 +1,5 @@
 
-{title help="forums" admpage="forums"}{tr}Message queue for forum{/tr} {$forum_info.name}{/title}
+{title help="forums" admpage="forums"}{tr}Message queue for forum{/tr} {$forum_info.name|escape}{/title}
 
 <div class="navbar">
 	{button href="tiki-view_forum.php?forumId=$forumId" _text="{tr}Back to forum{/tr}"}
@@ -81,7 +81,7 @@
 <tr>
 	<td>{tr}data{/tr}</td>
 	<td>
-		{textarea rows="6" cols="60" name="data"}{$msg_info.data}{/textarea}
+		<textarea rows="6" cols="60" name="data">{$msg_info.data|escape}</textarea>
 	</td>
 </tr>
 <tr>
@@ -133,11 +133,11 @@
 {cycle values="odd,even" print=false}
 {section name=ix loop=$items}
 <tr class="{cycle}">
-	<td class="checkbox">
+	<td style="text-align:center;">
 	  <input type="checkbox" name="msg[{$items[ix].qId}]" />
 	</td>
   
-	<td class="text">
+	<td style="text-align:left;">
 		{if $items[ix].parentId > 0}
 			[{tr}Topic:{/tr} {$items[ix].topic_title|escape}]
 		{else}
@@ -165,10 +165,16 @@
 				<br />
 			{/section}
   		  {/if}
+
+		
 	</td>
 </tr>
 {sectionelse}
-	{norecords _colspan=2 _text="{tr}No messages queued yet{/tr}"}
+<tr class="{cycle advance=false}">
+	<td colspan="2">
+	{tr}No messages queued yet{/tr}
+	</td>
+</tr>	
 {/section}
 </table>
 {if $items}

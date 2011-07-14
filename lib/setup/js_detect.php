@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -64,9 +64,9 @@ if ($prefs['javascript_enabled'] == 'y') {	// we have JavaScript
 			$headerlib->add_jsfile($custom_js, 50);
 		}
 	}
-
+	
 	// setup timezone array
-	$tz = array_keys(DateTimeZone::listAbbreviations());
+	$timezones = (version_compare(PHP_VERSION, '5.2.0', '>=') && function_exists("date_create")) ? array_keys(DateTimeZone::listAbbreviations()) : array("A","ACDT","ACST","ADT","AEDT","AEST","AKDT","AKST","AST","AWDT","AWST","B","BST","C","CDT","CDT","CEDT","CEST","CET","CST","CST","CST","CXT","D","E","EDT","EDT","EEDT","EEST","EET","EST","EST","EST","F","G","GMT","H","HAA","HAC","HADT","HAE","HAP","HAR","HAST","HAT","HAY","HNA","HNC","HNE","HNP","HNR","HNT","HNY","HST","I","IST","K","L","M","MDT","MESZ","MEZ","MSD","MSK","MST","N","NDT","NFT","NST","O","P","PDT","PST","Q","R","S","T","U","UTC","V","W","WDT","WEDT","WEST","WET","WST","WST","X","Y","Z");
 	$headerlib->add_js('
 function inArray(item, array) {
     for (var i in array) {
@@ -76,7 +76,7 @@ function inArray(item, array) {
     }
     return false;
 }
-var allTimeZoneCodes = ' . json_encode(array_map("strtoupper", $tz)) . ';
+var allTimeZoneCodes = ' . json_encode(array_map("strtoupper", $timezones)) . ';
 var local_tz = "";
 var now = new Date();
 var now_string = now.toString();
@@ -113,6 +113,7 @@ jqueryTiki.colorbox = '.($prefs['feature_shadowbox'] == 'y' ? 'true' : 'false') 
 jqueryTiki.cboxCurrent = "{current} / {total}";
 jqueryTiki.sheet = '.($prefs['feature_sheet'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.carousel = '.($prefs['feature_jquery_carousel'] == 'y' ? 'true' : 'false') . ';
+jqueryTiki.jqs5 = '.($prefs['feature_jquery_jqs5'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.validate = '.($prefs['feature_jquery_validation'] == 'y' ? 'true' : 'false') . ';
 
 jqueryTiki.effect = "'.$prefs['jquery_effect'].'";				// Default effect
@@ -124,25 +125,10 @@ jqueryTiki.effect_tabs_speed = '.($prefs['jquery_effect_tabs_speed'] == 'normal'
 
 jqueryTiki.autosave = '.($prefs['ajax_autosave'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.sefurl = '.($prefs['feature_sefurl'] == 'y' ? 'true' : 'false') . ';
-jqueryTiki.ajax = '.($prefs['feature_ajax'] == 'y' ? 'true' : 'false') . ';
-';	// NB replace "normal" speeds with int to workaround issue with jQuery 1.4.2
 
-	if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
-		$js .= '
-// overrides for prefs for jq in mobile mode
-jqueryTiki.ui = false;
-jqueryTiki.ui_theme = "";
-jqueryTiki.tooltips = false;
-jqueryTiki.autocomplete = false;
-jqueryTiki.superfish = false;
-jqueryTiki.colorbox = false;
-jqueryTiki.tablesorter = false;
-';
-		if ($prefs['feature_ajax'] !== 'y') {
-			$headerlib->add_js_config('var mobile_ajaxEnabled = false;');
-		}
-	}
+';	// NB replace "normal" speeds with int to workaround issue with jQuery 1.4.2
 	$headerlib->add_js($js, 100);	
+	
 	
 	if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6') !== false) {
 		
@@ -174,4 +160,5 @@ JS
 
 if ($prefs['feature_ajax'] != 'y') {
 	$prefs['ajax_autosave'] = 'n';
+	$prefs['ajax_xajax'] = 'n';
 }

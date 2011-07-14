@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,28 +7,11 @@
 
 class PerspectiveLib
 {
-	private $perspectives;
-	private $perspectivePreferences;
-
-	function __construct() {
-		$this->perspectives = TikiDb::get()->table('tiki_perspectives');
-		$this->perspectivePreferences = TikiDb::get()->table('tiki_perspective_preferences');
-	}
-
 	function get_current_perspective( $prefs ) {
 		if( isset( $_REQUEST['perspectiveId'] ) ) {
 			return (int) $_REQUEST['perspectiveId'];
 		} elseif( isset( $_SESSION['current_perspective'] ) ) {
 			return (int) $_SESSION['current_perspective'];
-		}
-
-		global $tikilib;
-		$ip = $tikilib->get_ip_address();
-
-		foreach( $this->get_subnet_map( $prefs ) as $subnet => $perspective ) {
-			if ( $this->is_in_subnet($ip, $subnet) ) {
-				return $perspective;
-			}
 		}
 
 		$currentDomain = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
@@ -40,15 +23,15 @@ class PerspectiveLib
 		}
 	}
 
-	private function get_map( $prefs, $active_pref, $config_pref ) {
+	function get_domain_map( $prefs = null ) {
 		if( ! $prefs ) {
 			global $prefs;
 		}
 
 		$out = array();
 		
-		if (( !isset($prefs[$active_pref]) || $prefs[$active_pref] != 'n' ) && isset($prefs[$config_pref])) {
-			foreach( explode( "\n", $prefs[$config_pref] ) as $config ) {
+		if (( !isset($prefs['multidomain_active']) || $prefs['multidomain_active'] != 'n' ) && isset($prefs['multidomain_config'])) {
+			foreach( explode( "\n", $prefs['multidomain_config'] ) as $config ) {
 				if (substr_count($config, ',') == 1) { // Ignore lines which don't have exactly one comma, such as empty lines. TODO: make sure there are no such lines in the first place
 					list( $domain, $perspective ) = explode( ',', $config );
 					$out[$domain] = trim($perspective);
@@ -57,26 +40,6 @@ class PerspectiveLib
 		}
 
 		return $out;
-	}
-
-	function get_subnet_map( $prefs = null ) {
-		return $this->get_map($prefs, 'site_terminal_active', 'site_terminal_config');
-	}
-
-	function get_domain_map( $prefs = null ) {
-		return $this->get_map($prefs, 'multidomain_active', 'multidomain_config');
-	}
-
-	private function is_in_subnet( $ip, $subnet ) {
-		list( $subnet, $size ) = explode( '/', $subnet );
-
-		// Warning - bit shifting ahead.
-
-		// Create the real mask from the /X suffix
-		$mask = 0xFFFFFFFF ^ ((1 << (int) (32 - $size)) - 1);
-
-		// Make sure the subnet-relevant part matches for the IP and the subnet being compared
-		return (ip2long($subnet) & $mask) === (ip2long($ip) & $mask);
 	}
 
 	// Returns a string-indexed array containing the preferences for the given perspective as "pref_name" => "pref_value".
@@ -115,35 +78,39 @@ class PerspectiveLib
 	// Adds or renames a perspective. If $perspectiveId exists, rename it to $name. Otherwise, create a new perspective with id $perspectiveId named $name.
 	// Returns true if and only if the operation succeeds.
 	function replace_perspective( $perspectiveId, $name ) {
+		$db = TikiDb::get();
+
 		if( $perspectiveId ) {
-			$this->perspectives->update(array(
-				'name' => $name,
-			), array(
-				'perspectiveId' => $perspectiveId,
-			));
+			$db->query( 'UPDATE tiki_perspectives SET name = ? WHERE perspectiveId = ?', 
+				array( $name, $perspectiveId ) );
 
 			return $perspectiveId;
 		} else {
-			return $this->perspectives->insert(array(
-				'name' => $name,
-			));
+			$db->query( 'INSERT INTO tiki_perspectives ( name ) VALUES( ? )',
+				array( $name ) );
+
+			$max = $db->getOne( 'SELECT MAX(perspectiveId) FROM tiki_perspectives' );
+			return $max;
 		}
 	}
 	
 	//Removes a perspective. 
 	function remove_perspective ( $perspectiveId )
 	{
+		$db = TikiDb::get();
+		
 		if ( $perspectiveId )
 		{
-			$this->perspectives->delete(array('perspectiveId' => $perspectiveId));
-			$this->perspectivePreferences->deleteMultiple(array('perspectiveId' => $perspectiveId));
+			$db->query( 'DELETE from tiki_perspectives WHERE perspectiveId = ?', array( $perspectiveId ) );
+			$db->query( 'DELETE from tiki_perspective_preferences WHERE perspectiveId = ?', array( $perspectiveId ) );
 		}
 	}
 
 	// Replaces all preferences from $perspectiveId with those in the provided string-indexed array (in format "pref_name" => "pref_value").
 	function replace_preferences( $perspectiveId, $preferences ) {
 		$db = TikiDb::get();
-		$this->perspectivePreferences->deleteMultiple(array('perspectiveId' => $perspectiveId));
+		$db->query( 'DELETE FROM tiki_perspective_preferences WHERE perspectiveId = ?',
+			array( $perspectiveId ) );
 
 		global $prefslib; require_once 'lib/prefslib.php';
 		foreach( $preferences as $pref => $value ) {
@@ -154,25 +121,19 @@ class PerspectiveLib
 	
 	// Replaces a specific preference
 	function replace_preference ( $preference, $value, $newValue ) {
-		$this->perspectivePreferences->update(array(
-			'value' => serialize($newValue),
-		), array(
-			'pref' => $preference,
-			'value' => serialize($value),
-		));
+		$db = TikiDb::get();
+		$db->query( 'UPDATE tiki_perspective_preferences SET value = ? WHERE pref = ? and value = ?',
+			array( serialize( $newValue ), $preference, serialize( $value ) ) );
 	}
 
 	// Sets $preference's value for $perspectiveId to $value.
 	function set_preference( $perspectiveId, $preference, $value ) {
-		$this->perspectivePreferences->delete(array(
-			'perspectiveId' => $perspectiveId,
-			'pref' => $preference,
-		));
-		$this->perspectivePreferences->insert(array(
-			'perspectiveId' => $perspectiveId,
-			'pref' => $preference,
-			'value' => serialize($value),
-		));
+		$db = TikiDb::get();
+
+		$db->query( 'DELETE FROM tiki_perspective_preferences WHERE perspectiveId = ? AND pref = ?',
+			array( $perspectiveId, $preference ) );
+		$db->query( 'INSERT INTO tiki_perspective_preferences ( perspectiveId, pref, value ) VALUES( ?, ?, ? )',
+			array( $perspectiveId, $preference, serialize( $value ) ) );
 	}
 
 	// Returns true if and only if a perspective with the given $perspectiveId exists.
@@ -200,13 +161,15 @@ class PerspectiveLib
 		return $list;
 	}
 
-	// Returns one of the perspectives with the given name
-	function get_perspective_with_given_name ( $name ) {
+	//Returns a list of perspectives with the given name, filtered by perms
+	function get_perspectives_with_given_name ( $name ) {
 	    $db = TikiDb::get();
 
-	    return $db->getOne( "SELECT perspectiveId FROM tiki_perspectives WHERE name = ?", array ( $name ) );
+	    $list = $db->getOne( "SELECT perspectiveId FROM tiki_perspectives WHERE name = ?", array ( $name ) );
 
 	    //$list = Perms::filter( array ( 'type' => 'perspective'), 'object', $list, array( 'object' => 'perspectiveId' ), 'perspective_view' );
+
+	    return $list;
 	}
 }
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -81,42 +81,28 @@ class Cachelib
 			$this->erase_dir_content("temp/cache/$tikidomain");
 			$this->erase_dir_content("modules/cache/$tikidomain");
 			$this->flush_opcode_cache();
-			if (is_object($tikilib)) { 
-				$tikilib->set_lastUpdatePrefs();
-			}
-			if (is_object($logslib)) {
-				$logslib->add_log( $log_section, 'erased all cache content');
-			}
+			if (is_object($tikilib)) { $tikilib->set_lastUpdatePrefs(); }
+			if (is_object($logslib)) { $logslib->add_log( $log_section, 'erased all cache content'); }
 		}
 		if (in_array( 'templates_c', $dir_names )) {
 			$this->erase_dir_content("templates_c/$tikidomain");
 			$this->flush_opcode_cache();
-			if (is_object($logslib)) {
-				$logslib->add_log( $log_section, 'erased templates_c content' );
-			}
+			if (is_object($logslib)) { $logslib->add_log( $log_section, 'erased templates_c content' ); }
 		}
 		if (in_array( 'temp_cache', $dir_names)) {
 			$this->erase_dir_content("temp/cache/$tikidomain");
-			if (is_object($logslib)) {
-				$logslib->add_log( $log_section, 'erased temp/cache content' );
-			}
+			if (is_object($logslib)) { $logslib->add_log( $log_section, 'erased temp/cache content' ); }
 		}
 		if (in_array( 'temp_public', $dir_names)) {
 			$this->erase_dir_content("temp/public/$tikidomain");
-			if (is_object($logslib)) { 
-				$logslib->add_log( $log_section, 'erased temp/public content' );
-			}
+			if (is_object($logslib)) { $logslib->add_log( $log_section, 'erased temp/public content' ); }
 		}
 		if (in_array( 'modules_cache', $dir_names)) {
 			$this->erase_dir_content("modules/cache/$tikidomain");
-			if (is_object($logslib)) {
-				$logslib->add_log( $log_section, 'erased modules/cache content' );
-			}
+			if (is_object($logslib)) { $logslib->add_log( $log_section, 'erased modules/cache content' ); }
 		}
 		if (in_array( 'prefs', $dir_names)) {
-			if (is_object($tikilib)) {
-				$tikilib->set_lastUpdatePrefs();
-			}
+			if (is_object($tikilib)) { $tikilib->set_lastUpdatePrefs(); }
 		}
 	}
 
@@ -256,7 +242,10 @@ class CacheLibFileSystem
 
 	function cacheItem($key, $data, $type='') {
 		$key = $type.md5($key);
-		@file_put_contents($this->folder."/$key",$data);
+		$fw = fopen($this->folder."/$key","w+");
+		fwrite($fw,$data);
+		fclose($fw);
+		chmod($this->folder."/$key", 0644);
 		return true;
 	}
 
@@ -267,11 +256,16 @@ class CacheLibFileSystem
 
 	function getCached($key, $type='') {
 		$key = $type.md5($key);
-		if (is_readable($this->folder."/$key")) {
-			return @file_get_contents($this->folder."/$key");
-		} else {
+		if ( !file_exists($this->folder."/$key")) { 	
 			return false;
-		}
+		} 
+		$fw = fopen($this->folder."/$key","r");
+		if ($l = filesize($this->folder."/$key"))
+			$data = fread($fw, $l);
+		else
+			$data = '';
+		fclose($fw);
+		return $data;
 	}
 
 	function invalidate($key, $type='') {

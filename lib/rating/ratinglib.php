@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -28,16 +28,6 @@ class RatingLib extends TikiDb_Bridge
 			$sort_mode = 'adv_rating_' . $parts[2];
 			return ' LEFT JOIN (SELECT `object` as `adv_rating_obj`, `value` as `adv_rating` FROM `tiki_rating_obtained` WHERE `type` = ' . $this->qstr( $type ) . ' AND `ratingConfigId` = ' . intval( $parts[1] ) . ') `adv_rating` ON `adv_rating`.`adv_rating_obj` = ' . $objectKey . ' ';
 		}
-	}
-
-	function obtain_ratings($type, $itemId) {
-		if ($type == 'wiki page') {
-			$query = "SELECT ratingConfigId, value FROM tiki_rating_obtained INNER JOIN tiki_pages ON tiki_rating_obtained.object = tiki_pages.page_id WHERE tiki_rating_obtained.type = ? AND tiki_pages.pageName = ?";
-		} else {
-			$query = "SELECT ratingConfigId, value FROM tiki_rating_obtained WHERE type = ? AND object = ?";
-		}
-
-		return $this->fetchMap($query, array($type, $itemId));
 	}
 
 	/**

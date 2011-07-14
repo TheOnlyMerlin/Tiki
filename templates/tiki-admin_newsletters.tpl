@@ -30,23 +30,19 @@
 	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
 		<tr class="{cycle}">
-			<td class="id">{self_link cookietab='2' _anchor='anchor2' nlId=$channels[user].nlId _title="{tr}Edit{/tr}"}{$channels[user].nlId}{/self_link}</td>
-			<td class="text">
+			<td>{self_link cookietab='2' _anchor='anchor2' nlId=$channels[user].nlId _title="{tr}Edit{/tr}"}{$channels[user].nlId}{/self_link}</td>
+			<td>
 				{self_link cookietab='2' _anchor='anchor2' nlId=$channels[user].nlId _title="{tr}Edit{/tr}"}{$channels[user].name|escape}{/self_link}
 				<div class="subcomment">{$channels[user].description|escape|nl2br}</div>
 			</td>
-			<td class="username">{$channels[user].author}</td>
-			<td class="integer">{$channels[user].users} ({$channels[user].confirmed})</td>
-			<td class="integer">{$channels[user].editions}</td>
-			<td class="integer">{$channels[user].drafts}</td>
-			<td class="date">{$channels[user].lastSent|tiki_short_datetime}</td>
-			<td class="action">
+			<td>{$channels[user].author}</td>
+			<td>{$channels[user].users} ({$channels[user].confirmed})</td>
+			<td>{$channels[user].editions}</td>
+			<td>{$channels[user].drafts}</td>
+			<td>{$channels[user].lastSent|tiki_short_datetime}</td>
+			<td>
 				<a class="link" href="tiki-objectpermissions.php?objectName={$channels[user].name|escape:"url"}&amp;objectType=newsletter&amp;permType=newsletters&amp;objectId={$channels[user].nlId}" title="{tr}Assign Permissions{/tr}">
-					{if $channels[user].individual eq 'y'}
-						{icon _id='key_active' alt="{tr}Assign Permissions{/tr}"}
-					{else}
-						{icon _id='key' alt="{tr}Assign Permissions{/tr}"}
-					{/if}
+					<img width="16" height="16" alt="{tr}Assign Permissions{/tr}" src="pics/icons/key{if $channels[user].individual eq 'y'}_active{/if}.png" />
 				</a>
 				{self_link _icon='page_edit' cookietab='2' _anchor='anchor2' nlId=$channels[user].nlId}{tr}Edit{/tr}{/self_link}
 				<a class="link" href="tiki-admin_newsletter_subscriptions.php?nlId={$channels[user].nlId}" title="{tr}Subscriptions{/tr}">{icon _id='group' alt="{tr}Subscriptions{/tr}"}</a>
@@ -56,7 +52,7 @@
 			</td>
 		</tr>
 	{sectionelse}
-         {norecords _colspan=8}
+		<tr><td class="odd" colspan="8"><strong>{tr}No records found.{/tr}</strong></td></tr>
 	{/section}
 </table>
 
@@ -64,7 +60,7 @@
 {/tab}
 
 {tab name="{tr}Create/Edit Newsletters{/tr}"}
-{if isset($individual) && $individual eq 'y'}
+{if $individual eq 'y'}
 	<a class="link" href="tiki-objectpermissions.php?objectName={$info.name|escape:"url"}&amp;objectType=newsletter&amp;permType=newsletters&amp;objectId={$info.nlId}">{tr}There are individual permissions set for this newsletter{/tr}</a><br /><br />
 {/if}
 

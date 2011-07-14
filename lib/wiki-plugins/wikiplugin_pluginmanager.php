@@ -1,12 +1,32 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+function wikiplugin_pluginmanager_help() {
+	return tra('Displays a list of plugins available in this wiki') . ':<br />~np~{PLUGINMANAGER(info=>version|description|arguments)}{PLUGINMANAGER}~/np~';
+}
+/**
+* Include the library {@link PluginsLib}
+*/
 require_once 'lib/wiki/pluginslib.php';
-
+/**
+* Plugin Manager
+* Displays a list of plugins available in this wiki.
+*
+* Params:
+* <ul>
+* <li>info (allows multiple columns, joined by '|') : version,description,arguments
+*           . By default, selected all.
+* </ul>
+*
+* @package Tikiwiki
+* @subpackage TikiPlugins
+* @author Claudio Bustos
+* @version $Revision: 1.11 $
+*/
 class WikiPluginPluginManager extends PluginsLib
 {
     var $expanded_params = array('info');
@@ -223,20 +243,16 @@ class WikiPluginPluginManager extends PluginsLib
         				$optcounter = 1;
         				$numoptions = count($paraminfo['options']);
 						foreach($paraminfo['options'] as $oplist => $opitem) {
-							if ((isset($opitem['value']) && !empty($opitem['value'])) &&
-									(isset($opitem['text']) && !empty($opitem['text'])))
-							{
-								if (isset($opitem['value']) && !empty($opitem['value'])) {
-									$rows .= $opitem['value'];
+							if (isset($opitem['value'])) {
+								$rows .= $opitem['value'];
+							} else {
+								$rows .=  $opitem['text'];
+							}
+							if ($optcounter < $numoptions) {	
+								if ($numoptions > 10) {
+									$rows .= ' | ';
 								} else {
-									$rows .=  $opitem['text'];
-								}
-								if ($optcounter < $numoptions) {	
-									if ($numoptions > 10) {
-										$rows .= ' | ';
-									} else {
-										$rows .= '<br />';
-									}
+									$rows .= '<br />';
 								}
 							}
 							$optcounter++;
@@ -262,11 +278,12 @@ class WikiPluginPluginManager extends PluginsLib
         				$paraminfo['default'] = '';
         			}
 					$rows .= $cellbegin . $paraminfo['default'] . '</td>';
-					//Since column
-        			if ($rowCounter == 1) {
-        				$header .= $headbegin . tra('Since') . '</td>';
+        		    if (isset($paraminfo['since'])) {
+        				if ($rowCounter == 1) {
+        					$header .= $headbegin . tra('Since') . '</td>';
+        				}
+						$rows .= $cellbegin . $paraminfo['since'] . '</td>';
         			}
-					$rows .= $cellbegin . $paraminfo['since'] . '</td>';
  		       		$rows .= "\n\t" . '</tr>';
  		       		$rowCounter++;
         		}
@@ -295,11 +312,10 @@ class WikiPluginPluginManager extends PluginsLib
 function wikiplugin_pluginmanager_info() {
     return array(
     	'name' => tra('Plugin Manager'),
-    	'documentation' => 'PluginPluginManager',
-    	'description' => tra('List wiki plugin or module information for the site'),
+    	'documentation' => tra('PluginPluginManager'),
+    	'description' => tra('Displays a list of plugins or modules available in this wiki.'),
     	'prefs' => array( 'wikiplugin_pluginmanager' ),
     	'introduced' => 3,
-		'icon' => 'pics/icons/plugin_link.png',
     	'params' => array(
     		'info' => array(
     			'required' => false,

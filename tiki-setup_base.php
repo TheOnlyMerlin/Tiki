@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -50,6 +50,7 @@ $needed_prefs = array(
 	'tiki_cdn_ssl' => '',
 	'language' => 'en',
 	'lang_use_db' => 'n',
+	'feature_pear_date' => 'y',
 	'lastUpdatePrefs' => - 1,
 	'feature_fullscreen' => 'n',
 	'error_reporting_level' => 0,
@@ -60,7 +61,7 @@ $needed_prefs = array(
 	'memcache_compress' => 'y',
 	'memcache_servers' => false,
 	'min_pass_length' => 5,
-	'pass_chr_special' => 'n'
+	'pass_chr_special' => 'n',
 );
 $tikilib->get_preferences($needed_prefs, true, true);
 if (!isset($prefs['lastUpdatePrefs']) || $prefs['lastUpdatePrefs'] == - 1) {
@@ -141,7 +142,6 @@ if( $cdn_pref ) {
 		exit;
 	}
 }
-$cookie_path = '';
 if (isset($_SERVER["REQUEST_URI"])) {
 	$cookie_path = str_replace("\\", "/", dirname($_SERVER["REQUEST_URI"]));
 	if ($cookie_path != '/') {
@@ -457,10 +457,7 @@ if (isset($_SESSION["$user_cookie_site"])) {
 	// }
 	
 }
-
-if (is_object($smarty)) {
-	$smarty->assign( 'CSRFTicket', isset( $_SESSION['ticket'] ) ? $_SESSION['ticket'] : null);
-}
+$smarty->assign( 'CSRFTicket', isset( $_SESSION['ticket'] ) ? $_SESSION['ticket'] : null);
 require_once ('lib/setup/perms.php');
 // --------------------------------------------------------------
 // deal with register_globals
@@ -482,11 +479,6 @@ $jitServer = new JitFilter($_SERVER);
 $_SERVER = $serverFilter->filter($_SERVER);
 // Rebuild request after gpc fix
 // _REQUEST should only contain GET and POST in the app
-
-$prepareInput = new TikiFilter_PrepareInput('~');
-$_GET = $prepareInput->prepare($_GET);
-$_POST = $prepareInput->prepare($_POST);
-
 $_REQUEST = array_merge($_GET, $_POST);
 // Preserve unfiltered values accessible through JIT filtering
 $jitPost = new JitFilter($_POST);
@@ -539,26 +531,6 @@ if ($tiki_p_trust_input != 'y') {
 	}
 	unset($tmp);
 }
-
-if ($prefs['tiki_check_file_content'] == 'y' && count($_FILES)) {
-	if ($finfo = new finfo(FILEINFO_MIME)) {
-
-		foreach ($_FILES as $key => & $upload_file_info) {
-			if (is_array($upload_file_info['tmp_name'])) {
-				foreach ($upload_file_info['tmp_name'] as $k => $tmp_name) {
-					if ($tmp_name) {
-						$upload_file_info['type'][$k] = $finfo->file($tmp_name);
-					}
-				}
-			} elseif ($upload_file_info['tmp_name']) {
-				$upload_file_info['type'] = $finfo->file($upload_file_info['tmp_name']);
-			}
-		}
-	}
-
-	unset($finfo);
-}
-
 // deal with old request globals (e.g. used by Smarty)
 $GLOBALS['HTTP_GET_VARS'] = & $_GET;
 $GLOBALS['HTTP_POST_VARS'] = & $_POST;
@@ -580,6 +552,4 @@ if (!isset($_SERVER['QUERY_STRING'])) $_SERVER['QUERY_STRING'] = '';
 if (!isset($_SERVER['REQUEST_URI']) || empty($_SERVER['REQUEST_URI'])) {
 	$_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'];
 }
-if (is_object($smarty)) {
-	$smarty->assign("tikidomain", $tikidomain);
-}
+$smarty->assign("tikidomain", $tikidomain);

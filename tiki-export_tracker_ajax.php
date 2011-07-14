@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -302,6 +302,7 @@ while (($items = $trklib->list_items($_REQUEST['trackerId'], $offset, $chunkSize
 			$str .= $delimitorL.smarty_modifier_tiki_short_datetime($item['lastModif'], '', 'n').$delimitorL;
 		}
 		if (count($item['field_values']) > 0) {
+			$smarty->assign('list_mode', 'csv');
 			foreach ($item['field_values'] as $field_value) {
 				$data = '';
 				if ($field_value['isHidden'] == 'n' || $field_value['isHidden'] == 'p' || ($field_value['isHidden'] == 'c' && ($item['itemUser'] == $user || $tiki_p_admin_trackers == 'y')) || ($field_value['isHidden'] == 'y' &&  $tiki_p_admin_trackers == 'y')) {
@@ -312,19 +313,18 @@ while (($items = $trklib->list_items($_REQUEST['trackerId'], $offset, $chunkSize
 //						$data = implode('%%%', $data);
 //					}
 //					$data = str_replace(array("\r\n", "\n", '<br />', $delimitorL, $delimitorR), array($CR, $CR, $CR, $delimitorL.$delimitorL, $delimitorR.$delimitorR), $data);
+					$smarty->assign_by_ref('field_value', $field_value);
 					switch($field_value['type']) {
 						case 'd': // text etc
 							$data = $field_value['value'];
 							if (is_array($data)) {			// TODO handle other types of field better here (preferably in a function in $trklib)
-								$data = implode($CR, $data);
+								$data = implode('%%%', $data);
 							}
-							$data = str_replace(array("\r\n", "\n", '<br />', $delimitorL, $delimitorR), array($CR, $CR, $CR, $delimitorL.$delimitorL, $delimitorR.$delimitorR), $data);				
 							break;
-						default: 
-							$data = $trklib->get_field_handler($field_value, $item)->renderOutput(array(
-								'list_mode' => 'csv', 'CR'=>$CR, 'delimitorL'=>$delimitorL, 'delimitorR'=>$delimitorR
-						));
+					default: 
+						$data = $smarty->fetch('tracker_item_field_value.tpl');
 					}
+				$data = str_replace(array("\r\n", "\n", '<br />', $delimitorL, $delimitorR), array($CR, $CR, $CR, $delimitorL.$delimitorL, $delimitorR.$delimitorR), $data);
 				}
 				$str .= needs_separator($str) ? '' : $separator;
 				$str .= $delimitorL.$data.$delimitorR;

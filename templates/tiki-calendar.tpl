@@ -2,7 +2,7 @@
 
 {title admpage="calendar"}
 	{if $displayedcals|@count eq 1}
-		{tr}Calendar:{/tr} {assign var=x value=$displayedcals[0]}{$infocals[$x].name}
+		{tr}Calendar{/tr}: {assign var=x value=$displayedcals[0]}{$infocals[$x].name|escape}
 	{else}
 		{tr}Calendar{/tr}
 	{/if}
@@ -26,7 +26,7 @@
 			{if $displayedcals|@count eq 1}
 				{button href="tiki-admin_calendars.php?calendarId=$displayedcals[0]" _text="{tr}Edit Calendar{/tr}"}
 			{/if}
-			{button href="tiki-admin_calendars.php?cookietab=1" _text="{tr}Admin Calendars{/tr}"}
+			{button href="tiki-admin_calendars.php" _text="{tr}Admin Calendars{/tr}"}
 		{/if}
 {* avoid Add Event being shown if no calendar is displayed *}
 		{if $tiki_p_add_events eq 'y'}
@@ -39,10 +39,10 @@
 
 		{if $viewlist eq 'list'}
 			{capture name=href}?viewlist=table{if $smarty.request.todate}&amp;todate={$smarty.request.todate}{/if}{/capture}
-			{button href=$smarty.capture.href _text="{tr}Calendar View{/tr}"}
+			{button href="`$smarty.capture.href`" _text="{tr}Calendar View{/tr}"}
 		{else}
 			{capture name=href}?viewlist=list{if $smarty.request.todate}&amp;todate={$smarty.request.todate}{/if}{/capture}
-			{button href=$smarty.capture.href _text="{tr}List View{/tr}"}
+			{button href="`$smarty.capture.href`" _text="{tr}List View{/tr}"}
 		{/if}
 
 		{if count($listcals) >= 1}
@@ -85,10 +85,10 @@
 	<div class="categbar" align="right">
 		{if $user and $prefs.feature_user_watches eq 'y'}
 			{if $category_watched eq 'y'}
-				{tr}Watched by categories:{/tr}
+				{tr}Watched by categories{/tr}:
 				{section name=i loop=$watching_categories}
 					{assign var=thiswatchingcateg value=$watching_categories[i].categId}
-					{button href="tiki-browse_categories.php?parentId=$thiswatchingcateg" _text=$watching_categories[i].name|escape}
+					{button href="tiki-browse_categories.php?parentId=$thiswatchingcateg" _text=$watching_categories[i].name}
 					&nbsp;
 				{/section}
 			{/if}	
@@ -139,7 +139,7 @@
 
 	{include file='tiki-calendar_nav.tpl'}
 	{if $viewlist eq 'list'}
-		{include file='tiki-calendar_listmode.tpl'}
+		{include file='tiki-calendar_listmode.tpl''}
 	{elseif $viewmode eq 'day'}
 		{include file='tiki-calendar_daymode.tpl'}
 	{elseif $viewmode eq 'week'}

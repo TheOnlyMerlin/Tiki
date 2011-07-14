@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,6 +7,7 @@
 
 require_once ('tiki-setup.php');
 include_once ('lib/categories/categlib.php');
+include_once ('lib/tree/categ_admin_tree.php');
 
 $access->check_feature('feature_categories');
 $access->check_permission('tiki_p_admin_categories');
@@ -24,7 +25,7 @@ if (!isset($_REQUEST["parentId"])) {
 $smarty->assign('parentId', $_REQUEST["parentId"]);
 
 if (!empty($_REQUEST['unassign'])) {
-	$access->check_authenticity(tra('Are you sure you want to unassign the objects of this category: ') . $info['name']);
+	$access->check_authenticity(tra('Are you sure you want to unassign the objects of this category: ') . htmlspecialchars($info['name']));
 	$categlib->unassign_all_objects($_REQUEST['parentId']);
 }
 if (!empty($_REQUEST['move_to']) && !empty($_REQUEST['toId'])) {
@@ -175,7 +176,7 @@ if (isset($_REQUEST["removeObject"])) {
 	$categlib->notify($values);
 }
 if (isset($_REQUEST["removeCat"]) && ($info = $categlib->get_category($_REQUEST['removeCat']))) {
-	$access->check_authenticity(tra('Click here to delete the category:') . ' ' . $info['name']);
+	$access->check_authenticity(tra('Click here to delete the category:') . ' ' . htmlspecialchars($info['name']));
 	$categlib->remove_category($_REQUEST["removeCat"]);
 }
 if (isset($_REQUEST["save"]) && isset($_REQUEST["name"]) && strlen($_REQUEST["name"]) > 0) {
@@ -332,12 +333,12 @@ $smarty->assign('find', $find);
 $objects = $categlib->list_category_objects($_REQUEST["parentId"], $offset, $maxRecords, $sort_mode, '', $find, false);
 
 if( $prefs['feature_galleries'] == 'y' ) {
-	$galleries = $tikilib->list_galleries($offset, -1, 'name_desc', 'admin', $find_objects);
+	$galleries = $tikilib->list_galleries($offset, $maxRecords, 'name_desc', 'admin', $find_objects);
 }
 
 if( $prefs['feature_file_galleries'] == 'y' ) {
 	include_once ('lib/filegals/filegallib.php');
-	$file_galleries = $filegallib->list_file_galleries($offset, -1, 'name_desc', 'admin', $find_objects, $prefs['fgal_root_id']);
+	$file_galleries = $filegallib->list_file_galleries($offset, $maxRecords, 'name_desc', 'admin', $find_objects, $prefs['fgal_root_id']);
 }
 
 if( $prefs['feature_forums'] == 'y' ) {
@@ -345,7 +346,7 @@ if( $prefs['feature_forums'] == 'y' ) {
 	if (!isset($commentslib)) {
 		$commentslib = new Comments($dbTiki);
 	}
-	$forums = $commentslib->list_forums($offset, -1, 'name_asc', $find_objects);
+	$forums = $commentslib->list_forums($offset, $maxRecords, 'name_asc', $find_objects);
 }
 
 if( $prefs['feature_polls'] == 'y' ) {
@@ -355,11 +356,11 @@ if( $prefs['feature_polls'] == 'y' ) {
 
 if( $prefs['feature_blogs'] == 'y' ) {
 	require_once('lib/blogs/bloglib.php');
-	$blogs = $bloglib->list_blogs($offset, -1, 'title_asc', $find_objects);
+	$blogs = $bloglib->list_blogs($offset, $maxRecords, 'title_asc', $find_objects);
 }
 
 if( $prefs['feature_wiki'] == 'y' ) {
-	$pages = $tikilib->list_pageNames($offset, -1, 'pageName_asc', $find_objects);
+	$pages = $tikilib->list_pageNames($offset, $maxRecords, 'pageName_asc', $find_objects);
 	//TODO for all other object types
 	$pages_not_in_cat = array();
 	foreach($pages['data'] as $pg) {
@@ -379,21 +380,21 @@ if( $prefs['feature_wiki'] == 'y' ) {
 }
 
 if( $prefs['feature_faqs'] == 'y' ) {
-	$faqs = $tikilib->list_faqs($offset, -1, 'title_asc', $find_objects);
+	$faqs = $tikilib->list_faqs($offset, $maxRecords, 'title_asc', $find_objects);
 }
 
 if( $prefs['feature_quizzes'] == 'y' ) {
-	$quizzes = $tikilib->list_quizzes($offset, -1, 'name_asc', $find_objects);
+	$quizzes = $tikilib->list_quizzes($offset, $maxRecords, 'name_asc', $find_objects);
 }
 
 if( $prefs['feature_trackers'] == 'y' ) {
 	include_once ('lib/trackers/trackerlib.php');
-	$trackers = $trklib->list_trackers($offset, -1, 'name_asc', $find_objects);
+	$trackers = $trklib->list_trackers($offset, $maxRecords, 'name_asc', $find_objects);
 }
 
 if( $prefs['feature_articles'] == 'y' ) {
 	global $artlib; require_once 'lib/articles/artlib.php';
-	$articles = $artlib->list_articles($offset, -1, 'title_asc', $find_objects, '', '', $user, '', '', 'n');
+	$articles = $artlib->list_articles($offset, $maxRecords, 'title_asc', $find_objects, '', '', $user, '', '', 'n');
 }
 
 if( $prefs['feature_directory'] == 'y' ) {

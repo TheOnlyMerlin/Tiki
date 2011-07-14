@@ -3,7 +3,13 @@
 {title help="Trackers" admpage="trackers"}{tr}Admin Trackers{/tr}{/title}
 
 <div class="navbar">
-	{include file="tracker_actions.tpl"}
+	{if  $tiki_p_list_trackers eq 'y'}
+		 {button href="tiki-list_trackers.php" _text="{tr}List Trackers{/tr}"}
+	{/if}
+	{if $trackerId}
+		{button href="tiki-admin_tracker_fields.php?trackerId=$trackerId" _text="{tr}Edit This Tracker's Fields{/tr}"}
+		{button href="tiki-view_tracker.php?trackerId=$trackerId" _text="{tr}View This Tracker's Items{/tr}"}
+	{/if}
 </div>
 
 {tabset name='tabs_admtrackers'}
@@ -15,7 +21,7 @@
 	{if ($channels) or ($find)}
 		{include file='find.tpl' filters=''}
 		{if ($find) and ($channels)}
-			<p>{tr}Found{/tr} {$channels|@count} {tr}trackers:{/tr}</p>
+			<p>{tr}Found{/tr} {$channels|@count} {tr}trackers{/tr}:</p>
 		{/if}
 	{/if}
 
@@ -32,22 +38,22 @@
 		{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
 			<tr class="{cycle}">
-				<td class="id">
-					<a class="tablename" href="tiki-admin_trackers.php?trackerId={$channels[user].trackerId}&amp;cookietab=2" title="{tr}Edit{/tr}">{$channels[user].trackerId}</a>
+				<td>
+					<a class="tablename" href="tiki-admin_trackers.php?trackerId={$channels[user].trackerId}&amp;show=mod" title="{tr}Edit{/tr}">{$channels[user].trackerId}</a>
 				</td>
-				<td class="text">
-					<a class="tablename" href="tiki-admin_trackers.php?trackerId={$channels[user].trackerId}&amp;cookietab=2" title="{tr}Edit{/tr}">{$channels[user].name|escape}</a>
+				<td>
+					<a class="tablename" href="tiki-admin_trackers.php?trackerId={$channels[user].trackerId}&amp;show=mod" title="{tr}Edit{/tr}">{$channels[user].name|escape}</a>
 				</td>
-				{if $channels[user].descriptionIsParsed eq 'y'}
-					<td class="text">{wiki}{$channels[user].description}{/wiki}</td>
+				{if $channels[user].descriptionIsParsed eq 'y' }
+					<td>{wiki}{$channels[user].description}{/wiki}</td>
 				{else}
-					<td class="text">{$channels[user].description|escape|nl2br}</td>
+					<td>{$channels[user].description|escape|nl2br}</td>
 				{/if}
-				<td class="date">{$channels[user].created|tiki_short_date}</td>
-				<td class="date">{$channels[user].lastModif|tiki_short_date}</td>
-				<td class="integer">{$channels[user].items}</td>
-				<td class="action">
-					<a title="{tr}Edit{/tr}" href="tiki-admin_trackers.php?trackerId={$channels[user].trackerId}&amp;cookietab=2">{icon _id='page_edit'}</a>
+				<td>{$channels[user].created|tiki_short_date}</td>
+				<td>{$channels[user].lastModif|tiki_short_date}</td>
+				<td style="text-align:right;" >{$channels[user].items}</td>
+				<td class="auto">
+					<a title="{tr}Edit{/tr}" href="tiki-admin_trackers.php?trackerId={$channels[user].trackerId}&amp;show=mod">{icon _id='page_edit'}</a>
 					<a title="{tr}View{/tr}" href="tiki-view_tracker.php?trackerId={$channels[user].trackerId}">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>
 					<a title="{tr}Fields{/tr}" class="link" href="tiki-admin_tracker_fields.php?trackerId={$channels[user].trackerId}">{icon _id='table' alt="{tr}Fields{/tr}"}</a>
 					{if $channels[user].individual eq 'y'}
@@ -55,15 +61,14 @@
 					{else}
 						<a title="{tr}Permissions{/tr}" class="link" href="tiki-objectpermissions.php?objectName={$channels[user].name|escape:"url"}&amp;objectType=tracker&amp;permType=trackers&amp;objectId={$channels[user].trackerId}">{icon _id='key' alt="{tr}Permissions{/tr}"}</a>
 					{/if}
+					&nbsp;
 					<a title="{tr}Delete{/tr}" class="link" href="tiki-admin_trackers.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].trackerId}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
 				</td>
 			</tr>
 		{sectionelse}
-			{if $find}
-				{norecords _colspan=7 _text="No records found with: $find"}
-			{else}
-				{norecords _colspan=7}
-			{/if}
+			<tr class="odd">
+				<td colspan="7"><strong>{tr}No records found{/tr}{if $find} {tr}with{/tr}: {$find}{/if}.</strong></td>
+			</tr>
 		{/section}
 	</table>
 	{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
@@ -86,14 +91,14 @@
 		<input type="hidden" name="trackerId" value="{$trackerId|escape}" />
 		<table class="formcolor">
 			<tr>
-				<td>{tr}Name:{/tr}</td>
+				<td>{tr}Name{/tr}:</td>
 				<td>
 					<input type="text" name="name" value="{$name|escape}" />
 				</td>
 			</tr>
 
 			<tr>
-				<td>{tr}Description:{/tr}</td>
+				<td>{tr}Description{/tr}:</td>
 				<td>
 					{tr}Description text is wiki-parsed:{/tr} 
 					<input type="checkbox" name="descriptionIsParsed" {if $descriptionIsParsed eq 'y'}checked="checked"{/if} onclick="toggleBlock('trackerDesc');" />
@@ -112,7 +117,7 @@
 				<tr>
 					<td>{tr}Auto create corresponding categories{/tr}</td>
 					<td>
-						<input type="checkbox" name="autoCreateCategories" {if $autoCreateCategories eq 'y'}checked="checked"{/if} />
+						<input type="checkbox" name="autoCreateCategories" {if $autoCreateCategories eq 'y' }checked="checked"{/if} />
 					</td>
 				</tr>
 			{/if}
@@ -123,7 +128,7 @@
 						<label for="autoCreateGroup">{tr}Create a group for each item{/tr}</label>
 					</td>
 					<td>
-						<input type="checkbox" id="autoCreateGroup" name="autoCreateGroup" {if $info.autoCreateGroup eq 'y'}checked="checked"{/if} onclick="toggleTrTd('autoCreateGroupOptions');toggleTrTd('autoCreateGroupOptions2');toggleTrTd('autoCreateGroupOptions3');toggleTrTd('autoCreateGroupOptions4');"/>
+						<input type="checkbox" id="autoCreateGroup" name="autoCreateGroup" {if $info.autoCreateGroup eq 'y' }checked="checked"{/if} onclick="toggleTrTd('autoCreateGroupOptions');toggleTrTd('autoCreateGroupOptions2');toggleTrTd('autoCreateGroupOptions3');toggleTrTd('autoCreateGroupOptions4');"/>
 					</td>
 				<tr id="autoCreateGroupOptions"{if $info.autoCreateGroup ne 'y' and $prefs.javascript_enabled eq 'y'} style="display:none;"{/if}>
 					<td></td>
@@ -132,7 +137,7 @@
 						<select id="autoCreateGroupInc" name="autoCreateGroupInc">
 							<option value="">{tr}None{/tr}</option>
 							{foreach item=gr from=$all_groupIds}
-								<option value="{$gr.id|escape}" {if $gr.id eq $info.autoCreateGroupInc} selected="selected"{/if}>{$gr.groupName|truncate:"52":" ..."|escape}</option>
+								<option value="{$gr.id|escape}" {if $gr.id eq $info.autoCreateGroupInc} selected="selected"{/if}>{$gr.groupName|truncate:"52":" ..."}</option>
 							{/foreach}
 						</select>
 					</td>
@@ -161,7 +166,7 @@
 				<tr id="autoCreateGroupOptions5"{if ($info.autoCreateGroup ne 'y' or $info.autoAssignGroupItem ne 'y') and $prefs.javascript_enabled eq 'y'} style="display:none;"{/if}>
 					<td></td>
 					<td>
-						<label for="autoCopyGroup">{tr}But copy the default group in this fieldId before updating the group{/tr}</label>
+						<label for="autoCopyGroup">{tr}But copy the default group in this fiedlId before updating the group{/tr}</label>
 						<input type="text" name="autoCopyGroup" id="autoCopyGroup" value="{$info.autoCopyGroup}" />
 					</td>
 				</tr>
@@ -418,16 +423,16 @@
 			<tr>
 				<td>{tr}Items can be created only during a certain time{/tr}</td>
 				<td>
-					&nbsp;&nbsp;&nbsp;&nbsp;{tr}After:{/tr} 
+					{tr}After:{/tr} 
 					<input type="checkbox" name="start"{if $info.start} checked="checked"{/if} /> 
 					{html_select_date prefix="start_" time=$info.start start_year="0" end_year="+10" field_order=$prefs.display_field_order} 
-					<span dir="ltr">{html_select_time prefix="start_" time=$info.start display_seconds=false use_24_hours=$use_24hr_clock}</span>
+					<span dir="ltr">{html_select_time prefix="start_" time=$info.start display_seconds=false}</span>
 					&nbsp;{$siteTimeZone}
 					<br />
 					{tr}Before:{/tr}
 					<input type="checkbox" name="end"{if $info.end} checked="checked"{/if} /> 
 					{html_select_date prefix="end_" time=$info.end start_year="0" end_year="+10" field_order=$prefs.display_field_order} 
-					<span dir="ltr">{html_select_time prefix="end_" time=$info.end display_seconds=false use_24_hours=$use_24hr_clock}</span>
+					<span dir="ltr">{html_select_time prefix="end_" time=$info.end display_seconds=false}</span>
 					&nbsp;{$siteTimeZone}
 				</td>
 			</tr>
@@ -471,12 +476,6 @@
 				<br /><em>{tr}wiki:pageName for a wiki page or tpl:tplName for a template{/tr}</em></td>
 			</tr>
 
-			<tr>
-				<td>{tr}Wiki page to edit an item{/tr}</td>
-				<td><input type="text" name="editItemPretty" value="{$info.editItemPretty|escape}" />
-				<br /><em>{tr}wiki:pageName for a wiki page or tpl:tplName for a template{/tr}</em></td>
-			</tr>
-
 			{if !empty($info.todos)}
 				<tr>
 					<td>{tr}Status changes list{/tr}</td>
@@ -512,7 +511,7 @@
 					<label>
 						{tr}From{/tr}
 						<select name="todo_from">
-							<option value=""></option>
+							<option value="" />
 							{foreach key=st item=stdata from=$status_types}
 								<option value="{$st|escape}">{$stdata.label|escape}</option>
 							{/foreach}
@@ -521,7 +520,7 @@
 					<label>
 						{tr}To{/tr}
 						<select name="todo_to">
-							<option value=""></option>
+							<option value="" />
 							{foreach key=st item=stdata from=$status_types}
 								<option value="{$st|escape}">{$stdata.label|escape}</option>
 							{/foreach}
@@ -549,13 +548,11 @@
 	</form>
 {/tab}
 
+{jq}if ($.ui && $(".tabs").length) { $("#content3").tiki("accordion", {heading: "h2"});}{/jq}
 {tab name="{tr}Import/Export{/tr}"}
-<h2>{tr}Tracker Import/Export{/tr}</h2>
-{tabset}
 {* --- tab with raw form --- *}
-{tab name="{tr}Import/export trackers{/tr}"}
-	
-	<h3>{tr}Tracker Definition{/tr}</h3>
+<h2>{tr}Import/export trackers{/tr}</h2>
+	<div>
 	<form action="tiki-admin_trackers.php" method="post">
 		<input type="hidden" name="trackerId" value="{$trackerId|escape}" />
 		<input type="hidden" name="import" value="1" />
@@ -594,17 +591,13 @@ categories = {$catsdump}
 		<br />
 		<input type="submit" name="save" value="{tr}Import{/tr}" />
 	</form>
-	{if $trackerId}
-		<h3>{tr}Export for profile{/tr}</h3>
-		{button href="tiki-admin_trackers.php?trackerId=$trackerId&exportTrackerProfile=y" _text="{tr}Export tracker{/tr}"}
-	{/if}
-	{/tab}
+	</div>
 	
 	{if $trackerId}
 		{include file='tiki-export_tracker.tpl'}
 
-		{tab name="{tr}Import CSV data{/tr}"}
-		<h3>{tr}Tracker Items Import{/tr}</h3>
+		<h2>{tr}Import CSV data{/tr}</h2>
+		<div>
 		<form action="tiki-import_tracker.php?trackerId={$trackerId}" method="post" enctype="multipart/form-data">
 			<table class="formcolor">
 				<tr>
@@ -619,9 +612,6 @@ categories = {$catsdump}
 						<br />
 						<input type="radio" name="dateFormat" value="dd/mm/yyyy" />
 						{tr}day{/tr}/{tr}month{/tr}/{tr}year{/tr}(31/01/2008)
-						<br />
-						<input type="radio" name="dateFormat" value="yyyy-mm-dd" />
-						{tr}year{/tr}-{tr}month{/tr}-{tr}day{/tr}(2008-01-31)
 						<br />
 						<input type="radio" name="dateFormat" value="" />{tr}timestamp{/tr}
 					</td>
@@ -644,10 +634,6 @@ categories = {$catsdump}
 					<td><input type="checkbox" name="add_items" /></td>
 				</tr>
 				<tr>
-					<td>{tr}Update lastModif date if updating items (status and created are updated only if the fields are specified in the csv):{/tr}</td>
-					<td><input type="checkbox" name="updateLastModif" checked="checked" /></td>
-				</tr>
-				<tr>
 					<td>&nbsp;</td>
 					<td><input type="submit" name="save" value="{tr}Import{/tr}" /></td>
 				</tr>
@@ -660,9 +646,8 @@ categories = {$catsdump}
 				<li>{tr}Auto-incremented itemid fields shall be included with no matter what values{/tr}</li>
 			</ul>
 		{/remarksbox}
-		{/tab}
+		</div>
 	{/if}
-{/tabset}
 {/tab}
 
 {tab name="{tr}Duplicate Tracker{/tr}"}
@@ -694,11 +679,11 @@ categories = {$catsdump}
 				<td>{tr}Tracker{/tr}</td>
 				<td>
 					{section name=ix loop=$trackers}
-						{if $smarty.section.ix.first}
+						{if $smarty.section.ix.first }
 							<select name="trackerId">
 						{/if}
 						<option value="{$trackers[ix].trackerId}"{if $trackerId eq $trackers[ix].trackerId} selected="selected"{/if}>{$trackers[ix].name|escape}</option>
-						{if $smarty.section.ix.last}
+						{if $smarty.section.ix.last }
 							</select>
 						{/if}
 					{/section}

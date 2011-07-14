@@ -4,12 +4,12 @@
 		<strong class='mandatory_note'>{tr}Fields marked with a * are mandatory.{/tr}</strong>
 	{/remarksbox}
 {/if}
-{if isset($customTip)}
+{if $customTip}
 	{remarksbox type='tip' title=$customTipTitle}
 	{tr}{$customTip|escape}{/tr}
 	{/remarksbox}
 {/if}
-{if isset($wikiHeaderTpl)}
+{if $wikiHeaderTpl}
 	{include file="wiki:$wikiHeaderTpl"}
 {/if}
 	
@@ -32,9 +32,9 @@
 {/if}
 {if $translation_mode eq 'n'}
 	{if $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}{assign var=pp value=$approvedPageName}{else}{assign var=pp value=$page}{/if}
-	{title}{if isset($hdr) && $prefs.wiki_edit_section eq 'y'}{tr}Edit Section{/tr}{else}{tr}Edit{/tr}{/if}: {$pp}{if $pageAlias ne ''}&nbsp;({$pageAlias}){/if}{/title}
+	{title}{if isset($hdr) && $prefs.wiki_edit_section eq 'y'}{tr}Edit Section{/tr}{else}{tr}Edit{/tr}{/if}: {$pp|escape}{if $pageAlias ne ''}&nbsp;({$pageAlias|escape}){/if}{/title}
 {else}
-   {title}{tr}Update '{$page}'{/tr}{/title}
+   {title}{tr}Update '{$page|escape}'{/tr}{/title}
 {/if}
    
 {if $beingStaged eq 'y'}
@@ -188,7 +188,7 @@
 					<input type="hidden" name="page" value="{$page|escape}" /> 
 					{* the above hidden field is needed for auto-save to work *}
 				{/if}
-				{tabset name='tabs_editpage' cookietab=1}
+				{tabset name='tabs_editpage'}
 					{tab name="{tr}Edit page{/tr}"}
 						{if $translation_mode == 'y'}
 							<div class="translation_message">
@@ -196,7 +196,7 @@
 								<p>{tr}Reproduce the changes highlighted on the left using the editor below{/tr}.</p>
 							</div>
 						{/if}
-						{textarea codemirror='true' syntax='tiki'}{$pagedata}{/textarea}
+						{textarea}{$pagedata}{/textarea}
 						{if $page|lower neq 'sandbox'}
 							<fieldset>
 								<label for="comment">{tr}Describe the change you made:{/tr} {help url='Editing+Wiki+Pages' desc="{tr}Edit comment: Enter some text to describe the changes you are currently making{/tr}"}</label>
@@ -237,6 +237,7 @@
 								{section name=o loop=$categIds}
 									<input type="hidden" name="cat_categories[]" value="{$categIds[o]}" />
 								{/section}
+								<input type="hidden" name="categId" value="{$categIdstr}" />
 								<input type="hidden" name="cat_categorize" value="on" />
 								
 								{if $prefs.feature_wiki_categorize_structure eq 'y'}
@@ -369,7 +370,6 @@ $("#allowhtml").change(function() {
 										    <option value="3600" {if $prefs.wiki_cache eq 3600}selected="selected"{/if}>1 {tr}hour{/tr}</option>
 										    <option value="7200" {if $prefs.wiki_cache eq 7200}selected="selected"{/if}>2 {tr}hours{/tr}</option>
 									    </select> 
-										{if $prefs.wiki_cache == 0}{remarksbox type="warning" title="{tr}Warning{/tr}"}{tr}Only cache a page if it should look the same to all groups authorized to see it.{/tr}{/remarksbox}{/if}
 									</fieldset>
 								{/if}
 								{if $prefs.feature_wiki_structure eq 'y'}
@@ -378,7 +378,7 @@ $("#allowhtml").change(function() {
 											<div id="showstructs">
 												{if $showstructs|@count gt 0}
 													<ul>
-														{foreach from=$showstructs item=page_info}
+														{foreach from=$showstructs item=page_info }
 															<li>{$page_info.pageName}{if !empty($page_info.page_alias)}({$page_info.page_alias}){/if}</li>
 														{/foreach}  
 													</ul>
@@ -471,7 +471,7 @@ $("#allowhtml").change(function() {
 									<select name="lang" id="lang">
 										<option value="">{tr}Unknown{/tr}</option>
 										{section name=ix loop=$languages}
-											<option value="{$languages[ix].value|escape}"{if $lang eq $languages[ix].value or (!($data.page_id) and $lang eq '' and $languages[ix].value eq $prefs.language)} selected="selected"{/if}>{$languages[ix].name}</option>
+											<option value="{$languages[ix].value|escape}"{if $lang eq $languages[ix].value or (not($data.page_id) and $lang eq '' and $languages[ix].value eq $prefs.language)} selected="selected"{/if}>{$languages[ix].name}</option>
 										{/section}
 									</select>
 									{if $translationOf}
@@ -490,11 +490,6 @@ $("#allowhtml").change(function() {
 										{/if}
 									</fieldset>
 								{/if}
-							{/if}
-							{if $prefs.geo_locate_wiki eq 'y'}
-								{$headerlib->add_map()}
-								<div class="map-container" data-target-field="geolocation" style="height: 250px; width: 250px;"></div>
-								<input type="hidden" name="geolocation" value="{$geolocation_string}" />
 							{/if}
 							{if $tiki_p_admin_wiki eq "y"}
 								<a href="tiki-admin.php?page=wiki">{tr}Admin wiki preferences{/tr} {icon _id='wrench'}</a>

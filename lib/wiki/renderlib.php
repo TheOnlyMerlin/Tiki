@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,7 +19,6 @@ class WikiRenderer
 	private $pageNumber = 1;
 	private $sortMode = 'created_desc';
 	private $showAttachments = 'n';
-	private $raw = false;
 
 	private $hasPermissions;
 	private $prep = array(
@@ -59,10 +58,12 @@ class WikiRenderer
 	function applyPermissions() // {{{
 	{
 		global $userlib;
-		$permNames = $userlib->get_permission_names_for('wiki');
+		$permDescs = $userlib->get_permissions( 0, -1, 'permName_desc', '', 'wiki' );
 		$objectperms = Perms::get( array( 'type' => 'wiki page', 'object' => $this->page ) );
 
-		foreach( $permNames as $name ) {
+		$objectperms = $this->applyLocalPerms($objectperms, $permDescs);
+		
+		foreach( $permDescs['data'] as $name ) {
 			$name = $name['permName'];
 			$this->setGlobal( $name, $objectperms->$name ? 'y' : 'n' );
 		}
@@ -74,6 +75,36 @@ class WikiRenderer
 		return $objectperms;
 	} // }}}
 
+	function applyLocalPerms($objectperms, $permDescs) // {{{
+	{
+		// This function is a kludge until a better more generic solution is found for "user specific" checking perms
+		global $prefs;
+		if ( $prefs['wiki_creator_admin'] == 'y' && !empty($this->user) && $this->info['creator'] == $this->user ) {
+			// to give all perms
+			foreach( $permDescs['data'] as $name ) {
+				$name = $name["permName"];
+				$shortname = str_replace('tiki_p_', '', $name);
+				$objectperms->$name = 1;
+				$objectperms->$shortname = 1;
+			}
+		}
+		if ($prefs['feature_wiki_userpage'] == 'y' && !empty($this->user) && strcasecmp($prefs['feature_wiki_userpage_prefix'], substr($this->page, 0, strlen($prefs['feature_wiki_userpage_prefix']))) == 0) {
+			if (strcasecmp($this->page, $prefs['feature_wiki_userpage_prefix'].$this->user) == 0) {
+				// user can edit his page
+				// to give view and edit perms
+				$objectperms->view = 1;
+				$objectperms->tiki_p_view = 1;
+				$objectperms->edit = 1;
+				$objectperms->tiki_p_edit = 1;
+			} else {
+				// user cannot edit
+				$objectperms->edit = 0;
+				$objectperms->tiki_p_edit = 0;
+			}
+		}
+		return $objectperms;
+	} // }}
+	
 	function restoreAll() // {{{
 	{
 		global $smarty, $prefs;
@@ -165,7 +196,7 @@ class WikiRenderer
 		global $prefs, $wikilib;
 
 		if( $prefs['wiki_authors_style'] != 'classic' ) {
-			$contributors = $wikilib->get_contributors($this->page, $this->info['user']);
+			$contributors = $wikilib->get_contributors($this->page, $this->info['user'], false);
 			$this->smartyassign('contributors',$contributors);
 		}
 	} // }}}
@@ -196,7 +227,6 @@ class WikiRenderer
 		if( !empty($this->info['lang'])) { 
 			$this->trads = $multilinguallib->getTranslations('wiki page', $this->info['page_id'], $this->page, $this->info['lang']);
 			$this->smartyassign('trads', $this->trads);
-			$this->smartyassign('translationsCount', count($this->trads));
 			$pageLang = $this->info['lang'];
 			$this->smartyassign('pageLang', $pageLang);
 		}
@@ -274,9 +304,7 @@ class WikiRenderer
 			return;
 		}
 
-		//Let us check if slides exist in the wiki page
-		$slides = preg_split('/-=[^=]+=-|![^=]+|!![^=]+!!![^=]+/',$this->info['data']);
-		
+		$slides = preg_split('/-=[^=]+=-/',$this->info['data']);
 		if(count($slides)>1) {
 			$this->smartyassign('show_slideshow','y');
 		} else {
@@ -307,32 +335,6 @@ class WikiRenderer
 
 		$this->smartyassign('cached_page','n');
 
-		if ($prefs['flaggedrev_approval'] == 'y') {
-			global $flaggedrevisionlib; require_once 'lib/wiki/flaggedrevisionlib.php';
-
-			if ($flaggedrevisionlib->page_requires_approval($this->page)) {
-				$this->smartyassign('revision_approval', true);
-
-				if ($version_info = $flaggedrevisionlib->get_version_with($this->page, 'moderation', 'OK')) {
-					$this->smartyassign('revision_approved', $version_info['version']);
-					if (empty($this->content_to_render)) {
-						$this->smartyassign('revision_displayed', $version_info['version']);
-						$this->content_to_render = $version_info['data'];
-					} else {
-						$this->smartyassign('revision_displayed', $this->info['version']);
-					}
-				} else {
-					$this->smartyassign('revision_approved', null);
-					if (empty($this->content_to_render)) {
-						$this->smartyassign('revision_displayed', null);
-						$this->content_to_render = '^' . tra('There are no approved versions of this page.', $this->info['lang']) . '^';
-					} else {
-						$this->smartyassign('revision_displayed', $this->info['version']);
-					}
-				}
-			}
-		}
-
 		if ($this->content_to_render == '') {
 			$pdata = $wikilib->get_parse($this->page, $canBeRefreshed);
 
@@ -345,11 +347,7 @@ class WikiRenderer
 				'language' => $this->info['lang']
 			);
 
-			if ($this->raw) {
-				$pdata = $tikilib->parse_data_raw($this->content_to_render);
-			} else {
-				$pdata = $wikilib->parse_data($this->content_to_render, $parse_options);
-			}
+			$pdata = $wikilib->parse_data($this->content_to_render, $parse_options);
 		}
 
 		$pages = $wikilib->get_number_of_pages($pdata);
@@ -372,10 +370,6 @@ class WikiRenderer
 		$this->smartyassign('pagenum',$this->pageNumber);
 
 		$this->smartyassign('lastVersion',$this->info["version"]);
-		if (isset($this->info['last_version'])) {
-			$this->smartyassign('versioned', true);
-		}
-
 		$this->smartyassign('lastModif',$this->info["lastModif"]);
 		if(empty($this->info['user'])) {
 			$this->info['user']=tra('Anonymous');  
@@ -392,7 +386,7 @@ class WikiRenderer
 	private function setupAttachments() // {{{
 	{
 		global $prefs, $wikilib;
-		if ( $prefs['feature_wiki_attachments'] != 'y' || $prefs['feature_use_fgal_for_wiki_attachments'] == 'y' )
+		if ( $prefs['feature_wiki_attachments'] != 'y' )
 			return;
 
 		// If anything below here is changed, please change lib/wiki-plugins/wikiplugin_attach.php as well.
@@ -461,18 +455,12 @@ class WikiRenderer
 	private function setupCategories() // {{{
 	{
 		global $prefs, $categlib;
-		require_once 'lib/categories/categlib.php';
 
 		$cats = array();
 		if ($prefs['feature_categories'] == 'y' && $categlib->is_categorized('wiki page',$this->page)) {
 			$this->smartyassign('is_categorized','y');
 			if ($prefs['feature_categoryobjects'] == 'y' || $prefs['feature_categorypath'] == 'y') {
 				$cats = $categlib->get_object_categories('wiki page',$this->page);
-			}
-			if ($prefs['category_morelikethis_algorithm'] != '') {
-				global $freetaglib; include_once('lib/freetag/freetaglib.php');
-				$category_related_objects = $freetaglib->get_similar('wiki page', $this->page, empty($prefs['category_morelikethis_mincommon_max'])?$prefs['maxRecords']: $prefs['category_morelikethis_mincommon_max'], null, 'category');
-				$this->smartyassign('category_related_objects', $category_related_objects);
 			}
 			if ($prefs['feature_categorypath'] == 'y') {	
 				$display_catpath = $categlib->get_categorypath($cats);
@@ -625,15 +613,5 @@ class WikiRenderer
 	function setInfo( $name, $value ) // {{{
 	{
 		$this->info[$name] = $value;
-	} // }}}
-
-	function forceLatest() // {{{
-	{
-		$this->content_to_render = $this->info['data'];
-	} // }}}
-
-	function useRaw() // {{{
-	{
-		$this->raw = true;
 	} // }}}
 }

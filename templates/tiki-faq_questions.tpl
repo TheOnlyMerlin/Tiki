@@ -1,4 +1,4 @@
-{title}{tr}Admin FAQ:{/tr} {$faq_info.title}{/title}
+{title}{tr}Admin FAQ{/tr}: {$faq_info.title|escape}{/title}
 
 <div class="navbar">
 	{button href="tiki-list_faqs.php" _text="{tr}List FAQs{/tr}"}
@@ -16,14 +16,14 @@
 {* begin table *}
 <table class="formcolor">
   <tr>
-    <td>{tr}Question:{/tr}</td>
+    <td>{tr}Question{/tr}:</td>
     <td >
       <textarea type="text" rows="2" cols="80" name="question">{$question|escape}</textarea>
     </td>
   </tr>
 
   <tr>
-    <td>{tr}Answer:{/tr}
+    <td>{tr}Answer{/tr}:
     </td>
     <td >
       {toolbars area_id="faqans"}
@@ -57,7 +57,7 @@
 </td>
 </tr>
 <tr>
-<td>{tr}Question:{/tr}</td>
+<td>{tr}Question{/tr}:</td>
 <td >
 <select name="usequestionId">
 {section name=ix loop=$allq}
@@ -97,15 +97,15 @@
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}
 <tr class="{cycle}">
-<td class="id">{$channels[user].questionId}</td>
-<td class="text">{$channels[user].question|escape}</td>
-<td class="action">
+<td>{$channels[user].questionId}</td>
+<td>{$channels[user].question|escape}</td>
+<td width="80px">
    <a class="link" href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;questionId={$channels[user].questionId}">{icon _id='page_edit'}</a>
    <a class="link" href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].questionId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 </td>
 </tr>
 {sectionelse}
-	{norecords _colspan=3}
+<tr><td class="odd" colspan="3">{tr}No records{/tr}</td></tr>
 {/section}
 </table>
 
@@ -123,9 +123,9 @@
 {cycle values="odd,even" print=false}
 {section name=ix loop=$suggested}
 <tr class="{cycle}">
-  <td class="text">{$suggested[ix].question|escape} </td>
-  <td class="text">{$suggested[ix].answer|escape}</td>
-  <td class="action">
+  <td>{$suggested[ix].question|escape} </td>
+  <td>{$suggested[ix].answer|escape}</td>
+  <td width='80px'>
   <a class="link" href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;approve_suggested={$suggested[ix].sfqId}" alt="{tr}Approve{/tr}">{icon _id=accept alt="{tr}Approve{/tr}"}</a>
   <a class="link" href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove_suggested={$suggested[ix].sfqId}">{icon _id=cross alt="{tr}Remove{/tr}"}</a> 
   </td>

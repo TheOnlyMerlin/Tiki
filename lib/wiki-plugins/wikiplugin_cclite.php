@@ -1,20 +1,23 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+/**
+ * General purpose cclite utility plugin
+ * To perform transaction list and summary     
+ */
 function wikiplugin_cclite_info() {
 	global $prefs;
 
 	return array(
 		'name' => tra('Cclite'),
-		'documentation' => 'PluginCclite',
+		'documentation' => tra('PluginCclite'),
 		'description' => tra('General purpose cclite utility plugin'),
 //		'validate' => '',
 		'prefs' => array( 'wikiplugin_cclite', 'payment_feature' ),
-		'icon' => 'pics/icons/money.png',
 		'params' => array(
 			'mode' => array(
 				'required' => false,
@@ -66,7 +69,7 @@ function wikiplugin_cclite( $data, $params, $offset ) {
 			
 	}
 	//$r = $cclitelib->cclite_send_request('logoff');
-	$result = '<em>In development...</em><br />' . $result;
+	$result = 'In development...<br />' . strip_tags($result);
 	$smarty->assign( 'wp_cclite_result', $result );
 	return '~np~' . $smarty->fetch( 'wiki-plugins/wikiplugin_cclite.tpl' ) . '~/np~';
 }

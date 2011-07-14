@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,6 +18,7 @@ if( isset( $_SERVER['REQUEST_METHOD'] ) ) die;
 // Add the imported libraries located in lib/
 $thirdpartyLibs = array(
 	'\./lib/pear.*',
+	'\./lib/phplayers.*',
 	'\./lib/smarty.*',
 	'\./lib/adodb.*',
 	'\./lib/debug.*',
@@ -28,11 +29,13 @@ $thirdpartyLibs = array(
 	'\./lib/core/Zend.*',
 	'\./lib/htmlparser/,*',
 	'\./lib/htmlpurifier/,*',
+	'\./lib/hawhaw.*',
 	'\./lib/ical.*',
 	'\./lib/images.*',
 	'\./lib/feedcreator.*',
 	'\./lib/sheet.*',
 	'\./lib/Horde/Yaml.*',
+	'\./lib/ajax/xajax/.*',
 	'\./lib/core/DeclFilter.*',
 	'\./lib/core/JitFilter.*',
 	'\./lib/core/Multilingual.*',
@@ -85,6 +88,7 @@ $safePaths = array(
 	'\./lib/wiki-plugins.*',
 	'\./lib/wiki-plugins-dist.*',
 	'\./lib/tree.*',
+	'\./lib/phplayers_tiki.*',
 );
 
 if( !file_exists( 'tiki-setup.php' ) )
@@ -532,7 +536,7 @@ foreach( $files as $key=>$dummy )
 		if( $file['unsafeextract'] ) 
 			$unsafe[] = $file;
 
-					break;
+		break;
 	case 'public':
 	case 'include':
 	case 'script':
@@ -548,7 +552,7 @@ foreach( $files as $key=>$dummy )
 		if( ! $file['noweb'] && ! $file['includeonly'] && ! count( $file['features'] ) && ! count( $file['permissions'] ) ) 
 			$unsafe[] = $file;
 
-					break;
+		break;
 	}
 }
 
@@ -619,14 +623,13 @@ $fileType = $fileRecord['type'];
 	</tbody>
 </table>
 
-	<?php 
-		foreach($features as $featureKey => $featureValue) {
-			print "$featureKey :\n";
-			foreach ($featureValue as $file) {
-				print "<li>$file</li>";
-			}
-			print "<br/><br/>\n";
-		} ?>
+	<?php foreach($features as $featureKey => $featureValue) {
+	  print "$featureKey :\n";
+	  foreach ($featureValue as $file) {
+	    print "<li>$file</li>";
+	  }
+	  print "<br/><br/>\n";
+	} ?>
 
 </body>
 </html>

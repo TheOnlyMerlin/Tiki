@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -228,43 +228,25 @@ function breadcrumb_getTitle($crumbs, $loc) {
 function _breadcrumb_getTitle($crumbs, $loc) {
     global $prefs, $print_page, $info, $structure, $structure_path, $tikilib, $smarty;
 
-	$len = count($crumbs);
-	
     if ( $prefs['feature_breadcrumbs'] == 'n' || $prefs['feature_sitetitle'] == 'title' ) {
-		require_once 'lib/smarty_tiki/modifier.sefurl.php';
-		if (! function_exists('smarty_modifier_escape')) {
-			require_once 'lib/smarty_tiki/modifier.escape.php';
-		}
-
+        $ret = '<strong><a title="';
+    } else if ( $prefs['feature_sitetitle'] == 'y' ) {
         $class = "pagetitle";
-		$metadata = '';
-
-		$current = current_object();
-		$escapedHref = smarty_modifier_escape( smarty_modifier_sefurl( $current['object'], $current['type'] ) );
-
-		if ($coordinates = TikiLib::lib('geo')->get_coordinates($current['type'], $current['object'])) {
-			$class = ' geolocated primary';
-			$metadata = " data-geo-lat=\"{$coordinates['lat']}\" data-geo-lon=\"{$coordinates['lon']}\"";
-			
-			if (isset($coordinates['zoom'])) {
-				$metadata .= " data-geo-zoom=\"{$coordinates['zoom']}\"";
-			}
-		}
-
-        $ret = '<strong><a class="'.$class.'"' . $metadata . ' title="'.tra("refresh").'" href="' . $escapedHref . '">';
+        $ret = '<a class="'.$class.'" title="';
     } else {
         $class = "crumblink";
         $ret = '<a class="'.$class.'" title="';
-		if ( ($structure == 'y') && $info ) {
-			$cnt = count($structure_path);
-		} else {
-			$cnt = count($crumbs);                      
-		}
-		$ret .= tra("go back to this crumb");
-		$ret .= '" accesskey="'.($cnt);
-		include_once('tiki-sefurl.php');
-		$ret .= '" href="'.filter_out_sefurl($crumbs[$len-1]->url, $smarty).'">';
     }
+    $len = count($crumbs);
+    if ( ($structure == 'y') && $info ) {
+        $cnt = count($structure_path);
+    } else {
+        $cnt = count($crumbs);                      
+    }
+    $ret .= 'refresh';
+    $ret .= '" accesskey="'.($cnt);
+    include_once('tiki-sefurl.php');
+    $ret .= '" href="'.filter_out_sefurl($crumbs[$len-1]->url, $smarty).'">';
     if ($prefs['feature_breadcrumbs'] == 'n' && $loc == "admin")
         $ret .= tra("Administration:")." ";
         if ($prefs['wikiapproval_hideprefix'] == 'y' && $approved = $tikilib->get_approved_page( $crumbs[$len-1]->title ) ) { 

@@ -1,25 +1,30 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+// wikiplugin_html v1.0
+//
+// Include literal HTML in a Wiki page
+// Jeremy Lee  2009-02-16
+
 function wikiplugin_html_info() {
 	return array(
 		'name' => tra('HTML'),
-		'documentation' => 'PluginHTML',
-		'description' => tra('Add HTML to a page'),
+		'documentation' => tra('PluginHTML'),
+		'description' => tra('Include literal HTML in a Wiki page'),
 		'prefs' => array('wikiplugin_html'),
 		'body' => tra('HTML code'),
 		'validate' => 'all',
 		'filter' => 'rawhtml_unsafe',
-		'icon' => 'pics/icons/mime/html.png',
+		'icon' => 'pics/icons/html.png',
 		'params' => array(
 			'wiki' => array(
 				'required' => false,
 				'name' => tra('Wiki syntax'),
-				'description' => tra('Parse wiki syntax within the HTML code.'),
+				'description' => tra('Parse wiki syntax within the html code.'),
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('No'), 'value' => 0),
@@ -47,6 +52,3 @@ function wikiplugin_html($data, $params) {
 
 	return '~np~' . $html . '~/np~';
 }
-
-include_once 'lib/codemirror_tiki/codemirror_tiki.php';
-tiki_syntax_highlighter_html();

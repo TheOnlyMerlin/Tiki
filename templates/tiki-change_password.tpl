@@ -32,7 +32,7 @@
 {/literal}
 {/jq}
 {if isset($new_user_validation) && $new_user_validation eq 'y'}
-	{title}{tr}Your account has been validated.{/tr} {tr}You have to choose a password to use this account.{/tr}{/title}
+	{title}{tr}Your account has been validated.{/tr}<br />{tr}You have to choose a password to use this account.{/tr}{/title}
 {else}
 	{assign var='new_user_validation' value='n'}
 	{title}{tr}Change password enforced{/tr}{/title}
@@ -71,9 +71,12 @@
 							<div id="mypassword_text"></div>
 							<div id="mypassword_bar" style="font-size: 5px; height: 2px; width: 0px;"></div> 
 						</div>
-  <input type="password" name="pass" id="pass1" onkeypress="regCapsLock(event)" onkeyup="runPassword(this.value, 'mypassword');{if 0 and $prefs.feature_ajax eq 'y'}check_pass();{/if}" />
-	{if 1 || $prefs.feature_ajax ne 'y'}{* AJAX_TODO *}
-		{include file='password_help.tpl'}
+  <input type="password" name="pass" id="pass1" onkeypress="regCapsLock(event)" onkeyup="runPassword(this.value, 'mypassword');{if $prefs.ajax_xajax eq 'y'}check_pass();{/if}" />
+	{if $prefs.ajax_xajax ne 'y'}
+		{if $prefs.min_pass_length > 1}
+								<div class="highlight"><em>{tr}Minimum {$prefs.min_pass_length} characters long{/tr}</em></div>{/if}
+		{if $prefs.pass_chr_num eq 'y'}
+								<div class="highlight"><em>{tr}Password must contain both letters and numbers{/tr}</em></div>{/if}
 	{/if}
   
   </td>

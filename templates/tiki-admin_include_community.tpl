@@ -27,9 +27,6 @@
 				{preference name=feature_tasks}
 				{preference name=feature_messages}
 				{preference name=feature_userfiles}
-				<div class="adminoptionboxchild" id="feature_userfiles_childcontainer">
-					{preference name=feature_use_fgal_for_user_files}
-				</div>
 				{preference name=feature_userlevels}
 				{preference name=feature_groupalert}
 				{preference name=change_theme}
@@ -40,7 +37,6 @@
 					{preference name=feature_wiki_userpage_prefix}
 				</div>
 				{preference name=feature_group_transition}
-				{preference name=user_favorites}
 			</div>
 		{/tab}
 
@@ -91,11 +87,9 @@
 			{preference name=users_prefs_display_timezone}
 			{preference name=users_prefs_user_information}
 			{preference name=users_prefs_user_dbl}
-			{preference name=users_prefs_display_12hr_clock}
 
 			{preference name=users_prefs_show_mouseover_user_info}
 			{preference name=users_prefs_tasks_maxRecords}
-			{preference name=users_prefs_diff_versions}
 
 
 		</fieldset>

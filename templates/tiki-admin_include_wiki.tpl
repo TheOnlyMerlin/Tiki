@@ -49,6 +49,7 @@
 				{preference name=feature_warn_on_edit}
 				{preference name=warn_on_edit_time}
 				{preference name=feature_wiki_undo}
+				{preference name=feature_wiki_save_draft}
 				{preference name=feature_wiki_footnotes}
 				{preference name=feature_wiki_allowhtml}
 				{preference name=wiki_timeout_warning}
@@ -101,16 +102,16 @@
 
 			{preference name=feature_dump}
 			<div class="adminoptionboxchild" id="feature_dump_childcontainer">
-				<div class="adminoptionbox clearfix">
+				<div class="adminoptionbox">
 					<div class="adminoptionlabel">
-						<label for="tagname">{tr}Tag for current wiki:{/tr}</label>
+						<label for="tagname">{tr}Tag for current wiki{/tr}:</label>
 						<input maxlength="20" size="20" type="text" name="tagname" id="tagname" />
 						<input type="submit" name="createtag" value="{tr}Create{/tr}" />
 					</div>
 				</div>
-				<div class="adminoptionbox clearfix">
+				<div class="adminoptionbox">
 					<div class="adminoptionlabel">
-						<label for="restoretag">{tr}Restore wiki to tag:{/tr}</label>
+						<label for="restoretag">{tr}Restore wiki to tag{/tr}:</label>
 						<select name="tagname" id="restoretag"{if $tags|@count eq '0'} disabled="disabled"{/if}>
 							{section name=sel loop=$tags}
 								<option value="{$tags[sel]|escape}">{$tags[sel]}</option>
@@ -121,9 +122,9 @@
 						<input type="submit" name="restoretag" value="{tr}Restore{/tr}"{if $tags|@count eq '0'} disabled="disabled"{/if} />
 					</div>
 				</div>
-				<div class="adminoptionbox clearfix">
+				<div class="adminoptionbox">
 					<div class="adminoptionlabel">
-						<label for="removetag">{tr}Remove a tag:{/tr}</label> 
+						<label for="removetag">{tr}Remove a tag{/tr}:</label> 
 						<select name="tagname" id="removetag"{if $tags|@count eq '0'} disabled="disabled"{/if}>
 							{section name=sel loop=$tags}
 								<option value="{$tags[sel]|escape}">{$tags[sel]}</option>
@@ -219,10 +220,6 @@
 
 		{preference name=feature_wiki_import_html}
 		{preference name=feature_wiki_import_page}
-		{preference name=feature_wiki_use_date}
-		<div class="adminoptionboxchild" id="feature_wiki_use_date_links">
-			{preference name=feature_wiki_use_date_links}
-		</div>
 		{preference name=wiki_uses_slides}
 		{preference name=feature_wiki_1like_redirection}
 		{preference name=feature_wiki_userpage}
@@ -241,11 +238,11 @@
 			{preference name=feature_wiki_multiprint}
 		</div>
 
-		<div class="adminoptionbox clearfix">
+		<div class="adminoptionbox">
 			<fieldset>
 				<legend>{tr}Wiki watch{/tr}{help url="Watch"}</legend>
 				{if $prefs.feature_user_watches ne 'y'}
-					<div class="adminoptionbox clearfix">
+					<div class="adminoptionbox">
 						{icon _id=information} {tr}Feature disabled{/tr}. <a href="tiki-admin.php?page=features" title="{tr}Features{/tr}">{tr}Enable now{/tr}</a>.
 					</div>
 				{else}
@@ -258,7 +255,6 @@
 			</fieldset>
 		</div>
 		{preference name=wiki_keywords}
-		{preference name=geo_locate_wiki}
 	{/tab}
 
 	{tab name="{tr}Staging &amp; Approval{/tr}"}
@@ -285,7 +281,7 @@
 
 					<fieldset>
 						<legend>{tr}Freetags{/tr}</legend>
-						<div class="adminoptionbox clearfix">
+						<div class="adminoptionbox">
 							{if $prefs.feature_freetags ne 'y'}
 								<br />
 								{icon _id=information}{tr}Freetags are disabled.{/tr} <a href="tiki-admin.php?page=features" title="{tr}Features{/tr}">{tr}Enable now{/tr}</a>.
@@ -297,17 +293,6 @@
 			</div>
 	{/tab}
 
-	{tab name="{tr}Flagged Revision{/tr}"}
-		<fieldset>
-			<legend>{tr}Revision Approval{/tr}</legend>
-
-			{preference name=flaggedrev_approval}
-			<div id="flaggedrev_approval_childcontainer">
-				{preference name=flaggedrev_approval_categories}
-			</div>
-		</fieldset>
-	{/tab}
-
 	{tab name="{tr}Page Listings{/tr}"}
 		<input type="hidden" name="wikilistprefs" />	  
 		{preference name=feature_listPages}
@@ -316,11 +301,11 @@
 		{preference name=feature_listorphanStructure}
 		{preference name=gmap_page_list}
 
-		<div class="adminoptionbox clearfix">
+		<div class="adminoptionbox">
 			<fieldset>
 				<legend>{tr}Configuration{/tr}</legend>
-				<div class="adminoptionbox clearfix">
-					{tr}Select which items to display when listing pages:{/tr}
+				<div class="adminoptionbox">
+					{tr}Select which items to display when listing pages{/tr}:
 				</div>
 				{preference name=wiki_list_sortorder}
 				<div class="adminoptionboxchild">
@@ -355,7 +340,6 @@
 				{preference name=wiki_list_language}
 				{preference name=wiki_list_categories}
 				{preference name=wiki_list_categories_path}
-				{preference name=wiki_list_rating}
 			</fieldset>  
 		</div>
 	{/tab}

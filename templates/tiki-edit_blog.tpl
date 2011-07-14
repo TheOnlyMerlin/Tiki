@@ -1,5 +1,5 @@
 {if $blogId > 0}
-  {title help="Blogs" url="tiki-edit_blog.php?blogId=$blogId" admpage="blogs"}{tr}Edit Blog:{/tr} {$title}{/title}
+  {title help="Blogs" url="tiki-edit_blog.php?blogId=$blogId" admpage="blogs"}{tr}Edit Blog:{/tr} {$title|escape}{/title}
 {else}
   {title help="Blogs"}{tr}Create Blog{/tr}{/title}
 {/if}
@@ -27,7 +27,7 @@
   <input type="hidden" name="blogId" value="{$blogId|escape}" />
   {tabset name='tabs_editblog'}
     {tab name="{tr}General Settings{/tr}"}
-      <table class="formcolor">
+      <table class="normal">
         <tr class="editblogform">
           <td><label for="blog-title">{tr}Title{/tr}</label></td>
           <td><input type="text" name="title" id="blog-title" value="{$title|escape}" /></td>
@@ -44,7 +44,7 @@
           <td>{tr}Creator{/tr}</td>
           <td>
             <select name="creator">
-              {if ($tiki_p_admin eq 'y' or $tiki_p_blog_admin eq 'y') and !empty($users)}
+              {if $tiki_p_admin eq 'y' or $tiki_p_blog_admin eq 'y'}
                 {foreach from=$users key=userId item=u}
                   <option value="{$u|escape}"{if $u eq $creator} selected="selected"{/if}>{$u|escape}</option>
                 {/foreach}
@@ -59,7 +59,7 @@
           <td><input type="checkbox" name="public" id="blogs-allow_others" {if $public eq 'y'}checked='checked'{/if}/></td>
         </tr>	
         <tr class="editblogform">
-          <td><label for="blogs-always_owner">{tr}If others post to blog, author should always be owner{/tr}</label></td>
+          <td><label for="blogs-always_owner">{tr}If others post to blog, Author should always be Owner{/tr}</label></td>
           <td><input type="checkbox" name="alwaysOwner" id="blogs-always_owner" {if $alwaysOwner eq 'y'}checked='checked'{/if}/></td>
         </tr>
         <tr class="editblogform">
@@ -79,7 +79,7 @@
       </table>
     {/tab}
     {tab name="{tr}Display Options{/tr}"}
-      <table class="formcolor">
+      <table class="normal">
         <tr class="editblogform">
           <td><label for="blogs-number">{tr}Number of posts to show per page{/tr}</label></td>
           <td><input type="text" name="maxPosts" id="blogs-number" value="{$maxPosts|escape}" /></td>
@@ -146,11 +146,11 @@
             </td>
           </tr>
 
-          {if strlen($heading) > 0 and $show_blog_heading_preview eq 'y'}
+          {if strlen($heading) > 0 and $blogId > 0}
             <tr class="editblogform">
               <td colspan="2">
                 {button href="#" _flip_id='blog_heading_preview' _class='link' _text="{tr}Heading preview{/tr}" _flip_default_open='n'}
-                <div id="blog_heading_preview" style="display: {if $show_blog_heading_preview eq 'y'}block{else}none{/if};">
+                <div id="blog_heading_preview" style="display: {if isset($smarty.session.tiki_cookie_jar.show_blog_heading_preview) and $smarty.session.tiki_cookie_jar.show_blog_heading_preview eq 'y'}block{else}none{/if};">
                   {eval var=$heading}
                 </div>
               </td>

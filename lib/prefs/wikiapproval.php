@@ -1,16 +1,16 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_wikiapproval_list($partial = false) {
+function prefs_wikiapproval_list() {
 	global $prefs;
 	
 	$staging_catree = array();
 
-	if (! $partial && $prefs['feature_categories'] == 'y') {
+	if ($prefs['feature_categories'] == 'y') {
 		global $categlib;
 
 		include_once ('lib/categories/categlib.php');
@@ -25,7 +25,7 @@ function prefs_wikiapproval_list($partial = false) {
 	}
 
 	global $userlib;
-	$all_groups = $partial ? array() : $userlib->list_all_groups();
+	$all_groups = $userlib->list_all_groups();
 
 	$staging_groups = array();
 	$staging_groups['-1'] = tra('None');
@@ -38,28 +38,23 @@ function prefs_wikiapproval_list($partial = false) {
 		'wikiapproval_block_editapproved' => array(
 			'name' => tra('Force bounce of editing of approved pages to staging'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wikiapproval_delete_staging' => array(
 			'name' => tra('Delete staging pages at approval'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wikiapproval_prefix' => array(
 			'name' => tra('Unique page name prefix to indicate staging copy'),
 			'type' => 'text',
 			'size' => '15',
-			'default' => '*',
 		),
 		'wikiapproval_hideprefix' => array(
 			'name' => tra('Hide page name prefix'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wikiapproval_sync_categories' => array(
 			'name' => tra('Categorize approved pages with categories of staging copy on approval'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wikiapproval_update_freetags' => array(
 			'name' => tra('Replace freetags with that of staging pages, on approval'),
@@ -67,7 +62,6 @@ function prefs_wikiapproval_list($partial = false) {
 			'dependencies' => array(
 				'feature_freetags',
 			), 
-			'default' => 'n',
 		),
 		'wikiapproval_combine_freetags' => array(
 			'name' => tra('Add new freetags of approved copy (into tags field) when editing staging pages'),
@@ -75,7 +69,6 @@ function prefs_wikiapproval_list($partial = false) {
 			'dependencies' => array(
 				'feature_freetags',
 			), 
-			'default' => 'n',
 		),
 		'wikiapproval_staging_category' => array(
 			'name' =>  tra('Staging'),
@@ -84,7 +77,6 @@ function prefs_wikiapproval_list($partial = false) {
 			'dependencies' => array(
 				'feature_categories',
 			),
-			'default' => '0',
 		),
 		'wikiapproval_approved_category' => array(
 			'name' =>  tra('Approved') . ' ' . tra('(mandatory for feature to work)'),
@@ -93,7 +85,6 @@ function prefs_wikiapproval_list($partial = false) {
 			'dependencies' => array(
 				'feature_categories',
 			),
-			'default' => '0',
 		),
 		'wikiapproval_outofsync_category' => array(
 			'name' =>  tra('Out-of-sync'),
@@ -102,13 +93,11 @@ function prefs_wikiapproval_list($partial = false) {
 			'dependencies' => array(
 				'feature_categories',
 			),
-			'default' => '0',
 		),
 		'wikiapproval_master_group' => array(
 			'name' => tra('If not in the group, edit is always redirected to the staging page edit'),
 			'type' => 'list',
 			'options' => $staging_groups,
-			'default' => '-1',
 			),
 	);	
 }

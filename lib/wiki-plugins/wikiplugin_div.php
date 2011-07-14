@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,11 +8,10 @@
 function wikiplugin_div_info() {
 	return array(
 		'name' => tra('Div'),
-		'documentation' => 'PluginDiv',
-		'description' => tra('Define and format sections of a page or text'),
+		'documentation' => tra('PluginDiv'),
+		'description' => tra('Insert a division block, span, blockquote or other text formatting on wiki page.'),
 		'prefs' => array('wikiplugin_div'),
 		'body' => tra('text'),
-		'icon' => 'pics/icons/script_code_red.png',
 		'params' => array(
 			'type' => array(
 				'required' => false,

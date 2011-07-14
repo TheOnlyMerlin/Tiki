@@ -1,17 +1,35 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+/*
+ * Tiki-Wiki CATEGORY plugin.
+ * 
+ * Syntax:
+ * 
+ * {CATEGORY(
+ *	id=>1+2+3,	 # defaults to current
+ *	types=>article+blog+directory+faq+fgal+forum+igal+newsletter+event+poll+quiz+survey+tracker+wiki # list of types of objects, default * (all),
+ *	sort=>[type|created|name|hits]_[asc|desc]	# default name_asc,
+ *	sub=>y|n		# display items of subcategories # default is 'true';
+ *	split=>y|n		# when displaying multiple categories, whether they should be split or not; defaults to yes
+ *	one=>y|n		# when y displays one categoy per line
+ * )}
+ * {CATEGORY}
+ */
+function wikiplugin_category_help() {
+	return tra("Insert list of items with the current/given category in the wiki page").":<br />~np~{CATEGORY(id=1+2+3, types=article+blog+faq+fgal+forum+igal+newsletter+event+poll+quiz+survey+tracker+wiki+img, sort=[type|created|name|hits|shuffle]_[asc|desc], sub=y|n, split=|n, and=y|n)}{CATEGORY}~/np~";
+}
+
 function wikiplugin_category_info() {
 	return array(
 		'name' => tra('Category'),
-		'documentation' => 'PluginCategory',
-		'description' => tra('List categories and objects assigned to them'),
+		'documentation' => tra('PluginCategory'),
+		'description' => tra('Insert list of items with the current/given category in the wiki page'),
 		'prefs' => array( 'feature_categories', 'wikiplugin_category' ),
-		'icon' => 'pics/icons/sitemap_color.png',
 		'params' => array(
 			'id' => array(
 				'required' => false,
@@ -175,13 +193,6 @@ function wikiplugin_category_info() {
 					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				),
-			),
-			'lang' => array(
-				'required' => false,
-				'name' => tra('Language'),
-				'description' => tra('List only objects in this language.').' '.tra('Only apply if type=wiki.'),
-				'filter' => 'lang',
-				'default' => '',
 			),		
 		),
 	);
@@ -213,13 +224,6 @@ function wikiplugin_category($data, $params) {
 	} else {
 		$sub = true;
 	}
-	if (!empty($lang)) {
-		$filter['language'] = $lang;
-	} elseif (isset($params['lang'])) {
-		$filter['language'] = $prefs['language'];
-	} else {
-		$filter = null;
-	}
 	if (isset($and) and substr(strtolower($and),0,1) == 'y') {
 		$and = true;
 	} else {
@@ -243,14 +247,10 @@ function wikiplugin_category($data, $params) {
 		$smarty->assign('one', $one);
 
 	if ($id == 'current') {
-		if (isset($_REQUEST['page'])) {
-			$objId = urldecode($_REQUEST['page']);
-			$id = $categlib->get_object_categories('wiki page', $objId);
-		} else {
-			$id = array();
-		}
+		$objId = urldecode($_REQUEST['page']);
+		$id = $categlib->get_object_categories('wiki page', $objId);
 	}
 	$smarty->assign('params', $params);
 
-	return "~np~". $categlib->get_categoryobjects($id,$types,$sort,$split,$sub,$and, $maxRecords, $filter)."~/np~";
+	return "~np~". $categlib->get_categoryobjects($id,$types,$sort,$split,$sub,$and, $maxRecords)."~/np~";
 }

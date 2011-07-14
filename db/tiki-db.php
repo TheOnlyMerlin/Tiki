@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -98,27 +98,7 @@ $tikidomainslash = (!empty($tikidomain) ? $tikidomain . '/' : '');
 $re = false;
 $default_api_tiki = $api_tiki;
 $api_tiki = '';
-if ( file_exists($local_php) ) {
-	$re = include($local_php);
-}
-
-global $systemConfiguration;
-$systemConfiguration = new Zend_Config(array(
-	'preference' => array(),
-	'rules' => array(),
-), array(
-	'readOnly' => false,
-));
-if (isset ($system_configuration_file)) {
-	if (! is_readable($system_configuration_file)) {
-		die('Configuration file could not be read.');
-	}
-	if (! isset($system_configuration_identifier)) {
-		$system_configuration_identifier = null;
-	}
-	$systemConfiguration = $systemConfiguration->merge(new Zend_Config_Ini($system_configuration_file, $system_configuration_identifier));
-}
-
+if ( file_exists($local_php) ) $re = include($local_php);
 if ( empty( $api_tiki ) ) {
 	$api_tiki_forced = false;
 	$api_tiki = $default_api_tiki;
@@ -133,16 +113,17 @@ if ( $re === false ) {
 	} else {
 		// we are in the installer don't redirect...
 		return ;
-	}
+  }
 }
 
 if ( $dbversion_tiki == '1.10' ) $dbversion_tiki = '2.0';
 
+require_once 'lib/core/TikiDb/ErrorHandler.php';
 class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 {
 	function handle( TikiDb $db, $query, $values, $result ) // {{{
 	{
-		global $smarty, $prefs;
+		global $smarty, $prefs, $ajaxlib;
 
 		$msg = $db->getErrorMessage();
 		$q=$query;
@@ -189,6 +170,22 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 
 			header("Cache-Control: no-cache, pre-check=0, post-check=0");
 
+			if ($prefs['ajax_xajax'] === 'y') {
+				global $ajaxlib;
+				include_once('lib/ajax/xajax/xajax_core/xajaxAIO.inc.php');
+				if ($ajaxlib && $ajaxlib->canProcessRequest()) {
+					// this was a xajax request -> return a xajax answer
+					$page = $smarty->fetch( 'database-connection-error.tpl' );
+					$objResponse = new xajaxResponse();
+					$page=addslashes(str_replace(array("\n", "\r"), array(' ', ' '), $page));
+					$objResponse->script("bugwin=window.open('', 'tikierror', 'width=760,height=500,scrollbars=1,resizable=1');".
+							"bugwin.document.write('$page');");
+					echo $objResponse->getOutput();
+					$this->log($msg.' - '.$q);
+					die();
+				}
+			}
+
 			$smarty->display('database-connection-error.tpl');
 			unset($_SESSION['fatal_error']);
 			$this->log($msg.' - '.$q);
@@ -203,7 +200,7 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 }
 
 $dbInitializer = 'db/tiki-db-adodb.php';
-if ($api_tiki == 'pdo' && extension_loaded("pdo") && in_array('mysql', PDO::getAvailableDrivers())) {
+if (extension_loaded("pdo") and $api_tiki == 'pdo' ) {
 	$dbInitializer = 'db/tiki-db-pdo.php';
 }
 

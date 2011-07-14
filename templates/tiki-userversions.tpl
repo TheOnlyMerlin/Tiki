@@ -1,6 +1,6 @@
-<h2>{tr}User_versions_for:{/tr} {$ruser}</h2>
+<h2>{tr}User_versions_for{/tr}: {$ruser}</h2>
 {if $preview}
-<h2>{tr}Version:{/tr} {$version}</h2>
+<h2>{tr}Version{/tr}: {$version}</h2>
 <div class="wikitext">{$preview.data}</div>
 <br /> 
 {/if}
@@ -26,7 +26,9 @@
 <td id="{cycle}">&nbsp;<a href="tiki-userversions.php?ruser={$ruser}&amp;page={$history[hist].pageName|escape:"url"}&amp;preview=1&amp;version={$history[hist].version}">{tr}View{/tr}</a>&nbsp;</td>
 </tr>
 {sectionelse}
-	{norecords _colspan=6}
+<tr><td colspan="6">
+<b>{tr}No records found{/tr}</b>
+</td></tr>
 {/section}
 </table>
 </div>

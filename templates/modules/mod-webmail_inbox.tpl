@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Id $ *}
 {* params:
  *   autoloaddelay in seconds (default = 1, -1 = off)
  *
@@ -28,7 +28,7 @@
 			{/if}
 			{*icon _id='resultset_last' class=''*}
 		</div>
-		{if 0 and $prefs.feature_ajax}{* AJAX_TODO *}
+		{if $prefs.ajax_xajax}
 			<a title="{tr}Refresh{/tr}" onclick="doRefreshWebmail(0, true);return false;">
 				{icon _id='arrow_refresh' class='webmail_refresh_icon icon'}
 				{icon _id='img/spinner.gif' class='webmail_refresh_busy icon' style='display:none'}
@@ -60,7 +60,7 @@
 						<span class="mod_numbers">{$smarty.section.ix.index_next})</span>&nbsp;
 					{/if}
 					<a class="linkmodule tips300 webmail_subject" href="tiki-webmail.php?locSection=read&amp;msgid={$webmail_list[ix].msgid}"
-							title="<span class='webmail_tip_title'><strong>{$subject}</strong><br />{tr}From:{/tr} <em>{$sender.name}</em> <tt>&amp;lt;{$sender.email}&amp;gt;</tt></span>|({$date_value})">
+							title="<span class='webmail_tip_title'><strong>{$subject}</strong><br />{tr}From{/tr}: <em>{$sender.name}</em> <tt>&amp;lt;{$sender.email}&amp;gt;</tt></span>|({$date_value})">
 						{if $maxlen > 0}{* default value for maxlen param eq 26 *}
 							{$subject|truncate:$maxlen:"...":true}
 						{else}
@@ -88,7 +88,7 @@
 					{else}
 						<span class="mod_webmail_from">{$sender.email|truncate:20:"...":true}</span>
 					{/if}
-					{assign var=tit value="<span class='webmail_tip_title'><strong>$subject</strong><br /></span>|{tr}From:{/tr} <em>`$sender.name`</em> &nbsp; <tt>&amp;lt;`$sender.email`&amp;gt;</tt><br /><small>[$date_value]</small>"}
+					{assign var=tit value="<span class='webmail_tip_title'><strong>$subject</strong><br /></span>|{tr}From{/tr}: <em>`$sender.name`</em> &nbsp; <tt>&amp;lt;`$sender.email`&amp;gt;</tt><br /><small>[$date_value]</small>"}
 					{self_link _script='tiki-webmail.php' msgid=$webmail_list[ix].msgid locSection='read' _noauto='y' _class='clearfix linkmodule tips300 webmail_subject' _title=$tit}
 						{if $maxlen > 0}{* default value for maxlen param eq 26 *}
 							{$subject|truncate:$maxlen:"...":true}

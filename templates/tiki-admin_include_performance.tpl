@@ -25,12 +25,13 @@
 					<div class="highlight" style="margin-left:30px;">
 						{tr}Output compression is active.{/tr}
 						<br />
-						{tr}Compression is handled by:{/tr} {$gzip_handler}.
+						{tr}Compression is handled by{/tr}: {$gzip_handler}.
 					</div>
 				{/if}
 			</div>
 			{preference name=tiki_cachecontrol_session}
 			{preference name=smarty_compilation}
+			{preference name=feature_bot_bar_debug}
 		{/tab}
 		
 		{tab name="{tr}Bytecode Cache{/tr}"}
@@ -108,27 +109,25 @@
 		{tab name="{tr}Major slow down{/tr}"}
 			{remarksbox type="note" title="{tr}Major slow down{/tr}"}{tr}These are reported to slow down Tiki. If you have a high-volume site, you may want to deactivate them{/tr}
 			{/remarksbox}
+			{preference name=feature_phplayers}
 			{preference name=wikiplugin_sharethis}
-			{preference name=log_sql}
-			{preference name=log_mail}
-			{preference name=log_tpl}
-			{preference name=error_reporting_level}
 			{remarksbox type="tip" title="{tr}Tip{/tr}"}
 				{tr}Many search options impact performance. Please see <a href="tiki-admin.php?page=search">Search admin panel</a>.{/tr}
 			{/remarksbox}
 		{/tab}
 
 		{tab name="{tr}Sessions{/tr}"}
+				{remarksbox type="note" title="{tr}Advanced configuration warning{/tr}"}
+					{tr}Note that storing session data in the database is an advanced systems administration option, and is for admins who have comprehensive access and understanding of the database, in order to deal with any unexpected effects.{/tr}
+				{/remarksbox}
+				<div style="padding:.5em;" align="left">
+					{icon _id=information style="vertical-align:middle"} {tr}Changing this feature will immediately log you out when you save this preference.{/tr} {if $prefs.forgotPass ne 'y'}If there is a chance you have forgotten your password, enable "Forget password" feature.<a href="tiki-admin.php?page=features" title="{tr}Features{/tr}">{tr}Enable now{/tr}</a>.{/if}
+				</div>
+				{preference name=session_storage}
+				{preference name=session_lifetime}
+				{preference name=session_cookie_name}
 				{preference name=session_silent}
 				{preference name=tiki_cachecontrol_nosession}
-		{/tab}
-
-		{tab name="{tr}Newsletter{/tr}"}
-			{preference name=newsletter_throttle}
-			<div class="adminoptionboxchild" id="newsletter_throttle_childcontainer">
-				{preference name=newsletter_pause_length}
-				{preference name=newsletter_batch_size}
-			</div>
 		{/tab}
 {/tabset}
 		

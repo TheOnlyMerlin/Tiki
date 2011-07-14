@@ -1,9 +1,11 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+
+require_once 'lib/core/Perms/ResolverFactory.php';
 
 /**
  * Obtains the object permissions for each object. Bulk loading provides
@@ -28,11 +30,6 @@ class Perms_ResolverFactory_ObjectFactory implements Perms_ResolverFactory
 		
 		$objects = array();
 		$hashes = array();
-
-		// Limit the amount of hashes preserved to reduce memory consumption
-		if (count($this->known) > 128) {
-			$this->known = array();
-		}
 
 		foreach( $values as $v ) {
 			$hash = $this->getHash( array_merge( $baseContext, array( 'object' => $v ) ) );
@@ -85,6 +82,7 @@ class Perms_ResolverFactory_ObjectFactory implements Perms_ResolverFactory
 		if( count( $perms ) == 0 ) {
 			return null;
 		} else {
+			require_once 'lib/core/Perms/Resolver/Static.php';
 			return new Perms_Resolver_Static( $perms, 'object' );
 		}
 	}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -72,7 +72,7 @@ if (isset($_REQUEST["referer"])) {
 }
 $_REQUEST["objectId"] = urldecode($_REQUEST["objectId"]);
 $_REQUEST["objectType"] = urldecode($_REQUEST["objectType"]);
-$_REQUEST["permType"] = !empty($_REQUEST['permType']) ? urldecode($_REQUEST["permType"]) : 'global';
+$_REQUEST["permType"] = !empty($_REQUEST['permType']) ? urldecode($_REQUEST["permType"]) : 'all';
 $smarty->assign('objectName', $_REQUEST["objectName"]);
 $smarty->assign('objectId', $_REQUEST["objectId"]);
 $smarty->assign('objectType', $_REQUEST["objectType"]);
@@ -131,6 +131,10 @@ if (isset($_REQUEST['feature_select'])) {
 	}
 	$tikilib->set_user_preference($user, 'objectperm_admin_features', serialize($_REQUEST['feature_filter']));
 	$cookietab = '1';
+	if ($_REQUEST['permType'] != 'all' && (count($_REQUEST['feature_filter']) > 1 || !in_array($_REQUEST['permType'], $_REQUEST['feature_filter']))) {
+		$_REQUEST['permType'] = 'all';
+		$_GET['permType'] = 'all';		// for auto_query_args?
+	}
 }
 
 $feature_filter = unserialize($tikilib->get_user_preference($user, 'objectperm_admin_features'));
@@ -238,7 +242,29 @@ if (!empty($_SESSION['perms_clipboard'])) {
 
 }
 
-//Quickperms apply {{{
+
+// Prepare display
+// Get the individual object permissions if any
+
+$displayedPermissions = get_displayed_permissions();
+
+if (isset($_REQUEST['used_groups'])) {
+	$group_filter = array();
+	foreach ( $displayedPermissions->getPermissionArray() as $group => $perms ) {
+		$group_filter[] = $group;
+		$group_filter = array_merge($group_filter, $userlib->get_including_groups($group, 'y'));
+	}
+	if (empty($group_filter)) {
+		$group_filter = array('Anonymous', 'Registered', 'Admins');
+	}
+	foreach ( $group_filter as $i=>$group) {
+		$ginfo = $userlib->get_group_info($group);
+		$group_filter[$i] = $ginfo['id'];
+	}
+	$cookietab = 1;
+}
+
+//Quickperms {{{
 //Test to map permissions of ile galleries into read write admin admin levels.
 if( $prefs['feature_quick_object_perms'] == 'y' ) {
 	require_once 'lib/core/Perms/Reflection/Quick.php';
@@ -271,31 +297,6 @@ if( $prefs['feature_quick_object_perms'] == 'y' ) {
 		$permissionApplier->apply( $newPermissions );
 	}
 }
-// }}}
-
-// Prepare display
-// Get the individual object permissions if any
-
-$displayedPermissions = get_displayed_permissions();
-
-if (isset($_REQUEST['used_groups'])) {
-	$group_filter = array();
-	foreach ( $displayedPermissions->getPermissionArray() as $group => $perms ) {
-		$group_filter[] = $group;
-		$group_filter = array_merge($group_filter, $userlib->get_including_groups($group, 'y'));
-	}
-	if (empty($group_filter)) {
-		$group_filter = array('Anonymous', 'Registered', 'Admins');
-	}
-	foreach ( $group_filter as $i=>$group) {
-		$ginfo = $userlib->get_group_info($group);
-		$group_filter[$i] = $ginfo['id'];
-	}
-	$cookietab = 1;
-}
-
-
-// Quick perms load {{{
 //Quickperm groups stuff
 if( $prefs['feature_quick_object_perms'] == 'y' ) {
 	$groupNames = array();
@@ -303,15 +304,6 @@ if( $prefs['feature_quick_object_perms'] == 'y' ) {
 		$groupNames[] = $group['groupName'];
 	}
 
-	$qperms = quickperms_get_data();
-	$smarty->assign('quickperms', $qperms);
-	$quickperms = new Perms_Reflection_Quick;
-
-	foreach( $qperms as $type => $data ) {
-		$quickperms->configure( $type, $data['data'] );
-	}
-
-	$displayedPermissions = get_displayed_permissions();
 	$map = $quickperms->getAppliedPermissions( $displayedPermissions, $groupNames );
 		
 	foreach($groups['data'] as $key=>$group) {
@@ -357,9 +349,9 @@ foreach($groups['data'] as &$row) {
 
 }
 
-$smarty->assign('permGroups', $permGroups);
+$smarty->assign('permGroups', implode(',', $permGroups));
 $smarty->assign('permGroupCols', $groupIndices);
-$smarty->assign('groupNames', $groupNames);
+$smarty->assign('groupNames', implode(',', $groupNames));
 //$smarty->assign('groupInheritance', $groupInheritance);
 
 
@@ -377,8 +369,8 @@ $candidates = $userlib->get_permissions(0, -1, 'permName_asc', '', $_REQUEST["pe
 // list of all features
 $ftemp = $userlib->get_permission_types();
 $features = array();
-foreach($ftemp as $f) {
-	$features[] = array('featureName' => $f, 'in_feature_filter' => $feature_filter === false || in_array($f, $feature_filter) ? 'y' : 'n');
+foreach($ftemp['data'] as $f) {
+	$features[] = array('featureName' => $f['type'], 'in_feature_filter' => $feature_filter === false || in_array($f['type'], $feature_filter) ? 'y' : 'n');
 }
 $features_enabled = array();
 
@@ -465,7 +457,7 @@ JS;
 		\$('input[value="'+\$(this).val()+'"]').					// other checkboxes of same value (perm)
 			filter('$beneficiaries').									// which inherit from this
 			attr('checked',\$(this).attr('checked')).					// check and disable
-			attr('disabled',\$(this).attr('checked'));
+			attr('disabled',\$(this).attr('checked') ? 'disabled' : '');
 	}
 		
 	\$(this).change( function() {									// bind click event
@@ -473,13 +465,13 @@ JS;
 		if (\$(this).attr('checked')) {
 			\$('input[value="'+\$(this).val()+'"]').			// same...
 				filter('$beneficiaries').
-				attr('checked',true).							// check?
-				attr('disabled',true);						// disable
+				attr('checked','checked').							// check?
+				attr('disabled','disabled');						// disable
 		} else {
 			\$('input[value="'+\$(this).val()+'"]').			// same...
 				filter('$beneficiaries').
-				attr('checked',false).									// check?
-				attr('disabled',false);								// disable
+				attr('checked','').									// check?
+				attr('disabled','');								// disable
 }
 	});
 			}
@@ -498,6 +490,8 @@ setTimeout(function(){$("#treetable_1_filter").keypress();}, 500);';
 $headerlib->add_jq_onready($js);
 
 ask_ticket('object-perms');
+setcookie('tab', $cookietab);
+$smarty->assign('cookietab', $cookietab);
 
 // setup smarty remarks flags
 
@@ -566,7 +560,6 @@ function quickperms_get_filegal() {
 				'tiki_p_edit_gallery_file' => 'tiki_p_edit_gallery_file',
 				'tiki_p_list_file_galleries' => 'tiki_p_list_file_galleries',
 				'tiki_p_upload_files' => 'tiki_p_upload_files',
-				'tiki_p_remove_files' => 'tiki_p_remove_files',
 				'tiki_p_view_fgal_explorer' => 'tiki_p_view_fgal_explorer',
 				'tiki_p_view_fgal_path' => 'tiki_p_view_fgal_path',
 				'tiki_p_view_file_gallery' => 'tiki_p_view_file_gallery',
@@ -582,7 +575,6 @@ function quickperms_get_filegal() {
 				'tiki_p_edit_gallery_file' => 'tiki_p_edit_gallery_file',
 				'tiki_p_list_file_galleries' => 'tiki_p_list_file_galleries',
 				'tiki_p_upload_files' => 'tiki_p_upload_files',
-				'tiki_p_remove_files' => 'tiki_p_remove_files',
 				'tiki_p_view_fgal_explorer' => 'tiki_p_view_fgal_explorer',
 				'tiki_p_view_fgal_path' => 'tiki_p_view_fgal_path',
 				'tiki_p_view_file_gallery' => 'tiki_p_view_file_gallery',

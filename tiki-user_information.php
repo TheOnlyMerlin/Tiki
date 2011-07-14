@@ -1,11 +1,14 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
+if ($prefs['ajax_xajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
 include_once ('lib/messu/messulib.php');
 include_once ('lib/userprefs/scrambleEmail.php');
 include_once ('lib/registration/registrationlib.php');
@@ -105,7 +108,7 @@ $smarty->assign('user_information', $user_information);
 $userinfo = $userlib->get_user_info($userwatch);
 $email_isPublic = $tikilib->get_user_preference($userwatch, 'email is public', 'n');
 if ($email_isPublic != 'n') {
-	$smarty->assign('scrambledEmail', scrambleEmail($userinfo['email'], $email_isPublic));
+	$userinfo['email'] = scrambleEmail($userinfo['email'], $email_isPublic);
 }
 $smarty->assign_by_ref('userinfo', $userinfo);
 $smarty->assign_by_ref('email_isPublic', $email_isPublic);
@@ -128,8 +131,7 @@ if ($prefs['feature_display_my_to_others'] == 'y') {
 		$smarty->assign_by_ref('user_galleries', $user_galleries);
 	}
 	if ($prefs['feature_trackers'] == 'y') {
-		$trklib = TikiLib::lib('trk');
-		$user_items = $trklib->get_user_items($userwatch);
+		$user_items = $tikilib->get_user_items($userwatch);
 		$smarty->assign_by_ref('user_items', $user_items);
 	}
 	if ($prefs['feature_articles'] == 'y') {
@@ -193,6 +195,16 @@ if ($prefs['user_tracker_infos']) {
 	$smarty->assign_by_ref('userItem', $items['data'][0]);
 }
 ask_ticket('user-information');
+if ($prefs['ajax_xajax'] == "y") {
+	function user_information_ajax() {
+		global $ajaxlib, $xajax;
+		$ajaxlib->registerTemplate("tiki-user_information.tpl");
+		$ajaxlib->registerTemplate("tiki-my_tiki.tpl");
+		$ajaxlib->registerFunction("loadComponent");
+		$ajaxlib->processRequests();
+	}
+	user_information_ajax();
+}
 // Get full user picture if it is set
 if ($prefs["user_store_file_gallery_picture"] == 'y') {
 	require_once ('lib/userprefs/userprefslib.php');

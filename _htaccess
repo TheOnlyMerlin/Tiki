@@ -1,4 +1,4 @@
-# $Id: _htaccess 33755 2011-04-01 17:01:37Z sylvieg $ [This line is used to check that this htaccess file is up to date. Do not edit this line and leave it as the first line.]
+# $Id$ [This line is used to check that this htaccess file is up to date. Do not edit this line and leave it as the first line.]
 # These are suggested Rewrite Rules for use with Tiki.
 # They enhance security and permit short URLs.
 # In your Tiki instance, visit tiki-admin.php?page=sefurl
@@ -17,6 +17,10 @@
 	deny from all
 </FilesMatch>
 
+<FilesMatch "\.(js|png|gif|jpg|css)$">
+	FileEtag None
+</FilesMatch>
+
 # If the site is stable, might be worth setting the expires header on all files
 #<IfModule mod_expires.c>
 #	<FilesMatch "\.(js|png|gif|jpg|css|ico)$">
@@ -25,7 +29,8 @@
 #	</FilesMatch>
 #</IfModule>
 
-# Using ETags will improve the YSlow scores
+
+# Using ETags will lower the YSlow scores
 FileETag none
 
 <IfModule deflate_module>
@@ -49,7 +54,7 @@ RewriteRule ^(.*) - [E=HTTP_AUTHORIZATION:%1]
 # RewriteBase   /
 
 #If your website is a checkout
-RewriteRule	.*/\.svn/.*	-	[F,L]
+RewriteRule	^\.svn/	-	[F,L]
 
 # If the URL points to a file then do nothing
 RewriteCond %{REQUEST_FILENAME} -s [OR]
@@ -69,8 +74,6 @@ RewriteRule (.*) - [L]
 # AddType application/x-httpd-php5 .php
 # AddHandler application/x-httpd-php5 .php
  
-# Permanent redirect: Add instructions as below. This is useful if you were using another Web application or static HTML and you want to avoid broken links
-# Redirect 301 /oldpage.html /tiki-index.php?page=newpage
  
 # direct one-word access
 RewriteRule ^(img\/trackers\/.*)   $1                                       [L]
@@ -91,21 +94,22 @@ RewriteRule ^contact$              tiki-contact.php                         [L]
 RewriteRule ^directories$          tiki-directory_browse.php                [L]
 RewriteRule ^dirlink([0-9]+)       tiki-directory_redirect.php?siteId=$1    [QSA,L]
 RewriteRule ^faqs$                 tiki-list_faqs.php                       [L]
-RewriteRule ^filelist$             tiki-list_file_gallery.php               [L]
+RewriteRule ^filelist$                tiki-list_file_gallery.php               [L]
 RewriteRule ^forums$               tiki-forums.php                          [L]
 RewriteRule ^galleries$            tiki-galleries.php                       [L]
 RewriteRule ^login$                tiki-login_scr.php                       [L]
 RewriteRule ^logout$               tiki-logout.php                          [L]
-RewriteRule ^register$             tiki-register.php                        [L]
+RewriteRule ^mobile$               tiki-mobile.php                          [L]
 RewriteRule ^my$                   tiki-my_tiki.php                         [L]
 RewriteRule ^newsletters$          tiki-newsletters.php                     [L]
 RewriteRule ^quizzes$              tiki-list_quizzes.php                    [L]
+RewriteRule ^register$             tiki-register.php                        [L]
 RewriteRule ^sheets$               tiki-sheets.php                          [L]
 RewriteRule ^stats$                tiki-stats.php                           [L]
 RewriteRule ^surveys$              tiki-list_surveys.php                    [L]
 RewriteRule ^trackers$             tiki-list_trackers.php                   [L]
 RewriteRule ^users$                tiki-list_users.php                      [L]
-RewriteRule ^userinfo$          tiki-view_tracker_item.php?view=+user&cookietab=2 [L]
+RewriteRule ^wml$                  tiki-mobile.php                          [L]
 
 # access any object by its numeric identifier
 RewriteRule ^article([0-9]+)\-.*(&comzone=.*)$  article$1$2
@@ -114,7 +118,7 @@ RewriteRule ^blog([0-9]+)\-.*$     blog$1
 RewriteRule ^blogpost([0-9]+)\-.*$ blogpost$1
 RewriteRule ^article([0-9]+)(.*)   tiki-read_article.php?articleId=$1$2     [QSA,L]
 RewriteRule ^art([0-9]+)(.*)       tiki-read_article.php?articleId=$1$2     [QSA,L]
-RewriteRule ^cat([0-9]+)\-?[^&]*(.*)       tiki-browse_categories.php?parentId=$1$2 [QSA,L]
+RewriteRule ^cat([0-9]+)(.*)       tiki-browse_categories.php?parentId=$1$2 [QSA,L]
 RewriteRule ^blog([0-9]+)(.*)      tiki-view_blog.php?blogId=$1$2           [QSA,L]
 RewriteRule ^blogpost([0-9]+)(.*)  tiki-view_blog_post.php?postId=$1$2      [QSA,L]
 RewriteRule ^browseimage([0-9]+)(.*) tiki-browse_image.php?imageId=$1$2     [QSA,L]
@@ -177,6 +181,6 @@ RewriteRule ^(.+)$                 tiki-index.php?page=$1                   [QSA
 #Require valid-user 
 
 <IfModule mod_dir.c>
-	DirectoryIndex index.php
+	DirectoryIndex tiki-index.php
 </IfModule>
 
