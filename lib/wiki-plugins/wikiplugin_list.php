@@ -40,13 +40,12 @@ function wikiplugin_list($data, $params)
 
 	foreach ($matches as $match) {
 		$name = $match->getName();
-		$arguments = $argumentParser->parse($match->getArguments());
 
-		foreach ($arguments as $key => $value) {
+		foreach ($argumentParser->parse($match->getArguments()) as $key => $value) {
 			$function = "wpquery_{$name}_{$key}";
 
 			if (function_exists($function)) {
-				$function($query, $value, $arguments);
+				$function($query, $value);
 			}
 
 			$function = "wpformat_{$name}_{$key}";
@@ -130,15 +129,9 @@ function wpquery_filter_deepcategories($query, $value)
 	$query->filterCategory($value, true);
 }
 
-function wpquery_filter_content($query, $value, array $arguments)
+function wpquery_filter_content($query, $value)
 {
-	if (isset($arguments['field'])) {
-		$fields = explode(',', $arguments['field']);
-	} else {
-		$fields = TikiLib::lib('tiki')->get_preference('unified_default_content', array('contents'), true);
-	}
-
-	$query->filterContent($value, $fields);
+	$query->filterContent($value, TikiLib::lib('tiki')->get_preference('unified_default_content', array('contents'), true));
 }
 
 function wpquery_filter_language($query, $value)

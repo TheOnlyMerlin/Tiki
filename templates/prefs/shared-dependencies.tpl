@@ -8,6 +8,3 @@
 		{/if}
 	{/foreach}
 {/if}
-{foreach from=$p.notes item=note}
-	<div class="pref_note">{$note|escape}</div>
-{/foreach}

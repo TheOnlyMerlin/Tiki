@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Copyright allows to determine a copyright for all the objects of tikiwiki{/tr}.{/remarksbox}
 
 <form action="tiki-admin.php?page=copyright" method="post">
@@ -18,7 +16,7 @@
 			<div class="adminoptionboxchild">
 				{preference name=wiki_feature_copyrights}
 				{preference name=articles_feature_copyrights}
-				{preference name=blogs_feature_copyrights}
+				{preference name=blogues_feature_copyrights}
 				{preference name=faqs_feature_copyrights}
 			</div>
 		</div>

@@ -7,44 +7,6 @@
 
 class Tracker_Field_Rating extends Tracker_Field_Abstract
 {
-	public static function getTypes()
-	{
-		return array(
-			'*' => array(
-				'name' => tr('Stars'),
-				'description' => tr('Displays a star rating'),
-				'readonly' => true,
-				'params' => array(
-					'option' => array(
-						'name' => tr('Option'),
-						'description' => tr('A possible option for the rating.'),
-						'filter' => 'int',
-						'count' => '*',
-					),
-				),
-			),
-			's' => array(
-				'name' => tr('Stars (system)'),
-				'description' => tr('Displays a star rating'),
-				'readonly' => true,
-				'deprecated' => true,
-				'params' => array(
-					'option' => array(
-						'name' => tr('Option'),
-						'description' => tr('A possible option for the rating.'),
-						'filter' => 'int',
-						'count' => '*',
-					),
-				),
-			),
-		);
-	}
-
-	public static function build($type, $trackerDefinition, $fieldInfo, $itemData)
-	{
-		return new self($fieldInfo, $itemData, $trackerDefinition);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		global $user;

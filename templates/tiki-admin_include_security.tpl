@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
 	{tr}Please see the <a class='rbox-link' target='tikihelp' href='http://dev.tiki.org/Security'>Security page</a> on Tiki's developer site.{/tr}
 	{tr}See <a href="tiki-admin_security.php" title="Security"><strong>Admin &gt; Security Admin</strong></a> for additional security settings{/tr}.
@@ -27,8 +25,7 @@
 			{tr}Please also see:{/tr} <a href="tiki-admin.php?page=login">{tr}HTTPS (SSL) and other login preferences{/tr}</a>
 
 			{preference name=newsletter_external_client}
-
-			{preference name=tiki_check_file_content}
+			
 		<fieldset>
 			<legend>{tr}CSRF Security{/tr}{help url="Security"}</legend>
 			<div class="adminoptionbox">

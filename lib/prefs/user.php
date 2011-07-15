@@ -5,13 +5,13 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_user_list($partial = false) {
+function prefs_user_list() {
 	
 	global $prefs;
 	
 	$catree = array('-1' => tra('None'));
 
-	if (! $partial && $prefs['feature_categories'] == 'y') {
+	if ($prefs['feature_categories'] == 'y') {
 		global $categlib;
 
 		include_once ('lib/categories/categlib.php');
@@ -30,7 +30,6 @@ function prefs_user_list($partial = false) {
 			'description' => tra('Show user\'s real name instead of login (when possible)'),
 			'help' => 'User+Preferences',
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'user_tracker_infos' => array(
 			'name' => tra('Display UserTracker information on the user information page'),
@@ -42,13 +41,11 @@ function prefs_user_list($partial = false) {
 			'dependencies' => array(
 				'userTracker',
 			),
-			'default' => '',
 		),
 		'user_assigned_modules' => array(
 			'name' => tra('Users can configure modules'),
 			'help' => 'Users+Configure+Modules',
 			'type' => 'flag',
-			'default' => 'n',
 		),	
 		'user_flip_modules' => array(
 			'name' => tra('Users can shade modules'),
@@ -60,13 +57,11 @@ function prefs_user_list($partial = false) {
 				'module' => tra('Module decides'),
 				'n' => tra('Never'),
 			),
-			'default' => 'module',
 		),
 		'user_store_file_gallery_picture' => array(
 			'name' => tra('Store full-size copy of avatar in file gallery'),
 			'help' => 'User+Preferences',
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'user_picture_gallery_id' => array(
 			'name' => tra('File gallery to store full-size copy of avatar in'),
@@ -75,7 +70,6 @@ function prefs_user_list($partial = false) {
 			'type' => 'text',
 			'filter' => 'digits',
 			'size' => '3',
-			'default' => 0,
 		),
 		'user_who_viewed_my_stuff' => array(
 			'name' => tra('Display who viewed my stuff on the user information page'),
@@ -91,7 +85,6 @@ function prefs_user_list($partial = false) {
 			'type' => 'text',
 			'filter' => 'digit',
 			'size' => '4',
-			'default' => 90,
 		),
 		'user_who_viewed_my_stuff_show_others' => array(
 			'name' => tra('Show to others who viewed my stuff on the user information page'),
@@ -100,13 +93,11 @@ function prefs_user_list($partial = false) {
 			'dependencies' => array(
 				'user_who_viewed_my_stuff',
 			),
-			'default' => 'n',
 		),
 		'user_list_order' => array(
 			'name' => tra('Sort Order'),
 			'type' => 'list',
-			'options' => $partial ? array() : UserListOrder(),
-			'default' => 'score_desc',
+			'options' => UserListOrder(),
 		),
 		'user_selector_threshold' => array(
 			'name' => tra('Maximum number of users to show in drop down lists'),
@@ -123,7 +114,6 @@ function prefs_user_list($partial = false) {
 			'dependencies' => array(
 				'userTracker',
 			),
-			'default' => 'n',
 		),
 		'user_register_prettytracker_tpl' => array(
 			'name' => tra('Registration pretty tracker template'),
@@ -133,7 +123,6 @@ function prefs_user_list($partial = false) {
 			'dependencies' => array(
 				'user_register_pretty_tracker',
 			),
-			'default' => '',
 		),
 		'user_trackersync_trackers' => array(
 			'name' => tra('User tracker IDs to sync prefs from'),
@@ -153,7 +142,6 @@ function prefs_user_list($partial = false) {
 				'userTracker',
 				'user_trackersync_trackers',
 			),
-			'default' => '',
 		),
 		'user_trackersync_geo' => array(
 			'name' => tra('Synchronize long/lat/zoom to location field'),
@@ -163,7 +151,6 @@ function prefs_user_list($partial = false) {
 				'userTracker',
 				'user_trackersync_trackers',
 			),
-			'default' => 'n',
 		),
 		'user_trackersync_groups' => array(
 			'name' => tra('Synchronize categories of user tracker item to user groups'),
@@ -185,7 +172,6 @@ function prefs_user_list($partial = false) {
 				'user_trackersync_groups',
 				'feature_categories',
 			),
-			'default' => -1,
 		),
 		'user_selector_threshold' => array(
 			'name' => tra('Maximum number of users to show in drop down lists'),
@@ -193,27 +179,18 @@ function prefs_user_list($partial = false) {
 			'type' => 'text',
 			'size' => '5',
 			'dependencies' => array('feature_jquery_autocomplete'),
-			'default' => 50,
 		),
 		'user_selector_realnames_tracker' => array(
 			'name' => tra('Show user\'s real name instead of login in autocomplete selector in trackers feature'),
 			'description' => tra('Use user\'s real name instead of login in autocomplete selector in trackers feature'),
 			'type' => 'flag',
 			'dependencies' => array('feature_jquery_autocomplete', 'user_show_realnames', 'feature_trackers'),
-			'default' => 'n',
 		),
 		'user_selector_realnames_messu' => array(
 			'name' => tra('Show user\'s real name instead of login in autocomplete selector in messaging feature'),
 			'description' => tra('Use user\'s real name instead of login in autocomplete selector in messaging feature'),
 			'type' => 'flag',
 			'dependencies' => array('feature_jquery_autocomplete', 'user_show_realnames', 'feature_messages'),
-			'default' => 'n',
-		),
-		'user_favorites' => array(
-			'name' => tra('User Favorites'),
-			'description' => tra('Allows for users to flag content as their favorite.'),
-			'type' => 'flag',
-			'default' => 'n',
 		),
 	);
 }

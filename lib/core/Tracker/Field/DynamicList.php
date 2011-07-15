@@ -13,56 +13,6 @@
  */
 class Tracker_Field_DynamicList extends Tracker_Field_Abstract
 {
-	public static function getTypes()
-	{
-		return array(
-			'w' => array(
-				'name' => tra('Dynamic Items List'),
-				'description' => tra('Dynamically updates a selection list based on linked data from another tracker.'),
-				'params' => array(
-					'trackerId' => array(
-						'name' => tr('Tracker ID'),
-						'description' => tr('Tracker to link with'),
-						'filter' => 'int',
-					),
-					'filterFieldIdThere' => array(
-						'name' => tr('Field ID (Other tracker)'),
-						'description' => tr('Field ID to link with in the other tracker'),
-						'filter' => 'int',
-					),
-					'filterFieldIdHere' => array(
-						'name' => tr('Field ID (This tracker)'),
-						'description' => tr('Field ID to link with in the current tracker'),
-						'filter' => 'int',
-					),
-					'listFieldIdThere' => array(
-						'name' => tr('Listed Field'),
-						'description' => tr('Field ID to be displayed in the drop list.'),
-						'filter' => 'int',
-					),
-					'statusThere' => array(
-						'name' => tr('Status Filter'),
-						'description' => tr('Restrict listed items to specific statuses.'),
-						'filter' => 'alpha',
-						'options' => array(
-							'opc' => tr('all'),
-							'o' => tr('open'),
-							'p' => tr('pending'),
-							'c' => tr('closed'),
-							'op' => tr('open, pending'),
-							'pc' => tr('pending, closed'),
-						),
-					),
-				),
-			),
-		);
-	}
-
-	public static function build($type, $trackerDefinition, $fieldInfo, $itemData)
-	{
-		return new self($fieldInfo, $itemData, $trackerDefinition);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		$ins_id = $this->getInsertId();
@@ -95,10 +45,8 @@ $("select[name=ins_' . $this->getOption(2) . ']").change(function(e, val) {
 			$ddl.empty();
 			$.each( data, function (i,v) {
 				$ddl.append(
-					$("<option/>")
-						.attr("value", v)
-						.text(v)
-				);
+					$("<option value=" + v + ">" + v + "</option>")
+				);					
 			});
 			if (val) {
 				$ddl.val(val);

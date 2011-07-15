@@ -43,9 +43,9 @@
 									<td class="text">{$special.perm|escape}</td>
 									<td class="text">
 										{if !empty($special.objectId)}
-											<a href="tiki-objectpermissions.php?objectId={$special.objectId}&amp;objectType={$special.objectType}&amp;objectName={$special.objectName|escape}">{$special.reason|escape}</a>
+											<a href="tiki-objectpermissions.php?objectId={$special.objectId}&amp;objectType={$special.objectType}&amp;objectName={$special.objectName|escape}">{tr}{$special.reason|escape}{/tr}</a>
 										{else}
-											{$special.reason|escape}
+											{tr}{$special.reason|escape}{/tr}
 										{/if}
 										{if !empty($special.detail)}({$special.detail|escape}){/if}
 									</td>
@@ -73,7 +73,7 @@
 										{if !empty($special.objectId)}
 											<a href="tiki-objectpermissions.php?objectId={$special.objectId}&amp;objectType={$special.objectType}&amp;objectName={$special.objectName|escape}">{tr}{$special.reason|escape}:{/tr} {$special.objectName}</a>
 										{else}
-											{$special.reason|escape}: {$special.objectName}
+											{tr}{$special.reason|escape}: {$special.objectName}{/tr}
 										{/if}
 										{if !empty($special.detail)}({$special.detail|escape}){/if}
 									</td>

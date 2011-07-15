@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {if $ispublished eq 'n' && $tiki_p_edit_article eq 'y'}
 	{remarksbox type='errors' title='Not Published'}
 	{tr}This Article is currently not published and only visible by Editors{/tr}
@@ -108,7 +106,7 @@
 					{if $article_attributes}
 						<div class="articleattributes">
 							{foreach from=$article_attributes key=attname item=attvalue}
-							{$attname|escape}: {$attvalue|escape}<br />
+							{tr}{$attname|escape}:{/tr} {$attvalue|escape}<br />
 							{/foreach}
 						</div>
 					{/if}

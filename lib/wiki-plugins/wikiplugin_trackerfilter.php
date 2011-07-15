@@ -238,8 +238,6 @@ $(".trackerfilter form").submit( function () {
 		}
 		if (empty($params['max']))
 			$params['max'] = $prefs['maxRecords'];
-		if (!empty($_REQUEST['f_status']))
-			$params['status'] = $_REQUEST['f_status'];
 		wikiplugin_trackerFilter_save_session_filters($params);
 		$smarty->assign('urlquery', wikiplugin_trackerFilter_build_urlquery($params));
 		include_once('lib/wiki-plugins/wikiplugin_trackerlist.php');
@@ -315,8 +313,6 @@ function wikiplugin_trackerfilter_build_trackerlist_filter($input, $formats, &$f
 		if (substr($key, 0, 2) == 'f_' && !empty($val) && (!is_array($val) || !empty($val[0]))) {
 			if (!is_array($val)) { $val = urldecode($val); }
 			$fieldId = substr($key, 2);
-			if ($fieldId == 'status')
-				continue;
 			if (preg_match('/([0-9]+)(Month|Day|Year|Hour|Minute|Second)/', $fieldId, $matches)) { // a date
 				if (!in_array($matches[1], $ffs)) {
 					$fieldId = $matches[1];
@@ -422,13 +418,9 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 
 	$iField = 0;
 	foreach ($listfields as $fieldId) {
-		if ($fieldId == 'status' || $fieldId == 'Status') {
-			$filter = array('name' => $fieldId, 'fieldId' => 'status', 'format' => 'd', 'opts'=> array(array('id'=>'o', 'name'=>'open', 'selected'=>(!empty($_REQUEST['f_status'])&& $_REQUEST['f_status']=='o')?'y':'n'), array('id'=>'p', 'name'=>'pending', 'selected'=>(!empty($_REQUEST['f_status'])&& $_REQUEST['f_status']=='p')?'y':'n'), array('id'=>'c', 'name'=>'closed', 'selected'=>(!empty($_REQUEST['f_status'])&& $_REQUEST['f_status']=='c')?'y':'n')));
-			$filters[] = $filter;
-			continue;		}
 		if (!is_numeric($fieldId)) { // composite field
 			$filter = array('name'=> 'Text', 'fieldId'=> $fieldId, 'format'=>'sqlsearch');
-			if (!empty($_REQUEST['f_'.$fieldId])) {
+			If (!empty($_REQUEST['f_'.$fieldId])) {
 				$filter['selected'] = $_REQUEST['f_'.$fieldId];
 			}
 			$filters[] = $filter;
@@ -557,6 +549,7 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 			case 'm': // email
 			case 'y': // country
 			case 'w': //dynamic item lists
+			case 'r': //item link
 			case 'k': //page selector
 			case 'u': // user
 			case 'g': // group
@@ -579,19 +572,6 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 						$opt['selected'] = 'n';
 					}
 					$opts[] = $opt;
-				}
-				break;
-			case 'r':
-				$opts = array();
-				$handler = $trklib->get_field_handler($field);
-				$add = $handler->getFieldData();
-				$selected = empty($_REQUEST['f_'.$fieldId])? '': $_REQUEST['f_'.$fieldId];
-				foreach ($add['list'] as $id => $option) {
-					$opts[] = array(
-						'id' => $id,
-						'name' => $option,
-						'selected' => $selected == $id,
-					);
 				}
 				break;
 		

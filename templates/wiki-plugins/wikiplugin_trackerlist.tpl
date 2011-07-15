@@ -1,4 +1,3 @@
-{* $Id$ *}
 {strip}
 	{if $showtitle eq 'y'}<div class="pagetitle">{$tracker_info.name}</div>{/if}
 	{if $showdesc eq 'y'}
@@ -53,8 +52,7 @@
 {/if}
 
 <table class="normal wikiplugin_trackerlist"
-	{if $displaysheet eq 'true'}title="{$tracker_info.name}" readonly="true"{/if}
-	{if $tableassheet eq 'true'}title="{tr}Tracker - {/tr}{$tracker_info.name}" readonly="true"{/if}
+	{if $displaysheet eq 'true'}title="{$tracker_info.name}"{/if}
 	>
 
 		{if $showfieldname ne 'n' and empty($tpl)}
@@ -193,8 +191,7 @@ link="{tr}List Attachments{/tr}"><img src="img/icons/folderin.gif" alt="{tr}List
 		{assign var=itemoff value=$itemoff+1}
 		{else}{* a pretty tpl *}
 {* ------------------------------------ *}
-   			{assign var=itemoff value=$itemoff+1}
-			{include file='tracker_pretty_item.tpl' fields=$items[user].field_values item=$items[user] wiki=$tpl}
+   			{include file='tracker_pretty_item.tpl' fields=$items[user].field_values item=$items[user] wiki=$tpl}
 			{trackerheader level=-1 title='' inTable=''}
 		{/if}
 	{/section}

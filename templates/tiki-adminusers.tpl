@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {title help="Users+Management" admpage="login" url="tiki-adminusers.php"}{tr}Admin Users{/tr}{/title}
 
 <div class="navbar">
@@ -163,8 +161,7 @@
 						{/if}	
 						<td class="text">
 							{if $users[user].currentLogin eq ''}
-								{capture name=when}{$users[user].age|duration_short}{/capture}
-								{tr}Never{/tr} <em>({tr 0=$smarty.capture.when}Registered %0 ago{/tr})</em>
+								{tr}Never{/tr} <em>({tr}Registered{/tr} {$users[user].age|duration_short} {tr}ago{/tr})</em>
 							{else}
 								{$users[user].currentLogin|tiki_long_datetime}
 							{/if}

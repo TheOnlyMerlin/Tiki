@@ -1880,7 +1880,7 @@ class TikiSheetOutputHandler extends TikiSheetDataHandler
 
 		$class = empty( $sheet->cssName ) ? "" : " class='{$sheet->cssName}'";
 		$id = empty( $sheet->sheetId ) ? '' : " rel='sheetId{$sheet->sheetId}'";
-		$title = " title='" . htmlspecialchars($sheet->getTitle(), ENT_QUOTES) . "'";
+		$title = " title='{$sheet->getTitle()}'";
 		$sub = $sheet->isSubSheet ? ' style="display:none;"' : '';
 		echo "<table{$class}{$id}{$sub}{$title}>\n";
 
@@ -2266,39 +2266,6 @@ class SheetLib extends TikiLib
 		$result = $this->query( "SELECT `className`, `headerRow`, `footerRow`, `parseValues` FROM `tiki_sheet_layout` WHERE `sheetId` = ? AND `end` IS NULL", array( $sheetId ) );
 
 		return $result->fetchRow();
-	}
-	
-	function add_related_tracker($sheetdId, $trackerId) {
-		global $relationlib; require_once('lib/attributes/relationlib.php');
-		$relationlib->add_relation("tiki.sheet.tracker", "sheetId", $sheetdId, "trackerId", $trackerId);
-	}
-	
-	function remove_related_tracker($sheetdId, $trackerId) {
-		global $relationlib; require_once('lib/attributes/relationlib.php');
-		$trackerIds = array();
-		foreach($relationlib->get_relations_from("sheetId", $sheetdId, "tiki.sheet.tracker") as $result) {
-			if ($result['itemId'] == $trackerId) {
-				$relationlib->remove_relation($result['relationId']);
-			}
-		} 
-	}
-	
-	function get_related_tracker_ids($sheetdId) {
-		global $relationlib; require_once('lib/attributes/relationlib.php');
-		$trackerIds = array();
-		foreach($relationlib->get_relations_from("sheetId", $sheetdId, "tiki.sheet.tracker") as $result) {
-			$trackerIds[] = $result['itemId'];
-		}
-		return $trackerIds;
-	}
-	
-	function get_related_trackers_as_html($sheetId) {
-		$trackerHtml = '';
-		require_once ('lib/wiki-plugins/wikiplugin_trackerlist.php');
-		foreach($this->get_related_tracker_ids($sheetId) as $trackerId) {
-			$trackerHtml .= wikiplugin_trackerlist(null, array("trackerId" => $trackerId, "tableassheet" => "y"));
-		}
-		return $trackerHtml;
 	}
 	
 	function get_sheet_subsheets( $sheetId ) // {{{2

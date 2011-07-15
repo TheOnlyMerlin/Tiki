@@ -7,9 +7,6 @@
 
 interface Tracker_Field_Interface
 {
-	public static function getTypes();
-
-	public static function build($type, $trackerDefinition, $fieldInfo, $itemData);
 
 	/**
 	 * return the values of a field (not necessarily the html that will be displayed) for input or output
@@ -36,11 +33,5 @@ interface Tracker_Field_Interface
 	*/
 	function renderOutput($context = array());
 
-	/**
-	 * Generate the plain text comparison to include in the watch email.
-	 */
-	function watchCompare($old, $new);
-
-	//function handleSave($value, $oldValue);
 }
 

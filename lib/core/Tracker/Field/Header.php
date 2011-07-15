@@ -13,40 +13,6 @@
  */
 class Tracker_Field_Header extends Tracker_Field_Abstract
 {
-	public static function getTypes()
-	{
-		return array(
-			'h' => array(
-				'name' => tr('Header'),
-				'description' => tr('Displays a header between fields to delimit a section and allow folding the fields.'),
-				'readonly' => true,
-				'params' => array(
-					'level' => array(
-						'name' => tr('Header Level'),
-						'description' => tr('Level of the header to use for complex tracker structures needing multiple heading levels.'),
-						'default' => 1,
-						'filter' => 'int',
-					),
-					'toggle' => array(
-						'name' => tr('Default State'),
-						'description' => tr('Controls the section toggles'),
-						'filter' => 'alpha',
-						'default' => 'o',
-						'options' => array(
-							'o' => tr('Open'),
-							'c' => tr('Closed'),
-						),
-					),
-				),
-			),
-		);
-	}
-
-	public static function build($type, $trackerDefinition, $fieldInfo, $itemData)
-	{
-		return new self($fieldInfo, $itemData, $trackerDefinition);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		$ins_id = $this->getInsertId();

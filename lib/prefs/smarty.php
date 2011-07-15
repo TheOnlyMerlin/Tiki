@@ -11,7 +11,6 @@ function prefs_smarty_list() {
 			'name' => tra('Include smarty notices in PHP error report'),
 			'description' => tra('In most cases, smarty notices can be safely ignored. However, they may be useful in the development process when strange issues occur.'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'smarty_security' => array(
 			'name' => tra('Smarty Security'),
@@ -19,7 +18,6 @@ function prefs_smarty_list() {
 			'warning' => tra('You should leave this on unless you know what you are doing.'),
 			'type' => 'flag',
 			'perspective' => false,
-			'default' => 'y',
 		),
 		'smarty_compilation' => array(
 			'name' => tra('Smarty Compilation'),
@@ -30,7 +28,6 @@ function prefs_smarty_list() {
 				'never' => tra('Never check (performance)'),
 				'always' => tra('Always (development, slow)'),
 			),
-			'default' => 'modified',
 		),
 	);
 }

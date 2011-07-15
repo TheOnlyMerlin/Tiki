@@ -1117,7 +1117,7 @@ tr.diffheader {
 
 /* wikiplugin tracker */
 table.wikiplugin_tracker td {
-	vertical-align: top;
+	vertical-align: middle;
 	padding-bottom:1.2em;
 }
 	
@@ -2063,18 +2063,12 @@ ul.freetagged li {
 
 /* Preferences        */
 .pref_dependency {
-	margin-left: 33px;
+	margin-left: 20px;
 	font-size: 95%;
 }
 
 img.pref_dependency {
 	opacity: 0.25;
-}
-
-.pref_note {
-	margin-left: 33px;
-	font-size: 90%;
-	font-style: italic;
 }
 
 /* Perspectives (edit) */

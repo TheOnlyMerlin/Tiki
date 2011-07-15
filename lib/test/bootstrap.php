@@ -82,16 +82,6 @@ $_SESSION = array(
 	)
 );
 chdir($pwd);
-
-global $systemConfiguration;
-$systemConfiguration = new Zend_Config(
-	array(
-		'preference' => array(),
-		'rules' => array(),
-	),
-	array('readOnly' => false)
-);
-
 global $user_overrider_prefs;
 $user_overrider_prefs = array();
 require_once 'lib/setup/prefs.php';

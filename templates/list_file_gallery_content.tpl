@@ -1,10 +1,9 @@
-{* $Id$ *}
 {if empty($sort_arg)}{assign var='sort_arg' value='sort_mode'}{/if}
 <table class="normal">
 	<tr>
 		{if $gal_info.show_checked ne 'n' and ($tiki_p_admin_file_galleries eq 'y' or $tiki_p_upload_files eq 'y')}
 			{assign var=nbCols value=$nbCols+1}
-			<th class="checkbox">{select_all checkbox_names='file[],subgal[]'}</th>
+			<th style="width:1%">&nbsp;</th>
 		{/if}
 
 		{if ( $prefs.use_context_menu_icon eq 'y' or $prefs.use_context_menu_text eq 'y' ) and $gal_info.show_action neq 'n' and $prefs.javascript_enabled eq 'y'}
@@ -215,7 +214,7 @@
 		<tr class="{cycle}">
 
 			{if $gal_info.show_checked neq 'n' and ($tiki_p_admin_file_galleries eq 'y' or $tiki_p_upload_files eq 'y')}
-				<td class="checkbox">
+				<td style="text-align:center;">
 					{if $files[changes].isgal eq 1}
 						{assign var='checkname' value='subgal'}
 					{else}
@@ -390,6 +389,7 @@
 	{sectionelse}
 		{norecords _colspan=$nbCols}
 	{/section}
+
 	{if $gal_info.show_checked ne 'n' and $tiki_p_admin_file_galleries eq 'y' and $prefs.javascript_enabled eq 'y'}
 		<tr>
 			<td colspan="{$nbCols}">
@@ -397,7 +397,6 @@
 			</td>
 		</tr>
 	{/if}
-
 
 </table>
 {if $prefs.feature_jquery_tooltips eq 'y'}

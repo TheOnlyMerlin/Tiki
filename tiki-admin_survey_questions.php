@@ -23,8 +23,23 @@ if (!isset($_REQUEST["surveyId"])) {
 	die;
 }
 $smarty->assign('surveyId', $_REQUEST["surveyId"]);
-$tikilib->get_perm_object($_REQUEST['surveyId'], 'survey');
-
+$smarty->assign('individual', 'n');
+if ($userlib->object_has_one_permission($_REQUEST["surveyId"], 'survey')) {
+	$smarty->assign('individual', 'y');
+	if ($tiki_p_admin != 'y') {
+		$perms = $userlib->get_permissions(0, -1, 'permName_desc', '', 'surveys');
+		foreach($perms["data"] as $perm) {
+			$permName = $perm["permName"];
+			if ($userlib->object_has_permission($user, $_REQUEST["surveyId"], 'survey', $permName)) {
+				$$permName = 'y';
+				$smarty->assign("$permName", 'y');
+			} else {
+				$$permName = 'n';
+				$smarty->assign("$permName", 'n');
+			}
+		}
+	}
+}
 $access->check_permission('tiki_p_admin_surveys');
 
 $survey_info = $srvlib->get_survey($_REQUEST["surveyId"]);

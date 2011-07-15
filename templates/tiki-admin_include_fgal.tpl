@@ -1,4 +1,3 @@
-{* $Id$ *}
 {if !empty($errors)}
 	{remarksbox type="errors" title="{tr}Errors{/tr}"}
 		{foreach from=$errors item=error}
@@ -81,13 +80,6 @@
 				{preference name='feature_use_fgal_for_user_files'}
 				{preference name='feature_use_fgal_for_wiki_attachments'}
 				{preference name='fgal_upload_progressbar'}
-				{preference name='fgal_upload_from_source'}
-				{preference name='fgal_tracker_existing_search'}
-
-				<div class="adminoptionboxchild" id="fgal_upload_from_source_childcontainer">
-					{preference name='fgal_source_refresh_frequency'}
-					{preference name='fgal_source_show_refresh'}
-				</div>
 			</fieldset>
 
 			<fieldset>
@@ -169,7 +161,14 @@
 
 
 		{tab name="{tr}Search Indexing{/tr}"}
-			{preference name=fgal_enable_auto_indexing}
+			<div class="adminoptionbox">
+				<div class="adminoption">
+					<input type="checkbox" id="fgal_enable_auto_indexing" name="fgal_enable_auto_indexing" {if $prefs.fgal_enable_auto_indexing eq 'y'}checked="checked"{/if} />
+				</div>
+				<div class="adminoptionlabel">
+					<label for="fgal_enable_auto_indexing">{tr}Automatically index files on upload or change{/tr}.</label>
+				</div>
+			</div>
 
 			<input name="filegalhandlers" type="hidden" />
 			<div class="adminoptionbox">
@@ -189,7 +188,6 @@
 					</div>
 
 					{if !empty($missingHandlers)}
-						{tr}Tiki is pre-configured to handle many common types. If any of those are listed here, it is because the command line tool is unavailable.{/tr}
 						{remarksbox type=warning title="{tr}Missing Handlers{/tr}"}
 							{foreach from=$missingHandlers item=mime}
 								{$mime|escape}

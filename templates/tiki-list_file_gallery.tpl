@@ -1,24 +1,22 @@
-{* $Id$ *}
-
 {title help="File+Galleries" admpage="fgal"}
-	{if $edit_mode eq 'y' and $galleryId eq 0}
-		{tr}Create a File Gallery{/tr}
-	{else}
-		{if $edit_mode eq 'y'}
-			{tr}Edit Gallery:{/tr}
-		{/if}
-		{strip} 
+	{strip}
+		{if $edit_mode eq 'y' and $galleryId eq 0}
+			{tr}Create a File Gallery{/tr}
+		{else}
+			{if $edit_mode eq 'y'}
+				{tr}Edit Gallery:{/tr}&nbsp;
+			{/if}
 			{if $gal_info.type eq 'user'}
 				{if $gal_info.user eq $user}
 					{tr}My Files{/tr}
 				{else}
-					{tr}Files of {$gal_info.user}{/tr}
+					{tr}Files of $user{/tr}
 				{/if}
 			{else}
-				{$name}
+				{$name|escape}
 			{/if}
-		{/strip}
-	{/if}
+		{/if}
+	{/strip}
 {/title}
 
 {if $edit_mode neq 'y' and $gal_info.description neq ''}
@@ -208,18 +206,16 @@
 
 	{if $galleryId gt 0
 		&& $prefs.feature_file_galleries_comments == 'y'
-		&& ($tiki_p_read_comments == 'y'
+		&& (($tiki_p_read_comments == 'y'
+		&& $comments_cant != 0)
 		|| $tiki_p_post_comments == 'y'
 		|| $tiki_p_edit_comments == 'y')}
 
 		<div id="page-bar" class="clearfix">
-			<span class="button"><a id="comment-toggle" href="tiki-ajax_services.php?controller=comment&amp;action=list&amp;type=file+gallery&amp;objectId={$galleryId|escape:'url'}#comment-container">{tr}Comments{/tr}</a></span>
-			{jq}
-				$('#comment-toggle').comment_toggle();
-			{/jq}
+			{include file='comments_button.tpl'}
 		</div>
 
-		<div id="comment-container"></div>
+		{include file='comments.tpl'}
 	{/if}
 {/if}
 

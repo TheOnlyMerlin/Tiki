@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 <form action="tiki-admin.php?page=general" class="admin" method="post">
 	<input type="hidden" name="new_prefs" />
 	<div class="heading input_submit_container" style="text-align: right;">
@@ -72,7 +70,7 @@
 					<label for="testMail">{tr}Email to send a test mail{/tr}</label>
 					<input type="text" name="testMail" id="testMail" />
 				</div>
-				{preference name=email_footer}
+					{preference name="email_footer"}
 			</fieldset>
 
 			<fieldset>
@@ -103,12 +101,7 @@
 				<div class="adminoptionboxchild" id="use_proxy_childcontainer">
 					{preference name=proxy_host}
 					{preference name=proxy_port}
-
-					{preference name=proxy_user}
-					{preference name=proxy_pass}
 				</div>
-
-				{preference name=http_skip_frameset}
 			</fieldset>
 
 			<fieldset>

@@ -1,4 +1,3 @@
-{* $Id$ *} 
 {if !isset($hide_page_header) or !$hide_page_header}
 	{if $prefs.feature_siteloc eq 'page' and $prefs.feature_breadcrumbs eq 'y'}
 		{if $prefs.feature_siteloclabel eq 'y'}{tr}Location : {/tr}{/if}

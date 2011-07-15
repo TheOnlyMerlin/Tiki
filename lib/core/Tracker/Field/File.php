@@ -13,35 +13,6 @@
  */
 class Tracker_Field_File extends Tracker_Field_Abstract
 {
-	public static function getTypes()
-	{
-		return array(
-			'A' => array(
-				'name' => tr('Attachment'),
-				'description' => tr('Allows a file to be attached to the tracker item.'),
-				'params' => array(
-					'listview' => array(
-						'name' => tr('List View'),
-						'description' => tr('Defines how attachments will be displayed within the field.'),
-						'options' => array(
-							'n' => tr('name'),
-							't' => tr('type'),
-							'ns' => tr('name, size'),
-							'nts' => tr('name, type, size'),
-							'u' => tr('uploader'),
-							'm' => tr('mediaplayer'),
-						),
-					),
-				),
-			),
-		);
-	}
-
-	public static function build($type, $trackerDefinition, $fieldInfo, $itemData)
-	{
-		return new self($fieldInfo, $itemData, $trackerDefinition);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		$ins_id = $this->getInsertId();
@@ -95,43 +66,6 @@ class Tracker_Field_File extends Tracker_Field_Abstract
 										   $smarty);
 		}
 		return $link;
-	}
-
-	function handleSave($value, $oldValue)
-	{
-		global $prefs, $user;
-		$tikilib = TikiLib::lib('tiki');
-
-		$trackerId = $this->getConfiguration('trackerId');
-		$file_name = $this->getConfiguration('file_name');
-		$file_size = $this->getConfiguration('file_size');
-		$file_type = $this->getConfiguration('file_type');
-
-		$perms = Perms::get('tracker', $trackerId);
-		if ($perms->attach_trackers && $file_name) {
-			if ($prefs['t_use_db'] == 'n') {
-				$fhash = md5($file_name.$tikilib->now);
-				if (file_put_contents($prefs['t_use_dir'] . $fhash, $value) === false) {
-					$smarty->assign('msg', tra('Cannot write to this file:'). $fhash);
-					$smarty->display("error.tpl");
-					die;
-				}
-				return array(
-					'value' => '',
-				);
-			} else {
-				$fhash = 0;
-			}
-
-			$trklib = TikiLib::lib('trk');
-			return array(
-				'value' => $trklib->replace_item_attachment($oldValue, $file_name, $file_type, $file_size, $value, '', $user, $fhash, '', '', $trackerId, $this->getItemId(), '', false),
-			);
-		}
-
-		return array(
-			'value' => '',
-		);
 	}
 }
 

@@ -2,7 +2,7 @@
 {title help="Spreadsheet"}{$title}{/title}
 
 <div>
-  {$description|escape}
+  {$description}
 </div>
 
 <div class="navbar">

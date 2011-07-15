@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {title help="Groups+Management" admpage="login"}{tr}Admin groups{/tr}{/title}
 
 <div class="navbar">
@@ -60,10 +58,7 @@
 				<td class="text">{tr}{$users[user].groupDesc|escape|nl2br}{/tr}</td>
 				<td class="text">
 					{section name=ix loop=$users[user].included}
-						{if !in_array($users[user].included[ix], $users[user].included_direct)}<i>{/if}
-						{$users[user].included[ix]|escape}
-						{if !in_array($users[user].included[ix], $users[user].included_direct)}</i>{/if}
-						<br />
+						{$users[user].included[ix]|escape}<br />
 					{/section}
 				</td>
 				<td class="text">
