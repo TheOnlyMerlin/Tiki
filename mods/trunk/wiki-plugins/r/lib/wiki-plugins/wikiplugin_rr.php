@@ -23,6 +23,7 @@ function wikiplugin_rr_info() {
 		'validate' => 'all',
 		'body' => tra('R Code'),
 		'icon' => 'pics/icons/r.png',	
+		'format' => 'html',
 		'params' => array(
 			'attId' => array(
 				'required' => false,
@@ -137,10 +138,18 @@ function wikiplugin_rr_info() {
 
 
 function wikiplugin_rr($data, $params) {
-	global $smarty, $trklib, $tikilib, $prefs;
+	global $smarty, $trklib, $tikilib, $prefs, $dbversion_tiki ;
 
 	# Clean the <br /> , <p> and </p> tags added by the Tiki or smarty parsers.
 	$data = str_replace(array("<br />", "<p>", "</p>"), "", $data);
+
+	// quick fix for 7.1RC1 - might find a better one soon... (jb).  Thanks jonnyb!
+	if (stripos($data, '&lt;') !== false ||
+				stripos($data, '&gt;') !== false ||
+				stripos($data, '&quot;') !== false
+			) {	// add more bad entities here 
+		$data =$tikilib->htmldecode($data);
+	}
 	
 	if ($params["security"]==0) {
 		/* do nothing: i.e. don't check for security in the command sent to R*/
@@ -253,12 +262,25 @@ function wikiplugin_rr($data, $params) {
 	$fn   = runR ($output, convert, $sha1, $data, '', $ws, $params);
 
 	$ret = file_get_contents ($fn);
+// XXX
+	// Check for Tiki version, to apply parsing of content or not (behavior changed in Tiki7, it seems)
+	if ($dbversion_tiki>=7.0) {
+		if (isset($params["wikisyntax"]) && $params["wikisyntax"]==1) {
+			return $tikilib->parse_data($ret, array());	// probably need some parsing options here? like is_html maybe
+		}else{ 		// if wikisyntax != 1 : no parsing of any wiki syntax
+			return $ret;
+//			return '~np~'.$ret.'~/np~';
+		}
+	}else{ 	// case for Tiki versions earlier than 7.0, where content is parsed by default	
+		if (isset($params["wikisyntax"]) && $params["wikisyntax"]==1) {
+			return $tikilib->parse_data($ret, array());
+			// return $ret;
+		}else{ 		// if wikisyntax != 1 : no parsing of any wiki syntax
+			return $ret;
+//			return '~np~'.$ret.'~/np~';
+		}
+	} // end of check for Tiki version
 
-	if (isset($params["wikisyntax"]) && $params["wikisyntax"]==1) {
-		return $ret;
-	}else{ 		// if wikisyntax != 1 : no parsing of any wiki syntax
-		return '~np~'.$ret.'~/np~';
-	}
 }
 
 
@@ -272,6 +294,12 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 	$rst  = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.html';
 	$rgo  = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.png';
 	$rgo_rel  = graph_dir . DIRECTORY_SEPARATOR . $sha1 . '.png';
+
+	if (isset($params["wikisyntax"])) {
+		$wikisyntax = $params["wikisyntax"];
+	}else{ 	
+		$wikisyntax = "0";
+	}
 
 	if (isset($params["width"])) {
 		$width = $params["width"];
@@ -287,6 +315,8 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 
 	if (isset($params["units"])) {
 		$units = $params["units"];
+	}else if( (isset($params["X11"]) || isset($params["x11"])) && ($params["X11"]==0 || $params["x11"]==0) ) {
+		$units = "";
 	}else{
 		$units = "px";
 	}
@@ -312,19 +342,20 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 	if (isset($params["wrap"])) {
 		$wrap = $params["wrap"];
 	}else{ 		// if not specified, use wrapping to avoid breaking layout
-		$wrap = 1;
+		$wrap = "1";
 	}
-	if ( isset($wrap) && $wrap == 1 ) {
+	if ( isset($wrap) && $wrap == "1" && isset($wikisyntax) && $wikisyntax == "0") {
 		// Force wrapping in <pre> tag through a CSS hack
 		$pre_style = 'white-space:pre-wrap;'
 			.' white-space:-moz-pre-wrap !important;'
 			.' white-space:-pre-wrap;'
 			.' white-space:-o-pre-wrap;'
 			.' word-wrap:break-word;';
-	} else {
+	} else{
 		// If there is no wrapping, display a scrollbar (only if needed) to avoid truncating the text
 		$pre_style = 'overflow:auto;';
-	}
+echo $wrap;
+	} 
 	
 
 	if (!file_exists($rst) or onsave) {
@@ -338,7 +369,7 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 		// Alternatively, request the user to use extra param x11=0 if no X11 on server.
 		if ( (isset($params["X11"]) || isset($params["x11"])) && ($params["X11"]==0 || $params["x11"]==0) ) {
 //			$content = 'dev2bitmap("' . $rgo . '", type = "png16", res = 72, height = 7, width = 7)' . "\n";
-			$content = 'cat(" -->")'."\n". 'dev2bitmap("' . $rgo . '" , width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', res = ' . $res . ')' . "\n";
+			$content = 'cat(" -->")'."\n". 'dev2bitmap("' . $rgo . '" , width = ' . $width . ', height = ' . $height . ', units = ' . $units . ', pointsize = ' . $pointsize . ', res = ' . $res . ')' . "\n";
 			$content .= 'dev.off()' . "\n";
 			// Add the user input code at the end
 			$content .= $input . "\n";
@@ -363,6 +394,7 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 				$content .= 'cat(" -->")'."\n". 'png(filename = "' . $rgo . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
 				// Add the user input code at the end
 				$content .= $input . "\n";
+
 			}
 		}
 		$content .= 'q()';
@@ -393,6 +425,7 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 	$r_count++;
 	
 	return $rst;
+
 }
 
 function runRinShell ($cmd, $chmf, &$r_exitcode) {
