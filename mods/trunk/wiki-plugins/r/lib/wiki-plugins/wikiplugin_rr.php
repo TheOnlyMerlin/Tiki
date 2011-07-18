@@ -262,14 +262,14 @@ function wikiplugin_rr($data, $params) {
 	$fn   = runR ($output, convert, $sha1, $data, '', $ws, $params);
 
 	$ret = file_get_contents ($fn);
-// XXX
 	// Check for Tiki version, to apply parsing of content or not (behavior changed in Tiki7, it seems)
+	// Right now, the behavior seems the almost the same one on 7+ and <7, but just in case, I leave this version check in place, 
+	// since some changes are expected sooner or later..., so I leave this as an easy place holder (and proof-of-concept of working version check 
 	if ($dbversion_tiki>=7.0) {
 		if (isset($params["wikisyntax"]) && $params["wikisyntax"]==1) {
-			return $tikilib->parse_data($ret, array());	// probably need some parsing options here? like is_html maybe
+			return $tikilib->parse_data($ret, array('is_html'=>true));	// the is_html parsing options are needed, in tiki7+, it seems, but not in < 7.0
 		}else{ 		// if wikisyntax != 1 : no parsing of any wiki syntax
 			return $ret;
-//			return '~np~'.$ret.'~/np~';
 		}
 	}else{ 	// case for Tiki versions earlier than 7.0, where content is parsed by default	
 		if (isset($params["wikisyntax"]) && $params["wikisyntax"]==1) {
@@ -277,7 +277,6 @@ function wikiplugin_rr($data, $params) {
 			// return $ret;
 		}else{ 		// if wikisyntax != 1 : no parsing of any wiki syntax
 			return $ret;
-//			return '~np~'.$ret.'~/np~';
 		}
 	} // end of check for Tiki version
 
