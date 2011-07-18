@@ -2,10 +2,10 @@ contributor:
 $Author: xavi $
 
 revision: 
-$Revision: 0.61 $
+$Revision: 0.62 $
 
 lastmodif:
-$Date: 2011-01-21 22:07:00 $
+$Date: 2011-07-18 18:31:00 $
 
 files: 
 wiki-plugins/r/lib/wiki-plugins/wikiplugin_r.php lib/wiki-plugins/wikiplugin_r.php
@@ -39,3 +39,4 @@ Changelog:
 0.5  parsing xml files fixed. Wrap param added (and enabled by default). Since 0.5.1, calls to the r plugin don't require admin validation, and in addition, can't execute dangerous commands. A new sister plugin is added (rr) which allows executing potentially dangerous commands. Since 0.52, icon is added, and textarea box to allow inserting R code from the plugin helper is added.
 0.60 Added basic codemirror css and js file for rsplus (so far, only copied from the Python ones). Further improvements to the highlighter for rsplus to come.
 0.61 Removed codemirror css and js files since they are now part of Tiki 7. Plugin made compatible again with Tiki <7. Carriage returns allowed inside R code in pretty trackers through wiki page templates, because PluginR removes all br p /p tags from the content to be parsed by R. Thanks Jonnyb for tips.
+0.62 Ported to work with Tiki7.x also (thanks jonnyb), and minor issue fixed with servers where R has no X11 support.
