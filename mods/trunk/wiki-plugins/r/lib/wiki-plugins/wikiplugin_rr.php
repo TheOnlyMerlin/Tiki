@@ -315,8 +315,6 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 
 	if (isset($params["units"])) {
 		$units = $params["units"];
-	}else if( (isset($params["X11"]) || isset($params["x11"])) && ($params["X11"]==0 || $params["x11"]==0) ) {
-		$units = "";
 	}else{
 		$units = "px";
 	}
@@ -369,7 +367,7 @@ echo $wrap;
 		// Alternatively, request the user to use extra param x11=0 if no X11 on server.
 		if ( (isset($params["X11"]) || isset($params["x11"])) && ($params["X11"]==0 || $params["x11"]==0) ) {
 //			$content = 'dev2bitmap("' . $rgo . '", type = "png16", res = 72, height = 7, width = 7)' . "\n";
-			$content = 'cat(" -->")'."\n". 'dev2bitmap("' . $rgo . '" , width = ' . $width . ', height = ' . $height . ', units = ' . $units . ', pointsize = ' . $pointsize . ', res = ' . $res . ')' . "\n";
+			$content = 'cat(" -->")'."\n". 'dev2bitmap("' . $rgo . '" , width = ' . $width . ', height = ' . $height . ',  pointsize = ' . $pointsize . ', res = ' . $res . ')' . "\n";
 			$content .= 'dev.off()' . "\n";
 			// Add the user input code at the end
 			$content .= $input . "\n";
