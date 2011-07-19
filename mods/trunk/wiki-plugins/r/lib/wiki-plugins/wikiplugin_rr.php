@@ -143,12 +143,14 @@ function wikiplugin_rr($data, $params) {
 	# Clean the <br /> , <p> and </p> tags added by the Tiki or smarty parsers.
 	$data = str_replace(array("<br />", "<p>", "</p>"), "", $data);
 
-	// quick fix for 7.1RC1 - might find a better one soon... (jb).  Thanks jonnyb!
-	if (stripos($data, '&lt;') !== false ||
-				stripos($data, '&gt;') !== false ||
-				stripos($data, '&quot;') !== false
-			) {	// add more bad entities here 
-		$data =$tikilib->htmldecode($data);
+	if ($dbversion_tiki>=7.0) {
+	  // quick fix for 7.1RC1 - might find a better one soon... (jb).  Thanks jonnyb!
+		if (stripos($data, '&lt;') !== false ||
+					stripos($data, '&gt;') !== false ||
+					stripos($data, '&quot;') !== false
+				) {	// add more bad entities here 
+			$data =$tikilib->htmldecode($data);
+		}
 	}
 	
 	if ($params["security"]==0) {
@@ -245,7 +247,7 @@ function wikiplugin_rr($data, $params) {
 
 	defined('graph_file_name')  || define('graph_file_name', $sha1 . '.png');
 
-	if ( isset($params["attId"]) && ($type == "text/csv" || $type == "text/comma-separated-values")) {
+	if ( isset($params["attId"]) && ($type == "text/csv" || $type == "text/comma-separated-values"  || $type == "text/plain")) {
 		$path = $_SERVER["SCRIPT_NAME"];
 		// record filetype, data_file (path and file name), and data (contents) to be displayed, if desired, from R
 		$data = "file_type <- \"$type\"\ndata_file <- \"$filepath\"\ndata <- read.csv(\"$filepath\")\n$data";
