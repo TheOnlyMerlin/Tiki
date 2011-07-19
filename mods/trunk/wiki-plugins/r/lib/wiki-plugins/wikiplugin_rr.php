@@ -258,6 +258,11 @@ function wikiplugin_rr($data, $params) {
 	} else {
 		// do nothing
 	}
+	if ($dbversion_tiki>=7.0) {
+	  # Clean the <br /> , <p> and </p> tags added by the Tiki or smarty parsers on smarty templates in tiki7
+	  $data = str_replace(array("<br />", "<p>", "</p>"), "", $data);
+	}
+
 	// execute R program
 	$fn   = runR ($output, convert, $sha1, $data, '', $ws, $params);
 
