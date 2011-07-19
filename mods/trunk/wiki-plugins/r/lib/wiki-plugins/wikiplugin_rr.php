@@ -253,7 +253,7 @@ function wikiplugin_rr($data, $params) {
 		$path = $_SERVER["SCRIPT_NAME"];
 		// record filetype, data_file (path and file name), and data (contents) to be displayed, if desired, from R
 		$data = "library(XML)\nfile_type <- \"$type\"\ndata_file <- xml(\"$filepath\")\ndata <- xmlTreeParse(data_file,  getDTD = F )\n$data";
-	} elseif (isset($params["attId"]) && $type != "text/csv" && $type != "text/comma-separated-values" && $type != "text/xml") {
+	} elseif (isset($params["attId"]) && $type != "text/csv" && $type != "text/comma-separated-values" && $type != "text/xml" && $type != "text/plain") {
 		$data = "data <- \"This file type is not recognized: $type.<br />Read the <a href=http://doc.tiki.org/PluginR>documentation</a> about the allowed filetypes\"\nfile_type <- \"$type\"\ndata_file <- \"$filepath\"\n$data";	
 	} else {
 		// do nothing
