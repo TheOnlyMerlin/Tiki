@@ -140,6 +140,8 @@ function wikiplugin_rr_info() {
 function wikiplugin_rr($data, $params) {
 	global $smarty, $trklib, $tikilib, $prefs, $dbversion_tiki ;
 
+	include_once('db/tiki-db.php');	// to set up multitiki etc if there ($tikidomain)
+
 	# Clean the <br /> , <p> and </p> tags added by the Tiki or smarty parsers.
 	$data = str_replace(array("<br />", "<p>", "</p>"), "", $data);
 
@@ -220,11 +222,11 @@ function wikiplugin_rr($data, $params) {
 		// --save : data sets are saved at the end of the R session
 		// --quiet : Do not print out the initial copyright and welcome messages from R
 		defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --save --quiet'));
-//		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' . $_REQUEST['itemId']);
-		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/_itemid_' . sprintf ("%06u", $_REQUEST['itemId']));
+		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
+		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. '_itemid_' . sprintf ("%06u", $_REQUEST['itemId']));
 		mkdir(r_dir, 0700);
-//		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/' . $_REQUEST['itemId']);
-		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/_itemid_' . sprintf ("%06u", $_REQUEST['itemId']));
+		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
+		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. '_itemid_' . sprintf ("%06u", $_REQUEST['itemId']));
 	}elseif (isset($params["loadandsave"]) && $params["loadandsave"]==1) {
 		// --save : data sets are saved at the end of the R session
 		// --quiet : Do not print out the initial copyright and welcome messages from R
@@ -233,24 +235,32 @@ function wikiplugin_rr($data, $params) {
 		//Convert spaces into some character to avoid R complaining becuase it can't create such folder in the server
 		$wikipage = str_replace(array(" ", "+"), "_", $_REQUEST['page']);
 
-		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' . $wikipage);
+		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
+		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. $wikipage);
 		mkdir(r_dir, 0700);
-		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/' . $wikipage);
+		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
+		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. $wikipage);
 		defined('wikipage')  || define('wikipage', $wikipage );
 	}else{
 		// --vanilla : Combine --no-save, --no-environ, --no-site-file, --no-init-file and --no-restore. Under Windows, this also includes --no-Rconsole.
 		// --slave : Make R run as quietly as possible. It implies --quiet and --no-save
 		defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --vanilla --slave'));
-		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache' );
-		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache' );
+		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
+		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache' .$tikidomainslash);
+		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache' .$tikidomainslash);
 	}
 
 	defined('graph_file_name')  || define('graph_file_name', $sha1 . '.png');
 
-	if ( isset($params["attId"]) && ($type == "text/csv" || $type == "text/comma-separated-values"  || $type == "text/plain")) {
+	if ( isset($params["attId"]) && ($type == "text/csv" || $type == "text/comma-separated-values")) {
 		$path = $_SERVER["SCRIPT_NAME"];
 		// record filetype, data_file (path and file name), and data (contents) to be displayed, if desired, from R
 		$data = "file_type <- \"$type\"\ndata_file <- \"$filepath\"\ndata <- read.csv(\"$filepath\")\n$data";
+	} elseif (isset($params["attId"]) && $type == "text/plain") {
+		$path = $_SERVER["SCRIPT_NAME"];
+		// record filetype, data_file (path and file name), and data (contents) to be displayed, if desired, from R
+		// read.delim & read.delim2 expect tabs as field separators (read.delim2 uses comma "," as decimal point; whereas read.delim uses point ".")
+		$data = "file_type <- \"$type\"\ndata_file <- \"$filepath\"\ndata <- read.delim2(\"$filepath\")\n$data";
 	} elseif (isset($params["attId"]) && $type == "text/xml") {
 		$path = $_SERVER["SCRIPT_NAME"];
 		// record filetype, data_file (path and file name), and data (contents) to be displayed, if desired, from R
