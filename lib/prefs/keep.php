@@ -12,7 +12,6 @@ function prefs_keep_list() {
 			'type' => 'text',
 			'size' => '5',
 			'shorthint' => tra('days'),
-			'default' => 1,
 		),
 	);	
 }

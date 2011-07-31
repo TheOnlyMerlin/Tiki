@@ -18,15 +18,4 @@ class Search_Type_PlainText implements Search_Type_Interface
 	{
 		return $this->value;
 	}
-
-	function filter(array $filters)
-	{
-		$value = $this->value;
-
-		foreach ($filters as $f) {
-			$value = $f->filter($value);
-		}
-
-		return new self($value);
-	}
 }

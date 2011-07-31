@@ -322,13 +322,6 @@ class HeaderLib
 		return $back;
 
 	}
-
-	function clear_js()
-	{
-		$this->js = array();
-		$this->jq_onready = array();
-	}
-
 	function output_js($wrap = true) {	// called in tiki.tpl - JS output at end of file now (pre 5.0)
 		global $prefs;
 
@@ -660,14 +653,6 @@ class HeaderLib
 		//$this->add_jsfile('http://maps.google.com/maps/api/js?v=3.3&sensor=false', 'external');
 		$this->add_jsfile('http://openlayers.org/api/2.10/OpenLayers.js', 'external');
 		$this->add_js('$(".map-container:not(.done)").addClass("done").createMap();');
-	}
-	
-	function add_dracula() {
-		// Because they are only used in this file, they are marked as external so they
-		// are not included in the minify
-		$this->add_jsfile( 'lib/dracula/raphael-min.js', 'external' );
-		$this->add_jsfile( 'lib/dracula/graffle.js', 'external' );
-		$this->add_jsfile( 'lib/dracula/graph.js', 'external' );
 	}
 }
 

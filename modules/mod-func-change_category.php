@@ -14,8 +14,8 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 function module_change_category_info() {
 	return array(
 		'name' => tra('Change Category'),
-		'description' => tra('Enables to categorize an object.') . " " . tra('This module currently only supports Wiki pages. Some combinations of Multiple categories, Detailed, Unassign and Assign may challenge intuition or be simply broken.'),
-		'prefs' => array('feature_categories', 'feature_wiki'),
+		'description' => tra('Enables to categorize an object.') . ' This module currently only supports Wiki pages. Some combinations of Multiple categories, Detailed, Unassign and Assign may challenge intuition or be simply broken.',
+		'prefs' => array( 'feature_categories', 'feature_wiki' ),
 		'documentation' => 'Module change_category',
 		'params' => array(
 			'id' => array(
@@ -25,7 +25,7 @@ function module_change_category_info() {
 			),
 			'notop' => array(
 				'name' => tra('No top'),
-				'description' => tra('In non-detailed view, disallow uncategorizing. Example value: 1.') . " " . tra('Not set by default.')
+				'description' => tra('In non-detailed view, disallow uncategorizing. Example value: 1.') . " " . tr('Not set by default.')
 			),
 			'path' => array(
 				'name' => tra('Display path'),
@@ -41,7 +41,7 @@ function module_change_category_info() {
 			),
 			'shy' => array(
 				'name' => tra('Shy'),
-				'description' => tra('If set to "y", the module is not shown on pages which are not already categorized.') . " " . tra('Not set by default.'),
+				'description' => tra('If set to "y", the module is not shown on pages which are not already categorized.' . " " . tra('Not set by default.')),
 			),
 			'detail' => array(
 				'name' => tra('Detailed'),

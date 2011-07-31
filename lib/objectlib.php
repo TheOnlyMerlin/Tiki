@@ -50,21 +50,21 @@ class ObjectLib extends TikiLib
     }
 
     function get_object_id($type, $itemId) {
-		$query = "select `objectId` from `tiki_objects` where `type`=? and `itemId`=?";
-		return $this->getOne($query, array($type, $itemId));
+	$query = "select `objectId` from `tiki_objects` where `type`=? and `itemId`=?";
+	return $this->getOne($query, array($type, $itemId));
     }
 
 	// Returns an array containing the object ids of objects of the same type. Each entry uses the item id as key and the object id as key. Items with no object id are ignored.
 	function get_object_ids($type, $itemIds) {
-		$query = "select `objectId`, `itemId` from `tiki_objects` where `type`=? and `itemId` IN (".implode(',', array_fill(0,count($itemIds),'?')).")";
+	$query = "select `objectId`, `itemId` from `tiki_objects` where `type`=? and `itemId` IN (".implode(',', array_fill(0,count($itemIds),'?')).")";
+
+	$result = $this->query($query, array_merge(array($type), $itemIds));
+	$objectIds = array();
 	
-		$result = $this->query($query, array_merge(array($type), $itemIds));
-		$objectIds = array();
-		
-		while ($res = $result->fetchRow()) {
-			$objectIds[$res["itemId"]] = $res["objectId"];
-		}
-		return $objectIds;
+	while ($res = $result->fetchRow()) {
+		$objectIds[$res["itemId"]] = $res["objectId"];
+	}
+	return $objectIds;
     }
 
 	function get_needed_perm($objectType, $action) {
@@ -137,7 +137,6 @@ class ObjectLib extends TikiLib
 		default : return '';
 		}	
 	}
-
 	function get_info($objectType, $object) {
 		switch ($objectType) {
 			case 'wiki': case 'wiki page':
@@ -148,18 +147,6 @@ class ObjectLib extends TikiLib
 				global $artlib; require_once 'lib/articles/artlib.php';
 				$info = $artlib->get_article($object);
 				return (array('title'=>$info['title'], 'data'=>$info['body']));
-			case 'file gallery':
-				$info = TikiLib::lib('filegal')->get_file_gallery_info($object);
-				return ( array('title' => $info['name']));
-			case 'blog':
-				$info = TikiLib::lib('blog')->get_blog($object);
-				return ( array('title' => $info['title']));
-			case 'forum':
-				$info = TikiLib::lib('comments')->get_forum($object);
-				return ( array('title' => $info['name']));
-			case 'tracker':
-				$info = TikiLib::lib('trk')->get_tracker($object);
-				return ( array('title' => $info['name']));
 		}
 		return (array('error'=>'true'));
 	}
@@ -188,29 +175,6 @@ class ObjectLib extends TikiLib
 		$result = $this->query($query,array((int) $objectId));
 		return $result->fetchRow();
 	}	
-
-	function get_title($type, $id)
-	{
-		switch ($type) {
-		case 'trackeritem':
-			return TikiLib::lib('trk')->get_isMain_value(null, $id);
-		}
-
-		$title = $this->table('tiki_objects')->fetchOne('name', array(
-			'type' => $type,
-			'itemId' => $id,
-		));
-		
-		if ($title) {
-			return $title;
-		}
-
-		$info = $this->get_info($type, $id);
-
-		if ($info) {
-			return $info['title'];
-		}
-	}
 	
 }
 $objectlib = new ObjectLib;

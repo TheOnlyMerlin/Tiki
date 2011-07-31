@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {title help="Trackers" admpage="trackers"}{tr}Admin Trackers{/tr}{/title}
 
 <div class="navbar">
@@ -161,7 +159,7 @@
 				<tr id="autoCreateGroupOptions5"{if ($info.autoCreateGroup ne 'y' or $info.autoAssignGroupItem ne 'y') and $prefs.javascript_enabled eq 'y'} style="display:none;"{/if}>
 					<td></td>
 					<td>
-						<label for="autoCopyGroup">{tr}But copy the default group in this fieldId before updating the group{/tr}</label>
+						<label for="autoCopyGroup">{tr}But copy the default group in this fiedlId before updating the group{/tr}</label>
 						<input type="text" name="autoCopyGroup" id="autoCopyGroup" value="{$info.autoCopyGroup}" />
 					</td>
 				</tr>
@@ -176,7 +174,7 @@
 				<td>{tr}Default status displayed in list mode{/tr}</td>
 				<td>
 					{foreach key=st item=stdata from=$status_types}
-						<input type="checkbox" name="defaultStatus[]" value="{$st}"{if isset($defaultStatusList.$st)} checked="checked"{/if} />
+						<input type="checkbox" name="defaultStatus[]" value="{$st}"{if $defaultStatusList.$st} checked="checked"{/if} />
 						{$stdata.label}
 						<br />
 					{/foreach}
@@ -337,7 +335,7 @@
 			</tr>
 
 			<tr>
-				<td>{tr}Tracker items allow ratings?{/tr}<br />{tr}(Deprecated, not needed to use new rating field){/tr}</td>
+				<td>{tr}Tracker items allow ratings?{/tr}</td>
 				<td>
 					<input type="checkbox" name="useRatings" {if $useRatings eq 'y'}checked="checked"{/if} onclick="toggleTrTd('ratingoptions');toggleTrTd('ratinginlisting');" />
 				</td>
@@ -401,15 +399,15 @@
 							<td>{tr}User{/tr}</td>
 						</tr>
 						<tr>
-							<td><input type="text" size="2" name="ui[filename]" value="{if isset($ui.filename)}{$ui.filename}{/if}" /></td>
-							<td><input type="text" size="2" name="ui[created]" value="{if isset($ui.created)}{$ui.created}{/if}" /></td>
-							<td><input type="text" size="2" name="ui[hits]" value="{if isset($ui.hits)}{$ui.hits}{/if}" /></td>
-							<td><input type="text" size="2" name="ui[comment]" value="{if isset($ui.comment)}{$ui.comment}{/if}" /></td>
-							<td><input type="text" size="2" name="ui[filesize]" value="{if isset($ui.filesize)}{$ui.filesize}{/if}" /></td>
-							<td><input type="text" size="2" name="ui[version]" value="{if isset($ui.version)}{$ui.version}{/if}" /></td>
-							<td><input type="text" size="2" name="ui[filetype]" value="{if isset($ui.filetype)}{$ui.filetype}{/if}" /></td>
-							<td><input type="text" size="2" name="ui[longdesc]" value="{if isset($ui.longdesc)}{$ui.longdesc}{/if}" /></td>
-							<td><input type="text" size="2" name="ui[user]" value="{if isset($ui.user)}{$ui.user}{/if}" /></td>
+							<td><input type="text" size="2" name="ui[filename]" value="{$ui.filename}" /></td>
+							<td><input type="text" size="2" name="ui[created]" value="{$ui.created}" /></td>
+							<td><input type="text" size="2" name="ui[hits]" value="{$ui.hits}" /></td>
+							<td><input type="text" size="2" name="ui[comment]" value="{$ui.comment}" /></td>
+							<td><input type="text" size="2" name="ui[filesize]" value="{$ui.filesize}" /></td>
+							<td><input type="text" size="2" name="ui[version]" value="{$ui.version}" /></td>
+							<td><input type="text" size="2" name="ui[filetype]" value="{$ui.filetype}" /></td>
+							<td><input type="text" size="2" name="ui[longdesc]" value="{$ui.longdesc}" /></td>
+							<td><input type="text" size="2" name="ui[user]" value="{$ui.user}" /></td>
 						</tr>
 					</table>
 				</td>
@@ -422,13 +420,13 @@
 					<input type="checkbox" name="start"{if $info.start} checked="checked"{/if} /> 
 					{html_select_date prefix="start_" time=$info.start start_year="0" end_year="+10" field_order=$prefs.display_field_order} 
 					<span dir="ltr">{html_select_time prefix="start_" time=$info.start display_seconds=false use_24_hours=$use_24hr_clock}</span>
-					&nbsp;{if isset($siteTimeZone)}{$siteTimeZone}{/if}
+					&nbsp;{$siteTimeZone}
 					<br />
 					{tr}Before:{/tr}
 					<input type="checkbox" name="end"{if $info.end} checked="checked"{/if} /> 
 					{html_select_date prefix="end_" time=$info.end start_year="0" end_year="+10" field_order=$prefs.display_field_order} 
 					<span dir="ltr">{html_select_time prefix="end_" time=$info.end display_seconds=false use_24_hours=$use_24hr_clock}</span>
-					&nbsp;{if isset($siteTimeZone)}{$siteTimeZone}{/if}
+					&nbsp;{$siteTimeZone}
 				</td>
 			</tr>
 
@@ -644,10 +642,6 @@ categories = {$catsdump}
 					<td><input type="checkbox" name="add_items" /></td>
 				</tr>
 				<tr>
-					<td>{tr}Update lastModif date if updating items (status and created are updated only if the fields are specified in the csv):{/tr}</td>
-					<td><input type="checkbox" name="updateLastModif" checked="checked" /></td>
-				</tr>
-				<tr>
 					<td>&nbsp;</td>
 					<td><input type="submit" name="save" value="{tr}Import{/tr}" /></td>
 				</tr>
@@ -718,19 +712,6 @@ categories = {$catsdump}
 			</tr>
 		</table>
 	</form>
-	
-	{if $prefs.tracker_remote_sync eq 'y'}
-		<h2>{tr}Duplicate Remote Tracker{/tr}</h2>
-		<form class="simple" method="post" action="tiki-ajax_services.php?controller=tracker&amp;action=clone_remote">
-			<label>
-				{tr}URL:{/tr}
-				<input type="url" name="url" required="required"/>
-			</label>
-			<div>
-				<input type="submit" value="{tr}Search for trackers to clone{/tr}"/>
-			</div>
-		</form>
-	{/if}
 {/tab}
 
 {/tabset}

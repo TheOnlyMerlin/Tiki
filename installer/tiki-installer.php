@@ -18,7 +18,6 @@ require_once( 'tiki-filter-base.php' );
 
 // Define and load Smarty components
 require_once ( 'lib/smarty/libs/Smarty.class.php');
-require_once 'lib/init/initlib.php';
 require_once ('installer/installlib.php');
 
 class InstallerDatabaseErrorHandler implements TikiDb_ErrorHandler
@@ -113,10 +112,7 @@ function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tik
 		$filetowrite .= "// \$client_charset='utf8';\n";
 		$filetowrite .= "// See http://tiki.org/ReleaseNotes5.0#Known_Issues and http://doc.tiki.org/Understanding+Encoding for more info\n\n";
 		$filetowrite .= "// If your php installation does not not have pdo extension\n";
-		$filetowrite .= "// \$api_tiki = 'adodb';\n\n";
-		$filetowrite .= "// Want configurations managed at the system level or restrict some preferences? http://doc.tiki.org/System+Configuration\n";
-		$filetowrite .= "// \$system_configuration_file = '/etc/tiki.ini';\n";
-		$filetowrite .= "// \$system_configuration_identifier = 'example.com';\n\n";
+		$filetowrite .= "// \$api_tiki = 'adodb';\n";
 		fwrite($fw, $filetowrite);
 		fclose($fw);
 	}
@@ -408,10 +404,9 @@ function list_disable_accounts() {
 }
 
 function initTikiDB( &$api, &$driver, $host, $user, $pass, $dbname, $client_charset, &$dbTiki ) {
-	global $tikifeedback, $smarty;
+	global $tikifeedback;
 	$dbcon = false;
 
-	// This section handles the case of adodb (not the preferred case)
 	if ( ( isset($api) && $api == 'adodb' ) || ! extension_loaded('pdo') ) {
 		$api = 'adodb';
 		$dbTiki = ADONewConnection( $driver );
@@ -419,34 +414,6 @@ function initTikiDB( &$api, &$driver, $host, $user, $pass, $dbname, $client_char
 		if (! $dbcon = (bool) @$dbTiki->Connect($host, $user, $pass, $dbname) ) {
 			$tikifeedback[] = array( 'num' => 1, 'mes' => $dbTiki->ErrorMsg() );
 		}
-
-		// Attempt to create database. This might work if the $user has create database permissions.
-		if ( ! $dbcon ) {
-			$dbh = ADONewConnection( $driver );
-			if ( @$dbh->Connect($host, $user, $pass) ) {
-				$dbname_clean = preg_replace('/[^a-z0-9$_]/',"",$dbname);
-				$sql="CREATE DATABASE IF NOT EXISTS `$dbname_clean` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
-				$dbcon=$dbh->Execute($sql);
-				if ( $dbcon ) {
-					$tikifeedback[] = array( 'num' => 1, 'mes'=> tra("Database `%0` was created.",'',false,array($dbname_clean)) );
-				} else {
-					$tikifeedback[] = array( 'num' => 1, 'mes'=> tra("Database `%0` creation failed. You need to create the database.",'',false,array($dbname_clean)) );
-				}
-			} else {
-				$tikifeedback[] = array( 'num' => 1, 'mes' => $dbh->ErrorMsg() );
-			}
-
-			if ( $dbcon ) {
-				$dbTiki = ADONewConnection( $driver );
-				$db = new TikiDb_Adodb( $dbTiki );
-				if (! $dbcon = (bool) @$dbTiki->Connect($host, $user, $pass, $dbname) ) {
-					$tikifeedback[] = array( 'num' => 1, 'mes' => $dbTiki->ErrorMsg() );
-				}
-			}
-
-		}
-
-	// This section handles the case of PDO (preferred case)
 	} else {
 		$db_hoststring = "host=$host";
 
@@ -464,34 +431,6 @@ function initTikiDB( &$api, &$driver, $host, $user, $pass, $dbname, $client_char
 		} catch ( PDOException $e ) {
 			$dbcon = false;
 			$tikifeedback[] = array( 'num' => 1, 'mes'=> $e->getMessage() );
-		}
-
-		if ( ! $dbcon ) {
-			try {
-				$dbh = new PDO("$driver:$db_hoststring", $user, $pass);
-				$dbname_clean = preg_replace('/[^a-z0-9$_]/',"",$dbname);
-				$sql="CREATE DATABASE IF NOT EXISTS `$dbname_clean` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
-				$dbcon=$dbh->exec($sql);
-				if ( $dbcon ) {
-					$tikifeedback[] = array( 'num' => 1, 'mes'=> tra("Database `%0` was created.",'',false,array($dbname_clean)) );
-				} else {
-					$tikifeedback[] = array( 'num' => 1, 'mes'=> tra("Database `%0` creation failed. You need to create the database.",'',false,array($dbname_clean)) );
-				}
-			} catch ( PDOException $e ) {
-				$dbcon = false;
-				$tikifeedback[] = array( 'num' => 1, 'mes'=> $e->getMessage() );
-			}
-
-			if ( $dbcon ) {
-				try {
-					$dbTiki = new PDO( "$driver:$db_hoststring;dbname=$dbname", $user, $pass );
-					$db = new TikiDb_Pdo( $dbTiki );
-				} catch ( PDOException $e ) {
-					$dbcon = false;
-					$tikifeedback[] = array( 'num' => 1, 'mes'=> $e->getMessage() );
-				}
-			}
-
 		}
 	}
 
@@ -775,7 +714,6 @@ if (
 
 if ( $dbcon ) {
 	$smarty->assign('dbcon', 'y');
-	$smarty->assign('dbname', $dbs_tiki);
 } else {
 	$smarty->assign('dbcon', 'n');
 }

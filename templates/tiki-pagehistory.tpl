@@ -1,6 +1,4 @@
-{* $Id$ *}
-
-{title admpage="wiki"}{tr}History:{/tr} {$page}{/title}
+{title admpage="wiki"}{tr}History:{/tr} {$page|escape}{/title}
 
 <div class="navbar">
 	{assign var=thispage value=$page|escape:url}
@@ -13,6 +11,8 @@
 		{/if}
 	{/if}
 </div>
+
+{include file='tiki-wiki_staging.tpl'}
 
 {if $preview}
 	<h2>{tr}Preview of version:{/tr} {$preview}

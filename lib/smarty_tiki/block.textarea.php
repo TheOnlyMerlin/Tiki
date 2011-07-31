@@ -48,8 +48,6 @@ function smarty_block_textarea($params, $content, &$smarty, $repeat) {
 	$params['id'] = isset($params['id']) ? $params['id'] : 'editwiki';
 	$params['area_id'] = isset($params['area_id']) ? $params['area_id'] : $params['id'];	// legacy param for toolbars?
 	$params['class'] = isset($params['class']) ? $params['class'] : 'wikiedit';
-	$params['comments'] = isset($params['comments']) ? $params['comments'] : 'n';
-	$params['autosave'] = isset($params['autosave']) ? $params['autosave'] : 'y';
 
 	//codemirror integration
 	if ($prefs['feature_syntax_highlighter'] === 'y') {
@@ -78,8 +76,7 @@ function smarty_block_textarea($params, $content, &$smarty, $repeat) {
 	$as_id = $params['id'];
 	
 	include_once('lib/smarty_tiki/block.remarksbox.php');
-	$editWarning = $prefs['wiki_timeout_warning'] == 'y' && isset($smarty->_tpl_vars['page']) && $smarty->_tpl_vars['page'] != 'sandbox';
-	if ($params['_simple'] === 'n' && $editWarning) {
+	if ($params['_simple'] === 'n' && isset($smarty->_tpl_vars['page']) && $smarty->_tpl_vars['page'] != 'sandbox') {
 		$html .= smarty_block_remarksbox( array( 'type'=>'tip', 'title'=>tra('Tip')),
 			tra('This edit session will expire in') .
 				' <span id="edittimeout">' . (ini_get('session.gc_maxlifetime') / 60) .'</span> '. tra('minutes') . '. ' .
@@ -90,14 +87,14 @@ function smarty_block_textarea($params, $content, &$smarty, $repeat) {
 		}
 	}
 
-	if ($prefs['feature_ajax'] == 'y' && $prefs['ajax_autosave'] == 'y' && $params['_simple'] == 'n' && $params['autosave'] == 'y') {	// retrieve autosaved content
+	if ($prefs['feature_ajax'] == 'y' && $prefs['ajax_autosave'] == 'y' && $params['_simple'] == 'n') {	// retrieve autosaved content
 		require_once("lib/ajax/autosave.php");
 		include_once('lib/smarty_tiki/block.self_link.php');
 		$auto_save_referrer = ensureReferrer();
 		if (empty($_REQUEST['autosave'])) {
 			$_REQUEST['autosave'] = 'n';
 		}
-		if (has_autosave($as_id, $auto_save_referrer)) {		//  and $params['preview'] == 0 -  why not?  
+		if (has_autosave($as_id, $auto_save_referrer)) {		//  and $params['preview'] == 0 -  why not?
 			$auto_saved = str_replace("\n","\r\n", get_autosave($as_id, $auto_save_referrer));
 			if ( strcmp($auto_saved, $content) === 0 ) {
 				$auto_saved = '';
@@ -105,8 +102,8 @@ function smarty_block_textarea($params, $content, &$smarty, $repeat) {
 			if (empty($auto_saved) || (isset($_REQUEST['mode_wysiwyg']) && $_REQUEST['mode_wysiwyg'] === 'y')) {	// switching modes, ignore auto save
 				remove_save($as_id, $auto_save_referrer);
 			} else {
-				$msg = '<div class="mandatory_star"><span class="autosave_message">'.tra('There is an autosaved draft of your recent edits, to use it instead of what is current displayed').'</span>&nbsp;' .
-							'<span class="autosave_message_2" style="display:none;">'.tra('If you want the original version instead of the autosaved draft of your edits').'</span>' .
+				$msg = '<div class="mandatory_star"><span class="autosave_message">'.tra('There is an autosaved version of this content, to use it instead of this saved one').'</span>&nbsp;' .
+							'<span class="autosave_message_2" style="display:none;">'.tra('If you want the saved version instead of this autosaved draft').'</span>' .
 							smarty_block_self_link( array( '_ajax'=>'n', '_onclick' => 'toggle_autosaved(\''.$as_id.'\',\''.$auto_save_referrer.'\');return false;'), tra('click here'), $smarty)."</div>";
 				$auto_save_warning = smarty_block_remarksbox( array( 'type'=>'info', 'title'=>tra('AutoSave')), $msg, $smarty)."\n";
 			}
@@ -174,7 +171,7 @@ window.CKEDITOR.config.extraPlugins += (window.CKEDITOR.config.extraPlugins ? ",
 window.CKEDITOR.plugins.addExternal( "tikiwiki", "'.$tikiroot.'lib/ckeditor_tiki/plugins/tikiwiki/");
 ', 5);	// before dialog tools init (10)
 		}
-		if ($prefs['feature_ajax'] === 'y' && $prefs['ajax_autosave'] === 'y' && $params['autosave'] == 'y') {
+		if ($prefs['feature_ajax'] === 'y' && $prefs['ajax_autosave'] === 'y') {
 			$headerlib->add_jq_onready('
 // --- config settings for the autosave plugin ---
 window.CKEDITOR.config.extraPlugins += (window.CKEDITOR.config.extraPlugins ? ",autosave" : "autosave" );
@@ -257,7 +254,7 @@ function CKeditor_OnComplete() {
 			$smarty->assign('textarea_attributes', $textarea_attributes);
 		}
 		$smarty->assign_by_ref('pagedata', htmlspecialchars($content));
-		$smarty->assign('comments', $params['comments']);	// jb removed fallback to using _simple here if comments not set 110720
+		$smarty->assign('comments', isset($params['comments']) ? $params['comments'] : $params['_simple'] === 'y' ? 'y' : 'n');
 		$smarty->assign('switcheditor', isset($params['switcheditor']) ? $params['switcheditor'] : 'n');
 		$smarty->assign('toolbar_section', $params['section']);
 		$html .= $smarty->fetch('wiki_edit.tpl');
@@ -389,7 +386,7 @@ function switchEditor(mode, form) {
 ";
 		}
 			
-		if( $editWarning ) {
+		if( $prefs['wiki_timeout_warning'] == 'y' ) {
 			$headerlib->add_js($js_editlock);
 		}
 		$headerlib->add_js($js_editconfirm);

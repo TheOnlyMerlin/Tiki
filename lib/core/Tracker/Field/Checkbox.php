@@ -11,20 +11,8 @@
  * Letter key: ~c~
  *
  */
-class Tracker_Field_Checkbox extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
+class Tracker_Field_Checkbox extends Tracker_Field_Abstract
 {
-	public static function getTypes()
-	{
-		return array(
-			'c' => array(
-				'name' => tr('Checkbox'),
-				'description' => tr('Provides a checkbox field for yes/no, on/off input.'),
-				'params' => array(
-				),
-			),
-		);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		$ins_id = $this->getInsertId();
@@ -44,27 +32,6 @@ class Tracker_Field_Checkbox extends Tracker_Field_Abstract implements Tracker_F
 	function renderInput($context = array())
 	{
 		return $this->renderTemplate('trackerinput/checkbox.tpl', $context);
-	}
-
-	function handleSave($value, $oldValue)
-	{
-		if ($value == 'on') {
-			$value = 'y';
-		}
-
-		return array(
-			'value' => $value,
-		);
-	}
-
-	function import($value)
-	{
-		return $value;
-	}
-
-	function export($value)
-	{
-		return $value;
 	}
 }
 

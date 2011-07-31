@@ -12,7 +12,12 @@ include_once ('lib/structures/structlib.php');
 include_once ('lib/wiki/wikilib.php');
 include_once ('lib/wiki-plugins/wikiplugin_slideshow.php');
 
-$access->check_feature('feature_wiki');
+if ($prefs['feature_wiki'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_wiki");
+
+	$smarty->display("error_raw.tpl");
+	die;
+}
 
 //make the other things know we are loading a slideshow
 $tikilib->is_slideshow = true;
@@ -110,8 +115,8 @@ $smarty->assign_by_ref('lastUser', $info["user"]);
 
 include_once ('tiki-section_options.php');
 
-$headerlib->add_cssfile( 'lib/jquery.s5/jquery.s5.css' );
-$headerlib->add_jsfile( 'lib/jquery.s5/jquery.s5.js' );
+$headerlib->add_cssfile( 'lib/jquery/jquery.s5/jquery.s5.css' );
+$headerlib->add_jsfile( 'lib/jquery/jquery.s5/jquery.s5.js' );
 $headerlib->add_jq_onready( '
 	window.s5Settings = (window.s5Settings ? window.s5Settings : {});
 	

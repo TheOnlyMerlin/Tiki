@@ -1,19 +1,22 @@
-{* $Id$ *}
 {if !isset($versioned) or not $versioned}
 	{strip}
 
 	{assign var=thispage value=$page|escape:"url"}
 
-	{capture assign=page_bar}
-		{if $prefs.user_favorites eq 'y' and $user}
-			{button _class="favorite-toggle" href="tiki-ajax_services.php?controller=favorite&amp;action=toggle&amp;type=wiki+page&amp;object=`$thispage`" _text="{tr}Toggle Favorite{/tr}"}
-		{/if}
+	{if isset($beingStaged) and $beingStaged eq 'y'}
+		{assign var=thisapprovedPageName value=$approvedPageName|escape:"url"}
+	{/if}
 
+	{capture assign=page_bar}
 		{if $edit_page neq 'y'}
 			{* Check that page is not locked and edit permission granted. SandBox can be edited w/o perm *}
-			{if ($editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') or ((!isset($user) or !$user) and $prefs.wiki_encourage_contribution eq 'y')) or $tiki_p_admin_wiki eq 'y'}
-				{assign var=thisPageName value=$thispage}
-				{if $page_ref_id}
+			{if ($editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') or ((!isset($user) or !$user) and $prefs.wiki_encourage_contribution eq 'y')) or $tiki_p_admin_wiki eq 'y' or (isset($canEditStaging) and $canEditStaging eq 'y')}
+				{if isset($needsStaging) and $needsStaging eq 'y'}
+					{assign var=thisPageName value=$stagingPageName|escape:"url"}
+				{else}
+					{assign var=thisPageName value=$thispage}
+				{/if}
+				{if $page_ref_id and $needsStaging neq 'y'}
 					{assign var=thisPageRefId value="&amp;page_ref_id=$page_ref_id"}
 				{else}
 					{assign var=thisPageRefId value=""}
@@ -40,7 +43,11 @@
 				{/if}
 
 				{if $tiki_p_rename eq 'y' && $editable}
-					{button href="tiki-rename_page.php?page=$thispage" _text="{tr}Rename{/tr}"}
+					{if isset($beingStaged) and $beingStaged eq 'y'}
+						{button href="tiki-rename_page.php?page=$thisapprovedPageName" _text="{tr}Rename{/tr}"}
+					{else}
+						{button href="tiki-rename_page.php?page=$thispage" _text="{tr}Rename{/tr}"}
+					{/if}
 				{/if}
 
 				{if $prefs.feature_wiki_usrlock eq 'y' and isset($user) and $user and $tiki_p_lock eq 'y'}
@@ -89,7 +96,7 @@
 				{button href="tiki-export_wiki_pages.php?page=$thispage" _text="{tr}Export{/tr}"}
 			{/if}
 
-			{if $prefs.feature_wiki_discuss eq 'y' && $show_page eq 'y' && $tiki_p_forum_post eq 'y'}
+			{if $prefs.feature_wiki_discuss eq 'y' && $show_page eq 'y' && $beingStaged ne 'y' && $tiki_p_forum_post eq 'y'}
 				{capture name='wiki_discussion_string'}{include file='wiki-discussion.tpl'}{/capture}
 				{assign var=thiswiki_discussion_string value=$smarty.capture.wiki_discussion_string|escape:"url"}
 				{button href="tiki-view_forum.php?forumId=`$prefs.wiki_forum_id`&amp;comments_postComment=post&amp;comments_title=$thispage&amp;comments_data=$thiswiki_discussion_string%3A+%5Btiki-index.php%3Fpage=$thispage%7C$thispage%5D&amp;comment_topictype=n" _text="{tr}Discuss{/tr}"}
@@ -99,16 +106,14 @@
 
 				{* don't show comments if feature disabled or not enough rights *}
 				{if $prefs.feature_wiki_comments == 'y'
-					&& ($prefs.wiki_comments_allowed_per_page neq 'y' or $info.comments_enabled eq 'y')
+					&& $comments_allowed_on_page == 'y'
 					&& $tiki_p_wiki_view_comments == 'y'
 					&& (($tiki_p_read_comments == 'y'
 					&& $comments_cant != 0)
 					|| $tiki_p_post_comments == 'y'
 					||$tiki_p_edit_comments == 'y')}
-					<span class="button"><a id="comment-toggle" href="tiki-ajax_services.php?controller=comment&amp;action=list&amp;type=wiki+page&amp;objectId={$page|escape:'url'}#comment-container">{tr}Comments{/tr}</a></span>
-					{jq}
-						$('#comment-toggle').comment_toggle();
-					{/jq}
+					{assign var=pagemd5 value=$page|@md5}
+					{include file='comments_button.tpl'}
 				{/if}
 
 				{* don't show attachments button if feature disabled or no corresponding rights or no attached files and r/o*}
@@ -138,7 +143,11 @@
 				{/if}{* attachments *}
 
 				{if $prefs.feature_multilingual eq 'y' and ($tiki_p_edit eq 'y' or ((!isset($user) or !$user) and $prefs.wiki_encourage_contribution eq 'y')) and !$lock}
-					{button href="tiki-edit_translation.php?page=$thispage" _text="{tr}Translate{/tr}"}
+					{if $beingStaged == 'y'}
+						{button href="tiki-edit_translation.php?page=$thisapprovedPageName" _text="{tr}Translate{/tr}"}
+					{else}
+						{button href="tiki-edit_translation.php?page=$thispage" _text="{tr}Translate{/tr}"}
+					{/if}
 				{/if}
 
 				{if $tiki_p_admin_wiki eq 'y' && $prefs.wiki_keywords eq 'y'}
@@ -166,8 +175,9 @@
 		{/if}
 	{/if}
 
-	{if $prefs.feature_wiki_comments eq 'y' and $tiki_p_wiki_view_comments == 'y' and $edit_page ne 'y'}
-		<div id="comment-container"></div>
+	{if $prefs.feature_wiki_comments eq 'y' and $tiki_p_wiki_view_comments == 'y' and $edit_page ne 'y' and $comments_allowed_on_page == 'y'}
+		<a name="comments"></a>
+		{include file='comments.tpl'}
 	{/if}
 
 	{/strip}

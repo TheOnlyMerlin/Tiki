@@ -11,37 +11,8 @@
  * Letter key: ~h~
  *
  */
-class Tracker_Field_Header extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
+class Tracker_Field_Header extends Tracker_Field_Abstract
 {
-	public static function getTypes()
-	{
-		return array(
-			'h' => array(
-				'name' => tr('Header'),
-				'description' => tr('Displays a header between fields to delimit a section and allow folding the fields.'),
-				'readonly' => true,
-				'params' => array(
-					'level' => array(
-						'name' => tr('Header Level'),
-						'description' => tr('Level of the header to use for complex tracker structures needing multiple heading levels.'),
-						'default' => 1,
-						'filter' => 'int',
-					),
-					'toggle' => array(
-						'name' => tr('Default State'),
-						'description' => tr('Controls the section toggles'),
-						'filter' => 'alpha',
-						'default' => 'o',
-						'options' => array(
-							'o' => tr('Open'),
-							'c' => tr('Closed'),
-						),
-					),
-				),
-			),
-		);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		$ins_id = $this->getInsertId();
@@ -119,16 +90,6 @@ class Tracker_Field_Header extends Tracker_Field_Abstract implements Tracker_Fie
 				$data_toggle .' style="display:none;"></span>';
 		
 		return $html;
-	}
-
-	function import($value)
-	{
-		return '';
-	}
-
-	function export($value)
-	{
-		return '';
 	}
 }
 

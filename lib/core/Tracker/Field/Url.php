@@ -10,20 +10,8 @@
  * 
  * - url key ~L~
  */
-class Tracker_Field_Url extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
+class Tracker_Field_Url extends Tracker_Field_Abstract
 {
-	public static function getTypes()
-	{
-		return array(
-			'L' => array(
-				'name' => tr('URL'),
-				'description' => tr('Creates a link to a specified URL.'),
-				'params' => array(
-				),
-			),
-		);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		$ins_id = $this->getInsertId();
@@ -55,16 +43,6 @@ class Tracker_Field_Url extends Tracker_Field_Abstract implements Tracker_Field_
 	function renderInput($context = array())
 	{
 		return $this->renderTemplate("trackerinput/url.tpl", $context);
-	}
-
-	function import($value)
-	{
-		return $value;
-	}
-
-	function export($value)
-	{
-		return $value;
 	}
 }
 

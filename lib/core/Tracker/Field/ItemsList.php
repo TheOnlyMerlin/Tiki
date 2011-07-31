@@ -13,122 +13,56 @@
  */
 class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 {
-	public static function getTypes()
-	{
-		return array(
-			'l' => array(
-				'name' => tr('Items List'),
-				'description' => tr('Displays a list of field values from another tracker that has a relation with this tracker.'),
-				'readonly' => true,
-				'params' => array(
-					'trackerId' => array(
-						'name' => tr('Tracker ID'),
-						'description' => tr('Tracker to list items from'),
-						'filter' => 'int',
-					),
-					'fieldIdThere' => array(
-						'name' => tr('Link Field ID'),
-						'description' => tr('Field ID containing an item link pointing to the item in this tracker or some other value to be matched.'),
-						'filter' => 'int',
-					),
-					'fieldIdHere' => array(
-						'name' => tr('Value Field ID'),
-						'description' => tr('Field ID matching the value in the link field ID if the field above is not an item link.'),
-						'filter' => 'int',
-					),
-					'displayFieldIdThere' => array(
-						'name' => tr('Fields to display'),
-						'description' => tr('Display alternate fields instead of the item title'),
-						'filter' => 'int',
-						'separator' => '|',
-					),
-					'linkToItems' => array(
-						'name' => tr('Display'),
-						'description' => tr('How the link to the items should be rendered'),
-						'filter' => 'int',
-						'options' => array(
-							0 => tr('Value'),
-							1 => tr('Link'),
-						),
-					),
-					'status' => array(
-						'name' => tr('Status Filter'),
-						'description' => tr('Limit the available items to a selected set'),
-						'filter' => 'alpha',
-						'options' => array(
-							'opc' => tr('all'),
-							'o' => tr('open'),
-							'p' => tr('pending'),
-							'c' => tr('closed'),
-							'op' => tr('open, pending'),
-							'pc' => tr('pending, closed'),
-						),
-					),
-				),
-			),
-		);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
-		$trackerId = (int) $this->getOption(0);
-		$remoteField = (int) $this->getOption(1);
-		$displayFields = $this->getOption(3);
-		$generateLinks = (bool) $this->getOption(4);
-		$status = $this->getOption(5, 'opc');
+		$ins_id = $this->getInsertId();
 
-		$tracker = Tracker_Definition::get($trackerId);
-		$technique = 'value';
+		$data = array(
+			'value' => $this->getValue(),
+		);
 
-		if ($tracker && $field = $tracker->getField($remoteField)) {
-			if ($field['type'] == 'r') {
-				$technique = 'id';
-			}
-		}
+		$trackerId = isset($requestData['trackerId'])
+				? $requestData['trackerId']
+				: $this->getConfiguration('trackerId');
 
-		$trklib = TikiLib::lib('trk');
-		if ($technique == 'id') {
-			$items = $trklib->get_items_list($trackerId, $remoteField, $this->getItemId(), $status);
-		} else {
-			$localField = (int) $this->getOption(2);
-			$localValue = $this->getData($localField);
+		$itemId = isset($requestData['itemId'])
+				? $requestData['itemId']
+				: $this->getItemId();
 
-			// Skip nulls
-			if ($localValue) {
-				$items = $trklib->get_items_list($trackerId, $remoteField, $localValue, $status);
-			} else {
-				$items = array();
-			}
-		}
-
-		$list = array();
-		foreach ($items as $itemId) {
-			if ($displayFields) {
-				$list[$itemId] = $trklib->concat_item_from_fieldslist($trackerId, $itemId, $displayFields, $status, ' ');
-			} else {
-				$list[$itemId] = $trklib->get_isMain_value($trackerId, $itemId);
+		if ( $trackerId && $itemId ) {
+			if ($this->getOption(3)) {
+				$l = explode(':', $this->getOption(1));
+				$finalFields = explode('|', $this->getOption(3));
+				$data['links'] = TikiLib::lib('trk')->get_join_values(
+						$trackerId, $itemId,
+						array_merge( array($this->getOption(2)), $l, array($this->getOption(3))),
+						$this->getOption(0), $finalFields,  ' ', $this->getOption(5)
+				);
+				if (count($data['links']) == 1) {
+					foreach($data['links'] as $linkItemId => $linkValue) {
+						if (is_numeric($data['links'][$linkItemId])) { // if later a computed field use this field
+							$info[$this->getConfiguration('fieldId')] = $linkValue;	// TODO $info not defined in this scope?
+						}
+					}
+				}
+				$data['trackerId'] = $this->getOption(0);
+				$data['tracker_options'] = TikiLib::lib('trk')->get_tracker_options($this->getOption(0));
 			}
 		}
 		
-		return array(
-			'value' => '',
-			'itemIds' => implode(',', $items),
-			'items' => $list,
-			'num' => count($list),
-			'links' => $generateLinks,
-		);
+		return $data;
 	}
 	
 	function renderInput($context = array())
 	{
-		return tr('Read Only');
+		return $this->renderTemplate('trackerinput/itemslist.tpl', $context);
 	}
 
 	function renderOutput( $context = array() ) {
 		if ($context['list_mode'] === 'csv') {
-			return $this->getConfiguration('value');
+			return $this->getConfiguration('value');	// FIXME
 		} else {
-			return $this->renderTemplate('trackeroutput/itemslist.tpl', $context);
+			return $this->renderInput( $context );
 		}
 	}
 }

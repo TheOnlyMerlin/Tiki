@@ -1,7 +1,6 @@
 {strip}
-{* $Id$ *}
 {****  Display warnings about incorrect values and missing mandatory fields ***}
-{if isset($err_mandatory) && count($err_mandatory) > 0}
+{if count($err_mandatory) > 0}
 {remarksbox type='errors' title="{tr}Errors{/tr}"}
 	<em class='mandatory_note'>{tr}Following mandatory fields are missing{/tr}</em>&nbsp;:<br/>
 	{section name=ix loop=$err_mandatory}
@@ -11,7 +10,7 @@
 {/remarksbox}
 {/if}
 
-{if isset($err_value) && count($err_value) > 0}
+{if count($err_value) > 0}
 {remarksbox type='errors' title="{tr}Errors{/tr}"}
 	<em class='mandatory_note'>{tr}Following fields are incorrect{/tr}</em>&nbsp;:<br/>
 	{section name=ix loop=$err_value}

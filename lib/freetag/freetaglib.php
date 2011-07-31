@@ -295,6 +295,11 @@ class FreetagLib extends ObjectLib
 			$bindvals = array_merge($bindvals, array($findesc, $findesc));
 		}
 
+		global $prefs;
+		if ($prefs['feature_wikiapproval'] == 'y') {
+			$mid .= ' AND o.`itemId` not like ?';
+			$bindvals[] = $prefs['wikiapproval_prefix'] . '%';
+		}
 		// We must adjust for duplicate normalized tags appearing multiple times in the join by
 		// counting only the distinct tags. It should also work for an individual user.
 
@@ -323,7 +328,7 @@ class FreetagLib extends ObjectLib
 			if ($tiki_p_admin == 'y') {
 				$ok = true;
 			} elseif ($row['type'] == 'blog post') {
-				$bloglib = TikiLib::lib('blog');
+				global $bloglib; include_once('lib/blogs/bloglib.php');
 				$post_info = $bloglib->get_post($row['itemId']);
 				if ($this->user_has_perm_on_object($user, $post_info['blogId'], 'blog', 'tiki_p_read_blog')) {
 					$ok = true;
@@ -1201,6 +1206,12 @@ class FreetagLib extends ObjectLib
 
 		$mid = ' oa.objectId <> ob.objectId	AND ob.type = ? AND oa.type = ? AND oa.itemId = ?';
 		$bindvals = array($targetType, $type, $objectId);
+
+		global $prefs;
+		if ($prefs['feature_wikiapproval'] == 'y') {
+			$mid .= ' AND ob.`itemId` not like ?';
+			$bindvals[] = $prefs['wikiapproval_prefix'] . '%';
+		}
 
 		if ($prefs['feature_multilingual'] == 'y' && $type == 'wiki page' && $targetType == 'wiki page') {
 			// make sure only same lang pages are selected

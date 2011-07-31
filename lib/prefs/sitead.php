@@ -13,7 +13,6 @@ function prefs_sitead_list() {
 			'dependencies' => array(
 				'feature_sitead',
 			),
-			'default' => 'n',
 		),	
 	);
 }

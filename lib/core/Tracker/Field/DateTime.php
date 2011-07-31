@@ -11,50 +11,8 @@
  * Letter key: ~f~
  *
  */
-class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
+class Tracker_Field_DateTime extends Tracker_Field_Abstract
 {
-	public static function getTypes()
-	{
-		return array(
-			'f' => array(
-				'name' => tr('Date and Time'),
-				'description' => tr('Provides drop-down options to accurately select a date and/or time.'),
-				'params' => array(
-					'datetime' => array(
-						'name' => tr('Type'),
-						'description' => tr('Components to be included'),
-						'filter' => 'text',
-						'options' => array(
-							'dt' => tr('Date and Time'),
-							'd' => tr('Date only'),
-						),
-					),
-					'startyear' => array(
-						'name' => tr('Start Year'),
-						'description' => tr('Year to allow selecting from'),
-						'example' => '1987',
-						'filter' => 'digits',
-					),
-					'endyear' => array(
-						'name' => tr('End Year'),
-						'description' => tr('Year to allow selecting to'),
-						'example' => '2020',
-						'filter' => 'digits',
-					),
-					'blankdate' => array(
-						'name' => tr('Default selection'),
-						'description' => tr('Indicates if blank dates should be allowed.'),
-						'filter' => 'alpha',
-						'options' => array(
-							'' => tr('Current Date'),
-							'blank' => tr('Blank'),
-						),
-					),
-				),
-			),
-		);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		$ins_id = $this->getInsertId();
@@ -100,26 +58,6 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 				}
 			}
 		}
-	}
-
-	function watchCompare($old, $new)
-	{
-		global $prefs;
-		$dformat = $prefs['short_date_format'].' '.$prefs['short_time_format'];
-		$old = TikiLib::lib('tiki')->date_format($dformat, (int)$old);
-		$new = TikiLib::lib('tiki')->date_format($dformat, (int)$new);
-
-		return parent::watchCompare($old, $new);
-	}
-
-	function import($value)
-	{
-		return $value;
-	}
-
-	function export($value)
-	{
-		return $value;
 	}
 }
 

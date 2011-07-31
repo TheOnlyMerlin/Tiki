@@ -83,6 +83,7 @@ class TikiMail extends HtmlMimeMail
 		if (!empty($prefs['email_footer'])) {
 			$text .= CRLF . $prefs['email_footer'];
 		}
+
 		if ($this->charset != "utf-8")
 			parent::setText(encodeString($this->encodeNonInCharset($text, false), $this->charset));
 		else

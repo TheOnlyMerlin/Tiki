@@ -247,22 +247,16 @@ class TikiAccessLib extends TikiLib
 			$detail['message'] .= ' (404)';
 			break;
 		case '403':
-			header ("HTTP/1.0 403 Forbidden");
+			if( $this->is_machine_request() )
+				header ("HTTP/1.0 403 Forbidden");
 			break;
 		case '503':
-			header ("HTTP/1.0 503 Service Unavailable");
-			break;
-		default:
-			$errortype = (int) $errortype;
-			$title = strip_tags($detail['errortitle']);
-			header("HTTP/1.0 $errortype $title");
+			if( $this->is_machine_request() )
+				header ("HTTP/1.0 503 Service Unavailable");
 			break;
 		}
 
 		if( $this->is_serializable_request() ) {
-			require_once 'lib/smarty_tiki/function.error_report.php';
-			TikiLib::lib('errorreport')->report($errortitle);
-			header('X-Tiki-Error: ' . smarty_function_error_report(array(), TikiLib::lib('smarty')));
 			$this->output_serialized( $detail );
 		} else {
 			if (($errortype == 401 || $errortype == 403) && empty($user) && ($prefs['permission_denied_login_box'] == 'y' || !empty($prefs['permission_denied_url']))) {
@@ -432,7 +426,7 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-	function get_accept_types($acceptFeed = false) {
+	function get_accept_types() {
 		$accept = explode( ',', $_SERVER['HTTP_ACCEPT'] );
 
 		if( isset( $_REQUEST['httpaccept'] ) ) {
@@ -450,10 +444,6 @@ class TikiAccessLib extends TikiLib
 				$known = 'json';
 			elseif( strpos( $t = 'text/x-yaml', $type ) !== false )
 				$known = 'yaml';
-			elseif( strpos( $t = 'application/rss+xml', $type ) !== false )
-				$known = 'rss';
-			elseif( strpos( $t = 'application/atom+xml', $type ) !== false )
-				$known = 'atom';
 
 			if( $known && ! isset( $types[$known] ) )
 				$types[$known] = $t;
@@ -479,40 +469,20 @@ class TikiAccessLib extends TikiLib
 		return false;
 	}
 
-	function is_serializable_request($acceptFeed = false) {
-		foreach( $this->get_accept_types($acceptFeed) as $name => $full ) {
+	function is_serializable_request() {
+		foreach( $this->get_accept_types() as $name => $full ) {
 			switch( $name ) {
 			case 'json':
 			case 'yaml':
 				return true;
-			case 'rss':
-			case 'atom':
-				if ($acceptFeed) {
-					return true;
-				}
 			}
 		}
 
 		return false;
 	}
 
-	function is_xml_http_request() {
-		return ! empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-	}
-
-	/**
-	 * Will process the output by serializing in the best way possible based on the request's accept headers.
-	 * To output as an RSS/Atom feed, a descriptor may be provided to map the array data to the feed's properties
-	 * and to supply additional information. The descriptor must contain the following keys:
-	 * [feedTitle] Feed's title, static value
-	 * [feedDescription] Feed's description, static value
-	 * [entryTitleKey] Key to lookup for each entry to find the title
-	 * [entryUrlKey] Key to lookup to find the URL of each entry
-	 * [entryModificationKey] Key to lookup to find the modification date
-	 * [entryObjectDescriptors] Optional. Array containing two key names, object key and object type to lookup missing information (url and title)
-	 */
-	function output_serialized( $data, $feed_descriptor = null ) {
-		foreach( $this->get_accept_types(! is_null($feed_descriptor)) as $name => $full ) {
+	function output_serialized( $data ) {
+		foreach( $this->get_accept_types() as $name => $full ) {
 			switch( $name ) {
 			case 'json':
 				header( "Content-Type: $full" );
@@ -523,24 +493,13 @@ class TikiAccessLib extends TikiLib
 				echo $data;
 				return;
 			case 'yaml':
+				require_once( 'Horde/Yaml.php' );
+				require_once( 'Horde/Yaml/Loader.php' );
+				require_once( 'Horde/Yaml/Node.php' );
+				require_once( 'Horde/Yaml/Exception.php' );
+
 				header( "Content-Type: $full" );
 				echo Horde_Yaml::dump($data);
-				return;
-			case 'rss':
-				$rsslib = TikiLib::lib('rss');
-				$writer = $rsslib->generate_feed_from_data($data, $feed_descriptor);
-				$writer->setFeedLink($this->tikiUrl($_SERVER['REQUEST_URI']), 'rss');
-
-				header('Content-Type: application/rss+xml');
-				echo $writer->export('rss');
-				return;
-			case 'atom':
-				$rsslib = TikiLib::lib('rss');
-				$writer = $rsslib->generate_feed_from_data($data, $feed_descriptor);
-				$writer->setFeedLink($this->tikiUrl($_SERVER['REQUEST_URI']), 'atom');
-
-				header('Content-Type: application/atom+xml');
-				echo $writer->export('atom');
 				return;
 			case 'html':
 				header( "Content-Type: $full" );

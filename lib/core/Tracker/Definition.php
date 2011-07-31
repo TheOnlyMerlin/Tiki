@@ -51,11 +51,6 @@ class Tracker_Definition
 		return isset($this->trackerInfo[$key]) ? $this->trackerInfo[$key] : $default;
 	}
 
-	function isEnabled($key)
-	{
-		return $this->getConfiguration($key) === 'y';
-	}
-
 	function getFields($outf = '')
 	{
 		if ($this->fields) {
@@ -82,19 +77,6 @@ class Tracker_Definition
 	{
 		foreach ($this->getFields() as $f) {
 			if ($f['name'] == $name) {
-				return $f;
-			}
-		}
-	}
-
-	function getFieldFromPermName($name)
-	{
-		if (empty($name)) {
-			return null;
-		}
-
-		foreach ($this->getFields() as $f) {
-			if ($f['permName'] == $name) {
 				return $f;
 			}
 		}
@@ -131,26 +113,6 @@ class Tracker_Definition
 		}
 	}
 
-	function getUserField()
-	{
-		foreach ($this->getFields() as $field) {
-			if ($field['type'] == 'u'
-				&& isset($field['options'][0]) && $field['options'][0] == 1) {
-
-				return $field['fieldId'];
-			}
-		}
-	}
-
-	function getGeolocationField()
-	{
-		foreach ($this->getFields() as $field) {
-			if ($field['type'] == 'G' && isset($field['options_array'][0]) && $field['options_array'][0] == 'y') {
-				return $field['fieldId'];
-			}
-		}
-	}
-
 	function getWriterGroupField()
 	{
 		foreach ($this->getFields() as $field) {
@@ -163,28 +125,8 @@ class Tracker_Definition
 
 	function getRateField()
 	{
-		// This is here to support some legacy code for the deprecated 's' type rating field. It is not meant to be generically apply to the newer stars rating field
 		foreach ($this->getFields() as $field) {
 			if ($field['type'] == 's' && $field['name'] == 'Rating') {
-				return $field['fieldId'];
-			}
-		}
-	}
-
-	function getFreetagField()
-	{
-		foreach ($this->getFields() as $field) {
-			if ($field['type'] == 'F') {
-				return $field['fieldId'];
-			}
-		}
-	}
-
-	function getLanguageField()
-	{
-		foreach ($this->getFields() as $field) {
-			if ($field['type'] == 'LANG'
-				&& isset($field['options'][0]) && $field['options'][0] == 1) {
 				return $field['fieldId'];
 			}
 		}
@@ -215,29 +157,6 @@ class Tracker_Definition
 	{
 		global $trklib;
 		return $trklib->get_item_creator($this->trackerInfo['trackerId'], $itemId);
-	}
-
-	function getSyncInformation()
-	{
-		global $prefs;
-
-		if ($prefs['tracker_remote_sync'] != 'y') {
-			return false;
-		}
-
-		$attributelib = TikiLib::lib('attribute');
-		$attributes = $attributelib->get_attributes('tracker', $this->getConfiguration('trackerId'));
-
-		if (! isset($attributes['tiki.sync.provider'])) {
-			return false;
-		}
-
-		return array(
-			'provider' => $attributes['tiki.sync.provider'],
-			'source' => $attributes['tiki.sync.source'],
-			'last' => $attributes['tiki.sync.last'],
-			'modified' => $this->getConfiguration('lastModif') > $attributes['tiki.sync.last'],
-		);
 	}
 }
 

@@ -512,8 +512,7 @@ function wikiplugin_tracker($data, $params)
 			}
 
 			$definition = Tracker_Definition::get($trackerId);
-			$item_info = isset($item_info) ? $item_info : array();
-			$factory = new Tracker_Field_Factory($definition);
+			$factory = new Tracker_Field_Factory($definition, isset($item_info) ? $item_info : array());
 			$flds = array('data' => $definition->getFields($outf));
 			$bad = array();
 			$embeddedId = false;
@@ -556,7 +555,7 @@ function wikiplugin_tracker($data, $params)
 					}
 				}
 				foreach ($flds['data'] as $k => $field) {
-					$handler = $factory->getHandler($field, $item_info);
+					$handler = $factory->getHandler($field);
 
 					if ($handler) {
 						$ins_fields['data'][$k] = array_merge($field, $handler->getFieldData($_REQUEST));
@@ -569,6 +568,98 @@ function wikiplugin_tracker($data, $params)
 				if (!isset($itemId) && $tracker['oneUserItem'] == 'y') {
 					$itemId = $trklib->get_user_item($trackerId, $tracker);
 				}
+
+				foreach ($flds['data'] as $fl) {
+					if ($factory->getHandler($fl)) {
+						continue;
+					}
+					// Types that were initially supported by the plugin
+					if (! in_array($fl['type'], array('q', 'k', 'u', 'g', 'I', 'C', 'n', 'j', 'f'))) {
+						continue;
+					}
+					// store value to display it later if form
+					// isn't fully filled.
+					if ($flds['data'][$cpt]['type'] == 's' && $flds['data'][$cpt]['name'] == 'Rating') {
+						if (isset($_REQUEST['track'][$fl['fieldId']])) {
+							$newItemRate = $_REQUEST['track'][$fl['fieldId']];
+							$newItemRateField = $fl['fieldId'];
+						} else {
+							$newItemRate = NULL;
+						}
+					
+					} elseif ($flds["data"][$cpt]["type"] == 'c') {
+						if (!isset($_REQUEST['track'][$fl['fieldId']])) {
+							$_REQUEST['track'][$fl['fieldId']] = 'n';
+						}	
+					} elseif (($flds['data'][$cpt]['type'] == 'u' || $flds['data'][$cpt]['type'] == 'g' || $flds['data'][$cpt]['type'] == 'I' || $flds['data'][$cpt]['type'] == 'k') &&	// user/group/ip
+							  ($flds['data'][$cpt]['options_array'][0] == '1' || $flds['data'][$cpt]['options_array'][0] == '2')) {	// create or modif
+						
+						if ($tiki_p_admin_trackers === 'y' && isset($_REQUEST['track'][$fl['fieldId']]) && in_array($fl['fieldId'], $fields_plugin)) {
+							// but admins can override if the field is in the form
+							// do nothing, act casual
+						} else if (empty($itemId) && ($flds['data'][$cpt]['options_array'][0] == '1' || $flds['data'][$cpt]['options_array'][0] == '2')) {
+							if ($flds['data'][$cpt]['type'] == 'u') {
+								$_REQUEST['track'][$fl['fieldId']] = empty($user)?(empty($_REQUEST['name'])? '':$_REQUEST['name']):$user;
+							} elseif ($flds['data'][$cpt]['type'] == 'g') {
+								$_REQUEST['track'][$fl['fieldId']] = $group;
+							} elseif ($flds['data'][$cpt]['type'] == 'I') {
+								$_REQUEST['track'][$fl['fieldId']] = $tikilib->get_ip_address();
+							} elseif ($flds['data'][$cpt]['type'] == 'k') {
+								$_REQUEST['track'][$fl['fieldId']] = isset($_REQUEST['page'])?$_REQUEST['page']: '';
+							}
+						} elseif (!empty($itemId) && $flds['data'][$cpt]['options_array'][0] == '2') {
+							if ($flds['data'][$cpt]['type'] == 'u')
+								$_REQUEST['track'][$fl['fieldId']] = $user;
+							elseif ($flds['data'][$cpt]['type'] == 'g')
+								$_REQUEST['track'][$fl['fieldId']] = $group;
+							elseif ($flds['data'][$cpt]['type'] == 'I')
+								$_REQUEST['track'][$fl['fieldId']] = $tikilib->get_ip_address();
+						}
+					} elseif (($flds['data'][$cpt]['type'] == 'C' || $flds['data'][$cpt]['type'] == 'e') && empty($_REQUEST['track'][$fl['fieldId']])) {
+						$_REQUEST['track'][$fl['fieldId']] = '';
+					} elseif ($flds['data'][$cpt]['type'] == 'f') {
+						$ins_id = $fields_prefix . $fl['fieldId'];
+						if (isset($_REQUEST[$ins_id.'Day']) || isset($_REQUEST[$ins_id.'Hour'])) {
+							$_REQUEST['track'][$fl['fieldId']] = $trklib->build_date($_REQUEST, $flds['data'][$cpt], $ins_id);
+						}
+					}
+					if (isset($_REQUEST['ins_'.$fl['fieldId']])) { // to remember if error
+						$_REQUEST['track'][$fl['fieldId']] = $_REQUEST['ins_'.$fl['fieldId']];
+					}
+
+					if(isset($_REQUEST['track'][$fl['fieldId']])) {
+						$flds['data'][$cpt]['value'] = $_REQUEST['track'][$fl['fieldId']];
+					} else {
+						$flds['data'][$cpt]['value'] = '';
+						if (empty($itemId)) {
+							if ($fl['type'] == 'c') {
+								$_REQUEST['track'][$fl['fieldId']] = 'n';
+							} elseif ($fl['type'] == 'R' && $fl['isMandatory'] == 'y') {
+								// if none radio is selected, there will be no value and no error if mandatory
+								$_REQUEST['track'][$fl['fieldId']] = '';
+							}
+						}
+					}
+					if (!empty($_REQUEST['other_track_'.$fl['fieldId']])) {
+						$flds['data'][$cpt]['value'] = $_REQUEST['other_track_'.$fl['fieldId']];
+					}
+					if ($flds['data'][$cpt]['isMultilingual'] == 'y') {
+						foreach ($prefs['available_languages'] as $num=>$tmplang) {
+							if (isset($_REQUEST['track'][$fl['fieldId']][$tmplang])) {
+								$fl['lingualvalue'][$num]['value'] = $_REQUEST['track'][$fl['fieldId']][$tmplang];
+								$fl['lingualvalue'][$num]['lang'] = $tmplang;
+							}
+						}
+					}
+					$full_fields[$fl['fieldId']] = $fl;
+					
+					if ($embedded == 'y' and $fl['name'] == 'page') {
+						$embeddedId = $fl['fieldId'];
+					}
+					if ($fl['isMain'] == 'y')
+						$mainfield = $flds['data'][$cpt]['value'];
+					$cpt++;
+				} /*foreach */
 
 				if (isset($_REQUEST['track'])) {
 					foreach ($_REQUEST['track'] as $fld=>$val) {
@@ -627,7 +718,7 @@ function wikiplugin_tracker($data, $params)
 						$page_badchars = "/[:\/?#\[\]@!$&'()*+,;=<>]/";
 						$matches = preg_match($page_badchars, $newpagename);
 						if ($matches) {
-							$field_errors['err_outputwiki'] = tr("The page to output the results to contains the following prohibited characters: %0. Try another name.", $page_badchars_display);
+							$field_errors['err_outputwiki'] = tra("The page to output the results to contains the following prohibited characters: $page_badchars_display. Try another name.");
 						} 
 					} else {
 						unset($outputtowiki);
@@ -1047,6 +1138,80 @@ function wikiplugin_tracker($data, $params)
 					if (($f['isHidden'] == 'c' || $f['isHidden'] == 'p') && !empty($itemId) && !isset($item['creator'])) {
 						$item['creator'] = $trklib->get_item_creator($trackerId, $itemId);
 					}
+					if ($f['type'] == 's' && ($f['name'] == 'Rating' || $f['name'] == tra('Rating')) && $perms['tiki_p_tracker_vote_ratings'] == 'y' && isset($item)) {
+						$item['my_rate'] = $tikilib->get_user_vote("tracker$trackerId.$itemId", $user);
+					}
+					if ($f['isMultilingual'] == 'y') {
+						$multi_languages = $prefs['available_languages'];
+						foreach ($multi_languages as $num=>$tmplang){
+							$flds['data'][$i]['lingualvalue'][$num]['lang'] = $tmplang;
+						}
+					}
+					if ($f['type'] == 'r') {
+						if (!isset($f['options_array'][3])) {
+							$flds['data'][$i]['list'] = array_unique($trklib->get_all_items($f['options_array'][0], $f['options_array'][1], isset($f['options_array'][4])?$f['options_array'][4]:'poc', false));
+						}
+						else {
+							$flds['data'][$i]['list'] = $trklib->get_all_items($f['options_array'][0], $f['options_array'][1], isset($f['options_array'][4])?$f['options_array'][4]:'poc', false);
+						}
+						if (isset($f['options_array'][3])) {
+							$flds['data'][$i]['listdisplay'] = array_unique($trklib->concat_all_items_from_fieldslist($f['options_array'][0], $f['options_array'][3], isset($f['options_array'][4])?$f['options_array'][4]:'poc'));
+						}
+					} elseif ($f['type'] == 'y') {
+						$flds['data'][$i]['flags'] = $tikilib->get_flags(true, true, isset($f['options_array'][1])&&$f['options_array'][1]==1?false:true);
+					} elseif ($f['type'] == 'u') {
+						if ($perms['tiki_p_admin_trackers'] == 'y' || ($f['options_array'][0] != 1 && $f['options_array'][0] != 2))
+							$flds['data'][$i]['list'] = $userlib->list_all_users();
+						elseif ($f['options_array'][0] == 1)
+							$flds['data'][$i]['value'] = $user;
+					} elseif ($f['type'] == 'g') {
+						$handler = $factory->getHandler($f);
+						$flds['data'][$i] = array_merge($flds['data'][$i], $handler->getFieldData(array()));
+					} elseif ($f['type'] == 'k') {
+						if ($f['options_array'][0] == 1) {
+							if (isset($page)) {
+								$flds['data'][$i]['value'] = $page;
+							}
+						}
+					} elseif ($f['type'] == 'e') {
+						global $categlib; include_once('lib/categories/categlib.php');
+						if (isset($f['options_array'][3]) && $f['options_array'][3] ==1) {
+							$all_descends = true;
+						} else {
+							$all_descends = false;
+						}
+						$flds['data'][$i]['list'] = $categlib->get_viewable_child_categories($f['options_array'][0], $all_descends);
+						// Need to load categories for purposes of showing
+						foreach($f['categs'] as $tcat) {
+							$flds['data'][$i]['cat'][$tcat['categId']] = 'y';
+						}
+					} elseif ($f['type'] == 'A') {
+						if (!empty($f['value'])) {
+							$flds['data'][$i]['info'] = $trklib->get_item_attachment($f['value']);
+						}
+					} elseif ($f['type'] == 'a') {
+						if ($f['options_array'][0] == 1 && empty($toolbars)) {
+							// all in the smarty object now
+						}
+					} elseif ($f['type'] == 'l' && isset($itemId)) {
+						$opts[1] = preg_split('/:/', $f['options_array'][1]);
+						$finalFields = explode('|', $f['options_array'][3]);
+						$flds['data'][$i]['value'] = $trklib->get_join_values($trackerId, $itemId, array_merge(array($f['options_array'][2]), array($f['options_array'][1]), array($finalFields[0])), $f['options_array'][0], $finalFields, ' ', empty($f['options_array'][5])?'':$f['options_array'][5]);
+					} elseif ($f['type'] == 'f' && empty($itemId) && (empty($f['options_array'][3]) || $f['options_array'][3] != 'blank')) {
+						$flds['data'][$i]['value'] = $tikilib->now;
+					} elseif ($f['type'] == 'F') {
+						global $freetaglib;
+						if (!is_object($freetaglib)) {
+							include_once('lib/freetag/freetaglib.php');
+						}
+						$flds['data'][$i]["freetags"] = $freetaglib->_parse_tag($f['value']);
+						$flds['data'][$i]["tag_suggestion"] = $freetaglib->get_tag_suggestion($flds['data'][$i]["freetags"],$prefs['freetags_browse_amount_tags_suggestion']);
+					}
+
+					if (!empty($f['value'])) {
+						// if it has an original or a suggested value, then set it as the default value
+						$flds['data'][$i]['defaultvalue'] = $f['value'];
+					}
 				}
 			}
 			if (!empty($showstatus) && $showstatus == 'y') {
@@ -1216,13 +1381,6 @@ function wikiplugin_tracker_render_input($f, $item) {
 	$smarty = TikiLib::lib('smarty');
 
 	$handler = $trklib->get_field_handler($f, $item);
-
-	if (! $item['itemId']) {
-		// Non-selected items have not been processed
-		$f = array_merge($f, $handler->getFieldData());
-		$handler = $trklib->get_field_handler($f, $item);
-	}
-
 	return $handler->renderInput(array(
 		'inTable' => 'y',
 	));

@@ -11,39 +11,8 @@
  * Letter key: ~y~
  *
  */
-class Tracker_Field_CountrySelector extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
+class Tracker_Field_CountrySelector extends Tracker_Field_Abstract
 {
-	public static function getTypes()
-	{
-		return array(
-			'y' => array(
-				'name' => tr('Country Selector'),
-				'description' => tr('Allows a selection from a specified list of countries'),
-				'params' => array(
-					'name_flag' => array(
-						'name' => tr('Display'),
-						'description' => tr('Specify the rendering type for the field'),
-						'filter' => 'int',
-						'options' => array(
-							0 => tr('Name and flag'),
-							1 => tr('Name only'),
-							2 => tr('Flag only'),
-						),
-					),
-					'sortorder' => array(
-						'name' => tr('Sort Order'),
-						'description' => tr('Determines whether the ordering should be based on the translated name or the English name.'),
-						'filter' => 'int',
-						'options' => array(
-							0 => tr('Translated name'),
-							1 => tr('English name'),
-						),
-					),
-				),
-			),
-		);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		$ins_id = $this->getInsertId();
@@ -88,16 +57,6 @@ class Tracker_Field_CountrySelector extends Tracker_Field_Abstract implements Tr
 	function renderInput($context = array())
 	{
 		return $this->renderTemplate('trackerinput/countryselector.tpl', $context);
-	}
-
-	function import($value)
-	{
-		return $value;
-	}
-
-	function export($value)
-	{
-		return $value;
 	}
 }
 

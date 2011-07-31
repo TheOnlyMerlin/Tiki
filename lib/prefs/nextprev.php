@@ -10,7 +10,6 @@ function prefs_nextprev_list() {
 		'nextprev_pagination' => array(
 			'name' => tra('Use relative (next / previous) pagination links'),
 			'type' => 'flag',
-			'default' => 'y',
 		),
 	);
 }

@@ -1,4 +1,3 @@
-{* $Id$ *} 
 {if !isset($hide_page_header) or !$hide_page_header}
 	{if $prefs.feature_siteloc eq 'page' and $prefs.feature_breadcrumbs eq 'y'}
 		{if $prefs.feature_siteloclabel eq 'y'}{tr}Location : {/tr}{/if}
@@ -8,6 +7,7 @@
 		{/if}
 	{/if}
 
+{include file='tiki-wiki_staging.tpl'}
 {include file='tiki-flaggedrev_approval_header.tpl'}
 
 {/if} {*hide_page_header*}
@@ -48,12 +48,16 @@
 				<ul>
 					{section name=j loop=$translation_alert[i]}
 						<li>
-							<a href="{$translation_alert[i][j].page|sefurl:wiki:with_next}no_bl=y">
-								{$translation_alert[i][j].page|escape}
+							<a href="{if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage|sefurl:wiki:with_next}{else}{$translation_alert[i][j].page|sefurl:wiki:with_next}{/if}no_bl=y">
+								{if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}
+									{$translation_alert[i][j].approvedPage}
+								{else}
+									{$translation_alert[i][j].page}
+								{/if}
 							</a>
 							({$translation_alert[i][j].lang})
-							{if $editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') and $beingEdited ne 'y'} 
-								<a href="tiki-editpage.php?page={$page|escape:'url'}&amp;source_page={$translation_alert[i][j].page|escape:'url'}&amp;oldver={$translation_alert[i][j].last_update|escape:'url'}&amp;newver={$translation_alert[i][j].current_version|escape:'url'}&amp;diff_style=htmldiff" title="{tr}update from it{/tr}">
+							{if $editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') and $beingEdited ne 'y' or $canEditStaging eq 'y'} 
+								<a href="tiki-editpage.php?page={if isset($stagingPageName) && $hasStaging == 'y'}{$stagingPageName|escape:'url'}{else}{$page|escape:'url'}{/if}&amp;source_page={$translation_alert[i][j].page|escape:'url'}&amp;oldver={$translation_alert[i][j].last_update|escape:'url'}&amp;newver={$translation_alert[i][j].current_version|escape:'url'}&amp;diff_style=htmldiff" title="{tr}update from it{/tr}">
 									{icon _id=arrow_refresh alt="{tr}update from it{/tr}" style="vertical-align:middle"}
 								</a>
 							{/if}

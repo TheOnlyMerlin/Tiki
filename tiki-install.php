@@ -11,24 +11,11 @@ if (!isset($content)) $content = 'No content specified. Something went wrong.<br
 if (!isset($dberror)) $dberror = false;
 
 // Check that PHP version is sufficient
-
 if (version_compare(PHP_VERSION, '5.2.0', '<')) {
 	$title = 'PHP 5.2 is required';
-	$content = '<p>Please contact your system administrator ( if you are not the one ;) ). Your version: '.PHP_VERSION.'.</p>';
+	$content = '<p>Please contact your system administrator ( if you are not the one ;) ).</p>';
 	createPage($title, $content);
 }
-
-require_once('lib/init/initlib.php');
-$tikipath = dirname(__FILE__) . '/';
-TikiInit::prependIncludePath($tikipath.'lib/pear');
-TikiInit::appendIncludePath($tikipath.'lib/core');
-TikiInit::appendIncludePath($tikipath);
-require_once 'Zend/Loader/Autoloader.php';
-Zend_Loader_Autoloader::getInstance()
-	->registerNamespace('TikiFilter')
-	->registerNamespace('DeclFilter')
-	->registerNamespace('JitFilter')
-	->registerNamespace('TikiDb');
 
 include_once('db/tiki-db.php');	// to set up multitiki etc if there
 
@@ -132,7 +119,7 @@ function createPage($title, $content){
 								</h1>
 							</div>
 				</div>
-					<div id="middle" style="width: 990px; text-align: center;">
+					<div id="tiki-center" style="display: table; width: 990px; text-align: center;">
 						$content
 					</div>
 				</div>

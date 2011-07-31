@@ -54,7 +54,7 @@ if( $prefs['tiki_domain_prefix'] == 'strip' && substr( $host, 0, 4 ) == 'www.' )
 	$domain_map[$host] = 'www.' . $host;
 }
 
-if (strpos($prefs['tiki_domain_redirects'], ',') !== false) {
+if( !empty($prefs['tiki_domain_redirects']) ) {
 	foreach( explode("\n", $prefs['tiki_domain_redirects']) as $row ) {
 		list($old, $new) = array_map('trim', explode(',', $row, 2));
 		$domain_map[$old] = $new;
@@ -187,8 +187,6 @@ if( isset( $_GET['msg'] ) ) {
 	$smarty->assign( 'display_msg', '' );
 }
 
-require_once 'lib/setup/events.php';
-
 if( $prefs['rating_advanced'] == 'y' && $prefs['rating_recalculation'] == 'randomload' ) {
 	global $ratinglib; require_once 'lib/rating/ratinglib.php';
 	$ratinglib->attempt_refresh();
@@ -216,8 +214,7 @@ if ($prefs['javascript_enabled'] != 'n') {
 	}
 
 	$headerlib->add_jsfile( 'lib/jquery_tiki/tiki-jquery.js' );
-	$headerlib->add_jsfile('lib/jquery/jquery.json-2.2.js');	
-
+	
 	if ($prefs['feature_syntax_highlighter'] == 'y') {
 		require_once('lib/codemirror_tiki/codemirror_tiki.php');
 		tiki_syntax_highlighter_base();
@@ -324,10 +321,6 @@ if ($prefs['javascript_enabled'] != 'n') {
 			$headerlib->add_jsfile("lib/metrics.js");
 		}
 
-		if (empty($user) && $prefs['feature_antibot'] == 'y') {
-			$headerlib->add_jsfile('lib/captcha/captchalib.js');
-		}
-
 		// include and setup themegen editor if already open
 		if ($tiki_p_admin === 'y' && $prefs['themegenerator_feature'] === 'y' && !empty($_COOKIE['themegen']) &&
 				(strpos($_SERVER['SCRIPT_NAME'], 'tiki-admin.php') === false || strpos($_SERVER['QUERY_STRING'], 'page=look') === false)) {
@@ -344,10 +337,6 @@ if( ! empty( $prefs['header_custom_css'] ) ) {
 
 if( ! empty( $prefs['header_custom_js'] ) ) {
 	$headerlib->add_js( $prefs['header_custom_js'] );
-}
-
-if ($prefs['feature_trackers'] == 'y') {
-	$headerlib->add_jsfile('lib/jquery_tiki/tiki-trackers.js');
 }
 
 if( session_id() ) {

@@ -1,5 +1,5 @@
-{* $Id$ *}
-{title url="tiki-view_tracker.php?trackerId=$trackerId" adm="trackers"}{tr}Tracker:{/tr} {$tracker_info.name}{/title}
+
+{title url="tiki-view_tracker.php?trackerId=$trackerId" adm="trackers"}{tr}Tracker:{/tr} {$tracker_info.name|escape}{/title}
 
 <div class="navbar">
 	 {if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
@@ -55,7 +55,7 @@
 				{include file='tracker_filter.tpl'}
 			{/if}
 			
-			{if (isset($cant_pages) && $cant_pages > 1) or $initial}{initials_filter_links}{/if}
+			{if $cant_pages > 1 or $initial}{initials_filter_links}{/if}
 			
 			<div align='left'>{tr}Items found:{/tr} {$item_count}</div>
 			
@@ -231,7 +231,7 @@
 				{include file='antibot.tpl' tr_style="formcolor" showmandatory=y}
 			{/if}
 			
-			{if !isset($groupforalert) || $groupforalert ne ''}
+			{if $groupforalert ne ''}
 				{if $showeachuser eq 'y'}
 					<tr>
 						<td>{tr}Choose users to alert{/tr}</td>
@@ -266,82 +266,12 @@
 		{* -------------------------------------------------- tab with export (and dump if perms) --- *}
 		{include file='tiki-export_tracker.tpl'}
 	{/if}
-
-	{if $tracker_sync}
-		{tab name="{tr}Synchronization{/tr}"}
-			<p>
-				{tr 0="`$tracker_sync.provider`/tracker`$tracker_sync.source`"}This tracker is a remote copy of <a href="%0">%0</a>.{/tr}
-				{if $tracker_sync.last}
-					{tr 0=$tracker_sync.last|tiki_short_date}It was last updated on %0.{/tr}
-				{/if}
-			</p>
-			{permission name=tiki_p_admin_trackers}
-				<form class="sync-refresh" method="post" action="tiki-ajax_services.php?controller=tracker&amp;action=sync_new&amp;trackerId={$trackerId|escape:'url'}">
-					<p>{tr}Items added locally{/tr}</p>
-					<ul class="load-items">
-					</ul>
-					<p><input type="submit" value="{tr}Push new items{/tr}"/></p>
-				</form>
-				<form class="sync-refresh" method="post" action="tiki-ajax_services.php?controller=tracker&amp;action=sync_refresh&amp;trackerId={$trackerId|escape:'url'}">
-					{if $tracker_sync.modified}
-						{remarksbox type=warning title="{tr}Local changes will be lost{/tr}"}
-							<p>{tr}When reloading the data from the source, all local changes will be lost.{/tr}</p>
-							<ul>
-								<li>{tr}New items that must be preserved should be pushed using the above controls.{/tr}</li>
-								<li>{tr}Modified items should be edited manually on the source tracker (until a better solution).{/tr}</li>
-							</ul>
-						{/remarksbox}
-					{/if}
-					<div class="submit">
-						<input type="hidden" name="confirm" value="1"/>
-						<input type="submit" name="submit" value="{tr}Reload data from source{/tr}"/>
-					</div>
-				</form>
-				{jq}
-					$('.sync-refresh').submit(function () {
-						var form = this;
-						$.ajax({
-							type: 'post',
-							url: $(form).attr('action'),
-							dataType: 'json',
-							data: $(form).serialize(),
-							error: function (jqxhr) {
-								$(':submit', form).showError(jqxhr);
-							},
-							success: function () {
-								document.location.reload();
-							}
-						});
-						return false;
-					});
-					$('.load-items').each(function () {
-						var list = this;
-						$.getJSON($(this).closest('form').attr('action'), function (data) {
-							$.each(data.result, function (k, info) {
-								var li = $('<li/>');
-								li.append($('<label/>')
-									.text(info.title)
-									.prepend($('<input type="checkbox" name="items[]"/>').attr('value', info.itemId))
-								);
-
-								$(list).append(li);
-							});
-
-							if (data.result.length === 0) {
-								$(list).closest('form').hide();
-							}
-						});
-					});
-				{/jq}
-			{/permission}
-		{/tab}
-	{/if}
 {/tabset}
 
 
 {foreach from=$fields key=ix item=field_value}
 	{assign var=fid value=$field_value.fieldId}
-	{if isset($listfields.$fid.http_request) && $listfields.$fid.http_request}
+	{if $listfields.$fid.http_request}
 		{jq}
 			selectValues('trackerIdList={{$listfields.$fid.http_request[0]}}&fieldlist={{$listfields.$fid.http_request[3]}}&filterfield={{$listfields.$fid.http_request[1]}}&status={{$listfields.$fid.http_request[4]}}&mandatory={{$listfields.$fid.http_request[6]}}','{{$listfields.$fid.http_request[5]}}','{{$field_value.ins_id}}')
 		{/jq}

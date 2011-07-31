@@ -29,7 +29,7 @@ class OAuthLib extends TikiDb_Bridge
 				$client->setParameterGet($configuration['secretAsGet'], $access->getTokenSecret());
 			}
 		} else {
-			$client = TikiLib::lib('tiki')->get_http_client();
+			$client = new Zend_Http_Client;
 		}
 
 		$client->setUri($arguments['url']);

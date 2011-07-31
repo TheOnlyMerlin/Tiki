@@ -1,1 +1,0 @@
-{$context.label|escape}

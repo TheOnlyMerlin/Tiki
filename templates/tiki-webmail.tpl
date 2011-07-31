@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {title help="Webmail" admpage="webmail"}{tr}Webmail{/tr}{/title}
 
 {include file='tiki-mytiki_bar.tpl'}
@@ -267,10 +265,6 @@
 										{/if}
 									</td>
 								</tr>
-							{/if}
-
-							{if $tiki_p_admin_group_webmail eq 'y'}
-								{include file='categorize.tpl'}
 							{/if}
 		
 							<tr>

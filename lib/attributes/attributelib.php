@@ -57,16 +57,6 @@ class AttributeLib extends TikiDb_Bridge
 		$filter = TikiFilter::get('attribute_type');
 		return $filter->filter( $name );
 	}
-
-	function find_objects_with($attribute, $value)
-	{
-		$attribute = $this->get_valid($attribute);
-
-		return $this->attributes->fetchAll(array('type', 'itemId'), array(
-			'attribute' => $attribute,
-			'value' => $value,
-		));
-	}
 }
 
 global $attributelib;

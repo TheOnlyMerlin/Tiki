@@ -64,7 +64,7 @@ function wikiplugin_toc_info()
 			),
 			'type' => array(
 				'name' => tra('Type'),
-				'description' => tra('Style to apply'),
+				'description' => tra('Apply the "plain" or "fancy" style'),
 				'required' => false,
 				'filter' => 'alpha',
 				'default' => 'plain',

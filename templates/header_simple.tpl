@@ -1,6 +1,5 @@
 {**
  * This file is simplified version of header.tpl intended to be used for pages such as popup windows, print page, etc.
- * $Id$
  *
  *}<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if isset($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if isset($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
@@ -35,7 +34,7 @@
 {else}
 {$prefs.browsertitle}
 {if !empty($headtitle)} : {$headtitle}
-{elseif !empty($page)} : {$page|escape} {* add $description|escape if you want to put the description + update breadcrumb_build replace return $crumbs->title; with return empty($crumbs->description)? $crumbs->title: $crumbs->description; *}
+{elseif !empty($page)} : {if $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}{$approvedPageName|escape}{else}{$page|escape}{/if} {* add $description|escape if you want to put the description + update breadcrumb_build replace return $crumbs->title; with return empty($crumbs->description)? $crumbs->title: $crumbs->description; *}
 {elseif !empty($arttitle)} : {$arttitle}
 {elseif !empty($title)} : {$title}
 {elseif !empty($thread_info.title)} : {$thread_info.title}

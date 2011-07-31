@@ -1,4 +1,4 @@
-{title help="Quiz"}{tr}Stats for quiz:{/tr} {$quiz_info.name}{/title}
+{title help="Quiz"}{tr}Stats for quiz:{/tr} {$quiz_info.name|escape}{/title}
 
 <div class="navbar">
 	{button href="tiki-list_quizzes.php" _text="{tr}List Quizzes{/tr}"} 

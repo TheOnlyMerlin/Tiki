@@ -20,6 +20,7 @@
 	<th>{tr}Field{/tr}</th>
 	<th>{tr}Old{/tr}</th>
 	<th>{tr}New{/tr}</th>
+	{if $prefs.feature_multilingual eq 'y'}<th>{tr}Language{/tr}</th>{/if}
 </tr> 
 {cycle values="odd,even" print=false}
 {foreach from=$history item=hist}
@@ -41,6 +42,9 @@
 		{else}
 			<td class="text">{$hist.value|escape}</td>
 			<td class="text">{$hist.new|escape}</td>
+		{/if}
+		{if $prefs.feature_multilingual eq 'y'}
+			<td class="text">{$hist.lang|escape}</td>
 		{/if}
 	</tr>
 {/foreach}

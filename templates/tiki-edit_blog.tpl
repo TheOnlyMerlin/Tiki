@@ -1,5 +1,5 @@
 {if $blogId > 0}
-  {title help="Blogs" url="tiki-edit_blog.php?blogId=$blogId" admpage="blogs"}{tr}Edit Blog:{/tr} {$title}{/title}
+  {title help="Blogs" url="tiki-edit_blog.php?blogId=$blogId" admpage="blogs"}{tr}Edit Blog:{/tr} {$title|escape}{/title}
 {else}
   {title help="Blogs"}{tr}Create Blog{/tr}{/title}
 {/if}
@@ -13,7 +13,7 @@
 	{/if}
 </div>
 
-{if isset($category_needed) && $category_needed eq 'y'}
+{if $category_needed eq 'y'}
 	{remarksbox type='Warning' title="{tr}Warning{/tr}"}
 	<div class="highlight"><em class='mandatory_note'>{tr}A category is mandatory{/tr}</em></div>
 	{/remarksbox}

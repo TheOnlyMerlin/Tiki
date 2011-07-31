@@ -11,15 +11,15 @@ function tiki_syntax_highlighter_flex() {
 
 		$headerlib->add_jq_onready("
 			$('textarea')
-				.flexibleSyntaxHighlighter({
+				.flexibleCodeMirror({
 					changeText: '".tra("Change Highlighter")."'
 				});
 			
 			$('.codelisting')
 				.each(function() {
-					$(this).flexibleSyntaxHighlighter({
+					$(this).flexibleCodeMirror({
 						readOnly: true,
-						mode: 'tiki',
+						parse: ['javascript'],
 						width: $(this).width() + 'px',
 						height: $(this).parent().height() + 'px'
 					});
@@ -35,13 +35,16 @@ function tiki_syntax_highlighter_base()
 	global $headerlib, $prefs;
 
 	if ( $prefs['feature_syntax_highlighter'] == 'y' ) {
-		$headerlib->add_cssfile( 'lib/codemirror/lib/codemirror.css' );
-		$headerlib->add_cssfile( 'lib/codemirror/theme/default.css' );
-		
 		$headerlib->add_cssfile( 'lib/codemirror_tiki/docs.css' );
-		
-		$headerlib->add_jsfile( 'lib/codemirror/lib/codemirror.js' );
+		$headerlib->add_jsfile( 'lib/codemirror/js/codemirror.js' );
 		$headerlib->add_jsfile( 'lib/codemirror_tiki/codemirror_tiki.js' );
+		
+		$headerlib->add_jq_onready("
+			$('#editwiki_toolbar')
+				.css('width', '100%')
+				.nextAll()
+				.css('width', '100%');
+		");
 	}
 }
 
@@ -54,8 +57,8 @@ function tiki_syntax_highlighter_html()
 				.bind('plugin_html_ready', function(args) {
 					var code = args.container.find('textarea:first');
 					
-					code.flexibleSyntaxHighlighter({
-						mode: 'php',
+					code.flexibleCodeMirror({
+						parse: ['xml', 'css', 'javascript', 'html'],
 						lineNumbers: true,
 						changeText: '".tra("Change Highlighter")."',
 						force: true
@@ -74,8 +77,8 @@ function tiki_syntax_highlighter_code()
 				.bind('plugin_code_ready', function(args) {
 					var code = args.container.find('textarea:first');
 					
-					code.flexibleSyntaxHighlighter({
-						mode: 'php',
+					code.flexibleCodeMirror({
+						parse: ['xml', 'css', 'javascript', 'html'],
 						lineNumbers: true,
 						changeText: '".tra("Change Highlighter")."',
 						force: true
@@ -93,8 +96,8 @@ function tiki_syntax_highlighter_r() {
 				.bind('plugin_r_ready', function(args) {
 					var r = args.container.find('textarea:first');
 				
-					r.flexibleSyntaxHighlighter({
-						mode: 'r',
+					r.flexibleCodeMirror({
+						parse: ['r'],
 						lineNumbers: true,
 						changeText: '".tra("Change Highlighter")."',
 						force: true
@@ -112,8 +115,8 @@ function tiki_syntax_highlighter_rr() {
 				.bind('plugin_rr_ready', function(args) {
 					var rr = args.container.find('textarea:first');
 
-					rr.flexibleSyntaxHighlighter({
-						mode: 'r',
+					rr.flexibleCodeMirror({
+						parse: ['r'],
 						lineNumbers: true,
 						changeText: '".tra("Change Highlighter")."',
 						force: true

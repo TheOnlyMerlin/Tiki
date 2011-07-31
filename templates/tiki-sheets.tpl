@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {title help="Spreadsheet"}{tr}Spreadsheets{/tr}{/title}
 
 {tabset}
@@ -19,9 +17,9 @@
 {cycle values="odd,even" print=false}
 	{section name=changes loop=$sheets}
 		<tr class="{cycle}">
-			<td class="text"><a class="galname sheetLink" sheetId="{$sheets[changes].sheetId}" href="tiki-view_sheets.php?sheetId={$sheets[changes].sheetId}">{$sheets[changes].title|escape}</a></td>
-			<td class="text">{$sheets[changes].description|escape}</td>
-			<td class="username">{$sheets[changes].author|escape}</td>
+			<td class="text"><a class="galname sheetLink" sheetId="{$sheets[changes].sheetId}" href="tiki-view_sheets.php?sheetId={$sheets[changes].sheetId}">{$sheets[changes].title}</a></td>
+			<td class="text">{$sheets[changes].description}</td>
+			<td class="username">{$sheets[changes].author}</td>
 			<td class="action">
 				{if $chart_enabled eq 'y'}
 					<a class="gallink" href="tiki-graph_sheet.php?sheetId={$sheets[changes].sheetId}">
@@ -74,7 +72,7 @@
 		{if $sheetId eq 0}
 			<h2>{tr}Create a sheet{/tr}</h2>
 		{else}
-			<h2>{tr}Configure this sheet:{/tr} {$title|escape}</h2>
+			<h2>{tr}Configure this sheet:{/tr} {$title}</h2>
 			{if $tiki_p_edit_sheet eq 'y'}
 				<div class="navbar">
 					{button href="tiki-sheets.php?edit_mode=1&amp;sheetId=0" _text="{tr}Create New Sheet{/tr}"}
@@ -103,14 +101,14 @@
 				{include file='categorize.tpl'}
 				<tr>
 					<td>{tr}Creator:{/tr}</td><td>
-						{user_selector name="creator" editable=$tiki_p_admin_sheet user=$creator}
+						{user_selector name="creator" editable=$tiki_p_admin_sheet}
 					</td>
 				</tr>
 				<tr>
 					<td>{tr}Join with Spreadsheet:{/tr}</td>
 					<td>
 						<select name="parentSheetId">
-							<option value="0">{tr}None{/tr}</option>
+							<option value="">{tr}None{/tr}</option>
 							{section name=sheet loop=$sheets}
 								{if not $sheets[sheet].parentSheetId}
 								<option value="{$sheets[sheet].sheetId}"{if $parentSheetId eq $sheets[sheet].sheetId} selected="selected"{/if}>
