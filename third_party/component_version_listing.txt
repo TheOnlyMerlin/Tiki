@@ -16,4 +16,5 @@ phplayers     | 1.5.2.1      | 24 September 2010
 slideshow     |              | 22 January 2010
 smarty        | 2.6.26       | 3 March 2011
 textwiki      |              | 24 June 2011
+vfsStream     | 0.10.0       | 10 August 2011
 xajax         | 0.5          | 7 February 2009
