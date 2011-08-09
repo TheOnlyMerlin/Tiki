@@ -2,7 +2,7 @@ Package       | @version     | uploaded
 --------------+--------------+------------------
 adodb         | 5.12         | 9 August 2011
 ckeditor      | 3.6.1        | 2 July 2011
-codemirror    | 2            | 22 July 2011
+codemirror    | 2.11         | 22 July 2011
 ezcomponents  | 1.8          | 9 May 2010
 fckeditor     | 2.6.6        | 27 June 2010
 html5shim     | 1.6.2        | 10 May 2011
