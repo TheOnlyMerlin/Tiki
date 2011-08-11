@@ -3,6 +3,13 @@ JQuery/Tiki readme
 -------------------------
 
 
+jonnybradley 11 August 2011
+
+Updates:
+	jquery.js 1.6.1 to 1.6.2
+	jquery.mobile 1.0b1 to 1.0b2 (version "-1.0b2" removed from filenames)
+	jquery-ui 1.8.11 to 1.8.15
+
 jonnybradley 24 June 2011
 
 Updates: (for Tiki 7.1+)
