@@ -428,7 +428,7 @@ echo $wrap;
 			// Write the start tag of an html comment to comment out the tag to remove echo from R console. The closing html comment tag is added inside $cont after the "option(echo=FALSE)"
 			fwrite ($fd, $prg . '<pre id="routput' . $r_count . '" name="routput' . $r_count . '" style="'.$pre_style.'"><!-- ' . $cont . '</pre>');
 			if (file_exists($rgo)) {
-				fwrite ($fd, $prg . '<img src="' . $rgo_rel . '" alt="' . $rgo_rel . '">');
+				fwrite ($fd, $prg . '<img src="' . $rgo_rel . '" class="fixedSize"' . '" alt="' . $rgo_rel . '">');
 		 	}
 	 	} else {
 			fwrite ($fd, $prg . '<pre><!-- ' . $cont . '<span style="color:red">' . $err . '</span>' . '</pre>');
