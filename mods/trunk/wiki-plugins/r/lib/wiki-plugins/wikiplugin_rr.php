@@ -453,7 +453,7 @@ echo $wrap;
 //				$content = 'options(echo=FALSE)'."\n". 'setwd("'. r_dir .'/")'."\n". 'cat(" -->")'."\n". 'png(filename = "' . $rgo . '.png' . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
 //				$content = 'options(echo=FALSE)'."\n".'cat(" -->")'."\n". 'png(filename = "' . $rgo . '.png' . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
 			}else{
-				$content = 'options(echo=FALSE)'."\n";
+				$content = 'options(echo=FALSE)'."\n". 'cat(" -->")'."\n";
 				// Check if the user requested an svg file to be generated instead of the standard png in the wiki page
 				if (isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="svg") {
 					// Prepare the graphic device to create also the svg file at the end
@@ -487,7 +487,7 @@ echo $wrap;
 			// Write the start tag of an html comment to comment out the tag to remove echo from R console. The closing html comment tag is added inside $cont after the "option(echo=FALSE)"
 			fwrite ($fd, $prg . '<pre id="routput' . $r_count . '" name="routput' . $r_count . '" style="'.$pre_style.'"><!-- ' . $cont . '</pre>');
 			if (file_exists($rgo . '.png')) {
-				fwrite ($fd, $prg . '<img src="' . $rgo_rel . '.png' . '" class="fixedSize"' . '" alt="' . $rgo_rel . '.png' . '">');
+				fwrite ($fd, $prg . '<img src="' . $rgo_rel . '.png' . '" class="fixedSize"' . ' alt="' . $rgo_rel . '.png' . '">');
 		 	}
 			if (isset($params["svg"]) && $params["svg"]=="1") {
 				fwrite ($fd, $prg . '</br><a href="' . curPageURL() . '&gtype=svg' . '" alt="' . $rgo_rel . '.svg' . '" target="_blank">Save as SVG</a>');
@@ -506,9 +506,10 @@ echo $wrap;
 		if (isset($_REQUEST["filename"])) {
 			$filename = $_REQUEST['filename'];
 		} else {
-			$filename = $wikipage . $r_count-1;
+			$filename = $wikipage . $r_count;
 		}
 		$filename = str_replace(array('?',"'",'"',':','/','\\'), '_', $filename);	// clean some bad chars
+		header('Content-type: image/svg+xml');
 		header('Content-Length: '.filesize($rgo . '.svg'));
 		header("Content-Disposition: attachment; filename=\"$filename\"");
 		readfile($rgo . '.svg');
