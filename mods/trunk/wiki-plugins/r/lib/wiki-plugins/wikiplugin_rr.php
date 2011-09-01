@@ -165,7 +165,7 @@ function wikiplugin_rr_info() {
 
 
 function wikiplugin_rr($data, $params) {
-	global $smarty, $trklib, $tikilib, $prefs, $dbversion_tiki ;
+	global $smarty, $trklib, $tikilib, $prefs, $dbversion_tiki, $user ;
 
 	include_once('db/tiki-db.php');	// to set up multitiki etc if there ($tikidomain)
 
@@ -303,7 +303,7 @@ function wikiplugin_rr($data, $params) {
 	}
 
 	// execute R program
-	$fn   = runR ($output, convert, $sha1, $data, '', $ws, $params);
+	$fn   = runR ($output, convert, $sha1, $data, '', $ws, $params, $user);
 
 	$ret = file_get_contents ($fn);
 	// Check for Tiki version, to apply parsing of content or not (behavior changed in Tiki7, it seems)
@@ -327,7 +327,7 @@ function wikiplugin_rr($data, $params) {
 }
 
 
-function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
+function runR ($output, $convert, $sha1, $input, $echo, $ws, $params, $user) {
 	static $r_count = 0;
 	
 	// Generate a graphics
@@ -494,10 +494,13 @@ echo $wrap;
 			if (file_exists($rgo . '.png')) {
 				fwrite ($fd, $prg . '<img src="' . $rgo_rel . '.png' . '" class="fixedSize"' . ' alt="' . $rgo_rel . '.png' . '">');
 		 	}
-			if (isset($params["svg"]) && $params["svg"]=="1") {
+			if ( !empty($user) && isset($params["svg"]) && $params["svg"]=="1" || ( isset($params["pdf"]) && $params["pdf"]=="1" ) ){
+				fwrite ($fd, $prg . '</br>');
+		 	}
+			if ( !empty($user) && isset($params["svg"]) && $params["svg"]=="1") {
 				fwrite ($fd, $prg . ' <span class="button"><a href="' . curPageURL() . '&gtype=svg' . '" alt="' . $rgo_rel . '.svg' . '" target="_blank">' . tr("Save Image as SVG") . '</a></span>');
 		 	}
-			if (isset($params["pdf"]) && $params["pdf"]=="1") {
+			if ( !empty($user) && isset($params["pdf"]) && $params["pdf"]=="1") {
 				fwrite ($fd, $prg . ' <span class="button"><a href="' . curPageURL() . '&gtype=pdf' . '" alt="' . $rgo_rel . '.pdf' . '" target="_blank">' . tr("Save Image as PDF") . '</a></span>');
 		 	}
 	 	} else {
@@ -509,7 +512,7 @@ echo $wrap;
 	$r_count++;
 	
 	// Check if the user requested an svg file to be generated instead of the standard png in the wiki page
-	if (isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="svg") {
+	if ( !empty($user) && isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="svg") {
 		// return an svg file to be downloaded
 		if (isset($_REQUEST["filename"])) {
 			$filename = $_REQUEST['filename'];
@@ -525,7 +528,7 @@ echo $wrap;
 		header('Content-Length: '.filesize($rgo . '.svg'));
 		header("Content-Disposition: attachment; filename=\"$filename\"");
 		readfile($rgo . '.svg');
-	} elseif (isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="pdf") { 	// Check if the user requested a pdf file to be generated instead of the standard png in the wiki page
+	} elseif ( !empty($user) && isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="pdf") { 	// Check if the user requested a pdf file to be generated instead of the standard png in the wiki page
 		// return a pdf file to be downloaded
 		if (isset($_REQUEST["filename"])) {
 			$filename = $_REQUEST['filename'];
