@@ -107,7 +107,7 @@ function wikiplugin_rr_info() {
 				'required' => false,
 				'safe' => true,
 				'name' => tra('svg'),
-				'description' => tra('Show link for the creation of the svg version of the plot. Options: 0 (do not create it, default), 1 (create it). Requires R Cairo pakage, which can be checked with the following command in the R console: capabilities()'),
+				'description' => tra('Show link for the creation of the SVG version of the plot. Options: 0 (do not create it, default), 1 (create it). Requires R Cairo pakage, which can be checked with the following command in the R console: capabilities()'),
 				'filter' => 'int',
 				'advanced' => true,
 			),
@@ -115,7 +115,7 @@ function wikiplugin_rr_info() {
 				'required' => false,
 				'safe' => true,
 				'name' => tra('pdf'),
-				'description' => tra('Create also an svg version of the plot, if any, in addition to the png shown in the page. Options: 0 (Do not create the svg file, default), 1 (create the svg file). Requires R Cairo pakage, which can be checked with the following command in the R console: capabilities()'),
+				'description' => tra('Show link for the creation of the PDF version of the plot. Options: 0 (do not create it, default), 1 (create it). Requires R Cairo pakage, which can be checked with the following command in the R console: capabilities()'),
 				'filter' => 'int',
 				'advanced' => true,
 			),
@@ -490,7 +490,7 @@ echo $wrap;
 				fwrite ($fd, $prg . '<img src="' . $rgo_rel . '.png' . '" class="fixedSize"' . ' alt="' . $rgo_rel . '.png' . '">');
 		 	}
 			if (isset($params["svg"]) && $params["svg"]=="1") {
-				fwrite ($fd, $prg . '</br><a href="' . curPageURL() . '&gtype=svg' . '" alt="' . $rgo_rel . '.svg' . '" target="_blank">Save as SVG</a>');
+				fwrite ($fd, $prg . '</br><span class="button"><a href="' . curPageURL() . '&gtype=svg' . '" alt="' . $rgo_rel . '.svg' . '" target="_blank">' . tr("Save Image as SVG") . '</a></span>');
 		 	}
 	 	} else {
 			fwrite ($fd, $prg . '<pre><!-- ' . $cont . '<span style="color:red">' . $err . '</span>' . '</pre>');
