@@ -337,8 +337,6 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 	$rst  = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.html';
 	// Since pluginR 0.7, graphic file type is not hardcoded here into png; 
 	//  file extensions will be set later for png and svg and/or pdf
-//	$rgo  = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.png';
-//	$rgo_rel  = graph_dir . DIRECTORY_SEPARATOR . $sha1 . '.png';
 	$rgo  = r_dir . DIRECTORY_SEPARATOR . $sha1 ;
 	$rgo_rel  = graph_dir . DIRECTORY_SEPARATOR . $sha1 ;
 
@@ -418,7 +416,6 @@ echo $wrap;
 
 		// Alternatively, request the user to use extra param x11=0 if no X11 on server.
 		if ( (isset($params["X11"]) || isset($params["x11"])) && ($params["X11"]==0 || $params["x11"]==0) ) {
-//			$content = 'dev2bitmap("' . $rgo . '.png' . '", type = "png16", res = 72, height = 7, width = 7)' . "\n";
 			$content = 'cat(" -->")'."\n". 'dev2bitmap("' . $rgo . '.png' . '" , width = ' . $width . ', height = ' . $height . ',  pointsize = ' . $pointsize . ', res = ' . $res . ')' . "\n";
 			$content .= 'dev.off()' . "\n";
 			// Add the user input code at the end
@@ -427,20 +424,25 @@ echo $wrap;
 			//	$content = 'png(filename = "' . $rgo . '.png' . '", width = 600, height = 600, bg = "transparent", res = 72)' . "\n";
 			if (isset($params["loadandsave"]) && $params["loadandsave"]==1) {
 				// Set R echo to false and Change the working directory to the current subfolder in the temp/cache folder
-//				$content = 'options(echo=FALSE)'."\n". 'setwd("'. r_dir .'/")'."\n". 'png(filename = "' . $rgo . '.png' . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
 				$content = 'options(echo=FALSE)'."\n". 'cat(" -->")'."\n". 'setwd("'. r_dir .'/")'."\n";
 				if (file_exists(r_dir . '/.RData')) {
 					$content .= 'load(".RData")' . "\n";
 				}
 
-				// Check if the user requested an svg file to be generated instead of the standard png in the wiki page
+				// Check if the user requested an svg file or pdf file to be generated instead of the standard png in the wiki page
 				if (isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="svg") {
-					// Prepare the graphic device to create also the svg file at the end
+					// Prepare the graphic device to create the svg file 
 					$content .= onefile . "<-" . $onefile . "\n";
 					$content .= 'svg(filename = if(onefile) "' . $rgo . '.svg' . '" else "' . $rgo . '%03d.svg' . '", onefile = ' . $onefile . ', width = ' . $width . ', height = ' . $height . ', pointsize = ' . $pointsize . ', bg = "' . $bg . '" , antialias = c("default", "none", "gray", "subpixel"))' . "\n";
 					// Add the user input code at the end
 					$content .= $input . "\n";
-				} else { # else of choice between svg and png
+				} elseif (isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="pdf") {  # case for pdf
+					// Prepare the graphic device to create the pdf
+					$content .= onefile . "<-" . $onefile . "\n";
+					$content .= 'cairo_pdf(filename = if(onefile) "' . $rgo . '.pdf' . '" else "' . $rgo . '%03d.pdf' . '", onefile = ' . $onefile . ', width = ' . $width . ', height = ' . $height . ', pointsize = ' . $pointsize . ', bg = "' . $bg . '" , antialias = c("default", "none", "gray", "subpixel"))' . "\n";
+					// Add the user input code at the end
+					$content .= $input . "\n";
+				} else { # else of choice between svg, pdf and png
 					// Produce the standard png file
 					$content .= 'png(filename = "' . $rgo . '.png' . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
 					// Add the user input code at the end
@@ -449,18 +451,22 @@ echo $wrap;
 
 				// Save the image after the user input
 				$content .= 'save.image(".RData")' . "\n";
-//				$content = 'options(echo=FALSE)'."\n". 'setwd("'. r_dir .'/")'."\n". 'cat(" -->")'."\n". 'png(filename = "' . $rgo . '.png' . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
-//				$content = 'options(echo=FALSE)'."\n".'cat(" -->")'."\n". 'png(filename = "' . $rgo . '.png' . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
 			}else{
 				$content = 'options(echo=FALSE)'."\n". 'cat(" -->")'."\n";
-				// Check if the user requested an svg file to be generated instead of the standard png in the wiki page
+				// Check if the user requested an svg file or pdf file to be generated instead of the standard png in the wiki page
 				if (isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="svg") {
-					// Prepare the graphic device to create also the svg file at the end
+					// Prepare the graphic device to create the svg file 
 					$content .= onefile . "<-" . $onefile . "\n";
 					$content .= 'svg(filename = if(onefile) "' . $rgo . '.svg' . '" else "' . $rgo . '%03d.svg' . '", onefile = ' . $onefile . ', width = ' . $width . ', height = ' . $height . ', pointsize = ' . $pointsize . ', bg = "' . $bg . '" , antialias = c("default", "none", "gray", "subpixel"))' . "\n";
 					// Add the user input code at the end
 					$content .= $input . "\n";
-				} else { # else of choice between svg and png
+				} elseif (isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="pdf") {  # case for pdf
+					// Prepare the graphic device to create the pdf
+					$content .= onefile . "<-" . $onefile . "\n";
+					$content .= 'cairo_pdf(filename = if(onefile) "' . $rgo . '.pdf' . '" else "' . $rgo . '%03d.pdf' . '", onefile = ' . $onefile . ', width = ' . $width . ', height = ' . $height . ', pointsize = ' . $pointsize . ', bg = "' . $bg . '" , antialias = c("default", "none", "gray", "subpixel"))' . "\n";
+					// Add the user input code at the end
+					$content .= $input . "\n";
+				} else { # else of choice between svg, pdf and png
 					// Produce the standard png file
 					$content .= 'png(filename = "' . $rgo . '.png' . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
 					// Add the user input code at the end
@@ -489,7 +495,10 @@ echo $wrap;
 				fwrite ($fd, $prg . '<img src="' . $rgo_rel . '.png' . '" class="fixedSize"' . ' alt="' . $rgo_rel . '.png' . '">');
 		 	}
 			if (isset($params["svg"]) && $params["svg"]=="1") {
-				fwrite ($fd, $prg . '</br><span class="button"><a href="' . curPageURL() . '&gtype=svg' . '" alt="' . $rgo_rel . '.svg' . '" target="_blank">' . tr("Save Image as SVG") . '</a></span>');
+				fwrite ($fd, $prg . ' <span class="button"><a href="' . curPageURL() . '&gtype=svg' . '" alt="' . $rgo_rel . '.svg' . '" target="_blank">' . tr("Save Image as SVG") . '</a></span>');
+		 	}
+			if (isset($params["pdf"]) && $params["pdf"]=="1") {
+				fwrite ($fd, $prg . ' <span class="button"><a href="' . curPageURL() . '&gtype=pdf' . '" alt="' . $rgo_rel . '.pdf' . '" target="_blank">' . tr("Save Image as PDF") . '</a></span>');
 		 	}
 	 	} else {
 			fwrite ($fd, $prg . '<pre><!-- ' . $cont . '<span style="color:red">' . $err . '</span>' . '</pre>');
@@ -516,7 +525,22 @@ echo $wrap;
 		header('Content-Length: '.filesize($rgo . '.svg'));
 		header("Content-Disposition: attachment; filename=\"$filename\"");
 		readfile($rgo . '.svg');
-//		echo "$rgo . '.svg'";
+	} elseif (isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="pdf") { 	// Check if the user requested a pdf file to be generated instead of the standard png in the wiki page
+		// return a pdf file to be downloaded
+		if (isset($_REQUEST["filename"])) {
+			$filename = $_REQUEST['filename'];
+		} else {
+			// Get wikipage name for the name of the svg or pdf files to be downloaded eventually
+			//Convert spaces into some character to avoid R complaining becuase it can't create such folder in the server
+			$wikipage = str_replace(array(" ", "+"), "_", $_REQUEST['page']);
+			// Create the filename
+			$filename = $wikipage . "_" . tr("plot") . $r_count . ".pdf";
+		}
+		$filename = str_replace(array('?',"'",'"',':','/','\\'), '_', $filename);	// clean some bad chars
+		header('Content-type: application/pdf');
+		header('Content-Length: '.filesize($rgo . '.pdf'));
+		header("Content-Disposition: attachment; filename=\"$filename\"");
+		readfile($rgo . '.pdf');
 	} else {
 		return $rst; // normal return of html file
 	}
@@ -526,16 +550,7 @@ echo $wrap;
 function runRinShell ($cmd, $chmf, &$r_exitcode) {
    $stdout = "";
    $msg = "";
-/*   if (security>1) {
-     $msg = shell_exec (sudo . $cmd);
-     if ($chmf!='') {
-       $cmd = sudo . chmod . $chmf;
-       exec ($cmd, $stdout, $r_exitcode);
-#      error ('R', $cmd, $msg);
-     }
-   } else { */
      exec ($cmd, $stdout, $r_exitcode);
-//   }
 
 // Alex, got error message here if no output
    if (is_array($stdout)) { 
@@ -545,7 +560,6 @@ function runRinShell ($cmd, $chmf, &$r_exitcode) {
      $msg .= $row . "\n";
    }
 
-#   error ('R', $cmd, $msg);
    return ($msg);
 }
 
