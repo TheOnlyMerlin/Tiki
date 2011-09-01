@@ -408,7 +408,6 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params) {
 echo $wrap;
 	} 
 	
-
 	if (!file_exists($rst) or onsave) {
 		$content = '';
 		$content .= 'rfiles<-"' . r_dir . '"' . "\n";
@@ -506,7 +505,11 @@ echo $wrap;
 		if (isset($_REQUEST["filename"])) {
 			$filename = $_REQUEST['filename'];
 		} else {
-			$filename = $wikipage . $r_count;
+			// Get wikipage name for the name of the svg or pdf files to be downloaded eventually
+			//Convert spaces into some character to avoid R complaining becuase it can't create such folder in the server
+			$wikipage = str_replace(array(" ", "+"), "_", $_REQUEST['page']);
+			// Create the filename
+			$filename = $wikipage . "_" . tr("plot") . $r_count . ".svg";
 		}
 		$filename = str_replace(array('?',"'",'"',':','/','\\'), '_', $filename);	// clean some bad chars
 		header('Content-type: image/svg+xml');
