@@ -2,6 +2,10 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 4 September 2011
+
+Add:
+	jquery-ui-timepicker-addon.js 0.9.6
 
 jonnybradley 11 August 2011
 
