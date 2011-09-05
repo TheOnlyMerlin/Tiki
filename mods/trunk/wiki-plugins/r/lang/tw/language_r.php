@@ -4,7 +4,7 @@
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 
-$lang = array(
+$lang_mod = array(
 // "RR (R syntax also)" => "RR (R syntax also)",
 // "Same as PluginR, but allowing the execution of potentially dangerous commands once the admin has validated the plugin call" => "Same as PluginR, but allowing the execution of potentially dangerous commands once the admin has validated the plugin call",
 // "R Code" => "R Code",
