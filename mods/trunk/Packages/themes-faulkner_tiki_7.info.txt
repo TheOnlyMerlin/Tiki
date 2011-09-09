@@ -17,7 +17,7 @@ themes/faulkner_tiki_7/styles/faulkner/bullet.gif styles/faulkner/bullet.gif
 themes/faulkner_tiki_7/styles/faulkner/entrybg.gif styles/faulkner/entrybg.gif
 themes/faulkner_tiki_7/styles/faulkner/faulkner.png styles/faulkner/faulkner.png
 themes/faulkner_tiki_7/styles/faulkner/foot.jpg styles/faulkner/foot.jpg
-themes/faulkner_tiki_7/styles/faulkner/h3bg.jpg styles/faulkner/h3bg.jpg
+themes/faulkner_tiki_7/styles/faulkner/h3bg.gif styles/faulkner/h3bg.gif
 themes/faulkner_tiki_7/styles/faulkner/index.php styles/faulkner/index.php
 themes/faulkner_tiki_7/styles/faulkner/leftmargin.jpg styles/faulkner/leftmargin.jpg
 themes/faulkner_tiki_7/styles/faulkner/menu.gif styles/faulkner/menu.gif

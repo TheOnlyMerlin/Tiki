@@ -12,7 +12,7 @@ $Date$
 Files:
 themes/fluidindex_tiki_7/Readme.txt styles/fluidindex/Readme.txt
 themes/fluidindex_tiki_7/styles/fluidindex.css styles/fluidindex.css
-themes/fluidindex_tiki_7/styles/fluidindex/arrows-600.png styles/fluidindex/arrows-6d809f.png
+themes/fluidindex_tiki_7/styles/fluidindex/arrows-6d809f.png styles/fluidindex/arrows-6d809f.png
 themes/fluidindex_tiki_7/styles/fluidindex/bg.gif styles/fluidindex/bg.gif
 themes/fluidindex_tiki_7/styles/fluidindex/bgfooter.jpg styles/fluidindex/bgfooter.jpg
 themes/fluidindex_tiki_7/styles/fluidindex/bquote.gif styles/fluidindex/bquote.gif

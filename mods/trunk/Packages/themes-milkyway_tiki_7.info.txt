@@ -20,7 +20,7 @@ themes/milkyway_tiki_7/styles/milkyway/ie6.css styles/milkyway/ie6.css
 themes/milkyway_tiki_7/styles/milkyway/ie7.css styles/milkyway/ie7.css
 themes/milkyway_tiki_7/styles/milkyway/index.php styles/milkyway/index.php
 themes/milkyway_tiki_7/styles/milkyway/milkyway.png styles/milkyway/milkyway.png
-themes/milkyway_tiki_7/styles/milkyway/mw_menu_active._bg.png styles/milkyway/mw_menu_active._bg.png
+themes/milkyway_tiki_7/styles/milkyway/mw_menu_active_bg.png styles/milkyway/mw_menu_active_bg.png
 themes/milkyway_tiki_7/styles/milkyway/mw_menu_cap_l.png styles/milkyway/mw_menu_cap_l.png
 themes/milkyway_tiki_7/styles/milkyway/mw_menu_cap_r.png.gif styles/milkyway/mw_menu_cap_r.png
 themes/milkyway_tiki_7/styles/milkyway/mw_menu_normal_bg.png styles/milkyway/mw_menu_normal_bg.png

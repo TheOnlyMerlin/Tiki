@@ -13,7 +13,6 @@ Files:
 themes/greenblog_tiki_7/Readme.txt styles/greenblog/Readme.txt
 themes/greenblog_tiki_7/styles/greenblog.css styles/greenblog.css
 themes/greenblog_tiki_7/styles/greenblog/comment_icon.gif styles/greenblog/comment_icon.gif
-themes/greenblog_tiki_7/styles/greenblog/comment_bg.jpg styles/greenblog/comment_bg.jpg
 themes/greenblog_tiki_7/styles/greenblog/comment_bottom.jpg styles/greenblog/comment_bottom.jpg
 themes/greenblog_tiki_7/styles/greenblog/footer_bg.jpg styles/greenblog/footer_bg.jpg
 themes/greenblog_tiki_7/styles/greenblog/greenblog.png styles/greenblog/greenblog.png
