@@ -1,0 +1,214 @@
+<project name="Tikitrunk" default="build">
+ <property name="source" value="svn"/>
+ <target name="clean" description="Clean up and create artifact directories">
+  <delete dir="${basedir}/build/api"/>
+  <delete dir="${basedir}/build/code-browser"/>
+  <delete dir="${basedir}/build/coverage"/>
+  <delete dir="${basedir}/build/logs"/>
+  <delete dir="${basedir}/build/pdepend"/>
+  <delete dir="${basedir}/build/docs"/>
+ </target>
+ 
+ <target name="prepare">
+  <mkdir dir="${basedir}/build/api"/>
+  <mkdir dir="${basedir}/build/code-browser"/>
+  <mkdir dir="${basedir}/build/coverage"/>
+  <mkdir dir="${basedir}/build/logs"/>
+  <mkdir dir="${basedir}/build/pdepend"/>
+  <mkdir dir="${basedir}/build/docs"/>
+ </target>
+ 
+ <target name="parallelTasks" description="Run the pdepend, phpmd, phpcpd, phpcs, phpdoc and phploc tasks in parallel using a maximum of 2 threads.">
+  <parallel threadCount="2">
+   <sequential>
+    <antcall target="phpcpd"/>
+    <antcall target="pdepend"/>
+    <antcall target="phpmd"/>
+    <antcall target="phpdoc"/>
+   </sequential>
+   <antcall target="phpcs"/>
+   <antcall target="phploc"/>
+  </parallel>
+ </target>
+ 
+<target name="phpdoc">
+  <exec dir="${basedir}" executable="phpdoc">
+   <arg line="-t build/docs/
+              --directory ${source}
+				  --ignore /lib/core/Horde/*,/lib/pear/*,/lib/adodb/*,/lib/smarty/*,/lib/jscalendar/*,/lib/ckeditor/*,/lib/htmlpurifier/*,/lib/pclzip/*,/lib/jquery/*,/lib/core/Zend/*,/lib/phpcas/*,/lib/ezcomponents/*,/db/local.php,/templates_c/*,/lang/*/language.php*,/lib/codemirror/*,/lib/svg-edit/*,/lib/mobileesp*,/lib/soap/nusoap/nusoap.php*,/lib/sheet/*,/lib/jquery.s5/*,/lib/jquery.sheet/*,/lib/test/local.php*,/lib/html5shim/*,/lib/test/vfsStream/*,/lib/fullcalendar/*
+              --parseprivate on
+              --undocumentedelements on
+              --output HTML:Smarty/Evolve:default -q"/>
+  </exec>
+ </target>
+ 
+ <target name="phpcpd" description="Generate pmd-cpd.xml using PHPCPD">
+  <exec executable="phpcpd">
+   <arg value="--log-pmd" />
+   <arg value="${basedir}/build/logs/pmd-cpd.xml" />
+   <arg value="--exclude" />
+	<arg value="${source}/lib/sheet" />
+   <arg value="--exclude" />
+	<arg value="${source}/lib/adodb" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/smarty" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/jscalendar" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/htmlpurifier" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/pclzip" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/jquery" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/jquery.sheet" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/jquery.s5" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/phpcas" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/ezcomponents" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/ckeditor" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/core/Horde" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/pear" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/codemirror" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/svg-edit" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/mobileesp" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/core/Zend" />
+   <arg value="--exclude" />
+   <arg value="${source}/templates_c" />
+   <arg value="--exclude" />
+   <arg value="${source}/lang" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/test" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/html5shim" />
+   <arg path="${source}" />
+   <arg value="${source}/lib/fullcalendar" />
+   <arg path="${source}" />
+  </exec>
+ </target> 
+ 
+ <target name="pdepend" description="Generate jdepend.xml and software metrics charts using PHP_Depend">
+  <exec executable="pdepend">
+   <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
+   <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
+   <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
+   <arg value="--ignore=lib/core/Horde,lib/pear,lib/adodb,lib/smarty,lib/jscalendar,lib/ckeditor,lib/htmlpurifier,lib/slideshow,lib/pclzip,lib/jquery,lib/jquery.sheet,lib/jquery.s5,lib/core/Zend,lib/phpcas,lib/sheet/include,lib/ezcomponents,lib/codemirror,lib/svg-edit,lib/mobileesp,lib/test/local.php,lib/html5shim,lib/test/vfsStream,lib/fullcalendar" />
+   <arg path="${source}" />
+  </exec>
+ </target> 
+ 
+ <target name="phpcs">
+  <exec dir="${basedir}" executable="phpcs" >
+   <arg value="--report=checkstyle" />
+   <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
+	<arg value="--standard=Tiki" />
+   <arg value="--ignore=*lib/core/Horde/*,*lib/pear/*,*lib/adodb/*,*lib/smarty/*,*lib/jscalendar/*,*lib/ckeditor/*,*lib/htmlpurifier/*,*lib/pclzip/*,*lib/jquery/*,*lib/core/Zend/*,*lib/phpcas/*,*lib/ezcomponents/*,*db/local.php,*templates_c/*,*lang/*/language.php*,*lib/codemirror/*,*lib/svg-edit/*,*lib/mobileesp*,*lib/soap/nusoap/nusoap.php*,*lib/sheet/*,*lib/jquery.s5/*,*lib/jquery.sheet/*,*lib/test/local.php*,*lib/html5shim/*,*lib/test/vfsStream/*,*lib/fullcalendar/*" />
+   <arg value="--extensions=php,js,css" />
+   <arg path="${source}" />
+  </exec>
+ </target>
+ 
+ <target name="phpmd" description="Generate pmd.xml using PHPMD">
+  <exec executable="phpmd">
+   <arg path="${source}" />
+   <arg value="xml" />
+   <arg value="${basedir}/build/phpmd.xml" />
+   <arg value="--reportfile" />
+   <arg value="${basedir}/build/logs/pmd.xml" />
+	<arg value="--exclude" />
+	<arg value="*lib/core/Horde/*,*lib/pear/*,*lib/adodb/*,*lib/smarty/*,*lib/jscalendar/*,*lib/ckeditor/*,*lib/htmlpurifier/*,*lib/pclzip/*,*lib/jquery/*,*lib/core/Zend/*,*lib/phpcas/*,*lib/ezcomponents/*,*db/local.php,*templates_c/*,*lang/*/language.php*,*lib/codemirror/*,*lib/svg-edit/*,*lib/mobileesp*,*lib/soap/nusoap/nusoap.php*,*lib/sheet/*,*lib/jquery.s5/*,*lib/jquery.sheet/*,*lib/test/local.php*,*lib/html5shim/*,*lib/test/vfsStream/*,*lib/fullcalendar/*" />
+  </exec>
+ </target>
+
+ <target name="phpunit">
+  <exec dir="${basedir}/${source}/lib/test" executable="phpunit" failonerror="true">
+   <arg line="--include-path    ${basedir}/source
+              --exclude-group   acceptance,multilingual
+              --log-junit       ${basedir}/build/logs/phpunit.xml
+              --coverage-clover ${basedir}/build/logs/phpunit.coverage.xml
+              --coverage-html   ${basedir}/build/coverage
+              ." />
+  </exec>
+ </target>
+       
+ <target name="code-coverage">   
+  <exec dir="${basedir}"
+        executable="phpunit"
+        failonerror="true">
+   <arg line="--coverage-html /path/to/webserver/that/can/serve/the/coverage/pages"/>
+  </exec>
+ </target>
+             
+ <target name="phploc" description="Generate phploc.csv">
+  <exec executable="phploc">
+   <arg value="--log-csv" />
+   <arg value="${basedir}/build/logs/phploc.csv" />
+   <arg value="--exclude" />
+	<arg value="${source}/lib/adodb" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/smarty" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/jscalendar" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/htmlpurifier" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/pclzip" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/jquery" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/jquery.sheet" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/jquery.s5" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/phpcas" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/ezcomponents" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/ckeditor" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/core/Horde" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/pear" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/codemirror" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/svg-edit" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/mobileesp" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/core/Zend" />
+   <arg value="--exclude" />
+   <arg value="${source}/templates_c" />
+   <arg value="--exclude" />
+   <arg value="${source}/lang" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/test" />
+   <arg value="--exclude" />
+   <arg value="${source}/lib/html5shim" />
+   <arg path="${source}" />
+   <arg value="${source}/lib/fullcalendar" />
+   <arg path="${source}" />
+  </exec>
+ </target>
+
+ <target name="phpcb" description="Aggregate tool output with PHP_CodeBrowser">
+  <exec executable="phpcb">
+   <arg value="--log" />
+   <arg path="${basedir}/build/logs" />
+   <arg value="--source" />
+   <arg path="${source}" />
+   <arg value="--output" />
+   <arg path="${basedir}/build/code-browser" />
+  </exec>
+ </target>
+ <target name="build" depends="clean,prepare,parallelTasks,phpunit,phpcb"/>
+</project>

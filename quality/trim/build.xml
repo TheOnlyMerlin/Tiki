@@ -1,0 +1,127 @@
+<project name="Trim" default="build">
+ <property name="source" value="trim"/>
+ <target name="clean" description="Clean up and create artifact directories">
+  <delete dir="${basedir}/build/api"/>
+  <delete dir="${basedir}/build/code-browser"/>
+  <delete dir="${basedir}/build/coverage"/>
+  <delete dir="${basedir}/build/logs"/>
+  <delete dir="${basedir}/build/pdepend"/>
+ </target>
+
+ <target name="prepare">
+  <mkdir dir="${basedir}/build/api"/>
+  <mkdir dir="${basedir}/build/code-browser"/>
+  <mkdir dir="${basedir}/build/coverage"/>
+  <mkdir dir="${basedir}/build/logs"/>
+  <mkdir dir="${basedir}/build/pdepend"/>
+  <mkdir dir="${basedir}/build/docs"/>
+ </target>
+
+ <target name="parallelTasks" description="Run the pdepend, phpmd, phpcpd, phpcs, phpdoc and phploc tasks in parallel using a maximum of 2 threads.">
+  <parallel threadCount="2">
+   <sequential>
+    <antcall target="phpcpd"/>
+    <antcall target="pdepend"/>
+    <antcall target="phpmd"/>
+   </sequential>
+   <antcall target="phpcs"/>
+   <antcall target="phpdoc"/>
+   <antcall target="phploc"/>
+  </parallel>
+ </target>
+
+ <target name="phpdoc">
+  <exec dir="${basedir}" executable="phpdoc">
+   <arg line="--target build/docs/
+              --directory ${source}
+              --parseprivate on
+              --undocumentedelements on
+              --output HTML:Smarty/Evolve:default"/>
+  </exec>
+ </target>
+
+ <target name="phpcpd" description="Generate pmd-cpd.xml using PHPCPD">
+  <exec executable="phpcpd">
+   <arg value="--log-pmd" />
+   <arg value="${basedir}/build/logs/pmd-cpd.xml" />
+   <arg value="--exclude" />
+   <arg value="${source}/src" />
+   <arg path="${source}" />
+  </exec>
+ </target> 
+
+ <target name="pdepend" description="Generate jdepend.xml and software metrics charts using PHP_Depend">
+  <exec executable="pdepend">
+   <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
+   <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
+   <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
+   <arg value="--ignore=trim/src/" />
+   <arg path="${source}" />
+  </exec>
+ </target> 
+ 
+ <target name="phpcs">
+  <exec dir="${basedir}" executable="phpcs" >
+   <arg value="--report=checkstyle" />
+   <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
+	<arg value="--standard=Tiki" />
+   <arg value="--extensions=php,js,css" />
+   <arg path="${source}" />
+  </exec>
+ </target>
+
+ <target name="phpmd" description="Generate pmd.xml using PHPMD">
+  <exec executable="phpmd">
+   <arg path="${source}" />
+   <arg value="xml" />
+   <arg value="${basedir}/build/phpmd.xml" />
+   <arg value="--reportfile" />
+   <arg value="${basedir}/build/logs/pmd.xml" />
+   <arg value="--exclude" />
+   <arg value="*src/*" />
+  </exec>
+ </target>
+ 
+ <target name="phpunit">
+  <exec dir="${basedir}/lib/test" executable="phpunit" failonerror="true">
+   <arg line="--include-path    ${basedir}/source
+              --exclude-group   acceptance,multilingual
+              --log-junit       ${basedir}/build/logs/phpunit.xml
+              --coverage-clover ${basedir}/build/logs/phpunit.coverage.xml
+              --coverage-html   ${basedir}/build/coverage
+              ." />
+  </exec>
+ </target>
+       
+ <target name="code-coverage">   
+  <exec dir="${basedir}"
+        executable="phpunit"
+        failonerror="true">
+   <arg line="--coverage-html /path/to/webserver/that/can/serve/the/coverage/pages"/>
+  </exec>
+ </target>
+
+ <target name="phploc" description="Generate phploc.csv">
+  <exec executable="phploc">
+   <arg value="--log-csv" />
+   <arg value="${basedir}/build/logs/phploc.csv" />
+   <arg value="--exclude" />
+   <arg value="${source}/src" />
+   <arg path="${source}" />
+  </exec>
+ </target>
+
+ <target name="phpcb" description="Aggregate tool output with PHP_CodeBrowser">
+  <exec executable="phpcb">
+   <arg value="--log" />
+   <arg path="${basedir}/build/logs" />
+   <arg value="--source" />
+   <arg path="${source}" />
+   <arg value="--output" />
+   <arg path="${basedir}/build/code-browser" />
+  </exec>
+ </target>
+<!--<target name="build" depends="clean,prepare,parallelTasks,phpunit,phpcb"/> -->
+ <target name="build" depends="clean,prepare,parallelTasks,phpcb"/> 
+<!-- <target name="build" depends="clean,prepare, phpcpd, pdepend, phpunit, code-coverage"/>-->
+</project>
