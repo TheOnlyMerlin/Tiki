@@ -5,6 +5,10 @@ JQuery/Tiki readme
 
 jonnybradley 12 September 2011
 
+Add:
+	jquery-ui-selectmenu v 1.1.0 from git repo https://github.com/fnagel/jquery-ui/zipball/selectmenu_v1.1.0
+						all non specific selectmenu files, demo and tests removed
+
 Updates:
 	jquery.mobile 1.0b2 to 1.0b3 (version removed from filenames)
 
