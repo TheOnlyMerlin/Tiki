@@ -1,4 +1,28 @@
-===== SVN trunk  =====
+===== Smarty 3.0.9  =====
+27/07/2011
+- bugfix subtemplate could use wrong varibale scope when it was recalled from different templates
+
+26/07/2011
+- bugfix experimental getTags() method did not work
+
+15/07/2011
+- bugfix individual cache_lifetime of {include} did not work correctly inside {block} tags
+
+12/07/2011
+- bugfix PHP did eat line break on nocache sections
+
+19/06/2011
+- bugfix clear_config Smarty2 BC wrapper function was missing
+
+16/06/2011
+- bugfix do not overwrite 'smarty' template variable when {include ... scope=parent} exits
+
+09/06/2011
+- bugfix smarty security_policy issue in plugins {html_image} and {fetch}
+
+07/06/2011
+- bugfix registerFilter() or registerPlugin() on template objects did register to the main Smarty object if the register methods had been used on the main Smarty object before.
+
 ===== Smarty 3.0.8  =====
 29/05/2011
 - bugfix <?xml ...> in templates did break "cache modified check"
