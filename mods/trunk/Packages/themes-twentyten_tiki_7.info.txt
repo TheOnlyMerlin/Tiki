@@ -1,0 +1,45 @@
+$Id$
+
+Contributor:
+$Author$
+
+Revision:
+$Revision$
+
+Lastmodif:
+$Date$
+
+Files:
+themes/twentyten_tiki_7/Readme.txt styles/twentyten/Readme.txt
+themes/twentyten_tiki_7/styles/twentyten.css styles/twentyten.css
+themes/twentyten_tiki_7/styles/twentyten/index.php styles/twentyten/index.php
+themes/twentyten_tiki_7/styles/twentyten/headers/berries.jpg styles/twentyten/headers/berries.jpg
+themes/twentyten_tiki_7/styles/twentyten/headers/cherryblossoms.jpg styles/twentyten/headers/cherryblossoms.jpg
+themes/twentyten_tiki_7/styles/twentyten/headers/concave.jpg styles/twentyten/headers/concave.jpg
+themes/twentyten_tiki_7/styles/twentyten/headers/fern.jpg styles/twentyten/headers/fern.jpg
+themes/twentyten_tiki_7/styles/twentyten/headers/forestfloor.jpg styles/twentyten/headers/forestfloor.jpg
+themes/twentyten_tiki_7/styles/twentyten/headers/inkwell.jpg styles/twentyten/headers/inkwell.jpg
+themes/twentyten_tiki_7/styles/twentyten/headers/path.jpg styles/twentyten/headers/path.jpg
+themes/twentyten_tiki_7/styles/twentyten/headers/sunset.jpg styles/twentyten/headers/sunset.jpg
+themes/twentyten_tiki_7/templates/styles/twentyten/credits.tpl templates/styles/twentyten/credits.tpl
+themes/twentyten_tiki_7/templates/styles/twentyten/index.php templates/styles/twentyten/index.php
+
+
+Description:
+The Twenty Ten theme uses the default *litecss source-ordered layout method (http://sourceforge.net/projects/litecss) of Tiki Wiki CMS Groupware and imports layout.css and design.css. To retain the original WordPress layout, use only the center column and right column. Also to best emulate the original look of the theme, these are the recommended module assignments (in this order) -> Top: logo (nobox=y) [only the site title and site subtitle should be input, no logo (unless its height is less than that of the site title maybe); twentyten_header_image (nobox=y) [This is a custom module that contains the wide header image. Its data can either be a link to a single image, or something like "{img  randomGalleryId=n}" to rotate images from a gallery (where n is the gallery Id, and all images should be the same size) It should be possible to put (layer) other modules on top of this one if desired; Topbar: login_box (nobox=y, mode=popup), menu (id=43 [or whatever is appropriate], type=horiz, menu_id=tiki-top, nobox=y).
+ 
+Docurl:
+http://themes.tikiwiki.org/Twentyten
+http://zukakakina.com/Twentyten
+ 
+Licence:
+This theme created for Tiki Wiki CMS Groupware is a derived work using visual elements of the Twenty Ten theme for WordPress, which was released under the GPL license. Consequently, the visual aspects retain the GPL license, while the  structural aspects based on the default Tiki components are licensed GNU/LGPL.
+ 
+Author:
+Gary Cunningham-Lee (chibaguy).
+ 
+Version:
+Tiki 7
+ 
+Changelog:
+1 initial package (September 24, 2011)

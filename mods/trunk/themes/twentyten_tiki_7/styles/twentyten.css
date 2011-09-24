@@ -1,0 +1,929 @@
+/* $Id$
+	Theme Name: Twenty Ten theme (twentyten.css) for Tiki Wiki CMS/Groupware.
+	Theme URI: http://themes.tiki.org
+	Description: Implementation of visual aspects of the Twenty Ten default theme for WordPress.
+	Author of original design: the WordPress team
+	Tiki implementor: Gary Cunningham-Lee (chibaguy)
+	Version: Based on version 1.0 of the WordPress version	
+*/
+ 
+/* Import foundation CSS files. */
+@import url("lite/lite.css");
+@import url("layout/layout.css");
+@import url("layout/design.css");
+
+/***** XHTML Elements (body tag here,
+			others follow Layout) *****/ 
+			
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	vertical-align: baseline;
+	background: transparent;
+}
+
+body,
+html>body {
+	line-height: 1;
+	color: #666;
+	font-size: 12px;
+	line-height: 18px;
+	font-family: Georgia, "Bitstream Charter", serif;
+}
+
+body {
+	background: #f1f1f1;
+}
+
+body,
+input,
+textarea {
+	color: #666;
+	font-size: 12px;
+	line-height: 18px;
+	font-family: Georgia, "Bitstream Charter", serif;
+}
+
+ /***** Layout (overrides layout.css;
+		also styling of page layout divs)  *****/
+		
+.fixed_width .fixedwidth {
+	width: 940px;
+}
+
+.fixed_width > .fixedwidth {
+	display: table;
+	margin: auto;
+	margin-top: 20px;
+	margin-bottom: 0;
+	width: 940px;
+	background: #fff;
+}
+
+#fixedwidth[id] {
+	height: auto;
+}
+							    
+#main {
+	text-align: left;
+	padding: 0 20px;
+}
+
+#c1c2,
+#col3 {
+	margin-top: 40px;
+}
+
+#c1c2	#wrapper	#col1.marginleft  {
+	margin-left: 200px;
+}
+
+#c1c2	#wrapper	#col1.marginright {
+	margin-right: 230px;
+}
+
+#c1c2	#wrapper	#col1	.content {
+	background: transparent;
+}
+
+#c1c2 #wrapper #col1 #tiki-center {
+	color: #444;
+	font-size: 14px;
+	line-height: 24px;
+}
+
+#c1c2 #col2 {
+	width: 200px;
+	overflow: visible;
+}
+
+#c1c2 #col2 .content {margin-left: 4px}
+
+#col3 {
+	width: 230px;
+	margin-left: -230px;
+}
+
+#col3 .content {margin-left: 20px;}
+
+/* Enable header and footer content to widen when middle has wide content. */ 
+body.fixed_width .fixedwidth .fixedwidth {
+	width: 100%;
+	padding: 0;
+}
+
+.footerbgtrap {
+	margin-bottom: 10px;
+	border-top: 4px solid #000;
+	margin-top: -4px;
+	padding-top: 18px;
+	padding-bottom: 18px;
+}
+
+/***** XHTML Elements (other than body tag) ******/
+
+blockquote {
+	quotes: none;
+}
+
+blockquote:before, blockquote:after {
+	content: '';
+	content: none;
+}
+
+del {
+	text-decoration: line-through;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-weight: normal;
+	clear: both;
+	color: #000;
+	margin: 0 0 20px 0;
+	line-height: 1.5em;
+}
+
+h1 {font-size: 1.5em}
+h2 {font-size: 1.4em}
+h3 {font-size: 1.3em}
+h4 {font-size: 1.2em}
+h5 {font-size: 1.1em}
+h6 {font-size: 1.0em}
+
+ol, ul {
+	list-style: none;
+}
+
+ul,
+.cssmenu_vert ul {
+	list-style: square;
+	margin: 0 0 18px 1.5em;
+}
+
+ol {
+	list-style: decimal;
+	margin: 0 0 18px 1.5em;
+}
+
+ol ol {list-style:upper-alpha;}
+ol ol ol {list-style:lower-roman;}
+ol ol ol ol {list-style:lower-alpha;}
+dl {margin:0 0 24px 0;}
+dt {font-weight: bold;}
+dd {margin-bottom: 18px;}
+strong {font-weight: bold;}
+
+cite,
+em,
+i {
+	font-style: italic;
+}
+
+big {font-size: 131.25%;}
+ins {background: #fcefa1;}
+
+blockquote {
+	font-style: italic;
+	padding: 0 3em;
+}
+
+blockquote cite,
+blockquote em,
+blockquote i {
+	font-style: normal;
+}
+
+pre {
+	background: #f9f9f9;
+	color: #333;
+	line-height: 18px;
+	margin-bottom: 18px;
+	padding: 1.5em;
+	font-family: "Courier 10 Pitch", Courier, monospace;
+}
+
+abbr,
+acronym {
+	border-bottom: 1px dotted #666;
+	cursor: help;
+}
+
+ins {
+	text-decoration: none;
+}
+
+sup,
+sub {
+	height: 0;
+	line-height: 1;
+	vertical-align: baseline;
+	position: relative;
+}
+
+sup {bottom: 1ex;}
+sub {top: .5ex;}
+
+input[type="text"],
+textarea {
+	padding: 2px;
+	background: #f9f9f9;
+	border: 1px solid #d3d3d3;
+	box-shadow: inset 1px 1px 1px rgba(0,0,0,0.1);
+	-moz-box-shadow: inset 1px 1px 1px rgba(0,0,0,0.1);
+	-webkit-box-shadow: inset 1px 1px 1px rgba(0,0,0,0.1);
+}
+
+a {color: #0066cc;}
+a:visited {color: #743399;}
+
+a:active,
+a:hover {
+	color: #ff4b33;
+}
+
+hr {
+	color: #e7e7e7;
+	background: #e7e7e7;
+}
+
+code {font-family: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;}
+
+h3.box-title,
+.cbox-title,
+.cssmenu_horiz,
+/*.cssmenu_vert,*/
+#sitetitle,
+#sitesubtitle,
+.pagetitle,
+.calnavigation,
+.days,
+.calodd,
+.caleven,
+.postbody-title h2,
+div.article h2,
+.author_info,
+.postfooter,
+.titleb,
+.forum_actions,
+input[type=submit] {
+	font-family: "Helvetica Neue", Arial, Helvetica, "Nimbus Sans L", sans-serif;
+}
+
+span.score b {font-weight: normal;}
+fieldset {border: 1px solid #d3d3d3;}
+legend {color: #000;}
+p {margin-bottom: 24px;}
+.navbar {line-height: 220%;}
+
+span.button a,
+span.button a:visited,
+button,
+input[type="reset"],
+input[type="submit"],
+span.button input,
+.calbuttonBox a {
+	margin: .5em .4em .5em 0;
+	cursor: pointer;
+	line-height: 1.4em;
+	width: auto;
+	overflow: visible;
+	border: 1px solid #d3d3d3;
+	background: #e6e6e6 url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
+	font-weight: normal;
+	color: #555555;
+	outline: none; 
+}
+
+span.button a:hover,
+.button a:hover,
+button:hover,
+input[type="reset"]:hover,
+input[type="submit"]:hover,
+span.button input:hover,
+.calbuttonBox:hover {
+	margin: .5em .4em .5em 0;
+	border: 1px solid #aaaaaa;
+	background: #dadada url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
+	font-weight: normal;
+	color: #212121;
+	outline: none;
+}
+	
+.highlight,
+span.highlight a {
+	border: 1px solid #fcefa1;
+	background: #fbf9ee url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x;
+	color: #363636;
+}
+
+span.button.highlight {border: none;}
+
+span.button.highlight a {
+	border: 1px solid #fcefa1;
+	background: #fbf9ee url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x;
+	color: #363636;
+}
+
+div.error {background: none;}
+
+/***** Site Header & Identity *****/
+.header {
+	min-height: 40px;
+	padding-top: 30px;
+}
+
+#top_modules .box-twentyten_header_image {
+	border-bottom: 1px solid #000;
+	border-top: 4px solid #000;
+	display: block;
+	position: absolute 0 0;
+	width: 940px;
+	height: 198px;
+	z-index: 0;
+	text-align: left;
+}
+
+#top_modules .box-poweredby {
+	z-index: 1;
+}
+
+#top_modules .box-logo {
+	min-width: 940px;
+}
+
+#top_modules #sitetitles {
+	width: 100%;
+}
+
+.box-logo #sitetitle {
+	float: left;
+	font-weight: bold;
+	font-size: 30px;
+	line-height: 36px;
+	margin: 0 0 18px;
+	width: 700px;
+}
+
+.box-logo #sitetitle a,
+.box-logo #sitetitle a:visited {
+	color: #000;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.box-logo #sitesubtitle {
+	clear: right;
+	float: right;
+	font-family: Georgia,"Bitstream Charter", serif;
+	font-style: italic;
+	margin: 20px 0 18px;
+	width: 220px;
+}
+
+#top_modules .box-login_box {
+	bottom: 0;
+}
+
+#top_modules .siteloginbar_popup .tabmark,
+#top_modules .siteloginbar_popup .tabmark a,
+#topbar_modules .siteloginbar_popup .tabmark,
+#topbar_modules .siteloginbar_popup .tabmark a {
+	background: #000;
+}
+
+#top_modules .siteloginbar_popup .tabmark a,
+#topbar_modules .siteloginbar_popup .tabmark a {
+	color: #aaa;
+	font-weight: bold;
+}
+
+#top_modules .siteloginbar_popup .tabmark:hover > a,
+#topbar_modules .siteloginbar_popup .tabmark:hover > a {
+	color: #fff;
+	background: #333;
+}
+
+#top_modules .module.secondary_site_menu {
+	position: absolute;
+	bottom: 174px;
+	right: 120px;
+	z-index: 1;
+}
+
+/* Siteloginbar (no popup, items arranged horizontally) */
+#topbar_modules .box-login_box {
+	position: absolute;
+	right: 10px;
+	bottom: 5px;
+}
+
+/* Sitelogin Popup */
+#topbar_modules .tiki_register_login {
+	bottom: 1px;
+	position: absolute;
+	right: 10px;
+}
+
+#topbar_modules #tiki-top {
+	background: #000;
+	color: #333;
+}
+
+#topbar_modules .box-search {
+	position: absolute;
+	right: 10px;
+	top: 6px;
+}
+	
+/****** Menus, Links ******/
+/** CSS (suckerfish) menus **/
+
+/* default and topbar dropdown typography (colors) and padding */
+.cssmenu_horiz a,
+.cssmenu_vert a {
+	background: #fff;
+	font-weight: normal;
+	text-decoration: none;
+	padding: .2em 1em;
+	font-size: 13px;
+}
+
+.cssmenu_horiz li ul li,
+.cssmenu_vert li ul li {
+	background:	#e2e2e2;
+	border: 1px solid #aaa;
+	border-top: 0;
+	margin-bottom: -1px
+}
+
+.cssmenu_horiz li ul li:first-child,
+.cssmenu_vert li ul li:first-child {
+	border-top: 1px solid #aaa;
+}
+
+#tiki-top .cssmenu_horiz {
+	margin-left: 12px;
+}
+
+#tiki-top .cssmenu_horiz li a {
+	padding: 14px 1em;
+	font-size: 13px;
+	font-weight: normal;
+	text-decoration: none;
+	background: none;
+	color: #aaa;
+	line-height: 38px;
+	padding: 0 10px;
+}
+
+#top_modules .secondary_site_menu .cssmenu_horiz li a {
+	color: #aaa;
+}
+
+#tiki-top .cssmenu_horiz ul li,
+#top_modules .secondary_site_menu .cssmenu_horiz ul li {
+	background: #000;
+}
+
+#tiki-top .cssmenu_horiz ul li a {
+	color: #aaa;
+}
+ 
+#tiki-top .cssmenu_horiz li:hover a {
+	color:#fff;
+	background:#333;
+}
+
+#tiki-top .cssmenu_horiz li:hover ul,
+#tiki-top .cssmenu_horiz li.sfHover ul {
+	top: 38px;
+}
+
+#secondary_site_menu .cssmenu_horiz li:hover ul,
+#secondary_site_menu .cssmenu_horiz li.sfHover ul {
+	top: 22px;
+}
+
+#tiki-top .cssmenu_horiz li:hover ul ul,
+#tiki-top .cssmenu_horiz li.sfHover ul ul,
+#secondary_site_menu .cssmenu_horiz li:hover ul ul,
+#secondary_site_menu .cssmenu_horiz li.sfHover ul ul {
+	top: -1px;
+}
+
+#tiki-top .cssmenu_horiz li.menuSection a {
+	padding-right: 24px;
+}
+
+#tiki-top .cssmenu_horiz li.selected a,
+.secondary_site_menu .cssmenu_horiz li.selected a {
+	color: #fff;
+	font-style: normal;
+} 
+
+.cssmenu_vert li {
+	list-style: square;	
+}
+
+.cssmenu_vert ul li {
+	list-style: none;
+}
+
+/* left column width */
+#col2 ul.cssmenu_vert {
+	padding-left: 0;
+}
+
+#col2 .cssmenu_vert,
+#col2 .cssmenu_vert li {
+	width: 166px;
+}
+
+/* offset from left column (matches above) */
+#col2 .cssmenu_vert li:hover ul,
+#col2 .cssmenu_vert li.sfHover ul {
+	left: 166px;
+}
+
+/* return ul ul ... to default */
+#col2 .cssmenu_vert li:hover ul,
+#col2 .cssmenu_vert li.sfHover ul,
+#col2 .cssmenu_vert li:hover ul li,
+#col2 .cssmenu_vert li.sfHover ul li {
+	width: 10em;
+}
+
+/* return ul ul ... to default */
+#col2 .cssmenu_vert li li:hover ul,
+#col2 .cssmenu_vert li li.sfHover ul {
+	left: 10em;
+}
+
+a .sf-sub-indicator {
+	top: 8px;
+}
+
+.sf-sub-indicator {
+	background: url(jqui/arrows-1174a5.png) no-repeat -10px -100px;
+}
+
+#tiki-top .cssmenu_horiz li a .sf-sub-indicator {top: 16px}
+
+#tiki-top .cssmenu_horiz li ul li  a .sf-sub-indicator {
+	background: url(jqui/arrows-1174a5.png) no-repeat;
+	top: 7px;
+}
+
+#secondary_site_menu a .sf-sub-indicator {
+	top: 8px;
+}
+
+/***** Boxes *****/
+/** Modules **/
+.cbox,
+.simplebox {
+	padding: .2em;
+	margin: 0 .5em 10px;
+	background: #fbf9ee url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_glass_55_fbf9ee_1x400.png) repeat-x scroll 50% 50%;
+	border: 1px solid #fcefa1;
+	color: #363636;
+}
+
+#col2 .box,
+#col3 .box {
+	margin-bottom: 10px;
+}
+
+
+h3.box-title,
+.cbox-title {
+	color: #333;
+	font-weight: bold;
+	margin: 0;
+	font-size: 14px;
+}
+
+.cbox-data,
+.box-data {
+	padding: .5em 1em;
+	background: none;
+}
+
+/** Other boxes **/
+
+.rbox-title, 
+.rbox-data {
+	background: #fbf9ee url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_glass_55_fbf9ee_1x400.png) repeat-x scroll 50% 50%;
+	border: 1px solid #fcefa1;
+	color: #363636;
+}
+
+.rbox-title {
+	border-bottom: none !important;
+}
+
+div.errors {
+	background: none;
+}
+
+.errors .rbox-title,
+.errors .rbox-data {
+	color: #cd0a0a;
+	background: #fef1ec url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_glass_55_fbf9ee_1x400.png) repeat-x scroll 50% bottom;
+	border: 1px solid #cd0a0a;
+}
+
+.warning .rbox-title,
+.warning .rbox-data {
+	color: #cd0a0a;
+	background: #fef1ec url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_glass_55_fbf9ee_1x400.png) repeat-x scroll 50% bottom;
+	border: 1px solid #cd0a0a;
+}
+
+
+div.errors {
+	color: #cd0a0a;
+}
+
+/***** Tables, Tabs *****/
+/** Tables **/
+table {
+	border-collapse: collapse;
+	border-spacing: none;
+}
+
+table.normal {
+	border: 10;
+}
+
+th,
+td.heading {
+	border-bottom: 4px solid #000;
+}
+
+tr.odd td,
+td.odd,
+li.odd {
+	background: #f9f9f9;
+}
+
+tr.even td,
+td.even,
+li.even {
+	background: #f3f3f3;
+}
+
+/** Tabs **/
+/* reset what's in layout.css */
+.tabactive,
+.tabinactive,
+[class].tabactive,
+[class].tabinactive {top: 0 !important}
+
+.tabs {
+	list-style-image: none;
+	list-style-position: outside;
+	list-style-type: none;
+	position: relative;
+	padding: .2em .2em 0;
+	margin:0 0.2em 1px 0;
+	border: 1px solid #aaa;
+	background: #d3d3d3 url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
+}
+
+.tabs br {
+	display: none;
+}
+
+.tabs span {
+	display: block;
+	float: left;
+}
+
+.tabmark {
+	list-style-image: none;
+	float: left;
+	border: 1px solid #d3d3d3;
+	background: #e6e6e6 url(../lib/jquery/jquery-ui/themes/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
+	outline: none;
+	border-bottom-width: 0 !important;
+	margin: 0 .2em -1px 0;
+}
+
+.tabmark a {
+	padding: 0.5em 1em;
+	color: #555;
+	font-weight: normal;
+}
+
+.tabactive {
+	border-bottom-width: 0;
+	padding-bottom: 1px;
+	border: 1px solid #aaa;
+	background: #fff url(../lib/jquery/jquery-ui/themes/smoothness/images/ui-bg_glass_65_ffffff_1x400.png) 50% 50% repeat-x;
+	font-weight: normal;
+	color: #212121;
+	outline: none;
+}
+
+/***** Wiki *****/
+.wikitext {
+	padding: 18px 0;
+}
+
+.pagetitle,
+h1 a.pagetitle {
+	color: #000;
+	font-size: 21px;
+	font-weight: bold;
+	margin-bottom: 0;
+	text-decoration: none;
+	line-height: 1.5em;
+}
+
+.pagetitle a,
+.pagetitle a:visited {
+	color: #000;
+	text-decoration: none;
+}
+
+.wikiplugin_bloglist .post .postbody {
+	margin-left: 0;
+}
+
+/***** Articles ****/
+body.tiki_cms h1 a.pagetitle,
+body.tiki_cms h1 a.pagetitle:visited,
+body.tiki_cms h1 a.pagetitle:hover {border-bottom: none}
+
+div.articletrailer span {
+	margin-left: 5px;
+	padding-left: 20px;
+}
+
+/***** Blogs *****/
+
+.postbody-title a,
+.postbody-title a:visited {
+	color: #000;
+	text-decoration: none;
+}
+
+.author_info,
+.author_info a,
+.author_info a:visited,
+.postfooter,
+.postfooter a,
+.postfooter a:visited,
+.titleb {
+	color: #aaa;
+	font-size: 12px;
+}
+
+body.tiki_blogs .post .postfooter {
+	float: left;
+}
+
+/***** Forums *****/
+
+.post {
+	border-bottom: 1px solid #E7E7E7;
+	line-height: 24px;
+}
+
+.navbar {
+	margin: 5px 0;
+}
+
+.post .postbody {
+	border-bottom: 1px solid #e7e7e7;
+	line-height: 24px;
+	margin: 0 0 24px;
+	padding: 0;
+	padding-left: 56px;
+	position: relative;
+}
+
+.author_info img {
+	position: absolute;
+	left: 6px;
+	top: 4px;
+}
+
+.postbody-title {
+	position: relative;
+}
+
+.postbody-title h2 {
+	margin-bottom: 0;
+}
+
+.postbody-title br.clear {
+	display: none;
+}
+	
+.postbody .actions {
+	text-align: right;
+	margin-bottom: 4px;
+}
+	
+.post .postbody .content {
+	float: none;
+}
+
+.post .author {
+	float: none;
+	text-align: left;
+	margin: 0 0 18px 0;
+	font-size: 12px;
+}
+
+.author_info {
+    padding: 5px 0 5px;
+}
+
+.post .author_info .icons {
+	text-align: left;
+	float: right;
+}
+
+.forum_actions {
+	background: #f9f9f9;
+}
+
+.forum_actions span.title {
+	font-weight: bold;
+}
+
+/***** Tags (freetags) *****/
+div.freetagitemlist {
+	margin-bottom: 30px;
+	padding: 0 0 10px;
+}
+
+/***** Directory *****/
+.dirsite {
+	margin-bottom: 30px;
+	padding: 0 0 10px}
+
+/***** Calendar *****/
+td.highlight {
+	background: #fbf9ee url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_glass_55_fbf9ee_1x400.png) repeat-x scroll 50% 50%;
+	border: 1px solid #fcefa1;
+	color: #363636;
+}
+
+.caltable {
+	border-bottom: none;
+}
+
+.caltable .days {
+	border: none;
+}
+
+.caltable td {
+	line-height: normal;
+}
+
+.caldark {
+	border: 0;
+}
+
+.caldark .calfocus {background: none;}
+
+.calodd,
+.caleven {
+	padding: 3px 0 2px;
+	background: #f9f9f9;
+	border:1px solid #fff;
+	text-align: center;
+}
+.calfocuson {
+	font-size: 100%; 
+	background: #fcefa1;
+}
+
+.calfocuson a {
+	font-size: 90%; 
+}
+
+.calHeadingOn,
+.calHeadingOn a {
+	background: #fcefa1;
+}
+
+/* End of File */
