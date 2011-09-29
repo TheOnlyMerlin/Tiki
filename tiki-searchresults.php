@@ -23,6 +23,8 @@ require_once ('tiki-setup.php');
 require_once ('lib/search/searchlib-mysql.php');
 $auto_query_args = array('highlight', 'where', 'initial', 'maxRecords', 'sort_mode', 'find', 'searchLang', 'words', 'boolean', 'categId' );
 $searchlib = new SearchLib;
+$smarty->assign('headtitle', tra('Search'));
+
 $access->check_feature('feature_search_fulltext');
 $access->check_permission('tiki_p_search');
 
@@ -202,7 +204,7 @@ if (($where == 'wikis' || $where == 'articles') && $prefs['feature_multilingual'
 if ($prefs['feature_categories'] == 'y') {
 	global $categlib;
 	include_once ('lib/categories/categlib.php');
-	$categories = $categlib->getCategories();
+	$categories = $categlib->get_all_categories_respect_perms(null, 'view_category');
 	$smarty->assign_by_ref('categories', $categories);
 	$smarty->assign('cat_tree', $categlib->generate_cat_tree($categories, true, $_REQUEST['cat_categories']));
 }

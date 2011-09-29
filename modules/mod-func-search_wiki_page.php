@@ -14,24 +14,11 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 function module_search_wiki_page_info() {
 	return array(
 		'name' => tra('Search for Wiki Page'),
-		'description' => tra('Search for a wiki page by name.') . ' ' . tra('Deprecated - use the Search module instead'), // Search doesn't support Exact Match
+		'description' => tra('Search for a wiki page by name.'),
 		'prefs' => array('feature_wiki'),
-		'params' => array(
-			'exact' => array(
-				'name' => tra('Exact Match'),
-				'description' => tra('Exact match checkbox checked by default if set to "y".') . " " . tr('Default: "n".'),
-				'filter' => 'alpha'
-			),
-		),
 	);
 }
 
 function module_search_wiki_page( $mod_reference, $module_params ) {
-	global $smarty;
-	$request = $smarty->getTemplateVars('exact_match');
-	if (isset($request)) {
-		$smarty->assign('exact', $request);
-	} else {
-		$smarty->assign('exact', isset($module_params['exact']) ? $module_params['exact'] : 'n');
-	}
+	
 }

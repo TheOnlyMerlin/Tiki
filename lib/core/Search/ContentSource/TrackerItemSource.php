@@ -8,12 +8,11 @@
 class Search_ContentSource_TrackerItemSource implements Search_ContentSource_Interface
 {
 	private $db;
-	private $trklib;
+	private $fields = null;
 
 	function __construct()
 	{
 		$this->db = TikiDb::get();
-		$this->trklib = TikiLib::lib('trk');
 	}
 
 	function getDocuments()
@@ -28,34 +27,12 @@ class Search_ContentSource_TrackerItemSource implements Search_ContentSource_Int
 			trklib performs no meaningful work when extracting the data and strips all
 			required semantics.
 		*/
-
+		$item = $this->db->table('tiki_tracker_items')->fetchRow(array('trackerId', 'createdBy', 'lastModifBy', 'status', 'lastModif'), array(
+			'itemId' => $objectId,
+		));
 		$data = array(
-			'title' => $typeFactory->sortable(tr('Unknown')),
+			'title' => $typeFactory->sortable(''),
 			'language' => $typeFactory->identifier('unknown'),
-		);
-
-		$item = $this->trklib->get_tracker_item($objectId);
-
-		if ($item['status'] == 'c') {
-			$permNeeded = 'tiki_p_view_trackers_closed';
-		} elseif ($item['status'] == 'p') {
-			$permNeeded = 'tiki_p_view_trackers_pending';
-		} else {
-			$permNeeded = 'tiki_p_view_trackers';
-		}
-
-		$definition = Tracker_Definition::get($item['trackerId']);
-
-		if (! $definition) {
-			return $data;
-		}
-
-		foreach ($this->getIndexableHandlers($definition, $item) as $baseKey => $handler) {
-			$data = array_merge($data, $handler->getDocumentPart($baseKey, $typeFactory));
-		}
-
-		$data = array_merge($data, array(
-			'title' => $typeFactory->sortable($this->trklib->get_isMain_value($item['trackerId'], $objectId)),
 			'modification_date' => $typeFactory->timestamp($item['lastModif']),
 			'contributors' => $typeFactory->multivalue(array_unique(array($item['createdBy'], $item['lastModifBy']))),
 
@@ -64,16 +41,75 @@ class Search_ContentSource_TrackerItemSource implements Search_ContentSource_Int
 
 			'parent_object_type' => $typeFactory->identifier('tracker'),
 			'parent_object_id' => $typeFactory->identifier($item['trackerId']),
-			'parent_view_permission' => $typeFactory->identifier($permNeeded),
+			'parent_view_permission' => $typeFactory->identifier('tiki_p_view_trackers'),
+		);
+
+		$itemData = $this->db->table('tiki_tracker_item_fields')->fetchMap('fieldId', 'value', array(
+			'itemId' => $objectId,
 		));
+
+		$definition = Tracker_Definition::get($item['trackerId']);
+		if (! $definition) {
+			return $data;
+		}
+
+		$fields = $definition->getFields();
+
+		$title = '';
+		foreach ($fields as $field) {
+			$fieldId = $field['fieldId'];
+			$value = isset($itemData[$fieldId]) ? $itemData[$fieldId] : null;
+
+			if (in_array($field['type'], array('A', 'i'))) {
+				// Skip attachments and images
+				continue;
+			}
+
+			if ($field['isMain'] == 'y') {
+				$title .= ' ' . $value;
+			}
+
+			// Make all fields sortable, except for textarea
+			$type = ($field['type'] == 'a') ? 'wikitext' : 'sortable';
+
+			$data['tracker_field_' . $fieldId] = $typeFactory->$type($value);
+		}
+
+		$data['title'] = $typeFactory->sortable(trim($title));
 
 		return $data;
 	}
 
 	function getProvidedFields()
 	{
-		$data = array(
-			'title',
+		if (is_null($this->fields)) {
+			$this->fields = array(
+				'title',
+				'language',
+				'modification_date',
+				'contributors',
+
+				'tracker_status',
+				'tracker_id',
+
+				'parent_view_permission',
+				'parent_object_id',
+				'parent_object_type',
+			);
+
+			$fields = $this->db->table('tiki_tracker_fields')->fetchColumn('fieldId', array());
+			foreach ($fields as $field) {
+				$this->fields[] = 'tracker_field_' . $field;
+			}
+		}
+
+		return $this->fields;
+	}
+
+	function getGlobalFields()
+	{
+		// Preserve individual tracker fields
+		return array_fill_keys(array_diff($this->getProvidedFields(), array(
 			'language',
 			'modification_date',
 			'contributors',
@@ -84,55 +120,7 @@ class Search_ContentSource_TrackerItemSource implements Search_ContentSource_Int
 			'parent_view_permission',
 			'parent_object_id',
 			'parent_object_type',
-		);
-
-		foreach ($this->getAllIndexableHandlers() as $baseKey => $handler) {
-			$data = array_merge($data, $handler->getProvidedFields($baseKey));
-		}
-
-		return array_unique($data);
-	}
-
-	function getGlobalFields()
-	{
-		$data = array();
-
-		foreach ($this->getAllIndexableHandlers() as $baseKey => $handler) {
-			$data = array_merge($data, $handler->getGlobalFields($baseKey));
-		}
-
-		$data['title'] = true;
-		return $data;
-	}
-
-	private function getIndexableHandlers($definition, $item = array())
-	{
-		$factory = $definition->getFieldFactory();
-
-		$handlers = array();
-		foreach ($definition->getFields() as $field) {
-			$fieldId = $field['fieldId'];
-			$handler = $factory->getHandler($field, $item);
-
-			if ($handler instanceof Tracker_Field_Indexable) {
-				$handlers['tracker_field_' . $fieldId] = $handler;
-			}
-		}
-
-		return $handlers;
-	}
-
-	private function getAllIndexableHandlers()
-	{
-		$trackers = $this->db->table('tiki_trackers')->fetchColumn('trackerId', array());
-
-		$handlers = array();
-		foreach ($trackers as $trackerId) {
-			$definition = Tracker_Definition::get($trackerId);
-			$handlers = array_merge($handlers, $this->getIndexableHandlers($definition));
-		}
-
-		return $handlers;
+		)), true);
 	}
 }
 

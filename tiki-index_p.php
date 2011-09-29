@@ -11,8 +11,6 @@ include_once('lib/structures/structlib.php');
 
 include_once('lib/wiki/wikilib.php');
 
-$parserlib = TikiLib::lib('parser');
-
 if ($prefs['feature_categories'] == 'y') {
 	global $categlib;
 	if (!is_object($categlib)) {
@@ -142,7 +140,7 @@ $smarty->assign('cached_page', 'n');
 // Get ~pp~, ~np~ and <pre> out of the way. --rlpowell, 24 May 2004
 $preparsed = array();
 $noparsed = array();
-$parserlib->parse_first( $info["data"], $preparsed, $noparsed );
+$tikilib->parse_first( $info["data"], $preparsed, $noparsed );
 
 $pdata = $wikilib->get_parse($page, $canBeRefreshed);
 

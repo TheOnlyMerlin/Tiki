@@ -139,54 +139,6 @@ class TikiInit
 		return $tempdir;
 	}
 
-	/**
-	* Convert a string to UTF-8. Fixes a bug in PHP decode
-	* From http://w3.org/International/questions/qa-forms-utf-8.html
-	* @param string String to be converted
-	* @return UTF-8 representation of the string
-	*/
-	static function to_utf8( $string ) {
-			// 
-		if ( preg_match('%^(?:
-      [\x09\x0A\x0D\x20-\x7E]            # ASCII
-    | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
-    | \xE0[\xA0-\xBF][\x80-\xBF]         # excluding overlongs
-    | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
-    | \xED[\x80-\x9F][\x80-\xBF]         # excluding surrogates
-    | \xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
-    | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
-    | \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
-)*$%xs', $string) ) {
-			return $string;
-		} else {
-			return iconv( 'CP1252', 'UTF-8', $string);
-		}
-	} 
-	
-	/**
-	*	Determine if the web server is an IIS server
-	*	@return true if IIS server, else false
-  	* \static
-	*/
-	static function isIIS() {
-		static $IIS;
-
-		// Sample value Microsoft-IIS/7.5
-		if (!isset($IIS) && isset($_SERVER['SERVER_SOFTWARE'])) {
-			$IIS = substr($_SERVER['SERVER_SOFTWARE'], 0, 13) == 'Microsoft-IIS';
-		}
-
-		return $IIS;
-	}	
-
-	/**
-	*	Determine if the web server is an IIS server
-	*	@return true if IIS server, else false
-  	* \static
-	*/
-	static function hasIIS_UrlRewriteModule() {
-			return isset($_SERVER['IIS_UrlRewriteModule']) == true;
-	}	
 }
 
 function tiki_error_handling($errno, $errstr, $errfile, $errline) {
@@ -229,9 +181,9 @@ function tiki_error_handling($errno, $errstr, $errfile, $errline) {
 	case E_RECOVERABLE_ERROR:
 		$back = "<div class='rbox-data' style='font-size:10px;border:1px solid'>";
 		$back.= "<b>PHP (".PHP_VERSION.") ERROR (".$err[$errno]."):</b><br />";
-		$back.= "<b style='font-family: monospace'>File:</b> $errfile<br />";
-		$back.= "<b style='font-family: monospace'>Line:</b> $errline<br />";
-		$back.= "<b style='font-family: monospace'>Type:</b> $errstr";
+		$back.= "<tt><b>File:</b></tt> $errfile<br />";
+		$back.= "<tt><b>Line:</b></tt> $errline<br />";
+		$back.= "<tt><b>Type:</b></tt> $errstr";
 		$back.= "</div>";
 		$phpErrors[] = $back;
 		break;
@@ -241,13 +193,13 @@ function tiki_error_handling($errno, $errstr, $errfile, $errline) {
 	case E_DEPRECATED:
 	case E_USER_DEPRECATED:
 		if (!  defined('THIRD_PARTY_LIBS_PATTERN') ||  ! preg_match(THIRD_PARTY_LIBS_PATTERN, $errfile) ) {
-			if ( ! empty($prefs['smarty_notice_reporting']) && $prefs['smarty_notice_reporting'] != 'y' && strstr($errfile, '.tpl.php'))
+			if ($prefs['smarty_notice_reporting'] != 'y' && strstr($errfile, '.tpl.php'))
 				break;
 			$back = "<div class='rbox-data' style='font-size:10px;border:1px solid'>";
 			$back.= "<b>PHP (".PHP_VERSION.") NOTICE ($err[$errno]):</b><br />";
-			$back.= "<b style='font-family: monospace'>File:</b> $errfile<br />";
-			$back.= "<b style='font-family: monospace'>Line:</b> $errline<br />";
-			$back.= "<b style='font-family: monospace'>Type:</b> $errstr";
+			$back.= "<tt><b>File:</b></tt> $errfile<br />";
+			$back.= "<tt><b>Line:</b></tt> $errline<br />";
+			$back.= "<tt><b>Type:</b></tt> $errstr";
 			$back.= "</div>";
 			$phpErrors[] = $back;
 		}

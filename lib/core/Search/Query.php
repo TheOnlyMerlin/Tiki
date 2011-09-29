@@ -41,23 +41,10 @@ class Search_Query
 		$this->addPart($query, 'plaintext', $field);
 	}
 
-	function filterType($types)
+	function filterType($type)
 	{
-		if (is_array($types)) {
-			foreach ($types as $type) {
-				$tokens[] = new Search_Expr_Token($type);
-			}
-			$or =  new Search_Expr_Or($tokens);
-			$this->addPart($or, 'identifier', 'object_type');
-		} else {
-			$token = new Search_Expr_Token($types);
-			$this->addPart($token, 'identifier', 'object_type');
-		}
-	}
-
-	function filterContributors($query)
-	{
-		$this->addPart($query, 'multivalue', 'contributors');
+		$token = new Search_Expr_Token($type);
+		$this->addPart($token, 'identifier', 'object_type');
 	}
 
 	function filterCategory($query, $deep = false)
@@ -90,24 +77,6 @@ class Search_Query
 	function filterRange($from, $to, $field = 'modification_date')
 	{
 		$this->expr->addPart(new Search_Expr_Range($from, $to, 'timestamp', $field));
-	}
-
-	function filterTextRange($from, $to, $field = 'title')
-	{
-		$this->expr->addPart(new Search_Expr_Range($from, $to, 'plaintext', $field));
-	}
-
-	function filterInitial($initial, $field = 'title')
-	{
-		$this->expr->addPart(new Search_Expr_Range($initial, substr($initial, 0, -1) . chr(ord(substr($initial, -1)) + 1), 'plaintext', $field));
-	}
-
-	function filterRelation($query, array $invertable = array())
-	{
-		$query = $this->parse($query);
-		$replacer = new Search_Query_RelationReplacer($invertable);
-		$query = $query->walk(array($replacer, 'visit'));
-		$this->addPart($query, 'multivalue', 'relations');
 	}
 
 	private function addPart($query, $type, $field)

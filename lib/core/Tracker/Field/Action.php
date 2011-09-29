@@ -7,45 +7,6 @@
 
 class Tracker_Field_Action implements Tracker_Field_Interface
 {
-	public static function getTypes()
-	{
-		return array(
-			'x' => array(
-				'name' => tr('Action'),
-				'description' => tr('Create a form which will be posted somewhere, not necessarily trackers or even Tiki.'),
-				'help' => 'Action Tracker Field',
-				'prefs' => array('trackerfield_action'),
-				'tags' => array('expert','experimental'),
-				'default' => 'n',
-				'params' => array(
-					'label' => array(
-						'name' => tr('Name'),
-						'description' => tr('Needs explanation'),
-						'filter' => 'text',
-					),
-					'post' => array(
-						'name' => tr('Post'),
-						'description' => tr('Needs explanation'),
-						'filter' => 'text',
-					),
-					'script' => array(
-						'name' => tr('Script'),
-						'description' => tr('Needs explanation'),
-						'filter' => 'text',
-						'example' => 'tiki-index.php',
-					),
-					'parameters' => array(
-						'name' => tr('Parameters'),
-						'description' => tr('Needs explanation'),
-						'filter' => 'text',
-						'count' => '*',
-						'example' => 'page:fieldname',
-					),
-				),
-			),
-		);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		return array();
@@ -57,11 +18,6 @@ class Tracker_Field_Action implements Tracker_Field_Interface
 	}
 
 	function renderOutput($context = array())
-	{
-		return null;
-	}
-
-	function watchCompare($new, $old)
 	{
 		return null;
 	}

@@ -1,9 +1,7 @@
-{* $Id$ *}
-
-{title}{if $parentId ne 0}{tr}Category{/tr} {$p_info.name}{else}{tr}Categories{/tr}{/if}{/title}
+{title}{if $parentId ne 0}{tr}Category{/tr} {$p_info.name|tr_if|escape}{else}{tr}Categories{/tr}{/if}{/title}
 
 {if $parentId and $p_info.description}
-	<div class="description">{$p_info.description|escape|nl2br}</div>
+	<div class="description">{$p_info.description}</div>
 {/if}
 <div class="categbar">
 	{button href="tiki-edit_categories.php" _text="{tr}Organize Objects{/tr}" _title="{tr}Organize Objects{/tr}"}
@@ -109,7 +107,7 @@
 </div>
 
 <form method="post" action="tiki-browse_categories.php">
-	<label>{tr}Find:{/tr} {if $parentId ne 0}{$p_info.name|escape} {/if}<input type="text" name="find" value="{$find|escape}" size="35" /></label><input type="submit" value="{tr}Find{/tr}" name="search" />
+	<label>{tr}Find:{/tr} {$p_info.name|escape} <input type="text" name="find" value="{$find|escape}" size="35" /></label><input type="submit" value="{tr}Find{/tr}" name="search" />
 	<label>{tr}in the current category - and its subcategories: {/tr}<input type="checkbox" name="deep" {if $deep eq 'on'}checked="checked"{/if}/></label>
 	<input type="hidden" name="parentId" value="{$parentId|escape}" />
 	<input type="hidden" name="type" value="{$type|escape}" />
@@ -125,28 +123,28 @@
 
 <br /><br />
 
-{if isset($p_info)}
+{if $path}
 	<div class="treetitle">{tr}Current category:{/tr}
 		<a href="tiki-browse_categories.php?parentId=0&amp;deep={$deep|escape:"url"}&amp;type={$type|escape:"url"}" class="categpath">{tr}Top{/tr}</a>
-		{foreach $p_info.tepath as $id=>$name}
+		{section name=x loop=$path}
 			&nbsp;{$prefs.site_crumb_seper}&nbsp;
-			<a class="categpath" href="tiki-browse_categories.php?parentId={$id}&amp;deep={$deep|escape:"url"}&amp;type={$type|escape:"url"}">{$name|escape}</a>
-		{/foreach}
+			<a class="categpath" href="tiki-browse_categories.php?parentId={$path[x].categId|escape:"url"}&amp;deep={$deep|escape:"url"}&amp;type={$type|escape:"url"}">{$path[x].name|tr_if|escape}</a>
+		{/section}
 			{$eyes_curr}
 	</div>
      
 	{if $parentId ne '0'}
-		<div>
+		<div class="treenode">
 			<a class="catname" href="tiki-browse_categories.php?parentId={$father|escape:"url"}&amp;deep={$deep|escape:"url"}&amp;type={$type|escape:"url"}" title="{tr}Upper level{/tr}">..</a>
 		</div>
 	{/if}
 	
 {elseif $paths}
 	{section name=x loop=$paths}
-		{foreach $paths[x] as $id=>$name}
+		{section name=y loop=$paths[x]}
 			&nbsp;{$prefs.site_crumb_seper|escape}&nbsp;
-			<a class="categpath" href="tiki-browse_categories.php?parentId={$id}&amp;deep={$deep|escape:"url"}&amp;type={$type|escape:"url"}">{$name|escape}</a>
-		{/foreach}
+			<a class="categpath" href="tiki-browse_categories.php?parentId={$paths[x][y].categId|escape:"url"}&amp;deep={$deep|escape:"url"}&amp;type={$type|escape:"url"}">{$paths[x][y].name|tr_if}</a>
+		{/section}
 		<br />
 	{/section}
 {/if}
@@ -176,7 +174,7 @@
 						<tr class="{cycle}">
 							<td class="text">
 								<a href={if empty($objects[ix].sefurl)}"{$objects[ix].href}"{else}"{$objects[ix].sefurl}"{/if} class="catname">{$objects[ix].name|escape|default:'&nbsp;'}</a>
-								<div class="subcomment">{$objects[ix].description|escape|nl2br}</div>
+								<div class="subcomment">{$objects[ix].description}</div>
 							</td>
 							<td class="text">
 								{tr}{$objects[ix].type|replace:"wiki page":"wiki"|replace:"trackeritem":"tracker item"}{/tr}

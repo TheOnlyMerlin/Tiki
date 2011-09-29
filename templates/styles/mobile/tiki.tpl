@@ -1,4 +1,4 @@
-{* $Id$ *}<!DOCTYPE html>
+<!DOCTYPE html>
 {* override for mobile *}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}"{if !empty($page_id)} id="page_{$page_id}"{/if}>
 	<head>
@@ -21,7 +21,7 @@
 			</div>
 		{/if}
 
-		{if $prefs.feature_tikitests eq 'y' and !empty($tikitest_state) and $tikitest_state neq 0}
+		{if $prefs.feature_tikitests eq 'y' and $tikitest_state neq 0}
 			{include file='tiki-tests_topbar.tpl'}
 		{/if}
 
@@ -139,7 +139,7 @@
 								{if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
 									<hr class="hidden" />{* for semantic separation of center and side columns *}
 									{if  $prefs.feature_left_column eq 'fixed' or ($prefs.feature_left_column ne 'n' && $left_modules|@count > 0 && $show_columns.left_modules ne 'n')}
-										<div id="col2"{if $prefs.feature_left_column eq 'user'} style="display:{if isset($cookie.show_col2) and $cookie.show_col2 ne 'y'} none{else} block{/if}{* mobile *};"{/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
+										<aside id="col2"{if $prefs.feature_left_column eq 'user'} style="display:{if isset($cookie.show_col2) and $cookie.show_col2 ne 'y'} none{else} block{/if}{* mobile *};"{/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
 											<h2 class="hidden">Sidebar</h2>
 											<div id="left_modules" class="content modules">
 												<div data-role="collapsible-set" data-theme="{$prefs.mobile_theme_modules}">{* mobile *}
@@ -148,13 +148,13 @@
 													{/section}
 												</div>{* mobile *}
 											</div>
-										</div>
+										</aside>
 									{/if}
 								{/if}
 							</div>{* -- END of #c1c2 -- *}
 							{if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
-								{if  $prefs.feature_right_column eq 'fixed' or ($prefs.feature_right_column ne 'n' && $right_modules|@count > 0 && $show_columns.right_modules ne 'n') or $module_pref_errors}
-									<div class="clearfix" id="col3"{if $prefs.feature_right_column eq 'user'} style="display:{if isset($cookie.show_col3) and $cookie.show_col3 ne 'y'} none{else} block{/if}{* mobile *};"{/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
+								{if  $prefs.feature_right_column eq 'fixed' or ($prefs.feature_right_column ne 'n' && $right_modules|@count > 0 && $show_columns.right_modules ne 'n')}
+									<aside class="clearfix" id="col3"{if $prefs.feature_right_column eq 'user'} style="display:{if isset($cookie.show_col3) and $cookie.show_col3 ne 'y'} none{else} block{/if}{* mobile *};"{/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
 										<h2 class="hidden">Sidebar</h2>
 										<div id="right_modules" class="content modules">
 											<div data-role="collapsible-set" data-theme="{$prefs.mobile_theme_modules}">{* mobile *}
@@ -163,15 +163,12 @@
 														<h3 href="#" class="error">{tr}Module errors{/tr}</h3>
 														{remarksbox type="warning" title="{tr}Module errors{/tr}"}
 															{tr}The following modules could not be loaded{/tr}
-															<form method="post" action="tiki-admin.php">
+															<p>
 																{foreach from=$module_pref_errors key=index item=pref_error}
-																	<p>{$pref_error.mod_name}:</p>
-																	{preference name=$pref_error.pref_name}
+																	<b>{$pref_error.mod_name}:</b><br />
+																	{tr}Preference was not set:{/tr} '{$pref_error.pref_name}'<br />
 																{/foreach}
-																<div class="submit">
-																	<input type="submit" value="{tr}Change{/tr}"/>
-																</div>
-															</form>
+															</p>
 														{/remarksbox}
 													</div>
 												{/if}
@@ -180,7 +177,7 @@
 												{/section}
 											</div>{* mobile *}
 										</div>
-									</div>
+									</aside>
 									<br style="clear:both" />
 								{/if}
 							{/if}

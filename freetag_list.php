@@ -15,24 +15,40 @@ global $tiki_p_view_freetags;
 
 if ($prefs['feature_freetags'] == 'y' and $tiki_p_view_freetags == 'y') {
 
-    $freetaglib = TikiLib::lib('freetag');
+    global $freetaglib;
+    if (!is_object($freetaglib)) {
+	include_once('lib/freetag/freetaglib.php');
+    }
 
     if (isset($cat_objid)) {
-		$tags = $freetaglib->get_tags_on_object($cat_objid, $cat_type);	
-		$tagarray = array(); 
-		$taglist = '';
-		if (!empty($tags['data'])) {
-			foreach ($tags['data'] as $tag) {
-				if (strstr($tag['tag'], ' ')) {
-					$taglist .= '"'.$tag['tag'] . '" ';
-				} else {
-					$taglist .= $tag['tag'] . ' ';
-				}
-				$tagarray[] = $tag['tag'];
-			}
-		}
 
-		$smarty->assign('taglist',$taglist);
+	$tags = $freetaglib->get_tags_on_object($cat_objid, $cat_type);	
+	$tagarray = array(); 
+	$taglist = '';
+	if (!empty($tags['data'])) {
+		foreach ($tags['data'] as $tag) {
+			if (strstr($tag['tag'], ' ')) {
+				$taglist .= '"'.$tag['tag'] . '" ';
+			} else {
+				$taglist .= $tag['tag'] . ' ';
+			}
+		    $tagarray[] = $tag['tag'];
+		}
+	}
+
+	if ($prefs['feature_wikiapproval'] == 'y' && $prefs['wikiapproval_combine_freetags'] == 'y'
+	 && $cat_type == 'wiki page' && $approved = $tikilib->get_approved_page($cat_objid)) {
+	 	// to combine tags from approved page 
+		$approvedPageName = $approved;
+		$approvedTags = $freetaglib->get_tags_on_object($approvedPageName, $cat_type);
+		foreach($approvedTags['data'] as $approvedTag) {
+				if (!in_array($approvedTag['tag'],$tagarray)) {
+					$taglist .= $approvedTag['tag'] . ' ';
+				}
+		}		
+	}
+	
+	$smarty->assign('taglist',$taglist);
     } else {
 	$taglist = '';
     }

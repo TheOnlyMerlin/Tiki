@@ -1,31 +1,29 @@
-{* $Id$ *}
-
 {if !empty($filegals_manager) and !isset($smarty.request.simpleMode)}
 	{assign var=simpleMode value='y'}
 {else}
 	{assign var=simpleMode value='n'}
 {/if}
 
-{title help="File+Galleries" admpage="fgal"}{if $editFileId}{tr}Edit File:{/tr} {$fileInfo.filename}{else}{tr}Upload File{/tr}{/if}{/title}
+{title help="File+Galleries" admpage="fgal"}{if $editFileId}{tr}Edit File:{/tr} {$fileInfo.filename|escape}{else}{tr}Upload File{/tr}{/if}{/title}
 
-{if !empty($galleryId) or (isset($galleries) and count($galleries) > 0 and $tiki_p_list_file_galleries eq 'y') or (isset($uploads) and count($uploads) > 0)}
+{if !empty($galleryId) or (count($galleries) > 0 and $tiki_p_list_file_galleries eq 'y') or (isset($uploads) and count($uploads) > 0)}
 <div class="navbar">
 	{if !empty($galleryId)}
 		{button galleryId="$galleryId" href="tiki-list_file_gallery.php" _text="{tr}Browse Gallery{/tr}"}
 	{/if}
 
-	{if isset($galleries) and count($galleries) > 0 and $tiki_p_list_file_galleries eq 'y'}
-		{if !empty($filegals_manager)}
+	{if count($galleries) > 0 and $tiki_p_list_file_galleries eq 'y'}
+		{if $filegals_manager neq ''}
 			{assign var=fgmanager value=$filegals_manager|escape}
 			{button href="tiki-list_file_gallery.php?filegals_manager=$fgmanager" _text="{tr}List Galleries{/tr}"}
 		{else}
 			{button href="tiki-list_file_gallery.php" _text="{tr}List Galleries{/tr}"}
 		{/if}
 	{/if}
-	{if isset($uploads) and count($uploads) > 0}
+	{if count($uploads) > 0}
 		{button href="#upload" _text="{tr}Upload File{/tr}"}
 	{/if}
-	{if !empty($filegals_manager)}
+	{if isset($filegals_manager)}
 		{if $simpleMode eq 'y'}{button simpleMode='n' galleryId=$galleryId href="" _text="{tr}Advanced mode{/tr}" _ajax="n"}{else}{button galleryId=$galleryId href="" _text="{tr}Simple mode{/tr}" _ajax="n"}{/if}
 		<span{if $simpleMode eq 'y'} style="display:none;"{/if}>
 			<label for="keepOpenCbx">{tr}Keep gallery window open{/tr}</label>
@@ -75,12 +73,12 @@
 				<img src="{$uploads[ix].fileId|sefurl:thumbnail}" />
 			</td>
 			<td>
-				{if !empty($filegals_manager)}
+				{if $filegals_manager neq ''}
 					<a href="#" onClick="window.opener.insertAt('{$filegals_manager}','{$files[changes].wiki_syntax|escape}');checkClose();return false;" title="{tr}Click Here to Insert in Wiki Syntax{/tr}">{$uploads[ix].name} ({$uploads[ix].size|kbsize})</a>
 				{else}
 					<b>{$uploads[ix].name} ({$uploads[ix].size|kbsize})</b>
 				{/if}
-				{button href="#" _flip_id="uploadinfos"|cat:$uploads[ix].fileId _text="{tr}Additional Info{/tr}"}
+				{button href="#" _flip_id="uploadinfos`$uploads[ix].fileId`" _text="{tr}Additional Info{/tr}"}
 				<div style="{if $prefs.javascript_enabled eq 'y'}display:none;{/if}" id="uploadinfos{$uploads[ix].fileId}">
 					{tr}You can download this file using:{/tr} <div class="code"><a class="link" href="{$uploads[ix].dllink}">{$uploads[ix].fileId|sefurl:file}</a></div>
 					{tr}You can link to the file from a Wiki page using:{/tr} <div class="code">[{$uploads[ix].fileId|sefurl:file}|{$uploads[ix].name} ({$uploads[ix].size|kbsize})]</div>
@@ -325,7 +323,7 @@
 
 	<input type="hidden" name="formId" value="0"/>
 	<input type="hidden" name="simpleMode" value="{$simpleMode}"/>
-	{if !empty($filegals_manager)}
+	{if $filegals_manager neq ''}
 		<input type="hidden" name="filegals_manager" value="{$filegals_manager}"/>
 	{/if}
 	{if isset($token_id) and $token_id neq ''}
@@ -515,7 +513,7 @@
 	
 			function add_upload_file() {
 				tmp = "<form onsubmit='return false' id='file_"+nb_upload+"' name='file_"+nb_upload+"' action='tiki-upload_file.php' target='upload_progress_"+nb_upload+"' enctype='multipart/form-data' method='post' style='margin:0px; padding:0px'>";
-				{{if !empty($filegals_manager)}}
+				{{if $filegals_manager neq ''}}
 				tmp += '<input type="hidden" name="filegals_manager" value="{$filegals_manager}"/>';
 				{{/if}}
 				tmp += '<input type="hidden" name="formId" value="'+nb_upload+'"/>';
@@ -553,39 +551,4 @@
 			}
 		{/jq}
 	{/if}
-
-	{if $prefs.fgal_upload_from_source eq 'y' and $tiki_p_upload_files eq 'y'}
-		<form class="remote-upload" method="post" action="{service controller=file action=remote}">
-			<h3>{tr}Upload from URL{/tr}</h3>
-			<p>
-				<input type="hidden" name="galleryId" value="{$galleryId|escape}"/>
-				<label>{tr}URL:{/tr} <input type="url" name="url" placeholder="http://"/></label>
-				<input type="submit" value="{tr}Add{/tr}"/>
-			</p>
-			<div class="result"></div>
-		</form>
-		{jq}
-			$('.remote-upload').submit(function () {
-				var form = this;
-				$.ajax({
-					method: 'POST',
-					url: $(form).attr('action'),
-					data: $(form).serialize(),
-					dataType: 'html',
-					success: function (data) {
-						$('.result', form).html(data);
-						$(form.url).val('');
-					},
-					complete: function () {
-						$('input', form).attr('disabled', 0);
-					}
-				});
-
-				$('input', this).attr('disabled', 1);
-				return false;
-			});
-		{/jq}
-	{/if}
-
 {/if}
-

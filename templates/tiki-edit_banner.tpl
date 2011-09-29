@@ -1,4 +1,3 @@
-{* $Id$ *}
 {title help="Banners"}{tr}Edit or create banners{/tr}{/title}
 
 <div class="navbar">
@@ -42,15 +41,6 @@
 				<td>
 					<input type="text" name="maxClicks" value="{$maxClicks|escape}" size="7" /><i>{tr}-1 for unlimited{/tr}</i>
 				</td>
-			</tr>
-			<tr>
-				<td>{tr}URIs where the banner appears only{/tr}</td>
-				<td><input type="text" name="onlyInURIs" value="{$onlyInURIs|escape}" /><br /><i>{tr}Type each URI enclosed with the # character. Exemple:#/this_page#/tiki-index.php?page=this_page#{/tr}</i>
-			</tr>
-			<tr>
-				<td>{tr}URIs where the banner will not appear {/tr}</td>
-				<td><input type="text" name="exceptInURIs" value="{$exceptInURIs|escape}" /><br /><i>{tr}Type each URI enclosed with the # character. Exemple:#/this_page#/tiki-index.php?page=this_page#{/tr}</i>
-			</tr>
 			<tr>
 				<td>{tr}Zone:{/tr}</td>
 				<td>

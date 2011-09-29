@@ -1,4 +1,4 @@
-# $Id: _htaccess 33755 2011-04-01 17:01:37Z sylvieg $ [This line is used to check that this configuration file is up to date. Do not edit this line and leave it as the first line.]
+# $Id: _htaccess 33755 2011-04-01 17:01:37Z sylvieg $ [This line is used to check that this htaccess file is up to date. Do not edit this line and leave it as the first line.]
 # These are suggested Rewrite Rules for use with Tiki.
 # They enhance security and permit short URLs.
 # In your Tiki instance, visit tiki-admin.php?page=sefurl
@@ -143,9 +143,6 @@ RewriteRule ^page-([A-Za-z0-9]+)   tiki-index.php?page=$1                   [QSA
 RewriteRule ^show:(~?)(.+)$        tiki-slideshow.php?page=$1$2             [QSA,L]
 RewriteRule ^user([0-9]+)(.*)      tiki-user_information.php?userId=$1$2    [QSA,L]
 RewriteRule ^(lib/wiki3d/.+\.jar)$ $1                                       [L]
-
-RewriteRule ^tiki-([a-z_]+)-([a-z_]+) tiki-ajax_services.php?controller=$1&action=$2		[QSA,L]
-RewriteRule ^tiki-([a-z_]+)         tiki-ajax_services.php?controller=$1		[QSA,L]
 
 RewriteRule \.(css|gif|jpg|png|php|html|js|htm|shtml|cgi|sql|phtml|txt|ihtml)   -       [L]
 RewriteRule ^(.+)$                 tiki-index.php?page=$1                   [QSA,L]

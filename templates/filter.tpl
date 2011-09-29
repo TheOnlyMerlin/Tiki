@@ -1,4 +1,3 @@
-{* $Id$ *}
 <form method="get" action="{$filter_action|escape}" class="filter">
 	<label>
 		{tr}Content{/tr}
@@ -30,7 +29,7 @@
 			</label>
 		</fieldset>
 
-		<div class="category-picker" title="{tr}Select Categories{/tr}" style="display:none;">
+		<div class="category-picker" title="{tr}Select Categories{/tr}">
 			{$filter_category_picker}
 		</div>
 	{/if}
@@ -43,7 +42,7 @@
 			<a class="tag-lookup" href="#">{tr}Lookup{/tr}</a>
 		</fieldset>
 
-		<div class="tag-picker" title="{tr}Select Tags{/tr}" style="display:none;">
+		<div class="tag-picker" title="{tr}Select Tag{/tr}">
 			{$filter_tags_picker}
 		</div>
 	{/if}

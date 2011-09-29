@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {if ( isset($tree) and count($tree) gt 0 && $tiki_p_list_file_galleries != 'n' && $fgal_options.show_explorer.value eq 'y' && $tiki_p_view_fgal_explorer eq 'y' ) or ( $gallery_path neq '' && $fgal_options.show_path.value eq 'y' && $tiki_p_view_fgal_path eq 'y' )}
 
 	<div class="fgal_top_bar" style="height:16px; vertical-align:middle">
@@ -53,7 +51,7 @@
 				</div>
 			{/if}
 
-			<form name="fgalformid" id="fgalform" method="post" action="{$smarty.server.PHP_SELF}{if !empty($filegals_manager)}?filegals_manager={$filegals_manager|escape}{/if}" enctype="multipart/form-data">
+			<form name="fgalformid" id="fgalform" method="post" action="{$smarty.server.PHP_SELF}{if $filegals_manager neq ''}?filegals_manager={$filegals_manager|escape}{/if}" enctype="multipart/form-data">
 				<input type="hidden" name="galleryId" value="{$gal_info.galleryId|escape}" />
 				<input type="hidden" name="find" value="{$find|escape}" />
 				{if !empty($smarty.request.show_details)}<input type="hidden" name="show_details" value="{$smarty.request.show_details}" />{/if}
@@ -109,7 +107,7 @@
 						
 						</div>
 						
-						{if !empty($smarty.request.movesel_x) and !isset($file_info)}
+						{if $smarty.request.movesel_x and !isset($file_info)}
 							<div>
 								{tr}Move to:{/tr}
 								<select name="moveto">
@@ -121,7 +119,7 @@
 							</div>
 						{/if}
 					</div>
-					{if !empty($perms)}
+					{if $perms}
 						<div>
 							{tr}Assign permissions to file galleries{/tr}
 							<select name="perms[]" multiple="multiple" size="5">

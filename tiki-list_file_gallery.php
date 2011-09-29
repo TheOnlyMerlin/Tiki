@@ -101,8 +101,8 @@ $smarty->assign('parentId', isset($_REQUEST['parentId']) ? (int)$_REQUEST['paren
 $smarty->assign('creator', $user);
 $smarty->assign('sortorder', 'created');
 $smarty->assign('sortdirection', 'desc');
-if ( $_REQUEST['galleryId'] === "1")
-	$smarty->assign_by_ref('name', tra($gal_info['name'])); //get_strings tra('File Galleries')
+if ( $_REQUEST['galleryId'] === "1" )
+	$smarty->assign('name', tra($gal_info['name'])); //get_strings tra('File Galleries')
 else
 	$smarty->assign_by_ref('name', $gal_info['name']);
 $smarty->assign_by_ref('galleryId', $_REQUEST['galleryId']);
@@ -245,7 +245,7 @@ if (!empty($_REQUEST['validate']) && $prefs['feature_file_galleries_save_draft']
 		}
 	}
 
-	$access->check_authenticity(tra('Validate draft: ') . (!empty($info['name']) ? $info['name'] . ' - ' : '') . $info['filename']);
+	$access->check_authenticity(tra('Validate draft: ') . (!empty($info['name']) ? htmlspecialchars($info['name']) . ' - ' : '') . $info['filename']);
 	$filegallib->validate_draft($info['fileId']);
 }
 
@@ -473,8 +473,7 @@ if (isset($_REQUEST['edit'])) {
 											'image_max_size_y'	=> $_REQUEST['image_max_size_y'],
 											'backlinkPerms'			=> isset($_REQUEST['backlinkPerms'])? 'y': 'n',
 											'show_backlinks'		=> $_REQUEST['fgal_list_backlinks'],
-											'wiki_syntax'			=> $_REQUEST['wiki_syntax'],
-											'show_source'			=> $_REQUEST['fgal_list_source'],
+											'wiki_syntax'			=> $_REQUEST['wiki_syntax']
 										);
 
 		if ($prefs['feature_file_galleries_templates'] == 'y' && isset($_REQUEST['fgal_template']) && !empty($_REQUEST['fgal_template'])) {
@@ -523,6 +522,7 @@ if (isset($_REQUEST['edit'])) {
 			$cat_name = $_REQUEST['name'];
 			$cat_href = 'tiki-list_file_gallery.php?galleryId=' . $cat_objid;
 			include_once ('categorize.php');
+			$categlib->build_cache();
 		}
 		
 		if (isset($_REQUEST['viewitem'])) {
@@ -580,7 +580,7 @@ if (!empty($_REQUEST['removegal'])) {
 		$smarty->display('error.tpl');
 		die;
 	}
-	$access->check_authenticity(tra('Remove file gallery: ') . $gal_info['name']);
+	$access->check_authenticity(tra('Remove file gallery: ') . ' ' . htmlspecialchars($gal_info['name']));
 	$filegallib->remove_file_gallery($_REQUEST['removegal'], $_REQUEST['removegal']);
 }
 
@@ -665,7 +665,7 @@ if (isset($_REQUEST['comment']) && $_REQUEST['comment'] != '' && isset($_REQUEST
 if ($prefs['feature_categories'] == 'y' && !isset($_REQUEST['edit_mode'])) {
 	global $categlib;
 	include_once ('lib/categories/categlib.php');
-	$categories = $categlib->getCategories();
+	$categories = $categlib->get_all_categories_respect_perms(null, 'view_category');
 	$smarty->assign_by_ref('categories', $categories);
 	$smarty->assign('cat_tree', $categlib->generate_cat_tree($categories, true, empty($_REQUEST['cat_categories'])? array(): $_REQUEST['cat_categories']));
 }
@@ -706,10 +706,6 @@ if (!empty($_REQUEST['find_lastModif']) && !empty($_REQUEST['find_lastModif_unit
 }
 if (!empty($_REQUEST['find_lastDownload']) && !empty($_REQUEST['find_lastDownload_unit']) ) {
 	$find['lastDownload'] = $tikilib->now - ($_REQUEST['find_lastDownload'] * $_REQUEST['find_lastDownload_unit']);
-}
-if (!empty($_REQUEST['find_fileType']) && !empty($_REQUEST['find_fileType']) ) {
-	include_once ('lib/mime/mimetypes.php');
-	$find['fileType'] = $mimetypes[$_REQUEST['find_fileType']];
 }
 
 if (!isset($_REQUEST['find']))
@@ -818,6 +814,15 @@ if (isset($_GET['slideshow'])) {
 // Browse view
 $smarty->assign('thumbnail_size', $prefs['fgal_thumb_max_size']);
 $smarty->assign('show_details', isset($_REQUEST['show_details']) ? $_REQUEST['show_details'] : 'n');
+// Set comments config
+if ($prefs['feature_file_galleries_comments'] == 'y') {
+	$comments_per_page = $prefs['file_galleries_comments_per_page'];
+	$thread_sort_mode = $prefs['file_galleries_comments_default_ordering'];
+	$comments_vars = array('galleryId', 'offset', 'sort_mode', 'find');
+	$comments_prefix_var = 'file gallery:';
+	$comments_object_var = 'galleryId';
+	include_once ('comments.php');
+}
 
 $options_sortorder = array( tra('Creation Date') => 'created'
 													, tra('Name') => 'name'
@@ -955,16 +960,12 @@ if (isset($_REQUEST['view']) && $_REQUEST['view'] == 'admin') {
 													, 'default_unit' => empty($_REQUEST['find_lastDownload_unit']) ? 'week' : $_REQUEST['find_lastDownload_unit']
 													);
 	foreach ($fgal_listing_conf as $k => $v) {
-		if ( $k == 'type' ) {
+		if ( $k == 'type' )
 			$show_k = 'icon';
-		} elseif ( $k == 'lastModif' ) {
+		elseif ( $k == 'lastModif' )
 			$show_k = 'modified';
-		} else {
-			$show_k = $k;
-		}
-		if (isset($prefs['fgal_list_'.$k.'_admin'])) {
+		else $show_k = $k;
 			$gal_info['show_'.$show_k] = $prefs['fgal_list_'.$k.'_admin'];
-		}
 	}
 	$smarty->assign('show_find_orphans', 'y');
 }

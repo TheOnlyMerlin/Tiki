@@ -11,12 +11,12 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-function smarty_function_show_sort($params, $smarty) {
+function smarty_function_show_sort($params, &$smarty) {
 	global $url_path;
 
 	if ( isset($_REQUEST[$params['sort']]) ) {
 		$p =  $_REQUEST[$params['sort']];
-	} elseif ( $s = $smarty->getTemplateVars($params['sort']) ) {
+	} elseif ( $s = $smarty->get_template_vars($params['sort']) ) {
 		$p = $s;
 	}
 
@@ -25,7 +25,7 @@ function smarty_function_show_sort($params, $smarty) {
 		$order = substr($p, strrpos($p, '_') + 1);
 
 		if ( strtolower($prop) == strtolower(trim($params['var'])) ) {
-			$smarty->loadPlugin('smarty_function_icon');
+			require_once $smarty->_get_plugin_filepath('function', 'icon');
 			$icon_params = array('alt' => tra('Invert Sort'), 'style' => 'vertical-align:middle');
 
 			switch( $order ) {

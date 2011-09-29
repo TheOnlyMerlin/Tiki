@@ -38,12 +38,12 @@ class Cachelib
 		return $this->implementation->isCached( $key, $type );
 	}
 
-	function getCached($key, $type='', $lastModif = false) {
-		return $this->implementation->getCached( $key, $type, $lastModif );
+	function getCached($key, $type='') {
+		return $this->implementation->getCached( $key, $type );
 	}
 
-	function getSerialized($key, $type = '', $lastModif = false) {
-		$data = $this->getCached( $key, $type, $lastModif );
+	function getSerialized($key, $type = '') {
+		$data = $this->getCached( $key, $type );
 		
 		if( $data ) {
 			return unserialize( $data );
@@ -54,6 +54,13 @@ class Cachelib
 		return $this->implementation->invalidate( $key, $type );
 	}
 
+	/**
+	 * Deprecated - use empty_cache()
+	 */
+	function empty_full_cache() {
+		$this->empty_cache();
+	}
+	
 	/**
 	 * Empty one or more caches
 	 * 
@@ -75,7 +82,7 @@ class Cachelib
 			$this->erase_dir_content("modules/cache/$tikidomain");
 			$this->flush_opcode_cache();
 			if (is_object($tikilib)) { 
-				$tikilib->invalidateModifiedPreferencesCaches();
+				$tikilib->set_lastUpdatePrefs();
 			}
 			if (is_object($logslib)) {
 				$logslib->add_log( $log_section, 'erased all cache content');
@@ -108,7 +115,7 @@ class Cachelib
 		}
 		if (in_array( 'prefs', $dir_names)) {
 			if (is_object($tikilib)) {
-				$tikilib->invalidateModifiedPreferencesCaches();
+				$tikilib->set_lastUpdatePrefs();
 			}
 		}
 	}
@@ -258,17 +265,10 @@ class CacheLibFileSystem
 		return is_file($this->folder."/$key");
 	}
 
-	function getCached($key, $type='', $lastModif = false) {
+	function getCached($key, $type='') {
 		$key = $type.md5($key);
-		$file = $this->folder."/$key";
-		if (is_readable($file)) {
-			// If a last date is given for cache validity, make sure the file is younger
-			if ($lastModif !== false && filemtime($file) < $lastModif) {
-				unlink($file);
-				return false;
-			}
-
-			return @file_get_contents($file);
+		if (is_readable($this->folder."/$key")) {
+			return @file_get_contents($this->folder."/$key");
 		} else {
 			return false;
 		}
@@ -278,6 +278,17 @@ class CacheLibFileSystem
 		$key = $type.md5($key);
 		if (is_file($this->folder."/$key")) {
 			unlink($this->folder."/$key");
+		}
+	}
+
+	function empty_full_cache(){
+		global $tikidomain,$logslib;
+		$this->erase_dir_content("templates_c/$tikidomain");
+		$this->erase_dir_content("temp/public/$tikidomain");
+		$this->erase_dir_content("temp/cache/$tikidomain");
+		$this->erase_dir_content("modules/cache/$tikidomain");
+		if (is_object($logslib)) {
+			$logslib->add_log('system','erased full cache');
 		}
 	}
 
@@ -308,7 +319,7 @@ class CacheLibMemcache
 		return false;
 	}
 
-	function getCached($key, $type='', $lastModif = false) {
+	function getCached($key, $type='') {
 		global $memcachelib;
 		return $memcachelib->get( $this->getKey( $key, $type ) );
 	}

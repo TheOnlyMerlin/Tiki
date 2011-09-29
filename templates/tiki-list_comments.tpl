@@ -1,4 +1,3 @@
-{* $Id$ *}
 {title help="comments" admpage="comments"}{$title}{/title}
 
 {if $comments or ($find ne '') or count($show_types) gt 0 or isset($smarty.request.findfilter_approved)}
@@ -51,7 +50,7 @@
 					<div class='box-title'>{tr}Actions{/tr}</div>
 					<div class='box-data'>
 						<a href="{$comments[ix].href}">{icon _id='magnifier' alt="{tr}Display{/tr}"}</a>
-						<a href="{$comments[ix].href|cat:"&amp;comments_threadId=$id&amp;edit_reply=1#form"}">{icon _id='page_edit' alt="{tr}Edit{/tr}"}</a>
+						<a href="{$comments[ix].href|cat:"&amp;comments_threadId=`$id`&amp;edit_reply=1#form"}">{icon _id='page_edit' alt="{tr}Edit{/tr}"}</a>
 						{self_link remove=1 checked=$id _icon='cross'}{tr}Delete{/tr}{/self_link}
 					</div>
 				</div>
@@ -78,7 +77,7 @@
 		{/capture}
 
 		<tr class="{cycle}{if $prefs.feature_comments_moderation eq 'y'} post-approved-{$comments[ix].approved}{/if}">
-			<td class="checkbox"><input type="checkbox" name="checked[]" value="{$id}" {if isset($rejected[$id]) }checked="checked"{/if}/></td>
+			<td class="checkbox"><input type="checkbox" name="checked[]" value="{$id}"/></td>
 			<td class="action">
 				<a title="{tr}Actions{/tr}" href="#" {popup trigger="onClick" sticky=1 mouseoff=1 fullhtml="1" center=true text=$smarty.capture.over_actions|escape:"javascript"|escape:"html"} style="padding:0; margin:0; border:0">{icon _id='wrench' alt="{tr}Actions{/tr}"}</a>
 			</td>
@@ -114,8 +113,8 @@
 			{if $tiki_p_admin_comments eq 'y' and $prefs.feature_comments_moderation eq 'y'}
 				<td class="approval">
 					{if $comments[ix].approved eq 'n'}
-						{self_link approve_x='y' checked=$id _icon='comment_approve'}{tr}Approve{/tr}{/self_link}
-						{self_link reject_x='r' checked=$id _icon='comment_reject'}{tr}Reject{/tr}{/self_link}
+						{self_link approve='y' checked=$id _icon='comment_approve'}{tr}Approve{/tr}{/self_link}
+						{self_link approve='r' checked=$id _icon='comment_reject'}{tr}Reject{/tr}{/self_link}
 					{elseif $comments[ix].approved eq 'y'}
 						&nbsp;{tr}Approved{/tr}&nbsp;
 					{elseif $comments[ix].approved eq 'r'}
@@ -127,9 +126,9 @@
 			{if $tiki_p_admin_comments eq 'y' and $prefs.comments_archive eq 'y'}
 				<td class="archive">
 					{if $comments[ix].archived eq 'y'}
-						{self_link unarchive_x='unarchive' checked=$id _icon='ofolder'}{tr}Unarchive{/tr}{/self_link}
+						{self_link archive='unarchive' checked=$id _icon='ofolder'}{tr}Unarchive{/tr}{/self_link}
 					{else}
-						{self_link archive_x='archive' checked=$id _icon='folder'}{tr}Archive{/tr}{/self_link}
+						{self_link archive='archive' checked=$id _icon='folder'}{tr}Archive{/tr}{/self_link}
 					{/if}
 				</td>
 			{/if}
@@ -147,17 +146,13 @@
 	<div class="formcolor">
 		{tr}Perform action with checked:{/tr}
 		{icon _id='cross' _tag='input_image' name='remove' value='y' alt="{tr}Delete{/tr}"}
-		{if $tiki_p_admin_comments eq 'y' and $prefs.feature_banning eq 'y'}
-			{icon _id='lock_red' _tag='input_image' name='ban' value='y' alt="{tr}Ban{/tr}"}
-			{icon _id='ban_remove' _tag='input_image' name='ban_remove' value='y' alt="{tr}Delete & Ban{/tr}"}
-		{/if}
 		{if $tiki_p_admin_comments eq 'y' and $prefs.feature_comments_moderation eq 'y'}
 			{icon _id='comment_approve' _tag='input_image' name='approve' value='y' alt="{tr}Approve{/tr}"}
-			{icon _id='comment_reject' _tag='input_image' name='reject' value='r' alt="{tr}Reject{/tr}"}
+			{icon _id='comment_reject' _tag='input_image' name='approve' value='r' alt="{tr}Reject{/tr}"}
 		{/if}
 		{if $tiki_p_admin_comments eq 'y' and $prefs.comments_archive eq 'y'}
-			{icon _id='folder' _tag='input_image' name='archive_x' value='archive' alt="{tr}Archive{/tr}"}
-			{icon _id='ofolder' _tag='input_image' name='unarchive_x' value='unarchive' alt="{tr}Unarchive{/tr}"}
+			{icon _id='folder' _tag='input_image' name='archive' value='archive' alt="{tr}Archive{/tr}"}
+			{icon _id='ofolder' _tag='input_image' name='archive' value='unarchive' alt="{tr}Unarchive{/tr}"}
 		{/if}
 	</div>
 	</form>

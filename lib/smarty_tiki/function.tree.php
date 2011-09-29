@@ -18,7 +18,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  * syntax: {tree}
  * 
  */
-function smarty_function_tree($params, $smarty) {
+function smarty_function_tree($params, &$smarty) {
 	global $prefs;
 
 	if ( $prefs['javascript_enabled'] == 'n' ) {
@@ -31,7 +31,7 @@ function smarty_function_tree($params, $smarty) {
 		$name = $params['data']['name'];
 		$link_id = 'id';
 		$link_var = 'galleryId';
-		$smarty->loadPlugin('smarty_function_icon');
+		require_once $smarty->_get_plugin_filepath('function', 'icon');
 		$icon = '&nbsp;' . smarty_function_icon(array('_id' => 'folder'), $smarty) . '&nbsp;';
 		
 		$tree_nodes = array(
@@ -42,7 +42,7 @@ function smarty_function_tree($params, $smarty) {
 			)
 		);
 		$root_id = $params['data']['id'];
-		$smarty->loadPlugin('smarty_block_self_link');
+		require_once $smarty->_get_plugin_filepath('block', 'self_link');
 		foreach($params['data']['data'] as $d) {
 			$link_params = array('_script' => $link, $link_var => $d[$link_id], '_class' => 'fgalname');
 			if (!empty($_REQUEST['filegals_manager'])) {

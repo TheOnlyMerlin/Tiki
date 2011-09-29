@@ -13,17 +13,12 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 function smarty_function_object_link( $params, $smarty ) {
 
-	if( ! isset( $params['type'], $params['id'] ) && ! isset( $params['identifier'] ) ) {
+	if( ! isset( $params['type'], $params['id'] ) ) {
 		return tra('No object information provided.');
 	}
 
-	if( isset( $params['type'], $params['id'] ) ) {
-		$type = $params['type'];
-		$object = $params['id'];
-	} else {
-		list($type, $object) = explode(':', $params['identifier'], 2);
-	}
-
+	$type = $params['type'];
+	$object = $params['id'];
 	$title = isset( $params['title'] ) ? $params['title'] : null;
 	$url = isset( $params['url'] ) ? $params['url'] : null;
 
@@ -49,9 +44,6 @@ function smarty_function_object_link( $params, $smarty ) {
 	case 'relation_target':
 		$function = 'smarty_function_object_link_relation_target';
 		break;
-	case 'freetag':
-		$function = 'smarty_function_object_link_freetag';
-		break;
 	default:
 		$function = 'smarty_function_object_link_default';
 		break;
@@ -65,15 +57,6 @@ function smarty_function_object_link_default( $smarty, $object, $title = null, $
 
 	if (! function_exists('smarty_modifier_escape')) {
 		require_once 'lib/smarty_tiki/modifier.escape.php';
-	}
-
-	if (empty($title)) {
-		$title = TikiLib::lib('object')->get_title($type, $object);
-	}
-
-	if (empty($title) && $type == 'freetag') {
-		// Blank freetag should not be returned with "No title specified"
-		return '';
 	}
 
 	$escapedPage = smarty_modifier_escape( $title ? $title : tra('No title specified') );
@@ -96,36 +79,10 @@ function smarty_function_object_link_default( $smarty, $object, $title = null, $
 		}
 	}
 	
-	if ( $type == "blog post" ) {
+	if ( $type == "blog post" )
 		$class = ' class="link"';
-	} elseif ( $type == "freetag" ) {
-		$class = ' class="freetag"';
-	}
 
-	$html = '<a href="' . $escapedHref . '"' . $class . $metadata . '>' . $escapedPage . '</a>';
-
-	$attributelib = TikiLib::lib('attribute');
-	$attributes = $attributelib->get_attributes($type, $object);
-	global $prefs;
-	if (isset($attributes['tiki.content.source']) && $prefs['fgal_source_show_refresh'] == 'y') {
-		require_once 'lib/smarty_tiki/function.icon.php';
-		$smarty->loadPlugin('smarty_function_service');
-		$html .= '<a class="file-refresh" href="' . smarty_function_service(array(
-			'controller' => 'file',
-			'action' => 'refresh',
-			'fileId' => intval($object),
-		), $smarty) . '">' . smarty_function_icon(array(
-			'_id' => 'arrow_refresh',
-		), $smarty) . '</a>';
-
-		TikiLib::lib('header')->add_js('$(".file-refresh").removeClass("file-refresh").click(function () {
-			$.getJSON($(this).attr("href"));
-			$(this).remove();
-			return false;
-		});');
-	}
-
-	return $html;
+	return '<a href="' . $escapedHref . '"' . $class . $metadata . '>' . $escapedPage . '</a>';
 }
 
 function smarty_function_object_link_user( $smarty, $user, $title = null ) {
@@ -207,18 +164,5 @@ function smarty_function_object_link_relation_end( $smarty, $end, $relationId, $
 	}
 
 	return $out;
-}
-
-function smarty_function_object_link_freetag( $smarty, $tag, $title = null ) {
-	global $prefs;
-	if ($prefs['feature_freetags'] != 'y') {
-		return tr('freetags disabled');
-	}
-
-	if (is_numeric($tag)) {
-		$tag = TikiLib::lib('freetag')->get_tag_from_id($tag);
-	}
-
-	return smarty_function_object_link_default($smarty, $tag, $tag, 'freetag');
 }
 

@@ -8,7 +8,15 @@
 $section = 'mytiki';
 require_once ('tiki-setup.php');
 require_once ('lib/socialnetworkslib.php');
-$access->check_feature('feature_socialnetworks');
+
+
+// Feature available?
+if ($prefs['feature_socialnetworks'] !='y') {
+	$smarty->assign('msg', tra("This feature is disabled") . ": feature_socialnetworks");
+	$smarty->display("error.tpl");
+	die;
+}
+
 $access->check_permission('tiki_p_socialnetworks',tra('Social networks'));
 
 if (isset($_REQUEST['request_twitter'])) {

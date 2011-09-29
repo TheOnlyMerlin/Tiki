@@ -5,21 +5,13 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- * Smarty plugin
- * @package Smarty
- * @subpackage plugins
- *
- */
-
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-function smarty_block_filter($params, $content, $smarty, $repeat)
-{
+function smarty_block_filter($params, $content, &$smarty, $repeat) {
 	global $prefs;
 	$tikilib = TikiLib::lib('tiki');
 	$unifiedsearchlib = TikiLib::lib('unifiedsearch');
@@ -31,9 +23,6 @@ function smarty_block_filter($params, $content, $smarty, $repeat)
 	$types = $unifiedsearchlib->getSupportedTypes();
 
 	$filter = isset($_REQUEST['filter']) ? $_REQUEST['filter'] : array();
-	if (isset($params['filter'])) {
-		$filter = array_merge($filter, $params['filter']);
-	}
 
 	// General
 	$smarty->assign('filter_action', $params['action']);
@@ -51,7 +40,7 @@ function smarty_block_filter($params, $content, $smarty, $repeat)
 		// Generate the category tree {{{
 		global $categlib; require_once 'lib/categories/categlib.php';
 		require_once 'lib/tree/categ_browse_tree.php';
-		$ctall = $categlib->getCategories();
+		$ctall = $categlib->get_all_categories_respect_perms(null, 'view_category');
 
 		$tree_nodes = array();
 		foreach($ctall as $c) {

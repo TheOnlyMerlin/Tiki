@@ -11,10 +11,10 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-function smarty_function_ticket($params, $smarty) {
-	if (is_null($smarty->getTemplateVars('CSRFTicket'))) {
+function smarty_function_ticket($params, &$smarty) {
+	if (is_null($smarty->get_template_vars('CSRFTicket'))) {
 		return '';
 	} else {
-		return '<input type="hidden" name="ticket" value="' . $smarty->getTemplateVars('CSRFTicket') .'" />';
+		return '<input type="hidden" name="ticket" value="' . $smarty->get_template_vars('CSRFTicket') .'" />';
 	}
 }

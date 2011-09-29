@@ -7,6 +7,7 @@
 
 $section = 'forums';
 require_once ('tiki-setup.php');
+$smarty->assign('headtitle', tra('Admin Forums'));
 if (!isset($_REQUEST['forumId'])) {
 	$_REQUEST['forumId'] = 0;
 }
@@ -45,14 +46,6 @@ if (isset($_REQUEST['batchaction']) && $_REQUEST['batchaction'] = 'delsel_x' && 
 		$commentslib->remove_forum($id);
 	}
 }
-if ($prefs['feature_multilingual'] === 'y') {
-	$languages = array();
-	$languages = $tikilib->list_languages();
-	$smarty->assign_by_ref('languages', $languages);
-} else {
-	$_REQUEST["forumLanguage"] = '';
-}
-
 if (isset($_REQUEST["save"])) {
 	check_ticket('admin-forums');
 	$_REQUEST['useMail'] = isset($_REQUEST['useMail']) ? 'y' : 'n';
@@ -93,15 +86,13 @@ if (isset($_REQUEST["save"])) {
 	if (substr($_REQUEST["att_store_dir"], -1) != "\\" && substr($_REQUEST["att_store_dir"], -1) != "/" && $_REQUEST["att_store_dir"] != "") {
 		$_REQUEST["att_store_dir"].= "/";
 	}
-	
-	$_REQUEST['forumLanguage'] = htmlspecialchars(isset($_REQUEST["forumLanguage"]) ? $_REQUEST["forumLanguage"] : '');
-	
-	$fid = $commentslib->replace_forum($_REQUEST["forumId"], $_REQUEST["name"], $_REQUEST["description"], $controlFlood, $_REQUEST["floodInterval"], $_REQUEST["moderator"], $_REQUEST["mail"], $useMail, $usePruneUnreplied, $_REQUEST["pruneUnrepliedAge"], $usePruneOld, $_REQUEST["pruneMaxAge"], $_REQUEST["topicsPerPage"], $_REQUEST["topicOrdering"], $_REQUEST["threadOrdering"], $_REQUEST["section"], $_REQUEST['topics_list_reads'], $_REQUEST['topics_list_replies'], $_REQUEST['topics_list_pts'], $_REQUEST['topics_list_lastpost'], $_REQUEST['topics_list_author'], $_REQUEST['vote_threads'], $_REQUEST['show_description'], $_REQUEST['inbound_pop_server'], 110, $_REQUEST['inbound_pop_user'], $_REQUEST['inbound_pop_password'], trim($_REQUEST['outbound_address']) , $_REQUEST['outbound_mails_for_inbound_mails'], $_REQUEST['outbound_mails_reply_link'], $_REQUEST['outbound_from'], $_REQUEST['topic_smileys'], $_REQUEST['topic_summary'], $_REQUEST['ui_avatar'], $_REQUEST['ui_flag'], $_REQUEST['ui_posts'], $_REQUEST['ui_level'], $_REQUEST['ui_email'], $_REQUEST['ui_online'], $_REQUEST['approval_type'], $_REQUEST['moderator_group'], $_REQUEST['forum_password'], $_REQUEST['forum_use_password'], $_REQUEST['att'], $_REQUEST['att_store'], $_REQUEST['att_store_dir'], $_REQUEST['att_max_size'], $_REQUEST['forum_last_n'], $_REQUEST['commentsPerPage'], $_REQUEST['threadStyle'], $_REQUEST['is_flat'], $_REQUEST['att_list_nb'], $_REQUEST['topics_list_lastpost_title'], $_REQUEST['topics_list_lastpost_avatar'], $_REQUEST['topics_list_author_avatar'], $_REQUEST['forumLanguage']);
+	$fid = $commentslib->replace_forum($_REQUEST["forumId"], $_REQUEST["name"], $_REQUEST["description"], $controlFlood, $_REQUEST["floodInterval"], $_REQUEST["moderator"], $_REQUEST["mail"], $useMail, $usePruneUnreplied, $_REQUEST["pruneUnrepliedAge"], $usePruneOld, $_REQUEST["pruneMaxAge"], $_REQUEST["topicsPerPage"], $_REQUEST["topicOrdering"], $_REQUEST["threadOrdering"], $_REQUEST["section"], $_REQUEST['topics_list_reads'], $_REQUEST['topics_list_replies'], $_REQUEST['topics_list_pts'], $_REQUEST['topics_list_lastpost'], $_REQUEST['topics_list_author'], $_REQUEST['vote_threads'], $_REQUEST['show_description'], $_REQUEST['inbound_pop_server'], 110, $_REQUEST['inbound_pop_user'], $_REQUEST['inbound_pop_password'], trim($_REQUEST['outbound_address']) , $_REQUEST['outbound_mails_for_inbound_mails'], $_REQUEST['outbound_mails_reply_link'], $_REQUEST['outbound_from'], $_REQUEST['topic_smileys'], $_REQUEST['topic_summary'], $_REQUEST['ui_avatar'], $_REQUEST['ui_flag'], $_REQUEST['ui_posts'], $_REQUEST['ui_level'], $_REQUEST['ui_email'], $_REQUEST['ui_online'], $_REQUEST['approval_type'], $_REQUEST['moderator_group'], $_REQUEST['forum_password'], $_REQUEST['forum_use_password'], $_REQUEST['att'], $_REQUEST['att_store'], $_REQUEST['att_store_dir'], $_REQUEST['att_max_size'], $_REQUEST['forum_last_n'], $_REQUEST['commentsPerPage'], $_REQUEST['threadStyle'], $_REQUEST['is_flat'], $_REQUEST['att_list_nb'], $_REQUEST['topics_list_lastpost_title'], $_REQUEST['topics_list_lastpost_avatar'], $_REQUEST['topics_list_author_avatar']);
 	$cat_type = 'forum';
 	$cat_objid = $fid;
 	$cat_desc = substr($_REQUEST["description"], 0, 200);
 	$cat_name = $_REQUEST["name"];
 	$cat_href = "tiki-view_forum.php?forumId=" . $cat_objid;
+	$cat_object_exists = (bool) $fid;
 	include_once ("categorize.php");
 	$_REQUEST["forumId"] = $fid;
 }
@@ -181,7 +172,6 @@ if ($_REQUEST["forumId"]) {
 	$info["vote_threads"] = 'n';
 	$info["forum_last_n"] = 0;
 	$info["is_flat"] = 'n';
-	$info["forumLanguage"] = '';
 }
 $smarty->assign('forumId', $_REQUEST["forumId"]);
 foreach($info as $key => $value) {
@@ -226,6 +216,7 @@ $smarty->assign_by_ref('cant', $channels["cant"]);
 $cat_type = 'forum';
 $cat_objid = $_REQUEST["forumId"];
 $categories = array();
+$cat_object_exists = (bool) $_REQUEST['forumId'];
 include_once ("categorize_list.php");
 if (!empty($_REQUEST['dup_mode'])) {
 	if ($offset == 0 && ($maxRecords == - 1 || $channels['cant'] <= $maxRecords)) {

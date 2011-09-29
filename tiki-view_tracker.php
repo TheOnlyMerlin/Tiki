@@ -181,20 +181,18 @@ $xfields = array('data' => $trackerDefinition->getFields());
 $popupFields = $trackerDefinition->getPopupFields();
 $smarty->assign_by_ref('popupFields', $popupFields);
 
-$smarty->assign('tracker_sync', $trackerDefinition->getSyncInformation());
-
 $orderkey = false;
 $listfields = array();
 $usecategs = false;
 $textarea_options = false;
 $all_descends = false;
 
-$fieldFactory = $trackerDefinition->getFieldFactory();
-
-$itemObject = Tracker_Item::newItem($_REQUEST['trackerId']);
+$fieldFactory = new Tracker_Field_Factory($trackerDefinition);
 
 foreach ($xfields['data'] as $i => $current_field) {
-	$current_field_ins = null;
+	$current_field_list = array();
+	$current_field_ins = array();
+	$current_field_fields = array();
 
 	$fid = $current_field["fieldId"];
 	$ins_id = 'ins_' . $fid;
@@ -205,37 +203,74 @@ foreach ($xfields['data'] as $i => $current_field) {
 	if (!empty($sort_field) and $sort_field == $fid) {
 		$orderkey = true;
 	}
-
-	$fieldIsVisible = $itemObject->canViewField($fid);
-	$fieldIsEditable = $itemObject->canModifyField($fid);
-
-	//exclude fields that should not be listed
-	if ($fieldIsVisible && ($current_field['isTblVisible'] == 'y' or in_array($fid, $popupFields))) {
-		$listfields[$fid] = $current_field;
+	if (in_array($current_field['type'], array('u', 'g', 'I')) && isset($current_field['options_array'][0]) && $current_field['options_array'][0] == 1) {
+		$creatorSelector = true;
+	} else {
+		$creatorSelector = false;
 	}
+	//exclude fields that should not be listed
+	if (($current_field['isTblVisible'] == 'y' or in_array($fid, $popupFields)) and ($current_field['isHidden'] == 'n' or $current_field['isHidden'] == 'p' or $tiki_p_admin_trackers == 'y' or ($current_field['type'] == 's' and $current_field['name'] == 'Rating' and $tiki_p_tracker_view_ratings == 'y'))) {
+		$current_field_list = $current_field;
+		//get category choices available based on option settings
+		if ($current_field_list['type'] == 'e' && $prefs['feature_categories'] == 'y') {
+			$parentId = $current_field_list['options_array'][0];
+			//get all category descendants if true, only first level children if false
+			if (isset($current_field_list['options_array'][3]) && $current_field_list['options_array'][3] == 1) {
+				$all_descends = true;
+			} else {
+				$all_descends = false;
+			}			
+			$current_field_list['categories'] = $categlib->get_viewable_child_categories($parentId, $all_descends);
+		}
+		if (isset($current_field['otherField'])) {
+			$current_field_list['otherField'] = $current_field['otherField'];
+		}
+	}
+	if ($creatorSelector or $current_field['isHidden'] == 'n' or $current_field['isHidden'] == 'c' or $current_field['isHidden'] == 'p' or $tiki_p_admin_trackers == 'y' or ($current_field['type'] == 's' and $current_field['name'] == 'Rating' and $tiki_p_tracker_view_ratings == 'y')) {
+		$current_field_ins = $current_field;
+		$current_field_fields = $current_field;
 
-	if ($fieldIsVisible || $fieldIsEditable) {
 		$handler = $fieldFactory->getHandler($current_field);
 
 		if ($handler) {
 			$field_values = $insert_values = $handler->getFieldData($_REQUEST);
-			$current_field_ins = array_merge($current_field, $insert_values);
+
+			if ($insert_values) {
+				$current_field_ins = array_merge($current_field_ins, $insert_values);
+			}
+
+			if ($field_values) {
+				$current_field_fields = array_merge($current_field_fields, $field_values);
+			}
 		}
+	}
+	// store values to have them available when there is
+	// an error in the values typed by an user for a field type.
+	if (isset($current_field_fields['fieldId'])) {
+		$current_field_fields['value'] = isset($current_field_ins['value']) ? $current_field_ins['value'] : '';
+	}
+
+	if (! empty($current_field_list)) {
+		$listfields[$fid] = $current_field_list;
 	}
 
 	if (! empty($current_field_ins)) {
-		if ($fieldIsEditable) {
-			$ins_fields['data'][$i] = $current_field_ins;
-		}
-		if ($fieldIsVisible) {
-			$fields['data'][$i] = $current_field_ins;
-		}
+		$ins_fields['data'][$i] = $current_field_ins;
+	}
+
+	if (! empty($current_field_fields)) {
+		$fields['data'][$i] = $current_field_fields;
 	}
 }
 
 // Collect information from the provided fields
+$ins_categs = array();
 $newItemRateField = null;
 foreach ($ins_fields['data'] as $current_field) {
+	if ($current_field['type'] == 'e' && isset($current_field['selected_categories'])) {
+		$ins_categs = array_merge($ins_categs, $current_field['selected_categories']);
+	}
+
 	if ($current_field['type'] == 's' && $current_field['name'] == 'Rating') {
 		$newItemRateField = $current_field;
 		$newItemRate = $current_field['request_rate'];
@@ -247,8 +282,7 @@ if (!$orderkey && $sort_mode == '') {
 }
 if (!empty($_REQUEST['remove'])) {
 	$item_info = $trklib->get_item_info($_REQUEST['remove']);
-	$actionObject = Tracker_Item::fromInfo($item_info);
-	if ($actionObject->canRemove()) {
+	if ($tiki_p_admin_trackers == 'y' || ($tiki_p_modify_tracker_items == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c') || ($tiki_p_modify_tracker_items_pending == 'y' && $item_info['status'] == 'p') || ($tiki_p_modify_tracker_items_closed == 'y' && $item_info['status'] == 'c')) {
 		$access->check_authenticity();
 		$trklib->remove_tracker_item($_REQUEST['remove']);
 	}
@@ -256,8 +290,7 @@ if (!empty($_REQUEST['remove'])) {
 	check_ticket('view-trackers');
 	foreach($_REQUEST['action'] as $batchid) {
 		$item_info = $trklib->get_item_info($batchid);
-		$actionObject = Tracker_Item::fromInfo($item_info);
-		if ($actionObject->canRemove()) {
+		if ($tiki_p_admin_trackers == 'y' || ($tiki_p_modify_tracker_items == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c') || ($tiki_p_modify_tracker_items_pending == 'y' && $item_info['status'] == 'p') || ($tiki_p_modify_tracker_items_closed == 'y' && $item_info['status'] == 'c')) {
 			$trklib->remove_tracker_item($batchid);
 		}
 	}
@@ -265,8 +298,7 @@ if (!empty($_REQUEST['remove'])) {
 	check_ticket('view-trackers');
 	foreach($_REQUEST['action'] as $batchid) {
 		$item_info = $trklib->get_item_info($batchid);
-		$actionObject = Tracker_Item::fromInfo($item_info);
-		if ($actionObject->canModify()) {
+		if ($tiki_p_admin_trackers == 'y' || ($tiki_p_modify_tracker_items == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c') || ($tiki_p_modify_tracker_items_pending == 'y' && $item_info['status'] == 'p') || ($tiki_p_modify_tracker_items_closed == 'y' && $item_info['status'] == 'c')) {
 			$trklib->replace_item($_REQUEST['trackerId'], $batchid, array(
 				'data' => ''
 			) , $_REQUEST['batchaction']);
@@ -314,7 +346,7 @@ if (isset($_REQUEST['import'])) {
 		fclose($fp);
 	}
 } elseif (isset($_REQUEST["save"])) {
-	if ($itemObject->canModify()) {
+	if ($tiki_p_create_tracker_items == 'y') {
 		global $captchalib; include_once 'lib/captcha/captchalib.php';
 		if (empty($user) && $prefs['feature_antibot'] == 'y' && !$captchalib->validate()) {
 			$smarty->assign('msg', $captchalib->getErrors());
@@ -339,7 +371,7 @@ if (isset($_REQUEST['import'])) {
 			if (empty($_REQUEST["itemId"]) && $tracker_info['oneUserItem'] == 'y') { // test if one item per user
 				$_REQUEST['itemId'] = $trklib->get_user_item($_REQUEST['trackerId'], $tracker_info);
 			}
-			$itemid = $trklib->replace_item($_REQUEST["trackerId"], $_REQUEST["itemId"], $ins_fields, $_REQUEST['status']);
+			$itemid = $trklib->replace_item($_REQUEST["trackerId"], $_REQUEST["itemId"], $ins_fields, $_REQUEST['status'], $ins_categs);
 			if (isset($_REQUEST['listtoalert']) && $prefs['feature_groupalert'] == 'y') {
 				$groupalertlib->Notify($_REQUEST['listtoalert'], "tiki-view_tracker_item.php?itemId=$itemid");
 			}
@@ -352,6 +384,7 @@ if (isset($_REQUEST['import'])) {
 					break;
 				}
 			}
+			$trklib->categorized_item($_REQUEST["trackerId"], $itemid, $mainfield, $ins_categs);
 			if (isset($newItemRate)) {
 				$trackerId = $_REQUEST["trackerId"];
 				$trklib->replace_rating($trackerId, $itemid, $newItemRateField, $user, $newItemRate);
@@ -457,7 +490,7 @@ if ($tracker_info['useComments'] == 'y' && ($tracker_info['showComments'] == 'y'
 			$items['data'][$itkey]['comments'] = $trklib->get_item_nb_comments($items['data'][$itkey]['itemId']);
 		}
 		if (isset($tracker_info['showLastComment']) && $tracker_info['showLastComment'] == 'y') {
-			$l = $trklib->list_last_comments( $items['data'][$itkey]['trackerId'], $items['data'][$itkey]['itemId'], 0, 1);
+			$l = $trklib->list_item_comments($items['data'][$itkey]['itemId'], 0, 1, 'posted_desc');
 			$items['data'][$itkey]['lastComment'] = !empty($l['cant']) ? $l['data'][0] : '';
 		}
 	}
@@ -471,7 +504,7 @@ if ($tracker_info['useAttachments'] == 'y' && $tracker_info['showAttachments'] =
 }
 foreach($xfields['data'] as $xfd) {
 	$fid = $xfd["fieldId"];
-	if ($xfd['isSearchable'] == 'y' and !isset($listfields[$fid]) and $itemObject->canViewField($fid)) {
+	if ($xfd['isSearchable'] == 'y' and !isset($listfields[$fid]) and ($xfd['isHidden'] == 'n' or $xfd['isHidden'] == 'p' or $tiki_p_admin_trackers == 'y' or ($xfd['type'] == 's' and $xfd['name'] == 'Rating' and $tiki_p_tracker_view_ratings == 'y'))) {
 		$listfields[$fid]['type'] = $xfd["type"];
 		$listfields[$fid]['name'] = $xfd["name"];
 		$listfields[$fid]['options'] = $xfd["options"];
@@ -484,13 +517,19 @@ foreach($xfields['data'] as $xfd) {
 		$listfields[$fid]['description'] = $xfd["description"];
 		$listfields[$fid]['visibleBy'] = $xfd['visibleBy'];
 		$listfields[$fid]['editableBy'] = $xfd['editableBy'];
+		if ($listfields[$fid]['type'] == 'e' && $prefs['feature_categories'] == 'y') { //category
+			$parentId = $listfields[$fid]['options_array'][0];
+			$listfields[$fid]['categories'] = $categlib->get_viewable_child_categories($parentId, $all_descends);
+		}
+		if (isset($xfd['otherField'])) {
+			$listfields[$fid]['otherField'] = $xfd['otherField'];
+		}
 	}
 }
 
 $smarty->assign('trackerId', $_REQUEST["trackerId"]);
 $smarty->assign('tracker_info', $tracker_info);
 $smarty->assign('fields', $fields['data']);
-$smarty->assign('ins_fields', $ins_fields['data']);
 $smarty->assign_by_ref('items', $items["data"]);
 $smarty->assign_by_ref('item_count', $items['cant']);
 $smarty->assign_by_ref('listfields', $listfields);

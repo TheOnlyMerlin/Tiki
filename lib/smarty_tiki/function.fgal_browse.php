@@ -20,7 +20,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  *  - _maxRecords
  *  - _find
  */
-function smarty_function_fgal_browse($params, $smarty) {
+function smarty_function_fgal_browse($params, &$smarty) {
 	if ( ! is_array($params) || ! isset($params['_id']) ) return;
 	global $tikilib, $userlib, $tiki_p_view_file_gallery, $prefs;
 
@@ -57,11 +57,11 @@ function smarty_function_fgal_browse($params, $smarty) {
 		include_once('fgal_listing_conf.php');
 
 		$gal_info['show_action'] = 'n';
-		$smarty->assignByRef('gal_info', $gal_info);
+		$smarty->assign_by_ref('gal_info', $gal_info);
 
 		// Get list of files in the gallery
 		$files = $filegallib->get_files($params['_offset'], $params['_maxRecords'], $params['_sort_mode'], $params['_find'], $params['_id']);
-		$smarty->assignByRef('files', $files['data']);
+		$smarty->assign_by_ref('files', $files['data']);
 		$smarty->assign('cant', $files['cant']); ///FIXME
 	}
 

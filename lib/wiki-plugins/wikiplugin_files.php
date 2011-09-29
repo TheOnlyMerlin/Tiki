@@ -13,14 +13,12 @@ function wikiplugin_files_info() {
 		'prefs' => array( 'feature_file_galleries', 'wikiplugin_files' ),
 		'body' => tra('Title'),
 		'icon' => 'pics/large/file-manager.png',
-		'tags' => array( 'basic' ),		
 		'params' => array(
 			'galleryId' => array(
 				'required' => false,
-				'name' => tra('File Galleries ID'),
-				'description' => tra('To list only files contained in these file galleries'),
+				'name' => tra('File Gallery ID'),
+				'description' => tra('To list only files contained in this file gallery'),
 				'default' => '',
-				'separator' => ':',
 			),
 			'categId' => array(
 				'required' => false,
@@ -293,18 +291,6 @@ function wikiplugin_files_info() {
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
-			'showthumb' => array(
-				'required' => false,
-				'name' => tra('Show Image Thumb'),
-				'description' => tra('Show Image thumb'),
-				'default' => 'n',
-				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
 			'creator' => array(
 				'required' => false,
 				'name' => tra('Creator'),
@@ -331,32 +317,8 @@ function wikiplugin_files_info() {
 				'default' => -1,
 				'advanced' => true,
 			),
-			'recursive' => array(
-				'required' => false,
-				'name' => tra('Recursive'),
-				'description' => tra('Recursive'),
-				'filter' => 'alpha',
-				'default' => 'n',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
-			'withsubgals' => array(
-				'required' => false,
-				'name' => tra('With sub-galleries'),
-				'description' => tra('With sub-galleries'),
-				'filter' => 'alpha',
-				'default' => 'y',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),	 	)
+
+	 	)
 	 );
 }
 function wikiplugin_files($data, $params) {
@@ -365,7 +327,7 @@ function wikiplugin_files($data, $params) {
 		return('');
 	}
 	global $filegallib; include_once('lib/filegals/filegallib.php');
-	$default = array('showfind'=>'n', 'showtitle'=>'y', 'showupload' => 'n', 'showgallery' => 'n', 'max' => -1, 'showthumb' => 'n', 'recursive' => 'n', 'withsubgals'=>'y');
+	$default = array('showfind'=>'n', 'showtitle'=>'y', 'showupload' => 'n', 'showgallery' => 'n', 'max' => -1);
 	$params = array_merge($default, $params);
 	$filter = '';
 	extract($params, EXTR_SKIP);
@@ -392,24 +354,22 @@ function wikiplugin_files($data, $params) {
 		$show_parentName = $showgallery;
 	}
 	$smarty->assign('show_parentName', $show_parentName);
-	$smarty->assign('show_thumb', $showthumb);
 
 	$filter = empty($creator)?'':array('creator'=>$creator);
 	if (!isset($sort))
 		$sort = 'name_asc';
 	if (isset($galleryId)) {
-		$galId = $galleryId[0];
-		$gal_info = $filegallib->get_file_gallery($galId);
+		$gal_info = $filegallib->get_file_gallery($galleryId);
 		if ($tiki_p_admin != 'y' && $tiki_p_admin_files_galleries != 'y' && $gal_info['user'] != $user) {
-			$p_view_file_gallery = $tikilib->user_has_perm_on_object($user, $galId, 'file gallery', 'tiki_p_view_file_gallery') ? 'y' : 'n';
+			$p_view_file_gallery = $tikilib->user_has_perm_on_object($user, $galleryId, 'file gallery', 'tiki_p_view_file_gallery') ? 'y' : 'n';
 			if ($p_view_file_gallery != 'y')
 				return;
-			$p_download_files = $tikilib->user_has_perm_on_object($user, $gal, 'file gallery', 'tiki_p_download_files') ? 'y' : 'n';
-			if ($showupload == 'y' && $tikilib->user_has_perm_on_object($user, $galId, 'file gallery', 'tiki_p_upload_files')) {
+			$p_download_files = $tikilib->user_has_perm_on_object($user, $galleryId, 'file gallery', 'tiki_p_download_files') ? 'y' : 'n';
+			if ($showupload == 'y' && $tikilib->user_has_perm_on_object($user, $galleryId, 'file gallery', 'tiki_p_upload_files')) {
 				$params['showupload'] = 'y';
 			}
-			$p_admin_file_galleries = $tikilib->user_has_perm_on_object($user, $galId, 'file gallery', 'tiki_p_admin_file_galleries') ? 'y' : 'n';
-			$p_edit_gallery_file = $tikilib->user_has_perm_on_object($user, $galId, 'file gallery', 'tiki_p_edit_gallery_file') ? 'y' : 'n';
+			$p_admin_file_galleries = $tikilib->user_has_perm_on_object($user, $galleryId, 'file gallery', 'tiki_p_admin_file_galleries') ? 'y' : 'n';
+			$p_edit_gallery_file = $tikilib->user_has_perm_on_object($user, $galleryId, 'file gallery', 'tiki_p_edit_gallery_file') ? 'y' : 'n';
 		} else {
 			$p_download_files = 'y';
 			$p_view_file_gallery = 'y';
@@ -422,10 +382,10 @@ function wikiplugin_files($data, $params) {
 		if (!empty($slideshow) && $slideshow == 'y') {
 			if ($prefs['javascript_enabled'] != 'y') return;
 			if (empty($data)) $data = tra('Slideshow');
-			return "~np~<a onclick=\"javascript:window.open('tiki-list_file_gallery.php?galleryId=$galleryId[0]&amp;find_creator=" . urlencode($creator) . "&amp;slideshow','','menubar=no,width=600,height=500,resizable=yes');\" href=\"#\">".tra($data).'</a>~/np~';
+			return "~np~<a onclick=\"javascript:window.open('tiki-list_file_gallery.php?galleryId=$galleryId&find_creator=$creator&amp;slideshow','','menubar=no,width=600,height=500,resizable=yes');\" href=\"#\">".tra($data).'</a>~/np~';
 		}
 		$find = isset($_REQUEST['find'])?  $_REQUEST['find']: '';
-		$fs = $filegallib->get_files(0, $max, $sort, $find, $galleryId, false, $withsubgals=='y', false, true, false, $show_parentName=='y', true, $recursive, '', false, false, false, $filter);
+		$fs = $filegallib->get_files(0, $max, $sort, $find, $galleryId, false, true, true, true, false, $show_parentName=='y', true, false, '', true, false, false, $filter);
 		if (isset($categId)) {
 			$objects = $categlib->list_category_objects($categId, 0, -1, 'itemId_asc', 'file');
 			$objects_in_categs = array();
@@ -467,7 +427,7 @@ function wikiplugin_files($data, $params) {
 				$p_edit_gallery_file = 'y';
 			}
 
-			$fs = $filegallib->get_files(0, $max, $sort, '', $og['itemId'], false, $withsubgals=='y', false, true, false, $show_parentName=='y', true, $recursive, '', false, false, false, $filter);			                                                      
+			$fs = $filegallib->get_files(0, $max, $sort, '', $og['itemId'], false, true, false, true, false, $show_parentName=='y', true, false, '', true, false, false, $filter);			                                                      
 			if ($fs['cant']) {
 				for ($i = 0; $i < count($fs['data']); ++$i) {
 					$fs['data'][$i]['gallery'] = $gal_info['name'];

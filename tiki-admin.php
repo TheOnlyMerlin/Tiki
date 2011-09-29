@@ -49,18 +49,16 @@ function simple_set_toggle($feature)
 	if (isset($_REQUEST[$feature]) && $_REQUEST[$feature] == 'on') {
 		if ((!isset($prefs[$feature]) || $prefs[$feature] != 'y')) {
 			// not yet set at all or not set to y
-			if ($tikilib->set_preference($feature, 'y')) {
-				add_feedback( $feature, tr('%0 enabled', $feature), 1, 1 );
-				$logslib->add_action('feature', $feature, 'system', 'enabled');
-			}
+			$tikilib->set_preference($feature, 'y');
+			add_feedback( $feature, tr('%0 enabled', $feature), 1, 1 );
+			$logslib->add_action('feature', $feature, 'system', 'enabled');
 		}
 	} else {
 		if ((!isset($prefs[$feature]) || $prefs[$feature] != 'n')) {
 			// not yet set at all or not set to n
-			if ($tikilib->set_preference($feature, 'n')) {
-				add_feedback($feature, tr('%0 disabled', $feature), 0, 1);
-				$logslib->add_action('feature', $feature, 'system', 'disabled');
-			}
+			$tikilib->set_preference($feature, 'n');
+			add_feedback($feature, tr('%0 disabled', $feature), 0, 1);
+			$logslib->add_action('feature', $feature, 'system', 'disabled');
 		}
 	}
 	global $cachelib;
@@ -83,9 +81,8 @@ function simple_set_value($feature, $pref = '', $isMultiple = false)
 	$old = $prefs[$feature];
 	if (isset($_REQUEST[$feature])) {
 		if ($pref != '') {
-			if ($tikilib->set_preference($pref, $_REQUEST[$feature])) {
-				$prefs[$feature] = $_REQUEST[$feature];
-			}
+			$tikilib->set_preference($pref, $_REQUEST[$feature]);
+			$prefs[$feature] = $_REQUEST[$feature];
 		} else {
 			$tikilib->set_preference($feature, $_REQUEST[$feature]);
 		}
@@ -93,9 +90,8 @@ function simple_set_value($feature, $pref = '', $isMultiple = false)
 		// Multiple selection controls do not exist if no item is selected.
 		// We still want the value to be updated.
 		if ($pref != '') {
-			if ($tikilib->set_preference($pref, array())) {
-				$prefs[$feature] = $_REQUEST[$feature];
-			}
+			$tikilib->set_preference($pref, array());
+			$prefs[$feature] = $_REQUEST[$feature];
 		} else {
 			$tikilib->set_preference($feature, array());
 		}
@@ -145,21 +141,13 @@ function byref_set_value($feature, $pref = '')
 
 $crumbs[] = new Breadcrumb(tra('Administration'), tra('Sections'), 'tiki-admin.php', 'Admin+Home', tra('Help on Configuration Sections', '', true));
 // Default values for AdminHome
-$admintitle = tra('Administration');
+$admintitle = 'Administration';
 $helpUrl = 'Admin+Home';
 $helpDescription = $description = '';
 $url = 'tiki-admin.php';
 $adminPage = '';
 
 global $prefslib; require_once 'lib/prefslib.php';
-
-if( isset ($_REQUEST['pref_filters']) ) {
-	$prefslib->setFilters( $_REQUEST['pref_filters'] );
-}
-
-$temp_filters = isset($_REQUEST['filters']) ? explode(' ', $_REQUEST['filters']) : null;
-$smarty->assign('pref_filters', $prefslib->getFilters($temp_filters));
-
 if( isset( $_REQUEST['lm_preference'] ) ) {
 	
 	$changes = $prefslib->applyChanges( (array) $_REQUEST['lm_preference'], $_REQUEST );
@@ -179,11 +167,13 @@ if( isset( $_REQUEST['lm_preference'] ) ) {
 }
 
 if( isset( $_REQUEST['lm_criteria'] ) ) {
+	global $prefslib; require_once 'lib/prefslib.php';
+
 	set_time_limit(0);
 	try {
 		$smarty->assign( 'lm_criteria', $_REQUEST['lm_criteria'] );
-		$results = $prefslib->getMatchingPreferences( $_REQUEST['lm_criteria'], $temp_filters );
-		$results = array_slice( $results, 0, 50 );
+		$results = $prefslib->getMatchingPreferences( $_REQUEST['lm_criteria'] );
+		$results = array_slice( $results, 0, 10 );
 		$smarty->assign( 'lm_searchresults', $results );
 		$smarty->assign( 'lm_error', '' );
 	} catch(Zend_Search_Lucene_Exception $e) {
@@ -199,377 +189,261 @@ if( isset( $_REQUEST['lm_criteria'] ) ) {
 
 $smarty->assign('indexNeedsRebuilding', $prefslib->indexNeedsRebuilding());
 
-$icons = array(
-	"general" => array(
-		'position' => '0px -15px;',
-		'icon' => 'pics/large/icon-configuration.png',
-		'title' => tr('General'),
-		'description' => tr('Global site configuration, date formats, admin password etc.'),
-		'help' => 'General+Admin',
-	),
-	"features" => array(
-		'position' => '-100px -15px;',
-		'icon' => 'pics/large/boot.png',
-		'title' => tr('Features'),
-		'description' => tr('Switches for major features'),
-		'help' => 'Features+Admin',
-	),
-	"login" => array(
-		'position' => '-200px -15px;',
-		'icon' => 'pics/large/stock_quit.png',
-		'title' => tr('Log in'),
-		'description' => tr('User registration, remember me cookie settings and authentication methods'),
-		'help' => 'Login+Config',
-	),
-	"community" => array(
-		'position' => '-300px -15px;',
-		'icon' => 'pics/large/users.png',
-		'title' => tr('Community'),
-		'description' => tr('User specific features and settings'),
-		'help' => 'Community',
-	),
-	"profiles" => array(
-		'position' => '-400px -15px;',
-		'icon' => 'pics/large/profiles.png',
-		'title' => tr('Profiles'),
-		'description' => tr('Repository configuration, browse and apply profiles'),
-		'help' => 'Profiles',
-	),
-	"look" => array(
-		'position' => '-500px -15px;',
-		'icon' => 'pics/large/gnome-settings-background.png',
-		'title' => tr('Look & Feel'),
-		'description' => tr('Theme selection, layout settings and UI effect controls'),
-		'help' => 'Look+and+Feel',
-	),
-	"textarea" => array(
-		'position' => '-100px -115px;',
-		'icon' => 'pics/large/editing48x48.png',
-		'title' => tr('Editing and Plugins'),
-		'description' => tr('Text editing settings applicable to many areas. Plugin activation and plugin alias management'),
-		'help' => 'Text+area',
-	),
-	"module" => array(
-		'position' => '-200px -115px;',
-		'icon' => 'pics/large/display-capplet.png',
-		'title' => tr('Module'),
-		'description' => tr('Module appearance settings'),
-		'help' => 'Module',
-	),
-	"metatags" => array(
-		'position' => '-300px -115px;',
-		'icon' => 'pics/large/metatags.png',
-		'title' => tr('Meta Tags'),
-		'description' => tr('Information to include in the header of each page'),
-		'help' => 'Meta+Tags',
-	),
-	"i18n" => array(
-		'position' => '0px -115px;',
-		'icon' => 'pics/large/i18n.png',
-		'title' => tr('i18n'),
-		'description' => tr('Internationalization and localization - mulitlingual features'),
-		'help' => 'i18n',
-	),
-	"maps" => array(
-		'icon' => 'pics/large/maps.png',
-		'position' => '-100px -515px;',
-		'title' => tr('Maps'),
-		'description' => tr('Settings and features for maps'),
-		'help' => 'Maps',
-	),
-	"performance" => array(
-		'position' => '-400px -115px;',
-		'icon' => 'pics/large/performance.png',
-		'title' => tr('Performance'),
-		'description' => tr('Server performance settings'),
-		'help' => 'Performance',
-	),
-	"security" => array(
-		'position' => '-500px -115px;',
-		'icon' => 'pics/large/gnome-lockscreen48x48.png',
-		'title' => tr('Security'),
-		'description' => tr('Site security settings'),
-		'help' => 'Security',
-	),
-	"comments" => array(
-		'position' => '0px -215px;',
-		'icon' => 'pics/large/comments.png',
-		'title' => tr('Comments'),
-		'description' => tr('Comments settings'),
-		'help' => 'Comments',
-	),
-	"rss" => array(
-		'position' => '-100px -215px;',
-		'icon' => 'pics/large/feed-icon.png',
-		'title' => tr('Feeds'),
-		'help' => 'Feeds User',
-		'description' => tr('Outgoing RSS feed setup'),
-	),
-	"connect" => array(
-		'position' => '-200px -215px;',
-		'icon' => 'pics/large/gnome-globe.png',
-		'title' => tr('Connect'),
-		'help' => 'Connect',
-		'description' => tr('Tiki Connect - join in!'),
-	),
-	"rating" => array(
-		'position' => '-300px -215px;',
-		'icon' => 'pics/large/rating.png',
-		'title' => tr('Rating'),
-		'help' => 'Advanced+Rating',
-	),
-	"search" => array(
-		'icon' => 'pics/large/xfce4-appfinder.png',
-		'position' => '-400px -415px;',
-		'title' => tr('Search'),
-		'description' => tr('Search configuration'),
-		'help' => 'Search',
-	),
-	"wiki" => array(
-		'position' => '-400px -215px;',
-		'icon' => 'pics/large/wikipages.png',
-		'title' => tr('Wiki'),
-		'disabled' => $prefs['feature_wiki'] != 'y',
-		'description' => tr('Wiki page settings and features'),
-		'help' => 'Wiki+Config',
-	),
-	"fgal" => array(
-		'position' => '-500px -215px;',
-		'icon' => 'pics/large/file-manager.png',
-		'title' => tr('File Galleries'),
-		'disabled' => $prefs['feature_file_galleries'] != 'y',
-		'description' => tr('Defaults and configuration for file galleries'),
-		'help' => 'File+Gallery',
-	),
-	"blogs" => array(
-		'position' => '0px -315px;',
-		'icon' => 'pics/large/blogs.png',
-		'title' => tr('Blogs'),
-		'disabled' => $prefs['feature_blogs'] != 'y',
-		'description' => tr('Settings for blogs'),
-		'help' => 'Blog',
-	),
-	"gal" => array(
-		'position' => '-100px -315px;',
-		'icon' => 'pics/large/stock_select-color.png',
-		'title' => tr('Image Galleries'),
-		'disabled' => $prefs['feature_galleries'] != 'y',
-		'description' => tr('Defaults and configuration for image galleries (will be phased out in favour of file galleries)'),
-		'help' => 'Image+Gallery',
-	),
-	"articles" => array(
-		'position' => '-200px -315px;',
-		'icon' => 'pics/large/stock_bold.png',
-		'title' => tr('Articles'),
-		'disabled' => $prefs['feature_articles'] != 'y',
-		'description' => tr('Settings and features for articles'),
-		'help' => 'Articles',
-	),
-	"forums" => array(
-		'icon' => 'pics/large/stock_index.png',
-		'position' => '-300px -315px;',
-		'title' => tr('Forums'),
-		'disabled' => $prefs['feature_forums'] != 'y',
-		'description' => tr('Settings and features for forums'),
-		'help' => 'Forum',
-	),
-	"trackers" => array(
-		'icon' => 'pics/large/gnome-settings-font.png',
-		'position' => '-400px -315px;',
-		'title' => tr('Trackers'),
-		'disabled' => $prefs['feature_trackers'] != 'y',
-		'description' => tr('Settings and features for trackers'),
-		'help' => 'Trackers',
-	),
-	"polls" => array(
-		'icon' => 'pics/large/stock_missing-image.png',
-		'position' => '-500px -315px;',
-		'title' => tr('Polls'),
-		'disabled' => $prefs['feature_polls'] != 'y',
-		'description' => tr('Settings and features for polls'),
-		'help' => 'Polls',
-	),
-	"calendar" => array(
-		'icon' => 'pics/large/date.png',
-		'position' => '0px -415px;',
-		'title' => tr('Calendar'),
-		'disabled' => $prefs['feature_calendar'] != 'y',
-		'description' => tr('Settings and features for calendars'),
-		'help' => 'Calendar',
-	),
-	"category" => array(
-		'icon' => 'pics/large/categories.png',
-		'position' => '-100px -415px;',
-		'title' => tr('Categories'),
-		'disabled' => $prefs['feature_categories'] != 'y',
-		'description' => tr('Settings and features for categories'),
-		'help' => 'Category',
-	),
-	"score" => array(
-		'icon' => 'pics/large/stock_about.png',
-		'position' => '-200px -415px;',
-		'title' => tr('Score'),
-		'disabled' => $prefs['feature_score'] != 'y',
-		'description' => tr('Values of actions for users rank score'),
-		'help' => 'Score',
-	),
-	"freetags" => array(
-		'icon' => 'pics/large/vcard.png',
-		'position' => '-300px -415px;',
-		'title' => tr('Freetags'),
-		'disabled' => $prefs['feature_freetags'] != 'y',
-		'description' => tr('Settings and features for freetags'),
-		'help' => 'Tags',
-	),
-	"faqs" => array(
-		'icon' => 'pics/large/stock_dialog_question.png',
-		'position' => '-500px -415px;',
-		'title' => tr('FAQs'),
-		'disabled' => $prefs['feature_faqs'] != 'y',
-		'description' => tr('Settings and features for FAQs'),
-		'help' => 'FAQ',
-	),
-	"directory" => array(
-		'icon' => 'pics/large/gnome-fs-server.png',
-		'position' => '0px -515px;',
-		'title' => tr('Directory'),
-		'disabled' => $prefs['feature_directory'] != 'y',
-		'description' => tr('Settings and features for directory of links'),
-		'help' => 'Directory',
-	),
-	"gmap" => array(
-		'icon' => 'pics/large/google_maps.png',
-		'position' => '-200px -515px;',
-		'title' => tr('Google Maps'),
-		'disabled' => $prefs['feature_gmap'] != 'y',
-		'description' => tr('Defaults and API key for Google Maps'),
-		'help' => 'gmap',
-	),
-	"copyright" => array(
-		'icon' => 'pics/large/copyright.png',
-		'position' => '-300px -515px;',
-		'title' => tr('Copyright'),
-		'disabled' => $prefs['feature_copyright'] != 'y',
-		'description' => tr('Site-wide copyright information'),
-		'help' => 'Copyright',
-	),
-	"messages" => array(
-		'icon' => 'pics/large/messages.png',
-		'position' => '-400px -515px;',
-		'title' => tr('Messages'),
-		'disabled' => $prefs['feature_messages'] != 'y',
-		'description' => tr('Message settings'),
-		'help' => 'Inter-User+Messages',
-	),
-	"userfiles" => array(
-		'icon' => 'pics/large/userfiles.png',
-		'position' => '-500px -515px;',
-		'title' => tr('User files'),
-		'disabled' => $prefs['feature_userfiles'] != 'y',
-		'description' => tr('User files settings'),
-		'help' => 'User+Files',
-	),
-	"webmail" => array(
-		'icon' => 'pics/large/evolution.png',
-		'position' => '0px -615px;',
-		'title' => tr('Webmail'),
-		'disabled' => $prefs['feature_webmail'] != 'y',
-		'description' => tr('Webmail settings'),
-		'help' => 'Webmail',
-	),
-	"wysiwyg" => array(
-		'icon' => 'pics/large/wysiwyg.png',
-		'position' => '-100px -615px;',
-		'title' => tr('Wysiwyg'),
-		'disabled' => $prefs['feature_wysiwyg'] != 'y',
-		'description' => tr('Options for WYSIWYG editor'),
-		'help' => 'Wysiwyg',
-	),
-	"ads" => array(
-		'icon' => 'pics/large/ads.png',
-		'position' => '-200px -615px;',
-		'title' => tr('Site Ads and Banners'),
-		'disabled' => $prefs['feature_banners'] != 'y',
-		'description' => tr('Banners are a common way to display advertisements and notices on a Web page.'),
-		'help' => 'Look+and+Feel',
-	),
-	"intertiki" => array(
-		'icon' => 'pics/large/intertiki.png',
-		'position' => '-300px -615px;',
-		'title' => tr('InterTiki'),
-		'disabled' => $prefs['feature_intertiki'] != 'y',
-		'description' => tr('Set up links between Tiki servers'),
-		'help' => 'InterTiki',
-	),
-	"semantic" => array(
-		'icon' => 'pics/large/semantic.png',
-		'position' => '-400px -615px;',
-		'title' => tr('Semantic links'),
-		'disabled' => $prefs['feature_semantic'] != 'y',
-		'description' => tr('Manage semantic wiki links'),
-		'help' => 'Semantic+Admin',
-	),
-	"webservices" => array(
-		'icon' => 'pics/large/webservices.png',
-		'position' => '-500px -615px;',
-		'title' => tr('Webservices'),
-		'disabled' => $prefs['feature_webservices'] != 'y',
-		'description' => tr('Register and manage web services'),
-		'help' => 'WebServices',
-	),
-	"sefurl" => array(
-		'icon' => 'pics/large/goto.png',
-		'position' => '0px -715px;',
-		'title' => tr('Search engine friendly url'),
-		'disabled' => $prefs['feature_sefurl'] != 'y',
-		'description' => tr('Search Engine Friendly URLs'),
-		'help' => 'Rewrite+Rules',
-	),
-	"video" => array(
-		'icon' => 'pics/large/gnome-camera-video-32.png',
-		'position' => '-100px -715px;',
-		'title' => tr('Video streaming integration'),
-		'disabled' => $prefs['feature_kaltura'] != 'y' && $prefs['feature_watershed'] != 'y',
-		'description' => tr('Video integration configuration'),
-		'help' => 'Kaltura+Config',
-	),
-	"payment" => array(
-		'icon' => 'pics/large/payment.png',
-		'position' => '-200px -715px;',
-		'title' => tr('Payment'),
-		'disabled' => $prefs['payment_feature'] != 'y',
-		'help' => 'Payment',
-	),
-	"socialnetworks" => array(
-		'icon' => 'pics/large/socialnetworks.png',
-		'position' => '-300px -715px;',
-		'title' => tr('Social networks'),
-		'disabled' => $prefs['feature_socialnetworks'] != 'y',
-		'description' => tr('Configure social networks integration'),
-		'help' => 'Social+Networks',
-	),
-	"share" => array(
-		'icon' => 'img/mytiki/stock_contact.png',
-		'position' => '-400px -715px;',
-		'title' => tr('Share'),
-		'disabled' => $prefs['feature_share'] != 'y',
-		'description' => tr('Configure share feature'),
-		'help' => 'share',
-	),
-);
-
 if (isset($_REQUEST['page'])) {
 	$adminPage = $_REQUEST['page'];
-	if (isset($icons[$adminPage])) {
-		$icon = $icons[$adminPage];
-
-		$admintitle = $icon['title'];
-		$description = isset($icon['description']) ? $icon['description'] : '';
-		$helpUrl = isset($icon['help']) ? $icon['help'] : '';
-		include_once ("admin/include_$adminPage.php");
-		$url = 'tiki-admin.php' . '?page=' . $adminPage;
+	if ($adminPage == 'features') {
+		$admintitle = 'Features'; //get_strings tra('Features')
+		$description = 'Enable/disable Tiki features here, but configure them elsewhere'; //get_strings tra('Enable/disable Tiki features here, but configure them elsewhere')
+		$helpUrl = 'Features+Admin';
+		include_once ('tiki-admin_include_features.php');
+	} else if ($adminPage == 'general') {
+		$admintitle = 'General'; //get_strings tra('General')
+		$description = 'General preferences and settings'; //get_strings tra('General preferences and settings')
+		$helpUrl = 'General+Admin';
+		include_once ('tiki-admin_include_general.php');
+	} else if ($adminPage == 'login') {
+		$admintitle = 'Login'; //get_strings tra('Login')
+		$description = 'User registration, login and authentication'; //get_strings tra('User registration, login and authentication')
+		$helpUrl = 'Login+Config';
+		include_once ('tiki-admin_include_login.php');
+	} else if ($adminPage == 'wiki') {
+		$admintitle = 'Wiki'; //get_strings tra('Wiki')
+		$description = 'Wiki settings'; //get_strings tra('Wiki settings')
+		$helpUrl = 'Wiki+Config';
+		include_once ('tiki-admin_include_wiki.php');
+	} else if ($adminPage == 'wikiatt') {
+		$admintitle = 'Wiki Attachments'; //get_strings tra('Wiki Attachments')
+		$description = 'Wiki attachments'; //get_strings tra('Wiki attachments')
+		$helpUrl = 'Wiki+Config';
+		include_once ('tiki-admin_include_wikiatt.php');
+	} else if ($adminPage == 'gal') {
+		$admintitle = 'Image Galleries'; //get_strings tra('Image Galleries')
+		$description = 'Image galleries'; //get_strings tra('Image galleries')
+		$helpUrl = 'Image+Gallery';
+		include_once ('tiki-admin_include_gal.php');
+	} else if ($adminPage == 'fgal') {
+		$admintitle = 'File Galleries'; //get_strings tra('File Galleries')
+		$description = 'File Galleries'; //get_strings tra('File Galleries')
+		$helpUrl = 'File+Gallery';
+		include_once ('tiki-admin_include_fgal.php');
+	} else if ($adminPage == 'cms') {
+		$admintitle = 'Articles'; //get_strings tra('Articles')
+		$description = 'Article/CMS settings'; //get_strings tra('Article/CMS settings')
+		$helpUrl = 'Articles';
+		include_once ('tiki-admin_include_cms.php');
+	} else if ($adminPage == 'polls') {
+		$admintitle = 'Polls'; //get_strings tra('Polls')
+		$description = 'Poll comments settings'; //get_strings tra('Poll comments settings')
+		$helpUrl = 'Polls';
+		include_once ('tiki-admin_include_polls.php');
+	} else if ($adminPage == 'blogs') {
+		$admintitle = 'Blogs'; //get_strings tra('Blogs')
+		$description = 'Configuration options for all blogs on your site'; //get_strings tra('Configuration options for all blogs on your site')
+		$helpUrl = 'Blog';
+		include_once ('tiki-admin_include_blogs.php');
+	} else if ($adminPage == 'forums') {
+		$admintitle = 'Forums'; //get_strings tra('Forums')
+		$description = 'Forums settings'; //get_strings tra('Forums settings')
+		$helpUrl = 'Forum';
+		include_once ('tiki-admin_include_forums.php');
+	} else if ($adminPage == 'faqs') {
+		$admintitle = 'FAQs'; //get_strings tra('FAQs')
+		$description = 'FAQ comments settings'; //get_strings tra('FAQ comments settings')
+		$helpUrl = 'FAQ';
+		include_once ('tiki-admin_include_faqs.php');
+	} else if ($adminPage == 'trackers') {
+		$admintitle = 'Trackers'; //get_strings tra('Trackers')
+		$description = 'Trackers settings'; //get_strings tra('Trackers settings')
+		$helpUrl = 'Trackers';
+		include_once ('tiki-admin_include_trackers.php');
+	} else if ($adminPage == 'webmail') {
+		$admintitle = 'Webmail'; //get_strings tra('Webmail')
+		$description = 'Webmail';
+		$helpUrl = 'Webmail';
+		include_once ('tiki-admin_include_webmail.php');
+	} else if ($adminPage == 'comments') {
+		$admintitle = 'Comments'; //get_strings tra('Comments')
+		$description = 'Comments settings'; //get_strings tra('Comments settings')
+		$helpUrl = 'Comments';
+		include_once ('tiki-admin_include_comments.php');
+	} else if ($adminPage == 'rss') {
+		$admintitle = 'Feeds'; //get_strings tra('Feeds')
+		$description = 'Feeds settings'; //get_strings tra('Feeds settings')
+		$helpUrl = 'Feeds User';
+		include_once ('tiki-admin_include_rss.php');
+	} else if ($adminPage == 'directory') {
+		$admintitle = 'Directory'; //get_strings tra('Directory')
+		$description = 'Directory settings'; //get_strings tra('Directory settings')
+		$helpUrl = 'Directory';
+		include_once ('tiki-admin_include_directory.php');
+	} else if ($adminPage == 'userfiles') {
+		$admintitle = 'User Files'; //get_strings tra('User files')
+		$description = 'User files'; //get_strings tra('User files')
+		$helpUrl = 'User+Files';
+		include_once ('tiki-admin_include_userfiles.php');
+	} else if ($adminPage == 'maps') {
+		$admintitle = 'Maps'; //get_strings tra('Maps')
+		$description = 'Maps configuration'; //get_strings tra('Maps configuration')
+		$helpUrl = 'Maps';
+		include_once ('tiki-admin_include_maps.php');
+	} else if ($adminPage == 'metatags') {
+		$admintitle = 'Meta Tags'; //get_strings tra('Meta Tags')
+		$description = 'Meta Tags settings'; //get_strings tra('Meta Tags settings')
+		$helpUrl = 'Meta+Tags';
+		include_once ('tiki-admin_include_metatags.php');
+	} else if ($adminPage == 'performance') {
+		$admintitle = 'Performance'; //get_strings tra('Performance')
+		$description = 'Speed & Performance'; // get_strings('Speed & Performance')
+		$helpUrl = 'Performance';
+		include_once ('tiki-admin_include_performance.php');
+	} else if ($adminPage == 'security') {
+		$admintitle = 'Security'; //get_strings tra('Security')
+		$description = 'Security'; //get_strings tra('Security')
+		$helpUrl = 'Security';
+		include_once ('tiki-admin_include_security.php');
+	} else if ($adminPage == 'search') {
+		$admintitle = 'Search'; //get_strings tra('Search')
+		$description = 'Search settings'; //get_strings tra('Search settings')
+		$helpUrl = 'Search';
+		include_once ('tiki-admin_include_search.php');
+	} else if ($adminPage == 'score') {
+		$admintitle = 'Score'; //get_strings tra('Score')
+		$description = 'Score settings'; //get_strings tra('Score settings')
+		$helpUrl = 'Score';
+		include_once ('tiki-admin_include_score.php');
+	} else if ($adminPage == 'community') {
+		$admintitle = 'Community'; //get_strings tra('Community')
+		$description = 'Community settings'; //get_strings tra('Community settings')
+		$helpUrl = 'Community';
+		include_once ('tiki-admin_include_community.php');
+	} else if ($adminPage == 'messages') {
+		$admintitle = 'Messages'; //get_strings tra('Site Identity')
+		$description = 'User Messages'; // already translated
+		$helpUrl = 'Inter-User+Messages';
+		include_once ('tiki-admin_include_messages.php');
+	} else if ($adminPage == 'calendar') {
+		$admintitle = 'Calendar'; //get_strings tra('Calendar')
+		$description = 'Calendar settings'; //get_strings tra('Calendar settings')
+		$helpUrl = 'Calendar';
+		include_once ('tiki-admin_include_calendar.php');
+	} else if ($adminPage == 'intertiki') {
+		$admintitle = 'Intertiki'; //get_strings tra('Intertiki')
+		$description = 'Intertiki settings'; //get_strings tra('Intertiki settings')
+		$helpUrl = 'InterTiki';
+		include_once ('tiki-admin_include_intertiki.php');
+	} else if ($adminPage == 'freetags') {
+		$admintitle = 'Freetags'; //get_strings tra('Freetags')
+		$description = 'Freetags settings'; //get_strings tra('Freetags settings')
+		$helpUrl = 'Tags';
+		include_once ('tiki-admin_include_freetags.php');
+	} else if ($adminPage == 'gmap') {
+		$admintitle = 'Google Maps'; //get_strings tra('Google Maps')
+		$description = 'Google Maps'; //get_strings tra('Google Maps')
+		$helpUrl = 'gmap';
+		include_once ('tiki-admin_include_gmap.php');
+	} else if ($adminPage == 'i18n') {
+		$admintitle = 'i18n'; //get_strings tra('i18n')
+		$description = 'Internationalization'; //get_strings tra('i18n')
+		$helpUrl = 'i18n';
+		include_once ('tiki-admin_include_i18n.php');
+	} else if ($adminPage == 'wysiwyg') {
+		$admintitle = 'wysiwyg'; //get_strings tra('i18n')
+		$description = 'Wysiwyg editor'; //get_strings tra('i18n')
+		$helpUrl = 'Wysiwyg';
+		include_once ('tiki-admin_include_wysiwyg.php');
+	} else if ($adminPage == 'copyright') {
+		$admintitle = 'Copyright'; //get_strings tra('i18n')
+		$description = 'Copyright management'; //get_strings tra('i18n')
+		$helpUrl = 'Copyright';
+		include_once ('tiki-admin_include_copyright.php');
+	} else if ($adminPage == 'category') {
+		$admintitle = 'Category'; //get_strings tra('Category')
+		$description = 'Category'; //get_strings tra('Category')
+		$helpUrl = 'Category';
+		include_once ('tiki-admin_include_category.php');
+	} else if ($adminPage == 'module') {
+		$admintitle = 'Module'; //get_strings tra('Module')
+		$description = 'Module'; //get_strings tra('Module')
+		$helpUrl = 'Module';
+		include_once ('tiki-admin_include_module.php');
+	} else if ($adminPage == 'look') {
+		$admintitle = 'Look & Feel'; //get_strings tra('Look & Feel')
+		$description = 'Customize look and feel of your Tiki'; //get_strings tra('Customize look and feel of your Tiki')
+		$helpUrl = 'Look+and+Feel';
+		include_once ('tiki-admin_include_look.php');
+	} else if ($adminPage == 'textarea') {
+		$admintitle = 'Text area'; //get_strings tra('Text area')
+		$description = 'Text area'; //get_strings tra('Text area')
+		$helpUrl = 'Text+area';
+		include_once ('tiki-admin_include_textarea.php');
+	} else if ($adminPage == 'ads') {
+		$admintitle = 'Site Ads and Banners'; // get_strings('Site Ads and Banners');
+		$description = 'Configure Site Ads and Banners'; //get_strings tra('Configure Site Ads and Banners')
+		$helpUrl = 'Look+and+Feel';
+		include_once ('tiki-admin_include_ads.php');
+	} else if ($adminPage == 'profiles') {
+		$admintitle = 'Profiles';		// get_strings('Profiles')
+		$description = 'Install predefined configuration profiles and add-ons.';		// get_strings('Install predefined configuration profiles and add-ons.')
+		$helpUrl = 'Profiles';
+		include_once ('tiki-admin_include_profiles.php');
+	} else if ($adminPage == 'plugins') {
+		$admintitle = 'Plugin Alias';		// get_strings('Plugin Alias')
+		$description = 'Create shortcut syntaxes to plugins.';		// get_strings('Create shortcut syntaxes to plugins.')
+		$helpUrl = 'Plugin+Alias';
+		include_once ('tiki-admin_include_plugins.php');
+	} else if ($adminPage == 'semantic') {
+		$admintitle = 'Semantic Wiki Links';		// get_strings('Semantic Wiki Links')
+		$description = 'Manage semantic tokens used throughout the wiki.';		// get_strings('Manage semantic tokens used throughout the wiki.')
+		$helpUrl = 'Semantic+Admin';
+		include_once ('tiki-admin_include_semantic.php');
+	} else if ($adminPage == 'webservices') {
+		$admintitle = 'Webservice Registration';		// get_strings('Webservice Registration')
+		$description = 'Discover and register web services to allow direct use in wiki pages.';		// get_strings('Discover and register web services to allow direct use in wiki pages.')
+		$helpUrl = 'WebServices';
+		include_once ('tiki-admin_include_webservices.php');
+	} else if ($adminPage == 'sefurl') {
+		$admintitle = 'Search engine friendly url';		// get_strings('Search engine friendly url')
+		$description = 'Search engine friendly url';		// get_strings('Search engine friendly url')
+		$helpUrl = 'Rewrite+Rules';
+		include_once ('tiki-admin_include_sefurl.php');
+	} else if ($adminPage == 'video') {
+		$admintitle = 'Video';		//get_strings tra('Video')
+		$description = 'Settings for video streaming integration';		//get_strings tra('Settings for video streaming integration')
+		$helpUrl = 'Kaltura+Config';
+		include_once ('tiki-admin_include_video.php');
+	} else if ($adminPage == 'connect') {
+		$admintitle = 'Connect';		// get_strings('Connect')
+		$description = 'Connect';		// get_strings('Connect')
+		$helpUrl = 'Connect';
+		include_once ('tiki-admin_include_connect.php');
+	} else if ($adminPage == 'rating') {
+		$admintitle = 'Advanced Rating';		// get_strings('Advanced Rating')
+		$description = 'Advanced Rating';		// get_strings('Advanced Rating')
+		$helpUrl = 'Advanced+Rating';
+		include_once ('tiki-admin_include_rating.php');
+	} else if ($adminPage == 'payment') {
+		$admintitle = 'Payment';		// get_strings('Payment')
+		$description = 'Payment';		// get_strings('Payment')
+		$helpUrl = 'Payment';
+		include_once ('tiki-admin_include_payment.php');
+	} else if ($adminPage == 'socialnetworks') {
+		$admintitle = 'Social Networks';		// get_strings('Social Networks')
+		$description = 'Settings for social networks integration';		// get_strings('Settings for social networks integration')
+		$helpUrl = 'Social+Networks';
+		include_once ('tiki-admin_include_socialnetworks.php');
+	} else if ($adminPage == 'share') {
+		$admintitle = 'Share';		// get_strings('Share')
+		$description = 'Settings for share preferences';		// get_strings('Settings for share preferences')
+		$helpUrl = 'share';
+		include_once ('tiki-admin_include_share.php');
+	} else {
+		$helpUrl = '';
 	}
-	$helpDescription = tr("Help on %0 Config", $admintitle);
+	$url = 'tiki-admin.php' . '?page=' . $adminPage;
+	if (!$helpUrl) {
+		$helpUrl = ucfirst($adminPage) . '+Config';
+	}
+	$helpDescription = "Help on $admintitle Config"; //get_strings tra("Help on $admintitle Config")
 	
 } else {
 	$smarty->assign('admintitle', 'Admin Home');
@@ -578,7 +452,8 @@ if (isset($_REQUEST['page'])) {
 	$smarty->assign('description', $crumbs[0]->description);
 }
 $headerlib->add_cssfile('css/admin.css');
-if (isset($admintitle) && isset($description)) {
+if (isset($admintitle)) {
+	$admintitle = tra($admintitle);
 	$crumbs[] = new Breadcrumb($admintitle, $description, $url, $helpUrl, $helpDescription);
 	$smarty->assign_by_ref('admintitle', $admintitle);
 	$headtitle = breadcrumb_buildHeadTitle($crumbs);
@@ -646,18 +521,14 @@ if ($prefs['feature_version_checks'] == 'y') {
 	}
 }
 
-foreach ($icons as &$icon) {
-	$icon = array_merge( array( 'disabled' => false, 'description' => '', 'icon' => 'pics/large/green_question48x48.png'), $icon);
-}
-
-$smarty->assign('icons', $icons);
-
 $smarty->assign_by_ref('tikifeedback', $tikifeedback);
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the template
 $smarty->assign('adminpage', $adminPage);
 $smarty->assign('mid', 'tiki-admin.tpl');
+if (isset($helpUrl)) $smarty->assign_by_ref('sectionhelp', $helpUrl);
+if (isset($description)) $smarty->assign('description', $description);
 $smarty->assign('trail', $crumbs);
 $smarty->assign('crumb', count($crumbs) - 1);
 include_once ('installer/installlib.php');

@@ -5,29 +5,24 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_themegenerator_list($partial = false) {
+function prefs_themegenerator_list() {
 	global $prefs, $themegenlib;
-
-	if (! $partial) {
-		include_once 'lib/themegenlib.php';
-		
-		$themes = array('' => tra('New...'));
-		
-		$list = $themegenlib->getCurrentTheme()->getPrefList();
-		if (count($list) > 0) {
-			$list = array_filter($list);
-			sort($list);
-			foreach( $list as $item ) {
-				$tm = new ThemeGenTheme($item);
-				$d = $tm->getData();
-				if ((empty($d['theme']) || $d['theme'] === $prefs['style']) &&
-						(empty($d['theme-option']) || $d['theme-option'] === $prefs['style_option'])) {
-					$themes[$item] = $item;
-				}
+	include_once 'lib/themegenlib.php';
+	
+	$themes = array('' => tra('New...'));
+	
+	$list = $themegenlib->getCurrentTheme()->getPrefList();
+	if (count($list) > 0) {
+		$list = array_filter($list);
+		sort($list);
+		foreach( $list as $item ) {
+			$tm = new ThemeGenTheme($item);
+			$d = $tm->getData();
+			if ((empty($d['theme']) || $d['theme'] === $prefs['style']) &&
+					(empty($d['theme-option']) || $d['theme-option'] === $prefs['style_option'])) {
+				$themes[$item] = $item;
 			}
 		}
-	} else {
-		$themes = array();
 	}
 	
 	return array(
@@ -37,16 +32,13 @@ function prefs_themegenerator_list($partial = false) {
 			'warning' => tra('Experimental. This feature is still under development.'),
 			'description' => tra('Permits to adjust colors and fonts via the browser.'),
 			'help' => 'Theme+Generator',
-			'tags' => array('experimental'),
-			'default' => 'n',
 		),
 		'themegenerator_theme' => array(
 			'name' => tra('Custom Theme'),
-			'description' => tra('Description needed'),
+			'description' => tra(''),
 			'type' => 'list',
 			'options' => $themes,
 			'dependencies' => 'themegenerator_feature',
-			'default' => '',
 		),
 	);	
 }

@@ -5,20 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- * Smarty plugin
- * @package Smarty
- * @subpackage plugins
- *
- */
-
-//this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
-  header("location: index.php");
-  exit;
-}
-
-function smarty_block_wikiplugin( $params, $content, $smarty, $repeat = false ) {
+function smarty_block_wikiplugin( $params, $content, &$smarty, $repeat = false ) {
  	global $tikilib;
 
 	if ( $repeat ) return;
@@ -29,9 +16,8 @@ function smarty_block_wikiplugin( $params, $content, $smarty, $repeat = false ) 
 
 	$name = $params['_name'];
 	unset( $params['_name'] );
-	
-	$parserlib = TikiLib::lib('parser');
-	return $parserlib->plugin_execute( $name, $content, $params, 0, false, array(
+
+	return $tikilib->plugin_execute( $name, $content, $params, 0, false, array(
 		'context_format' => 'html',
 		'ck_editor' => false,
 	) );

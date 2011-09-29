@@ -12,7 +12,12 @@ include_once ('lib/structures/structlib.php');
 include_once ('lib/wiki/wikilib.php');
 include_once ('lib/wiki-plugins/wikiplugin_slideshow.php');
 
-$access->check_feature('feature_wiki');
+if ($prefs['feature_wiki'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_wiki");
+
+	$smarty->display("error_raw.tpl");
+	die;
+}
 
 //make the other things know we are loading a slideshow
 $tikilib->is_slideshow = true;
@@ -84,9 +89,8 @@ if ($prefs['count_admin_pvs'] == 'y' || $user != 'admin') {
 }
 
 // Get page data
-$parserlib = TikiLib::lib('parser');
 $info = $tikilib->get_page_info($page);
-$pdata = $parserlib->parse_data_raw($info["data"]);
+$pdata = $tikilib->parse_data_raw($info["data"]);
 
 if (!isset($_REQUEST['pagenum']))
 	$_REQUEST['pagenum'] = 1;
@@ -96,8 +100,8 @@ $pdata = $wikilib->get_page($pdata, $_REQUEST['pagenum']);
 $smarty->assign('pages', $pages);
 
 // Put ~pp~, ~np~ and <pre> back. --rlpowell, 24 May 2004
-$parserlib->replace_preparse( $info["data"], $preparsed, $noparsed );
-$parserlib->replace_preparse( $pdata, $preparsed, $noparsed );
+$tikilib->replace_preparse( $info["data"], $preparsed, $noparsed );
+$tikilib->replace_preparse( $pdata, $preparsed, $noparsed );
 
 $smarty->assign_by_ref('parsed', $pdata);
 //$smarty->assign_by_ref('lastModif',date("l d of F, Y  [H:i:s]",$info["lastModif"]));

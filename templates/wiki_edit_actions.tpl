@@ -1,4 +1,3 @@
-{* $Id$ *}
 <input type="hidden" name="no_bl" value="y" />
 <input type="submit" class="wikiaction" title="{tr}Preview your changes.{/tr}" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;" />
 {if $prefs.ajax_autosave eq "y"}
@@ -12,7 +11,7 @@ return false;
 });{/jq}
 {/if}
 {if $page|lower neq 'sandbox' or $tiki_p_admin eq 'y'}
-	{if ! isset($page_badchars_display) or $prefs.wiki_badchar_prevent neq 'y'}
+	{if ! $page_badchars_display or $prefs.wiki_badchar_prevent neq 'y'}
 		{if $translation_mode eq 'y'}
 			<input type="hidden" name="source_page" value="{$source_page|escape}"/>
 			<input type="hidden" name="target_page" value="{$target_page|escape}"/>

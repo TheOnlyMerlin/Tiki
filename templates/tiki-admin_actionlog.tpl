@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {title help="Action log"}{tr}Action Log{/tr}{/title}
 
 {tabset name="admin_actionlog"}
@@ -46,7 +44,7 @@
 							<select multiple="multiple" size="{if $groups|@count > 5}5{else}{math equation=x+y x=$groups|@count y=1}{/if}" name="selectedGroups[]">
 								<option value="">{tr}All{/tr}</option>
 								{foreach from=$groups key=ix item=group}
-									<option value="{$group|escape}" {if $selectedGroups[$group] eq 'y'}selected="selected"{/if}>{$group|escape}</option>
+									<option value="{$group|escape}" {if $selectedGroups[$group] eq 'y'}selected="selected"{/if}>{$group}</option>
 								{/foreach}
 							</select>
 						</td>
@@ -232,13 +230,13 @@
 				{foreach from=$actionlogs item=actionlog}
 					<tr class="{cycle}">
 						<td class="username">
-							{if $actionlog.user}{$actionlog.user|escape}{else}{tr}Anonymous{/tr}{/if}
+							{if $actionlog.user}{$actionlog.user}{else}{tr}Anonymous{/tr}{/if}
 						</td>
 						<td class="date">
 							{$actionlog.lastModif|tiki_short_datetime}
 						</td>
 						<td class="text">
-							{tr}{$actionlog.action|escape}{/tr}
+							{tr}{$actionlog.action}{/tr}
 							{if $actionlog.action eq 'Categorized' || $actionlog.action eq 'Uncategorized'}/{$actionlog.comment|replace:"categId=":""}{/if}
 						</td>
 						<td class="text">
@@ -269,7 +267,7 @@
 							<td>
 								{foreach name=contribution from=$actionlog.contributions item=contribution}
 									{if !$smarty.foreach.contribution.first}, {/if}
-									{$contribution.name|escape}
+									{$contribution.name}
 								{/foreach}
 							</td>
 							{if $prefs.feature_contributor_wiki eq 'y'}
@@ -431,13 +429,13 @@
 				<tr>
 					<th>{tr}User{/tr}</th>
 					{foreach key=title item=nb from=$userActions.0}
-						{if $title ne 'user'}<th>{$title|replace:"/":" "|escape}</th>{/if}
+						{if $title ne 'user'}<th>{$title|replace:"/":" "}</th>{/if}
 					{/foreach}
 				</tr>
 				{cycle values="even,odd" print=false}
 				{foreach item=stat from=$userActions name=userActions}
 					<tr class="{cycle}">
-						<td class="username">{$stat.user|escape}</td>
+						<td class="username">{$stat.user}</td>
 						{foreach key=a item=nb from=$stat}
 							{if $a ne 'user'}<td class="integer">{$nb}</td>{/if}
 						{/foreach}
@@ -453,7 +451,7 @@
 				<tr>
 					<th>{tr}Object{/tr}</th>
 					{foreach key=title item=nb from=$objectActions[0]}
-						{if $title ne 'object' and $title ne 'link'}<th>{$title|replace:"/":" "|escape}</th>{/if}
+						{if $title ne 'object' and $title ne 'link'}<th>{$title|replace:"/":" "}</th>{/if}
 					{/foreach}
 				</tr>
 				{cycle values="even,odd" print=false}
@@ -477,12 +475,12 @@
 				<tr>
 					<th>{tr}Category{/tr}</th>
 					{foreach key=title item=nb from=$statCateg[0]}
-						{if $title ne 'category'}<th>{$title|replace:"/":" "|escape}</th>{/if}
+						{if $title ne 'category'}<th>{$title|replace:"/":" "}</th>{/if}
 					{/foreach}
 				</tr>
 				{foreach key=categId item=stat from=$statCateg}
 					<tr class="{cycle}">
-						<td class="text">{$stat.category|escape}</td>
+						<td class="text">{$stat.category}</td>
 						{foreach key=a item=nb from=$statCateg[$categId]}
 							{if $a ne 'category'}<td class="integer">{$nb}</td>{/if}
 						{/foreach}
@@ -504,8 +502,8 @@
 				</tr>
 				{foreach key=categUser item=stat from=$statUserCateg}
 					<tr class="{cycle}">
-						<td class="text">{$stat.category|escape}</td>
-						<td class="username">{$stat.user|escape}</td>
+						<td class="text">{$stat.category}</td>
+						<td class="username">{$stat.user}</td>
 						{foreach key=a item=nb from=$stat}
 							{if $a ne 'category' and $a ne 'user'}
 								<td class="integer">{$nb}</td>
@@ -520,7 +518,7 @@
 			<table>
 				<caption>
 					{if $selectedUsers}
-						{tr}Volume per the users' group and per contribution{/tr}
+						{tr}Volume per the users'group and per contribution{/tr}
 					{else}
 						{tr}Volume per group and per contribution{/tr}
 					{/if}
@@ -534,8 +532,8 @@
 				{foreach from=$groupContributions key=group item=contributions}
 					{foreach from=$contributions key=contribution item=stat}
 						<tr class="{cycle}">
-							<td class="text">{$group|escape}</td>
-							<td class="text">{$contribution|escape}</td>
+							<td class="text">{$group}</td>
+							<td class="text">{$contribution}</td>
 							<td class="integer">{$stat.add}</td>
 							<td class="integer">{$stat.del}</td>
 						</tr>
@@ -556,8 +554,8 @@
 				{foreach from=$userContributions key=user item=contributions}
 					{foreach from=$contributions key=contribution item=stat}
 						<tr class="{cycle}">
-							<td class="username">{$user|escape}</td>
-							<td class="text">{$stat.name|escape}</td>
+							<td class="username">{$user}</td>
+							<td class="text">{$stat.name}</td>
 							<td class="integer">{$stat.stat.add}</td>
 							<td class="integer">{$stat.stat.del}</td>
 						</tr>
@@ -568,7 +566,7 @@
 
 		{if $prefs.feature_contribution eq 'y' && isset($contributionStat)}
 			<table>
-				<caption>{if $selectedUsers}{tr}Volume per users' contribution and time{/tr}{else}{tr}Volume per contribution and time{/tr}{/if}</caption>
+				<caption>{if $selectedUsers}{tr}Volume per users' contribution and time{/tr}{else}{tr}Volumn per contribution and time{/tr}{/if}</caption>
 				<tr>
 					<th>{tr}Contribution{/tr}</th>
 					<th colspan="{$contributionNbCols}">{if $contribTime eq 'd'}{tr}Days{/tr}{else}{tr}Weeks{/tr}{/if}</th>
@@ -581,7 +579,7 @@
 				</tr>
 				{foreach from=$contributionStat key=contributionId item=contribution}
 					<tr class="{cycle}">
-						<td>{$contribution.name|escape}</td>
+						<td>{$contribution.name}</td>
 						{foreach from=$contribution.stat item=stat}
 							<td>
 								{if !empty($stat.add)}<span class="diffadded">{$stat.add}</span>{/if}

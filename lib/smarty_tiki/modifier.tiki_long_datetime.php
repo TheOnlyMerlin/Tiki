@@ -11,10 +11,9 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
+require_once $smarty->_get_plugin_filepath('modifier','tiki_date_format');
 function smarty_modifier_tiki_long_datetime($string) {
-	global $prefs, $smarty;
-
-	$smarty->loadPlugin('smarty_modifier_tiki_date_format');
+	global $prefs;
 	// if you change the separator do not forget to change the translation instruction in lib/prefs/long.php
 	return smarty_modifier_tiki_date_format($string, $prefs['long_date_format'].' '.$prefs['long_time_format']);
 }

@@ -14,7 +14,6 @@ function wikiplugin_googledoc_info() {
 		'body' => tra('Leave this empty.'),
 //		'validate' => 'all',
 		'icon' => 'pics/icons/google.png',
-		'tags' => array( 'basic' ),		
 		'params' => array(
 			'type' => array(
 				'safe' => true,
@@ -91,7 +90,7 @@ function wikiplugin_googledoc_info() {
 			'frameborder' => array(
 				'safe' => true,
 				'required' => false,
-				'name' => tra('Frame Border'),
+				'name' => 'Frame Border',
 				'description' => tra('Choose whether to show a border around the iframe'),
 				'default' => 0,
 				'options' => array(

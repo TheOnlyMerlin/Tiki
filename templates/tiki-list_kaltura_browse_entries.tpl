@@ -1,4 +1,3 @@
-{* $Id$ *}
 {jq notonready=true}
 	function loadMedia(entryId) {
 		$('#mykdp')[0].sendNotification("changeMedia", {entryId:entryId});
@@ -21,7 +20,7 @@
 			<param name="flashVars" value="entry_id={$klist[0]->id}" />
 			<param name="wmode" value="opaque" />
 		</object>
-		<div class="navi kaltura">
+		<div class="navi">
 			<a class="prev"></a> 
 			<div class="scrollable"> 
 				<div class="items"> 

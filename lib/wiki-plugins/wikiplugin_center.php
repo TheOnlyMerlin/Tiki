@@ -14,7 +14,6 @@ function wikiplugin_center_info() {
 		'body' => tra('text'),
 		'icon' => 'pics/icons/text_align_center.png',
 		'filter' => 'wikicontent',
-		'tags' => array( 'basic' ),		
 		'params' => array(
 		),
 	);

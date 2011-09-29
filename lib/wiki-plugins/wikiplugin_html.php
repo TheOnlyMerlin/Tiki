@@ -15,7 +15,6 @@ function wikiplugin_html_info() {
 		'validate' => 'all',
 		'filter' => 'rawhtml_unsafe',
 		'icon' => 'pics/icons/mime/html.png',
-		'tags' => array( 'basic' ),	
 		'params' => array(
 			'wiki' => array(
 				'required' => false,

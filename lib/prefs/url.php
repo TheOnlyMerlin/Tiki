@@ -14,12 +14,10 @@ function prefs_url_list() {
 			'dependencies' => array(
 				'allowRegister',
 			),
-			'default' => '',
 		),
 		'url_anonymous_page_not_found' => array(
 			'name' => tra('URL an anonymous is redirected when page not found'),
 			'type' => 'text',
-			'default' => '',
 		),
 	);
 }

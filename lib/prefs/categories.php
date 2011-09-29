@@ -16,7 +16,6 @@ function prefs_categories_list() {
 			'dependencies' => array(
 				'feature_categories',
 			),
-			'default' => 'n',
 		),
 	);
 }

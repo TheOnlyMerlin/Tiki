@@ -42,9 +42,8 @@ if( $all )
 	}
 
 	include 'tiki-setup.php';
-	
-	$parserlib = TikiLib::lib('parser');
-	$plugins = $parserlib->plugin_get_list();
+
+	$plugins = $tikilib->plugin_get_list();
 }
 else
 {
@@ -65,11 +64,10 @@ else
 
 ob_start();
 
-$parserlib = TikiLib::lib('parser');
 ?>
 if( typeof tiki_plugins == 'undefined' ) { var tiki_plugins = {}; }
 <?php foreach( $plugins as $plugin ):
-	if( ! $info = $parserlib->plugin_info( $plugin ) )
+	if( ! $info = $tikilib->plugin_info( $plugin ) )
 		continue;
 ?>
 tiki_plugins.<?php echo $plugin ?> = <?php echo json_encode( $info ) ?>;

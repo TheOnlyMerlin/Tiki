@@ -78,20 +78,20 @@ if( isset($_REQUEST['save'], $_REQUEST['pref']) ) {
 if( isset($_REQUEST['reset']) && $section != 'global' ) {
 	$prefName = 'toolbar_' . $section . ($comments ? '_comments' : '');
 	$tikilib->delete_preference( $prefName);
-	$smarty->loadPlugin('smarty_function_query');
+	require_once($smarty->_get_plugin_filepath('function', 'query'));
 	header('location: ?'. smarty_function_query(array('_urlencode'=>'n'), $smarty));
 }
 
 if( isset($_REQUEST['reset_global']) && $section == 'global' ) {
 	$prefName = 'toolbar_' . $section . ($comments ? '_comments' : '');
 	$tikilib->delete_preference( $prefName);
-	$smarty->loadPlugin('smarty_function_query');
+	require_once($smarty->_get_plugin_filepath('function', 'query'));
 	header('location: ?'. smarty_function_query(array('_urlencode'=>'n'), $smarty));
 }
 
 if ( !empty($_REQUEST['save_tool']) && !empty($_REQUEST['tool_name'])) {	// input from the tool edit form
 	Toolbar::saveTool($_REQUEST['tool_name'], $_REQUEST['tool_label'], $_REQUEST['tool_icon'], $_REQUEST['tool_token'], $_REQUEST['tool_syntax'], $_REQUEST['tool_type'], $_REQUEST['tool_plugin']);
-	$smarty->loadPlugin('smarty_function_query');
+	require_once($smarty->_get_plugin_filepath('function', 'query'));
 	header('location: ?'. smarty_function_query(array('_urlencode'=>'n'), $smarty));
 }
 
@@ -161,7 +161,6 @@ foreach( $qtlist as $name ) {
 		continue;
 	}
 	$wys = strlen($tag->getWysiwygToken()) ? 'qt-wys' : '';
-	$wyswik = strlen($tag->getWysiwygWikiToken()) ? 'qt-wyswik' : '';
 	$test_html = $tag->getWikiHtml('');
 	$wiki = strlen($test_html) > 0 ? 'qt-wiki' : '';
 	$wiki = strpos($test_html, 'qt-sheet') !== false ? 'qt-sheet' : $wiki;
@@ -186,7 +185,7 @@ foreach( $qtlist as $name ) {
 	if ($tag->getType() == 'Wikiplugin') {
 		$label .= '<input type="hidden" name="plugin" value="'.$tag->getPluginName().'" />';
 	}
-	$qtelement[$name] = array( 'name' => $name, 'class' => "toolbar qt-$name $wys $wiki $wyswik $plug $cust $avail", 'html' => "$icon<span>$label</span>");
+	$qtelement[$name] = array( 'name' => $name, 'class' => "toolbar qt-$name $wys $wiki $plug $cust $avail", 'html' => "$icon<span>$label</span>");
 }
 
 $headerlib->add_js( "var toolbarsadmin_rowStr = '" . substr(implode(",#row-",range(0,$rowCount)),2) . "'
@@ -215,10 +214,8 @@ if (count($_REQUEST) == 0) {
 }
 
 $plugins = array();
-
-$parserlib = TikiLib::lib('parser');
-foreach($parserlib->plugin_get_list() as $name) {
-	$info = $parserlib->plugin_info($name);
+foreach($tikilib->plugin_get_list() as $name) {
+	$info = $tikilib->plugin_info($name);
 	if (isset($info['prefs']) && is_array($info['prefs']) && count($info['prefs']) > 0) $plugins[$name] = $info;
 }
 $smarty->assign('plugins', $plugins);

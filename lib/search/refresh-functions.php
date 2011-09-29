@@ -11,7 +11,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-function refresh_index($object_type, $object_id = null, $process = true) {
+function refresh_index($object_type, $object_id = null) {
 	global $prefs;
 
 	// First process unified search, then process the legacy indexing if required.
@@ -19,18 +19,16 @@ function refresh_index($object_type, $object_id = null, $process = true) {
 	if( $prefs['unified_incremental_update'] == 'y' && $object_id ) {
 		$unified_type = refresh_index_convert_type($object_type);
 
+		$errlib = TikiLib::lib('errorreport');
 		try {
 			global $unifiedsearchlib; require_once 'lib/search/searchlib-unified.php';
 			$unifiedsearchlib->invalidateObject( $unified_type, $object_id );
-
-			if ($process) {
-				$unifiedsearchlib->processUpdateQueue();
-			}
+			$unifiedsearchlib->processUpdateQueue();
 
 		} catch (Zend_Search_Lucene_Exception $e) {
 
-			$errlib = TikiLib::lib('errorreport');
-			$errlib->report(tr('Search index could not be updated: %0', $e->getMessage()));
+			$errlib->report(tr('Search index could not be updated.') .
+							'<br />' . $e->getMessage());
 		}
 	}
 

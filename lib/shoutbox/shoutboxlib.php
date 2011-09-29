@@ -17,8 +17,6 @@ class ShoutboxLib extends TikiLib
 {
 	function list_shoutbox($offset, $maxRecords, $sort_mode, $find) {
 		global $prefs;
-		$parserlib = TikiLib::lib('parser');
-		
 		if ($find) {
 			$mid = " where (`message` like ?)";
 			$bindvars = array('%'.$find.'%');
@@ -55,7 +53,7 @@ class ShoutboxLib extends TikiLib
       $wrap_at = 25;
       $res["message"] = preg_replace('/(\s*)([^\;>\s]{'.$wrap_at.',})([^&]<|$)/e', "'\\1'.wordwrap('\\2', '".$wrap_at."', '<span></span>', 1).'\\3'", $res["message"]);
 		// emoticons support
-		$res["message"] = $parserlib->parse_smileys($res["message"]);
+		$res["message"] = $this->parse_smileys($res["message"]);
 			$ret[] = $res;
 		}
 		$retval = array();

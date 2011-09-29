@@ -10,7 +10,6 @@ function prefs_layout_list() {
 		'layout_section' => array(
 			'name' => tra('Layout per section'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'layout_fixed_width' => array(
 			'name' => tra('Layout Width'),
@@ -20,7 +19,6 @@ function prefs_layout_list() {
 			'dependencies' => array(
 				'feature_fixed_width',
 			),
-			'default' => '',
 		),
 		'layout_tabs_optional' => array(
 			'name' => tra('Users can choose not to have tabs'),
@@ -28,14 +26,12 @@ function prefs_layout_list() {
 			'dependencies' => array(
 				'feature_tabs',
 			),
-			'default' => 'y',
 		),
 		'layout_add_body_group_class' => array(
 			'name' => tra('Add group CSS info'),
 			'hint' => tra('Add classes to the page BODY tag to indicate group membership'),
 			'description' => tra('Either grp_Anonymous or grp_Registered and possibly grp_Admins as well'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 	);
 }

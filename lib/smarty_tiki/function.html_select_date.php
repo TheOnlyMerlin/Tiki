@@ -47,12 +47,12 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  * @param Smarty
  * @return string
  */
-function smarty_function_html_select_date($params, $smarty)
+function smarty_function_html_select_date($params, &$smarty)
 {
 	global $tikilib; // TIKI
-    $smarty->loadPlugin('smarty_shared_escape_special_chars');
-    $smarty->loadPlugin('smarty_shared_make_timestamp');
-    $smarty->loadPlugin('smarty_function_html_options');
+	require_once $smarty->_get_plugin_filepath('shared','escape_special_chars');
+    require_once $smarty->_get_plugin_filepath('shared','make_timestamp');
+    require_once $smarty->_get_plugin_filepath('function','html_options');
     /* Default values. */
     $prefix          = "Date_";
     $start_year      = strftime("%Y");
@@ -284,7 +284,7 @@ function smarty_function_html_select_date($params, $smarty)
             }
             $year_result .= ' />';
         } else {
-            $years = range(max((int)$start_year, 1970), (int)$end_year);
+            $years = range((int)$start_year, (int)$end_year);
             if ($reverse_years) {
                 rsort($years, SORT_NUMERIC);
             } else {

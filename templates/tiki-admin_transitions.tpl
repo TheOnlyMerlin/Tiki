@@ -80,14 +80,34 @@
 	{/tab}
 	{if $available_states|@count > 0}
 	{tab name="{tr}Transitions{/tr}"}
-		{$headerlib->add_dracula()}
-		<div id="graph-canvas" class="graph-canvas" data-graph-nodes="{$graph_nodes|escape}" data-graph-edges="{$graph_edges|escape}"></div>
+		<div id="graph-canvas"></div>
 		<a href="#" id="graph-draw" class="button">{tr}Draw Transition Diagram{/tr}</a>
 		{jq}
 		$('#graph-draw').click( function( e ) {
+			e.preventDefault();
 			$(this).hide();
-			$('#graph-canvas').drawGraph();
-			return false;
+			var width = $('#graph-canvas').width();
+			var height = Math.ceil( width * 9 / 16 );
+			var nodes = {{$graph_nodes}};
+			var edges = {{$graph_edges}};
+
+			var g = new Graph;
+			for( k in nodes ) {
+				g.addNode( nodes[k] );
+			}
+			for( k in edges ) {
+				var style = { directed: true };
+				if( edges[k].preserve ) {
+					style.color = 'red';
+				}
+				g.addEdge( edges[k].from, edges[k].to, style );
+			}
+
+			var layouter = new Graph.Layout.Spring(g);
+			layouter.layout();
+			
+			var renderer = new Graph.Renderer.Raphael('graph-canvas', g, width, height );
+			renderer.draw();
 		} );
 		{/jq}
 		<table class="normal">
@@ -128,7 +148,7 @@
 		<form method="post" action="tiki-admin_transitions.php?action={if $selected_transition}edit{else}new{/if}&amp;cookietab=2" style="text-align: left;">
 			{if $selected_transition}
 				<h2>
-					{tr _0=$selected_transition.name}Edit <em>%0</em>{/tr}
+					{tr 0=$selected_transition.name}Edit <em>%0</em>{/tr}
 					<input type="hidden" name="transitionId" value="{$selected_transition.transitionId|escape}"/>
 					(<a href="tiki-admin_transitions.php">{tr}Create new{/tr}</a>)
 				</h2>

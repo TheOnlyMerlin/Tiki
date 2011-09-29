@@ -42,10 +42,6 @@ class LanguageTranslationsTest extends TikiTestCase
 		TikiDb::get()->query('INSERT INTO `tiki_language` (`source`, `lang`, `tran`, `changed`) VALUES (?, ?, ?, ?)', array('Trying to insert malicious PHP code back to the language.php file', $this->lang, 'asff"); echo \'teste\'; $dois = array(\'\',"', 1));
 		TikiDb::get()->query('INSERT INTO `tiki_language` (`source`, `lang`, `tran`, `changed`) VALUES (?, ?, ?, ?)', array('Should escape "double quotes" in the source string', $this->lang, 'Deve escapar "aspas duplas" na string original', 1));
 		TikiDb::get()->query('INSERT INTO `tiki_language` (`source`, `lang`, `tran`) VALUES (?, ?, ?)', array('Not changed', $this->lang, 'Translation not changed'));
-		
-		TikiDb::get()->query('INSERT INTO `tiki_untranslated` (`source`, `lang`) VALUES (?, ?)', array('Untranslated string 1', $this->lang));
-		TikiDb::get()->query('INSERT INTO `tiki_untranslated` (`source`, `lang`) VALUES (?, ?)', array('Untranslated string 2', $this->lang));
-		TikiDb::get()->query('INSERT INTO `tiki_untranslated` (`source`, `lang`) VALUES (?, ?)', array('Untranslated string 3', $this->lang));
 
 		global ${"lang_$this->lang"};
 
@@ -70,9 +66,11 @@ class LanguageTranslationsTest extends TikiTestCase
 
 		TikiDb::get()->query('DELETE FROM `tiki_language` WHERE `lang` = ?', array($this->lang));
 		TikiDb::get()->query('DELETE FROM `tiki_untranslated` WHERE `lang` = ?', array($this->lang));
-		
-		unset($GLOBALS['prefs']['record_untranslated']);
 	}
+
+	// TODO: We need a way to create a Tiki database just for the tests
+	/*public function testGetDbTranslatedLanguages() {
+	}*/
 
 	public function testUpdateTransShouldInsertNewTranslation() {
 		$this->obj->updateTrans('New string', 'New translation');
@@ -137,29 +135,29 @@ class LanguageTranslationsTest extends TikiTestCase
 		$this->assertEquals(file_get_contents(dirname(__FILE__) . '/fixtures/language_modif.php'), file_get_contents($this->langDir . '/language.php'));
 	}
 
-	public function testWriteLanguageFileCallingTwoTimes_shouldNotDuplicateStringsInTheFile() {
+	public function testWriteLanguageFileCallingTwoTimesShouldNotDuplicateStringsInTheFile() {
 		copy(dirname(__FILE__) . '/fixtures/language_orig.php', $this->langDir . '/language.php');
 		$this->obj->writeLanguageFile();
 		$this->obj->writeLanguageFile();
 		$this->assertEquals(file_get_contents(dirname(__FILE__) . '/fixtures/language_modif.php'), file_get_contents($this->langDir . '/language.php'));
 	}
 
-	public function testWriteLanguage_shouldReturnTheNumberOfNewStringsInLanguageFile() {
+	public function testWriteLanguageShouldReturnTheNumberOfNewStringsInLanguageFile() {
 		copy(dirname(__FILE__) . '/fixtures/language_orig.php', $this->langDir . '/language.php');
 		$expectedResult = array('modif' => 2, 'new' => 4);
 		$return = $this->obj->writeLanguageFile();
 		$this->assertEquals($expectedResult, $return);
 	}
 
-	public function testWriteLanguage_shouldIgnoreEmptyStrings() {
+	public function testWriteLanguageShouldIgnoreEmptyStrings() {
 		TikiDb::get()->query('INSERT INTO `tiki_language` (`source`, `lang`, `tran`, `changed`) VALUES (?, ?, ?, ?)', array('', $this->lang, '', 1));
 		copy(dirname(__FILE__) . '/fixtures/language_orig.php', $this->langDir . '/language.php');
 		$this->obj->writeLanguageFile();
 		$this->assertEquals(file_get_contents(dirname(__FILE__) . '/fixtures/language_modif.php'), file_get_contents($this->langDir . '/language.php'));
 	}
 
-	public function testWriteLanguage_shouldRaiseExceptionForInvalidLanguagePhp() {
-		$this->setExpectedException('Language_Exception');
+	public function testWriteLanguageShouldRaiseExceptionForInvalidLanguagePhp() {
+		$this->setExpectedException('Exception');
 		copy(dirname(__FILE__) . '/fixtures/language_invalid.php', $this->langDir . '/language.php');
 		$this->obj->writeLanguageFile();
 	}
@@ -169,302 +167,65 @@ class LanguageTranslationsTest extends TikiTestCase
 		$this->assertFalse(TikiDb::get()->getOne('SELECT * FROM `tiki_language` WHERE `lang` = ?', array($this->obj->lang)));
 	}
 	
-	public function testGetFileUntranslated()
+	public function testGetUntranslatedFromFile()
 	{
 		$cachelib = $this->getMock('Cachelib', array('getSerialized', 'cacheItem'));
-		$cachelib->expects($this->once())->method('getSerialized')->with('untranslatedStrings.test_language.1234', 'untranslatedStrings')->will($this->returnValue(null));
+		$cachelib->expects($this->once())->method('getSerialized')->will($this->returnValue(null));
 		$cachelib->expects($this->once())->method('cacheItem');
 		
-		$obj = $this->getMock('LanguageTranslations', array('_getCacheLib', '_getFileHash'), array($this->lang));
-		$obj->expects($this->once())->method('_getCacheLib')->will($this->returnValue($cachelib));
-		$obj->expects($this->once())->method('_getFileHash')->will($this->returnValue(1234));
+		$obj = $this->getMock('LanguageTranslations', array('getCacheLib'), array($this->lang));
+		$obj->expects($this->once())->method('getCacheLib')->will($this->returnValue($cachelib));
 		
-		$expectedResult = array(
-			"Kalture Video" => array('source' => "Kalture Video", 'tran' => null),
-			"Communication error" => array('source' => "Communication error", 'tran' => null),
-			"Invalid response provided by the Kaltura server. Please retry" => array('source' => "Invalid response provided by the Kaltura server. Please retry", 'tran' => null),
-			"Delete comments" => array('source' => "Delete comments", 'tran' => null),
-			"Approved Status" => array('source' => "Approved Status", 'tran' => null),
-			"Queued" => array('source' => "Queued", 'tran' => null),
-			"The file is already locked by %s" => array('source' => "The file is already locked by %s", 'tran' => null),
-			"WARNING: The file is used in" => array('source' => "WARNING: The file is used in", 'tran' => null),
-			"You do not have permission to edit this file" => array('source' => "You do not have permission to edit this file", 'tran' => null),
-			"Not modified since" => array('source' => "Not modified since", 'tran' => null),
-			'Test special "characters" escaping' => array('source' => 'Test special "characters" escaping', 'tran' => null),
-		);
+		$expectedResult = array("Kalture Video" => null, "Communication error" => null, "Invalid response provided by the Kaltura server. Please retry" => null,
+			"Delete comments" => null, "Approved Status" => null, "Queued" => null, "The file is already locked by %s" => null, "WARNING: The file is used in" => null,
+			"You do not have permission to edit this file" => null, "Not modified since" => null, "Not downloaded since" => null);
 		
-		$this->assertEquals($expectedResult, $obj->getFileUntranslated());
+		$this->assertEquals($expectedResult, $obj->getUntranslatedFromFile());
 	}
 	
-	public function testGetFileUntranslated_checkCache()
+	public function testGetUnstranslatedFromFileCache()
 	{
-		$expectedResult = array(
-			"Kalture Video" => array('source' => "Kalture Video", 'tran' => null),
-			"Communication error" => array('source' => "Communication error", 'tran' => null),
-			"Invalid response provided by the Kaltura server. Please retry" => array('source' => "Invalid response provided by the Kaltura server. Please retry", 'tran' => null),
-			"Delete comments" => array('source' => "Delete comments", 'tran' => null),
-			"Approved Status" => array('source' => "Approved Status", 'tran' => null),
-			"Queued" => array('source' => "Queued", 'tran' => null),
-			"The file is already locked by %s" => array('source' => "The file is already locked by %s", 'tran' => null),
-			"WARNING: The file is used in" => array('source' => "WARNING: The file is used in", 'tran' => null),
-			"You do not have permission to edit this file" => array('source' => "You do not have permission to edit this file", 'tran' => null),
-			"Not modified since" => array('source' => "Not modified since", 'tran' => null),
-			'Test special "characters" escaping' => array('source' => 'Test special "characters" escaping', 'tran' => null),
-		);
-		$this->assertEquals($expectedResult, $this->obj->getFileUntranslated());
+		$expectedResult = array("Kalture Video" => null, "Communication error" => null, "Invalid response provided by the Kaltura server. Please retry" => null,
+			"Delete comments" => null, "Approved Status" => null, "Queued" => null, "The file is already locked by %s" => null, "WARNING: The file is used in" => null,
+			"You do not have permission to edit this file" => null, "Not modified since" => null, "Not downloaded since" => null);
+		$this->assertEquals($expectedResult, $this->obj->getUntranslatedFromFile());
 		
 		// change file to check if the cache is ignored when the file changes
 		copy(dirname(__FILE__) . '/fixtures/language_untranslated.php', $this->langDir . '/language.php');
-		$expectedResult = array(
-			"Kalture Video" => array('source' => "Kalture Video", 'tran' => null),
-			"Invalid response provided by the Kaltura server. Please retry" => array('source' => "Invalid response provided by the Kaltura server. Please retry", 'tran' => null),
-			"Delete comments" => array('source' => "Delete comments", 'tran' => null),
-			"Queued" => array('source' => "Queued", 'tran' => null),
-			"The file is already locked by %s" => array('source' => "The file is already locked by %s", 'tran' => null),
-			"WARNING: The file is used in" => array('source' => "WARNING: The file is used in", 'tran' => null),
-			"You do not have permission to edit this file" => array('source' => "You do not have permission to edit this file", 'tran' => null),
-		);
-		$this->assertEquals($expectedResult, $this->obj->getFileUntranslated());
+		$expectedResult = array("Kalture Video" => null, "Invalid response provided by the Kaltura server. Please retry" => null,
+			"Delete comments" => null, "Queued" => null, "The file is already locked by %s" => null, "WARNING: The file is used in" => null,
+			"You do not have permission to edit this file" => null);
+		$this->assertEquals($expectedResult, $this->obj->getUntranslatedFromFile());
 	}
 	
-	public function getAllTranslations_dataProvider()
+	public function testGetAllStrings()
 	{
-		$fileTranslations = array(
-			"categorize" => array("source" => "categorize", "tran" => "categorizar"),
-			"Set prefs" => array("source" => "Set prefs", "tran" => "Definir preferências"),
-			"creation date" => array("source" => "creation date", "tran" => "data de criação"),
-			"Delete comments" => array("source" => "Delete comments", "tran" => "Deletar comentários"),
+		$translations = array(
+			"categorize" => "categorizar",
+			"Set prefs" => "Definir preferências",
+			"Contributions by author" => "Contribuições por autor",
+			"Delete comments" => "Deletar comentários",
 		);
 		
-		$dbTranslations = array(
-			"Approved Status" => array("id" => "16131", "source" => "Approved Status", "lang" => "test_language", "tran" => "Aprovado", "changed" => "1"),
-			"creation date" => array("id" => "16132", "source" => "creation date", "lang" => "test_language", "tran" => "data de criação nova", "changed" => "1"),
-			"Post" => array("id" => "16133", "source" => "Post", "lang" => "test_language", "tran" => "Enviar", "changed" => "1"),
+		$untranslated = array(
+			"Kalture Video" => null,
+			"Delete comments" => null,
+			"The file is already locked by %s" => null,
 		);
-		
-		return array(
-			array($fileTranslations, $dbTranslations)
-		);
-	}
-	
-	/**
-	 * @dataProvider getAllTranslations_dataProvider
-	 */
-	public function testGetAllTranslations($fileTranslations, $dbTranslations)
-	{
-		$expectedResult = array(
-			'translations' => array(
-				"Approved Status" => array("id" => "16131", "source" => "Approved Status", "lang" => "test_language", "tran" => "Aprovado", "changed" => "1"),
-				"categorize" => array("source" => "categorize", "tran" => "categorizar"),
-				"creation date" => array("id" => "16132", "source" => "creation date", "lang" => "test_language", "tran" => "data de criação nova", "changed" => "1"),
-				"Delete comments" => array("source" => "Delete comments", "tran" => "Deletar comentários"),
-				"Post" => array("id" => "16133", "source" => "Post", "lang" => "test_language", "tran" => "Enviar", "changed" => "1"),
-				"Set prefs" => array("source" => "Set prefs", "tran" => "Definir preferências"),
-			),
-			'total' => 6,
-		);
-		
-		$obj = $this->getMock('LanguageTranslations', array('getFileTranslations', '_getDbTranslations'));
-		$obj->expects($this->once())->method('getFileTranslations')->will($this->returnValue($fileTranslations));
-		$obj->expects($this->once())->method('_getDbTranslations')->will($this->returnValue($dbTranslations));
-		
-		$this->assertEquals($expectedResult, $obj->getAllTranslations());
-	}
-	
-	/**
-	 * @dataProvider getAllTranslations_dataProvider
-	 */
-	public function testGetAllTranslations_filterByMaxRecordsAndOffset($fileTranslations, $dbTranslations)
-	{
-		$expectedResult = array(
-			'translations' => array(
-				"Delete comments" => array("source" => "Delete comments", "tran" => "Deletar comentários"),
-				"Post" => array("id" => "16133", "source" => "Post", "lang" => "test_language", "tran" => "Enviar", "changed" => "1"),
-			),
-			'total' => 6,
-		);
-		
-		$obj = $this->getMock('LanguageTranslations', array('getFileTranslations', '_getDbTranslations'));
-		$obj->expects($this->once())->method('getFileTranslations')->will($this->returnValue($fileTranslations));
-		$obj->expects($this->once())->method('_getDbTranslations')->will($this->returnValue($dbTranslations));
-		
-		$this->assertEquals($expectedResult, $obj->getAllTranslations(2, 3));
-	}
-	
-	/**
-	 * @dataProvider getAllTranslations_dataProvider
-	 */
-	public function testGetAllTranslations_filterByMaxRecordsOffsetAndSearch($fileTranslations, $dbTranslations)
-	{
-		$expectedResult = array(
-			'translations' => array(
-				"Set prefs" => array("source" => "Set prefs", "tran" => "Definir preferências"),
-			),
-			'total' => 2,
-		);
-		
-		$obj = $this->getMock('LanguageTranslations', array('getFileTranslations', '_getDbTranslations'));
-		$obj->expects($this->once())->method('getFileTranslations')->will($this->returnValue($fileTranslations));
-		$obj->expects($this->once())->method('_getDbTranslations')->will($this->returnValue($dbTranslations));
-		
-		$this->assertEquals($expectedResult, $obj->getAllTranslations(2, 1, 're'));
-	}
-	
-	/**
-	 * @dataProvider getAllTranslations_dataProvider
-	 */
-	public function testGetAllTranslations_searchByTranslation($fileTranslations, $dbTranslations)
-	{
-		$expectedResult = array(
-			'translations' => array(
-				"Set prefs" => array("source" => "Set prefs", "tran" => "Definir preferências"),
-			),
-			'total' => 1,
-		);
-		
-		$obj = $this->getMock('LanguageTranslations', array('getFileTranslations', '_getDbTranslations'));
-		$obj->expects($this->once())->method('getFileTranslations')->will($this->returnValue($fileTranslations));
-		$obj->expects($this->once())->method('_getDbTranslations')->will($this->returnValue($dbTranslations));
-		
-		$this->assertEquals($expectedResult, $obj->getAllTranslations(-1, 0, 'rê'));
-	}
-	
-	public function testGetFileTranslations()
-	{
-		copy(dirname(__FILE__) . '/fixtures/custom.php', $this->langDir . '/custom.php');
-		$this->assertEquals(27, count($this->obj->getFileTranslations()));
-	}
-	
-	public function testGetFileTranslations_shouldEscapeSpecialCharacters()
-	{
-		$trans = $this->obj->getFileTranslations();
-		$this->assertArrayHasKey('Second test special "characters" escaping', $trans);
-	}
-	
-	public function testGetDbTranslations()
-	{
-		$obj = $this->getMock('LanguageTranslations', array('_diff'), array('test_language'));
-		$obj->expects($this->any())->method('_diff');
-		
-		$dbTranslations = $obj->getDbTranslations('source_asc', -1, 0);
-		$this->assertGreaterThan(0, $dbTranslations['total']);
-		$this->assertEquals('Aprovado', $dbTranslations['translations']['Approved Status']['tran']);
-	}
-	
-	public function testGetDbTranslationsMaxrecordsAndOffset()
-	{
-		$obj = $this->getMock('LanguageTranslations', array('_diff'), array('test_language'));
-		$obj->expects($this->any())->method('_diff');
-		
-		$dbTranslations = $obj->getDbTranslations('source_asc', 2, 1);
-		$this->assertEquals(2, $dbTranslations['total']);
-		$this->assertEquals('Contribuições por autor', $dbTranslations['translations']['Contributions by author']['tran']);
-	}
-	
-	public function testGetDbTranslationsSearch()
-	{
-		$obj = $this->getMock('LanguageTranslations', array('_diff'), array('test_language'));
-		$obj->expects($this->any())->method('_diff');
-		
-		$dbTranslations = $obj->getDbTranslations('source_asc', -1, 0, 'Approved');
-		$this->assertEquals(1, $dbTranslations['total']);
-		$this->assertEquals('Aprovado', $dbTranslations['translations']['Approved Status']['tran']);
-	}
-	
-	public function testGetDbUntranslated()
-	{
-		global $prefs;
-		$prefs['record_untranslated'] = 'y';
 		
 		$expectedResult = array(
-			'translations' => array(
-				'Untranslated string 1' => array('source' => 'Untranslated string 1', 'tran' => null),
-				'Untranslated string 2' => array('source' => 'Untranslated string 2', 'tran' => null),
-				'Untranslated string 3' => array('source' => 'Untranslated string 3', 'tran' => null),
-			),
-			'total' => 3
+			"categorize" => "categorizar",
+			"Contributions by author" => "Contribuições por autor",
+			"Delete comments" => "Deletar comentários",
+			"Kalture Video" => null,
+			"Set prefs" => "Definir preferências",
+			"The file is already locked by %s" => null,
 		);
 		
-		$this->assertEquals($expectedResult, $this->obj->getDbUntranslated());
-	}
-	
-	public function testGetDbUntranslated_filterByMaxRecordsAndOffset()
-	{
-		global $prefs;
-		$prefs['record_untranslated'] = 'y';
+		$obj = $this->getMock('LanguageTranslations', array('getAllTranslations', 'getUntranslatedFromFile'));
+		$obj->expects($this->once())->method('getAllTranslations')->will($this->returnValue($translations));
+		$obj->expects($this->once())->method('getUntranslatedFromFile')->will($this->returnValue($untranslated));
 		
-		$expectedResult = array(
-			'translations' => array(
-				'Untranslated string 3' => array('source' => 'Untranslated string 3', 'tran' => null),
-			),
-			'total' => 3,
-		);
-		
-		$this->assertEquals($expectedResult, $this->obj->getDbUntranslated(1, 2));
-	}
-	
-	public function testGetDbUntranslated_filterBySearch()
-	{
-		global $prefs;
-		$prefs['record_untranslated'] = 'y';
-		
-		$expectedResult = array(
-			'translations' => array(
-				'Untranslated string 3' => array('source' => 'Untranslated string 3', 'tran' => null),
-			),
-			'total' => 1,
-		);
-		
-		$this->assertEquals($expectedResult, $this->obj->getDbUntranslated(-1, 0, 'string 3'));
-	}
-	
-	public function getAllUntranslated_dataProvider()
-	{
-		$dbUntranslated = array(
-			'Untranslated string 1' => array('source' => 'Untranslated string 1', 'tran' => null),
-			'Untranslated string 2' => array('source' => 'Untranslated string 2', 'tran' => null),
-			"Communication error" => array('source' => "Communication error", 'tran' => null),
-		);
-		
-		$fileUntranslated = array(
-			"Kalture Video" => array('source' => "Kalture Video", 'tran' => null),
-			"Communication error" => array('source' => "Communication error", 'tran' => null),
-			"Invalid response provided by the Kaltura server. Please retry" => array('source' => "Invalid response provided by the Kaltura server. Please retry", 'tran' => null),
-			"Delete comments" => array('source' => "Delete comments", 'tran' => null),
-			"Approved Status" => array('source' => "Approved Status", 'tran' => null),
-		);
-		
-		$dbTranslations = array(
-			"Approved Status" => array('source' => "Approved Status", 'tran' => 'Aprovado'),
-		);
-		
-		return array(
-			array($dbUntranslated, $fileUntranslated, $dbTranslations),
-		);
-	}
-	
-	/**
-	 * @dataProvider getAllUntranslated_dataProvider
-	 */
-	public function testGetAllUntranslated($dbUntranslated, $fileUntranslated, $dbTranslations)
-	{
-		$obj = $this->getMock('LanguageTranslations', array('getFileUntranslated', '_getDbUntranslated', '_getDbTranslations'));
-		$obj->expects($this->once())->method('getFileUntranslated')->will($this->returnValue($fileUntranslated));
-		$obj->expects($this->once())->method('_getDbUntranslated')->will($this->returnValue($dbUntranslated));
-		$obj->expects($this->once())->method('_getDbTranslations')->will($this->returnValue($dbTranslations));
-		
-		$expectedResult = array(
-			'translations' => array(
-				"Communication error" => array('source' => "Communication error", 'tran' => null),
-				"Delete comments" => array('source' => "Delete comments", 'tran' => null),
-				"Invalid response provided by the Kaltura server. Please retry" => array('source' => "Invalid response provided by the Kaltura server. Please retry", 'tran' => null),
-				"Kalture Video" => array('source' => "Kalture Video", 'tran' => null),
-				'Untranslated string 1' => array('source' => 'Untranslated string 1', 'tran' => null),
-				'Untranslated string 2' => array('source' => 'Untranslated string 2', 'tran' => null),
-			),
-			'total' => 6
-		);
-		
-		$this->assertEquals($expectedResult, $obj->getAllUntranslated());
+		$this->assertEquals($expectedResult, $obj->getAllStrings());
 	}
 }

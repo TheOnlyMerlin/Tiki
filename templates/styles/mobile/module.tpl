@@ -1,4 +1,3 @@
-{* $Id$ *}
 {* override for mobile module layoutas a list *}
 {capture name=name}{$module_name|replace:"+":"_"|cat:$module_position|cat:$module_ord|escape}{/capture}
 {if 0 and $module_nobox neq 'y'}{* mobile *}
@@ -53,7 +52,7 @@
 		{if $module_flip eq 'y' and $prefs.javascript_enabled ne 'n'}
 			<span id="moduleflip-{$smarty.capture.name}">
 				<a title="{tr}Toggle module contents{/tr}" class="flipmodtitle" href="javascript:icntoggle('mod-{$smarty.capture.name}','module.png');">
-					{assign var=name value="icnmod-"|cat:$smarty.capture.name}
+					{assign var=name value=`icnmod-$smarty.capture.name`}
 					{capture name=name}
 						icnmod-{$smarty.capture.name}
 					{/capture}

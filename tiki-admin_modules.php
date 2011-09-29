@@ -313,7 +313,9 @@ foreach ($all_modules_info as &$mod) {
 }
 uasort($all_modules_info, 'compare_names');
 $smarty->assign_by_ref( 'all_modules_info', $all_modules_info);
-$smarty->assign('module_list_show_all', !empty($_REQUEST['module_list_show_all']));
+if (!empty($_REQUEST['module_list_show_all'])) {
+	$smarty->assign('module_list_show_all', true);
+}
 
 $orders = array();
 for ($i = 1;$i < 50;$i++) {
@@ -380,7 +382,7 @@ $module_zones = array();
 foreach( $modlib->module_zones as $initial => $zone) {
 	$module_zones[$initial] = array(
 		'id' => $zone,
-		'name' => tra(substr($zone, 0, strpos($zone, '_')))
+		'name' => substr($zone, 0, strpos($zone, '_'))
 	);
 }
 $smarty->assign_by_ref( 'assigned_modules', $assigned_modules );
@@ -400,6 +402,7 @@ $headerlib->add_css('.module:hover {
 }');
 $headerlib->add_cssfile('css/admin.css');
 $headerlib->add_jsfile('lib/modules/tiki-admin_modules.js');
+$headerlib->add_jsfile('lib/jquery/jquery.json-2.2.js');
 
 $sameurl_elements = array(
     'offset',
@@ -412,8 +415,6 @@ ask_ticket('admin-modules');
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
 if (!empty($_REQUEST['edit_module'])) {	// pick up ajax calls
-	// the strings below are used to display the tab titles in the edit module box 
-	//get_strings tr('Module') tr('Appearance') tr('Visibility')
 	$smarty->display("admin_modules_form.tpl");
 } else {
 	$smarty->assign('mid', 'tiki-admin_modules.tpl');

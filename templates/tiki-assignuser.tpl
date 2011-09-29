@@ -1,7 +1,5 @@
-{* $Id$ *}
-
 {assign var=escuser value=$assign_user|escape:url}
-{title}{tr _0=$assign_user}Assign User %0 to Groups{/tr}{/title}
+{title}{tr}Assign User {$assign_user|escape} to Groups{/tr}{/title}
 
 <div class="navbar">
 	{if $tiki_p_admin eq 'y'} {* only full admins can manage groups, not tiki_p_admin_users *}
@@ -32,17 +30,17 @@
 			{/foreach}
 		</td>
 	</tr>
-	<form method="post" action="tiki-assignuser.php{if $assign_user}?assign_user={$assign_user|escape:'url'}{/if}">
+	<form method="post" action="tiki-assignuser.php{if $assign_user}?assign_user={$assign_user}{/if}">
 		<tr>
 			<td>{tr}Default Group:{/tr}</td>
 			<td>
 				<select name="defaultgroup">
 					<option value=""></option>
 					{foreach from=$user_info.groups key=name item=included}
-						<option value="{$name|escape}" {if $name eq $user_info.default_group}selected="selected"{/if}>{$name|escape}</option>
+						<option value="{$name}" {if $name eq $user_info.default_group}selected="selected"{/if}>{$name|escape}</option>
 					{/foreach}
 				</select>
-				<input type="hidden" value="{$user_info.login|escape}" name="login" />
+				<input type="hidden" value="{$user_info.login}" name="login" />
 				<input type="hidden" value="{$prefs.maxRecords}" name="maxRecords" />
 				<input type="hidden" value="{$offset}" name="offset" />
 				<input type="hidden" value="{$sort_mode}" name="sort_mode" />
@@ -52,7 +50,7 @@
 	</form>
 </table>
 <br />
-<div align="left"><h2>{tr _0=$assign_user|escape}Assign User %0 to Groups{/tr}</h2></div>
+<div align="left"><h2>{tr}Assign User {$assign_user|escape} to Groups{/tr}</h2></div>
 
 {include file='find.tpl' find_show_num_rows='y'}
 

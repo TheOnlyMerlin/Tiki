@@ -13,34 +13,6 @@
  */
 class Tracker_Field_File extends Tracker_Field_Abstract
 {
-	public static function getTypes()
-	{
-		return array(
-			'A' => array(
-				'name' => tr('Attachment'),
-				'description' => tr('Allows a file to be attached to the tracker item.'),
-				'help' => 'Attachment Field',				
-				'prefs' => array('trackerfield_file'),
-				'tags' => array('basic'),
-				'default' => 'n',
-				'params' => array(
-					'listview' => array(
-						'name' => tr('List View'),
-						'description' => tr('Defines how attachments will be displayed within the field.'),
-						'options' => array(
-							'n' => tr('name'),
-							't' => tr('type'),
-							'ns' => tr('name, size'),
-							'nts' => tr('name, type, size'),
-							'u' => tr('uploader'),
-							'm' => tr('mediaplayer'),
-						),
-					),
-				),
-			),
-		);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		$ins_id = $this->getInsertId();
@@ -66,88 +38,34 @@ class Tracker_Field_File extends Tracker_Field_Abstract
 		return $this->renderTemplate('trackerinput/file.tpl', $context);
 	}
 	
-	function renderInnerOutput( $context = array() ) {
+	function renderInnerOutput( $context ) {
 
 		$att_id = $this->getValue();
 
 		if (empty($att_id)) {
 			return '';
-		}
+		} else {
 
-		if ($context['list_mode'] === 'csv') {
-			global $base_url;
-			return $base_url . 'tiki-download_item_attachment.php?attId=' . $att_id;	// should something to do with export_attachment() happen here?
-		}
-
-		$attachment = TikiLib::lib('trk')->get_item_attachment($att_id);
-
-		$smarty = TikiLib::lib('smarty');
-		$smarty->loadPlugin('smarty_block_self_link');
-		$smarty->loadPlugin('smarty_function_icon');
-
-		$link = smarty_block_self_link(
-			array(
-				'_script' => 'tiki-download_item_attachment.php',
-				'attId' => $att_id,
-			),
-			smarty_function_icon(array('_id' => 'disk', 'alt' => tra('Download')), $smarty) . ' ' .
-			$attachment['filename'],
-			$smarty
-		);
-		return $link;
-	}
-
-	function handleSave($value, $oldValue)
-	{
-		global $prefs, $user;
-		$tikilib = TikiLib::lib('tiki');
-
-		$trackerId = $this->getConfiguration('trackerId');
-		$file_name = $this->getConfiguration('file_name');
-		$file_size = $this->getConfiguration('file_size');
-		$file_type = $this->getConfiguration('file_type');
-
-		$perms = Perms::get('tracker', $trackerId);
-		if ($perms->attach_trackers && $file_name) {
-			if ($prefs['t_use_db'] == 'n') {
-				$fhash = md5($file_name.$tikilib->now);
-				if (file_put_contents($prefs['t_use_dir'] . $fhash, $value) === false) {
-					$smarty->assign('msg', tra('Cannot write to this file:'). $fhash);
-					$smarty->display("error.tpl");
-					die;
-				}
-				return array(
-					'value' => '',
-				);
-			} else {
-				$fhash = 0;
+			if ($context['list_mode'] === 'csv') {
+				global $base_url;
+				return $base_url . 'tiki-download_item_attachment.php?attId=' . $att_id;	// should something to do with export_attachment() happen here?
 			}
 
-			$trklib = TikiLib::lib('trk');
-			return array(
-				'value' => $trklib->replace_item_attachment($oldValue, $file_name, $file_type, $file_size, $value, '', $user, $fhash, '', '', $trackerId, $this->getItemId(), '', false),
-			);
+			$attachment = TikiLib::lib('trk')->get_item_attachment($att_id);
+
+			$smarty = TikiLib::lib('smarty');
+			require_once $smarty->_get_plugin_filepath('block', 'self_link');
+			require_once $smarty->_get_plugin_filepath('function', 'icon');
+
+			$link = smarty_block_self_link(array(
+												'_script' => 'tiki-download_item_attachment.php',
+												'attId' => $att_id,
+										   ),
+										   smarty_function_icon(array('_id' => 'disk', 'alt' => tra('Download')), $smarty) . ' ' .
+										   $attachment['filename'],
+										   $smarty);
 		}
-
-		return array(
-			'value' => '',
-		);
-	}
-
-	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
-	{
-		return array(
-		);
-	}
-
-	function getProvidedFields($baseKey)
-	{
-		return array();
-	}
-
-	function getGlobalFields($baseKey)
-	{
-		return array();
+		return $link;
 	}
 }
 

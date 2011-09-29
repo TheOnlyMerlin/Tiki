@@ -9,7 +9,9 @@
  * Smarty plugin
  * @package Smarty
  * @subpackage plugins
- *
+ */
+
+/**
  * Smarty {translation lang=XX}{/translation} block plugin
  *
  * Type:     block function<br>
@@ -24,15 +26,14 @@
  * @param Smarty clever simulation of a method
  * @return string string $content re-formatted
  */
-
-function smarty_block_translation($params, $content, $smarty)
+function smarty_block_translation($params, $content, &$smarty)
 {
-	if (isset($content)) {
-  	$lang = $params['lang'];
-		if ($smarty->getTemplateVars('language') == $lang) {
-			return $content;
-		} else {
-			return '';
-		}
+    if (isset($content)) {
+        $lang = $params['lang'];
+	if ($smarty->get_template_vars('language') == $lang) {
+	    return $content;
+	} else {
+	    return '';
 	}
+    }
 }

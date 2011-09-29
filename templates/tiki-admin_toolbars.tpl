@@ -29,7 +29,6 @@
 					{if $prefs.feature_wysiwyg eq 'y'}<option value="both"{if $view_mode eq "both"} selected{/if}>{tr}Wiki and WYSIWYG{/tr}</option>{/if}
 					<option value="wiki"{if $view_mode eq "wiki"} selected{/if}>{tr}Wiki only{/tr}</option>
 					{if $prefs.feature_wysiwyg eq 'y'}<option value="wysiwyg"{if $view_mode eq "wysiwyg"} selected{/if}>{tr}WYSIWYG only{/tr}</option>{/if}
-					{if $prefs.feature_wysiwyg eq 'y' and $prefs.wysiwyg_htmltowiki eq 'y'}<option value="wysiwyg_wiki"{if $view_mode eq "wysiwyg_wiki"} selected{/if}>{tr}Visual Wiki{/tr}</option>{/if}
 					{if $prefs.feature_sheet eq 'y'}<option value="sheet"{if $view_mode eq "sheet"} selected{/if}>{tr}Spreadsheet{/tr}</option>{/if}
 				</select>
 			</div>
@@ -132,7 +131,7 @@
 	</div>
 </div>
 <div class="clearfix">
-{remarksbox title='{tr}Tips{/tr}'}
+{remarksbox title='Tips'}
 {tr}To configure the toolbars on the various text editing areas select the section, and optionally check the comments checkbox, you want to edit and drag the icons from the left hand box to the toolbars on the right.<br />
 Drag icons back from the toolbar rows onto the full list to remove them.<br />
 Icons with <strong>bold</strong> labels are for wiki text areas, those that are <em>italic</em> are for WYSIWYG mode, and those that are <strong><em>bold and italic</em></strong> are for both.<br />

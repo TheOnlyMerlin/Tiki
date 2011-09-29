@@ -14,7 +14,6 @@ function wikiplugin_tabs_info() {
 		'body' => tra('Tabs content separated by /////'),
 		'icon' => 'pics/icons/tab_edit.png',
 		'filter' => 'wikicontent',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'name' => array(
 				'required' => false,
@@ -28,16 +27,6 @@ function wikiplugin_tabs_info() {
 				'description' => tra('Pipe separated list of tab titles. Ex: tab 1|tab 2|tab 3'),
 				'default' => '',
 			),
-			'toggle' => array(
-				'required' => false,
-				'name' => tra('Toggle Tabs'),
-				'description' => tra('Allows to toggle from tabs to no tabs view'),
-				'default' => 'y',
-				'options' => array (
-					array('value' => 'y' , 'text' => tra('Yes')),
-					array('value' => 'n', 'text' => tra('No')),
-				),
-			),
 		),
 	);
 }
@@ -50,12 +39,6 @@ function wikiplugin_tabs($data, $params) {
 		$tabsetname = '';
 	}
 	
-	if (!empty($params['toggle'])) {
-		$toggle = $params['toggle'];
-	} else {
-		$toggle = 'y';
-	}
-	
 	$tabs = array();
 	if (!empty($params['tabs'])) {
 		$tabs = explode('|', $params['tabs']);
@@ -63,13 +46,11 @@ function wikiplugin_tabs($data, $params) {
 		return "''".tra("No tab title specified. At least one has to be set to make the tabs appear.")."''";
 	}
 	if (!empty($data)) {
-		$data = $tikilib->parse_data($data, array('suppress_icons' => true));
 		$tabData = explode('/////', $data);
 	}
 	
 	$smarty->assign( 'tabsetname', $tabsetname );
 	$smarty->assign_by_ref( 'tabs', $tabs );
-	$smarty->assign('toggle', $toggle );
 	$smarty->assign_by_ref( 'tabcontent', $tabData );
 
 	$content = $smarty->fetch( 'wiki-plugins/wikiplugin_tabs.tpl' );

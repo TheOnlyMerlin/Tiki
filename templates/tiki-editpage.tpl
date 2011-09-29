@@ -1,15 +1,14 @@
-{* $Id$ *}
 {if $page|lower neq 'sandbox' and $prefs.feature_contribution eq 'y' and $prefs.feature_contribution_mandatory eq 'y'}
 	{remarksbox type='tip' title="{tr}Tip{/tr}"}
 		<strong class='mandatory_note'>{tr}Fields marked with a * are mandatory.{/tr}</strong>
 	{/remarksbox}
 {/if}
-{if isset($customTip)}
+{if $customTip}
 	{remarksbox type='tip' title=$customTipTitle}
 	{tr}{$customTip|escape}{/tr}
 	{/remarksbox}
 {/if}
-{if isset($wikiHeaderTpl)}
+{if $wikiHeaderTpl}
 	{include file="wiki:$wikiHeaderTpl"}
 {/if}
 	
@@ -31,11 +30,37 @@
 });{/jq}
 {/if}
 {if $translation_mode eq 'n'}
-	{title}{if isset($hdr) && $prefs.wiki_edit_section eq 'y'}{tr}Edit Section:{/tr}{else}{tr}Edit:{/tr}{/if} {$page}{if $pageAlias ne ''} ({$pageAlias}){/if}{/title}
+	{if $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}{assign var=pp value=$approvedPageName}{else}{assign var=pp value=$page}{/if}
+	{title}{if isset($hdr) && $prefs.wiki_edit_section eq 'y'}{tr}Edit Section{/tr}{else}{tr}Edit{/tr}{/if}: {$pp|escape}{if $pageAlias ne ''}&nbsp;({$pageAlias|escape}){/if}{/title}
 {else}
-   {title}{tr}Update '{$page}'{/tr}{/title}
+   {title}{tr}Update '{$page|escape}'{/tr}{/title}
 {/if}
    
+{if $beingStaged eq 'y'}
+	<div class="tocnav">{icon _id=information style="vertical-align:middle" align="left"} 
+		{if $approvedPageExists}
+			{tr}You are editing the staging copy of the approved version of this page. Changes will be merged in after approval.{/tr}
+		{else}
+			{tr}This is a new staging page that has not been approved before.{/tr}
+		{/if}
+			{if $outOfSync eq 'y'}
+				{tr}The current staging copy may contain changes that have yet to be approved.{/tr}
+			{/if}
+		{if $lastSyncVersion}
+			<a class="link" href="tiki-pagehistory.php?page={$page|escape:'url'}&amp;diff2={$lastSyncVersion}" target="_blank">{tr}View changes since last approval.{/tr}</a>
+		{/if}
+	</div>
+{/if}
+{if $needsStaging eq 'y'}
+	<div class="tocnav">
+		{icon _id=information style="vertical-align:middle" align="left"} 
+		{tr}You are editing the approved copy of this page.{/tr}
+		{if $outOfSync eq 'y'}
+			{tr}There are currently changes in the staging copy that have yet to be approved.{/tr}
+		{/if}
+		{tr}Are you sure you do not want to edit{/tr} <a class="link" href="tiki-editpage.php?page={$stagingPageName|escape:'url'}">{tr}the staging copy{/tr}</a> {tr}instead?{/tr}
+	</div>
+{/if}
 {if isset($data.draft)}
 	{tr}Draft written on{/tr} {$data.draft.lastModif|tiki_long_time}<br/>
 	{if $data.draft.lastModif < $data.lastModif}
@@ -57,7 +82,7 @@
 	<div class="highlight"><em class='mandatory_note'>{tr}A contribution is mandatory{/tr}</em></div>
 	{/remarksbox}
 {/if}
-{if isset($summary_needed) && $summary_needed eq 'y'}
+{if $summary_needed eq 'y'}
 	{remarksbox type='Warning' title="{tr}Warning{/tr}"}
 	<div class="highlight"><em class='mandatory_note'>{tr}An edit summary is mandatory{/tr}</em></div>
 	{/remarksbox}
@@ -87,7 +112,7 @@
 {if $preview or $prefs.ajax_autosave eq "y"}
 	{include file='tiki-preview.tpl'}
 {/if}
-{if isset($diff_style)}
+{if $diff_style}
 	<div id="diff_outer">
 		<div style="overflow:auto;height:20ex;" id="diff_history">
 			{if $translation_mode == 'y'}		
@@ -103,8 +128,7 @@
 						<li>
 							{tr}Version:{/tr} {$diff.version|escape} - {$diff.comment|escape|default:"<em>{tr}No comment{/tr}</em>"}
 							{if count($diff_summaries) gt 1}
-								{assign var=diff_version value=$diff.version}
-								{icon _id="arrow_right"  onclick="\$('input[name=oldver]').val($diff_version);\$('#editpageform').submit();return false;"  _text="{tr}View{/tr}" style="cursor: pointer"}
+								{icon _id="arrow_right"  onclick="\$('input[name=oldver]').val(`$diff.version`);\$('#editpageform').submit();return false;"  _text="{tr}View{/tr}" style="cursor: pointer"}
 							{/if}
 						</li>
 					{/foreach}
@@ -123,11 +147,11 @@
 
 	<input type="hidden" name="no_bl" value="y" />
 	{if !empty($smarty.request.returnto)}<input type="hidden" name="returnto" value="{$smarty.request.returnto}" />{/if}
-	{if isset($diff_style)}
+	{if $diff_style}
 		<select name="diff_style" class="wikiaction"title="{tr}Edit wiki page{/tr}|{tr}Select the style used to display differences to be translated.{/tr}">
-			<option value="htmldiff"{if isset($diff_style) && $diff_style eq "htmldiff"} selected="selected"{/if}>{tr}html{/tr}</option>
-			<option value="inlinediff"{if isset($diff_style) && $diff_style eq "inlinediff"} selected="selected"{/if} >{tr}text{/tr}</option>			  
-			<option value="inlinediff-full"{if isset($diff_style) && $diff_style eq "inlinediff-full"} selected="selected"{/if} >{tr}text full{/tr}</option>			  
+			<option value="htmldiff"{if $diff_style eq "htmldiff"} selected="selected"{/if}>{tr}html{/tr}</option>
+			<option value="inlinediff"{if $diff_style eq "inlinediff"} selected="selected"{/if} >{tr}text{/tr}</option>			  
+			<option value="inlinediff-full"{if $diff_style eq "inlinediff-full"} selected="selected"{/if} >{tr}text full{/tr}</option>			  
 		</select>
 		<input type="submit" class="wikiaction tips" title="{tr}Edit wiki page{/tr}|{tr}Change the style used to display differences to be translated.{/tr}" name="preview" value="{tr}Change diff styles{/tr}" onclick="needToConfirm=false;" />
 	{/if}
@@ -139,7 +163,7 @@
 	{if $current_page_id}<input type="hidden" name="current_page_id" value="{$current_page_id}" />{/if}
 	{if $add_child}<input type="hidden" name="add_child" value="true" />{/if}
 	
-	{if $preview or $prefs.wiki_actions_bar eq 'top' or $prefs.wiki_actions_bar eq 'both'}
+	{if ( $preview && $staging_preview neq 'y' ) or $prefs.wiki_actions_bar eq 'top' or $prefs.wiki_actions_bar eq 'both'}
 		<div class='top_actions'>
 			{include file='wiki_edit_actions.tpl'}
 		</div>
@@ -151,11 +175,11 @@
 				{if isset($page_badchars_display)}
 					{if $prefs.wiki_badchar_prevent eq 'y'}
 						{remarksbox type=errors title="{tr}Invalid page name{/tr}"}
-							{tr _0=$page_badchars_display|escape}The page name specified contains unallowed characters. It will not be possible to save the page until those are removed: <strong>%0</strong>{/tr}
+							{tr 0=$page_badchars_display|escape}The page name specified contains unallowed characters. It will not be possible to save the page until those are removed: <strong>%0</strong>{/tr}
 						{/remarksbox}
 					{else}
 						{remarksbox type=tip title="{tr}Tip{/tr}"}
-							{tr _0=$page_badchars_display|escape}The page name specified contains characters that may render the page hard to access. You may want to consider removing those: <strong>%0</strong>{/tr}
+							{tr 0=$page_badchars_display|escape}The page name specified contains characters that may render the page hard to access. You may want to consider removing those: <strong>%0</strong>{/tr}
 						{/remarksbox}
 					{/if}
 					<p>{tr}Page name:{/tr} <input type="text" name="page" value="{$page|escape}" /></p>
@@ -176,7 +200,7 @@
 							<fieldset>
 								<label for="comment">{tr}Describe the change you made:{/tr} {help url='Editing+Wiki+Pages' desc="{tr}Edit comment: Enter some text to describe the changes you are currently making{/tr}"}</label>
 								<input style="width:98%;" class="wikiedit" type="text" id="comment" name="comment" value="{$commentdata|escape}" />
-								{if isset($show_watch) && $show_watch eq 'y'}
+								{if $show_watch eq 'y'}
 									<label for="watch">{tr}Monitor this page:{/tr}</label>
 									<input type="checkbox" id="watch" name="watch" value="1"{if $watch_checked eq 'y'} checked="checked"{/if} />
 								{/if}
@@ -189,7 +213,7 @@
 									</table>
 								</fieldset>
 							{/if}
-							{if (!isset($wysiwyg) || $wysiwyg neq 'y') and $prefs.feature_wiki_pictures eq 'y' and $tiki_p_upload_picture eq 'y' and $prefs.feature_filegals_manager neq 'y'}
+							{if $wysiwyg neq 'y' and $prefs.feature_wiki_pictures eq 'y' and $tiki_p_upload_picture eq 'y' and $prefs.feature_filegals_manager neq 'y'}
 								<fieldset>
 									<legend>{tr}Upload picture:{/tr}</legend>
 									<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
@@ -212,6 +236,7 @@
 								{section name=o loop=$categIds}
 									<input type="hidden" name="cat_categories[]" value="{$categIds[o]}" />
 								{/section}
+								<input type="hidden" name="categId" value="{$categIdstr}" />
 								<input type="hidden" name="cat_categorize" value="on" />
 								
 								{if $prefs.feature_wiki_categorize_structure eq 'y'}
@@ -285,7 +310,7 @@ $("#allowhtml").change(function() {
 								</fieldset>
 							{/if}
 							
-							{if !isset($wysiwyg) || $wysiwyg neq 'y'}
+							{if $wysiwyg neq 'y'}
 								{if $prefs.feature_wiki_attachments == 'y' and ($tiki_p_wiki_attach_files eq 'y' or $tiki_p_wiki_admin_attachments eq 'y')}
 									<fieldset>
 										<legend>{tr}Upload file:{/tr}</legend>
@@ -344,7 +369,6 @@ $("#allowhtml").change(function() {
 										    <option value="3600" {if $prefs.wiki_cache eq 3600}selected="selected"{/if}>1 {tr}hour{/tr}</option>
 										    <option value="7200" {if $prefs.wiki_cache eq 7200}selected="selected"{/if}>2 {tr}hours{/tr}</option>
 									    </select> 
-										{if $prefs.wiki_cache == 0}{remarksbox type="warning" title="{tr}Warning{/tr}"}{tr}Only cache a page if it should look the same to all groups authorized to see it.{/tr}{/remarksbox}{/if}
 									</fieldset>
 								{/if}
 								{if $prefs.feature_wiki_structure eq 'y'}
@@ -482,7 +506,7 @@ $("#allowhtml").change(function() {
 		
 		
 		{if $page|lower ne 'sandbox'}
-			{if $prefs.feature_antibot eq 'y' && (isset($anon_user) && $anon_user eq 'y')}
+			{if $prefs.feature_antibot eq 'y' && $anon_user eq 'y'}
 				{include file='antibot.tpl' tr_style="formcolor"}
 			{/if}
 		{/if}{* sandbox *}

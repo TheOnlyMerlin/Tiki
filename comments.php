@@ -30,30 +30,50 @@ $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 $handled_requests = array('comments_per_page', 'thread_style', 'thread_sort_mode');
 
 // Then determine the final value for thread display settings
-// If we are in a forum thread
+if ( isset($forum_mode) && $forum_mode == 'y' ) {
+	// If we are in a forum thread
 
-if ( $prefs['forum_thread_user_settings'] == 'y' && $prefs['forum_thread_user_settings_keep'] == 'y' ) {
-	// If 'forum_thread_user_settings' is enabled (allow user to change thread display settings)
-	// and if the 'forum_thread_user_settings_keep' is enabled (keep user settings for all forums during his session)
-	// ... we check session vars
-	//  !! Session var is not used when there is an explicit user request !!
+	if ( $prefs['forum_thread_user_settings'] == 'y' && $prefs['forum_thread_user_settings_keep'] == 'y' ) {
+		// If 'forum_thread_user_settings' is enabled (allow user to change thread display settings)
+		// and if the 'forum_thread_user_settings_keep' is enabled (keep user settings for all forums during his session)
+		// ... we check session vars
+		//  !! Session var is not used when there is an explicit user request !!
 
-	foreach ( $handled_requests as $request_name )
-		if ( isset($_SESSION['forums_'.$request_name]) && ! isset($_REQUEST[$request_name]) )
-			$$request_name = $_SESSION['forums_'.$request_name];
-}
-foreach ( $handled_requests as $request_name ) {
-	if ( empty($$request_name) && empty($_REQUEST[$request_name]) ) {
-		$$request_name = $prefs['forum_'.$request_name];
-	} elseif ( empty($$request_name) && !empty($_REQUEST[$request_name]) ) {
-		$$request_name = $_REQUEST[$request_name];
+		foreach ( $handled_requests as $request_name )
+			if ( isset($_SESSION['forums_'.$request_name]) && ! isset($_REQUEST[$request_name]) )
+				$$request_name = $_SESSION['forums_'.$request_name];
 	}
-}
+	foreach ( $handled_requests as $request_name ) {
+		if ( empty($$request_name) && empty($_REQUEST[$request_name]) ) {
+			$$request_name = $prefs['forum_'.$request_name];
+		} elseif ( empty($$request_name) && !empty($_REQUEST[$request_name]) ) {
+			$$request_name = $_REQUEST[$request_name];
+		}
+	}
 
-if ( $forum_info['is_flat'] == 'y' ) {
-	// If we have a flat forum (i.e. we reply only to the first message / thread)
-	// ... we then override $thread_style and force a 'plain' style
-	$thread_style = 'commentStyle_plain';
+	if ( $forum_info['is_flat'] == 'y' ) {
+		// If we have a flat forum (i.e. we reply only to the first message / thread)
+		// ... we then override $thread_style and force a 'plain' style
+		$thread_style = 'commentStyle_plain';
+	}
+
+} else {
+	// If we are not in a forum (e.g. wiki page comments, ...), we use other fallback values
+	if ( ! isset($comments_per_page) ) {
+		if( isset( $prefs[$section . '_comments_per_page'] ) ) {
+			$comments_per_page = (int) $prefs[$section . '_comments_per_page'];
+		} else {
+			$comments_per_page = 10;
+		}
+	}
+	if ( ! isset($thread_sort_mode) ) {
+		if( isset( $prefs[$section . '_comments_default_ordering'] ) ) {
+			$thread_sort_mode = $prefs[$section . '_comments_default_ordering'];
+		} else {
+			$thread_sort_mode = 'commentDate_asc';
+		}
+	}
+	if ( ! isset($thread_style) ) $thread_style = 'commentStyle_threaded';	
 }
 
 // Assign final values to smarty vars in order
@@ -158,37 +178,52 @@ $feedbacks = array();
 $errors = array();
 if ( isset($_REQUEST['comments_objectId']) && $_REQUEST['comments_objectId'] == $comments_objectId
 	&& (isset($_REQUEST['comments_postComment']) || isset($_REQUEST['comments_postComment_anonymous']) )) {
-	$forum_info = $commentslib->get_forum($_REQUEST['forumId']);
-	$threadId = $commentslib->post_in_forum($forum_info, $_REQUEST, $feedbacks, $errors);
-	if (!empty($threadId) && empty($errors)) {
-		$url = "tiki-view_forum_thread.php?forumId=" . $_REQUEST['forumId'] . "&comments_parentId=" . $_REQUEST['comments_parentId'];
-		if (!empty($_REQUEST['comments_threshold'])) 
-			$url .= "&amp;comments_threshold=".$_REQUEST['comments_threshold'];
-		if (!empty($_REQUEST['comments_offset'])) 
-			$url .= "&amp;comments_offset=".$_REQUEST['comments_offset'];
-		if (!empty($_REQUEST['comments_per_page'])) 
-			$url .= "&amp;comments_per_page=".$_REQUEST['comments_per_page'];
-		if (!empty($_REQUEST['thread_style'])) 
-			$url .= "&amp;thread_style=".$_REQUEST['thread_style'];
-		if (!empty($_REQUEST['thread_sort_mode'])) 
-			$url .= "&amp;thread_sort_mode=".$_REQUEST['thread_sort_mode'];			
-		if (!empty($feedbacks)) {
-			$_SESSION['feedbacks'] = $feedbacks;
-		}
+	if (isset($forum_mode) && $forum_mode == 'y') {
+		$forum_info = $commentslib->get_forum($_REQUEST['forumId']);
+		$threadId = $commentslib->post_in_forum($forum_info, $_REQUEST, $feedbacks, $errors);
+		if (!empty($threadId) && empty($errors)) {
+			$url = "tiki-view_forum_thread.php?forumId=" . $_REQUEST['forumId'] . "&comments_parentId=" . $_REQUEST['comments_parentId'];
+			if (!empty($_REQUEST['comments_threshold'])) 
+				$url .= "&amp;comments_threshold=".$_REQUEST['comments_threshold'];
+			if (!empty($_REQUEST['comments_offset'])) 
+				$url .= "&amp;comments_offset=".$_REQUEST['comments_offset'];
+			if (!empty($_REQUEST['comments_per_page'])) 
+				$url .= "&amp;comments_per_page=".$_REQUEST['comments_per_page'];
+			if (!empty($_REQUEST['thread_style'])) 
+				$url .= "&amp;thread_style=".$_REQUEST['thread_style'];
+			if (!empty($_REQUEST['thread_sort_mode'])) 
+				$url .= "&amp;thread_sort_mode=".$_REQUEST['thread_sort_mode'];			
+			if (!empty($feedbacks)) {
+				$_SESSION['feedbacks'] = $feedbacks;
+			}
 
-		//Watches
-		if ( $prefs['feature_user_watches'] == 'y') {
-			if ( isset($_REQUEST['watch']) && $_REQUEST['watch'] == 'y') {
-				$tikilib->add_user_watch($user, 'forum_post_thread', $_REQUEST['comments_parentId'], 'forum topic', $forum_info['name'] . ':' . $thread_info['title'], "tiki-view_forum_thread.php?forumId=" . $_REQUEST['forumId'] . "&amp;comments_parentId=" . $_REQUEST['comments_parentId']);
-			} else {
-				$tikilib->remove_user_watch($user, 'forum_post_thread', $_REQUEST['comments_parentId'], 'forum topic');
+			//Watches
+			if ( isset($forum_mode) && $forum_mode == 'y' && $prefs['feature_user_watches'] == 'y') {
+				if ( isset($_REQUEST['watch']) && $_REQUEST['watch'] == 'y') {
+					$tikilib->add_user_watch($user, 'forum_post_thread', $_REQUEST['comments_parentId'], 'forum topic', $forum_info['name'] . ':' . $thread_info['title'], "tiki-view_forum_thread.php?forumId=" . $_REQUEST['forumId'] . "&amp;comments_parentId=" . $_REQUEST['comments_parentId']);
+				} else {
+					$tikilib->remove_user_watch($user, 'forum_post_thread', $_REQUEST['comments_parentId'], 'forum topic');
+				}
+			}
+
+			header('location: ' . $url);
+			die;
+		}
+	} else {
+		$threadId = $commentslib->post_in_object($comments_objectId, $_REQUEST, $feedbacks, $errors);
+		if (!empty($threadId) && empty($errors) && $prefs['feature_user_watches'] == 'y') {
+			if ($prefs['wiki_watch_comments'] == 'y' && isset($_REQUEST["page"])) {
+				global $notificationemaillib; require_once('lib/notifications/notificationemaillib.php');
+				sendCommentNotification('wiki', $_REQUEST['page'], $_REQUEST['comments_title'], $_REQUEST['comments_data']);
+			} else if (isset($_REQUEST["articleId"])) {
+				global $notificationemaillib; require_once('lib/notifications/notificationemaillib.php');
+				sendCommentNotification('article', $_REQUEST['articleId'], $_REQUEST['comments_title'], $_REQUEST['comments_data']);
+			} elseif (isset($_REQUEST['itemId'])) {
+				global $notificationemaillib; require_once('lib/notifications/notificationemaillib.php');
+				sendCommentNotification('trackeritem', $_REQUEST['itemId'], $_REQUEST['comments_title'], $_REQUEST['comments_data']);
 			}
 		}
-
-		header('location: ' . $url);
-		die;
 	}
-
 	$smarty->assign_by_ref('errors', $errors);
 	$smarty->assign_by_ref('feedbacks', $feedbacks);
 
@@ -198,8 +233,42 @@ if ( isset($_REQUEST['comments_objectId']) && $_REQUEST['comments_objectId'] == 
 }
 
 global $tiki_p_admin_comments;
+if ((!isset($forum_mode) || $forum_mode == 'n') && $tiki_p_admin_comments == 'y' && isset($_REQUEST["comments_threadId"])) {
+	// Comments Moderation
+    if (!empty($_REQUEST['comments_approve'])) {
+		if ( $_REQUEST['comments_approve'] == 'y' ) {
+			$commentslib->approve_comment($_REQUEST["comments_threadId"]);
+		} elseif ( $_REQUEST['comments_approve'] == 'n' ) {
+			$commentslib->reject_comment($_REQUEST["comments_threadId"]);
+		}
+	}
 
-if ($tiki_p_admin_forum == 'y') {
+	// Comments archive
+	if ($prefs['comments_archive'] == 'y') {
+		if (!empty($_REQUEST['comment_archive'])) {
+			if ($_REQUEST['comment_archive'] == 'y') {
+				$commentslib->archive_thread($_REQUEST['comments_threadId']);
+			} else if ($_REQUEST['comment_archive'] == 'n') {
+				$commentslib->unarchive_thread($_REQUEST['comments_threadId']);
+			}
+		}
+		
+		$object = explode(':', $comments_objectId);
+		$smarty->assign('count_archived_comments', $commentslib->count_object_archived_comments($object[1], $object[0]));
+	}
+}
+
+// Comments and Forum Locking
+if ( $prefs['feature_comments_locking'] == 'y' && ! empty($_REQUEST['comments_lock']) && ! empty($comments_objectId) && ( ! isset($forum_mode) || $forum_mode == 'n' ) && $tiki_p_lock_comments == 'y' ) {
+	if ( $_REQUEST['comments_lock'] == 'y' ) {
+		$commentslib->lock_object_thread($comments_objectId);
+	} elseif ( $_REQUEST['comments_lock'] == 'n' ) {
+		$commentslib->unlock_object_thread($comments_objectId);
+	}
+}
+
+if (($tiki_p_remove_comments == 'y' && (!isset($forum_mode) || $forum_mode == 'n'))
+		|| (isset($forum_mode) && $forum_mode =='y' && $tiki_p_admin_forum == 'y' ) ) {
 	if (isset($_REQUEST["comments_remove"]) && isset($_REQUEST["comments_threadId"])) {
 		$access->check_authenticity();
 		$comments_show = 'y';
@@ -226,6 +295,12 @@ if ($_REQUEST["comments_threadId"] > 0) {
 		die;
 	}
 
+	// Add the replied-to text, with >.
+	// Disabled by damian
+	//	$smarty->assign('comment_data', '');
+	// Re-enabled by rlpowell; my users rely on this.  If you want to disable it, put an option in the forums or something.
+	// However, I re-enabled it *working*, instead of broken.  -rlpowell
+	// check to see if QUOTE plugin or > should be used -Terence
 	global $prefs;
 	if ( $comment_info["data"] != ''  ) {
 		if ( ($prefs['feature_forum_parse'] == 'y' || $prefs['section_comments_parse'] == 'y') && $prefs['feature_use_quoteplugin'] == 'y' ) {
@@ -246,14 +321,7 @@ if ($_REQUEST["comments_threadId"] > 0) {
 		}
 	}
 
-	if ( $prefs['forum_reply_forcetitle'] == 'y' ) {
-		$comment_title = '';
-	} elseif ( $prefs['forum_comments_no_title_prefix'] != 'y' ) {
-		$comment_title = tra('Re:').' '.$comment_info["title"];
-	} else {
-		$comment_title = $comment_info["title"];
-	}
-	$smarty->assign('comment_title', $comment_title);
+	$smarty->assign('comment_title', ( $prefs['forum_comments_no_title_prefix'] != 'y' ? tra('Re:').' ' : '' ).$comment_info["title"]);
 	$smarty->assign('comments_reply_threadId', $_REQUEST["comments_reply_threadId"]);
 } else {
 	$smarty->assign('comment_title', '');
@@ -338,7 +406,7 @@ if (empty($thread_sort_mode)) {
 }
 
 $comments_coms = $commentslib->get_comments($comments_objectId,
-		$_REQUEST["comments_parentId"],
+		(isset($forum_mode) && $forum_mode == 'y') ? $_REQUEST["comments_parentId"] : null,
 		$comments_offset, $comments_per_page, $thread_sort_mode, $_REQUEST["comments_commentFind"],
 		$_REQUEST['comments_threshold'], $thread_style, $threadId_if_reply);
 
@@ -377,23 +445,39 @@ if ($comments_offset > 0) {
 	$smarty->assign('comments_prev_offset', -1);
 }
 
+if (!isset($forum_mode) || $forum_mode == 'n') {
+	$defaultRows = $prefs['default_rows_textarea_comment'];
+}
+
+if ( ! isset($forum_mode) || $forum_mode == 'n' ) {
+	$queued = 0;
+	foreach ( $comments_coms['data'] as $k => $v ) {
+		if ( $v['approved'] == 'n' ) $queued++;
+	}
+	$smarty->assign('queued', $queued);
+}
 $smarty->assign('comments_coms', $comments_coms["data"] );
 
 // Grab the parent comment to show.  -rlpowell
-if (isset($_REQUEST["comments_parentId"])
-		&& $_REQUEST["comments_parentId"] > 0
-		&& $tiki_p_forum_post == 'y'
-		&& (isset($_REQUEST['comments_previewComment']) || isset($_REQUEST['post_reply']))) {
+if (isset($_REQUEST["comments_parentId"]) &&
+		$_REQUEST["comments_parentId"] > 0 && 
+		(($tiki_p_post_comments == 'y' && (!isset($forum_mode) || $forum_mode == 'n')) ||($tiki_p_forum_post == 'y' && isset($forum_mode) && $forum_mode == 'y')) &&
+		(isset($_REQUEST['comments_previewComment']) || isset($_REQUEST['post_reply']))) {
 	$parent_com = $commentslib->get_comment($_REQUEST["comments_parentId"]);
 	$smarty->assign_by_ref('parent_com', $parent_com);
 }
 
 // Get comments / forum lock status
-$thread_is_locked = ( ! empty($comments_objectId) && $commentslib->is_object_locked($comments_objectId) ) ? 'y' : 'n';
-$forum_is_locked = $thread_is_locked;
-$thread_is_locked = $comment_info['locked'];
-$smarty->assign('forum_is_locked', $forum_is_locked);
-$smarty->assign('thread_is_locked', $thread_is_locked);
+if ( isset($forum_mode) && $forum_mode == 'y' ) {
+	$thread_is_locked = ( ! empty($comments_objectId) && $commentslib->is_object_locked($comments_objectId) ) ? 'y' : 'n';
+	$forum_is_locked = $thread_is_locked;
+	$thread_is_locked = $comment_info['locked'];
+	$smarty->assign('forum_is_locked', $forum_is_locked);
+	$smarty->assign('thread_is_locked', $thread_is_locked);
+} elseif ( $prefs['feature_comments_locking'] == 'y' ) {
+	$thread_is_locked = ( ! empty($comments_objectId) && $commentslib->is_object_locked($comments_objectId) ) ? 'y' : 'n';
+	$smarty->assign('thread_is_locked', $thread_is_locked);
+}
 
 if (!empty($_REQUEST['post_reply'])) {
 	$smarty->assign('post_reply', $_REQUEST['post_reply']);

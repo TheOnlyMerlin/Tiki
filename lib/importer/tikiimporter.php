@@ -209,7 +209,7 @@ class TikiImporter
         }
 
         // convert \n to <br> if running script in web browser
-        if (php_sapi_name() != 'cli') {
+        if (isset($_SERVER['HTTP_HOST'])) {
             $msg = nl2br($msg);
             ob_flush();
         }

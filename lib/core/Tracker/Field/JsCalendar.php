@@ -7,30 +7,6 @@
 
 class Tracker_Field_JsCalendar extends Tracker_Field_DateTime
 {
-	public static function getTypes()
-	{
-		return array(
-			'j' => array(
-				'name' => tr('Date and Time (JSCalendar)'),
-				'description' => tr('Provides drop-down options to accurately select a date and/or time.'),
-				'prefs' => array('trackerfield_jscalendar'),
-				'tags' => array('advanced'),
-				'default' => 'n',
-				'params' => array(
-					'datetime' => array(
-						'name' => tr('Type'),
-						'description' => tr('Components to be included'),
-						'filter' => 'text',
-						'options' => array(
-							'dt' => tr('Date and Time'),
-							'd' => tr('Date only'),
-						),
-					),
-				),
-			),
-		);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		$ins_id = $this->getInsertId();
@@ -44,21 +20,7 @@ class Tracker_Field_JsCalendar extends Tracker_Field_DateTime
 
 	function renderInput($context = array())
 	{
-		$smarty = TikiLib::lib('smarty');
-		$smarty->loadPlugin('smarty_function_jscalendar');
-
-		$params = array( 'fieldname' => $this->getInsertId());
-		$params['showtime'] = $this->getOption(0) === 'd' ? 'n' : 'y';
-		if ( empty($context['inForm'])) {
-			$params['date'] = $this->getValue();
-			if (empty($params['date'])) {
-				$params['date'] = $this->getConfiguration('value');
-			}
-		} else {
-			$params['date'] = '';
-		}
-
-		return smarty_function_jscalendar( $params, $smarty);
+		return $this->renderTemplate('trackerinput/jscalendar.tpl', $context);
 	}
 }
 

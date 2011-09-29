@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {if $ispublished eq 'n' && $tiki_p_edit_article eq 'y'}
 	{remarksbox type='errors' title='Not Published'}
 	{tr}This Article is currently not published and only visible by Editors{/tr}
@@ -108,7 +106,7 @@
 					{if $article_attributes}
 						<div class="articleattributes">
 							{foreach from=$article_attributes key=attname item=attvalue}
-							{$attname|escape}: {$attvalue|escape}<br />
+							{tr}{$attname|escape}:{/tr} {$attvalue|escape}<br />
 							{/foreach}
 						</div>
 					{/if}
@@ -164,13 +162,13 @@
 </div>
 
 {if $prefs.feature_article_comments == 'y' && 
-		($tiki_p_read_comments == 'y' || $tiki_p_post_comments == 'y' || $tiki_p_edit_comments == 'y')}
+		(($tiki_p_read_comments == 'y' && $comments_cant != 0) || $tiki_p_post_comments == 'y' || $tiki_p_edit_comments == 'y')}
 
-	<div id="comment-container" data-target="{service controller=comment action=list type=article objectId=$articleId}"></div>
-	{jq}
-		var id = '#comment-container';
-		$(id).comment_load($(id).data('target'));
-	{/jq}
+	<div id="page-bar" class="clearfix">
+		{include file='comments_button.tpl'}
+	</div>
+
+	{include file='comments.tpl'}
 {/if}
 
 {if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categoryobjects eq 'y'}

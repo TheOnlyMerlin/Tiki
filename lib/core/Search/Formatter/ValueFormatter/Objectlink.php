@@ -7,10 +7,10 @@
 
 class Search_Formatter_ValueFormatter_Objectlink implements Search_Formatter_ValueFormatter_Interface
 {
-	function render($name, $value, array $entry)
+	function render($value, array $entry)
 	{
 		global $smarty;
-		$smarty->loadPlugin('smarty_function_object_link');
+		require_once $smarty->_get_plugin_filepath('function', 'object_link');
 
 		$params = array(
 			'type' => $entry['object_type'],

@@ -5,7 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracker_Field_Indexable
+abstract class Tracker_Field_Abstract implements Tracker_Field_Interface
 {
 	private $definition;
 	private $itemData;
@@ -72,29 +72,6 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 		}
 	}
 
-	function watchCompare($old, $new)
-	{
-		$name = $this->getConfiguration('name');
-		$is_visible = $this->getConfiguration('isHidden', 'n') == 'n';
-
-		if (! $is_visible) {
-			return;
-		}
-
-		if ($old) {
-			// split old value by lines
-			$lines = explode("\n", $old);
-			// mark every old value line with standard email reply character
-			$old_value_lines = '';
-			foreach ($lines as $line) {
-				$old_value_lines .= '> '.$line;
-			}
-			return "[-[$name]-]:\n--[Old]--:\n$old_value_lines\n\n*-[New]-*:\n$new";
-		} else {
-			return "[-[$name]-]:\n$new";
-		}
-	}
-
 	private function isLink($context = array())
 	{
 		$type = $this->getConfiguration('type');
@@ -110,7 +87,7 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 			return false;
 		}
 
-		if (isset($context['list_mode']) && $context['list_mode'] == 'csv') {
+		if ($context['list_mode'] == 'csv') {
 			return false;
 		}
 
@@ -144,13 +121,13 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 			return null;
 		}
 
-		$factory = $this->trackerDefinition->getFieldFactory();
+		$factory = new Tracker_Field_Factory($this->trackerDefinition, $this->itemData);
 
 		$popupFields = array();
 		foreach ($fields as $id) {
 			$field = $this->trackerDefinition->getField($id);
 			
-			$handler = $factory->getHandler($field, $this->itemData);
+			$handler = $factory->getHandler($field);
 
 			if ($handler) {
 				$field = array_merge($field, $handler->getFieldData());
@@ -171,7 +148,7 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 	 */
 	protected function renderInnerOutput($context = array())
 	{
-		if (isset($context['list_mode']) && $context['list_mode'] === 'csv') {
+		if ($context['list_mode'] === 'csv') {
 			$val = $this->getConfiguration('value');
 			$default = array('CR'=>'%%%', 'delimitorL'=>'"', 'delimitorR'=>'"');
 			$context = array_merge($default, $context);
@@ -197,12 +174,13 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 		return isset($this->definition[$key]) ? $this->definition[$key] : $default;
 	}
 
-	protected function getValue($default = '')
+	protected function getValue($default = '', $keySuffix = '')
 	{
 		$key = $this->getConfiguration('fieldId');
+		$keyWithSuffix = $key . $keySuffix;
 		
-		if (isset($this->itemData[$key])) {
-			$value =$this->itemData[$key];
+		if (isset($this->itemData[$keyWithSuffix])) {
+			$value =$this->itemData[$keyWithSuffix];
 		} else {
 			$value = isset($this->itemData[$key]) ? $this->itemData[$key] : null;
 		}
@@ -225,20 +203,6 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 	 */
 	protected function getOption($number, $default = false)
 	{
-		if (! is_numeric($number)) {
-			$type = $this->getConfiguration('type');
-			$class = get_class($this);
-
-			$info = call_user_func(array($class, 'getTypes'));
-			$params = array_keys($info[$type]['params']);
-
-			$number = array_search($number, $params);
-
-			if ($number === false) {
-				return $default;
-			}
-		}
-
 		return isset($this->definition['options_array'][(int) $number]) ?
 			$this->definition['options_array'][(int) $number] :
 			$default;
@@ -254,32 +218,14 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 		return $this->itemData;
 	}
 
-	protected function renderTemplate($file, $context = array(), $data = array())
+	protected function renderTemplate($file, $context = array())
 	{
 		$smarty = TikiLib::lib('smarty');
 		$smarty->assign('field', $this->definition);
 		$smarty->assign('context', $context);
 		$smarty->assign('item', $this->getItemData());
-		$smarty->assign('data', $data);
 
-		return $smarty->fetch($file, $file);
-	}
-
-	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
-	{
-		return array(
-			$baseKey => $typeFactory->sortable($this->getValue()),
-		);
-	}
-
-	function getProvidedFields($baseKey)
-	{
-		return array($baseKey);
-	}
-
-	function getGlobalFields($baseKey)
-	{
-		return array($baseKey => true);
+		return $smarty->fetch($file);
 	}
 }
 

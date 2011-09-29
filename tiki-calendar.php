@@ -182,7 +182,7 @@ $viewdays2 = array_values($viewdays);
 
 if (isset($_REQUEST['sort_mode'])) $sort_mode = $_REQUEST['sort_mode'];
 
-if ($_SESSION['CalendarViewGroups']) {
+if ($_SESSION['CalendarViewGroups']) { 
 	if (array_key_exists('CalendarViewList',$_SESSION) && $_SESSION['CalendarViewList'] == "list") {
 		if (isset($sort_mode)) {
 			$smarty->assign_by_ref('sort_mode', $sort_mode);
@@ -710,7 +710,7 @@ if ($calendarViewMode['casedefault'] == 'day') {
 $smarty->assign('hrows', $hrows);
 $smarty->assign('manyEvents', $manyEvents);
 $smarty->assign('hours', $hours);
-$smarty->assign('hr_display', !empty($hr_display) ? $hr_display : array());
+$smarty->assign('hr_display', $hr_display);
 $smarty->assign('arows', $arows);
 $smarty->assign('mrows', array(0=>"00", 5=>"05", 10=>"10", 15=>"15", 20=>"20", 25=>"25", 30=>"30", 35=>"35", 40=>"40", 45=>"45", 50=>"50", 55=>"55"));
 
@@ -783,13 +783,6 @@ ask_ticket('calendar');
 
 include_once('tiki-jscalendar.php');
 
-if ( !empty($prefs['calendar_fullcalendar']) && $prefs['calendar_fullcalendar'] === 'y' ) {
-	$headerlib->add_cssfile('lib/fullcalendar/fullcalendar.css');
-	$headerlib->add_jsfile('lib/fullcalendar/fullcalendar.min.js');
-	$smarty->assign('minHourOfDay',$minHourOfDay);
-	$smarty->assign('maxHourOfDay',$maxHourOfDay);
-}
-
 $smarty->assign('uses_tabs', 'y');
 if(isset($_REQUEST['editmode']) && ($_REQUEST['editmode'] == 'add' || $_REQUEST['editmode'] == 'edit')) {
 	$smarty->assign('mid', 'tiki-calendar_add_event.tpl');
@@ -800,4 +793,5 @@ else {
 
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
+$smarty->assign('headtitle',tra('Calendar'));
 $smarty->display("tiki.tpl");

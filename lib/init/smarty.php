@@ -14,11 +14,47 @@ if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== FALSE) {
 require_once 'lib/setup/third_party.php';
 require_once (defined('SMARTY_DIR') ? SMARTY_DIR : 'lib/smarty/libs/') . 'Smarty.class.php';
 
-class Tiki_Security_Policy extends Smarty_Security
+class Smarty_Tiki extends Smarty
 {
-		public $php_modifiers = array( 'nl2br','escape', 'count', 'addslashes', 'ucfirst', 'ucwords', 'urlencode', 'md5', 'implode', 'explode', 'is_array', 'htmlentities', 'var_dump', 'strip_tags', 'json_encode', 'stristr' );
-		public $php_functions = array('isset', 'empty', 'count', 'sizeof', 'in_array', 'is_array', 'time', 'nl2br', 'tra', 'strlen', 'strstr', 'strtolower', 'basename', 'ereg', 'array_key_exists', 'preg_match', 'json_encode', 'stristr', 'is_numeric', 'array' );
-		public $secure_dir = array(
+	var $url_overriding_prefix_stack = null;
+	var $url_overriding_prefix = null;
+
+	function Smarty_Tiki($tikidomain = '') {
+		parent::Smarty();
+		global $prefs;
+
+		if ($tikidomain) { $tikidomain.= '/'; }
+		$this->template_dir = realpath('templates/');
+		$this->compile_dir = realpath("templates_c/$tikidomain");
+		$this->config_dir = realpath('configs/');
+		$this->cache_dir = realpath("templates_c/$tikidomain");
+		$this->caching = 0;
+		$this->compile_check = ( $prefs['smarty_compilation'] != 'never' );
+		$this->force_compile = ( $prefs['smarty_compilation'] == 'always' );
+		$this->assign('app_name', 'Tiki');
+		$this->plugins_dir = array(	// the directory order must be like this to overload a plugin
+			TIKI_SMARTY_DIR,
+			SMARTY_DIR.'plugins'
+		);
+		$this->security = ( $prefs['smarty_security'] == 'y' );
+
+		// In general, it's better that use_sub_dirs = false
+		// If ever you are on a very large/complex/multilingual site and your
+		// templates_c directory is > 10 000 files, (you can check at tiki-admin_system.php)
+		// you can change to true and maybe you will get better performance.
+		// http://smarty.php.net/manual/en/variable.use.sub.dirs.php
+		//
+		$this->use_sub_dirs = false;
+
+		$this->security_settings['MODIFIER_FUNCS'] = array_merge(
+			$this->security_settings['MODIFIER_FUNCS'],
+			array('addslashes', 'ucfirst', 'ucwords', 'urlencode', 'md5', 'implode', 'explode', 'is_array', 'htmlentities', 'var_dump', 'strip_tags')
+		);
+		$this->security_settings['IF_FUNCS'] = array_merge(
+			$this->security_settings['IF_FUNCS'],
+			array('tra', 'strlen', 'strstr', 'strtolower', 'basename', 'ereg', 'array_key_exists', 'preg_match', 'in_array')
+		);
+		$this->secure_dir = array(
 			'img/icons',
 			'img/icons2',
 			'img/flags',
@@ -29,41 +65,9 @@ class Tiki_Security_Policy extends Smarty_Security
 			'pics/icons/mime',
 			'pics/large',
 		);
-}
+		$this->security_settings['ALLOW_SUPER_GLOBALS'] = true;
 
-class Smarty_Tiki extends Smarty
-{
-	var $url_overriding_prefix_stack = null;
-	var $url_overriding_prefix = null;
-
-	function Smarty_Tiki($tikidomain = '') {
-		parent::__construct();
-		global $prefs;
-
-		if ($tikidomain) { $tikidomain.= '/'; }
-		$this->template_dir = realpath('templates/'); // This needs to be changed to a setTemplateDir() call for Smarty 3.1, but Tiki reads template_dir in several places and expects it to be a string, not an array.
-		$this->compile_dir = realpath("templates_c/$tikidomain");
-		$this->config_dir = null;
-		$this->compile_check = ( $prefs['smarty_compilation'] != 'never' );
-		$this->force_compile = ( $prefs['smarty_compilation'] == 'always' );
-		$this->assign('app_name', 'Tiki');
-		$this->plugins_dir = array(	// the directory order must be like this to overload a plugin
-			TIKI_SMARTY_DIR,
-			SMARTY_DIR.'plugins'
-		);
-
-		if ( $prefs['smarty_security'] == 'y' ) {
-			$this->enableSecurity('Tiki_Security_Policy');
-		} else {
-			$this->disableSecurity();
-		}
-		$this->use_sub_dirs = false;
 		$this->url_overriding_prefix_stack = array();
-		if (!empty($prefs['smarty_notice_reporting']) and $prefs['smarty_notice_reporting'] === 'y' ) {
-			$this->error_reporting = E_ALL;
-		} else {
-			$this->error_reporting = E_ALL ^ E_NOTICE;
-		}
 	}
 
 	function _smarty_include($params) {
@@ -89,8 +93,8 @@ class Smarty_Tiki extends Smarty
 		$smarty_orig_values = array();
 		if ( is_array( $override_vars ) ) {
 			foreach ( $override_vars as $k => $v ) {
-				$smarty_orig_values[ $k ] =& $this->getTemplateVars( $k );
-				$this->assignByRef($k, $override_vars[ $k ]);
+				$smarty_orig_values[ $k ] =& $this->get_template_vars( $k );
+				$this->assign_by_ref($k, $override_vars[ $k ]);
 			}
 		}
 
@@ -99,7 +103,7 @@ class Smarty_Tiki extends Smarty
 		// Restore original values of smarty variables
 		if ( count( $smarty_orig_values ) > 0 ) {
 			foreach ( $smarty_orig_values as $k => $v ) {
-				$this->assignByRef($k, $smarty_orig_values[ $k ]);
+				$this->assign_by_ref($k, $smarty_orig_values[ $k ]);
 			}
 		}
 
@@ -107,10 +111,10 @@ class Smarty_Tiki extends Smarty
 		return $return;
 	}
 
-	function fetch($_smarty_tpl_file, $_smarty_cache_id = null, $_smarty_compile_id = null, $parent = null, $_smarty_display = false) {
+	function fetch($_smarty_tpl_file, $_smarty_cache_id = null, $_smarty_compile_id = null, $_smarty_display = false) {
 		global $prefs, $style_base, $tikidomain, $zoom_templates;
 
-		if ( ($tpl = $this->getTemplateVars('mid')) && ( $_smarty_tpl_file == 'tiki.tpl' || $_smarty_tpl_file == 'tiki-print.tpl' || $_smarty_tpl_file == 'tiki_full.tpl' ) ) {
+		if ( ($tpl = $this->get_template_vars('mid')) && ( $_smarty_tpl_file == 'tiki.tpl' || $_smarty_tpl_file == 'tiki-print.tpl' || $_smarty_tpl_file == 'tiki_full.tpl' ) ) {
 
 			// Set the last mid template to be used by AJAX to simulate a 'BACK' action
 			if ( isset($_SESSION['last_mid_template']) ) {
@@ -121,20 +125,31 @@ class Smarty_Tiki extends Smarty
 			$_SESSION['last_mid_php'] = $_SERVER['REQUEST_URI'];
 
 			// set the first part of the browser title for admin pages
-			if ( null === $this->getTemplateVars('headtitle') ) {
+			if (!isset($this->_tpl_vars['headtitle'])) {
 				$script_name = basename($_SERVER['SCRIPT_NAME']);
 				if ($script_name != 'tiki-admin.php' && strpos($script_name, 'tiki-admin') === 0) {
 					$str = substr($script_name, 10, strpos($script_name, '.php') - 10);
 					$str = ucwords(trim(str_replace('_', ' ', $str)));
-					$this->assign('headtitle', 'Admin ' . $str);
+					$this->assign('headtitle', tra('Admin ' . $str));
+					// get_strings tra('Admin Calendar') tra('Admin Actionlog') tra('Admin Banners') tra('Admin Calendars') tra('Admin Categories') tra('Admin Content Templates')
+					//			tra('Admin Contribution') tra('Admin Cookies') tra('Admin Dsn') tra('Admin External Wikis') tra('Admin Forums') tra('Admin Hotwords') tra('Admin Html Page Content')
+					//			tra('Admin Html Pages') tra('Admin Integrator Rules') tra('Admin Integrator') tra('Admin Keywords') tra('Admin Layout') tra('Admin Links') tra('Admin Mailin')
+					//			tra('Admin Menu Options') tra('Admin Menus') tra('Admin Metrics') tra('Admin Modules') tra('Admin Newsletter Subscriptions') tra('Admin Newsletters') tra('Admin Notifications')
+					//			tra('Admin Poll Options') tra('Admin Polls') tra('Admin Rssmodules') tra('Admin Security') tra('Admin Shoutbox Words') tra('Admin Structures') tra('Admin Survey Questions')
+					//			tra('Admin Surveys') tra('Admin System') tra('Admin Toolbars') tra('Admin Topics') tra('Admin Tracker Fields') tra('Admin Trackers')
 				} else if (strpos($script_name, 'tiki-list') === 0) {
 					$str = substr($script_name, 9, strpos($script_name, '.php') - 9);
 					$str = ucwords(trim(str_replace('_', ' ', $str)));
-					$this->assign('headtitle', 'List ' . $str);
+					$this->assign('headtitle', tra('List ' . $str));
+					// get_strings tra('List Articles') tra('List Banners') tra('List Blogs') tra('List Cache') tra('List Comments') tra('List Contents') tra('List Faqs') tra('List File Gallery')
+					//			tra('List Gallery') tra('List Integrator Repositories') tra('List Kaltura Entries') tra('List Object Permissions') tra('List Posts') tra('List Quizzes') tra('List Submissions')
+					//			tra('List Surveys') tra('List Trackers') tra('List Users') tra('List Pages')
 				} else if (strpos($script_name, 'tiki-view') === 0) {
 					$str = substr($script_name, 9, strpos($script_name, '.php') - 9);
 					$str = ucwords(trim(str_replace('_', ' ', $str)));
-					$this->assign('headtitle', 'View ' . $str);
+					$this->assign('headtitle', tra('View ' . $str));
+					// get_strings tra('View Articles') tra('View Banner') tra('View Blog Post Image') tra('View Blog Post') tra('View Blog') tra('View Cache') tra('View Faq') tra('View Forum Thread')
+					//			 tra('View Minical Topic') tra('View Sheets') tra('View Tracker Item') tra('View Tracker More Info') tra('View Tracker')
 				} else { // still not set? guess...
 					$str = str_replace(array('tiki-', '.php', '_'), array('', '', ' '), $script_name);
 					$str = ucwords($str);
@@ -145,9 +160,16 @@ class Smarty_Tiki extends Smarty
 			if ( $_smarty_tpl_file == 'tiki-print.tpl' ) {
 				$this->assign('print_page', 'y');
 			}
-			$data = $this->fetch($tpl, $_smarty_cache_id, $_smarty_compile_id, $parent);//must get the mid because the modules can overwrite smarty variables
+			$data = $this->fetch($tpl, $_smarty_cache_id, $_smarty_compile_id);//must get the mid because the modules can overwrite smarty variables
 
 			$this->assign('mid_data', $data);
+
+			// Enable AJAX
+			if ( $prefs['feature_ajax'] === 'y' && $prefs['mobile_feature'] === 'y' && $_smarty_display ) {
+				global $ajaxlib; require_once( 'lib/ajax/ajaxlib.php' );
+				$ajaxlib->registerTemplate( $tpl );
+				$ajaxlib->processRequests( $data, $tpl );
+			}
 
 			include_once('tiki-modules.php');
 
@@ -155,6 +177,13 @@ class Smarty_Tiki extends Smarty
 			ob_end_clean(); // Empty existing Output Buffer that may have been created in smarty before the call of this confirm / error* template
 			if ( $prefs['feature_obzip'] == 'y' ) {
 				ob_start('ob_gzhandler');
+			}
+
+			// Enable AJAX
+			if ( $prefs['feature_ajax'] === 'y' && $prefs['mobile_feature'] === 'y' && $_smarty_display ) {
+				global $ajaxlib; require_once('lib/ajax/ajaxlib.php');
+				$ajaxlib->registerTemplate($_smarty_tpl_file);
+				$ajaxlib->processRequests();
 			}
 
 			include_once('tiki-modules.php');
@@ -173,22 +202,14 @@ class Smarty_Tiki extends Smarty
 		$_smarty_cache_id = $prefs['language'] . $_smarty_cache_id;
 		$_smarty_compile_id = $prefs['language'] . $_smarty_compile_id;
 
-		return parent::fetch($_smarty_tpl_file, $_smarty_cache_id, $_smarty_compile_id, $parent, $_smarty_display);
-	}
-
-	function clear_assign($var) {
-		return parent::clearAssign($var);
-	}
-
-	function assign_by_ref($var,&$value) {
-		return parent::assignByRef($var,$value);
+		return parent::fetch($_smarty_tpl_file, $_smarty_cache_id, $_smarty_compile_id, $_smarty_display);
 	}
 
 	/* fetch in a specific language  without theme consideration */
 	function fetchLang($lg, $_smarty_tpl_file, $_smarty_cache_id = null, $_smarty_compile_id = null, $_smarty_display = false)  {
 		global $prefs, $lang, $style_base, $tikidomain;
 
-		if (isset($prefs['style']) && isset($style_base)) {
+                if (isset($prefs['style']) && isset($style_base)) {
 			if ($tikidomain and file_exists("templates/$tikidomain/styles/$style_base/$_smarty_tpl_file")) {
 				$_smarty_tpl_file = "$tikidomain/styles/$style_base/$_smarty_tpl_file";
 			} elseif ($tikidomain and file_exists("templates/$tikidomain/$_smarty_tpl_file")) {
@@ -200,19 +221,54 @@ class Smarty_Tiki extends Smarty
 
 		$_smarty_cache_id = $lg . $_smarty_cache_id;
 		$_smarty_compile_id = $lg . $_smarty_compile_id;
-
-		$lgSave = $prefs['language'];
-		$prefs['language'] = $lg;
-		$res = parent::fetch($_smarty_tpl_file, $_smarty_cache_id, $_smarty_compile_id, null, $_smarty_display);
-		$prefs['language'] = $lgSave; // Restore the language of the user triggering the notification
+		$this->_compile_id = $lg . $_smarty_compile_id; // not pretty but I don't know how to change id for get_compile_path
+		$isCompiled = $this->_is_compiled($_smarty_tpl_file, $this->_get_compile_path($_smarty_tpl_file));
+		if (!$isCompiled) {
+			$lgSave = $prefs['language'];
+			$prefs['language'] = $lg;
+		}
+		$res = parent::fetch($_smarty_tpl_file, $_smarty_cache_id, $_smarty_compile_id, $_smarty_display);
+		if (!$isCompiled) {
+			$prefs['language'] = $lgSave;
+		}
 
 		return preg_replace("/^[ \t]*/", '', $res);
 	}
+	function is_cached($_smarty_tpl_file, $_smarty_cache_id = null, $_smarty_compile_id = null) {
+		global $prefs, $style_base, $tikidomain;
 
+		if (isset($prefs['style']) && isset($style_base)) {
+			if ($tikidomain and file_exists("templates/$tikidomain/styles/$style_base/$_smarty_tpl_file")) {
+				$_smarty_tpl_file = "$tikidomain/styles/$style_base/$_smarty_tpl_file";
+			} elseif ($tikidomain and file_exists("templates/$tikidomain/$_smarty_tpl_file")) {
+				$_smarty_tpl_file = "$tikidomain/$_smarty_tpl_file";
+			} elseif (file_exists("templates/styles/$style_base/$_smarty_tpl_file")) {
+				$_smarty_tpl_file = "styles/$style_base/$_smarty_tpl_file";
+			}
+		}
+		$_smarty_cache_id = $prefs['language'] . $_smarty_cache_id;
+		$_smarty_compile_id = $prefs['language'] . $_smarty_compile_id;
+		return parent::is_cached($_smarty_tpl_file, $_smarty_cache_id, $_smarty_compile_id);
+	}
+	function clear_cache($_smarty_tpl_file = null, $_smarty_cache_id = null, $_smarty_compile_id = null, $_smarty_exp_time=null) {
+		global $prefs, $style_base, $tikidomain;
+
+		if (isset($prefs['style']) && isset($style_base) && isset($_smarty_tpl_file)) {
+			if ($tikidomain and file_exists("templates/$tikidomain/styles/$style_base/$_smarty_tpl_file")) {
+				$_smarty_tpl_file = "$tikidomain/styles/$style_base/$_smarty_tpl_file";
+			} elseif ($tikidomain and file_exists("templates/$tikidomain/$_smarty_tpl_file")) {
+				$_smarty_tpl_file = "$tikidomain/$_smarty_tpl_file";
+			} elseif (file_exists("templates/styles/$style_base/$_smarty_tpl_file")) {
+				$_smarty_tpl_file = "styles/$style_base/$_smarty_tpl_file";
+			}
+		}
+		$_smarty_cache_id = $prefs['language'] . $_smarty_cache_id;
+		$_smarty_compile_id = $prefs['language'] . $_smarty_compile_id;
+		return parent::clear_cache($_smarty_tpl_file, $_smarty_cache_id, $_smarty_compile_id, $_smarty_exp_time);
+	}
 	function display($resource_name, $cache_id=null, $compile_id = null, $content_type = 'text/html; charset=utf-8') {
 
 		global $prefs;
-
 		if ( !empty($prefs['feature_htmlpurifier_output']) and $prefs['feature_htmlpurifier_output'] == 'y' ) {
 			static $loaded = false;
 			static $purifier = null;
@@ -237,7 +293,6 @@ class Smarty_Tiki extends Smarty
 			return $purifier->purify(parent::display($resource_name, $cache_id, $compile_id));
 		} else {
 			return parent::display($resource_name, $cache_id, $compile_id);
-
 		}
 	}
 	// Returns the file name associated to the template name
@@ -271,23 +326,33 @@ class Smarty_Tiki extends Smarty
 
 if (!isset($tikidomain)) { $tikidomain = ''; }
 $smarty = new Smarty_Tiki($tikidomain);
-$smarty->loadFilter('pre', 'tr');
-$smarty->loadFilter('pre', 'jq');
+$smarty->load_filter('pre', 'tr');
+$smarty->load_filter('pre', 'jq');
 
 include_once('lib/smarty_tiki/resource.tplwiki.php');
-$smarty->registerResource('tplwiki', array('smarty_resource_tplwiki_source', 'smarty_resource_tplwiki_timestamp', 'smarty_resource_tplwiki_secure', 'smarty_resource_tplwiki_trusted'));
+$smarty->register_resource('tplwiki', array('smarty_resource_tplwiki_source', 'smarty_resource_tplwiki_timestamp', 'smarty_resource_tplwiki_secure', 'smarty_resource_tplwiki_trusted'));
 
 include_once('lib/smarty_tiki/resource.wiki.php');
-$smarty->registerResource('wiki', array('smarty_resource_wiki_source', 'smarty_resource_wiki_timestamp', 'smarty_resource_wiki_secure', 'smarty_resource_wiki_trusted'));
+$smarty->register_resource('wiki', array('smarty_resource_wiki_source', 'smarty_resource_wiki_timestamp', 'smarty_resource_wiki_secure', 'smarty_resource_wiki_trusted'));
 
 global $prefs;
 // Assign the prefs array in smarty, by reference
-$smarty->assignByRef('prefs', $prefs);
+$smarty->assign_by_ref('prefs', $prefs);
 
-if ( !empty($prefs['log_tpl']) && $prefs['log_tpl'] === 'y' ) {
-	$smarty->loadFilter('pre', 'log_tpl');
+// Define the special maxRecords global var
+$maxRecords = $prefs['maxRecords'];
+$smarty->assign_by_ref('maxRecords', $maxRecords);
+
+if ($prefs['log_tpl'] == 'y') {
+	$smarty->load_filter('pre', 'log_tpl');
 }
-if ( !empty($prefs['feature_sefurl_filter']) && $prefs['feature_sefurl_filter'] === 'y' ) {
+if ( $prefs['feature_sefurl_filter'] == 'y' ) {
   require_once ('tiki-sefurl.php');
-  $smarty->registerFilter('output','filter_out_sefurl');
+  $smarty->register_outputfilter('filter_out_sefurl');
 }
+
+// temp assigns for textarea row/cols that used to depend on
+// defunct textareasize thing. These textareas should eventually be
+// converted to use {textarea} object that have the correct defaults already
+$smarty->assign('rows', 20);
+$smarty->assign('cols', 80);

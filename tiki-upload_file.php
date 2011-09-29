@@ -32,7 +32,7 @@ if ($prefs['feature_groupalert'] == 'y') {
 @ini_set('max_execution_time', 0); //will not work in safe_mode is on
 $auto_query_args = array('galleryId', 'fileId', 'filegals_manager', 'view', 'simpleMode');
 
-if ( $prefs['auth_token_access'] == 'y' && !empty($token) ) {
+if ( $prefs['auth_token_access'] == 'y' && $token ) {
 	$smarty->assign('token_id', $token);
 }
 
@@ -199,6 +199,7 @@ if ( $prefs['fgal_limit_hits_per_file'] == 'y' ) {
 
 $cat_type = 'file';
 $cat_objid = (int) $fileId;
+$cat_object_exists = (bool) $cat_objid;
 include_once ('categorize_list.php');
 
 include_once ('tiki-section_options.php');

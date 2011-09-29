@@ -7,7 +7,11 @@
 
 $section = 'cms';
 require_once ('tiki-setup.php');
+
 include_once ('lib/articles/artlib.php');
+
+$smarty->assign('headtitle',tra('Admin Article Types'));
+
 $access->check_feature('feature_articles');
 
 // PERMISSIONS: NEEDS p_admin or tiki_p_articles_admin_types
@@ -89,7 +93,5 @@ $smarty->assign('types', $types);
 
 include_once ('tiki-section_options.php');
 
-// the strings below are used to localize the article types in the template file
-//get_strings tr('Article') tr('Review') tr('Event') tr('Classified')
 $smarty->assign('mid', 'tiki-article_types.tpl');
 $smarty->display("tiki.tpl");

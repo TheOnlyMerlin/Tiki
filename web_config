@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id$ [This line is used to check that this configuration file is up to date. Do not edit this line and leave it as the second line.] -->
 <configuration>
   <system.webServer>
     <defaultDocument>
@@ -9,10 +8,7 @@
         <add value="index.php" />
       </files>
     </defaultDocument>
-		<security>
-			<requestFiltering allowDoubleEscaping="True"/>
-		</security>
-		<rewrite>
+        <rewrite>
             <rules>
                 <clear />
                 <rule name="RequestBlockingRule1">

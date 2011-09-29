@@ -9,13 +9,12 @@
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 
 // Handle the current user prefs in session
-if ( ! isset($_SESSION['u_info']) || $_SESSION['u_info']['login'] != $user ) {
+if ( ! isset($_SESSION['u_info']['login']) || $_SESSION['u_info']['login'] != $user || $_SESSION['need_reload_prefs'] ) {
+	$_SESSION['need_reload_prefs'] = false;
 	$_SESSION['u_info'] = array();
+	$_SESSION['u_info']['prefs'] = array();
 	$_SESSION['u_info']['login'] = $user;
 	$_SESSION['u_info']['group'] = ( $user ) ? $userlib->get_user_default_group($user) : '';
-	if (empty($user)) {
-		$_SESSION['preferences'] = array(); // For anonymous, store some preferences like the theme in the session.
-	}
 }
 
 // Define the globals $u_info array for use in php / smarty
@@ -26,6 +25,7 @@ if ( $user ) {
 
 	// Initialize user prefs
 	$user_preferences = array(); // Used for cache
+	$user_preferences[$user] =& $_SESSION['u_info']['prefs'];
 
 	$default_group = $group = $_SESSION['u_info']['group'];
 	$smarty->assign('group', $group); // do not use by_ref as $group can be changed in the .php
@@ -56,7 +56,6 @@ if ( $user ) {
 	$smarty->assign("userPage_exists", $exist);
 
 } else {
-	$prefs = array_merge($prefs, $_SESSION['preferences']);
 	$allowMsgs = 'n';
 }
 

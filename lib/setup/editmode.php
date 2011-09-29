@@ -33,23 +33,8 @@ if ($prefs['feature_wysiwyg'] == 'y' && $prefs['javascript_enabled'] == 'y') {
 } else {
 	$_SESSION['wysiwyg'] = 'n';
 }
-
-/*
- * The following two globals are helper vars for wysiwyg_htmltowiki:
- * - $wysiwyg_wiki        : is needed to load the toolbars and the CKE plugins
- * - $disable_wysiwyg_html: is needed to perform the appropriate syntax conversions during editor switch 
- */
-global $wysiwyg_wiki, $disable_wysiwyg_html;
-$wysiwyg_wiki = false;
-$disable_wysiwyg_html = false;  
-
 if ($_SESSION['wysiwyg'] == 'y') {
-	if ($prefs['feature_wysiwyg'] == 'y' && $prefs['wysiwyg_wiki_parsed'] == 'y' && $prefs['wysiwyg_htmltowiki'] == 'y' && !$info['is_html']) { // use wysiwyg_htmltowiki for wiki pages only 
-		$is_html = false;
-		$wysiwyg_wiki = true; // do WYSIWYG-Wiki
-	} else {
-		$is_html = true;
-	}
+	$is_html = true;
 } elseif ($prefs['feature_wiki_allowhtml'] == 'y' and ($tiki_p_admin == 'y' or $tiki_p_use_HTML == 'y')) {
 	if (isset($_REQUEST['preview']) || isset($jitRequest['edit'])) {
 		if (isset($_REQUEST["allowhtml"]) && $_REQUEST["allowhtml"] == "on") {
@@ -60,9 +45,6 @@ if ($_SESSION['wysiwyg'] == 'y') {
 			$is_html = true;
 		}
 	}
-}
-if ($prefs['feature_wysiwyg'] == 'y' && $prefs['wysiwyg_wiki_parsed'] == 'y' && $prefs['wysiwyg_htmltowiki'] == 'y' && !$info['is_html']) {
-	$disable_wysiwyg_html = true;
 }
 if (isset($jitRequest['edit'])) {
 	// Restore the property for the rest of the script

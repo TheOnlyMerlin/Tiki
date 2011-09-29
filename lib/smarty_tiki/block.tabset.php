@@ -5,11 +5,13 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+// this script may only be included - so it's better to die if called directly
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
+  header("location: index.php");
+  exit;
+}
+
 /**
- * Smarty plugin
- * @package Smarty
- * @subpackage plugins
- *
  * \brief smarty_block_tabs : add tabs to a template
  *
  * params: name (optional but unique per page if set)
@@ -23,19 +25,14 @@
  * 		{tab name='tab3'}tab content{/tab}
  *	{/tabset}
  * \endcode
+ *
  */
 
-//this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
-  header("location: index.php");
-  exit;
-}
+function smarty_block_tabset($params, $content, &$smarty, &$repeat) {
+	global $prefs, $smarty_tabset_name, $smarty_tabset, $smarty_tabset_i_tab, $cookietab, $headerlib, $tabset_index, $tikilib;
 
-function smarty_block_tabset($params, $content, $smarty, &$repeat)
-{
-	global $prefs, $smarty_tabset_name, $smarty_tabset, $smarty_tabset_i_tab, $cookietab, $headerlib, $tabset_index;
 
-	if ($smarty->getTemplateVars('print_page') == 'y' || $prefs['layout_tabs_optional'] === 'n') {
+	if ($smarty->get_template_vars('print_page') == 'y' || $prefs['layout_tabs_optional'] === 'n') {
 		$params['toggle'] = 'n';
 	}
 	if ( $repeat ) {
@@ -50,7 +47,7 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 			$short_name = str_replace(array('tiki-', '.php'), '', basename($_SERVER['SCRIPT_NAME']));
 			$smarty_tabset_name = 't_' . $short_name . $tabset_index;
 		}
-		$smarty_tabset_name = TikiLib::remove_non_word_characters_and_accents( $smarty_tabset_name );
+		$smarty_tabset_name = preg_replace('/[\s,\/\|]+/', '_', $tikilib->take_away_accent( $smarty_tabset_name ));	// TODO refactor into clean_string - see e.g. toolbarslib?
 		$smarty_tabset[$tabset_index] = array( 'name' => $smarty_tabset_name, 'tabs' => array());
 		if (!isset($smarty_tabset_i_tab)) {
 			$smarty_tabset_i_tab = 1;
@@ -82,7 +79,7 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 		//closing
 		if ( $prefs['feature_tabs'] == 'y') {
 			if (empty($params['toggle']) || $params['toggle'] != 'n') {
-				$smarty->loadPlugin('smarty_function_button');
+				require_once $smarty->_get_plugin_filepath('function','button');
 				if ($cookietab == 'n') {
 					$button_params['_text'] = tra('Tab View');
 				} else {

@@ -1,4 +1,3 @@
-{* $Id$ *}
 <table>
  <tr>
   <th>{tr}Account{/tr}</th>
@@ -18,18 +17,18 @@
   <td>{$a.accountNotes|escape}</td>
   <td style="text-align:right">
   	{if $book.bookCurrencyPos==-1}{$book.bookCurrency}{/if}
-  	{$a.accountBudget|number_format:$book.bookDecimals:$book.bookDecPoint:$book.bookThousand}
+  	{$a.accountBudget|currency:$book.bookDecPoint:$book.bookThousand}
   	{if $book.bookCurrencyPos==1}{$book.bookCurrency}{/if}
   </td>
   <td>{if $a.accountLocked==1}{tr}Yes{/tr}{else}{tr}No{/tr}{/if}</td>
   <td style="text-align:right">
 	{if $book.bookCurrencyPos==-1}{$book.bookCurrency}{/if}
-  	{$a.debit|number_format:$book.bookDecimals:$book.bookDecPoint:$book.bookThousand}
+  	{$a.debit|currency:$book.bookDecPoint:$book.bookThousand}
   	{if $book.bookCurrencyPos==1}{$book.bookCurrency}{/if}
   </td>
   <td style="text-align:right">
   	{if $book.bookCurrencyPos==-1}{$book.bookCurrency}{/if}
-  	{$a.credit|number_format:$book.bookDecimals:$book.bookDecPoint:$book.bookThousand}
+  	{$a.credit|currency:$book.bookDecPoint:$book.bookThousand}
   	{if $book.bookCurrencyPos==1}{$book.bookCurrency}{/if}
   </td>
   <td>{$a.accountTax}</td>

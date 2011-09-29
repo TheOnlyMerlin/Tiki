@@ -14,8 +14,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 function module_quick_edit_info() {
 	return array(
 		'name' => tra('Quick Edit'),
-		// Search actually lacks customTip, customTipTitle and headerwiki, added in r27746.
-		'description' => tra('Enables to quickly create or edit Wiki pages.') . ' ' . tra('Deprecated - use the Search module instead.'),
+		'description' => tra('Enables to quickly create or edit Wiki pages.'),
 		'prefs' => array( 'feature_wiki' ),
 		'params' => array(
 			'templateId' => array(
@@ -32,12 +31,15 @@ function module_quick_edit_info() {
 			),
 			'size' => array(
 				'name' => tra('INPUT SIZE'),
-				'description' => tra('Size attribute (horizontal, in characters) of the text input field for page names.') . " " . tra('Default:') . " 15",
-				'filter' => 'int'
+				'description' => tra('Size attribute (horizontal, in characters) of the text input field for page names.') . " " . tra('Default:') . " 15"
 			),
 			'mod_quickedit_heading' => array(
 				'name' => tra('Heading'),
 				'description' => tra('Optional heading to display at the top of the module\'s content.')
+			),
+			'categId' => array(
+				'name' => tra('Category identifier'),
+				'description' => tra('If set to a category identifier, pages created through the module are automatically categorized only in the specified category.') . " " . tra('Not set by default.')
 			),
 			'addcategId' => array(
 				'name' => tra('Category to preselect'),
@@ -90,6 +92,11 @@ function module_quick_edit( $mod_reference, $module_params ) {
 	} else {
 		$mod_quickedit_heading = false;
 	}
+	if (isset($module_params["categId"])) {
+		$categId = $module_params["categId"];
+	} else {
+		$categId = '';
+	}
 	if (isset($module_params["addcategId"])) {
 		$addcategId = $module_params["addcategId"];
 	} else {
@@ -114,6 +121,7 @@ function module_quick_edit( $mod_reference, $module_params ) {
 	$smarty->assign('wikiHeaderTpl', $wikiHeaderTpl);
 	$smarty->assign('customTip', $customTip);
 	$smarty->assign('customTipTitle', $customTipTitle);
+	$smarty->assign('categId', $categId);
 	$smarty->assign('addcategId', $addcategId);
 	$smarty->assign('size', $size);
 	$smarty->assign('mod_quickedit_heading', $mod_quickedit_heading);

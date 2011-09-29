@@ -19,7 +19,7 @@ function tr($content) {
 	return tra( $content, '', false, array_slice( $args, 1 ) );
 }
 
-function tra($content, $lg='', $unused = false, $args = array()) {
+function tra($content, $lg='', $no_interactive = false, $args = array()) {
 	global $prefs;
 	static $languages = array();
 
@@ -38,7 +38,7 @@ function tra($content, $lg='', $unused = false, $args = array()) {
 		init_language( $lang );
 	}
 
-	$out = tra_impl( $content, $lang, $args );
+	$out = tra_impl( $content, $lang, $no_interactive, $args );
 
 	record_string( $content, $out );
 
@@ -47,22 +47,14 @@ function tra($content, $lg='', $unused = false, $args = array()) {
 
 function init_language( $lg ) {
 	global $tikidomain, $prefs;
-	if (is_file("lang/$lg/language.php")) {
+	if( is_file("lang/$lg/language.php")) {
 		global ${"lang_$lg"};
 
 		$lang = array();
 		include("lang/$lg/language.php");
-		
-		// include mods language files if any
-		foreach (glob("lang/$lg/language_*.php") as $file) {
-			require($file);
-			$lang = array_merge($lang, $lang_mod);
-		}
-
 		if (is_file("lang/$lg/custom.php")) {
 			include_once("lang/$lg/custom.php");
 		}
-		
 		if (!empty($tikidomain) && is_file("lang/$lg/$tikidomain/custom.php")) {
 			include_once("lang/$lg/$tikidomain/custom.php");
 		}
@@ -82,7 +74,7 @@ function init_language( $lg ) {
 	}
 }
 
-function tra_impl($content, $lg='', $args = array()) {
+function tra_impl($content, $lg='', $no_interactive = false, $args = array()) {
 	global $prefs, $tikilib;
 
 	if (empty($content)) {

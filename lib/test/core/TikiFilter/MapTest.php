@@ -12,6 +12,8 @@
 
 class TikiFilter_MapTest extends TikiTestCase
 {
+	private $array;
+
 	function testDirect()
 	{
 		$this->assertTrue( TikiFilter::get( 'digits' ) instanceof Zend_Filter_Digits );

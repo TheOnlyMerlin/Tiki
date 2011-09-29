@@ -11,15 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-require_once('Exception.php');
-
-/**
- * @package   Tiki
- * @subpackage    Language
- * Provides methods to update translations in the database and
- * to export translations from the database to language.php
- * files. Used by Interactive Translation and tiki-edit_languages.php 
- */
 class LanguageTranslations extends TikiDb_Bridge
 {
 	/**
@@ -28,14 +19,9 @@ class LanguageTranslations extends TikiDb_Bridge
 	public $lang;
 
 	/**
-	 * @var string path to language.php file
+	 * @var string path to the language file
 	 */
 	protected $filePath;
-	
-	/**
-	 * @var string path to custom.php file
-	 */
-	protected $customFilePath;
 	
 	/**
 	 * Whether or not there is translations saved in the
@@ -62,7 +48,6 @@ class LanguageTranslations extends TikiDb_Bridge
 		}
 		
 		$this->filePath = "lang/{$this->lang}/language.php";
-		$this->customFilePath = "lang/{$this->lang}/custom.php";
 	}
 
 	/**
@@ -75,7 +60,7 @@ class LanguageTranslations extends TikiDb_Bridge
 	 *
 	 * @param string $originalStr the original string
 	 * @param string $translatedStr the translated string
-	 * @return null
+	 * @return void
 	 */
 	public function updateTrans($originalStr, $translatedStr) {
 		global ${"lang_$this->lang"}, $user, $tikilib;
@@ -136,11 +121,11 @@ class LanguageTranslations extends TikiDb_Bridge
 			$stats = array('modif' => 0, 'new' => 0);
 
 			// add new strings to the language.php
-			$lastStr = array_search(");\n", $langFile);
+			$lastStr = array_search("\"###end###\"=>\"###end###\");\n", $langFile);
 
 			if ($lastStr === FALSE) {
 				// file has no line with "###end###\"=>\"###end###\") marking the end of the array
-				throw new Language_Exception(tr("The file lang/%0/language.php is not well formated. Run get_strings.php?lang=%0 and then try to export the translations again.", $this->lang));
+				throw new Exception(tra("The file lang/$this->lang/language.php is not well formated. Run get_strings.php?lang=$this->lang and then try to export the translations again."));
 			}			
 			
 			// foreach translation in the database check each string in the language.php file
@@ -166,7 +151,7 @@ class LanguageTranslations extends TikiDb_Bridge
 				}
 			}
 
-			// convert every entry in the array $dbTrans (translations that are not present in language.php)
+			// convert every entry in the array $dbTrans (translation that are not presente in language.php)
 			// to a string in the format '"original string" => "translation"'
 			$newTrans = array();
 			foreach ($dbTrans as $orig => $trans) {
@@ -206,9 +191,21 @@ class LanguageTranslations extends TikiDb_Bridge
 	 * @return array
 	 */
 	protected function _getDbTranslations($sort_mode = 'source_asc', $maxRecords = -1, $offset = 0, $originalTranslations = false, $searchQuery = null) {
+		global $tikilib;
+		
 		if ($originalTranslations) {
 			// load $lang with all translations excluding database translations to compare changes
-			$lang = $this->getFileTranslations();
+			$lang = array();
+			require("lang/$this->lang/language.php");
+			
+			if (is_file("lang/$this->lang/custom.php")) {
+				include_once("lang/$this->lang/custom.php");
+			}
+			
+			global $tikidomain;
+			if (!empty($tikidomain) && is_file("lang/$this->lang/$tikidomain/custom.php")) {
+				include_once("lang/$this->lang/$tikidomain/custom.php");
+			}
 		}
 		
 		$bindvars = array($this->lang);
@@ -224,14 +221,13 @@ class LanguageTranslations extends TikiDb_Bridge
 		
 		while ($res = $result->fetchRow()) {
 			if ($res['userId']) {
-				$tikilib = TikiLib::lib('tiki');
 				$res['user'] = $tikilib->get_user_login($res['userId']);
 			}
 
-			if ($originalTranslations && isset($lang[$res['source']]) && $lang[$res['source']]['tran'] != $res['tran']) {
+			if ($originalTranslations && isset($lang[$res['source']]) && $lang[$res['source']] != $res['tran']) {
 				require_once('lib/diff/difflib.php');
-				$res['originalTranslation'] = $lang[$res['source']]['tran'];
-				$res['diff'] = $this->_diff($res['originalTranslation'], $res['tran']);
+				$res['originalTranslation'] = $lang[$res['source']];
+				$res['diff'] = diff2($res['originalTranslation'], $res['tran'], 'htmldiff');
 			}
 
 			$translations[$res['source']] = $res;
@@ -240,18 +236,6 @@ class LanguageTranslations extends TikiDb_Bridge
 		return $translations;
 	}
 
-	/**
-	 * Return the difference of to strings.
-	 * 
-	 * @param $original original string
-	 * @param $new new string
-	 * @return string
-	 */
-	protected function _diff($original, $new)
-	{
-		return diff2($original, $new, 'htmldiff');
-	}
-	
 	/**
 	 * Return all the custom translations in the database with
 	 * special characters escaped
@@ -325,7 +309,7 @@ class LanguageTranslations extends TikiDb_Bridge
 	 *  @param string $search return only results that matches the searched string
 	 *  @return array database translations ('translations' and 'total')
 	 */
-	public function getDbTranslations($sort_mode = 'source_asc', $maxRecords = -1, $offset = 0, $search = null) {
+	public function getDbTranslations($sort_mode, $maxRecords, $offset, $search = null) {
 		global $tikilib;
 		
 		$translations = array();
@@ -339,7 +323,8 @@ class LanguageTranslations extends TikiDb_Bridge
 
 		$translations = $this->_getDbTranslations($sort_mode, $maxRecords, $offset, true, $searchQuery);
 
-		$total = count($translations);
+		$query = "select count(*) from `tiki_language` where `lang`=? $searchQuery";
+		$total = $this->getOne($query, $bindvars);
 
 		return array('translations' => $translations, 'total' => $total);
 	}
@@ -355,235 +340,107 @@ class LanguageTranslations extends TikiDb_Bridge
 	}
 	
 	/**
-	 * Parse a language.php file to get the untranslated strings,
-	 * store the strings in a cache file and return them.
-	 * 
-	 * The untranslated strings are store in the keys of an array
-	 * that has null values.
-	 * 
-	 * @return array untranslated strings
-	 */
-	public function getFileUntranslated()
-	{
-		$cachelib = $this->_getCacheLib();
-		$cacheKey = 'untranslatedStrings.' . $this->lang . '.' . $this->_getFileHash();
-		$info = $cachelib->getSerialized($cacheKey, 'untranslatedStrings');
-
-		if ($info) {
-			return $info;
-		}
-		
-		$contents = file($this->filePath);
-		$untranslated = array();
-		
-		foreach ($contents as $line) {
-			// match untranslated string in a language.php file
-			if (preg_match('|^//\s*?"(.+)"\s*=>\s*".+".*|', $line, $matches)) {
-				$source = Language::removePhpSlashes($matches[1]);
-				$untranslated[$source] = array('source' => $source, 'tran' => null);
-			}
-		}
-		
-		$cachelib->cacheItem($cacheKey, serialize($untranslated), 'untranslatedStrings');
-
-		return $untranslated;
-	}	
-
-	/**
-	 * Get the md5 hash for the language file.
-	 * 
-	 * @return string md5 hash for the language file
-	 */
-	protected function _getFileHash()
-	{
-		return md5_file($this->filePath);
-	}
-	
-	/**
-	 * Return untranslated strings recorded in the 
-	 * database (if feature "record_untranslated is enabled)
+	 * Return recorded untranslated strings (if feature
+	 * "record_untranslated is enabled)
 	 *
-	 * @param int $maxRecords
-	 * @param int $offset
-	 * @param string $searchQuery
-	 * @return array recorded untranslated strings
-	 */
-	protected function _getDbUntranslated($maxRecords = -1, $offset = 0, $searchQuery = null) {
-		global $prefs;
-
-		if ($prefs['record_untranslated'] != 'y') {
-			return array();
-		}
-
-		$translations = array();
-
-		$query = "SELECT `source` FROM `tiki_untranslated` WHERE `lang`=? $searchQuery ORDER BY source asc";
-		$result = $this->query($query, array($this->lang), $maxRecords, $offset);
-
-		while ($res = $result->fetchRow()) {
-			$translations[$res['source']] = array('source' => $res['source'], 'tran' => null);
-		}
-
-		return $translations;
-	}
-
-	/**
-	 * Return array of untranslated strings stored in the database.
-	 * 
-	 * @param int $maxRecords
-	 * @param int $offset
-	 * @param string $search
-	 * @return array untranslated strings stored in the database
-	 */
-	public function getDbUntranslated($maxRecords = -1, $offset = 0, $search = null)
-	{
-		global $prefs;
-		
-		$untranslated = array();
-		$total = 0;
-		
-		if ($prefs['record_untranslated'] == 'y') {
-			$searchQuery = '';
-			if ($search) {
-				$search = $this->qstr("%$search%");
-				$searchQuery = " AND `source` like $search ";
-			}
-			
-			$untranslated = $this->_getDbUntranslated($maxRecords, $offset, $searchQuery);
-			
-			$query = "select count(*) from `tiki_untranslated` where `lang`=? $searchQuery";
-			$total = $this->getOne($query, array($this->lang));
-		}
-			
-		return array('translations' => $untranslated, 'total' => $total);
-	}
-	
-	/**
-	 * Get all untranslated strings (from language.php and db).
-	 * Only get untranslated strings from db if preference
-	 * record_untranslated is enabled.
-	 * 
-	 * @param int $maxRecords
-	 * @param int $offset
-	 * @param string $search
-	 * @return array
-	 */
-	public function getAllUntranslated($maxRecords = -1, $offset = 0, $search = null)
-	{
-		$fileUntranslated = $this->getFileUntranslated();
-		
-		// remove from $fileUntranslated strings translated in the database
-		$dbTranslations = $this->_getDbTranslations();
-		foreach ($fileUntranslated as $key => $value) {
-			if (array_key_exists($key, $dbTranslations)) {
-				unset($fileUntranslated[$key]);
-			}
-		}
-		
-		$dbUntranslated = $this->_getDbUntranslated();
-		$untranslatedStrings = array_merge($fileUntranslated, $dbUntranslated);
-
-		return $this->_filterStrings($untranslatedStrings, $maxRecords, $offset, $search);
-	}
-	
-	/**
-	 * Return all the translations from language.php
-	 * and custom.php (if existent).
-	 * 
-	 * @return array translations
-	 */
-	public function getFileTranslations()
-	{
-		$lang = array();
-		
-		if (is_file($this->filePath)) {
-			require($this->filePath);
-		}
-		
-		// custom.php
-		if (is_file($this->customFilePath)) {
-			require($this->customFilePath);
-		}
-
-		global $tikidomain;
-		if (!empty($tikidomain) && is_file("lang/$this->lang/$tikidomain/custom.php")) {
-			require("lang/$this->lang/$tikidomain/custom.php");
-		}
-		
-		// remove last entry from language.php used only for get_strings.php
-		if (isset($lang['###end###'])) {
-			unset($lang['###end###']);
-		}
-		
-		$lang = $this->_convertTranslationsArray($lang);
-		
-		return $lang;
-	}
-	
-	/**
-	 * Get all translations (db + custom.php + language.php)
-	 * 
+	 * @param string $sort_mode
 	 * @param int $maxRecords
 	 * @param int $offset
 	 * @param string $search return only results that matches the searched string
-	 * @return array translations and total number
+	 * @return array recorded untranslated strings ('translations' and 'total')
 	 */
-	public function getAllTranslations($maxRecords = -1, $offset = 0, $search = null)
-	{
-		$fileTranslations = $this->getFileTranslations();
-		$dbTranslations = $this->_getDbTranslations('source_asc', -1, 0, true);
-		$translations = array_merge($fileTranslations, $dbTranslations);
-		
-		return $this->_filterStrings($translations, $maxRecords, $offset, $search);
+	public function getRecordedUntranslated($sort_mode, $maxRecords, $offset, $search = null) {
+		global $prefs;
+
+		if ($prefs['record_untranslated'] != 'y') {
+			return;
+		}
+
+		$translations = array();
+		$bindvars = array($this->lang);
+		$searchQuery = '';
+
+		if ($search) {
+			$searchQuery = " and `source` like ?";
+			$bindvars[] = '%' . $search . '%';
+		}
+
+		$query = "select * from `tiki_untranslated` where `lang`=? $searchQuery order by " . $this->convertSortMode($sort_mode);
+		$result = $this->query($query, $bindvars, $maxRecords, $offset);
+
+		while ($res = $result->fetchRow()) {
+			$translations[] = $res;
+		}
+
+		$query = "select count(*) from `tiki_untranslated` where `lang`=? $searchQuery";
+		$total = $this->getOne($query, $bindvars);
+
+		return array('translations' => $translations, 'total' => $total);
 	}
-	
+
 	/**
-	 * Receives an array of strings and filter then based on the
-	 * values of $maxRecords, $offset and $search. Return an array
-	 * with the total number of strings (key 'total') and the filtered
-	 * strings (key 'translations').
-	 * 
-	 * @param array $strings
+	 * Return all translations (db + custom.php + language.php)
+	 *
 	 * @param int $maxRecords
 	 * @param int $offset
-	 * @param string|null $search
-	 * @return array the filtered array
+	 * @param string $search return only results that matches the searched string
+	 * @return array translations
 	 */
-	protected function _filterStrings($strings, $maxRecords, $offset, $search)
-	{
-		// display only translations that match the searched string if any
+	public function getAllTranslations($maxRecords, $offset, $search = null) {
+		global ${"lang_$this->lang"};
+		
+		if (!isset(${"lang_$this->lang"})) {
+			init_language($this->lang);
+		}
+
+		$all_translations = ${"lang_$this->lang"};
+
+		// display only translations that match the searched string
 		if (isset($search) && strlen($search) > 0) {
 			$pattern = "/.*$search.*/i";
 
 			// search source strings
-			$keys = preg_grep($pattern, array_keys($strings));
+			$keys = preg_grep($pattern, array_keys($all_translations));
 			$sources = array();
 			foreach ($keys as $key) {
-				$sources[$key] = $strings[$key];
+				$sources[$key] = $all_translations[$key];
 			}
 
 			// search translation strings
-			$translations = array();
-			foreach ($strings as $key => $string) {
-				if (!empty($string['tran']) && strpos($string['tran'], $search) !== false) {
-					$translations[$key] = $strings[$key];  
-				}
-			}
+			$all_translations = preg_grep($pattern, $all_translations);
 
-			// join matches against source string and translation
-			$strings = array_merge($translations, $sources);
+			$all_translations = array_merge($all_translations, $sources);
 		}
 
-		$total = count($strings);
+		$total = count($all_translations);
+		$translations = array_slice($all_translations, $offset, $maxRecords);
 		
-		uksort($strings, 'strcasecmp');
+		$translations = $this->_convertTranslationsArray($translations);
 		
-		$length = ($maxRecords > 0) ? $maxRecords : null;
+		return array('translations' => $translations, 'total' => $total);
+	}
+	
+	/**
+	 * Get all translations (db + custom.php + language.php) plus
+	 * untranslated strings from language.php
+	 * 
+	 * @param int $maxRecords
+	 * @param int $offset
+	 * @param string $search return only results that matches the searched string
+	 * @return array translations and untranslated strings
+	 */
+	public function getAllStrings(/*$maxRecord, $offset, $search = null*/)
+	{
+		$translations = $this->getAllTranslations(100, 0);
+		$untranslated = $this->getUntranslatedFromFile();
 		
-		$strings = array_slice($strings, $offset, $length);
+		// merge the two arrays overwriting untranslated strings that
+		// have been translated in the database
+		$strings = array_merge($untranslated, $translations);
 		
-		//TODO: key 'translations' should be renamed to 'strings' for consistency
-		return array('translations' => $strings, 'total' => $total);
+		ksort($strings);
+		
+		return $strings;
 	}
 	
 	/**
@@ -598,13 +455,20 @@ class LanguageTranslations extends TikiDb_Bridge
 	protected function _convertTranslationsArray($translations) {
 		$newFormat = array();
 		
+		$dbTranslations = $this->_getDbTranslations('source_asc', -1, 0, true);
+
 		foreach ($translations as $source => $tran) {
-			$newItem = array(
-				'source' => $source,
-				'tran' => $tran,
-			);
+			$newItem = array();
 			
-			$newFormat[$source] = $newItem;
+			// if string has been changed in the database
+			if (isset($dbTranslations[$source])) {
+				$newItem = $dbTranslations[$source];
+			} else {
+				$newItem['tran'] = $tran;
+				$newItem['source'] = $source;
+			}
+			
+			$newFormat[] = $newItem;
 		}
 		
 		return $newFormat;
@@ -616,8 +480,43 @@ class LanguageTranslations extends TikiDb_Bridge
 	 * 
 	 * @return Cachelib cachelib object
 	 */
-	protected function _getCacheLib()
+	protected function getCacheLib()
 	{
 		return TikiLib::lib('cache');
+	}
+	
+	/**
+	 * Parse a language.php file to get the untranslated strings,
+	 * store the strings in a cache file and return them.
+	 * 
+	 * The untranslated strings are store in the keys of an array
+	 * that has null values.
+	 * 
+	 * @return array untranslated strings
+	 */
+	public function getUntranslatedFromFile()
+	{
+		$cachelib = $this->getCacheLib();
+		$hash = md5_file($this->filePath);
+		$cacheKey = 'untranslatedStrings.' . $this->lang . $hash;
+		$info = $cachelib->getSerialized($cacheKey, 'untranslatedStrings');
+
+		if ($info) {
+			return $info;
+		}
+		
+		$contents = file($this->filePath);
+		$untranslated = array();
+		
+		foreach ($contents as $line) {
+			// match untranslated string in a language.php file
+			if (preg_match('|^//\s*?"(.+)"\s*=>\s*".+".*|', $line, $matches)) {
+				$untranslated[$matches[1]] = null;
+			}
+		}
+		
+		$cachelib->cacheItem($cacheKey, serialize($untranslated), 'untranslatedStrings');
+		
+		return $untranslated;
 	}	
 }

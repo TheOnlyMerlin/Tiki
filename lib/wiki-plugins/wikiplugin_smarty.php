@@ -13,13 +13,12 @@ function wikiplugin_smarty_info() {
 		'prefs' => array('wikiplugin_smarty'),
 		'validate' => 'all',
 		'extraparams' => true,
-		'tags' => array( 'experimental' ),
 		'icon' => 'pics/icons/task_submitted.png',
 		'params' => array(
 			'name' => array(
-				'required' => true,
-				'name' => tra('Smarty function'),
-				'description' => tra('The name of the Smarty function that the button will activate. Available functions are: lib/smarty/libs/plugins/function.[name].php'),
+				'required' => false,
+				'name' => tra('Smarty Function'),
+				'description' => tra('The name of the smarty function that the button will activate. Available functions are: lib/smarty/libs/plugins/function.[name].php'),
 				'filter' => 'word',
 				'default' => '',
 			),

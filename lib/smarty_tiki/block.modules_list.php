@@ -1,15 +1,17 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+// this script may only be included - so it's better to die if called directly
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
+  header("location: index.php");
+  exit;
+}
+
 /**
- * Smarty plugin
- * @package Smarty
- * @subpackage plugins
- *
  * \brief smarty_block_modules_list : show unordered or ordered list or nothing if there is nothing to show
  *
  * params: list
@@ -28,14 +30,8 @@
  *
  */
 
-//this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
-  header("location: index.php");
-  exit;
-}
-
-function smarty_block_modules_list($params, $content, $smarty, &$repeat)
-{
+function smarty_block_modules_list($params, $content, &$smarty, &$repeat) {
+	global $prefs;
 	if( count($params["list"]) > 0 ){
 		if( $params["nonums"] == "y") {
 			$ret = '<ul>' . $content . '</ul>';
@@ -43,9 +39,7 @@ function smarty_block_modules_list($params, $content, $smarty, &$repeat)
 			$ret = '<ol>' . $content . '</ol>';
 		}
 	}else{
-		if (empty($params['none']))
-			$params['none'] = 'No records to display'; //get_strings tra('No records to display');
-		$ret = '<em>'.tra($params['none']).'</em>';
+		$ret = '<em>'.tra('No records to display').'</em>';
 	}		
 	return $ret;
 }

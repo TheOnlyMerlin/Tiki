@@ -33,12 +33,12 @@ function module_upcoming_events_info() {
 			),
 			'cellpadding' => array(
 				'name' => tra('cellpadding'),
-				'description' => tra('If set to an integer, apply this cellpadding to the HTML table generated.'),
+				'description' => 'If set to an integer, apply this cellpadding to the HTML table generated.',
 				'filter' => 'int'
 			),
 			'cellspacing' => array(
 				'name' => tra('cellspacing'),
-				'description' => tra('If set to an integer, apply this cellspacing to the HTML table generated.'),
+				'description' => 'If set to an integer, apply this cellspacing to the HTML table generated.',
 				'filter' => 'int'
 			),
 			'showDescription' => array(

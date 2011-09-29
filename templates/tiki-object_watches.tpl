@@ -1,5 +1,4 @@
-{* $Id$ *}
-{capture}{if isset($smarty.request.objectName)}{tr}Object Watches:{/tr} {$smarty.request.objectName}{else}{tr}Object Watches{/tr}{/if}{/capture}
+{capture}{if isset($smarty.request.objectName)}{tr}Object Watches:{/tr} {$smarty.request.objectName|escape}{else}{tr}Object Watches{/tr}{/if}{/capture}
 {title help="Mail notifications"}{$smarty.capture.default}{/title}
 
 {if isset($referer)}
@@ -38,7 +37,7 @@
 				{foreach from=$deletedGroupsDesc item=g}<li>{$g|escape}&nbsp;&nbsp;<em>removed</em></li>{/foreach}
 			{/if}
 			</ul>
-			{if isset($tree)} 
+			{if !empty($catTreeNodes)} 
 				{tr}were made to these descendants:{/tr}
 				{$tree}
 			{/if}

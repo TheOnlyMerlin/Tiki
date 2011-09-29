@@ -16,19 +16,14 @@ class Search_ContentSource_ForumPostSource implements Search_ContentSource_Inter
 
 	function getDocuments()
 	{
-		global $prefs;
-		if ($prefs['unified_forum_deepindexing'] == 'y') {
-			$filters = array('objectType' => 'forum', 'parentId' => 0);
-		} else {
-			$filters = array('objectType' => 'forum');
-		}
-		return $this->db->table('tiki_comments')->fetchColumn('threadId', $filters);
+		return $this->db->table('tiki_comments')->fetchColumn('threadId', array(
+			'objectType' => 'forum',
+			'parentId' => 0,
+		));
 	}
 
 	function getDocument($objectId, Search_Type_Factory_Interface $typeFactory)
 	{
-		global $prefs;
-
 		$commentslib = TikiLib::lib('comments');
 		$comment = $commentslib->get_comment($objectId);
 
@@ -37,25 +32,19 @@ class Search_ContentSource_ForumPostSource implements Search_ContentSource_Inter
 		$author = array($comment['userName']);
 
 		$thread = $commentslib->get_comments($comment['objectType'] . ':' . $comment['object'], $objectId, 0, 0);
-		$forum_info = $commentslib->get_forum($comment['object']);
-		$forum_language = $forum_info['forumLanguage'] ? $forum_info['forumLanguage'] : 'unknown';
-
-		if ($prefs['unified_forum_deepindexing'] == 'y') {
-			foreach ($thread['data'] as $reply) {
-				$content .= "\n{$reply['data']}";
-				$lastModification = max($lastModification, $reply['commentDate']);
-				$author[] = $comment['userName'];
-			}
+		foreach ($thread['data'] as $reply) {
+			$content .= "\n{$reply['data']}";
+			$lastModification = max($lastModification, $reply['commentDate']);
+			$author[] = $comment['userName'];
 		}
 
 		$data = array(
 			'title' => $typeFactory->sortable($comment['title']),
-			'language' => $typeFactory->identifier($forum_language),
+			'language' => $typeFactory->identifier('unknown'),
 			'modification_date' => $typeFactory->timestamp($lastModification),
 			'contributors' => $typeFactory->multivalue(array_unique($author)),
 
 			'post_content' => $typeFactory->wikitext($content),
-			'parent_thread_id' => $typeFactory->identifier($comment['parentId']),
 
 			'parent_object_type' => $typeFactory->identifier($comment['objectType']),
 			'parent_object_id' => $typeFactory->identifier($comment['object']),
@@ -74,7 +63,6 @@ class Search_ContentSource_ForumPostSource implements Search_ContentSource_Inter
 			'contributors',
 
 			'post_content',
-			'parent_thread_id',
 
 			'parent_view_permission',
 			'parent_object_id',

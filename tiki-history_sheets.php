@@ -8,9 +8,7 @@
 $section = 'sheet';
 $tiki_sheet_div_style = '';
 require_once ('tiki-setup.php');
-
-$sheetlib = TikiLib::lib("sheet");
-
+require_once ('lib/sheet/grid.php');
 $auto_query_args = array(
 	'sheetId',
 	'idx_0',
@@ -61,13 +59,14 @@ $cookietab = 1;
 $sheetlib->setup_jquery_sheet();
 $headerlib->add_jq_onready("
 	$.sheet.tikiOptions = $.extend($.sheet.tikiOptions, {
-		editable: false
+		editable: false,
+		fnPaneScroll: $.sheet.paneScrollLocker,
+		fnSwitchSheet: $.sheet.switchSheetLocker
 	});
 	
-	jST = $('div.tiki_sheet')
-		.sheet($.sheet.tikiOptions)
-		.bind('paneScroll', $.sheet.paneScrollLocker)
-		.bind('switchSheet', $.sheet.switchSheetLocker);
+	$('div.tiki_sheet').each(function() {
+		$(this).sheet($.sheet.tikiOptions);
+	});
 	
 	$.sheet.setValuesForCompareSheet('$sheetIndexes[0]', $('input.compareSheet1'), '$sheetIndexes[1]', $('input.compareSheet2'));
 	

@@ -1,4 +1,4 @@
-{title admpage="articles" help="Articles"}{tr}Submissions{/tr}{/title}
+{title}{tr}Submissions{/tr}{/title}
 
 <div class="navbar">
 	{button href="tiki-edit_submission.php" _text="{tr}Edit New Submission{/tr}"}
@@ -99,7 +99,7 @@
 						<a class="link" href="tiki-edit_submission.php?subId={$listpages[changes].subId}">{icon _id='page_edit'}</a>
 					{/if}
 					{if $tiki_p_approve_submission eq 'y'}
-						<a class="link" href="tiki-list_submissions.php?approve={$listpages[changes].subId}">{icon _id='accept' alt="{tr}Approve{/tr}"}</a>
+						<a class="link" href="tiki-list_submissions.php?approve={$listpages[changes].subId}"><img src='img/icons2/post.gif' alt="{tr}Approve{/tr}" title="{tr}Approve{/tr}" /></a>
 					{/if}
 					{if $tiki_p_remove_submission eq 'y'}
 						<a class="link" href="tiki-list_submissions.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$listpages[changes].subId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
@@ -107,12 +107,11 @@
 				</td>
 			</tr>
 		{sectionelse}
-			{assign var=numbercol value=$numbercol+1}
 			{norecords _colspan=$numbercol}
 		{/section}
 		{if $tiki_p_remove_submission eq 'y' or $tiki_p_approve_submission eq 'y'}
 			<tr>
-				<td colspan="{$numbercol}">
+				<td colspan="7">
 					{if $listpages}
 						<p align="left"> {*on the left to have it close to the checkboxes*}
 							{if $tiki_p_remove_submission eq 'y'}

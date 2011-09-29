@@ -88,50 +88,23 @@ if (isset($_REQUEST['checked'])) {
 			$commentslib->remove_comment($id);
 		}
 	}
-
-	// Ban IP adresses of multiple spammers
-	if ( isset($_REQUEST['ban_x']) ) {
-		$mass_ban_ip = implode('|',$checked);
-		header('Location: tiki-admin_banning.php?mass_ban_ip=' . $mass_ban_ip);
-		exit;
-	}
-	// Ban IP adresses of multiple spammers and remove comments
-	if ( isset($_REQUEST['ban_remove_x'])) {
-		$mass_ban_ip = implode('|',$checked);
-		header('Location: tiki-admin_banning.php?mass_remove=y&mass_ban_ip=' . $mass_ban_ip);
-		exit;
-	}
-
-	// Approve comment(s)
-	if ($prefs['feature_comments_moderation'] == 'y' && isset($_REQUEST['approve_x']) ) {
+	// Approve/Reject comment(s)
+	if ($prefs['feature_comments_moderation'] == 'y' && isset($_REQUEST['approve']) && in_array($_REQUEST['approve'], array('y', 'n', 'r'))) {
 		foreach($checked as $id) {
-			$commentslib->approve_comment($id, 'y');
+			$commentslib->approve_comment($id, $_REQUEST['approve']);
 		}
 	}
-
-	// Reject comment(s)
-	if ($prefs['feature_comments_moderation'] == 'y' && isset($_REQUEST['reject_x'])) {
+	
+	// Archive/unarchive comment(s)
+	if ($prefs['comments_archive'] == 'y' && isset($_REQUEST['archive']) && in_array($_REQUEST['archive'], array('archive', 'unarchive'))) {
 		foreach($checked as $id) {
-			$commentslib->approve_comment($id, 'r');
-			$rejected[$id] = true;
-		}
-		$smarty->assign_by_ref('rejected', $rejected);
-	}
-
-	// Archive comment(s)
-	if ($prefs['comments_archive'] == 'y' && isset($_REQUEST['archive_x']) ) {
-		foreach($checked as $id) {
-			$commentslib->archive_thread($id);
+			if ($_REQUEST['archive'] == 'archive') {
+				$commentslib->archive_thread($id);
+			} else if ($_REQUEST['archive'] == 'unarchive') {
+				$commentslib->unarchive_thread($id);
+			}
 		}
 	}
-
-	// Unarchive comment(s)
-	if ($prefs['comments_archive'] == 'y' && isset($_REQUEST['unarchive_x']) ) {
-		foreach($checked as $id) {
-			$commentslib->unarchive_thread($id);
-		}
-	}
-
 }
 if (isset($_REQUEST["sort_mode"])) {
 	$sort_mode = $_REQUEST["sort_mode"];

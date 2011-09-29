@@ -10,40 +10,15 @@
  * 
  * Letter key: ~g~
  *
+ *	Options:
+ *		0: auto-assign =
+ *			0 = general
+ *			1 = creator
+ *			2 = modifier
+ *
  */
 class Tracker_Field_GroupSelector extends Tracker_Field_Abstract
 {
-	public static function getTypes()
-	{
-		return array(
-			'g' => array(
-				'name' => tr('Group Selector'),
-				'description' => tr('Allows a selection from a specified list of user groups.'),
-				'help' => 'Group selector',				
-				'prefs' => array('trackerfield_groupselector'),
-				'tags' => array('advanced'),
-				'default' => 'n',
-				'params' => array(
-					'autoassign' => array(
-						'name' => tr('Auto-Assign'),
-						'description' => tr('Determines if any group should be automatically assigned to the field.'),
-						'filter' => 'int',
-						'options' => array(
-							0 => tr('None'),
-							1 => tr('Creator'),
-							2 => tr('Modifier'),
-						),
-					),
-					'groupId' => array(
-						'name' => tr('Group Filter'),
-						'description' => tr('Limit listed groups to those including the specified group.'),
-						'filter' => 'int',
-					),
-				),
-			),
-		);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		global $tiki_p_admin_trackers, $group;
@@ -84,22 +59,6 @@ class Tracker_Field_GroupSelector extends Tracker_Field_Abstract
 	function renderInput($context = array())
 	{
 		return $this->renderTemplate('trackerinput/groupselector.tpl', $context);
-	}
-
-	function handleSave($value, $oldValue)
-	{
-		global $prefs;
-
-		if ($this->getOption(0) && is_null($oldValue)) {
-			$definition = $this->getTrackerDefinition();
-			if ($prefs['groupTracker'] == 'y' && $definition->isEnabled('autoCreateGroup')) {
-				$value = TikiLib::lib('trk')->groupName($definition->getInformation(), $this->getItemId());
-			}
-		}
-
-		return array(
-			'value' => $value,
-		);
 	}
 }
 

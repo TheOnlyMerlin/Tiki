@@ -13,7 +13,6 @@ function wikiplugin_poll_info() {
 		'prefs' => array( 'feature_polls', 'wikiplugin_poll' ),
 		'body' => tra('Title'),
 		'icon' => 'pics/icons/thumb_up.png',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'pollId' => array(
 				'required' => true,
@@ -58,7 +57,8 @@ function wikiplugin_poll($data, $params) {
 	extract ($params,EXTR_SKIP);
 
 	if (!isset($pollId)) {
-	    return WikiParser_PluginOutput::argumentError(array('pollId'));
+	    $smarty->assign('msg', tra("missing poll ID for plugin POLL"));
+	    return $smarty->fetch("error_simple.tpl");
 	}
 	global $polllib;include_once ('lib/polls/polllib.php');
 

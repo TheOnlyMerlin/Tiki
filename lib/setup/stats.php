@@ -12,7 +12,7 @@ if ( $prefs['feature_referer_stats'] == 'y' ) {
     if ( isset($_SERVER['HTTP_REFERER']) ) {
         $pref = parse_url($_SERVER['HTTP_REFERER']);
         if ( isset($pref['host']) && !strstr($_SERVER['SERVER_NAME'], $pref['host']) ) {
-            $tikilib->register_referer($pref['host'],$_SERVER['HTTP_REFERER']);
+            $tikilib->register_referer($pref['host']);
         }
     }
 }
@@ -21,8 +21,7 @@ if ( $prefs['feature_referer_stats'] == 'y' ) {
 //if ( $prefs['feature_stats'] == 'y' ) {
 	if ( $prefs['count_admin_pvs'] == 'y' || $user != 'admin' ) {
 		if ( ! isset($section) or ( $section != 'chat' and $section != 'livesupport' ) ) {
-			$statslib = TikiLib::lib('stats');
-			$statslib->add_pageview();
+			$tikilib->add_pageview();
 		}
 	}
 //}

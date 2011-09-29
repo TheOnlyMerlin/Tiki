@@ -41,8 +41,8 @@ class OIntegrate
 
 	function performRequest( $url, $postBody = null ) // {{{
 	{
-		$cachelib = TikiLib::lib('cache');
-		$tikilib = TikiLib::lib('tiki');
+		global $cachelib;
+		require_once 'lib/cache/cachelib.php';
 
 		if ( $cache = $cachelib->getSerialized( $url.$postBody )) {
 			if( time() < $cache['expires'] )
@@ -51,35 +51,40 @@ class OIntegrate
 			$cachelib->invalidate( $url.$postBody );
 		}
 
-		$client = $tikilib->get_http_client( $url );
-		$method = null;
-
 		if( empty($postBody) ) {
-			$method = 'GET';
-			$client->setHeaders(array(
-				'Accept' => 'application/json,text/x-yaml',
-				'OIntegrate-Version' => '1.0',
-			));
+			$opts = array(
+				'http' => array(
+					'method' => 'GET',
+					'header' =>
+						"Accept: application/json,text/x-yaml\r\n"
+						. "OIntegrate-Version: 1.0\r\n",
+					'content' => '',
+				),
+			);
 		} else {
-			$client->setHeaders(array(
-				'Accept' => 'application/json,text/x-yaml',
-				'OIntegrate-Version' => '1.0',
-			));
-			$client->setRawData( $postBody, 'application/x-www-form-urlencoded' );
+			$opts = array(
+				'http' => array(
+					'method' => 'POST',
+					'header' =>
+						"Accept: application/json,text/x-yaml\r\n"
+						. "OIntegrate-Version: 1.0\r\n"
+						. "Content-Type: application/x-www-form-urlencoded\r\n"
+						. "Content-Length: " . strlen($postBody) . "\r\n",
+					'content' => $postBody,
+				),
+			);
 		}
 
-		if( count( $this->schemaVersion ) ) {
-			$client->setHeaders( 'OIntegrate-SchemaVersion', implode( ', ', $this->schemaVersion ) );
-		}
-		if( count( $this->acceptTemplates ) ) {
-			$client->setHeaders( 'OIntegrate-AcceptTemplate', implode( ', ', $this->acceptTemplates ) );
-		}
+		if( count( $this->schemaVersion ) )
+			$opts['http']['header'] .= "OIntegrate-SchemaVersion: " . implode( ', ', $this->schemaVersion ) . "\r\n";
+		if( count( $this->acceptTemplates ) )
+			$opts['http']['header'] .= "OIntegrate-AcceptTemplate: " . implode( ', ', $this->acceptTemplates ) . "\r\n";
 
-		$httpResponse = $client->request($method);
-		$content = $httpResponse->getBody();
+		$context = stream_context_create( $opts );
+		$content = file_get_contents( $url, false, $context );
 
-		$contentType = $httpResponse->getHeader('Content-Type');
-		$cacheControl = $httpResponse->getHeader('Cache-Control');
+		$contentType = $this->extractHeader( $http_response_header, 'Content-Type' );
+		$cacheControl = $this->extractHeader( $http_response_header, 'Cache-Control' );
 
 		$response = new OIntegrate_Response;
 		$response->contentType = $contentType;
@@ -90,11 +95,11 @@ class OIntegrate
 		$filter->addCatchAllFilter( 'xss' );
 
 		$response->data = $filter->filter( $response->data );
-		$response->version = $httpResponse->getHeader('OIntegrate-Version');
-		$response->schemaVersion = $httpResponse->getHeader('OIntegrate-SchemaVersion');
+		$response->version = $this->extractHeader( $http_response_header, 'OIntegrate-Version' );
+		$response->schemaVersion = $this->extractHeader( $http_response_header, 'OIntegrate-SchemaVersion' );
 		if( ! $response->schemaVersion && isset( $response->data->_version ) )
 			$response->schemaVersion = $response->data->_version;
-		$response->schemaDocumentation = $httpResponse->getHeader('OIntegrate-SchemaDocumentation');
+		$response->schemaDocumentation = $this->extractHeader( $http_response_header, 'OIntegrate-SchemaDocumentation' );
 
 		global $prefs;
 		// Respect cache duration asked for
@@ -116,6 +121,17 @@ class OIntegrate
 		}
 
 		return $response;
+	} // }}}
+
+	private function extractHeader( $headerList, $name ) // {{{
+	{
+		$name = strtolower( $name );
+		foreach( $headerList as $line )
+			if( strpos( strtolower($line), $name ) === 0 ) {
+				list( $header, $value ) = explode( ':', $line, 2 );
+
+				return trim( $value );
+			}
 	} // }}}
 
 	function unserialize( $type, $data ) // {{{

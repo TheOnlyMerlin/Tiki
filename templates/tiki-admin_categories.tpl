@@ -1,4 +1,3 @@
-{* $Id$ *}
 {title help="Categories" admpage="category"}{tr}Admin Categories{/tr}{/title}
 
 <div class="navbar">
@@ -13,23 +12,61 @@
 <div class="tree" id="top">
 	<div class="treetitle">{tr}Current category:{/tr} 
 		<a href="tiki-admin_categories.php?parentId=0" class="categpath">{tr}Top{/tr}</a>
-		{if $parentId != 0}
-		{foreach $path as $id=>$name}
+		{section name=x loop=$path}
 			&nbsp;::&nbsp;
-			<a class="categpath" href="tiki-admin_categories.php?parentId={$id}">{$name|escape}</a>
-		{/foreach}
+			<a class="categpath" href="tiki-admin_categories.php?parentId={$path[x].categId}">{$path[x].name|escape}</a>
+		{/section}
 		<br />
 		{tr}Current Category ID:{/tr} {$parentId}
-		{/if}
 	</div>
 </div>
 
-{$tree}
+{section name=dx loop=$catree}
+	{assign var=after value=$smarty.section.dx.index_next}
+	{assign var=before value=$smarty.section.dx.index_prev}
+	{if $smarty.section.dx.index > 0 and $catree[dx].deep > $catree[$before].deep}
+		<div id="id{$catree[$before].categId}" style="display:{if $catree[$before].incat eq 'y'}inline{else}none{/if};">
+	{/if}
+	<div class="treenode{if $catree[dx].categId eq $smarty.request.parentId}select{/if}">
+	<!-- {$catree[dx].parentId} :: {$catree[dx].categId} :: -->
+	{if $catree[dx].children > 0}
+		<i class="mini">{$catree[dx].children} {tr}Child categories{/tr}</i>
+	{/if}
+		
+	{if $catree[dx].objects > 0}
+		<i class="mini">{$catree[dx].objects} {tr}Child categories{/tr}</i>
+	{/if}
+		
+	<a href="tiki-admin_categories.php?parentId={$catree[dx].parentId}&amp;categId={$catree[dx].categId}" title="{tr}Edit{/tr}">{icon _id='page_edit' hspace="5" vspace="1"}</a>
+	<a href="tiki-admin_categories.php?parentId={$catree[dx].categId}" title="{tr}View{/tr}">{icon _id='magnifier' hspace="5" vspace="1"}</a>
+	<a href="tiki-admin_categories.php?parentId={$catree[dx].parentId}&amp;removeCat={$catree[dx].categId}" title="{tr}Delete{/tr}">{icon _id='cross' hspace="5" vspace="1"}</a>
+		
+	{if $catree[dx].has_perm eq 'y'}
+		<a title="{tr}Edit permissions for this category{/tr}" href="tiki-objectpermissions.php?objectType=category&amp;objectId={$catree[dx].categId}&amp;objectName={$catree[dx].name|escape:'url'}&amp;permType=all">{icon hspace="5" vspace="1" _id='key_active' alt="{tr}Edit permissions for this category{/tr}"}</a>
+	{else}
+		<a title="{tr}Assign Permissions{/tr}" href="tiki-objectpermissions.php?objectType=category&amp;objectId={$catree[dx].categId}&amp;objectName={$catree[dx].name|escape:'url'}&amp;permType=all">{icon hspace="5" vspace="1" _id='key' alt="{tr}Assign Permissions{/tr}"}</a>
+	{/if}
+		
+	<div style="display: inline; padding-left:{$catree[dx].deep*30+5}px;">
+		<a class="catname" href="tiki-admin_categories.php?parentId={$catree[dx].categId}">{$catree[dx].name|escape}</a>
+		{if $smarty.section.dx.last}
+			{repeat count=$catree[dx].deep}</div>{/repeat}
+		{elseif $catree[dx].deep < $catree[$after].deep}
+			<a href="javascript:toggle('id{$catree[dx].categId}');" class="linkmenu">&gt;&gt;&gt;</a>
+			</div>
+		{elseif $catree[dx].deep eq $catree[$after].deep}
+			</div>
+		{else}
+			</div>
+			{repeat count=$catree[dx].deep-$catree[$after].deep}</div>{/repeat}
+		{/if}
+	</div>
+{/section}
 
 {tabset}
 	{tab name="{tr}Create/Edit category{/tr}"}
 		{if $categId > 0}
-			<h2>{tr}Edit this category:{/tr} <b>{$categoryName|escape}</b> </h2>
+			<h2>{tr}Edit this category:{/tr} <b>{$name|escape}</b> </h2>
 			{button href="tiki-admin_categories.php?parentId=$parentId#editcreate" _text="{tr}Create New{/tr}" _title="{tr}Create New{/tr}"}
 		{else}
 			<h2>{tr}Add new category{/tr}</h2>
@@ -41,16 +78,16 @@
 					<td>{tr}Parent:{/tr}</td>
 					<td>
 						<select name="parentId">
-							{if $tiki_p_admin_categories eq 'y'}<option value="0">{tr}Top{/tr}</option>{/if}
-								{foreach $categories as $category}
-								<option value="{$category.categId}" {if $category.categId eq $parentId}selected="selected"{/if}>{$category.categpath|escape}</option>
-								{/foreach}
+							<option value="0">{tr}Top{/tr}</option>
+							{section name=ix loop=$catree}
+								<option value="{$catree[ix].categId|escape}" {if $catree[ix].categId eq $parentId}selected="selected"{/if}>{$catree[ix].categpath|escape}</option>
+							{/section}
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td>{tr}Name:{/tr}</td>
-					<td><input type="text" size="40" name="name" value="{$categoryName|escape}" /></td>
+					<td><input type="text" size="40" name="name" value="{$name|escape}" /></td>
 				</tr>
 				<tr>
 					<td>{tr}Description:{/tr}</td>
@@ -72,17 +109,23 @@
 			</form>
 		{/tab}
 	{/if}
-	{if $parentId != 0}
 	{tab name="{tr}Objects in category{/tr}"}
 		<h2>{tr}Objects in category:{/tr} {$categ_name|escape}</h2>
 		{if $objects}
-			<form method="get" action="tiki-admin_categories.php">
-				<label>{tr}Find:{/tr}<input type="text" name="find" /></label>
-				<input type="hidden" name="parentId" value="{$parentId|escape}" />
-				<input type="submit" value="{tr}Filter{/tr}" name="search" />
-				<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
-				<input type="hidden" name="find_objects" value="{$find_objects|escape}" />
-			</form>
+			<table class="findtable">
+				<tr>
+					<td class="findtable">{tr}Find{/tr}</td>
+					<td class="findtable">
+						<form method="get" action="tiki-admin_categories.php">
+							<input type="text" name="find" />
+							<input type="hidden" name="parentId" value="{$parentId|escape}" />
+							<input type="submit" value="{tr}Find{/tr}" name="search" />
+							<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
+							<input type="hidden" name="find_objects" value="{$find_objects|escape}" />
+						</form>
+					</td>
+				</tr>
+			</table>
 		{/if}
 		<table class="normal">
 			<tr>
@@ -113,6 +156,7 @@
 		{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 	{/tab}
 	
+	{if $parentId !=0}
 		{tab name="{tr}Moving objects between categories{/tr}"}
 			<h2>{tr}Moving objects between categories{/tr}</h2>
 			<form method="get" action="tiki-admin_categories.php" name="move">
@@ -120,30 +164,38 @@
 				<input type="submit" name="unassign" value="{tr}Unassign all objects from this category{/tr}" />
 				<br />
 				<select name="toId">
-				{foreach $categories as $category}
-					<option value="{$category.categId}" {if $category.categId eq $parentId}selected="selected"{/if}>{$category.categpath|escape}</option>
-				{/foreach}
+				{section name=ix loop=$catree}
+					<option value="{$catree[ix].categId|escape}" {if $catree[ix].categId eq $parentId}selected="selected"{/if}>{$catree[ix].categpath|escape}</option>
+				{/section}
 				</select>
 				<input type="submit" name="move_to" value="{tr}Move all the objects from this category to this one{/tr}" />
 				<br />
 				<select name="to">
-				{foreach $categories as $category}
-					<option value="{$category.categId}" {if $category.categId eq $parentId}selected="selected"{/if}>{$category.categpath|escape}</option>
-				{/foreach}				</select>
+				{section name=ix loop=$catree}
+					<option value="{$catree[ix].categId|escape}" {if $catree[ix].categId eq $parentId}selected="selected"{/if}>{$catree[ix].categpath|escape}</option>
+				{/section}
+				</select>
 				<input type="submit" name="copy_from" value="{tr}Assign all objects of this category to this one{/tr}" />
 			</form>
 		{/tab}
 				
 		{tab name="{tr}Add objects to category{/tr}"}
 			<h2>{tr}Add objects to category:{/tr} <b>{$categ_name|escape}</b></h2>
-			<form method="get" action="tiki-admin_categories.php">
-				<label>{tr}Find:{/tr}<input type="text" name="find_objects" /></label>
-				<input type="hidden" name="parentId" value="{$parentId|escape}" />
-				<input type="submit" value="{tr}Filter{/tr}" name="search_objects" />
-				<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
-				<input type="hidden" name="offset" value="{$offset|escape}" />
-				<input type="hidden" name="find" value="{$find|escape}" />
-			</form>
+			<table class="findtable">
+				<tr>
+					<td class="findtable">{tr}Find{/tr}</td>
+					<td>
+						<form method="get" action="tiki-admin_categories.php">
+							<input type="text" name="find_objects" />
+							<input type="hidden" name="parentId" value="{$parentId|escape}" />
+							<input type="submit" value="{tr}Filter{/tr}" name="search_objects" />
+							<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
+							<input type="hidden" name="offset" value="{$offset|escape}" />
+							<input type="hidden" name="find" value="{$find|escape}" />
+						</form>
+					</td>
+				</tr>
+			</table>
 			{pagination_links cant=$maximum step=$maxRecords offset=$offset}{/pagination_links}
 			<form action="tiki-admin_categories.php" method="post">
 				<input type="hidden" name="parentId" value="{$parentId|escape}" />

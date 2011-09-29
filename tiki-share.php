@@ -82,8 +82,11 @@ if (empty($_REQUEST['report']) || $_REQUEST['report'] != 'y') {
 	}
 	$smarty->assign('forums',$forums);
 	$report='n';
+	$smarty->assign('headtitle', tra('Share this page'));
 } else {
 	$report='y';
+	$smarty->assign('headtitle', tra('Report this page'));
+
 }
 $smarty->assign('report',$_REQUEST['report']);
 
@@ -327,7 +330,7 @@ function checkAddresses($recipients) {
 			$ok = $ret[0];
 		}
 		if (!$ok) {
-			$e[] = tra('One of the email addresses you typed is invalid:') . '&nbsp;' . $recipient;
+			$e[] = tra('One of the email addresses you typed is invalid') . ': ' . $recipient;
 		}
 	}
 	if(count($e) != 0) {

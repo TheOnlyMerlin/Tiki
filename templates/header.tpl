@@ -1,4 +1,3 @@
-{* $Id$ *}
 {if $base_uri and ($dir_level gt 0 or $prefs.feature_html_head_base_tag eq 'y')}
 	<base href="{$base_uri|escape}" />
 {/if}
@@ -61,7 +60,11 @@
 		{elseif !empty($title) and !is_array($title)}
 			{$title|escape}
 		{elseif !empty($page)}
-			{$page|escape}
+			{if isset($beingStaged) and $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}
+				{$approvedPageName|escape}
+			{else}
+				{$page|escape}
+			{/if}
 		{elseif !empty($description)}{$description|escape}
 		{* add $description|escape if you want to put the description + update breadcrumb_build replace return $crumbs->title; with return empty($crumbs->description)? $crumbs->title: $crumbs->description; *}
 		{elseif !empty($arttitle)}
@@ -88,7 +91,7 @@
 {/if}
 
 {* --- universaleditbutton.org --- *}
-{if (isset($editable) and $editable) and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox' or $tiki_p_admin_wiki eq 'y')}
+{if (isset($editable) and $editable) and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox' or $tiki_p_admin_wiki eq 'y' or $canEditStaging eq 'y')}
 	<link rel="alternate" type="application/x-wiki" title="{tr}Edit this page!{/tr}" href="tiki-editpage.php?page={$page|escape:url}" />
 {/if}
 

@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {title help="Contribution"}{tr}Admin Contributions{/tr}{/title}
 
 {if $contribution}
@@ -123,7 +121,7 @@
 	{cycle print=false values="even,odd"}
 	{section name=ix loop=$contributions}
 		<tr class="{cycle}">
-			<td class="text">{$contributions[ix].name|escape}</td>
+			<td class="text">{$contributions[ix].name}</td>
 			<td class="text">{$contributions[ix].description|truncate|escape}</td>
 			<td class="action">
 				<a class="link" href="tiki-admin_contribution.php?contributionId={$contributions[ix].contributionId}">{icon _id='shape_square_edit'}</a> &nbsp;

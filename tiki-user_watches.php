@@ -47,7 +47,7 @@ if (isset($_POST['langwatch'])) {
 
 if ($prefs['feature_categories']) {
 	include_once ('lib/categories/categlib.php');
-	$categories = $categlib->getCategories(NULL, true, false);
+	$categories = $categlib->list_categs();
 } else {
 	$categories = array();
 }
@@ -141,7 +141,7 @@ if ( $prefs['feature_user_watches_languages'] == 'y') {
 	);
 }
 $rawEvents = $tikilib->get_watches_events();
-$events = array();
+$event = array();
 foreach($rawEvents as $event) {
 	if (array_key_exists($event, $notification_types)) {
 		$events[$event] = $notification_types[$event]['label'];

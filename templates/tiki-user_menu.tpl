@@ -1,5 +1,3 @@
-{* $Id$ *}
-<div class="tikimenu{if $menu_info.structure eq 'y'} structuremenu{/if}">
 {assign var=opensec value='0'}
 {assign var=sep value=''}
 
@@ -37,7 +35,7 @@
 			</span>
 		{/if}
 	{elseif $prefs.feature_menusfolderstyle eq 'y'}
-	{assign var="icon_name" value="icnmenu$cname"}
+	{assign var="icon_name" value=icnmenu$cname}
 	<a class='separator' href="javascript:icntoggle('menu{$cname}');" title="{tr}Toggle options{/tr}">
 		{if $menu_info.type ne 'd'}
 			{if empty($menu_info.icon)}
@@ -118,4 +116,4 @@
 {/section}
 {assign var=opensec value=0}
 {/if}
-</div>
+

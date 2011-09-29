@@ -539,10 +539,12 @@ class Tiki_Profile_InstallHandler_Tracker extends Tiki_Profile_InstallHandler //
 			$options[$key] = $value;
 		}
 
-		$trklib = TikiLib::lib('trk');
+		global $trklib;
+		if( ! $trklib )
+			require_once 'lib/trackers/trackerlib.php';
 		
-		$trackerId = $trklib->get_tracker_by_name($name);
-		return $trklib->replace_tracker( $trackerId, $name, $description, $options, 'y' );
+		// using false as trackerId stops multiple trackers of same name being created
+		return $trklib->replace_tracker( false, $name, $description, $options, 'y' );
 	} // }}}
 
 	function _export($trackerId) // {{{
@@ -637,10 +639,6 @@ class Tiki_Profile_InstallHandler_TrackerField extends Tiki_Profile_InstallHandl
 			'visby' => '',     //just adding this as a placeholder for now - format seems quite complex
 			'editby' => '',    //just adding this as a placeholder for now - format seems quite complex
 			'descparsed' => 'n',			
-			'validation' => '',
-			'validation_param' => '',
-			'validation_message' => '',
-			'permname' => $this->obj->getRef(), // Use the profile reference as the name by default
 		);
 	} // }}}
 
@@ -729,13 +727,13 @@ class Tiki_Profile_InstallHandler_TrackerField extends Tiki_Profile_InstallHandl
 
 		$data = array_merge( $this->getDefaultValues(), $data );
 
-		$trklib = TikiLib::lib('trk');
-
-		$fieldId = $trklib->get_field_id($data['tracker'], $data['name']);
+		global $trklib;
+		if( ! $trklib )
+			require_once 'lib/trackers/trackerlib.php';
 
 		return $trklib->replace_tracker_field(
 			$data['tracker'],
-			$fieldId,
+			false,
 			$data['name'],
 			$data['type'],
 			$data['link'],
@@ -752,12 +750,7 @@ class Tiki_Profile_InstallHandler_TrackerField extends Tiki_Profile_InstallHandl
 			$data['errordesc'],
 			$data['visby'],
 			$data['editby'],
-			$data['descparsed'],
-			$data['validation'],
-			$data['validation_param'],
-			$data['validation_message'],
-			$data['permname']
-		);
+			$data['descparsed'] );
 	}
 
 	function _export($info)
@@ -883,7 +876,6 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler /
 	private $message;
 	private $structure;
 	private $wysiwyg;
-	private $wiki_authors_style;
 	
 	private $mode = 'create_or_update';
 	private $exists;
@@ -916,8 +908,6 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler /
 			$this->structure = $data['structure'];
 		if( array_key_exists( 'wysiwyg', $data ) )
 			$this->wysiwyg = $data['wysiwyg'];
-		if( array_key_exists( 'wiki_authors_style', $data ) )
-			$this->wiki_authors_style = $data['wiki_authors_style'];
 	}
 
 	function canInstall()
@@ -972,7 +962,6 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler /
 		$this->replaceReferences( $this->message );
 		$this->replaceReferences( $this->structure );
 		$this->replaceReferences( $this->wysiwyg );
-		$this->replaceReferences( $this->wiki_authors_style );
 	
 		$this->mode = $this->convertMode();
 
@@ -992,7 +981,7 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler /
 			if( ! $this->message ) {
 				$this->message = tra('Created by profile installer');
 			}
-			if( ! $tikilib->create_page( $this->name, 0, $this->content, time(), $this->message, 'admin', '0.0.0.0', $this->description, $this->lang, $is_html, null, $this->wysiwyg, $this->wiki_authors_style ) )
+			if( ! $tikilib->create_page( $this->name, 0, $this->content, time(), $this->message, 'admin', '0.0.0.0', $this->description, $this->lang, $is_html, null, $this->wysiwyg ) )
 				return null;
 		} else {
 			$info = $tikilib->get_page_info( $this->name, true, true );
@@ -1027,7 +1016,7 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler /
 				$this->message = tra('Page updated by profile installer');
 			}
 
-			$tikilib->update_page( $this->name, $this->content, $this->message, 'admin', '0.0.0.0', $this->description, 0, $this->lang, $is_html, null, null, $this->wysiwyg, $this->wiki_authors_style );
+			$tikilib->update_page( $this->name, $this->content, $this->message, 'admin', '0.0.0.0', $this->description, 0, $this->lang, $is_html, null, null, $this->wysiwyg );
 		}
 
 		global $multilinguallib;
@@ -1056,7 +1045,6 @@ class Tiki_Profile_InstallHandler_Category extends Tiki_Profile_InstallHandler /
 	private $name;
 	private $description = '';
 	private $parent = 0;
-	private $migrateparent = 0;
 	private $items = array();
 
 	function fetchData()
@@ -1072,8 +1060,6 @@ class Tiki_Profile_InstallHandler_Category extends Tiki_Profile_InstallHandler /
 			$this->description = $data['description'];
 		if( array_key_exists( 'parent', $data ) )
 			$this->parent = $data['parent'];
-		if( array_key_exists( 'migrateparent', $data ) )
-			$this->migrateparent = $data['migrateparent'];
 		if( array_key_exists( 'items', $data ) && is_array( $data['items'] ) )
 			foreach( $data['items'] as $pair )
 				if( is_array($pair) && count( $pair ) == 2 )
@@ -1097,7 +1083,6 @@ class Tiki_Profile_InstallHandler_Category extends Tiki_Profile_InstallHandler /
 		$this->replaceReferences( $this->name );
 		$this->replaceReferences( $this->description );
 		$this->replaceReferences( $this->parent );
-		$this->replaceReferences( $this->migrateparent );
 		$this->replaceReferences( $this->items );
 		
 		global $categlib;
@@ -1106,10 +1091,6 @@ class Tiki_Profile_InstallHandler_Category extends Tiki_Profile_InstallHandler /
 			$categlib->update_category( $id, $this->name, $this->description, $this->parent );
 		} else {
 			$id = $categlib->add_category( $this->parent, $this->name, $this->description );
-		}
-
-		if ($this->migrateparent && $from = $categlib->exist_child_category( $this->migrateparent, $this->name )) {
-			$categlib->move_all_objects($from, $id);
 		}
 
 		foreach( $this->items as $item )
@@ -1677,9 +1658,8 @@ class Tiki_Profile_InstallHandler_PluginAlias extends Tiki_Profile_InstallHandle
 
 		$name = $data['name'];
 		unset( $data['name'] );
-		
-		$parserlib = TikiLib::lib('parser');
-		$parserlib->plugin_alias_store( $name, $data );
+
+		$tikilib->plugin_alias_store( $name, $data );
 
 		return $name;
 	}
@@ -2282,7 +2262,6 @@ class Tiki_Profile_InstallHandler_Forum extends Tiki_Profile_InstallHandler // {
 			'enable_ui_email' => 'n',
 			'enable_ui_online' => 'n',
 			'enable_password_protection' => 'n',
-			'forum_language' => '',
 		);
 
 		$data = Tiki_Profile::convertLists( $data, array(
@@ -2379,8 +2358,7 @@ class Tiki_Profile_InstallHandler_Forum extends Tiki_Profile_InstallHandler // {
 			$data['list_att_nb'],
 			$data['list_topic_last_post_title'],
 			$data['list_topic_last_post_avatar'],
-			$data['list_topic_author_avatar'],
-			$data['forum_language']
+			$data['list_topic_author_avatar']
 		);
 
 		return $id;
@@ -2690,9 +2668,6 @@ class Tiki_Profile_InstallHandler_Calendar extends Tiki_Profile_InstallHandler /
 			global $user;
 			$customflags = isset($calendar['customflags']) ? $calendar['customflags']  : array();
 			$options = isset($calendar['options']) ? $calendar['options']  : array();
-			if (!isset($calendar['options']) && !isset($calendar['customflags']) && !empty($calendar['calendarId'])) {
-				return $calendar['calendarId']; //only pick up the id
-			}
 			$id = $calendarlib->set_calendar($calendar['calendarId'], $user, $calendar['name'], $calendar['description'], $customflags,$options);
 			return $id;
 		}

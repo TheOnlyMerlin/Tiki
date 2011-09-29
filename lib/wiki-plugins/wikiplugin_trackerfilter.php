@@ -238,8 +238,6 @@ $(".trackerfilter form").submit( function () {
 		}
 		if (empty($params['max']))
 			$params['max'] = $prefs['maxRecords'];
-		if (!empty($_REQUEST['f_status']))
-			$params['status'] = $_REQUEST['f_status'];
 		wikiplugin_trackerFilter_save_session_filters($params);
 		$smarty->assign('urlquery', wikiplugin_trackerFilter_build_urlquery($params));
 		include_once('lib/wiki-plugins/wikiplugin_trackerlist.php');
@@ -315,8 +313,6 @@ function wikiplugin_trackerfilter_build_trackerlist_filter($input, $formats, &$f
 		if (substr($key, 0, 2) == 'f_' && !empty($val) && (!is_array($val) || !empty($val[0]))) {
 			if (!is_array($val)) { $val = urldecode($val); }
 			$fieldId = substr($key, 2);
-			if ($fieldId == 'status')
-				continue;
 			if (preg_match('/([0-9]+)(Month|Day|Year|Hour|Minute|Second)/', $fieldId, $matches)) { // a date
 				if (!in_array($matches[1], $ffs)) {
 					$fieldId = $matches[1];
@@ -426,13 +422,9 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 
 	$iField = 0;
 	foreach ($listfields as $fieldId) {
-		if ($fieldId == 'status' || $fieldId == 'Status') {
-			$filter = array('name' => $fieldId, 'fieldId' => 'status', 'format' => 'd', 'opts'=> array(array('id'=>'o', 'name'=>'open', 'selected'=>(!empty($_REQUEST['f_status'])&& $_REQUEST['f_status']=='o')?'y':'n'), array('id'=>'p', 'name'=>'pending', 'selected'=>(!empty($_REQUEST['f_status'])&& $_REQUEST['f_status']=='p')?'y':'n'), array('id'=>'c', 'name'=>'closed', 'selected'=>(!empty($_REQUEST['f_status'])&& $_REQUEST['f_status']=='c')?'y':'n')));
-			$filters[] = $filter;
-			continue;		}
 		if (!is_numeric($fieldId)) { // composite field
 			$filter = array('name'=> 'Text', 'fieldId'=> $fieldId, 'format'=>'sqlsearch');
-			if (!empty($_REQUEST['f_'.$fieldId])) {
+			If (!empty($_REQUEST['f_'.$fieldId])) {
 				$filter['selected'] = $_REQUEST['f_'.$fieldId];
 			}
 			$filters[] = $filter;
@@ -454,17 +446,12 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 			switch ($field['type']){
 			case 'e':// category
 				global $categlib; include_once('lib/categories/categlib.php');
-				if (ctype_digit($field['options_array'][0]) && $field['options_array'][0] > 0) {
-					if (isset($field['options_array'][3]) && $field['options_array'][3] == 1) {
-						$type = 'descendants';
-					} else {
-						$type = 'children';
-					}
-					$filter = array('identifier'=>$field['options_array'][0], 'type'=>$type);
-					$res = $categlib->getCategories($filter, true, false); 
+				if (isset($fopt['options_array'][3]) && $fopt['options_array'][3] == 1) {
+					$all_descends = true;
 				} else {
-					$res = array();
+					$all_descends = false;
 				}
+				$res = $categlib->get_child_categories($field['options_array'][0], $all_descends);
 				$formats[$fieldId] = (count($res) >= 6)? 'd': 'r';
 				break;
 			case 'd': // drop down list
@@ -490,12 +477,7 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 		if ($field['type'] == 'e' && ($formats[$fieldId] == 't' || $formats[$fieldId] == 'T' || $formats[$fieldId] == 'i')) { // do not accept a format text for a categ for the moment
 			if (empty($res)) {
 				global $categlib; include_once('lib/categories/categlib.php');
-				if (ctype_digit($field['options_array'][0]) && $field['options_array'][0] > 0) {
-					$filter = array('identifier'=>$field['options_array'][0], 'type'=>'children');
-					$res = $categlib->getCategories($filter, true, false); 
-				} else {
-					$res = array();
-				}
+				$res = $categlib->get_child_categories($field['options_array'][0]);
 			}
 			$formats[$fieldId] = (count($res) >= 6)? 'd': 'r';
 		}
@@ -508,12 +490,7 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 			case 'e': // category
 				if (empty($res)) {
 					global $categlib; include_once('lib/categories/categlib.php');
-					if (ctype_digit($field['options_array'][0]) && $field['options_array'][0] > 0) {
-						$filter = array('identifier'=>$field['options_array'][0], 'type'=>'children');
-						$res = $categlib->getCategories($filter, true, false); 
-					} else {
-						$res = array();
-					}
+					$res = $categlib->get_child_categories($field['options_array'][0]);
 				}
 				foreach ($res as $opt) {
 					$opt['id'] = $opt['categId'];
@@ -576,6 +553,7 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 			case 'm': // email
 			case 'y': // country
 			case 'w': //dynamic item lists
+			case 'r': //item link
 			case 'k': //page selector
 			case 'u': // user
 			case 'g': // group
@@ -598,19 +576,6 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 						$opt['selected'] = 'n';
 					}
 					$opts[] = $opt;
-				}
-				break;
-			case 'r':
-				$opts = array();
-				$handler = $trklib->get_field_handler($field);
-				$add = $handler->getFieldData();
-				$selected = empty($_REQUEST['f_'.$fieldId])? '': $_REQUEST['f_'.$fieldId];
-				foreach ($add['list'] as $id => $option) {
-					$opts[] = array(
-						'id' => $id,
-						'name' => $option,
-						'selected' => $selected == $id,
-					);
 				}
 				break;
 		

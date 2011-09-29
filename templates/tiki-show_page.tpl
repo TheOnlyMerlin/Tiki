@@ -1,4 +1,3 @@
-{* $Id$ *} 
 {if !isset($hide_page_header) or !$hide_page_header}
 	{if $prefs.feature_siteloc eq 'page' and $prefs.feature_breadcrumbs eq 'y'}
 		{if $prefs.feature_siteloclabel eq 'y'}{tr}Location : {/tr}{/if}
@@ -8,6 +7,7 @@
 		{/if}
 	{/if}
 
+{include file='tiki-wiki_staging.tpl'}
 {include file='tiki-flaggedrev_approval_header.tpl'}
 
 {/if} {*hide_page_header*}
@@ -48,12 +48,16 @@
 				<ul>
 					{section name=j loop=$translation_alert[i]}
 						<li>
-							<a href="{$translation_alert[i][j].page|sefurl:wiki:with_next}no_bl=y">
-								{$translation_alert[i][j].page|escape}
+							<a href="{if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}{$translation_alert[i][j].approvedPage|sefurl:wiki:with_next}{else}{$translation_alert[i][j].page|sefurl:wiki:with_next}{/if}no_bl=y">
+								{if $translation_alert[i][j].approvedPage && $hasStaging == 'y'}
+									{$translation_alert[i][j].approvedPage}
+								{else}
+									{$translation_alert[i][j].page}
+								{/if}
 							</a>
 							({$translation_alert[i][j].lang})
-							{if $editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') and $beingEdited ne 'y'} 
-								<a href="tiki-editpage.php?page={$page|escape:'url'}&amp;source_page={$translation_alert[i][j].page|escape:'url'}&amp;oldver={$translation_alert[i][j].last_update|escape:'url'}&amp;newver={$translation_alert[i][j].current_version|escape:'url'}&amp;diff_style=htmldiff" title="{tr}update from it{/tr}">
+							{if $editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') and $beingEdited ne 'y' or $canEditStaging eq 'y'} 
+								<a href="tiki-editpage.php?page={if isset($stagingPageName) && $hasStaging == 'y'}{$stagingPageName|escape:'url'}{else}{$page|escape:'url'}{/if}&amp;source_page={$translation_alert[i][j].page|escape:'url'}&amp;oldver={$translation_alert[i][j].last_update|escape:'url'}&amp;newver={$translation_alert[i][j].current_version|escape:'url'}&amp;diff_style=htmldiff" title="{tr}update from it{/tr}">
 									{icon _id=arrow_refresh alt="{tr}update from it{/tr}" style="vertical-align:middle"}
 								</a>
 							{/if}
@@ -77,7 +81,7 @@
 
 				<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$prev_page}">{icon _id='resultset_previous' alt="{tr}Previous page{/tr}"}</a>
 
-				<small>{tr _0=$pagenum _1=$pages}page: %0/%1{/tr}</small>
+				<small>{tr 0=$pagenum 1=$pages}page: %0/%1{/tr}</small>
 
 				<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$next_page}">{icon _id='resultset_next' alt="{tr}Next page{/tr}"}</a>
 
@@ -132,7 +136,7 @@
 
 			<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$prev_page}">{icon _id='resultset_previous' alt="{tr}Previous page{/tr}"}</a>
 
-			<small>{tr _0=$pagenum _1=$pages}page: %0/%1{/tr}</small>
+			<small>{tr 0=$pagenum 1=$pages}page: %0/%1{/tr}</small>
 
 			<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$next_page}">{icon _id='resultset_next' alt="{tr}Next page{/tr}"}</a>
 
@@ -145,7 +149,7 @@
 	<div class="wikitext" id="wikifootnote">{$footnote}</div>
 {/if}
 
-<p class="editdate">
+{capture name='editdate_section'}{strip}
 	{if isset($wiki_authors_style) && $wiki_authors_style neq 'none'}
 		{include file='wiki_authors.tpl'}
 	{/if}
@@ -157,7 +161,14 @@
 		{capture name=url}{$base_url}{$page|sefurl}{if !empty($smarty.request.itemId)}&amp;itemId={$smarty.request.itemId}{/if}{/capture}
 		{tr}The original document is available at{/tr} <a href="{$smarty.capture.url}">{$smarty.capture.url}</a>
 	{/if}
-</p>
+{/strip}{/capture}
+
+{* When editdate (authors + copyright + print_page) section is not empty show it *}
+{if $smarty.capture.editdate_section neq ''}
+	<p class="editdate">
+		{$smarty.capture.editdate_section}
+	</p>
+{/if}
 
 {if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categoryobjects eq 'y'}
 	{$display_catobjects}

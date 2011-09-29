@@ -14,7 +14,6 @@ function wikiplugin_button_info() {
 		'validate' => 'none',
 		'extraparams' => false,
 		'icon' => 'pics/icons/control_play_blue.png',
-		'tags' => array( 'basic' ),		
 		'params' => array(
 			'href' => array(
 				'required' => true,
@@ -23,13 +22,6 @@ function wikiplugin_button_info() {
 				'filter' => 'url',
 				'default' => '',
 			),
-			'_class' => array(
-				'required' => false,
-                                'name' => tra('CSS Class'),
-                                'description' => tra('CSS class for the button'),
-                                'filter' => 'text',
-                                'default' => '',
-                        ),
 			'_text' => array(
 				'required' => false,
 				'name' => tra('Label'),
@@ -43,8 +35,6 @@ function wikiplugin_button_info() {
 
 function wikiplugin_button($data, $params) {
 	global $tikilib,$smarty;
-	$parserlib = TikiLib::lib('parser');
-	
 	if (empty($params['href'])) {
 		return tra('Incorrect param');
 	}
@@ -61,7 +51,7 @@ function wikiplugin_button($data, $params) {
 	}
 	
 	// Parse wiki argument variables in the url, if any (i.e.: {{itemId}} for it's numeric value).
-	$parserlib->parse_wiki_argvariable($params['href']);
+	$tikilib->parse_wiki_argvariable($params['href']);
 
 	include_once($path);
 	$func = 'smarty_function_button';

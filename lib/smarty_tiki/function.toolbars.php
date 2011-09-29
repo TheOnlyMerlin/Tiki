@@ -9,9 +9,9 @@
  * Smarty plugin to display content only to some groups
  */
 
-function smarty_function_toolbars($params, $smarty)
+function smarty_function_toolbars($params, &$smarty)
 {
-	global $prefs, $wysiwyg_wiki;
+	global $prefs;
 	$default = array('comments' => '');
 	$params = array_merge($default, $params);
 	
@@ -33,6 +33,14 @@ function smarty_function_toolbars($params, $smarty)
 		$comments = false;
 	}
 	
+	// some non-converted <textareas> expect $rows and $cols set in smarty (transitional for 6)
+	if (!isset($smarty->_tpl_vars['rows'])) {
+		$smarty->assign('rows', 20);
+	}
+	if (!isset($smarty->_tpl_vars['cols'])) {
+		$smarty->assign('cols', 80);
+	}
+	
 	// some tool filters to help roll out textarea & toolbars to more sections quickly (for 4.0)
 
 	$hidden = array();
@@ -50,13 +58,7 @@ function smarty_function_toolbars($params, $smarty)
 	include_once( 'lib/toolbars/toolbarslib.php' );
 	$list = ToolbarsList::fromPreference( $params['section'] . ($comments ? '_comments' : ''), $hidden );
 	if ( isset($params['_wysiwyg']) && $params['_wysiwyg'] == 'y') {
-		if ($wysiwyg_wiki) {
-			// load the Wiki toolbars into the CKE
-			return $list->getWysiwygArray( $params['area_id'], 'wiki' );			
-		} else {
-			// load the html toolbars into the CKE
-			return $list->getWysiwygArray( $params['area_id'] );
-		}
+		return $list->getWysiwygArray( $params['area_id'] );
 	} else {
 		return $list->getWikiHtml( $params['area_id'], $params['comments'] );
 	}

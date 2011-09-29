@@ -12,7 +12,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 // Param: 'id' or 'label'
-function smarty_function_interactivetranslation($params, $smarty) {
+function smarty_function_interactivetranslation($params, &$smarty) {
 	global $headerlib, $smarty;
 
 	$strings = get_collected_strings();
@@ -25,7 +25,7 @@ function smarty_function_interactivetranslation($params, $smarty) {
 	$strings = json_encode( $strings );
 	
 	// add wrench icon link
-	$smarty->loadPlugin('smarty_block_self_link');
+	require_once $smarty->_get_plugin_filepath('block', 'self_link');
 	$help .= smarty_block_self_link(
 		array( '_icon'=>'wrench',
 			   '_script'=>'tiki-edit_languages.php',
@@ -37,7 +37,7 @@ function smarty_function_interactivetranslation($params, $smarty) {
 JS;
 
 	$headerlib->add_jq_onready($jq);
-	$headerlib->add_jq_onready(file_get_contents('lib/language/js/interactive_translation.js'));
+	$headerlib->add_jq_onready(file_get_contents('lib/language/interactive_translation.js'));
 
 	return $smarty->fetch('interactive_translation_box.tpl');
 }

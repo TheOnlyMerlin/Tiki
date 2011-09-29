@@ -1,7 +1,7 @@
-{* $Id$ *}
-{title help="trackers"}{$tracker_info.name}{/title}
 
-{if ! isset($print_page) || $print_page ne 'y'}
+{title help="trackers"}{$tracker_info.name|escape}{/title}
+
+{if $print_page ne 'y'}
 
 	{* --------- navigation ------ *}
 	<div class="navbar">
@@ -31,7 +31,7 @@
 	</div>
 
 	{* ------- return/next/previous tab --- *}
-	{if $canView}
+	{if $tiki_p_view_trackers eq 'y'}
 		{pagination_links cant=$cant offset=$offset reloff=$smarty.request.reloff itemname="{tr}Item{/tr}"}
 			{* Do not specify an itemId in URL used for pagination, because it will use the specified itemId instead of moving to another item *}
 			{$smarty.server.php_self}?{query itemId=NULL trackerId=$trackerId}
@@ -47,26 +47,6 @@
 		{* --- tab with view ------------------------------------------------------------------------- *}
 		{if empty($tracker_info.viewItemPretty)}
 			<h2>{tr}View Item{/tr}</h2>
-			{if $tracker_is_multilingual}
-				<div class="translations">
-					<a href="{service controller=translation action=manage type=trackeritem source=$itemId}">{tr}Translations{/tr}</a>
-				</div>
-				{jq}
-					$('.translations a').click(function () {
-						var link = this;
-						$(this).serviceDialog({
-							title: $(link).text(),
-							data: {
-								controller: 'translation',
-								action: 'manage',
-								type: 'trackeritem',
-								source: "{{$itemId|escape}}"
-							}
-						});
-						return false;
-					});
-				{/jq}
-			{/if}
 			<table class="formcolor">
 				{if $tracker_info.showStatus eq 'y' or ($tracker_info.showStatusAdminOnly eq 'y' and $tiki_p_admin_trackers eq 'y')}
 					{assign var=ustatus value=$info.status|default:"p"}
@@ -77,8 +57,8 @@
 				{/if}
 				{assign var=stick value="n"}
 
-				{foreach from=$fields key=ix item=cur_field}
-					{if !($tracker_info.doNotShowEmptyField eq 'y' and empty($cur_field.value) and empty($cur_field.cat) and empty($cur_field.links) and $cur_field.type ne 's' and $cur_field.type ne 'h') and ($cur_field.options_array[0] ne 'password')}
+				{foreach from=$ins_fields key=ix item=cur_field}
+					{if ($cur_field.isHidden ne 'y' or $tiki_p_admin_trackers eq 'y') and !($tracker_info.doNotShowEmptyField eq 'y' and empty($cur_field.value) and empty($cur_field.cat) and empty($cur_field.links) and $cur_field.type ne 's' and $cur_field.type ne 'h') and ($cur_field.options_array[0] ne 'password') and (empty($cur_field.visibleBy) or in_array($default_group, $cur_field.visibleBy) or $tiki_p_admin_trackers eq 'y')}
 						<tr class="field{$cur_field.fieldId}">
 							<td class="formlabel" >
 								{$cur_field.name|escape}
@@ -112,16 +92,54 @@
 	{* -------------------------------------------------- tab with comments --- *}
 	{if $tracker_info.useComments eq 'y' and ($tiki_p_tracker_view_comments ne 'n' or $tiki_p_comment_tracker_items ne 'n')}
 
-		{tab name="{tr}Comments{/tr}"}
+		{if $tiki_p_tracker_view_comments ne 'n'}
+			{assign var=tabcomment_vtrackit value="{tr}Comments{/tr} (`$commentCount`)"}
+		{else}
+			{assign var=tabcomment_vtrackit value="{tr}Comments{/tr}"}
+		{/if}
 
-			<div id="comment-container" data-target="{service controller=comment action=list type=trackeritem objectId=$itemId}"></div>
-			{jq}
-				var id = '#comment-container';
-				$(id).comment_load($(id).data('target'));
-			{/jq}
+		{tab name=$tabcomment_vtrackit}
 
-		{/tab}
-	{/if}
+		{if $print_page ne 'y' and $tiki_p_comment_tracker_items eq 'y'}
+			<h2>{tr}Add a Comment{/tr}</h2>
+			<form action="tiki-view_tracker_item.php" method="post" id="commentform" name="commentform">
+				<input type="hidden" name="trackerId" value="{$trackerId|escape}" />
+				<input type="hidden" name="itemId" value="{$itemId|escape}" />
+				<input type="hidden" name="commentId" value="{$commentId|escape}" />
+				<table class="formcolor">
+					<tr>
+						<td>{tr}Title:{/tr}</td>
+						<td><input type="text" name="comment_title" value="{$comment_title|escape}"/></td>
+					</tr>
+					<tr>
+						<td>{tr}Comment:{/tr}</td>
+						<td><textarea rows="{if empty($rows)}4{else}{$rows}{/if}" cols="{if empty($cols)}50{else}{$cols}{/if}" name="comment_data" id="comment_data">{$comment_data|escape}</textarea></td>
+					</tr>
+					{if !$user and $prefs.feature_antibot eq 'y'}
+						{include file='antibot.tpl'}
+					{/if}
+					<tr>
+						<td>&nbsp;</td>
+						<td><input type="submit" name="save_comment" value="{tr}Save{/tr}" /></td>
+					</tr>
+				</table>
+			</form>
+		{/if}
+		{if $tiki_p_tracker_view_comments ne 'n'}
+			<h2>{tr}Comments{/tr}</h2>
+			{section name=ix loop=$comments}
+				<div class="commentbloc">
+					<b>{$comments[ix].title|escape}</b> {if $comments[ix].user}{tr}by{/tr} {$comments[ix].user|userlink}{/if}
+					{if $print_page ne 'y' and $tiki_p_admin_trackers eq 'y'}[<a class="link" href="tiki-view_tracker_item.php?trackerId={$trackerId}&amp;itemId={$itemId}&amp;commentId={$comments[ix].commentId}" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>|&nbsp;&nbsp;<a class="link" href="tiki-view_tracker_item.php?trackerId={$trackerId}&amp;itemId={$itemId}&amp;remove_comment={$comments[ix].commentId}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>&nbsp;&nbsp;]{/if}
+					<br />
+					<small>{tr}posted on:{/tr} {$comments[ix].posted|tiki_short_datetime}</small><br />
+					{$comments[ix].parsed}
+					<hr />
+				</div>
+			{/section}
+		{/if}
+	{/tab}
+{/if}
 
 {* ---------------------------------------- tab with attachments --- *}
 {if $tracker_info.useAttachments eq 'y' and $tiki_p_tracker_view_attachments eq 'y'}
@@ -131,8 +149,9 @@
 {/if}
 
 {* --------------------------------------------------------------- tab with edit --- *}
-{if (! isset($print_page) || $print_page ne 'y') && $canModify}
-	{tab name=$editTitle}
+{if $print_page ne 'y' && ($tiki_p_modify_tracker_items eq 'y' and $item_info.status ne 'p' and $item_info.status ne 'c') or ($tiki_p_modify_tracker_items_pending eq 'y' and $item_info.status eq 'p') or ($tiki_p_modify_tracker_items_closed eq 'y' and $item_info.status eq 'c') or $special}
+	{capture name="editTitle"}{if ($tiki_p_remove_tracker_items eq 'y' and $item_info.status ne 'p' and $item_info.status ne 'c') or ($tiki_p_remove_tracker_items_pending eq 'y' and $item_info.status eq 'p') or ($tiki_p_remove_tracker_items_closed eq 'y' and $item_info.status eq 'c')}{tr}Edit/Delete{/tr}{else}{tr}Edit{/tr}{/if}{/capture}
+	{tab name=$smarty.capture.editTitle}
 		<h2>{tr}Edit Item{/tr}</h2>
 
 		<div class="nohighlight">
@@ -179,9 +198,9 @@
 							{if count($fields) >= 5}
 								<input type="submit" name="save" value="{tr}Save{/tr}" onclick="needToConfirm=false" />
 								{* --------------------------- to return to tracker list after saving --------- *}
-								{if $canView}
+								{if $tiki_p_view_trackers eq 'y'}
 									<input type="submit" name="save_return" value="{tr}Save{/tr} &amp; {tr}Back to Items list{/tr}" onclick="needToConfirm=false" />
-									{if $canRemove}
+									{if $tiki_p_admin_trackers eq 'y' or ($tiki_p_remove_tracker_items eq 'y' and $item_info.status ne 'p' and $item_info.status ne 'c') or ($tiki_p_remove_tracker_items_pending eq 'y' and $item_info.status eq 'p') or ($tiki_p_remove_tracker_items_closed eq 'y' and $item_info.status eq 'c')}
 										<a class="link" href="tiki-view_tracker.php?trackerId={$trackerId}&amp;remove={$itemId}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
 									{/if}
 								{/if}
@@ -249,10 +268,10 @@
 					<td colspan="2">
 						<input type="submit" name="save" value="{tr}Save{/tr}" onclick="needToConfirm=false" />
 						{* --------------------------- to return to tracker list after saving --------- *}
-						{if $canView}
+						{if $tiki_p_view_trackers eq 'y'}
 							<input type="submit" name="save_return" value="{tr}Save{/tr} &amp; {tr}Back to Items List{/tr}" onclick="needToConfirm=false" />
 						{/if}
-						{if $canRemove}
+						{if $tiki_p_admin_trackers eq 'y' or ($tiki_p_remove_tracker_items eq 'y' and $item_info.status ne 'p' and $item_info.status ne 'c') or ($tiki_p_remove_tracker_items_pending eq 'y' and $item_info.status eq 'p') or ($tiki_p_remove_tracker_items_closed eq 'y' and $item_info.status eq 'c')}
 							<a class="link" href="tiki-view_tracker.php?trackerId={$trackerId}&amp;remove={$itemId}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
 						{/if}
 						{if $item_info.logs.cant}
@@ -264,7 +283,7 @@
 					</td>
 				</tr>
 			</table>
-		
+			{query _type='form_input' itemId=NULL trackerId=NULL}
 			{* ------------------- *}
 		</form>
 
@@ -307,6 +326,7 @@
 {/tabset}
 <br /><br />
 
-{if isset($print_page) && $print_page eq 'y'}
-	{tr}The original document is available at{/tr} <a href="{$base_url|escape}{$itemId|sefurl:trackeritem}">{$base_url|escape}{$itemId|sefurl:trackeritem}</a>
+{if $print_page eq 'y'}
+	{capture name=url}{$base_url}{$itemId|sefurl:trackeritem}{/capture}
+	{tr}The original document is available at{/tr} <a href="{$smarty.capture.url}">{$smarty.capture.url}</a>
 {/if}

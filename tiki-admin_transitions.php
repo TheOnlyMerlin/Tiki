@@ -93,7 +93,8 @@ case 'remove':
 }
 
 // Obtain data
-$categories = $categlib->getCategories();
+$all_categories = $categlib->list_categs();
+$categories = Perms::filter( array( 'type' => 'category' ), 'object', $all_categories, array( 'object' => 'categId' ), 'view_category' );
 $cat_tree = $categlib->generate_cat_tree( $categories, true, array_keys( $available_states ) );
 
 $transitionlib = new TransitionLib( $transition_mode );
@@ -144,6 +145,13 @@ $smarty->assign('cat_tree', $cat_tree );
 
 // Graph setup
 if( count( $available_states ) > 0 ) {
+	// Because they are only used in this file, they are marked as external so they
+	// are not included in the minify
+	$headerlib->add_jsfile( 'lib/dracula/raphael-min.js', 'external' );
+	$headerlib->add_jsfile( 'lib/dracula/graffle.js', 'external' );
+	$headerlib->add_jsfile( 'lib/dracula/graph.js', 'external' );
+
+
 	$edges = array();
 	foreach( $transitions as $tr ) {
 		$edges[] = array( 'from' => $tr['from_label'], 'to' => $tr['to_label'], 'label' => $tr['name'], 'preserve' => (bool) $tr['preserve'] );

@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 <div class="catblock clearfix"> 
 	{if !isset($params.showTitle) or $params.showTitle eq 'y'}
 		<div class="cattitle">
@@ -17,7 +15,7 @@
    {foreach key=t item=i from=$listcat}
    	{if $params.showtype ne 'n'}
       <li>
-      {$t}:
+      {tr}{$t}:{/tr}
       <ul class="{if $params.one eq 'y'}catitemsone{else}catitems{/if}">
 	{/if}
         {section name=o loop=$i}

@@ -21,14 +21,14 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  * 
  * Adapted to do more than string for tiki 5
  */
-function smarty_function_var_dump($params, $smarty)
+function smarty_function_var_dump($params, &$smarty)
 {
 	global $debugger, $smarty;
 	require_once('lib/debug/debugger.php');
 	//
 	$v = $params['var'];
 	if (!empty($v)) {
-		$tmp = $smarty->getTemplateVars();
+		$tmp = $smarty->get_template_vars();
 		if (is_array($tmp) && isset($tmp["$v"])) {
 			if (is_string($tmp[$v])) {
 				$debugger->msg("Smarty var_dump(".$v.') = '.print_r($tmp[$v], true));

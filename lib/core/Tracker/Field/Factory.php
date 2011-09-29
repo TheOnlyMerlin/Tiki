@@ -7,115 +7,91 @@
 
 class Tracker_Field_Factory
 {
-	private static $trackerFieldLocalCache;
-
 	private $trackerDefinition;
-	private $typeMap = array();
-	private $infoMap = array();
+	private $itemData;
 
-	function __construct($trackerDefinition)
+	function __construct($trackerDefinition, $itemData = array())
 	{
 		$this->trackerDefinition = $trackerDefinition;
-		
-		$fieldMap = $this->buildTypeMap(array(
-			'lib/core/Tracker/Field' => 'Tracker_Field_',
-		));
-	}
-	
-	private function getPreCacheTypeMap()
-	{
-		if (!empty(self::$trackerFieldLocalCache)) {
-			$this->typeMap = self::$trackerFieldLocalCache['type'];
-			$this->infoMap = self::$trackerFieldLocalCache['info'];
-			return true;
-		}
-
-		return false;
-	}
-	
-	private function setPreCacheTypeMap($data)
-	{
-		self::$trackerFieldLocalCache = array(
-			'type' => $data['typeMap'],
-			'info' => $data['infoMap']
-		);
-	}
-	
-	private function buildTypeMap($paths)
-	{
-		global $prefs;
-		$cacheKey = 'fieldtypes.' . $prefs['language'];
-		
-		if ($this->getPreCacheTypeMap()) {
-			return;
-		}
-
-		$cachelib = TikiLib::lib('cache');
-		if ($data = $cachelib->getSerialized($cacheKey)) {
-			$this->typeMap = $data['typeMap'];
-			$this->infoMap = $data['infoMap'];
-			
-			$this->setPreCacheTypeMap($data);
-			return;
-		}
-
-		foreach ($paths as $path => $prefix) {
-			foreach (glob("$path/*.php") as $file) {
-				$class = $prefix . substr($file, strlen($path) + 1, -4);
-				$reflected = new ReflectionClass($class);
-
-				if ($reflected->isInstantiable() && $reflected->implementsInterface('Tracker_Field_Interface')) {
-					$providedFields = call_user_func(array($class, 'getTypes'));
-
-					foreach ($providedFields as $key => $info) {
-						$this->typeMap[$key] = $class;
-						$this->infoMap[$key] = $info;
-					}
-				}
-			}
-		}
-
-		uasort($this->infoMap, array($this, 'compareName'));
-
-		$data = array(
-			'typeMap' => $this->typeMap,
-			'infoMap' => $this->infoMap,
-		);
-
-		$cachelib->cacheItem($cacheKey, serialize($data));
-		$this->setPreCacheTypeMap($data);
+		$this->itemData = $itemData;
 	}
 
-	function compareName($a, $b)
-	{
-		return strcasecmp($a['name'], $b['name']);
-	}
-
-	function getFieldTypes()
-	{
-		return $this->infoMap;
-	}
-
-	function getHandler($field_info, $itemData = array())
-	{
-		$type = $field_info['type'];
-
-		if (isset($this->typeMap[$type])) {
-			$info = $this->infoMap[$type];
-			$class = $this->typeMap[$type];
-
-			global $prefs;
-			foreach ($info['prefs'] as $pref) {
-				if ($prefs[$pref] != 'y') {
-					return null;
-				}
-			}
-
-			if (is_callable(array($class, 'build'))) {
-				return call_user_func(array($class, 'build'), $type, $this->trackerDefinition, $field_info, $itemData); 
-			} else {
-				return new $class($field_info, $itemData, $this->trackerDefinition);
-			}
+	function getHandler($field_info) {
+		switch ($field_info['type']) {
+			case 'A':
+				return new Tracker_Field_File($field_info, $this->itemData, $this->trackerDefinition);
+			case 'a':
+				return new Tracker_Field_TextArea($field_info, $this->itemData, $this->trackerDefinition);
+			case 'C':
+				return new Tracker_Field_Computed($field_info, $this->itemData, $this->trackerDefinition);
+			case 'c':
+				return new Tracker_Field_Checkbox($field_info, $this->itemData, $this->trackerDefinition);
+			case 'd':
+				return new Tracker_Field_Dropdown($field_info, $this->itemData, $this->trackerDefinition);
+			case 'D':
+				return new Tracker_Field_Dropdown($field_info, $this->itemData, $this->trackerDefinition, 'other');
+			case 'R':
+				return new Tracker_Field_Dropdown($field_info, $this->itemData, $this->trackerDefinition, 'radio');
+			case 'e':
+				return new Tracker_Field_Category($field_info, $this->itemData, $this->trackerDefinition);
+			case 'F':
+				return new Tracker_Field_Freetags($field_info, $this->itemData, $this->trackerDefinition);
+			case 'f':
+				return new Tracker_Field_DateTime($field_info, $this->itemData, $this->trackerDefinition);
+			case 'G':
+				return new Tracker_Field_Location($field_info, $this->itemData, $this->trackerDefinition);
+			case 'g':
+				return new Tracker_Field_GroupSelector($field_info, $this->itemData, $this->trackerDefinition);
+			case 'h':
+				return new Tracker_Field_Header($field_info, $this->itemData, $this->trackerDefinition);
+			case 'i':
+				return new Tracker_Field_Image($field_info, $this->itemData, $this->trackerDefinition);
+			case 'j':
+				return new Tracker_Field_JsCalendar($field_info, $this->itemData, $this->trackerDefinition);
+			case 'I':
+				return new Tracker_Field_Simple($field_info, $this->itemData, $this->trackerDefinition, 'ip');
+			case 'L':
+				return new Tracker_Field_Url($field_info, $this->itemData, $this->trackerDefinition);
+			case 'k':
+				return new Tracker_Field_PageSelector($field_info, $this->itemData, $this->trackerDefinition);
+			case 'l':
+				return new Tracker_Field_ItemsList($field_info, $this->itemData, $this->trackerDefinition);
+			case 'm':
+				return new Tracker_Field_Simple($field_info, $this->itemData, $this->trackerDefinition, 'email');
+			case 'N':
+				return new Tracker_Field_InGroup($field_info, $this->itemData, $this->trackerDefinition);
+			case 'n':
+			case 'b':
+				return new Tracker_Field_Numeric($field_info, $this->itemData, $this->trackerDefinition);
+			case 'P':
+				return new Tracker_Field_Ldap($field_info, $this->itemData, $this->trackerDefinition);
+			case 'p':
+				return new Tracker_Field_UserPreference($field_info, $this->itemData, $this->trackerDefinition);			
+			case 'q':
+				return new Tracker_Field_AutoIncrement($field_info, $this->itemData, $this->trackerDefinition);
+			case 'r':
+				return new Tracker_Field_ItemLink($field_info, $this->itemData, $this->trackerDefinition);
+			case 's':
+			case '*':
+				return new Tracker_Field_Rating($field_info, $this->itemData, $this->trackerDefinition);
+			case 'S':
+				return new Tracker_Field_StaticText($field_info, $this->itemData, $this->trackerDefinition);
+			case 't':
+				return new Tracker_Field_Text($field_info, $this->itemData, $this->trackerDefinition);
+			case 'u':
+				return new Tracker_Field_UserSelector($field_info, $this->itemData, $this->trackerDefinition);
+			case 'usergroups':
+				return new Tracker_Field_UserGroups($field_info, $this->itemData, $this->trackerDefinition);
+			case 'x':
+				return new Tracker_Field_Action($field_info, $this->itemData, $this->trackerDefinition);
+			case 'y':
+				return new Tracker_Field_CountrySelector($field_info, $this->itemData, $this->trackerDefinition);
+			case 'U':
+				return new Tracker_Field_UserSubscription($field_info, $this->itemData, $this->trackerDefinition);
+			case 'W':
+				return new Tracker_Field_WebService($field_info, $this->itemData, $this->trackerDefinition);
+			case 'w':
+				return new Tracker_Field_DynamicList($field_info, $this->itemData, $this->trackerDefinition);
 		}
 	}
 }

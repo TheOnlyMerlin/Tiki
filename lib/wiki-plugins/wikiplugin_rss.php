@@ -14,7 +14,6 @@ function wikiplugin_rss_info() {
 		'icon' => 'pics/icons/rss.png',
 		'format' => 'html',
 		'filter' => 'striptags',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'id' => array(
 				'required' => true,

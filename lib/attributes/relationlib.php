@@ -13,10 +13,6 @@ class RelationLib extends TikiDb_Bridge
 	 * relation ends with a dot, it will be used as a wildcard.
 	 */
 	function get_relations_from( $type, $object, $relation = null ) {
-		if( substr($relation, -7) === '.invert' ) {
-			return $this->get_relations_to( $type, $object, substr($relation, 0, -7));
-		}
-
 		$cond = array( 'source_type = ?', 'source_itemId = ?' );
 		$vars = array( $type, $object );
 
@@ -26,10 +22,6 @@ class RelationLib extends TikiDb_Bridge
 	}
 
 	function get_relations_to( $type, $object, $relation = null ) {
-		if( substr($relation, -7) === '.invert' ) {
-			return $this->get_relations_from( $type, $object, substr($relation, 0, -7));
-		}
-
 		$cond = array( 'target_type = ?', 'target_itemId = ?' );
 		$vars = array( $type, $object );
 
@@ -53,10 +45,6 @@ class RelationLib extends TikiDb_Bridge
 		$relation = TikiFilter::get( 'attribute_type' )
 			->filter( $relation );
 
-		if( substr($relation, -7) === '.invert' ) {
-			return $this->add_relation( substr($relation, 0, -7), $target_type, $target_object, $src_type, $src_object );
-		}
-
 		if( $relation ) {
 			$data = array( $relation, $src_type, $src_object, $target_type, $target_object );
 
@@ -67,23 +55,6 @@ class RelationLib extends TikiDb_Bridge
 		} else {
 			return 0;	
 		}
-	}
-
-	function get_relation_id( $relation, $src_type, $src_object, $target_type, $target_object ) {
-		$relation = TikiFilter::get( 'attribute_type' )
-			->filter( $relation );
-
-		if( substr($relation, -7) === '.invert' ) {
-			return $this->get_relation_id( substr($relation, 0, -7), $target_type, $target_object, $src_type, $src_object );
-		}
-
-		$id = 0;
-		if( $relation ) {
-			$data = array( $relation, $src_type, $src_object, $target_type, $target_object );
-
-			$id = $this->getOne( 'SELECT `relationId` FROM `tiki_object_relations` WHERE `relation` = ? AND `source_type` = ? AND `source_itemId` = ? AND `target_type` = ? AND `target_itemId` = ?', $data );
-		}
-		return $id;
 	}
 
 	function get_relation( $id ) {

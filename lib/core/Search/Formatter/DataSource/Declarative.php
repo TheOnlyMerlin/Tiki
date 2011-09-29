@@ -20,7 +20,7 @@ class Search_Formatter_DataSource_Declarative implements Search_Formatter_DataSo
 		$this->globalSources[] = $globalSource;
 	}
 
-	function getInformation(Search_ResultSet $list, array $fields)
+	function getInformation($list, array $fields)
 	{
 		foreach ($list as & $entry) {
 			$type = $entry['object_type'];

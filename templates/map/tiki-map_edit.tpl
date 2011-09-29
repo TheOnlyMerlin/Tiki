@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 <a class="pagetitle" href="tiki-map_edit.php?mode=listing">{tr}Mapfiles{/tr}</a><br />
 <a href="http://www.mapserver.org/mapfile/reference.html">http://www.mapserver.org/mapfile/reference.html</a><br /><br />
 {if $mapfile}<h2>{tr}Mapfile:{/tr} {$mapfile}</h2>{/if}
@@ -90,7 +88,9 @@
 	<div id='textarea-toolbar' style='padding:3px; font-size:10px;'>
 		{toolbars area_id='mapdata'}
 	</div>
-	<textarea id='mapdata' class='wikiedit' name='pagedata' rows='20' wrap='virtual' style='width:99%'>{$pagedata|escape}</textarea>
+	<textarea id='mapdata' class='wikiedit' name='pagedata' rows='{$rows}' wrap='virtual' cols='{$cols}' style='width:99%'>{$pagedata|escape}</textarea>
+	<input type="hidden" name="rows" value="{$rows}"/>
+	<input type="hidden" name="cols" value="{$cols}"/>
 	<input type="hidden" name="mapfile" value="{$mapfile}" />
 	<input type="hidden" name="mode" value="{$mode}" />
 </div>

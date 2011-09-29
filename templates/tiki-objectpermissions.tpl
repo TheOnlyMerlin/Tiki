@@ -1,16 +1,8 @@
-{* $Id$ *}
-
-{title help="Permission"}{if $objectType eq 'global'}{tr}Assign global permissions{/tr}{else}{tr}Assign permissions to {/tr}{$objectType}: {$objectName}{/if}{/title}
+{title help="Permission"}{if $objectType eq 'global'}{tr}Assign global permissions{/tr}{else}{tr}Assign permissions to {/tr}{tr}{$objectType|escape}:{/tr} {$objectName|escape}{/if}{/title}
 
 <div class="navbar">
-	{if !empty($referer)}{button href="$referer" _text="{tr}Back{/tr}"}{/if}
-	{if $tiki_p_admin eq 'y'} {* only full admins can manage groups, not tiki_p_admin_users *}
-		{button href="tiki-admingroups.php" _text="{tr}Admin Groups{/tr}"}
-	{/if}
-	{if $tiki_p_admin_users eq 'y'}
-	{button href="tiki-adminusers.php" _text="{tr}Admin users{/tr}"}
-	{/if}
-	{button href="tiki-list_object_permissions.php" _text="{tr}Object Permissions List{/tr}"}
+{if !empty($referer)}{button href="$referer" _text="{tr}Back{/tr}"}{/if}
+{button href="tiki-list_object_permissions.php" _text="{tr}Object Permissions List{/tr}"}
 </div>
 
 {tabset name='tabs_objectpermissions'}
@@ -97,7 +89,7 @@ if ($("#assignstructure").attr("checked")) {
 		<h3>{tr}Permissions{/tr}</h3>
 
 		<div>
-		{treetable _data=$perms _checkbox=$permGroups _checkboxTitles=$groupNames _checkboxColumnIndex=$permGroupCols _valueColumnIndex="permName" _columns="\"label\"=\"{tr}Permission{/tr}\"" _groupColumn='type' _openall='y' _showSelected='y' _columnsContainHtml='y'}
+		{treetable _data=$perms _checkbox=$permGroups _checkboxTitles=$groupNames _checkboxColumnIndex=$permGroupCols _valueColumnIndex="permName" _columns="\"label\"=\"{tr}Permission{/tr}\"" _sortColumn='type' _openall='y' _showSelected='y' _columnsContainHtml='y'}
 		</div>
 
 		{if ($perms|@count) eq '0'}{remarksbox type="warning" title="{tr}Warning{/tr}"}{tr}You must select at least one feature{/tr}.{/remarksbox}{/if}
@@ -109,6 +101,10 @@ if ($("#assignstructure").attr("checked")) {
 			{/if}
 		</div>
 	</form>
+	
+	{remarksbox type="note" title="{tr}Note{/tr}"}
+		{tr}Previous version of assign permissions page can still be found{/tr} <a href="tiki-assignpermission.php?group={if isset($smarty.request.group)}{$smarty.request.group}{else}Anonymous{/if}">{tr}here{/tr}</a>
+	{/remarksbox}
 	
 	{/tab}
 	

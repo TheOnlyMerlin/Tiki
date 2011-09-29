@@ -585,23 +585,13 @@ function sendStructureEmailNotification($params) {
 function sendCommentNotification($type, $id, $title, $content, $commentId=null) {
 	global $user, $tikilib, $smarty, $prefs;
 	if ($type == 'wiki') {
-		$events = 'wiki_comment_changes';
+		$event = 'wiki_comment_changes';
 	} elseif ($type == 'article') {
-		$events = 'article_commented';
-	} elseif ($type == 'trackeritem') {
-		$events = 'trackeritem_commented';
+		$event = 'article_commented';
 	} else {
 		throw new Exception('Unknown type');
 	}
-	if ($type == 'trackeritem') {
-		// Tracker watches are pretty complicated, to get from trklib
-		$trklib = TikiLib::lib('trk');
-		$trackerId = $trklib->get_tracker_for_item($id);
-		$trackerOptions = $trklib->get_tracker_options($trackerId);
-		$watches = $trklib->get_notification_emails($trackerId, $id, $trackerOptions);
-	} else {
-		$watches = $tikilib->get_event_watches($event, $id);
-	}
+	$watches = $tikilib->get_event_watches($event, $id);
 	$watches2 = $tikilib->get_event_watches('comment_post', $commentId);
 	if (!empty($watches2)) {
 		$watches = array_merge($watches, $watches2);
@@ -613,17 +603,6 @@ function sendCommentNotification($type, $id, $title, $content, $commentId=null) 
 			global $artlib;	include_once ('lib/articles/artlib.php');
 			$smarty->assign('mail_objectname', $artlib->get_title($id));
 			$smarty->assign('mail_objectid', $id);
-		} elseif ($type == 'trackeritem') {
-			if ($prefs['feature_daily_report_watches'] == 'y') {
-				$reportslib = TikiLib::lib('reports');
-				$reportslib->makeReportCache($watches,
-					array('event' => 'tracker_item_comment', 'itemId' => $id, 'trackerId' => $trackerId, 'user' => $user, 'threadId' => $commentId)
-				);
-			}
-			
-			$tracker = $trklib->get_tracker($trackerId);
-			$smarty->assign('mail_objectid', $id);	
-			$smarty->assign('mail_objectname', $tracker['name']);
 		}
 		$smarty->assign('objecttype', $type);		
 		$smarty->assign('mail_user', $user);

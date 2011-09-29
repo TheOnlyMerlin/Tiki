@@ -7,6 +7,6 @@
 
 interface Search_Formatter_ValueFormatter_Interface
 {
-	function render($name, $value, array $entry);
+	function render($value, array $entry);
 }
 

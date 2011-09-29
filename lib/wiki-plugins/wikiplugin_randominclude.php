@@ -42,8 +42,6 @@ function wikiplugin_randominclude($data, $params) {
 		return '';
 	}
 	$text = $data['data'];
-	
-	$parserlib = TikiLib::lib('parser');
-	$parserlib->parse_wiki_argvariable($text);
+	$tikilib->parse_wiki_argvariable($text);
 	return $text;
 }

@@ -12,51 +12,16 @@ function prefs_geo_list()
 			'name' => tra('Geolocate wiki pages'),
 			'description' => tra('Provide controls to geolocate wiki pages from the edit functionality.'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'geo_locate_article' => array(
 			'name' => tra('Geolocate articles'),
 			'description' => tra('Provide controls to geolocate articles from the edit functionality.'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'geo_locate_blogpost' => array(
 			'name' => tra('Geolocate blog posts'),
 			'description' => tra('Provide controls to geolocate blog posts from the edit functionality.'),
 			'type' => 'flag',
-			'default' => 'n',
-		),
-		'geo_tilesets' => array(
-			'name' => tra('Available tile layers on maps'),
-			'description' => tra('Allows to replace the default OpenStreetMap tiles for tiles from other mapping services, such as Google, Yahoo or Bing.'),
-			'hint' => tr('Valid options are: %0', implode(', ', array(
-				'openstreetmap',
-				'openaerialmap',
-				'google_street',
-				'google_satellite',
-				'google_physical',
-				'google_hybrid',
-				/* Needs additional testing
-				'visualearth_road',
-				'visualearth_aerial',
-				'visualearth_hybrid',
-				'yahoo_street',
-				'yahoo_satellite',
-				'yahoo_hybrid',
-				*/
-			))),
-			'type' => 'text',
-			'filter' => 'word',
-			'separator' => ',',
-			'default' => array('openstreetmap'),
-			'tags' => array('advanced', 'experimental'),
-		),
-		'geo_google_streetview' => array(
-			'name' => tr('Google Street View'),
-			'description' => array('Open up Google Street View in a window to see the visible coordinates.'),
-			'type' => 'flag',
-			'default' => 'n',
-			'tags' => array('basic', 'experimental'),
 		),
 	);
 }

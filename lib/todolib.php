@@ -206,5 +206,5 @@ class TodoLib
 		}
 	}
 }
-global $todolib;
+global $totolib;
 $todolib = new TodoLib;

@@ -9,6 +9,8 @@ require_once ('tiki-setup.php');
 include_once ('lib/categories/categlib.php');
 
 $access->check_feature('feature_categories');
+$access->check_permission('tiki_p_admin_categories');
+
 // Check for parent category or set to 0 if not present
 if (!empty($_REQUEST['parentId']) && !($info = $categlib->get_category($_REQUEST['parentId']))) {
 	$smarty->assign('msg', 'Incorrect param'.' parentId');
@@ -16,18 +18,13 @@ if (!empty($_REQUEST['parentId']) && !($info = $categlib->get_category($_REQUEST
 	die;
 }	
 
-if (!isset($_REQUEST['parentId'])) {
-	$_REQUEST['parentId'] = 0;
+if (!isset($_REQUEST["parentId"])) {
+	$_REQUEST["parentId"] = 0;
 }
-$smarty->assign('parentId', $_REQUEST['parentId']);
-
-
-if (!empty($_REQUEST['parentId'])) {
-	$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['parentId'] );
-}
+$smarty->assign('parentId', $_REQUEST["parentId"]);
 
 if (!empty($_REQUEST['unassign'])) {
-	$access->check_authenticity(tra('Are you sure you want to unassign the objects of this category: ') . $info['name']);
+	$access->check_authenticity(tra('Are you sure you want to unassign the objects of this category: ') . htmlspecialchars($info['name']));
 	$categlib->unassign_all_objects($_REQUEST['parentId']);
 }
 if (!empty($_REQUEST['move_to']) && !empty($_REQUEST['toId'])) {
@@ -37,7 +34,6 @@ if (!empty($_REQUEST['move_to']) && !empty($_REQUEST['toId'])) {
 		$smarty->display('error.tpl');
 		die;
 	}
-	$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['toId'] );
 	$categlib->move_all_objects($_REQUEST['parentId'], $_REQUEST['toId']);
 }
 if (!empty($_REQUEST['copy_from']) && !empty($_REQUEST['to'])) {
@@ -47,15 +43,15 @@ if (!empty($_REQUEST['copy_from']) && !empty($_REQUEST['to'])) {
 		$smarty->display('error.tpl');
 		die;
 	}
-	$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['to'] );
 	$categlib->assign_all_objects($_REQUEST['parentId'], $_REQUEST['to']);
 }
 if (isset($_REQUEST["addpage"]) && $_REQUEST["parentId"] != 0) {
 	check_ticket('admin-categories');
 	// Here we categorize a page
+	// $categlib->categorize_page($_REQUEST["pageName"],$_REQUEST["parentId"]);
 	// add multiple pages at once
 	foreach($_REQUEST['pageName'] as $value) {
-		$categlib->categorize_any('wiki page', $value, $_REQUEST["parentId"]);
+		$categlib->categorize_page($value, $_REQUEST["parentId"]);
 		$category = $categlib->get_category($_REQUEST["parentId"]);
 		$categorizedObject = $categlib->get_categorized_object('wiki page', $value);
 		// Notify the users watching this category.
@@ -77,61 +73,61 @@ if (isset($_REQUEST["addpage"]) && $_REQUEST["parentId"] != 0) {
 if (isset($_REQUEST["addpoll"]) && $_REQUEST["parentId"] != 0) {
 	check_ticket('admin-categories');
 	// Here we categorize a poll
-	$categlib->categorize_any('poll', $_REQUEST["pollId"], $_REQUEST["parentId"]);
+	$categlib->categorize_poll($_REQUEST["pollId"], $_REQUEST["parentId"]);
 	$categorizedObject = $categlib->get_categorized_object('poll', $_REQUEST["pollId"]);
 }
 if (isset($_REQUEST["addfaq"]) && $_REQUEST["parentId"] != 0) {
 	check_ticket('admin-categories');
 	// Here we categorize a faq
-	$categlib->categorize_any('faq', $_REQUEST["faqId"], $_REQUEST["parentId"]);
+	$categlib->categorize_faq($_REQUEST["faqId"], $_REQUEST["parentId"]);
 	$categorizedObject = $categlib->get_categorized_object('faq', $_REQUEST["faqId"]);
 }
 if (isset($_REQUEST["addtracker"]) && $_REQUEST["parentId"] != 0) {
 	check_ticket('admin-categories');
 	// Here we categorize a tracker
-	$categlib->categorize_any('tracker', $_REQUEST["trackerId"], $_REQUEST["parentId"]);
+	$categlib->categorize_tracker($_REQUEST["trackerId"], $_REQUEST["parentId"]);
 	$categorizedObject = $categlib->get_categorized_object('tracker', $_REQUEST["trackerId"]);
 }
 if (isset($_REQUEST["addquiz"]) && $_REQUEST["parentId"] != 0) {
 	check_ticket('admin-categories');
 	// Here we categorize a quiz
-	$categlib->categorize_any('quiz', $_REQUEST["quizId"], $_REQUEST["parentId"]);
+	$categlib->categorize_quiz($_REQUEST["quizId"], $_REQUEST["parentId"]);
 	$categorizedObject = $categlib->get_categorized_object('quiz', $_REQUEST["quizId"]);
 }
 if (isset($_REQUEST["addforum"]) && $_REQUEST["parentId"] != 0) {
 	check_ticket('admin-categories');
 	// Here we categorize a forum
-	$categlib->categorize_any('forum', $_REQUEST["forumId"], $_REQUEST["parentId"]);
+	$categlib->categorize_forum($_REQUEST["forumId"], $_REQUEST["parentId"]);
 	$categorizedObject = $categlib->get_categorized_object('forum', $_REQUEST["forumId"]);
 }
 if (isset($_REQUEST["addgallery"]) && $_REQUEST["parentId"] != 0) {
 	check_ticket('admin-categories');
 	// Here we categorize an image gallery
-	$categlib->categorize_any('image gallery', $_REQUEST["galleryId"], $_REQUEST["parentId"]);
+	$categlib->categorize_gallery($_REQUEST["galleryId"], $_REQUEST["parentId"]);
 	$categorizedObject = $categlib->get_categorized_object('image gallery', $_REQUEST["galleryId"]);
 }
 if (isset($_REQUEST["addfilegallery"]) && $_REQUEST["parentId"] != 0) {
 	check_ticket('admin-categories');
 	// Here we categorize a file gallery
-	$categlib->categorize_any('file gallery', $_REQUEST["file_galleryId"], $_REQUEST["parentId"]);
+	$categlib->categorize_file_gallery($_REQUEST["file_galleryId"], $_REQUEST["parentId"]);
 	$categorizedObject = $categlib->get_categorized_object('file gallery', $_REQUEST["file_galleryId"]);
 }
 if (isset($_REQUEST["addarticle"]) && $_REQUEST["parentId"] != 0) {
 	check_ticket('admin-categories');
 	// Here we categorize an article
-	$categlib->categorize_any('article', $_REQUEST["articleId"], $_REQUEST["parentId"]);
+	$categlib->categorize_article($_REQUEST["articleId"], $_REQUEST["parentId"]);
 	$categorizedObject = $categlib->get_categorized_object('article', $_REQUEST["articleId"]);
 }
 if (isset($_REQUEST["addblog"]) && $_REQUEST["parentId"] != 0) {
 	check_ticket('admin-categories');
 	// Here we categorize a blog
-	$categlib->categorize_any('blog', $_REQUEST["blogId"], $_REQUEST["parentId"]);
+	$categlib->categorize_blog($_REQUEST["blogId"], $_REQUEST["parentId"]);
 	$categorizedObject = $categlib->get_categorized_object('blog', $_REQUEST["blogId"]);
 }
 if (isset($_REQUEST["adddirectory"]) && $_REQUEST["parentId"] != 0) {
 	check_ticket('admin-categories');
 	// Here we categorize a directory category
-	$categlib->categorize_any('directory', $_REQUEST["directoryId"], $_REQUEST["parentId"]);
+	$categlib->categorize_directory($_REQUEST["directoryId"], $_REQUEST["parentId"]);
 	$categorizedObject = $categlib->get_categorized_object('directory', $_REQUEST["directoryId"]);
 }
 if (isset($categorizedObject) && !isset($_REQUEST["addpage"])) {
@@ -151,8 +147,7 @@ if (isset($categorizedObject) && !isset($_REQUEST["addpage"])) {
 	);
 	$categlib->notify($values);
 }
-if (!empty($_REQUEST["categId"])) {
-	$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['categId'] );
+if (isset($_REQUEST["categId"])) {
 	$info = $categlib->get_category($_REQUEST["categId"]);
 } else {
 	$_REQUEST["categId"] = 0;
@@ -180,8 +175,7 @@ if (isset($_REQUEST["removeObject"])) {
 	$categlib->notify($values);
 }
 if (isset($_REQUEST["removeCat"]) && ($info = $categlib->get_category($_REQUEST['removeCat']))) {
-	$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['removeCat'] );
-	$access->check_authenticity(tra('Click here to delete the category:') . ' ' . $info['name']);
+	$access->check_authenticity(tra('Click here to delete the category:') . ' ' . htmlspecialchars($info['name']));
 	$categlib->remove_category($_REQUEST["removeCat"]);
 }
 if (isset($_REQUEST["save"]) && isset($_REQUEST["name"]) && strlen($_REQUEST["name"]) > 0) {
@@ -198,9 +192,6 @@ if (isset($_REQUEST["save"]) && isset($_REQUEST["name"]) && strlen($_REQUEST["na
 		$errors[] = tra('You can not create a category with a name already existing at this level');
 	} else {
 		$newcategId = $categlib->add_category($_REQUEST["parentId"], $_REQUEST["name"], $_REQUEST["description"]);
-		if ($tiki_p_admin_categories != 'y') {
-			$userlib->copy_object_permissions($_REQUEST['parentId'], $newcategId, 'category');
-		}
 	}
 	$info["name"] = '';
 	$info["description"] = '';
@@ -236,9 +227,7 @@ if (isset($_REQUEST['import']) && isset($_FILES['csvlist']['tmp_name'])) {
 					$smarty->display('error.tpl');
 					die;
 				}
-				$access->check_permission('tiki_p_admin_categories', '', 'category', $parentId );
 			} else {
-				$access->check_permission('tiki_p_admin_categories');
 				$parentId = 0;
 			}
 			if (!$categlib->exist_child_category($parentId, $data[0])) {
@@ -248,63 +237,53 @@ if (isset($_REQUEST['import']) && isset($_FILES['csvlist']['tmp_name'])) {
 					$smarty->display('error.tpl');
 					die;
 				}
-				if ($tiki_p_admin_categories != 'y') {
-					$userlib->copy_object_permissions($parentId, $newcategId, 'category');
-				}
 			}
 		}
 	}
 }
 $smarty->assign('categId', $_REQUEST["categId"]);
-$smarty->assign('categoryName', $info["name"]);
+$smarty->assign('name', $info["name"]);
 $smarty->assign('description', $info["description"]);
 // If the parent category is not zero get the category path
 if ($_REQUEST["parentId"]) {
+	$path = $categlib->get_category_path($_REQUEST["parentId"]);
 	$p_info = $categlib->get_category($_REQUEST["parentId"]);
 	$father = $p_info["parentId"];
-	$smarty->assign('categ_name', $p_info['name']);
-	$smarty->assign('path', $p_info['tepath']);
+	$categ_name = $p_info['name'];
 } else {
+	$path = "";
 	$father = 0;
+	$categ_name = tra('Top');
 }
+$smarty->assign('path', $path);
 $smarty->assign('father', $father);
-
+$smarty->assign('categ_name', $categ_name);
 // ---------------------------------------------------
-
-$categories = $categlib->getCategories(NULL, false);
-if (empty($categories) && $tiki_p_admin_categories != 'y') {
-	$access->check_permission('tiki_p_admin_categories');
-}
-$smarty->assign('categories', $categories);
-
-$treeNodes = array();
-$smarty->loadPlugin('smarty_function_icon');
-foreach($categories as $category) {
-	$data = '<a href="tiki-admin_categories.php?parentId=' . $category['parentId'] . '&amp;categId=' . $category['categId'] . '" title="' . tra('Edit') . '">' . smarty_function_icon(array('_id'=>'page_edit'), $smarty) . '</a>';
-	$data .= '<a href="tiki-admin_categories.php?parentId=' . $category['parentId'] . '&amp;removeCat=' . $category['categId'] . '" title="' . tra('Delete') . '">' . smarty_function_icon(array('_id'=>'cross'), $smarty) . '</a>';
-
-	if ($tiki_p_admin_categories == 'y') {
-		if ($userlib->object_has_one_permission($category['categId'], 'category')) {
-			$title = tra('Edit permissions for this category');
-			$icon = 'key_active';
-		} else {
-			$title = tra('Assign Permissions');
-			$icon = 'key';
+function array_csort($marray, $column) {
+	if (is_array($marray)) {
+		$sortarr = array();
+		foreach($marray as $key => $row) {
+			$sortarr[$key] = $row[$column];
 		}
-		$data .= '<a href="tiki-objectpermissions.php?objectType=category&amp;objectId=' . $category['categId'] . '&amp;objectName=' . urlencode($category['name']) . '&amp;permType=category">' . smarty_function_icon(array('_id'=>$icon, 'alt'=>$title), $smarty) . '</a>';
+		array_multisort($sortarr, $marray);
+		return $marray;
+	} else {
+		return array();
 	}
-	
-	$data .= '<a class="catname" href="tiki-admin_categories.php?parentId=' . $category["categId"] . '">' . htmlspecialchars($category['name']) .'</a> ';
-	$treeNodes[] = array(
-		'id' => $category['categId'],
-		'parent' => $category['parentId'],
-		'data' => $data 
-	);
 }
-include_once ('lib/tree/categ_browse_tree.php');
-$treeMaker = new CatBrowseTreeMaker('categ');
-$smarty->assign('tree', $treeMaker->make_tree(0, $treeNodes));
-
+$catree = $categlib->list_all_categories(0, -1, 'name_asc', '', '', 0);
+//$catree = array_csort($catree['data'],'categpath'); not needed as array is already sorted when returned from categlib
+if (is_array($path)) {
+	foreach($catree['data'] as $key => $c) {
+		foreach($path as $p) {
+			if ($p['categId'] == $c['categId']) {
+				$catree['data'][$key]['incat'] = 'y';
+				break;
+			}
+		}
+	}
+}
+$smarty->assign('catree', $catree['data']);
 // ---------------------------------------------------
 if (!isset($_REQUEST["sort_mode"])) {
 	$sort_mode = 'name_asc';

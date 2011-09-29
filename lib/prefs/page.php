@@ -16,12 +16,10 @@ function prefs_page_list() {
 				'bottom' => tra('Bottom'),
 				'none' => tra('Neither'),
 			),
-			'default' => 'bottom',
 		),
 		'page_n_times_in_a_structure' => array(
 			'name' => tra('A page can occur multiple times in a structure'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 	);
 }

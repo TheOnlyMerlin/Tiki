@@ -6,14 +6,13 @@
 // $Id$
 
 
-function prefs_highlight_list($partial = false) {
+function prefs_highlight_list() {
 	return array(
 		'highlight_group' => array(
 			'name' => tra('Highlight group'),
 			'help' => 'Groups',
 			'type' => 'list',
-			'options' => highlight_group_values($partial),
-			'default' => '0',
+			'options' => highlight_group_values(),
 		),
 	);
 }
@@ -24,13 +23,9 @@ function prefs_highlight_list($partial = false) {
  * @access public
  * @return array: group list with '0' => None as added value
  */
-function highlight_group_values($partial)
+function highlight_group_values()
 {
-	global $userlib;
-
-	if ($partial) {
-		return false;
-	}
+	global $prefs, $userlib;
 
 	$listgroups = $userlib->get_groups(0, -1, 'groupName_desc', '', '', 'n');
 

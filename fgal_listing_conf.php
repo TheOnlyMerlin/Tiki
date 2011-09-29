@@ -31,8 +31,7 @@ $fgal_listing_conf = array(
 	'lockedby' => array('name' => tra('Locked by'), 'icon' => 'lock_gray'),
 	'backlinks' => array('name' => tra('Backlinks')),
 	'deleteAfter' => array('name'=>tra('Delete After')),
-	'share' => array('name'=>tra('Share with')),
-	'source' => array('name' => tra('Source')),
+	'share' => array('name'=>tra('Share with'))
 );
 
 if (isset($section) && $section == 'admin') {
@@ -51,9 +50,7 @@ foreach ( $fgal_listing_conf as $k => $v ) {
 	} elseif ( isset($gal_info) && isset($gal_info['show_'.$show_k]) ) {
 		$fgal_listing_conf[$k]['value'] = $gal_info['show_'.$show_k];
 	} else {
-		if (isset($prefs['fgal_list_'.$k]) ) {
-			$fgal_listing_conf[$k]['value'] = $prefs['fgal_list_'.$k];
-		}
+		$fgal_listing_conf[$k]['value'] = $prefs['fgal_list_'.$k];
 	}
 }
 // Do not show "Locked by" info if the gallery is not lockable
@@ -65,9 +62,7 @@ $smarty->assign_by_ref('fgal_listing_conf', $fgal_listing_conf);
 
 if (isset($section) && $section == 'admin') {
 	foreach ($fgal_listing_conf_admin as $k=>$v) {
-		if (isset($prefs['fgal_list_'.$k]) ) {
-			$fgal_listing_conf_admin[$k]['value'] = $prefs['fgal_list_'.$k];
-		}
+		$fgal_listing_conf_admin[$k]['value'] = $prefs['fgal_list_'.$k];
 	}
 	$smarty->assign_by_ref('fgal_listing_conf_admin', $fgal_listing_conf_admin);
 }

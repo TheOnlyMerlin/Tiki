@@ -13,7 +13,6 @@ function wikiplugin_iframe_info() {
 		'prefs' => array( 'wikiplugin_iframe' ),
 		'body' => tra('URL'),
 		'validate' => 'all',
-		'tags' => array( 'basic' ),
 		'icon' => 'pics/icons/page_copy.png',
 		'params' => array(
 			'name' => array(

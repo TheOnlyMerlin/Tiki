@@ -6,9 +6,9 @@
 // $Id$
 
 function smarty_function_preference( $params, $smarty ) {
-	global $prefslib, $prefs, $user_overrider_prefs; require_once 'lib/prefslib.php';
+	global $prefslib, $prefs; require_once 'lib/prefslib.php';
 	if( ! isset( $params['name'] ) ) {
-		return 'Preference name not specified.';
+		return tra( 'Preference name not specified.' );
 	}
 
 	$source = null;
@@ -21,14 +21,8 @@ function smarty_function_preference( $params, $smarty ) {
 		if( isset($params['label']) ) {
 			$info['name'] = $params['label'];
 		}
-		if (in_array($params['name'], $user_overrider_prefs) && isset($prefs[$params['name']])) {
-			$info['value'] = $prefs['site_' . $params['name']];
-		}
-
-		if (isset($params['visible']) && $params['visible'] == 'always') {
-			// Modified preferences are never hidden, so pretend it's modified when forcing display
-			$info['tags'][] = 'modified';
-			$info['tagstring'] .= ' modified';
+		if (isset($params['default'])) {// use for site_language
+			$info['value'] = $params['default'];
 		}
 
 		if ($get_pages) {
@@ -56,23 +50,10 @@ function smarty_function_preference( $params, $smarty ) {
 			$smarty->assign( 'mode', 'normal' );
 		}
 		
-		//we reset the codemirror/syntax vars so that they are blank because they are reused for other params
-		$smarty->assign( 'codemirror' );
-		$smarty->assign( 'syntax' );
-		
-		if ( !empty( $params['syntax'] ) ) {
-			$smarty->assign( 'codemirror', 'true' );
-			$smarty->assign( 'syntax', $params['syntax'] );
-		}
-		
 		return $smarty->fetch( 'prefs/' . $info['type'] . '.tpl' );
 	} else {
-		$info = array(
-			'value' => tra('Error'),
-			'default_val' => tra('Error'),
-			'name' => tr( 'Preference %0 is not defined', $params['name'] ),
-			'tags' => array('modified', 'basic', 'all'),
-			'tagstring' => 'modified basic all',
+		$info = array('value' => tra('Error'), 'default_val' => tra('Error'),
+			'name' => tr( 'Preference %0 is not defined', $params['name'] )
 		);
 		if (strpos($_SERVER["SCRIPT_NAME"], 'tiki-edit_perspective.php') !== false) {
 			$info['hint'] = tra('Drag this out of the perspective and resave it.');

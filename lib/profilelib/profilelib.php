@@ -5,6 +5,12 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+require_once( 'lib/Horde/Yaml.php' );
+require_once( 'lib/Horde/Yaml/Loader.php' );
+require_once( 'lib/Horde/Yaml/Node.php' );
+require_once( 'lib/Horde/Yaml/Exception.php' );
+
+
 class Tiki_Profile
 {
 	const SHORT_PATTERN = '/^\$((([\w\.-]+):)?((\w+):))?(\w+)$/';
@@ -182,8 +188,7 @@ class Tiki_Profile
 	{
 		global $tikilib, $wikilib;
 		require_once 'lib/wiki/wikilib.php';
-		$parserlib = TikiLib::lib('parser');
-		
+
 		$profile = new self;
 		$profile->domain = 'tiki://local';
 		$profile->profile = $pageName;
@@ -192,7 +197,7 @@ class Tiki_Profile
 
 		$info = $tikilib->get_page_info( $pageName );
 		$content = html_entity_decode( $info['data'] );
-		$parserlib->parse_wiki_argvariable($content);
+		$tikilib->parse_wiki_argvariable($content);
 		$profile->loadYaml( $content );
 
 		return $profile;
@@ -262,26 +267,25 @@ class Tiki_Profile
 
 		$this->data = array();
 
-		$matches = WikiParser_PluginMatcher::match($content);
-		$parser = new WikiParser_PluginArgumentParser;
-
-		foreach ($matches as $match)
+		while( false !== $base = $this->findNextPluginStart($content, $pos) )
 		{
-			$arguments = $parser->parse($match->getArguments());
-			if ( ($match->getName() == 'code' && isset($arguments['caption']) && $arguments['caption'] == 'YAML')
-				|| $match->getName() == 'profile' )
+			$begin = strpos( $content, ')}', $base ) + 2;
+			$end = strpos( $content, '{CODE}', $base );
+			$pos = $end + 6;
+
+			if( false === $base || false === $begin || false === $end )
+				return false;
+
+			$yaml = substr( $content, $begin, $end - $begin );
+
+			$data = Horde_Yaml::load( $yaml );
+
+			foreach( $data as $key => $value )
 			{
-				$yaml = $match->getBody();
-
-				$data = Horde_Yaml::load( $yaml );
-
-				foreach( $data as $key => $value )
-				{
-					if( array_key_exists( $key, $this->data ) )
-						$this->data[$key] = $this->mergeData( $this->data[$key], $value );
-					else
-						$this->data[$key] = $value;
-				}
+				if( array_key_exists( $key, $this->data ) )
+					$this->data[$key] = $this->mergeData( $this->data[$key], $value );
+				else
+					$this->data[$key] = $value;
 			}
 		}
 

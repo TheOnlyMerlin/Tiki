@@ -10,7 +10,8 @@ require_once ('tiki-setup.php');
 include_once ('lib/categories/categlib.php');
 include_once ('lib/articles/artlib.php');
 
-//get_strings tra('New Article')
+$smarty->assign('headtitle',tra('Edit article'));
+
 if ($prefs['feature_freetags'] == 'y') {
 	global $freetaglib;
 	include_once('lib/freetag/freetaglib.php');
@@ -48,7 +49,7 @@ if (isset($_REQUEST['cancel_edit'])) {
 		die;
 	}
 	include_once('tiki-sefurl.php');
-	header ('location: '.filter_out_sefurl("tiki-read_article.php?articleId=$articleId", 'article', $artice_data['title']));
+	header ('location: '.filter_out_sefurl("tiki-read_article.php?articleId=$articleId", $smarty, 'article', $artice_data['title']));
 	die;
 }
 
@@ -423,7 +424,7 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 
 	if ($prefs['feature_multilingual'] == 'y' && $_REQUEST['lang'] && isset($article_data) && $article_data['lang'] != $_REQUEST["lang"]) {
 		include_once("lib/multilingual/multilinguallib.php");
-		if ($multilinguallib->updateObjectLang('article', $article_data['articleId'], $_REQUEST["lang"], true)) {
+		if ($multilinguallib->updatePageLang('article', $article_data['articleId'], $_REQUEST["lang"], true)) {
 			$_REQUEST['lang'] = $article_data['lang'];
 			$smarty->assign('msg', tra("The language can't be changed as its set of translations has already this language"));
 			$smarty->display("error.tpl");
@@ -468,6 +469,7 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 	$cat_objid = $artid;
 	$cat_desc = substr($_REQUEST["heading"], 0, 200);
 	$cat_name = $_REQUEST["title"];
+	$cat_object_exists = (bool) $artid;
 	$cat_lang = $_REQUEST['lang'];
 	$cat_href = "tiki-read_article.php?articleId=" . $cat_objid;
 	include_once("categorize.php");
@@ -497,7 +499,7 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 	@$artlib->delete_image_cache("preview",$previewId);
 
 	include_once('tiki-sefurl.php');
-	header ('location: '.	filter_out_sefurl("tiki-read_article.php?articleId=$artid", 'article', $_REQUEST['title']));
+	header ('location: '.	filter_out_sefurl("tiki-read_article.php?articleId=$artid", $smarty, 'article', $_REQUEST['title']));
 }
 $smarty->assign_by_ref('errors', $errors);
 
@@ -521,7 +523,7 @@ if (array($types)) {
 $smarty->assign('type', $type);
 }
 if ($prefs["article_custom_attributes"] == 'y') {
-	$article_attributes = $artlib->get_article_attributes($articleId);	
+	$article_attributes = $artlib->get_article_attributes($_REQUEST["articleId"]);	
 	$smarty->assign('article_attributes', $article_attributes);
 	$all_attributes = array();
 	$js_string = '';
@@ -559,6 +561,7 @@ if( $prefs['geo_locate_article'] == 'y' ) {
 
 $cat_type = 'article';
 $cat_objid = $articleId;
+$cat_object_exists = (bool) $articleId;
 include_once ("categorize_list.php");
 
 if ($prefs['feature_freetags'] == 'y') {

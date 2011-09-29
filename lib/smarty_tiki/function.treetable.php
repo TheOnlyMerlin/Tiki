@@ -66,7 +66,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-function smarty_function_treetable($params, $smarty) {
+function smarty_function_treetable($params, &$smarty) {
 	global $headerlib, $tree_table_id, $prefs;
 	
 	extract($params);
@@ -89,7 +89,7 @@ function smarty_function_treetable($params, $smarty) {
 			$_checkboxColumnIndex = preg_split('/,/', trim($_checkboxColumnIndex));
 		}
 		if (count($_checkbox) != count($_checkboxColumnIndex)) {
-			return 'Number of items in _checkboxColumnIndex doesn not match items in _checkbox';
+			return tra('Number of items in _checkboxColumnIndex doesn not match items in _checkbox');
 		}
 	}
 	if (!empty($_checkboxTitles)) {
@@ -101,7 +101,7 @@ function smarty_function_treetable($params, $smarty) {
 			}
 		}
 		if (count($_checkbox) != count($_checkboxTitles)) {
-			return 'Number of items in _checkboxTitles doesn not match items in _checkbox';
+			return tra('Number of items in _checkboxTitles doesn not match items in _checkbox');
 		}
 	}
 	$_checkboxColumnIndex = empty($_checkboxColumnIndex) ? 0 : $_checkboxColumnIndex;
@@ -162,13 +162,9 @@ function smarty_function_treetable($params, $smarty) {
 	}
 	
 	$_sortColumn = empty($_sortColumn) ? '' : $_sortColumn;
-	$_groupColumn = empty($_groupColumn) ? '' : $_groupColumn;
 	
 	if ($_sortColumn) {
 		sort2d($_data, $_sortColumn);
-	} elseif ($_groupColumn) {
-		sort2d($_data, $_groupColumn, false);
-		$_sortColumn = $_groupColumn;
 	}
 	
 	$class = empty($class) ? 'treeTable' : $class;	// treetable
@@ -180,7 +176,7 @@ function smarty_function_treetable($params, $smarty) {
 */
 
 	if ($_listFilter == 'y' && count($_data) > $_filterMinRows) {
-		$smarty->loadPlugin('smarty_function_listfilter');
+		require_once($smarty->_get_plugin_filepath('function', 'listfilter'));
 		$html .= smarty_function_listfilter(
 			array('id' => $id.'_filter',
 				  'selectors' => "#$id tbody tr:not(.parent)",
@@ -189,7 +185,7 @@ function smarty_function_treetable($params, $smarty) {
 	}
 
 	if ($_openall == 'y') {
-		$smarty->loadPlugin('smarty_function_icon');
+		require_once($smarty->_get_plugin_filepath('function', 'icon'));
 		$html .= '&nbsp;' . smarty_function_icon(
 			array('_id' => 'folder',
 				'id' => $id.'_openall',
@@ -223,7 +219,7 @@ $("#'.$id.'_openall").click( function () {
 	}
 	
 	if ($_showSelected == 'y') {
-		$smarty->loadPlugin('smarty_function_icon');
+		require_once($smarty->_get_plugin_filepath('function', 'icon'));
 		$html .= ' <input type="checkbox" id="'.$id.'_showSelected" title="'.tra('Show only selected').'" />';
 		$html .= ' ' . tra('Show only selected');
 				
@@ -396,17 +392,13 @@ $("#'.$id.'_showSelected").click( function () {
 // WARNING: $sort must be associative
 function sort2d( &$arrIn, $index = null, $sort = 'asort') {
 	// pseudo-secure--never allow user input into $sort
+	if (strpos($sort, 'sort') === false) {$sort = 'asort';}
 	$arrTemp = Array();
 	$arrOut = Array();
 	foreach ( $arrIn as $key=>$value ) {
 		$arrTemp[$key] = is_null($index) ? reset($value) : $value[$index];
 	}
-
-	if ($sort) {
-		if (strpos($sort, 'sort') === false) {$sort = 'asort';}
-		$sort($arrTemp);
-	}
-
+	$sort($arrTemp);
 	foreach ( $arrTemp as $key=>$value ) {
 		$arrOut[$key] = $arrIn[$key];
 	}

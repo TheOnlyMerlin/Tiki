@@ -233,7 +233,8 @@ class ImageGalsLib extends TikiLib
 	{
 		$this->filesize = filesize($fname);
 
-		if ($this->uselib == "gd") {
+		if ($this->uselib == "imagick") {
+		} else if ($this->uselib == "gd") {
 			unset ($this->filetype);
 
 			$imageinfo = getimagesize($fname);
@@ -561,7 +562,9 @@ class ImageGalsLib extends TikiLib
 		$size = strlen($this->image);
 		$fhash = "";
 
-		if ($prefs['gal_use_db'] != 'y') {
+		if ($prefs['gal_use_db'] == 'y') {
+			// Prepare to store data in database
+		} else {
 			// Store data in directory
 			switch ($this->type) {
 			case 't':
@@ -826,7 +829,9 @@ class ImageGalsLib extends TikiLib
 		}
 		$path = '';
 
-		if ($prefs['gal_use_db'] != 'y') {
+		if ($prefs['gal_use_db'] == 'y') {
+			// Prepare to store data in database
+		} else {
 			// Store data in directory
 			$fhash = md5(uniqid($filename));
 			if (!($fw = fopen($prefs['gal_use_dir'] . $fhash, "wb"))) {

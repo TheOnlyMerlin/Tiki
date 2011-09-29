@@ -11,24 +11,8 @@
  * Letter key: ~c~
  *
  */
-class Tracker_Field_Checkbox extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
+class Tracker_Field_Checkbox extends Tracker_Field_Abstract
 {
-	public static function getTypes()
-	{
-		return array(
-			'c' => array(
-				'name' => tr('Checkbox'),
-				'description' => tr('Provides a checkbox field for yes/no, on/off input.'),
-				'help' => 'Checkbox Tracker Field',					
-				'prefs' => array('trackerfield_checkbox'),
-				'tags' => array('basic'),
-				'default' => 'y',
-				'params' => array(
-				),
-			),
-		);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		$ins_id = $this->getInsertId();
@@ -39,9 +23,6 @@ class Tracker_Field_Checkbox extends Tracker_Field_Abstract implements Tracker_F
 			$val = 'n';
 		} else {
 			$val = $this->getValue();
-			if (empty($val)) {
-				$val = 'n';
-			}
 		}
 		return array(
 			'value' => $val,
@@ -51,47 +32,6 @@ class Tracker_Field_Checkbox extends Tracker_Field_Abstract implements Tracker_F
 	function renderInput($context = array())
 	{
 		return $this->renderTemplate('trackerinput/checkbox.tpl', $context);
-	}
-
-	function handleSave($value, $oldValue)
-	{
-		if ($value == 'on') {
-			$value = 'y';
-		}
-
-		return array(
-			'value' => $value,
-		);
-	}
-
-	function importRemote($value)
-	{
-		return $value;
-	}
-
-	function exportRemote($value)
-	{
-		return $value;
-	}
-
-	function importRemoteField(array $info, array $syncInfo)
-	{
-		return $info;
-	}
-
-	function renderOutput($context = array())
-	{
-		$fieldData = $this->getFieldData();
-		return $fieldData['value']; 
-	}
-
-	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
-	{
-		$checked = $this->getValue() === 'y';
-
-		return array(
-			$baseKey => $typeFactory->identifier($checked ? 'y' : 'n'),
-		);
 	}
 }
 

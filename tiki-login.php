@@ -72,6 +72,7 @@ if ($tiki_p_admin == 'y') {
 		if ($userlib->user_exists($_REQUEST['username'])) {
 			$username = $userlib->get_user_real_case($_REQUEST['username']);
 			$_SESSION[$user_cookie_site] = $username;
+			$smarty->assign_by_ref('user', $username);
 		}
 		header('location: ' . $_SESSION['loginfrom']);
 		// Unset session variable for the next su
@@ -184,15 +185,12 @@ if (isset($_REQUEST['intertiki']) and in_array($_REQUEST['intertiki'], array_key
 	}
 } else {
 	// Verify user is valid
-	$ret = $userlib->validate_user($user, $pass, $challenge, $response);
-	if (count($ret) == 3)
-		$ret[] = null;
-	list($isvalid, $user, $error, $method) = $ret;
+	list($isvalid, $user, $error) = $userlib->validate_user($user, $pass, $challenge, $response);
 	// If the password is valid but it is due then force the user to change the password by
 	// sending the user to the new password change screen without letting him use tiki
 	// The user must re-nter the old password so no security risk here
 	if ($isvalid) {
-		$isdue = $userlib->is_due($user, $method);
+		$isdue = $userlib->is_due($user);
 		if ($user != 'admin') { // admin has not necessarely an email
 			$isEmailDue = $userlib->is_email_due($user, 'email');
 			// Update some user details from LDAP
@@ -320,7 +318,7 @@ if ($isvalid) {
 						$groupHome = $userlib->get_user_default_homepage($user);
 						if ($groupHome != '') {
 							include_once('tiki-sefurl.php');
-							$url = (preg_match('/^(\/|https?:)/', $groupHome)) ? $groupHome : filter_out_sefurl('tiki-index.php?page=' . urlencode($groupHome));
+							$url = (preg_match('/^(\/|https?:)/', $groupHome)) ? $groupHome : filter_out_sefurl('tiki-index.php?page=' . urlencode($groupHome), $smarty);
 						}
 					}
 				}
@@ -404,27 +402,27 @@ if ($isvalid) {
 				exit;
 
 			case ACCOUNT_DISABLED:
-				$error = tra('Account disabled');
+				$error = 'Account disabled';
 				break;
 
 			case ACCOUNT_WAITING_USER:
-				$error = tra('You did not validate your account');
-				$extraButton = array('href'=>'tiki-send_mail.php?user='. urlencode($_REQUEST['user']), 'text'=>tra('Resend'), 'comment'=>tra('You should have received an email. Check your mailbox and your spam box. Otherwise click on the button to resend the email')); 
+				$error = 'You did not validate your account';
+				$extraButton = array('href'=>'tiki-send_mail.php?user='.$_REQUEST['user'], 'text'=>tra('Resend'), 'comment'=>tra('You should have received an email. Check your mailbox and your spam box. Otherwise click on the button to resend the email')); 
 				break;
 
 			case USER_AMBIGOUS:
-				$error = tra('You must use the right case for your user name');
+				$error = 'You must use the right case for your user name';
 				break;
 
 			case USER_NOT_VALIDATED:
-				$error = tra('You are not yet validated');
+				$error = 'You are not yet validated';
 				break;
 
 			default:
-				$error = tra('Invalid username or password');
+				$error = 'Invalid username or password';
 		}
 		if (isset($extraButton)) $smarty->assign_by_ref('extraButton', $extraButton);
-		$smarty->assign('msg', $error);
+		$smarty->assign('msg', tra($error));
 		$smarty->display('error.tpl');
 		exit;
 		// on a login error wait this long in seconds. slows down automated login attacks.

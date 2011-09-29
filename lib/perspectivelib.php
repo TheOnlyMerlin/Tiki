@@ -142,6 +142,7 @@ class PerspectiveLib
 
 	// Replaces all preferences from $perspectiveId with those in the provided string-indexed array (in format "pref_name" => "pref_value").
 	function replace_preferences( $perspectiveId, $preferences ) {
+		$db = TikiDb::get();
 		$this->perspectivePreferences->deleteMultiple(array('perspectiveId' => $perspectiveId));
 
 		global $prefslib; require_once 'lib/prefslib.php';
@@ -199,13 +200,15 @@ class PerspectiveLib
 		return $list;
 	}
 
-	// Returns one of the perspectives with the given name
-	function get_perspective_with_given_name ( $name ) {
+	//Returns a list of perspectives with the given name, filtered by perms
+	function get_perspectives_with_given_name ( $name ) {
 	    $db = TikiDb::get();
 
-	    return $db->getOne( "SELECT perspectiveId FROM tiki_perspectives WHERE name = ?", array ( $name ) );
+	    $list = $db->getOne( "SELECT perspectiveId FROM tiki_perspectives WHERE name = ?", array ( $name ) );
 
 	    //$list = Perms::filter( array ( 'type' => 'perspective'), 'object', $list, array( 'object' => 'perspectiveId' ), 'perspective_view' );
+
+	    return $list;
 	}
 }
 

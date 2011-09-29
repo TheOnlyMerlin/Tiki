@@ -12,7 +12,6 @@ function wikiplugin_flash_info() {
 		'description' => tra('Embed a video or audio file'),
 		'prefs' => array('wikiplugin_flash'),
 		'extraparams' => true,
-		'tags' => array( 'basic' ),		
 		'icon' => 'pics/icons/mime/swf.png',
 		'params' => array(
 			'type' => array(

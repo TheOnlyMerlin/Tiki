@@ -14,7 +14,6 @@ function wikiplugin_tag_info() {
 		'validate' => 'all',
 		'body' => tra('text'),
 		'icon' => 'pics/icons/script_code_red.png',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'tag' => array(
 				'required' => false,

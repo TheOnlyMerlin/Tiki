@@ -129,5 +129,6 @@ $smarty->assign_by_ref('listpages',$listpages["data"]);
 $section='friends';
 include_once('tiki-section_options.php');
 
+// Display the template
 $smarty->assign('mid','tiki-friends.tpl');
 $smarty->display("tiki.tpl");

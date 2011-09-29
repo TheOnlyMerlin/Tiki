@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {title help="Communication+Center"}{tr}Received Pages{/tr}{/title}
 
 {if !empty($errors)}
@@ -99,8 +97,6 @@
 					<a class="link" href="tiki-received_pages.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].receivedPageId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 				</td>
 			</tr>
-		{sectionelse}
-			{norecords _colspan=6}
 		{/section}
 	</table>
 	{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
@@ -177,8 +173,6 @@
 					{/if}
 				{/section}
 			{/if}
-		{sectionelse}
-			{norecords _colspan=7}
 		{/section}
 		{select_all checkbox_names='checked[]' label="{tr}Select All{/tr}"}
 	</table>

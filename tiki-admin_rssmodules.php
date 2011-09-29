@@ -7,7 +7,6 @@
 
 require_once ('tiki-setup.php');
 include_once ('lib/rss/rsslib.php');
-//get_strings tra('External Feeds')
 $auto_query_args = array(
 	'rssId',
 	'offset',
@@ -22,7 +21,6 @@ $access->check_permission('tiki_p_admin_rssmodules');
 
 if (isset($_REQUEST["rssId"])) {
 	$smarty->assign('rssId', $_REQUEST["rssId"]);
-	$cookietab = 2;
 }
 $smarty->assign('preview', 'n');
 if (isset($_REQUEST["view"])) {
@@ -79,9 +77,6 @@ if( isset($_REQUEST['article']) && $prefs['feature_articles'] == 'y' ) {
 			'rating' => $jitPost->rating->int(),
 			'submission' => isset( $_POST['submission'] ),
 		) );
-		$cookietab = 1;
-	} else {
-		$cookietab = 3;		
 	}
 
 	$config = $rsslib->get_article_generator( $_REQUEST['article'] );
@@ -123,7 +118,6 @@ if (isset($_REQUEST["save"])) {
 	$smarty->assign('refresh', 900);
 	$smarty->assign('showTitle', 'n');
 	$smarty->assign('showPubDate', 'n');
-	$cookietab = 1;
 }
 if (!isset($_REQUEST["sort_mode"])) {
 	$sort_mode = 'name_desc';

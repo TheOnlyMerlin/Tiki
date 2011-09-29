@@ -5,11 +5,13 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- * Smarty plugin
- * @package Smarty
- * @subpackage plugins
- *
+//this script may only be included - so its better to die if called directly.
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
+	header("location: index.php");
+	exit;
+}
+
+/*
  * smarty_block_self_link : add a link (with A tag) to the current page on a text (passed through $content argument).
  *
  *   The generated link uses other smarty functions like query and show_sort to handle AJAX, sorting fields, and sorting icons.
@@ -32,22 +34,34 @@
  *   _script : specify another script than the current one (this disable AJAX for this link when the current script is different).
  *   _on* : specify values of on* (e.g. onclick) HTML attributes used for javascript events
  */
-
-//this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
-  header("location: index.php");
-  exit;
-}
-
-function smarty_block_self_link($params, $content, $smarty, $repeat = false)
-{
+function smarty_block_self_link($params, $content, &$smarty, $repeat = false) {
+	global $prefs;
 	$default_type = 'absolute_path';
 	$default_icon_type = 'relative';
 
 	if ( $repeat ) return;
-	$smarty->loadPlugin('smarty_function_query');
+	require_once $smarty->_get_plugin_filepath('function', 'query');
 
 	if ( is_array($params) ) {
+
+		if ( ! empty($params['_selected']) ) {
+			// Filter the condition
+			if (preg_match('/[a-zA-Z0-9 =<>!]+/',$params['_selected'])) {
+				$error_report = error_reporting(~E_ALL);
+				$return = eval ( '$selected =' . $params['_selected'].";" );
+				error_reporting($error_report);
+				if ($return !== FALSE) {
+					if ($selected) {
+						if (! empty($params['_selected_class']) ) {
+							$params['_class'] = $params['_selected_class'];
+						} else {
+							$params['_class'] = 'selected';
+						}
+					}
+				}
+			}
+		}
+
 		if ( ! isset($content) ) $content = '';
 		if ( ! isset($params['_ajax']) ) $params['_ajax'] = 'y';
 		if ( ! isset($params['_script']) ) $params['_script'] = '';
@@ -79,7 +93,7 @@ function smarty_block_self_link($params, $content, $smarty, $repeat = false)
 
 			if ( empty($params['_disabled']) ) {
 				if ( $params['_ajax'] === 'y' && $params['_script'] === '' ) {
-					$smarty->loadPlugin('smarty_block_ajax_href');
+					require_once $smarty->_get_plugin_filepath('block', 'ajax_href');
 					if ( ! isset($params['_htmlelement']) ) $params['_htmlelement'] = 'role_main';
 					if ( ! isset($params['_onclick']) ) $params['_onclick'] = '';
 					if ( ! isset($params['_template']) ) {
@@ -103,7 +117,7 @@ function smarty_block_self_link($params, $content, $smarty, $repeat = false)
 
 			if ( isset($params['_icon']) ) {
 				if ( ! isset($params['_title']) && $content != '' ) $params['_title'] = $content;
-				$smarty->loadPlugin('smarty_function_icon');
+				require_once $smarty->_get_plugin_filepath('function', 'icon');
 
 				$icon_params = array('_id' => $params['_icon'], '_type' => $default_icon_type);
 				if ( isset($params['_alt']) ) {
@@ -139,14 +153,10 @@ function smarty_block_self_link($params, $content, $smarty, $repeat = false)
 			}
 			$link .= $ret;
 
-			if (isset($params['_confirm'])) {
-				$link .= ' data-confirm="' . smarty_modifier_escape($params['_confirm']) . '"';
-			}
-
 			$ret = "<a $link>".$content.'</a>';
 
 			if ( !empty($params['_sort_field']) ) {
-				$smarty->loadPlugin('smarty_function_show_sort');
+				require_once $smarty->_get_plugin_filepath('function', 'show_sort');
 				$ret .= "<a $link style='text-decoration:none;'>".smarty_function_show_sort(
 						array('sort' => $params['_sort_arg'], 'var' => $params['_sort_field']),
 						$smarty

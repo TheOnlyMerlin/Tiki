@@ -1,4 +1,3 @@
-{* $Id$ *}
 {tabset name='stat' toggle='n'}
 	{foreach from=$stat key=when item=typeStat}
 		{capture name='tabtitle'}
@@ -15,7 +14,7 @@
 			 <ul>
 			{foreach from=$typeStat key=type item=list}
 				{foreach from=$list key=what item=nb} 
-					<li>{$what}: {$nb}</li>
+					<li>{tr}{$what}:{/tr} {$nb}</li>
 				{/foreach}
 			{/foreach}
 			</ul>

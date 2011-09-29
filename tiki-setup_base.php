@@ -33,6 +33,7 @@ ini_set('magic_quotes_runtime', 0);
 ini_set('allow_call_time_pass_reference', 'On');
 // ---------------------------------------------------------------------
 // inclusions of mandatory stuff and setup
+require_once ('lib/setup/compat.php');
 require_once ('lib/tikiticketlib.php');
 require_once ('db/tiki-db.php');
 require_once ('lib/tikilib.php');
@@ -49,7 +50,8 @@ $needed_prefs = array(
 	'tiki_cdn_ssl' => '',
 	'language' => 'en',
 	'lang_use_db' => 'n',
-	'versionOfPreferencesCache' => - 1,
+	'feature_pear_date' => 'y',
+	'lastUpdatePrefs' => - 1,
 	'feature_fullscreen' => 'n',
 	'error_reporting_level' => 0,
 	'smarty_notice_reporting' => 'n',
@@ -59,19 +61,12 @@ $needed_prefs = array(
 	'memcache_compress' => 'y',
 	'memcache_servers' => false,
 	'min_pass_length' => 5,
-	'pass_chr_special' => 'n',
-	'smarty_compilation' => 'modified',
+	'pass_chr_special' => 'n'
 );
-// check that tiki_preferences is there
-if (empty($tikilib->query("SHOW TABLES LIKE 'tiki_preferences'")->numrows)) {
-	// smarty not initialised at this point to do a polite message, sadly
-	header('location: tiki-install.php');
-	exit;
-}
 $tikilib->get_preferences($needed_prefs, true, true);
-if (!isset($prefs['versionOfPreferencesCache']) || $prefs['versionOfPreferencesCache'] == - 1) {
-	$tikilib->query('delete from `tiki_preferences` where `name`=?', array('versionOfPreferencesCache'));
-	$tikilib->query('insert into `tiki_preferences`(`name`,`value`) values(?,?)', array('versionOfPreferencesCache', 1));
+if (!isset($prefs['lastUpdatePrefs']) || $prefs['lastUpdatePrefs'] == - 1) {
+	$tikilib->query('delete from `tiki_preferences` where `name`=?', array('lastUpdatePrefs'));
+	$tikilib->query('insert into `tiki_preferences`(`name`,`value`) values(?,?)', array('lastUpdatePrefs', 1));
 }
 
 if ($prefs['session_protected'] == 'y' && ! isset($_SERVER['HTTPS'])) {
@@ -177,11 +172,6 @@ if ($prefs['feature_fullscreen'] == 'y') {
 require_once ('lib/setup/prefs.php');
 // Smarty needs session since 2.6.25
 require_once ('lib/init/smarty.php');
-
-// Define the special maxRecords global variable
-$maxRecords = $prefs['maxRecords'];
-$smarty->assignByRef('maxRecords', $maxRecords);
-
 require_once ('lib/userslib.php'); global $userlib;
 $userlib = new UsersLib;
 require_once ('lib/tikiaccesslib.php');
@@ -445,24 +435,28 @@ if (isset($_SESSION["$user_cookie_site"])) {
 	}
 } else {
 	$user = NULL;
-
-	if ( isset($prefs['login_http_basic']) && $prefs['login_http_basic'] === 'always' ||
-		(isset($prefs['login_http_basic']) && $prefs['login_http_basic'] === 'ssl' && isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')) {
-
-		// Authenticate if the credentials are present, do nothing otherwise
-		if (isset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {
-			$validate = $userlib->validate_user($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
-
-			if ($validate[0]) {
-				$user = $validate[1];
-				$userlib->confirm_user($user);
-			} else {
-				header('WWW-Authenticate: Basic realm="'.$tikidomain.'"');
-				header('HTTP/1.0 401 Unauthorized');
-				exit;
-			}
-		}
-	}
+	// if everything failed, check for user+pass params in the URL
+	// this is needed for access to things like RSS feeds that are configured to be
+	// be visible to registered users and/or certain groups
+	// #####################################################################################
+	// Note: if you uncomment the following section, people are allowed to log in using
+	// GET (username and password in URL). That is some kind of insecure, because
+	// password and username are not encrypted and visible and browser caches etc, besides
+	// that someone could try to break in with brute force attacks. So uncomment this only
+	// if you are in a trusted environment (maybe intranet) and want to ignore the risks.
+	// #####################################################################################
+	// 	$isvalid = false;
+	// 	if (isset($_REQUEST["user"]) && isset($_REQUEST["pass"])) {
+	// 		$isvalid = $userlib->validate_user($_REQUEST["user"], $_REQUEST["pass"], '', '');
+	// 		if ($isvalid) {
+	// 			$_SESSION["$user_cookie_site"] = $_REQUEST["user"];
+	// 			$user = $_REQUEST["user"];
+	// 			$smarty->assign_by_ref('user', $user);
+	// 			// Now since the user is valid we put the user provpassword as the password
+	// 			$userlib->confirm_user($user);
+	// 		}
+	// }
+	
 }
 
 if (is_object($smarty)) {
@@ -511,6 +505,7 @@ array_unshift( $inputConfiguration, array(
 	'staticKeyFilters' => array(
 		'menu' => 'striptags',
 		'cat_categorize' => 'alpha',
+		'cat_clearall' => 'alpha',
 		'tab' => 'digits',
 		'javascript_enabled' => 'alpha',
 		'XDEBUG_PROFILE' => 'int',
@@ -545,26 +540,6 @@ if ($tiki_p_trust_input != 'y') {
 	}
 	unset($tmp);
 }
-
-if ( isset($prefs['tiki_check_file_content']) && $prefs['tiki_check_file_content'] == 'y' && count($_FILES)) {
-	if ($finfo = new finfo(FILEINFO_MIME_TYPE)) {
-
-		foreach ($_FILES as $key => & $upload_file_info) {
-			if (is_array($upload_file_info['tmp_name'])) {
-				foreach ($upload_file_info['tmp_name'] as $k => $tmp_name) {
-					if ($tmp_name) {
-						$upload_file_info['type'][$k] = $finfo->file($tmp_name);
-					}
-				}
-			} elseif ($upload_file_info['tmp_name']) {
-				$upload_file_info['type'] = $finfo->file($upload_file_info['tmp_name']);
-			}
-		}
-	}
-
-	unset($finfo);
-}
-
 // deal with old request globals (e.g. used by Smarty)
 $GLOBALS['HTTP_GET_VARS'] = & $_GET;
 $GLOBALS['HTTP_POST_VARS'] = & $_POST;
@@ -575,7 +550,7 @@ unset($GLOBALS['HTTP_SESSION_VARS']);
 unset($GLOBALS['HTTP_POST_FILES']);
 // --------------------------------------------------------------
 if (isset($_REQUEST['highlight']) || (isset($prefs['feature_referer_highlight']) && $prefs['feature_referer_highlight'] == 'y')) {
-	$smarty->loadFilter('output', 'highlight');
+	$smarty->load_filter('output', 'highlight');
 }
 if (function_exists('mb_internal_encoding')) {
 	mb_internal_encoding("UTF-8");

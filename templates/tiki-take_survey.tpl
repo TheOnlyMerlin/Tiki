@@ -1,7 +1,7 @@
 <form name="aform" formId='editpageform' action="{$form_action|default:'tiki-take_survey.php'}" method="post">
 <input type="hidden" name="surveyId" value="{$surveyId|escape}" />
 <input type="hidden" name="vote" value="yes" />
-  {if !isset($show_name) or $show_name eq 'y'}{title}{$survey_info.name}{/title}{/if}
+  {if !isset($show_name) or $show_name eq 'y'}{title}{$survey_info.name|escape}{/title}{/if}
 	{if $error_msg neq ''}
 		{remarksbox type="warning" title="{tr}Warning{/tr}"}{$error_msg}{/remarksbox}
 	{/if}
@@ -25,13 +25,13 @@
 				{if $questions[ix].explode.0 > 0}
 					{assign var='textrows' value=$questions[ix].explode.0}
 				{else}
-					{assign var='textrows' value=20}
+					{assign var='textrows' value=$rows}
 				{/if}
 
 				{if $questions[ix].explode.1 > 0}
 					{assign var='textcols' value=$questions[ix].explode.1}
 				{else}
-					{assign var='textcols' value=80}
+					{assign var='textcols' value=$cols}
 				{/if}
 
         <div class="quizoptions">
@@ -79,7 +79,7 @@
           {/if}
         </div>
       {elseif $questions[ix].type eq 'g'}
-        {fgal_browse _id=$questions[ix].explode.0 show_selectall='n' show_infos='n' checkbox_label="{tr}Choose{/tr}" file_checkbox_name="question_"|cat:$questions[ix].questionId}
+        {fgal_browse _id=$questions[ix].explode.0 show_selectall='n' show_infos='n' checkbox_label="{tr}Choose{/tr}" file_checkbox_name="question_`$questions[ix].questionId`"}
       {/if}
     </div>
   {/section}

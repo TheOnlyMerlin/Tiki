@@ -5,11 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- * Smarty plugin
- * @package Smarty
- * @subpackage plugins
- *
+/*
  * \brief Add help via icon to a page
  * @author: Stéphane Casset
  * @date: 06/11/2008
@@ -21,7 +17,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-function smarty_block_add_help($params, $content, $smarty, &$repeat) {
+function smarty_block_add_help($params, $content, &$smarty, &$repeat) {
 	global $prefs;
 	global $help_sections;
 
@@ -43,7 +39,7 @@ function smarty_block_add_help($params, $content, $smarty, &$repeat) {
 
 	if (!isset($params['show']) or $params['show'] == 'y') {
 		global $headerlib;
-		$smarty->loadPlugin('smarty_block_self_link');
+		require_once $smarty->_get_plugin_filepath('block', 'self_link');
 		$self_link_params['_alt'] = tra('Click for Help');
 		$self_link_params['_icon'] = 'help';
 		$self_link_params['_ajax'] = 'n';

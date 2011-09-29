@@ -302,7 +302,6 @@ class HeaderLib
 	}
 
 	function output_js_config($wrap = true) {
-		$back = null;
 		if (count($this->js_config)) {
 			ksort($this->js_config);
 			$back = "\n<!-- js_config before loading JSfile -->\n";
@@ -323,13 +322,6 @@ class HeaderLib
 		return $back;
 
 	}
-
-	function clear_js()
-	{
-		$this->js = array();
-		$this->jq_onready = array();
-	}
-
 	function output_js($wrap = true) {	// called in tiki.tpl - JS output at end of file now (pre 5.0)
 		global $prefs;
 
@@ -413,10 +405,7 @@ class HeaderLib
 	 * @return array[strings]
 	 */
 	function getJsfiles() {
-		if (! function_exists('smarty_modifier_escape')) {
-			require_once 'lib/smarty_tiki/modifier.escape.php';
-		}
-		
+
 		ksort($this->jsfiles);
 		$out = array();
 
@@ -444,35 +433,23 @@ class HeaderLib
 	 * 
 	 * @param string $html - source to search for JavaScript
 	 * @param bool $switch_fn_definition - if set converts 'function fName ()' to 'fName = function()' for AJAX
-	 * @param bool $isFiles - if set true, get external scripts. If set to false, get inline scripts. If true, the external script tags's src attributes are returned as an array.
-	 *
+	 * 
 	 * @return array of JavaScript strings
 	 */
-	function getJsFromHTML( $html, $switch_fn_definition = false, $isFiles = false ) {
+	function getJsFromHTML( $html, $switch_fn_definition = false ) {
 		$jsarr = array();
 		$js_script = array();
 		
 		preg_match_all('/(?:<script.*type=[\'"]?text\/javascript[\'"]?.*>\s*?)(.*)(?:\s*<\/script>)/Umis', $html, $jsarr);
-		if ($isFiles == false) {
-			if (count($jsarr) > 1 && is_array($jsarr[1]) && count($jsarr[1]) > 0) {
-				$js = preg_replace('/\s*?<\!--\/\/--><\!\[CDATA\[\/\/><\!--\s*?/Umis', '', $jsarr[1]);	// strip out CDATA XML wrapper if there
-				$js = preg_replace('/\s*?\/\/--><\!\]\]>\s*?/Umis', '', $js);
+		if (count($jsarr) > 1 && is_array($jsarr[1]) && count($jsarr[1]) > 0) {
+			$js = preg_replace('/\s*?<\!--\/\/--><\!\[CDATA\[\/\/><\!--\s*?/Umis', '', $jsarr[1]);	// strip out CDATA XML wrapper if there
+			$js = preg_replace('/\s*?\/\/--><\!\]\]>\s*?/Umis', '', $js);
 
-				if ($switch_fn_definition) {
-					$js = preg_replace('/function (.*)\(/Umis', "$1 = function(", $js);
-				}
+			if ($switch_fn_definition) {
+				$js = preg_replace('/function (.*)\(/Umis', "$1 = function(", $js);
+			}
 
-				$js_script = array_merge($js_script, $js);
-			}
-		} else {
-			foreach($jsarr[0] as $key=>$tag) {
-				if (empty($jsarr[1][$key])) { //if there was no content in the script, it is a src file
-					//we load the js as a xml element, then look to see if it has a "src" tag, if it does, we push it to array for end back
-					$js = simplexml_load_string($tag);
-					if (!empty($js['src']))
-						array_push($js_script, (string)$js['src']);
-				}
-			}
+			$js_script = array_merge($js_script, $js);
 		}
 		// this is very probably possible as a single regexp, maybe a preg_replace_callback
 		// but it was stopping the CDATA group being returned (and life's too short ;)
@@ -480,11 +457,6 @@ class HeaderLib
 		// preg_match_all('/<script.*type=[\'"]?text\/javascript[\'"]?.*>(\s*<\!--\/\/--><\!\[CDATA\[\/\/><\!--)?\s*?(.*)(\s*\/\/--><\!\]\]>\s*)?<\/script>/imsU', $html, $js);
 		
 		return $js_script;
-	}
-	
-	function removeJsFromHTML( $html ) {
-		$html = preg_replace('/(?:<script.*type=[\'"]?text\/javascript[\'"]?.*>\s*?)(.*)(?:\s*<\/script>)/Umis', "", $html);
-		return $html;
 	}
 	
 	public function get_all_css_content() {
@@ -640,7 +612,7 @@ class HeaderLib
 	private function process_themegen_files($files) {
 		global $prefs, $tikidomainslash, $in_installer;
 		
-		if (empty($in_installer) && isset($prefs['themegenerator_feature']) && $prefs['themegenerator_feature'] === 'y' && !empty($prefs['themegenerator_theme'])) {
+		if (empty($in_installer) && $prefs['themegenerator_feature'] === 'y' && !empty($prefs['themegenerator_theme'])) {
 			global $themegenlib; include_once 'lib/themegenlib.php';
 			
 			$data = $themegenlib->getCurrentTheme()->getData();
@@ -677,40 +649,12 @@ class HeaderLib
 	}
 
 	function add_map() {
-		$tikilib = TikiLib::lib('tiki');
-		$enabled = $tikilib->get_preference('geo_tilesets', array('openstreetmap'), true);
-
-		$enalbed = $tikilib->get_preference('geo_tilesets', array('openstreetmap'));
-
-		$google = array_intersect(array('google_street', 'google_physical', 'google_satellite', 'google_hybrid'), $enabled);
-		if (count($google) > 0 || $prefs['geo_google_streetview'] == 'y') {
-			$this->add_jsfile('http://maps.google.com/maps/api/js?v=3.3&sensor=false', 'external');
-		}
-
-		/* Needs additional testing
-		$visual = array_intersect(array('visualearth_road', 'visualearth_aerial', 'visualearth_hybrid'), $enabled);
-		if (count($visual) > 0) {
-			$this->add_jsfile('http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1', 'external');
-		}
-
-		$yahoo = array_intersect(array('yahoo_street', 'yahoo_hybrid', 'yahoo_satellite'), $enabled);
-		if (count($yahoo) > 0) {
-			$this->add_jsfile('http://api.maps.yahoo.com/ajaxymap?v=3.0', 'external');
-		}
-		*/
-
-		$this->add_jsfile('http://openlayers.org/api/2.11/OpenLayers.js', 'external');
+		// Annoying notice with copyrights still remain in google
+		//$this->add_jsfile('http://maps.google.com/maps/api/js?v=3.3&sensor=false', 'external');
+		$this->add_jsfile('http://openlayers.org/api/2.10/OpenLayers.js', 'external');
 		$this->add_js('$(".map-container:not(.done)").addClass("done").createMap();');
-	}
-	
-	function add_dracula() {
-		// Because they are only used in this file, they are marked as external so they
-		// are not included in the minify
-		$this->add_jsfile( 'lib/dracula/raphael-min.js', 'external' );
-		$this->add_jsfile( 'lib/dracula/graffle.js', 'external' );
-		$this->add_jsfile( 'lib/dracula/graph.js', 'external' );
 	}
 }
 
 $headerlib = new HeaderLib;
-$smarty->assignByRef('headerlib', $headerlib);
+$smarty->assign_by_ref('headerlib', $headerlib);

@@ -15,8 +15,7 @@ function wikiplugin_datachannel_info()
 		'prefs' => array('wikiplugin_datachannel'),
 		'body' => tra('List of fields to display. One field per line. Comma delimited: fieldname,label') . '<br /><br />' .
 					tra('To use values from other forms on the same page as parameters for the data-channel use "fieldname, external=fieldid".') . ' ' .
-					tra('Where "fieldid" is the id (important) of the external input to use, and "fieldname" is the name of the parameter in the data-channel') . ' . ' .
-					tra('To use fixed hidden preset values use "fieldname, hidden=value."'),
+					tra('Where "fieldid" is the id (important) of the external input to use, and "fieldname" is the name of the parameter in the data-channel'),
 		'extraparams' => true,
 		'icon' => 'pics/icons/transmit_blue.png',
 		'params' => array(
@@ -60,10 +59,10 @@ function wikiplugin_datachannel_info()
 				'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Clear all Tiki caches'), 'value' => 'all'), 
-					array('text' => './templates_c/', 'value' => 'templates_c'),
-					array('text' => './modules/cache/', 'value' => 'modules_cache'),
-					array('text' => './temp/cache/', 'value' => 'temp_cache'),
-					array('text' => './temp/public/', 'value' => 'temp_public'),
+					array('text' => tra('./templates_c/'), 'value' => 'templates_c'),
+					array('text' => tra('./modules/cache/'), 'value' => 'modules_cache'),
+					array('text' => tra('./temp/cache/'), 'value' => 'temp_cache'),
+					array('text' => tra('./temp/public/'), 'value' => 'temp_public'),
 					array('text' => tra('All user prefs sessions'), 'value' => 'prefs'),
 					array('text' => tra('None'), 'value' => 'none'),
 				),
@@ -148,10 +147,6 @@ function wikiplugin_datachannel( $data, $params )
 					$js .= "\n".'$("input[name=\'' . $parts[0] . '\']").val( unescape($("#' . $moreparts[1] . '").val()));';
 				}
 				$inputfields[ $parts[0] ] = 'external';
-			} elseif (strpos( $parts[1], 'hidden') === 0) {
-				$moreparts = explode('=', trim($parts[1]), 2);
-				$fields[ $parts[0] ] = $moreparts[1];
-				$inputfields[ $parts[0] ] = 'hidden';
 			} else {
 				$fields[ $parts[0] ] = $parts[1];
 				$inputfields[ $parts[0] ] = $parts[1];
@@ -166,12 +161,11 @@ function wikiplugin_datachannel( $data, $params )
 	$groups = Perms::get()->getGroups();
 
 	$config = Tiki_Profile_ChannelList::fromConfiguration( $prefs['profile_channels'] );
-	if( $config->canExecuteChannels( array( $params['channel'] ), $groups, true ) ) {
+	if( $config->canExecuteChannels( array( $params['channel'] ), $groups ) ) {
 		$smarty->assign( 'datachannel_execution', $executionId );
 		if( $_SERVER['REQUEST_METHOD'] == 'POST' 
 			&& isset( $_POST['datachannel_execution'] ) 
-			&& $_POST['datachannel_execution'] == $executionId
-			&& $config->canExecuteChannels( array( $params['channel'] ), $groups ) ) {
+			&& $_POST['datachannel_execution'] == $executionId ) {
 
 			$input = array_intersect_key( $_POST, $inputfields );
 			
@@ -280,8 +274,6 @@ function wikiplugin_datachannel( $data, $params )
 			}
 			$smarty->assign('datachannel_feedbacks', array_merge($installer->getFeedback(), $profile->getFeedback()) );
 		}
-
-		$smarty->assign( 'datachannel_inputfields', $inputfields );
 		$smarty->assign( 'datachannel_fields', $fields );
 		$smarty->assign( 'button_label', !empty($params['buttonLabel']) ? $params['buttonLabel'] : 'Go');
 		$smarty->assign( 'form_class_attr', !empty($params['class']) ? ' class="' . $params['class'] . '"' : '');

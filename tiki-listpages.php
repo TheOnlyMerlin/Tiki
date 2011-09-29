@@ -38,6 +38,7 @@ if (isset($_REQUEST['hits_link_to_all_languages']) && $_REQUEST['hits_link_to_al
 }
 $smarty->assign('all_langs', $all_langs);
 
+$smarty->assign('headtitle', tra('Pages'));
 $access->check_feature(array('feature_wiki', 'feature_listPages'));
 $access->check_permission('tiki_p_view');
 /* mass-remove:
@@ -282,15 +283,13 @@ if (!empty($multiprint_pages)) {
 	if ($prefs['feature_categories'] == 'y') {
 		global $categlib;
 		include_once ('lib/categories/categlib.php');
-		$categories = $categlib->getCategories();
+		$categories = $categlib->get_all_categories_respect_perms($user, 'view_category');
 		$smarty->assign('notable', 'y');
 		$smarty->assign('cat_tree', $categlib->generate_cat_tree($categories, true, $_REQUEST['cat_categories']));
 		$smarty->assign_by_ref('categories', $categories);
 		if ((isset($prefs['wiki_list_categories']) && $prefs['wiki_list_categories'] == 'y') || (isset($prefs['wiki_list_categories_path']) && $prefs['wiki_list_categories_path'] == 'y')) {
 			foreach($listpages['data'] as $i => $check) {
 				$cats = $categlib->get_object_categories('wiki page', $check['pageName']);
-				$listpages['data'][$i]['categpath'] = array();
-				$listpages['data'][$i]['categname'] = array();
 				foreach($cats as $cat) {
 					$listpages['data'][$i]['categpath'][] = $cp = $categlib->get_category_path_string($cat);
 					if ($s = strrchr($cp, ':')) $listpages['data'][$i]['categname'][] = substr($s, 1);

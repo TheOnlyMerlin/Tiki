@@ -10,51 +10,17 @@
  * 
  * Letter key: ~u~
  *
+ *	Options:
+ *		0: auto-assign =
+ *			0 = general
+ *			1 = creator
+ *			2 = modifier
+ *
+ *		1: email_notify
+ *			0/1
  */
-class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
+class Tracker_Field_UserSelector extends Tracker_Field_Abstract
 {
-	public static function getTypes()
-	{
-		return array(
-			'u' => array(
-				'name' => tr('User Selector'),
-				'description' => tr('Allows the selection of a user from a list.'),
-				'help' => 'User selector',
-				'prefs' => array('trackerfield_userselector'),
-				'tags' => array('basic'),
-				'default' => 'y',
-				'params' => array(
-					'autoassign' => array(
-						'name' => tr('Auto-Assign'),
-						'description' => tr('Assign the value based on the creator or modifier.'),
-						'filter' => 'int',
-						'default' => 0,
-						'options' => array(
-							0 => tr('None'),
-							1 => tr('Creator'),
-							2 => tr('Modifier'),
-						),
-					),
-					'notify' => array(
-						'name' => tr('Email Notification'),
-						'description' => tr('Send an email notification to the user every time the item is modified.'),
-						'filter' => 'int',
-						'options' => array(
-							0 => tr('No'),
-							1 => tr('Yes'),
-						),
-					),
-					'groupIds' => array(
-						'name' => tr('Group IDs'),
-						'description' => tr('Limit the list of users to members of specific groups.'),
-						'separator' => '|',
-						'filter' => 'int',
-					),
-				),
-			),
-		);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		global $tiki_p_admin_trackers, $user;
@@ -63,15 +29,13 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 
 		$data = array();
 		
-		$autoassign = (int) $this->getOption(0);
-
 		if ( isset($requestData[$ins_id])) {
-			if ($autoassign == 0 || $tiki_p_admin_trackers === 'y') {
+			if ($this->getOption(0) < 1 || $tiki_p_admin_trackers === 'y') {
 				$data['value'] = $requestData[$ins_id];
 			} else {
-				if ($autoassign == 2) {
+				if ($this->getOption(0) == 2) {
 					$data['value'] = $user;
-				} elseif ($autoassign == 1) {
+				} elseif ($this->getOption(0) == 1) {
 					if (!$this->getItemId() || ($this->getTrackerDefinition()->getConfiguration('userCanTakeOwnership')  == 'y' && !$this->getValue())) {
 						$data['value'] = $user; // the user appropiate the item
 					} else {
@@ -95,15 +59,12 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 		$smarty = TikiLib::lib('smarty');
 		
 		$value = $this->getConfiguration('value');
-		$autoassign = (int) $this->getOption(0);
-		if ($value === false && ($autoassign == 1 || $autoassign == 2)) {
+		if ($value === false && ($this->getOption(0) == 1 || $this->getOption(0) == 2)) {
 			$value = $user;
 		}
 		
-		if ($autoassign == 0 || $tiki_p_admin_trackers === 'y') {
-			$groupIds = $this->getOption(2, '');
-
-			$smarty->loadPlugin('smarty_function_user_selector');
+		if ($this->getOption(0) == 0 || $tiki_p_admin_trackers === 'y') {
+			require_once $smarty->_get_plugin_filepath('function', 'user_selector');
 			return smarty_function_user_selector(
 					array(	'user' => $value,
 							'id'  => 'user_selector_' . $this->getConfiguration('fieldId'),
@@ -111,10 +72,9 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 							'name' => $this->getInsertId(),
 							'editable' => 'y',
 							'allowNone' => $this->getConfiguration('isMandatory') === 'y' ? 'n' : 'y',
-							'groupIds' => $groupIds,
 					), $smarty);
 		} else {
-			$smarty->loadPlugin('smarty_modifier_username');
+			require_once $smarty->_get_plugin_filepath('modifier', 'username');
 			return smarty_modifier_username( $value ) . '<input type="hidden" name="' . $this->getInsertId() . '" value="' . $value . '">';
 		}
 	}
@@ -125,53 +85,10 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 		if (empty($value)) {
 			return '';
 		} else {
-			TikiLib::lib('smarty')->loadPlugin('smarty_modifier_username');
+			require_once TikiLib::lib('smarty')->_get_plugin_filepath('modifier', 'username');
 			return smarty_modifier_username( $value );
 		}
 	}
 
-	function importRemote($value)
-	{
-		return $value;
-	}
-
-	function exportRemote($value)
-	{
-		return $value;
-	}
-
-	function importRemoteField(array $info, array $syncInfo)
-	{
-		$groupIds = $this->getOption(2, '');
-		$groupIds = array_filter(explode('|', $groupIds));
-		$groupIds = array_map('intval', $groupIds);
-
-		$controller = new Services_RemoteController($syncInfo['provider'], 'user');
-		$users = $controller->getResultLoader('list_users', array(
-			'groupIds' => $groupIds,
-		));
-
-		$list = array();
-		foreach ($users as $user) {
-			$list[] = $user['login'];
-		}
-
-		if (count($list)) {
-			$info['type'] = 'd';
-			$info['options'] = implode(',', $list);
-		} else {
-			$info['type'] = 't';
-			$info['options'] = '';
-		}
-
-		return $info;
-	}
-
-	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
-	{
-		return array(
-			$baseKey => $typeFactory->identifier($this->getValue()),
-		);
-	}
 }
 

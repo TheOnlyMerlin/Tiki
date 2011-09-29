@@ -1,6 +1,4 @@
-{* $Id$ *}
-
-{title admpage="articles" help="Articles"}{tr}Admin Topics{/tr}{/title}
+{title help="Articles"}{tr}Admin Topics{/tr}{/title}
 
 <h2>{tr}Create a new topic{/tr}</h2>
 

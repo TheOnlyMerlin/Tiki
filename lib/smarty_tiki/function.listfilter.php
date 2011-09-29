@@ -23,20 +23,15 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  * @selectors		CSS (jQuery) selector(s) for what to filter
  * @exclude			selector(s) for what to exclude from the text filter
  * 						(but still hide when parent is empty)
- * @query			key/field name for presetting filter box value from the URL
- * 						e.g. tiki-admin.php?page=textarea&filter=blog
- * 						(default="textFilter" - set to an empty string to disable)
  * 
  * Mainly for treetable lists...
  * @parentSelector	CSS (jQuery) selector(s) for parent nodes of what to filter
  * @childPrefix = 'child-of-'	prefix for child class (to hide parent if all children are hidden by the filter)
- *
- * @return html string (with jQuery added to headerlib)
  */
 
 
 
-function smarty_function_listfilter($params, $smarty) {
+function smarty_function_listfilter($params, &$smarty) {
 	global $headerlib, $prefs, $listfilter_id;
 	if ($prefs['feature_jquery'] != 'y' || $prefs['javascript_enabled'] != 'y') {
 		return '';
@@ -66,30 +61,14 @@ function smarty_function_listfilter($params, $smarty) {
 		}
 		if (isset($size)) $input .= " size='$size'";
 		if (isset($maxlength)) $input .= " maxlength='$maxlength'";
-
-		// value from url
-		if (!isset($query)) {
-			$query = 'textFilter';
-		}
-		if (!empty($query) && !empty($_REQUEST[$query])) {
-			$input .= ' value="' . $_REQUEST[$query] . '"';
-		}
-
-		$input .= " class='listfilter' />";
-		$input .= "<img src='pics/icons/close.png' onclick=\"\$('#$id').val('').keyup();return false;\" class='closeicon' width='16' height='16' style='visibility:hidden;position:relative;right:20px;top:6px;'/>";
-		$input .= "</label>";
-
+		$input .= " /></label>";
+		
 		if (!isset($selectors)) $selectors = ".$id table tr";
 			
 		$content = "
 \$('#$id').keyup( function() {
 	var criterias = this.value.toLowerCase().split( /\s+/ );
-
-	if (this.value.length) {
-		$(this).next('img.closeicon').css('visibility', '');
-	} else {
-		$(this).next('img.closeicon').css('visibility', 'hidden');
-	}
+	
 	\$('$selectors').each( function() {
 		var text = \$(this).text().toLowerCase();
 		for( i = 0; criterias.length > i; ++i ) {
@@ -113,18 +92,9 @@ function smarty_function_listfilter($params, $smarty) {
 	});
 ";
 		}
-		$content .= '
+		$content .= "
 } );	// end keyup
-';
-		if (!empty($query) && !empty($_REQUEST[$query])) {
-			$content .= "
-setTimeout(function () {
-	if ($('#$id').val() != '') {
-		$('#$id').keyup();
-	}
-}, 1000);
-";
-		}
+		";
 	
 		$headerlib->add_jq_onready($content);
 		return $input;

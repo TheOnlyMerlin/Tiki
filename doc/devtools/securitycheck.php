@@ -8,12 +8,9 @@
 // analyse_file_path groups files by type, e.g. library, etc.
 
 // Usage:
-// From Tiki root, run:
+// From TikiWiki root, run:
 // php doc/devtools/securitycheck.php > securityreport.html
-// visit securityreport.html (where your Tiki is)
-//
-//
-// Related script:  doc/devtools/prefreport.php
+// visit securityreport.html (where your TikiWiki is)
 //
 
 if( isset( $_SERVER['REQUEST_METHOD'] ) ) die;
@@ -47,14 +44,15 @@ $safePaths = array(
 	'\./db/virtuals.inc',
 
 	/* The following are DELIBERATELY PUBLIC. */
+	'\./tiki-change_password.php;',
 	'\./tiki-cookie-jar.php',
 	'\./tiki-error_simple.php',
 	'\./tiki-information.php',
-	'\./tiki-install.php',  // does its own check
+	'\./tiki-install.php',
 	'\./tiki-jsplugin.php',
 	'\./tiki-live_support_chat_frame.php',
 	'\./tiki-login_scr.php',
-	'\./tiki-channel.php',			// does its own checks
+	'\./tiki-channel.php',			// does it's own checks
 
 	/* This file is just comments */
 	'./about.php',
@@ -543,7 +541,7 @@ usort( $unsafe, 'sort_cb' );
 <html>
 <head><title>Security Static Checker Output</title></head>
 <body>
-<p>Tiki Version: <?php echo "$major.$minor.$revision" ?></p>
+<p>TikiWiki Version: <?php echo "$major.$minor.$revision" ?></p>
 <p>Audit Date: <?php echo date( 'Y-m-d H:i:s' ) ?></p>
 <h1>Potentially unsafe files</h1>
 <p>

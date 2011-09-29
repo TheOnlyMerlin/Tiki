@@ -200,8 +200,10 @@ class FreetagLib extends ObjectLib
 																		, $broaden = 'n'
 																		) 
 	{
+		global $categlib;
+		include_once('lib/categories/categlib.php');
 
-		global $tiki_p_admin, $user, $smarty, $prefs;
+		global $tiki_p_admin, $user, $smarty;
 		if (!isset($tagArray) || !is_array($tagArray)) {
 			return false;
 		}
@@ -293,6 +295,11 @@ class FreetagLib extends ObjectLib
 			$bindvals = array_merge($bindvals, array($findesc, $findesc));
 		}
 
+		global $prefs;
+		if ($prefs['feature_wikiapproval'] == 'y') {
+			$mid .= ' AND o.`itemId` not like ?';
+			$bindvals[] = $prefs['wikiapproval_prefix'] . '%';
+		}
 		// We must adjust for duplicate normalized tags appearing multiple times in the join by
 		// counting only the distinct tags. It should also work for an individual user.
 
@@ -315,13 +322,13 @@ class FreetagLib extends ObjectLib
 		$cant = $this->getOne($query_cant, $bindvals);
 
 		$ret = array();
-		$permMap = TikiLib::lib('object')->map_object_type_to_permission();
+		$permMap = $categlib->map_object_type_to_permission();
 		while ($row = $result->fetchRow()) {
 			$ok = false;
 			if ($tiki_p_admin == 'y') {
 				$ok = true;
 			} elseif ($row['type'] == 'blog post') {
-				$bloglib = TikiLib::lib('blog');
+				global $bloglib; include_once('lib/blogs/bloglib.php');
 				$post_info = $bloglib->get_post($row['itemId']);
 				if ($this->user_has_perm_on_object($user, $post_info['blogId'], 'blog', 'tiki_p_read_blog')) {
 					$ok = true;
@@ -337,10 +344,10 @@ class FreetagLib extends ObjectLib
 				if ($prefs['feature_sefurl'] == 'y') {
 					include_once('tiki-sefurl.php');
 					if ($row['type'] == 'blog post' && !empty($post_info)) {
-						$row['href'] = filter_out_sefurl($row['href'], 'blogpost', $post_info['title']);
+						$row['href'] = filter_out_sefurl($row['href'], $smarty, 'blogpost', $post_info['title']);
 					} else {
 						$type = ($row['type'] == 'wiki page') ? 'wiki' : ($row['type'] == 'blog post'? 'blogpost': $row['type']);
-						$row['href'] = filter_out_sefurl($row['href'], $type);
+						$row['href'] = filter_out_sefurl($row['href'], $smarty, $type);
 					}
 				}
 				$ret[] = $row;
@@ -535,11 +542,6 @@ class FreetagLib extends ObjectLib
 		$bindvars[] = $tag;
 		$bindvars[] = $normalized_tag;
 
-		// force tag to be universal if no lang set
-		if (!$lang) {
-			$lang = null;
-		}
-
 		if ($this->multilingual && $lang && ! $anyLanguage) {
 			$mid .= ' AND `lang` = ?'; // null lang means universal
 			$bindvars[] = $lang;
@@ -647,7 +649,7 @@ class FreetagLib extends ObjectLib
 
 		$tagId = $this->find_or_create_tag( $tag, $lang, false );
 
-		$objectId = $this->add_object($type, $itemId, FALSE);
+		$objectId = $this->add_object($type, $itemId);
 
 		$query = 'INSERT INTO `tiki_freetagged_objects`'
 						. ' (`tagId`, `objectId`, `user`, `created`)'
@@ -799,13 +801,6 @@ class FreetagLib extends ObjectLib
 		return $this->getOne($query, array($tag));
 	}
 
-	function get_tag_from_id($tagId)
-	{
-		return $this->table('tiki_freetags')->fetchOne('tag', array(
-			'tagId' => $tagId,
-		));
-	}
-
 	/**
 	 * get_raw_tag_id
 	 *
@@ -937,16 +932,7 @@ class FreetagLib extends ObjectLib
 	 */
 	function _tag_object_array($user, $itemId, $type, $tagArray, $lang = null)
 	{
-		// first check for lang of object
-		if (!$lang) {
-			$langutil = new Services_Language_Utilities;
-			try {
-				$lang = $langutil->getLanguage($type, $itemId);
-			} catch (Services_Exception $e) {
-				$lang = null;
-			}
-		}
-		
+
 		foreach($tagArray as $tag) {
 			$tag = trim($tag);
 			if ($tag != '') {
@@ -1042,11 +1028,6 @@ class FreetagLib extends ObjectLib
 
 	function get_tag_suggestion($exclude = '', $max = 10, $lang = null)
 	{
-		global $prefs;
-		if (!$lang && !empty($prefs['language'])) {
-			$lang = $prefs['language'];
-		}
-
 		$query = 'SELECT t.* FROM `tiki_freetags` t, `tiki_freetagged_objects` o'
 						. ' WHERE t.`tagId` = o.`tagId`'
 						. ' AND (`lang` = ? or `lang` IS null)'
@@ -1221,6 +1202,12 @@ class FreetagLib extends ObjectLib
 
 		$mid = ' oa.objectId <> ob.objectId	AND ob.type = ? AND oa.type = ? AND oa.itemId = ?';
 		$bindvals = array($targetType, $type, $objectId);
+
+		global $prefs;
+		if ($prefs['feature_wikiapproval'] == 'y') {
+			$mid .= ' AND ob.`itemId` not like ?';
+			$bindvals[] = $prefs['wikiapproval_prefix'] . '%';
+		}
 
 		if ($prefs['feature_multilingual'] == 'y' && $type == 'wiki page' && $targetType == 'wiki page') {
 			// make sure only same lang pages are selected

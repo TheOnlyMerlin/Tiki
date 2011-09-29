@@ -11,93 +11,9 @@
  * - email key ~m~
  * - ip key ~I~
  */
-class Tracker_Field_Simple extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
+class Tracker_Field_Simple extends Tracker_Field_Abstract
 {
 	private $type;
-
-	public static function getTypes()
-	{
-		return array(
-			'm' => array(
-				'name' => tr('Email'),
-				'description' => tr('Allows to input an email address with options of making it active.'),
-				'help' => 'Email Tracker Field',				
-				'prefs' => array('trackerfield_email'),
-				'tags' => array('basic'),
-				'default' => 'y',
-				'params' => array(
-					'link' => array(
-						'name' => tr('Link Type'),
-						'description' => tr('How the email address will be rendered.'),
-						'filter' => 'int',
-						'options' => array(
-							0 => tr('Plain text'),
-							1 => tr('Encoded mailto link'),
-							2 => tr('Simple mailto link'),
-						),
-					),
-					'watchopen' => array(
-						'name' => tr('Watch Open'),
-						'description' => tr('Notify this address every time the status changes to open.'),
-						'filter' => 'alpha',
-						'options' => array(
-							'' => tr('No'),
-							'o' => tr('Yes'),
-						),
-					),
-					'watchpending' => array(
-						'name' => tr('Watch Pending'),
-						'description' => tr('Notify this address every time the status changes to pending.'),
-						'filter' => 'alpha',
-						'options' => array(
-							'' => tr('No'),
-							'p' => tr('Yes'),
-						),
-					),
-					'watchopen' => array(
-						'name' => tr('Watch Closed'),
-						'description' => tr('Notify this address every time the status changes to closed.'),
-						'filter' => 'alpha',
-						'options' => array(
-							'' => tr('No'),
-							'c' => tr('Yes'),
-						),
-					),
-				),
-			),
-			'I' => array(
-				'name' => tr('IP Selector'),
-				'description' => tr('IP address input field.'),
-				'help' => 'IP selector',
-				'prefs' => array('trackerfield_ipaddress'),
-				'tags' => array('basic'),
-				'default' => 'n',
-				'params' => array(
-					'autoassign' => array(
-						'name' => tr('Auto-assign'),
-						'description' => tr('Automatically assign the value on creation or edit.'),
-						'filter' => 'int',
-						'default' => 0,
-						'options' => array(
-							0 => tr('None'),
-							1 => tr('Creator'),
-							2 => tr('Modifier'),
-						),
-					),
-				),
-			),
-		);
-	}
-	
-	public static function build($type, $trackerDefinition, $fieldInfo, $itemData)
-	{
-		switch ($type) {
-			case 'm':
-				return new Tracker_Field_Simple($field_info, $itemData, $trackerDefinition, 'email');
-			case 'I':
-				return new Tracker_Field_Simple($field_info, $itemData, $trackerDefinition, 'ip');
-		}
-	}
 	
 	function __construct($fieldInfo, $itemData, $trackerDefinition, $type)
 	{
@@ -119,21 +35,6 @@ class Tracker_Field_Simple extends Tracker_Field_Abstract implements Tracker_Fie
 	function renderInput($context = array())
 	{
 		return $this->renderTemplate("trackerinput/{$this->type}.tpl", $context);
-	}
-
-	function importRemote($value)
-	{
-		return $value;
-	}
-
-	function exportRemote($value)
-	{
-		return $value;
-	}
-
-	function importRemoteField(array $info, array $syncInfo)
-	{
-		return $info;
 	}
 }
 

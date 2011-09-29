@@ -70,7 +70,7 @@ function module_categories( $mod_reference, &$module_params ) {
 	$urlEnd .= "&amp;deep=$deep";
 	$name = "";
 
-	$categories = $categlib->getCategories();
+	$categories = $categlib->get_all_categories_respect_perms(null, 'view_category');
 
 	if ( empty($categories) ) {
 		$module_params['error'] = tra("You do not have permission to use this feature");
@@ -108,14 +108,14 @@ function module_categories( $mod_reference, &$module_params ) {
 	include_once('tiki-sefurl.php');
 	foreach ($categories as $cat) {
 		if (isset($module_params['selflink']) && $module_params['selflink'] == 'y') {
-			$url = filter_out_sefurl('tiki-index.php?page=' . urlencode($cat['name']));
+			$url = filter_out_sefurl('tiki-index.php?page='.tr($cat['name']), $smarty);
 		} else {
-			$url = filter_out_sefurl('tiki-browse_categories.php?parentId=' . $cat['categId'], 'category', $cat['name']) .$urlEnd;
+			$url = filter_out_sefurl('tiki-browse_categories.php?parentId=' . $cat['categId'], $smarty, 'category', $cat['name']) .$urlEnd;
 		}
 		$tree_nodes[] = array(
 			"id" => $cat["categId"],
 			"parent" => $cat["parentId"],
-			"data" => '<a class="catname" href="'.$url.'">' . htmlspecialchars($cat['name']) . '</a><br />'
+			"data" => '<a class="catname" href="'.$url.'">' . tr($cat['name']) . '</a><br />'
 		);
 	}
 	$tm = new CatBrowseTreeMaker('mod_categ' . $module_params['module_position'] . $module_params['module_ord']);

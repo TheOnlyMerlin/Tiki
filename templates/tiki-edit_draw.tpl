@@ -1,23 +1,15 @@
-{* $Id$ *}
-{title help="Draw"}{$name}{/title}
+{title help="Draw"}{$title}{/title}
 
-<div id="tiki_draw" style="text-align: center;">
-	<div id="fileData" style="display: none;">{$data}</div>
-	
-	<input type="hidden" id="fileId" value="{$fileId}" />
-	<input type="hidden" id="galleryId" value="{$galleryId}" />
-	<input type="hidden" id="fileName" value="{$name}" />
-	<input type="hidden" id="fileWidth" value="{$width}" />
-	<input type="hidden" id="fileHeight" value="{$hight}" />
-	
-	<div id="drawEditor">
-		<div id="drawMenu">
-			<button id="drawSave" style="float left;">{tr}Save{/tr}</button>
-			<button id="drawRename">{tr}Rename{/tr}</button>
-			<button id="drawBack">{tr}Back{/tr}</button>
-			<button id="drawFullscreen">{tr}Toggle Fullscreen{/tr}</button>
-		</div>
+<div style="text-align: center;">
+	<div id="svg-editHeaderLeft" style="position: absolute; left: 7px;top: 5px;">
+		<button id="tiki-draw_save" onclick="window.saveSvg();">{tr}Save{/tr}</button>
 	</div>
 	
-	<div id="map">{$map}</div>
+	<div id="svg-editHeaderRight" style="position: absolute; right: 15px;top: 5px;">
+		<button id="tiki-draw_back" onclick="document.location = 'tiki-list_file_gallery.php?galleryId={$galleryId}'">{tr}Back{/tr}</button>
+	</div>
+	
+	<iframe src="lib/svg-edit/svg-editor.html" id="svgedit"></iframe>
+	
+	
 </div>    

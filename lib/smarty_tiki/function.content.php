@@ -1,3 +1,4 @@
+
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
@@ -12,7 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 }
 
 // Param: 'id' or 'label'
-function smarty_function_content($params, $smarty) {
+function smarty_function_content($params, &$smarty) {
   global $dcslib; require_once 'lib/dcs/dcslib.php';
 
   if ( isset($params['id']) ) {

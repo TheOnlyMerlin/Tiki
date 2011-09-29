@@ -205,7 +205,7 @@ class RegistrationLib extends TikiLib
 	 *  @returns ?
 	 */
 	/*private*/
-	function local_check_registration($registration, $from_intertiki = false) {
+	function local_check_registration($registration) {
 		global $_SESSION, $prefs, $userlib, $captchalib;
         
 		if (empty($registration['name']))
@@ -296,7 +296,7 @@ class RegistrationLib extends TikiLib
 			$userlib->send_validation_email($registration['name'], $apass, $registration['email'], '', '', isset($registration['chosenGroup']) ? $registration['chosenGroup'] : '');
 			$userlib->add_user($registration['name'], $newPass, $registration["email"], '', false, $apass, $openid_url , $this->merged_prefs['validateRegistration'] == 'y'?'a':'u');
 			$logslib->add_log('register', 'created account ' . $registration['name']);
-			$result=tra('You will receive an email with the information needed to log into this site the first time.');
+			$result=tra('You will receive an email with information to login for the first time into this site');
 		} else {
 			$userlib->add_user($registration['name'], $newPass, $registration["email"], '', false, NULL, $openid_url);
 			$logslib->add_log('register', 'created account ' . $registration['name']);

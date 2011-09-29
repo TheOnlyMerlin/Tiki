@@ -30,7 +30,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  * @param string containing var-attribute and value-attribute
  * @param Smarty_Compiler
  */
-function smarty_compiler_assign($tag_attrs, $compiler) {
+function smarty_compiler_assign($tag_attrs, &$compiler) {
 	
 	$_params = $compiler->_parse_attrs($tag_attrs);
 
@@ -51,7 +51,6 @@ function smarty_compiler_assign($tag_attrs, $compiler) {
 	//     and will be simply available in smarty as $myarray.foo.bar
 	//
 	if ( strpos($_params['var'], '.') !== false ) {
-		//FIXME
 		return "\$this->_tpl_vars[".str_replace('.', "']['", $_params['var'])."] = {$_params['value']};";
 	}
 

@@ -18,7 +18,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
  *  - _id: ID of the file
  *  - _max: Reduce image height and width to be less or equal the value of '_max' in pixels (keep ratio)
  */
-function smarty_function_thumb($params, $smarty) {
+function smarty_function_thumb($params, &$smarty) {
 	global $prefs;
 	
 	if ( ! is_array($params) || ! isset($params['_id']) ) return;
@@ -26,7 +26,7 @@ function smarty_function_thumb($params, $smarty) {
 	if ( ! isset($params['_max']) ) $params['_max'] = $prefs['fgal_thumb_max_size']; // default thumbnail size
 
 	// Include smarty functions used below
-	$smarty->loadPlugin('smarty_function_html_image');
+	require_once $smarty->_get_plugin_filepath('function', 'html_image');
 
 // Smarty html_image has some problems to detect height and width of such a file...
 //	$html = smarty_function_html_image(array(

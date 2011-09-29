@@ -31,11 +31,11 @@ abstract class SerializedList
 	 * @param string $name
 	 */
 	public function __construct($name) {
-		global $prefs;
+		global $tikilib, $prefs;
 		
 		$this->initPrefPrefix();
 		
-		$this->name = strtolower( TikiLib::remove_non_word_characters_and_accents( $name ));
+		$this->name = strtolower( preg_replace('/[\s,\/\|]+/', '_', $tikilib->take_away_accent( $name )) );
 		if (!empty($this->name) && !empty($prefs[$this->getPrefName()])) {
 			$this->loadPref();
 		} else {
@@ -92,6 +92,7 @@ abstract class SerializedList
 		if( !in_array( $this->name, $list ) ) {
 			$list[] = $this->name;
 			$tikilib->set_preference( $this->getListName(), serialize($list) );
+			$tikilib->set_lastUpdatePrefs();
 		}
 	}
 
@@ -107,6 +108,7 @@ abstract class SerializedList
 		if( in_array( $this->name, $list ) ) {
 			$list = array_diff($list, array($this->name));
 			$tikilib->set_preference( $this->getListName(), serialize($list) );
+			$tikilib->set_lastUpdatePrefs();
 		}
 	}
 	

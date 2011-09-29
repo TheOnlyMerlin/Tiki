@@ -5,62 +5,13 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-// To contain data services for ajax calls
-//
-// If controller and action are specified in the request, the controller class matching the
-// controller key in the $contollerMap registry will be instanciated. The method matching the
-// action name will be called. The input to the method is a JitFilter. The output of the method
-// will be serialized and sent to the browser.
-//
-// Otherwise, the procedural script remains
-
-$controllerMap = array(
-	'comment' => 'Services_Comment_Controller',
-	'file' => 'Services_File_Controller',
-	'auth_source' => 'Services_AuthSource_Controller',
-	'tracker' => 'Services_Tracker_Controller',
-	'tracker_sync' => 'Services_Tracker_SyncController',
-	'tracker_todo' => 'Services_Tracker_TodoController',
-	'favorite' => 'Services_Favorite_Controller',
-	'translation' => 'Services_Language_TranslationController',
-	'user' => 'Services_User_Controller',
-	'category' => 'Services_Category_Controller',
-	'connect' => 'Services_Connect_Client',
-	'connect_server' => 'Services_Connect_Server',
-);
-
-$inputConfiguration = array(array(
-	'staticKeyFilters' => array(
-		'action' => 'word',
-		'controller' => 'word',
-		// for tiki connect
-		'guid' => 'text',
-		'captcha' => 'alnum',
-		'status' => 'word',
-	),
-	'staticKeyFiltersForArrays' => array(
-		'connect_data' => 'xss',
-	) ,
-));
-
-if (isset($_REQUEST['controller'], $_REQUEST['action'])) {
-	$inputConfiguration[] = array('catchAllUnset' => null);
-}
+// To contain data services for ajax calls (autocomplete calls sa far)
 
 require_once ('tiki-setup.php');
 
-if (isset($_REQUEST['controller'], $_REQUEST['action'])) {
-	$controller = $_REQUEST['controller'];
-	$action = $_REQUEST['action'];
-
-	$broker = new Services_Broker($controllerMap);
-	$broker->process($controller, $action, $jitRequest);
-	exit;
-}
+$access->check_feature( array( 'feature_ajax', 'feature_jquery_autocomplete' ) );
 
 if ($access->is_serializable_request() && isset($_REQUEST['listonly'])) {
-	$access->check_feature( array( 'feature_ajax', 'feature_jquery_autocomplete' ) );
-
 	$sep = '|';
 	if( isset( $_REQUEST['separator'] ) ) {
 		$sep = $_REQUEST['separator'];
@@ -185,8 +136,7 @@ if ($access->is_serializable_request() && isset($_REQUEST['listonly'])) {
 }
 
 // Handle Zotero Requests
-if ($access->is_serializable_request() && isset($_REQUEST['zotero_tags'])) {
-	$access->check_feature( array( 'zotero_enabled' ) );
+if ($prefs['zotero_enabled'] == 'y' && $access->is_serializable_request() && isset($_REQUEST['zotero_tags'])) {
 	$zoterolib = TikiLib::lib('zotero');
 
 	$references = $zoterolib->get_references($_REQUEST['zotero_tags']);

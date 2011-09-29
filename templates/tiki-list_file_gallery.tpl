@@ -1,24 +1,22 @@
-{* $Id$ *}
-
 {title help="File+Galleries" admpage="fgal"}
-	{if $edit_mode eq 'y' and $galleryId eq 0}
-		{tr}Create a File Gallery{/tr}
-	{else}
-		{if $edit_mode eq 'y'}
-			{tr}Edit Gallery:{/tr}
-		{/if}
-		{strip} 
+	{strip}
+		{if $edit_mode eq 'y' and $galleryId eq 0}
+			{tr}Create a File Gallery{/tr}
+		{else}
+			{if $edit_mode eq 'y'}
+				{tr}Edit Gallery:{/tr}&nbsp;
+			{/if}
 			{if $gal_info.type eq 'user'}
 				{if $gal_info.user eq $user}
 					{tr}My Files{/tr}
 				{else}
-					{tr}Files of {$gal_info.user}{/tr}
+					{tr}Files of $user{/tr}
 				{/if}
 			{else}
-				{$name}
+				{$name|escape}
 			{/if}
-		{/strip}
-	{/if}
+		{/if}
+	{/strip}
 {/title}
 
 {if $edit_mode neq 'y' and $gal_info.description neq ''}
@@ -65,7 +63,7 @@
 		{/if}
 
 		{if $tiki_p_create_file_galleries eq 'y' and $edit_mode ne 'y'}
-			{button _keepall='y' _text="{tr}Create a File Gallery{/tr}" edit_mode=1 parentId=$galleryId cookietab=1}
+			{button _text="{tr}Create a File Gallery{/tr}" href="?edit_mode=1&amp;parentId=$galleryId&amp;cookietab=1"}
 		{/if}
 
 		{if $tiki_p_create_file_galleries eq 'y' and $dup_mode ne 'y'}
@@ -74,38 +72,39 @@
 
 		{if $tiki_p_admin_file_galleries eq 'y' or $user eq $gal_info.user}
 			{if $edit_mode eq 'y' or $dup_mode eq 'y'}
-				{button _keepall='y' _text="{tr}Browse Gallery{/tr}" galleryId=$galleryId}
+				{button _text="{tr}Browse Gallery{/tr}" href="?galleryId=$galleryId"}
 			{else}
-				{button _keepall='y' _text="{tr}Edit Gallery{/tr}" edit_mode="1" galleryId=$galleryId}
+				{button _text="{tr}Edit Gallery{/tr}" href="?edit_mode=1&amp;galleryId=$galleryId"}
 			{/if}
 		{/if}
 
 		{if $edit_mode neq 'y' and $dup_mode neq 'y'}
 			{if $view eq 'browse' or $view eq 'admin'}
-				{button __keepall='y' text="{tr}List Gallery{/tr}" view="list" galleryId=$galleryId}
+				{button _text="{tr}List Gallery{/tr}" href="?view=list&amp;galleryId=$galleryId"}
 			{else}
 				{if $tiki_p_admin_file_galleries eq 'y'}
-					{button _keepall='y' _text="{tr}Admin View{/tr}" view="admin" galleryId=$galleryId}
+					{button _text="{tr}Admin View{/tr}" href="?view=admin&amp;galleryId=$galleryId"}
 				{/if}
 				{button _text="{tr}Browse Images{/tr}" view="browse" galleryId=$galleryId} {* no AJAX to make shadowbox work in browse view *}
 			{/if}
 		{/if}
 
 		{if $tiki_p_assign_perm_file_gallery eq 'y'}
-			{button _keepall='y' _text="{tr}Permissions{/tr}" href="tiki-objectpermissions.php" objectName=$name objectType='file+gallery' permType='file+galleries' objectId=$galleryId}
+			{assign var=objectName value=$name|escape:"url"}
+			{button _text="{tr}Permissions{/tr}" href="tiki-objectpermissions.php?objectName=$objectName&amp;objectType=file+gallery&amp;permType=file+galleries&amp;objectId=$galleryId"}
 		{/if}
 
 		{if $tiki_p_admin_file_galleries eq 'y' or $user eq $gal_info.user or $gal_info.public eq 'y'}
 			{if $tiki_p_upload_files eq 'y'}
-				{button _keepall='y' _text="{tr}Upload File{/tr}" href="tiki-upload_file.php" galleryId=$galleryId}
+				{button _text="{tr}Upload File{/tr}" href="tiki-upload_file.php?galleryId=$galleryId"}
 			{/if}
 			
-			{if $prefs.feature_draw eq 'y'}
-				{button _keepall='y' _text="{tr}Create a drawing{/tr}" href="tiki-edit_draw.php" galleryId=$galleryId}
+			{if $tiki_p_upload_files eq 'y' and $prefs.feature_file_galleries_batch eq "y"}
+				{button _text="{tr}Create a drawing{/tr}" href="tiki-edit_draw.php?galleryId=$galleryId"}
 			{/if}
 			
 			{if $prefs.feature_file_galleries_batch eq "y" and $tiki_p_batch_upload_file_dir eq 'y'}
-				{button _keepall='y' _text="{tr}Directory Batch{/tr}" href="tiki-batch_upload_files.php" galleryId=$galleryId}
+				{button _text="{tr}Directory Batch{/tr}" href="tiki-batch_upload_files.php?galleryId=$galleryId"}
 			{/if}
 		{/if}
 
@@ -116,7 +115,7 @@
 		{/if}
 
 		{if $tiki_p_create_file_galleries eq 'y' and $edit_mode ne 'y'}
-			{button _keepall='y' _text="{tr}Create a File Gallery{/tr}" edit_mode="1" parentId="-1" galleryId="0"}
+			{button _text="{tr}Create a File Gallery{/tr}" href="?edit_mode=1&amp;parentId=-1&amp;galleryId=0"}
 		{/if}
 
 		{if $tiki_p_upload_files eq 'y'}
@@ -130,7 +129,7 @@
 
 </div>
 
-{if !empty($filegals_manager)}
+{if $filegals_manager neq ''}
 	{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Be careful to set the right permissions on the files you link to{/tr}.{/remarksbox}
 	<label for="keepOpenCbx">{tr}Keep gallery window open{/tr}</label>
 	<input type="checkbox" id="keepOpenCbx" checked="checked">
@@ -153,13 +152,13 @@
 		{if $category_watched eq 'y'}
 			{tr}Watched by categories:{/tr}
 			{section name=i loop=$watching_categories}
-				{button _keepall='y' _text=$watching_categories[i].name|escape href="tiki-browse_categories.php" parentId=$watching_categories[i].categId}
+				{button _text=$watching_categories[i].name|escape href="tiki-browse_categories.php?parentId=`$watching_categories[i].categId`"}
 			{/section}
 		{/if}			
 	</div>
 {/if}
 
-{if !empty($fgal_diff)}
+{if $fgal_diff|@count gt 0}
 	{remarksbox type="note" title="{tr}Modifications{/tr}"}
 		{foreach from=$fgal_diff item=fgp_prop key=fgp_name name=change}
 			{tr}Property <b>{$fgp_name}</b> Changed{/tr}
@@ -173,7 +172,7 @@
 	{include file='duplicate_file_gallery.tpl'}
 {else}
 	{if $prefs.fgal_search eq 'y'}
-		{include file='find.tpl' find_show_num_rows = 'y' find_show_categories_multi='y' find_durations=$find_durations find_show_sub='y' find_other="{tr}Gallery of this fileId{/tr}"}
+		{include file='find.tpl' find_show_num_rows = 'y' find_show_categories_multi='y' find_durations=$find_durations find_show_sub='y' find_other="Gallery of this fileId"}
 	{/if}
 	{if $prefs.fgal_search_in_content eq 'y' and $galleryId > 0}
 		<div class="findtable">
@@ -207,18 +206,16 @@
 
 	{if $galleryId gt 0
 		&& $prefs.feature_file_galleries_comments == 'y'
-		&& ($tiki_p_read_comments == 'y'
+		&& (($tiki_p_read_comments == 'y'
+		&& $comments_cant != 0)
 		|| $tiki_p_post_comments == 'y'
 		|| $tiki_p_edit_comments == 'y')}
 
 		<div id="page-bar" class="clearfix">
-			<span class="button"><a id="comment-toggle" href="{service controller=comment action=list type="file gallery" objectId=$galleryId}#comment-container">{tr}Comments{/tr}</a></span>
-			{jq}
-				$('#comment-toggle').comment_toggle();
-			{/jq}
+			{include file='comments_button.tpl'}
 		</div>
 
-		<div id="comment-container"></div>
+		{include file='comments.tpl'}
 	{/if}
 {/if}
 

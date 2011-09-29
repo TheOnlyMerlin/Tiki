@@ -15,7 +15,6 @@ function wikiplugin_list_info()
 		'body' => tra('List configuration information'),
 		'filter' => 'wikicontent',
 		'icon' => 'pics/icons/text_list_bullets.png',
-		'tags' => array( 'basic' ),
 		'params' => array(
 		),
 	);
@@ -33,28 +32,20 @@ function wikiplugin_list($data, $params)
 	$query->setWeightCalculator($unifiedsearchlib->getWeightCalculator());
 
 	if (isset($_REQUEST['offset'])) {
-		if (isset($_REQUEST['maxRecords'])) {
-			$query->setRange($_REQUEST['offset'], $_REQUEST['maxRecords']);
-		} else {
-			$query->setRange($_REQUEST['offset']);
-		}
+		$query->setRange($_REQUEST['offset']);
 	}
 
 	$matches = WikiParser_PluginMatcher::match($data);
 	$argumentParser = new WikiParser_PluginArgumentParser;
 
-	$onclick = '';
-	$offset_jsvar = '';
-
 	foreach ($matches as $match) {
 		$name = $match->getName();
-		$arguments = $argumentParser->parse($match->getArguments());
 
-		foreach ($arguments as $key => $value) {
+		foreach ($argumentParser->parse($match->getArguments()) as $key => $value) {
 			$function = "wpquery_{$name}_{$key}";
 
 			if (function_exists($function)) {
-				$function($query, $value, $arguments);
+				$function($query, $value);
 			}
 
 			$function = "wpformat_{$name}_{$key}";
@@ -71,20 +62,11 @@ function wikiplugin_list($data, $params)
 		if ($name == 'alternate') {
 			$alternate = $match->getBody();
 		}
-
-		if ($name == 'pagination' && isset($arguments['onclick'])) {
-			$onclick = $arguments['onclick'];
-		}
-		if ($name == 'pagination' && isset($arguments['offset_jsvar'])) {
-			$offset_jsvar = $arguments['offset_jsvar'];
-		}
 	}
 
-	if (! Perms::get()->admin) {
-		$query->filterPermissions(Perms::get()->getGroups());
-	}
+	$query->filterPermissions(Perms::get()->getGroups());
 
-	if (!empty($_REQUEST['sort_mode'])) {
+	if (isset($_REQUEST['sort_mode'])) {
 		$query->setOrder($_REQUEST['sort_mode']);
 	}
 
@@ -93,7 +75,7 @@ function wikiplugin_list($data, $params)
 	$result = $query->search($index);
 
 	if (count($result)) {
-		if (!empty($output)) {
+		if ($output) {
 			$arguments = $argumentParser->parse($output->getArguments());
 	
 			if (isset($arguments['template'])) {
@@ -101,21 +83,15 @@ function wikiplugin_list($data, $params)
 					$arguments['template'] = dirname(__FILE__) . '/../../templates/table.tpl';
 				}
 				$builder = new Search_Formatter_ArrayBuilder;
-				$templateData = $builder->getData($output->getBody());
 
 				$plugin = new Search_Formatter_Plugin_SmartyTemplate($arguments['template']);
-				$plugin->setData($templateData);
-				$plugin->setFields(wp_list_findfields($templateData));
-			} elseif (isset($arguments['wiki']) && TikiLib::lib('tiki')->page_exists($arguments['wiki'])) {	
-				$wikitpl = "tplwiki:" . $arguments['wiki'];
-				$wikicontent = TikiLib::lib('smarty')->fetch($wikitpl);
-				$plugin = new Search_Formatter_Plugin_WikiTemplate($wikicontent);
+				$plugin->setData($builder->getData($output->getBody()));
 			} else {
 				$plugin = new Search_Formatter_Plugin_WikiTemplate($output->getBody());
 			}
 
 			if (isset($arguments['pagination'])) {
-				$plugin = new WikiPlugin_List_AppendPagination($plugin, $onclick, $offset_jsvar);
+				$plugin = new WikiPlugin_List_AppendPagination($plugin);
 			}
 		} else {
 			$plugin = new Search_Formatter_Plugin_WikiTemplate("* {display name=title format=objectlink}\n");
@@ -129,7 +105,7 @@ function wikiplugin_list($data, $params)
 		}
 
 		$out = $formatter->format($result);
-	} elseif(!empty($alternate)) {
+	} elseif($alternate) {
 		$out = $alternate;
 	} else {
 		$out = '^' . tra('No results for query.') . '^';
@@ -138,14 +114,8 @@ function wikiplugin_list($data, $params)
 	return $out;
 }
 
-function wpquery_list_max($query, $value)
-{
-	$query->setRange(0, $value);	
-}
-
 function wpquery_filter_type($query, $value)
 {
-	$value = explode(',', $value);
 	$query->filterType($value);
 }
 
@@ -154,25 +124,14 @@ function wpquery_filter_categories($query, $value)
 	$query->filterCategory($value);
 }
 
-function wpquery_filter_contributors($query, $value)
-{
-	$query->filterContributors($value);
-}
-
 function wpquery_filter_deepcategories($query, $value)
 {
 	$query->filterCategory($value, true);
 }
 
-function wpquery_filter_content($query, $value, array $arguments)
+function wpquery_filter_content($query, $value)
 {
-	if (isset($arguments['field'])) {
-		$fields = explode(',', $arguments['field']);
-	} else {
-		$fields = TikiLib::lib('tiki')->get_preference('unified_default_content', array('contents'), true);
-	}
-
-	$query->filterContent($value, $fields);
+	$query->filterContent($value, TikiLib::lib('tiki')->get_preference('unified_default_content', array('contents'), true));
 }
 
 function wpquery_filter_language($query, $value)
@@ -180,50 +139,8 @@ function wpquery_filter_language($query, $value)
 	$query->filterLanguage($value);
 }
 
-function wpquery_filter_relation($query, $value, $arguments)
+function wpquery_sort_mode($query, $value)
 {
-	if (! isset($arguments['qualifier'], $arguments['objecttype'])) {
-		TikiLib::lib('errorreport')->report(tr('Missing objectype or qualifier for relation filter.'));
-	}
-
-	$token = (string) new Search_Query_Relation($arguments['qualifier'], $arguments['objecttype'], $value);
-	$query->filterRelation($token);
-}
-
-function wpquery_filter_favorite($query, $value)
-{
-	wpquery_filter_relation($query, $value, array(
-		'qualifier' => 'tiki.user.favorite.invert',
-		'objecttype' => 'user',
-	));
-}
-
-function wpquery_filter_range($query, $value, array $arguments)
-{
-	if (! isset($arguments['from'], $arguments['to'])) {
-		TikiLib::lib('errorreport')->report(tr('Missing from or to for range filter.'));
-	} 
-	$query->filterRange($arguments['from'], $arguments['to'], $value); 
-}
-
-function wpquery_filter_textrange($query, $value, array $arguments)
-{
-	if (! isset($arguments['from'], $arguments['to'])) {
-		TikiLib::lib('errorreport')->report(tr('Missing from or to for range filter.'));
-	}
-	$query->filterTextRange($arguments['from'], $arguments['to'], $value);
-}
-
-function wpquery_sort_mode($query, $value, array $arguments)
-{
-	if ($value == 'randommode') {
-		if ( !empty($arguments['modes']) ) {
-			$modes = explode(',', $arguments['modes']);
-			$value = $modes[array_rand($modes)];
-		} else {
-			return;
-		}
-	}
 	$query->setOrder($value);
 }
 
@@ -236,11 +153,9 @@ class WikiPlugin_List_AppendPagination implements Search_Formatter_Plugin_Interf
 {
 	private $parent;
 
-	function __construct(Search_Formatter_Plugin_Interface $parent, $onclick, $offset_jsvar)
-	{ 
+	function __construct(Search_Formatter_Plugin_Interface $parent)
+	{
 		$this->parent = $parent;
-		$this->offset_jsvar = $offset_jsvar;
-		$this->onclick = $onclick;
 	}
 
 	function getFields()
@@ -258,31 +173,18 @@ class WikiPlugin_List_AppendPagination implements Search_Formatter_Plugin_Interf
 		return $this->parent->prepareEntry($entry);
 	}
 
-	function renderEntries(Search_ResultSet $entries)
+	function renderEntries($entries, $count, $offset, $maxRecords)
 	{
 		global $smarty;
-		$smarty->loadPlugin('smarty_block_pagination_links');
-		$pagination = smarty_block_pagination_links(array('_onclick' => $this->onclick, 'offset_jsvar' => $this->offset_jsvar, 'resultset' => $entries), '', $smarty, false);
+		require_once $smarty->_get_plugin_filepath('block', 'pagination_links');
+		$pagination = smarty_block_pagination_links(array('cant' => $count, 'offset' => $offset, 'step' => $maxRecords), '', $smarty, false);
 
 		if ($this->getFormat() == Search_Formatter_Plugin_Interface::FORMAT_WIKI) {
 			$pagination = "~np~$pagination~/np~";
 		}
-		return $this->parent->renderEntries($entries) . $pagination;
+
+		return $this->parent->renderEntries($entries, $count, $offset, $maxRecords)
+			. $pagination;
 	}
-}
-
-function wp_list_findfields($data)
-{
-	$data = TikiLib::array_flat($data);
-
-	// Heuristic based: only lowecase letters, digits and underscore
-	$fields = array();
-	foreach ($data as $candidate) {
-		if (preg_match("/^[a-z0-9_]+$/", $candidate)) {
-			$fields[] = $candidate;
-		}
-	}
-
-	return $fields;
 }
 

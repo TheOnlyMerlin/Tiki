@@ -6,10 +6,6 @@
 // $Id$
 
 /**
- * Smarty plugin
- * @package Smarty
- * @subpackage plugins
- *
  * \brief Smarty {tikimodule}{/tikimodule} block handler
  *
  * To make a module it is enough to place smth like following
@@ -29,10 +25,11 @@
  * flip="n" is the default.
  * and the param decorations="n" to suppress module decorations
  * decorations="y" is the default.
- *
- * \Note
- * error was used only in case the name was not there.
- * I fixed that error case. -- mose
+
+\Note
+error was used only in case the name was not there.
+I fixed that error case. -- mose
+ 
  */
 
 //this script may only be included - so its better to die if called directly.
@@ -41,8 +38,9 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   exit;
 }
 
-function smarty_block_tikimodule($params, $content, $smarty)
-{
+
+function smarty_block_tikimodule($params, $content, &$smarty) {
+	global $prefs;
 	extract($params);
 	if (!isset($content))   return "";
 	if (!isset($error))  $error = '';
@@ -74,6 +72,6 @@ function smarty_block_tikimodule($params, $content, $smarty)
 	$smarty->assign('module_decorations', $decorations);
 	if ( empty($type) ) $type = "module";
 	$smarty->assign('module_type', $type);
-	$smarty->assignByRef('module_content', $content);
+	$smarty->assign_by_ref('module_content', $content);
 	return $smarty->fetch('module.tpl');
 }

@@ -1,4 +1,3 @@
-{* $Id$ *}
 {title help="share"}
 	{if $report != 'y'}{tr}Share this page{/tr}{else}{tr}Report this page{/tr}{/if}
 {/title}
@@ -20,7 +19,7 @@
 		{/if}
 		{if isset($facebookId) and $facebookId!=false}
 			<div>
-				<img src="img/icons/facebook-logo_32.png" /> </a>{tr}The link was posted on your Facebook wall{/tr}
+				<img src="img/icons/facebook-logo_32.png" /> </a>{tr}The link was posted on your facebook wall{/tr}
 			</div>
 		{/if}
 		{if isset($messageSent)}
@@ -79,7 +78,7 @@
 				</td>
 	
 				<td>
-					<textarea name="comment" style="width:95%;" rows="10" id='comment'>{$comment|escape|@default:"{tr}I found an interesting page that I thought you would like.{/tr}"}</textarea>
+					<textarea name="comment" style="width:95%;" rows="10" cols='{$cols}' id='comment'>{$comment|escape|@default:"{tr}I found an interesting page that I thought you would like.{/tr}"}</textarea>
 				</td>
 			</tr>
 	
@@ -162,7 +161,7 @@
 							{tr}No{/tr}
 						{else}
 							{remarksbox type="note" title="{tr}Note{/tr}"}
-								<p><a href="tiki-socialnetworks.php">{tr}Authorize with Twitter first{/tr}</a></p>
+								<p><a href="tiki-socialnetworks.php">{tr}Authorize with twitter first{/tr}</a></p>
 							{/remarksbox}
 						{/if}
 					</td>
@@ -190,7 +189,7 @@
 					<td rowspan="2">
 						<img src="img/icons/facebook-logo_32.png" alt="Facebook" />
 						<br />
-							{tr}Put on my Facebook wall{/tr}
+							{tr}Put on my facebook wall{/tr}
 					</td>
 					<td>
 						{if $facebook}
@@ -200,7 +199,7 @@
 							{tr}No{/tr}
 						{else}
 							{remarksbox type="note" title="{tr}Note{/tr}"}
-								<p><a href="tiki-socialnetworks.php">{tr}Authorize with Facebook first{/tr}</a></p>
+								<p><a href="tiki-socialnetworks.php">{tr}Authorize with facebook first{/tr}</a></p>
 							{/remarksbox}
 						{/if}
 					</td>

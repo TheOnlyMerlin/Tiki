@@ -22,7 +22,6 @@ function wikiplugin_mouseover_info() {
 		'prefs' => array( 'wikiplugin_mouseover' ),
 		'body' => tra('Hidden content, unless the label parameter is undefined, in which case this is the label.'),
 		'icon' => 'pics/icons/comment_add.png',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'label' => array(
 				'required' => true,

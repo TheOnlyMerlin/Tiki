@@ -31,11 +31,11 @@ close();
 					{$file_error}
 				{/remarksbox}
 			{else}
-				{remarksbox type='errors' title=$errortitle}
-					{tr}Page not found{/tr}<br />{$page|escape}
-				{/remarksbox}
 				{if $prefs.feature_likePages eq 'y'}
 					{if $likepages}
+						{remarksbox type='errors' title=$errortitle}
+							{tr}Page not found{/tr}<br />{$page|escape}
+						{/remarksbox}
 						<p>{tr}Perhaps you are looking for:{/tr}</p>
 						<ul>
 							{section name=back loop=$likepages}
@@ -43,22 +43,29 @@ close();
 							{/section}
 						</ul>
 					{else}
-			 			{remarksbox}
-							{tr}There are no wiki pages similar to '{$page|escape}'{/tr}
+			 			{remarksbox type='errors' title=$errortitle}
+							{tr}There are no wiki pages similar to '{$page}'{/tr}
 						{/remarksbox}
 			 		{/if}
 				{/if}
 
 				{if $prefs.feature_search eq 'y' && $tiki_p_search eq 'y'}
 					{if $prefs.feature_likePages ne 'y'}
+						{remarksbox type='errors' title=$errortitle}
+							{tr}Page not found{/tr} <br />{$page|escape}
+						{/remarksbox}
 					{/if}
 					{if $prefs.feature_search_fulltext eq 'y'}
 						{include file='tiki-searchresults.tpl' searchNoResults="false" searchStyle="menu" searchOrientation="horiz" words="$page"}
 					{else}
-						{include file='tiki-searchindex.tpl' searchNoResults="true"	searchStyle="menu" searchOrientation="horiz" words="$page" filter=$filter}
+						{include file='tiki-searchindex.tpl' searchNoResults="true"	searchStyle="menu" searchOrientation="horiz" words="$page"}
 					{/if}
 				{/if}
-
+				{if $prefs.feature_likePages ne 'y' and !($prefs.feature_search eq 'y' && $tiki_p_search eq 'y')}
+					{remarksbox type='errors' title=$errortitle}
+						{tr}Page not found{/tr} <br />{$page|escape}
+					{/remarksbox}
+				{/if}
 			{/if}
 
 		{else}

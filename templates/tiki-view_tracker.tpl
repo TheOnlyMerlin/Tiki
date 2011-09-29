@@ -1,5 +1,5 @@
-{* $Id$ *}
-{title url="tiki-view_tracker.php?trackerId=$trackerId" adm="trackers"}{tr}Tracker:{/tr} {$tracker_info.name}{/title}
+
+{title url="tiki-view_tracker.php?trackerId=$trackerId" adm="trackers"}{tr}Tracker:{/tr} {$tracker_info.name|escape}{/title}
 
 <div class="navbar">
 	 {if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
@@ -55,7 +55,7 @@
 				{include file='tracker_filter.tpl'}
 			{/if}
 			
-			{if (isset($cant_pages) && $cant_pages > 1) or $initial}{initials_filter_links}{/if}
+			{if $cant_pages > 1 or $initial}{initials_filter_links}{/if}
 			
 			<div align='left'>{tr}Items found:{/tr} {$item_count}</div>
 			
@@ -74,11 +74,14 @@
 								</th>
 							{/if}
 							
-							{foreach from=$listfields key=ix item=field_value}
-								{if $field_value.isTblVisible eq 'y' and ( $field_value.type ne 'x' and $field_value.type ne 'h') and ($field_value.type ne 'p' or $field_value.options_array[0] ne 'password')}
+							{foreach from=$fields key=ix item=field_value}
+								{if ( $field_value.type eq 's' and ($field_value.name eq "Rating" or $field_value.name eq tra("Rating")) and $field_value.isTblVisible eq 'y' ) || ( $field_value.isTblVisible eq 'y' and $field_value.type ne 'x' and $field_value.type ne 'h' and ($field_value.isHidden eq 'n' or $field_value.isHidden eq 'p' or $tiki_p_admin_trackers eq 'y') ) and ($field_value.type ne 'p' or $field_value.options_array[0] ne 'password') and (empty($field_value.visibleBy) or in_array($default_group, $field_value.visibleBy) or $tiki_p_admin_trackers eq 'y')}
 									<th class="auto">
 										{self_link _sort_arg='sort_mode' _sort_field='f_'|cat:$field_value.fieldId}{$field_value.name|truncate:255:"..."|escape|default:"&nbsp;"}{/self_link}
 									</th>
+									{if $field_value.type eq 's' and ($field_value.name eq "Rating" or $field_value.name eq tra("Rating"))}
+										{assign var=rateFieldId value=$field_value.fieldId}
+									{/if}
 								{/if}
 							{/foreach}
 							
@@ -120,9 +123,11 @@
 								
 								{* ------- list values --- *}
 								{foreach from=$items[user].field_values key=ix item=field_value}
-									{if $field_value.isTblVisible eq 'y' and $field_value.type ne 'x' and $field_value.type ne 'h' and ($field_value.type ne 'p' or $field_value.options_array[0] ne 'password')}
+									{if $field_value.isTblVisible eq 'y' and $field_value.type ne 'x' and $field_value.type ne 'h' and ($field_value.isHidden eq 'n' 
+										or $field_value.isHidden eq 'p' or $tiki_p_admin_trackers eq 'y') and ($field_value.type ne 'p' or $field_value.options_array[0] ne 'password') 
+										and (empty($field_value.visibleBy) or in_array($default_group, $field_value.visibleBy) or $tiki_p_admin_trackers eq 'y')}
 										<td class={if $field_value.type eq 'n' or $field_value.type eq 'q' or $field_value.type eq 'b'}"numeric"{else}"auto"{/if}>
-											{trackeroutput field=$field_value showlinks=y showpopup="y" item=$items[user] list_mode=y inTable=formcolor reloff=$itemoff}
+											{trackeroutput field=$field_value showlinks=y showpopup="y" item=$items[user] list_mode=y inTable=formcolor}
 										</td>
 									{/if}
 								{/foreach}
@@ -198,22 +203,26 @@
 					<td>{include file='tracker_status_input.tpl' tracker=$tracker_info form_status=status}</td>
 				</tr>
 			{/if}
-			{foreach from=$ins_fields key=ix item=field_value}
-				{if $field_value.type ne 'x' and $field_value.type ne 'l' and $field_value.type ne 'q' and
-						($field_value.type ne 'A' or $tiki_p_attach_trackers eq 'y') and $field_value.type ne 'N' and $field_value.type ne '*' and
-						!($field_value.type eq 's' and $field_value.name eq 'Rating')}
-					<tr>
-						<td>
-							{if $field_value.isMandatory eq 'y'}
-								{$field_value.name}<em class='mandatory_star'>*</em>
-							{else}
-								{$field_value.name}
-							{/if}
-						</td>
-						<td>
-							{trackerinput field=$field_value inTable=formcolor}
-						</td>
-					</tr>
+			{foreach from=$fields key=ix item=field_value}
+				{if $field_value.isHidden eq 'n' or $field_value.isHidden eq 'c'  or $tiki_p_admin_trackers eq 'y'}
+					{if $field_value.type ne 'x' and $field_value.type ne 'l' and $field_value.type ne 'q' and
+							(empty($field_value.visibleBy) or in_array($default_group, $field_value.visibleBy) or $tiki_p_admin_trackers eq 'y') and
+							(empty($field_value.editableBy) or in_array($default_group, $field_value.editableBy) or $tiki_p_admin_trackers eq 'y') and
+							($field_value.type ne 'A' or $tiki_p_attach_trackers eq 'y') and $field_value.type ne 'N' and $field_value.type ne '*' and
+							!($field_value.type eq 's' and $field_value.name eq 'Rating')}
+						<tr>
+							<td>
+								{if $field_value.isMandatory eq 'y'}
+									{$field_value.name}<em class='mandatory_star'>*</em>
+								{else}
+									{$field_value.name}
+								{/if}
+							</td>
+							<td>
+								{trackerinput field=$field_value inTable=formcolor}
+							</td>
+						</tr>
+					{/if}
 				{/if}
 			{/foreach}
 			
@@ -222,7 +231,7 @@
 				{include file='antibot.tpl' tr_style="formcolor" showmandatory=y}
 			{/if}
 			
-			{if !isset($groupforalert) || $groupforalert ne ''}
+			{if $groupforalert ne ''}
 				{if $showeachuser eq 'y'}
 					<tr>
 						<td>{tr}Choose users to alert{/tr}</td>
@@ -253,113 +262,18 @@
 		{/tab}
 	{/if}
 	
-	{if $tracker_sync}
-		{tab name="{tr}Synchronization{/tr}"}
-			<p>
-				{tr _0=$tracker_sync.provider|cat:'/tracker'|cat:$tracker_sync.source}This tracker is a remote copy of <a href="%0">%0</a>.{/tr}
-				{if $tracker_sync.last}
-					{tr _0=$tracker_sync.last|tiki_short_date}It was last updated on %0.{/tr}
-				{/if}
-			</p>
-			{permission name=tiki_p_admin_trackers}
-				<form class="sync-refresh" method="post" action="{service controller=tracker_sync action=sync_meta trackerId=$trackerId}">
-					<p><input type="submit" value="{tr}Reload field definitions{/tr}"/></p>
-				</form>
-				<form class="sync-refresh" method="post" action="{service controller=tracker_sync action=sync_new trackerId=$trackerId}">
-					<p>{tr}Items added locally{/tr}</p>
-					<ul class="load-items items">
-					</ul>
-					<p><input type="submit" value="{tr}Push new items{/tr}"/></p>
-				</form>
-				<form class="sync-refresh" method="post" action="{service controller=tracker_sync action=sync_edit trackerId=$trackerId}">
-					<div class="item-block">
-						<p>{tr}Safe modifications (no remote conflict){/tr}</p>
-						<ul class="load-items automatic">
-						</ul>
-					</div>
-					<div class="item-block">
-						<p>{tr}Dangerous modifications (remote conflict){/tr}</p>
-						<ul class="load-items manual">
-						</ul>
-					</div>
-					<p>{tr}On push, local items will be removed until data reload.{/tr}</p>
-					<p><input type="submit" value="{tr}Push local changes{/tr}"/></p>
-				</form>
-				<form class="sync-refresh" method="post" action="{service controller=tracker_sync action=sync_refresh trackerId=$trackerId}">
-					{if $tracker_sync.modified}
-						{remarksbox type=warning title="{tr}Local changes will be lost{/tr}"}
-							<p>{tr}When reloading the data from the source, all local changes will be lost.{/tr}</p>
-							<ul>
-								<li>{tr}New items that must be preserved should be pushed using the above controls.{/tr}</li>
-								<li>
-									{tr}Modifications that must be preserved should be replicated.{/tr}
-									<ul>
-										<li>{tr}Without conflicts: Using the above controls{/tr}</li>
-										<li>{tr}With conflicts: Manually on the source.{/tr} <em>{tr}Using the above controls will cause information loss.{/tr}</em></li>
-									</ul>
-								</li>
-							</ul>
-						{/remarksbox}
-					{/if}
-					<div class="submit">
-						<input type="hidden" name="confirm" value="1"/>
-						<input type="submit" name="submit" value="{tr}Reload data from source{/tr}"/>
-					</div>
-				</form>
-				{jq}
-					$('.sync-refresh').submit(function () {
-						var form = this;
-						$.ajax({
-							type: 'post',
-							url: $(form).attr('action'),
-							dataType: 'json',
-							data: $(form).serialize(),
-							error: function (jqxhr) {
-								$(':submit', form).showError(jqxhr);
-							},
-							success: function () {
-								document.location.reload();
-							}
-						});
-						return false;
-					});
-					$('.load-items').closest('form').each(function () {
-						var form = this;
-						$(form).hide();
-						$.getJSON($(this).attr('action'), function (data) {
-							$.each(data.sets, function (k, name) {
-								var list = $(form).find('.load-items.' + name)[0];
-
-								$.each(data[name], function (k, info) {
-									var li = $('<li/>');
-									li.append($('<label/>')
-										.text(info.title)
-										.prepend($('<input type="checkbox" name="' + name + '[]"/>').attr('value', info.itemId))
-									);
-
-									$.each({localUrl: "{tr}Local{/tr}", remoteUrl: "{tr}Remote{/tr}"}, function (key, label) {
-										if (info[key]) {
-											li
-												.append(' ')
-												.append($('<a/>')
-													.attr('href', info[key])
-													.text(label));
-										}
-									});
-
-									$(list).append(li);
-								});
-
-								if (data[name].length === 0) {
-									$(list).closest('.item-block').hide();
-								} else {
-									$(form).show();
-								}
-							});
-						});
-					});
-				{/jq}
-			{/permission}
-		{/tab}
+	{if $tiki_p_export_tracker eq 'y'}
+		{* -------------------------------------------------- tab with export (and dump if perms) --- *}
+		{include file='tiki-export_tracker.tpl'}
 	{/if}
 {/tabset}
+
+
+{foreach from=$fields key=ix item=field_value}
+	{assign var=fid value=$field_value.fieldId}
+	{if $listfields.$fid.http_request}
+		{jq}
+			selectValues('trackerIdList={{$listfields.$fid.http_request[0]}}&fieldlist={{$listfields.$fid.http_request[3]}}&filterfield={{$listfields.$fid.http_request[1]}}&status={{$listfields.$fid.http_request[4]}}&mandatory={{$listfields.$fid.http_request[6]}}','{{$listfields.$fid.http_request[5]}}','{{$field_value.ins_id}}')
+		{/jq}
+	{/if}
+{/foreach}

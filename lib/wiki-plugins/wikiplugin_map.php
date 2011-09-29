@@ -8,52 +8,35 @@
 function wikiplugin_map_info() {
 	return array(
 		'name' => tra('Map'),
-		'format' => 'html',
 		'documentation' => 'PluginMap',
-		'description' => tra('Display a map'),
-		'prefs' => array( 'wikiplugin_map' ),
+		'description' => tra('Display a map created using the Maps feature'),
+		'prefs' => array( 'feature_maps', 'wikiplugin_map' ),
 		'icon' => 'pics/icons/map.png',
-		'tags' => array( 'basic' ),
 		'params' => array(
-			'scope' => array(
-				'required' => false,
-				'name' => tr('Scope'),
-				'description' => tr('Display the geolocated items represented in the page. (all, center, or custom as a CSS selector)'),
-				'filter' => 'striptags',
-				'default' => 'center',
-			),
-			'width' => array(
-				'required' => false,
-				'name' => tra('Width'),
-				'description' => tra('Width of the map in pixels'),
-				'filter' => 'int',
-			),
-			'height' => array(
-				'required' => false,
-				'name' => tra('Height'),
-				'description' => tra('Height of the map in pixels'),
-				'filter' => 'int',
-			),
 			'mapfile' => array(
-				'required' => false,
-				'name' => tra('MapServer File'),
-				'description' => tra('MapServer file identifier. Only fill this in if you are using MapServer.'),
-				'filter' => 'url',
-				'advanced' => true,
+				'required' => true,
+				'name' => tra('Map File'),
+				'description' => tra('Map file identifier'),
 			),
 			'extents' => array(
 				'required' => false,
 				'name' => tra('Extents'),
 				'description' => tra('Extents'),
-				'filter' => 'text',
-				'advanced' => true,
 			),
 			'size' => array(
 				'required' => false,
 				'name' => tra('Size'),
 				'description' => tra('Size of the map'),
-				'filter' => 'int',
-				'advanced' => true,
+			),
+			'width' => array(
+				'required' => false,
+				'name' => tra('Width'),
+				'description' => tra('Width of the map'),
+			),
+			'height' => array(
+				'required' => false,
+				'name' => tra('Height'),
+				'description' => tra('Height of the map'),
 			),
 		),
 	);
@@ -62,53 +45,8 @@ function wikiplugin_map_info() {
 function wikiplugin_map($data, $params) {
 	global $tikilib, $prefs;
 
-	if (isset($params['mapfile'])) {
-		return wp_map_mapserver($params);
-	}
-
-	require_once 'lib/smarty_tiki/modifier.escape.php';
-
-	$width = '400';
-	if (isset($params['width'])) {
-		$width = (int) $params['width'];
-	}
-
-	$height = '300';
-	if (isset($params['height'])) {
-		$height = (int) $params['height'];
-	}
-
-	TikiLib::lib('header')->add_map();
-	$scope = smarty_modifier_escape(wp_map_getscope($params));
-	return "<div class=\"map-container\" data-marker-filter=\"$scope\" style=\"width: {$width}px; height: {$height}px;\"></div>";
-}
-
-function wp_map_getscope($params)
-{
-	$scope = 'center';
-	if (isset($params['scope'])) {
-		$scope = $params['scope'];
-	}
-
-	switch ($scope) {
-		case 'center':
-			return '#tiki-center .geolocated';
-		case 'all':
-			return '.geolocated';
-		default:
-			return $scope;
-	}
-}
-
-function wp_map_mapserver($params)
-{
-	global $prefs;
-
-	if ($prefs['feature_maps'] != 'y') {
-		return WikiParser_PluginOutput::disabled('map', array('feature_maps'));
-	}
-
 	extract ($params,EXTR_SKIP);
+
 	$mapdata="";
 	if (isset($mapfile)) {
 		$mapdata='mapfile='.$mapfile.'&';

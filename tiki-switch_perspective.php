@@ -10,21 +10,22 @@ require_once 'lib/perspectivelib.php';
 
 $access->check_feature( 'feature_perspective' );
 
+// Force preference reload, new perspective will be taken in account.
 $_SESSION['current_perspective'] = 0;
+$_SESSION['need_reload_prefs'] = true;
 
 if( isset($_REQUEST['perspective']) ) {
 	$perspective = $_REQUEST['perspective'];
 	if( $perspectivelib->perspective_exists( $perspective ) ) {
-		if ($prefs['multidomain_switchdomain'] == 'y') {
-			foreach( $perspectivelib->get_domain_map() as $domain => $persp ) {
-				if( $persp == $perspective && isset($_SERVER['HTTP_HOST']) && $domain != $_SERVER['HTTP_HOST'] ) {
-					$targetUrl = 'http://' . $domain;
+		foreach( $perspectivelib->get_domain_map() as $domain => $persp ) {
+			if( $persp == $perspective ) {
+				$targetUrl = 'http://' . $domain;
 
-					header( 'Location: ' . $targetUrl );
-					exit;
-				}
+				header( 'Location: ' . $targetUrl );
+				exit;
 			}
 		}
+
 		$_SESSION['current_perspective'] = $perspective;
 	}
 }

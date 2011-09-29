@@ -1,5 +1,7 @@
 {strip}
-	{title admpage="calendar"}{tr}Calendar event : {/tr}{$calitem.name}{/title}
+	{title admpage="calendar"}
+		{tr}Calendar Item{/tr}
+	{/title}
 	
 	<div class="navbar">
 		{if $tiki_p_view_calendar eq 'y'}
@@ -838,7 +840,7 @@
 				</td>
 				<td>
 					{if $edit}
-						{textarea name="save[description]" id="editwiki" cols=40 rows=10}
+						{textarea name="save[description]" id="editwiki"}
 							{$calitem.description}
 						{/textarea}
 					{else}
@@ -854,7 +856,11 @@
 						{tr}Status{/tr}
 					</td>
 					<td>
-						<div class="statusbox	{if $calitem.status eq 0}status0{/if}">
+						<div class="statusbox
+							{if $calitem.status eq 0}
+								 status0
+							{/if}
+						">
 							{if $edit}
 								<input id="status0" type="radio" name="save[status]" value="0"
 									{if (!empty($calitem) and $calitem.status eq 0) or (empty($calitem) and $calendar.defaulteventstatus eq 0)}
@@ -868,7 +874,11 @@
 								{tr}Tentative{/tr}
 							{/if}
 						</div>
-						<div class="statusbox	{if $calitem.status eq 1}status1{/if}">
+						<div class="statusbox
+							{if $calitem.status eq 1}
+								 status1
+							{/if}
+						">
 							{if $edit}
 								<input id="status1" type="radio" name="save[status]" value="1"
 									{if $calitem.status eq 1}
@@ -882,7 +892,11 @@
 								{tr}Confirmed{/tr}
 							{/if}
 						</div>
-						<div class="statusbox {if $calitem.status eq 2}status2{/if}">
+						<div class="statusbox
+							{if $calitem.status eq 2}
+								 status2
+							{/if}
+						">
 							{if $edit}
 								<input id="status2" type="radio" name="save[status]" value="2"
 									{if $calitem.status eq 2}
@@ -1037,7 +1051,7 @@
 					{/if}
 				</td>
 			</tr>
-			{if !empty($groupforalert)}
+			{if $groupforalert ne ''}
 				{if $showeachuser eq 'y'}
 					<tr>
 						<td>
@@ -1124,7 +1138,6 @@
 							" style="width:90%;" />
 						{/if}
 					{else}
-						{assign var='in_particip' value='n'}
 						{foreach item=ppl from=$calitem.participants}
 							{$ppl.name|userlink} 
 							{if $listroles[$ppl.role]}

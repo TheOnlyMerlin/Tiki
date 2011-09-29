@@ -1,4 +1,4 @@
-{title url="tiki-blog_post.php?blogId=$blogId&amp;postId=$postId"}{if $postId gt 0}{tr}Edit Post{/tr}{else}{tr}New Post{/tr}{/if}{if !empty($blog_data.title)} - {$blog_data.title}{/if}{/title}
+{title url="tiki-blog_post.php?blogId=$blogId&amp;postId=$postId"}{if $postId gt 0}{tr}Edit Post{/tr}{else}{tr}New Post{/tr}{/if}{if !empty($blog_data.title)} - {$blog_data.title|escape}{/if}{/title}
 
 <div class="navbar">
 	{if $postId > 0}
@@ -62,7 +62,7 @@
 
 			<tr>
 				<td class="editblogform">{tr}Title:{/tr}</td><td class="editblogform">
-					<input type="text" size="80" maxlength="255" name="title" value="{$post_info.title|escape}" />
+					<input type="text" size="80" name="title" value="{$post_info.title|escape}" />
 				</td>
 			</tr>
 

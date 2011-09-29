@@ -23,10 +23,10 @@ class TWVersion
 		//   stable   : Represents stable releases.
 		//   unstable : Represents candidate and test/development releases.
 		//   trunk     : Represents next generation development version.
-		$this->branch 	= 'trunk';
+		$this->branch 	= 'stable';
 
 		// Set everything else, including defaults.
-		$this->version 	= '8.0 SVN';	// needs to have no spaces for releases
+		$this->version 	= '7.2';	// needs to have no spaces for releases
 		$this->star	= '';
 		$this->releases	= array();
 
@@ -67,7 +67,6 @@ class TWVersion
 				16=>'Vulpeculae',	// 5.x
 				17=>'Rigel',		// 6.x
 				18=>'Electra',		// 7.x
-				19=>'Star required',	// 8.x
 		);
 	}
 
@@ -148,6 +147,7 @@ class TWVersion
 				'7.1RC1',
 				'7.1RC2',
 				'7.1',
+				'7.2',
 			);
 	}
 

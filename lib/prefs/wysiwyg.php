@@ -6,6 +6,7 @@
 // $Id$
 
 function prefs_wysiwyg_list() {
+	global $prefs;
 	
 	return array(
 		'wysiwyg_optional' => array(
@@ -14,7 +15,6 @@ function prefs_wysiwyg_list() {
 			'dependencies' => array(
 				'feature_wysiwyg',
 			),
-			'default' => 'y',
 		),
 		'wysiwyg_default' => array(
 			'name' => tra('Wysiwyg Editor is displayed by default'),
@@ -22,24 +22,20 @@ function prefs_wysiwyg_list() {
 			'dependencies' => array(
 				'feature_optional',
 			),
-			'default' => 'n',
 		),
 		'wysiwyg_memo' => array(
 			'name' => tra('Reopen with the same editor'),
 			'type' => 'flag',
-			'default' => 'y',
 		),
 		'wysiwyg_wiki_parsed' => array(
 			'name' => tra('Content is parsed like wiki page'),
 			'description' => tra('This allows a mixture of wiki and html. All wiki syntax is parsed.'),
 			'type' => 'flag',
-			'default' => 'y',
 		),
 		'wysiwyg_wiki_semi_parsed' => array(
 			'name' => tra('Content is partially wiki parsed'),
 			'description' => tra('This also allows a mixture of wiki and html. Only some wiki syntax is parsed, such as plugins (not inline character styles etc).'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wysiwyg_toolbar_skin' => array(
 			'name' => tra('Wysiwyg editor skin'),
@@ -49,7 +45,6 @@ function prefs_wysiwyg_list() {
 				'office2003' => tra('Office 2003'),
 				'v2' => tra('V2 (FCKEditor appearance)'),
 			),
-			'default' => 'kama',
 		),
 		'wysiwyg_htmltowiki' => array(
 			'name' => tra('Use Wiki syntax in WYSIWYG'),
@@ -59,14 +54,12 @@ function prefs_wysiwyg_list() {
 			'dependencies' => array(
 				'ajax_autosave',
 			),
-			'default' => 'n',
 		),
 		'wysiwyg_fonts' => array(
 			'name' => tra('Font names'),
 			'description' => tra('List of font names separated by;'),
 			'type' => 'textarea',
 			'size' => '3',
-			'default' => 'sans serif;serif;monospace;Arial;Century Gothic;Comic Sans MS;Courier New;Tahoma;Times New Roman;Verdana',
 		),
 	);
 }

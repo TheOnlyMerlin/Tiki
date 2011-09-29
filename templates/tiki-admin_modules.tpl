@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {strip}
 {title help="Modules" admpage="module"}{tr}Admin Modules{/tr}{/title}
 
@@ -27,7 +25,8 @@
 	{/remarksbox}
 {/if}
 
-{remarksbox type="note" title="{tr}Modules{/tr}" icon="star"}
+{remarksbox type="note" title="{tr}Modules Revamp{/tr}" icon="star"}
+	<em>{tr}New. This feature is still under development{/tr}</em><br />
 	<ul>
 		<li>{tr}Drag the modules around to re-order then click save when ready{/tr}</li>
 		<li>{tr}Double click them to edit{/tr}</li>
@@ -201,7 +200,7 @@
 					<h3>{tr}Objects that can be included{/tr}</h3>
 					{pagination_links cant=$maximum step=$maxRecords offset=$offset}{/pagination_links}
 					<table>
-						{if $prefs.feature_polls eq "y"}
+						{if $polls}
 							<tr>
 								<td>
 									<label for="list_polls">{tr}Available polls:{/tr}</label>
