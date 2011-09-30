@@ -1,14 +1,14 @@
-/*
+ /*
  * jQuery Media Plugin for converting elements into rich media content.
  *
  * Examples and documentation at: http://malsup.com/jquery/media/
- * Copyright (c) 2007-2008 M. Alsup
+ * Copyright (c) 2007-2010 M. Alsup
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl.html
  *
  * @author: M. Alsup
- * @version: 0.92 (24-SEP-2009)
+ * @version: 0.96 (23-MAR-2011)
  * @requires jQuery v1.1.2 or later
  * $Id: jquery.media.js 2460 2007-07-23 02:53:15Z malsup $
  *
@@ -32,6 +32,8 @@
  * Thanks to Richard Connamacher for excellent improvements to the non-IE behavior!
  */
 ;(function($) {
+
+var lameIE = $.browser.msie && $.browser.version < 9;
 
 /**
  * Chainable method for converting elements into rich media.
@@ -108,7 +110,7 @@ $.fn.media.mapFormat = function(format, player) {
 
 // global defautls; override as needed
 $.fn.media.defaults = {
-	standards:  false,      // use object tags only (no embeds for non-IE browsers)
+	standards:  true,       // use object tags only (no embeds for non-IE browsers)
 	canUndo:    true,       // tells plugin to store the original markup so it can be reverted via: $(sel).mediaUndo()
 	width:		400,
 	height:		400,
@@ -188,6 +190,11 @@ $.fn.media.defaults.players = {
 		}
 	},
 	// special cases
+	img: {
+		name:  'img',
+		title: 'Image',
+		types: 'gif,png,jpg'
+	},
 	iframe: {
 		name:  'iframe',
 		types: 'html,pdf'
@@ -253,12 +260,23 @@ function getSettings(el, options) {
 	// support metadata plugin (v1.0 and v2.0)
 	var meta = $.metadata ? $el.metadata() : $.meta ? $el.data() : {};
 	meta = meta || {};
-	var w = meta.width	 || parseInt(((cls.match(/w:(\d+)/)||[])[1]||0));
-	var h = meta.height || parseInt(((cls.match(/h:(\d+)/)||[])[1]||0));
+	var w = meta.width  || parseInt(((cls.match(/\bw:(\d+)/)||[])[1]||0)) || parseInt(((cls.match(/\bwidth:(\d+)/)||[])[1]||0));
+	var h = meta.height || parseInt(((cls.match(/\bh:(\d+)/)||[])[1]||0)) || parseInt(((cls.match(/\bheight:(\d+)/)||[])[1]||0))
 
 	if (w) meta.width	= w;
 	if (h) meta.height = h;
 	if (cls) meta.cls = cls;
+	
+	// crank html5 style data attributes
+	var dataName = 'data-';
+    for (var i=0; i < el.attributes.length; i++) {
+        var a = el.attributes[i], n = $.trim(a.name);
+        var index = n.indexOf(dataName);
+        if (index === 0) {
+        	n = n.substring(dataName.length);
+        	meta[n] = a.value;
+        }
+    }
 
 	var a = $.fn.media.defaults;
 	var b = options;
@@ -393,11 +411,18 @@ function generate(el, opts, player) {
 	var o = $.fn.media.defaults.players[player];
 
 	if (player == 'iframe') {
-		var o = $('<iframe' + ' width="' + opts.width + '" height="' + opts.height + '" >');
+		o = $('<iframe' + ' width="' + opts.width + '" height="' + opts.height + '" >');
 		o.attr('src', opts.src);
 		o.css('backgroundColor', o.bgColor);
 	}
-	else if ($.browser.msie) {
+	else if (player == 'img') {
+		o = $('<img>');
+		o.attr('src', opts.src);
+		opts.width && o.attr('width', opts.width);
+		opts.height && o.attr('height', opts.height);
+		o.css('backgroundColor', o.bgColor);
+	}
+	else if (lameIE) {
 		var a = ['<object width="' + opts.width + '" height="' + opts.height + '" '];
 		for (var key in opts.attrs)
 			a.push(key + '="'+opts.attrs[key]+'" ');
@@ -415,10 +440,18 @@ function generate(el, opts, player) {
 		for (var i=0; i < p.length; i++)
 			o.appendChild(document.createElement(p[i]));
 	}
-	else if (o.standards) {
+	else if (opts.standards) {
 		// Rewritten to be standards compliant by Richard Connamacher
 		var a = ['<object type="' + o.mimetype +'" width="' + opts.width + '" height="' + opts.height +'"'];
 		if (opts.src) a.push(' data="' + opts.src + '" ');
+		if ($.browser.msie) {
+			for (var key in o.ieAttrs || {}) {
+				var v = o.ieAttrs[key];
+				if (key == 'codebase' && window.location.protocol == 'https:')
+					v = v.replace('http','https');
+				a.push(key + '="'+v+'" ');
+			}
+		}
 		a.push('>');
 		a.push('<param name="' + (o.oUrl || 'src') +'" value="' + opts.src + '">');
 		for (var key in opts.params) {
@@ -449,7 +482,7 @@ function generate(el, opts, player) {
 	var cls = opts.cls ? (' class="' + opts.cls + '"') : '';
 	var $div = $('<div' + id + cls + '>');
 	$el.after($div).remove();
-	($.browser.msie || player == 'iframe') ? $div.append(o) : $div.html(a.join(''));
+	(lameIE || player == 'iframe' || player == 'img') ? $div.append(o) : $div.html(a.join(''));
 	if (opts.caption) $('<div>').appendTo($div).html(opts.caption);
 	return $div;
 };
