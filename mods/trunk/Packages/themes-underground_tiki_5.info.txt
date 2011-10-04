@@ -16,9 +16,7 @@ themes/underground_tiki_5/styles/underground/arrows-000.png styles/underground/a
 themes/underground_tiki_5/styles/underground/bg.gif styles/underground/bg.gif
 themes/underground_tiki_5/styles/underground/bullet.gif styles/underground/bullet.gif
 themes/underground_tiki_5/styles/underground/footerbg.gif styles/underground/footerbg.gif
-themes/underground_tiki_5/styles/underground/headerbottombg.png styles/underground/headerbottombg.png
-themes/underground_tiki_5/styles/underground/headertopbg.png styles/underground/headertopbg.png
-themes/underground_tiki_5/styles/underground/ie6.css styles/underground/ie6.css
+themes/underground_tiki_5/styles/underground/headerbg.gif styles/underground/headerbg.gif
 themes/underground_tiki_5/styles/underground/index.php styles/underground/index.php
 themes/underground_tiki_5/styles/underground/quote.gif styles/underground/quote.gif
 themes/underground_tiki_5/styles/underground/tableft.gif styles/underground/tableft.gif
@@ -27,11 +25,9 @@ themes/underground_tiki_5/styles/underground/underground.png styles/underground/
 themes/underground_tiki_5/templates/styles/underground/credits.tpl templates/styles/underground/credits.tpl
 themes/underground_tiki_5/templates/styles/underground/index.php templates/styles/underground/index.php
 themes/underground_tiki_5/templates/styles/underground/tiki-site_header.tpl templates/styles/underground/tiki-site_header.tpl
-themes/underground_tiki_5/templates/styles/underground/tiki-site_header_top.tpl templates/styles/underground/tiki-site_header_top.tpl
-themes/underground_tiki_5/templates/styles/underground/tiki-top_bar.tpl templates/styles/underground/tiki-top_bar.tpl
 
 Description:
-Underground uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss). Although this theme can be used with all three columns, the present column margins were specified for a two-column layout (left and center) to emulate the look of the original design. For more information, please see the documentation pages for this theme. Please do not remove the link to Styleshout.com from the page footer.
+Underground uses the *litecss source-ordered layout method (http://sourceforge.net/projects/litecss). Due to the limited page-top space, not all Look & Feel options may be available. Although this theme can be used with all three columns, the present column margins were specified for a two-column layout (left and center) to emulate the look of the original design. For more information, please see the documentation pages for this theme. Please do not remove the link to Styleshout.com from the page footer.
  
 Docurl:
 http://themes.tikiwiki.org/Underground
@@ -47,6 +43,6 @@ Version:
 5
  
 Changelog:
-3 updated for Tiki 5
-2 updated for Tiki 3
+3 Updated for Tiki 5
+2 Updated for Tiki 3
 1 initial package

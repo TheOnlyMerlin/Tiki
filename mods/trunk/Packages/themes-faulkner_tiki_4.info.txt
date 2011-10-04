@@ -33,10 +33,9 @@ themes/faulkner_tiki_4/styles/faulkner/title_right.gif styles/faulkner/title_rig
 themes/faulkner_tiki_4/templates/styles/faulkner/credits.tpl templates/styles/faulkner/credits.tpl
 themes/faulkner_tiki_4/templates/styles/faulkner/index.php templates/styles/faulkner/index.php
 themes/faulkner_tiki_4/templates/styles/faulkner/tiki.tpl templates/styles/faulkner/tiki.tpl
-themes/faulkner_tiki_4/templates/styles/faulkner/tiki-sitemenu.tpl templates/styles/faulkner/tiki-sitemenu.tpl
 
 Description:
-The Faulkner theme for TikiWiki CMS/Groupware is adapted from the original WordPress template by Demus Designs. In a departure from the original design, two page-layout tables are used to enable expanding content area and side-column-independent background gradients. This was necessary to support Tiki's flexible content-display options. Look & Feel custom code is used to display the site title and text ornaments. If updating this theme from a previous version, be sure to remove all old template (.tpl) files in templates/styles/faulkner; some aren't compatible with Tiki 3. 
+The Faulkner theme for TikiWiki CMS/Groupware is adapted from the original WordPress template by Demus Designs. In a departure from the original design, two page-layout tables are used to enable expanding content area and side-column-independent background gradients. This was necessary to support Tiki's flexible content-display options. Look & Feel custom code is used to display the site title and text ornaments. If updating this theme from a previous version, be sure to remove all old template (.tpl) files in templates/styles/faulkner; some aren't compatible with Tiki 4. 
  
 Docurl:
 http://themes.tikiwiki.org/Faulkner
@@ -54,5 +53,5 @@ Version:
 Changelog:
 4 updated for Tiki 4
 3 modified to import layout/layout.css; suckerfish menu arrows image added
-2 updated for Tiki 3.
+2 updated for Tiki 3
 1 initial package

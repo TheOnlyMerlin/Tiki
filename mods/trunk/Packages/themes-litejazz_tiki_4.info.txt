@@ -25,17 +25,14 @@ themes/litejazz_tiki_4/styles/litejazz/menu-div.png styles/litejazz/menu-div.png
 themes/litejazz_tiki_4/styles/litejazz/menubg-over.png styles/litejazz/menubg-over.png
 themes/litejazz_tiki_4/styles/litejazz/options/green.css styles/litejazz/options/green.css
 themes/litejazz_tiki_4/styles/litejazz/options/red.css styles/litejazz/options/red.css
-themes/litejazz_tiki_4/styles/litejazz/options/blue/index.php styles/litejazz/options/blue/index.php
 themes/litejazz_tiki_4/styles/litejazz/options/blue/topbar_custcode.png styles/litejazz/options/blue/topbar_custcode.png
-themes/litejazz_tiki_4/styles/litejazz/options/green/green.png styles/litejazz/options/green/green.png
-themes/litejazz_tiki_4/styles/litejazz/options/green/index.php styles/litejazz/options/green/index.php
 themes/litejazz_tiki_4/styles/litejazz/options/green/topbar_custcode.png styles/litejazz/options/green/topbar_custcode.png
-themes/litejazz_tiki_4/styles/litejazz/options/red/index.php styles/litejazz/options/red/index.php
-themes/litejazz_tiki_4/styles/litejazz/options/red/red.png styles/litejazz/options/red/red.png
 themes/litejazz_tiki_4/styles/litejazz/options/red/topbar_custcode.png styles/litejazz/options/red/topbar_custcode.png
 themes/litejazz_tiki_4/templates/styles/litejazz/credits.tpl templates/styles/litejazz/credits.tpl
 themes/litejazz_tiki_4/templates/styles/litejazz/index.php templates/styles/litejazz/index.php
-
+themes/litejazz_tiki_4/templates/styles/litejazz/litejazz_bottom.tpl templates/styles/litejazz/litejazz_bottom.tpl
+themes/litejazz_tiki_4/templates/styles/litejazz/litejazz_top.tpl templates/styles/litejazz/litejazz_top.tpl
+themes/litejazz_tiki_4/templates/styles/litejazz/tiki.tpl templates/styles/litejazz/tiki.tpl
 
 Description:
 Adaptation for TikiWiki CMS/Groupware of the LiteJazz theme for Drupal by Roopletheme (http://roopletheme.com).
@@ -55,6 +52,6 @@ Version:
 4
  
 Changelog:
-3 updated for Tiki 4 (now uses *lite.css layout method)
+3 updated for Tiki 4
 2 modified to import layout/layout.css
 1 initial package
