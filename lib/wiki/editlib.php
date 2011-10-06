@@ -190,100 +190,6 @@ class EditLib
 	
 	
 	/**
-	 * Utility for walk_and_parse to process links
-	 * 
-	 * @param array $args the attributes of the link
-	 * @param array $text the link text
-	 * @param string $src output string
-	 * @param array $p ['stack'] = closing strings stack
-	 */
-	private function parseLinkTag(&$args, $text, &$src, &$p) {
-		
-		/*
-		 * parse the link classes
-		 */
-		$cl_wiki = false;
-		$cl_wiki_page = false;
-		
-		if ( isset($args['class']) && isset($args['href']) ) {
-			$matches = array();
-			preg_match_all('/([^ ]+)/', $args['class']['value'], $matches);
-			$classes = $matches[0];
-			
-			foreach ($classes as $cl) {
-				switch ($cl) {
-					case 'wiki': $cl_wiki = true; break;
-					case 'wiki_page': $cl_wiki_page = true; break;
-				}				
-			} 
-		}
-		
-
-		/*
-		 * convert the links
-		 */
-		$p['wiki_lbr']++; // force wiki line break mode
-		
-		if ( $cl_wiki && $cl_wiki_page ) {
-
-			/*
-			 * link to wiki page -> (( ))
-			 */
-
-			// extract the human readable page name
-			$href = urldecode($args['href']['value']);
-			$href = preg_replace('/tiki\-index\.php\?page\=/', '', $href);
-
-			// split the page name into target and anchor
-			$matches = preg_split('/#/', $href);
-			if ( count($matches) == 2) {
-				$target = $matches[0];
-				$anchor = '|#' . $matches[1];
-			} else {
-				$target = $href;
-				$anchor = '';
-			}
-
-			// open the link
-			if ($target) {
-
-				// the link is defined by the next token if
-				// -> we don't have an anchor
-				// -> AND the target matches the text of the next token
-				$link = '';
-				if ( $anchor || $target != $text ) {
-					$link = $target . $anchor . '|';
-					
-					// do we need a separator?
-					if ($text) {
-						$link . '|';
-					}
-				};
-				$this->processWikiTag('a', &$src, &$p, '((', '))', true); 				
-				$src .= $link;
-				
-			} // target defined
-		} else {
-
-			// default, to be reviewed
-			if (isset($args["href"]["value"])) {
-				if( strstr( $args["href"]["value"], "http:" )) {
-					$src .= '['.$args["href"]["value"].'|';
-				} else {
-					//$src .= '['.$head_url.$args["href"]["value"].'|';
-					$src .= '['.$args["href"]["value"].'|';
-				}
-				$p['stack'][] = array('tag' => 'a', 'string' => ']');
-			}
-			if( isset($args["name"]["value"])) {
-				$src .= '{ANAME()}'.$args["name"]["value"].'{ANAME}';
-			}
-			
-		} // convert links
-	}
-	
-	
-	/**
 	 * Utility for walk_and_parse to process p and div tags
 	 *
 	 * @param bool $isPar True if we process a <p>, false if a <div>
@@ -836,23 +742,7 @@ class EditLib
 								}
 							break;
 						case "a":
-							if (isset($c[$i]['pars'])) {
-								// get the link text
-								$text = '';
-								if ( $i < count($c) ) {
-									$next_token = &$c[$i+1];
-									if (isset($next_token['type']) && $next_token['type'] == 'text' && isset($next_token['data']) )
-									{
-										$text = trim($next_token['data']);
-									}
-								}
-								// parse the link
-								$this->parseLinkTag($c[$i]['pars'], $text, $src, $p);
-							}
-							
-							// deactivated by mauriz, will be replaced by the routine above
 							// If href attribute present in <a> tag
-							/* 
 							if (isset($c[$i]["pars"]["href"]["value"])) {
 								if( strstr( $c[$i]["pars"]["href"]["value"], "http:" )) {
 									$src .= '['.$c[$i]["pars"]["href"]["value"].'|';
@@ -864,9 +754,6 @@ class EditLib
 							if( isset($c[$i]["pars"]["name"]["value"])) {
 								$src .= '{ANAME()}'.$c[$i]["pars"]["name"]["value"].'{ANAME}';
 							}
-							*/
-							
-							
 							break;
 					}	// end switch on tag name
 				} else {
@@ -901,7 +788,6 @@ class EditLib
 					
 					// can we leave wiki line break mode ?
 					switch ($c[$i]["data"]["name"]) { 
-						case "a":
 						case "h1":
 						case "h2": 
 						case "h3":

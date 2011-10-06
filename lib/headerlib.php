@@ -21,6 +21,7 @@ class HeaderLib
 	var $css;
 	var $rssfeeds;
 	var $metatags;
+	var $hasDoneOutput;
 	var $minified;
 	var $wysiwyg_parsing;
 
@@ -34,6 +35,7 @@ class HeaderLib
 		$this->css = array();
 		$this->rssfeeds = array();
 		$this->metatags = array();
+		$this->hasDoneOutput = false;
 		$this->minified = array();
 		$this->wysiwyg_parsing = false;
 	}
@@ -69,11 +71,21 @@ class HeaderLib
 		if (!$this->wysiwyg_parsing && (empty($this->js_config[$rank]) or !in_array($script,$this->js_config[$rank]))) {
 			$this->js_config[$rank][] = $script;
 		}
+		if ($this->hasDoneOutput) {	// if called after smarty parse header.tpl return the script so the caller can do something with it
+			return $this->wrap_js($script);
+		} else {
+			return '';
+		}
 	}
 
 	function add_js($script,$rank=0) {
 		if (!$this->wysiwyg_parsing && (empty($this->js[$rank]) or !in_array($script,$this->js[$rank]))) {
 			$this->js[$rank][] = $script;
+		}
+		if ($this->hasDoneOutput) {	// if called after smarty parse header.tpl return the script so the caller can do something with it
+			return $this->wrap_js($script);
+		} else {
+			return '';
 		}
 	}
 
@@ -86,6 +98,11 @@ class HeaderLib
 	function add_jq_onready($script,$rank=0) {
 		if (!$this->wysiwyg_parsing && (empty($this->jq_onready[$rank]) or !in_array($script,$this->jq_onready[$rank]))) {
 			$this->jq_onready[$rank][] = $script;
+		}
+		if ($this->hasDoneOutput) {	// if called after smarty parse header.tpl return the script so the caller can do something with it
+			return $this->wrap_js("\$(document).ready(function(){".$script."});\n");
+		} else {
+			return '';
 		}
 	}
 
@@ -194,6 +211,7 @@ class HeaderLib
 			}
 			$back.= "\n";
 		}
+		$this->hasDoneOutput = true;
 		return $back;
 	}
 
@@ -252,7 +270,6 @@ class HeaderLib
 				foreach( $files as $f ) {
 					$content = file_get_contents( $f );
 					if ( ! preg_match('/min\.js$/', $f) and $this->minified[$f] !== true) {
-						set_time_limit(600);
 						$minified .= JSMin::minify( $content );
 					} else {
 						$minified .= "\n// skipping minification for $f \n" . $content;
@@ -417,6 +434,11 @@ class HeaderLib
 		return "<script type=\"text/javascript\">\n<!--//--><![CDATA[//><!--\n".$inJs."//--><!]]>\n</script>\n";
 	}
 
+	function hasOutput() {
+		return $this->hasDoneOutput;
+	}
+	
+	
 	/**
 	 * Get JavaScript tags from html source - used for AJAX responses and cached pages
 	 * 
