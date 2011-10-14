@@ -2,6 +2,10 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 14 October 2011
+
+Update:
+	jquery-ui-selectmenu to latest "dev" version from http://github.com/fnagel/jquery-ui/zipball/selectmenu
 
 jonnybradley 30 September 2011
 

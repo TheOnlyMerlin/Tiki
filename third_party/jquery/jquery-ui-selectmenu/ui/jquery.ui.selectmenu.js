@@ -38,10 +38,10 @@ $.widget("ui.selectmenu", {
 		var self = this, o = this.options;
 
 		// set a default id value, generate a new random one if not set by developer
-		var selectmenuId = this.element.attr( 'id' ) || 'ui-selectmenu-' + Math.random().toString( 16 ).slice( 2, 10 );
+		var selectmenuId = this.element.attr( 'id' ).replace(':', '\\:') || 'ui-selectmenu-' + Math.random().toString( 16 ).slice( 2, 10 );
 
 		// quick array of button and menu id's
-		this.ids = [ selectmenuId + '-button', selectmenuId + '-menu' ];
+		this.ids = [ selectmenuId, selectmenuId + '-button', selectmenuId + '-menu' ];
 
 		// define safe mouseup for future toggling
 		this._safemouseup = true;
@@ -49,12 +49,12 @@ $.widget("ui.selectmenu", {
 		// create menu button wrapper
 		this.newelement = $( '<a />', {
 			'class': this.widgetBaseClass + ' ui-widget ui-state-default ui-corner-all',
-			'id' : this.ids[ 0 ],
+			'id' : this.ids[ 1 ],
 			'role': 'button',
-			'href': '#',
+			'href': '#nogo',
 			'tabindex': this.element.attr( 'disabled' ) ? 1 : 0,
 			'aria-haspopup': true,
-			'aria-owns': this.ids[ 1 ]
+			'aria-owns': this.ids[ 2 ]
 		});
 		this.newelementWrap = $( o.wrapperElement )
 			.append( this.newelement )
@@ -78,7 +78,7 @@ $.widget("ui.selectmenu", {
 
 		// make associated form label trigger focus
 		$( 'label[for="' + selectmenuId + '"]' )
-			.attr( 'for', this.ids[0] )
+			.attr( 'for', this.ids[1] )
 			.bind( 'click.selectmenu', function() {
 				self.newelement[0].focus();
 				return false;
@@ -183,8 +183,8 @@ $.widget("ui.selectmenu", {
 			'class': 'ui-widget ui-widget-content',
 			'aria-hidden': true,
 			'role': 'listbox',
-			'aria-labelledby': this.ids[0],
-			'id': this.ids[1]
+			'aria-labelledby': this.ids[1],
+			'id': this.ids[2]
 		});
 		this.listWrap = $( o.wrapperElement )
 			.addClass( self.widgetBaseClass + '-menu' )
@@ -254,9 +254,7 @@ $.widget("ui.selectmenu", {
 			.bind( 'mousedown.selectmenu mouseup.selectmenu', function() { return false; });
 
 		// needed when window is resized
-		// TODO seems to be useless, but causes errors (fnagel 01.08.11)
-		// see: https://github.com/fnagel/jquery-ui/issues/147
-		// $(window).bind( "resize.selectmenu", $.proxy( self._refreshPosition, this ) );
+		$(window).bind( "resize.selectmenu", $.proxy( self.close, this ) );
 	},
 
 	_init: function() {
@@ -295,7 +293,7 @@ $.widget("ui.selectmenu", {
 				}					
 				var thisAAttr = {
 					html: selectOptionData[i].text,
-					href : '#', 
+					href : '#nogo', 
 					tabindex : -1, 
 					role : 'option',
 					'aria-selected' : false
@@ -376,7 +374,7 @@ $.widget("ui.selectmenu", {
 				}
 			}
 		} else {
-			$('<li role="presentation"><a href="#" tabindex="-1" role="option"></a></li>').appendTo(this.list);
+			$('<li role="presentation"><a href="#nogo" tabindex="-1" role="option"></a></li>').appendTo(this.list);
 		}
 		// we need to set and unset the CSS classes for dropdown and popup style
 		var isDropDown = ( o.style == 'dropdown' );
@@ -449,8 +447,8 @@ $.widget("ui.selectmenu", {
 		$( document ).unbind( ".selectmenu" );
 
 		// unbind click on label, reset its for attr
-		$( 'label[for=' + this.newelement.attr('id') + ']' )
-			.attr( 'for', this.element.attr( 'id' ) )
+		$( 'label[for=' + this.ids[0] + ']' )
+			.attr( 'for', this.ids[0] )
 			.unbind( '.selectmenu' );
 		
 		this.newelementWrap.remove();
@@ -593,7 +591,7 @@ $.widget("ui.selectmenu", {
 	},
 
 	_toggle: function(event, retainFocus) {
-		if ( this.list.is('.' + this.widgetBaseClass + '-open') ) {
+		if ( this.listWrap.is('.' + this.widgetBaseClass + '-open') ) {
 			this.close(event, retainFocus);
 		} else {
 			this.open(event);
