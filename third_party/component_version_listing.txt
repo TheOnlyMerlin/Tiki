@@ -1,22 +1,23 @@
-Package       | @version     | uploaded           | @revision
---------------+--------------+--------------------+-------------
-adodb         | 5.12         | 9 August 2011      | 35914
-ckeditor      | 3.6.1        | 2 July 2011        | 35160
-codemirror    | 2.11         | 22 July 2011       | 35569
-ezcomponents  | 1.8          | 9 May 2010         | 27007
-fckeditor     | 2.6.6        | 27 June 2010       | 27778
-fullcalendar  | 1.5.1        | 17 August 2011     | 36237
-html5shim     | 1.6.2        | 10 May 2011        | 34346
-htmlpurifier  | 4.3.0        | 10 May 2011        | 34345
-jquery        | 1.6.1        | 12 August 2011     | 36068
-jscalendar    | 1.4          | 3 March 2011       | 33205
-mobileESP     |              | 7 June 2011        | 34807
-pclzip        | 2.8          | 11 August 2009     | 20759
-phpcas        | 1.1.1        | 26 May 2010        | 27326
-phplayers     | 1.5.2.1      | 24 September 2010  | 29564
-slideshow     |              | 22 January 2010    | 24598
-smarty        | 2.6.26       | 3 March 2011       | 33205
-(smarty3)     | 3.0.8        | 12 August 2011     | 36063
-textwiki      |              | 24 June 2011       | 35033
-vfsStream     | 0.10.0       | 10 August 2011     | 35942
-xajax         | 0.5          | 7 February 2009    | 16597
+Package          | @version     | uploaded       | @revision
+-----------------+--------------+----------------+-------------
+adodb            | 5.12         | 09/08/2011     | 35914
+ckeditor         | 3.6.1        | 2 July 2011        | 35160
+codemirror       | 2.11         | 22/07/2011     | 35569
+ezcomponents     | 1.8          | 09/05/2010     | 27007
+fckeditor        | 2.6.6        | 27/06/2010     | 27778
+fullcalendar     | 1.5.1        | 17 August 2011     | 36237
+html5shim        | 1.6.2        | 10/05/2011     | 34346
+htmlpurifier     | 4.3.0        | 10/05/2011     | 34345
+jquery           | 1.6.1        | 12 August 2011     | 36068
+jscalendar       | 1.4          | 03/03/2011     | 33205
+mobileESP        |              | 7 June 2011        | 34807
+pclzip           | 2.8          | 11/08/2009     | 20759
+phpcas           | 1.1.1        | 26/05/2010     | 27326
+phplayers        | 1.5.2.1      | 24/09/2010     | 29564
+simile_timeline  |              | 16/09/2011     | 37297
+slideshow        |              | 22/01/2010     | 24598
+smarty           | 2.6.26       | 03/03/2011     | 33205
+(smarty3)        | 3.0.9        | 19/09/2011     | 37405
+textwiki         |              | 24/06/2011     | 35033
+vfsStream        | 0.10.0       | 10/08/2011     | 35942
+xajax            | 0.5          | 07/02/2009     | 16597
