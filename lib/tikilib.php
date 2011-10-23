@@ -242,9 +242,6 @@ class TikiLib extends TikiDb_Bridge
 		case 'scorm':
 			require_once 'lib/filegals/scormlib.php';
 			return self::$libraries[$name] = new ScormLib;
-		case 'mod':
-			global $modlib; require_once 'lib/modules/modlib.php';
-			return self::$libraries[$name] = $modlib;
 		}
 	}
 
@@ -1674,7 +1671,7 @@ class TikiLib extends TikiDb_Bridge
 
 		// In other cases, we look in db
 		$id = $this->table('users_users')->fetchOne('userId', array('login' => $u));
-		$id = ($id === false) ? -1 : $id;
+		$id = ($id === NULL) ? -1 : $id;
 		if ( $current ) $_SESSION['u_info']['id'] = $id;
 		return $id;
 	}

@@ -13,13 +13,7 @@ class TikiFilter_PrepareInput
 	{
 		$this->delimiter = $delimiter;
 	}
-	
-	static function delimiter($delimiter)
-	{
-		$me = new self($delimiter);
-		return $me;
-	}
-	
+
 	function prepare(array $input)
 	{
 		$output = array();
@@ -45,25 +39,6 @@ class TikiFilter_PrepareInput
 		}
 
 		return $output;
-	}
-	
-	function flatten(array $input)
-	{
-		function flattenValues($values, &$newValues = array(),$prefix = '', $delimiter = '_') {
-		
-			foreach ($values as $key => $value) {
-				if (is_array($value)) {
-					$newPrefix = $prefix.$key.$delimiter;
-					$newValues =& flattenValues($value, $newValues ,$newPrefix, $delimiter);
-				} else {
-					$newValues[$prefix.$key] = $value;
-				}
-			}
-			
-			return $newValues;
-		}
-		
-		return flattenValues($input);
 	}
 }
 

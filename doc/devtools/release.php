@@ -319,6 +319,11 @@ function check_smarty_syntax(&$error_msg) {
 	require_once 'lib/init/smarty.php';
 	set_error_handler('check_smarty_syntax_error_handler');
 
+	$templates_dir = $smarty->template_dir;
+	$templates_dir_length = strlen($templates_dir);
+	if ( $templates_dir_length > 1 && $templates_dir{$templates_dir_length - 1} == '/' )
+		$templates_dir = substr($templates_dir, 0, --$templates_dir_length);
+	$temp_compile_file = TEMP_DIR . 'smarty_compiled_content';
 	$smarty->compileAllTemplates('.tpl', true);
 }
 
@@ -759,7 +764,7 @@ function parse_copyrights() {
 	return $return;
 }
 
-function get_contributors_data($path, &$contributors, $minRevision, $maxRevision, $step = 5000) {
+function get_contributors_data($path, &$contributors, $minRevision, $maxRevision, $step = 15000) {
 	global $nbCommiters;
 
 	if ( empty($contributors) ) {

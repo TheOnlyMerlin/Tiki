@@ -742,9 +742,6 @@ a.toolbar {			/* each tool button */
 .icon_edit_section {
 	float: right;
 }
-.icon_edit_section img.icon {
-	margin-top: -1px !important;
-}
 
 /***** Boxes *****/
 /** Modules **/

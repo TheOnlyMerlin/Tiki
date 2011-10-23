@@ -1245,7 +1245,7 @@ class TrackerLib extends TikiLib
 		return $retval;
 	}
 	function filter_categ_items($ret) {
-		// FIXME: this is an approximation - the perm should be function of the status
+		//this is an approxomation - the perm should be function of the status
 		$categlib = TikiLib::lib('categ');
 		if (empty($ret['itemId']) || $categlib->is_categorized('trackeritem', $ret['itemId'])) {
 			return Perms::filter(array('type' => 'trackeritem'), 'object', $ret, array('object' => 'itemId'), 'view_trackers');
@@ -1694,13 +1694,6 @@ class TrackerLib extends TikiLib
 							//$userlib->change_user_password($user, $ins_fields['data'][$i]['value']);
 							continue;
 						}
-						
-						if ($data[$i] === 'NULL') {
-							$data[$i] = '';
-						}
-						// remove escaped quotes \" etc
-						$data[$i] = stripslashes($data[$i]);
-
 						switch ($field['type']) {
 						case 'e':
 							$cats = preg_split('/%%%/', trim($data[$i]));
@@ -1724,9 +1717,9 @@ class TrackerLib extends TikiLib
 							$data[$i] = preg_replace('/\%\%\%/',"\r\n",$data[$i]);
 							break;
 						case 'c':
-							if (strtolower($data[$i]) == 'yes' || strtolower($data[$i]) == 'on' || $data[$i] == 1)
+							if (strtolower($data[$i]) == 'yes' || strtolower($data[$i]) == 'on')
 								$data[$i] = 'y';
-							else
+							elseif (strtolower($data[$i]) == 'no')
 								$data[$i] = 'n';
 							break;
 						case 'f':
@@ -1740,8 +1733,6 @@ class TrackerLib extends TikiLib
 							} elseif ($dateFormat == 'yyyy-mm-dd') {
 								list($y, $m, $d) = preg_split('#-#', $data[$i]);
 								$data[$i] = $tikilib->make_time(0, 0, 0, $m, $d, $y);
-							} else if (!is_numeric($data[$i])) {	// timestamp but not numeric
-								$data[$i] = '';
 							}
 							break;
 						}
@@ -4010,7 +4001,7 @@ class TrackerLib extends TikiLib
 		}
 		foreach ($currentGroups as $groupName) {
 			$catid = $categlib->get_category_id($groupName);
-			if (in_array($catid, $removable_catids) && !in_array($catid, $addable_catids)) {
+			if (in_array($catid, $removable_catids) && !in_array($catid, $valid_catids)) {
 				$userlib->remove_user_from_group($trackersync_user, $groupName);
 			}
 		}
@@ -4171,33 +4162,6 @@ class TrackerLib extends TikiLib
 			TikiLib::lib('smarty')->assign("f_$fieldId", $r);
 			return $r;
 		}
-	}
-	
-	public function replaceItemFromRequestValues($trackerId, $fieldIds, $fieldValues, $itemId = 0, $i = 0) {
-		$trackerDefinition = Tracker_Definition::get($trackerId);
-		$fields = $trackerDefinition->getFields();
-
-		foreach ($fields as $key => $field) {
-			$fieldId = $field['fieldId'];
-			$fieldValue = ($i > 0 ? $fieldValues[$fieldId][$i] : $fieldValues[$fieldId]);
-			$fields[$key]['value'] = (empty($fieldValue) ? '' : $fieldValue);
-		}
-
-		return $this->replace_item($trackerId, $itemId, array("data"=>$fields), 'o');
-	}
-	
-	public function replaceItemFromRequestValuesByName($trackerName, $fieldNames, $fieldValues, $itemId = 0, $i = 0) {
-		$trackerId = $this->get_tracker_by_name($trackerName);
-		$trackerDefinition = Tracker_Definition::get($trackerId);
-		$fields = $trackerDefinition->getFields();
-
-		foreach ($fields as $key => $field) {
-			$fieldName = $field['name'];
-			$fieldValue = ($i > 0 ? $fieldValues[str_replace(" ", "_", $fieldName)][$i] : $fieldValues[str_replace(" ", "_", $fieldName)]);
-			$fields[$key]['value'] = (empty($fieldValue) ? '' : $fieldValue);
-		}
-		
-		return $this->replace_item($trackerId, $itemId, array("data"=>$fields), 'o');
 	}
 }
 

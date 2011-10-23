@@ -1077,5 +1077,4 @@ class ModLib extends TikiLib
 
 	
 }
-global $modlib;
 $modlib = new ModLib;

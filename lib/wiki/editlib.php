@@ -21,10 +21,6 @@ class EditLib
 	public $oldSourceVersion = null;
 	public $newSourceVersion = null;
 	
-	// Fields for handling links to external wiki pages
-	private $external_wikis = null;
-	
-	
 	// general
 		
 	function make_sure_page_to_be_created_is_not_an_alias($page, $page_info) {
@@ -190,226 +186,6 @@ class EditLib
 		}
 		
 		return $hex;
-	}
-	
-	
-	/**
-	 * Utility for walk_and_parse to process links
-	 * 
-	 * @param array $args the attributes of the link
-	 * @param array $text the link text
-	 * @param string $src output string
-	 * @param array $p ['stack'] = closing strings stack
-	 */
-	private function parseLinkTag(&$args, &$text, &$src, &$p) {
-		
-		$link = '';
-		$link_open = '';
-		$link_close = '';
-		
-		/*
-		 * parse the link classes
-		 */
-		$cl_wiki = false;
-		$cl_wiki_page = false; // Wiki page
-		$cl_ext_page = false; // external Wiki page
-		$cl_external = false; // external web page
-		$ext_wiki_name = '';
-		
-		if ( isset($args['class']) && isset($args['href']) ) {
-			$matches = array();
-			preg_match_all('/([^ ]+)/', $args['class']['value'], $matches);
-			$classes = $matches[0];
-			
-			for ($i=0; $i< count($classes); $i++) {				
-				$cl = $classes[$i];
-							
-				switch ($cl) {
-					case 'wiki': $cl_wiki = true; break;
-					case 'wiki_page': $cl_wiki_page = true; break;
-					case 'ext_page': $cl_ext_page = true; break;
-					case 'external': $cl_external = true; break;
-					default:
-						// if the preceding class was 'ext_page', then we have the name of the external Wiki 
-						if ($i > 0 && $classes[$i-1] == 'ext_page') {
-							$ext_wiki_name = $cl;
-						}
-				}				
-			} 
-		}
-		
-		
-		/*
-		 * extract the target and the anchor from the href
-		 */
-		if ( isset($args['href']) ) {
-			$href = urldecode($args['href']['value']);
-			$matches = explode( '#', $href);
-			if ( count($matches) == 2) {
-				$target = $matches[0];
-				$anchor = '#' . $matches[1];
-			} else {
-				$target = $href;
-				$anchor = '';
-			}
-		} else {
-			$target = '';
-			$anchor = '';
-		}	
-		
-		
-		/*
-		 * treat invalid external Wikis as web links
-		 */
-		if ( $cl_ext_page ) {
-			
-			// retrieve the definitions from the database
-			if ($this->external_wikis == null) {
-				global $tikilib;
-				$query = 'SELECT `name`, `extwiki` FROM `tiki_extwiki`';
-				$this->external_wikis = $tikilib->fetchMap($query);
-			}
-
-			// name must be set and defined
-			if ( !$ext_wiki_name || !isset($this->external_wikis[$ext_wiki_name]) ) {
-				$cl_ext_page = false;
-				$cl_wiki_page = false;
-			}
-		};
-		
-		
-		/*
-		 * construct the links according to the defined classes
-		 */
-		if ( $cl_wiki_page ) {
-
-			/*
-			 * link to wiki page -> (( ))
-			 */
-			$link_open = '((';
-			$link_close = '))';				
-			
-			// remove the html part of the target 
-			$target = preg_replace('/tiki\-index\.php\?page\=/', '', $target);
-
-			// construct the link				
-			$link = $target;
-			if ($anchor) {
-				$link .= '|' . $anchor;
-			}
-			
-		} else if ( $cl_ext_page ) {
-			
-			/*
-			 * link to external Wiki page ((:))
-			 */
-			$link_open = '((';
-			$link_close = '))';				
-			
-			// remove the extwiki definition from the target
-			$def = preg_replace('/\$page/', '', $this->external_wikis[$ext_wiki_name]);
-			$def = preg_quote($def, '/');
-			$target = preg_replace('/^' . $def.'/', '', $target);
-			
-			// construct the link
-			$link = $ext_wiki_name . ':' . $target;
-			if ($anchor) {
-				$link .= '|' . $anchor;
-			}
-			
-		} else if ($cl_wiki && !$cl_external && !$target && strlen($anchor) > 0  && substr($anchor, 0, 1) == '#' ) {
-
-			/*
-			 * inpage links [#]
-			 */
-			$link_open = '[';
-			$link_close = ']';
-			
-			// construct the link
-			$link = $target = $anchor;
-			$anchor = '';
-
-		} else if ($cl_wiki && !$cl_external) {
-			
-			/*
-			 * other tiki resources []
-			 * -> articles, ...
-			 */
-			$link_open = '[';
-			$link_close = ']';		
-
-			// construct the link			
-			$link = $target;
-			
-		} else if (!$cl_wiki && !$cl_external && !$text && isset($args['id']) && isset($args['id']['value']) ) {
-			
-			/*
-			 * anchor
-			 */
-			 $link_open = '{ANAME()}';
-			 $link_close = '{ANAME}';
-			 $link = $args['id']['value'];
-			
-		} else {
-			
-			/*
-			 * other links []
-			 */
-			$link_open = '[';
-			$link_close = ']';
-			
-			
-			/*
-			 * parse the rel attribute
-			 */
-			$box = '';
-			
-			if ( isset($args['class']) && isset($args['rel']) ) {
-				$matches = array();
-				preg_match_all('/([^ ]+)/', $args['rel']['value'], $matches);
-				$rels = $matches[0];
-				
-				for ($i=0; $i< count($rels); $i++) {				
-					$r = $rels[$i];
-					
-					if (preg_match('/^box/', $r) ) {
-						$box = $r;
-					}
-				}
-			}
-			
-			// construct the link
-			$link = $target;	
-			if ($anchor) {
-				$link .= $anchor;
-			}		
-			// the box must be appended to the text
-			if ($box) {
-				$text .= '|' . $box;
-			}				
-			
-		} // convert links
-		
-		
-	
-		/*
-		 * flush the constructed link
-		 */
-		if ($link_open && $link_close) {
-
-			$p['wiki_lbr']++; // force wiki line break mode
-			
-			// does the link text match the target?
-			if ($target == trim($text)) {
-				$text = '';	 // make sure walk_and_parse() does not append any text.
-			} else {
-				$link .= '|'; // the text will be appended by walk_and_parse()
-			}
-				
-			// process the tag and update the output
-			$this->processWikiTag('a', &$src, &$p, $link_open, $link_close, true); 				
-			$src .= $link;
-		}
 	}
 	
 	
@@ -725,11 +501,11 @@ class EditLib
 	 *
 	 * @param $inData			page data, can be wiki or mixed html/wiki
 	 * @param bool $fromWiki	set if converting from wiki page using "switch editor"
-	 * @param bool $isHtml set if are doing WYSIWYG Wiki
+	 * @param bool $wysiwyg_wiki set if are doing WYSIWYG Wiki
 	 * @return string			html to send to ckeditor
 	 */
 
-	function parseToWysiwyg( $inData, $fromWiki = false, $isHtml = false ) {
+	function parseToWysiwyg( $inData, $fromWiki = false, $wysiwyg_wiki = false ) {
 		global $tikilib, $tikiroot, $prefs;
 		// Parsing page data for wysiwyg editor
 		$inData = $this->partialParseWysiwygToWiki($inData);	// remove any wysiwyg plugins so they don't get double parsed
@@ -737,8 +513,8 @@ class EditLib
 		$parsed = preg_replace('/&#039;/', '\'', $parsed);			// catch single quotes at html entities
 		
 		$parsed = $tikilib->parse_data( $parsed, array( 'absolute_links'=>true, 'noheaderinc'=>true, 'suppress_icons' => true,
-														'ck_editor' => true, 'is_html' => ($isHtml && !$fromWiki),
-														'process_wiki_paragraphs' => (!$isHtml || $fromWiki),
+														'ck_editor' => true, 'is_html' => (!$wysiwyg_wiki && !$fromWiki),
+														'process_wiki_paragraphs' => ($wysiwyg_wiki || $fromWiki),
 															'process_double_brackets' => 'n'));
 		
 		if ($fromWiki) {
@@ -969,23 +745,7 @@ class EditLib
 								}
 							break;
 						case "a":
-							if (isset($c[$i]['pars'])) {
-								// get the link text
-								$text = '';
-								if ( $i < count($c) ) {
-									$next_token = &$c[$i+1];
-									if (isset($next_token['type']) && $next_token['type'] == 'text' && isset($next_token['data']) )
-									{
-										$text = &$next_token['data'];
-									}
-								}
-								// parse the link
-								$this->parseLinkTag($c[$i]['pars'], $text, $src, $p);
-							}
-							
-							// deactivated by mauriz, will be replaced by the routine above
 							// If href attribute present in <a> tag
-							/* 
 							if (isset($c[$i]["pars"]["href"]["value"])) {
 								if( strstr( $c[$i]["pars"]["href"]["value"], "http:" )) {
 									$src .= '['.$c[$i]["pars"]["href"]["value"].'|';
@@ -997,9 +757,6 @@ class EditLib
 							if( isset($c[$i]["pars"]["name"]["value"])) {
 								$src .= '{ANAME()}'.$c[$i]["pars"]["name"]["value"].'{ANAME}';
 							}
-							*/
-							
-							
 							break;
 					}	// end switch on tag name
 				} else {
@@ -1034,7 +791,6 @@ class EditLib
 					
 					// can we leave wiki line break mode ?
 					switch ($c[$i]["data"]["name"]) { 
-						case "a":
 						case "h1":
 						case "h2": 
 						case "h3":

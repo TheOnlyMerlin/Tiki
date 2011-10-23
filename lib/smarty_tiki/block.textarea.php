@@ -28,7 +28,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 function smarty_block_textarea($params, $content, $smarty, $repeat)
 {
-	global $prefs, $headerlib, $smarty, $is_html;
+	global $prefs, $headerlib, $smarty, $disable_wysiwyg_html;
 
 	if ( $repeat ) return;
 
@@ -77,6 +77,9 @@ function smarty_block_textarea($params, $content, $smarty, $repeat)
 	$html = '';
 	$html .= '<input type="hidden" name="mode_wysiwyg" value="" /><input type="hidden" name="mode_normal" value="" />';
 
+	// setup for wysiwyg editing (introduced for wysiwyg_htmltowiki)  
+	$html .= "<input type=\"hidden\" name=\"disable_wysiwyg_html\" value=\"$disable_wysiwyg_html\" />";
+	
 	$auto_save_referrer = '';
 	$auto_save_warning = '';
 	$as_id = $params['id'];
@@ -164,7 +167,7 @@ function smarty_block_textarea($params, $content, $smarty, $repeat)
 		$cktools = substr($cktools, 1, strlen($cktools) - 2);	// remove surrouding [ & ]
 		$cktools = str_replace(']],[[', '],"/",[', $cktools);	// add new row chars - done here so as not to break existing f/ck
 		
-		$ckeformattags = ToolbarCombos::getFormatTags($is_html ? 'html' : 'wiki');
+		$ckeformattags = $disable_wysiwyg_html ? ToolbarCombos::getFormatTags('wiki') : ToolbarCombos::getFormatTags('html');
 		
 		$html .= '<input type="hidden" name="wysiwyg" value="y" />';
 		$headerlib->add_jq_onready('
@@ -175,7 +178,8 @@ window.CKEDITOR.plugins.addExternal( "tikiplugin", "'.$tikiroot.'lib/ckeditor_ti
 window.CKEDITOR.config.ajaxAutoSaveTargetUrl = "'.$tikiroot.'tiki-auto_save.php";	// URL to post to (also used for plugin processing)
 ');	// before all
 		
-		if (!$is_html) {
+		global $wysiwyg_wiki;
+		if ($wysiwyg_wiki) {
 			$headerlib->add_jq_onready('
 window.CKEDITOR.config.extraPlugins += (window.CKEDITOR.config.extraPlugins ? ",tikiwiki" : "tikiwiki" );
 window.CKEDITOR.plugins.addExternal( "tikiwiki", "'.$tikiroot.'lib/ckeditor_tiki/plugins/tikiwiki/");
@@ -270,7 +274,7 @@ function CKeditor_OnComplete() {
 		if ( $textarea_attributes != '' ) {
 			$smarty->assign('textarea_attributes', $textarea_attributes);
 		}
-		$smarty->assignByRef('textareadata', htmlspecialchars($content));
+		$smarty->assignByRef('pagedata', htmlspecialchars($content));
 		$html .= $smarty->fetch('wiki_edit.tpl');
 
 		$html .= "\n".'<input type="hidden" name="wysiwyg" value="n" />';

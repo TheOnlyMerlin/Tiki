@@ -1358,8 +1358,7 @@ class FileGalLib extends TikiLib
 	 * @param int $galleryId The id of the gallery 
 	 * @return The special root gallery Id
 	 */
-	// WARNING: Semi-private function. "Public callers" should only pass the galleryId parameter.
-	function getGallerySpecialRoot( $galleryId, $treeParentId = null, &$tree = null /* Pass by reference for performance */) {
+	function getGallerySpecialRoot( $galleryId, $treeParentId = null, &$tree = null ) {
 		global $prefs;
 
 		if ( ( $treeParentId === null xor $tree === null ) || $galleryId <= 0 ) {
@@ -1419,73 +1418,41 @@ class FileGalLib extends TikiLib
 		return $return;
 	}
 
-	// Return HTML code to display the complete file galleries tree for the special root containing the given gallery.
-	// If $galleryIdentifier is not given, default to the "default" / normal / "File Galleries" file galleries.
-	function getTreeHTML($galleryIdentifier = NULL)
-	{
-		global $prefs, $smarty;
-		require_once ('lib/tree/BrowseTreeMaker.php');
-		$galleryIdentifier = is_null($galleryIdentifier) ? $prefs['fgal_root_id'] : $galleryIdentifier;
-		$subGalleries = $this->getSubGalleries($galleryIdentifier);
-	
-		$smarty->loadPlugin('smarty_function_icon');
-		$icon = '&nbsp;' . smarty_function_icon(array('_id' => 'folder'), $smarty) . '&nbsp;';
-		
-		$smarty->loadPlugin('smarty_block_self_link');
-		$linkParameters = array('_script' => 'tiki-list_file_gallery.php', '_class' => 'fgalname');
-		if (!empty($_REQUEST['filegals_manager'])) {
-			$linkParameters['filegals_manager'] = $_REQUEST['filegals_manager'];
-		}
-		$nodes = array();
-		foreach ($subGalleries['data'] as $subGallery) {
-			$linkParameters['galleryId'] = $subGallery['id'];
-			$nodes[] = array(
-				'id' => $subGallery['id'],
-				'parent' => $subGallery['parentId'],
-				'data' => smarty_block_self_link($linkParameters, $icon . htmlspecialchars($subGallery['name']), $smarty), 
-			);
-		}
-		$browseTreeMaker = new BrowseTreeMaker('Galleries');
-		return $browseTreeMaker->make_tree($this->getGallerySpecialRoot($galleryIdentifier), $nodes);
+	// Get default tree for filegals
+	function getFilegalsTree( $currentGalleryId = null ) {
+		return $this->getTree( $this->getFilegalsIdsTree(), $currentGalleryId );
 	}
-	
-	// Return the given gallery's path relative to its special root. The path starts with a constant component, File Galleries for default galleries.
-	// It would be File Galleries > Foo for a root default file gallery named "Foo". Other constant components are "User File Galleries" and "Wiki Attachment File Galleries".
-	// Returns an array with 2 elements, "Array" and "HTML".
-	// Array is a numerically-indexed array with one element per path component. Each value is the name of the component (usually a file gallery name). Keys are file gallery OIDs.
-	// HTML is a string of HTML code to display the path.
-	function getPath($galleryIdentifier) {
-		global $prefs, $user;
-		$rootIdentifier = $this->getGallerySpecialRoot($galleryIdentifier);
-		$root = $this->get_file_gallery_info($galleryIdentifier);
-		if ( $user != '' && $prefs['feature_use_fgal_for_user_files'] == 'y' ) {
-			$userGallery = $this->get_user_file_gallery();
-			if ($userGallery == $prefs['fgal_root_user_id']) {
-				$rootIdentifier = $userGallery;
-			}
-		}
+
+	// Build galleries browsing tree and current gallery path array
+	function getTree( $idTree, $currentGalleryId = null ) {
+		global $prefs;
+
+		$allGalleries = $this->getSubGalleries();
+
+		$idTreeKeys = array_keys( $idTree );
+		$rootGalleryId = $idTreeKeys[0];
+		if ( $currentGalleryId === null ) $currentGalleryId = $rootGalleryId;
+
+		$script = 'tiki-list_file_gallery.php';
+		$tree = array('link' => $script, 'id' => $rootGalleryId );
+
 		$path = array();
-		for ($node = $this->get_file_gallery_info($galleryIdentifier); $node && $node['galleryId'] != $rootIdentifier; $node = $this->get_file_gallery_info($node['parentId'])) {
+		for ($node = $this->get_file_gallery_info($currentGalleryId); $node && $node['galleryId'] != $rootGalleryId; $node = $this->get_file_gallery_info($node['parentId'])) {
 			$path[$node['galleryId']] = $node['name'];
 		}
-		if (isset($userGallery) && $rootIdentifier == $userGallery) {
-			$path[$rootIdentifier] = tra('User File Galleries');
-		} elseif ($rootIdentifier == $prefs['fgal_root_wiki_attachments_id']) {
-			$path[$rootIdentifier] = tra('Wiki Attachment File Galleries');
-		} else {
-			$path[$rootIdentifier] = tra('File Galleries');
-		}
+		$path[$rootGalleryId] = tra('File Galleries');
 		$path = array_reverse($path, true);
 		
 		$pathHtml = '';
 		foreach ( $path as $identifier => $name ) {
 			if ( $pathHtml != '' ) $pathHtml .= ' &nbsp;&gt;&nbsp;';
-			$pathHtml .= '<a href="tiki-list_file_gallery.php?galleryId=' . $identifier . (!empty($_REQUEST['filegals_manager']) ? '&amp;filegals_manager=' . urlencode($_REQUEST['filegals_manager']) : '') . '">' . htmlspecialchars($name) . '</a>';
+			$pathHtml .= '<a href="' . $script . '?galleryId=' . $identifier . (!empty($_REQUEST['filegals_manager']) ? '&amp;filegals_manager=' . urlencode($_REQUEST['filegals_manager']) : '') . '">' . htmlspecialchars($name) . '</a>';
 		}
 
 		return array(
-			'HTML' => $pathHtml,
-			'Array' => $path
+			'tree' => $tree,
+			'path' => $pathHtml,
+			'pathArray' => $path
 		);
 	}
 

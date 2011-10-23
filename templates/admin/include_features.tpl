@@ -52,7 +52,6 @@
 				{preference name=feature_tell_a_friend}
 				{preference name=feature_share}
 				{preference name=feature_credits}
-				{preference name=feature_time_sheet}
 				{preference name=feature_invoice}
 				{preference name=feature_accounting}
 				{preference name=payment_feature}				
@@ -74,8 +73,6 @@
 				{preference name=feature_faqs}
 				{preference name=feature_galleries}
 				{preference name=feature_html_pages}	
-				
-				{preference name=feature_jison_wiki_parser}
 			</div>
 		</fieldset>
 

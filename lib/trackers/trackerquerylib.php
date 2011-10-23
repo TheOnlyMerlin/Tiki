@@ -48,7 +48,6 @@ class TrackerQueryLib
 	private $desc = false;
 	private $render = true;
 	private $excludeDetails = false;
-	private $lastModif = true;
 	private $delimiter = "[{|!|}]";
 	private $debug = false;
 	
@@ -108,16 +107,6 @@ class TrackerQueryLib
 	
 	public function byName($byName = true) {
 		$this->byName = $byName;
-		return $this;
-	}
-	
-	public function lastModif() {
-		$this->lastModif = true;
-		return $this;
-	}
-	
-	public function created() {
-		$this->lastModif = false;
 		return $this;
 	}
 	
@@ -435,8 +424,6 @@ class TrackerQueryLib
 			unset($this->offset);
 		}
 		
-		$dateUnit = ($this->lastModif ? 'lastModif' : 'created');
-		
 		$query = "
 			SELECT
 				tiki_tracker_items.status,
@@ -482,8 +469,8 @@ class TrackerQueryLib
 			WHERE
 			tiki_trackers.trackerId = ?
 			
-			".(!empty($this->start) && !$this->search ? 								" AND tiki_tracker_items.$dateUnit > ? " : "")."
-			".(!empty($this->end) && !$this->search ? 								" AND tiki_tracker_items.$dateUnit < ? " : "")."
+			".(!empty($this->start) && !$this->search ? 								" AND tiki_tracker_items.lastModif > ? " : "")."
+			".(!empty($this->end) && !$this->search ? 								" AND tiki_tracker_items.lastModif < ? " : "")."
 			".(!empty($this->itemId) && !$this->search ? 							" AND tiki_tracker_item_fields.itemId = ? " : "")."
 			".(!empty($fields_safe) ? $fields_safe : "")."
 			".(!empty($status_safe) ? $status_safe : "")."
@@ -491,7 +478,7 @@ class TrackerQueryLib
 			GROUP BY
 				tiki_tracker_item_fields.itemId ".($this->desc == true ? 'DESC' : 'ASC')."
 			ORDER BY 
-				tiki_tracker_items.$dateUnit
+				tiki_tracker_items.lastModif
 			".(!empty($this->limit) ? 
 				" LIMIT ".(!empty($this->offset) ? $this->offset.", " : "")." ".$this->limit
 				: ""
